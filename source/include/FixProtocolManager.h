@@ -5142,7 +5142,7 @@ public:
 			AddTagValue(AddTagRefTagID, refTagId);
 		if(refMsgType != 0)
 			AddTagString2(AddTagRefMsgType, refMsgType, refMsgTypeLength);
-		if(sessionRejectReason != -1)
+		if(static_cast<int8_t>(sessionRejectReason) != -1)
 			AddTagValue(AddTagSessionRejectReason, (int)sessionRejectReason);
 		if(text != 0)
 			AddTagString(AddTagText, text);
