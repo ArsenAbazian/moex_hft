@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="CPP_MODULE" version="4">
+  <component name="NewModuleRootManager">
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/FeedConnection.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/XmlReader.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Robot.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Robot.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/FastProtocolManager.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/ConsoleManager.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/LogManager.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/FixProtocolManager.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/HftConsole.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/LogManager.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/XmlAttribute.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/ProtocolHistoryManager.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/FixProtocolManager.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/WinSockManager.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/MarketInfo.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/ItoaTester.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/ItoaConverter.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/MarketServerInfo.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CMakeLists.txt" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/UTCTimeConverter.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/XmlNode.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/FeedConnection.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/XmlNode.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/XmlAttribute.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/ItoaConverter.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/FeedChannel.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/XmlReader.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Types.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/UTCTimeConverter.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/MarketServerInfo.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/FeedChannel.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/FastProtocolTester.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/UTCTimeConverterTester.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/DtoaConverter.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/DtoaConverter.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/ItoaTester.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/FastProtocolTester.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/WinSockManager.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/FastProtocolManager.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/ConsoleManager.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/MarketInfo.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/ProtocolHistoryManager.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/UTCTimeConverterTester.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/FixTypes.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/ConnectionParameters.h" isTestSource="false" />
+    </content>
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module-library">
+      <library name="Header Search Paths">
+        <CLASSES>
+          <root url="file:///usr/lib/gcc/x86_64-linux-gnu/5/include-fixed" />
+          <root url="file:///usr/lib/gcc/x86_64-linux-gnu/5/include" />
+          <root url="file:///usr/include" />
+          <root url="file:///usr/local/include" />
+        </CLASSES>
+        <SOURCES>
+          <root url="file:///usr/lib/gcc/x86_64-linux-gnu/5/include-fixed" />
+          <root url="file:///usr/lib/gcc/x86_64-linux-gnu/5/include" />
+          <root url="file:///usr/include" />
+          <root url="file:///usr/local/include" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+  </component>
+</module>
