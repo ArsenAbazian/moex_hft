@@ -29,7 +29,7 @@ WinSockManager::~WinSockManager()
 	*/
 }
 
-int WinSockManager::Initialize(char *server_address, u_short server_port) { 
+int WinSockManager::Initialize(char *server_address, unsigned short server_port) { 
 
 	/*
 	DefaultLogManager::Default->StartLog("WinSockManager::Initialize");
