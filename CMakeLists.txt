@@ -61,7 +61,7 @@ else(TINYXML_FOUND)
 #      BUILD_COMMAND make
 #      CONFIGURE_COMMAND make
 #      INSTALL_COMMAND make install DESTDIR=${CMAKE_CURRENT_LIST_DIR}/opt prefix=
-      INSTALL_DIR "${CMAKE_CURRENT_LIST_DIR}/opt"
+      INSTALL_DIR "${CMAKE_CURRENT_LIST_DIR}/opt/lib"
     )
     ExternalProject_Get_Property(tinyxml INSTALL_DIR)
     include_directories("${INSTALL_DIR}/include")
@@ -70,9 +70,6 @@ else(TINYXML_FOUND)
 endif(TINYXML_FOUND)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${common_params}")
-
-INCLUDE_DIRECTORIES(tinyxml2)
-LINK_DIRECTORIES(tinyxml2)
 
 file(GLOB_RECURSE sources source/src/*.c*)
 file(GLOB_RECURSE includes source/include/*.h)
@@ -93,4 +90,6 @@ endforeach(inc_dir)
 
 add_executable(hft_robot ${sources})
 add_dependencies(hft_robot tinyxml)
+target_link_libraries(hft_robot ${TINYXML_LIBRARY} dl)
+#target_link_libraries(hft_robot -Wl,--whole-archive ${TINYXML_LIBRARY} -Wl,--no-whole-archive dl)
 #set_target_properties(hft_robot PROPERTIES LINKER_LANGUAGE CXX)
