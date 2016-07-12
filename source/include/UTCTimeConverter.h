@@ -68,7 +68,7 @@ public:
 		*buffer = '.';
 		buffer++;
 
-		register char *v = (char*)(UTCTimeConverter::miliseconds + st->wMilliseconds);
+		char *v = (char*)(UTCTimeConverter::miliseconds + st->wMilliseconds);
 		buffer[0] = v[0]; buffer[1] = v[1]; buffer[2] = v[2]; //TODO Optimize
 
 		//     y   m   d   -   h   :   m   :   s   .  ms

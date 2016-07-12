@@ -346,7 +346,7 @@ const char* StrPair::GetStr()
         }
         // The loop below has plenty going on, and this
         // is a less useful mode. Break it out.
-        if ( _flags & NEEDS_WHITESPACE_COLLAPSING ) {
+        if ( _flags & COLLAPSE_WHITESPACE ) {
             CollapseWhitespace();
         }
         _flags = (_flags & NEEDS_DELETE);
@@ -1049,7 +1049,7 @@ char* XMLText::ParseDeep( char* p, StrPair* )
     else {
         int flags = _document->ProcessEntities() ? StrPair::TEXT_ELEMENT : StrPair::TEXT_ELEMENT_LEAVE_ENTITIES;
         if ( _document->WhitespaceMode() == COLLAPSE_WHITESPACE ) {
-            flags |= StrPair::NEEDS_WHITESPACE_COLLAPSING;
+            flags |= StrPair::COLLAPSE_WHITESPACE;
         }
 
         p = _value.ParseText( p, "<", flags );

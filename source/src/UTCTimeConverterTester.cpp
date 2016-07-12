@@ -57,9 +57,9 @@ void UTCTimeConverterTester::Test() {
 			st.wMonth != stNew.wMonth ||
 			st.wDay != stNew.wDay) {
 
-			printf("UTCTimeConverter::FromString: expected %d%d%d but was %d%d%d",
+			printf("UTCTimeConverter::FromString: expected %u%u%u but was %u%u%u",
 				st.wYear, st.wMonth, st.wDay,
-				stNew.wYear, stNew.wMonth);
+				stNew.wYear, stNew.wMonth, stNew.wDay);
 			throw;
 		}
 	}

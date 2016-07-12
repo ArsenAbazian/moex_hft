@@ -31,7 +31,7 @@ public:
 
 	inline char*	Buffer() { return this->currentItem; }
 	inline void		Increment(int length, HistoryItemType itemType) {
-		register int itemCount = this->currentBuffer->ItemCount;
+		int itemCount = this->currentBuffer->ItemCount;
 		
 		this->currentBuffer->ItemLength[itemCount] = length;
 		this->currentBuffer->ItemOffset[itemCount] = this->currentBuffer->Current - this->currentBuffer->Buffer;
@@ -41,7 +41,8 @@ public:
 		itemCount++;
 		if ((itemCount > this->currentBuffer->ItemsMaxCount) || 
 			(this->currentBuffer->Current - this->currentBuffer->Buffer) >= this->currentBuffer->BufferCapacity) { 
-			this->bufferIndex = (this->bufferIndex++) % this->bufferCount;
+			this->bufferIndex = (this->bufferIndex) % this->bufferCount;
+			this->bufferIndex++;
 			this->currentBuffer = &(this->buffer[this->bufferIndex]);
 			this->currentBuffer->ItemCount = 0;
 			this->currentBuffer->Current = this->currentBuffer->Buffer;

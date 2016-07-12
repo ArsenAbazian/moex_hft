@@ -1629,7 +1629,7 @@ class FastProtocolManager
 		return this->heartbeat;
 	}
 
-	inline void EncodeEncodeLogoutInfo(int msgSeqNumber, register FastLogoutInfo* info) {
+	inline void EncodeEncodeLogoutInfo(int msgSeqNumber, FastLogoutInfo* info) {
 		ResetBuffer();
 		WriteMsgSeqNumber(msgSeqNumber);
 		WriteString_Mandatory(info->MessageType, info->MessageTypeLength);
@@ -1640,7 +1640,7 @@ class FastProtocolManager
 		WriteUInt64_Mandatory(info->SendingTime);
 		WriteString_Optional(info->Text, info->TextLength);
 	}
-	inline void EncodeEncodeSecurityStatusInfo(int msgSeqNumber, register FastSecurityStatusInfo* info) {
+	inline void EncodeEncodeSecurityStatusInfo(int msgSeqNumber, FastSecurityStatusInfo* info) {
 		ResetBuffer();
 		WriteMsgSeqNumber(msgSeqNumber);
 		WriteString_Mandatory(info->MessageType, info->MessageTypeLength);
@@ -1655,7 +1655,7 @@ class FastProtocolManager
 		WriteInt32_Optional(info->SecurityTradingStatus);
 		WriteUInt32_Optional(info->AuctionIndicator);
 	}
-	inline void EncodeEncodeTradingSessionStatusInfo(int msgSeqNumber, register FastTradingSessionStatusInfo* info) {
+	inline void EncodeEncodeTradingSessionStatusInfo(int msgSeqNumber, FastTradingSessionStatusInfo* info) {
 		ResetBuffer();
 		WriteMsgSeqNumber(msgSeqNumber);
 		WriteString_Mandatory(info->MessageType, info->MessageTypeLength);
@@ -1668,7 +1668,7 @@ class FastProtocolManager
 		WriteString_Optional(info->Text, info->TextLength);
 		WriteString_Mandatory(info->TradingSessionID, info->TradingSessionIDLength);
 	}
-	inline void EncodeEncodeHeartbeatInfo(int msgSeqNumber, register FastHeartbeatInfo* info) {
+	inline void EncodeEncodeHeartbeatInfo(int msgSeqNumber, FastHeartbeatInfo* info) {
 		ResetBuffer();
 		WriteMsgSeqNumber(msgSeqNumber);
 		WriteString_Mandatory(info->MessageType, info->MessageTypeLength);
@@ -1715,13 +1715,13 @@ public:
 		return true;
 	}
 	
-	inline void WriteMsgSeqNumber(register int msgSeqNumber) {
+	inline void WriteMsgSeqNumber(int msgSeqNumber) {
 		*((int*)this->currentPos) = msgSeqNumber;
 		this->currentPos += 4;
 	}
 
 	inline int ReadMsgSeqNumber() {
-		register int result = *(int*)this->currentPos;
+		int result = *(int*)this->currentPos;
 		this->currentPos += 4;
 		return result;
 	}
@@ -1757,7 +1757,7 @@ public:
 		return false;
 	}
 	inline bool CheckProcessNullString() {
-		register WORD str = *((WORD*)this->currentPos);
+		WORD str = *((WORD*)this->currentPos);
 		if (str == 0x0000)
 			return false;
 		if ((str & 0xFF) == 0x00) {
@@ -1773,8 +1773,8 @@ public:
 		return CheckProcessNullInt32();
 	}
 
-	inline void WriteInt32_Mandatory(register INT32 value) { 
-		register int encoded = 0;
+	inline void WriteInt32_Mandatory(INT32 value) { 
+		int encoded = 0;
 		if (value >= 0) {
 
 			encoded |= ((value & 0x7f) | 0x80);
@@ -1939,14 +1939,14 @@ public:
 			this->currentPos += 4;
 		}
 	}
-	inline void WriteInt32_Optional(register INT32 value) {
+	inline void WriteInt32_Optional(INT32 value) {
 		if (value > 0)
 			value++;
 		WriteInt32_Mandatory(value);
 	}
 
 	inline void WriteUInt32_Mandatory(UINT32 value) {
-		register UINT encoded = 0;
+		UINT encoded = 0;
 
 		encoded |= ((value & 0x7f) | 0x80);
 		value >>= 7;
@@ -1993,22 +1993,22 @@ public:
 		*((int*)this->currentPos) = encoded;
 		this->currentPos += 4;
 	}
-	inline void WriteUInt32_Optional(register UINT32 value) {
+	inline void WriteUInt32_Optional(UINT32 value) {
 		value++;
 		WriteUInt32_Mandatory(value);
 	}
 
 	inline INT32 ReadInt32_Optional() {
-		register INT32 result = ReadInt32_Mandatory();
+		INT32 result = ReadInt32_Mandatory();
 		if (result > 0)
 			return result - 1;
 		return result;
 	}
 	inline INT32 ReadInt32_Mandatory() {
-		register INT32 result;
-		register INT32 memory = *((INT32*)(this->currentPos));
+		INT32 result;
+		INT32 memory = *((INT32*)(this->currentPos));
 
-		register INT32 valueMasked = memory & 0xff;
+		INT32 valueMasked = memory & 0xff;
 
 		if (valueMasked == 0x00) { // extended positive integer
 			result = 0;
@@ -2169,8 +2169,8 @@ public:
 	}
 	
 	inline UINT32 ReadUInt32_Mandatory() {
-		register INT32 result = 0;
-		register INT32 memory = *((INT32*)(this->currentPos));
+		INT32 result = 0;
+		INT32 memory = *((INT32*)(this->currentPos));
 
 		result |= memory & 0x7f;
 		if ((memory & 0x80) != 0) {
@@ -2210,18 +2210,18 @@ public:
 		return result;
 	}
 	inline UINT32 ReadUInt32_Optional() {
-		register INT32 result = ReadUInt32_Mandatory();
+		INT32 result = ReadUInt32_Mandatory();
 		return result - 1;
 	}
 
-	inline void WriteInt64_Optional(register INT64 value) {
+	inline void WriteInt64_Optional(INT64 value) {
 		if (value > 0)
 			value++;
 		WriteInt64_Mandatory(value);
 	}
 	inline void WriteInt64_Mandatory(INT64 value) { 
-		register INT64 encoded = 0;
-		register INT32 encoded2;
+		INT64 encoded = 0;
+		INT32 encoded2;
 		if (value >= 0) {
 			encoded |= ((value & 0x7f) | 0x80);
 			value >>= 7;
@@ -2576,8 +2576,8 @@ public:
 		WriteUInt64_Mandatory(value);
 	}
 	inline void WriteUInt64_Mandatory(UINT64 value) {
-		register UINT64 encoded = 0;
-		register UINT encoded2;
+		UINT64 encoded = 0;
+		UINT encoded2;
 
 		encoded |= ((value & 0x7f) | 0x80);
 		value >>= 7;
@@ -2677,10 +2677,10 @@ public:
 	}
 
 	inline INT64 ReadInt64_Mandatory() {
-		register INT64 result;
-		register INT64 memory = *((INT64*)(this->currentPos));
+		INT64 result;
+		INT64 memory = *((INT64*)(this->currentPos));
 
-		register INT64 valueMasked = memory & 0xff;
+		INT64 valueMasked = memory & 0xff;
 
 		if (valueMasked == 0x00) { // extended positive integer
 			result = 0;
@@ -3031,15 +3031,15 @@ public:
 		}
 	}
 	inline INT64 ReadInt64_Optional() {
-		register INT64 value = ReadInt64_Mandatory();
+		INT64 value = ReadInt64_Mandatory();
 		if (value > 0)
 			return value - 1;
 		return value;
 	}
 
 	inline UINT64 ReadUInt64_Mandatory() {
-		register UINT64 result;
-		register UINT64 memory = *(UINT64*)this->currentPos;
+		UINT64 result;
+		UINT64 memory = *(UINT64*)this->currentPos;
 
 		result = memory & 0x7f;
 		if ((memory & 0x80) != 0) {
@@ -3174,8 +3174,8 @@ public:
 	}
 
 	inline void ReadString_Optional(char **strPtrAddress, int *lengthAddress) {
-		register UINT64 memory = *((UINT64*)this->currentPos);
-		register int length = 0;
+		UINT64 memory = *((UINT64*)this->currentPos);
+		int length = 0;
 		if ((memory & 0xffff) == 0x8000) { 
 			*strPtrAddress = (char*)this->currentPos;
 			lengthAddress = 0;
@@ -3253,8 +3253,8 @@ public:
 		*lengthAddress = length;
 	}
 	inline void ReadString_Mandatory(char **strPtrAddress, int *lengthAddress) {
-		register UINT64 memory = *((UINT64*)this->currentPos);
-		register int length = 0;
+		UINT64 memory = *((UINT64*)this->currentPos);
+		int length = 0;
 		if ((memory & 0xff) == 0x80) {
 			*(this->currentPos) = 0;
 			*strPtrAddress = (char*)this->currentPos;
@@ -3334,13 +3334,13 @@ public:
 	}
 
 	inline void ReadByteVector_Optional(BYTE **vecPtrAddress, int *lengthAddress) { 
-		register int length = ReadInt32_Optional();
+		int length = ReadInt32_Optional();
 		*vecPtrAddress = this->currentPos;
 		this->currentPos += length;
 		*lengthAddress = length;
 	}
 	inline void ReadByteVector_Mandatory(BYTE **vecPtrAddress, int *lengthAddress) { 
-		register int length = ReadInt32_Mandatory();
+		int length = ReadInt32_Mandatory();
 		*vecPtrAddress = this->currentPos;
 		this->currentPos += length;
 		*lengthAddress = length;
@@ -3363,9 +3363,9 @@ public:
 	}
 
 	inline void ParsePresenceMap(int *presenceMapBits, int maxBitsCount) { 
-		register int *pmap = (int*)this->currentPos;
-		register int value;
-		register int *intPmap = presenceMapBits;
+		int *pmap = (int*)this->currentPos;
+		int value;
+		int *intPmap = presenceMapBits;
 		while (true) {
 			value = *pmap;
 			for (int i = 0; i < 7; i++) {
@@ -4830,78 +4830,78 @@ public:
 		return info;
 	}
 	inline void Decode_Generic() {
-		register char msgType = ReadMsgType();
-		register FastDecodeMethodPointer funcPtr = this->DecodeMethods_Generic[msgType];
+		char msgType = ReadMsgType();
+		FastDecodeMethodPointer funcPtr = this->DecodeMethods_Generic[msgType];
 		(this->*funcPtr)();
 	}
 	inline void Decode_OLS_FOND() {
-		register char msgType = ReadMsgType();
-		register FastDecodeMethodPointer funcPtr = this->DecodeMethods_OLS_FOND[msgType];
+		char msgType = ReadMsgType();
+		FastDecodeMethodPointer funcPtr = this->DecodeMethods_OLS_FOND[msgType];
 		(this->*funcPtr)();
 	}
 	inline void Decode_OLS_CURR() {
-		register char msgType = ReadMsgType();
-		register FastDecodeMethodPointer funcPtr = this->DecodeMethods_OLS_CURR[msgType];
+		char msgType = ReadMsgType();
+		FastDecodeMethodPointer funcPtr = this->DecodeMethods_OLS_CURR[msgType];
 		(this->*funcPtr)();
 	}
 	inline void Decode_TLS_FOND() {
-		register char msgType = ReadMsgType();
-		register FastDecodeMethodPointer funcPtr = this->DecodeMethods_TLS_FOND[msgType];
+		char msgType = ReadMsgType();
+		FastDecodeMethodPointer funcPtr = this->DecodeMethods_TLS_FOND[msgType];
 		(this->*funcPtr)();
 	}
 	inline void Decode_TLS_CURR() {
-		register char msgType = ReadMsgType();
-		register FastDecodeMethodPointer funcPtr = this->DecodeMethods_TLS_CURR[msgType];
+		char msgType = ReadMsgType();
+		FastDecodeMethodPointer funcPtr = this->DecodeMethods_TLS_CURR[msgType];
 		(this->*funcPtr)();
 	}
 	inline void Decode_OBS_FOND() {
-		register char msgType = ReadMsgType();
-		register FastDecodeMethodPointer funcPtr = this->DecodeMethods_OBS_FOND[msgType];
+		char msgType = ReadMsgType();
+		FastDecodeMethodPointer funcPtr = this->DecodeMethods_OBS_FOND[msgType];
 		(this->*funcPtr)();
 	}
 	inline void Decode_OBS_CURR() {
-		register char msgType = ReadMsgType();
-		register FastDecodeMethodPointer funcPtr = this->DecodeMethods_OBS_CURR[msgType];
+		char msgType = ReadMsgType();
+		FastDecodeMethodPointer funcPtr = this->DecodeMethods_OBS_CURR[msgType];
 		(this->*funcPtr)();
 	}
 	inline void Decode_MSR_FOND() {
-		register char msgType = ReadMsgType();
-		register FastDecodeMethodPointer funcPtr = this->DecodeMethods_MSR_FOND[msgType];
+		char msgType = ReadMsgType();
+		FastDecodeMethodPointer funcPtr = this->DecodeMethods_MSR_FOND[msgType];
 		(this->*funcPtr)();
 	}
 	inline void Decode_MSR_CURR() {
-		register char msgType = ReadMsgType();
-		register FastDecodeMethodPointer funcPtr = this->DecodeMethods_MSR_CURR[msgType];
+		char msgType = ReadMsgType();
+		FastDecodeMethodPointer funcPtr = this->DecodeMethods_MSR_CURR[msgType];
 		(this->*funcPtr)();
 	}
 	inline void Decode_OLR_FOND() {
-		register char msgType = ReadMsgType();
-		register FastDecodeMethodPointer funcPtr = this->DecodeMethods_OLR_FOND[msgType];
+		char msgType = ReadMsgType();
+		FastDecodeMethodPointer funcPtr = this->DecodeMethods_OLR_FOND[msgType];
 		(this->*funcPtr)();
 	}
 	inline void Decode_OLR_CURR() {
-		register char msgType = ReadMsgType();
-		register FastDecodeMethodPointer funcPtr = this->DecodeMethods_OLR_CURR[msgType];
+		char msgType = ReadMsgType();
+		FastDecodeMethodPointer funcPtr = this->DecodeMethods_OLR_CURR[msgType];
 		(this->*funcPtr)();
 	}
 	inline void Decode_OBR_FOND() {
-		register char msgType = ReadMsgType();
-		register FastDecodeMethodPointer funcPtr = this->DecodeMethods_OBR_FOND[msgType];
+		char msgType = ReadMsgType();
+		FastDecodeMethodPointer funcPtr = this->DecodeMethods_OBR_FOND[msgType];
 		(this->*funcPtr)();
 	}
 	inline void Decode_OBR_CURR() {
-		register char msgType = ReadMsgType();
-		register FastDecodeMethodPointer funcPtr = this->DecodeMethods_OBR_CURR[msgType];
+		char msgType = ReadMsgType();
+		FastDecodeMethodPointer funcPtr = this->DecodeMethods_OBR_CURR[msgType];
 		(this->*funcPtr)();
 	}
 	inline void Decode_TLR_FOND() {
-		register char msgType = ReadMsgType();
-		register FastDecodeMethodPointer funcPtr = this->DecodeMethods_TLR_FOND[msgType];
+		char msgType = ReadMsgType();
+		FastDecodeMethodPointer funcPtr = this->DecodeMethods_TLR_FOND[msgType];
 		(this->*funcPtr)();
 	}
 	inline void Decode_TLR_CURR() {
-		register char msgType = ReadMsgType();
-		register FastDecodeMethodPointer funcPtr = this->DecodeMethods_TLR_CURR[msgType];
+		char msgType = ReadMsgType();
+		FastDecodeMethodPointer funcPtr = this->DecodeMethods_TLR_CURR[msgType];
 		(this->*funcPtr)();
 	}
 #pragma endregion

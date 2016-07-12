@@ -104,6 +104,7 @@ void WinSockManager::SetMessage(char* res){
 }
 
 void WinSockManager::ProcessMessageCore(){
+	/*
 	int lastProcessedMessageIndex = 0;
 	while (true)
 	{
@@ -113,6 +114,7 @@ void WinSockManager::ProcessMessageCore(){
 		Send(answer, strlen(answer));
 		lastProcessedMessageIndex = (lastProcessedMessageIndex + 1) % 100; // 100 = array length
 	}
+	*/
 }
 
 bool WinSockManager::Reconnect() { 

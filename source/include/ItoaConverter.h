@@ -196,7 +196,7 @@ public:
 	}
 	inline int FromString(char *buffer, int *outValue, char stopSymbol) { 
 		char *start = buffer;
-		register int result = 0;
+		int result = 0;
 
 		if (*buffer == '-') {  // yes stupid but optimized
 			buffer++;
@@ -227,7 +227,7 @@ public:
 	inline int FromStringFast(char *buffer, int *outValue, char stopSymbol) { 
 		char *start = buffer;
 		char *digitStart = buffer;
-		register int result = 0;
+		int result = 0;
 
 		if (*buffer == '-') { 
 			buffer++;

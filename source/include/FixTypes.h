@@ -168,7 +168,8 @@ typedef enum _FixSessionRejectReason {
     InvalidFieldOrder = 15,
     IncorrectNumInGroup = 16,
     FieldNoDataValueContainsSeparator = 17,
-    Other = 99
+    Other = 99,
+    NoReason = -1
 }FixSessionRejectReason;
 
 

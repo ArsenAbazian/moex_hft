@@ -5142,7 +5142,7 @@ public:
 			AddTagValue(AddTagRefTagID, refTagId);
 		if(refMsgType != 0)
 			AddTagString2(AddTagRefMsgType, refMsgType, refMsgTypeLength);
-		if(sessionRejectReason != -1)
+		if(sessionRejectReason != FixSessionRejectReason::NoReason)
 			AddTagValue(AddTagSessionRejectReason, (int)sessionRejectReason);
 		if(text != 0)
 			AddTagString(AddTagText, text);
@@ -5826,6 +5826,8 @@ public:
 		AddLog(FixDcProcessMessageBodyLen, FixDcSuccess);
 		buffer += length;
 		*outLength = (*outLength) + length;
+
+		return true;
 	}
 };
 
