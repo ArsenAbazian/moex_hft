@@ -468,7 +468,7 @@ void FastProtocolTester::TestReadInt64_Mandatory() {
 		if (value != i)
 			throw;
 		if ((i % 1000000) == 0)
-			printf("%ld\n", i);
+			printf("%llu\n", i);
 	}
 
 	for (INT64 i = 0; i < 0x7ffffffffffffff0; i += 5) {
@@ -479,7 +479,7 @@ void FastProtocolTester::TestReadInt64_Mandatory() {
 		if (value != i)
 			throw;
 		if ((i % 1000000) == 0)
-			printf("%ld\n", i);
+			printf("%llu\n", i);
 	}
 
 

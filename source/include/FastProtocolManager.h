@@ -4658,7 +4658,7 @@ public:
 			ReadString_Mandatory(&(info->MessageEncoding), &(info->MessageEncodingLength));
 		}
 		else {
-			info->MessageEncoding = "UTF-8";
+			info->MessageEncoding = const_cast<char *>("UTF-8");
 			info->MessageEncodingLength = 5;
 		}
 		if(!CheckProcessNullInt32())
