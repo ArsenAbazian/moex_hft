@@ -5129,24 +5129,24 @@ public:
 	}
 
 	inline void AddEncodedTextTag(char *encodedText, int encodedTextLength) { 
-		if (encodedText == NULL)
+		if (encodedTextLength == 0)
 			return;
 		AddTagValue(AddTagEncodedTextLen, encodedTextLength);
 		AddTagData(AddTagEncodedText, encodedText, encodedTextLength);
 	}
 
-	inline void CreateRejectMessage(int refMsgSeqNum, int refTagId, char *refMsgType, int refMsgTypeLength, FixSessionRejectReason sessionRejectReason, char *text, char *encodedText, int encodedTextLength) {
+	inline void CreateRejectMessage(FixRejectInfo *info) {
 		AddHeader(MsgTypeReject);
-		AddTagValue(AddTagRefSeqNum, refMsgSeqNum);
-		if(refTagId != 0)
-			AddTagValue(AddTagRefTagID, refTagId);
-		if(refMsgType != 0)
-			AddTagString2(AddTagRefMsgType, refMsgType, refMsgTypeLength);
-	if(sessionRejectReason != FixSessionRejectReason::NoReason)
-			AddTagValue(AddTagSessionRejectReason, (int)sessionRejectReason);
-		if(text != 0)
-			AddTagString(AddTagText, text);
-		AddEncodedTextTag(encodedText, encodedTextLength);
+		AddTagValue(AddTagRefSeqNum, info->RefMsgSeqNum);
+		if(info->RefTagId != 0)
+			AddTagValue(AddTagRefTagID, info->RefTagId);
+		if(info->RefMsgTypeLength != 0)
+			AddTagString2(AddTagRefMsgType, info->RefMsgType, info->RefMsgTypeLength);
+	    if(info->SessionRejectReason != FixSessionRejectReason::NoReason)
+			AddTagValue(AddTagSessionRejectReason, (int)info->SessionRejectReason);
+		if(info->TextLength != 0)
+			AddTagString(AddTagText, info->Text);
+		AddEncodedTextTag(info->EncodedText, info->EncodedTextLength);
 		UpdateLengthTagValue();
 		AddTrail();
 		AddStringZero();
@@ -5467,69 +5467,65 @@ public:
 
 #pragma endregion
 
-	inline void AddGroupLogon(int encryptionType, int hearthBtInt, bool shouldResetSeqNum, char *password, int passLength, char *newPassword, int newPassLength, bool allowSessionStatus, FixSessionStatus sessionStatus, bool cancelOnDisconnect, char languageId) {
+	inline void AddGroupLogon(FixLogonInfo *info) {
 		AddTagEncryptMethod();
 		AddEqual();
-		AddValue(encryptionType);	// must be zero not supported by MOEX
+		AddValue(info->EncryptionType);	// must be zero not supported by MOEX
 		AddSeparator();
 		
 		AddTagHeartBtInt();
 		AddEqual();
-		AddValue(hearthBtInt);
+		AddValue(info->HearthBtInt);
 		AddSeparator();
 		
 		AddTagResetSeqNumFlag();
 		AddEqual();
-		AddValue(shouldResetSeqNum);
+		AddValue(info->ShouldResetSeqNum);
 		AddSeparator();
 
 		AddTagPassword();
 		AddEqual();
-		AddArray(password, passLength);
+		AddArray(info->Password, info->PassLength);
 		AddSeparator();
 
-		if (newPassLength > 0) { 
+		if (info->NewPassLength > 0) {
 			AddTagNewPassword();
 			AddEqual();
-			AddArray(newPassword, newPassLength);
+			AddArray(info->NewPassword, info->NewPassLength);
 			AddSeparator();
 		}
 
-		if (allowSessionStatus) { 
+		if (info->AllowSessionStatus) {
 			AddTagSessionStatus();
 			AddEqual();
-			AddValue((int)sessionStatus);
+			AddValue((int)info->SessionStatus);
 			AddSeparator();
 		}
 
-		if (cancelOnDisconnect) { 
+		if (info->CancelOnDisconnect) {
 			AddTagCancelOnDisconnect();
 			AddEqual();
 			AddSymbol('A');
 			AddSeparator();
 		}
 
-		if (languageId != 0) { 
+		if (info->LanguageId != 0) {
 			AddTagTagLanguageID();
 			AddEqual();
-			AddSymbol(languageId);
+			AddSymbol(info->LanguageId);
 			AddSeparator();
 		}
 	}
 
-	inline void CreateLogonMessage(int msgStartSeqNo, int encryptionType, int hearthBtInt, bool shouldResetSeqNum, char *senderCompID, char *password, int passLength, char *newPassword, int newPassLength, bool allowSessionStatus, FixSessionStatus sessionStatus, bool cancelOnDisconnect, char languageId) {
-		this->messageSequenceNumber = msgStartSeqNo;
-		this->SetSenderComputerId(senderCompID);
+	inline void CreateLogonMessage(FixLogonInfo *logon) {
+		this->messageSequenceNumber = logon->MsgStartSeqNo;
+		this->SetSenderComputerId(logon->SenderCompID);
 		AddHeader(MsgTypeLogon);
-		AddGroupLogon(encryptionType, hearthBtInt, shouldResetSeqNum, password, passLength, newPassword, newPassLength, allowSessionStatus, sessionStatus, cancelOnDisconnect, languageId);
+		AddGroupLogon(logon);
 		UpdateLengthTagValue();
 		AddTrail();
 		AddStringZero();
 		IncrementBuffer();
-	}
-	
-	inline void CreateLogonMessage(FixLogonInfo *logon) {
-		CreateLogonMessage(logon->MsgStartSequenceNumber, logon->EncryptionType, logon->HearthBtInt, logon->ShouldResetSeqNum, logon->CompID, logon->Password, logon->PassLength, logon->NewPassword, logon->NewPassLength, logon->AllowSessionStatus, logon->SessionStatus, logon->CancelOnDisconnect, logon->LanguageId);
 	}
 
 	inline void CreateLogoutMessage(char *text, int textLength) { 
@@ -5546,10 +5542,10 @@ public:
 		IncrementBuffer();
 	}
 
-	inline void CreateOrderStatusRequestMessage(char *orderId, int orderIdLength, char *ciOrdId, int ciOrdIdLength) { 
+	inline void CreateOrderStatusRequestMessage(FixOrderStatusRequestInfo *info) {
 		AddHeader(MsgTypeOrderStatusRequest);
-		AddTagString2(AddTagOrderID, orderId, orderIdLength);
-		AddTagString2(AddTagClOrdID, ciOrdId, ciOrdIdLength);
+		AddTagString2(AddTagOrderID, info->OrderId, info->OrderIdLength);
+		AddTagString2(AddTagClOrdID, info->CiOrdId, info->CiOrdIdLength);
 		UpdateLengthTagValue();
 		AddTrail();
 		AddStringZero();

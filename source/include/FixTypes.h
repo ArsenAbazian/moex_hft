@@ -133,12 +133,12 @@ typedef enum _FixSessionStatus  {
 
 
 typedef struct _LogonInfo {
-    int MsgStartSequenceNumber;
+    int MsgStartSeqNo;
     int EncryptionType;
     int HearthBtInt;
     bool ShouldResetSeqNum;
-    char CompID[32];
-    int CompIDLength;
+    char SenderCompID[32];
+    int SenderCompIDLength;
     char Password[12];
     int PassLength;
     char NewPassword[12];
@@ -172,6 +172,13 @@ typedef enum _FixSessionRejectReason {
     NoReason = -1
 }FixSessionRejectReason;
 
+
+typedef struct _FixOrderStatusRequestInfo {
+    char        OrderId[64];
+    int         OrderIdLength;
+    char        CiOrdId[64];
+    int         CiOrdIdLength;
+}FixOrderStatusRequestInfo;
 
 static const char	**FixSecurityType = new const char*[5] {
         "FXSPOT",
@@ -343,6 +350,18 @@ typedef struct _FixTagValueInfo {
     char		CharValue;
     int			Length;
 }FixTagValueInfo;
+
+typedef struct _FixRejectInfo {
+    int         RefMsgSeqNum;
+    int         RefTagId;
+    char        RefMsgType[512];
+    int         RefMsgTypeLength;
+    FixSessionRejectReason SessionRejectReason;
+    char        Text[512];
+    int         TextLength;
+    char        EncodedText[512];
+    int         EncodedTextLength;
+}FixRejectInfo;
 
 typedef struct _Decimal {
     INT32		Mantissa;
