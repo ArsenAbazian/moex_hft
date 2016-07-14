@@ -1,6 +1,8 @@
 #pragma once
 #include "Types.h"
 #include "ItoaConverter.h"
+#include <sys/time.h>
+#include <time.h>
 
 typedef  struct _SYSTEMTIME  {
 	unsigned short wYear;
@@ -22,6 +24,10 @@ class UTCTimeConverter
 	static CharVector4		*years;
 	static CharVector2		*hours;
 	static CharVector3		*miliseconds;
+    SYSTEMTIME              currentTime;
+    struct timeval          *tval;
+    struct tm               *calendarTime;
+    int                     currentMs;
 
 	ItoaConverter			*converter;
 
@@ -36,6 +42,46 @@ public:
 	~UTCTimeConverter();
 
 	void Initialize();
+    inline int GetCurrentTimeString(char *buffer) {
+        gettimeofday(this->tval, NULL);
+        gmtime_r(&(this->tval->tv_sec), this->calendarTime);
+        this->calendarTime->tm_year += 1900; //strange why?
+        return ToString(buffer, this->calendarTime, tval->tv_usec / 1000);
+    }
+    inline struct tm* CalendarTime() { return this->calendarTime; }
+    inline struct timeval* TimeVal() { return this->tval; }
+    inline int ToString(char *buffer, struct tm *t, int ms) {
+        *((DWORD*)buffer) = *((DWORD*)&(UTCTimeConverter::years[t->tm_year]));
+        buffer += 4;
+
+        *((WORD*)buffer) = *((WORD*)&(UTCTimeConverter::hours[t->tm_mon]));
+        buffer += 2;
+
+        *((WORD*)buffer) = *((WORD*)&(UTCTimeConverter::hours[t->tm_mday]));
+        buffer += 2;
+
+        *((DWORD*)buffer) = 0x3a00002d; // -00:  reversed
+        buffer++;
+
+        *((WORD*)buffer) = *((WORD*)&(UTCTimeConverter::hours[t->tm_hour]));
+        buffer += 3;
+
+        *((WORD*)buffer) = *((WORD*)&(UTCTimeConverter::hours[t->tm_min]));
+        buffer += 2;
+
+        *((DWORD*)buffer) = 0x2e00003a; // :00.  reversed
+        buffer++;
+
+        *((WORD*)buffer) = *((WORD*)&(UTCTimeConverter::hours[t->tm_sec]));
+        buffer += 3;
+
+        char *v = (char*)(UTCTimeConverter::miliseconds[ms]);
+        *((DWORD*)buffer) = *((DWORD*)v);
+
+        //       y   m   d   -   h   :   m   :   s   .  ms
+        //return 4 + 2 + 2 + 1 + 2 + 1 + 2 + 1 + 2 + 1 + 3;
+        return UTCTimeStampLength;
+    }
 	inline int ToString(char *buffer, SYSTEMTIME *st) { 
 
 		*((DWORD*)buffer) = *((DWORD*)&(UTCTimeConverter::years[st->wYear]));
@@ -47,32 +93,27 @@ public:
 		*((WORD*)buffer) = *((WORD*)&(UTCTimeConverter::hours[st->wDay]));
 		buffer += 2;
 
-		*buffer = '-';
-		buffer++;
+        *((DWORD*)buffer) = 0x3a00002d; // -00:  reversed
+        buffer++;
 
 		*((WORD*)buffer) = *((WORD*)&(UTCTimeConverter::hours[st->wHour]));
-		buffer += 2;
-
-		*buffer = ':';
-		buffer++;
+		buffer += 3;
 
 		*((WORD*)buffer) = *((WORD*)&(UTCTimeConverter::hours[st->wMinute]));
 		buffer += 2;
 
-		*buffer = ':';
-		buffer++;
+        *((DWORD*)buffer) = 0x2e00003a; // :00.  reversed
+        buffer++;
 
 		*((WORD*)buffer) = *((WORD*)&(UTCTimeConverter::hours[st->wSecond]));
-		buffer += 2;
+		buffer += 3;
 
-		*buffer = '.';
-		buffer++;
+		char *v = (char*)(UTCTimeConverter::miliseconds[st->wMilliseconds]);
+        *((DWORD*)buffer) = *((DWORD*)v);
 
-		char *v = (char*)(UTCTimeConverter::miliseconds + st->wMilliseconds);
-		buffer[0] = v[0]; buffer[1] = v[1]; buffer[2] = v[2]; //TODO Optimize
-
-		//     y   m   d   -   h   :   m   :   s   .  ms
-		return 4 + 2 + 2 + 1 + 2 + 1 + 2 + 1 + 2 + 1 + 3;
+		//       y   m   d   -   h   :   m   :   s   .  ms
+		//return 4 + 2 + 2 + 1 + 2 + 1 + 2 + 1 + 2 + 1 + 3;
+        return UTCTimeStampLength;
 	}
 
 	inline int ToDateString(char *buffer, SYSTEMTIME *st) { 

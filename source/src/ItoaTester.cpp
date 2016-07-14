@@ -112,22 +112,4 @@ void ItoaTester::Test() {
 			throw;
 		}
 	}
-
-	/*
-	printf("Test performance\n");
-	buf[conv.Convert(buf, 123456789, 0)] = '\0';
-	DWORD start = GetTickCount();
-	for (int a = 0; a < 10000000; a ++) {
-		conv.FromString(buf, &newValue, '\0');
-	}
-	DWORD end = GetTickCount();
-	printf("FromString = %d\n", end - start);
-
-	start = GetTickCount();
-	for (int a = 0; a < 10000000; a++) {
-		conv.FromStringFast(buf, &newValue, '\0');
-	}
-	end = GetTickCount();
-	printf("Fast = %d\n", end - start);
-	*/
 }

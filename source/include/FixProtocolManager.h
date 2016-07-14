@@ -4981,12 +4981,12 @@ public:
 
 	public:
 	inline int GetUTCTimeString(char *buf) {
-		int length = 0;
-		char *savedBuf = buf;
+		return this->timeConverter->GetCurrentTimeString(buf);
+        //int length = 0;
+		//char *savedBuf = buf;
 
-		//TODO
 
-		return this->timeConverter->ToString(buf, this->currentTime);
+		//return this->timeConverter->ToString(buf, this->currentTime);
 	}
 
 	inline void AddFullDateTimeValue(SYSTEMTIME *st) {

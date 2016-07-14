@@ -1,5 +1,6 @@
 #include "ItoaConverter.h"
 #include "UTCTimeConverter.h"
+#include <memory>
 
 CharVector4 *UTCTimeConverter::years = NULL;
 CharVector2 *UTCTimeConverter::hours = NULL;
@@ -10,6 +11,8 @@ UTCTimeConverter::UTCTimeConverter()
 {
 	if (UTCTimeConverter::years == NULL)
 		Initialize();
+	this->tval = new struct timeval;
+	this->calendarTime = new struct tm;
 	this->converter = new ItoaConverter();
 }
 

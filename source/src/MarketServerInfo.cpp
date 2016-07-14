@@ -43,13 +43,13 @@ void MarketServerInfo::Clear() {
 FixLogonInfo* MarketServerInfo::CreateLogonInfo() { 
 	FixLogonInfo* res = new FixLogonInfo();
 	
-	strcpy(res->CompID, SenderComputerId());
-	res->CompIDLength = strlen(res->CompID);
+	strcpy(res->SenderCompID, SenderComputerId());
+	res->SenderCompIDLength = strlen(res->SenderCompID);
 	strcpy(res->Password, Password());
 	res->PassLength = strlen(res->Password);
 	res->HearthBtInt = 60;
 	res->ShouldResetSeqNum = false;
-	res->MsgStartSequenceNumber = 1;
+	res->MsgStartSeqNo = 1;
 	res->ShouldResetSeqNum = true;
 	
 	return res;

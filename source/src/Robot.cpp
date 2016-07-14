@@ -4,7 +4,7 @@
 Robot::Robot()
 {
 	this->channelsCount = 0;
-	//memset(this->channels, 0, sizeof(FeedChannel*) * MARKET_INFO_CAPACITY);
+	memset(this->channels, 0, sizeof(FeedChannel*) * MARKET_INFO_CAPACITY);
 }
 
 Robot::~Robot()

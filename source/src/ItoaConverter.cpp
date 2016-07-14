@@ -25,16 +25,13 @@ ItoaConverter::~ItoaConverter()
 void ItoaConverter::InitializePositive4DigitMinCount1() { 
 	ItoaConverter::digitString4List = new DigitString4[10000];
 
-	char buffer[4];
-	for (int i = 0; i < 10000; i++) {
+	char buffer[4] = {0x30, 0, 0, 0};
+    ((int*)ItoaConverter::digitString4List)[0] = *((int*)buffer);
+
+	for (int i = 1; i < 10000; i++) {
 		*((int*)buffer) = 0;
 		char *digit = buffer;
 		bool force = false;
-		if (i == 0) {
-			buffer[0] = 0x30;
-			((int*)ItoaConverter::digitString4List)[i] = *((int*)buffer);
-			continue;
-		}
 		if (i / 1000 > 0) {
 			*digit = i / 1000 + 0x30;
 			digit++;
@@ -57,17 +54,13 @@ void ItoaConverter::InitializePositive4DigitMinCount1() {
 void ItoaConverter::InitializePositive4DigitMinCount2() { 
 	ItoaConverter::digitString4List2 = new DigitString4[10000];
 
-	char buffer[4];
-	for (int i = 0; i < 10000; i++) {
+	char buffer[4] = { 0x30, 0x30, 0, 0};
+
+    ((int*)ItoaConverter::digitString4List2)[0] = *((int*)buffer);
+	for (int i = 1; i < 10000; i++) {
 		*((int*)buffer) = 0;
 		char *digit = buffer;
 		bool force = false;
-		if (i == 0) {
-			buffer[0] = 0x30;
-			buffer[1] = 0x30;
-			((int*)ItoaConverter::digitString4List2)[i] = *((int*)buffer);
-			continue;
-		}
 		if (i / 1000 > 0) {
 			*digit = i / 1000 + 0x30;
 			digit++;
@@ -86,17 +79,12 @@ void ItoaConverter::InitializePositive4DigitMinCount2() {
 void ItoaConverter::InitializePositive4DigitMinCount3() {
 	ItoaConverter::digitString4List3 = new DigitString4[10000];
 
-	char buffer[4];
-	for (int i = 0; i < 10000; i++) {
+	char buffer[4] = {0x30, 0x30, 0x30, 0};
+    ((int*)ItoaConverter::digitString4List3)[0] = *((int*)buffer);
+
+	for (int i = 1; i < 10000; i++) {
 		*((int*)buffer) = 0;
 		char *digit = buffer;
-		if (i == 0) {
-			buffer[0] = 0x30;
-			buffer[1] = 0x30;
-			buffer[2] = 0x30;
-			((int*)ItoaConverter::digitString4List3)[i] = *((int*)buffer);
-			continue;
-		}
 		if (i / 1000 > 0) {
 			*digit = i / 1000 + 0x30;
 			digit++;
@@ -125,7 +113,8 @@ void ItoaConverter::InitializePositive4DigitMinCount4() {
 void ItoaConverter::Initialize() {
 	ItoaConverter::digitCount = new int[ITOA_LIST_COUNT];
 	ItoaConverter::digitStringList = new DigitString[ITOA_LIST_COUNT];
-	
+
+
 	InitializePositive4DigitMinCount1();
 	InitializePositive4DigitMinCount2();
 	InitializePositive4DigitMinCount3();
@@ -155,10 +144,12 @@ void ItoaConverter::Initialize() {
 	
 	char digit[2] = { 0, 0 };
 	int *index = (int*)digit;
-	for (int i = 0; i < max2DigiValue - min2DigitValue; i++) {
+	for (int i = 0; i < 100; i++) {
 		int iarr = (*index & 0x0000ffff);
+		if(iarr	>= max2DigiValue - min2DigitValue)
+			throw;
 		ItoaConverter::charDigit2[iarr] = ((int)digit[0]) * 10 + digit[1];
-		if (digit[0] <= 9)
+		if (digit[0] < 9)
 			digit[0] ++;
 		else {
 			digit[1] ++;
@@ -174,8 +165,10 @@ void ItoaConverter::Initialize() {
 
 	ItoaConverter::charDigit3 = new int[max3DigitValue - min3DigitValue];
 	index = (int*)digit3;
-	for (int i = 0; i < max3DigitValue - min3DigitValue; i++) { 
+	for (int i = 0; i < 1000; i++) {
 		int iarr = (*index & 0x00ffffff);
+		if(iarr >= max3DigitValue - min3DigitValue)
+			throw;
 		ItoaConverter::charDigit3[iarr] = ((int)digit3[0]) * 100 + ((int)digit3[1]) * 10 + digit3[2];
 		if (digit3[0] < 9) {
 			digit3[0]++;
@@ -186,6 +179,7 @@ void ItoaConverter::Initialize() {
 				digit3[1]++;
 			}
 			else {
+				digit3[0] = 0;
 				digit3[1] = 0;
 				digit3[2]++;
 				if (digit3[2] > 9)
