@@ -61,7 +61,7 @@ else(TINYXML_FOUND)
 #      BUILD_COMMAND make
 #      CONFIGURE_COMMAND make
 #      INSTALL_COMMAND make install DESTDIR=${CMAKE_CURRENT_LIST_DIR}/opt prefix=
-      INSTALL_DIR "${CMAKE_CURRENT_LIST_DIR}/opt/lib"
+      INSTALL_DIR "${CMAKE_CURRENT_LIST_DIR}/opt"
     )
     ExternalProject_Get_Property(tinyxml INSTALL_DIR)
     include_directories("${INSTALL_DIR}/include")
