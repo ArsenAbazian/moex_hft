@@ -97,7 +97,7 @@ bool MarketServerInfo::Connect() {
 	}
 	
 	this->socketManager = new WinSockManager();
-	bool result = this->socketManager->Connect(this->internetAddress, this->internetPort) == 0;
+	bool result = this->socketManager->Connect(this->internetAddress, this->internetPort);
 	
 	DefaultLogManager::Default->EndLog(result);
 	return result;
@@ -105,7 +105,7 @@ bool MarketServerInfo::Connect() {
 
 bool MarketServerInfo::Disconnect() { 
 	if (this->socketManager != NULL && this->socketManager->IsConnected())
-		return this->socketManager->Close() == 0;
+		return this->socketManager->Disconnect() == 0;
 	return true;
 }
 

@@ -48,6 +48,7 @@ int main(int argc, char** argv)
 
 	Robot *robot = new Robot();
 	robot->Run();
+    delete robot;
 
 	/*if (!robot->AddDefaultTestMarkets()) {
 		ConsoleManager::WaitEnter();

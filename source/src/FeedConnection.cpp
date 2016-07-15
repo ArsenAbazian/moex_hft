@@ -49,9 +49,9 @@ bool FeedConnection::Connect() {
 }
 
 bool FeedConnection::Disconnect() {
-	if (this->socketAManager->Close() != 0)
+	if (this->socketAManager->Disconnect() != 0)
 		return false;
-	if (this->socketBManager->Close() != 0)
+	if (this->socketBManager->Disconnect() != 0)
 		return false;
 	return true;
 }

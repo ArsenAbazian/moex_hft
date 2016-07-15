@@ -9,7 +9,13 @@ Robot::Robot()
 
 Robot::~Robot()
 {
+    DefaultLogManager::Default->StartLog("Robot::~Robot");
+
+    bool result = DisconnectChannels();
+    result &= DisconnectMarkets();
 	delete this->protocolManager;
+
+    DefaultLogManager::Default->EndLog(result);
 }
 
 bool Robot::ConnectChannels() { 

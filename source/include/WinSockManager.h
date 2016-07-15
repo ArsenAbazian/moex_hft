@@ -21,8 +21,8 @@ public:
 	WinSockManager();
 	~WinSockManager();
 
-	int Connect(char *server_address, unsigned short server_port);
-	int Close();
+	bool Connect(char *server_address, unsigned short server_port);
+	bool Disconnect();
 	void WaitEnter();
 	void Failed();
 	void Done(); 

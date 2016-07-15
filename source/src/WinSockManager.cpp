@@ -31,19 +31,19 @@ WinSockManager::~WinSockManager()
 	*/
 }
 
-int WinSockManager::Connect(char *server_address, unsigned short server_port) {
+bool WinSockManager::Connect(char *server_address, unsigned short server_port) {
 	DefaultLogManager::Default->StartLog("WinSockManager::Initialize");
 	this->m_socket = socket(AF_INET, SOCK_STREAM, 0);
 
 	if (this->m_socket < 0) {
 		DefaultLogManager::Default->EndLog(false, strerror(errno));
-		return errno;
+		return false;
 	}
 
 	this->m_server = gethostbyaddr(server_address, strlen(server_address), AF_INET);
 	if(this->m_server == NULL) {
 		DefaultLogManager::Default->EndLog(false, strerror(errno));
-		return errno;
+		return false;
 	}
 
 	bzero(&this->m_adress, sizeof(sockaddr_in));
@@ -54,24 +54,24 @@ int WinSockManager::Connect(char *server_address, unsigned short server_port) {
 	int result = connect(this->m_socket, (struct sockaddr*)&(this->m_adress), sizeof(this->m_adress));
 	if(result < 0) {
 		DefaultLogManager::Default->EndLog(false, strerror(errno));
-		return errno;
+		return false;
 	}
 
 	DefaultLogManager::Default->EndLog(true);
 	this->connected = true;
-	return 0;
+	return true;
 }
 
-int WinSockManager::Close() {
+bool WinSockManager::Disconnect() {
 	DefaultLogManager::Default->StartLog("WinSockManager::Close");
 	int result = close(this->m_socket);
 	if (result != 0) {
 		DefaultLogManager::Default->EndLog(false, strerror(errno));
-		return errno;
+		return false;
 	}
 	this->connected = false;
 	DefaultLogManager::Default->EndLog(true);
-	return 0;
+	return true;
 }
 
 void WinSockManager::Run()
