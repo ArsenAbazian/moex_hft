@@ -2,22 +2,26 @@
 #include "Types.h"
 #include <stdint.h>
 #include "ProtocolHistoryManager.h"
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <errno.h>
 
 class WinSockManager
 {
 	static int ManagersCount;
 
-	//WSADATA wsa;
-	//SOCKET s;
-	//sockaddr_in sin;
-	bool connected;
+	int             m_socket;
+	sockaddr_in     m_adress;
+    struct hostent* m_server;
+
+    bool connected;
 	int lastReceivedBytes;
 	char *receivedBytes;
 public:
 	WinSockManager();
 	~WinSockManager();
 
-	int Initialize(char *server_adress, unsigned short server_port);
+	int Connect(char *server_address, unsigned short server_port);
 	int Close();
 	void WaitEnter();
 	void Failed();
@@ -27,29 +31,28 @@ public:
 	bool TryFixSocketError(int socketError);
 
 	inline bool Send(char *frame, int frameLength) { 
-		/*
-		register int bytesSend = send(s, frame, frameLength, 0);
-		if (bytesSend == SOCKET_ERROR) { 
-			if (TryFixSocketError(WSAGetLastError()))
-				return send(s, frame, frameLength, 0) != SOCKET_ERROR;
+        int bytesSend = send(this->m_socket, frame, frameLength, 0);
+		if (bytesSend < 0) {
+			if (TryFixSocketError(errno))
+				return send(this->m_socket, frame, frameLength, 0) >= 0;
 			return false;
-		}*/
+		}
 		return true;
 
 	}
 	inline bool Recv(char *frame, int maxFrameLength) {
-		/*
-		this->lastReceivedBytes = recv(s, frame, maxFrameLength, 0);
+
+		this->lastReceivedBytes = recv(this->m_socket, frame, maxFrameLength, 0);
 		if (this->lastReceivedBytes == 0) { // connection was gracefullty closed - try to reconnect?
 			return Reconnect();
 		}
-		else if (this->lastReceivedBytes == SOCKET_ERROR) {
-			if (TryFixSocketError(WSAGetLastError())) { // ok, we miss datagramm but at least fixed socket
+		else if (this->lastReceivedBytes < 0) {
+			if (TryFixSocketError(errno)) { // ok, we miss datagramm but at least fixed socket
 				this->receivedBytes = 0;
 				return true;
 			}
 			return false;
-		}*/
+		}
 		return true;
 	}
 	

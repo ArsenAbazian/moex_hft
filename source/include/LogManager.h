@@ -44,17 +44,17 @@ public:
 		ConsoleManager::Write("->", message2);
 	}
 	void WriteLine(const char* message) { ConsoleManager::WriteLine(this->tabs, message); }
-	void WriteSuccess(bool condition) { ConsoleManager::WriteLine(this->tabs, (condition ? "Success." : "Failed")); }
+	void WriteSuccess(bool condition) { ConsoleManager::WriteLine(this->tabs, (condition ? "success." : "failed")); }
 	void WriteSuccess(const char * message, const char* message2, bool condition) { 
 		ConsoleManager::Write(tabs, message);
 		ConsoleManager::Write("->", message2);
 		ConsoleManager::Write(" - ");
-		ConsoleManager::WriteLine(condition ? "Success." : "Failed.");
+		ConsoleManager::WriteLine(condition ? "success." : "failed.");
 	}
 	void WriteSuccess(const char * message, bool condition) { 
 		ConsoleManager::Write(tabs, message);
 		ConsoleManager::Write(" - ");
-		ConsoleManager::WriteLine(condition ? "Success." : "Failed."); 
+		ConsoleManager::WriteLine(condition ? "success." : "failed.");
 	}
 	void StartLog(const char* message) {
 		StartLog(message, NULL);
@@ -80,7 +80,7 @@ public:
 	}
 
 	void EndLog(bool condition, char *errorText) { 
-		if (condition == false) {
+		if (!condition) {
 			bool dummy = true;
 		}
 		if (this->messageIndex == -1)
@@ -95,7 +95,7 @@ public:
 		}
 		
 		ConsoleManager::Write(" - ");
-		ConsoleManager::Write(condition ? "Success." : "Failed.");
+		ConsoleManager::Write(condition ? "success." : "failed.");
 		if (errorText != NULL) {
 			ConsoleManager::Write("(");
 			ConsoleManager::Write(errorText);

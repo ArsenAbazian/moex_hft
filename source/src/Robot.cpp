@@ -92,7 +92,7 @@ bool Robot::AddDefaultTestChannels() {
     tinyxml2::XMLError res = doc.LoadFile("/tmp/config_test.xml");
 
     if(res != tinyxml2::XMLError::XML_SUCCESS) {
-        DefaultLogManager::Default->EndLog(false);
+        DefaultLogManager::Default->EndLog(false, strerror(errno));
         return false;
     }
     tinyxml2::XMLElement *cfgNode = doc.FirstChildElement("configuration");

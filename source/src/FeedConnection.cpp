@@ -36,11 +36,11 @@ FeedConnection::~FeedConnection() {
 
 bool FeedConnection::Connect() {
 	DefaultLogManager::Default->StartLog("FeedConnection::Connect");
-	if (this->socketAManager->Initialize(this->feedAIp, this->feedAPort) != 0) {
+	if (this->socketAManager->Connect(this->feedAIp, this->feedAPort) != 0) {
 		DefaultLogManager::Default->EndLog(false);
 		return false;
 	}
-	if (this->socketBManager->Initialize(this->feedBIp, this->feedBPort) != 0) {
+	if (this->socketBManager->Connect(this->feedBIp, this->feedBPort) != 0) {
 		DefaultLogManager::Default->EndLog(false);
 		return false;
 	}
@@ -120,8 +120,6 @@ FeedConnectionErrorCode FeedConnection::ListenNormal() {
 		IncrementBufferIndex();
 		return CheckReceivedBytes(buffer);
 	}
-	
-	return FeedConnectionErrorCode::Success;
 }
 
 FeedConnectionErrorCode FeedConnection::Listen() {

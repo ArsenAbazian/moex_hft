@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <thread>
 #include <cstring>
+#include <netdb.h>
+#include <unistd.h>
 #include "WinSockManager.h"
 #include "LogManager.h"
 
@@ -29,59 +31,56 @@ WinSockManager::~WinSockManager()
 	*/
 }
 
-int WinSockManager::Initialize(char *server_address, unsigned short server_port) { 
-
-	/*
+int WinSockManager::Connect(char *server_address, unsigned short server_port) {
 	DefaultLogManager::Default->StartLog("WinSockManager::Initialize");
-	s = socket(AF_INET, SOCK_STREAM, 0);
-	if (s == INVALID_SOCKET) {
-		int error = WSAGetLastError();
-		DefaultLogManager::Default->EndLog(false, ConsoleManager::GetErrorText(error));
-		return error;
+	this->m_socket = socket(AF_INET, SOCK_STREAM, 0);
+
+	if (this->m_socket < 0) {
+		DefaultLogManager::Default->EndLog(false, strerror(errno));
+		return errno;
 	}
 
-	ZeroMemory(&sin, sizeof(sockaddr_in));
-
-	int result = inet_pton(AF_INET, server_address, &(sin.sin_addr));
-	if (result != 1) {
-		int error = WSAGetLastError();
-		DefaultLogManager::Default->EndLog(false, ConsoleManager::GetErrorText(error));
-		return error;
+	this->m_server = gethostbyaddr(server_address, strlen(server_address), AF_INET);
+	if(this->m_server == NULL) {
+		DefaultLogManager::Default->EndLog(false, strerror(errno));
+		return errno;
 	}
 
-	sin.sin_family = AF_INET;
-	sin.sin_port = htons(server_port);
+	bzero(&this->m_adress, sizeof(sockaddr_in));
+	this->m_adress.sin_family = AF_INET;
+	this->m_adress.sin_port = htons(server_port);
+	memcpy(((char*)&this->m_adress.sin_addr.s_addr), this->m_server->h_addr_list[0], this->m_server->h_length);
 
-	result = connect(s, (const sockaddr*)&sin, sizeof(sin));
-	if (result < 0) {
-		int error = WSAGetLastError();
-		DefaultLogManager::Default->EndLog(false, ConsoleManager::GetErrorText(error));
-		return error;
+	int result = connect(this->m_socket, (struct sockaddr*)&(this->m_adress), sizeof(this->m_adress));
+	if(result < 0) {
+		DefaultLogManager::Default->EndLog(false, strerror(errno));
+		return errno;
 	}
 
 	DefaultLogManager::Default->EndLog(true);
 	this->connected = true;
-	 */
 	return 0;
 }
 
 int WinSockManager::Close() {
-	/*
-	int result = closesocket(s);
+	DefaultLogManager::Default->StartLog("WinSockManager::Close");
+	int result = close(this->m_socket);
 	if (result != 0) {
-		return WSAGetLastError();
+		DefaultLogManager::Default->EndLog(false, strerror(errno));
+		return errno;
 	}
 	this->connected = false;
-	 */
+	DefaultLogManager::Default->EndLog(true);
 	return 0;
 }
 
 void WinSockManager::Run()
 {
-	std::thread tr = std::thread(&WinSockManager::RunCore, this);
+	//std::thread tr = std::thread(&WinSockManager::RunCore, this);
 }
 void WinSockManager::RunCore()
 {
+	/*
 	std::thread tr = std::thread(&WinSockManager::ProcessMessageCore, this);
 	char message[10000];
 	while (true){
@@ -96,6 +95,7 @@ void WinSockManager::RunCore()
 			SetMessage(res);
 		}
 	}
+	*/
 }
 
 void WinSockManager::SetMessage(char* res){
@@ -118,31 +118,30 @@ void WinSockManager::ProcessMessageCore(){
 }
 
 bool WinSockManager::Reconnect() { 
-	/*
-	int result = closesocket(this->s);
-	if (result == SOCKET_ERROR) {
-		int error = WSAGetLastError();
-		DefaultLogManager::Default->EndLog(false, ConsoleManager::GetErrorText(error));
+	DefaultLogManager::Default->StartLog("WinSockManager::Reconnect");
+	int result = close(this->m_socket);
+	if (result < 0) {
+		DefaultLogManager::Default->EndLog(false, strerror(errno));
 		return false;
 	}
 
-	this->s = socket(AF_INET, SOCK_STREAM, 0);
-	if (this->s == INVALID_SOCKET) {
-		int error = WSAGetLastError();
-		DefaultLogManager::Default->EndLog(false, ConsoleManager::GetErrorText(error));
+	this->m_socket = socket(AF_INET, SOCK_STREAM, 0);
+	if (this->m_socket < 0) {
+		DefaultLogManager::Default->EndLog(false, strerror(errno));
 		return false;
 	}
 	
-	result = connect(this->s, (const sockaddr*)&(this->sin), sizeof(this->sin));
-	if (result == SOCKET_ERROR) {
-		int error = WSAGetLastError();
-		DefaultLogManager::Default->EndLog(false, ConsoleManager::GetErrorText(error));
+	result = connect(this->m_socket, (const sockaddr*)&(this->m_adress), sizeof(this->m_adress));
+	if (result < 0) {
+		DefaultLogManager::Default->EndLog(false, strerror(errno));
 		return false;
 	}
-	*/
+
+	DefaultLogManager::Default->EndLog(true);
 	return true;
 }
 
 bool WinSockManager::TryFixSocketError(int errorCode) {
-	return true;
+
+	return this->Reconnect();
 }
