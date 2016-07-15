@@ -217,16 +217,15 @@ bool Robot::Run() {
 		return false;
 	}
 
-	if (!this->ConnectMarkets()) {
-		DefaultLogManager::Default->EndLog(false);
-		return false;
-	}
+    if (!this->ConnectMarkets()) {
+        DefaultLogManager::Default->EndLog(false);
+        return false;
+    }
 
-	if (!this->ConnectChannels()) { 
-		this->DisconnectMarkets();
-		DefaultLogManager::Default->EndLog(false);
-		return false;
-	}
+    if (!this->ConnectChannels()) {
+        DefaultLogManager::Default->EndLog(false);
+        return false;
+    }
 
 	DefaultLogManager::Default->EndLog(true);
 	return true;

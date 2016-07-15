@@ -5,30 +5,17 @@
 #include <unistd.h>
 #include "WinSockManager.h"
 #include "LogManager.h"
+#include <arpa/inet.h>
 
 int WinSockManager::ManagersCount = 0;
-WinSockManager::WinSockManager()
-{
-	/*
-	if (WinSockManager::ManagersCount == 0) { 
-		DefaultLogManager::Default->StartLog("Initializing Winsock");
-		if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0) {
-			DefaultLogManager::Default->EndLog(false);
-			throw;
-		}
-		DefaultLogManager::Default->EndLog(true);
-	} */
-	WinSockManager::ManagersCount++;
+WinSockManager::WinSockManager() {
+	this->m_socket = 0;
+    WinSockManager::ManagersCount++;
 }
 
 
-WinSockManager::~WinSockManager()
-{
+WinSockManager::~WinSockManager() {
 	WinSockManager::ManagersCount--;
-	/*
-	if (WinSockManager::ManagersCount == 0)
-		WSACleanup();
-	*/
 }
 
 bool WinSockManager::Connect(char *server_address, unsigned short server_port) {
@@ -40,16 +27,10 @@ bool WinSockManager::Connect(char *server_address, unsigned short server_port) {
 		return false;
 	}
 
-	this->m_server = gethostbyaddr(server_address, strlen(server_address), AF_INET);
-	if(this->m_server == NULL) {
-		DefaultLogManager::Default->EndLog(false, strerror(errno));
-		return false;
-	}
-
 	bzero(&this->m_adress, sizeof(sockaddr_in));
-	this->m_adress.sin_family = AF_INET;
+    inet_pton(AF_INET, server_address, &(this->m_adress.sin_addr));
+    this->m_adress.sin_family = AF_INET;
 	this->m_adress.sin_port = htons(server_port);
-	memcpy(((char*)&this->m_adress.sin_addr.s_addr), this->m_server->h_addr_list[0], this->m_server->h_length);
 
 	int result = connect(this->m_socket, (struct sockaddr*)&(this->m_adress), sizeof(this->m_adress));
 	if(result < 0) {

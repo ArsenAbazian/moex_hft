@@ -35,12 +35,12 @@ FeedConnection::~FeedConnection() {
 }
 
 bool FeedConnection::Connect() {
-	DefaultLogManager::Default->StartLog("FeedConnection::Connect");
-	if (this->socketAManager->Connect(this->feedAIp, this->feedAPort) != 0) {
+	DefaultLogManager::Default->StartLog(this->feedTypeName,"FeedConnection::Connect");
+	if (!this->socketAManager->Connect(this->feedAIp, this->feedAPort)) {
 		DefaultLogManager::Default->EndLog(false);
 		return false;
 	}
-	if (this->socketBManager->Connect(this->feedBIp, this->feedBPort) != 0) {
+	if (!this->socketBManager->Connect(this->feedBIp, this->feedBPort)) {
 		DefaultLogManager::Default->EndLog(false);
 		return false;
 	}
@@ -49,11 +49,13 @@ bool FeedConnection::Connect() {
 }
 
 bool FeedConnection::Disconnect() {
-	if (this->socketAManager->Disconnect() != 0)
-		return false;
-	if (this->socketBManager->Disconnect() != 0)
-		return false;
-	return true;
+    DefaultLogManager::Default->StartLog(this->feedTypeName,"FeedConnection::Disconnect");
+
+    bool result = this->socketAManager->Disconnect();
+	result &= this->socketBManager->Disconnect();
+
+    DefaultLogManager::Default->EndLog(result);
+    return result;
 }
 
 void FeedConnection::ClearReceiveBuffers() { 

@@ -12,7 +12,6 @@ class WinSockManager
 
 	int             m_socket;
 	sockaddr_in     m_adress;
-    struct hostent* m_server;
 
     bool connected;
 	int lastReceivedBytes;

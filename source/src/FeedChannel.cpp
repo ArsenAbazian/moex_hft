@@ -22,50 +22,50 @@ FeedChannel::~FeedChannel() {
 }
 
 void FeedChannel::SetConnection(FeedConnection *conn) { 
-	if (strcmp(conn->Id(), "OBR"))
+	if (strcmp(conn->Id(), "OBR") == 0)
 		this->orderBookIncremental = conn;
-	if (strcmp(conn->Id(), "OBS"))
+	if (strcmp(conn->Id(), "OBS") == 0)
 		this->orderBookSnapshot = conn;
-	if (strcmp(conn->Id(), "MSR"))
+	if (strcmp(conn->Id(), "MSR") == 0)
 		this->statisticsIncremental = conn;
-	if (strcmp(conn->Id(), "MSS"))
+	if (strcmp(conn->Id(), "MSS") == 0)
 		this->statisticsSnapshot = conn;
-	if (strcmp(conn->Id(), "OLR"))
+	if (strcmp(conn->Id(), "OLR") == 0)
 		this->ordersIncremental = conn;
-	if (strcmp(conn->Id(), "OLS"))
+	if (strcmp(conn->Id(), "OLS") == 0)
 		this->ordersSnapshot = conn;
-	if (strcmp(conn->Id(), "TLR"))
+	if (strcmp(conn->Id(), "TLR") == 0)
 		this->tradesIncremental = conn;
-	if (strcmp(conn->Id(), "TLS"))
+	if (strcmp(conn->Id(), "TLS") == 0)
 		this->tradesSnapshot = conn;
-	if (strcmp(conn->Id(), "IDF"))
+	if (strcmp(conn->Id(), "IDF") == 0)
 		this->instrumentReplay = conn;
-	if (strcmp(conn->Id(), "ISF"))
+	if (strcmp(conn->Id(), "ISF") == 0)
 		this->instrumentStatus = conn;
-	if (strcmp(conn->Id(), "H"))
+	if (strcmp(conn->Id(), "H") == 0)
 		this->historicalReplay = conn;
 }
 
 bool FeedChannel::Logon(FeedConnection *conn) { 
 	if (conn == NULL)
-		return true;
+		return false;
 	return conn->Logon();
 }
 
 bool FeedChannel::Logout(FeedConnection *conn) { 
 	if (conn == NULL)
-		return true;
+		return false;
 	return conn->Logout();
 }
 
 bool FeedChannel::Connect(FeedConnection *conn) { 
 	if (conn == NULL)
-		return true;
+		return false;
 	return conn->Connect();
 }
 bool FeedChannel::Disconnect(FeedConnection *conn) { 
 	if (conn == NULL)
-		return true;
+		return false;
 	return conn->Disconnect();
 }
 
@@ -98,7 +98,8 @@ bool FeedChannel::Connect() {
 }
 
 bool FeedChannel::Disconnect() { 
-	
+	DefaultLogManager::Default->StartLog("FeedChannel::Disconnect");
+
 	bool result = true;
 	
 	result &= this->Disconnect(this->orderBookIncremental);
@@ -113,6 +114,7 @@ bool FeedChannel::Disconnect() {
 	result &= this->Disconnect(this->instrumentStatus);
 	result &= this->Disconnect(this->historicalReplay);
 
+	DefaultLogManager::Default->EndLog(result);
 	return result;
 }
 
