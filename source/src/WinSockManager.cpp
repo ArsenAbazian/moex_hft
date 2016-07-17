@@ -9,7 +9,7 @@
 
 int WinSockManager::ManagersCount = 0;
 WinSockManager::WinSockManager() {
-	this->m_socket = 0;
+	this->m_socket = -1;
     WinSockManager::ManagersCount++;
 }
 
@@ -20,7 +20,9 @@ WinSockManager::~WinSockManager() {
 
 bool WinSockManager::Connect(char *server_address, unsigned short server_port) {
 	DefaultLogManager::Default->StartLog("WinSockManager::Initialize");
-	this->m_socket = socket(AF_INET, SOCK_STREAM, 0);
+
+    this->connected = false;
+    this->m_socket = socket(AF_INET, SOCK_STREAM, 0);
 
 	if (this->m_socket < 0) {
 		DefaultLogManager::Default->EndLog(false, strerror(errno));
@@ -34,6 +36,7 @@ bool WinSockManager::Connect(char *server_address, unsigned short server_port) {
 
 	int result = connect(this->m_socket, (struct sockaddr*)&(this->m_adress), sizeof(this->m_adress));
 	if(result < 0) {
+        close(this->m_socket);
 		DefaultLogManager::Default->EndLog(false, strerror(errno));
 		return false;
 	}
@@ -45,12 +48,21 @@ bool WinSockManager::Connect(char *server_address, unsigned short server_port) {
 
 bool WinSockManager::Disconnect() {
 	DefaultLogManager::Default->StartLog("WinSockManager::Close");
+    if(this->m_socket == -1) {
+        DefaultLogManager::Default->EndLog(true);
+        return true;
+    }
+
+    if(this->connected) {
+        shutdown(this->m_socket, SHUT_RDWR);
+        this->connected = false;
+    }
+
 	int result = close(this->m_socket);
 	if (result != 0) {
 		DefaultLogManager::Default->EndLog(false, strerror(errno));
 		return false;
 	}
-	this->connected = false;
 	DefaultLogManager::Default->EndLog(true);
 	return true;
 }
@@ -100,12 +112,19 @@ void WinSockManager::ProcessMessageCore(){
 
 bool WinSockManager::Reconnect() { 
 	DefaultLogManager::Default->StartLog("WinSockManager::Reconnect");
-	int result = close(this->m_socket);
+
+    if(this->connected) {
+        shutdown(this->m_socket, SHUT_RDWR);
+        this->connected = false;
+    }
+
+    int result = close(this->m_socket);
 	if (result < 0) {
 		DefaultLogManager::Default->EndLog(false, strerror(errno));
 		return false;
 	}
 
+    this->connected = false;
 	this->m_socket = socket(AF_INET, SOCK_STREAM, 0);
 	if (this->m_socket < 0) {
 		DefaultLogManager::Default->EndLog(false, strerror(errno));
