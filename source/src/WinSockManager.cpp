@@ -19,7 +19,7 @@ WinSockManager::~WinSockManager() {
 }
 
 bool WinSockManager::Connect(char *server_address, unsigned short server_port, WinSockConnectionType connType) {
-	DefaultLogManager::Default->StartLog("WinSockManager::Initialize");
+	DefaultLogManager::Default->StartLog(LogMessageCode::lmcWinSockManager_Initialize);
 
     this->connected = false;
     this->m_socket = socket(AF_INET, connType == WinSockConnectionType::wsTCP? SOCK_STREAM: SOCK_DGRAM, 0);
@@ -47,7 +47,7 @@ bool WinSockManager::Connect(char *server_address, unsigned short server_port, W
 }
 
 bool WinSockManager::Disconnect() {
-	DefaultLogManager::Default->StartLog("WinSockManager::Close");
+	DefaultLogManager::Default->StartLog(LogMessageCode::lmcWinSockManager_Close);
     if(this->m_socket == -1) {
         DefaultLogManager::Default->EndLog(true);
         return true;
@@ -110,7 +110,7 @@ void WinSockManager::ProcessMessageCore(){
 }
 
 bool WinSockManager::Reconnect() { 
-	DefaultLogManager::Default->StartLog("WinSockManager::Reconnect");
+	DefaultLogManager::Default->StartLog(LogMessageCode::lmcWinSockManager_Reconnect);
 
     if(this->connected) {
         shutdown(this->m_socket, SHUT_RDWR);

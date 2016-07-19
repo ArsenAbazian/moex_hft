@@ -4,6 +4,7 @@
 class MarketInfo {
 
 	char name[16];
+	int m_nameLogIndex;
 
 	MarketServerInfo *trade;
 	MarketServerInfo *tradeCapture;

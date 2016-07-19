@@ -34,6 +34,10 @@ protected:
 
 	char	id[16];
 	char	feedTypeName[64];
+
+	int     m_idLogIndex;
+	int 	m_feedTypeNameLogIndex;
+
 	char	feedTypeValue;
 
 	FeedConnectionProtocol protocol;

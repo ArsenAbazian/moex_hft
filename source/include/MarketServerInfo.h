@@ -6,6 +6,7 @@
 class MarketServerInfo
 {
 	char	name[128];
+	int     m_nameLogIndex;
 	char	internetAddress[32];
 	int		internetPort;
 	char	targetComputerId[128];

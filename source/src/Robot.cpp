@@ -9,7 +9,7 @@ Robot::Robot()
 
 Robot::~Robot()
 {
-    DefaultLogManager::Default->StartLog("Robot::~Robot");
+    DefaultLogManager::Default->StartLog(LogMessageCode::lmcRobot_Robot);
 
     bool result = DisconnectChannels();
     result &= DisconnectMarkets();
@@ -19,7 +19,7 @@ Robot::~Robot()
 }
 
 bool Robot::ConnectChannels() { 
-	DefaultLogManager::Default->StartLog("Robot::ConnectChannels");
+	DefaultLogManager::Default->StartLog(LogMessageCode::lmcRobot_ConnectChannels);
 	for (int i = 0; i < this->channelsCount; i++) { 
 		if (!this->channels[i]->Connect()) {
 			DefaultLogManager::Default->EndLog(false);
@@ -57,7 +57,7 @@ bool Robot::LogoutChannels() {
 
 bool Robot::ConnectMarkets() {
 	
-	DefaultLogManager::Default->StartLog("Robot::ConnectMarkets...");
+	DefaultLogManager::Default->StartLog(LogMessageCode::lmcRobot_ConnectMarkets);
 	for (int i = 0; i < this->marketCount; i++) {
 		if (!this->markets[i]->Connect()) {
 			DefaultLogManager::Default->EndLog(false);
@@ -93,7 +93,7 @@ bool Robot::LogoutMarkets() {
 }
 
 bool Robot::AddDefaultTestChannels() {
-    DefaultLogManager::Default->StartLog("Robot::AddDefaultTestChannels");
+    DefaultLogManager::Default->StartLog(LogMessageCode::lmcRobot_AddDefaultTestChannels);
     tinyxml2::XMLDocument doc;
     tinyxml2::XMLError res = doc.LoadFile("/tmp/config_test.xml");
 
@@ -205,7 +205,7 @@ FeedConnection* Robot::CreateConnectionCore(const char *feedChannelId, const cha
 }
 
 bool Robot::Run() { 
-    DefaultLogManager::Default->StartLog("Robot::Run");
+    DefaultLogManager::Default->StartLog(LogMessageCode::lmcRobot_Run);
 	
 	if(!this->AddDefaultTestMarkets()) {
 		DefaultLogManager::Default->EndLog(false);

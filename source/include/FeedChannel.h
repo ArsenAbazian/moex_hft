@@ -4,7 +4,9 @@
 class FeedChannel
 {
 	char id[16];
+	int  m_idLogIndex;
 	char name[64];
+	int  m_nameLogIndex;
 
 	FeedConnection *orderBookIncremental;
 	FeedConnection *orderBookSnapshot;

@@ -5,6 +5,9 @@ FeedChannel::FeedChannel(const char *id, const char *name) {
 	strcpy(this->id, id);
 	strcpy(this->name, name);
 
+    this->m_idLogIndex = DefaultLogMessageProvider::Default->RegisterText(this->id);
+    this->m_nameLogIndex = DefaultLogMessageProvider::Default->RegisterText(this->name);
+
 	this->orderBookIncremental = NULL;
 	this->orderBookSnapshot = NULL;
 	this->statisticsIncremental = NULL;
@@ -70,7 +73,7 @@ bool FeedChannel::Disconnect(FeedConnection *conn) {
 }
 
 bool FeedChannel::Connect() { 
-	DefaultLogManager::Default->StartLog(this->name, "FeedChannel::Connect");
+	DefaultLogManager::Default->StartLog(this->m_nameLogIndex, LogMessageCode::lmcFeedChannel_Connect);
 	
 	if (!this->Connect(this->orderBookIncremental)) {
 		DefaultLogManager::Default->EndLog(false);
@@ -98,7 +101,7 @@ bool FeedChannel::Connect() {
 }
 
 bool FeedChannel::Disconnect() { 
-	DefaultLogManager::Default->StartLog("FeedChannel::Disconnect");
+	DefaultLogManager::Default->StartLog(LogMessageCode::lmcFeedChannel_Disconnect);
 
 	bool result = true;
 	

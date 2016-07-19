@@ -17,6 +17,7 @@ MarketServerInfo::MarketServerInfo()
 
 MarketServerInfo::MarketServerInfo(const char *name, const char *internetAddress, int internetPort, const char *senderComputerId, const char *password, const char *targetComputerId, const char *astsServerName) {
 	strcpy(this->name, name);
+    this->m_nameLogIndex = DefaultLogMessageProvider::Default->RegisterText(this->name);
 	strcpy(this->internetAddress, internetAddress);
 	this->internetPort = internetPort;
 	strcpy(this->targetComputerId, targetComputerId);
@@ -86,7 +87,7 @@ bool MarketServerInfo::Logout() {
 }
 
 bool MarketServerInfo::Connect() {
-	DefaultLogManager::Default->StartLog(this->name, "MarketServerInfo::Connect");
+	DefaultLogManager::Default->StartLog(this->m_nameLogIndex, LogMessageCode::lmcMarketServerInfo_Connect);
 	if (this->fixManager == NULL) {
 		this->fixManager = new FixProtocolManager(DefaultFixProtocolHistoryManager::defaultManager);
 		this->fixManager->SetTargetComputerId((char*)TargetComputerId());
@@ -104,7 +105,7 @@ bool MarketServerInfo::Connect() {
 }
 
 bool MarketServerInfo::Disconnect() {
-    DefaultLogManager::Default->StartLog(this->name, "MarketServerInfo::Disconnect");
+    DefaultLogManager::Default->StartLog(this->m_nameLogIndex, LogMessageCode::lmcMarketServerInfo_Disconnect);
 	if (this->socketManager != NULL && this->socketManager->IsConnected()) {
         bool result = this->socketManager->Disconnect();
         DefaultLogManager::Default->EndLog(result);

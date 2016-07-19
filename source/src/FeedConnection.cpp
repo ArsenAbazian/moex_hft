@@ -4,6 +4,10 @@
 FeedConnection::FeedConnection(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) {
 	strcpy(this->id, id);
 	strcpy(this->feedTypeName, name);
+
+	this->m_idLogIndex = DefaultLogMessageProvider::Default->RegisterText(this->id);
+	this->m_feedTypeNameLogIndex = DefaultLogMessageProvider::Default->RegisterText(this->feedTypeName);
+
 	this->feedTypeValue = value;
 	this->protocol = protocol;
 	
@@ -35,7 +39,7 @@ FeedConnection::~FeedConnection() {
 }
 
 bool FeedConnection::Connect() {
-	DefaultLogManager::Default->StartLog(this->feedTypeName,"FeedConnection::Connect");
+	DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Connect);
 	WinSockConnectionType connType = this->protocol == FeedConnectionProtocol::TCP_IP? WinSockConnectionType::wsTCP: WinSockConnectionType::wsUDP;
     if (!this->socketAManager->Connect(this->feedASourceIp, this->feedAPort, connType)) {
 		DefaultLogManager::Default->EndLog(false);
@@ -50,7 +54,7 @@ bool FeedConnection::Connect() {
 }
 
 bool FeedConnection::Disconnect() {
-    DefaultLogManager::Default->StartLog(this->feedTypeName,"FeedConnection::Disconnect");
+    DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Disconnect);
 
     bool result = this->socketAManager->Disconnect();
 	result &= this->socketBManager->Disconnect();

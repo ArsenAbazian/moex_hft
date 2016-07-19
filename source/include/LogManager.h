@@ -21,16 +21,16 @@ public:
 	virtual void StartLog(const char* message) = 0;
 	virtual void StartLog(const char* message, const char* message2) = 0;
 	virtual void EndLog(bool condition, const char *errorMessage) = 0;
-    virtual void EndLog(bool condition, int errno) = 0;
+    virtual void EndLogErrNo(bool condition, int errno) = 0;
 
-    virtual void Write(LogMessageCode messageCode) = 0;
-    virtual void Write(LogMessageCode messageCode, LogMessageCode messageCode2) = 0;
-    virtual void WriteLine(LogMessageCode messageCode) = 0;
-    virtual void WriteSuccess(LogMessageCode messageCode, bool condition) = 0;
-    virtual void WriteSuccess(LogMessageCode messageCode, LogMessageCode messageCode2, bool condition) = 0;
-    virtual void StartLog(LogMessageCode messageCode) = 0;
-    virtual void StartLog(LogMessageCode messageCode, LogMessageCode messageCode2) = 0;
-    virtual void EndLog(bool condition, LogMessageCode errorCode) = 0;
+    virtual void Write(int messageCode) = 0;
+    virtual void Write(int messageCode, int messageCode2) = 0;
+    virtual void WriteLine(int messageCode) = 0;
+    virtual void WriteSuccess(int messageCode, bool condition) = 0;
+    virtual void WriteSuccess(int messageCode, int messageCode2, bool condition) = 0;
+    virtual void StartLog(int messageCode) = 0;
+    virtual void StartLog(int messageCode, int messageCode2) = 0;
+    virtual void EndLog(bool condition, int messageCode) = 0;
 
     void EndLog(bool condition) { EndLog(condition, (const char*)NULL); }
 };
@@ -44,8 +44,8 @@ typedef  enum _BinaryLogItemType {
 
 typedef struct _BinaryLogItem {
     struct timespec     m_time;             // timestamp DO NOT MOVE THIS FIELD!!!!!
-    LogMessageCode      m_message;          // char message code - optimize - do not copy string - usually name of object
-    LogMessageCode      m_message2;         // char message code2 - usually - method name
+    int                 m_message;          // char message code - optimize - do not copy string - usually name of object
+    int                 m_message2;         // char message code2 - usually - method name
     BinaryLogItemType   m_type;             // by default (do not set) is NodeItem
     int                 m_bufferIndex;      // for fix and fast protocol - buffer index
     int                 m_bufferStart;      // for fix and fast protocol - message start index in buffer
@@ -71,7 +71,7 @@ class BinaryLogManager : public LogManager {
         delete[] this->m_items;
     }
 
-    inline void Write(LogMessageCode messageCode, LogMessageCode messageCode2) {
+    inline void Write(int messageCode, int messageCode2) {
         BinaryLogItem *item = &(this->m_items[this->m_itemIndex]);
 
         clock_gettime(CLOCK_PROCESS_CPUTIME_ID, (struct timespec*)item);
@@ -80,7 +80,7 @@ class BinaryLogManager : public LogManager {
 
         this->m_itemIndex++;
     }
-    inline void Write(LogMessageCode messageCode) {
+    inline void Write(int messageCode) {
         BinaryLogItem *item = &(this->m_items[this->m_itemIndex]);
 
         clock_gettime(CLOCK_PROCESS_CPUTIME_ID, (struct timespec*)item);
@@ -88,28 +88,28 @@ class BinaryLogManager : public LogManager {
 
         this->m_itemIndex++;
     }
-    inline void WriteLine(LogMessageCode messageCode) {
+    inline void WriteLine(int messageCode) {
         Write(messageCode);
     }
     inline void WriteSuccess(bool condition) {
 
     }
-    inline void WriteSuccess(LogMessageCode messageCode, bool condition) {
+    inline void WriteSuccess(int messageCode, bool condition) {
 
     }
-    inline void WriteSuccess(LogMessageCode messageCode, LogMessageCode messageCode2, bool condition) {
+    inline void WriteSuccess(int messageCode, int messageCode2, bool condition) {
 
     }
-    inline void StartLog(LogMessageCode messageCode) {
+    inline void StartLog(int messageCode) {
 
     }
-    inline void StartLog(LogMessageCode messageCode, LogMessageCode messageCode2) {
+    inline void StartLog(int messageCode, int messageCode2) {
 
     }
-    inline void EndLog(bool condition, LogMessageCode errorCode) {
+    inline void EndLog(bool condition, int messageCode) {
 
     }
-    inline void EndLog(bool condition, int errno) {
+    inline void EndLogErrNo(bool condition, int errno) {
 
     }
 
@@ -148,6 +148,7 @@ class ConsoleLogManager : public LogManager {
 	char tabs[256];
 	int tabsCount;
 	bool shouldStartNewLine;
+    LogMessageProvider *logMessageProvider;
 
 public:
 	ConsoleLogManager() { 
@@ -155,6 +156,7 @@ public:
 		this->tabs[0] = '\0';
 		this->tabsCount = 0;
 		this->shouldStartNewLine = false;
+        this->logMessageProvider = DefaultLogMessageProvider::Default;
 	}
 
 	void Write(const char* message) { ConsoleManager::Write(this->tabs, message); }
@@ -225,33 +227,33 @@ public:
 		this->messageIndex--;
 		this->shouldStartNewLine = false;
 	}
-    void EndLog(bool condition, int errno) {
+    void EndLogErrNo(bool condition, int errno) {
         EndLog(condition, strerror(errno));
     }
 
-    void Write(LogMessageCode messageCode, LogMessageCode messageCode2) {
-        throw;
+    void Write(int messageCode, int messageCode2) {
+        Write(logMessageProvider->Message(messageCode), logMessageProvider->Message(messageCode2));
     }
-    void Write(LogMessageCode messageCode) {
-        throw;
+    void Write(int messageCode) {
+		Write(logMessageProvider->Message(messageCode));
     }
-    void WriteLine(LogMessageCode messageCode) {
-        throw;
+    void WriteLine(int messageCode) {
+		WriteLine(logMessageProvider->Message(messageCode));
     }
-    void WriteSuccess(LogMessageCode messageCode, bool condition) {
-        throw;
+    void WriteSuccess(int messageCode, bool condition) {
+		WriteSuccess(logMessageProvider->Message(messageCode), condition);
     }
-    void WriteSuccess(LogMessageCode messageCode, LogMessageCode messageCode2, bool condition) {
-        throw;
+    void WriteSuccess(int messageCode, int messageCode2, bool condition) {
+		WriteSuccess(logMessageProvider->Message(messageCode), logMessageProvider->Message(messageCode2), condition);
     }
-    void StartLog(LogMessageCode messageCode) {
-        throw;
+    void StartLog(int messageCode) {
+		StartLog(logMessageProvider->Message(messageCode));
     }
-    void StartLog(LogMessageCode messageCode, LogMessageCode messageCode2) {
-        throw;
+    void StartLog(int messageCode, int messageCode2) {
+		StartLog(logMessageProvider->Message(messageCode), logMessageProvider->Message(messageCode2));
     }
-    void EndLog(bool condition, LogMessageCode errorCode) {
-        throw;
+    void EndLog(bool condition, int errorCode) {
+		EndLog(condition, logMessageProvider->Message(errorCode));
     }
 };
 
@@ -266,15 +268,15 @@ class EmptylogManager : public LogManager {
 	void StartLog(const char* message, const char* message2) {}
 	void EndLog(bool condition, const char *errorMessage) {}
 
-    void Write(LogMessageCode messageCode, LogMessageCode messageCode2) { }
-    void Write(LogMessageCode messageCode) { }
-    void WriteLine(LogMessageCode messageCode) { }
-    void WriteSuccess(LogMessageCode messageCode, bool condition) { }
-    void WriteSuccess(LogMessageCode messageCode, LogMessageCode messageCode2, bool condition) { }
-    void StartLog(LogMessageCode messageCode) { }
-    void StartLog(LogMessageCode messageCode, LogMessageCode messageCode2) { }
-    void EndLog(bool condition, LogMessageCode errorCode) { }
-    void EndLog(bool condition, int errno) { }
+    void Write(int messageCode, int messageCode2) { }
+    void Write(int messageCode) { }
+    void WriteLine(int messageCode) { }
+    void WriteSuccess(int messageCode, bool condition) { }
+    void WriteSuccess(int messageCode, int messageCode2, bool condition) { }
+    void StartLog(int messageCode) { }
+    void StartLog(int messageCode, int messageCode2) { }
+    void EndLog(bool condition, int messageCode) { }
+    void EndLogErrNo(bool condition, int errno) { }
 };
 
 class DefaultLogManager {

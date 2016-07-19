@@ -38,7 +38,7 @@ public:
 	bool AddDefaultTestChannels();
 
 	bool AddDefaultTestMarkets() { 
-		DefaultLogManager::Default->StartLog("Robot::AddDefaultTestMarkets");
+		DefaultLogManager::Default->StartLog(LogMessageCode::lmcRobot_AddDefaultTestMarkets);
 		AddMarket(new MarketInfo("FOND", FundMarketSenderComputerId, FundMarketPassword, FundMarketTradeServerAddress, FundMarketTradeASTSServerName,
 			FundMarketTradeName, FundMarketTradeServerPort, FundMarketTradeTargetComputerId,
 			FundMarketTradeCaptureName, FundMarketTradeCaptureServerPort, FundMarketTradeCaptureTargetComputerId,
