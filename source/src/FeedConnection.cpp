@@ -36,11 +36,11 @@ FeedConnection::~FeedConnection() {
 
 bool FeedConnection::Connect() {
 	DefaultLogManager::Default->StartLog(this->feedTypeName,"FeedConnection::Connect");
-	if (!this->socketAManager->Connect(this->feedAIp, this->feedAPort)) {
+	if (!this->socketAManager->Connect(this->feedASourceIp, this->feedAPort)) {
 		DefaultLogManager::Default->EndLog(false);
 		return false;
 	}
-	if (!this->socketBManager->Connect(this->feedBIp, this->feedBPort)) {
+	if (!this->socketBManager->Connect(this->feedBSourceIp, this->feedBPort)) {
 		DefaultLogManager::Default->EndLog(false);
 		return false;
 	}

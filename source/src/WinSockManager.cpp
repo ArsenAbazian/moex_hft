@@ -71,8 +71,7 @@ void WinSockManager::Run()
 {
 	//std::thread tr = std::thread(&WinSockManager::RunCore, this);
 }
-void WinSockManager::RunCore()
-{
+void WinSockManager::RunCore() {
 	/*
 	std::thread tr = std::thread(&WinSockManager::ProcessMessageCore, this);
 	char message[10000];
@@ -91,7 +90,7 @@ void WinSockManager::RunCore()
 	*/
 }
 
-void WinSockManager::SetMessage(char* res){
+void WinSockManager::SetMessage(char* res) {
 	messages[lastMessageIndex] = res;
 	lastMessageIndex = (lastMessageIndex + 1) % 100; // 100 = array length
 }
