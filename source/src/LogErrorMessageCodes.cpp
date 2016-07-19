@@ -1,20 +1,25 @@
 //
 // Created by root on 18.07.16.
 //
-#include <LogErrorMessageCodes.h>
 #include "LogErrorMessageCodes.h"
 
-void LogMessagesProvider::InitializeLogMessageText() {
-#pragma region LogMessagesProvider_InitializeLogMessageText_GeneratedCode
+void LogMessageProvider::InitializeLogMessageText() {
+#pragma region LogMessagesProvider_InitArray_GeneratedCode
+    this->LogMessageText = new const char*[100];
+#pragma endregion
 
+#pragma region LogMessagesProvider_InitializeLogMessageText_GeneratedCode
+    this->LogMessageText[LogMessageCode::lmcNone] = "none";
+    this->LogMessageText[LogMessageCode::lmcSuccess] = "success";
+    this->LogMessageText[LogMessageCode::lmcFailed] = "failed";
 #pragma endregion
 }
 
-LogMessagesProvider::LogMessagesProvider() {
+LogMessageProvider::LogMessageProvider() {
 
 }
 
-LogMessagesProvider::~LogMessagesProvider() {
+LogMessageProvider::~LogMessageProvider() {
 
 }
 

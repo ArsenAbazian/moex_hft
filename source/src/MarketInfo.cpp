@@ -41,7 +41,7 @@ MarketInfo::~MarketInfo() {
 }
 
 bool MarketInfo::Connect() { 
-	DefaultLogManager::Default->StartLog(this->name, "Connect");
+	DefaultLogManager::Default->StartLog(this->name, "MarketInfo::Connect");
 	if (this->trade == NULL) {
 		DefaultLogManager::Default->EndLog(true);
 		return true;
@@ -68,15 +68,22 @@ void MarketInfo::Run() {
 	this->dropCopy->SocketManager()->Run();
 }
 
-bool MarketInfo::Disconnect() { 
+bool MarketInfo::Disconnect() {
+	DefaultLogManager::Default->StartLog(this->name, "MarketInfo::Disconnect");
 	if (this->trade == NULL)
 		return true;
-	if (!this->trade->Disconnect())
+	if (!this->trade->Disconnect()) {
+		DefaultLogManager::Default->EndLog(false);
 		return false;
-	if (!this->tradeCapture->Disconnect())
+	}
+	if (!this->tradeCapture->Disconnect()) {
+		DefaultLogManager::Default->EndLog(false);
 		return false;
-	if (!this->dropCopy->Disconnect())
+	}
+	if (!this->dropCopy->Disconnect()) {
+		DefaultLogManager::Default->EndLog(false);
 		return false;
+	}
 	return true;
 }
 

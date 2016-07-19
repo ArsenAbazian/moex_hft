@@ -86,7 +86,7 @@ bool MarketServerInfo::Logout() {
 }
 
 bool MarketServerInfo::Connect() {
-	DefaultLogManager::Default->StartLog(this->name, "Connect");
+	DefaultLogManager::Default->StartLog(this->name, "MarketServerInfo::Connect");
 	if (this->fixManager == NULL) {
 		this->fixManager = new FixProtocolManager(DefaultFixProtocolHistoryManager::defaultManager);
 		this->fixManager->SetTargetComputerId((char*)TargetComputerId());
@@ -103,9 +103,14 @@ bool MarketServerInfo::Connect() {
 	return result;
 }
 
-bool MarketServerInfo::Disconnect() { 
-	if (this->socketManager != NULL && this->socketManager->IsConnected())
-		return this->socketManager->Disconnect() == 0;
+bool MarketServerInfo::Disconnect() {
+    DefaultLogManager::Default->StartLog(this->name, "MarketServerInfo::Disconnect");
+	if (this->socketManager != NULL && this->socketManager->IsConnected()) {
+        bool result = this->socketManager->Disconnect();
+        DefaultLogManager::Default->EndLog(result);
+        return result;
+    }
+    DefaultLogManager::Default->EndLog(true);
 	return true;
 }
 

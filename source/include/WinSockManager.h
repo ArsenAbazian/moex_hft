@@ -6,12 +6,18 @@
 #include <netinet/in.h>
 #include <errno.h>
 
+typedef enum _WinSockConnectionType{
+	wsTCP,
+	wsUDP
+}WinSockConnectionType;
+
 class WinSockManager
 {
 	static int ManagersCount;
 
 	int             m_socket;
 	sockaddr_in     m_adress;
+	WinSockConnectionType m_connectionType;
 
     bool connected;
 	int lastReceivedBytes;
@@ -20,7 +26,10 @@ public:
 	WinSockManager();
 	~WinSockManager();
 
-	bool Connect(char *server_address, unsigned short server_port);
+	bool Connect(char *server_address, unsigned short server_port) {
+		return Connect(server_address, server_port, WinSockConnectionType::wsTCP);
+	}
+	bool Connect(char *server_address, unsigned short server_port, WinSockConnectionType type);
 	bool Disconnect();
 	void WaitEnter();
 	void Failed();

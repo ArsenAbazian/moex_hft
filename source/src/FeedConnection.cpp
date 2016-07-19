@@ -36,11 +36,12 @@ FeedConnection::~FeedConnection() {
 
 bool FeedConnection::Connect() {
 	DefaultLogManager::Default->StartLog(this->feedTypeName,"FeedConnection::Connect");
-	if (!this->socketAManager->Connect(this->feedASourceIp, this->feedAPort)) {
+	WinSockConnectionType connType = this->protocol == FeedConnectionProtocol::TCP_IP? WinSockConnectionType::wsTCP: WinSockConnectionType::wsUDP;
+    if (!this->socketAManager->Connect(this->feedASourceIp, this->feedAPort, connType)) {
 		DefaultLogManager::Default->EndLog(false);
 		return false;
 	}
-	if (!this->socketBManager->Connect(this->feedBSourceIp, this->feedBPort)) {
+	if (!this->socketBManager->Connect(this->feedBSourceIp, this->feedBPort, connType)) {
 		DefaultLogManager::Default->EndLog(false);
 		return false;
 	}

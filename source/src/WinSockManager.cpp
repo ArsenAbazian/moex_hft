@@ -18,11 +18,11 @@ WinSockManager::~WinSockManager() {
 	WinSockManager::ManagersCount--;
 }
 
-bool WinSockManager::Connect(char *server_address, unsigned short server_port) {
+bool WinSockManager::Connect(char *server_address, unsigned short server_port, WinSockConnectionType connType) {
 	DefaultLogManager::Default->StartLog("WinSockManager::Initialize");
 
     this->connected = false;
-    this->m_socket = socket(AF_INET, SOCK_STREAM, 0);
+    this->m_socket = socket(AF_INET, connType == WinSockConnectionType::wsTCP? SOCK_STREAM: SOCK_DGRAM, 0);
 
 	if (this->m_socket < 0) {
 		DefaultLogManager::Default->EndLog(false, strerror(errno));

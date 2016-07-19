@@ -76,7 +76,7 @@ int main(int argc, char** argv)
 	manager->DisconnectMarkets();*/
 
 
-	ConsoleManager::WaitEnter();
+	//ConsoleManager::WaitEnter();
     return 0;
 }
 
