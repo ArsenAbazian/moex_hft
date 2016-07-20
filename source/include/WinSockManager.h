@@ -18,6 +18,7 @@ class WinSockManager
 	int             m_socket;
 	sockaddr_in     m_adress;
 	WinSockConnectionType m_connectionType;
+	int 			m_serverAddressLogIndex;
 
     bool connected;
 	int lastReceivedBytes;

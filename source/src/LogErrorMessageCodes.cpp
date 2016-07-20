@@ -23,12 +23,13 @@ void LogMessageProvider::InitializeLogMessageText() {
 	this->m_logMessageText[LogMessageCode::lmcMarketServerInfo_Disconnect] = "MarketServerInfo::Disconnect";
 	this->m_logMessageText[LogMessageCode::lmcRobot_Robot] = "Robot::~Robot";
 	this->m_logMessageText[LogMessageCode::lmcRobot_ConnectChannels] = "Robot::ConnectChannels";
-	this->m_logMessageText[LogMessageCode::lmcRobot_ConnectMarkets] = "Robot::ConnectMarkets...";
+	this->m_logMessageText[LogMessageCode::lmcRobot_ConnectMarkets] = "Robot::ConnectMarkets";
 	this->m_logMessageText[LogMessageCode::lmcRobot_AddDefaultTestChannels] = "Robot::AddDefaultTestChannels";
 	this->m_logMessageText[LogMessageCode::lmcRobot_Run] = "Robot::Run";
 	this->m_logMessageText[LogMessageCode::lmcWinSockManager_Initialize] = "WinSockManager::Initialize";
 	this->m_logMessageText[LogMessageCode::lmcWinSockManager_Close] = "WinSockManager::Close";
 	this->m_logMessageText[LogMessageCode::lmcWinSockManager_Reconnect] = "WinSockManager::Reconnect";
+	this->m_logMessageText[LogMessageCode::lmcWinSockManager_Connect] = "WinSockManager::Connect";
 #pragma endregion
 }
 

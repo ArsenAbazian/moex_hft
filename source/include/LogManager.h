@@ -32,7 +32,8 @@ public:
     virtual void StartLog(int messageCode, int messageCode2) = 0;
     virtual void EndLog(bool condition, int messageCode) = 0;
 
-    void EndLog(bool condition) { EndLog(condition, (const char*)NULL); }
+    virtual void EndLog(bool condition) { EndLog(condition, (const char*)NULL); }
+    virtual void Print() = 0;
 };
 
 // Flags
@@ -43,7 +44,8 @@ typedef  enum _BinaryLogItemType {
 }BinaryLogItemType;
 
 typedef struct _BinaryLogItem {
-    struct timespec     m_time;             // timestamp DO NOT MOVE THIS FIELD!!!!!
+    struct timespec     m_startTime;        // timestamp DO NOT MOVE THIS FIELD!!!!!
+    struct timespec     m_endTime;          // end timestamp
     int                 m_message;          // char message code - optimize - do not copy string - usually name of object
     int                 m_message2;         // char message code2 - usually - method name
     BinaryLogItemType   m_type;             // by default (do not set) is NodeItem
@@ -52,6 +54,9 @@ typedef struct _BinaryLogItem {
     int                 m_bytesCount;       // for fix and fast protocol - bytes count;
     int                 m_errno;            // error number
     bool                m_result;           // method result - fail or success
+    int                 m_index;            //
+    int                 m_startIndex;
+    int                 m_endIndex;
 }BinaryLogItem;
 
 class BinaryLogManager : public LogManager {
@@ -62,55 +67,142 @@ class BinaryLogManager : public LogManager {
     const int           m_itemsCount = 200000;  // set 200000 for a while
     int                 m_itemIndex;
 
+    char                m_tabs[64];
+    int                 m_tabsCount;
+
+    inline void AddTab() {
+        this->m_tabs[this->m_tabsCount] = '\t';
+        this->m_tabsCount++;
+        this->m_tabs[this->m_tabsCount] = '\0';
+    }
+    inline void RemoveTab() {
+        this->m_tabsCount--;
+        this->m_tabs[this->m_tabsCount] = '\0';
+    }
+
+    inline BinaryLogItem* TopStack() { return this->m_stack[this->m_stackTop]; }
+
+    inline void Push(BinaryLogItem *item) {
+        if(this->m_stackTop > -1)
+            TopStack()->m_type = BinaryLogItemType::NodeStart;
+        this->m_stackTop++;
+        this->m_stack[this->m_stackTop] = item;
+    }
+
+    inline BinaryLogItem* Pop() {
+        BinaryLogItem *top = this->TopStack();
+        if(top->m_type == BinaryLogItemType::NodeStart) {
+            BinaryLogItem *end = Next();
+            end->m_type = BinaryLogItemType::NodeEnd;
+            end->m_startIndex = top->m_index;
+            top->m_endIndex = end->m_index;
+            top = end;
+        }
+        this->m_stackTop--;
+        return top;
+    }
+
+    inline BinaryLogItem* Next() {
+        BinaryLogItem *item = &(this->m_items[this->m_itemIndex]);
+        this->m_itemIndex++;
+        return item;
+    }
+
+    inline void GetStartClock(BinaryLogItem *item) {
+        clock_gettime(CLOCK_PROCESS_CPUTIME_ID, (struct timespec*)item);
+    }
+
+    inline void GetEndClock(BinaryLogItem *item) {
+        clock_gettime(CLOCK_PROCESS_CPUTIME_ID, (struct timespec*)&(item->m_endTime));
+    }
+
+public:
+
     BinaryLogManager() {
         this->m_items = new BinaryLogItem[this->m_itemsCount];
+        for(int i = 0; i < this->m_itemsCount; i++) {
+            this->m_items[i].m_result = true;
+            this->m_items[i].m_index = i;
+            this->m_items[i].m_message2 = -1;
+            this->m_items[i].m_message = -1;
+        }
         this->m_itemIndex = 0;
-        this->m_stackTop = 0;
+        this->m_stackTop = -1;
     }
     ~BinaryLogManager() {
         delete[] this->m_items;
     }
 
     inline void Write(int messageCode, int messageCode2) {
-        BinaryLogItem *item = &(this->m_items[this->m_itemIndex]);
+        BinaryLogItem *item = this->Next();
 
-        clock_gettime(CLOCK_PROCESS_CPUTIME_ID, (struct timespec*)item);
+        GetStartClock(item);
         item->m_message = messageCode;
         item->m_message2 = messageCode2;
-
-        this->m_itemIndex++;
     }
     inline void Write(int messageCode) {
-        BinaryLogItem *item = &(this->m_items[this->m_itemIndex]);
+        BinaryLogItem *item = this->Next();
 
-        clock_gettime(CLOCK_PROCESS_CPUTIME_ID, (struct timespec*)item);
+        GetStartClock(item);
         item->m_message = messageCode;
-
-        this->m_itemIndex++;
     }
     inline void WriteLine(int messageCode) {
         Write(messageCode);
     }
     inline void WriteSuccess(bool condition) {
-
+        Write(condition? LogMessageCode::lmcSuccess: LogMessageCode::lmcFailed);
     }
     inline void WriteSuccess(int messageCode, bool condition) {
+        BinaryLogItem *item = this->Next();
 
+        GetStartClock(item);
+        item->m_message = messageCode;
+        item->m_result = condition;
     }
     inline void WriteSuccess(int messageCode, int messageCode2, bool condition) {
+        BinaryLogItem *item = this->Next();
 
+        clock_gettime(CLOCK_PROCESS_CPUTIME_ID, (struct timespec*)item);
+        item->m_message = messageCode;
+        item->m_message = messageCode2;
+        item->m_result = condition;
     }
     inline void StartLog(int messageCode) {
+        BinaryLogItem *item = this->Next();
 
+        GetStartClock(item);
+        item->m_message = messageCode;
+
+        this->Push(item);
     }
     inline void StartLog(int messageCode, int messageCode2) {
+        BinaryLogItem *item = this->Next();
+
+        GetStartClock(item);
+        item->m_message = messageCode;
+        item->m_message2 = messageCode2;
+
+        this->Push(item);
 
     }
-    inline void EndLog(bool condition, int messageCode) {
 
+    inline void EndLog(bool condition) {
+        BinaryLogItem *item = Pop();
+        GetEndClock(item);
+        item->m_result = condition;
+    }
+
+    inline void EndLog(bool condition, int messageCode) {
+        BinaryLogItem *item = Pop();
+        GetEndClock(item);
+        item->m_result = condition;
+        item->m_message = messageCode;
     }
     inline void EndLogErrNo(bool condition, int errno) {
-
+        BinaryLogItem *item = Pop();
+        GetEndClock(item);
+        item->m_result = condition;
+        item->m_errno = errno;
     }
 
     void Write(const char* message) {
@@ -137,6 +229,9 @@ class BinaryLogManager : public LogManager {
     void EndLog(bool condition, const char *errorMessage) {
         throw;
     }
+
+    void Print();
+    void Print(BinaryLogItem *item);
 };
 
 class ConsoleLogManager : public LogManager {
@@ -255,6 +350,7 @@ public:
     void EndLog(bool condition, int errorCode) {
 		EndLog(condition, logMessageProvider->Message(errorCode));
     }
+    void Print() { }
 };
 
 class EmptylogManager : public LogManager {
@@ -277,6 +373,7 @@ class EmptylogManager : public LogManager {
     void StartLog(int messageCode, int messageCode2) { }
     void EndLog(bool condition, int messageCode) { }
     void EndLogErrNo(bool condition, int errno) { }
+    void Print() { }
 };
 
 class DefaultLogManager {

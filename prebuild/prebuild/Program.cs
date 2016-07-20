@@ -271,13 +271,14 @@ namespace prebuild {
 						break;
 					if(endIndex == -1)
 						break;
-					string message = file.LineText.Substring(index, endIndex - index);
+					string message = file.LineText.Substring(index, endIndex - index + 1);
 					EnumInfo info = new EnumInfo();
-					info.MessageText = message.Substring(1, message.Length - 2);
+					info.MessageText = message.Replace("\"", "");
 					info.Value = GetMaxEnumValue(enums) + 1;
 					enums.Add(info);
 					file.SetCurrentLine(file.LineText.Replace(message, info.EnumFullName)); 
 					Console.WriteLine(file.FileName + ": replaced " + message + " with " + info.EnumFullName);
+					index = endIndex + 1;
 				}
 			}
 		}

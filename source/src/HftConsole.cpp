@@ -77,6 +77,7 @@ int main(int argc, char** argv)
 
 
 	//ConsoleManager::WaitEnter();
+	DefaultLogManager::Default->Print();
     return 0;
 }
 

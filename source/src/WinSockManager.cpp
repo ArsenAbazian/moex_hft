@@ -10,6 +10,7 @@
 int WinSockManager::ManagersCount = 0;
 WinSockManager::WinSockManager() {
 	this->m_socket = -1;
+	this->m_serverAddressLogIndex = LogMessageCode::lmcNone;
     WinSockManager::ManagersCount++;
 }
 
@@ -19,7 +20,9 @@ WinSockManager::~WinSockManager() {
 }
 
 bool WinSockManager::Connect(char *server_address, unsigned short server_port, WinSockConnectionType connType) {
-	DefaultLogManager::Default->StartLog(LogMessageCode::lmcWinSockManager_Initialize);
+	this->m_serverAddressLogIndex = DefaultLogMessageProvider::Default->RegisterText(server_address);
+
+	DefaultLogManager::Default->StartLog(LogMessageCode::lmcWinSockManager_Connect, this->m_serverAddressLogIndex);
 
     this->connected = false;
     this->m_socket = socket(AF_INET, connType == WinSockConnectionType::wsTCP? SOCK_STREAM: SOCK_DGRAM, 0);
@@ -47,7 +50,7 @@ bool WinSockManager::Connect(char *server_address, unsigned short server_port, W
 }
 
 bool WinSockManager::Disconnect() {
-	DefaultLogManager::Default->StartLog(LogMessageCode::lmcWinSockManager_Close);
+	DefaultLogManager::Default->StartLog(LogMessageCode::lmcWinSockManager_Close, this->m_serverAddressLogIndex);
     if(this->m_socket == -1) {
         DefaultLogManager::Default->EndLog(true);
         return true;
@@ -110,7 +113,7 @@ void WinSockManager::ProcessMessageCore(){
 }
 
 bool WinSockManager::Reconnect() { 
-	DefaultLogManager::Default->StartLog(LogMessageCode::lmcWinSockManager_Reconnect);
+	DefaultLogManager::Default->StartLog(LogMessageCode::lmcWinSockManager_Reconnect, this->m_serverAddressLogIndex);
 
     if(this->connected) {
         shutdown(this->m_socket, SHUT_RDWR);
