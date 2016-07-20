@@ -5,4 +5,6 @@ cmake_install.cmake
 build/
 deps/
 opt/
+prebuild/prebuild/bin
+prebuild/prebuild/obj
 hft_robot
