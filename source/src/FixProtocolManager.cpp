@@ -1,7 +1,7 @@
 #include "FixProtocolManager.h"
 
 
-FixProtocolManager::FixProtocolManager(FixProtocolHistoryManager *historyManager)
+FixProtocolManager::FixProtocolManager(SocketBufferManager *historyManager)
 {
 	this->historyManager = historyManager;
 	this->currentPos = this->Message();
@@ -11,7 +11,6 @@ FixProtocolManager::FixProtocolManager(FixProtocolHistoryManager *historyManager
 	this->timeConverter = new UTCTimeConverter();
 	this->currentTime = new SYSTEMTIME;
 }
-
 
 FixProtocolManager::~FixProtocolManager()
 {

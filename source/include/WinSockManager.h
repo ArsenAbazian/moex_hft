@@ -1,7 +1,7 @@
 #pragma once
 #include "Types.h"
 #include <stdint.h>
-#include "ProtocolHistoryManager.h"
+#include "SocketBufferManager.h"
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <errno.h>
@@ -50,7 +50,6 @@ public:
 
 	}
 	inline bool Recv(char *frame, int maxFrameLength) {
-
 		this->lastReceivedBytes = recv(this->m_socket, frame, maxFrameLength, 0);
 		if (this->lastReceivedBytes == 0) { // connection was gracefullty closed - try to reconnect?
 			return Reconnect();
@@ -65,7 +64,7 @@ public:
 		return true;
 	}
 	
-	inline bool Recv(HistoryItemType receivedItemType) { 
+	inline bool Recv() {
 		/*
 		this->receivedBytes = DefaultFixProtocolHistoryManager::defaultManager->Buffer();
 		register bool result = Recv(this->receivedBytes, 128000);

@@ -77,10 +77,12 @@ bool Robot::DisconnectMarkets() {
 }
 
 bool Robot::LogonMarkets() {
-	bool success = true;
+    DefaultLogManager::Default->StartLog(LogMessageCode::lmcRobot_LogonMarkets);
+    bool success = true;
 	for (int i = 0; i < this->marketCount; i++) {
 		success &= this->markets[i]->Logon();
 	}
+    DefaultLogManager::Default->EndLog(success);
 	return success;
 }
 
@@ -217,12 +219,18 @@ bool Robot::Run() {
 		return false;
 	}
 
-    if (!this->ConnectMarkets()) {
+    if(!this->ConnectMarkets()) {
         DefaultLogManager::Default->EndLog(false);
         return false;
     }
 
-    if (!this->ConnectChannels()) {
+    if(!this->ConnectChannels()) {
+        DefaultLogManager::Default->EndLog(false);
+        return false;
+    }
+
+    if(!this->LogonMarkets()) {
+        this->LogoutMarkets();
         DefaultLogManager::Default->EndLog(false);
         return false;
     }
@@ -230,27 +238,3 @@ bool Robot::Run() {
 	DefaultLogManager::Default->EndLog(true);
 	return true;
 }
-
-//bool Robot::Logon(MarketInfo *info) { 
-//	bool success = true;
-//	success &= this->Logon(info->Trade());
-//	success &= this->Logon(info->TradeCapture());
-//	success &= this->Logon(info->TradeDropCopy());
-//
-//	return success;
-//}
-//bool Robot::Logout(MarketInfo *info) {
-//	bool success = true;
-//	success &= this->Logout(info->Trade());
-//	success &= this->Logout(info->TradeCapture());
-//	success &= this->Logout(info->TradeDropCopy());
-//
-//	return success;
-//}
-//bool Robot::Logon(MarketServerInfo *info) { 
-//	return info->Logon();
-//}
-//
-//bool Robot::Logout(MarketServerInfo *info) { 
-//	return info->Logout();
-//}

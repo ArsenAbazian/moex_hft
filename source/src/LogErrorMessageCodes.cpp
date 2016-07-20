@@ -30,6 +30,9 @@ void LogMessageProvider::InitializeLogMessageText() {
 	this->m_logMessageText[LogMessageCode::lmcWinSockManager_Close] = "WinSockManager::Close";
 	this->m_logMessageText[LogMessageCode::lmcWinSockManager_Reconnect] = "WinSockManager::Reconnect";
 	this->m_logMessageText[LogMessageCode::lmcWinSockManager_Connect] = "WinSockManager::Connect";
+	this->m_logMessageText[LogMessageCode::lmcMarketInfo_Logon] = "MarketInfo::Logon";
+	this->m_logMessageText[LogMessageCode::lmcRobot_LogonMarkets] = "Robot::LogonMarkets";
+	this->m_logMessageText[LogMessageCode::lmcMarketServerInfo_Logon] = "MarketServerInfo_Logon";
 #pragma endregion
 }
 

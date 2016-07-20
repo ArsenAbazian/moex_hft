@@ -91,10 +91,14 @@ bool MarketInfo::Disconnect() {
 
 bool MarketInfo::Logon() { 
 	bool success = true;
-	success &= this->trade->Logon();
+
+    DefaultLogManager::Default->StartLog(this->m_nameLogIndex, LogMessageCode::lmcMarketInfo_Logon);
+
+    success &= this->trade->Logon();
 	success &= this->tradeCapture->Logon();
 	success &= this->dropCopy->Logon();
 
+    DefaultLogManager::Default->EndLog(success);
 	return success;
 }
 

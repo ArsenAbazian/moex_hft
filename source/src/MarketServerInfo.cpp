@@ -57,17 +57,22 @@ FixLogonInfo* MarketServerInfo::CreateLogonInfo() {
 }
 
 bool MarketServerInfo::Logon() { 
+	DefaultLogManager::Default->StartLog(this->m_nameLogIndex, LogMessageCode::lmcMarketServerInfo_Logon);
+
 	this->fixManager->CreateLogonMessage(this->logonInfo);
-	if (!this->socketManager->Send(this->fixManager->Message(), this->fixManager->MessageLength()))
+	if (!this->socketManager->Send(this->fixManager->Message(), this->fixManager->MessageLength())) {
+		DefaultLogManager::Default->EndLog(false);
 		return false;
+	}
 
-	printf("SEND %s\n\n", this->fixManager->Message());
-	if (!this->socketManager->Recv(FixMessage))
+	if (!this->socketManager->Recv()) {
+		DefaultLogManager::Default->EndLog(false);
 		return false;
+	}
 
-	printf("RECV %s\n\n", this->socketManager->ReceivedBytes());
 	this->fixManager->IncMessageSequenceNumber();
 
+	DefaultLogManager::Default->EndLog(true);
 	return true;
 }
 
@@ -77,7 +82,7 @@ bool MarketServerInfo::Logout() {
 		return false;
 
 	printf("SEND %s\n\n", this->fixManager->Message());
-	if (!this->socketManager->Recv(FixMessage))
+	if (!this->socketManager->Recv())
 		return false;
 
 	printf("RECV %s\n\n", this->socketManager->ReceivedBytes());

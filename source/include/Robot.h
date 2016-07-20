@@ -7,7 +7,7 @@
 
 #define MARKET_INFO_CAPACITY 10
 typedef enum _RobotState {
-	
+
 } RobotState;
 class Robot
 {
@@ -67,6 +67,6 @@ public:
 	bool DisconnectMarkets();
 	bool LogonMarkets();
 	bool LogoutMarkets();
-	
+
 	bool Run();
 };

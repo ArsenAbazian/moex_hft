@@ -4,7 +4,7 @@
 #include "ItoaConverter.h"
 #include "DtoaConverter.h"
 #include "UTCTimeConverter.h"
-#include "ProtocolHistoryManager.h"
+#include "SocketBufferManager.h"
 #include <time.h>
 #include <sys/time.h>
 
@@ -95,7 +95,7 @@ class FixProtocolManager {
 	FixDiagnosticCodes processingLog[2048];
 	int processingLogLength = 0;
 	int receivedMessageLength;
-	FixProtocolHistoryManager *historyManager;
+	SocketBufferManager *historyManager;
 	char* messageBuffer;
 	int messageLength;
 	char* currentPos;
@@ -4890,7 +4890,7 @@ class FixProtocolManager {
 #pragma endregion
 	
 public:
-	FixProtocolManager(FixProtocolHistoryManager *historyManager);
+	FixProtocolManager(SocketBufferManager *historyManager);
 	~FixProtocolManager();
 
 	inline void StartNewMessage() {
@@ -5089,7 +5089,7 @@ public:
 
 	inline void IncrementBuffer() { 
 		this->messageLength = this->MessageLengthCore();
-		this->historyManager->Increment(this->MessageLengthCore() + 1, FixMessage);
+		this->historyManager->Increment(this->MessageLengthCore() + 1);
 	}
 
 	inline void CreateHearthBeatMessage() {
