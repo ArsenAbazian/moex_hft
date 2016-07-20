@@ -374,7 +374,7 @@ namespace prebuild {
 
 		public static List<string> GetSourceFiles() {
 			List<string> sources = new List<string>();
-			GetSourceFiles("../../../../hft/source/", sources);
+			GetSourceFiles("../../../../source/", sources);
 			return sources;
 
 		}
@@ -395,7 +395,7 @@ namespace prebuild {
 
 		public static bool CopyFastServerConfigurationFile() { 
 			string fileName = "config_test.xml";
-			string inputPath = "../../../../hft/test/data/";
+			string inputPath = "../../../../test/data/";
 			string outputPath = "/tmp/";
 			if (File.Exists (outputPath + fileName)) {
 				Console.WriteLine ("found FAST server configuration file in destination. remove.");
