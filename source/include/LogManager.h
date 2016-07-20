@@ -92,7 +92,7 @@ class BinaryLogManager : public LogManager {
         Write(messageCode);
     }
     inline void WriteSuccess(bool condition) {
-
+        
     }
     inline void WriteSuccess(int messageCode, bool condition) {
 
