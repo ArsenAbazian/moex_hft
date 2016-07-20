@@ -5,17 +5,17 @@
       <sourceFolder url="file://$MODULE_DIR$/cmake/FindTinyXML2.cmake" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/CMakeLists.txt" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/src/ItoaConverter.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/source/src/MarketInfo.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/source/src/SocketBufferManager.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/src/UTCTimeConverter.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/src/LogErrorMessageCodes.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/src/Robot.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/src/MarketServerInfo.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/source/src/MarketInfo.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/src/FixProtocolManager.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/src/FastProtocolManager.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/src/DtoaConverter.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/src/FeedChannel.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/src/ItoaTester.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/source/src/ProtocolHistoryManager.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/src/FeedConnection.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/src/LogManager.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/src/FastProtocolTester.cpp" isTestSource="false" />
