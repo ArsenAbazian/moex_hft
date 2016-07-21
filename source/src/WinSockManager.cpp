@@ -7,16 +7,16 @@
 #include "LogManager.h"
 #include <arpa/inet.h>
 
-int WinSockManager::ManagersCount = 0;
-WinSockManager::WinSockManager() {
+WinSockManager::WinSockManager(ISocketBufferProvider *provider) {
 	this->m_socket = -1;
 	this->m_serverAddressLogIndex = LogMessageCode::lmcNone;
-    WinSockManager::ManagersCount++;
+	this->m_bufferProvider = provider;
+	this->m_recvBuffer = this->m_bufferProvider->RecvBuffer();
+	this->m_sendBuffer = this->m_bufferProvider->SendBuffer();
 }
 
 
 WinSockManager::~WinSockManager() {
-	WinSockManager::ManagersCount--;
 }
 
 bool WinSockManager::Connect(char *server_address, unsigned short server_port, WinSockConnectionType connType) {
@@ -24,7 +24,7 @@ bool WinSockManager::Connect(char *server_address, unsigned short server_port, W
 
 	DefaultLogManager::Default->StartLog(LogMessageCode::lmcWinSockManager_Connect, this->m_serverAddressLogIndex);
 
-    this->connected = false;
+    this->m_connected = false;
     this->m_socket = socket(AF_INET, connType == WinSockConnectionType::wsTCP? SOCK_STREAM: SOCK_DGRAM, 0);
 
 	if (this->m_socket < 0) {
@@ -45,7 +45,7 @@ bool WinSockManager::Connect(char *server_address, unsigned short server_port, W
 	}
 
 	DefaultLogManager::Default->EndLog(true);
-	this->connected = true;
+	this->m_connected = true;
 	return true;
 }
 
@@ -56,9 +56,9 @@ bool WinSockManager::Disconnect() {
         return true;
     }
 
-    if(this->connected) {
+    if(this->m_connected) {
         shutdown(this->m_socket, SHUT_RDWR);
-        this->connected = false;
+        this->m_connected = false;
     }
 
 	int result = close(this->m_socket);
@@ -93,31 +93,12 @@ void WinSockManager::RunCore() {
 	*/
 }
 
-void WinSockManager::SetMessage(char* res) {
-	messages[lastMessageIndex] = res;
-	lastMessageIndex = (lastMessageIndex + 1) % 100; // 100 = array length
-}
-
-void WinSockManager::ProcessMessageCore(){
-	/*
-	int lastProcessedMessageIndex = 0;
-	while (true)
-	{
-		if (lastMessageIndex == lastProcessedMessageIndex) continue;
-		char* income = messages[lastProcessedMessageIndex];
-		char* answer = "Answer";
-		Send(answer, strlen(answer));
-		lastProcessedMessageIndex = (lastProcessedMessageIndex + 1) % 100; // 100 = array length
-	}
-	*/
-}
-
 bool WinSockManager::Reconnect() { 
 	DefaultLogManager::Default->StartLog(LogMessageCode::lmcWinSockManager_Reconnect, this->m_serverAddressLogIndex);
 
-    if(this->connected) {
+    if(this->m_connected) {
         shutdown(this->m_socket, SHUT_RDWR);
-        this->connected = false;
+        this->m_connected = false;
     }
 
     int result = close(this->m_socket);
@@ -126,7 +107,7 @@ bool WinSockManager::Reconnect() {
 		return false;
 	}
 
-    this->connected = false;
+    this->m_connected = false;
 	this->m_socket = socket(AF_INET, SOCK_STREAM, 0);
 	if (this->m_socket < 0) {
 		DefaultLogManager::Default->EndLog(false, strerror(errno));

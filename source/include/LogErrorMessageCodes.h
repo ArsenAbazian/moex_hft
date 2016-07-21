@@ -30,7 +30,8 @@ typedef enum _LogMessageCode {
 	lmcWinSockManager_Connect = 20,
 	lmcMarketInfo_Logon = 21,
 	lmcRobot_LogonMarkets = 22,
-	lmcMarketServerInfo_Logon = 23
+	lmcMarketServerInfo_Logon = 23,
+	lmcFeedConnection_InitializeSockets = 24
 #pragma  endregion
 }LogMessageCode;
 

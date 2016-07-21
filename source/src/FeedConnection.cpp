@@ -18,27 +18,30 @@ FeedConnection::FeedConnection(const char *id, const char *name, char value, Fee
 	strcpy(this->feedBSourceIp, bSourceIp);
 	strcpy(this->feedBIp, bIp);
 	this->feedBPort = bPort;
-
-	this->socketAManager = new WinSockManager();
-	this->socketBManager = new WinSockManager();
 	this->fastProtocolManager = new FastProtocolManager();
-
-	this->receiveBufferPlain = null;
-	this->receiveBufferList = null;
-	this->messageSeqNumberList = null;
-
-	InitializeReceiveBuffer(FEED_CONNECTION_MAX_BUFFERS_COUNT);
-
 	this->state = FeedConnectionState::Normal;
-	this->currentReceiveBufferIndex = 0;
 }
 
 
 FeedConnection::~FeedConnection() {
-	ClearReceiveBuffers();
+
+}
+
+bool FeedConnection::InitializeSockets() {
+	if(this->socketAManager != NULL)
+		return true;
+	DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_InitializeSockets);
+
+	this->socketAManager = new WinSockManager(this->CreateSocketBufferProvider());
+	this->socketBManager = new WinSockManager(this->CreateSocketBufferProvider());
+
+	DefaultLogManager::Default->EndLog(true);
+	return true;
 }
 
 bool FeedConnection::Connect() {
+	if(this->socketAManager == NULL && !this->InitializeSockets())
+		return false;
 	DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Connect);
 	WinSockConnectionType connType = this->protocol == FeedConnectionProtocol::TCP_IP? WinSockConnectionType::wsTCP: WinSockConnectionType::wsUDP;
     if (!this->socketAManager->Connect(this->feedASourceIp, this->feedAPort, connType)) {
@@ -63,36 +66,6 @@ bool FeedConnection::Disconnect() {
     return result;
 }
 
-void FeedConnection::ClearReceiveBuffers() { 
-	
-	if (this->receiveBufferPlain != null) {
-		delete[] this->receiveBufferPlain;
-		delete[] this->receiveBufferList;
-		delete[] this->messageSeqNumberList;
-	}
-
-	this->receiveBufferPlain = null;
-	this->receiveBufferList = null;
-	this->messageSeqNumberList = null;
-} 
-
-void FeedConnection::InitializeReceiveBuffer(int maxBuffersCount) {
-
-	ClearReceiveBuffers();
-	
-	this->maxReceiveBufferCount = maxBuffersCount;
-	this->receiveBufferPlain = new BYTE[FEED_CONNECTION_MAX_BUFFER_LENGTH * maxBuffersCount];
-	this->receiveBufferList = new BYTE*[this->maxReceiveBufferCount];
-	this->messageSeqNumberList = new int[this->maxReceiveBufferCount];
-	
-	BYTE *address = this->receiveBufferPlain;
-	for (int i = 0; i < this->maxReceiveBufferCount; i++) {
-		this->receiveBufferList[i] = address;
-		address += FEED_CONNECTION_MAX_BUFFER_LENGTH;
-	}
-	memset(this->messageSeqNumberList, 0, sizeof(int) * this->maxReceiveBufferCount);
-}
-
 FeedConnectionErrorCode FeedConnection::CheckReceivedBytes(BYTE *buffer) { 
 	int receivedMsgSeqNumber = this->ReadMessageSequenceNumber(buffer);
 	int delta = receivedMsgSeqNumber - ExpectedMessageSeqNumber();
@@ -110,7 +83,8 @@ FeedConnectionErrorCode FeedConnection::CheckReceivedBytes(BYTE *buffer) {
 }
 
 FeedConnectionErrorCode FeedConnection::ListenNormal() {
-	
+	return FeedConnectionErrorCode::Success;
+	/*
 	BYTE *buffer = CurrentBuffer();
 	bool result = this->socketAManager->Recv((char*)buffer, FEED_CONNECTION_MAX_BUFFER_LENGTH);
 	if (!result || this->socketAManager->ReceivedBytesCount() == 0) { 
@@ -127,6 +101,7 @@ FeedConnectionErrorCode FeedConnection::ListenNormal() {
 		IncrementBufferIndex();
 		return CheckReceivedBytes(buffer);
 	}
+	*/
 }
 
 FeedConnectionErrorCode FeedConnection::Listen() {

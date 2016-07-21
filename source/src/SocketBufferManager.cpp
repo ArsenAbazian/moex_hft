@@ -1,38 +1,26 @@
 #include "SocketBufferManager.h"
 #include <memory.h>
 
+SocketBuffer::SocketBuffer(INextIndexProvider *provider, unsigned int bufferSize, unsigned int maxItemsCount) {
 
-SocketBufferManager::SocketBufferManager(int bufferCapaticy)  {
-	this->buffer = new SocketBufferInfo[this->bufferCount];
-	this->bufferIndex = 0;
-
-	for (int i = 0; i < this->bufferCount; i++) { 
-		this->buffer[i].size = bufferCapaticy;
-		this->buffer[i].buffer = new char[bufferCapaticy + this->AdditionalBufferMemory];
-		memset(this->buffer[i].buffer, bufferCapaticy + this->AdditionalBufferMemory, sizeof(char));
-		this->buffer[i].current = this->buffer[i].buffer;
-		this->buffer[i].currentIndex = 0;
-		this->buffer[i].itemsCount = 0;
-		this->buffer[i].itemsMaxCount = bufferCapaticy / 20;
-		this->buffer[i].itemLength = new int[this->buffer[i].itemsMaxCount];
-		this->buffer[i].itemOffset = new int[this->buffer[i].itemsMaxCount];
-		memset(this->buffer[i].itemLength, this->buffer[i].itemsMaxCount, sizeof(int));
-		memset(this->buffer[i].itemOffset, this->buffer[i].itemsMaxCount, sizeof(int));
-	}
-
-	this->currentBuffer = &(this->buffer[this->bufferIndex]);
-	this->currentItem = this->currentBuffer->buffer;
+    this->m_indexProvider = provider;
+    this->m_size = bufferSize;
+    this->m_maxItemsCount = maxItemsCount;
+    this->m_buffer = new unsigned char[this->m_size + this->AdditionalBufferMemory];
+    this->m_items = new unsigned char*[this->m_maxItemsCount];
+    this->m_itemLength = new unsigned int[this->m_maxItemsCount];
+    this->m_index = new unsigned int[this->m_maxItemsCount];
+    bzero(this->m_buffer, this->m_size + this->AdditionalBufferMemory);
+    bzero(this->m_items, this->m_maxItemsCount * sizeof(unsigned char*));
+    bzero(this->m_itemLength, this->m_maxItemsCount * sizeof(unsigned int));
+    this->Reset();
 }
 
-
-SocketBufferManager::~SocketBufferManager()
-{
-	for (int i = 0; i < this->bufferCount; i++) { 
-		delete[] this->buffer[i].buffer;
-		delete[] this->buffer[i].itemLength;
-		delete[] this->buffer[i].itemOffset;
-	}
-	delete[] this->buffer;
+SocketBuffer::~SocketBuffer() {
+    delete[] this->m_buffer;
+    delete[] this->m_items;
+    delete[] this->m_itemLength;
+    delete[] this->m_index;
 }
 
-SocketBufferManager* DefaultFixProtocolHistoryManager::defaultManager = new SocketBufferManager(FixProtocolHistoryBufferLength);
+SocketBufferManager* DefaultSocketBufferManager::Default = new SocketBufferManager(RobotSettings::SocketBuffersMaxCount);

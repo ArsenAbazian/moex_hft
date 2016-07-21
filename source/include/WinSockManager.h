@@ -11,20 +11,46 @@ typedef enum _WinSockConnectionType{
 	wsUDP
 }WinSockConnectionType;
 
-class WinSockManager
-{
-	static int ManagersCount;
-
-	int             m_socket;
-	sockaddr_in     m_adress;
-	WinSockConnectionType m_connectionType;
-	int 			m_serverAddressLogIndex;
-
-    bool connected;
-	int lastReceivedBytes;
-	char *receivedBytes;
+class ISocketBufferProvider {
 public:
-	WinSockManager();
+    virtual SocketBuffer* SendBuffer() = 0;
+    virtual SocketBuffer* RecvBuffer() = 0;
+};
+
+class SocketBufferProvider : public ISocketBufferProvider {
+	unsigned int 			m_sendSize;
+	unsigned int			m_recvSize;
+	unsigned int 			m_sendItemsCount;
+	unsigned int			m_recvItemsCount;
+	SocketBufferManager		*m_manager;
+public:
+	SocketBufferProvider(SocketBufferManager *manager, unsigned int sendSize, unsigned int sendItemsCount, unsigned int recvSize, unsigned int recvItemsCount)
+			: m_manager(manager),
+			m_sendSize(sendSize),
+			m_recvSize(recvSize),
+			m_sendItemsCount(sendItemsCount),
+			m_recvItemsCount(recvItemsCount) { }
+
+	SocketBuffer *SendBuffer() { return this->m_manager->GetFreeBuffer(this->m_sendSize, this->m_sendItemsCount); }
+	SocketBuffer *RecvBuffer() { return this->m_manager->GetFreeBuffer(this->m_recvSize, this->m_recvItemsCount); }
+};
+
+class WinSockManager {
+	int                             m_socket;
+	sockaddr_in                     m_adress;
+	WinSockConnectionType           m_connectionType;
+	int 			                m_serverAddressLogIndex;
+    ISocketBufferProvider           *m_bufferProvider;
+    SocketBuffer                    *m_sendBuffer;
+    SocketBuffer                    *m_recvBuffer;
+
+    bool                            m_connected;
+	int                             m_sendSize;
+    int                             m_recvSize;
+	unsigned char                   *m_recvBytes;
+    unsigned char                   *m_sendBytes;
+public:
+	WinSockManager(ISocketBufferProvider *provider);
 	~WinSockManager();
 
 	bool Connect(char *server_address, unsigned short server_port) {
@@ -32,58 +58,50 @@ public:
 	}
 	bool Connect(char *server_address, unsigned short server_port, WinSockConnectionType type);
 	bool Disconnect();
-	void WaitEnter();
-	void Failed();
-	void Done(); 
 	bool Reconnect();
-
 	bool TryFixSocketError(int socketError);
 
-	inline bool Send(char *frame, int frameLength) { 
-        int bytesSend = send(this->m_socket, frame, frameLength, 0);
-		if (bytesSend < 0) {
-			if (TryFixSocketError(errno))
-				return send(this->m_socket, frame, frameLength, 0) >= 0;
+	inline bool Send(int frameLength) {
+        this->m_sendBytes = this->m_sendBuffer->CurrentPos();
+        this->m_sendSize = send(this->m_socket, this->m_sendBytes, frameLength, 0);
+		if (this->m_sendSize < 0) {
+			if (TryFixSocketError(errno)) {
+				this->m_sendSize = send(this->m_socket, this->m_sendBytes, frameLength, 0);
+                if(this->m_sendSize < 0)
+                    return false;
+                this->m_sendBuffer->Next(this->m_sendSize);
+                return true;
+            }
 			return false;
 		}
+        this->m_sendBuffer->Next(this->m_sendSize);
 		return true;
 
 	}
-	inline bool Recv(char *frame, int maxFrameLength) {
-		this->lastReceivedBytes = recv(this->m_socket, frame, maxFrameLength, 0);
-		if (this->lastReceivedBytes == 0) { // connection was gracefullty closed - try to reconnect?
-			return Reconnect();
-		}
-		else if (this->lastReceivedBytes < 0) {
-			if (TryFixSocketError(errno)) { // ok, we miss datagramm but at least fixed socket
-				this->receivedBytes = 0;
-				return true;
-			}
-			return false;
-		}
-		return true;
-	}
-	
+
 	inline bool Recv() {
-		/*
-		this->receivedBytes = DefaultFixProtocolHistoryManager::defaultManager->Buffer();
-		register bool result = Recv(this->receivedBytes, 128000);
-		if (result) { 
-			this->receivedBytes[this->ReceivedBytesCount()] = '\0';
-			DefaultFixProtocolHistoryManager::defaultManager->Increment(this->ReceivedBytesCount(), receivedItemType);
-		}*/
-		//return result;
-		return true;
+        this->m_recvBytes = this->m_recvBuffer->CurrentPos();
+        this->m_recvSize = recv(this->m_socket, this->m_recvBytes, 8192, 0);
+        if (this->m_recvSize == 0) { // connection was gracefullty closed - try to reconnect?
+            return Reconnect();
+        }
+        else if (this->m_recvSize < 0) {
+            if (TryFixSocketError(errno)) { // ok, we miss datagramm but at least fixed socket
+                this->m_recvSize = 0;
+                return true;
+            }
+            return false;
+        }
+        this->m_recvBuffer->Next(this->m_recvSize);
+        return true;
 	}
-	inline bool IsConnected() { return this->connected; }
-	inline int ReceivedBytesCount() { return this->lastReceivedBytes; }
-	inline char* ReceivedBytes() { return this->receivedBytes; }
+	inline bool IsConnected() { return this->m_connected; }
+	inline int RecvSize() { return this->m_recvSize; }
+	inline unsigned char* RecvBytes() { return this->m_recvBytes; }
+    inline int SendSize() { return this->m_sendSize; }
+    inline unsigned char* SendBytes() { return this->m_sendBytes; }
 
 	void Run();
 	void RunCore();
-	void SetMessage(char* message);
-	void ProcessMessageCore();
-	int lastMessageIndex = 0;
-	char* messages[100];
 };
 

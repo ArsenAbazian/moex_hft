@@ -1,4 +1,11 @@
 #pragma once
+#include "Types.h"
+#include <cstddef>
+
+class INextIndexProvider {
+public:
+    virtual inline unsigned int NextIndex() = 0;
+};
 
 class SocketBuffer {
     const int           AdditionalBufferMemory = 8192;
@@ -11,8 +18,10 @@ class SocketBuffer {
 	unsigned int        m_size;
 	unsigned char*      *m_items;
 	unsigned int        *m_itemLength;
+    unsigned int        *m_index;
+    INextIndexProvider  *m_indexProvider;
 public:
-    SocketBuffer(unsigned int bufferSize, unsigned int maxItemsCount);
+    SocketBuffer(INextIndexProvider *provider, unsigned int bufferSize, unsigned int maxItemsCount);
     ~SocketBuffer();
 
     inline unsigned char* Start() { return this->m_buffer; }
@@ -23,18 +32,20 @@ public:
     inline unsigned int ItemLength(int index) { return this->m_itemLength[index]; }
     inline unsigned char* Item(int index) { return this->m_items[index]; }
 
+    inline unsigned int NextIndex() { return this->m_indexProvider->NextIndex(); }
     inline void Next(int length) {
-        int itemCount = this->itemsCount;
+        int itemCount = this->m_itemsCount;
 
         this->m_itemLength[itemCount] = length;
-        this->m_items[itemCount] = this->current;
-        this->current += (length & 0xfffffffc) + 4; //optimization by 4
+        this->m_items[itemCount] = this->m_current;
+        this->m_index[itemCount] = NextIndex();
+        this->m_current += (length & 0xfffffffc) + 4; //optimization by 4
 
         itemCount++;
-        if ((itemCount >= this->itemsMaxCount) || (this->current >= this->m_end))
+        if ((itemCount >= this->m_maxItemsCount) || (this->m_current >= this->m_end))
             this->Reset();
         else
-            this->currentBuffer->itemsCount = itemCount;
+            this->m_itemsCount = itemCount;
     }
     void Reset() {
         this->m_current = this->m_buffer;
@@ -43,12 +54,17 @@ public:
     }
 };
 
-class SocketBufferManager {
+class SocketBufferManager : public INextIndexProvider {
     SocketBuffer        **m_buffers;
     int                 m_maxItemsCount;
     int                 m_itemsCount;
+    unsigned int        m_globalIndex;
 public:
-	SocketBufferManager(int maxBuffersCount);
+	SocketBufferManager(int maxBuffersCount) {
+        this->m_maxItemsCount = maxBuffersCount;
+        this->m_buffers = new SocketBuffer*[maxBuffersCount];
+        this->m_itemsCount = 0;
+    }
 	~SocketBufferManager() {
         for(int i = 0; i < this->m_itemsCount; i++)
             delete this->m_buffers[i];
@@ -56,15 +72,17 @@ public:
         this->m_itemsCount = 0;
     }
 
-    inline SocketBuffer* GetBuffer(unsigned int size, unsigned int maxItemsCount) {
+    inline SocketBuffer* GetFreeBuffer(unsigned int size, unsigned int maxItemsCount) {
         if(this->m_itemsCount >= this->m_maxItemsCount)
             return NULL;
-        this->m_buffers[this->m_itemsCount] = new SocketBuffer(size, maxItemsCount);
+        this->m_buffers[this->m_itemsCount] = new SocketBuffer(this, size, maxItemsCount);
         this->m_itemsCount++;
+        return this->m_buffers[this->m_itemsCount - 1];
     }
+    inline unsigned int NextIndex() { unsigned int res = this->m_globalIndex; this->m_globalIndex++; return res; }
 };
 
-class DefaultFixProtocolHistoryManager {
+class DefaultSocketBufferManager {
 public: static SocketBufferManager *Default;
 };
 

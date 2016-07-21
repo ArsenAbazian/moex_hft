@@ -83,38 +83,28 @@
 
 class FixProtocolManager {
 
-	char senderComputerId[100];
-	char targetComputerId[100];
-	int senderComputerIdLength;
-	int targetComputerIdLength;
+	char                senderComputerId[100];
+	char                targetComputerId[100];
+	int                 senderComputerIdLength;
+	int                 targetComputerIdLength;
 
-	SYSTEMTIME		*currentTime;
-	FixTagValueInfo	tagValueList[1024];
-	int				tagValueItemsCount;
+	SYSTEMTIME		    *currentTime;
+	FixTagValueInfo	    tagValueList[1024];
+	int				    tagValueItemsCount;
 
-	FixDiagnosticCodes processingLog[2048];
-	int processingLogLength = 0;
-	int receivedMessageLength;
-	SocketBufferManager *historyManager;
-	char* messageBuffer;
-	int messageLength;
-	char* currentPos;
-	int messageSequenceNumber;
+	int                 receivedMessageLength;
+	char                *messageBuffer;
+	int                 messageLength;
+	char                *currentPos;
+	int                 messageSequenceNumber;
 
-	DtoaConverter *doubleConverter;
-	ItoaConverter *intConverter;
+	DtoaConverter       *doubleConverter;
+	ItoaConverter       *intConverter;
 
 	inline void AddSymbol(char symbol) { *(this->currentPos) = symbol; this->currentPos++; }
 	inline void AddEqual() { *(this->currentPos) = '='; this->currentPos++; }
 	inline void AddSeparator() { AddSymbol(0x01); }
 	inline void AddTag(const char* tag, int length) { AddArray((char*)tag, length); AddSymbol('='); }
-
-	inline void ClearLog() { this->processingLogLength = 0; }
-	inline void AddDiagnosticCode(FixDiagnosticCodes code) { this->processingLog[this->processingLogLength] = code; this->processingLogLength++; }
-	inline void AddLog(FixDiagnosticCodes operation, FixDiagnosticCodes result) { 
-		AddDiagnosticCode(operation);
-		AddDiagnosticCode(result);
-	}
 
 #pragma region Tags
 	const char* FixProtocolVersion = "FIX.4.4";
@@ -4890,11 +4880,11 @@ class FixProtocolManager {
 #pragma endregion
 	
 public:
-	FixProtocolManager(SocketBufferManager *historyManager);
+	FixProtocolManager();
 	~FixProtocolManager();
 
 	inline void StartNewMessage() {
-		this->currentPos = this->MessageCore();
+		this->currentPos = this->messageBuffer;
 		*(this->currentPos) = '\0';
 	}
 
@@ -4982,11 +4972,6 @@ public:
 	public:
 	inline int GetUTCTimeString(char *buf) {
 		return this->timeConverter->GetCurrentTimeString(buf);
-        //int length = 0;
-		//char *savedBuf = buf;
-
-
-		//return this->timeConverter->ToString(buf, this->currentTime);
 	}
 
 	inline void AddFullDateTimeValue(SYSTEMTIME *st) {
@@ -5001,16 +4986,11 @@ public:
 		this->currentPos += this->timeConverter->ToDateString(this->currentPos, year, month, day);
 	}
 
-	inline void AddStringZero() { *(this->currentPos) = '\0'; }
-	
-	inline int		MaxMessageLength() { return 4192; }
-private:	
-	inline int		MessageLengthCore() { return this->currentPos - this->MessageCore(); }
-	inline char*	MessageCore() { return this->historyManager->Buffer(); }
+	inline void     AddStringZero() { *(this->currentPos) = '\0'; }
+
 public:
 	inline char*	Message() { return this->messageBuffer; }
-	inline int		MessageLength() { return this->messageLength; }
-	
+	inline int		MessageLength() { return this->currentPos - this->messageBuffer; }
 
 	inline void AddSendingTime() {
 		AddTagSendingTime(); AddEqual();
@@ -5031,7 +5011,7 @@ public:
 	inline void UpdateLengthTagValue() {
 		const int HeaderTagLength = 10; // 8=FIX.4.4|
 		const int MessageLengthLength = 6;
-		InToString(&this->MessageCore()[HeaderTagLength + 2], MessageLengthCore() - HeaderTagLength - MessageLengthLength, 3);
+		InToString(&(this->messageBuffer[HeaderTagLength + 2]), this->MessageLength() - HeaderTagLength - MessageLengthLength, 3);
 	}
 
 	inline void AddHeader(char messageType) {
@@ -5039,8 +5019,6 @@ public:
 	}
 
 	inline void AddHeader(char messageType, bool possResend) {
-		ResetMessage();
-		ResetTagValueList();
 		AddFixHeader();
 		AddBodyLength();
 		AddMessageType(messageType);
@@ -5055,8 +5033,8 @@ public:
 
 	inline int CalcCheckSum() {
 		int sum = 0;
-		char *buf = this->MessageCore();
-		int length = this->currentPos - this->MessageCore();
+		char *buf = this->messageBuffer;
+		int length = this->currentPos - this->messageBuffer;
 		*((int*)this->currentPos) = 0;
 		for (int i = 0; i < length; i++, buf++)
 			sum += (unsigned int)*buf;
@@ -5081,23 +5059,16 @@ public:
 		AddValue(testRequestId);
 	}
 
-	inline void ResetMessage() { 
-		this->messageBuffer = this->MessageCore();
-		this->messageLength = 0;
-		this->currentPos = this->MessageCore(); 
-	}
-
-	inline void IncrementBuffer() { 
-		this->messageLength = this->MessageLengthCore();
-		this->historyManager->Increment(this->MessageLengthCore() + 1);
-	}
+	inline void SetMessageBuffer(char *buffer) {
+        this->messageBuffer = buffer;
+        this->currentPos = this->messageBuffer;
+    }
 
 	inline void CreateHearthBeatMessage() {
 		AddHeader(MsgTypeHearthBeat);
 		UpdateLengthTagValue();
 		AddTrail();
 		AddStringZero();
-		IncrementBuffer();
 	}
 
 	inline void CreateHearthBeatMessage(int testRequestId) {
@@ -5106,7 +5077,6 @@ public:
 		UpdateLengthTagValue();
 		AddTrail();
 		AddStringZero();
-		IncrementBuffer();
 	}
 
 	inline void CreateTestRequestMessage(int testRequestId) {
@@ -5115,7 +5085,6 @@ public:
 		UpdateLengthTagValue();
 		AddTrail();
 		AddStringZero();
-		IncrementBuffer();
 	}
 
 	inline void CreateResendRequestMessage(int start, int end) {
@@ -5125,7 +5094,6 @@ public:
 		UpdateLengthTagValue();
 		AddTrail();
 		AddStringZero();
-		IncrementBuffer();
 	}
 
 	inline void AddEncodedTextTag(char *encodedText, int encodedTextLength) { 
@@ -5150,7 +5118,6 @@ public:
 		UpdateLengthTagValue();
 		AddTrail();
 		AddStringZero();
-		IncrementBuffer();
 	}
 	
 	inline void CreateSequenceResetMessage(bool allowGapFillFlag, bool gapFill, int newSeqNumber) { 
@@ -5525,7 +5492,6 @@ public:
 		UpdateLengthTagValue();
 		AddTrail();
 		AddStringZero();
-		IncrementBuffer();
 	}
 
 	inline void CreateLogoutMessage(char *text, int textLength) { 
@@ -5539,7 +5505,6 @@ public:
 		UpdateLengthTagValue();
 		AddTrail();
 		AddStringZero();
-		IncrementBuffer();
 	}
 
 	inline void CreateOrderStatusRequestMessage(FixOrderStatusRequestInfo *info) {
@@ -5549,7 +5514,6 @@ public:
 		UpdateLengthTagValue();
 		AddTrail();
 		AddStringZero();
-		IncrementBuffer();
 	}
 
 	inline void CreateNewOrderMessage(FixNewOrderInfo *info) {
@@ -5607,7 +5571,6 @@ public:
 		UpdateLengthTagValue();
 		AddTrail();
 		AddStringZero();
-		IncrementBuffer();
 	}
 
 	inline void CreateOrderCancelRequest(FixOrderCancelRequestInfo *info) { 
@@ -5627,7 +5590,6 @@ public:
 		UpdateLengthTagValue();
 		AddTrail();
 		AddStringZero();
-		IncrementBuffer();
 	}
 
 	inline void CreateOrderCancelReplaceRequest(FixOrderCancelRequestInfo *cinfo, FixNewOrderInfo *info) {
@@ -5668,7 +5630,6 @@ public:
 		UpdateLengthTagValue();
 		AddTrail();
 		AddStringZero();
-		IncrementBuffer();
 	}
 
 	inline void CreateSecurityDefinitionRequestMessage(char *securityReqId, int securityReqIdLength, FixSecurityRequestType requestType) {
@@ -5680,7 +5641,6 @@ public:
 		UpdateLengthTagValue();
 		AddTrail();
 		AddStringZero();
-		IncrementBuffer();
 	}
 
 	inline void CreateSecurityListRequestMessage(char *securityReqId, int securityReqIdLength, FixSecurityListRequestType requestType) {
@@ -5692,7 +5652,6 @@ public:
 		UpdateLengthTagValue();
 		AddTrail();
 		AddStringZero();
-		IncrementBuffer();
 	}
 
 	inline void AddOrderMassCancelRequest(FixOrderMassCancelRequestInfo *info) {
@@ -5724,7 +5683,6 @@ public:
 		UpdateLengthTagValue();
 		AddTrail();
 		AddStringZero();
-		IncrementBuffer();
 	}
 	inline void ResetTagValueList() { this->tagValueItemsCount = 0; }
 	inline FixTagValueInfo* TagValueList() { return this->tagValueList; }
@@ -5807,19 +5765,13 @@ public:
 
 	inline bool ProcessCheckHeader(char *buffer, int *outLength) { 
 		int length = 0;
-		if (!CheckFixHeader(buffer, &length)) {
-			AddLog(FixDcCheckFixVersion, FixDcFailed);
+		if (!CheckFixHeader(buffer, &length))
 			return false;
-		}
-		AddLog(FixDcCheckFixVersion, FixDcSuccess);
 		buffer += length;
 		*outLength = (*outLength) + length;
 	
-		if (!ProcessMessageLengthTag(buffer, &length)) { 
-			AddLog(FixDcProcessMessageBodyLen, FixDcFailed);
+		if (!ProcessMessageLengthTag(buffer, &length))
 			return false;
-		}
-		AddLog(FixDcProcessMessageBodyLen, FixDcSuccess);
 		buffer += length;
 		*outLength = (*outLength) + length;
 

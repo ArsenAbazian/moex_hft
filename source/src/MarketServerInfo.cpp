@@ -60,7 +60,7 @@ bool MarketServerInfo::Logon() {
 	DefaultLogManager::Default->StartLog(this->m_nameLogIndex, LogMessageCode::lmcMarketServerInfo_Logon);
 
 	this->fixManager->CreateLogonMessage(this->logonInfo);
-	if (!this->socketManager->Send(this->fixManager->Message(), this->fixManager->MessageLength())) {
+	if (!this->socketManager->Send(this->fixManager->MessageLength())) {
 		DefaultLogManager::Default->EndLog(false);
 		return false;
 	}
@@ -78,14 +78,14 @@ bool MarketServerInfo::Logon() {
 
 bool MarketServerInfo::Logout() { 
 	this->fixManager->CreateLogoutMessage("Good Bye!", 9);
-	if (!this->socketManager->Send(this->fixManager->Message(), this->fixManager->MessageLength()))
+	if (!this->socketManager->Send(this->fixManager->MessageLength()))
 		return false;
 
 	printf("SEND %s\n\n", this->fixManager->Message());
 	if (!this->socketManager->Recv())
 		return false;
 
-	printf("RECV %s\n\n", this->socketManager->ReceivedBytes());
+	printf("RECV %s\n\n", this->socketManager->RecvBytes());
 	this->fixManager->IncMessageSequenceNumber();
 
 	return true;
@@ -94,7 +94,7 @@ bool MarketServerInfo::Logout() {
 bool MarketServerInfo::Connect() {
 	DefaultLogManager::Default->StartLog(this->m_nameLogIndex, LogMessageCode::lmcMarketServerInfo_Connect);
 	if (this->fixManager == NULL) {
-		this->fixManager = new FixProtocolManager(DefaultFixProtocolHistoryManager::defaultManager);
+		this->fixManager = new FixProtocolManager();
 		this->fixManager->SetTargetComputerId((char*)TargetComputerId());
 		this->fixManager->SetMessageSequenceNumber(1);
 	}

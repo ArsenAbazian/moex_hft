@@ -14,8 +14,17 @@
 
 class RobotSettings {
 public:
-    static int SocketBuffersMaxCount = 3 * 2 + 2 * 11 * 2; // 2 * 3 Fix servers and 2 * 11 * 2 fast servers
+    static int SocketBuffersMaxCount;
+    static unsigned int DefaultFeedConnectionSendBufferSize;
+    static unsigned int DefaultFeedConnectionRecvBufferSize;
+    static unsigned int DefaultFeedConnectionSendItemsCount;
+    static unsigned int DefaultFeedConnectionRecvItemsCount;
 };
 
+int RobotSettings::SocketBuffersMaxCount = 256; // they are created only when needed
+unsigned int RobotSettings::DefaultFeedConnectionSendBufferSize = 8 * 1024 * 1024;
+unsigned int RobotSettings::DefaultFeedConnectionRecvBufferSize = 64 * 1024 * 1024;
+unsigned int RobotSettings::DefaultFeedConnectionSendItemsCount = 20000;    // I think that we most will listen data - no to send
+unsigned int RobotSettings::DefaultFeedConnectionRecvItemsCount = 200000;   // I don't know yet how much items needed
 
 

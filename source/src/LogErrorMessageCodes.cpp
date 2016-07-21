@@ -33,6 +33,7 @@ void LogMessageProvider::InitializeLogMessageText() {
 	this->m_logMessageText[LogMessageCode::lmcMarketInfo_Logon] = "MarketInfo::Logon";
 	this->m_logMessageText[LogMessageCode::lmcRobot_LogonMarkets] = "Robot::LogonMarkets";
 	this->m_logMessageText[LogMessageCode::lmcMarketServerInfo_Logon] = "MarketServerInfo_Logon";
+	this->m_logMessageText[LogMessageCode::lmcFeedConnection_InitializeSockets] = "FeedConnection::InitializeSockets";
 #pragma endregion
 }
 
