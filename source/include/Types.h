@@ -12,5 +12,10 @@
 #define INT64 int64_t
 #define UINT uint32_t
 
+class RobotSettings {
+public:
+    static int SocketBuffersMaxCount = 3 * 2 + 2 * 11 * 2; // 2 * 3 Fix servers and 2 * 11 * 2 fast servers
+};
+
 
 
