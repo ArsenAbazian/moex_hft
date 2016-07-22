@@ -6,7 +6,7 @@
 #include "ConsoleManager.h"
 #include "LogErrorMessageCodes.h"
 
-#define BINARY_LOG_MANAGER_ALLOW_PRINT
+//#define BINARY_LOG_MANAGER_ALLOW_PRINT
 
 class LogManager
 {

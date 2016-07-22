@@ -39,6 +39,12 @@ void LogMessageProvider::InitializeLogMessageText() {
 	this->m_logMessageText[LogMessageCode::lmcFOND_feed_channel_not_found] = "FOND feed channel not found.";
 	this->m_logMessageText[LogMessageCode::lmcCURR_market_not_found] = "CURR market not found.";
 	this->m_logMessageText[LogMessageCode::lmcCURR_feed_channel_not_found] = "CURR feed channel not found.";
+	this->m_logMessageText[LogMessageCode::lmcWinSockManager_DoWork] = "WinSockManager::DoWork";
+	this->m_logMessageText[LogMessageCode::lmcWinSockManager_StopWork] = "WinSockManager::StopWork";
+	this->m_logMessageText[LogMessageCode::lmcMarketInfo_DoWork] = "MarketInfo::DoWork";
+	this->m_logMessageText[LogMessageCode::lmcRobot_MarketsDoWork] = "Robot::MarketsDoWork";
+	this->m_logMessageText[LogMessageCode::lmcRobot_DoWork] = "Robot::DoWork";
+	this->m_logMessageText[LogMessageCode::lmcRobot_DoWorkCore] = "Robot::DoWorkCore";
 #pragma endregion
 }
 

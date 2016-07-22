@@ -5,6 +5,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <errno.h>
+#include <thread>
 
 typedef enum _WinSockConnectionType{
 	wsTCP,
@@ -39,6 +40,7 @@ class WinSockManager {
 	int                             m_socket;
 	sockaddr_in                     m_adress;
 	WinSockConnectionType           m_connectionType;
+	char 							m_fullAddress[64];
 	int 			                m_serverAddressLogIndex;
     ISocketBufferProvider           *m_bufferProvider;
     SocketBuffer                    *m_sendBuffer;
@@ -49,6 +51,12 @@ class WinSockManager {
     int                             m_recvSize;
 	unsigned char                   *m_recvBytes;
     unsigned char                   *m_sendBytes;
+
+	std::thread						*m_threadSend;
+	std::thread						*m_threadRecv;
+
+	void WorkSend();
+	void WorkRecv();
 public:
 	WinSockManager(ISocketBufferProvider *provider);
 	~WinSockManager();
@@ -101,7 +109,7 @@ public:
     inline int SendSize() { return this->m_sendSize; }
     inline unsigned char* SendBytes() { return this->m_sendBytes; }
 
-	void Run();
-	void RunCore();
+	void DoWork();
+	void StopWork();
 };
 

@@ -36,7 +36,13 @@ typedef enum _LogMessageCode {
 	lmcFOND_market_not_found = 26,
 	lmcFOND_feed_channel_not_found = 27,
 	lmcCURR_market_not_found = 28,
-	lmcCURR_feed_channel_not_found = 29
+	lmcCURR_feed_channel_not_found = 29,
+	lmcWinSockManager_DoWork = 30,
+	lmcWinSockManager_StopWork = 31,
+	lmcMarketInfo_DoWork = 32,
+	lmcRobot_MarketsDoWork = 33,
+	lmcRobot_DoWork = 34,
+	lmcRobot_DoWorkCore = 35
 #pragma  endregion
 }LogMessageCode;
 

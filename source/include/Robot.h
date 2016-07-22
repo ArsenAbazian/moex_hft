@@ -36,6 +36,15 @@ class Robot
         }
         return NULL;
     }
+
+    bool LogonMarkets();
+    bool LogoutMarkets();
+    bool ConnectMarkets();
+    bool DisconnectMarkets();
+    bool MarketsDoWork();
+    bool DoWork();
+    bool DoWorkCore();
+
 public:
 	Robot();
 	~Robot();
@@ -104,16 +113,6 @@ public:
 
 	inline MarketInfo **Markets() { return (MarketInfo**)this->markets; }
 	inline int MarketCount() { return this->marketCount; }
-
-	bool ConnectChannels();
-	bool DisconnectChannels();
-	bool LogonChannels();
-	bool LogoutChannels();
-
-	bool ConnectMarkets();
-	bool DisconnectMarkets();
-	bool LogonMarkets();
-	bool LogoutMarkets();
 
 	bool Run();
 };

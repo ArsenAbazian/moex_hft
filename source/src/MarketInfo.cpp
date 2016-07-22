@@ -58,26 +58,38 @@ bool MarketInfo::Connect() {
 		DefaultLogManager::Default->EndLog(true);
 		return true;
 	}
-	if (!this->m_trade->Connect()) {
+	if(!this->m_trade->Connect()) {
 		DefaultLogManager::Default->EndLog(false);
 		return false;
 	}
-	if (!this->m_tradeCapture->Connect()) {
+	if(!this->m_tradeCapture->Connect()) {
 		DefaultLogManager::Default->EndLog(false);
 		return false;
 	}
-	if (!this->m_dropCopy->Connect()) {
+	if(!this->m_dropCopy->Connect()) {
 		DefaultLogManager::Default->EndLog(false);
 		return false;
 	}
+    if(this->m_feedChannel != NULL && !this->m_feedChannel->Connect()) {
+        DefaultLogManager::Default->EndLog(false);
+        return false;
+    }
 	DefaultLogManager::Default->EndLog(true);
 	return true;
 }
 
-void MarketInfo::Run() {
-	this->m_trade->SocketManager()->Run();
-	this->m_tradeCapture->SocketManager()->Run();
-	this->m_dropCopy->SocketManager()->Run();
+bool MarketInfo::DoWork() {
+    DefaultLogManager::Default->StartLog(LogMessageCode::lmcMarketInfo_DoWork, this->m_nameLogIndex);
+
+    this->m_trade->SocketManager()->DoWork();
+	this->m_tradeCapture->SocketManager()->DoWork();
+	this->m_dropCopy->SocketManager()->DoWork();
+
+    if(this->m_feedChannel != NULL) {
+
+    }
+    DefaultLogManager::Default->EndLog(true);
+    return true;
 }
 
 bool MarketInfo::Disconnect() {
@@ -96,6 +108,10 @@ bool MarketInfo::Disconnect() {
 		DefaultLogManager::Default->EndLog(false);
 		return false;
 	}
+    if(this->m_feedChannel != NULL && !this->m_feedChannel->Disconnect()) {
+        DefaultLogManager::Default->EndLog(false);
+        return false;
+    }
 	DefaultLogManager::Default->EndLog(true);
 	return true;
 }
