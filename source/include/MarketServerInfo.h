@@ -3,8 +3,7 @@
 #include "WinSockManager.h"
 #include "FixProtocolManager.h"
 
-class MarketServerInfo
-{
+class MarketServerInfo {
 	char	name[128];
 	int     m_nameLogIndex;
 	char	internetAddress[32];
@@ -17,14 +16,14 @@ class MarketServerInfo
 	char	password[16];
 	int		passwordLength;
 
-	WinSockManager		*socketManager;
-	FixProtocolManager	*fixManager;
-	FixLogonInfo		*logonInfo;
+	WinSockManager			*socketManager;
+	FixProtocolManager		*fixManager;
+	FixLogonInfo			*logonInfo;
 
 	void Clear();
 	FixLogonInfo*		CreateLogonInfo();
+	virtual WinSockManager*	CreateSocketManager();
 public:
-	MarketServerInfo();
 	MarketServerInfo(const char *name, const char *internetAddress, int internetPort, const char *senderComputerId, const char *password, const char *targetComputerId, const char *astsServerName);
 	~MarketServerInfo();
 
@@ -46,5 +45,23 @@ public:
 	bool Disconnect();
 	bool Logon();
 	bool Logout();
+};
+
+class TradeMarketServerInfo : public MarketServerInfo {
+public:
+	TradeMarketServerInfo(const char *name, const char *internetAddress, int internetPort, const char *senderComputerId, const char *password, const char *targetComputerId, const char *astsServerName) :
+			MarketServerInfo(name, internetAddress, internetPort, senderComputerId, password, targetComputerId, astsServerName) {}
+};
+
+class TradeCaptureMarketServerInfo : public MarketServerInfo {
+public:
+	TradeCaptureMarketServerInfo(const char *name, const char *internetAddress, int internetPort, const char *senderComputerId, const char *password, const char *targetComputerId, const char *astsServerName) :
+			MarketServerInfo(name, internetAddress, internetPort, senderComputerId, password, targetComputerId, astsServerName) {}
+};
+
+class TradeDropCopyMarketServerInfo : public MarketServerInfo {
+public:
+	TradeDropCopyMarketServerInfo(const char *name, const char *internetAddress, int internetPort, const char *senderComputerId, const char *password, const char *targetComputerId, const char *astsServerName) :
+			MarketServerInfo(name, internetAddress, internetPort, senderComputerId, password, targetComputerId, astsServerName) { }
 };
 

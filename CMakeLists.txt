@@ -133,7 +133,7 @@ foreach(inc_dir ${inc_dirs})
     set(include_path "${include_path} -I${inc_dir}")
 endforeach(inc_dir)
 
-add_executable(hft_robot ${sources} source/include/LogErrorMessageCodes.h source/src/LogErrorMessageCodes.cpp)
+add_executable(hft_robot ${sources} source/include/LogErrorMessageCodes.h source/src/LogErrorMessageCodes.cpp source/src/Types.cpp)
 add_dependencies(hft_robot tinyxml)
 target_link_libraries(hft_robot ${TINYXML_LIBRARY} dl)
 #target_link_libraries(hft_robot -Wl,--whole-archive ${TINYXML_LIBRARY} -Wl,--no-whole-archive dl)

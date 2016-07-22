@@ -13,14 +13,18 @@ WinSockManager::WinSockManager(ISocketBufferProvider *provider) {
 	this->m_bufferProvider = provider;
 	this->m_recvBuffer = this->m_bufferProvider->RecvBuffer();
 	this->m_sendBuffer = this->m_bufferProvider->SendBuffer();
+	this->m_threadRecv = NULL;
+	this->m_threadSend = NULL;
 }
 
 
 WinSockManager::~WinSockManager() {
+	this->StopWork();
 }
 
 bool WinSockManager::Connect(char *server_address, unsigned short server_port, WinSockConnectionType connType) {
-	this->m_serverAddressLogIndex = DefaultLogMessageProvider::Default->RegisterText(server_address);
+	sprintf(this->m_fullAddress, "%s:%d", server_address, server_port);
+	this->m_serverAddressLogIndex = DefaultLogMessageProvider::Default->RegisterText(this->m_fullAddress);
 
 	DefaultLogManager::Default->StartLog(LogMessageCode::lmcWinSockManager_Connect, this->m_serverAddressLogIndex);
 
@@ -70,12 +74,45 @@ bool WinSockManager::Disconnect() {
 	return true;
 }
 
+void WinSockManager::WorkSend() {
+	while(true) {
+		printf("%s -> work_send\n", this->m_fullAddress);
+	}
+}
+
+void WinSockManager::WorkRecv() {
+	while(true) {
+		printf("%s -> work_recv\n", this->m_fullAddress);
+	}
+}
+
+void WinSockManager::DoWork() {
+	DefaultLogManager::Default->StartLog(LogMessageCode::lmcWinSockManager_DoWork, this->m_serverAddressLogIndex);
+	if(this->m_threadSend == NULL)
+		this->m_threadSend = new std::thread(&WinSockManager::WorkSend, this);
+	if(this->m_threadRecv == NULL)
+		this->m_threadRecv = new std::thread(&WinSockManager::WorkRecv, this);
+	DefaultLogManager::Default->EndLog(true);
+}
+
+void WinSockManager::StopWork() {
+	DefaultLogManager::Default->StartLog(LogMessageCode::lmcWinSockManager_StopWork, this->m_serverAddressLogIndex);
+	if(this->m_threadSend != NULL)
+		delete this->m_threadSend;
+	if(this->m_threadRecv != NULL)
+		delete this->m_threadRecv;
+	this->m_threadSend = NULL;
+	this->m_threadRecv = NULL;
+	DefaultLogManager::Default->EndLog(true);
+}
+
+/*
 void WinSockManager::Run()
 {
-	//std::thread tr = std::thread(&WinSockManager::RunCore, this);
+	std::thread tr = std::thread(&WinSockManager::RunCore, this);
 }
 void WinSockManager::RunCore() {
-	/*
+
 	std::thread tr = std::thread(&WinSockManager::ProcessMessageCore, this);
 	char message[10000];
 	while (true){
@@ -90,8 +127,9 @@ void WinSockManager::RunCore() {
 			SetMessage(res);
 		}
 	}
-	*/
+
 }
+*/
 
 bool WinSockManager::Reconnect() { 
 	DefaultLogManager::Default->StartLog(LogMessageCode::lmcWinSockManager_Reconnect, this->m_serverAddressLogIndex);

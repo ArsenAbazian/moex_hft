@@ -6,11 +6,22 @@ void MarketInfo::Initialize(const char* name, const char *senderComputerId, cons
 	const char *tradeCaptureName, const char *tradeCaptureAddress, int tradeCapturePort, const char *tradeCaptureTargetComputerId, const char *tradeCaptureASTSServerName,
 	const char *tradeDropCopyName, const char *tradeDropCopyAddress, int tradeDropCopyPort, const char *tradeDropCopyTargetComputerId, const char *tradeDropCopyASTSServerName) {
 	
-	strcpy(this->name, name);
-	this->m_nameLogIndex = DefaultLogMessageProvider::Default->RegisterText(this->name);
-	this->trade = new MarketServerInfo(tradeName, tradeAddress, tradePort, senderComputerId, password, tradeTargetComputerId, tradeASTSServerName);
-	this->tradeCapture = new MarketServerInfo(tradeCaptureName, tradeCaptureAddress, tradeCapturePort, senderComputerId, password, tradeCaptureTargetComputerId, tradeCaptureASTSServerName);
-	this->dropCopy = new MarketServerInfo(tradeDropCopyName, tradeDropCopyAddress, tradeDropCopyPort, senderComputerId, password, tradeDropCopyTargetComputerId, tradeDropCopyASTSServerName);
+	strcpy(this->m_name, name);
+	this->m_nameLogIndex = DefaultLogMessageProvider::Default->RegisterText(this->m_name);
+
+	this->m_trade = this->CreateTradeServerInfo(tradeName, tradeAddress, tradePort, senderComputerId, password, tradeTargetComputerId, tradeASTSServerName);
+	this->m_tradeCapture = this->CreateTradeCaptureServerInfo(tradeCaptureName, tradeCaptureAddress, tradeCapturePort, senderComputerId, password, tradeCaptureTargetComputerId, tradeCaptureASTSServerName);
+	this->m_dropCopy = this->CreateDropCopyServerInfo(tradeDropCopyName, tradeDropCopyAddress, tradeDropCopyPort, senderComputerId, password, tradeDropCopyTargetComputerId, tradeDropCopyASTSServerName);
+}
+
+MarketServerInfo* MarketInfo::CreateTradeServerInfo(const char *name, const char *internetAddress, int internetPort, const char *senderComputerId, const char *password, const char *targetComputerId, const char *astsServerName) {
+	return new TradeMarketServerInfo(name, internetAddress, internetPort, senderComputerId, password, targetComputerId, astsServerName);
+}
+MarketServerInfo* MarketInfo::CreateTradeCaptureServerInfo(const char *name, const char *internetAddress, int internetPort, const char *senderComputerId, const char *password, const char *targetComputerId, const char *astsServerName) {
+	return new TradeCaptureMarketServerInfo(name, internetAddress, internetPort, senderComputerId, password, targetComputerId, astsServerName);
+}
+MarketServerInfo* MarketInfo::CreateDropCopyServerInfo(const char *name, const char *internetAddress, int internetPort, const char *senderComputerId, const char *password, const char *targetComputerId, const char *astsServerName) {
+	return new TradeDropCopyMarketServerInfo(name, internetAddress, internetPort, senderComputerId, password, targetComputerId, astsServerName);
 }
 
 MarketInfo::MarketInfo(const char* name, const char *senderComputerId, const char *password,
@@ -33,58 +44,74 @@ MarketInfo::MarketInfo(const char* name, const char *senderComputedId, const cha
 }
 
 MarketInfo::~MarketInfo() { 
-	if (this->trade != NULL)
-		delete this->trade;
-	if (this->tradeCapture != NULL)
-		delete this->tradeCapture;
-	if (this->dropCopy != NULL)
-		delete this->dropCopy;
+	if (this->m_trade != NULL)
+		delete this->m_trade;
+	if (this->m_tradeCapture != NULL)
+		delete this->m_tradeCapture;
+	if (this->m_dropCopy != NULL)
+		delete this->m_dropCopy;
 }
 
 bool MarketInfo::Connect() { 
 	DefaultLogManager::Default->StartLog(this->m_nameLogIndex, LogMessageCode::lmcMarketInfo_Connect);
-	if (this->trade == NULL) {
+	if (this->m_trade == NULL) {
 		DefaultLogManager::Default->EndLog(true);
 		return true;
 	}
-	if (!this->trade->Connect()) {
+	if(!this->m_trade->Connect()) {
 		DefaultLogManager::Default->EndLog(false);
 		return false;
 	}
-	if (!this->tradeCapture->Connect()) {
+	if(!this->m_tradeCapture->Connect()) {
 		DefaultLogManager::Default->EndLog(false);
 		return false;
 	}
-	if (!this->dropCopy->Connect()) {
+	if(!this->m_dropCopy->Connect()) {
 		DefaultLogManager::Default->EndLog(false);
 		return false;
 	}
+    if(this->m_feedChannel != NULL && !this->m_feedChannel->Connect()) {
+        DefaultLogManager::Default->EndLog(false);
+        return false;
+    }
 	DefaultLogManager::Default->EndLog(true);
 	return true;
 }
 
-void MarketInfo::Run() {
-	this->trade->SocketManager()->Run();
-	this->tradeCapture->SocketManager()->Run();
-	this->dropCopy->SocketManager()->Run();
+bool MarketInfo::DoWork() {
+    DefaultLogManager::Default->StartLog(LogMessageCode::lmcMarketInfo_DoWork, this->m_nameLogIndex);
+
+    this->m_trade->SocketManager()->DoWork();
+	this->m_tradeCapture->SocketManager()->DoWork();
+	this->m_dropCopy->SocketManager()->DoWork();
+
+    if(this->m_feedChannel != NULL) {
+
+    }
+    DefaultLogManager::Default->EndLog(true);
+    return true;
 }
 
 bool MarketInfo::Disconnect() {
 	DefaultLogManager::Default->StartLog(this->m_nameLogIndex, LogMessageCode::lmcMarketInfo_Disconnect);
-	if (this->trade == NULL)
+	if (this->m_trade == NULL)
 		return true;
-	if (!this->trade->Disconnect()) {
+	if (!this->m_trade->Disconnect()) {
 		DefaultLogManager::Default->EndLog(false);
 		return false;
 	}
-	if (!this->tradeCapture->Disconnect()) {
+	if (!this->m_tradeCapture->Disconnect()) {
 		DefaultLogManager::Default->EndLog(false);
 		return false;
 	}
-	if (!this->dropCopy->Disconnect()) {
+	if (!this->m_dropCopy->Disconnect()) {
 		DefaultLogManager::Default->EndLog(false);
 		return false;
 	}
+    if(this->m_feedChannel != NULL && !this->m_feedChannel->Disconnect()) {
+        DefaultLogManager::Default->EndLog(false);
+        return false;
+    }
 	DefaultLogManager::Default->EndLog(true);
 	return true;
 }
@@ -94,9 +121,9 @@ bool MarketInfo::Logon() {
 
     DefaultLogManager::Default->StartLog(this->m_nameLogIndex, LogMessageCode::lmcMarketInfo_Logon);
 
-    success &= this->trade->Logon();
-	success &= this->tradeCapture->Logon();
-	success &= this->dropCopy->Logon();
+    success &= this->m_trade->Logon();
+	success &= this->m_tradeCapture->Logon();
+	success &= this->m_dropCopy->Logon();
 
     DefaultLogManager::Default->EndLog(success);
 	return success;
@@ -104,11 +131,8 @@ bool MarketInfo::Logon() {
 
 bool MarketInfo::Logout() { 
 	bool success = true;
-	success &= this->trade->Logout();
-	success &= this->tradeCapture->Logout();
-	success &= this->dropCopy->Logout();
+	success &= this->m_trade->Logout();
+	success &= this->m_tradeCapture->Logout();
+	success &= this->m_dropCopy->Logout();
 	return success;
 }
-		
-
-

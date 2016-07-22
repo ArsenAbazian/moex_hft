@@ -1,59 +1,19 @@
 #include "Robot.h"
 #include <tinyxml2.h>
 
-Robot::Robot()
-{
+Robot::Robot() {
 	this->channelsCount = 0;
 	memset(this->channels, 0, sizeof(FeedChannel*) * MARKET_INFO_CAPACITY);
 }
 
-Robot::~Robot()
-{
+Robot::~Robot() {
     DefaultLogManager::Default->StartLog(LogMessageCode::lmcRobot_Robot);
 
-    bool result = DisconnectChannels();
-    result &= DisconnectMarkets();
+    bool result = DisconnectMarkets();
 	delete this->protocolManager;
 
     DefaultLogManager::Default->EndLog(result);
 }
-
-bool Robot::ConnectChannels() { 
-	DefaultLogManager::Default->StartLog(LogMessageCode::lmcRobot_ConnectChannels);
-	for (int i = 0; i < this->channelsCount; i++) { 
-		if (!this->channels[i]->Connect()) {
-			DefaultLogManager::Default->EndLog(false);
-			return false;
-		}
-	}
-	DefaultLogManager::Default->EndLog(true);
-	return true;
-}
-
-bool Robot::DisconnectChannels() { 
-	bool success = true;
-	for (int i = 0; i < this->channelsCount; i++) { 
-		success &= this->channels[i]->Disconnect();
-	}
-	return success;
-}
-
-bool Robot::LogonChannels() { 
-	bool success = true;
-	for (int i = 0; i < this->channelsCount; i++) { 
-		success &= this->channels[i]->Logon();
-	}
-	return success;
-}
-
-bool Robot::LogoutChannels() {
-	bool success = true;
-	for (int i = 0; i < this->channelsCount; i++) {
-		success &= this->channels[i]->Logout();
-	}
-	return success;
-}
-
 
 bool Robot::ConnectMarkets() {
 	
@@ -206,6 +166,20 @@ FeedConnection* Robot::CreateConnectionCore(const char *feedChannelId, const cha
     return new FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort);
 }
 
+bool Robot::MarketsDoWork() {
+    DefaultLogManager::Default->StartLog(LogMessageCode::lmcRobot_MarketsDoWork);
+
+    for(int i = 0; i < this->marketCount; i++) {
+        if(!this->markets[i]->DoWork()) {
+            DefaultLogManager::Default->EndLog(false);
+            return true;
+        }
+    }
+
+    DefaultLogManager::Default->EndLog(true);
+    return true;
+}
+
 bool Robot::Run() { 
     DefaultLogManager::Default->StartLog(LogMessageCode::lmcRobot_Run);
 	
@@ -219,22 +193,49 @@ bool Robot::Run() {
 		return false;
 	}
 
+    if(!this->SetFeedChannelsForMarkets()) {
+        DefaultLogManager::Default->EndLog(false);
+        return false;
+    }
+
     if(!this->ConnectMarkets()) {
         DefaultLogManager::Default->EndLog(false);
         return false;
     }
 
-    if(!this->ConnectChannels()) {
-        DefaultLogManager::Default->EndLog(false);
-        return false;
-    }
-
-    if(!this->LogonMarkets()) {
-        this->LogoutMarkets();
+    if(!this->DoWork()) {
         DefaultLogManager::Default->EndLog(false);
         return false;
     }
 
 	DefaultLogManager::Default->EndLog(true);
 	return true;
+}
+
+bool Robot::DoWork() {
+    DefaultLogManager::Default->StartLog(LogMessageCode::lmcRobot_DoWork);
+
+    if(!this->MarketsDoWork()) {
+        DefaultLogManager::Default->EndLog(false);
+        return false;
+    }
+
+    if(!this->DoWorkCore()) {
+        DefaultLogManager::Default->EndLog(false);
+        return false;
+    }
+
+    DefaultLogManager::Default->EndLog(true);
+    return true;
+}
+
+bool Robot::DoWorkCore() {
+    DefaultLogManager::Default->StartLog(LogMessageCode::lmcRobot_DoWorkCore);
+
+    while(true) {
+        printf("robot do work\n");
+    }
+
+    DefaultLogManager::Default->EndLog(true);
+    return true;
 }

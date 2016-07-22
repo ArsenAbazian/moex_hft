@@ -6,6 +6,8 @@
 #include "ConsoleManager.h"
 #include "LogErrorMessageCodes.h"
 
+//#define BINARY_LOG_MANAGER_ALLOW_PRINT
+
 class LogManager
 {
 public:
@@ -139,12 +141,18 @@ public:
         GetStartClock(item);
         item->m_message = messageCode;
         item->m_message2 = messageCode2;
+#ifdef BINARY_LOG_MANAGER_ALLOW_PRINT
+        Print(item);
+#endif
     }
     inline void Write(int messageCode) {
         BinaryLogItem *item = this->Next();
 
         GetStartClock(item);
         item->m_message = messageCode;
+#ifdef BINARY_LOG_MANAGER_ALLOW_PRINT
+        Print(item);
+#endif
     }
     inline void WriteLine(int messageCode) {
         Write(messageCode);
@@ -158,6 +166,9 @@ public:
         GetStartClock(item);
         item->m_message = messageCode;
         item->m_result = condition;
+#ifdef BINARY_LOG_MANAGER_ALLOW_PRINT
+        Print(item);
+#endif
     }
     inline void WriteSuccess(int messageCode, int messageCode2, bool condition) {
         BinaryLogItem *item = this->Next();
@@ -166,6 +177,9 @@ public:
         item->m_message = messageCode;
         item->m_message = messageCode2;
         item->m_result = condition;
+#ifdef BINARY_LOG_MANAGER_ALLOW_PRINT
+        Print(item);
+#endif
     }
     inline void StartLog(int messageCode) {
         BinaryLogItem *item = this->Next();
@@ -183,13 +197,17 @@ public:
         item->m_message2 = messageCode2;
 
         this->Push(item);
-
     }
 
     inline void EndLog(bool condition) {
         BinaryLogItem *item = Pop();
         GetEndClock(item);
         item->m_result = condition;
+#ifdef BINARY_LOG_MANAGER_ALLOW_PRINT
+        if(item->m_type == BinaryLogItemType::NodeEnd)
+            item = &(this->m_items[item->m_startIndex]);
+        Print(item);
+#endif
     }
 
     inline void EndLog(bool condition, int messageCode) {
@@ -197,12 +215,22 @@ public:
         GetEndClock(item);
         item->m_result = condition;
         item->m_message = messageCode;
+#ifdef BINARY_LOG_MANAGER_ALLOW_PRINT
+        if(item->m_type == BinaryLogItemType::NodeEnd)
+            item = &(this->m_items[item->m_startIndex]);
+        Print(item);
+#endif
     }
     inline void EndLogErrNo(bool condition, int errno) {
         BinaryLogItem *item = Pop();
         GetEndClock(item);
         item->m_result = condition;
         item->m_errno = errno;
+#ifdef BINARY_LOG_MANAGER_ALLOW_PRINT
+        if(item->m_type == BinaryLogItemType::NodeEnd)
+            item = &(this->m_items[item->m_startIndex]);
+        Print(item);
+#endif
     }
 
     void Write(const char* message) {
