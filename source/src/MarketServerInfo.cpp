@@ -2,19 +2,6 @@
 #include <stdio.h>
 #include "LogManager.h"
 
-
-MarketServerInfo::MarketServerInfo()
-{
-	this->internetAddress[0] = '\0';
-	this->internetPort = 0;
-	this->targetComputerId[0] = '\0';
-	this->targetComputerIdLength = 0;
-	this->astsServerName[0] = '\0';
-	this->socketManager = NULL;
-	this->fixManager = NULL;
-	this->logonInfo = NULL;
-}
-
 MarketServerInfo::MarketServerInfo(const char *name, const char *internetAddress, int internetPort, const char *senderComputerId, const char *password, const char *targetComputerId, const char *astsServerName) {
 	strcpy(this->name, name);
     this->m_nameLogIndex = DefaultLogMessageProvider::Default->RegisterText(this->name);
@@ -27,6 +14,10 @@ MarketServerInfo::MarketServerInfo(const char *name, const char *internetAddress
 	this->senderComputerIdLength = strlen(this->senderComputerId);
 	strcpy(this->password, password);
 	this->passwordLength = strlen(this->password);
+
+    this->socketManager = NULL;
+    this->fixManager = NULL;
+    this->logonInfo = NULL;
 }
 
 void MarketServerInfo::Clear() { 
@@ -91,6 +82,12 @@ bool MarketServerInfo::Logout() {
 	return true;
 }
 
+WinSockManager* MarketServerInfo::CreateSocketManager() {
+    return new WinSockManager(new SocketBufferProvider(DefaultSocketBufferManager::Default,
+                                                       RobotSettings::DefaultMarketSendBufferSize, RobotSettings::DefaultMarketSendItemsCount,
+                                                       RobotSettings::DefaultMarketRecvBufferSize, RobotSettings::DefaultMarketRecvItemsCount));
+}
+
 bool MarketServerInfo::Connect() {
 	DefaultLogManager::Default->StartLog(this->m_nameLogIndex, LogMessageCode::lmcMarketServerInfo_Connect);
 	if (this->fixManager == NULL) {
@@ -102,7 +99,7 @@ bool MarketServerInfo::Connect() {
 		this->logonInfo = CreateLogonInfo();
 	}
 	
-	this->socketManager = new WinSockManager();
+	this->socketManager = CreateSocketManager();
 	bool result = this->socketManager->Connect(this->internetAddress, this->internetPort);
 	
 	DefaultLogManager::Default->EndLog(result);

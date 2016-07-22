@@ -208,10 +208,12 @@ namespace prebuild {
 			foreach(EnumInfo info in availableEnums) {
 				Console.WriteLine("existing enum: " + info.EnumName + " = " + info.Value + " -> " + info.MessageText);
 			}
+			int count = availableEnums.Count;
 			FindInitializeStringConstants(files, availableEnums);
-
-			WriteLogMessageCodeEnumDeclaration(enumFile, availableEnums);
-			WriteLogMessageTextInitializationCode(msgInitFile, availableEnums);
+			if(availableEnums.Count != count) {
+				WriteLogMessageCodeEnumDeclaration(enumFile, availableEnums);
+				WriteLogMessageTextInitializationCode(msgInitFile, availableEnums);
+			}
 
 			foreach(TextFile file in files) {
 				if(!file.Modified) {

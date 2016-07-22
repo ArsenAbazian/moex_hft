@@ -34,6 +34,11 @@ void LogMessageProvider::InitializeLogMessageText() {
 	this->m_logMessageText[LogMessageCode::lmcRobot_LogonMarkets] = "Robot::LogonMarkets";
 	this->m_logMessageText[LogMessageCode::lmcMarketServerInfo_Logon] = "MarketServerInfo_Logon";
 	this->m_logMessageText[LogMessageCode::lmcFeedConnection_InitializeSockets] = "FeedConnection::InitializeSockets";
+	this->m_logMessageText[LogMessageCode::lmcRobot_SetFeedChannelsForMarkets] = "Robot::SetFeedChannelsForMarkets";
+	this->m_logMessageText[LogMessageCode::lmcFOND_market_not_found] = "FOND market not found.";
+	this->m_logMessageText[LogMessageCode::lmcFOND_feed_channel_not_found] = "FOND feed channel not found.";
+	this->m_logMessageText[LogMessageCode::lmcCURR_market_not_found] = "CURR market not found.";
+	this->m_logMessageText[LogMessageCode::lmcCURR_feed_channel_not_found] = "CURR feed channel not found.";
 #pragma endregion
 }
 

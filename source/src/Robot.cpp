@@ -1,14 +1,12 @@
 #include "Robot.h"
 #include <tinyxml2.h>
 
-Robot::Robot()
-{
+Robot::Robot() {
 	this->channelsCount = 0;
 	memset(this->channels, 0, sizeof(FeedChannel*) * MARKET_INFO_CAPACITY);
 }
 
-Robot::~Robot()
-{
+Robot::~Robot() {
     DefaultLogManager::Default->StartLog(LogMessageCode::lmcRobot_Robot);
 
     bool result = DisconnectChannels();
@@ -219,6 +217,11 @@ bool Robot::Run() {
 		return false;
 	}
 
+    if(!this->SetFeedChannelsForMarkets()) {
+        DefaultLogManager::Default->EndLog(false);
+        return false;
+    }
+
     if(!this->ConnectMarkets()) {
         DefaultLogManager::Default->EndLog(false);
         return false;
@@ -229,11 +232,13 @@ bool Robot::Run() {
         return false;
     }
 
+    /*
     if(!this->LogonMarkets()) {
         this->LogoutMarkets();
         DefaultLogManager::Default->EndLog(false);
         return false;
     }
+    */
 
 	DefaultLogManager::Default->EndLog(true);
 	return true;

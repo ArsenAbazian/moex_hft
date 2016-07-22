@@ -19,12 +19,11 @@ public:
     static unsigned int DefaultFeedConnectionRecvBufferSize;
     static unsigned int DefaultFeedConnectionSendItemsCount;
     static unsigned int DefaultFeedConnectionRecvItemsCount;
+    static unsigned int DefaultMarketSendBufferSize;
+    static unsigned int DefaultMarketRecvBufferSize;
+    static unsigned int DefaultMarketSendItemsCount;
+    static unsigned int DefaultMarketRecvItemsCount;
 };
 
-int RobotSettings::SocketBuffersMaxCount = 256; // they are created only when needed
-unsigned int RobotSettings::DefaultFeedConnectionSendBufferSize = 8 * 1024 * 1024;
-unsigned int RobotSettings::DefaultFeedConnectionRecvBufferSize = 64 * 1024 * 1024;
-unsigned int RobotSettings::DefaultFeedConnectionSendItemsCount = 20000;    // I think that we most will listen data - no to send
-unsigned int RobotSettings::DefaultFeedConnectionRecvItemsCount = 200000;   // I don't know yet how much items needed
 
 

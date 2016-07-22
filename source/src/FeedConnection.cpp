@@ -20,6 +20,9 @@ FeedConnection::FeedConnection(const char *id, const char *name, char value, Fee
 	this->feedBPort = bPort;
 	this->fastProtocolManager = new FastProtocolManager();
 	this->state = FeedConnectionState::Normal;
+
+    this->socketAManager = NULL;
+    this->socketBManager = NULL;
 }
 
 
@@ -59,8 +62,11 @@ bool FeedConnection::Connect() {
 bool FeedConnection::Disconnect() {
     DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Disconnect);
 
-    bool result = this->socketAManager->Disconnect();
-	result &= this->socketBManager->Disconnect();
+    bool result = true;
+    if(this->socketAManager != NULL)
+        result &= this->socketAManager->Disconnect();
+    if(this->socketBManager != NULL)
+	    result &= this->socketBManager->Disconnect();
 
     DefaultLogManager::Default->EndLog(result);
     return result;
