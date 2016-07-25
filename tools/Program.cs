@@ -1,9 +1,9 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
-
+using Mono.Options;
 
 namespace prebuild {
 	public class EnumInfo { 
@@ -174,7 +174,23 @@ namespace prebuild {
 	}
 
 	class MainClass {
+		private static Dictionary<string, string> m_params = new Dictionary<string, string>();
 		public static void Main (string[] args) {
+			OptionSet p = new OptionSet() {
+				{"x|xml=", "Full path to config XML",
+					v => m_params.Add("x", v) },
+				{"d|data=", "Path to directory with data files",
+					v => m_params.Add("d", v) },
+				{"o|out=", "Output directory",
+					v => m_params.Add("o", v) },
+				{"s|src=", "C++ sources directory",
+					v => m_params.Add("s", v) }
+			};
+			try {
+				p.Parse(args);
+			} catch (OptionException e) {
+				Console.WriteLine (e.Message);
+			}
 			if(!CopyFastServerConfigurationFile()) {
 				Console.WriteLine ("exit.");
 				return;
@@ -377,9 +393,13 @@ namespace prebuild {
 
 		public static List<string> GetSourceFiles() {
 			List<string> sources = new List<string>();
-			GetSourceFiles("../../../../source/", sources);
+			string sourceDir = "";
+			if (!m_params.TryGetValue("s", out sourceDir)) {
+				sourceDir = "../../source/";
+				Console.WriteLine("Using default source directory: " + sourceDir);
+			}
+			GetSourceFiles(sourceDir, sources);
 			return sources;
-
 		}
 		public static void GetSourceFiles(string path, List<string> sources) {
 			IEnumerable<string> dirs = Directory.EnumerateDirectories(path);
@@ -397,9 +417,21 @@ namespace prebuild {
 		}
 
 		public static bool CopyFastServerConfigurationFile() { 
-			string fileName = "config_test.xml";
-			string inputPath = "../../../../test/data/";
-			string outputPath = "/tmp/";
+			string fileName = "";
+			if (!m_params.TryGetValue("x", out fileName)) {
+				fileName = "config_test.xml";
+				Console.WriteLine("Using default XML config: " + fileName);
+			}
+			string inputPath = "";
+			if (!m_params.TryGetValue("d", out inputPath)) {
+				inputPath = "../../test/data/";
+				Console.WriteLine("Using default data directory: " + inputPath);
+			}
+			string outputPath = "";
+			if (!m_params.TryGetValue("o", out outputPath)) {
+				outputPath = "/tmp/";
+				Console.WriteLine("Using default output directory: " + outputPath);
+			}
 			if (File.Exists (outputPath + fileName)) {
 				Console.WriteLine ("found FAST server configuration file in destination. remove.");
 				File.Delete (outputPath + fileName);

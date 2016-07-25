@@ -1,3 +1,4 @@
+include(Colors)
 set(DPDK_ROOT_DIR
     "${DPDK_ROOT_DIR}"
     CACHE

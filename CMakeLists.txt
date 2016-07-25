@@ -1,18 +1,71 @@
 cmake_minimum_required(VERSION 3.5)
 project(hft_robot)
 
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
+include(InstallRequiredSystemLibraries)
+include(ExternalProject)
+include(Colors)
+
+set(CMAKE_CONFIGURATION_TYPES "Debug;Release;RelInfo;MinSize" CACHE
+  STRING "Possible build types"
+  FORCE
+  )
+
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
+
 add_custom_target(clean-cmake
     COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_LIST_DIR}/cmake/CleanCmake.cmake
 )
 
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
-include(InstallRequiredSystemLibraries)
-include(ExternalProject)
+if(NOT CMAKE_BUILD_TYPE)
+  message(STATUS "You don't define build type.\nPlease define like ${BoldYellow}-DCMAKE_BUILD_TYPE={Debug|Release|RelInfo|MinSize}${ColourReset}\nBy default building ${BoldGreen}DEBUG${ColourReset}")
+  set(CMAKE_BUILD_TYPE DEBUG)
+endif()
+
+string(TOLOWER "${CMAKE_BUILD_TYPE}" CMAKE_BUILD_TYPE_LOWER)
+string(TOUPPER "${CMAKE_BUILD_TYPE}" CMAKE_BUILD_TYPE_UPPER)
+set(CMAKE_BUILD_TYPE "${CMAKE_BUILD_TYPE_UPPER}" CACHE
+    STRING "Choose the type of build, options are: Debug, Release, RelInfo, MinSize"
+    FORCE
+    )
+
+if(CMAKE_BUILD_TYPE_LOWER MATCHES debug)
+  message(STATUS "Building ${BoldRed}DEBUG${ColourReset} version")
+elseif(CMAKE_BUILD_TYPE_LOWER MATCHES relinfo)
+  message(STATUS "Building ${BoldGreen}Release with debug info${ColourReset} version")
+  set(CMAKE_BUILD_TYPE RELEASE)
+elseif(CMAKE_BUILD_TYPE_LOWER MATCHES minsize)
+  message(STATUS "Building ${BoldGreen}Minimal size Release${ColourReset} version")
+  set(CMAKE_BUILD_TYPE RELEASE)
+else()
+  message(STATUS "Building ${BoldGreen}${CMAKE_BUILD_TYPE}${ColourReset} version")
+endif()
+
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/build/${CMAKE_BUILD_TYPE_LOWER}")
+set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/build/${CMAKE_BUILD_TYPE_LOWER})
+
+find_package(CSharp)
+include(GetPkgVariable)
+
+# First add task to compile code generator
+
+pkg_get_variable(mono-options Sources)
+message(STATUS "${Green}Found Mono.Options in ${BoldBlue}${MONO_OPTIONS_SOURCES}${ColourReset}")
+
+set(fast_generator ${EXECUTABLE_OUTPUT_PATH}/fast_generator)
+add_custom_command(OUTPUT ${fast_generator}
+  COMMAND ${CSHARP_COMPILER} -sdk:4.0 -out:${fast_generator} ${CMAKE_CURRENT_LIST_DIR}/tools/Program.cs ${CMAKE_CURRENT_LIST_DIR}/tools/AssemblyInfo.cs ${MONO_OPTIONS_SOURCES}
+)
+
+add_custom_target(fast_generate ALL
+  DEPENDS ${fast_generator}
+)
 
 set(CMAKE_CXX_COMPILER clang++)
 set(CMAKE_C_COMPILER clang)
 
 set(common_params "-march=corei7 -msse4.2 -msse4.1 -m64 -mtune=corei7 -fpic -pthread -std=gnu++1z -fms-extensions -mcx16 -D__STDC_LIMIT_MACROS")
+#set(common_params "${common_params} --target=x86_64-pc-linux-elf")
 #set(CMAKE_CXX_FLAGS_DEBUG "${common_params} -g3 - O0")
 #set(CMAKE_CXX_FLAGS_RELEASE "${common_params} -g0 -O3")
 
@@ -53,6 +106,7 @@ if(TINYXML_FOUND)
     include_directories("${TINYXML_INCLUDE_DIR}")
     add_custom_target(tinyxml)
 else(TINYXML_FOUND)
+    message(STATUS "${Yellow}Building TinyXML2${ColourReset}")
     ExternalProject_Add(tinyxml PREFIX ${TinyXML_PREFIX}
       GIT_REPOSITORY https://github.com/leethomason/tinyxml2.git
       GIT_TAG 3.0.0
@@ -88,8 +142,14 @@ foreach(inc_dir ${inc_dirs})
     set(include_path "${include_path} -I${inc_dir}")
 endforeach(inc_dir)
 
-add_executable(hft_robot ${sources} source/include/LogErrorMessageCodes.h source/src/LogErrorMessageCodes.cpp source/src/Types.cpp source/include/SocketThreadManager.h source/src/SocketThreadManager.cpp)
-add_dependencies(hft_robot tinyxml)
+add_executable(hft_robot ${sources})
+add_dependencies(hft_robot tinyxml fast_generate)
 target_link_libraries(hft_robot ${TINYXML_LIBRARY} dl)
+
+add_custom_command(TARGET fast_generate
+  POST_BUILD
+  COMMAND ${CSHARP_MONO_INTERPRETER_} ${fast_generator} -d ${CMAKE_CURRENT_LIST_DIR}/test/data/ -s ${CMAKE_CURRENT_LIST_DIR}/source/
+)
+
 #target_link_libraries(hft_robot -Wl,--whole-archive ${TINYXML_LIBRARY} -Wl,--no-whole-archive dl)
 #set_target_properties(hft_robot PROPERTIES LINKER_LANGUAGE CXX)

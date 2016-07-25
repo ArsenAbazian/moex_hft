@@ -1,5 +1,0 @@
-/home/arsen/Documents/hft_robot/hft/prebuild/prebuild/obj/x86/Debug/.NETFramework,Version=v4.5.AssemblyAttribute.cs
-/home/arsen/Documents/hft_robot/hft/prebuild/prebuild/bin/Debug/prebuild.exe.mdb
-/home/arsen/Documents/hft_robot/hft/prebuild/prebuild/bin/Debug/prebuild.exe
-/home/arsen/Documents/hft_robot/hft/prebuild/prebuild/obj/x86/Debug/prebuild.exe
-/home/arsen/Documents/hft_robot/hft/prebuild/prebuild/obj/x86/Debug/prebuild.exe.mdb

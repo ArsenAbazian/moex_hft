@@ -1,3 +1,4 @@
+include(Colors)
 find_path(TINYXML_INCLUDE_DIR
     NAMES
     tinyxml2.h
@@ -36,11 +37,11 @@ else ()
 endif ()
 
 if (TINYXML_FOUND)
-  message(STATUS "Found TinyXML: ${TINYXML_LIBRARY}")
+  message(STATUS "${Green}Found TinyXML: ${BoldBlue}${TINYXML_LIBRARY}${ColourReset}")
   mark_as_advanced(
     TINYXML_LIBRARY
     TINYXML_INCLUDE_DIR
   )
 else ()
-  message(STATUS "Not Found TinyXML library - trying to build on next run")
+  message(STATUS "${Red}Not Found TinyXML library - trying to build on next run${ColourReset}")
 endif ()
