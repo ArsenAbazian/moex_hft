@@ -1,6 +1,7 @@
 #include "MarketServerInfo.h"
 #include <stdio.h>
 #include "LogManager.h"
+#include "Stopwatch.h"
 
 MarketServerInfo::MarketServerInfo(const char *name, const char *internetAddress, int internetPort, const char *senderComputerId, const char *password, const char *targetComputerId, const char *astsServerName) {
 	strcpy(this->name, name);
@@ -55,9 +56,9 @@ bool MarketServerInfo::Logon() {
 #ifdef ROBOT_WORK_ANYWAY
 	if(this->socketManager->IsConnected()) {
 #endif
-        for(int i = 0; i < 10; i++) {
-			if (!this->socketManager->SendCore((unsigned char *) this->fixManager->Message(),
-											   this->fixManager->MessageLength())) {
+		DefaultStopwatch::Default->Start();
+        while(DefaultStopwatch::Default->ElapsedSeconds() < 45) {
+			if (!this->socketManager->SendCore((unsigned char *) this->fixManager->Message(), this->fixManager->MessageLength())) {
 				DefaultLogManager::Default->EndLog(false);
 				return false;
 			}
@@ -79,6 +80,7 @@ bool MarketServerInfo::Logon() {
 
 			break;
 		}
+
 		this->fixManager->IncMessageSequenceNumber();
 #ifdef ROBOT_WORK_ANYWAY
 	}
@@ -106,13 +108,13 @@ bool MarketServerInfo::Logout() {
 		return false;
 	}
 
-	if(!this->socketManager->CheckProcessHearthBeat(2382)) {
+	if(!this->fixManager->CheckProcessHearthBeat(2382)) {
 		DefaultLogManager::Default->EndLog(false);
 		return false;
 	}
 
 	this->fixManager->SetMessageBuffer((char*)this->socketManager->GetNextSendBuffer());
-	this->fixManager->CreateLogoutMessage(DefaultLogMessageProvider::Default->RegisterText("Good Bye!"));
+	this->fixManager->CreateLogoutMessage("Good Bye!");
 	if (!this->socketManager->SendCore((unsigned char*)this->fixManager->Message(), this->fixManager->MessageLength())) {
 		DefaultLogManager::Default->EndLog(false);
 		return false;

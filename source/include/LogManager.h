@@ -11,12 +11,11 @@
 class LogManager
 {
 public:
-	LogManager();
-	~LogManager();
-
-	virtual void Write(const char* message) = 0;
+    virtual void Write(const char* message) = 0;
 	virtual void Write(const char* message, const char* message2) = 0;
-	virtual void WriteLine(const char* message) = 0;
+	virtual void WriteFix(int messageIndex, int bufferIndex, int itemIndex) = 0;
+    virtual void WriteFast(int messageIndex, int bufferIndex, int itemIndex, int size) = 0;
+    virtual void WriteLine(const char* message) = 0;
 	virtual void WriteSuccess(bool condition) = 0;
 	virtual void WriteSuccess(const char* message, bool condition) = 0;
 	virtual void WriteSuccess(const char* message, const char* message2, bool condition) = 0;
@@ -43,7 +42,9 @@ public:
 typedef  enum _BinaryLogItemType {
     NodeItem = 0,
     NodeStart = 1,
-    NodeEnd = 2
+    NodeEnd = 2,
+    NodeFix = 3,
+    NodeFast = 4
 }BinaryLogItemType;
 
 typedef struct _BinaryLogItem {
@@ -52,14 +53,16 @@ typedef struct _BinaryLogItem {
     int                 m_message;          // char message code - optimize - do not copy string - usually name of object
     int                 m_message2;         // char message code2 - usually - method name
     BinaryLogItemType   m_type;             // by default (do not set) is NodeItem
-    int                 m_bufferIndex;      // for fix and fast protocol - buffer index
-    int                 m_bufferStart;      // for fix and fast protocol - message start index in buffer
+    int                 m_bufferIndex;      //
+    int                 m_itemIndex;        //
     int                 m_bytesCount;       // for fix and fast protocol - bytes count;
     int                 m_errno;            // error number
     bool                m_result;           // method result - fail or success
     int                 m_index;            //
-    int                 m_startIndex;
-    int                 m_endIndex;
+    union {
+        int m_startIndex;
+        int m_endIndex;
+    };
 }BinaryLogItem;
 
 class BinaryLogManager : public LogManager {
@@ -128,6 +131,7 @@ public:
             this->m_items[i].m_index = i;
             this->m_items[i].m_message2 = -1;
             this->m_items[i].m_message = -1;
+            this->m_items[i].m_bytesCount = 0;
         }
         this->m_itemIndex = 0;
         this->m_stackTop = -1;
@@ -155,6 +159,33 @@ public:
         Print(item);
 #endif
     }
+
+    void WriteFix(int messageCode, int bufferIndex, int itemIndex) {
+        BinaryLogItem *item = this->Next();
+
+        GetStartClock(item);
+        item->m_message = messageCode;
+        item->m_bufferIndex = bufferIndex;
+        item->m_itemIndex = itemIndex;
+        item->m_type = BinaryLogItemType::NodeFix;
+#ifdef BINARY_LOG_MANAGER_ALLOW_PRINT
+        Print(item);
+#endif
+    }
+    void WriteFast(int messageCode, int bufferIndex, int itemIndex, int size) {
+        BinaryLogItem *item = this->Next();
+
+        GetStartClock(item);
+        item->m_message = messageCode;
+        item->m_bufferIndex = bufferIndex;
+        item->m_itemIndex = itemIndex;
+        item->m_type = BinaryLogItemType::NodeFast;
+        item->m_bytesCount = size;
+#ifdef BINARY_LOG_MANAGER_ALLOW_PRINT
+        Print(item);
+#endif
+    }
+
     inline void WriteLine(int messageCode) {
         Write(messageCode);
     }
@@ -390,6 +421,8 @@ public:
     void EndLog(bool condition, int errorCode) {
 		EndLog(condition, logMessageProvider->Message(errorCode));
     }
+    void WriteFix(int messageIndex, int bufferIndex, int itemIndex) { }
+    void WriteFast(int messageIndex, int bufferIndex, int itemIndex, int size) { }
     void Print() { }
 };
 
@@ -404,6 +437,8 @@ class EmptylogManager : public LogManager {
 	void StartLog(const char* message, const char* message2) {}
 	void EndLog(bool condition, const char *errorMessage) {}
 
+    void WriteFix(int messageIndex, int bufferIndex, int itemIndex) { }
+    void WriteFast(int messageIndex, int bufferIndex, int itemIndex, int size) { }
     void Write(int messageCode, int messageCode2) { }
     void Write(int messageCode) { }
     void WriteLine(int messageCode) { }

@@ -5800,11 +5800,11 @@ public:
 		int tag = Read3SymbolTag(this->currentPos);
 		this->currentPos += 3;
 
-		if (*buffer != '=' || tag != TagTestReqID)
+		if (*(this->currentPos) != '=' || tag != TagTestReqID)
 			return false;
 
 		int hearthBeat = ReadValuePredict34(this->currentPos, &length, FIX_SEPARATOR);
-		this->currentPos = length + 1;
+		this->currentPos += length + 1;
 
 		return true;
 	}

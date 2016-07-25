@@ -53,9 +53,11 @@ pkg_get_variable(mono-options Sources)
 message(STATUS "${Green}Found Mono.Options in ${BoldBlue}${MONO_OPTIONS_SOURCES}${ColourReset}")
 
 set(fast_generator ${EXECUTABLE_OUTPUT_PATH}/fast_generator)
+file(MAKE_DIRECTORY ${fast_generator})
 add_custom_command(OUTPUT ${fast_generator}
   COMMAND ${CSHARP_COMPILER} -sdk:4.0 -out:${fast_generator} ${CMAKE_CURRENT_LIST_DIR}/tools/Program.cs ${CMAKE_CURRENT_LIST_DIR}/tools/AssemblyInfo.cs ${MONO_OPTIONS_SOURCES}
-)
+  COMMENT "building fast_generator..."
+        )
 
 add_custom_target(fast_generate ALL
   DEPENDS ${fast_generator}
@@ -142,14 +144,14 @@ foreach(inc_dir ${inc_dirs})
     set(include_path "${include_path} -I${inc_dir}")
 endforeach(inc_dir)
 
-add_executable(hft_robot ${sources})
+add_executable(hft_robot ${sources} source/src/Stopwatch.cpp source/include/Stopwatch.h)
 add_dependencies(hft_robot tinyxml fast_generate)
 target_link_libraries(hft_robot ${TINYXML_LIBRARY} dl)
 
 add_custom_command(TARGET fast_generate
-  POST_BUILD
+  PRE_BUILD
   COMMAND ${CSHARP_MONO_INTERPRETER_} ${fast_generator} -d ${CMAKE_CURRENT_LIST_DIR}/test/data/ -s ${CMAKE_CURRENT_LIST_DIR}/source/
-)
+        COMMENT "generating code...")
 
 #target_link_libraries(hft_robot -Wl,--whole-archive ${TINYXML_LIBRARY} -Wl,--no-whole-archive dl)
 #set_target_properties(hft_robot PROPERTIES LINKER_LANGUAGE CXX)

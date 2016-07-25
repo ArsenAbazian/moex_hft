@@ -1,15 +1,5 @@
 #include "LogManager.h"
 
-
-LogManager::LogManager()
-{
-}
-
-
-LogManager::~LogManager()
-{
-}
-
 void BinaryLogManager::Print() {
     for(int i = 0; i < this->m_itemIndex; i++) {
         BinaryLogItem *item = &this->m_items[i];
@@ -29,13 +19,20 @@ void BinaryLogManager::Print(BinaryLogItem *item) {
         printf("%s", DefaultLogMessageProvider::Default->Message(item->m_message));
     if(item->m_message2 != -1)
         printf("->%s", DefaultLogMessageProvider::Default->Message(item->m_message2));
-    if(item->m_type != BinaryLogItemType::NodeStart) {
+    /*
+    if(item->m_type == BinaryLogItemType::NodeFix) {
+        printf("%s", DefaultLogMessageProvider::Default->)
+    }
+    else if(item->m_type == BinaryLogItemType::NodeFast) {
+
+    }
+    else */if(item->m_type != BinaryLogItemType::NodeStart) {
         printf(" - %s. ", item->m_result? DefaultLogMessageProvider::Default->Message(LogMessageCode::lmcSuccess):
                       DefaultLogMessageProvider::Default->Message(LogMessageCode::lmcFailed));
         if(item->m_errno != 0)
             printf("(%s)", strerror(item->m_errno));
     }
-    if(item->m_type == BinaryLogItemType::NodeStart) {
+    else if(item->m_type == BinaryLogItemType::NodeStart) {
         BinaryLogItem *end = &(this->m_items[item->m_endIndex]);
         printf(" - %s. ", end->m_result? DefaultLogMessageProvider::Default->Message(LogMessageCode::lmcSuccess):
                           DefaultLogMessageProvider::Default->Message(LogMessageCode::lmcFailed));

@@ -6,6 +6,7 @@
 #include <netinet/in.h>
 #include <errno.h>
 #include <thread>
+#include "LogManager.h"
 
 typedef enum _WinSockConnectionType{
 	wsTCP,
@@ -106,7 +107,8 @@ public:
     }
 
 	inline bool SendCore(unsigned char *sendBytes, int frameLength) {
-        this->m_sendSize = send(this->m_socket, sendBytes, frameLength, 0);
+		//DefaultLogManager::Default->Write(sendBytes, frameLength);
+		this->m_sendSize = send(this->m_socket, sendBytes, frameLength, 0);
 		if (this->m_sendSize < 0) {
 			if (TryFixSocketError(errno)) {
 				this->m_sendSize = send(this->m_socket, sendBytes, frameLength, 0);
