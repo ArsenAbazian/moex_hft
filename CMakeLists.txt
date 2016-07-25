@@ -145,5 +145,11 @@ endforeach(inc_dir)
 add_executable(hft_robot ${sources})
 add_dependencies(hft_robot tinyxml fast_generate)
 target_link_libraries(hft_robot ${TINYXML_LIBRARY} dl)
+
+add_custom_command(TARGET fast_generate
+  POST_BUILD
+  COMMAND ${CSHARP_MONO_INTERPRETER_} ${fast_generator} -d ${CMAKE_CURRENT_LIST_DIR}/test/data/ -s ${CMAKE_CURRENT_LIST_DIR}/source/
+)
+
 #target_link_libraries(hft_robot -Wl,--whole-archive ${TINYXML_LIBRARY} -Wl,--no-whole-archive dl)
 #set_target_properties(hft_robot PROPERTIES LINKER_LANGUAGE CXX)
