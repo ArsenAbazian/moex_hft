@@ -1,6 +1,11 @@
 cmake_minimum_required(VERSION 3.5)
 project(hft_robot)
 
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
+include(InstallRequiredSystemLibraries)
+include(ExternalProject)
+include(Colors)
+
 set(CMAKE_CONFIGURATION_TYPES "Debug;Release;RelInfo;MinSize" CACHE
   STRING "Possible build types"
   FORCE
@@ -11,8 +16,6 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
 add_custom_target(clean-cmake
     COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_LIST_DIR}/cmake/CleanCmake.cmake
 )
-
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
 
 if(NOT CMAKE_BUILD_TYPE)
   message(STATUS "You don't define build type.\nPlease define like ${BoldYellow}-DCMAKE_BUILD_TYPE={Debug|Release|RelInfo|MinSize}${ColourReset}\nBy default building ${BoldGreen}DEBUG${ColourReset}")
@@ -41,17 +44,23 @@ endif()
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/build/${CMAKE_BUILD_TYPE_LOWER}")
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/build/${CMAKE_BUILD_TYPE_LOWER})
 
-include(InstallRequiredSystemLibraries)
-include(ExternalProject)
-include(Colors)
-
 find_package(CSharp)
+include(GetPkgVariable)
 
 # First add task to compile code generator
 
-add_custom_command(OUTPUT ${EXECUTABLE_OUTPUT_PATH}/fast_fenerator
-  COMMAND ${CSHARP_COMPILER} -out:${EXECUTABLE_OUTPUT_PATH}/fast_fenerator tools/Program.cs
+pkg_get_variable(mono-options Sources)
+message(STATUS "${Green}Found Mono.Options in ${BoldBlue}${MONO_OPTIONS_SOURCES}${ColourReset}")
+
+set(fast_generator ${EXECUTABLE_OUTPUT_PATH}/fast_generator)
+add_custom_command(OUTPUT ${fast_generator}
+  COMMAND ${CSHARP_COMPILER} -sdk:4.0 -out:${fast_generator} ${CMAKE_CURRENT_LIST_DIR}/tools/Program.cs ${CMAKE_CURRENT_LIST_DIR}/tools/AssemblyInfo.cs ${MONO_OPTIONS_SOURCES}
 )
+
+add_custom_target(fast_generate ALL
+  DEPENDS ${fast_generator}
+)
+
 set(CMAKE_CXX_COMPILER clang++)
 set(CMAKE_C_COMPILER clang)
 
@@ -133,8 +142,8 @@ foreach(inc_dir ${inc_dirs})
     set(include_path "${include_path} -I${inc_dir}")
 endforeach(inc_dir)
 
-add_executable(hft_robot ${sources} source/include/LogErrorMessageCodes.h source/src/LogErrorMessageCodes.cpp source/src/Types.cpp)
-add_dependencies(hft_robot tinyxml)
+add_executable(hft_robot ${sources})
+add_dependencies(hft_robot tinyxml fast_generate)
 target_link_libraries(hft_robot ${TINYXML_LIBRARY} dl)
 #target_link_libraries(hft_robot -Wl,--whole-archive ${TINYXML_LIBRARY} -Wl,--no-whole-archive dl)
 #set_target_properties(hft_robot PROPERTIES LINKER_LANGUAGE CXX)
