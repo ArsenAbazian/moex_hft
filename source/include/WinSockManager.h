@@ -12,6 +12,19 @@ typedef enum _WinSockConnectionType{
 	wsUDP
 }WinSockConnectionType;
 
+
+typedef enum _WinSockStatus {
+    wssOk,
+    wssFailed,
+    wssWaitRecv
+}WinSockStatus;
+
+typedef struct _PacketInfo {
+    unsigned char*  buffer;
+    unsigned int    size;
+}PacketInfo;
+
+
 class ISocketBufferProvider {
 public:
     virtual SocketBuffer* SendBuffer() = 0;
@@ -46,17 +59,19 @@ class WinSockManager {
     SocketBuffer                    *m_sendBuffer;
     SocketBuffer                    *m_recvBuffer;
 
+    PacketInfo                      m_freeSendPacket;
+    PacketInfo                      *m_sendPacket;
+
     bool                            m_connected;
 	int                             m_sendSize;
     int                             m_recvSize;
 	unsigned char                   *m_recvBytes;
     unsigned char                   *m_sendBytes;
 
-	std::thread						*m_threadSend;
-	std::thread						*m_threadRecv;
+    WinSockStatus                   m_sendStatus;
+    WinSockStatus                   m_recvStatus;
 
-	void WorkSend();
-	void WorkRecv();
+
 public:
 	WinSockManager(ISocketBufferProvider *provider);
 	~WinSockManager();
@@ -69,12 +84,32 @@ public:
 	bool Reconnect();
 	bool TryFixSocketError(int socketError);
 
-	inline bool Send(int frameLength) {
-        this->m_sendBytes = this->m_sendBuffer->CurrentPos();
-        this->m_sendSize = send(this->m_socket, this->m_sendBytes, frameLength, 0);
+    inline unsigned char* GetNextSendBuffer() {
+        this->m_sendBuffer->Next(this->m_sendSize);
+        return this->m_sendBuffer->CurrentPos();
+    }
+
+    inline void WorkSend() {
+        if (this->m_sendPacket == NULL)
+            return;
+        if (!SendCore(this->m_sendPacket->buffer, this->m_sendPacket->size))
+            this->m_sendStatus = WinSockStatus::wssFailed;
+        this->m_sendPacket = NULL;
+    }
+    inline void WorkRecv() {
+        if(this->m_recvStatus != WinSockStatus::wssWaitRecv)
+            return;
+        if(!RecvCore())
+            this->m_recvStatus = WinSockStatus::wssFailed;
+        else
+            this->m_recvStatus = WinSockStatus::wssOk;
+    }
+
+	inline bool SendCore(unsigned char *sendBytes, int frameLength) {
+        this->m_sendSize = send(this->m_socket, sendBytes, frameLength, 0);
 		if (this->m_sendSize < 0) {
 			if (TryFixSocketError(errno)) {
-				this->m_sendSize = send(this->m_socket, this->m_sendBytes, frameLength, 0);
+				this->m_sendSize = send(this->m_socket, sendBytes, frameLength, 0);
                 if(this->m_sendSize < 0)
                     return false;
                 this->m_sendBuffer->Next(this->m_sendSize);
@@ -87,7 +122,7 @@ public:
 
 	}
 
-	inline bool Recv() {
+	inline bool RecvCore() {
         this->m_recvBytes = this->m_recvBuffer->CurrentPos();
         this->m_recvSize = recv(this->m_socket, this->m_recvBytes, 8192, 0);
         if (this->m_recvSize == 0) { // connection was gracefullty closed - try to reconnect?
@@ -108,8 +143,5 @@ public:
 	inline unsigned char* RecvBytes() { return this->m_recvBytes; }
     inline int SendSize() { return this->m_sendSize; }
     inline unsigned char* SendBytes() { return this->m_sendBytes; }
-
-	void DoWork();
-	void StopWork();
 };
 

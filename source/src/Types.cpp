@@ -11,6 +11,5 @@ unsigned int RobotSettings::DefaultFeedConnectionRecvItemsCount = 200000;       
 
 unsigned int RobotSettings::DefaultMarketSendBufferSize = 16 * 1024 * 1024;     // why 16? don't know
 unsigned int RobotSettings::DefaultMarketRecvBufferSize = 16 * 1024 * 1024;
-unsigned int RobotSettings::DefaultMarketSendItemsCount = 16 * 1024 * 1024;
-unsigned int RobotSettings::DefaultMarketRecvItemsCount = 16 * 1024 * 1024;
-
+unsigned int RobotSettings::DefaultMarketSendItemsCount = 4 * 1024 * 1024;
+unsigned int RobotSettings::DefaultMarketRecvItemsCount = 4 * 1024 * 1024;

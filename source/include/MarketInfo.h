@@ -43,7 +43,6 @@ public:
     inline const char* Name() { return this->m_name; }
 
 	bool Connect();
-	bool DoWork();
 	bool Disconnect();
 	bool Logon();
 	bool Logout();

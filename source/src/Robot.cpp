@@ -1,5 +1,6 @@
 #include "Robot.h"
 #include <tinyxml2.h>
+#include "SocketThreadManager.h"
 
 Robot::Robot() {
 	this->channelsCount = 0;
@@ -21,7 +22,11 @@ bool Robot::ConnectMarkets() {
 	for (int i = 0; i < this->marketCount; i++) {
 		if (!this->markets[i]->Connect()) {
 			DefaultLogManager::Default->EndLog(false);
+#ifdef ROBOT_WORK_ANYWAY
+            continue;
+#else
 			return false;
+#endif
 		}
 	}
 	DefaultLogManager::Default->EndLog(true);
@@ -166,15 +171,20 @@ FeedConnection* Robot::CreateConnectionCore(const char *feedChannelId, const cha
     return new FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort);
 }
 
-bool Robot::MarketsDoWork() {
-    DefaultLogManager::Default->StartLog(LogMessageCode::lmcRobot_MarketsDoWork);
+bool Robot::InitializeThreads() {
+    DefaultLogManager::Default->StartLog(LogMessageCode::lmcRobot_InitializeThreads);
 
-    for(int i = 0; i < this->marketCount; i++) {
-        if(!this->markets[i]->DoWork()) {
-            DefaultLogManager::Default->EndLog(false);
-            return true;
-        }
-    }
+    WinSockManager  **marketManagers = new WinSockManager*[6] {
+            this->m_currMarket->Trade()->SocketManager(),
+            this->m_currMarket->TradeCapture()->SocketManager(),
+            this->m_currMarket->TradeDropCopy()->SocketManager(),
+            this->m_fondMarket->Trade()->SocketManager(),
+            this->m_fondMarket->TradeCapture()->SocketManager(),
+            this->m_fondMarket->TradeDropCopy()->SocketManager()
+    };
+
+    DefaultSocketThreadManager::Default->AddSendThread(marketManagers, 2);
+    DefaultSocketThreadManager::Default->AddRecvThread(marketManagers, 2);
 
     DefaultLogManager::Default->EndLog(true);
     return true;
@@ -215,15 +225,29 @@ bool Robot::Run() {
 bool Robot::DoWork() {
     DefaultLogManager::Default->StartLog(LogMessageCode::lmcRobot_DoWork);
 
-    if(!this->MarketsDoWork()) {
+    if(!this->InitializeThreads()) {
         DefaultLogManager::Default->EndLog(false);
         return false;
     }
 
+    if(!this->LogonMarkets()) {
+        DefaultLogManager::Default->EndLog(false);
+        return false;
+    }
+
+    /*
     if(!this->DoWorkCore()) {
         DefaultLogManager::Default->EndLog(false);
         return false;
     }
+    */
+
+    if(!this->LogoutMarkets()) {
+        DefaultLogManager::Default->EndLog(false);
+        return false;
+    }
+
+    DefaultLogManager::Default->Print();
 
     DefaultLogManager::Default->EndLog(true);
     return true;
@@ -233,7 +257,7 @@ bool Robot::DoWorkCore() {
     DefaultLogManager::Default->StartLog(LogMessageCode::lmcRobot_DoWorkCore);
 
     while(true) {
-        printf("robot do work\n");
+        //printf("robot do work\n");
     }
 
     DefaultLogManager::Default->EndLog(true);

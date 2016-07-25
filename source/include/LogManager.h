@@ -6,7 +6,7 @@
 #include "ConsoleManager.h"
 #include "LogErrorMessageCodes.h"
 
-//#define BINARY_LOG_MANAGER_ALLOW_PRINT
+#define BINARY_LOG_MANAGER_ALLOW_PRINT
 
 class LogManager
 {
@@ -24,6 +24,7 @@ public:
 	virtual void StartLog(const char* message, const char* message2) = 0;
 	virtual void EndLog(bool condition, const char *errorMessage) = 0;
     virtual void EndLogErrNo(bool condition, int errno) = 0;
+    virtual void EndLogErrNo(bool condition, const char *errText) = 0;
 
     virtual void Write(int messageCode) = 0;
     virtual void Write(int messageCode, int messageCode2) = 0;
@@ -232,6 +233,17 @@ public:
         Print(item);
 #endif
     }
+    inline void EndLogErrNo(bool condition, const char *errText) {
+        BinaryLogItem *item = Pop();
+        GetEndClock(item);
+        item->m_result = condition;
+        item->m_errno = DefaultLogMessageProvider::Default->RegisterText(errText);
+#ifdef BINARY_LOG_MANAGER_ALLOW_PRINT
+        if(item->m_type == BinaryLogItemType::NodeEnd)
+            item = &(this->m_items[item->m_startIndex]);
+        Print(item);
+#endif
+    }
 
     void Write(const char* message) {
         throw;
@@ -255,7 +267,7 @@ public:
         throw;
     }
     void EndLog(bool condition, const char *errorMessage) {
-        throw;
+        EndLog(condition, DefaultLogMessageProvider::Default->RegisterText(errorMessage));
     }
 
     void Print();

@@ -7,6 +7,7 @@
 #include "SocketBufferManager.h"
 #include <time.h>
 #include <sys/time.h>
+#include <stdio.h>
 
 #define FIX_SEPARATOR 0x01
 
@@ -4896,6 +4897,10 @@ public:
 		memcpy(this->currentPos, string, length);
 		this->currentPos += length;
 	}
+	inline void AddArray(const char *string, int length) {
+		memcpy(this->currentPos, string, length);
+		this->currentPos += length;
+	}
 	inline void AddArray(char *string) {
 		while (*string != '\0') { 
 			*(this->currentPos) = *string;
@@ -5493,8 +5498,10 @@ public:
 		AddTrail();
 		AddStringZero();
 	}
-
-	inline void CreateLogoutMessage(char *text, int textLength) { 
+	inline void CreateLogoutMessage(const char *text) {
+		CreateLogoutMessage(text, strlen(text));
+	}
+	inline void CreateLogoutMessage(const char *text, int textLength) {
 		AddHeader(MsgTypeLogout);
 		if (text != NULL) {
 			AddTagText();
@@ -5774,6 +5781,30 @@ public:
 			return false;
 		buffer += length;
 		*outLength = (*outLength) + length;
+
+		return true;
+	}
+
+	inline bool ProcessCheckLogonMessage() {
+		printf("recv = %s", this->messageBuffer);
+		return true;
+	}
+
+	inline bool CheckProcessHearthBeat(int testReqId) {
+		int length = 0;
+		this->currentPos = this->messageBuffer;
+		if(!ProcessCheckHeader(this->currentPos, &length))
+			return false;
+
+		this->currentPos += length;
+		int tag = Read3SymbolTag(this->currentPos);
+		this->currentPos += 3;
+
+		if (*buffer != '=' || tag != TagTestReqID)
+			return false;
+
+		int hearthBeat = ReadValuePredict34(this->currentPos, &length, FIX_SEPARATOR);
+		this->currentPos = length + 1;
 
 		return true;
 	}

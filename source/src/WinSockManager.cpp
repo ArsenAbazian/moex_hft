@@ -6,6 +6,7 @@
 #include "WinSockManager.h"
 #include "LogManager.h"
 #include <arpa/inet.h>
+#include "SocketThreadManager.h"
 
 WinSockManager::WinSockManager(ISocketBufferProvider *provider) {
 	this->m_socket = -1;
@@ -13,13 +14,16 @@ WinSockManager::WinSockManager(ISocketBufferProvider *provider) {
 	this->m_bufferProvider = provider;
 	this->m_recvBuffer = this->m_bufferProvider->RecvBuffer();
 	this->m_sendBuffer = this->m_bufferProvider->SendBuffer();
-	this->m_threadRecv = NULL;
-	this->m_threadSend = NULL;
+    this->m_sendPacket = NULL;
+    this->m_sendStatus = WinSockStatus::wssOk;
+    this->m_recvStatus = WinSockStatus::wssOk;
+    this->m_sendSize = 0;
+    this->m_recvSize = 0;
 }
 
 
 WinSockManager::~WinSockManager() {
-	this->StopWork();
+
 }
 
 bool WinSockManager::Connect(char *server_address, unsigned short server_port, WinSockConnectionType connType) {
@@ -32,7 +36,7 @@ bool WinSockManager::Connect(char *server_address, unsigned short server_port, W
     this->m_socket = socket(AF_INET, connType == WinSockConnectionType::wsTCP? SOCK_STREAM: SOCK_DGRAM, 0);
 
 	if (this->m_socket < 0) {
-		DefaultLogManager::Default->EndLog(false, strerror(errno));
+		DefaultLogManager::Default->EndLogErrNo(false, strerror(errno));
 		return false;
 	}
 
@@ -44,7 +48,7 @@ bool WinSockManager::Connect(char *server_address, unsigned short server_port, W
 	int result = connect(this->m_socket, (struct sockaddr*)&(this->m_adress), sizeof(this->m_adress));
 	if(result < 0) {
         close(this->m_socket);
-		DefaultLogManager::Default->EndLog(false, strerror(errno));
+		DefaultLogManager::Default->EndLogErrNo(false, strerror(errno));
 		return false;
 	}
 
@@ -74,64 +78,7 @@ bool WinSockManager::Disconnect() {
 	return true;
 }
 
-void WinSockManager::WorkSend() {
-	while(true) {
-		printf("%s -> work_send\n", this->m_fullAddress);
-	}
-}
-
-void WinSockManager::WorkRecv() {
-	while(true) {
-		printf("%s -> work_recv\n", this->m_fullAddress);
-	}
-}
-
-void WinSockManager::DoWork() {
-	DefaultLogManager::Default->StartLog(LogMessageCode::lmcWinSockManager_DoWork, this->m_serverAddressLogIndex);
-	if(this->m_threadSend == NULL)
-		this->m_threadSend = new std::thread(&WinSockManager::WorkSend, this);
-	if(this->m_threadRecv == NULL)
-		this->m_threadRecv = new std::thread(&WinSockManager::WorkRecv, this);
-	DefaultLogManager::Default->EndLog(true);
-}
-
-void WinSockManager::StopWork() {
-	DefaultLogManager::Default->StartLog(LogMessageCode::lmcWinSockManager_StopWork, this->m_serverAddressLogIndex);
-	if(this->m_threadSend != NULL)
-		delete this->m_threadSend;
-	if(this->m_threadRecv != NULL)
-		delete this->m_threadRecv;
-	this->m_threadSend = NULL;
-	this->m_threadRecv = NULL;
-	DefaultLogManager::Default->EndLog(true);
-}
-
-/*
-void WinSockManager::Run()
-{
-	std::thread tr = std::thread(&WinSockManager::RunCore, this);
-}
-void WinSockManager::RunCore() {
-
-	std::thread tr = std::thread(&WinSockManager::ProcessMessageCore, this);
-	char message[10000];
-	while (true){
-		int data_length = Recv(message, 10000);
-		if (data_length <= 0) continue;
-
-		unsigned int i = 0;
-		while (i < (unsigned int)data_length)
-		{
-			char* res = &(message[i]);
-			i += strlen(res);
-			SetMessage(res);
-		}
-	}
-
-}
-*/
-
-bool WinSockManager::Reconnect() { 
+bool WinSockManager::Reconnect() {
 	DefaultLogManager::Default->StartLog(LogMessageCode::lmcWinSockManager_Reconnect, this->m_serverAddressLogIndex);
 
     if(this->m_connected) {

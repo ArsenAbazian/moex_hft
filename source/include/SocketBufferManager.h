@@ -34,12 +34,14 @@ public:
 
     inline unsigned int NextIndex() { return this->m_indexProvider->NextIndex(); }
     inline void Next(int length) {
+        if(length == 0)
+            return;
         int itemCount = this->m_itemsCount;
 
         this->m_itemLength[itemCount] = length;
         this->m_items[itemCount] = this->m_current;
         this->m_index[itemCount] = NextIndex();
-        this->m_current += (length & 0xfffffffc) + 4; //optimization by 4
+        this->m_current += (length & 0xfffffffc) + 8; //optimization by 4 + additional 4 bytes for zero string
 
         itemCount++;
         if ((itemCount >= this->m_maxItemsCount) || (this->m_current >= this->m_end))

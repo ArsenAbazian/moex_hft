@@ -50,13 +50,75 @@ FixLogonInfo* MarketServerInfo::CreateLogonInfo() {
 bool MarketServerInfo::Logon() { 
 	DefaultLogManager::Default->StartLog(this->m_nameLogIndex, LogMessageCode::lmcMarketServerInfo_Logon);
 
+	this->fixManager->SetMessageBuffer((char*)this->socketManager->GetNextSendBuffer());
 	this->fixManager->CreateLogonMessage(this->logonInfo);
-	if (!this->socketManager->Send(this->fixManager->MessageLength())) {
+#ifdef ROBOT_WORK_ANYWAY
+	if(this->socketManager->IsConnected()) {
+#endif
+        for(int i = 0; i < 10; i++) {
+			if (!this->socketManager->SendCore((unsigned char *) this->fixManager->Message(),
+											   this->fixManager->MessageLength())) {
+				DefaultLogManager::Default->EndLog(false);
+				return false;
+			}
+
+			if (!this->socketManager->RecvCore()) {
+				DefaultLogManager::Default->EndLog(false);
+				return false;
+			}
+
+			if(this->socketManager->RecvSize() == 0)
+				continue;
+
+			this->socketManager->RecvBytes()[this->socketManager->RecvSize()] = '\0';
+			this->fixManager->SetMessageBuffer((char *) this->socketManager->RecvBytes());
+			if (!this->fixManager->ProcessCheckLogonMessage()) {
+				DefaultLogManager::Default->EndLog(false);
+				return false;
+			}
+
+			break;
+		}
+		this->fixManager->IncMessageSequenceNumber();
+#ifdef ROBOT_WORK_ANYWAY
+	}
+#endif
+	DefaultLogManager::Default->EndLog(true);
+	return true;
+}
+
+bool MarketServerInfo::Logout() {
+	DefaultLogManager::Default->StartLog(this->m_nameLogIndex, LogMessageCode::lmcMarketServerInfo_Logout);
+
+	this->fixManager->SetMessageBuffer((char*)this->socketManager->GetNextSendBuffer());
+
+	// first we must be sure that there is no lost message before logout
+	// so we should send TestRequest and receive HearthBeat messages
+	this->fixManager->CreateTestRequestMessage(2382);
+	if (!this->socketManager->SendCore((unsigned char*)this->fixManager->Message(), this->fixManager->MessageLength())) {
+		DefaultLogManager::Default->EndLog(false);
+		return false;
+	}
+	this->fixManager->IncMessageSequenceNumber();
+
+	if (!this->socketManager->RecvCore()) {
 		DefaultLogManager::Default->EndLog(false);
 		return false;
 	}
 
-	if (!this->socketManager->Recv()) {
+	if(!this->socketManager->CheckProcessHearthBeat(2382)) {
+		DefaultLogManager::Default->EndLog(false);
+		return false;
+	}
+
+	this->fixManager->SetMessageBuffer((char*)this->socketManager->GetNextSendBuffer());
+	this->fixManager->CreateLogoutMessage(DefaultLogMessageProvider::Default->RegisterText("Good Bye!"));
+	if (!this->socketManager->SendCore((unsigned char*)this->fixManager->Message(), this->fixManager->MessageLength())) {
+		DefaultLogManager::Default->EndLog(false);
+		return false;
+	}
+
+	if (!this->socketManager->RecvCore()) {
 		DefaultLogManager::Default->EndLog(false);
 		return false;
 	}
@@ -64,21 +126,6 @@ bool MarketServerInfo::Logon() {
 	this->fixManager->IncMessageSequenceNumber();
 
 	DefaultLogManager::Default->EndLog(true);
-	return true;
-}
-
-bool MarketServerInfo::Logout() { 
-	this->fixManager->CreateLogoutMessage("Good Bye!", 9);
-	if (!this->socketManager->Send(this->fixManager->MessageLength()))
-		return false;
-
-	printf("SEND %s\n\n", this->fixManager->Message());
-	if (!this->socketManager->Recv())
-		return false;
-
-	printf("RECV %s\n\n", this->socketManager->RecvBytes());
-	this->fixManager->IncMessageSequenceNumber();
-
 	return true;
 }
 

@@ -17,6 +17,9 @@ class Robot
 	MarketInfo *markets[MARKET_INFO_CAPACITY];
 	int		marketCount;
 
+    MarketInfo *m_currMarket;
+    MarketInfo *m_fondMarket;
+
 	RobotState state;
 
 	FixProtocolManager *protocolManager;
@@ -41,7 +44,7 @@ class Robot
     bool LogoutMarkets();
     bool ConnectMarkets();
     bool DisconnectMarkets();
-    bool MarketsDoWork();
+    bool InitializeThreads();
     bool DoWork();
     bool DoWorkCore();
 
@@ -79,9 +82,9 @@ public:
     bool SetFeedChannelsForMarkets() {
         DefaultLogManager::Default->StartLog(LogMessageCode::lmcRobot_SetFeedChannelsForMarkets);
 
-        MarketInfo *fondMarket = FindMarket("FOND");
+        this->m_fondMarket = FindMarket("FOND");
         FeedChannel *fondChannel = FindFeedChannel("FOND");
-        if(fondMarket == NULL) {
+        if(this->m_fondMarket == NULL) {
             DefaultLogManager::Default->EndLog(false, LogMessageCode::lmcFOND_market_not_found);
             return false;
         }
@@ -90,9 +93,9 @@ public:
             return false;
         }
 
-        MarketInfo *currMarket = FindMarket("CURR");
+        this->m_currMarket = FindMarket("CURR");
         FeedChannel *currChannel = FindFeedChannel("CURR");
-        if(currMarket == NULL) {
+        if(this->m_currMarket == NULL) {
             DefaultLogManager::Default->EndLog(false, LogMessageCode::lmcCURR_market_not_found);
             return false;
         }
@@ -101,8 +104,8 @@ public:
             return false;
         }
 
-        fondMarket->SetFeedChannel(fondChannel);
-        currMarket->SetFeedChannel(currChannel);
+        this->m_fondMarket->SetFeedChannel(fondChannel);
+        this->m_currMarket->SetFeedChannel(currChannel);
 
         DefaultLogManager::Default->EndLog(true);
         return true;

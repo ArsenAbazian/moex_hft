@@ -2,6 +2,8 @@
 
 #include <cstdint>
 
+#define ROBOT_WORK_ANYWAY
+
 #define null 0
 #define BYTE unsigned char
 #define UINT32 unsigned int

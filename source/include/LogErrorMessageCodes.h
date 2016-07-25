@@ -42,7 +42,10 @@ typedef enum _LogMessageCode {
 	lmcMarketInfo_DoWork = 32,
 	lmcRobot_MarketsDoWork = 33,
 	lmcRobot_DoWork = 34,
-	lmcRobot_DoWorkCore = 35
+	lmcRobot_DoWorkCore = 35,
+	lmcMarketServerInfo_DoWork = 36,
+	lmcMarketServerInfo_Logout = 37,
+	lmcRobot_InitializeThreads = 38
 #pragma  endregion
 }LogMessageCode;
 

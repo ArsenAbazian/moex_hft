@@ -59,37 +59,31 @@ bool MarketInfo::Connect() {
 		return true;
 	}
 	if(!this->m_trade->Connect()) {
+#ifndef ROBOT_WORK_ANYWAY
 		DefaultLogManager::Default->EndLog(false);
 		return false;
+#endif
 	}
 	if(!this->m_tradeCapture->Connect()) {
+#ifndef ROBOT_WORK_ANYWAY
 		DefaultLogManager::Default->EndLog(false);
 		return false;
+#endif
 	}
 	if(!this->m_dropCopy->Connect()) {
+#ifndef ROBOT_WORK_ANYWAY
 		DefaultLogManager::Default->EndLog(false);
 		return false;
+#endif
 	}
     if(this->m_feedChannel != NULL && !this->m_feedChannel->Connect()) {
-        DefaultLogManager::Default->EndLog(false);
-        return false;
+#ifndef ROBOT_WORK_ANYWAY
+		DefaultLogManager::Default->EndLog(false);
+		return false;
+#endif
     }
 	DefaultLogManager::Default->EndLog(true);
 	return true;
-}
-
-bool MarketInfo::DoWork() {
-    DefaultLogManager::Default->StartLog(LogMessageCode::lmcMarketInfo_DoWork, this->m_nameLogIndex);
-
-    this->m_trade->SocketManager()->DoWork();
-	this->m_tradeCapture->SocketManager()->DoWork();
-	this->m_dropCopy->SocketManager()->DoWork();
-
-    if(this->m_feedChannel != NULL) {
-
-    }
-    DefaultLogManager::Default->EndLog(true);
-    return true;
 }
 
 bool MarketInfo::Disconnect() {

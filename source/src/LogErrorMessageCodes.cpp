@@ -32,7 +32,7 @@ void LogMessageProvider::InitializeLogMessageText() {
 	this->m_logMessageText[LogMessageCode::lmcWinSockManager_Connect] = "WinSockManager::Connect";
 	this->m_logMessageText[LogMessageCode::lmcMarketInfo_Logon] = "MarketInfo::Logon";
 	this->m_logMessageText[LogMessageCode::lmcRobot_LogonMarkets] = "Robot::LogonMarkets";
-	this->m_logMessageText[LogMessageCode::lmcMarketServerInfo_Logon] = "MarketServerInfo_Logon";
+	this->m_logMessageText[LogMessageCode::lmcMarketServerInfo_Logon] = "MarketServerInfo::Logon";
 	this->m_logMessageText[LogMessageCode::lmcFeedConnection_InitializeSockets] = "FeedConnection::InitializeSockets";
 	this->m_logMessageText[LogMessageCode::lmcRobot_SetFeedChannelsForMarkets] = "Robot::SetFeedChannelsForMarkets";
 	this->m_logMessageText[LogMessageCode::lmcFOND_market_not_found] = "FOND market not found.";
@@ -45,6 +45,9 @@ void LogMessageProvider::InitializeLogMessageText() {
 	this->m_logMessageText[LogMessageCode::lmcRobot_MarketsDoWork] = "Robot::MarketsDoWork";
 	this->m_logMessageText[LogMessageCode::lmcRobot_DoWork] = "Robot::DoWork";
 	this->m_logMessageText[LogMessageCode::lmcRobot_DoWorkCore] = "Robot::DoWorkCore";
+	this->m_logMessageText[LogMessageCode::lmcMarketServerInfo_DoWork] = "MarketServerInfo::DoWork";
+	this->m_logMessageText[LogMessageCode::lmcMarketServerInfo_Logout] = "MarketServerInfo::Logout";
+	this->m_logMessageText[LogMessageCode::lmcRobot_InitializeThreads] = "Robot::InitializeThreads";
 #pragma endregion
 }
 
