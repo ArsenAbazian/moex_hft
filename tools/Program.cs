@@ -393,12 +393,13 @@ namespace prebuild {
 
 		public static List<string> GetSourceFiles() {
 			List<string> sources = new List<string>();
-			string sourceDir = "../../source/";
-			if (!m_params.TryGetValue("s", out sourceDir))
+			string sourceDir = "";
+			if (!m_params.TryGetValue("s", out sourceDir)) {
+				sourceDir = "../../source/";
 				Console.WriteLine("Using default source directory: " + sourceDir);
+			}
 			GetSourceFiles(sourceDir, sources);
 			return sources;
-
 		}
 		public static void GetSourceFiles(string path, List<string> sources) {
 			IEnumerable<string> dirs = Directory.EnumerateDirectories(path);
@@ -416,15 +417,21 @@ namespace prebuild {
 		}
 
 		public static bool CopyFastServerConfigurationFile() { 
-			string fileName = "config_test.xml";
-			if (!m_params.TryGetValue("x", out fileName))
+			string fileName = "";
+			if (!m_params.TryGetValue("x", out fileName)) {
+				fileName = "config_test.xml";
 				Console.WriteLine("Using default XML config: " + fileName);
-			string inputPath = "../../test/data/";
-			if (!m_params.TryGetValue("d", out inputPath))
+			}
+			string inputPath = "";
+			if (!m_params.TryGetValue("d", out inputPath)) {
+				inputPath = "../../test/data/";
 				Console.WriteLine("Using default data directory: " + inputPath);
-			string outputPath = "/tmp/";
-			if (!m_params.TryGetValue("o", out outputPath))
+			}
+			string outputPath = "";
+			if (!m_params.TryGetValue("o", out outputPath)) {
+				outputPath = "/tmp/";
 				Console.WriteLine("Using default output directory: " + outputPath);
+			}
 			if (File.Exists (outputPath + fileName)) {
 				Console.WriteLine ("found FAST server configuration file in destination. remove.");
 				File.Delete (outputPath + fileName);
