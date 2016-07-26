@@ -1,8 +1,9 @@
 #include "SocketBufferManager.h"
 #include <memory.h>
 
-SocketBuffer::SocketBuffer(INextIndexProvider *provider, unsigned int bufferSize, unsigned int maxItemsCount) {
+SocketBuffer::SocketBuffer(INextIndexProvider *provider, unsigned int bufferSize, unsigned int maxItemsCount, unsigned int bufferIndex) {
 
+    this->m_bufferIndex = bufferIndex;
     this->m_indexProvider = provider;
     this->m_size = bufferSize;
     this->m_maxItemsCount = maxItemsCount;

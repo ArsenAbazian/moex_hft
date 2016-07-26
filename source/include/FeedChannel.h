@@ -36,5 +36,21 @@ public:
 	bool Logout(FeedConnection *conn);
 	bool Logon();
 	bool Logout();
+
+	inline bool DoWorkAtom() {
+		bool res = this->orderBookIncremental->DoWorkAtom();
+		res &= this->orderBookSnapshot->DoWorkAtom();
+		res &= this->statisticsIncremental->DoWorkAtom();
+		res &= this->statisticsSnapshot->DoWorkAtom();
+		res &= this->ordersIncremental->DoWorkAtom();
+		res &= this->ordersSnapshot->DoWorkAtom();
+		res &= this->tradesIncremental->DoWorkAtom();
+		res &= this->tradesSnapshot->DoWorkAtom();
+		res &= this->instrumentReplay->DoWorkAtom();
+		res &= this->instrumentStatus->DoWorkAtom();
+		res &= this->historicalReplay->DoWorkAtom();
+
+		return res;
+	}
 };
 

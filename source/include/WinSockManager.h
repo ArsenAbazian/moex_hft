@@ -13,7 +13,6 @@ typedef enum _WinSockConnectionType{
 	wsUDP
 }WinSockConnectionType;
 
-
 typedef enum _WinSockStatus {
     wssOk,
     wssFailed,
@@ -60,9 +59,6 @@ class WinSockManager {
     SocketBuffer                    *m_sendBuffer;
     SocketBuffer                    *m_recvBuffer;
 
-    PacketInfo                      m_freeSendPacket;
-    PacketInfo                      *m_sendPacket;
-
     bool                            m_connected;
 	int                             m_sendSize;
     int                             m_recvSize;
@@ -90,53 +86,30 @@ public:
         return this->m_sendBuffer->CurrentPos();
     }
 
-    inline void WorkSend() {
-        if (this->m_sendPacket == NULL)
-            return;
-        if (!SendCore(this->m_sendPacket->buffer, this->m_sendPacket->size))
-            this->m_sendStatus = WinSockStatus::wssFailed;
-        this->m_sendPacket = NULL;
-    }
-    inline void WorkRecv() {
-        if(this->m_recvStatus != WinSockStatus::wssWaitRecv)
-            return;
-        if(!RecvCore())
-            this->m_recvStatus = WinSockStatus::wssFailed;
-        else
-            this->m_recvStatus = WinSockStatus::wssOk;
-    }
-
-	inline bool SendCore(unsigned char *sendBytes, int frameLength) {
-		//DefaultLogManager::Default->Write(sendBytes, frameLength);
-		this->m_sendSize = send(this->m_socket, sendBytes, frameLength, 0);
+	inline bool SendFix(int size) {
+        BinaryLogItem *item = DefaultLogManager::Default->WriteFix(LogMessageCode::lmcWinSockManager_SendFix, this->m_sendBuffer->BufferIndex(), this->m_sendBuffer->CurrentItemIndex());
+        this->m_sendBytes = this->m_sendBuffer->CurrentPos();
+        this->m_sendSize = send(this->m_socket, this->m_sendBytes, size, 0);
 		if (this->m_sendSize < 0) {
-			if (TryFixSocketError(errno)) {
-				this->m_sendSize = send(this->m_socket, sendBytes, frameLength, 0);
-                if(this->m_sendSize < 0)
-                    return false;
-                this->m_sendBuffer->Next(this->m_sendSize);
-                return true;
-            }
-			return false;
+            item->m_result = false;
+            item->m_errno = errno;
+            return false;
 		}
+        item->m_result = true;
         this->m_sendBuffer->Next(this->m_sendSize);
 		return true;
-
 	}
 
-	inline bool RecvCore() {
+	inline bool RecvFix() {
+        BinaryLogItem *item = DefaultLogManager::Default->WriteFix(LogMessageCode::lmcWinSockManager_RecvFix, this->m_recvBuffer->BufferIndex(), this->m_recvBuffer->CurrentItemIndex());
         this->m_recvBytes = this->m_recvBuffer->CurrentPos();
         this->m_recvSize = recv(this->m_socket, this->m_recvBytes, 8192, 0);
-        if (this->m_recvSize == 0) { // connection was gracefullty closed - try to reconnect?
-            return Reconnect();
-        }
-        else if (this->m_recvSize < 0) {
-            if (TryFixSocketError(errno)) { // ok, we miss datagramm but at least fixed socket
-                this->m_recvSize = 0;
-                return true;
-            }
+        if (this->m_recvSize <= 0) {
+            item->m_errno = errno;
+            item->m_result = false;
             return false;
         }
+        item->m_result = true;
         this->m_recvBuffer->Next(this->m_recvSize);
         return true;
 	}

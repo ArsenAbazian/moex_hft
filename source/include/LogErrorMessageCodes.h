@@ -45,7 +45,14 @@ typedef enum _LogMessageCode {
 	lmcRobot_DoWorkCore = 35,
 	lmcMarketServerInfo_DoWork = 36,
 	lmcMarketServerInfo_Logout = 37,
-	lmcRobot_InitializeThreads = 38
+	lmcRobot_InitializeThreads = 38,
+	lmcWinSockManager_SendFix = 39,
+	lmcWinSockManager_RecvFix = 40,
+	lmcMarketServerInfo_SendLogon_Atom = 41,
+	lmcMarketServerInfo_RepeatSendLogon_Atom = 42,
+	lmcMarketServerInfo_RecvLogon_Atom = 43,
+	lmcMarketServerInfo_RepeatRecvLogon_Atom = 44,
+	lmcMarketServerInfo_RepeatRecvLogon_Atom = 45
 #pragma  endregion
 }LogMessageCode;
 

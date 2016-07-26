@@ -40,13 +40,14 @@ class Robot
         return NULL;
     }
 
-    bool LogonMarkets();
-    bool LogoutMarkets();
+    /*bool LogonMarkets();
+    bool LogoutMarkets();*/
     bool ConnectMarkets();
     bool DisconnectMarkets();
-    bool InitializeThreads();
     bool DoWork();
-    bool DoWorkCore();
+    inline bool DoWorkAtom() {
+        return true;
+    }
 
 public:
 	Robot();

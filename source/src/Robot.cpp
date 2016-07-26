@@ -41,7 +41,7 @@ bool Robot::DisconnectMarkets() {
 	return success;
 }
 
-bool Robot::LogonMarkets() {
+/*bool Robot::LogonMarkets() {
     DefaultLogManager::Default->StartLog(LogMessageCode::lmcRobot_LogonMarkets);
     bool success = true;
 	for (int i = 0; i < this->marketCount; i++) {
@@ -57,7 +57,7 @@ bool Robot::LogoutMarkets() {
 		success &= this->markets[i]->Logout();
 	}
 	return success;
-}
+}*/
 
 bool Robot::AddDefaultTestChannels() {
     DefaultLogManager::Default->StartLog(LogMessageCode::lmcRobot_AddDefaultTestChannels);
@@ -171,6 +171,7 @@ FeedConnection* Robot::CreateConnectionCore(const char *feedChannelId, const cha
     return new FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort);
 }
 
+/*
 bool Robot::InitializeThreads() {
     DefaultLogManager::Default->StartLog(LogMessageCode::lmcRobot_InitializeThreads);
 
@@ -189,6 +190,7 @@ bool Robot::InitializeThreads() {
     DefaultLogManager::Default->EndLog(true);
     return true;
 }
+*/
 
 bool Robot::Run() { 
     DefaultLogManager::Default->StartLog(LogMessageCode::lmcRobot_Run);
@@ -225,41 +227,35 @@ bool Robot::Run() {
 bool Robot::DoWork() {
     DefaultLogManager::Default->StartLog(LogMessageCode::lmcRobot_DoWork);
 
-    if(!this->InitializeThreads()) {
-        DefaultLogManager::Default->EndLog(false);
-        return false;
-    }
-
-    if(!this->LogonMarkets()) {
-        DefaultLogManager::Default->EndLog(false);
-        return false;
-    }
-
     /*
-    if(!this->DoWorkCore()) {
+    if(!this->InitializeThreads()) {
         DefaultLogManager::Default->EndLog(false);
         return false;
     }
     */
 
-    if(!this->LogoutMarkets()) {
-        DefaultLogManager::Default->EndLog(false);
-        return false;
+    while(true) {
+        if(getchar())
+            break;
+        if(!this->m_currMarket->DoWorkAtom()) {
+            DefaultLogManager::Default->EndLog(false);
+            DefaultLogManager::Default->Print();
+            return false;
+        }
+        if(!this->m_fondMarket->DoWorkAtom()) {
+            DefaultLogManager::Default->EndLog(false);
+            DefaultLogManager::Default->Print();
+            return false;
+        }
+        if(!this->DoWorkAtom()) {
+            DefaultLogManager::Default->EndLog(false);
+            DefaultLogManager::Default->Print();
+            return false;
+        }
     }
 
     DefaultLogManager::Default->Print();
-
     DefaultLogManager::Default->EndLog(true);
     return true;
 }
 
-bool Robot::DoWorkCore() {
-    DefaultLogManager::Default->StartLog(LogMessageCode::lmcRobot_DoWorkCore);
-
-    while(true) {
-        //printf("robot do work\n");
-    }
-
-    DefaultLogManager::Default->EndLog(true);
-    return true;
-}

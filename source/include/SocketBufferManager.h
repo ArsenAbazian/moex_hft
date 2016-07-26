@@ -10,6 +10,7 @@ public:
 class SocketBuffer {
     const int           AdditionalBufferMemory = 8192;
 
+    unsigned int         m_bufferIndex;
     unsigned char       *m_buffer;
 	unsigned char       *m_current;
     unsigned char       *m_end;
@@ -21,13 +22,15 @@ class SocketBuffer {
     unsigned int        *m_index;
     INextIndexProvider  *m_indexProvider;
 public:
-    SocketBuffer(INextIndexProvider *provider, unsigned int bufferSize, unsigned int maxItemsCount);
+    SocketBuffer(INextIndexProvider *provider, unsigned int bufferSize, unsigned int maxItemsCount, unsigned int bufferIndex);
     ~SocketBuffer();
 
+    inline unsigned int BufferIndex() { return this->m_bufferIndex; }
     inline unsigned char* Start() { return this->m_buffer; }
     inline unsigned char* CurrentPos() { return this->m_current; }
     inline unsigned int ItemsMaxCount() { return this->m_maxItemsCount; }
     inline unsigned int ItemsCount() { return this->m_itemsCount; }
+    inline unsigned int CurrentItemIndex() { return this->m_itemsCount; }
     inline unsigned int Size() { return this->m_size; }
     inline unsigned int ItemLength(int index) { return this->m_itemLength[index]; }
     inline unsigned char* Item(int index) { return this->m_items[index]; }
@@ -77,7 +80,7 @@ public:
     inline SocketBuffer* GetFreeBuffer(unsigned int size, unsigned int maxItemsCount) {
         if(this->m_itemsCount >= this->m_maxItemsCount)
             return NULL;
-        this->m_buffers[this->m_itemsCount] = new SocketBuffer(this, size, maxItemsCount);
+        this->m_buffers[this->m_itemsCount] = new SocketBuffer(this, size, maxItemsCount, this->m_itemsCount);
         this->m_itemsCount++;
         return this->m_buffers[this->m_itemsCount - 1];
     }

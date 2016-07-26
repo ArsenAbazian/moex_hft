@@ -48,6 +48,13 @@ void LogMessageProvider::InitializeLogMessageText() {
 	this->m_logMessageText[LogMessageCode::lmcMarketServerInfo_DoWork] = "MarketServerInfo::DoWork";
 	this->m_logMessageText[LogMessageCode::lmcMarketServerInfo_Logout] = "MarketServerInfo::Logout";
 	this->m_logMessageText[LogMessageCode::lmcRobot_InitializeThreads] = "Robot::InitializeThreads";
+	this->m_logMessageText[LogMessageCode::lmcWinSockManager_SendFix] = "WinSockManager::SendFix";
+	this->m_logMessageText[LogMessageCode::lmcWinSockManager_RecvFix] = "WinSockManager::RecvFix";
+	this->m_logMessageText[LogMessageCode::lmcMarketServerInfo_SendLogon_Atom] = "MarketServerInfo::SendLogon_Atom";
+	this->m_logMessageText[LogMessageCode::lmcMarketServerInfo_RepeatSendLogon_Atom] = "MarketServerInfo::RepeatSendLogon_Atom";
+	this->m_logMessageText[LogMessageCode::lmcMarketServerInfo_RecvLogon_Atom] = "MarketServerInfo::RecvLogon_Atom";
+	this->m_logMessageText[LogMessageCode::lmcMarketServerInfo_RepeatRecvLogon_Atom] = "MarketServerInfo::RepeatRecvLogon_Atom";
+	this->m_logMessageText[LogMessageCode::lmcMarketServerInfo_RepeatRecvLogon_Atom] = "MarketServerInfo::RepeatRecvLogon_Atom";
 #pragma endregion
 }
 

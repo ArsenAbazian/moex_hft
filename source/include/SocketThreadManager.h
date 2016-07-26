@@ -19,8 +19,9 @@ public:
         bzero(this->m_threads, sizeof(std::thread*) * 100);
         this->m_threadsCount = 0;
     }
-
+    /*
     void OnWorkSendSingle(WinSockManager *manager) {
+
         while(true) {
             manager->WorkSend();
         }
@@ -62,7 +63,7 @@ public:
         else
             this->m_threads[this->m_threadsCount] = new std::thread(&SocketThreadManager::OnWorkRecv, this, manager, managersCount);
         this->m_threadsCount++;
-    }
+    }*/
 };
 
 class DefaultSocketThreadManager {

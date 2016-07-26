@@ -8,36 +8,6 @@
 
 #define BINARY_LOG_MANAGER_ALLOW_PRINT
 
-class LogManager
-{
-public:
-    virtual void Write(const char* message) = 0;
-	virtual void Write(const char* message, const char* message2) = 0;
-	virtual void WriteFix(int messageIndex, int bufferIndex, int itemIndex) = 0;
-    virtual void WriteFast(int messageIndex, int bufferIndex, int itemIndex, int size) = 0;
-    virtual void WriteLine(const char* message) = 0;
-	virtual void WriteSuccess(bool condition) = 0;
-	virtual void WriteSuccess(const char* message, bool condition) = 0;
-	virtual void WriteSuccess(const char* message, const char* message2, bool condition) = 0;
-	virtual void StartLog(const char* message) = 0;
-	virtual void StartLog(const char* message, const char* message2) = 0;
-	virtual void EndLog(bool condition, const char *errorMessage) = 0;
-    virtual void EndLogErrNo(bool condition, int errno) = 0;
-    virtual void EndLogErrNo(bool condition, const char *errText) = 0;
-
-    virtual void Write(int messageCode) = 0;
-    virtual void Write(int messageCode, int messageCode2) = 0;
-    virtual void WriteLine(int messageCode) = 0;
-    virtual void WriteSuccess(int messageCode, bool condition) = 0;
-    virtual void WriteSuccess(int messageCode, int messageCode2, bool condition) = 0;
-    virtual void StartLog(int messageCode) = 0;
-    virtual void StartLog(int messageCode, int messageCode2) = 0;
-    virtual void EndLog(bool condition, int messageCode) = 0;
-
-    virtual void EndLog(bool condition) { EndLog(condition, (const char*)NULL); }
-    virtual void Print() = 0;
-};
-
 // Flags
 typedef  enum _BinaryLogItemType {
     NodeItem = 0,
@@ -64,6 +34,36 @@ typedef struct _BinaryLogItem {
         int m_endIndex;
     };
 }BinaryLogItem;
+
+class LogManager
+{
+public:
+    virtual void Write(const char* message) = 0;
+	virtual void Write(const char* message, const char* message2) = 0;
+	virtual BinaryLogItem* WriteFix(int messageIndex, int bufferIndex, int itemIndex) = 0;
+    virtual BinaryLogItem* WriteFast(int messageIndex, int bufferIndex, int itemIndex, int size) = 0;
+    virtual void WriteLine(const char* message) = 0;
+	virtual void WriteSuccess(bool condition) = 0;
+	virtual void WriteSuccess(const char* message, bool condition) = 0;
+	virtual void WriteSuccess(const char* message, const char* message2, bool condition) = 0;
+	virtual void StartLog(const char* message) = 0;
+	virtual void StartLog(const char* message, const char* message2) = 0;
+	virtual void EndLog(bool condition, const char *errorMessage) = 0;
+    virtual void EndLogErrNo(bool condition, int errno) = 0;
+    virtual void EndLogErrNo(bool condition, const char *errText) = 0;
+
+    virtual void Write(int messageCode) = 0;
+    virtual void Write(int messageCode, int messageCode2) = 0;
+    virtual void WriteLine(int messageCode) = 0;
+    virtual void WriteSuccess(int messageCode, bool condition) = 0;
+    virtual void WriteSuccess(int messageCode, int messageCode2, bool condition) = 0;
+    virtual void StartLog(int messageCode) = 0;
+    virtual void StartLog(int messageCode, int messageCode2) = 0;
+    virtual void EndLog(bool condition, int messageCode) = 0;
+
+    virtual void EndLog(bool condition) { EndLog(condition, (const char*)NULL); }
+    virtual void Print() = 0;
+};
 
 class BinaryLogManager : public LogManager {
     BinaryLogItem       *m_stack[256];
@@ -160,7 +160,7 @@ public:
 #endif
     }
 
-    void WriteFix(int messageCode, int bufferIndex, int itemIndex) {
+    inline BinaryLogItem* WriteFix(int messageCode, int bufferIndex, int itemIndex) {
         BinaryLogItem *item = this->Next();
 
         GetStartClock(item);
@@ -171,8 +171,9 @@ public:
 #ifdef BINARY_LOG_MANAGER_ALLOW_PRINT
         Print(item);
 #endif
+        return item;
     }
-    void WriteFast(int messageCode, int bufferIndex, int itemIndex, int size) {
+    inline BinaryLogItem* WriteFast(int messageCode, int bufferIndex, int itemIndex, int size) {
         BinaryLogItem *item = this->Next();
 
         GetStartClock(item);
@@ -184,6 +185,7 @@ public:
 #ifdef BINARY_LOG_MANAGER_ALLOW_PRINT
         Print(item);
 #endif
+        return item;
     }
 
     inline void WriteLine(int messageCode) {
@@ -421,8 +423,8 @@ public:
     void EndLog(bool condition, int errorCode) {
 		EndLog(condition, logMessageProvider->Message(errorCode));
     }
-    void WriteFix(int messageIndex, int bufferIndex, int itemIndex) { }
-    void WriteFast(int messageIndex, int bufferIndex, int itemIndex, int size) { }
+    BinaryLogItem* WriteFix(int messageIndex, int bufferIndex, int itemIndex) { return NULL; }
+    BinaryLogItem* WriteFast(int messageIndex, int bufferIndex, int itemIndex, int size) { return NULL; }
     void Print() { }
 };
 
@@ -437,8 +439,8 @@ class EmptylogManager : public LogManager {
 	void StartLog(const char* message, const char* message2) {}
 	void EndLog(bool condition, const char *errorMessage) {}
 
-    void WriteFix(int messageIndex, int bufferIndex, int itemIndex) { }
-    void WriteFast(int messageIndex, int bufferIndex, int itemIndex, int size) { }
+    BinaryLogItem* WriteFix(int messageIndex, int bufferIndex, int itemIndex) { return NULL; }
+    BinaryLogItem* WriteFast(int messageIndex, int bufferIndex, int itemIndex, int size) { return NULL; }
     void Write(int messageCode, int messageCode2) { }
     void Write(int messageCode) { }
     void WriteLine(int messageCode) { }

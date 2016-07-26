@@ -51,6 +51,13 @@ public:
 	inline MarketServerInfo* TradeCapture() { return this->m_tradeCapture; }
 	inline MarketServerInfo* TradeDropCopy() { return this->m_dropCopy; }
 
+	inline bool DoWorkAtom() {
+		bool res = this->m_feedChannel->DoWorkAtom();
+		res &= this->m_trade->DoWorkAtom();
+		res &= this->m_tradeCapture->DoWorkAtom();
+		res &= this->m_dropCopy->DoWorkAtom();
+		return res;
+	}
 };
 
 class FondMarketInfo : public MarketInfo {

@@ -84,6 +84,10 @@ public:
 	inline int MesssageSeqNumber() { return this->messageSeqNumber; }
 	inline int ExpectedMessageSeqNumber() { return this->messageSeqNumber + 1; }
 	FeedConnectionErrorCode Listen();
+
+	inline bool DoWorkAtom() {
+		return true;
+	}
 };
 
 class FeedConnection_CURR_OBR : public FeedConnection {

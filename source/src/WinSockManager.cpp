@@ -14,7 +14,6 @@ WinSockManager::WinSockManager(ISocketBufferProvider *provider) {
 	this->m_bufferProvider = provider;
 	this->m_recvBuffer = this->m_bufferProvider->RecvBuffer();
 	this->m_sendBuffer = this->m_bufferProvider->SendBuffer();
-    this->m_sendPacket = NULL;
     this->m_sendStatus = WinSockStatus::wssOk;
     this->m_recvStatus = WinSockStatus::wssOk;
     this->m_sendSize = 0;
