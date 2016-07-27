@@ -1,6 +1,6 @@
 #include "Robot.h"
 #include <tinyxml2.h>
-#include "SocketThreadManager.h"
+#include <cstdio>
 
 Robot::Robot() {
 	this->channelsCount = 0;
@@ -227,16 +227,7 @@ bool Robot::Run() {
 bool Robot::DoWork() {
     DefaultLogManager::Default->StartLog(LogMessageCode::lmcRobot_DoWork);
 
-    /*
-    if(!this->InitializeThreads()) {
-        DefaultLogManager::Default->EndLog(false);
-        return false;
-    }
-    */
-
     while(true) {
-        if(getchar())
-            break;
         if(!this->m_currMarket->DoWorkAtom()) {
             DefaultLogManager::Default->EndLog(false);
             DefaultLogManager::Default->Print();
@@ -252,6 +243,8 @@ bool Robot::DoWork() {
             DefaultLogManager::Default->Print();
             return false;
         }
+        if(!this->Working())
+            break;
     }
 
     DefaultLogManager::Default->Print();

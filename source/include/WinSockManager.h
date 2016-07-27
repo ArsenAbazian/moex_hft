@@ -101,14 +101,19 @@ public:
 	}
 
 	inline bool RecvFix() {
-        BinaryLogItem *item = DefaultLogManager::Default->WriteFix(LogMessageCode::lmcWinSockManager_RecvFix, this->m_recvBuffer->BufferIndex(), this->m_recvBuffer->CurrentItemIndex());
-        this->m_recvBytes = this->m_recvBuffer->CurrentPos();
+		BinaryLogItem *item = NULL;
+		this->m_recvBytes = this->m_recvBuffer->CurrentPos();
         this->m_recvSize = recv(this->m_socket, this->m_recvBytes, 8192, 0);
-        if (this->m_recvSize <= 0) {
-            item->m_errno = errno;
+        if (this->m_recvSize < 0) {
+			item = DefaultLogManager::Default->WriteFix(LogMessageCode::lmcWinSockManager_RecvFix, -1, -1);
+			item->m_errno = errno;
             item->m_result = false;
             return false;
         }
+		else if(this->m_recvSize == 0) {
+			return false; // do nothing
+		}
+		item = DefaultLogManager::Default->WriteFix(LogMessageCode::lmcWinSockManager_RecvFix, this->m_recvBuffer->BufferIndex(), this->m_recvBuffer->CurrentItemIndex());
         item->m_result = true;
         this->m_recvBuffer->Next(this->m_recvSize);
         return true;

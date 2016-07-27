@@ -109,24 +109,3 @@ bool MarketInfo::Disconnect() {
 	DefaultLogManager::Default->EndLog(true);
 	return true;
 }
-
-bool MarketInfo::Logon() { 
-	bool success = true;
-
-    DefaultLogManager::Default->StartLog(this->m_nameLogIndex, LogMessageCode::lmcMarketInfo_Logon);
-
-    success &= this->m_trade->Logon();
-	success &= this->m_tradeCapture->Logon();
-	success &= this->m_dropCopy->Logon();
-
-    DefaultLogManager::Default->EndLog(success);
-	return success;
-}
-
-bool MarketInfo::Logout() { 
-	bool success = true;
-	success &= this->m_trade->Logout();
-	success &= this->m_tradeCapture->Logout();
-	success &= this->m_dropCopy->Logout();
-	return success;
-}

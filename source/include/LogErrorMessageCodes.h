@@ -51,8 +51,11 @@ typedef enum _LogMessageCode {
 	lmcMarketServerInfo_SendLogon_Atom = 41,
 	lmcMarketServerInfo_RepeatSendLogon_Atom = 42,
 	lmcMarketServerInfo_RecvLogon_Atom = 43,
-	lmcMarketServerInfo_RepeatRecvLogon_Atom = 44,
-	lmcMarketServerInfo_RepeatRecvLogon_Atom = 45
+	lmcMarketServerInfo_WaitRecvLogon_Atom = 44,
+	lmcMarketServerInfo_SendLogout_Atom = 45,
+	lmcMarketServerInfo_RepeatSendLogout_Atom = 46,
+	lmcMarketServerInfo_RecvLogout_Atom = 47,
+	lmcMarketServerInfo_WaitRecvLogout_Atom = 48
 #pragma  endregion
 }LogMessageCode;
 

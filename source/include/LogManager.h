@@ -89,16 +89,15 @@ class BinaryLogManager : public LogManager {
     inline BinaryLogItem* TopStack() { return this->m_stack[this->m_stackTop]; }
 
     inline void Push(BinaryLogItem *item) {
-        if(this->m_stackTop > -1)
-            TopStack()->m_type = BinaryLogItemType::NodeStart;
         this->m_stackTop++;
         this->m_stack[this->m_stackTop] = item;
     }
 
     inline BinaryLogItem* Pop() {
         BinaryLogItem *top = this->TopStack();
-        if(top->m_type == BinaryLogItemType::NodeStart) {
+        if(top->m_index != this->m_itemIndex) {
             BinaryLogItem *end = Next();
+            top->m_type = BinaryLogItemType::NodeStart;
             end->m_type = BinaryLogItemType::NodeEnd;
             end->m_startIndex = top->m_index;
             top->m_endIndex = end->m_index;

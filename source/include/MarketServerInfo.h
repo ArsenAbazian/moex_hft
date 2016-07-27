@@ -11,7 +11,13 @@ typedef enum _MarketServerState {
 	mssSendLogon,
 	mssSendLogonRepeat,
 	mssRecvLogon,
-	mssRecvLogonRepeat,
+	mssRecvLogonWait,
+	mssSendLogout,
+	mssSendLogoutRepeat,
+	mssRecvLogout,
+	mssRecvLogoutWait,
+    mssEnd,
+	mssDoNothing,
 	mssPanic
 }MarketServerState;
 
@@ -41,9 +47,15 @@ class MarketServerInfo {
 	bool SendLogon_Atom();
 	bool RepeatSendLogon_Atom();
 	bool RecvLogon_Atom();
-	bool RepeatRecvLogon_Atom();
+	bool WaitRecvLogon_Atom();
 	bool Logout_Atom();
 	bool Panic_Atom();
+    bool DoNothing_Atom();
+	bool End_Atom();
+	bool SendLogout_Atom();
+	bool RepeatSendLogout_Atom();
+	bool RecvLogout_Atom();
+	bool WaitRecvLogout_Atom();
 public:
 	MarketServerInfo(const char *name, const char *internetAddress, int internetPort, const char *senderComputerId, const char *password, const char *targetComputerId, const char *astsServerName);
 	~MarketServerInfo();
@@ -61,6 +73,7 @@ public:
 
 	inline WinSockManager* SocketManager() { return this->m_socketManager; }
 	inline FixProtocolManager* FixManager() { return this->m_fixManager; }
+    inline MarketServerState State() { return this->m_state; }
 
 	bool Connect();
 	bool Disconnect();
@@ -77,6 +90,8 @@ public:
 #endif
 		return (this->*m_workAtomPtr)();
 	}
+
+	inline bool Working() { return this->m_state != MarketServerState::mssEnd; }
 };
 
 class TradeMarketServerInfo : public MarketServerInfo {

@@ -48,6 +48,9 @@ class Robot
     inline bool DoWorkAtom() {
         return true;
     }
+    inline bool Working() {
+        return this->m_currMarket->Working() || this->m_fondMarket->Working();
+    }
 
 public:
 	Robot();

@@ -1,3 +1,4 @@
+#include <SocketBufferManager.h>
 #include "LogManager.h"
 
 void BinaryLogManager::Print() {
@@ -19,14 +20,17 @@ void BinaryLogManager::Print(BinaryLogItem *item) {
         printf("%s", DefaultLogMessageProvider::Default->Message(item->m_message));
     if(item->m_message2 != -1)
         printf("->%s", DefaultLogMessageProvider::Default->Message(item->m_message2));
-    /*
+
     if(item->m_type == BinaryLogItemType::NodeFix) {
-        printf("%s", DefaultLogMessageProvider::Default->)
+        if(item->m_bufferIndex == -1)
+            printf(" null\n");
+        else
+            printf(" '%s'\n", DefaultSocketBufferManager::Default->Buffer(item->m_bufferIndex)->Item(item->m_itemIndex));
     }
     else if(item->m_type == BinaryLogItemType::NodeFast) {
 
     }
-    else */if(item->m_type != BinaryLogItemType::NodeStart) {
+    else if(item->m_type != BinaryLogItemType::NodeStart) {
         printf(" - %s. ", item->m_result? DefaultLogMessageProvider::Default->Message(LogMessageCode::lmcSuccess):
                       DefaultLogMessageProvider::Default->Message(LogMessageCode::lmcFailed));
         if(item->m_errno != 0)

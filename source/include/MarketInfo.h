@@ -44,13 +44,14 @@ public:
 
 	bool Connect();
 	bool Disconnect();
-	bool Logon();
-	bool Logout();
 
 	inline MarketServerInfo* Trade() { return this->m_trade; }
 	inline MarketServerInfo* TradeCapture() { return this->m_tradeCapture; }
 	inline MarketServerInfo* TradeDropCopy() { return this->m_dropCopy; }
 
+	inline bool Working() {
+		return this->m_trade->Working() || this->m_tradeCapture->Working() || this->m_dropCopy->Working();
+	}
 	inline bool DoWorkAtom() {
 		bool res = this->m_feedChannel->DoWorkAtom();
 		res &= this->m_trade->DoWorkAtom();

@@ -83,9 +83,10 @@ bool MarketServerInfo::RepeatSendLogon_Atom() {
 
 bool MarketServerInfo::RecvLogon_Atom() {
     DefaultLogManager::Default->StartLog(this->m_nameLogIndex, LogMessageCode::lmcMarketServerInfo_RecvLogon_Atom);
-    if(!this->m_socketManager->RecvBytes()) {
+    this->m_stopwatch->Start();
+    if(!this->m_socketManager->RecvFix()) {
         if(this->m_socketManager->RecvSize() == 0) {
-            this->SetState(MarketServerState::mssRecvLogonRepeat, &MarketServerInfo::RepeatRecvLogon_Atom);
+            this->SetState(MarketServerState::mssRecvLogonWait, &MarketServerInfo::WaitRecvLogon_Atom);
             DefaultLogManager::Default->EndLog(false);
             return true;
         }
@@ -95,25 +96,118 @@ bool MarketServerInfo::RecvLogon_Atom() {
             return true;
         }
     }
+    this->m_fixManager->IncMessageSequenceNumber();
+    DefaultLogManager::Default->EndLog(true);
+    this->SetState(MarketServerState::mssSendLogout, &MarketServerInfo::SendLogout_Atom);
+    return true;
+}
 
+bool MarketServerInfo::WaitRecvLogon_Atom() {
+    if(!this->m_socketManager->RecvFix()) {
+        if(this->m_stopwatch->ElapsedSeconds() > 10) {
+            this->SetState(MarketServerState::mssSendLogon, &MarketServerInfo::SendLogon_Atom);
+            DefaultLogManager::Default->StartLog(this->m_nameLogIndex, LogMessageCode::lmcMarketServerInfo_WaitRecvLogon_Atom);
+            DefaultLogManager::Default->EndLog(false);
+            return true;
+        }
+        if(this->m_socketManager->RecvSize() == 0) {
+            return true;
+        }
+        else {
+            DefaultLogManager::Default->StartLog(this->m_nameLogIndex, LogMessageCode::lmcMarketServerInfo_WaitRecvLogon_Atom);
+            DefaultLogManager::Default->EndLog(false);
+            this->SetState(MarketServerState::mssPanic, &MarketServerInfo::Panic_Atom);
+            return true;
+        }
+    }
+    DefaultLogManager::Default->StartLog(this->m_nameLogIndex, LogMessageCode::lmcMarketServerInfo_WaitRecvLogon_Atom);
+    DefaultLogManager::Default->EndLog(true);
+    this->m_fixManager->IncMessageSequenceNumber();
+    this->SetState(MarketServerState::mssSendLogout, &MarketServerInfo::SendLogout_Atom);
+    return true;
+}
+
+bool MarketServerInfo::SendLogout_Atom() {
+
+    DefaultLogManager::Default->StartLog(this->m_nameLogIndex, LogMessageCode::lmcMarketServerInfo_SendLogout_Atom);
+
+    this->m_fixManager->SetMessageBuffer((char*)this->m_socketManager->GetNextSendBuffer());
+    this->m_fixManager->CreateLogoutMessage("Hasta la vista baby!");
+    if(!this->m_socketManager->SendFix(this->m_fixManager->MessageLength())) {
+        this->SetState(MarketServerState::mssSendLogoutRepeat, &MarketServerInfo::RepeatSendLogout_Atom);
+        DefaultLogManager::Default->EndLog(false);
+        return true;
+    }
+    this->m_fixManager->IncMessageSequenceNumber();
+    this->SetState(MarketServerState::mssRecvLogout, &MarketServerInfo::RecvLogout_Atom);
     DefaultLogManager::Default->EndLog(true);
     return true;
 }
 
-bool MarketServerInfo::RepeatRecvLogon_Atom() {
-    if(!this->m_socketManager->RecvBytes()) {
+bool MarketServerInfo::RepeatSendLogout_Atom() {
+    DefaultLogManager::Default->StartLog(this->m_nameLogIndex, LogMessageCode::lmcMarketServerInfo_RepeatSendLogout_Atom);
+    if(!this->m_socketManager->SendFix(this->m_fixManager->MessageLength())) {
+        DefaultLogManager::Default->EndLog(false);
+        return true;
+    }
+    this->m_fixManager->IncMessageSequenceNumber();
+    this->SetState(MarketServerState::mssRecvLogout, &MarketServerInfo::RecvLogout_Atom);
+    DefaultLogManager::Default->EndLog(true);
+    return true;
+}
+
+bool MarketServerInfo::RecvLogout_Atom() {
+    DefaultLogManager::Default->StartLog(this->m_nameLogIndex, LogMessageCode::lmcMarketServerInfo_RecvLogout_Atom);
+    this->m_stopwatch->Start();
+    if(!this->m_socketManager->RecvFix()) {
+        if(this->m_socketManager->RecvSize() == 0) {
+            this->SetState(MarketServerState::mssRecvLogoutWait, &MarketServerInfo::WaitRecvLogout_Atom);
+            DefaultLogManager::Default->EndLog(false);
+            return true;
+        }
+        else {
+            this->SetState(MarketServerState::mssPanic, &MarketServerInfo::Panic_Atom);
+            DefaultLogManager::Default->EndLog(false);
+            return true;
+        }
+    }
+    this->m_fixManager->IncMessageSequenceNumber();
+    DefaultLogManager::Default->EndLog(true);
+    this->SetState(MarketServerState::mssEnd, &MarketServerInfo::End_Atom);
+    return true;
+}
+
+bool MarketServerInfo::WaitRecvLogout_Atom() {
+    if(!this->m_socketManager->RecvFix()) {
+        if(this->m_stopwatch->ElapsedSeconds() > 10) {
+            DefaultLogManager::Default->StartLog(this->m_nameLogIndex, LogMessageCode::lmcMarketServerInfo_WaitRecvLogout_Atom);
+            DefaultLogManager::Default->EndLog(false);
+            this->SetState(MarketServerState::mssEnd, &MarketServerInfo::End_Atom);
+            return true;
+        }
         if(this->m_socketManager->RecvSize() == 0) {
             return true;
         }
         else {
-            DefaultLogManager::Default->StartLog(this->m_nameLogIndex, LogMessageCode::lmcMarketServerInfo_RepeatRecvLogon_Atom);
+            DefaultLogManager::Default->StartLog(this->m_nameLogIndex, LogMessageCode::lmcMarketServerInfo_WaitRecvLogout_Atom);
             DefaultLogManager::Default->EndLog(false);
             this->SetState(MarketServerState::mssPanic, &MarketServerInfo::Panic_Atom);
             return true;
         }
     }
-    DefaultLogManager::Default->StartLog(this->m_nameLogIndex, LogMessageCode::lmcMarketServerInfo_RepeatRecvLogon_Atom);
+    DefaultLogManager::Default->StartLog(this->m_nameLogIndex, LogMessageCode::lmcMarketServerInfo_WaitRecvLogout_Atom);
     DefaultLogManager::Default->EndLog(true);
+    this->m_fixManager->IncMessageSequenceNumber();
+    this->SetState(MarketServerState::mssEnd, &MarketServerInfo::End_Atom);
+    return true;
+}
+
+bool MarketServerInfo::End_Atom() {
+    return true;
+}
+
+bool MarketServerInfo::DoNothing_Atom() {
+    printf("%s - do nothing\n", this->m_name);
     return true;
 }
 
@@ -202,8 +296,4 @@ bool MarketServerInfo::Disconnect() {
 
 MarketServerInfo::~MarketServerInfo() {
 	Clear();
-}
-
-bool MarketServerInfo::DoWorkAtom_Start() {
-
 }
