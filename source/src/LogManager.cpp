@@ -13,36 +13,45 @@ void BinaryLogManager::Print() {
 }
 
 void BinaryLogManager::Print(BinaryLogItem *item) {
-    if(item->m_type == BinaryLogItemType::NodeEnd)
-        return;
     printf("%s", this->m_tabs);
-    if(item->m_message != -1)
-        printf("%s", DefaultLogMessageProvider::Default->Message(item->m_message));
-    if(item->m_message2 != -1)
-        printf("->%s", DefaultLogMessageProvider::Default->Message(item->m_message2));
+
+    if(item->m_type == BinaryLogItemType::NodeEnd && item->m_startIndex != -1) {
+        BinaryLogItem *start = &(this->m_items[item->m_startIndex]);
+        if(start->m_message != -1)
+            printf("'%s'", DefaultLogMessageProvider::Default->Message(start->m_message));
+        if(start->m_message2 != -1)
+            printf(" -> %s", DefaultLogMessageProvider::Default->Message(start->m_message2));
+    }
+    else {
+        if(item->m_message != -1)
+            printf("'%s'", DefaultLogMessageProvider::Default->Message(item->m_message));
+        if(item->m_message2 != -1)
+            printf(" -> %s", DefaultLogMessageProvider::Default->Message(item->m_message2));
+    }
 
     if(item->m_type == BinaryLogItemType::NodeFix) {
         if(item->m_bufferIndex == -1)
-            printf(" null\n");
+            printf(" null");
         else
-            printf(" '%s'\n", DefaultSocketBufferManager::Default->Buffer(item->m_bufferIndex)->Item(item->m_itemIndex));
+            printf(" '%s'", DefaultSocketBufferManager::Default->Buffer(item->m_bufferIndex)->Item(item->m_itemIndex));
     }
     else if(item->m_type == BinaryLogItemType::NodeFast) {
 
     }
     else if(item->m_type != BinaryLogItemType::NodeStart) {
         printf(" - %s. ", item->m_result? DefaultLogMessageProvider::Default->Message(LogMessageCode::lmcSuccess):
-                      DefaultLogMessageProvider::Default->Message(LogMessageCode::lmcFailed));
+        DefaultLogMessageProvider::Default->Message(LogMessageCode::lmcFailed));
         if(item->m_errno != 0)
             printf("(%s)", strerror(item->m_errno));
     }
-    else if(item->m_type == BinaryLogItemType::NodeStart) {
+    else if(item->m_type == BinaryLogItemType::NodeStart && item->m_endIndex != -1) {
         BinaryLogItem *end = &(this->m_items[item->m_endIndex]);
         printf(" - %s. ", end->m_result? DefaultLogMessageProvider::Default->Message(LogMessageCode::lmcSuccess):
                           DefaultLogMessageProvider::Default->Message(LogMessageCode::lmcFailed));
         if(end->m_errno != 0)
             printf("(%s)", strerror(item->m_errno));
     }
+
     printf("\n");
 }
 

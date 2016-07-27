@@ -91,11 +91,13 @@ class BinaryLogManager : public LogManager {
     inline void Push(BinaryLogItem *item) {
         this->m_stackTop++;
         this->m_stack[this->m_stackTop] = item;
+#ifdef BINARY_LOG_MANAGER_ALLOW_PRINT
+#endif
     }
 
     inline BinaryLogItem* Pop() {
         BinaryLogItem *top = this->TopStack();
-        if(top->m_index != this->m_itemIndex) {
+        if(top->m_index != (this->m_itemIndex - 1)) {
             BinaryLogItem *end = Next();
             top->m_type = BinaryLogItemType::NodeStart;
             end->m_type = BinaryLogItemType::NodeEnd;
@@ -104,6 +106,8 @@ class BinaryLogManager : public LogManager {
             top = end;
         }
         this->m_stackTop--;
+#ifdef BINARY_LOG_MANAGER_ALLOW_PRINT
+#endif
         return top;
     }
 
@@ -131,6 +135,8 @@ public:
             this->m_items[i].m_message2 = -1;
             this->m_items[i].m_message = -1;
             this->m_items[i].m_bytesCount = 0;
+            this->m_items[i].m_startIndex = -1;
+            this->m_items[i].m_endIndex = -1;
         }
         this->m_itemIndex = 0;
         this->m_stackTop = -1;
@@ -221,6 +227,12 @@ public:
         item->m_message = messageCode;
 
         this->Push(item);
+#ifdef BINARY_LOG_MANAGER_ALLOW_PRINT
+        if(item->m_type == BinaryLogItemType::NodeEnd)
+            item = &(this->m_items[item->m_startIndex]);
+        Print(item);
+        AddTab();
+#endif
     }
     inline void StartLog(int messageCode, int messageCode2) {
         BinaryLogItem *item = this->Next();
@@ -230,6 +242,12 @@ public:
         item->m_message2 = messageCode2;
 
         this->Push(item);
+#ifdef BINARY_LOG_MANAGER_ALLOW_PRINT
+        if(item->m_type == BinaryLogItemType::NodeEnd)
+            item = &(this->m_items[item->m_startIndex]);
+        Print(item);
+        AddTab();
+#endif
     }
 
     inline void EndLog(bool condition) {
@@ -237,8 +255,7 @@ public:
         GetEndClock(item);
         item->m_result = condition;
 #ifdef BINARY_LOG_MANAGER_ALLOW_PRINT
-        if(item->m_type == BinaryLogItemType::NodeEnd)
-            item = &(this->m_items[item->m_startIndex]);
+        RemoveTab();
         Print(item);
 #endif
     }
@@ -249,8 +266,7 @@ public:
         item->m_result = condition;
         item->m_message = messageCode;
 #ifdef BINARY_LOG_MANAGER_ALLOW_PRINT
-        if(item->m_type == BinaryLogItemType::NodeEnd)
-            item = &(this->m_items[item->m_startIndex]);
+        RemoveTab();
         Print(item);
 #endif
     }
@@ -260,8 +276,7 @@ public:
         item->m_result = condition;
         item->m_errno = errno;
 #ifdef BINARY_LOG_MANAGER_ALLOW_PRINT
-        if(item->m_type == BinaryLogItemType::NodeEnd)
-            item = &(this->m_items[item->m_startIndex]);
+        RemoveTab();
         Print(item);
 #endif
     }
@@ -271,8 +286,7 @@ public:
         item->m_result = condition;
         item->m_errno = DefaultLogMessageProvider::Default->RegisterText(errText);
 #ifdef BINARY_LOG_MANAGER_ALLOW_PRINT
-        if(item->m_type == BinaryLogItemType::NodeEnd)
-            item = &(this->m_items[item->m_startIndex]);
+        RemoveTab();
         Print(item);
 #endif
     }

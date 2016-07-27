@@ -17,20 +17,11 @@
     </ADDITIONAL_GENERATION_ENVIRONMENT>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="32604c03-98a8-42cf-80f6-771ec2ce84cc" name="Default" comment="just simple socket connector for testing purposes (FAST and FIX later)">
+    <list default="true" id="32604c03-98a8-42cf-80f6-771ec2ce84cc" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/LogErrorMessageCodes.h" afterPath="$PROJECT_DIR$/source/include/LogErrorMessageCodes.h" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/LogManager.h" afterPath="$PROJECT_DIR$/source/include/LogManager.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/MarketInfo.h" afterPath="$PROJECT_DIR$/source/include/MarketInfo.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/MarketServerInfo.h" afterPath="$PROJECT_DIR$/source/include/MarketServerInfo.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/Robot.h" afterPath="$PROJECT_DIR$/source/include/Robot.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/SocketBufferManager.h" afterPath="$PROJECT_DIR$/source/include/SocketBufferManager.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/WinSockManager.h" afterPath="$PROJECT_DIR$/source/include/WinSockManager.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/src/LogErrorMessageCodes.cpp" afterPath="$PROJECT_DIR$/source/src/LogErrorMessageCodes.cpp" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/src/LogManager.cpp" afterPath="$PROJECT_DIR$/source/src/LogManager.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/src/MarketInfo.cpp" afterPath="$PROJECT_DIR$/source/src/MarketInfo.cpp" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/src/MarketServerInfo.cpp" afterPath="$PROJECT_DIR$/source/src/MarketServerInfo.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/src/Robot.cpp" afterPath="$PROJECT_DIR$/source/src/Robot.cpp" />
     </list>
     <ignored path="hft_robot.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -53,8 +44,8 @@
       <file leaf-file-name="MarketServerInfo.cpp" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/source/src/MarketServerInfo.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="171">
-              <caret line="86" column="36" selection-start-line="86" selection-start-column="36" selection-end-line="86" selection-end-column="36" />
+            <state relative-caret-position="324">
+              <caret line="67" column="36" selection-start-line="67" selection-start-column="36" selection-end-line="67" selection-end-column="36" />
               <folding>
                 <element signature="e#0#29#0" expanded="true" />
               </folding>
@@ -62,11 +53,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="LogManager.cpp" pinned="false" current-in-tab="false">
+      <file leaf-file-name="LogManager.cpp" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/source/src/LogManager.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="385">
-              <caret line="25" column="21" selection-start-line="25" selection-start-column="21" selection-end-line="25" selection-end-column="21" />
+            <state relative-caret-position="171">
+              <caret line="32" column="37" selection-start-line="32" selection-start-column="37" selection-end-line="32" selection-end-column="37" />
               <folding>
                 <element signature="e#0#32#0" expanded="true" />
               </folding>
@@ -128,7 +119,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="WinSockManager.h" pinned="false" current-in-tab="true">
+      <file leaf-file-name="WinSockManager.h" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/source/include/WinSockManager.h">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="0">
@@ -143,8 +134,8 @@
       <file leaf-file-name="LogManager.h" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/source/include/LogManager.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="48">
-              <caret line="99" column="44" selection-start-line="99" selection-start-column="44" selection-end-line="99" selection-end-column="44" />
+            <state relative-caret-position="199">
+              <caret line="258" column="0" selection-start-line="258" selection-start-column="0" selection-end-line="258" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -153,8 +144,8 @@
       <file leaf-file-name="Robot.h" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/source/include/Robot.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="256">
-              <caret line="51" column="75" selection-start-line="51" selection-start-column="75" selection-end-line="51" selection-end-column="75" />
+            <state relative-caret-position="273">
+              <caret line="81" column="38" selection-start-line="81" selection-start-column="38" selection-end-line="81" selection-end-column="38" />
               <folding />
             </state>
           </provider>
@@ -209,16 +200,16 @@
         <option value="$PROJECT_DIR$/source/src/MarketInfo.cpp" />
         <option value="$PROJECT_DIR$/source/include/SocketBufferManager.h" />
         <option value="$PROJECT_DIR$/source/src/SocketBufferManager.cpp" />
-        <option value="$PROJECT_DIR$/source/src/LogManager.cpp" />
         <option value="$PROJECT_DIR$/source/include/LogErrorMessageCodes.h" />
         <option value="$PROJECT_DIR$/source/src/LogErrorMessageCodes.cpp" />
         <option value="$PROJECT_DIR$/source/include/Robot.h" />
         <option value="$PROJECT_DIR$/source/include/MarketInfo.h" />
         <option value="$PROJECT_DIR$/source/include/MarketServerInfo.h" />
         <option value="$PROJECT_DIR$/source/src/Robot.cpp" />
+        <option value="$PROJECT_DIR$/source/include/WinSockManager.h" />
         <option value="$PROJECT_DIR$/source/src/MarketServerInfo.cpp" />
         <option value="$PROJECT_DIR$/source/include/LogManager.h" />
-        <option value="$PROJECT_DIR$/source/include/WinSockManager.h" />
+        <option value="$PROJECT_DIR$/source/src/LogManager.cpp" />
       </list>
     </option>
   </component>
@@ -590,7 +581,7 @@
       <workItem from="1469437646242" duration="18953000" />
       <workItem from="1469480470940" duration="6227000" />
       <workItem from="1469534610835" duration="9727000" />
-      <workItem from="1469604888606" duration="12585000" />
+      <workItem from="1469604888606" duration="15471000" />
     </task>
     <task id="LOCAL-00001" summary="move params to structures">
       <created>1468443448895</created>
@@ -711,11 +702,18 @@
       <option name="project" value="LOCAL" />
       <updated>1469186274598</updated>
     </task>
-    <option name="localTasksCounter" value="18" />
+    <task id="LOCAL-00018" summary="first send/receive login/logout">
+      <created>1469632801456</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1469632801456</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="177338000" />
+    <option name="totallyTimeSpent" value="180224000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -728,19 +726,19 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="65" y="24" width="1855" height="951" extended-state="6" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24945416" sideWeight="0.493007" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32942554" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.88745606" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.22626026" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="CMake" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.13716295" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2813599" sideWeight="0.5021834" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3845252" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.40445486" sideWeight="0.4978166" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.7854631" sideWeight="0.4978166" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32942554" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.235262" sideWeight="0.506993" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3270809" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.5169988" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -796,7 +794,8 @@
     <MESSAGE value="force checkin current files for copying virtual machine to another note.&#10;project will have compilation errors :( sorry" />
     <MESSAGE value="still not compilable..." />
     <MESSAGE value="finally compilable" />
-    <option name="LAST_COMMIT_MESSAGE" value="finally compilable" />
+    <MESSAGE value="first send/receive login/logout" />
+    <option name="LAST_COMMIT_MESSAGE" value="first send/receive login/logout" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -810,7 +809,7 @@
       <breakpoints-dialog>
         <breakpoints-dialog />
       </breakpoints-dialog>
-      <option name="time" value="139" />
+      <option name="time" value="146" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -1130,14 +1129,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/source/include/Robot.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="256">
-          <caret line="51" column="75" selection-start-line="51" selection-start-column="75" selection-end-line="51" selection-end-column="75" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/source/include/MarketInfo.h">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="288">
@@ -1166,40 +1157,48 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/source/src/LogManager.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="385">
-          <caret line="25" column="21" selection-start-line="25" selection-start-column="21" selection-end-line="25" selection-end-column="21" />
-          <folding>
-            <element signature="e#0#32#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/source/include/LogManager.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="48">
-          <caret line="99" column="44" selection-start-line="99" selection-start-column="44" selection-end-line="99" selection-end-column="44" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/source/src/MarketServerInfo.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="171">
-          <caret line="86" column="36" selection-start-line="86" selection-start-column="36" selection-end-line="86" selection-end-column="36" />
-          <folding>
-            <element signature="e#0#29#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/source/include/WinSockManager.h">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="e#13#31#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/src/MarketServerInfo.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="324">
+          <caret line="67" column="36" selection-start-line="67" selection-start-column="36" selection-end-line="67" selection-end-column="36" />
+          <folding>
+            <element signature="e#0#29#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/include/Robot.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="273">
+          <caret line="81" column="38" selection-start-line="81" selection-start-column="38" selection-end-line="81" selection-end-column="38" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/include/LogManager.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="199">
+          <caret line="258" column="0" selection-start-line="258" selection-start-column="0" selection-end-line="258" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/src/LogManager.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="171">
+          <caret line="32" column="37" selection-start-line="32" selection-start-column="37" selection-end-line="32" selection-end-column="37" />
+          <folding>
+            <element signature="e#0#32#0" expanded="true" />
           </folding>
         </state>
       </provider>

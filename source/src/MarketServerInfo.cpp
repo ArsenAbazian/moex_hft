@@ -66,6 +66,7 @@ bool MarketServerInfo::SendLogon_Atom() {
     this->m_fixManager->IncMessageSequenceNumber();
     this->SetState(MarketServerState::mssRecvLogon, &MarketServerInfo::RecvLogon_Atom);
     DefaultLogManager::Default->EndLog(true);
+
     return true;
 }
 
