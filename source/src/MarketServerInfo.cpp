@@ -99,7 +99,24 @@ bool MarketServerInfo::RecvLogon_Atom() {
         }
     }
     this->m_fixManager->SetMessageBuffer((char*)this->m_socketManager->RecvBytes());
-    this->m_fixManager->ProcessCheckHeader(); //TODO DODODOD
+    if(!this->m_fixManager->ProcessCheckHeader()) {
+        this->SetState(MarketServerState::mssPanic, &MarketServerInfo::Panic_Atom);
+        DefaultLogManager::Default->EndLog(false);
+        return true;
+    }
+    if(this->m_fixManager->HeaderInfo()->msgType == MsgTypeLogout) {
+        if(this->m_fixManager->CheckDetectCorrectMsgSeqNumber()) {
+            this->m_logonInfo->MsgStartSeqNo = this->m_fixManager->MessageSequenceNumber();
+            this->SetState(MarketServerState::mssSendLogon, &MarketServerInfo::SendLogon_Atom);
+            DefaultLogManager::Default->EndLog(false);
+            return true;
+        }
+        else {
+            this->SetState(MarketServerState::mssPanic, &MarketServerInfo::Panic_Atom);
+            DefaultLogManager::Default->EndLog(false);
+            return true;
+        }
+    }
 
     this->UnlockServer();
     this->m_fixManager->IncMessageSequenceNumber();
@@ -213,12 +230,10 @@ bool MarketServerInfo::WaitRecvLogout_Atom() {
 }
 
 bool MarketServerInfo::End_Atom() {
-    printf("%s - end\n", this->m_name);
     return true;
 }
 
 bool MarketServerInfo::DoNothing_Atom() {
-    printf("%s - do nothing\n", this->m_name);
     return true;
 }
 

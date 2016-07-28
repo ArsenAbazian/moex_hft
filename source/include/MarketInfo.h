@@ -60,9 +60,9 @@ public:
 		//if(!this->m_dropCopy->ServerLocked() && !this->m_tradeCapture->ServerLocked())
             res &= this->m_trade->DoWorkAtom();
 		//if(!this->m_trade->ServerLocked() && !this->m_dropCopy->ServerLocked())
-        //    res &= this->m_tradeCapture->DoWorkAtom();
+            res &= this->m_tradeCapture->DoWorkAtom();
         //if(!this->m_tradeCapture->ServerLocked() && !this->m_trade->ServerLocked())
-		//    res &= this->m_dropCopy->DoWorkAtom();
+		    res &= this->m_dropCopy->DoWorkAtom();
 
         return res;
 	}
