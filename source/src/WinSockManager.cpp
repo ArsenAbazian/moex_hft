@@ -104,6 +104,7 @@ bool WinSockManager::Reconnect() {
 		return false;
 	}
 
+	this->m_connected = true;
 	DefaultLogManager::Default->EndLog(true);
 	return true;
 }

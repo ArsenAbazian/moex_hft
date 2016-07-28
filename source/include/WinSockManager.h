@@ -91,11 +91,11 @@ public:
         this->m_sendBytes = this->m_sendBuffer->CurrentPos();
         this->m_sendSize = send(this->m_socket, this->m_sendBytes, size, 0);
 		if (this->m_sendSize < 0) {
-            item->m_result = false;
+            item->m_result = NullableBoolean::nbFalse;
             item->m_errno = errno;
             return false;
 		}
-        item->m_result = true;
+        item->m_result = NullableBoolean::nbTrue;
         this->m_sendBuffer->Next(this->m_sendSize);
 		return true;
 	}
@@ -107,14 +107,16 @@ public:
         if (this->m_recvSize < 0) {
 			item = DefaultLogManager::Default->WriteFix(LogMessageCode::lmcWinSockManager_RecvFix, -1, -1);
 			item->m_errno = errno;
-            item->m_result = false;
+            item->m_result = NullableBoolean::nbFalse;
+            this->Reconnect();
             return false;
         }
 		else if(this->m_recvSize == 0) {
-			return false; // do nothing
+			this->Reconnect();
+            return false; // do nothing
 		}
 		item = DefaultLogManager::Default->WriteFix(LogMessageCode::lmcWinSockManager_RecvFix, this->m_recvBuffer->BufferIndex(), this->m_recvBuffer->CurrentItemIndex());
-        item->m_result = true;
+        item->m_result = NullableBoolean::nbTrue;
         this->m_recvBuffer->Next(this->m_recvSize);
         return true;
 	}

@@ -8,7 +8,7 @@ class MarketServerInfo;
 typedef bool (MarketServerInfo::*MarketServerInfoWorkAtomPtr)();
 
 typedef enum _MarketServerState {
-	mssSendLogon,
+    mssSendLogon,
 	mssSendLogonRepeat,
 	mssRecvLogon,
 	mssRecvLogonWait,
@@ -39,6 +39,7 @@ class MarketServerInfo {
 	FixProtocolManager				*m_fixManager;
 	FixLogonInfo					*m_logonInfo;
 	Stopwatch						*m_stopwatch;
+    bool                             m_lockServer;
 
 	virtual WinSockManager*	CreateSocketManager();
 	FixLogonInfo* CreateLogonInfo();
@@ -74,6 +75,10 @@ public:
 	inline WinSockManager* SocketManager() { return this->m_socketManager; }
 	inline FixProtocolManager* FixManager() { return this->m_fixManager; }
     inline MarketServerState State() { return this->m_state; }
+
+    inline void LockServer() { this->m_lockServer = true; }
+    inline void UnlockServer(){ this->m_lockServer = false; }
+    inline bool ServerLocked() { return this->m_lockServer; }
 
 	bool Connect();
 	bool Disconnect();

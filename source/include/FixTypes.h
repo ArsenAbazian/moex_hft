@@ -340,6 +340,22 @@ typedef enum _FixSecurityListRequestType {
     FixSecurityListRequestType_All = 4
 }FixSecurityListRequestType;
 
+typedef struct _FixHeaderInfo {
+    char*       name;
+    int         nameLength;
+    int         bodyLength;
+    char        msgType;
+    char*       senderCompID;
+    int         senderCompIDLength;
+    char*       targetCompID;
+    int         targetCompIDLength;
+    int         msgSeqNum;
+    bool        possDupFlag;
+    bool        possResend;
+    char*       sendingTime;
+    char*       origSendingTime;
+}FixHeaderInfo;
+
 typedef struct _FixTagValueInfo {
     char		*StartingAddress;
     int			Tag;

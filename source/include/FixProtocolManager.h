@@ -9,7 +9,10 @@
 #include <sys/time.h>
 #include <stdio.h>
 
-#define FIX_SEPARATOR 0x01
+#define FIX_SEPARATOR 					0x01
+#define FIX_SEPARATOR_SECOND_BYTE		0x00000100L
+#define FIX_SEPARATOR_THIRD_BYTE		0x00010000L
+#define FIX_SEPARATOR_FORTH_BYTE		0x01000000L
 
 #pragma region SessionRejectReason
 #define SrrInvalidTagNumber "0" // Invalid tag number
@@ -90,6 +93,7 @@ class FixProtocolManager {
 	int                 targetComputerIdLength;
 
 	SYSTEMTIME		    *currentTime;
+	FixHeaderInfo		*m_headerInfo;
 	FixTagValueInfo	    tagValueList[1024];
 	int				    tagValueItemsCount;
 
@@ -109,6 +113,7 @@ class FixProtocolManager {
 
 #pragma region Tags
 	const char* FixProtocolVersion = "FIX.4.4";
+	const int FixProtocolVersionLength = 7;
 	const char* FastProtocolVersion = "FIXT.1.1";
 	const int FastProtocolVersionLength = 8;
 
@@ -5697,6 +5702,27 @@ public:
 	inline int ReadValue(char *buffer, int *outValue, char stopSymbol) { 
 		return this->intConverter->FromStringFast(buffer, outValue, stopSymbol);
 	}
+	inline void ReadValuePredict234(int *outValue) {
+		this->currentPos += ReadValuePredict234(this->currentPos, outValue, FIX_SEPARATOR) + 1;
+	}
+	inline int ReadValuePredict234(char *buffer, int* outValue, char stopSymbol) {
+		if (buffer[3] == stopSymbol) {
+			*outValue = this->intConverter->From2SymbolUnsigned(buffer);
+			return 2;
+		}
+		if (buffer[4] == stopSymbol) {
+			*outValue = this->intConverter->From3SymbolUnsigned(buffer);
+			return 3;
+		}
+		if (buffer[5] == stopSymbol) {
+			*outValue = this->intConverter->From4SymbolUnsigned(buffer);
+			return 4;
+		}
+		return this->intConverter->FromStringFast(buffer, outValue, stopSymbol);
+	}
+	inline void ReadValuePredict34(int* outValue) {
+		this->currentPos += this->ReadValuePredict34(this->currentPos, outValue, FIX_SEPARATOR) + 1;
+	}
 	inline int ReadValuePredict34(char *buffer, int* outValue, char stopSymbol) { 
 		if (buffer[4] == stopSymbol) {
 			*outValue = this->intConverter->From3SymbolUnsigned(buffer);
@@ -5739,48 +5765,187 @@ public:
 	inline int Read3SymbolTag(char *buffer) { return this->intConverter->From3SymbolUnsigned(buffer); }
 	inline int Read4SymbolTag(char *buffer) { return this->intConverter->From4SymbolUnsigned(buffer); }
 
-	inline bool CheckFixHeader(char *buffer, int *outLength) { 
-		int tag = Read1SymbolTag(buffer); 
-		buffer++;
-		
-		if (*buffer != '=' || tag != TagBeginString)
+	inline bool ReadCheck1SymbolTag(int expectedTag) {
+		if (this->Read1SymbolTag(this->currentPos) != expectedTag) {
 			return false;
-		
-		if (*((int*)buffer) != *((int*)this->FixProtocolVersion))
+		}
+		this->currentPos ++;
+		if(*(this->currentPos) != '=') {
 			return false;
-		
-		buffer += 4 + 3;
-		if (*buffer != FIX_SEPARATOR)
+		}
+		this->currentPos++;
+		return true;
+	}
+
+	inline bool ReadCheck2SymbolTag(int expectedTag) {
+		if (this->Read2SymbolTag(this->currentPos) != expectedTag) {
+			return false;
+		}
+		this->currentPos +=2;
+		if(*(this->currentPos) != '=') {
+			return false;
+		}
+		this->currentPos++;
+		return true;
+	}
+
+	inline bool ReadCheckSkip2SymbolTag(int expectedTag, bool *checkFailed) {
+		if (this->Read2SymbolTag(this->currentPos) != expectedTag) {
+			*checkFailed = false;
+			return false;
+		}
+		this->currentPos +=2;
+		if(*(this->currentPos) != '=') {
+			*checkFailed = true;
+			return false;
+		}
+		this->currentPos++;
+		return true;
+	}
+
+	inline bool Read2TagSymbol(int expectedTag, char *value) {
+		if(!this->ReadCheck2SymbolTag(expectedTag))
+			return false;
+		*value = *(this->currentPos);
+		this->currentPos++;
+		if(*(this->currentPos) != FIX_SEPARATOR)
+			return false;
+		this->currentPos++;
+		return true;
+	}
+
+	inline bool ReadString(int *length) {
+		const int MaxStringLength = 1500;
+		int len = 0;
+		unsigned int *pack4 = (unsigned int*)this->currentPos;
+		while(len < MaxStringLength) {
+			if((*pack4 & 0x000000ff) == FIX_SEPARATOR) {
+				break;
+			}
+			if((*pack4 & 0x0000ff00) == FIX_SEPARATOR_SECOND_BYTE) {
+				len ++;
+				break;
+			}
+			if((*pack4 & 0x00ff0000) == FIX_SEPARATOR_THIRD_BYTE) {
+				len +=2;
+				break;
+			}
+			if((*pack4 & 0xff000000) == FIX_SEPARATOR_FORTH_BYTE) {
+				len +=3;
+				break;
+			}
+			len += 4;
+			pack4++;
+		}
+		*length = len;
+		this->currentPos += len + 1;
+		return len < MaxStringLength;
+	}
+
+	inline bool Read2SymbolTagString(int expectedTag, char **strPtr, int *length) {
+		if(!this->ReadCheck2SymbolTag(expectedTag))
+			return false;
+		*strPtr = this->currentPos;
+		return this->ReadString(&(this->m_headerInfo->senderCompIDLength));
+	}
+
+	inline bool ReadUtcTimeStamp(char **strPtr) {
+		*strPtr = this->currentPos;
+		if(this->currentPos[UTCTimeStampLength] != FIX_SEPARATOR)
+			return false;
+		this->currentPos += UTCTimeStampLength + 1;
+		return true;
+	}
+
+	inline bool Read2SymbolTagTimeStamp(int expectedTag, char **strPtr) {
+		if(!this->ReadCheck2SymbolTag(expectedTag))
+			return false;
+		return this->ReadUtcTimeStamp(strPtr);
+	}
+
+	inline bool Read2TagIntValuePredict234(int expectedTag, int *value) {
+		if(!this->ReadCheck2SymbolTag(expectedTag))
+			return false;
+		ReadValuePredict234(value);
+		return true;
+	}
+
+	inline bool ReadBooleanSymbol(bool *value) {
+		*value = *(this->currentPos) == 'Y';
+		this->currentPos++;
+		return true;
+	}
+
+	inline bool CheckFixHeader() {
+		if(this->currentPos[this->FixProtocolVersionLength] != FIX_SEPARATOR)
+			return false;
+		this->currentPos += this->FixProtocolVersionLength + 1;
+		/*
+		if(!this->ReadCheck1SymbolTag(TagBeginString))
 			return false;
 
+		if (*((int*)this->currentPos) != *((int*)this->FixProtocolVersion))
+			return false;
+
+		this->currentPos += 4 + 3;
+		if (*(this->currentPos) != FIX_SEPARATOR)
+			return false;
+
+		this->currentPos++;
 		*outLength = 1 + 1 + 7 + 1;
+		*/
 		return true;
 	}
 
-	inline bool ProcessMessageLengthTag(char *buffer, int *outLength) {
-		int tag = Read1SymbolTag(buffer);
-		buffer++;
-
-		if (*buffer != '=' || tag != TagBodyLength)
+	inline bool ProcessMessageLengthTag() {
+		if(!this->ReadCheck1SymbolTag(TagBodyLength))
 			return false;
-		
-		int length = ReadValuePredict34(buffer, &this->receivedMessageLength, FIX_SEPARATOR);
-		*outLength = length + 1;
-		
+
+		this->ReadValuePredict34(&this->m_headerInfo->bodyLength);
 		return true;
 	}
 
-	inline bool ProcessCheckHeader(char *buffer, int *outLength) { 
-		int length = 0;
-		if (!CheckFixHeader(buffer, &length))
+	inline FixHeaderInfo* HeaderInfo() { return this->m_headerInfo; }
+	inline bool ProcessCheckHeader() {
+
+		this->m_headerInfo->name = this->currentPos;
+		if (!CheckFixHeader())
 			return false;
-		buffer += length;
-		*outLength = (*outLength) + length;
-	
-		if (!ProcessMessageLengthTag(buffer, &length))
+
+		if (!ProcessMessageLengthTag())
 			return false;
-		buffer += length;
-		*outLength = (*outLength) + length;
+
+		if(!this->Read2TagSymbol(TagMsgType, &(this->m_headerInfo->msgType)))
+			return false;
+
+		if(!this->Read2SymbolTagString(TagSenderCompID, &(this->m_headerInfo->senderCompID), &(this->m_headerInfo->senderCompIDLength)))
+			return false;
+
+		if(!this->Read2SymbolTagString(TagTargetCompID, &(this->m_headerInfo->targetCompID), &(this->m_headerInfo->targetCompIDLength)))
+			return false;
+
+		if(!this->Read2TagIntValuePredict234(TagMsgSeqNum, &(this->m_headerInfo->msgSeqNum)))
+			return false;
+
+		bool checkFailed = false;
+		if(this->ReadCheckSkip2SymbolTag(TagPossDupFlag, &checkFailed)) {
+			this->ReadBooleanSymbol(&(this->m_headerInfo->possDupFlag));
+		}
+		else if(checkFailed)
+			return false;
+		if(this->ReadCheckSkip2SymbolTag(TagPossResend, &checkFailed)) {
+			this->ReadBooleanSymbol(&(this->m_headerInfo->possResend));
+		}
+		else if(checkFailed)
+			return false;
+		if(!this->Read2SymbolTagTimeStamp(TagSendingTime, &(this->m_headerInfo->sendingTime)))
+			return false;
+		if(this->ReadCheckSkip2SymbolTag(TagOrigSendingTime, &checkFailed) &&
+				!this->ReadUtcTimeStamp(&(this->m_headerInfo->origSendingTime))) {
+			return false;
+		}
+		if(checkFailed)
+			return false;
 
 		return true;
 	}
@@ -5793,10 +5958,9 @@ public:
 	inline bool CheckProcessHearthBeat(int testReqId) {
 		int length = 0;
 		this->currentPos = this->messageBuffer;
-		if(!ProcessCheckHeader(this->currentPos, &length))
+		if(!ProcessCheckHeader())
 			return false;
 
-		this->currentPos += length;
 		int tag = Read3SymbolTag(this->currentPos);
 		this->currentPos += 3;
 
@@ -5804,7 +5968,7 @@ public:
 			return false;
 
 		int hearthBeat = ReadValuePredict34(this->currentPos, &length, FIX_SEPARATOR);
-		this->currentPos += length + 1;
+		this->currentPos ++;
 
 		return true;
 	}

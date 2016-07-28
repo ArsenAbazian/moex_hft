@@ -228,16 +228,20 @@ bool Robot::DoWork() {
     DefaultLogManager::Default->StartLog(LogMessageCode::lmcRobot_DoWork);
 
     while(true) {
-        if(!this->m_currMarket->DoWorkAtom()) {
-            DefaultLogManager::Default->EndLog(false);
-            DefaultLogManager::Default->Print();
-            return false;
-        }
-        if(!this->m_fondMarket->DoWorkAtom()) {
-            DefaultLogManager::Default->EndLog(false);
-            DefaultLogManager::Default->Print();
-            return false;
-        }
+        //if(!this->m_fondMarket->ServerLocked()) {
+            if(!this->m_currMarket->DoWorkAtom()) {
+                DefaultLogManager::Default->EndLog(false);
+                DefaultLogManager::Default->Print();
+                return false;
+            }
+        //}
+        //if(!this->m_currMarket->ServerLocked()) {
+            if (!this->m_fondMarket->DoWorkAtom()) {
+                DefaultLogManager::Default->EndLog(false);
+                DefaultLogManager::Default->Print();
+                return false;
+            }
+        //}
         if(!this->DoWorkAtom()) {
             DefaultLogManager::Default->EndLog(false);
             DefaultLogManager::Default->Print();

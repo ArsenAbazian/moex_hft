@@ -39,17 +39,23 @@ void BinaryLogManager::Print(BinaryLogItem *item) {
 
     }
     else if(item->m_type != BinaryLogItemType::NodeStart) {
-        printf(" - %s. ", item->m_result? DefaultLogMessageProvider::Default->Message(LogMessageCode::lmcSuccess):
-        DefaultLogMessageProvider::Default->Message(LogMessageCode::lmcFailed));
-        if(item->m_errno != 0)
-            printf("(%s)", strerror(item->m_errno));
+        if(item->m_result != NullableBoolean::nbNull) {
+            printf(" - %s. ", item->m_result == NullableBoolean::nbTrue?
+                              DefaultLogMessageProvider::Default->Message(LogMessageCode::lmcSuccess):
+                              DefaultLogMessageProvider::Default->Message(LogMessageCode::lmcFailed));
+            if(item->m_errno != 0)
+                printf("(%s)", strerror(item->m_errno));
+        }
     }
     else if(item->m_type == BinaryLogItemType::NodeStart && item->m_endIndex != -1) {
         BinaryLogItem *end = &(this->m_items[item->m_endIndex]);
-        printf(" - %s. ", end->m_result? DefaultLogMessageProvider::Default->Message(LogMessageCode::lmcSuccess):
-                          DefaultLogMessageProvider::Default->Message(LogMessageCode::lmcFailed));
-        if(end->m_errno != 0)
-            printf("(%s)", strerror(item->m_errno));
+        if(end->m_result != NullableBoolean::nbNull) {
+            printf(" - %s. ", end->m_result == NullableBoolean::nbTrue?
+                              DefaultLogMessageProvider::Default->Message(LogMessageCode::lmcSuccess):
+                              DefaultLogMessageProvider::Default->Message(LogMessageCode::lmcFailed));
+            if(end->m_errno != 0)
+                printf("(%s)", strerror(item->m_errno));
+        }
     }
 
     printf("\n");

@@ -8,6 +8,12 @@
 
 #define BINARY_LOG_MANAGER_ALLOW_PRINT
 
+typedef enum _NullableBoolean{
+    nbNull = -1,
+    nbFalse = 0,
+    nbTrue = 1
+}NullableBoolean;
+
 // Flags
 typedef  enum _BinaryLogItemType {
     NodeItem = 0,
@@ -27,8 +33,8 @@ typedef struct _BinaryLogItem {
     int                 m_itemIndex;        //
     int                 m_bytesCount;       // for fix and fast protocol - bytes count;
     int                 m_errno;            // error number
-    bool                m_result;           // method result - fail or success
-    int                 m_index;            //
+    NullableBoolean     m_result;           // method result - 0 - fail, 1 - success, -1 - no value
+    int                 m_index;            // global index
     union {
         int m_startIndex;
         int m_endIndex;
@@ -130,7 +136,7 @@ public:
     BinaryLogManager() {
         this->m_items = new BinaryLogItem[this->m_itemsCount];
         for(int i = 0; i < this->m_itemsCount; i++) {
-            this->m_items[i].m_result = true;
+            this->m_items[i].m_result = NullableBoolean::nbNull;
             this->m_items[i].m_index = i;
             this->m_items[i].m_message2 = -1;
             this->m_items[i].m_message = -1;
@@ -204,7 +210,7 @@ public:
 
         GetStartClock(item);
         item->m_message = messageCode;
-        item->m_result = condition;
+        item->m_result = (NullableBoolean)condition;
 #ifdef BINARY_LOG_MANAGER_ALLOW_PRINT
         Print(item);
 #endif
@@ -215,7 +221,7 @@ public:
         clock_gettime(CLOCK_PROCESS_CPUTIME_ID, (struct timespec*)item);
         item->m_message = messageCode;
         item->m_message = messageCode2;
-        item->m_result = condition;
+        item->m_result = (NullableBoolean)condition;
 #ifdef BINARY_LOG_MANAGER_ALLOW_PRINT
         Print(item);
 #endif
@@ -253,7 +259,7 @@ public:
     inline void EndLog(bool condition) {
         BinaryLogItem *item = Pop();
         GetEndClock(item);
-        item->m_result = condition;
+        item->m_result = (NullableBoolean)condition;
 #ifdef BINARY_LOG_MANAGER_ALLOW_PRINT
         RemoveTab();
         Print(item);
@@ -263,7 +269,7 @@ public:
     inline void EndLog(bool condition, int messageCode) {
         BinaryLogItem *item = Pop();
         GetEndClock(item);
-        item->m_result = condition;
+        item->m_result = (NullableBoolean)condition;
         item->m_message = messageCode;
 #ifdef BINARY_LOG_MANAGER_ALLOW_PRINT
         RemoveTab();
@@ -273,7 +279,7 @@ public:
     inline void EndLogErrNo(bool condition, int errno) {
         BinaryLogItem *item = Pop();
         GetEndClock(item);
-        item->m_result = condition;
+        item->m_result = (NullableBoolean)condition;
         item->m_errno = errno;
 #ifdef BINARY_LOG_MANAGER_ALLOW_PRINT
         RemoveTab();
@@ -283,7 +289,7 @@ public:
     inline void EndLogErrNo(bool condition, const char *errText) {
         BinaryLogItem *item = Pop();
         GetEndClock(item);
-        item->m_result = condition;
+        item->m_result = (NullableBoolean)condition;
         item->m_errno = DefaultLogMessageProvider::Default->RegisterText(errText);
 #ifdef BINARY_LOG_MANAGER_ALLOW_PRINT
         RemoveTab();
