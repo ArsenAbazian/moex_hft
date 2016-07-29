@@ -52,17 +52,14 @@ public:
 	inline bool Working() {
 		return this->m_trade->Working() || this->m_tradeCapture->Working() || this->m_dropCopy->Working();
 	}
-    inline bool ServerLocked() {
-        return this->m_trade->ServerLocked() || this->m_tradeCapture->ServerLocked() || this->m_dropCopy->ServerLocked();
-    }
+
 	inline bool DoWorkAtom() {
-		bool res = this->m_feedChannel->DoWorkAtom();
-		//if(!this->m_dropCopy->ServerLocked() && !this->m_tradeCapture->ServerLocked())
-            res &= this->m_trade->DoWorkAtom();
-		//if(!this->m_trade->ServerLocked() && !this->m_dropCopy->ServerLocked())
-            res &= this->m_tradeCapture->DoWorkAtom();
-        //if(!this->m_tradeCapture->ServerLocked() && !this->m_trade->ServerLocked())
-		    res &= this->m_dropCopy->DoWorkAtom();
+        bool res = this->m_feedChannel->DoWorkAtom();
+        this->m_tradeCapture->SetState(MarketServerState::mssEnd, &MarketServerInfo::End_Atom);
+        this->m_dropCopy->SetState(MarketServerState::mssEnd, &MarketServerInfo::End_Atom);
+        res &= this->m_trade->DoWorkAtom();
+        //res &= this->m_tradeCapture->DoWorkAtom();
+		//res &= this->m_dropCopy->DoWorkAtom();
 
         return res;
 	}

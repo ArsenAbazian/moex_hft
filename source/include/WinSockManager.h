@@ -108,7 +108,6 @@ public:
 			item = DefaultLogManager::Default->WriteFix(LogMessageCode::lmcWinSockManager_RecvFix, -1, -1);
 			item->m_errno = errno;
             item->m_result = NullableBoolean::nbFalse;
-            this->Reconnect();
             return false;
         }
 		else if(this->m_recvSize == 0) {

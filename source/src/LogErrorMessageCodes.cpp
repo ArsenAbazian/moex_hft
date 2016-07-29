@@ -58,6 +58,10 @@ void LogMessageProvider::InitializeLogMessageText() {
 	this->m_logMessageText[LogMessageCode::lmcMarketServerInfo_RepeatSendLogout_Atom] = "MarketServerInfo::RepeatSendLogout_Atom";
 	this->m_logMessageText[LogMessageCode::lmcMarketServerInfo_RecvLogout_Atom] = "MarketServerInfo::RecvLogout_Atom";
 	this->m_logMessageText[LogMessageCode::lmcMarketServerInfo_WaitRecvLogout_Atom] = "MarketServerInfo::WaitRecvLogout_Atom";
+	this->m_logMessageText[LogMessageCode::lmcMarketServerInfo_Reconnect_Atom] = "MarketServerInfo::Reconnect_Atom";
+	this->m_logMessageText[LogMessageCode::lmcMarketServerInfo_SendTestRequest_Atom] = "MarketServerInfo::SendTestRequest_Atom";
+	this->m_logMessageText[LogMessageCode::lmcMarketServerInfo_RepeatSendTestRequest_Atom] = "MarketServerInfo::RepeatSendTestRequest_Atom";
+	this->m_logMessageText[LogMessageCode::lmcMarketServerInfo_RecvHearthBeat_Atom] = "MarketServerInfo::RecvHearthBeat_Atom";
 #pragma endregion
 }
 

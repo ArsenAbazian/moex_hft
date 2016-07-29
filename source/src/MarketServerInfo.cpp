@@ -51,11 +51,23 @@ FixLogonInfo* MarketServerInfo::CreateLogonInfo() {
 	return res;
 }
 
+bool MarketServerInfo::Reconnect_Atom() {
+    DefaultLogManager::Default->StartLog(this->m_nameLogIndex, LogMessageCode::lmcMarketServerInfo_Reconnect_Atom);
+
+    if(!this->m_socketManager->Reconnect()) {
+        DefaultLogManager::Default->EndLog(false);
+        return true;
+    }
+
+    this->SetState(this->m_nextState, this->m_nextWorkAtomPtr);
+    DefaultLogManager::Default->EndLog(true);
+    return true;
+}
+
 bool MarketServerInfo::SendLogon_Atom() {
 
     DefaultLogManager::Default->StartLog(this->m_nameLogIndex, LogMessageCode::lmcMarketServerInfo_SendLogon_Atom);
 
-    this->LockServer();
     this->m_fixManager->SetMessageBuffer((char*)this->m_socketManager->GetNextSendBuffer());
     this->m_fixManager->CreateLogonMessage(this->m_logonInfo);
     if(!this->m_socketManager->SendFix(this->m_fixManager->MessageLength())) {
@@ -76,7 +88,6 @@ bool MarketServerInfo::RepeatSendLogon_Atom() {
         DefaultLogManager::Default->EndLog(false);
         return true;
     }
-    this->m_fixManager->IncMessageSequenceNumber();
     this->SetState(MarketServerState::mssRecvLogon, &MarketServerInfo::RecvLogon_Atom);
     DefaultLogManager::Default->EndLog(true);
     return true;
@@ -86,28 +97,20 @@ bool MarketServerInfo::RecvLogon_Atom() {
     DefaultLogManager::Default->StartLog(this->m_nameLogIndex, LogMessageCode::lmcMarketServerInfo_RecvLogon_Atom);
     this->m_stopwatch->Start();
     if(!this->m_socketManager->RecvFix()) {
-        if(this->m_socketManager->RecvSize() == 0) {
-            this->UnlockServer();
-            this->SetState(MarketServerState::mssSendLogon, &MarketServerInfo::SendLogon_Atom);
-            DefaultLogManager::Default->EndLog(false);
-            return true;
-        }
-        else {
-            this->SetState(MarketServerState::mssPanic, &MarketServerInfo::Panic_Atom);
-            DefaultLogManager::Default->EndLog(false);
-            return true;
-        }
+        this->ReconnectSetNextState(MarketServerState::mssSendLogon, &MarketServerInfo::SendLogon_Atom);
+        DefaultLogManager::Default->EndLog(false);
+        return true;
     }
-    this->m_fixManager->SetMessageBuffer((char*)this->m_socketManager->RecvBytes());
+    this->m_fixManager->SetMessageBuffer((char*)this->m_socketManager->RecvBytes(), this->m_socketManager->RecvSize());
     if(!this->m_fixManager->ProcessCheckHeader()) {
-        this->SetState(MarketServerState::mssPanic, &MarketServerInfo::Panic_Atom);
+        this->ReconnectSetNextState(MarketServerState::mssSendLogon, &MarketServerInfo::SendLogon_Atom);
         DefaultLogManager::Default->EndLog(false);
         return true;
     }
     if(this->m_fixManager->HeaderInfo()->msgType == MsgTypeLogout) {
         if(this->m_fixManager->CheckDetectCorrectMsgSeqNumber()) {
             this->m_logonInfo->MsgStartSeqNo = this->m_fixManager->MessageSequenceNumber();
-            this->SetState(MarketServerState::mssSendLogon, &MarketServerInfo::SendLogon_Atom);
+            this->ReconnectSetNextState(MarketServerState::mssSendLogon, &MarketServerInfo::SendLogon_Atom);
             DefaultLogManager::Default->EndLog(false);
             return true;
         }
@@ -118,37 +121,31 @@ bool MarketServerInfo::RecvLogon_Atom() {
         }
     }
 
-    this->UnlockServer();
     this->m_fixManager->IncMessageSequenceNumber();
     DefaultLogManager::Default->EndLog(true);
-    this->SetState(MarketServerState::mssSendLogout, &MarketServerInfo::SendLogout_Atom);
+    this->m_stopwatch->Start();
+    this->SetState(MarketServerState::mssDoNothing, &MarketServerInfo::DoNothing_Atom);
     return true;
 }
 
 bool MarketServerInfo::WaitRecvLogon_Atom() {
     if(!this->m_socketManager->RecvFix()) {
         if(this->m_stopwatch->ElapsedSeconds() > 10) {
-            this->UnlockServer();
             this->SetState(MarketServerState::mssSendLogon, &MarketServerInfo::SendLogon_Atom);
-            DefaultLogManager::Default->StartLog(this->m_nameLogIndex, LogMessageCode::lmcMarketServerInfo_WaitRecvLogon_Atom);
-            DefaultLogManager::Default->EndLog(false);
+            DefaultLogManager::Default->WriteSuccess(this->m_nameLogIndex, LogMessageCode::lmcMarketServerInfo_WaitRecvLogon_Atom, false);
             return true;
         }
         if(this->m_socketManager->RecvSize() == 0) {
-            this->UnlockServer();
-            this->SetState(MarketServerState::mssSendLogon, &MarketServerInfo::SendLogon_Atom);
+            this->ReconnectSetNextState(MarketServerState::mssSendLogon, &MarketServerInfo::SendLogon_Atom);
             return true;
         }
         else {
-            DefaultLogManager::Default->StartLog(this->m_nameLogIndex, LogMessageCode::lmcMarketServerInfo_WaitRecvLogon_Atom);
-            DefaultLogManager::Default->EndLog(false);
+            DefaultLogManager::Default->WriteSuccess(this->m_nameLogIndex, LogMessageCode::lmcMarketServerInfo_WaitRecvLogon_Atom, false);
             this->SetState(MarketServerState::mssPanic, &MarketServerInfo::Panic_Atom);
             return true;
         }
     }
-    DefaultLogManager::Default->StartLog(this->m_nameLogIndex, LogMessageCode::lmcMarketServerInfo_WaitRecvLogon_Atom);
-    DefaultLogManager::Default->EndLog(true);
-    this->UnlockServer();
+    DefaultLogManager::Default->WriteSuccess(this->m_nameLogIndex, LogMessageCode::lmcMarketServerInfo_WaitRecvLogon_Atom, true);
     this->m_fixManager->IncMessageSequenceNumber();
     this->SetState(MarketServerState::mssSendLogout, &MarketServerInfo::SendLogout_Atom);
     return true;
@@ -188,7 +185,7 @@ bool MarketServerInfo::RecvLogout_Atom() {
     this->m_stopwatch->Start();
     if(!this->m_socketManager->RecvFix()) {
         if(this->m_socketManager->RecvSize() == 0) {
-            this->SetState(MarketServerState::mssSendLogout, &MarketServerInfo::SendLogout_Atom);
+            this->ReconnectSetNextState(MarketServerState::mssSendLogout, &MarketServerInfo::SendLogout_Atom);
             DefaultLogManager::Default->EndLog(false);
             return true;
         }
@@ -207,25 +204,78 @@ bool MarketServerInfo::RecvLogout_Atom() {
 bool MarketServerInfo::WaitRecvLogout_Atom() {
     if(!this->m_socketManager->RecvFix()) {
         if(this->m_stopwatch->ElapsedSeconds() > 10) {
-            DefaultLogManager::Default->StartLog(this->m_nameLogIndex, LogMessageCode::lmcMarketServerInfo_WaitRecvLogout_Atom);
-            DefaultLogManager::Default->EndLog(false);
+            DefaultLogManager::Default->WriteSuccess(this->m_nameLogIndex, LogMessageCode::lmcMarketServerInfo_WaitRecvLogout_Atom, false);
             this->SetState(MarketServerState::mssEnd, &MarketServerInfo::End_Atom);
             return true;
         }
         if(this->m_socketManager->RecvSize() == 0) {
+            this->ReconnectSetNextState(MarketServerState::mssSendLogout, &MarketServerInfo::SendLogout_Atom);
             return true;
         }
         else {
-            DefaultLogManager::Default->StartLog(this->m_nameLogIndex, LogMessageCode::lmcMarketServerInfo_WaitRecvLogout_Atom);
-            DefaultLogManager::Default->EndLog(false);
+            DefaultLogManager::Default->WriteSuccess(this->m_nameLogIndex, LogMessageCode::lmcMarketServerInfo_WaitRecvLogout_Atom, false);
             this->SetState(MarketServerState::mssPanic, &MarketServerInfo::Panic_Atom);
             return true;
         }
     }
-    DefaultLogManager::Default->StartLog(this->m_nameLogIndex, LogMessageCode::lmcMarketServerInfo_WaitRecvLogout_Atom);
-    DefaultLogManager::Default->EndLog(true);
+    DefaultLogManager::Default->WriteSuccess(this->m_nameLogIndex, LogMessageCode::lmcMarketServerInfo_WaitRecvLogout_Atom, true);
     this->m_fixManager->IncMessageSequenceNumber();
     this->SetState(MarketServerState::mssEnd, &MarketServerInfo::End_Atom);
+    return true;
+}
+
+bool MarketServerInfo::SendTestRequest_Atom() {
+    DefaultLogManager::Default->StartLog(this->m_nameLogIndex, LogMessageCode::lmcMarketServerInfo_SendTestRequest_Atom);
+
+    this->m_fixManager->SetMessageBuffer((char*)this->m_socketManager->GetNextSendBuffer());
+    this->m_testRequestId = rand();
+    this->m_fixManager->CreateTestRequestMessage();
+    this->m_stopwatch->Start();
+    if(!this->m_socketManager->SendFix(this->m_fixManager->MessageLength())) {
+        this->SetState(MarketServerState::mssSendTestRequestRepeat, &MarketServerInfo::RepeatSendTestRequest_Atom);
+        DefaultLogManager::Default->EndLog(false);
+        return true;
+    }
+    this->m_fixManager->IncMessageSequenceNumber();
+    this->SetState(MarketServerState::mssRecvHearthBeat, &MarketServerInfo::RecvHearthBeat_Atom);
+    DefaultLogManager::Default->EndLog(true);
+    return true;
+}
+
+bool MarketServerInfo::RepeatSendTestRequest_Atom() {
+    DefaultLogManager::Default->StartLog(this->m_nameLogIndex, LogMessageCode::lmcMarketServerInfo_RepeatSendTestRequest_Atom);
+    this->m_stopwatch->Start();
+    if(!this->m_socketManager->SendFix(this->m_fixManager->MessageLength())) {
+        DefaultLogManager::Default->EndLog(false);
+        return true;
+    }
+    this->m_fixManager->IncMessageSequenceNumber();
+    this->SetState(MarketServerState::mssRecvHearthBeat, &MarketServerInfo::RecvHearthBeat_Atom);
+    DefaultLogManager::Default->EndLog(true);
+    return true;
+}
+
+bool MarketServerInfo::RecvHearthBeat_Atom() {
+    if(!this->m_socketManager->RecvFix()) {
+        if(this->m_stopwatch->ElapsedSeconds() > 10) {
+            DefaultLogManager::Default->WriteSuccess(this->m_nameLogIndex, LogMessageCode::lmcMarketServerInfo_RecvHearthBeat_Atom, false);
+            this->SetState(MarketServerState::mssEnd, &MarketServerInfo::End_Atom);
+            return true;
+        }
+        if(this->m_socketManager->RecvSize() == 0) {
+            this->ReconnectSetNextState(MarketServerState::mssSendTestRequest, &MarketServerInfo::SendTestRequest_Atom);
+            return true;
+        }
+        else {
+            DefaultLogManager::Default->WriteSuccess(this->m_nameLogIndex, LogMessageCode::lmcMarketServerInfo_RecvHearthBeat_Atom, false);
+            this->SetState(MarketServerState::mssPanic, &MarketServerInfo::Panic_Atom);
+            return true;
+        }
+    }
+    DefaultLogManager::Default->WriteSuccess(this->m_nameLogIndex, LogMessageCode::lmcMarketServerInfo_RecvHearthBeat_Atom, true);
+    this->m_fixManager->IncMessageSequenceNumber();
+    this->m_stopwatch->Start();
+    this->JumpNextState();
     return true;
 }
 
@@ -234,55 +284,15 @@ bool MarketServerInfo::End_Atom() {
 }
 
 bool MarketServerInfo::DoNothing_Atom() {
+    if(this->m_stopwatch->ElapsedSeconds() > 30) {
+        this->SetNextState(MarketServerState::mssDoNothing, &MarketServerInfo::DoNothing_Atom);
+        this->SetState(MarketServerState::mssSendTestRequestRepeat, &MarketServerInfo::SendTestRequest_Atom);
+    }
     return true;
 }
 
 bool MarketServerInfo::Panic_Atom() {
     return true;
-}
-
-bool MarketServerInfo::Logout_Atom() {
-    /*
-	DefaultLogManager::Default->StartLog(this->m_nameLogIndex, LogMessageCode::lmcMarketServerInfo_Logout);
-
-	this->fixManager->SetMessageBuffer((char*)this->socketManager->GetNextSendBuffer());
-
-	// first we must be sure that there is no lost message before logout
-	// so we should send TestRequest and receive HearthBeat messages
-	this->fixManager->CreateTestRequestMessage(2382);
-	if (!this->socketManager->SendCore((unsigned char*)this->fixManager->Message(), this->fixManager->MessageLength())) {
-		DefaultLogManager::Default->EndLog(false);
-		return false;
-	}
-	this->fixManager->IncMessageSequenceNumber();
-
-	if (!this->socketManager->RecvCore()) {
-		DefaultLogManager::Default->EndLog(false);
-		return false;
-	}
-
-	if(!this->fixManager->CheckProcessHearthBeat(2382)) {
-		DefaultLogManager::Default->EndLog(false);
-		return false;
-	}
-
-	this->fixManager->SetMessageBuffer((char*)this->socketManager->GetNextSendBuffer());
-	this->fixManager->CreateLogoutMessage("Good Bye!");
-	if (!this->socketManager->SendCore((unsigned char*)this->fixManager->Message(), this->fixManager->MessageLength())) {
-		DefaultLogManager::Default->EndLog(false);
-		return false;
-	}
-
-	if (!this->socketManager->RecvCore()) {
-		DefaultLogManager::Default->EndLog(false);
-		return false;
-	}
-
-	this->fixManager->IncMessageSequenceNumber();
-
-	DefaultLogManager::Default->EndLog(true);
-    */
-	return true;
 }
 
 WinSockManager* MarketServerInfo::CreateSocketManager() {

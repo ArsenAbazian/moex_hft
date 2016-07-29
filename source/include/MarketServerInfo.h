@@ -8,6 +8,7 @@ class MarketServerInfo;
 typedef bool (MarketServerInfo::*MarketServerInfoWorkAtomPtr)();
 
 typedef enum _MarketServerState {
+    mssConnect,
     mssSendLogon,
 	mssSendLogonRepeat,
 	mssRecvLogon,
@@ -16,6 +17,9 @@ typedef enum _MarketServerState {
 	mssSendLogoutRepeat,
 	mssRecvLogout,
 	mssRecvLogoutWait,
+    mssSendTestRequest,
+    mssSendTestRequestRepeat,
+    mssRecvHearthBeat,
     mssEnd,
 	mssDoNothing,
 	mssPanic
@@ -33,18 +37,26 @@ class MarketServerInfo {
 	int								m_senderComputerIdLength;
 	char							m_password[16];
 	int								m_passwordLength;
+    int                             m_testRequestId;
 	MarketServerState				m_state;
 	MarketServerInfoWorkAtomPtr		m_workAtomPtr;
-	WinSockManager					*m_socketManager;
+
+    MarketServerState				m_nextState;
+    MarketServerInfoWorkAtomPtr		m_nextWorkAtomPtr;
+
+    WinSockManager					*m_socketManager;
 	FixProtocolManager				*m_fixManager;
 	FixLogonInfo					*m_logonInfo;
 	Stopwatch						*m_stopwatch;
-    bool                             m_lockServer;
 
 	virtual WinSockManager*	CreateSocketManager();
 	FixLogonInfo* CreateLogonInfo();
 	void Clear();
 
+    bool Reconnect_Atom();
+    bool RepeatSendTestRequest_Atom();
+    bool SendTestRequest_Atom();
+    bool RecvHearthBeat_Atom();
 	bool SendLogon_Atom();
 	bool RepeatSendLogon_Atom();
 	bool RecvLogon_Atom();
@@ -52,7 +64,6 @@ class MarketServerInfo {
 	bool Logout_Atom();
 	bool Panic_Atom();
     bool DoNothing_Atom();
-	bool End_Atom();
 	bool SendLogout_Atom();
 	bool RepeatSendLogout_Atom();
 	bool RecvLogout_Atom();
@@ -76,17 +87,29 @@ public:
 	inline FixProtocolManager* FixManager() { return this->m_fixManager; }
     inline MarketServerState State() { return this->m_state; }
 
-    inline void LockServer() { this->m_lockServer = true; }
-    inline void UnlockServer(){ this->m_lockServer = false; }
-    inline bool ServerLocked() { return this->m_lockServer; }
+    bool End_Atom();
 
-	bool Connect();
+    bool Connect();
 	bool Disconnect();
 
 	inline void SetState(MarketServerState state, MarketServerInfoWorkAtomPtr funcPtr) {
 		this->m_state = state;
 		this->m_workAtomPtr = funcPtr;
 	}
+
+    inline void SetNextState(MarketServerState state, MarketServerInfoWorkAtomPtr funcPtr) {
+        this->m_nextState = state;
+        this->m_nextWorkAtomPtr = funcPtr;
+    }
+
+    inline void ReconnectSetNextState(MarketServerState state, MarketServerInfoWorkAtomPtr funcPtr) {
+        this->SetNextState(state, funcPtr);
+        this->SetState(MarketServerState::mssConnect, &MarketServerInfo::Reconnect_Atom);
+    }
+
+    inline void JumpNextState() {
+        this->SetState(this->m_nextState, this->m_nextWorkAtomPtr);
+    }
 
 	inline bool DoWorkAtom() {
 #ifdef ROBOT_WORK_ANYWAY
