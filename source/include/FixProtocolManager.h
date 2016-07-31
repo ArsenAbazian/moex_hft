@@ -8,6 +8,7 @@
 #include <time.h>
 #include <sys/time.h>
 #include <stdio.h>
+#include "FixMessage.h"
 
 #define AddTagValue(tagName, tagValue) tagName AddEqual(); AddValue(tagValue); AddSeparator();
 #define AddTagString(tagName, tagValueString) tagName AddEqual(); AddArray(tagValueString); AddSeparator();
@@ -22,31 +23,29 @@ class FixProtocolManager {
 	int                 targetComputerIdLength;
 
 	SYSTEMTIME		    *currentTime;
-	FixHeaderInfo		*m_headerInfo;
-	FixTagValueInfo	    tagValueList[1024];
-	int				    tagValueItemsCount;
 
-	int                 receivedMessageLength;
-	char                *messageBuffer;
-	int                 messageBufferSize;
-	char                *currentPos;
+    int                     receivedMessageLength;
+	char                    *messageBuffer;
+	int                     messageBufferSize;
+
+    const int               m_maxRecvMessageCount = 128;
+    int                     m_recvMessageCount;
+    FixProtocolMessage      *m_currMsg;
+    FixProtocolMessage      *m_recvMessage[128];
+
+    char                *currentPos;
 	int                 messageSequenceNumber;
 
 	DtoaConverter       *doubleConverter;
 	ItoaConverter       *intConverter;
+
+
 
 	inline void AddSymbol(char symbol) { *(this->currentPos) = symbol; this->currentPos++; }
 	inline void AddEqual() { *(this->currentPos) = '='; this->currentPos++; }
 	inline void AddSeparator() { AddSymbol(0x01); }
 	inline void AddTag(const char* tag, int length) { AddArray((char*)tag, length); AddSymbol('='); }
 
-#pragma region Tags
-	const char* FixProtocolVersion = "FIX.4.4";
-	const int FixProtocolVersionLength = 7;
-	const char* FastProtocolVersion = "FIXT.1.1";
-	const int FastProtocolVersionLength = 8;
-#pragma endregion
-	
 public:
 	FixProtocolManager();
 	~FixProtocolManager();
@@ -56,9 +55,70 @@ public:
 		*(this->currentPos) = '\0';
 	}
 
-	inline void ResetMessageSequenceNumber() { this->SetMessageSequenceNumber(1); }
+    inline int FindSeparator(int start) {
+        int len = start;
+        unsigned int *pack4 = (unsigned int*)(this->messageBuffer + start);
+        while(len < this->messageBufferSize) {
+            unsigned int value = *pack4;
+            if((value & 0x000000ff) == FIX_SEPARATOR)
+                return len;
+            if((value & 0x0000ff00) == FIX_SEPARATOR_SECOND_BYTE)
+                return len + 1;
+            if((value & 0x00ff0000) == FIX_SEPARATOR_THIRD_BYTE)
+                return len + 2;
+            if((value & 0xff000000) == FIX_SEPARATOR_FORTH_BYTE)
+                return len + 3;
+            len += 4;
+            pack4++;
+        }
+        return -1;
+    }
+
+    inline void ProcessSplitRecvMessages() {
+        int tagStart = 0;
+        int separatorIndex = FindSeparator(0);
+        this->currentPos = this->messageBuffer;
+        this->m_recvMessageCount = 1;
+
+        FixProtocolMessage **msgPtr = this->m_recvMessage;
+        FixProtocolMessage *msg = *msgPtr;
+        msg->Reset();
+        msg->Buffer(this->messageBuffer);
+        //msg->AddTag(this->messageBuffer);
+
+        while(separatorIndex != -1 && separatorIndex != this->messageBufferSize - 1) {
+            if(this->messageBuffer[separatorIndex + 1] == '8' && this->messageBuffer[separatorIndex + 1] == '=' ) {
+                msg->AddTag(&this->messageBuffer[tagStart], separatorIndex - tagStart);
+                msg->Size(this->messageBuffer + separatorIndex - msg->Buffer() + 1);
+                msgPtr++; msg = *msgPtr;
+                msg->Reset();
+                msg->Buffer(this->messageBuffer + separatorIndex + 1);
+                this->m_recvMessageCount++;
+            }
+            msg->AddTag(&this->messageBuffer[tagStart], separatorIndex - tagStart);
+            tagStart = separatorIndex + 1;
+            separatorIndex = FindSeparator(tagStart);
+        }
+        msg->AddTag(&this->messageBuffer[tagStart], separatorIndex - tagStart);
+        msg->Size(this->messageBufferSize - (msg->Buffer() - this->messageBuffer));
+    }
+
+    inline void SelectRecvMessage(int index) {
+        this->m_currMsg = this->m_recvMessage[index];
+        this->messageBuffer = this->m_currMsg->Buffer();
+        this->messageBufferSize = this->m_currMsg->Size();
+        this->currentPos = this->messageBuffer;
+    }
+    inline FixProtocolMessage* RecvMessage(int index) { return this->m_recvMessage[index]; }
+    inline int RecvMessageCount() { return this->m_recvMessageCount; }
+	inline FixProtocolMessage* Message(int index) { return this->m_recvMessage[index]; }
+    inline void ResetMessageSequenceNumber() { this->SetMessageSequenceNumber(1); }
 	inline void SetMessageSequenceNumber(int value) { this->messageSequenceNumber = value; }
 	inline void IncMessageSequenceNumber() { this->messageSequenceNumber++; }
+
+    inline bool ProcessCheckHeader() { return this->Message(0)->ProcessCheckHeader(); }
+    inline FixHeaderInfo* Header() { return this->Message(0)->Header(); }
+    inline bool CheckDetectCorrectMsgSeqNumber() { return this->Message(0)->CheckDetectCorrectMsgSeqNumber(); }
 
 	inline void AddArray(char *string, int length) {
 		memcpy(this->currentPos, string, length);
@@ -234,13 +294,15 @@ public:
 	}
 
     inline void SetMessageBuffer(char *buffer) {
-        SetMessageBuffer(buffer, 10000);
+        this->messageBuffer = buffer;
+        this->messageBufferSize = 10000;
+        this->currentPos = this->messageBuffer;
     }
 
-	inline void SetMessageBuffer(char *buffer, int size) {
+	inline void SetRecvMessageBuffer(char *buffer, int size) {
         this->messageBuffer = buffer;
         this->messageBufferSize = size;
-        this->currentPos = this->messageBuffer;
+        this->ProcessSplitRecvMessages();
     }
 
 	inline void CreateHearthBeatMessage() {
@@ -865,335 +927,6 @@ public:
 		AddTrail();
 		AddStringZero();
 	}
-	inline void ResetTagValueList() { this->tagValueItemsCount = 0; }
-	inline FixTagValueInfo* TagValueList() { return this->tagValueList; }
-	inline int TagValuesCount() { return this->tagValueItemsCount; }
-	inline int ReadValue(char *buffer, int *outValue, char stopSymbol) { 
-		return this->intConverter->FromStringFast(buffer, outValue, stopSymbol);
-	}
-	inline void ReadValuePredict234(int *outValue) {
-		this->currentPos += ReadValuePredict234(this->currentPos, outValue, FIX_SEPARATOR) + 1;
-	}
-	inline int ReadValuePredict234(char *buffer, int* outValue, char stopSymbol) {
-		if (buffer[2] == stopSymbol) {
-			*outValue = this->intConverter->From2SymbolUnsigned(buffer);
-			return 2;
-		}
-		if (buffer[3] == stopSymbol) {
-			*outValue = this->intConverter->From3SymbolUnsigned(buffer);
-			return 3;
-		}
-		if (buffer[4] == stopSymbol) {
-			*outValue = this->intConverter->From4SymbolUnsigned(buffer);
-			return 4;
-		}
-		return this->intConverter->FromStringFast(buffer, outValue, stopSymbol);
-	}
-	inline void ReadValuePredict34(int* outValue) {
-		this->currentPos += this->ReadValuePredict34(this->currentPos, outValue, FIX_SEPARATOR) + 1;
-	}
-	inline int ReadValuePredict34(char *buffer, int* outValue, char stopSymbol) { 
-		if (buffer[3] == stopSymbol) {
-			*outValue = this->intConverter->From3SymbolUnsigned(buffer);
-			return 3;
-		}
-		if (buffer[4] == stopSymbol) {
-			*outValue = this->intConverter->From4SymbolUnsigned(buffer);
-			return 4;
-		}
-		return this->intConverter->FromStringFast(buffer, outValue, stopSymbol);
-	}
-	inline int ReadUTCDateTime(char *buffer, SYSTEMTIME *st, char stopSymbol) { 
-		return this->timeConverter->FromString(buffer, st, stopSymbol);
-	}
-	inline int ReadUTCDate(char *buffer, SYSTEMTIME *st) { 
-		return this->timeConverter->FromDateString(buffer, st);
-	}
-	inline int ReadTag(char *buffer, int *outValue) { 
-		if (buffer[3] == '=') { 
-			*outValue = this->intConverter->From3SymbolUnsigned(buffer);
-			return 4;
-		}
-		else if (buffer[2] == '=') { 
-			*outValue = this->intConverter->From2SymbolUnsigned(buffer);
-			return 3;
-		}
-		else if (buffer[1] == '=') {
-			*outValue = *buffer - 0x30;
-			return 2;
-		}
-		else if (buffer[4] == '=') { 
-			*outValue = this->intConverter->From4SymbolUnsigned(buffer);
-			return 5;
-		}
-		return this->intConverter->FromStringFast(buffer, outValue, '=') + 1;
-	}
-	
-	inline int Read1SymbolTag(char *buffer) { return *buffer - 0x30; }
-	inline int Read2SymbolTag(char *buffer) { return this->intConverter->From2SymbolUnsigned(buffer); }
-	inline int Read3SymbolTag(char *buffer) { return this->intConverter->From3SymbolUnsigned(buffer); }
-	inline int Read4SymbolTag(char *buffer) { return this->intConverter->From4SymbolUnsigned(buffer); }
 
-	inline bool ReadCheck1SymbolTag(int expectedTag) {
-		if (this->Read1SymbolTag(this->currentPos) != expectedTag) {
-			return false;
-		}
-		this->currentPos ++;
-		if(*(this->currentPos) != '=') {
-			return false;
-		}
-		this->currentPos++;
-		return true;
-	}
-
-	inline bool ReadCheck2SymbolTag(int expectedTag) {
-		if (this->Read2SymbolTag(this->currentPos) != expectedTag) {
-			return false;
-		}
-		this->currentPos +=2;
-		if(*(this->currentPos) != '=') {
-			return false;
-		}
-		this->currentPos++;
-		return true;
-	}
-
-	inline bool ReadCheckSkip2SymbolTag(int expectedTag, bool *checkFailed) {
-		if (this->Read2SymbolTag(this->currentPos) != expectedTag) {
-			*checkFailed = false;
-			return false;
-		}
-		this->currentPos +=2;
-		if(*(this->currentPos) != '=') {
-			*checkFailed = true;
-			return false;
-		}
-		this->currentPos++;
-		return true;
-	}
-
-	inline bool Read2TagSymbol(int expectedTag, char *value) {
-		if(!this->ReadCheck2SymbolTag(expectedTag))
-			return false;
-		*value = *(this->currentPos);
-		this->currentPos++;
-		if(*(this->currentPos) != FIX_SEPARATOR)
-			return false;
-		this->currentPos++;
-		return true;
-	}
-
-    inline bool FindSymbol(char *str, int maxLength, char symb, int *length) {
-        int len = 0;
-        unsigned int *pack4 = (unsigned int*)str;
-        unsigned int symb1 = symb;
-        unsigned int symb2 = symb; symb2 <<= 8;
-        unsigned int symb3 = symb2; symb3 <<= 8;
-        unsigned int symb4 = symb3; symb4 <<= 8;
-        while(len < maxLength) {
-            if((*pack4 & 0x000000ff) == symb1) {
-                break;
-            }
-            if((*pack4 & 0x0000ff00) == symb2) {
-                len ++;
-                break;
-            }
-            if((*pack4 & 0x00ff0000) == symb3) {
-                len +=2;
-                break;
-            }
-            if((*pack4 & 0xff000000) == symb4) {
-                len +=3;
-                break;
-            }
-            len += 4;
-            pack4++;
-        }
-        *length = len;
-        return len < maxLength;
-    }
-
-	inline bool ReadString(int *length) {
-		const int MaxStringLength = 1500;
-		int len = 0;
-		unsigned int *pack4 = (unsigned int*)this->currentPos;
-		while(len < MaxStringLength) {
-			if((*pack4 & 0x000000ff) == FIX_SEPARATOR) {
-				break;
-			}
-			if((*pack4 & 0x0000ff00) == FIX_SEPARATOR_SECOND_BYTE) {
-				len ++;
-				break;
-			}
-			if((*pack4 & 0x00ff0000) == FIX_SEPARATOR_THIRD_BYTE) {
-				len +=2;
-				break;
-			}
-			if((*pack4 & 0xff000000) == FIX_SEPARATOR_FORTH_BYTE) {
-				len +=3;
-				break;
-			}
-			len += 4;
-			pack4++;
-		}
-		*length = len;
-		this->currentPos += len + 1;
-		return len < MaxStringLength;
-	}
-
-	inline bool Read2SymbolTagString(int expectedTag, char **strPtr, int *length) {
-		if(!this->ReadCheck2SymbolTag(expectedTag))
-			return false;
-		*strPtr = this->currentPos;
-		return this->ReadString(length);
-	}
-
-	inline bool ReadUtcTimeStamp(char **strPtr) {
-		*strPtr = this->currentPos;
-		if(this->currentPos[UTCTimeStampLength] != FIX_SEPARATOR)
-			return false;
-		this->currentPos += UTCTimeStampLength + 1;
-		return true;
-	}
-
-	inline bool Read2SymbolTagTimeStamp(int expectedTag, char **strPtr) {
-		if(!this->ReadCheck2SymbolTag(expectedTag))
-			return false;
-		return this->ReadUtcTimeStamp(strPtr);
-	}
-
-	inline bool Read2TagIntValuePredict234(int expectedTag, int *value) {
-		if(!this->ReadCheck2SymbolTag(expectedTag))
-			return false;
-		ReadValuePredict234(value);
-		return true;
-	}
-
-	inline bool ReadBooleanSymbol(bool *value) {
-		*value = *(this->currentPos) == 'Y';
-		this->currentPos++;
-		return true;
-	}
-
-	inline bool CheckFixHeader() {
-        // 8=FIX...
-		if(this->currentPos[2 + this->FixProtocolVersionLength] != FIX_SEPARATOR)
-			return false;
-		this->currentPos += 2 + this->FixProtocolVersionLength + 1;
-		/*
-		if(!this->ReadCheck1SymbolTag(TagBeginString))
-			return false;
-
-		if (*((int*)this->currentPos) != *((int*)this->FixProtocolVersion))
-			return false;
-
-		this->currentPos += 4 + 3;
-		if (*(this->currentPos) != FIX_SEPARATOR)
-			return false;
-
-		this->currentPos++;
-		*outLength = 1 + 1 + 7 + 1;
-		*/
-		return true;
-	}
-
-	inline bool ProcessMessageLengthTag() {
-		if(!this->ReadCheck1SymbolTag(TagBodyLength))
-			return false;
-
-		this->ReadValuePredict34(&this->m_headerInfo->bodyLength);
-		return true;
-	}
-
-	inline FixHeaderInfo* HeaderInfo() { return this->m_headerInfo; }
-	inline bool ProcessCheckHeader() {
-
-		this->m_headerInfo->name = this->currentPos;
-		if (!CheckFixHeader())
-			return false;
-
-		if (!ProcessMessageLengthTag())
-			return false;
-
-		if(!this->Read2TagSymbol(TagMsgType, &(this->m_headerInfo->msgType)))
-			return false;
-
-		if(!this->Read2SymbolTagString(TagSenderCompID, &(this->m_headerInfo->senderCompID), &(this->m_headerInfo->senderCompIDLength)))
-			return false;
-
-		if(!this->Read2SymbolTagString(TagTargetCompID, &(this->m_headerInfo->targetCompID), &(this->m_headerInfo->targetCompIDLength)))
-			return false;
-
-		if(!this->Read2TagIntValuePredict234(TagMsgSeqNum, &(this->m_headerInfo->msgSeqNum)))
-			return false;
-
-		bool checkFailed = false;
-		if(this->ReadCheckSkip2SymbolTag(TagPossDupFlag, &checkFailed)) {
-			this->ReadBooleanSymbol(&(this->m_headerInfo->possDupFlag));
-		}
-		else if(checkFailed)
-			return false;
-		if(this->ReadCheckSkip2SymbolTag(TagPossResend, &checkFailed)) {
-			this->ReadBooleanSymbol(&(this->m_headerInfo->possResend));
-		}
-		else if(checkFailed)
-			return false;
-		if(!this->Read2SymbolTagTimeStamp(TagSendingTime, &(this->m_headerInfo->sendingTime)))
-			return false;
-		if(this->ReadCheckSkip2SymbolTag(TagOrigSendingTime, &checkFailed) &&
-				!this->ReadUtcTimeStamp(&(this->m_headerInfo->origSendingTime))) {
-			return false;
-		}
-		if(checkFailed)
-			return false;
-
-		return true;
-	}
-
-    inline bool CheckDetectCorrectMsgSeqNumber() {
-        bool checkFailed = false;
-        if (!this->ReadCheckSkip2SymbolTag(TagText, &checkFailed))
-            return false;
-        //The incoming message has a sequence number (
-        char *msg = this->currentPos;
-        int length = 0;
-        if (!this->ReadString(&length))
-            return false;
-
-        int bIndex = -1;
-        if (!this->FindSymbol(msg, length, '(', &bIndex))
-            return false;
-
-        msg += bIndex + 1;
-        if (!this->FindSymbol(msg, length - bIndex - 1, '(', &bIndex))
-            return false;
-
-        msg += bIndex + 1;
-        this->ReadValuePredict234(msg, &(this->messageSequenceNumber), ')');
-        return true;
-    }
-
-	inline bool ProcessCheckLogonMessage() {
-		printf("recv = %s", this->messageBuffer);
-		return true;
-	}
-
-	inline bool CheckProcessHearthBeat(int testReqId) {
-		int length = 0;
-		this->currentPos = this->messageBuffer;
-		if(!ProcessCheckHeader())
-			return false;
-
-		int tag = Read3SymbolTag(this->currentPos);
-		this->currentPos += 3;
-
-		if (*(this->currentPos) != '=' || tag != TagTestReqID)
-			return false;
-
-		int hearthBeat = ReadValuePredict34(this->currentPos, &length, FIX_SEPARATOR);
-		this->currentPos ++;
-
-		return true;
-	}
 };
 

@@ -224,53 +224,110 @@ public:
 	inline int From4SymbolUnsigned(char *buffer) { 
 		return (int)(*buffer - 0x30) * 1000 + From3SymbolUnsigned(&(buffer[1]));
 	}
-	inline int FromStringFast(char *buffer, int *outValue, char stopSymbol) { 
-		char *start = buffer;
-		char *digitStart = buffer;
-		int result = 0;
+    inline int FromStringFast(char *buffer, int *outValue, char stopSymbol) {
+        char *start = buffer;
+        char *digitStart = buffer;
+        int result = 0;
 
-		if (*buffer == '-') { 
+        if (*buffer == '-') {
+            buffer++;
+            while (*buffer != stopSymbol) {
+                digitStart = buffer;
+                buffer++;
+                if (*buffer != stopSymbol) {
+                    buffer++;
+                    if (*buffer != stopSymbol) {
+                        buffer++;
+                        result = result * 1000 + ItoaConverter::charDigit3[((*(int*)digitStart) & 0x00ffffff) - 0x00303030];
+                    }
+                    else {
+                        result = result * 100 + ItoaConverter::charDigit2[((*(int*)digitStart) & 0x0000ffff) - 0x00003030];
+                    }
+                }
+                else {
+                    result = result * 10 + *digitStart - D0;
+                }
+            }
+            *outValue = -result;
+        }
+        else {
+            while (*buffer != stopSymbol) {
+                digitStart = buffer;
+                buffer++;
+                if (*buffer != stopSymbol) {
+                    buffer++;
+                    if (*buffer != stopSymbol) {
+                        buffer++;
+                        result = result * 1000 + ItoaConverter::charDigit3[((*(int*)digitStart) & 0x00ffffff) - 0x00303030];
+                    }
+                    else {
+                        result = result * 100 + ItoaConverter::charDigit2[((*(int*)digitStart) & 0x0000ffff) - 0x00003030];
+                    }
+                }
+                else {
+                    result = result * 10 + *digitStart - D0;
+                }
+            }
+            *outValue = result;
+        }
+        return buffer - start;
+    }
+
+    inline int FromStringFastUnsigned(char *buffer, int *outValue, char stopSymbol) {
+        char *start = buffer;
+        char *digitStart = buffer;
+        int result = 0;
+
+        while (*buffer != stopSymbol) {
+            digitStart = buffer;
+            buffer++;
+            if (*buffer != stopSymbol) {
+                buffer++;
+                if (*buffer != stopSymbol) {
+                    buffer++;
+                    result = result * 1000 +
+                             ItoaConverter::charDigit3[((*(int *) digitStart) & 0x00ffffff) - 0x00303030];
+                }
+                else {
+                    result =
+                            result * 100 + ItoaConverter::charDigit2[((*(int *) digitStart) & 0x0000ffff) - 0x00003030];
+                }
+            }
+            else {
+                result = result * 10 + *digitStart - D0;
+            }
+        }
+        *outValue = result;
+        return buffer - start;
+    }
+    inline int FromStringFastUnsigned(char *buffer, int count) {
+        char *digitStart = buffer;
+        int result = 0;
+        while(count > 0) {
+            if (count >= 3) {
+                result = result * 1000 + ItoaConverter::charDigit3[((*(int *) buffer) & 0x00ffffff) - 0x00303030];
+                count -= 3;
+                buffer += 3;
+            }
+            else if(count >= 2) {
+                result = result * 100 + ItoaConverter::charDigit2[((*(int*)buffer) & 0x0000ffff) - 0x00003030];
+                count -= 2;
+                buffer += 2;
+            }
+            else {
+                result = result * 10 + *digitStart - D0;
+                break;
+            }
+        }
+        return result;
+    }
+	inline int FromStringFast(char *buffer, int count) {
+		if (*buffer == '-') {
 			buffer++;
-			while (*buffer != stopSymbol) {
-				digitStart = buffer;
-				buffer++;
-				if (*buffer != stopSymbol) {
-					buffer++;
-					if (*buffer != stopSymbol) {
-						buffer++;
-						result = result * 1000 + ItoaConverter::charDigit3[((*(int*)digitStart) & 0x00ffffff) - 0x00303030];
-					}
-					else {
-						result = result * 100 + ItoaConverter::charDigit2[((*(int*)digitStart) & 0x0000ffff) - 0x00003030];
-					}
-				}
-				else {
-					result = result * 10 + *digitStart - D0;
-				}
-			}
-			*outValue = -result;
+			count--;
+			return -this->FromStringFastUnsigned(buffer, count);
 		}
-		else {
-			while (*buffer != stopSymbol) {
-				digitStart = buffer;
-				buffer++;
-				if (*buffer != stopSymbol) {
-					buffer++;
-					if (*buffer != stopSymbol) { 
-						buffer++;
-						result = result * 1000 + ItoaConverter::charDigit3[((*(int*)digitStart) & 0x00ffffff) - 0x00303030];
-					}
-					else { 
-						result = result * 100 + ItoaConverter::charDigit2[((*(int*)digitStart) & 0x0000ffff) - 0x00003030];
-					}
-				}
-				else {
-					result = result * 10 + *digitStart - D0;
-				}
-			}
-			*outValue = result;
-		}
-		return buffer - start;
+		return this->FromStringFastUnsigned(buffer, count);
 	}
 };
 

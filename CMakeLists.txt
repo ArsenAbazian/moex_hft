@@ -144,7 +144,7 @@ foreach(inc_dir ${inc_dirs})
     set(include_path "${include_path} -I${inc_dir}")
 endforeach(inc_dir)
 
-add_executable(hft_robot ${sources} source/src/Stopwatch.cpp source/include/Stopwatch.h source/src/FixProtocolManagerTester.cpp source/include/FixProtocolManagerTester.h source/include/FixProtocolMacros.h)
+add_executable(hft_robot ${sources} source/src/Stopwatch.cpp source/include/Stopwatch.h source/src/FixProtocolManagerTester.cpp source/include/FixProtocolManagerTester.h source/include/FixProtocolMacros.h source/include/FixMessage.h)
 add_dependencies(hft_robot tinyxml fast_generate)
 target_link_libraries(hft_robot ${TINYXML_LIBRARY} dl)
 

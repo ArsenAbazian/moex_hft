@@ -10,6 +10,23 @@ void FixProtocolManagerTester::TestMoreThanOneMessageReceived() {
     FixProtocolManager *manager = new FixProtocolManager();
 
     manager->SetMessageBuffer((char*)recvString);
+    manager->ProcessSplitRecvMessages();
+
+    if(manager->RecvMessageCount() != 2)
+        throw;
+    manager->SelectRecvMessage(0);
+    if(!manager->Message(0)->ProcessCheckHeader())
+        throw;
+    if(!manager->Message(1)->ProcessCheckHeader())
+        throw;
+    if(manager->Message(0)->TagsCount() != 7)
+        throw;
+    if(manager->Message(1)->TagsCount() != 10)
+        throw;
+    if(manager->Message(0)->Header()->msgType != MsgTypeHearthBeat)
+        throw;
+    if(manager->Message(1)->Header()->msgType != MsgTypeResendRequest)
+        throw;
 
     delete manager;
 }

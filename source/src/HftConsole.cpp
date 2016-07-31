@@ -4,6 +4,7 @@
 #include "ItoaTester.h"
 #include "UTCTimeConverterTester.h"
 #include "FastProtocolTester.h"
+#include "FixProtocolManagerTester.h"
 #include "Robot.h"
 
 int main(int argc, char** argv)
@@ -13,6 +14,7 @@ int main(int argc, char** argv)
 	bool test_all = false;
 	bool test_time = false;
 	bool test_fast = false;
+	bool test_fix = false;
 
 	for (int i = 0; i < argc; i++) {
 		if (strcmp(argv[i], "test_itoa") == 0)
@@ -23,10 +25,11 @@ int main(int argc, char** argv)
 			test_time = true;
 		if (strcmp(argv[i], "test_fast") == 0)
 			test_fast = true;
+		if(strcmp(argv[i], "test_fix"))
+			test_fix = true;
 		if (strcmp(argv[i], "test_all") == 0)
 			test_all = true;
 	}
-
 
 	if (test_itoa || test_all) {
 		ItoaTester tester;
@@ -43,40 +46,18 @@ int main(int argc, char** argv)
 		tester.Test();
 	}
 
-	if (test_itoa || test_ftoa || test_time || test_all || test_fast)
+	if(test_fix || test_all) {
+		FixProtocolManagerTester tester;
+		tester.Test();
+	}
+
+	if (test_itoa || test_ftoa || test_time || test_all || test_fast || test_fix)
 		return 1;
 
 	Robot *robot = new Robot();
 	robot->Run();
     delete robot;
 
-	/*if (!robot->AddDefaultTestMarkets()) {
-		ConsoleManager::WaitEnter();
-		return 0;
-	}
-	if (!robot->AddDefaultTestChannels()) {
-		ConsoleManager::WaitEnter();
-		return 0;
-	}*/
-
-	/*if (!manager->ConnectMarkets()) {
-		ConsoleManager::WaitEnter();
-		return 0;
-	}
-	if (!manager->ConnectChannels()) {
-		ConsoleManager::WaitEnter();
-		return 0;
-	}
-	
-	ConsoleManager::WaitEnter();
-	manager->LogonMarkets();
-	ConsoleManager::WaitEnter();
-	manager->LogoutMarkets();
-	ConsoleManager::WaitEnter();
-	manager->DisconnectMarkets();*/
-
-
-	//ConsoleManager::WaitEnter();
 	DefaultLogManager::Default->Print();
     return 0;
 }

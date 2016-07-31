@@ -242,6 +242,13 @@ const char FixTradeThruTimeFullDay = '0';
 const char FixTradeThruTimeGetAvailable = '3';
 const char FixTradeThruTimeFullOrDecline = '4';
 
+#pragma region Tags
+static const char* FixProtocolVersion = "FIX.4.4";
+static const int FixProtocolVersionLength = 7;
+static const char* FastProtocolVersion = "FIXT.1.1";
+static const int FastProtocolVersionLength = 8;
+#pragma endregion
+
 typedef struct _FixNewOrderInfo {
     char				ClOrdID[12];
     int					ClOrdIDLength;
@@ -379,6 +386,15 @@ typedef struct _FixRejectInfo {
     char        EncodedText[512];
     int         EncodedTextLength;
 }FixRejectInfo;
+
+typedef struct _FixHearthBeatInfo {
+    int         TestReqID;
+}FixHearthBeatInfo;
+
+typedef struct _FixResendRequestInfo {
+    int         BeginSeqNo;
+    int         EndSeqNo;
+}FixResendRequestInfo;
 
 typedef struct _Decimal {
     INT32		Mantissa;

@@ -8,8 +8,10 @@ FixProtocolManager::FixProtocolManager() {
 	this->doubleConverter = new DtoaConverter();
 	this->timeConverter = new UTCTimeConverter();
 	this->currentTime = new SYSTEMTIME;
-    this->m_headerInfo = new FixHeaderInfo();
-    bzero(this->m_headerInfo, sizeof(FixHeaderInfo));
+    for(int i = 0; i < this->m_maxRecvMessageCount; i++) {
+        this->m_recvMessage[i] = new FixProtocolMessage(this->intConverter, this->timeConverter, this->doubleConverter);
+    }
+    this->m_recvMessageCount = 0;
 }
 
 FixProtocolManager::~FixProtocolManager() {

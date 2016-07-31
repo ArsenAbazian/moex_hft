@@ -101,13 +101,13 @@ bool MarketServerInfo::RecvLogon_Atom() {
         DefaultLogManager::Default->EndLog(false);
         return true;
     }
-    this->m_fixManager->SetMessageBuffer((char*)this->m_socketManager->RecvBytes(), this->m_socketManager->RecvSize());
+    this->m_fixManager->SetRecvMessageBuffer((char*)this->m_socketManager->RecvBytes(), this->m_socketManager->RecvSize());
     if(!this->m_fixManager->ProcessCheckHeader()) {
         this->ReconnectSetNextState(MarketServerState::mssSendLogon, &MarketServerInfo::SendLogon_Atom);
         DefaultLogManager::Default->EndLog(false);
         return true;
     }
-    if(this->m_fixManager->HeaderInfo()->msgType == MsgTypeLogout) {
+    if(this->m_fixManager->Header()->msgType == MsgTypeLogout) {
         if(this->m_fixManager->CheckDetectCorrectMsgSeqNumber()) {
             this->m_logonInfo->MsgStartSeqNo = this->m_fixManager->MessageSequenceNumber();
             this->ReconnectSetNextState(MarketServerState::mssSendLogon, &MarketServerInfo::SendLogon_Atom);
