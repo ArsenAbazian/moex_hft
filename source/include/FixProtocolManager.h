@@ -137,13 +137,6 @@ public:
 		memcpy(this->currentPos, string, length);
 		this->currentPos += length;
 	}
-	inline void AddArray(char *string) {
-		while (*string != '\0') { 
-			*(this->currentPos) = *string;
-			this->currentPos++;
-			string++;
-		}
-	}
 	inline int InToString(char *tempBuffer, int value) {
 		return this->intConverter->Convert(tempBuffer, value);
 	}
@@ -370,7 +363,7 @@ public:
 	    if(info->SessionRejectReason != FixSessionRejectReason::NoReason)
 			AddTagValue(AddTagSessionRejectReason, (int)info->SessionRejectReason);
 		if(info->TextLength != 0)
-			AddTagString(AddTagText, info->Text);
+			AddTagString2(AddTagText, info->Text, info->TextLength);
 		AddEncodedTextTag(info->EncodedText, info->EncodedTextLength);
 		UpdateLengthTagValue();
 		AddTrail();
@@ -386,11 +379,12 @@ public:
 		AddTrail();
 	}
 
-	inline void CreateLogoutMessage(char *text, char *encodedText, int encodedTextLength) { 
+	inline void CreateLogoutMessage(char *text, int textLength, char *encodedText, int encodedTextLength) {
 		AddHeader(MsgTypeLogout);
 		if (text != NULL)
-			AddTagString(AddTagText, text);
-		AddEncodedTextTag(encodedText, encodedTextLength);
+			AddTagString2(AddTagText, text, textLength);
+		if(encodedText != NULL)
+			AddEncodedTextTag(encodedText, encodedTextLength);
 		UpdateLengthTagValue();
 		AddTrail();
 	}

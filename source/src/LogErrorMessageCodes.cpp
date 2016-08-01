@@ -62,6 +62,18 @@ void LogMessageProvider::InitializeLogMessageText() {
 	this->m_logMessageText[LogMessageCode::lmcMarketServerInfo_SendTestRequest_Atom] = "MarketServerInfo::SendTestRequest_Atom";
 	this->m_logMessageText[LogMessageCode::lmcMarketServerInfo_RepeatSendTestRequest_Atom] = "MarketServerInfo::RepeatSendTestRequest_Atom";
 	this->m_logMessageText[LogMessageCode::lmcMarketServerInfo_RecvHearthBeat_Atom] = "MarketServerInfo::RecvHearthBeat_Atom";
+	this->m_logMessageText[LogMessageCode::lmcMarketServerInfo_SendResendRequest_Atom] = "MarketServerInfo::SendResendRequest_Atom";
+	this->m_logMessageText[LogMessageCode::lmcMarketServerInfo_RepeatSendResendRequest_Atom] = "MarketServerInfo::RepeatSendResendRequest_Atom";
+	this->m_logMessageText[LogMessageCode::lmcMarketServerInfo_ProcessMessages] = "MarketServerInfo::ProcessMessages";
+	this->m_logMessageText[LogMessageCode::lmcMarketServerInfo_ProcessMessage] = "MarketServerInfo::ProcessMessage";
+	this->m_logMessageText[LogMessageCode::lmcMarketServerInfo_OnReceiveHearthBeatMessage] = "MarketServerInfo::OnReceiveHearthBeatMessage";
+	this->m_logMessageText[LogMessageCode::lmcMarketServerInfo_OnReceiveResendRequestMessage] = "MarketServerInfo::OnReceiveResendRequestMessage";
+	this->m_logMessageText[LogMessageCode::lmcMarketServerInfo_OnReceiveLogonMessage] = "MarketServerInfo::OnReceiveLogonMessage";
+	this->m_logMessageText[LogMessageCode::lmcMarketServerInfo_OnReceiveLogoutMessage] = "MarketServerInfo::OnReceiveLogoutMessage";
+	this->m_logMessageText[LogMessageCode::lmcMarketServerInfo_OnReceiveTestRequestMessage] = "MarketServerInfo::OnReceiveTestRequestMessage";
+	this->m_logMessageText[LogMessageCode::lmcMarketServerInfo_ResendLastMessage_Atom] = "MarketServerInfo::ResendLastMessage_Atom";
+	this->m_logMessageText[LogMessageCode::lmcMarketServerInfo_RecvMessage_Atom] = "MarketServerInfo::RecvMessage_Atom";
+	this->m_logMessageText[LogMessageCode::lmcMarketServerInfo_RecvResendRequest_Atom] = "MarketServerInfo::RecvResendRequest_Atom";
 #pragma endregion
 }
 

@@ -59,7 +59,19 @@ typedef enum _LogMessageCode {
 	lmcMarketServerInfo_Reconnect_Atom = 49,
 	lmcMarketServerInfo_SendTestRequest_Atom = 50,
 	lmcMarketServerInfo_RepeatSendTestRequest_Atom = 51,
-	lmcMarketServerInfo_RecvHearthBeat_Atom = 52
+	lmcMarketServerInfo_RecvHearthBeat_Atom = 52,
+	lmcMarketServerInfo_SendResendRequest_Atom = 53,
+	lmcMarketServerInfo_RepeatSendResendRequest_Atom = 54,
+	lmcMarketServerInfo_ProcessMessages = 55,
+	lmcMarketServerInfo_ProcessMessage = 56,
+	lmcMarketServerInfo_OnReceiveHearthBeatMessage = 57,
+	lmcMarketServerInfo_OnReceiveResendRequestMessage = 58,
+	lmcMarketServerInfo_OnReceiveLogonMessage = 59,
+	lmcMarketServerInfo_OnReceiveLogoutMessage = 60,
+	lmcMarketServerInfo_OnReceiveTestRequestMessage = 61,
+	lmcMarketServerInfo_ResendLastMessage_Atom = 62,
+	lmcMarketServerInfo_RecvMessage_Atom = 63,
+	lmcMarketServerInfo_RecvResendRequest_Atom = 64
 #pragma  endregion
 }LogMessageCode;
 
