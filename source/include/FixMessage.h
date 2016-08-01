@@ -11,7 +11,10 @@
 #include "UTCTimeConverter.h"
 
 typedef struct _FixTag {
-    char*   buffer;
+    union {
+        char*   buffer;
+        unsigned int*   ui_buffer;
+    };
     char*   value;
     int     size;
     int     valueSize;
@@ -36,7 +39,6 @@ class FixProtocolMessage {
     UTCTimeConverter            *m_timeConv;
     DtoaConverter               *m_doubleConv;
     int                         m_currentTag;
-    int                         m_msgSeqNumber;
 
 public:
     FixProtocolMessage(ItoaConverter *intConv, UTCTimeConverter *timeConv, DtoaConverter *doubleConv) {
@@ -75,9 +77,6 @@ public:
     inline int TagsCount() { return this->m_tagsCount; }
     inline void MoveNext() { this->m_currentTag++; }
 
-    /*inline int ReadValue(char *buffer, int *outValue, char stopSymbol) {
-        return this->m_intConv->FromStringFast(buffer, outValue, stopSymbol);
-    }*/
     inline void ReadValuePredict324Unsigned(FixTag *tag) {
         tag->uintValue = ReadValuePredict324Unsigned(tag->value, tag->valueSize);
     }
@@ -124,19 +123,20 @@ public:
         return this->m_timeConv->FromDateString(buffer, st);
     }
     inline int ReadTag(char *buffer, int *outValue) {
-        if (buffer[3] == '=') {
+        unsigned int tagVal = *((unsigned int *)buffer);
+        if ((tagVal & 0xff000000) == FIX_EQUAL_FORTH_BYTE) {
             *outValue = this->m_intConv->From3SymbolUnsigned(buffer);
             return 4;
         }
-        else if (buffer[2] == '=') {
+        else if ((tagVal & 0xff000000) == FIX_EQUAL_THIRD_BYTE) {
             *outValue = this->m_intConv->From2SymbolUnsigned(buffer);
             return 3;
         }
-        else if (buffer[1] == '=') {
+        else if ((tagVal & 0xff000000) == FIX_EQUAL_SECOND_BYTE) {
             *outValue = *buffer - 0x30;
             return 2;
         }
-        else if (buffer[4] == '=') {
+        else if(buffer[4] == '=') {
             *outValue = this->m_intConv->From4SymbolUnsigned(buffer);
             return 5;
         }
@@ -180,6 +180,48 @@ public:
     inline bool ReadCheck3SymbolTag(FixTag *tag, int expectedTag) {
         return this->Read3SymbolTag(tag) == expectedTag;
     }
+    inline bool ReadCheck4SymbolTag(FixTag *tag, int expectedTag) {
+        return this->Read4SymbolTag(tag) == expectedTag;
+    }
+
+    inline bool ReadCheck1SymbolTag(FixTag *tag, int binaryExpectedTag, int expectedTag) {
+        if((*(tag->ui_buffer) & 0x0000ffff) == binaryExpectedTag) {
+            tag->tag = expectedTag;
+            tag->value = tag->buffer + 2;
+            tag->valueSize = tag->size - 2;
+            return true;
+        }
+        return false;
+    }
+
+    inline bool ReadCheck2SymbolTag(FixTag *tag, int binaryExpectedTag, int expectedTag) {
+        if((*(tag->ui_buffer) & 0x00ffffff) == binaryExpectedTag) {
+            tag->tag = expectedTag;
+            tag->value = tag->buffer + 3;
+            tag->valueSize = tag->size - 3;
+            return true;
+        }
+        return false;
+    }
+
+    inline bool ReadCheck3SymbolTag(FixTag *tag, int binaryExpectedTag, int expectedTag) {
+        if(*(tag->ui_buffer) == binaryExpectedTag) {
+            tag->tag = expectedTag;
+            tag->value = tag->buffer + 4;
+            tag->valueSize = tag->size - 4;
+            return true;
+        }
+        return false;
+    }
+    inline bool ReadCheck4SymbolTag(FixTag *tag, int binaryExpectedTag, int expectedTag) {
+        if(*(tag->ui_buffer) == binaryExpectedTag && tag->buffer[4] == '=') {
+            tag->tag = expectedTag;
+            tag->value = tag->buffer + 5;
+            tag->valueSize = tag->size - 5;
+            return true;
+        }
+        return false;
+    }
 
     inline bool Read2TagSymbol(FixTag *tag, int expectedTag) {
         if(!this->ReadCheck2SymbolTag(tag, expectedTag) || tag->valueSize != 1)
@@ -189,6 +231,19 @@ public:
     }
     inline bool ReadCheck2SymbolBoolean(FixTag *tag, int expectedTag) {
         if(!this->ReadCheck2SymbolTag(tag, expectedTag))
+            return false;
+        this->ReadBooleanSymbol(tag);
+        return true;
+    }
+
+    inline bool Read2TagSymbol(FixTag *tag, int binaryExpectedTag, int expectedTag) {
+        if(!this->ReadCheck2SymbolTag(tag, binaryExpectedTag, expectedTag) || tag->valueSize != 1)
+            return false;
+        tag->charValue = *(tag->value);
+        return true;
+    }
+    inline bool ReadCheck2SymbolBoolean(FixTag *tag, int binaryExpectedTag, int expectedTag) {
+        if(!this->ReadCheck2SymbolTag(tag, binaryExpectedTag, expectedTag))
             return false;
         this->ReadBooleanSymbol(tag);
         return true;
@@ -243,8 +298,8 @@ public:
         return len < maxLength;
     }
 
-    inline bool Read2TagIntValuePredict234(FixTag *tag, int expectedTag) {
-        if(!this->ReadCheck2SymbolTag(tag, expectedTag))
+    inline bool Read2TagIntValuePredict234(FixTag *tag, int binaryExpectedTag, int expectedTag) {
+        if(!this->ReadCheck2SymbolTag(tag, binaryExpectedTag, expectedTag))
             return false;
         this->ReadValuePredict324Unsigned(tag);
         return true;
@@ -258,7 +313,7 @@ public:
     }
 
     inline bool CheckFixHeader(FixTag *tag) {
-        if(!this->ReadCheck1SymbolTag(tag, TagBeginString) || tag->valueSize != FixProtocolVersionLength)
+        if(!this->ReadCheck1SymbolTag(tag, TagCheckBeginString, TagBeginString) || tag->valueSize != FixProtocolVersionLength)
             return false;
         // 8=FIX...
         this->m_headerInfo->name = tag->value; // 8=
@@ -268,7 +323,7 @@ public:
     }
 
     inline bool ProcessMessageLengthTag(FixTag *tag) {
-        if(!this->ReadCheck1SymbolTag(tag, TagBodyLength))
+        if(!this->ReadCheck1SymbolTag(tag, TagCheckBodyLength, TagBodyLength))
             return false;
 
         ReadValuePredict324Unsigned(tag);
@@ -285,56 +340,56 @@ public:
             return false;
 
         FixTag *tag = this->Tag(2);
-        if(!this->Read2TagSymbol(tag, TagMsgType))
+        if(!this->Read2TagSymbol(tag, TagCheckMsgType, TagMsgType))
             return false;
         this->m_headerInfo->msgType = tag->charValue;
 
         tag = this->Tag(3);
-        if(!this->ReadCheck2SymbolTag(tag, TagSenderCompID))
+        if(!this->ReadCheck2SymbolTag(tag, TagCheckSenderCompID, TagSenderCompID))
             return false;
         this->m_headerInfo->senderCompID = tag->value;
         this->m_headerInfo->senderCompIDLength = tag->valueSize;
 
         tag = this->Tag(4);
-        if(!this->ReadCheck2SymbolTag(tag, TagTargetCompID))
+        if(!this->ReadCheck2SymbolTag(tag, TagCheckTargetCompID, TagTargetCompID))
             return false;
         this->m_headerInfo->targetCompID = tag->value;
         this->m_headerInfo->targetCompIDLength = tag->valueSize;
 
         tag = this->Tag(5);
-        if(!this->Read2TagIntValuePredict234(tag, TagMsgSeqNum))
+        if(!this->Read2TagIntValuePredict234(tag, TagCheckMsgSeqNum, TagMsgSeqNum))
             return false;
         this->m_headerInfo->msgSeqNum = tag->intValue;
 
         this->m_currentTag = 6;
         tag = this->CurrentTag();
-        if(this->ReadCheck2SymbolBoolean(tag, TagPossDupFlag)) {
+        if(this->ReadCheck2SymbolBoolean(tag, TagCheckPossDupFlag, TagPossDupFlag)) {
             this->m_headerInfo->possDupFlag = tag->boolValue;
             this->MoveNext();
         }
         tag = this->CurrentTag();
-        if(this->ReadCheck2SymbolBoolean(tag, TagPossResend)) {
+        if(this->ReadCheck2SymbolBoolean(tag, TagCheckPossResend, TagPossResend)) {
             if(!this->ReadBooleanSymbol(tag))
                 return false;
             this->m_headerInfo->possResend = tag->boolValue;
             this->MoveNext();
         }
         tag = this->CurrentTag();
-        if(!this->ReadCheck2SymbolTag(tag, TagSendingTime))
+        if(!this->ReadCheck2SymbolTag(tag, TagCheckSendingTime, TagSendingTime))
             return false;
         this->MoveNext();
         this->m_headerInfo->sendingTime = tag->value;
         tag = this->CurrentTag();
-        if(this->ReadCheck2SymbolTag(tag, TagOrigSendingTime)) {
+        if(this->ReadCheck2SymbolTag(tag, TagCheckOrigSendingTime, TagOrigSendingTime)) {
             this->m_headerInfo->origSendingTime = tag->value;
             this->MoveNext();
         }
         return true;
     }
 
-    inline bool CheckDetectCorrectMsgSeqNumber() {
+    inline bool CheckDetectCorrectMsgSeqNumber(int *outValue) {
         FixTag *tag = this->CurrentTag();
-        if (!this->ReadCheck2SymbolTag(tag, TagText))
+        if (!this->ReadCheck2SymbolTag(tag, TagCheckText, TagText))
             return false;
         //The incoming message has a sequence number (
         char *msg = tag->value;
@@ -348,7 +403,7 @@ public:
             return false;
 
         msg += bIndex + 1;
-        this->m_msgSeqNumber = this->ReadValuePredict34Unsigned(msg, ')');
+        *outValue = this->ReadValuePredict34Unsigned(msg, ')');
         return true;
     }
 
@@ -358,7 +413,7 @@ public:
             return false;
 
         FixTag *tag = this->CurrentTag();
-        if(!ReadCheck3SymbolTag(tag, TagTestReqID))
+        if(!ReadCheck3SymbolTag(tag, TagCheckTestReqID, TagTestReqID))
             return false;
 
         this->ReadValuePredict324Unsigned(tag);

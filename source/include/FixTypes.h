@@ -407,6 +407,11 @@ typedef struct _Decimal {
 #define FIX_SEPARATOR_THIRD_BYTE		0x00010000L
 #define FIX_SEPARATOR_FORTH_BYTE		0x01000000L
 
+#define FIX_EQUAL 					0x3d
+#define FIX_EQUAL_SECOND_BYTE		0x00003d00L
+#define FIX_EQUAL_THIRD_BYTE		0x003d0000L
+#define FIX_EQUAL_FORTH_BYTE		0x3d000000L
+
 #pragma region SessionRejectReason
 #define SrrInvalidTagNumber "0" // Invalid tag number
 #define SrrRequiredTagMissing "1" // Required tag missing

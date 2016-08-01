@@ -125,7 +125,9 @@ public:
 
     inline bool ProcessCheckHeader() { return this->Message(0)->ProcessCheckHeader(); }
     inline FixHeaderInfo* Header() { return this->Message(0)->Header(); }
-    inline bool CheckDetectCorrectMsgSeqNumber() { return this->Message(0)->CheckDetectCorrectMsgSeqNumber(); }
+    inline bool CheckDetectCorrectMsgSeqNumber() {
+		return this->Message(0)->CheckDetectCorrectMsgSeqNumber(&(this->m_sendMsgSeqNumber));
+	}
 
 	inline void AddArray(char *string, int length) {
 		memcpy(this->currentPos, string, length);
