@@ -3,7 +3,8 @@
 
 FixProtocolManager::FixProtocolManager() {
 	this->messageBuffer = this->currentPos = NULL;
-    this->messageSequenceNumber = 0;
+    this->m_recvMsgSeqNumber = 1;
+    this->m_sendMsgSeqNumber = 1;
 	this->intConverter = new ItoaConverter();
 	this->doubleConverter = new DtoaConverter();
 	this->timeConverter = new UTCTimeConverter();

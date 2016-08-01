@@ -34,12 +34,11 @@ class FixProtocolManager {
     FixProtocolMessage      *m_recvMessage[128];
 
     char                *currentPos;
-	int                 messageSequenceNumber;
-
+	int                 m_sendMsgSeqNumber;
+    int                 m_recvMsgSeqNumber;
+    
 	DtoaConverter       *doubleConverter;
 	ItoaConverter       *intConverter;
-
-
 
 	inline void AddSymbol(char symbol) { *(this->currentPos) = symbol; this->currentPos++; }
 	inline void AddEqual() { *(this->currentPos) = '='; this->currentPos++; }
@@ -75,32 +74,35 @@ public:
     }
 
     inline void ProcessSplitRecvMessages() {
-        int tagStart = 0;
-        int separatorIndex = FindSeparator(0);
-        this->currentPos = this->messageBuffer;
-        this->m_recvMessageCount = 1;
-
         FixProtocolMessage **msgPtr = this->m_recvMessage;
         FixProtocolMessage *msg = *msgPtr;
+        int tagStart = 0;
+
         msg->Reset();
         msg->Buffer(this->messageBuffer);
-        //msg->AddTag(this->messageBuffer);
+        this->m_recvMessageCount = 0;
 
-        while(separatorIndex != -1 && separatorIndex != this->messageBufferSize - 1) {
-            if(this->messageBuffer[separatorIndex + 1] == '8' && this->messageBuffer[separatorIndex + 1] == '=' ) {
-                msg->AddTag(&this->messageBuffer[tagStart], separatorIndex - tagStart);
-                msg->Size(this->messageBuffer + separatorIndex - msg->Buffer() + 1);
-                msgPtr++; msg = *msgPtr;
-                msg->Reset();
-                msg->Buffer(this->messageBuffer + separatorIndex + 1);
-                this->m_recvMessageCount++;
-            }
+        int separatorIndex = FindSeparator(0);
+        int msgStart = 0;
+        while(separatorIndex != -1) {
             msg->AddTag(&this->messageBuffer[tagStart], separatorIndex - tagStart);
             tagStart = separatorIndex + 1;
+            // 8= -> 0x3d38
+            if(*((unsigned short*)&(this->messageBuffer[tagStart])) == 0x3d38 ) {
+                msg->Size(separatorIndex - msgStart + 1);
+                msgStart = tagStart;
+                msgPtr++; msg = *msgPtr;
+                msg->Reset();
+                msg->Buffer(this->messageBuffer + tagStart);
+                this->m_recvMessageCount++;
+            }
+            if(separatorIndex == this->messageBufferSize - 1) {
+                this->m_recvMessageCount++;
+                msg->Size(separatorIndex - msgStart + 1);
+                break;
+            }
             separatorIndex = FindSeparator(tagStart);
         }
-        msg->AddTag(&this->messageBuffer[tagStart], separatorIndex - tagStart);
-        msg->Size(this->messageBufferSize - (msg->Buffer() - this->messageBuffer));
     }
 
     inline void SelectRecvMessage(int index) {
@@ -112,9 +114,14 @@ public:
     inline FixProtocolMessage* RecvMessage(int index) { return this->m_recvMessage[index]; }
     inline int RecvMessageCount() { return this->m_recvMessageCount; }
 	inline FixProtocolMessage* Message(int index) { return this->m_recvMessage[index]; }
-    inline void ResetMessageSequenceNumber() { this->SetMessageSequenceNumber(1); }
-	inline void SetMessageSequenceNumber(int value) { this->messageSequenceNumber = value; }
-	inline void IncMessageSequenceNumber() { this->messageSequenceNumber++; }
+    
+    inline void ResetSendMsgSeqNumber() { this->SetSendMsgSeqNumber(1); }
+	inline void SetSendMsgSeqNumber(int value) { this->m_sendMsgSeqNumber = value; }
+    inline void IncSendMsgSeqNumber() { this->m_sendMsgSeqNumber++; }
+
+    inline void ResetRecvMsgSeqNumber() { this->SetRecvMsgSeqNumber(1); }
+    inline void SetRecvMsgSeqNumber(int value) { this->m_recvMsgSeqNumber = value; }
+    inline void IncRecvMsgSeqNumber() { this->m_recvMsgSeqNumber++; }
 
     inline bool ProcessCheckHeader() { return this->Message(0)->ProcessCheckHeader(); }
     inline FixHeaderInfo* Header() { return this->Message(0)->Header(); }
@@ -257,7 +264,7 @@ public:
 		AddMessageType(messageType);
 		AddSenderComputerId();
 		AddTargetComputerId();
-		AddMessageSeqNumber(this->messageSequenceNumber);
+		AddMessageSeqNumber(this->m_sendMsgSeqNumber);
 		if (possResend) {
 			AddTagPossResend
             AddEqual(); AddValue('Y');
@@ -645,34 +652,6 @@ public:
 		AddSeparator();
 	}
 	
-#pragma region Additional MOEX Tags
-#define TagStrSessionStatus "1409"
-#define TagSessionStatus 1409
-
-#define AddTagSessionStatus *((unsigned int*)this->currentPos) = 0x39303431; this->currentPos += 4;
-
-#define TagStrCancelOnDisconnect "6867"
-#define TagCancelOnDisconnect 6867
-#define AddTagCancelOnDisconnect *((unsigned int*)this->currentPos) = 0x37363836; this->currentPos += 4;
-
-#define TagStrLanguageID "6936"
-#define TagLanguageID 6936
-#define AddTagTagLanguageID *((unsigned int*)this->currentPos) = 0x36333936; this->currentPos += 4;
-
-#define TagStrTradeThruTime "5202"
-#define TagTradeThruTime 5202
-#define AddTagTradeThruTime *((unsigned int*)this->currentPos) = 0x32303235; this->currentPos += 4;
-
-#define	TagStrMaxPriceLevels "1090"
-#define TagMaxPriceLevels 1090
-#define AddTagMaxPriceLevels *((unsigned int*)this->currentPos) = 0x30393031; this->currentPos += 4;
-
-#define TagStrCancelOrigOnReject "9619"
-#define TagCancelOrigOnReject 9619
-#define AddTagCancelOrigOnReject *((unsigned int*)this->currentPos) = 0x39313639; this->currentPos += 4;
-
-#pragma endregion
-
 	inline void AddGroupLogon(FixLogonInfo *info) {
 		AddTagEncryptMethod
 		AddEqual();
@@ -716,17 +695,18 @@ public:
 		}
 
 		if (info->LanguageId != 0) {
-			AddTagTagLanguageID
+			AddTagLanguageID
 			AddEqual();
 			AddSymbol(info->LanguageId);
 			AddSeparator();
 		}
 	}
 
-    inline int MessageSequenceNumber() { return this->messageSequenceNumber; }
+    inline int SendMsgSeqNumber() { return this->m_sendMsgSeqNumber; }
+    inline int RecvMsgSeqNumber() { return this->m_recvMsgSeqNumber; }
 
 	inline void CreateLogonMessage(FixLogonInfo *logon) {
-		this->messageSequenceNumber = logon->MsgStartSeqNo;
+		this->m_sendMsgSeqNumber = logon->MsgStartSeqNo;
 		this->SetSenderComputerId(logon->SenderCompID);
 		AddHeader(MsgTypeLogon);
 		AddGroupLogon(logon);

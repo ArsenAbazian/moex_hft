@@ -25,7 +25,7 @@ int main(int argc, char** argv)
 			test_time = true;
 		if (strcmp(argv[i], "test_fast") == 0)
 			test_fast = true;
-		if(strcmp(argv[i], "test_fix"))
+		if(strcmp(argv[i], "test_fix") == 0)
 			test_fix = true;
 		if (strcmp(argv[i], "test_all") == 0)
 			test_all = true;

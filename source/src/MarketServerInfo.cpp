@@ -75,7 +75,7 @@ bool MarketServerInfo::SendLogon_Atom() {
         DefaultLogManager::Default->EndLog(false);
         return true;
     }
-    this->m_fixManager->IncMessageSequenceNumber();
+    this->m_fixManager->IncSendMsgSeqNumber();
     this->SetState(MarketServerState::mssRecvLogon, &MarketServerInfo::RecvLogon_Atom);
     DefaultLogManager::Default->EndLog(true);
 
@@ -109,7 +109,7 @@ bool MarketServerInfo::RecvLogon_Atom() {
     }
     if(this->m_fixManager->Header()->msgType == MsgTypeLogout) {
         if(this->m_fixManager->CheckDetectCorrectMsgSeqNumber()) {
-            this->m_logonInfo->MsgStartSeqNo = this->m_fixManager->MessageSequenceNumber();
+            this->m_logonInfo->MsgStartSeqNo = this->m_fixManager->SendMsgSeqNumber();
             this->ReconnectSetNextState(MarketServerState::mssSendLogon, &MarketServerInfo::SendLogon_Atom);
             DefaultLogManager::Default->EndLog(false);
             return true;
@@ -121,7 +121,7 @@ bool MarketServerInfo::RecvLogon_Atom() {
         }
     }
 
-    this->m_fixManager->IncMessageSequenceNumber();
+    this->m_fixManager->IncRecvMsgSeqNumber();
     DefaultLogManager::Default->EndLog(true);
     this->m_stopwatch->Start();
     this->SetState(MarketServerState::mssDoNothing, &MarketServerInfo::DoNothing_Atom);
@@ -146,7 +146,7 @@ bool MarketServerInfo::WaitRecvLogon_Atom() {
         }
     }
     DefaultLogManager::Default->WriteSuccess(this->m_nameLogIndex, LogMessageCode::lmcMarketServerInfo_WaitRecvLogon_Atom, true);
-    this->m_fixManager->IncMessageSequenceNumber();
+    this->m_fixManager->IncRecvMsgSeqNumber();
     this->SetState(MarketServerState::mssSendLogout, &MarketServerInfo::SendLogout_Atom);
     return true;
 }
@@ -162,7 +162,7 @@ bool MarketServerInfo::SendLogout_Atom() {
         DefaultLogManager::Default->EndLog(false);
         return true;
     }
-    this->m_fixManager->IncMessageSequenceNumber();
+    this->m_fixManager->IncSendMsgSeqNumber();
     this->SetState(MarketServerState::mssRecvLogout, &MarketServerInfo::RecvLogout_Atom);
     DefaultLogManager::Default->EndLog(true);
     return true;
@@ -174,7 +174,7 @@ bool MarketServerInfo::RepeatSendLogout_Atom() {
         DefaultLogManager::Default->EndLog(false);
         return true;
     }
-    this->m_fixManager->IncMessageSequenceNumber();
+    this->m_fixManager->IncSendMsgSeqNumber();
     this->SetState(MarketServerState::mssRecvLogout, &MarketServerInfo::RecvLogout_Atom);
     DefaultLogManager::Default->EndLog(true);
     return true;
@@ -195,7 +195,7 @@ bool MarketServerInfo::RecvLogout_Atom() {
             return true;
         }
     }
-    this->m_fixManager->IncMessageSequenceNumber();
+    this->m_fixManager->IncRecvMsgSeqNumber();
     DefaultLogManager::Default->EndLog(true);
     this->SetState(MarketServerState::mssEnd, &MarketServerInfo::End_Atom);
     return true;
@@ -219,7 +219,7 @@ bool MarketServerInfo::WaitRecvLogout_Atom() {
         }
     }
     DefaultLogManager::Default->WriteSuccess(this->m_nameLogIndex, LogMessageCode::lmcMarketServerInfo_WaitRecvLogout_Atom, true);
-    this->m_fixManager->IncMessageSequenceNumber();
+    this->m_fixManager->IncRecvMsgSeqNumber();
     this->SetState(MarketServerState::mssEnd, &MarketServerInfo::End_Atom);
     return true;
 }
@@ -236,7 +236,7 @@ bool MarketServerInfo::SendTestRequest_Atom() {
         DefaultLogManager::Default->EndLog(false);
         return true;
     }
-    this->m_fixManager->IncMessageSequenceNumber();
+    this->m_fixManager->IncSendMsgSeqNumber();
     this->SetState(MarketServerState::mssRecvHearthBeat, &MarketServerInfo::RecvHearthBeat_Atom);
     DefaultLogManager::Default->EndLog(true);
     return true;
@@ -249,7 +249,7 @@ bool MarketServerInfo::RepeatSendTestRequest_Atom() {
         DefaultLogManager::Default->EndLog(false);
         return true;
     }
-    this->m_fixManager->IncMessageSequenceNumber();
+    this->m_fixManager->IncSendMsgSeqNumber();
     this->SetState(MarketServerState::mssRecvHearthBeat, &MarketServerInfo::RecvHearthBeat_Atom);
     DefaultLogManager::Default->EndLog(true);
     return true;
@@ -273,7 +273,7 @@ bool MarketServerInfo::RecvHearthBeat_Atom() {
         }
     }
     DefaultLogManager::Default->WriteSuccess(this->m_nameLogIndex, LogMessageCode::lmcMarketServerInfo_RecvHearthBeat_Atom, true);
-    this->m_fixManager->IncMessageSequenceNumber();
+    this->m_fixManager->IncRecvMsgSeqNumber();
     this->m_stopwatch->Start();
     this->JumpNextState();
     return true;
@@ -306,7 +306,8 @@ bool MarketServerInfo::Connect() {
 	if (this->m_fixManager == NULL) {
 		this->m_fixManager = new FixProtocolManager();
 		this->m_fixManager->SetTargetComputerId((char*)TargetComputerId());
-		this->m_fixManager->SetMessageSequenceNumber(1);
+		this->m_fixManager->SetSendMsgSeqNumber(1);
+        this->m_fixManager->SetRecvMsgSeqNumber(1);
 	}
 	if (this->m_logonInfo == NULL) {
 		this->m_logonInfo = CreateLogonInfo();
