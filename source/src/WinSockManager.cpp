@@ -8,12 +8,9 @@
 #include <arpa/inet.h>
 #include "SocketThreadManager.h"
 
-WinSockManager::WinSockManager(ISocketBufferProvider *provider) {
+WinSockManager::WinSockManager() {
 	this->m_socket = -1;
 	this->m_serverAddressLogIndex = LogMessageCode::lmcNone;
-	this->m_bufferProvider = provider;
-	this->m_recvBuffer = this->m_bufferProvider->RecvBuffer();
-	this->m_sendBuffer = this->m_bufferProvider->SendBuffer();
     this->m_sendStatus = WinSockStatus::wssOk;
     this->m_recvStatus = WinSockStatus::wssOk;
     this->m_sendSize = 0;

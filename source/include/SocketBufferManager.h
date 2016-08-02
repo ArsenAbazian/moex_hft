@@ -40,7 +40,7 @@ public:
         int itemCount = this->m_itemsCount;
 
         this->m_itemLength[itemCount] = length;
-        this->m_current += (length & 0xfffffffc) + 8; //optimization by 4 + additional 4 bytes for zero string
+        //this->m_current += (length & 0xfffffffc) + 8; //optimization by 4 + additional 4 bytes for zero string
 
         itemCount++;
         if ((itemCount >= this->m_maxItemsCount) || (this->m_current >= this->m_end))

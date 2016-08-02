@@ -31,6 +31,7 @@ class FixProtocolMessage {
     const int                   m_tagsMaxCount = 256;
 
     FixHeaderInfo               *m_headerInfo;
+    FixResendRequestInfo        *m_resendRequestInfo;
     int                         m_size;
     char*                       m_buffer;
     int                         m_tagsCount;
@@ -43,6 +44,7 @@ class FixProtocolMessage {
 public:
     FixProtocolMessage(ItoaConverter *intConv, UTCTimeConverter *timeConv, DtoaConverter *doubleConv) {
         this->m_headerInfo = new FixHeaderInfo;
+        this->m_resendRequestInfo = new FixResendRequestInfo;
         this->m_size = 0;
         this->m_buffer = 0;
         this->m_tagsCount = 0;
@@ -72,15 +74,17 @@ public:
         this->m_tagsCount++;
     }
     inline FixHeaderInfo* Header() { return this->m_headerInfo; }
+    inline FixResendRequestInfo *ResendRequestInfo() { return this->m_resendRequestInfo; }
     inline FixTag* Tag(int index) { return this->m_tags[index]; }
     inline FixTag* CurrentTag() { return this->Tag(this->m_currentTag); }
     inline int TagsCount() { return this->m_tagsCount; }
     inline void MoveNext() { this->m_currentTag++; }
 
-    inline void ReadValuePredict324Unsigned(FixTag *tag) {
+    inline unsigned int ReadValuePredict324Unsigned(FixTag *tag) {
         tag->uintValue = ReadValuePredict324Unsigned(tag->value, tag->valueSize);
+        return tag->uintValue;
     }
-    inline int ReadValuePredict324Unsigned(char *buffer, int length) {
+    inline unsigned int ReadValuePredict324Unsigned(char *buffer, int length) {
         if (length == 3)
             return this->m_intConv->From3SymbolUnsigned(buffer);
         if (length == 2)
@@ -89,15 +93,15 @@ public:
             return this->m_intConv->From4SymbolUnsigned(buffer);
         return this->m_intConv->FromStringFastUnsigned(buffer, length);
     }
-    inline int ReadValuePredict324Unsigned(char *buffer, char stopSymb) {
+    inline unsigned int ReadValuePredict324Unsigned(char *buffer, char stopSymb) {
         if (buffer[3] == stopSymb)
             return this->m_intConv->From3SymbolUnsigned(buffer);
         if (buffer[2] == stopSymb)
             return this->m_intConv->From2SymbolUnsigned(buffer);
         if (buffer[4] == stopSymb)
             return this->m_intConv->From4SymbolUnsigned(buffer);
-        int outValue;
-        this->m_intConv->FromStringFastUnsigned(buffer, &outValue, stopSymb);
+        unsigned int outValue;
+        this->m_intConv->FromStringFastUnsigned(buffer, (int*)&outValue, stopSymb);
         return outValue;
     }
     inline int ReadValuePredict34Unsigned(char *buffer, char stopSymb) {
@@ -408,15 +412,28 @@ public:
     }
 
     inline bool CheckProcessHearthBeat(int testReqId) {
-        int length = 0;
-        if(!ProcessCheckHeader())
-            return false;
-
         FixTag *tag = this->CurrentTag();
         if(!ReadCheck3SymbolTag(tag, TagCheckTestReqID, TagTestReqID))
             return false;
 
         this->ReadValuePredict324Unsigned(tag);
+        this->MoveNext();
+
+        return true;
+    }
+
+    inline bool CheckProcessResendRequest() {
+        FixTag *tag = this->CurrentTag();
+
+        if(!ReadCheck1SymbolTag(tag, TagCheckBeginSeqNo, TagBeginSeqNo))
+            return false;
+        this->m_resendRequestInfo->BeginSeqNo = this->ReadValuePredict324Unsigned(tag);
+        this->MoveNext();
+
+        tag = this->CurrentTag();
+        if(!ReadCheck1SymbolTag(tag, TagCheckEndSeqNo, TagEndSeqNo))
+            return false;
+        this->m_resendRequestInfo->EndSeqNo = this->ReadValuePredict324Unsigned(tag);
         this->MoveNext();
 
         return true;

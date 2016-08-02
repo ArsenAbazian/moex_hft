@@ -215,13 +215,13 @@ public:
 		}
 		return buffer - start;
 	}
-	inline int From2SymbolUnsigned(char *buffer) {
+	inline unsigned int From2SymbolUnsigned(char *buffer) {
 		return ItoaConverter::charDigit2[((*(int*)buffer) & 0x0000ffff) - 0x00003030];
 	}
-	inline int From3SymbolUnsigned(char *buffer) {
+	inline unsigned int From3SymbolUnsigned(char *buffer) {
 		return ItoaConverter::charDigit3[((*(int*)buffer) & 0x00ffffff) - 0x00303030];
 	}
-	inline int From4SymbolUnsigned(char *buffer) { 
+	inline unsigned int From4SymbolUnsigned(char *buffer) {
 		return (int)(*buffer - 0x30) * 1000 + From3SymbolUnsigned(&(buffer[1]));
 	}
     inline int FromStringFast(char *buffer, int *outValue, char stopSymbol) {

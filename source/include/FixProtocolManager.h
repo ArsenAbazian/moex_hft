@@ -9,6 +9,7 @@
 #include <sys/time.h>
 #include <stdio.h>
 #include "FixMessage.h"
+#include "SocketBufferManager.h"
 
 #define AddTagValue(tagName, tagValue) tagName AddEqual(); AddValue(tagValue); AddSeparator();
 #define AddTagString(tagName, tagValueString) tagName AddEqual(); AddArray(tagValueString); AddSeparator();
@@ -17,28 +18,32 @@
 
 class FixProtocolManager {
 
-	char                senderComputerId[100];
-	char                targetComputerId[100];
-	int                 senderComputerIdLength;
-	int                 targetComputerIdLength;
+	char                            senderComputerId[100];
+	char                            targetComputerId[100];
+	int                             senderComputerIdLength;
+	int                             targetComputerIdLength;
 
-	SYSTEMTIME		    *currentTime;
+	SYSTEMTIME		                *currentTime;
 
-    int                     receivedMessageLength;
-	char                    *messageBuffer;
-	int                     messageBufferSize;
+    int                             receivedMessageLength;
+	char                            *messageBuffer;
+	int                             messageBufferSize;
 
-    const int               m_maxRecvMessageCount = 128;
-    int                     m_recvMessageCount;
-    FixProtocolMessage      *m_currMsg;
-    FixProtocolMessage      *m_recvMessage[128];
+    const int                       m_maxRecvMessageCount = 128;
+    int                             m_recvMessageCount;
+    FixProtocolMessage              *m_currMsg;
+    FixProtocolMessage              *m_recvMessage[128];
 
-    char                *currentPos;
-	int                 m_sendMsgSeqNumber;
-    int                 m_recvMsgSeqNumber;
+    char                            *currentPos;
+	int                             m_sendMsgSeqNumber;
+    int                             m_recvMsgSeqNumber;
     
-	DtoaConverter       *doubleConverter;
-	ItoaConverter       *intConverter;
+	DtoaConverter                   *doubleConverter;
+	ItoaConverter                   *intConverter;
+
+    ISocketBufferProvider           *m_bufferProvider;
+    SocketBuffer                    *m_sendBuffer;
+    SocketBuffer                    *m_recvBuffer;
 
 	inline void AddSymbol(char symbol) { *(this->currentPos) = symbol; this->currentPos++; }
 	inline void AddEqual() { *(this->currentPos) = '='; this->currentPos++; }
@@ -46,8 +51,17 @@ class FixProtocolManager {
 	inline void AddTag(const char* tag, int length) { AddArray((char*)tag, length); AddSymbol('='); }
 
 public:
-	FixProtocolManager();
+	FixProtocolManager(ISocketBufferProvider *provider);
 	~FixProtocolManager();
+
+    inline bool FindSendMessageInHistory(int msgSeqNo, char **msgBuffer, int *msgSize) {
+
+        return false;
+    }
+
+    inline void SaveSendMessage() {
+
+    }
 
 	inline void StartNewMessage() {
 		this->currentPos = this->messageBuffer;
@@ -311,7 +325,8 @@ public:
 		AddHeader(MsgTypeHearthBeat);
 		UpdateLengthTagValue();
 		AddTrail();
-		AddStringZero();
+		//AddStringZero();
+        SaveSendMessage();
 	}
 
 	inline void CreateHearthBeatMessage(int testRequestId) {
@@ -319,14 +334,16 @@ public:
 		AddTestRequestId(testRequestId);
 		UpdateLengthTagValue();
 		AddTrail();
-		AddStringZero();
+		//AddStringZero();
+        SaveSendMessage();
 	}
 
     inline void CreateTestRequestMessage() {
         AddHeader(MsgTypeTestRequest);
         UpdateLengthTagValue();
         AddTrail();
-        AddStringZero();
+        //AddStringZero();
+        SaveSendMessage();
     }
 
 	inline void CreateTestRequestMessage(int testRequestId) {
@@ -334,7 +351,8 @@ public:
 		AddTestRequestId(testRequestId);
 		UpdateLengthTagValue();
 		AddTrail();
-		AddStringZero();
+		//AddStringZero();
+        SaveSendMessage();
 	}
 
 	inline void CreateResendRequestMessage(int start, int end) {
@@ -343,7 +361,8 @@ public:
 		AddTagValue(AddTagEndSeqNo, end);
 		UpdateLengthTagValue();
 		AddTrail();
-		AddStringZero();
+		//AddStringZero();
+        SaveSendMessage();
 	}
 
 	inline void AddEncodedTextTag(char *encodedText, int encodedTextLength) { 
@@ -367,7 +386,8 @@ public:
 		AddEncodedTextTag(info->EncodedText, info->EncodedTextLength);
 		UpdateLengthTagValue();
 		AddTrail();
-		AddStringZero();
+		//AddStringZero();
+        SaveSendMessage();
 	}
 	
 	inline void CreateSequenceResetMessage(bool allowGapFillFlag, bool gapFill, int newSeqNumber) { 
@@ -377,6 +397,8 @@ public:
 		AddTagValue(AddTagNewSeqNo, newSeqNumber);
 		UpdateLengthTagValue();
 		AddTrail();
+        //AddStringZero();
+        SaveSendMessage();
 	}
 
 	inline void CreateLogoutMessage(char *text, int textLength, char *encodedText, int encodedTextLength) {
@@ -387,6 +409,8 @@ public:
 			AddEncodedTextTag(encodedText, encodedTextLength);
 		UpdateLengthTagValue();
 		AddTrail();
+        //AddStringZero();
+        SaveSendMessage();
 	}
 
 	inline void AddGroupInstrument(FixInstrumentInfo *info) { 
@@ -702,13 +726,14 @@ public:
     inline int RecvMsgSeqNumber() { return this->m_recvMsgSeqNumber; }
 
 	inline void CreateLogonMessage(FixLogonInfo *logon) {
-		this->m_sendMsgSeqNumber = logon->MsgStartSeqNo;
+        this->m_sendMsgSeqNumber = logon->MsgStartSeqNo;
 		this->SetSenderComputerId(logon->SenderCompID);
 		AddHeader(MsgTypeLogon);
 		AddGroupLogon(logon);
 		UpdateLengthTagValue();
 		AddTrail();
-		AddStringZero();
+		//AddStringZero();
+        SaveSendMessage();
 	}
 	inline void CreateLogoutMessage(const char *text) {
 		CreateLogoutMessage(text, strlen(text));
@@ -723,7 +748,8 @@ public:
 		}
 		UpdateLengthTagValue();
 		AddTrail();
-		AddStringZero();
+		//AddStringZero();
+        SaveSendMessage();
 	}
 
 	inline void CreateOrderStatusRequestMessage(FixOrderStatusRequestInfo *info) {
@@ -732,7 +758,8 @@ public:
 		AddTagString2(AddTagClOrdID, info->CiOrdId, info->CiOrdIdLength);
 		UpdateLengthTagValue();
 		AddTrail();
-		AddStringZero();
+		//AddStringZero();
+        SaveSendMessage();
 	}
 
 	inline void CreateNewOrderMessage(FixNewOrderInfo *info) {
@@ -789,7 +816,8 @@ public:
 
 		UpdateLengthTagValue();
 		AddTrail();
-		AddStringZero();
+		//AddStringZero();
+        SaveSendMessage();
 	}
 
 	inline void CreateOrderCancelRequest(FixOrderCancelRequestInfo *info) { 
@@ -808,7 +836,8 @@ public:
 
 		UpdateLengthTagValue();
 		AddTrail();
-		AddStringZero();
+		//AddStringZero();
+        SaveSendMessage();
 	}
 
 	inline void CreateOrderCancelReplaceRequest(FixOrderCancelRequestInfo *cinfo, FixNewOrderInfo *info) {
@@ -848,7 +877,8 @@ public:
 
 		UpdateLengthTagValue();
 		AddTrail();
-		AddStringZero();
+		//AddStringZero();
+        SaveSendMessage();
 	}
 
 	inline void CreateSecurityDefinitionRequestMessage(char *securityReqId, int securityReqIdLength, FixSecurityRequestType requestType) {
@@ -859,7 +889,8 @@ public:
 		
 		UpdateLengthTagValue();
 		AddTrail();
-		AddStringZero();
+		//AddStringZero();
+        SaveSendMessage();
 	}
 
 	inline void CreateSecurityListRequestMessage(char *securityReqId, int securityReqIdLength, FixSecurityListRequestType requestType) {
@@ -870,7 +901,8 @@ public:
 		
 		UpdateLengthTagValue();
 		AddTrail();
-		AddStringZero();
+		//AddStringZero();
+        SaveSendMessage();
 	}
 
 	inline void AddOrderMassCancelRequest(FixOrderMassCancelRequestInfo *info) {
@@ -901,8 +933,8 @@ public:
 		
 		UpdateLengthTagValue();
 		AddTrail();
-		AddStringZero();
+		//AddStringZero();
+        SaveSendMessage();
 	}
-
 };
 

@@ -33,6 +33,7 @@ typedef enum _MarketServerState {
 	mssRecvResendRequest,
 	mssRecvMessage,
 	mssResendLastMessage,
+    mssResendMessageSeq,
     mssEnd,
 	mssDoNothing,
 	mssPanic
@@ -60,6 +61,11 @@ class MarketServerInfo {
     MarketServerInfoWorkAtomPtr				m_nextWorkAtomPtr;
 	bool									m_shouldRecvMessage;
 
+    bool                                    m_shouldResendMessages;
+    unsigned int                            m_resendBeginSeqNo;
+    unsigned int                            m_resendEndSeqNo;
+    unsigned int                            m_resendCurrentSeqNo;
+
     WinSockManager					*m_socketManager;
 	FixProtocolManager				*m_fixManager;
 	FixLogonInfo					*m_logonInfo;
@@ -69,6 +75,28 @@ class MarketServerInfo {
 	virtual WinSockManager*	CreateSocketManager();
 	FixLogonInfo* CreateLogonInfo();
 	void Clear();
+
+    inline void ResendMessages(FixResendRequestInfo *info) {
+        this->m_shouldResendMessages = true;
+        this->m_resendBeginSeqNo = info->BeginSeqNo;
+        this->m_resendEndSeqNo = info->EndSeqNo;
+        if(this->m_resendEndSeqNo == 0)
+            this->m_resendEndSeqNo = this->m_fixManager->SendMsgSeqNumber();
+        this->m_resendCurrentSeqNo = info->EndSeqNo;
+        this->SetState(MarketServerState::mssResendMessageSeq, &MarketServerInfo::ResendMessageSeq_Atom);
+    }
+
+    inline bool CheckNeedResendNextMessage() {
+        if(this->m_resendCurrentSeqNo > this->m_resendEndSeqNo) {
+            this->m_shouldResendMessages = false;
+            this->SetState(MarketServerState::mssDoNothing, &MarketServerInfo::DoNothing_Atom);
+            return false;
+        }
+        else {
+            this->SetState(MarketServerState::mssResendMessageSeq, &MarketServerInfo::ResendMessageSeq_Atom);
+        }
+        return true;
+    }
 
 	inline void SaveSendState() { this->m_sendState = this->m_state; }
 	inline bool AfterSuccessfulSend() {
@@ -87,7 +115,7 @@ class MarketServerInfo {
 	}
 	inline bool SendCore(bool shouldRecvAnswer) {
 		this->m_shouldRecvMessage = shouldRecvAnswer;
-		if(!this->m_socketManager->SendFix(this->m_fixManager->MessageLength()))
+		if(!this->m_socketManager->Send(this->m_fixManager->MessageLength()))
 			return this->AfterFailedSend();
 		return this->AfterSuccessfulSend();
 	}
@@ -131,7 +159,7 @@ class MarketServerInfo {
 
 		this->m_fixManager->IncRecvMsgSeqNumber();
 		DefaultLogManager::Default->EndLog(true);
-		return msiMsgResProcessedExit;
+		return res;
 	}
 
 	MsiMessageProcessResult OnReceiveUnsupportedMessage(FixProtocolMessage *msg) {
@@ -145,7 +173,8 @@ class MarketServerInfo {
 
     bool Reconnect_Atom();
     bool ResendLastMessage_Atom();
-	bool RecvMessage_Atom();
+	bool ResendMessageSeq_Atom();
+    bool RecvMessage_Atom();
 	//bool RepeatSendResendRequest_Atom();
 	bool SendResendRequest_Atom();
 	//bool RecvResendRequest_Atom();
