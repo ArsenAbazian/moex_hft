@@ -431,7 +431,7 @@ public:
         this->MoveNext();
 
         tag = this->CurrentTag();
-        if(!ReadCheck1SymbolTag(tag, TagCheckEndSeqNo, TagEndSeqNo))
+        if(!ReadCheck2SymbolTag(tag, TagCheckEndSeqNo, TagEndSeqNo))
             return false;
         this->m_resendRequestInfo->EndSeqNo = this->ReadValuePredict324Unsigned(tag);
         this->MoveNext();

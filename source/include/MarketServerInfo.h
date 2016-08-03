@@ -19,18 +19,9 @@ typedef enum _MarketServerState {
     mssConnect,
     mssSendLogon,
 	mssSendLogonRepeat,
-	mssRecvLogon,
-	mssRecvLogonWait,
 	mssSendLogout,
-	mssSendLogoutRepeat,
-	mssRecvLogout,
-	mssRecvLogoutWait,
     mssSendTestRequest,
-    mssSendTestRequestRepeat,
-    mssRecvHearthBeat,
 	mssSendResendRequest,
-	mssSendResendRequestRepeat,
-	mssRecvResendRequest,
 	mssRecvMessage,
 	mssResendLastMessage,
     mssResendMessageSeq,
@@ -82,7 +73,7 @@ class MarketServerInfo {
         this->m_resendEndSeqNo = info->EndSeqNo;
         if(this->m_resendEndSeqNo == 0)
             this->m_resendEndSeqNo = this->m_fixManager->SendMsgSeqNumber();
-        this->m_resendCurrentSeqNo = info->EndSeqNo;
+        this->m_resendCurrentSeqNo = this->m_resendBeginSeqNo;
         this->SetState(MarketServerState::mssResendMessageSeq, &MarketServerInfo::ResendMessageSeq_Atom);
     }
 
@@ -107,6 +98,12 @@ class MarketServerInfo {
 		return true;
 	}
 
+    inline bool AfterFailedRecv() {
+        return true;
+    }
+    inline bool AfterSuccessfulRecv() {
+        return true;
+    }
 	inline bool AfterFailedSend() {
 		this->SaveSendState();
 		this->SetState(MarketServerState::mssResendLastMessage, &MarketServerInfo::ResendLastMessage_Atom);
@@ -115,13 +112,14 @@ class MarketServerInfo {
 	}
 	inline bool SendCore(bool shouldRecvAnswer) {
 		this->m_shouldRecvMessage = shouldRecvAnswer;
-		if(!this->m_socketManager->Send(this->m_fixManager->SendBuffer(), this->m_fixManager->SendBufferSize()))
+		if(!this->m_fixManager->SendFix(this->m_socketManager))
 			return this->AfterFailedSend();
 		return this->AfterSuccessfulSend();
 	}
     inline bool RecvCore() {
-        this->m_fixManager->PrepareRecvBuffer();
-        return this->m_socketManager->Recv(this->m_fixManager->RecvBuffer());
+        if(!this->m_fixManager->RecvFix(this->m_socketManager))
+            return this->AfterFailedRecv();
+        return this->AfterSuccessfulRecv();
     }
 
 	void InitializeOnMessagePtrArray();
@@ -179,23 +177,12 @@ class MarketServerInfo {
     bool ResendLastMessage_Atom();
 	bool ResendMessageSeq_Atom();
     bool RecvMessage_Atom();
-	//bool RepeatSendResendRequest_Atom();
 	bool SendResendRequest_Atom();
-	//bool RecvResendRequest_Atom();
-	//bool RepeatSendTestRequest_Atom();
     bool SendTestRequest_Atom();
-    //bool RecvHearthBeat_Atom();
 	bool SendLogon_Atom();
-	//bool RepeatSendLogon_Atom();
-	//bool RecvLogon_Atom();
-	//bool WaitRecvLogon_Atom();
-	//bool Logout_Atom();
 	bool Panic_Atom();
     bool DoNothing_Atom();
 	bool SendLogout_Atom();
-	//bool RepeatSendLogout_Atom();
-	//bool RecvLogout_Atom();
-	//bool WaitRecvLogout_Atom();
 public:
 	MarketServerInfo(const char *name, const char *internetAddress, int internetPort, const char *senderComputerId, const char *password, const char *targetComputerId, const char *astsServerName);
 	~MarketServerInfo();

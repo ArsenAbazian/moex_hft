@@ -32,8 +32,14 @@ void BinaryLogManager::Print(BinaryLogItem *item) {
     if(item->m_type == BinaryLogItemType::NodeFix) {
         if(item->m_bufferIndex == -1)
             printf(" null");
-        else
-            printf(" '%s'", DefaultSocketBufferManager::Default->Buffer(item->m_bufferIndex)->Item(item->m_itemIndex));
+        else {
+            char *itemText = (char*)DefaultSocketBufferManager::Default->Buffer(item->m_bufferIndex)->Item(item->m_itemIndex);
+            int itemSize = DefaultSocketBufferManager::Default->Buffer(item->m_bufferIndex)->ItemLength(item->m_itemIndex);
+
+            char prevChar = itemText[itemSize]; itemText[itemSize] = '\0';
+            printf(" '%s'", itemText);
+            itemText[itemSize] = prevChar;
+        }
     }
     else if(item->m_type == BinaryLogItemType::NodeFast) {
 
@@ -61,5 +67,5 @@ void BinaryLogManager::Print(BinaryLogItem *item) {
     printf("\n");
 }
 
-LogManager* DefaultLogManager::Default = new BinaryLogManager();
+BinaryLogManager* DefaultLogManager::Default = new BinaryLogManager();
 //LogManager* DefaultLogManager::Default = new ConsoleLogManager();

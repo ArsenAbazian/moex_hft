@@ -31,6 +31,7 @@ public:
     inline unsigned int ItemsMaxCount() { return this->m_maxItemsCount; }
     inline unsigned int ItemsCount() { return this->m_itemsCount; }
     inline unsigned int CurrentItemIndex() { return this->m_itemsCount; }
+    inline void SetCurrentItemSize(int size) { this->m_itemLength[this->m_itemsCount] = size; }
     inline unsigned int Size() { return this->m_size; }
     inline unsigned int ItemLength(int index) { return this->m_itemLength[index]; }
     inline unsigned char* Item(int index) { return this->m_items[index]; }

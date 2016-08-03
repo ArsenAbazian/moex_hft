@@ -28,6 +28,7 @@ class FixProtocolManager {
 
     int                             receivedMessageLength;
 	unsigned char                   *m_sendMessageBuffer;
+    int                             m_sendItemStartIndex;
     char                            *messageBuffer;
 	int                             messageBufferSize;
 
@@ -58,6 +59,7 @@ public:
 
     inline void PrepareSendBuffer() {
         this->m_sendMessageBuffer = this->m_sendBuffer->CurrentPos();
+        this->m_sendItemStartIndex = this->m_sendBuffer->CurrentItemIndex();
         this->SetMessageBuffer((char*)this->m_sendMessageBuffer);
     }
 
@@ -73,14 +75,34 @@ public:
         return true;
     }
 
+    inline SocketBuffer* SendSocketBuffer() { return this->m_sendBuffer; }
     inline unsigned char* SendBuffer() { return this->m_sendMessageBuffer; }
     inline unsigned char* RecvBuffer() { return (unsigned char*)this->messageBuffer; }
 
     inline unsigned int SendBufferSize() { return (unsigned int)(this->currentPos - ((char*)this->m_sendMessageBuffer)); }
+    inline bool SendFix(WinSockManager *manager) {
+        DefaultLogManager::Default->WriteFix(LogMessageCode::lmcFixProtocolManager_SendFix, this->m_sendBuffer->BufferIndex(), this->m_sendItemStartIndex);
+        return manager->Send(this->SendBuffer(), this->SendBufferSize());
+    }
+    inline bool RecvFix(WinSockManager *manager) {
+        this->PrepareRecvBuffer();
+        bool res = manager->Recv(this->RecvBuffer());
+        if(res) {
+            manager->RecvBytes()[manager->RecvSize()] = '\0';
+            this->SetRecvBufferSize(manager->RecvSize());
+            this->m_recvBuffer->SetCurrentItemSize(manager->RecvSize());
+            DefaultLogManager::Default->WriteFix(LogMessageCode::lmcFixProtocolManager_RecvFix, this->m_recvBuffer->BufferIndex(), this->m_recvBuffer->CurrentItemIndex());
+        }
+        else {
+            DefaultLogManager::Default->WriteSuccess(LogMessageCode::lmcFixProtocolManager_RecvFix, false);
+        }
+        return res;
+    }
 
     inline void SaveSendMessage() {
         AddStringZero();
         this->m_sendBuffer->Next(this->MessageLength());
+        DefaultLogManager::Default->WriteFix(LogMessageCode::lmcFixMessage, this->m_sendBuffer->BufferIndex(), this->m_sendBuffer->CurrentItemIndex() - 1);
     }
 
 	inline void StartNewMessage() {
@@ -337,10 +359,7 @@ public:
         this->currentPos = this->messageBuffer;
     }
 
-	inline void UpdateRecvMessageBuffer(int size) {
-        this->messageBufferSize = size;
-        this->ProcessSplitRecvMessages();
-    }
+    inline void SetRecvBufferSize(int size) { this->messageBufferSize = size; }
 
 	inline void CreateHearthBeatMessage() {
 		AddHeader(MsgTypeHearthBeat);

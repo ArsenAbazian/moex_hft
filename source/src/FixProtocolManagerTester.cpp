@@ -14,7 +14,7 @@ void FixProtocolManagerTester::TestMoreThanOneMessageReceived() {
 
     manager->PrepareRecvBuffer();
     memcpy(manager->RecvBuffer(), recvString, strlen(recvString));
-    manager->UpdateRecvMessageBuffer(strlen(recvString));
+    manager->SetRecvBufferSize(strlen(recvString));
 
     if(manager->RecvMessageCount() != 2)
         throw;

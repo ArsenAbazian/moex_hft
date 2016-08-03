@@ -80,50 +80,25 @@ public:
 	bool TryFixSocketError(int socketError);
 
 	inline bool Resend() { return this->Send(this->SendBytes(), this->SendSize()); }
-	inline bool Send(unsigned char *buffer, int size, int bufferIndex, int itemIndex, int itemsCount) {
-        //BinaryLogItem *item = DefaultLogManager::Default->WriteFix(LogMessageCode::lmcWinSockManager_SendFix, this->m_sendBuffer->BufferIndex(), this->m_sendBuffer->CurrentItemIndex());
+	inline bool Send(unsigned char *buffer, int size) {
         this->m_sendBytes = buffer;
         this->m_sendSize = size;
         this->m_sendSizeActual = send(this->m_socket, this->m_sendBytes, size, 0);
-		if (this->m_sendSizeActual < 0) {
-            /*item->m_result = NullableBoolean::nbFalse;
-            item->m_errno = errno;*/
-            return false;
-		}
-        //item->m_result = NullableBoolean::nbTrue;
-		return true;
-	}
-
-	/*inline bool SendFix(unsigned char *buffer, int size) {
-		BinaryLogItem *item = DefaultLogManager::Default->WriteFix(LogMessageCode::lmcWinSockManager_SendFix, this->m_sendBuffer->BufferIndex(), this->m_sendBuffer->CurrentItemIndex());
-		this->m_sendBytes = buffer;
-		this->m_sendSize = send(this->m_socket, this->m_sendBytes, size, 0);
-		if (this->m_sendSize < 0) {
-			item->m_result = NullableBoolean::nbFalse;
-			item->m_errno = errno;
-			return false;
-		}
-		item->m_result = NullableBoolean::nbTrue;
-		return true;
-	}*/
-
-	inline bool Recv(unsigned char *buffer) {
-		//BinaryLogItem *item = NULL;
-		this->m_recvBytes = buffer; //this->m_recvBuffer->CurrentPos();
-        this->m_recvSize = recv(this->m_socket, this->m_recvBytes, 8192, 0);
-        if (this->m_recvSize < 0) {
-			/*item = DefaultLogManager::Default->WriteFix(LogMessageCode::lmcWinSockManager_RecvFix, -1, -1);
-			item->m_errno = errno;
-            item->m_result = NullableBoolean::nbFalse;*/
+        if(this->m_sendSizeActual != this->m_sendSize) {
             return false;
         }
+        return true;
+	}
+
+	inline bool Recv(unsigned char *buffer) {
+		this->m_recvBytes = buffer;
+        this->m_recvSize = recv(this->m_socket, this->m_recvBytes, 8192, 0);
+        if (this->m_recvSize < 0)
+            return false;
 		else if(this->m_recvSize == 0) {
 			this->Reconnect();
             return false; // do nothing
 		}
-		//item = DefaultLogManager::Default->WriteFix(LogMessageCode::lmcWinSockManager_RecvFix, this->m_recvBuffer->BufferIndex(), this->m_recvBuffer->CurrentItemIndex());
-        //item->m_result = NullableBoolean::nbTrue;
-        //this->m_recvBuffer->Next(this->m_recvSize);
         return true;
 	}
 	inline bool IsConnected() { return this->m_connected; }

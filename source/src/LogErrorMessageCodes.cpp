@@ -10,7 +10,7 @@ void LogMessageProvider::InitializeLogMessageText() {
 
 #pragma region LogMessagesProvider_InitializeLogMessageText_GeneratedCode
 	this->m_logMessageText[LogMessageCode::lmcNone] = "none";
-	this->m_logMessageText[LogMessageCode::lmcSuccess] = "success";
+	this->m_logMessageText[LogMessageCode::lmcSuccess] = "ok";
 	this->m_logMessageText[LogMessageCode::lmcFailed] = "failed";
 	this->m_logMessageText[LogMessageCode::lmcRobot_AddDefaultTestMarkets] = "Robot::AddDefaultTestMarkets";
 	this->m_logMessageText[LogMessageCode::lmcFeedChannel_Connect] = "FeedChannel::Connect";
@@ -74,6 +74,13 @@ void LogMessageProvider::InitializeLogMessageText() {
 	this->m_logMessageText[LogMessageCode::lmcMarketServerInfo_ResendLastMessage_Atom] = "MarketServerInfo::ResendLastMessage_Atom";
 	this->m_logMessageText[LogMessageCode::lmcMarketServerInfo_RecvMessage_Atom] = "MarketServerInfo::RecvMessage_Atom";
 	this->m_logMessageText[LogMessageCode::lmcMarketServerInfo_RecvResendRequest_Atom] = "MarketServerInfo::RecvResendRequest_Atom";
+	this->m_logMessageText[LogMessageCode::lmcFixMessage] = "FixMessage";
+	this->m_logMessageText[LogMessageCode::lmcWinSockManager_Send] = "WinSockManager::Send";
+	this->m_logMessageText[LogMessageCode::lmcWinSockManager_Recv] = "WinSockManager::Recv";
+	this->m_logMessageText[LogMessageCode::lmcFixProtocolManager_SendFix] = "FixProtocolManager::SendFix";
+	this->m_logMessageText[LogMessageCode::lmcFixProtocolManager_RecvFix] = "FixProtocolManager::RecvFix";
+	this->m_logMessageText[LogMessageCode::lmcMarketServerInfo_ResendMessageSeq_Atom] = "MarketServerInfo::ResendMessageSeq_Atom";
+	this->m_logMessageText[LogMessageCode::lmcMarketServerInfo_ResendMessageSeq_Atom] = "MarketServerInfo::ResendMessageSeq_Atom";
 #pragma endregion
 }
 

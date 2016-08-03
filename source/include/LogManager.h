@@ -41,37 +41,7 @@ typedef struct _BinaryLogItem {
     };
 }BinaryLogItem;
 
-class LogManager
-{
-public:
-    virtual void Write(const char* message) = 0;
-	virtual void Write(const char* message, const char* message2) = 0;
-	virtual BinaryLogItem* WriteFix(int messageIndex, int bufferIndex, int itemIndex) = 0;
-    virtual BinaryLogItem* WriteFast(int messageIndex, int bufferIndex, int itemIndex, int size) = 0;
-    virtual void WriteLine(const char* message) = 0;
-	virtual void WriteSuccess(bool condition) = 0;
-	virtual void WriteSuccess(const char* message, bool condition) = 0;
-	virtual void WriteSuccess(const char* message, const char* message2, bool condition) = 0;
-	virtual void StartLog(const char* message) = 0;
-	virtual void StartLog(const char* message, const char* message2) = 0;
-	virtual void EndLog(bool condition, const char *errorMessage) = 0;
-    virtual void EndLogErrNo(bool condition, int errno) = 0;
-    virtual void EndLogErrNo(bool condition, const char *errText) = 0;
-
-    virtual void Write(int messageCode) = 0;
-    virtual void Write(int messageCode, int messageCode2) = 0;
-    virtual void WriteLine(int messageCode) = 0;
-    virtual void WriteSuccess(int messageCode, bool condition) = 0;
-    virtual void WriteSuccess(int messageCode, int messageCode2, bool condition) = 0;
-    virtual void StartLog(int messageCode) = 0;
-    virtual void StartLog(int messageCode, int messageCode2) = 0;
-    virtual void EndLog(bool condition, int messageCode) = 0;
-
-    virtual void EndLog(bool condition) { EndLog(condition, (const char*)NULL); }
-    virtual void Print() = 0;
-};
-
-class BinaryLogManager : public LogManager {
+class BinaryLogManager {
     BinaryLogItem       *m_stack[256];
     int                 m_stackTop;
 
@@ -151,7 +121,7 @@ public:
         delete[] this->m_items;
     }
 
-    inline void Write(int messageCode, int messageCode2) {
+    inline BinaryLogItem* Write(int messageCode, int messageCode2) {
         BinaryLogItem *item = this->Next();
 
         GetStartClock(item);
@@ -160,8 +130,9 @@ public:
 #ifdef BINARY_LOG_MANAGER_ALLOW_PRINT
         Print(item);
 #endif
+        return item;
     }
-    inline void Write(int messageCode) {
+    inline BinaryLogItem* Write(int messageCode) {
         BinaryLogItem *item = this->Next();
 
         GetStartClock(item);
@@ -169,6 +140,7 @@ public:
 #ifdef BINARY_LOG_MANAGER_ALLOW_PRINT
         Print(item);
 #endif
+        return item;
     }
 
     inline BinaryLogItem* WriteFix(int messageCode, int bufferIndex, int itemIndex) {
@@ -199,13 +171,18 @@ public:
         return item;
     }
 
-    inline void WriteLine(int messageCode) {
-        Write(messageCode);
+    inline BinaryLogItem* WriteLine(int messageCode) {
+        return Write(messageCode);
     }
-    inline void WriteSuccess(bool condition) {
-        Write(condition? LogMessageCode::lmcSuccess: LogMessageCode::lmcFailed);
+    inline BinaryLogItem* WriteSuccess(bool condition) {
+        return Write(condition? LogMessageCode::lmcSuccess: LogMessageCode::lmcFailed);
     }
-    inline void WriteSuccess(int messageCode, bool condition) {
+    inline BinaryLogItem* WriteSuccess(int messageCode, bool condition, int errno) {
+        BinaryLogItem *item = WriteSuccess(messageCode, condition);
+        item->m_errno = errno;
+        return item;
+    }
+    inline BinaryLogItem* WriteSuccess(int messageCode, bool condition) {
         BinaryLogItem *item = this->Next();
 
         GetStartClock(item);
@@ -214,8 +191,9 @@ public:
 #ifdef BINARY_LOG_MANAGER_ALLOW_PRINT
         Print(item);
 #endif
+        return item;
     }
-    inline void WriteSuccess(int messageCode, int messageCode2, bool condition) {
+    inline BinaryLogItem* WriteSuccess(int messageCode, int messageCode2, bool condition) {
         BinaryLogItem *item = this->Next();
 
         clock_gettime(CLOCK_PROCESS_CPUTIME_ID, (struct timespec*)item);
@@ -225,8 +203,9 @@ public:
 #ifdef BINARY_LOG_MANAGER_ALLOW_PRINT
         Print(item);
 #endif
+        return item;
     }
-    inline void StartLog(int messageCode) {
+    inline BinaryLogItem* StartLog(int messageCode) {
         BinaryLogItem *item = this->Next();
 
         GetStartClock(item);
@@ -239,8 +218,9 @@ public:
         Print(item);
         AddTab();
 #endif
+        return item;
     }
-    inline void StartLog(int messageCode, int messageCode2) {
+    inline BinaryLogItem* StartLog(int messageCode, int messageCode2) {
         BinaryLogItem *item = this->Next();
 
         GetStartClock(item);
@@ -254,9 +234,10 @@ public:
         Print(item);
         AddTab();
 #endif
+        return item;
     }
 
-    inline void EndLog(bool condition) {
+    inline BinaryLogItem* EndLog(bool condition) {
         BinaryLogItem *item = Pop();
         GetEndClock(item);
         item->m_result = (NullableBoolean)condition;
@@ -264,9 +245,10 @@ public:
         RemoveTab();
         Print(item);
 #endif
+        return item;
     }
 
-    inline void EndLog(bool condition, int messageCode) {
+    inline BinaryLogItem* EndLog(bool condition, int messageCode) {
         BinaryLogItem *item = Pop();
         GetEndClock(item);
         item->m_result = (NullableBoolean)condition;
@@ -275,8 +257,9 @@ public:
         RemoveTab();
         Print(item);
 #endif
+        return item;
     }
-    inline void EndLogErrNo(bool condition, int errno) {
+    inline BinaryLogItem* EndLogErrNo(bool condition, int errno) {
         BinaryLogItem *item = Pop();
         GetEndClock(item);
         item->m_result = (NullableBoolean)condition;
@@ -285,8 +268,9 @@ public:
         RemoveTab();
         Print(item);
 #endif
+        return item;
     }
-    inline void EndLogErrNo(bool condition, const char *errText) {
+    inline BinaryLogItem* EndLogErrNo(bool condition, const char *errText) {
         BinaryLogItem *item = Pop();
         GetEndClock(item);
         item->m_result = (NullableBoolean)condition;
@@ -295,184 +279,39 @@ public:
         RemoveTab();
         Print(item);
 #endif
+        return item;
     }
 
-    void Write(const char* message) {
+    BinaryLogItem* Write(const char* message) {
         throw;
     }
-    void Write(const char* message, const char* message2) {
+    BinaryLogItem* Write(const char* message, const char* message2) {
         throw;
     }
-    void WriteLine(const char* message) {
+    BinaryLogItem* WriteLine(const char* message) {
         throw;
     }
-    void WriteSuccess(const char* message, bool condition) {
+    BinaryLogItem* WriteSuccess(const char* message, bool condition) {
         throw;
     }
-    void WriteSuccess(const char* message, const char* message2, bool condition) {
+    BinaryLogItem* WriteSuccess(const char* message, const char* message2, bool condition) {
         throw;
     }
-    void StartLog(const char* message) {
+    BinaryLogItem* StartLog(const char* message) {
         throw;
     }
-    void StartLog(const char* message, const char* message2) {
+    BinaryLogItem* StartLog(const char* message, const char* message2) {
         throw;
     }
-    void EndLog(bool condition, const char *errorMessage) {
-        EndLog(condition, DefaultLogMessageProvider::Default->RegisterText(errorMessage));
+    BinaryLogItem* EndLog(bool condition, const char *errorMessage) {
+        return EndLog(condition, DefaultLogMessageProvider::Default->RegisterText(errorMessage));
     }
 
     void Print();
     void Print(BinaryLogItem *item);
 };
 
-class ConsoleLogManager : public LogManager {
-	const int messagesCount = 2048;
-	const char *messages[2048];
-	const char *messages2[2048];
-	bool repeatMessage[2048];
-	int messageIndex;
-	char tabs[256];
-	int tabsCount;
-	bool shouldStartNewLine;
-    LogMessageProvider *logMessageProvider;
-
-public:
-	ConsoleLogManager() { 
-		this->messageIndex = -1;
-		this->tabs[0] = '\0';
-		this->tabsCount = 0;
-		this->shouldStartNewLine = false;
-        this->logMessageProvider = DefaultLogMessageProvider::Default;
-	}
-
-	void Write(const char* message) { ConsoleManager::Write(this->tabs, message); }
-	void Write(const char* message, const char* message2) { 
-		ConsoleManager::Write(this->tabs, message); 
-		ConsoleManager::Write("->", message2);
-	}
-	void WriteLine(const char* message) { ConsoleManager::WriteLine(this->tabs, message); }
-	void WriteSuccess(bool condition) { ConsoleManager::WriteLine(this->tabs, (condition ? "success." : "failed")); }
-	void WriteSuccess(const char * message, const char* message2, bool condition) { 
-		ConsoleManager::Write(tabs, message);
-		ConsoleManager::Write("->", message2);
-		ConsoleManager::Write(" - ");
-		ConsoleManager::WriteLine(condition ? "success." : "failed.");
-	}
-	void WriteSuccess(const char * message, bool condition) { 
-		ConsoleManager::Write(tabs, message);
-		ConsoleManager::Write(" - ");
-		ConsoleManager::WriteLine(condition ? "success." : "failed.");
-	}
-	void StartLog(const char* message) {
-		StartLog(message, NULL);
-	}
-	void StartLog(const char* message, const char* message2) { 
-		if(this->shouldStartNewLine)
-			WriteLine("");
-		if (this->messageIndex >= 0)
-			this->repeatMessage[this->messageIndex] = true;
-		this->messageIndex++;
-		this->repeatMessage[this->messageIndex] = false;
-		this->messages[this->messageIndex] = message;
-		this->messages2[this->messageIndex] = message2;
-		if (message2 != NULL)
-			Write(message, message2); 
-		else 
-			Write(message);
-		this->tabs[this->tabsCount] = ' ';
-		this->tabs[this->tabsCount + 1] = ' ';
-		this->tabsCount +=2;
-		this->tabs[this->tabsCount] = '\0';
-		this->shouldStartNewLine = true;
-	}
-
-	void EndLog(bool condition, const char *errorText) {
-		if (!condition) {
-			bool dummy = true;
-		}
-		if (this->messageIndex == -1)
-			return;
-		this->tabsCount -=2;
-		this->tabs[this->tabsCount] = '\0';
-		if (this->repeatMessage[this->messageIndex]) {
-			ConsoleManager::Write(tabs, this->messages[this->messageIndex]);
-			if (this->messages2[this->messageIndex] != NULL) {
-				ConsoleManager::Write("->", this->messages2[this->messageIndex]);
-			}
-		}
-		
-		ConsoleManager::Write(" - ");
-		ConsoleManager::Write(condition ? "success." : "failed.");
-		if (errorText != NULL) {
-			ConsoleManager::Write("(");
-			ConsoleManager::Write(errorText);
-			ConsoleManager::Write(")");
-		}
-		ConsoleManager::WriteLine("");
-		
-		this->messageIndex--;
-		this->shouldStartNewLine = false;
-	}
-    void EndLogErrNo(bool condition, int errno) {
-        EndLog(condition, strerror(errno));
-    }
-
-    void Write(int messageCode, int messageCode2) {
-        Write(logMessageProvider->Message(messageCode), logMessageProvider->Message(messageCode2));
-    }
-    void Write(int messageCode) {
-		Write(logMessageProvider->Message(messageCode));
-    }
-    void WriteLine(int messageCode) {
-		WriteLine(logMessageProvider->Message(messageCode));
-    }
-    void WriteSuccess(int messageCode, bool condition) {
-		WriteSuccess(logMessageProvider->Message(messageCode), condition);
-    }
-    void WriteSuccess(int messageCode, int messageCode2, bool condition) {
-		WriteSuccess(logMessageProvider->Message(messageCode), logMessageProvider->Message(messageCode2), condition);
-    }
-    void StartLog(int messageCode) {
-		StartLog(logMessageProvider->Message(messageCode));
-    }
-    void StartLog(int messageCode, int messageCode2) {
-		StartLog(logMessageProvider->Message(messageCode), logMessageProvider->Message(messageCode2));
-    }
-    void EndLog(bool condition, int errorCode) {
-		EndLog(condition, logMessageProvider->Message(errorCode));
-    }
-    BinaryLogItem* WriteFix(int messageIndex, int bufferIndex, int itemIndex) { return NULL; }
-    BinaryLogItem* WriteFast(int messageIndex, int bufferIndex, int itemIndex, int size) { return NULL; }
-    void Print() { }
-};
-
-class EmptylogManager : public LogManager {
-	void Write(const char* message) {}
-	void Write(const char* message, const char* message2) {}
-	void WriteLine(const char* message) {}
-	void WriteSuccess(bool condition) {}
-	void WriteSuccess(const char* message, bool condition) {}
-	void WriteSuccess(const char* message, const char* message2, bool condition) {}
-	void StartLog(const char* message) {}
-	void StartLog(const char* message, const char* message2) {}
-	void EndLog(bool condition, const char *errorMessage) {}
-
-    BinaryLogItem* WriteFix(int messageIndex, int bufferIndex, int itemIndex) { return NULL; }
-    BinaryLogItem* WriteFast(int messageIndex, int bufferIndex, int itemIndex, int size) { return NULL; }
-    void Write(int messageCode, int messageCode2) { }
-    void Write(int messageCode) { }
-    void WriteLine(int messageCode) { }
-    void WriteSuccess(int messageCode, bool condition) { }
-    void WriteSuccess(int messageCode, int messageCode2, bool condition) { }
-    void StartLog(int messageCode) { }
-    void StartLog(int messageCode, int messageCode2) { }
-    void EndLog(bool condition, int messageCode) { }
-    void EndLogErrNo(bool condition, int errno) { }
-    void Print() { }
-};
-
 class DefaultLogManager {
 public:
-	static LogManager *Default;
+	static BinaryLogManager *Default;
 };
