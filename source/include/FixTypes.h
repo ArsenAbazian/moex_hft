@@ -378,13 +378,11 @@ typedef struct _FixTagValueInfo {
 typedef struct _FixRejectInfo {
     int         RefMsgSeqNum;
     int         RefTagId;
-    char        RefMsgType[512];
-    int         RefMsgTypeLength;
+    bool        AllowRefMsgType;
+    char        RefMsgType;
     FixSessionRejectReason SessionRejectReason;
     char        Text[512];
     int         TextLength;
-    char        EncodedText[512];
-    int         EncodedTextLength;
 }FixRejectInfo;
 
 typedef struct _FixHearthBeatInfo {

@@ -82,6 +82,15 @@ public:
     inline int TagsCount() { return this->m_tagsCount; }
     inline void MoveNext() { this->m_currentTag++; }
 
+    inline void Error(int errorTagId, FixSessionRejectReason rejectReason) {
+        this->m_rejectInfo->RefMsgSeqNum = this->m_headerInfo->msgSeqNum;
+        this->m_rejectInfo->AllowRefMsgType = true;
+        this->m_rejectInfo->RefMsgType = this->m_headerInfo->msgType;
+        this->m_rejectInfo->RefTagId = errorTagId;
+        this->m_rejectInfo->SessionRejectReason = rejectReason;
+        this->m_rejectInfo->TextLength = 0;
+    }
+
     inline unsigned int ReadValuePredict324Unsigned(FixTag *tag) {
         tag->uintValue = ReadValuePredict324Unsigned(tag->value, tag->valueSize);
         return tag->uintValue;
@@ -197,7 +206,6 @@ public:
             tag->valueSize = tag->size - 2;
             return true;
         }
-
         return false;
     }
 

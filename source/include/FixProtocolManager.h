@@ -13,6 +13,7 @@
 #include "WinSockManager.h"
 
 #define AddTagValue(tagName, tagValue) tagName AddEqual(); AddValue(tagValue); AddSeparator();
+#define AddTagSymbolValue(tagName, tagValue) tagName AddEqual(); AddSymbol(tagValue); AddSeparator();
 #define AddTagString(tagName, tagValueString) tagName AddEqual(); AddArray(tagValueString); AddSeparator();
 #define AddTagString2(tagName, tagValueString, length) tagName AddEqual(); AddArray(tagValueString, length); AddSeparator();
 #define AddTagData(tagName, tagData, tagDataLen) tagName AddEqual(); AddArray(tagData, tagDataLen); AddSeparator();
@@ -415,13 +416,12 @@ public:
 		AddTagValue(AddTagRefSeqNum, info->RefMsgSeqNum);
 		if(info->RefTagId != 0)
 			AddTagValue(AddTagRefTagID, info->RefTagId);
-		if(info->RefMsgTypeLength != 0)
-			AddTagString2(AddTagRefMsgType, info->RefMsgType, info->RefMsgTypeLength);
+		if(info->AllowRefMsgType)
+            AddTagSymbolValue(AddTagRefMsgType, info->RefMsgType);
 	    if(info->SessionRejectReason != FixSessionRejectReason::NoReason)
 			AddTagValue(AddTagSessionRejectReason, (int)info->SessionRejectReason);
 		if(info->TextLength != 0)
 			AddTagString2(AddTagText, info->Text, info->TextLength);
-		AddEncodedTextTag(info->EncodedText, info->EncodedTextLength);
 		UpdateLengthTagValue();
 		AddTrail();
         SaveSendMessage();

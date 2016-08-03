@@ -18,9 +18,7 @@
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/FixMessage.h" afterPath="$PROJECT_DIR$/source/include/FixMessage.h" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/FixProtocolManager.h" afterPath="$PROJECT_DIR$/source/include/FixProtocolManager.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/MarketServerInfo.h" afterPath="$PROJECT_DIR$/source/include/MarketServerInfo.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/src/FixProtocolManager.cpp" afterPath="$PROJECT_DIR$/source/src/FixProtocolManager.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/src/MarketServerInfo.cpp" afterPath="$PROJECT_DIR$/source/src/MarketServerInfo.cpp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/FixTypes.h" afterPath="$PROJECT_DIR$/source/include/FixTypes.h" />
     </list>
     <ignored path="hft_robot.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -47,6 +45,15 @@
               <caret line="20" column="40" selection-start-line="20" selection-start-column="40" selection-end-line="20" selection-end-column="40" />
               <folding>
                 <element signature="e#0#29#0" expanded="true" />
+                <marker date="1470234424810" expanded="true" signature="1364:1968" ph="{...}" />
+                <marker date="1470234424810" expanded="true" signature="2486:2935" ph="{...}" />
+                <marker date="1470234424810" expanded="true" signature="3666:4817" ph="{...}" />
+                <marker date="1470234424810" expanded="true" signature="6413:7176" ph="{...}" />
+                <marker date="1470234424810" expanded="true" signature="7220:7799" ph="{...}" />
+                <marker date="1470234424810" expanded="true" signature="7832:8142" ph="{...}" />
+                <marker date="1470234424810" expanded="true" signature="8973:9235" ph="{...}" />
+                <marker date="1470234424810" expanded="true" signature="16909:17233" ph="{...}" />
+                <marker date="1470234424810" expanded="true" signature="19009:19029" ph="{...}" />
               </folding>
             </state>
           </provider>
@@ -62,7 +69,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="FixProtocolManager.cpp" pinned="false" current-in-tab="true">
+      <file leaf-file-name="FixProtocolManager.cpp" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/source/src/FixProtocolManager.cpp">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="251">
@@ -92,11 +99,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="FixMessage.h" pinned="false" current-in-tab="false">
+      <file leaf-file-name="FixMessage.h" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/source/include/FixMessage.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="313">
-              <caret line="199" column="0" selection-start-line="199" selection-start-column="0" selection-end-line="199" selection-end-column="0" />
+            <state relative-caret-position="305">
+              <caret line="102" column="24" selection-start-line="102" selection-start-column="24" selection-end-line="102" selection-end-column="24" />
               <folding>
                 <element signature="e#102#123#0" expanded="true" />
               </folding>
@@ -117,8 +124,8 @@
       <file leaf-file-name="FixProtocolManager.h" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/source/include/FixProtocolManager.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="147">
-              <caret line="869" column="8" selection-start-line="869" selection-start-column="8" selection-end-line="869" selection-end-column="8" />
+            <state relative-caret-position="423">
+              <caret line="432" column="18" selection-start-line="432" selection-start-column="18" selection-end-line="432" selection-end-column="18" />
               <folding />
             </state>
           </provider>
@@ -127,8 +134,8 @@
       <file leaf-file-name="FixTypes.h" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/source/include/FixTypes.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="18">
-              <caret line="377" column="2" selection-start-line="377" selection-start-column="2" selection-end-line="377" selection-end-column="2" />
+            <state relative-caret-position="171">
+              <caret line="385" column="0" selection-start-line="385" selection-start-column="0" selection-end-line="385" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -188,7 +195,6 @@
         <option value="$PROJECT_DIR$/source/include/FixProtocolManagerTester.h" />
         <option value="$PROJECT_DIR$/source/src/HftConsole.cpp" />
         <option value="$PROJECT_DIR$/source/include/FixProtocolMacros.h" />
-        <option value="$PROJECT_DIR$/source/include/FixTypes.h" />
         <option value="$PROJECT_DIR$/source/include/ItoaConverter.h" />
         <option value="$PROJECT_DIR$/source/src/WinSockManager.cpp" />
         <option value="$PROJECT_DIR$/source/include/LogManager.h" />
@@ -200,9 +206,10 @@
         <option value="$PROJECT_DIR$/source/include/SocketBufferManager.h" />
         <option value="$PROJECT_DIR$/source/src/MarketServerInfo.cpp" />
         <option value="$PROJECT_DIR$/source/include/MarketServerInfo.h" />
-        <option value="$PROJECT_DIR$/source/include/FixProtocolManager.h" />
-        <option value="$PROJECT_DIR$/source/include/FixMessage.h" />
         <option value="$PROJECT_DIR$/source/src/FixProtocolManager.cpp" />
+        <option value="$PROJECT_DIR$/source/include/FixProtocolManager.h" />
+        <option value="$PROJECT_DIR$/source/include/FixTypes.h" />
+        <option value="$PROJECT_DIR$/source/include/FixMessage.h" />
       </list>
     </option>
   </component>
@@ -703,7 +710,7 @@
       <workItem from="1469961022247" duration="9210000" />
       <workItem from="1470032167672" duration="18289000" />
       <workItem from="1470122509598" duration="14138000" />
-      <workItem from="1470209649810" duration="14312000" />
+      <workItem from="1470209649810" duration="15107000" />
     </task>
     <task id="LOCAL-00001" summary="move params to structures">
       <created>1468443448895</created>
@@ -859,11 +866,18 @@
       <option name="project" value="LOCAL" />
       <updated>1470233851380</updated>
     </task>
-    <option name="localTasksCounter" value="23" />
+    <task id="LOCAL-00023" summary="1. Now code is working. It sends and receives Logon, Logout, TestRequest, HearthBeat&#10;2. Working on ResendRequest">
+      <created>1470235706795</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1470235706795</updated>
+    </task>
+    <option name="localTasksCounter" value="24" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="283746000" />
+    <option name="totallyTimeSpent" value="284541000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -880,7 +894,7 @@
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.31441048" sideWeight="0.493007" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32942554" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.4267292" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.4618992" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="CMake" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.13716295" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2813599" sideWeight="0.5021834" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3634232" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -1299,6 +1313,15 @@
           <caret line="20" column="40" selection-start-line="20" selection-start-column="40" selection-end-line="20" selection-end-column="40" />
           <folding>
             <element signature="e#0#29#0" expanded="true" />
+            <marker date="1470234424810" expanded="true" signature="1364:1968" ph="{...}" />
+            <marker date="1470234424810" expanded="true" signature="2486:2935" ph="{...}" />
+            <marker date="1470234424810" expanded="true" signature="3666:4817" ph="{...}" />
+            <marker date="1470234424810" expanded="true" signature="6413:7176" ph="{...}" />
+            <marker date="1470234424810" expanded="true" signature="7220:7799" ph="{...}" />
+            <marker date="1470234424810" expanded="true" signature="7832:8142" ph="{...}" />
+            <marker date="1470234424810" expanded="true" signature="8973:9235" ph="{...}" />
+            <marker date="1470234424810" expanded="true" signature="16909:17233" ph="{...}" />
+            <marker date="1470234424810" expanded="true" signature="19009:19029" ph="{...}" />
           </folding>
         </state>
       </provider>
@@ -1311,37 +1334,37 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/source/src/FixProtocolManager.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="251">
+          <caret line="22" column="56" selection-start-line="22" selection-start-column="56" selection-end-line="22" selection-end-column="56" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/source/include/FixTypes.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="18">
-          <caret line="377" column="2" selection-start-line="377" selection-start-column="2" selection-end-line="377" selection-end-column="2" />
+        <state relative-caret-position="171">
+          <caret line="385" column="0" selection-start-line="385" selection-start-column="0" selection-end-line="385" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/source/include/FixProtocolManager.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="147">
-          <caret line="869" column="8" selection-start-line="869" selection-start-column="8" selection-end-line="869" selection-end-column="8" />
+        <state relative-caret-position="423">
+          <caret line="432" column="18" selection-start-line="432" selection-start-column="18" selection-end-line="432" selection-end-column="18" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/source/include/FixMessage.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="313">
-          <caret line="199" column="0" selection-start-line="199" selection-start-column="0" selection-end-line="199" selection-end-column="0" />
+        <state relative-caret-position="305">
+          <caret line="102" column="24" selection-start-line="102" selection-start-column="24" selection-end-line="102" selection-end-column="24" />
           <folding>
             <element signature="e#102#123#0" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/source/src/FixProtocolManager.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="251">
-          <caret line="22" column="56" selection-start-line="22" selection-start-column="56" selection-end-line="22" selection-end-column="56" />
-          <folding />
         </state>
       </provider>
     </entry>
