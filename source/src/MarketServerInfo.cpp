@@ -18,6 +18,7 @@ MarketServerInfo::MarketServerInfo(const char *name, const char *internetAddress
     this->m_stopwatch = new Stopwatch();
     this->m_resendRequestInfo = new FixResendRequestInfo();
     this->InitializeOnMessagePtrArray();
+    this->m_inSendResendRequest = false;
 
     this->SetState(MarketServerState::mssSendLogon, &MarketServerInfo::SendLogon_Atom);
 
@@ -66,6 +67,10 @@ MsiMessageProcessResult MarketServerInfo::OnReceiveLogonMessage(FixProtocolMessa
 
     this->m_stopwatch->Start();
     this->SetState(MarketServerState::mssDoNothing, &MarketServerInfo::DoNothing_Atom);
+
+    this->m_resendRequestInfo->BeginSeqNo = 50;
+    this->m_resendRequestInfo->EndSeqNo = 0;
+    this->SetState(MarketServerState::mssSendResendRequest, &MarketServerInfo::SendResendRequest_Atom);
 
     DefaultLogManager::Default->EndLog(true);
     return MsiMessageProcessResult::msiMsgResProcessed;
@@ -228,6 +233,7 @@ bool MarketServerInfo::SendResendRequest_Atom(){
     DefaultLogManager::Default->StartLog(this->m_nameLogIndex, LogMessageCode::lmcMarketServerInfo_SendResendRequest_Atom);
 
     this->m_fixManager->PrepareSendBuffer();
+    this->m_inSendResendRequest = true;
     this->m_fixManager->CreateResendRequestMessage(this->m_resendRequestInfo->BeginSeqNo, this->m_resendRequestInfo->EndSeqNo);
     return this->SendCore(true);
 }
@@ -450,12 +456,6 @@ bool MarketServerInfo::DoNothing_Atom() {
         this->m_resendCurrentSeqNo++;
         if(this->CheckNeedResendNextMessage())
             return true;
-    }
-    else {
-        /*this->m_resendRequestInfo->BeginSeqNo = 50;
-        this->m_resendRequestInfo->EndSeqNo = 0;
-        this->SetState(MarketServerState::mssSendResendRequest, &MarketServerInfo::SendResendRequest_Atom);
-        return true;*/
     }
     if(this->m_stopwatch->ElapsedSeconds() > 30) {
         this->SetNextState(MarketServerState::mssDoNothing, &MarketServerInfo::DoNothing_Atom);

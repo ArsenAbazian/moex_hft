@@ -47,6 +47,7 @@ class FixProtocolManager {
     ISocketBufferProvider           *m_bufferProvider;
     SocketBuffer                    *m_sendBuffer;
     SocketBuffer                    *m_recvBuffer;
+    FixRejectInfo                   *m_rejectInfo;
 
 	inline void AddSymbol(char symbol) { *(this->currentPos) = symbol; this->currentPos++; }
 	inline void AddEqual() { *(this->currentPos) = '='; this->currentPos++; }
@@ -56,6 +57,8 @@ class FixProtocolManager {
 public:
 	FixProtocolManager(ISocketBufferProvider *provider);
 	~FixProtocolManager();
+
+    inline FixRejectInfo* RejectInfo() { return this->m_rejectInfo; }
 
     inline void PrepareSendBuffer() {
         this->m_sendMessageBuffer = this->m_sendBuffer->CurrentPos();

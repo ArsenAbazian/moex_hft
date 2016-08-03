@@ -57,11 +57,13 @@ class MarketServerInfo {
     unsigned int                            m_resendEndSeqNo;
     unsigned int                            m_resendCurrentSeqNo;
 
-    WinSockManager					*m_socketManager;
-	FixProtocolManager				*m_fixManager;
-	FixLogonInfo					*m_logonInfo;
-	Stopwatch						*m_stopwatch;
-	FixResendRequestInfo			*m_resendRequestInfo;
+    bool                                    m_inSendResendRequest;
+
+    WinSockManager					        *m_socketManager;
+	FixProtocolManager				        *m_fixManager;
+	FixLogonInfo					        *m_logonInfo;
+	Stopwatch						        *m_stopwatch;
+	FixResendRequestInfo			        *m_resendRequestInfo;
 
 	virtual ISocketBufferProvider*	CreateSocketBufferProvider();
 	FixLogonInfo* CreateLogonInfo();

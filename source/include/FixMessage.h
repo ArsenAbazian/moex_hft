@@ -40,9 +40,10 @@ class FixProtocolMessage {
     UTCTimeConverter            *m_timeConv;
     DtoaConverter               *m_doubleConv;
     int                         m_currentTag;
+    FixRejectInfo               *m_rejectInfo;
 
 public:
-    FixProtocolMessage(ItoaConverter *intConv, UTCTimeConverter *timeConv, DtoaConverter *doubleConv) {
+    FixProtocolMessage(ItoaConverter *intConv, UTCTimeConverter *timeConv, DtoaConverter *doubleConv, FixRejectInfo *rejectInfo) {
         this->m_headerInfo = new FixHeaderInfo;
         this->m_resendRequestInfo = new FixResendRequestInfo;
         this->m_size = 0;
@@ -51,6 +52,7 @@ public:
         this->m_intConv = intConv;
         this->m_timeConv = timeConv;
         this->m_doubleConv = doubleConv;
+        this->m_rejectInfo = rejectInfo;
         for(int i = 0; i < this->m_tagsMaxCount; i++)
             this->m_tags[i] = new FixTag();
     }
@@ -195,6 +197,7 @@ public:
             tag->valueSize = tag->size - 2;
             return true;
         }
+
         return false;
     }
 
@@ -317,7 +320,9 @@ public:
     }
 
     inline bool CheckFixHeader(FixTag *tag) {
-        if(!this->ReadCheck1SymbolTag(tag, TagCheckBeginString, TagBeginString) || tag->valueSize != FixProtocolVersionLength)
+        if(!this->ReadCheck1SymbolTag(tag, TagCheckBeginString, TagBeginString))
+            return false;
+        if(tag->valueSize != FixProtocolVersionLength)
             return false;
         // 8=FIX...
         this->m_headerInfo->name = tag->value; // 8=
