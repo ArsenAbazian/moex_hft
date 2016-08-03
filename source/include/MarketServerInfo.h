@@ -72,7 +72,7 @@ class MarketServerInfo {
 	Stopwatch						*m_stopwatch;
 	FixResendRequestInfo			*m_resendRequestInfo;
 
-	virtual WinSockManager*	CreateSocketManager();
+	virtual ISocketBufferProvider*	CreateSocketBufferProvider();
 	FixLogonInfo* CreateLogonInfo();
 	void Clear();
 
@@ -115,10 +115,14 @@ class MarketServerInfo {
 	}
 	inline bool SendCore(bool shouldRecvAnswer) {
 		this->m_shouldRecvMessage = shouldRecvAnswer;
-		if(!this->m_socketManager->Send(this->m_fixManager->MessageLength()))
+		if(!this->m_socketManager->Send(this->m_fixManager->SendBuffer(), this->m_fixManager->SendBufferSize()))
 			return this->AfterFailedSend();
 		return this->AfterSuccessfulSend();
 	}
+    inline bool RecvCore() {
+        this->m_fixManager->PrepareRecvBuffer();
+        return this->m_socketManager->Recv(this->m_fixManager->RecvBuffer());
+    }
 
 	void InitializeOnMessagePtrArray();
 	inline bool ProcessMessages(int startIndex) {

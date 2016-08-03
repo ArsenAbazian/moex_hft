@@ -1,4 +1,5 @@
 #pragma once
+#pragma once
 
 #include "FixTypes.h"
 #include "ItoaConverter.h"
@@ -9,7 +10,7 @@
 #include <sys/time.h>
 #include <stdio.h>
 #include "FixMessage.h"
-#include "SocketBufferManager.h"
+#include "WinSockManager.h"
 
 #define AddTagValue(tagName, tagValue) tagName AddEqual(); AddValue(tagValue); AddSeparator();
 #define AddTagString(tagName, tagValueString) tagName AddEqual(); AddArray(tagValueString); AddSeparator();
@@ -26,7 +27,8 @@ class FixProtocolManager {
 	SYSTEMTIME		                *currentTime;
 
     int                             receivedMessageLength;
-	char                            *messageBuffer;
+	unsigned char                   *m_sendMessageBuffer;
+    char                            *messageBuffer;
 	int                             messageBufferSize;
 
     const int                       m_maxRecvMessageCount = 128;
@@ -54,13 +56,31 @@ public:
 	FixProtocolManager(ISocketBufferProvider *provider);
 	~FixProtocolManager();
 
-    inline bool FindSendMessageInHistory(int msgSeqNo, char **msgBuffer, int *msgSize) {
-
-        return false;
+    inline void PrepareSendBuffer() {
+        this->m_sendMessageBuffer = this->m_sendBuffer->CurrentPos();
+        this->SetMessageBuffer((char*)this->m_sendMessageBuffer);
     }
 
-    inline void SaveSendMessage() {
+    inline void PrepareRecvBuffer() {
+        this->SetMessageBuffer((char*)this->m_recvBuffer->CurrentPos());
+    }
 
+    inline bool FindSendMessageInHistory(int msgSeqNo, char **msgBuffer, int *msgSize) {
+        if(msgSeqNo >= this->m_sendBuffer->ItemsCount())
+            return false;
+        *msgBuffer = (char*)this->m_sendBuffer->Item(msgSeqNo - 1);
+        *msgSize = this->m_sendBuffer->ItemLength(msgSeqNo - 1);
+        return true;
+    }
+
+    inline unsigned char* SendBuffer() { return this->m_sendMessageBuffer; }
+    inline unsigned char* RecvBuffer() { return (unsigned char*)this->messageBuffer; }
+
+    inline unsigned int SendBufferSize() { return (unsigned int)(this->currentPos - ((char*)this->m_sendMessageBuffer)); }
+
+    inline void SaveSendMessage() {
+        AddStringZero();
+        this->m_sendBuffer->Next(this->MessageLength());
     }
 
 	inline void StartNewMessage() {
@@ -104,6 +124,7 @@ public:
             // 8= -> 0x3d38
             if(*((unsigned short*)&(this->messageBuffer[tagStart])) == 0x3d38 ) {
                 msg->Size(separatorIndex - msgStart + 1);
+                this->m_recvBuffer->Next(msg->Size());
                 msgStart = tagStart;
                 msgPtr++; msg = *msgPtr;
                 msg->Reset();
@@ -113,6 +134,7 @@ public:
             if(separatorIndex == this->messageBufferSize - 1) {
                 this->m_recvMessageCount++;
                 msg->Size(separatorIndex - msgStart + 1);
+                this->m_recvBuffer->Next(msg->Size());
                 break;
             }
             separatorIndex = FindSeparator(tagStart);
@@ -315,8 +337,7 @@ public:
         this->currentPos = this->messageBuffer;
     }
 
-	inline void SetRecvMessageBuffer(char *buffer, int size) {
-        this->messageBuffer = buffer;
+	inline void UpdateRecvMessageBuffer(int size) {
         this->messageBufferSize = size;
         this->ProcessSplitRecvMessages();
     }
@@ -325,7 +346,6 @@ public:
 		AddHeader(MsgTypeHearthBeat);
 		UpdateLengthTagValue();
 		AddTrail();
-		//AddStringZero();
         SaveSendMessage();
 	}
 
@@ -334,7 +354,6 @@ public:
 		AddTestRequestId(testRequestId);
 		UpdateLengthTagValue();
 		AddTrail();
-		//AddStringZero();
         SaveSendMessage();
 	}
 
@@ -342,7 +361,6 @@ public:
         AddHeader(MsgTypeTestRequest);
         UpdateLengthTagValue();
         AddTrail();
-        //AddStringZero();
         SaveSendMessage();
     }
 
@@ -351,7 +369,6 @@ public:
 		AddTestRequestId(testRequestId);
 		UpdateLengthTagValue();
 		AddTrail();
-		//AddStringZero();
         SaveSendMessage();
 	}
 
@@ -361,7 +378,6 @@ public:
 		AddTagValue(AddTagEndSeqNo, end);
 		UpdateLengthTagValue();
 		AddTrail();
-		//AddStringZero();
         SaveSendMessage();
 	}
 
@@ -386,7 +402,6 @@ public:
 		AddEncodedTextTag(info->EncodedText, info->EncodedTextLength);
 		UpdateLengthTagValue();
 		AddTrail();
-		//AddStringZero();
         SaveSendMessage();
 	}
 	
@@ -397,7 +412,6 @@ public:
 		AddTagValue(AddTagNewSeqNo, newSeqNumber);
 		UpdateLengthTagValue();
 		AddTrail();
-        //AddStringZero();
         SaveSendMessage();
 	}
 
@@ -409,7 +423,6 @@ public:
 			AddEncodedTextTag(encodedText, encodedTextLength);
 		UpdateLengthTagValue();
 		AddTrail();
-        //AddStringZero();
         SaveSendMessage();
 	}
 
@@ -732,7 +745,6 @@ public:
 		AddGroupLogon(logon);
 		UpdateLengthTagValue();
 		AddTrail();
-		//AddStringZero();
         SaveSendMessage();
 	}
 	inline void CreateLogoutMessage(const char *text) {
@@ -748,7 +760,6 @@ public:
 		}
 		UpdateLengthTagValue();
 		AddTrail();
-		//AddStringZero();
         SaveSendMessage();
 	}
 
@@ -758,7 +769,6 @@ public:
 		AddTagString2(AddTagClOrdID, info->CiOrdId, info->CiOrdIdLength);
 		UpdateLengthTagValue();
 		AddTrail();
-		//AddStringZero();
         SaveSendMessage();
 	}
 
@@ -816,7 +826,6 @@ public:
 
 		UpdateLengthTagValue();
 		AddTrail();
-		//AddStringZero();
         SaveSendMessage();
 	}
 
@@ -836,7 +845,6 @@ public:
 
 		UpdateLengthTagValue();
 		AddTrail();
-		//AddStringZero();
         SaveSendMessage();
 	}
 
@@ -877,7 +885,6 @@ public:
 
 		UpdateLengthTagValue();
 		AddTrail();
-		//AddStringZero();
         SaveSendMessage();
 	}
 
@@ -889,7 +896,6 @@ public:
 		
 		UpdateLengthTagValue();
 		AddTrail();
-		//AddStringZero();
         SaveSendMessage();
 	}
 
@@ -901,7 +907,6 @@ public:
 		
 		UpdateLengthTagValue();
 		AddTrail();
-		//AddStringZero();
         SaveSendMessage();
 	}
 
@@ -933,7 +938,6 @@ public:
 		
 		UpdateLengthTagValue();
 		AddTrail();
-		//AddStringZero();
         SaveSendMessage();
 	}
 };

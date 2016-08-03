@@ -112,8 +112,11 @@ bool MarketServerInfo::ResendMessageSeq_Atom() {
     char *msgBuffer = 0;
     int msgSize = 0;
 
-    this->m_fixManager->FindSendMessageInHistory(this->m_resendCurrentSeqNo, &msgBuffer, &msgSize);
-    if(!this->m_socketManager->SendFix((unsigned char*)msgBuffer, msgSize)) {
+    if(!this->m_fixManager->FindSendMessageInHistory(this->m_resendCurrentSeqNo, &msgBuffer, &msgSize)) {
+        DefaultLogManager::Default->EndLog(false);
+        return false;
+    }
+    if(!this->m_socketManager->Send((unsigned char*)msgBuffer, msgSize)) {
         this->ReconnectSetNextState(MarketServerState::mssResendLastMessage, &MarketServerInfo::ResendLastMessage_Atom);
         DefaultLogManager::Default->EndLog(false);
         return true;
@@ -134,7 +137,7 @@ bool MarketServerInfo::ResendMessageSeq_Atom() {
 bool MarketServerInfo::ResendLastMessage_Atom() {
     DefaultLogManager::Default->StartLog(this->m_nameLogIndex, LogMessageCode::lmcMarketServerInfo_ResendLastMessage_Atom);
 
-    if(!this->m_socketManager->ResendFix()) {
+    if(!this->m_socketManager->Resend()) {
         this->ReconnectSetNextState(MarketServerState::mssResendLastMessage, &MarketServerInfo::ResendLastMessage_Atom);
         DefaultLogManager::Default->EndLog(false);
         return true;
@@ -154,13 +157,13 @@ bool MarketServerInfo::ResendLastMessage_Atom() {
 bool MarketServerInfo::RecvMessage_Atom() {
     DefaultLogManager::Default->StartLog(this->m_nameLogIndex, LogMessageCode::lmcMarketServerInfo_RecvMessage_Atom);
 
-    if(!this->m_socketManager->RecvFix()) {
+    if(!this->RecvCore()) {
         this->ReconnectSetNextState(MarketServerState::mssResendLastMessage, &MarketServerInfo::ResendLastMessage_Atom);
         DefaultLogManager::Default->EndLog(false);
         return true;
     }
+    this->m_fixManager->ProcessSplitRecvMessages();
 
-    this->m_fixManager->SetRecvMessageBuffer((char*)(this->m_socketManager->RecvBytes()), this->m_socketManager->RecvSize());
     if(!this->ProcessMessages()) {
         DefaultLogManager::Default->EndLog(false);
         return true;
@@ -214,7 +217,7 @@ bool MarketServerInfo::SendLogon_Atom() {
 
     DefaultLogManager::Default->StartLog(this->m_nameLogIndex, LogMessageCode::lmcMarketServerInfo_SendLogon_Atom);
 
-    this->m_fixManager->SetMessageBuffer((char*)this->m_socketManager->GetNextSendBuffer());
+    this->m_fixManager->PrepareSendBuffer();
     this->m_fixManager->CreateLogonMessage(this->m_logonInfo);
     return this->SendCore(true);
 }
@@ -223,7 +226,7 @@ bool MarketServerInfo::SendResendRequest_Atom(){
 
     DefaultLogManager::Default->StartLog(this->m_nameLogIndex, LogMessageCode::lmcMarketServerInfo_SendResendRequest_Atom);
 
-    this->m_fixManager->SetMessageBuffer((char*)this->m_socketManager->GetNextSendBuffer());
+    this->m_fixManager->PrepareSendBuffer();
     this->m_fixManager->CreateResendRequestMessage(this->m_resendRequestInfo->BeginSeqNo, this->m_resendRequestInfo->EndSeqNo);
     return this->SendCore(true);
 }
@@ -231,7 +234,7 @@ bool MarketServerInfo::SendResendRequest_Atom(){
 /*
 bool MarketServerInfo::RepeatSendLogon_Atom() {
     DefaultLogManager::Default->StartLog(this->m_nameLogIndex, LogMessageCode::lmcMarketServerInfo_RepeatSendLogon_Atom);
-    if(!this->m_socketManager->SendFix(this->m_fixManager->MessageLength())) {
+    if(!this->m_socketManager->Send(this->m_fixManager->MessageLength())) {
         DefaultLogManager::Default->EndLog(false);
         return true;
     }
@@ -242,7 +245,7 @@ bool MarketServerInfo::RepeatSendLogon_Atom() {
 
 bool MarketServerInfo::RepeatSendResendRequest_Atom() {
     DefaultLogManager::Default->StartLog(this->m_nameLogIndex, LogMessageCode::lmcMarketServerInfo_RepeatSendResendRequest_Atom);
-    if(!this->m_socketManager->SendFix(this->m_fixManager->MessageLength())) {
+    if(!this->m_socketManager->Send(this->m_fixManager->MessageLength())) {
         DefaultLogManager::Default->EndLog(false);
         return true;
     }
@@ -326,14 +329,14 @@ bool MarketServerInfo::SendLogout_Atom() {
 
     DefaultLogManager::Default->StartLog(this->m_nameLogIndex, LogMessageCode::lmcMarketServerInfo_SendLogout_Atom);
 
-    this->m_fixManager->SetMessageBuffer((char*)this->m_socketManager->GetNextSendBuffer());
+    this->m_fixManager->PrepareSendBuffer();
     this->m_fixManager->CreateLogoutMessage("Hasta la vista baby!");
     return this->SendCore(true);
 }
 /*
 bool MarketServerInfo::RepeatSendLogout_Atom() {
     DefaultLogManager::Default->StartLog(this->m_nameLogIndex, LogMessageCode::lmcMarketServerInfo_RepeatSendLogout_Atom);
-    if(!this->m_socketManager->SendFix(this->m_fixManager->MessageLength())) {
+    if(!this->m_socketManager->Send(this->m_fixManager->MessageLength())) {
         DefaultLogManager::Default->EndLog(false);
         return true;
     }
@@ -391,7 +394,7 @@ bool MarketServerInfo::WaitRecvLogout_Atom() {
 bool MarketServerInfo::SendTestRequest_Atom() {
     DefaultLogManager::Default->StartLog(this->m_nameLogIndex, LogMessageCode::lmcMarketServerInfo_SendTestRequest_Atom);
 
-    this->m_fixManager->SetMessageBuffer((char*)this->m_socketManager->GetNextSendBuffer());
+    this->m_fixManager->PrepareSendBuffer();
     this->m_testRequestId = rand();
     this->m_fixManager->CreateTestRequestMessage();
     this->m_stopwatch->Start();
@@ -402,7 +405,7 @@ bool MarketServerInfo::SendTestRequest_Atom() {
 bool MarketServerInfo::RepeatSendTestRequest_Atom() {
     DefaultLogManager::Default->StartLog(this->m_nameLogIndex, LogMessageCode::lmcMarketServerInfo_RepeatSendTestRequest_Atom);
     this->m_stopwatch->Start();
-    if(!this->m_socketManager->SendFix(this->m_fixManager->MessageLength())) {
+    if(!this->m_socketManager->Send(this->m_fixManager->MessageLength())) {
         DefaultLogManager::Default->EndLog(false);
         return true;
     }
@@ -458,16 +461,16 @@ bool MarketServerInfo::Panic_Atom() {
     return true;
 }
 
-WinSockManager* MarketServerInfo::CreateSocketManager() {
-    return new WinSockManager(new SocketBufferProvider(DefaultSocketBufferManager::Default,
-                                                       RobotSettings::DefaultMarketSendBufferSize, RobotSettings::DefaultMarketSendItemsCount,
-                                                       RobotSettings::DefaultMarketRecvBufferSize, RobotSettings::DefaultMarketRecvItemsCount));
+ISocketBufferProvider* MarketServerInfo::CreateSocketBufferProvider() {
+    return new SocketBufferProvider(DefaultSocketBufferManager::Default,
+                             RobotSettings::DefaultMarketSendBufferSize, RobotSettings::DefaultMarketSendItemsCount,
+                             RobotSettings::DefaultMarketRecvBufferSize, RobotSettings::DefaultMarketRecvItemsCount);
 }
 
 bool MarketServerInfo::Connect() {
 	DefaultLogManager::Default->StartLog(this->m_nameLogIndex, LogMessageCode::lmcMarketServerInfo_Connect);
 	if (this->m_fixManager == NULL) {
-		this->m_fixManager = new FixProtocolManager();
+		this->m_fixManager = new FixProtocolManager(this->CreateSocketBufferProvider());
 		this->m_fixManager->SetTargetComputerId((char*)TargetComputerId());
 		this->m_fixManager->SetSendMsgSeqNumber(100);
         this->m_fixManager->SetRecvMsgSeqNumber(1);
@@ -477,7 +480,7 @@ bool MarketServerInfo::Connect() {
         this->m_logonInfo->MsgStartSeqNo = 100;
 	}
 	
-	this->m_socketManager = CreateSocketManager();
+	this->m_socketManager = new WinSockManager();
 	bool result = this->m_socketManager->Connect(this->m_internetAddress, this->m_internetPort);
 	
 	DefaultLogManager::Default->EndLog(result);

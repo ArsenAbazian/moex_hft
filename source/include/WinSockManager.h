@@ -58,6 +58,7 @@ class WinSockManager {
 
     bool                            m_connected;
 	int                             m_sendSize;
+    int                             m_sendSizeActual;
     int                             m_recvSize;
 	unsigned char                   *m_recvBytes;
     unsigned char                   *m_sendBytes;
@@ -78,18 +79,18 @@ public:
 	bool Reconnect();
 	bool TryFixSocketError(int socketError);
 
-	inline bool ResendFix() { return this->SendFix(this->SendSize()); }
-	inline bool Send(unsigned char *buffer, int size) {
+	inline bool Resend() { return this->Send(this->SendBytes(), this->SendSize()); }
+	inline bool Send(unsigned char *buffer, int size, int bufferIndex, int itemIndex, int itemsCount) {
         //BinaryLogItem *item = DefaultLogManager::Default->WriteFix(LogMessageCode::lmcWinSockManager_SendFix, this->m_sendBuffer->BufferIndex(), this->m_sendBuffer->CurrentItemIndex());
-        this->m_sendBytes = buffer; //this->m_sendBuffer->CurrentPos();
-        this->m_sendSize = send(this->m_socket, this->m_sendBytes, size, 0);
-		if (this->m_sendSize < 0) {
-            //item->m_result = NullableBoolean::nbFalse;
-            //item->m_errno = errno;
+        this->m_sendBytes = buffer;
+        this->m_sendSize = size;
+        this->m_sendSizeActual = send(this->m_socket, this->m_sendBytes, size, 0);
+		if (this->m_sendSizeActual < 0) {
+            /*item->m_result = NullableBoolean::nbFalse;
+            item->m_errno = errno;*/
             return false;
 		}
         //item->m_result = NullableBoolean::nbTrue;
-        //this->m_sendBuffer->Next(size);
 		return true;
 	}
 
@@ -129,6 +130,7 @@ public:
 	inline int RecvSize() { return this->m_recvSize; }
 	inline unsigned char* RecvBytes() { return this->m_recvBytes; }
     inline int SendSize() { return this->m_sendSize; }
+    inline int ActualSendSize() { return this->m_sendSizeActual; }
     inline unsigned char* SendBytes() { return this->m_sendBytes; }
 };
 

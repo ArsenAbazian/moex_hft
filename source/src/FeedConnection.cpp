@@ -35,8 +35,8 @@ bool FeedConnection::InitializeSockets() {
 		return true;
 	DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_InitializeSockets);
 
-	this->socketAManager = new WinSockManager(this->CreateSocketBufferProvider());
-	this->socketBManager = new WinSockManager(this->CreateSocketBufferProvider());
+	this->socketAManager = new WinSockManager();
+	this->socketBManager = new WinSockManager();
 
 	DefaultLogManager::Default->EndLog(true);
 	return true;
