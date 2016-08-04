@@ -31,7 +31,6 @@ typedef struct _BinaryLogItem {
     BinaryLogItemType   m_type;             // by default (do not set) is NodeItem
     int                 m_bufferIndex;      //
     int                 m_itemIndex;        //
-    int                 m_bytesCount;       // for fix and fast protocol - bytes count;
     int                 m_errno;            // error number
     NullableBoolean     m_result;           // method result - 0 - fail, 1 - success, -1 - no value
     int                 m_index;            // global index
@@ -110,7 +109,6 @@ public:
             this->m_items[i].m_index = i;
             this->m_items[i].m_message2 = -1;
             this->m_items[i].m_message = -1;
-            this->m_items[i].m_bytesCount = 0;
             this->m_items[i].m_startIndex = -1;
             this->m_items[i].m_endIndex = -1;
         }
@@ -156,7 +154,7 @@ public:
 #endif
         return item;
     }
-    inline BinaryLogItem* WriteFast(int messageCode, int bufferIndex, int itemIndex, int size) {
+    inline BinaryLogItem* WriteFast(int messageCode, int bufferIndex, int itemIndex) {
         BinaryLogItem *item = this->Next();
 
         GetStartClock(item);
@@ -164,7 +162,6 @@ public:
         item->m_bufferIndex = bufferIndex;
         item->m_itemIndex = itemIndex;
         item->m_type = BinaryLogItemType::NodeFast;
-        item->m_bytesCount = size;
 #ifdef BINARY_LOG_MANAGER_ALLOW_PRINT
         Print(item);
 #endif

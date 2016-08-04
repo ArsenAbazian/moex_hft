@@ -118,6 +118,7 @@ class MarketServerInfo {
 			return this->AfterFailedSend();
 		return this->AfterSuccessfulSend();
 	}
+	inline bool CanRecv() { return this->m_socketManager->ShouldRecv(); }
     inline bool RecvCore() {
         if(!this->m_fixManager->RecvFix(this->m_socketManager))
             return this->AfterFailedRecv();

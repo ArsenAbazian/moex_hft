@@ -14,6 +14,7 @@ void BinaryLogManager::Print() {
 
 void BinaryLogManager::Print(BinaryLogItem *item) {
     printf("%s", this->m_tabs);
+    printf("%d: ", item->m_index);
 
     if(item->m_type == BinaryLogItemType::NodeEnd && item->m_startIndex != -1) {
         BinaryLogItem *start = &(this->m_items[item->m_startIndex]);
@@ -42,7 +43,16 @@ void BinaryLogManager::Print(BinaryLogItem *item) {
         }
     }
     else if(item->m_type == BinaryLogItemType::NodeFast) {
-
+        if(item->m_bufferIndex == -1)
+            printf("null");
+        else {
+            unsigned char *itemText = DefaultSocketBufferManager::Default->Buffer(item->m_bufferIndex)->Item(item->m_itemIndex);
+            int itemSize = DefaultSocketBufferManager::Default->Buffer(item->m_bufferIndex)->ItemLength(item->m_itemIndex);
+            for(int i = 0; i < itemSize; i++) {
+                printf("%2x ", (unsigned int)itemText[i]);
+            }
+            printf("\n");
+        }
     }
     else if(item->m_type != BinaryLogItemType::NodeStart) {
         if(item->m_result != NullableBoolean::nbNull) {

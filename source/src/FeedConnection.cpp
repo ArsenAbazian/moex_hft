@@ -19,12 +19,18 @@ FeedConnection::FeedConnection(const char *id, const char *name, char value, Fee
 	strcpy(this->feedBIp, bIp);
 	this->feedBPort = bPort;
 	this->fastProtocolManager = new FastProtocolManager();
-	this->state = FeedConnectionState::Normal;
+	this->m_socketABufferProvider = CreateSocketBufferProvider();
+	this->m_socketBBufferProvider = CreateSocketBufferProvider();
+	this->m_sendABuffer = this->m_socketABufferProvider->SendBuffer();
+	this->m_recvABuffer = this->m_socketABufferProvider->RecvBuffer();
+	this->m_sendBBuffer = this->m_socketBBufferProvider->SendBuffer();
+	this->m_recvBBuffer = this->m_socketBBufferProvider->RecvBuffer();
 
     this->socketAManager = NULL;
     this->socketBManager = NULL;
-}
 
+	this->SetState(FeedConnectionState::fcsSuspend, &FeedConnection::Suspend_Atom);
+}
 
 FeedConnection::~FeedConnection() {
 
@@ -72,6 +78,47 @@ bool FeedConnection::Disconnect() {
     return result;
 }
 
+bool FeedConnection::Suspend_Atom() {
+	return true;
+}
+
+bool FeedConnection::Listen_Atom() {
+	if(!this->CanListen())
+		return true;
+
+	bool res = false;
+	if(!this->socketAManager->Recv(this->m_recvABuffer->CurrentPos())) {
+		DefaultLogManager::Default->WriteSuccess(LogMessageCode::lmcsocketA, LogMessageCode::lmcFeedConnection_Listen_Atom, false)->m_errno = errno;
+		this->socketAManager->Reconnect();
+		if(!this->socketBManager->Recv(this->m_recvBBuffer->CurrentPos())) {
+			DefaultLogManager::Default->WriteSuccess(LogMessageCode::lmcsocketB, LogMessageCode::lmcFeedConnection_Listen_Atom, false)->m_errno = errno;
+			this->socketBManager->Reconnect();
+			return true;
+		}
+		if(this->socketBManager->RecvSize() == 0)
+			return true;
+		res = this->ProcessMessage(this->m_recvBBuffer, this->socketBManager->RecvSize());
+		this->m_recvBBuffer->Next(this->socketBManager->RecvSize());
+	}
+	else if(this->socketAManager->RecvSize() == 0) {
+		if(!this->socketBManager->Recv(this->m_recvBBuffer->CurrentPos())) {
+			DefaultLogManager::Default->WriteSuccess(LogMessageCode::lmcsocketB, LogMessageCode::lmcFeedConnection_Listen_Atom, false)->m_errno = errno;
+			this->socketBManager->Reconnect();
+			return true;
+		}
+		if(this->socketBManager->RecvSize() == 0)
+			return true;
+		res = this->ProcessMessage(this->m_recvBBuffer, this->socketBManager->RecvSize());
+		this->m_recvBBuffer->Next(this->socketBManager->RecvSize());
+	}
+	else {
+		res = this->ProcessMessage(this->m_recvABuffer, this->socketAManager->RecvSize());
+		this->m_recvABuffer->Next(this->socketAManager->RecvSize());
+	}
+
+	return res;
+}
+/*
 FeedConnectionErrorCode FeedConnection::CheckReceivedBytes(BYTE *buffer) { 
 	int receivedMsgSeqNumber = this->ReadMessageSequenceNumber(buffer);
 	int delta = receivedMsgSeqNumber - ExpectedMessageSeqNumber();
@@ -90,7 +137,7 @@ FeedConnectionErrorCode FeedConnection::CheckReceivedBytes(BYTE *buffer) {
 
 FeedConnectionErrorCode FeedConnection::ListenNormal() {
 	return FeedConnectionErrorCode::Success;
-	/*
+
 	BYTE *buffer = CurrentBuffer();
 	bool result = this->socketAManager->Recv((char*)buffer, FEED_CONNECTION_MAX_BUFFER_LENGTH);
 	if (!result || this->socketAManager->ReceivedBytesCount() == 0) { 
@@ -107,7 +154,6 @@ FeedConnectionErrorCode FeedConnection::ListenNormal() {
 		IncrementBufferIndex();
 		return CheckReceivedBytes(buffer);
 	}
-	*/
 }
 
 FeedConnectionErrorCode FeedConnection::Listen() {
@@ -119,3 +165,4 @@ FeedConnectionErrorCode FeedConnection::Listen() {
 
 	return FeedConnectionErrorCode::Success;
 }
+*/

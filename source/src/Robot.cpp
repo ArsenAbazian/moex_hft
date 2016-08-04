@@ -228,6 +228,9 @@ bool Robot::DoWork() {
     DefaultLogManager::Default->StartLog(LogMessageCode::lmcRobot_DoWork);
 
     while(true) {
+        if(!WinSockManager::UpdateManagersPollStatus())
+            break;
+
         //if(!this->m_fondMarket->ServerLocked()) {
             if(!this->m_currMarket->DoWorkAtom()) {
                 DefaultLogManager::Default->EndLog(false);

@@ -81,6 +81,12 @@ void LogMessageProvider::InitializeLogMessageText() {
 	this->m_logMessageText[LogMessageCode::lmcFixProtocolManager_RecvFix] = "FixProtocolManager::RecvFix";
 	this->m_logMessageText[LogMessageCode::lmcMarketServerInfo_ResendMessageSeq_Atom] = "MarketServerInfo::ResendMessageSeq_Atom";
 	this->m_logMessageText[LogMessageCode::lmcMarketServerInfo_OnReceiveReject] = "MarketServerInfo::OnReceiveReject";
+	this->m_logMessageText[LogMessageCode::lmcFeedConnection_ProcessMessage] = "FeedConnection::ProcessMessage";
+	this->m_logMessageText[LogMessageCode::lmcFeedConnection_Decode] = "FeedConnection::Decode";
+	this->m_logMessageText[LogMessageCode::lmcsocketA] = "socketA";
+	this->m_logMessageText[LogMessageCode::lmcFeedConnection_Listen_Atom] = "FeedConnection::Listen_Atom";
+	this->m_logMessageText[LogMessageCode::lmcsocketB] = "socketB";
+	this->m_logMessageText[LogMessageCode::lmcWinSockManager_UpdateManagersPollStatus] = "WinSockManager::UpdateManagersPollStatus";
 #pragma endregion
 }
 

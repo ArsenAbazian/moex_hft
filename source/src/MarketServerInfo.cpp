@@ -171,6 +171,9 @@ bool MarketServerInfo::ResendLastMessage_Atom() {
 }
 
 bool MarketServerInfo::RecvMessage_Atom() {
+    if(!this->CanRecv())
+        return true;
+
     DefaultLogManager::Default->StartLog(this->m_nameLogIndex, LogMessageCode::lmcMarketServerInfo_RecvMessage_Atom);
 
     if(!this->RecvCore()) {

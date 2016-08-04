@@ -49,19 +49,7 @@ void FeedChannel::SetConnection(FeedConnection *conn) {
 		this->historicalReplay = conn;
 }
 
-bool FeedChannel::Logon(FeedConnection *conn) { 
-	if (conn == NULL)
-		return false;
-	return conn->Logon();
-}
-
-bool FeedChannel::Logout(FeedConnection *conn) { 
-	if (conn == NULL)
-		return false;
-	return conn->Logout();
-}
-
-bool FeedChannel::Connect(FeedConnection *conn) { 
+bool FeedChannel::Connect(FeedConnection *conn) {
 	if (conn == NULL)
 		return false;
 	return conn->Connect();
@@ -96,6 +84,12 @@ bool FeedChannel::Connect() {
 		return false;
 	}
 
+	this->orderBookIncremental->Listen();
+	this->statisticsIncremental->Listen();
+	this->ordersIncremental->Listen();
+	this->tradesIncremental->Listen();
+	this->instrumentStatus->Listen();
+
 	DefaultLogManager::Default->EndLog(true);
 	return true;
 }
@@ -118,42 +112,5 @@ bool FeedChannel::Disconnect() {
 	result &= this->Disconnect(this->historicalReplay);
 
 	DefaultLogManager::Default->EndLog(result);
-	return result;
-}
-
-bool FeedChannel::Logon() { 
-	
-	bool result = true;
-
-	result &= this->Logon(this->orderBookIncremental);
-	result &= this->Logon(this->orderBookSnapshot);
-	result &= this->Logon(this->statisticsIncremental);
-	result &= this->Logon(this->statisticsSnapshot);
-	result &= this->Logon(this->ordersIncremental);
-	result &= this->Logon(this->ordersSnapshot);
-	result &= this->Logon(this->tradesIncremental);
-	result &= this->Logon(this->tradesSnapshot);
-	result &= this->Logon(this->instrumentReplay);
-	result &= this->Logon(this->instrumentStatus);
-	result &= this->Logon(this->historicalReplay);
-
-	return result;
-}
-
-bool FeedChannel::Logout() { 
-	bool result = true;
-
-	result &= this->Logout(this->orderBookIncremental);
-	result &= this->Logout(this->orderBookSnapshot);
-	result &= this->Logout(this->statisticsIncremental);
-	result &= this->Logout(this->statisticsSnapshot);
-	result &= this->Logout(this->ordersIncremental);
-	result &= this->Logout(this->ordersSnapshot);
-	result &= this->Logout(this->tradesIncremental);
-	result &= this->Logout(this->tradesSnapshot);
-	result &= this->Logout(this->instrumentReplay);
-	result &= this->Logout(this->instrumentStatus);
-	result &= this->Logout(this->historicalReplay);
-
 	return result;
 }

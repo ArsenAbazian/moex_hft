@@ -7,6 +7,7 @@
 #include <errno.h>
 #include <thread>
 #include "LogManager.h"
+#include <sys/poll.h>
 
 typedef enum _WinSockConnectionType{
 	wsTCP,
@@ -49,9 +50,18 @@ public:
 	SocketBuffer *RecvBuffer() { return this->m_manager->GetFreeBuffer(this->m_recvSize, this->m_recvItemsCount); }
 };
 
+class WinSockManager;
 class WinSockManager {
+	static struct pollfd			*m_pollFd;
+	static int 						*m_recvCount;
+	static int 						m_pollFdCount;
+	static int						m_registeredCount;
+	static WinSockManager			**m_registeredManagers;
+	static int 						m_pollRes;
+
 	int                             m_socket;
 	sockaddr_in                     m_adress;
+	unsigned int					m_addressSize;
 	WinSockConnectionType           m_connectionType;
 	char 							m_fullAddress[64];
 	int 			                m_serverAddressLogIndex;
@@ -66,10 +76,38 @@ class WinSockManager {
     WinSockStatus                   m_sendStatus;
     WinSockStatus                   m_recvStatus;
 
+	int								m_pollIndex;
+
+	inline int GetFreePollIndex() { return WinSockManager::m_registeredCount; }
+	inline void IncPollIndex() { WinSockManager::m_registeredCount++;  }
+	void RegisterPoll();
+
+	inline void UpdatePoll() {
+		WinSockManager::m_pollFd[this->m_pollIndex].fd = this->m_socket;
+	}
+
+	void InitializePollInfo();
 
 public:
 	WinSockManager();
 	~WinSockManager();
+
+	inline static bool UpdateManagersPollStatus() {
+		WinSockManager::m_pollRes = poll(WinSockManager::m_pollFd, WinSockManager::m_registeredCount, 0);
+		if(WinSockManager::m_pollRes == -1) {
+			DefaultLogManager::Default->WriteSuccess(LogMessageCode::lmcWinSockManager_UpdateManagersPollStatus, false)->m_errno = errno;
+			return false;
+		}
+		else if(WinSockManager::m_pollRes == 0)
+			return true;
+		for(int i = 0; i < WinSockManager::m_pollFdCount; i++) {
+			WinSockManager::m_recvCount[i] += WinSockManager::m_pollFd[i].revents;
+			WinSockManager::m_pollFd[i].revents = 0;
+		}
+		return true;
+	}
+
+	inline static bool HasRecvEvents() { return WinSockManager::m_pollRes > 0; }
 
 	bool Connect(char *server_address, unsigned short server_port) {
 		return Connect(server_address, server_port, WinSockConnectionType::wsTCP);
@@ -90,16 +128,43 @@ public:
         return true;
 	}
 
+	inline bool ShouldRecv() { return WinSockManager::m_recvCount[this->m_pollIndex] > 0; }
+	inline void OnRecv() {
+		if(this->ShouldRecv())
+			WinSockManager::m_recvCount[this->m_pollIndex]--;
+	}
+
 	inline bool Recv(unsigned char *buffer) {
+		if(!this->ShouldRecv()) {
+			this->m_recvSize = 0;
+			return true;
+		}
+		if(this->m_connectionType == WinSockConnectionType::wsTCP)
+			return this->RecvTCP(buffer);
+		return this->RecvUDP(buffer);
+	}
+
+	inline bool RecvTCP(unsigned char *buffer) {
 		this->m_recvBytes = buffer;
         this->m_recvSize = recv(this->m_socket, this->m_recvBytes, 8192, 0);
-        if (this->m_recvSize < 0)
+		if (this->m_recvSize < 0)
             return false;
-		else if(this->m_recvSize == 0) {
+		if(this->m_recvSize == 0) {
 			this->Reconnect();
             return false; // do nothing
 		}
+		this->OnRecv();
         return true;
+	}
+	inline bool RecvUDP(unsigned char *buffer) {
+		this->m_recvBytes = buffer;
+		this->m_addressSize = sizeof(sockaddr_in);
+		this->m_recvSize = recvfrom(this->m_socket, this->m_recvBytes, 8192, 0, (struct sockaddr*)&(this->m_adress), &(this->m_addressSize));
+		if(this->m_recvSize > 0) {
+			this->OnRecv();
+			return true;
+		}
+		return false;
 	}
 	inline bool IsConnected() { return this->m_connected; }
 	inline int RecvSize() { return this->m_recvSize; }

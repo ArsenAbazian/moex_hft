@@ -91,7 +91,7 @@ public:
     inline bool RecvFix(WinSockManager *manager) {
         this->PrepareRecvBuffer();
         bool res = manager->Recv(this->RecvBuffer());
-        if(res) {
+        if(res && manager->RecvSize() > 0) {
             manager->RecvBytes()[manager->RecvSize()] = '\0';
             this->SetRecvBufferSize(manager->RecvSize());
             this->m_recvBuffer->SetCurrentItemSize(manager->RecvSize());

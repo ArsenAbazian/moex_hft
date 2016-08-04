@@ -1,8 +1,7 @@
 #pragma once
 #include "FeedConnection.h"
 
-class FeedChannel
-{
+class FeedChannel {
 	char id[16];
 	int  m_idLogIndex;
 	char name[64];

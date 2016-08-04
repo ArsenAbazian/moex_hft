@@ -1689,6 +1689,7 @@ public:
 	inline void SetNewBuffer(BYTE *buffer, int length) { 
 		this->buffer = buffer;
 		this->bufferLength = length;
+		this->ResetBuffer();
 	} 
 	inline void ClearBuffer() { memset(this->buffer, 0, this->bufferLength); }
 	inline char ReadMsgType() { throw; }
