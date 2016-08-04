@@ -381,7 +381,7 @@ typedef struct _FixRejectInfo {
     bool        AllowRefMsgType;
     char        RefMsgType;
     FixSessionRejectReason SessionRejectReason;
-    char        Text[512];
+    char        *Text;
     int         TextLength;
 }FixRejectInfo;
 

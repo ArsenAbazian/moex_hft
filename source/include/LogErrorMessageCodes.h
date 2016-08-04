@@ -78,6 +78,7 @@ typedef enum _LogMessageCode {
 	lmcFixProtocolManager_SendFix = 68,
 	lmcFixProtocolManager_RecvFix = 69,
 	lmcMarketServerInfo_ResendMessageSeq_Atom = 70,
+	lmcMarketServerInfo_OnReceiveReject = 71
 #pragma  endregion
 }LogMessageCode;
 

@@ -37,6 +37,16 @@ void MarketServerInfo::InitializeOnMessagePtrArray() {
     this->m_onMessagePtrArray[MsgTypeLogon] = &MarketServerInfo::OnReceiveLogonMessage;
     this->m_onMessagePtrArray[MsgTypeLogout] = &MarketServerInfo::OnReceiveLogoutMessage;
     this->m_onMessagePtrArray[MsgTypeTestRequest] = &MarketServerInfo::OnReceiveTestRequestMessage;
+    this->m_onMessagePtrArray[MsgTypeReject] = &MarketServerInfo::OnReceiveReject;
+}
+
+MsiMessageProcessResult MarketServerInfo::OnReceiveReject(FixProtocolMessage *msg) {
+    DefaultLogManager::Default->StartLog(this->m_nameLogIndex, LogMessageCode::lmcMarketServerInfo_OnReceiveReject);
+
+    this->SetState(MarketServerState::mssDoNothing, &MarketServerInfo::DoNothing_Atom);
+
+    DefaultLogManager::Default->EndLog(true);
+    return MsiMessageProcessResult::msiMsgResProcessed;
 }
 
 MsiMessageProcessResult MarketServerInfo::OnReceiveHearthBeatMessage(FixProtocolMessage *msg) {

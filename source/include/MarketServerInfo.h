@@ -174,6 +174,7 @@ class MarketServerInfo {
 	MsiMessageProcessResult OnReceiveLogonMessage(FixProtocolMessage *msg);
 	MsiMessageProcessResult OnReceiveResendRequestMessage(FixProtocolMessage *msg);
 	MsiMessageProcessResult OnReceiveTestRequestMessage(FixProtocolMessage *msg);
+    MsiMessageProcessResult OnReceiveReject(FixProtocolMessage *msg);
 
     bool Reconnect_Atom();
     bool ResendLastMessage_Atom();

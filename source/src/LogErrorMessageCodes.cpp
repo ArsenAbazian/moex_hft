@@ -80,7 +80,7 @@ void LogMessageProvider::InitializeLogMessageText() {
 	this->m_logMessageText[LogMessageCode::lmcFixProtocolManager_SendFix] = "FixProtocolManager::SendFix";
 	this->m_logMessageText[LogMessageCode::lmcFixProtocolManager_RecvFix] = "FixProtocolManager::RecvFix";
 	this->m_logMessageText[LogMessageCode::lmcMarketServerInfo_ResendMessageSeq_Atom] = "MarketServerInfo::ResendMessageSeq_Atom";
-	this->m_logMessageText[LogMessageCode::lmcMarketServerInfo_ResendMessageSeq_Atom] = "MarketServerInfo::ResendMessageSeq_Atom";
+	this->m_logMessageText[LogMessageCode::lmcMarketServerInfo_OnReceiveReject] = "MarketServerInfo::OnReceiveReject";
 #pragma endregion
 }
 
