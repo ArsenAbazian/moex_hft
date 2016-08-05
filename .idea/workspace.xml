@@ -16,9 +16,6 @@
   <component name="ChangeListManager">
     <list default="true" id="32604c03-98a8-42cf-80f6-771ec2ce84cc" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/FeedConnection.h" afterPath="$PROJECT_DIR$/source/include/FeedConnection.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/src/MarketServerInfo.cpp" afterPath="$PROJECT_DIR$/source/src/MarketServerInfo.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/src/Types.cpp" afterPath="$PROJECT_DIR$/source/src/Types.cpp" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tools/Program.cs" afterPath="$PROJECT_DIR$/tools/Program.cs" />
     </list>
     <ignored path="hft_robot.iws" />
@@ -595,7 +592,7 @@
       <workItem from="1470330994883" duration="1229000" />
       <workItem from="1470386897941" duration="336000" />
       <workItem from="1470389119084" duration="150000" />
-      <workItem from="1470389709292" duration="3428000" />
+      <workItem from="1470389709292" duration="4083000" />
     </task>
     <task id="LOCAL-00001" summary="move params to structures">
       <created>1468443448895</created>
@@ -765,11 +762,18 @@
       <option name="project" value="LOCAL" />
       <updated>1470331501641</updated>
     </task>
-    <option name="localTasksCounter" value="25" />
+    <task id="LOCAL-00025" summary="1. adding some files needed to generate fast encoding methods">
+      <created>1470399339399</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1470399339399</updated>
+    </task>
+    <option name="localTasksCounter" value="26" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="307682000" />
+    <option name="totallyTimeSpent" value="308337000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -784,7 +788,7 @@
     <frame x="65" y="24" width="1855" height="951" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.21451965" sideWeight="0.493007" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.26637554" sideWeight="0.493007" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32942554" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.59906214" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="CMake" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.13716295" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -795,7 +799,7 @@
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32942554" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.235262" sideWeight="0.506993" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.31418523" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.49941385" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -856,7 +860,8 @@
     <MESSAGE value="1. Refactoring - Now multiple receive messages should process at once&#10;2. Some message processing not working will fix at night (went to play guiar at first floor loudly)" />
     <MESSAGE value="1. Now code is working. It sends and receives Logon, Logout, TestRequest, HearthBeat&#10;2. Working on ResendRequest" />
     <MESSAGE value="1. Change stupid blocked send and receive with poll :) (evil laugh)&#10;2. But polling code now placed in WinSockManager (dont know if it should be extracted to separate class )" />
-    <option name="LAST_COMMIT_MESSAGE" value="1. Change stupid blocked send and receive with poll :) (evil laugh)&#10;2. But polling code now placed in WinSockManager (dont know if it should be extracted to separate class )" />
+    <MESSAGE value="1. adding some files needed to generate fast encoding methods" />
+    <option name="LAST_COMMIT_MESSAGE" value="1. adding some files needed to generate fast encoding methods" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
