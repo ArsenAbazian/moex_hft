@@ -78,10 +78,6 @@ MsiMessageProcessResult MarketServerInfo::OnReceiveLogonMessage(FixProtocolMessa
     this->m_stopwatch->Start();
     this->SetState(MarketServerState::mssDoNothing, &MarketServerInfo::DoNothing_Atom);
 
-    this->m_resendRequestInfo->BeginSeqNo = 50;
-    this->m_resendRequestInfo->EndSeqNo = 0;
-    this->SetState(MarketServerState::mssSendResendRequest, &MarketServerInfo::SendResendRequest_Atom);
-
     DefaultLogManager::Default->EndLog(true);
     return MsiMessageProcessResult::msiMsgResProcessed;
 }
@@ -469,6 +465,10 @@ bool MarketServerInfo::DoNothing_Atom() {
         this->m_resendCurrentSeqNo++;
         if(this->CheckNeedResendNextMessage())
             return true;
+    }
+    if(this->CanRecv()) {
+        this->SetState(MarketServerState::mssRecvMessage, &MarketServerInfo::RecvMessage_Atom);
+        return true;
     }
     if(this->m_stopwatch->ElapsedSeconds() > 30) {
         this->SetNextState(MarketServerState::mssDoNothing, &MarketServerInfo::DoNothing_Atom);

@@ -10,8 +10,9 @@ typedef enum _FeedConnectionProtocol {
 
 typedef enum _FeedConnectionState {
 	fcsSuspend,
-	fcsListen
-}FeedConnectionState;
+	fcsListen,
+    fcsSendLogon
+} FeedConnectionState;
 
 typedef enum _FeedConnectionProcessMessageResultValue {
 	fcMsgResProcessed,
@@ -84,6 +85,7 @@ protected:
 	}
 	bool Suspend_Atom();
 	bool Listen_Atom();
+    bool SendLogon_Atom();
 	bool ProcessMessage(SocketBuffer *buffer, int size) {
 		this->fastProtocolManager->SetNewBuffer(buffer->CurrentPos(), size);
 		buffer->Next(size);

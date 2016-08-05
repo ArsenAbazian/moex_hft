@@ -114,7 +114,7 @@ namespace prebuild {
 		}
 		bool WriteToFile(string fileName) {
 			if(!Modified) {
-				Console.WriteLine(FileName + " was not changed. skip update.");
+				//Console.WriteLine(FileName + " was not changed. skip update.");
 				return true;
 			}
 			try {
@@ -168,7 +168,7 @@ namespace prebuild {
 				throw new ArgumentException("pragma region not found");
 			for(int i = 0; i < endLine - startLine; i++)
 				Lines.RemoveAt(startLine);
-			Console.WriteLine("cleared region '" + regionName + "' removed lines from " + startLine + " to " + endLine);
+			//Console.WriteLine("cleared region '" + regionName + "' removed lines from " + startLine + " to " + endLine);
 			Line = startLine;
 		}
 	}
@@ -233,7 +233,7 @@ namespace prebuild {
 
 			foreach(TextFile file in files) {
 				if(!file.Modified) {
-					Console.WriteLine(file.FileName + " was not modified. skip save");
+					//Console.WriteLine(file.FileName + " was not modified. skip save");
 					continue;
 				}
 				if(!file.Save())
