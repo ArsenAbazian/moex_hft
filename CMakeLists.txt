@@ -150,7 +150,7 @@ target_link_libraries(hft_robot ${TINYXML_LIBRARY} dl)
 
 add_custom_command(TARGET fast_generate
   PRE_BUILD
-  COMMAND ${CSHARP_MONO_INTERPRETER_} ${fast_generator} -d ${CMAKE_CURRENT_LIST_DIR}/test/data/ -s ${CMAKE_CURRENT_LIST_DIR}/source/
+  COMMAND ${CSHARP_MONO_INTERPRETER_} ${fast_generator} -d ${CMAKE_CURRENT_LIST_DIR}/test/data/ -s ${CMAKE_CURRENT_LIST_DIR}/source/ -f -fs ${CMAKE_CURRENT_LIST_DIR}/source/include/FastProtocolManager.h -fx ${CMAKE_CURRENT_LIST_DIR}/test/data/FIX50SP2-2015-Apr.xml -fwe "Logon,Logout,Security Definition,Security Status,Trading Session Status,Hearthbeat"
         COMMENT "generating code...")
 
 #target_link_libraries(hft_robot -Wl,--whole-archive ${TINYXML_LIBRARY} -Wl,--no-whole-archive dl)

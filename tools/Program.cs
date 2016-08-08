@@ -3,48 +3,47 @@ using System.IO;
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
+using System.Xml;
 using Mono.Options;
 
 namespace prebuild {
 	class FastTemplatesCodeGenerator {
 		List<string> Strings { get; set; }
+		List<string> OriginalStrings { get; set; }
 
 		int WriteIndex { get; set; }
 
-		public bool ConstantCheckingFlag { get; set; }
+		public bool WriteConstantCheckingCode { get; set; }
 
-		List<string> EncodeMessages { get; set; }
+		public List<string> EncodeMessages { get; set; }
+		public string SourceFile { get; set; }
+		public string TemplateFile { get; set; }
 
 		void WriteLine (string line) { 
 			Strings.Insert(WriteIndex, line);
 			WriteIndex++;
 		}
 
-		void Generate (string[] args) {
-			if(args.Length == 0) {
-				Console.WriteLine("use: FastTemplatesCppCodeGenerator.exe templates.xml cppFilesName check_constants(optional)");
-				return;
+		public bool Generate () {
+			if(!File.Exists(SourceFile)) {
+				Console.WriteLine("source file '" + SourceFile + "' does not exist.");
+				return false;
 			}
-
-			for(int i = 2; i < args.Length; i++) {
-				if(args[i] == "check_constants")
-					ConstantCheckingFlag = true;
-				if(args[i].StartsWith("write_encode")) {
-					EncodeMessages = new List<string>();
-					string begin = args[i].Substring(args[i].IndexOf(':'));
-					string[] messages = begin.Split(',', ' ');
-					EncodeMessages.AddRange(messages);
-				}
+			if(!File.Exists(TemplateFile)) {
+				Console.WriteLine("template xml file'" + TemplateFile + "' does not exist.");
+				return false;
 			}
-
+			
 			XmlDocument doc = new XmlDocument();
-			doc.Load(args[0]);
+			doc.Load(TemplateFile);
 
-			StreamReader hFileRead = new StreamReader(args[1]);
+			StreamReader hFileRead = new StreamReader(SourceFile);
 			Strings = new List<string>();
+			OriginalStrings = new List<string>();
 			string line = null;
 			while((line = hFileRead.ReadLine()) != null) {
 				Strings.Add(line);
+				OriginalStrings.Add((string)line.Clone());
 			}
 			hFileRead.Close();
 
@@ -56,11 +55,27 @@ namespace prebuild {
 				ParseTemplatesNode(node);
 			}
 
-			StreamWriter hFileWrite = new StreamWriter(args[1]);
+			if(OriginalStrings.Count == Strings.Count) {
+				bool equal = true;
+				for(int i = 0; i < OriginalStrings.Count; i++) {
+					if(!string.Equals(Strings[i], OriginalStrings[i])) {
+						equal = false;
+						break;
+					}
+				}
+				if(equal) {
+					Console.WriteLine("no changes were made. skip update source file.");
+					return true;
+				}
+			}
+
+			StreamWriter hFileWrite = new StreamWriter(SourceFile);
 			foreach(string str in Strings)
 				hFileWrite.WriteLine(str);
 			hFileWrite.Flush();
 			hFileWrite.Close();
+
+			return true;
 		}
 
 		string Message_Info_Structures_Definition_GeneratedCode = "Message_Info_Structures_Definition_GeneratedCode";
@@ -122,10 +137,23 @@ namespace prebuild {
 		}
 
 		private  void WriteEncodeMethodsCode (XmlNode templatesNode) {
+			if(EncodeMessages == null || EncodeMessages.Count == 0) {
+				return;
+			}
+			SetPosition(Encode_Methods_Definition_GeneratedCode);
+			Console.WriteLine("write encode methods");
+			foreach(string name in EncodeMessages)
+				Console.Write(name + ", ");
+			Console.WriteLine();
 			List<XmlNode> messages = GetAllMessages(templatesNode);
 			foreach(XmlNode message in messages) {
-				if(!EncodeMessages.Contains(message.Attributes["name"].Value))
+				string msgName = message.PreviousSibling.Value.Trim();
+				Console.Write("checking message for encode method '" + msgName + "'");
+				if(!EncodeMessages.Contains(msgName)) {
+					Console.WriteLine(" - no");
 					continue;
+				}
+				Console.WriteLine(" - yes");
 				WriteEncodeMethodCode(message);
 			}
 		}
@@ -135,8 +163,9 @@ namespace prebuild {
 			WriteLine("\tinline void Encode" + info.EncodeMethodName + "(int msgSeqNumber, " + info.Name + "* info) {");
 			WriteLine("\t\tResetBuffer();");
 			WriteLine("\t\tWriteMsgSeqNumber(msgSeqNumber);");
+			int presenceByteCount = CalcPresenceMapByteCount(message);
 			if(GetMaxPresenceBitCount(message) > 0)
-				WriteLine("\t\tWritePresenceMap(info->PresenceMap);");
+				WriteLine("\t\tWritePresenceMap" + presenceByteCount + "(info->PresenceMap);");
 			foreach(XmlNode node in message.ChildNodes) {
 				WriteEncodeValueCode(node, info, "\t\t");
 			}
@@ -146,9 +175,9 @@ namespace prebuild {
 		private  void WriteEncodeValueCode (XmlNode field, StructureInfo structureInfo, string tabs) {
 			if(ShouldWriteCheckPresenceMapCode(field)) {
 				if(HasOptionalPresence(field))
-					WriteLine(tabs + "if(CheckOptionalFieldPresence(" + structureInfo + "->PresenceMap[" + CalcFieldPresenceIndex(field) + "]))");
+					WriteLine(tabs + "if(CheckOptionalFieldPresence(" + "info" + "->PresenceMap, PRESENCE_MAP_INDEX" + CalcFieldPresenceIndex(field) + "))");
 				else
-					WriteLine(tabs + "if(CheckMandatoryFieldPresence(" + structureInfo + "->PresenceMap[" + CalcFieldPresenceIndex(field) + "]))");
+					WriteLine(tabs + "if(CheckMandatoryFieldPresence(" + "info" + "->PresenceMap, PRESENCE_MAP_INDEX" + CalcFieldPresenceIndex(field) + "))");
 
 				tabs += "\t";
 			}
@@ -177,7 +206,8 @@ namespace prebuild {
 		}
 
 		private  void WriteSequenceEncodeMethodCode (XmlNode field, StructureInfo structureInfo, string tabs) {
-			throw new NotImplementedException();
+			WriteLine("//TODO");
+			//throw new NotImplementedException();
 		}
 
 		private  void WriteByteVectorEncodeMethodCode (XmlNode field, StructureInfo structureInfo, string tabs) {
@@ -376,6 +406,11 @@ namespace prebuild {
 		private  void WriteStructuresDefinitionCode (XmlNode templatesNode) {
 			XmlNode lastComment = null;
 			SetPosition(Message_Info_Structures_Definition_GeneratedCode);
+			for(int i = 0; i < 32; i++) {
+				string code = string.Format("0x{0:x8}", 1 << (31 - i));
+				WriteLine("#define PRESENCE_MAP_INDEX" + i + " " + code);
+			}
+			WriteLine("");
 			foreach(XmlNode node in templatesNode.ChildNodes) {
 				if(node.NodeType == XmlNodeType.Comment) {
 					lastComment = node;
@@ -417,7 +452,7 @@ namespace prebuild {
 				WriteLine("\t\tmemset(this->DecodeMethods" + mSuffix + ", 0, sizeof(FastDecodeMethodPointer) * ptCount);");
 				WriteLine("");
 				WriteLine("\t\tfor(int i = 0; i < 256; i++)");
-				WriteLine("\t\t\tthis->DecodeMethods[i] = &FastProtocolManager::DecodeUnsupportedMessage;");
+				WriteLine("\t\t\tthis->DecodeMethods" + mSuffix + "[i] = &FastProtocolManager::DecodeUnsupportedMessage;");
 				WriteLine("");
 				List<DecodeMessageInfo> methods = GetDecodeMessageMethods(templatesNode, mSuffix);
 				foreach(DecodeMessageInfo info in methods) {
@@ -456,7 +491,6 @@ namespace prebuild {
 				if(node.Name != "template")
 					continue;
 				if(!node.Attributes["name"].Value.Contains('-') || GetMethodSuffix(node) == mSuffix) {
-					string name = GetMethodSuffix(node);
 					DecodeMessageInfo info = new DecodeMessageInfo();
 					info.MsgType = node.Attributes["name"].Value.Substring(0, 1);
 					info.Suffix = mSuffix;
@@ -487,17 +521,19 @@ namespace prebuild {
 			return res;
 		}
 
-		private  void WriteNodeSequenceStructDefinition (XmlNode template, string templateName) {
+		private  void WriteNodeSequenceStructDefinition (XmlNode template, string parentName) {
 			foreach(XmlNode node in template) {
-				string name = templateName + Name(node);
+				string name = parentName + Name(node);
+
 				WriteNodeSequenceStructDefinition(node, name);
+				StructureInfo info = new StructureInfo() { NameCore = name, IsSequence = true};
 
 				if(node.Name != "sequence")
 					continue;
 
-				WriteLine("typedef struct _Fast" + name + "ItemInfo {");
-				WriteSequenceNodeFieldDefinition(node, name);
-				WriteLine("}Fast" + name + "ItemInfo;");
+				WriteLine("typedef struct _" + info.Name + " {");
+				WriteSequenceNodeFieldDefinition(node, info.NameCore);
+				WriteLine("}" + info.Name + ";");
 				WriteLine("");
 
 				definedStructName.Add(name);
@@ -532,9 +568,30 @@ namespace prebuild {
 
 		private  void WritePresenceMapDefinition (XmlNode node) {
 			int maxPresenceBitCount = GetMaxPresenceBitCount(node);
-			if(maxPresenceBitCount == 0)
-				return;
-			WriteLine("\tint\t\t\tPresenceMap[" + maxPresenceBitCount + "];");
+			int maxPresenceMapIntCount = CalcPresenceMapIntCount(maxPresenceBitCount);
+			WriteLine("\tUINT\t\t\tPresenceMap[" + maxPresenceMapIntCount + "];");
+		}
+
+		int CalcPresenceMapByteCount(XmlNode node) {
+			int maxPresenceBitCount = GetMaxPresenceBitCount(node);
+			return CalcPresenceMapByteCount(maxPresenceBitCount);
+		}
+
+		int CalcPresenceMapIntCount(int bitCount) {
+			int res = CalcPresenceMapByteCount(bitCount);
+			int intRes = res / 4;
+			if(res % 4 > 0)
+				intRes++;
+			if(intRes == 0)
+				return 1;
+			return intRes;
+		}
+
+		int CalcPresenceMapByteCount(int bitCount) {
+			int res = bitCount / 8;
+			if(bitCount % 8 > 0)
+				res++;
+			return res;
 		}
 
 		bool FieldMandatoryAndHasConstant (XmlNode field) {
@@ -699,9 +756,9 @@ namespace prebuild {
 		private  void WriteCheckingPresenceMapCode (XmlNode value, string objectValueName, string classCoreName, string tabString) {
 			int fieldPresenceIndex = CalcFieldPresenceIndex(value);
 			if(HasOptionalPresence(value)) {
-				WriteLine(tabString + "if(CheckOptionalFieldPresence(" + objectValueName + "->PresenceMap[" + fieldPresenceIndex + "])) {");
+				WriteLine(tabString + "if(CheckOptionalFieldPresence(" + objectValueName + "->PresenceMap, PRESENCE_MAP_INDEX" + fieldPresenceIndex + ")) {");
 			} else {
-				WriteLine(tabString + "if(CheckMandatoryFieldPresence(" + objectValueName + "->PresenceMap[" + fieldPresenceIndex + "])) {");
+				WriteLine(tabString + "if(CheckMandatoryFieldPresence(" + objectValueName + "->PresenceMap, PRESENCE_MAP_INDEX" + fieldPresenceIndex + ")) {");
 			}
 		}
 
@@ -823,7 +880,7 @@ namespace prebuild {
 		}
 
 		private  void WriteConstantValueCheckingCode (XmlNode value, string structName, string parentName, string tabString) {
-			if(!ConstantCheckingFlag)
+			if(!WriteConstantCheckingCode)
 				return;
 			//WriteLine("#ifdef FAST_CHECK_CONSTANT_VALUES");
 			if(value.Name == "string")
@@ -1423,19 +1480,25 @@ namespace prebuild {
 					v => m_params.Add("o", v)
 				}, {"s|src=", "C++ sources directory",
 					v => m_params.Add("s", v)
-				}, {"f|fast=", "Generate Fast protocol code",
+				}, {"f|fast", "Generate Fast protocol code",
 					v => m_params.Add("f", v)
-				},
-				{"fx|fast_xml=", "Path to Fast templates file xml",
+				}, {"fx|fast_xml=", "Path to Fast templates file xml",
 					v => m_params.Add("fx", v)
-				}, {"fcc|fast_check_const=", "Write constant checking code in fast protocol files", 
+				}, {"fs|fast_source=", "Path to FastProtocolManager h file",
+					v => m_params.Add("fs", v)
+				}, {"fcc|fast_check_const", "Write constant checking code in fast protocol files", 
 					v => m_params.Add("fcc", v)
+				}, {"fwe|fast_write_encode=", "Write encdode methods for messages",
+					v => m_params.Add("fwe", v)
 				}
 			};
 			try {
 				p.Parse(args);
 			} catch(OptionException e) {
 				Console.WriteLine(e.Message);
+			}
+			foreach(string k in m_params.Keys) {
+				Console.WriteLine(k + " " + m_params[k]);
 			}
 			if(!CopyFastServerConfigurationFile()) {
 				Console.WriteLine("exit.");
@@ -1452,6 +1515,29 @@ namespace prebuild {
 				return;
 			}
 			FastTemplatesCodeGenerator generator = new FastTemplatesCodeGenerator();
+			generator.WriteConstantCheckingCode = m_params.TryGetValue("fcc", out value);
+
+			if(!m_params.TryGetValue("fs", out value)) {
+				Console.WriteLine("FastProtocolManager file not specified. skip generation.");
+				return;
+			}
+			generator.SourceFile = value;
+			if(!m_params.TryGetValue("fx", out value)) {
+				Console.WriteLine("Fast template file not specified. skip generation.");
+				return;
+			}
+			generator.TemplateFile = value;
+			if(m_params.TryGetValue("fwe", out value)) {
+				generator.EncodeMessages = new List<string>();
+				string[] messages = value.Split(',');
+				generator.EncodeMessages.AddRange(messages);
+			}
+
+			if(!generator.Generate()) {
+				Console.WriteLine("generate fast protocol - failed.");
+				return;
+			}
+			Console.WriteLine("generate fast protocol - done.");
 		}
 
 		static string LogMessageCodes_GeneratedCode = "LogMessageCodes_GeneratedCode";
@@ -1476,10 +1562,10 @@ namespace prebuild {
 			}
 
 			List<EnumInfo> availableEnums = GetAvailableEnums(enumFile, msgInitFile);
-			Console.WriteLine("found existing enums " + availableEnums.Count);
-			foreach(EnumInfo info in availableEnums) {
-				Console.WriteLine("existing enum: " + info.EnumName + " = " + info.Value + " -> " + info.MessageText);
-			}
+			//Console.WriteLine("found existing enums " + availableEnums.Count);
+			//foreach(EnumInfo info in availableEnums) {
+			//	Console.WriteLine("existing enum: " + info.EnumName + " = " + info.Value + " -> " + info.MessageText);
+			//}
 			int count = availableEnums.Count;
 			FindInitializeStringConstants(files, availableEnums);
 			if(availableEnums.Count != count) {
@@ -1504,7 +1590,7 @@ namespace prebuild {
 			foreach(EnumInfo info in enums) {
 				string code = "\tthis->m_logMessageText[" + info.EnumFullName + "] = \"" + info.MessageText + "\";";
 				file.Add(code);
-				Console.WriteLine(code);
+				//Console.WriteLine(code);
 			}
 		}
 
@@ -1515,7 +1601,7 @@ namespace prebuild {
 				if(i < enums.Count - 1)
 					code += ",";
 				file.Add(code);
-				Console.WriteLine(code);
+				//Console.WriteLine(code);
 			}
 		}
 
@@ -1551,7 +1637,7 @@ namespace prebuild {
 					info.Value = GetMaxEnumValue(enums) + 1;
 					enums.Add(info);
 					file.SetCurrentLine(file.LineText.Replace(message, info.EnumFullName)); 
-					Console.WriteLine(file.FileName + ": replaced " + message + " with " + info.EnumFullName);
+					//Console.WriteLine(file.FileName + ": replaced " + message + " with " + info.EnumFullName);
 					index = endIndex + 1;
 				}
 			}
@@ -1584,7 +1670,7 @@ namespace prebuild {
 				EnumInfo info = new EnumInfo();
 				info.ParseEnum(enumFile.LineText);
 				res.Add(info);
-				Console.WriteLine("found enum value -> " + info.EnumName + " = " + info.Value);
+				//Console.WriteLine("found enum value -> " + info.EnumName + " = " + info.Value);
 			}
 
 			startPos = msgInitFile.FindString(LogMessagesProvider_InitializeLogMessageText_GeneratedCode);
@@ -1611,7 +1697,7 @@ namespace prebuild {
 				if(messageStart == -1 || messageEnd == -1)
 					throw new KeyNotFoundException("Enum message text not found: " + tokens[3]);
 				info.MessageText = msgInitFile.LineText.Substring(messageStart + 1, messageEnd - messageStart - 1);
-				Console.WriteLine("found enum message text -> '" + info.MessageText + "' for enum " + tokens[3]);
+				//Console.WriteLine("found enum message text -> '" + info.MessageText + "' for enum " + tokens[3]);
 			}
 
 			return res;
@@ -1626,7 +1712,7 @@ namespace prebuild {
 				//Console.WriteLine("processing file " + file.FileName + " for region " + regionName);
 				file.GoTo(0);
 				if(file.FindString(regionName) != -1) {
-					Console.WriteLine("region '" + regionName + "' found in " + file.FileName + " line: " + file.Line);
+					//Console.WriteLine("region '" + regionName + "' found in " + file.FileName + " line: " + file.Line);
 					return file;
 				}
 			}

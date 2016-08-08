@@ -2,8 +2,41 @@
 #include "FixTypes.h"
 
 #pragma region Message_Info_Structures_Definition_GeneratedCode
+#define PRESENCE_MAP_INDEX0 0x80000000
+#define PRESENCE_MAP_INDEX1 0x40000000
+#define PRESENCE_MAP_INDEX2 0x20000000
+#define PRESENCE_MAP_INDEX3 0x10000000
+#define PRESENCE_MAP_INDEX4 0x08000000
+#define PRESENCE_MAP_INDEX5 0x04000000
+#define PRESENCE_MAP_INDEX6 0x02000000
+#define PRESENCE_MAP_INDEX7 0x01000000
+#define PRESENCE_MAP_INDEX8 0x00800000
+#define PRESENCE_MAP_INDEX9 0x00400000
+#define PRESENCE_MAP_INDEX10 0x00200000
+#define PRESENCE_MAP_INDEX11 0x00100000
+#define PRESENCE_MAP_INDEX12 0x00080000
+#define PRESENCE_MAP_INDEX13 0x00040000
+#define PRESENCE_MAP_INDEX14 0x00020000
+#define PRESENCE_MAP_INDEX15 0x00010000
+#define PRESENCE_MAP_INDEX16 0x00008000
+#define PRESENCE_MAP_INDEX17 0x00004000
+#define PRESENCE_MAP_INDEX18 0x00002000
+#define PRESENCE_MAP_INDEX19 0x00001000
+#define PRESENCE_MAP_INDEX20 0x00000800
+#define PRESENCE_MAP_INDEX21 0x00000400
+#define PRESENCE_MAP_INDEX22 0x00000200
+#define PRESENCE_MAP_INDEX23 0x00000100
+#define PRESENCE_MAP_INDEX24 0x00000080
+#define PRESENCE_MAP_INDEX25 0x00000040
+#define PRESENCE_MAP_INDEX26 0x00000020
+#define PRESENCE_MAP_INDEX27 0x00000010
+#define PRESENCE_MAP_INDEX28 0x00000008
+#define PRESENCE_MAP_INDEX29 0x00000004
+#define PRESENCE_MAP_INDEX30 0x00000002
+#define PRESENCE_MAP_INDEX31 0x00000001
+
 typedef struct _FastMarketDataSnapshotFullRefreshGenericGroupMDEntriesItemInfo {
-	int			PresenceMap[2];
+	int			PresenceMap[1];
 	char*		MDEntryType;			// id=269  presence=optional  
 	int			MDEntryTypeLength;
 	char*		MDEntryID;			// id=278  presence=optional  
@@ -65,7 +98,7 @@ typedef struct _FastMarketDataSnapshotFullRefreshGenericGroupMDEntriesItemInfo {
 }FastMarketDataSnapshotFullRefreshGenericGroupMDEntriesItemInfo;
 
 typedef struct _FastMarketDataIncrementalRefreshGenericGroupMDEntriesItemInfo {
-	int			PresenceMap[2];
+	int			PresenceMap[1];
 	UINT32		MDUpdateAction;			// id=279  presence=optional  
 	char*		MDEntryType;			// id=269  presence=optional  
 	int			MDEntryTypeLength;
@@ -180,6 +213,7 @@ typedef struct _FastMarketDataSnapshotFullRefreshOLSCURRGroupMDEntriesItemInfo {
 }FastMarketDataSnapshotFullRefreshOLSCURRGroupMDEntriesItemInfo;
 
 typedef struct _FastMarketDataSnapshotFullRefreshTLSFONDGroupMDEntriesItemInfo {
+	int			PresenceMap[1];
 	char*		MDEntryType;			// id=269  
 	int			MDEntryTypeLength;
 	char*		MDEntryID;			// id=278  presence=optional  
@@ -207,6 +241,7 @@ typedef struct _FastMarketDataSnapshotFullRefreshTLSFONDGroupMDEntriesItemInfo {
 }FastMarketDataSnapshotFullRefreshTLSFONDGroupMDEntriesItemInfo;
 
 typedef struct _FastMarketDataSnapshotFullRefreshTLSCURRGroupMDEntriesItemInfo {
+	int			PresenceMap[1];
 	char*		MDEntryType;			// id=269  
 	int			MDEntryTypeLength;
 	char*		MDEntryID;			// id=278  presence=optional  
@@ -232,6 +267,7 @@ typedef struct _FastMarketDataSnapshotFullRefreshTLSCURRGroupMDEntriesItemInfo {
 }FastMarketDataSnapshotFullRefreshTLSCURRGroupMDEntriesItemInfo;
 
 typedef struct _FastMarketDataSnapshotFullRefreshOBSFONDGroupMDEntriesItemInfo {
+	int			PresenceMap[1];
 	char*		MDEntryType;			// id=269  presence=optional  
 	int			MDEntryTypeLength;
 	char*		MDEntryID;			// id=278  presence=optional  
@@ -248,6 +284,7 @@ typedef struct _FastMarketDataSnapshotFullRefreshOBSFONDGroupMDEntriesItemInfo {
 }FastMarketDataSnapshotFullRefreshOBSFONDGroupMDEntriesItemInfo;
 
 typedef struct _FastMarketDataSnapshotFullRefreshOBSCURRGroupMDEntriesItemInfo {
+	int			PresenceMap[1];
 	char*		MDEntryType;			// id=269  presence=optional  
 	int			MDEntryTypeLength;
 	char*		MDEntryID;			// id=278  presence=optional  
@@ -409,6 +446,7 @@ typedef struct _FastMarketDataIncrementalRefreshOLRCURRGroupMDEntriesItemInfo {
 }FastMarketDataIncrementalRefreshOLRCURRGroupMDEntriesItemInfo;
 
 typedef struct _FastMarketDataIncrementalRefreshOBRFONDGroupMDEntriesItemInfo {
+	int			PresenceMap[1];
 	UINT32		MDUpdateAction;			// id=279  presence=optional  
 	char*		MDEntryType;			// id=269  presence=optional  
 	int			MDEntryTypeLength;
@@ -431,6 +469,7 @@ typedef struct _FastMarketDataIncrementalRefreshOBRFONDGroupMDEntriesItemInfo {
 }FastMarketDataIncrementalRefreshOBRFONDGroupMDEntriesItemInfo;
 
 typedef struct _FastMarketDataIncrementalRefreshOBRCURRGroupMDEntriesItemInfo {
+	int			PresenceMap[1];
 	UINT32		MDUpdateAction;			// id=279  presence=optional  
 	char*		MDEntryType;			// id=269  presence=optional  
 	int			MDEntryTypeLength;
@@ -450,6 +489,7 @@ typedef struct _FastMarketDataIncrementalRefreshOBRCURRGroupMDEntriesItemInfo {
 }FastMarketDataIncrementalRefreshOBRCURRGroupMDEntriesItemInfo;
 
 typedef struct _FastMarketDataIncrementalRefreshTLRFONDGroupMDEntriesItemInfo {
+	int			PresenceMap[1];
 	UINT32		MDUpdateAction;			// id=279  presence=optional  
 	char*		MDEntryType;			// id=269  
 	int			MDEntryTypeLength;
@@ -483,6 +523,7 @@ typedef struct _FastMarketDataIncrementalRefreshTLRFONDGroupMDEntriesItemInfo {
 }FastMarketDataIncrementalRefreshTLRFONDGroupMDEntriesItemInfo;
 
 typedef struct _FastMarketDataIncrementalRefreshTLRCURRGroupMDEntriesItemInfo {
+	int			PresenceMap[1];
 	UINT32		MDUpdateAction;			// id=279  presence=optional  
 	char*		MDEntryType;			// id=269  
 	int			MDEntryTypeLength;
@@ -514,12 +555,14 @@ typedef struct _FastMarketDataIncrementalRefreshTLRCURRGroupMDEntriesItemInfo {
 }FastMarketDataIncrementalRefreshTLRCURRGroupMDEntriesItemInfo;
 
 typedef struct _FastSecurityDefinitionGroupInstrAttribItemInfo {
+	int			PresenceMap[1];
 	INT32		InstrAttribType;			// id=871  
 	BYTE*		InstrAttribValue;			// id=872  presence=optional  
 	int			InstrAttribValueLength;
 }FastSecurityDefinitionGroupInstrAttribItemInfo;
 
 typedef struct _FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo {
+	int			PresenceMap[1];
 	char*		TradingSessionID;			// id=336  
 	int			TradingSessionIDLength;
 	char*		TradingSessionSubID;			// id=625  presence=optional  
@@ -529,12 +572,14 @@ typedef struct _FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItem
 }FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo;
 
 typedef struct _FastSecurityDefinitionMarketSegmentGrpItemInfo {
+	int			PresenceMap[1];
 	Decimal		RoundLot;			// id=561  presence=optional  
 	int			TradingSessionRulesGrpCount;			// presence=optional  
 	FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo** TradingSessionRulesGrp;			// presence=optional  
 }FastSecurityDefinitionMarketSegmentGrpItemInfo;
 
 typedef struct _FastLogonInfo {
+	int			PresenceMap[1];
 	char*		MessageType;			// id=35    constant has constant value = A
 	int			MessageTypeLength;
 	char*		BeginString;			// id=8    constant has constant value = FIXT.1.1
@@ -555,6 +600,7 @@ typedef struct _FastLogonInfo {
 }FastLogonInfo;
 
 typedef struct _FastLogoutInfo {
+	int			PresenceMap[1];
 	char*		MessageType;			// id=35    constant has constant value = 5
 	int			MessageTypeLength;
 	char*		BeginString;			// id=8    constant has constant value = FIXT.1.1
@@ -570,6 +616,7 @@ typedef struct _FastLogoutInfo {
 }FastLogoutInfo;
 
 typedef struct _FastMarketDataSnapshotFullRefreshGenericInfo {
+	int			PresenceMap[1];
 	char*		MessageType;			// id=35    constant has constant value = W
 	int			MessageTypeLength;
 	char*		BeginString;			// id=8    constant has constant value = FIXT.1.1
@@ -597,6 +644,7 @@ typedef struct _FastMarketDataSnapshotFullRefreshGenericInfo {
 }FastMarketDataSnapshotFullRefreshGenericInfo;
 
 typedef struct _FastMarketDataIncrementalRefreshGenericInfo {
+	int			PresenceMap[1];
 	char*		MessageType;			// id=35    constant has constant value = X
 	int			MessageTypeLength;
 	char*		ApplVerID;			// id=1128    constant has constant value = 9
@@ -612,6 +660,7 @@ typedef struct _FastMarketDataIncrementalRefreshGenericInfo {
 }FastMarketDataIncrementalRefreshGenericInfo;
 
 typedef struct _FastMarketDataSnapshotFullRefreshOLSFONDInfo {
+	int			PresenceMap[1];
 	char*		MessageType;			// id=35    constant has constant value = W
 	int			MessageTypeLength;
 	char*		BeginString;			// id=8    constant has constant value = FIXT.1.1
@@ -638,6 +687,7 @@ typedef struct _FastMarketDataSnapshotFullRefreshOLSFONDInfo {
 }FastMarketDataSnapshotFullRefreshOLSFONDInfo;
 
 typedef struct _FastMarketDataSnapshotFullRefreshOLSCURRInfo {
+	int			PresenceMap[1];
 	char*		MessageType;			// id=35    constant has constant value = W
 	int			MessageTypeLength;
 	char*		BeginString;			// id=8    constant has constant value = FIXT.1.1
@@ -663,6 +713,7 @@ typedef struct _FastMarketDataSnapshotFullRefreshOLSCURRInfo {
 }FastMarketDataSnapshotFullRefreshOLSCURRInfo;
 
 typedef struct _FastMarketDataSnapshotFullRefreshTLSFONDInfo {
+	int			PresenceMap[1];
 	char*		MessageType;			// id=35    constant has constant value = W
 	int			MessageTypeLength;
 	char*		BeginString;			// id=8    constant has constant value = FIXT.1.1
@@ -689,6 +740,7 @@ typedef struct _FastMarketDataSnapshotFullRefreshTLSFONDInfo {
 }FastMarketDataSnapshotFullRefreshTLSFONDInfo;
 
 typedef struct _FastMarketDataSnapshotFullRefreshTLSCURRInfo {
+	int			PresenceMap[1];
 	char*		MessageType;			// id=35    constant has constant value = W
 	int			MessageTypeLength;
 	char*		BeginString;			// id=8    constant has constant value = FIXT.1.1
@@ -714,6 +766,7 @@ typedef struct _FastMarketDataSnapshotFullRefreshTLSCURRInfo {
 }FastMarketDataSnapshotFullRefreshTLSCURRInfo;
 
 typedef struct _FastMarketDataSnapshotFullRefreshOBSFONDInfo {
+	int			PresenceMap[1];
 	char*		MessageType;			// id=35    constant has constant value = W
 	int			MessageTypeLength;
 	char*		BeginString;			// id=8    constant has constant value = FIXT.1.1
@@ -740,6 +793,7 @@ typedef struct _FastMarketDataSnapshotFullRefreshOBSFONDInfo {
 }FastMarketDataSnapshotFullRefreshOBSFONDInfo;
 
 typedef struct _FastMarketDataSnapshotFullRefreshOBSCURRInfo {
+	int			PresenceMap[1];
 	char*		MessageType;			// id=35    constant has constant value = W
 	int			MessageTypeLength;
 	char*		BeginString;			// id=8    constant has constant value = FIXT.1.1
@@ -765,6 +819,7 @@ typedef struct _FastMarketDataSnapshotFullRefreshOBSCURRInfo {
 }FastMarketDataSnapshotFullRefreshOBSCURRInfo;
 
 typedef struct _FastMarketDataIncrementalRefreshMSRFONDInfo {
+	int			PresenceMap[1];
 	char*		MessageType;			// id=35    constant has constant value = X
 	int			MessageTypeLength;
 	char*		ApplVerID;			// id=1128    constant has constant value = 9
@@ -780,6 +835,7 @@ typedef struct _FastMarketDataIncrementalRefreshMSRFONDInfo {
 }FastMarketDataIncrementalRefreshMSRFONDInfo;
 
 typedef struct _FastMarketDataIncrementalRefreshMSRCURRInfo {
+	int			PresenceMap[1];
 	char*		MessageType;			// id=35    constant has constant value = X
 	int			MessageTypeLength;
 	char*		ApplVerID;			// id=1128    constant has constant value = 9
@@ -795,6 +851,7 @@ typedef struct _FastMarketDataIncrementalRefreshMSRCURRInfo {
 }FastMarketDataIncrementalRefreshMSRCURRInfo;
 
 typedef struct _FastMarketDataIncrementalRefreshOLRFONDInfo {
+	int			PresenceMap[1];
 	char*		MessageType;			// id=35    constant has constant value = X
 	int			MessageTypeLength;
 	char*		ApplVerID;			// id=1128    constant has constant value = 9
@@ -810,6 +867,7 @@ typedef struct _FastMarketDataIncrementalRefreshOLRFONDInfo {
 }FastMarketDataIncrementalRefreshOLRFONDInfo;
 
 typedef struct _FastMarketDataIncrementalRefreshOLRCURRInfo {
+	int			PresenceMap[1];
 	char*		MessageType;			// id=35    constant has constant value = X
 	int			MessageTypeLength;
 	char*		ApplVerID;			// id=1128    constant has constant value = 9
@@ -825,6 +883,7 @@ typedef struct _FastMarketDataIncrementalRefreshOLRCURRInfo {
 }FastMarketDataIncrementalRefreshOLRCURRInfo;
 
 typedef struct _FastMarketDataIncrementalRefreshOBRFONDInfo {
+	int			PresenceMap[1];
 	char*		MessageType;			// id=35    constant has constant value = X
 	int			MessageTypeLength;
 	char*		ApplVerID;			// id=1128    constant has constant value = 9
@@ -840,6 +899,7 @@ typedef struct _FastMarketDataIncrementalRefreshOBRFONDInfo {
 }FastMarketDataIncrementalRefreshOBRFONDInfo;
 
 typedef struct _FastMarketDataIncrementalRefreshOBRCURRInfo {
+	int			PresenceMap[1];
 	char*		MessageType;			// id=35    constant has constant value = X
 	int			MessageTypeLength;
 	char*		ApplVerID;			// id=1128    constant has constant value = 9
@@ -855,6 +915,7 @@ typedef struct _FastMarketDataIncrementalRefreshOBRCURRInfo {
 }FastMarketDataIncrementalRefreshOBRCURRInfo;
 
 typedef struct _FastMarketDataIncrementalRefreshTLRFONDInfo {
+	int			PresenceMap[1];
 	char*		MessageType;			// id=35    constant has constant value = X
 	int			MessageTypeLength;
 	char*		ApplVerID;			// id=1128    constant has constant value = 9
@@ -870,6 +931,7 @@ typedef struct _FastMarketDataIncrementalRefreshTLRFONDInfo {
 }FastMarketDataIncrementalRefreshTLRFONDInfo;
 
 typedef struct _FastMarketDataIncrementalRefreshTLRCURRInfo {
+	int			PresenceMap[1];
 	char*		MessageType;			// id=35    constant has constant value = X
 	int			MessageTypeLength;
 	char*		ApplVerID;			// id=1128    constant has constant value = 9
@@ -885,7 +947,7 @@ typedef struct _FastMarketDataIncrementalRefreshTLRCURRInfo {
 }FastMarketDataIncrementalRefreshTLRCURRInfo;
 
 typedef struct _FastSecurityDefinitionInfo {
-	int			PresenceMap[2];
+	int			PresenceMap[1];
 	char*		MessageType;			// id=35    constant has constant value = d
 	int			MessageTypeLength;
 	char*		ApplVerID;			// id=1128    constant has constant value = 9
@@ -957,6 +1019,7 @@ typedef struct _FastSecurityDefinitionInfo {
 }FastSecurityDefinitionInfo;
 
 typedef struct _FastSecurityStatusInfo {
+	int			PresenceMap[1];
 	char*		MessageType;			// id=35    constant has constant value = f
 	int			MessageTypeLength;
 	char*		ApplVerID;			// id=1128    constant has constant value = 9
@@ -978,6 +1041,7 @@ typedef struct _FastSecurityStatusInfo {
 }FastSecurityStatusInfo;
 
 typedef struct _FastTradingSessionStatusInfo {
+	int			PresenceMap[1];
 	char*		MessageType;			// id=35    constant has constant value = h
 	int			MessageTypeLength;
 	char*		ApplVerID;			// id=1128    constant has constant value = 9
@@ -996,6 +1060,7 @@ typedef struct _FastTradingSessionStatusInfo {
 }FastTradingSessionStatusInfo;
 
 typedef struct _FastHeartbeatInfo {
+	int			PresenceMap[1];
 	char*		MessageType;			// id=35    constant has constant value = 0
 	int			MessageTypeLength;
 	char*		BeginString;			// id=8    constant has constant value = FIXT.1.1
@@ -1015,8 +1080,8 @@ typedef void* (FastProtocolManager::*FastDecodeMethodPointer)();
 #pragma endregion
 
 #pragma region Checking_Presence_GeneratedCode
-#define CheckMandatoryFieldPresence(field) (field != 0)
-#define CheckOptionalFieldPresence(field) (field != 0)
+#define CheckMandatoryFieldPresence(map, field) ((*map & field) != 0)
+#define CheckOptionalFieldPresence(map, field) ((*map & field) != 0)
 #pragma endregion
 
 class FastProtocolManager
@@ -1297,6 +1362,9 @@ class FastProtocolManager
 		this->DecodeMethods_Generic = new FastDecodeMethodPointer[ptCount];
 		memset(this->DecodeMethods_Generic, 0, sizeof(FastDecodeMethodPointer) * ptCount);
 
+		for(int i = 0; i < 256; i++)
+			this->DecodeMethods_Generic[i] = &FastProtocolManager::DecodeUnsupportedMessage;
+
 		this->DecodeMethods_Generic[(int)'A'] = &FastProtocolManager::DecodeLogon;
 		this->DecodeMethods_Generic[(int)'5'] = &FastProtocolManager::DecodeLogout;
 		this->DecodeMethods_Generic[(int)'W'] = &FastProtocolManager::DecodeMarketDataSnapshotFullRefreshGeneric;
@@ -1309,6 +1377,9 @@ class FastProtocolManager
 		this->DecodeMethods_OLS_FOND = new FastDecodeMethodPointer[ptCount];
 		memset(this->DecodeMethods_OLS_FOND, 0, sizeof(FastDecodeMethodPointer) * ptCount);
 
+		for(int i = 0; i < 256; i++)
+			this->DecodeMethods_OLS_FOND[i] = &FastProtocolManager::DecodeUnsupportedMessage;
+
 		this->DecodeMethods_OLS_FOND[(int)'A'] = &FastProtocolManager::DecodeLogon;
 		this->DecodeMethods_OLS_FOND[(int)'5'] = &FastProtocolManager::DecodeLogout;
 		this->DecodeMethods_OLS_FOND[(int)'W'] = &FastProtocolManager::DecodeMarketDataSnapshotFullRefreshOLSFOND;
@@ -1319,6 +1390,9 @@ class FastProtocolManager
 
 		this->DecodeMethods_OLS_CURR = new FastDecodeMethodPointer[ptCount];
 		memset(this->DecodeMethods_OLS_CURR, 0, sizeof(FastDecodeMethodPointer) * ptCount);
+
+		for(int i = 0; i < 256; i++)
+			this->DecodeMethods_OLS_CURR[i] = &FastProtocolManager::DecodeUnsupportedMessage;
 
 		this->DecodeMethods_OLS_CURR[(int)'A'] = &FastProtocolManager::DecodeLogon;
 		this->DecodeMethods_OLS_CURR[(int)'5'] = &FastProtocolManager::DecodeLogout;
@@ -1331,6 +1405,9 @@ class FastProtocolManager
 		this->DecodeMethods_TLS_FOND = new FastDecodeMethodPointer[ptCount];
 		memset(this->DecodeMethods_TLS_FOND, 0, sizeof(FastDecodeMethodPointer) * ptCount);
 
+		for(int i = 0; i < 256; i++)
+			this->DecodeMethods_TLS_FOND[i] = &FastProtocolManager::DecodeUnsupportedMessage;
+
 		this->DecodeMethods_TLS_FOND[(int)'A'] = &FastProtocolManager::DecodeLogon;
 		this->DecodeMethods_TLS_FOND[(int)'5'] = &FastProtocolManager::DecodeLogout;
 		this->DecodeMethods_TLS_FOND[(int)'W'] = &FastProtocolManager::DecodeMarketDataSnapshotFullRefreshTLSFOND;
@@ -1341,6 +1418,9 @@ class FastProtocolManager
 
 		this->DecodeMethods_TLS_CURR = new FastDecodeMethodPointer[ptCount];
 		memset(this->DecodeMethods_TLS_CURR, 0, sizeof(FastDecodeMethodPointer) * ptCount);
+
+		for(int i = 0; i < 256; i++)
+			this->DecodeMethods_TLS_CURR[i] = &FastProtocolManager::DecodeUnsupportedMessage;
 
 		this->DecodeMethods_TLS_CURR[(int)'A'] = &FastProtocolManager::DecodeLogon;
 		this->DecodeMethods_TLS_CURR[(int)'5'] = &FastProtocolManager::DecodeLogout;
@@ -1353,6 +1433,9 @@ class FastProtocolManager
 		this->DecodeMethods_OBS_FOND = new FastDecodeMethodPointer[ptCount];
 		memset(this->DecodeMethods_OBS_FOND, 0, sizeof(FastDecodeMethodPointer) * ptCount);
 
+		for(int i = 0; i < 256; i++)
+			this->DecodeMethods_OBS_FOND[i] = &FastProtocolManager::DecodeUnsupportedMessage;
+
 		this->DecodeMethods_OBS_FOND[(int)'A'] = &FastProtocolManager::DecodeLogon;
 		this->DecodeMethods_OBS_FOND[(int)'5'] = &FastProtocolManager::DecodeLogout;
 		this->DecodeMethods_OBS_FOND[(int)'W'] = &FastProtocolManager::DecodeMarketDataSnapshotFullRefreshOBSFOND;
@@ -1363,6 +1446,9 @@ class FastProtocolManager
 
 		this->DecodeMethods_OBS_CURR = new FastDecodeMethodPointer[ptCount];
 		memset(this->DecodeMethods_OBS_CURR, 0, sizeof(FastDecodeMethodPointer) * ptCount);
+
+		for(int i = 0; i < 256; i++)
+			this->DecodeMethods_OBS_CURR[i] = &FastProtocolManager::DecodeUnsupportedMessage;
 
 		this->DecodeMethods_OBS_CURR[(int)'A'] = &FastProtocolManager::DecodeLogon;
 		this->DecodeMethods_OBS_CURR[(int)'5'] = &FastProtocolManager::DecodeLogout;
@@ -1375,6 +1461,9 @@ class FastProtocolManager
 		this->DecodeMethods_MSR_FOND = new FastDecodeMethodPointer[ptCount];
 		memset(this->DecodeMethods_MSR_FOND, 0, sizeof(FastDecodeMethodPointer) * ptCount);
 
+		for(int i = 0; i < 256; i++)
+			this->DecodeMethods_MSR_FOND[i] = &FastProtocolManager::DecodeUnsupportedMessage;
+
 		this->DecodeMethods_MSR_FOND[(int)'A'] = &FastProtocolManager::DecodeLogon;
 		this->DecodeMethods_MSR_FOND[(int)'5'] = &FastProtocolManager::DecodeLogout;
 		this->DecodeMethods_MSR_FOND[(int)'X'] = &FastProtocolManager::DecodeMarketDataIncrementalRefreshMSRFOND;
@@ -1385,6 +1474,9 @@ class FastProtocolManager
 
 		this->DecodeMethods_MSR_CURR = new FastDecodeMethodPointer[ptCount];
 		memset(this->DecodeMethods_MSR_CURR, 0, sizeof(FastDecodeMethodPointer) * ptCount);
+
+		for(int i = 0; i < 256; i++)
+			this->DecodeMethods_MSR_CURR[i] = &FastProtocolManager::DecodeUnsupportedMessage;
 
 		this->DecodeMethods_MSR_CURR[(int)'A'] = &FastProtocolManager::DecodeLogon;
 		this->DecodeMethods_MSR_CURR[(int)'5'] = &FastProtocolManager::DecodeLogout;
@@ -1397,6 +1489,9 @@ class FastProtocolManager
 		this->DecodeMethods_OLR_FOND = new FastDecodeMethodPointer[ptCount];
 		memset(this->DecodeMethods_OLR_FOND, 0, sizeof(FastDecodeMethodPointer) * ptCount);
 
+		for(int i = 0; i < 256; i++)
+			this->DecodeMethods_OLR_FOND[i] = &FastProtocolManager::DecodeUnsupportedMessage;
+
 		this->DecodeMethods_OLR_FOND[(int)'A'] = &FastProtocolManager::DecodeLogon;
 		this->DecodeMethods_OLR_FOND[(int)'5'] = &FastProtocolManager::DecodeLogout;
 		this->DecodeMethods_OLR_FOND[(int)'X'] = &FastProtocolManager::DecodeMarketDataIncrementalRefreshOLRFOND;
@@ -1407,6 +1502,9 @@ class FastProtocolManager
 
 		this->DecodeMethods_OLR_CURR = new FastDecodeMethodPointer[ptCount];
 		memset(this->DecodeMethods_OLR_CURR, 0, sizeof(FastDecodeMethodPointer) * ptCount);
+
+		for(int i = 0; i < 256; i++)
+			this->DecodeMethods_OLR_CURR[i] = &FastProtocolManager::DecodeUnsupportedMessage;
 
 		this->DecodeMethods_OLR_CURR[(int)'A'] = &FastProtocolManager::DecodeLogon;
 		this->DecodeMethods_OLR_CURR[(int)'5'] = &FastProtocolManager::DecodeLogout;
@@ -1419,6 +1517,9 @@ class FastProtocolManager
 		this->DecodeMethods_OBR_FOND = new FastDecodeMethodPointer[ptCount];
 		memset(this->DecodeMethods_OBR_FOND, 0, sizeof(FastDecodeMethodPointer) * ptCount);
 
+		for(int i = 0; i < 256; i++)
+			this->DecodeMethods_OBR_FOND[i] = &FastProtocolManager::DecodeUnsupportedMessage;
+
 		this->DecodeMethods_OBR_FOND[(int)'A'] = &FastProtocolManager::DecodeLogon;
 		this->DecodeMethods_OBR_FOND[(int)'5'] = &FastProtocolManager::DecodeLogout;
 		this->DecodeMethods_OBR_FOND[(int)'X'] = &FastProtocolManager::DecodeMarketDataIncrementalRefreshOBRFOND;
@@ -1429,6 +1530,9 @@ class FastProtocolManager
 
 		this->DecodeMethods_OBR_CURR = new FastDecodeMethodPointer[ptCount];
 		memset(this->DecodeMethods_OBR_CURR, 0, sizeof(FastDecodeMethodPointer) * ptCount);
+
+		for(int i = 0; i < 256; i++)
+			this->DecodeMethods_OBR_CURR[i] = &FastProtocolManager::DecodeUnsupportedMessage;
 
 		this->DecodeMethods_OBR_CURR[(int)'A'] = &FastProtocolManager::DecodeLogon;
 		this->DecodeMethods_OBR_CURR[(int)'5'] = &FastProtocolManager::DecodeLogout;
@@ -1441,6 +1545,9 @@ class FastProtocolManager
 		this->DecodeMethods_TLR_FOND = new FastDecodeMethodPointer[ptCount];
 		memset(this->DecodeMethods_TLR_FOND, 0, sizeof(FastDecodeMethodPointer) * ptCount);
 
+		for(int i = 0; i < 256; i++)
+			this->DecodeMethods_TLR_FOND[i] = &FastProtocolManager::DecodeUnsupportedMessage;
+
 		this->DecodeMethods_TLR_FOND[(int)'A'] = &FastProtocolManager::DecodeLogon;
 		this->DecodeMethods_TLR_FOND[(int)'5'] = &FastProtocolManager::DecodeLogout;
 		this->DecodeMethods_TLR_FOND[(int)'X'] = &FastProtocolManager::DecodeMarketDataIncrementalRefreshTLRFOND;
@@ -1451,6 +1558,9 @@ class FastProtocolManager
 
 		this->DecodeMethods_TLR_CURR = new FastDecodeMethodPointer[ptCount];
 		memset(this->DecodeMethods_TLR_CURR, 0, sizeof(FastDecodeMethodPointer) * ptCount);
+
+		for(int i = 0; i < 256; i++)
+			this->DecodeMethods_TLR_CURR[i] = &FastProtocolManager::DecodeUnsupportedMessage;
 
 		this->DecodeMethods_TLR_CURR[(int)'A'] = &FastProtocolManager::DecodeLogon;
 		this->DecodeMethods_TLR_CURR[(int)'5'] = &FastProtocolManager::DecodeLogout;
@@ -1629,54 +1739,6 @@ class FastProtocolManager
 		return this->heartbeat;
 	}
 
-	inline void EncodeEncodeLogoutInfo(int msgSeqNumber, FastLogoutInfo* info) {
-		ResetBuffer();
-		WriteMsgSeqNumber(msgSeqNumber);
-		WriteString_Mandatory(info->MessageType, info->MessageTypeLength);
-		WriteString_Mandatory(info->BeginString, info->BeginStringLength);
-		WriteString_Mandatory(info->SenderCompID, info->SenderCompIDLength);
-		WriteString_Mandatory(info->TargetCompID, info->TargetCompIDLength);
-		WriteUInt32_Mandatory(info->MsgSeqNum);
-		WriteUInt64_Mandatory(info->SendingTime);
-		WriteString_Optional(info->Text, info->TextLength);
-	}
-	inline void EncodeEncodeSecurityStatusInfo(int msgSeqNumber, FastSecurityStatusInfo* info) {
-		ResetBuffer();
-		WriteMsgSeqNumber(msgSeqNumber);
-		WriteString_Mandatory(info->MessageType, info->MessageTypeLength);
-		WriteString_Mandatory(info->ApplVerID, info->ApplVerIDLength);
-		WriteString_Mandatory(info->BeginString, info->BeginStringLength);
-		WriteString_Mandatory(info->SenderCompID, info->SenderCompIDLength);
-		WriteUInt32_Mandatory(info->MsgSeqNum);
-		WriteUInt64_Mandatory(info->SendingTime);
-		WriteString_Mandatory(info->Symbol, info->SymbolLength);
-		WriteString_Optional(info->TradingSessionID, info->TradingSessionIDLength);
-		WriteString_Optional(info->TradingSessionSubID, info->TradingSessionSubIDLength);
-		WriteInt32_Optional(info->SecurityTradingStatus);
-		WriteUInt32_Optional(info->AuctionIndicator);
-	}
-	inline void EncodeEncodeTradingSessionStatusInfo(int msgSeqNumber, FastTradingSessionStatusInfo* info) {
-		ResetBuffer();
-		WriteMsgSeqNumber(msgSeqNumber);
-		WriteString_Mandatory(info->MessageType, info->MessageTypeLength);
-		WriteString_Mandatory(info->ApplVerID, info->ApplVerIDLength);
-		WriteString_Mandatory(info->BeginString, info->BeginStringLength);
-		WriteString_Mandatory(info->SenderCompID, info->SenderCompIDLength);
-		WriteUInt32_Mandatory(info->MsgSeqNum);
-		WriteUInt64_Mandatory(info->SendingTime);
-		WriteInt32_Mandatory(info->TradSesStatus);
-		WriteString_Optional(info->Text, info->TextLength);
-		WriteString_Mandatory(info->TradingSessionID, info->TradingSessionIDLength);
-	}
-	inline void EncodeEncodeHeartbeatInfo(int msgSeqNumber, FastHeartbeatInfo* info) {
-		ResetBuffer();
-		WriteMsgSeqNumber(msgSeqNumber);
-		WriteString_Mandatory(info->MessageType, info->MessageTypeLength);
-		WriteString_Mandatory(info->BeginString, info->BeginStringLength);
-		WriteString_Mandatory(info->SenderCompID, info->SenderCompIDLength);
-		WriteUInt32_Mandatory(info->MsgSeqNum);
-		WriteUInt64_Mandatory(info->SendingTime);
-	}
 #pragma endregion
 
 public:
@@ -1720,6 +1782,27 @@ public:
 		*((int*)this->currentPos) = msgSeqNumber;
 		this->currentPos += 4;
 	}
+
+
+    inline void WritePresenceMap1(int *map) {
+        *((int*)this->currentPos) = *map;
+        this->currentPos++;
+    }
+
+    inline void WritePresenceMap2(int *map) {
+        *((int*)this->currentPos) = *map;
+        this->currentPos+=2;
+    }
+
+    inline void WritePresenceMap3(int *map) {
+        *((int*)this->currentPos) = *map;
+        this->currentPos+=3;
+    }
+
+    inline void WritePresenceMap4(int *map) {
+        *((int*)this->currentPos) = *map;
+        this->currentPos+=4;
+    }
 
 	inline int ReadMsgSeqNumber() {
 		int result = *(int*)this->currentPos;
@@ -3420,7 +3503,118 @@ public:
 #pragma endregion
 
 #pragma region Encode_Methods_Definition_GeneratedCode
+	inline void EncodeEncodeLogonInfo(int msgSeqNumber, FastLogonInfo* info) {
+		ResetBuffer();
+		WriteMsgSeqNumber(msgSeqNumber);
+		WriteString_Mandatory(info->MessageType, info->MessageTypeLength);
+		WriteString_Mandatory(info->BeginString, info->BeginStringLength);
+		WriteString_Mandatory(info->SenderCompID, info->SenderCompIDLength);
+		WriteString_Mandatory(info->TargetCompID, info->TargetCompIDLength);
+		WriteUInt32_Mandatory(info->MsgSeqNum);
+		WriteUInt64_Mandatory(info->SendingTime);
+		WriteInt32_Mandatory(info->HeartBtInt);
+		WriteString_Optional(info->Username, info->UsernameLength);
+		WriteString_Optional(info->Password, info->PasswordLength);
+		WriteString_Mandatory(info->DefaultApplVerID, info->DefaultApplVerIDLength);
+	}
+	inline void EncodeEncodeLogoutInfo(int msgSeqNumber, FastLogoutInfo* info) {
+		ResetBuffer();
+		WriteMsgSeqNumber(msgSeqNumber);
+		WriteString_Mandatory(info->MessageType, info->MessageTypeLength);
+		WriteString_Mandatory(info->BeginString, info->BeginStringLength);
+		WriteString_Mandatory(info->SenderCompID, info->SenderCompIDLength);
+		WriteString_Mandatory(info->TargetCompID, info->TargetCompIDLength);
+		WriteUInt32_Mandatory(info->MsgSeqNum);
+		WriteUInt64_Mandatory(info->SendingTime);
+		WriteString_Optional(info->Text, info->TextLength);
+	}
+	inline void EncodeEncodeSecurityDefinitionInfo(int msgSeqNumber, FastSecurityDefinitionInfo* info) {
+		ResetBuffer();
+		WriteMsgSeqNumber(msgSeqNumber);
+		WritePresenceMap1(info->PresenceMap);
+		WriteString_Mandatory(info->MessageType, info->MessageTypeLength);
+		WriteString_Mandatory(info->ApplVerID, info->ApplVerIDLength);
+		WriteString_Mandatory(info->BeginString, info->BeginStringLength);
+		WriteString_Mandatory(info->SenderCompID, info->SenderCompIDLength);
+		if(CheckMandatoryFieldPresence(info->PresenceMap, PRESENCE_MAP_INDEX0))
+			WriteUInt32_Mandatory(info->MsgSeqNum);
+		WriteUInt64_Mandatory(info->SendingTime);
+		if(CheckMandatoryFieldPresence(info->PresenceMap, PRESENCE_MAP_INDEX1))
+			WriteString_Mandatory(info->MessageEncoding, info->MessageEncodingLength);
+		WriteInt32_Optional(info->TotNumReports);
+		WriteString_Optional(info->Symbol, info->SymbolLength);
+		WriteByteVector_Optional(info->SecurityID, info->SecurityIDLength);
+		WriteByteVector_Optional(info->SecurityIDSource, info->SecurityIDSourceLength);
+		WriteInt32_Optional(info->Product);
+		WriteByteVector_Optional(info->CFICode, info->CFICodeLength);
+		WriteByteVector_Optional(info->SecurityType, info->SecurityTypeLength);
+		WriteUInt32_Optional(info->MaturityDate);
+		WriteUInt32_Optional(info->SettlDate);
+		WriteString_Optional(info->SettleType, info->SettleTypeLength);
+		WriteDecimal_Optional(&(info->OrigIssueAmt));
+		WriteUInt32_Optional(info->CouponPaymentDate);
+		WriteDecimal_Optional(&(info->CouponRate));
+		WriteUInt32_Optional(info->SettlFixingDate);
+		WriteDecimal_Optional(&(info->DividendNetPx));
+		WriteByteVector_Optional(info->SecurityDesc, info->SecurityDescLength);
+		WriteByteVector_Optional(info->EncodedSecurityDesc, info->EncodedSecurityDescLength);
+		WriteByteVector_Optional(info->QuoteText, info->QuoteTextLength);
+//TODO
+		WriteString_Optional(info->Currency, info->CurrencyLength);
+//TODO
+		WriteString_Optional(info->SettlCurrency, info->SettlCurrencyLength);
+		WriteInt32_Optional(info->PriceType);
+		WriteString_Optional(info->StateSecurityID, info->StateSecurityIDLength);
+		WriteByteVector_Optional(info->EncodedShortSecurityDesc, info->EncodedShortSecurityDescLength);
+		WriteByteVector_Optional(info->MarketCode, info->MarketCodeLength);
+		WriteDecimal_Optional(&(info->MinPriceIncrement));
+		WriteDecimal_Optional(&(info->MktShareLimit));
+		WriteDecimal_Optional(&(info->MktShareThreshold));
+		WriteDecimal_Optional(&(info->MaxOrdersVolume));
+		WriteDecimal_Optional(&(info->PriceMvmLimit));
+		WriteDecimal_Optional(&(info->FaceValue));
+		WriteDecimal_Optional(&(info->BaseSwapPx));
+		WriteDecimal_Optional(&(info->RepoToPx));
+		WriteDecimal_Optional(&(info->BuyBackPx));
+		WriteUInt32_Optional(info->BuyBackDate);
+		WriteDecimal_Optional(&(info->NoSharesIssued));
+		WriteDecimal_Optional(&(info->HighLimit));
+		WriteDecimal_Optional(&(info->LowLimit));
+		WriteInt32_Optional(info->NumOfDaysToMaturity);
+	}
+	inline void EncodeEncodeSecurityStatusInfo(int msgSeqNumber, FastSecurityStatusInfo* info) {
+		ResetBuffer();
+		WriteMsgSeqNumber(msgSeqNumber);
+		WriteString_Mandatory(info->MessageType, info->MessageTypeLength);
+		WriteString_Mandatory(info->ApplVerID, info->ApplVerIDLength);
+		WriteString_Mandatory(info->BeginString, info->BeginStringLength);
+		WriteString_Mandatory(info->SenderCompID, info->SenderCompIDLength);
+		WriteUInt32_Mandatory(info->MsgSeqNum);
+		WriteUInt64_Mandatory(info->SendingTime);
+		WriteString_Mandatory(info->Symbol, info->SymbolLength);
+		WriteString_Optional(info->TradingSessionID, info->TradingSessionIDLength);
+		WriteString_Optional(info->TradingSessionSubID, info->TradingSessionSubIDLength);
+		WriteInt32_Optional(info->SecurityTradingStatus);
+		WriteUInt32_Optional(info->AuctionIndicator);
+	}
+	inline void EncodeEncodeTradingSessionStatusInfo(int msgSeqNumber, FastTradingSessionStatusInfo* info) {
+		ResetBuffer();
+		WriteMsgSeqNumber(msgSeqNumber);
+		WriteString_Mandatory(info->MessageType, info->MessageTypeLength);
+		WriteString_Mandatory(info->ApplVerID, info->ApplVerIDLength);
+		WriteString_Mandatory(info->BeginString, info->BeginStringLength);
+		WriteString_Mandatory(info->SenderCompID, info->SenderCompIDLength);
+		WriteUInt32_Mandatory(info->MsgSeqNum);
+		WriteUInt64_Mandatory(info->SendingTime);
+		WriteInt32_Mandatory(info->TradSesStatus);
+		WriteString_Optional(info->Text, info->TextLength);
+		WriteString_Mandatory(info->TradingSessionID, info->TradingSessionIDLength);
+	}
 #pragma endregion
+
+    void* DecodeUnsupportedMessage() {
+        return NULL;
+    }
 
 #pragma region Decode_Methods_Definition_GeneratedCode
 	void* DecodeLogon() {
@@ -3569,7 +3763,7 @@ public:
 				ReadDecimal_Optional(&(gmdeItemInfo->BuyBackPx));
 			if(!CheckProcessNullUInt32())
 				gmdeItemInfo->BuyBackDate = ReadUInt32_Optional();
-			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap[0])) {
+			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX0)) {
 				if(!CheckProcessNullString())
 					ReadString_Optional(&(gmdeItemInfo->DealNumber), &(gmdeItemInfo->DealNumberLength));
 				else {
@@ -3577,7 +3771,7 @@ public:
 					gmdeItemInfo->DealNumberLength = gmdeItemInfo->PrevDealNumberLength;
 				}
 			}
-			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap[1])) {
+			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX1)) {
 				if(!CheckProcessNullString())
 					ReadString_Optional(&(gmdeItemInfo->CXFlag), &(gmdeItemInfo->CXFlagLength));
 				else {
@@ -3698,7 +3892,7 @@ public:
 				ReadDecimal_Optional(&(gmdeItemInfo->BuyBackPx));
 			if(!CheckProcessNullUInt32())
 				gmdeItemInfo->BuyBackDate = ReadUInt32_Optional();
-			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap[0])) {
+			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX0)) {
 				if(!CheckProcessNullString())
 					ReadString_Optional(&(gmdeItemInfo->DealNumber), &(gmdeItemInfo->DealNumberLength));
 				else {
@@ -3706,7 +3900,7 @@ public:
 					gmdeItemInfo->DealNumberLength = gmdeItemInfo->PrevDealNumberLength;
 				}
 			}
-			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap[1])) {
+			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX1)) {
 				if(!CheckProcessNullString())
 					ReadString_Optional(&(gmdeItemInfo->CXFlag), &(gmdeItemInfo->CXFlagLength));
 				else {
@@ -3773,7 +3967,7 @@ public:
 				ReadDecimal_Optional(&(gmdeItemInfo->MDEntryPx));
 			if(!CheckProcessNullDecimal())
 				ReadDecimal_Optional(&(gmdeItemInfo->MDEntrySize));
-			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap[0])) {
+			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX0)) {
 				if(!CheckProcessNullString())
 					ReadString_Optional(&(gmdeItemInfo->DealNumber), &(gmdeItemInfo->DealNumberLength));
 				else {
@@ -3844,7 +4038,7 @@ public:
 				ReadDecimal_Optional(&(gmdeItemInfo->MDEntryPx));
 			if(!CheckProcessNullDecimal())
 				ReadDecimal_Optional(&(gmdeItemInfo->MDEntrySize));
-			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap[0])) {
+			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX0)) {
 				if(!CheckProcessNullString())
 					ReadString_Optional(&(gmdeItemInfo->DealNumber), &(gmdeItemInfo->DealNumberLength));
 				else {
@@ -4193,7 +4387,7 @@ public:
 				gmdeItemInfo->SettlDate = ReadUInt32_Optional();
 			if(!CheckProcessNullString())
 				ReadString_Optional(&(gmdeItemInfo->SettleType), &(gmdeItemInfo->SettleTypeLength));
-			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap[0])) {
+			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX0)) {
 				if(!CheckProcessNullString())
 					ReadString_Optional(&(gmdeItemInfo->CXFlag), &(gmdeItemInfo->CXFlagLength));
 				else {
@@ -4274,7 +4468,7 @@ public:
 				gmdeItemInfo->SettlDate = ReadUInt32_Optional();
 			if(!CheckProcessNullString())
 				ReadString_Optional(&(gmdeItemInfo->SettleType), &(gmdeItemInfo->SettleTypeLength));
-			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap[0])) {
+			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX0)) {
 				if(!CheckProcessNullString())
 					ReadString_Optional(&(gmdeItemInfo->CXFlag), &(gmdeItemInfo->CXFlagLength));
 				else {
@@ -4331,7 +4525,7 @@ public:
 				ReadDecimal_Optional(&(gmdeItemInfo->MDEntryPx));
 			if(!CheckProcessNullDecimal())
 				ReadDecimal_Optional(&(gmdeItemInfo->MDEntrySize));
-			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap[0])) {
+			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX0)) {
 				if(!CheckProcessNullString())
 					ReadString_Optional(&(gmdeItemInfo->DealNumber), &(gmdeItemInfo->DealNumberLength));
 				else {
@@ -4396,7 +4590,7 @@ public:
 				ReadDecimal_Optional(&(gmdeItemInfo->MDEntryPx));
 			if(!CheckProcessNullDecimal())
 				ReadDecimal_Optional(&(gmdeItemInfo->MDEntrySize));
-			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap[0])) {
+			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX0)) {
 				if(!CheckProcessNullString())
 					ReadString_Optional(&(gmdeItemInfo->DealNumber), &(gmdeItemInfo->DealNumberLength));
 				else {
@@ -4648,18 +4842,18 @@ public:
 		ReadString_Mandatory(&(info->ApplVerID), &(info->ApplVerIDLength));
 		ReadString_Mandatory(&(info->BeginString), &(info->BeginStringLength));
 		ReadString_Mandatory(&(info->SenderCompID), &(info->SenderCompIDLength));
-		if(CheckMandatoryFieldPresence(info->PresenceMap[0])) {
+		if(CheckMandatoryFieldPresence(info->PresenceMap, PRESENCE_MAP_INDEX0)) {
 			info->MsgSeqNum = ReadUInt32_Mandatory();
 		}
 		else {
 			info->MsgSeqNum++;
 		}
 		info->SendingTime = ReadUInt64_Mandatory();
-		if(CheckMandatoryFieldPresence(info->PresenceMap[1])) {
+		if(CheckMandatoryFieldPresence(info->PresenceMap, PRESENCE_MAP_INDEX1)) {
 			ReadString_Mandatory(&(info->MessageEncoding), &(info->MessageEncodingLength));
 		}
 		else {
-			info->MessageEncoding = const_cast<char *>("UTF-8");
+			info->MessageEncoding = "UTF-8";
 			info->MessageEncodingLength = 5;
 		}
 		if(!CheckProcessNullInt32())
@@ -4831,77 +5025,77 @@ public:
 		return info;
 	}
 	inline void Decode_Generic() {
-		char msgType = ReadMsgType();
+		unsigned char msgType = ReadMsgType();
 		FastDecodeMethodPointer funcPtr = this->DecodeMethods_Generic[msgType];
 		(this->*funcPtr)();
 	}
 	inline void Decode_OLS_FOND() {
-		char msgType = ReadMsgType();
+		unsigned char msgType = ReadMsgType();
 		FastDecodeMethodPointer funcPtr = this->DecodeMethods_OLS_FOND[msgType];
 		(this->*funcPtr)();
 	}
 	inline void Decode_OLS_CURR() {
-		char msgType = ReadMsgType();
+		unsigned char msgType = ReadMsgType();
 		FastDecodeMethodPointer funcPtr = this->DecodeMethods_OLS_CURR[msgType];
 		(this->*funcPtr)();
 	}
 	inline void Decode_TLS_FOND() {
-		char msgType = ReadMsgType();
+		unsigned char msgType = ReadMsgType();
 		FastDecodeMethodPointer funcPtr = this->DecodeMethods_TLS_FOND[msgType];
 		(this->*funcPtr)();
 	}
 	inline void Decode_TLS_CURR() {
-		char msgType = ReadMsgType();
+		unsigned char msgType = ReadMsgType();
 		FastDecodeMethodPointer funcPtr = this->DecodeMethods_TLS_CURR[msgType];
 		(this->*funcPtr)();
 	}
 	inline void Decode_OBS_FOND() {
-		char msgType = ReadMsgType();
+		unsigned char msgType = ReadMsgType();
 		FastDecodeMethodPointer funcPtr = this->DecodeMethods_OBS_FOND[msgType];
 		(this->*funcPtr)();
 	}
 	inline void Decode_OBS_CURR() {
-		char msgType = ReadMsgType();
+		unsigned char msgType = ReadMsgType();
 		FastDecodeMethodPointer funcPtr = this->DecodeMethods_OBS_CURR[msgType];
 		(this->*funcPtr)();
 	}
 	inline void Decode_MSR_FOND() {
-		char msgType = ReadMsgType();
+		unsigned char msgType = ReadMsgType();
 		FastDecodeMethodPointer funcPtr = this->DecodeMethods_MSR_FOND[msgType];
 		(this->*funcPtr)();
 	}
 	inline void Decode_MSR_CURR() {
-		char msgType = ReadMsgType();
+		unsigned char msgType = ReadMsgType();
 		FastDecodeMethodPointer funcPtr = this->DecodeMethods_MSR_CURR[msgType];
 		(this->*funcPtr)();
 	}
 	inline void Decode_OLR_FOND() {
-		char msgType = ReadMsgType();
+		unsigned char msgType = ReadMsgType();
 		FastDecodeMethodPointer funcPtr = this->DecodeMethods_OLR_FOND[msgType];
 		(this->*funcPtr)();
 	}
 	inline void Decode_OLR_CURR() {
-		char msgType = ReadMsgType();
+		unsigned char msgType = ReadMsgType();
 		FastDecodeMethodPointer funcPtr = this->DecodeMethods_OLR_CURR[msgType];
 		(this->*funcPtr)();
 	}
 	inline void Decode_OBR_FOND() {
-		char msgType = ReadMsgType();
+		unsigned char msgType = ReadMsgType();
 		FastDecodeMethodPointer funcPtr = this->DecodeMethods_OBR_FOND[msgType];
 		(this->*funcPtr)();
 	}
 	inline void Decode_OBR_CURR() {
-		char msgType = ReadMsgType();
+		unsigned char msgType = ReadMsgType();
 		FastDecodeMethodPointer funcPtr = this->DecodeMethods_OBR_CURR[msgType];
 		(this->*funcPtr)();
 	}
 	inline void Decode_TLR_FOND() {
-		char msgType = ReadMsgType();
+		unsigned char msgType = ReadMsgType();
 		FastDecodeMethodPointer funcPtr = this->DecodeMethods_TLR_FOND[msgType];
 		(this->*funcPtr)();
 	}
 	inline void Decode_TLR_CURR() {
-		char msgType = ReadMsgType();
+		unsigned char msgType = ReadMsgType();
 		FastDecodeMethodPointer funcPtr = this->DecodeMethods_TLR_CURR[msgType];
 		(this->*funcPtr)();
 	}
