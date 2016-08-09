@@ -1,5 +1,6 @@
 #pragma once
 #include "FixTypes.h"
+#include <stdio.h>
 
 #pragma region Message_Info_Structures_Definition_GeneratedCode
 #define PRESENCE_MAP_INDEX0 0x80000000
@@ -36,1039 +37,1471 @@
 #define PRESENCE_MAP_INDEX31 0x00000001
 
 typedef struct _FastMarketDataSnapshotFullRefreshGenericGroupMDEntriesItemInfo {
-	int			PresenceMap[1];
-	char*		MDEntryType;			// id=269  presence=optional  
-	int			MDEntryTypeLength;
-	char*		MDEntryID;			// id=278  presence=optional  
-	int			MDEntryIDLength;
-	UINT32		MDEntryDate;			// id=272  presence=optional  
-	UINT32		MDEntryTime;			// id=273  presence=optional  
-	UINT32		OrigTime;			// id=9412  presence=optional  
-	Decimal		MDEntryPx;			// id=270  presence=optional  
-	Decimal		MDEntrySize;			// id=271  presence=optional  
-	char*		QuoteCondition;			// id=276  presence=optional  
-	int			QuoteConditionLength;
-	char*		TradeCondition;			// id=277  presence=optional  
-	int			TradeConditionLength;
-	char*		OpenCloseSettlFlag;			// id=286  presence=optional  
-	int			OpenCloseSettlFlagLength;
-	char*		OrdType;			// id=40  presence=optional  
-	int			OrdTypeLength;
-	UINT32		EffectiveTime;			// id=5902  presence=optional  
-	UINT32		StartTime;			// id=9820  presence=optional  
-	Decimal		AccruedInterestAmt;			// id=5384  presence=optional  
-	Decimal		ChgFromWAPrice;			// id=5510  presence=optional  
-	Decimal		ChgOpenInterest;			// id=5511  presence=optional  
-	Decimal		BidMarketSize;			// id=5292  presence=optional  
-	Decimal		AskMarketSize;			// id=5293  presence=optional  
-	INT32		TotalNumOfTrades;			// id=6139  presence=optional  
-	Decimal		TradeValue;			// id=6143  presence=optional  
-	Decimal		Yield;			// id=236  presence=optional  
-	Decimal		TotalVolume;			// id=5791  presence=optional  
-	INT32		OfferNbOr;			// id=9168  presence=optional  
-	INT32		BidNbOr;			// id=9169  presence=optional  
-	Decimal		ChgFromSettlmnt;			// id=9750  presence=optional  
-	UINT32		SettlDate;			// id=64  presence=optional  
-	char*		SettleType;			// id=5459  presence=optional  
-	int			SettleTypeLength;
-	INT32		SumQtyOfBest;			// id=10503  presence=optional  
-	char*		OrderSide;			// id=10504  presence=optional  
-	int			OrderSideLength;
-	char*		OrderStatus;			// id=10505  presence=optional  
-	int			OrderStatusLength;
-	Decimal		MinCurrPx;			// id=10509  presence=optional  
-	UINT32		MinCurrPxChgTime;			// id=10510  presence=optional  
-	UINT32		VolumeIndicator;			// id=7017  presence=optional  
-	Decimal		Price;			// id=44  presence=optional  
-	INT32		PriceType;			// id=423  presence=optional  
-	Decimal		NominalValue;			// id=9280  presence=optional  
-	Decimal		RepoToPx;			// id=5677  presence=optional  
-	Decimal		BuyBackPx;			// id=5558  presence=optional  
-	UINT32		BuyBackDate;			// id=5559  presence=optional  
-	char*		DealNumber;			// id=9885  presence=optional    copy
-	int			DealNumberLength;
-	char*		PrevDealNumber; // copy
-	int			PrevDealNumberLength; // copy
-	char*		CXFlag;			// id=5154  presence=optional    copy
-	int			CXFlagLength;
-	char*		PrevCXFlag; // copy
-	int			PrevCXFlagLength; // copy
-	char*		TradingSessionSubID;			// id=625  presence=optional  
-	int			TradingSessionSubIDLength;
+	UINT							PresenceMap[1];
+	char*							MDEntryType;			// id=269  presence=optional  
+	int							MDEntryTypeLength;
+	bool							AllowMDEntryType;
+	char*							MDEntryID;			// id=278  presence=optional  
+	int							MDEntryIDLength;
+	bool							AllowMDEntryID;
+	UINT32							MDEntryDate;			// id=272  presence=optional  
+	bool							AllowMDEntryDate;
+	UINT32							MDEntryTime;			// id=273  presence=optional  
+	bool							AllowMDEntryTime;
+	UINT32							OrigTime;			// id=9412  presence=optional  
+	bool							AllowOrigTime;
+	Decimal							MDEntryPx;			// id=270  presence=optional  
+	bool							AllowMDEntryPx;
+	Decimal							MDEntrySize;			// id=271  presence=optional  
+	bool							AllowMDEntrySize;
+	char*							QuoteCondition;			// id=276  presence=optional  
+	int							QuoteConditionLength;
+	bool							AllowQuoteCondition;
+	char*							TradeCondition;			// id=277  presence=optional  
+	int							TradeConditionLength;
+	bool							AllowTradeCondition;
+	char*							OpenCloseSettlFlag;			// id=286  presence=optional  
+	int							OpenCloseSettlFlagLength;
+	bool							AllowOpenCloseSettlFlag;
+	char*							OrdType;			// id=40  presence=optional  
+	int							OrdTypeLength;
+	bool							AllowOrdType;
+	UINT32							EffectiveTime;			// id=5902  presence=optional  
+	bool							AllowEffectiveTime;
+	UINT32							StartTime;			// id=9820  presence=optional  
+	bool							AllowStartTime;
+	Decimal							AccruedInterestAmt;			// id=5384  presence=optional  
+	bool							AllowAccruedInterestAmt;
+	Decimal							ChgFromWAPrice;			// id=5510  presence=optional  
+	bool							AllowChgFromWAPrice;
+	Decimal							ChgOpenInterest;			// id=5511  presence=optional  
+	bool							AllowChgOpenInterest;
+	Decimal							BidMarketSize;			// id=5292  presence=optional  
+	bool							AllowBidMarketSize;
+	Decimal							AskMarketSize;			// id=5293  presence=optional  
+	bool							AllowAskMarketSize;
+	INT32							TotalNumOfTrades;			// id=6139  presence=optional  
+	bool							AllowTotalNumOfTrades;
+	Decimal							TradeValue;			// id=6143  presence=optional  
+	bool							AllowTradeValue;
+	Decimal							Yield;			// id=236  presence=optional  
+	bool							AllowYield;
+	Decimal							TotalVolume;			// id=5791  presence=optional  
+	bool							AllowTotalVolume;
+	INT32							OfferNbOr;			// id=9168  presence=optional  
+	bool							AllowOfferNbOr;
+	INT32							BidNbOr;			// id=9169  presence=optional  
+	bool							AllowBidNbOr;
+	Decimal							ChgFromSettlmnt;			// id=9750  presence=optional  
+	bool							AllowChgFromSettlmnt;
+	UINT32							SettlDate;			// id=64  presence=optional  
+	bool							AllowSettlDate;
+	char*							SettleType;			// id=5459  presence=optional  
+	int							SettleTypeLength;
+	bool							AllowSettleType;
+	INT32							SumQtyOfBest;			// id=10503  presence=optional  
+	bool							AllowSumQtyOfBest;
+	char*							OrderSide;			// id=10504  presence=optional  
+	int							OrderSideLength;
+	bool							AllowOrderSide;
+	char*							OrderStatus;			// id=10505  presence=optional  
+	int							OrderStatusLength;
+	bool							AllowOrderStatus;
+	Decimal							MinCurrPx;			// id=10509  presence=optional  
+	bool							AllowMinCurrPx;
+	UINT32							MinCurrPxChgTime;			// id=10510  presence=optional  
+	bool							AllowMinCurrPxChgTime;
+	UINT32							VolumeIndicator;			// id=7017  presence=optional  
+	bool							AllowVolumeIndicator;
+	Decimal							Price;			// id=44  presence=optional  
+	bool							AllowPrice;
+	INT32							PriceType;			// id=423  presence=optional  
+	bool							AllowPriceType;
+	Decimal							NominalValue;			// id=9280  presence=optional  
+	bool							AllowNominalValue;
+	Decimal							RepoToPx;			// id=5677  presence=optional  
+	bool							AllowRepoToPx;
+	Decimal							BuyBackPx;			// id=5558  presence=optional  
+	bool							AllowBuyBackPx;
+	UINT32							BuyBackDate;			// id=5559  presence=optional  
+	bool							AllowBuyBackDate;
+	char*							DealNumber;			// id=9885  presence=optional    copy
+	int							DealNumberLength;
+	char*							PrevDealNumber; // copy
+	int							PrevDealNumberLength; // copy
+	bool							AllowDealNumber;
+	const int							DealNumberPresenceIndex = PRESENCE_MAP_INDEX0;
+	char*							CXFlag;			// id=5154  presence=optional    copy
+	int							CXFlagLength;
+	char*							PrevCXFlag; // copy
+	int							PrevCXFlagLength; // copy
+	bool							AllowCXFlag;
+	const int							CXFlagPresenceIndex = PRESENCE_MAP_INDEX1;
+	char*							TradingSessionSubID;			// id=625  presence=optional  
+	int							TradingSessionSubIDLength;
+	bool							AllowTradingSessionSubID;
 }FastMarketDataSnapshotFullRefreshGenericGroupMDEntriesItemInfo;
 
 typedef struct _FastMarketDataIncrementalRefreshGenericGroupMDEntriesItemInfo {
-	int			PresenceMap[1];
-	UINT32		MDUpdateAction;			// id=279  presence=optional  
-	char*		MDEntryType;			// id=269  presence=optional  
-	int			MDEntryTypeLength;
-	char*		MDEntryID;			// id=278  presence=optional  
-	int			MDEntryIDLength;
-	INT32		RptSeq;			// id=83  presence=optional  
-	UINT32		MDEntryDate;			// id=272  presence=optional  
-	UINT32		OrigTime;			// id=9412  presence=optional  
-	UINT32		SettlDate;			// id=64  presence=optional  
-	char*		SettleType;			// id=5459  presence=optional  
-	int			SettleTypeLength;
-	UINT32		MDEntryTime;			// id=273  presence=optional  
-	UINT32		EffectiveTime;			// id=5902  presence=optional  
-	UINT32		StartTime;			// id=9820  presence=optional  
-	char*		Symbol;			// id=55  presence=optional  
-	int			SymbolLength;
-	Decimal		MDEntryPx;			// id=270  presence=optional  
-	Decimal		MDEntrySize;			// id=271  presence=optional  
-	char*		QuoteCondition;			// id=276  presence=optional  
-	int			QuoteConditionLength;
-	char*		TradeCondition;			// id=277  presence=optional  
-	int			TradeConditionLength;
-	char*		OpenCloseSettlFlag;			// id=286  presence=optional  
-	int			OpenCloseSettlFlagLength;
-	char*		OrdType;			// id=40  presence=optional  
-	int			OrdTypeLength;
-	Decimal		NetChgPrevDay;			// id=451  presence=optional  
-	Decimal		AccruedInterestAmt;			// id=5384  presence=optional  
-	Decimal		ChgFromWAPrice;			// id=5510  presence=optional  
-	Decimal		ChgOpenInterest;			// id=5511  presence=optional  
-	Decimal		BidMarketSize;			// id=5292  presence=optional  
-	Decimal		AskMarketSize;			// id=5293  presence=optional  
-	INT32		TotalNumOfTrades;			// id=6139  presence=optional  
-	Decimal		TradeValue;			// id=6143  presence=optional  
-	Decimal		Yield;			// id=236  presence=optional  
-	Decimal		TotalVolume;			// id=5791  presence=optional  
-	INT32		OfferNbOr;			// id=9168  presence=optional  
-	INT32		BidNbOr;			// id=9169  presence=optional  
-	Decimal		ChgFromSettlmnt;			// id=9750  presence=optional  
-	INT32		SumQtyOfBest;			// id=10503  presence=optional  
-	char*		OrderSide;			// id=10504  presence=optional  
-	int			OrderSideLength;
-	char*		OrderStatus;			// id=10505  presence=optional  
-	int			OrderStatusLength;
-	Decimal		MinCurrPx;			// id=10509  presence=optional  
-	UINT32		MinCurrPxChgTime;			// id=10510  presence=optional  
-	UINT32		VolumeIndicator;			// id=7017  presence=optional  
-	Decimal		Price;			// id=44  presence=optional  
-	INT32		PriceType;			// id=423  presence=optional  
-	Decimal		NominalValue;			// id=9280  presence=optional  
-	Decimal		RepoToPx;			// id=5677  presence=optional  
-	Decimal		BuyBackPx;			// id=5558  presence=optional  
-	UINT32		BuyBackDate;			// id=5559  presence=optional  
-	char*		DealNumber;			// id=9885  presence=optional    copy
-	int			DealNumberLength;
-	char*		PrevDealNumber; // copy
-	int			PrevDealNumberLength; // copy
-	char*		CXFlag;			// id=5154  presence=optional    copy
-	int			CXFlagLength;
-	char*		PrevCXFlag; // copy
-	int			PrevCXFlagLength; // copy
-	char*		TradingSessionID;			// id=336  presence=optional  
-	int			TradingSessionIDLength;
-	char*		TradingSessionSubID;			// id=625  presence=optional  
-	int			TradingSessionSubIDLength;
+	UINT							PresenceMap[1];
+	UINT32							MDUpdateAction;			// id=279  presence=optional  
+	bool							AllowMDUpdateAction;
+	char*							MDEntryType;			// id=269  presence=optional  
+	int							MDEntryTypeLength;
+	bool							AllowMDEntryType;
+	char*							MDEntryID;			// id=278  presence=optional  
+	int							MDEntryIDLength;
+	bool							AllowMDEntryID;
+	INT32							RptSeq;			// id=83  presence=optional  
+	bool							AllowRptSeq;
+	UINT32							MDEntryDate;			// id=272  presence=optional  
+	bool							AllowMDEntryDate;
+	UINT32							OrigTime;			// id=9412  presence=optional  
+	bool							AllowOrigTime;
+	UINT32							SettlDate;			// id=64  presence=optional  
+	bool							AllowSettlDate;
+	char*							SettleType;			// id=5459  presence=optional  
+	int							SettleTypeLength;
+	bool							AllowSettleType;
+	UINT32							MDEntryTime;			// id=273  presence=optional  
+	bool							AllowMDEntryTime;
+	UINT32							EffectiveTime;			// id=5902  presence=optional  
+	bool							AllowEffectiveTime;
+	UINT32							StartTime;			// id=9820  presence=optional  
+	bool							AllowStartTime;
+	char*							Symbol;			// id=55  presence=optional  
+	int							SymbolLength;
+	bool							AllowSymbol;
+	Decimal							MDEntryPx;			// id=270  presence=optional  
+	bool							AllowMDEntryPx;
+	Decimal							MDEntrySize;			// id=271  presence=optional  
+	bool							AllowMDEntrySize;
+	char*							QuoteCondition;			// id=276  presence=optional  
+	int							QuoteConditionLength;
+	bool							AllowQuoteCondition;
+	char*							TradeCondition;			// id=277  presence=optional  
+	int							TradeConditionLength;
+	bool							AllowTradeCondition;
+	char*							OpenCloseSettlFlag;			// id=286  presence=optional  
+	int							OpenCloseSettlFlagLength;
+	bool							AllowOpenCloseSettlFlag;
+	char*							OrdType;			// id=40  presence=optional  
+	int							OrdTypeLength;
+	bool							AllowOrdType;
+	Decimal							NetChgPrevDay;			// id=451  presence=optional  
+	bool							AllowNetChgPrevDay;
+	Decimal							AccruedInterestAmt;			// id=5384  presence=optional  
+	bool							AllowAccruedInterestAmt;
+	Decimal							ChgFromWAPrice;			// id=5510  presence=optional  
+	bool							AllowChgFromWAPrice;
+	Decimal							ChgOpenInterest;			// id=5511  presence=optional  
+	bool							AllowChgOpenInterest;
+	Decimal							BidMarketSize;			// id=5292  presence=optional  
+	bool							AllowBidMarketSize;
+	Decimal							AskMarketSize;			// id=5293  presence=optional  
+	bool							AllowAskMarketSize;
+	INT32							TotalNumOfTrades;			// id=6139  presence=optional  
+	bool							AllowTotalNumOfTrades;
+	Decimal							TradeValue;			// id=6143  presence=optional  
+	bool							AllowTradeValue;
+	Decimal							Yield;			// id=236  presence=optional  
+	bool							AllowYield;
+	Decimal							TotalVolume;			// id=5791  presence=optional  
+	bool							AllowTotalVolume;
+	INT32							OfferNbOr;			// id=9168  presence=optional  
+	bool							AllowOfferNbOr;
+	INT32							BidNbOr;			// id=9169  presence=optional  
+	bool							AllowBidNbOr;
+	Decimal							ChgFromSettlmnt;			// id=9750  presence=optional  
+	bool							AllowChgFromSettlmnt;
+	INT32							SumQtyOfBest;			// id=10503  presence=optional  
+	bool							AllowSumQtyOfBest;
+	char*							OrderSide;			// id=10504  presence=optional  
+	int							OrderSideLength;
+	bool							AllowOrderSide;
+	char*							OrderStatus;			// id=10505  presence=optional  
+	int							OrderStatusLength;
+	bool							AllowOrderStatus;
+	Decimal							MinCurrPx;			// id=10509  presence=optional  
+	bool							AllowMinCurrPx;
+	UINT32							MinCurrPxChgTime;			// id=10510  presence=optional  
+	bool							AllowMinCurrPxChgTime;
+	UINT32							VolumeIndicator;			// id=7017  presence=optional  
+	bool							AllowVolumeIndicator;
+	Decimal							Price;			// id=44  presence=optional  
+	bool							AllowPrice;
+	INT32							PriceType;			// id=423  presence=optional  
+	bool							AllowPriceType;
+	Decimal							NominalValue;			// id=9280  presence=optional  
+	bool							AllowNominalValue;
+	Decimal							RepoToPx;			// id=5677  presence=optional  
+	bool							AllowRepoToPx;
+	Decimal							BuyBackPx;			// id=5558  presence=optional  
+	bool							AllowBuyBackPx;
+	UINT32							BuyBackDate;			// id=5559  presence=optional  
+	bool							AllowBuyBackDate;
+	char*							DealNumber;			// id=9885  presence=optional    copy
+	int							DealNumberLength;
+	char*							PrevDealNumber; // copy
+	int							PrevDealNumberLength; // copy
+	bool							AllowDealNumber;
+	const int							DealNumberPresenceIndex = PRESENCE_MAP_INDEX0;
+	char*							CXFlag;			// id=5154  presence=optional    copy
+	int							CXFlagLength;
+	char*							PrevCXFlag; // copy
+	int							PrevCXFlagLength; // copy
+	bool							AllowCXFlag;
+	const int							CXFlagPresenceIndex = PRESENCE_MAP_INDEX1;
+	char*							TradingSessionID;			// id=336  presence=optional  
+	int							TradingSessionIDLength;
+	bool							AllowTradingSessionID;
+	char*							TradingSessionSubID;			// id=625  presence=optional  
+	int							TradingSessionSubIDLength;
+	bool							AllowTradingSessionSubID;
 }FastMarketDataIncrementalRefreshGenericGroupMDEntriesItemInfo;
 
 typedef struct _FastMarketDataSnapshotFullRefreshOLSFONDGroupMDEntriesItemInfo {
-	int			PresenceMap[1];
-	char*		MDEntryType;			// id=269  presence=optional  
-	int			MDEntryTypeLength;
-	char*		MDEntryID;			// id=278  presence=optional  
-	int			MDEntryIDLength;
-	UINT32		MDEntryDate;			// id=272  presence=optional  
-	UINT32		MDEntryTime;			// id=273  presence=optional  
-	UINT32		OrigTime;			// id=9412  presence=optional  
-	Decimal		MDEntryPx;			// id=270  presence=optional  
-	Decimal		MDEntrySize;			// id=271  presence=optional  
-	char*		DealNumber;			// id=9885  presence=optional    copy
-	int			DealNumberLength;
-	char*		PrevDealNumber; // copy
-	int			PrevDealNumberLength; // copy
-	Decimal		Yield;			// id=236  presence=optional  
-	char*		OrderStatus;			// id=10505  presence=optional  
-	int			OrderStatusLength;
-	char*		OrdType;			// id=40  presence=optional  
-	int			OrdTypeLength;
-	Decimal		TotalVolume;			// id=5791  presence=optional  
-	char*		TradingSessionSubID;			// id=625  presence=optional  
-	int			TradingSessionSubIDLength;
+	UINT							PresenceMap[1];
+	char*							MDEntryType;			// id=269  presence=optional  
+	int							MDEntryTypeLength;
+	bool							AllowMDEntryType;
+	char*							MDEntryID;			// id=278  presence=optional  
+	int							MDEntryIDLength;
+	bool							AllowMDEntryID;
+	UINT32							MDEntryDate;			// id=272  presence=optional  
+	bool							AllowMDEntryDate;
+	UINT32							MDEntryTime;			// id=273  presence=optional  
+	bool							AllowMDEntryTime;
+	UINT32							OrigTime;			// id=9412  presence=optional  
+	bool							AllowOrigTime;
+	Decimal							MDEntryPx;			// id=270  presence=optional  
+	bool							AllowMDEntryPx;
+	Decimal							MDEntrySize;			// id=271  presence=optional  
+	bool							AllowMDEntrySize;
+	char*							DealNumber;			// id=9885  presence=optional    copy
+	int							DealNumberLength;
+	char*							PrevDealNumber; // copy
+	int							PrevDealNumberLength; // copy
+	bool							AllowDealNumber;
+	const int							DealNumberPresenceIndex = PRESENCE_MAP_INDEX0;
+	Decimal							Yield;			// id=236  presence=optional  
+	bool							AllowYield;
+	char*							OrderStatus;			// id=10505  presence=optional  
+	int							OrderStatusLength;
+	bool							AllowOrderStatus;
+	char*							OrdType;			// id=40  presence=optional  
+	int							OrdTypeLength;
+	bool							AllowOrdType;
+	Decimal							TotalVolume;			// id=5791  presence=optional  
+	bool							AllowTotalVolume;
+	char*							TradingSessionSubID;			// id=625  presence=optional  
+	int							TradingSessionSubIDLength;
+	bool							AllowTradingSessionSubID;
 }FastMarketDataSnapshotFullRefreshOLSFONDGroupMDEntriesItemInfo;
 
 typedef struct _FastMarketDataSnapshotFullRefreshOLSCURRGroupMDEntriesItemInfo {
-	int			PresenceMap[1];
-	char*		MDEntryType;			// id=269  presence=optional  
-	int			MDEntryTypeLength;
-	char*		MDEntryID;			// id=278  presence=optional  
-	int			MDEntryIDLength;
-	UINT32		MDEntryDate;			// id=272  presence=optional  
-	UINT32		MDEntryTime;			// id=273  presence=optional  
-	UINT32		OrigTime;			// id=9412  presence=optional  
-	Decimal		MDEntryPx;			// id=270  presence=optional  
-	Decimal		MDEntrySize;			// id=271  presence=optional  
-	char*		DealNumber;			// id=9885  presence=optional    copy
-	int			DealNumberLength;
-	char*		PrevDealNumber; // copy
-	int			PrevDealNumberLength; // copy
-	char*		OrderStatus;			// id=10505  presence=optional  
-	int			OrderStatusLength;
-	char*		TradingSessionSubID;			// id=625  presence=optional  
-	int			TradingSessionSubIDLength;
+	UINT							PresenceMap[1];
+	char*							MDEntryType;			// id=269  presence=optional  
+	int							MDEntryTypeLength;
+	bool							AllowMDEntryType;
+	char*							MDEntryID;			// id=278  presence=optional  
+	int							MDEntryIDLength;
+	bool							AllowMDEntryID;
+	UINT32							MDEntryDate;			// id=272  presence=optional  
+	bool							AllowMDEntryDate;
+	UINT32							MDEntryTime;			// id=273  presence=optional  
+	bool							AllowMDEntryTime;
+	UINT32							OrigTime;			// id=9412  presence=optional  
+	bool							AllowOrigTime;
+	Decimal							MDEntryPx;			// id=270  presence=optional  
+	bool							AllowMDEntryPx;
+	Decimal							MDEntrySize;			// id=271  presence=optional  
+	bool							AllowMDEntrySize;
+	char*							DealNumber;			// id=9885  presence=optional    copy
+	int							DealNumberLength;
+	char*							PrevDealNumber; // copy
+	int							PrevDealNumberLength; // copy
+	bool							AllowDealNumber;
+	const int							DealNumberPresenceIndex = PRESENCE_MAP_INDEX0;
+	char*							OrderStatus;			// id=10505  presence=optional  
+	int							OrderStatusLength;
+	bool							AllowOrderStatus;
+	char*							TradingSessionSubID;			// id=625  presence=optional  
+	int							TradingSessionSubIDLength;
+	bool							AllowTradingSessionSubID;
 }FastMarketDataSnapshotFullRefreshOLSCURRGroupMDEntriesItemInfo;
 
 typedef struct _FastMarketDataSnapshotFullRefreshTLSFONDGroupMDEntriesItemInfo {
-	int			PresenceMap[1];
-	char*		MDEntryType;			// id=269  
-	int			MDEntryTypeLength;
-	char*		MDEntryID;			// id=278  presence=optional  
-	int			MDEntryIDLength;
-	UINT32		MDEntryDate;			// id=272  presence=optional  
-	UINT32		MDEntryTime;			// id=273  presence=optional  
-	UINT32		OrigTime;			// id=9412  presence=optional  
-	char*		OrderSide;			// id=10504  presence=optional  
-	int			OrderSideLength;
-	Decimal		MDEntryPx;			// id=270  presence=optional  
-	Decimal		MDEntrySize;			// id=271  presence=optional  
-	Decimal		AccruedInterestAmt;			// id=5384  presence=optional  
-	Decimal		TradeValue;			// id=6143  presence=optional  
-	Decimal		Yield;			// id=236  presence=optional  
-	UINT32		SettlDate;			// id=64  presence=optional  
-	char*		SettleType;			// id=5459  presence=optional  
-	int			SettleTypeLength;
-	Decimal		Price;			// id=44  presence=optional  
-	INT32		PriceType;			// id=423  presence=optional  
-	Decimal		RepoToPx;			// id=5677  presence=optional  
-	Decimal		BuyBackPx;			// id=5558  presence=optional  
-	UINT32		BuyBackDate;			// id=5559  presence=optional  
-	char*		TradingSessionSubID;			// id=625  presence=optional  
-	int			TradingSessionSubIDLength;
+	UINT							PresenceMap[1];
+	char*							MDEntryType;			// id=269  
+	int							MDEntryTypeLength;
+	char*							MDEntryID;			// id=278  presence=optional  
+	int							MDEntryIDLength;
+	bool							AllowMDEntryID;
+	UINT32							MDEntryDate;			// id=272  presence=optional  
+	bool							AllowMDEntryDate;
+	UINT32							MDEntryTime;			// id=273  presence=optional  
+	bool							AllowMDEntryTime;
+	UINT32							OrigTime;			// id=9412  presence=optional  
+	bool							AllowOrigTime;
+	char*							OrderSide;			// id=10504  presence=optional  
+	int							OrderSideLength;
+	bool							AllowOrderSide;
+	Decimal							MDEntryPx;			// id=270  presence=optional  
+	bool							AllowMDEntryPx;
+	Decimal							MDEntrySize;			// id=271  presence=optional  
+	bool							AllowMDEntrySize;
+	Decimal							AccruedInterestAmt;			// id=5384  presence=optional  
+	bool							AllowAccruedInterestAmt;
+	Decimal							TradeValue;			// id=6143  presence=optional  
+	bool							AllowTradeValue;
+	Decimal							Yield;			// id=236  presence=optional  
+	bool							AllowYield;
+	UINT32							SettlDate;			// id=64  presence=optional  
+	bool							AllowSettlDate;
+	char*							SettleType;			// id=5459  presence=optional  
+	int							SettleTypeLength;
+	bool							AllowSettleType;
+	Decimal							Price;			// id=44  presence=optional  
+	bool							AllowPrice;
+	INT32							PriceType;			// id=423  presence=optional  
+	bool							AllowPriceType;
+	Decimal							RepoToPx;			// id=5677  presence=optional  
+	bool							AllowRepoToPx;
+	Decimal							BuyBackPx;			// id=5558  presence=optional  
+	bool							AllowBuyBackPx;
+	UINT32							BuyBackDate;			// id=5559  presence=optional  
+	bool							AllowBuyBackDate;
+	char*							TradingSessionSubID;			// id=625  presence=optional  
+	int							TradingSessionSubIDLength;
+	bool							AllowTradingSessionSubID;
 }FastMarketDataSnapshotFullRefreshTLSFONDGroupMDEntriesItemInfo;
 
 typedef struct _FastMarketDataSnapshotFullRefreshTLSCURRGroupMDEntriesItemInfo {
-	int			PresenceMap[1];
-	char*		MDEntryType;			// id=269  
-	int			MDEntryTypeLength;
-	char*		MDEntryID;			// id=278  presence=optional  
-	int			MDEntryIDLength;
-	UINT32		MDEntryDate;			// id=272  presence=optional  
-	UINT32		MDEntryTime;			// id=273  presence=optional  
-	UINT32		OrigTime;			// id=9412  presence=optional  
-	char*		OrderSide;			// id=10504  presence=optional  
-	int			OrderSideLength;
-	Decimal		MDEntryPx;			// id=270  presence=optional  
-	Decimal		MDEntrySize;			// id=271  presence=optional  
-	Decimal		TradeValue;			// id=6143  presence=optional  
-	UINT32		SettlDate;			// id=64  presence=optional  
-	char*		SettleType;			// id=5459  presence=optional  
-	int			SettleTypeLength;
-	Decimal		Price;			// id=44  presence=optional  
-	INT32		PriceType;			// id=423  presence=optional  
-	Decimal		RepoToPx;			// id=5677  presence=optional  
-	Decimal		BuyBackPx;			// id=5558  presence=optional  
-	UINT32		BuyBackDate;			// id=5559  presence=optional  
-	char*		TradingSessionSubID;			// id=625  presence=optional  
-	int			TradingSessionSubIDLength;
+	UINT							PresenceMap[1];
+	char*							MDEntryType;			// id=269  
+	int							MDEntryTypeLength;
+	char*							MDEntryID;			// id=278  presence=optional  
+	int							MDEntryIDLength;
+	bool							AllowMDEntryID;
+	UINT32							MDEntryDate;			// id=272  presence=optional  
+	bool							AllowMDEntryDate;
+	UINT32							MDEntryTime;			// id=273  presence=optional  
+	bool							AllowMDEntryTime;
+	UINT32							OrigTime;			// id=9412  presence=optional  
+	bool							AllowOrigTime;
+	char*							OrderSide;			// id=10504  presence=optional  
+	int							OrderSideLength;
+	bool							AllowOrderSide;
+	Decimal							MDEntryPx;			// id=270  presence=optional  
+	bool							AllowMDEntryPx;
+	Decimal							MDEntrySize;			// id=271  presence=optional  
+	bool							AllowMDEntrySize;
+	Decimal							TradeValue;			// id=6143  presence=optional  
+	bool							AllowTradeValue;
+	UINT32							SettlDate;			// id=64  presence=optional  
+	bool							AllowSettlDate;
+	char*							SettleType;			// id=5459  presence=optional  
+	int							SettleTypeLength;
+	bool							AllowSettleType;
+	Decimal							Price;			// id=44  presence=optional  
+	bool							AllowPrice;
+	INT32							PriceType;			// id=423  presence=optional  
+	bool							AllowPriceType;
+	Decimal							RepoToPx;			// id=5677  presence=optional  
+	bool							AllowRepoToPx;
+	Decimal							BuyBackPx;			// id=5558  presence=optional  
+	bool							AllowBuyBackPx;
+	UINT32							BuyBackDate;			// id=5559  presence=optional  
+	bool							AllowBuyBackDate;
+	char*							TradingSessionSubID;			// id=625  presence=optional  
+	int							TradingSessionSubIDLength;
+	bool							AllowTradingSessionSubID;
 }FastMarketDataSnapshotFullRefreshTLSCURRGroupMDEntriesItemInfo;
 
 typedef struct _FastMarketDataSnapshotFullRefreshOBSFONDGroupMDEntriesItemInfo {
-	int			PresenceMap[1];
-	char*		MDEntryType;			// id=269  presence=optional  
-	int			MDEntryTypeLength;
-	char*		MDEntryID;			// id=278  presence=optional  
-	int			MDEntryIDLength;
-	Decimal		MDEntryPx;			// id=270  presence=optional  
-	Decimal		MDEntrySize;			// id=271  presence=optional  
-	UINT32		MDEntryTime;			// id=273  presence=optional  
-	UINT32		OrigTime;			// id=9412  presence=optional  
-	Decimal		Yield;			// id=236  presence=optional  
-	UINT32		EffectiveTime;			// id=5902  presence=optional  
-	Decimal		NominalValue;			// id=9280  presence=optional  
-	char*		TradingSessionSubID;			// id=625  presence=optional  
-	int			TradingSessionSubIDLength;
+	UINT							PresenceMap[1];
+	char*							MDEntryType;			// id=269  presence=optional  
+	int							MDEntryTypeLength;
+	bool							AllowMDEntryType;
+	char*							MDEntryID;			// id=278  presence=optional  
+	int							MDEntryIDLength;
+	bool							AllowMDEntryID;
+	Decimal							MDEntryPx;			// id=270  presence=optional  
+	bool							AllowMDEntryPx;
+	Decimal							MDEntrySize;			// id=271  presence=optional  
+	bool							AllowMDEntrySize;
+	UINT32							MDEntryTime;			// id=273  presence=optional  
+	bool							AllowMDEntryTime;
+	UINT32							OrigTime;			// id=9412  presence=optional  
+	bool							AllowOrigTime;
+	Decimal							Yield;			// id=236  presence=optional  
+	bool							AllowYield;
+	UINT32							EffectiveTime;			// id=5902  presence=optional  
+	bool							AllowEffectiveTime;
+	Decimal							NominalValue;			// id=9280  presence=optional  
+	bool							AllowNominalValue;
+	char*							TradingSessionSubID;			// id=625  presence=optional  
+	int							TradingSessionSubIDLength;
+	bool							AllowTradingSessionSubID;
 }FastMarketDataSnapshotFullRefreshOBSFONDGroupMDEntriesItemInfo;
 
 typedef struct _FastMarketDataSnapshotFullRefreshOBSCURRGroupMDEntriesItemInfo {
-	int			PresenceMap[1];
-	char*		MDEntryType;			// id=269  presence=optional  
-	int			MDEntryTypeLength;
-	char*		MDEntryID;			// id=278  presence=optional  
-	int			MDEntryIDLength;
-	Decimal		MDEntryPx;			// id=270  presence=optional  
-	Decimal		MDEntrySize;			// id=271  presence=optional  
-	UINT32		MDEntryTime;			// id=273  presence=optional  
-	UINT32		OrigTime;			// id=9412  presence=optional  
-	char*		TradingSessionSubID;			// id=625  presence=optional  
-	int			TradingSessionSubIDLength;
+	UINT							PresenceMap[1];
+	char*							MDEntryType;			// id=269  presence=optional  
+	int							MDEntryTypeLength;
+	bool							AllowMDEntryType;
+	char*							MDEntryID;			// id=278  presence=optional  
+	int							MDEntryIDLength;
+	bool							AllowMDEntryID;
+	Decimal							MDEntryPx;			// id=270  presence=optional  
+	bool							AllowMDEntryPx;
+	Decimal							MDEntrySize;			// id=271  presence=optional  
+	bool							AllowMDEntrySize;
+	UINT32							MDEntryTime;			// id=273  presence=optional  
+	bool							AllowMDEntryTime;
+	UINT32							OrigTime;			// id=9412  presence=optional  
+	bool							AllowOrigTime;
+	char*							TradingSessionSubID;			// id=625  presence=optional  
+	int							TradingSessionSubIDLength;
+	bool							AllowTradingSessionSubID;
 }FastMarketDataSnapshotFullRefreshOBSCURRGroupMDEntriesItemInfo;
 
 typedef struct _FastMarketDataIncrementalRefreshMSRFONDGroupMDEntriesItemInfo {
-	int			PresenceMap[1];
-	UINT32		MDUpdateAction;			// id=279  presence=optional  
-	char*		MDEntryType;			// id=269  presence=optional  
-	int			MDEntryTypeLength;
-	char*		MDEntryID;			// id=278  presence=optional  
-	int			MDEntryIDLength;
-	char*		Symbol;			// id=55  presence=optional  
-	int			SymbolLength;
-	INT32		RptSeq;			// id=83  presence=optional  
-	Decimal		MDEntryPx;			// id=270  presence=optional  
-	Decimal		MDEntrySize;			// id=271  presence=optional  
-	UINT32		MDEntryDate;			// id=272  presence=optional  
-	UINT32		MDEntryTime;			// id=273  presence=optional  
-	UINT32		StartTime;			// id=9820  presence=optional  
-	char*		QuoteCondition;			// id=276  presence=optional  
-	int			QuoteConditionLength;
-	char*		TradeCondition;			// id=277  presence=optional  
-	int			TradeConditionLength;
-	char*		OpenCloseSettlFlag;			// id=286  presence=optional  
-	int			OpenCloseSettlFlagLength;
-	Decimal		NetChgPrevDay;			// id=451  presence=optional  
-	Decimal		AccruedInterestAmt;			// id=5384  presence=optional  
-	Decimal		ChgFromWAPrice;			// id=5510  presence=optional  
-	Decimal		ChgOpenInterest;			// id=5511  presence=optional  
-	Decimal		BidMarketSize;			// id=5292  presence=optional  
-	Decimal		AskMarketSize;			// id=5293  presence=optional  
-	INT32		TotalNumOfTrades;			// id=6139  presence=optional  
-	Decimal		TradeValue;			// id=6143  presence=optional  
-	Decimal		Yield;			// id=236  presence=optional  
-	INT32		OfferNbOr;			// id=9168  presence=optional  
-	INT32		BidNbOr;			// id=9169  presence=optional  
-	Decimal		ChgFromSettlmnt;			// id=9750  presence=optional  
-	Decimal		MinCurrPx;			// id=10509  presence=optional  
-	UINT32		MinCurrPxChgTime;			// id=10510  presence=optional  
-	UINT32		VolumeIndicator;			// id=7017  presence=optional  
-	UINT32		SettlDate;			// id=64  presence=optional  
-	char*		SettleType;			// id=5459  presence=optional  
-	int			SettleTypeLength;
-	char*		CXFlag;			// id=5154  presence=optional    copy
-	int			CXFlagLength;
-	char*		PrevCXFlag; // copy
-	int			PrevCXFlagLength; // copy
-	char*		TradingSessionID;			// id=336  presence=optional  
-	int			TradingSessionIDLength;
-	char*		TradingSessionSubID;			// id=625  presence=optional  
-	int			TradingSessionSubIDLength;
+	UINT							PresenceMap[1];
+	UINT32							MDUpdateAction;			// id=279  presence=optional  
+	bool							AllowMDUpdateAction;
+	char*							MDEntryType;			// id=269  presence=optional  
+	int							MDEntryTypeLength;
+	bool							AllowMDEntryType;
+	char*							MDEntryID;			// id=278  presence=optional  
+	int							MDEntryIDLength;
+	bool							AllowMDEntryID;
+	char*							Symbol;			// id=55  presence=optional  
+	int							SymbolLength;
+	bool							AllowSymbol;
+	INT32							RptSeq;			// id=83  presence=optional  
+	bool							AllowRptSeq;
+	Decimal							MDEntryPx;			// id=270  presence=optional  
+	bool							AllowMDEntryPx;
+	Decimal							MDEntrySize;			// id=271  presence=optional  
+	bool							AllowMDEntrySize;
+	UINT32							MDEntryDate;			// id=272  presence=optional  
+	bool							AllowMDEntryDate;
+	UINT32							MDEntryTime;			// id=273  presence=optional  
+	bool							AllowMDEntryTime;
+	UINT32							StartTime;			// id=9820  presence=optional  
+	bool							AllowStartTime;
+	char*							QuoteCondition;			// id=276  presence=optional  
+	int							QuoteConditionLength;
+	bool							AllowQuoteCondition;
+	char*							TradeCondition;			// id=277  presence=optional  
+	int							TradeConditionLength;
+	bool							AllowTradeCondition;
+	char*							OpenCloseSettlFlag;			// id=286  presence=optional  
+	int							OpenCloseSettlFlagLength;
+	bool							AllowOpenCloseSettlFlag;
+	Decimal							NetChgPrevDay;			// id=451  presence=optional  
+	bool							AllowNetChgPrevDay;
+	Decimal							AccruedInterestAmt;			// id=5384  presence=optional  
+	bool							AllowAccruedInterestAmt;
+	Decimal							ChgFromWAPrice;			// id=5510  presence=optional  
+	bool							AllowChgFromWAPrice;
+	Decimal							ChgOpenInterest;			// id=5511  presence=optional  
+	bool							AllowChgOpenInterest;
+	Decimal							BidMarketSize;			// id=5292  presence=optional  
+	bool							AllowBidMarketSize;
+	Decimal							AskMarketSize;			// id=5293  presence=optional  
+	bool							AllowAskMarketSize;
+	INT32							TotalNumOfTrades;			// id=6139  presence=optional  
+	bool							AllowTotalNumOfTrades;
+	Decimal							TradeValue;			// id=6143  presence=optional  
+	bool							AllowTradeValue;
+	Decimal							Yield;			// id=236  presence=optional  
+	bool							AllowYield;
+	INT32							OfferNbOr;			// id=9168  presence=optional  
+	bool							AllowOfferNbOr;
+	INT32							BidNbOr;			// id=9169  presence=optional  
+	bool							AllowBidNbOr;
+	Decimal							ChgFromSettlmnt;			// id=9750  presence=optional  
+	bool							AllowChgFromSettlmnt;
+	Decimal							MinCurrPx;			// id=10509  presence=optional  
+	bool							AllowMinCurrPx;
+	UINT32							MinCurrPxChgTime;			// id=10510  presence=optional  
+	bool							AllowMinCurrPxChgTime;
+	UINT32							VolumeIndicator;			// id=7017  presence=optional  
+	bool							AllowVolumeIndicator;
+	UINT32							SettlDate;			// id=64  presence=optional  
+	bool							AllowSettlDate;
+	char*							SettleType;			// id=5459  presence=optional  
+	int							SettleTypeLength;
+	bool							AllowSettleType;
+	char*							CXFlag;			// id=5154  presence=optional    copy
+	int							CXFlagLength;
+	char*							PrevCXFlag; // copy
+	int							PrevCXFlagLength; // copy
+	bool							AllowCXFlag;
+	const int							CXFlagPresenceIndex = PRESENCE_MAP_INDEX0;
+	char*							TradingSessionID;			// id=336  presence=optional  
+	int							TradingSessionIDLength;
+	bool							AllowTradingSessionID;
+	char*							TradingSessionSubID;			// id=625  presence=optional  
+	int							TradingSessionSubIDLength;
+	bool							AllowTradingSessionSubID;
 }FastMarketDataIncrementalRefreshMSRFONDGroupMDEntriesItemInfo;
 
 typedef struct _FastMarketDataIncrementalRefreshMSRCURRGroupMDEntriesItemInfo {
-	int			PresenceMap[1];
-	UINT32		MDUpdateAction;			// id=279  presence=optional  
-	char*		MDEntryType;			// id=269  presence=optional  
-	int			MDEntryTypeLength;
-	char*		MDEntryID;			// id=278  presence=optional  
-	int			MDEntryIDLength;
-	char*		Symbol;			// id=55  presence=optional  
-	int			SymbolLength;
-	INT32		RptSeq;			// id=83  presence=optional  
-	Decimal		MDEntryPx;			// id=270  presence=optional  
-	Decimal		MDEntrySize;			// id=271  presence=optional  
-	UINT32		MDEntryDate;			// id=272  presence=optional  
-	UINT32		MDEntryTime;			// id=273  presence=optional  
-	char*		QuoteCondition;			// id=276  presence=optional  
-	int			QuoteConditionLength;
-	char*		TradeCondition;			// id=277  presence=optional  
-	int			TradeConditionLength;
-	char*		OpenCloseSettlFlag;			// id=286  presence=optional  
-	int			OpenCloseSettlFlagLength;
-	Decimal		NetChgPrevDay;			// id=451  presence=optional  
-	Decimal		ChgFromWAPrice;			// id=5510  presence=optional  
-	Decimal		ChgOpenInterest;			// id=5511  presence=optional  
-	INT32		TotalNumOfTrades;			// id=6139  presence=optional  
-	Decimal		TradeValue;			// id=6143  presence=optional  
-	INT32		OfferNbOr;			// id=9168  presence=optional  
-	INT32		BidNbOr;			// id=9169  presence=optional  
-	Decimal		ChgFromSettlmnt;			// id=9750  presence=optional  
-	UINT32		SettlDate;			// id=64  presence=optional  
-	char*		SettleType;			// id=5459  presence=optional  
-	int			SettleTypeLength;
-	char*		CXFlag;			// id=5154  presence=optional    copy
-	int			CXFlagLength;
-	char*		PrevCXFlag; // copy
-	int			PrevCXFlagLength; // copy
-	char*		TradingSessionID;			// id=336  presence=optional  
-	int			TradingSessionIDLength;
-	char*		TradingSessionSubID;			// id=625  presence=optional  
-	int			TradingSessionSubIDLength;
+	UINT							PresenceMap[1];
+	UINT32							MDUpdateAction;			// id=279  presence=optional  
+	bool							AllowMDUpdateAction;
+	char*							MDEntryType;			// id=269  presence=optional  
+	int							MDEntryTypeLength;
+	bool							AllowMDEntryType;
+	char*							MDEntryID;			// id=278  presence=optional  
+	int							MDEntryIDLength;
+	bool							AllowMDEntryID;
+	char*							Symbol;			// id=55  presence=optional  
+	int							SymbolLength;
+	bool							AllowSymbol;
+	INT32							RptSeq;			// id=83  presence=optional  
+	bool							AllowRptSeq;
+	Decimal							MDEntryPx;			// id=270  presence=optional  
+	bool							AllowMDEntryPx;
+	Decimal							MDEntrySize;			// id=271  presence=optional  
+	bool							AllowMDEntrySize;
+	UINT32							MDEntryDate;			// id=272  presence=optional  
+	bool							AllowMDEntryDate;
+	UINT32							MDEntryTime;			// id=273  presence=optional  
+	bool							AllowMDEntryTime;
+	char*							QuoteCondition;			// id=276  presence=optional  
+	int							QuoteConditionLength;
+	bool							AllowQuoteCondition;
+	char*							TradeCondition;			// id=277  presence=optional  
+	int							TradeConditionLength;
+	bool							AllowTradeCondition;
+	char*							OpenCloseSettlFlag;			// id=286  presence=optional  
+	int							OpenCloseSettlFlagLength;
+	bool							AllowOpenCloseSettlFlag;
+	Decimal							NetChgPrevDay;			// id=451  presence=optional  
+	bool							AllowNetChgPrevDay;
+	Decimal							ChgFromWAPrice;			// id=5510  presence=optional  
+	bool							AllowChgFromWAPrice;
+	Decimal							ChgOpenInterest;			// id=5511  presence=optional  
+	bool							AllowChgOpenInterest;
+	INT32							TotalNumOfTrades;			// id=6139  presence=optional  
+	bool							AllowTotalNumOfTrades;
+	Decimal							TradeValue;			// id=6143  presence=optional  
+	bool							AllowTradeValue;
+	INT32							OfferNbOr;			// id=9168  presence=optional  
+	bool							AllowOfferNbOr;
+	INT32							BidNbOr;			// id=9169  presence=optional  
+	bool							AllowBidNbOr;
+	Decimal							ChgFromSettlmnt;			// id=9750  presence=optional  
+	bool							AllowChgFromSettlmnt;
+	UINT32							SettlDate;			// id=64  presence=optional  
+	bool							AllowSettlDate;
+	char*							SettleType;			// id=5459  presence=optional  
+	int							SettleTypeLength;
+	bool							AllowSettleType;
+	char*							CXFlag;			// id=5154  presence=optional    copy
+	int							CXFlagLength;
+	char*							PrevCXFlag; // copy
+	int							PrevCXFlagLength; // copy
+	bool							AllowCXFlag;
+	const int							CXFlagPresenceIndex = PRESENCE_MAP_INDEX0;
+	char*							TradingSessionID;			// id=336  presence=optional  
+	int							TradingSessionIDLength;
+	bool							AllowTradingSessionID;
+	char*							TradingSessionSubID;			// id=625  presence=optional  
+	int							TradingSessionSubIDLength;
+	bool							AllowTradingSessionSubID;
 }FastMarketDataIncrementalRefreshMSRCURRGroupMDEntriesItemInfo;
 
 typedef struct _FastMarketDataIncrementalRefreshOLRFONDGroupMDEntriesItemInfo {
-	int			PresenceMap[1];
-	UINT32		MDUpdateAction;			// id=279  presence=optional  
-	char*		MDEntryType;			// id=269  presence=optional  
-	int			MDEntryTypeLength;
-	char*		MDEntryID;			// id=278  presence=optional  
-	int			MDEntryIDLength;
-	char*		Symbol;			// id=55  presence=optional  
-	int			SymbolLength;
-	INT32		RptSeq;			// id=83  presence=optional  
-	UINT32		MDEntryDate;			// id=272  presence=optional  
-	UINT32		MDEntryTime;			// id=273  presence=optional  
-	UINT32		OrigTime;			// id=9412  presence=optional  
-	Decimal		MDEntryPx;			// id=270  presence=optional  
-	Decimal		MDEntrySize;			// id=271  presence=optional  
-	char*		DealNumber;			// id=9885  presence=optional    copy
-	int			DealNumberLength;
-	char*		PrevDealNumber; // copy
-	int			PrevDealNumberLength; // copy
-	Decimal		Yield;			// id=236  presence=optional  
-	char*		OrderStatus;			// id=10505  presence=optional  
-	int			OrderStatusLength;
-	char*		OrdType;			// id=40  presence=optional  
-	int			OrdTypeLength;
-	Decimal		TotalVolume;			// id=5791  presence=optional  
-	char*		TradingSessionID;			// id=336  presence=optional  
-	int			TradingSessionIDLength;
-	char*		TradingSessionSubID;			// id=625  presence=optional  
-	int			TradingSessionSubIDLength;
+	UINT							PresenceMap[1];
+	UINT32							MDUpdateAction;			// id=279  presence=optional  
+	bool							AllowMDUpdateAction;
+	char*							MDEntryType;			// id=269  presence=optional  
+	int							MDEntryTypeLength;
+	bool							AllowMDEntryType;
+	char*							MDEntryID;			// id=278  presence=optional  
+	int							MDEntryIDLength;
+	bool							AllowMDEntryID;
+	char*							Symbol;			// id=55  presence=optional  
+	int							SymbolLength;
+	bool							AllowSymbol;
+	INT32							RptSeq;			// id=83  presence=optional  
+	bool							AllowRptSeq;
+	UINT32							MDEntryDate;			// id=272  presence=optional  
+	bool							AllowMDEntryDate;
+	UINT32							MDEntryTime;			// id=273  presence=optional  
+	bool							AllowMDEntryTime;
+	UINT32							OrigTime;			// id=9412  presence=optional  
+	bool							AllowOrigTime;
+	Decimal							MDEntryPx;			// id=270  presence=optional  
+	bool							AllowMDEntryPx;
+	Decimal							MDEntrySize;			// id=271  presence=optional  
+	bool							AllowMDEntrySize;
+	char*							DealNumber;			// id=9885  presence=optional    copy
+	int							DealNumberLength;
+	char*							PrevDealNumber; // copy
+	int							PrevDealNumberLength; // copy
+	bool							AllowDealNumber;
+	const int							DealNumberPresenceIndex = PRESENCE_MAP_INDEX0;
+	Decimal							Yield;			// id=236  presence=optional  
+	bool							AllowYield;
+	char*							OrderStatus;			// id=10505  presence=optional  
+	int							OrderStatusLength;
+	bool							AllowOrderStatus;
+	char*							OrdType;			// id=40  presence=optional  
+	int							OrdTypeLength;
+	bool							AllowOrdType;
+	Decimal							TotalVolume;			// id=5791  presence=optional  
+	bool							AllowTotalVolume;
+	char*							TradingSessionID;			// id=336  presence=optional  
+	int							TradingSessionIDLength;
+	bool							AllowTradingSessionID;
+	char*							TradingSessionSubID;			// id=625  presence=optional  
+	int							TradingSessionSubIDLength;
+	bool							AllowTradingSessionSubID;
 }FastMarketDataIncrementalRefreshOLRFONDGroupMDEntriesItemInfo;
 
 typedef struct _FastMarketDataIncrementalRefreshOLRCURRGroupMDEntriesItemInfo {
-	int			PresenceMap[1];
-	UINT32		MDUpdateAction;			// id=279  presence=optional  
-	char*		MDEntryType;			// id=269  presence=optional  
-	int			MDEntryTypeLength;
-	char*		MDEntryID;			// id=278  presence=optional  
-	int			MDEntryIDLength;
-	char*		Symbol;			// id=55  presence=optional  
-	int			SymbolLength;
-	INT32		RptSeq;			// id=83  presence=optional  
-	UINT32		MDEntryDate;			// id=272  presence=optional  
-	UINT32		MDEntryTime;			// id=273  presence=optional  
-	UINT32		OrigTime;			// id=9412  presence=optional  
-	Decimal		MDEntryPx;			// id=270  presence=optional  
-	Decimal		MDEntrySize;			// id=271  presence=optional  
-	char*		DealNumber;			// id=9885  presence=optional    copy
-	int			DealNumberLength;
-	char*		PrevDealNumber; // copy
-	int			PrevDealNumberLength; // copy
-	char*		OrderStatus;			// id=10505  presence=optional  
-	int			OrderStatusLength;
-	char*		TradingSessionID;			// id=336  presence=optional  
-	int			TradingSessionIDLength;
-	char*		TradingSessionSubID;			// id=625  presence=optional  
-	int			TradingSessionSubIDLength;
+	UINT							PresenceMap[1];
+	UINT32							MDUpdateAction;			// id=279  presence=optional  
+	bool							AllowMDUpdateAction;
+	char*							MDEntryType;			// id=269  presence=optional  
+	int							MDEntryTypeLength;
+	bool							AllowMDEntryType;
+	char*							MDEntryID;			// id=278  presence=optional  
+	int							MDEntryIDLength;
+	bool							AllowMDEntryID;
+	char*							Symbol;			// id=55  presence=optional  
+	int							SymbolLength;
+	bool							AllowSymbol;
+	INT32							RptSeq;			// id=83  presence=optional  
+	bool							AllowRptSeq;
+	UINT32							MDEntryDate;			// id=272  presence=optional  
+	bool							AllowMDEntryDate;
+	UINT32							MDEntryTime;			// id=273  presence=optional  
+	bool							AllowMDEntryTime;
+	UINT32							OrigTime;			// id=9412  presence=optional  
+	bool							AllowOrigTime;
+	Decimal							MDEntryPx;			// id=270  presence=optional  
+	bool							AllowMDEntryPx;
+	Decimal							MDEntrySize;			// id=271  presence=optional  
+	bool							AllowMDEntrySize;
+	char*							DealNumber;			// id=9885  presence=optional    copy
+	int							DealNumberLength;
+	char*							PrevDealNumber; // copy
+	int							PrevDealNumberLength; // copy
+	bool							AllowDealNumber;
+	const int							DealNumberPresenceIndex = PRESENCE_MAP_INDEX0;
+	char*							OrderStatus;			// id=10505  presence=optional  
+	int							OrderStatusLength;
+	bool							AllowOrderStatus;
+	char*							TradingSessionID;			// id=336  presence=optional  
+	int							TradingSessionIDLength;
+	bool							AllowTradingSessionID;
+	char*							TradingSessionSubID;			// id=625  presence=optional  
+	int							TradingSessionSubIDLength;
+	bool							AllowTradingSessionSubID;
 }FastMarketDataIncrementalRefreshOLRCURRGroupMDEntriesItemInfo;
 
 typedef struct _FastMarketDataIncrementalRefreshOBRFONDGroupMDEntriesItemInfo {
-	int			PresenceMap[1];
-	UINT32		MDUpdateAction;			// id=279  presence=optional  
-	char*		MDEntryType;			// id=269  presence=optional  
-	int			MDEntryTypeLength;
-	char*		MDEntryID;			// id=278  presence=optional  
-	int			MDEntryIDLength;
-	char*		Symbol;			// id=55  presence=optional  
-	int			SymbolLength;
-	INT32		RptSeq;			// id=83  presence=optional  
-	Decimal		MDEntryPx;			// id=270  presence=optional  
-	Decimal		MDEntrySize;			// id=271  presence=optional  
-	UINT32		MDEntryTime;			// id=273  presence=optional  
-	UINT32		OrigTime;			// id=9412  presence=optional  
-	Decimal		Yield;			// id=236  presence=optional  
-	UINT32		EffectiveTime;			// id=5902  presence=optional  
-	Decimal		NominalValue;			// id=9280  presence=optional  
-	char*		TradingSessionID;			// id=336  presence=optional  
-	int			TradingSessionIDLength;
-	char*		TradingSessionSubID;			// id=625  presence=optional  
-	int			TradingSessionSubIDLength;
+	UINT							PresenceMap[1];
+	UINT32							MDUpdateAction;			// id=279  presence=optional  
+	bool							AllowMDUpdateAction;
+	char*							MDEntryType;			// id=269  presence=optional  
+	int							MDEntryTypeLength;
+	bool							AllowMDEntryType;
+	char*							MDEntryID;			// id=278  presence=optional  
+	int							MDEntryIDLength;
+	bool							AllowMDEntryID;
+	char*							Symbol;			// id=55  presence=optional  
+	int							SymbolLength;
+	bool							AllowSymbol;
+	INT32							RptSeq;			// id=83  presence=optional  
+	bool							AllowRptSeq;
+	Decimal							MDEntryPx;			// id=270  presence=optional  
+	bool							AllowMDEntryPx;
+	Decimal							MDEntrySize;			// id=271  presence=optional  
+	bool							AllowMDEntrySize;
+	UINT32							MDEntryTime;			// id=273  presence=optional  
+	bool							AllowMDEntryTime;
+	UINT32							OrigTime;			// id=9412  presence=optional  
+	bool							AllowOrigTime;
+	Decimal							Yield;			// id=236  presence=optional  
+	bool							AllowYield;
+	UINT32							EffectiveTime;			// id=5902  presence=optional  
+	bool							AllowEffectiveTime;
+	Decimal							NominalValue;			// id=9280  presence=optional  
+	bool							AllowNominalValue;
+	char*							TradingSessionID;			// id=336  presence=optional  
+	int							TradingSessionIDLength;
+	bool							AllowTradingSessionID;
+	char*							TradingSessionSubID;			// id=625  presence=optional  
+	int							TradingSessionSubIDLength;
+	bool							AllowTradingSessionSubID;
 }FastMarketDataIncrementalRefreshOBRFONDGroupMDEntriesItemInfo;
 
 typedef struct _FastMarketDataIncrementalRefreshOBRCURRGroupMDEntriesItemInfo {
-	int			PresenceMap[1];
-	UINT32		MDUpdateAction;			// id=279  presence=optional  
-	char*		MDEntryType;			// id=269  presence=optional  
-	int			MDEntryTypeLength;
-	char*		MDEntryID;			// id=278  presence=optional  
-	int			MDEntryIDLength;
-	char*		Symbol;			// id=55  presence=optional  
-	int			SymbolLength;
-	INT32		RptSeq;			// id=83  presence=optional  
-	Decimal		MDEntryPx;			// id=270  presence=optional  
-	Decimal		MDEntrySize;			// id=271  presence=optional  
-	UINT32		MDEntryTime;			// id=273  presence=optional  
-	UINT32		OrigTime;			// id=9412  presence=optional  
-	char*		TradingSessionID;			// id=336  presence=optional  
-	int			TradingSessionIDLength;
-	char*		TradingSessionSubID;			// id=625  presence=optional  
-	int			TradingSessionSubIDLength;
+	UINT							PresenceMap[1];
+	UINT32							MDUpdateAction;			// id=279  presence=optional  
+	bool							AllowMDUpdateAction;
+	char*							MDEntryType;			// id=269  presence=optional  
+	int							MDEntryTypeLength;
+	bool							AllowMDEntryType;
+	char*							MDEntryID;			// id=278  presence=optional  
+	int							MDEntryIDLength;
+	bool							AllowMDEntryID;
+	char*							Symbol;			// id=55  presence=optional  
+	int							SymbolLength;
+	bool							AllowSymbol;
+	INT32							RptSeq;			// id=83  presence=optional  
+	bool							AllowRptSeq;
+	Decimal							MDEntryPx;			// id=270  presence=optional  
+	bool							AllowMDEntryPx;
+	Decimal							MDEntrySize;			// id=271  presence=optional  
+	bool							AllowMDEntrySize;
+	UINT32							MDEntryTime;			// id=273  presence=optional  
+	bool							AllowMDEntryTime;
+	UINT32							OrigTime;			// id=9412  presence=optional  
+	bool							AllowOrigTime;
+	char*							TradingSessionID;			// id=336  presence=optional  
+	int							TradingSessionIDLength;
+	bool							AllowTradingSessionID;
+	char*							TradingSessionSubID;			// id=625  presence=optional  
+	int							TradingSessionSubIDLength;
+	bool							AllowTradingSessionSubID;
 }FastMarketDataIncrementalRefreshOBRCURRGroupMDEntriesItemInfo;
 
 typedef struct _FastMarketDataIncrementalRefreshTLRFONDGroupMDEntriesItemInfo {
-	int			PresenceMap[1];
-	UINT32		MDUpdateAction;			// id=279  presence=optional  
-	char*		MDEntryType;			// id=269  
-	int			MDEntryTypeLength;
-	char*		MDEntryID;			// id=278  presence=optional  
-	int			MDEntryIDLength;
-	char*		Symbol;			// id=55  presence=optional  
-	int			SymbolLength;
-	INT32		RptSeq;			// id=83  presence=optional  
-	UINT32		MDEntryDate;			// id=272  presence=optional  
-	UINT32		MDEntryTime;			// id=273  presence=optional  
-	UINT32		OrigTime;			// id=9412  presence=optional  
-	char*		OrderSide;			// id=10504  presence=optional  
-	int			OrderSideLength;
-	Decimal		MDEntryPx;			// id=270  presence=optional  
-	Decimal		MDEntrySize;			// id=271  presence=optional  
-	Decimal		AccruedInterestAmt;			// id=5384  presence=optional  
-	Decimal		TradeValue;			// id=6143  presence=optional  
-	Decimal		Yield;			// id=236  presence=optional  
-	UINT32		SettlDate;			// id=64  presence=optional  
-	char*		SettleType;			// id=5459  presence=optional  
-	int			SettleTypeLength;
-	Decimal		Price;			// id=44  presence=optional  
-	INT32		PriceType;			// id=423  presence=optional  
-	Decimal		RepoToPx;			// id=5677  presence=optional  
-	Decimal		BuyBackPx;			// id=5558  presence=optional  
-	UINT32		BuyBackDate;			// id=5559  presence=optional  
-	char*		TradingSessionID;			// id=336  presence=optional  
-	int			TradingSessionIDLength;
-	char*		TradingSessionSubID;			// id=625  presence=optional  
-	int			TradingSessionSubIDLength;
+	UINT							PresenceMap[1];
+	UINT32							MDUpdateAction;			// id=279  presence=optional  
+	bool							AllowMDUpdateAction;
+	char*							MDEntryType;			// id=269  
+	int							MDEntryTypeLength;
+	char*							MDEntryID;			// id=278  presence=optional  
+	int							MDEntryIDLength;
+	bool							AllowMDEntryID;
+	char*							Symbol;			// id=55  presence=optional  
+	int							SymbolLength;
+	bool							AllowSymbol;
+	INT32							RptSeq;			// id=83  presence=optional  
+	bool							AllowRptSeq;
+	UINT32							MDEntryDate;			// id=272  presence=optional  
+	bool							AllowMDEntryDate;
+	UINT32							MDEntryTime;			// id=273  presence=optional  
+	bool							AllowMDEntryTime;
+	UINT32							OrigTime;			// id=9412  presence=optional  
+	bool							AllowOrigTime;
+	char*							OrderSide;			// id=10504  presence=optional  
+	int							OrderSideLength;
+	bool							AllowOrderSide;
+	Decimal							MDEntryPx;			// id=270  presence=optional  
+	bool							AllowMDEntryPx;
+	Decimal							MDEntrySize;			// id=271  presence=optional  
+	bool							AllowMDEntrySize;
+	Decimal							AccruedInterestAmt;			// id=5384  presence=optional  
+	bool							AllowAccruedInterestAmt;
+	Decimal							TradeValue;			// id=6143  presence=optional  
+	bool							AllowTradeValue;
+	Decimal							Yield;			// id=236  presence=optional  
+	bool							AllowYield;
+	UINT32							SettlDate;			// id=64  presence=optional  
+	bool							AllowSettlDate;
+	char*							SettleType;			// id=5459  presence=optional  
+	int							SettleTypeLength;
+	bool							AllowSettleType;
+	Decimal							Price;			// id=44  presence=optional  
+	bool							AllowPrice;
+	INT32							PriceType;			// id=423  presence=optional  
+	bool							AllowPriceType;
+	Decimal							RepoToPx;			// id=5677  presence=optional  
+	bool							AllowRepoToPx;
+	Decimal							BuyBackPx;			// id=5558  presence=optional  
+	bool							AllowBuyBackPx;
+	UINT32							BuyBackDate;			// id=5559  presence=optional  
+	bool							AllowBuyBackDate;
+	char*							TradingSessionID;			// id=336  presence=optional  
+	int							TradingSessionIDLength;
+	bool							AllowTradingSessionID;
+	char*							TradingSessionSubID;			// id=625  presence=optional  
+	int							TradingSessionSubIDLength;
+	bool							AllowTradingSessionSubID;
 }FastMarketDataIncrementalRefreshTLRFONDGroupMDEntriesItemInfo;
 
 typedef struct _FastMarketDataIncrementalRefreshTLRCURRGroupMDEntriesItemInfo {
-	int			PresenceMap[1];
-	UINT32		MDUpdateAction;			// id=279  presence=optional  
-	char*		MDEntryType;			// id=269  
-	int			MDEntryTypeLength;
-	char*		MDEntryID;			// id=278  presence=optional  
-	int			MDEntryIDLength;
-	char*		Symbol;			// id=55  presence=optional  
-	int			SymbolLength;
-	INT32		RptSeq;			// id=83  presence=optional  
-	UINT32		MDEntryDate;			// id=272  presence=optional  
-	UINT32		MDEntryTime;			// id=273  presence=optional  
-	UINT32		OrigTime;			// id=9412  presence=optional  
-	char*		OrderSide;			// id=10504  presence=optional  
-	int			OrderSideLength;
-	Decimal		MDEntryPx;			// id=270  presence=optional  
-	Decimal		MDEntrySize;			// id=271  presence=optional  
-	Decimal		TradeValue;			// id=6143  presence=optional  
-	UINT32		SettlDate;			// id=64  presence=optional  
-	char*		SettleType;			// id=5459  presence=optional  
-	int			SettleTypeLength;
-	Decimal		Price;			// id=44  presence=optional  
-	INT32		PriceType;			// id=423  presence=optional  
-	Decimal		RepoToPx;			// id=5677  presence=optional  
-	Decimal		BuyBackPx;			// id=5558  presence=optional  
-	UINT32		BuyBackDate;			// id=5559  presence=optional  
-	char*		TradingSessionID;			// id=336  presence=optional  
-	int			TradingSessionIDLength;
-	char*		TradingSessionSubID;			// id=625  presence=optional  
-	int			TradingSessionSubIDLength;
+	UINT							PresenceMap[1];
+	UINT32							MDUpdateAction;			// id=279  presence=optional  
+	bool							AllowMDUpdateAction;
+	char*							MDEntryType;			// id=269  
+	int							MDEntryTypeLength;
+	char*							MDEntryID;			// id=278  presence=optional  
+	int							MDEntryIDLength;
+	bool							AllowMDEntryID;
+	char*							Symbol;			// id=55  presence=optional  
+	int							SymbolLength;
+	bool							AllowSymbol;
+	INT32							RptSeq;			// id=83  presence=optional  
+	bool							AllowRptSeq;
+	UINT32							MDEntryDate;			// id=272  presence=optional  
+	bool							AllowMDEntryDate;
+	UINT32							MDEntryTime;			// id=273  presence=optional  
+	bool							AllowMDEntryTime;
+	UINT32							OrigTime;			// id=9412  presence=optional  
+	bool							AllowOrigTime;
+	char*							OrderSide;			// id=10504  presence=optional  
+	int							OrderSideLength;
+	bool							AllowOrderSide;
+	Decimal							MDEntryPx;			// id=270  presence=optional  
+	bool							AllowMDEntryPx;
+	Decimal							MDEntrySize;			// id=271  presence=optional  
+	bool							AllowMDEntrySize;
+	Decimal							TradeValue;			// id=6143  presence=optional  
+	bool							AllowTradeValue;
+	UINT32							SettlDate;			// id=64  presence=optional  
+	bool							AllowSettlDate;
+	char*							SettleType;			// id=5459  presence=optional  
+	int							SettleTypeLength;
+	bool							AllowSettleType;
+	Decimal							Price;			// id=44  presence=optional  
+	bool							AllowPrice;
+	INT32							PriceType;			// id=423  presence=optional  
+	bool							AllowPriceType;
+	Decimal							RepoToPx;			// id=5677  presence=optional  
+	bool							AllowRepoToPx;
+	Decimal							BuyBackPx;			// id=5558  presence=optional  
+	bool							AllowBuyBackPx;
+	UINT32							BuyBackDate;			// id=5559  presence=optional  
+	bool							AllowBuyBackDate;
+	char*							TradingSessionID;			// id=336  presence=optional  
+	int							TradingSessionIDLength;
+	bool							AllowTradingSessionID;
+	char*							TradingSessionSubID;			// id=625  presence=optional  
+	int							TradingSessionSubIDLength;
+	bool							AllowTradingSessionSubID;
 }FastMarketDataIncrementalRefreshTLRCURRGroupMDEntriesItemInfo;
 
 typedef struct _FastSecurityDefinitionGroupInstrAttribItemInfo {
-	int			PresenceMap[1];
-	INT32		InstrAttribType;			// id=871  
-	BYTE*		InstrAttribValue;			// id=872  presence=optional  
-	int			InstrAttribValueLength;
+	UINT							PresenceMap[1];
+	INT32							InstrAttribType;			// id=871  
+	BYTE*							InstrAttribValue;			// id=872  presence=optional  
+	int							InstrAttribValueLength;
+	bool							AllowInstrAttribValue;
 }FastSecurityDefinitionGroupInstrAttribItemInfo;
 
 typedef struct _FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo {
-	int			PresenceMap[1];
-	char*		TradingSessionID;			// id=336  
-	int			TradingSessionIDLength;
-	char*		TradingSessionSubID;			// id=625  presence=optional  
-	int			TradingSessionSubIDLength;
-	INT32		SecurityTradingStatus;			// id=326  presence=optional  
-	INT32		OrderNote;			// id=9680  presence=optional  
+	UINT							PresenceMap[1];
+	char*							TradingSessionID;			// id=336  
+	int							TradingSessionIDLength;
+	char*							TradingSessionSubID;			// id=625  presence=optional  
+	int							TradingSessionSubIDLength;
+	bool							AllowTradingSessionSubID;
+	INT32							SecurityTradingStatus;			// id=326  presence=optional  
+	bool							AllowSecurityTradingStatus;
+	INT32							OrderNote;			// id=9680  presence=optional  
+	bool							AllowOrderNote;
 }FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo;
 
 typedef struct _FastSecurityDefinitionMarketSegmentGrpItemInfo {
-	int			PresenceMap[1];
-	Decimal		RoundLot;			// id=561  presence=optional  
-	int			TradingSessionRulesGrpCount;			// presence=optional  
+	UINT							PresenceMap[1];
+	Decimal							RoundLot;			// id=561  presence=optional  
+	bool							AllowRoundLot;
+	int							TradingSessionRulesGrpCount;			// presence=optional  
 	FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo** TradingSessionRulesGrp;			// presence=optional  
+	bool							AllowTradingSessionRulesGrp;
 }FastSecurityDefinitionMarketSegmentGrpItemInfo;
 
 typedef struct _FastLogonInfo {
-	int			PresenceMap[1];
-	char*		MessageType;			// id=35    constant has constant value = A
-	int			MessageTypeLength;
-	char*		BeginString;			// id=8    constant has constant value = FIXT.1.1
-	int			BeginStringLength;
-	char*		SenderCompID;			// id=49    constant has constant value = MOEX
-	int			SenderCompIDLength;
-	char*		TargetCompID;			// id=56  
-	int			TargetCompIDLength;
-	UINT32		MsgSeqNum;			// id=34  
-	UINT64		SendingTime;			// id=52  
-	INT32		HeartBtInt;			// id=108  
-	char*		Username;			// id=553  presence=optional  
-	int			UsernameLength;
-	char*		Password;			// id=554  presence=optional  
-	int			PasswordLength;
-	char*		DefaultApplVerID;			// id=1137  
-	int			DefaultApplVerIDLength;
+	UINT							PresenceMap[1];
+	char*							MessageType;			// id=35    constant has constant value = A
+	int							MessageTypeLength;
+	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
+	int							BeginStringLength;
+	char*							SenderCompID;			// id=49    constant has constant value = MOEX
+	int							SenderCompIDLength;
+	char*							TargetCompID;			// id=56  
+	int							TargetCompIDLength;
+	UINT32							MsgSeqNum;			// id=34  
+	UINT64							SendingTime;			// id=52  
+	INT32							HeartBtInt;			// id=108  
+	char*							Username;			// id=553  presence=optional  
+	int							UsernameLength;
+	bool							AllowUsername;
+	char*							Password;			// id=554  presence=optional  
+	int							PasswordLength;
+	bool							AllowPassword;
+	char*							DefaultApplVerID;			// id=1137  
+	int							DefaultApplVerIDLength;
 }FastLogonInfo;
 
 typedef struct _FastLogoutInfo {
-	int			PresenceMap[1];
-	char*		MessageType;			// id=35    constant has constant value = 5
-	int			MessageTypeLength;
-	char*		BeginString;			// id=8    constant has constant value = FIXT.1.1
-	int			BeginStringLength;
-	char*		SenderCompID;			// id=49    constant has constant value = MOEX
-	int			SenderCompIDLength;
-	char*		TargetCompID;			// id=56  
-	int			TargetCompIDLength;
-	UINT32		MsgSeqNum;			// id=34  
-	UINT64		SendingTime;			// id=52  
-	char*		Text;			// id=58  presence=optional  
-	int			TextLength;
+	UINT							PresenceMap[1];
+	char*							MessageType;			// id=35    constant has constant value = 5
+	int							MessageTypeLength;
+	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
+	int							BeginStringLength;
+	char*							SenderCompID;			// id=49    constant has constant value = MOEX
+	int							SenderCompIDLength;
+	char*							TargetCompID;			// id=56  
+	int							TargetCompIDLength;
+	UINT32							MsgSeqNum;			// id=34  
+	UINT64							SendingTime;			// id=52  
+	char*							Text;			// id=58  presence=optional  
+	int							TextLength;
+	bool							AllowText;
 }FastLogoutInfo;
 
 typedef struct _FastMarketDataSnapshotFullRefreshGenericInfo {
-	int			PresenceMap[1];
-	char*		MessageType;			// id=35    constant has constant value = W
-	int			MessageTypeLength;
-	char*		BeginString;			// id=8    constant has constant value = FIXT.1.1
-	int			BeginStringLength;
-	char*		ApplVerID;			// id=1128    constant has constant value = 9
-	int			ApplVerIDLength;
-	char*		SenderCompID;			// id=49    constant has constant value = MOEX
-	int			SenderCompIDLength;
-	UINT32		MsgSeqNum;			// id=34  
-	UINT64		SendingTime;			// id=52  
-	char*		TradingSessionID;			// id=336  presence=optional  
-	int			TradingSessionIDLength;
-	char*		Symbol;			// id=55  
-	int			SymbolLength;
-	UINT32		LastMsgSeqNumProcessed;			// id=369  presence=optional  
-	INT32		RptSeq;			// id=83  
-	UINT32		LastFragment;			// id=893  presence=optional  
-	UINT32		RouteFirst;			// id=7944  presence=optional  
-	INT32		TradSesStatus;			// id=340  presence=optional  
-	INT32		MDSecurityTradingStatus;			// id=1682  presence=optional  
-	UINT32		AuctionIndicator;			// id=5509  presence=optional  
-	Decimal		NetChgPrevDay;			// id=451  presence=optional  
-	int			GroupMDEntriesCount;
+	UINT							PresenceMap[1];
+	char*							MessageType;			// id=35    constant has constant value = W
+	int							MessageTypeLength;
+	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
+	int							BeginStringLength;
+	char*							ApplVerID;			// id=1128    constant has constant value = 9
+	int							ApplVerIDLength;
+	char*							SenderCompID;			// id=49    constant has constant value = MOEX
+	int							SenderCompIDLength;
+	UINT32							MsgSeqNum;			// id=34  
+	UINT64							SendingTime;			// id=52  
+	char*							TradingSessionID;			// id=336  presence=optional  
+	int							TradingSessionIDLength;
+	bool							AllowTradingSessionID;
+	char*							Symbol;			// id=55  
+	int							SymbolLength;
+	UINT32							LastMsgSeqNumProcessed;			// id=369  presence=optional  
+	bool							AllowLastMsgSeqNumProcessed;
+	INT32							RptSeq;			// id=83  
+	UINT32							LastFragment;			// id=893  presence=optional  
+	bool							AllowLastFragment;
+	UINT32							RouteFirst;			// id=7944  presence=optional  
+	bool							AllowRouteFirst;
+	INT32							TradSesStatus;			// id=340  presence=optional  
+	bool							AllowTradSesStatus;
+	INT32							MDSecurityTradingStatus;			// id=1682  presence=optional  
+	bool							AllowMDSecurityTradingStatus;
+	UINT32							AuctionIndicator;			// id=5509  presence=optional  
+	bool							AllowAuctionIndicator;
+	Decimal							NetChgPrevDay;			// id=451  presence=optional  
+	bool							AllowNetChgPrevDay;
+	int							GroupMDEntriesCount;
 	FastMarketDataSnapshotFullRefreshGenericGroupMDEntriesItemInfo** GroupMDEntries;
 }FastMarketDataSnapshotFullRefreshGenericInfo;
 
 typedef struct _FastMarketDataIncrementalRefreshGenericInfo {
-	int			PresenceMap[1];
-	char*		MessageType;			// id=35    constant has constant value = X
-	int			MessageTypeLength;
-	char*		ApplVerID;			// id=1128    constant has constant value = 9
-	int			ApplVerIDLength;
-	char*		BeginString;			// id=8    constant has constant value = FIXT.1.1
-	int			BeginStringLength;
-	char*		SenderCompID;			// id=49    constant has constant value = MOEX
-	int			SenderCompIDLength;
-	UINT32		MsgSeqNum;			// id=34  
-	UINT64		SendingTime;			// id=52  
-	int			GroupMDEntriesCount;
+	UINT							PresenceMap[1];
+	char*							MessageType;			// id=35    constant has constant value = X
+	int							MessageTypeLength;
+	char*							ApplVerID;			// id=1128    constant has constant value = 9
+	int							ApplVerIDLength;
+	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
+	int							BeginStringLength;
+	char*							SenderCompID;			// id=49    constant has constant value = MOEX
+	int							SenderCompIDLength;
+	UINT32							MsgSeqNum;			// id=34  
+	UINT64							SendingTime;			// id=52  
+	int							GroupMDEntriesCount;
 	FastMarketDataIncrementalRefreshGenericGroupMDEntriesItemInfo** GroupMDEntries;
 }FastMarketDataIncrementalRefreshGenericInfo;
 
 typedef struct _FastMarketDataSnapshotFullRefreshOLSFONDInfo {
-	int			PresenceMap[1];
-	char*		MessageType;			// id=35    constant has constant value = W
-	int			MessageTypeLength;
-	char*		BeginString;			// id=8    constant has constant value = FIXT.1.1
-	int			BeginStringLength;
-	char*		ApplVerID;			// id=1128    constant has constant value = 9
-	int			ApplVerIDLength;
-	char*		SenderCompID;			// id=49    constant has constant value = MOEX
-	int			SenderCompIDLength;
-	UINT32		MsgSeqNum;			// id=34  
-	UINT64		SendingTime;			// id=52  
-	UINT32		LastMsgSeqNumProcessed;			// id=369  presence=optional  
-	INT32		RptSeq;			// id=83  
-	UINT32		LastFragment;			// id=893  presence=optional  
-	UINT32		RouteFirst;			// id=7944  presence=optional  
-	INT32		TradSesStatus;			// id=340  presence=optional  
-	char*		TradingSessionID;			// id=336  presence=optional  
-	int			TradingSessionIDLength;
-	char*		Symbol;			// id=55  
-	int			SymbolLength;
-	INT32		MDSecurityTradingStatus;			// id=1682  presence=optional  
-	UINT32		AuctionIndicator;			// id=5509  presence=optional  
-	int			GroupMDEntriesCount;
+	UINT							PresenceMap[1];
+	char*							MessageType;			// id=35    constant has constant value = W
+	int							MessageTypeLength;
+	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
+	int							BeginStringLength;
+	char*							ApplVerID;			// id=1128    constant has constant value = 9
+	int							ApplVerIDLength;
+	char*							SenderCompID;			// id=49    constant has constant value = MOEX
+	int							SenderCompIDLength;
+	UINT32							MsgSeqNum;			// id=34  
+	UINT64							SendingTime;			// id=52  
+	UINT32							LastMsgSeqNumProcessed;			// id=369  presence=optional  
+	bool							AllowLastMsgSeqNumProcessed;
+	INT32							RptSeq;			// id=83  
+	UINT32							LastFragment;			// id=893  presence=optional  
+	bool							AllowLastFragment;
+	UINT32							RouteFirst;			// id=7944  presence=optional  
+	bool							AllowRouteFirst;
+	INT32							TradSesStatus;			// id=340  presence=optional  
+	bool							AllowTradSesStatus;
+	char*							TradingSessionID;			// id=336  presence=optional  
+	int							TradingSessionIDLength;
+	bool							AllowTradingSessionID;
+	char*							Symbol;			// id=55  
+	int							SymbolLength;
+	INT32							MDSecurityTradingStatus;			// id=1682  presence=optional  
+	bool							AllowMDSecurityTradingStatus;
+	UINT32							AuctionIndicator;			// id=5509  presence=optional  
+	bool							AllowAuctionIndicator;
+	int							GroupMDEntriesCount;
 	FastMarketDataSnapshotFullRefreshOLSFONDGroupMDEntriesItemInfo** GroupMDEntries;
 }FastMarketDataSnapshotFullRefreshOLSFONDInfo;
 
 typedef struct _FastMarketDataSnapshotFullRefreshOLSCURRInfo {
-	int			PresenceMap[1];
-	char*		MessageType;			// id=35    constant has constant value = W
-	int			MessageTypeLength;
-	char*		BeginString;			// id=8    constant has constant value = FIXT.1.1
-	int			BeginStringLength;
-	char*		ApplVerID;			// id=1128    constant has constant value = 9
-	int			ApplVerIDLength;
-	char*		SenderCompID;			// id=49    constant has constant value = MOEX
-	int			SenderCompIDLength;
-	UINT32		MsgSeqNum;			// id=34  
-	UINT64		SendingTime;			// id=52  
-	UINT32		LastMsgSeqNumProcessed;			// id=369  presence=optional  
-	INT32		RptSeq;			// id=83  
-	UINT32		LastFragment;			// id=893  presence=optional  
-	UINT32		RouteFirst;			// id=7944  presence=optional  
-	INT32		TradSesStatus;			// id=340  presence=optional  
-	char*		TradingSessionID;			// id=336  presence=optional  
-	int			TradingSessionIDLength;
-	char*		Symbol;			// id=55  
-	int			SymbolLength;
-	INT32		MDSecurityTradingStatus;			// id=1682  presence=optional  
-	int			GroupMDEntriesCount;
+	UINT							PresenceMap[1];
+	char*							MessageType;			// id=35    constant has constant value = W
+	int							MessageTypeLength;
+	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
+	int							BeginStringLength;
+	char*							ApplVerID;			// id=1128    constant has constant value = 9
+	int							ApplVerIDLength;
+	char*							SenderCompID;			// id=49    constant has constant value = MOEX
+	int							SenderCompIDLength;
+	UINT32							MsgSeqNum;			// id=34  
+	UINT64							SendingTime;			// id=52  
+	UINT32							LastMsgSeqNumProcessed;			// id=369  presence=optional  
+	bool							AllowLastMsgSeqNumProcessed;
+	INT32							RptSeq;			// id=83  
+	UINT32							LastFragment;			// id=893  presence=optional  
+	bool							AllowLastFragment;
+	UINT32							RouteFirst;			// id=7944  presence=optional  
+	bool							AllowRouteFirst;
+	INT32							TradSesStatus;			// id=340  presence=optional  
+	bool							AllowTradSesStatus;
+	char*							TradingSessionID;			// id=336  presence=optional  
+	int							TradingSessionIDLength;
+	bool							AllowTradingSessionID;
+	char*							Symbol;			// id=55  
+	int							SymbolLength;
+	INT32							MDSecurityTradingStatus;			// id=1682  presence=optional  
+	bool							AllowMDSecurityTradingStatus;
+	int							GroupMDEntriesCount;
 	FastMarketDataSnapshotFullRefreshOLSCURRGroupMDEntriesItemInfo** GroupMDEntries;
 }FastMarketDataSnapshotFullRefreshOLSCURRInfo;
 
 typedef struct _FastMarketDataSnapshotFullRefreshTLSFONDInfo {
-	int			PresenceMap[1];
-	char*		MessageType;			// id=35    constant has constant value = W
-	int			MessageTypeLength;
-	char*		BeginString;			// id=8    constant has constant value = FIXT.1.1
-	int			BeginStringLength;
-	char*		ApplVerID;			// id=1128    constant has constant value = 9
-	int			ApplVerIDLength;
-	char*		SenderCompID;			// id=49    constant has constant value = MOEX
-	int			SenderCompIDLength;
-	UINT32		MsgSeqNum;			// id=34  
-	UINT64		SendingTime;			// id=52  
-	UINT32		LastMsgSeqNumProcessed;			// id=369  presence=optional  
-	INT32		RptSeq;			// id=83  
-	UINT32		LastFragment;			// id=893  presence=optional  
-	UINT32		RouteFirst;			// id=7944  presence=optional  
-	INT32		TradSesStatus;			// id=340  presence=optional  
-	char*		TradingSessionID;			// id=336  presence=optional  
-	int			TradingSessionIDLength;
-	char*		Symbol;			// id=55  
-	int			SymbolLength;
-	INT32		MDSecurityTradingStatus;			// id=1682  presence=optional  
-	UINT32		AuctionIndicator;			// id=5509  presence=optional  
-	int			GroupMDEntriesCount;
+	UINT							PresenceMap[1];
+	char*							MessageType;			// id=35    constant has constant value = W
+	int							MessageTypeLength;
+	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
+	int							BeginStringLength;
+	char*							ApplVerID;			// id=1128    constant has constant value = 9
+	int							ApplVerIDLength;
+	char*							SenderCompID;			// id=49    constant has constant value = MOEX
+	int							SenderCompIDLength;
+	UINT32							MsgSeqNum;			// id=34  
+	UINT64							SendingTime;			// id=52  
+	UINT32							LastMsgSeqNumProcessed;			// id=369  presence=optional  
+	bool							AllowLastMsgSeqNumProcessed;
+	INT32							RptSeq;			// id=83  
+	UINT32							LastFragment;			// id=893  presence=optional  
+	bool							AllowLastFragment;
+	UINT32							RouteFirst;			// id=7944  presence=optional  
+	bool							AllowRouteFirst;
+	INT32							TradSesStatus;			// id=340  presence=optional  
+	bool							AllowTradSesStatus;
+	char*							TradingSessionID;			// id=336  presence=optional  
+	int							TradingSessionIDLength;
+	bool							AllowTradingSessionID;
+	char*							Symbol;			// id=55  
+	int							SymbolLength;
+	INT32							MDSecurityTradingStatus;			// id=1682  presence=optional  
+	bool							AllowMDSecurityTradingStatus;
+	UINT32							AuctionIndicator;			// id=5509  presence=optional  
+	bool							AllowAuctionIndicator;
+	int							GroupMDEntriesCount;
 	FastMarketDataSnapshotFullRefreshTLSFONDGroupMDEntriesItemInfo** GroupMDEntries;
 }FastMarketDataSnapshotFullRefreshTLSFONDInfo;
 
 typedef struct _FastMarketDataSnapshotFullRefreshTLSCURRInfo {
-	int			PresenceMap[1];
-	char*		MessageType;			// id=35    constant has constant value = W
-	int			MessageTypeLength;
-	char*		BeginString;			// id=8    constant has constant value = FIXT.1.1
-	int			BeginStringLength;
-	char*		ApplVerID;			// id=1128    constant has constant value = 9
-	int			ApplVerIDLength;
-	char*		SenderCompID;			// id=49    constant has constant value = MOEX
-	int			SenderCompIDLength;
-	UINT32		MsgSeqNum;			// id=34  
-	UINT64		SendingTime;			// id=52  
-	UINT32		LastMsgSeqNumProcessed;			// id=369  presence=optional  
-	INT32		RptSeq;			// id=83  
-	UINT32		LastFragment;			// id=893  presence=optional  
-	UINT32		RouteFirst;			// id=7944  presence=optional  
-	INT32		TradSesStatus;			// id=340  presence=optional  
-	char*		TradingSessionID;			// id=336  presence=optional  
-	int			TradingSessionIDLength;
-	char*		Symbol;			// id=55  
-	int			SymbolLength;
-	INT32		MDSecurityTradingStatus;			// id=1682  presence=optional  
-	int			GroupMDEntriesCount;
+	UINT							PresenceMap[1];
+	char*							MessageType;			// id=35    constant has constant value = W
+	int							MessageTypeLength;
+	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
+	int							BeginStringLength;
+	char*							ApplVerID;			// id=1128    constant has constant value = 9
+	int							ApplVerIDLength;
+	char*							SenderCompID;			// id=49    constant has constant value = MOEX
+	int							SenderCompIDLength;
+	UINT32							MsgSeqNum;			// id=34  
+	UINT64							SendingTime;			// id=52  
+	UINT32							LastMsgSeqNumProcessed;			// id=369  presence=optional  
+	bool							AllowLastMsgSeqNumProcessed;
+	INT32							RptSeq;			// id=83  
+	UINT32							LastFragment;			// id=893  presence=optional  
+	bool							AllowLastFragment;
+	UINT32							RouteFirst;			// id=7944  presence=optional  
+	bool							AllowRouteFirst;
+	INT32							TradSesStatus;			// id=340  presence=optional  
+	bool							AllowTradSesStatus;
+	char*							TradingSessionID;			// id=336  presence=optional  
+	int							TradingSessionIDLength;
+	bool							AllowTradingSessionID;
+	char*							Symbol;			// id=55  
+	int							SymbolLength;
+	INT32							MDSecurityTradingStatus;			// id=1682  presence=optional  
+	bool							AllowMDSecurityTradingStatus;
+	int							GroupMDEntriesCount;
 	FastMarketDataSnapshotFullRefreshTLSCURRGroupMDEntriesItemInfo** GroupMDEntries;
 }FastMarketDataSnapshotFullRefreshTLSCURRInfo;
 
 typedef struct _FastMarketDataSnapshotFullRefreshOBSFONDInfo {
-	int			PresenceMap[1];
-	char*		MessageType;			// id=35    constant has constant value = W
-	int			MessageTypeLength;
-	char*		BeginString;			// id=8    constant has constant value = FIXT.1.1
-	int			BeginStringLength;
-	char*		ApplVerID;			// id=1128    constant has constant value = 9
-	int			ApplVerIDLength;
-	char*		SenderCompID;			// id=49    constant has constant value = MOEX
-	int			SenderCompIDLength;
-	UINT32		MsgSeqNum;			// id=34  
-	UINT64		SendingTime;			// id=52  
-	UINT32		LastMsgSeqNumProcessed;			// id=369  presence=optional  
-	INT32		RptSeq;			// id=83  
-	INT32		TradSesStatus;			// id=340  presence=optional  
-	char*		TradingSessionID;			// id=336  presence=optional  
-	int			TradingSessionIDLength;
-	char*		Symbol;			// id=55  
-	int			SymbolLength;
-	UINT32		LastFragment;			// id=893  presence=optional  
-	UINT32		RouteFirst;			// id=7944  presence=optional  
-	INT32		MDSecurityTradingStatus;			// id=1682  presence=optional  
-	UINT32		AuctionIndicator;			// id=5509  presence=optional  
-	int			GroupMDEntriesCount;
+	UINT							PresenceMap[1];
+	char*							MessageType;			// id=35    constant has constant value = W
+	int							MessageTypeLength;
+	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
+	int							BeginStringLength;
+	char*							ApplVerID;			// id=1128    constant has constant value = 9
+	int							ApplVerIDLength;
+	char*							SenderCompID;			// id=49    constant has constant value = MOEX
+	int							SenderCompIDLength;
+	UINT32							MsgSeqNum;			// id=34  
+	UINT64							SendingTime;			// id=52  
+	UINT32							LastMsgSeqNumProcessed;			// id=369  presence=optional  
+	bool							AllowLastMsgSeqNumProcessed;
+	INT32							RptSeq;			// id=83  
+	INT32							TradSesStatus;			// id=340  presence=optional  
+	bool							AllowTradSesStatus;
+	char*							TradingSessionID;			// id=336  presence=optional  
+	int							TradingSessionIDLength;
+	bool							AllowTradingSessionID;
+	char*							Symbol;			// id=55  
+	int							SymbolLength;
+	UINT32							LastFragment;			// id=893  presence=optional  
+	bool							AllowLastFragment;
+	UINT32							RouteFirst;			// id=7944  presence=optional  
+	bool							AllowRouteFirst;
+	INT32							MDSecurityTradingStatus;			// id=1682  presence=optional  
+	bool							AllowMDSecurityTradingStatus;
+	UINT32							AuctionIndicator;			// id=5509  presence=optional  
+	bool							AllowAuctionIndicator;
+	int							GroupMDEntriesCount;
 	FastMarketDataSnapshotFullRefreshOBSFONDGroupMDEntriesItemInfo** GroupMDEntries;
 }FastMarketDataSnapshotFullRefreshOBSFONDInfo;
 
 typedef struct _FastMarketDataSnapshotFullRefreshOBSCURRInfo {
-	int			PresenceMap[1];
-	char*		MessageType;			// id=35    constant has constant value = W
-	int			MessageTypeLength;
-	char*		BeginString;			// id=8    constant has constant value = FIXT.1.1
-	int			BeginStringLength;
-	char*		ApplVerID;			// id=1128    constant has constant value = 9
-	int			ApplVerIDLength;
-	char*		SenderCompID;			// id=49    constant has constant value = MOEX
-	int			SenderCompIDLength;
-	UINT32		MsgSeqNum;			// id=34  
-	UINT64		SendingTime;			// id=52  
-	UINT32		LastMsgSeqNumProcessed;			// id=369  presence=optional  
-	INT32		RptSeq;			// id=83  
-	INT32		TradSesStatus;			// id=340  presence=optional  
-	char*		TradingSessionID;			// id=336  presence=optional  
-	int			TradingSessionIDLength;
-	char*		Symbol;			// id=55  
-	int			SymbolLength;
-	UINT32		LastFragment;			// id=893  presence=optional  
-	UINT32		RouteFirst;			// id=7944  presence=optional  
-	INT32		MDSecurityTradingStatus;			// id=1682  presence=optional  
-	int			GroupMDEntriesCount;
+	UINT							PresenceMap[1];
+	char*							MessageType;			// id=35    constant has constant value = W
+	int							MessageTypeLength;
+	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
+	int							BeginStringLength;
+	char*							ApplVerID;			// id=1128    constant has constant value = 9
+	int							ApplVerIDLength;
+	char*							SenderCompID;			// id=49    constant has constant value = MOEX
+	int							SenderCompIDLength;
+	UINT32							MsgSeqNum;			// id=34  
+	UINT64							SendingTime;			// id=52  
+	UINT32							LastMsgSeqNumProcessed;			// id=369  presence=optional  
+	bool							AllowLastMsgSeqNumProcessed;
+	INT32							RptSeq;			// id=83  
+	INT32							TradSesStatus;			// id=340  presence=optional  
+	bool							AllowTradSesStatus;
+	char*							TradingSessionID;			// id=336  presence=optional  
+	int							TradingSessionIDLength;
+	bool							AllowTradingSessionID;
+	char*							Symbol;			// id=55  
+	int							SymbolLength;
+	UINT32							LastFragment;			// id=893  presence=optional  
+	bool							AllowLastFragment;
+	UINT32							RouteFirst;			// id=7944  presence=optional  
+	bool							AllowRouteFirst;
+	INT32							MDSecurityTradingStatus;			// id=1682  presence=optional  
+	bool							AllowMDSecurityTradingStatus;
+	int							GroupMDEntriesCount;
 	FastMarketDataSnapshotFullRefreshOBSCURRGroupMDEntriesItemInfo** GroupMDEntries;
 }FastMarketDataSnapshotFullRefreshOBSCURRInfo;
 
 typedef struct _FastMarketDataIncrementalRefreshMSRFONDInfo {
-	int			PresenceMap[1];
-	char*		MessageType;			// id=35    constant has constant value = X
-	int			MessageTypeLength;
-	char*		ApplVerID;			// id=1128    constant has constant value = 9
-	int			ApplVerIDLength;
-	char*		BeginString;			// id=8    constant has constant value = FIXT.1.1
-	int			BeginStringLength;
-	char*		SenderCompID;			// id=49    constant has constant value = MOEX
-	int			SenderCompIDLength;
-	UINT32		MsgSeqNum;			// id=34  
-	UINT64		SendingTime;			// id=52  
-	int			GroupMDEntriesCount;
+	UINT							PresenceMap[1];
+	char*							MessageType;			// id=35    constant has constant value = X
+	int							MessageTypeLength;
+	char*							ApplVerID;			// id=1128    constant has constant value = 9
+	int							ApplVerIDLength;
+	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
+	int							BeginStringLength;
+	char*							SenderCompID;			// id=49    constant has constant value = MOEX
+	int							SenderCompIDLength;
+	UINT32							MsgSeqNum;			// id=34  
+	UINT64							SendingTime;			// id=52  
+	int							GroupMDEntriesCount;
 	FastMarketDataIncrementalRefreshMSRFONDGroupMDEntriesItemInfo** GroupMDEntries;
 }FastMarketDataIncrementalRefreshMSRFONDInfo;
 
 typedef struct _FastMarketDataIncrementalRefreshMSRCURRInfo {
-	int			PresenceMap[1];
-	char*		MessageType;			// id=35    constant has constant value = X
-	int			MessageTypeLength;
-	char*		ApplVerID;			// id=1128    constant has constant value = 9
-	int			ApplVerIDLength;
-	char*		BeginString;			// id=8    constant has constant value = FIXT.1.1
-	int			BeginStringLength;
-	char*		SenderCompID;			// id=49    constant has constant value = MOEX
-	int			SenderCompIDLength;
-	UINT32		MsgSeqNum;			// id=34  
-	UINT64		SendingTime;			// id=52  
-	int			GroupMDEntriesCount;
+	UINT							PresenceMap[1];
+	char*							MessageType;			// id=35    constant has constant value = X
+	int							MessageTypeLength;
+	char*							ApplVerID;			// id=1128    constant has constant value = 9
+	int							ApplVerIDLength;
+	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
+	int							BeginStringLength;
+	char*							SenderCompID;			// id=49    constant has constant value = MOEX
+	int							SenderCompIDLength;
+	UINT32							MsgSeqNum;			// id=34  
+	UINT64							SendingTime;			// id=52  
+	int							GroupMDEntriesCount;
 	FastMarketDataIncrementalRefreshMSRCURRGroupMDEntriesItemInfo** GroupMDEntries;
 }FastMarketDataIncrementalRefreshMSRCURRInfo;
 
 typedef struct _FastMarketDataIncrementalRefreshOLRFONDInfo {
-	int			PresenceMap[1];
-	char*		MessageType;			// id=35    constant has constant value = X
-	int			MessageTypeLength;
-	char*		ApplVerID;			// id=1128    constant has constant value = 9
-	int			ApplVerIDLength;
-	char*		BeginString;			// id=8    constant has constant value = FIXT.1.1
-	int			BeginStringLength;
-	char*		SenderCompID;			// id=49    constant has constant value = MOEX
-	int			SenderCompIDLength;
-	UINT32		MsgSeqNum;			// id=34  
-	UINT64		SendingTime;			// id=52  
-	int			GroupMDEntriesCount;
+	UINT							PresenceMap[1];
+	char*							MessageType;			// id=35    constant has constant value = X
+	int							MessageTypeLength;
+	char*							ApplVerID;			// id=1128    constant has constant value = 9
+	int							ApplVerIDLength;
+	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
+	int							BeginStringLength;
+	char*							SenderCompID;			// id=49    constant has constant value = MOEX
+	int							SenderCompIDLength;
+	UINT32							MsgSeqNum;			// id=34  
+	UINT64							SendingTime;			// id=52  
+	int							GroupMDEntriesCount;
 	FastMarketDataIncrementalRefreshOLRFONDGroupMDEntriesItemInfo** GroupMDEntries;
 }FastMarketDataIncrementalRefreshOLRFONDInfo;
 
 typedef struct _FastMarketDataIncrementalRefreshOLRCURRInfo {
-	int			PresenceMap[1];
-	char*		MessageType;			// id=35    constant has constant value = X
-	int			MessageTypeLength;
-	char*		ApplVerID;			// id=1128    constant has constant value = 9
-	int			ApplVerIDLength;
-	char*		BeginString;			// id=8    constant has constant value = FIXT.1.1
-	int			BeginStringLength;
-	char*		SenderCompID;			// id=49    constant has constant value = MOEX
-	int			SenderCompIDLength;
-	UINT32		MsgSeqNum;			// id=34  
-	UINT64		SendingTime;			// id=52  
-	int			GroupMDEntriesCount;
+	UINT							PresenceMap[1];
+	char*							MessageType;			// id=35    constant has constant value = X
+	int							MessageTypeLength;
+	char*							ApplVerID;			// id=1128    constant has constant value = 9
+	int							ApplVerIDLength;
+	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
+	int							BeginStringLength;
+	char*							SenderCompID;			// id=49    constant has constant value = MOEX
+	int							SenderCompIDLength;
+	UINT32							MsgSeqNum;			// id=34  
+	UINT64							SendingTime;			// id=52  
+	int							GroupMDEntriesCount;
 	FastMarketDataIncrementalRefreshOLRCURRGroupMDEntriesItemInfo** GroupMDEntries;
 }FastMarketDataIncrementalRefreshOLRCURRInfo;
 
 typedef struct _FastMarketDataIncrementalRefreshOBRFONDInfo {
-	int			PresenceMap[1];
-	char*		MessageType;			// id=35    constant has constant value = X
-	int			MessageTypeLength;
-	char*		ApplVerID;			// id=1128    constant has constant value = 9
-	int			ApplVerIDLength;
-	char*		BeginString;			// id=8    constant has constant value = FIXT.1.1
-	int			BeginStringLength;
-	char*		SenderCompID;			// id=49    constant has constant value = MOEX
-	int			SenderCompIDLength;
-	UINT32		MsgSeqNum;			// id=34  
-	UINT64		SendingTime;			// id=52  
-	int			GroupMDEntriesCount;
+	UINT							PresenceMap[1];
+	char*							MessageType;			// id=35    constant has constant value = X
+	int							MessageTypeLength;
+	char*							ApplVerID;			// id=1128    constant has constant value = 9
+	int							ApplVerIDLength;
+	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
+	int							BeginStringLength;
+	char*							SenderCompID;			// id=49    constant has constant value = MOEX
+	int							SenderCompIDLength;
+	UINT32							MsgSeqNum;			// id=34  
+	UINT64							SendingTime;			// id=52  
+	int							GroupMDEntriesCount;
 	FastMarketDataIncrementalRefreshOBRFONDGroupMDEntriesItemInfo** GroupMDEntries;
 }FastMarketDataIncrementalRefreshOBRFONDInfo;
 
 typedef struct _FastMarketDataIncrementalRefreshOBRCURRInfo {
-	int			PresenceMap[1];
-	char*		MessageType;			// id=35    constant has constant value = X
-	int			MessageTypeLength;
-	char*		ApplVerID;			// id=1128    constant has constant value = 9
-	int			ApplVerIDLength;
-	char*		BeginString;			// id=8    constant has constant value = FIXT.1.1
-	int			BeginStringLength;
-	char*		SenderCompID;			// id=49    constant has constant value = MOEX
-	int			SenderCompIDLength;
-	UINT32		MsgSeqNum;			// id=34  
-	UINT64		SendingTime;			// id=52  
-	int			GroupMDEntriesCount;
+	UINT							PresenceMap[1];
+	char*							MessageType;			// id=35    constant has constant value = X
+	int							MessageTypeLength;
+	char*							ApplVerID;			// id=1128    constant has constant value = 9
+	int							ApplVerIDLength;
+	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
+	int							BeginStringLength;
+	char*							SenderCompID;			// id=49    constant has constant value = MOEX
+	int							SenderCompIDLength;
+	UINT32							MsgSeqNum;			// id=34  
+	UINT64							SendingTime;			// id=52  
+	int							GroupMDEntriesCount;
 	FastMarketDataIncrementalRefreshOBRCURRGroupMDEntriesItemInfo** GroupMDEntries;
 }FastMarketDataIncrementalRefreshOBRCURRInfo;
 
 typedef struct _FastMarketDataIncrementalRefreshTLRFONDInfo {
-	int			PresenceMap[1];
-	char*		MessageType;			// id=35    constant has constant value = X
-	int			MessageTypeLength;
-	char*		ApplVerID;			// id=1128    constant has constant value = 9
-	int			ApplVerIDLength;
-	char*		BeginString;			// id=8    constant has constant value = FIXT.1.1
-	int			BeginStringLength;
-	char*		SenderCompID;			// id=49    constant has constant value = MOEX
-	int			SenderCompIDLength;
-	UINT32		MsgSeqNum;			// id=34  
-	UINT64		SendingTime;			// id=52  
-	int			GroupMDEntriesCount;
+	UINT							PresenceMap[1];
+	char*							MessageType;			// id=35    constant has constant value = X
+	int							MessageTypeLength;
+	char*							ApplVerID;			// id=1128    constant has constant value = 9
+	int							ApplVerIDLength;
+	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
+	int							BeginStringLength;
+	char*							SenderCompID;			// id=49    constant has constant value = MOEX
+	int							SenderCompIDLength;
+	UINT32							MsgSeqNum;			// id=34  
+	UINT64							SendingTime;			// id=52  
+	int							GroupMDEntriesCount;
 	FastMarketDataIncrementalRefreshTLRFONDGroupMDEntriesItemInfo** GroupMDEntries;
 }FastMarketDataIncrementalRefreshTLRFONDInfo;
 
 typedef struct _FastMarketDataIncrementalRefreshTLRCURRInfo {
-	int			PresenceMap[1];
-	char*		MessageType;			// id=35    constant has constant value = X
-	int			MessageTypeLength;
-	char*		ApplVerID;			// id=1128    constant has constant value = 9
-	int			ApplVerIDLength;
-	char*		BeginString;			// id=8    constant has constant value = FIXT.1.1
-	int			BeginStringLength;
-	char*		SenderCompID;			// id=49    constant has constant value = MOEX
-	int			SenderCompIDLength;
-	UINT32		MsgSeqNum;			// id=34  
-	UINT64		SendingTime;			// id=52  
-	int			GroupMDEntriesCount;
+	UINT							PresenceMap[1];
+	char*							MessageType;			// id=35    constant has constant value = X
+	int							MessageTypeLength;
+	char*							ApplVerID;			// id=1128    constant has constant value = 9
+	int							ApplVerIDLength;
+	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
+	int							BeginStringLength;
+	char*							SenderCompID;			// id=49    constant has constant value = MOEX
+	int							SenderCompIDLength;
+	UINT32							MsgSeqNum;			// id=34  
+	UINT64							SendingTime;			// id=52  
+	int							GroupMDEntriesCount;
 	FastMarketDataIncrementalRefreshTLRCURRGroupMDEntriesItemInfo** GroupMDEntries;
 }FastMarketDataIncrementalRefreshTLRCURRInfo;
 
 typedef struct _FastSecurityDefinitionInfo {
-	int			PresenceMap[1];
-	char*		MessageType;			// id=35    constant has constant value = d
-	int			MessageTypeLength;
-	char*		ApplVerID;			// id=1128    constant has constant value = 9
-	int			ApplVerIDLength;
-	char*		BeginString;			// id=8    constant has constant value = FIXT.1.1
-	int			BeginStringLength;
-	char*		SenderCompID;			// id=49    constant has constant value = MOEX
-	int			SenderCompIDLength;
-	UINT32		MsgSeqNum;			// id=34    increment
-	UINT64		SendingTime;			// id=52  
-	char*		MessageEncoding;			// id=347    default
-	int			MessageEncodingLength;
-	INT32		TotNumReports;			// id=911  presence=optional  
-	char*		Symbol;			// id=55  presence=optional  
-	int			SymbolLength;
-	BYTE*		SecurityID;			// id=48  presence=optional  
-	int			SecurityIDLength;
-	BYTE*		SecurityIDSource;			// id=22  presence=optional  
-	int			SecurityIDSourceLength;
-	INT32		Product;			// id=460  presence=optional  
-	BYTE*		CFICode;			// id=461  presence=optional  
-	int			CFICodeLength;
-	BYTE*		SecurityType;			// id=167  presence=optional  
-	int			SecurityTypeLength;
-	UINT32		MaturityDate;			// id=541  presence=optional  
-	UINT32		SettlDate;			// id=64  presence=optional  
-	char*		SettleType;			// id=5459  presence=optional  
-	int			SettleTypeLength;
-	Decimal		OrigIssueAmt;			// id=5850  presence=optional  
-	UINT32		CouponPaymentDate;			// id=224  presence=optional  
-	Decimal		CouponRate;			// id=223  presence=optional  
-	UINT32		SettlFixingDate;			// id=9119  presence=optional  
-	Decimal		DividendNetPx;			// id=9982  presence=optional  
-	BYTE*		SecurityDesc;			// id=107  presence=optional  
-	int			SecurityDescLength;
-	BYTE*		EncodedSecurityDesc;			// id=351  presence=optional  
-	int			EncodedSecurityDescLength;
-	BYTE*		QuoteText;			// id=9696  presence=optional  
-	int			QuoteTextLength;
-	int			GroupInstrAttribCount;			// presence=optional  
+	UINT							PresenceMap[1];
+	char*							MessageType;			// id=35    constant has constant value = d
+	int							MessageTypeLength;
+	char*							ApplVerID;			// id=1128    constant has constant value = 9
+	int							ApplVerIDLength;
+	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
+	int							BeginStringLength;
+	char*							SenderCompID;			// id=49    constant has constant value = MOEX
+	int							SenderCompIDLength;
+	UINT32							MsgSeqNum;			// id=34    increment
+	const int							MsgSeqNumPresenceIndex = PRESENCE_MAP_INDEX0;
+	UINT64							SendingTime;			// id=52  
+	char*							MessageEncoding;			// id=347    default
+	int							MessageEncodingLength;
+	const int							MessageEncodingPresenceIndex = PRESENCE_MAP_INDEX1;
+	INT32							TotNumReports;			// id=911  presence=optional  
+	bool							AllowTotNumReports;
+	char*							Symbol;			// id=55  presence=optional  
+	int							SymbolLength;
+	bool							AllowSymbol;
+	BYTE*							SecurityID;			// id=48  presence=optional  
+	int							SecurityIDLength;
+	bool							AllowSecurityID;
+	BYTE*							SecurityIDSource;			// id=22  presence=optional  
+	int							SecurityIDSourceLength;
+	bool							AllowSecurityIDSource;
+	INT32							Product;			// id=460  presence=optional  
+	bool							AllowProduct;
+	BYTE*							CFICode;			// id=461  presence=optional  
+	int							CFICodeLength;
+	bool							AllowCFICode;
+	BYTE*							SecurityType;			// id=167  presence=optional  
+	int							SecurityTypeLength;
+	bool							AllowSecurityType;
+	UINT32							MaturityDate;			// id=541  presence=optional  
+	bool							AllowMaturityDate;
+	UINT32							SettlDate;			// id=64  presence=optional  
+	bool							AllowSettlDate;
+	char*							SettleType;			// id=5459  presence=optional  
+	int							SettleTypeLength;
+	bool							AllowSettleType;
+	Decimal							OrigIssueAmt;			// id=5850  presence=optional  
+	bool							AllowOrigIssueAmt;
+	UINT32							CouponPaymentDate;			// id=224  presence=optional  
+	bool							AllowCouponPaymentDate;
+	Decimal							CouponRate;			// id=223  presence=optional  
+	bool							AllowCouponRate;
+	UINT32							SettlFixingDate;			// id=9119  presence=optional  
+	bool							AllowSettlFixingDate;
+	Decimal							DividendNetPx;			// id=9982  presence=optional  
+	bool							AllowDividendNetPx;
+	BYTE*							SecurityDesc;			// id=107  presence=optional  
+	int							SecurityDescLength;
+	bool							AllowSecurityDesc;
+	BYTE*							EncodedSecurityDesc;			// id=351  presence=optional  
+	int							EncodedSecurityDescLength;
+	bool							AllowEncodedSecurityDesc;
+	BYTE*							QuoteText;			// id=9696  presence=optional  
+	int							QuoteTextLength;
+	bool							AllowQuoteText;
+	int							GroupInstrAttribCount;			// presence=optional  
 	FastSecurityDefinitionGroupInstrAttribItemInfo** GroupInstrAttrib;			// presence=optional  
-	char*		Currency;			// id=15  presence=optional  
-	int			CurrencyLength;
-	int			MarketSegmentGrpCount;			// presence=optional  
+	bool							AllowGroupInstrAttrib;
+	char*							Currency;			// id=15  presence=optional  
+	int							CurrencyLength;
+	bool							AllowCurrency;
+	int							MarketSegmentGrpCount;			// presence=optional  
 	FastSecurityDefinitionMarketSegmentGrpItemInfo** MarketSegmentGrp;			// presence=optional  
-	char*		SettlCurrency;			// id=120  presence=optional  
-	int			SettlCurrencyLength;
-	INT32		PriceType;			// id=423  presence=optional  
-	char*		StateSecurityID;			// id=5217  presence=optional  
-	int			StateSecurityIDLength;
-	BYTE*		EncodedShortSecurityDesc;			// id=5383  presence=optional  
-	int			EncodedShortSecurityDescLength;
-	BYTE*		MarketCode;			// id=5385  presence=optional  
-	int			MarketCodeLength;
-	Decimal		MinPriceIncrement;			// id=969  presence=optional  
-	Decimal		MktShareLimit;			// id=5387  presence=optional  
-	Decimal		MktShareThreshold;			// id=5388  presence=optional  
-	Decimal		MaxOrdersVolume;			// id=5389  presence=optional  
-	Decimal		PriceMvmLimit;			// id=5470  presence=optional  
-	Decimal		FaceValue;			// id=5508  presence=optional  
-	Decimal		BaseSwapPx;			// id=5556  presence=optional  
-	Decimal		RepoToPx;			// id=5677  presence=optional  
-	Decimal		BuyBackPx;			// id=5558  presence=optional  
-	UINT32		BuyBackDate;			// id=5559  presence=optional  
-	Decimal		NoSharesIssued;			// id=7595  presence=optional  
-	Decimal		HighLimit;			// id=9199  presence=optional  
-	Decimal		LowLimit;			// id=9200  presence=optional  
-	INT32		NumOfDaysToMaturity;			// id=10508  presence=optional  
+	bool							AllowMarketSegmentGrp;
+	char*							SettlCurrency;			// id=120  presence=optional  
+	int							SettlCurrencyLength;
+	bool							AllowSettlCurrency;
+	INT32							PriceType;			// id=423  presence=optional  
+	bool							AllowPriceType;
+	char*							StateSecurityID;			// id=5217  presence=optional  
+	int							StateSecurityIDLength;
+	bool							AllowStateSecurityID;
+	BYTE*							EncodedShortSecurityDesc;			// id=5383  presence=optional  
+	int							EncodedShortSecurityDescLength;
+	bool							AllowEncodedShortSecurityDesc;
+	BYTE*							MarketCode;			// id=5385  presence=optional  
+	int							MarketCodeLength;
+	bool							AllowMarketCode;
+	Decimal							MinPriceIncrement;			// id=969  presence=optional  
+	bool							AllowMinPriceIncrement;
+	Decimal							MktShareLimit;			// id=5387  presence=optional  
+	bool							AllowMktShareLimit;
+	Decimal							MktShareThreshold;			// id=5388  presence=optional  
+	bool							AllowMktShareThreshold;
+	Decimal							MaxOrdersVolume;			// id=5389  presence=optional  
+	bool							AllowMaxOrdersVolume;
+	Decimal							PriceMvmLimit;			// id=5470  presence=optional  
+	bool							AllowPriceMvmLimit;
+	Decimal							FaceValue;			// id=5508  presence=optional  
+	bool							AllowFaceValue;
+	Decimal							BaseSwapPx;			// id=5556  presence=optional  
+	bool							AllowBaseSwapPx;
+	Decimal							RepoToPx;			// id=5677  presence=optional  
+	bool							AllowRepoToPx;
+	Decimal							BuyBackPx;			// id=5558  presence=optional  
+	bool							AllowBuyBackPx;
+	UINT32							BuyBackDate;			// id=5559  presence=optional  
+	bool							AllowBuyBackDate;
+	Decimal							NoSharesIssued;			// id=7595  presence=optional  
+	bool							AllowNoSharesIssued;
+	Decimal							HighLimit;			// id=9199  presence=optional  
+	bool							AllowHighLimit;
+	Decimal							LowLimit;			// id=9200  presence=optional  
+	bool							AllowLowLimit;
+	INT32							NumOfDaysToMaturity;			// id=10508  presence=optional  
+	bool							AllowNumOfDaysToMaturity;
 }FastSecurityDefinitionInfo;
 
 typedef struct _FastSecurityStatusInfo {
-	int			PresenceMap[1];
-	char*		MessageType;			// id=35    constant has constant value = f
-	int			MessageTypeLength;
-	char*		ApplVerID;			// id=1128    constant has constant value = 9
-	int			ApplVerIDLength;
-	char*		BeginString;			// id=8    constant has constant value = FIXT.1.1
-	int			BeginStringLength;
-	char*		SenderCompID;			// id=49    constant has constant value = MOEX
-	int			SenderCompIDLength;
-	UINT32		MsgSeqNum;			// id=34  
-	UINT64		SendingTime;			// id=52  
-	char*		Symbol;			// id=55  
-	int			SymbolLength;
-	char*		TradingSessionID;			// id=336  presence=optional  
-	int			TradingSessionIDLength;
-	char*		TradingSessionSubID;			// id=625  presence=optional  
-	int			TradingSessionSubIDLength;
-	INT32		SecurityTradingStatus;			// id=326  presence=optional  
-	UINT32		AuctionIndicator;			// id=5509  presence=optional  
+	UINT							PresenceMap[1];
+	char*							MessageType;			// id=35    constant has constant value = f
+	int							MessageTypeLength;
+	char*							ApplVerID;			// id=1128    constant has constant value = 9
+	int							ApplVerIDLength;
+	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
+	int							BeginStringLength;
+	char*							SenderCompID;			// id=49    constant has constant value = MOEX
+	int							SenderCompIDLength;
+	UINT32							MsgSeqNum;			// id=34  
+	UINT64							SendingTime;			// id=52  
+	char*							Symbol;			// id=55  
+	int							SymbolLength;
+	char*							TradingSessionID;			// id=336  presence=optional  
+	int							TradingSessionIDLength;
+	bool							AllowTradingSessionID;
+	char*							TradingSessionSubID;			// id=625  presence=optional  
+	int							TradingSessionSubIDLength;
+	bool							AllowTradingSessionSubID;
+	INT32							SecurityTradingStatus;			// id=326  presence=optional  
+	bool							AllowSecurityTradingStatus;
+	UINT32							AuctionIndicator;			// id=5509  presence=optional  
+	bool							AllowAuctionIndicator;
 }FastSecurityStatusInfo;
 
 typedef struct _FastTradingSessionStatusInfo {
-	int			PresenceMap[1];
-	char*		MessageType;			// id=35    constant has constant value = h
-	int			MessageTypeLength;
-	char*		ApplVerID;			// id=1128    constant has constant value = 9
-	int			ApplVerIDLength;
-	char*		BeginString;			// id=8    constant has constant value = FIXT.1.1
-	int			BeginStringLength;
-	char*		SenderCompID;			// id=49    constant has constant value = MOEX
-	int			SenderCompIDLength;
-	UINT32		MsgSeqNum;			// id=34  
-	UINT64		SendingTime;			// id=52  
-	INT32		TradSesStatus;			// id=340  
-	char*		Text;			// id=58  presence=optional  
-	int			TextLength;
-	char*		TradingSessionID;			// id=336  
-	int			TradingSessionIDLength;
+	UINT							PresenceMap[1];
+	char*							MessageType;			// id=35    constant has constant value = h
+	int							MessageTypeLength;
+	char*							ApplVerID;			// id=1128    constant has constant value = 9
+	int							ApplVerIDLength;
+	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
+	int							BeginStringLength;
+	char*							SenderCompID;			// id=49    constant has constant value = MOEX
+	int							SenderCompIDLength;
+	UINT32							MsgSeqNum;			// id=34  
+	UINT64							SendingTime;			// id=52  
+	INT32							TradSesStatus;			// id=340  
+	char*							Text;			// id=58  presence=optional  
+	int							TextLength;
+	bool							AllowText;
+	char*							TradingSessionID;			// id=336  
+	int							TradingSessionIDLength;
 }FastTradingSessionStatusInfo;
 
 typedef struct _FastHeartbeatInfo {
-	int			PresenceMap[1];
-	char*		MessageType;			// id=35    constant has constant value = 0
-	int			MessageTypeLength;
-	char*		BeginString;			// id=8    constant has constant value = FIXT.1.1
-	int			BeginStringLength;
-	char*		SenderCompID;			// id=49    constant has constant value = MOEX
-	int			SenderCompIDLength;
-	UINT32		MsgSeqNum;			// id=34  
-	UINT64		SendingTime;			// id=52  
+	UINT							PresenceMap[1];
+	char*							MessageType;			// id=35    constant has constant value = 0
+	int							MessageTypeLength;
+	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
+	int							BeginStringLength;
+	char*							SenderCompID;			// id=49    constant has constant value = MOEX
+	int							SenderCompIDLength;
+	UINT32							MsgSeqNum;			// id=34  
+	UINT64							SendingTime;			// id=52  
 }FastHeartbeatInfo;
 
 #pragma endregion
@@ -1084,12 +1517,19 @@ typedef void* (FastProtocolManager::*FastDecodeMethodPointer)();
 #define CheckOptionalFieldPresence(map, field) ((*map & field) != 0)
 #pragma endregion
 
-class FastProtocolManager
-{
+class FastProtocolManager {
 	const int maxBufferLength = 16000;
 	BYTE	*buffer;
 	BYTE	*currentPos;
 	int		bufferLength;
+
+#pragma region String_Constant_Declaration_GeneratedCode
+	char	MessageEncodingConstString[6];
+
+	void InitializeConstantStrings() {
+		sprintf(MessageEncodingConstString, "UTF-8");
+	}
+#pragma endregion
 
 #pragma region Structure_Objects_Declaration_GeneratedCode
 	FastLogonInfo*	logon;
@@ -1784,22 +2224,22 @@ public:
 	}
 
 
-    inline void WritePresenceMap1(int *map) {
+    inline void WritePresenceMap1(uint32_t *map) {
         *((int*)this->currentPos) = *map;
         this->currentPos++;
     }
 
-    inline void WritePresenceMap2(int *map) {
+    inline void WritePresenceMap2(uint32_t *map) {
         *((int*)this->currentPos) = *map;
         this->currentPos+=2;
     }
 
-    inline void WritePresenceMap3(int *map) {
+    inline void WritePresenceMap3(uint32_t *map) {
         *((int*)this->currentPos) = *map;
         this->currentPos+=3;
     }
 
-    inline void WritePresenceMap4(int *map) {
+    inline void WritePresenceMap4(uint32_t *map) {
         *((int*)this->currentPos) = *map;
         this->currentPos+=4;
     }
@@ -1811,6 +2251,11 @@ public:
 	}
 
 	inline bool IsNull() {  return *(this->currentPos) == 0x80; }
+
+    inline void WriteNull() {
+        *(this->currentPos) = 0x80;
+        this->currentPos++;
+    }
 
 	inline bool CheckProcessNullInt32() {
 		if (*(this->currentPos) == 0x80) {
@@ -3446,10 +3891,10 @@ public:
 		this->currentPos += length;
 	}
 
-	inline void ParsePresenceMap(int *presenceMapBits, int maxBitsCount) { 
-		int *pmap = (int*)this->currentPos;
-		int value;
-		int *intPmap = presenceMapBits;
+	inline void ParsePresenceMap(UINT *presenceMapBits, int maxBitsCount) {
+		UINT *pmap = (UINT*)this->currentPos;
+		UINT value;
+		UINT *intPmap = presenceMapBits;
 		while (true) {
 			value = *pmap;
 			for (int i = 0; i < 7; i++) {
@@ -3503,7 +3948,7 @@ public:
 #pragma endregion
 
 #pragma region Encode_Methods_Definition_GeneratedCode
-	inline void EncodeEncodeLogonInfo(int msgSeqNumber, FastLogonInfo* info) {
+	inline void EncodeLogonInfo(int msgSeqNumber, FastLogonInfo* info) {
 		ResetBuffer();
 		WriteMsgSeqNumber(msgSeqNumber);
 		WriteString_Mandatory(info->MessageType, info->MessageTypeLength);
@@ -3513,11 +3958,17 @@ public:
 		WriteUInt32_Mandatory(info->MsgSeqNum);
 		WriteUInt64_Mandatory(info->SendingTime);
 		WriteInt32_Mandatory(info->HeartBtInt);
-		WriteString_Optional(info->Username, info->UsernameLength);
-		WriteString_Optional(info->Password, info->PasswordLength);
+		if(!info->AllowUsername)
+			this->WriteNull();
+		else
+			WriteString_Optional(info->Username, info->UsernameLength);
+		if(!info->AllowPassword)
+			this->WriteNull();
+		else
+			WriteString_Optional(info->Password, info->PasswordLength);
 		WriteString_Mandatory(info->DefaultApplVerID, info->DefaultApplVerIDLength);
 	}
-	inline void EncodeEncodeLogoutInfo(int msgSeqNumber, FastLogoutInfo* info) {
+	inline void EncodeLogoutInfo(int msgSeqNumber, FastLogoutInfo* info) {
 		ResetBuffer();
 		WriteMsgSeqNumber(msgSeqNumber);
 		WriteString_Mandatory(info->MessageType, info->MessageTypeLength);
@@ -3526,63 +3977,227 @@ public:
 		WriteString_Mandatory(info->TargetCompID, info->TargetCompIDLength);
 		WriteUInt32_Mandatory(info->MsgSeqNum);
 		WriteUInt64_Mandatory(info->SendingTime);
-		WriteString_Optional(info->Text, info->TextLength);
+		if(!info->AllowText)
+			this->WriteNull();
+		else
+			WriteString_Optional(info->Text, info->TextLength);
 	}
-	inline void EncodeEncodeSecurityDefinitionInfo(int msgSeqNumber, FastSecurityDefinitionInfo* info) {
+	inline void EncodeSecurityDefinitionInfo(int msgSeqNumber, FastSecurityDefinitionInfo* info) {
 		ResetBuffer();
 		WriteMsgSeqNumber(msgSeqNumber);
-		WritePresenceMap1(info->PresenceMap);
+		WritePresenceMap1((UINT*)info->PresenceMap);
 		WriteString_Mandatory(info->MessageType, info->MessageTypeLength);
 		WriteString_Mandatory(info->ApplVerID, info->ApplVerIDLength);
 		WriteString_Mandatory(info->BeginString, info->BeginStringLength);
 		WriteString_Mandatory(info->SenderCompID, info->SenderCompIDLength);
-		if(CheckMandatoryFieldPresence(info->PresenceMap, PRESENCE_MAP_INDEX0))
+		if(CheckMandatoryFieldPresence(info->PresenceMap, info->MsgSeqNumPresenceIndex))
 			WriteUInt32_Mandatory(info->MsgSeqNum);
 		WriteUInt64_Mandatory(info->SendingTime);
-		if(CheckMandatoryFieldPresence(info->PresenceMap, PRESENCE_MAP_INDEX1))
+		if(CheckMandatoryFieldPresence(info->PresenceMap, info->MessageEncodingPresenceIndex))
 			WriteString_Mandatory(info->MessageEncoding, info->MessageEncodingLength);
-		WriteInt32_Optional(info->TotNumReports);
-		WriteString_Optional(info->Symbol, info->SymbolLength);
-		WriteByteVector_Optional(info->SecurityID, info->SecurityIDLength);
-		WriteByteVector_Optional(info->SecurityIDSource, info->SecurityIDSourceLength);
-		WriteInt32_Optional(info->Product);
-		WriteByteVector_Optional(info->CFICode, info->CFICodeLength);
-		WriteByteVector_Optional(info->SecurityType, info->SecurityTypeLength);
-		WriteUInt32_Optional(info->MaturityDate);
-		WriteUInt32_Optional(info->SettlDate);
-		WriteString_Optional(info->SettleType, info->SettleTypeLength);
-		WriteDecimal_Optional(&(info->OrigIssueAmt));
-		WriteUInt32_Optional(info->CouponPaymentDate);
-		WriteDecimal_Optional(&(info->CouponRate));
-		WriteUInt32_Optional(info->SettlFixingDate);
-		WriteDecimal_Optional(&(info->DividendNetPx));
-		WriteByteVector_Optional(info->SecurityDesc, info->SecurityDescLength);
-		WriteByteVector_Optional(info->EncodedSecurityDesc, info->EncodedSecurityDescLength);
-		WriteByteVector_Optional(info->QuoteText, info->QuoteTextLength);
-//TODO
-		WriteString_Optional(info->Currency, info->CurrencyLength);
-//TODO
-		WriteString_Optional(info->SettlCurrency, info->SettlCurrencyLength);
-		WriteInt32_Optional(info->PriceType);
-		WriteString_Optional(info->StateSecurityID, info->StateSecurityIDLength);
-		WriteByteVector_Optional(info->EncodedShortSecurityDesc, info->EncodedShortSecurityDescLength);
-		WriteByteVector_Optional(info->MarketCode, info->MarketCodeLength);
-		WriteDecimal_Optional(&(info->MinPriceIncrement));
-		WriteDecimal_Optional(&(info->MktShareLimit));
-		WriteDecimal_Optional(&(info->MktShareThreshold));
-		WriteDecimal_Optional(&(info->MaxOrdersVolume));
-		WriteDecimal_Optional(&(info->PriceMvmLimit));
-		WriteDecimal_Optional(&(info->FaceValue));
-		WriteDecimal_Optional(&(info->BaseSwapPx));
-		WriteDecimal_Optional(&(info->RepoToPx));
-		WriteDecimal_Optional(&(info->BuyBackPx));
-		WriteUInt32_Optional(info->BuyBackDate);
-		WriteDecimal_Optional(&(info->NoSharesIssued));
-		WriteDecimal_Optional(&(info->HighLimit));
-		WriteDecimal_Optional(&(info->LowLimit));
-		WriteInt32_Optional(info->NumOfDaysToMaturity);
+		if(!info->AllowTotNumReports)
+			this->WriteNull();
+		else
+			WriteInt32_Optional(info->TotNumReports);
+		if(!info->AllowSymbol)
+			this->WriteNull();
+		else
+			WriteString_Optional(info->Symbol, info->SymbolLength);
+		if(!info->AllowSecurityID)
+			this->WriteNull();
+		else
+			WriteByteVector_Optional(info->SecurityID, info->SecurityIDLength);
+		if(!info->AllowSecurityIDSource)
+			this->WriteNull();
+		else
+			WriteByteVector_Optional(info->SecurityIDSource, info->SecurityIDSourceLength);
+		if(!info->AllowProduct)
+			this->WriteNull();
+		else
+			WriteInt32_Optional(info->Product);
+		if(!info->AllowCFICode)
+			this->WriteNull();
+		else
+			WriteByteVector_Optional(info->CFICode, info->CFICodeLength);
+		if(!info->AllowSecurityType)
+			this->WriteNull();
+		else
+			WriteByteVector_Optional(info->SecurityType, info->SecurityTypeLength);
+		if(!info->AllowMaturityDate)
+			this->WriteNull();
+		else
+			WriteUInt32_Optional(info->MaturityDate);
+		if(!info->AllowSettlDate)
+			this->WriteNull();
+		else
+			WriteUInt32_Optional(info->SettlDate);
+		if(!info->AllowSettleType)
+			this->WriteNull();
+		else
+			WriteString_Optional(info->SettleType, info->SettleTypeLength);
+		if(!info->AllowOrigIssueAmt)
+			this->WriteNull();
+		else
+			WriteDecimal_Optional(&(info->OrigIssueAmt));
+		if(!info->AllowCouponPaymentDate)
+			this->WriteNull();
+		else
+			WriteUInt32_Optional(info->CouponPaymentDate);
+		if(!info->AllowCouponRate)
+			this->WriteNull();
+		else
+			WriteDecimal_Optional(&(info->CouponRate));
+		if(!info->AllowSettlFixingDate)
+			this->WriteNull();
+		else
+			WriteUInt32_Optional(info->SettlFixingDate);
+		if(!info->AllowDividendNetPx)
+			this->WriteNull();
+		else
+			WriteDecimal_Optional(&(info->DividendNetPx));
+		if(!info->AllowSecurityDesc)
+			this->WriteNull();
+		else
+			WriteByteVector_Optional(info->SecurityDesc, info->SecurityDescLength);
+		if(!info->AllowEncodedSecurityDesc)
+			this->WriteNull();
+		else
+			WriteByteVector_Optional(info->EncodedSecurityDesc, info->EncodedSecurityDescLength);
+		if(!info->AllowQuoteText)
+			this->WriteNull();
+		else
+			WriteByteVector_Optional(info->QuoteText, info->QuoteTextLength);
+		if(!info->AllowGroupInstrAttrib)
+			this->WriteNull();
+		else {
+			WriteUInt32_Mandatory(info->GroupInstrAttribCount);
+			FastSecurityDefinitionGroupInstrAttribItemInfo **giaItemInfo = info->GroupInstrAttrib;
+			for(int i = 0; i < info->GroupInstrAttribCount; i++) {
+				WriteInt32_Mandatory((*giaItemInfo)->InstrAttribType);
+				if(!(*giaItemInfo)->AllowInstrAttribValue)
+					this->WriteNull();
+				else
+					WriteByteVector_Optional((*giaItemInfo)->InstrAttribValue, (*giaItemInfo)->InstrAttribValueLength);
+				giaItemInfo++;
+			}
+		}
+		if(!info->AllowCurrency)
+			this->WriteNull();
+		else
+			WriteString_Optional(info->Currency, info->CurrencyLength);
+		if(!info->AllowMarketSegmentGrp)
+			this->WriteNull();
+		else {
+			WriteUInt32_Mandatory(info->MarketSegmentGrpCount);
+			FastSecurityDefinitionMarketSegmentGrpItemInfo **msgItemInfo = info->MarketSegmentGrp;
+			for(int i = 0; i < info->MarketSegmentGrpCount; i++) {
+				if(!(*msgItemInfo)->AllowRoundLot)
+					this->WriteNull();
+				else
+					WriteDecimal_Optional(&((*msgItemInfo)->RoundLot));
+				if(!(*msgItemInfo)->AllowTradingSessionRulesGrp)
+					this->WriteNull();
+				else {
+					WriteUInt32_Mandatory((*msgItemInfo)->TradingSessionRulesGrpCount);
+					FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo **tsrgItemInfo = (*msgItemInfo)->TradingSessionRulesGrp;
+					for(int i = 0; i < (*msgItemInfo)->TradingSessionRulesGrpCount; i++) {
+						WriteString_Mandatory((*tsrgItemInfo)->TradingSessionID, (*tsrgItemInfo)->TradingSessionIDLength);
+						if(!(*tsrgItemInfo)->AllowTradingSessionSubID)
+							this->WriteNull();
+						else
+							WriteString_Optional((*tsrgItemInfo)->TradingSessionSubID, (*tsrgItemInfo)->TradingSessionSubIDLength);
+						if(!(*tsrgItemInfo)->AllowSecurityTradingStatus)
+							this->WriteNull();
+						else
+							WriteInt32_Optional((*tsrgItemInfo)->SecurityTradingStatus);
+						if(!(*tsrgItemInfo)->AllowOrderNote)
+							this->WriteNull();
+						else
+							WriteInt32_Optional((*tsrgItemInfo)->OrderNote);
+						tsrgItemInfo++;
+					}
+				}
+				msgItemInfo++;
+			}
+		}
+		if(!info->AllowSettlCurrency)
+			this->WriteNull();
+		else
+			WriteString_Optional(info->SettlCurrency, info->SettlCurrencyLength);
+		if(!info->AllowPriceType)
+			this->WriteNull();
+		else
+			WriteInt32_Optional(info->PriceType);
+		if(!info->AllowStateSecurityID)
+			this->WriteNull();
+		else
+			WriteString_Optional(info->StateSecurityID, info->StateSecurityIDLength);
+		if(!info->AllowEncodedShortSecurityDesc)
+			this->WriteNull();
+		else
+			WriteByteVector_Optional(info->EncodedShortSecurityDesc, info->EncodedShortSecurityDescLength);
+		if(!info->AllowMarketCode)
+			this->WriteNull();
+		else
+			WriteByteVector_Optional(info->MarketCode, info->MarketCodeLength);
+		if(!info->AllowMinPriceIncrement)
+			this->WriteNull();
+		else
+			WriteDecimal_Optional(&(info->MinPriceIncrement));
+		if(!info->AllowMktShareLimit)
+			this->WriteNull();
+		else
+			WriteDecimal_Optional(&(info->MktShareLimit));
+		if(!info->AllowMktShareThreshold)
+			this->WriteNull();
+		else
+			WriteDecimal_Optional(&(info->MktShareThreshold));
+		if(!info->AllowMaxOrdersVolume)
+			this->WriteNull();
+		else
+			WriteDecimal_Optional(&(info->MaxOrdersVolume));
+		if(!info->AllowPriceMvmLimit)
+			this->WriteNull();
+		else
+			WriteDecimal_Optional(&(info->PriceMvmLimit));
+		if(!info->AllowFaceValue)
+			this->WriteNull();
+		else
+			WriteDecimal_Optional(&(info->FaceValue));
+		if(!info->AllowBaseSwapPx)
+			this->WriteNull();
+		else
+			WriteDecimal_Optional(&(info->BaseSwapPx));
+		if(!info->AllowRepoToPx)
+			this->WriteNull();
+		else
+			WriteDecimal_Optional(&(info->RepoToPx));
+		if(!info->AllowBuyBackPx)
+			this->WriteNull();
+		else
+			WriteDecimal_Optional(&(info->BuyBackPx));
+		if(!info->AllowBuyBackDate)
+			this->WriteNull();
+		else
+			WriteUInt32_Optional(info->BuyBackDate);
+		if(!info->AllowNoSharesIssued)
+			this->WriteNull();
+		else
+			WriteDecimal_Optional(&(info->NoSharesIssued));
+		if(!info->AllowHighLimit)
+			this->WriteNull();
+		else
+			WriteDecimal_Optional(&(info->HighLimit));
+		if(!info->AllowLowLimit)
+			this->WriteNull();
+		else
+			WriteDecimal_Optional(&(info->LowLimit));
+		if(!info->AllowNumOfDaysToMaturity)
+			this->WriteNull();
+		else
+			WriteInt32_Optional(info->NumOfDaysToMaturity);
 	}
-	inline void EncodeEncodeSecurityStatusInfo(int msgSeqNumber, FastSecurityStatusInfo* info) {
+	inline void EncodeSecurityStatusInfo(int msgSeqNumber, FastSecurityStatusInfo* info) {
 		ResetBuffer();
 		WriteMsgSeqNumber(msgSeqNumber);
 		WriteString_Mandatory(info->MessageType, info->MessageTypeLength);
@@ -3592,12 +4207,24 @@ public:
 		WriteUInt32_Mandatory(info->MsgSeqNum);
 		WriteUInt64_Mandatory(info->SendingTime);
 		WriteString_Mandatory(info->Symbol, info->SymbolLength);
-		WriteString_Optional(info->TradingSessionID, info->TradingSessionIDLength);
-		WriteString_Optional(info->TradingSessionSubID, info->TradingSessionSubIDLength);
-		WriteInt32_Optional(info->SecurityTradingStatus);
-		WriteUInt32_Optional(info->AuctionIndicator);
+		if(!info->AllowTradingSessionID)
+			this->WriteNull();
+		else
+			WriteString_Optional(info->TradingSessionID, info->TradingSessionIDLength);
+		if(!info->AllowTradingSessionSubID)
+			this->WriteNull();
+		else
+			WriteString_Optional(info->TradingSessionSubID, info->TradingSessionSubIDLength);
+		if(!info->AllowSecurityTradingStatus)
+			this->WriteNull();
+		else
+			WriteInt32_Optional(info->SecurityTradingStatus);
+		if(!info->AllowAuctionIndicator)
+			this->WriteNull();
+		else
+			WriteUInt32_Optional(info->AuctionIndicator);
 	}
-	inline void EncodeEncodeTradingSessionStatusInfo(int msgSeqNumber, FastTradingSessionStatusInfo* info) {
+	inline void EncodeTradingSessionStatusInfo(int msgSeqNumber, FastTradingSessionStatusInfo* info) {
 		ResetBuffer();
 		WriteMsgSeqNumber(msgSeqNumber);
 		WriteString_Mandatory(info->MessageType, info->MessageTypeLength);
@@ -3607,7 +4234,10 @@ public:
 		WriteUInt32_Mandatory(info->MsgSeqNum);
 		WriteUInt64_Mandatory(info->SendingTime);
 		WriteInt32_Mandatory(info->TradSesStatus);
-		WriteString_Optional(info->Text, info->TextLength);
+		if(!info->AllowText)
+			this->WriteNull();
+		else
+			WriteString_Optional(info->Text, info->TextLength);
 		WriteString_Mandatory(info->TradingSessionID, info->TradingSessionIDLength);
 	}
 #pragma endregion
@@ -4853,7 +5483,7 @@ public:
 			ReadString_Mandatory(&(info->MessageEncoding), &(info->MessageEncodingLength));
 		}
 		else {
-			info->MessageEncoding = "UTF-8";
+			info->MessageEncoding = this->MessageEncodingConstString;
 			info->MessageEncodingLength = 5;
 		}
 		if(!CheckProcessNullInt32())

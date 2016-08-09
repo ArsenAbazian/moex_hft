@@ -85,6 +85,7 @@ namespace prebuild {
 		string Decode_Methods_Definition_GeneratedCode = "Decode_Methods_Definition_GeneratedCode";
 		string Get_Free_Item_Methods_GeneratedCode = "Get_Free_Item_Methods_GeneratedCode";
 		string Encode_Methods_Definition_GeneratedCode = "Encode_Methods_Definition_GeneratedCode";
+		string String_Constant_Declaration_GeneratedCode = "String_Constant_Declaration_GeneratedCode";
 
 		private  void ClearPreviouseGeneratedCode () {
 			string[] keywords = new string[] { 
@@ -94,7 +95,8 @@ namespace prebuild {
 				Decode_Method_Pointer_Arrays_GeneratedCode,
 				Get_Free_Item_Methods_GeneratedCode,
 				Decode_Methods_Definition_GeneratedCode,
-				Encode_Methods_Definition_GeneratedCode
+				Encode_Methods_Definition_GeneratedCode,
+				String_Constant_Declaration_GeneratedCode
 			};
 			foreach(string keyword in keywords) {
 				int startingIndex = GetKeywordLineIndex(keyword) + 1;
@@ -125,15 +127,57 @@ namespace prebuild {
 			return -1;
 		}
 
+		List<ConstantStringInfo> ConstantStrings { get; set; }
+
 		private  void ParseTemplatesNode (XmlNode templatesNode) {
 
 			WriteEntireMethodAddressArrays(templatesNode);
 			WriteStructuresDefinitionCode(templatesNode);
 			WriteStructuresDeclarationCode(templatesNode);
+			ConstantStrings = GetConstantStrings(templatesNode);
+			WriteStringConstantDeclarationCode(templatesNode);
 			WriteGetFreeItemCode(templatesNode);
 
 			WriteEncodeMethodsCode(templatesNode);
 			WriteDecodeMethodsCode(templatesNode);
+		}
+
+		class ConstantStringInfo {
+			public XmlNode Node { get; set; }
+			public string Name { get { return Node.Attributes["name"].Value; } }
+			public string Value { get { return Node.ChildNodes[0].Attributes["value"].Value; } }
+			public string FieldName { get { return Name + "ConstString"; } }
+		}
+
+		private bool HasConstString(XmlNode node) {
+			return node.Name == "string" && node.ChildNodes.Count == 1 && node.ChildNodes[0].Name == "default";
+		}
+
+		private List<ConstantStringInfo> GetConstantStrings(XmlNode node) {
+			List<ConstantStringInfo> res = new List<ConstantStringInfo>();
+			GetConstantStrings(node, res);
+			return res;
+		}
+
+		private void GetConstantStrings(XmlNode node, List<ConstantStringInfo> list) {
+			foreach(XmlNode child in node.ChildNodes) {
+				if(HasConstString(child))
+					list.Add(new ConstantStringInfo() { Node = child });
+				GetConstantStrings(child, list);
+			}
+		}
+
+		private void WriteStringConstantDeclarationCode(XmlNode node) {
+			SetPosition(String_Constant_Declaration_GeneratedCode);
+			foreach(ConstantStringInfo info in ConstantStrings) {
+				WriteLine("\tchar\t" + info.FieldName + "[" + (info.Value.Length + 1) + "];");
+			}
+			WriteLine("");
+			WriteLine("\tvoid InitializeConstantStrings() {");
+			foreach(ConstantStringInfo info in ConstantStrings) {
+				WriteLine("\t\tsprintf(" + info.FieldName + ", \"" + info.Value + "\");");
+			}
+			WriteLine("\t}");
 		}
 
 		private  void WriteEncodeMethodsCode (XmlNode templatesNode) {
@@ -160,103 +204,123 @@ namespace prebuild {
 
 		private  void WriteEncodeMethodCode (XmlNode message) {
 			StructureInfo info = new StructureInfo() { NameCore = GetTemplateName(message.PreviousSibling.Value) };
-			WriteLine("\tinline void Encode" + info.EncodeMethodName + "(int msgSeqNumber, " + info.Name + "* info) {");
+			WriteLine("\tinline void " + info.EncodeMethodName + "(int msgSeqNumber, " + info.Name + "* info) {");
 			WriteLine("\t\tResetBuffer();");
 			WriteLine("\t\tWriteMsgSeqNumber(msgSeqNumber);");
 			int presenceByteCount = CalcPresenceMapByteCount(message);
 			if(GetMaxPresenceBitCount(message) > 0)
-				WriteLine("\t\tWritePresenceMap" + presenceByteCount + "(info->PresenceMap);");
+				WriteLine("\t\tWritePresenceMap" + presenceByteCount + "((UINT*)info->PresenceMap);");
 			foreach(XmlNode node in message.ChildNodes) {
+				info.Parent = null;
 				WriteEncodeValueCode(node, info, "\t\t");
 			}
 			WriteLine("\t}");
 		}
 
-		private  void WriteEncodeValueCode (XmlNode field, StructureInfo structureInfo, string tabs) {
-			if(ShouldWriteCheckPresenceMapCode(field)) {
-				if(HasOptionalPresence(field))
-					WriteLine(tabs + "if(CheckOptionalFieldPresence(" + "info" + "->PresenceMap, PRESENCE_MAP_INDEX" + CalcFieldPresenceIndex(field) + "))");
-				else
-					WriteLine(tabs + "if(CheckMandatoryFieldPresence(" + "info" + "->PresenceMap, PRESENCE_MAP_INDEX" + CalcFieldPresenceIndex(field) + "))");
+		private void WriteNullValueCode(string tabs, XmlNode value) {
+			WriteLine(tabs + "this->WriteNull();");
+		}
+
+		private  void WriteEncodeValueCode (XmlNode field, StructureInfo si, string tabs) {
+			bool nullCheck = ShouldWriteNullCheckCode(field);
+			bool presenceCheck = ShouldWriteCheckPresenceMapCode(field);
+			if(presenceCheck) {
+				string bracket = nullCheck ? " {" : "";
+				string checkPresenceMethodName = HasOptionalPresence(field)? "CheckOptionalFieldPresence": "CheckMandatoryFieldPresence";
+				WriteLine(tabs + "if(" + checkPresenceMethodName + "(" + si.InCodeValueName + "->PresenceMap, " + si.InCodeValueName + "->" + PresenceIndexName(field) + "))" + bracket);
+
+				tabs += "\t";
+			}
+			if(nullCheck) {
+				WriteLine(tabs + "if(!" + si.InCodeValueName + "->" + AllowFlagName(field) + ")");
+				WriteNullValueCode(tabs + "\t", field);
+
+				if(field.Name == "sequence")
+					WriteLine(tabs + "else {");
+				else 
+					WriteLine(tabs + "else");
 
 				tabs += "\t";
 			}
 			if(field.Name == "string")
-				WriteStringEncodeMethodCode(field, structureInfo, tabs);
+				WriteStringEncodeMethodCode(field, si, tabs);
 			else if(field.Name == "uInt32")
-				WriteUint32EncodeMethodCode(field, structureInfo, tabs);
+				WriteUint32EncodeMethodCode(field, si, tabs);
 			else if(field.Name == "int32")
-				WriteInt32EncodeMethodCode(field, structureInfo, tabs);
+				WriteInt32EncodeMethodCode(field, si, tabs);
 			else if(field.Name == "uInt64")
-				WriteUint64EncodeMethodCode(field, structureInfo, tabs);
+				WriteUint64EncodeMethodCode(field, si, tabs);
 			else if(field.Name == "int64")
-				WriteInt64EncodeMethodCode(field, structureInfo, tabs);
+				WriteInt64EncodeMethodCode(field, si, tabs);
 			else if(field.Name == "decimal")
-				WriteDecimalEncodeMethodCode(field, structureInfo, tabs);
+				WriteDecimalEncodeMethodCode(field, si, tabs);
 			else if(field.Name == "byteVector")
-				WriteByteVectorEncodeMethodCode(field, structureInfo, tabs);
+				WriteByteVectorEncodeMethodCode(field, si, tabs);
 			else if(field.Name == "sequence") {
-				WriteSequenceEncodeMethodCode(field, structureInfo, tabs);
+				WriteSequenceEncodeMethodCode(field, si, tabs);
+				if(nullCheck) {
+					tabs = tabs.Substring(1);
+					WriteLine(tabs + "}");
+				}
+
 			} else if(field.Name == "length") {
 				// Do nothing
 			}
-			if(ShouldWriteCheckPresenceMapCode(field)) {
+			if(nullCheck && presenceCheck) {
+				tabs = tabs.Substring(1);
+				WriteLine(tabs + "}");
+			}
+			if(presenceCheck) {
 				tabs = tabs.Substring(1);
 			}
 		}
 
-		private  void WriteSequenceEncodeMethodCode (XmlNode field, StructureInfo structureInfo, string tabs) {
-			WriteLine("//TODO");
-			//throw new NotImplementedException();
+		private  void WriteSequenceEncodeMethodCode (XmlNode field, StructureInfo si, string tabs) {
+			string itemInfo = GetIemInfoPrefix(field) + "ItemInfo";
+			StructureInfo info = new StructureInfo() { InCodeValueName = "(*" + itemInfo + ")", NameCore = si.NameCore + Name(field), IsSequence = true };
+			WriteLine(tabs + "WriteUInt32_Mandatory(" + si.InCodeValueName + "->" + Name(field) + "Count);");
+			WriteLine(tabs + info.Name + " **" + itemInfo + " = " + si.InCodeValueName + "->" + Name(field) + ";");
+			WriteLine(tabs + "for(int i = 0; i < " + si.InCodeValueName + "->" + Name(field) + "Count; i++) {");
+			foreach(XmlNode node in field.ChildNodes) {
+				WriteEncodeValueCode(node, info, tabs + "\t");
+			}
+			WriteLine(tabs + "\t" + itemInfo + "++;");
+			WriteLine(tabs + "}");
 		}
 
-		private  void WriteByteVectorEncodeMethodCode (XmlNode field, StructureInfo structureInfo, string tabs) {
-			if(HasOptionalPresence(field))
-				WriteLine(tabs + "WriteByteVector_Optional(info->" + Name(field) + ", info->" + Name(field) + "Length);");
-			else
-				WriteLine(tabs + "WriteByteVector_Mandatory(info->" + Name(field) + ", info->" + Name(field) + "Length);");
+		private  void WriteByteVectorEncodeMethodCode (XmlNode field, StructureInfo si, string tabs) {
+			string methodName = HasOptionalPresence(field)? "WriteByteVector_Optional": "WriteByteVector_Mandatory";
+			WriteLine(tabs + methodName + "(" + si.InCodeValueName + "->" + Name(field) + ", " + si.InCodeValueName + "->" + Name(field) + "Length);");
 		}
 
-		private  void WriteDecimalEncodeMethodCode (XmlNode field, StructureInfo structureInfo, string tabs) {
-			if(HasOptionalPresence(field))
-				WriteLine(tabs + "WriteDecimal_Optional(&(info->" + Name(field) + "));");
-			else
-				WriteLine(tabs + "WriteDecimal_Mandatory(&(info->" + Name(field) + "));");
+		private  void WriteDecimalEncodeMethodCode (XmlNode field, StructureInfo si, string tabs) {
+			string methodName = HasOptionalPresence(field) ? "WriteDecimal_Optional" : "WriteDecimal_Mandatory";
+			WriteLine(tabs + methodName + "(&(" + si.InCodeValueName + "->" + Name(field) + "));");
 		}
 
-		private  void WriteInt64EncodeMethodCode (XmlNode field, StructureInfo structureInfo, string tabs) {
-			if(HasOptionalPresence(field))
-				WriteLine(tabs + "WriteInt64_Optional(info->" + Name(field) + ");");
-			else
-				WriteLine(tabs + "WriteInt64_Mandatory(info->" + Name(field) + ");");
+		private  void WriteInt64EncodeMethodCode (XmlNode field, StructureInfo si, string tabs) {
+			string methodName = HasOptionalPresence(field) ? "WriteInt64_Optional" : "WriteInt64_Mandatory";
+			WriteLine(tabs + methodName + "(" + si.InCodeValueName + "->" + Name(field) + ");");
 		}
 
-		private  void WriteUint64EncodeMethodCode (XmlNode field, StructureInfo structureInfo, string tabs) {
-			if(HasOptionalPresence(field))
-				WriteLine(tabs + "WriteUInt64_Optional(info->" + Name(field) + ");");
-			else
-				WriteLine(tabs + "WriteUInt64_Mandatory(info->" + Name(field) + ");");
+		private  void WriteUint64EncodeMethodCode (XmlNode field, StructureInfo si, string tabs) {
+			string methodName = HasOptionalPresence(field) ? "WriteUInt64_Optional" : "WriteUInt64_Mandatory";
+			WriteLine(tabs + methodName + "(" + si.InCodeValueName + "->" + Name(field) + ");");
 		}
 
-		private  void WriteInt32EncodeMethodCode (XmlNode field, StructureInfo structureInfo, string tabs) {
-			if(HasOptionalPresence(field))
-				WriteLine(tabs + "WriteInt32_Optional(info->" + Name(field) + ");");
-			else
-				WriteLine(tabs + "WriteInt32_Mandatory(info->" + Name(field) + ");");
+		private  void WriteInt32EncodeMethodCode (XmlNode field, StructureInfo si, string tabs) {
+			string methodName = HasOptionalPresence(field) ? "WriteInt32_Optional" : "WriteInt32_Mandatory";
+			WriteLine(tabs + methodName + "(" + si.InCodeValueName + "->" + Name(field) + ");");
 		}
 
-		private  void WriteUint32EncodeMethodCode (XmlNode field, StructureInfo structureInfo, string tabs) {
-			if(HasOptionalPresence(field))
-				WriteLine(tabs + "WriteUInt32_Optional(info->" + Name(field) + ");");
-			else
-				WriteLine(tabs + "WriteUInt32_Mandatory(info->" + Name(field) + ");");
+		private  void WriteUint32EncodeMethodCode (XmlNode field, StructureInfo si, string tabs) {
+			string methodName = HasOptionalPresence(field) ? "WriteUInt32_Optional" : "WriteUInt32_Mandatory";
+			WriteLine(tabs + methodName + "(" + si.InCodeValueName + "->" + Name(field) + ");");
 		}
 
-		private  void WriteStringEncodeMethodCode (XmlNode field, StructureInfo structureInfo, string tabs) {
-			if(HasOptionalPresence(field))
-				WriteLine(tabs + "WriteString_Optional(info->" + Name(field) + ", info->" + Name(field) + "Length);");
-			else
-				WriteLine(tabs + "WriteString_Mandatory(info->" + Name(field) + ", info->" + Name(field) + "Length);");
+		private  void WriteStringEncodeMethodCode (XmlNode field, StructureInfo si, string tabs) {
+			string methodName = HasOptionalPresence(field) ? "WriteString_Optional" : "WriteString_Mandatory";
+			WriteLine(tabs + methodName + "(" + si.InCodeValueName + "->" + Name(field) + ", " + si.InCodeValueName + "->" + Name(field) + "Length);");
 		}
 
 		private  List<XmlNode> GetAllMessages (XmlNode templatesNode) {
@@ -320,6 +384,20 @@ namespace prebuild {
 
 			public string EncodeMethodName {
 				get { return "Encode" + NameCore + Suffix; }
+			}
+
+			public StructureInfo Parent { get; set; }
+			public string InStructFieldName { get; set; }
+			string inCodeValueName = "info";
+			public string InCodeValueName { 
+				get { 
+					if(Parent == null)
+						return inCodeValueName;
+					return Parent.InCodeValueName + "->" + InStructFieldName;
+				}
+				set { 
+					inCodeValueName = value;
+				}
 			}
 		}
 
@@ -563,13 +641,25 @@ namespace prebuild {
 					// Do nothing
 				} else
 					Console.WriteLine("found undefined field " + field.Name);
+				WriteAllowFlagAndPresenceMapIndex(field);
 			}
 		}
+
+		string StuctFieldsSpacing { get{ return "\t\t\t\t\t\t\t"; } }
+
+		private void WriteAllowFlagAndPresenceMapIndex(XmlNode field) {
+			if(ShouldWriteNullCheckCode(field)) {
+				WriteLine("\tbool" + StuctFieldsSpacing + AllowFlagName(field) + ";");
+			}
+			if(ShouldWriteCheckPresenceMapCode(field)) {
+				WriteLine("\tconst int" + StuctFieldsSpacing + PresenceIndexName(field) + " = PRESENCE_MAP_INDEX" + CalcFieldPresenceIndex(field) + ";");
+			}			
+		} 
 
 		private  void WritePresenceMapDefinition (XmlNode node) {
 			int maxPresenceBitCount = GetMaxPresenceBitCount(node);
 			int maxPresenceMapIntCount = CalcPresenceMapIntCount(maxPresenceBitCount);
-			WriteLine("\tUINT\t\t\tPresenceMap[" + maxPresenceMapIntCount + "];");
+			WriteLine("\tUINT" + StuctFieldsSpacing + "PresenceMap[" + maxPresenceMapIntCount + "];");
 		}
 
 		int CalcPresenceMapByteCount(XmlNode node) {
@@ -631,60 +721,60 @@ namespace prebuild {
 		}
 
 		private  void WriteSequence (XmlNode field, string parentName) {
-			WriteLine("\tint\t\t\t" + Name(field) + "Count;" + GetCommentLine(field));
+			WriteLine("\tint" + StuctFieldsSpacing + Name(field) + "Count;" + GetCommentLine(field));
 			WriteLine("\tFast" + parentName + Name(field) + "ItemInfo** " + Name(field) + ";" + GetCommentLine(field));
 		}
 
 		private  void WriteByteVectorField (XmlNode field) {
-			WriteLine("\tBYTE*\t\t" + Name(field) + ";" + GetCommentLine(field));
-			WriteLine("\tint\t\t\t" + Name(field) + "Length;");
+			WriteLine("\tBYTE*" + StuctFieldsSpacing + Name(field) + ";" + GetCommentLine(field));
+			WriteLine("\tint" + StuctFieldsSpacing + Name(field) + "Length;");
 			if(HasCopyValueAttribute(field)) {
-				WriteLine("\tBYTE*\t\tPrev" + Name(field) + "; // copy");
-				WriteLine("\tint\t\t\tPrev" + Name(field) + "Length;// copy");
+				WriteLine("\tBYTE* " + StuctFieldsSpacing + "Prev" + Name(field) + "; // copy");
+				WriteLine("\tint" + StuctFieldsSpacing + "Prev" + Name(field) + "Length;// copy");
 			}
 		}
 
 		private  void WriteDecimalField (XmlNode field) {
-			WriteLine("\tDecimal\t\t" + Name(field) + ";" + GetCommentLine(field));
+			WriteLine("\tDecimal" + StuctFieldsSpacing + Name(field) + ";" + GetCommentLine(field));
 			if(HasCopyValueAttribute(field)) {
-				WriteLine("\tDecimal\t\tPrev" + Name(field) + "; // copy");
+				WriteLine("\tDecimal" + StuctFieldsSpacing + "Prev" + Name(field) + "; // copy");
 			}
 		}
 
 		private  void WriteInt64Field (XmlNode field) {
-			WriteLine("\tUINT64\t\t" + Name(field) + ";" + GetCommentLine(field));
+			WriteLine("\tUINT64" + StuctFieldsSpacing + Name(field) + ";" + GetCommentLine(field));
 			if(HasCopyValueAttribute(field)) {
-				WriteLine("\tUINT64\t\tPrev" + Name(field) + "; // copy");
+				WriteLine("\tUINT64" + StuctFieldsSpacing + "Prev" + Name(field) + "; // copy");
 			}
 		}
 
 		private  void WriteUint64Field (XmlNode field) {
-			WriteLine("\tUINT64\t\t" + Name(field) + ";" + GetCommentLine(field));
+			WriteLine("\tUINT64" + StuctFieldsSpacing + Name(field) + ";" + GetCommentLine(field));
 			if(HasCopyValueAttribute(field)) {
-				WriteLine("\tUINT64\t\tPrev" + Name(field) + "; // copy");
+				WriteLine("\tUINT64" + StuctFieldsSpacing + "Prev" + Name(field) + "; // copy");
 			}
 		}
 
 		private  void WriteInt32Field (XmlNode field) {
-			WriteLine("\tINT32\t\t" + Name(field) + ";" + GetCommentLine(field));
+			WriteLine("\tINT32" + StuctFieldsSpacing + Name(field) + ";" + GetCommentLine(field));
 			if(HasCopyValueAttribute(field)) {
-				WriteLine("\tINT32\t\tPrev" + Name(field) + "; // copy");
+				WriteLine("\tINT32" + StuctFieldsSpacing + "Prev" + Name(field) + "; // copy");
 			}
 		}
 
 		private  void WriteUint32Field (XmlNode field) {
-			WriteLine("\tUINT32\t\t" + Name(field) + ";" + GetCommentLine(field));
+			WriteLine("\tUINT32" + StuctFieldsSpacing + Name(field) + ";" + GetCommentLine(field));
 			if(HasCopyValueAttribute(field)) {
-				WriteLine("\tUINT32\t\tPrev" + Name(field) + "; // copy");
+				WriteLine("\tUINT32" + StuctFieldsSpacing + "Prev" + Name(field) + "; // copy");
 			}
 		}
 
 		private  void WriteStringDefinition (XmlNode field) {
-			WriteLine("\tchar*\t\t" + Name(field) + ";" + GetCommentLine(field));
-			WriteLine("\tint\t\t\t" + Name(field) + "Length;");
+			WriteLine("\tchar*" + StuctFieldsSpacing + Name(field) + ";" + GetCommentLine(field));
+			WriteLine("\tint" + StuctFieldsSpacing + Name(field) + "Length;");
 			if(HasCopyValueAttribute(field)) {
-				WriteLine("\tchar*\t\tPrev" + Name(field) + "; // copy");
-				WriteLine("\tint\t\t\tPrev" + Name(field) + "Length; // copy");
+				WriteLine("\tchar*" + StuctFieldsSpacing + "Prev" + Name(field) + "; // copy");
+				WriteLine("\tint" + StuctFieldsSpacing + "Prev" + Name(field) + "Length; // copy");
 			}
 		}
 
@@ -904,6 +994,12 @@ namespace prebuild {
 		string Name (XmlNode node) {
 			return node.Attributes["name"] != null ? node.Attributes["name"].Value : "";
 		}
+		string PresenceIndexName(XmlNode node) {
+			return Name(node) + "PresenceIndex";
+		}
+		string AllowFlagName(XmlNode node) {
+			return "Allow" + Name(node);
+		}
 
 		int LevelCount = 1;
 
@@ -1117,7 +1213,8 @@ namespace prebuild {
 		}
 
 		private  void WriteStringValueDefault (XmlNode value, string structName, string tabString) {
-			WriteLine(tabString + structName + "->" + Name(value) + " = \"" + GetDefaultValue(value) + "\";");
+			ConstantStringInfo info = ConstantStrings.FirstOrDefault((i) => i.Node == value);
+			WriteLine(tabString + structName + "->" + Name(value) + " = this->" + info.FieldName + ";");
 			WriteLine(tabString + structName + "->" + Name(value) + "Length = " + GetDefaultValue(value).Length + ";");
 		}
 
