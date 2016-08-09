@@ -1523,8 +1523,14 @@ class FastProtocolManager {
 	BYTE	*currentPos;
 	int		bufferLength;
 
+    int     m_sendMsgSeqNo;
+    int     m_recvMsgSeqNo;
+
 #pragma region String_Constant_Declaration_GeneratedCode
+public:
 	char	MessageEncodingConstString[6];
+	const UINT	MessageEncodingConstStringLength = 5;
+private:
 
 	void InitializeConstantStrings() {
 		sprintf(MessageEncodingConstString, "UTF-8");
@@ -2182,6 +2188,12 @@ class FastProtocolManager {
 #pragma endregion
 
 public:
+
+    inline int SendMsgSeqNo() { return this->m_sendMsgSeqNo; }
+    inline void IncSendMsgSeqNo() { this->m_sendMsgSeqNo++; }
+
+    inline int RecvMsgSeqNo() { return this->m_recvMsgSeqNo; }
+    inline void IncRecvMsgSeqNo() { this->m_recvMsgSeqNo++; }
 
 #pragma region Core_Methods
 	inline bool FastCompareString1(char *str1, char *str2) { return *str1 == *str2; }
@@ -3948,9 +3960,9 @@ public:
 #pragma endregion
 
 #pragma region Encode_Methods_Definition_GeneratedCode
-	inline void EncodeLogonInfo(int msgSeqNumber, FastLogonInfo* info) {
+	inline void EncodeLogonInfo(FastLogonInfo* info) {
 		ResetBuffer();
-		WriteMsgSeqNumber(msgSeqNumber);
+		WriteMsgSeqNumber(this->m_sendMsgSeqNo);
 		WriteString_Mandatory(info->MessageType, info->MessageTypeLength);
 		WriteString_Mandatory(info->BeginString, info->BeginStringLength);
 		WriteString_Mandatory(info->SenderCompID, info->SenderCompIDLength);
@@ -3968,9 +3980,9 @@ public:
 			WriteString_Optional(info->Password, info->PasswordLength);
 		WriteString_Mandatory(info->DefaultApplVerID, info->DefaultApplVerIDLength);
 	}
-	inline void EncodeLogoutInfo(int msgSeqNumber, FastLogoutInfo* info) {
+	inline void EncodeLogoutInfo(FastLogoutInfo* info) {
 		ResetBuffer();
-		WriteMsgSeqNumber(msgSeqNumber);
+		WriteMsgSeqNumber(this->m_sendMsgSeqNo);
 		WriteString_Mandatory(info->MessageType, info->MessageTypeLength);
 		WriteString_Mandatory(info->BeginString, info->BeginStringLength);
 		WriteString_Mandatory(info->SenderCompID, info->SenderCompIDLength);
@@ -3982,9 +3994,9 @@ public:
 		else
 			WriteString_Optional(info->Text, info->TextLength);
 	}
-	inline void EncodeSecurityDefinitionInfo(int msgSeqNumber, FastSecurityDefinitionInfo* info) {
+	inline void EncodeSecurityDefinitionInfo(FastSecurityDefinitionInfo* info) {
 		ResetBuffer();
-		WriteMsgSeqNumber(msgSeqNumber);
+		WriteMsgSeqNumber(this->m_sendMsgSeqNo);
 		WritePresenceMap1((UINT*)info->PresenceMap);
 		WriteString_Mandatory(info->MessageType, info->MessageTypeLength);
 		WriteString_Mandatory(info->ApplVerID, info->ApplVerIDLength);
@@ -4197,9 +4209,9 @@ public:
 		else
 			WriteInt32_Optional(info->NumOfDaysToMaturity);
 	}
-	inline void EncodeSecurityStatusInfo(int msgSeqNumber, FastSecurityStatusInfo* info) {
+	inline void EncodeSecurityStatusInfo(FastSecurityStatusInfo* info) {
 		ResetBuffer();
-		WriteMsgSeqNumber(msgSeqNumber);
+		WriteMsgSeqNumber(this->m_sendMsgSeqNo);
 		WriteString_Mandatory(info->MessageType, info->MessageTypeLength);
 		WriteString_Mandatory(info->ApplVerID, info->ApplVerIDLength);
 		WriteString_Mandatory(info->BeginString, info->BeginStringLength);
@@ -4224,9 +4236,9 @@ public:
 		else
 			WriteUInt32_Optional(info->AuctionIndicator);
 	}
-	inline void EncodeTradingSessionStatusInfo(int msgSeqNumber, FastTradingSessionStatusInfo* info) {
+	inline void EncodeTradingSessionStatusInfo(FastTradingSessionStatusInfo* info) {
 		ResetBuffer();
-		WriteMsgSeqNumber(msgSeqNumber);
+		WriteMsgSeqNumber(this->m_sendMsgSeqNo);
 		WriteString_Mandatory(info->MessageType, info->MessageTypeLength);
 		WriteString_Mandatory(info->ApplVerID, info->ApplVerIDLength);
 		WriteString_Mandatory(info->BeginString, info->BeginStringLength);

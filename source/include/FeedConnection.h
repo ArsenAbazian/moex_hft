@@ -48,7 +48,8 @@ protected:
 
 	WinSockManager								*socketAManager;
 	WinSockManager								*socketBManager;
-	FastProtocolManager 						*fastProtocolManager;
+	FastProtocolManager 						*m_fastProtocolManager;
+    FastLogonInfo                               *m_fastLogonInfo;
 
 	ISocketBufferProvider						*m_socketABufferProvider;
 	ISocketBufferProvider						*m_socketBBufferProvider;
@@ -87,10 +88,10 @@ protected:
 	bool Listen_Atom();
     bool SendLogon_Atom();
 	bool ProcessMessage(SocketBuffer *buffer, int size) {
-		this->fastProtocolManager->SetNewBuffer(buffer->CurrentPos(), size);
+		this->m_fastProtocolManager->SetNewBuffer(buffer->CurrentPos(), size);
 		buffer->Next(size);
 		DefaultLogManager::Default->WriteFast(LogMessageCode::lmcFeedConnection_ProcessMessage, buffer->BufferIndex(), buffer->CurrentItemIndex());
-		int msgSeqNo = this->fastProtocolManager->ReadMsgSeqNumber();
+		int msgSeqNo = this->m_fastProtocolManager->ReadMsgSeqNumber();
 		if(msgSeqNo > this->ExpectedMsgSeqNo()) {
 			return false;
 		}
@@ -108,7 +109,7 @@ public:
 
 	inline virtual void Decode() {
 		DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Decode);
-		this->fastProtocolManager->Decode_Generic();
+		this->m_fastProtocolManager->Decode_Generic();
 		DefaultLogManager::Default->EndLog(true);
 	}
 
@@ -132,7 +133,7 @@ public:
 		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) { }
 	inline void Decode() {
 		DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Decode);
-		this->fastProtocolManager->Decode_OBR_CURR();
+		this->m_fastProtocolManager->Decode_OBR_CURR();
 		DefaultLogManager::Default->EndLog(true);
 	}
 	ISocketBufferProvider* CreateSocketBufferProvider() {
@@ -150,7 +151,7 @@ public:
 		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) { }
 	inline void Decode() {
 		DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Decode);
-		this->fastProtocolManager->Decode_OBS_CURR();
+		this->m_fastProtocolManager->Decode_OBS_CURR();
 		DefaultLogManager::Default->EndLog(true);
 	}
 	ISocketBufferProvider* CreateSocketBufferProvider() {
@@ -168,7 +169,7 @@ public:
 		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) { }
 	inline void Decode() {
 		DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Decode);
-		this->fastProtocolManager->Decode_MSR_CURR();
+		this->m_fastProtocolManager->Decode_MSR_CURR();
 		DefaultLogManager::Default->EndLog(true);
 	}
 	ISocketBufferProvider* CreateSocketBufferProvider() {
@@ -199,7 +200,7 @@ public:
 		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) { }
 	inline void Decode() {
 		DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Decode);
-		this->fastProtocolManager->Decode_OLR_CURR();
+		this->m_fastProtocolManager->Decode_OLR_CURR();
 		DefaultLogManager::Default->EndLog(true);
 	}
 	ISocketBufferProvider* CreateSocketBufferProvider() {
@@ -217,7 +218,7 @@ public:
 		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) { }
 	inline void Decode() {
 		DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Decode);
-		this->fastProtocolManager->Decode_OLS_CURR();
+		this->m_fastProtocolManager->Decode_OLS_CURR();
 		DefaultLogManager::Default->EndLog(true);
 	}
 	ISocketBufferProvider* CreateSocketBufferProvider() {
@@ -235,7 +236,7 @@ public:
 		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) { }
 	inline void Decode() {
 		DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Decode);
-		this->fastProtocolManager->Decode_TLR_CURR();
+		this->m_fastProtocolManager->Decode_TLR_CURR();
 		DefaultLogManager::Default->EndLog(true);
 	}
 	ISocketBufferProvider* CreateSocketBufferProvider() {
@@ -253,7 +254,7 @@ public:
 		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) { }
 	inline void Decode() {
 		DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Decode);
-		this->fastProtocolManager->Decode_TLS_CURR();
+		this->m_fastProtocolManager->Decode_TLS_CURR();
 		DefaultLogManager::Default->EndLog(true);
 	}
 	ISocketBufferProvider* CreateSocketBufferProvider() {
@@ -271,7 +272,7 @@ public:
 		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) { }
 	inline void Decode() {
 		DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Decode);
-		this->fastProtocolManager->Decode_OBR_FOND();
+		this->m_fastProtocolManager->Decode_OBR_FOND();
 		DefaultLogManager::Default->EndLog(true);
 	}
 	ISocketBufferProvider* CreateSocketBufferProvider() {
@@ -289,7 +290,7 @@ public:
 		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) { }
 	inline void Decode() {
 		DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Decode);
-		this->fastProtocolManager->Decode_OBS_FOND();
+		this->m_fastProtocolManager->Decode_OBS_FOND();
 		DefaultLogManager::Default->EndLog(true);
 	}
 	ISocketBufferProvider* CreateSocketBufferProvider() {
@@ -307,7 +308,7 @@ public:
 		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) { }
 	inline void Decode() {
 		DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Decode);
-		this->fastProtocolManager->Decode_MSR_FOND();
+		this->m_fastProtocolManager->Decode_MSR_FOND();
 		DefaultLogManager::Default->EndLog(true);
 	}
 	ISocketBufferProvider* CreateSocketBufferProvider() {
@@ -338,7 +339,7 @@ public:
 		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) { }
 	inline void Decode() {
 		DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Decode);
-		this->fastProtocolManager->Decode_OLR_FOND();
+		this->m_fastProtocolManager->Decode_OLR_FOND();
 		DefaultLogManager::Default->EndLog(true);
 	}
 	ISocketBufferProvider* CreateSocketBufferProvider() {
@@ -356,7 +357,7 @@ public:
 		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) { }
 	inline void Decode() {
 		DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Decode);
-		this->fastProtocolManager->Decode_OLS_FOND();
+		this->m_fastProtocolManager->Decode_OLS_FOND();
 		DefaultLogManager::Default->EndLog(true);
 	}
 	ISocketBufferProvider* CreateSocketBufferProvider() {
@@ -374,7 +375,7 @@ public:
 		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) { }
 	inline void Decode() {
 		DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Decode);
-		this->fastProtocolManager->Decode_TLR_FOND();
+		this->m_fastProtocolManager->Decode_TLR_FOND();
 		DefaultLogManager::Default->EndLog(true);
 	}
 	ISocketBufferProvider* CreateSocketBufferProvider() {
@@ -392,7 +393,7 @@ public:
 		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) { }
 	inline void Decode() {
 		DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Decode);
-		this->fastProtocolManager->Decode_TLS_FOND();
+		this->m_fastProtocolManager->Decode_TLS_FOND();
 		DefaultLogManager::Default->EndLog(true);
 	}
 	ISocketBufferProvider* CreateSocketBufferProvider() {

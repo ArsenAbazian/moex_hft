@@ -18,7 +18,8 @@ FeedConnection::FeedConnection(const char *id, const char *name, char value, Fee
 	strcpy(this->feedBSourceIp, bSourceIp);
 	strcpy(this->feedBIp, bIp);
 	this->feedBPort = bPort;
-	this->fastProtocolManager = new FastProtocolManager();
+	this->m_fastProtocolManager = new FastProtocolManager();
+    this->m_fastLogonInfo = new FastLogonInfo();
 	this->m_socketABufferProvider = CreateSocketBufferProvider();
 	this->m_socketBBufferProvider = CreateSocketBufferProvider();
 	this->m_sendABuffer = this->m_socketABufferProvider->SendBuffer();
@@ -80,6 +81,16 @@ bool FeedConnection::Disconnect() {
 
 bool FeedConnection::Suspend_Atom() {
 	return true;
+}
+
+bool FeedConnection::SendLogon_Atom() {
+
+    this->m_fastLogonInfo->AllowPassword = true;
+    this->m_fastLogonInfo->AllowUsername = true;
+    //this->m_fastLogonInfo->BeginString
+
+    this->m_fastProtocolManager->EncodeLogonInfo(this->m_fastLogonInfo);
+    return true;
 }
 
 bool FeedConnection::Listen_Atom() {

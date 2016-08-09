@@ -150,7 +150,7 @@ namespace prebuild {
 		}
 
 		private bool HasConstString(XmlNode node) {
-			return node.Name == "string" && node.ChildNodes.Count == 1 && node.ChildNodes[0].Name == "default";
+			return node.Name == "string" && node.ChildNodes.Count == 1 && (node.ChildNodes[0].Name == "default"/* || node.ChildNodes[0].Name == "constant"*/);
 		}
 
 		private List<ConstantStringInfo> GetConstantStrings(XmlNode node) {
@@ -169,9 +169,12 @@ namespace prebuild {
 
 		private void WriteStringConstantDeclarationCode(XmlNode node) {
 			SetPosition(String_Constant_Declaration_GeneratedCode);
+			WriteLine("public:");
 			foreach(ConstantStringInfo info in ConstantStrings) {
 				WriteLine("\tchar\t" + info.FieldName + "[" + (info.Value.Length + 1) + "];");
+				WriteLine("\tconst UINT\t" + info.FieldName + "Length = " + info.Value.Length + ";");
 			}
+			WriteLine("private:");
 			WriteLine("");
 			WriteLine("\tvoid InitializeConstantStrings() {");
 			foreach(ConstantStringInfo info in ConstantStrings) {
@@ -204,9 +207,9 @@ namespace prebuild {
 
 		private  void WriteEncodeMethodCode (XmlNode message) {
 			StructureInfo info = new StructureInfo() { NameCore = GetTemplateName(message.PreviousSibling.Value) };
-			WriteLine("\tinline void " + info.EncodeMethodName + "(int msgSeqNumber, " + info.Name + "* info) {");
+			WriteLine("\tinline void " + info.EncodeMethodName + "(" + info.Name + "* info) {");
 			WriteLine("\t\tResetBuffer();");
-			WriteLine("\t\tWriteMsgSeqNumber(msgSeqNumber);");
+			WriteLine("\t\tWriteMsgSeqNumber(this->m_sendMsgSeqNo);");
 			int presenceByteCount = CalcPresenceMapByteCount(message);
 			if(GetMaxPresenceBitCount(message) > 0)
 				WriteLine("\t\tWritePresenceMap" + presenceByteCount + "((UINT*)info->PresenceMap);");
