@@ -84,7 +84,11 @@ typedef enum _LogMessageCode {
 	lmcsocketA = 74,
 	lmcFeedConnection_Listen_Atom = 75,
 	lmcsocketB = 76,
-	lmcWinSockManager_UpdateManagersPollStatus = 77
+	lmcWinSockManager_UpdateManagersPollStatus = 77,
+	lmcFeedConnection_SendLogon_Atom = 78,
+	lmcFeedConnection_ResendLastMessage_Atom = 79,
+	lmcFeedConnection_Reconnect_Atom = 80,
+	lmcFeedConnection_SendCore = 81
 #pragma  endregion
 }LogMessageCode;
 

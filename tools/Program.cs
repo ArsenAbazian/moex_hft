@@ -188,19 +188,12 @@ namespace prebuild {
 				return;
 			}
 			SetPosition(Encode_Methods_Definition_GeneratedCode);
-			Console.WriteLine("write encode methods");
-			foreach(string name in EncodeMessages)
-				Console.Write(name + ", ");
-			Console.WriteLine();
 			List<XmlNode> messages = GetAllMessages(templatesNode);
 			foreach(XmlNode message in messages) {
 				string msgName = message.PreviousSibling.Value.Trim();
-				Console.Write("checking message for encode method '" + msgName + "'");
 				if(!EncodeMessages.Contains(msgName)) {
-					Console.WriteLine(" - no");
 					continue;
 				}
-				Console.WriteLine(" - yes");
 				WriteEncodeMethodCode(message);
 			}
 		}

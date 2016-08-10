@@ -68,7 +68,7 @@ void FastProtocolTester::TestReadInt32_Optional() {
 
 	manager->ResetBuffer();
 	manager->WriteInt32_Optional(942755);
-	if (manager->UsedLength() != 3)
+	if (manager->MessageLength() != 3)
 		throw;
 	if (manager->Buffer()[0] != 0x39) {
 		throw std::runtime_error("buffer 0");
@@ -82,7 +82,7 @@ void FastProtocolTester::TestReadInt32_Optional() {
 
 	manager->ResetBuffer();
 	manager->WriteInt32_Optional(-942755);
-	if (manager->UsedLength() != 3)
+	if (manager->MessageLength() != 3)
 		throw;
 
 	if (manager->Buffer()[0] != 0x46) {
@@ -135,14 +135,14 @@ void FastProtocolTester::TestReadString_Optional() {
 	FastProtocolManager *manager = new FastProtocolManager();
 
 	manager->WriteString_Optional((const char*)NULL, 0);
-	if (manager->UsedLength() != 1)
+	if (manager->MessageLength() != 1)
 		throw;
 	if (manager->Buffer()[0] != 0x80)
 		throw;
 
 	manager->ResetBuffer();
 	manager->WriteString_Optional((char*)"", 0);
-	if (manager->UsedLength() != 2)
+	if (manager->MessageLength() != 2)
 		throw;
 	if (manager->Buffer()[0] != 0x00)
 		throw;
@@ -159,7 +159,7 @@ void FastProtocolTester::TestReadString_Optional() {
 	for (int i = 1; i < 60; i++) { 
 		manager->ResetBuffer();
 		manager->WriteString_Optional(buffer, i);
-		if (manager->UsedLength() != i)
+		if (manager->MessageLength() != i)
 			throw;
 
 		manager->ResetBuffer();
@@ -180,7 +180,7 @@ void FastProtocolTester::TestReadString_Mandatory() {
 	FastProtocolManager *manager = new FastProtocolManager();
 
 	manager->WriteString_Mandatory((char*)"", 0);
-	if (manager->UsedLength() != 1)
+	if (manager->MessageLength() != 1)
 		throw;
 	if (manager->Buffer()[0] != 0x80)
 		throw;
@@ -195,7 +195,7 @@ void FastProtocolTester::TestReadString_Mandatory() {
 	for (int i = 1; i < 60; i++) {
 		manager->ResetBuffer();
 		manager->WriteString_Mandatory(buffer, i);
-		if (manager->UsedLength() != i)
+		if (manager->MessageLength() != i)
 			throw;
 
 		manager->ResetBuffer();
@@ -216,7 +216,7 @@ void FastProtocolTester::TestReadByteVector_Optional() {
 	FastProtocolManager *manager = new FastProtocolManager();
 
 	manager->WriteByteVector_Optional(NULL, 0);
-	if (manager->UsedLength() != 1)
+	if (manager->MessageLength() != 1)
 		throw;
 	if (manager->Buffer()[0] != 0x80)
 		throw;
@@ -280,7 +280,7 @@ void FastProtocolTester::TestReadDecimal_Optional() {
 	Decimal value = { 942755, 2 };
 	manager->WriteDecimal_Optional(&value);
 
-	if (manager->UsedLength() != 4)
+	if (manager->MessageLength() != 4)
 		throw;
 	if (!manager->CheckBuffer(new BYTE[4] { 0x83, 0x39, 0x45, 0xa3 }, 4))
 		throw;
@@ -289,7 +289,7 @@ void FastProtocolTester::TestReadDecimal_Optional() {
 	manager->ResetBuffer();
 	manager->WriteDecimal_Optional(&value);
 
-	if (manager->UsedLength() != 4)
+	if (manager->MessageLength() != 4)
 		throw;
 	if (!manager->CheckBuffer(new BYTE[4] { 0xfe, 0x46, 0x3a, 0xdd }, 4))
 		throw;
@@ -298,7 +298,7 @@ void FastProtocolTester::TestReadDecimal_Optional() {
 	manager->ResetBuffer();
 	manager->WriteDecimal_Optional(&value);
 
-	if (manager->UsedLength() != 4)
+	if (manager->MessageLength() != 4)
 		throw;
 	if (!manager->CheckBuffer(new BYTE[4] { 0xfd, 0x7f, 0x3f, 0xff }, 4))
 		throw;
@@ -313,7 +313,7 @@ void FastProtocolTester::TestReadDecimal_Mandatory() {
 	Decimal value = { 942755, 2 };
 	manager->WriteDecimal_Mandatory(&value);
 
-	if (manager->UsedLength() != 4)
+	if (manager->MessageLength() != 4)
 		throw;
 	if (!manager->CheckBuffer(new BYTE[4] { 0x82, 0x39, 0x45, 0xa3 }, 4))
 		throw;
@@ -322,7 +322,7 @@ void FastProtocolTester::TestReadDecimal_Mandatory() {
 	manager->ResetBuffer();
 	manager->WriteDecimal_Mandatory(&value);
 
-	if (manager->UsedLength() != 5)
+	if (manager->MessageLength() != 5)
 		throw;
 	if (!manager->CheckBuffer(new BYTE[5] { 0x81, 0x04, 0x3f, 0x34, 0xde }, 5))
 		throw;
@@ -331,7 +331,7 @@ void FastProtocolTester::TestReadDecimal_Mandatory() {
 	manager->ResetBuffer();
 	manager->WriteDecimal_Mandatory(&value);
 
-	if (manager->UsedLength() != 4)
+	if (manager->MessageLength() != 4)
 		throw;
 	if (!manager->CheckBuffer(new BYTE[4] { 0xfe, 0x39, 0x45, 0xa3 }, 4))
 		throw;

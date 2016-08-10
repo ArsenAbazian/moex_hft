@@ -2,6 +2,8 @@
 #include "WinSockManager.h"
 #include "FastProtocolManager.h"
 #include "Types.h"
+#include <sys/time.h>
+#include "Stopwatch.h"
 
 typedef enum _FeedConnectionProtocol {
 	TCP_IP,
@@ -11,7 +13,9 @@ typedef enum _FeedConnectionProtocol {
 typedef enum _FeedConnectionState {
 	fcsSuspend,
 	fcsListen,
-    fcsSendLogon
+    fcsSendLogon,
+    fcsResendLastMessage,
+    fcsConnect
 } FeedConnectionState;
 
 typedef enum _FeedConnectionProcessMessageResultValue {
@@ -70,6 +74,14 @@ protected:
 	FeedConnectionWorkAtomPtr					m_nextWorkAtomPtr;
 	bool										m_shouldUseNextState;
 
+    struct timeval                              *m_tval;
+    Stopwatch                                   *m_stopwatch;
+    bool                                        m_shouldReceiveAnswer;
+
+    inline void GetCurrentTime(UINT64 *time) {
+        gettimeofday(this->m_tval, NULL);
+        *time = this->m_tval->tv_usec / 1000;
+    }
 	inline bool CanListen() { return this->socketAManager->ShouldRecv() || this->socketBManager->ShouldRecv(); }
 	inline void IncrementMsgSeqNo() { this->m_msgSeqNo++; }
 	bool InitializeSockets();
@@ -89,9 +101,37 @@ protected:
 		this->m_nextWorkAtomPtr = funcPtr;
 		this->m_shouldUseNextState = true;
 	}
+
 	bool Suspend_Atom();
 	bool Listen_Atom();
     bool SendLogon_Atom();
+    bool ResendLastMessage_Atom();
+    bool Reconnect_Atom();
+
+    inline void ReconnectSetNextState(FeedConnectionState state, FeedConnectionWorkAtomPtr funcPtr) {
+        this->SetNextState(state, funcPtr);
+        this->SetState(FeedConnectionState::fcsConnect, &FeedConnection::Reconnect_Atom);
+    }
+
+    inline void JumpNextState() {
+        this->SetState(this->m_nextState, this->m_nextWorkAtomPtr);
+    }
+
+    inline bool SendCore() {
+        this->m_sendABuffer->SetCurrentItemSize(this->m_fastProtocolManager->MessageLength());
+        DefaultLogManager::Default->WriteFast(LogMessageCode::lmcFeedConnection_SendCore, this->m_sendABuffer->BufferIndex(), this->m_sendABuffer->CurrentItemIndex());
+        if(!this->socketAManager->Send(this->m_fastProtocolManager->Buffer(), this->m_fastProtocolManager->MessageLength())) {
+            this->SetState(FeedConnectionState::fcsResendLastMessage, &FeedConnection::ResendLastMessage_Atom);
+            DefaultLogManager::Default->EndLog(false);
+            return true;
+        }
+
+        this->m_sendABuffer->Next(this->m_fastProtocolManager->MessageLength());
+        this->SetState(FeedConnectionState::fcsListen, &FeedConnection::Listen_Atom);
+        DefaultLogManager::Default->EndLog(true);
+        return true;
+    }
+
 	bool ProcessMessage(SocketBuffer *buffer, int size) {
 		this->m_fastProtocolManager->SetNewBuffer(buffer->CurrentPos(), size);
 		buffer->Next(size);
@@ -112,7 +152,10 @@ public:
 
     void SetSenderCompId(const char *senderCompId) {
         this->m_senderCompId = senderCompId;
-        this->m_senderCompIdLength = strlen(this->m_senderCompId);
+        if(this->m_senderCompId == NULL)
+            this->m_senderCompIdLength = 0;
+        else
+            this->m_senderCompIdLength = strlen(this->m_senderCompId);
     }
     void SetPassword(const char *password) {
         this->m_password = password;
@@ -139,6 +182,11 @@ public:
 		else
 			this->SetNextState(FeedConnectionState::fcsListen, &FeedConnection::Listen_Atom);
 	}
+    inline void Start() {
+        if(this->m_state != FeedConnectionState::fcsSuspend)
+            return;
+        this->SetState(FeedConnectionState::fcsSendLogon, &FeedConnection::SendLogon_Atom);
+    }
 };
 
 class FeedConnection_CURR_OBR : public FeedConnection {

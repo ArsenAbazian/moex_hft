@@ -30,6 +30,10 @@ FeedConnection::FeedConnection(const char *id, const char *name, char value, Fee
     this->socketAManager = NULL;
     this->socketBManager = NULL;
 
+	this->m_stopwatch = new Stopwatch();
+
+    this->m_tval = new struct timeval;
+
 	this->SetState(FeedConnectionState::fcsSuspend, &FeedConnection::Suspend_Atom);
 }
 
@@ -84,6 +88,7 @@ bool FeedConnection::Suspend_Atom() {
 }
 
 bool FeedConnection::SendLogon_Atom() {
+    DefaultLogManager::Default->StartLog(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_SendLogon_Atom);
 
     this->m_fastLogonInfo->AllowPassword = true;
     this->m_fastLogonInfo->AllowUsername = true;
@@ -92,14 +97,56 @@ bool FeedConnection::SendLogon_Atom() {
     this->m_fastLogonInfo->Password = (char*)this->m_password;
     this->m_fastLogonInfo->PasswordLength = this->m_passwordLength;
     this->m_fastLogonInfo->HeartBtInt = 60;
+    this->m_fastLogonInfo->MsgSeqNum = this->m_fastProtocolManager->SendMsgSeqNo();
+    this->GetCurrentTime(&(this->m_fastLogonInfo->SendingTime));
 
+    this->m_fastProtocolManager->SetNewBuffer(this->m_sendABuffer->CurrentPos(), 8192);
+    this->m_fastProtocolManager->ResetBuffer();
     this->m_fastProtocolManager->EncodeLogonInfo(this->m_fastLogonInfo);
+
+	this->m_stopwatch->Start();
+	this->m_shouldReceiveAnswer = true;
+	this->m_fastProtocolManager->IncSendMsgSeqNo();
+
+	return this->SendCore();
+}
+
+bool FeedConnection::ResendLastMessage_Atom() {
+    DefaultLogManager::Default->StartLog(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_ResendLastMessage_Atom);
+
+    if(!this->socketAManager->Resend()) {
+        this->ReconnectSetNextState(FeedConnectionState::fcsResendLastMessage, &FeedConnection::ResendLastMessage_Atom);
+        DefaultLogManager::Default->EndLog(false);
+        return true;
+    }
+    this->SetState(FeedConnectionState::fcsListen, &FeedConnection::Listen_Atom);
+	if(this->m_shouldReceiveAnswer)
+		this->m_stopwatch->Start();
+    DefaultLogManager::Default->EndLog(true);
+    return true;
+}
+
+bool FeedConnection::Reconnect_Atom() {
+    DefaultLogManager::Default->StartLog(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_Reconnect_Atom);
+
+    if(!this->socketAManager->Reconnect()) {
+        DefaultLogManager::Default->EndLog(false);
+        return true;
+    }
+
+    this->SetState(this->m_nextState, this->m_nextWorkAtomPtr);
+    DefaultLogManager::Default->EndLog(true);
     return true;
 }
 
 bool FeedConnection::Listen_Atom() {
-	if(!this->CanListen())
+	if(!this->CanListen()) {
+		if(this->m_shouldReceiveAnswer && this->m_stopwatch->ElapsedSeconds() > 20) {
+			this->SetState(FeedConnectionState::fcsResendLastMessage, &FeedConnection::ResendLastMessage_Atom);
+			return true;
+		}
 		return true;
+	}
 
 	bool res = false;
 	if(!this->socketAManager->Recv(this->m_recvABuffer->CurrentPos())) {
@@ -114,6 +161,7 @@ bool FeedConnection::Listen_Atom() {
 			return true;
 		res = this->ProcessMessage(this->m_recvBBuffer, this->socketBManager->RecvSize());
 		this->m_recvBBuffer->Next(this->socketBManager->RecvSize());
+		this->m_shouldReceiveAnswer = false;
 	}
 	else if(this->socketAManager->RecvSize() == 0) {
 		if(!this->socketBManager->Recv(this->m_recvBBuffer->CurrentPos())) {
@@ -125,10 +173,12 @@ bool FeedConnection::Listen_Atom() {
 			return true;
 		res = this->ProcessMessage(this->m_recvBBuffer, this->socketBManager->RecvSize());
 		this->m_recvBBuffer->Next(this->socketBManager->RecvSize());
+		this->m_shouldReceiveAnswer = false;
 	}
 	else {
 		res = this->ProcessMessage(this->m_recvABuffer, this->socketAManager->RecvSize());
 		this->m_recvABuffer->Next(this->socketAManager->RecvSize());
+		this->m_shouldReceiveAnswer = false;
 	}
 
 	return res;

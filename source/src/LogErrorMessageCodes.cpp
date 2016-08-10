@@ -87,6 +87,10 @@ void LogMessageProvider::InitializeLogMessageText() {
 	this->m_logMessageText[LogMessageCode::lmcFeedConnection_Listen_Atom] = "FeedConnection::Listen_Atom";
 	this->m_logMessageText[LogMessageCode::lmcsocketB] = "socketB";
 	this->m_logMessageText[LogMessageCode::lmcWinSockManager_UpdateManagersPollStatus] = "WinSockManager::UpdateManagersPollStatus";
+	this->m_logMessageText[LogMessageCode::lmcFeedConnection_SendLogon_Atom] = "FeedConnection::SendLogon_Atom";
+	this->m_logMessageText[LogMessageCode::lmcFeedConnection_ResendLastMessage_Atom] = "FeedConnection::ResendLastMessage_Atom";
+	this->m_logMessageText[LogMessageCode::lmcFeedConnection_Reconnect_Atom] = "FeedConnection::Reconnect_Atom";
+	this->m_logMessageText[LogMessageCode::lmcFeedConnection_SendCore] = "FeedConnection::SendCore";
 #pragma endregion
 }
 

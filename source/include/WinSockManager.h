@@ -131,7 +131,7 @@ public:
 	inline bool ShouldRecv() { return WinSockManager::m_recvCount[this->m_pollIndex] > 0; }
 	inline void OnRecv() {
 		if(this->ShouldRecv())
-			WinSockManager::m_recvCount[this->m_pollIndex]--;
+			WinSockManager::m_recvCount[this->m_pollIndex] = 0;//--;
 	}
 
 	inline bool Recv(unsigned char *buffer) {
@@ -149,11 +149,11 @@ public:
         this->m_recvSize = recv(this->m_socket, this->m_recvBytes, 8192, 0);
 		if (this->m_recvSize < 0)
             return false;
+		this->OnRecv();
 		if(this->m_recvSize == 0) {
 			this->Reconnect();
             return false; // do nothing
 		}
-		this->OnRecv();
         return true;
 	}
 	inline bool RecvUDP(unsigned char *buffer) {

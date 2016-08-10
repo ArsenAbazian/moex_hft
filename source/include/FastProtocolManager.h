@@ -1523,8 +1523,8 @@ class FastProtocolManager {
 	BYTE	*currentPos;
 	int		bufferLength;
 
-    int     m_sendMsgSeqNo;
-    int     m_recvMsgSeqNo;
+    unsigned int     m_sendMsgSeqNo;
+    unsigned int     m_recvMsgSeqNo;
 
 #pragma region String_Constant_Declaration_GeneratedCode
 public:
@@ -2189,10 +2189,10 @@ private:
 
 public:
 
-    inline int SendMsgSeqNo() { return this->m_sendMsgSeqNo; }
+    inline unsigned int SendMsgSeqNo() { return this->m_sendMsgSeqNo; }
     inline void IncSendMsgSeqNo() { this->m_sendMsgSeqNo++; }
 
-    inline int RecvMsgSeqNo() { return this->m_recvMsgSeqNo; }
+    inline unsigned int RecvMsgSeqNo() { return this->m_recvMsgSeqNo; }
     inline void IncRecvMsgSeqNo() { this->m_recvMsgSeqNo++; }
 
 #pragma region Core_Methods
@@ -3983,7 +3983,7 @@ public:
 	inline BYTE* Buffer() { return this->buffer; }
 	inline BYTE* CurrentPos() { return this->currentPos; }
 	inline int BufferLength() { return this->bufferLength; }
-	inline int UsedLength() { return this->currentPos - this->buffer; }
+	inline int MessageLength() { return this->currentPos - this->buffer; }
 	inline void SetBufferLength(int value) { this->bufferLength = value; }
 #pragma endregion
 

@@ -85,11 +85,11 @@ bool FeedChannel::Connect() {
 		return false;
 	}
 
-	this->orderBookIncremental->Listen();
-	this->statisticsIncremental->Listen();
-	this->ordersIncremental->Listen();
-	this->tradesIncremental->Listen();
-	this->instrumentStatus->Listen();
+	this->orderBookIncremental->Start();
+	this->statisticsIncremental->Start();
+	this->ordersIncremental->Start();
+	this->tradesIncremental->Start();
+	this->instrumentStatus->Start();
 
 	DefaultLogManager::Default->EndLog(true);
 	return true;
