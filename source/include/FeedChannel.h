@@ -6,6 +6,8 @@ class FeedChannel {
 	int  m_idLogIndex;
 	char name[64];
 	int  m_nameLogIndex;
+	const char *m_senderCompId;
+	const char *m_password;
 
 	FeedConnection *orderBookIncremental;
 	FeedConnection *orderBookSnapshot;
@@ -22,6 +24,59 @@ class FeedChannel {
 public:
 	FeedChannel(const char *id, const char *name);
 	~FeedChannel();
+
+	void SetPassword(const char *password) {
+		this->m_password = password;
+		if(this->orderBookIncremental != NULL)
+			this->orderBookIncremental->SetPassword(this->m_password);
+		if(this->orderBookIncremental != NULL)
+			this->orderBookSnapshot->SetPassword(this->m_password);
+		if(this->statisticsIncremental != NULL)
+			this->statisticsIncremental->SetPassword(this->m_password);
+		if(this->statisticsSnapshot != NULL)
+			this->statisticsSnapshot->SetPassword(this->m_password);
+		if(this->ordersIncremental != NULL)
+			this->ordersIncremental->SetPassword(this->m_password);
+		if(this->ordersSnapshot != NULL)
+			this->ordersSnapshot->SetPassword(this->m_password);
+		if(this->tradesIncremental != NULL)
+			this->tradesIncremental->SetPassword(this->m_password);
+		if(this->tradesSnapshot != NULL)
+			this->tradesSnapshot->SetPassword(this->m_password);
+		if(this->instrumentReplay != NULL)
+			this->instrumentReplay->SetPassword(this->m_password);
+		if(this->instrumentStatus != NULL)
+			this->instrumentStatus->SetPassword(this->m_password);
+		if(this->historicalReplay != NULL)
+			this->historicalReplay->SetPassword(this->m_password);
+	}
+
+	void SetSenderCompId(const char *senderCompId) {
+		this->m_senderCompId = senderCompId;
+
+		if(this->orderBookIncremental != NULL)
+			this->orderBookIncremental->SetSenderCompId(this->m_senderCompId);
+		if(this->orderBookIncremental != NULL)
+			this->orderBookSnapshot->SetSenderCompId(this->m_senderCompId);
+		if(this->statisticsIncremental != NULL)
+			this->statisticsIncremental->SetSenderCompId(this->m_senderCompId);
+		if(this->statisticsSnapshot != NULL)
+			this->statisticsSnapshot->SetSenderCompId(this->m_senderCompId);
+		if(this->ordersIncremental != NULL)
+			this->ordersIncremental->SetSenderCompId(this->m_senderCompId);
+		if(this->ordersSnapshot != NULL)
+			this->ordersSnapshot->SetSenderCompId(this->m_senderCompId);
+		if(this->tradesIncremental != NULL)
+			this->tradesIncremental->SetSenderCompId(this->m_senderCompId);
+		if(this->tradesSnapshot != NULL)
+			this->tradesSnapshot->SetSenderCompId(this->m_senderCompId);
+		if(this->instrumentReplay != NULL)
+			this->instrumentReplay->SetSenderCompId(this->m_senderCompId);
+		if(this->instrumentStatus != NULL)
+			this->instrumentStatus->SetSenderCompId(this->m_senderCompId);
+		if(this->historicalReplay != NULL)
+			this->historicalReplay->SetSenderCompId(this->m_senderCompId);
+	}
 
 	void SetConnection(FeedConnection *conn);
 	const char* Id() { return this->id; }

@@ -134,7 +134,7 @@ void FastProtocolTester::TestReadString_Optional() {
 	printf("Test FastProtocolTester::TestReadString_Optional\n");
 	FastProtocolManager *manager = new FastProtocolManager();
 
-	manager->WriteString_Optional(NULL, 0);
+	manager->WriteString_Optional((const char*)NULL, 0);
 	if (manager->UsedLength() != 1)
 		throw;
 	if (manager->Buffer()[0] != 0x80)

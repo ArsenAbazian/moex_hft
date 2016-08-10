@@ -46,6 +46,11 @@ protected:
 
 	int											m_msgSeqNo;
 
+    const char                                  *m_senderCompId;
+    int                                         m_senderCompIdLength;
+    const char                                  *m_password;
+    int                                         m_passwordLength;
+
 	WinSockManager								*socketAManager;
 	WinSockManager								*socketBManager;
 	FastProtocolManager 						*m_fastProtocolManager;
@@ -105,7 +110,16 @@ public:
 	bool Connect();
 	bool Disconnect();
 
-	inline char* Id() { return this->id; }
+    void SetSenderCompId(const char *senderCompId) {
+        this->m_senderCompId = senderCompId;
+        this->m_senderCompIdLength = strlen(this->m_senderCompId);
+    }
+    void SetPassword(const char *password) {
+        this->m_password = password;
+        this->m_passwordLength = strlen(this->m_password);
+    }
+
+    inline char* Id() { return this->id; }
 
 	inline virtual void Decode() {
 		DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Decode);

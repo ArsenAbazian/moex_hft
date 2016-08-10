@@ -3683,7 +3683,8 @@ public:
 		WriteInt32_Mandatory(value->Mantissa);
 		return;
 	}
-	inline void WriteDecimal_Mandatory(Decimal *value) { 
+
+	inline void WriteDecimal_Mandatory(Decimal *value) {
 		WriteInt32_Mandatory(value->Exponent);
 		WriteInt32_Mandatory(value->Mantissa);
 		return;
@@ -3703,7 +3704,8 @@ public:
 		this->currentPos[length - 1] |= 0x80;
 		this->currentPos += length;
 	}
-	inline void WriteString_Mandatory(char *str, int length) { 
+
+	inline void WriteString_Mandatory(char *str, int length) {
 		if (length == 0) {
 			*((int*)this->currentPos) = 0x80;
 			this->currentPos ++;
@@ -3713,6 +3715,32 @@ public:
 		this->currentPos[length - 1] |= 0x80;
 		this->currentPos += length;
 	}
+
+    inline void WriteString_Optional(const char *str, int length) {
+        if (str == NULL) {
+            *(this->currentPos) = 0x80;
+            this->currentPos++;
+        }
+        else if (length == 0) {
+            *((int*)this->currentPos) = 0x8000;
+            this->currentPos += 2;
+            return;
+        }
+        memcpy(this->currentPos, str, length);
+        this->currentPos[length - 1] |= 0x80;
+        this->currentPos += length;
+    }
+
+    inline void WriteString_Mandatory(const char *str, int length) {
+        if (length == 0) {
+            *((int*)this->currentPos) = 0x80;
+            this->currentPos ++;
+            return;
+        }
+        memcpy(this->currentPos, str, length);
+        this->currentPos[length - 1] |= 0x80;
+        this->currentPos += length;
+    }
 
 	inline void ReadString_Optional(char **strPtrAddress, int *lengthAddress) {
 		UINT64 memory = *((UINT64*)this->currentPos);
@@ -3963,9 +3991,9 @@ public:
 	inline void EncodeLogonInfo(FastLogonInfo* info) {
 		ResetBuffer();
 		WriteMsgSeqNumber(this->m_sendMsgSeqNo);
-		WriteString_Mandatory(info->MessageType, info->MessageTypeLength);
-		WriteString_Mandatory(info->BeginString, info->BeginStringLength);
-		WriteString_Mandatory(info->SenderCompID, info->SenderCompIDLength);
+		WriteString_Mandatory("A", 1);
+		WriteString_Mandatory("FIXT.1.1", 8);
+		WriteString_Mandatory("MOEX", 4);
 		WriteString_Mandatory(info->TargetCompID, info->TargetCompIDLength);
 		WriteUInt32_Mandatory(info->MsgSeqNum);
 		WriteUInt64_Mandatory(info->SendingTime);
@@ -3983,9 +4011,9 @@ public:
 	inline void EncodeLogoutInfo(FastLogoutInfo* info) {
 		ResetBuffer();
 		WriteMsgSeqNumber(this->m_sendMsgSeqNo);
-		WriteString_Mandatory(info->MessageType, info->MessageTypeLength);
-		WriteString_Mandatory(info->BeginString, info->BeginStringLength);
-		WriteString_Mandatory(info->SenderCompID, info->SenderCompIDLength);
+		WriteString_Mandatory("5", 1);
+		WriteString_Mandatory("FIXT.1.1", 8);
+		WriteString_Mandatory("MOEX", 4);
 		WriteString_Mandatory(info->TargetCompID, info->TargetCompIDLength);
 		WriteUInt32_Mandatory(info->MsgSeqNum);
 		WriteUInt64_Mandatory(info->SendingTime);
@@ -3998,10 +4026,10 @@ public:
 		ResetBuffer();
 		WriteMsgSeqNumber(this->m_sendMsgSeqNo);
 		WritePresenceMap1((UINT*)info->PresenceMap);
-		WriteString_Mandatory(info->MessageType, info->MessageTypeLength);
-		WriteString_Mandatory(info->ApplVerID, info->ApplVerIDLength);
-		WriteString_Mandatory(info->BeginString, info->BeginStringLength);
-		WriteString_Mandatory(info->SenderCompID, info->SenderCompIDLength);
+		WriteString_Mandatory("d", 1);
+		WriteString_Mandatory("9", 1);
+		WriteString_Mandatory("FIXT.1.1", 8);
+		WriteString_Mandatory("MOEX", 4);
 		if(CheckMandatoryFieldPresence(info->PresenceMap, info->MsgSeqNumPresenceIndex))
 			WriteUInt32_Mandatory(info->MsgSeqNum);
 		WriteUInt64_Mandatory(info->SendingTime);
@@ -4212,10 +4240,10 @@ public:
 	inline void EncodeSecurityStatusInfo(FastSecurityStatusInfo* info) {
 		ResetBuffer();
 		WriteMsgSeqNumber(this->m_sendMsgSeqNo);
-		WriteString_Mandatory(info->MessageType, info->MessageTypeLength);
-		WriteString_Mandatory(info->ApplVerID, info->ApplVerIDLength);
-		WriteString_Mandatory(info->BeginString, info->BeginStringLength);
-		WriteString_Mandatory(info->SenderCompID, info->SenderCompIDLength);
+		WriteString_Mandatory("f", 1);
+		WriteString_Mandatory("9", 1);
+		WriteString_Mandatory("FIXT.1.1", 8);
+		WriteString_Mandatory("MOEX", 4);
 		WriteUInt32_Mandatory(info->MsgSeqNum);
 		WriteUInt64_Mandatory(info->SendingTime);
 		WriteString_Mandatory(info->Symbol, info->SymbolLength);
@@ -4239,10 +4267,10 @@ public:
 	inline void EncodeTradingSessionStatusInfo(FastTradingSessionStatusInfo* info) {
 		ResetBuffer();
 		WriteMsgSeqNumber(this->m_sendMsgSeqNo);
-		WriteString_Mandatory(info->MessageType, info->MessageTypeLength);
-		WriteString_Mandatory(info->ApplVerID, info->ApplVerIDLength);
-		WriteString_Mandatory(info->BeginString, info->BeginStringLength);
-		WriteString_Mandatory(info->SenderCompID, info->SenderCompIDLength);
+		WriteString_Mandatory("h", 1);
+		WriteString_Mandatory("9", 1);
+		WriteString_Mandatory("FIXT.1.1", 8);
+		WriteString_Mandatory("MOEX", 4);
 		WriteUInt32_Mandatory(info->MsgSeqNum);
 		WriteUInt64_Mandatory(info->SendingTime);
 		WriteInt32_Mandatory(info->TradSesStatus);

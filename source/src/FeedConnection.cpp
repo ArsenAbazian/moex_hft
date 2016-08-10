@@ -87,7 +87,11 @@ bool FeedConnection::SendLogon_Atom() {
 
     this->m_fastLogonInfo->AllowPassword = true;
     this->m_fastLogonInfo->AllowUsername = true;
-    //this->m_fastLogonInfo->BeginString
+    this->m_fastLogonInfo->SenderCompID = (char*)this->m_senderCompId;
+    this->m_fastLogonInfo->SenderCompIDLength = this->m_senderCompIdLength;
+    this->m_fastLogonInfo->Password = (char*)this->m_password;
+    this->m_fastLogonInfo->PasswordLength = this->m_passwordLength;
+    this->m_fastLogonInfo->HeartBtInt = 60;
 
     this->m_fastProtocolManager->EncodeLogonInfo(this->m_fastLogonInfo);
     return true;

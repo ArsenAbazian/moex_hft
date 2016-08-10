@@ -37,7 +37,9 @@ public:
 
     void SetFeedChannel(FeedChannel *feedChannel) {
         this->m_feedChannel = feedChannel;
-    }
+    	this->m_feedChannel->SetSenderCompId(this->m_trade->SenderComputerId());
+		this->m_feedChannel->SetPassword(this->m_trade->Password());
+	}
 
     inline FeedChannel* FeedChannel() { return this->m_feedChannel; }
     inline const char* Name() { return this->m_name; }

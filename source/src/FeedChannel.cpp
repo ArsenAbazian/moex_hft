@@ -25,6 +25,7 @@ FeedChannel::~FeedChannel() {
 }
 
 void FeedChannel::SetConnection(FeedConnection *conn) { 
+	conn->SetSenderCompId(this->m_senderCompId);
 	if (strcmp(conn->Id(), "OBR") == 0)
 		this->orderBookIncremental = conn;
 	if (strcmp(conn->Id(), "OBS") == 0)

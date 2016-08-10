@@ -323,7 +323,10 @@ namespace prebuild {
 
 		private  void WriteStringEncodeMethodCode (XmlNode field, StructureInfo si, string tabs) {
 			string methodName = HasOptionalPresence(field) ? "WriteString_Optional" : "WriteString_Mandatory";
-			WriteLine(tabs + methodName + "(" + si.InCodeValueName + "->" + Name(field) + ", " + si.InCodeValueName + "->" + Name(field) + "Length);");
+			if(HasConstantAttribute(field))
+				WriteLine(tabs + methodName + "(\"" + GetFieldConstantValue(field) + "\", " + GetFieldConstantValue(field).Length + ");");
+			else 
+				WriteLine(tabs + methodName + "(" + si.InCodeValueName + "->" + Name(field) + ", " + si.InCodeValueName + "->" + Name(field) + "Length);");
 		}
 
 		private  List<XmlNode> GetAllMessages (XmlNode templatesNode) {
