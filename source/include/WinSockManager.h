@@ -6,6 +6,12 @@
 #include <netinet/in.h>
 #include <errno.h>
 #include <thread>
+#include <stdio.h>
+#include <thread>
+#include <cstring>
+#include <netdb.h>
+#include <unistd.h>
+#include <arpa/inet.h>
 #include "LogManager.h"
 #include <sys/poll.h>
 
@@ -61,6 +67,7 @@ class WinSockManager {
 
 	int                             m_socket;
 	sockaddr_in                     m_adress;
+	ip_mreq_source					m_imr;
 	unsigned int					m_addressSize;
 	WinSockConnectionType           m_connectionType;
 	char 							m_fullAddress[64];
@@ -87,7 +94,80 @@ class WinSockManager {
 	}
 
 	void InitializePollInfo();
+	inline bool ReconnectFast() {
+		DefaultLogManager::Default->StartLog(LogMessageCode::lmcWinSockManager_Reconnect, this->m_serverAddressLogIndex);
 
+		if(this->m_connected) {
+			shutdown(this->m_socket, SHUT_RDWR);
+			this->m_connected = false;
+		}
+
+		int result = close(this->m_socket);
+		if (result < 0) {
+			DefaultLogManager::Default->EndLog(false, strerror(errno));
+			return false;
+		}
+
+		this->m_connected = false;
+
+		this->m_socket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+		if (this->m_socket < 0) {
+			DefaultLogManager::Default->EndLogErrNo(false, strerror(errno));
+			return false;
+		}
+
+		if(bind(this->m_socket, (struct sockaddr*)&(this->m_adress), sizeof(this->m_adress)) < 0) {
+			DefaultLogManager::Default->EndLogErrNo(false, strerror(errno));
+			return false;
+		}
+
+		if(setsockopt(this->m_socket, IPPROTO_IP, IP_ADD_SOURCE_MEMBERSHIP, (char*)&(this->m_imr), sizeof(this->m_imr)) < 0) {
+			DefaultLogManager::Default->EndLogErrNo(false, strerror(errno));
+			return false;
+		}
+
+		this->UpdatePoll();
+
+		this->m_connected = true;
+		DefaultLogManager::Default->EndLog(true);
+		return true;
+	}
+
+	inline bool ReconnectTcp() {
+		DefaultLogManager::Default->StartLog(LogMessageCode::lmcWinSockManager_Reconnect, this->m_serverAddressLogIndex);
+
+		if(this->m_connected) {
+			shutdown(this->m_socket, SHUT_RDWR);
+			this->m_connected = false;
+		}
+
+		int result = close(this->m_socket);
+		if (result < 0) {
+			DefaultLogManager::Default->EndLog(false, strerror(errno));
+			return false;
+		}
+
+		this->m_connected = false;
+		this->m_socket = socket(AF_INET,
+								SOCK_STREAM,
+								IPPROTO_TCP);
+		if (this->m_socket < 0) {
+			DefaultLogManager::Default->EndLog(false, strerror(errno));
+			return false;
+		}
+
+		result = connect(this->m_socket, (const sockaddr*)&(this->m_adress), sizeof(this->m_adress));
+		if (result < 0) {
+			DefaultLogManager::Default->EndLog(false, strerror(errno));
+			return false;
+		}
+
+		this->UpdatePoll();
+
+		this->m_connected = true;
+		DefaultLogManager::Default->EndLog(true);
+		return true;
+	}
 public:
 	WinSockManager();
 	~WinSockManager();
@@ -109,12 +189,16 @@ public:
 
 	inline static bool HasRecvEvents() { return WinSockManager::m_pollRes > 0; }
 
-	bool Connect(char *server_address, unsigned short server_port) {
-		return Connect(server_address, server_port, WinSockConnectionType::wsTCP);
-	}
-	bool Connect(char *server_address, unsigned short server_port, WinSockConnectionType type);
+	bool Connect(char *server_address, unsigned short server_port);
+	bool ConnectMulticast(char *sourceIP, char *groupIp, unsigned short groupPort);
 	bool Disconnect();
-	bool Reconnect();
+
+	inline bool Reconnect() {
+		if(this->m_connectionType == WinSockConnectionType::wsTCP)
+			return this->ReconnectTcp();
+		return this->ReconnectFast();
+	}
+
 	bool TryFixSocketError(int socketError);
 
 	inline bool Resend() { return this->Send(this->SendBytes(), this->SendSize()); }

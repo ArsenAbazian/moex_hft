@@ -185,7 +185,8 @@ public:
     inline void Start() {
         if(this->m_state != FeedConnectionState::fcsSuspend)
             return;
-        this->SetState(FeedConnectionState::fcsSendLogon, &FeedConnection::SendLogon_Atom);
+        this->Listen();
+        //this->SetState(FeedConnectionState::fcsSendLogon, &FeedConnection::SendLogon_Atom);
     }
 };
 

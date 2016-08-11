@@ -57,15 +57,22 @@ bool FeedConnection::Connect() {
 	if(this->socketAManager == NULL && !this->InitializeSockets())
 		return false;
 	DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Connect);
-	WinSockConnectionType connType = this->protocol == FeedConnectionProtocol::TCP_IP? WinSockConnectionType::wsTCP: WinSockConnectionType::wsUDP;
-    if (!this->socketAManager->Connect(this->feedASourceIp, this->feedAPort, connType)) {
-		DefaultLogManager::Default->EndLog(false);
-		return false;
-	}
-	if (!this->socketBManager->Connect(this->feedBSourceIp, this->feedBPort, connType)) {
-		DefaultLogManager::Default->EndLog(false);
-		return false;
-	}
+    if(this->protocol == FeedConnectionProtocol::UDP_IP) {
+        if (!this->socketAManager->ConnectMulticast(this->feedASourceIp, this->feedAIp, this->feedAPort)) {
+            DefaultLogManager::Default->EndLog(false);
+            return false;
+        }
+        if (!this->socketBManager->ConnectMulticast(this->feedBSourceIp, this->feedBIp, this->feedBPort)) {
+            DefaultLogManager::Default->EndLog(false);
+            return false;
+        }
+    }
+    else {
+        if(!this->socketAManager->Connect(this->feedAIp, this->feedAPort)) {
+            DefaultLogManager::Default->EndLog(false);
+            return false;
+        }
+    }
 	DefaultLogManager::Default->EndLog(true);
 	return true;
 }

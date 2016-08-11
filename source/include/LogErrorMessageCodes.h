@@ -88,7 +88,8 @@ typedef enum _LogMessageCode {
 	lmcFeedConnection_SendLogon_Atom = 78,
 	lmcFeedConnection_ResendLastMessage_Atom = 79,
 	lmcFeedConnection_Reconnect_Atom = 80,
-	lmcFeedConnection_SendCore = 81
+	lmcFeedConnection_SendCore = 81,
+	lmcWinSockManager_ConnectFast = 82
 #pragma  endregion
 }LogMessageCode;
 

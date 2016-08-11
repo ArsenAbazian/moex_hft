@@ -91,6 +91,7 @@ void LogMessageProvider::InitializeLogMessageText() {
 	this->m_logMessageText[LogMessageCode::lmcFeedConnection_ResendLastMessage_Atom] = "FeedConnection::ResendLastMessage_Atom";
 	this->m_logMessageText[LogMessageCode::lmcFeedConnection_Reconnect_Atom] = "FeedConnection::Reconnect_Atom";
 	this->m_logMessageText[LogMessageCode::lmcFeedConnection_SendCore] = "FeedConnection::SendCore";
+	this->m_logMessageText[LogMessageCode::lmcWinSockManager_ConnectFast] = "WinSockManager::ConnectFast";
 #pragma endregion
 }
 
