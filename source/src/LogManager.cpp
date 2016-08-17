@@ -50,7 +50,10 @@ void BinaryLogManager::Print(BinaryLogItem *item) {
             unsigned char *itemText = DefaultSocketBufferManager::Default->Buffer(item->m_bufferIndex)->Item(item->m_itemIndex);
             int itemSize = DefaultSocketBufferManager::Default->Buffer(item->m_bufferIndex)->ItemLength(item->m_itemIndex);
             for(int i = 0; i < itemSize; i++) {
-                printf("%2.2x ", (unsigned int)itemText[i]);
+                if(i == itemSize - 1)
+                    printf("%2.2x", (unsigned int)itemText[i]);
+                else
+                    printf("%2.2x ", (unsigned int)itemText[i]);
             }
             printf("'");
         }

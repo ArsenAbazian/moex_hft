@@ -131,6 +131,7 @@ namespace prebuild {
 
 		private  void ParseTemplatesNode (XmlNode templatesNode) {
 
+			HeaderTags = CollectHeaderTags(templatesNode);
 			WriteEntireMethodAddressArrays(templatesNode);
 			WriteStructuresDefinitionCode(templatesNode);
 			WriteStructuresDeclarationCode(templatesNode);
@@ -139,6 +140,7 @@ namespace prebuild {
 			WriteGetFreeItemCode(templatesNode);
 
 			WriteEncodeMethodsCode(templatesNode);
+			WriteHeaderParsingCode(templatesNode);
 			WriteDecodeMethodsCode(templatesNode);
 		}
 
@@ -359,7 +361,7 @@ namespace prebuild {
 
 			public string ValueName { 
 				get { 
-					return NameCore.Substring(0, 1).ToLower() + NameCore.Substring(1) + (IsSequence ? "Items" : ""); 
+					return "m_" + NameCore.Substring(0, 1).ToLower() + NameCore.Substring(1) + (IsSequence ? "Items" : ""); 
 				} 
 			}
 
@@ -402,6 +404,7 @@ namespace prebuild {
 
 		private  List<StructureInfo> GetAllStructureNames (XmlNode templatesNode) {
 			List<StructureInfo> res = new List<StructureInfo>();
+			res.Add(new StructureInfo() { NameCore = "Header" });
 			foreach(XmlNode node in templatesNode.ChildNodes) {
 				if(node.Name == "template") {
 					res.Add(new StructureInfo() { NameCore = GetTemplateName(node.PreviousSibling.Value) });
@@ -464,9 +467,61 @@ namespace prebuild {
 			WriteLine("\t}");
 		}
 
+		private List<XmlNode> GetTemplates(XmlNode templatesNode) {
+			List<XmlNode> res = new List<XmlNode>();
+
+			foreach(XmlNode node in templatesNode.ChildNodes) {
+				if(node.Name == "template")
+					res.Add(node);
+			}
+			return res;
+		}
+
+		private List<string> CollectHeaderTags(XmlNode templatesNode) {
+			List<string> headerTags = new List<string>();
+			List<XmlNode> templates = GetTemplates(templatesNode);
+			 
+			for(int i = 0; i < templates[0].ChildNodes.Count; i++) {
+				string tagId = templates[0].ChildNodes[i].Attributes["id"].Value;
+				Console.WriteLine("checking " + tagId);
+				for(int j = 1; j < templates.Count; j++) {
+					if(i >= templates[j].ChildNodes.Count)
+						return headerTags;
+					string tagId2 = templates[j].ChildNodes[i].Attributes["id"].Value;
+					if(tagId != tagId2) {
+						Console.WriteLine("non header tag expected " + tagId + " but found " + tagId2);
+						return headerTags;
+					}
+				}
+				Console.WriteLine("add header tag " + templates[0].ChildNodes[i].Attributes["name"].Value);
+				headerTags.Add(templates[0].ChildNodes[i].Attributes["id"].Value);
+			}
+			return headerTags;
+		}
+
+		protected List<string> HeaderTags { get; set; }
+		private void WriteHeaderParsingCode(XmlNode templatesNode) {
+			SetPosition(Decode_Methods_Definition_GeneratedCode);
+			List<XmlNode> templates = GetTemplates(templatesNode);
+
+			WriteLine("\tinline FastHeaderInfo* DecodeHeader() {"); 
+			WriteLine("");
+			WriteLine("\t\tFastHeaderInfo *info = GetFreeHeaderInfo();");
+			WriteLine("\t\t");
+			WriteParsePresenceMap(null, "info", "\t\t");
+			WriteLine("");
+			foreach(XmlNode value in templates[0].ChildNodes) {
+				if(!IsValueBelongsToHeader(value))
+					break;
+				ParseValue(value, "info", "", "\t\t");
+			}
+			WriteLine("\t\treturn info;");
+			WriteLine("\t}");
+			WriteLine("");
+		}
+
 		private  void WriteDecodeMethodsCode (XmlNode templatesNode) {
 			XmlNode lastComment = null;
-			SetPosition(Decode_Methods_Definition_GeneratedCode);
 			foreach(XmlNode node in templatesNode.ChildNodes) {
 				if(node.NodeType == XmlNodeType.Comment) {
 					lastComment = node;
@@ -487,7 +542,14 @@ namespace prebuild {
 				string code = string.Format("0x{0:x8}", 1 << (31 - i));
 				WriteLine("#define PRESENCE_MAP_INDEX" + i + " " + code);
 			}
+
 			WriteLine("");
+			WriteLine("typedef struct _FastHeaderInfo {");
+			List<XmlNode> templates = GetTemplates(templatesNode);
+			WriteSequenceNodeFieldDefinition(templates[0], "", true, true, true, 16);
+			WriteLine("}FastHeaderInfo;");
+			WriteLine("");
+
 			foreach(XmlNode node in templatesNode.ChildNodes) {
 				if(node.NodeType == XmlNodeType.Comment) {
 					lastComment = node;
@@ -555,7 +617,8 @@ namespace prebuild {
 			List<string> decodeEntryMethodList = GetDecodeEntryMethodList(templatesNode);
 			foreach(string mSuffix in decodeEntryMethodList) {
 				WriteLine("\tinline void Decode" + mSuffix + "() {");
-				WriteLine("\t\tunsigned char msgType = ReadMsgType();");
+				WriteLine("\t\tthis->DecodeHeader();");
+				WriteLine("\t\tunsigned char msgType = this->GetMsgType();");
 				WriteLine("\t\tFastDecodeMethodPointer funcPtr = this->DecodeMethods" + mSuffix + "[msgType];");
 				WriteLine("\t\t(this->*funcPtr)();");
 				WriteLine("\t}");
@@ -597,7 +660,6 @@ namespace prebuild {
 			}
 			return res;
 		}
-
 		private  void WriteNodeSequenceStructDefinition (XmlNode template, string parentName) {
 			foreach(XmlNode node in template) {
 				string name = parentName + Name(node);
@@ -609,7 +671,7 @@ namespace prebuild {
 					continue;
 
 				WriteLine("typedef struct _" + info.Name + " {");
-				WriteSequenceNodeFieldDefinition(node, info.NameCore);
+				WriteSequenceNodeFieldDefinition(node, info.NameCore, false, false, true, 0);
 				WriteLine("}" + info.Name + ";");
 				WriteLine("");
 
@@ -617,9 +679,12 @@ namespace prebuild {
 			}
 		}
 
-		private  void WriteSequenceNodeFieldDefinition (XmlNode node, string parentName) {
-			WritePresenceMapDefinition(node);
+		private  void WriteSequenceNodeFieldDefinition (XmlNode node, string parentName, bool checkHeaderTag, bool generateIfHeaderTag, bool writePresenceMap, int forcedPresenceMapCount) {
+			if(writePresenceMap)
+				WritePresenceMapDefinition(node, forcedPresenceMapCount);
 			foreach(XmlNode field in node) {
+				if(checkHeaderTag && IsValueBelongsToHeader(field) == !generateIfHeaderTag)
+					continue;
 				if(field.Name == "string")
 					WriteStringDefinition(field);
 				else if(field.Name == "uInt32")
@@ -655,15 +720,20 @@ namespace prebuild {
 			}			
 		} 
 
-		private  void WritePresenceMapDefinition (XmlNode node) {
+		private  void WritePresenceMapDefinition (XmlNode node, int forcedPresenceMapCount) {
 			int maxPresenceBitCount = GetMaxPresenceBitCount(node);
-			int maxPresenceMapIntCount = CalcPresenceMapIntCount(maxPresenceBitCount);
+			int maxPresenceMapIntCount = forcedPresenceMapCount != 0? forcedPresenceMapCount: CalcPresenceMapIntCount(maxPresenceBitCount);
 			WriteLine("\tUINT" + StuctFieldsSpacing + "PresenceMap[" + maxPresenceMapIntCount + "];");
 		}
 
 		int CalcPresenceMapByteCount(XmlNode node) {
 			int maxPresenceBitCount = GetMaxPresenceBitCount(node);
 			return CalcPresenceMapByteCount(maxPresenceBitCount);
+		}
+
+		int CalcPresenceMapIntCount(XmlNode node) {
+			int maxPresenceBitCount = GetMaxPresenceBitCount(node);
+			return CalcPresenceMapIntCount(maxPresenceBitCount);
 		}
 
 		int CalcPresenceMapIntCount(int bitCount) {
@@ -790,7 +860,7 @@ namespace prebuild {
 			if(definedStructName.Contains(templateName))
 				return;
 			WriteLine("typedef struct _Fast" + templateName + "Info {");
-			WriteSequenceNodeFieldDefinition(node, templateName);
+			WriteSequenceNodeFieldDefinition(node, templateName, true, false, true, 0);
 			WriteLine("}Fast" + templateName + "Info;");
 			WriteLine("");
 
@@ -798,10 +868,10 @@ namespace prebuild {
 		}
 
 		void WriteParsePresenceMap (XmlNode node, string info, string tabString) {
-			int count = GetMaxPresenceBitCount(node);
-			if(count == 0)
-				return;
-			WriteLine(tabString + "ParsePresenceMap(" + info + "->PresenceMap, " + count + ");");
+			//int count = GetMaxPresenceBitCount(node);
+			//if(count == 0)
+			//	return;
+			WriteLine(tabString + "ParsePresenceMap(" + info + "->PresenceMap);");
 		}
 
 		private  int GetMaxPresenceBitCount (XmlNode node) {
@@ -812,17 +882,28 @@ namespace prebuild {
 			return count;
 		}
 
+		bool IsValueBelongsToHeader(XmlNode value) {
+			if(value.Attributes["id"] == null)
+				return false;
+			return HeaderTags.Contains(value.Attributes["id"].Value);
+		}
+
+		private void WriteCopyPresenceMap(string tabs, string infoName, int count) {
+			WriteLine(tabs + "this->CopyPresenceMap(" + infoName + "->PresenceMap, this->m_header->PresenceMap, " + count + ");");
+		}
+
 		private  void ParseTemplateNode (XmlNode template, string templateName) {
 			WriteLine("\tvoid* Decode" + templateName + "() {");
 			StructureInfo info = new StructureInfo() { NameCore = templateName };
 			WriteLine("\t\tFast" + templateName + "Info* info = " + info.GetFreeMethodName + "();");
 			WriteLine("");
 			if(GetMaxPresenceBitCount(template) > 0) {
-				WriteParsePresenceMap(template, "info", "\t\t");
-				WriteLine("");
+				WriteCopyPresenceMap("\t\t", "info", CalcPresenceMapIntCount(template));
 			}
-
+			WriteLine("");
 			foreach(XmlNode value in template.ChildNodes) {
+				if(IsValueBelongsToHeader(value))
+					continue;
 				ParseValue(value, "info", templateName, "\t\t");
 			}
 			WriteLine("\t\treturn info;");
