@@ -207,7 +207,7 @@ namespace prebuild {
 			WriteLine("\t\tWriteMsgSeqNumber(this->m_sendMsgSeqNo);");
 			int presenceByteCount = CalcPresenceMapByteCount(message);
 			if(GetMaxPresenceBitCount(message) > 0)
-				WriteLine("\t\tWritePresenceMap" + presenceByteCount + "((UINT*)info->PresenceMap);");
+				WriteLine("\t\tWritePresenceMap" + presenceByteCount + "(info->PresenceMap);");
 			foreach(XmlNode node in message.ChildNodes) {
 				info.Parent = null;
 				WriteEncodeValueCode(node, info, "\t\t");
@@ -538,10 +538,55 @@ namespace prebuild {
 		private  void WriteStructuresDefinitionCode (XmlNode templatesNode) {
 			XmlNode lastComment = null;
 			SetPosition(Message_Info_Structures_Definition_GeneratedCode);
-			for(int i = 0; i < 32; i++) {
-				string code = string.Format("0x{0:x8}", 1 << (31 - i));
-				WriteLine("#define PRESENCE_MAP_INDEX" + i + " " + code);
+
+			WriteLine("#define PRESENCE_MAP_INDEX0  0x00000040");
+			WriteLine("#define PRESENCE_MAP_INDEX1  0x00000020");
+			WriteLine("#define PRESENCE_MAP_INDEX2  0x00000010");
+			WriteLine("#define PRESENCE_MAP_INDEX3  0x00000008");
+			WriteLine("#define PRESENCE_MAP_INDEX4  0x00000004");
+			WriteLine("#define PRESENCE_MAP_INDEX5  0x00000002");
+			WriteLine("#define PRESENCE_MAP_INDEX6  0x00000001");
+
+			WriteLine("#define PRESENCE_MAP_INDEX7  0x00004000");
+			WriteLine("#define PRESENCE_MAP_INDEX8  0x00002000");
+			WriteLine("#define PRESENCE_MAP_INDEX9  0x00001000");
+			WriteLine("#define PRESENCE_MAP_INDEX10 0x00000800");
+			WriteLine("#define PRESENCE_MAP_INDEX11 0x00000400");
+			WriteLine("#define PRESENCE_MAP_INDEX12 0x00000200");
+			WriteLine("#define PRESENCE_MAP_INDEX13 0x00000100");
+
+			WriteLine("#define PRESENCE_MAP_INDEX14 0x00400000");
+			WriteLine("#define PRESENCE_MAP_INDEX15 0x00200000");
+			WriteLine("#define PRESENCE_MAP_INDEX16 0x00100000");
+			WriteLine("#define PRESENCE_MAP_INDEX17 0x00080000");
+			WriteLine("#define PRESENCE_MAP_INDEX18 0x00040000");
+			WriteLine("#define PRESENCE_MAP_INDEX19 0x00020000");
+			WriteLine("#define PRESENCE_MAP_INDEX20 0x00010000");
+
+			WriteLine("#define PRESENCE_MAP_INDEX21 0x40000000");
+			WriteLine("#define PRESENCE_MAP_INDEX22 0x20000000");
+			WriteLine("#define PRESENCE_MAP_INDEX23 0x10000000");
+			WriteLine("#define PRESENCE_MAP_INDEX24 0x08000000");
+			WriteLine("#define PRESENCE_MAP_INDEX25 0x04000000");
+			WriteLine("#define PRESENCE_MAP_INDEX26 0x02000000");
+			WriteLine("#define PRESENCE_MAP_INDEX27 0x01000000");
+
+			/*
+			int index = 0;
+
+			int stop0 = 0x00000080;
+			int stop1 = 0x00008000;
+			int stop2 = 0x00800000;
+
+			for(int i = 0; i < 31; i++) {
+				int code = 1 << (30 - i);
+				if(code == stop0 || code == stop1 || code == stop2)
+					continue;
+				string codeStr = string.Format("0x{0:x8}", code);
+				WriteLine("#define PRESENCE_MAP_INDEX" + index + " " + codeStr);
+				index++;
 			}
+			*/
 
 			WriteLine("");
 			WriteLine("typedef struct _FastHeaderInfo {");
@@ -716,14 +761,14 @@ namespace prebuild {
 				WriteLine("\tbool" + StuctFieldsSpacing + AllowFlagName(field) + ";");
 			}
 			if(ShouldWriteCheckPresenceMapCode(field)) {
-				WriteLine("\tconst int" + StuctFieldsSpacing + PresenceIndexName(field) + " = PRESENCE_MAP_INDEX" + CalcFieldPresenceIndex(field) + ";");
+				WriteLine("\tconst UINT" + StuctFieldsSpacing + PresenceIndexName(field) + " = PRESENCE_MAP_INDEX" + CalcFieldPresenceIndex(field) + ";");
 			}			
 		} 
 
 		private  void WritePresenceMapDefinition (XmlNode node, int forcedPresenceMapCount) {
-			int maxPresenceBitCount = GetMaxPresenceBitCount(node);
-			int maxPresenceMapIntCount = forcedPresenceMapCount != 0? forcedPresenceMapCount: CalcPresenceMapIntCount(maxPresenceBitCount);
-			WriteLine("\tUINT" + StuctFieldsSpacing + "PresenceMap[" + maxPresenceMapIntCount + "];");
+			//int maxPresenceBitCount = GetMaxPresenceBitCount(node);
+			//int maxPresenceMapIntCount = forcedPresenceMapCount != 0? forcedPresenceMapCount: CalcPresenceMapIntCount(maxPresenceBitCount);
+			WriteLine("\tUINT" + StuctFieldsSpacing + "PresenceMap;");
 		}
 
 		int CalcPresenceMapByteCount(XmlNode node) {
@@ -871,7 +916,7 @@ namespace prebuild {
 			//int count = GetMaxPresenceBitCount(node);
 			//if(count == 0)
 			//	return;
-			WriteLine(tabString + "ParsePresenceMap(" + info + "->PresenceMap);");
+			WriteLine(tabString + "this->ParsePresenceMap(&(" + info + "->PresenceMap));");
 		}
 
 		private  int GetMaxPresenceBitCount (XmlNode node) {
@@ -889,7 +934,7 @@ namespace prebuild {
 		}
 
 		private void WriteCopyPresenceMap(string tabs, string infoName, int count) {
-			WriteLine(tabs + "this->CopyPresenceMap(" + infoName + "->PresenceMap, this->m_header->PresenceMap, " + count + ");");
+			WriteLine(tabs + infoName + "->PresenceMap = this->m_header->PresenceMap;");
 		}
 
 		private  void ParseTemplateNode (XmlNode template, string templateName) {

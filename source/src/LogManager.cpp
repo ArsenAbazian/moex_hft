@@ -46,8 +46,9 @@ void BinaryLogManager::Print(BinaryLogItem *item) {
         if(item->m_bufferIndex == -1)
             printf("null");
         else {
-            printf(" '");
             unsigned char *itemText = DefaultSocketBufferManager::Default->Buffer(item->m_bufferIndex)->Item(item->m_itemIndex);
+            printf("  %d ", *((int*)itemText));
+            printf(" '");
             int itemSize = DefaultSocketBufferManager::Default->Buffer(item->m_bufferIndex)->ItemLength(item->m_itemIndex);
             for(int i = 0; i < itemSize; i++) {
                 if(i == itemSize - 1)

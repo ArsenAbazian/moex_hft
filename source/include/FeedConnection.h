@@ -132,16 +132,16 @@ protected:
         return true;
     }
 
-	bool ProcessMessage(SocketBuffer *buffer, int size) {
+	inline bool ProcessMessage(SocketBuffer *buffer, int size) {
 		this->m_fastProtocolManager->SetNewBuffer(buffer->CurrentPos(), size);
-		buffer->Next(size);
-		DefaultLogManager::Default->WriteFast(LogMessageCode::lmcFeedConnection_ProcessMessage, buffer->BufferIndex(), buffer->CurrentItemIndex());
-		int msgSeqNo = this->m_fastProtocolManager->ReadMsgSeqNumber();
-		if(msgSeqNo > this->ExpectedMsgSeqNo()) {
-			return false;
-		}
-		this->Decode();
-		return true;
+        buffer->Next(size);
+        DefaultLogManager::Default->WriteFast(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_ProcessMessage, buffer->BufferIndex(), buffer->CurrentItemIndex() - 1);
+        int msgSeqNo = this->m_fastProtocolManager->ReadMsgSeqNumber();
+		//if(msgSeqNo == this->ExpectedMsgSeqNo()) {
+			this->Decode();
+            return true;
+		//}
+		//return true;
 	}
 public:
 	FeedConnection(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort);

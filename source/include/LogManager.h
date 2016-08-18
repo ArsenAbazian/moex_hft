@@ -168,6 +168,21 @@ public:
         return item;
     }
 
+    inline BinaryLogItem* WriteFast(int messageCode, int messageCode2, int bufferIndex, int itemIndex) {
+        BinaryLogItem *item = this->Next();
+
+        GetStartClock(item);
+        item->m_message = messageCode;
+        item->m_message2 = messageCode2;
+        item->m_bufferIndex = bufferIndex;
+        item->m_itemIndex = itemIndex;
+        item->m_type = BinaryLogItemType::NodeFast;
+#ifdef BINARY_LOG_MANAGER_ALLOW_PRINT
+        Print(item);
+#endif
+        return item;
+    }
+
     inline BinaryLogItem* WriteLine(int messageCode) {
         return Write(messageCode);
     }
