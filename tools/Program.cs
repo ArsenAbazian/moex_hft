@@ -460,15 +460,15 @@ namespace prebuild {
 			WriteLine("\t}");
 
 			WriteLine("");
-			/*
-			WriteLine("\tvoid ResetMessageInfoIndicies() {");
+
+			WriteLine("\tinline void ResetMessageInfoIndicies() {");
 			foreach(StructureInfo str in structures) {
 				if(str.IsSequence) {
 					WriteLine("\t\tthis->" + str.CurrentItemValueName + " = this->" + str.ValueName + ";");
 				}
 			}
 			WriteLine("\t}");
-			*/
+
 		}
 
 		private List<XmlNode> GetTemplates(XmlNode templatesNode) {
@@ -691,10 +691,10 @@ namespace prebuild {
 			List<string> decodeEntryMethodList = GetDecodeEntryMethodList(templatesNode);
 			int minId = CalcMinTemplateId(templatesNode);
 			foreach(string mSuffix in decodeEntryMethodList) {
-				WriteLine("\tinline void Decode" + mSuffix + "() {");
+				WriteLine("\tinline void* Decode" + mSuffix + "() {");
 				WriteLine("\t\tthis->DecodeHeader();");
 				WriteLine("\t\tFastDecodeMethodPointer funcPtr = this->DecodeMethods[this->m_templateId - " + minId + "];");
-				WriteLine("\t\t(this->*funcPtr)();");
+				WriteLine("\t\treturn (this->*funcPtr)();");
 				WriteLine("\t}");
 			}
 		}
@@ -1166,7 +1166,7 @@ namespace prebuild {
 			WriteLine("");
 			WriteLine(tabString + "for(int i = 0; i < " + objectValueName + "->" + Name(value) + "Count; i++) {");
 			WriteLine(tabString + "\t" + itemInfo + " = GetFree" + parentClassCoreName + Name(value) + "ItemInfo();");
-
+			WriteLine(tabString + "\t" + objectValueName + "->" + Name(value) + "[i] = " + itemInfo + ";");
 
 			if(GetMaxPresenceBitCount(value) > 0) {
 				WriteLine("");

@@ -5,6 +5,7 @@
 #include <limits.h>
 #include "FastProtocolManager.h"
 #include "FastProtocolTester.h"
+#include <sys/time.h>
 
 FastProtocolTester::FastProtocolTester()
 {
@@ -16,7 +17,7 @@ FastProtocolTester::~FastProtocolTester()
 }
 
 void FastProtocolTester::TestMessages() {
-	unsigned char *message = new unsigned char[300] {0x04,0xa4,0x07,0x00,0xe0,0x1b,0xb8,0x1e,0x48,0x84,
+	unsigned char *message = new unsigned char[111] {0x04,0xa4,0x07,0x00,0xe0,0x1b,0xb8,0x1e,0x48,0x84,
                                                      0x23,0x68,0x05,0x07,0x7a,0x6e,0x66,0xdc,0x82,0x81,
                                                      0xb0,0x42,0x30,0x30,0x30,0x37,0x37,0x38,0x38,0x37,
                                                      0xb5,0x45,0x55,0x52,0x5f,0x52,0x55,0x42,0x5f,0x5f,
@@ -32,9 +33,44 @@ void FastProtocolTester::TestMessages() {
 	manager->SetNewBuffer(message, 1000);
 
     int msgSeqNo = manager->ReadMsgSeqNumber();
-    manager->Decode_Generic();
+    FastMarketDataIncrementalRefreshOBRCURRInfo *info = (FastMarketDataIncrementalRefreshOBRCURRInfo*)manager->Decode_Generic();
 
+    if(info->MsgSeqNum != msgSeqNo)
+        throw;
+    if(info->SendingTime != 20160819142308700)
+        throw;
+    if(info->GroupMDEntriesCount != 2)
+        throw;
 
+    FastMarketDataIncrementalRefreshOBRCURRGroupMDEntriesItemInfo *itemInfo1 = info->GroupMDEntries[0];
+    FastMarketDataIncrementalRefreshOBRCURRGroupMDEntriesItemInfo *itemInfo2 = info->GroupMDEntries[1];
+
+    if(itemInfo1->MDUpdateAction != mduaAdd)
+        throw;
+    if(itemInfo1->MDEntryTypeLength != 1)
+        throw;
+    if(itemInfo1->MDEntryType[0] != mdetBuyQuote)
+        throw;
+    if(itemInfo1->MDEntryIDLength != 10)
+        throw;
+    if(!this->CompareStrings(itemInfo1->MDEntryID, "B000778875"))
+        throw;
+    if(itemInfo1->SymbolLength != 12)
+        throw;
+    if(!this->CompareStrings(itemInfo1->Symbol, "EUR_RUB__TOM"))
+        throw;
+    if(itemInfo1->RptSeq != 270094)
+        throw;
+    //if(itemInfo1->MDEntryPx)
+}
+
+bool FastProtocolTester::CompareStrings(char* str1, const char *str2) {
+    int length = strlen(str2);
+    for(int i = 0; i < length; i++) {
+        if(str1[i] != str2[i])
+            return false;
+    }
+    return true;
 }
 
 void FastProtocolTester::TestMessageSequenceNumber() { 

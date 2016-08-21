@@ -25,6 +25,7 @@ public:
 		TestParsePresenceMap();
 	}
 
+	bool CompareStrings(char* str1, const char *str2);
 	void TestMessages();
 
 	void TestReadUInt64_Optional();

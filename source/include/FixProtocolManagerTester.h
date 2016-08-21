@@ -12,6 +12,7 @@ public:
         TestMoreThanOneMessageReceived();
     }
     void TestMoreThanOneMessageReceived();
+
 };
 
 

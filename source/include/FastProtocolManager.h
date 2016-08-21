@@ -1809,6 +1809,27 @@ private:
 
 	}
 
+	inline void ResetMessageInfoIndicies() {
+		this->m_marketDataSnapshotFullRefreshGenericGroupMDEntriesItemsCurrentItem = this->m_marketDataSnapshotFullRefreshGenericGroupMDEntriesItems;
+		this->m_marketDataIncrementalRefreshGenericGroupMDEntriesItemsCurrentItem = this->m_marketDataIncrementalRefreshGenericGroupMDEntriesItems;
+		this->m_marketDataSnapshotFullRefreshOLSFONDGroupMDEntriesItemsCurrentItem = this->m_marketDataSnapshotFullRefreshOLSFONDGroupMDEntriesItems;
+		this->m_marketDataSnapshotFullRefreshOLSCURRGroupMDEntriesItemsCurrentItem = this->m_marketDataSnapshotFullRefreshOLSCURRGroupMDEntriesItems;
+		this->m_marketDataSnapshotFullRefreshTLSFONDGroupMDEntriesItemsCurrentItem = this->m_marketDataSnapshotFullRefreshTLSFONDGroupMDEntriesItems;
+		this->m_marketDataSnapshotFullRefreshTLSCURRGroupMDEntriesItemsCurrentItem = this->m_marketDataSnapshotFullRefreshTLSCURRGroupMDEntriesItems;
+		this->m_marketDataSnapshotFullRefreshOBSFONDGroupMDEntriesItemsCurrentItem = this->m_marketDataSnapshotFullRefreshOBSFONDGroupMDEntriesItems;
+		this->m_marketDataSnapshotFullRefreshOBSCURRGroupMDEntriesItemsCurrentItem = this->m_marketDataSnapshotFullRefreshOBSCURRGroupMDEntriesItems;
+		this->m_marketDataIncrementalRefreshMSRFONDGroupMDEntriesItemsCurrentItem = this->m_marketDataIncrementalRefreshMSRFONDGroupMDEntriesItems;
+		this->m_marketDataIncrementalRefreshMSRCURRGroupMDEntriesItemsCurrentItem = this->m_marketDataIncrementalRefreshMSRCURRGroupMDEntriesItems;
+		this->m_marketDataIncrementalRefreshOLRFONDGroupMDEntriesItemsCurrentItem = this->m_marketDataIncrementalRefreshOLRFONDGroupMDEntriesItems;
+		this->m_marketDataIncrementalRefreshOLRCURRGroupMDEntriesItemsCurrentItem = this->m_marketDataIncrementalRefreshOLRCURRGroupMDEntriesItems;
+		this->m_marketDataIncrementalRefreshOBRFONDGroupMDEntriesItemsCurrentItem = this->m_marketDataIncrementalRefreshOBRFONDGroupMDEntriesItems;
+		this->m_marketDataIncrementalRefreshOBRCURRGroupMDEntriesItemsCurrentItem = this->m_marketDataIncrementalRefreshOBRCURRGroupMDEntriesItems;
+		this->m_marketDataIncrementalRefreshTLRFONDGroupMDEntriesItemsCurrentItem = this->m_marketDataIncrementalRefreshTLRFONDGroupMDEntriesItems;
+		this->m_marketDataIncrementalRefreshTLRCURRGroupMDEntriesItemsCurrentItem = this->m_marketDataIncrementalRefreshTLRCURRGroupMDEntriesItems;
+		this->m_securityDefinitionGroupInstrAttribItemsCurrentItem = this->m_securityDefinitionGroupInstrAttribItems;
+		this->m_securityDefinitionMarketSegmentGrpItemsCurrentItem = this->m_securityDefinitionMarketSegmentGrpItems;
+		this->m_securityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemsCurrentItem = this->m_securityDefinitionMarketSegmentGrpTradingSessionRulesGrpItems;
+	}
 #pragma endregion
 
 #pragma region Decode_Method_Pointer_Arrays_GeneratedCode
@@ -2071,7 +2092,8 @@ public:
 		this->buffer = buffer;
 		this->bufferLength = length;
 		this->ResetBuffer();
-	} 
+	    this->ResetMessageInfoIndicies();
+    }
 	inline void ClearBuffer() { memset(this->buffer, 0, this->bufferLength); }
 
 	inline bool CheckBuffer(BYTE *arrayToCompare, int length) {
@@ -4212,6 +4234,7 @@ public:
 
 		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 			gmdeItemInfo = GetFreeMarketDataSnapshotFullRefreshGenericGroupMDEntriesItemInfo();
+			info->GroupMDEntries[i] = gmdeItemInfo;
 
 			this->ParsePresenceMap(&(gmdeItemInfo->PresenceMap));
 
@@ -4326,6 +4349,7 @@ public:
 
 		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 			gmdeItemInfo = GetFreeMarketDataIncrementalRefreshGenericGroupMDEntriesItemInfo();
+			info->GroupMDEntries[i] = gmdeItemInfo;
 
 			this->ParsePresenceMap(&(gmdeItemInfo->PresenceMap));
 
@@ -4466,6 +4490,7 @@ public:
 
 		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 			gmdeItemInfo = GetFreeMarketDataSnapshotFullRefreshOLSFONDGroupMDEntriesItemInfo();
+			info->GroupMDEntries[i] = gmdeItemInfo;
 
 			this->ParsePresenceMap(&(gmdeItemInfo->PresenceMap));
 
@@ -4530,6 +4555,7 @@ public:
 
 		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 			gmdeItemInfo = GetFreeMarketDataSnapshotFullRefreshOLSCURRGroupMDEntriesItemInfo();
+			info->GroupMDEntries[i] = gmdeItemInfo;
 
 			this->ParsePresenceMap(&(gmdeItemInfo->PresenceMap));
 
@@ -4590,6 +4616,7 @@ public:
 
 		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 			gmdeItemInfo = GetFreeMarketDataSnapshotFullRefreshTLSFONDGroupMDEntriesItemInfo();
+			info->GroupMDEntries[i] = gmdeItemInfo;
 			ReadString_Mandatory(&(gmdeItemInfo->MDEntryType), &(gmdeItemInfo->MDEntryTypeLength));
 			if(!CheckProcessNullString())
 				ReadString_Optional(&(gmdeItemInfo->MDEntryID), &(gmdeItemInfo->MDEntryIDLength));
@@ -4656,6 +4683,7 @@ public:
 
 		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 			gmdeItemInfo = GetFreeMarketDataSnapshotFullRefreshTLSCURRGroupMDEntriesItemInfo();
+			info->GroupMDEntries[i] = gmdeItemInfo;
 			ReadString_Mandatory(&(gmdeItemInfo->MDEntryType), &(gmdeItemInfo->MDEntryTypeLength));
 			if(!CheckProcessNullString())
 				ReadString_Optional(&(gmdeItemInfo->MDEntryID), &(gmdeItemInfo->MDEntryIDLength));
@@ -4720,6 +4748,7 @@ public:
 
 		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 			gmdeItemInfo = GetFreeMarketDataSnapshotFullRefreshOBSFONDGroupMDEntriesItemInfo();
+			info->GroupMDEntries[i] = gmdeItemInfo;
 			if(!CheckProcessNullString())
 				ReadString_Optional(&(gmdeItemInfo->MDEntryType), &(gmdeItemInfo->MDEntryTypeLength));
 			if(!CheckProcessNullString())
@@ -4769,6 +4798,7 @@ public:
 
 		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 			gmdeItemInfo = GetFreeMarketDataSnapshotFullRefreshOBSCURRGroupMDEntriesItemInfo();
+			info->GroupMDEntries[i] = gmdeItemInfo;
 			if(!CheckProcessNullString())
 				ReadString_Optional(&(gmdeItemInfo->MDEntryType), &(gmdeItemInfo->MDEntryTypeLength));
 			if(!CheckProcessNullString())
@@ -4798,6 +4828,7 @@ public:
 
 		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 			gmdeItemInfo = GetFreeMarketDataIncrementalRefreshMSRFONDGroupMDEntriesItemInfo();
+			info->GroupMDEntries[i] = gmdeItemInfo;
 
 			this->ParsePresenceMap(&(gmdeItemInfo->PresenceMap));
 
@@ -4888,6 +4919,7 @@ public:
 
 		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 			gmdeItemInfo = GetFreeMarketDataIncrementalRefreshMSRCURRGroupMDEntriesItemInfo();
+			info->GroupMDEntries[i] = gmdeItemInfo;
 
 			this->ParsePresenceMap(&(gmdeItemInfo->PresenceMap));
 
@@ -4962,6 +4994,7 @@ public:
 
 		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 			gmdeItemInfo = GetFreeMarketDataIncrementalRefreshOLRFONDGroupMDEntriesItemInfo();
+			info->GroupMDEntries[i] = gmdeItemInfo;
 
 			this->ParsePresenceMap(&(gmdeItemInfo->PresenceMap));
 
@@ -5020,6 +5053,7 @@ public:
 
 		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 			gmdeItemInfo = GetFreeMarketDataIncrementalRefreshOLRCURRGroupMDEntriesItemInfo();
+			info->GroupMDEntries[i] = gmdeItemInfo;
 
 			this->ParsePresenceMap(&(gmdeItemInfo->PresenceMap));
 
@@ -5072,6 +5106,7 @@ public:
 
 		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 			gmdeItemInfo = GetFreeMarketDataIncrementalRefreshOBRFONDGroupMDEntriesItemInfo();
+			info->GroupMDEntries[i] = gmdeItemInfo;
 			if(!CheckProcessNullUInt32())
 				gmdeItemInfo->MDUpdateAction = ReadUInt32_Optional();
 			if(!CheckProcessNullString())
@@ -5115,6 +5150,7 @@ public:
 
 		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 			gmdeItemInfo = GetFreeMarketDataIncrementalRefreshOBRCURRGroupMDEntriesItemInfo();
+			info->GroupMDEntries[i] = gmdeItemInfo;
 			if(!CheckProcessNullUInt32())
 				gmdeItemInfo->MDUpdateAction = ReadUInt32_Optional();
 			if(!CheckProcessNullString())
@@ -5152,6 +5188,7 @@ public:
 
 		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 			gmdeItemInfo = GetFreeMarketDataIncrementalRefreshTLRFONDGroupMDEntriesItemInfo();
+			info->GroupMDEntries[i] = gmdeItemInfo;
 			if(!CheckProcessNullUInt32())
 				gmdeItemInfo->MDUpdateAction = ReadUInt32_Optional();
 			ReadString_Mandatory(&(gmdeItemInfo->MDEntryType), &(gmdeItemInfo->MDEntryTypeLength));
@@ -5212,6 +5249,7 @@ public:
 
 		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 			gmdeItemInfo = GetFreeMarketDataIncrementalRefreshTLRCURRGroupMDEntriesItemInfo();
+			info->GroupMDEntries[i] = gmdeItemInfo;
 			if(!CheckProcessNullUInt32())
 				gmdeItemInfo->MDUpdateAction = ReadUInt32_Optional();
 			ReadString_Mandatory(&(gmdeItemInfo->MDEntryType), &(gmdeItemInfo->MDEntryTypeLength));
@@ -5316,6 +5354,7 @@ public:
 
 		for(int i = 0; i < info->GroupInstrAttribCount; i++) {
 			giaItemInfo = GetFreeSecurityDefinitionGroupInstrAttribItemInfo();
+			info->GroupInstrAttrib[i] = giaItemInfo;
 			giaItemInfo->InstrAttribType = ReadInt32_Mandatory();
 			if(!CheckProcessNullByteVector())
 				ReadByteVector_Optional(&(giaItemInfo->InstrAttribValue), &(giaItemInfo->InstrAttribValueLength));
@@ -5329,6 +5368,7 @@ public:
 
 		for(int i = 0; i < info->MarketSegmentGrpCount; i++) {
 			msgItemInfo = GetFreeSecurityDefinitionMarketSegmentGrpItemInfo();
+			info->MarketSegmentGrp[i] = msgItemInfo;
 			if(!CheckProcessNullDecimal())
 				ReadDecimal_Optional(&(msgItemInfo->RoundLot));
 
@@ -5337,6 +5377,7 @@ public:
 
 			for(int i = 0; i < msgItemInfo->TradingSessionRulesGrpCount; i++) {
 				tsrgItemInfo = GetFreeSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo();
+				msgItemInfo->TradingSessionRulesGrp[i] = tsrgItemInfo;
 				ReadString_Mandatory(&(tsrgItemInfo->TradingSessionID), &(tsrgItemInfo->TradingSessionIDLength));
 				if(!CheckProcessNullString())
 					ReadString_Optional(&(tsrgItemInfo->TradingSessionSubID), &(tsrgItemInfo->TradingSessionSubIDLength));
@@ -5422,80 +5463,80 @@ public:
 		info->SendingTime = ReadUInt64_Mandatory();
 		return info;
 	}
-	inline void Decode_Generic() {
+	inline void* Decode_Generic() {
 		this->DecodeHeader();
 		FastDecodeMethodPointer funcPtr = this->DecodeMethods[this->m_templateId - 2101];
-		(this->*funcPtr)();
+		return (this->*funcPtr)();
 	}
-	inline void Decode_OLS_FOND() {
+	inline void* Decode_OLS_FOND() {
 		this->DecodeHeader();
 		FastDecodeMethodPointer funcPtr = this->DecodeMethods[this->m_templateId - 2101];
-		(this->*funcPtr)();
+		return (this->*funcPtr)();
 	}
-	inline void Decode_OLS_CURR() {
+	inline void* Decode_OLS_CURR() {
 		this->DecodeHeader();
 		FastDecodeMethodPointer funcPtr = this->DecodeMethods[this->m_templateId - 2101];
-		(this->*funcPtr)();
+		return (this->*funcPtr)();
 	}
-	inline void Decode_TLS_FOND() {
+	inline void* Decode_TLS_FOND() {
 		this->DecodeHeader();
 		FastDecodeMethodPointer funcPtr = this->DecodeMethods[this->m_templateId - 2101];
-		(this->*funcPtr)();
+		return (this->*funcPtr)();
 	}
-	inline void Decode_TLS_CURR() {
+	inline void* Decode_TLS_CURR() {
 		this->DecodeHeader();
 		FastDecodeMethodPointer funcPtr = this->DecodeMethods[this->m_templateId - 2101];
-		(this->*funcPtr)();
+		return (this->*funcPtr)();
 	}
-	inline void Decode_OBS_FOND() {
+	inline void* Decode_OBS_FOND() {
 		this->DecodeHeader();
 		FastDecodeMethodPointer funcPtr = this->DecodeMethods[this->m_templateId - 2101];
-		(this->*funcPtr)();
+		return (this->*funcPtr)();
 	}
-	inline void Decode_OBS_CURR() {
+	inline void* Decode_OBS_CURR() {
 		this->DecodeHeader();
 		FastDecodeMethodPointer funcPtr = this->DecodeMethods[this->m_templateId - 2101];
-		(this->*funcPtr)();
+		return (this->*funcPtr)();
 	}
-	inline void Decode_MSR_FOND() {
+	inline void* Decode_MSR_FOND() {
 		this->DecodeHeader();
 		FastDecodeMethodPointer funcPtr = this->DecodeMethods[this->m_templateId - 2101];
-		(this->*funcPtr)();
+		return (this->*funcPtr)();
 	}
-	inline void Decode_MSR_CURR() {
+	inline void* Decode_MSR_CURR() {
 		this->DecodeHeader();
 		FastDecodeMethodPointer funcPtr = this->DecodeMethods[this->m_templateId - 2101];
-		(this->*funcPtr)();
+		return (this->*funcPtr)();
 	}
-	inline void Decode_OLR_FOND() {
+	inline void* Decode_OLR_FOND() {
 		this->DecodeHeader();
 		FastDecodeMethodPointer funcPtr = this->DecodeMethods[this->m_templateId - 2101];
-		(this->*funcPtr)();
+		return (this->*funcPtr)();
 	}
-	inline void Decode_OLR_CURR() {
+	inline void* Decode_OLR_CURR() {
 		this->DecodeHeader();
 		FastDecodeMethodPointer funcPtr = this->DecodeMethods[this->m_templateId - 2101];
-		(this->*funcPtr)();
+		return (this->*funcPtr)();
 	}
-	inline void Decode_OBR_FOND() {
+	inline void* Decode_OBR_FOND() {
 		this->DecodeHeader();
 		FastDecodeMethodPointer funcPtr = this->DecodeMethods[this->m_templateId - 2101];
-		(this->*funcPtr)();
+		return (this->*funcPtr)();
 	}
-	inline void Decode_OBR_CURR() {
+	inline void* Decode_OBR_CURR() {
 		this->DecodeHeader();
 		FastDecodeMethodPointer funcPtr = this->DecodeMethods[this->m_templateId - 2101];
-		(this->*funcPtr)();
+		return (this->*funcPtr)();
 	}
-	inline void Decode_TLR_FOND() {
+	inline void* Decode_TLR_FOND() {
 		this->DecodeHeader();
 		FastDecodeMethodPointer funcPtr = this->DecodeMethods[this->m_templateId - 2101];
-		(this->*funcPtr)();
+		return (this->*funcPtr)();
 	}
-	inline void Decode_TLR_CURR() {
+	inline void* Decode_TLR_CURR() {
 		this->DecodeHeader();
 		FastDecodeMethodPointer funcPtr = this->DecodeMethods[this->m_templateId - 2101];
-		(this->*funcPtr)();
+		return (this->*funcPtr)();
 	}
 #pragma endregion
 };
