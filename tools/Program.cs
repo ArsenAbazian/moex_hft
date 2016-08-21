@@ -131,7 +131,7 @@ namespace prebuild {
 
 		private  void ParseTemplatesNode (XmlNode templatesNode) {
 
-			HeaderTags = CollectHeaderTags(templatesNode);
+			//HeaderTags = CollectHeaderTags(templatesNode);
 			WriteEntireMethodAddressArrays(templatesNode);
 			WriteStructuresDefinitionCode(templatesNode);
 			WriteStructuresDeclarationCode(templatesNode);
@@ -339,7 +339,9 @@ namespace prebuild {
 			foreach(StructureInfo str in structures) {
 				WriteLine("\tinline " + str.Name + "* " + str.GetFreeMethodName + "() {");
 				if(str.IsSequence) {
-					WriteLine("\t\treturn this->" + str.CurrentItemValueName + ";");
+					WriteLine("\t\t" + str.Name + " *res = this->" + str.CurrentItemValueName + ";");
+					WriteLine("\t\tthis->" + str.CurrentItemValueName + "++;");
+					WriteLine("\t\treturn res;");
 				} else {
 					WriteLine("\t\treturn this->" + str.ValueName + ";");
 				}
@@ -404,7 +406,6 @@ namespace prebuild {
 
 		private  List<StructureInfo> GetAllStructureNames (XmlNode templatesNode) {
 			List<StructureInfo> res = new List<StructureInfo>();
-			res.Add(new StructureInfo() { NameCore = "Header" });
 			foreach(XmlNode node in templatesNode.ChildNodes) {
 				if(node.Name == "template") {
 					res.Add(new StructureInfo() { NameCore = GetTemplateName(node.PreviousSibling.Value) });
@@ -438,7 +439,7 @@ namespace prebuild {
 
 			foreach(StructureInfo str in structures) {
 				if(str.IsSequence) {
-					WriteLine("\t" + str.Name + "*\t\t" + str.CurrentItemValueName + ";");
+					WriteLine("\t" + str.Name + "\t\t*" + str.CurrentItemValueName + ";");
 				}
 			}
 
@@ -449,6 +450,7 @@ namespace prebuild {
 					WriteLine("\t\tthis->" + str.ValueName + " = new " + str.Name + "[1024];");
 					WriteLine("\t\tmemset(this->" + str.ValueName + ", 0, 1024 * sizeof(" + str.Name + "));");
 					WriteLine("\t\tthis->" + str.MaxItemCountValueName + " = 1024;");
+					WriteLine("\t\tthis->" + str.CurrentItemValueName + " = this->" + str.ValueName + ";");
 				} else {
 					WriteLine("\t\tthis->" + str.ValueName + " = new " + str.Name + "();");
 					WriteLine("\t\tmemset(this->" + str.ValueName + ", 0, sizeof(" + str.Name + "));");
@@ -458,6 +460,7 @@ namespace prebuild {
 			WriteLine("\t}");
 
 			WriteLine("");
+			/*
 			WriteLine("\tvoid ResetMessageInfoIndicies() {");
 			foreach(StructureInfo str in structures) {
 				if(str.IsSequence) {
@@ -465,6 +468,7 @@ namespace prebuild {
 				}
 			}
 			WriteLine("\t}");
+			*/
 		}
 
 		private List<XmlNode> GetTemplates(XmlNode templatesNode) {
@@ -502,20 +506,11 @@ namespace prebuild {
 		protected List<string> HeaderTags { get; set; }
 		private void WriteHeaderParsingCode(XmlNode templatesNode) {
 			SetPosition(Decode_Methods_Definition_GeneratedCode);
-			List<XmlNode> templates = GetTemplates(templatesNode);
 
-			WriteLine("\tinline FastHeaderInfo* DecodeHeader() {"); 
+			WriteLine("\tinline void DecodeHeader() {"); 
 			WriteLine("");
-			WriteLine("\t\tFastHeaderInfo *info = GetFreeHeaderInfo();");
-			WriteLine("\t\t");
-			WriteParsePresenceMap(null, "info", "\t\t");
-			WriteLine("");
-			foreach(XmlNode value in templates[0].ChildNodes) {
-				if(!IsValueBelongsToHeader(value))
-					break;
-				ParseValue(value, "info", "", "\t\t");
-			}
-			WriteLine("\t\treturn info;");
+			WriteLine("\t\tthis->ParsePresenceMap(&(this->m_presenceMap));");
+			WriteLine("\t\tthis->m_templateId = ReadUInt32_Mandatory();");
 			WriteLine("\t}");
 			WriteLine("");
 		}
@@ -539,61 +534,76 @@ namespace prebuild {
 			XmlNode lastComment = null;
 			SetPosition(Message_Info_Structures_Definition_GeneratedCode);
 
-			WriteLine("#define PRESENCE_MAP_INDEX0  0x00000040");
-			WriteLine("#define PRESENCE_MAP_INDEX1  0x00000020");
-			WriteLine("#define PRESENCE_MAP_INDEX2  0x00000010");
-			WriteLine("#define PRESENCE_MAP_INDEX3  0x00000008");
-			WriteLine("#define PRESENCE_MAP_INDEX4  0x00000004");
-			WriteLine("#define PRESENCE_MAP_INDEX5  0x00000002");
-			WriteLine("#define PRESENCE_MAP_INDEX6  0x00000001");
+			WriteLine("#define PRESENCE_MAP_INDEX0  0x0000000000000040L");
+			WriteLine("#define PRESENCE_MAP_INDEX1  0x0000000000000020L");
+			WriteLine("#define PRESENCE_MAP_INDEX2  0x0000000000000010L");
+			WriteLine("#define PRESENCE_MAP_INDEX3  0x0000000000000008L");
+			WriteLine("#define PRESENCE_MAP_INDEX4  0x0000000000000004L");
+			WriteLine("#define PRESENCE_MAP_INDEX5  0x0000000000000002L");
+			WriteLine("#define PRESENCE_MAP_INDEX6  0x0000000000000001L");
 
-			WriteLine("#define PRESENCE_MAP_INDEX7  0x00004000");
-			WriteLine("#define PRESENCE_MAP_INDEX8  0x00002000");
-			WriteLine("#define PRESENCE_MAP_INDEX9  0x00001000");
-			WriteLine("#define PRESENCE_MAP_INDEX10 0x00000800");
-			WriteLine("#define PRESENCE_MAP_INDEX11 0x00000400");
-			WriteLine("#define PRESENCE_MAP_INDEX12 0x00000200");
-			WriteLine("#define PRESENCE_MAP_INDEX13 0x00000100");
+			WriteLine("#define PRESENCE_MAP_INDEX7  0x0000000000004000L");
+			WriteLine("#define PRESENCE_MAP_INDEX8  0x0000000000002000L");
+			WriteLine("#define PRESENCE_MAP_INDEX9  0x0000000000001000L");
+			WriteLine("#define PRESENCE_MAP_INDEX10 0x0000000000000800L");
+			WriteLine("#define PRESENCE_MAP_INDEX11 0x0000000000000400L");
+			WriteLine("#define PRESENCE_MAP_INDEX12 0x0000000000000200L");
+			WriteLine("#define PRESENCE_MAP_INDEX13 0x0000000000000100L");
 
-			WriteLine("#define PRESENCE_MAP_INDEX14 0x00400000");
-			WriteLine("#define PRESENCE_MAP_INDEX15 0x00200000");
-			WriteLine("#define PRESENCE_MAP_INDEX16 0x00100000");
-			WriteLine("#define PRESENCE_MAP_INDEX17 0x00080000");
-			WriteLine("#define PRESENCE_MAP_INDEX18 0x00040000");
-			WriteLine("#define PRESENCE_MAP_INDEX19 0x00020000");
-			WriteLine("#define PRESENCE_MAP_INDEX20 0x00010000");
+			WriteLine("#define PRESENCE_MAP_INDEX14 0x0000000000400000L");
+			WriteLine("#define PRESENCE_MAP_INDEX15 0x0000000000200000L");
+			WriteLine("#define PRESENCE_MAP_INDEX16 0x0000000000100000L");
+			WriteLine("#define PRESENCE_MAP_INDEX17 0x0000000000080000L");
+			WriteLine("#define PRESENCE_MAP_INDEX18 0x0000000000040000L");
+			WriteLine("#define PRESENCE_MAP_INDEX19 0x0000000000020000L");
+			WriteLine("#define PRESENCE_MAP_INDEX20 0x0000000000010000L");
 
-			WriteLine("#define PRESENCE_MAP_INDEX21 0x40000000");
-			WriteLine("#define PRESENCE_MAP_INDEX22 0x20000000");
-			WriteLine("#define PRESENCE_MAP_INDEX23 0x10000000");
-			WriteLine("#define PRESENCE_MAP_INDEX24 0x08000000");
-			WriteLine("#define PRESENCE_MAP_INDEX25 0x04000000");
-			WriteLine("#define PRESENCE_MAP_INDEX26 0x02000000");
-			WriteLine("#define PRESENCE_MAP_INDEX27 0x01000000");
+			WriteLine("#define PRESENCE_MAP_INDEX21 0x0000000040000000L");
+			WriteLine("#define PRESENCE_MAP_INDEX22 0x0000000020000000L");
+			WriteLine("#define PRESENCE_MAP_INDEX23 0x0000000010000000L");
+			WriteLine("#define PRESENCE_MAP_INDEX24 0x0000000008000000L");
+			WriteLine("#define PRESENCE_MAP_INDEX25 0x0000000004000000L");
+			WriteLine("#define PRESENCE_MAP_INDEX26 0x0000000002000000L");
+			WriteLine("#define PRESENCE_MAP_INDEX27 0x0000000001000000L");
 
-			/*
-			int index = 0;
+			WriteLine("#define PRESENCE_MAP_INDEX28 0x0000004000000000L");
+			WriteLine("#define PRESENCE_MAP_INDEX29 0x0000002000000000L");
+			WriteLine("#define PRESENCE_MAP_INDEX30 0x0000001000000000L");
+			WriteLine("#define PRESENCE_MAP_INDEX31 0x0000000800000000L");
+			WriteLine("#define PRESENCE_MAP_INDEX32 0x0000000400000000L");
+			WriteLine("#define PRESENCE_MAP_INDEX33 0x0000000200000000L");
+			WriteLine("#define PRESENCE_MAP_INDEX34 0x0000000100000000L");
 
-			int stop0 = 0x00000080;
-			int stop1 = 0x00008000;
-			int stop2 = 0x00800000;
+			WriteLine("#define PRESENCE_MAP_INDEX35 0x0000400000000000L");
+			WriteLine("#define PRESENCE_MAP_INDEX36 0x0000200000000000L");
+			WriteLine("#define PRESENCE_MAP_INDEX37 0x0000100000000000L");
+			WriteLine("#define PRESENCE_MAP_INDEX38 0x0000080000000000L");
+			WriteLine("#define PRESENCE_MAP_INDEX39 0x0000040000000000L");
+			WriteLine("#define PRESENCE_MAP_INDEX40 0x0000020000000000L");
+			WriteLine("#define PRESENCE_MAP_INDEX41 0x0000010000000000L");
 
-			for(int i = 0; i < 31; i++) {
-				int code = 1 << (30 - i);
-				if(code == stop0 || code == stop1 || code == stop2)
-					continue;
-				string codeStr = string.Format("0x{0:x8}", code);
-				WriteLine("#define PRESENCE_MAP_INDEX" + index + " " + codeStr);
-				index++;
-			}
-			*/
+			WriteLine("#define PRESENCE_MAP_INDEX42 0x0040000000000000L");
+			WriteLine("#define PRESENCE_MAP_INDEX43 0x0020000000000000L");
+			WriteLine("#define PRESENCE_MAP_INDEX44 0x0010000000000000L");
+			WriteLine("#define PRESENCE_MAP_INDEX45 0x0008000000000000L");
+			WriteLine("#define PRESENCE_MAP_INDEX46 0x0004000000000000L");
+			WriteLine("#define PRESENCE_MAP_INDEX47 0x0002000000000000L");
+			WriteLine("#define PRESENCE_MAP_INDEX48 0x0001000000000000L");
+
+			WriteLine("#define PRESENCE_MAP_INDEX49 0x4000000000000000L");
+			WriteLine("#define PRESENCE_MAP_INDEX50 0x2000000000000000L");
+			WriteLine("#define PRESENCE_MAP_INDEX51 0x1000000000000000L");
+			WriteLine("#define PRESENCE_MAP_INDEX52 0x0800000000000000L");
+			WriteLine("#define PRESENCE_MAP_INDEX53 0x0400000000000000L");
+			WriteLine("#define PRESENCE_MAP_INDEX54 0x0200000000000000L");
+			WriteLine("#define PRESENCE_MAP_INDEX55 0x0100000000000000L");
 
 			WriteLine("");
-			WriteLine("typedef struct _FastHeaderInfo {");
-			List<XmlNode> templates = GetTemplates(templatesNode);
-			WriteSequenceNodeFieldDefinition(templates[0], "", true, true, true, 16);
-			WriteLine("}FastHeaderInfo;");
-			WriteLine("");
+			//WriteLine("typedef struct _FastHeaderInfo {");
+			//List<XmlNode> templates = GetTemplates(templatesNode);
+			//WriteSequenceNodeFieldDefinition(templates[0], "", true, true, true, 16);
+			//WriteLine("}FastHeaderInfo;");
+			//WriteLine("");
 
 			foreach(XmlNode node in templatesNode.ChildNodes) {
 				if(node.NodeType == XmlNodeType.Comment) {
@@ -619,31 +629,50 @@ namespace prebuild {
 			}
 		}
 
+		int CalcMaxTemplateId(XmlNode templatesNode) {
+			List<XmlNode> list = GetTemplates(templatesNode);
+			int id = 0;
+			foreach(XmlNode t in list) {
+				int tid = Int32.Parse(t.Attributes["id"].Value);
+				id = Math.Max(id, tid);
+			}
+			return id;
+		}
+
+		int CalcMinTemplateId(XmlNode templatesNode) {
+			List<XmlNode> list = GetTemplates(templatesNode);
+			int id = 100000;
+			foreach(XmlNode t in list) {
+				int tid = Int32.Parse(t.Attributes["id"].Value);
+				id = Math.Min(id, tid);
+			}
+			return id;
+		}
+
 		private  void WriteEntireMethodAddressArrays (XmlNode templatesNode) {
 			SetPosition(Decode_Method_Pointer_Definition_GeneratedCode);
 			WriteLine("typedef void* (FastProtocolManager::*FastDecodeMethodPointer)();");
 
 			SetPosition(Decode_Method_Pointer_Arrays_GeneratedCode);
-			List<string> decodeEntryMethodList = GetDecodeEntryMethodList(templatesNode);
-			foreach(string mSuffix in decodeEntryMethodList) {
-				WriteLine("\tFastDecodeMethodPointer* DecodeMethods" + mSuffix + ";");
-			}
+			WriteLine("\tFastDecodeMethodPointer* DecodeMethods;");
 			WriteLine("");
 			WriteLine("\tvoid InitializeDecodeMethodPointers() {");
-			WriteLine("\t\tint ptCount = 256;");
-			foreach(string mSuffix in decodeEntryMethodList) {
-				WriteLine("\t\tthis->DecodeMethods" + mSuffix + " = new FastDecodeMethodPointer[ptCount];");
-				WriteLine("\t\tmemset(this->DecodeMethods" + mSuffix + ", 0, sizeof(FastDecodeMethodPointer) * ptCount);");
-				WriteLine("");
-				WriteLine("\t\tfor(int i = 0; i < 256; i++)");
-				WriteLine("\t\t\tthis->DecodeMethods" + mSuffix + "[i] = &FastProtocolManager::DecodeUnsupportedMessage;");
-				WriteLine("");
-				List<DecodeMessageInfo> methods = GetDecodeMessageMethods(templatesNode, mSuffix);
-				foreach(DecodeMessageInfo info in methods) {
-					WriteLine("\t\tthis->DecodeMethods" + mSuffix + "[(int)'" + info.MsgType + "'] = &FastProtocolManager::" + info.FullDecodeMethodName + ";");
-				}
-				WriteLine("");
+			int maxId = CalcMaxTemplateId(templatesNode);
+			int minId = CalcMinTemplateId(templatesNode);
+			int count = maxId - minId + 1;
+
+			WriteLine("\t\tint ptCount = " + count + ";");
+			WriteLine("\t\tthis->DecodeMethods = new FastDecodeMethodPointer[ptCount];");
+			WriteLine("\t\tmemset(this->DecodeMethods, 0, sizeof(FastDecodeMethodPointer) * ptCount);");
+			WriteLine("");
+			WriteLine("\t\tfor(int i = 0; i < " + count + "; i++)");
+			WriteLine("\t\t\tthis->DecodeMethods[i] = &FastProtocolManager::DecodeUnsupportedMessage;");
+			WriteLine("");
+			List<DecodeMessageInfo> methods = GetDecodeMessageMethods(templatesNode);
+			foreach(DecodeMessageInfo info in methods) {
+				WriteLine("\t\tthis->DecodeMethods[" + info.TemplateId + " - " + minId + "] = &FastProtocolManager::" + info.FullDecodeMethodName + ";");
 			}
+			WriteLine("");
 			WriteLine("\t}");
 			WriteLine("");
 		}
@@ -654,34 +683,32 @@ namespace prebuild {
 
 		class DecodeMessageInfo {
 			public string MsgType;
-			public string Suffix;
+			public int TemplateId;
 			public string FullDecodeMethodName;
 		}
 
 		private  void WriteEntireMethodsCode (XmlNode templatesNode) {
 			List<string> decodeEntryMethodList = GetDecodeEntryMethodList(templatesNode);
+			int minId = CalcMinTemplateId(templatesNode);
 			foreach(string mSuffix in decodeEntryMethodList) {
 				WriteLine("\tinline void Decode" + mSuffix + "() {");
 				WriteLine("\t\tthis->DecodeHeader();");
-				WriteLine("\t\tunsigned char msgType = this->GetMsgType();");
-				WriteLine("\t\tFastDecodeMethodPointer funcPtr = this->DecodeMethods" + mSuffix + "[msgType];");
+				WriteLine("\t\tFastDecodeMethodPointer funcPtr = this->DecodeMethods[this->m_templateId - " + minId + "];");
 				WriteLine("\t\t(this->*funcPtr)();");
 				WriteLine("\t}");
 			}
 		}
 
-		private  List<DecodeMessageInfo> GetDecodeMessageMethods (XmlNode templatesNode, string mSuffix) {
+		private  List<DecodeMessageInfo> GetDecodeMessageMethods (XmlNode templatesNode) {
 			List<DecodeMessageInfo> res = new List<DecodeMessageInfo>();
 			foreach(XmlNode node in templatesNode.ChildNodes) {
 				if(node.Name != "template")
 					continue;
-				if(!node.Attributes["name"].Value.Contains('-') || GetMethodSuffix(node) == mSuffix) {
-					DecodeMessageInfo info = new DecodeMessageInfo();
-					info.MsgType = node.Attributes["name"].Value.Substring(0, 1);
-					info.Suffix = mSuffix;
-					info.FullDecodeMethodName = "Decode" + GetTemplateName(node.PreviousSibling.Value);
-					res.Add(info);
-				}
+				DecodeMessageInfo info = new DecodeMessageInfo();
+				info.MsgType = node.Attributes["name"].Value.Substring(0, 1);
+				info.TemplateId = Int32.Parse(node.Attributes["id"].Value);
+				info.FullDecodeMethodName = "Decode" + GetTemplateName(node.PreviousSibling.Value);
+				res.Add(info);
 			}
 			return res;
 		}
@@ -716,7 +743,7 @@ namespace prebuild {
 					continue;
 
 				WriteLine("typedef struct _" + info.Name + " {");
-				WriteSequenceNodeFieldDefinition(node, info.NameCore, false, false, true, 0);
+				WriteSequenceNodeFieldDefinition(node, info.NameCore);
 				WriteLine("}" + info.Name + ";");
 				WriteLine("");
 
@@ -724,12 +751,9 @@ namespace prebuild {
 			}
 		}
 
-		private  void WriteSequenceNodeFieldDefinition (XmlNode node, string parentName, bool checkHeaderTag, bool generateIfHeaderTag, bool writePresenceMap, int forcedPresenceMapCount) {
-			if(writePresenceMap)
-				WritePresenceMapDefinition(node, forcedPresenceMapCount);
+		private  void WriteSequenceNodeFieldDefinition (XmlNode node, string parentName) {
+			WritePresenceMapDefinition(node);
 			foreach(XmlNode field in node) {
-				if(checkHeaderTag && IsValueBelongsToHeader(field) == !generateIfHeaderTag)
-					continue;
 				if(field.Name == "string")
 					WriteStringDefinition(field);
 				else if(field.Name == "uInt32")
@@ -765,10 +789,10 @@ namespace prebuild {
 			}			
 		} 
 
-		private  void WritePresenceMapDefinition (XmlNode node, int forcedPresenceMapCount) {
+		private  void WritePresenceMapDefinition (XmlNode node) {
 			//int maxPresenceBitCount = GetMaxPresenceBitCount(node);
 			//int maxPresenceMapIntCount = forcedPresenceMapCount != 0? forcedPresenceMapCount: CalcPresenceMapIntCount(maxPresenceBitCount);
-			WriteLine("\tUINT" + StuctFieldsSpacing + "PresenceMap;");
+			WriteLine("\tUINT64" + StuctFieldsSpacing + "PresenceMap;");
 		}
 
 		int CalcPresenceMapByteCount(XmlNode node) {
@@ -836,7 +860,7 @@ namespace prebuild {
 
 		private  void WriteSequence (XmlNode field, string parentName) {
 			WriteLine("\tint" + StuctFieldsSpacing + Name(field) + "Count;" + GetCommentLine(field));
-			WriteLine("\tFast" + parentName + Name(field) + "ItemInfo** " + Name(field) + ";" + GetCommentLine(field));
+			WriteLine("\tFast" + parentName + Name(field) + "ItemInfo* " + Name(field) + "[64];" + GetCommentLine(field));
 		}
 
 		private  void WriteByteVectorField (XmlNode field) {
@@ -905,7 +929,7 @@ namespace prebuild {
 			if(definedStructName.Contains(templateName))
 				return;
 			WriteLine("typedef struct _Fast" + templateName + "Info {");
-			WriteSequenceNodeFieldDefinition(node, templateName, true, false, true, 0);
+			WriteSequenceNodeFieldDefinition(node, templateName);
 			WriteLine("}Fast" + templateName + "Info;");
 			WriteLine("");
 
@@ -913,9 +937,6 @@ namespace prebuild {
 		}
 
 		void WriteParsePresenceMap (XmlNode node, string info, string tabString) {
-			//int count = GetMaxPresenceBitCount(node);
-			//if(count == 0)
-			//	return;
 			WriteLine(tabString + "this->ParsePresenceMap(&(" + info + "->PresenceMap));");
 		}
 
@@ -934,7 +955,7 @@ namespace prebuild {
 		}
 
 		private void WriteCopyPresenceMap(string tabs, string infoName, int count) {
-			WriteLine(tabs + infoName + "->PresenceMap = this->m_header->PresenceMap;");
+			WriteLine(tabs + infoName + "->PresenceMap = this->m_presenceMap;");
 		}
 
 		private  void ParseTemplateNode (XmlNode template, string templateName) {
@@ -942,13 +963,13 @@ namespace prebuild {
 			StructureInfo info = new StructureInfo() { NameCore = templateName };
 			WriteLine("\t\tFast" + templateName + "Info* info = " + info.GetFreeMethodName + "();");
 			WriteLine("");
+			/*
 			if(GetMaxPresenceBitCount(template) > 0) {
 				WriteCopyPresenceMap("\t\t", "info", CalcPresenceMapIntCount(template));
+				WriteLine("");
 			}
-			WriteLine("");
+			*/
 			foreach(XmlNode value in template.ChildNodes) {
-				if(IsValueBelongsToHeader(value))
-					continue;
 				ParseValue(value, "info", templateName, "\t\t");
 			}
 			WriteLine("\t\treturn info;");
@@ -1142,11 +1163,9 @@ namespace prebuild {
 			WriteLine("");
 			WriteLine(tabString + objectValueName + "->" + Name(value) + "Count = ReadUInt32_Mandatory();");
 			WriteLine(tabString + "Fast" + parentClassCoreName + Name(value) + "ItemInfo* " + itemInfo + " = NULL;");
-			WriteLine(tabString + "Fast" + parentClassCoreName + Name(value) + "ItemInfo** " + itemInfo + "List = " + objectValueName + "->" + Name(value) + ";");
 			WriteLine("");
 			WriteLine(tabString + "for(int i = 0; i < " + objectValueName + "->" + Name(value) + "Count; i++) {");
 			WriteLine(tabString + "\t" + itemInfo + " = GetFree" + parentClassCoreName + Name(value) + "ItemInfo();");
-			WriteLine(tabString + "\t(*" + itemInfo + "List) = " + itemInfo + ";");
 
 
 			if(GetMaxPresenceBitCount(value) > 0) {
@@ -1162,7 +1181,6 @@ namespace prebuild {
 				ParseValue(node, itemInfo, parentClassCoreName + Name(value), tabString + "\t");
 				LevelCount--;
 			}
-			WriteLine(tabString + "\t" + itemInfo + "List++;");
 			WriteLine(tabString + "}");
 			WriteLine("");
 		}
@@ -1440,6 +1458,11 @@ namespace prebuild {
 			if(value.Name == "length")
 				return;
 			bool shouldWritePmapCode = ShouldWriteCheckPresenceMapCode(value);
+
+			// skip constant value WHY??????!!!!!
+			if(HasConstantAttribute(value))
+				return;
+
 			if(shouldWritePmapCode) {
 				WriteCheckingPresenceMapCode(value, objectValueName, classCoreName, tabString);
 				tabString += "\t";

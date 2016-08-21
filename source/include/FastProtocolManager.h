@@ -1,50 +1,68 @@
 #pragma once
 #include "FixTypes.h"
+#include "FastTypes.h"
 #include <stdio.h>
 
-#define FAST_STOPBIT_FIRST_BYTE 		0x00000080L
-#define FAST_STOPBIT_SECOND_BYTE		0x00008000L
-#define FAST_STOPBIT_THIRD_BYTE			0x00800000L
-#define FAST_STOPBIT_FORTH_BYTE			0x80000000L
-
 #pragma region Message_Info_Structures_Definition_GeneratedCode
-#define PRESENCE_MAP_INDEX0  0x00000040
-#define PRESENCE_MAP_INDEX1  0x00000020
-#define PRESENCE_MAP_INDEX2  0x00000010
-#define PRESENCE_MAP_INDEX3  0x00000008
-#define PRESENCE_MAP_INDEX4  0x00000004
-#define PRESENCE_MAP_INDEX5  0x00000002
-#define PRESENCE_MAP_INDEX6  0x00000001
-#define PRESENCE_MAP_INDEX7  0x00004000
-#define PRESENCE_MAP_INDEX8  0x00002000
-#define PRESENCE_MAP_INDEX9  0x00001000
-#define PRESENCE_MAP_INDEX10 0x00000800
-#define PRESENCE_MAP_INDEX11 0x00000400
-#define PRESENCE_MAP_INDEX12 0x00000200
-#define PRESENCE_MAP_INDEX13 0x00000100
-#define PRESENCE_MAP_INDEX14 0x00400000
-#define PRESENCE_MAP_INDEX15 0x00200000
-#define PRESENCE_MAP_INDEX16 0x00100000
-#define PRESENCE_MAP_INDEX17 0x00080000
-#define PRESENCE_MAP_INDEX18 0x00040000
-#define PRESENCE_MAP_INDEX19 0x00020000
-#define PRESENCE_MAP_INDEX20 0x00010000
-#define PRESENCE_MAP_INDEX21 0x40000000
-#define PRESENCE_MAP_INDEX22 0x20000000
-#define PRESENCE_MAP_INDEX23 0x10000000
-#define PRESENCE_MAP_INDEX24 0x08000000
-#define PRESENCE_MAP_INDEX25 0x04000000
-#define PRESENCE_MAP_INDEX26 0x02000000
-#define PRESENCE_MAP_INDEX27 0x01000000
-
-typedef struct _FastHeaderInfo {
-	UINT							PresenceMap;
-	char*							MessageType;			// id=35    constant has constant value = A
-	int							MessageTypeLength;
-}FastHeaderInfo;
+#define PRESENCE_MAP_INDEX0  0x0000000000000040L
+#define PRESENCE_MAP_INDEX1  0x0000000000000020L
+#define PRESENCE_MAP_INDEX2  0x0000000000000010L
+#define PRESENCE_MAP_INDEX3  0x0000000000000008L
+#define PRESENCE_MAP_INDEX4  0x0000000000000004L
+#define PRESENCE_MAP_INDEX5  0x0000000000000002L
+#define PRESENCE_MAP_INDEX6  0x0000000000000001L
+#define PRESENCE_MAP_INDEX7  0x0000000000004000L
+#define PRESENCE_MAP_INDEX8  0x0000000000002000L
+#define PRESENCE_MAP_INDEX9  0x0000000000001000L
+#define PRESENCE_MAP_INDEX10 0x0000000000000800L
+#define PRESENCE_MAP_INDEX11 0x0000000000000400L
+#define PRESENCE_MAP_INDEX12 0x0000000000000200L
+#define PRESENCE_MAP_INDEX13 0x0000000000000100L
+#define PRESENCE_MAP_INDEX14 0x0000000000400000L
+#define PRESENCE_MAP_INDEX15 0x0000000000200000L
+#define PRESENCE_MAP_INDEX16 0x0000000000100000L
+#define PRESENCE_MAP_INDEX17 0x0000000000080000L
+#define PRESENCE_MAP_INDEX18 0x0000000000040000L
+#define PRESENCE_MAP_INDEX19 0x0000000000020000L
+#define PRESENCE_MAP_INDEX20 0x0000000000010000L
+#define PRESENCE_MAP_INDEX21 0x0000000040000000L
+#define PRESENCE_MAP_INDEX22 0x0000000020000000L
+#define PRESENCE_MAP_INDEX23 0x0000000010000000L
+#define PRESENCE_MAP_INDEX24 0x0000000008000000L
+#define PRESENCE_MAP_INDEX25 0x0000000004000000L
+#define PRESENCE_MAP_INDEX26 0x0000000002000000L
+#define PRESENCE_MAP_INDEX27 0x0000000001000000L
+#define PRESENCE_MAP_INDEX28 0x0000004000000000L
+#define PRESENCE_MAP_INDEX29 0x0000002000000000L
+#define PRESENCE_MAP_INDEX30 0x0000001000000000L
+#define PRESENCE_MAP_INDEX31 0x0000000800000000L
+#define PRESENCE_MAP_INDEX32 0x0000000400000000L
+#define PRESENCE_MAP_INDEX33 0x0000000200000000L
+#define PRESENCE_MAP_INDEX34 0x0000000100000000L
+#define PRESENCE_MAP_INDEX35 0x0000400000000000L
+#define PRESENCE_MAP_INDEX36 0x0000200000000000L
+#define PRESENCE_MAP_INDEX37 0x0000100000000000L
+#define PRESENCE_MAP_INDEX38 0x0000080000000000L
+#define PRESENCE_MAP_INDEX39 0x0000040000000000L
+#define PRESENCE_MAP_INDEX40 0x0000020000000000L
+#define PRESENCE_MAP_INDEX41 0x0000010000000000L
+#define PRESENCE_MAP_INDEX42 0x0040000000000000L
+#define PRESENCE_MAP_INDEX43 0x0020000000000000L
+#define PRESENCE_MAP_INDEX44 0x0010000000000000L
+#define PRESENCE_MAP_INDEX45 0x0008000000000000L
+#define PRESENCE_MAP_INDEX46 0x0004000000000000L
+#define PRESENCE_MAP_INDEX47 0x0002000000000000L
+#define PRESENCE_MAP_INDEX48 0x0001000000000000L
+#define PRESENCE_MAP_INDEX49 0x4000000000000000L
+#define PRESENCE_MAP_INDEX50 0x2000000000000000L
+#define PRESENCE_MAP_INDEX51 0x1000000000000000L
+#define PRESENCE_MAP_INDEX52 0x0800000000000000L
+#define PRESENCE_MAP_INDEX53 0x0400000000000000L
+#define PRESENCE_MAP_INDEX54 0x0200000000000000L
+#define PRESENCE_MAP_INDEX55 0x0100000000000000L
 
 typedef struct _FastMarketDataSnapshotFullRefreshGenericGroupMDEntriesItemInfo {
-	UINT							PresenceMap;
+	UINT64							PresenceMap;
 	char*							MDEntryType;			// id=269  presence=optional  
 	int							MDEntryTypeLength;
 	bool							AllowMDEntryType;
@@ -150,7 +168,7 @@ typedef struct _FastMarketDataSnapshotFullRefreshGenericGroupMDEntriesItemInfo {
 }FastMarketDataSnapshotFullRefreshGenericGroupMDEntriesItemInfo;
 
 typedef struct _FastMarketDataIncrementalRefreshGenericGroupMDEntriesItemInfo {
-	UINT							PresenceMap;
+	UINT64							PresenceMap;
 	UINT32							MDUpdateAction;			// id=279  presence=optional  
 	bool							AllowMDUpdateAction;
 	char*							MDEntryType;			// id=269  presence=optional  
@@ -268,7 +286,7 @@ typedef struct _FastMarketDataIncrementalRefreshGenericGroupMDEntriesItemInfo {
 }FastMarketDataIncrementalRefreshGenericGroupMDEntriesItemInfo;
 
 typedef struct _FastMarketDataSnapshotFullRefreshOLSFONDGroupMDEntriesItemInfo {
-	UINT							PresenceMap;
+	UINT64							PresenceMap;
 	char*							MDEntryType;			// id=269  presence=optional  
 	int							MDEntryTypeLength;
 	bool							AllowMDEntryType;
@@ -307,7 +325,7 @@ typedef struct _FastMarketDataSnapshotFullRefreshOLSFONDGroupMDEntriesItemInfo {
 }FastMarketDataSnapshotFullRefreshOLSFONDGroupMDEntriesItemInfo;
 
 typedef struct _FastMarketDataSnapshotFullRefreshOLSCURRGroupMDEntriesItemInfo {
-	UINT							PresenceMap;
+	UINT64							PresenceMap;
 	char*							MDEntryType;			// id=269  presence=optional  
 	int							MDEntryTypeLength;
 	bool							AllowMDEntryType;
@@ -339,7 +357,7 @@ typedef struct _FastMarketDataSnapshotFullRefreshOLSCURRGroupMDEntriesItemInfo {
 }FastMarketDataSnapshotFullRefreshOLSCURRGroupMDEntriesItemInfo;
 
 typedef struct _FastMarketDataSnapshotFullRefreshTLSFONDGroupMDEntriesItemInfo {
-	UINT							PresenceMap;
+	UINT64							PresenceMap;
 	char*							MDEntryType;			// id=269  
 	int							MDEntryTypeLength;
 	char*							MDEntryID;			// id=278  presence=optional  
@@ -385,7 +403,7 @@ typedef struct _FastMarketDataSnapshotFullRefreshTLSFONDGroupMDEntriesItemInfo {
 }FastMarketDataSnapshotFullRefreshTLSFONDGroupMDEntriesItemInfo;
 
 typedef struct _FastMarketDataSnapshotFullRefreshTLSCURRGroupMDEntriesItemInfo {
-	UINT							PresenceMap;
+	UINT64							PresenceMap;
 	char*							MDEntryType;			// id=269  
 	int							MDEntryTypeLength;
 	char*							MDEntryID;			// id=278  presence=optional  
@@ -427,7 +445,7 @@ typedef struct _FastMarketDataSnapshotFullRefreshTLSCURRGroupMDEntriesItemInfo {
 }FastMarketDataSnapshotFullRefreshTLSCURRGroupMDEntriesItemInfo;
 
 typedef struct _FastMarketDataSnapshotFullRefreshOBSFONDGroupMDEntriesItemInfo {
-	UINT							PresenceMap;
+	UINT64							PresenceMap;
 	char*							MDEntryType;			// id=269  presence=optional  
 	int							MDEntryTypeLength;
 	bool							AllowMDEntryType;
@@ -454,7 +472,7 @@ typedef struct _FastMarketDataSnapshotFullRefreshOBSFONDGroupMDEntriesItemInfo {
 }FastMarketDataSnapshotFullRefreshOBSFONDGroupMDEntriesItemInfo;
 
 typedef struct _FastMarketDataSnapshotFullRefreshOBSCURRGroupMDEntriesItemInfo {
-	UINT							PresenceMap;
+	UINT64							PresenceMap;
 	char*							MDEntryType;			// id=269  presence=optional  
 	int							MDEntryTypeLength;
 	bool							AllowMDEntryType;
@@ -475,7 +493,7 @@ typedef struct _FastMarketDataSnapshotFullRefreshOBSCURRGroupMDEntriesItemInfo {
 }FastMarketDataSnapshotFullRefreshOBSCURRGroupMDEntriesItemInfo;
 
 typedef struct _FastMarketDataIncrementalRefreshMSRFONDGroupMDEntriesItemInfo {
-	UINT							PresenceMap;
+	UINT64							PresenceMap;
 	UINT32							MDUpdateAction;			// id=279  presence=optional  
 	bool							AllowMDUpdateAction;
 	char*							MDEntryType;			// id=269  presence=optional  
@@ -558,7 +576,7 @@ typedef struct _FastMarketDataIncrementalRefreshMSRFONDGroupMDEntriesItemInfo {
 }FastMarketDataIncrementalRefreshMSRFONDGroupMDEntriesItemInfo;
 
 typedef struct _FastMarketDataIncrementalRefreshMSRCURRGroupMDEntriesItemInfo {
-	UINT							PresenceMap;
+	UINT64							PresenceMap;
 	UINT32							MDUpdateAction;			// id=279  presence=optional  
 	bool							AllowMDUpdateAction;
 	char*							MDEntryType;			// id=269  presence=optional  
@@ -625,7 +643,7 @@ typedef struct _FastMarketDataIncrementalRefreshMSRCURRGroupMDEntriesItemInfo {
 }FastMarketDataIncrementalRefreshMSRCURRGroupMDEntriesItemInfo;
 
 typedef struct _FastMarketDataIncrementalRefreshOLRFONDGroupMDEntriesItemInfo {
-	UINT							PresenceMap;
+	UINT64							PresenceMap;
 	UINT32							MDUpdateAction;			// id=279  presence=optional  
 	bool							AllowMDUpdateAction;
 	char*							MDEntryType;			// id=269  presence=optional  
@@ -674,7 +692,7 @@ typedef struct _FastMarketDataIncrementalRefreshOLRFONDGroupMDEntriesItemInfo {
 }FastMarketDataIncrementalRefreshOLRFONDGroupMDEntriesItemInfo;
 
 typedef struct _FastMarketDataIncrementalRefreshOLRCURRGroupMDEntriesItemInfo {
-	UINT							PresenceMap;
+	UINT64							PresenceMap;
 	UINT32							MDUpdateAction;			// id=279  presence=optional  
 	bool							AllowMDUpdateAction;
 	char*							MDEntryType;			// id=269  presence=optional  
@@ -716,7 +734,7 @@ typedef struct _FastMarketDataIncrementalRefreshOLRCURRGroupMDEntriesItemInfo {
 }FastMarketDataIncrementalRefreshOLRCURRGroupMDEntriesItemInfo;
 
 typedef struct _FastMarketDataIncrementalRefreshOBRFONDGroupMDEntriesItemInfo {
-	UINT							PresenceMap;
+	UINT64							PresenceMap;
 	UINT32							MDUpdateAction;			// id=279  presence=optional  
 	bool							AllowMDUpdateAction;
 	char*							MDEntryType;			// id=269  presence=optional  
@@ -753,7 +771,7 @@ typedef struct _FastMarketDataIncrementalRefreshOBRFONDGroupMDEntriesItemInfo {
 }FastMarketDataIncrementalRefreshOBRFONDGroupMDEntriesItemInfo;
 
 typedef struct _FastMarketDataIncrementalRefreshOBRCURRGroupMDEntriesItemInfo {
-	UINT							PresenceMap;
+	UINT64							PresenceMap;
 	UINT32							MDUpdateAction;			// id=279  presence=optional  
 	bool							AllowMDUpdateAction;
 	char*							MDEntryType;			// id=269  presence=optional  
@@ -784,7 +802,7 @@ typedef struct _FastMarketDataIncrementalRefreshOBRCURRGroupMDEntriesItemInfo {
 }FastMarketDataIncrementalRefreshOBRCURRGroupMDEntriesItemInfo;
 
 typedef struct _FastMarketDataIncrementalRefreshTLRFONDGroupMDEntriesItemInfo {
-	UINT							PresenceMap;
+	UINT64							PresenceMap;
 	UINT32							MDUpdateAction;			// id=279  presence=optional  
 	bool							AllowMDUpdateAction;
 	char*							MDEntryType;			// id=269  
@@ -840,7 +858,7 @@ typedef struct _FastMarketDataIncrementalRefreshTLRFONDGroupMDEntriesItemInfo {
 }FastMarketDataIncrementalRefreshTLRFONDGroupMDEntriesItemInfo;
 
 typedef struct _FastMarketDataIncrementalRefreshTLRCURRGroupMDEntriesItemInfo {
-	UINT							PresenceMap;
+	UINT64							PresenceMap;
 	UINT32							MDUpdateAction;			// id=279  presence=optional  
 	bool							AllowMDUpdateAction;
 	char*							MDEntryType;			// id=269  
@@ -892,7 +910,7 @@ typedef struct _FastMarketDataIncrementalRefreshTLRCURRGroupMDEntriesItemInfo {
 }FastMarketDataIncrementalRefreshTLRCURRGroupMDEntriesItemInfo;
 
 typedef struct _FastSecurityDefinitionGroupInstrAttribItemInfo {
-	UINT							PresenceMap;
+	UINT64							PresenceMap;
 	INT32							InstrAttribType;			// id=871  
 	BYTE*							InstrAttribValue;			// id=872  presence=optional  
 	int							InstrAttribValueLength;
@@ -900,7 +918,7 @@ typedef struct _FastSecurityDefinitionGroupInstrAttribItemInfo {
 }FastSecurityDefinitionGroupInstrAttribItemInfo;
 
 typedef struct _FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo {
-	UINT							PresenceMap;
+	UINT64							PresenceMap;
 	char*							TradingSessionID;			// id=336  
 	int							TradingSessionIDLength;
 	char*							TradingSessionSubID;			// id=625  presence=optional  
@@ -913,16 +931,18 @@ typedef struct _FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItem
 }FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo;
 
 typedef struct _FastSecurityDefinitionMarketSegmentGrpItemInfo {
-	UINT							PresenceMap;
+	UINT64							PresenceMap;
 	Decimal							RoundLot;			// id=561  presence=optional  
 	bool							AllowRoundLot;
 	int							TradingSessionRulesGrpCount;			// presence=optional  
-	FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo** TradingSessionRulesGrp;			// presence=optional  
+	FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo* TradingSessionRulesGrp[64];			// presence=optional  
 	bool							AllowTradingSessionRulesGrp;
 }FastSecurityDefinitionMarketSegmentGrpItemInfo;
 
 typedef struct _FastLogonInfo {
-	UINT							PresenceMap;
+	UINT64							PresenceMap;
+	char*							MessageType;			// id=35    constant has constant value = A
+	int							MessageTypeLength;
 	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
 	int							BeginStringLength;
 	char*							SenderCompID;			// id=49    constant has constant value = MOEX
@@ -943,7 +963,9 @@ typedef struct _FastLogonInfo {
 }FastLogonInfo;
 
 typedef struct _FastLogoutInfo {
-	UINT							PresenceMap;
+	UINT64							PresenceMap;
+	char*							MessageType;			// id=35    constant has constant value = 5
+	int							MessageTypeLength;
 	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
 	int							BeginStringLength;
 	char*							SenderCompID;			// id=49    constant has constant value = MOEX
@@ -958,7 +980,9 @@ typedef struct _FastLogoutInfo {
 }FastLogoutInfo;
 
 typedef struct _FastMarketDataSnapshotFullRefreshGenericInfo {
-	UINT							PresenceMap;
+	UINT64							PresenceMap;
+	char*							MessageType;			// id=35    constant has constant value = W
+	int							MessageTypeLength;
 	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
 	int							BeginStringLength;
 	char*							ApplVerID;			// id=1128    constant has constant value = 9
@@ -988,11 +1012,13 @@ typedef struct _FastMarketDataSnapshotFullRefreshGenericInfo {
 	Decimal							NetChgPrevDay;			// id=451  presence=optional  
 	bool							AllowNetChgPrevDay;
 	int							GroupMDEntriesCount;
-	FastMarketDataSnapshotFullRefreshGenericGroupMDEntriesItemInfo** GroupMDEntries;
+	FastMarketDataSnapshotFullRefreshGenericGroupMDEntriesItemInfo* GroupMDEntries[64];
 }FastMarketDataSnapshotFullRefreshGenericInfo;
 
 typedef struct _FastMarketDataIncrementalRefreshGenericInfo {
-	UINT							PresenceMap;
+	UINT64							PresenceMap;
+	char*							MessageType;			// id=35    constant has constant value = X
+	int							MessageTypeLength;
 	char*							ApplVerID;			// id=1128    constant has constant value = 9
 	int							ApplVerIDLength;
 	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
@@ -1002,11 +1028,13 @@ typedef struct _FastMarketDataIncrementalRefreshGenericInfo {
 	UINT32							MsgSeqNum;			// id=34  
 	UINT64							SendingTime;			// id=52  
 	int							GroupMDEntriesCount;
-	FastMarketDataIncrementalRefreshGenericGroupMDEntriesItemInfo** GroupMDEntries;
+	FastMarketDataIncrementalRefreshGenericGroupMDEntriesItemInfo* GroupMDEntries[64];
 }FastMarketDataIncrementalRefreshGenericInfo;
 
 typedef struct _FastMarketDataSnapshotFullRefreshOLSFONDInfo {
-	UINT							PresenceMap;
+	UINT64							PresenceMap;
+	char*							MessageType;			// id=35    constant has constant value = W
+	int							MessageTypeLength;
 	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
 	int							BeginStringLength;
 	char*							ApplVerID;			// id=1128    constant has constant value = 9
@@ -1034,11 +1062,13 @@ typedef struct _FastMarketDataSnapshotFullRefreshOLSFONDInfo {
 	UINT32							AuctionIndicator;			// id=5509  presence=optional  
 	bool							AllowAuctionIndicator;
 	int							GroupMDEntriesCount;
-	FastMarketDataSnapshotFullRefreshOLSFONDGroupMDEntriesItemInfo** GroupMDEntries;
+	FastMarketDataSnapshotFullRefreshOLSFONDGroupMDEntriesItemInfo* GroupMDEntries[64];
 }FastMarketDataSnapshotFullRefreshOLSFONDInfo;
 
 typedef struct _FastMarketDataSnapshotFullRefreshOLSCURRInfo {
-	UINT							PresenceMap;
+	UINT64							PresenceMap;
+	char*							MessageType;			// id=35    constant has constant value = W
+	int							MessageTypeLength;
 	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
 	int							BeginStringLength;
 	char*							ApplVerID;			// id=1128    constant has constant value = 9
@@ -1064,11 +1094,13 @@ typedef struct _FastMarketDataSnapshotFullRefreshOLSCURRInfo {
 	INT32							MDSecurityTradingStatus;			// id=1682  presence=optional  
 	bool							AllowMDSecurityTradingStatus;
 	int							GroupMDEntriesCount;
-	FastMarketDataSnapshotFullRefreshOLSCURRGroupMDEntriesItemInfo** GroupMDEntries;
+	FastMarketDataSnapshotFullRefreshOLSCURRGroupMDEntriesItemInfo* GroupMDEntries[64];
 }FastMarketDataSnapshotFullRefreshOLSCURRInfo;
 
 typedef struct _FastMarketDataSnapshotFullRefreshTLSFONDInfo {
-	UINT							PresenceMap;
+	UINT64							PresenceMap;
+	char*							MessageType;			// id=35    constant has constant value = W
+	int							MessageTypeLength;
 	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
 	int							BeginStringLength;
 	char*							ApplVerID;			// id=1128    constant has constant value = 9
@@ -1096,11 +1128,13 @@ typedef struct _FastMarketDataSnapshotFullRefreshTLSFONDInfo {
 	UINT32							AuctionIndicator;			// id=5509  presence=optional  
 	bool							AllowAuctionIndicator;
 	int							GroupMDEntriesCount;
-	FastMarketDataSnapshotFullRefreshTLSFONDGroupMDEntriesItemInfo** GroupMDEntries;
+	FastMarketDataSnapshotFullRefreshTLSFONDGroupMDEntriesItemInfo* GroupMDEntries[64];
 }FastMarketDataSnapshotFullRefreshTLSFONDInfo;
 
 typedef struct _FastMarketDataSnapshotFullRefreshTLSCURRInfo {
-	UINT							PresenceMap;
+	UINT64							PresenceMap;
+	char*							MessageType;			// id=35    constant has constant value = W
+	int							MessageTypeLength;
 	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
 	int							BeginStringLength;
 	char*							ApplVerID;			// id=1128    constant has constant value = 9
@@ -1126,11 +1160,13 @@ typedef struct _FastMarketDataSnapshotFullRefreshTLSCURRInfo {
 	INT32							MDSecurityTradingStatus;			// id=1682  presence=optional  
 	bool							AllowMDSecurityTradingStatus;
 	int							GroupMDEntriesCount;
-	FastMarketDataSnapshotFullRefreshTLSCURRGroupMDEntriesItemInfo** GroupMDEntries;
+	FastMarketDataSnapshotFullRefreshTLSCURRGroupMDEntriesItemInfo* GroupMDEntries[64];
 }FastMarketDataSnapshotFullRefreshTLSCURRInfo;
 
 typedef struct _FastMarketDataSnapshotFullRefreshOBSFONDInfo {
-	UINT							PresenceMap;
+	UINT64							PresenceMap;
+	char*							MessageType;			// id=35    constant has constant value = W
+	int							MessageTypeLength;
 	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
 	int							BeginStringLength;
 	char*							ApplVerID;			// id=1128    constant has constant value = 9
@@ -1158,11 +1194,13 @@ typedef struct _FastMarketDataSnapshotFullRefreshOBSFONDInfo {
 	UINT32							AuctionIndicator;			// id=5509  presence=optional  
 	bool							AllowAuctionIndicator;
 	int							GroupMDEntriesCount;
-	FastMarketDataSnapshotFullRefreshOBSFONDGroupMDEntriesItemInfo** GroupMDEntries;
+	FastMarketDataSnapshotFullRefreshOBSFONDGroupMDEntriesItemInfo* GroupMDEntries[64];
 }FastMarketDataSnapshotFullRefreshOBSFONDInfo;
 
 typedef struct _FastMarketDataSnapshotFullRefreshOBSCURRInfo {
-	UINT							PresenceMap;
+	UINT64							PresenceMap;
+	char*							MessageType;			// id=35    constant has constant value = W
+	int							MessageTypeLength;
 	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
 	int							BeginStringLength;
 	char*							ApplVerID;			// id=1128    constant has constant value = 9
@@ -1188,11 +1226,13 @@ typedef struct _FastMarketDataSnapshotFullRefreshOBSCURRInfo {
 	INT32							MDSecurityTradingStatus;			// id=1682  presence=optional  
 	bool							AllowMDSecurityTradingStatus;
 	int							GroupMDEntriesCount;
-	FastMarketDataSnapshotFullRefreshOBSCURRGroupMDEntriesItemInfo** GroupMDEntries;
+	FastMarketDataSnapshotFullRefreshOBSCURRGroupMDEntriesItemInfo* GroupMDEntries[64];
 }FastMarketDataSnapshotFullRefreshOBSCURRInfo;
 
 typedef struct _FastMarketDataIncrementalRefreshMSRFONDInfo {
-	UINT							PresenceMap;
+	UINT64							PresenceMap;
+	char*							MessageType;			// id=35    constant has constant value = X
+	int							MessageTypeLength;
 	char*							ApplVerID;			// id=1128    constant has constant value = 9
 	int							ApplVerIDLength;
 	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
@@ -1202,11 +1242,13 @@ typedef struct _FastMarketDataIncrementalRefreshMSRFONDInfo {
 	UINT32							MsgSeqNum;			// id=34  
 	UINT64							SendingTime;			// id=52  
 	int							GroupMDEntriesCount;
-	FastMarketDataIncrementalRefreshMSRFONDGroupMDEntriesItemInfo** GroupMDEntries;
+	FastMarketDataIncrementalRefreshMSRFONDGroupMDEntriesItemInfo* GroupMDEntries[64];
 }FastMarketDataIncrementalRefreshMSRFONDInfo;
 
 typedef struct _FastMarketDataIncrementalRefreshMSRCURRInfo {
-	UINT							PresenceMap;
+	UINT64							PresenceMap;
+	char*							MessageType;			// id=35    constant has constant value = X
+	int							MessageTypeLength;
 	char*							ApplVerID;			// id=1128    constant has constant value = 9
 	int							ApplVerIDLength;
 	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
@@ -1216,11 +1258,13 @@ typedef struct _FastMarketDataIncrementalRefreshMSRCURRInfo {
 	UINT32							MsgSeqNum;			// id=34  
 	UINT64							SendingTime;			// id=52  
 	int							GroupMDEntriesCount;
-	FastMarketDataIncrementalRefreshMSRCURRGroupMDEntriesItemInfo** GroupMDEntries;
+	FastMarketDataIncrementalRefreshMSRCURRGroupMDEntriesItemInfo* GroupMDEntries[64];
 }FastMarketDataIncrementalRefreshMSRCURRInfo;
 
 typedef struct _FastMarketDataIncrementalRefreshOLRFONDInfo {
-	UINT							PresenceMap;
+	UINT64							PresenceMap;
+	char*							MessageType;			// id=35    constant has constant value = X
+	int							MessageTypeLength;
 	char*							ApplVerID;			// id=1128    constant has constant value = 9
 	int							ApplVerIDLength;
 	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
@@ -1230,11 +1274,13 @@ typedef struct _FastMarketDataIncrementalRefreshOLRFONDInfo {
 	UINT32							MsgSeqNum;			// id=34  
 	UINT64							SendingTime;			// id=52  
 	int							GroupMDEntriesCount;
-	FastMarketDataIncrementalRefreshOLRFONDGroupMDEntriesItemInfo** GroupMDEntries;
+	FastMarketDataIncrementalRefreshOLRFONDGroupMDEntriesItemInfo* GroupMDEntries[64];
 }FastMarketDataIncrementalRefreshOLRFONDInfo;
 
 typedef struct _FastMarketDataIncrementalRefreshOLRCURRInfo {
-	UINT							PresenceMap;
+	UINT64							PresenceMap;
+	char*							MessageType;			// id=35    constant has constant value = X
+	int							MessageTypeLength;
 	char*							ApplVerID;			// id=1128    constant has constant value = 9
 	int							ApplVerIDLength;
 	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
@@ -1244,11 +1290,13 @@ typedef struct _FastMarketDataIncrementalRefreshOLRCURRInfo {
 	UINT32							MsgSeqNum;			// id=34  
 	UINT64							SendingTime;			// id=52  
 	int							GroupMDEntriesCount;
-	FastMarketDataIncrementalRefreshOLRCURRGroupMDEntriesItemInfo** GroupMDEntries;
+	FastMarketDataIncrementalRefreshOLRCURRGroupMDEntriesItemInfo* GroupMDEntries[64];
 }FastMarketDataIncrementalRefreshOLRCURRInfo;
 
 typedef struct _FastMarketDataIncrementalRefreshOBRFONDInfo {
-	UINT							PresenceMap;
+	UINT64							PresenceMap;
+	char*							MessageType;			// id=35    constant has constant value = X
+	int							MessageTypeLength;
 	char*							ApplVerID;			// id=1128    constant has constant value = 9
 	int							ApplVerIDLength;
 	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
@@ -1258,11 +1306,13 @@ typedef struct _FastMarketDataIncrementalRefreshOBRFONDInfo {
 	UINT32							MsgSeqNum;			// id=34  
 	UINT64							SendingTime;			// id=52  
 	int							GroupMDEntriesCount;
-	FastMarketDataIncrementalRefreshOBRFONDGroupMDEntriesItemInfo** GroupMDEntries;
+	FastMarketDataIncrementalRefreshOBRFONDGroupMDEntriesItemInfo* GroupMDEntries[64];
 }FastMarketDataIncrementalRefreshOBRFONDInfo;
 
 typedef struct _FastMarketDataIncrementalRefreshOBRCURRInfo {
-	UINT							PresenceMap;
+	UINT64							PresenceMap;
+	char*							MessageType;			// id=35    constant has constant value = X
+	int							MessageTypeLength;
 	char*							ApplVerID;			// id=1128    constant has constant value = 9
 	int							ApplVerIDLength;
 	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
@@ -1272,11 +1322,13 @@ typedef struct _FastMarketDataIncrementalRefreshOBRCURRInfo {
 	UINT32							MsgSeqNum;			// id=34  
 	UINT64							SendingTime;			// id=52  
 	int							GroupMDEntriesCount;
-	FastMarketDataIncrementalRefreshOBRCURRGroupMDEntriesItemInfo** GroupMDEntries;
+	FastMarketDataIncrementalRefreshOBRCURRGroupMDEntriesItemInfo* GroupMDEntries[64];
 }FastMarketDataIncrementalRefreshOBRCURRInfo;
 
 typedef struct _FastMarketDataIncrementalRefreshTLRFONDInfo {
-	UINT							PresenceMap;
+	UINT64							PresenceMap;
+	char*							MessageType;			// id=35    constant has constant value = X
+	int							MessageTypeLength;
 	char*							ApplVerID;			// id=1128    constant has constant value = 9
 	int							ApplVerIDLength;
 	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
@@ -1286,11 +1338,13 @@ typedef struct _FastMarketDataIncrementalRefreshTLRFONDInfo {
 	UINT32							MsgSeqNum;			// id=34  
 	UINT64							SendingTime;			// id=52  
 	int							GroupMDEntriesCount;
-	FastMarketDataIncrementalRefreshTLRFONDGroupMDEntriesItemInfo** GroupMDEntries;
+	FastMarketDataIncrementalRefreshTLRFONDGroupMDEntriesItemInfo* GroupMDEntries[64];
 }FastMarketDataIncrementalRefreshTLRFONDInfo;
 
 typedef struct _FastMarketDataIncrementalRefreshTLRCURRInfo {
-	UINT							PresenceMap;
+	UINT64							PresenceMap;
+	char*							MessageType;			// id=35    constant has constant value = X
+	int							MessageTypeLength;
 	char*							ApplVerID;			// id=1128    constant has constant value = 9
 	int							ApplVerIDLength;
 	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
@@ -1300,11 +1354,13 @@ typedef struct _FastMarketDataIncrementalRefreshTLRCURRInfo {
 	UINT32							MsgSeqNum;			// id=34  
 	UINT64							SendingTime;			// id=52  
 	int							GroupMDEntriesCount;
-	FastMarketDataIncrementalRefreshTLRCURRGroupMDEntriesItemInfo** GroupMDEntries;
+	FastMarketDataIncrementalRefreshTLRCURRGroupMDEntriesItemInfo* GroupMDEntries[64];
 }FastMarketDataIncrementalRefreshTLRCURRInfo;
 
 typedef struct _FastSecurityDefinitionInfo {
-	UINT							PresenceMap;
+	UINT64							PresenceMap;
+	char*							MessageType;			// id=35    constant has constant value = d
+	int							MessageTypeLength;
 	char*							ApplVerID;			// id=1128    constant has constant value = 9
 	int							ApplVerIDLength;
 	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
@@ -1363,13 +1419,13 @@ typedef struct _FastSecurityDefinitionInfo {
 	int							QuoteTextLength;
 	bool							AllowQuoteText;
 	int							GroupInstrAttribCount;			// presence=optional  
-	FastSecurityDefinitionGroupInstrAttribItemInfo** GroupInstrAttrib;			// presence=optional  
+	FastSecurityDefinitionGroupInstrAttribItemInfo* GroupInstrAttrib[64];			// presence=optional  
 	bool							AllowGroupInstrAttrib;
 	char*							Currency;			// id=15  presence=optional  
 	int							CurrencyLength;
 	bool							AllowCurrency;
 	int							MarketSegmentGrpCount;			// presence=optional  
-	FastSecurityDefinitionMarketSegmentGrpItemInfo** MarketSegmentGrp;			// presence=optional  
+	FastSecurityDefinitionMarketSegmentGrpItemInfo* MarketSegmentGrp[64];			// presence=optional  
 	bool							AllowMarketSegmentGrp;
 	char*							SettlCurrency;			// id=120  presence=optional  
 	int							SettlCurrencyLength;
@@ -1416,7 +1472,9 @@ typedef struct _FastSecurityDefinitionInfo {
 }FastSecurityDefinitionInfo;
 
 typedef struct _FastSecurityStatusInfo {
-	UINT							PresenceMap;
+	UINT64							PresenceMap;
+	char*							MessageType;			// id=35    constant has constant value = f
+	int							MessageTypeLength;
 	char*							ApplVerID;			// id=1128    constant has constant value = 9
 	int							ApplVerIDLength;
 	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
@@ -1440,7 +1498,9 @@ typedef struct _FastSecurityStatusInfo {
 }FastSecurityStatusInfo;
 
 typedef struct _FastTradingSessionStatusInfo {
-	UINT							PresenceMap;
+	UINT64							PresenceMap;
+	char*							MessageType;			// id=35    constant has constant value = h
+	int							MessageTypeLength;
 	char*							ApplVerID;			// id=1128    constant has constant value = 9
 	int							ApplVerIDLength;
 	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
@@ -1458,7 +1518,9 @@ typedef struct _FastTradingSessionStatusInfo {
 }FastTradingSessionStatusInfo;
 
 typedef struct _FastHeartbeatInfo {
-	UINT							PresenceMap;
+	UINT64							PresenceMap;
+	char*							MessageType;			// id=35    constant has constant value = 0
+	int							MessageTypeLength;
 	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
 	int							BeginStringLength;
 	char*							SenderCompID;			// id=49    constant has constant value = MOEX
@@ -1485,6 +1547,8 @@ class FastProtocolManager {
 	BYTE	*buffer;
 	BYTE	*currentPos;
 	int		bufferLength;
+    UINT    m_templateId;
+    UINT64  m_presenceMap;
 
     unsigned int     m_sendMsgSeqNo;
     unsigned int     m_recvMsgSeqNo;
@@ -1501,7 +1565,6 @@ private:
 #pragma endregion
 
 #pragma region Structure_Objects_Declaration_GeneratedCode
-	FastHeaderInfo*	m_header;
 	FastLogonInfo*	m_logon;
 	FastLogoutInfo*	m_logout;
 	FastMarketDataSnapshotFullRefreshGenericInfo*	m_marketDataSnapshotFullRefreshGeneric;
@@ -1562,30 +1625,27 @@ private:
 	int		m_securityDefinitionGroupInstrAttribItemsMaxCount;
 	int		m_securityDefinitionMarketSegmentGrpItemsMaxCount;
 	int		m_securityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemsMaxCount;
-	FastMarketDataSnapshotFullRefreshGenericGroupMDEntriesItemInfo*		m_marketDataSnapshotFullRefreshGenericGroupMDEntriesItemsCurrentItem;
-	FastMarketDataIncrementalRefreshGenericGroupMDEntriesItemInfo*		m_marketDataIncrementalRefreshGenericGroupMDEntriesItemsCurrentItem;
-	FastMarketDataSnapshotFullRefreshOLSFONDGroupMDEntriesItemInfo*		m_marketDataSnapshotFullRefreshOLSFONDGroupMDEntriesItemsCurrentItem;
-	FastMarketDataSnapshotFullRefreshOLSCURRGroupMDEntriesItemInfo*		m_marketDataSnapshotFullRefreshOLSCURRGroupMDEntriesItemsCurrentItem;
-	FastMarketDataSnapshotFullRefreshTLSFONDGroupMDEntriesItemInfo*		m_marketDataSnapshotFullRefreshTLSFONDGroupMDEntriesItemsCurrentItem;
-	FastMarketDataSnapshotFullRefreshTLSCURRGroupMDEntriesItemInfo*		m_marketDataSnapshotFullRefreshTLSCURRGroupMDEntriesItemsCurrentItem;
-	FastMarketDataSnapshotFullRefreshOBSFONDGroupMDEntriesItemInfo*		m_marketDataSnapshotFullRefreshOBSFONDGroupMDEntriesItemsCurrentItem;
-	FastMarketDataSnapshotFullRefreshOBSCURRGroupMDEntriesItemInfo*		m_marketDataSnapshotFullRefreshOBSCURRGroupMDEntriesItemsCurrentItem;
-	FastMarketDataIncrementalRefreshMSRFONDGroupMDEntriesItemInfo*		m_marketDataIncrementalRefreshMSRFONDGroupMDEntriesItemsCurrentItem;
-	FastMarketDataIncrementalRefreshMSRCURRGroupMDEntriesItemInfo*		m_marketDataIncrementalRefreshMSRCURRGroupMDEntriesItemsCurrentItem;
-	FastMarketDataIncrementalRefreshOLRFONDGroupMDEntriesItemInfo*		m_marketDataIncrementalRefreshOLRFONDGroupMDEntriesItemsCurrentItem;
-	FastMarketDataIncrementalRefreshOLRCURRGroupMDEntriesItemInfo*		m_marketDataIncrementalRefreshOLRCURRGroupMDEntriesItemsCurrentItem;
-	FastMarketDataIncrementalRefreshOBRFONDGroupMDEntriesItemInfo*		m_marketDataIncrementalRefreshOBRFONDGroupMDEntriesItemsCurrentItem;
-	FastMarketDataIncrementalRefreshOBRCURRGroupMDEntriesItemInfo*		m_marketDataIncrementalRefreshOBRCURRGroupMDEntriesItemsCurrentItem;
-	FastMarketDataIncrementalRefreshTLRFONDGroupMDEntriesItemInfo*		m_marketDataIncrementalRefreshTLRFONDGroupMDEntriesItemsCurrentItem;
-	FastMarketDataIncrementalRefreshTLRCURRGroupMDEntriesItemInfo*		m_marketDataIncrementalRefreshTLRCURRGroupMDEntriesItemsCurrentItem;
-	FastSecurityDefinitionGroupInstrAttribItemInfo*		m_securityDefinitionGroupInstrAttribItemsCurrentItem;
-	FastSecurityDefinitionMarketSegmentGrpItemInfo*		m_securityDefinitionMarketSegmentGrpItemsCurrentItem;
-	FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo*		m_securityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemsCurrentItem;
+	FastMarketDataSnapshotFullRefreshGenericGroupMDEntriesItemInfo		*m_marketDataSnapshotFullRefreshGenericGroupMDEntriesItemsCurrentItem;
+	FastMarketDataIncrementalRefreshGenericGroupMDEntriesItemInfo		*m_marketDataIncrementalRefreshGenericGroupMDEntriesItemsCurrentItem;
+	FastMarketDataSnapshotFullRefreshOLSFONDGroupMDEntriesItemInfo		*m_marketDataSnapshotFullRefreshOLSFONDGroupMDEntriesItemsCurrentItem;
+	FastMarketDataSnapshotFullRefreshOLSCURRGroupMDEntriesItemInfo		*m_marketDataSnapshotFullRefreshOLSCURRGroupMDEntriesItemsCurrentItem;
+	FastMarketDataSnapshotFullRefreshTLSFONDGroupMDEntriesItemInfo		*m_marketDataSnapshotFullRefreshTLSFONDGroupMDEntriesItemsCurrentItem;
+	FastMarketDataSnapshotFullRefreshTLSCURRGroupMDEntriesItemInfo		*m_marketDataSnapshotFullRefreshTLSCURRGroupMDEntriesItemsCurrentItem;
+	FastMarketDataSnapshotFullRefreshOBSFONDGroupMDEntriesItemInfo		*m_marketDataSnapshotFullRefreshOBSFONDGroupMDEntriesItemsCurrentItem;
+	FastMarketDataSnapshotFullRefreshOBSCURRGroupMDEntriesItemInfo		*m_marketDataSnapshotFullRefreshOBSCURRGroupMDEntriesItemsCurrentItem;
+	FastMarketDataIncrementalRefreshMSRFONDGroupMDEntriesItemInfo		*m_marketDataIncrementalRefreshMSRFONDGroupMDEntriesItemsCurrentItem;
+	FastMarketDataIncrementalRefreshMSRCURRGroupMDEntriesItemInfo		*m_marketDataIncrementalRefreshMSRCURRGroupMDEntriesItemsCurrentItem;
+	FastMarketDataIncrementalRefreshOLRFONDGroupMDEntriesItemInfo		*m_marketDataIncrementalRefreshOLRFONDGroupMDEntriesItemsCurrentItem;
+	FastMarketDataIncrementalRefreshOLRCURRGroupMDEntriesItemInfo		*m_marketDataIncrementalRefreshOLRCURRGroupMDEntriesItemsCurrentItem;
+	FastMarketDataIncrementalRefreshOBRFONDGroupMDEntriesItemInfo		*m_marketDataIncrementalRefreshOBRFONDGroupMDEntriesItemsCurrentItem;
+	FastMarketDataIncrementalRefreshOBRCURRGroupMDEntriesItemInfo		*m_marketDataIncrementalRefreshOBRCURRGroupMDEntriesItemsCurrentItem;
+	FastMarketDataIncrementalRefreshTLRFONDGroupMDEntriesItemInfo		*m_marketDataIncrementalRefreshTLRFONDGroupMDEntriesItemsCurrentItem;
+	FastMarketDataIncrementalRefreshTLRCURRGroupMDEntriesItemInfo		*m_marketDataIncrementalRefreshTLRCURRGroupMDEntriesItemsCurrentItem;
+	FastSecurityDefinitionGroupInstrAttribItemInfo		*m_securityDefinitionGroupInstrAttribItemsCurrentItem;
+	FastSecurityDefinitionMarketSegmentGrpItemInfo		*m_securityDefinitionMarketSegmentGrpItemsCurrentItem;
+	FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo		*m_securityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemsCurrentItem;
 
 	void InitializeMessageInfo() {
-		this->m_header = new FastHeaderInfo();
-		memset(this->m_header, 0, sizeof(FastHeaderInfo));
-
 		this->m_logon = new FastLogonInfo();
 		memset(this->m_logon, 0, sizeof(FastLogonInfo));
 
@@ -1598,6 +1658,7 @@ private:
 		this->m_marketDataSnapshotFullRefreshGenericGroupMDEntriesItems = new FastMarketDataSnapshotFullRefreshGenericGroupMDEntriesItemInfo[1024];
 		memset(this->m_marketDataSnapshotFullRefreshGenericGroupMDEntriesItems, 0, 1024 * sizeof(FastMarketDataSnapshotFullRefreshGenericGroupMDEntriesItemInfo));
 		this->m_marketDataSnapshotFullRefreshGenericGroupMDEntriesItemsMaxCount = 1024;
+		this->m_marketDataSnapshotFullRefreshGenericGroupMDEntriesItemsCurrentItem = this->m_marketDataSnapshotFullRefreshGenericGroupMDEntriesItems;
 
 		this->m_marketDataIncrementalRefreshGeneric = new FastMarketDataIncrementalRefreshGenericInfo();
 		memset(this->m_marketDataIncrementalRefreshGeneric, 0, sizeof(FastMarketDataIncrementalRefreshGenericInfo));
@@ -1605,6 +1666,7 @@ private:
 		this->m_marketDataIncrementalRefreshGenericGroupMDEntriesItems = new FastMarketDataIncrementalRefreshGenericGroupMDEntriesItemInfo[1024];
 		memset(this->m_marketDataIncrementalRefreshGenericGroupMDEntriesItems, 0, 1024 * sizeof(FastMarketDataIncrementalRefreshGenericGroupMDEntriesItemInfo));
 		this->m_marketDataIncrementalRefreshGenericGroupMDEntriesItemsMaxCount = 1024;
+		this->m_marketDataIncrementalRefreshGenericGroupMDEntriesItemsCurrentItem = this->m_marketDataIncrementalRefreshGenericGroupMDEntriesItems;
 
 		this->m_marketDataSnapshotFullRefreshOLSFOND = new FastMarketDataSnapshotFullRefreshOLSFONDInfo();
 		memset(this->m_marketDataSnapshotFullRefreshOLSFOND, 0, sizeof(FastMarketDataSnapshotFullRefreshOLSFONDInfo));
@@ -1612,6 +1674,7 @@ private:
 		this->m_marketDataSnapshotFullRefreshOLSFONDGroupMDEntriesItems = new FastMarketDataSnapshotFullRefreshOLSFONDGroupMDEntriesItemInfo[1024];
 		memset(this->m_marketDataSnapshotFullRefreshOLSFONDGroupMDEntriesItems, 0, 1024 * sizeof(FastMarketDataSnapshotFullRefreshOLSFONDGroupMDEntriesItemInfo));
 		this->m_marketDataSnapshotFullRefreshOLSFONDGroupMDEntriesItemsMaxCount = 1024;
+		this->m_marketDataSnapshotFullRefreshOLSFONDGroupMDEntriesItemsCurrentItem = this->m_marketDataSnapshotFullRefreshOLSFONDGroupMDEntriesItems;
 
 		this->m_marketDataSnapshotFullRefreshOLSCURR = new FastMarketDataSnapshotFullRefreshOLSCURRInfo();
 		memset(this->m_marketDataSnapshotFullRefreshOLSCURR, 0, sizeof(FastMarketDataSnapshotFullRefreshOLSCURRInfo));
@@ -1619,6 +1682,7 @@ private:
 		this->m_marketDataSnapshotFullRefreshOLSCURRGroupMDEntriesItems = new FastMarketDataSnapshotFullRefreshOLSCURRGroupMDEntriesItemInfo[1024];
 		memset(this->m_marketDataSnapshotFullRefreshOLSCURRGroupMDEntriesItems, 0, 1024 * sizeof(FastMarketDataSnapshotFullRefreshOLSCURRGroupMDEntriesItemInfo));
 		this->m_marketDataSnapshotFullRefreshOLSCURRGroupMDEntriesItemsMaxCount = 1024;
+		this->m_marketDataSnapshotFullRefreshOLSCURRGroupMDEntriesItemsCurrentItem = this->m_marketDataSnapshotFullRefreshOLSCURRGroupMDEntriesItems;
 
 		this->m_marketDataSnapshotFullRefreshTLSFOND = new FastMarketDataSnapshotFullRefreshTLSFONDInfo();
 		memset(this->m_marketDataSnapshotFullRefreshTLSFOND, 0, sizeof(FastMarketDataSnapshotFullRefreshTLSFONDInfo));
@@ -1626,6 +1690,7 @@ private:
 		this->m_marketDataSnapshotFullRefreshTLSFONDGroupMDEntriesItems = new FastMarketDataSnapshotFullRefreshTLSFONDGroupMDEntriesItemInfo[1024];
 		memset(this->m_marketDataSnapshotFullRefreshTLSFONDGroupMDEntriesItems, 0, 1024 * sizeof(FastMarketDataSnapshotFullRefreshTLSFONDGroupMDEntriesItemInfo));
 		this->m_marketDataSnapshotFullRefreshTLSFONDGroupMDEntriesItemsMaxCount = 1024;
+		this->m_marketDataSnapshotFullRefreshTLSFONDGroupMDEntriesItemsCurrentItem = this->m_marketDataSnapshotFullRefreshTLSFONDGroupMDEntriesItems;
 
 		this->m_marketDataSnapshotFullRefreshTLSCURR = new FastMarketDataSnapshotFullRefreshTLSCURRInfo();
 		memset(this->m_marketDataSnapshotFullRefreshTLSCURR, 0, sizeof(FastMarketDataSnapshotFullRefreshTLSCURRInfo));
@@ -1633,6 +1698,7 @@ private:
 		this->m_marketDataSnapshotFullRefreshTLSCURRGroupMDEntriesItems = new FastMarketDataSnapshotFullRefreshTLSCURRGroupMDEntriesItemInfo[1024];
 		memset(this->m_marketDataSnapshotFullRefreshTLSCURRGroupMDEntriesItems, 0, 1024 * sizeof(FastMarketDataSnapshotFullRefreshTLSCURRGroupMDEntriesItemInfo));
 		this->m_marketDataSnapshotFullRefreshTLSCURRGroupMDEntriesItemsMaxCount = 1024;
+		this->m_marketDataSnapshotFullRefreshTLSCURRGroupMDEntriesItemsCurrentItem = this->m_marketDataSnapshotFullRefreshTLSCURRGroupMDEntriesItems;
 
 		this->m_marketDataSnapshotFullRefreshOBSFOND = new FastMarketDataSnapshotFullRefreshOBSFONDInfo();
 		memset(this->m_marketDataSnapshotFullRefreshOBSFOND, 0, sizeof(FastMarketDataSnapshotFullRefreshOBSFONDInfo));
@@ -1640,6 +1706,7 @@ private:
 		this->m_marketDataSnapshotFullRefreshOBSFONDGroupMDEntriesItems = new FastMarketDataSnapshotFullRefreshOBSFONDGroupMDEntriesItemInfo[1024];
 		memset(this->m_marketDataSnapshotFullRefreshOBSFONDGroupMDEntriesItems, 0, 1024 * sizeof(FastMarketDataSnapshotFullRefreshOBSFONDGroupMDEntriesItemInfo));
 		this->m_marketDataSnapshotFullRefreshOBSFONDGroupMDEntriesItemsMaxCount = 1024;
+		this->m_marketDataSnapshotFullRefreshOBSFONDGroupMDEntriesItemsCurrentItem = this->m_marketDataSnapshotFullRefreshOBSFONDGroupMDEntriesItems;
 
 		this->m_marketDataSnapshotFullRefreshOBSCURR = new FastMarketDataSnapshotFullRefreshOBSCURRInfo();
 		memset(this->m_marketDataSnapshotFullRefreshOBSCURR, 0, sizeof(FastMarketDataSnapshotFullRefreshOBSCURRInfo));
@@ -1647,6 +1714,7 @@ private:
 		this->m_marketDataSnapshotFullRefreshOBSCURRGroupMDEntriesItems = new FastMarketDataSnapshotFullRefreshOBSCURRGroupMDEntriesItemInfo[1024];
 		memset(this->m_marketDataSnapshotFullRefreshOBSCURRGroupMDEntriesItems, 0, 1024 * sizeof(FastMarketDataSnapshotFullRefreshOBSCURRGroupMDEntriesItemInfo));
 		this->m_marketDataSnapshotFullRefreshOBSCURRGroupMDEntriesItemsMaxCount = 1024;
+		this->m_marketDataSnapshotFullRefreshOBSCURRGroupMDEntriesItemsCurrentItem = this->m_marketDataSnapshotFullRefreshOBSCURRGroupMDEntriesItems;
 
 		this->m_marketDataIncrementalRefreshMSRFOND = new FastMarketDataIncrementalRefreshMSRFONDInfo();
 		memset(this->m_marketDataIncrementalRefreshMSRFOND, 0, sizeof(FastMarketDataIncrementalRefreshMSRFONDInfo));
@@ -1654,6 +1722,7 @@ private:
 		this->m_marketDataIncrementalRefreshMSRFONDGroupMDEntriesItems = new FastMarketDataIncrementalRefreshMSRFONDGroupMDEntriesItemInfo[1024];
 		memset(this->m_marketDataIncrementalRefreshMSRFONDGroupMDEntriesItems, 0, 1024 * sizeof(FastMarketDataIncrementalRefreshMSRFONDGroupMDEntriesItemInfo));
 		this->m_marketDataIncrementalRefreshMSRFONDGroupMDEntriesItemsMaxCount = 1024;
+		this->m_marketDataIncrementalRefreshMSRFONDGroupMDEntriesItemsCurrentItem = this->m_marketDataIncrementalRefreshMSRFONDGroupMDEntriesItems;
 
 		this->m_marketDataIncrementalRefreshMSRCURR = new FastMarketDataIncrementalRefreshMSRCURRInfo();
 		memset(this->m_marketDataIncrementalRefreshMSRCURR, 0, sizeof(FastMarketDataIncrementalRefreshMSRCURRInfo));
@@ -1661,6 +1730,7 @@ private:
 		this->m_marketDataIncrementalRefreshMSRCURRGroupMDEntriesItems = new FastMarketDataIncrementalRefreshMSRCURRGroupMDEntriesItemInfo[1024];
 		memset(this->m_marketDataIncrementalRefreshMSRCURRGroupMDEntriesItems, 0, 1024 * sizeof(FastMarketDataIncrementalRefreshMSRCURRGroupMDEntriesItemInfo));
 		this->m_marketDataIncrementalRefreshMSRCURRGroupMDEntriesItemsMaxCount = 1024;
+		this->m_marketDataIncrementalRefreshMSRCURRGroupMDEntriesItemsCurrentItem = this->m_marketDataIncrementalRefreshMSRCURRGroupMDEntriesItems;
 
 		this->m_marketDataIncrementalRefreshOLRFOND = new FastMarketDataIncrementalRefreshOLRFONDInfo();
 		memset(this->m_marketDataIncrementalRefreshOLRFOND, 0, sizeof(FastMarketDataIncrementalRefreshOLRFONDInfo));
@@ -1668,6 +1738,7 @@ private:
 		this->m_marketDataIncrementalRefreshOLRFONDGroupMDEntriesItems = new FastMarketDataIncrementalRefreshOLRFONDGroupMDEntriesItemInfo[1024];
 		memset(this->m_marketDataIncrementalRefreshOLRFONDGroupMDEntriesItems, 0, 1024 * sizeof(FastMarketDataIncrementalRefreshOLRFONDGroupMDEntriesItemInfo));
 		this->m_marketDataIncrementalRefreshOLRFONDGroupMDEntriesItemsMaxCount = 1024;
+		this->m_marketDataIncrementalRefreshOLRFONDGroupMDEntriesItemsCurrentItem = this->m_marketDataIncrementalRefreshOLRFONDGroupMDEntriesItems;
 
 		this->m_marketDataIncrementalRefreshOLRCURR = new FastMarketDataIncrementalRefreshOLRCURRInfo();
 		memset(this->m_marketDataIncrementalRefreshOLRCURR, 0, sizeof(FastMarketDataIncrementalRefreshOLRCURRInfo));
@@ -1675,6 +1746,7 @@ private:
 		this->m_marketDataIncrementalRefreshOLRCURRGroupMDEntriesItems = new FastMarketDataIncrementalRefreshOLRCURRGroupMDEntriesItemInfo[1024];
 		memset(this->m_marketDataIncrementalRefreshOLRCURRGroupMDEntriesItems, 0, 1024 * sizeof(FastMarketDataIncrementalRefreshOLRCURRGroupMDEntriesItemInfo));
 		this->m_marketDataIncrementalRefreshOLRCURRGroupMDEntriesItemsMaxCount = 1024;
+		this->m_marketDataIncrementalRefreshOLRCURRGroupMDEntriesItemsCurrentItem = this->m_marketDataIncrementalRefreshOLRCURRGroupMDEntriesItems;
 
 		this->m_marketDataIncrementalRefreshOBRFOND = new FastMarketDataIncrementalRefreshOBRFONDInfo();
 		memset(this->m_marketDataIncrementalRefreshOBRFOND, 0, sizeof(FastMarketDataIncrementalRefreshOBRFONDInfo));
@@ -1682,6 +1754,7 @@ private:
 		this->m_marketDataIncrementalRefreshOBRFONDGroupMDEntriesItems = new FastMarketDataIncrementalRefreshOBRFONDGroupMDEntriesItemInfo[1024];
 		memset(this->m_marketDataIncrementalRefreshOBRFONDGroupMDEntriesItems, 0, 1024 * sizeof(FastMarketDataIncrementalRefreshOBRFONDGroupMDEntriesItemInfo));
 		this->m_marketDataIncrementalRefreshOBRFONDGroupMDEntriesItemsMaxCount = 1024;
+		this->m_marketDataIncrementalRefreshOBRFONDGroupMDEntriesItemsCurrentItem = this->m_marketDataIncrementalRefreshOBRFONDGroupMDEntriesItems;
 
 		this->m_marketDataIncrementalRefreshOBRCURR = new FastMarketDataIncrementalRefreshOBRCURRInfo();
 		memset(this->m_marketDataIncrementalRefreshOBRCURR, 0, sizeof(FastMarketDataIncrementalRefreshOBRCURRInfo));
@@ -1689,6 +1762,7 @@ private:
 		this->m_marketDataIncrementalRefreshOBRCURRGroupMDEntriesItems = new FastMarketDataIncrementalRefreshOBRCURRGroupMDEntriesItemInfo[1024];
 		memset(this->m_marketDataIncrementalRefreshOBRCURRGroupMDEntriesItems, 0, 1024 * sizeof(FastMarketDataIncrementalRefreshOBRCURRGroupMDEntriesItemInfo));
 		this->m_marketDataIncrementalRefreshOBRCURRGroupMDEntriesItemsMaxCount = 1024;
+		this->m_marketDataIncrementalRefreshOBRCURRGroupMDEntriesItemsCurrentItem = this->m_marketDataIncrementalRefreshOBRCURRGroupMDEntriesItems;
 
 		this->m_marketDataIncrementalRefreshTLRFOND = new FastMarketDataIncrementalRefreshTLRFONDInfo();
 		memset(this->m_marketDataIncrementalRefreshTLRFOND, 0, sizeof(FastMarketDataIncrementalRefreshTLRFONDInfo));
@@ -1696,6 +1770,7 @@ private:
 		this->m_marketDataIncrementalRefreshTLRFONDGroupMDEntriesItems = new FastMarketDataIncrementalRefreshTLRFONDGroupMDEntriesItemInfo[1024];
 		memset(this->m_marketDataIncrementalRefreshTLRFONDGroupMDEntriesItems, 0, 1024 * sizeof(FastMarketDataIncrementalRefreshTLRFONDGroupMDEntriesItemInfo));
 		this->m_marketDataIncrementalRefreshTLRFONDGroupMDEntriesItemsMaxCount = 1024;
+		this->m_marketDataIncrementalRefreshTLRFONDGroupMDEntriesItemsCurrentItem = this->m_marketDataIncrementalRefreshTLRFONDGroupMDEntriesItems;
 
 		this->m_marketDataIncrementalRefreshTLRCURR = new FastMarketDataIncrementalRefreshTLRCURRInfo();
 		memset(this->m_marketDataIncrementalRefreshTLRCURR, 0, sizeof(FastMarketDataIncrementalRefreshTLRCURRInfo));
@@ -1703,6 +1778,7 @@ private:
 		this->m_marketDataIncrementalRefreshTLRCURRGroupMDEntriesItems = new FastMarketDataIncrementalRefreshTLRCURRGroupMDEntriesItemInfo[1024];
 		memset(this->m_marketDataIncrementalRefreshTLRCURRGroupMDEntriesItems, 0, 1024 * sizeof(FastMarketDataIncrementalRefreshTLRCURRGroupMDEntriesItemInfo));
 		this->m_marketDataIncrementalRefreshTLRCURRGroupMDEntriesItemsMaxCount = 1024;
+		this->m_marketDataIncrementalRefreshTLRCURRGroupMDEntriesItemsCurrentItem = this->m_marketDataIncrementalRefreshTLRCURRGroupMDEntriesItems;
 
 		this->m_securityDefinition = new FastSecurityDefinitionInfo();
 		memset(this->m_securityDefinition, 0, sizeof(FastSecurityDefinitionInfo));
@@ -1710,14 +1786,17 @@ private:
 		this->m_securityDefinitionGroupInstrAttribItems = new FastSecurityDefinitionGroupInstrAttribItemInfo[1024];
 		memset(this->m_securityDefinitionGroupInstrAttribItems, 0, 1024 * sizeof(FastSecurityDefinitionGroupInstrAttribItemInfo));
 		this->m_securityDefinitionGroupInstrAttribItemsMaxCount = 1024;
+		this->m_securityDefinitionGroupInstrAttribItemsCurrentItem = this->m_securityDefinitionGroupInstrAttribItems;
 
 		this->m_securityDefinitionMarketSegmentGrpItems = new FastSecurityDefinitionMarketSegmentGrpItemInfo[1024];
 		memset(this->m_securityDefinitionMarketSegmentGrpItems, 0, 1024 * sizeof(FastSecurityDefinitionMarketSegmentGrpItemInfo));
 		this->m_securityDefinitionMarketSegmentGrpItemsMaxCount = 1024;
+		this->m_securityDefinitionMarketSegmentGrpItemsCurrentItem = this->m_securityDefinitionMarketSegmentGrpItems;
 
 		this->m_securityDefinitionMarketSegmentGrpTradingSessionRulesGrpItems = new FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo[1024];
 		memset(this->m_securityDefinitionMarketSegmentGrpTradingSessionRulesGrpItems, 0, 1024 * sizeof(FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo));
 		this->m_securityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemsMaxCount = 1024;
+		this->m_securityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemsCurrentItem = this->m_securityDefinitionMarketSegmentGrpTradingSessionRulesGrpItems;
 
 		this->m_securityStatus = new FastSecurityStatusInfo();
 		memset(this->m_securityStatus, 0, sizeof(FastSecurityStatusInfo));
@@ -1730,268 +1809,47 @@ private:
 
 	}
 
-	void ResetMessageInfoIndicies() {
-		this->m_marketDataSnapshotFullRefreshGenericGroupMDEntriesItemsCurrentItem = this->m_marketDataSnapshotFullRefreshGenericGroupMDEntriesItems;
-		this->m_marketDataIncrementalRefreshGenericGroupMDEntriesItemsCurrentItem = this->m_marketDataIncrementalRefreshGenericGroupMDEntriesItems;
-		this->m_marketDataSnapshotFullRefreshOLSFONDGroupMDEntriesItemsCurrentItem = this->m_marketDataSnapshotFullRefreshOLSFONDGroupMDEntriesItems;
-		this->m_marketDataSnapshotFullRefreshOLSCURRGroupMDEntriesItemsCurrentItem = this->m_marketDataSnapshotFullRefreshOLSCURRGroupMDEntriesItems;
-		this->m_marketDataSnapshotFullRefreshTLSFONDGroupMDEntriesItemsCurrentItem = this->m_marketDataSnapshotFullRefreshTLSFONDGroupMDEntriesItems;
-		this->m_marketDataSnapshotFullRefreshTLSCURRGroupMDEntriesItemsCurrentItem = this->m_marketDataSnapshotFullRefreshTLSCURRGroupMDEntriesItems;
-		this->m_marketDataSnapshotFullRefreshOBSFONDGroupMDEntriesItemsCurrentItem = this->m_marketDataSnapshotFullRefreshOBSFONDGroupMDEntriesItems;
-		this->m_marketDataSnapshotFullRefreshOBSCURRGroupMDEntriesItemsCurrentItem = this->m_marketDataSnapshotFullRefreshOBSCURRGroupMDEntriesItems;
-		this->m_marketDataIncrementalRefreshMSRFONDGroupMDEntriesItemsCurrentItem = this->m_marketDataIncrementalRefreshMSRFONDGroupMDEntriesItems;
-		this->m_marketDataIncrementalRefreshMSRCURRGroupMDEntriesItemsCurrentItem = this->m_marketDataIncrementalRefreshMSRCURRGroupMDEntriesItems;
-		this->m_marketDataIncrementalRefreshOLRFONDGroupMDEntriesItemsCurrentItem = this->m_marketDataIncrementalRefreshOLRFONDGroupMDEntriesItems;
-		this->m_marketDataIncrementalRefreshOLRCURRGroupMDEntriesItemsCurrentItem = this->m_marketDataIncrementalRefreshOLRCURRGroupMDEntriesItems;
-		this->m_marketDataIncrementalRefreshOBRFONDGroupMDEntriesItemsCurrentItem = this->m_marketDataIncrementalRefreshOBRFONDGroupMDEntriesItems;
-		this->m_marketDataIncrementalRefreshOBRCURRGroupMDEntriesItemsCurrentItem = this->m_marketDataIncrementalRefreshOBRCURRGroupMDEntriesItems;
-		this->m_marketDataIncrementalRefreshTLRFONDGroupMDEntriesItemsCurrentItem = this->m_marketDataIncrementalRefreshTLRFONDGroupMDEntriesItems;
-		this->m_marketDataIncrementalRefreshTLRCURRGroupMDEntriesItemsCurrentItem = this->m_marketDataIncrementalRefreshTLRCURRGroupMDEntriesItems;
-		this->m_securityDefinitionGroupInstrAttribItemsCurrentItem = this->m_securityDefinitionGroupInstrAttribItems;
-		this->m_securityDefinitionMarketSegmentGrpItemsCurrentItem = this->m_securityDefinitionMarketSegmentGrpItems;
-		this->m_securityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemsCurrentItem = this->m_securityDefinitionMarketSegmentGrpTradingSessionRulesGrpItems;
-	}
 #pragma endregion
 
 #pragma region Decode_Method_Pointer_Arrays_GeneratedCode
-	FastDecodeMethodPointer* DecodeMethods_Generic;
-	FastDecodeMethodPointer* DecodeMethods_OLS_FOND;
-	FastDecodeMethodPointer* DecodeMethods_OLS_CURR;
-	FastDecodeMethodPointer* DecodeMethods_TLS_FOND;
-	FastDecodeMethodPointer* DecodeMethods_TLS_CURR;
-	FastDecodeMethodPointer* DecodeMethods_OBS_FOND;
-	FastDecodeMethodPointer* DecodeMethods_OBS_CURR;
-	FastDecodeMethodPointer* DecodeMethods_MSR_FOND;
-	FastDecodeMethodPointer* DecodeMethods_MSR_CURR;
-	FastDecodeMethodPointer* DecodeMethods_OLR_FOND;
-	FastDecodeMethodPointer* DecodeMethods_OLR_CURR;
-	FastDecodeMethodPointer* DecodeMethods_OBR_FOND;
-	FastDecodeMethodPointer* DecodeMethods_OBR_CURR;
-	FastDecodeMethodPointer* DecodeMethods_TLR_FOND;
-	FastDecodeMethodPointer* DecodeMethods_TLR_CURR;
+	FastDecodeMethodPointer* DecodeMethods;
 
 	void InitializeDecodeMethodPointers() {
-		int ptCount = 256;
-		this->DecodeMethods_Generic = new FastDecodeMethodPointer[ptCount];
-		memset(this->DecodeMethods_Generic, 0, sizeof(FastDecodeMethodPointer) * ptCount);
+		int ptCount = 1413;
+		this->DecodeMethods = new FastDecodeMethodPointer[ptCount];
+		memset(this->DecodeMethods, 0, sizeof(FastDecodeMethodPointer) * ptCount);
 
-		for(int i = 0; i < 256; i++)
-			this->DecodeMethods_Generic[i] = &FastProtocolManager::DecodeUnsupportedMessage;
+		for(int i = 0; i < 1413; i++)
+			this->DecodeMethods[i] = &FastProtocolManager::DecodeUnsupportedMessage;
 
-		this->DecodeMethods_Generic[(int)'A'] = &FastProtocolManager::DecodeLogon;
-		this->DecodeMethods_Generic[(int)'5'] = &FastProtocolManager::DecodeLogout;
-		this->DecodeMethods_Generic[(int)'W'] = &FastProtocolManager::DecodeMarketDataSnapshotFullRefreshGeneric;
-		this->DecodeMethods_Generic[(int)'X'] = &FastProtocolManager::DecodeMarketDataIncrementalRefreshGeneric;
-		this->DecodeMethods_Generic[(int)'d'] = &FastProtocolManager::DecodeSecurityDefinition;
-		this->DecodeMethods_Generic[(int)'f'] = &FastProtocolManager::DecodeSecurityStatus;
-		this->DecodeMethods_Generic[(int)'h'] = &FastProtocolManager::DecodeTradingSessionStatus;
-		this->DecodeMethods_Generic[(int)'0'] = &FastProtocolManager::DecodeHeartbeat;
-
-		this->DecodeMethods_OLS_FOND = new FastDecodeMethodPointer[ptCount];
-		memset(this->DecodeMethods_OLS_FOND, 0, sizeof(FastDecodeMethodPointer) * ptCount);
-
-		for(int i = 0; i < 256; i++)
-			this->DecodeMethods_OLS_FOND[i] = &FastProtocolManager::DecodeUnsupportedMessage;
-
-		this->DecodeMethods_OLS_FOND[(int)'A'] = &FastProtocolManager::DecodeLogon;
-		this->DecodeMethods_OLS_FOND[(int)'5'] = &FastProtocolManager::DecodeLogout;
-		this->DecodeMethods_OLS_FOND[(int)'W'] = &FastProtocolManager::DecodeMarketDataSnapshotFullRefreshOLSFOND;
-		this->DecodeMethods_OLS_FOND[(int)'d'] = &FastProtocolManager::DecodeSecurityDefinition;
-		this->DecodeMethods_OLS_FOND[(int)'f'] = &FastProtocolManager::DecodeSecurityStatus;
-		this->DecodeMethods_OLS_FOND[(int)'h'] = &FastProtocolManager::DecodeTradingSessionStatus;
-		this->DecodeMethods_OLS_FOND[(int)'0'] = &FastProtocolManager::DecodeHeartbeat;
-
-		this->DecodeMethods_OLS_CURR = new FastDecodeMethodPointer[ptCount];
-		memset(this->DecodeMethods_OLS_CURR, 0, sizeof(FastDecodeMethodPointer) * ptCount);
-
-		for(int i = 0; i < 256; i++)
-			this->DecodeMethods_OLS_CURR[i] = &FastProtocolManager::DecodeUnsupportedMessage;
-
-		this->DecodeMethods_OLS_CURR[(int)'A'] = &FastProtocolManager::DecodeLogon;
-		this->DecodeMethods_OLS_CURR[(int)'5'] = &FastProtocolManager::DecodeLogout;
-		this->DecodeMethods_OLS_CURR[(int)'W'] = &FastProtocolManager::DecodeMarketDataSnapshotFullRefreshOLSCURR;
-		this->DecodeMethods_OLS_CURR[(int)'d'] = &FastProtocolManager::DecodeSecurityDefinition;
-		this->DecodeMethods_OLS_CURR[(int)'f'] = &FastProtocolManager::DecodeSecurityStatus;
-		this->DecodeMethods_OLS_CURR[(int)'h'] = &FastProtocolManager::DecodeTradingSessionStatus;
-		this->DecodeMethods_OLS_CURR[(int)'0'] = &FastProtocolManager::DecodeHeartbeat;
-
-		this->DecodeMethods_TLS_FOND = new FastDecodeMethodPointer[ptCount];
-		memset(this->DecodeMethods_TLS_FOND, 0, sizeof(FastDecodeMethodPointer) * ptCount);
-
-		for(int i = 0; i < 256; i++)
-			this->DecodeMethods_TLS_FOND[i] = &FastProtocolManager::DecodeUnsupportedMessage;
-
-		this->DecodeMethods_TLS_FOND[(int)'A'] = &FastProtocolManager::DecodeLogon;
-		this->DecodeMethods_TLS_FOND[(int)'5'] = &FastProtocolManager::DecodeLogout;
-		this->DecodeMethods_TLS_FOND[(int)'W'] = &FastProtocolManager::DecodeMarketDataSnapshotFullRefreshTLSFOND;
-		this->DecodeMethods_TLS_FOND[(int)'d'] = &FastProtocolManager::DecodeSecurityDefinition;
-		this->DecodeMethods_TLS_FOND[(int)'f'] = &FastProtocolManager::DecodeSecurityStatus;
-		this->DecodeMethods_TLS_FOND[(int)'h'] = &FastProtocolManager::DecodeTradingSessionStatus;
-		this->DecodeMethods_TLS_FOND[(int)'0'] = &FastProtocolManager::DecodeHeartbeat;
-
-		this->DecodeMethods_TLS_CURR = new FastDecodeMethodPointer[ptCount];
-		memset(this->DecodeMethods_TLS_CURR, 0, sizeof(FastDecodeMethodPointer) * ptCount);
-
-		for(int i = 0; i < 256; i++)
-			this->DecodeMethods_TLS_CURR[i] = &FastProtocolManager::DecodeUnsupportedMessage;
-
-		this->DecodeMethods_TLS_CURR[(int)'A'] = &FastProtocolManager::DecodeLogon;
-		this->DecodeMethods_TLS_CURR[(int)'5'] = &FastProtocolManager::DecodeLogout;
-		this->DecodeMethods_TLS_CURR[(int)'W'] = &FastProtocolManager::DecodeMarketDataSnapshotFullRefreshTLSCURR;
-		this->DecodeMethods_TLS_CURR[(int)'d'] = &FastProtocolManager::DecodeSecurityDefinition;
-		this->DecodeMethods_TLS_CURR[(int)'f'] = &FastProtocolManager::DecodeSecurityStatus;
-		this->DecodeMethods_TLS_CURR[(int)'h'] = &FastProtocolManager::DecodeTradingSessionStatus;
-		this->DecodeMethods_TLS_CURR[(int)'0'] = &FastProtocolManager::DecodeHeartbeat;
-
-		this->DecodeMethods_OBS_FOND = new FastDecodeMethodPointer[ptCount];
-		memset(this->DecodeMethods_OBS_FOND, 0, sizeof(FastDecodeMethodPointer) * ptCount);
-
-		for(int i = 0; i < 256; i++)
-			this->DecodeMethods_OBS_FOND[i] = &FastProtocolManager::DecodeUnsupportedMessage;
-
-		this->DecodeMethods_OBS_FOND[(int)'A'] = &FastProtocolManager::DecodeLogon;
-		this->DecodeMethods_OBS_FOND[(int)'5'] = &FastProtocolManager::DecodeLogout;
-		this->DecodeMethods_OBS_FOND[(int)'W'] = &FastProtocolManager::DecodeMarketDataSnapshotFullRefreshOBSFOND;
-		this->DecodeMethods_OBS_FOND[(int)'d'] = &FastProtocolManager::DecodeSecurityDefinition;
-		this->DecodeMethods_OBS_FOND[(int)'f'] = &FastProtocolManager::DecodeSecurityStatus;
-		this->DecodeMethods_OBS_FOND[(int)'h'] = &FastProtocolManager::DecodeTradingSessionStatus;
-		this->DecodeMethods_OBS_FOND[(int)'0'] = &FastProtocolManager::DecodeHeartbeat;
-
-		this->DecodeMethods_OBS_CURR = new FastDecodeMethodPointer[ptCount];
-		memset(this->DecodeMethods_OBS_CURR, 0, sizeof(FastDecodeMethodPointer) * ptCount);
-
-		for(int i = 0; i < 256; i++)
-			this->DecodeMethods_OBS_CURR[i] = &FastProtocolManager::DecodeUnsupportedMessage;
-
-		this->DecodeMethods_OBS_CURR[(int)'A'] = &FastProtocolManager::DecodeLogon;
-		this->DecodeMethods_OBS_CURR[(int)'5'] = &FastProtocolManager::DecodeLogout;
-		this->DecodeMethods_OBS_CURR[(int)'W'] = &FastProtocolManager::DecodeMarketDataSnapshotFullRefreshOBSCURR;
-		this->DecodeMethods_OBS_CURR[(int)'d'] = &FastProtocolManager::DecodeSecurityDefinition;
-		this->DecodeMethods_OBS_CURR[(int)'f'] = &FastProtocolManager::DecodeSecurityStatus;
-		this->DecodeMethods_OBS_CURR[(int)'h'] = &FastProtocolManager::DecodeTradingSessionStatus;
-		this->DecodeMethods_OBS_CURR[(int)'0'] = &FastProtocolManager::DecodeHeartbeat;
-
-		this->DecodeMethods_MSR_FOND = new FastDecodeMethodPointer[ptCount];
-		memset(this->DecodeMethods_MSR_FOND, 0, sizeof(FastDecodeMethodPointer) * ptCount);
-
-		for(int i = 0; i < 256; i++)
-			this->DecodeMethods_MSR_FOND[i] = &FastProtocolManager::DecodeUnsupportedMessage;
-
-		this->DecodeMethods_MSR_FOND[(int)'A'] = &FastProtocolManager::DecodeLogon;
-		this->DecodeMethods_MSR_FOND[(int)'5'] = &FastProtocolManager::DecodeLogout;
-		this->DecodeMethods_MSR_FOND[(int)'X'] = &FastProtocolManager::DecodeMarketDataIncrementalRefreshMSRFOND;
-		this->DecodeMethods_MSR_FOND[(int)'d'] = &FastProtocolManager::DecodeSecurityDefinition;
-		this->DecodeMethods_MSR_FOND[(int)'f'] = &FastProtocolManager::DecodeSecurityStatus;
-		this->DecodeMethods_MSR_FOND[(int)'h'] = &FastProtocolManager::DecodeTradingSessionStatus;
-		this->DecodeMethods_MSR_FOND[(int)'0'] = &FastProtocolManager::DecodeHeartbeat;
-
-		this->DecodeMethods_MSR_CURR = new FastDecodeMethodPointer[ptCount];
-		memset(this->DecodeMethods_MSR_CURR, 0, sizeof(FastDecodeMethodPointer) * ptCount);
-
-		for(int i = 0; i < 256; i++)
-			this->DecodeMethods_MSR_CURR[i] = &FastProtocolManager::DecodeUnsupportedMessage;
-
-		this->DecodeMethods_MSR_CURR[(int)'A'] = &FastProtocolManager::DecodeLogon;
-		this->DecodeMethods_MSR_CURR[(int)'5'] = &FastProtocolManager::DecodeLogout;
-		this->DecodeMethods_MSR_CURR[(int)'X'] = &FastProtocolManager::DecodeMarketDataIncrementalRefreshMSRCURR;
-		this->DecodeMethods_MSR_CURR[(int)'d'] = &FastProtocolManager::DecodeSecurityDefinition;
-		this->DecodeMethods_MSR_CURR[(int)'f'] = &FastProtocolManager::DecodeSecurityStatus;
-		this->DecodeMethods_MSR_CURR[(int)'h'] = &FastProtocolManager::DecodeTradingSessionStatus;
-		this->DecodeMethods_MSR_CURR[(int)'0'] = &FastProtocolManager::DecodeHeartbeat;
-
-		this->DecodeMethods_OLR_FOND = new FastDecodeMethodPointer[ptCount];
-		memset(this->DecodeMethods_OLR_FOND, 0, sizeof(FastDecodeMethodPointer) * ptCount);
-
-		for(int i = 0; i < 256; i++)
-			this->DecodeMethods_OLR_FOND[i] = &FastProtocolManager::DecodeUnsupportedMessage;
-
-		this->DecodeMethods_OLR_FOND[(int)'A'] = &FastProtocolManager::DecodeLogon;
-		this->DecodeMethods_OLR_FOND[(int)'5'] = &FastProtocolManager::DecodeLogout;
-		this->DecodeMethods_OLR_FOND[(int)'X'] = &FastProtocolManager::DecodeMarketDataIncrementalRefreshOLRFOND;
-		this->DecodeMethods_OLR_FOND[(int)'d'] = &FastProtocolManager::DecodeSecurityDefinition;
-		this->DecodeMethods_OLR_FOND[(int)'f'] = &FastProtocolManager::DecodeSecurityStatus;
-		this->DecodeMethods_OLR_FOND[(int)'h'] = &FastProtocolManager::DecodeTradingSessionStatus;
-		this->DecodeMethods_OLR_FOND[(int)'0'] = &FastProtocolManager::DecodeHeartbeat;
-
-		this->DecodeMethods_OLR_CURR = new FastDecodeMethodPointer[ptCount];
-		memset(this->DecodeMethods_OLR_CURR, 0, sizeof(FastDecodeMethodPointer) * ptCount);
-
-		for(int i = 0; i < 256; i++)
-			this->DecodeMethods_OLR_CURR[i] = &FastProtocolManager::DecodeUnsupportedMessage;
-
-		this->DecodeMethods_OLR_CURR[(int)'A'] = &FastProtocolManager::DecodeLogon;
-		this->DecodeMethods_OLR_CURR[(int)'5'] = &FastProtocolManager::DecodeLogout;
-		this->DecodeMethods_OLR_CURR[(int)'X'] = &FastProtocolManager::DecodeMarketDataIncrementalRefreshOLRCURR;
-		this->DecodeMethods_OLR_CURR[(int)'d'] = &FastProtocolManager::DecodeSecurityDefinition;
-		this->DecodeMethods_OLR_CURR[(int)'f'] = &FastProtocolManager::DecodeSecurityStatus;
-		this->DecodeMethods_OLR_CURR[(int)'h'] = &FastProtocolManager::DecodeTradingSessionStatus;
-		this->DecodeMethods_OLR_CURR[(int)'0'] = &FastProtocolManager::DecodeHeartbeat;
-
-		this->DecodeMethods_OBR_FOND = new FastDecodeMethodPointer[ptCount];
-		memset(this->DecodeMethods_OBR_FOND, 0, sizeof(FastDecodeMethodPointer) * ptCount);
-
-		for(int i = 0; i < 256; i++)
-			this->DecodeMethods_OBR_FOND[i] = &FastProtocolManager::DecodeUnsupportedMessage;
-
-		this->DecodeMethods_OBR_FOND[(int)'A'] = &FastProtocolManager::DecodeLogon;
-		this->DecodeMethods_OBR_FOND[(int)'5'] = &FastProtocolManager::DecodeLogout;
-		this->DecodeMethods_OBR_FOND[(int)'X'] = &FastProtocolManager::DecodeMarketDataIncrementalRefreshOBRFOND;
-		this->DecodeMethods_OBR_FOND[(int)'d'] = &FastProtocolManager::DecodeSecurityDefinition;
-		this->DecodeMethods_OBR_FOND[(int)'f'] = &FastProtocolManager::DecodeSecurityStatus;
-		this->DecodeMethods_OBR_FOND[(int)'h'] = &FastProtocolManager::DecodeTradingSessionStatus;
-		this->DecodeMethods_OBR_FOND[(int)'0'] = &FastProtocolManager::DecodeHeartbeat;
-
-		this->DecodeMethods_OBR_CURR = new FastDecodeMethodPointer[ptCount];
-		memset(this->DecodeMethods_OBR_CURR, 0, sizeof(FastDecodeMethodPointer) * ptCount);
-
-		for(int i = 0; i < 256; i++)
-			this->DecodeMethods_OBR_CURR[i] = &FastProtocolManager::DecodeUnsupportedMessage;
-
-		this->DecodeMethods_OBR_CURR[(int)'A'] = &FastProtocolManager::DecodeLogon;
-		this->DecodeMethods_OBR_CURR[(int)'5'] = &FastProtocolManager::DecodeLogout;
-		this->DecodeMethods_OBR_CURR[(int)'X'] = &FastProtocolManager::DecodeMarketDataIncrementalRefreshOBRCURR;
-		this->DecodeMethods_OBR_CURR[(int)'d'] = &FastProtocolManager::DecodeSecurityDefinition;
-		this->DecodeMethods_OBR_CURR[(int)'f'] = &FastProtocolManager::DecodeSecurityStatus;
-		this->DecodeMethods_OBR_CURR[(int)'h'] = &FastProtocolManager::DecodeTradingSessionStatus;
-		this->DecodeMethods_OBR_CURR[(int)'0'] = &FastProtocolManager::DecodeHeartbeat;
-
-		this->DecodeMethods_TLR_FOND = new FastDecodeMethodPointer[ptCount];
-		memset(this->DecodeMethods_TLR_FOND, 0, sizeof(FastDecodeMethodPointer) * ptCount);
-
-		for(int i = 0; i < 256; i++)
-			this->DecodeMethods_TLR_FOND[i] = &FastProtocolManager::DecodeUnsupportedMessage;
-
-		this->DecodeMethods_TLR_FOND[(int)'A'] = &FastProtocolManager::DecodeLogon;
-		this->DecodeMethods_TLR_FOND[(int)'5'] = &FastProtocolManager::DecodeLogout;
-		this->DecodeMethods_TLR_FOND[(int)'X'] = &FastProtocolManager::DecodeMarketDataIncrementalRefreshTLRFOND;
-		this->DecodeMethods_TLR_FOND[(int)'d'] = &FastProtocolManager::DecodeSecurityDefinition;
-		this->DecodeMethods_TLR_FOND[(int)'f'] = &FastProtocolManager::DecodeSecurityStatus;
-		this->DecodeMethods_TLR_FOND[(int)'h'] = &FastProtocolManager::DecodeTradingSessionStatus;
-		this->DecodeMethods_TLR_FOND[(int)'0'] = &FastProtocolManager::DecodeHeartbeat;
-
-		this->DecodeMethods_TLR_CURR = new FastDecodeMethodPointer[ptCount];
-		memset(this->DecodeMethods_TLR_CURR, 0, sizeof(FastDecodeMethodPointer) * ptCount);
-
-		for(int i = 0; i < 256; i++)
-			this->DecodeMethods_TLR_CURR[i] = &FastProtocolManager::DecodeUnsupportedMessage;
-
-		this->DecodeMethods_TLR_CURR[(int)'A'] = &FastProtocolManager::DecodeLogon;
-		this->DecodeMethods_TLR_CURR[(int)'5'] = &FastProtocolManager::DecodeLogout;
-		this->DecodeMethods_TLR_CURR[(int)'X'] = &FastProtocolManager::DecodeMarketDataIncrementalRefreshTLRCURR;
-		this->DecodeMethods_TLR_CURR[(int)'d'] = &FastProtocolManager::DecodeSecurityDefinition;
-		this->DecodeMethods_TLR_CURR[(int)'f'] = &FastProtocolManager::DecodeSecurityStatus;
-		this->DecodeMethods_TLR_CURR[(int)'h'] = &FastProtocolManager::DecodeTradingSessionStatus;
-		this->DecodeMethods_TLR_CURR[(int)'0'] = &FastProtocolManager::DecodeHeartbeat;
+		this->DecodeMethods[2101 - 2101] = &FastProtocolManager::DecodeLogon;
+		this->DecodeMethods[2102 - 2101] = &FastProtocolManager::DecodeLogout;
+		this->DecodeMethods[2103 - 2101] = &FastProtocolManager::DecodeMarketDataSnapshotFullRefreshGeneric;
+		this->DecodeMethods[2104 - 2101] = &FastProtocolManager::DecodeMarketDataIncrementalRefreshGeneric;
+		this->DecodeMethods[2410 - 2101] = &FastProtocolManager::DecodeMarketDataSnapshotFullRefreshOLSFOND;
+		this->DecodeMethods[3500 - 2101] = &FastProtocolManager::DecodeMarketDataSnapshotFullRefreshOLSCURR;
+		this->DecodeMethods[2411 - 2101] = &FastProtocolManager::DecodeMarketDataSnapshotFullRefreshTLSFOND;
+		this->DecodeMethods[3501 - 2101] = &FastProtocolManager::DecodeMarketDataSnapshotFullRefreshTLSCURR;
+		this->DecodeMethods[2412 - 2101] = &FastProtocolManager::DecodeMarketDataSnapshotFullRefreshOBSFOND;
+		this->DecodeMethods[3502 - 2101] = &FastProtocolManager::DecodeMarketDataSnapshotFullRefreshOBSCURR;
+		this->DecodeMethods[2423 - 2101] = &FastProtocolManager::DecodeMarketDataIncrementalRefreshMSRFOND;
+		this->DecodeMethods[3513 - 2101] = &FastProtocolManager::DecodeMarketDataIncrementalRefreshMSRCURR;
+		this->DecodeMethods[2420 - 2101] = &FastProtocolManager::DecodeMarketDataIncrementalRefreshOLRFOND;
+		this->DecodeMethods[3510 - 2101] = &FastProtocolManager::DecodeMarketDataIncrementalRefreshOLRCURR;
+		this->DecodeMethods[2422 - 2101] = &FastProtocolManager::DecodeMarketDataIncrementalRefreshOBRFOND;
+		this->DecodeMethods[3512 - 2101] = &FastProtocolManager::DecodeMarketDataIncrementalRefreshOBRCURR;
+		this->DecodeMethods[2421 - 2101] = &FastProtocolManager::DecodeMarketDataIncrementalRefreshTLRFOND;
+		this->DecodeMethods[3511 - 2101] = &FastProtocolManager::DecodeMarketDataIncrementalRefreshTLRCURR;
+		this->DecodeMethods[2115 - 2101] = &FastProtocolManager::DecodeSecurityDefinition;
+		this->DecodeMethods[2106 - 2101] = &FastProtocolManager::DecodeSecurityStatus;
+		this->DecodeMethods[2107 - 2101] = &FastProtocolManager::DecodeTradingSessionStatus;
+		this->DecodeMethods[2108 - 2101] = &FastProtocolManager::DecodeHeartbeat;
 
 	}
 
 #pragma endregion
 
 #pragma region Get_Free_Item_Methods_GeneratedCode
-	inline FastHeaderInfo* GetFreeHeaderInfo() {
-		return this->m_header;
-	}
-
 	inline FastLogonInfo* GetFreeLogonInfo() {
 		return this->m_logon;
 	}
@@ -2005,7 +1863,9 @@ private:
 	}
 
 	inline FastMarketDataSnapshotFullRefreshGenericGroupMDEntriesItemInfo* GetFreeMarketDataSnapshotFullRefreshGenericGroupMDEntriesItemInfo() {
-		return this->m_marketDataSnapshotFullRefreshGenericGroupMDEntriesItemsCurrentItem;
+		FastMarketDataSnapshotFullRefreshGenericGroupMDEntriesItemInfo *res = this->m_marketDataSnapshotFullRefreshGenericGroupMDEntriesItemsCurrentItem;
+		this->m_marketDataSnapshotFullRefreshGenericGroupMDEntriesItemsCurrentItem++;
+		return res;
 	}
 
 	inline FastMarketDataIncrementalRefreshGenericInfo* GetFreeMarketDataIncrementalRefreshGenericInfo() {
@@ -2013,7 +1873,9 @@ private:
 	}
 
 	inline FastMarketDataIncrementalRefreshGenericGroupMDEntriesItemInfo* GetFreeMarketDataIncrementalRefreshGenericGroupMDEntriesItemInfo() {
-		return this->m_marketDataIncrementalRefreshGenericGroupMDEntriesItemsCurrentItem;
+		FastMarketDataIncrementalRefreshGenericGroupMDEntriesItemInfo *res = this->m_marketDataIncrementalRefreshGenericGroupMDEntriesItemsCurrentItem;
+		this->m_marketDataIncrementalRefreshGenericGroupMDEntriesItemsCurrentItem++;
+		return res;
 	}
 
 	inline FastMarketDataSnapshotFullRefreshOLSFONDInfo* GetFreeMarketDataSnapshotFullRefreshOLSFONDInfo() {
@@ -2021,7 +1883,9 @@ private:
 	}
 
 	inline FastMarketDataSnapshotFullRefreshOLSFONDGroupMDEntriesItemInfo* GetFreeMarketDataSnapshotFullRefreshOLSFONDGroupMDEntriesItemInfo() {
-		return this->m_marketDataSnapshotFullRefreshOLSFONDGroupMDEntriesItemsCurrentItem;
+		FastMarketDataSnapshotFullRefreshOLSFONDGroupMDEntriesItemInfo *res = this->m_marketDataSnapshotFullRefreshOLSFONDGroupMDEntriesItemsCurrentItem;
+		this->m_marketDataSnapshotFullRefreshOLSFONDGroupMDEntriesItemsCurrentItem++;
+		return res;
 	}
 
 	inline FastMarketDataSnapshotFullRefreshOLSCURRInfo* GetFreeMarketDataSnapshotFullRefreshOLSCURRInfo() {
@@ -2029,7 +1893,9 @@ private:
 	}
 
 	inline FastMarketDataSnapshotFullRefreshOLSCURRGroupMDEntriesItemInfo* GetFreeMarketDataSnapshotFullRefreshOLSCURRGroupMDEntriesItemInfo() {
-		return this->m_marketDataSnapshotFullRefreshOLSCURRGroupMDEntriesItemsCurrentItem;
+		FastMarketDataSnapshotFullRefreshOLSCURRGroupMDEntriesItemInfo *res = this->m_marketDataSnapshotFullRefreshOLSCURRGroupMDEntriesItemsCurrentItem;
+		this->m_marketDataSnapshotFullRefreshOLSCURRGroupMDEntriesItemsCurrentItem++;
+		return res;
 	}
 
 	inline FastMarketDataSnapshotFullRefreshTLSFONDInfo* GetFreeMarketDataSnapshotFullRefreshTLSFONDInfo() {
@@ -2037,7 +1903,9 @@ private:
 	}
 
 	inline FastMarketDataSnapshotFullRefreshTLSFONDGroupMDEntriesItemInfo* GetFreeMarketDataSnapshotFullRefreshTLSFONDGroupMDEntriesItemInfo() {
-		return this->m_marketDataSnapshotFullRefreshTLSFONDGroupMDEntriesItemsCurrentItem;
+		FastMarketDataSnapshotFullRefreshTLSFONDGroupMDEntriesItemInfo *res = this->m_marketDataSnapshotFullRefreshTLSFONDGroupMDEntriesItemsCurrentItem;
+		this->m_marketDataSnapshotFullRefreshTLSFONDGroupMDEntriesItemsCurrentItem++;
+		return res;
 	}
 
 	inline FastMarketDataSnapshotFullRefreshTLSCURRInfo* GetFreeMarketDataSnapshotFullRefreshTLSCURRInfo() {
@@ -2045,7 +1913,9 @@ private:
 	}
 
 	inline FastMarketDataSnapshotFullRefreshTLSCURRGroupMDEntriesItemInfo* GetFreeMarketDataSnapshotFullRefreshTLSCURRGroupMDEntriesItemInfo() {
-		return this->m_marketDataSnapshotFullRefreshTLSCURRGroupMDEntriesItemsCurrentItem;
+		FastMarketDataSnapshotFullRefreshTLSCURRGroupMDEntriesItemInfo *res = this->m_marketDataSnapshotFullRefreshTLSCURRGroupMDEntriesItemsCurrentItem;
+		this->m_marketDataSnapshotFullRefreshTLSCURRGroupMDEntriesItemsCurrentItem++;
+		return res;
 	}
 
 	inline FastMarketDataSnapshotFullRefreshOBSFONDInfo* GetFreeMarketDataSnapshotFullRefreshOBSFONDInfo() {
@@ -2053,7 +1923,9 @@ private:
 	}
 
 	inline FastMarketDataSnapshotFullRefreshOBSFONDGroupMDEntriesItemInfo* GetFreeMarketDataSnapshotFullRefreshOBSFONDGroupMDEntriesItemInfo() {
-		return this->m_marketDataSnapshotFullRefreshOBSFONDGroupMDEntriesItemsCurrentItem;
+		FastMarketDataSnapshotFullRefreshOBSFONDGroupMDEntriesItemInfo *res = this->m_marketDataSnapshotFullRefreshOBSFONDGroupMDEntriesItemsCurrentItem;
+		this->m_marketDataSnapshotFullRefreshOBSFONDGroupMDEntriesItemsCurrentItem++;
+		return res;
 	}
 
 	inline FastMarketDataSnapshotFullRefreshOBSCURRInfo* GetFreeMarketDataSnapshotFullRefreshOBSCURRInfo() {
@@ -2061,7 +1933,9 @@ private:
 	}
 
 	inline FastMarketDataSnapshotFullRefreshOBSCURRGroupMDEntriesItemInfo* GetFreeMarketDataSnapshotFullRefreshOBSCURRGroupMDEntriesItemInfo() {
-		return this->m_marketDataSnapshotFullRefreshOBSCURRGroupMDEntriesItemsCurrentItem;
+		FastMarketDataSnapshotFullRefreshOBSCURRGroupMDEntriesItemInfo *res = this->m_marketDataSnapshotFullRefreshOBSCURRGroupMDEntriesItemsCurrentItem;
+		this->m_marketDataSnapshotFullRefreshOBSCURRGroupMDEntriesItemsCurrentItem++;
+		return res;
 	}
 
 	inline FastMarketDataIncrementalRefreshMSRFONDInfo* GetFreeMarketDataIncrementalRefreshMSRFONDInfo() {
@@ -2069,7 +1943,9 @@ private:
 	}
 
 	inline FastMarketDataIncrementalRefreshMSRFONDGroupMDEntriesItemInfo* GetFreeMarketDataIncrementalRefreshMSRFONDGroupMDEntriesItemInfo() {
-		return this->m_marketDataIncrementalRefreshMSRFONDGroupMDEntriesItemsCurrentItem;
+		FastMarketDataIncrementalRefreshMSRFONDGroupMDEntriesItemInfo *res = this->m_marketDataIncrementalRefreshMSRFONDGroupMDEntriesItemsCurrentItem;
+		this->m_marketDataIncrementalRefreshMSRFONDGroupMDEntriesItemsCurrentItem++;
+		return res;
 	}
 
 	inline FastMarketDataIncrementalRefreshMSRCURRInfo* GetFreeMarketDataIncrementalRefreshMSRCURRInfo() {
@@ -2077,7 +1953,9 @@ private:
 	}
 
 	inline FastMarketDataIncrementalRefreshMSRCURRGroupMDEntriesItemInfo* GetFreeMarketDataIncrementalRefreshMSRCURRGroupMDEntriesItemInfo() {
-		return this->m_marketDataIncrementalRefreshMSRCURRGroupMDEntriesItemsCurrentItem;
+		FastMarketDataIncrementalRefreshMSRCURRGroupMDEntriesItemInfo *res = this->m_marketDataIncrementalRefreshMSRCURRGroupMDEntriesItemsCurrentItem;
+		this->m_marketDataIncrementalRefreshMSRCURRGroupMDEntriesItemsCurrentItem++;
+		return res;
 	}
 
 	inline FastMarketDataIncrementalRefreshOLRFONDInfo* GetFreeMarketDataIncrementalRefreshOLRFONDInfo() {
@@ -2085,7 +1963,9 @@ private:
 	}
 
 	inline FastMarketDataIncrementalRefreshOLRFONDGroupMDEntriesItemInfo* GetFreeMarketDataIncrementalRefreshOLRFONDGroupMDEntriesItemInfo() {
-		return this->m_marketDataIncrementalRefreshOLRFONDGroupMDEntriesItemsCurrentItem;
+		FastMarketDataIncrementalRefreshOLRFONDGroupMDEntriesItemInfo *res = this->m_marketDataIncrementalRefreshOLRFONDGroupMDEntriesItemsCurrentItem;
+		this->m_marketDataIncrementalRefreshOLRFONDGroupMDEntriesItemsCurrentItem++;
+		return res;
 	}
 
 	inline FastMarketDataIncrementalRefreshOLRCURRInfo* GetFreeMarketDataIncrementalRefreshOLRCURRInfo() {
@@ -2093,7 +1973,9 @@ private:
 	}
 
 	inline FastMarketDataIncrementalRefreshOLRCURRGroupMDEntriesItemInfo* GetFreeMarketDataIncrementalRefreshOLRCURRGroupMDEntriesItemInfo() {
-		return this->m_marketDataIncrementalRefreshOLRCURRGroupMDEntriesItemsCurrentItem;
+		FastMarketDataIncrementalRefreshOLRCURRGroupMDEntriesItemInfo *res = this->m_marketDataIncrementalRefreshOLRCURRGroupMDEntriesItemsCurrentItem;
+		this->m_marketDataIncrementalRefreshOLRCURRGroupMDEntriesItemsCurrentItem++;
+		return res;
 	}
 
 	inline FastMarketDataIncrementalRefreshOBRFONDInfo* GetFreeMarketDataIncrementalRefreshOBRFONDInfo() {
@@ -2101,7 +1983,9 @@ private:
 	}
 
 	inline FastMarketDataIncrementalRefreshOBRFONDGroupMDEntriesItemInfo* GetFreeMarketDataIncrementalRefreshOBRFONDGroupMDEntriesItemInfo() {
-		return this->m_marketDataIncrementalRefreshOBRFONDGroupMDEntriesItemsCurrentItem;
+		FastMarketDataIncrementalRefreshOBRFONDGroupMDEntriesItemInfo *res = this->m_marketDataIncrementalRefreshOBRFONDGroupMDEntriesItemsCurrentItem;
+		this->m_marketDataIncrementalRefreshOBRFONDGroupMDEntriesItemsCurrentItem++;
+		return res;
 	}
 
 	inline FastMarketDataIncrementalRefreshOBRCURRInfo* GetFreeMarketDataIncrementalRefreshOBRCURRInfo() {
@@ -2109,7 +1993,9 @@ private:
 	}
 
 	inline FastMarketDataIncrementalRefreshOBRCURRGroupMDEntriesItemInfo* GetFreeMarketDataIncrementalRefreshOBRCURRGroupMDEntriesItemInfo() {
-		return this->m_marketDataIncrementalRefreshOBRCURRGroupMDEntriesItemsCurrentItem;
+		FastMarketDataIncrementalRefreshOBRCURRGroupMDEntriesItemInfo *res = this->m_marketDataIncrementalRefreshOBRCURRGroupMDEntriesItemsCurrentItem;
+		this->m_marketDataIncrementalRefreshOBRCURRGroupMDEntriesItemsCurrentItem++;
+		return res;
 	}
 
 	inline FastMarketDataIncrementalRefreshTLRFONDInfo* GetFreeMarketDataIncrementalRefreshTLRFONDInfo() {
@@ -2117,7 +2003,9 @@ private:
 	}
 
 	inline FastMarketDataIncrementalRefreshTLRFONDGroupMDEntriesItemInfo* GetFreeMarketDataIncrementalRefreshTLRFONDGroupMDEntriesItemInfo() {
-		return this->m_marketDataIncrementalRefreshTLRFONDGroupMDEntriesItemsCurrentItem;
+		FastMarketDataIncrementalRefreshTLRFONDGroupMDEntriesItemInfo *res = this->m_marketDataIncrementalRefreshTLRFONDGroupMDEntriesItemsCurrentItem;
+		this->m_marketDataIncrementalRefreshTLRFONDGroupMDEntriesItemsCurrentItem++;
+		return res;
 	}
 
 	inline FastMarketDataIncrementalRefreshTLRCURRInfo* GetFreeMarketDataIncrementalRefreshTLRCURRInfo() {
@@ -2125,7 +2013,9 @@ private:
 	}
 
 	inline FastMarketDataIncrementalRefreshTLRCURRGroupMDEntriesItemInfo* GetFreeMarketDataIncrementalRefreshTLRCURRGroupMDEntriesItemInfo() {
-		return this->m_marketDataIncrementalRefreshTLRCURRGroupMDEntriesItemsCurrentItem;
+		FastMarketDataIncrementalRefreshTLRCURRGroupMDEntriesItemInfo *res = this->m_marketDataIncrementalRefreshTLRCURRGroupMDEntriesItemsCurrentItem;
+		this->m_marketDataIncrementalRefreshTLRCURRGroupMDEntriesItemsCurrentItem++;
+		return res;
 	}
 
 	inline FastSecurityDefinitionInfo* GetFreeSecurityDefinitionInfo() {
@@ -2133,15 +2023,21 @@ private:
 	}
 
 	inline FastSecurityDefinitionGroupInstrAttribItemInfo* GetFreeSecurityDefinitionGroupInstrAttribItemInfo() {
-		return this->m_securityDefinitionGroupInstrAttribItemsCurrentItem;
+		FastSecurityDefinitionGroupInstrAttribItemInfo *res = this->m_securityDefinitionGroupInstrAttribItemsCurrentItem;
+		this->m_securityDefinitionGroupInstrAttribItemsCurrentItem++;
+		return res;
 	}
 
 	inline FastSecurityDefinitionMarketSegmentGrpItemInfo* GetFreeSecurityDefinitionMarketSegmentGrpItemInfo() {
-		return this->m_securityDefinitionMarketSegmentGrpItemsCurrentItem;
+		FastSecurityDefinitionMarketSegmentGrpItemInfo *res = this->m_securityDefinitionMarketSegmentGrpItemsCurrentItem;
+		this->m_securityDefinitionMarketSegmentGrpItemsCurrentItem++;
+		return res;
 	}
 
 	inline FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo* GetFreeSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo() {
-		return this->m_securityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemsCurrentItem;
+		FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo *res = this->m_securityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemsCurrentItem;
+		this->m_securityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemsCurrentItem++;
+		return res;
 	}
 
 	inline FastSecurityStatusInfo* GetFreeSecurityStatusInfo() {
@@ -2177,10 +2073,7 @@ public:
 		this->ResetBuffer();
 	} 
 	inline void ClearBuffer() { memset(this->buffer, 0, this->bufferLength); }
-	
-    inline unsigned char GetMsgType() {
-        return *(this->m_header->MessageType);
-    }
+
 	inline bool CheckBuffer(BYTE *arrayToCompare, int length) {
 		int lengthInt = length / 4;
 		for (int i = 0; i < lengthInt; i++)
@@ -2235,6 +2128,9 @@ public:
 		this->currentPos += 4;
 		return result;
 	}
+
+    inline UINT TemplateId() { return this->m_templateId; }
+    inline UINT64 PresenceMap() { return this->m_presenceMap; }
 
 	inline bool IsNull() {  return *(this->currentPos) == 0x80; }
 
@@ -3905,8 +3801,8 @@ public:
 		this->currentPos += length;
 	}
 
-	inline void ParsePresenceMap(UINT *map) {
-		UINT value = *((UINT*)this->currentPos);
+	inline void ParsePresenceMap(UINT64 *map) {
+		UINT64 value = *((UINT*)this->currentPos);
 		if((value & FAST_STOPBIT_FIRST_BYTE) != 0) {
 			*map = value;
 			this->currentPos++;
@@ -3922,8 +3818,28 @@ public:
 			this->currentPos += 3;
 			return;
 		}
+        if((value & FAST_STOPBIT_FORTH_BYTE) != 0) {
+            *map = value;
+            this->currentPos += 4;
+            return;
+        }
+        if((value & FAST_STOPBIT_FIFTH_BYTE) != 0) {
+            *map = value;
+            this->currentPos += 5;
+            return;
+        }
+        if((value & FAST_STOPBIT_SIXSTH_BYTE) != 0) {
+            *map = value;
+            this->currentPos += 6;
+            return;
+        }
+        if((value & FAST_STOPBIT_SEVENTH_BYTE) != 0) {
+            *map = value;
+            this->currentPos += 7;
+            return;
+        }
 		*map = value;
-		this->currentPos += 4;
+		this->currentPos += 8;
 		return;
 	}
 
@@ -4237,22 +4153,15 @@ public:
     }
 
 #pragma region Decode_Methods_Definition_GeneratedCode
-	inline FastHeaderInfo* DecodeHeader() {
+	inline void DecodeHeader() {
 
-		FastHeaderInfo *info = GetFreeHeaderInfo();
-		
-		this->ParsePresenceMap(&(info->PresenceMap));
-
-		ReadString_Mandatory(&(info->MessageType), &(info->MessageTypeLength));
-		return info;
+		this->ParsePresenceMap(&(this->m_presenceMap));
+		this->m_templateId = ReadUInt32_Mandatory();
 	}
 
 	void* DecodeLogon() {
 		FastLogonInfo* info = GetFreeLogonInfo();
 
-
-		ReadString_Mandatory(&(info->BeginString), &(info->BeginStringLength));
-		ReadString_Mandatory(&(info->SenderCompID), &(info->SenderCompIDLength));
 		ReadString_Mandatory(&(info->TargetCompID), &(info->TargetCompIDLength));
 		info->MsgSeqNum = ReadUInt32_Mandatory();
 		info->SendingTime = ReadUInt64_Mandatory();
@@ -4267,9 +4176,6 @@ public:
 	void* DecodeLogout() {
 		FastLogoutInfo* info = GetFreeLogoutInfo();
 
-
-		ReadString_Mandatory(&(info->BeginString), &(info->BeginStringLength));
-		ReadString_Mandatory(&(info->SenderCompID), &(info->SenderCompIDLength));
 		ReadString_Mandatory(&(info->TargetCompID), &(info->TargetCompIDLength));
 		info->MsgSeqNum = ReadUInt32_Mandatory();
 		info->SendingTime = ReadUInt64_Mandatory();
@@ -4280,10 +4186,6 @@ public:
 	void* DecodeMarketDataSnapshotFullRefreshGeneric() {
 		FastMarketDataSnapshotFullRefreshGenericInfo* info = GetFreeMarketDataSnapshotFullRefreshGenericInfo();
 
-
-		ReadString_Mandatory(&(info->BeginString), &(info->BeginStringLength));
-		ReadString_Mandatory(&(info->ApplVerID), &(info->ApplVerIDLength));
-		ReadString_Mandatory(&(info->SenderCompID), &(info->SenderCompIDLength));
 		info->MsgSeqNum = ReadUInt32_Mandatory();
 		info->SendingTime = ReadUInt64_Mandatory();
 		if(!CheckProcessNullString())
@@ -4307,11 +4209,9 @@ public:
 
 		info->GroupMDEntriesCount = ReadUInt32_Mandatory();
 		FastMarketDataSnapshotFullRefreshGenericGroupMDEntriesItemInfo* gmdeItemInfo = NULL;
-		FastMarketDataSnapshotFullRefreshGenericGroupMDEntriesItemInfo** gmdeItemInfoList = info->GroupMDEntries;
 
 		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 			gmdeItemInfo = GetFreeMarketDataSnapshotFullRefreshGenericGroupMDEntriesItemInfo();
-			(*gmdeItemInfoList) = gmdeItemInfo;
 
 			this->ParsePresenceMap(&(gmdeItemInfo->PresenceMap));
 
@@ -4411,7 +4311,6 @@ public:
 			}
 			if(!CheckProcessNullString())
 				ReadString_Optional(&(gmdeItemInfo->TradingSessionSubID), &(gmdeItemInfo->TradingSessionSubIDLength));
-			gmdeItemInfoList++;
 		}
 
 		return info;
@@ -4419,20 +4318,14 @@ public:
 	void* DecodeMarketDataIncrementalRefreshGeneric() {
 		FastMarketDataIncrementalRefreshGenericInfo* info = GetFreeMarketDataIncrementalRefreshGenericInfo();
 
-
-		ReadString_Mandatory(&(info->ApplVerID), &(info->ApplVerIDLength));
-		ReadString_Mandatory(&(info->BeginString), &(info->BeginStringLength));
-		ReadString_Mandatory(&(info->SenderCompID), &(info->SenderCompIDLength));
 		info->MsgSeqNum = ReadUInt32_Mandatory();
 		info->SendingTime = ReadUInt64_Mandatory();
 
 		info->GroupMDEntriesCount = ReadUInt32_Mandatory();
 		FastMarketDataIncrementalRefreshGenericGroupMDEntriesItemInfo* gmdeItemInfo = NULL;
-		FastMarketDataIncrementalRefreshGenericGroupMDEntriesItemInfo** gmdeItemInfoList = info->GroupMDEntries;
 
 		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 			gmdeItemInfo = GetFreeMarketDataIncrementalRefreshGenericGroupMDEntriesItemInfo();
-			(*gmdeItemInfoList) = gmdeItemInfo;
 
 			this->ParsePresenceMap(&(gmdeItemInfo->PresenceMap));
 
@@ -4542,7 +4435,6 @@ public:
 				ReadString_Optional(&(gmdeItemInfo->TradingSessionID), &(gmdeItemInfo->TradingSessionIDLength));
 			if(!CheckProcessNullString())
 				ReadString_Optional(&(gmdeItemInfo->TradingSessionSubID), &(gmdeItemInfo->TradingSessionSubIDLength));
-			gmdeItemInfoList++;
 		}
 
 		return info;
@@ -4550,10 +4442,6 @@ public:
 	void* DecodeMarketDataSnapshotFullRefreshOLSFOND() {
 		FastMarketDataSnapshotFullRefreshOLSFONDInfo* info = GetFreeMarketDataSnapshotFullRefreshOLSFONDInfo();
 
-
-		ReadString_Mandatory(&(info->BeginString), &(info->BeginStringLength));
-		ReadString_Mandatory(&(info->ApplVerID), &(info->ApplVerIDLength));
-		ReadString_Mandatory(&(info->SenderCompID), &(info->SenderCompIDLength));
 		info->MsgSeqNum = ReadUInt32_Mandatory();
 		info->SendingTime = ReadUInt64_Mandatory();
 		if(!CheckProcessNullUInt32())
@@ -4575,11 +4463,9 @@ public:
 
 		info->GroupMDEntriesCount = ReadUInt32_Mandatory();
 		FastMarketDataSnapshotFullRefreshOLSFONDGroupMDEntriesItemInfo* gmdeItemInfo = NULL;
-		FastMarketDataSnapshotFullRefreshOLSFONDGroupMDEntriesItemInfo** gmdeItemInfoList = info->GroupMDEntries;
 
 		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 			gmdeItemInfo = GetFreeMarketDataSnapshotFullRefreshOLSFONDGroupMDEntriesItemInfo();
-			(*gmdeItemInfoList) = gmdeItemInfo;
 
 			this->ParsePresenceMap(&(gmdeItemInfo->PresenceMap));
 
@@ -4615,7 +4501,6 @@ public:
 				ReadDecimal_Optional(&(gmdeItemInfo->TotalVolume));
 			if(!CheckProcessNullString())
 				ReadString_Optional(&(gmdeItemInfo->TradingSessionSubID), &(gmdeItemInfo->TradingSessionSubIDLength));
-			gmdeItemInfoList++;
 		}
 
 		return info;
@@ -4623,10 +4508,6 @@ public:
 	void* DecodeMarketDataSnapshotFullRefreshOLSCURR() {
 		FastMarketDataSnapshotFullRefreshOLSCURRInfo* info = GetFreeMarketDataSnapshotFullRefreshOLSCURRInfo();
 
-
-		ReadString_Mandatory(&(info->BeginString), &(info->BeginStringLength));
-		ReadString_Mandatory(&(info->ApplVerID), &(info->ApplVerIDLength));
-		ReadString_Mandatory(&(info->SenderCompID), &(info->SenderCompIDLength));
 		info->MsgSeqNum = ReadUInt32_Mandatory();
 		info->SendingTime = ReadUInt64_Mandatory();
 		if(!CheckProcessNullUInt32())
@@ -4646,11 +4527,9 @@ public:
 
 		info->GroupMDEntriesCount = ReadUInt32_Mandatory();
 		FastMarketDataSnapshotFullRefreshOLSCURRGroupMDEntriesItemInfo* gmdeItemInfo = NULL;
-		FastMarketDataSnapshotFullRefreshOLSCURRGroupMDEntriesItemInfo** gmdeItemInfoList = info->GroupMDEntries;
 
 		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 			gmdeItemInfo = GetFreeMarketDataSnapshotFullRefreshOLSCURRGroupMDEntriesItemInfo();
-			(*gmdeItemInfoList) = gmdeItemInfo;
 
 			this->ParsePresenceMap(&(gmdeItemInfo->PresenceMap));
 
@@ -4680,7 +4559,6 @@ public:
 				ReadString_Optional(&(gmdeItemInfo->OrderStatus), &(gmdeItemInfo->OrderStatusLength));
 			if(!CheckProcessNullString())
 				ReadString_Optional(&(gmdeItemInfo->TradingSessionSubID), &(gmdeItemInfo->TradingSessionSubIDLength));
-			gmdeItemInfoList++;
 		}
 
 		return info;
@@ -4688,10 +4566,6 @@ public:
 	void* DecodeMarketDataSnapshotFullRefreshTLSFOND() {
 		FastMarketDataSnapshotFullRefreshTLSFONDInfo* info = GetFreeMarketDataSnapshotFullRefreshTLSFONDInfo();
 
-
-		ReadString_Mandatory(&(info->BeginString), &(info->BeginStringLength));
-		ReadString_Mandatory(&(info->ApplVerID), &(info->ApplVerIDLength));
-		ReadString_Mandatory(&(info->SenderCompID), &(info->SenderCompIDLength));
 		info->MsgSeqNum = ReadUInt32_Mandatory();
 		info->SendingTime = ReadUInt64_Mandatory();
 		if(!CheckProcessNullUInt32())
@@ -4713,11 +4587,9 @@ public:
 
 		info->GroupMDEntriesCount = ReadUInt32_Mandatory();
 		FastMarketDataSnapshotFullRefreshTLSFONDGroupMDEntriesItemInfo* gmdeItemInfo = NULL;
-		FastMarketDataSnapshotFullRefreshTLSFONDGroupMDEntriesItemInfo** gmdeItemInfoList = info->GroupMDEntries;
 
 		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 			gmdeItemInfo = GetFreeMarketDataSnapshotFullRefreshTLSFONDGroupMDEntriesItemInfo();
-			(*gmdeItemInfoList) = gmdeItemInfo;
 			ReadString_Mandatory(&(gmdeItemInfo->MDEntryType), &(gmdeItemInfo->MDEntryTypeLength));
 			if(!CheckProcessNullString())
 				ReadString_Optional(&(gmdeItemInfo->MDEntryID), &(gmdeItemInfo->MDEntryIDLength));
@@ -4755,7 +4627,6 @@ public:
 				gmdeItemInfo->BuyBackDate = ReadUInt32_Optional();
 			if(!CheckProcessNullString())
 				ReadString_Optional(&(gmdeItemInfo->TradingSessionSubID), &(gmdeItemInfo->TradingSessionSubIDLength));
-			gmdeItemInfoList++;
 		}
 
 		return info;
@@ -4763,10 +4634,6 @@ public:
 	void* DecodeMarketDataSnapshotFullRefreshTLSCURR() {
 		FastMarketDataSnapshotFullRefreshTLSCURRInfo* info = GetFreeMarketDataSnapshotFullRefreshTLSCURRInfo();
 
-
-		ReadString_Mandatory(&(info->BeginString), &(info->BeginStringLength));
-		ReadString_Mandatory(&(info->ApplVerID), &(info->ApplVerIDLength));
-		ReadString_Mandatory(&(info->SenderCompID), &(info->SenderCompIDLength));
 		info->MsgSeqNum = ReadUInt32_Mandatory();
 		info->SendingTime = ReadUInt64_Mandatory();
 		if(!CheckProcessNullUInt32())
@@ -4786,11 +4653,9 @@ public:
 
 		info->GroupMDEntriesCount = ReadUInt32_Mandatory();
 		FastMarketDataSnapshotFullRefreshTLSCURRGroupMDEntriesItemInfo* gmdeItemInfo = NULL;
-		FastMarketDataSnapshotFullRefreshTLSCURRGroupMDEntriesItemInfo** gmdeItemInfoList = info->GroupMDEntries;
 
 		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 			gmdeItemInfo = GetFreeMarketDataSnapshotFullRefreshTLSCURRGroupMDEntriesItemInfo();
-			(*gmdeItemInfoList) = gmdeItemInfo;
 			ReadString_Mandatory(&(gmdeItemInfo->MDEntryType), &(gmdeItemInfo->MDEntryTypeLength));
 			if(!CheckProcessNullString())
 				ReadString_Optional(&(gmdeItemInfo->MDEntryID), &(gmdeItemInfo->MDEntryIDLength));
@@ -4824,7 +4689,6 @@ public:
 				gmdeItemInfo->BuyBackDate = ReadUInt32_Optional();
 			if(!CheckProcessNullString())
 				ReadString_Optional(&(gmdeItemInfo->TradingSessionSubID), &(gmdeItemInfo->TradingSessionSubIDLength));
-			gmdeItemInfoList++;
 		}
 
 		return info;
@@ -4832,10 +4696,6 @@ public:
 	void* DecodeMarketDataSnapshotFullRefreshOBSFOND() {
 		FastMarketDataSnapshotFullRefreshOBSFONDInfo* info = GetFreeMarketDataSnapshotFullRefreshOBSFONDInfo();
 
-
-		ReadString_Mandatory(&(info->BeginString), &(info->BeginStringLength));
-		ReadString_Mandatory(&(info->ApplVerID), &(info->ApplVerIDLength));
-		ReadString_Mandatory(&(info->SenderCompID), &(info->SenderCompIDLength));
 		info->MsgSeqNum = ReadUInt32_Mandatory();
 		info->SendingTime = ReadUInt64_Mandatory();
 		if(!CheckProcessNullUInt32())
@@ -4857,11 +4717,9 @@ public:
 
 		info->GroupMDEntriesCount = ReadUInt32_Mandatory();
 		FastMarketDataSnapshotFullRefreshOBSFONDGroupMDEntriesItemInfo* gmdeItemInfo = NULL;
-		FastMarketDataSnapshotFullRefreshOBSFONDGroupMDEntriesItemInfo** gmdeItemInfoList = info->GroupMDEntries;
 
 		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 			gmdeItemInfo = GetFreeMarketDataSnapshotFullRefreshOBSFONDGroupMDEntriesItemInfo();
-			(*gmdeItemInfoList) = gmdeItemInfo;
 			if(!CheckProcessNullString())
 				ReadString_Optional(&(gmdeItemInfo->MDEntryType), &(gmdeItemInfo->MDEntryTypeLength));
 			if(!CheckProcessNullString())
@@ -4882,7 +4740,6 @@ public:
 				ReadDecimal_Optional(&(gmdeItemInfo->NominalValue));
 			if(!CheckProcessNullString())
 				ReadString_Optional(&(gmdeItemInfo->TradingSessionSubID), &(gmdeItemInfo->TradingSessionSubIDLength));
-			gmdeItemInfoList++;
 		}
 
 		return info;
@@ -4890,10 +4747,6 @@ public:
 	void* DecodeMarketDataSnapshotFullRefreshOBSCURR() {
 		FastMarketDataSnapshotFullRefreshOBSCURRInfo* info = GetFreeMarketDataSnapshotFullRefreshOBSCURRInfo();
 
-
-		ReadString_Mandatory(&(info->BeginString), &(info->BeginStringLength));
-		ReadString_Mandatory(&(info->ApplVerID), &(info->ApplVerIDLength));
-		ReadString_Mandatory(&(info->SenderCompID), &(info->SenderCompIDLength));
 		info->MsgSeqNum = ReadUInt32_Mandatory();
 		info->SendingTime = ReadUInt64_Mandatory();
 		if(!CheckProcessNullUInt32())
@@ -4913,11 +4766,9 @@ public:
 
 		info->GroupMDEntriesCount = ReadUInt32_Mandatory();
 		FastMarketDataSnapshotFullRefreshOBSCURRGroupMDEntriesItemInfo* gmdeItemInfo = NULL;
-		FastMarketDataSnapshotFullRefreshOBSCURRGroupMDEntriesItemInfo** gmdeItemInfoList = info->GroupMDEntries;
 
 		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 			gmdeItemInfo = GetFreeMarketDataSnapshotFullRefreshOBSCURRGroupMDEntriesItemInfo();
-			(*gmdeItemInfoList) = gmdeItemInfo;
 			if(!CheckProcessNullString())
 				ReadString_Optional(&(gmdeItemInfo->MDEntryType), &(gmdeItemInfo->MDEntryTypeLength));
 			if(!CheckProcessNullString())
@@ -4932,7 +4783,6 @@ public:
 				gmdeItemInfo->OrigTime = ReadUInt32_Optional();
 			if(!CheckProcessNullString())
 				ReadString_Optional(&(gmdeItemInfo->TradingSessionSubID), &(gmdeItemInfo->TradingSessionSubIDLength));
-			gmdeItemInfoList++;
 		}
 
 		return info;
@@ -4940,20 +4790,14 @@ public:
 	void* DecodeMarketDataIncrementalRefreshMSRFOND() {
 		FastMarketDataIncrementalRefreshMSRFONDInfo* info = GetFreeMarketDataIncrementalRefreshMSRFONDInfo();
 
-
-		ReadString_Mandatory(&(info->ApplVerID), &(info->ApplVerIDLength));
-		ReadString_Mandatory(&(info->BeginString), &(info->BeginStringLength));
-		ReadString_Mandatory(&(info->SenderCompID), &(info->SenderCompIDLength));
 		info->MsgSeqNum = ReadUInt32_Mandatory();
 		info->SendingTime = ReadUInt64_Mandatory();
 
 		info->GroupMDEntriesCount = ReadUInt32_Mandatory();
 		FastMarketDataIncrementalRefreshMSRFONDGroupMDEntriesItemInfo* gmdeItemInfo = NULL;
-		FastMarketDataIncrementalRefreshMSRFONDGroupMDEntriesItemInfo** gmdeItemInfoList = info->GroupMDEntries;
 
 		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 			gmdeItemInfo = GetFreeMarketDataIncrementalRefreshMSRFONDGroupMDEntriesItemInfo();
-			(*gmdeItemInfoList) = gmdeItemInfo;
 
 			this->ParsePresenceMap(&(gmdeItemInfo->PresenceMap));
 
@@ -5029,7 +4873,6 @@ public:
 				ReadString_Optional(&(gmdeItemInfo->TradingSessionID), &(gmdeItemInfo->TradingSessionIDLength));
 			if(!CheckProcessNullString())
 				ReadString_Optional(&(gmdeItemInfo->TradingSessionSubID), &(gmdeItemInfo->TradingSessionSubIDLength));
-			gmdeItemInfoList++;
 		}
 
 		return info;
@@ -5037,20 +4880,14 @@ public:
 	void* DecodeMarketDataIncrementalRefreshMSRCURR() {
 		FastMarketDataIncrementalRefreshMSRCURRInfo* info = GetFreeMarketDataIncrementalRefreshMSRCURRInfo();
 
-
-		ReadString_Mandatory(&(info->ApplVerID), &(info->ApplVerIDLength));
-		ReadString_Mandatory(&(info->BeginString), &(info->BeginStringLength));
-		ReadString_Mandatory(&(info->SenderCompID), &(info->SenderCompIDLength));
 		info->MsgSeqNum = ReadUInt32_Mandatory();
 		info->SendingTime = ReadUInt64_Mandatory();
 
 		info->GroupMDEntriesCount = ReadUInt32_Mandatory();
 		FastMarketDataIncrementalRefreshMSRCURRGroupMDEntriesItemInfo* gmdeItemInfo = NULL;
-		FastMarketDataIncrementalRefreshMSRCURRGroupMDEntriesItemInfo** gmdeItemInfoList = info->GroupMDEntries;
 
 		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 			gmdeItemInfo = GetFreeMarketDataIncrementalRefreshMSRCURRGroupMDEntriesItemInfo();
-			(*gmdeItemInfoList) = gmdeItemInfo;
 
 			this->ParsePresenceMap(&(gmdeItemInfo->PresenceMap));
 
@@ -5110,7 +4947,6 @@ public:
 				ReadString_Optional(&(gmdeItemInfo->TradingSessionID), &(gmdeItemInfo->TradingSessionIDLength));
 			if(!CheckProcessNullString())
 				ReadString_Optional(&(gmdeItemInfo->TradingSessionSubID), &(gmdeItemInfo->TradingSessionSubIDLength));
-			gmdeItemInfoList++;
 		}
 
 		return info;
@@ -5118,20 +4954,14 @@ public:
 	void* DecodeMarketDataIncrementalRefreshOLRFOND() {
 		FastMarketDataIncrementalRefreshOLRFONDInfo* info = GetFreeMarketDataIncrementalRefreshOLRFONDInfo();
 
-
-		ReadString_Mandatory(&(info->ApplVerID), &(info->ApplVerIDLength));
-		ReadString_Mandatory(&(info->BeginString), &(info->BeginStringLength));
-		ReadString_Mandatory(&(info->SenderCompID), &(info->SenderCompIDLength));
 		info->MsgSeqNum = ReadUInt32_Mandatory();
 		info->SendingTime = ReadUInt64_Mandatory();
 
 		info->GroupMDEntriesCount = ReadUInt32_Mandatory();
 		FastMarketDataIncrementalRefreshOLRFONDGroupMDEntriesItemInfo* gmdeItemInfo = NULL;
-		FastMarketDataIncrementalRefreshOLRFONDGroupMDEntriesItemInfo** gmdeItemInfoList = info->GroupMDEntries;
 
 		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 			gmdeItemInfo = GetFreeMarketDataIncrementalRefreshOLRFONDGroupMDEntriesItemInfo();
-			(*gmdeItemInfoList) = gmdeItemInfo;
 
 			this->ParsePresenceMap(&(gmdeItemInfo->PresenceMap));
 
@@ -5175,7 +5005,6 @@ public:
 				ReadString_Optional(&(gmdeItemInfo->TradingSessionID), &(gmdeItemInfo->TradingSessionIDLength));
 			if(!CheckProcessNullString())
 				ReadString_Optional(&(gmdeItemInfo->TradingSessionSubID), &(gmdeItemInfo->TradingSessionSubIDLength));
-			gmdeItemInfoList++;
 		}
 
 		return info;
@@ -5183,20 +5012,14 @@ public:
 	void* DecodeMarketDataIncrementalRefreshOLRCURR() {
 		FastMarketDataIncrementalRefreshOLRCURRInfo* info = GetFreeMarketDataIncrementalRefreshOLRCURRInfo();
 
-
-		ReadString_Mandatory(&(info->ApplVerID), &(info->ApplVerIDLength));
-		ReadString_Mandatory(&(info->BeginString), &(info->BeginStringLength));
-		ReadString_Mandatory(&(info->SenderCompID), &(info->SenderCompIDLength));
 		info->MsgSeqNum = ReadUInt32_Mandatory();
 		info->SendingTime = ReadUInt64_Mandatory();
 
 		info->GroupMDEntriesCount = ReadUInt32_Mandatory();
 		FastMarketDataIncrementalRefreshOLRCURRGroupMDEntriesItemInfo* gmdeItemInfo = NULL;
-		FastMarketDataIncrementalRefreshOLRCURRGroupMDEntriesItemInfo** gmdeItemInfoList = info->GroupMDEntries;
 
 		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 			gmdeItemInfo = GetFreeMarketDataIncrementalRefreshOLRCURRGroupMDEntriesItemInfo();
-			(*gmdeItemInfoList) = gmdeItemInfo;
 
 			this->ParsePresenceMap(&(gmdeItemInfo->PresenceMap));
 
@@ -5234,7 +5057,6 @@ public:
 				ReadString_Optional(&(gmdeItemInfo->TradingSessionID), &(gmdeItemInfo->TradingSessionIDLength));
 			if(!CheckProcessNullString())
 				ReadString_Optional(&(gmdeItemInfo->TradingSessionSubID), &(gmdeItemInfo->TradingSessionSubIDLength));
-			gmdeItemInfoList++;
 		}
 
 		return info;
@@ -5242,20 +5064,14 @@ public:
 	void* DecodeMarketDataIncrementalRefreshOBRFOND() {
 		FastMarketDataIncrementalRefreshOBRFONDInfo* info = GetFreeMarketDataIncrementalRefreshOBRFONDInfo();
 
-
-		ReadString_Mandatory(&(info->ApplVerID), &(info->ApplVerIDLength));
-		ReadString_Mandatory(&(info->BeginString), &(info->BeginStringLength));
-		ReadString_Mandatory(&(info->SenderCompID), &(info->SenderCompIDLength));
 		info->MsgSeqNum = ReadUInt32_Mandatory();
 		info->SendingTime = ReadUInt64_Mandatory();
 
 		info->GroupMDEntriesCount = ReadUInt32_Mandatory();
 		FastMarketDataIncrementalRefreshOBRFONDGroupMDEntriesItemInfo* gmdeItemInfo = NULL;
-		FastMarketDataIncrementalRefreshOBRFONDGroupMDEntriesItemInfo** gmdeItemInfoList = info->GroupMDEntries;
 
 		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 			gmdeItemInfo = GetFreeMarketDataIncrementalRefreshOBRFONDGroupMDEntriesItemInfo();
-			(*gmdeItemInfoList) = gmdeItemInfo;
 			if(!CheckProcessNullUInt32())
 				gmdeItemInfo->MDUpdateAction = ReadUInt32_Optional();
 			if(!CheckProcessNullString())
@@ -5284,7 +5100,6 @@ public:
 				ReadString_Optional(&(gmdeItemInfo->TradingSessionID), &(gmdeItemInfo->TradingSessionIDLength));
 			if(!CheckProcessNullString())
 				ReadString_Optional(&(gmdeItemInfo->TradingSessionSubID), &(gmdeItemInfo->TradingSessionSubIDLength));
-			gmdeItemInfoList++;
 		}
 
 		return info;
@@ -5292,20 +5107,14 @@ public:
 	void* DecodeMarketDataIncrementalRefreshOBRCURR() {
 		FastMarketDataIncrementalRefreshOBRCURRInfo* info = GetFreeMarketDataIncrementalRefreshOBRCURRInfo();
 
-
-		ReadString_Mandatory(&(info->ApplVerID), &(info->ApplVerIDLength));
-		ReadString_Mandatory(&(info->BeginString), &(info->BeginStringLength));
-		ReadString_Mandatory(&(info->SenderCompID), &(info->SenderCompIDLength));
 		info->MsgSeqNum = ReadUInt32_Mandatory();
 		info->SendingTime = ReadUInt64_Mandatory();
 
 		info->GroupMDEntriesCount = ReadUInt32_Mandatory();
 		FastMarketDataIncrementalRefreshOBRCURRGroupMDEntriesItemInfo* gmdeItemInfo = NULL;
-		FastMarketDataIncrementalRefreshOBRCURRGroupMDEntriesItemInfo** gmdeItemInfoList = info->GroupMDEntries;
 
 		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 			gmdeItemInfo = GetFreeMarketDataIncrementalRefreshOBRCURRGroupMDEntriesItemInfo();
-			(*gmdeItemInfoList) = gmdeItemInfo;
 			if(!CheckProcessNullUInt32())
 				gmdeItemInfo->MDUpdateAction = ReadUInt32_Optional();
 			if(!CheckProcessNullString())
@@ -5328,7 +5137,6 @@ public:
 				ReadString_Optional(&(gmdeItemInfo->TradingSessionID), &(gmdeItemInfo->TradingSessionIDLength));
 			if(!CheckProcessNullString())
 				ReadString_Optional(&(gmdeItemInfo->TradingSessionSubID), &(gmdeItemInfo->TradingSessionSubIDLength));
-			gmdeItemInfoList++;
 		}
 
 		return info;
@@ -5336,20 +5144,14 @@ public:
 	void* DecodeMarketDataIncrementalRefreshTLRFOND() {
 		FastMarketDataIncrementalRefreshTLRFONDInfo* info = GetFreeMarketDataIncrementalRefreshTLRFONDInfo();
 
-
-		ReadString_Mandatory(&(info->ApplVerID), &(info->ApplVerIDLength));
-		ReadString_Mandatory(&(info->BeginString), &(info->BeginStringLength));
-		ReadString_Mandatory(&(info->SenderCompID), &(info->SenderCompIDLength));
 		info->MsgSeqNum = ReadUInt32_Mandatory();
 		info->SendingTime = ReadUInt64_Mandatory();
 
 		info->GroupMDEntriesCount = ReadUInt32_Mandatory();
 		FastMarketDataIncrementalRefreshTLRFONDGroupMDEntriesItemInfo* gmdeItemInfo = NULL;
-		FastMarketDataIncrementalRefreshTLRFONDGroupMDEntriesItemInfo** gmdeItemInfoList = info->GroupMDEntries;
 
 		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 			gmdeItemInfo = GetFreeMarketDataIncrementalRefreshTLRFONDGroupMDEntriesItemInfo();
-			(*gmdeItemInfoList) = gmdeItemInfo;
 			if(!CheckProcessNullUInt32())
 				gmdeItemInfo->MDUpdateAction = ReadUInt32_Optional();
 			ReadString_Mandatory(&(gmdeItemInfo->MDEntryType), &(gmdeItemInfo->MDEntryTypeLength));
@@ -5395,7 +5197,6 @@ public:
 				ReadString_Optional(&(gmdeItemInfo->TradingSessionID), &(gmdeItemInfo->TradingSessionIDLength));
 			if(!CheckProcessNullString())
 				ReadString_Optional(&(gmdeItemInfo->TradingSessionSubID), &(gmdeItemInfo->TradingSessionSubIDLength));
-			gmdeItemInfoList++;
 		}
 
 		return info;
@@ -5403,20 +5204,14 @@ public:
 	void* DecodeMarketDataIncrementalRefreshTLRCURR() {
 		FastMarketDataIncrementalRefreshTLRCURRInfo* info = GetFreeMarketDataIncrementalRefreshTLRCURRInfo();
 
-
-		ReadString_Mandatory(&(info->ApplVerID), &(info->ApplVerIDLength));
-		ReadString_Mandatory(&(info->BeginString), &(info->BeginStringLength));
-		ReadString_Mandatory(&(info->SenderCompID), &(info->SenderCompIDLength));
 		info->MsgSeqNum = ReadUInt32_Mandatory();
 		info->SendingTime = ReadUInt64_Mandatory();
 
 		info->GroupMDEntriesCount = ReadUInt32_Mandatory();
 		FastMarketDataIncrementalRefreshTLRCURRGroupMDEntriesItemInfo* gmdeItemInfo = NULL;
-		FastMarketDataIncrementalRefreshTLRCURRGroupMDEntriesItemInfo** gmdeItemInfoList = info->GroupMDEntries;
 
 		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 			gmdeItemInfo = GetFreeMarketDataIncrementalRefreshTLRCURRGroupMDEntriesItemInfo();
-			(*gmdeItemInfoList) = gmdeItemInfo;
 			if(!CheckProcessNullUInt32())
 				gmdeItemInfo->MDUpdateAction = ReadUInt32_Optional();
 			ReadString_Mandatory(&(gmdeItemInfo->MDEntryType), &(gmdeItemInfo->MDEntryTypeLength));
@@ -5458,7 +5253,6 @@ public:
 				ReadString_Optional(&(gmdeItemInfo->TradingSessionID), &(gmdeItemInfo->TradingSessionIDLength));
 			if(!CheckProcessNullString())
 				ReadString_Optional(&(gmdeItemInfo->TradingSessionSubID), &(gmdeItemInfo->TradingSessionSubIDLength));
-			gmdeItemInfoList++;
 		}
 
 		return info;
@@ -5466,11 +5260,6 @@ public:
 	void* DecodeSecurityDefinition() {
 		FastSecurityDefinitionInfo* info = GetFreeSecurityDefinitionInfo();
 
-		info->PresenceMap = this->m_header->PresenceMap;
-
-		ReadString_Mandatory(&(info->ApplVerID), &(info->ApplVerIDLength));
-		ReadString_Mandatory(&(info->BeginString), &(info->BeginStringLength));
-		ReadString_Mandatory(&(info->SenderCompID), &(info->SenderCompIDLength));
 		if(CheckMandatoryFieldPresence(info->PresenceMap, PRESENCE_MAP_INDEX0)) {
 			info->MsgSeqNum = ReadUInt32_Mandatory();
 		}
@@ -5524,15 +5313,12 @@ public:
 
 		info->GroupInstrAttribCount = ReadUInt32_Mandatory();
 		FastSecurityDefinitionGroupInstrAttribItemInfo* giaItemInfo = NULL;
-		FastSecurityDefinitionGroupInstrAttribItemInfo** giaItemInfoList = info->GroupInstrAttrib;
 
 		for(int i = 0; i < info->GroupInstrAttribCount; i++) {
 			giaItemInfo = GetFreeSecurityDefinitionGroupInstrAttribItemInfo();
-			(*giaItemInfoList) = giaItemInfo;
 			giaItemInfo->InstrAttribType = ReadInt32_Mandatory();
 			if(!CheckProcessNullByteVector())
 				ReadByteVector_Optional(&(giaItemInfo->InstrAttribValue), &(giaItemInfo->InstrAttribValueLength));
-			giaItemInfoList++;
 		}
 
 		if(!CheckProcessNullString())
@@ -5540,21 +5326,17 @@ public:
 
 		info->MarketSegmentGrpCount = ReadUInt32_Mandatory();
 		FastSecurityDefinitionMarketSegmentGrpItemInfo* msgItemInfo = NULL;
-		FastSecurityDefinitionMarketSegmentGrpItemInfo** msgItemInfoList = info->MarketSegmentGrp;
 
 		for(int i = 0; i < info->MarketSegmentGrpCount; i++) {
 			msgItemInfo = GetFreeSecurityDefinitionMarketSegmentGrpItemInfo();
-			(*msgItemInfoList) = msgItemInfo;
 			if(!CheckProcessNullDecimal())
 				ReadDecimal_Optional(&(msgItemInfo->RoundLot));
 
 			msgItemInfo->TradingSessionRulesGrpCount = ReadUInt32_Mandatory();
 			FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo* tsrgItemInfo = NULL;
-			FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo** tsrgItemInfoList = msgItemInfo->TradingSessionRulesGrp;
 
 			for(int i = 0; i < msgItemInfo->TradingSessionRulesGrpCount; i++) {
 				tsrgItemInfo = GetFreeSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo();
-				(*tsrgItemInfoList) = tsrgItemInfo;
 				ReadString_Mandatory(&(tsrgItemInfo->TradingSessionID), &(tsrgItemInfo->TradingSessionIDLength));
 				if(!CheckProcessNullString())
 					ReadString_Optional(&(tsrgItemInfo->TradingSessionSubID), &(tsrgItemInfo->TradingSessionSubIDLength));
@@ -5562,10 +5344,8 @@ public:
 					tsrgItemInfo->SecurityTradingStatus = ReadInt32_Optional();
 				if(!CheckProcessNullInt32())
 					tsrgItemInfo->OrderNote = ReadInt32_Optional();
-				tsrgItemInfoList++;
 			}
 
-			msgItemInfoList++;
 		}
 
 		if(!CheckProcessNullString())
@@ -5611,10 +5391,6 @@ public:
 	void* DecodeSecurityStatus() {
 		FastSecurityStatusInfo* info = GetFreeSecurityStatusInfo();
 
-
-		ReadString_Mandatory(&(info->ApplVerID), &(info->ApplVerIDLength));
-		ReadString_Mandatory(&(info->BeginString), &(info->BeginStringLength));
-		ReadString_Mandatory(&(info->SenderCompID), &(info->SenderCompIDLength));
 		info->MsgSeqNum = ReadUInt32_Mandatory();
 		info->SendingTime = ReadUInt64_Mandatory();
 		ReadString_Mandatory(&(info->Symbol), &(info->SymbolLength));
@@ -5631,10 +5407,6 @@ public:
 	void* DecodeTradingSessionStatus() {
 		FastTradingSessionStatusInfo* info = GetFreeTradingSessionStatusInfo();
 
-
-		ReadString_Mandatory(&(info->ApplVerID), &(info->ApplVerIDLength));
-		ReadString_Mandatory(&(info->BeginString), &(info->BeginStringLength));
-		ReadString_Mandatory(&(info->SenderCompID), &(info->SenderCompIDLength));
 		info->MsgSeqNum = ReadUInt32_Mandatory();
 		info->SendingTime = ReadUInt64_Mandatory();
 		info->TradSesStatus = ReadInt32_Mandatory();
@@ -5646,101 +5418,83 @@ public:
 	void* DecodeHeartbeat() {
 		FastHeartbeatInfo* info = GetFreeHeartbeatInfo();
 
-
-		ReadString_Mandatory(&(info->BeginString), &(info->BeginStringLength));
-		ReadString_Mandatory(&(info->SenderCompID), &(info->SenderCompIDLength));
 		info->MsgSeqNum = ReadUInt32_Mandatory();
 		info->SendingTime = ReadUInt64_Mandatory();
 		return info;
 	}
 	inline void Decode_Generic() {
 		this->DecodeHeader();
-		unsigned char msgType = this->GetMsgType();
-		FastDecodeMethodPointer funcPtr = this->DecodeMethods_Generic[msgType];
+		FastDecodeMethodPointer funcPtr = this->DecodeMethods[this->m_templateId - 2101];
 		(this->*funcPtr)();
 	}
 	inline void Decode_OLS_FOND() {
 		this->DecodeHeader();
-		unsigned char msgType = this->GetMsgType();
-		FastDecodeMethodPointer funcPtr = this->DecodeMethods_OLS_FOND[msgType];
+		FastDecodeMethodPointer funcPtr = this->DecodeMethods[this->m_templateId - 2101];
 		(this->*funcPtr)();
 	}
 	inline void Decode_OLS_CURR() {
 		this->DecodeHeader();
-		unsigned char msgType = this->GetMsgType();
-		FastDecodeMethodPointer funcPtr = this->DecodeMethods_OLS_CURR[msgType];
+		FastDecodeMethodPointer funcPtr = this->DecodeMethods[this->m_templateId - 2101];
 		(this->*funcPtr)();
 	}
 	inline void Decode_TLS_FOND() {
 		this->DecodeHeader();
-		unsigned char msgType = this->GetMsgType();
-		FastDecodeMethodPointer funcPtr = this->DecodeMethods_TLS_FOND[msgType];
+		FastDecodeMethodPointer funcPtr = this->DecodeMethods[this->m_templateId - 2101];
 		(this->*funcPtr)();
 	}
 	inline void Decode_TLS_CURR() {
 		this->DecodeHeader();
-		unsigned char msgType = this->GetMsgType();
-		FastDecodeMethodPointer funcPtr = this->DecodeMethods_TLS_CURR[msgType];
+		FastDecodeMethodPointer funcPtr = this->DecodeMethods[this->m_templateId - 2101];
 		(this->*funcPtr)();
 	}
 	inline void Decode_OBS_FOND() {
 		this->DecodeHeader();
-		unsigned char msgType = this->GetMsgType();
-		FastDecodeMethodPointer funcPtr = this->DecodeMethods_OBS_FOND[msgType];
+		FastDecodeMethodPointer funcPtr = this->DecodeMethods[this->m_templateId - 2101];
 		(this->*funcPtr)();
 	}
 	inline void Decode_OBS_CURR() {
 		this->DecodeHeader();
-		unsigned char msgType = this->GetMsgType();
-		FastDecodeMethodPointer funcPtr = this->DecodeMethods_OBS_CURR[msgType];
+		FastDecodeMethodPointer funcPtr = this->DecodeMethods[this->m_templateId - 2101];
 		(this->*funcPtr)();
 	}
 	inline void Decode_MSR_FOND() {
 		this->DecodeHeader();
-		unsigned char msgType = this->GetMsgType();
-		FastDecodeMethodPointer funcPtr = this->DecodeMethods_MSR_FOND[msgType];
+		FastDecodeMethodPointer funcPtr = this->DecodeMethods[this->m_templateId - 2101];
 		(this->*funcPtr)();
 	}
 	inline void Decode_MSR_CURR() {
 		this->DecodeHeader();
-		unsigned char msgType = this->GetMsgType();
-		FastDecodeMethodPointer funcPtr = this->DecodeMethods_MSR_CURR[msgType];
+		FastDecodeMethodPointer funcPtr = this->DecodeMethods[this->m_templateId - 2101];
 		(this->*funcPtr)();
 	}
 	inline void Decode_OLR_FOND() {
 		this->DecodeHeader();
-		unsigned char msgType = this->GetMsgType();
-		FastDecodeMethodPointer funcPtr = this->DecodeMethods_OLR_FOND[msgType];
+		FastDecodeMethodPointer funcPtr = this->DecodeMethods[this->m_templateId - 2101];
 		(this->*funcPtr)();
 	}
 	inline void Decode_OLR_CURR() {
 		this->DecodeHeader();
-		unsigned char msgType = this->GetMsgType();
-		FastDecodeMethodPointer funcPtr = this->DecodeMethods_OLR_CURR[msgType];
+		FastDecodeMethodPointer funcPtr = this->DecodeMethods[this->m_templateId - 2101];
 		(this->*funcPtr)();
 	}
 	inline void Decode_OBR_FOND() {
 		this->DecodeHeader();
-		unsigned char msgType = this->GetMsgType();
-		FastDecodeMethodPointer funcPtr = this->DecodeMethods_OBR_FOND[msgType];
+		FastDecodeMethodPointer funcPtr = this->DecodeMethods[this->m_templateId - 2101];
 		(this->*funcPtr)();
 	}
 	inline void Decode_OBR_CURR() {
 		this->DecodeHeader();
-		unsigned char msgType = this->GetMsgType();
-		FastDecodeMethodPointer funcPtr = this->DecodeMethods_OBR_CURR[msgType];
+		FastDecodeMethodPointer funcPtr = this->DecodeMethods[this->m_templateId - 2101];
 		(this->*funcPtr)();
 	}
 	inline void Decode_TLR_FOND() {
 		this->DecodeHeader();
-		unsigned char msgType = this->GetMsgType();
-		FastDecodeMethodPointer funcPtr = this->DecodeMethods_TLR_FOND[msgType];
+		FastDecodeMethodPointer funcPtr = this->DecodeMethods[this->m_templateId - 2101];
 		(this->*funcPtr)();
 	}
 	inline void Decode_TLR_CURR() {
 		this->DecodeHeader();
-		unsigned char msgType = this->GetMsgType();
-		FastDecodeMethodPointer funcPtr = this->DecodeMethods_TLR_CURR[msgType];
+		FastDecodeMethodPointer funcPtr = this->DecodeMethods[this->m_templateId - 2101];
 		(this->*funcPtr)();
 	}
 #pragma endregion

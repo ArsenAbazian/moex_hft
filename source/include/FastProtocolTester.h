@@ -5,7 +5,8 @@ public:
 	FastProtocolTester();
 	~FastProtocolTester();
 
-	void Test() { 
+	void Test() {
+	    TestMessages();
 		TestReadUInt32_Optional();
 		TestReadUInt32_Mandatory();
 		TestReadUInt64_Optional();
@@ -23,7 +24,9 @@ public:
 		TestReadInt32_Mandatory();
 		TestParsePresenceMap();
 	}
-	
+
+	void TestMessages();
+
 	void TestReadUInt64_Optional();
 	void TestReadUInt64_Mandatory();
 	void TestReadInt64_Optional();

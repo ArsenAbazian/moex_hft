@@ -31,10 +31,11 @@
       <sourceFolder url="file://$MODULE_DIR$/source/src/UTCTimeConverterTester.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/src/ConsoleManager.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/src/HftConsole.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/source/include/FastTypes.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/source/include/FixProtocolManagerTester.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/source/include/FixMessage.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/include/Stopwatch.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/include/FixProtocolMacros.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/source/include/FixMessage.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/source/include/FixProtocolManagerTester.h" isTestSource="false" />
     </content>
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module-library">
