@@ -20,9 +20,7 @@
   <component name="ChangeListManager">
     <list default="true" id="32604c03-98a8-42cf-80f6-771ec2ce84cc" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/FastProtocolManager.h" afterPath="$PROJECT_DIR$/source/include/FastProtocolManager.h" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/src/FastProtocolTester.cpp" afterPath="$PROJECT_DIR$/source/src/FastProtocolTester.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tools/Program.cs" afterPath="$PROJECT_DIR$/tools/Program.cs" />
     </list>
     <ignored path="hft_robot.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -42,11 +40,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="FastProtocolManager.h" pinned="false" current-in-tab="true">
+      <file leaf-file-name="FastProtocolManager.h" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/source/include/FastProtocolManager.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="142">
-              <caret line="6340" column="62" selection-start-line="6340" selection-start-column="62" selection-end-line="6340" selection-end-column="62" />
+            <state relative-caret-position="33">
+              <caret line="6338" column="8" selection-start-line="6338" selection-start-column="8" selection-end-line="6338" selection-end-column="8" />
               <folding>
                 <element signature="e#13#34#0" expanded="true" />
               </folding>
@@ -74,14 +72,13 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="FastProtocolTester.cpp" pinned="false" current-in-tab="false">
+      <file leaf-file-name="FastProtocolTester.cpp" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/source/src/FastProtocolTester.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="251">
-              <caret line="231" column="1" selection-start-line="231" selection-start-column="1" selection-end-line="231" selection-end-column="1" />
+            <state relative-caret-position="269">
+              <caret line="232" column="60" selection-start-line="232" selection-start-column="60" selection-end-line="232" selection-end-column="60" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
-                <marker date="1471877812156" expanded="true" signature="278:281" ph="{...}" />
               </folding>
             </state>
           </provider>
@@ -204,8 +201,8 @@
         <option value="$PROJECT_DIR$/source/include/FixProtocolManagerTester.h" />
         <option value="$PROJECT_DIR$/source/include/FastProtocolTester.h" />
         <option value="$PROJECT_DIR$/source/include/FixProtocolManager.h" />
-        <option value="$PROJECT_DIR$/source/src/FastProtocolTester.cpp" />
         <option value="$PROJECT_DIR$/source/include/FastProtocolManager.h" />
+        <option value="$PROJECT_DIR$/source/src/FastProtocolTester.cpp" />
       </list>
     </option>
   </component>
@@ -595,7 +592,7 @@
       <workItem from="1471465414459" duration="7029000" />
       <workItem from="1471502754332" duration="11529000" />
       <workItem from="1471692959874" duration="23693000" />
-      <workItem from="1471852791051" duration="14793000" />
+      <workItem from="1471852791051" duration="14945000" />
     </task>
     <task id="LOCAL-00001" summary="move params to structures">
       <created>1468443448895</created>
@@ -807,11 +804,18 @@
       <option name="project" value="LOCAL" />
       <updated>1471868214331</updated>
     </task>
-    <option name="localTasksCounter" value="31" />
+    <task id="LOCAL-00031" summary="1. Refactore presence map, working on decoding fast protocol messages&#10;">
+      <created>1471882146144</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1471882146144</updated>
+    </task>
+    <option name="localTasksCounter" value="32" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="407339000" />
+    <option name="totallyTimeSpent" value="407491000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -828,15 +832,15 @@
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.20414847" sideWeight="0.493007" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32942554" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.28722158" sideWeight="0.6730349" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4876905" sideWeight="0.6730349" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="CMake" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32121924" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.28722158" sideWeight="0.32696506" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.47127783" sideWeight="0.23580787" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39507622" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.61313015" sideWeight="0.4978166" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32942554" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.235262" sideWeight="0.506993" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.41735053" sideWeight="0.76746726" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.47127783" sideWeight="0.76419216" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -925,7 +929,7 @@
       <breakpoints-dialog>
         <breakpoints-dialog />
       </breakpoints-dialog>
-      <option name="time" value="240" />
+      <option name="time" value="241" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -1206,6 +1210,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="902">
           <caret line="45" column="22" selection-start-line="45" selection-start-column="22" selection-end-line="45" selection-end-column="22" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1281,17 +1286,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/source/src/FastProtocolTester.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="251">
-          <caret line="231" column="1" selection-start-line="231" selection-start-column="1" selection-end-line="231" selection-end-column="1" />
-          <folding>
-            <element signature="e#0#18#0" expanded="true" />
-            <marker date="1471877812156" expanded="true" signature="278:281" ph="{...}" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/source/include/FixTypes.h">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="155">
@@ -1302,10 +1296,20 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/source/include/FastProtocolManager.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="142">
-          <caret line="6340" column="62" selection-start-line="6340" selection-start-column="62" selection-end-line="6340" selection-end-column="62" />
+        <state relative-caret-position="33">
+          <caret line="6338" column="8" selection-start-line="6338" selection-start-column="8" selection-end-line="6338" selection-end-column="8" />
           <folding>
             <element signature="e#13#34#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/src/FastProtocolTester.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="269">
+          <caret line="232" column="60" selection-start-line="232" selection-start-column="60" selection-end-line="232" selection-end-column="60" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
           </folding>
         </state>
       </provider>
