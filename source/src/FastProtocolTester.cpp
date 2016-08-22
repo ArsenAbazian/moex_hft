@@ -34,6 +34,7 @@ void FastProtocolTester::TestMessages() {
 
     int msgSeqNo = manager->ReadMsgSeqNumber();
     FastMarketDataIncrementalRefreshOBRCURRInfo *info = (FastMarketDataIncrementalRefreshOBRCURRInfo*)manager->Decode_Generic();
+    manager->PrintMarketDataIncrementalRefreshOBRCURR(info);
 
     if(info->MsgSeqNum != msgSeqNo)
         throw;
@@ -141,6 +142,8 @@ void FastProtocolTester::TestMessages() {
     msgSeqNo = manager->ReadMsgSeqNumber();
     info = (FastMarketDataIncrementalRefreshOBRCURRInfo*)manager->Decode_Generic();
 
+    manager->PrintMarketDataIncrementalRefreshOBRCURR(info);
+
     if(info->MsgSeqNum != msgSeqNo)
         throw;
     if(info->SendingTime != 20160819142308760)
@@ -229,8 +232,6 @@ void FastProtocolTester::TestMessages() {
         throw;
     if(itemInfo2->TradingSessionSubID[0] != 0)
         throw;
-
-    manager->PrintMarketDataIncrementalRefreshOBRCURR(info);
 }
 
 bool FastProtocolTester::CompareStrings(char* str1, const char *str2) {
@@ -695,7 +696,7 @@ void FastProtocolTester::TestReadInt64_Mandatory() {
 		if (value != i)
 			throw;
 		if ((i % 1000000) == 0)
-			printf("%llu\n", i);
+			printf("%" PRIu64 "\n", i);
 	}
 
 	for (INT64 i = 0; i < 0x7ffffffffffffff0; i += 5) {
@@ -706,7 +707,7 @@ void FastProtocolTester::TestReadInt64_Mandatory() {
 		if (value != i)
 			throw;
 		if ((i % 1000000) == 0)
-			printf("%llu\n", i);
+			printf("%" PRIu64 "\n", i);
 	}
 
 

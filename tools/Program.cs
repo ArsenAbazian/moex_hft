@@ -983,7 +983,7 @@ namespace prebuild {
 			StructureInfo info = new StructureInfo() { NameCore = templateName };
 			WriteLine("\tvoid Print" + templateName + "(" + info.Name + " *info) {");
 			WriteLine("");
-			WriteLine("\t\tprintf(\"" + info.Name + " {\");");
+			WriteLine("\t\tprintf(\"" + info.Name + " {\\n\");");
 			WritePrintPresenceMap(template, info, "\t\t", 1);
 			foreach(XmlNode value in template.ChildNodes) {
 				PrintValue(value, "info", templateName, "\t\t", 1);
@@ -1544,7 +1544,9 @@ namespace prebuild {
 		}
 
 		private  void PrintSequence (XmlNode value, string objectValueName, string parentClassCoreName, string tabString, int tabsCount) {
+			
 			string itemInfo = GetIemInfoPrefix(value) + "ItemInfo";
+			WriteLine(tabString + "PrintInt32(\"" + Name(value) + "Count\", " + objectValueName + "->" + Name(value) + "Count, " + tabsCount + ");");
 			WriteLine("");
 			string countField = objectValueName + "->" + Name(value) + "Count";
 
@@ -1552,7 +1554,7 @@ namespace prebuild {
 			WriteLine("");
 			WriteLine(tabString + "for(int i = 0; i < " + countField + "; i++) {");
 			WriteLine(tabString + "\t" + itemInfo + " = " + objectValueName + "->" + Name(value) + "[i];");
-
+			WriteLine(tabString + "\tPrintItemBegin(\"item\", i, " + tabsCount + ");");
 			foreach(XmlNode node in value.ChildNodes) {
 				if(node.Name == "length")
 					continue;
@@ -1562,6 +1564,7 @@ namespace prebuild {
 				tabsCount--;
 				LevelCount--;
 			}
+			WriteLine(tabString + "\tPrintItemEnd(" + tabsCount + ");");
 			WriteLine(tabString + "}");
 			WriteLine("");
 		}

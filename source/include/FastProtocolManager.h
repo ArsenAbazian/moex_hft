@@ -3,6 +3,7 @@
 #include "FastTypes.h"
 #include <stdio.h>
 #include <math.h>
+#include <inttypes.h>
 
 #pragma region Message_Info_Structures_Definition_GeneratedCode
 #define PRESENCE_MAP_INDEX0  0x0000000000000040L
@@ -2238,15 +2239,23 @@ public:
     }
     inline void PrintUInt32(const char *name, UINT value, int tabCount) {
         this->PrintTabs(tabCount);
-        printf("%s = %ud\n", name, value);
+        printf("%s = %u\n", name, value);
     }
     inline void PrintInt64(const char *name, INT64 value, int tabCount) {
         this->PrintTabs(tabCount);
-        printf("%s = %l\n", name, value);
+        printf("%s = %" PRId64 "\n", name, value);
     }
     inline void PrintUInt64(const char *name, UINT64 value, int tabCount) {
         this->PrintTabs(tabCount);
-        printf("%s = %ul\n", name, value);
+        printf("%s = %" PRIu64 "\n", name, value);
+    }
+    inline void PrintItemBegin(const char *name, int index, int tabsCount) {
+        this->PrintTabs(tabsCount);
+        printf("%s%d {\n", name, index);
+    }
+    inline void PrintItemEnd(int tabsCount) {
+        this->PrintTabs(tabsCount);
+        printf("}\n");
     }
     inline void PrintString(const char *name, char *str, int count, int tabCount) {
         this->PrintTabs(tabCount);
@@ -2267,26 +2276,27 @@ public:
         printf("'\n");
     }
     inline void PrintDecimal(const char *name, Decimal *value, int tabCount) {
+        this->PrintTabs(tabCount);
+        printf("%s = ", name);
         INT64 intVal = value->Mantissa;
         if(value->Exponent >= 0) {
             for(int i = 0; i < value->Exponent; i++) {
                 intVal *= 10;
             }
-            this->PrintTabs(tabCount);
-            printf("%l\n", intVal);
+            printf("%" PRId64, intVal);
         }
         if(value->Exponent < 0) {
             for(int i = value->Exponent; i < 0; i++) {
                 intVal = intVal / 10;
             }
-            this->PrintTabs(tabCount);
-            printf("%l.", intVal);
+            printf("%" PRId64 ".", intVal);
             for(int i = value->Exponent; i < 0; i++) {
                 intVal = intVal * 10;
             }
             intVal = value->Mantissa - intVal;
-            printf("%d");
+            printf("%" PRId64, intVal);
         }
+        printf("\n");
     }
 
     inline void WriteNull() {
@@ -5673,7 +5683,7 @@ public:
 	}
 	void PrintLogon(FastLogonInfo *info) {
 
-		printf("FastLogonInfo {");
+		printf("FastLogonInfo {\n");
 		PrintString("TargetCompID", info->TargetCompID, info->TargetCompIDLength, 1);
 		PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 		PrintUInt64("SendingTime", info->SendingTime, 1);
@@ -5685,7 +5695,7 @@ public:
 	}
 	void PrintLogout(FastLogoutInfo *info) {
 
-		printf("FastLogoutInfo {");
+		printf("FastLogoutInfo {\n");
 		PrintString("TargetCompID", info->TargetCompID, info->TargetCompIDLength, 1);
 		PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 		PrintUInt64("SendingTime", info->SendingTime, 1);
@@ -5694,7 +5704,7 @@ public:
 	}
 	void PrintMarketDataSnapshotFullRefreshGeneric(FastMarketDataSnapshotFullRefreshGenericInfo *info) {
 
-		printf("FastMarketDataSnapshotFullRefreshGenericInfo {");
+		printf("FastMarketDataSnapshotFullRefreshGenericInfo {\n");
 		PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 		PrintUInt64("SendingTime", info->SendingTime, 1);
 		PrintString("TradingSessionID", info->TradingSessionID, info->TradingSessionIDLength, 1);
@@ -5707,11 +5717,13 @@ public:
 		PrintInt32("MDSecurityTradingStatus", info->MDSecurityTradingStatus, 1);
 		PrintUInt32("AuctionIndicator", info->AuctionIndicator, 1);
 		PrintDecimal("NetChgPrevDay", &(info->NetChgPrevDay), 1);
+		PrintInt32("GroupMDEntriesCount", info->GroupMDEntriesCount, 1);
 
 		FastMarketDataSnapshotFullRefreshGenericGroupMDEntriesItemInfo* gmdeItemInfo = NULL;
 
 		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 			gmdeItemInfo = info->GroupMDEntries[i];
+			PrintItemBegin("item", i, 1);
 			PrintString("MDEntryType", gmdeItemInfo->MDEntryType, gmdeItemInfo->MDEntryTypeLength, 2);
 			PrintString("MDEntryID", gmdeItemInfo->MDEntryID, gmdeItemInfo->MDEntryIDLength, 2);
 			PrintUInt32("MDEntryDate", gmdeItemInfo->MDEntryDate, 2);
@@ -5754,20 +5766,23 @@ public:
 			PrintString("DealNumber", gmdeItemInfo->DealNumber, gmdeItemInfo->DealNumberLength, 2);
 			PrintString("CXFlag", gmdeItemInfo->CXFlag, gmdeItemInfo->CXFlagLength, 2);
 			PrintString("TradingSessionSubID", gmdeItemInfo->TradingSessionSubID, gmdeItemInfo->TradingSessionSubIDLength, 2);
+			PrintItemEnd(1);
 		}
 
 		printf("}\n");
 	}
 	void PrintMarketDataIncrementalRefreshGeneric(FastMarketDataIncrementalRefreshGenericInfo *info) {
 
-		printf("FastMarketDataIncrementalRefreshGenericInfo {");
+		printf("FastMarketDataIncrementalRefreshGenericInfo {\n");
 		PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 		PrintUInt64("SendingTime", info->SendingTime, 1);
+		PrintInt32("GroupMDEntriesCount", info->GroupMDEntriesCount, 1);
 
 		FastMarketDataIncrementalRefreshGenericGroupMDEntriesItemInfo* gmdeItemInfo = NULL;
 
 		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 			gmdeItemInfo = info->GroupMDEntries[i];
+			PrintItemBegin("item", i, 1);
 			PrintUInt32("MDUpdateAction", gmdeItemInfo->MDUpdateAction, 2);
 			PrintString("MDEntryType", gmdeItemInfo->MDEntryType, gmdeItemInfo->MDEntryTypeLength, 2);
 			PrintString("MDEntryID", gmdeItemInfo->MDEntryID, gmdeItemInfo->MDEntryIDLength, 2);
@@ -5815,13 +5830,14 @@ public:
 			PrintString("CXFlag", gmdeItemInfo->CXFlag, gmdeItemInfo->CXFlagLength, 2);
 			PrintString("TradingSessionID", gmdeItemInfo->TradingSessionID, gmdeItemInfo->TradingSessionIDLength, 2);
 			PrintString("TradingSessionSubID", gmdeItemInfo->TradingSessionSubID, gmdeItemInfo->TradingSessionSubIDLength, 2);
+			PrintItemEnd(1);
 		}
 
 		printf("}\n");
 	}
 	void PrintMarketDataSnapshotFullRefreshOLSFOND(FastMarketDataSnapshotFullRefreshOLSFONDInfo *info) {
 
-		printf("FastMarketDataSnapshotFullRefreshOLSFONDInfo {");
+		printf("FastMarketDataSnapshotFullRefreshOLSFONDInfo {\n");
 		PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 		PrintUInt64("SendingTime", info->SendingTime, 1);
 		PrintUInt32("LastMsgSeqNumProcessed", info->LastMsgSeqNumProcessed, 1);
@@ -5833,11 +5849,13 @@ public:
 		PrintString("Symbol", info->Symbol, info->SymbolLength, 1);
 		PrintInt32("MDSecurityTradingStatus", info->MDSecurityTradingStatus, 1);
 		PrintUInt32("AuctionIndicator", info->AuctionIndicator, 1);
+		PrintInt32("GroupMDEntriesCount", info->GroupMDEntriesCount, 1);
 
 		FastMarketDataSnapshotFullRefreshOLSFONDGroupMDEntriesItemInfo* gmdeItemInfo = NULL;
 
 		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 			gmdeItemInfo = info->GroupMDEntries[i];
+			PrintItemBegin("item", i, 1);
 			PrintString("MDEntryType", gmdeItemInfo->MDEntryType, gmdeItemInfo->MDEntryTypeLength, 2);
 			PrintString("MDEntryID", gmdeItemInfo->MDEntryID, gmdeItemInfo->MDEntryIDLength, 2);
 			PrintUInt32("MDEntryDate", gmdeItemInfo->MDEntryDate, 2);
@@ -5851,13 +5869,14 @@ public:
 			PrintString("OrdType", gmdeItemInfo->OrdType, gmdeItemInfo->OrdTypeLength, 2);
 			PrintDecimal("TotalVolume", &(gmdeItemInfo->TotalVolume), 2);
 			PrintString("TradingSessionSubID", gmdeItemInfo->TradingSessionSubID, gmdeItemInfo->TradingSessionSubIDLength, 2);
+			PrintItemEnd(1);
 		}
 
 		printf("}\n");
 	}
 	void PrintMarketDataSnapshotFullRefreshOLSCURR(FastMarketDataSnapshotFullRefreshOLSCURRInfo *info) {
 
-		printf("FastMarketDataSnapshotFullRefreshOLSCURRInfo {");
+		printf("FastMarketDataSnapshotFullRefreshOLSCURRInfo {\n");
 		PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 		PrintUInt64("SendingTime", info->SendingTime, 1);
 		PrintUInt32("LastMsgSeqNumProcessed", info->LastMsgSeqNumProcessed, 1);
@@ -5868,11 +5887,13 @@ public:
 		PrintString("TradingSessionID", info->TradingSessionID, info->TradingSessionIDLength, 1);
 		PrintString("Symbol", info->Symbol, info->SymbolLength, 1);
 		PrintInt32("MDSecurityTradingStatus", info->MDSecurityTradingStatus, 1);
+		PrintInt32("GroupMDEntriesCount", info->GroupMDEntriesCount, 1);
 
 		FastMarketDataSnapshotFullRefreshOLSCURRGroupMDEntriesItemInfo* gmdeItemInfo = NULL;
 
 		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 			gmdeItemInfo = info->GroupMDEntries[i];
+			PrintItemBegin("item", i, 1);
 			PrintString("MDEntryType", gmdeItemInfo->MDEntryType, gmdeItemInfo->MDEntryTypeLength, 2);
 			PrintString("MDEntryID", gmdeItemInfo->MDEntryID, gmdeItemInfo->MDEntryIDLength, 2);
 			PrintUInt32("MDEntryDate", gmdeItemInfo->MDEntryDate, 2);
@@ -5883,13 +5904,14 @@ public:
 			PrintString("DealNumber", gmdeItemInfo->DealNumber, gmdeItemInfo->DealNumberLength, 2);
 			PrintString("OrderStatus", gmdeItemInfo->OrderStatus, gmdeItemInfo->OrderStatusLength, 2);
 			PrintString("TradingSessionSubID", gmdeItemInfo->TradingSessionSubID, gmdeItemInfo->TradingSessionSubIDLength, 2);
+			PrintItemEnd(1);
 		}
 
 		printf("}\n");
 	}
 	void PrintMarketDataSnapshotFullRefreshTLSFOND(FastMarketDataSnapshotFullRefreshTLSFONDInfo *info) {
 
-		printf("FastMarketDataSnapshotFullRefreshTLSFONDInfo {");
+		printf("FastMarketDataSnapshotFullRefreshTLSFONDInfo {\n");
 		PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 		PrintUInt64("SendingTime", info->SendingTime, 1);
 		PrintUInt32("LastMsgSeqNumProcessed", info->LastMsgSeqNumProcessed, 1);
@@ -5901,11 +5923,13 @@ public:
 		PrintString("Symbol", info->Symbol, info->SymbolLength, 1);
 		PrintInt32("MDSecurityTradingStatus", info->MDSecurityTradingStatus, 1);
 		PrintUInt32("AuctionIndicator", info->AuctionIndicator, 1);
+		PrintInt32("GroupMDEntriesCount", info->GroupMDEntriesCount, 1);
 
 		FastMarketDataSnapshotFullRefreshTLSFONDGroupMDEntriesItemInfo* gmdeItemInfo = NULL;
 
 		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 			gmdeItemInfo = info->GroupMDEntries[i];
+			PrintItemBegin("item", i, 1);
 			PrintString("MDEntryType", gmdeItemInfo->MDEntryType, gmdeItemInfo->MDEntryTypeLength, 2);
 			PrintString("MDEntryID", gmdeItemInfo->MDEntryID, gmdeItemInfo->MDEntryIDLength, 2);
 			PrintUInt32("MDEntryDate", gmdeItemInfo->MDEntryDate, 2);
@@ -5925,13 +5949,14 @@ public:
 			PrintDecimal("BuyBackPx", &(gmdeItemInfo->BuyBackPx), 2);
 			PrintUInt32("BuyBackDate", gmdeItemInfo->BuyBackDate, 2);
 			PrintString("TradingSessionSubID", gmdeItemInfo->TradingSessionSubID, gmdeItemInfo->TradingSessionSubIDLength, 2);
+			PrintItemEnd(1);
 		}
 
 		printf("}\n");
 	}
 	void PrintMarketDataSnapshotFullRefreshTLSCURR(FastMarketDataSnapshotFullRefreshTLSCURRInfo *info) {
 
-		printf("FastMarketDataSnapshotFullRefreshTLSCURRInfo {");
+		printf("FastMarketDataSnapshotFullRefreshTLSCURRInfo {\n");
 		PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 		PrintUInt64("SendingTime", info->SendingTime, 1);
 		PrintUInt32("LastMsgSeqNumProcessed", info->LastMsgSeqNumProcessed, 1);
@@ -5942,11 +5967,13 @@ public:
 		PrintString("TradingSessionID", info->TradingSessionID, info->TradingSessionIDLength, 1);
 		PrintString("Symbol", info->Symbol, info->SymbolLength, 1);
 		PrintInt32("MDSecurityTradingStatus", info->MDSecurityTradingStatus, 1);
+		PrintInt32("GroupMDEntriesCount", info->GroupMDEntriesCount, 1);
 
 		FastMarketDataSnapshotFullRefreshTLSCURRGroupMDEntriesItemInfo* gmdeItemInfo = NULL;
 
 		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 			gmdeItemInfo = info->GroupMDEntries[i];
+			PrintItemBegin("item", i, 1);
 			PrintString("MDEntryType", gmdeItemInfo->MDEntryType, gmdeItemInfo->MDEntryTypeLength, 2);
 			PrintString("MDEntryID", gmdeItemInfo->MDEntryID, gmdeItemInfo->MDEntryIDLength, 2);
 			PrintUInt32("MDEntryDate", gmdeItemInfo->MDEntryDate, 2);
@@ -5964,13 +5991,14 @@ public:
 			PrintDecimal("BuyBackPx", &(gmdeItemInfo->BuyBackPx), 2);
 			PrintUInt32("BuyBackDate", gmdeItemInfo->BuyBackDate, 2);
 			PrintString("TradingSessionSubID", gmdeItemInfo->TradingSessionSubID, gmdeItemInfo->TradingSessionSubIDLength, 2);
+			PrintItemEnd(1);
 		}
 
 		printf("}\n");
 	}
 	void PrintMarketDataSnapshotFullRefreshOBSFOND(FastMarketDataSnapshotFullRefreshOBSFONDInfo *info) {
 
-		printf("FastMarketDataSnapshotFullRefreshOBSFONDInfo {");
+		printf("FastMarketDataSnapshotFullRefreshOBSFONDInfo {\n");
 		PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 		PrintUInt64("SendingTime", info->SendingTime, 1);
 		PrintUInt32("LastMsgSeqNumProcessed", info->LastMsgSeqNumProcessed, 1);
@@ -5982,11 +6010,13 @@ public:
 		PrintUInt32("RouteFirst", info->RouteFirst, 1);
 		PrintInt32("MDSecurityTradingStatus", info->MDSecurityTradingStatus, 1);
 		PrintUInt32("AuctionIndicator", info->AuctionIndicator, 1);
+		PrintInt32("GroupMDEntriesCount", info->GroupMDEntriesCount, 1);
 
 		FastMarketDataSnapshotFullRefreshOBSFONDGroupMDEntriesItemInfo* gmdeItemInfo = NULL;
 
 		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 			gmdeItemInfo = info->GroupMDEntries[i];
+			PrintItemBegin("item", i, 1);
 			PrintString("MDEntryType", gmdeItemInfo->MDEntryType, gmdeItemInfo->MDEntryTypeLength, 2);
 			PrintString("MDEntryID", gmdeItemInfo->MDEntryID, gmdeItemInfo->MDEntryIDLength, 2);
 			PrintDecimal("MDEntryPx", &(gmdeItemInfo->MDEntryPx), 2);
@@ -5997,13 +6027,14 @@ public:
 			PrintUInt32("EffectiveTime", gmdeItemInfo->EffectiveTime, 2);
 			PrintDecimal("NominalValue", &(gmdeItemInfo->NominalValue), 2);
 			PrintString("TradingSessionSubID", gmdeItemInfo->TradingSessionSubID, gmdeItemInfo->TradingSessionSubIDLength, 2);
+			PrintItemEnd(1);
 		}
 
 		printf("}\n");
 	}
 	void PrintMarketDataSnapshotFullRefreshOBSCURR(FastMarketDataSnapshotFullRefreshOBSCURRInfo *info) {
 
-		printf("FastMarketDataSnapshotFullRefreshOBSCURRInfo {");
+		printf("FastMarketDataSnapshotFullRefreshOBSCURRInfo {\n");
 		PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 		PrintUInt64("SendingTime", info->SendingTime, 1);
 		PrintUInt32("LastMsgSeqNumProcessed", info->LastMsgSeqNumProcessed, 1);
@@ -6014,11 +6045,13 @@ public:
 		PrintUInt32("LastFragment", info->LastFragment, 1);
 		PrintUInt32("RouteFirst", info->RouteFirst, 1);
 		PrintInt32("MDSecurityTradingStatus", info->MDSecurityTradingStatus, 1);
+		PrintInt32("GroupMDEntriesCount", info->GroupMDEntriesCount, 1);
 
 		FastMarketDataSnapshotFullRefreshOBSCURRGroupMDEntriesItemInfo* gmdeItemInfo = NULL;
 
 		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 			gmdeItemInfo = info->GroupMDEntries[i];
+			PrintItemBegin("item", i, 1);
 			PrintString("MDEntryType", gmdeItemInfo->MDEntryType, gmdeItemInfo->MDEntryTypeLength, 2);
 			PrintString("MDEntryID", gmdeItemInfo->MDEntryID, gmdeItemInfo->MDEntryIDLength, 2);
 			PrintDecimal("MDEntryPx", &(gmdeItemInfo->MDEntryPx), 2);
@@ -6026,20 +6059,23 @@ public:
 			PrintUInt32("MDEntryTime", gmdeItemInfo->MDEntryTime, 2);
 			PrintUInt32("OrigTime", gmdeItemInfo->OrigTime, 2);
 			PrintString("TradingSessionSubID", gmdeItemInfo->TradingSessionSubID, gmdeItemInfo->TradingSessionSubIDLength, 2);
+			PrintItemEnd(1);
 		}
 
 		printf("}\n");
 	}
 	void PrintMarketDataIncrementalRefreshMSRFOND(FastMarketDataIncrementalRefreshMSRFONDInfo *info) {
 
-		printf("FastMarketDataIncrementalRefreshMSRFONDInfo {");
+		printf("FastMarketDataIncrementalRefreshMSRFONDInfo {\n");
 		PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 		PrintUInt64("SendingTime", info->SendingTime, 1);
+		PrintInt32("GroupMDEntriesCount", info->GroupMDEntriesCount, 1);
 
 		FastMarketDataIncrementalRefreshMSRFONDGroupMDEntriesItemInfo* gmdeItemInfo = NULL;
 
 		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 			gmdeItemInfo = info->GroupMDEntries[i];
+			PrintItemBegin("item", i, 1);
 			PrintUInt32("MDUpdateAction", gmdeItemInfo->MDUpdateAction, 2);
 			PrintString("MDEntryType", gmdeItemInfo->MDEntryType, gmdeItemInfo->MDEntryTypeLength, 2);
 			PrintString("MDEntryID", gmdeItemInfo->MDEntryID, gmdeItemInfo->MDEntryIDLength, 2);
@@ -6073,20 +6109,23 @@ public:
 			PrintString("CXFlag", gmdeItemInfo->CXFlag, gmdeItemInfo->CXFlagLength, 2);
 			PrintString("TradingSessionID", gmdeItemInfo->TradingSessionID, gmdeItemInfo->TradingSessionIDLength, 2);
 			PrintString("TradingSessionSubID", gmdeItemInfo->TradingSessionSubID, gmdeItemInfo->TradingSessionSubIDLength, 2);
+			PrintItemEnd(1);
 		}
 
 		printf("}\n");
 	}
 	void PrintMarketDataIncrementalRefreshMSRCURR(FastMarketDataIncrementalRefreshMSRCURRInfo *info) {
 
-		printf("FastMarketDataIncrementalRefreshMSRCURRInfo {");
+		printf("FastMarketDataIncrementalRefreshMSRCURRInfo {\n");
 		PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 		PrintUInt64("SendingTime", info->SendingTime, 1);
+		PrintInt32("GroupMDEntriesCount", info->GroupMDEntriesCount, 1);
 
 		FastMarketDataIncrementalRefreshMSRCURRGroupMDEntriesItemInfo* gmdeItemInfo = NULL;
 
 		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 			gmdeItemInfo = info->GroupMDEntries[i];
+			PrintItemBegin("item", i, 1);
 			PrintUInt32("MDUpdateAction", gmdeItemInfo->MDUpdateAction, 2);
 			PrintString("MDEntryType", gmdeItemInfo->MDEntryType, gmdeItemInfo->MDEntryTypeLength, 2);
 			PrintString("MDEntryID", gmdeItemInfo->MDEntryID, gmdeItemInfo->MDEntryIDLength, 2);
@@ -6112,20 +6151,23 @@ public:
 			PrintString("CXFlag", gmdeItemInfo->CXFlag, gmdeItemInfo->CXFlagLength, 2);
 			PrintString("TradingSessionID", gmdeItemInfo->TradingSessionID, gmdeItemInfo->TradingSessionIDLength, 2);
 			PrintString("TradingSessionSubID", gmdeItemInfo->TradingSessionSubID, gmdeItemInfo->TradingSessionSubIDLength, 2);
+			PrintItemEnd(1);
 		}
 
 		printf("}\n");
 	}
 	void PrintMarketDataIncrementalRefreshOLRFOND(FastMarketDataIncrementalRefreshOLRFONDInfo *info) {
 
-		printf("FastMarketDataIncrementalRefreshOLRFONDInfo {");
+		printf("FastMarketDataIncrementalRefreshOLRFONDInfo {\n");
 		PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 		PrintUInt64("SendingTime", info->SendingTime, 1);
+		PrintInt32("GroupMDEntriesCount", info->GroupMDEntriesCount, 1);
 
 		FastMarketDataIncrementalRefreshOLRFONDGroupMDEntriesItemInfo* gmdeItemInfo = NULL;
 
 		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 			gmdeItemInfo = info->GroupMDEntries[i];
+			PrintItemBegin("item", i, 1);
 			PrintUInt32("MDUpdateAction", gmdeItemInfo->MDUpdateAction, 2);
 			PrintString("MDEntryType", gmdeItemInfo->MDEntryType, gmdeItemInfo->MDEntryTypeLength, 2);
 			PrintString("MDEntryID", gmdeItemInfo->MDEntryID, gmdeItemInfo->MDEntryIDLength, 2);
@@ -6143,20 +6185,23 @@ public:
 			PrintDecimal("TotalVolume", &(gmdeItemInfo->TotalVolume), 2);
 			PrintString("TradingSessionID", gmdeItemInfo->TradingSessionID, gmdeItemInfo->TradingSessionIDLength, 2);
 			PrintString("TradingSessionSubID", gmdeItemInfo->TradingSessionSubID, gmdeItemInfo->TradingSessionSubIDLength, 2);
+			PrintItemEnd(1);
 		}
 
 		printf("}\n");
 	}
 	void PrintMarketDataIncrementalRefreshOLRCURR(FastMarketDataIncrementalRefreshOLRCURRInfo *info) {
 
-		printf("FastMarketDataIncrementalRefreshOLRCURRInfo {");
+		printf("FastMarketDataIncrementalRefreshOLRCURRInfo {\n");
 		PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 		PrintUInt64("SendingTime", info->SendingTime, 1);
+		PrintInt32("GroupMDEntriesCount", info->GroupMDEntriesCount, 1);
 
 		FastMarketDataIncrementalRefreshOLRCURRGroupMDEntriesItemInfo* gmdeItemInfo = NULL;
 
 		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 			gmdeItemInfo = info->GroupMDEntries[i];
+			PrintItemBegin("item", i, 1);
 			PrintUInt32("MDUpdateAction", gmdeItemInfo->MDUpdateAction, 2);
 			PrintString("MDEntryType", gmdeItemInfo->MDEntryType, gmdeItemInfo->MDEntryTypeLength, 2);
 			PrintString("MDEntryID", gmdeItemInfo->MDEntryID, gmdeItemInfo->MDEntryIDLength, 2);
@@ -6171,20 +6216,23 @@ public:
 			PrintString("OrderStatus", gmdeItemInfo->OrderStatus, gmdeItemInfo->OrderStatusLength, 2);
 			PrintString("TradingSessionID", gmdeItemInfo->TradingSessionID, gmdeItemInfo->TradingSessionIDLength, 2);
 			PrintString("TradingSessionSubID", gmdeItemInfo->TradingSessionSubID, gmdeItemInfo->TradingSessionSubIDLength, 2);
+			PrintItemEnd(1);
 		}
 
 		printf("}\n");
 	}
 	void PrintMarketDataIncrementalRefreshOBRFOND(FastMarketDataIncrementalRefreshOBRFONDInfo *info) {
 
-		printf("FastMarketDataIncrementalRefreshOBRFONDInfo {");
+		printf("FastMarketDataIncrementalRefreshOBRFONDInfo {\n");
 		PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 		PrintUInt64("SendingTime", info->SendingTime, 1);
+		PrintInt32("GroupMDEntriesCount", info->GroupMDEntriesCount, 1);
 
 		FastMarketDataIncrementalRefreshOBRFONDGroupMDEntriesItemInfo* gmdeItemInfo = NULL;
 
 		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 			gmdeItemInfo = info->GroupMDEntries[i];
+			PrintItemBegin("item", i, 1);
 			PrintUInt32("MDUpdateAction", gmdeItemInfo->MDUpdateAction, 2);
 			PrintString("MDEntryType", gmdeItemInfo->MDEntryType, gmdeItemInfo->MDEntryTypeLength, 2);
 			PrintString("MDEntryID", gmdeItemInfo->MDEntryID, gmdeItemInfo->MDEntryIDLength, 2);
@@ -6199,20 +6247,23 @@ public:
 			PrintDecimal("NominalValue", &(gmdeItemInfo->NominalValue), 2);
 			PrintString("TradingSessionID", gmdeItemInfo->TradingSessionID, gmdeItemInfo->TradingSessionIDLength, 2);
 			PrintString("TradingSessionSubID", gmdeItemInfo->TradingSessionSubID, gmdeItemInfo->TradingSessionSubIDLength, 2);
+			PrintItemEnd(1);
 		}
 
 		printf("}\n");
 	}
 	void PrintMarketDataIncrementalRefreshOBRCURR(FastMarketDataIncrementalRefreshOBRCURRInfo *info) {
 
-		printf("FastMarketDataIncrementalRefreshOBRCURRInfo {");
+		printf("FastMarketDataIncrementalRefreshOBRCURRInfo {\n");
 		PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 		PrintUInt64("SendingTime", info->SendingTime, 1);
+		PrintInt32("GroupMDEntriesCount", info->GroupMDEntriesCount, 1);
 
 		FastMarketDataIncrementalRefreshOBRCURRGroupMDEntriesItemInfo* gmdeItemInfo = NULL;
 
 		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 			gmdeItemInfo = info->GroupMDEntries[i];
+			PrintItemBegin("item", i, 1);
 			PrintUInt32("MDUpdateAction", gmdeItemInfo->MDUpdateAction, 2);
 			PrintString("MDEntryType", gmdeItemInfo->MDEntryType, gmdeItemInfo->MDEntryTypeLength, 2);
 			PrintString("MDEntryID", gmdeItemInfo->MDEntryID, gmdeItemInfo->MDEntryIDLength, 2);
@@ -6224,20 +6275,23 @@ public:
 			PrintUInt32("OrigTime", gmdeItemInfo->OrigTime, 2);
 			PrintString("TradingSessionID", gmdeItemInfo->TradingSessionID, gmdeItemInfo->TradingSessionIDLength, 2);
 			PrintString("TradingSessionSubID", gmdeItemInfo->TradingSessionSubID, gmdeItemInfo->TradingSessionSubIDLength, 2);
+			PrintItemEnd(1);
 		}
 
 		printf("}\n");
 	}
 	void PrintMarketDataIncrementalRefreshTLRFOND(FastMarketDataIncrementalRefreshTLRFONDInfo *info) {
 
-		printf("FastMarketDataIncrementalRefreshTLRFONDInfo {");
+		printf("FastMarketDataIncrementalRefreshTLRFONDInfo {\n");
 		PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 		PrintUInt64("SendingTime", info->SendingTime, 1);
+		PrintInt32("GroupMDEntriesCount", info->GroupMDEntriesCount, 1);
 
 		FastMarketDataIncrementalRefreshTLRFONDGroupMDEntriesItemInfo* gmdeItemInfo = NULL;
 
 		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 			gmdeItemInfo = info->GroupMDEntries[i];
+			PrintItemBegin("item", i, 1);
 			PrintUInt32("MDUpdateAction", gmdeItemInfo->MDUpdateAction, 2);
 			PrintString("MDEntryType", gmdeItemInfo->MDEntryType, gmdeItemInfo->MDEntryTypeLength, 2);
 			PrintString("MDEntryID", gmdeItemInfo->MDEntryID, gmdeItemInfo->MDEntryIDLength, 2);
@@ -6261,20 +6315,23 @@ public:
 			PrintUInt32("BuyBackDate", gmdeItemInfo->BuyBackDate, 2);
 			PrintString("TradingSessionID", gmdeItemInfo->TradingSessionID, gmdeItemInfo->TradingSessionIDLength, 2);
 			PrintString("TradingSessionSubID", gmdeItemInfo->TradingSessionSubID, gmdeItemInfo->TradingSessionSubIDLength, 2);
+			PrintItemEnd(1);
 		}
 
 		printf("}\n");
 	}
 	void PrintMarketDataIncrementalRefreshTLRCURR(FastMarketDataIncrementalRefreshTLRCURRInfo *info) {
 
-		printf("FastMarketDataIncrementalRefreshTLRCURRInfo {");
+		printf("FastMarketDataIncrementalRefreshTLRCURRInfo {\n");
 		PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 		PrintUInt64("SendingTime", info->SendingTime, 1);
+		PrintInt32("GroupMDEntriesCount", info->GroupMDEntriesCount, 1);
 
 		FastMarketDataIncrementalRefreshTLRCURRGroupMDEntriesItemInfo* gmdeItemInfo = NULL;
 
 		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 			gmdeItemInfo = info->GroupMDEntries[i];
+			PrintItemBegin("item", i, 1);
 			PrintUInt32("MDUpdateAction", gmdeItemInfo->MDUpdateAction, 2);
 			PrintString("MDEntryType", gmdeItemInfo->MDEntryType, gmdeItemInfo->MDEntryTypeLength, 2);
 			PrintString("MDEntryID", gmdeItemInfo->MDEntryID, gmdeItemInfo->MDEntryIDLength, 2);
@@ -6296,13 +6353,14 @@ public:
 			PrintUInt32("BuyBackDate", gmdeItemInfo->BuyBackDate, 2);
 			PrintString("TradingSessionID", gmdeItemInfo->TradingSessionID, gmdeItemInfo->TradingSessionIDLength, 2);
 			PrintString("TradingSessionSubID", gmdeItemInfo->TradingSessionSubID, gmdeItemInfo->TradingSessionSubIDLength, 2);
+			PrintItemEnd(1);
 		}
 
 		printf("}\n");
 	}
 	void PrintSecurityDefinition(FastSecurityDefinitionInfo *info) {
 
-		printf("FastSecurityDefinitionInfo {");
+		printf("FastSecurityDefinitionInfo {\n");
 		PrintPresenceMap(m_securityDefinition->PresenceMap, 2, 1);
 		PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 		PrintUInt64("SendingTime", info->SendingTime, 1);
@@ -6325,33 +6383,42 @@ public:
 		PrintByteVector("SecurityDesc", info->SecurityDesc, info->SecurityDescLength, 1);
 		PrintByteVector("EncodedSecurityDesc", info->EncodedSecurityDesc, info->EncodedSecurityDescLength, 1);
 		PrintByteVector("QuoteText", info->QuoteText, info->QuoteTextLength, 1);
+		PrintInt32("GroupInstrAttribCount", info->GroupInstrAttribCount, 1);
 
 		FastSecurityDefinitionGroupInstrAttribItemInfo* giaItemInfo = NULL;
 
 		for(int i = 0; i < info->GroupInstrAttribCount; i++) {
 			giaItemInfo = info->GroupInstrAttrib[i];
+			PrintItemBegin("item", i, 1);
 			PrintInt32("InstrAttribType", giaItemInfo->InstrAttribType, 2);
 			PrintByteVector("InstrAttribValue", giaItemInfo->InstrAttribValue, giaItemInfo->InstrAttribValueLength, 2);
+			PrintItemEnd(1);
 		}
 
 		PrintString("Currency", info->Currency, info->CurrencyLength, 1);
+		PrintInt32("MarketSegmentGrpCount", info->MarketSegmentGrpCount, 1);
 
 		FastSecurityDefinitionMarketSegmentGrpItemInfo* msgItemInfo = NULL;
 
 		for(int i = 0; i < info->MarketSegmentGrpCount; i++) {
 			msgItemInfo = info->MarketSegmentGrp[i];
+			PrintItemBegin("item", i, 1);
 			PrintDecimal("RoundLot", &(msgItemInfo->RoundLot), 2);
+			PrintInt32("TradingSessionRulesGrpCount", msgItemInfo->TradingSessionRulesGrpCount, 2);
 
 			FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo* tsrgItemInfo = NULL;
 
 			for(int i = 0; i < msgItemInfo->TradingSessionRulesGrpCount; i++) {
 				tsrgItemInfo = msgItemInfo->TradingSessionRulesGrp[i];
+				PrintItemBegin("item", i, 2);
 				PrintString("TradingSessionID", tsrgItemInfo->TradingSessionID, tsrgItemInfo->TradingSessionIDLength, 3);
 				PrintString("TradingSessionSubID", tsrgItemInfo->TradingSessionSubID, tsrgItemInfo->TradingSessionSubIDLength, 3);
 				PrintInt32("SecurityTradingStatus", tsrgItemInfo->SecurityTradingStatus, 3);
 				PrintInt32("OrderNote", tsrgItemInfo->OrderNote, 3);
+				PrintItemEnd(2);
 			}
 
+			PrintItemEnd(1);
 		}
 
 		PrintString("SettlCurrency", info->SettlCurrency, info->SettlCurrencyLength, 1);
@@ -6377,7 +6444,7 @@ public:
 	}
 	void PrintSecurityStatus(FastSecurityStatusInfo *info) {
 
-		printf("FastSecurityStatusInfo {");
+		printf("FastSecurityStatusInfo {\n");
 		PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 		PrintUInt64("SendingTime", info->SendingTime, 1);
 		PrintString("Symbol", info->Symbol, info->SymbolLength, 1);
@@ -6389,7 +6456,7 @@ public:
 	}
 	void PrintTradingSessionStatus(FastTradingSessionStatusInfo *info) {
 
-		printf("FastTradingSessionStatusInfo {");
+		printf("FastTradingSessionStatusInfo {\n");
 		PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 		PrintUInt64("SendingTime", info->SendingTime, 1);
 		PrintInt32("TradSesStatus", info->TradSesStatus, 1);
@@ -6399,7 +6466,7 @@ public:
 	}
 	void PrintHeartbeat(FastHeartbeatInfo *info) {
 
-		printf("FastHeartbeatInfo {");
+		printf("FastHeartbeatInfo {\n");
 		PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 		PrintUInt64("SendingTime", info->SendingTime, 1);
 		printf("}\n");
