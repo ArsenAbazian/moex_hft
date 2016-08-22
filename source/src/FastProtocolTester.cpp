@@ -229,9 +229,6 @@ void FastProtocolTester::TestMessages() {
         throw;
     if(itemInfo2->TradingSessionSubID[0] != 0)
         throw;
-
-
-
 }
 
 bool FastProtocolTester::CompareStrings(char* str1, const char *str2) {

@@ -142,6 +142,7 @@ namespace prebuild {
 			WriteEncodeMethodsCode(templatesNode);
 			WriteHeaderParsingCode(templatesNode);
 			WriteDecodeMethodsCode(templatesNode);
+			WritePrintMethodsCode(templatesNode);
 		}
 
 		class ConstantStringInfo {
@@ -516,18 +517,20 @@ namespace prebuild {
 		}
 
 		private  void WriteDecodeMethodsCode (XmlNode templatesNode) {
-			XmlNode lastComment = null;
 			foreach(XmlNode node in templatesNode.ChildNodes) {
-				if(node.NodeType == XmlNodeType.Comment) {
-					lastComment = node;
-					continue;
-				}
 				if(node.Name == "template") {
-					ParseTemplateNode(node, lastComment == null ? "" : GetTemplateName(lastComment.Value));
-					lastComment = null;
+					ParseTemplateNode(node, GetTemplateName(node.PreviousSibling.Value));
 				}
 			}
 			WriteEntireMethodsCode(templatesNode);
+		}
+
+		private void WritePrintMethodsCode(XmlNode templatesNode) {
+			foreach(XmlNode node in templatesNode.ChildNodes) {
+				if(node.Name == "template") {
+					PrintTemplateNode(node, GetTemplateName(node.PreviousSibling.Value));
+				}
+			}
 		}
 
 		private  void WriteStructuresDefinitionCode (XmlNode templatesNode) {
@@ -963,16 +966,29 @@ namespace prebuild {
 			StructureInfo info = new StructureInfo() { NameCore = templateName };
 			WriteLine("\t\tFast" + templateName + "Info* info = " + info.GetFreeMethodName + "();");
 			WriteLine("");
-			/*
-			if(GetMaxPresenceBitCount(template) > 0) {
-				WriteCopyPresenceMap("\t\t", "info", CalcPresenceMapIntCount(template));
-				WriteLine("");
-			}
-			*/
 			foreach(XmlNode value in template.ChildNodes) {
 				ParseValue(value, "info", templateName, "\t\t");
 			}
 			WriteLine("\t\treturn info;");
+			WriteLine("\t}");
+		}
+
+		private void WritePrintPresenceMap(XmlNode template, StructureInfo info, string tabs, int tabsCount) {
+			if(GetMaxPresenceBitCount(template) > 0) {
+				WriteLine(tabs + "PrintPresenceMap(" + info.ValueName + "->PresenceMap, " + GetMaxPresenceBitCount(template) + ", " + tabsCount + ");");
+			}
+		}
+
+		private  void PrintTemplateNode (XmlNode template, string templateName) {
+			StructureInfo info = new StructureInfo() { NameCore = templateName };
+			WriteLine("\tvoid Print" + templateName + "(" + info.Name + " *info) {");
+			WriteLine("");
+			WriteLine("\t\tprintf(\"" + info.Name + " {\");");
+			WritePrintPresenceMap(template, info, "\t\t", 1);
+			foreach(XmlNode value in template.ChildNodes) {
+				PrintValue(value, "info", templateName, "\t\t", 1);
+			}
+			WriteLine("\t\tprintf(\"}\\n\");");
 			WriteLine("\t}");
 		}
 
@@ -1496,6 +1512,88 @@ namespace prebuild {
 				if(IsMandatoryField(value)) {
 					WriteOperatorsCode(value, objectValueName, classCoreName, tabString);   
 				}
+			}
+		}
+
+		private  void PrintStringValue (XmlNode value, string info, string tabString, int tabsCount) {
+			WriteLine(tabString + "PrintString(\"" + Name(value) + "\", " + info + "->" + Name(value) + ", " + info + "->" + Name(value) + "Length" + ", " + tabsCount + ");");
+		}
+
+		private  void PrintUInt32Value (XmlNode value, string info, string tabString, int tabsCount) {
+			WriteLine(tabString + "PrintUInt32(\"" + Name(value) + "\", " + info + "->" + Name(value) + ", " + tabsCount + ");");
+		}
+
+		private  void PrintInt32Value (XmlNode value, string info, string tabString, int tabsCount) {
+			WriteLine(tabString + "PrintInt32(\"" + Name(value) + "\", " + info + "->" + Name(value) + ", " + tabsCount + ");");
+		}
+
+		private  void PrintUInt64Value (XmlNode value, string info, string tabString, int tabsCount) {
+			WriteLine(tabString + "PrintUInt64(\"" + Name(value) + "\", " + info + "->" + Name(value) + ", " + tabsCount + ");");
+		}
+
+		private  void PrintInt64Value (XmlNode value, string info, string tabString, int tabsCount) {
+			WriteLine(tabString + "PrintInt64(\"" + Name(value) + "\", " + info + "->" + Name(value) + ", " + tabsCount + ");");
+		}
+
+		private  void PrintDecimalValue (XmlNode value, string info, string tabString, int tabsCount) {
+			WriteLine(tabString + "PrintDecimal(\"" + Name(value) + "\", &(" + info + "->" + Name(value) + "), " + tabsCount + ");");
+		}
+
+		private  void PrintByteVectorValue (XmlNode value, string info, string tabString, int tabsCount) {
+			WriteLine(tabString + "PrintByteVector(\"" + Name(value) + "\", " + info + "->" + Name(value) + ", " + info + "->" + Name(value) + "Length" + ", " + tabsCount + ");");
+		}
+
+		private  void PrintSequence (XmlNode value, string objectValueName, string parentClassCoreName, string tabString, int tabsCount) {
+			string itemInfo = GetIemInfoPrefix(value) + "ItemInfo";
+			WriteLine("");
+			string countField = objectValueName + "->" + Name(value) + "Count";
+
+			WriteLine(tabString + "Fast" + parentClassCoreName + Name(value) + "ItemInfo* " + itemInfo + " = NULL;");
+			WriteLine("");
+			WriteLine(tabString + "for(int i = 0; i < " + countField + "; i++) {");
+			WriteLine(tabString + "\t" + itemInfo + " = " + objectValueName + "->" + Name(value) + "[i];");
+
+			foreach(XmlNode node in value.ChildNodes) {
+				if(node.Name == "length")
+					continue;
+				LevelCount++;
+				tabsCount++;
+				PrintValue(node, itemInfo, parentClassCoreName + Name(value), tabString + "\t", tabsCount);
+				tabsCount--;
+				LevelCount--;
+			}
+			WriteLine(tabString + "}");
+			WriteLine("");
+		}
+
+		private  void PrintValue (XmlNode value, string objectValueName, string classCoreName, string tabString, int tabsCount) {
+			if(value.Name == "length")
+				return;
+			
+			// skip constant value WHY??????!!!!!
+			if(HasConstantAttribute(value))
+				return;
+
+			if(value.Name == "string")
+				PrintStringValue(value, objectValueName, tabString, tabsCount);
+			else if(value.Name == "uInt32")
+				PrintUInt32Value(value, objectValueName, tabString, tabsCount);
+			else if(value.Name == "int32")
+				PrintInt32Value(value, objectValueName, tabString, tabsCount);
+			else if(value.Name == "uInt64")
+				PrintUInt64Value(value, objectValueName, tabString, tabsCount);
+			else if(value.Name == "int64")
+				PrintInt64Value(value, objectValueName, tabString, tabsCount);
+			else if(value.Name == "decimal")
+				PrintDecimalValue(value, objectValueName, tabString, tabsCount);
+			else if(value.Name == "byteVector")
+				PrintByteVectorValue(value, objectValueName, tabString, tabsCount);
+			else if(value.Name == "sequence")
+				PrintSequence(value, objectValueName, classCoreName, tabString, tabsCount);
+			else {
+				WriteLine(tabString + "TODO!!!!!!!!");
+				Console.WriteLine("ERROR: found undefined field " + value.Name);
+				throw new NotImplementedException("ERROR: found undefined field " + value.Name);
 			}
 		}
 
