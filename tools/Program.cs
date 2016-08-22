@@ -8,25 +8,42 @@ using Mono.Options;
 
 namespace prebuild {
 	class FastTemplatesCodeGenerator {
-		List<string> Strings { get; set; }
-		List<string> OriginalStrings { get; set; }
+		List<string> Strings { get { return CurrentFile.Lines; } }
 
-		int WriteIndex { get; set; }
+		//int WriteIndex { get; set; }
 
 		public bool WriteConstantCheckingCode { get; set; }
 
 		public List<string> EncodeMessages { get; set; }
-		public string SourceFile { get; set; }
+		public string SourceFileH { get; set; }
+		public string SourceFileCpp { get; set; }
+		public string SourceTypes { get; set; }
 		public string TemplateFile { get; set; }
 
+		protected TextFile HFile { get; set; }
+		protected TextFile CppFile { get; set; }
+		protected TextFile TypesFile { get; set; }
+		protected TextFile CurrentFile { get; set; }
+
 		void WriteLine (string line) { 
-			Strings.Insert(WriteIndex, line);
-			WriteIndex++;
+			if(CurrentFile == null)
+				CurrentFile = HFile;
+			CurrentFile.Add(line);
+			//Strings.Insert(WriteIndex, line);
+			//WriteIndex++;
 		}
 
 		public bool Generate () {
-			if(!File.Exists(SourceFile)) {
-				Console.WriteLine("source file '" + SourceFile + "' does not exist.");
+			if(!File.Exists(SourceFileH)) {
+				Console.WriteLine("source file '" + SourceFileH + "' does not exist.");
+				return false;
+			}
+			if(!File.Exists(SourceFileCpp)) {
+				Console.WriteLine("source file '" + SourceFileCpp + "' does not exist.");
+				return false;
+			}
+			if(!File.Exists(SourceTypes)) {
+				Console.WriteLine("source file '" + TypesFile + "' does not exist.");
 				return false;
 			}
 			if(!File.Exists(TemplateFile)) {
@@ -37,15 +54,13 @@ namespace prebuild {
 			XmlDocument doc = new XmlDocument();
 			doc.Load(TemplateFile);
 
-			StreamReader hFileRead = new StreamReader(SourceFile);
-			Strings = new List<string>();
-			OriginalStrings = new List<string>();
-			string line = null;
-			while((line = hFileRead.ReadLine()) != null) {
-				Strings.Add(line);
-				OriginalStrings.Add((string)line.Clone());
-			}
-			hFileRead.Close();
+			HFile = new TextFile();
+			CppFile = new TextFile();
+			TypesFile = new TextFile();
+
+			HFile.LoadFromFile(SourceFileH);
+			CppFile.LoadFromFile(SourceFileCpp);
+			TypesFile.LoadFromFile(SourceTypes);
 
 			ClearPreviouseGeneratedCode();
 
@@ -55,25 +70,18 @@ namespace prebuild {
 				ParseTemplatesNode(node);
 			}
 
-			if(OriginalStrings.Count == Strings.Count) {
-				bool equal = true;
-				for(int i = 0; i < OriginalStrings.Count; i++) {
-					if(!string.Equals(Strings[i], OriginalStrings[i])) {
-						equal = false;
-						break;
-					}
-				}
-				if(equal) {
-					Console.WriteLine("no changes were made. skip update source file.");
-					return true;
-				}
-			}
-
-			StreamWriter hFileWrite = new StreamWriter(SourceFile);
-			foreach(string str in Strings)
-				hFileWrite.WriteLine(str);
-			hFileWrite.Flush();
-			hFileWrite.Close();
+			if(!HFile.Modified)
+				Console.WriteLine(SourceFileH + " - no changes were made. skip update source file.");
+			else
+				HFile.Save();
+			if(!CppFile.Modified)
+				Console.WriteLine(SourceFileCpp + " - no changes were made. skip update source file.");
+			else
+				CppFile.Save();
+			if(!TypesFile.Modified)
+				Console.WriteLine(SourceTypes + " - no changes were made. skip update source file.");
+			else
+				TypesFile.Save();
 
 			return true;
 		}
@@ -86,6 +94,8 @@ namespace prebuild {
 		string Get_Free_Item_Methods_GeneratedCode = "Get_Free_Item_Methods_GeneratedCode";
 		string Encode_Methods_Definition_GeneratedCode = "Encode_Methods_Definition_GeneratedCode";
 		string String_Constant_Declaration_GeneratedCode = "String_Constant_Declaration_GeneratedCode";
+		string Print_Methods_Definition_GeneratedCode = "Print_Methods_Definition_GeneratedCode";
+		string Print_Methods_Declaration_GeneratedCode = "Print_Methods_Declaration_GeneratedCode";
 
 		private  void ClearPreviouseGeneratedCode () {
 			string[] keywords = new string[] { 
@@ -96,14 +106,18 @@ namespace prebuild {
 				Get_Free_Item_Methods_GeneratedCode,
 				Decode_Methods_Definition_GeneratedCode,
 				Encode_Methods_Definition_GeneratedCode,
-				String_Constant_Declaration_GeneratedCode
+				String_Constant_Declaration_GeneratedCode,
+				Print_Methods_Declaration_GeneratedCode,
+				Print_Methods_Definition_GeneratedCode
 			};
 			foreach(string keyword in keywords) {
-				int startingIndex = GetKeywordLineIndex(keyword) + 1;
+				SetPosition(keyword);
+				int startingIndex = CurrentFile.Line;
 				int endIndex = GetEndRegionLineIndex(startingIndex);
 				int count = endIndex - startingIndex;
-				for(int i = 0; i < count; i++)
-					Strings.RemoveAt(startingIndex);
+				for(int i = 0; i < count; i++) {
+					CurrentFile.Remove(startingIndex);
+				}
 			}
 		}
 
@@ -118,12 +132,8 @@ namespace prebuild {
 		}
 
 		private  int GetKeywordLineIndex (string keyword) {
-			int index = 0;
-			foreach(string str in Strings) {
-				if(str.Contains(keyword))
-					return index;
-				index++;
-			}
+			if(SetPosition(keyword))
+				return CurrentFile.Line;
 			return -1;
 		}
 
@@ -526,6 +536,14 @@ namespace prebuild {
 		}
 
 		private void WritePrintMethodsCode(XmlNode templatesNode) {
+			SetPosition(Print_Methods_Declaration_GeneratedCode);
+			foreach(XmlNode node in templatesNode.ChildNodes) {
+				if(node.Name == "template") {
+					PrintDeclareTemplateNode(node, GetTemplateName(node.PreviousSibling.Value));
+				}
+			}
+
+			SetPosition(Print_Methods_Definition_GeneratedCode);
 			foreach(XmlNode node in templatesNode.ChildNodes) {
 				if(node.Name == "template") {
 					PrintTemplateNode(node, GetTemplateName(node.PreviousSibling.Value));
@@ -602,11 +620,6 @@ namespace prebuild {
 			WriteLine("#define PRESENCE_MAP_INDEX55 0x0100000000000000L");
 
 			WriteLine("");
-			//WriteLine("typedef struct _FastHeaderInfo {");
-			//List<XmlNode> templates = GetTemplates(templatesNode);
-			//WriteSequenceNodeFieldDefinition(templates[0], "", true, true, true, 16);
-			//WriteLine("}FastHeaderInfo;");
-			//WriteLine("");
 
 			foreach(XmlNode node in templatesNode.ChildNodes) {
 				if(node.NodeType == XmlNodeType.Comment) {
@@ -680,8 +693,34 @@ namespace prebuild {
 			WriteLine("");
 		}
 
-		private  void SetPosition (string keyword) {
-			WriteIndex = GetKeywordLineIndex(keyword) + 1;
+		private  bool SetPosition (string keyword) {
+			HFile.GoTo(0);
+			CppFile.GoTo(0);
+			TypesFile.GoTo(0);
+			int index = HFile.FindString(keyword);
+			if(index >= 0) {
+				HFile.GoTo(index + 1);
+				CurrentFile = HFile;
+				return true;
+			}
+			index = CppFile.FindString(keyword);
+			if(index >= 0) {
+				CppFile.GoTo(index + 1);
+				CurrentFile = CppFile;
+				return true;
+			}
+			index = TypesFile.FindString(keyword);
+			if(index >= 0) {
+				TypesFile.GoTo(index + 1);
+				CurrentFile = TypesFile;
+				return true;
+			}
+
+			Console.WriteLine("hfile " + SourceFileH + " " + HFile.Lines.Count);
+			Console.WriteLine("cppfile " + SourceFileCpp + " " + CppFile.Lines.Count);
+			Console.WriteLine("types_file " + TypesFile.Lines.Count);
+			throw new Exception("error cant find keyword " + keyword);
+			//WriteIndex = GetKeywordLineIndex(keyword) + 1;
 		}
 
 		class DecodeMessageInfo {
@@ -979,17 +1018,23 @@ namespace prebuild {
 			}
 		}
 
+		private void PrintDeclareTemplateNode(XmlNode template, string templateName) {
+			StructureInfo info = new StructureInfo() { NameCore = templateName };
+			WriteLine("\tvoid Print" + templateName + "(" + info.Name + " *info);");
+		}
+
 		private  void PrintTemplateNode (XmlNode template, string templateName) {
 			StructureInfo info = new StructureInfo() { NameCore = templateName };
-			WriteLine("\tvoid Print" + templateName + "(" + info.Name + " *info) {");
+			WriteLine("void FastProtocolManager::Print" + templateName + "(" + info.Name + " *info) {");
 			WriteLine("");
-			WriteLine("\t\tprintf(\"" + info.Name + " {\\n\");");
+			WriteLine("\tprintf(\"" + info.Name + " {\\n\");");
 			WritePrintPresenceMap(template, info, "\t\t", 1);
+			WriteLine("\tPrintInt32(\"TemplateId\", " + template.Attributes["id"].Value + ", 1);");
 			foreach(XmlNode value in template.ChildNodes) {
-				PrintValue(value, "info", templateName, "\t\t", 1);
+				PrintValue(value, "info", templateName, "\t", 1);
 			}
-			WriteLine("\t\tprintf(\"}\\n\");");
-			WriteLine("\t}");
+			WriteLine("\tprintf(\"}\\n\");");
+			WriteLine("}");
 		}
 
 		bool HasAttribute (XmlNode node, string attributeName) {
@@ -1705,12 +1750,24 @@ namespace prebuild {
 	public class TextFile {
 		public TextFile () {
 			Lines = new List<string>();
+			OriginalLines = new List<string>();
 		}
 
 		public string FileName { get; set; }
 
-		public bool Modified  { get; private set; }
+		public bool Modified {
+			get{ 
+				if(OriginalLines.Count != Lines.Count)
+					return true;
 
+				for(int i = 0; i < OriginalLines.Count; i++) {
+					if(!string.Equals(Lines[i], OriginalLines[i])) {
+						return true;
+					}
+				}
+				return false;
+			}
+		}
 		public int FindString (string searchString) {
 			if(Line < 0 || Line > LineCount)
 				Line = 0;
@@ -1730,8 +1787,10 @@ namespace prebuild {
 			try {
 				StreamReader reader = new StreamReader(fileName);
 				string line = null;
-				while((line = reader.ReadLine()) != null)
+				while((line = reader.ReadLine()) != null) {
 					Lines.Add(line);
+					OriginalLines.Add((string)line.Clone());
+				}
 				reader.Close();
 			} catch(Exception) { 
 				return false;
@@ -1757,11 +1816,12 @@ namespace prebuild {
 			} catch(Exception) {
 				return false;
 			}
-			Modified = false;
+			//Modified = false;
 			return true;
 		}
 
-		protected List<string> Lines { get; set; }
+		public List<string> Lines { get; set; }
+		protected List<string> OriginalLines { get; set; }
 
 		public int Line { get; set; }
 
@@ -1772,22 +1832,22 @@ namespace prebuild {
 		}
 
 		public void Replace (int index, string newLine) { 
-			Modified = true;
+			//Modified = true;
 			Lines[index] = newLine;
 		}
 
 		public void Remove (int index) { 
-			Modified = true;
+			//Modified = true;
 			Lines.RemoveAt(index);
 		}
 
 		public void Add (int index, string newLine) {
-			Modified = true;
+			//Modified = true;
 			Lines.Insert(index, newLine);
 		}
 
 		public void Add (string newLine) {
-			Modified = true;
+			//Modified = true;
 			Lines.Insert(Line, newLine);
 			Line++;
 		}
@@ -1795,7 +1855,7 @@ namespace prebuild {
 		public int LineCount { get { return Lines.Count; } }
 
 		public void SetCurrentLine (string newText) {
-			Modified = true;
+			//Modified = true;
 			Lines[Line] = newText;
 		}
 
@@ -1830,8 +1890,12 @@ namespace prebuild {
 					v => m_params.Add("f", v)
 				}, {"fx|fast_xml=", "Path to Fast templates file xml",
 					v => m_params.Add("fx", v)
-				}, {"fs|fast_source=", "Path to FastProtocolManager h file",
-					v => m_params.Add("fs", v)
+				}, {"fh|fast__source_h=", "Path to FastProtocolManager.h file",
+					v => m_params.Add("fh", v)
+				}, {"fc|fast__source_cpp=", "Path to FastProtocolManager.cpp file",
+					v => m_params.Add("fc", v)
+				}, {"ft|fast_types=", "Path to FastTypes.h file",
+					v => m_params.Add("ft", v)
 				}, {"fcc|fast_check_const", "Write constant checking code in fast protocol files", 
 					v => m_params.Add("fcc", v)
 				}, {"fwe|fast_write_encode=", "Write encdode methods for messages",
@@ -1863,11 +1927,21 @@ namespace prebuild {
 			FastTemplatesCodeGenerator generator = new FastTemplatesCodeGenerator();
 			generator.WriteConstantCheckingCode = m_params.TryGetValue("fcc", out value);
 
-			if(!m_params.TryGetValue("fs", out value)) {
-				Console.WriteLine("FastProtocolManager file not specified. skip generation.");
+			if(!m_params.TryGetValue("fc", out value)) {
+				Console.WriteLine("FastProtocolManager.cpp file not specified. skip generation.");
 				return;
 			}
-			generator.SourceFile = value;
+			generator.SourceFileCpp = value;
+			if(!m_params.TryGetValue("fh", out value)) {
+				Console.WriteLine("FastProtocolManager.h file not specified. skip generation.");
+				return;
+			}
+			generator.SourceFileH = value;
+			if(!m_params.TryGetValue("ft", out value)) {
+				Console.WriteLine("FastTypes file not specified. skip generation.");
+				return;
+			}
+			generator.SourceTypes = value;
 			if(!m_params.TryGetValue("fx", out value)) {
 				Console.WriteLine("Fast template file not specified. skip generation.");
 				return;
