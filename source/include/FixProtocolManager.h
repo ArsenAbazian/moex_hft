@@ -61,6 +61,16 @@ public:
 
     inline FixRejectInfo* RejectInfo() { return this->m_rejectInfo; }
 
+	inline void PrintBufferFromCurrent() {
+		int start = this->currentPos - this->messageBuffer;
+		for(int i = 0; i < this->messageBufferSize - start; i++) {
+			if(i == this->messageBufferSize - start - 1)
+				printf("%02x", this->currentPos[i]);
+			else
+				printf("%02x ", this->currentPos[i]);
+		}
+	}
+
     inline void PrepareSendBuffer() {
         this->m_sendMessageBuffer = this->m_sendBuffer->CurrentPos();
         this->m_sendItemStartIndex = this->m_sendBuffer->CurrentItemIndex();

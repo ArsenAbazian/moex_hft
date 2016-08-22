@@ -3560,14 +3560,14 @@ public:
 		memcpy(this->buffer, value, length);
 	}
 
-	inline void ReadDecimal_Optional(Decimal *value) { 
-		value->Mantissa = ReadInt32_Mandatory();
-		value->Exponent = ReadInt32_Optional();
+	inline void ReadDecimal_Optional(Decimal *value) {
+        value->Exponent = ReadInt32_Optional();
+        value->Mantissa = ReadInt32_Mandatory();
 	}
 
-	inline void ReadDecimal_Mandatory(Decimal *value) { 
-		value->Mantissa = ReadInt32_Mandatory();
-		value->Exponent = ReadInt32_Mandatory();
+	inline void ReadDecimal_Mandatory(Decimal *value) {
+        value->Exponent = ReadInt32_Mandatory();
+        value->Mantissa = ReadInt32_Mandatory();
 	}
 
 	inline void WriteDecimal_Optional(Decimal *value) { 

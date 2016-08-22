@@ -30,7 +30,7 @@ void FastProtocolTester::TestMessages() {
                                                      0x6d,0x65,0xa1,0x2a,0x0a,0xb7,0x43,0x45,0x54,0xd3,0x80};
 
 	FastProtocolManager *manager = new FastProtocolManager();
-	manager->SetNewBuffer(message, 1000);
+	manager->SetNewBuffer(message, 111);
 
     int msgSeqNo = manager->ReadMsgSeqNumber();
     FastMarketDataIncrementalRefreshOBRCURRInfo *info = (FastMarketDataIncrementalRefreshOBRCURRInfo*)manager->Decode_Generic();
@@ -40,6 +40,9 @@ void FastProtocolTester::TestMessages() {
     if(info->SendingTime != 20160819142308700)
         throw;
     if(info->GroupMDEntriesCount != 2)
+        throw;
+
+    if(manager->MessageLength() != 111)
         throw;
 
     FastMarketDataIncrementalRefreshOBRCURRGroupMDEntriesItemInfo *itemInfo1 = info->GroupMDEntries[0];
@@ -61,7 +64,174 @@ void FastProtocolTester::TestMessages() {
         throw;
     if(itemInfo1->RptSeq != 270094)
         throw;
-    //if(itemInfo1->MDEntryPx)
+    if(itemInfo1->MDEntryPx.Exponent != -4)
+        throw;
+    if(itemInfo1->MDEntryPx.Mantissa != 778875)
+        throw;
+    if(itemInfo1->MDEntrySize.Mantissa != 328)
+        throw;
+    if(itemInfo1->MDEntrySize.Exponent != 0)
+        throw;
+    if(itemInfo1->MDEntryTime != 142308000)
+        throw;
+    if(itemInfo1->OrigTime != 682877)
+        throw;
+    if(itemInfo1->TradingSessionIDLength != 4)
+        throw;
+    if(!this->CompareStrings(itemInfo1->TradingSessionID, "CETS"))
+        throw;
+    if(itemInfo1->TradingSessionSubIDLength != 1)
+        throw;
+    if(itemInfo1->TradingSessionSubID[0] != 0)
+        throw;
+
+
+    if(itemInfo2->MDUpdateAction != mduaChange)
+        throw;
+    if(itemInfo2->MDEntryTypeLength != 1)
+        throw;
+    if(itemInfo2->MDEntryType[0] != mdetSellQuote)
+        throw;
+    if(itemInfo2->MDEntryIDLength != 10)
+        throw;
+    if(!this->CompareStrings(itemInfo2->MDEntryID, "S000816775"))
+        throw;
+    if(itemInfo2->SymbolLength != 12)
+        throw;
+    if(!this->CompareStrings(itemInfo2->Symbol, "EUR_RUB__TOM"))
+        throw;
+    if(itemInfo2->RptSeq != 270095)
+        throw;
+    if(itemInfo2->MDEntryPx.Exponent != -4)
+        throw;
+    if(itemInfo2->MDEntryPx.Mantissa != 816775)
+        throw;
+    if(itemInfo2->MDEntrySize.Mantissa != 1268)
+        throw;
+    if(itemInfo2->MDEntrySize.Exponent != 0)
+        throw;
+    if(itemInfo2->MDEntryTime != 142308000)
+        throw;
+    if(itemInfo2->OrigTime != 689462)
+        throw;
+    if(itemInfo2->TradingSessionIDLength != 4)
+        throw;
+    if(!this->CompareStrings(itemInfo2->TradingSessionID, "CETS"))
+        throw;
+    if(itemInfo2->TradingSessionSubIDLength != 1)
+        throw;
+    if(itemInfo2->TradingSessionSubID[0] != 0)
+        throw;
+
+
+    message = new unsigned char[107] {0x05,0xa4,0x07,0x00,0xe0,0x1b,0xb8,0x1e,0x48,0x85,
+                                   0x23,0x68,0x05,0x07,0x7a,0x6e,0x67,0x98,0x82,0x82,
+                                   0xb1,0x53,0x30,0x30,0x30,0x37,0x36,0x34,0x30,0x30,
+                                   0xb0,0x55,0x53,0x44,0x30,0x30,0x30,0x55,0x54,0x53,
+                                   0x54,0x4f,0xcd,0x0f,0x0d,0x84,0xff,0x05,0xfc,0x81,
+                                   0x0d,0xb4,0x43,0x6d,0x65,0xa1,0x2d,0x74,0xb1,0x43,
+                                   0x45,0x54,0xd3,0x80,0x82,0xb0,0x42,0x30,0x30,0x30,
+                                   0x37,0x31,0x39,0x38,0x35,0xb0,0x55,0x53,0x44,0x52,
+                                   0x55,0x42,0x5f,0x53,0x50,0xd4,0x00,0x47,0x87,0xfd,
+                                   0x04,0x32,0xb1,0x82,0xb0,0x43,0x6d,0x65,0xa1,0x2d,
+                                   0x74,0xd1,0x43,0x45,0x54,0xd3,0x80};
+
+    manager->SetNewBuffer(message, 107);
+
+    msgSeqNo = manager->ReadMsgSeqNumber();
+    info = (FastMarketDataIncrementalRefreshOBRCURRInfo*)manager->Decode_Generic();
+
+    if(info->MsgSeqNum != msgSeqNo)
+        throw;
+    if(info->SendingTime != 20160819142308760)
+        throw;
+    if(info->GroupMDEntriesCount != 2)
+        throw;
+
+    if(manager->MessageLength() != 107)
+        throw;
+
+    itemInfo1 = info->GroupMDEntries[0];
+    itemInfo2 = info->GroupMDEntries[1];
+
+
+    if(itemInfo1->MDUpdateAction != mduaChange)
+        throw;
+    if(itemInfo1->MDEntryTypeLength != 1)
+        throw;
+    if(itemInfo1->MDEntryType[0] != mdetSellQuote)
+        throw;
+    if(itemInfo1->MDEntryIDLength != 10)
+        throw;
+    if(!this->CompareStrings(itemInfo1->MDEntryID, "S000764000"))
+        throw;
+    if(itemInfo1->SymbolLength != 12)
+        throw;
+    if(!this->CompareStrings(itemInfo1->Symbol, "USD000UTSTOM"))
+        throw;
+    if(itemInfo1->RptSeq != 247427)
+        throw;
+    if(itemInfo1->MDEntryPx.Exponent != -1)
+        throw;
+    if(itemInfo1->MDEntryPx.Mantissa != 764)
+        throw;
+    if(itemInfo1->MDEntrySize.Mantissa != 1716)
+        throw;
+    if(itemInfo1->MDEntrySize.Exponent != 0)
+        throw;
+    if(itemInfo1->MDEntryTime != 142308000)
+        throw;
+    if(itemInfo1->OrigTime != 752176)
+        throw;
+    if(itemInfo1->TradingSessionIDLength != 4)
+        throw;
+    if(!this->CompareStrings(itemInfo1->TradingSessionID, "CETS"))
+        throw;
+    if(itemInfo1->TradingSessionSubIDLength != 1)
+        throw;
+    if(itemInfo1->TradingSessionSubID[0] != 0)
+        throw;
+
+
+    if(itemInfo2->MDUpdateAction != mduaChange)
+        throw;
+    if(itemInfo2->MDEntryTypeLength != 1)
+        throw;
+    if(itemInfo2->MDEntryType[0] != mdetBuyQuote)
+        throw;
+    if(itemInfo2->MDEntryIDLength != 10)
+        throw;
+    if(!this->CompareStrings(itemInfo2->MDEntryID, "B000719850"))
+        throw;
+    if(itemInfo2->SymbolLength != 10)
+        throw;
+    if(!this->CompareStrings(itemInfo2->Symbol, "USDRUB_SPT"))
+        throw;
+    if(itemInfo2->RptSeq != 9094)
+        throw;
+    if(itemInfo2->MDEntryPx.Exponent != -3)
+        throw;
+    if(itemInfo2->MDEntryPx.Mantissa != 71985)
+        throw;
+    if(itemInfo2->MDEntrySize.Mantissa != 48)
+        throw;
+    if(itemInfo2->MDEntrySize.Exponent != 1)
+        throw;
+    if(itemInfo2->MDEntryTime != 142308000)
+        throw;
+    if(itemInfo2->OrigTime != 752208)
+        throw;
+    if(itemInfo2->TradingSessionIDLength != 4)
+        throw;
+    if(!this->CompareStrings(itemInfo2->TradingSessionID, "CETS"))
+        throw;
+    if(itemInfo2->TradingSessionSubIDLength != 1)
+        throw;
+    if(itemInfo2->TradingSessionSubID[0] != 0)
+        throw;
+
+
+
 }
 
 bool FastProtocolTester::CompareStrings(char* str1, const char *str2) {
