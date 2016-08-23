@@ -542,11 +542,21 @@ namespace prebuild {
 					PrintDeclareTemplateNode(node, GetTemplateName(node.PreviousSibling.Value));
 				}
 			}
+			foreach(XmlNode node in templatesNode.ChildNodes) {
+				if(node.Name == "template") {
+					PrintXmlDeclareTemplateNode(node, GetTemplateName(node.PreviousSibling.Value));
+				}
+			}
 
 			SetPosition(Print_Methods_Definition_GeneratedCode);
 			foreach(XmlNode node in templatesNode.ChildNodes) {
 				if(node.Name == "template") {
 					PrintTemplateNode(node, GetTemplateName(node.PreviousSibling.Value));
+				}
+			}
+			foreach(XmlNode node in templatesNode.ChildNodes) {
+				if(node.Name == "template") {
+					PrintXmlTemplateNode(node, GetTemplateName(node.PreviousSibling.Value));
 				}
 			}
 		}
@@ -1018,9 +1028,19 @@ namespace prebuild {
 			}
 		}
 
+		private void WritePrintXmlPresenceMap(XmlNode template, StructureInfo info, string tabs) {
+			if(GetMaxPresenceBitCount(template) > 0) {
+				WriteLine(tabs + "PrintXmlPresenceMap(" + info.ValueName + "->PresenceMap, " + GetMaxPresenceBitCount(template) + ");");
+			}
+		}
+
 		private void PrintDeclareTemplateNode(XmlNode template, string templateName) {
 			StructureInfo info = new StructureInfo() { NameCore = templateName };
 			WriteLine("\tvoid Print" + templateName + "(" + info.Name + " *info);");
+		}
+		private void PrintXmlDeclareTemplateNode(XmlNode template, string templateName) {
+			StructureInfo info = new StructureInfo() { NameCore = templateName };
+			WriteLine("\tvoid PrintXml" + templateName + "(" + info.Name + " *info);");
 		}
 
 		private  void PrintTemplateNode (XmlNode template, string templateName) {
@@ -1034,6 +1054,20 @@ namespace prebuild {
 				PrintValue(value, "info", templateName, "\t", 1);
 			}
 			WriteLine("\tprintf(\"}\\n\");");
+			WriteLine("}");
+		}
+
+		private  void PrintXmlTemplateNode (XmlNode template, string templateName) {
+			StructureInfo info = new StructureInfo() { NameCore = templateName };
+			WriteLine("void FastProtocolManager::PrintXml" + templateName + "(" + info.Name + " *info) {");
+			WriteLine("");
+			WriteLine("\tPrintXmlItemBegin(\"" + info.Name +"\");");
+			WritePrintXmlPresenceMap(template, info, "\t\t");
+			WriteLine("\tPrintXmlInt32(\"TemplateId\", " + template.Attributes["id"].Value + ");");
+			foreach(XmlNode value in template.ChildNodes) {
+				PrintXmlValue(value, "info", templateName, "\t");
+			}
+			WriteLine("\tPrintXmlItemEnd(\"" + info.Name +"\");");
 			WriteLine("}");
 		}
 
@@ -1585,7 +1619,59 @@ namespace prebuild {
 		}
 
 		private  void PrintByteVectorValue (XmlNode value, string info, string tabString, int tabsCount) {
-			WriteLine(tabString + "PrintByteVector(\"" + Name(value) + "\", " + info + "->" + Name(value) + ", " + info + "->" + Name(value) + "Length" + ", " + tabsCount + ");");
+			WriteLine(tabString + "PrintByteVector(\"" + Name(value) + "\", " + info + "->" + Name(value) + ", " + info + "->" + Name(value) + "Length, " + tabsCount + ");");
+		}
+
+		private  void PrintXmlStringValue (XmlNode value, string info, string tabString) {
+			WriteLine(tabString + "PrintXmlString(\"" + Name(value) + "\", " + info + "->" + Name(value) + ", " + info + "->" + Name(value) + "Length" + ");");
+		}
+
+		private  void PrintXmlUInt32Value (XmlNode value, string info, string tabString) {
+			WriteLine(tabString + "PrintXmlUInt32(\"" + Name(value) + "\", " + info + "->" + Name(value) + ");");
+		}
+
+		private  void PrintXmlInt32Value (XmlNode value, string info, string tabString) {
+			WriteLine(tabString + "PrintXmlInt32(\"" + Name(value) + "\", " + info + "->" + Name(value) + ");");
+		}
+
+		private  void PrintXmlUInt64Value (XmlNode value, string info, string tabString) {
+			WriteLine(tabString + "PrintXmlUInt64(\"" + Name(value) + "\", " + info + "->" + Name(value) + ");");
+		}
+
+		private  void PrintXmlInt64Value (XmlNode value, string info, string tabString) {
+			WriteLine(tabString + "PrintXmlInt64(\"" + Name(value) + "\", " + info + "->" + Name(value) + ");");
+		}
+
+		private  void PrintXmlDecimalValue (XmlNode value, string info, string tabString) {
+			WriteLine(tabString + "PrintXmlDecimal(\"" + Name(value) + "\", &(" + info + "->" + Name(value) + "));");
+		}
+
+		private  void PrintXmlByteVectorValue (XmlNode value, string info, string tabString) {
+			WriteLine(tabString + "PrintXmlByteVector(\"" + Name(value) + "\", " + info + "->" + Name(value) + ", " + info + "->" + Name(value) + "Length" + ");");
+		}
+
+		private  void PrintXmlSequence (XmlNode value, string objectValueName, string parentClassCoreName, string tabString) {
+
+			string itemInfo = GetIemInfoPrefix(value) + "ItemInfo";
+			WriteLine(tabString + "PrintXmlInt32(\"" + Name(value) + "Count\", " + objectValueName + "->" + Name(value) + "Count);");
+			WriteLine("");
+			string countField = objectValueName + "->" + Name(value) + "Count";
+
+			WriteLine(tabString + "Fast" + parentClassCoreName + Name(value) + "ItemInfo* " + itemInfo + " = NULL;");
+			WriteLine("");
+			WriteLine(tabString + "for(int i = 0; i < " + countField + "; i++) {");
+			WriteLine(tabString + "\t" + itemInfo + " = " + objectValueName + "->" + Name(value) + "[i];");
+			WriteLine(tabString + "\tPrintXmlItemBegin(\"item\", i);");
+			foreach(XmlNode node in value.ChildNodes) {
+				if(node.Name == "length")
+					continue;
+				LevelCount++;
+				PrintXmlValue(node, itemInfo, parentClassCoreName + Name(value), tabString + "\t");
+				LevelCount--;
+			}
+			WriteLine(tabString + "\tPrintXmlItemEnd(\"item\", i);");
+			WriteLine(tabString + "}");
+			WriteLine("");
 		}
 
 		private  void PrintSequence (XmlNode value, string objectValueName, string parentClassCoreName, string tabString, int tabsCount) {
@@ -1638,6 +1724,37 @@ namespace prebuild {
 				PrintByteVectorValue(value, objectValueName, tabString, tabsCount);
 			else if(value.Name == "sequence")
 				PrintSequence(value, objectValueName, classCoreName, tabString, tabsCount);
+			else {
+				WriteLine(tabString + "TODO!!!!!!!!");
+				Console.WriteLine("ERROR: found undefined field " + value.Name);
+				throw new NotImplementedException("ERROR: found undefined field " + value.Name);
+			}
+		}
+
+		private  void PrintXmlValue (XmlNode value, string objectValueName, string classCoreName, string tabString) {
+			if(value.Name == "length")
+				return;
+
+			// skip constant value WHY??????!!!!!
+			if(HasConstantAttribute(value))
+				return;
+
+			if(value.Name == "string")
+				PrintXmlStringValue(value, objectValueName, tabString);
+			else if(value.Name == "uInt32")
+				PrintXmlUInt32Value(value, objectValueName, tabString);
+			else if(value.Name == "int32")
+				PrintXmlInt32Value(value, objectValueName, tabString);
+			else if(value.Name == "uInt64")
+				PrintXmlUInt64Value(value, objectValueName, tabString);
+			else if(value.Name == "int64")
+				PrintXmlInt64Value(value, objectValueName, tabString);
+			else if(value.Name == "decimal")
+				PrintXmlDecimalValue(value, objectValueName, tabString);
+			else if(value.Name == "byteVector")
+				PrintXmlByteVectorValue(value, objectValueName, tabString);
+			else if(value.Name == "sequence")
+				PrintXmlSequence(value, objectValueName, classCoreName, tabString);
 			else {
 				WriteLine(tabString + "TODO!!!!!!!!");
 				Console.WriteLine("ERROR: found undefined field " + value.Name);

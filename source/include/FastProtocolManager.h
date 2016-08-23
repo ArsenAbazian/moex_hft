@@ -638,11 +638,13 @@ public:
     void PrintXmlUInt32(const char *name, UINT value);
     void PrintXmlInt64(const char *name, INT64 value);
     void PrintXmlUInt64(const char *name, UINT64 value);
+    void PrintXmlItemBegin(const char *name);
+    void PrintXmlItemEnd(const char *name);
     void PrintXmlItemBegin(const char *name, int index);
     void PrintXmlItemEnd(const char *name, int index);
     void PrintXmlString(const char *name, char *str, int count);
     void PrintXmlByteVector(const char *name, unsigned char *data, int count);
-    void PrintDecimal(const char *name, Decimal *value);
+    void PrintXmlDecimal(const char *name, Decimal *value);
     bool BeginExportXml(const char *fileName);
     void EndExportXml();
     void PrintInt32(const char *name, int value, int tabCount);
@@ -2696,6 +2698,28 @@ public:
 	void PrintSecurityStatus(FastSecurityStatusInfo *info);
 	void PrintTradingSessionStatus(FastTradingSessionStatusInfo *info);
 	void PrintHeartbeat(FastHeartbeatInfo *info);
+	void PrintXmlLogon(FastLogonInfo *info);
+	void PrintXmlLogout(FastLogoutInfo *info);
+	void PrintXmlMarketDataSnapshotFullRefreshGeneric(FastMarketDataSnapshotFullRefreshGenericInfo *info);
+	void PrintXmlMarketDataIncrementalRefreshGeneric(FastMarketDataIncrementalRefreshGenericInfo *info);
+	void PrintXmlMarketDataSnapshotFullRefreshOLSFOND(FastMarketDataSnapshotFullRefreshOLSFONDInfo *info);
+	void PrintXmlMarketDataSnapshotFullRefreshOLSCURR(FastMarketDataSnapshotFullRefreshOLSCURRInfo *info);
+	void PrintXmlMarketDataSnapshotFullRefreshTLSFOND(FastMarketDataSnapshotFullRefreshTLSFONDInfo *info);
+	void PrintXmlMarketDataSnapshotFullRefreshTLSCURR(FastMarketDataSnapshotFullRefreshTLSCURRInfo *info);
+	void PrintXmlMarketDataSnapshotFullRefreshOBSFOND(FastMarketDataSnapshotFullRefreshOBSFONDInfo *info);
+	void PrintXmlMarketDataSnapshotFullRefreshOBSCURR(FastMarketDataSnapshotFullRefreshOBSCURRInfo *info);
+	void PrintXmlMarketDataIncrementalRefreshMSRFOND(FastMarketDataIncrementalRefreshMSRFONDInfo *info);
+	void PrintXmlMarketDataIncrementalRefreshMSRCURR(FastMarketDataIncrementalRefreshMSRCURRInfo *info);
+	void PrintXmlMarketDataIncrementalRefreshOLRFOND(FastMarketDataIncrementalRefreshOLRFONDInfo *info);
+	void PrintXmlMarketDataIncrementalRefreshOLRCURR(FastMarketDataIncrementalRefreshOLRCURRInfo *info);
+	void PrintXmlMarketDataIncrementalRefreshOBRFOND(FastMarketDataIncrementalRefreshOBRFONDInfo *info);
+	void PrintXmlMarketDataIncrementalRefreshOBRCURR(FastMarketDataIncrementalRefreshOBRCURRInfo *info);
+	void PrintXmlMarketDataIncrementalRefreshTLRFOND(FastMarketDataIncrementalRefreshTLRFONDInfo *info);
+	void PrintXmlMarketDataIncrementalRefreshTLRCURR(FastMarketDataIncrementalRefreshTLRCURRInfo *info);
+	void PrintXmlSecurityDefinition(FastSecurityDefinitionInfo *info);
+	void PrintXmlSecurityStatus(FastSecurityStatusInfo *info);
+	void PrintXmlTradingSessionStatus(FastTradingSessionStatusInfo *info);
+	void PrintXmlHeartbeat(FastHeartbeatInfo *info);
 #pragma endregion
 
 #pragma region Decode_Methods_Definition_GeneratedCode
