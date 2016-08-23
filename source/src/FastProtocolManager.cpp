@@ -274,6 +274,9 @@ void FastProtocolManager::PrintByteVector(const char *name, unsigned char *data,
 		else
 			printf("%02x ", data[i]);
 	}
+	printf("' -> '");
+	for(int i = 0; i < count; i++)
+		printf("%c", data[i]);
 	printf("'\n");
 }
 void FastProtocolManager::PrintDecimal(const char *name, Decimal *value, int tabCount) {

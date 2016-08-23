@@ -1263,7 +1263,10 @@ namespace prebuild {
 		private  void ParseSequence (XmlNode value, string objectValueName, string parentClassCoreName, string tabString) {
 			string itemInfo = GetIemInfoPrefix(value) + "ItemInfo";
 			WriteLine("");
-			WriteLine(tabString + objectValueName + "->" + Name(value) + "Count = ReadUInt32_Mandatory();");
+			if(HasOptionalPresence(value))
+				WriteLine(tabString + objectValueName + "->" + Name(value) + "Count = ReadUInt32_Optional();");
+			else 
+				WriteLine(tabString + objectValueName + "->" + Name(value) + "Count = ReadUInt32_Mandatory();");
 			WriteLine(tabString + "Fast" + parentClassCoreName + Name(value) + "ItemInfo* " + itemInfo + " = NULL;");
 			WriteLine("");
 			WriteLine(tabString + "for(int i = 0; i < " + objectValueName + "->" + Name(value) + "Count; i++) {");
@@ -1572,11 +1575,12 @@ namespace prebuild {
 			// skip constant value WHY??????!!!!!
 			if(!CanParseValue(value))
 				return;
-
+			/*
 			if(shouldWritePmapCode) {
 				WriteCheckingPresenceMapCode(value, objectValueName, classCoreName, tabString);
 				tabString += "\t";
 			}
+			*/
 			if(value.Name == "string")
 				ParseStringValue(value, objectValueName, tabString);
 			else if(value.Name == "uInt32")
@@ -1600,13 +1604,14 @@ namespace prebuild {
 			}
 			if(HasConstantAttribute(value))
 				WriteConstantValueCheckingCode(value, objectValueName, classCoreName, tabString);
+			/*
 			if(shouldWritePmapCode) {
 				tabString = tabString.Substring(1);
 				WriteLine(tabString + "}");
 				if(IsMandatoryField(value)) {
 					WriteOperatorsCode(value, objectValueName, classCoreName, tabString);   
 				}
-			}
+			}*/
 		}
 
 		private  void PrintStringValue (XmlNode value, string info, string tabString, int tabsCount) {
