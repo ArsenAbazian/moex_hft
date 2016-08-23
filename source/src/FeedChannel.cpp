@@ -84,12 +84,40 @@ bool FeedChannel::Connect() {
 		DefaultLogManager::Default->EndLog(false);
 		return false;
 	}
+    // not needed
+    if(!this->Connect(this->orderBookSnapshot)) {
+        DefaultLogManager::Default->EndLog(false);
+        return false;
+    }
+    if(!this->Connect(this->statisticsSnapshot)) {
+        DefaultLogManager::Default->EndLog(false);
+        return false;
+    }
+    if(!this->Connect(this->ordersSnapshot)) {
+        DefaultLogManager::Default->EndLog(false);
+        return false;
+    }
+    if(!this->Connect(this->tradesSnapshot)) {
+        DefaultLogManager::Default->EndLog(false);
+        return false;
+    }
+    if(!this->Connect(this->instrumentReplay)) {
+        DefaultLogManager::Default->EndLog(false);
+        return false;
+    }
 
 	this->orderBookIncremental->Start();
 	this->statisticsIncremental->Start();
 	this->ordersIncremental->Start();
 	this->tradesIncremental->Start();
 	this->instrumentStatus->Start();
+
+	// not needed....
+	this->orderBookSnapshot->Start();
+	this->statisticsSnapshot->Start();
+	this->ordersSnapshot->Start();
+	this->tradesSnapshot->Start();
+	this->instrumentReplay->Start();
 
 	DefaultLogManager::Default->EndLog(true);
 	return true;

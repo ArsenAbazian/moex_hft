@@ -1006,7 +1006,7 @@ namespace prebuild {
 			return HeaderTags.Contains(value.Attributes["id"].Value);
 		}
 
-		private void WriteCopyPresenceMap(string tabs, string infoName, int count) {
+		private void WriteCopyPresenceMap(string tabs, string infoName) {
 			WriteLine(tabs + infoName + "->PresenceMap = this->m_presenceMap;");
 		}
 
@@ -1014,6 +1014,7 @@ namespace prebuild {
 			WriteLine("\tvoid* Decode" + templateName + "() {");
 			StructureInfo info = new StructureInfo() { NameCore = templateName };
 			WriteLine("\t\tFast" + templateName + "Info* info = " + info.GetFreeMethodName + "();");
+			WriteCopyPresenceMap("\t\t", "info");
 			WriteLine("");
 			foreach(XmlNode value in template.ChildNodes) {
 				ParseValue(value, "info", templateName, "\t\t");
@@ -1179,6 +1180,12 @@ namespace prebuild {
 		}
 
 		private  bool ShouldWriteCheckPresenceMapCode (XmlNode value) {
+			string[] forbidden = new string[] { "MsgSeqNum", "MessageEncoding" };
+			for(int i = 0; i < forbidden.Length; i++) {
+				if(forbidden[i] == Name(value))
+					return false;
+			}
+
 			if(HasMandatoryPresence(value) && HasConstantAttribute(value))
 				return false;
 			if(HasOptionalPresence(value) && HasConstantAttribute(value))
@@ -1549,13 +1556,21 @@ namespace prebuild {
 			WriteLine(tabString + info + "->" + Name(value) + "Length = " + info + "->Prev" + Name(value) + "Length;");
 		}
 
+		private bool CanParseValue(XmlNode value) {
+			string[] forbidden = { "MessageType", "ApplVerID", "BeginString", "SenderCompID", "MessageEncoding" };
+			for(int i = 0; i < forbidden.Length; i++)
+				if(forbidden[i] == Name(value))
+					return false;
+			return true;
+		}
+
 		private  void ParseValue (XmlNode value, string objectValueName, string classCoreName, string tabString) {
 			if(value.Name == "length")
 				return;
 			bool shouldWritePmapCode = ShouldWriteCheckPresenceMapCode(value);
 
 			// skip constant value WHY??????!!!!!
-			if(HasConstantAttribute(value))
+			if(!CanParseValue(value))
 				return;
 
 			if(shouldWritePmapCode) {

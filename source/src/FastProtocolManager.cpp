@@ -999,7 +999,6 @@ void FastProtocolManager::PrintMarketDataIncrementalRefreshTLRCURR(FastMarketDat
 void FastProtocolManager::PrintSecurityDefinition(FastSecurityDefinitionInfo *info) {
 
 	printf("FastSecurityDefinitionInfo {\n");
-		PrintPresenceMap(m_securityDefinition->PresenceMap, 2, 1);
 	PrintInt32("TemplateId", 2115, 1);
 	PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 	PrintUInt64("SendingTime", info->SendingTime, 1);
@@ -1811,7 +1810,6 @@ void FastProtocolManager::PrintXmlMarketDataIncrementalRefreshTLRCURR(FastMarket
 void FastProtocolManager::PrintXmlSecurityDefinition(FastSecurityDefinitionInfo *info) {
 
 	PrintXmlItemBegin("FastSecurityDefinitionInfo");
-		PrintXmlPresenceMap(m_securityDefinition->PresenceMap, 2);
 	PrintXmlInt32("TemplateId", 2115);
 	PrintXmlUInt32("MsgSeqNum", info->MsgSeqNum);
 	PrintXmlUInt64("SendingTime", info->SendingTime);

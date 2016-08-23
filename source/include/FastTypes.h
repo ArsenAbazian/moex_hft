@@ -1427,11 +1427,9 @@ typedef struct _FastSecurityDefinitionInfo {
 	char*							SenderCompID;			// id=49    constant has constant value = MOEX
 	int							SenderCompIDLength;
 	UINT32							MsgSeqNum;			// id=34    increment
-	const UINT							MsgSeqNumPresenceIndex = PRESENCE_MAP_INDEX0;
 	UINT64							SendingTime;			// id=52  
 	char*							MessageEncoding;			// id=347    default
 	int							MessageEncodingLength;
-	const UINT							MessageEncodingPresenceIndex = PRESENCE_MAP_INDEX1;
 	INT32							TotNumReports;			// id=911  presence=optional  
 	bool							AllowTotNumReports;
 	char*							Symbol;			// id=55  presence=optional  

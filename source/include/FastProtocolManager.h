@@ -2327,40 +2327,48 @@ public:
 	inline void ParsePresenceMap(UINT64 *map) {
 		UINT64 value = *((UINT*)this->currentPos);
 		if((value & FAST_STOPBIT_FIRST_BYTE) != 0) {
-			*map = value;
+			value &= 0x000000000000007f;
+            *map = value;
 			this->currentPos++;
 			return;
 		}
 		if((value & FAST_STOPBIT_SECOND_BYTE) != 0) {
-			*map = value;
+            value &= 0x0000000000007f7f;
+            *map = value;
 			this->currentPos += 2;
 			return;
 		}
 		if((value & FAST_STOPBIT_THIRD_BYTE) != 0) {
-			*map = value;
+            value &= 0x00000000007f7f7f;
+            *map = value;
 			this->currentPos += 3;
 			return;
 		}
         if((value & FAST_STOPBIT_FORTH_BYTE) != 0) {
+            value &= 0x000000007f7f7f7f;
             *map = value;
             this->currentPos += 4;
             return;
         }
         if((value & FAST_STOPBIT_FIFTH_BYTE) != 0) {
+            value &= 0x0000007f7f7f7f7f;
             *map = value;
             this->currentPos += 5;
             return;
         }
         if((value & FAST_STOPBIT_SIXSTH_BYTE) != 0) {
+            value &= 0x00007f7f7f7f7f7f;
             *map = value;
             this->currentPos += 6;
             return;
         }
         if((value & FAST_STOPBIT_SEVENTH_BYTE) != 0) {
+            value &= 0x007f7f7f7f7f7f7f;
             *map = value;
             this->currentPos += 7;
             return;
         }
+        value &= 0x7f7f7f7f7f7f7f7f;
 		*map = value;
 		this->currentPos += 8;
 		return;
@@ -2414,16 +2422,13 @@ public:
 	inline void EncodeSecurityDefinitionInfo(FastSecurityDefinitionInfo* info) {
 		ResetBuffer();
 		WriteMsgSeqNumber(this->m_sendMsgSeqNo);
-		WritePresenceMap1(info->PresenceMap);
 		WriteString_Mandatory("d", 1);
 		WriteString_Mandatory("9", 1);
 		WriteString_Mandatory("FIXT.1.1", 8);
 		WriteString_Mandatory("MOEX", 4);
-		if(CheckMandatoryFieldPresence(info->PresenceMap, info->MsgSeqNumPresenceIndex))
-			WriteUInt32_Mandatory(info->MsgSeqNum);
+		WriteUInt32_Mandatory(info->MsgSeqNum);
 		WriteUInt64_Mandatory(info->SendingTime);
-		if(CheckMandatoryFieldPresence(info->PresenceMap, info->MessageEncodingPresenceIndex))
-			WriteString_Mandatory(info->MessageEncoding, info->MessageEncodingLength);
+		WriteString_Mandatory(info->MessageEncoding, info->MessageEncodingLength);
 		if(!info->AllowTotNumReports)
 			this->WriteNull();
 		else
@@ -2731,6 +2736,7 @@ public:
 
 	void* DecodeLogon() {
 		FastLogonInfo* info = GetFreeLogonInfo();
+		info->PresenceMap = this->m_presenceMap;
 
 		ReadString_Mandatory(&(info->TargetCompID), &(info->TargetCompIDLength));
 		info->MsgSeqNum = ReadUInt32_Mandatory();
@@ -2745,6 +2751,7 @@ public:
 	}
 	void* DecodeLogout() {
 		FastLogoutInfo* info = GetFreeLogoutInfo();
+		info->PresenceMap = this->m_presenceMap;
 
 		ReadString_Mandatory(&(info->TargetCompID), &(info->TargetCompIDLength));
 		info->MsgSeqNum = ReadUInt32_Mandatory();
@@ -2755,6 +2762,7 @@ public:
 	}
 	void* DecodeMarketDataSnapshotFullRefreshGeneric() {
 		FastMarketDataSnapshotFullRefreshGenericInfo* info = GetFreeMarketDataSnapshotFullRefreshGenericInfo();
+		info->PresenceMap = this->m_presenceMap;
 
 		info->MsgSeqNum = ReadUInt32_Mandatory();
 		info->SendingTime = ReadUInt64_Mandatory();
@@ -2888,6 +2896,7 @@ public:
 	}
 	void* DecodeMarketDataIncrementalRefreshGeneric() {
 		FastMarketDataIncrementalRefreshGenericInfo* info = GetFreeMarketDataIncrementalRefreshGenericInfo();
+		info->PresenceMap = this->m_presenceMap;
 
 		info->MsgSeqNum = ReadUInt32_Mandatory();
 		info->SendingTime = ReadUInt64_Mandatory();
@@ -3013,6 +3022,7 @@ public:
 	}
 	void* DecodeMarketDataSnapshotFullRefreshOLSFOND() {
 		FastMarketDataSnapshotFullRefreshOLSFONDInfo* info = GetFreeMarketDataSnapshotFullRefreshOLSFONDInfo();
+		info->PresenceMap = this->m_presenceMap;
 
 		info->MsgSeqNum = ReadUInt32_Mandatory();
 		info->SendingTime = ReadUInt64_Mandatory();
@@ -3080,6 +3090,7 @@ public:
 	}
 	void* DecodeMarketDataSnapshotFullRefreshOLSCURR() {
 		FastMarketDataSnapshotFullRefreshOLSCURRInfo* info = GetFreeMarketDataSnapshotFullRefreshOLSCURRInfo();
+		info->PresenceMap = this->m_presenceMap;
 
 		info->MsgSeqNum = ReadUInt32_Mandatory();
 		info->SendingTime = ReadUInt64_Mandatory();
@@ -3139,6 +3150,7 @@ public:
 	}
 	void* DecodeMarketDataSnapshotFullRefreshTLSFOND() {
 		FastMarketDataSnapshotFullRefreshTLSFONDInfo* info = GetFreeMarketDataSnapshotFullRefreshTLSFONDInfo();
+		info->PresenceMap = this->m_presenceMap;
 
 		info->MsgSeqNum = ReadUInt32_Mandatory();
 		info->SendingTime = ReadUInt64_Mandatory();
@@ -3208,6 +3220,7 @@ public:
 	}
 	void* DecodeMarketDataSnapshotFullRefreshTLSCURR() {
 		FastMarketDataSnapshotFullRefreshTLSCURRInfo* info = GetFreeMarketDataSnapshotFullRefreshTLSCURRInfo();
+		info->PresenceMap = this->m_presenceMap;
 
 		info->MsgSeqNum = ReadUInt32_Mandatory();
 		info->SendingTime = ReadUInt64_Mandatory();
@@ -3271,6 +3284,7 @@ public:
 	}
 	void* DecodeMarketDataSnapshotFullRefreshOBSFOND() {
 		FastMarketDataSnapshotFullRefreshOBSFONDInfo* info = GetFreeMarketDataSnapshotFullRefreshOBSFONDInfo();
+		info->PresenceMap = this->m_presenceMap;
 
 		info->MsgSeqNum = ReadUInt32_Mandatory();
 		info->SendingTime = ReadUInt64_Mandatory();
@@ -3323,6 +3337,7 @@ public:
 	}
 	void* DecodeMarketDataSnapshotFullRefreshOBSCURR() {
 		FastMarketDataSnapshotFullRefreshOBSCURRInfo* info = GetFreeMarketDataSnapshotFullRefreshOBSCURRInfo();
+		info->PresenceMap = this->m_presenceMap;
 
 		info->MsgSeqNum = ReadUInt32_Mandatory();
 		info->SendingTime = ReadUInt64_Mandatory();
@@ -3367,6 +3382,7 @@ public:
 	}
 	void* DecodeMarketDataIncrementalRefreshMSRFOND() {
 		FastMarketDataIncrementalRefreshMSRFONDInfo* info = GetFreeMarketDataIncrementalRefreshMSRFONDInfo();
+		info->PresenceMap = this->m_presenceMap;
 
 		info->MsgSeqNum = ReadUInt32_Mandatory();
 		info->SendingTime = ReadUInt64_Mandatory();
@@ -3458,6 +3474,7 @@ public:
 	}
 	void* DecodeMarketDataIncrementalRefreshMSRCURR() {
 		FastMarketDataIncrementalRefreshMSRCURRInfo* info = GetFreeMarketDataIncrementalRefreshMSRCURRInfo();
+		info->PresenceMap = this->m_presenceMap;
 
 		info->MsgSeqNum = ReadUInt32_Mandatory();
 		info->SendingTime = ReadUInt64_Mandatory();
@@ -3533,6 +3550,7 @@ public:
 	}
 	void* DecodeMarketDataIncrementalRefreshOLRFOND() {
 		FastMarketDataIncrementalRefreshOLRFONDInfo* info = GetFreeMarketDataIncrementalRefreshOLRFONDInfo();
+		info->PresenceMap = this->m_presenceMap;
 
 		info->MsgSeqNum = ReadUInt32_Mandatory();
 		info->SendingTime = ReadUInt64_Mandatory();
@@ -3592,6 +3610,7 @@ public:
 	}
 	void* DecodeMarketDataIncrementalRefreshOLRCURR() {
 		FastMarketDataIncrementalRefreshOLRCURRInfo* info = GetFreeMarketDataIncrementalRefreshOLRCURRInfo();
+		info->PresenceMap = this->m_presenceMap;
 
 		info->MsgSeqNum = ReadUInt32_Mandatory();
 		info->SendingTime = ReadUInt64_Mandatory();
@@ -3645,6 +3664,7 @@ public:
 	}
 	void* DecodeMarketDataIncrementalRefreshOBRFOND() {
 		FastMarketDataIncrementalRefreshOBRFONDInfo* info = GetFreeMarketDataIncrementalRefreshOBRFONDInfo();
+		info->PresenceMap = this->m_presenceMap;
 
 		info->MsgSeqNum = ReadUInt32_Mandatory();
 		info->SendingTime = ReadUInt64_Mandatory();
@@ -3689,6 +3709,7 @@ public:
 	}
 	void* DecodeMarketDataIncrementalRefreshOBRCURR() {
 		FastMarketDataIncrementalRefreshOBRCURRInfo* info = GetFreeMarketDataIncrementalRefreshOBRCURRInfo();
+		info->PresenceMap = this->m_presenceMap;
 
 		info->MsgSeqNum = ReadUInt32_Mandatory();
 		info->SendingTime = ReadUInt64_Mandatory();
@@ -3727,6 +3748,7 @@ public:
 	}
 	void* DecodeMarketDataIncrementalRefreshTLRFOND() {
 		FastMarketDataIncrementalRefreshTLRFONDInfo* info = GetFreeMarketDataIncrementalRefreshTLRFONDInfo();
+		info->PresenceMap = this->m_presenceMap;
 
 		info->MsgSeqNum = ReadUInt32_Mandatory();
 		info->SendingTime = ReadUInt64_Mandatory();
@@ -3788,6 +3810,7 @@ public:
 	}
 	void* DecodeMarketDataIncrementalRefreshTLRCURR() {
 		FastMarketDataIncrementalRefreshTLRCURRInfo* info = GetFreeMarketDataIncrementalRefreshTLRCURRInfo();
+		info->PresenceMap = this->m_presenceMap;
 
 		info->MsgSeqNum = ReadUInt32_Mandatory();
 		info->SendingTime = ReadUInt64_Mandatory();
@@ -3845,21 +3868,10 @@ public:
 	}
 	void* DecodeSecurityDefinition() {
 		FastSecurityDefinitionInfo* info = GetFreeSecurityDefinitionInfo();
+		info->PresenceMap = this->m_presenceMap;
 
-		if(CheckMandatoryFieldPresence(info->PresenceMap, PRESENCE_MAP_INDEX0)) {
-			info->MsgSeqNum = ReadUInt32_Mandatory();
-		}
-		else {
-			info->MsgSeqNum++;
-		}
+		info->MsgSeqNum = ReadUInt32_Mandatory();
 		info->SendingTime = ReadUInt64_Mandatory();
-		if(CheckMandatoryFieldPresence(info->PresenceMap, PRESENCE_MAP_INDEX1)) {
-			ReadString_Mandatory(&(info->MessageEncoding), &(info->MessageEncodingLength));
-		}
-		else {
-			info->MessageEncoding = this->MessageEncodingConstString;
-			info->MessageEncodingLength = 5;
-		}
 		if(!CheckProcessNullInt32())
 			info->TotNumReports = ReadInt32_Optional();
 		if(!CheckProcessNullString())
@@ -3979,6 +3991,7 @@ public:
 	}
 	void* DecodeSecurityStatus() {
 		FastSecurityStatusInfo* info = GetFreeSecurityStatusInfo();
+		info->PresenceMap = this->m_presenceMap;
 
 		info->MsgSeqNum = ReadUInt32_Mandatory();
 		info->SendingTime = ReadUInt64_Mandatory();
@@ -3995,6 +4008,7 @@ public:
 	}
 	void* DecodeTradingSessionStatus() {
 		FastTradingSessionStatusInfo* info = GetFreeTradingSessionStatusInfo();
+		info->PresenceMap = this->m_presenceMap;
 
 		info->MsgSeqNum = ReadUInt32_Mandatory();
 		info->SendingTime = ReadUInt64_Mandatory();
@@ -4006,6 +4020,7 @@ public:
 	}
 	void* DecodeHeartbeat() {
 		FastHeartbeatInfo* info = GetFreeHeartbeatInfo();
+		info->PresenceMap = this->m_presenceMap;
 
 		info->MsgSeqNum = ReadUInt32_Mandatory();
 		info->SendingTime = ReadUInt64_Mandatory();
