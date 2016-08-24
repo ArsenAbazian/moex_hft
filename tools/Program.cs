@@ -1263,10 +1263,19 @@ namespace prebuild {
 		private  void ParseSequence (XmlNode value, string objectValueName, string parentClassCoreName, string tabString) {
 			string itemInfo = GetIemInfoPrefix(value) + "ItemInfo";
 			WriteLine("");
+			if(ShouldWriteNullCheckCode(value)) {
+				WriteLine(tabString + "if(!CheckProcessNullInt32())");
+				tabString += "\t";
+			}
 			if(HasOptionalPresence(value))
 				WriteLine(tabString + objectValueName + "->" + Name(value) + "Count = ReadUInt32_Optional();");
-			else 
+			else 				
 				WriteLine(tabString + objectValueName + "->" + Name(value) + "Count = ReadUInt32_Mandatory();");
+			if(ShouldWriteNullCheckCode(value)) {
+				tabString = tabString.Substring(1);
+				WriteLine(tabString + "else");
+				WriteLine(tabString + "\t" + objectValueName + "->" + Name(value) + "Count = 0;");
+			}
 			WriteLine(tabString + "Fast" + parentClassCoreName + Name(value) + "ItemInfo* " + itemInfo + " = NULL;");
 			WriteLine("");
 			WriteLine(tabString + "for(int i = 0; i < " + objectValueName + "->" + Name(value) + "Count; i++) {");

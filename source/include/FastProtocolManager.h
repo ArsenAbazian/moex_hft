@@ -3889,7 +3889,10 @@ public:
 		if(!CheckProcessNullByteVector())
 			ReadByteVector_Optional(&(info->QuoteText), &(info->QuoteTextLength));
 
-		info->GroupInstrAttribCount = ReadUInt32_Optional();
+		if(!CheckProcessNullInt32())
+			info->GroupInstrAttribCount = ReadUInt32_Optional();
+		else
+			info->GroupInstrAttribCount = 0;
 		FastSecurityDefinitionGroupInstrAttribItemInfo* giaItemInfo = NULL;
 
 		for(int i = 0; i < info->GroupInstrAttribCount; i++) {
@@ -3903,7 +3906,10 @@ public:
 		if(!CheckProcessNullString())
 			ReadString_Optional(&(info->Currency), &(info->CurrencyLength));
 
-		info->MarketSegmentGrpCount = ReadUInt32_Optional();
+		if(!CheckProcessNullInt32())
+			info->MarketSegmentGrpCount = ReadUInt32_Optional();
+		else
+			info->MarketSegmentGrpCount = 0;
 		FastSecurityDefinitionMarketSegmentGrpItemInfo* msgItemInfo = NULL;
 
 		for(int i = 0; i < info->MarketSegmentGrpCount; i++) {
@@ -3912,7 +3918,10 @@ public:
 			if(!CheckProcessNullDecimal())
 				ReadDecimal_Optional(&(msgItemInfo->RoundLot));
 
-			msgItemInfo->TradingSessionRulesGrpCount = ReadUInt32_Optional();
+			if(!CheckProcessNullInt32())
+				msgItemInfo->TradingSessionRulesGrpCount = ReadUInt32_Optional();
+			else
+				msgItemInfo->TradingSessionRulesGrpCount = 0;
 			FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo* tsrgItemInfo = NULL;
 
 			for(int i = 0; i < msgItemInfo->TradingSessionRulesGrpCount; i++) {

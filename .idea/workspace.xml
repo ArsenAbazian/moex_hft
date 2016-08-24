@@ -21,10 +21,6 @@
     <list default="true" id="32604c03-98a8-42cf-80f6-771ec2ce84cc" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/FastProtocolManager.h" afterPath="$PROJECT_DIR$/source/include/FastProtocolManager.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/FastTypes.h" afterPath="$PROJECT_DIR$/source/include/FastTypes.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/src/FastProtocolManager.cpp" afterPath="$PROJECT_DIR$/source/src/FastProtocolManager.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/src/FastProtocolTester.cpp" afterPath="$PROJECT_DIR$/source/src/FastProtocolTester.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/src/FeedChannel.cpp" afterPath="$PROJECT_DIR$/source/src/FeedChannel.cpp" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tools/Program.cs" afterPath="$PROJECT_DIR$/tools/Program.cs" />
     </list>
     <ignored path="hft_robot.iws" />
@@ -55,11 +51,21 @@
           </provider>
         </entry>
       </file>
+      <file leaf-file-name="FastProtocolManager.cpp" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/source/src/FastProtocolManager.cpp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="327">
+              <caret line="276" column="13" selection-start-line="276" selection-start-column="13" selection-end-line="276" selection-end-column="13" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file leaf-file-name="FastProtocolManager.h" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/source/include/FastProtocolManager.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="285">
-              <caret line="3914" column="62" selection-start-line="3914" selection-start-column="62" selection-end-line="3914" selection-end-column="62" />
+            <state relative-caret-position="262">
+              <caret line="3911" column="44" selection-start-line="3911" selection-start-column="44" selection-end-line="3911" selection-end-column="44" />
               <folding>
                 <element signature="e#13#34#0" expanded="true" />
               </folding>
@@ -70,8 +76,8 @@
       <file leaf-file-name="FastProtocolTester.cpp" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/source/src/FastProtocolTester.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="187">
-              <caret line="259" column="41" selection-start-line="259" selection-start-column="41" selection-end-line="259" selection-end-column="41" />
+            <state relative-caret-position="482">
+              <caret line="293" column="38" selection-start-line="293" selection-start-column="38" selection-end-line="293" selection-end-column="38" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -141,16 +147,6 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="WinSockManager.h" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/source/include/WinSockManager.h">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="66">
-              <caret line="214" column="79" selection-start-line="214" selection-start-column="79" selection-end-line="214" selection-end-column="79" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
     </leaf>
   </component>
   <component name="Git.Settings">
@@ -206,10 +202,10 @@
         <option value="$PROJECT_DIR$/source/include/FixProtocolManager.h" />
         <option value="$PROJECT_DIR$/CMakeLists.txt" />
         <option value="$PROJECT_DIR$/source/include/FastTypes.h" />
-        <option value="$PROJECT_DIR$/source/src/FastProtocolManager.cpp" />
         <option value="$PROJECT_DIR$/source/src/FeedChannel.cpp" />
-        <option value="$PROJECT_DIR$/source/include/FastProtocolManager.h" />
+        <option value="$PROJECT_DIR$/source/src/FastProtocolManager.cpp" />
         <option value="$PROJECT_DIR$/source/src/FastProtocolTester.cpp" />
+        <option value="$PROJECT_DIR$/source/include/FastProtocolManager.h" />
       </list>
     </option>
   </component>
@@ -694,7 +690,7 @@
       <workItem from="1471502754332" duration="11529000" />
       <workItem from="1471692959874" duration="23693000" />
       <workItem from="1471852791051" duration="14945000" />
-      <workItem from="1471888714164" duration="21202000" />
+      <workItem from="1471888714164" duration="26479000" />
     </task>
     <task id="LOCAL-00001" summary="move params to structures">
       <created>1468443448895</created>
@@ -927,11 +923,25 @@
       <option name="project" value="LOCAL" />
       <updated>1471907697812</updated>
     </task>
-    <option name="localTasksCounter" value="34" />
+    <task id="LOCAL-00034" summary="1. Parsing other FAST messages, Fucking MOEX dialect, lot of incorrect template behavior.....&#10;2. Testing SecurityDefinition. Not finished yet">
+      <created>1471985708261</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1471985708263</updated>
+    </task>
+    <task id="LOCAL-00035" summary="Continue parsing FAST messages">
+      <created>1471993374498</created>
+      <option name="number" value="00035" />
+      <option name="presentableId" value="LOCAL-00035" />
+      <option name="project" value="LOCAL" />
+      <updated>1471993374498</updated>
+    </task>
+    <option name="localTasksCounter" value="36" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="428693000" />
+    <option name="totallyTimeSpent" value="433970000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -946,17 +956,17 @@
     <frame x="65" y="24" width="1855" height="951" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25873363" sideWeight="0.493007" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.18504366" sideWeight="0.493007" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32942554" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3669402" sideWeight="0.6113537" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3669402" sideWeight="0.566048" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="CMake" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32121924" sideWeight="0.49344978" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3317702" sideWeight="0.29803494" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.4701055" sideWeight="0.25655022" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39507622" sideWeight="0.4978166" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.61313015" sideWeight="0.49563318" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.61313015" sideWeight="0.49344978" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32942554" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.235262" sideWeight="0.506993" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3317702" sideWeight="0.7019651" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.4701055" sideWeight="0.7434498" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -997,8 +1007,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
-    <MESSAGE value="fix severe bug with ItoaConverter (memory corrupt)" />
-    <MESSAGE value="wrote additional tests for UTC time converter&#10; some crazy optimizations for UTC time converter" />
     <MESSAGE value="working with simple sockets...." />
     <MESSAGE value="continue working with simple socket" />
     <MESSAGE value="LogManager starting..." />
@@ -1022,7 +1030,9 @@
     <MESSAGE value="1. Refactore presence map, working on decoding fast protocol messages&#10;" />
     <MESSAGE value="1. Add Printing to Console  for FAST messages... going to work on exporting messages to xml&#10;" />
     <MESSAGE value="1. Fast Protocol Generation Code Split Into 3 Files &quot;FastProtocolManager.h&quot; &quot;FastProtocolManager.cpp&quot; &quot;FastTypes.h&quot;&#10;2. Add Some methods for exporting xml - not finished&#10;3. Finised Print methods... (see FastProtocolTester.cpp)" />
-    <option name="LAST_COMMIT_MESSAGE" value="1. Fast Protocol Generation Code Split Into 3 Files &quot;FastProtocolManager.h&quot; &quot;FastProtocolManager.cpp&quot; &quot;FastTypes.h&quot;&#10;2. Add Some methods for exporting xml - not finished&#10;3. Finised Print methods... (see FastProtocolTester.cpp)" />
+    <MESSAGE value="1. Parsing other FAST messages, Fucking MOEX dialect, lot of incorrect template behavior.....&#10;2. Testing SecurityDefinition. Not finished yet" />
+    <MESSAGE value="Continue parsing FAST messages" />
+    <option name="LAST_COMMIT_MESSAGE" value="Continue parsing FAST messages" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1034,19 +1044,19 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/source/src/FastProtocolTester.cpp</url>
-          <line>259</line>
-          <option name="timeStamp" value="251" />
+          <line>293</line>
+          <option name="timeStamp" value="264" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/source/include/FastProtocolManager.h</url>
-          <line>3914</line>
-          <option name="timeStamp" value="252" />
+          <line>3897</line>
+          <option name="timeStamp" value="265" />
         </line-breakpoint>
       </breakpoints>
       <breakpoints-dialog>
         <breakpoints-dialog />
       </breakpoints-dialog>
-      <option name="time" value="253" />
+      <option name="time" value="266" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -1343,14 +1353,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/source/src/FastProtocolManager.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="344">
-          <caret line="1921" column="43" selection-start-line="1921" selection-start-column="43" selection-end-line="1921" selection-end-column="43" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/source/include/WinSockManager.h">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="66">
@@ -1417,10 +1419,18 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/source/src/FastProtocolManager.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="327">
+          <caret line="276" column="13" selection-start-line="276" selection-start-column="13" selection-end-line="276" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/source/src/FastProtocolTester.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="187">
-          <caret line="259" column="41" selection-start-line="259" selection-start-column="41" selection-end-line="259" selection-end-column="41" />
+        <state relative-caret-position="482">
+          <caret line="293" column="38" selection-start-line="293" selection-start-column="38" selection-end-line="293" selection-end-column="38" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>
@@ -1429,8 +1439,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/source/include/FastProtocolManager.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="285">
-          <caret line="3914" column="62" selection-start-line="3914" selection-start-column="62" selection-end-line="3914" selection-end-column="62" />
+        <state relative-caret-position="262">
+          <caret line="3911" column="44" selection-start-line="3911" selection-start-column="44" selection-end-line="3911" selection-end-column="44" />
           <folding>
             <element signature="e#13#34#0" expanded="true" />
           </folding>
