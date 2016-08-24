@@ -52,6 +52,16 @@ void FastProtocolTester::TestMessages() {
     manager->PrintSecurityDefinition(sd);
     if(manager->MessageLength() != 225)
         throw;
+    if(!CompareStrings(sd->StateSecurityID, "RU34007KOS0"))
+        throw;
+    if(sd->SettlDate != 20160823)
+        throw;
+
+    if(sd->FaceValue.Mantissa != 55 || sd->FaceValue.Exponent != 1)
+        throw;
+    if(sd->NoSharesIssued.Mantissa != 4 || sd->NoSharesIssued.Exponent != 6)
+        throw;
+    manager->PrintSecurityDefinition(sd);
 
 	message = new unsigned char[111] {0x04,0xa4,0x07,0x00,0xe0,0x1b,0xb8,0x1e,0x48,0x84,
                                                      0x23,0x68,0x05,0x07,0x7a,0x6e,0x66,0xdc,0x82,0x81,
