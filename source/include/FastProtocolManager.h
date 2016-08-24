@@ -2063,23 +2063,23 @@ public:
 
 	inline void ReadDecimal_Optional(Decimal *value) {
         value->Exponent = ReadInt32_Optional();
-        value->Mantissa = ReadInt32_Mandatory();
+        value->Mantissa = ReadInt64_Mandatory();
 	}
 
 	inline void ReadDecimal_Mandatory(Decimal *value) {
         value->Exponent = ReadInt32_Mandatory();
-        value->Mantissa = ReadInt32_Mandatory();
+        value->Mantissa = ReadInt64_Mandatory();
 	}
 
 	inline void WriteDecimal_Optional(Decimal *value) { 
 		WriteInt32_Optional(value->Exponent);
-		WriteInt32_Mandatory(value->Mantissa);
+		WriteInt64_Mandatory(value->Mantissa);
 		return;
 	}
 
 	inline void WriteDecimal_Mandatory(Decimal *value) {
 		WriteInt32_Mandatory(value->Exponent);
-		WriteInt32_Mandatory(value->Mantissa);
+		WriteInt64_Mandatory(value->Mantissa);
 		return;
 	}
 

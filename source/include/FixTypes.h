@@ -395,7 +395,7 @@ typedef struct _FixResendRequestInfo {
 }FixResendRequestInfo;
 
 typedef struct _Decimal {
-    INT32		Mantissa;
+    INT64		Mantissa;
     INT32		Exponent;
 }Decimal;
 #pragma pack(pop)
