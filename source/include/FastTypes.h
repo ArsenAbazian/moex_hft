@@ -120,6 +120,14 @@ typedef enum _MDEntryType {
 #define PRESENCE_MAP_INDEX54 0x0200000000000000L
 #define PRESENCE_MAP_INDEX55 0x0100000000000000L
 
+typedef struct _FastSnapshotInfo {
+	UINT64				PresenceMap;
+	UINT32				RptSeq;
+	UINT32				LastFragment;
+	UINT32				RouteFirst;
+	UINT32				LastMsgSeqNumProcessed;
+}FastSnapshotInfo;
+
 typedef struct _FastMarketDataSnapshotFullRefreshGenericGroupMDEntriesItemInfo {
 	UINT64							PresenceMap;
 	char*							MDEntryType;			// id=269  presence=optional  

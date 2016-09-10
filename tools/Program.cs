@@ -346,6 +346,7 @@ namespace prebuild {
 
 		private  void WriteGetFreeItemCode (XmlNode templatesNode) {
 			SetPosition(Get_Free_Item_Methods_GeneratedCode);
+
 			List<StructureInfo> structures = GetAllStructureNames(templatesNode);
 			foreach(StructureInfo str in structures) {
 				WriteLine("\tinline " + str.Name + "* " + str.GetFreeMethodName + "() {");
@@ -532,6 +533,11 @@ namespace prebuild {
 					continue;
 				ParseTemplateNode(node, GetTemplateName(node.PreviousSibling.Value));
 			}
+			foreach(XmlNode node in templatesNode.ChildNodes) {
+				if(node.Name != "template")
+					continue;
+				WriteGetSnapshotInfoMethod(node, GetTemplateName(node.PreviousSibling.Value));
+			}
 			WriteEntireMethodsCode(templatesNode);
 		}
 
@@ -631,6 +637,15 @@ namespace prebuild {
 
 			WriteLine("");
 
+			WriteLine("typedef struct _FastSnapshotInfo {");
+			WriteLine("\tUINT64\t\t\t\tPresenceMap;");
+			foreach(string fieldName in SnapshotInfoFields) {
+				WriteLine("\tUINT32\t\t\t\t" + fieldName + ";");
+			}
+			WriteLine("}FastSnapshotInfo;");
+
+			WriteLine("");
+
 			foreach(XmlNode node in templatesNode.ChildNodes) {
 				if(node.NodeType == XmlNodeType.Comment) {
 					lastComment = node;
@@ -678,7 +693,7 @@ namespace prebuild {
 		private  void WriteEntireMethodAddressArrays (XmlNode templatesNode) {
 			SetPosition(Decode_Method_Pointer_Definition_GeneratedCode);
 			WriteLine("typedef void* (FastProtocolManager::*FastDecodeMethodPointer)();");
-			WriteLine("typedef void  (FastProtocolManager::*FastGetSnapshotInfoMethodPointer)();");
+			WriteLine("typedef FastSnapshotInfo* (FastProtocolManager::*FastGetSnapshotInfoMethodPointer)();");
 
 			SetPosition(Decode_Method_Pointer_Arrays_GeneratedCode);
 			WriteLine("\tFastDecodeMethodPointer* DecodeMethods;");
@@ -702,8 +717,11 @@ namespace prebuild {
 			List<DecodeMessageInfo> methods = GetDecodeMessageMethods(templatesNode);
 			foreach(DecodeMessageInfo info in methods) {
 				WriteLine("\t\tthis->DecodeMethods[" + info.TemplateId + " - " + minId + "] = &FastProtocolManager::" + info.FullDecodeMethodName + ";");
-				if(info.HasGetSnapshotInfoMethod)
-					WriteLine("\t\tthis->GetSnapshotInfoMethods[" + info.TemplateId + " - " + minId + "] = &FastProtocolManager::" + info.FullGetSnapshotInfoMethod + ";");
+			}
+			foreach(DecodeMessageInfo info in methods) {
+				if(!info.HasGetSnapshotInfoMethod)
+					continue;
+				WriteLine("\t\tthis->GetSnapshotInfoMethods[" + info.TemplateId + " - " + minId + "] = &FastProtocolManager::" + info.FullGetSnapshotInfoMethod + ";");
 			}
 			WriteLine("");
 			WriteLine("\t}");
@@ -744,8 +762,8 @@ namespace prebuild {
 			public string MsgType { get; set; }
 			public int TemplateId { get; set; }
 			public string FullDecodeMethodName { get { return "Decode" + NameCore; } }
-			public bool HasGetSnapshotInfoMethod { get { return FullDecodeMethodName.Contains("FullRefreshGeneric"); } }
-			public bool FullGetSnapshotInfoMethod { get { return "GetSnapshotInfo" + NameCore; } }
+			public bool HasGetSnapshotInfoMethod { get { return FullDecodeMethodName.Contains("FullRefresh"); } }
+			public string FullGetSnapshotInfoMethod { get { return "GetSnapshotInfo" + NameCore; } }
 		}
 
 		private  void WriteEntireMethodsCode (XmlNode templatesNode) {
@@ -756,9 +774,9 @@ namespace prebuild {
 			WriteLine("\t\treturn (this->*funcPtr)();");
 			WriteLine("\t}");
 
-			WriteLine("\tinline void DecodeSnapshotInfo() {");
+			WriteLine("\tinline FastSnapshotInfo* GetSnapshotInfo() {");
 			WriteLine("\t\tthis->DecodeHeader();");
-			WriteLine("\t\tFastDecodeMethodPointer funcPtr = this->GetSnaphostInfoMethods[this->m_templateId - " + minId + "];");
+			WriteLine("\t\tFastGetSnapshotInfoMethodPointer funcPtr = this->GetSnapshotInfoMethods[this->m_templateId - " + minId + "];");
 			WriteLine("\t\treturn (this->*funcPtr)();");
 			WriteLine("\t}");
 		}
@@ -1035,14 +1053,31 @@ namespace prebuild {
 			WriteLine("\t}");
 		}
 
-		private  void WriteGetSnapshotInfoMethod(XmlNode template, string templateName, List<string> allowedFields) {
-			WriteLine("\tvoid* GetSnapshotInfo" + templateName + "() {");
-			StructureInfo info = new StructureInfo() { NameCore = templateName };
+		List<string> snapshotInfoFields;
+		protected List<string> SnapshotInfoFields { 
+			get { 
+				if(snapshotInfoFields == null) {
+					snapshotInfoFields = new List<string>();
+					snapshotInfoFields.Add("RptSeq");
+					snapshotInfoFields.Add("LastFragment");
+					snapshotInfoFields.Add("RouteFirst");
+					snapshotInfoFields.Add("LastMsgSeqNumProcessed");
+				}
+				return snapshotInfoFields;
+			}
+		}
+
+		private  void WriteGetSnapshotInfoMethod(XmlNode template, string templateName) {
+			List<string> parsed = new List<string>();
+
+			WriteLine("\tFastSnapshotInfo* GetSnapshotInfo" + templateName + "() {");
 			WriteLine("\t\tFastSnapshotInfo *info = GetFreeSnapshotInfo();" );
 			WriteCopyPresenceMap("\t\t", "info");
 			WriteLine("");
 			foreach(XmlNode value in template.ChildNodes) {
-				ParseValue(value, "info", templateName, "\t\t", allowedFields);
+				ParseValue(value, "info", templateName, "\t\t", true, SnapshotInfoFields, parsed);
+				if(parsed.Count == SnapshotInfoFields.Count)
+					break;
 			}
 			WriteLine("\t\treturn info;");
 			WriteLine("\t}");
@@ -1602,19 +1637,28 @@ namespace prebuild {
 		}
 
 		private  void ParseValue (XmlNode value, string objectValueName, string classCoreName, string tabString) {
+			ParseValue(value, objectValueName, classCoreName, tabString, false, null, null);
+		}
+
+		private void WriteSkipCode(string tabStrings, string fieldName) {
+			WriteLine(tabStrings + "SkipToNextField(); // " + fieldName);
+		}
+
+		private  void ParseValue (XmlNode value, string objectValueName, string classCoreName, string tabString, bool skipNonAllowed, List<string> allowedFields, List<string> parsed) {
 			if(value.Name == "length")
 				return;
-			bool shouldWritePmapCode = ShouldWriteCheckPresenceMapCode(value);
 
 			// skip constant value WHY??????!!!!!
 			if(!CanParseValue(value))
 				return;
-			/*
-			if(shouldWritePmapCode) {
-				WriteCheckingPresenceMapCode(value, objectValueName, classCoreName, tabString);
-				tabString += "\t";
+
+			if(skipNonAllowed) { 
+				if(!allowedFields.Contains(Name(value))) {
+					WriteSkipCode(tabString, Name(value));
+					return;
+				}
+				parsed.Add(Name(value));
 			}
-			*/
 			if(value.Name == "string")
 				ParseStringValue(value, objectValueName, tabString);
 			else if(value.Name == "uInt32")
@@ -1638,14 +1682,6 @@ namespace prebuild {
 			}
 			if(HasConstantAttribute(value))
 				WriteConstantValueCheckingCode(value, objectValueName, classCoreName, tabString);
-			/*
-			if(shouldWritePmapCode) {
-				tabString = tabString.Substring(1);
-				WriteLine(tabString + "}");
-				if(IsMandatoryField(value)) {
-					WriteOperatorsCode(value, objectValueName, classCoreName, tabString);   
-				}
-			}*/
 		}
 
 		private  void PrintStringValue (XmlNode value, string info, string tabString, int tabsCount) {

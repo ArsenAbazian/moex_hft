@@ -9,6 +9,7 @@ class FastProtocolManager;
 
 #pragma region Decode_Method_Pointer_Definition_GeneratedCode
 typedef void* (FastProtocolManager::*FastDecodeMethodPointer)();
+typedef FastSnapshotInfo* (FastProtocolManager::*FastGetSnapshotInfoMethodPointer)();
 #pragma endregion
 
 #pragma region Checking_Presence_GeneratedCode
@@ -27,6 +28,8 @@ class FastProtocolManager {
     unsigned int    m_sendMsgSeqNo;
     unsigned int    m_recvMsgSeqNo;
     FILE            *m_xmlFilePtr;
+
+    FastSnapshotInfo *m_snapshotInfo;
 
 #pragma region String_Constant_Declaration_GeneratedCode
 public:
@@ -309,14 +312,17 @@ private:
 
 #pragma region Decode_Method_Pointer_Arrays_GeneratedCode
 	FastDecodeMethodPointer* DecodeMethods;
+	FastGetSnapshotInfoMethodPointer* GetSnapshotInfoMethods;
 
 	void InitializeDecodeMethodPointers() {
 		int ptCount = 1413;
 		this->DecodeMethods = new FastDecodeMethodPointer[ptCount];
-		memset(this->DecodeMethods, 0, sizeof(FastDecodeMethodPointer) * ptCount);
+		this->GetSnapshotInfoMethods = new FastGetSnapshotInfoMethodPointer[ptCount];
 
-		for(int i = 0; i < 1413; i++)
+		for(int i = 0; i < 1413; i++) {
 			this->DecodeMethods[i] = &FastProtocolManager::DecodeUnsupportedMessage;
+			this->GetSnapshotInfoMethods[i] = &FastProtocolManager::GetSnapshotInfoUnsupported;
+		}
 
 		this->DecodeMethods[2101 - 2101] = &FastProtocolManager::DecodeLogon;
 		this->DecodeMethods[2102 - 2101] = &FastProtocolManager::DecodeLogout;
@@ -340,10 +346,25 @@ private:
 		this->DecodeMethods[2106 - 2101] = &FastProtocolManager::DecodeSecurityStatus;
 		this->DecodeMethods[2107 - 2101] = &FastProtocolManager::DecodeTradingSessionStatus;
 		this->DecodeMethods[2108 - 2101] = &FastProtocolManager::DecodeHeartbeat;
+		this->GetSnapshotInfoMethods[2103 - 2101] = &FastProtocolManager::GetSnapshotInfoMarketDataSnapshotFullRefreshGeneric;
+		this->GetSnapshotInfoMethods[2410 - 2101] = &FastProtocolManager::GetSnapshotInfoMarketDataSnapshotFullRefreshOLSFOND;
+		this->GetSnapshotInfoMethods[3500 - 2101] = &FastProtocolManager::GetSnapshotInfoMarketDataSnapshotFullRefreshOLSCURR;
+		this->GetSnapshotInfoMethods[2411 - 2101] = &FastProtocolManager::GetSnapshotInfoMarketDataSnapshotFullRefreshTLSFOND;
+		this->GetSnapshotInfoMethods[3501 - 2101] = &FastProtocolManager::GetSnapshotInfoMarketDataSnapshotFullRefreshTLSCURR;
+		this->GetSnapshotInfoMethods[2412 - 2101] = &FastProtocolManager::GetSnapshotInfoMarketDataSnapshotFullRefreshOBSFOND;
+		this->GetSnapshotInfoMethods[3502 - 2101] = &FastProtocolManager::GetSnapshotInfoMarketDataSnapshotFullRefreshOBSCURR;
 
 	}
 
 #pragma endregion
+
+    inline FastSnapshotInfo* GetFreeSnapshotInfo() {
+        this->m_snapshotInfo->LastFragment = 0;
+        this->m_snapshotInfo->LastMsgSeqNumProcessed = -1;
+        this->m_snapshotInfo->RouteFirst = 0;
+        this->m_snapshotInfo->RptSeq = -1;
+        return this->m_snapshotInfo;
+    }
 
 #pragma region Get_Free_Item_Methods_GeneratedCode
 	inline FastLogonInfo* GetFreeLogonInfo() {
@@ -2135,6 +2156,60 @@ public:
         this->currentPos += length;
     }
 
+    inline void SkipToNextField() {
+        UINT64 memory = *((UINT64*)this->currentPos);
+        while (true) {
+            if ((memory & 0x8080808080808080) != 0) {
+                if ((memory & 0x0000000080808080) != 0) {
+                    if ((memory & 0x8080) != 0) {
+                        if ((memory & 0x80) != 0) {
+                            this->currentPos++;
+                            break;
+                        }
+                        else {
+                            this->currentPos += 2;
+                            break;
+                        }
+                    }
+                    else {
+                        if ((memory & 0x800000) != 0) {
+                            this->currentPos += 3;
+                            break;
+                        }
+                        else {
+                            this->currentPos += 4;
+                            break;
+                        }
+                    }
+                }
+                else {
+                    if ((memory & 0x0000808000000000) != 0) {
+                        if ((memory & 0x0000008000000000) != 0) {
+                            this->currentPos += 5;
+                            break;
+                        }
+                        else {
+                            this->currentPos += 6;
+                            break;
+                        }
+                    }
+                    else {
+                        if ((memory & 0x0080000000000000) != 0) {
+                            this->currentPos += 7;
+                            break;
+                        }
+                        else {
+                            this->currentPos += 8;
+                            break;
+                        }
+                    }
+                }
+            }
+            this->currentPos += 8;
+            memory = *((UINT64*)this->currentPos);
+        }
+    }
+
 	inline void ReadString_Optional(char **strPtrAddress, int *lengthAddress) {
 		UINT64 memory = *((UINT64*)this->currentPos);
 		int length = 0;
@@ -2680,8 +2755,8 @@ public:
         return NULL;
     }
 
-	void GetSnapshotInfoUnsupported() {
-		// do nothing
+	FastSnapshotInfo* GetSnapshotInfoUnsupported() {
+		return 0;
 	}
 
 #pragma region Print_Methods_Declaration_GeneratedCode
@@ -4019,79 +4094,311 @@ public:
 		info->SendingTime = ReadUInt64_Mandatory();
 		return info;
 	}
-	inline void* Decode_Generic() {
+	FastSnapshotInfo* GetSnapshotInfoLogon() {
+		FastSnapshotInfo *info = GetFreeSnapshotInfo();
+		info->PresenceMap = this->m_presenceMap;
+
+		SkipToNextField(); // TargetCompID
+		SkipToNextField(); // MsgSeqNum
+		SkipToNextField(); // SendingTime
+		SkipToNextField(); // HeartBtInt
+		SkipToNextField(); // Username
+		SkipToNextField(); // Password
+		SkipToNextField(); // DefaultApplVerID
+		return info;
+	}
+	FastSnapshotInfo* GetSnapshotInfoLogout() {
+		FastSnapshotInfo *info = GetFreeSnapshotInfo();
+		info->PresenceMap = this->m_presenceMap;
+
+		SkipToNextField(); // TargetCompID
+		SkipToNextField(); // MsgSeqNum
+		SkipToNextField(); // SendingTime
+		SkipToNextField(); // Text
+		return info;
+	}
+	FastSnapshotInfo* GetSnapshotInfoMarketDataSnapshotFullRefreshGeneric() {
+		FastSnapshotInfo *info = GetFreeSnapshotInfo();
+		info->PresenceMap = this->m_presenceMap;
+
+		SkipToNextField(); // MsgSeqNum
+		SkipToNextField(); // SendingTime
+		SkipToNextField(); // TradingSessionID
+		SkipToNextField(); // Symbol
+		if(!CheckProcessNullUInt32())
+			info->LastMsgSeqNumProcessed = ReadUInt32_Optional();
+		info->RptSeq = ReadInt32_Mandatory();
+		if(!CheckProcessNullUInt32())
+			info->LastFragment = ReadUInt32_Optional();
+		if(!CheckProcessNullUInt32())
+			info->RouteFirst = ReadUInt32_Optional();
+		return info;
+	}
+	FastSnapshotInfo* GetSnapshotInfoMarketDataIncrementalRefreshGeneric() {
+		FastSnapshotInfo *info = GetFreeSnapshotInfo();
+		info->PresenceMap = this->m_presenceMap;
+
+		SkipToNextField(); // MsgSeqNum
+		SkipToNextField(); // SendingTime
+		SkipToNextField(); // GroupMDEntries
+		return info;
+	}
+	FastSnapshotInfo* GetSnapshotInfoMarketDataSnapshotFullRefreshOLSFOND() {
+		FastSnapshotInfo *info = GetFreeSnapshotInfo();
+		info->PresenceMap = this->m_presenceMap;
+
+		SkipToNextField(); // MsgSeqNum
+		SkipToNextField(); // SendingTime
+		if(!CheckProcessNullUInt32())
+			info->LastMsgSeqNumProcessed = ReadUInt32_Optional();
+		info->RptSeq = ReadInt32_Mandatory();
+		if(!CheckProcessNullUInt32())
+			info->LastFragment = ReadUInt32_Optional();
+		if(!CheckProcessNullUInt32())
+			info->RouteFirst = ReadUInt32_Optional();
+		return info;
+	}
+	FastSnapshotInfo* GetSnapshotInfoMarketDataSnapshotFullRefreshOLSCURR() {
+		FastSnapshotInfo *info = GetFreeSnapshotInfo();
+		info->PresenceMap = this->m_presenceMap;
+
+		SkipToNextField(); // MsgSeqNum
+		SkipToNextField(); // SendingTime
+		if(!CheckProcessNullUInt32())
+			info->LastMsgSeqNumProcessed = ReadUInt32_Optional();
+		info->RptSeq = ReadInt32_Mandatory();
+		if(!CheckProcessNullUInt32())
+			info->LastFragment = ReadUInt32_Optional();
+		if(!CheckProcessNullUInt32())
+			info->RouteFirst = ReadUInt32_Optional();
+		return info;
+	}
+	FastSnapshotInfo* GetSnapshotInfoMarketDataSnapshotFullRefreshTLSFOND() {
+		FastSnapshotInfo *info = GetFreeSnapshotInfo();
+		info->PresenceMap = this->m_presenceMap;
+
+		SkipToNextField(); // MsgSeqNum
+		SkipToNextField(); // SendingTime
+		if(!CheckProcessNullUInt32())
+			info->LastMsgSeqNumProcessed = ReadUInt32_Optional();
+		info->RptSeq = ReadInt32_Mandatory();
+		if(!CheckProcessNullUInt32())
+			info->LastFragment = ReadUInt32_Optional();
+		if(!CheckProcessNullUInt32())
+			info->RouteFirst = ReadUInt32_Optional();
+		return info;
+	}
+	FastSnapshotInfo* GetSnapshotInfoMarketDataSnapshotFullRefreshTLSCURR() {
+		FastSnapshotInfo *info = GetFreeSnapshotInfo();
+		info->PresenceMap = this->m_presenceMap;
+
+		SkipToNextField(); // MsgSeqNum
+		SkipToNextField(); // SendingTime
+		if(!CheckProcessNullUInt32())
+			info->LastMsgSeqNumProcessed = ReadUInt32_Optional();
+		info->RptSeq = ReadInt32_Mandatory();
+		if(!CheckProcessNullUInt32())
+			info->LastFragment = ReadUInt32_Optional();
+		if(!CheckProcessNullUInt32())
+			info->RouteFirst = ReadUInt32_Optional();
+		return info;
+	}
+	FastSnapshotInfo* GetSnapshotInfoMarketDataSnapshotFullRefreshOBSFOND() {
+		FastSnapshotInfo *info = GetFreeSnapshotInfo();
+		info->PresenceMap = this->m_presenceMap;
+
+		SkipToNextField(); // MsgSeqNum
+		SkipToNextField(); // SendingTime
+		if(!CheckProcessNullUInt32())
+			info->LastMsgSeqNumProcessed = ReadUInt32_Optional();
+		info->RptSeq = ReadInt32_Mandatory();
+		SkipToNextField(); // TradSesStatus
+		SkipToNextField(); // TradingSessionID
+		SkipToNextField(); // Symbol
+		if(!CheckProcessNullUInt32())
+			info->LastFragment = ReadUInt32_Optional();
+		if(!CheckProcessNullUInt32())
+			info->RouteFirst = ReadUInt32_Optional();
+		return info;
+	}
+	FastSnapshotInfo* GetSnapshotInfoMarketDataSnapshotFullRefreshOBSCURR() {
+		FastSnapshotInfo *info = GetFreeSnapshotInfo();
+		info->PresenceMap = this->m_presenceMap;
+
+		SkipToNextField(); // MsgSeqNum
+		SkipToNextField(); // SendingTime
+		if(!CheckProcessNullUInt32())
+			info->LastMsgSeqNumProcessed = ReadUInt32_Optional();
+		info->RptSeq = ReadInt32_Mandatory();
+		SkipToNextField(); // TradSesStatus
+		SkipToNextField(); // TradingSessionID
+		SkipToNextField(); // Symbol
+		if(!CheckProcessNullUInt32())
+			info->LastFragment = ReadUInt32_Optional();
+		if(!CheckProcessNullUInt32())
+			info->RouteFirst = ReadUInt32_Optional();
+		return info;
+	}
+	FastSnapshotInfo* GetSnapshotInfoMarketDataIncrementalRefreshMSRFOND() {
+		FastSnapshotInfo *info = GetFreeSnapshotInfo();
+		info->PresenceMap = this->m_presenceMap;
+
+		SkipToNextField(); // MsgSeqNum
+		SkipToNextField(); // SendingTime
+		SkipToNextField(); // GroupMDEntries
+		return info;
+	}
+	FastSnapshotInfo* GetSnapshotInfoMarketDataIncrementalRefreshMSRCURR() {
+		FastSnapshotInfo *info = GetFreeSnapshotInfo();
+		info->PresenceMap = this->m_presenceMap;
+
+		SkipToNextField(); // MsgSeqNum
+		SkipToNextField(); // SendingTime
+		SkipToNextField(); // GroupMDEntries
+		return info;
+	}
+	FastSnapshotInfo* GetSnapshotInfoMarketDataIncrementalRefreshOLRFOND() {
+		FastSnapshotInfo *info = GetFreeSnapshotInfo();
+		info->PresenceMap = this->m_presenceMap;
+
+		SkipToNextField(); // MsgSeqNum
+		SkipToNextField(); // SendingTime
+		SkipToNextField(); // GroupMDEntries
+		return info;
+	}
+	FastSnapshotInfo* GetSnapshotInfoMarketDataIncrementalRefreshOLRCURR() {
+		FastSnapshotInfo *info = GetFreeSnapshotInfo();
+		info->PresenceMap = this->m_presenceMap;
+
+		SkipToNextField(); // MsgSeqNum
+		SkipToNextField(); // SendingTime
+		SkipToNextField(); // GroupMDEntries
+		return info;
+	}
+	FastSnapshotInfo* GetSnapshotInfoMarketDataIncrementalRefreshOBRFOND() {
+		FastSnapshotInfo *info = GetFreeSnapshotInfo();
+		info->PresenceMap = this->m_presenceMap;
+
+		SkipToNextField(); // MsgSeqNum
+		SkipToNextField(); // SendingTime
+		SkipToNextField(); // GroupMDEntries
+		return info;
+	}
+	FastSnapshotInfo* GetSnapshotInfoMarketDataIncrementalRefreshOBRCURR() {
+		FastSnapshotInfo *info = GetFreeSnapshotInfo();
+		info->PresenceMap = this->m_presenceMap;
+
+		SkipToNextField(); // MsgSeqNum
+		SkipToNextField(); // SendingTime
+		SkipToNextField(); // GroupMDEntries
+		return info;
+	}
+	FastSnapshotInfo* GetSnapshotInfoMarketDataIncrementalRefreshTLRFOND() {
+		FastSnapshotInfo *info = GetFreeSnapshotInfo();
+		info->PresenceMap = this->m_presenceMap;
+
+		SkipToNextField(); // MsgSeqNum
+		SkipToNextField(); // SendingTime
+		SkipToNextField(); // GroupMDEntries
+		return info;
+	}
+	FastSnapshotInfo* GetSnapshotInfoMarketDataIncrementalRefreshTLRCURR() {
+		FastSnapshotInfo *info = GetFreeSnapshotInfo();
+		info->PresenceMap = this->m_presenceMap;
+
+		SkipToNextField(); // MsgSeqNum
+		SkipToNextField(); // SendingTime
+		SkipToNextField(); // GroupMDEntries
+		return info;
+	}
+	FastSnapshotInfo* GetSnapshotInfoSecurityDefinition() {
+		FastSnapshotInfo *info = GetFreeSnapshotInfo();
+		info->PresenceMap = this->m_presenceMap;
+
+		SkipToNextField(); // MsgSeqNum
+		SkipToNextField(); // SendingTime
+		SkipToNextField(); // TotNumReports
+		SkipToNextField(); // Symbol
+		SkipToNextField(); // SecurityID
+		SkipToNextField(); // SecurityIDSource
+		SkipToNextField(); // Product
+		SkipToNextField(); // CFICode
+		SkipToNextField(); // SecurityType
+		SkipToNextField(); // MaturityDate
+		SkipToNextField(); // SettlDate
+		SkipToNextField(); // SettleType
+		SkipToNextField(); // OrigIssueAmt
+		SkipToNextField(); // CouponPaymentDate
+		SkipToNextField(); // CouponRate
+		SkipToNextField(); // SettlFixingDate
+		SkipToNextField(); // DividendNetPx
+		SkipToNextField(); // SecurityDesc
+		SkipToNextField(); // EncodedSecurityDesc
+		SkipToNextField(); // QuoteText
+		SkipToNextField(); // GroupInstrAttrib
+		SkipToNextField(); // Currency
+		SkipToNextField(); // MarketSegmentGrp
+		SkipToNextField(); // SettlCurrency
+		SkipToNextField(); // PriceType
+		SkipToNextField(); // StateSecurityID
+		SkipToNextField(); // EncodedShortSecurityDesc
+		SkipToNextField(); // MarketCode
+		SkipToNextField(); // MinPriceIncrement
+		SkipToNextField(); // MktShareLimit
+		SkipToNextField(); // MktShareThreshold
+		SkipToNextField(); // MaxOrdersVolume
+		SkipToNextField(); // PriceMvmLimit
+		SkipToNextField(); // FaceValue
+		SkipToNextField(); // BaseSwapPx
+		SkipToNextField(); // RepoToPx
+		SkipToNextField(); // BuyBackPx
+		SkipToNextField(); // BuyBackDate
+		SkipToNextField(); // NoSharesIssued
+		SkipToNextField(); // HighLimit
+		SkipToNextField(); // LowLimit
+		SkipToNextField(); // NumOfDaysToMaturity
+		return info;
+	}
+	FastSnapshotInfo* GetSnapshotInfoSecurityStatus() {
+		FastSnapshotInfo *info = GetFreeSnapshotInfo();
+		info->PresenceMap = this->m_presenceMap;
+
+		SkipToNextField(); // MsgSeqNum
+		SkipToNextField(); // SendingTime
+		SkipToNextField(); // Symbol
+		SkipToNextField(); // TradingSessionID
+		SkipToNextField(); // TradingSessionSubID
+		SkipToNextField(); // SecurityTradingStatus
+		SkipToNextField(); // AuctionIndicator
+		return info;
+	}
+	FastSnapshotInfo* GetSnapshotInfoTradingSessionStatus() {
+		FastSnapshotInfo *info = GetFreeSnapshotInfo();
+		info->PresenceMap = this->m_presenceMap;
+
+		SkipToNextField(); // MsgSeqNum
+		SkipToNextField(); // SendingTime
+		SkipToNextField(); // TradSesStatus
+		SkipToNextField(); // Text
+		SkipToNextField(); // TradingSessionID
+		return info;
+	}
+	FastSnapshotInfo* GetSnapshotInfoHeartbeat() {
+		FastSnapshotInfo *info = GetFreeSnapshotInfo();
+		info->PresenceMap = this->m_presenceMap;
+
+		SkipToNextField(); // MsgSeqNum
+		SkipToNextField(); // SendingTime
+		return info;
+	}
+	inline void* Decode() {
 		this->DecodeHeader();
 		FastDecodeMethodPointer funcPtr = this->DecodeMethods[this->m_templateId - 2101];
 		return (this->*funcPtr)();
 	}
-	inline void* Decode_OLS_FOND() {
+	inline FastSnapshotInfo* GetSnapshotInfo() {
 		this->DecodeHeader();
-		FastDecodeMethodPointer funcPtr = this->DecodeMethods[this->m_templateId - 2101];
-		return (this->*funcPtr)();
-	}
-	inline void* Decode_OLS_CURR() {
-		this->DecodeHeader();
-		FastDecodeMethodPointer funcPtr = this->DecodeMethods[this->m_templateId - 2101];
-		return (this->*funcPtr)();
-	}
-	inline void* Decode_TLS_FOND() {
-		this->DecodeHeader();
-		FastDecodeMethodPointer funcPtr = this->DecodeMethods[this->m_templateId - 2101];
-		return (this->*funcPtr)();
-	}
-	inline void* Decode_TLS_CURR() {
-		this->DecodeHeader();
-		FastDecodeMethodPointer funcPtr = this->DecodeMethods[this->m_templateId - 2101];
-		return (this->*funcPtr)();
-	}
-	inline void* Decode_OBS_FOND() {
-		this->DecodeHeader();
-		FastDecodeMethodPointer funcPtr = this->DecodeMethods[this->m_templateId - 2101];
-		return (this->*funcPtr)();
-	}
-	inline void* Decode_OBS_CURR() {
-		this->DecodeHeader();
-		FastDecodeMethodPointer funcPtr = this->DecodeMethods[this->m_templateId - 2101];
-		return (this->*funcPtr)();
-	}
-	inline void* Decode_MSR_FOND() {
-		this->DecodeHeader();
-		FastDecodeMethodPointer funcPtr = this->DecodeMethods[this->m_templateId - 2101];
-		return (this->*funcPtr)();
-	}
-	inline void* Decode_MSR_CURR() {
-		this->DecodeHeader();
-		FastDecodeMethodPointer funcPtr = this->DecodeMethods[this->m_templateId - 2101];
-		return (this->*funcPtr)();
-	}
-	inline void* Decode_OLR_FOND() {
-		this->DecodeHeader();
-		FastDecodeMethodPointer funcPtr = this->DecodeMethods[this->m_templateId - 2101];
-		return (this->*funcPtr)();
-	}
-	inline void* Decode_OLR_CURR() {
-		this->DecodeHeader();
-		FastDecodeMethodPointer funcPtr = this->DecodeMethods[this->m_templateId - 2101];
-		return (this->*funcPtr)();
-	}
-	inline void* Decode_OBR_FOND() {
-		this->DecodeHeader();
-		FastDecodeMethodPointer funcPtr = this->DecodeMethods[this->m_templateId - 2101];
-		return (this->*funcPtr)();
-	}
-	inline void* Decode_OBR_CURR() {
-		this->DecodeHeader();
-		FastDecodeMethodPointer funcPtr = this->DecodeMethods[this->m_templateId - 2101];
-		return (this->*funcPtr)();
-	}
-	inline void* Decode_TLR_FOND() {
-		this->DecodeHeader();
-		FastDecodeMethodPointer funcPtr = this->DecodeMethods[this->m_templateId - 2101];
-		return (this->*funcPtr)();
-	}
-	inline void* Decode_TLR_CURR() {
-		this->DecodeHeader();
-		FastDecodeMethodPointer funcPtr = this->DecodeMethods[this->m_templateId - 2101];
+		FastGetSnapshotInfoMethodPointer funcPtr = this->GetSnapshotInfoMethods[this->m_templateId - 2101];
 		return (this->*funcPtr)();
 	}
 #pragma endregion

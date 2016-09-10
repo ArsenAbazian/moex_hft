@@ -153,16 +153,16 @@ protected:
 	inline void StopListenSnapshot() {
 		this->m_snapshot->Stop();
 	}
-	inline int CheckForRouteFirst(BinaryLogItem *item) {
+	inline bool CheckForRouteFirst(BinaryLogItem *item) {
 		unsigned char *buffer = this->m_recvABuffer->Item(item->m_itemIndex);
 		this->m_fastProtocolManager->SetNewBuffer(buffer, this->m_recvABuffer->ItemLength(item->m_itemIndex));
-		return this->m_fastProtocolManager->Decode_Generic(); // CHeck!!!!!!!!!!!! RouteFirst and skip all!!!!!
-	}
+		FastSnapshotInfo* info = this->m_fastProtocolManager->GetSnapshotInfo();
+        return info->RouteFirst == 1;
+    }
 	inline int CheckForRouteFirst() {
 		while(this->m_currentMsgSeqNum <= this->m_maxRecvMsgSeqNum) {
-			int start = this->CheckForRouteFirst(this->m_packets[this->m_currentMsgSeqNum]);
-			if(start > -1)
-				return start;
+			if(this->CheckForRouteFirst(this->m_packets[this->m_currentMsgSeqNum]))
+			    return this->m_currentMsgSeqNum;
 			this->m_currentMsgSeqNum++;
 		}
 		return -1;
@@ -310,7 +310,7 @@ public:
     }
 	inline void Decode() {
 		DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Decode);
-		this->m_fastProtocolManager->Decode_OBR_CURR();
+		this->m_fastProtocolManager->Decode();
 		DefaultLogManager::Default->EndLog(true);
 	}
 	ISocketBufferProvider* CreateSocketBufferProvider() {
@@ -331,7 +331,7 @@ public:
     }
 	inline void Decode() {
 		DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Decode);
-		this->m_fastProtocolManager->Decode_OBS_CURR();
+		this->m_fastProtocolManager->Decode();
 		DefaultLogManager::Default->EndLog(true);
 	}
 	ISocketBufferProvider* CreateSocketBufferProvider() {
@@ -351,7 +351,7 @@ public:
     }
 	inline void Decode() {
 		DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Decode);
-		this->m_fastProtocolManager->Decode_MSR_CURR();
+		this->m_fastProtocolManager->Decode();
 		DefaultLogManager::Default->EndLog(true);
 	}
 	ISocketBufferProvider* CreateSocketBufferProvider() {
@@ -386,7 +386,7 @@ public:
     }
 	inline void Decode() {
 		DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Decode);
-		this->m_fastProtocolManager->Decode_OLR_CURR();
+		this->m_fastProtocolManager->Decode();
 		DefaultLogManager::Default->EndLog(true);
 	}
 	ISocketBufferProvider* CreateSocketBufferProvider() {
@@ -406,7 +406,7 @@ public:
     }
 	inline void Decode() {
 		DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Decode);
-		this->m_fastProtocolManager->Decode_OLS_CURR();
+		this->m_fastProtocolManager->Decode();
 		DefaultLogManager::Default->EndLog(true);
 	}
 	ISocketBufferProvider* CreateSocketBufferProvider() {
@@ -426,7 +426,7 @@ public:
     }
 	inline void Decode() {
 		DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Decode);
-		this->m_fastProtocolManager->Decode_TLR_CURR();
+		this->m_fastProtocolManager->Decode();
 		DefaultLogManager::Default->EndLog(true);
 	}
 	ISocketBufferProvider* CreateSocketBufferProvider() {
@@ -446,7 +446,7 @@ public:
     }
 	inline void Decode() {
 		DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Decode);
-		this->m_fastProtocolManager->Decode_TLS_CURR();
+		this->m_fastProtocolManager->Decode();
 		DefaultLogManager::Default->EndLog(true);
 	}
 	ISocketBufferProvider* CreateSocketBufferProvider() {
@@ -466,7 +466,7 @@ public:
     }
 	inline void Decode() {
 		DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Decode);
-		this->m_fastProtocolManager->Decode_OBR_FOND();
+		this->m_fastProtocolManager->Decode();
 		DefaultLogManager::Default->EndLog(true);
 	}
 	ISocketBufferProvider* CreateSocketBufferProvider() {
@@ -486,7 +486,7 @@ public:
     }
 	inline void Decode() {
 		DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Decode);
-		this->m_fastProtocolManager->Decode_OBS_FOND();
+		this->m_fastProtocolManager->Decode();
 		DefaultLogManager::Default->EndLog(true);
 	}
 	ISocketBufferProvider* CreateSocketBufferProvider() {
@@ -506,7 +506,7 @@ public:
     }
 	inline void Decode() {
 		DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Decode);
-		this->m_fastProtocolManager->Decode_MSR_FOND();
+		this->m_fastProtocolManager->Decode();
 		DefaultLogManager::Default->EndLog(true);
 	}
 	ISocketBufferProvider* CreateSocketBufferProvider() {
@@ -541,7 +541,7 @@ public:
     }
 	inline void Decode() {
 		DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Decode);
-		this->m_fastProtocolManager->Decode_OLR_FOND();
+		this->m_fastProtocolManager->Decode();
 		DefaultLogManager::Default->EndLog(true);
 	}
 	ISocketBufferProvider* CreateSocketBufferProvider() {
@@ -561,7 +561,7 @@ public:
     }
 	inline void Decode() {
 		DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Decode);
-		this->m_fastProtocolManager->Decode_OLS_FOND();
+		this->m_fastProtocolManager->Decode();
 		DefaultLogManager::Default->EndLog(true);
 	}
 	ISocketBufferProvider* CreateSocketBufferProvider() {
@@ -581,7 +581,7 @@ public:
     }
 	inline void Decode() {
 		DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Decode);
-		this->m_fastProtocolManager->Decode_TLR_FOND();
+		this->m_fastProtocolManager->Decode();
 		DefaultLogManager::Default->EndLog(true);
 	}
 	ISocketBufferProvider* CreateSocketBufferProvider() {
@@ -601,7 +601,7 @@ public:
     }
 	inline void Decode() {
 		DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Decode);
-		this->m_fastProtocolManager->Decode_TLS_FOND();
+		this->m_fastProtocolManager->Decode();
 		DefaultLogManager::Default->EndLog(true);
 	}
 	ISocketBufferProvider* CreateSocketBufferProvider() {
