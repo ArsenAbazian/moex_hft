@@ -21,18 +21,23 @@ FeedConnection::FeedConnection(const char *id, const char *name, char value, Fee
 	this->m_fastProtocolManager = new FastProtocolManager();
     this->m_fastLogonInfo = new FastLogonInfo();
 	this->m_socketABufferProvider = CreateSocketBufferProvider();
-	this->m_socketBBufferProvider = CreateSocketBufferProvider();
 	this->m_sendABuffer = this->m_socketABufferProvider->SendBuffer();
 	this->m_recvABuffer = this->m_socketABufferProvider->RecvBuffer();
-	this->m_sendBBuffer = this->m_socketBBufferProvider->SendBuffer();
-	this->m_recvBBuffer = this->m_socketBBufferProvider->RecvBuffer();
 
     this->socketAManager = NULL;
     this->socketBManager = NULL;
 
 	this->m_stopwatch = new Stopwatch();
+    this->m_waitTimer = new Stopwatch();
 
     this->m_tval = new struct timeval;
+	this->m_packets = new BinaryLogItem*[RobotSettings::DefaultFeedConnectionPacketCount];
+	bzero(this->m_packets, sizeof(BinaryLogItem*) * RobotSettings::DefaultFeedConnectionPacketCount);
+
+	this->m_waitingSnapshot = false;
+	this->m_currentMsgSeqNum = 1;
+	this->m_maxRecvMsgSeqNum = 0;
+    this->m_listenPtr = &FeedConnection::Listen_Atom_Incremental;
 
 	this->SetState(FeedConnectionState::fcsSuspend, &FeedConnection::Suspend_Atom);
 }
@@ -126,7 +131,7 @@ bool FeedConnection::ResendLastMessage_Atom() {
         DefaultLogManager::Default->EndLog(false);
         return true;
     }
-    this->SetState(FeedConnectionState::fcsListen, &FeedConnection::Listen_Atom);
+    this->SetState(FeedConnectionState::fcsListen, this->m_listenPtr);
 	if(this->m_shouldReceiveAnswer)
 		this->m_stopwatch->Start();
     DefaultLogManager::Default->EndLog(true);
@@ -146,95 +151,50 @@ bool FeedConnection::Reconnect_Atom() {
     return true;
 }
 
-bool FeedConnection::Listen_Atom() {
-	if(!this->CanListen()) {
-		if(this->m_shouldReceiveAnswer && this->m_stopwatch->ElapsedSeconds() > 20) {
-			this->SetState(FeedConnectionState::fcsResendLastMessage, &FeedConnection::ResendLastMessage_Atom);
+bool FeedConnection::Listen_Atom_Incremental() {
+
+	if(this->WaitingSnapshot()) {
+		this->ProcessServerA();
+		this->ProcessServerB();
+
+		if(this->SnapshotAvailable()) {
+			this->ApplySnapshot();
+			this->ApplyPacketSequence();
+            this->StopListenSnapshot();
+			this->StartWaitIncremental();
+			this->ResetWaitTime();
+		}
+	}
+	else {
+		if(!this->ProcessServerA() && !this->ProcessServerB()) {
+			if (this->WaitTimeExpired()) {
+				this->StartListenSnapshot();
+			}
 			return true;
 		}
+		this->ApplyPacketSequence();
+		if(!this->ActualMsgSeqNum()) {
+			if(this->WaitTimeExpired())
+				this->StartListenSnapshot();
+		}
+		this->ResetWaitTime();
 		return true;
 	}
 
-	bool res = false;
-	if(!this->socketAManager->Recv(this->m_recvABuffer->CurrentPos())) {
-		DefaultLogManager::Default->WriteSuccess(LogMessageCode::lmcsocketA, LogMessageCode::lmcFeedConnection_Listen_Atom, false)->m_errno = errno;
-		this->socketAManager->Reconnect();
-		if(!this->socketBManager->Recv(this->m_recvBBuffer->CurrentPos())) {
-			DefaultLogManager::Default->WriteSuccess(LogMessageCode::lmcsocketB, LogMessageCode::lmcFeedConnection_Listen_Atom, false)->m_errno = errno;
-			this->socketBManager->Reconnect();
-			return true;
-		}
-		if(this->socketBManager->RecvSize() == 0)
-			return true;
-		res = this->ProcessMessage(this->m_recvBBuffer, this->socketBManager->RecvSize());
-		this->m_recvBBuffer->Next(this->socketBManager->RecvSize());
-		this->m_shouldReceiveAnswer = false;
-	}
-	else if(this->socketAManager->RecvSize() == 0) {
-		if(!this->socketBManager->Recv(this->m_recvBBuffer->CurrentPos())) {
-			DefaultLogManager::Default->WriteSuccess(LogMessageCode::lmcsocketB, LogMessageCode::lmcFeedConnection_Listen_Atom, false)->m_errno = errno;
-			this->socketBManager->Reconnect();
-			return true;
-		}
-		if(this->socketBManager->RecvSize() == 0)
-			return true;
-		res = this->ProcessMessage(this->m_recvBBuffer, this->socketBManager->RecvSize());
-		this->m_recvBBuffer->Next(this->socketBManager->RecvSize());
-		this->m_shouldReceiveAnswer = false;
-	}
-	else {
-		res = this->ProcessMessage(this->m_recvABuffer, this->socketAManager->RecvSize());
-		this->m_recvABuffer->Next(this->socketAManager->RecvSize());
-		this->m_shouldReceiveAnswer = false;
-	}
-
-	return res;
-}
-/*
-FeedConnectionErrorCode FeedConnection::CheckReceivedBytes(BYTE *buffer) { 
-	int receivedMsgSeqNumber = this->ReadMessageSequenceNumber(buffer);
-	int delta = receivedMsgSeqNumber - ExpectedMessageSeqNumber();
-	if (delta < 0) { 
-		return FeedConnectionErrorCode::Success; // just skip previous message
-	}
-	else if (delta > 0) { // received future message
-		
-	}
-	else { 
-		IncrementMessageSeqNumber();
-		Decode();
-	}
-	return FeedConnectionErrorCode::Success;
+	return false;
 }
 
-FeedConnectionErrorCode FeedConnection::ListenNormal() {
-	return FeedConnectionErrorCode::Success;
+bool FeedConnection::Listen_Atom_Snapshot() {
 
-	BYTE *buffer = CurrentBuffer();
-	bool result = this->socketAManager->Recv((char*)buffer, FEED_CONNECTION_MAX_BUFFER_LENGTH);
-	if (!result || this->socketAManager->ReceivedBytesCount() == 0) { 
-		result = this->socketBManager->Recv((char*)buffer, FEED_CONNECTION_MAX_BUFFER_LENGTH);
-		if (!result || this->socketBManager->ReceivedBytesCount() == 0) { 
-			return FeedConnectionErrorCode::NoBytesReceived;
-		}
-		else { 
-			IncrementBufferIndex();
-			return CheckReceivedBytes(buffer);
-		}
-	}
-	else { 
-		IncrementBufferIndex();
-		return CheckReceivedBytes(buffer);
-	}
+    this->ProcessServerA();
+    this->ProcessServerB();
+
+    if(this->m_snapshotStartMsgSeqNum == -1) {
+        this->m_snapshotStartMsgSeqNum = this->CheckForRouteFirst();
+    }
+    else {
+
+    }
+
+	return false;
 }
-
-FeedConnectionErrorCode FeedConnection::Listen() {
-	
-	switch (state) {
-	case FeedConnectionState::Normal:
-		return this->ListenNormal();
-	}
-
-	return FeedConnectionErrorCode::Success;
-}
-*/

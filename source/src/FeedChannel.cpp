@@ -63,7 +63,13 @@ bool FeedChannel::Disconnect(FeedConnection *conn) {
 
 bool FeedChannel::Connect() { 
 	DefaultLogManager::Default->StartLog(this->m_nameLogIndex, LogMessageCode::lmcFeedChannel_Connect);
-	
+
+	this->orderBookIncremental->SetSnapshot(this->ordersSnapshot);
+	this->statisticsIncremental->SetSnapshot(this->statisticsSnapshot);
+	this->tradesIncremental->SetSnapshot(this->tradesSnapshot);
+	this->ordersIncremental->SetSnapshot(this->ordersSnapshot);
+	this->instrumentReplay->SetSnapshot(this->instrumentStatus);
+
 	if (!this->Connect(this->orderBookIncremental)) {
 		DefaultLogManager::Default->EndLog(false);
 		return false;
@@ -113,11 +119,11 @@ bool FeedChannel::Connect() {
 	this->instrumentStatus->Start();
 
 	// not needed....
-	this->orderBookSnapshot->Start();
-	this->statisticsSnapshot->Start();
-	this->ordersSnapshot->Start();
-	this->tradesSnapshot->Start();
-	this->instrumentReplay->Start();
+	//this->orderBookSnapshot->Start();
+	//this->statisticsSnapshot->Start();
+	//this->ordersSnapshot->Start();
+	//this->tradesSnapshot->Start();
+	//this->instrumentReplay->Start();
 
 	DefaultLogManager::Default->EndLog(true);
 	return true;

@@ -25,6 +25,7 @@ public:
     static unsigned int DefaultMarketRecvBufferSize;
     static unsigned int DefaultMarketSendItemsCount;
     static unsigned int DefaultMarketRecvItemsCount;
+    static unsigned int DefaultFeedConnectionPacketCount;
 };
 
 

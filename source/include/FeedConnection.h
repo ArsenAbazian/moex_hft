@@ -27,11 +27,25 @@ typedef enum _FeedConnectionProcessMessageResultValue {
 class FeedConnection;
 typedef bool (FeedConnection::*FeedConnectionWorkAtomPtr)();
 
+typedef enum _FeedConnectionType {
+    Incremental,
+    Snapshot
+}FeedConnectionType;
+
 class FeedConnection {
 	const int MaxReceiveBufferSize = 1500;
+    const int WaitIncrementalMaxTimeSec         = 5;
 protected:
 	char										id[16];
 	char										feedTypeName[64];
+
+    FeedConnectionType                          m_type;
+    FeedConnection                              *m_incremental;
+    FeedConnection                              *m_snapshot;
+	int 										m_snapshotStartMsgSeqNum;
+	int											m_snapshotEndMsgSeqNum;
+
+    BinaryLogItem                               **m_packets;
 
 	int     									m_idLogIndex;
 	int 										m_feedTypeNameLogIndex;
@@ -48,12 +62,15 @@ protected:
 	char										feedBIp[64];
 	int											feedBPort;
 
-	int											m_msgSeqNo;
+	int											m_currentMsgSeqNum;
+    int                                         m_maxRecvMsgSeqNum;
 
     const char                                  *m_senderCompId;
     int                                         m_senderCompIdLength;
     const char                                  *m_password;
     int                                         m_passwordLength;
+
+    bool                                        m_waitingSnapshot;
 
 	WinSockManager								*socketAManager;
 	WinSockManager								*socketBManager;
@@ -61,11 +78,8 @@ protected:
     FastLogonInfo                               *m_fastLogonInfo;
 
 	ISocketBufferProvider						*m_socketABufferProvider;
-	ISocketBufferProvider						*m_socketBBufferProvider;
 	SocketBuffer								*m_sendABuffer;
 	SocketBuffer								*m_recvABuffer;
-	SocketBuffer								*m_sendBBuffer;
-	SocketBuffer								*m_recvBBuffer;
 
 	FeedConnectionState							m_state;
 	FeedConnectionWorkAtomPtr					m_workAtomPtr;
@@ -74,8 +88,11 @@ protected:
 	FeedConnectionWorkAtomPtr					m_nextWorkAtomPtr;
 	bool										m_shouldUseNextState;
 
+	FeedConnectionWorkAtomPtr					m_listenPtr;
+
     struct timeval                              *m_tval;
     Stopwatch                                   *m_stopwatch;
+    Stopwatch                                   *m_waitTimer;
     bool                                        m_shouldReceiveAnswer;
 
     inline void GetCurrentTime(UINT64 *time) {
@@ -83,7 +100,78 @@ protected:
         *time = this->m_tval->tv_usec / 1000;
     }
 	inline bool CanListen() { return this->socketAManager->ShouldRecv() || this->socketBManager->ShouldRecv(); }
-	inline void IncrementMsgSeqNo() { this->m_msgSeqNo++; }
+
+    inline bool ProcessServerA() { return this->ProcessServer(this->socketAManager, LogMessageCode::lmcsocketA); }
+    inline bool ProcessServerB() { return this->ProcessServer(this->socketBManager, LogMessageCode::lmcsocketB); }
+    inline bool ProcessServer(WinSockManager *socketManager, LogMessageCode socketName) {
+        if(!socketManager->ShouldRecv())
+            return false;
+        if(!socketManager->Recv(this->m_recvABuffer->CurrentPos())) {
+            DefaultLogManager::Default->WriteSuccess(socketName,
+                                                     LogMessageCode::lmcFeedConnection_Listen_Atom,
+                                                     false)->m_errno = errno;
+            socketManager->Reconnect();
+            return false;
+        }
+        if(socketManager->RecvSize() == 0)
+            return false;
+        UINT msgSeqNum = *((UINT*)socketManager->RecvBytes());
+        if(msgSeqNum < this->ExpectedMsgSeqNo() || this->m_packets[msgSeqNum] != 0)
+            return false;
+
+        BinaryLogItem *item = DefaultLogManager::Default->WriteFast(this->m_idLogIndex,
+                                                                    LogMessageCode::lmcFeedConnection_ProcessMessage,
+                                                                    this->m_recvABuffer->BufferIndex(),
+                                                                    this->m_recvABuffer->CurrentItemIndex() - 1);
+        this->m_packets[msgSeqNum] = item;
+        this->m_recvABuffer->Next(socketManager->RecvSize());
+        return true;
+    }
+    inline bool WaitingSnapshot() { return this->m_waitingSnapshot; }
+    inline bool SnapshotAvailable() { throw; }
+    inline bool ApplySnapshot() { throw; }
+    inline bool ApplyPacketSequence() {
+        int i = this->m_currentMsgSeqNum;
+        while(i <= this->m_maxRecvMsgSeqNum) {
+            if(this->m_packets[i] == 0) {
+                this->m_currentMsgSeqNum = i - 1;
+                return true;
+            }
+            this->ProcessMessage(this->m_packets[i]);
+            i++;
+        }
+        this->m_currentMsgSeqNum = this->m_maxRecvMsgSeqNum;
+        return true;
+    }
+    inline bool WaitTimeExpired() { return this->m_waitTimer->ElapsedSeconds() > this->WaitIncrementalMaxTimeSec; }
+    inline void StartListenSnapshot() {
+		this->m_waitingSnapshot = true;
+		this->m_snapshot->Start();
+		this->m_snapshotStartMsgSeqNum = -1;
+		this->m_snapshotEndMsgSeqNum = -1;
+	}
+	inline void StopListenSnapshot() {
+		this->m_snapshot->Stop();
+	}
+	inline int CheckForRouteFirst(BinaryLogItem *item) {
+		unsigned char *buffer = this->m_recvABuffer->Item(item->m_itemIndex);
+		this->m_fastProtocolManager->SetNewBuffer(buffer, this->m_recvABuffer->ItemLength(item->m_itemIndex));
+		return this->m_fastProtocolManager->Decode_Generic(); // CHeck!!!!!!!!!!!! RouteFirst and skip all!!!!!
+	}
+	inline int CheckForRouteFirst() {
+		while(this->m_currentMsgSeqNum <= this->m_maxRecvMsgSeqNum) {
+			int start = this->CheckForRouteFirst(this->m_packets[this->m_currentMsgSeqNum]);
+			if(start > -1)
+				return start;
+			this->m_currentMsgSeqNum++;
+		}
+		return -1;
+	}
+    inline void ResetWaitTime() { this->m_waitTimer->Start(); }
+    inline void StartWaitIncremental() { this->m_waitingSnapshot = false; }
+    inline bool ActualMsgSeqNum() { return this->m_currentMsgSeqNum == this->m_maxRecvMsgSeqNum; }
+
+	inline void IncrementMsgSeqNo() { this->m_currentMsgSeqNum++; }
 	bool InitializeSockets();
 	virtual ISocketBufferProvider* CreateSocketBufferProvider() {
 			return new SocketBufferProvider(DefaultSocketBufferManager::Default,
@@ -104,6 +192,8 @@ protected:
 
 	bool Suspend_Atom();
 	bool Listen_Atom();
+    bool Listen_Atom_Incremental();
+    bool Listen_Atom_Snapshot();
     bool SendLogon_Atom();
     bool ResendLastMessage_Atom();
     bool Reconnect_Atom();
@@ -127,25 +217,44 @@ protected:
         }
 
         this->m_sendABuffer->Next(this->m_fastProtocolManager->MessageLength());
-        this->SetState(FeedConnectionState::fcsListen, &FeedConnection::Listen_Atom);
+        this->SetState(FeedConnectionState::fcsListen, this->m_listenPtr);
         DefaultLogManager::Default->EndLog(true);
         return true;
     }
 
-	inline bool ProcessMessage(SocketBuffer *buffer, int size) {
-		this->m_fastProtocolManager->SetNewBuffer(buffer->CurrentPos(), size);
-        buffer->Next(size);
-        DefaultLogManager::Default->WriteFast(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_ProcessMessage, buffer->BufferIndex(), buffer->CurrentItemIndex() - 1);
-        int msgSeqNo = this->m_fastProtocolManager->ReadMsgSeqNumber();
-		//if(msgSeqNo == this->ExpectedMsgSeqNo()) {
-			this->Decode();
-            return true;
-		//}
-		//return true;
+	inline bool ProcessMessage(BinaryLogItem *item) {
+        unsigned char *buffer = this->m_recvABuffer->Item(item->m_itemIndex);
+        this->m_fastProtocolManager->SetNewBuffer(buffer, this->m_recvABuffer->ItemLength(item->m_itemIndex));
+        this->Decode();
+        return true;
 	}
 public:
 	FeedConnection(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort);
 	~FeedConnection();
+
+    inline void SetType(FeedConnectionType type) {
+        this->m_type = type;
+        this->m_listenPtr = this->m_type == FeedConnectionType::Incremental? &FeedConnection::Listen_Atom_Incremental: &FeedConnection::Listen_Atom_Snapshot;
+    }
+    inline FeedConnectionType Type() { return this->m_type; }
+
+    inline void SetIncremental(FeedConnection *conn) {
+		if(this->m_incremental == conn)
+			return;
+		this->m_incremental = conn;
+		if(this->m_incremental != 0)
+			this->m_incremental->SetSnapshot(this);
+	}
+    inline FeedConnection *Incremental() { return this->m_incremental; }
+
+    inline void SetSnapshot(FeedConnection *conn) {
+		if(this->m_snapshot == conn)
+			return;
+		this->m_snapshot = conn;
+		if(this->m_snapshot != 0)
+			this->m_snapshot->SetIncremental(this);
+	}
+    inline FeedConnection *Snapshot() { return this->m_snapshot; }
 
 	bool Connect();
 	bool Disconnect();
@@ -166,34 +275,39 @@ public:
 
 	inline virtual void Decode() {
 		DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Decode);
-		this->m_fastProtocolManager->Decode_Generic();
+
 		DefaultLogManager::Default->EndLog(true);
 	}
 
-	inline int MsgSeqNo() { return this->m_msgSeqNo; }
-	inline int ExpectedMsgSeqNo() { return this->m_msgSeqNo + 1; }
+	inline int MsgSeqNo() { return this->m_currentMsgSeqNum; }
+	inline int ExpectedMsgSeqNo() { return this->m_currentMsgSeqNum + 1; }
 
 	inline bool DoWorkAtom() {
 		return (this->*m_workAtomPtr)();
 	}
 	inline void Listen() {
 		if(this->m_state == FeedConnectionState::fcsSuspend)
-			this->SetState(FeedConnectionState::fcsListen, &FeedConnection::Listen_Atom);
+			this->SetState(FeedConnectionState::fcsListen, this->m_listenPtr);
 		else
-			this->SetNextState(FeedConnectionState::fcsListen, &FeedConnection::Listen_Atom);
+			this->SetNextState(FeedConnectionState::fcsListen, this->m_listenPtr);
 	}
     inline void Start() {
         if(this->m_state != FeedConnectionState::fcsSuspend)
             return;
         this->Listen();
-        //this->SetState(FeedConnectionState::fcsSendLogon, &FeedConnection::SendLogon_Atom);
     }
+	inline void Stop() {
+		this->SetState(FeedConnectionState::fcsSuspend, &FeedConnection::Suspend_Atom);
+	}
 };
 
 class FeedConnection_CURR_OBR : public FeedConnection {
 public:
 	FeedConnection_CURR_OBR(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
-		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) { }
+		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
+
+        this->m_type = FeedConnectionType::Incremental;
+    }
 	inline void Decode() {
 		DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Decode);
 		this->m_fastProtocolManager->Decode_OBR_CURR();
@@ -211,7 +325,10 @@ public:
 class FeedConnection_CURR_OBS : public FeedConnection {
 public:
 	FeedConnection_CURR_OBS(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
-		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) { }
+		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
+
+        this->m_type = FeedConnectionType::Snapshot;
+    }
 	inline void Decode() {
 		DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Decode);
 		this->m_fastProtocolManager->Decode_OBS_CURR();
@@ -229,7 +346,9 @@ public:
 class FeedConnection_CURR_MSR : public FeedConnection {
 public:
 	FeedConnection_CURR_MSR(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
-		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) { }
+		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
+        this->m_type = FeedConnectionType::Incremental;
+    }
 	inline void Decode() {
 		DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Decode);
 		this->m_fastProtocolManager->Decode_MSR_CURR();
@@ -247,7 +366,9 @@ public:
 class FeedConnection_CURR_MSS : public FeedConnection {
 public:
 	FeedConnection_CURR_MSS(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
-		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) { }
+		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
+        this->m_type = FeedConnectionType::Snapshot;
+    }
 	ISocketBufferProvider* CreateSocketBufferProvider() {
 		return new SocketBufferProvider(DefaultSocketBufferManager::Default,
 										RobotSettings::DefaultFeedConnectionSendBufferSize,
@@ -260,7 +381,9 @@ public:
 class FeedConnection_CURR_OLR : public FeedConnection {
 public:
 	FeedConnection_CURR_OLR(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
-		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) { }
+		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
+        this->m_type = FeedConnectionType::Incremental;
+    }
 	inline void Decode() {
 		DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Decode);
 		this->m_fastProtocolManager->Decode_OLR_CURR();
@@ -278,7 +401,9 @@ public:
 class FeedConnection_CURR_OLS : public FeedConnection {
 public:
 	FeedConnection_CURR_OLS(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
-		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) { }
+		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
+        this->m_type = FeedConnectionType::Snapshot;
+    }
 	inline void Decode() {
 		DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Decode);
 		this->m_fastProtocolManager->Decode_OLS_CURR();
@@ -296,7 +421,9 @@ public:
 class FeedConnection_CURR_TLR : public FeedConnection {
 public:
 	FeedConnection_CURR_TLR(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
-		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) { }
+		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
+        this->m_type = FeedConnectionType::Incremental;
+    }
 	inline void Decode() {
 		DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Decode);
 		this->m_fastProtocolManager->Decode_TLR_CURR();
@@ -314,7 +441,9 @@ public:
 class FeedConnection_CURR_TLS : public FeedConnection {
 public:
 	FeedConnection_CURR_TLS(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
-		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) { }
+		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
+        this->m_type = FeedConnectionType::Snapshot;
+    }
 	inline void Decode() {
 		DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Decode);
 		this->m_fastProtocolManager->Decode_TLS_CURR();
@@ -332,7 +461,9 @@ public:
 class FeedConnection_FOND_OBR : public FeedConnection {
 public:
 	FeedConnection_FOND_OBR(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
-		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) { }
+		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
+        this->m_type = FeedConnectionType::Incremental;
+    }
 	inline void Decode() {
 		DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Decode);
 		this->m_fastProtocolManager->Decode_OBR_FOND();
@@ -350,7 +481,9 @@ public:
 class FeedConnection_FOND_OBS : public FeedConnection {
 public:
 	FeedConnection_FOND_OBS(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
-		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) { }
+		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
+        this->m_type = FeedConnectionType::Snapshot;
+    }
 	inline void Decode() {
 		DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Decode);
 		this->m_fastProtocolManager->Decode_OBS_FOND();
@@ -368,7 +501,9 @@ public:
 class FeedConnection_FOND_MSR : public FeedConnection {
 public:
 	FeedConnection_FOND_MSR(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
-		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) { }
+		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
+        this->m_type = FeedConnectionType::Incremental;
+    }
 	inline void Decode() {
 		DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Decode);
 		this->m_fastProtocolManager->Decode_MSR_FOND();
@@ -386,7 +521,9 @@ public:
 class FeedConnection_FOND_MSS : public FeedConnection {
 public:
 	FeedConnection_FOND_MSS(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
-		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) { }
+		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
+        this->m_type = FeedConnectionType::Snapshot;
+    }
 	ISocketBufferProvider* CreateSocketBufferProvider() {
 		return new SocketBufferProvider(DefaultSocketBufferManager::Default,
 										RobotSettings::DefaultFeedConnectionSendBufferSize,
@@ -399,7 +536,9 @@ public:
 class FeedConnection_FOND_OLR : public FeedConnection {
 public:
 	FeedConnection_FOND_OLR(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
-		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) { }
+		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
+        this->m_type = FeedConnectionType::Incremental;
+    }
 	inline void Decode() {
 		DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Decode);
 		this->m_fastProtocolManager->Decode_OLR_FOND();
@@ -417,7 +556,9 @@ public:
 class FeedConnection_FOND_OLS : public FeedConnection {
 public:
 	FeedConnection_FOND_OLS(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
-		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) { }
+		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
+        this->m_type = FeedConnectionType::Snapshot;
+    }
 	inline void Decode() {
 		DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Decode);
 		this->m_fastProtocolManager->Decode_OLS_FOND();
@@ -435,7 +576,9 @@ public:
 class FeedConnection_FOND_TLR : public FeedConnection {
 public:
 	FeedConnection_FOND_TLR(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
-		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) { }
+		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
+        this->m_type = FeedConnectionType::Incremental;
+    }
 	inline void Decode() {
 		DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Decode);
 		this->m_fastProtocolManager->Decode_TLR_FOND();
@@ -453,7 +596,9 @@ public:
 class FeedConnection_FOND_TLS : public FeedConnection {
 public:
 	FeedConnection_FOND_TLS(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
-		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) { }
+		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
+        this->m_type = FeedConnectionType::Snapshot;
+    }
 	inline void Decode() {
 		DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Decode);
 		this->m_fastProtocolManager->Decode_TLS_FOND();

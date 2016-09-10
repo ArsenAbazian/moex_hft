@@ -678,9 +678,11 @@ namespace prebuild {
 		private  void WriteEntireMethodAddressArrays (XmlNode templatesNode) {
 			SetPosition(Decode_Method_Pointer_Definition_GeneratedCode);
 			WriteLine("typedef void* (FastProtocolManager::*FastDecodeMethodPointer)();");
+			WriteLine("typedef void  (FastProtocolManager::*FastGetSnapshotInfoMethodPointer)();");
 
 			SetPosition(Decode_Method_Pointer_Arrays_GeneratedCode);
 			WriteLine("\tFastDecodeMethodPointer* DecodeMethods;");
+			WriteLine("\tFastGetSnapshotInfoMethodPointer* GetSnapshotInfoMethods;");
 			WriteLine("");
 			WriteLine("\tvoid InitializeDecodeMethodPointers() {");
 			int maxId = CalcMaxTemplateId(templatesNode);
@@ -689,14 +691,19 @@ namespace prebuild {
 
 			WriteLine("\t\tint ptCount = " + count + ";");
 			WriteLine("\t\tthis->DecodeMethods = new FastDecodeMethodPointer[ptCount];");
-			WriteLine("\t\tmemset(this->DecodeMethods, 0, sizeof(FastDecodeMethodPointer) * ptCount);");
+			WriteLine("\t\tthis->GetSnapshotInfoMethods = new FastGetSnapshotInfoMethodPointer[ptCount];");
+
 			WriteLine("");
-			WriteLine("\t\tfor(int i = 0; i < " + count + "; i++)");
+			WriteLine("\t\tfor(int i = 0; i < " + count + "; i++) {");
 			WriteLine("\t\t\tthis->DecodeMethods[i] = &FastProtocolManager::DecodeUnsupportedMessage;");
+			WriteLine("\t\t\tthis->GetSnapshotInfoMethods[i] = &FastProtocolManager::GetSnapshotInfoUnsupported;");
+			WriteLine("\t\t}");
 			WriteLine("");
 			List<DecodeMessageInfo> methods = GetDecodeMessageMethods(templatesNode);
 			foreach(DecodeMessageInfo info in methods) {
 				WriteLine("\t\tthis->DecodeMethods[" + info.TemplateId + " - " + minId + "] = &FastProtocolManager::" + info.FullDecodeMethodName + ";");
+				if(info.HasGetSnapshotInfoMethod)
+					WriteLine("\t\tthis->GetSnapshotInfoMethods[" + info.TemplateId + " - " + minId + "] = &FastProtocolManager::" + info.FullGetSnapshotInfoMethod + ";");
 			}
 			WriteLine("");
 			WriteLine("\t}");
@@ -730,25 +737,30 @@ namespace prebuild {
 			Console.WriteLine("cppfile " + SourceFileCpp + " " + CppFile.Lines.Count);
 			Console.WriteLine("types_file " + TypesFile.Lines.Count);
 			throw new Exception("error cant find keyword " + keyword);
-			//WriteIndex = GetKeywordLineIndex(keyword) + 1;
 		}
 
 		class DecodeMessageInfo {
-			public string MsgType;
-			public int TemplateId;
-			public string FullDecodeMethodName;
+			public string NameCore { get; set; }
+			public string MsgType { get; set; }
+			public int TemplateId { get; set; }
+			public string FullDecodeMethodName { get { return "Decode" + NameCore; } }
+			public bool HasGetSnapshotInfoMethod { get { return FullDecodeMethodName.Contains("FullRefreshGeneric"); } }
+			public bool FullGetSnapshotInfoMethod { get { return "GetSnapshotInfo" + NameCore; } }
 		}
 
 		private  void WriteEntireMethodsCode (XmlNode templatesNode) {
-			List<string> decodeEntryMethodList = GetDecodeEntryMethodList(templatesNode);
 			int minId = CalcMinTemplateId(templatesNode);
-			foreach(string mSuffix in decodeEntryMethodList) {
-				WriteLine("\tinline void* Decode" + mSuffix + "() {");
-				WriteLine("\t\tthis->DecodeHeader();");
-				WriteLine("\t\tFastDecodeMethodPointer funcPtr = this->DecodeMethods[this->m_templateId - " + minId + "];");
-				WriteLine("\t\treturn (this->*funcPtr)();");
-				WriteLine("\t}");
-			}
+			WriteLine("\tinline void* Decode() {");
+			WriteLine("\t\tthis->DecodeHeader();");
+			WriteLine("\t\tFastDecodeMethodPointer funcPtr = this->DecodeMethods[this->m_templateId - " + minId + "];");
+			WriteLine("\t\treturn (this->*funcPtr)();");
+			WriteLine("\t}");
+
+			WriteLine("\tinline void DecodeSnapshotInfo() {");
+			WriteLine("\t\tthis->DecodeHeader();");
+			WriteLine("\t\tFastDecodeMethodPointer funcPtr = this->GetSnaphostInfoMethods[this->m_templateId - " + minId + "];");
+			WriteLine("\t\treturn (this->*funcPtr)();");
+			WriteLine("\t}");
 		}
 
 		private  List<DecodeMessageInfo> GetDecodeMessageMethods (XmlNode templatesNode) {
@@ -759,7 +771,7 @@ namespace prebuild {
 				DecodeMessageInfo info = new DecodeMessageInfo();
 				info.MsgType = node.Attributes["name"].Value.Substring(0, 1);
 				info.TemplateId = Int32.Parse(node.Attributes["id"].Value);
-				info.FullDecodeMethodName = "Decode" + GetTemplateName(node.PreviousSibling.Value);
+				info.NameCore = GetTemplateName(node.PreviousSibling.Value);
 				res.Add(info);
 			}
 			return res;

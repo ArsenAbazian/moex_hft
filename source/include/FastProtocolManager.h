@@ -2680,6 +2680,10 @@ public:
         return NULL;
     }
 
+	void GetSnapshotInfoUnsupported() {
+		// do nothing
+	}
+
 #pragma region Print_Methods_Declaration_GeneratedCode
 	void PrintLogon(FastLogonInfo *info);
 	void PrintLogout(FastLogoutInfo *info);
