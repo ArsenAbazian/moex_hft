@@ -528,9 +528,9 @@ namespace prebuild {
 
 		private  void WriteDecodeMethodsCode (XmlNode templatesNode) {
 			foreach(XmlNode node in templatesNode.ChildNodes) {
-				if(node.Name == "template") {
-					ParseTemplateNode(node, GetTemplateName(node.PreviousSibling.Value));
-				}
+				if(node.Name != "template")
+					continue;
+				ParseTemplateNode(node, GetTemplateName(node.PreviousSibling.Value));
 			}
 			WriteEntireMethodsCode(templatesNode);
 		}
@@ -1022,7 +1022,7 @@ namespace prebuild {
 			WriteLine(tabs + infoName + "->PresenceMap = this->m_presenceMap;");
 		}
 
-		private  void ParseTemplateNode (XmlNode template, string templateName) {
+		private  void ParseTemplateNode(XmlNode template, string templateName) {
 			WriteLine("\tvoid* Decode" + templateName + "() {");
 			StructureInfo info = new StructureInfo() { NameCore = templateName };
 			WriteLine("\t\tFast" + templateName + "Info* info = " + info.GetFreeMethodName + "();");
@@ -1030,6 +1030,19 @@ namespace prebuild {
 			WriteLine("");
 			foreach(XmlNode value in template.ChildNodes) {
 				ParseValue(value, "info", templateName, "\t\t");
+			}
+			WriteLine("\t\treturn info;");
+			WriteLine("\t}");
+		}
+
+		private  void WriteGetSnapshotInfoMethod(XmlNode template, string templateName, List<string> allowedFields) {
+			WriteLine("\tvoid* GetSnapshotInfo" + templateName + "() {");
+			StructureInfo info = new StructureInfo() { NameCore = templateName };
+			WriteLine("\t\tFastSnapshotInfo *info = GetFreeSnapshotInfo();" );
+			WriteCopyPresenceMap("\t\t", "info");
+			WriteLine("");
+			foreach(XmlNode value in template.ChildNodes) {
+				ParseValue(value, "info", templateName, "\t\t", allowedFields);
 			}
 			WriteLine("\t\treturn info;");
 			WriteLine("\t}");
