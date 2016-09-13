@@ -41,24 +41,6 @@ bool Robot::DisconnectMarkets() {
 	return success;
 }
 
-/*bool Robot::LogonMarkets() {
-    DefaultLogManager::Default->StartLog(LogMessageCode::lmcRobot_LogonMarkets);
-    bool success = true;
-	for (int i = 0; i < this->marketCount; i++) {
-		success &= this->markets[i]->Logon();
-	}
-    DefaultLogManager::Default->EndLog(success);
-	return success;
-}
-
-bool Robot::LogoutMarkets() {
-	bool success = true;
-	for (int i = 0; i < this->marketCount; i++) {
-		success &= this->markets[i]->Logout();
-	}
-	return success;
-}*/
-
 bool Robot::AddDefaultTestChannels() {
     DefaultLogManager::Default->StartLog(LogMessageCode::lmcRobot_AddDefaultTestChannels);
     tinyxml2::XMLDocument doc;
@@ -171,28 +153,7 @@ FeedConnection* Robot::CreateConnectionCore(const char *feedChannelId, const cha
     return new FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort);
 }
 
-/*
-bool Robot::InitializeThreads() {
-    DefaultLogManager::Default->StartLog(LogMessageCode::lmcRobot_InitializeThreads);
-
-    WinSockManager  **marketManagers = new WinSockManager*[6] {
-            this->m_currMarket->Trade()->SocketManager(),
-            this->m_currMarket->TradeCapture()->SocketManager(),
-            this->m_currMarket->TradeDropCopy()->SocketManager(),
-            this->m_fondMarket->Trade()->SocketManager(),
-            this->m_fondMarket->TradeCapture()->SocketManager(),
-            this->m_fondMarket->TradeDropCopy()->SocketManager()
-    };
-
-    DefaultSocketThreadManager::Default->AddSendThread(marketManagers, 2);
-    DefaultSocketThreadManager::Default->AddRecvThread(marketManagers, 2);
-
-    DefaultLogManager::Default->EndLog(true);
-    return true;
-}
-*/
-
-bool Robot::Run() { 
+bool Robot::Run() {
     DefaultLogManager::Default->StartLog(LogMessageCode::lmcRobot_Run);
 	
 	if(!this->AddDefaultTestMarkets()) {
@@ -227,24 +188,20 @@ bool Robot::Run() {
 bool Robot::DoWork() {
     DefaultLogManager::Default->StartLog(LogMessageCode::lmcRobot_DoWork);
 
+    this->m_currMarket->Enable(false);
     while(true) {
         if(!WinSockManager::UpdateManagersPollStatus())
             break;
-
-        //if(!this->m_fondMarket->ServerLocked()) {
-            if(!this->m_currMarket->DoWorkAtom()) {
-                DefaultLogManager::Default->EndLog(false);
-                DefaultLogManager::Default->Print();
-                return false;
-            }
-        //}
-        //if(!this->m_currMarket->ServerLocked()) {
-            if (!this->m_fondMarket->DoWorkAtom()) {
-                DefaultLogManager::Default->EndLog(false);
-                DefaultLogManager::Default->Print();
-                return false;
-            }
-        //}
+        if(!this->m_currMarket->DoWorkAtom()) {
+            DefaultLogManager::Default->EndLog(false);
+            DefaultLogManager::Default->Print();
+            return false;
+        }
+        if (!this->m_fondMarket->DoWorkAtom()) {
+            DefaultLogManager::Default->EndLog(false);
+            DefaultLogManager::Default->Print();
+            return false;
+        }
         if(!this->DoWorkAtom()) {
             DefaultLogManager::Default->EndLog(false);
             DefaultLogManager::Default->Print();

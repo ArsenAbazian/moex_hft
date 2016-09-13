@@ -6,6 +6,7 @@ class MarketInfo {
 
 	char                m_name[16];
 	int                 m_nameLogIndex;
+	bool				m_enable;
 
 	MarketServerInfo    *m_trade;
 	MarketServerInfo    *m_tradeCapture;
@@ -47,6 +48,9 @@ public:
 	bool Connect();
 	bool Disconnect();
 
+	inline void Enable(bool enable) { this->m_enable = enable; }
+	inline bool Enabled() { return this->m_enable; }
+
 	inline MarketServerInfo* Trade() { return this->m_trade; }
 	inline MarketServerInfo* TradeCapture() { return this->m_tradeCapture; }
 	inline MarketServerInfo* TradeDropCopy() { return this->m_dropCopy; }
@@ -56,6 +60,8 @@ public:
 	}
 
 	inline bool DoWorkAtom() {
+		if(!this->Enabled())
+			return true;
         bool res = this->m_feedChannel->DoWorkAtom();
         this->m_tradeCapture->SetState(MarketServerState::mssEnd, &MarketServerInfo::End_Atom);
         this->m_dropCopy->SetState(MarketServerState::mssEnd, &MarketServerInfo::End_Atom);

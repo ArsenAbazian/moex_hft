@@ -64,7 +64,13 @@ bool FeedChannel::Disconnect(FeedConnection *conn) {
 bool FeedChannel::Connect() { 
 	DefaultLogManager::Default->StartLog(this->m_nameLogIndex, LogMessageCode::lmcFeedChannel_Connect);
 
-	this->orderBookIncremental->SetSnapshot(this->ordersSnapshot);
+    this->orderBookSnapshot->SetType(FeedConnectionType::Snapshot);
+    this->ordersSnapshot->SetType(FeedConnectionType::Snapshot);
+    this->statisticsSnapshot->SetType(FeedConnectionType::Snapshot);
+    this->tradesSnapshot->SetType(FeedConnectionType::Snapshot);
+    this->instrumentStatus->SetType(FeedConnectionType::Snapshot);
+
+	this->orderBookIncremental->SetSnapshot(this->orderBookSnapshot);
 	this->statisticsIncremental->SetSnapshot(this->statisticsSnapshot);
 	this->tradesIncremental->SetSnapshot(this->tradesSnapshot);
 	this->ordersIncremental->SetSnapshot(this->ordersSnapshot);
@@ -74,6 +80,7 @@ bool FeedChannel::Connect() {
 		DefaultLogManager::Default->EndLog(false);
 		return false;
 	}
+    /*
 	if (!this->Connect(this->statisticsIncremental)) {
 		DefaultLogManager::Default->EndLog(false);
 		return false;
@@ -90,11 +97,13 @@ bool FeedChannel::Connect() {
 		DefaultLogManager::Default->EndLog(false);
 		return false;
 	}
+    */
     // not needed
     if(!this->Connect(this->orderBookSnapshot)) {
         DefaultLogManager::Default->EndLog(false);
         return false;
     }
+    /*
     if(!this->Connect(this->statisticsSnapshot)) {
         DefaultLogManager::Default->EndLog(false);
         return false;
@@ -111,12 +120,13 @@ bool FeedChannel::Connect() {
         DefaultLogManager::Default->EndLog(false);
         return false;
     }
+    */
 
 	this->orderBookIncremental->Start();
-	this->statisticsIncremental->Start();
-	this->ordersIncremental->Start();
-	this->tradesIncremental->Start();
-	this->instrumentStatus->Start();
+	//this->statisticsIncremental->Start();
+	//this->ordersIncremental->Start();
+	//this->tradesIncremental->Start();
+	//this->instrumentStatus->Start();
 
 	// not needed....
 	//this->orderBookSnapshot->Start();

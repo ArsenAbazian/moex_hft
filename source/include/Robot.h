@@ -40,8 +40,6 @@ class Robot
         return NULL;
     }
 
-    /*bool LogonMarkets();
-    bool LogoutMarkets();*/
     bool ConnectMarkets();
     bool DisconnectMarkets();
     bool DoWork();
@@ -74,7 +72,6 @@ public:
 			FundMarketTradeName, FundMarketTradeServerPort, FundMarketTradeTargetComputerId,
 			FundMarketTradeCaptureName, FundMarketTradeCaptureServerPort, FundMarketTradeCaptureTargetComputerId,
 			FundMarketTradeDropCopyName, FundMarketTradeDropCopyServerPort, FundMarketTradeDropCopyTargetComputerId));
-
 		AddMarket(new CurrencyMarketInfo("CURR", CurrencyMarketSenderComputerId, CurrencyMarketPassword, CurrencyMarketTradeServerAddress, CurrencyMarketTradeASTSServerName,
 			CurrencyMarketTradeName, CurrencyMarketTradeServerPort, CurrencyMarketTradeTargetComputerId,
 			CurrencyMarketTradeCaptureName, CurrencyMarketTradeCaptureServerPort, CurrencyMarketTradeCaptureTargetComputerId,
@@ -107,7 +104,6 @@ public:
             DefaultLogManager::Default->EndLog(false, LogMessageCode::lmcCURR_feed_channel_not_found);
             return false;
         }
-
         this->m_fondMarket->SetFeedChannel(fondChannel);
         this->m_currMarket->SetFeedChannel(currChannel);
 

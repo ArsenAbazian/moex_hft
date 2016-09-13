@@ -92,6 +92,12 @@ void LogMessageProvider::InitializeLogMessageText() {
 	this->m_logMessageText[LogMessageCode::lmcFeedConnection_Reconnect_Atom] = "FeedConnection::Reconnect_Atom";
 	this->m_logMessageText[LogMessageCode::lmcFeedConnection_SendCore] = "FeedConnection::SendCore";
 	this->m_logMessageText[LogMessageCode::lmcWinSockManager_ConnectFast] = "WinSockManager::ConnectFast";
+	this->m_logMessageText[LogMessageCode::lmcFeedConnection_Listen_Atom_Incremental] = "FeedConnection::Listen_Atom_Incremental";
+	this->m_logMessageText[LogMessageCode::lmcFeedConnection_StartListenSnapshot] = "FeedConnection::StartListenSnapshot";
+	this->m_logMessageText[LogMessageCode::lmcFeedConnection_GetRouteFirst] = "FeedConnection::GetRouteFirst";
+	this->m_logMessageText[LogMessageCode::lmcFeedConnection_GetLastFragment] = "FeedConnection::GetLastFragment";
+	this->m_logMessageText[LogMessageCode::lmcFeedConnection_StartNewSnapshot] = "FeedConnection::StartNewSnapshot";
+	this->m_logMessageText[LogMessageCode::lmcFeedConnection_Listen_Atom_Snapshot] = "FeedConnection::Listen_Atom_Snapshot";
 #pragma endregion
 }
 

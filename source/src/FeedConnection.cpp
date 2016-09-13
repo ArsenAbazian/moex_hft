@@ -38,6 +38,7 @@ FeedConnection::FeedConnection(const char *id, const char *name, char value, Fee
 	this->m_currentMsgSeqNum = 1;
 	this->m_maxRecvMsgSeqNum = 0;
     this->m_listenPtr = &FeedConnection::Listen_Atom_Incremental;
+    this->m_type = FeedConnectionType::Incremental;
 
 	this->SetState(FeedConnectionState::fcsSuspend, &FeedConnection::Suspend_Atom);
 }
@@ -153,48 +154,89 @@ bool FeedConnection::Reconnect_Atom() {
 
 bool FeedConnection::Listen_Atom_Incremental() {
 
-	if(this->WaitingSnapshot()) {
-		this->ProcessServerA();
-		this->ProcessServerB();
+    bool recv = this->ProcessServerA();
+    recv |= this->ProcessServerB();
 
-		if(this->SnapshotAvailable()) {
-			this->ApplySnapshot();
-			this->ApplyPacketSequence();
+    if(!recv) {
+        if(!this->m_waitTimer->Active(1)) {
+            this->m_waitTimer->Start(1);
+        }
+        else {
+            if(this->m_waitTimer->ElapsedSeconds(1) > this->WaitAnyPacketMaxTimeSec) {
+                DefaultLogManager::Default->WriteSuccess(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_Listen_Atom_Incremental, false);
+                return false;
+            }
+        }
+    }
+    else {
+        this->m_waitTimer->Stop(1);
+    }
+
+    if(this->WaitingSnapshot()) {
+		if(this->m_snapshot->SnapshotAvailable()) {
+			this->m_snapshot->ApplySnapshot();
+			this->m_currentMsgSeqNum = this->m_snapshot->LastMsgSeqNumProcessed() + 1;
+            this->ApplyPacketSequence();
             this->StopListenSnapshot();
 			this->StartWaitIncremental();
-			this->ResetWaitTime();
 		}
 	}
 	else {
-		if(!this->ProcessServerA() && !this->ProcessServerB()) {
-			if (this->WaitTimeExpired()) {
-				this->StartListenSnapshot();
-			}
-			return true;
-		}
-		this->ApplyPacketSequence();
-		if(!this->ActualMsgSeqNum()) {
-			if(this->WaitTimeExpired())
-				this->StartListenSnapshot();
-		}
-		this->ResetWaitTime();
+        if(this->ApplyPacketSequence()) {
+            this->m_waitTimer->Stop();
+            return true;
+        }
+        if(!this->m_waitTimer->Active()) {
+            this->m_waitTimer->Start();
+        }
+        else {
+            if(this->m_waitTimer->ElapsedSeconds()) {
+                this->StartListenSnapshot();
+                this->m_waitTimer->Stop();
+            }
+        }
 		return true;
 	}
-
-	return false;
+	return true;
 }
 
 bool FeedConnection::Listen_Atom_Snapshot() {
 
-    this->ProcessServerA();
-    this->ProcessServerB();
+    bool recv = this->ProcessServerA();
+    recv |= this->ProcessServerB();
 
-    if(this->m_snapshotStartMsgSeqNum == -1) {
-        this->m_snapshotStartMsgSeqNum = this->CheckForRouteFirst();
+    if(!recv) {
+        if(!this->m_waitTimer->Active(1)) {
+            this->m_waitTimer->Start(1);
+        }
+        else {
+            if(this->m_waitTimer->ElapsedSeconds(1) > this->WaitAnyPacketMaxTimeSec) {
+                DefaultLogManager::Default->WriteSuccess(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_Listen_Atom_Snapshot, false);
+                return false;
+            }
+        }
     }
     else {
-
+        this->m_waitTimer->Stop(1);
     }
 
-	return false;
+    if(this->m_snapshotRouteFirst == -1)
+        this->m_snapshotRouteFirst = this->GetRouteFirst();
+    if(this->m_snapshotLastFragment == -1) {
+        this->m_snapshotLastFragment = this->GetLastFragment(&(this->m_lastMsgSeqNumProcessed));
+        this->m_waitTimer->Start();
+    }
+    if(this->m_snapshotRouteFirst != -1 && this->m_snapshotLastFragment != -1) {
+        for(int i = this->m_snapshotRouteFirst + 1; i < this->m_snapshotLastFragment; i++) {
+            if(this->m_packets[i] == NULL) {
+                if(this->m_waitTimer->ElapsedSeconds() > 2) {
+                    this->StartNewSnapshot();
+                }
+                return true;
+            }
+        }
+        this->m_snapshotAvailable = true;
+    }
+
+	return true;
 }

@@ -35,6 +35,7 @@ typedef enum _FeedConnectionType {
 class FeedConnection {
 	const int MaxReceiveBufferSize = 1500;
     const int WaitIncrementalMaxTimeSec         = 5;
+    const int WaitAnyPacketMaxTimeSec           = 10;
 protected:
 	char										id[16];
 	char										feedTypeName[64];
@@ -44,6 +45,10 @@ protected:
     FeedConnection                              *m_snapshot;
 	int 										m_snapshotStartMsgSeqNum;
 	int											m_snapshotEndMsgSeqNum;
+    int                                         m_snapshotRouteFirst;
+    int                                         m_snapshotLastFragment;
+    int                                         m_lastMsgSeqNumProcessed;
+    int                                         m_snapshotAvailable;
 
     BinaryLogItem                               **m_packets;
 
@@ -99,6 +104,7 @@ protected:
         gettimeofday(this->m_tval, NULL);
         *time = this->m_tval->tv_usec / 1000;
     }
+
 	inline bool CanListen() { return this->socketAManager->ShouldRecv() || this->socketBManager->ShouldRecv(); }
 
     inline bool ProcessServerA() { return this->ProcessServer(this->socketAManager, LogMessageCode::lmcsocketA); }
@@ -113,42 +119,55 @@ protected:
             socketManager->Reconnect();
             return false;
         }
-        if(socketManager->RecvSize() == 0)
+        int size = socketManager->RecvSize();
+        if(size == 0)
             return false;
         UINT msgSeqNum = *((UINT*)socketManager->RecvBytes());
         if(msgSeqNum < this->ExpectedMsgSeqNo() || this->m_packets[msgSeqNum] != 0)
             return false;
 
+        this->m_recvABuffer->SetCurrentItemSize(size);
         BinaryLogItem *item = DefaultLogManager::Default->WriteFast(this->m_idLogIndex,
                                                                     LogMessageCode::lmcFeedConnection_ProcessMessage,
                                                                     this->m_recvABuffer->BufferIndex(),
-                                                                    this->m_recvABuffer->CurrentItemIndex() - 1);
+                                                                    this->m_recvABuffer->CurrentItemIndex());
+        if(this->m_type == FeedConnectionType::Incremental) {
+            if (this->m_maxRecvMsgSeqNum < msgSeqNum)
+                this->m_maxRecvMsgSeqNum = msgSeqNum;
+        }
+        else {
+            if(this->m_snapshotStartMsgSeqNum == -1)
+                this->m_snapshotStartMsgSeqNum = msgSeqNum;
+            if(this->m_snapshotEndMsgSeqNum < msgSeqNum)
+                this->m_snapshotEndMsgSeqNum = msgSeqNum;
+        }
         this->m_packets[msgSeqNum] = item;
-        this->m_recvABuffer->Next(socketManager->RecvSize());
+        this->m_recvABuffer->Next(size);
         return true;
     }
     inline bool WaitingSnapshot() { return this->m_waitingSnapshot; }
-    inline bool SnapshotAvailable() { throw; }
+    inline bool SnapshotAvailable() { return this->m_snapshotAvailable; }
     inline bool ApplySnapshot() { throw; }
     inline bool ApplyPacketSequence() {
         int i = this->m_currentMsgSeqNum;
+        bool processed = false;
         while(i <= this->m_maxRecvMsgSeqNum) {
             if(this->m_packets[i] == 0) {
                 this->m_currentMsgSeqNum = i - 1;
-                return true;
+                return processed;
             }
             this->ProcessMessage(this->m_packets[i]);
+            processed = true;
             i++;
         }
-        this->m_currentMsgSeqNum = this->m_maxRecvMsgSeqNum;
-        return true;
+        this->m_currentMsgSeqNum = i;
+        return processed;
     }
-    inline bool WaitTimeExpired() { return this->m_waitTimer->ElapsedSeconds() > this->WaitIncrementalMaxTimeSec; }
     inline void StartListenSnapshot() {
-		this->m_waitingSnapshot = true;
+        DefaultLogManager::Default->WriteSuccess(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_StartListenSnapshot, true);
+        this->m_waitingSnapshot = true;
 		this->m_snapshot->Start();
-		this->m_snapshotStartMsgSeqNum = -1;
-		this->m_snapshotEndMsgSeqNum = -1;
+		this->m_snapshot->StartNewSnapshot();
 	}
 	inline void StopListenSnapshot() {
 		this->m_snapshot->Stop();
@@ -159,14 +178,33 @@ protected:
 		FastSnapshotInfo* info = this->m_fastProtocolManager->GetSnapshotInfo();
         return info->RouteFirst == 1;
     }
-	inline int CheckForRouteFirst() {
-		while(this->m_currentMsgSeqNum <= this->m_maxRecvMsgSeqNum) {
-			if(this->CheckForRouteFirst(this->m_packets[this->m_currentMsgSeqNum]))
-			    return this->m_currentMsgSeqNum;
-			this->m_currentMsgSeqNum++;
+    inline bool CheckForLastFragment(BinaryLogItem *item, int *refMsgSeqNum) {
+        unsigned char *buffer = this->m_recvABuffer->Item(item->m_itemIndex);
+        this->m_fastProtocolManager->SetNewBuffer(buffer, this->m_recvABuffer->ItemLength(item->m_itemIndex));
+        FastSnapshotInfo* info = this->m_fastProtocolManager->GetSnapshotInfo();
+        *refMsgSeqNum = info->LastMsgSeqNumProcessed;
+        return info->LastFragment == 1;
+    }
+	inline int GetRouteFirst() {
+		while(this->m_snapshotStartMsgSeqNum <= this->m_snapshotEndMsgSeqNum) {
+			if(this->CheckForRouteFirst(this->m_packets[this->m_currentMsgSeqNum])) {
+                DefaultLogManager::Default->WriteSuccess(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_GetRouteFirst, true);
+                return this->m_snapshotStartMsgSeqNum;
+            }
+            this->m_snapshotStartMsgSeqNum++;
 		}
 		return -1;
 	}
+    inline int GetLastFragment(int *refMsgSeqNum) {
+        while(this->m_snapshotStartMsgSeqNum <= this->m_snapshotEndMsgSeqNum) {
+            if (this->CheckForLastFragment(this->m_packets[this->m_currentMsgSeqNum], refMsgSeqNum)) {
+                DefaultLogManager::Default->WriteSuccess(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_GetLastFragment, false);
+                return this->m_snapshotStartMsgSeqNum;
+            }
+            this->m_snapshotStartMsgSeqNum++;
+        }
+        return -1;
+    }
     inline void ResetWaitTime() { this->m_waitTimer->Start(); }
     inline void StartWaitIncremental() { this->m_waitingSnapshot = false; }
     inline bool ActualMsgSeqNum() { return this->m_currentMsgSeqNum == this->m_maxRecvMsgSeqNum; }
@@ -232,6 +270,17 @@ public:
 	FeedConnection(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort);
 	~FeedConnection();
 
+    inline int LastMsgSeqNumProcessed() { return this->m_lastMsgSeqNumProcessed; }
+
+    inline void StartNewSnapshot() {
+        DefaultLogManager::Default->WriteSuccess(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_StartNewSnapshot, true);
+        this->m_snapshotAvailable = false;
+        this->m_snapshotEndMsgSeqNum =
+        this->m_snapshotStartMsgSeqNum = -1;
+        this->m_snapshotRouteFirst =
+        this->m_snapshotLastFragment = -1;
+    }
+
     inline void SetType(FeedConnectionType type) {
         this->m_type = type;
         this->m_listenPtr = this->m_type == FeedConnectionType::Incremental? &FeedConnection::Listen_Atom_Incremental: &FeedConnection::Listen_Atom_Snapshot;
@@ -294,6 +343,7 @@ public:
     inline void Start() {
         if(this->m_state != FeedConnectionState::fcsSuspend)
             return;
+        this->m_waitTimer->Start();
         this->Listen();
     }
 	inline void Stop() {

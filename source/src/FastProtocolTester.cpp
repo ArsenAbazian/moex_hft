@@ -48,7 +48,7 @@ void FastProtocolTester::TestMessages() {
 
     manager->SetNewBuffer(message, 225);
     int msgSeqNo = manager->ReadMsgSeqNumber();
-    FastSecurityDefinitionInfo *sd = (FastSecurityDefinitionInfo*)manager->Decode_Generic();
+    FastSecurityDefinitionInfo *sd = (FastSecurityDefinitionInfo*)manager->Decode();
     manager->PrintSecurityDefinition(sd);
     if(manager->MessageLength() != 225)
         throw;
@@ -78,7 +78,7 @@ void FastProtocolTester::TestMessages() {
 
     manager->SetNewBuffer(message, 111);
     msgSeqNo = manager->ReadMsgSeqNumber();
-    FastMarketDataIncrementalRefreshOBRCURRInfo *info = (FastMarketDataIncrementalRefreshOBRCURRInfo*)manager->Decode_Generic();
+    FastMarketDataIncrementalRefreshOBRCURRInfo *info = (FastMarketDataIncrementalRefreshOBRCURRInfo*)manager->Decode();
     manager->PrintMarketDataIncrementalRefreshOBRCURR(info);
 
     if(info->MsgSeqNum != msgSeqNo)
@@ -185,7 +185,7 @@ void FastProtocolTester::TestMessages() {
     manager->SetNewBuffer(message, 107);
 
     msgSeqNo = manager->ReadMsgSeqNumber();
-    info = (FastMarketDataIncrementalRefreshOBRCURRInfo*)manager->Decode_Generic();
+    info = (FastMarketDataIncrementalRefreshOBRCURRInfo*)manager->Decode();
 
     manager->PrintMarketDataIncrementalRefreshOBRCURR(info);
 
@@ -301,7 +301,7 @@ void FastProtocolTester::TestMessages() {
 
     manager->SetNewBuffer(message, 171);
     msgSeqNo = manager->ReadMsgSeqNumber();
-    sd = (FastSecurityDefinitionInfo*)manager->Decode_Generic();
+    sd = (FastSecurityDefinitionInfo*)manager->Decode();
     manager->PrintSecurityDefinition(sd);
     if(manager->MessageLength() != 171)
         throw;
