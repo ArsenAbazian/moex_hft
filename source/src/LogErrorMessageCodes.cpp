@@ -98,6 +98,8 @@ void LogMessageProvider::InitializeLogMessageText() {
 	this->m_logMessageText[LogMessageCode::lmcFeedConnection_GetLastFragment] = "FeedConnection::GetLastFragment";
 	this->m_logMessageText[LogMessageCode::lmcFeedConnection_StartNewSnapshot] = "FeedConnection::StartNewSnapshot";
 	this->m_logMessageText[LogMessageCode::lmcFeedConnection_Listen_Atom_Snapshot] = "FeedConnection::Listen_Atom_Snapshot";
+	this->m_logMessageText[LogMessageCode::lmcFeedConnection_StopListenSnapshot] = "FeedConnection::StopListenSnapshot";
+	this->m_logMessageText[LogMessageCode::lmcFeedConnection_StopListenSnapshot] = "FeedConnection::StopListenSnapshot";
 #pragma endregion
 }
 

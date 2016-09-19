@@ -639,6 +639,7 @@ namespace prebuild {
 
 			WriteLine("typedef struct _FastSnapshotInfo {");
 			WriteLine("\tUINT64\t\t\t\tPresenceMap;");
+			WriteLine("\tint\t\t\t\tTemplateId;");
 			foreach(string fieldName in SnapshotInfoFields) {
 				WriteLine("\tUINT32\t\t\t\t" + fieldName + ";");
 			}
@@ -1073,6 +1074,7 @@ namespace prebuild {
 			WriteLine("\tFastSnapshotInfo* GetSnapshotInfo" + templateName + "() {");
 			WriteLine("\t\tFastSnapshotInfo *info = GetFreeSnapshotInfo();" );
 			WriteCopyPresenceMap("\t\t", "info");
+			WriteLine("\t\tinfo->TemplateId = this->m_templateId;");
 			WriteLine("");
 			foreach(XmlNode value in template.ChildNodes) {
 				ParseValue(value, "info", templateName, "\t\t", true, SnapshotInfoFields, parsed);

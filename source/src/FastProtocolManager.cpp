@@ -7,6 +7,7 @@ FastProtocolManager::FastProtocolManager() {
 	this->InitializeConstantStrings();
 	this->InitializeDecodeMethodPointers();
 	this->InitializeMessageInfo();
+	this->m_snapshotInfo = new FastSnapshotInfo();
 }
 
 

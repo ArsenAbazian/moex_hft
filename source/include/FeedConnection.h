@@ -48,6 +48,7 @@ protected:
     int                                         m_snapshotRouteFirst;
     int                                         m_snapshotLastFragment;
     int                                         m_lastMsgSeqNumProcessed;
+	int											m_rptSeq;
     int                                         m_snapshotAvailable;
 
     BinaryLogItem                               **m_packets;
@@ -81,6 +82,7 @@ protected:
 	WinSockManager								*socketBManager;
 	FastProtocolManager 						*m_fastProtocolManager;
     FastLogonInfo                               *m_fastLogonInfo;
+
 
 	ISocketBufferProvider						*m_socketABufferProvider;
 	SocketBuffer								*m_sendABuffer;
@@ -122,8 +124,8 @@ protected:
         int size = socketManager->RecvSize();
         if(size == 0)
             return false;
-        UINT msgSeqNum = *((UINT*)socketManager->RecvBytes());
-        if(msgSeqNum < this->ExpectedMsgSeqNo() || this->m_packets[msgSeqNum] != 0)
+        int msgSeqNum = *((UINT*)socketManager->RecvBytes());
+        if(this->m_packets[msgSeqNum] != 0)
             return false;
 
         this->m_recvABuffer->SetCurrentItemSize(size);
@@ -147,7 +149,11 @@ protected:
     }
     inline bool WaitingSnapshot() { return this->m_waitingSnapshot; }
     inline bool SnapshotAvailable() { return this->m_snapshotAvailable; }
-    inline bool ApplySnapshot() { throw; }
+    inline bool ApplySnapshot() {
+		printf("%s -> Snapshot applied\n", this->id);
+		printf("RouteFirst = %d, LastFragment = %d, LastMsgSeqProcessed = %d, RptSeq = %d\n", this->m_snapshotRouteFirst, this->m_snapshotLastFragment, this->m_lastMsgSeqNumProcessed, this->m_rptSeq);
+		return true;
+	}
     inline bool ApplyPacketSequence() {
         int i = this->m_currentMsgSeqNum;
         bool processed = false;
@@ -163,31 +169,44 @@ protected:
         this->m_currentMsgSeqNum = i;
         return processed;
     }
-    inline void StartListenSnapshot() {
-        DefaultLogManager::Default->WriteSuccess(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_StartListenSnapshot, true);
+    inline bool StartListenSnapshot() {
+		if(!this->m_snapshot->Start()) {
+			DefaultLogManager::Default->WriteSuccess(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_StartListenSnapshot, false);
+			return false;
+		}
         this->m_waitingSnapshot = true;
-		this->m_snapshot->Start();
 		this->m_snapshot->StartNewSnapshot();
+		DefaultLogManager::Default->WriteSuccess(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_StartListenSnapshot, true);
+		return true;
 	}
-	inline void StopListenSnapshot() {
-		this->m_snapshot->Stop();
+	inline bool StopListenSnapshot() {
+		if(!this->m_snapshot->Stop()) {
+			DefaultLogManager::Default->WriteSuccess(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_StopListenSnapshot, false);
+			return false;
+		}
+		DefaultLogManager::Default->WriteSuccess(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_StopListenSnapshot, true);
+		return true;
 	}
 	inline bool CheckForRouteFirst(BinaryLogItem *item) {
 		unsigned char *buffer = this->m_recvABuffer->Item(item->m_itemIndex);
 		this->m_fastProtocolManager->SetNewBuffer(buffer, this->m_recvABuffer->ItemLength(item->m_itemIndex));
+		this->m_fastProtocolManager->ReadMsgSeqNumber();
 		FastSnapshotInfo* info = this->m_fastProtocolManager->GetSnapshotInfo();
         return info->RouteFirst == 1;
     }
     inline bool CheckForLastFragment(BinaryLogItem *item, int *refMsgSeqNum) {
         unsigned char *buffer = this->m_recvABuffer->Item(item->m_itemIndex);
         this->m_fastProtocolManager->SetNewBuffer(buffer, this->m_recvABuffer->ItemLength(item->m_itemIndex));
+		this->m_fastProtocolManager->ReadMsgSeqNumber();
         FastSnapshotInfo* info = this->m_fastProtocolManager->GetSnapshotInfo();
         *refMsgSeqNum = info->LastMsgSeqNumProcessed;
         return info->LastFragment == 1;
     }
 	inline int GetRouteFirst() {
+		if(this->m_snapshotStartMsgSeqNum == -1)
+			return -1;
 		while(this->m_snapshotStartMsgSeqNum <= this->m_snapshotEndMsgSeqNum) {
-			if(this->CheckForRouteFirst(this->m_packets[this->m_currentMsgSeqNum])) {
+			if(this->CheckForRouteFirst(this->m_packets[this->m_snapshotStartMsgSeqNum])) {
                 DefaultLogManager::Default->WriteSuccess(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_GetRouteFirst, true);
                 return this->m_snapshotStartMsgSeqNum;
             }
@@ -195,9 +214,19 @@ protected:
 		}
 		return -1;
 	}
+	inline FastSnapshotInfo* GetSnapshotInfo(int index) {
+		BinaryLogItem *item = this->m_packets[index];
+		unsigned char *buffer = this->m_recvABuffer->Item(item->m_itemIndex);
+		this->m_fastProtocolManager->SetNewBuffer(buffer, this->m_recvABuffer->ItemLength(item->m_itemIndex));
+		this->m_fastProtocolManager->ReadMsgSeqNumber();
+		FastSnapshotInfo *res = this->m_fastProtocolManager->GetSnapshotInfo();
+		return res;
+	}
     inline int GetLastFragment(int *refMsgSeqNum) {
+		if(this->m_snapshotStartMsgSeqNum == -1)
+			return -1;
         while(this->m_snapshotStartMsgSeqNum <= this->m_snapshotEndMsgSeqNum) {
-            if (this->CheckForLastFragment(this->m_packets[this->m_currentMsgSeqNum], refMsgSeqNum)) {
+            if (this->CheckForLastFragment(this->m_packets[this->m_snapshotStartMsgSeqNum], refMsgSeqNum)) {
                 DefaultLogManager::Default->WriteSuccess(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_GetLastFragment, false);
                 return this->m_snapshotStartMsgSeqNum;
             }
@@ -284,6 +313,10 @@ public:
     inline void SetType(FeedConnectionType type) {
         this->m_type = type;
         this->m_listenPtr = this->m_type == FeedConnectionType::Incremental? &FeedConnection::Listen_Atom_Incremental: &FeedConnection::Listen_Atom_Snapshot;
+		if(this->m_state == FeedConnectionState::fcsListen)
+			this->SetState(this->m_state, this->m_listenPtr);
+		else if(this->m_nextState == FeedConnectionState::fcsListen)
+			this->SetNextState(this->m_state, this->m_listenPtr);
     }
     inline FeedConnectionType Type() { return this->m_type; }
 
@@ -305,8 +338,44 @@ public:
 	}
     inline FeedConnection *Snapshot() { return this->m_snapshot; }
 
-	bool Connect();
-	bool Disconnect();
+	inline bool Connect() {
+		if(this->socketAManager != NULL && this->socketAManager->IsConnected())
+			return true;
+		if(this->socketAManager == NULL && !this->InitializeSockets())
+			return false;
+		DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Connect);
+		if(this->protocol == FeedConnectionProtocol::UDP_IP) {
+			if (!this->socketAManager->ConnectMulticast(this->feedASourceIp, this->feedAIp, this->feedAPort)) {
+				DefaultLogManager::Default->EndLog(false);
+				return false;
+			}
+			if (!this->socketBManager->ConnectMulticast(this->feedBSourceIp, this->feedBIp, this->feedBPort)) {
+				DefaultLogManager::Default->EndLog(false);
+				return false;
+			}
+		}
+		else {
+			if(!this->socketAManager->Connect(this->feedAIp, this->feedAPort)) {
+				DefaultLogManager::Default->EndLog(false);
+				return false;
+			}
+		}
+		DefaultLogManager::Default->EndLog(true);
+		return true;
+	}
+
+	inline bool Disconnect() {
+		DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Disconnect);
+
+		bool result = true;
+		if(this->socketAManager != NULL)
+			result &= this->socketAManager->Disconnect();
+		if(this->socketBManager != NULL)
+			result &= this->socketBManager->Disconnect();
+
+		DefaultLogManager::Default->EndLog(result);
+		return result;
+	}
 
     void SetSenderCompId(const char *senderCompId) {
         this->m_senderCompId = senderCompId;
@@ -340,14 +409,20 @@ public:
 		else
 			this->SetNextState(FeedConnectionState::fcsListen, this->m_listenPtr);
 	}
-    inline void Start() {
-        if(this->m_state != FeedConnectionState::fcsSuspend)
-            return;
+    inline bool Start() {
+        if(!this->Connect())
+			return false;
+		if(this->m_state != FeedConnectionState::fcsSuspend)
+            return true;
         this->m_waitTimer->Start();
         this->Listen();
+		return true;
     }
-	inline void Stop() {
+	inline bool Stop() {
 		this->SetState(FeedConnectionState::fcsSuspend, &FeedConnection::Suspend_Atom);
+		if(!this->Disconnect())
+			return false;
+		return true;
 	}
 };
 

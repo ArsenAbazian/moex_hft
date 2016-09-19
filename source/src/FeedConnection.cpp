@@ -59,43 +59,6 @@ bool FeedConnection::InitializeSockets() {
 	return true;
 }
 
-bool FeedConnection::Connect() {
-	if(this->socketAManager == NULL && !this->InitializeSockets())
-		return false;
-	DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Connect);
-    if(this->protocol == FeedConnectionProtocol::UDP_IP) {
-        if (!this->socketAManager->ConnectMulticast(this->feedASourceIp, this->feedAIp, this->feedAPort)) {
-            DefaultLogManager::Default->EndLog(false);
-            return false;
-        }
-        if (!this->socketBManager->ConnectMulticast(this->feedBSourceIp, this->feedBIp, this->feedBPort)) {
-            DefaultLogManager::Default->EndLog(false);
-            return false;
-        }
-    }
-    else {
-        if(!this->socketAManager->Connect(this->feedAIp, this->feedAPort)) {
-            DefaultLogManager::Default->EndLog(false);
-            return false;
-        }
-    }
-	DefaultLogManager::Default->EndLog(true);
-	return true;
-}
-
-bool FeedConnection::Disconnect() {
-    DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Disconnect);
-
-    bool result = true;
-    if(this->socketAManager != NULL)
-        result &= this->socketAManager->Disconnect();
-    if(this->socketBManager != NULL)
-	    result &= this->socketBManager->Disconnect();
-
-    DefaultLogManager::Default->EndLog(result);
-    return result;
-}
-
 bool FeedConnection::Suspend_Atom() {
 	return true;
 }
@@ -177,7 +140,8 @@ bool FeedConnection::Listen_Atom_Incremental() {
 			this->m_snapshot->ApplySnapshot();
 			this->m_currentMsgSeqNum = this->m_snapshot->LastMsgSeqNumProcessed() + 1;
             this->ApplyPacketSequence();
-            this->StopListenSnapshot();
+            if(!this->StopListenSnapshot())
+                return false;
 			this->StartWaitIncremental();
 		}
 	}
@@ -191,7 +155,8 @@ bool FeedConnection::Listen_Atom_Incremental() {
         }
         else {
             if(this->m_waitTimer->ElapsedSeconds()) {
-                this->StartListenSnapshot();
+                if(!this->StartListenSnapshot())
+                    return false;
                 this->m_waitTimer->Stop();
             }
         }
@@ -201,6 +166,8 @@ bool FeedConnection::Listen_Atom_Incremental() {
 }
 
 bool FeedConnection::Listen_Atom_Snapshot() {
+    if(this->m_snapshotAvailable)
+        return true;
 
     bool recv = this->ProcessServerA();
     recv |= this->ProcessServerB();
@@ -220,12 +187,27 @@ bool FeedConnection::Listen_Atom_Snapshot() {
         this->m_waitTimer->Stop(1);
     }
 
-    if(this->m_snapshotRouteFirst == -1)
-        this->m_snapshotRouteFirst = this->GetRouteFirst();
-    if(this->m_snapshotLastFragment == -1) {
-        this->m_snapshotLastFragment = this->GetLastFragment(&(this->m_lastMsgSeqNumProcessed));
-        this->m_waitTimer->Start();
+    for(int i = this->m_snapshotStartMsgSeqNum; i < this->m_snapshotEndMsgSeqNum; i++) {
+        FastSnapshotInfo *info = this->GetSnapshotInfo(i);
+        if(info->RouteFirst)
+            this->m_snapshotRouteFirst = i;
+        if(info->LastFragment && this->m_snapshotStartMsgSeqNum != -1) {
+            this->m_snapshotLastFragment = i;
+            this->m_lastMsgSeqNumProcessed = info->LastMsgSeqNumProcessed;
+            this->m_rptSeq = info->RptSeq;
+            this->m_waitTimer->Start();
+
+            printf("\t\tFound Snapshot -> RouteFirst = %d, LastFragment = %d, LastMsgSeqProcessed = %d, RptSeq = %d\n", this->m_snapshotRouteFirst, this->m_snapshotLastFragment, this->m_lastMsgSeqNumProcessed, this->m_rptSeq);
+
+            if(this->m_lastMsgSeqNumProcessed < this->m_incremental->m_currentMsgSeqNum) {
+                this->m_waitTimer->Stop();
+                this->StartNewSnapshot();
+                return true;
+            }
+            break;
+        }
     }
+
     if(this->m_snapshotRouteFirst != -1 && this->m_snapshotLastFragment != -1) {
         for(int i = this->m_snapshotRouteFirst + 1; i < this->m_snapshotLastFragment; i++) {
             if(this->m_packets[i] == NULL) {
@@ -235,6 +217,7 @@ bool FeedConnection::Listen_Atom_Snapshot() {
                 return true;
             }
         }
+        this->m_waitTimer->Stop();
         this->m_snapshotAvailable = true;
     }
 

@@ -98,12 +98,11 @@ bool FeedChannel::Connect() {
 		return false;
 	}
     */
-    // not needed
+    /*
     if(!this->Connect(this->orderBookSnapshot)) {
         DefaultLogManager::Default->EndLog(false);
         return false;
     }
-    /*
     if(!this->Connect(this->statisticsSnapshot)) {
         DefaultLogManager::Default->EndLog(false);
         return false;

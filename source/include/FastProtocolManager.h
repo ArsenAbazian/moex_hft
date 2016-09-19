@@ -4097,6 +4097,7 @@ public:
 	FastSnapshotInfo* GetSnapshotInfoLogon() {
 		FastSnapshotInfo *info = GetFreeSnapshotInfo();
 		info->PresenceMap = this->m_presenceMap;
+		info->TemplateId = this->m_templateId;
 
 		SkipToNextField(); // TargetCompID
 		SkipToNextField(); // MsgSeqNum
@@ -4110,6 +4111,7 @@ public:
 	FastSnapshotInfo* GetSnapshotInfoLogout() {
 		FastSnapshotInfo *info = GetFreeSnapshotInfo();
 		info->PresenceMap = this->m_presenceMap;
+		info->TemplateId = this->m_templateId;
 
 		SkipToNextField(); // TargetCompID
 		SkipToNextField(); // MsgSeqNum
@@ -4120,6 +4122,7 @@ public:
 	FastSnapshotInfo* GetSnapshotInfoMarketDataSnapshotFullRefreshGeneric() {
 		FastSnapshotInfo *info = GetFreeSnapshotInfo();
 		info->PresenceMap = this->m_presenceMap;
+		info->TemplateId = this->m_templateId;
 
 		SkipToNextField(); // MsgSeqNum
 		SkipToNextField(); // SendingTime
@@ -4137,6 +4140,7 @@ public:
 	FastSnapshotInfo* GetSnapshotInfoMarketDataIncrementalRefreshGeneric() {
 		FastSnapshotInfo *info = GetFreeSnapshotInfo();
 		info->PresenceMap = this->m_presenceMap;
+		info->TemplateId = this->m_templateId;
 
 		SkipToNextField(); // MsgSeqNum
 		SkipToNextField(); // SendingTime
@@ -4146,6 +4150,7 @@ public:
 	FastSnapshotInfo* GetSnapshotInfoMarketDataSnapshotFullRefreshOLSFOND() {
 		FastSnapshotInfo *info = GetFreeSnapshotInfo();
 		info->PresenceMap = this->m_presenceMap;
+		info->TemplateId = this->m_templateId;
 
 		SkipToNextField(); // MsgSeqNum
 		SkipToNextField(); // SendingTime
@@ -4161,6 +4166,7 @@ public:
 	FastSnapshotInfo* GetSnapshotInfoMarketDataSnapshotFullRefreshOLSCURR() {
 		FastSnapshotInfo *info = GetFreeSnapshotInfo();
 		info->PresenceMap = this->m_presenceMap;
+		info->TemplateId = this->m_templateId;
 
 		SkipToNextField(); // MsgSeqNum
 		SkipToNextField(); // SendingTime
@@ -4176,6 +4182,7 @@ public:
 	FastSnapshotInfo* GetSnapshotInfoMarketDataSnapshotFullRefreshTLSFOND() {
 		FastSnapshotInfo *info = GetFreeSnapshotInfo();
 		info->PresenceMap = this->m_presenceMap;
+		info->TemplateId = this->m_templateId;
 
 		SkipToNextField(); // MsgSeqNum
 		SkipToNextField(); // SendingTime
@@ -4191,6 +4198,7 @@ public:
 	FastSnapshotInfo* GetSnapshotInfoMarketDataSnapshotFullRefreshTLSCURR() {
 		FastSnapshotInfo *info = GetFreeSnapshotInfo();
 		info->PresenceMap = this->m_presenceMap;
+		info->TemplateId = this->m_templateId;
 
 		SkipToNextField(); // MsgSeqNum
 		SkipToNextField(); // SendingTime
@@ -4206,6 +4214,7 @@ public:
 	FastSnapshotInfo* GetSnapshotInfoMarketDataSnapshotFullRefreshOBSFOND() {
 		FastSnapshotInfo *info = GetFreeSnapshotInfo();
 		info->PresenceMap = this->m_presenceMap;
+		info->TemplateId = this->m_templateId;
 
 		SkipToNextField(); // MsgSeqNum
 		SkipToNextField(); // SendingTime
@@ -4224,6 +4233,7 @@ public:
 	FastSnapshotInfo* GetSnapshotInfoMarketDataSnapshotFullRefreshOBSCURR() {
 		FastSnapshotInfo *info = GetFreeSnapshotInfo();
 		info->PresenceMap = this->m_presenceMap;
+		info->TemplateId = this->m_templateId;
 
 		SkipToNextField(); // MsgSeqNum
 		SkipToNextField(); // SendingTime
@@ -4242,6 +4252,7 @@ public:
 	FastSnapshotInfo* GetSnapshotInfoMarketDataIncrementalRefreshMSRFOND() {
 		FastSnapshotInfo *info = GetFreeSnapshotInfo();
 		info->PresenceMap = this->m_presenceMap;
+		info->TemplateId = this->m_templateId;
 
 		SkipToNextField(); // MsgSeqNum
 		SkipToNextField(); // SendingTime
@@ -4251,6 +4262,7 @@ public:
 	FastSnapshotInfo* GetSnapshotInfoMarketDataIncrementalRefreshMSRCURR() {
 		FastSnapshotInfo *info = GetFreeSnapshotInfo();
 		info->PresenceMap = this->m_presenceMap;
+		info->TemplateId = this->m_templateId;
 
 		SkipToNextField(); // MsgSeqNum
 		SkipToNextField(); // SendingTime
@@ -4260,6 +4272,7 @@ public:
 	FastSnapshotInfo* GetSnapshotInfoMarketDataIncrementalRefreshOLRFOND() {
 		FastSnapshotInfo *info = GetFreeSnapshotInfo();
 		info->PresenceMap = this->m_presenceMap;
+		info->TemplateId = this->m_templateId;
 
 		SkipToNextField(); // MsgSeqNum
 		SkipToNextField(); // SendingTime
@@ -4269,6 +4282,7 @@ public:
 	FastSnapshotInfo* GetSnapshotInfoMarketDataIncrementalRefreshOLRCURR() {
 		FastSnapshotInfo *info = GetFreeSnapshotInfo();
 		info->PresenceMap = this->m_presenceMap;
+		info->TemplateId = this->m_templateId;
 
 		SkipToNextField(); // MsgSeqNum
 		SkipToNextField(); // SendingTime
@@ -4278,6 +4292,7 @@ public:
 	FastSnapshotInfo* GetSnapshotInfoMarketDataIncrementalRefreshOBRFOND() {
 		FastSnapshotInfo *info = GetFreeSnapshotInfo();
 		info->PresenceMap = this->m_presenceMap;
+		info->TemplateId = this->m_templateId;
 
 		SkipToNextField(); // MsgSeqNum
 		SkipToNextField(); // SendingTime
@@ -4287,6 +4302,7 @@ public:
 	FastSnapshotInfo* GetSnapshotInfoMarketDataIncrementalRefreshOBRCURR() {
 		FastSnapshotInfo *info = GetFreeSnapshotInfo();
 		info->PresenceMap = this->m_presenceMap;
+		info->TemplateId = this->m_templateId;
 
 		SkipToNextField(); // MsgSeqNum
 		SkipToNextField(); // SendingTime
@@ -4296,6 +4312,7 @@ public:
 	FastSnapshotInfo* GetSnapshotInfoMarketDataIncrementalRefreshTLRFOND() {
 		FastSnapshotInfo *info = GetFreeSnapshotInfo();
 		info->PresenceMap = this->m_presenceMap;
+		info->TemplateId = this->m_templateId;
 
 		SkipToNextField(); // MsgSeqNum
 		SkipToNextField(); // SendingTime
@@ -4305,6 +4322,7 @@ public:
 	FastSnapshotInfo* GetSnapshotInfoMarketDataIncrementalRefreshTLRCURR() {
 		FastSnapshotInfo *info = GetFreeSnapshotInfo();
 		info->PresenceMap = this->m_presenceMap;
+		info->TemplateId = this->m_templateId;
 
 		SkipToNextField(); // MsgSeqNum
 		SkipToNextField(); // SendingTime
@@ -4314,6 +4332,7 @@ public:
 	FastSnapshotInfo* GetSnapshotInfoSecurityDefinition() {
 		FastSnapshotInfo *info = GetFreeSnapshotInfo();
 		info->PresenceMap = this->m_presenceMap;
+		info->TemplateId = this->m_templateId;
 
 		SkipToNextField(); // MsgSeqNum
 		SkipToNextField(); // SendingTime
@@ -4362,6 +4381,7 @@ public:
 	FastSnapshotInfo* GetSnapshotInfoSecurityStatus() {
 		FastSnapshotInfo *info = GetFreeSnapshotInfo();
 		info->PresenceMap = this->m_presenceMap;
+		info->TemplateId = this->m_templateId;
 
 		SkipToNextField(); // MsgSeqNum
 		SkipToNextField(); // SendingTime
@@ -4375,6 +4395,7 @@ public:
 	FastSnapshotInfo* GetSnapshotInfoTradingSessionStatus() {
 		FastSnapshotInfo *info = GetFreeSnapshotInfo();
 		info->PresenceMap = this->m_presenceMap;
+		info->TemplateId = this->m_templateId;
 
 		SkipToNextField(); // MsgSeqNum
 		SkipToNextField(); // SendingTime
@@ -4386,6 +4407,7 @@ public:
 	FastSnapshotInfo* GetSnapshotInfoHeartbeat() {
 		FastSnapshotInfo *info = GetFreeSnapshotInfo();
 		info->PresenceMap = this->m_presenceMap;
+		info->TemplateId = this->m_templateId;
 
 		SkipToNextField(); // MsgSeqNum
 		SkipToNextField(); // SendingTime
