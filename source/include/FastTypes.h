@@ -123,10 +123,11 @@ typedef enum _MDEntryType {
 typedef struct _FastSnapshotInfo {
 	UINT64				PresenceMap;
 	int				TemplateId;
-	UINT32				RptSeq;
+	INT32				RptSeq;
 	UINT32				LastFragment;
 	UINT32				RouteFirst;
 	UINT32				LastMsgSeqNumProcessed;
+	UINT64				SendingTime;
 }FastSnapshotInfo;
 
 typedef struct _FastMarketDataSnapshotFullRefreshGenericGroupMDEntriesItemInfo {

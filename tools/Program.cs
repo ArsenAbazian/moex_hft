@@ -640,8 +640,9 @@ namespace prebuild {
 			WriteLine("typedef struct _FastSnapshotInfo {");
 			WriteLine("\tUINT64\t\t\t\tPresenceMap;");
 			WriteLine("\tint\t\t\t\tTemplateId;");
-			foreach(string fieldName in SnapshotInfoFields) {
-				WriteLine("\tUINT32\t\t\t\t" + fieldName + ";");
+			InitializeSnapshotInfoFields(templatesNode);
+			foreach(SnapshotFieldInfo info in SnapshotInfoFields) {
+				WriteLine("\t" + info.FieldType + "\t\t\t\t" + info.FieldName + ";");
 			}
 			WriteLine("}FastSnapshotInfo;");
 
@@ -1054,24 +1055,77 @@ namespace prebuild {
 			WriteLine("\t}");
 		}
 
-		List<string> snapshotInfoFields;
-		protected List<string> SnapshotInfoFields { 
+		List<SnapshotFieldInfo> snapshotInfoFields;
+		public class SnapshotFieldInfo { 
+			public SnapshotFieldInfo(string fieldType, string fieldName) {
+				FieldType = fieldType;
+				FieldName = fieldName;
+			}
+			public string FieldType { get; set; }
+			public string FieldName { get; set; }
+		}
+		protected List<SnapshotFieldInfo> SnapshotInfoFields { 
 			get { 
 				if(snapshotInfoFields == null) {
-					snapshotInfoFields = new List<string>();
-					snapshotInfoFields.Add("RptSeq");
-					snapshotInfoFields.Add("LastFragment");
-					snapshotInfoFields.Add("RouteFirst");
-					snapshotInfoFields.Add("LastMsgSeqNumProcessed");
+					snapshotInfoFields = new List<SnapshotFieldInfo>();
+					snapshotInfoFields.Add(new SnapshotFieldInfo("", "RptSeq"));
+					snapshotInfoFields.Add(new SnapshotFieldInfo("", "LastFragment"));
+					snapshotInfoFields.Add(new SnapshotFieldInfo("", "RouteFirst"));
+					snapshotInfoFields.Add(new SnapshotFieldInfo("", "LastMsgSeqNumProcessed"));
+					snapshotInfoFields.Add(new SnapshotFieldInfo("", "SendingTime"));
 				}
 				return snapshotInfoFields;
 			}
+		}
+
+		private XmlNode GetChildNode(XmlNode root, string childName) {
+			foreach(XmlNode node in root.ChildNodes) {
+				if(node.Attributes["name"].Value == childName)
+					return node;
+			}
+			return null;
+		} 
+
+		private void InitializeSnapshotInfoFields(XmlNode templates) {
+			List<XmlNode> nodes = GetTemplates(templates);
+			foreach(SnapshotFieldInfo info in SnapshotInfoFields) {
+				foreach(XmlNode node in nodes) {
+					XmlNode child = GetChildNode(node, info.FieldName);
+					if(child != null) {
+						info.FieldType = child.Name.ToUpper();
+						break;
+					}
+				}
+			}
+		}
+
+		private bool IsSnapshotNode(XmlNode node) {
+			foreach(SnapshotFieldInfo field in SnapshotInfoFields) {
+				if(field.FieldName == node.Attributes["name"].Value)
+					return true;
+			}
+			return false;
+		}
+
+		private bool HasSnapshotFields(XmlNode template) {
+			foreach(XmlNode node in template.ChildNodes) {
+				if(IsSnapshotNode(node))
+					return true;
+			}
+			return false;
 		}
 
 		private  void WriteGetSnapshotInfoMethod(XmlNode template, string templateName) {
 			List<string> parsed = new List<string>();
 
 			WriteLine("\tFastSnapshotInfo* GetSnapshotInfo" + templateName + "() {");
+
+			if(!HasSnapshotFields(template)) {
+				WriteLine("\t\treturn NULL;");
+				WriteLine("\t}");
+				return;
+			}
+
 			WriteLine("\t\tFastSnapshotInfo *info = GetFreeSnapshotInfo();" );
 			WriteCopyPresenceMap("\t\t", "info");
 			WriteLine("\t\tinfo->TemplateId = this->m_templateId;");
@@ -1083,6 +1137,13 @@ namespace prebuild {
 			}
 			WriteLine("\t\treturn info;");
 			WriteLine("\t}");
+
+			CurrentFile.Line -= 3;
+			while(CurrentFile.Lines[CurrentFile.Line].Contains("SkipToNextField")) {
+				CurrentFile.Lines.RemoveAt(CurrentFile.Line);
+				CurrentFile.Line--;
+			}
+			CurrentFile.Line += 3;
 		}
 
 		private void WritePrintPresenceMap(XmlNode template, StructureInfo info, string tabs, int tabsCount) {
@@ -1645,8 +1706,14 @@ namespace prebuild {
 		private void WriteSkipCode(string tabStrings, string fieldName) {
 			WriteLine(tabStrings + "SkipToNextField(); // " + fieldName);
 		}
-
-		private  void ParseValue (XmlNode value, string objectValueName, string classCoreName, string tabString, bool skipNonAllowed, List<string> allowedFields, List<string> parsed) {
+		bool Contains(List<SnapshotFieldInfo> fields, XmlNode node) {
+			foreach(SnapshotFieldInfo info in fields) {
+				if(info.FieldName == Name(node))
+					return true;
+			}
+			return false;
+		}
+		private  void ParseValue (XmlNode value, string objectValueName, string classCoreName, string tabString, bool skipNonAllowed, List<SnapshotFieldInfo> allowedFields, List<string> parsed) {
 			if(value.Name == "length")
 				return;
 
@@ -1655,7 +1722,7 @@ namespace prebuild {
 				return;
 
 			if(skipNonAllowed) { 
-				if(!allowedFields.Contains(Name(value))) {
+				if(!Contains(allowedFields, value)) {
 					WriteSkipCode(tabString, Name(value));
 					return;
 				}

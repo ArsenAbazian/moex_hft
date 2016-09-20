@@ -21,6 +21,8 @@ class FeedChannel {
 	FeedConnection *instrumentStatus;
 	FeedConnection *historicalReplay;
 
+	bool CheckConnections();
+
 public:
 	FeedChannel(const char *id, const char *name);
 	~FeedChannel();

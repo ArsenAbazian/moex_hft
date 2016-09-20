@@ -187,23 +187,36 @@ bool FeedConnection::Listen_Atom_Snapshot() {
         this->m_waitTimer->Stop(1);
     }
 
-    for(int i = this->m_snapshotStartMsgSeqNum; i < this->m_snapshotEndMsgSeqNum; i++) {
+    if(this->m_snapshotStartMsgSeqNum == -1)
+        return true;
+    for(int i = this->m_snapshotStartMsgSeqNum; i <= this->m_snapshotEndMsgSeqNum; i++) {
         FastSnapshotInfo *info = this->GetSnapshotInfo(i);
-        if(info->RouteFirst)
-            this->m_snapshotRouteFirst = i;
-        if(info->LastFragment && this->m_snapshotStartMsgSeqNum != -1) {
+        if(info == NULL)
+            continue;
+        if(this->m_snapshotRouteFirst == -1) {
+            this->m_snapshotStartMsgSeqNum = i + 1;
+            if(info->RouteFirst == 1)
+                this->m_snapshotRouteFirst = i;
+            else
+                continue;
+        }
+        if(info->LastFragment == 1) {
             this->m_snapshotLastFragment = i;
+            printf("\t\tFound Snapshot -> MsgSeqNum = %d, TemplateId = %d, SendingTime = %lu RouteFirst = %d, LastFragment = %d, LastMsgSeqProcessed = %d, RptSeq = %d\n",
+                   i,
+                   info->TemplateId,
+                   info->SendingTime,
+                   this->m_snapshotRouteFirst,
+                   this->m_snapshotLastFragment, info->LastMsgSeqNumProcessed, info->RptSeq);
+            if(info->LastMsgSeqNumProcessed < this->m_incremental->m_currentMsgSeqNum) {
+                this->m_snapshotRouteFirst = -1;
+                this->m_snapshotLastFragment = -1;
+                this->m_snapshotStartMsgSeqNum = i + 1;
+                continue;
+            }
             this->m_lastMsgSeqNumProcessed = info->LastMsgSeqNumProcessed;
             this->m_rptSeq = info->RptSeq;
-            this->m_waitTimer->Start();
 
-            printf("\t\tFound Snapshot -> RouteFirst = %d, LastFragment = %d, LastMsgSeqProcessed = %d, RptSeq = %d\n", this->m_snapshotRouteFirst, this->m_snapshotLastFragment, this->m_lastMsgSeqNumProcessed, this->m_rptSeq);
-
-            if(this->m_lastMsgSeqNumProcessed < this->m_incremental->m_currentMsgSeqNum) {
-                this->m_waitTimer->Stop();
-                this->StartNewSnapshot();
-                return true;
-            }
             break;
         }
     }
@@ -211,7 +224,12 @@ bool FeedConnection::Listen_Atom_Snapshot() {
     if(this->m_snapshotRouteFirst != -1 && this->m_snapshotLastFragment != -1) {
         for(int i = this->m_snapshotRouteFirst + 1; i < this->m_snapshotLastFragment; i++) {
             if(this->m_packets[i] == NULL) {
+                if(!this->m_waitTimer->Active()) {
+                    this->m_waitTimer->Start();
+                    return true;
+                }
                 if(this->m_waitTimer->ElapsedSeconds() > 2) {
+                    this->m_waitTimer->Stop();
                     this->StartNewSnapshot();
                 }
                 return true;

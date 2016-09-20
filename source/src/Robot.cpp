@@ -114,40 +114,40 @@ bool Robot::AddDefaultTestChannels() {
 }
 
 FeedConnection* Robot::CreateConnectionCore(const char *feedChannelId, const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) {
-    if (strcmp(feedChannelId, "CURR")) { // CURR
-        if (strcmp(id, "OBR"))
+    if (strcmp(feedChannelId, "CURR") == 0) { // CURR
+        if (strcmp(id, "OBR") == 0)
             return new FeedConnection_CURR_OBR(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort);
-        if (strcmp(id, "OBS"))
+        if (strcmp(id, "OBS") == 0)
             return new FeedConnection_CURR_OBS(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort);
-        if (strcmp(id, "MSR"))
+        if (strcmp(id, "MSR") == 0)
             return new FeedConnection_CURR_MSR(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort);
-        if (strcmp(id, "MSS"))
+        if (strcmp(id, "MSS") == 0)
             return new FeedConnection_CURR_MSS(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort);
-        if (strcmp(id, "OLR"))
+        if (strcmp(id, "OLR") == 0)
             return new FeedConnection_CURR_OLR(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort);
-        if (strcmp(id, "OLS"))
+        if (strcmp(id, "OLS") == 0)
             return new FeedConnection_CURR_OLS(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort);
-        if (strcmp(id, "TLR"))
+        if (strcmp(id, "TLR") == 0)
             return new FeedConnection_CURR_TLR(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort);
-        if (strcmp(id, "TLS"))
+        if (strcmp(id, "TLS") == 0)
             return new FeedConnection_CURR_TLS(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort);
     }
     else { // FOND
-        if (strcmp(id, "OBR"))
+        if (strcmp(id, "OBR") == 0)
             return new FeedConnection_FOND_OBR(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort);
-        if (strcmp(id, "OBS"))
+        if (strcmp(id, "OBS") == 0)
             return new FeedConnection_FOND_OBS(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort);
-        if (strcmp(id, "MSR"))
+        if (strcmp(id, "MSR") == 0)
             return new FeedConnection_FOND_MSR(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort);
-        if (strcmp(id, "MSS"))
+        if (strcmp(id, "MSS") == 0)
             return new FeedConnection_FOND_MSS(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort);
-        if (strcmp(id, "OLR"))
+        if (strcmp(id, "OLR") == 0)
             return new FeedConnection_FOND_OLR(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort);
-        if (strcmp(id, "OLS"))
+        if (strcmp(id, "OLS") == 0)
             return new FeedConnection_FOND_OLS(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort);
-        if (strcmp(id, "TLR"))
+        if (strcmp(id, "TLR") == 0)
             return new FeedConnection_FOND_TLR(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort);
-        if (strcmp(id, "TLS"))
+        if (strcmp(id, "TLS") == 0)
             return new FeedConnection_FOND_TLS(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort);
     }
     return new FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort);

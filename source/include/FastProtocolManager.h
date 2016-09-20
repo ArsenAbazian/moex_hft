@@ -4101,11 +4101,7 @@ public:
 
 		SkipToNextField(); // TargetCompID
 		SkipToNextField(); // MsgSeqNum
-		SkipToNextField(); // SendingTime
-		SkipToNextField(); // HeartBtInt
-		SkipToNextField(); // Username
-		SkipToNextField(); // Password
-		SkipToNextField(); // DefaultApplVerID
+		info->SendingTime = ReadUInt64_Mandatory();
 		return info;
 	}
 	FastSnapshotInfo* GetSnapshotInfoLogout() {
@@ -4115,8 +4111,7 @@ public:
 
 		SkipToNextField(); // TargetCompID
 		SkipToNextField(); // MsgSeqNum
-		SkipToNextField(); // SendingTime
-		SkipToNextField(); // Text
+		info->SendingTime = ReadUInt64_Mandatory();
 		return info;
 	}
 	FastSnapshotInfo* GetSnapshotInfoMarketDataSnapshotFullRefreshGeneric() {
@@ -4125,7 +4120,7 @@ public:
 		info->TemplateId = this->m_templateId;
 
 		SkipToNextField(); // MsgSeqNum
-		SkipToNextField(); // SendingTime
+		info->SendingTime = ReadUInt64_Mandatory();
 		SkipToNextField(); // TradingSessionID
 		SkipToNextField(); // Symbol
 		if(!CheckProcessNullUInt32())
@@ -4143,8 +4138,7 @@ public:
 		info->TemplateId = this->m_templateId;
 
 		SkipToNextField(); // MsgSeqNum
-		SkipToNextField(); // SendingTime
-		SkipToNextField(); // GroupMDEntries
+		info->SendingTime = ReadUInt64_Mandatory();
 		return info;
 	}
 	FastSnapshotInfo* GetSnapshotInfoMarketDataSnapshotFullRefreshOLSFOND() {
@@ -4153,7 +4147,7 @@ public:
 		info->TemplateId = this->m_templateId;
 
 		SkipToNextField(); // MsgSeqNum
-		SkipToNextField(); // SendingTime
+		info->SendingTime = ReadUInt64_Mandatory();
 		if(!CheckProcessNullUInt32())
 			info->LastMsgSeqNumProcessed = ReadUInt32_Optional();
 		info->RptSeq = ReadInt32_Mandatory();
@@ -4169,7 +4163,7 @@ public:
 		info->TemplateId = this->m_templateId;
 
 		SkipToNextField(); // MsgSeqNum
-		SkipToNextField(); // SendingTime
+		info->SendingTime = ReadUInt64_Mandatory();
 		if(!CheckProcessNullUInt32())
 			info->LastMsgSeqNumProcessed = ReadUInt32_Optional();
 		info->RptSeq = ReadInt32_Mandatory();
@@ -4185,7 +4179,7 @@ public:
 		info->TemplateId = this->m_templateId;
 
 		SkipToNextField(); // MsgSeqNum
-		SkipToNextField(); // SendingTime
+		info->SendingTime = ReadUInt64_Mandatory();
 		if(!CheckProcessNullUInt32())
 			info->LastMsgSeqNumProcessed = ReadUInt32_Optional();
 		info->RptSeq = ReadInt32_Mandatory();
@@ -4201,7 +4195,7 @@ public:
 		info->TemplateId = this->m_templateId;
 
 		SkipToNextField(); // MsgSeqNum
-		SkipToNextField(); // SendingTime
+		info->SendingTime = ReadUInt64_Mandatory();
 		if(!CheckProcessNullUInt32())
 			info->LastMsgSeqNumProcessed = ReadUInt32_Optional();
 		info->RptSeq = ReadInt32_Mandatory();
@@ -4217,7 +4211,7 @@ public:
 		info->TemplateId = this->m_templateId;
 
 		SkipToNextField(); // MsgSeqNum
-		SkipToNextField(); // SendingTime
+		info->SendingTime = ReadUInt64_Mandatory();
 		if(!CheckProcessNullUInt32())
 			info->LastMsgSeqNumProcessed = ReadUInt32_Optional();
 		info->RptSeq = ReadInt32_Mandatory();
@@ -4236,7 +4230,7 @@ public:
 		info->TemplateId = this->m_templateId;
 
 		SkipToNextField(); // MsgSeqNum
-		SkipToNextField(); // SendingTime
+		info->SendingTime = ReadUInt64_Mandatory();
 		if(!CheckProcessNullUInt32())
 			info->LastMsgSeqNumProcessed = ReadUInt32_Optional();
 		info->RptSeq = ReadInt32_Mandatory();
@@ -4255,8 +4249,7 @@ public:
 		info->TemplateId = this->m_templateId;
 
 		SkipToNextField(); // MsgSeqNum
-		SkipToNextField(); // SendingTime
-		SkipToNextField(); // GroupMDEntries
+		info->SendingTime = ReadUInt64_Mandatory();
 		return info;
 	}
 	FastSnapshotInfo* GetSnapshotInfoMarketDataIncrementalRefreshMSRCURR() {
@@ -4265,8 +4258,7 @@ public:
 		info->TemplateId = this->m_templateId;
 
 		SkipToNextField(); // MsgSeqNum
-		SkipToNextField(); // SendingTime
-		SkipToNextField(); // GroupMDEntries
+		info->SendingTime = ReadUInt64_Mandatory();
 		return info;
 	}
 	FastSnapshotInfo* GetSnapshotInfoMarketDataIncrementalRefreshOLRFOND() {
@@ -4275,8 +4267,7 @@ public:
 		info->TemplateId = this->m_templateId;
 
 		SkipToNextField(); // MsgSeqNum
-		SkipToNextField(); // SendingTime
-		SkipToNextField(); // GroupMDEntries
+		info->SendingTime = ReadUInt64_Mandatory();
 		return info;
 	}
 	FastSnapshotInfo* GetSnapshotInfoMarketDataIncrementalRefreshOLRCURR() {
@@ -4285,8 +4276,7 @@ public:
 		info->TemplateId = this->m_templateId;
 
 		SkipToNextField(); // MsgSeqNum
-		SkipToNextField(); // SendingTime
-		SkipToNextField(); // GroupMDEntries
+		info->SendingTime = ReadUInt64_Mandatory();
 		return info;
 	}
 	FastSnapshotInfo* GetSnapshotInfoMarketDataIncrementalRefreshOBRFOND() {
@@ -4295,8 +4285,7 @@ public:
 		info->TemplateId = this->m_templateId;
 
 		SkipToNextField(); // MsgSeqNum
-		SkipToNextField(); // SendingTime
-		SkipToNextField(); // GroupMDEntries
+		info->SendingTime = ReadUInt64_Mandatory();
 		return info;
 	}
 	FastSnapshotInfo* GetSnapshotInfoMarketDataIncrementalRefreshOBRCURR() {
@@ -4305,8 +4294,7 @@ public:
 		info->TemplateId = this->m_templateId;
 
 		SkipToNextField(); // MsgSeqNum
-		SkipToNextField(); // SendingTime
-		SkipToNextField(); // GroupMDEntries
+		info->SendingTime = ReadUInt64_Mandatory();
 		return info;
 	}
 	FastSnapshotInfo* GetSnapshotInfoMarketDataIncrementalRefreshTLRFOND() {
@@ -4315,8 +4303,7 @@ public:
 		info->TemplateId = this->m_templateId;
 
 		SkipToNextField(); // MsgSeqNum
-		SkipToNextField(); // SendingTime
-		SkipToNextField(); // GroupMDEntries
+		info->SendingTime = ReadUInt64_Mandatory();
 		return info;
 	}
 	FastSnapshotInfo* GetSnapshotInfoMarketDataIncrementalRefreshTLRCURR() {
@@ -4325,8 +4312,7 @@ public:
 		info->TemplateId = this->m_templateId;
 
 		SkipToNextField(); // MsgSeqNum
-		SkipToNextField(); // SendingTime
-		SkipToNextField(); // GroupMDEntries
+		info->SendingTime = ReadUInt64_Mandatory();
 		return info;
 	}
 	FastSnapshotInfo* GetSnapshotInfoSecurityDefinition() {
@@ -4335,47 +4321,7 @@ public:
 		info->TemplateId = this->m_templateId;
 
 		SkipToNextField(); // MsgSeqNum
-		SkipToNextField(); // SendingTime
-		SkipToNextField(); // TotNumReports
-		SkipToNextField(); // Symbol
-		SkipToNextField(); // SecurityID
-		SkipToNextField(); // SecurityIDSource
-		SkipToNextField(); // Product
-		SkipToNextField(); // CFICode
-		SkipToNextField(); // SecurityType
-		SkipToNextField(); // MaturityDate
-		SkipToNextField(); // SettlDate
-		SkipToNextField(); // SettleType
-		SkipToNextField(); // OrigIssueAmt
-		SkipToNextField(); // CouponPaymentDate
-		SkipToNextField(); // CouponRate
-		SkipToNextField(); // SettlFixingDate
-		SkipToNextField(); // DividendNetPx
-		SkipToNextField(); // SecurityDesc
-		SkipToNextField(); // EncodedSecurityDesc
-		SkipToNextField(); // QuoteText
-		SkipToNextField(); // GroupInstrAttrib
-		SkipToNextField(); // Currency
-		SkipToNextField(); // MarketSegmentGrp
-		SkipToNextField(); // SettlCurrency
-		SkipToNextField(); // PriceType
-		SkipToNextField(); // StateSecurityID
-		SkipToNextField(); // EncodedShortSecurityDesc
-		SkipToNextField(); // MarketCode
-		SkipToNextField(); // MinPriceIncrement
-		SkipToNextField(); // MktShareLimit
-		SkipToNextField(); // MktShareThreshold
-		SkipToNextField(); // MaxOrdersVolume
-		SkipToNextField(); // PriceMvmLimit
-		SkipToNextField(); // FaceValue
-		SkipToNextField(); // BaseSwapPx
-		SkipToNextField(); // RepoToPx
-		SkipToNextField(); // BuyBackPx
-		SkipToNextField(); // BuyBackDate
-		SkipToNextField(); // NoSharesIssued
-		SkipToNextField(); // HighLimit
-		SkipToNextField(); // LowLimit
-		SkipToNextField(); // NumOfDaysToMaturity
+		info->SendingTime = ReadUInt64_Mandatory();
 		return info;
 	}
 	FastSnapshotInfo* GetSnapshotInfoSecurityStatus() {
@@ -4384,12 +4330,7 @@ public:
 		info->TemplateId = this->m_templateId;
 
 		SkipToNextField(); // MsgSeqNum
-		SkipToNextField(); // SendingTime
-		SkipToNextField(); // Symbol
-		SkipToNextField(); // TradingSessionID
-		SkipToNextField(); // TradingSessionSubID
-		SkipToNextField(); // SecurityTradingStatus
-		SkipToNextField(); // AuctionIndicator
+		info->SendingTime = ReadUInt64_Mandatory();
 		return info;
 	}
 	FastSnapshotInfo* GetSnapshotInfoTradingSessionStatus() {
@@ -4398,10 +4339,7 @@ public:
 		info->TemplateId = this->m_templateId;
 
 		SkipToNextField(); // MsgSeqNum
-		SkipToNextField(); // SendingTime
-		SkipToNextField(); // TradSesStatus
-		SkipToNextField(); // Text
-		SkipToNextField(); // TradingSessionID
+		info->SendingTime = ReadUInt64_Mandatory();
 		return info;
 	}
 	FastSnapshotInfo* GetSnapshotInfoHeartbeat() {
@@ -4410,7 +4348,7 @@ public:
 		info->TemplateId = this->m_templateId;
 
 		SkipToNextField(); // MsgSeqNum
-		SkipToNextField(); // SendingTime
+		info->SendingTime = ReadUInt64_Mandatory();
 		return info;
 	}
 	inline void* Decode() {

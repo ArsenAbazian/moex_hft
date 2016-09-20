@@ -142,6 +142,8 @@ protected:
                 this->m_snapshotStartMsgSeqNum = msgSeqNum;
             if(this->m_snapshotEndMsgSeqNum < msgSeqNum)
                 this->m_snapshotEndMsgSeqNum = msgSeqNum;
+			if(this->m_snapshotStartMsgSeqNum > this->m_snapshotEndMsgSeqNum)
+				this->m_snapshotStartMsgSeqNum = this->m_snapshotEndMsgSeqNum; // TODO unbelievable - remove then
         }
         this->m_packets[msgSeqNum] = item;
         this->m_recvABuffer->Next(size);
@@ -159,7 +161,7 @@ protected:
         bool processed = false;
         while(i <= this->m_maxRecvMsgSeqNum) {
             if(this->m_packets[i] == 0) {
-                this->m_currentMsgSeqNum = i - 1;
+                this->m_currentMsgSeqNum = i;
                 return processed;
             }
             this->ProcessMessage(this->m_packets[i]);
@@ -192,14 +194,16 @@ protected:
 		this->m_fastProtocolManager->SetNewBuffer(buffer, this->m_recvABuffer->ItemLength(item->m_itemIndex));
 		this->m_fastProtocolManager->ReadMsgSeqNumber();
 		FastSnapshotInfo* info = this->m_fastProtocolManager->GetSnapshotInfo();
-        return info->RouteFirst == 1;
+        return info == NULL? false: info->RouteFirst == 1;
     }
     inline bool CheckForLastFragment(BinaryLogItem *item, int *refMsgSeqNum) {
         unsigned char *buffer = this->m_recvABuffer->Item(item->m_itemIndex);
         this->m_fastProtocolManager->SetNewBuffer(buffer, this->m_recvABuffer->ItemLength(item->m_itemIndex));
 		this->m_fastProtocolManager->ReadMsgSeqNumber();
         FastSnapshotInfo* info = this->m_fastProtocolManager->GetSnapshotInfo();
-        *refMsgSeqNum = info->LastMsgSeqNumProcessed;
+        if(info == NULL)
+			return false;
+		*refMsgSeqNum = info->LastMsgSeqNumProcessed;
         return info->LastFragment == 1;
     }
 	inline int GetRouteFirst() {
@@ -215,12 +219,13 @@ protected:
 		return -1;
 	}
 	inline FastSnapshotInfo* GetSnapshotInfo(int index) {
+		if(this->m_packets[index] == NULL)
+			return NULL;
 		BinaryLogItem *item = this->m_packets[index];
 		unsigned char *buffer = this->m_recvABuffer->Item(item->m_itemIndex);
 		this->m_fastProtocolManager->SetNewBuffer(buffer, this->m_recvABuffer->ItemLength(item->m_itemIndex));
 		this->m_fastProtocolManager->ReadMsgSeqNumber();
-		FastSnapshotInfo *res = this->m_fastProtocolManager->GetSnapshotInfo();
-		return res;
+		return this->m_fastProtocolManager->GetSnapshotInfo();
 	}
     inline int GetLastFragment(int *refMsgSeqNum) {
 		if(this->m_snapshotStartMsgSeqNum == -1)
@@ -292,7 +297,8 @@ protected:
 	inline bool ProcessMessage(BinaryLogItem *item) {
         unsigned char *buffer = this->m_recvABuffer->Item(item->m_itemIndex);
         this->m_fastProtocolManager->SetNewBuffer(buffer, this->m_recvABuffer->ItemLength(item->m_itemIndex));
-        this->Decode();
+        this->m_fastProtocolManager->ReadMsgSeqNumber();
+		this->Decode();
         return true;
 	}
 public:
@@ -304,9 +310,9 @@ public:
     inline void StartNewSnapshot() {
         DefaultLogManager::Default->WriteSuccess(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_StartNewSnapshot, true);
         this->m_snapshotAvailable = false;
-        this->m_snapshotEndMsgSeqNum =
+        this->m_snapshotEndMsgSeqNum = -1;
         this->m_snapshotStartMsgSeqNum = -1;
-        this->m_snapshotRouteFirst =
+        this->m_snapshotRouteFirst = -1;
         this->m_snapshotLastFragment = -1;
     }
 
@@ -431,7 +437,7 @@ public:
 	FeedConnection_CURR_OBR(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
 		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
 
-        this->m_type = FeedConnectionType::Incremental;
+		this->SetType(FeedConnectionType::Incremental);
     }
 	inline void Decode() {
 		DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Decode);
@@ -452,7 +458,7 @@ public:
 	FeedConnection_CURR_OBS(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
 		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
 
-        this->m_type = FeedConnectionType::Snapshot;
+		this->SetType(FeedConnectionType::Snapshot);
     }
 	inline void Decode() {
 		DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Decode);
@@ -472,7 +478,7 @@ class FeedConnection_CURR_MSR : public FeedConnection {
 public:
 	FeedConnection_CURR_MSR(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
 		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
-        this->m_type = FeedConnectionType::Incremental;
+		this->SetType(FeedConnectionType::Incremental);
     }
 	inline void Decode() {
 		DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Decode);
@@ -492,7 +498,7 @@ class FeedConnection_CURR_MSS : public FeedConnection {
 public:
 	FeedConnection_CURR_MSS(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
 		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
-        this->m_type = FeedConnectionType::Snapshot;
+		this->SetType(FeedConnectionType::Snapshot);
     }
 	ISocketBufferProvider* CreateSocketBufferProvider() {
 		return new SocketBufferProvider(DefaultSocketBufferManager::Default,
@@ -507,7 +513,7 @@ class FeedConnection_CURR_OLR : public FeedConnection {
 public:
 	FeedConnection_CURR_OLR(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
 		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
-        this->m_type = FeedConnectionType::Incremental;
+		this->SetType(FeedConnectionType::Incremental);
     }
 	inline void Decode() {
 		DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Decode);
@@ -527,7 +533,7 @@ class FeedConnection_CURR_OLS : public FeedConnection {
 public:
 	FeedConnection_CURR_OLS(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
 		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
-        this->m_type = FeedConnectionType::Snapshot;
+		this->SetType(FeedConnectionType::Snapshot);
     }
 	inline void Decode() {
 		DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Decode);
@@ -547,7 +553,7 @@ class FeedConnection_CURR_TLR : public FeedConnection {
 public:
 	FeedConnection_CURR_TLR(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
 		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
-        this->m_type = FeedConnectionType::Incremental;
+		this->SetType(FeedConnectionType::Incremental);
     }
 	inline void Decode() {
 		DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Decode);
@@ -567,7 +573,7 @@ class FeedConnection_CURR_TLS : public FeedConnection {
 public:
 	FeedConnection_CURR_TLS(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
 		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
-        this->m_type = FeedConnectionType::Snapshot;
+		this->SetType(FeedConnectionType::Snapshot);
     }
 	inline void Decode() {
 		DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Decode);
@@ -587,7 +593,7 @@ class FeedConnection_FOND_OBR : public FeedConnection {
 public:
 	FeedConnection_FOND_OBR(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
 		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
-        this->m_type = FeedConnectionType::Incremental;
+		this->SetType(FeedConnectionType::Incremental);
     }
 	inline void Decode() {
 		DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Decode);
@@ -607,7 +613,7 @@ class FeedConnection_FOND_OBS : public FeedConnection {
 public:
 	FeedConnection_FOND_OBS(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
 		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
-        this->m_type = FeedConnectionType::Snapshot;
+		this->SetType(FeedConnectionType::Snapshot);
     }
 	inline void Decode() {
 		DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Decode);
@@ -627,7 +633,7 @@ class FeedConnection_FOND_MSR : public FeedConnection {
 public:
 	FeedConnection_FOND_MSR(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
 		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
-        this->m_type = FeedConnectionType::Incremental;
+		this->SetType(FeedConnectionType::Incremental);
     }
 	inline void Decode() {
 		DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Decode);
@@ -647,7 +653,7 @@ class FeedConnection_FOND_MSS : public FeedConnection {
 public:
 	FeedConnection_FOND_MSS(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
 		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
-        this->m_type = FeedConnectionType::Snapshot;
+		this->SetType(FeedConnectionType::Snapshot);
     }
 	ISocketBufferProvider* CreateSocketBufferProvider() {
 		return new SocketBufferProvider(DefaultSocketBufferManager::Default,
@@ -662,7 +668,7 @@ class FeedConnection_FOND_OLR : public FeedConnection {
 public:
 	FeedConnection_FOND_OLR(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
 		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
-        this->m_type = FeedConnectionType::Incremental;
+		this->SetType(FeedConnectionType::Incremental);
     }
 	inline void Decode() {
 		DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Decode);
@@ -682,7 +688,7 @@ class FeedConnection_FOND_OLS : public FeedConnection {
 public:
 	FeedConnection_FOND_OLS(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
 		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
-        this->m_type = FeedConnectionType::Snapshot;
+		this->SetType(FeedConnectionType::Snapshot);
     }
 	inline void Decode() {
 		DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Decode);
@@ -702,7 +708,7 @@ class FeedConnection_FOND_TLR : public FeedConnection {
 public:
 	FeedConnection_FOND_TLR(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
 		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
-        this->m_type = FeedConnectionType::Incremental;
+		this->SetType(FeedConnectionType::Incremental);
     }
 	inline void Decode() {
 		DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Decode);
@@ -722,7 +728,7 @@ class FeedConnection_FOND_TLS : public FeedConnection {
 public:
 	FeedConnection_FOND_TLS(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
 		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
-        this->m_type = FeedConnectionType::Snapshot;
+		this->SetType(FeedConnectionType::Snapshot);
     }
 	inline void Decode() {
 		DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Decode);

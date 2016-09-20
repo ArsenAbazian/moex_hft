@@ -61,14 +61,35 @@ bool FeedChannel::Disconnect(FeedConnection *conn) {
 	return conn->Disconnect();
 }
 
+bool FeedChannel::CheckConnections() {
+	if(this->orderBookIncremental->Type() != FeedConnectionType::Incremental)
+		return false;
+	if(this->ordersIncremental->Type() != FeedConnectionType::Incremental)
+		return false;
+	if(this->statisticsIncremental->Type() != FeedConnectionType::Incremental)
+		return false;
+	if(this->tradesIncremental->Type() != FeedConnectionType::Incremental)
+		return false;
+
+	if(this->orderBookSnapshot->Type() != FeedConnectionType::Snapshot)
+		return false;
+	if(this->ordersSnapshot->Type() != FeedConnectionType::Snapshot)
+		return false;
+	if(this->statisticsSnapshot->Type() != FeedConnectionType::Snapshot)
+		return false;
+	if(this->tradesSnapshot->Type() != FeedConnectionType::Snapshot)
+		return false;
+
+	return true;
+}
+
 bool FeedChannel::Connect() { 
 	DefaultLogManager::Default->StartLog(this->m_nameLogIndex, LogMessageCode::lmcFeedChannel_Connect);
 
-    this->orderBookSnapshot->SetType(FeedConnectionType::Snapshot);
-    this->ordersSnapshot->SetType(FeedConnectionType::Snapshot);
-    this->statisticsSnapshot->SetType(FeedConnectionType::Snapshot);
-    this->tradesSnapshot->SetType(FeedConnectionType::Snapshot);
-    this->instrumentStatus->SetType(FeedConnectionType::Snapshot);
+	if(!this->CheckConnections()) {
+		DefaultLogManager::Default->EndLog(false);
+		return false;
+	}
 
 	this->orderBookIncremental->SetSnapshot(this->orderBookSnapshot);
 	this->statisticsIncremental->SetSnapshot(this->statisticsSnapshot);
