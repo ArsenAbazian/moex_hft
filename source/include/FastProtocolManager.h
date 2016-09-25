@@ -30,6 +30,7 @@ class FastProtocolManager {
     FILE            *m_xmlFilePtr;
 
     FastSnapshotInfo *m_snapshotInfo;
+	void			*m_lastDecodedInfo;
 
 #pragma region String_Constant_Declaration_GeneratedCode
 public:
@@ -4354,7 +4355,150 @@ public:
 	inline void* Decode() {
 		this->DecodeHeader();
 		FastDecodeMethodPointer funcPtr = this->DecodeMethods[this->m_templateId - 2101];
-		return (this->*funcPtr)();
+		this->m_lastDecodedInfo = (this->*funcPtr)();
+		return this->m_lastDecodedInfo;
+	}
+	inline void Print() {
+
+		switch(this->m_templateId) {
+			case 2101:
+				PrintLogon((FastLogonInfo*)this->m_lastDecodedInfo);
+				break;
+			case 2102:
+				PrintLogout((FastLogoutInfo*)this->m_lastDecodedInfo);
+				break;
+			case 2103:
+				PrintMarketDataSnapshotFullRefreshGeneric((FastMarketDataSnapshotFullRefreshGenericInfo*)this->m_lastDecodedInfo);
+				break;
+			case 2104:
+				PrintMarketDataIncrementalRefreshGeneric((FastMarketDataIncrementalRefreshGenericInfo*)this->m_lastDecodedInfo);
+				break;
+			case 2410:
+				PrintMarketDataSnapshotFullRefreshOLSFOND((FastMarketDataSnapshotFullRefreshOLSFONDInfo*)this->m_lastDecodedInfo);
+				break;
+			case 3500:
+				PrintMarketDataSnapshotFullRefreshOLSCURR((FastMarketDataSnapshotFullRefreshOLSCURRInfo*)this->m_lastDecodedInfo);
+				break;
+			case 2411:
+				PrintMarketDataSnapshotFullRefreshTLSFOND((FastMarketDataSnapshotFullRefreshTLSFONDInfo*)this->m_lastDecodedInfo);
+				break;
+			case 3501:
+				PrintMarketDataSnapshotFullRefreshTLSCURR((FastMarketDataSnapshotFullRefreshTLSCURRInfo*)this->m_lastDecodedInfo);
+				break;
+			case 2412:
+				PrintMarketDataSnapshotFullRefreshOBSFOND((FastMarketDataSnapshotFullRefreshOBSFONDInfo*)this->m_lastDecodedInfo);
+				break;
+			case 3502:
+				PrintMarketDataSnapshotFullRefreshOBSCURR((FastMarketDataSnapshotFullRefreshOBSCURRInfo*)this->m_lastDecodedInfo);
+				break;
+			case 2423:
+				PrintMarketDataIncrementalRefreshMSRFOND((FastMarketDataIncrementalRefreshMSRFONDInfo*)this->m_lastDecodedInfo);
+				break;
+			case 3513:
+				PrintMarketDataIncrementalRefreshMSRCURR((FastMarketDataIncrementalRefreshMSRCURRInfo*)this->m_lastDecodedInfo);
+				break;
+			case 2420:
+				PrintMarketDataIncrementalRefreshOLRFOND((FastMarketDataIncrementalRefreshOLRFONDInfo*)this->m_lastDecodedInfo);
+				break;
+			case 3510:
+				PrintMarketDataIncrementalRefreshOLRCURR((FastMarketDataIncrementalRefreshOLRCURRInfo*)this->m_lastDecodedInfo);
+				break;
+			case 2422:
+				PrintMarketDataIncrementalRefreshOBRFOND((FastMarketDataIncrementalRefreshOBRFONDInfo*)this->m_lastDecodedInfo);
+				break;
+			case 3512:
+				PrintMarketDataIncrementalRefreshOBRCURR((FastMarketDataIncrementalRefreshOBRCURRInfo*)this->m_lastDecodedInfo);
+				break;
+			case 2421:
+				PrintMarketDataIncrementalRefreshTLRFOND((FastMarketDataIncrementalRefreshTLRFONDInfo*)this->m_lastDecodedInfo);
+				break;
+			case 3511:
+				PrintMarketDataIncrementalRefreshTLRCURR((FastMarketDataIncrementalRefreshTLRCURRInfo*)this->m_lastDecodedInfo);
+				break;
+			case 2115:
+				PrintSecurityDefinition((FastSecurityDefinitionInfo*)this->m_lastDecodedInfo);
+				break;
+			case 2106:
+				PrintSecurityStatus((FastSecurityStatusInfo*)this->m_lastDecodedInfo);
+				break;
+			case 2107:
+				PrintTradingSessionStatus((FastTradingSessionStatusInfo*)this->m_lastDecodedInfo);
+				break;
+			case 2108:
+				PrintHeartbeat((FastHeartbeatInfo*)this->m_lastDecodedInfo);
+				break;
+		}
+	}
+	inline void PrintXml() {
+
+		switch(this->m_templateId) {
+			case 2101:
+				PrintXmlLogon((FastLogonInfo*)this->m_lastDecodedInfo);
+				break;
+			case 2102:
+				PrintXmlLogout((FastLogoutInfo*)this->m_lastDecodedInfo);
+				break;
+			case 2103:
+				PrintXmlMarketDataSnapshotFullRefreshGeneric((FastMarketDataSnapshotFullRefreshGenericInfo*)this->m_lastDecodedInfo);
+				break;
+			case 2104:
+				PrintXmlMarketDataIncrementalRefreshGeneric((FastMarketDataIncrementalRefreshGenericInfo*)this->m_lastDecodedInfo);
+				break;
+			case 2410:
+				PrintXmlMarketDataSnapshotFullRefreshOLSFOND((FastMarketDataSnapshotFullRefreshOLSFONDInfo*)this->m_lastDecodedInfo);
+				break;
+			case 3500:
+				PrintXmlMarketDataSnapshotFullRefreshOLSCURR((FastMarketDataSnapshotFullRefreshOLSCURRInfo*)this->m_lastDecodedInfo);
+				break;
+			case 2411:
+				PrintXmlMarketDataSnapshotFullRefreshTLSFOND((FastMarketDataSnapshotFullRefreshTLSFONDInfo*)this->m_lastDecodedInfo);
+				break;
+			case 3501:
+				PrintXmlMarketDataSnapshotFullRefreshTLSCURR((FastMarketDataSnapshotFullRefreshTLSCURRInfo*)this->m_lastDecodedInfo);
+				break;
+			case 2412:
+				PrintXmlMarketDataSnapshotFullRefreshOBSFOND((FastMarketDataSnapshotFullRefreshOBSFONDInfo*)this->m_lastDecodedInfo);
+				break;
+			case 3502:
+				PrintXmlMarketDataSnapshotFullRefreshOBSCURR((FastMarketDataSnapshotFullRefreshOBSCURRInfo*)this->m_lastDecodedInfo);
+				break;
+			case 2423:
+				PrintXmlMarketDataIncrementalRefreshMSRFOND((FastMarketDataIncrementalRefreshMSRFONDInfo*)this->m_lastDecodedInfo);
+				break;
+			case 3513:
+				PrintXmlMarketDataIncrementalRefreshMSRCURR((FastMarketDataIncrementalRefreshMSRCURRInfo*)this->m_lastDecodedInfo);
+				break;
+			case 2420:
+				PrintXmlMarketDataIncrementalRefreshOLRFOND((FastMarketDataIncrementalRefreshOLRFONDInfo*)this->m_lastDecodedInfo);
+				break;
+			case 3510:
+				PrintXmlMarketDataIncrementalRefreshOLRCURR((FastMarketDataIncrementalRefreshOLRCURRInfo*)this->m_lastDecodedInfo);
+				break;
+			case 2422:
+				PrintXmlMarketDataIncrementalRefreshOBRFOND((FastMarketDataIncrementalRefreshOBRFONDInfo*)this->m_lastDecodedInfo);
+				break;
+			case 3512:
+				PrintXmlMarketDataIncrementalRefreshOBRCURR((FastMarketDataIncrementalRefreshOBRCURRInfo*)this->m_lastDecodedInfo);
+				break;
+			case 2421:
+				PrintXmlMarketDataIncrementalRefreshTLRFOND((FastMarketDataIncrementalRefreshTLRFONDInfo*)this->m_lastDecodedInfo);
+				break;
+			case 3511:
+				PrintXmlMarketDataIncrementalRefreshTLRCURR((FastMarketDataIncrementalRefreshTLRCURRInfo*)this->m_lastDecodedInfo);
+				break;
+			case 2115:
+				PrintXmlSecurityDefinition((FastSecurityDefinitionInfo*)this->m_lastDecodedInfo);
+				break;
+			case 2106:
+				PrintXmlSecurityStatus((FastSecurityStatusInfo*)this->m_lastDecodedInfo);
+				break;
+			case 2107:
+				PrintXmlTradingSessionStatus((FastTradingSessionStatusInfo*)this->m_lastDecodedInfo);
+				break;
+			case 2108:
+				PrintXmlHeartbeat((FastHeartbeatInfo*)this->m_lastDecodedInfo);
+				break;
+		}
 	}
 	inline FastSnapshotInfo* GetSnapshotInfo() {
 		this->DecodeHeader();

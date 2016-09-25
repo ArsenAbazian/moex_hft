@@ -766,6 +766,9 @@ namespace prebuild {
 			public string FullDecodeMethodName { get { return "Decode" + NameCore; } }
 			public bool HasGetSnapshotInfoMethod { get { return FullDecodeMethodName.Contains("FullRefresh"); } }
 			public string FullGetSnapshotInfoMethod { get { return "GetSnapshotInfo" + NameCore; } }
+			public string PrintMethodName { get { return "Print" + NameCore; } }
+			public string PrintXmlMethodName { get { return "PrintXml" + NameCore; } }
+			public string StructName { get { return "Fast" + NameCore + "Info"; } }
 		}
 
 		private  void WriteEntireMethodsCode (XmlNode templatesNode) {
@@ -773,7 +776,31 @@ namespace prebuild {
 			WriteLine("\tinline void* Decode() {");
 			WriteLine("\t\tthis->DecodeHeader();");
 			WriteLine("\t\tFastDecodeMethodPointer funcPtr = this->DecodeMethods[this->m_templateId - " + minId + "];");
-			WriteLine("\t\treturn (this->*funcPtr)();");
+			WriteLine("\t\tthis->m_lastDecodedInfo = (this->*funcPtr)();");
+			WriteLine("\t\treturn this->m_lastDecodedInfo;");
+			WriteLine("\t}");
+
+			WriteLine("\tvoid Print() {");
+			WriteLine("");
+			WriteLine("\t\tswitch(this->m_templateId) {");
+			List<DecodeMessageInfo> messages = GetDecodeMessageMethods(templatesNode);
+			foreach(DecodeMessageInfo info in messages) {
+				WriteLine("\t\t\tcase " + info.TemplateId + ":");
+				WriteLine("\t\t\t\t" + info.PrintMethodName + "((" + info.StructName + "*)this->m_lastDecodedInfo);");
+				WriteLine("\t\t\t\tbreak;");
+			}
+			WriteLine("\t\t}");
+			WriteLine("\t}");
+
+			WriteLine("\tvoid PrintXml() {");
+			WriteLine("");
+			WriteLine("\t\tswitch(this->m_templateId) {");
+			foreach(DecodeMessageInfo info in messages) {
+				WriteLine("\t\t\tcase " + info.TemplateId + ":");
+				WriteLine("\t\t\t\t" + info.PrintXmlMethodName + "((" + info.StructName + "*)this->m_lastDecodedInfo);");
+				WriteLine("\t\t\t\tbreak;");
+			}
+			WriteLine("\t\t}");
 			WriteLine("\t}");
 
 			WriteLine("\tinline FastSnapshotInfo* GetSnapshotInfo() {");

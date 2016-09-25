@@ -134,6 +134,8 @@ protected:
                                                                     this->m_recvABuffer->BufferIndex(),
                                                                     this->m_recvABuffer->CurrentItemIndex());
         if(this->m_type == FeedConnectionType::Incremental) {
+            //if(this->m_currentMsgSeqNum == 1)
+            //    this->m_currentMsgSeqNum = msgSeqNum;  // TODO - remove after debug end
             if (this->m_maxRecvMsgSeqNum < msgSeqNum)
                 this->m_maxRecvMsgSeqNum = msgSeqNum;
         }
@@ -298,7 +300,10 @@ protected:
         unsigned char *buffer = this->m_recvABuffer->Item(item->m_itemIndex);
         this->m_fastProtocolManager->SetNewBuffer(buffer, this->m_recvABuffer->ItemLength(item->m_itemIndex));
         this->m_fastProtocolManager->ReadMsgSeqNumber();
-		this->Decode();
+		DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Decode);
+		this->m_fastProtocolManager->Decode();
+		this->m_fastProtocolManager->Print();
+		DefaultLogManager::Default->EndLog(true);
         return true;
 	}
 public:
@@ -439,11 +444,6 @@ public:
 
 		this->SetType(FeedConnectionType::Incremental);
     }
-	inline void Decode() {
-		DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Decode);
-		this->m_fastProtocolManager->Decode();
-		DefaultLogManager::Default->EndLog(true);
-	}
 	ISocketBufferProvider* CreateSocketBufferProvider() {
 		return new SocketBufferProvider(DefaultSocketBufferManager::Default,
 										RobotSettings::DefaultFeedConnectionSendBufferSize,
@@ -460,11 +460,6 @@ public:
 
 		this->SetType(FeedConnectionType::Snapshot);
     }
-	inline void Decode() {
-		DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Decode);
-		this->m_fastProtocolManager->Decode();
-		DefaultLogManager::Default->EndLog(true);
-	}
 	ISocketBufferProvider* CreateSocketBufferProvider() {
 		return new SocketBufferProvider(DefaultSocketBufferManager::Default,
 										RobotSettings::DefaultFeedConnectionSendBufferSize,
@@ -480,11 +475,6 @@ public:
 		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
 		this->SetType(FeedConnectionType::Incremental);
     }
-	inline void Decode() {
-		DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Decode);
-		this->m_fastProtocolManager->Decode();
-		DefaultLogManager::Default->EndLog(true);
-	}
 	ISocketBufferProvider* CreateSocketBufferProvider() {
 		return new SocketBufferProvider(DefaultSocketBufferManager::Default,
 										RobotSettings::DefaultFeedConnectionSendBufferSize,
@@ -515,11 +505,6 @@ public:
 		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
 		this->SetType(FeedConnectionType::Incremental);
     }
-	inline void Decode() {
-		DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Decode);
-		this->m_fastProtocolManager->Decode();
-		DefaultLogManager::Default->EndLog(true);
-	}
 	ISocketBufferProvider* CreateSocketBufferProvider() {
 		return new SocketBufferProvider(DefaultSocketBufferManager::Default,
 										RobotSettings::DefaultFeedConnectionSendBufferSize,
@@ -535,11 +520,6 @@ public:
 		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
 		this->SetType(FeedConnectionType::Snapshot);
     }
-	inline void Decode() {
-		DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Decode);
-		this->m_fastProtocolManager->Decode();
-		DefaultLogManager::Default->EndLog(true);
-	}
 	ISocketBufferProvider* CreateSocketBufferProvider() {
 		return new SocketBufferProvider(DefaultSocketBufferManager::Default,
 										RobotSettings::DefaultFeedConnectionSendBufferSize,
@@ -555,11 +535,6 @@ public:
 		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
 		this->SetType(FeedConnectionType::Incremental);
     }
-	inline void Decode() {
-		DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Decode);
-		this->m_fastProtocolManager->Decode();
-		DefaultLogManager::Default->EndLog(true);
-	}
 	ISocketBufferProvider* CreateSocketBufferProvider() {
 		return new SocketBufferProvider(DefaultSocketBufferManager::Default,
 										RobotSettings::DefaultFeedConnectionSendBufferSize,
@@ -575,11 +550,6 @@ public:
 		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
 		this->SetType(FeedConnectionType::Snapshot);
     }
-	inline void Decode() {
-		DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Decode);
-		this->m_fastProtocolManager->Decode();
-		DefaultLogManager::Default->EndLog(true);
-	}
 	ISocketBufferProvider* CreateSocketBufferProvider() {
 		return new SocketBufferProvider(DefaultSocketBufferManager::Default,
 										RobotSettings::DefaultFeedConnectionSendBufferSize,
@@ -595,11 +565,6 @@ public:
 		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
 		this->SetType(FeedConnectionType::Incremental);
     }
-	inline void Decode() {
-		DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Decode);
-		this->m_fastProtocolManager->Decode();
-		DefaultLogManager::Default->EndLog(true);
-	}
 	ISocketBufferProvider* CreateSocketBufferProvider() {
 		return new SocketBufferProvider(DefaultSocketBufferManager::Default,
 										RobotSettings::DefaultFeedConnectionSendBufferSize,
@@ -615,11 +580,6 @@ public:
 		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
 		this->SetType(FeedConnectionType::Snapshot);
     }
-	inline void Decode() {
-		DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Decode);
-		this->m_fastProtocolManager->Decode();
-		DefaultLogManager::Default->EndLog(true);
-	}
 	ISocketBufferProvider* CreateSocketBufferProvider() {
 		return new SocketBufferProvider(DefaultSocketBufferManager::Default,
 										RobotSettings::DefaultFeedConnectionSendBufferSize,
@@ -635,11 +595,6 @@ public:
 		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
 		this->SetType(FeedConnectionType::Incremental);
     }
-	inline void Decode() {
-		DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Decode);
-		this->m_fastProtocolManager->Decode();
-		DefaultLogManager::Default->EndLog(true);
-	}
 	ISocketBufferProvider* CreateSocketBufferProvider() {
 		return new SocketBufferProvider(DefaultSocketBufferManager::Default,
 										RobotSettings::DefaultFeedConnectionSendBufferSize,
@@ -670,11 +625,6 @@ public:
 		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
 		this->SetType(FeedConnectionType::Incremental);
     }
-	inline void Decode() {
-		DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Decode);
-		this->m_fastProtocolManager->Decode();
-		DefaultLogManager::Default->EndLog(true);
-	}
 	ISocketBufferProvider* CreateSocketBufferProvider() {
 		return new SocketBufferProvider(DefaultSocketBufferManager::Default,
 										RobotSettings::DefaultFeedConnectionSendBufferSize,
@@ -690,11 +640,6 @@ public:
 		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
 		this->SetType(FeedConnectionType::Snapshot);
     }
-	inline void Decode() {
-		DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Decode);
-		this->m_fastProtocolManager->Decode();
-		DefaultLogManager::Default->EndLog(true);
-	}
 	ISocketBufferProvider* CreateSocketBufferProvider() {
 		return new SocketBufferProvider(DefaultSocketBufferManager::Default,
 										RobotSettings::DefaultFeedConnectionSendBufferSize,
@@ -710,11 +655,6 @@ public:
 		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
 		this->SetType(FeedConnectionType::Incremental);
     }
-	inline void Decode() {
-		DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Decode);
-		this->m_fastProtocolManager->Decode();
-		DefaultLogManager::Default->EndLog(true);
-	}
 	ISocketBufferProvider* CreateSocketBufferProvider() {
 		return new SocketBufferProvider(DefaultSocketBufferManager::Default,
 										RobotSettings::DefaultFeedConnectionSendBufferSize,
@@ -730,11 +670,6 @@ public:
 		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
 		this->SetType(FeedConnectionType::Snapshot);
     }
-	inline void Decode() {
-		DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Decode);
-		this->m_fastProtocolManager->Decode();
-		DefaultLogManager::Default->EndLog(true);
-	}
 	ISocketBufferProvider* CreateSocketBufferProvider() {
 		return new SocketBufferProvider(DefaultSocketBufferManager::Default,
 										RobotSettings::DefaultFeedConnectionSendBufferSize,

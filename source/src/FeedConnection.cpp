@@ -150,11 +150,12 @@ bool FeedConnection::Listen_Atom_Incremental() {
             this->m_waitTimer->Stop();
             return true;
         }
+        /* TODO REMOVE!!!! */
         if(!this->m_waitTimer->Active()) {
             this->m_waitTimer->Start();
         }
         else {
-            if(this->m_waitTimer->ElapsedSeconds()) {
+            if(this->m_waitTimer->ElapsedSeconds() > 3) {
                 if(!this->StartListenSnapshot())
                     return false;
                 this->m_waitTimer->Stop();
