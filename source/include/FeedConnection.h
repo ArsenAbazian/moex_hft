@@ -4,6 +4,15 @@
 #include "Types.h"
 #include <sys/time.h>
 #include "Stopwatch.h"
+#include "OrderBookInfo.h"
+#include "MarketData/OrderBookInfoList.h"
+#include "MarketData/MarketDataTable.h"
+
+typedef enum _FeedConnectionMessage {
+	fcmHeartBeat = 2108,
+	fmcIncrementalRefresh_OBR_FOND = 2422,
+	fmcFullRefresh_OBS_FOND = 2412
+}FeedConnectionMessage;
 
 typedef enum _FeedConnectionProtocol {
 	TCP_IP,
@@ -33,7 +42,7 @@ typedef enum _FeedConnectionType {
 }FeedConnectionType;
 
 class FeedConnection {
-	const int MaxReceiveBufferSize = 1500;
+	const int MaxReceiveBufferSize 				= 1500;
     const int WaitIncrementalMaxTimeSec         = 5;
     const int WaitAnyPacketMaxTimeSec           = 10;
 protected:
@@ -102,6 +111,11 @@ protected:
     Stopwatch                                   *m_waitTimer;
     bool                                        m_shouldReceiveAnswer;
 
+protected:
+	MarketDataTable								*m_orderBookTable;
+	OrderBookInfoList							*m_orderBookInfoPool;
+private:
+
     inline void GetCurrentTime(UINT64 *time) {
         gettimeofday(this->m_tval, NULL);
         *time = this->m_tval->tv_usec / 1000;
@@ -153,9 +167,33 @@ protected:
     }
     inline bool WaitingSnapshot() { return this->m_waitingSnapshot; }
     inline bool SnapshotAvailable() { return this->m_snapshotAvailable; }
+
+	inline void AddOrderBookInfo(char *symbol, FastMarketDataSnapshotFullRefreshOBSFONDGroupMDEntriesItemInfo *info) {
+		SimpleListNode *obn = this->m_orderBookInfoPool->GetItem();
+		OrderBookInfo *obi = (OrderBookInfo)obn->Data();
+
+		this->m_orderBookTable->Add(symbol, info->Trad)
+
+		printf()
+	}
+
+	inline bool ApplyOrderBookSnapshot_FOND() {
+		FastMarketDataSnapshotFullRefreshOBSFONDInfo *info = (FastMarketDataSnapshotFullRefreshOBSFONDInfo*)this->m_snapshot->m_fastProtocolManager->LastDecodeInfo();
+
+		this->m_orderBookTable->Clear();
+		for(int i = 0; i < info->GroupMDEntriesCount; i++)
+			this->AddOrderBookInfo(info->Symbol, info info->GroupMDEntries[i]);
+
+		return true;
+	}
+
     inline bool ApplySnapshot() {
-		printf("%s -> Snapshot applied\n", this->id);
-		printf("RouteFirst = %d, LastFragment = %d, LastMsgSeqProcessed = %d, RptSeq = %d\n", this->m_snapshotRouteFirst, this->m_snapshotLastFragment, this->m_lastMsgSeqNumProcessed, this->m_rptSeq);
+		switch(this->m_snapshot->m_fastProtocolManager->TemplateId()) {
+			case FeedConnectionMessage::fmcFullRefresh_OBS_FOND:
+				return this->ApplyOrderBookSnapshot_FOND();
+		}
+		//printf("%s -> Snapshot applied\n", this->id);
+		//printf("RouteFirst = %d, LastFragment = %d, LastMsgSeqProcessed = %d, RptSeq = %d\n", this->m_snapshotRouteFirst, this->m_snapshotLastFragment, this->m_lastMsgSeqNumProcessed, this->m_rptSeq);
 		return true;
 	}
     inline bool ApplyPacketSequence() {
@@ -296,6 +334,57 @@ protected:
         return true;
     }
 
+	inline OrderBookInfo* AddOrderBookInfo(FastMarketDataIncrementalRefreshOBRFONDGroupMDEntriesItemInfo *info) {
+		SimpleListNode *orderBookNode = this->m_orderBookInfoPool->GetItem();
+		OrderBookInfo *obi = (OrderBookInfo*)orderBookNode->Data();
+
+		this->m_orderBookTable->Add(info->Symbol, info->TradingSessionID, orderBookNode);
+		printf("add order book %s\n", info->MDEntryID);
+
+		return 0;
+	}
+
+	inline void ChangeOrderBookInfo(FastMarketDataIncrementalRefreshOBRFONDGroupMDEntriesItemInfo *info) {
+		printf("chanfe order book %s\n", info->MDEntryID);
+	}
+
+	inline void RemoveOrderBookInfo(FastMarketDataIncrementalRefreshOBRFONDGroupMDEntriesItemInfo *info) {
+		printf("remove order book %s\n", info->MDEntryID);
+	}
+
+	inline bool OnIncrementalRefresh_OBR_FOND(FastMarketDataIncrementalRefreshOBRFONDGroupMDEntriesItemInfo *info) {
+		if(info->MDUpdateAction == MDUpdateAction::mduaAdd) {
+			AddOrderBookInfo(info);
+		}
+		else if(info->MDUpdateAction == MDUpdateAction::mduaChange) {
+			ChangeOrderBookInfo(info);
+		}
+		else if(info->MDUpdateAction == MDUpdateAction::mduaDelete) {
+			RemoveOrderBookInfo(info);
+		}
+
+		return true;
+	}
+
+	inline bool OnIncrementalRefresh_OBR_FOND() {
+		FastMarketDataIncrementalRefreshOBRFONDInfo *info = (FastMarketDataIncrementalRefreshOBRFONDInfo*)this->m_fastProtocolManager->LastDecodeInfo();
+		bool res = true;
+		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
+			res |= this->OnIncrementalRefresh_OBR_FOND(info->GroupMDEntries[i]);
+		}
+		return res;
+	}
+
+	inline bool ApplyDecodedMessage() {
+		switch(this->m_fastProtocolManager->TemplateId()) {
+			case FeedConnectionMessage::fcmHeartBeat:
+				break;
+			case FeedConnectionMessage::fmcIncrementalRefresh_OBR_FOND:
+				return this->OnIncrementalRefresh_OBR_FOND();
+		}
+		return true;
+	}
+
 	inline bool ProcessMessage(BinaryLogItem *item) {
         unsigned char *buffer = this->m_recvABuffer->Item(item->m_itemIndex);
         this->m_fastProtocolManager->SetNewBuffer(buffer, this->m_recvABuffer->ItemLength(item->m_itemIndex));
@@ -303,6 +392,7 @@ protected:
 		DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Decode);
 		this->m_fastProtocolManager->Decode();
 		this->m_fastProtocolManager->Print();
+		this->ApplyDecodedMessage();
 		DefaultLogManager::Default->EndLog(true);
         return true;
 	}
@@ -443,6 +533,8 @@ public:
 		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
 
 		this->SetType(FeedConnectionType::Incremental);
+		this->m_orderBookTable = new MarketDataTable();
+		this->m_orderBookInfoPool = new OrderBookInfoList(1000, 200);
     }
 	ISocketBufferProvider* CreateSocketBufferProvider() {
 		return new SocketBufferProvider(DefaultSocketBufferManager::Default,
@@ -564,6 +656,8 @@ public:
 	FeedConnection_FOND_OBR(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
 		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
 		this->SetType(FeedConnectionType::Incremental);
+		this->m_orderBookTable = new MarketDataTable();
+		this->m_orderBookInfoPool = new OrderBookInfoList(1000, 200);
     }
 	ISocketBufferProvider* CreateSocketBufferProvider() {
 		return new SocketBufferProvider(DefaultSocketBufferManager::Default,

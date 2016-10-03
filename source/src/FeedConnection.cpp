@@ -209,6 +209,11 @@ bool FeedConnection::Listen_Atom_Snapshot() {
                    info->SendingTime,
                    this->m_snapshotRouteFirst,
                    this->m_snapshotLastFragment, info->LastMsgSeqNumProcessed, info->RptSeq);
+            if(info->LastMsgSeqNumProcessed == 0 && info->RptSeq == 0) { //empty snapshot - no data
+                this->m_waitTimer->Stop();
+                this->m_snapshotAvailable = true;
+                return true;
+            }
             if(info->LastMsgSeqNumProcessed < this->m_incremental->m_currentMsgSeqNum) {
                 this->m_snapshotRouteFirst = -1;
                 this->m_snapshotLastFragment = -1;

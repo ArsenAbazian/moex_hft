@@ -5,8 +5,8 @@
 #ifndef HFT_ROBOT_ORDERBOOKINFO_H
 #define HFT_ROBOT_ORDERBOOKINFO_H
 
-class OrderBookInfo {
+typedef struct _OrderBookInfo {
 
-};
+}OrderBookInfo;
 
 #endif //HFT_ROBOT_ORDERBOOKINFO_H

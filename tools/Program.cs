@@ -459,9 +459,9 @@ namespace prebuild {
 			WriteLine("\tvoid InitializeMessageInfo() {");
 			foreach(StructureInfo str in structures) {
 				if(str.IsSequence) {
-					WriteLine("\t\tthis->" + str.ValueName + " = new " + str.Name + "[1024];");
-					WriteLine("\t\tmemset(this->" + str.ValueName + ", 0, 1024 * sizeof(" + str.Name + "));");
-					WriteLine("\t\tthis->" + str.MaxItemCountValueName + " = 1024;");
+					WriteLine("\t\tthis->" + str.ValueName + " = new " + str.Name + "[64];");
+					WriteLine("\t\tmemset(this->" + str.ValueName + ", 0, 64 * sizeof(" + str.Name + "));");
+					WriteLine("\t\tthis->" + str.MaxItemCountValueName + " = 64;");
 					WriteLine("\t\tthis->" + str.CurrentItemValueName + " = this->" + str.ValueName + ";");
 				} else {
 					WriteLine("\t\tthis->" + str.ValueName + " = new " + str.Name + "();");
