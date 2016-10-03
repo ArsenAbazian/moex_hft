@@ -6,7 +6,7 @@
 #define HFT_ROBOT_ORDERBOOKINFOLIST_H
 
 #include "../Lib/SimpleList.h"
-#include "OrderBookInfo.h"
+#include "../FastTypes.h"
 
 class OrderBookInfoList {
     SimpleList      *m_list;
@@ -14,7 +14,7 @@ class OrderBookInfoList {
 
     inline void AllocateOrderBookInfo(SimpleListNode *start, SimpleListNode *end) {
         do {
-            start->Data(new OrderBookInfo());
+            start->Data(new FastOBRFONDItemInfo);
             start = start->Next();
         }
         while(start != end);

@@ -286,7 +286,7 @@ namespace prebuild {
 
 		private  void WriteSequenceEncodeMethodCode (XmlNode field, StructureInfo si, string tabs) {
 			string itemInfo = GetIemInfoPrefix(field) + "ItemInfo";
-			StructureInfo info = new StructureInfo() { InCodeValueName = "(*" + itemInfo + ")", NameCore = si.NameCore + Name(field), IsSequence = true };
+			StructureInfo info = new StructureInfo() { InCodeValueName = "(*" + itemInfo + ")", NameCore = si.NameCore + ItemName(field), IsSequence = true };
 			WriteLine(tabs + "WriteUInt32_Mandatory(" + si.InCodeValueName + "->" + Name(field) + "Count);");
 			WriteLine(tabs + info.Name + " **" + itemInfo + " = " + si.InCodeValueName + "->" + Name(field) + ";");
 			WriteLine(tabs + "for(int i = 0; i < " + si.InCodeValueName + "->" + Name(field) + "Count; i++) {");
@@ -430,7 +430,7 @@ namespace prebuild {
 		private  void GetSequenceStructureNames (string parentStructNameCore, XmlNode node, List<StructureInfo> res) {
 			foreach(XmlNode field in node.ChildNodes) {
 				if(field.Name == "sequence") {
-					res.Add(new StructureInfo() { IsSequence = true, NameCore = parentStructNameCore + Name(field) });
+					res.Add(new StructureInfo() { IsSequence = true, NameCore = parentStructNameCore + ItemName(field) });
 					GetSequenceStructureNames(parentStructNameCore + Name(field), field, res);
 				}
 			}
@@ -568,7 +568,6 @@ namespace prebuild {
 		}
 
 		private  void WriteStructuresDefinitionCode (XmlNode templatesNode) {
-			XmlNode lastComment = null;
 			SetPosition(Message_Info_Structures_Definition_GeneratedCode);
 
 			WriteLine("#define PRESENCE_MAP_INDEX0  0x0000000000000040L");
@@ -649,26 +648,13 @@ namespace prebuild {
 			WriteLine("");
 
 			foreach(XmlNode node in templatesNode.ChildNodes) {
-				if(node.NodeType == XmlNodeType.Comment) {
-					lastComment = node;
-					continue;
-				}
-				if(node.Name == "template") {
-					WriteNodeSequenceStructDefinition(node, lastComment == null ? "" : GetTemplateName(lastComment.Value));
-					lastComment = null;
-				}
+				if(node.Name == "template")
+					WriteNodeSequenceStructDefinition(node, GetTemplateName(node.PreviousSibling.Value));
 			}
 
-			lastComment = null;
 			foreach(XmlNode node in templatesNode.ChildNodes) {
-				if(node.NodeType == XmlNodeType.Comment) {
-					lastComment = node;
-					continue;
-				}
-				if(node.Name == "template") {
-					WriteNodeDefinition(node, lastComment == null ? "" : GetTemplateName(lastComment.Value));
-					lastComment = null;
-				}
+				if(node.Name == "template")
+					WriteNodeDefinition(node, GetTemplateName(node.PreviousSibling.Value));
 			}
 		}
 
@@ -845,7 +831,7 @@ namespace prebuild {
 		}
 		private  void WriteNodeSequenceStructDefinition (XmlNode template, string parentName) {
 			foreach(XmlNode node in template) {
-				string name = parentName + Name(node);
+				string name = parentName + ItemName(node);
 
 				WriteNodeSequenceStructDefinition(node, name);
 				StructureInfo info = new StructureInfo() { NameCore = name, IsSequence = true};
@@ -858,7 +844,7 @@ namespace prebuild {
 				WriteLine("}" + info.Name + ";");
 				WriteLine("");
 
-				definedStructName.Add(name);
+				definedStructName.Add(info.Name);
 			}
 		}
 
@@ -971,7 +957,7 @@ namespace prebuild {
 
 		private  void WriteSequence (XmlNode field, string parentName) {
 			WriteLine("\tint" + StuctFieldsSpacing + Name(field) + "Count;" + GetCommentLine(field));
-			WriteLine("\tFast" + parentName + Name(field) + "ItemInfo* " + Name(field) + "[64];" + GetCommentLine(field));
+			WriteLine("\tFast" + parentName + ItemName(field) + "ItemInfo* " + Name(field) + "[64];" + GetCommentLine(field));
 		}
 
 		private  void WriteByteVectorField (XmlNode field) {
@@ -1031,6 +1017,11 @@ namespace prebuild {
 			templateName = templateName.Replace("-", "");
 			templateName = templateName.Replace("/", "");
 			templateName = templateName.Replace(" ", "");
+			templateName = templateName.Replace("Full", "");
+			templateName = templateName.Replace("Market", "");
+			templateName = templateName.Replace("Data", "");
+			templateName = templateName.Replace("Snapshot", "");
+			templateName = templateName.Replace("Refresh", "");
 			return templateName;
 		}
 
@@ -1392,6 +1383,9 @@ namespace prebuild {
 		string Name (XmlNode node) {
 			return node.Attributes["name"] != null ? node.Attributes["name"].Value : "";
 		}
+		string ItemName(XmlNode node) {
+			return Name(node) == "GroupMDEntries" ? "" : Name(node);
+		}
 		string PresenceIndexName(XmlNode node) {
 			return Name(node) + "PresenceIndex";
 		}
@@ -1426,10 +1420,10 @@ namespace prebuild {
 				WriteLine(tabString + "else");
 				WriteLine(tabString + "\t" + objectValueName + "->" + Name(value) + "Count = 0;");
 			}
-			WriteLine(tabString + "Fast" + parentClassCoreName + Name(value) + "ItemInfo* " + itemInfo + " = NULL;");
+			WriteLine(tabString + "Fast" + parentClassCoreName + ItemName(value) + "ItemInfo* " + itemInfo + " = NULL;");
 			WriteLine("");
 			WriteLine(tabString + "for(int i = 0; i < " + objectValueName + "->" + Name(value) + "Count; i++) {");
-			WriteLine(tabString + "\t" + itemInfo + " = GetFree" + parentClassCoreName + Name(value) + "ItemInfo();");
+			WriteLine(tabString + "\t" + itemInfo + " = GetFree" + parentClassCoreName + ItemName(value) + "ItemInfo();");
 			WriteLine(tabString + "\t" + objectValueName + "->" + Name(value) + "[i] = " + itemInfo + ";");
 
 			if(GetMaxPresenceBitCount(value) > 0) {
@@ -1843,7 +1837,7 @@ namespace prebuild {
 			WriteLine("");
 			string countField = objectValueName + "->" + Name(value) + "Count";
 
-			WriteLine(tabString + "Fast" + parentClassCoreName + Name(value) + "ItemInfo* " + itemInfo + " = NULL;");
+			WriteLine(tabString + "Fast" + parentClassCoreName + ItemName(value) + "ItemInfo* " + itemInfo + " = NULL;");
 			WriteLine("");
 			WriteLine(tabString + "for(int i = 0; i < " + countField + "; i++) {");
 			WriteLine(tabString + "\t" + itemInfo + " = " + objectValueName + "->" + Name(value) + "[i];");
@@ -1867,7 +1861,7 @@ namespace prebuild {
 			WriteLine("");
 			string countField = objectValueName + "->" + Name(value) + "Count";
 
-			WriteLine(tabString + "Fast" + parentClassCoreName + Name(value) + "ItemInfo* " + itemInfo + " = NULL;");
+			WriteLine(tabString + "Fast" + parentClassCoreName + ItemName(value) + "ItemInfo* " + itemInfo + " = NULL;");
 			WriteLine("");
 			WriteLine(tabString + "for(int i = 0; i < " + countField + "; i++) {");
 			WriteLine(tabString + "\t" + itemInfo + " = " + objectValueName + "->" + Name(value) + "[i];");

@@ -328,9 +328,9 @@ void FastProtocolManager::PrintLogout(FastLogoutInfo *info) {
 	PrintString("Text", info->Text, info->TextLength, 1);
 	printf("}\n");
 }
-void FastProtocolManager::PrintMarketDataSnapshotFullRefreshGeneric(FastMarketDataSnapshotFullRefreshGenericInfo *info) {
+void FastProtocolManager::PrintGeneric(FastGenericInfo *info) {
 
-	printf("FastMarketDataSnapshotFullRefreshGenericInfo {\n");
+	printf("FastGenericInfo {\n");
 	PrintInt32("TemplateId", 2103, 1);
 	PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 	PrintUInt64("SendingTime", info->SendingTime, 1);
@@ -346,7 +346,7 @@ void FastProtocolManager::PrintMarketDataSnapshotFullRefreshGeneric(FastMarketDa
 	PrintDecimal("NetChgPrevDay", &(info->NetChgPrevDay), 1);
 	PrintInt32("GroupMDEntriesCount", info->GroupMDEntriesCount, 1);
 
-	FastMarketDataSnapshotFullRefreshGenericGroupMDEntriesItemInfo* gmdeItemInfo = NULL;
+	FastGenericItemInfo* gmdeItemInfo = NULL;
 
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 		gmdeItemInfo = info->GroupMDEntries[i];
@@ -398,15 +398,15 @@ void FastProtocolManager::PrintMarketDataSnapshotFullRefreshGeneric(FastMarketDa
 
 	printf("}\n");
 }
-void FastProtocolManager::PrintMarketDataIncrementalRefreshGeneric(FastMarketDataIncrementalRefreshGenericInfo *info) {
+void FastProtocolManager::PrintIncrementalGeneric(FastIncrementalGenericInfo *info) {
 
-	printf("FastMarketDataIncrementalRefreshGenericInfo {\n");
+	printf("FastIncrementalGenericInfo {\n");
 	PrintInt32("TemplateId", 2104, 1);
 	PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 	PrintUInt64("SendingTime", info->SendingTime, 1);
 	PrintInt32("GroupMDEntriesCount", info->GroupMDEntriesCount, 1);
 
-	FastMarketDataIncrementalRefreshGenericGroupMDEntriesItemInfo* gmdeItemInfo = NULL;
+	FastIncrementalGenericItemInfo* gmdeItemInfo = NULL;
 
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 		gmdeItemInfo = info->GroupMDEntries[i];
@@ -463,9 +463,9 @@ void FastProtocolManager::PrintMarketDataIncrementalRefreshGeneric(FastMarketDat
 
 	printf("}\n");
 }
-void FastProtocolManager::PrintMarketDataSnapshotFullRefreshOLSFOND(FastMarketDataSnapshotFullRefreshOLSFONDInfo *info) {
+void FastProtocolManager::PrintOLSFOND(FastOLSFONDInfo *info) {
 
-	printf("FastMarketDataSnapshotFullRefreshOLSFONDInfo {\n");
+	printf("FastOLSFONDInfo {\n");
 	PrintInt32("TemplateId", 2410, 1);
 	PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 	PrintUInt64("SendingTime", info->SendingTime, 1);
@@ -480,7 +480,7 @@ void FastProtocolManager::PrintMarketDataSnapshotFullRefreshOLSFOND(FastMarketDa
 	PrintUInt32("AuctionIndicator", info->AuctionIndicator, 1);
 	PrintInt32("GroupMDEntriesCount", info->GroupMDEntriesCount, 1);
 
-	FastMarketDataSnapshotFullRefreshOLSFONDGroupMDEntriesItemInfo* gmdeItemInfo = NULL;
+	FastOLSFONDItemInfo* gmdeItemInfo = NULL;
 
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 		gmdeItemInfo = info->GroupMDEntries[i];
@@ -503,9 +503,9 @@ void FastProtocolManager::PrintMarketDataSnapshotFullRefreshOLSFOND(FastMarketDa
 
 	printf("}\n");
 }
-void FastProtocolManager::PrintMarketDataSnapshotFullRefreshOLSCURR(FastMarketDataSnapshotFullRefreshOLSCURRInfo *info) {
+void FastProtocolManager::PrintOLSCURR(FastOLSCURRInfo *info) {
 
-	printf("FastMarketDataSnapshotFullRefreshOLSCURRInfo {\n");
+	printf("FastOLSCURRInfo {\n");
 	PrintInt32("TemplateId", 3500, 1);
 	PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 	PrintUInt64("SendingTime", info->SendingTime, 1);
@@ -519,7 +519,7 @@ void FastProtocolManager::PrintMarketDataSnapshotFullRefreshOLSCURR(FastMarketDa
 	PrintInt32("MDSecurityTradingStatus", info->MDSecurityTradingStatus, 1);
 	PrintInt32("GroupMDEntriesCount", info->GroupMDEntriesCount, 1);
 
-	FastMarketDataSnapshotFullRefreshOLSCURRGroupMDEntriesItemInfo* gmdeItemInfo = NULL;
+	FastOLSCURRItemInfo* gmdeItemInfo = NULL;
 
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 		gmdeItemInfo = info->GroupMDEntries[i];
@@ -539,9 +539,9 @@ void FastProtocolManager::PrintMarketDataSnapshotFullRefreshOLSCURR(FastMarketDa
 
 	printf("}\n");
 }
-void FastProtocolManager::PrintMarketDataSnapshotFullRefreshTLSFOND(FastMarketDataSnapshotFullRefreshTLSFONDInfo *info) {
+void FastProtocolManager::PrintTLSFOND(FastTLSFONDInfo *info) {
 
-	printf("FastMarketDataSnapshotFullRefreshTLSFONDInfo {\n");
+	printf("FastTLSFONDInfo {\n");
 	PrintInt32("TemplateId", 2411, 1);
 	PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 	PrintUInt64("SendingTime", info->SendingTime, 1);
@@ -556,7 +556,7 @@ void FastProtocolManager::PrintMarketDataSnapshotFullRefreshTLSFOND(FastMarketDa
 	PrintUInt32("AuctionIndicator", info->AuctionIndicator, 1);
 	PrintInt32("GroupMDEntriesCount", info->GroupMDEntriesCount, 1);
 
-	FastMarketDataSnapshotFullRefreshTLSFONDGroupMDEntriesItemInfo* gmdeItemInfo = NULL;
+	FastTLSFONDItemInfo* gmdeItemInfo = NULL;
 
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 		gmdeItemInfo = info->GroupMDEntries[i];
@@ -585,9 +585,9 @@ void FastProtocolManager::PrintMarketDataSnapshotFullRefreshTLSFOND(FastMarketDa
 
 	printf("}\n");
 }
-void FastProtocolManager::PrintMarketDataSnapshotFullRefreshTLSCURR(FastMarketDataSnapshotFullRefreshTLSCURRInfo *info) {
+void FastProtocolManager::PrintTLSCURR(FastTLSCURRInfo *info) {
 
-	printf("FastMarketDataSnapshotFullRefreshTLSCURRInfo {\n");
+	printf("FastTLSCURRInfo {\n");
 	PrintInt32("TemplateId", 3501, 1);
 	PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 	PrintUInt64("SendingTime", info->SendingTime, 1);
@@ -601,7 +601,7 @@ void FastProtocolManager::PrintMarketDataSnapshotFullRefreshTLSCURR(FastMarketDa
 	PrintInt32("MDSecurityTradingStatus", info->MDSecurityTradingStatus, 1);
 	PrintInt32("GroupMDEntriesCount", info->GroupMDEntriesCount, 1);
 
-	FastMarketDataSnapshotFullRefreshTLSCURRGroupMDEntriesItemInfo* gmdeItemInfo = NULL;
+	FastTLSCURRItemInfo* gmdeItemInfo = NULL;
 
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 		gmdeItemInfo = info->GroupMDEntries[i];
@@ -628,9 +628,9 @@ void FastProtocolManager::PrintMarketDataSnapshotFullRefreshTLSCURR(FastMarketDa
 
 	printf("}\n");
 }
-void FastProtocolManager::PrintMarketDataSnapshotFullRefreshOBSFOND(FastMarketDataSnapshotFullRefreshOBSFONDInfo *info) {
+void FastProtocolManager::PrintOBSFOND(FastOBSFONDInfo *info) {
 
-	printf("FastMarketDataSnapshotFullRefreshOBSFONDInfo {\n");
+	printf("FastOBSFONDInfo {\n");
 	PrintInt32("TemplateId", 2412, 1);
 	PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 	PrintUInt64("SendingTime", info->SendingTime, 1);
@@ -645,7 +645,7 @@ void FastProtocolManager::PrintMarketDataSnapshotFullRefreshOBSFOND(FastMarketDa
 	PrintUInt32("AuctionIndicator", info->AuctionIndicator, 1);
 	PrintInt32("GroupMDEntriesCount", info->GroupMDEntriesCount, 1);
 
-	FastMarketDataSnapshotFullRefreshOBSFONDGroupMDEntriesItemInfo* gmdeItemInfo = NULL;
+	FastOBSFONDItemInfo* gmdeItemInfo = NULL;
 
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 		gmdeItemInfo = info->GroupMDEntries[i];
@@ -665,9 +665,9 @@ void FastProtocolManager::PrintMarketDataSnapshotFullRefreshOBSFOND(FastMarketDa
 
 	printf("}\n");
 }
-void FastProtocolManager::PrintMarketDataSnapshotFullRefreshOBSCURR(FastMarketDataSnapshotFullRefreshOBSCURRInfo *info) {
+void FastProtocolManager::PrintOBSCURR(FastOBSCURRInfo *info) {
 
-	printf("FastMarketDataSnapshotFullRefreshOBSCURRInfo {\n");
+	printf("FastOBSCURRInfo {\n");
 	PrintInt32("TemplateId", 3502, 1);
 	PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 	PrintUInt64("SendingTime", info->SendingTime, 1);
@@ -681,7 +681,7 @@ void FastProtocolManager::PrintMarketDataSnapshotFullRefreshOBSCURR(FastMarketDa
 	PrintInt32("MDSecurityTradingStatus", info->MDSecurityTradingStatus, 1);
 	PrintInt32("GroupMDEntriesCount", info->GroupMDEntriesCount, 1);
 
-	FastMarketDataSnapshotFullRefreshOBSCURRGroupMDEntriesItemInfo* gmdeItemInfo = NULL;
+	FastOBSCURRItemInfo* gmdeItemInfo = NULL;
 
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 		gmdeItemInfo = info->GroupMDEntries[i];
@@ -698,15 +698,15 @@ void FastProtocolManager::PrintMarketDataSnapshotFullRefreshOBSCURR(FastMarketDa
 
 	printf("}\n");
 }
-void FastProtocolManager::PrintMarketDataIncrementalRefreshMSRFOND(FastMarketDataIncrementalRefreshMSRFONDInfo *info) {
+void FastProtocolManager::PrintIncrementalMSRFOND(FastIncrementalMSRFONDInfo *info) {
 
-	printf("FastMarketDataIncrementalRefreshMSRFONDInfo {\n");
+	printf("FastIncrementalMSRFONDInfo {\n");
 	PrintInt32("TemplateId", 2423, 1);
 	PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 	PrintUInt64("SendingTime", info->SendingTime, 1);
 	PrintInt32("GroupMDEntriesCount", info->GroupMDEntriesCount, 1);
 
-	FastMarketDataIncrementalRefreshMSRFONDGroupMDEntriesItemInfo* gmdeItemInfo = NULL;
+	FastIncrementalMSRFONDItemInfo* gmdeItemInfo = NULL;
 
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 		gmdeItemInfo = info->GroupMDEntries[i];
@@ -749,15 +749,15 @@ void FastProtocolManager::PrintMarketDataIncrementalRefreshMSRFOND(FastMarketDat
 
 	printf("}\n");
 }
-void FastProtocolManager::PrintMarketDataIncrementalRefreshMSRCURR(FastMarketDataIncrementalRefreshMSRCURRInfo *info) {
+void FastProtocolManager::PrintIncrementalMSRCURR(FastIncrementalMSRCURRInfo *info) {
 
-	printf("FastMarketDataIncrementalRefreshMSRCURRInfo {\n");
+	printf("FastIncrementalMSRCURRInfo {\n");
 	PrintInt32("TemplateId", 3513, 1);
 	PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 	PrintUInt64("SendingTime", info->SendingTime, 1);
 	PrintInt32("GroupMDEntriesCount", info->GroupMDEntriesCount, 1);
 
-	FastMarketDataIncrementalRefreshMSRCURRGroupMDEntriesItemInfo* gmdeItemInfo = NULL;
+	FastIncrementalMSRCURRItemInfo* gmdeItemInfo = NULL;
 
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 		gmdeItemInfo = info->GroupMDEntries[i];
@@ -792,15 +792,15 @@ void FastProtocolManager::PrintMarketDataIncrementalRefreshMSRCURR(FastMarketDat
 
 	printf("}\n");
 }
-void FastProtocolManager::PrintMarketDataIncrementalRefreshOLRFOND(FastMarketDataIncrementalRefreshOLRFONDInfo *info) {
+void FastProtocolManager::PrintIncrementalOLRFOND(FastIncrementalOLRFONDInfo *info) {
 
-	printf("FastMarketDataIncrementalRefreshOLRFONDInfo {\n");
+	printf("FastIncrementalOLRFONDInfo {\n");
 	PrintInt32("TemplateId", 2420, 1);
 	PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 	PrintUInt64("SendingTime", info->SendingTime, 1);
 	PrintInt32("GroupMDEntriesCount", info->GroupMDEntriesCount, 1);
 
-	FastMarketDataIncrementalRefreshOLRFONDGroupMDEntriesItemInfo* gmdeItemInfo = NULL;
+	FastIncrementalOLRFONDItemInfo* gmdeItemInfo = NULL;
 
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 		gmdeItemInfo = info->GroupMDEntries[i];
@@ -827,15 +827,15 @@ void FastProtocolManager::PrintMarketDataIncrementalRefreshOLRFOND(FastMarketDat
 
 	printf("}\n");
 }
-void FastProtocolManager::PrintMarketDataIncrementalRefreshOLRCURR(FastMarketDataIncrementalRefreshOLRCURRInfo *info) {
+void FastProtocolManager::PrintIncrementalOLRCURR(FastIncrementalOLRCURRInfo *info) {
 
-	printf("FastMarketDataIncrementalRefreshOLRCURRInfo {\n");
+	printf("FastIncrementalOLRCURRInfo {\n");
 	PrintInt32("TemplateId", 3510, 1);
 	PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 	PrintUInt64("SendingTime", info->SendingTime, 1);
 	PrintInt32("GroupMDEntriesCount", info->GroupMDEntriesCount, 1);
 
-	FastMarketDataIncrementalRefreshOLRCURRGroupMDEntriesItemInfo* gmdeItemInfo = NULL;
+	FastIncrementalOLRCURRItemInfo* gmdeItemInfo = NULL;
 
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 		gmdeItemInfo = info->GroupMDEntries[i];
@@ -859,15 +859,15 @@ void FastProtocolManager::PrintMarketDataIncrementalRefreshOLRCURR(FastMarketDat
 
 	printf("}\n");
 }
-void FastProtocolManager::PrintMarketDataIncrementalRefreshOBRFOND(FastMarketDataIncrementalRefreshOBRFONDInfo *info) {
+void FastProtocolManager::PrintIncrementalOBRFOND(FastIncrementalOBRFONDInfo *info) {
 
-	printf("FastMarketDataIncrementalRefreshOBRFONDInfo {\n");
+	printf("FastIncrementalOBRFONDInfo {\n");
 	PrintInt32("TemplateId", 2422, 1);
 	PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 	PrintUInt64("SendingTime", info->SendingTime, 1);
 	PrintInt32("GroupMDEntriesCount", info->GroupMDEntriesCount, 1);
 
-	FastMarketDataIncrementalRefreshOBRFONDGroupMDEntriesItemInfo* gmdeItemInfo = NULL;
+	FastIncrementalOBRFONDItemInfo* gmdeItemInfo = NULL;
 
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 		gmdeItemInfo = info->GroupMDEntries[i];
@@ -891,15 +891,15 @@ void FastProtocolManager::PrintMarketDataIncrementalRefreshOBRFOND(FastMarketDat
 
 	printf("}\n");
 }
-void FastProtocolManager::PrintMarketDataIncrementalRefreshOBRCURR(FastMarketDataIncrementalRefreshOBRCURRInfo *info) {
+void FastProtocolManager::PrintIncrementalOBRCURR(FastIncrementalOBRCURRInfo *info) {
 
-	printf("FastMarketDataIncrementalRefreshOBRCURRInfo {\n");
+	printf("FastIncrementalOBRCURRInfo {\n");
 	PrintInt32("TemplateId", 3512, 1);
 	PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 	PrintUInt64("SendingTime", info->SendingTime, 1);
 	PrintInt32("GroupMDEntriesCount", info->GroupMDEntriesCount, 1);
 
-	FastMarketDataIncrementalRefreshOBRCURRGroupMDEntriesItemInfo* gmdeItemInfo = NULL;
+	FastIncrementalOBRCURRItemInfo* gmdeItemInfo = NULL;
 
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 		gmdeItemInfo = info->GroupMDEntries[i];
@@ -920,15 +920,15 @@ void FastProtocolManager::PrintMarketDataIncrementalRefreshOBRCURR(FastMarketDat
 
 	printf("}\n");
 }
-void FastProtocolManager::PrintMarketDataIncrementalRefreshTLRFOND(FastMarketDataIncrementalRefreshTLRFONDInfo *info) {
+void FastProtocolManager::PrintIncrementalTLRFOND(FastIncrementalTLRFONDInfo *info) {
 
-	printf("FastMarketDataIncrementalRefreshTLRFONDInfo {\n");
+	printf("FastIncrementalTLRFONDInfo {\n");
 	PrintInt32("TemplateId", 2421, 1);
 	PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 	PrintUInt64("SendingTime", info->SendingTime, 1);
 	PrintInt32("GroupMDEntriesCount", info->GroupMDEntriesCount, 1);
 
-	FastMarketDataIncrementalRefreshTLRFONDGroupMDEntriesItemInfo* gmdeItemInfo = NULL;
+	FastIncrementalTLRFONDItemInfo* gmdeItemInfo = NULL;
 
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 		gmdeItemInfo = info->GroupMDEntries[i];
@@ -961,15 +961,15 @@ void FastProtocolManager::PrintMarketDataIncrementalRefreshTLRFOND(FastMarketDat
 
 	printf("}\n");
 }
-void FastProtocolManager::PrintMarketDataIncrementalRefreshTLRCURR(FastMarketDataIncrementalRefreshTLRCURRInfo *info) {
+void FastProtocolManager::PrintIncrementalTLRCURR(FastIncrementalTLRCURRInfo *info) {
 
-	printf("FastMarketDataIncrementalRefreshTLRCURRInfo {\n");
+	printf("FastIncrementalTLRCURRInfo {\n");
 	PrintInt32("TemplateId", 3511, 1);
 	PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 	PrintUInt64("SendingTime", info->SendingTime, 1);
 	PrintInt32("GroupMDEntriesCount", info->GroupMDEntriesCount, 1);
 
-	FastMarketDataIncrementalRefreshTLRCURRGroupMDEntriesItemInfo* gmdeItemInfo = NULL;
+	FastIncrementalTLRCURRItemInfo* gmdeItemInfo = NULL;
 
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 		gmdeItemInfo = info->GroupMDEntries[i];
@@ -1139,9 +1139,9 @@ void FastProtocolManager::PrintXmlLogout(FastLogoutInfo *info) {
 	PrintXmlString("Text", info->Text, info->TextLength);
 	PrintXmlItemEnd("FastLogoutInfo");
 }
-void FastProtocolManager::PrintXmlMarketDataSnapshotFullRefreshGeneric(FastMarketDataSnapshotFullRefreshGenericInfo *info) {
+void FastProtocolManager::PrintXmlGeneric(FastGenericInfo *info) {
 
-	PrintXmlItemBegin("FastMarketDataSnapshotFullRefreshGenericInfo");
+	PrintXmlItemBegin("FastGenericInfo");
 	PrintXmlInt32("TemplateId", 2103);
 	PrintXmlUInt32("MsgSeqNum", info->MsgSeqNum);
 	PrintXmlUInt64("SendingTime", info->SendingTime);
@@ -1157,7 +1157,7 @@ void FastProtocolManager::PrintXmlMarketDataSnapshotFullRefreshGeneric(FastMarke
 	PrintXmlDecimal("NetChgPrevDay", &(info->NetChgPrevDay));
 	PrintXmlInt32("GroupMDEntriesCount", info->GroupMDEntriesCount);
 
-	FastMarketDataSnapshotFullRefreshGenericGroupMDEntriesItemInfo* gmdeItemInfo = NULL;
+	FastGenericItemInfo* gmdeItemInfo = NULL;
 
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 		gmdeItemInfo = info->GroupMDEntries[i];
@@ -1207,17 +1207,17 @@ void FastProtocolManager::PrintXmlMarketDataSnapshotFullRefreshGeneric(FastMarke
 		PrintXmlItemEnd("item", i);
 	}
 
-	PrintXmlItemEnd("FastMarketDataSnapshotFullRefreshGenericInfo");
+	PrintXmlItemEnd("FastGenericInfo");
 }
-void FastProtocolManager::PrintXmlMarketDataIncrementalRefreshGeneric(FastMarketDataIncrementalRefreshGenericInfo *info) {
+void FastProtocolManager::PrintXmlIncrementalGeneric(FastIncrementalGenericInfo *info) {
 
-	PrintXmlItemBegin("FastMarketDataIncrementalRefreshGenericInfo");
+	PrintXmlItemBegin("FastIncrementalGenericInfo");
 	PrintXmlInt32("TemplateId", 2104);
 	PrintXmlUInt32("MsgSeqNum", info->MsgSeqNum);
 	PrintXmlUInt64("SendingTime", info->SendingTime);
 	PrintXmlInt32("GroupMDEntriesCount", info->GroupMDEntriesCount);
 
-	FastMarketDataIncrementalRefreshGenericGroupMDEntriesItemInfo* gmdeItemInfo = NULL;
+	FastIncrementalGenericItemInfo* gmdeItemInfo = NULL;
 
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 		gmdeItemInfo = info->GroupMDEntries[i];
@@ -1272,11 +1272,11 @@ void FastProtocolManager::PrintXmlMarketDataIncrementalRefreshGeneric(FastMarket
 		PrintXmlItemEnd("item", i);
 	}
 
-	PrintXmlItemEnd("FastMarketDataIncrementalRefreshGenericInfo");
+	PrintXmlItemEnd("FastIncrementalGenericInfo");
 }
-void FastProtocolManager::PrintXmlMarketDataSnapshotFullRefreshOLSFOND(FastMarketDataSnapshotFullRefreshOLSFONDInfo *info) {
+void FastProtocolManager::PrintXmlOLSFOND(FastOLSFONDInfo *info) {
 
-	PrintXmlItemBegin("FastMarketDataSnapshotFullRefreshOLSFONDInfo");
+	PrintXmlItemBegin("FastOLSFONDInfo");
 	PrintXmlInt32("TemplateId", 2410);
 	PrintXmlUInt32("MsgSeqNum", info->MsgSeqNum);
 	PrintXmlUInt64("SendingTime", info->SendingTime);
@@ -1291,7 +1291,7 @@ void FastProtocolManager::PrintXmlMarketDataSnapshotFullRefreshOLSFOND(FastMarke
 	PrintXmlUInt32("AuctionIndicator", info->AuctionIndicator);
 	PrintXmlInt32("GroupMDEntriesCount", info->GroupMDEntriesCount);
 
-	FastMarketDataSnapshotFullRefreshOLSFONDGroupMDEntriesItemInfo* gmdeItemInfo = NULL;
+	FastOLSFONDItemInfo* gmdeItemInfo = NULL;
 
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 		gmdeItemInfo = info->GroupMDEntries[i];
@@ -1312,11 +1312,11 @@ void FastProtocolManager::PrintXmlMarketDataSnapshotFullRefreshOLSFOND(FastMarke
 		PrintXmlItemEnd("item", i);
 	}
 
-	PrintXmlItemEnd("FastMarketDataSnapshotFullRefreshOLSFONDInfo");
+	PrintXmlItemEnd("FastOLSFONDInfo");
 }
-void FastProtocolManager::PrintXmlMarketDataSnapshotFullRefreshOLSCURR(FastMarketDataSnapshotFullRefreshOLSCURRInfo *info) {
+void FastProtocolManager::PrintXmlOLSCURR(FastOLSCURRInfo *info) {
 
-	PrintXmlItemBegin("FastMarketDataSnapshotFullRefreshOLSCURRInfo");
+	PrintXmlItemBegin("FastOLSCURRInfo");
 	PrintXmlInt32("TemplateId", 3500);
 	PrintXmlUInt32("MsgSeqNum", info->MsgSeqNum);
 	PrintXmlUInt64("SendingTime", info->SendingTime);
@@ -1330,7 +1330,7 @@ void FastProtocolManager::PrintXmlMarketDataSnapshotFullRefreshOLSCURR(FastMarke
 	PrintXmlInt32("MDSecurityTradingStatus", info->MDSecurityTradingStatus);
 	PrintXmlInt32("GroupMDEntriesCount", info->GroupMDEntriesCount);
 
-	FastMarketDataSnapshotFullRefreshOLSCURRGroupMDEntriesItemInfo* gmdeItemInfo = NULL;
+	FastOLSCURRItemInfo* gmdeItemInfo = NULL;
 
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 		gmdeItemInfo = info->GroupMDEntries[i];
@@ -1348,11 +1348,11 @@ void FastProtocolManager::PrintXmlMarketDataSnapshotFullRefreshOLSCURR(FastMarke
 		PrintXmlItemEnd("item", i);
 	}
 
-	PrintXmlItemEnd("FastMarketDataSnapshotFullRefreshOLSCURRInfo");
+	PrintXmlItemEnd("FastOLSCURRInfo");
 }
-void FastProtocolManager::PrintXmlMarketDataSnapshotFullRefreshTLSFOND(FastMarketDataSnapshotFullRefreshTLSFONDInfo *info) {
+void FastProtocolManager::PrintXmlTLSFOND(FastTLSFONDInfo *info) {
 
-	PrintXmlItemBegin("FastMarketDataSnapshotFullRefreshTLSFONDInfo");
+	PrintXmlItemBegin("FastTLSFONDInfo");
 	PrintXmlInt32("TemplateId", 2411);
 	PrintXmlUInt32("MsgSeqNum", info->MsgSeqNum);
 	PrintXmlUInt64("SendingTime", info->SendingTime);
@@ -1367,7 +1367,7 @@ void FastProtocolManager::PrintXmlMarketDataSnapshotFullRefreshTLSFOND(FastMarke
 	PrintXmlUInt32("AuctionIndicator", info->AuctionIndicator);
 	PrintXmlInt32("GroupMDEntriesCount", info->GroupMDEntriesCount);
 
-	FastMarketDataSnapshotFullRefreshTLSFONDGroupMDEntriesItemInfo* gmdeItemInfo = NULL;
+	FastTLSFONDItemInfo* gmdeItemInfo = NULL;
 
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 		gmdeItemInfo = info->GroupMDEntries[i];
@@ -1394,11 +1394,11 @@ void FastProtocolManager::PrintXmlMarketDataSnapshotFullRefreshTLSFOND(FastMarke
 		PrintXmlItemEnd("item", i);
 	}
 
-	PrintXmlItemEnd("FastMarketDataSnapshotFullRefreshTLSFONDInfo");
+	PrintXmlItemEnd("FastTLSFONDInfo");
 }
-void FastProtocolManager::PrintXmlMarketDataSnapshotFullRefreshTLSCURR(FastMarketDataSnapshotFullRefreshTLSCURRInfo *info) {
+void FastProtocolManager::PrintXmlTLSCURR(FastTLSCURRInfo *info) {
 
-	PrintXmlItemBegin("FastMarketDataSnapshotFullRefreshTLSCURRInfo");
+	PrintXmlItemBegin("FastTLSCURRInfo");
 	PrintXmlInt32("TemplateId", 3501);
 	PrintXmlUInt32("MsgSeqNum", info->MsgSeqNum);
 	PrintXmlUInt64("SendingTime", info->SendingTime);
@@ -1412,7 +1412,7 @@ void FastProtocolManager::PrintXmlMarketDataSnapshotFullRefreshTLSCURR(FastMarke
 	PrintXmlInt32("MDSecurityTradingStatus", info->MDSecurityTradingStatus);
 	PrintXmlInt32("GroupMDEntriesCount", info->GroupMDEntriesCount);
 
-	FastMarketDataSnapshotFullRefreshTLSCURRGroupMDEntriesItemInfo* gmdeItemInfo = NULL;
+	FastTLSCURRItemInfo* gmdeItemInfo = NULL;
 
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 		gmdeItemInfo = info->GroupMDEntries[i];
@@ -1437,11 +1437,11 @@ void FastProtocolManager::PrintXmlMarketDataSnapshotFullRefreshTLSCURR(FastMarke
 		PrintXmlItemEnd("item", i);
 	}
 
-	PrintXmlItemEnd("FastMarketDataSnapshotFullRefreshTLSCURRInfo");
+	PrintXmlItemEnd("FastTLSCURRInfo");
 }
-void FastProtocolManager::PrintXmlMarketDataSnapshotFullRefreshOBSFOND(FastMarketDataSnapshotFullRefreshOBSFONDInfo *info) {
+void FastProtocolManager::PrintXmlOBSFOND(FastOBSFONDInfo *info) {
 
-	PrintXmlItemBegin("FastMarketDataSnapshotFullRefreshOBSFONDInfo");
+	PrintXmlItemBegin("FastOBSFONDInfo");
 	PrintXmlInt32("TemplateId", 2412);
 	PrintXmlUInt32("MsgSeqNum", info->MsgSeqNum);
 	PrintXmlUInt64("SendingTime", info->SendingTime);
@@ -1456,7 +1456,7 @@ void FastProtocolManager::PrintXmlMarketDataSnapshotFullRefreshOBSFOND(FastMarke
 	PrintXmlUInt32("AuctionIndicator", info->AuctionIndicator);
 	PrintXmlInt32("GroupMDEntriesCount", info->GroupMDEntriesCount);
 
-	FastMarketDataSnapshotFullRefreshOBSFONDGroupMDEntriesItemInfo* gmdeItemInfo = NULL;
+	FastOBSFONDItemInfo* gmdeItemInfo = NULL;
 
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 		gmdeItemInfo = info->GroupMDEntries[i];
@@ -1474,11 +1474,11 @@ void FastProtocolManager::PrintXmlMarketDataSnapshotFullRefreshOBSFOND(FastMarke
 		PrintXmlItemEnd("item", i);
 	}
 
-	PrintXmlItemEnd("FastMarketDataSnapshotFullRefreshOBSFONDInfo");
+	PrintXmlItemEnd("FastOBSFONDInfo");
 }
-void FastProtocolManager::PrintXmlMarketDataSnapshotFullRefreshOBSCURR(FastMarketDataSnapshotFullRefreshOBSCURRInfo *info) {
+void FastProtocolManager::PrintXmlOBSCURR(FastOBSCURRInfo *info) {
 
-	PrintXmlItemBegin("FastMarketDataSnapshotFullRefreshOBSCURRInfo");
+	PrintXmlItemBegin("FastOBSCURRInfo");
 	PrintXmlInt32("TemplateId", 3502);
 	PrintXmlUInt32("MsgSeqNum", info->MsgSeqNum);
 	PrintXmlUInt64("SendingTime", info->SendingTime);
@@ -1492,7 +1492,7 @@ void FastProtocolManager::PrintXmlMarketDataSnapshotFullRefreshOBSCURR(FastMarke
 	PrintXmlInt32("MDSecurityTradingStatus", info->MDSecurityTradingStatus);
 	PrintXmlInt32("GroupMDEntriesCount", info->GroupMDEntriesCount);
 
-	FastMarketDataSnapshotFullRefreshOBSCURRGroupMDEntriesItemInfo* gmdeItemInfo = NULL;
+	FastOBSCURRItemInfo* gmdeItemInfo = NULL;
 
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 		gmdeItemInfo = info->GroupMDEntries[i];
@@ -1507,17 +1507,17 @@ void FastProtocolManager::PrintXmlMarketDataSnapshotFullRefreshOBSCURR(FastMarke
 		PrintXmlItemEnd("item", i);
 	}
 
-	PrintXmlItemEnd("FastMarketDataSnapshotFullRefreshOBSCURRInfo");
+	PrintXmlItemEnd("FastOBSCURRInfo");
 }
-void FastProtocolManager::PrintXmlMarketDataIncrementalRefreshMSRFOND(FastMarketDataIncrementalRefreshMSRFONDInfo *info) {
+void FastProtocolManager::PrintXmlIncrementalMSRFOND(FastIncrementalMSRFONDInfo *info) {
 
-	PrintXmlItemBegin("FastMarketDataIncrementalRefreshMSRFONDInfo");
+	PrintXmlItemBegin("FastIncrementalMSRFONDInfo");
 	PrintXmlInt32("TemplateId", 2423);
 	PrintXmlUInt32("MsgSeqNum", info->MsgSeqNum);
 	PrintXmlUInt64("SendingTime", info->SendingTime);
 	PrintXmlInt32("GroupMDEntriesCount", info->GroupMDEntriesCount);
 
-	FastMarketDataIncrementalRefreshMSRFONDGroupMDEntriesItemInfo* gmdeItemInfo = NULL;
+	FastIncrementalMSRFONDItemInfo* gmdeItemInfo = NULL;
 
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 		gmdeItemInfo = info->GroupMDEntries[i];
@@ -1558,17 +1558,17 @@ void FastProtocolManager::PrintXmlMarketDataIncrementalRefreshMSRFOND(FastMarket
 		PrintXmlItemEnd("item", i);
 	}
 
-	PrintXmlItemEnd("FastMarketDataIncrementalRefreshMSRFONDInfo");
+	PrintXmlItemEnd("FastIncrementalMSRFONDInfo");
 }
-void FastProtocolManager::PrintXmlMarketDataIncrementalRefreshMSRCURR(FastMarketDataIncrementalRefreshMSRCURRInfo *info) {
+void FastProtocolManager::PrintXmlIncrementalMSRCURR(FastIncrementalMSRCURRInfo *info) {
 
-	PrintXmlItemBegin("FastMarketDataIncrementalRefreshMSRCURRInfo");
+	PrintXmlItemBegin("FastIncrementalMSRCURRInfo");
 	PrintXmlInt32("TemplateId", 3513);
 	PrintXmlUInt32("MsgSeqNum", info->MsgSeqNum);
 	PrintXmlUInt64("SendingTime", info->SendingTime);
 	PrintXmlInt32("GroupMDEntriesCount", info->GroupMDEntriesCount);
 
-	FastMarketDataIncrementalRefreshMSRCURRGroupMDEntriesItemInfo* gmdeItemInfo = NULL;
+	FastIncrementalMSRCURRItemInfo* gmdeItemInfo = NULL;
 
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 		gmdeItemInfo = info->GroupMDEntries[i];
@@ -1601,17 +1601,17 @@ void FastProtocolManager::PrintXmlMarketDataIncrementalRefreshMSRCURR(FastMarket
 		PrintXmlItemEnd("item", i);
 	}
 
-	PrintXmlItemEnd("FastMarketDataIncrementalRefreshMSRCURRInfo");
+	PrintXmlItemEnd("FastIncrementalMSRCURRInfo");
 }
-void FastProtocolManager::PrintXmlMarketDataIncrementalRefreshOLRFOND(FastMarketDataIncrementalRefreshOLRFONDInfo *info) {
+void FastProtocolManager::PrintXmlIncrementalOLRFOND(FastIncrementalOLRFONDInfo *info) {
 
-	PrintXmlItemBegin("FastMarketDataIncrementalRefreshOLRFONDInfo");
+	PrintXmlItemBegin("FastIncrementalOLRFONDInfo");
 	PrintXmlInt32("TemplateId", 2420);
 	PrintXmlUInt32("MsgSeqNum", info->MsgSeqNum);
 	PrintXmlUInt64("SendingTime", info->SendingTime);
 	PrintXmlInt32("GroupMDEntriesCount", info->GroupMDEntriesCount);
 
-	FastMarketDataIncrementalRefreshOLRFONDGroupMDEntriesItemInfo* gmdeItemInfo = NULL;
+	FastIncrementalOLRFONDItemInfo* gmdeItemInfo = NULL;
 
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 		gmdeItemInfo = info->GroupMDEntries[i];
@@ -1636,17 +1636,17 @@ void FastProtocolManager::PrintXmlMarketDataIncrementalRefreshOLRFOND(FastMarket
 		PrintXmlItemEnd("item", i);
 	}
 
-	PrintXmlItemEnd("FastMarketDataIncrementalRefreshOLRFONDInfo");
+	PrintXmlItemEnd("FastIncrementalOLRFONDInfo");
 }
-void FastProtocolManager::PrintXmlMarketDataIncrementalRefreshOLRCURR(FastMarketDataIncrementalRefreshOLRCURRInfo *info) {
+void FastProtocolManager::PrintXmlIncrementalOLRCURR(FastIncrementalOLRCURRInfo *info) {
 
-	PrintXmlItemBegin("FastMarketDataIncrementalRefreshOLRCURRInfo");
+	PrintXmlItemBegin("FastIncrementalOLRCURRInfo");
 	PrintXmlInt32("TemplateId", 3510);
 	PrintXmlUInt32("MsgSeqNum", info->MsgSeqNum);
 	PrintXmlUInt64("SendingTime", info->SendingTime);
 	PrintXmlInt32("GroupMDEntriesCount", info->GroupMDEntriesCount);
 
-	FastMarketDataIncrementalRefreshOLRCURRGroupMDEntriesItemInfo* gmdeItemInfo = NULL;
+	FastIncrementalOLRCURRItemInfo* gmdeItemInfo = NULL;
 
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 		gmdeItemInfo = info->GroupMDEntries[i];
@@ -1668,17 +1668,17 @@ void FastProtocolManager::PrintXmlMarketDataIncrementalRefreshOLRCURR(FastMarket
 		PrintXmlItemEnd("item", i);
 	}
 
-	PrintXmlItemEnd("FastMarketDataIncrementalRefreshOLRCURRInfo");
+	PrintXmlItemEnd("FastIncrementalOLRCURRInfo");
 }
-void FastProtocolManager::PrintXmlMarketDataIncrementalRefreshOBRFOND(FastMarketDataIncrementalRefreshOBRFONDInfo *info) {
+void FastProtocolManager::PrintXmlIncrementalOBRFOND(FastIncrementalOBRFONDInfo *info) {
 
-	PrintXmlItemBegin("FastMarketDataIncrementalRefreshOBRFONDInfo");
+	PrintXmlItemBegin("FastIncrementalOBRFONDInfo");
 	PrintXmlInt32("TemplateId", 2422);
 	PrintXmlUInt32("MsgSeqNum", info->MsgSeqNum);
 	PrintXmlUInt64("SendingTime", info->SendingTime);
 	PrintXmlInt32("GroupMDEntriesCount", info->GroupMDEntriesCount);
 
-	FastMarketDataIncrementalRefreshOBRFONDGroupMDEntriesItemInfo* gmdeItemInfo = NULL;
+	FastIncrementalOBRFONDItemInfo* gmdeItemInfo = NULL;
 
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 		gmdeItemInfo = info->GroupMDEntries[i];
@@ -1700,17 +1700,17 @@ void FastProtocolManager::PrintXmlMarketDataIncrementalRefreshOBRFOND(FastMarket
 		PrintXmlItemEnd("item", i);
 	}
 
-	PrintXmlItemEnd("FastMarketDataIncrementalRefreshOBRFONDInfo");
+	PrintXmlItemEnd("FastIncrementalOBRFONDInfo");
 }
-void FastProtocolManager::PrintXmlMarketDataIncrementalRefreshOBRCURR(FastMarketDataIncrementalRefreshOBRCURRInfo *info) {
+void FastProtocolManager::PrintXmlIncrementalOBRCURR(FastIncrementalOBRCURRInfo *info) {
 
-	PrintXmlItemBegin("FastMarketDataIncrementalRefreshOBRCURRInfo");
+	PrintXmlItemBegin("FastIncrementalOBRCURRInfo");
 	PrintXmlInt32("TemplateId", 3512);
 	PrintXmlUInt32("MsgSeqNum", info->MsgSeqNum);
 	PrintXmlUInt64("SendingTime", info->SendingTime);
 	PrintXmlInt32("GroupMDEntriesCount", info->GroupMDEntriesCount);
 
-	FastMarketDataIncrementalRefreshOBRCURRGroupMDEntriesItemInfo* gmdeItemInfo = NULL;
+	FastIncrementalOBRCURRItemInfo* gmdeItemInfo = NULL;
 
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 		gmdeItemInfo = info->GroupMDEntries[i];
@@ -1729,17 +1729,17 @@ void FastProtocolManager::PrintXmlMarketDataIncrementalRefreshOBRCURR(FastMarket
 		PrintXmlItemEnd("item", i);
 	}
 
-	PrintXmlItemEnd("FastMarketDataIncrementalRefreshOBRCURRInfo");
+	PrintXmlItemEnd("FastIncrementalOBRCURRInfo");
 }
-void FastProtocolManager::PrintXmlMarketDataIncrementalRefreshTLRFOND(FastMarketDataIncrementalRefreshTLRFONDInfo *info) {
+void FastProtocolManager::PrintXmlIncrementalTLRFOND(FastIncrementalTLRFONDInfo *info) {
 
-	PrintXmlItemBegin("FastMarketDataIncrementalRefreshTLRFONDInfo");
+	PrintXmlItemBegin("FastIncrementalTLRFONDInfo");
 	PrintXmlInt32("TemplateId", 2421);
 	PrintXmlUInt32("MsgSeqNum", info->MsgSeqNum);
 	PrintXmlUInt64("SendingTime", info->SendingTime);
 	PrintXmlInt32("GroupMDEntriesCount", info->GroupMDEntriesCount);
 
-	FastMarketDataIncrementalRefreshTLRFONDGroupMDEntriesItemInfo* gmdeItemInfo = NULL;
+	FastIncrementalTLRFONDItemInfo* gmdeItemInfo = NULL;
 
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 		gmdeItemInfo = info->GroupMDEntries[i];
@@ -1770,17 +1770,17 @@ void FastProtocolManager::PrintXmlMarketDataIncrementalRefreshTLRFOND(FastMarket
 		PrintXmlItemEnd("item", i);
 	}
 
-	PrintXmlItemEnd("FastMarketDataIncrementalRefreshTLRFONDInfo");
+	PrintXmlItemEnd("FastIncrementalTLRFONDInfo");
 }
-void FastProtocolManager::PrintXmlMarketDataIncrementalRefreshTLRCURR(FastMarketDataIncrementalRefreshTLRCURRInfo *info) {
+void FastProtocolManager::PrintXmlIncrementalTLRCURR(FastIncrementalTLRCURRInfo *info) {
 
-	PrintXmlItemBegin("FastMarketDataIncrementalRefreshTLRCURRInfo");
+	PrintXmlItemBegin("FastIncrementalTLRCURRInfo");
 	PrintXmlInt32("TemplateId", 3511);
 	PrintXmlUInt32("MsgSeqNum", info->MsgSeqNum);
 	PrintXmlUInt64("SendingTime", info->SendingTime);
 	PrintXmlInt32("GroupMDEntriesCount", info->GroupMDEntriesCount);
 
-	FastMarketDataIncrementalRefreshTLRCURRGroupMDEntriesItemInfo* gmdeItemInfo = NULL;
+	FastIncrementalTLRCURRItemInfo* gmdeItemInfo = NULL;
 
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 		gmdeItemInfo = info->GroupMDEntries[i];
@@ -1809,7 +1809,7 @@ void FastProtocolManager::PrintXmlMarketDataIncrementalRefreshTLRCURR(FastMarket
 		PrintXmlItemEnd("item", i);
 	}
 
-	PrintXmlItemEnd("FastMarketDataIncrementalRefreshTLRCURRInfo");
+	PrintXmlItemEnd("FastIncrementalTLRCURRInfo");
 }
 void FastProtocolManager::PrintXmlSecurityDefinition(FastSecurityDefinitionInfo *info) {
 

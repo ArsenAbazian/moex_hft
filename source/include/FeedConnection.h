@@ -168,21 +168,21 @@ private:
     inline bool WaitingSnapshot() { return this->m_waitingSnapshot; }
     inline bool SnapshotAvailable() { return this->m_snapshotAvailable; }
 
-	inline void AddOrderBookInfo(char *symbol, FastMarketDataSnapshotFullRefreshOBSFONDGroupMDEntriesItemInfo *info) {
+	inline void AddOrderBookInfo(char *symbol, FastOBSFONDItemInfo *info) {
 		SimpleListNode *obn = this->m_orderBookInfoPool->GetItem();
-		OrderBookInfo *obi = (OrderBookInfo)obn->Data();
+		OrderBookInfo *obi = (OrderBookInfo*)obn->Data();
 
-		this->m_orderBookTable->Add(symbol, info->Trad)
+		//this->m_orderBookTable->Add(symbol, info->Trad)
 
-		printf()
+		//printf()
 	}
 
 	inline bool ApplyOrderBookSnapshot_FOND() {
-		FastMarketDataSnapshotFullRefreshOBSFONDInfo *info = (FastMarketDataSnapshotFullRefreshOBSFONDInfo*)this->m_snapshot->m_fastProtocolManager->LastDecodeInfo();
+		FastOBSFONDInfo *info = (FastOBSFONDInfo*)this->m_snapshot->m_fastProtocolManager->LastDecodeInfo();
 
 		this->m_orderBookTable->Clear();
 		for(int i = 0; i < info->GroupMDEntriesCount; i++)
-			this->AddOrderBookInfo(info->Symbol, info info->GroupMDEntries[i]);
+			this->AddOrderBookInfo(info->Symbol, info->GroupMDEntries[i]);
 
 		return true;
 	}
@@ -334,7 +334,7 @@ private:
         return true;
     }
 
-	inline OrderBookInfo* AddOrderBookInfo(FastMarketDataIncrementalRefreshOBRFONDGroupMDEntriesItemInfo *info) {
+	inline OrderBookInfo* AddOrderBookInfo(FastIncrementalOBRFONDItemInfo *info) {
 		SimpleListNode *orderBookNode = this->m_orderBookInfoPool->GetItem();
 		OrderBookInfo *obi = (OrderBookInfo*)orderBookNode->Data();
 
@@ -344,15 +344,15 @@ private:
 		return 0;
 	}
 
-	inline void ChangeOrderBookInfo(FastMarketDataIncrementalRefreshOBRFONDGroupMDEntriesItemInfo *info) {
+	inline void ChangeOrderBookInfo(FastIncrementalOBRFONDItemInfo *info) {
 		printf("chanfe order book %s\n", info->MDEntryID);
 	}
 
-	inline void RemoveOrderBookInfo(FastMarketDataIncrementalRefreshOBRFONDGroupMDEntriesItemInfo *info) {
+	inline void RemoveOrderBookInfo(FastIncrementalOBRFONDItemInfo *info) {
 		printf("remove order book %s\n", info->MDEntryID);
 	}
 
-	inline bool OnIncrementalRefresh_OBR_FOND(FastMarketDataIncrementalRefreshOBRFONDGroupMDEntriesItemInfo *info) {
+	inline bool OnIncrementalRefresh_OBR_FOND(FastIncrementalOBRFONDItemInfo *info) {
 		if(info->MDUpdateAction == MDUpdateAction::mduaAdd) {
 			AddOrderBookInfo(info);
 		}
@@ -367,7 +367,7 @@ private:
 	}
 
 	inline bool OnIncrementalRefresh_OBR_FOND() {
-		FastMarketDataIncrementalRefreshOBRFONDInfo *info = (FastMarketDataIncrementalRefreshOBRFONDInfo*)this->m_fastProtocolManager->LastDecodeInfo();
+		FastIncrementalOBRFONDInfo *info = (FastIncrementalOBRFONDInfo*)this->m_fastProtocolManager->LastDecodeInfo();
 		bool res = true;
 		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 			res |= this->OnIncrementalRefresh_OBR_FOND(info->GroupMDEntries[i]);

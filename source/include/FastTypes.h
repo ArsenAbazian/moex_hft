@@ -130,7 +130,7 @@ typedef struct _FastSnapshotInfo {
 	UINT64				SendingTime;
 }FastSnapshotInfo;
 
-typedef struct _FastMarketDataSnapshotFullRefreshGenericGroupMDEntriesItemInfo {
+typedef struct _FastGenericItemInfo {
 	UINT64							PresenceMap;
 	char*							MDEntryType;			// id=269  presence=optional  
 	int							MDEntryTypeLength;
@@ -234,9 +234,9 @@ typedef struct _FastMarketDataSnapshotFullRefreshGenericGroupMDEntriesItemInfo {
 	char*							TradingSessionSubID;			// id=625  presence=optional  
 	int							TradingSessionSubIDLength;
 	bool							AllowTradingSessionSubID;
-}FastMarketDataSnapshotFullRefreshGenericGroupMDEntriesItemInfo;
+}FastGenericItemInfo;
 
-typedef struct _FastMarketDataIncrementalRefreshGenericGroupMDEntriesItemInfo {
+typedef struct _FastIncrementalGenericItemInfo {
 	UINT64							PresenceMap;
 	UINT32							MDUpdateAction;			// id=279  presence=optional  
 	bool							AllowMDUpdateAction;
@@ -352,9 +352,9 @@ typedef struct _FastMarketDataIncrementalRefreshGenericGroupMDEntriesItemInfo {
 	char*							TradingSessionSubID;			// id=625  presence=optional  
 	int							TradingSessionSubIDLength;
 	bool							AllowTradingSessionSubID;
-}FastMarketDataIncrementalRefreshGenericGroupMDEntriesItemInfo;
+}FastIncrementalGenericItemInfo;
 
-typedef struct _FastMarketDataSnapshotFullRefreshOLSFONDGroupMDEntriesItemInfo {
+typedef struct _FastOLSFONDItemInfo {
 	UINT64							PresenceMap;
 	char*							MDEntryType;			// id=269  presence=optional  
 	int							MDEntryTypeLength;
@@ -391,9 +391,9 @@ typedef struct _FastMarketDataSnapshotFullRefreshOLSFONDGroupMDEntriesItemInfo {
 	char*							TradingSessionSubID;			// id=625  presence=optional  
 	int							TradingSessionSubIDLength;
 	bool							AllowTradingSessionSubID;
-}FastMarketDataSnapshotFullRefreshOLSFONDGroupMDEntriesItemInfo;
+}FastOLSFONDItemInfo;
 
-typedef struct _FastMarketDataSnapshotFullRefreshOLSCURRGroupMDEntriesItemInfo {
+typedef struct _FastOLSCURRItemInfo {
 	UINT64							PresenceMap;
 	char*							MDEntryType;			// id=269  presence=optional  
 	int							MDEntryTypeLength;
@@ -423,9 +423,9 @@ typedef struct _FastMarketDataSnapshotFullRefreshOLSCURRGroupMDEntriesItemInfo {
 	char*							TradingSessionSubID;			// id=625  presence=optional  
 	int							TradingSessionSubIDLength;
 	bool							AllowTradingSessionSubID;
-}FastMarketDataSnapshotFullRefreshOLSCURRGroupMDEntriesItemInfo;
+}FastOLSCURRItemInfo;
 
-typedef struct _FastMarketDataSnapshotFullRefreshTLSFONDGroupMDEntriesItemInfo {
+typedef struct _FastTLSFONDItemInfo {
 	UINT64							PresenceMap;
 	char*							MDEntryType;			// id=269  
 	int							MDEntryTypeLength;
@@ -469,9 +469,9 @@ typedef struct _FastMarketDataSnapshotFullRefreshTLSFONDGroupMDEntriesItemInfo {
 	char*							TradingSessionSubID;			// id=625  presence=optional  
 	int							TradingSessionSubIDLength;
 	bool							AllowTradingSessionSubID;
-}FastMarketDataSnapshotFullRefreshTLSFONDGroupMDEntriesItemInfo;
+}FastTLSFONDItemInfo;
 
-typedef struct _FastMarketDataSnapshotFullRefreshTLSCURRGroupMDEntriesItemInfo {
+typedef struct _FastTLSCURRItemInfo {
 	UINT64							PresenceMap;
 	char*							MDEntryType;			// id=269  
 	int							MDEntryTypeLength;
@@ -511,9 +511,9 @@ typedef struct _FastMarketDataSnapshotFullRefreshTLSCURRGroupMDEntriesItemInfo {
 	char*							TradingSessionSubID;			// id=625  presence=optional  
 	int							TradingSessionSubIDLength;
 	bool							AllowTradingSessionSubID;
-}FastMarketDataSnapshotFullRefreshTLSCURRGroupMDEntriesItemInfo;
+}FastTLSCURRItemInfo;
 
-typedef struct _FastMarketDataSnapshotFullRefreshOBSFONDGroupMDEntriesItemInfo {
+typedef struct _FastOBSFONDItemInfo {
 	UINT64							PresenceMap;
 	char*							MDEntryType;			// id=269  presence=optional  
 	int							MDEntryTypeLength;
@@ -538,9 +538,9 @@ typedef struct _FastMarketDataSnapshotFullRefreshOBSFONDGroupMDEntriesItemInfo {
 	char*							TradingSessionSubID;			// id=625  presence=optional  
 	int							TradingSessionSubIDLength;
 	bool							AllowTradingSessionSubID;
-}FastMarketDataSnapshotFullRefreshOBSFONDGroupMDEntriesItemInfo;
+}FastOBSFONDItemInfo;
 
-typedef struct _FastMarketDataSnapshotFullRefreshOBSCURRGroupMDEntriesItemInfo {
+typedef struct _FastOBSCURRItemInfo {
 	UINT64							PresenceMap;
 	char*							MDEntryType;			// id=269  presence=optional  
 	int							MDEntryTypeLength;
@@ -559,9 +559,9 @@ typedef struct _FastMarketDataSnapshotFullRefreshOBSCURRGroupMDEntriesItemInfo {
 	char*							TradingSessionSubID;			// id=625  presence=optional  
 	int							TradingSessionSubIDLength;
 	bool							AllowTradingSessionSubID;
-}FastMarketDataSnapshotFullRefreshOBSCURRGroupMDEntriesItemInfo;
+}FastOBSCURRItemInfo;
 
-typedef struct _FastMarketDataIncrementalRefreshMSRFONDGroupMDEntriesItemInfo {
+typedef struct _FastIncrementalMSRFONDItemInfo {
 	UINT64							PresenceMap;
 	UINT32							MDUpdateAction;			// id=279  presence=optional  
 	bool							AllowMDUpdateAction;
@@ -642,9 +642,9 @@ typedef struct _FastMarketDataIncrementalRefreshMSRFONDGroupMDEntriesItemInfo {
 	char*							TradingSessionSubID;			// id=625  presence=optional  
 	int							TradingSessionSubIDLength;
 	bool							AllowTradingSessionSubID;
-}FastMarketDataIncrementalRefreshMSRFONDGroupMDEntriesItemInfo;
+}FastIncrementalMSRFONDItemInfo;
 
-typedef struct _FastMarketDataIncrementalRefreshMSRCURRGroupMDEntriesItemInfo {
+typedef struct _FastIncrementalMSRCURRItemInfo {
 	UINT64							PresenceMap;
 	UINT32							MDUpdateAction;			// id=279  presence=optional  
 	bool							AllowMDUpdateAction;
@@ -709,9 +709,9 @@ typedef struct _FastMarketDataIncrementalRefreshMSRCURRGroupMDEntriesItemInfo {
 	char*							TradingSessionSubID;			// id=625  presence=optional  
 	int							TradingSessionSubIDLength;
 	bool							AllowTradingSessionSubID;
-}FastMarketDataIncrementalRefreshMSRCURRGroupMDEntriesItemInfo;
+}FastIncrementalMSRCURRItemInfo;
 
-typedef struct _FastMarketDataIncrementalRefreshOLRFONDGroupMDEntriesItemInfo {
+typedef struct _FastIncrementalOLRFONDItemInfo {
 	UINT64							PresenceMap;
 	UINT32							MDUpdateAction;			// id=279  presence=optional  
 	bool							AllowMDUpdateAction;
@@ -758,9 +758,9 @@ typedef struct _FastMarketDataIncrementalRefreshOLRFONDGroupMDEntriesItemInfo {
 	char*							TradingSessionSubID;			// id=625  presence=optional  
 	int							TradingSessionSubIDLength;
 	bool							AllowTradingSessionSubID;
-}FastMarketDataIncrementalRefreshOLRFONDGroupMDEntriesItemInfo;
+}FastIncrementalOLRFONDItemInfo;
 
-typedef struct _FastMarketDataIncrementalRefreshOLRCURRGroupMDEntriesItemInfo {
+typedef struct _FastIncrementalOLRCURRItemInfo {
 	UINT64							PresenceMap;
 	UINT32							MDUpdateAction;			// id=279  presence=optional  
 	bool							AllowMDUpdateAction;
@@ -800,9 +800,9 @@ typedef struct _FastMarketDataIncrementalRefreshOLRCURRGroupMDEntriesItemInfo {
 	char*							TradingSessionSubID;			// id=625  presence=optional  
 	int							TradingSessionSubIDLength;
 	bool							AllowTradingSessionSubID;
-}FastMarketDataIncrementalRefreshOLRCURRGroupMDEntriesItemInfo;
+}FastIncrementalOLRCURRItemInfo;
 
-typedef struct _FastMarketDataIncrementalRefreshOBRFONDGroupMDEntriesItemInfo {
+typedef struct _FastIncrementalOBRFONDItemInfo {
 	UINT64							PresenceMap;
 	UINT32							MDUpdateAction;			// id=279  presence=optional  
 	bool							AllowMDUpdateAction;
@@ -837,9 +837,9 @@ typedef struct _FastMarketDataIncrementalRefreshOBRFONDGroupMDEntriesItemInfo {
 	char*							TradingSessionSubID;			// id=625  presence=optional  
 	int							TradingSessionSubIDLength;
 	bool							AllowTradingSessionSubID;
-}FastMarketDataIncrementalRefreshOBRFONDGroupMDEntriesItemInfo;
+}FastIncrementalOBRFONDItemInfo;
 
-typedef struct _FastMarketDataIncrementalRefreshOBRCURRGroupMDEntriesItemInfo {
+typedef struct _FastIncrementalOBRCURRItemInfo {
 	UINT64							PresenceMap;
 	UINT32							MDUpdateAction;			// id=279  presence=optional  
 	bool							AllowMDUpdateAction;
@@ -868,9 +868,9 @@ typedef struct _FastMarketDataIncrementalRefreshOBRCURRGroupMDEntriesItemInfo {
 	char*							TradingSessionSubID;			// id=625  presence=optional  
 	int							TradingSessionSubIDLength;
 	bool							AllowTradingSessionSubID;
-}FastMarketDataIncrementalRefreshOBRCURRGroupMDEntriesItemInfo;
+}FastIncrementalOBRCURRItemInfo;
 
-typedef struct _FastMarketDataIncrementalRefreshTLRFONDGroupMDEntriesItemInfo {
+typedef struct _FastIncrementalTLRFONDItemInfo {
 	UINT64							PresenceMap;
 	UINT32							MDUpdateAction;			// id=279  presence=optional  
 	bool							AllowMDUpdateAction;
@@ -924,9 +924,9 @@ typedef struct _FastMarketDataIncrementalRefreshTLRFONDGroupMDEntriesItemInfo {
 	char*							TradingSessionSubID;			// id=625  presence=optional  
 	int							TradingSessionSubIDLength;
 	bool							AllowTradingSessionSubID;
-}FastMarketDataIncrementalRefreshTLRFONDGroupMDEntriesItemInfo;
+}FastIncrementalTLRFONDItemInfo;
 
-typedef struct _FastMarketDataIncrementalRefreshTLRCURRGroupMDEntriesItemInfo {
+typedef struct _FastIncrementalTLRCURRItemInfo {
 	UINT64							PresenceMap;
 	UINT32							MDUpdateAction;			// id=279  presence=optional  
 	bool							AllowMDUpdateAction;
@@ -976,7 +976,7 @@ typedef struct _FastMarketDataIncrementalRefreshTLRCURRGroupMDEntriesItemInfo {
 	char*							TradingSessionSubID;			// id=625  presence=optional  
 	int							TradingSessionSubIDLength;
 	bool							AllowTradingSessionSubID;
-}FastMarketDataIncrementalRefreshTLRCURRGroupMDEntriesItemInfo;
+}FastIncrementalTLRCURRItemInfo;
 
 typedef struct _FastSecurityDefinitionGroupInstrAttribItemInfo {
 	UINT64							PresenceMap;
@@ -1048,7 +1048,7 @@ typedef struct _FastLogoutInfo {
 	bool							AllowText;
 }FastLogoutInfo;
 
-typedef struct _FastMarketDataSnapshotFullRefreshGenericInfo {
+typedef struct _FastGenericInfo {
 	UINT64							PresenceMap;
 	char*							MessageType;			// id=35    constant has constant value = W
 	int							MessageTypeLength;
@@ -1081,10 +1081,10 @@ typedef struct _FastMarketDataSnapshotFullRefreshGenericInfo {
 	Decimal							NetChgPrevDay;			// id=451  presence=optional  
 	bool							AllowNetChgPrevDay;
 	int							GroupMDEntriesCount;
-	FastMarketDataSnapshotFullRefreshGenericGroupMDEntriesItemInfo* GroupMDEntries[64];
-}FastMarketDataSnapshotFullRefreshGenericInfo;
+	FastGenericItemInfo* GroupMDEntries[64];
+}FastGenericInfo;
 
-typedef struct _FastMarketDataIncrementalRefreshGenericInfo {
+typedef struct _FastIncrementalGenericInfo {
 	UINT64							PresenceMap;
 	char*							MessageType;			// id=35    constant has constant value = X
 	int							MessageTypeLength;
@@ -1097,10 +1097,10 @@ typedef struct _FastMarketDataIncrementalRefreshGenericInfo {
 	UINT32							MsgSeqNum;			// id=34  
 	UINT64							SendingTime;			// id=52  
 	int							GroupMDEntriesCount;
-	FastMarketDataIncrementalRefreshGenericGroupMDEntriesItemInfo* GroupMDEntries[64];
-}FastMarketDataIncrementalRefreshGenericInfo;
+	FastIncrementalGenericItemInfo* GroupMDEntries[64];
+}FastIncrementalGenericInfo;
 
-typedef struct _FastMarketDataSnapshotFullRefreshOLSFONDInfo {
+typedef struct _FastOLSFONDInfo {
 	UINT64							PresenceMap;
 	char*							MessageType;			// id=35    constant has constant value = W
 	int							MessageTypeLength;
@@ -1131,10 +1131,10 @@ typedef struct _FastMarketDataSnapshotFullRefreshOLSFONDInfo {
 	UINT32							AuctionIndicator;			// id=5509  presence=optional  
 	bool							AllowAuctionIndicator;
 	int							GroupMDEntriesCount;
-	FastMarketDataSnapshotFullRefreshOLSFONDGroupMDEntriesItemInfo* GroupMDEntries[64];
-}FastMarketDataSnapshotFullRefreshOLSFONDInfo;
+	FastOLSFONDItemInfo* GroupMDEntries[64];
+}FastOLSFONDInfo;
 
-typedef struct _FastMarketDataSnapshotFullRefreshOLSCURRInfo {
+typedef struct _FastOLSCURRInfo {
 	UINT64							PresenceMap;
 	char*							MessageType;			// id=35    constant has constant value = W
 	int							MessageTypeLength;
@@ -1163,10 +1163,10 @@ typedef struct _FastMarketDataSnapshotFullRefreshOLSCURRInfo {
 	INT32							MDSecurityTradingStatus;			// id=1682  presence=optional  
 	bool							AllowMDSecurityTradingStatus;
 	int							GroupMDEntriesCount;
-	FastMarketDataSnapshotFullRefreshOLSCURRGroupMDEntriesItemInfo* GroupMDEntries[64];
-}FastMarketDataSnapshotFullRefreshOLSCURRInfo;
+	FastOLSCURRItemInfo* GroupMDEntries[64];
+}FastOLSCURRInfo;
 
-typedef struct _FastMarketDataSnapshotFullRefreshTLSFONDInfo {
+typedef struct _FastTLSFONDInfo {
 	UINT64							PresenceMap;
 	char*							MessageType;			// id=35    constant has constant value = W
 	int							MessageTypeLength;
@@ -1197,10 +1197,10 @@ typedef struct _FastMarketDataSnapshotFullRefreshTLSFONDInfo {
 	UINT32							AuctionIndicator;			// id=5509  presence=optional  
 	bool							AllowAuctionIndicator;
 	int							GroupMDEntriesCount;
-	FastMarketDataSnapshotFullRefreshTLSFONDGroupMDEntriesItemInfo* GroupMDEntries[64];
-}FastMarketDataSnapshotFullRefreshTLSFONDInfo;
+	FastTLSFONDItemInfo* GroupMDEntries[64];
+}FastTLSFONDInfo;
 
-typedef struct _FastMarketDataSnapshotFullRefreshTLSCURRInfo {
+typedef struct _FastTLSCURRInfo {
 	UINT64							PresenceMap;
 	char*							MessageType;			// id=35    constant has constant value = W
 	int							MessageTypeLength;
@@ -1229,10 +1229,10 @@ typedef struct _FastMarketDataSnapshotFullRefreshTLSCURRInfo {
 	INT32							MDSecurityTradingStatus;			// id=1682  presence=optional  
 	bool							AllowMDSecurityTradingStatus;
 	int							GroupMDEntriesCount;
-	FastMarketDataSnapshotFullRefreshTLSCURRGroupMDEntriesItemInfo* GroupMDEntries[64];
-}FastMarketDataSnapshotFullRefreshTLSCURRInfo;
+	FastTLSCURRItemInfo* GroupMDEntries[64];
+}FastTLSCURRInfo;
 
-typedef struct _FastMarketDataSnapshotFullRefreshOBSFONDInfo {
+typedef struct _FastOBSFONDInfo {
 	UINT64							PresenceMap;
 	char*							MessageType;			// id=35    constant has constant value = W
 	int							MessageTypeLength;
@@ -1263,10 +1263,10 @@ typedef struct _FastMarketDataSnapshotFullRefreshOBSFONDInfo {
 	UINT32							AuctionIndicator;			// id=5509  presence=optional  
 	bool							AllowAuctionIndicator;
 	int							GroupMDEntriesCount;
-	FastMarketDataSnapshotFullRefreshOBSFONDGroupMDEntriesItemInfo* GroupMDEntries[64];
-}FastMarketDataSnapshotFullRefreshOBSFONDInfo;
+	FastOBSFONDItemInfo* GroupMDEntries[64];
+}FastOBSFONDInfo;
 
-typedef struct _FastMarketDataSnapshotFullRefreshOBSCURRInfo {
+typedef struct _FastOBSCURRInfo {
 	UINT64							PresenceMap;
 	char*							MessageType;			// id=35    constant has constant value = W
 	int							MessageTypeLength;
@@ -1295,10 +1295,10 @@ typedef struct _FastMarketDataSnapshotFullRefreshOBSCURRInfo {
 	INT32							MDSecurityTradingStatus;			// id=1682  presence=optional  
 	bool							AllowMDSecurityTradingStatus;
 	int							GroupMDEntriesCount;
-	FastMarketDataSnapshotFullRefreshOBSCURRGroupMDEntriesItemInfo* GroupMDEntries[64];
-}FastMarketDataSnapshotFullRefreshOBSCURRInfo;
+	FastOBSCURRItemInfo* GroupMDEntries[64];
+}FastOBSCURRInfo;
 
-typedef struct _FastMarketDataIncrementalRefreshMSRFONDInfo {
+typedef struct _FastIncrementalMSRFONDInfo {
 	UINT64							PresenceMap;
 	char*							MessageType;			// id=35    constant has constant value = X
 	int							MessageTypeLength;
@@ -1311,10 +1311,10 @@ typedef struct _FastMarketDataIncrementalRefreshMSRFONDInfo {
 	UINT32							MsgSeqNum;			// id=34  
 	UINT64							SendingTime;			// id=52  
 	int							GroupMDEntriesCount;
-	FastMarketDataIncrementalRefreshMSRFONDGroupMDEntriesItemInfo* GroupMDEntries[64];
-}FastMarketDataIncrementalRefreshMSRFONDInfo;
+	FastIncrementalMSRFONDItemInfo* GroupMDEntries[64];
+}FastIncrementalMSRFONDInfo;
 
-typedef struct _FastMarketDataIncrementalRefreshMSRCURRInfo {
+typedef struct _FastIncrementalMSRCURRInfo {
 	UINT64							PresenceMap;
 	char*							MessageType;			// id=35    constant has constant value = X
 	int							MessageTypeLength;
@@ -1327,10 +1327,10 @@ typedef struct _FastMarketDataIncrementalRefreshMSRCURRInfo {
 	UINT32							MsgSeqNum;			// id=34  
 	UINT64							SendingTime;			// id=52  
 	int							GroupMDEntriesCount;
-	FastMarketDataIncrementalRefreshMSRCURRGroupMDEntriesItemInfo* GroupMDEntries[64];
-}FastMarketDataIncrementalRefreshMSRCURRInfo;
+	FastIncrementalMSRCURRItemInfo* GroupMDEntries[64];
+}FastIncrementalMSRCURRInfo;
 
-typedef struct _FastMarketDataIncrementalRefreshOLRFONDInfo {
+typedef struct _FastIncrementalOLRFONDInfo {
 	UINT64							PresenceMap;
 	char*							MessageType;			// id=35    constant has constant value = X
 	int							MessageTypeLength;
@@ -1343,10 +1343,10 @@ typedef struct _FastMarketDataIncrementalRefreshOLRFONDInfo {
 	UINT32							MsgSeqNum;			// id=34  
 	UINT64							SendingTime;			// id=52  
 	int							GroupMDEntriesCount;
-	FastMarketDataIncrementalRefreshOLRFONDGroupMDEntriesItemInfo* GroupMDEntries[64];
-}FastMarketDataIncrementalRefreshOLRFONDInfo;
+	FastIncrementalOLRFONDItemInfo* GroupMDEntries[64];
+}FastIncrementalOLRFONDInfo;
 
-typedef struct _FastMarketDataIncrementalRefreshOLRCURRInfo {
+typedef struct _FastIncrementalOLRCURRInfo {
 	UINT64							PresenceMap;
 	char*							MessageType;			// id=35    constant has constant value = X
 	int							MessageTypeLength;
@@ -1359,10 +1359,10 @@ typedef struct _FastMarketDataIncrementalRefreshOLRCURRInfo {
 	UINT32							MsgSeqNum;			// id=34  
 	UINT64							SendingTime;			// id=52  
 	int							GroupMDEntriesCount;
-	FastMarketDataIncrementalRefreshOLRCURRGroupMDEntriesItemInfo* GroupMDEntries[64];
-}FastMarketDataIncrementalRefreshOLRCURRInfo;
+	FastIncrementalOLRCURRItemInfo* GroupMDEntries[64];
+}FastIncrementalOLRCURRInfo;
 
-typedef struct _FastMarketDataIncrementalRefreshOBRFONDInfo {
+typedef struct _FastIncrementalOBRFONDInfo {
 	UINT64							PresenceMap;
 	char*							MessageType;			// id=35    constant has constant value = X
 	int							MessageTypeLength;
@@ -1375,10 +1375,10 @@ typedef struct _FastMarketDataIncrementalRefreshOBRFONDInfo {
 	UINT32							MsgSeqNum;			// id=34  
 	UINT64							SendingTime;			// id=52  
 	int							GroupMDEntriesCount;
-	FastMarketDataIncrementalRefreshOBRFONDGroupMDEntriesItemInfo* GroupMDEntries[64];
-}FastMarketDataIncrementalRefreshOBRFONDInfo;
+	FastIncrementalOBRFONDItemInfo* GroupMDEntries[64];
+}FastIncrementalOBRFONDInfo;
 
-typedef struct _FastMarketDataIncrementalRefreshOBRCURRInfo {
+typedef struct _FastIncrementalOBRCURRInfo {
 	UINT64							PresenceMap;
 	char*							MessageType;			// id=35    constant has constant value = X
 	int							MessageTypeLength;
@@ -1391,10 +1391,10 @@ typedef struct _FastMarketDataIncrementalRefreshOBRCURRInfo {
 	UINT32							MsgSeqNum;			// id=34  
 	UINT64							SendingTime;			// id=52  
 	int							GroupMDEntriesCount;
-	FastMarketDataIncrementalRefreshOBRCURRGroupMDEntriesItemInfo* GroupMDEntries[64];
-}FastMarketDataIncrementalRefreshOBRCURRInfo;
+	FastIncrementalOBRCURRItemInfo* GroupMDEntries[64];
+}FastIncrementalOBRCURRInfo;
 
-typedef struct _FastMarketDataIncrementalRefreshTLRFONDInfo {
+typedef struct _FastIncrementalTLRFONDInfo {
 	UINT64							PresenceMap;
 	char*							MessageType;			// id=35    constant has constant value = X
 	int							MessageTypeLength;
@@ -1407,10 +1407,10 @@ typedef struct _FastMarketDataIncrementalRefreshTLRFONDInfo {
 	UINT32							MsgSeqNum;			// id=34  
 	UINT64							SendingTime;			// id=52  
 	int							GroupMDEntriesCount;
-	FastMarketDataIncrementalRefreshTLRFONDGroupMDEntriesItemInfo* GroupMDEntries[64];
-}FastMarketDataIncrementalRefreshTLRFONDInfo;
+	FastIncrementalTLRFONDItemInfo* GroupMDEntries[64];
+}FastIncrementalTLRFONDInfo;
 
-typedef struct _FastMarketDataIncrementalRefreshTLRCURRInfo {
+typedef struct _FastIncrementalTLRCURRInfo {
 	UINT64							PresenceMap;
 	char*							MessageType;			// id=35    constant has constant value = X
 	int							MessageTypeLength;
@@ -1423,8 +1423,8 @@ typedef struct _FastMarketDataIncrementalRefreshTLRCURRInfo {
 	UINT32							MsgSeqNum;			// id=34  
 	UINT64							SendingTime;			// id=52  
 	int							GroupMDEntriesCount;
-	FastMarketDataIncrementalRefreshTLRCURRGroupMDEntriesItemInfo* GroupMDEntries[64];
-}FastMarketDataIncrementalRefreshTLRCURRInfo;
+	FastIncrementalTLRCURRItemInfo* GroupMDEntries[64];
+}FastIncrementalTLRCURRInfo;
 
 typedef struct _FastSecurityDefinitionInfo {
 	UINT64							PresenceMap;
