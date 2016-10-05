@@ -5,7 +5,7 @@
 #ifndef HFT_ROBOT_MARKETDATATABLE_H
 #define HFT_ROBOT_MARKETDATATABLE_H
 
-#include "../Lib/SimpleList.h"
+#include "Lib/PointerList.h"
 #include "../Types.h"
 
 #define MAX_SYMBOLS_COUNT               128
@@ -18,10 +18,10 @@ class MarketDataTable {
     int                 m_symbolsCount;
     int                 m_tradingSessionsCount;
 
-    SimpleList*         m_table[MAX_SYMBOLS_COUNT][MAX_TRADING_SESSIONS_COUNT];
+    PointerList*         m_table[MAX_SYMBOLS_COUNT][MAX_TRADING_SESSIONS_COUNT];
     int                 m_usedListsMap[MAX_SYMBOLS_COUNT][MAX_TRADING_SESSIONS_COUNT];
-    SimpleList*         m_usedLists;
-    SimpleList*         m_usedMapList;
+    PointerList*         m_usedLists;
+    PointerList*         m_usedMapList;
 
     inline bool IsSymbolEquals(char *s1, char *s2) {
         UINT32 *u1 = (UINT32*)s1;
@@ -66,12 +66,12 @@ public:
     MarketDataTable() {
         for(int i = 0; i < MAX_SYMBOLS_COUNT; i++) {
             for(int j = 0; j < MAX_TRADING_SESSIONS_COUNT; j++) {
-                this->m_table[i][j] = new SimpleList(MAX_TABLE_LIST_COUNT);
+                this->m_table[i][j] = new PointerList(MAX_TABLE_LIST_COUNT);
                 this->m_usedListsMap[i][j] = 0;
             }
         }
-        this->m_usedLists = new SimpleList(MAX_SYMBOLS_COUNT * MAX_TRADING_SESSIONS_COUNT + 10);
-        this->m_usedMapList = new SimpleList(MAX_SYMBOLS_COUNT * MAX_TRADING_SESSIONS_COUNT + 10);
+        this->m_usedLists = new PointerList(MAX_SYMBOLS_COUNT * MAX_TRADING_SESSIONS_COUNT + 10);
+        this->m_usedMapList = new PointerList(MAX_SYMBOLS_COUNT * MAX_TRADING_SESSIONS_COUNT + 10);
     }
     ~MarketDataTable() {
         for(int i = 0; i < MAX_SYMBOLS_COUNT; i++) {
@@ -81,13 +81,13 @@ public:
         }
     }
 
-    inline SimpleList* GetList(char *symbol, char *tradingSession) {
+    inline PointerList* GetList(char *symbol, char *tradingSession) {
         int symbolIndex = GetSymbolIndex(symbol);
         int tradingSessionIndex = GetTradingSessionIdIndex(tradingSession);
         return this->m_table[symbolIndex][tradingSessionIndex];
     }
 
-    inline SimpleList* GetListAndRemoveRef(char *symbol, char *tradingSession) {
+    inline PointerList* GetListAndRemoveRef(char *symbol, char *tradingSession) {
         int symbolIndex = GetSymbolIndex(symbol);
         int tradingSessionIndex = GetTradingSessionIdIndex(tradingSession);
 
@@ -101,7 +101,7 @@ public:
         int symbolIndex = GetSymbolIndex(symbol);
         int tradingSessionIndex = GetTradingSessionIdIndex(tradingSession);
 
-        SimpleList *list = this->m_table[symbolIndex][tradingSessionIndex];
+        PointerList *list = this->m_table[symbolIndex][tradingSessionIndex];
         list->Add(data);
 
         if(this->m_usedListsMap[symbolIndex][tradingSessionIndex] == 0) {
@@ -111,10 +111,28 @@ public:
         this->m_usedListsMap[symbolIndex][tradingSessionIndex]++;
     }
 
+    inline void Add(char *symbol, char *tradingSession, void **data, int count) {
+        void **item = data;
+
+        int symbolIndex = GetSymbolIndex(symbol);
+        int tradingSessionIndex = GetTradingSessionIdIndex(tradingSession);
+
+        PointerList *list = this->m_table[symbolIndex][tradingSessionIndex];
+
+        for(int i = 0; i < count; i++, item++) {
+            list->Add(*item);
+        }
+        if(this->m_usedListsMap[symbolIndex][tradingSessionIndex] == 0) {
+            this->m_usedLists->Add(list);
+            this->m_usedMapList->Add(&(this->m_usedListsMap[symbolIndex][tradingSessionIndex]));
+        }
+        this->m_usedListsMap[symbolIndex][tradingSessionIndex] += count;
+    }
+
     inline void Clear() {
-        SimpleListNode *node = this->m_usedLists->Start();
+        LinkedPointer *node = this->m_usedLists->Start();
         while(true) {
-            SimpleList *list = (SimpleList*)node->Data();
+            PointerList *list = (PointerList*)node->Data();
             list->Clear();
             if(node == this->m_usedLists->End())
                 break;

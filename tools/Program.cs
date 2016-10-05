@@ -67,7 +67,7 @@ namespace prebuild {
 			foreach(XmlNode node in doc.ChildNodes) {
 				if(node.Name != "templates")
 					continue;
-				ParseTemplatesNode(node);
+				GenerateTemplatesCode(node);
 			}
 
 			if(!HFile.Modified)
@@ -139,7 +139,7 @@ namespace prebuild {
 
 		List<ConstantStringInfo> ConstantStrings { get; set; }
 
-		private  void ParseTemplatesNode (XmlNode templatesNode) {
+		private  void GenerateTemplatesCode (XmlNode templatesNode) {
 
 			//HeaderTags = CollectHeaderTags(templatesNode);
 			WriteEntireMethodAddressArrays(templatesNode);
@@ -148,6 +148,7 @@ namespace prebuild {
 			ConstantStrings = GetConstantStrings(templatesNode);
 			WriteStringConstantDeclarationCode(templatesNode);
 			WriteGetFreeItemCode(templatesNode);
+			WriteReleaseItemCode(templatesNode);
 
 			WriteEncodeMethodsCode(templatesNode);
 			WriteHeaderParsingCode(templatesNode);
@@ -351,11 +352,46 @@ namespace prebuild {
 			foreach(StructureInfo str in structures) {
 				WriteLine("\tinline " + str.Name + "* " + str.GetFreeMethodName + "() {");
 				if(str.IsSequence) {
-					WriteLine("\t\t" + str.Name + " *res = this->" + str.CurrentItemValueName + ";");
-					WriteLine("\t\tthis->" + str.CurrentItemValueName + "++;");
-					WriteLine("\t\treturn res;");
+					WriteLine("\t\treturn this->" + str.ValueName + "->NewItem();");
+
 				} else {
 					WriteLine("\t\treturn this->" + str.ValueName + ";");
+				}
+				WriteLine("\t}");
+				WriteLine("");
+			}
+		}
+
+		public string NameWithParent(XmlNode node) {
+			string name = string.Empty;
+			while(node.Name != "templates") {
+				if(node.Name == "template")
+					name = GetTemplateName(node.PreviousSibling.Value) + name;
+				else 
+					name = ItemName(node) + name;
+				node = node.ParentNode;
+			}
+			return name;
+		}
+
+		private void WriteReleaseItemCode (XmlNode templatesNode) {
+			List<StructureInfo> structures = GetAllStructureNames(templatesNode);
+			foreach(StructureInfo str in structures) {
+				WriteLine("\tinline void Release(" + str.Name + "* info) {");
+				foreach(XmlNode childNode in str.Node.ChildNodes) {
+					if(childNode.Name == "sequence") {
+						string field = Name(childNode);
+						WriteLine("\t\tif(info->" + field + "Count != 0) {");
+						WriteLine("\t\t\tPointerList *list = info->" + field + "[0]->Pointer->Owner();");
+						StructureInfo item = new StructureInfo() { NameCore = NameWithParent(childNode), IsSequence = true };
+						WriteLine("\t\t\t" + item.Name + " **item = info->" + field + ";");
+						WriteLine("\t\t\tfor(int i = 0; i < info->" + field + "Count; i++) {");
+						WriteLine("\t\t\t\tthis->Release(*item);");
+						WriteLine("\t\t\t\tlist->Push((*item)->Pointer);");
+						WriteLine("\t\t\t\titem++;");
+						WriteLine("\t\t\t}");
+						WriteLine("\t\t}");
+					}
 				}
 				WriteLine("\t}");
 				WriteLine("");
@@ -368,6 +404,8 @@ namespace prebuild {
 					return "Fast" + NameCore + Suffix;
 				}
 			}
+
+			public XmlNode Node { get; set; }
 
 			public string NameCore { get; set; }
 
@@ -397,6 +435,10 @@ namespace prebuild {
 				get { return "GetFree" + NameCore + Suffix; }
 			}
 
+			public string ReleaseMethodName { 
+				get { return "Release" + NameCore + Suffix; }
+			}
+
 			public string EncodeMethodName {
 				get { return "Encode" + NameCore + Suffix; }
 			}
@@ -420,7 +462,7 @@ namespace prebuild {
 			List<StructureInfo> res = new List<StructureInfo>();
 			foreach(XmlNode node in templatesNode.ChildNodes) {
 				if(node.Name == "template") {
-					res.Add(new StructureInfo() { NameCore = GetTemplateName(node.PreviousSibling.Value) });
+					res.Add(new StructureInfo() { NameCore = GetTemplateName(node.PreviousSibling.Value), Node = node });
 					GetSequenceStructureNames(GetTemplateName(node.PreviousSibling.Value), node, res);
 				}
 			}
@@ -430,7 +472,7 @@ namespace prebuild {
 		private  void GetSequenceStructureNames (string parentStructNameCore, XmlNode node, List<StructureInfo> res) {
 			foreach(XmlNode field in node.ChildNodes) {
 				if(field.Name == "sequence") {
-					res.Add(new StructureInfo() { IsSequence = true, NameCore = parentStructNameCore + ItemName(field) });
+					res.Add(new StructureInfo() { IsSequence = true, NameCore = parentStructNameCore + ItemName(field), Node = field });
 					GetSequenceStructureNames(parentStructNameCore + Name(field), field, res);
 				}
 			}
@@ -441,28 +483,17 @@ namespace prebuild {
 
 			List<StructureInfo> structures = GetAllStructureNames(templatesNode);
 			foreach(StructureInfo str in structures) {
-				WriteLine("\t" + str.Name + "*\t" + str.ValueName + ";");
-			}
-			foreach(StructureInfo str in structures) {
-				if(str.IsSequence) {
-					WriteLine("\tint\t\t" + str.MaxItemCountValueName + ";");
-				}
-			}
-
-			foreach(StructureInfo str in structures) {
-				if(str.IsSequence) {
-					WriteLine("\t" + str.Name + "\t\t*" + str.CurrentItemValueName + ";");
-				}
+				if(!str.IsSequence)
+					WriteLine("\t" + str.Name + "*\t" + str.ValueName + ";");
+				else
+					WriteLine("\tAutoAllocatePointerList<" + str.Name + ">\t\t*" + str.ValueName + ";");
 			}
 
 			WriteLine("");
 			WriteLine("\tvoid InitializeMessageInfo() {");
 			foreach(StructureInfo str in structures) {
 				if(str.IsSequence) {
-					WriteLine("\t\tthis->" + str.ValueName + " = new " + str.Name + "[64];");
-					WriteLine("\t\tmemset(this->" + str.ValueName + ", 0, 64 * sizeof(" + str.Name + "));");
-					WriteLine("\t\tthis->" + str.MaxItemCountValueName + " = 64;");
-					WriteLine("\t\tthis->" + str.CurrentItemValueName + " = this->" + str.ValueName + ";");
+					WriteLine("\t\tthis->" + str.ValueName + " = new AutoAllocatePointerList<" + str.Name + ">(2, 256);");
 				} else {
 					WriteLine("\t\tthis->" + str.ValueName + " = new " + str.Name + "();");
 					WriteLine("\t\tmemset(this->" + str.ValueName + ", 0, sizeof(" + str.Name + "));");
@@ -472,15 +503,6 @@ namespace prebuild {
 			WriteLine("\t}");
 
 			WriteLine("");
-
-			WriteLine("\tinline void ResetMessageInfoIndicies() {");
-			foreach(StructureInfo str in structures) {
-				if(str.IsSequence) {
-					WriteLine("\t\tthis->" + str.CurrentItemValueName + " = this->" + str.ValueName + ";");
-				}
-			}
-			WriteLine("\t}");
-
 		}
 
 		private List<XmlNode> GetTemplates(XmlNode templatesNode) {
@@ -840,11 +862,12 @@ namespace prebuild {
 					continue;
 
 				WriteLine("typedef struct _" + info.Name + " {");
+				WriteLine("\tLinkedPointer" + StuctFieldsSpacing + "*Pointer;");
 				WriteSequenceNodeFieldDefinition(node, info.NameCore);
 				WriteLine("}" + info.Name + ";");
 				WriteLine("");
 
-				definedStructName.Add(info.Name);
+				//definedStructName.Add(info.Name);
 			}
 		}
 
@@ -1028,8 +1051,8 @@ namespace prebuild {
 		List<string> definedStructName = new List<string>();
 
 		private  void WriteNodeDefinition (XmlNode node, string templateName) {
-			if(definedStructName.Contains(templateName))
-				return;
+			//if(definedStructName.Contains(templateName))
+			//	return;
 			WriteLine("typedef struct _Fast" + templateName + "Info {");
 			WriteSequenceNodeFieldDefinition(node, templateName);
 			WriteLine("}Fast" + templateName + "Info;");

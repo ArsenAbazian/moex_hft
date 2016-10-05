@@ -47,82 +47,44 @@ private:
 	FastLogonInfo*	m_logon;
 	FastLogoutInfo*	m_logout;
 	FastGenericInfo*	m_generic;
-	FastGenericItemInfo*	m_genericItems;
+	AutoAllocatePointerList<FastGenericItemInfo>		*m_genericItems;
 	FastIncrementalGenericInfo*	m_incrementalGeneric;
-	FastIncrementalGenericItemInfo*	m_incrementalGenericItems;
+	AutoAllocatePointerList<FastIncrementalGenericItemInfo>		*m_incrementalGenericItems;
 	FastOLSFONDInfo*	m_oLSFOND;
-	FastOLSFONDItemInfo*	m_oLSFONDItems;
+	AutoAllocatePointerList<FastOLSFONDItemInfo>		*m_oLSFONDItems;
 	FastOLSCURRInfo*	m_oLSCURR;
-	FastOLSCURRItemInfo*	m_oLSCURRItems;
+	AutoAllocatePointerList<FastOLSCURRItemInfo>		*m_oLSCURRItems;
 	FastTLSFONDInfo*	m_tLSFOND;
-	FastTLSFONDItemInfo*	m_tLSFONDItems;
+	AutoAllocatePointerList<FastTLSFONDItemInfo>		*m_tLSFONDItems;
 	FastTLSCURRInfo*	m_tLSCURR;
-	FastTLSCURRItemInfo*	m_tLSCURRItems;
+	AutoAllocatePointerList<FastTLSCURRItemInfo>		*m_tLSCURRItems;
 	FastOBSFONDInfo*	m_oBSFOND;
-	FastOBSFONDItemInfo*	m_oBSFONDItems;
+	AutoAllocatePointerList<FastOBSFONDItemInfo>		*m_oBSFONDItems;
 	FastOBSCURRInfo*	m_oBSCURR;
-	FastOBSCURRItemInfo*	m_oBSCURRItems;
+	AutoAllocatePointerList<FastOBSCURRItemInfo>		*m_oBSCURRItems;
 	FastIncrementalMSRFONDInfo*	m_incrementalMSRFOND;
-	FastIncrementalMSRFONDItemInfo*	m_incrementalMSRFONDItems;
+	AutoAllocatePointerList<FastIncrementalMSRFONDItemInfo>		*m_incrementalMSRFONDItems;
 	FastIncrementalMSRCURRInfo*	m_incrementalMSRCURR;
-	FastIncrementalMSRCURRItemInfo*	m_incrementalMSRCURRItems;
+	AutoAllocatePointerList<FastIncrementalMSRCURRItemInfo>		*m_incrementalMSRCURRItems;
 	FastIncrementalOLRFONDInfo*	m_incrementalOLRFOND;
-	FastIncrementalOLRFONDItemInfo*	m_incrementalOLRFONDItems;
+	AutoAllocatePointerList<FastIncrementalOLRFONDItemInfo>		*m_incrementalOLRFONDItems;
 	FastIncrementalOLRCURRInfo*	m_incrementalOLRCURR;
-	FastIncrementalOLRCURRItemInfo*	m_incrementalOLRCURRItems;
+	AutoAllocatePointerList<FastIncrementalOLRCURRItemInfo>		*m_incrementalOLRCURRItems;
 	FastIncrementalOBRFONDInfo*	m_incrementalOBRFOND;
-	FastIncrementalOBRFONDItemInfo*	m_incrementalOBRFONDItems;
+	AutoAllocatePointerList<FastIncrementalOBRFONDItemInfo>		*m_incrementalOBRFONDItems;
 	FastIncrementalOBRCURRInfo*	m_incrementalOBRCURR;
-	FastIncrementalOBRCURRItemInfo*	m_incrementalOBRCURRItems;
+	AutoAllocatePointerList<FastIncrementalOBRCURRItemInfo>		*m_incrementalOBRCURRItems;
 	FastIncrementalTLRFONDInfo*	m_incrementalTLRFOND;
-	FastIncrementalTLRFONDItemInfo*	m_incrementalTLRFONDItems;
+	AutoAllocatePointerList<FastIncrementalTLRFONDItemInfo>		*m_incrementalTLRFONDItems;
 	FastIncrementalTLRCURRInfo*	m_incrementalTLRCURR;
-	FastIncrementalTLRCURRItemInfo*	m_incrementalTLRCURRItems;
+	AutoAllocatePointerList<FastIncrementalTLRCURRItemInfo>		*m_incrementalTLRCURRItems;
 	FastSecurityDefinitionInfo*	m_securityDefinition;
-	FastSecurityDefinitionGroupInstrAttribItemInfo*	m_securityDefinitionGroupInstrAttribItems;
-	FastSecurityDefinitionMarketSegmentGrpItemInfo*	m_securityDefinitionMarketSegmentGrpItems;
-	FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo*	m_securityDefinitionMarketSegmentGrpTradingSessionRulesGrpItems;
+	AutoAllocatePointerList<FastSecurityDefinitionGroupInstrAttribItemInfo>		*m_securityDefinitionGroupInstrAttribItems;
+	AutoAllocatePointerList<FastSecurityDefinitionMarketSegmentGrpItemInfo>		*m_securityDefinitionMarketSegmentGrpItems;
+	AutoAllocatePointerList<FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo>		*m_securityDefinitionMarketSegmentGrpTradingSessionRulesGrpItems;
 	FastSecurityStatusInfo*	m_securityStatus;
 	FastTradingSessionStatusInfo*	m_tradingSessionStatus;
 	FastHeartbeatInfo*	m_heartbeat;
-	int		m_genericItemsMaxCount;
-	int		m_incrementalGenericItemsMaxCount;
-	int		m_oLSFONDItemsMaxCount;
-	int		m_oLSCURRItemsMaxCount;
-	int		m_tLSFONDItemsMaxCount;
-	int		m_tLSCURRItemsMaxCount;
-	int		m_oBSFONDItemsMaxCount;
-	int		m_oBSCURRItemsMaxCount;
-	int		m_incrementalMSRFONDItemsMaxCount;
-	int		m_incrementalMSRCURRItemsMaxCount;
-	int		m_incrementalOLRFONDItemsMaxCount;
-	int		m_incrementalOLRCURRItemsMaxCount;
-	int		m_incrementalOBRFONDItemsMaxCount;
-	int		m_incrementalOBRCURRItemsMaxCount;
-	int		m_incrementalTLRFONDItemsMaxCount;
-	int		m_incrementalTLRCURRItemsMaxCount;
-	int		m_securityDefinitionGroupInstrAttribItemsMaxCount;
-	int		m_securityDefinitionMarketSegmentGrpItemsMaxCount;
-	int		m_securityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemsMaxCount;
-	FastGenericItemInfo		*m_genericItemsCurrentItem;
-	FastIncrementalGenericItemInfo		*m_incrementalGenericItemsCurrentItem;
-	FastOLSFONDItemInfo		*m_oLSFONDItemsCurrentItem;
-	FastOLSCURRItemInfo		*m_oLSCURRItemsCurrentItem;
-	FastTLSFONDItemInfo		*m_tLSFONDItemsCurrentItem;
-	FastTLSCURRItemInfo		*m_tLSCURRItemsCurrentItem;
-	FastOBSFONDItemInfo		*m_oBSFONDItemsCurrentItem;
-	FastOBSCURRItemInfo		*m_oBSCURRItemsCurrentItem;
-	FastIncrementalMSRFONDItemInfo		*m_incrementalMSRFONDItemsCurrentItem;
-	FastIncrementalMSRCURRItemInfo		*m_incrementalMSRCURRItemsCurrentItem;
-	FastIncrementalOLRFONDItemInfo		*m_incrementalOLRFONDItemsCurrentItem;
-	FastIncrementalOLRCURRItemInfo		*m_incrementalOLRCURRItemsCurrentItem;
-	FastIncrementalOBRFONDItemInfo		*m_incrementalOBRFONDItemsCurrentItem;
-	FastIncrementalOBRCURRItemInfo		*m_incrementalOBRCURRItemsCurrentItem;
-	FastIncrementalTLRFONDItemInfo		*m_incrementalTLRFONDItemsCurrentItem;
-	FastIncrementalTLRCURRItemInfo		*m_incrementalTLRCURRItemsCurrentItem;
-	FastSecurityDefinitionGroupInstrAttribItemInfo		*m_securityDefinitionGroupInstrAttribItemsCurrentItem;
-	FastSecurityDefinitionMarketSegmentGrpItemInfo		*m_securityDefinitionMarketSegmentGrpItemsCurrentItem;
-	FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo		*m_securityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemsCurrentItem;
 
 	void InitializeMessageInfo() {
 		this->m_logon = new FastLogonInfo();
@@ -134,148 +96,91 @@ private:
 		this->m_generic = new FastGenericInfo();
 		memset(this->m_generic, 0, sizeof(FastGenericInfo));
 
-		this->m_genericItems = new FastGenericItemInfo[64];
-		memset(this->m_genericItems, 0, 64 * sizeof(FastGenericItemInfo));
-		this->m_genericItemsMaxCount = 64;
-		this->m_genericItemsCurrentItem = this->m_genericItems;
+		this->m_genericItems = new AutoAllocatePointerList<FastGenericItemInfo>(2, 256);
 
 		this->m_incrementalGeneric = new FastIncrementalGenericInfo();
 		memset(this->m_incrementalGeneric, 0, sizeof(FastIncrementalGenericInfo));
 
-		this->m_incrementalGenericItems = new FastIncrementalGenericItemInfo[64];
-		memset(this->m_incrementalGenericItems, 0, 64 * sizeof(FastIncrementalGenericItemInfo));
-		this->m_incrementalGenericItemsMaxCount = 64;
-		this->m_incrementalGenericItemsCurrentItem = this->m_incrementalGenericItems;
+		this->m_incrementalGenericItems = new AutoAllocatePointerList<FastIncrementalGenericItemInfo>(2, 256);
 
 		this->m_oLSFOND = new FastOLSFONDInfo();
 		memset(this->m_oLSFOND, 0, sizeof(FastOLSFONDInfo));
 
-		this->m_oLSFONDItems = new FastOLSFONDItemInfo[64];
-		memset(this->m_oLSFONDItems, 0, 64 * sizeof(FastOLSFONDItemInfo));
-		this->m_oLSFONDItemsMaxCount = 64;
-		this->m_oLSFONDItemsCurrentItem = this->m_oLSFONDItems;
+		this->m_oLSFONDItems = new AutoAllocatePointerList<FastOLSFONDItemInfo>(2, 256);
 
 		this->m_oLSCURR = new FastOLSCURRInfo();
 		memset(this->m_oLSCURR, 0, sizeof(FastOLSCURRInfo));
 
-		this->m_oLSCURRItems = new FastOLSCURRItemInfo[64];
-		memset(this->m_oLSCURRItems, 0, 64 * sizeof(FastOLSCURRItemInfo));
-		this->m_oLSCURRItemsMaxCount = 64;
-		this->m_oLSCURRItemsCurrentItem = this->m_oLSCURRItems;
+		this->m_oLSCURRItems = new AutoAllocatePointerList<FastOLSCURRItemInfo>(2, 256);
 
 		this->m_tLSFOND = new FastTLSFONDInfo();
 		memset(this->m_tLSFOND, 0, sizeof(FastTLSFONDInfo));
 
-		this->m_tLSFONDItems = new FastTLSFONDItemInfo[64];
-		memset(this->m_tLSFONDItems, 0, 64 * sizeof(FastTLSFONDItemInfo));
-		this->m_tLSFONDItemsMaxCount = 64;
-		this->m_tLSFONDItemsCurrentItem = this->m_tLSFONDItems;
+		this->m_tLSFONDItems = new AutoAllocatePointerList<FastTLSFONDItemInfo>(2, 256);
 
 		this->m_tLSCURR = new FastTLSCURRInfo();
 		memset(this->m_tLSCURR, 0, sizeof(FastTLSCURRInfo));
 
-		this->m_tLSCURRItems = new FastTLSCURRItemInfo[64];
-		memset(this->m_tLSCURRItems, 0, 64 * sizeof(FastTLSCURRItemInfo));
-		this->m_tLSCURRItemsMaxCount = 64;
-		this->m_tLSCURRItemsCurrentItem = this->m_tLSCURRItems;
+		this->m_tLSCURRItems = new AutoAllocatePointerList<FastTLSCURRItemInfo>(2, 256);
 
 		this->m_oBSFOND = new FastOBSFONDInfo();
 		memset(this->m_oBSFOND, 0, sizeof(FastOBSFONDInfo));
 
-		this->m_oBSFONDItems = new FastOBSFONDItemInfo[64];
-		memset(this->m_oBSFONDItems, 0, 64 * sizeof(FastOBSFONDItemInfo));
-		this->m_oBSFONDItemsMaxCount = 64;
-		this->m_oBSFONDItemsCurrentItem = this->m_oBSFONDItems;
+		this->m_oBSFONDItems = new AutoAllocatePointerList<FastOBSFONDItemInfo>(2, 256);
 
 		this->m_oBSCURR = new FastOBSCURRInfo();
 		memset(this->m_oBSCURR, 0, sizeof(FastOBSCURRInfo));
 
-		this->m_oBSCURRItems = new FastOBSCURRItemInfo[64];
-		memset(this->m_oBSCURRItems, 0, 64 * sizeof(FastOBSCURRItemInfo));
-		this->m_oBSCURRItemsMaxCount = 64;
-		this->m_oBSCURRItemsCurrentItem = this->m_oBSCURRItems;
+		this->m_oBSCURRItems = new AutoAllocatePointerList<FastOBSCURRItemInfo>(2, 256);
 
 		this->m_incrementalMSRFOND = new FastIncrementalMSRFONDInfo();
 		memset(this->m_incrementalMSRFOND, 0, sizeof(FastIncrementalMSRFONDInfo));
 
-		this->m_incrementalMSRFONDItems = new FastIncrementalMSRFONDItemInfo[64];
-		memset(this->m_incrementalMSRFONDItems, 0, 64 * sizeof(FastIncrementalMSRFONDItemInfo));
-		this->m_incrementalMSRFONDItemsMaxCount = 64;
-		this->m_incrementalMSRFONDItemsCurrentItem = this->m_incrementalMSRFONDItems;
+		this->m_incrementalMSRFONDItems = new AutoAllocatePointerList<FastIncrementalMSRFONDItemInfo>(2, 256);
 
 		this->m_incrementalMSRCURR = new FastIncrementalMSRCURRInfo();
 		memset(this->m_incrementalMSRCURR, 0, sizeof(FastIncrementalMSRCURRInfo));
 
-		this->m_incrementalMSRCURRItems = new FastIncrementalMSRCURRItemInfo[64];
-		memset(this->m_incrementalMSRCURRItems, 0, 64 * sizeof(FastIncrementalMSRCURRItemInfo));
-		this->m_incrementalMSRCURRItemsMaxCount = 64;
-		this->m_incrementalMSRCURRItemsCurrentItem = this->m_incrementalMSRCURRItems;
+		this->m_incrementalMSRCURRItems = new AutoAllocatePointerList<FastIncrementalMSRCURRItemInfo>(2, 256);
 
 		this->m_incrementalOLRFOND = new FastIncrementalOLRFONDInfo();
 		memset(this->m_incrementalOLRFOND, 0, sizeof(FastIncrementalOLRFONDInfo));
 
-		this->m_incrementalOLRFONDItems = new FastIncrementalOLRFONDItemInfo[64];
-		memset(this->m_incrementalOLRFONDItems, 0, 64 * sizeof(FastIncrementalOLRFONDItemInfo));
-		this->m_incrementalOLRFONDItemsMaxCount = 64;
-		this->m_incrementalOLRFONDItemsCurrentItem = this->m_incrementalOLRFONDItems;
+		this->m_incrementalOLRFONDItems = new AutoAllocatePointerList<FastIncrementalOLRFONDItemInfo>(2, 256);
 
 		this->m_incrementalOLRCURR = new FastIncrementalOLRCURRInfo();
 		memset(this->m_incrementalOLRCURR, 0, sizeof(FastIncrementalOLRCURRInfo));
 
-		this->m_incrementalOLRCURRItems = new FastIncrementalOLRCURRItemInfo[64];
-		memset(this->m_incrementalOLRCURRItems, 0, 64 * sizeof(FastIncrementalOLRCURRItemInfo));
-		this->m_incrementalOLRCURRItemsMaxCount = 64;
-		this->m_incrementalOLRCURRItemsCurrentItem = this->m_incrementalOLRCURRItems;
+		this->m_incrementalOLRCURRItems = new AutoAllocatePointerList<FastIncrementalOLRCURRItemInfo>(2, 256);
 
 		this->m_incrementalOBRFOND = new FastIncrementalOBRFONDInfo();
 		memset(this->m_incrementalOBRFOND, 0, sizeof(FastIncrementalOBRFONDInfo));
 
-		this->m_incrementalOBRFONDItems = new FastIncrementalOBRFONDItemInfo[64];
-		memset(this->m_incrementalOBRFONDItems, 0, 64 * sizeof(FastIncrementalOBRFONDItemInfo));
-		this->m_incrementalOBRFONDItemsMaxCount = 64;
-		this->m_incrementalOBRFONDItemsCurrentItem = this->m_incrementalOBRFONDItems;
+		this->m_incrementalOBRFONDItems = new AutoAllocatePointerList<FastIncrementalOBRFONDItemInfo>(2, 256);
 
 		this->m_incrementalOBRCURR = new FastIncrementalOBRCURRInfo();
 		memset(this->m_incrementalOBRCURR, 0, sizeof(FastIncrementalOBRCURRInfo));
 
-		this->m_incrementalOBRCURRItems = new FastIncrementalOBRCURRItemInfo[64];
-		memset(this->m_incrementalOBRCURRItems, 0, 64 * sizeof(FastIncrementalOBRCURRItemInfo));
-		this->m_incrementalOBRCURRItemsMaxCount = 64;
-		this->m_incrementalOBRCURRItemsCurrentItem = this->m_incrementalOBRCURRItems;
+		this->m_incrementalOBRCURRItems = new AutoAllocatePointerList<FastIncrementalOBRCURRItemInfo>(2, 256);
 
 		this->m_incrementalTLRFOND = new FastIncrementalTLRFONDInfo();
 		memset(this->m_incrementalTLRFOND, 0, sizeof(FastIncrementalTLRFONDInfo));
 
-		this->m_incrementalTLRFONDItems = new FastIncrementalTLRFONDItemInfo[64];
-		memset(this->m_incrementalTLRFONDItems, 0, 64 * sizeof(FastIncrementalTLRFONDItemInfo));
-		this->m_incrementalTLRFONDItemsMaxCount = 64;
-		this->m_incrementalTLRFONDItemsCurrentItem = this->m_incrementalTLRFONDItems;
+		this->m_incrementalTLRFONDItems = new AutoAllocatePointerList<FastIncrementalTLRFONDItemInfo>(2, 256);
 
 		this->m_incrementalTLRCURR = new FastIncrementalTLRCURRInfo();
 		memset(this->m_incrementalTLRCURR, 0, sizeof(FastIncrementalTLRCURRInfo));
 
-		this->m_incrementalTLRCURRItems = new FastIncrementalTLRCURRItemInfo[64];
-		memset(this->m_incrementalTLRCURRItems, 0, 64 * sizeof(FastIncrementalTLRCURRItemInfo));
-		this->m_incrementalTLRCURRItemsMaxCount = 64;
-		this->m_incrementalTLRCURRItemsCurrentItem = this->m_incrementalTLRCURRItems;
+		this->m_incrementalTLRCURRItems = new AutoAllocatePointerList<FastIncrementalTLRCURRItemInfo>(2, 256);
 
 		this->m_securityDefinition = new FastSecurityDefinitionInfo();
 		memset(this->m_securityDefinition, 0, sizeof(FastSecurityDefinitionInfo));
 
-		this->m_securityDefinitionGroupInstrAttribItems = new FastSecurityDefinitionGroupInstrAttribItemInfo[64];
-		memset(this->m_securityDefinitionGroupInstrAttribItems, 0, 64 * sizeof(FastSecurityDefinitionGroupInstrAttribItemInfo));
-		this->m_securityDefinitionGroupInstrAttribItemsMaxCount = 64;
-		this->m_securityDefinitionGroupInstrAttribItemsCurrentItem = this->m_securityDefinitionGroupInstrAttribItems;
+		this->m_securityDefinitionGroupInstrAttribItems = new AutoAllocatePointerList<FastSecurityDefinitionGroupInstrAttribItemInfo>(2, 256);
 
-		this->m_securityDefinitionMarketSegmentGrpItems = new FastSecurityDefinitionMarketSegmentGrpItemInfo[64];
-		memset(this->m_securityDefinitionMarketSegmentGrpItems, 0, 64 * sizeof(FastSecurityDefinitionMarketSegmentGrpItemInfo));
-		this->m_securityDefinitionMarketSegmentGrpItemsMaxCount = 64;
-		this->m_securityDefinitionMarketSegmentGrpItemsCurrentItem = this->m_securityDefinitionMarketSegmentGrpItems;
+		this->m_securityDefinitionMarketSegmentGrpItems = new AutoAllocatePointerList<FastSecurityDefinitionMarketSegmentGrpItemInfo>(2, 256);
 
-		this->m_securityDefinitionMarketSegmentGrpTradingSessionRulesGrpItems = new FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo[64];
-		memset(this->m_securityDefinitionMarketSegmentGrpTradingSessionRulesGrpItems, 0, 64 * sizeof(FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo));
-		this->m_securityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemsMaxCount = 64;
-		this->m_securityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemsCurrentItem = this->m_securityDefinitionMarketSegmentGrpTradingSessionRulesGrpItems;
+		this->m_securityDefinitionMarketSegmentGrpTradingSessionRulesGrpItems = new AutoAllocatePointerList<FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo>(2, 256);
 
 		this->m_securityStatus = new FastSecurityStatusInfo();
 		memset(this->m_securityStatus, 0, sizeof(FastSecurityStatusInfo));
@@ -288,27 +193,6 @@ private:
 
 	}
 
-	inline void ResetMessageInfoIndicies() {
-		this->m_genericItemsCurrentItem = this->m_genericItems;
-		this->m_incrementalGenericItemsCurrentItem = this->m_incrementalGenericItems;
-		this->m_oLSFONDItemsCurrentItem = this->m_oLSFONDItems;
-		this->m_oLSCURRItemsCurrentItem = this->m_oLSCURRItems;
-		this->m_tLSFONDItemsCurrentItem = this->m_tLSFONDItems;
-		this->m_tLSCURRItemsCurrentItem = this->m_tLSCURRItems;
-		this->m_oBSFONDItemsCurrentItem = this->m_oBSFONDItems;
-		this->m_oBSCURRItemsCurrentItem = this->m_oBSCURRItems;
-		this->m_incrementalMSRFONDItemsCurrentItem = this->m_incrementalMSRFONDItems;
-		this->m_incrementalMSRCURRItemsCurrentItem = this->m_incrementalMSRCURRItems;
-		this->m_incrementalOLRFONDItemsCurrentItem = this->m_incrementalOLRFONDItems;
-		this->m_incrementalOLRCURRItemsCurrentItem = this->m_incrementalOLRCURRItems;
-		this->m_incrementalOBRFONDItemsCurrentItem = this->m_incrementalOBRFONDItems;
-		this->m_incrementalOBRCURRItemsCurrentItem = this->m_incrementalOBRCURRItems;
-		this->m_incrementalTLRFONDItemsCurrentItem = this->m_incrementalTLRFONDItems;
-		this->m_incrementalTLRCURRItemsCurrentItem = this->m_incrementalTLRCURRItems;
-		this->m_securityDefinitionGroupInstrAttribItemsCurrentItem = this->m_securityDefinitionGroupInstrAttribItems;
-		this->m_securityDefinitionMarketSegmentGrpItemsCurrentItem = this->m_securityDefinitionMarketSegmentGrpItems;
-		this->m_securityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemsCurrentItem = this->m_securityDefinitionMarketSegmentGrpTradingSessionRulesGrpItems;
-	}
 #pragma endregion
 
 #pragma region Decode_Method_Pointer_Arrays_GeneratedCode
@@ -374,9 +258,7 @@ private:
 	}
 
 	inline FastGenericItemInfo* GetFreeGenericItemInfo() {
-		FastGenericItemInfo *res = this->m_genericItemsCurrentItem;
-		this->m_genericItemsCurrentItem++;
-		return res;
+		return this->m_genericItems->NewItem();
 	}
 
 	inline FastIncrementalGenericInfo* GetFreeIncrementalGenericInfo() {
@@ -384,9 +266,7 @@ private:
 	}
 
 	inline FastIncrementalGenericItemInfo* GetFreeIncrementalGenericItemInfo() {
-		FastIncrementalGenericItemInfo *res = this->m_incrementalGenericItemsCurrentItem;
-		this->m_incrementalGenericItemsCurrentItem++;
-		return res;
+		return this->m_incrementalGenericItems->NewItem();
 	}
 
 	inline FastOLSFONDInfo* GetFreeOLSFONDInfo() {
@@ -394,9 +274,7 @@ private:
 	}
 
 	inline FastOLSFONDItemInfo* GetFreeOLSFONDItemInfo() {
-		FastOLSFONDItemInfo *res = this->m_oLSFONDItemsCurrentItem;
-		this->m_oLSFONDItemsCurrentItem++;
-		return res;
+		return this->m_oLSFONDItems->NewItem();
 	}
 
 	inline FastOLSCURRInfo* GetFreeOLSCURRInfo() {
@@ -404,9 +282,7 @@ private:
 	}
 
 	inline FastOLSCURRItemInfo* GetFreeOLSCURRItemInfo() {
-		FastOLSCURRItemInfo *res = this->m_oLSCURRItemsCurrentItem;
-		this->m_oLSCURRItemsCurrentItem++;
-		return res;
+		return this->m_oLSCURRItems->NewItem();
 	}
 
 	inline FastTLSFONDInfo* GetFreeTLSFONDInfo() {
@@ -414,9 +290,7 @@ private:
 	}
 
 	inline FastTLSFONDItemInfo* GetFreeTLSFONDItemInfo() {
-		FastTLSFONDItemInfo *res = this->m_tLSFONDItemsCurrentItem;
-		this->m_tLSFONDItemsCurrentItem++;
-		return res;
+		return this->m_tLSFONDItems->NewItem();
 	}
 
 	inline FastTLSCURRInfo* GetFreeTLSCURRInfo() {
@@ -424,9 +298,7 @@ private:
 	}
 
 	inline FastTLSCURRItemInfo* GetFreeTLSCURRItemInfo() {
-		FastTLSCURRItemInfo *res = this->m_tLSCURRItemsCurrentItem;
-		this->m_tLSCURRItemsCurrentItem++;
-		return res;
+		return this->m_tLSCURRItems->NewItem();
 	}
 
 	inline FastOBSFONDInfo* GetFreeOBSFONDInfo() {
@@ -434,9 +306,7 @@ private:
 	}
 
 	inline FastOBSFONDItemInfo* GetFreeOBSFONDItemInfo() {
-		FastOBSFONDItemInfo *res = this->m_oBSFONDItemsCurrentItem;
-		this->m_oBSFONDItemsCurrentItem++;
-		return res;
+		return this->m_oBSFONDItems->NewItem();
 	}
 
 	inline FastOBSCURRInfo* GetFreeOBSCURRInfo() {
@@ -444,9 +314,7 @@ private:
 	}
 
 	inline FastOBSCURRItemInfo* GetFreeOBSCURRItemInfo() {
-		FastOBSCURRItemInfo *res = this->m_oBSCURRItemsCurrentItem;
-		this->m_oBSCURRItemsCurrentItem++;
-		return res;
+		return this->m_oBSCURRItems->NewItem();
 	}
 
 	inline FastIncrementalMSRFONDInfo* GetFreeIncrementalMSRFONDInfo() {
@@ -454,9 +322,7 @@ private:
 	}
 
 	inline FastIncrementalMSRFONDItemInfo* GetFreeIncrementalMSRFONDItemInfo() {
-		FastIncrementalMSRFONDItemInfo *res = this->m_incrementalMSRFONDItemsCurrentItem;
-		this->m_incrementalMSRFONDItemsCurrentItem++;
-		return res;
+		return this->m_incrementalMSRFONDItems->NewItem();
 	}
 
 	inline FastIncrementalMSRCURRInfo* GetFreeIncrementalMSRCURRInfo() {
@@ -464,9 +330,7 @@ private:
 	}
 
 	inline FastIncrementalMSRCURRItemInfo* GetFreeIncrementalMSRCURRItemInfo() {
-		FastIncrementalMSRCURRItemInfo *res = this->m_incrementalMSRCURRItemsCurrentItem;
-		this->m_incrementalMSRCURRItemsCurrentItem++;
-		return res;
+		return this->m_incrementalMSRCURRItems->NewItem();
 	}
 
 	inline FastIncrementalOLRFONDInfo* GetFreeIncrementalOLRFONDInfo() {
@@ -474,9 +338,7 @@ private:
 	}
 
 	inline FastIncrementalOLRFONDItemInfo* GetFreeIncrementalOLRFONDItemInfo() {
-		FastIncrementalOLRFONDItemInfo *res = this->m_incrementalOLRFONDItemsCurrentItem;
-		this->m_incrementalOLRFONDItemsCurrentItem++;
-		return res;
+		return this->m_incrementalOLRFONDItems->NewItem();
 	}
 
 	inline FastIncrementalOLRCURRInfo* GetFreeIncrementalOLRCURRInfo() {
@@ -484,9 +346,7 @@ private:
 	}
 
 	inline FastIncrementalOLRCURRItemInfo* GetFreeIncrementalOLRCURRItemInfo() {
-		FastIncrementalOLRCURRItemInfo *res = this->m_incrementalOLRCURRItemsCurrentItem;
-		this->m_incrementalOLRCURRItemsCurrentItem++;
-		return res;
+		return this->m_incrementalOLRCURRItems->NewItem();
 	}
 
 	inline FastIncrementalOBRFONDInfo* GetFreeIncrementalOBRFONDInfo() {
@@ -494,9 +354,7 @@ private:
 	}
 
 	inline FastIncrementalOBRFONDItemInfo* GetFreeIncrementalOBRFONDItemInfo() {
-		FastIncrementalOBRFONDItemInfo *res = this->m_incrementalOBRFONDItemsCurrentItem;
-		this->m_incrementalOBRFONDItemsCurrentItem++;
-		return res;
+		return this->m_incrementalOBRFONDItems->NewItem();
 	}
 
 	inline FastIncrementalOBRCURRInfo* GetFreeIncrementalOBRCURRInfo() {
@@ -504,9 +362,7 @@ private:
 	}
 
 	inline FastIncrementalOBRCURRItemInfo* GetFreeIncrementalOBRCURRItemInfo() {
-		FastIncrementalOBRCURRItemInfo *res = this->m_incrementalOBRCURRItemsCurrentItem;
-		this->m_incrementalOBRCURRItemsCurrentItem++;
-		return res;
+		return this->m_incrementalOBRCURRItems->NewItem();
 	}
 
 	inline FastIncrementalTLRFONDInfo* GetFreeIncrementalTLRFONDInfo() {
@@ -514,9 +370,7 @@ private:
 	}
 
 	inline FastIncrementalTLRFONDItemInfo* GetFreeIncrementalTLRFONDItemInfo() {
-		FastIncrementalTLRFONDItemInfo *res = this->m_incrementalTLRFONDItemsCurrentItem;
-		this->m_incrementalTLRFONDItemsCurrentItem++;
-		return res;
+		return this->m_incrementalTLRFONDItems->NewItem();
 	}
 
 	inline FastIncrementalTLRCURRInfo* GetFreeIncrementalTLRCURRInfo() {
@@ -524,9 +378,7 @@ private:
 	}
 
 	inline FastIncrementalTLRCURRItemInfo* GetFreeIncrementalTLRCURRItemInfo() {
-		FastIncrementalTLRCURRItemInfo *res = this->m_incrementalTLRCURRItemsCurrentItem;
-		this->m_incrementalTLRCURRItemsCurrentItem++;
-		return res;
+		return this->m_incrementalTLRCURRItems->NewItem();
 	}
 
 	inline FastSecurityDefinitionInfo* GetFreeSecurityDefinitionInfo() {
@@ -534,21 +386,15 @@ private:
 	}
 
 	inline FastSecurityDefinitionGroupInstrAttribItemInfo* GetFreeSecurityDefinitionGroupInstrAttribItemInfo() {
-		FastSecurityDefinitionGroupInstrAttribItemInfo *res = this->m_securityDefinitionGroupInstrAttribItemsCurrentItem;
-		this->m_securityDefinitionGroupInstrAttribItemsCurrentItem++;
-		return res;
+		return this->m_securityDefinitionGroupInstrAttribItems->NewItem();
 	}
 
 	inline FastSecurityDefinitionMarketSegmentGrpItemInfo* GetFreeSecurityDefinitionMarketSegmentGrpItemInfo() {
-		FastSecurityDefinitionMarketSegmentGrpItemInfo *res = this->m_securityDefinitionMarketSegmentGrpItemsCurrentItem;
-		this->m_securityDefinitionMarketSegmentGrpItemsCurrentItem++;
-		return res;
+		return this->m_securityDefinitionMarketSegmentGrpItems->NewItem();
 	}
 
 	inline FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo* GetFreeSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo() {
-		FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo *res = this->m_securityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemsCurrentItem;
-		this->m_securityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemsCurrentItem++;
-		return res;
+		return this->m_securityDefinitionMarketSegmentGrpTradingSessionRulesGrpItems->NewItem();
 	}
 
 	inline FastSecurityStatusInfo* GetFreeSecurityStatusInfo() {
@@ -561,6 +407,300 @@ private:
 
 	inline FastHeartbeatInfo* GetFreeHeartbeatInfo() {
 		return this->m_heartbeat;
+	}
+
+	inline void Release(FastLogonInfo* info) {
+	}
+
+	inline void Release(FastLogoutInfo* info) {
+	}
+
+	inline void Release(FastGenericInfo* info) {
+		if(info->GroupMDEntriesCount != 0) {
+			PointerList *list = info->GroupMDEntries[0]->Pointer->Owner();
+			FastGenericItemInfo **item = info->GroupMDEntries;
+			for(int i = 0; i < info->GroupMDEntriesCount; i++) {
+				this->Release(*item);
+				list->Push((*item)->Pointer);
+				item++;
+			}
+		}
+	}
+
+	inline void Release(FastGenericItemInfo* info) {
+	}
+
+	inline void Release(FastIncrementalGenericInfo* info) {
+		if(info->GroupMDEntriesCount != 0) {
+			PointerList *list = info->GroupMDEntries[0]->Pointer->Owner();
+			FastIncrementalGenericItemInfo **item = info->GroupMDEntries;
+			for(int i = 0; i < info->GroupMDEntriesCount; i++) {
+				this->Release(*item);
+				list->Push((*item)->Pointer);
+				item++;
+			}
+		}
+	}
+
+	inline void Release(FastIncrementalGenericItemInfo* info) {
+	}
+
+	inline void Release(FastOLSFONDInfo* info) {
+		if(info->GroupMDEntriesCount != 0) {
+			PointerList *list = info->GroupMDEntries[0]->Pointer->Owner();
+			FastOLSFONDItemInfo **item = info->GroupMDEntries;
+			for(int i = 0; i < info->GroupMDEntriesCount; i++) {
+				this->Release(*item);
+				list->Push((*item)->Pointer);
+				item++;
+			}
+		}
+	}
+
+	inline void Release(FastOLSFONDItemInfo* info) {
+	}
+
+	inline void Release(FastOLSCURRInfo* info) {
+		if(info->GroupMDEntriesCount != 0) {
+			PointerList *list = info->GroupMDEntries[0]->Pointer->Owner();
+			FastOLSCURRItemInfo **item = info->GroupMDEntries;
+			for(int i = 0; i < info->GroupMDEntriesCount; i++) {
+				this->Release(*item);
+				list->Push((*item)->Pointer);
+				item++;
+			}
+		}
+	}
+
+	inline void Release(FastOLSCURRItemInfo* info) {
+	}
+
+	inline void Release(FastTLSFONDInfo* info) {
+		if(info->GroupMDEntriesCount != 0) {
+			PointerList *list = info->GroupMDEntries[0]->Pointer->Owner();
+			FastTLSFONDItemInfo **item = info->GroupMDEntries;
+			for(int i = 0; i < info->GroupMDEntriesCount; i++) {
+				this->Release(*item);
+				list->Push((*item)->Pointer);
+				item++;
+			}
+		}
+	}
+
+	inline void Release(FastTLSFONDItemInfo* info) {
+	}
+
+	inline void Release(FastTLSCURRInfo* info) {
+		if(info->GroupMDEntriesCount != 0) {
+			PointerList *list = info->GroupMDEntries[0]->Pointer->Owner();
+			FastTLSCURRItemInfo **item = info->GroupMDEntries;
+			for(int i = 0; i < info->GroupMDEntriesCount; i++) {
+				this->Release(*item);
+				list->Push((*item)->Pointer);
+				item++;
+			}
+		}
+	}
+
+	inline void Release(FastTLSCURRItemInfo* info) {
+	}
+
+	inline void Release(FastOBSFONDInfo* info) {
+		if(info->GroupMDEntriesCount != 0) {
+			PointerList *list = info->GroupMDEntries[0]->Pointer->Owner();
+			FastOBSFONDItemInfo **item = info->GroupMDEntries;
+			for(int i = 0; i < info->GroupMDEntriesCount; i++) {
+				this->Release(*item);
+				list->Push((*item)->Pointer);
+				item++;
+			}
+		}
+	}
+
+	inline void Release(FastOBSFONDItemInfo* info) {
+	}
+
+	inline void Release(FastOBSCURRInfo* info) {
+		if(info->GroupMDEntriesCount != 0) {
+			PointerList *list = info->GroupMDEntries[0]->Pointer->Owner();
+			FastOBSCURRItemInfo **item = info->GroupMDEntries;
+			for(int i = 0; i < info->GroupMDEntriesCount; i++) {
+				this->Release(*item);
+				list->Push((*item)->Pointer);
+				item++;
+			}
+		}
+	}
+
+	inline void Release(FastOBSCURRItemInfo* info) {
+	}
+
+	inline void Release(FastIncrementalMSRFONDInfo* info) {
+		if(info->GroupMDEntriesCount != 0) {
+			PointerList *list = info->GroupMDEntries[0]->Pointer->Owner();
+			FastIncrementalMSRFONDItemInfo **item = info->GroupMDEntries;
+			for(int i = 0; i < info->GroupMDEntriesCount; i++) {
+				this->Release(*item);
+				list->Push((*item)->Pointer);
+				item++;
+			}
+		}
+	}
+
+	inline void Release(FastIncrementalMSRFONDItemInfo* info) {
+	}
+
+	inline void Release(FastIncrementalMSRCURRInfo* info) {
+		if(info->GroupMDEntriesCount != 0) {
+			PointerList *list = info->GroupMDEntries[0]->Pointer->Owner();
+			FastIncrementalMSRCURRItemInfo **item = info->GroupMDEntries;
+			for(int i = 0; i < info->GroupMDEntriesCount; i++) {
+				this->Release(*item);
+				list->Push((*item)->Pointer);
+				item++;
+			}
+		}
+	}
+
+	inline void Release(FastIncrementalMSRCURRItemInfo* info) {
+	}
+
+	inline void Release(FastIncrementalOLRFONDInfo* info) {
+		if(info->GroupMDEntriesCount != 0) {
+			PointerList *list = info->GroupMDEntries[0]->Pointer->Owner();
+			FastIncrementalOLRFONDItemInfo **item = info->GroupMDEntries;
+			for(int i = 0; i < info->GroupMDEntriesCount; i++) {
+				this->Release(*item);
+				list->Push((*item)->Pointer);
+				item++;
+			}
+		}
+	}
+
+	inline void Release(FastIncrementalOLRFONDItemInfo* info) {
+	}
+
+	inline void Release(FastIncrementalOLRCURRInfo* info) {
+		if(info->GroupMDEntriesCount != 0) {
+			PointerList *list = info->GroupMDEntries[0]->Pointer->Owner();
+			FastIncrementalOLRCURRItemInfo **item = info->GroupMDEntries;
+			for(int i = 0; i < info->GroupMDEntriesCount; i++) {
+				this->Release(*item);
+				list->Push((*item)->Pointer);
+				item++;
+			}
+		}
+	}
+
+	inline void Release(FastIncrementalOLRCURRItemInfo* info) {
+	}
+
+	inline void Release(FastIncrementalOBRFONDInfo* info) {
+		if(info->GroupMDEntriesCount != 0) {
+			PointerList *list = info->GroupMDEntries[0]->Pointer->Owner();
+			FastIncrementalOBRFONDItemInfo **item = info->GroupMDEntries;
+			for(int i = 0; i < info->GroupMDEntriesCount; i++) {
+				this->Release(*item);
+				list->Push((*item)->Pointer);
+				item++;
+			}
+		}
+	}
+
+	inline void Release(FastIncrementalOBRFONDItemInfo* info) {
+	}
+
+	inline void Release(FastIncrementalOBRCURRInfo* info) {
+		if(info->GroupMDEntriesCount != 0) {
+			PointerList *list = info->GroupMDEntries[0]->Pointer->Owner();
+			FastIncrementalOBRCURRItemInfo **item = info->GroupMDEntries;
+			for(int i = 0; i < info->GroupMDEntriesCount; i++) {
+				this->Release(*item);
+				list->Push((*item)->Pointer);
+				item++;
+			}
+		}
+	}
+
+	inline void Release(FastIncrementalOBRCURRItemInfo* info) {
+	}
+
+	inline void Release(FastIncrementalTLRFONDInfo* info) {
+		if(info->GroupMDEntriesCount != 0) {
+			PointerList *list = info->GroupMDEntries[0]->Pointer->Owner();
+			FastIncrementalTLRFONDItemInfo **item = info->GroupMDEntries;
+			for(int i = 0; i < info->GroupMDEntriesCount; i++) {
+				this->Release(*item);
+				list->Push((*item)->Pointer);
+				item++;
+			}
+		}
+	}
+
+	inline void Release(FastIncrementalTLRFONDItemInfo* info) {
+	}
+
+	inline void Release(FastIncrementalTLRCURRInfo* info) {
+		if(info->GroupMDEntriesCount != 0) {
+			PointerList *list = info->GroupMDEntries[0]->Pointer->Owner();
+			FastIncrementalTLRCURRItemInfo **item = info->GroupMDEntries;
+			for(int i = 0; i < info->GroupMDEntriesCount; i++) {
+				this->Release(*item);
+				list->Push((*item)->Pointer);
+				item++;
+			}
+		}
+	}
+
+	inline void Release(FastIncrementalTLRCURRItemInfo* info) {
+	}
+
+	inline void Release(FastSecurityDefinitionInfo* info) {
+		if(info->GroupInstrAttribCount != 0) {
+			PointerList *list = info->GroupInstrAttrib[0]->Pointer->Owner();
+			FastSecurityDefinitionGroupInstrAttribItemInfo **item = info->GroupInstrAttrib;
+			for(int i = 0; i < info->GroupInstrAttribCount; i++) {
+				this->Release(*item);
+				list->Push((*item)->Pointer);
+				item++;
+			}
+		}
+		if(info->MarketSegmentGrpCount != 0) {
+			PointerList *list = info->MarketSegmentGrp[0]->Pointer->Owner();
+			FastSecurityDefinitionMarketSegmentGrpItemInfo **item = info->MarketSegmentGrp;
+			for(int i = 0; i < info->MarketSegmentGrpCount; i++) {
+				this->Release(*item);
+				list->Push((*item)->Pointer);
+				item++;
+			}
+		}
+	}
+
+	inline void Release(FastSecurityDefinitionGroupInstrAttribItemInfo* info) {
+	}
+
+	inline void Release(FastSecurityDefinitionMarketSegmentGrpItemInfo* info) {
+		if(info->TradingSessionRulesGrpCount != 0) {
+			PointerList *list = info->TradingSessionRulesGrp[0]->Pointer->Owner();
+			FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo **item = info->TradingSessionRulesGrp;
+			for(int i = 0; i < info->TradingSessionRulesGrpCount; i++) {
+				this->Release(*item);
+				list->Push((*item)->Pointer);
+				item++;
+			}
+		}
+	}
+
+	inline void Release(FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo* info) {
+	}
+
+	inline void Release(FastSecurityStatusInfo* info) {
+	}
+
+	inline void Release(FastTradingSessionStatusInfo* info) {
+	}
+
+	inline void Release(FastHeartbeatInfo* info) {
 	}
 
 #pragma endregion
@@ -584,7 +724,6 @@ public:
 		this->buffer = buffer;
 		this->bufferLength = length;
 		this->ResetBuffer();
-	    this->ResetMessageInfoIndicies();
     }
 	inline void ClearBuffer() { memset(this->buffer, 0, this->bufferLength); }
 

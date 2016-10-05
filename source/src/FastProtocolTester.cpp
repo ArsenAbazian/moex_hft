@@ -78,8 +78,8 @@ void FastProtocolTester::TestMessages() {
 
     manager->SetNewBuffer(message, 111);
     msgSeqNo = manager->ReadMsgSeqNumber();
-    FastMarketDataIncrementalRefreshOBRCURRInfo *info = (FastMarketDataIncrementalRefreshOBRCURRInfo*)manager->Decode();
-    manager->PrintMarketDataIncrementalRefreshOBRCURR(info);
+    FastIncrementalOBRCURRInfo *info = (FastIncrementalOBRCURRInfo*)manager->Decode();
+    manager->PrintIncrementalOBRCURR(info);
 
     if(info->MsgSeqNum != msgSeqNo)
         throw;
@@ -91,8 +91,8 @@ void FastProtocolTester::TestMessages() {
     if(manager->MessageLength() != 111)
         throw;
 
-    FastMarketDataIncrementalRefreshOBRCURRGroupMDEntriesItemInfo *itemInfo1 = info->GroupMDEntries[0];
-    FastMarketDataIncrementalRefreshOBRCURRGroupMDEntriesItemInfo *itemInfo2 = info->GroupMDEntries[1];
+    FastIncrementalOBRCURRItemInfo *itemInfo1 = info->GroupMDEntries[0];
+    FastIncrementalOBRCURRItemInfo *itemInfo2 = info->GroupMDEntries[1];
 
     if(itemInfo1->MDUpdateAction != mduaAdd)
         throw;
@@ -185,9 +185,9 @@ void FastProtocolTester::TestMessages() {
     manager->SetNewBuffer(message, 107);
 
     msgSeqNo = manager->ReadMsgSeqNumber();
-    info = (FastMarketDataIncrementalRefreshOBRCURRInfo*)manager->Decode();
+    info = (FastIncrementalOBRCURRInfo*)manager->Decode();
 
-    manager->PrintMarketDataIncrementalRefreshOBRCURR(info);
+    manager->PrintIncrementalOBRCURR(info);
 
     if(info->MsgSeqNum != msgSeqNo)
         throw;

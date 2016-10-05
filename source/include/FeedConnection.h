@@ -4,8 +4,7 @@
 #include "Types.h"
 #include <sys/time.h>
 #include "Stopwatch.h"
-#include "OrderBookInfo.h"
-#include "MarketData/OrderBookInfoList.h"
+#include "Lib/AutoAllocatePointerList.h"
 #include "MarketData/MarketDataTable.h"
 
 typedef enum _FeedConnectionMessage {
@@ -113,7 +112,6 @@ protected:
 
 protected:
 	MarketDataTable								*m_orderBookTable;
-	OrderBookInfoList							*m_orderBookInfoPool;
 private:
 
     inline void GetCurrentTime(UINT64 *time) {
@@ -168,22 +166,11 @@ private:
     inline bool WaitingSnapshot() { return this->m_waitingSnapshot; }
     inline bool SnapshotAvailable() { return this->m_snapshotAvailable; }
 
-	inline void AddOrderBookInfo(char *symbol, FastOBSFONDItemInfo *info) {
-		SimpleListNode *obn = this->m_orderBookInfoPool->GetItem();
-		OrderBookInfo *obi = (OrderBookInfo*)obn->Data();
-
-		//this->m_orderBookTable->Add(symbol, info->Trad)
-
-		//printf()
-	}
-
 	inline bool ApplyOrderBookSnapshot_FOND() {
 		FastOBSFONDInfo *info = (FastOBSFONDInfo*)this->m_snapshot->m_fastProtocolManager->LastDecodeInfo();
 
 		this->m_orderBookTable->Clear();
-		for(int i = 0; i < info->GroupMDEntriesCount; i++)
-			this->AddOrderBookInfo(info->Symbol, info->GroupMDEntries[i]);
-
+		this->m_orderBookTable->Add(info->Symbol, info->TradingSessionID, info->GroupMDEntries, info->GroupMDEntriesCount);
 		return true;
 	}
 
@@ -192,8 +179,6 @@ private:
 			case FeedConnectionMessage::fmcFullRefresh_OBS_FOND:
 				return this->ApplyOrderBookSnapshot_FOND();
 		}
-		//printf("%s -> Snapshot applied\n", this->id);
-		//printf("RouteFirst = %d, LastFragment = %d, LastMsgSeqProcessed = %d, RptSeq = %d\n", this->m_snapshotRouteFirst, this->m_snapshotLastFragment, this->m_lastMsgSeqNumProcessed, this->m_rptSeq);
 		return true;
 	}
     inline bool ApplyPacketSequence() {
@@ -334,11 +319,8 @@ private:
         return true;
     }
 
-	inline OrderBookInfo* AddOrderBookInfo(FastIncrementalOBRFONDItemInfo *info) {
-		SimpleListNode *orderBookNode = this->m_orderBookInfoPool->GetItem();
-		OrderBookInfo *obi = (OrderBookInfo*)orderBookNode->Data();
-
-		this->m_orderBookTable->Add(info->Symbol, info->TradingSessionID, orderBookNode);
+	inline FastOBSFONDItemInfo* AddOrderBookInfo(FastIncrementalOBRFONDItemInfo *info) {
+		this->m_orderBookTable->Add(info->Symbol, info->TradingSessionID, info->Pointer);
 		printf("add order book %s\n", info->MDEntryID);
 
 		return 0;
@@ -534,7 +516,6 @@ public:
 
 		this->SetType(FeedConnectionType::Incremental);
 		this->m_orderBookTable = new MarketDataTable();
-		this->m_orderBookInfoPool = new OrderBookInfoList(1000, 200);
     }
 	ISocketBufferProvider* CreateSocketBufferProvider() {
 		return new SocketBufferProvider(DefaultSocketBufferManager::Default,
@@ -657,7 +638,6 @@ public:
 		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
 		this->SetType(FeedConnectionType::Incremental);
 		this->m_orderBookTable = new MarketDataTable();
-		this->m_orderBookInfoPool = new OrderBookInfoList(1000, 200);
     }
 	ISocketBufferProvider* CreateSocketBufferProvider() {
 		return new SocketBufferProvider(DefaultSocketBufferManager::Default,

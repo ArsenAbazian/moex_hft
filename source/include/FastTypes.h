@@ -14,6 +14,8 @@
 #define FAST_STOPBIT_SIXSTH_BYTE		0x0000800000000000L
 #define FAST_STOPBIT_SEVENTH_BYTE		0x0080000000000000L
 
+#include "Lib/AutoAllocatePointerList.h"
+
 typedef enum _MDUpdateAction {
     mduaAdd = 0,
     mduaChange = 1,
@@ -131,6 +133,7 @@ typedef struct _FastSnapshotInfo {
 }FastSnapshotInfo;
 
 typedef struct _FastGenericItemInfo {
+	LinkedPointer							*Pointer;
 	UINT64							PresenceMap;
 	char*							MDEntryType;			// id=269  presence=optional  
 	int							MDEntryTypeLength;
@@ -237,6 +240,7 @@ typedef struct _FastGenericItemInfo {
 }FastGenericItemInfo;
 
 typedef struct _FastIncrementalGenericItemInfo {
+	LinkedPointer							*Pointer;
 	UINT64							PresenceMap;
 	UINT32							MDUpdateAction;			// id=279  presence=optional  
 	bool							AllowMDUpdateAction;
@@ -355,6 +359,7 @@ typedef struct _FastIncrementalGenericItemInfo {
 }FastIncrementalGenericItemInfo;
 
 typedef struct _FastOLSFONDItemInfo {
+	LinkedPointer							*Pointer;
 	UINT64							PresenceMap;
 	char*							MDEntryType;			// id=269  presence=optional  
 	int							MDEntryTypeLength;
@@ -394,6 +399,7 @@ typedef struct _FastOLSFONDItemInfo {
 }FastOLSFONDItemInfo;
 
 typedef struct _FastOLSCURRItemInfo {
+	LinkedPointer							*Pointer;
 	UINT64							PresenceMap;
 	char*							MDEntryType;			// id=269  presence=optional  
 	int							MDEntryTypeLength;
@@ -426,6 +432,7 @@ typedef struct _FastOLSCURRItemInfo {
 }FastOLSCURRItemInfo;
 
 typedef struct _FastTLSFONDItemInfo {
+	LinkedPointer							*Pointer;
 	UINT64							PresenceMap;
 	char*							MDEntryType;			// id=269  
 	int							MDEntryTypeLength;
@@ -472,6 +479,7 @@ typedef struct _FastTLSFONDItemInfo {
 }FastTLSFONDItemInfo;
 
 typedef struct _FastTLSCURRItemInfo {
+	LinkedPointer							*Pointer;
 	UINT64							PresenceMap;
 	char*							MDEntryType;			// id=269  
 	int							MDEntryTypeLength;
@@ -514,6 +522,7 @@ typedef struct _FastTLSCURRItemInfo {
 }FastTLSCURRItemInfo;
 
 typedef struct _FastOBSFONDItemInfo {
+	LinkedPointer							*Pointer;
 	UINT64							PresenceMap;
 	char*							MDEntryType;			// id=269  presence=optional  
 	int							MDEntryTypeLength;
@@ -541,6 +550,7 @@ typedef struct _FastOBSFONDItemInfo {
 }FastOBSFONDItemInfo;
 
 typedef struct _FastOBSCURRItemInfo {
+	LinkedPointer							*Pointer;
 	UINT64							PresenceMap;
 	char*							MDEntryType;			// id=269  presence=optional  
 	int							MDEntryTypeLength;
@@ -562,6 +572,7 @@ typedef struct _FastOBSCURRItemInfo {
 }FastOBSCURRItemInfo;
 
 typedef struct _FastIncrementalMSRFONDItemInfo {
+	LinkedPointer							*Pointer;
 	UINT64							PresenceMap;
 	UINT32							MDUpdateAction;			// id=279  presence=optional  
 	bool							AllowMDUpdateAction;
@@ -645,6 +656,7 @@ typedef struct _FastIncrementalMSRFONDItemInfo {
 }FastIncrementalMSRFONDItemInfo;
 
 typedef struct _FastIncrementalMSRCURRItemInfo {
+	LinkedPointer							*Pointer;
 	UINT64							PresenceMap;
 	UINT32							MDUpdateAction;			// id=279  presence=optional  
 	bool							AllowMDUpdateAction;
@@ -712,6 +724,7 @@ typedef struct _FastIncrementalMSRCURRItemInfo {
 }FastIncrementalMSRCURRItemInfo;
 
 typedef struct _FastIncrementalOLRFONDItemInfo {
+	LinkedPointer							*Pointer;
 	UINT64							PresenceMap;
 	UINT32							MDUpdateAction;			// id=279  presence=optional  
 	bool							AllowMDUpdateAction;
@@ -761,6 +774,7 @@ typedef struct _FastIncrementalOLRFONDItemInfo {
 }FastIncrementalOLRFONDItemInfo;
 
 typedef struct _FastIncrementalOLRCURRItemInfo {
+	LinkedPointer							*Pointer;
 	UINT64							PresenceMap;
 	UINT32							MDUpdateAction;			// id=279  presence=optional  
 	bool							AllowMDUpdateAction;
@@ -803,6 +817,7 @@ typedef struct _FastIncrementalOLRCURRItemInfo {
 }FastIncrementalOLRCURRItemInfo;
 
 typedef struct _FastIncrementalOBRFONDItemInfo {
+	LinkedPointer							*Pointer;
 	UINT64							PresenceMap;
 	UINT32							MDUpdateAction;			// id=279  presence=optional  
 	bool							AllowMDUpdateAction;
@@ -840,6 +855,7 @@ typedef struct _FastIncrementalOBRFONDItemInfo {
 }FastIncrementalOBRFONDItemInfo;
 
 typedef struct _FastIncrementalOBRCURRItemInfo {
+	LinkedPointer							*Pointer;
 	UINT64							PresenceMap;
 	UINT32							MDUpdateAction;			// id=279  presence=optional  
 	bool							AllowMDUpdateAction;
@@ -871,6 +887,7 @@ typedef struct _FastIncrementalOBRCURRItemInfo {
 }FastIncrementalOBRCURRItemInfo;
 
 typedef struct _FastIncrementalTLRFONDItemInfo {
+	LinkedPointer							*Pointer;
 	UINT64							PresenceMap;
 	UINT32							MDUpdateAction;			// id=279  presence=optional  
 	bool							AllowMDUpdateAction;
@@ -927,6 +944,7 @@ typedef struct _FastIncrementalTLRFONDItemInfo {
 }FastIncrementalTLRFONDItemInfo;
 
 typedef struct _FastIncrementalTLRCURRItemInfo {
+	LinkedPointer							*Pointer;
 	UINT64							PresenceMap;
 	UINT32							MDUpdateAction;			// id=279  presence=optional  
 	bool							AllowMDUpdateAction;
@@ -979,6 +997,7 @@ typedef struct _FastIncrementalTLRCURRItemInfo {
 }FastIncrementalTLRCURRItemInfo;
 
 typedef struct _FastSecurityDefinitionGroupInstrAttribItemInfo {
+	LinkedPointer							*Pointer;
 	UINT64							PresenceMap;
 	INT32							InstrAttribType;			// id=871  
 	BYTE*							InstrAttribValue;			// id=872  presence=optional  
@@ -987,6 +1006,7 @@ typedef struct _FastSecurityDefinitionGroupInstrAttribItemInfo {
 }FastSecurityDefinitionGroupInstrAttribItemInfo;
 
 typedef struct _FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo {
+	LinkedPointer							*Pointer;
 	UINT64							PresenceMap;
 	char*							TradingSessionID;			// id=336  
 	int							TradingSessionIDLength;
@@ -1000,6 +1020,7 @@ typedef struct _FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItem
 }FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo;
 
 typedef struct _FastSecurityDefinitionMarketSegmentGrpItemInfo {
+	LinkedPointer							*Pointer;
 	UINT64							PresenceMap;
 	Decimal							RoundLot;			// id=561  presence=optional  
 	bool							AllowRoundLot;
