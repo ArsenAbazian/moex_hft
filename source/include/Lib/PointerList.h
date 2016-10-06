@@ -142,6 +142,7 @@ public:
     inline LinkedPointer* Next(LinkedPointer *node) { return node->Next(); }
     inline LinkedPointer* PoolStart() { return this->m_poolHead; }
     inline LinkedPointer* PoolEnd() { return this->m_poolTail; }
+    inline int Count() { return this->m_count; }
 
     inline void Clear() {
         if(this->m_head == this->m_tail)

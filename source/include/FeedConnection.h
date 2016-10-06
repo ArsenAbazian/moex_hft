@@ -167,20 +167,23 @@ private:
     inline bool SnapshotAvailable() { return this->m_snapshotAvailable; }
 
 	inline bool ApplyOrderBookSnapshot_FOND() {
-		FastOBSFONDInfo *info = (FastOBSFONDInfo*)this->m_snapshot->m_fastProtocolManager->LastDecodeInfo();
-
-		this->m_orderBookTable->Clear();
-		this->m_orderBookTable->Add(info->Symbol, info->TradingSessionID, info->GroupMDEntries, info->GroupMDEntriesCount);
+        this->m_orderBookTable->Clear();
+        for(int i = this->m_snapshotRouteFirst; i <= this->m_snapshotLastFragment; i++) {
+            this->ProcessMessage(this->m_packets[i]);
+        }
+        //FastOBSFONDInfo *info = (FastOBSFONDInfo*)this->m_snapshot->m_fastProtocolManager->LastDecodeInfo();
+		//this->m_orderBookTable->Add(info->Symbol, info->TradingSessionID, (void**)info->GroupMDEntries, info->GroupMDEntriesCount);
 		return true;
 	}
 
     inline bool ApplySnapshot() {
-		switch(this->m_snapshot->m_fastProtocolManager->TemplateId()) {
+        switch(this->m_fastProtocolManager->TemplateId()) {
 			case FeedConnectionMessage::fmcFullRefresh_OBS_FOND:
 				return this->ApplyOrderBookSnapshot_FOND();
 		}
 		return true;
 	}
+
     inline bool ApplyPacketSequence() {
         int i = this->m_currentMsgSeqNum;
         bool processed = false;
@@ -357,12 +360,24 @@ private:
 		return res;
 	}
 
+    inline bool OnFullRefresh_OBS_FOND() {
+        FastOBSFONDInfo *info = (FastOBSFONDInfo*)this->m_fastProtocolManager->LastDecodeInfo();
+        PointerList *list = this->m_orderBookTable->GetListAndZeroRef(info->Symbol, info->TradingSessionID);
+        for(int i = 0; i < info->GroupMDEntriesCount; i++) {
+            FastOBSFONDItemInfo *item = info->GroupMDEntries[i];
+            list->Add(item->Pointer);
+        }
+        return true;
+    }
+
 	inline bool ApplyDecodedMessage() {
 		switch(this->m_fastProtocolManager->TemplateId()) {
 			case FeedConnectionMessage::fcmHeartBeat:
 				break;
 			case FeedConnectionMessage::fmcIncrementalRefresh_OBR_FOND:
 				return this->OnIncrementalRefresh_OBR_FOND();
+            case FeedConnectionMessage::fmcFullRefresh_OBS_FOND:
+                return this->OnFullRefresh_OBS_FOND();
 		}
 		return true;
 	}

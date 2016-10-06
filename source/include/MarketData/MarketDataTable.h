@@ -19,9 +19,8 @@ class MarketDataTable {
     int                 m_tradingSessionsCount;
 
     PointerList*         m_table[MAX_SYMBOLS_COUNT][MAX_TRADING_SESSIONS_COUNT];
-    int                 m_usedListsMap[MAX_SYMBOLS_COUNT][MAX_TRADING_SESSIONS_COUNT];
     PointerList*         m_usedLists;
-    PointerList*         m_usedMapList;
+    //PointerList*         m_usedMapList;
 
     inline bool IsSymbolEquals(char *s1, char *s2) {
         UINT32 *u1 = (UINT32*)s1;
@@ -67,11 +66,10 @@ public:
         for(int i = 0; i < MAX_SYMBOLS_COUNT; i++) {
             for(int j = 0; j < MAX_TRADING_SESSIONS_COUNT; j++) {
                 this->m_table[i][j] = new PointerList(MAX_TABLE_LIST_COUNT);
-                this->m_usedListsMap[i][j] = 0;
             }
         }
         this->m_usedLists = new PointerList(MAX_SYMBOLS_COUNT * MAX_TRADING_SESSIONS_COUNT + 10);
-        this->m_usedMapList = new PointerList(MAX_SYMBOLS_COUNT * MAX_TRADING_SESSIONS_COUNT + 10);
+        //this->m_usedMapList = new PointerList(MAX_SYMBOLS_COUNT * MAX_TRADING_SESSIONS_COUNT + 10);
     }
     ~MarketDataTable() {
         for(int i = 0; i < MAX_SYMBOLS_COUNT; i++) {
@@ -81,19 +79,9 @@ public:
         }
     }
 
-    inline PointerList* GetList(char *symbol, char *tradingSession) {
+    inline PointerList* GetItem(char *symbol, char *tradingSession) {
         int symbolIndex = GetSymbolIndex(symbol);
         int tradingSessionIndex = GetTradingSessionIdIndex(tradingSession);
-        return this->m_table[symbolIndex][tradingSessionIndex];
-    }
-
-    inline PointerList* GetListAndRemoveRef(char *symbol, char *tradingSession) {
-        int symbolIndex = GetSymbolIndex(symbol);
-        int tradingSessionIndex = GetTradingSessionIdIndex(tradingSession);
-
-        if(this->m_usedListsMap[symbolIndex][tradingSessionIndex] > 0)
-            this->m_usedListsMap[symbolIndex][tradingSessionIndex]--;
-
         return this->m_table[symbolIndex][tradingSessionIndex];
     }
 
@@ -104,11 +92,8 @@ public:
         PointerList *list = this->m_table[symbolIndex][tradingSessionIndex];
         list->Add(data);
 
-        if(this->m_usedListsMap[symbolIndex][tradingSessionIndex] == 0) {
+        if(list->Count() == 1)
             this->m_usedLists->Add(list);
-            this->m_usedMapList->Add(&(this->m_usedListsMap[symbolIndex][tradingSessionIndex]));
-        }
-        this->m_usedListsMap[symbolIndex][tradingSessionIndex]++;
     }
 
     inline void Add(char *symbol, char *tradingSession, void **data, int count) {
@@ -122,11 +107,8 @@ public:
         for(int i = 0; i < count; i++, item++) {
             list->Add(*item);
         }
-        if(this->m_usedListsMap[symbolIndex][tradingSessionIndex] == 0) {
+        if(list->Count() == count)
             this->m_usedLists->Add(list);
-            this->m_usedMapList->Add(&(this->m_usedListsMap[symbolIndex][tradingSessionIndex]));
-        }
-        this->m_usedListsMap[symbolIndex][tradingSessionIndex] += count;
     }
 
     inline void Clear() {
@@ -139,6 +121,7 @@ public:
             node = this->m_usedLists->Next(node);
         }
         this->m_usedLists->Clear();
+        /*
         node = this->m_usedMapList->Start();
         while(true) {
             *((int*)node->Data()) = 0;
@@ -147,6 +130,7 @@ public:
             node = this->m_usedMapList->Next(node);
         }
         this->m_usedMapList->Clear();
+        */
     }
 };
 

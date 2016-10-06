@@ -1,4 +1,5 @@
 include(Colors)
+
 find_path(TINYXML_INCLUDE_DIR
     NAMES
     tinyxml2.h
