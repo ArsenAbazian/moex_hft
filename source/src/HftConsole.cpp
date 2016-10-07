@@ -1,10 +1,11 @@
 // HftConsole.cpp : Defines the entry point for the console application.
 //
 
-#include "ItoaTester.h"
-#include "UTCTimeConverterTester.h"
-#include "FastProtocolTester.h"
-#include "FixProtocolManagerTester.h"
+#include <Test/HashTableTester.h>
+#include "Test/ItoaTester.h"
+#include "Test/UTCTimeConverterTester.h"
+#include "Test/FastProtocolTester.h"
+#include "Test/FixProtocolManagerTester.h"
 #include "Robot.h"
 
 int main(int argc, char** argv)
@@ -15,6 +16,7 @@ int main(int argc, char** argv)
 	bool test_time = false;
 	bool test_fast = false;
 	bool test_fix = false;
+	bool test_feed = false;
 
 	for (int i = 0; i < argc; i++) {
 		if (strcmp(argv[i], "test_itoa") == 0)
@@ -27,6 +29,8 @@ int main(int argc, char** argv)
 			test_fast = true;
 		if(strcmp(argv[i], "test_fix") == 0)
 			test_fix = true;
+		if(strcmp(argv[i], "test_feed") == 0)
+			test_feed = true;
 		if (strcmp(argv[i], "test_all") == 0)
 			test_all = true;
 	}
@@ -51,7 +55,12 @@ int main(int argc, char** argv)
 		tester.Test();
 	}
 
-	if (test_itoa || test_ftoa || test_time || test_all || test_fast || test_fix)
+	if(test_feed || test_all) {
+		HashTableTester tester;
+		tester.Test();
+	}
+
+	if (test_itoa || test_ftoa || test_time || test_all || test_fast || test_fix || test_feed)
 		return 1;
 
 	Robot *robot = new Robot();

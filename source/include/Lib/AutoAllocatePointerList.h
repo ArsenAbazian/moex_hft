@@ -9,10 +9,10 @@
 #include "FastTypes.h"
 
 template<typename T> class AutoAllocatePointerList {
-    PointerList      *m_list;
+    PointerList<T> *m_list;
     int             m_addCapacity;
 
-    inline void Allocate(LinkedPointer *start, LinkedPointer *end) {
+    inline void Allocate(LinkedPointer<T> *start, LinkedPointer<T> *end) {
         do {
             T *t = new T;
             t->Pointer = start;
@@ -24,19 +24,21 @@ template<typename T> class AutoAllocatePointerList {
 public:
     AutoAllocatePointerList(int capacity, int additionalCapacity) {
         this->m_addCapacity = additionalCapacity;
-        this->m_list = new PointerList(capacity);
+        this->m_list = new PointerList<T>(capacity);
         this->Allocate(this->m_list->PoolStart(), this->m_list->PoolEnd());
     }
     inline T* NewItem() {
         if(this->m_list->IsFull()) {
-            LinkedPointer *node = this->m_list->Append(this->m_addCapacity);
+            LinkedPointer<T> *node = this->m_list->Append(this->m_addCapacity);
             this->Allocate(node, this->m_list->PoolEnd());
         }
         return (T*)this->m_list->Pop()->Data();
     }
+    inline PointerList<T>* ListCore() { return this->m_list; }
     inline void FreeItem(LinkedPointer *node) {
         this->m_list->Push(node);
     }
+    inline int Count() { return this->m_list->Count(); }
 };
 
 #endif //HFT_ROBOT_ORDERBOOKINFOLIST_H

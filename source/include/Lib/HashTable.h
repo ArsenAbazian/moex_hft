@@ -6,21 +6,41 @@
 #define HFT_ROBOT_MARKETDATATABLE_H
 
 #include "Lib/PointerList.h"
-#include "../Types.h"
+#include "Types.h"
 
 #define MAX_SYMBOLS_COUNT               128
 #define MAX_TRADING_SESSIONS_COUNT      128
 #define MAX_TABLE_LIST_COUNT            256
 
-class MarketDataTable {
+template <typename T> class HashTableItem {
+    PointerList<T>     *m_items;
+    LinkedPointer<T>   *m_usedPointer;
+public:
+    HashTableItem() {
+        this->m_items = new PointerList(MAX_TABLE_LIST_COUNT);
+        this->m_usedPointer = 0;
+    }
+    ~HashTableItem() {
+        delete this->m_items;
+    }
+
+    inline PointerList<T>* Items() { return this->m_items; }
+    inline LinkedPointer<T>* UsedListPointer(){ return this->m_usedPointer; }
+    inline void UsedListPointer(LinkedPointer *usedPointer) { this->m_usedPointer = usedPointer; }
+    inline void RemoveFromUsed(bool isUsed) {
+        this->m_usedPointer->Owner()->Remove(this->m_usedPointer);
+        this->m_usedPointer = 0;
+    }
+};
+
+template<typename T> class HashTable {
     char                m_symbols[MAX_SYMBOLS_COUNT][4];
-    char                m_tradingSession[MAX_TRADING_SESSIONS_COUNT][8];
+    char                m_tradingSession[MAX_TRADING_SESSIONS_COUNT][10];
     int                 m_symbolsCount;
     int                 m_tradingSessionsCount;
 
-    PointerList*         m_table[MAX_SYMBOLS_COUNT][MAX_TRADING_SESSIONS_COUNT];
-    PointerList*         m_usedLists;
-    //PointerList*         m_usedMapList;
+    HashTableItem<T>*   m_table[MAX_SYMBOLS_COUNT][MAX_TRADING_SESSIONS_COUNT];
+    PointerList< HashTableItem<T> >*     m_usedLists;
 
     inline bool IsSymbolEquals(char *s1, char *s2) {
         UINT32 *u1 = (UINT32*)s1;
@@ -62,16 +82,15 @@ public:
         return this->m_tradingSessionsCount - 1;
     }
 
-    MarketDataTable() {
+    HashTable() {
         for(int i = 0; i < MAX_SYMBOLS_COUNT; i++) {
             for(int j = 0; j < MAX_TRADING_SESSIONS_COUNT; j++) {
-                this->m_table[i][j] = new PointerList(MAX_TABLE_LIST_COUNT);
+                this->m_table[i][j] = new HashTableItem<T>();
             }
         }
-        this->m_usedLists = new PointerList(MAX_SYMBOLS_COUNT * MAX_TRADING_SESSIONS_COUNT + 10);
-        //this->m_usedMapList = new PointerList(MAX_SYMBOLS_COUNT * MAX_TRADING_SESSIONS_COUNT + 10);
+        this->m_usedLists = new PointerList<HashTableItem<T>>(MAX_SYMBOLS_COUNT * MAX_TRADING_SESSIONS_COUNT + 10);
     }
-    ~MarketDataTable() {
+    ~HashTable() {
         for(int i = 0; i < MAX_SYMBOLS_COUNT; i++) {
             for(int j = 0; j < MAX_TRADING_SESSIONS_COUNT; j++) {
                 delete this->m_table[i][j];
@@ -79,58 +98,57 @@ public:
         }
     }
 
-    inline PointerList* GetItem(char *symbol, char *tradingSession) {
+    inline int SymbolsCount() { return this->m_symbolsCount; }
+    inline int TradingSessionsCount() { return this->m_tradingSessionsCount; }
+    inline HashTableItem* Item(int symbolIndex, int tradingSessionIndex) {
+        return this->m_table[symbolIndex][tradingSessionIndex];
+    }
+    inline int UsedItemCount() { return this->m_usedLists->Count(); }
+
+    inline HashTableItem<T>* GetItem(char *symbol, char *tradingSession) {
         int symbolIndex = GetSymbolIndex(symbol);
         int tradingSessionIndex = GetTradingSessionIdIndex(tradingSession);
         return this->m_table[symbolIndex][tradingSessionIndex];
     }
 
-    inline void Add(char *symbol, char *tradingSession, void *data) {
+    inline HashTableItem<T>* Add(char *symbol, char *tradingSession, T *data) {
         int symbolIndex = GetSymbolIndex(symbol);
         int tradingSessionIndex = GetTradingSessionIdIndex(tradingSession);
 
-        PointerList *list = this->m_table[symbolIndex][tradingSessionIndex];
-        list->Add(data);
+        HashTableItem<T> *item = this->m_table[symbolIndex][tradingSessionIndex];
+        item->Items()->Add(data);
 
-        if(list->Count() == 1)
-            this->m_usedLists->Add(list);
+        if(item->Items()->Count() == 1)
+            this->m_usedLists->Add(item); //TODO
+        return item;
     }
 
-    inline void Add(char *symbol, char *tradingSession, void **data, int count) {
-        void **item = data;
+    inline HashTableItem<T>* Add(char *symbol, char *tradingSession, T **data, int count) {
+        T **item = data;
 
         int symbolIndex = GetSymbolIndex(symbol);
         int tradingSessionIndex = GetTradingSessionIdIndex(tradingSession);
 
-        PointerList *list = this->m_table[symbolIndex][tradingSessionIndex];
+        HashTableItem<T> *mditem = this->m_table[symbolIndex][tradingSessionIndex];
 
         for(int i = 0; i < count; i++, item++) {
-            list->Add(*item);
+            mditem->Items()->Add(*item);
         }
-        if(list->Count() == count)
-            this->m_usedLists->Add(list);
+        if(mditem->Items()->Count() == count)
+            this->m_usedLists->Add(mditem);
+        return mditem;
     }
 
     inline void Clear() {
-        LinkedPointer *node = this->m_usedLists->Start();
+        LinkedPointer<HashTableItem<T>> *node = this->m_usedLists->Start();
         while(true) {
-            PointerList *list = (PointerList*)node->Data();
+            HashtableItem<T> *list = (HashTableItem<T>*)node->Data();
             list->Clear();
             if(node == this->m_usedLists->End())
                 break;
             node = this->m_usedLists->Next(node);
         }
         this->m_usedLists->Clear();
-        /*
-        node = this->m_usedMapList->Start();
-        while(true) {
-            *((int*)node->Data()) = 0;
-            if(node == this->m_usedMapList->End())
-                break;
-            node = this->m_usedMapList->Next(node);
-        }
-        this->m_usedMapList->Clear();
-        */
     }
 };
 

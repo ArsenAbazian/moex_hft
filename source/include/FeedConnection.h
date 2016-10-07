@@ -5,7 +5,7 @@
 #include <sys/time.h>
 #include "Stopwatch.h"
 #include "Lib/AutoAllocatePointerList.h"
-#include "MarketData/MarketDataTable.h"
+#include "Lib/HashTable.h"
 
 typedef enum _FeedConnectionMessage {
 	fcmHeartBeat = 2108,
@@ -111,7 +111,7 @@ protected:
     bool                                        m_shouldReceiveAnswer;
 
 protected:
-	MarketDataTable								*m_orderBookTable;
+	HashTable								    *m_orderBookTable;
 private:
 
     inline void GetCurrentTime(UINT64 *time) {
@@ -361,12 +361,15 @@ private:
 	}
 
     inline bool OnFullRefresh_OBS_FOND() {
+        /* TODO implement OnFullRefresh
         FastOBSFONDInfo *info = (FastOBSFONDInfo*)this->m_fastProtocolManager->LastDecodeInfo();
         PointerList *list = this->m_orderBookTable->GetListAndZeroRef(info->Symbol, info->TradingSessionID);
         for(int i = 0; i < info->GroupMDEntriesCount; i++) {
             FastOBSFONDItemInfo *item = info->GroupMDEntries[i];
             list->Add(item->Pointer);
         }
+        return true;
+        */
         return true;
     }
 
@@ -530,7 +533,7 @@ public:
 		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
 
 		this->SetType(FeedConnectionType::Incremental);
-		this->m_orderBookTable = new MarketDataTable();
+		this->m_orderBookTable = new HashTable();
     }
 	ISocketBufferProvider* CreateSocketBufferProvider() {
 		return new SocketBufferProvider(DefaultSocketBufferManager::Default,
@@ -652,7 +655,7 @@ public:
 	FeedConnection_FOND_OBR(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
 		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
 		this->SetType(FeedConnectionType::Incremental);
-		this->m_orderBookTable = new MarketDataTable();
+		this->m_orderBookTable = new HashTable();
     }
 	ISocketBufferProvider* CreateSocketBufferProvider() {
 		return new SocketBufferProvider(DefaultSocketBufferManager::Default,
