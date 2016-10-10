@@ -10,8 +10,12 @@ public:
     FeedConnectionTester() { }
     ~FeedConnectionTester() { }
 
-    void Test() {
+    void Test_OBR_FOND() {
+        
+    }
 
+    void Test() {
+        Test_OBR_FOND();
     }
 };
 

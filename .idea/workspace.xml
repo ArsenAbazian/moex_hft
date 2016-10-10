@@ -19,11 +19,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32604c03-98a8-42cf-80f6-771ec2ce84cc" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/hft_robot.iml" afterPath="$PROJECT_DIR$/.idea/hft_robot.iml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/Lib/HashTable.h" afterPath="$PROJECT_DIR$/source/include/Lib/HashTable.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/Lib/PointerList.h" afterPath="$PROJECT_DIR$/source/include/Lib/PointerList.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/Test/HashTableTester.h" afterPath="$PROJECT_DIR$/source/include/Test/HashTableTester.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/Test/FeedConnectionTest.h" afterPath="$PROJECT_DIR$/source/include/Test/FeedConnectionTest.h" />
     </list>
     <ignored path="hft_robot.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -47,7 +44,7 @@
         <entry file="file://$PROJECT_DIR$/source/include/Test/FeedConnectionTest.h">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="234">
-              <caret line="13" column="0" selection-start-line="13" selection-start-column="0" selection-end-line="13" selection-end-column="0" />
+              <caret line="13" column="8" selection-start-line="13" selection-start-column="8" selection-end-line="13" selection-end-column="8" />
               <folding />
             </state>
           </provider>
@@ -107,11 +104,11 @@
         <option value="$PROJECT_DIR$/source/include/FastTypes.h" />
         <option value="$PROJECT_DIR$/source/include/FastProtocolManager.h" />
         <option value="$PROJECT_DIR$/source/include/FeedConnection.h" />
-        <option value="$PROJECT_DIR$/source/include/Test/FeedConnectionTest.h" />
         <option value="$PROJECT_DIR$/cmake/FindTinyXML2.cmake" />
         <option value="$PROJECT_DIR$/source/include/Lib/PointerList.h" />
         <option value="$PROJECT_DIR$/source/include/Test/HashTableTester.h" />
         <option value="$PROJECT_DIR$/source/include/Lib/HashTable.h" />
+        <option value="$PROJECT_DIR$/source/include/Test/FeedConnectionTest.h" />
       </list>
     </option>
   </component>
@@ -593,7 +590,7 @@
       <workItem from="1475260972386" duration="11512000" />
       <workItem from="1475606674302" duration="4800000" />
       <workItem from="1475768231603" duration="20562000" />
-      <workItem from="1476122970783" duration="6089000" />
+      <workItem from="1476122970783" duration="6542000" />
     </task>
     <task id="LOCAL-00001" summary="move params to structures">
       <created>1468443448895</created>
@@ -896,11 +893,18 @@
       <option name="project" value="LOCAL" />
       <updated>1475854206746</updated>
     </task>
-    <option name="localTasksCounter" value="44" />
+    <task id="LOCAL-00044" summary="1. GetSnapshotInfo - not finished  compilable... and half working">
+      <created>1476129463471</created>
+      <option name="number" value="00044" />
+      <option name="presentableId" value="LOCAL-00044" />
+      <option name="project" value="LOCAL" />
+      <updated>1476129463471</updated>
+    </task>
+    <option name="localTasksCounter" value="45" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="572259000" />
+    <option name="totallyTimeSpent" value="572712000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -1459,7 +1463,7 @@
     <entry file="file://$PROJECT_DIR$/source/include/Test/FeedConnectionTest.h">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="234">
-          <caret line="13" column="0" selection-start-line="13" selection-start-column="0" selection-end-line="13" selection-end-column="0" />
+          <caret line="13" column="8" selection-start-line="13" selection-start-column="8" selection-end-line="13" selection-end-column="8" />
           <folding />
         </state>
       </provider>
