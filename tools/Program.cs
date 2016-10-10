@@ -382,8 +382,8 @@ namespace prebuild {
 					if(childNode.Name == "sequence") {
 						string field = Name(childNode);
 						WriteLine("\t\tif(info->" + field + "Count != 0) {");
-						WriteLine("\t\t\tPointerList *list = info->" + field + "[0]->Pointer->Owner();");
 						StructureInfo item = new StructureInfo() { NameCore = NameWithParent(childNode), IsSequence = true };
+						WriteLine("\t\t\tPointerList<" + item.Name + "> *list = info->" + field + "[0]->Pointer->Owner();");
 						WriteLine("\t\t\t" + item.Name + " **item = info->" + field + ";");
 						WriteLine("\t\t\tfor(int i = 0; i < info->" + field + "Count; i++) {");
 						WriteLine("\t\t\t\tthis->Release(*item);");
@@ -862,7 +862,7 @@ namespace prebuild {
 					continue;
 
 				WriteLine("typedef struct _" + info.Name + " {");
-				WriteLine("\tLinkedPointer" + StuctFieldsSpacing + "*Pointer;");
+				WriteLine("\tLinkedPointer<_" + info.Name + ">" + StuctFieldsSpacing + "*Pointer;");
 				WriteSequenceNodeFieldDefinition(node, info.NameCore);
 				WriteLine("}" + info.Name + ";");
 				WriteLine("");

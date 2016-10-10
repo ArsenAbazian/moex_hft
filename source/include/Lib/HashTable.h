@@ -17,7 +17,7 @@ template <typename T> class HashTableItem {
     LinkedPointer<T>   *m_usedPointer;
 public:
     HashTableItem() {
-        this->m_items = new PointerList(MAX_TABLE_LIST_COUNT);
+        this->m_items = new PointerList<T>(MAX_TABLE_LIST_COUNT);
         this->m_usedPointer = 0;
     }
     ~HashTableItem() {
@@ -26,10 +26,22 @@ public:
 
     inline PointerList<T>* Items() { return this->m_items; }
     inline LinkedPointer<T>* UsedListPointer(){ return this->m_usedPointer; }
-    inline void UsedListPointer(LinkedPointer *usedPointer) { this->m_usedPointer = usedPointer; }
-    inline void RemoveFromUsed(bool isUsed) {
+    inline void UsedListPointer(LinkedPointer<T> *usedPointer) { this->m_usedPointer = usedPointer; }
+    inline void RemoveFromUsed() {
         this->m_usedPointer->Owner()->Remove(this->m_usedPointer);
         this->m_usedPointer = 0;
+    }
+    inline void Clear() {
+        LinkedPointer<T> *start = this->m_items->Start();
+        LinkedPointer<T> *end = this->m_items->End();
+        while(true) {
+            start->Data()->Pointer->Owner()->Push(start->Data()->Pointer);
+            if(start == end)
+                break;
+            start = start->Next();
+        }
+        this->m_items->Clear();
+        this->RemoveFromUsed();
     }
 };
 
@@ -100,7 +112,7 @@ public:
 
     inline int SymbolsCount() { return this->m_symbolsCount; }
     inline int TradingSessionsCount() { return this->m_tradingSessionsCount; }
-    inline HashTableItem* Item(int symbolIndex, int tradingSessionIndex) {
+    inline HashTableItem<T>* Item(int symbolIndex, int tradingSessionIndex) {
         return this->m_table[symbolIndex][tradingSessionIndex];
     }
     inline int UsedItemCount() { return this->m_usedLists->Count(); }
@@ -142,7 +154,7 @@ public:
     inline void Clear() {
         LinkedPointer<HashTableItem<T>> *node = this->m_usedLists->Start();
         while(true) {
-            HashtableItem<T> *list = (HashTableItem<T>*)node->Data();
+            HashTableItem<T> *list = (HashTableItem<T>*)node->Data();
             list->Clear();
             if(node == this->m_usedLists->End())
                 break;

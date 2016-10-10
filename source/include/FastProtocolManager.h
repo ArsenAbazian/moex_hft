@@ -417,7 +417,7 @@ private:
 
 	inline void Release(FastGenericInfo* info) {
 		if(info->GroupMDEntriesCount != 0) {
-			PointerList *list = info->GroupMDEntries[0]->Pointer->Owner();
+			PointerList<FastGenericItemInfo> *list = info->GroupMDEntries[0]->Pointer->Owner();
 			FastGenericItemInfo **item = info->GroupMDEntries;
 			for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 				this->Release(*item);
@@ -432,7 +432,7 @@ private:
 
 	inline void Release(FastIncrementalGenericInfo* info) {
 		if(info->GroupMDEntriesCount != 0) {
-			PointerList *list = info->GroupMDEntries[0]->Pointer->Owner();
+			PointerList<FastIncrementalGenericItemInfo> *list = info->GroupMDEntries[0]->Pointer->Owner();
 			FastIncrementalGenericItemInfo **item = info->GroupMDEntries;
 			for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 				this->Release(*item);
@@ -447,7 +447,7 @@ private:
 
 	inline void Release(FastOLSFONDInfo* info) {
 		if(info->GroupMDEntriesCount != 0) {
-			PointerList *list = info->GroupMDEntries[0]->Pointer->Owner();
+			PointerList<FastOLSFONDItemInfo> *list = info->GroupMDEntries[0]->Pointer->Owner();
 			FastOLSFONDItemInfo **item = info->GroupMDEntries;
 			for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 				this->Release(*item);
@@ -462,7 +462,7 @@ private:
 
 	inline void Release(FastOLSCURRInfo* info) {
 		if(info->GroupMDEntriesCount != 0) {
-			PointerList *list = info->GroupMDEntries[0]->Pointer->Owner();
+			PointerList<FastOLSCURRItemInfo> *list = info->GroupMDEntries[0]->Pointer->Owner();
 			FastOLSCURRItemInfo **item = info->GroupMDEntries;
 			for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 				this->Release(*item);
@@ -477,7 +477,7 @@ private:
 
 	inline void Release(FastTLSFONDInfo* info) {
 		if(info->GroupMDEntriesCount != 0) {
-			PointerList *list = info->GroupMDEntries[0]->Pointer->Owner();
+			PointerList<FastTLSFONDItemInfo> *list = info->GroupMDEntries[0]->Pointer->Owner();
 			FastTLSFONDItemInfo **item = info->GroupMDEntries;
 			for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 				this->Release(*item);
@@ -492,7 +492,7 @@ private:
 
 	inline void Release(FastTLSCURRInfo* info) {
 		if(info->GroupMDEntriesCount != 0) {
-			PointerList *list = info->GroupMDEntries[0]->Pointer->Owner();
+			PointerList<FastTLSCURRItemInfo> *list = info->GroupMDEntries[0]->Pointer->Owner();
 			FastTLSCURRItemInfo **item = info->GroupMDEntries;
 			for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 				this->Release(*item);
@@ -507,7 +507,7 @@ private:
 
 	inline void Release(FastOBSFONDInfo* info) {
 		if(info->GroupMDEntriesCount != 0) {
-			PointerList *list = info->GroupMDEntries[0]->Pointer->Owner();
+			PointerList<FastOBSFONDItemInfo> *list = info->GroupMDEntries[0]->Pointer->Owner();
 			FastOBSFONDItemInfo **item = info->GroupMDEntries;
 			for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 				this->Release(*item);
@@ -522,7 +522,7 @@ private:
 
 	inline void Release(FastOBSCURRInfo* info) {
 		if(info->GroupMDEntriesCount != 0) {
-			PointerList *list = info->GroupMDEntries[0]->Pointer->Owner();
+			PointerList<FastOBSCURRItemInfo> *list = info->GroupMDEntries[0]->Pointer->Owner();
 			FastOBSCURRItemInfo **item = info->GroupMDEntries;
 			for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 				this->Release(*item);
@@ -537,7 +537,7 @@ private:
 
 	inline void Release(FastIncrementalMSRFONDInfo* info) {
 		if(info->GroupMDEntriesCount != 0) {
-			PointerList *list = info->GroupMDEntries[0]->Pointer->Owner();
+			PointerList<FastIncrementalMSRFONDItemInfo> *list = info->GroupMDEntries[0]->Pointer->Owner();
 			FastIncrementalMSRFONDItemInfo **item = info->GroupMDEntries;
 			for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 				this->Release(*item);
@@ -552,7 +552,7 @@ private:
 
 	inline void Release(FastIncrementalMSRCURRInfo* info) {
 		if(info->GroupMDEntriesCount != 0) {
-			PointerList *list = info->GroupMDEntries[0]->Pointer->Owner();
+			PointerList<FastIncrementalMSRCURRItemInfo> *list = info->GroupMDEntries[0]->Pointer->Owner();
 			FastIncrementalMSRCURRItemInfo **item = info->GroupMDEntries;
 			for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 				this->Release(*item);
@@ -567,7 +567,7 @@ private:
 
 	inline void Release(FastIncrementalOLRFONDInfo* info) {
 		if(info->GroupMDEntriesCount != 0) {
-			PointerList *list = info->GroupMDEntries[0]->Pointer->Owner();
+			PointerList<FastIncrementalOLRFONDItemInfo> *list = info->GroupMDEntries[0]->Pointer->Owner();
 			FastIncrementalOLRFONDItemInfo **item = info->GroupMDEntries;
 			for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 				this->Release(*item);
@@ -582,7 +582,7 @@ private:
 
 	inline void Release(FastIncrementalOLRCURRInfo* info) {
 		if(info->GroupMDEntriesCount != 0) {
-			PointerList *list = info->GroupMDEntries[0]->Pointer->Owner();
+			PointerList<FastIncrementalOLRCURRItemInfo> *list = info->GroupMDEntries[0]->Pointer->Owner();
 			FastIncrementalOLRCURRItemInfo **item = info->GroupMDEntries;
 			for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 				this->Release(*item);
@@ -597,7 +597,7 @@ private:
 
 	inline void Release(FastIncrementalOBRFONDInfo* info) {
 		if(info->GroupMDEntriesCount != 0) {
-			PointerList *list = info->GroupMDEntries[0]->Pointer->Owner();
+			PointerList<FastIncrementalOBRFONDItemInfo> *list = info->GroupMDEntries[0]->Pointer->Owner();
 			FastIncrementalOBRFONDItemInfo **item = info->GroupMDEntries;
 			for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 				this->Release(*item);
@@ -612,7 +612,7 @@ private:
 
 	inline void Release(FastIncrementalOBRCURRInfo* info) {
 		if(info->GroupMDEntriesCount != 0) {
-			PointerList *list = info->GroupMDEntries[0]->Pointer->Owner();
+			PointerList<FastIncrementalOBRCURRItemInfo> *list = info->GroupMDEntries[0]->Pointer->Owner();
 			FastIncrementalOBRCURRItemInfo **item = info->GroupMDEntries;
 			for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 				this->Release(*item);
@@ -627,7 +627,7 @@ private:
 
 	inline void Release(FastIncrementalTLRFONDInfo* info) {
 		if(info->GroupMDEntriesCount != 0) {
-			PointerList *list = info->GroupMDEntries[0]->Pointer->Owner();
+			PointerList<FastIncrementalTLRFONDItemInfo> *list = info->GroupMDEntries[0]->Pointer->Owner();
 			FastIncrementalTLRFONDItemInfo **item = info->GroupMDEntries;
 			for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 				this->Release(*item);
@@ -642,7 +642,7 @@ private:
 
 	inline void Release(FastIncrementalTLRCURRInfo* info) {
 		if(info->GroupMDEntriesCount != 0) {
-			PointerList *list = info->GroupMDEntries[0]->Pointer->Owner();
+			PointerList<FastIncrementalTLRCURRItemInfo> *list = info->GroupMDEntries[0]->Pointer->Owner();
 			FastIncrementalTLRCURRItemInfo **item = info->GroupMDEntries;
 			for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 				this->Release(*item);
@@ -657,7 +657,7 @@ private:
 
 	inline void Release(FastSecurityDefinitionInfo* info) {
 		if(info->GroupInstrAttribCount != 0) {
-			PointerList *list = info->GroupInstrAttrib[0]->Pointer->Owner();
+			PointerList<FastSecurityDefinitionGroupInstrAttribItemInfo> *list = info->GroupInstrAttrib[0]->Pointer->Owner();
 			FastSecurityDefinitionGroupInstrAttribItemInfo **item = info->GroupInstrAttrib;
 			for(int i = 0; i < info->GroupInstrAttribCount; i++) {
 				this->Release(*item);
@@ -666,7 +666,7 @@ private:
 			}
 		}
 		if(info->MarketSegmentGrpCount != 0) {
-			PointerList *list = info->MarketSegmentGrp[0]->Pointer->Owner();
+			PointerList<FastSecurityDefinitionMarketSegmentGrpItemInfo> *list = info->MarketSegmentGrp[0]->Pointer->Owner();
 			FastSecurityDefinitionMarketSegmentGrpItemInfo **item = info->MarketSegmentGrp;
 			for(int i = 0; i < info->MarketSegmentGrpCount; i++) {
 				this->Release(*item);
@@ -681,7 +681,7 @@ private:
 
 	inline void Release(FastSecurityDefinitionMarketSegmentGrpItemInfo* info) {
 		if(info->TradingSessionRulesGrpCount != 0) {
-			PointerList *list = info->TradingSessionRulesGrp[0]->Pointer->Owner();
+			PointerList<FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo> *list = info->TradingSessionRulesGrp[0]->Pointer->Owner();
 			FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo **item = info->TradingSessionRulesGrp;
 			for(int i = 0; i < info->TradingSessionRulesGrpCount; i++) {
 				this->Release(*item);

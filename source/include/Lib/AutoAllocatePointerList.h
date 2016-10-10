@@ -35,7 +35,7 @@ public:
         return (T*)this->m_list->Pop()->Data();
     }
     inline PointerList<T>* ListCore() { return this->m_list; }
-    inline void FreeItem(LinkedPointer *node) {
+    inline void FreeItem(LinkedPointer<T> *node) {
         this->m_list->Push(node);
     }
     inline int Count() { return this->m_list->Count(); }

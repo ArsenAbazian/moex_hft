@@ -5,10 +5,10 @@
 #ifndef HFT_ROBOT_SIMPLELIST_H
 #define HFT_ROBOT_SIMPLELIST_H
 
-class PointerList;
+template <typename T> class PointerList;
 
 template <typename T> class LinkedPointer {
-    PointerList     *m_owner;
+    PointerList<T>  *m_owner;
     LinkedPointer   *m_next;
     LinkedPointer   *m_prev;
     T               *m_data;
@@ -25,8 +25,8 @@ public:
     inline void Prev(LinkedPointer *node) { this->m_prev = node; }
     inline T* Data() { return this->m_data; }
     inline void Data(T *data) { this->m_data = data; }
-    inline PointerList* Owner() { return this->m_owner; }
-    inline void Owner(PointerList *owner) { this->m_owner = owner; }
+    inline PointerList<T>* Owner() { return this->m_owner; }
+    inline void Owner(PointerList<T> *owner) { this->m_owner = owner; }
 };
 
 template <typename T> class PointerList {
@@ -68,7 +68,7 @@ public:
         this->m_tail = this->m_head = this->Pop();
         this->m_head->Next(0);
         this->m_head->Prev(0);
-        this->m_head->Data(this);
+        this->m_head->Data(0);
         this->m_count = 0;
     }
     ~PointerList() {
@@ -143,7 +143,7 @@ public:
     }
     inline LinkedPointer<T>* Start() { return this->m_head->Next(); }
     inline LinkedPointer<T>* End() { return this->m_tail; }
-    inline LinkedPointer<T>* Next(LinkedPointer *node) { return node->Next(); }
+    inline LinkedPointer<T>* Next(LinkedPointer<T> *node) { return node->Next(); }
     inline LinkedPointer<T>* PoolStart() { return this->m_poolHead; }
     inline LinkedPointer<T>* PoolEnd() { return this->m_poolTail; }
     inline int Count() { return this->m_count; }

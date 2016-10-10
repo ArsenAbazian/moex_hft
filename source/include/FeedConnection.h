@@ -111,7 +111,8 @@ protected:
     bool                                        m_shouldReceiveAnswer;
 
 protected:
-	HashTable								    *m_orderBookTable;
+	HashTable<FastOBSFONDItemInfo>			    *m_orderBookTableFond;
+    HashTable<FastOBSCURRItemInfo>              *m_orderBookTableCurr;
 private:
 
     inline void GetCurrentTime(UINT64 *time) {
@@ -167,7 +168,7 @@ private:
     inline bool SnapshotAvailable() { return this->m_snapshotAvailable; }
 
 	inline bool ApplyOrderBookSnapshot_FOND() {
-        this->m_orderBookTable->Clear();
+        this->m_orderBookTableFond->Clear();
         for(int i = this->m_snapshotRouteFirst; i <= this->m_snapshotLastFragment; i++) {
             this->ProcessMessage(this->m_packets[i]);
         }
@@ -323,7 +324,7 @@ private:
     }
 
 	inline FastOBSFONDItemInfo* AddOrderBookInfo(FastIncrementalOBRFONDItemInfo *info) {
-		this->m_orderBookTable->Add(info->Symbol, info->TradingSessionID, info->Pointer);
+		//this->m_orderBookTable->Add(info->Symbol, info->TradingSessionID, info->Pointer);
 		printf("add order book %s\n", info->MDEntryID);
 
 		return 0;
@@ -533,7 +534,7 @@ public:
 		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
 
 		this->SetType(FeedConnectionType::Incremental);
-		this->m_orderBookTable = new HashTable();
+		this->m_orderBookTableCurr = new HashTable<FastOBSCURRItemInfo>();
     }
 	ISocketBufferProvider* CreateSocketBufferProvider() {
 		return new SocketBufferProvider(DefaultSocketBufferManager::Default,
@@ -655,7 +656,7 @@ public:
 	FeedConnection_FOND_OBR(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
 		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
 		this->SetType(FeedConnectionType::Incremental);
-		this->m_orderBookTable = new HashTable();
+		this->m_orderBookTableFond = new HashTable<FastOBSFONDItemInfo>();
     }
 	ISocketBufferProvider* CreateSocketBufferProvider() {
 		return new SocketBufferProvider(DefaultSocketBufferManager::Default,

@@ -15,14 +15,14 @@ class HashTableTester {
 
 public:
     void TestDefaults() {
-        HashTable *table = new HashTable();
+        HashTable<void> *table = new HashTable<void>();
         if(table->SymbolsCount() != 0)
             throw;
         if(table->TradingSessionsCount() != 0)
             throw;
         for(int i = 0; i < MAX_SYMBOLS_COUNT; i++) {
             for(int j = 0; j < MAX_TRADING_SESSIONS_COUNT; j++) {
-                HashTableItem *item = table->Item(i, j);
+                HashTableItem<void> *item = table->Item(i, j);
                 if(item->Items()->Count() != 0)
                     throw;
             }
@@ -32,7 +32,7 @@ public:
     }
 
     void TestAddItem() {
-        HashTable *table = new HashTable();
+        HashTable<FastOBSFONDItemInfo> *table = new HashTable<FastOBSFONDItemInfo>();
         AutoAllocatePointerList<FastOBSFONDItemInfo> *list = new AutoAllocatePointerList<FastOBSFONDItemInfo>(10, 10);
 
         FastOBSFONDItemInfo *itemInfo = list->NewItem();
@@ -42,7 +42,7 @@ public:
             throw;
         if(list->Count() != 1)
             throw;
-        HashTableItem *item = table->Add("SMB1", "TRADING001", itemInfo);
+        HashTableItem<FastOBSFONDItemInfo> *item = table->Add("SMB1", "TRADING001", itemInfo);
         if(table->UsedItemCount() != 1)
             throw;
         if(item->Items()->Count() != 1)
@@ -64,7 +64,7 @@ public:
         index = table->GetTradingSessionIdIndex("TRADING002");
         if(index != 1)
             throw;
-        LinkedPointer *ptr = item->Items()->Get(itemInfo);
+        LinkedPointer<FastOBSFONDItemInfo> *ptr = item->Items()->Get(itemInfo);
         if(ptr == 0)
             throw;
 
@@ -77,7 +77,7 @@ public:
         if(list->Count() != 2)
             throw;
 
-        HashTableItem *item2 = table->Add("SMB3", "TRADING003", itemInfo2);
+        HashTableItem<FastOBSFONDItemInfo> *item2 = table->Add("SMB3", "TRADING003", itemInfo2);
         if(table->UsedItemCount() != 2)
             throw;
         if(item2->Items()->Count() != 1)
@@ -87,14 +87,14 @@ public:
         if(table->TradingSessionsCount() != 3)
             throw;
 
-        LinkedPointer *ptr2 = item2->Items()->Get(itemInfo2);
+        LinkedPointer<FastOBSFONDItemInfo> *ptr2 = item2->Items()->Get(itemInfo2);
         if(ptr2 == 0)
             throw;
 
         // add new item to existing list
         FastOBSFONDItemInfo *itemInfo3 = list->NewItem();
 
-        HashTableItem *item3 = table->Add("SMB1", "TRADING001", itemInfo3);
+        HashTableItem<FastOBSFONDItemInfo> *item3 = table->Add("SMB1", "TRADING001", itemInfo3);
         if(item3 != item)
             throw;
         if(table->UsedItemCount() != 2)
@@ -108,7 +108,7 @@ public:
     }
 
     void TestAddArrayOfItems() {
-        HashTable *table = new HashTable();
+        HashTable<FastOBSFONDItemInfo> *table = new HashTable<FastOBSFONDItemInfo>();
         AutoAllocatePointerList<FastOBSFONDItemInfo> *list = new AutoAllocatePointerList<FastOBSFONDItemInfo>(10, 10);
 
         FastOBSFONDItemInfo* itemInfoArray[3];
@@ -117,7 +117,7 @@ public:
         itemInfoArray[2] = list->NewItem();
 
 
-        HashTableItem *item = table->Add("SMB1", "TRADING001", (void**)itemInfoArray, 3);
+        HashTableItem<FastOBSFONDItemInfo> *item = table->Add("SMB1", "TRADING001", (FastOBSFONDItemInfo**)itemInfoArray, 3);
         if(table->UsedItemCount() != 1)
             throw;
         if(item->Items()->Count() != 3)
@@ -135,7 +135,7 @@ public:
     }
 
     void TestClear() {
-        HashTable *table = new HashTable();
+        HashTable<FastOBSFONDItemInfo> *table = new HashTable<FastOBSFONDItemInfo>();
         AutoAllocatePointerList<FastOBSFONDItemInfo> *list = new AutoAllocatePointerList<FastOBSFONDItemInfo>(10, 10);
 
         FastOBSFONDItemInfo* itemInfoArray[3];
@@ -143,7 +143,7 @@ public:
         itemInfoArray[1] = list->NewItem();
         itemInfoArray[2] = list->NewItem();
 
-        table->Add("SMB1", "TRADING001", (void**)itemInfoArray, 3);
+        table->Add("SMB1", "TRADING001", (FastOBSFONDItemInfo**)itemInfoArray, 3);
         table->Add("SMB2", "TRADING001", list->NewItem());
         table->Add("SMB3", "TRADING001", list->NewItem());
         table->Add("SMB1", "TRADING002", list->NewItem());
@@ -157,11 +157,38 @@ public:
             throw;
     }
 
+    void TestClearItem() {
+        HashTable<FastOBSFONDItemInfo> *table = new HashTable<FastOBSFONDItemInfo>();
+        AutoAllocatePointerList<FastOBSFONDItemInfo> *list = new AutoAllocatePointerList<FastOBSFONDItemInfo>(10, 10);
+
+        FastOBSFONDItemInfo* itemInfoArray[3];
+        itemInfoArray[0] = list->NewItem();
+        itemInfoArray[1] = list->NewItem();
+        itemInfoArray[2] = list->NewItem();
+
+        table->Add("SMB1", "TRADING001", (FastOBSFONDItemInfo**)itemInfoArray, 3);
+        table->Add("SMB2", "TRADING001", list->NewItem());
+        table->Add("SMB3", "TRADING001", list->NewItem());
+        table->Add("SMB1", "TRADING002", list->NewItem());
+
+        int count = list->Count();
+        int usedCount = table->UsedItemCount();
+        HashTableItem<FastOBSFONDItemInfo> *item = table->GetItem("SMB1", "TRADING001");
+        item->Clear();
+        if(list->Count() != count - 3)
+            throw;
+        if(table->UsedItemCount() != usedCount - 1)
+            throw;
+
+        //LinkedPointer<FastOBSFONDItemInfo> *listItem = item->Clear();
+    }
+
     void Test() {
         this->TestDefaults();
         this->TestAddItem();
         this->TestAddArrayOfItems();
         this->TestClear();
+        this->TestClearItem();
     }
 };
 
