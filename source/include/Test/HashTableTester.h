@@ -179,8 +179,48 @@ public:
             throw;
         if(table->UsedItemCount() != usedCount - 1)
             throw;
+    }
 
-        //LinkedPointer<FastOBSFONDItemInfo> *listItem = item->Clear();
+    void TestRemoveItem() {
+        HashTable<FastOBSFONDItemInfo> *table = new HashTable<FastOBSFONDItemInfo>();
+        AutoAllocatePointerList<FastOBSFONDItemInfo> *list = new AutoAllocatePointerList<FastOBSFONDItemInfo>(10, 10);
+
+        FastOBSFONDItemInfo* itemInfoArray[3];
+        itemInfoArray[0] = list->NewItem();
+        itemInfoArray[1] = list->NewItem();
+        itemInfoArray[2] = list->NewItem();
+
+        table->Add("SMB1", "TRADING001", (FastOBSFONDItemInfo**)itemInfoArray, 3);
+        table->Add("SMB2", "TRADING001", list->NewItem());
+        table->Add("SMB3", "TRADING001", list->NewItem());
+        table->Add("SMB1", "TRADING002", list->NewItem());
+
+        int usedCount = table->UsedItemCount();
+        HashTableItem<FastOBSFONDItemInfo> *item = table->GetItem("SMB1", "TRADING001");
+
+        int count = list->Count();
+        int itemCount = item->Count();
+        item->Remove(item->Start());
+        if(item->Count() != itemCount - 1)
+            throw;
+        if(table->UsedItemCount() != usedCount)
+            throw;
+        if(list->Count() != count - 1)
+            throw;
+        item->Remove(item->Start());
+        if(item->Count() != itemCount - 2)
+            throw;
+        if(table->UsedItemCount() != usedCount)
+            throw;
+        if(list->Count() != count - 2)
+            throw;
+        item->Remove(item->Start());
+        if(item->Count() != 0)
+            throw;
+        if(table->UsedItemCount() != usedCount - 1)
+            throw;
+        if(list->Count() != count - 3)
+            throw;
     }
 
     void Test() {
@@ -189,6 +229,7 @@ public:
         this->TestAddArrayOfItems();
         this->TestClear();
         this->TestClearItem();
+        this->TestRemoveItem();
     }
 };
 

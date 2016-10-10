@@ -14,7 +14,7 @@
 
 template <typename T> class HashTableItem {
     PointerList<T>     *m_items;
-    LinkedPointer<T>   *m_usedPointer;
+    LinkedPointer<HashTableItem<T>>   *m_usedPointer;
 public:
     HashTableItem() {
         this->m_items = new PointerList<T>(MAX_TABLE_LIST_COUNT);
@@ -25,8 +25,8 @@ public:
     }
 
     inline PointerList<T>* Items() { return this->m_items; }
-    inline LinkedPointer<T>* UsedListPointer(){ return this->m_usedPointer; }
-    inline void UsedListPointer(LinkedPointer<T> *usedPointer) { this->m_usedPointer = usedPointer; }
+    inline LinkedPointer<HashTableItem<T>>* UsedListPointer(){ return this->m_usedPointer; }
+    inline void UsedListPointer(LinkedPointer<HashTableItem<T>> *usedPointer) { this->m_usedPointer = usedPointer; }
     inline void RemoveFromUsed() {
         this->m_usedPointer->Owner()->Remove(this->m_usedPointer);
         this->m_usedPointer = 0;
@@ -43,6 +43,16 @@ public:
         this->m_items->Clear();
         this->RemoveFromUsed();
     }
+
+    inline LinkedPointer<T>* Start() { return this->m_items->Start(); }
+    inline LinkedPointer<T>* End() { return this->m_items->End(); }
+    inline int Count() { return this->m_items->Count(); }
+    inline void Remove(LinkedPointer<T> *item) {
+        item->Data()->Pointer->Owner()->Push(item->Data()->Pointer);
+        this->m_items->Remove(item);
+        if(this->m_items->Count() == 0)
+            this->RemoveFromUsed();
+    }
 };
 
 template<typename T> class HashTable {
@@ -54,13 +64,13 @@ template<typename T> class HashTable {
     HashTableItem<T>*   m_table[MAX_SYMBOLS_COUNT][MAX_TRADING_SESSIONS_COUNT];
     PointerList< HashTableItem<T> >*     m_usedLists;
 
-    inline bool IsSymbolEquals(char *s1, char *s2) {
+    inline bool IsSymbolEquals(const char *s1, const char *s2) {
         UINT32 *u1 = (UINT32*)s1;
         UINT32 *u2 = (UINT32*)s2;
         return (*u1) == (*u2);
     }
 
-    inline bool IsTradingSessionEquals(char *s1, char *s2) {
+    inline bool IsTradingSessionEquals(const char *s1, const char *s2) {
         UINT64 *u1 = (UINT64*)s1;
         UINT64 *u2 = (UINT64*)s2;
 
@@ -74,7 +84,7 @@ template<typename T> class HashTable {
     }
 
 public:
-    inline int GetSymbolIndex(char *symbol) {
+    inline int GetSymbolIndex(const char *symbol) {
         for(int i = 0; i < this->m_symbolsCount; i++) {
             if(this->IsSymbolEquals(symbol, this->m_symbols[i]))
                 return i;
@@ -83,7 +93,7 @@ public:
         this->m_symbolsCount++;
         return this->m_symbolsCount - 1;
     }
-    inline int GetTradingSessionIdIndex(char *tradingSessionId) {
+    inline int GetTradingSessionIdIndex(const char *tradingSessionId) {
         for(int i = 0; i < this->m_tradingSessionsCount; i++) {
             if(this->IsTradingSessionEquals(tradingSessionId, this->m_tradingSession[i]))
                 return i;
@@ -117,25 +127,26 @@ public:
     }
     inline int UsedItemCount() { return this->m_usedLists->Count(); }
 
-    inline HashTableItem<T>* GetItem(char *symbol, char *tradingSession) {
+    inline HashTableItem<T>* GetItem(const char *symbol, const char *tradingSession) {
         int symbolIndex = GetSymbolIndex(symbol);
         int tradingSessionIndex = GetTradingSessionIdIndex(tradingSession);
         return this->m_table[symbolIndex][tradingSessionIndex];
     }
 
-    inline HashTableItem<T>* Add(char *symbol, char *tradingSession, T *data) {
+    inline HashTableItem<T>* Add(const char *symbol, const char *tradingSession, T *data) {
         int symbolIndex = GetSymbolIndex(symbol);
         int tradingSessionIndex = GetTradingSessionIdIndex(tradingSession);
 
         HashTableItem<T> *item = this->m_table[symbolIndex][tradingSessionIndex];
         item->Items()->Add(data);
 
-        if(item->Items()->Count() == 1)
-            this->m_usedLists->Add(item); //TODO
+        if(item->Items()->Count() == 1) {
+            item->UsedListPointer(this->m_usedLists->Add(item));
+        }
         return item;
     }
 
-    inline HashTableItem<T>* Add(char *symbol, char *tradingSession, T **data, int count) {
+    inline HashTableItem<T>* Add(const char *symbol, const char *tradingSession, T **data, int count) {
         T **item = data;
 
         int symbolIndex = GetSymbolIndex(symbol);
@@ -146,8 +157,9 @@ public:
         for(int i = 0; i < count; i++, item++) {
             mditem->Items()->Add(*item);
         }
-        if(mditem->Items()->Count() == count)
-            this->m_usedLists->Add(mditem);
+        if(mditem->Items()->Count() == count) {
+            mditem->UsedListPointer(this->m_usedLists->Add(mditem));
+        }
         return mditem;
     }
 

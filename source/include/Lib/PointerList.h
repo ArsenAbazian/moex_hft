@@ -83,21 +83,23 @@ public:
         while(node != this->m_tail);
     }
 
-    inline void Add(T *data) {
+    inline LinkedPointer<T>* Add(T *data) {
         LinkedPointer<T> *node = this->Pop();
         node->Data(data);
         this->m_tail->Next(node);
         node->Prev(this->m_tail);
         this->m_tail = node;
+        return node;
     }
 
-    inline void Insert(LinkedPointer<T> *before, T *data) {
+    inline LinkedPointer<T>* Insert(LinkedPointer<T> *before, T *data) {
         LinkedPointer<T> *node = this->Pop();
         LinkedPointer<T> *prev = before->Prev();
         prev->Next(node);
         node->Prev(prev);
         node->Next(before);
         before->Prev(node);
+        return node;
     }
 
     inline LinkedPointer<T>* Get(T *data) {
@@ -118,7 +120,6 @@ public:
         prev->Next(next);
         next->Prev(prev);
         this->Push(node);
-        this->m_count--;
     }
 
     inline void Remove(T *data) {
