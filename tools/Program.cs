@@ -5,6 +5,7 @@ using System.Text;
 using System.Linq;
 using System.Xml;
 using Mono.Options;
+using System.Collections;
 
 namespace prebuild {
 	class FastTemplatesCodeGenerator {
@@ -348,7 +349,7 @@ namespace prebuild {
 		private  void WriteGetFreeItemCode (XmlNode templatesNode) {
 			SetPosition(Get_Free_Item_Methods_GeneratedCode);
 
-			List<StructureInfo> structures = GetAllStructureNames(templatesNode);
+			List<StructureInfo> structures = GetStructures(templatesNode);
 			foreach(StructureInfo str in structures) {
 				WriteLine("\tinline " + str.Name + "* " + str.GetFreeMethodName + "() {");
 				if(str.IsSequence) {
@@ -375,7 +376,7 @@ namespace prebuild {
 		}
 
 		private void WriteReleaseItemCode (XmlNode templatesNode) {
-			List<StructureInfo> structures = GetAllStructureNames(templatesNode);
+			List<StructureInfo> structures = GetStructures(templatesNode);
 			foreach(StructureInfo str in structures) {
 				WriteLine("\tinline void Release(" + str.Name + "* info) {");
 				foreach(XmlNode childNode in str.Node.ChildNodes) {
@@ -444,6 +445,7 @@ namespace prebuild {
 			}
 
 			public StructureInfo Parent { get; set; }
+			public StructureInfo SimilarStruct { get; set; }
 			public string InStructFieldName { get; set; }
 			string inCodeValueName = "info";
 			public string InCodeValueName { 
@@ -456,32 +458,55 @@ namespace prebuild {
 					inCodeValueName = value;
 				}
 			}
+			public List<XmlNode> Fields { get; set; }
 		}
 
-		private  List<StructureInfo> GetAllStructureNames (XmlNode templatesNode) {
+		private  List<StructureInfo> GetStructures (XmlNode templatesNode) {
 			List<StructureInfo> res = new List<StructureInfo>();
 			foreach(XmlNode node in templatesNode.ChildNodes) {
 				if(node.Name == "template") {
-					res.Add(new StructureInfo() { NameCore = GetTemplateName(node.PreviousSibling.Value), Node = node });
-					GetSequenceStructureNames(GetTemplateName(node.PreviousSibling.Value), node, res);
+					string nameCore = GetTemplateName(node.PreviousSibling.Value);
+					List<StructureInfo> child = new List<StructureInfo>();
+					GetSequenceStructureNames(nameCore, node, child);
+					StructureInfo info = new StructureInfo() { NameCore = nameCore, Node = node };
+					foreach(StructureInfo c in child) {
+						res.Add(c);
+						c.Parent = info;
+					}
+					info.Fields = new List<XmlNode>();
+					foreach(XmlNode field in node.ChildNodes) {
+						info.Fields.Add(field);
+					}
+					res.Add(info);
 				}
 			}
 			return res;
 		}
 
-		private  void GetSequenceStructureNames (string parentStructNameCore, XmlNode node, List<StructureInfo> res) {
-			foreach(XmlNode field in node.ChildNodes) {
-				if(field.Name == "sequence") {
-					res.Add(new StructureInfo() { IsSequence = true, NameCore = parentStructNameCore + ItemName(field), Node = field });
-					GetSequenceStructureNames(parentStructNameCore + Name(field), field, res);
+		private  void GetSequenceStructureNames (string parentStructNameCore, XmlNode parent, List<StructureInfo> res) {
+			foreach(XmlNode node in parent.ChildNodes) {
+				if(node.Name != "sequence")
+					continue;
+				string nameCore = parentStructNameCore + ItemName(node);
+				List<StructureInfo> child = new List<StructureInfo>();
+				GetSequenceStructureNames(nameCore, node, child);
+				StructureInfo info = new StructureInfo() { IsSequence = true, NameCore = nameCore, Node = node }; 
+				foreach(StructureInfo c in child) {
+					res.Add(c);
+					c.Parent = info;
 				}
+				info.Fields = new List<XmlNode>();
+				foreach(XmlNode field in node.ChildNodes) {
+					info.Fields.Add(field);
+				}
+				res.Add(info);
 			}
 		}
 
 		private  void WriteStructuresDeclarationCode (XmlNode templatesNode) {
 			SetPosition(Structure_Objects_Declaration_GeneratedCode);
 
-			List<StructureInfo> structures = GetAllStructureNames(templatesNode);
+			List<StructureInfo> structures = GetStructures(templatesNode);
 			foreach(StructureInfo str in structures) {
 				if(!str.IsSequence)
 					WriteLine("\t" + str.Name + "*\t" + str.ValueName + ";");
@@ -589,6 +614,86 @@ namespace prebuild {
 			}
 		}
 
+		Dictionary<string, string> similarTemplates;
+		protected Dictionary<string, string> SimilarTemplates { 
+			get { 
+				if(similarTemplates == null) {
+					similarTemplates = new Dictionary<string, string>();
+					similarTemplates.Add("W-Generic", "X-Generic");
+
+					similarTemplates.Add("W-OLS-FOND", "X-OLR-FOND");
+					similarTemplates.Add("W-TLS-FOND", "X-TLR-FOND");
+					similarTemplates.Add("W-OBS-FOND", "X-OBR-FOND");
+
+					similarTemplates.Add("W-OLS-CURR", "X-OLR-CURR");
+					similarTemplates.Add("W-TLS-CURR", "X-TLR-CURR");
+					similarTemplates.Add("W-OBS-CURR", "X-OBR-CURR");
+				}
+				return similarTemplates;
+			}
+		}
+
+		StructureInfo FindSimilarStructure(List<StructureInfo> str, StructureInfo info){
+			XmlNode parentNode = info.Node.ParentNode;
+			if(parentNode.Name != "template")
+				return null;
+			string infoParentName = parentNode.Attributes["name"].Value;
+
+			Console.WriteLine("Seek similar for " + infoParentName);
+			foreach(StructureInfo info2 in str) { 
+				XmlNode parentNode2 = info2.Node.ParentNode;
+				if(parentNode2.Name != "template")
+					continue;
+				string infoParentName2 = parentNode2.Attributes["name"].Value;
+				Console.WriteLine("checking " + infoParentName2);
+
+				string nameToCheck = string.Empty;
+				if(!SimilarTemplates.TryGetValue(infoParentName, out nameToCheck))
+					continue;
+				if(nameToCheck == infoParentName2) {
+					return info2;
+				}
+			}
+			
+			return null;
+		}
+
+		List<StructureInfo> MergeStructures(List<StructureInfo> str) {
+			List<StructureInfo> res = new List<StructureInfo>();
+			List<StructureInfo> strToRemove = new List<StructureInfo>();
+			foreach(StructureInfo info in str) {
+				if(!info.IsSequence) {
+					res.Add(info);
+					continue;
+				}
+				StructureInfo info2 = FindSimilarStructure(str, info);
+				if(info2 == null) {
+					res.Add(info);
+					continue;
+				}
+				Console.WriteLine("Found Similar Structures " + info.Name + " = " + info2.Name);
+				strToRemove.Add(info2);
+				info.SimilarStruct = info2;
+				foreach(XmlNode node2 in info2.Fields) {
+					bool foundField = false;
+					foreach(XmlNode node in info.Fields) {
+						if(Name(node) == Name(node2)) {
+							foundField = true;
+							break;
+						}
+					}
+					if(!foundField)
+						info.Fields.Add(node2);
+				}
+				res.Add(info);
+			}
+			foreach(StructureInfo info in strToRemove) {
+				res.Remove(info);
+			}
+
+			return res;
+		}
+
 		private  void WriteStructuresDefinitionCode (XmlNode templatesNode) {
 			SetPosition(Message_Info_Structures_Definition_GeneratedCode);
 
@@ -669,14 +774,10 @@ namespace prebuild {
 
 			WriteLine("");
 
-			foreach(XmlNode node in templatesNode.ChildNodes) {
-				if(node.Name == "template")
-					WriteNodeSequenceStructDefinition(node, GetTemplateName(node.PreviousSibling.Value));
-			}
-
-			foreach(XmlNode node in templatesNode.ChildNodes) {
-				if(node.Name == "template")
-					WriteNodeDefinition(node, GetTemplateName(node.PreviousSibling.Value));
+			List<StructureInfo> str = GetStructures(templatesNode);
+			str = MergeStructures(str);
+			foreach(StructureInfo info in str) { 
+				WriteStructureDefinition(info);
 			}
 		}
 
@@ -851,29 +952,15 @@ namespace prebuild {
 			}
 			return res;
 		}
-		private  void WriteNodeSequenceStructDefinition (XmlNode template, string parentName) {
-			foreach(XmlNode node in template) {
-				string name = parentName + ItemName(node);
 
-				WriteNodeSequenceStructDefinition(node, name);
-				StructureInfo info = new StructureInfo() { NameCore = name, IsSequence = true};
-
-				if(node.Name != "sequence")
-					continue;
-
-				WriteLine("typedef struct _" + info.Name + " {");
-				WriteLine("\tLinkedPointer<_" + info.Name + ">" + StuctFieldsSpacing + "*Pointer;");
-				WriteSequenceNodeFieldDefinition(node, info.NameCore);
-				WriteLine("}" + info.Name + ";");
-				WriteLine("");
-
-				//definedStructName.Add(info.Name);
-			}
+		private void WritePointerCode(StructureInfo info) {
+			WriteLine("\tLinkedPointer<_" + info.Name + ">" + StuctFieldsSpacing + "*Pointer;");
 		}
 
-		private  void WriteSequenceNodeFieldDefinition (XmlNode node, string parentName) {
-			WritePresenceMapDefinition(node);
-			foreach(XmlNode field in node) {
+		private  void WriteStructureFieldsDefinitionCode (StructureInfo info, string parentName) {
+			WritePresenceMapDefinition();
+			WritePointerCode(info);
+			foreach(XmlNode field in info.Fields) {
 				if(field.Name == "string")
 					WriteStringDefinition(field);
 				else if(field.Name == "uInt32")
@@ -909,9 +996,7 @@ namespace prebuild {
 			}			
 		} 
 
-		private  void WritePresenceMapDefinition (XmlNode node) {
-			//int maxPresenceBitCount = GetMaxPresenceBitCount(node);
-			//int maxPresenceMapIntCount = forcedPresenceMapCount != 0? forcedPresenceMapCount: CalcPresenceMapIntCount(maxPresenceBitCount);
+		private  void WritePresenceMapDefinition () {
 			WriteLine("\tUINT64" + StuctFieldsSpacing + "PresenceMap;");
 		}
 
@@ -1048,17 +1133,11 @@ namespace prebuild {
 			return templateName;
 		}
 
-		List<string> definedStructName = new List<string>();
-
-		private  void WriteNodeDefinition (XmlNode node, string templateName) {
-			//if(definedStructName.Contains(templateName))
-			//	return;
-			WriteLine("typedef struct _Fast" + templateName + "Info {");
-			WriteSequenceNodeFieldDefinition(node, templateName);
-			WriteLine("}Fast" + templateName + "Info;");
+		private  void WriteStructureDefinition (StructureInfo info) { 
+			WriteLine("typedef struct _" + info.Name + "{");
+			WriteStructureFieldsDefinitionCode(info, info.NameCore);
+			WriteLine("}" + info.Name + ";");
 			WriteLine("");
-
-			definedStructName.Add(templateName);
 		}
 
 		void WriteParsePresenceMap (XmlNode node, string info, string tabString) {

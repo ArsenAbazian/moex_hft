@@ -134,9 +134,51 @@ typedef struct _FastSnapshotInfo {
 	UINT64				SendingTime;
 }FastSnapshotInfo;
 
-typedef struct _FastGenericItemInfo {
-	LinkedPointer<_FastGenericItemInfo>							*Pointer;
+typedef struct _FastLogonInfo{
 	UINT64							PresenceMap;
+	LinkedPointer<_FastLogonInfo>							*Pointer;
+	char*							MessageType;			// id=35    constant has constant value = A
+	int							MessageTypeLength;
+	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
+	int							BeginStringLength;
+	char*							SenderCompID;			// id=49    constant has constant value = MOEX
+	int							SenderCompIDLength;
+	char*							TargetCompID;			// id=56  
+	int							TargetCompIDLength;
+	UINT32							MsgSeqNum;			// id=34  
+	UINT64							SendingTime;			// id=52  
+	INT32							HeartBtInt;			// id=108  
+	char*							Username;			// id=553  presence=optional  
+	int							UsernameLength;
+	bool							AllowUsername;
+	char*							Password;			// id=554  presence=optional  
+	int							PasswordLength;
+	bool							AllowPassword;
+	char*							DefaultApplVerID;			// id=1137  
+	int							DefaultApplVerIDLength;
+}FastLogonInfo;
+
+typedef struct _FastLogoutInfo{
+	UINT64							PresenceMap;
+	LinkedPointer<_FastLogoutInfo>							*Pointer;
+	char*							MessageType;			// id=35    constant has constant value = 5
+	int							MessageTypeLength;
+	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
+	int							BeginStringLength;
+	char*							SenderCompID;			// id=49    constant has constant value = MOEX
+	int							SenderCompIDLength;
+	char*							TargetCompID;			// id=56  
+	int							TargetCompIDLength;
+	UINT32							MsgSeqNum;			// id=34  
+	UINT64							SendingTime;			// id=52  
+	char*							Text;			// id=58  presence=optional  
+	int							TextLength;
+	bool							AllowText;
+}FastLogoutInfo;
+
+typedef struct _FastGenericItemInfo{
+	UINT64							PresenceMap;
+	LinkedPointer<_FastGenericItemInfo>							*Pointer;
 	char*							MDEntryType;			// id=269  presence=optional  
 	int							MDEntryTypeLength;
 	bool							AllowMDEntryType;
@@ -239,130 +281,77 @@ typedef struct _FastGenericItemInfo {
 	char*							TradingSessionSubID;			// id=625  presence=optional  
 	int							TradingSessionSubIDLength;
 	bool							AllowTradingSessionSubID;
-}FastGenericItemInfo;
-
-typedef struct _FastIncrementalGenericItemInfo {
-	LinkedPointer<_FastIncrementalGenericItemInfo>							*Pointer;
-	UINT64							PresenceMap;
 	UINT32							MDUpdateAction;			// id=279  presence=optional  
 	bool							AllowMDUpdateAction;
-	char*							MDEntryType;			// id=269  presence=optional  
-	int							MDEntryTypeLength;
-	bool							AllowMDEntryType;
-	char*							MDEntryID;			// id=278  presence=optional  
-	int							MDEntryIDLength;
-	bool							AllowMDEntryID;
 	INT32							RptSeq;			// id=83  presence=optional  
 	bool							AllowRptSeq;
-	UINT32							MDEntryDate;			// id=272  presence=optional  
-	bool							AllowMDEntryDate;
-	UINT32							OrigTime;			// id=9412  presence=optional  
-	bool							AllowOrigTime;
-	UINT32							SettlDate;			// id=64  presence=optional  
-	bool							AllowSettlDate;
-	char*							SettleType;			// id=5459  presence=optional  
-	int							SettleTypeLength;
-	bool							AllowSettleType;
-	UINT32							MDEntryTime;			// id=273  presence=optional  
-	bool							AllowMDEntryTime;
-	UINT32							EffectiveTime;			// id=5902  presence=optional  
-	bool							AllowEffectiveTime;
-	UINT32							StartTime;			// id=9820  presence=optional  
-	bool							AllowStartTime;
 	char*							Symbol;			// id=55  presence=optional  
 	int							SymbolLength;
 	bool							AllowSymbol;
-	Decimal							MDEntryPx;			// id=270  presence=optional  
-	bool							AllowMDEntryPx;
-	Decimal							MDEntrySize;			// id=271  presence=optional  
-	bool							AllowMDEntrySize;
-	char*							QuoteCondition;			// id=276  presence=optional  
-	int							QuoteConditionLength;
-	bool							AllowQuoteCondition;
-	char*							TradeCondition;			// id=277  presence=optional  
-	int							TradeConditionLength;
-	bool							AllowTradeCondition;
-	char*							OpenCloseSettlFlag;			// id=286  presence=optional  
-	int							OpenCloseSettlFlagLength;
-	bool							AllowOpenCloseSettlFlag;
-	char*							OrdType;			// id=40  presence=optional  
-	int							OrdTypeLength;
-	bool							AllowOrdType;
 	Decimal							NetChgPrevDay;			// id=451  presence=optional  
 	bool							AllowNetChgPrevDay;
-	Decimal							AccruedInterestAmt;			// id=5384  presence=optional  
-	bool							AllowAccruedInterestAmt;
-	Decimal							ChgFromWAPrice;			// id=5510  presence=optional  
-	bool							AllowChgFromWAPrice;
-	Decimal							ChgOpenInterest;			// id=5511  presence=optional  
-	bool							AllowChgOpenInterest;
-	Decimal							BidMarketSize;			// id=5292  presence=optional  
-	bool							AllowBidMarketSize;
-	Decimal							AskMarketSize;			// id=5293  presence=optional  
-	bool							AllowAskMarketSize;
-	INT32							TotalNumOfTrades;			// id=6139  presence=optional  
-	bool							AllowTotalNumOfTrades;
-	Decimal							TradeValue;			// id=6143  presence=optional  
-	bool							AllowTradeValue;
-	Decimal							Yield;			// id=236  presence=optional  
-	bool							AllowYield;
-	Decimal							TotalVolume;			// id=5791  presence=optional  
-	bool							AllowTotalVolume;
-	INT32							OfferNbOr;			// id=9168  presence=optional  
-	bool							AllowOfferNbOr;
-	INT32							BidNbOr;			// id=9169  presence=optional  
-	bool							AllowBidNbOr;
-	Decimal							ChgFromSettlmnt;			// id=9750  presence=optional  
-	bool							AllowChgFromSettlmnt;
-	INT32							SumQtyOfBest;			// id=10503  presence=optional  
-	bool							AllowSumQtyOfBest;
-	char*							OrderSide;			// id=10504  presence=optional  
-	int							OrderSideLength;
-	bool							AllowOrderSide;
-	char*							OrderStatus;			// id=10505  presence=optional  
-	int							OrderStatusLength;
-	bool							AllowOrderStatus;
-	Decimal							MinCurrPx;			// id=10509  presence=optional  
-	bool							AllowMinCurrPx;
-	UINT32							MinCurrPxChgTime;			// id=10510  presence=optional  
-	bool							AllowMinCurrPxChgTime;
-	UINT32							VolumeIndicator;			// id=7017  presence=optional  
-	bool							AllowVolumeIndicator;
-	Decimal							Price;			// id=44  presence=optional  
-	bool							AllowPrice;
-	INT32							PriceType;			// id=423  presence=optional  
-	bool							AllowPriceType;
-	Decimal							NominalValue;			// id=9280  presence=optional  
-	bool							AllowNominalValue;
-	Decimal							RepoToPx;			// id=5677  presence=optional  
-	bool							AllowRepoToPx;
-	Decimal							BuyBackPx;			// id=5558  presence=optional  
-	bool							AllowBuyBackPx;
-	UINT32							BuyBackDate;			// id=5559  presence=optional  
-	bool							AllowBuyBackDate;
-	char*							DealNumber;			// id=9885  presence=optional    copy
-	int							DealNumberLength;
-	char*							PrevDealNumber; // copy
-	int							PrevDealNumberLength; // copy
-	bool							AllowDealNumber;
-	const UINT							DealNumberPresenceIndex = PRESENCE_MAP_INDEX0;
-	char*							CXFlag;			// id=5154  presence=optional    copy
-	int							CXFlagLength;
-	char*							PrevCXFlag; // copy
-	int							PrevCXFlagLength; // copy
-	bool							AllowCXFlag;
-	const UINT							CXFlagPresenceIndex = PRESENCE_MAP_INDEX1;
 	char*							TradingSessionID;			// id=336  presence=optional  
 	int							TradingSessionIDLength;
 	bool							AllowTradingSessionID;
-	char*							TradingSessionSubID;			// id=625  presence=optional  
-	int							TradingSessionSubIDLength;
-	bool							AllowTradingSessionSubID;
-}FastIncrementalGenericItemInfo;
+}FastGenericItemInfo;
 
-typedef struct _FastOLSFONDItemInfo {
-	LinkedPointer<_FastOLSFONDItemInfo>							*Pointer;
+typedef struct _FastGenericInfo{
 	UINT64							PresenceMap;
+	LinkedPointer<_FastGenericInfo>							*Pointer;
+	char*							MessageType;			// id=35    constant has constant value = W
+	int							MessageTypeLength;
+	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
+	int							BeginStringLength;
+	char*							ApplVerID;			// id=1128    constant has constant value = 9
+	int							ApplVerIDLength;
+	char*							SenderCompID;			// id=49    constant has constant value = MOEX
+	int							SenderCompIDLength;
+	UINT32							MsgSeqNum;			// id=34  
+	UINT64							SendingTime;			// id=52  
+	char*							TradingSessionID;			// id=336  presence=optional  
+	int							TradingSessionIDLength;
+	bool							AllowTradingSessionID;
+	char*							Symbol;			// id=55  
+	int							SymbolLength;
+	UINT32							LastMsgSeqNumProcessed;			// id=369  presence=optional  
+	bool							AllowLastMsgSeqNumProcessed;
+	INT32							RptSeq;			// id=83  
+	UINT32							LastFragment;			// id=893  presence=optional  
+	bool							AllowLastFragment;
+	UINT32							RouteFirst;			// id=7944  presence=optional  
+	bool							AllowRouteFirst;
+	INT32							TradSesStatus;			// id=340  presence=optional  
+	bool							AllowTradSesStatus;
+	INT32							MDSecurityTradingStatus;			// id=1682  presence=optional  
+	bool							AllowMDSecurityTradingStatus;
+	UINT32							AuctionIndicator;			// id=5509  presence=optional  
+	bool							AllowAuctionIndicator;
+	Decimal							NetChgPrevDay;			// id=451  presence=optional  
+	bool							AllowNetChgPrevDay;
+	int							GroupMDEntriesCount;
+	FastGenericItemInfo* GroupMDEntries[64];
+}FastGenericInfo;
+
+typedef struct _FastIncrementalGenericInfo{
+	UINT64							PresenceMap;
+	LinkedPointer<_FastIncrementalGenericInfo>							*Pointer;
+	char*							MessageType;			// id=35    constant has constant value = X
+	int							MessageTypeLength;
+	char*							ApplVerID;			// id=1128    constant has constant value = 9
+	int							ApplVerIDLength;
+	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
+	int							BeginStringLength;
+	char*							SenderCompID;			// id=49    constant has constant value = MOEX
+	int							SenderCompIDLength;
+	UINT32							MsgSeqNum;			// id=34  
+	UINT64							SendingTime;			// id=52  
+	int							GroupMDEntriesCount;
+	FastIncrementalGenericItemInfo* GroupMDEntries[64];
+}FastIncrementalGenericInfo;
+
+typedef struct _FastOLSFONDItemInfo{
+	UINT64							PresenceMap;
+	LinkedPointer<_FastOLSFONDItemInfo>							*Pointer;
 	char*							MDEntryType;			// id=269  presence=optional  
 	int							MDEntryTypeLength;
 	bool							AllowMDEntryType;
@@ -398,11 +387,56 @@ typedef struct _FastOLSFONDItemInfo {
 	char*							TradingSessionSubID;			// id=625  presence=optional  
 	int							TradingSessionSubIDLength;
 	bool							AllowTradingSessionSubID;
+	UINT32							MDUpdateAction;			// id=279  presence=optional  
+	bool							AllowMDUpdateAction;
+	char*							Symbol;			// id=55  presence=optional  
+	int							SymbolLength;
+	bool							AllowSymbol;
+	INT32							RptSeq;			// id=83  presence=optional  
+	bool							AllowRptSeq;
+	char*							TradingSessionID;			// id=336  presence=optional  
+	int							TradingSessionIDLength;
+	bool							AllowTradingSessionID;
 }FastOLSFONDItemInfo;
 
-typedef struct _FastOLSCURRItemInfo {
-	LinkedPointer<_FastOLSCURRItemInfo>							*Pointer;
+typedef struct _FastOLSFONDInfo{
 	UINT64							PresenceMap;
+	LinkedPointer<_FastOLSFONDInfo>							*Pointer;
+	char*							MessageType;			// id=35    constant has constant value = W
+	int							MessageTypeLength;
+	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
+	int							BeginStringLength;
+	char*							ApplVerID;			// id=1128    constant has constant value = 9
+	int							ApplVerIDLength;
+	char*							SenderCompID;			// id=49    constant has constant value = MOEX
+	int							SenderCompIDLength;
+	UINT32							MsgSeqNum;			// id=34  
+	UINT64							SendingTime;			// id=52  
+	UINT32							LastMsgSeqNumProcessed;			// id=369  presence=optional  
+	bool							AllowLastMsgSeqNumProcessed;
+	INT32							RptSeq;			// id=83  
+	UINT32							LastFragment;			// id=893  presence=optional  
+	bool							AllowLastFragment;
+	UINT32							RouteFirst;			// id=7944  presence=optional  
+	bool							AllowRouteFirst;
+	INT32							TradSesStatus;			// id=340  presence=optional  
+	bool							AllowTradSesStatus;
+	char*							TradingSessionID;			// id=336  presence=optional  
+	int							TradingSessionIDLength;
+	bool							AllowTradingSessionID;
+	char*							Symbol;			// id=55  
+	int							SymbolLength;
+	INT32							MDSecurityTradingStatus;			// id=1682  presence=optional  
+	bool							AllowMDSecurityTradingStatus;
+	UINT32							AuctionIndicator;			// id=5509  presence=optional  
+	bool							AllowAuctionIndicator;
+	int							GroupMDEntriesCount;
+	FastOLSFONDItemInfo* GroupMDEntries[64];
+}FastOLSFONDInfo;
+
+typedef struct _FastOLSCURRItemInfo{
+	UINT64							PresenceMap;
+	LinkedPointer<_FastOLSCURRItemInfo>							*Pointer;
 	char*							MDEntryType;			// id=269  presence=optional  
 	int							MDEntryTypeLength;
 	bool							AllowMDEntryType;
@@ -431,11 +465,54 @@ typedef struct _FastOLSCURRItemInfo {
 	char*							TradingSessionSubID;			// id=625  presence=optional  
 	int							TradingSessionSubIDLength;
 	bool							AllowTradingSessionSubID;
+	UINT32							MDUpdateAction;			// id=279  presence=optional  
+	bool							AllowMDUpdateAction;
+	char*							Symbol;			// id=55  presence=optional  
+	int							SymbolLength;
+	bool							AllowSymbol;
+	INT32							RptSeq;			// id=83  presence=optional  
+	bool							AllowRptSeq;
+	char*							TradingSessionID;			// id=336  presence=optional  
+	int							TradingSessionIDLength;
+	bool							AllowTradingSessionID;
 }FastOLSCURRItemInfo;
 
-typedef struct _FastTLSFONDItemInfo {
-	LinkedPointer<_FastTLSFONDItemInfo>							*Pointer;
+typedef struct _FastOLSCURRInfo{
 	UINT64							PresenceMap;
+	LinkedPointer<_FastOLSCURRInfo>							*Pointer;
+	char*							MessageType;			// id=35    constant has constant value = W
+	int							MessageTypeLength;
+	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
+	int							BeginStringLength;
+	char*							ApplVerID;			// id=1128    constant has constant value = 9
+	int							ApplVerIDLength;
+	char*							SenderCompID;			// id=49    constant has constant value = MOEX
+	int							SenderCompIDLength;
+	UINT32							MsgSeqNum;			// id=34  
+	UINT64							SendingTime;			// id=52  
+	UINT32							LastMsgSeqNumProcessed;			// id=369  presence=optional  
+	bool							AllowLastMsgSeqNumProcessed;
+	INT32							RptSeq;			// id=83  
+	UINT32							LastFragment;			// id=893  presence=optional  
+	bool							AllowLastFragment;
+	UINT32							RouteFirst;			// id=7944  presence=optional  
+	bool							AllowRouteFirst;
+	INT32							TradSesStatus;			// id=340  presence=optional  
+	bool							AllowTradSesStatus;
+	char*							TradingSessionID;			// id=336  presence=optional  
+	int							TradingSessionIDLength;
+	bool							AllowTradingSessionID;
+	char*							Symbol;			// id=55  
+	int							SymbolLength;
+	INT32							MDSecurityTradingStatus;			// id=1682  presence=optional  
+	bool							AllowMDSecurityTradingStatus;
+	int							GroupMDEntriesCount;
+	FastOLSCURRItemInfo* GroupMDEntries[64];
+}FastOLSCURRInfo;
+
+typedef struct _FastTLSFONDItemInfo{
+	UINT64							PresenceMap;
+	LinkedPointer<_FastTLSFONDItemInfo>							*Pointer;
 	char*							MDEntryType;			// id=269  
 	int							MDEntryTypeLength;
 	char*							MDEntryID;			// id=278  presence=optional  
@@ -478,11 +555,56 @@ typedef struct _FastTLSFONDItemInfo {
 	char*							TradingSessionSubID;			// id=625  presence=optional  
 	int							TradingSessionSubIDLength;
 	bool							AllowTradingSessionSubID;
+	UINT32							MDUpdateAction;			// id=279  presence=optional  
+	bool							AllowMDUpdateAction;
+	char*							Symbol;			// id=55  presence=optional  
+	int							SymbolLength;
+	bool							AllowSymbol;
+	INT32							RptSeq;			// id=83  presence=optional  
+	bool							AllowRptSeq;
+	char*							TradingSessionID;			// id=336  presence=optional  
+	int							TradingSessionIDLength;
+	bool							AllowTradingSessionID;
 }FastTLSFONDItemInfo;
 
-typedef struct _FastTLSCURRItemInfo {
-	LinkedPointer<_FastTLSCURRItemInfo>							*Pointer;
+typedef struct _FastTLSFONDInfo{
 	UINT64							PresenceMap;
+	LinkedPointer<_FastTLSFONDInfo>							*Pointer;
+	char*							MessageType;			// id=35    constant has constant value = W
+	int							MessageTypeLength;
+	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
+	int							BeginStringLength;
+	char*							ApplVerID;			// id=1128    constant has constant value = 9
+	int							ApplVerIDLength;
+	char*							SenderCompID;			// id=49    constant has constant value = MOEX
+	int							SenderCompIDLength;
+	UINT32							MsgSeqNum;			// id=34  
+	UINT64							SendingTime;			// id=52  
+	UINT32							LastMsgSeqNumProcessed;			// id=369  presence=optional  
+	bool							AllowLastMsgSeqNumProcessed;
+	INT32							RptSeq;			// id=83  
+	UINT32							LastFragment;			// id=893  presence=optional  
+	bool							AllowLastFragment;
+	UINT32							RouteFirst;			// id=7944  presence=optional  
+	bool							AllowRouteFirst;
+	INT32							TradSesStatus;			// id=340  presence=optional  
+	bool							AllowTradSesStatus;
+	char*							TradingSessionID;			// id=336  presence=optional  
+	int							TradingSessionIDLength;
+	bool							AllowTradingSessionID;
+	char*							Symbol;			// id=55  
+	int							SymbolLength;
+	INT32							MDSecurityTradingStatus;			// id=1682  presence=optional  
+	bool							AllowMDSecurityTradingStatus;
+	UINT32							AuctionIndicator;			// id=5509  presence=optional  
+	bool							AllowAuctionIndicator;
+	int							GroupMDEntriesCount;
+	FastTLSFONDItemInfo* GroupMDEntries[64];
+}FastTLSFONDInfo;
+
+typedef struct _FastTLSCURRItemInfo{
+	UINT64							PresenceMap;
+	LinkedPointer<_FastTLSCURRItemInfo>							*Pointer;
 	char*							MDEntryType;			// id=269  
 	int							MDEntryTypeLength;
 	char*							MDEntryID;			// id=278  presence=optional  
@@ -521,11 +643,54 @@ typedef struct _FastTLSCURRItemInfo {
 	char*							TradingSessionSubID;			// id=625  presence=optional  
 	int							TradingSessionSubIDLength;
 	bool							AllowTradingSessionSubID;
+	UINT32							MDUpdateAction;			// id=279  presence=optional  
+	bool							AllowMDUpdateAction;
+	char*							Symbol;			// id=55  presence=optional  
+	int							SymbolLength;
+	bool							AllowSymbol;
+	INT32							RptSeq;			// id=83  presence=optional  
+	bool							AllowRptSeq;
+	char*							TradingSessionID;			// id=336  presence=optional  
+	int							TradingSessionIDLength;
+	bool							AllowTradingSessionID;
 }FastTLSCURRItemInfo;
 
-typedef struct _FastOBSFONDItemInfo {
-	LinkedPointer<_FastOBSFONDItemInfo>							*Pointer;
+typedef struct _FastTLSCURRInfo{
 	UINT64							PresenceMap;
+	LinkedPointer<_FastTLSCURRInfo>							*Pointer;
+	char*							MessageType;			// id=35    constant has constant value = W
+	int							MessageTypeLength;
+	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
+	int							BeginStringLength;
+	char*							ApplVerID;			// id=1128    constant has constant value = 9
+	int							ApplVerIDLength;
+	char*							SenderCompID;			// id=49    constant has constant value = MOEX
+	int							SenderCompIDLength;
+	UINT32							MsgSeqNum;			// id=34  
+	UINT64							SendingTime;			// id=52  
+	UINT32							LastMsgSeqNumProcessed;			// id=369  presence=optional  
+	bool							AllowLastMsgSeqNumProcessed;
+	INT32							RptSeq;			// id=83  
+	UINT32							LastFragment;			// id=893  presence=optional  
+	bool							AllowLastFragment;
+	UINT32							RouteFirst;			// id=7944  presence=optional  
+	bool							AllowRouteFirst;
+	INT32							TradSesStatus;			// id=340  presence=optional  
+	bool							AllowTradSesStatus;
+	char*							TradingSessionID;			// id=336  presence=optional  
+	int							TradingSessionIDLength;
+	bool							AllowTradingSessionID;
+	char*							Symbol;			// id=55  
+	int							SymbolLength;
+	INT32							MDSecurityTradingStatus;			// id=1682  presence=optional  
+	bool							AllowMDSecurityTradingStatus;
+	int							GroupMDEntriesCount;
+	FastTLSCURRItemInfo* GroupMDEntries[64];
+}FastTLSCURRInfo;
+
+typedef struct _FastOBSFONDItemInfo{
+	UINT64							PresenceMap;
+	LinkedPointer<_FastOBSFONDItemInfo>							*Pointer;
 	char*							MDEntryType;			// id=269  presence=optional  
 	int							MDEntryTypeLength;
 	bool							AllowMDEntryType;
@@ -549,11 +714,56 @@ typedef struct _FastOBSFONDItemInfo {
 	char*							TradingSessionSubID;			// id=625  presence=optional  
 	int							TradingSessionSubIDLength;
 	bool							AllowTradingSessionSubID;
+	UINT32							MDUpdateAction;			// id=279  presence=optional  
+	bool							AllowMDUpdateAction;
+	char*							Symbol;			// id=55  presence=optional  
+	int							SymbolLength;
+	bool							AllowSymbol;
+	INT32							RptSeq;			// id=83  presence=optional  
+	bool							AllowRptSeq;
+	char*							TradingSessionID;			// id=336  presence=optional  
+	int							TradingSessionIDLength;
+	bool							AllowTradingSessionID;
 }FastOBSFONDItemInfo;
 
-typedef struct _FastOBSCURRItemInfo {
-	LinkedPointer<_FastOBSCURRItemInfo>							*Pointer;
+typedef struct _FastOBSFONDInfo{
 	UINT64							PresenceMap;
+	LinkedPointer<_FastOBSFONDInfo>							*Pointer;
+	char*							MessageType;			// id=35    constant has constant value = W
+	int							MessageTypeLength;
+	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
+	int							BeginStringLength;
+	char*							ApplVerID;			// id=1128    constant has constant value = 9
+	int							ApplVerIDLength;
+	char*							SenderCompID;			// id=49    constant has constant value = MOEX
+	int							SenderCompIDLength;
+	UINT32							MsgSeqNum;			// id=34  
+	UINT64							SendingTime;			// id=52  
+	UINT32							LastMsgSeqNumProcessed;			// id=369  presence=optional  
+	bool							AllowLastMsgSeqNumProcessed;
+	INT32							RptSeq;			// id=83  
+	INT32							TradSesStatus;			// id=340  presence=optional  
+	bool							AllowTradSesStatus;
+	char*							TradingSessionID;			// id=336  presence=optional  
+	int							TradingSessionIDLength;
+	bool							AllowTradingSessionID;
+	char*							Symbol;			// id=55  
+	int							SymbolLength;
+	UINT32							LastFragment;			// id=893  presence=optional  
+	bool							AllowLastFragment;
+	UINT32							RouteFirst;			// id=7944  presence=optional  
+	bool							AllowRouteFirst;
+	INT32							MDSecurityTradingStatus;			// id=1682  presence=optional  
+	bool							AllowMDSecurityTradingStatus;
+	UINT32							AuctionIndicator;			// id=5509  presence=optional  
+	bool							AllowAuctionIndicator;
+	int							GroupMDEntriesCount;
+	FastOBSFONDItemInfo* GroupMDEntries[64];
+}FastOBSFONDInfo;
+
+typedef struct _FastOBSCURRItemInfo{
+	UINT64							PresenceMap;
+	LinkedPointer<_FastOBSCURRItemInfo>							*Pointer;
 	char*							MDEntryType;			// id=269  presence=optional  
 	int							MDEntryTypeLength;
 	bool							AllowMDEntryType;
@@ -571,11 +781,54 @@ typedef struct _FastOBSCURRItemInfo {
 	char*							TradingSessionSubID;			// id=625  presence=optional  
 	int							TradingSessionSubIDLength;
 	bool							AllowTradingSessionSubID;
+	UINT32							MDUpdateAction;			// id=279  presence=optional  
+	bool							AllowMDUpdateAction;
+	char*							Symbol;			// id=55  presence=optional  
+	int							SymbolLength;
+	bool							AllowSymbol;
+	INT32							RptSeq;			// id=83  presence=optional  
+	bool							AllowRptSeq;
+	char*							TradingSessionID;			// id=336  presence=optional  
+	int							TradingSessionIDLength;
+	bool							AllowTradingSessionID;
 }FastOBSCURRItemInfo;
 
-typedef struct _FastIncrementalMSRFONDItemInfo {
-	LinkedPointer<_FastIncrementalMSRFONDItemInfo>							*Pointer;
+typedef struct _FastOBSCURRInfo{
 	UINT64							PresenceMap;
+	LinkedPointer<_FastOBSCURRInfo>							*Pointer;
+	char*							MessageType;			// id=35    constant has constant value = W
+	int							MessageTypeLength;
+	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
+	int							BeginStringLength;
+	char*							ApplVerID;			// id=1128    constant has constant value = 9
+	int							ApplVerIDLength;
+	char*							SenderCompID;			// id=49    constant has constant value = MOEX
+	int							SenderCompIDLength;
+	UINT32							MsgSeqNum;			// id=34  
+	UINT64							SendingTime;			// id=52  
+	UINT32							LastMsgSeqNumProcessed;			// id=369  presence=optional  
+	bool							AllowLastMsgSeqNumProcessed;
+	INT32							RptSeq;			// id=83  
+	INT32							TradSesStatus;			// id=340  presence=optional  
+	bool							AllowTradSesStatus;
+	char*							TradingSessionID;			// id=336  presence=optional  
+	int							TradingSessionIDLength;
+	bool							AllowTradingSessionID;
+	char*							Symbol;			// id=55  
+	int							SymbolLength;
+	UINT32							LastFragment;			// id=893  presence=optional  
+	bool							AllowLastFragment;
+	UINT32							RouteFirst;			// id=7944  presence=optional  
+	bool							AllowRouteFirst;
+	INT32							MDSecurityTradingStatus;			// id=1682  presence=optional  
+	bool							AllowMDSecurityTradingStatus;
+	int							GroupMDEntriesCount;
+	FastOBSCURRItemInfo* GroupMDEntries[64];
+}FastOBSCURRInfo;
+
+typedef struct _FastIncrementalMSRFONDItemInfo{
+	UINT64							PresenceMap;
+	LinkedPointer<_FastIncrementalMSRFONDItemInfo>							*Pointer;
 	UINT32							MDUpdateAction;			// id=279  presence=optional  
 	bool							AllowMDUpdateAction;
 	char*							MDEntryType;			// id=269  presence=optional  
@@ -657,9 +910,26 @@ typedef struct _FastIncrementalMSRFONDItemInfo {
 	bool							AllowTradingSessionSubID;
 }FastIncrementalMSRFONDItemInfo;
 
-typedef struct _FastIncrementalMSRCURRItemInfo {
-	LinkedPointer<_FastIncrementalMSRCURRItemInfo>							*Pointer;
+typedef struct _FastIncrementalMSRFONDInfo{
 	UINT64							PresenceMap;
+	LinkedPointer<_FastIncrementalMSRFONDInfo>							*Pointer;
+	char*							MessageType;			// id=35    constant has constant value = X
+	int							MessageTypeLength;
+	char*							ApplVerID;			// id=1128    constant has constant value = 9
+	int							ApplVerIDLength;
+	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
+	int							BeginStringLength;
+	char*							SenderCompID;			// id=49    constant has constant value = MOEX
+	int							SenderCompIDLength;
+	UINT32							MsgSeqNum;			// id=34  
+	UINT64							SendingTime;			// id=52  
+	int							GroupMDEntriesCount;
+	FastIncrementalMSRFONDItemInfo* GroupMDEntries[64];
+}FastIncrementalMSRFONDInfo;
+
+typedef struct _FastIncrementalMSRCURRItemInfo{
+	UINT64							PresenceMap;
+	LinkedPointer<_FastIncrementalMSRCURRItemInfo>							*Pointer;
 	UINT32							MDUpdateAction;			// id=279  presence=optional  
 	bool							AllowMDUpdateAction;
 	char*							MDEntryType;			// id=269  presence=optional  
@@ -725,620 +995,9 @@ typedef struct _FastIncrementalMSRCURRItemInfo {
 	bool							AllowTradingSessionSubID;
 }FastIncrementalMSRCURRItemInfo;
 
-typedef struct _FastIncrementalOLRFONDItemInfo {
-	LinkedPointer<_FastIncrementalOLRFONDItemInfo>							*Pointer;
+typedef struct _FastIncrementalMSRCURRInfo{
 	UINT64							PresenceMap;
-	UINT32							MDUpdateAction;			// id=279  presence=optional  
-	bool							AllowMDUpdateAction;
-	char*							MDEntryType;			// id=269  presence=optional  
-	int							MDEntryTypeLength;
-	bool							AllowMDEntryType;
-	char*							MDEntryID;			// id=278  presence=optional  
-	int							MDEntryIDLength;
-	bool							AllowMDEntryID;
-	char*							Symbol;			// id=55  presence=optional  
-	int							SymbolLength;
-	bool							AllowSymbol;
-	INT32							RptSeq;			// id=83  presence=optional  
-	bool							AllowRptSeq;
-	UINT32							MDEntryDate;			// id=272  presence=optional  
-	bool							AllowMDEntryDate;
-	UINT32							MDEntryTime;			// id=273  presence=optional  
-	bool							AllowMDEntryTime;
-	UINT32							OrigTime;			// id=9412  presence=optional  
-	bool							AllowOrigTime;
-	Decimal							MDEntryPx;			// id=270  presence=optional  
-	bool							AllowMDEntryPx;
-	Decimal							MDEntrySize;			// id=271  presence=optional  
-	bool							AllowMDEntrySize;
-	char*							DealNumber;			// id=9885  presence=optional    copy
-	int							DealNumberLength;
-	char*							PrevDealNumber; // copy
-	int							PrevDealNumberLength; // copy
-	bool							AllowDealNumber;
-	const UINT							DealNumberPresenceIndex = PRESENCE_MAP_INDEX0;
-	Decimal							Yield;			// id=236  presence=optional  
-	bool							AllowYield;
-	char*							OrderStatus;			// id=10505  presence=optional  
-	int							OrderStatusLength;
-	bool							AllowOrderStatus;
-	char*							OrdType;			// id=40  presence=optional  
-	int							OrdTypeLength;
-	bool							AllowOrdType;
-	Decimal							TotalVolume;			// id=5791  presence=optional  
-	bool							AllowTotalVolume;
-	char*							TradingSessionID;			// id=336  presence=optional  
-	int							TradingSessionIDLength;
-	bool							AllowTradingSessionID;
-	char*							TradingSessionSubID;			// id=625  presence=optional  
-	int							TradingSessionSubIDLength;
-	bool							AllowTradingSessionSubID;
-}FastIncrementalOLRFONDItemInfo;
-
-typedef struct _FastIncrementalOLRCURRItemInfo {
-	LinkedPointer<_FastIncrementalOLRCURRItemInfo>							*Pointer;
-	UINT64							PresenceMap;
-	UINT32							MDUpdateAction;			// id=279  presence=optional  
-	bool							AllowMDUpdateAction;
-	char*							MDEntryType;			// id=269  presence=optional  
-	int							MDEntryTypeLength;
-	bool							AllowMDEntryType;
-	char*							MDEntryID;			// id=278  presence=optional  
-	int							MDEntryIDLength;
-	bool							AllowMDEntryID;
-	char*							Symbol;			// id=55  presence=optional  
-	int							SymbolLength;
-	bool							AllowSymbol;
-	INT32							RptSeq;			// id=83  presence=optional  
-	bool							AllowRptSeq;
-	UINT32							MDEntryDate;			// id=272  presence=optional  
-	bool							AllowMDEntryDate;
-	UINT32							MDEntryTime;			// id=273  presence=optional  
-	bool							AllowMDEntryTime;
-	UINT32							OrigTime;			// id=9412  presence=optional  
-	bool							AllowOrigTime;
-	Decimal							MDEntryPx;			// id=270  presence=optional  
-	bool							AllowMDEntryPx;
-	Decimal							MDEntrySize;			// id=271  presence=optional  
-	bool							AllowMDEntrySize;
-	char*							DealNumber;			// id=9885  presence=optional    copy
-	int							DealNumberLength;
-	char*							PrevDealNumber; // copy
-	int							PrevDealNumberLength; // copy
-	bool							AllowDealNumber;
-	const UINT							DealNumberPresenceIndex = PRESENCE_MAP_INDEX0;
-	char*							OrderStatus;			// id=10505  presence=optional  
-	int							OrderStatusLength;
-	bool							AllowOrderStatus;
-	char*							TradingSessionID;			// id=336  presence=optional  
-	int							TradingSessionIDLength;
-	bool							AllowTradingSessionID;
-	char*							TradingSessionSubID;			// id=625  presence=optional  
-	int							TradingSessionSubIDLength;
-	bool							AllowTradingSessionSubID;
-}FastIncrementalOLRCURRItemInfo;
-
-typedef struct _FastIncrementalOBRFONDItemInfo {
-	LinkedPointer<_FastIncrementalOBRFONDItemInfo>							*Pointer;
-	UINT64							PresenceMap;
-	UINT32							MDUpdateAction;			// id=279  presence=optional  
-	bool							AllowMDUpdateAction;
-	char*							MDEntryType;			// id=269  presence=optional  
-	int							MDEntryTypeLength;
-	bool							AllowMDEntryType;
-	char*							MDEntryID;			// id=278  presence=optional  
-	int							MDEntryIDLength;
-	bool							AllowMDEntryID;
-	char*							Symbol;			// id=55  presence=optional  
-	int							SymbolLength;
-	bool							AllowSymbol;
-	INT32							RptSeq;			// id=83  presence=optional  
-	bool							AllowRptSeq;
-	Decimal							MDEntryPx;			// id=270  presence=optional  
-	bool							AllowMDEntryPx;
-	Decimal							MDEntrySize;			// id=271  presence=optional  
-	bool							AllowMDEntrySize;
-	UINT32							MDEntryTime;			// id=273  presence=optional  
-	bool							AllowMDEntryTime;
-	UINT32							OrigTime;			// id=9412  presence=optional  
-	bool							AllowOrigTime;
-	Decimal							Yield;			// id=236  presence=optional  
-	bool							AllowYield;
-	UINT32							EffectiveTime;			// id=5902  presence=optional  
-	bool							AllowEffectiveTime;
-	Decimal							NominalValue;			// id=9280  presence=optional  
-	bool							AllowNominalValue;
-	char*							TradingSessionID;			// id=336  presence=optional  
-	int							TradingSessionIDLength;
-	bool							AllowTradingSessionID;
-	char*							TradingSessionSubID;			// id=625  presence=optional  
-	int							TradingSessionSubIDLength;
-	bool							AllowTradingSessionSubID;
-}FastIncrementalOBRFONDItemInfo;
-
-typedef struct _FastIncrementalOBRCURRItemInfo {
-	LinkedPointer<_FastIncrementalOBRCURRItemInfo>							*Pointer;
-	UINT64							PresenceMap;
-	UINT32							MDUpdateAction;			// id=279  presence=optional  
-	bool							AllowMDUpdateAction;
-	char*							MDEntryType;			// id=269  presence=optional  
-	int							MDEntryTypeLength;
-	bool							AllowMDEntryType;
-	char*							MDEntryID;			// id=278  presence=optional  
-	int							MDEntryIDLength;
-	bool							AllowMDEntryID;
-	char*							Symbol;			// id=55  presence=optional  
-	int							SymbolLength;
-	bool							AllowSymbol;
-	INT32							RptSeq;			// id=83  presence=optional  
-	bool							AllowRptSeq;
-	Decimal							MDEntryPx;			// id=270  presence=optional  
-	bool							AllowMDEntryPx;
-	Decimal							MDEntrySize;			// id=271  presence=optional  
-	bool							AllowMDEntrySize;
-	UINT32							MDEntryTime;			// id=273  presence=optional  
-	bool							AllowMDEntryTime;
-	UINT32							OrigTime;			// id=9412  presence=optional  
-	bool							AllowOrigTime;
-	char*							TradingSessionID;			// id=336  presence=optional  
-	int							TradingSessionIDLength;
-	bool							AllowTradingSessionID;
-	char*							TradingSessionSubID;			// id=625  presence=optional  
-	int							TradingSessionSubIDLength;
-	bool							AllowTradingSessionSubID;
-}FastIncrementalOBRCURRItemInfo;
-
-typedef struct _FastIncrementalTLRFONDItemInfo {
-	LinkedPointer<_FastIncrementalTLRFONDItemInfo>							*Pointer;
-	UINT64							PresenceMap;
-	UINT32							MDUpdateAction;			// id=279  presence=optional  
-	bool							AllowMDUpdateAction;
-	char*							MDEntryType;			// id=269  
-	int							MDEntryTypeLength;
-	char*							MDEntryID;			// id=278  presence=optional  
-	int							MDEntryIDLength;
-	bool							AllowMDEntryID;
-	char*							Symbol;			// id=55  presence=optional  
-	int							SymbolLength;
-	bool							AllowSymbol;
-	INT32							RptSeq;			// id=83  presence=optional  
-	bool							AllowRptSeq;
-	UINT32							MDEntryDate;			// id=272  presence=optional  
-	bool							AllowMDEntryDate;
-	UINT32							MDEntryTime;			// id=273  presence=optional  
-	bool							AllowMDEntryTime;
-	UINT32							OrigTime;			// id=9412  presence=optional  
-	bool							AllowOrigTime;
-	char*							OrderSide;			// id=10504  presence=optional  
-	int							OrderSideLength;
-	bool							AllowOrderSide;
-	Decimal							MDEntryPx;			// id=270  presence=optional  
-	bool							AllowMDEntryPx;
-	Decimal							MDEntrySize;			// id=271  presence=optional  
-	bool							AllowMDEntrySize;
-	Decimal							AccruedInterestAmt;			// id=5384  presence=optional  
-	bool							AllowAccruedInterestAmt;
-	Decimal							TradeValue;			// id=6143  presence=optional  
-	bool							AllowTradeValue;
-	Decimal							Yield;			// id=236  presence=optional  
-	bool							AllowYield;
-	UINT32							SettlDate;			// id=64  presence=optional  
-	bool							AllowSettlDate;
-	char*							SettleType;			// id=5459  presence=optional  
-	int							SettleTypeLength;
-	bool							AllowSettleType;
-	Decimal							Price;			// id=44  presence=optional  
-	bool							AllowPrice;
-	INT32							PriceType;			// id=423  presence=optional  
-	bool							AllowPriceType;
-	Decimal							RepoToPx;			// id=5677  presence=optional  
-	bool							AllowRepoToPx;
-	Decimal							BuyBackPx;			// id=5558  presence=optional  
-	bool							AllowBuyBackPx;
-	UINT32							BuyBackDate;			// id=5559  presence=optional  
-	bool							AllowBuyBackDate;
-	char*							TradingSessionID;			// id=336  presence=optional  
-	int							TradingSessionIDLength;
-	bool							AllowTradingSessionID;
-	char*							TradingSessionSubID;			// id=625  presence=optional  
-	int							TradingSessionSubIDLength;
-	bool							AllowTradingSessionSubID;
-}FastIncrementalTLRFONDItemInfo;
-
-typedef struct _FastIncrementalTLRCURRItemInfo {
-	LinkedPointer<_FastIncrementalTLRCURRItemInfo>							*Pointer;
-	UINT64							PresenceMap;
-	UINT32							MDUpdateAction;			// id=279  presence=optional  
-	bool							AllowMDUpdateAction;
-	char*							MDEntryType;			// id=269  
-	int							MDEntryTypeLength;
-	char*							MDEntryID;			// id=278  presence=optional  
-	int							MDEntryIDLength;
-	bool							AllowMDEntryID;
-	char*							Symbol;			// id=55  presence=optional  
-	int							SymbolLength;
-	bool							AllowSymbol;
-	INT32							RptSeq;			// id=83  presence=optional  
-	bool							AllowRptSeq;
-	UINT32							MDEntryDate;			// id=272  presence=optional  
-	bool							AllowMDEntryDate;
-	UINT32							MDEntryTime;			// id=273  presence=optional  
-	bool							AllowMDEntryTime;
-	UINT32							OrigTime;			// id=9412  presence=optional  
-	bool							AllowOrigTime;
-	char*							OrderSide;			// id=10504  presence=optional  
-	int							OrderSideLength;
-	bool							AllowOrderSide;
-	Decimal							MDEntryPx;			// id=270  presence=optional  
-	bool							AllowMDEntryPx;
-	Decimal							MDEntrySize;			// id=271  presence=optional  
-	bool							AllowMDEntrySize;
-	Decimal							TradeValue;			// id=6143  presence=optional  
-	bool							AllowTradeValue;
-	UINT32							SettlDate;			// id=64  presence=optional  
-	bool							AllowSettlDate;
-	char*							SettleType;			// id=5459  presence=optional  
-	int							SettleTypeLength;
-	bool							AllowSettleType;
-	Decimal							Price;			// id=44  presence=optional  
-	bool							AllowPrice;
-	INT32							PriceType;			// id=423  presence=optional  
-	bool							AllowPriceType;
-	Decimal							RepoToPx;			// id=5677  presence=optional  
-	bool							AllowRepoToPx;
-	Decimal							BuyBackPx;			// id=5558  presence=optional  
-	bool							AllowBuyBackPx;
-	UINT32							BuyBackDate;			// id=5559  presence=optional  
-	bool							AllowBuyBackDate;
-	char*							TradingSessionID;			// id=336  presence=optional  
-	int							TradingSessionIDLength;
-	bool							AllowTradingSessionID;
-	char*							TradingSessionSubID;			// id=625  presence=optional  
-	int							TradingSessionSubIDLength;
-	bool							AllowTradingSessionSubID;
-}FastIncrementalTLRCURRItemInfo;
-
-typedef struct _FastSecurityDefinitionGroupInstrAttribItemInfo {
-	LinkedPointer<_FastSecurityDefinitionGroupInstrAttribItemInfo>							*Pointer;
-	UINT64							PresenceMap;
-	INT32							InstrAttribType;			// id=871  
-	BYTE*							InstrAttribValue;			// id=872  presence=optional  
-	int							InstrAttribValueLength;
-	bool							AllowInstrAttribValue;
-}FastSecurityDefinitionGroupInstrAttribItemInfo;
-
-typedef struct _FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo {
-	LinkedPointer<_FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo>							*Pointer;
-	UINT64							PresenceMap;
-	char*							TradingSessionID;			// id=336  
-	int							TradingSessionIDLength;
-	char*							TradingSessionSubID;			// id=625  presence=optional  
-	int							TradingSessionSubIDLength;
-	bool							AllowTradingSessionSubID;
-	INT32							SecurityTradingStatus;			// id=326  presence=optional  
-	bool							AllowSecurityTradingStatus;
-	INT32							OrderNote;			// id=9680  presence=optional  
-	bool							AllowOrderNote;
-}FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo;
-
-typedef struct _FastSecurityDefinitionMarketSegmentGrpItemInfo {
-	LinkedPointer<_FastSecurityDefinitionMarketSegmentGrpItemInfo>							*Pointer;
-	UINT64							PresenceMap;
-	Decimal							RoundLot;			// id=561  presence=optional  
-	bool							AllowRoundLot;
-	int							TradingSessionRulesGrpCount;			// presence=optional  
-	FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo* TradingSessionRulesGrp[64];			// presence=optional  
-	bool							AllowTradingSessionRulesGrp;
-}FastSecurityDefinitionMarketSegmentGrpItemInfo;
-
-typedef struct _FastLogonInfo {
-	UINT64							PresenceMap;
-	char*							MessageType;			// id=35    constant has constant value = A
-	int							MessageTypeLength;
-	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
-	int							BeginStringLength;
-	char*							SenderCompID;			// id=49    constant has constant value = MOEX
-	int							SenderCompIDLength;
-	char*							TargetCompID;			// id=56  
-	int							TargetCompIDLength;
-	UINT32							MsgSeqNum;			// id=34  
-	UINT64							SendingTime;			// id=52  
-	INT32							HeartBtInt;			// id=108  
-	char*							Username;			// id=553  presence=optional  
-	int							UsernameLength;
-	bool							AllowUsername;
-	char*							Password;			// id=554  presence=optional  
-	int							PasswordLength;
-	bool							AllowPassword;
-	char*							DefaultApplVerID;			// id=1137  
-	int							DefaultApplVerIDLength;
-}FastLogonInfo;
-
-typedef struct _FastLogoutInfo {
-	UINT64							PresenceMap;
-	char*							MessageType;			// id=35    constant has constant value = 5
-	int							MessageTypeLength;
-	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
-	int							BeginStringLength;
-	char*							SenderCompID;			// id=49    constant has constant value = MOEX
-	int							SenderCompIDLength;
-	char*							TargetCompID;			// id=56  
-	int							TargetCompIDLength;
-	UINT32							MsgSeqNum;			// id=34  
-	UINT64							SendingTime;			// id=52  
-	char*							Text;			// id=58  presence=optional  
-	int							TextLength;
-	bool							AllowText;
-}FastLogoutInfo;
-
-typedef struct _FastGenericInfo {
-	UINT64							PresenceMap;
-	char*							MessageType;			// id=35    constant has constant value = W
-	int							MessageTypeLength;
-	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
-	int							BeginStringLength;
-	char*							ApplVerID;			// id=1128    constant has constant value = 9
-	int							ApplVerIDLength;
-	char*							SenderCompID;			// id=49    constant has constant value = MOEX
-	int							SenderCompIDLength;
-	UINT32							MsgSeqNum;			// id=34  
-	UINT64							SendingTime;			// id=52  
-	char*							TradingSessionID;			// id=336  presence=optional  
-	int							TradingSessionIDLength;
-	bool							AllowTradingSessionID;
-	char*							Symbol;			// id=55  
-	int							SymbolLength;
-	UINT32							LastMsgSeqNumProcessed;			// id=369  presence=optional  
-	bool							AllowLastMsgSeqNumProcessed;
-	INT32							RptSeq;			// id=83  
-	UINT32							LastFragment;			// id=893  presence=optional  
-	bool							AllowLastFragment;
-	UINT32							RouteFirst;			// id=7944  presence=optional  
-	bool							AllowRouteFirst;
-	INT32							TradSesStatus;			// id=340  presence=optional  
-	bool							AllowTradSesStatus;
-	INT32							MDSecurityTradingStatus;			// id=1682  presence=optional  
-	bool							AllowMDSecurityTradingStatus;
-	UINT32							AuctionIndicator;			// id=5509  presence=optional  
-	bool							AllowAuctionIndicator;
-	Decimal							NetChgPrevDay;			// id=451  presence=optional  
-	bool							AllowNetChgPrevDay;
-	int							GroupMDEntriesCount;
-	FastGenericItemInfo* GroupMDEntries[64];
-}FastGenericInfo;
-
-typedef struct _FastIncrementalGenericInfo {
-	UINT64							PresenceMap;
-	char*							MessageType;			// id=35    constant has constant value = X
-	int							MessageTypeLength;
-	char*							ApplVerID;			// id=1128    constant has constant value = 9
-	int							ApplVerIDLength;
-	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
-	int							BeginStringLength;
-	char*							SenderCompID;			// id=49    constant has constant value = MOEX
-	int							SenderCompIDLength;
-	UINT32							MsgSeqNum;			// id=34  
-	UINT64							SendingTime;			// id=52  
-	int							GroupMDEntriesCount;
-	FastIncrementalGenericItemInfo* GroupMDEntries[64];
-}FastIncrementalGenericInfo;
-
-typedef struct _FastOLSFONDInfo {
-	UINT64							PresenceMap;
-	char*							MessageType;			// id=35    constant has constant value = W
-	int							MessageTypeLength;
-	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
-	int							BeginStringLength;
-	char*							ApplVerID;			// id=1128    constant has constant value = 9
-	int							ApplVerIDLength;
-	char*							SenderCompID;			// id=49    constant has constant value = MOEX
-	int							SenderCompIDLength;
-	UINT32							MsgSeqNum;			// id=34  
-	UINT64							SendingTime;			// id=52  
-	UINT32							LastMsgSeqNumProcessed;			// id=369  presence=optional  
-	bool							AllowLastMsgSeqNumProcessed;
-	INT32							RptSeq;			// id=83  
-	UINT32							LastFragment;			// id=893  presence=optional  
-	bool							AllowLastFragment;
-	UINT32							RouteFirst;			// id=7944  presence=optional  
-	bool							AllowRouteFirst;
-	INT32							TradSesStatus;			// id=340  presence=optional  
-	bool							AllowTradSesStatus;
-	char*							TradingSessionID;			// id=336  presence=optional  
-	int							TradingSessionIDLength;
-	bool							AllowTradingSessionID;
-	char*							Symbol;			// id=55  
-	int							SymbolLength;
-	INT32							MDSecurityTradingStatus;			// id=1682  presence=optional  
-	bool							AllowMDSecurityTradingStatus;
-	UINT32							AuctionIndicator;			// id=5509  presence=optional  
-	bool							AllowAuctionIndicator;
-	int							GroupMDEntriesCount;
-	FastOLSFONDItemInfo* GroupMDEntries[64];
-}FastOLSFONDInfo;
-
-typedef struct _FastOLSCURRInfo {
-	UINT64							PresenceMap;
-	char*							MessageType;			// id=35    constant has constant value = W
-	int							MessageTypeLength;
-	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
-	int							BeginStringLength;
-	char*							ApplVerID;			// id=1128    constant has constant value = 9
-	int							ApplVerIDLength;
-	char*							SenderCompID;			// id=49    constant has constant value = MOEX
-	int							SenderCompIDLength;
-	UINT32							MsgSeqNum;			// id=34  
-	UINT64							SendingTime;			// id=52  
-	UINT32							LastMsgSeqNumProcessed;			// id=369  presence=optional  
-	bool							AllowLastMsgSeqNumProcessed;
-	INT32							RptSeq;			// id=83  
-	UINT32							LastFragment;			// id=893  presence=optional  
-	bool							AllowLastFragment;
-	UINT32							RouteFirst;			// id=7944  presence=optional  
-	bool							AllowRouteFirst;
-	INT32							TradSesStatus;			// id=340  presence=optional  
-	bool							AllowTradSesStatus;
-	char*							TradingSessionID;			// id=336  presence=optional  
-	int							TradingSessionIDLength;
-	bool							AllowTradingSessionID;
-	char*							Symbol;			// id=55  
-	int							SymbolLength;
-	INT32							MDSecurityTradingStatus;			// id=1682  presence=optional  
-	bool							AllowMDSecurityTradingStatus;
-	int							GroupMDEntriesCount;
-	FastOLSCURRItemInfo* GroupMDEntries[64];
-}FastOLSCURRInfo;
-
-typedef struct _FastTLSFONDInfo {
-	UINT64							PresenceMap;
-	char*							MessageType;			// id=35    constant has constant value = W
-	int							MessageTypeLength;
-	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
-	int							BeginStringLength;
-	char*							ApplVerID;			// id=1128    constant has constant value = 9
-	int							ApplVerIDLength;
-	char*							SenderCompID;			// id=49    constant has constant value = MOEX
-	int							SenderCompIDLength;
-	UINT32							MsgSeqNum;			// id=34  
-	UINT64							SendingTime;			// id=52  
-	UINT32							LastMsgSeqNumProcessed;			// id=369  presence=optional  
-	bool							AllowLastMsgSeqNumProcessed;
-	INT32							RptSeq;			// id=83  
-	UINT32							LastFragment;			// id=893  presence=optional  
-	bool							AllowLastFragment;
-	UINT32							RouteFirst;			// id=7944  presence=optional  
-	bool							AllowRouteFirst;
-	INT32							TradSesStatus;			// id=340  presence=optional  
-	bool							AllowTradSesStatus;
-	char*							TradingSessionID;			// id=336  presence=optional  
-	int							TradingSessionIDLength;
-	bool							AllowTradingSessionID;
-	char*							Symbol;			// id=55  
-	int							SymbolLength;
-	INT32							MDSecurityTradingStatus;			// id=1682  presence=optional  
-	bool							AllowMDSecurityTradingStatus;
-	UINT32							AuctionIndicator;			// id=5509  presence=optional  
-	bool							AllowAuctionIndicator;
-	int							GroupMDEntriesCount;
-	FastTLSFONDItemInfo* GroupMDEntries[64];
-}FastTLSFONDInfo;
-
-typedef struct _FastTLSCURRInfo {
-	UINT64							PresenceMap;
-	char*							MessageType;			// id=35    constant has constant value = W
-	int							MessageTypeLength;
-	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
-	int							BeginStringLength;
-	char*							ApplVerID;			// id=1128    constant has constant value = 9
-	int							ApplVerIDLength;
-	char*							SenderCompID;			// id=49    constant has constant value = MOEX
-	int							SenderCompIDLength;
-	UINT32							MsgSeqNum;			// id=34  
-	UINT64							SendingTime;			// id=52  
-	UINT32							LastMsgSeqNumProcessed;			// id=369  presence=optional  
-	bool							AllowLastMsgSeqNumProcessed;
-	INT32							RptSeq;			// id=83  
-	UINT32							LastFragment;			// id=893  presence=optional  
-	bool							AllowLastFragment;
-	UINT32							RouteFirst;			// id=7944  presence=optional  
-	bool							AllowRouteFirst;
-	INT32							TradSesStatus;			// id=340  presence=optional  
-	bool							AllowTradSesStatus;
-	char*							TradingSessionID;			// id=336  presence=optional  
-	int							TradingSessionIDLength;
-	bool							AllowTradingSessionID;
-	char*							Symbol;			// id=55  
-	int							SymbolLength;
-	INT32							MDSecurityTradingStatus;			// id=1682  presence=optional  
-	bool							AllowMDSecurityTradingStatus;
-	int							GroupMDEntriesCount;
-	FastTLSCURRItemInfo* GroupMDEntries[64];
-}FastTLSCURRInfo;
-
-typedef struct _FastOBSFONDInfo {
-	UINT64							PresenceMap;
-	char*							MessageType;			// id=35    constant has constant value = W
-	int							MessageTypeLength;
-	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
-	int							BeginStringLength;
-	char*							ApplVerID;			// id=1128    constant has constant value = 9
-	int							ApplVerIDLength;
-	char*							SenderCompID;			// id=49    constant has constant value = MOEX
-	int							SenderCompIDLength;
-	UINT32							MsgSeqNum;			// id=34  
-	UINT64							SendingTime;			// id=52  
-	UINT32							LastMsgSeqNumProcessed;			// id=369  presence=optional  
-	bool							AllowLastMsgSeqNumProcessed;
-	INT32							RptSeq;			// id=83  
-	INT32							TradSesStatus;			// id=340  presence=optional  
-	bool							AllowTradSesStatus;
-	char*							TradingSessionID;			// id=336  presence=optional  
-	int							TradingSessionIDLength;
-	bool							AllowTradingSessionID;
-	char*							Symbol;			// id=55  
-	int							SymbolLength;
-	UINT32							LastFragment;			// id=893  presence=optional  
-	bool							AllowLastFragment;
-	UINT32							RouteFirst;			// id=7944  presence=optional  
-	bool							AllowRouteFirst;
-	INT32							MDSecurityTradingStatus;			// id=1682  presence=optional  
-	bool							AllowMDSecurityTradingStatus;
-	UINT32							AuctionIndicator;			// id=5509  presence=optional  
-	bool							AllowAuctionIndicator;
-	int							GroupMDEntriesCount;
-	FastOBSFONDItemInfo* GroupMDEntries[64];
-}FastOBSFONDInfo;
-
-typedef struct _FastOBSCURRInfo {
-	UINT64							PresenceMap;
-	char*							MessageType;			// id=35    constant has constant value = W
-	int							MessageTypeLength;
-	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
-	int							BeginStringLength;
-	char*							ApplVerID;			// id=1128    constant has constant value = 9
-	int							ApplVerIDLength;
-	char*							SenderCompID;			// id=49    constant has constant value = MOEX
-	int							SenderCompIDLength;
-	UINT32							MsgSeqNum;			// id=34  
-	UINT64							SendingTime;			// id=52  
-	UINT32							LastMsgSeqNumProcessed;			// id=369  presence=optional  
-	bool							AllowLastMsgSeqNumProcessed;
-	INT32							RptSeq;			// id=83  
-	INT32							TradSesStatus;			// id=340  presence=optional  
-	bool							AllowTradSesStatus;
-	char*							TradingSessionID;			// id=336  presence=optional  
-	int							TradingSessionIDLength;
-	bool							AllowTradingSessionID;
-	char*							Symbol;			// id=55  
-	int							SymbolLength;
-	UINT32							LastFragment;			// id=893  presence=optional  
-	bool							AllowLastFragment;
-	UINT32							RouteFirst;			// id=7944  presence=optional  
-	bool							AllowRouteFirst;
-	INT32							MDSecurityTradingStatus;			// id=1682  presence=optional  
-	bool							AllowMDSecurityTradingStatus;
-	int							GroupMDEntriesCount;
-	FastOBSCURRItemInfo* GroupMDEntries[64];
-}FastOBSCURRInfo;
-
-typedef struct _FastIncrementalMSRFONDInfo {
-	UINT64							PresenceMap;
-	char*							MessageType;			// id=35    constant has constant value = X
-	int							MessageTypeLength;
-	char*							ApplVerID;			// id=1128    constant has constant value = 9
-	int							ApplVerIDLength;
-	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
-	int							BeginStringLength;
-	char*							SenderCompID;			// id=49    constant has constant value = MOEX
-	int							SenderCompIDLength;
-	UINT32							MsgSeqNum;			// id=34  
-	UINT64							SendingTime;			// id=52  
-	int							GroupMDEntriesCount;
-	FastIncrementalMSRFONDItemInfo* GroupMDEntries[64];
-}FastIncrementalMSRFONDInfo;
-
-typedef struct _FastIncrementalMSRCURRInfo {
-	UINT64							PresenceMap;
+	LinkedPointer<_FastIncrementalMSRCURRInfo>							*Pointer;
 	char*							MessageType;			// id=35    constant has constant value = X
 	int							MessageTypeLength;
 	char*							ApplVerID;			// id=1128    constant has constant value = 9
@@ -1353,8 +1012,9 @@ typedef struct _FastIncrementalMSRCURRInfo {
 	FastIncrementalMSRCURRItemInfo* GroupMDEntries[64];
 }FastIncrementalMSRCURRInfo;
 
-typedef struct _FastIncrementalOLRFONDInfo {
+typedef struct _FastIncrementalOLRFONDInfo{
 	UINT64							PresenceMap;
+	LinkedPointer<_FastIncrementalOLRFONDInfo>							*Pointer;
 	char*							MessageType;			// id=35    constant has constant value = X
 	int							MessageTypeLength;
 	char*							ApplVerID;			// id=1128    constant has constant value = 9
@@ -1369,8 +1029,9 @@ typedef struct _FastIncrementalOLRFONDInfo {
 	FastIncrementalOLRFONDItemInfo* GroupMDEntries[64];
 }FastIncrementalOLRFONDInfo;
 
-typedef struct _FastIncrementalOLRCURRInfo {
+typedef struct _FastIncrementalOLRCURRInfo{
 	UINT64							PresenceMap;
+	LinkedPointer<_FastIncrementalOLRCURRInfo>							*Pointer;
 	char*							MessageType;			// id=35    constant has constant value = X
 	int							MessageTypeLength;
 	char*							ApplVerID;			// id=1128    constant has constant value = 9
@@ -1385,8 +1046,9 @@ typedef struct _FastIncrementalOLRCURRInfo {
 	FastIncrementalOLRCURRItemInfo* GroupMDEntries[64];
 }FastIncrementalOLRCURRInfo;
 
-typedef struct _FastIncrementalOBRFONDInfo {
+typedef struct _FastIncrementalOBRFONDInfo{
 	UINT64							PresenceMap;
+	LinkedPointer<_FastIncrementalOBRFONDInfo>							*Pointer;
 	char*							MessageType;			// id=35    constant has constant value = X
 	int							MessageTypeLength;
 	char*							ApplVerID;			// id=1128    constant has constant value = 9
@@ -1401,8 +1063,9 @@ typedef struct _FastIncrementalOBRFONDInfo {
 	FastIncrementalOBRFONDItemInfo* GroupMDEntries[64];
 }FastIncrementalOBRFONDInfo;
 
-typedef struct _FastIncrementalOBRCURRInfo {
+typedef struct _FastIncrementalOBRCURRInfo{
 	UINT64							PresenceMap;
+	LinkedPointer<_FastIncrementalOBRCURRInfo>							*Pointer;
 	char*							MessageType;			// id=35    constant has constant value = X
 	int							MessageTypeLength;
 	char*							ApplVerID;			// id=1128    constant has constant value = 9
@@ -1417,8 +1080,9 @@ typedef struct _FastIncrementalOBRCURRInfo {
 	FastIncrementalOBRCURRItemInfo* GroupMDEntries[64];
 }FastIncrementalOBRCURRInfo;
 
-typedef struct _FastIncrementalTLRFONDInfo {
+typedef struct _FastIncrementalTLRFONDInfo{
 	UINT64							PresenceMap;
+	LinkedPointer<_FastIncrementalTLRFONDInfo>							*Pointer;
 	char*							MessageType;			// id=35    constant has constant value = X
 	int							MessageTypeLength;
 	char*							ApplVerID;			// id=1128    constant has constant value = 9
@@ -1433,8 +1097,9 @@ typedef struct _FastIncrementalTLRFONDInfo {
 	FastIncrementalTLRFONDItemInfo* GroupMDEntries[64];
 }FastIncrementalTLRFONDInfo;
 
-typedef struct _FastIncrementalTLRCURRInfo {
+typedef struct _FastIncrementalTLRCURRInfo{
 	UINT64							PresenceMap;
+	LinkedPointer<_FastIncrementalTLRCURRInfo>							*Pointer;
 	char*							MessageType;			// id=35    constant has constant value = X
 	int							MessageTypeLength;
 	char*							ApplVerID;			// id=1128    constant has constant value = 9
@@ -1449,8 +1114,42 @@ typedef struct _FastIncrementalTLRCURRInfo {
 	FastIncrementalTLRCURRItemInfo* GroupMDEntries[64];
 }FastIncrementalTLRCURRInfo;
 
-typedef struct _FastSecurityDefinitionInfo {
+typedef struct _FastSecurityDefinitionGroupInstrAttribItemInfo{
 	UINT64							PresenceMap;
+	LinkedPointer<_FastSecurityDefinitionGroupInstrAttribItemInfo>							*Pointer;
+	INT32							InstrAttribType;			// id=871  
+	BYTE*							InstrAttribValue;			// id=872  presence=optional  
+	int							InstrAttribValueLength;
+	bool							AllowInstrAttribValue;
+}FastSecurityDefinitionGroupInstrAttribItemInfo;
+
+typedef struct _FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo{
+	UINT64							PresenceMap;
+	LinkedPointer<_FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo>							*Pointer;
+	char*							TradingSessionID;			// id=336  
+	int							TradingSessionIDLength;
+	char*							TradingSessionSubID;			// id=625  presence=optional  
+	int							TradingSessionSubIDLength;
+	bool							AllowTradingSessionSubID;
+	INT32							SecurityTradingStatus;			// id=326  presence=optional  
+	bool							AllowSecurityTradingStatus;
+	INT32							OrderNote;			// id=9680  presence=optional  
+	bool							AllowOrderNote;
+}FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo;
+
+typedef struct _FastSecurityDefinitionMarketSegmentGrpItemInfo{
+	UINT64							PresenceMap;
+	LinkedPointer<_FastSecurityDefinitionMarketSegmentGrpItemInfo>							*Pointer;
+	Decimal							RoundLot;			// id=561  presence=optional  
+	bool							AllowRoundLot;
+	int							TradingSessionRulesGrpCount;			// presence=optional  
+	FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo* TradingSessionRulesGrp[64];			// presence=optional  
+	bool							AllowTradingSessionRulesGrp;
+}FastSecurityDefinitionMarketSegmentGrpItemInfo;
+
+typedef struct _FastSecurityDefinitionInfo{
+	UINT64							PresenceMap;
+	LinkedPointer<_FastSecurityDefinitionInfo>							*Pointer;
 	char*							MessageType;			// id=35    constant has constant value = d
 	int							MessageTypeLength;
 	char*							ApplVerID;			// id=1128    constant has constant value = 9
@@ -1561,8 +1260,9 @@ typedef struct _FastSecurityDefinitionInfo {
 	bool							AllowNumOfDaysToMaturity;
 }FastSecurityDefinitionInfo;
 
-typedef struct _FastSecurityStatusInfo {
+typedef struct _FastSecurityStatusInfo{
 	UINT64							PresenceMap;
+	LinkedPointer<_FastSecurityStatusInfo>							*Pointer;
 	char*							MessageType;			// id=35    constant has constant value = f
 	int							MessageTypeLength;
 	char*							ApplVerID;			// id=1128    constant has constant value = 9
@@ -1587,8 +1287,9 @@ typedef struct _FastSecurityStatusInfo {
 	bool							AllowAuctionIndicator;
 }FastSecurityStatusInfo;
 
-typedef struct _FastTradingSessionStatusInfo {
+typedef struct _FastTradingSessionStatusInfo{
 	UINT64							PresenceMap;
+	LinkedPointer<_FastTradingSessionStatusInfo>							*Pointer;
 	char*							MessageType;			// id=35    constant has constant value = h
 	int							MessageTypeLength;
 	char*							ApplVerID;			// id=1128    constant has constant value = 9
@@ -1607,8 +1308,9 @@ typedef struct _FastTradingSessionStatusInfo {
 	int							TradingSessionIDLength;
 }FastTradingSessionStatusInfo;
 
-typedef struct _FastHeartbeatInfo {
+typedef struct _FastHeartbeatInfo{
 	UINT64							PresenceMap;
+	LinkedPointer<_FastHeartbeatInfo>							*Pointer;
 	char*							MessageType;			// id=35    constant has constant value = 0
 	int							MessageTypeLength;
 	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1

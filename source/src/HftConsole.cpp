@@ -6,6 +6,7 @@
 #include "Test/UTCTimeConverterTester.h"
 #include "Test/FastProtocolTester.h"
 #include "Test/FixProtocolManagerTester.h"
+#include "Test/FeedConnectionTester.h"
 #include "Robot.h"
 
 int main(int argc, char** argv)
@@ -58,6 +59,9 @@ int main(int argc, char** argv)
 	if(test_feed || test_all) {
 		HashTableTester tester;
 		tester.Test();
+
+		FeedConnectionTester tester2;
+		tester2.Test();
 	}
 
 	if (test_itoa || test_ftoa || test_time || test_all || test_fast || test_fix || test_feed)

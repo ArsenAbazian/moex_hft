@@ -40,7 +40,10 @@ typedef enum _FeedConnectionType {
     Snapshot
 }FeedConnectionType;
 
+class FeedConnectionTester;
 class FeedConnection {
+	friend class FeedConnectionTester;
+
 	const int MaxReceiveBufferSize 				= 1500;
     const int WaitIncrementalMaxTimeSec         = 5;
     const int WaitAnyPacketMaxTimeSec           = 10;
@@ -323,11 +326,10 @@ private:
         return true;
     }
 
-	inline FastOBSFONDItemInfo* AddOrderBookInfo(FastIncrementalOBRFONDItemInfo *info) {
-		//this->m_orderBookTable->Add(info->Symbol, info->TradingSessionID, info->Pointer);
-		printf("add order book %s\n", info->MDEntryID);
-
-		return 0;
+	inline FastOBSFONDItemInfo* AddOrderBookInfo(FastIncrementalOBRFONDItemInfo *incInfo) {
+		/*FastOBSFONDItemInfo *fullInfo = this->m_fastProtocolManager->GetFreeOBSFONDItemInfo();
+		this->m_fastProtocolManager->Assign(fullInfo, incInfo);
+		this->m_orderBookTable->Add(info->Symbol, info->TradingSessionID, info);*/
 	}
 
 	inline void ChangeOrderBookInfo(FastIncrementalOBRFONDItemInfo *info) {
@@ -352,8 +354,7 @@ private:
 		return true;
 	}
 
-	inline bool OnIncrementalRefresh_OBR_FOND() {
-		FastIncrementalOBRFONDInfo *info = (FastIncrementalOBRFONDInfo*)this->m_fastProtocolManager->LastDecodeInfo();
+	inline bool OnIncrementalRefresh_OBR_FOND(FastIncrementalOBRFONDInfo *info) {
 		bool res = true;
 		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 			res |= this->OnIncrementalRefresh_OBR_FOND(info->GroupMDEntries[i]);
@@ -379,7 +380,7 @@ private:
 			case FeedConnectionMessage::fcmHeartBeat:
 				break;
 			case FeedConnectionMessage::fmcIncrementalRefresh_OBR_FOND:
-				return this->OnIncrementalRefresh_OBR_FOND();
+				return this->OnIncrementalRefresh_OBR_FOND((FastIncrementalOBRFONDInfo*)this->m_fastProtocolManager->LastDecodeInfo());
             case FeedConnectionMessage::fmcFullRefresh_OBS_FOND:
                 return this->OnFullRefresh_OBS_FOND();
 		}

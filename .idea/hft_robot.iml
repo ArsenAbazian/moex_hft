@@ -2,13 +2,15 @@
 <module type="CPP_MODULE" version="4">
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
-      <sourceFolder url="file://$MODULE_DIR$/cmake/FindCSharp.cmake" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/cmake/Colors.cmake" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/cmake/FindCSharp.cmake" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/cmake/GetPkgVariable.cmake" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/cmake/FindMono.cmake" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/cmake/FindTinyXML2.cmake" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/deps/tinyxml2/tmp/tinyxml-cfgcmd.txt.in" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/CMakeLists.txt" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/src/LogManager.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/source/src/ItoaTester.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/src/Robot.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/src/ItoaConverter.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/src/Types.cpp" isTestSource="false" />
@@ -27,18 +29,23 @@
       <sourceFolder url="file://$MODULE_DIR$/source/src/Test/FastProtocolTester.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/src/Stopwatch.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/src/WinSockManager.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/source/src/FastProtocolTester.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/src/SocketBufferManager.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/source/src/FixProtocolManagerTester.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/src/DtoaConverter.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/src/LogErrorMessageCodes.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/source/src/UTCTimeConverterTester.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/src/ConsoleManager.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/include/Stopwatch.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/include/Test/HashTableTester.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/include/Test/FixProtocolManagerTester.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/source/include/Test/FeedConnectionTest.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/source/include/Lib/PointerList.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/source/include/Test/FeedConnectionTester.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/include/Lib/AutoAllocatePointerList.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/source/include/Lib/PointerList.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/include/Lib/HashTable.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/source/include/MarketData/MarketDataTable.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/include/FixProtocolMacros.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/source/include/FixProtocolManagerTester.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/include/FastTypes.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/include/FixMessage.h" isTestSource="false" />
     </content>
