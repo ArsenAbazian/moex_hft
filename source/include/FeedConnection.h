@@ -326,21 +326,20 @@ private:
         return true;
     }
 
-	inline FastOBSFONDItemInfo* AddOrderBookInfo(FastIncrementalOBRFONDItemInfo *incInfo) {
-		/*FastOBSFONDItemInfo *fullInfo = this->m_fastProtocolManager->GetFreeOBSFONDItemInfo();
-		this->m_fastProtocolManager->Assign(fullInfo, incInfo);
-		this->m_orderBookTable->Add(info->Symbol, info->TradingSessionID, info);*/
+	inline void AddOrderBookInfo(FastOBSFONDItemInfo *info) {
+		info->Used = true;
+        this->m_orderBookTableFond->Add(info->Symbol, info->TradingSessionID, info);
 	}
 
-	inline void ChangeOrderBookInfo(FastIncrementalOBRFONDItemInfo *info) {
+	inline void ChangeOrderBookInfo(FastOBSFONDItemInfo *info) {
 		printf("chanfe order book %s\n", info->MDEntryID);
 	}
 
-	inline void RemoveOrderBookInfo(FastIncrementalOBRFONDItemInfo *info) {
+	inline void RemoveOrderBookInfo(FastOBSFONDItemInfo *info) {
 		printf("remove order book %s\n", info->MDEntryID);
 	}
 
-	inline bool OnIncrementalRefresh_OBR_FOND(FastIncrementalOBRFONDItemInfo *info) {
+	inline bool OnIncrementalRefresh_OBR_FOND(FastOBSFONDItemInfo *info) {
 		if(info->MDUpdateAction == MDUpdateAction::mduaAdd) {
 			AddOrderBookInfo(info);
 		}
@@ -354,7 +353,7 @@ private:
 		return true;
 	}
 
-	inline bool OnIncrementalRefresh_OBR_FOND(FastIncrementalOBRFONDInfo *info) {
+	inline bool OnIncrementalRefresh_OBR_FOND(FastOBSFONDInfo *info) {
 		bool res = true;
 		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 			res |= this->OnIncrementalRefresh_OBR_FOND(info->GroupMDEntries[i]);
@@ -380,7 +379,7 @@ private:
 			case FeedConnectionMessage::fcmHeartBeat:
 				break;
 			case FeedConnectionMessage::fmcIncrementalRefresh_OBR_FOND:
-				return this->OnIncrementalRefresh_OBR_FOND((FastIncrementalOBRFONDInfo*)this->m_fastProtocolManager->LastDecodeInfo());
+				return this->OnIncrementalRefresh_OBR_FOND((FastOBSFONDInfo*)this->m_fastProtocolManager->LastDecodeInfo());
             case FeedConnectionMessage::fmcFullRefresh_OBS_FOND:
                 return this->OnFullRefresh_OBS_FOND();
 		}

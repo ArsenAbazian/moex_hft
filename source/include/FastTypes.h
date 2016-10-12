@@ -137,6 +137,7 @@ typedef struct _FastSnapshotInfo {
 typedef struct _FastLogonInfo{
 	UINT64							PresenceMap;
 	LinkedPointer<_FastLogonInfo>							*Pointer;
+	bool							Used;
 	char*							MessageType;			// id=35    constant has constant value = A
 	int							MessageTypeLength;
 	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
@@ -161,6 +162,7 @@ typedef struct _FastLogonInfo{
 typedef struct _FastLogoutInfo{
 	UINT64							PresenceMap;
 	LinkedPointer<_FastLogoutInfo>							*Pointer;
+	bool							Used;
 	char*							MessageType;			// id=35    constant has constant value = 5
 	int							MessageTypeLength;
 	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
@@ -179,6 +181,7 @@ typedef struct _FastLogoutInfo{
 typedef struct _FastGenericItemInfo{
 	UINT64							PresenceMap;
 	LinkedPointer<_FastGenericItemInfo>							*Pointer;
+	bool							Used;
 	char*							MDEntryType;			// id=269  presence=optional  
 	int							MDEntryTypeLength;
 	bool							AllowMDEntryType;
@@ -298,6 +301,7 @@ typedef struct _FastGenericItemInfo{
 typedef struct _FastGenericInfo{
 	UINT64							PresenceMap;
 	LinkedPointer<_FastGenericInfo>							*Pointer;
+	bool							Used;
 	char*							MessageType;			// id=35    constant has constant value = W
 	int							MessageTypeLength;
 	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
@@ -335,6 +339,7 @@ typedef struct _FastGenericInfo{
 typedef struct _FastIncrementalGenericInfo{
 	UINT64							PresenceMap;
 	LinkedPointer<_FastIncrementalGenericInfo>							*Pointer;
+	bool							Used;
 	char*							MessageType;			// id=35    constant has constant value = X
 	int							MessageTypeLength;
 	char*							ApplVerID;			// id=1128    constant has constant value = 9
@@ -346,12 +351,13 @@ typedef struct _FastIncrementalGenericInfo{
 	UINT32							MsgSeqNum;			// id=34  
 	UINT64							SendingTime;			// id=52  
 	int							GroupMDEntriesCount;
-	FastIncrementalGenericItemInfo* GroupMDEntries[64];
+	FastGenericItemInfo* GroupMDEntries[64];
 }FastIncrementalGenericInfo;
 
 typedef struct _FastOLSFONDItemInfo{
 	UINT64							PresenceMap;
 	LinkedPointer<_FastOLSFONDItemInfo>							*Pointer;
+	bool							Used;
 	char*							MDEntryType;			// id=269  presence=optional  
 	int							MDEntryTypeLength;
 	bool							AllowMDEntryType;
@@ -402,6 +408,7 @@ typedef struct _FastOLSFONDItemInfo{
 typedef struct _FastOLSFONDInfo{
 	UINT64							PresenceMap;
 	LinkedPointer<_FastOLSFONDInfo>							*Pointer;
+	bool							Used;
 	char*							MessageType;			// id=35    constant has constant value = W
 	int							MessageTypeLength;
 	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
@@ -437,6 +444,7 @@ typedef struct _FastOLSFONDInfo{
 typedef struct _FastOLSCURRItemInfo{
 	UINT64							PresenceMap;
 	LinkedPointer<_FastOLSCURRItemInfo>							*Pointer;
+	bool							Used;
 	char*							MDEntryType;			// id=269  presence=optional  
 	int							MDEntryTypeLength;
 	bool							AllowMDEntryType;
@@ -480,6 +488,7 @@ typedef struct _FastOLSCURRItemInfo{
 typedef struct _FastOLSCURRInfo{
 	UINT64							PresenceMap;
 	LinkedPointer<_FastOLSCURRInfo>							*Pointer;
+	bool							Used;
 	char*							MessageType;			// id=35    constant has constant value = W
 	int							MessageTypeLength;
 	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
@@ -513,6 +522,7 @@ typedef struct _FastOLSCURRInfo{
 typedef struct _FastTLSFONDItemInfo{
 	UINT64							PresenceMap;
 	LinkedPointer<_FastTLSFONDItemInfo>							*Pointer;
+	bool							Used;
 	char*							MDEntryType;			// id=269  
 	int							MDEntryTypeLength;
 	char*							MDEntryID;			// id=278  presence=optional  
@@ -570,6 +580,7 @@ typedef struct _FastTLSFONDItemInfo{
 typedef struct _FastTLSFONDInfo{
 	UINT64							PresenceMap;
 	LinkedPointer<_FastTLSFONDInfo>							*Pointer;
+	bool							Used;
 	char*							MessageType;			// id=35    constant has constant value = W
 	int							MessageTypeLength;
 	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
@@ -605,6 +616,7 @@ typedef struct _FastTLSFONDInfo{
 typedef struct _FastTLSCURRItemInfo{
 	UINT64							PresenceMap;
 	LinkedPointer<_FastTLSCURRItemInfo>							*Pointer;
+	bool							Used;
 	char*							MDEntryType;			// id=269  
 	int							MDEntryTypeLength;
 	char*							MDEntryID;			// id=278  presence=optional  
@@ -658,6 +670,7 @@ typedef struct _FastTLSCURRItemInfo{
 typedef struct _FastTLSCURRInfo{
 	UINT64							PresenceMap;
 	LinkedPointer<_FastTLSCURRInfo>							*Pointer;
+	bool							Used;
 	char*							MessageType;			// id=35    constant has constant value = W
 	int							MessageTypeLength;
 	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
@@ -691,6 +704,7 @@ typedef struct _FastTLSCURRInfo{
 typedef struct _FastOBSFONDItemInfo{
 	UINT64							PresenceMap;
 	LinkedPointer<_FastOBSFONDItemInfo>							*Pointer;
+	bool							Used;
 	char*							MDEntryType;			// id=269  presence=optional  
 	int							MDEntryTypeLength;
 	bool							AllowMDEntryType;
@@ -729,6 +743,7 @@ typedef struct _FastOBSFONDItemInfo{
 typedef struct _FastOBSFONDInfo{
 	UINT64							PresenceMap;
 	LinkedPointer<_FastOBSFONDInfo>							*Pointer;
+	bool							Used;
 	char*							MessageType;			// id=35    constant has constant value = W
 	int							MessageTypeLength;
 	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
@@ -764,6 +779,7 @@ typedef struct _FastOBSFONDInfo{
 typedef struct _FastOBSCURRItemInfo{
 	UINT64							PresenceMap;
 	LinkedPointer<_FastOBSCURRItemInfo>							*Pointer;
+	bool							Used;
 	char*							MDEntryType;			// id=269  presence=optional  
 	int							MDEntryTypeLength;
 	bool							AllowMDEntryType;
@@ -796,6 +812,7 @@ typedef struct _FastOBSCURRItemInfo{
 typedef struct _FastOBSCURRInfo{
 	UINT64							PresenceMap;
 	LinkedPointer<_FastOBSCURRInfo>							*Pointer;
+	bool							Used;
 	char*							MessageType;			// id=35    constant has constant value = W
 	int							MessageTypeLength;
 	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
@@ -829,6 +846,7 @@ typedef struct _FastOBSCURRInfo{
 typedef struct _FastIncrementalMSRFONDItemInfo{
 	UINT64							PresenceMap;
 	LinkedPointer<_FastIncrementalMSRFONDItemInfo>							*Pointer;
+	bool							Used;
 	UINT32							MDUpdateAction;			// id=279  presence=optional  
 	bool							AllowMDUpdateAction;
 	char*							MDEntryType;			// id=269  presence=optional  
@@ -913,6 +931,7 @@ typedef struct _FastIncrementalMSRFONDItemInfo{
 typedef struct _FastIncrementalMSRFONDInfo{
 	UINT64							PresenceMap;
 	LinkedPointer<_FastIncrementalMSRFONDInfo>							*Pointer;
+	bool							Used;
 	char*							MessageType;			// id=35    constant has constant value = X
 	int							MessageTypeLength;
 	char*							ApplVerID;			// id=1128    constant has constant value = 9
@@ -930,6 +949,7 @@ typedef struct _FastIncrementalMSRFONDInfo{
 typedef struct _FastIncrementalMSRCURRItemInfo{
 	UINT64							PresenceMap;
 	LinkedPointer<_FastIncrementalMSRCURRItemInfo>							*Pointer;
+	bool							Used;
 	UINT32							MDUpdateAction;			// id=279  presence=optional  
 	bool							AllowMDUpdateAction;
 	char*							MDEntryType;			// id=269  presence=optional  
@@ -998,6 +1018,7 @@ typedef struct _FastIncrementalMSRCURRItemInfo{
 typedef struct _FastIncrementalMSRCURRInfo{
 	UINT64							PresenceMap;
 	LinkedPointer<_FastIncrementalMSRCURRInfo>							*Pointer;
+	bool							Used;
 	char*							MessageType;			// id=35    constant has constant value = X
 	int							MessageTypeLength;
 	char*							ApplVerID;			// id=1128    constant has constant value = 9
@@ -1015,6 +1036,7 @@ typedef struct _FastIncrementalMSRCURRInfo{
 typedef struct _FastIncrementalOLRFONDInfo{
 	UINT64							PresenceMap;
 	LinkedPointer<_FastIncrementalOLRFONDInfo>							*Pointer;
+	bool							Used;
 	char*							MessageType;			// id=35    constant has constant value = X
 	int							MessageTypeLength;
 	char*							ApplVerID;			// id=1128    constant has constant value = 9
@@ -1026,12 +1048,13 @@ typedef struct _FastIncrementalOLRFONDInfo{
 	UINT32							MsgSeqNum;			// id=34  
 	UINT64							SendingTime;			// id=52  
 	int							GroupMDEntriesCount;
-	FastIncrementalOLRFONDItemInfo* GroupMDEntries[64];
+	FastOLSFONDItemInfo* GroupMDEntries[64];
 }FastIncrementalOLRFONDInfo;
 
 typedef struct _FastIncrementalOLRCURRInfo{
 	UINT64							PresenceMap;
 	LinkedPointer<_FastIncrementalOLRCURRInfo>							*Pointer;
+	bool							Used;
 	char*							MessageType;			// id=35    constant has constant value = X
 	int							MessageTypeLength;
 	char*							ApplVerID;			// id=1128    constant has constant value = 9
@@ -1043,12 +1066,13 @@ typedef struct _FastIncrementalOLRCURRInfo{
 	UINT32							MsgSeqNum;			// id=34  
 	UINT64							SendingTime;			// id=52  
 	int							GroupMDEntriesCount;
-	FastIncrementalOLRCURRItemInfo* GroupMDEntries[64];
+	FastOLSCURRItemInfo* GroupMDEntries[64];
 }FastIncrementalOLRCURRInfo;
 
 typedef struct _FastIncrementalOBRFONDInfo{
 	UINT64							PresenceMap;
 	LinkedPointer<_FastIncrementalOBRFONDInfo>							*Pointer;
+	bool							Used;
 	char*							MessageType;			// id=35    constant has constant value = X
 	int							MessageTypeLength;
 	char*							ApplVerID;			// id=1128    constant has constant value = 9
@@ -1060,12 +1084,13 @@ typedef struct _FastIncrementalOBRFONDInfo{
 	UINT32							MsgSeqNum;			// id=34  
 	UINT64							SendingTime;			// id=52  
 	int							GroupMDEntriesCount;
-	FastIncrementalOBRFONDItemInfo* GroupMDEntries[64];
+	FastOBSFONDItemInfo* GroupMDEntries[64];
 }FastIncrementalOBRFONDInfo;
 
 typedef struct _FastIncrementalOBRCURRInfo{
 	UINT64							PresenceMap;
 	LinkedPointer<_FastIncrementalOBRCURRInfo>							*Pointer;
+	bool							Used;
 	char*							MessageType;			// id=35    constant has constant value = X
 	int							MessageTypeLength;
 	char*							ApplVerID;			// id=1128    constant has constant value = 9
@@ -1077,12 +1102,13 @@ typedef struct _FastIncrementalOBRCURRInfo{
 	UINT32							MsgSeqNum;			// id=34  
 	UINT64							SendingTime;			// id=52  
 	int							GroupMDEntriesCount;
-	FastIncrementalOBRCURRItemInfo* GroupMDEntries[64];
+	FastOBSCURRItemInfo* GroupMDEntries[64];
 }FastIncrementalOBRCURRInfo;
 
 typedef struct _FastIncrementalTLRFONDInfo{
 	UINT64							PresenceMap;
 	LinkedPointer<_FastIncrementalTLRFONDInfo>							*Pointer;
+	bool							Used;
 	char*							MessageType;			// id=35    constant has constant value = X
 	int							MessageTypeLength;
 	char*							ApplVerID;			// id=1128    constant has constant value = 9
@@ -1094,12 +1120,13 @@ typedef struct _FastIncrementalTLRFONDInfo{
 	UINT32							MsgSeqNum;			// id=34  
 	UINT64							SendingTime;			// id=52  
 	int							GroupMDEntriesCount;
-	FastIncrementalTLRFONDItemInfo* GroupMDEntries[64];
+	FastTLSFONDItemInfo* GroupMDEntries[64];
 }FastIncrementalTLRFONDInfo;
 
 typedef struct _FastIncrementalTLRCURRInfo{
 	UINT64							PresenceMap;
 	LinkedPointer<_FastIncrementalTLRCURRInfo>							*Pointer;
+	bool							Used;
 	char*							MessageType;			// id=35    constant has constant value = X
 	int							MessageTypeLength;
 	char*							ApplVerID;			// id=1128    constant has constant value = 9
@@ -1111,12 +1138,13 @@ typedef struct _FastIncrementalTLRCURRInfo{
 	UINT32							MsgSeqNum;			// id=34  
 	UINT64							SendingTime;			// id=52  
 	int							GroupMDEntriesCount;
-	FastIncrementalTLRCURRItemInfo* GroupMDEntries[64];
+	FastTLSCURRItemInfo* GroupMDEntries[64];
 }FastIncrementalTLRCURRInfo;
 
 typedef struct _FastSecurityDefinitionGroupInstrAttribItemInfo{
 	UINT64							PresenceMap;
 	LinkedPointer<_FastSecurityDefinitionGroupInstrAttribItemInfo>							*Pointer;
+	bool							Used;
 	INT32							InstrAttribType;			// id=871  
 	BYTE*							InstrAttribValue;			// id=872  presence=optional  
 	int							InstrAttribValueLength;
@@ -1126,6 +1154,7 @@ typedef struct _FastSecurityDefinitionGroupInstrAttribItemInfo{
 typedef struct _FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo{
 	UINT64							PresenceMap;
 	LinkedPointer<_FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo>							*Pointer;
+	bool							Used;
 	char*							TradingSessionID;			// id=336  
 	int							TradingSessionIDLength;
 	char*							TradingSessionSubID;			// id=625  presence=optional  
@@ -1140,6 +1169,7 @@ typedef struct _FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItem
 typedef struct _FastSecurityDefinitionMarketSegmentGrpItemInfo{
 	UINT64							PresenceMap;
 	LinkedPointer<_FastSecurityDefinitionMarketSegmentGrpItemInfo>							*Pointer;
+	bool							Used;
 	Decimal							RoundLot;			// id=561  presence=optional  
 	bool							AllowRoundLot;
 	int							TradingSessionRulesGrpCount;			// presence=optional  
@@ -1150,6 +1180,7 @@ typedef struct _FastSecurityDefinitionMarketSegmentGrpItemInfo{
 typedef struct _FastSecurityDefinitionInfo{
 	UINT64							PresenceMap;
 	LinkedPointer<_FastSecurityDefinitionInfo>							*Pointer;
+	bool							Used;
 	char*							MessageType;			// id=35    constant has constant value = d
 	int							MessageTypeLength;
 	char*							ApplVerID;			// id=1128    constant has constant value = 9
@@ -1263,6 +1294,7 @@ typedef struct _FastSecurityDefinitionInfo{
 typedef struct _FastSecurityStatusInfo{
 	UINT64							PresenceMap;
 	LinkedPointer<_FastSecurityStatusInfo>							*Pointer;
+	bool							Used;
 	char*							MessageType;			// id=35    constant has constant value = f
 	int							MessageTypeLength;
 	char*							ApplVerID;			// id=1128    constant has constant value = 9
@@ -1290,6 +1322,7 @@ typedef struct _FastSecurityStatusInfo{
 typedef struct _FastTradingSessionStatusInfo{
 	UINT64							PresenceMap;
 	LinkedPointer<_FastTradingSessionStatusInfo>							*Pointer;
+	bool							Used;
 	char*							MessageType;			// id=35    constant has constant value = h
 	int							MessageTypeLength;
 	char*							ApplVerID;			// id=1128    constant has constant value = 9
@@ -1311,6 +1344,7 @@ typedef struct _FastTradingSessionStatusInfo{
 typedef struct _FastHeartbeatInfo{
 	UINT64							PresenceMap;
 	LinkedPointer<_FastHeartbeatInfo>							*Pointer;
+	bool							Used;
 	char*							MessageType;			// id=35    constant has constant value = 0
 	int							MessageTypeLength;
 	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1

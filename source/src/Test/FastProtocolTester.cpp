@@ -91,8 +91,8 @@ void FastProtocolTester::TestMessages() {
     if(manager->MessageLength() != 111)
         throw;
 
-    FastIncrementalOBRCURRItemInfo *itemInfo1 = info->GroupMDEntries[0];
-    FastIncrementalOBRCURRItemInfo *itemInfo2 = info->GroupMDEntries[1];
+    FastOBSCURRItemInfo *itemInfo1 = info->GroupMDEntries[0];
+    FastOBSCURRItemInfo *itemInfo2 = info->GroupMDEntries[1];
 
     if(itemInfo1->MDUpdateAction != mduaAdd)
         throw;

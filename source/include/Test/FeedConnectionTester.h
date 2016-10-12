@@ -19,16 +19,17 @@ public:
                                                                   "10.50.129.200", "239.192.113.3", 9113,
                                                                   "10.50.129.200", "239.192.113.131", 9313);
 
-        AutoAllocatePointerList<FastIncrementalOBRFONDItemInfo> *itemInfoList = new AutoAllocatePointerList<FastIncrementalOBRFONDItemInfo>(10, 10);
+        AutoAllocatePointerList<FastOBSFONDItemInfo> *itemInfoList = new AutoAllocatePointerList<FastOBSFONDItemInfo>(10, 10);
 
-        FastIncrementalOBRFONDInfo *info = new FastIncrementalOBRFONDInfo;
-        FastIncrementalOBRFONDItemInfo *item1 = itemInfoList->NewItem();
-        item1->MDUpdateAction = MDUpdateAction::mduaAdd;
         char symbol[5];
         char trading[11];
 
         sprintf(symbol, "SMB1");
         sprintf(trading, "TRADING001");
+
+        FastOBSFONDInfo *info = new FastOBSFONDInfo;
+        FastOBSFONDItemInfo *item1 = itemInfoList->NewItem();
+        item1->MDUpdateAction = MDUpdateAction::mduaAdd;
 
         item1->Symbol = symbol;
         item1->TradingSessionID = trading;
@@ -43,6 +44,51 @@ public:
         if(fc->m_orderBookTableFond->SymbolsCount() != 1)
             throw;
         if(fc->m_orderBookTableFond->TradingSessionsCount() != 1)
+            throw;
+
+        FastOBSFONDItemInfo *item2 = itemInfoList->NewItem();
+        item2->MDUpdateAction = MDUpdateAction::mduaAdd;
+
+        item2->Symbol = symbol;
+        item2->TradingSessionID = trading;
+
+        FastOBSFONDItemInfo *item3 = itemInfoList->NewItem();
+        item3->MDUpdateAction = MDUpdateAction::mduaAdd;
+
+        item3->Symbol = symbol;
+        item3->TradingSessionID = trading;
+
+        info->GroupMDEntriesCount = 2;
+        info->GroupMDEntries[0] = item2;
+        info->GroupMDEntries[1] = item3;
+
+        fc->OnIncrementalRefresh_OBR_FOND(info);
+
+        if(fc->m_orderBookTableFond->UsedItemCount() != 1)
+            throw;
+        if(fc->m_orderBookTableFond->SymbolsCount() != 1)
+            throw;
+        if(fc->m_orderBookTableFond->TradingSessionsCount() != 1)
+            throw;
+
+        HashTableItem<FastOBSFONDItemInfo> *hs = fc->m_orderBookTableFond->GetItem(symbol, trading);
+        if(hs->Count() != 3)
+            throw;
+
+        if(!item1->Used || !item2->Used || !item3->Used)
+            throw;
+        sprintf(symbol, "SMB2");
+
+        fc->OnIncrementalRefresh_OBR_FOND(info);
+        if(fc->m_orderBookTableFond->UsedItemCount() != 2)
+            throw;
+        if(fc->m_orderBookTableFond->SymbolsCount() != 2)
+            throw;
+        if(fc->m_orderBookTableFond->TradingSessionsCount() != 1)
+            throw;
+
+        hs = fc->m_orderBookTableFond->GetItem(symbol, trading);
+        if(hs->Count() != 2)
             throw;
     }
 

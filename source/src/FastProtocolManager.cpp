@@ -406,7 +406,7 @@ void FastProtocolManager::PrintIncrementalGeneric(FastIncrementalGenericInfo *in
 	PrintUInt64("SendingTime", info->SendingTime, 1);
 	PrintInt32("GroupMDEntriesCount", info->GroupMDEntriesCount, 1);
 
-	FastIncrementalGenericItemInfo* gmdeItemInfo = NULL;
+	FastGenericItemInfo* gmdeItemInfo = NULL;
 
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 		gmdeItemInfo = info->GroupMDEntries[i];
@@ -800,7 +800,7 @@ void FastProtocolManager::PrintIncrementalOLRFOND(FastIncrementalOLRFONDInfo *in
 	PrintUInt64("SendingTime", info->SendingTime, 1);
 	PrintInt32("GroupMDEntriesCount", info->GroupMDEntriesCount, 1);
 
-	FastIncrementalOLRFONDItemInfo* gmdeItemInfo = NULL;
+	FastOLSFONDItemInfo* gmdeItemInfo = NULL;
 
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 		gmdeItemInfo = info->GroupMDEntries[i];
@@ -835,7 +835,7 @@ void FastProtocolManager::PrintIncrementalOLRCURR(FastIncrementalOLRCURRInfo *in
 	PrintUInt64("SendingTime", info->SendingTime, 1);
 	PrintInt32("GroupMDEntriesCount", info->GroupMDEntriesCount, 1);
 
-	FastIncrementalOLRCURRItemInfo* gmdeItemInfo = NULL;
+	FastOLSCURRItemInfo* gmdeItemInfo = NULL;
 
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 		gmdeItemInfo = info->GroupMDEntries[i];
@@ -867,7 +867,7 @@ void FastProtocolManager::PrintIncrementalOBRFOND(FastIncrementalOBRFONDInfo *in
 	PrintUInt64("SendingTime", info->SendingTime, 1);
 	PrintInt32("GroupMDEntriesCount", info->GroupMDEntriesCount, 1);
 
-	FastIncrementalOBRFONDItemInfo* gmdeItemInfo = NULL;
+	FastOBSFONDItemInfo* gmdeItemInfo = NULL;
 
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 		gmdeItemInfo = info->GroupMDEntries[i];
@@ -899,7 +899,7 @@ void FastProtocolManager::PrintIncrementalOBRCURR(FastIncrementalOBRCURRInfo *in
 	PrintUInt64("SendingTime", info->SendingTime, 1);
 	PrintInt32("GroupMDEntriesCount", info->GroupMDEntriesCount, 1);
 
-	FastIncrementalOBRCURRItemInfo* gmdeItemInfo = NULL;
+	FastOBSCURRItemInfo* gmdeItemInfo = NULL;
 
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 		gmdeItemInfo = info->GroupMDEntries[i];
@@ -928,7 +928,7 @@ void FastProtocolManager::PrintIncrementalTLRFOND(FastIncrementalTLRFONDInfo *in
 	PrintUInt64("SendingTime", info->SendingTime, 1);
 	PrintInt32("GroupMDEntriesCount", info->GroupMDEntriesCount, 1);
 
-	FastIncrementalTLRFONDItemInfo* gmdeItemInfo = NULL;
+	FastTLSFONDItemInfo* gmdeItemInfo = NULL;
 
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 		gmdeItemInfo = info->GroupMDEntries[i];
@@ -969,7 +969,7 @@ void FastProtocolManager::PrintIncrementalTLRCURR(FastIncrementalTLRCURRInfo *in
 	PrintUInt64("SendingTime", info->SendingTime, 1);
 	PrintInt32("GroupMDEntriesCount", info->GroupMDEntriesCount, 1);
 
-	FastIncrementalTLRCURRItemInfo* gmdeItemInfo = NULL;
+	FastTLSCURRItemInfo* gmdeItemInfo = NULL;
 
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 		gmdeItemInfo = info->GroupMDEntries[i];
@@ -1217,7 +1217,7 @@ void FastProtocolManager::PrintXmlIncrementalGeneric(FastIncrementalGenericInfo 
 	PrintXmlUInt64("SendingTime", info->SendingTime);
 	PrintXmlInt32("GroupMDEntriesCount", info->GroupMDEntriesCount);
 
-	FastIncrementalGenericItemInfo* gmdeItemInfo = NULL;
+	FastGenericItemInfo* gmdeItemInfo = NULL;
 
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 		gmdeItemInfo = info->GroupMDEntries[i];
@@ -1611,7 +1611,7 @@ void FastProtocolManager::PrintXmlIncrementalOLRFOND(FastIncrementalOLRFONDInfo 
 	PrintXmlUInt64("SendingTime", info->SendingTime);
 	PrintXmlInt32("GroupMDEntriesCount", info->GroupMDEntriesCount);
 
-	FastIncrementalOLRFONDItemInfo* gmdeItemInfo = NULL;
+	FastOLSFONDItemInfo* gmdeItemInfo = NULL;
 
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 		gmdeItemInfo = info->GroupMDEntries[i];
@@ -1646,7 +1646,7 @@ void FastProtocolManager::PrintXmlIncrementalOLRCURR(FastIncrementalOLRCURRInfo 
 	PrintXmlUInt64("SendingTime", info->SendingTime);
 	PrintXmlInt32("GroupMDEntriesCount", info->GroupMDEntriesCount);
 
-	FastIncrementalOLRCURRItemInfo* gmdeItemInfo = NULL;
+	FastOLSCURRItemInfo* gmdeItemInfo = NULL;
 
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 		gmdeItemInfo = info->GroupMDEntries[i];
@@ -1678,7 +1678,7 @@ void FastProtocolManager::PrintXmlIncrementalOBRFOND(FastIncrementalOBRFONDInfo 
 	PrintXmlUInt64("SendingTime", info->SendingTime);
 	PrintXmlInt32("GroupMDEntriesCount", info->GroupMDEntriesCount);
 
-	FastIncrementalOBRFONDItemInfo* gmdeItemInfo = NULL;
+	FastOBSFONDItemInfo* gmdeItemInfo = NULL;
 
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 		gmdeItemInfo = info->GroupMDEntries[i];
@@ -1710,7 +1710,7 @@ void FastProtocolManager::PrintXmlIncrementalOBRCURR(FastIncrementalOBRCURRInfo 
 	PrintXmlUInt64("SendingTime", info->SendingTime);
 	PrintXmlInt32("GroupMDEntriesCount", info->GroupMDEntriesCount);
 
-	FastIncrementalOBRCURRItemInfo* gmdeItemInfo = NULL;
+	FastOBSCURRItemInfo* gmdeItemInfo = NULL;
 
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 		gmdeItemInfo = info->GroupMDEntries[i];
@@ -1739,7 +1739,7 @@ void FastProtocolManager::PrintXmlIncrementalTLRFOND(FastIncrementalTLRFONDInfo 
 	PrintXmlUInt64("SendingTime", info->SendingTime);
 	PrintXmlInt32("GroupMDEntriesCount", info->GroupMDEntriesCount);
 
-	FastIncrementalTLRFONDItemInfo* gmdeItemInfo = NULL;
+	FastTLSFONDItemInfo* gmdeItemInfo = NULL;
 
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 		gmdeItemInfo = info->GroupMDEntries[i];
@@ -1780,7 +1780,7 @@ void FastProtocolManager::PrintXmlIncrementalTLRCURR(FastIncrementalTLRCURRInfo 
 	PrintXmlUInt64("SendingTime", info->SendingTime);
 	PrintXmlInt32("GroupMDEntriesCount", info->GroupMDEntriesCount);
 
-	FastIncrementalTLRCURRItemInfo* gmdeItemInfo = NULL;
+	FastTLSCURRItemInfo* gmdeItemInfo = NULL;
 
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 		gmdeItemInfo = info->GroupMDEntries[i];

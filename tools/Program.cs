@@ -34,6 +34,8 @@ namespace prebuild {
 			//WriteIndex++;
 		}
 
+		protected XmlNode TemplatesNode { get; private set; }
+
 		public bool Generate () {
 			if(!File.Exists(SourceFileH)) {
 				Console.WriteLine("source file '" + SourceFileH + "' does not exist.");
@@ -68,7 +70,8 @@ namespace prebuild {
 			foreach(XmlNode node in doc.ChildNodes) {
 				if(node.Name != "templates")
 					continue;
-				GenerateTemplatesCode(node);
+				TemplatesNode = node;
+				GenerateTemplatesCode();
 			}
 
 			if(!HFile.Modified)
@@ -140,21 +143,21 @@ namespace prebuild {
 
 		List<ConstantStringInfo> ConstantStrings { get; set; }
 
-		private  void GenerateTemplatesCode (XmlNode templatesNode) {
+		private  void GenerateTemplatesCode () {
 
 			//HeaderTags = CollectHeaderTags(templatesNode);
-			WriteEntireMethodAddressArrays(templatesNode);
-			WriteStructuresDefinitionCode(templatesNode);
-			WriteStructuresDeclarationCode(templatesNode);
-			ConstantStrings = GetConstantStrings(templatesNode);
-			WriteStringConstantDeclarationCode(templatesNode);
-			WriteGetFreeItemCode(templatesNode);
-			WriteReleaseItemCode(templatesNode);
+			WriteEntireMethodAddressArrays(TemplatesNode);
+			WriteStructuresDefinitionCode(TemplatesNode);
+			WriteStructuresDeclarationCode(TemplatesNode);
+			ConstantStrings = GetConstantStrings(TemplatesNode);
+			WriteStringConstantDeclarationCode(TemplatesNode);
+			WriteGetFreeItemCode(TemplatesNode);
+			WriteReleaseItemCode(TemplatesNode);
 
-			WriteEncodeMethodsCode(templatesNode);
-			WriteHeaderParsingCode(templatesNode);
-			WriteDecodeMethodsCode(templatesNode);
-			WritePrintMethodsCode(templatesNode);
+			WriteEncodeMethodsCode(TemplatesNode);
+			WriteHeaderParsingCode(TemplatesNode);
+			WriteDecodeMethodsCode(TemplatesNode);
+			WritePrintMethodsCode(TemplatesNode);
 		}
 
 		class ConstantStringInfo {
@@ -349,12 +352,11 @@ namespace prebuild {
 		private  void WriteGetFreeItemCode (XmlNode templatesNode) {
 			SetPosition(Get_Free_Item_Methods_GeneratedCode);
 
-			List<StructureInfo> structures = GetStructures(templatesNode);
-			foreach(StructureInfo str in structures) {
+			foreach(StructureInfo str in Structures) {
 				WriteLine("\tinline " + str.Name + "* " + str.GetFreeMethodName + "() {");
+
 				if(str.IsSequence) {
 					WriteLine("\t\treturn this->" + str.ValueName + "->NewItem();");
-
 				} else {
 					WriteLine("\t\treturn this->" + str.ValueName + ";");
 				}
@@ -376,19 +378,26 @@ namespace prebuild {
 		}
 
 		private void WriteReleaseItemCode (XmlNode templatesNode) {
-			List<StructureInfo> structures = GetStructures(templatesNode);
-			foreach(StructureInfo str in structures) {
+			foreach(StructureInfo str in Structures) {
+
 				WriteLine("\tinline void Release(" + str.Name + "* info) {");
+
 				foreach(XmlNode childNode in str.Node.ChildNodes) {
 					if(childNode.Name == "sequence") {
 						string field = Name(childNode);
 						WriteLine("\t\tif(info->" + field + "Count != 0) {");
-						StructureInfo item = new StructureInfo() { NameCore = NameWithParent(childNode), IsSequence = true };
+
+						StructureInfo item = GetOriginalStruct(childNode);
+						if(item == null)
+							item = GetStruct(childNode);
+
 						WriteLine("\t\t\tPointerList<" + item.Name + "> *list = info->" + field + "[0]->Pointer->Owner();");
 						WriteLine("\t\t\t" + item.Name + " **item = info->" + field + ";");
 						WriteLine("\t\t\tfor(int i = 0; i < info->" + field + "Count; i++) {");
-						WriteLine("\t\t\t\tthis->Release(*item);");
-						WriteLine("\t\t\t\tlist->Push((*item)->Pointer);");
+						WriteLine("\t\t\t\tif(!(*item)->Used) {");
+						WriteLine("\t\t\t\t\tthis->Release(*item);");
+						WriteLine("\t\t\t\t\tlist->Push((*item)->Pointer);");
+						WriteLine("\t\t\t\t}");
 						WriteLine("\t\t\t\titem++;");
 						WriteLine("\t\t\t}");
 						WriteLine("\t\t}");
@@ -506,12 +515,12 @@ namespace prebuild {
 		private  void WriteStructuresDeclarationCode (XmlNode templatesNode) {
 			SetPosition(Structure_Objects_Declaration_GeneratedCode);
 
-			List<StructureInfo> structures = GetStructures(templatesNode);
-			foreach(StructureInfo str in structures) {
+			foreach(StructureInfo str in Structures) {
 				if(!str.IsSequence)
 					WriteLine("\t" + str.Name + "*\t" + str.ValueName + ";");
-				else
+				else {
 					WriteLine("\tAutoAllocatePointerList<" + str.Name + ">\t\t*" + str.ValueName + ";");
+				}
 			}
 
 			WriteLine("");
@@ -774,10 +783,17 @@ namespace prebuild {
 
 			WriteLine("");
 
-			List<StructureInfo> str = GetStructures(templatesNode);
-			str = MergeStructures(str);
-			foreach(StructureInfo info in str) { 
+			foreach(StructureInfo info in Structures) { 
 				WriteStructureDefinition(info);
+			}
+		}
+
+		List<StructureInfo> structures;
+		protected List<StructureInfo> Structures { 
+			get { 
+				if(structures == null)
+					structures = MergeStructures(GetStructures(TemplatesNode));
+				return structures;
 			}
 		}
 
@@ -955,6 +971,7 @@ namespace prebuild {
 
 		private void WritePointerCode(StructureInfo info) {
 			WriteLine("\tLinkedPointer<_" + info.Name + ">" + StuctFieldsSpacing + "*Pointer;");
+			WriteLine("\tbool" + StuctFieldsSpacing + "Used;");
 		}
 
 		private  void WriteStructureFieldsDefinitionCode (StructureInfo info, string parentName) {
@@ -1063,9 +1080,29 @@ namespace prebuild {
 			return attribute.Name == "name" || attribute.Name == "id" || attribute.Name == "presence";
 		}
 
+		StructureInfo GetOriginalStruct(XmlNode field) {
+			foreach(StructureInfo info in Structures) {
+				if(info.SimilarStruct != null && info.SimilarStruct.Node == field)
+					return info;
+			}
+			return null;
+		}
+		StructureInfo GetStruct(XmlNode field) {
+			foreach(StructureInfo info in Structures) {
+				if(info.Node == field)
+					return info;
+			}
+			return null;
+		}
+
 		private  void WriteSequence (XmlNode field, string parentName) {
 			WriteLine("\tint" + StuctFieldsSpacing + Name(field) + "Count;" + GetCommentLine(field));
-			WriteLine("\tFast" + parentName + ItemName(field) + "ItemInfo* " + Name(field) + "[64];" + GetCommentLine(field));
+			StructureInfo originalStruct = GetOriginalStruct(field);
+			if(originalStruct != null) {
+				WriteLine("\t" + originalStruct.Name + "* " + Name(field) + "[64];" + GetCommentLine(field));
+			}
+			else
+				WriteLine("\tFast" + parentName + ItemName(field) + "ItemInfo* " + Name(field) + "[64];" + GetCommentLine(field));
 		}
 
 		private  void WriteByteVectorField (XmlNode field) {
@@ -1507,6 +1544,9 @@ namespace prebuild {
 		}
 
 		private  void ParseSequence (XmlNode value, string objectValueName, string parentClassCoreName, string tabString) {
+			StructureInfo info = GetOriginalStruct(value);
+			if(info == null)
+				info = GetStruct(value);
 			string itemInfo = GetIemInfoPrefix(value) + "ItemInfo";
 			WriteLine("");
 			if(ShouldWriteNullCheckCode(value)) {
@@ -1522,10 +1562,10 @@ namespace prebuild {
 				WriteLine(tabString + "else");
 				WriteLine(tabString + "\t" + objectValueName + "->" + Name(value) + "Count = 0;");
 			}
-			WriteLine(tabString + "Fast" + parentClassCoreName + ItemName(value) + "ItemInfo* " + itemInfo + " = NULL;");
+			WriteLine(tabString + info.Name + "* " + itemInfo + " = NULL;");
 			WriteLine("");
 			WriteLine(tabString + "for(int i = 0; i < " + objectValueName + "->" + Name(value) + "Count; i++) {");
-			WriteLine(tabString + "\t" + itemInfo + " = GetFree" + parentClassCoreName + ItemName(value) + "ItemInfo();");
+			WriteLine(tabString + "\t" + itemInfo + " = GetFree" + info.NameCore + "ItemInfo();");
 			WriteLine(tabString + "\t" + objectValueName + "->" + Name(value) + "[i] = " + itemInfo + ";");
 
 			if(GetMaxPresenceBitCount(value) > 0) {
@@ -1933,13 +1973,15 @@ namespace prebuild {
 		}
 
 		private  void PrintXmlSequence (XmlNode value, string objectValueName, string parentClassCoreName, string tabString) {
-
+			StructureInfo info = GetOriginalStruct(value);
+			if(info == null)
+				info = GetStruct(value);
 			string itemInfo = GetIemInfoPrefix(value) + "ItemInfo";
 			WriteLine(tabString + "PrintXmlInt32(\"" + Name(value) + "Count\", " + objectValueName + "->" + Name(value) + "Count);");
 			WriteLine("");
 			string countField = objectValueName + "->" + Name(value) + "Count";
 
-			WriteLine(tabString + "Fast" + parentClassCoreName + ItemName(value) + "ItemInfo* " + itemInfo + " = NULL;");
+			WriteLine(tabString + info.Name + "* " + itemInfo + " = NULL;");
 			WriteLine("");
 			WriteLine(tabString + "for(int i = 0; i < " + countField + "; i++) {");
 			WriteLine(tabString + "\t" + itemInfo + " = " + objectValueName + "->" + Name(value) + "[i];");
@@ -1957,13 +1999,15 @@ namespace prebuild {
 		}
 
 		private  void PrintSequence (XmlNode value, string objectValueName, string parentClassCoreName, string tabString, int tabsCount) {
-			
+			StructureInfo info = GetOriginalStruct(value);
+			if(info == null)
+				info = GetStruct(value);
 			string itemInfo = GetIemInfoPrefix(value) + "ItemInfo";
 			WriteLine(tabString + "PrintInt32(\"" + Name(value) + "Count\", " + objectValueName + "->" + Name(value) + "Count, " + tabsCount + ");");
 			WriteLine("");
 			string countField = objectValueName + "->" + Name(value) + "Count";
 
-			WriteLine(tabString + "Fast" + parentClassCoreName + ItemName(value) + "ItemInfo* " + itemInfo + " = NULL;");
+			WriteLine(tabString + info.Name + "* " + itemInfo + " = NULL;");
 			WriteLine("");
 			WriteLine(tabString + "for(int i = 0; i < " + countField + "; i++) {");
 			WriteLine(tabString + "\t" + itemInfo + " = " + objectValueName + "->" + Name(value) + "[i];");
