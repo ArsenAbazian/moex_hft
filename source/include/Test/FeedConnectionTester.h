@@ -71,7 +71,7 @@ public:
         if(fc->m_orderBookTableFond->TradingSessionsCount() != 1)
             throw;
 
-        HashTableItem<FastOBSFONDItemInfo> *hs = fc->m_orderBookTableFond->GetItem(symbol, trading);
+        OrderBookTableItem<FastOBSFONDItemInfo> *hs = fc->m_orderBookTableFond->GetItem(symbol, trading);
         if(hs->Count() != 3)
             throw;
 

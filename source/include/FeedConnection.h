@@ -6,6 +6,7 @@
 #include "Stopwatch.h"
 #include "Lib/AutoAllocatePointerList.h"
 #include "Lib/HashTable.h"
+#include "MarketData/OrderBookTable.h"
 
 typedef enum _FeedConnectionMessage {
 	fcmHeartBeat = 2108,
@@ -114,8 +115,8 @@ protected:
     bool                                        m_shouldReceiveAnswer;
 
 protected:
-	HashTable<FastOBSFONDItemInfo>			    *m_orderBookTableFond;
-    HashTable<FastOBSCURRItemInfo>              *m_orderBookTableCurr;
+	OrderBookTable<FastOBSFONDItemInfo>			*m_orderBookTableFond;
+    OrderBookTable<FastOBSCURRItemInfo>         *m_orderBookTableCurr;
 private:
 
     inline void GetCurrentTime(UINT64 *time) {
@@ -534,7 +535,7 @@ public:
 		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
 
 		this->SetType(FeedConnectionType::Incremental);
-		this->m_orderBookTableCurr = new HashTable<FastOBSCURRItemInfo>();
+		this->m_orderBookTableCurr = new OrderBookTable<FastOBSCURRItemInfo>();
     }
 	ISocketBufferProvider* CreateSocketBufferProvider() {
 		return new SocketBufferProvider(DefaultSocketBufferManager::Default,
@@ -656,7 +657,7 @@ public:
 	FeedConnection_FOND_OBR(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
 		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
 		this->SetType(FeedConnectionType::Incremental);
-		this->m_orderBookTableFond = new HashTable<FastOBSFONDItemInfo>();
+		this->m_orderBookTableFond = new OrderBookTable<FastOBSFONDItemInfo>();
     }
 	ISocketBufferProvider* CreateSocketBufferProvider() {
 		return new SocketBufferProvider(DefaultSocketBufferManager::Default,

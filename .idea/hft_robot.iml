@@ -43,6 +43,7 @@
       <sourceFolder url="file://$MODULE_DIR$/source/include/Lib/AutoAllocatePointerList.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/include/Lib/PointerList.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/include/Lib/HashTable.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/source/include/MarketData/TradingTable.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/include/MarketData/MarketDataTable.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/include/FixProtocolMacros.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/include/FixProtocolManagerTester.h" isTestSource="false" />

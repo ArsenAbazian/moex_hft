@@ -970,7 +970,7 @@ namespace prebuild {
 		}
 
 		private void WritePointerCode(StructureInfo info) {
-			WriteLine("\tLinkedPointer<_" + info.Name + ">" + StuctFieldsSpacing + "*Pointer;");
+			WriteLine("\tLinkedPointer<" + info.Name + ">" + StuctFieldsSpacing + "*Pointer;");
 			WriteLine("\tbool" + StuctFieldsSpacing + "Used;");
 		}
 
@@ -1000,6 +1000,11 @@ namespace prebuild {
 					Console.WriteLine("found undefined field " + field.Name);
 				WriteAllowFlagAndPresenceMapIndex(field);
 			}
+
+			WriteLine("");
+			WriteLine("\t" + info.Name + "(){ }");
+			WriteLine("\t~" + info.Name + "(){ }");
+			WriteLine("\tinline void Clear() { }");
 		}
 
 		string StuctFieldsSpacing { get{ return "\t\t\t\t\t\t\t"; } }
@@ -1171,9 +1176,10 @@ namespace prebuild {
 		}
 
 		private  void WriteStructureDefinition (StructureInfo info) { 
-			WriteLine("typedef struct _" + info.Name + "{");
+			WriteLine("class " + info.Name + "{");
+			WriteLine("public:");
 			WriteStructureFieldsDefinitionCode(info, info.NameCore);
-			WriteLine("}" + info.Name + ";");
+			WriteLine("};");
 			WriteLine("");
 		}
 

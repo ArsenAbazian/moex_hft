@@ -55,14 +55,14 @@ public:
     }
 };
 
-template<typename T> class HashTable {
-    char                m_symbols[MAX_SYMBOLS_COUNT][4];
-    char                m_tradingSession[MAX_TRADING_SESSIONS_COUNT][10];
-    int                 m_symbolsCount;
-    int                 m_tradingSessionsCount;
+template<typename TableItemClassName> class HashTable {
+    char                                m_symbols[MAX_SYMBOLS_COUNT][4];
+    char                                m_tradingSession[MAX_TRADING_SESSIONS_COUNT][10];
+    int                                 m_symbolsCount;
+    int                                 m_tradingSessionsCount;
 
-    HashTableItem<T>*   m_table[MAX_SYMBOLS_COUNT][MAX_TRADING_SESSIONS_COUNT];
-    PointerList< HashTableItem<T> >*     m_usedLists;
+    TableItemClassName*                    m_table[MAX_SYMBOLS_COUNT][MAX_TRADING_SESSIONS_COUNT];
+    PointerList<TableItemClassName>*       m_usedItems;
 
     inline bool IsSymbolEquals(const char *s1, const char *s2) {
         UINT32 *u1 = (UINT32*)s1;
@@ -107,72 +107,68 @@ public:
     HashTable() {
         for(int i = 0; i < MAX_SYMBOLS_COUNT; i++) {
             for(int j = 0; j < MAX_TRADING_SESSIONS_COUNT; j++) {
-                this->m_table[i][j] = new HashTableItem<T>();
+                this->m_table[i][j] = new TableItemClassName();
             }
-        }
-        this->m_usedLists = new PointerList<HashTableItem<T>>(MAX_SYMBOLS_COUNT * MAX_TRADING_SESSIONS_COUNT + 10);
+        };
+        this->m_usedItems = new PointerList<TableItemClassName>(MAX_SYMBOLS_COUNT * MAX_TRADING_SESSIONS_COUNT + 10);
     }
     ~HashTable() {
         for(int i = 0; i < MAX_SYMBOLS_COUNT; i++) {
             for(int j = 0; j < MAX_TRADING_SESSIONS_COUNT; j++) {
                 delete this->m_table[i][j];
             }
-        }
+        };
     }
 
     inline int SymbolsCount() { return this->m_symbolsCount; }
     inline int TradingSessionsCount() { return this->m_tradingSessionsCount; }
-    inline HashTableItem<T>* Item(int symbolIndex, int tradingSessionIndex) {
+    inline TableItemClassName* Item(int symbolIndex, int tradingSessionIndex) {
         return this->m_table[symbolIndex][tradingSessionIndex];
     }
-    inline int UsedItemCount() { return this->m_usedLists->Count(); }
+    inline int UsedItemCount() { return this->m_usedItems->Count(); }
 
-    inline HashTableItem<T>* GetItem(const char *symbol, const char *tradingSession) {
+    inline TableItemClassName* GetItem(const char *symbol, const char *tradingSession) {
         int symbolIndex = GetSymbolIndex(symbol);
         int tradingSessionIndex = GetTradingSessionIdIndex(tradingSession);
         return this->m_table[symbolIndex][tradingSessionIndex];
-    }
-
-    inline HashTableItem<T>* Add(const char *symbol, const char *tradingSession, T *data) {
-        int symbolIndex = GetSymbolIndex(symbol);
-        int tradingSessionIndex = GetTradingSessionIdIndex(tradingSession);
-
-        HashTableItem<T> *item = this->m_table[symbolIndex][tradingSessionIndex];
-        item->Items()->Add(data);
-
-        if(item->Items()->Count() == 1) {
-            item->UsedListPointer(this->m_usedLists->Add(item));
-        }
-        return item;
-    }
-
-    inline HashTableItem<T>* Add(const char *symbol, const char *tradingSession, T **data, int count) {
-        T **item = data;
-
-        int symbolIndex = GetSymbolIndex(symbol);
-        int tradingSessionIndex = GetTradingSessionIdIndex(tradingSession);
-
-        HashTableItem<T> *mditem = this->m_table[symbolIndex][tradingSessionIndex];
-
-        for(int i = 0; i < count; i++, item++) {
-            mditem->Items()->Add(*item);
-        }
-        if(mditem->Items()->Count() == count) {
-            mditem->UsedListPointer(this->m_usedLists->Add(mditem));
-        }
-        return mditem;
     }
 
     inline void Clear() {
-        LinkedPointer<HashTableItem<T>> *node = this->m_usedLists->Start();
+        LinkedPointer<TableItemClassName> *node = this->m_usedItems->Start();
         while(true) {
-            HashTableItem<T> *list = (HashTableItem<T>*)node->Data();
-            list->Clear();
-            if(node == this->m_usedLists->End())
+            TableItemClassName *item = node->Data();
+            item->Clear();
+            if(node == this->m_usedItems->End())
                 break;
-            node = this->m_usedLists->Next(node);
+            node = this->m_usedItems->Next(node);
         }
-        this->m_usedLists->Clear();
+        this->m_usedItems->Clear();
+    }
+
+    inline LinkedPointer<TableItemClassName>* GetUsedItem(TableItemClassName *item) {
+        LinkedPointer<TableItemClassName> *node = this->m_usedItems->Start();
+        while(true) {
+            if(node->Data() == item)
+                return node;
+            if(node == this->m_usedItems->End())
+                return 0;
+            node = this->m_usedItems->Next(node);
+        }
+        return 0;
+    }
+
+    inline void AddUsed(TableItemClassName *item) {
+        LinkedPointer<TableItemClassName> *node = this->m_usedItems->Start();
+        if(node->Data()->Used())
+            return;
+        this->m_usedItems->Add(item);
+    }
+    inline void RemoveUsed(TableItemClassName *item) {
+        LinkedPointer<TableItemClassName> *listItem = GetUsedItem(item);
+        if(listItem != 0) {
+            this->m_usedItems->Remove(listItem);
+            listItem->Data()->Used(false);
+        }
     }
 };
 

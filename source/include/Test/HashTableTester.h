@@ -14,6 +14,7 @@
 class HashTableTester {
 
 public:
+    /*
     void TestDefaults() {
         HashTable<void> *table = new HashTable<void>();
         if(table->SymbolsCount() != 0)
@@ -231,6 +232,7 @@ public:
         this->TestClearItem();
         this->TestRemoveItem();
     }
+     */
 };
 
 
