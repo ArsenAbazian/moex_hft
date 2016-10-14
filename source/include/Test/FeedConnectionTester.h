@@ -13,7 +13,7 @@ public:
     FeedConnectionTester() { }
     ~FeedConnectionTester() { }
 
-    void Test_OnIncrementalRefresh_OBR_FOND() {
+    void Test_OnIncrementalRefresh_OBR_FOND_Add() {
         FeedConnection_FOND_OBR *fc = new FeedConnection_FOND_OBR("OBR", "Refresh Incremental", 'I',
                                                                   FeedConnectionProtocol::UDP_IP,
                                                                   "10.50.129.200", "239.192.113.3", 9113,
@@ -90,6 +90,10 @@ public:
         hs = fc->m_orderBookTableFond->GetItem(symbol, trading);
         if(hs->Count() != 2)
             throw;
+    }
+
+    void Test_OnIncrementalRefresh_OBR_FOND() {
+        Test_OnIncrementalRefresh_OBR_FOND_Add();
     }
 
     void Test_OBR_FOND() {
