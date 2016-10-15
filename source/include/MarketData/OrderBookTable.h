@@ -10,6 +10,8 @@
 template <typename T> class OrderBookTableItem {
     PointerList<T>      *m_bidList;
     PointerList<T>      *m_askList;
+
+    T                   *m_info;
     bool                m_used;
 
     inline void Clear(PointerList<T> *list) {
@@ -26,6 +28,7 @@ public:
     OrderBookTableItem() {
         this->m_bidList = new PointerList<T>(128);
         this->m_askList = new PointerList<T>(128);
+        this->m_info = new T();
     }
     ~OrderBookTableItem() {
         delete this->m_bidList;
@@ -38,6 +41,9 @@ public:
         Clear(this->m_bidList);
         Clear(this->m_askList);
     }
+    inline T* Info() { return this->m_info; }
+    inline void Info(T *info) { this->m_info; }
+
     inline void Add(T *item) {
 
     }
@@ -69,7 +75,7 @@ public:
     }
     inline void ClearItem(const char *symbol, const char *tradingSession) {
         OrderBookTableItem<T> *tableItem = this->m_table->GetItem(symbol, tradingSession);
-        this->m_table->FreeItem(tableItem);
+        this->m_table->RemoveUsed(tableItem);
         tableItem->Clear();
     }
     inline int SymbolsCount() { return this->m_table->SymbolsCount(); }

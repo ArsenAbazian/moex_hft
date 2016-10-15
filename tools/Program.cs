@@ -145,7 +145,6 @@ namespace prebuild {
 
 		private  void GenerateTemplatesCode () {
 
-			//HeaderTags = CollectHeaderTags(templatesNode);
 			WriteEntireMethodAddressArrays(TemplatesNode);
 			WriteStructuresDefinitionCode(TemplatesNode);
 			WriteStructuresDeclarationCode(TemplatesNode);
@@ -356,7 +355,8 @@ namespace prebuild {
 				WriteLine("\tinline " + str.Name + "* " + str.GetFreeMethodName + "() {");
 
 				if(str.IsSequence) {
-					WriteLine("\t\treturn this->" + str.ValueName + "->NewItem();");
+					WriteLine("\t\tthis->" + str.CurrentItemValueName + "++;");
+					WriteLine("\t\treturn this->" + str.CurrentItemValueName + ";");
 				} else {
 					WriteLine("\t\treturn this->" + str.ValueName + ";");
 				}
@@ -378,34 +378,13 @@ namespace prebuild {
 		}
 
 		private void WriteReleaseItemCode (XmlNode templatesNode) {
+			WriteLine("\tinline void Reset() {");
 			foreach(StructureInfo str in Structures) {
-
-				WriteLine("\tinline void Release(" + str.Name + "* info) {");
-
-				foreach(XmlNode childNode in str.Node.ChildNodes) {
-					if(childNode.Name == "sequence") {
-						string field = Name(childNode);
-						WriteLine("\t\tif(info->" + field + "Count != 0) {");
-
-						StructureInfo item = GetOriginalStruct(childNode);
-						if(item == null)
-							item = GetStruct(childNode);
-
-						WriteLine("\t\t\tPointerList<" + item.Name + "> *list = info->" + field + "[0]->Pointer->Owner();");
-						WriteLine("\t\t\t" + item.Name + " **item = info->" + field + ";");
-						WriteLine("\t\t\tfor(int i = 0; i < info->" + field + "Count; i++) {");
-						WriteLine("\t\t\t\tif(!(*item)->Used) {");
-						WriteLine("\t\t\t\t\tthis->Release(*item);");
-						WriteLine("\t\t\t\t\tlist->Push((*item)->Pointer);");
-						WriteLine("\t\t\t\t}");
-						WriteLine("\t\t\t\titem++;");
-						WriteLine("\t\t\t}");
-						WriteLine("\t\t}");
-					}
-				}
-				WriteLine("\t}");
-				WriteLine("");
+				if(!str.IsSequence)
+					continue;
+				WriteLine("\t\tthis->" + str.CurrentItemValueName + " = this->" + str.ValueName + ";");
 			}
+			WriteLine("\t}");
 		}
 
 		public class StructureInfo {
@@ -519,15 +498,20 @@ namespace prebuild {
 				if(!str.IsSequence)
 					WriteLine("\t" + str.Name + "*\t" + str.ValueName + ";");
 				else {
-					WriteLine("\tAutoAllocatePointerList<" + str.Name + ">\t\t*" + str.ValueName + ";");
+					WriteLine("\t" + str.Name + "\t" + str.ValueName + "[32];");
 				}
 			}
 
 			WriteLine("");
+			foreach(StructureInfo str in Structures) 
+				WriteLine("\t" + str.Name + "\t*" + str.CurrentItemValueName + ";");
+			
+			WriteLine("");
 			WriteLine("\tvoid InitializeMessageInfo() {");
 			foreach(StructureInfo str in structures) {
 				if(str.IsSequence) {
-					WriteLine("\t\tthis->" + str.ValueName + " = new AutoAllocatePointerList<" + str.Name + ">(2, 256);");
+					WriteLine("\t\tmemset(this->" + str.ValueName + ", 0, 32 * sizeof(" + str.Name + "));");
+					WriteLine("\t\tthis->" + str.CurrentItemValueName + " = this->" + str.ValueName + ";");
 				} else {
 					WriteLine("\t\tthis->" + str.ValueName + " = new " + str.Name + "();");
 					WriteLine("\t\tmemset(this->" + str.ValueName + ", 0, sizeof(" + str.Name + "));");
@@ -970,8 +954,8 @@ namespace prebuild {
 		}
 
 		private void WritePointerCode(StructureInfo info) {
-			WriteLine("\tLinkedPointer<" + info.Name + ">" + StuctFieldsSpacing + "*Pointer;");
-			WriteLine("\tbool" + StuctFieldsSpacing + "Used;");
+			//WriteLine("\tLinkedPointer<" + info.Name + ">" + StuctFieldsSpacing + "*Pointer;");
+			//WriteLine("\tbool" + StuctFieldsSpacing + "Used;");
 		}
 
 		private  void WriteStructureFieldsDefinitionCode (StructureInfo info, string parentName) {

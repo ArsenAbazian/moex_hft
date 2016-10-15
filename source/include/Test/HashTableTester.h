@@ -223,16 +223,16 @@ public:
         if(list->Count() != count - 3)
             throw;
     }
-
+    */
     void Test() {
-        this->TestDefaults();
-        this->TestAddItem();
-        this->TestAddArrayOfItems();
-        this->TestClear();
-        this->TestClearItem();
-        this->TestRemoveItem();
+        //this->TestDefaults();
+        //this->TestAddItem();
+        //this->TestAddArrayOfItems();
+        //this->TestClear();
+        //this->TestClearItem();
+        //this->TestRemoveItem();
     }
-     */
+
 };
 
 

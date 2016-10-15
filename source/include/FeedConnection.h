@@ -328,8 +328,7 @@ private:
     }
 
 	inline void AddOrderBookInfo(FastOBSFONDItemInfo *info) {
-		info->Used = true;
-        this->m_orderBookTableFond->Add(info->Symbol, info->TradingSessionID, info);
+        //this->m_orderBookTableFond->Add(info->Symbol, info->TradingSessionID, info);
 	}
 
 	inline void ChangeOrderBookInfo(FastOBSFONDItemInfo *info) {

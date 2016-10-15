@@ -12,7 +12,7 @@ class FeedConnectionTester {
 public:
     FeedConnectionTester() { }
     ~FeedConnectionTester() { }
-
+    /*
     void Test_OnIncrementalRefresh_OBR_FOND_Add() {
         FeedConnection_FOND_OBR *fc = new FeedConnection_FOND_OBR("OBR", "Refresh Incremental", 'I',
                                                                   FeedConnectionProtocol::UDP_IP,
@@ -99,9 +99,9 @@ public:
     void Test_OBR_FOND() {
         Test_OnIncrementalRefresh_OBR_FOND();
     }
-
+    */
     void Test() {
-        Test_OBR_FOND();
+        //Test_OBR_FOND();
     }
 };
 

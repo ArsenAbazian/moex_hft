@@ -137,8 +137,6 @@ typedef struct _FastSnapshotInfo {
 class FastLogonInfo{
 public:
 	UINT64							PresenceMap;
-	LinkedPointer<FastLogonInfo>							*Pointer;
-	bool							Used;
 	char*							MessageType;			// id=35    constant has constant value = A
 	int							MessageTypeLength;
 	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
@@ -167,8 +165,6 @@ public:
 class FastLogoutInfo{
 public:
 	UINT64							PresenceMap;
-	LinkedPointer<FastLogoutInfo>							*Pointer;
-	bool							Used;
 	char*							MessageType;			// id=35    constant has constant value = 5
 	int							MessageTypeLength;
 	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
@@ -191,8 +187,6 @@ public:
 class FastGenericItemInfo{
 public:
 	UINT64							PresenceMap;
-	LinkedPointer<FastGenericItemInfo>							*Pointer;
-	bool							Used;
 	char*							MDEntryType;			// id=269  presence=optional  
 	int							MDEntryTypeLength;
 	bool							AllowMDEntryType;
@@ -316,8 +310,6 @@ public:
 class FastGenericInfo{
 public:
 	UINT64							PresenceMap;
-	LinkedPointer<FastGenericInfo>							*Pointer;
-	bool							Used;
 	char*							MessageType;			// id=35    constant has constant value = W
 	int							MessageTypeLength;
 	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
@@ -359,8 +351,6 @@ public:
 class FastIncrementalGenericInfo{
 public:
 	UINT64							PresenceMap;
-	LinkedPointer<FastIncrementalGenericInfo>							*Pointer;
-	bool							Used;
 	char*							MessageType;			// id=35    constant has constant value = X
 	int							MessageTypeLength;
 	char*							ApplVerID;			// id=1128    constant has constant value = 9
@@ -382,8 +372,6 @@ public:
 class FastOLSFONDItemInfo{
 public:
 	UINT64							PresenceMap;
-	LinkedPointer<FastOLSFONDItemInfo>							*Pointer;
-	bool							Used;
 	char*							MDEntryType;			// id=269  presence=optional  
 	int							MDEntryTypeLength;
 	bool							AllowMDEntryType;
@@ -438,8 +426,6 @@ public:
 class FastOLSFONDInfo{
 public:
 	UINT64							PresenceMap;
-	LinkedPointer<FastOLSFONDInfo>							*Pointer;
-	bool							Used;
 	char*							MessageType;			// id=35    constant has constant value = W
 	int							MessageTypeLength;
 	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
@@ -479,8 +465,6 @@ public:
 class FastOLSCURRItemInfo{
 public:
 	UINT64							PresenceMap;
-	LinkedPointer<FastOLSCURRItemInfo>							*Pointer;
-	bool							Used;
 	char*							MDEntryType;			// id=269  presence=optional  
 	int							MDEntryTypeLength;
 	bool							AllowMDEntryType;
@@ -528,8 +512,6 @@ public:
 class FastOLSCURRInfo{
 public:
 	UINT64							PresenceMap;
-	LinkedPointer<FastOLSCURRInfo>							*Pointer;
-	bool							Used;
 	char*							MessageType;			// id=35    constant has constant value = W
 	int							MessageTypeLength;
 	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
@@ -567,8 +549,6 @@ public:
 class FastTLSFONDItemInfo{
 public:
 	UINT64							PresenceMap;
-	LinkedPointer<FastTLSFONDItemInfo>							*Pointer;
-	bool							Used;
 	char*							MDEntryType;			// id=269  
 	int							MDEntryTypeLength;
 	char*							MDEntryID;			// id=278  presence=optional  
@@ -630,8 +610,6 @@ public:
 class FastTLSFONDInfo{
 public:
 	UINT64							PresenceMap;
-	LinkedPointer<FastTLSFONDInfo>							*Pointer;
-	bool							Used;
 	char*							MessageType;			// id=35    constant has constant value = W
 	int							MessageTypeLength;
 	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
@@ -671,8 +649,6 @@ public:
 class FastTLSCURRItemInfo{
 public:
 	UINT64							PresenceMap;
-	LinkedPointer<FastTLSCURRItemInfo>							*Pointer;
-	bool							Used;
 	char*							MDEntryType;			// id=269  
 	int							MDEntryTypeLength;
 	char*							MDEntryID;			// id=278  presence=optional  
@@ -730,8 +706,6 @@ public:
 class FastTLSCURRInfo{
 public:
 	UINT64							PresenceMap;
-	LinkedPointer<FastTLSCURRInfo>							*Pointer;
-	bool							Used;
 	char*							MessageType;			// id=35    constant has constant value = W
 	int							MessageTypeLength;
 	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
@@ -769,8 +743,6 @@ public:
 class FastOBSFONDItemInfo{
 public:
 	UINT64							PresenceMap;
-	LinkedPointer<FastOBSFONDItemInfo>							*Pointer;
-	bool							Used;
 	char*							MDEntryType;			// id=269  presence=optional  
 	int							MDEntryTypeLength;
 	bool							AllowMDEntryType;
@@ -813,8 +785,6 @@ public:
 class FastOBSFONDInfo{
 public:
 	UINT64							PresenceMap;
-	LinkedPointer<FastOBSFONDInfo>							*Pointer;
-	bool							Used;
 	char*							MessageType;			// id=35    constant has constant value = W
 	int							MessageTypeLength;
 	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
@@ -854,8 +824,6 @@ public:
 class FastOBSCURRItemInfo{
 public:
 	UINT64							PresenceMap;
-	LinkedPointer<FastOBSCURRItemInfo>							*Pointer;
-	bool							Used;
 	char*							MDEntryType;			// id=269  presence=optional  
 	int							MDEntryTypeLength;
 	bool							AllowMDEntryType;
@@ -892,8 +860,6 @@ public:
 class FastOBSCURRInfo{
 public:
 	UINT64							PresenceMap;
-	LinkedPointer<FastOBSCURRInfo>							*Pointer;
-	bool							Used;
 	char*							MessageType;			// id=35    constant has constant value = W
 	int							MessageTypeLength;
 	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
@@ -931,8 +897,6 @@ public:
 class FastIncrementalMSRFONDItemInfo{
 public:
 	UINT64							PresenceMap;
-	LinkedPointer<FastIncrementalMSRFONDItemInfo>							*Pointer;
-	bool							Used;
 	UINT32							MDUpdateAction;			// id=279  presence=optional  
 	bool							AllowMDUpdateAction;
 	char*							MDEntryType;			// id=269  presence=optional  
@@ -1021,8 +985,6 @@ public:
 class FastIncrementalMSRFONDInfo{
 public:
 	UINT64							PresenceMap;
-	LinkedPointer<FastIncrementalMSRFONDInfo>							*Pointer;
-	bool							Used;
 	char*							MessageType;			// id=35    constant has constant value = X
 	int							MessageTypeLength;
 	char*							ApplVerID;			// id=1128    constant has constant value = 9
@@ -1044,8 +1006,6 @@ public:
 class FastIncrementalMSRCURRItemInfo{
 public:
 	UINT64							PresenceMap;
-	LinkedPointer<FastIncrementalMSRCURRItemInfo>							*Pointer;
-	bool							Used;
 	UINT32							MDUpdateAction;			// id=279  presence=optional  
 	bool							AllowMDUpdateAction;
 	char*							MDEntryType;			// id=269  presence=optional  
@@ -1118,8 +1078,6 @@ public:
 class FastIncrementalMSRCURRInfo{
 public:
 	UINT64							PresenceMap;
-	LinkedPointer<FastIncrementalMSRCURRInfo>							*Pointer;
-	bool							Used;
 	char*							MessageType;			// id=35    constant has constant value = X
 	int							MessageTypeLength;
 	char*							ApplVerID;			// id=1128    constant has constant value = 9
@@ -1141,8 +1099,6 @@ public:
 class FastIncrementalOLRFONDInfo{
 public:
 	UINT64							PresenceMap;
-	LinkedPointer<FastIncrementalOLRFONDInfo>							*Pointer;
-	bool							Used;
 	char*							MessageType;			// id=35    constant has constant value = X
 	int							MessageTypeLength;
 	char*							ApplVerID;			// id=1128    constant has constant value = 9
@@ -1164,8 +1120,6 @@ public:
 class FastIncrementalOLRCURRInfo{
 public:
 	UINT64							PresenceMap;
-	LinkedPointer<FastIncrementalOLRCURRInfo>							*Pointer;
-	bool							Used;
 	char*							MessageType;			// id=35    constant has constant value = X
 	int							MessageTypeLength;
 	char*							ApplVerID;			// id=1128    constant has constant value = 9
@@ -1187,8 +1141,6 @@ public:
 class FastIncrementalOBRFONDInfo{
 public:
 	UINT64							PresenceMap;
-	LinkedPointer<FastIncrementalOBRFONDInfo>							*Pointer;
-	bool							Used;
 	char*							MessageType;			// id=35    constant has constant value = X
 	int							MessageTypeLength;
 	char*							ApplVerID;			// id=1128    constant has constant value = 9
@@ -1210,8 +1162,6 @@ public:
 class FastIncrementalOBRCURRInfo{
 public:
 	UINT64							PresenceMap;
-	LinkedPointer<FastIncrementalOBRCURRInfo>							*Pointer;
-	bool							Used;
 	char*							MessageType;			// id=35    constant has constant value = X
 	int							MessageTypeLength;
 	char*							ApplVerID;			// id=1128    constant has constant value = 9
@@ -1233,8 +1183,6 @@ public:
 class FastIncrementalTLRFONDInfo{
 public:
 	UINT64							PresenceMap;
-	LinkedPointer<FastIncrementalTLRFONDInfo>							*Pointer;
-	bool							Used;
 	char*							MessageType;			// id=35    constant has constant value = X
 	int							MessageTypeLength;
 	char*							ApplVerID;			// id=1128    constant has constant value = 9
@@ -1256,8 +1204,6 @@ public:
 class FastIncrementalTLRCURRInfo{
 public:
 	UINT64							PresenceMap;
-	LinkedPointer<FastIncrementalTLRCURRInfo>							*Pointer;
-	bool							Used;
 	char*							MessageType;			// id=35    constant has constant value = X
 	int							MessageTypeLength;
 	char*							ApplVerID;			// id=1128    constant has constant value = 9
@@ -1279,8 +1225,6 @@ public:
 class FastSecurityDefinitionGroupInstrAttribItemInfo{
 public:
 	UINT64							PresenceMap;
-	LinkedPointer<FastSecurityDefinitionGroupInstrAttribItemInfo>							*Pointer;
-	bool							Used;
 	INT32							InstrAttribType;			// id=871  
 	BYTE*							InstrAttribValue;			// id=872  presence=optional  
 	int							InstrAttribValueLength;
@@ -1294,8 +1238,6 @@ public:
 class FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo{
 public:
 	UINT64							PresenceMap;
-	LinkedPointer<FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo>							*Pointer;
-	bool							Used;
 	char*							TradingSessionID;			// id=336  
 	int							TradingSessionIDLength;
 	char*							TradingSessionSubID;			// id=625  presence=optional  
@@ -1314,8 +1256,6 @@ public:
 class FastSecurityDefinitionMarketSegmentGrpItemInfo{
 public:
 	UINT64							PresenceMap;
-	LinkedPointer<FastSecurityDefinitionMarketSegmentGrpItemInfo>							*Pointer;
-	bool							Used;
 	Decimal							RoundLot;			// id=561  presence=optional  
 	bool							AllowRoundLot;
 	int							TradingSessionRulesGrpCount;			// presence=optional  
@@ -1330,8 +1270,6 @@ public:
 class FastSecurityDefinitionInfo{
 public:
 	UINT64							PresenceMap;
-	LinkedPointer<FastSecurityDefinitionInfo>							*Pointer;
-	bool							Used;
 	char*							MessageType;			// id=35    constant has constant value = d
 	int							MessageTypeLength;
 	char*							ApplVerID;			// id=1128    constant has constant value = 9
@@ -1449,8 +1387,6 @@ public:
 class FastSecurityStatusInfo{
 public:
 	UINT64							PresenceMap;
-	LinkedPointer<FastSecurityStatusInfo>							*Pointer;
-	bool							Used;
 	char*							MessageType;			// id=35    constant has constant value = f
 	int							MessageTypeLength;
 	char*							ApplVerID;			// id=1128    constant has constant value = 9
@@ -1482,8 +1418,6 @@ public:
 class FastTradingSessionStatusInfo{
 public:
 	UINT64							PresenceMap;
-	LinkedPointer<FastTradingSessionStatusInfo>							*Pointer;
-	bool							Used;
 	char*							MessageType;			// id=35    constant has constant value = h
 	int							MessageTypeLength;
 	char*							ApplVerID;			// id=1128    constant has constant value = 9
@@ -1509,8 +1443,6 @@ public:
 class FastHeartbeatInfo{
 public:
 	UINT64							PresenceMap;
-	LinkedPointer<FastHeartbeatInfo>							*Pointer;
-	bool							Used;
 	char*							MessageType;			// id=35    constant has constant value = 0
 	int							MessageTypeLength;
 	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
