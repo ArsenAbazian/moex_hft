@@ -71,6 +71,24 @@ public:
         this->m_head->Data(0);
         this->m_count = 0;
     }
+    inline void FreeData() {
+        LinkedPointer<T> *s = this->m_poolHead;
+        while(true) {
+            delete s->Data();
+            if(s == this->m_poolTail)
+                break;
+            s = s->Next();
+        }
+    }
+    inline void AllocData() {
+        LinkedPointer<T> *s = this->m_poolHead;
+        while(true) {
+            s->Data(new T());
+            if(s == this->m_poolTail)
+                break;
+            s = s->Next();
+        }
+    }
     ~PointerList() {
         while(this->m_head != this->m_tail)
             this->Remove(this->m_head->Next());
@@ -92,6 +110,13 @@ public:
         return node;
     }
 
+    inline LinkedPointer<T>* Add(LinkedPointer<T> *node) {
+        this->m_tail->Next(node);
+        node->Prev(this->m_tail);
+        this->m_tail = node;
+        return node;
+    }
+
     inline LinkedPointer<T>* Insert(LinkedPointer<T> *before, T *data) {
         LinkedPointer<T> *node = this->Pop();
         LinkedPointer<T> *prev = before->Prev();
@@ -100,6 +125,14 @@ public:
         node->Next(before);
         before->Prev(node);
         return node;
+    }
+
+    inline void Insert(LinkedPointer<T> *before, LinkedPointer<T> *node) {
+        LinkedPointer<T> *prev = before->Prev();
+        prev->Next(node);
+        node->Prev(prev);
+        node->Next(before);
+        before->Prev(node);
     }
 
     inline LinkedPointer<T>* Get(T *data) {

@@ -7,12 +7,14 @@
 #include "Test/FastProtocolTester.h"
 #include "Test/FixProtocolManagerTester.h"
 #include "Test/FeedConnectionTester.h"
+#include "Test/DecimalTester.h"
 #include "Robot.h"
 
 int main(int argc, char** argv)
 {
     bool test_itoa = false;
 	bool test_ftoa = false;
+	bool test_decimal = false;
 	bool test_all = false;
 	bool test_time = false;
 	bool test_fast = false;
@@ -32,12 +34,19 @@ int main(int argc, char** argv)
 			test_fix = true;
 		if(strcmp(argv[i], "test_feed") == 0)
 			test_feed = true;
+		if(strcmp(argv[i], "test_decimal") == 0)
+			test_decimal = true;
 		if (strcmp(argv[i], "test_all") == 0)
 			test_all = true;
 	}
 
 	if (test_itoa || test_all) {
 		ItoaTester tester;
+		tester.Test();
+	}
+
+	if(test_decimal || test_all) {
+		DecimalTester tester;
 		tester.Test();
 	}
 
@@ -64,7 +73,7 @@ int main(int argc, char** argv)
 		tester2.Test();
 	}
 
-	if (test_itoa || test_ftoa || test_time || test_all || test_fast || test_fix || test_feed)
+	if (test_itoa || test_ftoa || test_time || test_all || test_fast || test_fix || test_feed || test_decimal)
 		return 1;
 
 	Robot *robot = new Robot();

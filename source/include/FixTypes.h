@@ -394,10 +394,59 @@ typedef struct _FixResendRequestInfo {
     int         EndSeqNo;
 }FixResendRequestInfo;
 
-typedef struct _Decimal {
+class Decimal {
+    static INT64 PowOf10[10];
+    static double MulOf10[10];
+    static double DivOf10[10];
+
+public:
     INT64		Mantissa;
     INT32		Exponent;
-}Decimal;
+    double      Value;
+
+    Decimal() {
+        Mantissa = 0;
+        Exponent = 0;
+    }
+    Decimal(INT64 mantissa, INT32 exponent) {
+        this->Mantissa = mantissa;
+        this->Exponent = exponent;
+    }
+    inline void Set(INT64 mantissa, INT32 exponent) {
+        this->Mantissa = mantissa;
+        this->Exponent = exponent;
+    }
+    inline double Calculate() {
+        if(Exponent < 0)
+            Value = ((double)Mantissa) * DivOf10[-Exponent];
+        else
+            Value = ((double)Mantissa) * MulOf10[Exponent];
+        return Value;
+    }
+    inline bool Less(Decimal *value) {
+        return this->Calculate() < value->Calculate();
+    }
+    inline bool LessOrEqual(Decimal *value) {
+        return this->Calculate() <= value->Calculate();
+    }
+    inline bool Equal(Decimal *value) {
+        return this->Calculate() == value->Calculate();
+    }
+    inline bool Greater(Decimal *value) {
+        return !this->LessOrEqual(value);
+    }
+    inline bool GreaterOrEqual(Decimal *value) {
+        return !this->Less(value);
+    }
+    inline void Assign(Decimal *value) {
+        this->Mantissa = value->Mantissa;
+        this->Exponent = value->Exponent;
+        this->Value = value->Value;
+    }
+};
+
+
+
 #pragma pack(pop)
 
 #define FIX_SEPARATOR 					0x01

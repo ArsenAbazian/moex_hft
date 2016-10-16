@@ -634,7 +634,7 @@ void FastProtocolTester::TestReadDecimal_Optional() {
 	printf("Test FastProtocolTester::TestReadDecimal_Optional\n");
 	FastProtocolManager *manager = new FastProtocolManager();
 
-	Decimal value = { 942755, 2 };
+	Decimal value(942755, 2);
 	manager->WriteDecimal_Optional(&value);
 
 	if (manager->MessageLength() != 4)
@@ -642,7 +642,7 @@ void FastProtocolTester::TestReadDecimal_Optional() {
 	if (!manager->CheckBuffer(new BYTE[4] { 0x83, 0x39, 0x45, 0xa3 }, 4))
 		throw;
 
-	value = { -942755, -2 };
+	value.Set(-942755, -2);
 	manager->ResetBuffer();
 	manager->WriteDecimal_Optional(&value);
 
@@ -651,7 +651,7 @@ void FastProtocolTester::TestReadDecimal_Optional() {
 	if (!manager->CheckBuffer(new BYTE[4] { 0xfe, 0x46, 0x3a, 0xdd }, 4))
 		throw;
 	
-	value = { -8193, -3 };
+	value.Set(-8193, -3);
 	manager->ResetBuffer();
 	manager->WriteDecimal_Optional(&value);
 

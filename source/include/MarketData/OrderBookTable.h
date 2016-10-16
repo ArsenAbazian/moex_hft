@@ -6,31 +6,39 @@
 #define HFT_ROBOT_ORDERBOOKTABLE_H
 
 #include "../Lib/HashTable.h"
+#include "../FastTypes.h"
+
+class OrderBookQuote {
+public:
+    Decimal         Price;
+    Decimal         Size;
+    char            Id[11];
+
+    OrderBookQuote() {
+        Price.Exponent = 0;
+        Price.Mantissa = 0;
+        Size.Exponent = 0;
+        Size.Mantissa = 0;
+        bzero(this->Id, 11);
+    }
+};
 
 template <typename T> class OrderBookTableItem {
-    PointerList<T>      *m_bidList;
-    PointerList<T>      *m_askList;
+    PointerList<OrderBookQuote>      *m_bidList;
+    PointerList<OrderBookQuote>      *m_askList;
 
-    T                   *m_info;
-    bool                m_used;
+    bool                              m_used;
 
-    inline void Clear(PointerList<T> *list) {
-        LinkedPointer<T> *node = list->Start();
-        while(true) {
-            T *item = node->Data();
-            item->Clear();
-            if(node == list->End())
-                break;
-            node = list->Next(node);
-        }
-    }
 public:
     OrderBookTableItem() {
-        this->m_bidList = new PointerList<T>(128);
-        this->m_askList = new PointerList<T>(128);
-        this->m_info = new T();
+        this->m_bidList = new PointerList<OrderBookQuote>(128);
+        this->m_askList = new PointerList<OrderBookQuote>(128);
+        this->m_bidList->AllocData();
+        this->m_askList->AllocData();
     }
     ~OrderBookTableItem() {
+        this->m_bidList->FreeData();
+        this->m_askList->FreeData();
         delete this->m_bidList;
         delete this->m_askList;
     }
@@ -38,11 +46,54 @@ public:
     inline bool Used() { return this->m_used; }
     inline void Used(bool used) { this->m_used = used; }
     inline void Clear() {
-        Clear(this->m_bidList);
-        Clear(this->m_askList);
+        this->m_bidList->Clear();
+        this->m_askList->Clear();
     }
-    inline T* Info() { return this->m_info; }
-    inline void Info(T *info) { this->m_info; }
+
+    inline void Assign(OrderBookQuote *quote, const char *id, Decimal *price, Decimal *size) {
+        quote->Price.Assign(price);
+        quote->Size.Assign(size);
+    }
+
+    inline void AddBuyQuote(const char *id, Decimal *price, Decimal *size) {
+        LinkedPointer<OrderBookQuote> *node = this->m_askList->Start();
+        double value = price->Calculate();
+
+        while(true) {
+            if(node->Data()->Price.Value < value) {
+                LinkedPointer<OrderBookQuote> *curr = this->m_askList->Pop();
+                this->Assign(curr->Data(), id, price, size);
+                this->m_askList->Insert(node, curr);
+                return;
+            }
+            if(node == this->m_askList->End())
+                break;
+            node = node->Next();
+        }
+        LinkedPointer<OrderBookQuote> *curr = this->m_askList->Pop();
+        this->Assign(curr->Data(), id, price, size);
+        this->m_askList->Add(curr);
+    }
+
+    inline void AddSellQuote(const char *id, Decimal *price, Decimal *size) {
+        LinkedPointer<OrderBookQuote> *node = this->m_bidList->Start();
+        double value = price->Calculate();
+
+        while(true) {
+            if(node->Data()->Price.Value > value) {
+                LinkedPointer<OrderBookQuote> *curr = this->m_bidList->Pop();
+                this->Assign(curr->Data(), id, price, size);
+                this->m_bidList->Insert(node, curr);
+                return;
+            }
+            if(node == this->m_bidList->End())
+                break;
+            node = node->Next();
+        }
+        LinkedPointer<OrderBookQuote> *curr = this->m_bidList->Pop();
+        this->Assign(curr->Data(), id, price, size);
+        this->m_bidList->Add(curr);
+    }
 
     inline void Add(T *item) {
 
