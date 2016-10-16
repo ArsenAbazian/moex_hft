@@ -613,14 +613,7 @@
       <workItem from="1475768231603" duration="20562000" />
       <workItem from="1476122970783" duration="6542000" />
       <workItem from="1476166939793" duration="21859000" />
-      <workItem from="1476556723418" duration="14723000" />
-    </task>
-    <task id="LOCAL-00001" summary="move params to structures">
-      <created>1468443448895</created>
-      <option name="number" value="00001" />
-      <option name="presentableId" value="LOCAL-00001" />
-      <option name="project" value="LOCAL" />
-      <updated>1468443448895</updated>
+      <workItem from="1476556723418" duration="14752000" />
     </task>
     <task id="LOCAL-00002" summary="wrote additional tests for UTC time converter&#10; some crazy optimizations for UTC time converter">
       <created>1468530083457</created>
@@ -958,11 +951,18 @@
       <option name="project" value="LOCAL" />
       <updated>1476650952937</updated>
     </task>
-    <option name="localTasksCounter" value="50" />
+    <task id="LOCAL-00050" summary="Refactoring....">
+      <created>1476650983569</created>
+      <option name="number" value="00050" />
+      <option name="presentableId" value="LOCAL-00050" />
+      <option name="project" value="LOCAL" />
+      <updated>1476650983573</updated>
+    </task>
+    <option name="localTasksCounter" value="51" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="609294000" />
+    <option name="totallyTimeSpent" value="609323000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
