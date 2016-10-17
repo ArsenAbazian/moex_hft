@@ -23,31 +23,33 @@ public:
     }
 };
 
-template <typename T> class OrderBookTableItem {
-    PointerList<OrderBookQuote>      *m_bidList;
-    PointerList<OrderBookQuote>      *m_askList;
+class OrderBookTableItem {
+    PointerList<OrderBookQuote>      *m_sellQuoteList;
+    PointerList<OrderBookQuote>      *m_buyQuoteList;
 
     bool                              m_used;
 
 public:
     OrderBookTableItem() {
-        this->m_bidList = new PointerList<OrderBookQuote>(128);
-        this->m_askList = new PointerList<OrderBookQuote>(128);
-        this->m_bidList->AllocData();
-        this->m_askList->AllocData();
+        this->m_sellQuoteList = new PointerList<OrderBookQuote>(128);
+        this->m_buyQuoteList = new PointerList<OrderBookQuote>(128);
+        this->m_sellQuoteList->AllocData();
+        this->m_buyQuoteList->AllocData();
     }
     ~OrderBookTableItem() {
-        this->m_bidList->FreeData();
-        this->m_askList->FreeData();
-        delete this->m_bidList;
-        delete this->m_askList;
+        this->m_sellQuoteList->FreeData();
+        this->m_buyQuoteList->FreeData();
+        delete this->m_sellQuoteList;
+        delete this->m_buyQuoteList;
     }
 
+    inline PointerList<OrderBookQuote>* SellQuotes() { return this->m_sellQuoteList; }
+    inline PointerList<OrderBookQuote>* BuyQuotes() { return this->m_buyQuoteList; }
     inline bool Used() { return this->m_used; }
     inline void Used(bool used) { this->m_used = used; }
     inline void Clear() {
-        this->m_bidList->Clear();
-        this->m_askList->Clear();
+        this->m_sellQuoteList->Clear();
+        this->m_buyQuoteList->Clear();
     }
 
     inline void Assign(OrderBookQuote *quote, const char *id, Decimal *price, Decimal *size) {
@@ -56,68 +58,64 @@ public:
     }
 
     inline void AddBuyQuote(const char *id, Decimal *price, Decimal *size) {
-        LinkedPointer<OrderBookQuote> *node = this->m_askList->Start();
+        LinkedPointer<OrderBookQuote> *node = this->m_buyQuoteList->Start();
         double value = price->Calculate();
 
         while(true) {
             if(node->Data()->Price.Value < value) {
-                LinkedPointer<OrderBookQuote> *curr = this->m_askList->Pop();
+                LinkedPointer<OrderBookQuote> *curr = this->m_buyQuoteList->Pop();
                 this->Assign(curr->Data(), id, price, size);
-                this->m_askList->Insert(node, curr);
+                this->m_buyQuoteList->Insert(node, curr);
                 return;
             }
-            if(node == this->m_askList->End())
+            if(node == this->m_buyQuoteList->End())
                 break;
             node = node->Next();
         }
-        LinkedPointer<OrderBookQuote> *curr = this->m_askList->Pop();
+        LinkedPointer<OrderBookQuote> *curr = this->m_buyQuoteList->Pop();
         this->Assign(curr->Data(), id, price, size);
-        this->m_askList->Add(curr);
+        this->m_buyQuoteList->Add(curr);
     }
 
     inline void AddSellQuote(const char *id, Decimal *price, Decimal *size) {
-        LinkedPointer<OrderBookQuote> *node = this->m_bidList->Start();
+        LinkedPointer<OrderBookQuote> *node = this->m_sellQuoteList->Start();
         double value = price->Calculate();
 
         while(true) {
             if(node->Data()->Price.Value > value) {
-                LinkedPointer<OrderBookQuote> *curr = this->m_bidList->Pop();
+                LinkedPointer<OrderBookQuote> *curr = this->m_sellQuoteList->Pop();
                 this->Assign(curr->Data(), id, price, size);
-                this->m_bidList->Insert(node, curr);
+                this->m_sellQuoteList->Insert(node, curr);
                 return;
             }
-            if(node == this->m_bidList->End())
+            if(node == this->m_sellQuoteList->End())
                 break;
             node = node->Next();
         }
-        LinkedPointer<OrderBookQuote> *curr = this->m_bidList->Pop();
+        LinkedPointer<OrderBookQuote> *curr = this->m_sellQuoteList->Pop();
         this->Assign(curr->Data(), id, price, size);
-        this->m_bidList->Add(curr);
-    }
-
-    inline void Add(T *item) {
-
+        this->m_sellQuoteList->Add(curr);
     }
 };
 
 template <typename T> class OrderBookTable {
-    HashTable<OrderBookTableItem<T>>                *m_table;
+    HashTable<T>                *m_table;
 
 public:
     OrderBookTable() {
-        this->m_table = new HashTable<OrderBookTableItem<T>>();
+        this->m_table = new HashTable<OrderBookTableItem>();
     }
     ~OrderBookTable() {
         delete this->m_table;
     }
 
     inline void Add(const char *symbol, const char *tradingSession, T *item) {
-        OrderBookTableItem<T> *tableItem = this->m_table->GetItem(symbol, tradingSession);
+        T *tableItem = this->m_table->GetItem(symbol, tradingSession);
         this->m_table->AddUsed(tableItem);
         tableItem->Add(item);
     }
     inline void Add(const char *symbol, const char *tradingSession, T **items) {
-        OrderBookTableItem<T> *tableItem = this->m_table->GetItem(symbol, tradingSession);
+        T *tableItem = this->m_table->GetItem(symbol, tradingSession);
         this->m_table->AddUsed(tableItem);
         tableItem->Add(items);
     }
@@ -125,14 +123,14 @@ public:
         this->m_table->Clear();
     }
     inline void ClearItem(const char *symbol, const char *tradingSession) {
-        OrderBookTableItem<T> *tableItem = this->m_table->GetItem(symbol, tradingSession);
+        T *tableItem = this->m_table->GetItem(symbol, tradingSession);
         this->m_table->RemoveUsed(tableItem);
         tableItem->Clear();
     }
     inline int SymbolsCount() { return this->m_table->SymbolsCount(); }
     inline int TradingSessionsCount() { return this->m_table->TradingSessionsCount(); }
     inline int UsedItemCount() { return this->m_table->UsedItemCount(); }
-    inline OrderBookTableItem<T>* GetItem(const char *symbol, const char *tradingSession) { return this->m_table->GetItem(symbol, tradingSession);  }
+    inline T* GetItem(const char *symbol, const char *tradingSession) { return this->m_table->GetItem(symbol, tradingSession);  }
 };
 
 #endif //HFT_ROBOT_ORDERBOOKTABLE_H

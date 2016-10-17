@@ -11,12 +11,39 @@ class DecimalTester {
 public:
     void Test() {
         Decimal dec;
-        for(double d = 0.0; d < 1.0; d += 0.0000001) {
-            dec.Mantissa = (INT64)(d * 10000000.0 + 0.5);
+        for(int i = 0; i < 1000000; i++) {
+            double d = i * 0.0000001;
+            dec.Mantissa = i;
             dec.Exponent = -7;
-
-            double d2 = dec.Calculate();
-            if(d != d2)
+            if(d != dec.Calculate())
+                throw;
+        }
+        for(int i = 0; i < 10000000; i+=5) {
+            double d = i * 0.00000001;
+            dec.Mantissa = i;
+            dec.Exponent = -8;
+            if(d != dec.Calculate())
+                throw;
+        }
+        for(int i = 0; i < 100000000; i+=53) {
+            double d = i * 0.000000001;
+            dec.Mantissa = i;
+            dec.Exponent = -9;
+            if(d != dec.Calculate())
+                throw;
+        }
+        for(int i = 0; i < 10000; i++) {
+            double d = i;
+            dec.Mantissa = i;
+            dec.Exponent = 0;
+            if(d != dec.Calculate())
+                throw;
+        }
+        for(int i = 0; i < 10000; i++) {
+            double d = i * 10;
+            dec.Mantissa = i;
+            dec.Exponent = 1;
+            if(d != dec.Calculate())
                 throw;
         }
     }

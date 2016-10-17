@@ -402,19 +402,62 @@ class Decimal {
 public:
     INT64		Mantissa;
     INT32		Exponent;
+    INT64       MantissaDigitCount;
     double      Value;
 
     Decimal() {
         Mantissa = 0;
         Exponent = 0;
+        MantissaDigitCount = 0;
     }
     Decimal(INT64 mantissa, INT32 exponent) {
         this->Mantissa = mantissa;
         this->Exponent = exponent;
+        //this->Update();
     }
     inline void Set(INT64 mantissa, INT32 exponent) {
         this->Mantissa = mantissa;
         this->Exponent = exponent;
+        //this->Update();
+    }
+    inline void CalcMantissaDigitCount() {
+        if(Mantissa > 99999) { // 6 digits and above
+            if(MantissaDigitCount > 9999999) { // 8 and above
+                if(MantissaDigitCount > 99999999999) { // 10 and above
+                    if(MantissaDigitCount < 10000000000)
+                        MantissaDigitCount = 10;
+                    throw;
+                }
+                else {
+                    if(MantissaDigitCount > 99999999)
+                        MantissaDigitCount = 9;
+                    else
+                        MantissaDigitCount = 8;
+                }
+            }
+            else {
+                if(MantissaDigitCount > 999999)
+                    MantissaDigitCount = 7;
+                else
+                    MantissaDigitCount = 6;
+            }
+        }
+        else {
+            if(Mantissa > 999) { // 4 digits and above
+                if(Mantissa > 9999)
+                    MantissaDigitCount = 5;
+                else
+                    MantissaDigitCount = 4;
+            }
+            else {
+                if(Mantissa > 99)
+                    MantissaDigitCount = 3;
+                else if(Mantissa > 9)
+                    MantissaDigitCount = 2;
+                else
+                    MantissaDigitCount = 1;
+            }
+        }
     }
     inline double Calculate() {
         if(Exponent < 0)

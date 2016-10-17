@@ -115,8 +115,8 @@ protected:
     bool                                        m_shouldReceiveAnswer;
 
 protected:
-	OrderBookTable<FastOBSFONDItemInfo>			*m_orderBookTableFond;
-    OrderBookTable<FastOBSCURRItemInfo>         *m_orderBookTableCurr;
+	OrderBookTable<OrderBookTableItem>			*m_orderBookTableFond;
+    OrderBookTable<OrderBookTableItem>          *m_orderBookTableCurr;
 private:
 
     inline void GetCurrentTime(UINT64 *time) {
@@ -403,6 +403,8 @@ public:
 	~FeedConnection();
 
     inline int LastMsgSeqNumProcessed() { return this->m_lastMsgSeqNumProcessed; }
+	inline OrderBookTable<OrderBookTableItem> *OrderBookFond() { return this->m_orderBookTableFond; }
+	inline OrderBookTable<OrderBookTableItem> *OrderBookCurr() { return this->m_orderBookTableCurr; }
 
     inline void StartNewSnapshot() {
         DefaultLogManager::Default->WriteSuccess(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_StartNewSnapshot, true);
@@ -535,7 +537,7 @@ public:
 		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
 
 		this->SetType(FeedConnectionType::Incremental);
-		this->m_orderBookTableCurr = new OrderBookTable<FastOBSCURRItemInfo>();
+		this->m_orderBookTableCurr = new OrderBookTable<OrderBookTableItem>();
     }
 	ISocketBufferProvider* CreateSocketBufferProvider() {
 		return new SocketBufferProvider(DefaultSocketBufferManager::Default,
@@ -657,7 +659,7 @@ public:
 	FeedConnection_FOND_OBR(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
 		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
 		this->SetType(FeedConnectionType::Incremental);
-		this->m_orderBookTableFond = new OrderBookTable<FastOBSFONDItemInfo>();
+		this->m_orderBookTableFond = new OrderBookTable<OrderBookTableItem>();
     }
 	ISocketBufferProvider* CreateSocketBufferProvider() {
 		return new SocketBufferProvider(DefaultSocketBufferManager::Default,
