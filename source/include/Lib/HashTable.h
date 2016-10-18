@@ -55,56 +55,121 @@ public:
     }
 };
 
+class SizedArray {
+
+    inline bool IsEquals4(const char *s2) {
+        UINT32 *u1 = (UINT32*)this->m_text;
+        UINT32 *u2 = (UINT32*)s2;
+        return (*u1) == (*u2);
+    }
+
+    inline bool IsEquals10(const char *s2) {
+        UINT64 *u1 = (UINT64*)this->m_text;
+        UINT64 *u2 = (UINT64*)s2;
+
+        if( (*u1) != (*u2) )
+            return false;
+
+        short *sh1 = (short*)(this->m_text + 8);
+        short *sh2 = (short*)(s2 + 8);
+
+        return (*sh1) == (*sh2);
+    }
+
+    inline bool IsEquals12(const char *s2) {
+        UINT64 *u1 = (UINT64*)this->m_text;
+        UINT64 *u2 = (UINT64*)s2;
+
+        if( (*u1) != (*u2) )
+            return false;
+
+        UINT32 *sh1 = (UINT32*)(this->m_text + 8);
+        UINT32 *sh2 = (UINT32*)(s2 + 8);
+
+        return (*sh1) == (*sh2);
+    }
+public:
+
+    const char *m_text;
+    int m_length;
+
+    SizedArray() {
+        this->m_length = 0;
+    }
+
+    inline bool Equal(const char *text, int length) {
+        if(this->m_length != length)
+            return false;
+
+        if(this->m_length == 4)
+            return this->IsEquals4(text);
+        if(this->m_length == 10)
+            return this->IsEquals10(text);
+        if(this->m_length == 12)
+            return this->IsEquals12(text);
+
+        UINT64 *u1 = (UINT64*)this->m_text;
+        UINT64 *u2 = (UINT64*)text;
+
+        int i;
+        for(i = 0; i < this->m_length; i+= 8) {
+            if(*u1 != *u2)
+                return false;
+            u1++;
+            u2++;
+        }
+        int len = 8 - (i - this->m_length);
+        u1--;
+        u2--;
+        short *sh1 = (short*)u1;
+        short *sh2 = (short*)u2;
+        for( i = i - 8; i < this->m_length; i+= 2) {
+             if(*sh1 != *sh2)
+                 return false;
+        }
+        if(len % 2 != 0)
+            return this->m_text[length - 1] == text[length - 1];
+        return true;
+    }
+};
+
 template<typename TableItemClassName> class HashTable {
-    char                                m_symbols[MAX_SYMBOLS_COUNT][4];
-    char                                m_tradingSession[MAX_TRADING_SESSIONS_COUNT][10];
+
+    SizedArray*                         m_symbols[MAX_SYMBOLS_COUNT];
+    SizedArray*                         m_tradingSession[MAX_TRADING_SESSIONS_COUNT];
     int                                 m_symbolsCount;
     int                                 m_tradingSessionsCount;
 
     TableItemClassName*                    m_table[MAX_SYMBOLS_COUNT][MAX_TRADING_SESSIONS_COUNT];
     PointerList<TableItemClassName>*       m_usedItems;
 
-    inline bool IsSymbolEquals(const char *s1, const char *s2) {
-        UINT32 *u1 = (UINT32*)s1;
-        UINT32 *u2 = (UINT32*)s2;
-        return (*u1) == (*u2);
-    }
-
-    inline bool IsTradingSessionEquals(const char *s1, const char *s2) {
-        UINT64 *u1 = (UINT64*)s1;
-        UINT64 *u2 = (UINT64*)s2;
-
-        if( (*u1) != (*u2) )
-            return false;
-
-        short *sh1 = (short*)(s1 + 8);
-        short *sh2 = (short*)(s2 + 8);
-
-        return (*sh1) == (*sh2);
-    }
-
 public:
-    inline int GetSymbolIndex(const char *symbol) {
+    inline int GetSymbolIndex(const char *symbol, int length) {
         for(int i = 0; i < this->m_symbolsCount; i++) {
-            if(this->IsSymbolEquals(symbol, this->m_symbols[i]))
+            if(this->m_symbols[i]->Equal(symbol, length))
                 return i;
         }
-        *((UINT32*)this->m_symbols[this->m_symbolsCount]) = *((UINT32*)symbol);
+        this->m_symbols[this->m_symbolsCount]->m_text = symbol;
+        this->m_symbols[this->m_symbolsCount]->m_length = length;
         this->m_symbolsCount++;
         return this->m_symbolsCount - 1;
     }
-    inline int GetTradingSessionIdIndex(const char *tradingSessionId) {
+    inline int GetTradingSessionIdIndex(const char *tradingSessionId, int length) {
         for(int i = 0; i < this->m_tradingSessionsCount; i++) {
-            if(this->IsTradingSessionEquals(tradingSessionId, this->m_tradingSession[i]))
+            if(this->m_tradingSession[i]->Equal(tradingSessionId, length))
                 return i;
         }
-        *((UINT64*)this->m_tradingSession[this->m_tradingSessionsCount]) = *((UINT64*)tradingSessionId);
-        *((short*)(this->m_tradingSession[this->m_tradingSessionsCount] + 8)) = *((short*)(tradingSessionId + 8));
+        this->m_tradingSession[this->m_tradingSessionsCount]->m_text = tradingSessionId;
+        this->m_tradingSession[this->m_tradingSessionsCount]->m_length = length;
         this->m_tradingSessionsCount++;
         return this->m_tradingSessionsCount - 1;
     }
 
     HashTable() {
+        for(int i = 0; i < MAX_SYMBOLS_COUNT; i++)
+            this->m_symbols[i] = new SizedArray();
+        for(int j = 0; j < MAX_TRADING_SESSIONS_COUNT; j++)
+            this->m_tradingSession[j] = new SizedArray();
         for(int i = 0; i < MAX_SYMBOLS_COUNT; i++) {
             for(int j = 0; j < MAX_TRADING_SESSIONS_COUNT; j++) {
                 this->m_table[i][j] = new TableItemClassName();
@@ -113,6 +178,10 @@ public:
         this->m_usedItems = new PointerList<TableItemClassName>(MAX_SYMBOLS_COUNT * MAX_TRADING_SESSIONS_COUNT + 10);
     }
     ~HashTable() {
+        for(int i = 0; i < MAX_SYMBOLS_COUNT; i++)
+            delete this->m_symbols[i];
+        for(int j = 0; j < MAX_TRADING_SESSIONS_COUNT; j++)
+            delete this->m_tradingSession[j];
         for(int i = 0; i < MAX_SYMBOLS_COUNT; i++) {
             for(int j = 0; j < MAX_TRADING_SESSIONS_COUNT; j++) {
                 delete this->m_table[i][j];
@@ -127,9 +196,9 @@ public:
     }
     inline int UsedItemCount() { return this->m_usedItems->Count(); }
 
-    inline TableItemClassName* GetItem(const char *symbol, const char *tradingSession) {
-        int symbolIndex = GetSymbolIndex(symbol);
-        int tradingSessionIndex = GetTradingSessionIdIndex(tradingSession);
+    inline TableItemClassName* GetItem(const char *symbol, int symbolLen, const char *tradingSession, int tradingSessionLen) {
+        int symbolIndex = GetSymbolIndex(symbol, symbolLen);
+        int tradingSessionIndex = GetTradingSessionIdIndex(tradingSession, tradingSessionLen);
         return this->m_table[symbolIndex][tradingSessionIndex];
     }
 
@@ -154,7 +223,6 @@ public:
                 return 0;
             node = this->m_usedItems->Next(node);
         }
-        return 0;
     }
 
     inline void AddUsed(TableItemClassName *item) {

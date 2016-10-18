@@ -41,6 +41,8 @@ FeedConnection::FeedConnection(const char *id, const char *name, char value, Fee
     this->m_type = FeedConnectionType::Incremental;
 
 	this->SetState(FeedConnectionState::fcsSuspend, &FeedConnection::Suspend_Atom);
+
+    this->obrLogFile = fopen("obr_log_file.txt", "wt");
 }
 
 FeedConnection::~FeedConnection() {

@@ -194,8 +194,9 @@ private:
         bool processed = false;
         while(i <= this->m_maxRecvMsgSeqNum) {
             if(this->m_packets[i] == 0) {
-                this->m_currentMsgSeqNum = i;
-                return processed;
+				i++; continue; // TODO remove this code
+                //this->m_currentMsgSeqNum = i; // TODO uncomment this code
+                //return processed;
             }
             this->ProcessMessage(this->m_packets[i]);
             processed = true;
@@ -339,7 +340,7 @@ private:
 	inline void RemoveOrderBookInfo(FastOBSFONDItemInfo *info) {
 		printf("remove order book %s\n", info->MDEntryID);
 	}
-
+	FILE *obrLogFile;
 	inline bool OnIncrementalRefresh_OBR_FOND(FastOBSFONDItemInfo *info) {
 		if(info->MDUpdateAction == MDUpdateAction::mduaAdd) {
 			AddOrderBookInfo(info);
@@ -389,7 +390,20 @@ private:
 
 	inline bool ProcessMessage(BinaryLogItem *item) {
         unsigned char *buffer = this->m_recvABuffer->Item(item->m_itemIndex);
-        this->m_fastProtocolManager->SetNewBuffer(buffer, this->m_recvABuffer->ItemLength(item->m_itemIndex));
+
+		//TODO remove unused logging
+		int length = this->m_recvABuffer->ItemLength(item->m_itemIndex);
+		fprintf(this->obrLogFile, "unsigned char *msg%d = new unsigned char [%d] { ", item->m_itemIndex, length);
+		for(int i = 0; i < length; i++) {
+			fprintf(this->obrLogFile, "0x%2.2x", buffer[i]);
+			if(i < length - 1)
+				fprintf(this->obrLogFile, ", ");
+		}
+		fprintf(this->obrLogFile, "};\n");
+		fflush(this->obrLogFile);
+		//till this
+
+		this->m_fastProtocolManager->SetNewBuffer(buffer, this->m_recvABuffer->ItemLength(item->m_itemIndex));
         this->m_fastProtocolManager->ReadMsgSeqNumber();
 		DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Decode);
 		this->m_fastProtocolManager->Decode();

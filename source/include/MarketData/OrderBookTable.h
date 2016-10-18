@@ -12,14 +12,17 @@ class OrderBookQuote {
 public:
     Decimal         Price;
     Decimal         Size;
-    char            Id[11];
+    SizedArray      *Id;
+    int             RptSec;
+    INT32           Time;
+    INT32           OrigTime;
 
     OrderBookQuote() {
+        Id = new SizedArray();
         Price.Exponent = 0;
         Price.Mantissa = 0;
         Size.Exponent = 0;
         Size.Mantissa = 0;
-        bzero(this->Id, 11);
     }
 };
 
@@ -52,49 +55,66 @@ public:
         this->m_buyQuoteList->Clear();
     }
 
-    inline void Assign(OrderBookQuote *quote, const char *id, Decimal *price, Decimal *size) {
-        quote->Price.Assign(price);
-        quote->Size.Assign(size);
-    }
-
-    inline void AddBuyQuote(const char *id, Decimal *price, Decimal *size) {
+    inline LinkedPointer<OrderBookQuote>* AddBuyQuote(Decimal *price) {
         LinkedPointer<OrderBookQuote> *node = this->m_buyQuoteList->Start();
         double value = price->Calculate();
 
         while(true) {
             if(node->Data()->Price.Value < value) {
                 LinkedPointer<OrderBookQuote> *curr = this->m_buyQuoteList->Pop();
-                this->Assign(curr->Data(), id, price, size);
                 this->m_buyQuoteList->Insert(node, curr);
-                return;
+                return curr;
             }
             if(node == this->m_buyQuoteList->End())
                 break;
             node = node->Next();
         }
         LinkedPointer<OrderBookQuote> *curr = this->m_buyQuoteList->Pop();
-        this->Assign(curr->Data(), id, price, size);
         this->m_buyQuoteList->Add(curr);
+        return curr;
     }
 
-    inline void AddSellQuote(const char *id, Decimal *price, Decimal *size) {
+    inline LinkedPointer<OrderBookQuote>* AddSellQuote(Decimal *price) {
         LinkedPointer<OrderBookQuote> *node = this->m_sellQuoteList->Start();
         double value = price->Calculate();
 
         while(true) {
             if(node->Data()->Price.Value > value) {
                 LinkedPointer<OrderBookQuote> *curr = this->m_sellQuoteList->Pop();
-                this->Assign(curr->Data(), id, price, size);
                 this->m_sellQuoteList->Insert(node, curr);
-                return;
+                return curr;
             }
             if(node == this->m_sellQuoteList->End())
                 break;
             node = node->Next();
         }
         LinkedPointer<OrderBookQuote> *curr = this->m_sellQuoteList->Pop();
-        this->Assign(curr->Data(), id, price, size);
         this->m_sellQuoteList->Add(curr);
+        return curr;
+    }
+
+    inline void AddQuote(LinkedPointer<OrderBookQuote> *ptr, FastOBSFONDItemInfo *item) {
+        OrderBookQuote* ob = ptr->Data();
+
+        ob->Id->m_text = item->MDEntryID;
+        ob->Id->m_length = item->MDEntryIDLength;
+        ob->Price.Assign(&(item->MDEntryPx));
+        ob->Size.Assign(&(item->MDEntrySize));
+        ob->RptSec = item->RptSeq;
+        ob->Time = item->MDEntryTime;
+        ob->OrigTime = item->OrigTime;
+    }
+
+    inline LinkedPointer<OrderBookQuote>* AddBuyQuote(FastOBSFONDItemInfo *item) {
+        LinkedPointer<OrderBookQuote> *ptr = AddBuyQuote(&(item->MDEntryPx));
+        this->AddQuote(ptr, item);
+        return ptr;
+    }
+
+    inline LinkedPointer<OrderBookQuote>* AddSellQuote(FastOBSFONDItemInfo *item) {
+        LinkedPointer<OrderBookQuote> *ptr = AddSellQuote(&(item->MDEntryPx));
+        this->AddQuote(ptr, item);
+        return ptr;
     }
 };
 
@@ -109,28 +129,28 @@ public:
         delete this->m_table;
     }
 
-    inline void Add(const char *symbol, const char *tradingSession, T *item) {
-        T *tableItem = this->m_table->GetItem(symbol, tradingSession);
+    inline void Add(const char *symbol, int symbolLen, const char *tradingSession, int tradingLen, T *item) {
+        T *tableItem = this->m_table->GetItem(symbol, symbolLen, tradingSession, tradingLen);
         this->m_table->AddUsed(tableItem);
         tableItem->Add(item);
     }
-    inline void Add(const char *symbol, const char *tradingSession, T **items) {
-        T *tableItem = this->m_table->GetItem(symbol, tradingSession);
+    inline void Add(const char *symbol, int symbolLen, const char *tradingSession, int tradingLen, T **items) {
+        T *tableItem = this->m_table->GetItem(symbol, symbolLen, tradingSession, tradingLen);
         this->m_table->AddUsed(tableItem);
         tableItem->Add(items);
     }
     inline void Clear() {
         this->m_table->Clear();
     }
-    inline void ClearItem(const char *symbol, const char *tradingSession) {
-        T *tableItem = this->m_table->GetItem(symbol, tradingSession);
+    inline void ClearItem(const char *symbol, int symbolLen, const char *tradingSession, int tradingSessionLen) {
+        T *tableItem = this->m_table->GetItem(symbol, symbolLen, tradingSession, tradingSessionLen);
         this->m_table->RemoveUsed(tableItem);
         tableItem->Clear();
     }
     inline int SymbolsCount() { return this->m_table->SymbolsCount(); }
     inline int TradingSessionsCount() { return this->m_table->TradingSessionsCount(); }
     inline int UsedItemCount() { return this->m_table->UsedItemCount(); }
-    inline T* GetItem(const char *symbol, const char *tradingSession) { return this->m_table->GetItem(symbol, tradingSession);  }
+    inline T* GetItem(const char *symbol, int symbolLen, const char *tradingSession, int tradingSessionLen) { return this->m_table->GetItem(symbol, symbolLen, tradingSession, tradingSessionLen);  }
 };
 
 #endif //HFT_ROBOT_ORDERBOOKTABLE_H

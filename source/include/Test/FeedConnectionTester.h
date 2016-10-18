@@ -48,7 +48,7 @@ public:
             throw;
         if(fc->m_orderBookTableFond->TradingSessionsCount() != 1)
             throw;
-        OrderBookTableItem *obi = fc->OrderBookFond()->GetItem(symbol, trading);
+        OrderBookTableItem *obi = fc->OrderBookFond()->GetItem(symbol, 4, trading, 10);
         if(obi == 0)
             throw;
         if(obi->BuyQuotes()->Count() != 1)
@@ -60,7 +60,7 @@ public:
             throw;
         if(!quote->Size.Equal(&size))
             throw;
-        if(strcmp(quote->Id, entryId) != 0)
+        if(quote->Id->Equal(entryId, 10))
             throw;
 
         /*
