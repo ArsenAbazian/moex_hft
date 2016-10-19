@@ -329,7 +329,7 @@ private:
     }
 
 	inline void AddOrderBookInfo(FastOBSFONDItemInfo *info) {
-
+		this->m_orderBookTableFond->Add(info);
 		//this->m_orderBookTableFond->Add(info->Symbol, info->TradingSessionID, info);
 	}
 

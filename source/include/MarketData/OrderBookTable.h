@@ -59,15 +59,17 @@ public:
         LinkedPointer<OrderBookQuote> *node = this->m_buyQuoteList->Start();
         double value = price->Calculate();
 
-        while(true) {
-            if(node->Data()->Price.Value < value) {
-                LinkedPointer<OrderBookQuote> *curr = this->m_buyQuoteList->Pop();
-                this->m_buyQuoteList->Insert(node, curr);
-                return curr;
+        if(node != null) {
+            while (true) {
+                if (node->Data()->Price.Value < value) {
+                    LinkedPointer<OrderBookQuote> *curr = this->m_buyQuoteList->Pop();
+                    this->m_buyQuoteList->Insert(node, curr);
+                    return curr;
+                }
+                if (node == this->m_buyQuoteList->End())
+                    break;
+                node = node->Next();
             }
-            if(node == this->m_buyQuoteList->End())
-                break;
-            node = node->Next();
         }
         LinkedPointer<OrderBookQuote> *curr = this->m_buyQuoteList->Pop();
         this->m_buyQuoteList->Add(curr);
@@ -78,15 +80,17 @@ public:
         LinkedPointer<OrderBookQuote> *node = this->m_sellQuoteList->Start();
         double value = price->Calculate();
 
-        while(true) {
-            if(node->Data()->Price.Value > value) {
-                LinkedPointer<OrderBookQuote> *curr = this->m_sellQuoteList->Pop();
-                this->m_sellQuoteList->Insert(node, curr);
-                return curr;
+        if(node != null) {
+            while (true) {
+                if (node->Data()->Price.Value > value) {
+                    LinkedPointer<OrderBookQuote> *curr = this->m_sellQuoteList->Pop();
+                    this->m_sellQuoteList->Insert(node, curr);
+                    return curr;
+                }
+                if (node == this->m_sellQuoteList->End())
+                    break;
+                node = node->Next();
             }
-            if(node == this->m_sellQuoteList->End())
-                break;
-            node = node->Next();
         }
         LinkedPointer<OrderBookQuote> *curr = this->m_sellQuoteList->Pop();
         this->m_sellQuoteList->Add(curr);
@@ -116,6 +120,12 @@ public:
         this->AddQuote(ptr, item);
         return ptr;
     }
+
+    inline LinkedPointer<OrderBookQuote>* Add(FastOBSFONDItemInfo *info) {
+        if(info->MDEntryType[0] == mdetBuyQuote)
+            return this->AddBuyQuote(info);
+        return this->AddSellQuote(info);
+    }
 };
 
 template <typename T> class OrderBookTable {
@@ -128,7 +138,6 @@ public:
     ~OrderBookTable() {
         delete this->m_table;
     }
-
     inline void Add(const char *symbol, int symbolLen, const char *tradingSession, int tradingLen, T *item) {
         T *tableItem = this->m_table->GetItem(symbol, symbolLen, tradingSession, tradingLen);
         this->m_table->AddUsed(tableItem);
@@ -138,6 +147,11 @@ public:
         T *tableItem = this->m_table->GetItem(symbol, symbolLen, tradingSession, tradingLen);
         this->m_table->AddUsed(tableItem);
         tableItem->Add(items);
+    }
+    inline void Add(FastOBSFONDItemInfo *info) {
+        T *tableItem = this->m_table->GetItem(info->Symbol, info->SymbolLength, info->TradingSessionID, info->TradingSessionIDLength);
+        this->m_table->AddUsed(tableItem);
+        tableItem->Add(info);
     }
     inline void Clear() {
         this->m_table->Clear();

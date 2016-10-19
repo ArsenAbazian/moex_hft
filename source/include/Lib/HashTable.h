@@ -226,17 +226,16 @@ public:
     }
 
     inline void AddUsed(TableItemClassName *item) {
-        LinkedPointer<TableItemClassName> *node = this->m_usedItems->Start();
-        if(node->Data()->Used())
+        if(item->Used())
             return;
+        item->Used(true);
         this->m_usedItems->Add(item);
     }
     inline void RemoveUsed(TableItemClassName *item) {
-        LinkedPointer<TableItemClassName> *listItem = GetUsedItem(item);
-        if(listItem != 0) {
-            this->m_usedItems->Remove(listItem);
-            listItem->Data()->Used(false);
-        }
+        if(item->Used())
+            return;
+        item->Used(false);
+        this->m_usedItems->Remove(item);
     }
 };
 
