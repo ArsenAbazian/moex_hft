@@ -330,15 +330,14 @@ private:
 
 	inline void AddOrderBookInfo(FastOBSFONDItemInfo *info) {
 		this->m_orderBookTableFond->Add(info);
-		//this->m_orderBookTableFond->Add(info->Symbol, info->TradingSessionID, info);
 	}
 
 	inline void ChangeOrderBookInfo(FastOBSFONDItemInfo *info) {
-		printf("chanfe order book %s\n", info->MDEntryID);
+		this->m_orderBookTableFond->Change(info);
 	}
 
 	inline void RemoveOrderBookInfo(FastOBSFONDItemInfo *info) {
-		printf("remove order book %s\n", info->MDEntryID);
+		this->m_orderBookTableFond->Remove(info);
 	}
 	FILE *obrLogFile;
 	inline bool OnIncrementalRefresh_OBR_FOND(FastOBSFONDItemInfo *info) {

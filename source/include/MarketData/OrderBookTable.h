@@ -97,7 +97,7 @@ public:
         return curr;
     }
 
-    inline void AddQuote(LinkedPointer<OrderBookQuote> *ptr, FastOBSFONDItemInfo *item) {
+    inline void AssignQuote(LinkedPointer<OrderBookQuote> *ptr, FastOBSFONDItemInfo *item) {
         OrderBookQuote* ob = ptr->Data();
 
         ob->Id->m_text = item->MDEntryID;
@@ -111,13 +111,13 @@ public:
 
     inline LinkedPointer<OrderBookQuote>* AddBuyQuote(FastOBSFONDItemInfo *item) {
         LinkedPointer<OrderBookQuote> *ptr = AddBuyQuote(&(item->MDEntryPx));
-        this->AddQuote(ptr, item);
+        this->AssignQuote(ptr, item);
         return ptr;
     }
 
     inline LinkedPointer<OrderBookQuote>* AddSellQuote(FastOBSFONDItemInfo *item) {
         LinkedPointer<OrderBookQuote> *ptr = AddSellQuote(&(item->MDEntryPx));
-        this->AddQuote(ptr, item);
+        this->AssignQuote(ptr, item);
         return ptr;
     }
 
@@ -125,6 +125,75 @@ public:
         if(info->MDEntryType[0] == mdetBuyQuote)
             return this->AddBuyQuote(info);
         return this->AddSellQuote(info);
+    }
+
+    inline LinkedPointer<OrderBookQuote>* GetQuote(PointerList<OrderBookQuote> *list, FastOBSFONDItemInfo *info) {
+        LinkedPointer<OrderBookQuote> *node = list->Start();
+        if(node == 0)
+            return 0;
+        while(true) {
+            if(node->Data()->Id->Equal(info->MDEntryID, info->MDEntryIDLength))
+                return node;
+            if(node == list->End())
+                return 0;
+            node = node->Next();
+        }
+    }
+
+    inline LinkedPointer<OrderBookQuote>* RemoveBuyQuote(FastOBSFONDItemInfo *info) {
+        LinkedPointer<OrderBookQuote> *node = this->m_buyQuoteList->Start();
+        if(node == 0)
+            return 0;
+        while(true) {
+            if(node->Data()->Id->Equal(info->MDEntryID, info->MDEntryIDLength)) {
+                this->m_buyQuoteList->Remove(node);
+                return node;
+            }
+            if(node == this->m_buyQuoteList->End())
+                break;
+            node = node->Next();
+        }
+        return 0;
+    }
+
+    inline LinkedPointer<OrderBookQuote>* RemoveSellQuote(FastOBSFONDItemInfo *info) {
+        LinkedPointer<OrderBookQuote> *node = this->m_sellQuoteList->Start();
+        if(node == 0)
+            return 0;
+        while(true) {
+            if(node->Data()->Id->Equal(info->MDEntryID, info->MDEntryIDLength)) {
+                this->m_sellQuoteList->Remove(node);
+                return node;
+            }
+            if(node == this->m_buyQuoteList->End())
+                break;
+            node = node->Next();
+        }
+        return 0;
+    }
+
+    inline void ChangeBuyQuote(FastOBSFONDItemInfo *info) {
+        this->RemoveBuyQuote(info);
+        this->AddBuyQuote(info);
+    }
+
+    inline void ChangeSellQuote(FastOBSFONDItemInfo *info) {
+        this->RemoveSellQuote(info);
+        this->AddSellQuote(info);
+    }
+
+    inline void Remove(FastOBSFONDItemInfo *info) {
+        if(info->MDEntryType[0] == mdetBuyQuote)
+            this->RemoveBuyQuote(info);
+        else
+            this->RemoveSellQuote(info);
+    }
+
+    inline void Change(FastOBSFONDItemInfo *info) {
+        if(info->MDEntryType[0] == mdetBuyQuote)
+            this->ChangeBuyQuote(info);
+        else
+            this->ChangeSellQuote(info);
     }
 };
 
@@ -152,6 +221,14 @@ public:
         T *tableItem = this->m_table->GetItem(info->Symbol, info->SymbolLength, info->TradingSessionID, info->TradingSessionIDLength);
         this->m_table->AddUsed(tableItem);
         tableItem->Add(info);
+    }
+    inline void Remove(FastOBSFONDItemInfo *info) {
+        T *tableItem = this->m_table->GetItem(info->Symbol, info->SymbolLength, info->TradingSessionID, info->TradingSessionIDLength);
+        tableItem->Remove(info);
+    }
+    inline void Change(FastOBSFONDItemInfo *info) {
+        T *tableItem = this->m_table->GetItem(info->Symbol, info->SymbolLength, info->TradingSessionID, info->TradingSessionIDLength);
+        tableItem->Change(info);
     }
     inline void Clear() {
         this->m_table->Clear();
