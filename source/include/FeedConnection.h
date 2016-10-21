@@ -354,7 +354,7 @@ private:
 		return true;
 	}
 
-	inline bool OnIncrementalRefresh_OBR_FOND(FastOBSFONDInfo *info) {
+	inline bool OnIncrementalRefresh_OBR_FOND(FastIncrementalOBRFONDInfo *info) {
 		bool res = true;
 		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 			res |= this->OnIncrementalRefresh_OBR_FOND(info->GroupMDEntries[i]);
@@ -362,16 +362,9 @@ private:
 		return res;
 	}
 
-    inline bool OnFullRefresh_OBS_FOND() {
-        /* TODO implement OnFullRefresh
-        FastOBSFONDInfo *info = (FastOBSFONDInfo*)this->m_fastProtocolManager->LastDecodeInfo();
-        PointerList *list = this->m_orderBookTable->GetListAndZeroRef(info->Symbol, info->TradingSessionID);
-        for(int i = 0; i < info->GroupMDEntriesCount; i++) {
-            FastOBSFONDItemInfo *item = info->GroupMDEntries[i];
-            list->Add(item->Pointer);
-        }
-        return true;
-        */
+    inline bool OnFullRefresh_OBS_FOND(FastOBSFONDInfo *info) {
+        this->m_orderBookTableFond->Clear();
+		this->m_orderBookTableFond->Add(info);
         return true;
     }
 
@@ -380,9 +373,9 @@ private:
 			case FeedConnectionMessage::fcmHeartBeat:
 				break;
 			case FeedConnectionMessage::fmcIncrementalRefresh_OBR_FOND:
-				return this->OnIncrementalRefresh_OBR_FOND((FastOBSFONDInfo*)this->m_fastProtocolManager->LastDecodeInfo());
+				return this->OnIncrementalRefresh_OBR_FOND((FastIncrementalOBRFONDInfo*)this->m_fastProtocolManager->LastDecodeInfo());
             case FeedConnectionMessage::fmcFullRefresh_OBS_FOND:
-                return this->OnFullRefresh_OBS_FOND();
+                return this->OnFullRefresh_OBS_FOND((FastOBSFONDInfo*)this->m_fastProtocolManager->LastDecodeInfo());
 		}
 		return true;
 	}

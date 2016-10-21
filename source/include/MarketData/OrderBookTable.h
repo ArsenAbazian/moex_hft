@@ -222,6 +222,15 @@ public:
         this->m_table->AddUsed(tableItem);
         tableItem->Add(info);
     }
+    inline void Add(FastOBSFONDInfo *info) {
+        T *tableItem = this->m_table->GetItem(info->Symbol, info->SymbolLength, info->TradingSessionID, info->TradingSessionIDLength);
+        this->m_table->AddUsed(tableItem);
+        FastOBSFONDItemInfo **item = info->GroupMDEntries;
+
+        for(int i = 0; i < info->GroupMDEntriesCount; i++, item++) {
+            tableItem->Add(*item);
+        }
+    }
     inline void Remove(FastOBSFONDItemInfo *info) {
         T *tableItem = this->m_table->GetItem(info->Symbol, info->SymbolLength, info->TradingSessionID, info->TradingSessionIDLength);
         tableItem->Remove(info);

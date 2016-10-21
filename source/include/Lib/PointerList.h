@@ -191,6 +191,20 @@ public:
         this->m_poolTail = end;
         this->m_count = 0;
     }
+
+    int CopyToArray(T *array) {
+        LinkedPointer<T> *node = this->Start();
+        if(node == 0)
+            return 0;
+        int index = 0;
+        while(true) {
+            array[index] = node->Data();
+            index++;
+            if(node == this->End())
+                return index;
+            node = node->Next();
+        }
+    }
 };
 
 #endif //HFT_ROBOT_SIMPLELIST_H
