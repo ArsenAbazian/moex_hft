@@ -11,7 +11,9 @@
 typedef enum _FeedConnectionMessage {
 	fcmHeartBeat = 2108,
 	fmcIncrementalRefresh_OBR_FOND = 2422,
-	fmcFullRefresh_OBS_FOND = 2412
+	fmcFullRefresh_OBS_FOND = 2412,
+	fmcIncrementalRefresh_OBR_CURR = 3512,
+	fmcFullRefresh_OBS_CURR = 3502
 }FeedConnectionMessage;
 
 typedef enum _FeedConnectionProtocol {
@@ -115,8 +117,8 @@ protected:
     bool                                        m_shouldReceiveAnswer;
 
 protected:
-	OrderBookTable<OrderBookTableItem>			*m_orderBookTableFond;
-    OrderBookTable<OrderBookTableItem>          *m_orderBookTableCurr;
+	OrderBookTable<FastOBSFONDInfo, FastOBSFONDItemInfo>		*m_orderBookTableFond;
+    OrderBookTable<FastOBSCURRInfo, FastOBSCURRItemInfo>        *m_orderBookTableCurr;
 private:
 
     inline void GetCurrentTime(UINT64 *time) {
@@ -328,27 +330,53 @@ private:
         return true;
     }
 
-	inline void AddOrderBookInfo(FastOBSFONDItemInfo *info) {
+	inline void AddOrderBookInfoFond(FastOBSFONDItemInfo *info) {
 		this->m_orderBookTableFond->Add(info);
 	}
 
-	inline void ChangeOrderBookInfo(FastOBSFONDItemInfo *info) {
+	inline void ChangeOrderBookInfoFond(FastOBSFONDItemInfo *info) {
 		this->m_orderBookTableFond->Change(info);
 	}
 
-	inline void RemoveOrderBookInfo(FastOBSFONDItemInfo *info) {
+	inline void RemoveOrderBookInfoFond(FastOBSFONDItemInfo *info) {
 		this->m_orderBookTableFond->Remove(info);
+	}
+
+	inline void AddOrderBookInfoCurr(FastOBSCURRItemInfo *info) {
+		this->m_orderBookTableCurr->Add(info);
+	}
+
+	inline void ChangeOrderBookInfoCurr(FastOBSCURRItemInfo *info) {
+		this->m_orderBookTableCurr->Change(info);
+	}
+
+	inline void RemoveOrderBookInfoCurr(FastOBSCURRItemInfo *info) {
+		this->m_orderBookTableCurr->Remove(info);
 	}
 	FILE *obrLogFile;
 	inline bool OnIncrementalRefresh_OBR_FOND(FastOBSFONDItemInfo *info) {
 		if(info->MDUpdateAction == MDUpdateAction::mduaAdd) {
-			AddOrderBookInfo(info);
+			AddOrderBookInfoFond(info);
 		}
 		else if(info->MDUpdateAction == MDUpdateAction::mduaChange) {
-			ChangeOrderBookInfo(info);
+			ChangeOrderBookInfoFond(info);
 		}
 		else if(info->MDUpdateAction == MDUpdateAction::mduaDelete) {
-			RemoveOrderBookInfo(info);
+			RemoveOrderBookInfoFond(info);
+		}
+
+		return true;
+	}
+
+	inline bool OnIncrementalRefresh_OBR_CURR(FastOBSCURRItemInfo *info) {
+		if(info->MDUpdateAction == MDUpdateAction::mduaAdd) {
+			AddOrderBookInfoCurr(info);
+		}
+		else if(info->MDUpdateAction == MDUpdateAction::mduaChange) {
+			ChangeOrderBookInfoCurr(info);
+		}
+		else if(info->MDUpdateAction == MDUpdateAction::mduaDelete) {
+			RemoveOrderBookInfoCurr(info);
 		}
 
 		return true;
@@ -368,6 +396,20 @@ private:
         return true;
     }
 
+	inline bool OnIncrementalRefresh_OBR_CURR(FastIncrementalOBRCURRInfo *info) {
+		bool res = true;
+		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
+			res |= this->OnIncrementalRefresh_OBR_CURR(info->GroupMDEntries[i]);
+		}
+		return res;
+	}
+
+	inline bool OnFullRefresh_OBS_CURR(FastOBSCURRInfo *info) {
+		this->m_orderBookTableCurr->Clear();
+		this->m_orderBookTableCurr->Add(info);
+		return true;
+	}
+
 	inline bool ApplyDecodedMessage() {
 		switch(this->m_fastProtocolManager->TemplateId()) {
 			case FeedConnectionMessage::fcmHeartBeat:
@@ -376,6 +418,10 @@ private:
 				return this->OnIncrementalRefresh_OBR_FOND((FastIncrementalOBRFONDInfo*)this->m_fastProtocolManager->LastDecodeInfo());
             case FeedConnectionMessage::fmcFullRefresh_OBS_FOND:
                 return this->OnFullRefresh_OBS_FOND((FastOBSFONDInfo*)this->m_fastProtocolManager->LastDecodeInfo());
+			case FeedConnectionMessage::fmcIncrementalRefresh_OBR_CURR:
+				return this->OnIncrementalRefresh_OBR_CURR((FastIncrementalOBRCURRInfo*)this->m_fastProtocolManager->LastDecodeInfo());
+			case FeedConnectionMessage::fmcFullRefresh_OBS_CURR:
+				return this->OnFullRefresh_OBS_CURR((FastOBSCURRInfo*)this->m_fastProtocolManager->LastDecodeInfo());
 		}
 		return true;
 	}
@@ -409,8 +455,8 @@ public:
 	~FeedConnection();
 
     inline int LastMsgSeqNumProcessed() { return this->m_lastMsgSeqNumProcessed; }
-	inline OrderBookTable<OrderBookTableItem> *OrderBookFond() { return this->m_orderBookTableFond; }
-	inline OrderBookTable<OrderBookTableItem> *OrderBookCurr() { return this->m_orderBookTableCurr; }
+	inline OrderBookTable<FastOBSFONDInfo, FastOBSFONDItemInfo> *OrderBookFond() { return this->m_orderBookTableFond; }
+	inline OrderBookTable<FastOBSCURRInfo, FastOBSCURRItemInfo> *OrderBookCurr() { return this->m_orderBookTableCurr; }
 
     inline void StartNewSnapshot() {
         DefaultLogManager::Default->WriteSuccess(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_StartNewSnapshot, true);
@@ -543,7 +589,7 @@ public:
 		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
 
 		this->SetType(FeedConnectionType::Incremental);
-		this->m_orderBookTableCurr = new OrderBookTable<OrderBookTableItem>();
+		this->m_orderBookTableCurr = new OrderBookTable<FastOBSCURRInfo, FastOBSCURRItemInfo>();
     }
 	ISocketBufferProvider* CreateSocketBufferProvider() {
 		return new SocketBufferProvider(DefaultSocketBufferManager::Default,
@@ -665,7 +711,7 @@ public:
 	FeedConnection_FOND_OBR(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
 		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
 		this->SetType(FeedConnectionType::Incremental);
-		this->m_orderBookTableFond = new OrderBookTable<OrderBookTableItem>();
+		this->m_orderBookTableFond = new OrderBookTable<FastOBSFONDInfo, FastOBSFONDItemInfo>();
     }
 	ISocketBufferProvider* CreateSocketBufferProvider() {
 		return new SocketBufferProvider(DefaultSocketBufferManager::Default,

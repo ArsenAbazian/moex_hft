@@ -97,6 +97,10 @@ public:
         this->m_length = 0;
     }
 
+    inline bool Equal(const char *text) {
+        return this->Equal(text, strlen(text));
+    }
+
     inline bool Equal(const char *text, int length) {
         if(this->m_length != length)
             return false;

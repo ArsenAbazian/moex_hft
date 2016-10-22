@@ -466,6 +466,11 @@ public:
             Value = ((double)Mantissa) * MulOf10[Exponent];
         return Value;
     }
+    inline double Calculate(INT64 mantissa, INT32 exponent) {
+        if(Exponent < 0)
+            return ((double)mantissa) * DivOf10[-exponent];
+        return ((double)mantissa) * MulOf10[exponent];
+    }
     inline bool Less(Decimal *value) {
         return this->Calculate() < value->Calculate();
     }
@@ -474,6 +479,9 @@ public:
     }
     inline bool Equal(Decimal *value) {
         return this->Calculate() == value->Calculate();
+    }
+    inline bool Equal(UINT64 mantissa, UINT32 exponent) {
+        return this->Calculate() == Calculate(mantissa, exponent);
     }
     inline bool Greater(Decimal *value) {
         return !this->LessOrEqual(value);

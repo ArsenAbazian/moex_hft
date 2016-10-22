@@ -26,7 +26,7 @@ public:
     }
 };
 
-class OrderBookTableItem {
+template <typename T> class OrderBookTableItem {
     PointerList<OrderBookQuote>      *m_sellQuoteList;
     PointerList<OrderBookQuote>      *m_buyQuoteList;
 
@@ -97,7 +97,7 @@ public:
         return curr;
     }
 
-    inline void AssignQuote(LinkedPointer<OrderBookQuote> *ptr, FastOBSFONDItemInfo *item) {
+    inline void AssignQuote(LinkedPointer<OrderBookQuote> *ptr, T *item) {
         OrderBookQuote* ob = ptr->Data();
 
         ob->Id->m_text = item->MDEntryID;
@@ -109,25 +109,25 @@ public:
         ob->OrigTime = item->OrigTime;
     }
 
-    inline LinkedPointer<OrderBookQuote>* AddBuyQuote(FastOBSFONDItemInfo *item) {
+    inline LinkedPointer<OrderBookQuote>* AddBuyQuote(T *item) {
         LinkedPointer<OrderBookQuote> *ptr = AddBuyQuote(&(item->MDEntryPx));
         this->AssignQuote(ptr, item);
         return ptr;
     }
 
-    inline LinkedPointer<OrderBookQuote>* AddSellQuote(FastOBSFONDItemInfo *item) {
+    inline LinkedPointer<OrderBookQuote>* AddSellQuote(T *item) {
         LinkedPointer<OrderBookQuote> *ptr = AddSellQuote(&(item->MDEntryPx));
         this->AssignQuote(ptr, item);
         return ptr;
     }
 
-    inline LinkedPointer<OrderBookQuote>* Add(FastOBSFONDItemInfo *info) {
+    inline LinkedPointer<OrderBookQuote>* Add(T *info) {
         if(info->MDEntryType[0] == mdetBuyQuote)
             return this->AddBuyQuote(info);
         return this->AddSellQuote(info);
     }
 
-    inline LinkedPointer<OrderBookQuote>* GetQuote(PointerList<OrderBookQuote> *list, FastOBSFONDItemInfo *info) {
+    inline LinkedPointer<OrderBookQuote>* GetQuote(PointerList<OrderBookQuote> *list, T *info) {
         LinkedPointer<OrderBookQuote> *node = list->Start();
         if(node == 0)
             return 0;
@@ -140,7 +140,7 @@ public:
         }
     }
 
-    inline LinkedPointer<OrderBookQuote>* RemoveBuyQuote(FastOBSFONDItemInfo *info) {
+    inline LinkedPointer<OrderBookQuote>* RemoveBuyQuote(T *info) {
         LinkedPointer<OrderBookQuote> *node = this->m_buyQuoteList->Start();
         if(node == 0)
             return 0;
@@ -156,7 +156,7 @@ public:
         return 0;
     }
 
-    inline LinkedPointer<OrderBookQuote>* RemoveSellQuote(FastOBSFONDItemInfo *info) {
+    inline LinkedPointer<OrderBookQuote>* RemoveSellQuote(T *info) {
         LinkedPointer<OrderBookQuote> *node = this->m_sellQuoteList->Start();
         if(node == 0)
             return 0;
@@ -172,24 +172,24 @@ public:
         return 0;
     }
 
-    inline void ChangeBuyQuote(FastOBSFONDItemInfo *info) {
+    inline void ChangeBuyQuote(T *info) {
         this->RemoveBuyQuote(info);
         this->AddBuyQuote(info);
     }
 
-    inline void ChangeSellQuote(FastOBSFONDItemInfo *info) {
+    inline void ChangeSellQuote(T *info) {
         this->RemoveSellQuote(info);
         this->AddSellQuote(info);
     }
 
-    inline void Remove(FastOBSFONDItemInfo *info) {
+    inline void Remove(T *info) {
         if(info->MDEntryType[0] == mdetBuyQuote)
             this->RemoveBuyQuote(info);
         else
             this->RemoveSellQuote(info);
     }
 
-    inline void Change(FastOBSFONDItemInfo *info) {
+    inline void Change(T *info) {
         if(info->MDEntryType[0] == mdetBuyQuote)
             this->ChangeBuyQuote(info);
         else
@@ -197,60 +197,60 @@ public:
     }
 };
 
-template <typename T> class OrderBookTable {
-    HashTable<T>                *m_table;
+template <typename INFO, typename ITEMINFO> class OrderBookTable {
+    HashTable<OrderBookTableItem<ITEMINFO>>                *m_table;
 
 public:
     OrderBookTable() {
-        this->m_table = new HashTable<OrderBookTableItem>();
+        this->m_table = new HashTable<OrderBookTableItem<ITEMINFO>>();
     }
     ~OrderBookTable() {
         delete this->m_table;
     }
-    inline void Add(const char *symbol, int symbolLen, const char *tradingSession, int tradingLen, T *item) {
-        T *tableItem = this->m_table->GetItem(symbol, symbolLen, tradingSession, tradingLen);
+    inline void Add(const char *symbol, int symbolLen, const char *tradingSession, int tradingLen, ITEMINFO *item) {
+        OrderBookTableItem<ITEMINFO> *tableItem = this->m_table->GetItem(symbol, symbolLen, tradingSession, tradingLen);
         this->m_table->AddUsed(tableItem);
         tableItem->Add(item);
     }
-    inline void Add(const char *symbol, int symbolLen, const char *tradingSession, int tradingLen, T **items) {
-        T *tableItem = this->m_table->GetItem(symbol, symbolLen, tradingSession, tradingLen);
+    inline void Add(const char *symbol, int symbolLen, const char *tradingSession, int tradingLen, ITEMINFO **items) {
+        OrderBookTableItem<ITEMINFO> *tableItem = this->m_table->GetItem(symbol, symbolLen, tradingSession, tradingLen);
         this->m_table->AddUsed(tableItem);
         tableItem->Add(items);
     }
-    inline void Add(FastOBSFONDItemInfo *info) {
-        T *tableItem = this->m_table->GetItem(info->Symbol, info->SymbolLength, info->TradingSessionID, info->TradingSessionIDLength);
+    inline void Add(ITEMINFO *info) {
+        OrderBookTableItem<ITEMINFO> *tableItem = this->m_table->GetItem(info->Symbol, info->SymbolLength, info->TradingSessionID, info->TradingSessionIDLength);
         this->m_table->AddUsed(tableItem);
         tableItem->Add(info);
     }
-    inline void Add(FastOBSFONDInfo *info) {
-        T *tableItem = this->m_table->GetItem(info->Symbol, info->SymbolLength, info->TradingSessionID, info->TradingSessionIDLength);
+    inline void Add(INFO *info) {
+        OrderBookTableItem<ITEMINFO> *tableItem = this->m_table->GetItem(info->Symbol, info->SymbolLength, info->TradingSessionID, info->TradingSessionIDLength);
         this->m_table->AddUsed(tableItem);
-        FastOBSFONDItemInfo **item = info->GroupMDEntries;
+        ITEMINFO **item = info->GroupMDEntries;
 
         for(int i = 0; i < info->GroupMDEntriesCount; i++, item++) {
             tableItem->Add(*item);
         }
     }
-    inline void Remove(FastOBSFONDItemInfo *info) {
-        T *tableItem = this->m_table->GetItem(info->Symbol, info->SymbolLength, info->TradingSessionID, info->TradingSessionIDLength);
+    inline void Remove(ITEMINFO *info) {
+        OrderBookTableItem<ITEMINFO> *tableItem = this->m_table->GetItem(info->Symbol, info->SymbolLength, info->TradingSessionID, info->TradingSessionIDLength);
         tableItem->Remove(info);
     }
-    inline void Change(FastOBSFONDItemInfo *info) {
-        T *tableItem = this->m_table->GetItem(info->Symbol, info->SymbolLength, info->TradingSessionID, info->TradingSessionIDLength);
+    inline void Change(ITEMINFO *info) {
+        OrderBookTableItem<ITEMINFO> *tableItem = this->m_table->GetItem(info->Symbol, info->SymbolLength, info->TradingSessionID, info->TradingSessionIDLength);
         tableItem->Change(info);
     }
     inline void Clear() {
         this->m_table->Clear();
     }
     inline void ClearItem(const char *symbol, int symbolLen, const char *tradingSession, int tradingSessionLen) {
-        T *tableItem = this->m_table->GetItem(symbol, symbolLen, tradingSession, tradingSessionLen);
+        OrderBookTableItem<ITEMINFO> *tableItem = this->m_table->GetItem(symbol, symbolLen, tradingSession, tradingSessionLen);
         this->m_table->RemoveUsed(tableItem);
         tableItem->Clear();
     }
     inline int SymbolsCount() { return this->m_table->SymbolsCount(); }
     inline int TradingSessionsCount() { return this->m_table->TradingSessionsCount(); }
     inline int UsedItemCount() { return this->m_table->UsedItemCount(); }
-    inline T* GetItem(const char *symbol, int symbolLen, const char *tradingSession, int tradingSessionLen) { return this->m_table->GetItem(symbol, symbolLen, tradingSession, tradingSessionLen);  }
+    inline OrderBookTableItem<ITEMINFO>* GetItem(const char *symbol, int symbolLen, const char *tradingSession, int tradingSessionLen) { return this->m_table->GetItem(symbol, symbolLen, tradingSession, tradingSessionLen);  }
 };
 
 #endif //HFT_ROBOT_ORDERBOOKTABLE_H

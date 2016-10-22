@@ -135,6 +135,17 @@ public:
         before->Prev(node);
     }
 
+    inline T* Item(int index) {
+        LinkedPointer<T> *node = this->Start();
+        while(index > 0) {
+            if(node == this->End())
+                return 0;
+            node = node->Next();
+            index--;
+        }
+        return node->Data();
+    }
+
     inline LinkedPointer<T>* Get(T *data) {
         LinkedPointer<T> *node = this->m_head;
         while(true) {
