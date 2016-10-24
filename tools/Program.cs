@@ -498,20 +498,21 @@ namespace prebuild {
 				if(!str.IsSequence)
 					WriteLine("\t" + str.Name + "*\t" + str.ValueName + ";");
 				else {
-					WriteLine("\t" + str.Name + "\t" + str.ValueName + "[32];");
+					WriteLine("\tAutoAllocatePointerList<" + str.Name + ">\t*" + str.ValueName + ";");
 				}
 			}
 
-			WriteLine("");
-			foreach(StructureInfo str in Structures) 
-				WriteLine("\t" + str.Name + "\t*" + str.CurrentItemValueName + ";");
+			//WriteLine("");
+			//foreach(StructureInfo str in Structures) 
+				//WriteLine("\t" + str.Name + "\t*" + str.CurrentItemValueName + ";");
 			
 			WriteLine("");
 			WriteLine("\tvoid InitializeMessageInfo() {");
 			foreach(StructureInfo str in structures) {
 				if(str.IsSequence) {
-					WriteLine("\t\tmemset(this->" + str.ValueName + ", 0, 32 * sizeof(" + str.Name + "));");
-					WriteLine("\t\tthis->" + str.CurrentItemValueName + " = this->" + str.ValueName + ";");
+					WriteLine("\t\tthis->" + str.ValueName + " = new AutoAllocatePointerList<" + str.Name + ">(128, 256);");
+					//WriteLine("\t\tmemset(this->" + str.ValueName + ", 0, 32 * sizeof(" + str.Name + "));");
+					//WriteLine("\t\tthis->" + str.CurrentItemValueName + " = this->" + str.ValueName + ";");
 				} else {
 					WriteLine("\t\tthis->" + str.ValueName + " = new " + str.Name + "();");
 					WriteLine("\t\tmemset(this->" + str.ValueName + ", 0, sizeof(" + str.Name + "));");
