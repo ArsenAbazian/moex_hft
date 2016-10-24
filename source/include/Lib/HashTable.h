@@ -55,39 +55,79 @@ public:
     }
 };
 
-class SizedArray {
-
-    inline bool IsEquals4(const char *s2) {
-        UINT32 *u1 = (UINT32*)this->m_text;
+class StringIdComparer {
+public:
+    static inline bool IsEquals4(const char *s1, const char *s2) {
+        UINT32 *u1 = (UINT32*)s1;
         UINT32 *u2 = (UINT32*)s2;
         return (*u1) == (*u2);
     }
 
-    inline bool IsEquals10(const char *s2) {
-        UINT64 *u1 = (UINT64*)this->m_text;
+    static inline bool IsEquals10(const char *s1, const char *s2) {
+        UINT64 *u1 = (UINT64*)s1;
         UINT64 *u2 = (UINT64*)s2;
 
         if( (*u1) != (*u2) )
             return false;
 
-        short *sh1 = (short*)(this->m_text + 8);
+        short *sh1 = (short*)(s1 + 8);
         short *sh2 = (short*)(s2 + 8);
 
         return (*sh1) == (*sh2);
     }
 
-    inline bool IsEquals12(const char *s2) {
-        UINT64 *u1 = (UINT64*)this->m_text;
+    static inline bool IsEquals12(const char *s1, const char *s2) {
+        UINT64 *u1 = (UINT64*)s1;
         UINT64 *u2 = (UINT64*)s2;
 
         if( (*u1) != (*u2) )
             return false;
 
-        UINT32 *sh1 = (UINT32*)(this->m_text + 8);
+        UINT32 *sh1 = (UINT32*)(s1 + 8);
         UINT32 *sh2 = (UINT32*)(s2 + 8);
 
         return (*sh1) == (*sh2);
     }
+
+    static inline bool Equal(const char *s1, int l1, const char *s2, int l2) {
+        if(l1 != l2)
+            return false;
+
+        if(l1 == 4)
+            return IsEquals4(s1, s2);
+        if(l1 == 10)
+            return IsEquals10(s1, s2);
+        if(l1 == 12)
+            return IsEquals12(s1, s2);
+
+        UINT64 *u1 = (UINT64*)s1;
+        UINT64 *u2 = (UINT64*)s2;
+
+        int i;
+        for(i = 0; i < l1; i+= 8) {
+            if(*u1 != *u2)
+                return false;
+            u1++;
+            u2++;
+        }
+        int len = 8 - (i - l1);
+        u1--;
+        u2--;
+        short *sh1 = (short*)u1;
+        short *sh2 = (short*)u2;
+        for( i = i - 8; i < l1; i+= 2) {
+            if(*sh1 != *sh2)
+                return false;
+            sh1++;
+            sh2++;
+        }
+        if(len % 2 != 0)
+            return s1[l1 - 1] == s2[l1 - 1];
+        return true;
+    }
+};
+
+class SizedArray {
 public:
 
     const char *m_text;
@@ -98,42 +138,10 @@ public:
     }
 
     inline bool Equal(const char *text) {
-        return this->Equal(text, strlen(text));
+        return StringIdComparer::Equal(this->m_text, this->m_length, text, strlen(text));
     }
-
     inline bool Equal(const char *text, int length) {
-        if(this->m_length != length)
-            return false;
-
-        if(this->m_length == 4)
-            return this->IsEquals4(text);
-        if(this->m_length == 10)
-            return this->IsEquals10(text);
-        if(this->m_length == 12)
-            return this->IsEquals12(text);
-
-        UINT64 *u1 = (UINT64*)this->m_text;
-        UINT64 *u2 = (UINT64*)text;
-
-        int i;
-        for(i = 0; i < this->m_length; i+= 8) {
-            if(*u1 != *u2)
-                return false;
-            u1++;
-            u2++;
-        }
-        int len = 8 - (i - this->m_length);
-        u1--;
-        u2--;
-        short *sh1 = (short*)u1;
-        short *sh2 = (short*)u2;
-        for( i = i - 8; i < this->m_length; i+= 2) {
-             if(*sh1 != *sh2)
-                 return false;
-        }
-        if(len % 2 != 0)
-            return this->m_text[length - 1] == text[length - 1];
-        return true;
+        return StringIdComparer::Equal(this->m_text, this->m_length, text, length);
     }
 };
 

@@ -42,14 +42,14 @@ public:
             throw;
         if(obi->BuyQuotes()->Count() != 1)
             throw;
-        OrderBookQuote *quote = obi->BuyQuotes()->Start()->Data();
+        FastOBSFONDItemInfo *quote = obi->BuyQuotes()->Start()->Data();
         Decimal price(3, -2);
         Decimal size(1, 2);
-        if(!quote->Price.Equal(&price))
+        if(!quote->MDEntryPx.Equal(&price))
             throw;
-        if(!quote->Size.Equal(&size))
+        if(!quote->MDEntrySize.Equal(&size))
             throw;
-        if(!quote->Id->Equal("ENTRYID001", 10))
+        if(!StringIdComparer::Equal(quote->MDEntryID, quote->MDEntryIDLength, "ENTRYID001", 10))
             throw;
 
         info->GroupMDEntriesCount = 1;
@@ -70,11 +70,11 @@ public:
             throw;
         quote = obi->BuyQuotes()->Start()->Data();
         price.Set(4, -2);
-        if(!quote->Price.Equal(&price))
+        if(!quote->MDEntryPx.Equal(&price))
             throw;
-        if(!quote->Size.Equal(&size))
+        if(!quote->MDEntrySize.Equal(&size))
             throw;
-        if(!quote->Id->Equal("ENTRYID002", 10))
+        if(!StringIdComparer::Equal(quote->MDEntryID, quote->MDEntryIDLength, "ENTRYID002", 10))
             throw;
 
         info->GroupMDEntriesCount = 1;
@@ -96,29 +96,29 @@ public:
 
         quote = obi->BuyQuotes()->Start()->Data();
         price.Set(4, -2);
-        if(!quote->Price.Equal(&price))
+        if(!quote->MDEntryPx.Equal(&price))
             throw;
-        if(!quote->Size.Equal(&size))
+        if(!quote->MDEntrySize.Equal(&size))
             throw;
-        if(!quote->Id->Equal("ENTRYID002", 10))
+        if(!StringIdComparer::Equal(quote->MDEntryID, quote->MDEntryIDLength, "ENTRYID002", 10))
             throw;
 
         quote = obi->BuyQuotes()->Start()->Next()->Data();
         price.Set(3, -2);
-        if(!quote->Price.Equal(&price))
+        if(!quote->MDEntryPx.Equal(&price))
             throw;
-        if(!quote->Size.Equal(&size))
+        if(!quote->MDEntrySize.Equal(&size))
             throw;
-        if(!quote->Id->Equal("ENTRYID001", 10))
+        if(!StringIdComparer::Equal(quote->MDEntryID, quote->MDEntryIDLength, "ENTRYID001", 10))
             throw;
 
         quote = obi->BuyQuotes()->End()->Data();
         price.Set(2, -2);
-        if(!quote->Price.Equal(&price))
+        if(!quote->MDEntryPx.Equal(&price))
             throw;
-        if(!quote->Size.Equal(&size))
+        if(!quote->MDEntrySize.Equal(&size))
             throw;
-        if(!quote->Id->Equal("ENTRYID003", 10))
+        if(!StringIdComparer::Equal(quote->MDEntryID, quote->MDEntryIDLength, "ENTRYID003", 10))
             throw;
 
         info->GroupMDEntriesCount = 1;
@@ -140,38 +140,38 @@ public:
 
         quote = obi->BuyQuotes()->Start()->Data();
         price.Set(4, -2);
-        if(!quote->Price.Equal(&price))
+        if(!quote->MDEntryPx.Equal(&price))
             throw;
-        if(!quote->Size.Equal(&size))
+        if(!quote->MDEntrySize.Equal(&size))
             throw;
-        if(!quote->Id->Equal("ENTRYID002", 10))
+        if(!StringIdComparer::Equal(quote->MDEntryID, quote->MDEntryIDLength, "ENTRYID002", 10))
             throw;
 
         quote = obi->BuyQuotes()->Start()->Next()->Data();
         price.Set(3, -2);
-        if(!quote->Price.Equal(&price))
+        if(!quote->MDEntryPx.Equal(&price))
             throw;
-        if(!quote->Size.Equal(&size))
+        if(!quote->MDEntrySize.Equal(&size))
             throw;
-        if(!quote->Id->Equal("ENTRYID001", 10))
+        if(!StringIdComparer::Equal(quote->MDEntryID, quote->MDEntryIDLength, "ENTRYID001", 10))
             throw;
 
         quote = obi->BuyQuotes()->Start()->Next()->Next()->Data();
         price.Set(25, -3);
-        if(!quote->Price.Equal(&price))
+        if(!quote->MDEntryPx.Equal(&price))
             throw;
-        if(!quote->Size.Equal(&size))
+        if(!quote->MDEntrySize.Equal(&size))
             throw;
-        if(!quote->Id->Equal("ENTRYID004", 10))
+        if(!StringIdComparer::Equal(quote->MDEntryID, quote->MDEntryIDLength, "ENTRYID004", 10))
             throw;
 
         quote = obi->BuyQuotes()->End()->Data();
         price.Set(2, -2);
-        if(!quote->Price.Equal(&price))
+        if(!quote->MDEntryPx.Equal(&price))
             throw;
-        if(!quote->Size.Equal(&size))
+        if(!quote->MDEntrySize.Equal(&size))
             throw;
-        if(!quote->Id->Equal("ENTRYID003", 10))
+        if(!StringIdComparer::Equal(quote->MDEntryID, quote->MDEntryIDLength, "ENTRYID003", 10))
             throw;
     }
 
@@ -211,11 +211,11 @@ public:
         OrderBookTableItem<FastOBSFONDItemInfo> *obi = fc->OrderBookFond()->GetItem("SMB1", 4, "TRADING001", 10);
         if(obi->BuyQuotes()->Count() != 3)
             throw;
-        if(!obi->BuyQuotes()->Start()->Data()->Id->Equal("ENTRYID002", 10))
+        if(!StringIdComparer::Equal(obi->BuyQuotes()->Item(0)->MDEntryID, 10, "ENTRYID002", 10))
             throw;
-        if(!obi->BuyQuotes()->Start()->Next()->Data()->Id->Equal("ENTRYID001", 10))
+        if(!StringIdComparer::Equal(obi->BuyQuotes()->Item(1)->MDEntryID, 10, "ENTRYID001", 10))
             throw;
-        if(!obi->BuyQuotes()->Start()->Next()->Next()->Data()->Id->Equal("ENTRYID003", 10))
+        if(!StringIdComparer::Equal(obi->BuyQuotes()->Item(2)->MDEntryID, 10, "ENTRYID003", 10))
             throw;
 
         info->GroupMDEntriesCount = 1;
@@ -229,9 +229,9 @@ public:
         obi = fc->OrderBookFond()->GetItem("SMB1", 4, "TRADING001", 10);
         if(obi->BuyQuotes()->Count() != 2)
             throw;
-        if(!obi->BuyQuotes()->Start()->Data()->Id->Equal("ENTRYID002", 10))
+        if(!StringIdComparer::Equal(obi->BuyQuotes()->Item(0)->MDEntryID, 10, "ENTRYID002", 10))
             throw;
-        if(!obi->BuyQuotes()->Start()->Next()->Data()->Id->Equal("ENTRYID001", 10))
+        if(!StringIdComparer::Equal(obi->BuyQuotes()->Item(1)->MDEntryID, 10, "ENTRYID001", 10))
             throw;
 
         info->GroupMDEntriesCount = 1;
@@ -245,7 +245,7 @@ public:
         obi = fc->OrderBookFond()->GetItem("SMB1", 4, "TRADING001", 10);
         if(obi->BuyQuotes()->Count() != 1)
             throw;
-        if(!obi->BuyQuotes()->Start()->Data()->Id->Equal("ENTRYID001", 10))
+        if(!StringIdComparer::Equal(obi->BuyQuotes()->Item(0)->MDEntryID, 10, "ENTRYID001", 10))
             throw;
 
         info->GroupMDEntriesCount = 1;
@@ -282,13 +282,13 @@ public:
         fc->OnIncrementalRefresh_OBR_FOND(info);
 
         OrderBookTableItem<FastOBSFONDItemInfo> *obi2 = fc->OrderBookFond()->GetItem("SMB1", 4, "TRADING001", 10);
-        if(!obi2->BuyQuotes()->Item(0)->Id->Equal("ENTRYID002"))
+        if(!StringIdComparer::Equal(obi2->BuyQuotes()->Item(0)->MDEntryID, 10, "ENTRYID002", 10))
             throw;
-        if(!obi2->BuyQuotes()->Item(1)->Id->Equal("ENTRYID001"))
+        if(!StringIdComparer::Equal(obi2->BuyQuotes()->Item(1)->MDEntryID, 10, "ENTRYID001", 10))
             throw;
-        if(!obi2->BuyQuotes()->Item(2)->Id->Equal("ENTRYID004"))
+        if(!StringIdComparer::Equal(obi2->BuyQuotes()->Item(2)->MDEntryID, 10, "ENTRYID004", 10))
             throw;
-        if(!obi2->BuyQuotes()->Item(3)->Id->Equal("ENTRYID003"))
+        if(!StringIdComparer::Equal(obi2->BuyQuotes()->Item(3)->MDEntryID, 10, "ENTRYID003", 10))
             throw;
 
         FastOBSFONDItemInfo *item5 = CreateFastOBRFondItemInfo("SMB1", "TRADING001", 24, -3, 1, 3, mduaChange, mdetBuyQuote, "ENTRYID002");
@@ -300,32 +300,32 @@ public:
 
         OrderBookTableItem<FastOBSFONDItemInfo> *obi = fc->OrderBookFond()->GetItem("SMB1", 4, "TRADING001", 10);
 
-        OrderBookQuote *qt1 = obi->BuyQuotes()->Item(0);
-        OrderBookQuote *qt2 = obi->BuyQuotes()->Item(1);
-        OrderBookQuote *qt3 = obi->BuyQuotes()->Item(2);
-        OrderBookQuote *qt4 = obi->BuyQuotes()->Item(3);
+        FastOBSFONDItemInfo *qt1 = obi->BuyQuotes()->Item(0);
+        FastOBSFONDItemInfo *qt2 = obi->BuyQuotes()->Item(1);
+        FastOBSFONDItemInfo *qt3 = obi->BuyQuotes()->Item(2);
+        FastOBSFONDItemInfo *qt4 = obi->BuyQuotes()->Item(3);
 
         if(fc->OrderBookFond()->UsedItemCount() != 1)
             throw;
         if(obi->BuyQuotes()->Count() != 4)
             throw;
-        if(!qt1->Id->Equal("ENTRYID001", 10))
+        if(!StringIdComparer::Equal(qt1->MDEntryID, 10, "ENTRYID001", 10))
             throw;
-        if(!qt2->Id->Equal("ENTRYID004", 10))
+        if(!StringIdComparer::Equal(qt2->MDEntryID, 10, "ENTRYID004", 10))
             throw;
-        if(!qt3->Id->Equal("ENTRYID002", 10))
+        if(!StringIdComparer::Equal(qt3->MDEntryID, 10, "ENTRYID002", 10))
             throw;
-        if(!qt4->Id->Equal("ENTRYID003", 10))
-            throw;
-
-        if(qt1->Price.Mantissa != item1->MDEntryPx.Mantissa)
-            throw;
-        if(qt1->Price.Exponent != item1->MDEntryPx.Exponent)
+        if(!StringIdComparer::Equal(qt4->MDEntryID, 10, "ENTRYID003", 10))
             throw;
 
-        if(qt3->Price.Mantissa != item5->MDEntryPx.Mantissa)
+        if(qt1->MDEntryPx.Mantissa != item1->MDEntryPx.Mantissa)
             throw;
-        if(qt3->Price.Exponent != item5->MDEntryPx.Exponent)
+        if(qt1->MDEntryPx.Exponent != item1->MDEntryPx.Exponent)
+            throw;
+
+        if(qt3->MDEntryPx.Mantissa != item5->MDEntryPx.Mantissa)
+            throw;
+        if(qt3->MDEntryPx.Exponent != item5->MDEntryPx.Exponent)
             throw;
     }
 
@@ -524,18 +524,18 @@ public:
         if(obi->BuyQuotes()->Count() != 2)
             throw;
 
-        OrderBookQuote *qt1 = obi->BuyQuotes()->Start()->Data();
-        OrderBookQuote *qt2 = obi->BuyQuotes()->Start()->Next()->Data();
+        FastOBSFONDItemInfo *qt1 = obi->BuyQuotes()->Start()->Data();
+        FastOBSFONDItemInfo *qt2 = obi->BuyQuotes()->Start()->Next()->Data();
 
-        if(!qt1->Id->Equal("ENTRYID008", 10))
+        if(!StringIdComparer::Equal(qt1->MDEntryID, 10, "ENTRYID008", 10))
             throw;
-        if(!qt2->Id->Equal("ENTRYID007", 10))
+        if(!StringIdComparer::Equal(qt2->MDEntryID, 10, "ENTRYID007", 10))
             throw;
-        if(!qt1->Price.Equal(8, -2))
+        if(!qt1->MDEntryPx.Equal(8, -2))
             throw;
-        if(!qt1->Size.Equal(1, 2))
+        if(!qt1->MDEntrySize.Equal(1, 2))
             throw;
-        if(!qt2->Price.Equal(7, -2))
+        if(!qt2->MDEntryPx.Equal(7, -2))
             throw;
     }
 
@@ -568,12 +568,12 @@ public:
             throw;
         if(obi->SellQuotes()->Count() != 1)
             throw;
-        OrderBookQuote *quote = obi->SellQuotes()->Start()->Data();
-        if(!quote->Price.Equal(3, -2))
+        FastOBSFONDItemInfo *quote = obi->SellQuotes()->Start()->Data();
+        if(!quote->MDEntryPx.Equal(3, -2))
             throw;
-        if(!quote->Size.Equal(1, 2))
+        if(!quote->MDEntrySize.Equal(1, 2))
             throw;
-        if(!quote->Id->Equal("ENTRYID001", 10))
+        if(!StringIdComparer::Equal(quote->MDEntryID, 10, "ENTRYID001", 10))
             throw;
 
         info->GroupMDEntriesCount = 1;
@@ -593,19 +593,19 @@ public:
         if(obi->SellQuotes()->Count() != 2)
             throw;
         quote = obi->SellQuotes()->Start()->Data();
-        if(!quote->Price.Equal(3, -2))
+        if(!quote->MDEntryPx.Equal(3, -2))
             throw;
-        if(!quote->Size.Equal(1, 2))
+        if(!quote->MDEntrySize.Equal(1, 2))
             throw;
-        if(!quote->Id->Equal("ENTRYID001", 10))
+        if(!StringIdComparer::Equal(quote->MDEntryID, 10, "ENTRYID001", 10))
             throw;
 
         quote = obi->SellQuotes()->Item(1);
-        if(!quote->Price.Equal(4, -2))
+        if(!quote->MDEntryPx.Equal(4, -2))
             throw;
-        if(!quote->Size.Equal(1, 2))
+        if(!quote->MDEntrySize.Equal(1, 2))
             throw;
-        if(!quote->Id->Equal("ENTRYID002", 10))
+        if(!StringIdComparer::Equal(quote->MDEntryID, 10, "ENTRYID002", 10))
             throw;
 
         info->GroupMDEntriesCount = 1;
@@ -626,27 +626,27 @@ public:
             throw;
 
         quote = obi->SellQuotes()->Start()->Data();
-        if(!quote->Price.Equal(2, -2))
+        if(!quote->MDEntryPx.Equal(2, -2))
             throw;
-        if(!quote->Size.Equal(1, 2))
+        if(!quote->MDEntrySize.Equal(1, 2))
             throw;
-        if(!quote->Id->Equal("ENTRYID003", 10))
+        if(!StringIdComparer::Equal(quote->MDEntryID, 10, "ENTRYID003", 10))
             throw;
 
         quote = obi->SellQuotes()->Start()->Next()->Data();
-        if(!quote->Price.Equal(3, -2))
+        if(!quote->MDEntryPx.Equal(3, -2))
             throw;
-        if(!quote->Size.Equal(1, 2))
+        if(!quote->MDEntrySize.Equal(1, 2))
             throw;
-        if(!quote->Id->Equal("ENTRYID001", 10))
+        if(!StringIdComparer::Equal(quote->MDEntryID, 10, "ENTRYID001", 10))
             throw;
 
         quote = obi->SellQuotes()->End()->Data();
-        if(!quote->Price.Equal(4, -2))
+        if(!quote->MDEntryPx.Equal(4, -2))
             throw;
-        if(!quote->Size.Equal(1, 2))
+        if(!quote->MDEntrySize.Equal(1, 2))
             throw;
-        if(!quote->Id->Equal("ENTRYID002", 10))
+        if(!StringIdComparer::Equal(quote->MDEntryID, 10, "ENTRYID002", 10))
             throw;
 
         info->GroupMDEntriesCount = 1;
@@ -667,35 +667,35 @@ public:
             throw;
 
         quote = obi->SellQuotes()->Start()->Data();
-        if(!quote->Price.Equal(2, -2))
+        if(!quote->MDEntryPx.Equal(2, -2))
             throw;
-        if(!quote->Size.Equal(1, 2))
+        if(!quote->MDEntrySize.Equal(1, 2))
             throw;
-        if(!quote->Id->Equal("ENTRYID003", 10))
+        if(!StringIdComparer::Equal(quote->MDEntryID, 10, "ENTRYID003", 10))
             throw;
 
         quote = obi->SellQuotes()->Start()->Next()->Data();
-        if(!quote->Price.Equal(25, -3))
+        if(!quote->MDEntryPx.Equal(25, -3))
             throw;
-        if(!quote->Size.Equal(1, 2))
+        if(!quote->MDEntrySize.Equal(1, 2))
             throw;
-        if(!quote->Id->Equal("ENTRYID004", 10))
+        if(!StringIdComparer::Equal(quote->MDEntryID, 10, "ENTRYID004", 10))
             throw;
 
         quote = obi->SellQuotes()->Start()->Next()->Next()->Data();
-        if(!quote->Price.Equal(3, -2))
+        if(!quote->MDEntryPx.Equal(3, -2))
             throw;
-        if(!quote->Size.Equal(1, 2))
+        if(!quote->MDEntrySize.Equal(1, 2))
             throw;
-        if(!quote->Id->Equal("ENTRYID001", 10))
+        if(!StringIdComparer::Equal(quote->MDEntryID, 10, "ENTRYID001", 10))
             throw;
 
         quote = obi->SellQuotes()->End()->Data();
-        if(!quote->Price.Equal(4, -2))
+        if(!quote->MDEntryPx.Equal(4, -2))
             throw;
-        if(!quote->Size.Equal(1, 2))
+        if(!quote->MDEntrySize.Equal(1, 2))
             throw;
-        if(!quote->Id->Equal("ENTRYID002", 10))
+        if(!StringIdComparer::Equal(quote->MDEntryID, 10, "ENTRYID002", 10))
             throw;
     }
 
@@ -733,13 +733,14 @@ public:
             throw;
 
         OrderBookTableItem<FastOBSFONDItemInfo> *obi = fc->OrderBookFond()->GetItem("SMB1", 4, "TRADING001", 10);
-        if(obi->BuyQuotes()->Count() != 3)
+        if(obi->SellQuotes()->Count() != 3)
             throw;
-        if(!obi->BuyQuotes()->Start()->Data()->Id->Equal("ENTRYID003", 10))
+
+        if(!StringIdComparer::Equal(obi->SellQuotes()->Item(0)->MDEntryID, 10,"ENTRYID003", 10))
             throw;
-        if(!obi->BuyQuotes()->Start()->Next()->Data()->Id->Equal("ENTRYID001", 10))
+        if(!StringIdComparer::Equal(obi->SellQuotes()->Item(1)->MDEntryID, 10,"ENTRYID001", 10))
             throw;
-        if(!obi->BuyQuotes()->Start()->Next()->Next()->Data()->Id->Equal("ENTRYID002", 10))
+        if(!StringIdComparer::Equal(obi->SellQuotes()->Item(2)->MDEntryID, 10,"ENTRYID002", 10))
             throw;
 
         info->GroupMDEntriesCount = 1;
@@ -751,11 +752,11 @@ public:
             throw;
 
         obi = fc->OrderBookFond()->GetItem("SMB1", 4, "TRADING001", 10);
-        if(obi->BuyQuotes()->Count() != 2)
+        if(obi->SellQuotes()->Count() != 2)
             throw;
-        if(!obi->BuyQuotes()->Start()->Data()->Id->Equal("ENTRYID001", 10))
+        if(!StringIdComparer::Equal(obi->SellQuotes()->Item(0)->MDEntryID, 10,"ENTRYID001", 10))
             throw;
-        if(!obi->BuyQuotes()->Start()->Next()->Data()->Id->Equal("ENTRYID002", 10))
+        if(!StringIdComparer::Equal(obi->SellQuotes()->Item(1)->MDEntryID, 10,"ENTRYID002", 10))
             throw;
 
         info->GroupMDEntriesCount = 1;
@@ -767,9 +768,9 @@ public:
             throw;
 
         obi = fc->OrderBookFond()->GetItem("SMB1", 4, "TRADING001", 10);
-        if(obi->BuyQuotes()->Count() != 1)
+        if(obi->SellQuotes()->Count() != 1)
             throw;
-        if(!obi->BuyQuotes()->Start()->Data()->Id->Equal("ENTRYID001", 10))
+        if(!StringIdComparer::Equal(obi->SellQuotes()->Item(0)->MDEntryID, 10,"ENTRYID001", 10))
             throw;
 
         info->GroupMDEntriesCount = 1;
@@ -781,11 +782,11 @@ public:
             throw;
 
         obi = fc->OrderBookFond()->GetItem("SMB1", 4, "TRADING001", 10);
-        if(obi->BuyQuotes()->Count() != 0)
+        if(obi->SellQuotes()->Count() != 0)
             throw;
     }
 
-    void Test_OnIncrementalRefresh_OBR_FOND_Change_Sellquotes() {
+    void Test_OnIncrementalRefresh_OBR_FOND_Change_SellQuotes() {
         FeedConnection_FOND_OBR *fc = new FeedConnection_FOND_OBR("OBR", "Refresh Incremental", 'I',
                                                                   FeedConnectionProtocol::UDP_IP,
                                                                   "10.50.129.200", "239.192.113.3", 9113,
@@ -806,16 +807,16 @@ public:
         fc->OnIncrementalRefresh_OBR_FOND(info);
 
         OrderBookTableItem<FastOBSFONDItemInfo> *obi2 = fc->OrderBookFond()->GetItem("SMB1", 4, "TRADING001", 10);
-        if(!obi2->SellQuotes()->Item(0)->Id->Equal("ENTRYID003"))
+        if(!StringIdComparer::Equal(obi2->SellQuotes()->Item(0)->MDEntryID, 10, "ENTRYID003", 10))
             throw;
-        if(!obi2->SellQuotes()->Item(1)->Id->Equal("ENTRYID004"))
+        if(!StringIdComparer::Equal(obi2->SellQuotes()->Item(1)->MDEntryID, 10, "ENTRYID004", 10))
             throw;
-        if(!obi2->SellQuotes()->Item(2)->Id->Equal("ENTRYID001"))
+        if(!StringIdComparer::Equal(obi2->SellQuotes()->Item(2)->MDEntryID, 10, "ENTRYID001", 10))
             throw;
-        if(!obi2->SellQuotes()->Item(3)->Id->Equal("ENTRYID002"))
+        if(!StringIdComparer::Equal(obi2->SellQuotes()->Item(3)->MDEntryID, 10, "ENTRYID002", 10))
             throw;
 
-        FastOBSFONDItemInfo *item5 = CreateFastOBRFondItemInfo("SMB1", "TRADING001", 24, -3, 1, 3, mduaChange, mdetBuyQuote, "ENTRYID002");
+        FastOBSFONDItemInfo *item5 = CreateFastOBRFondItemInfo("SMB1", "TRADING001", 24, -3, 1, 3, mduaChange, mdetSellQuote, "ENTRYID002");
 
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item5;
@@ -824,32 +825,32 @@ public:
 
         OrderBookTableItem<FastOBSFONDItemInfo> *obi = fc->OrderBookFond()->GetItem("SMB1", 4, "TRADING001", 10);
 
-        OrderBookQuote *qt1 = obi->SellQuotes()->Item(0);
-        OrderBookQuote *qt2 = obi->SellQuotes()->Item(1);
-        OrderBookQuote *qt3 = obi->SellQuotes()->Item(2);
-        OrderBookQuote *qt4 = obi->SellQuotes()->Item(3);
+        FastOBSFONDItemInfo *qt1 = obi->SellQuotes()->Item(0);
+        FastOBSFONDItemInfo *qt2 = obi->SellQuotes()->Item(1);
+        FastOBSFONDItemInfo *qt3 = obi->SellQuotes()->Item(2);
+        FastOBSFONDItemInfo *qt4 = obi->SellQuotes()->Item(3);
 
         if(fc->OrderBookFond()->UsedItemCount() != 1)
             throw;
         if(obi->SellQuotes()->Count() != 4)
             throw;
-        if(!qt1->Id->Equal("ENTRYID003", 10))
+        if(!StringIdComparer::Equal(qt1->MDEntryID, 10, "ENTRYID003", 10))
             throw;
-        if(!qt2->Id->Equal("ENTRYID002", 10))
+        if(!StringIdComparer::Equal(qt2->MDEntryID, 10, "ENTRYID002", 10))
             throw;
-        if(!qt3->Id->Equal("ENTRYID004", 10))
+        if(!StringIdComparer::Equal(qt3->MDEntryID, 10, "ENTRYID004", 10))
             throw;
-        if(!qt4->Id->Equal("ENTRYID001", 10))
-            throw;
-
-        if(qt1->Price.Mantissa != item1->MDEntryPx.Mantissa)
-            throw;
-        if(qt1->Price.Exponent != item1->MDEntryPx.Exponent)
+        if(!StringIdComparer::Equal(qt4->MDEntryID, 10, "ENTRYID001", 10))
             throw;
 
-        if(qt3->Price.Mantissa != item5->MDEntryPx.Mantissa)
+        if(qt1->MDEntryPx.Mantissa != item3->MDEntryPx.Mantissa)
             throw;
-        if(qt3->Price.Exponent != item5->MDEntryPx.Exponent)
+        if(qt1->MDEntryPx.Exponent != item3->MDEntryPx.Exponent)
+            throw;
+
+        if(qt2->MDEntryPx.Mantissa != item5->MDEntryPx.Mantissa)
+            throw;
+        if(qt2->MDEntryPx.Exponent != item5->MDEntryPx.Exponent)
             throw;
     }
 
@@ -878,7 +879,7 @@ public:
             throw;
 
         OrderBookTableItem<FastOBSFONDItemInfo> *obi = fc->OrderBookFond()->GetItem("SMB1", 4, "TRADING001", 10);
-        if(obi->BuyQuotes()->Count() != 0)
+        if(obi->SellQuotes()->Count() != 0)
             throw;
     }
 
@@ -903,8 +904,8 @@ public:
         fc->OnIncrementalRefresh_OBR_FOND(info);
 
         FastOBSFONDInfo *info2 = CreateFastOBSFondInfo("SMB2", "TRADING001");
-        FastOBSFONDItemInfo *newItem1 = CreateFastOBSFondItemInfo(7,-2, 1, 2, mdetBuyQuote, "ENTRYID007");
-        FastOBSFONDItemInfo *newItem2 = CreateFastOBSFondItemInfo(8,-2, 1, 2, mdetBuyQuote, "ENTRYID008");
+        FastOBSFONDItemInfo *newItem1 = CreateFastOBSFondItemInfo(7,-2, 1, 2, mdetSellQuote, "ENTRYID007");
+        FastOBSFONDItemInfo *newItem2 = CreateFastOBSFondItemInfo(8,-2, 1, 2, mdetSellQuote, "ENTRYID008");
 
         info2->GroupMDEntriesCount = 2;
         info2->GroupMDEntries[0] = newItem1;
@@ -916,25 +917,25 @@ public:
             throw;
 
         OrderBookTableItem<FastOBSFONDItemInfo> *obi3 = fc->OrderBookFond()->GetItem("SMB1", 4, "TRADING001", 10);
-        if(obi3->BuyQuotes()->Count() != 0)
+        if(obi3->SellQuotes()->Count() != 0)
             throw;
 
         OrderBookTableItem<FastOBSFONDItemInfo> *obi = fc->OrderBookFond()->GetItem("SMB2", 4, "TRADING001", 10);
-        if(obi->BuyQuotes()->Count() != 2)
+        if(obi->SellQuotes()->Count() != 2)
             throw;
 
-        OrderBookQuote *qt1 = obi->BuyQuotes()->Start()->Data();
-        OrderBookQuote *qt2 = obi->BuyQuotes()->Start()->Next()->Data();
+        FastOBSFONDItemInfo *qt1 = obi->SellQuotes()->Start()->Data();
+        FastOBSFONDItemInfo *qt2 = obi->SellQuotes()->Start()->Next()->Data();
 
-        if(!qt1->Id->Equal("ENTRYID007", 10))
+        if(!StringIdComparer::Equal(qt1->MDEntryID, 10, "ENTRYID007", 10))
             throw;
-        if(!qt2->Id->Equal("ENTRYID008", 10))
+        if(!StringIdComparer::Equal(qt2->MDEntryID, 10, "ENTRYID008", 10))
             throw;
-        if(!qt1->Price.Equal(7, -2))
+        if(!qt1->MDEntryPx.Equal(7, -2))
             throw;
-        if(!qt1->Size.Equal(1, 2))
+        if(!qt1->MDEntrySize.Equal(1, 2))
             throw;
-        if(!qt2->Price.Equal(8, -2))
+        if(!qt2->MDEntryPx.Equal(8, -2))
             throw;
     }
 
@@ -970,14 +971,14 @@ public:
             throw;
         if(obi->BuyQuotes()->Count() != 1)
             throw;
-        OrderBookQuote *quote = obi->BuyQuotes()->Start()->Data();
+        FastOBSCURRItemInfo *quote = obi->BuyQuotes()->Start()->Data();
         Decimal price(3, -2);
         Decimal size(1, 2);
-        if(!quote->Price.Equal(&price))
+        if(!quote->MDEntryPx.Equal(&price))
             throw;
-        if(!quote->Size.Equal(&size))
+        if(!quote->MDEntrySize.Equal(&size))
             throw;
-        if(!quote->Id->Equal("ENTRYID001", 10))
+        if(!StringIdComparer::Equal(quote->MDEntryID, 10, "ENTRYID001", 10))
             throw;
 
         info->GroupMDEntriesCount = 1;
@@ -998,11 +999,11 @@ public:
             throw;
         quote = obi->BuyQuotes()->Start()->Data();
         price.Set(4, -2);
-        if(!quote->Price.Equal(&price))
+        if(!quote->MDEntryPx.Equal(&price))
             throw;
-        if(!quote->Size.Equal(&size))
+        if(!quote->MDEntrySize.Equal(&size))
             throw;
-        if(!quote->Id->Equal("ENTRYID002", 10))
+        if(!StringIdComparer::Equal(quote->MDEntryID, 10, "ENTRYID002", 10))
             throw;
 
         info->GroupMDEntriesCount = 1;
@@ -1024,29 +1025,29 @@ public:
 
         quote = obi->BuyQuotes()->Start()->Data();
         price.Set(4, -2);
-        if(!quote->Price.Equal(&price))
+        if(!quote->MDEntryPx.Equal(&price))
             throw;
-        if(!quote->Size.Equal(&size))
+        if(!quote->MDEntrySize.Equal(&size))
             throw;
-        if(!quote->Id->Equal("ENTRYID002", 10))
+        if(!StringIdComparer::Equal(quote->MDEntryID, 10, "ENTRYID002", 10))
             throw;
 
         quote = obi->BuyQuotes()->Start()->Next()->Data();
         price.Set(3, -2);
-        if(!quote->Price.Equal(&price))
+        if(!quote->MDEntryPx.Equal(&price))
             throw;
-        if(!quote->Size.Equal(&size))
+        if(!quote->MDEntrySize.Equal(&size))
             throw;
-        if(!quote->Id->Equal("ENTRYID001", 10))
+        if(!StringIdComparer::Equal(quote->MDEntryID, 10, "ENTRYID001", 10))
             throw;
 
         quote = obi->BuyQuotes()->End()->Data();
         price.Set(2, -2);
-        if(!quote->Price.Equal(&price))
+        if(!quote->MDEntryPx.Equal(&price))
             throw;
-        if(!quote->Size.Equal(&size))
+        if(!quote->MDEntrySize.Equal(&size))
             throw;
-        if(!quote->Id->Equal("ENTRYID003", 10))
+        if(!StringIdComparer::Equal(quote->MDEntryID, 10, "ENTRYID003", 10))
             throw;
 
         info->GroupMDEntriesCount = 1;
@@ -1068,38 +1069,38 @@ public:
 
         quote = obi->BuyQuotes()->Start()->Data();
         price.Set(4, -2);
-        if(!quote->Price.Equal(&price))
+        if(!quote->MDEntryPx.Equal(&price))
             throw;
-        if(!quote->Size.Equal(&size))
+        if(!quote->MDEntrySize.Equal(&size))
             throw;
-        if(!quote->Id->Equal("ENTRYID002", 10))
+        if(!StringIdComparer::Equal(quote->MDEntryID, 10, "ENTRYID002", 10))
             throw;
 
         quote = obi->BuyQuotes()->Start()->Next()->Data();
         price.Set(3, -2);
-        if(!quote->Price.Equal(&price))
+        if(!quote->MDEntryPx.Equal(&price))
             throw;
-        if(!quote->Size.Equal(&size))
+        if(!quote->MDEntrySize.Equal(&size))
             throw;
-        if(!quote->Id->Equal("ENTRYID001", 10))
+        if(!StringIdComparer::Equal(quote->MDEntryID, 10, "ENTRYID001", 10))
             throw;
 
         quote = obi->BuyQuotes()->Start()->Next()->Next()->Data();
         price.Set(25, -3);
-        if(!quote->Price.Equal(&price))
+        if(!quote->MDEntryPx.Equal(&price))
             throw;
-        if(!quote->Size.Equal(&size))
+        if(!quote->MDEntrySize.Equal(&size))
             throw;
-        if(!quote->Id->Equal("ENTRYID004", 10))
+        if(!StringIdComparer::Equal(quote->MDEntryID, 10, "ENTRYID004", 10))
             throw;
 
         quote = obi->BuyQuotes()->End()->Data();
         price.Set(2, -2);
-        if(!quote->Price.Equal(&price))
+        if(!quote->MDEntryPx.Equal(&price))
             throw;
-        if(!quote->Size.Equal(&size))
+        if(!quote->MDEntrySize.Equal(&size))
             throw;
-        if(!quote->Id->Equal("ENTRYID003", 10))
+        if(!StringIdComparer::Equal(quote->MDEntryID, 10, "ENTRYID003", 10))
             throw;
     }
 
@@ -1139,11 +1140,11 @@ public:
         OrderBookTableItem<FastOBSCURRItemInfo> *obi = fc->OrderBookCurr()->GetItem("SMB1", 4, "TRADING001", 10);
         if(obi->BuyQuotes()->Count() != 3)
             throw;
-        if(!obi->BuyQuotes()->Start()->Data()->Id->Equal("ENTRYID002", 10))
+        if(!StringIdComparer::Equal(obi->BuyQuotes()->Item(0)->MDEntryID, 10, "ENTRYID002", 10))
             throw;
-        if(!obi->BuyQuotes()->Start()->Next()->Data()->Id->Equal("ENTRYID001", 10))
+        if(!StringIdComparer::Equal(obi->BuyQuotes()->Item(1)->MDEntryID, 10, "ENTRYID001", 10))
             throw;
-        if(!obi->BuyQuotes()->Start()->Next()->Next()->Data()->Id->Equal("ENTRYID003", 10))
+        if(!StringIdComparer::Equal(obi->BuyQuotes()->Item(2)->MDEntryID, 10, "ENTRYID003", 10))
             throw;
 
         info->GroupMDEntriesCount = 1;
@@ -1157,9 +1158,9 @@ public:
         obi = fc->OrderBookCurr()->GetItem("SMB1", 4, "TRADING001", 10);
         if(obi->BuyQuotes()->Count() != 2)
             throw;
-        if(!obi->BuyQuotes()->Start()->Data()->Id->Equal("ENTRYID002", 10))
+        if(!StringIdComparer::Equal(obi->BuyQuotes()->Item(0)->MDEntryID, 10, "ENTRYID002", 10))
             throw;
-        if(!obi->BuyQuotes()->Start()->Next()->Data()->Id->Equal("ENTRYID001", 10))
+        if(!StringIdComparer::Equal(obi->BuyQuotes()->Item(1)->MDEntryID, 10, "ENTRYID001", 10))
             throw;
 
         info->GroupMDEntriesCount = 1;
@@ -1173,7 +1174,7 @@ public:
         obi = fc->OrderBookCurr()->GetItem("SMB1", 4, "TRADING001", 10);
         if(obi->BuyQuotes()->Count() != 1)
             throw;
-        if(!obi->BuyQuotes()->Start()->Data()->Id->Equal("ENTRYID001", 10))
+        if(!StringIdComparer::Equal(obi->BuyQuotes()->Item(0)->MDEntryID, 10, "ENTRYID001", 10))
             throw;
 
         info->GroupMDEntriesCount = 1;
@@ -1210,13 +1211,13 @@ public:
         fc->OnIncrementalRefresh_OBR_CURR(info);
 
         OrderBookTableItem<FastOBSCURRItemInfo> *obi2 = fc->OrderBookCurr()->GetItem("SMB1", 4, "TRADING001", 10);
-        if(!obi2->BuyQuotes()->Item(0)->Id->Equal("ENTRYID002"))
+        if(!StringIdComparer::Equal(obi2->BuyQuotes()->Item(0)->MDEntryID, 10, "ENTRYID002", 10))
             throw;
-        if(!obi2->BuyQuotes()->Item(1)->Id->Equal("ENTRYID001"))
+        if(!StringIdComparer::Equal(obi2->BuyQuotes()->Item(1)->MDEntryID, 10, "ENTRYID001", 10))
             throw;
-        if(!obi2->BuyQuotes()->Item(2)->Id->Equal("ENTRYID004"))
+        if(!StringIdComparer::Equal(obi2->BuyQuotes()->Item(2)->MDEntryID, 10, "ENTRYID004", 10))
             throw;
-        if(!obi2->BuyQuotes()->Item(3)->Id->Equal("ENTRYID003"))
+        if(!StringIdComparer::Equal(obi2->BuyQuotes()->Item(3)->MDEntryID, 10, "ENTRYID003", 10))
             throw;
 
         FastOBSCURRItemInfo *item5 = CreateFastOBRCurrItemInfo("SMB1", "TRADING001", 24, -3, 1, 3, mduaChange, mdetBuyQuote, "ENTRYID002");
@@ -1228,32 +1229,32 @@ public:
 
         OrderBookTableItem<FastOBSCURRItemInfo> *obi = fc->OrderBookCurr()->GetItem("SMB1", 4, "TRADING001", 10);
 
-        OrderBookQuote *qt1 = obi->BuyQuotes()->Item(0);
-        OrderBookQuote *qt2 = obi->BuyQuotes()->Item(1);
-        OrderBookQuote *qt3 = obi->BuyQuotes()->Item(2);
-        OrderBookQuote *qt4 = obi->BuyQuotes()->Item(3);
+        FastOBSCURRItemInfo *qt1 = obi->BuyQuotes()->Item(0);
+        FastOBSCURRItemInfo *qt2 = obi->BuyQuotes()->Item(1);
+        FastOBSCURRItemInfo *qt3 = obi->BuyQuotes()->Item(2);
+        FastOBSCURRItemInfo *qt4 = obi->BuyQuotes()->Item(3);
 
         if(fc->OrderBookCurr()->UsedItemCount() != 1)
             throw;
         if(obi->BuyQuotes()->Count() != 4)
             throw;
-        if(!qt1->Id->Equal("ENTRYID001", 10))
+        if(!StringIdComparer::Equal(qt1->MDEntryID, 10, "ENTRYID001", 10))
             throw;
-        if(!qt2->Id->Equal("ENTRYID004", 10))
+        if(!StringIdComparer::Equal(qt2->MDEntryID, 10, "ENTRYID004", 10))
             throw;
-        if(!qt3->Id->Equal("ENTRYID002", 10))
+        if(!StringIdComparer::Equal(qt3->MDEntryID, 10, "ENTRYID002", 10))
             throw;
-        if(!qt4->Id->Equal("ENTRYID003", 10))
-            throw;
-
-        if(qt1->Price.Mantissa != item1->MDEntryPx.Mantissa)
-            throw;
-        if(qt1->Price.Exponent != item1->MDEntryPx.Exponent)
+        if(!StringIdComparer::Equal(qt4->MDEntryID, 10, "ENTRYID003", 10))
             throw;
 
-        if(qt3->Price.Mantissa != item5->MDEntryPx.Mantissa)
+        if(qt1->MDEntryPx.Mantissa != item1->MDEntryPx.Mantissa)
             throw;
-        if(qt3->Price.Exponent != item5->MDEntryPx.Exponent)
+        if(qt1->MDEntryPx.Exponent != item1->MDEntryPx.Exponent)
+            throw;
+
+        if(qt3->MDEntryPx.Mantissa != item5->MDEntryPx.Mantissa)
+            throw;
+        if(qt3->MDEntryPx.Exponent != item5->MDEntryPx.Exponent)
             throw;
     }
 
@@ -1334,18 +1335,18 @@ public:
         if(obi->BuyQuotes()->Count() != 2)
             throw;
 
-        OrderBookQuote *qt1 = obi->BuyQuotes()->Start()->Data();
-        OrderBookQuote *qt2 = obi->BuyQuotes()->Start()->Next()->Data();
+        FastOBSCURRItemInfo *qt1 = obi->BuyQuotes()->Start()->Data();
+        FastOBSCURRItemInfo *qt2 = obi->BuyQuotes()->Start()->Next()->Data();
 
-        if(!qt1->Id->Equal("ENTRYID008", 10))
+        if(!StringIdComparer::Equal(qt1->MDEntryID, 10, "ENTRYID008", 10))
             throw;
-        if(!qt2->Id->Equal("ENTRYID007", 10))
+        if(!StringIdComparer::Equal(qt2->MDEntryID, 10, "ENTRYID007", 10))
             throw;
-        if(!qt1->Price.Equal(8, -2))
+        if(!qt1->MDEntryPx.Equal(8, -2))
             throw;
-        if(!qt1->Size.Equal(1, 2))
+        if(!qt1->MDEntrySize.Equal(1, 2))
             throw;
-        if(!qt2->Price.Equal(7, -2))
+        if(!qt2->MDEntryPx.Equal(7, -2))
             throw;
     }
 
@@ -1378,12 +1379,12 @@ public:
             throw;
         if(obi->SellQuotes()->Count() != 1)
             throw;
-        OrderBookQuote *quote = obi->SellQuotes()->Start()->Data();
-        if(!quote->Price.Equal(3, -2))
+        FastOBSCURRItemInfo *quote = obi->SellQuotes()->Start()->Data();
+        if(!quote->MDEntryPx.Equal(3, -2))
             throw;
-        if(!quote->Size.Equal(1, 2))
+        if(!quote->MDEntrySize.Equal(1, 2))
             throw;
-        if(!quote->Id->Equal("ENTRYID001", 10))
+        if(!StringIdComparer::Equal(quote->MDEntryID, 10, "ENTRYID001", 10))
             throw;
 
         info->GroupMDEntriesCount = 1;
@@ -1403,19 +1404,19 @@ public:
         if(obi->SellQuotes()->Count() != 2)
             throw;
         quote = obi->SellQuotes()->Start()->Data();
-        if(!quote->Price.Equal(3, -2))
+        if(!quote->MDEntryPx.Equal(3, -2))
             throw;
-        if(!quote->Size.Equal(1, 2))
+        if(!quote->MDEntrySize.Equal(1, 2))
             throw;
-        if(!quote->Id->Equal("ENTRYID001", 10))
+        if(!StringIdComparer::Equal(quote->MDEntryID, 10, "ENTRYID001", 10))
             throw;
 
         quote = obi->SellQuotes()->Item(1);
-        if(!quote->Price.Equal(4, -2))
+        if(!quote->MDEntryPx.Equal(4, -2))
             throw;
-        if(!quote->Size.Equal(1, 2))
+        if(!quote->MDEntrySize.Equal(1, 2))
             throw;
-        if(!quote->Id->Equal("ENTRYID002", 10))
+        if(!StringIdComparer::Equal(quote->MDEntryID, 10, "ENTRYID002", 10))
             throw;
 
         info->GroupMDEntriesCount = 1;
@@ -1436,27 +1437,27 @@ public:
             throw;
 
         quote = obi->SellQuotes()->Start()->Data();
-        if(!quote->Price.Equal(2, -2))
+        if(!quote->MDEntryPx.Equal(2, -2))
             throw;
-        if(!quote->Size.Equal(1, 2))
+        if(!quote->MDEntrySize.Equal(1, 2))
             throw;
-        if(!quote->Id->Equal("ENTRYID003", 10))
+        if(!StringIdComparer::Equal(quote->MDEntryID, 10, "ENTRYID003", 10))
             throw;
 
         quote = obi->SellQuotes()->Start()->Next()->Data();
-        if(!quote->Price.Equal(3, -2))
+        if(!quote->MDEntryPx.Equal(3, -2))
             throw;
-        if(!quote->Size.Equal(1, 2))
+        if(!quote->MDEntrySize.Equal(1, 2))
             throw;
-        if(!quote->Id->Equal("ENTRYID001", 10))
+        if(!StringIdComparer::Equal(quote->MDEntryID, 10, "ENTRYID001", 10))
             throw;
 
         quote = obi->SellQuotes()->End()->Data();
-        if(!quote->Price.Equal(4, -2))
+        if(!quote->MDEntryPx.Equal(4, -2))
             throw;
-        if(!quote->Size.Equal(1, 2))
+        if(!quote->MDEntrySize.Equal(1, 2))
             throw;
-        if(!quote->Id->Equal("ENTRYID002", 10))
+        if(!StringIdComparer::Equal(quote->MDEntryID, 10, "ENTRYID002", 10))
             throw;
 
         info->GroupMDEntriesCount = 1;
@@ -1477,35 +1478,35 @@ public:
             throw;
 
         quote = obi->SellQuotes()->Start()->Data();
-        if(!quote->Price.Equal(2, -2))
+        if(!quote->MDEntryPx.Equal(2, -2))
             throw;
-        if(!quote->Size.Equal(1, 2))
+        if(!quote->MDEntrySize.Equal(1, 2))
             throw;
-        if(!quote->Id->Equal("ENTRYID003", 10))
+        if(!StringIdComparer::Equal(quote->MDEntryID, 10, "ENTRYID003", 10))
             throw;
 
         quote = obi->SellQuotes()->Start()->Next()->Data();
-        if(!quote->Price.Equal(25, -3))
+        if(!quote->MDEntryPx.Equal(25, -3))
             throw;
-        if(!quote->Size.Equal(1, 2))
+        if(!quote->MDEntrySize.Equal(1, 2))
             throw;
-        if(!quote->Id->Equal("ENTRYID004", 10))
+        if(!StringIdComparer::Equal(quote->MDEntryID, 10, "ENTRYID004", 10))
             throw;
 
         quote = obi->SellQuotes()->Start()->Next()->Next()->Data();
-        if(!quote->Price.Equal(3, -2))
+        if(!quote->MDEntryPx.Equal(3, -2))
             throw;
-        if(!quote->Size.Equal(1, 2))
+        if(!quote->MDEntrySize.Equal(1, 2))
             throw;
-        if(!quote->Id->Equal("ENTRYID001", 10))
+        if(!StringIdComparer::Equal(quote->MDEntryID, 10, "ENTRYID001", 10))
             throw;
 
         quote = obi->SellQuotes()->End()->Data();
-        if(!quote->Price.Equal(4, -2))
+        if(!quote->MDEntryPx.Equal(4, -2))
             throw;
-        if(!quote->Size.Equal(1, 2))
+        if(!quote->MDEntrySize.Equal(1, 2))
             throw;
-        if(!quote->Id->Equal("ENTRYID002", 10))
+        if(!StringIdComparer::Equal(quote->MDEntryID, 10, "ENTRYID002", 10))
             throw;
     }
 
@@ -1543,13 +1544,13 @@ public:
             throw;
 
         OrderBookTableItem<FastOBSCURRItemInfo> *obi = fc->OrderBookCurr()->GetItem("SMB1", 4, "TRADING001", 10);
-        if(obi->BuyQuotes()->Count() != 3)
+        if(obi->SellQuotes()->Count() != 3)
             throw;
-        if(!obi->BuyQuotes()->Start()->Data()->Id->Equal("ENTRYID003", 10))
+        if(!StringIdComparer::Equal(obi->SellQuotes()->Item(0)->MDEntryID, 10, "ENTRYID003", 10))
             throw;
-        if(!obi->BuyQuotes()->Start()->Next()->Data()->Id->Equal("ENTRYID001", 10))
+        if(!StringIdComparer::Equal(obi->SellQuotes()->Item(1)->MDEntryID, 10, "ENTRYID001", 10))
             throw;
-        if(!obi->BuyQuotes()->Start()->Next()->Next()->Data()->Id->Equal("ENTRYID002", 10))
+        if(!StringIdComparer::Equal(obi->SellQuotes()->Item(2)->MDEntryID, 10, "ENTRYID002", 10))
             throw;
 
         info->GroupMDEntriesCount = 1;
@@ -1561,11 +1562,11 @@ public:
             throw;
 
         obi = fc->OrderBookCurr()->GetItem("SMB1", 4, "TRADING001", 10);
-        if(obi->BuyQuotes()->Count() != 2)
+        if(obi->SellQuotes()->Count() != 2)
             throw;
-        if(!obi->BuyQuotes()->Start()->Data()->Id->Equal("ENTRYID001", 10))
+        if(!StringIdComparer::Equal(obi->SellQuotes()->Item(0)->MDEntryID, 10, "ENTRYID001", 10))
             throw;
-        if(!obi->BuyQuotes()->Start()->Next()->Data()->Id->Equal("ENTRYID002", 10))
+        if(!StringIdComparer::Equal(obi->SellQuotes()->Item(1)->MDEntryID, 10, "ENTRYID002", 10))
             throw;
 
         info->GroupMDEntriesCount = 1;
@@ -1577,9 +1578,9 @@ public:
             throw;
 
         obi = fc->OrderBookCurr()->GetItem("SMB1", 4, "TRADING001", 10);
-        if(obi->BuyQuotes()->Count() != 1)
+        if(obi->SellQuotes()->Count() != 1)
             throw;
-        if(!obi->BuyQuotes()->Start()->Data()->Id->Equal("ENTRYID001", 10))
+        if(!StringIdComparer::Equal(obi->SellQuotes()->Item(0)->MDEntryID, 10, "ENTRYID001", 10))
             throw;
 
         info->GroupMDEntriesCount = 1;
@@ -1591,11 +1592,11 @@ public:
             throw;
 
         obi = fc->OrderBookCurr()->GetItem("SMB1", 4, "TRADING001", 10);
-        if(obi->BuyQuotes()->Count() != 0)
+        if(obi->SellQuotes()->Count() != 0)
             throw;
     }
 
-    void Test_OnIncrementalRefresh_OBR_CURR_Change_Sellquotes() {
+    void Test_OnIncrementalRefresh_OBR_CURR_Change_SellQuotes() {
         FeedConnection_CURR_OBR *fc = new FeedConnection_CURR_OBR("OBR", "Refresh Incremental", 'I',
                                                                   FeedConnectionProtocol::UDP_IP,
                                                                   "10.50.129.200", "239.192.113.3", 9113,
@@ -1616,16 +1617,16 @@ public:
         fc->OnIncrementalRefresh_OBR_CURR(info);
 
         OrderBookTableItem<FastOBSCURRItemInfo> *obi2 = fc->OrderBookCurr()->GetItem("SMB1", 4, "TRADING001", 10);
-        if(!obi2->SellQuotes()->Item(0)->Id->Equal("ENTRYID003"))
+        if(!StringIdComparer::Equal(obi2->SellQuotes()->Item(0)->MDEntryID, 10, "ENTRYID003", 10))
             throw;
-        if(!obi2->SellQuotes()->Item(1)->Id->Equal("ENTRYID004"))
+        if(!StringIdComparer::Equal(obi2->SellQuotes()->Item(1)->MDEntryID, 10, "ENTRYID004", 10))
             throw;
-        if(!obi2->SellQuotes()->Item(2)->Id->Equal("ENTRYID001"))
+        if(!StringIdComparer::Equal(obi2->SellQuotes()->Item(2)->MDEntryID, 10, "ENTRYID001", 10))
             throw;
-        if(!obi2->SellQuotes()->Item(3)->Id->Equal("ENTRYID002"))
+        if(!StringIdComparer::Equal(obi2->SellQuotes()->Item(3)->MDEntryID, 10, "ENTRYID002", 10))
             throw;
 
-        FastOBSCURRItemInfo *item5 = CreateFastOBRCurrItemInfo("SMB1", "TRADING001", 24, -3, 1, 3, mduaChange, mdetBuyQuote, "ENTRYID002");
+        FastOBSCURRItemInfo *item5 = CreateFastOBRCurrItemInfo("SMB1", "TRADING001", 24, -3, 1, 3, mduaChange, mdetSellQuote, "ENTRYID002");
 
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item5;
@@ -1634,32 +1635,32 @@ public:
 
         OrderBookTableItem<FastOBSCURRItemInfo> *obi = fc->OrderBookCurr()->GetItem("SMB1", 4, "TRADING001", 10);
 
-        OrderBookQuote *qt1 = obi->SellQuotes()->Item(0);
-        OrderBookQuote *qt2 = obi->SellQuotes()->Item(1);
-        OrderBookQuote *qt3 = obi->SellQuotes()->Item(2);
-        OrderBookQuote *qt4 = obi->SellQuotes()->Item(3);
+        FastOBSCURRItemInfo *qt1 = obi->SellQuotes()->Item(0);
+        FastOBSCURRItemInfo *qt2 = obi->SellQuotes()->Item(1);
+        FastOBSCURRItemInfo *qt3 = obi->SellQuotes()->Item(2);
+        FastOBSCURRItemInfo *qt4 = obi->SellQuotes()->Item(3);
 
         if(fc->OrderBookCurr()->UsedItemCount() != 1)
             throw;
         if(obi->SellQuotes()->Count() != 4)
             throw;
-        if(!qt1->Id->Equal("ENTRYID003", 10))
+        if(!StringIdComparer::Equal(qt1->MDEntryID, 10, "ENTRYID003", 10))
             throw;
-        if(!qt2->Id->Equal("ENTRYID002", 10))
+        if(!StringIdComparer::Equal(qt2->MDEntryID, 10, "ENTRYID002", 10))
             throw;
-        if(!qt3->Id->Equal("ENTRYID004", 10))
+        if(!StringIdComparer::Equal(qt3->MDEntryID, 10, "ENTRYID004", 10))
             throw;
-        if(!qt4->Id->Equal("ENTRYID001", 10))
-            throw;
-
-        if(qt1->Price.Mantissa != item1->MDEntryPx.Mantissa)
-            throw;
-        if(qt1->Price.Exponent != item1->MDEntryPx.Exponent)
+        if(!StringIdComparer::Equal(qt4->MDEntryID, 10, "ENTRYID001", 10))
             throw;
 
-        if(qt3->Price.Mantissa != item5->MDEntryPx.Mantissa)
+        if(qt1->MDEntryPx.Mantissa != item3->MDEntryPx.Mantissa)
             throw;
-        if(qt3->Price.Exponent != item5->MDEntryPx.Exponent)
+        if(qt1->MDEntryPx.Exponent != item3->MDEntryPx.Exponent)
+            throw;
+
+        if(qt2->MDEntryPx.Mantissa != item5->MDEntryPx.Mantissa)
+            throw;
+        if(qt2->MDEntryPx.Exponent != item5->MDEntryPx.Exponent)
             throw;
     }
 
@@ -1713,8 +1714,8 @@ public:
         fc->OnIncrementalRefresh_OBR_CURR(info);
 
         FastOBSCURRInfo *info2 = CreateFastOBSCurrInfo("SMB2", "TRADING001");
-        FastOBSCURRItemInfo *newItem1 = CreateFastOBSCurrItemInfo(7,-2, 1, 2, mdetBuyQuote, "ENTRYID007");
-        FastOBSCURRItemInfo *newItem2 = CreateFastOBSCurrItemInfo(8,-2, 1, 2, mdetBuyQuote, "ENTRYID008");
+        FastOBSCURRItemInfo *newItem1 = CreateFastOBSCurrItemInfo(7,-2, 1, 2, mdetSellQuote, "ENTRYID007");
+        FastOBSCURRItemInfo *newItem2 = CreateFastOBSCurrItemInfo(8,-2, 1, 2, mdetSellQuote, "ENTRYID008");
 
         info2->GroupMDEntriesCount = 2;
         info2->GroupMDEntries[0] = newItem1;
@@ -1726,32 +1727,32 @@ public:
             throw;
 
         OrderBookTableItem<FastOBSCURRItemInfo> *obi3 = fc->OrderBookCurr()->GetItem("SMB1", 4, "TRADING001", 10);
-        if(obi3->BuyQuotes()->Count() != 0)
+        if(obi3->SellQuotes()->Count() != 0)
             throw;
 
         OrderBookTableItem<FastOBSCURRItemInfo> *obi = fc->OrderBookCurr()->GetItem("SMB2", 4, "TRADING001", 10);
-        if(obi->BuyQuotes()->Count() != 2)
+        if(obi->SellQuotes()->Count() != 2)
             throw;
 
-        OrderBookQuote *qt1 = obi->BuyQuotes()->Start()->Data();
-        OrderBookQuote *qt2 = obi->BuyQuotes()->Start()->Next()->Data();
+        FastOBSCURRItemInfo *qt1 = obi->SellQuotes()->Item(0);
+        FastOBSCURRItemInfo *qt2 = obi->SellQuotes()->Item(1);
 
-        if(!qt1->Id->Equal("ENTRYID007", 10))
+        if(!StringIdComparer::Equal(qt1->MDEntryID, 10, "ENTRYID007", 10))
             throw;
-        if(!qt2->Id->Equal("ENTRYID008", 10))
+        if(!StringIdComparer::Equal(qt2->MDEntryID, 10, "ENTRYID008", 10))
             throw;
-        if(!qt1->Price.Equal(7, -2))
+        if(!qt1->MDEntryPx.Equal(7, -2))
             throw;
-        if(!qt1->Size.Equal(1, 2))
+        if(!qt1->MDEntrySize.Equal(1, 2))
             throw;
-        if(!qt2->Price.Equal(8, -2))
+        if(!qt2->MDEntryPx.Equal(8, -2))
             throw;
     }
 
     void Test_OnIncrementalRefresh_OBR_CURR_SellQuotes() {
         Test_OnIncrementalRefresh_OBR_CURR_Add_SellQuotes();
         Test_OnIncrementalRefresh_OBR_CURR_Remove_SellQuotes();
-        Test_OnIncrementalRefresh_OBR_CURR_Change_Sellquotes();
+        Test_OnIncrementalRefresh_OBR_CURR_Change_SellQuotes();
         Test_Clear_SellQuotes();
     }
 
@@ -1765,7 +1766,7 @@ public:
     void Test_OnIncrementalRefresh_OBR_FOND_SellQuotes() {
         Test_OnIncrementalRefresh_OBR_FOND_Add_SellQuotes();
         Test_OnIncrementalRefresh_OBR_FOND_Remove_SellQuotes();
-        Test_OnIncrementalRefresh_OBR_FOND_Change_Sellquotes();
+        Test_OnIncrementalRefresh_OBR_FOND_Change_SellQuotes();
         Test_Clear_SellQuotes();
     }
 

@@ -27,27 +27,23 @@ public:
 };
 
 template <typename T> class OrderBookTableItem {
-    PointerList<OrderBookQuote>      *m_sellQuoteList;
-    PointerList<OrderBookQuote>      *m_buyQuoteList;
+    PointerList<T>      *m_sellQuoteList;
+    PointerList<T>      *m_buyQuoteList;
 
-    bool                              m_used;
+    bool                 m_used;
 
 public:
     OrderBookTableItem() {
-        this->m_sellQuoteList = new PointerList<OrderBookQuote>(128);
-        this->m_buyQuoteList = new PointerList<OrderBookQuote>(128);
-        this->m_sellQuoteList->AllocData();
-        this->m_buyQuoteList->AllocData();
+        this->m_sellQuoteList = new PointerList<T>(128);
+        this->m_buyQuoteList = new PointerList<T>(128);
     }
     ~OrderBookTableItem() {
-        this->m_sellQuoteList->FreeData();
-        this->m_buyQuoteList->FreeData();
         delete this->m_sellQuoteList;
         delete this->m_buyQuoteList;
     }
 
-    inline PointerList<OrderBookQuote>* SellQuotes() { return this->m_sellQuoteList; }
-    inline PointerList<OrderBookQuote>* BuyQuotes() { return this->m_buyQuoteList; }
+    inline PointerList<T>* SellQuotes() { return this->m_sellQuoteList; }
+    inline PointerList<T>* BuyQuotes() { return this->m_buyQuoteList; }
     inline bool Used() { return this->m_used; }
     inline void Used(bool used) { this->m_used = used; }
     inline void Clear() {
@@ -55,14 +51,14 @@ public:
         this->m_buyQuoteList->Clear();
     }
 
-    inline LinkedPointer<OrderBookQuote>* AddBuyQuote(Decimal *price) {
-        LinkedPointer<OrderBookQuote> *node = this->m_buyQuoteList->Start();
+    inline LinkedPointer<T>* AddBuyQuote(Decimal *price) {
+        LinkedPointer<T> *node = this->m_buyQuoteList->Start();
         double value = price->Calculate();
 
         if(node != null) {
             while (true) {
-                if (node->Data()->Price.Value < value) {
-                    LinkedPointer<OrderBookQuote> *curr = this->m_buyQuoteList->Pop();
+                if (node->Data()->MDEntryPx.Value < value) {
+                    LinkedPointer<T> *curr = this->m_buyQuoteList->Pop();
                     this->m_buyQuoteList->Insert(node, curr);
                     return curr;
                 }
@@ -71,19 +67,19 @@ public:
                 node = node->Next();
             }
         }
-        LinkedPointer<OrderBookQuote> *curr = this->m_buyQuoteList->Pop();
+        LinkedPointer<T> *curr = this->m_buyQuoteList->Pop();
         this->m_buyQuoteList->Add(curr);
         return curr;
     }
 
-    inline LinkedPointer<OrderBookQuote>* AddSellQuote(Decimal *price) {
-        LinkedPointer<OrderBookQuote> *node = this->m_sellQuoteList->Start();
+    inline LinkedPointer<T>* AddSellQuote(Decimal *price) {
+        LinkedPointer<T> *node = this->m_sellQuoteList->Start();
         double value = price->Calculate();
 
         if(node != null) {
             while (true) {
-                if (node->Data()->Price.Value > value) {
-                    LinkedPointer<OrderBookQuote> *curr = this->m_sellQuoteList->Pop();
+                if (node->Data()->MDEntryPx.Value > value) {
+                    LinkedPointer<T> *curr = this->m_sellQuoteList->Pop();
                     this->m_sellQuoteList->Insert(node, curr);
                     return curr;
                 }
@@ -92,43 +88,31 @@ public:
                 node = node->Next();
             }
         }
-        LinkedPointer<OrderBookQuote> *curr = this->m_sellQuoteList->Pop();
+        LinkedPointer<T> *curr = this->m_sellQuoteList->Pop();
         this->m_sellQuoteList->Add(curr);
         return curr;
     }
 
-    inline void AssignQuote(LinkedPointer<OrderBookQuote> *ptr, T *item) {
-        OrderBookQuote* ob = ptr->Data();
-
-        ob->Id->m_text = item->MDEntryID;
-        ob->Id->m_length = item->MDEntryIDLength;
-        ob->Price.Assign(&(item->MDEntryPx));
-        ob->Size.Assign(&(item->MDEntrySize));
-        ob->RptSec = item->RptSeq;
-        ob->Time = item->MDEntryTime;
-        ob->OrigTime = item->OrigTime;
+    inline LinkedPointer<T>* AddBuyQuote(T *item) {
+        LinkedPointer<T> *res = AddBuyQuote(&(item->MDEntryPx));
+        res->Data(item);
+        return res;
     }
 
-    inline LinkedPointer<OrderBookQuote>* AddBuyQuote(T *item) {
-        LinkedPointer<OrderBookQuote> *ptr = AddBuyQuote(&(item->MDEntryPx));
-        this->AssignQuote(ptr, item);
-        return ptr;
+    inline LinkedPointer<T>* AddSellQuote(T *item) {
+        LinkedPointer<T> *res = AddSellQuote(&(item->MDEntryPx));
+        res->Data(item);
+        return res;
     }
 
-    inline LinkedPointer<OrderBookQuote>* AddSellQuote(T *item) {
-        LinkedPointer<OrderBookQuote> *ptr = AddSellQuote(&(item->MDEntryPx));
-        this->AssignQuote(ptr, item);
-        return ptr;
-    }
-
-    inline LinkedPointer<OrderBookQuote>* Add(T *info) {
+    inline LinkedPointer<T>* Add(T *info) {
         if(info->MDEntryType[0] == mdetBuyQuote)
             return this->AddBuyQuote(info);
         return this->AddSellQuote(info);
     }
 
-    inline LinkedPointer<OrderBookQuote>* GetQuote(PointerList<OrderBookQuote> *list, T *info) {
-        LinkedPointer<OrderBookQuote> *node = list->Start();
+    inline LinkedPointer<T>* GetQuote(PointerList<OrderBookQuote> *list, T *info) {
+        LinkedPointer<T> *node = list->Start();
         if(node == 0)
             return 0;
         while(true) {
@@ -140,12 +124,13 @@ public:
         }
     }
 
-    inline LinkedPointer<OrderBookQuote>* RemoveBuyQuote(T *info) {
-        LinkedPointer<OrderBookQuote> *node = this->m_buyQuoteList->Start();
+    inline LinkedPointer<T>* RemoveBuyQuote(T *info) {
+        LinkedPointer<T> *node = this->m_buyQuoteList->Start();
         if(node == 0)
             return 0;
         while(true) {
-            if(node->Data()->Id->Equal(info->MDEntryID, info->MDEntryIDLength)) {
+            T *data = node->Data();
+            if(StringIdComparer::Equal(data->MDEntryID, data->MDEntryIDLength, info->MDEntryID, info->MDEntryIDLength)) {
                 this->m_buyQuoteList->Remove(node);
                 return node;
             }
@@ -156,12 +141,13 @@ public:
         return 0;
     }
 
-    inline LinkedPointer<OrderBookQuote>* RemoveSellQuote(T *info) {
-        LinkedPointer<OrderBookQuote> *node = this->m_sellQuoteList->Start();
+    inline LinkedPointer<T>* RemoveSellQuote(T *info) {
+        LinkedPointer<T> *node = this->m_sellQuoteList->Start();
         if(node == 0)
             return 0;
         while(true) {
-            if(node->Data()->Id->Equal(info->MDEntryID, info->MDEntryIDLength)) {
+            T *data = node->Data();
+            if(StringIdComparer::Equal(data->MDEntryID, data->MDEntryIDLength, info->MDEntryID, info->MDEntryIDLength)) {
                 this->m_sellQuoteList->Remove(node);
                 return node;
             }
