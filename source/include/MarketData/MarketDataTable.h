@@ -307,8 +307,8 @@ public:
 };
 
 
-template <typename INFO, typename ITEMINFO> class MarketDataTable {
-    HashTable<OrderBookTableItem<ITEMINFO>>                *m_table;
+template <typename TABLEITEM, typename INFO, typename ITEMINFO> class MarketDataTable {
+    HashTable<TABLEITEM<ITEMINFO>>                *m_table;
 
 public:
     MarketDataTable() {
@@ -318,22 +318,22 @@ public:
         delete this->m_table;
     }
     inline void Add(const char *symbol, int symbolLen, const char *tradingSession, int tradingLen, ITEMINFO *item) {
-        OrderBookTableItem<ITEMINFO> *tableItem = this->m_table->GetItem(symbol, symbolLen, tradingSession, tradingLen);
+        TABLEITEM<ITEMINFO> *tableItem = this->m_table->GetItem(symbol, symbolLen, tradingSession, tradingLen);
         this->m_table->AddUsed(tableItem);
         tableItem->Add(item);
     }
     inline void Add(const char *symbol, int symbolLen, const char *tradingSession, int tradingLen, ITEMINFO **items) {
-        OrderBookTableItem<ITEMINFO> *tableItem = this->m_table->GetItem(symbol, symbolLen, tradingSession, tradingLen);
+        TABLEITEM<ITEMINFO> *tableItem = this->m_table->GetItem(symbol, symbolLen, tradingSession, tradingLen);
         this->m_table->AddUsed(tableItem);
         tableItem->Add(items);
     }
     inline void Add(ITEMINFO *info) {
-        OrderBookTableItem<ITEMINFO> *tableItem = this->m_table->GetItem(info->Symbol, info->SymbolLength, info->TradingSessionID, info->TradingSessionIDLength);
+        TABLEITEM<ITEMINFO> *tableItem = this->m_table->GetItem(info->Symbol, info->SymbolLength, info->TradingSessionID, info->TradingSessionIDLength);
         this->m_table->AddUsed(tableItem);
         tableItem->Add(info);
     }
     inline void Add(INFO *info) {
-        OrderBookTableItem<ITEMINFO> *tableItem = this->m_table->GetItem(info->Symbol, info->SymbolLength, info->TradingSessionID, info->TradingSessionIDLength);
+        TABLEITEM<ITEMINFO> *tableItem = this->m_table->GetItem(info->Symbol, info->SymbolLength, info->TradingSessionID, info->TradingSessionIDLength);
         this->m_table->AddUsed(tableItem);
         ITEMINFO **item = info->GroupMDEntries;
 
@@ -342,25 +342,25 @@ public:
         }
     }
     inline void Remove(ITEMINFO *info) {
-        OrderBookTableItem<ITEMINFO> *tableItem = this->m_table->GetItem(info->Symbol, info->SymbolLength, info->TradingSessionID, info->TradingSessionIDLength);
+        TABLEITEM<ITEMINFO> *tableItem = this->m_table->GetItem(info->Symbol, info->SymbolLength, info->TradingSessionID, info->TradingSessionIDLength);
         tableItem->Remove(info);
     }
     inline void Change(ITEMINFO *info) {
-        OrderBookTableItem<ITEMINFO> *tableItem = this->m_table->GetItem(info->Symbol, info->SymbolLength, info->TradingSessionID, info->TradingSessionIDLength);
+        TABLEITEM<ITEMINFO> *tableItem = this->m_table->GetItem(info->Symbol, info->SymbolLength, info->TradingSessionID, info->TradingSessionIDLength);
         tableItem->Change(info);
     }
     inline void Clear() {
         this->m_table->Clear();
     }
     inline void ClearItem(const char *symbol, int symbolLen, const char *tradingSession, int tradingSessionLen) {
-        OrderBookTableItem<ITEMINFO> *tableItem = this->m_table->GetItem(symbol, symbolLen, tradingSession, tradingSessionLen);
+        TABLEITEM<ITEMINFO> *tableItem = this->m_table->GetItem(symbol, symbolLen, tradingSession, tradingSessionLen);
         this->m_table->RemoveUsed(tableItem);
         tableItem->Clear();
     }
     inline int SymbolsCount() { return this->m_table->SymbolsCount(); }
     inline int TradingSessionsCount() { return this->m_table->TradingSessionsCount(); }
     inline int UsedItemCount() { return this->m_table->UsedItemCount(); }
-    inline OrderBookTableItem<ITEMINFO>* GetItem(const char *symbol, int symbolLen, const char *tradingSession, int tradingSessionLen) { return this->m_table->GetItem(symbol, symbolLen, tradingSession, tradingSessionLen);  }
+    inline TABLEITEM<ITEMINFO>* GetItem(const char *symbol, int symbolLen, const char *tradingSession, int tradingSessionLen) { return this->m_table->GetItem(symbol, symbolLen, tradingSession, tradingSessionLen);  }
 };
 
 #endif //HFT_ROBOT_ORDERBOOKTABLE_H

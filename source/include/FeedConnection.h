@@ -121,10 +121,10 @@ protected:
     bool                                        m_shouldReceiveAnswer;
 
 protected:
-	MarketDataTable<FastOBSFONDInfo, FastOBSFONDItemInfo>		*m_orderBookTableFond;
-	MarketDataTable<FastOBSCURRInfo, FastOBSCURRItemInfo>        *m_orderBookTableCurr;
-	MarketDataTable<FastOLSFONDInfo, FastOLSFONDItemInfo>		*m_orderTableFond;
-	MarketDataTable<FastOLSCURRInfo, FastOLSCURRItemInfo>		*m_orderTableCurr;
+	MarketDataTable<OrderBookTableItem, FastOBSFONDInfo, FastOBSFONDItemInfo>		*m_orderBookTableFond;
+	MarketDataTable<OrderBookTableItem,FastOBSCURRInfo, FastOBSCURRItemInfo>        *m_orderBookTableCurr;
+	MarketDataTable<OrderTableItem, FastOLSFONDInfo, FastOLSFONDItemInfo>		*m_orderTableFond;
+	MarketDataTable<OrderTableItem, FastOLSCURRInfo, FastOLSCURRItemInfo>		*m_orderTableCurr;
 private:
 
     inline void GetCurrentTime(UINT64 *time) {
@@ -551,8 +551,10 @@ public:
 	~FeedConnection();
 
     inline int LastMsgSeqNumProcessed() { return this->m_lastMsgSeqNumProcessed; }
-	inline MarketDataTable<FastOBSFONDInfo, FastOBSFONDItemInfo> *OrderBookFond() { return this->m_orderBookTableFond; }
-	inline MarketDataTable<FastOBSCURRInfo, FastOBSCURRItemInfo> *OrderBookCurr() { return this->m_orderBookTableCurr; }
+	inline MarketDataTable<OrderBookTableItem, FastOBSFONDInfo, FastOBSFONDItemInfo> *OrderBookFond() { return this->m_orderBookTableFond; }
+	inline MarketDataTable<OrderBookTableItem, FastOBSCURRInfo, FastOBSCURRItemInfo> *OrderBookCurr() { return this->m_orderBookTableCurr; }
+	inline MarketDataTable<OrderTableItem, FastOLSFONDInfo, FastOLSFONDItemInfo> *OrderBookFond() { return this->m_orderTableFond; }
+	inline MarketDataTable<OrderTableItem, FastOLSCURRInfo, FastOLSCURRItemInfo> *OrderBookCurr() { return this->m_orderTableCurr; }
 
     inline void StartNewSnapshot() {
         DefaultLogManager::Default->WriteSuccess(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_StartNewSnapshot, true);
@@ -685,7 +687,7 @@ public:
 		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
 
 		this->SetType(FeedConnectionType::Incremental);
-		this->m_orderBookTableCurr = new MarketDataTable<FastOBSCURRInfo, FastOBSCURRItemInfo>();
+		this->m_orderBookTableCurr = new MarketDataTable<OrderBookTableItem, FastOBSCURRInfo, FastOBSCURRItemInfo>();
     }
 	ISocketBufferProvider* CreateSocketBufferProvider() {
 		return new SocketBufferProvider(DefaultSocketBufferManager::Default,
@@ -747,7 +749,7 @@ public:
 	FeedConnection_CURR_OLR(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
 		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
 		this->SetType(FeedConnectionType::Incremental);
-		this->m_orderTableCurr = new MarketDataTable<FastOLSCURRInfo, FastOLSCURRItemInfo>();
+		this->m_orderTableCurr = new MarketDataTable<OrderTableItem, FastOLSCURRInfo, FastOLSCURRItemInfo>();
     }
 	ISocketBufferProvider* CreateSocketBufferProvider() {
 		return new SocketBufferProvider(DefaultSocketBufferManager::Default,
@@ -808,7 +810,7 @@ public:
 	FeedConnection_FOND_OBR(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
 		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
 		this->SetType(FeedConnectionType::Incremental);
-		this->m_orderBookTableFond = new MarketDataTable<FastOBSFONDInfo, FastOBSFONDItemInfo>();
+		this->m_orderBookTableFond = new MarketDataTable<OrderBookTableItem, FastOBSFONDInfo, FastOBSFONDItemInfo>();
     }
 	ISocketBufferProvider* CreateSocketBufferProvider() {
 		return new SocketBufferProvider(DefaultSocketBufferManager::Default,
@@ -869,7 +871,7 @@ public:
 	FeedConnection_FOND_OLR(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
 		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
 		this->SetType(FeedConnectionType::Incremental);
-		this->m_orderTableFond = new MarketDataTable<FastOLSFONDInfo, FastOLSFONDItemInfo>();
+		this->m_orderTableFond = new MarketDataTable<OrderTableItem, FastOLSFONDInfo, FastOLSFONDItemInfo>();
     }
 	ISocketBufferProvider* CreateSocketBufferProvider() {
 		return new SocketBufferProvider(DefaultSocketBufferManager::Default,
