@@ -16,6 +16,7 @@ template<typename T> class AutoAllocatePointerList {
         do {
             T *t = new T;
             t->Pointer = start;
+            t->Allocator = this;
             start->Data(t);
             start = start->Next();
         }
@@ -32,10 +33,13 @@ public:
             LinkedPointer<T> *node = this->m_list->Append(this->m_addCapacity);
             this->Allocate(node, this->m_list->PoolEnd());
         }
-        return (T*)this->m_list->Pop()->Data();
+        T *item = this->m_list->Pop()->Data();
+        item->Used = true;
+        return item;
     }
     inline PointerList<T>* ListCore() { return this->m_list; }
     inline void FreeItem(LinkedPointer<T> *node) {
+        node->Data()->Used = false;
         this->m_list->Push(node);
     }
     inline int Count() { return this->m_list->Count(); }

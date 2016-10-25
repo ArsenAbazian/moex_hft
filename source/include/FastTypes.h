@@ -137,6 +137,9 @@ typedef struct _FastSnapshotInfo {
 class FastLogonInfo{
 public:
 	UINT64							PresenceMap;
+	LinkedPointer<FastLogonInfo>							*Pointer;
+	AutoAllocatePointerList<FastLogonInfo>							*Allocator;
+	bool							Used;
 	char*							MessageType;			// id=35    constant has constant value = A
 	int							MessageTypeLength;
 	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
@@ -157,14 +160,25 @@ public:
 	char*							DefaultApplVerID;			// id=1137  
 	int							DefaultApplVerIDLength;
 
-	FastLogonInfo(){ }
+	FastLogonInfo(){
+		this->Used = false;
+	}
 	~FastLogonInfo(){ }
-	inline void Clear() { }
+	inline void Clear() {
+	}
+	inline void ReleaseUnused() {
+		if(this->Used)
+			return;
+
+	}
 };
 
 class FastLogoutInfo{
 public:
 	UINT64							PresenceMap;
+	LinkedPointer<FastLogoutInfo>							*Pointer;
+	AutoAllocatePointerList<FastLogoutInfo>							*Allocator;
+	bool							Used;
 	char*							MessageType;			// id=35    constant has constant value = 5
 	int							MessageTypeLength;
 	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
@@ -179,14 +193,25 @@ public:
 	int							TextLength;
 	bool							AllowText;
 
-	FastLogoutInfo(){ }
+	FastLogoutInfo(){
+		this->Used = false;
+	}
 	~FastLogoutInfo(){ }
-	inline void Clear() { }
+	inline void Clear() {
+	}
+	inline void ReleaseUnused() {
+		if(this->Used)
+			return;
+
+	}
 };
 
 class FastGenericItemInfo{
 public:
 	UINT64							PresenceMap;
+	LinkedPointer<FastGenericItemInfo>							*Pointer;
+	AutoAllocatePointerList<FastGenericItemInfo>							*Allocator;
+	bool							Used;
 	char*							MDEntryType;			// id=269  presence=optional  
 	int							MDEntryTypeLength;
 	bool							AllowMDEntryType;
@@ -302,14 +327,27 @@ public:
 	int							TradingSessionIDLength;
 	bool							AllowTradingSessionID;
 
-	FastGenericItemInfo(){ }
+	FastGenericItemInfo(){
+		this->Used = false;
+	}
 	~FastGenericItemInfo(){ }
-	inline void Clear() { }
+	inline void Clear() {
+		this->Allocator->FreeItem(this->Pointer);
+	}
+	inline void ReleaseUnused() {
+		if(this->Used)
+			return;
+
+		this->Allocator->FreeItem(this->Pointer);
+	}
 };
 
 class FastGenericInfo{
 public:
 	UINT64							PresenceMap;
+	LinkedPointer<FastGenericInfo>							*Pointer;
+	AutoAllocatePointerList<FastGenericInfo>							*Allocator;
+	bool							Used;
 	char*							MessageType;			// id=35    constant has constant value = W
 	int							MessageTypeLength;
 	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
@@ -343,14 +381,29 @@ public:
 	int							GroupMDEntriesCount;
 	FastGenericItemInfo* GroupMDEntries[64];
 
-	FastGenericInfo(){ }
+	FastGenericInfo(){
+		this->Used = false;
+	}
 	~FastGenericInfo(){ }
-	inline void Clear() { }
+	inline void Clear() {
+		for(int i = 0; i < this->GroupMDEntriesCount; i++)
+			this->GroupMDEntries[i]->Clear();
+	}
+	inline void ReleaseUnused() {
+		if(this->Used)
+			return;
+
+		for(int i = 0; i < this->GroupMDEntriesCount; i++)
+			this->GroupMDEntries[i]->ReleaseUnused();
+	}
 };
 
 class FastIncrementalGenericInfo{
 public:
 	UINT64							PresenceMap;
+	LinkedPointer<FastIncrementalGenericInfo>							*Pointer;
+	AutoAllocatePointerList<FastIncrementalGenericInfo>							*Allocator;
+	bool							Used;
 	char*							MessageType;			// id=35    constant has constant value = X
 	int							MessageTypeLength;
 	char*							ApplVerID;			// id=1128    constant has constant value = 9
@@ -364,14 +417,29 @@ public:
 	int							GroupMDEntriesCount;
 	FastGenericItemInfo* GroupMDEntries[64];
 
-	FastIncrementalGenericInfo(){ }
+	FastIncrementalGenericInfo(){
+		this->Used = false;
+	}
 	~FastIncrementalGenericInfo(){ }
-	inline void Clear() { }
+	inline void Clear() {
+		for(int i = 0; i < this->GroupMDEntriesCount; i++)
+			this->GroupMDEntries[i]->Clear();
+	}
+	inline void ReleaseUnused() {
+		if(this->Used)
+			return;
+
+		for(int i = 0; i < this->GroupMDEntriesCount; i++)
+			this->GroupMDEntries[i]->ReleaseUnused();
+	}
 };
 
 class FastOLSFONDItemInfo{
 public:
 	UINT64							PresenceMap;
+	LinkedPointer<FastOLSFONDItemInfo>							*Pointer;
+	AutoAllocatePointerList<FastOLSFONDItemInfo>							*Allocator;
+	bool							Used;
 	char*							MDEntryType;			// id=269  presence=optional  
 	int							MDEntryTypeLength;
 	bool							AllowMDEntryType;
@@ -418,14 +486,27 @@ public:
 	int							TradingSessionIDLength;
 	bool							AllowTradingSessionID;
 
-	FastOLSFONDItemInfo(){ }
+	FastOLSFONDItemInfo(){
+		this->Used = false;
+	}
 	~FastOLSFONDItemInfo(){ }
-	inline void Clear() { }
+	inline void Clear() {
+		this->Allocator->FreeItem(this->Pointer);
+	}
+	inline void ReleaseUnused() {
+		if(this->Used)
+			return;
+
+		this->Allocator->FreeItem(this->Pointer);
+	}
 };
 
 class FastOLSFONDInfo{
 public:
 	UINT64							PresenceMap;
+	LinkedPointer<FastOLSFONDInfo>							*Pointer;
+	AutoAllocatePointerList<FastOLSFONDInfo>							*Allocator;
+	bool							Used;
 	char*							MessageType;			// id=35    constant has constant value = W
 	int							MessageTypeLength;
 	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
@@ -457,14 +538,29 @@ public:
 	int							GroupMDEntriesCount;
 	FastOLSFONDItemInfo* GroupMDEntries[64];
 
-	FastOLSFONDInfo(){ }
+	FastOLSFONDInfo(){
+		this->Used = false;
+	}
 	~FastOLSFONDInfo(){ }
-	inline void Clear() { }
+	inline void Clear() {
+		for(int i = 0; i < this->GroupMDEntriesCount; i++)
+			this->GroupMDEntries[i]->Clear();
+	}
+	inline void ReleaseUnused() {
+		if(this->Used)
+			return;
+
+		for(int i = 0; i < this->GroupMDEntriesCount; i++)
+			this->GroupMDEntries[i]->ReleaseUnused();
+	}
 };
 
 class FastOLSCURRItemInfo{
 public:
 	UINT64							PresenceMap;
+	LinkedPointer<FastOLSCURRItemInfo>							*Pointer;
+	AutoAllocatePointerList<FastOLSCURRItemInfo>							*Allocator;
+	bool							Used;
 	char*							MDEntryType;			// id=269  presence=optional  
 	int							MDEntryTypeLength;
 	bool							AllowMDEntryType;
@@ -504,14 +600,27 @@ public:
 	int							TradingSessionIDLength;
 	bool							AllowTradingSessionID;
 
-	FastOLSCURRItemInfo(){ }
+	FastOLSCURRItemInfo(){
+		this->Used = false;
+	}
 	~FastOLSCURRItemInfo(){ }
-	inline void Clear() { }
+	inline void Clear() {
+		this->Allocator->FreeItem(this->Pointer);
+	}
+	inline void ReleaseUnused() {
+		if(this->Used)
+			return;
+
+		this->Allocator->FreeItem(this->Pointer);
+	}
 };
 
 class FastOLSCURRInfo{
 public:
 	UINT64							PresenceMap;
+	LinkedPointer<FastOLSCURRInfo>							*Pointer;
+	AutoAllocatePointerList<FastOLSCURRInfo>							*Allocator;
+	bool							Used;
 	char*							MessageType;			// id=35    constant has constant value = W
 	int							MessageTypeLength;
 	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
@@ -541,14 +650,29 @@ public:
 	int							GroupMDEntriesCount;
 	FastOLSCURRItemInfo* GroupMDEntries[64];
 
-	FastOLSCURRInfo(){ }
+	FastOLSCURRInfo(){
+		this->Used = false;
+	}
 	~FastOLSCURRInfo(){ }
-	inline void Clear() { }
+	inline void Clear() {
+		for(int i = 0; i < this->GroupMDEntriesCount; i++)
+			this->GroupMDEntries[i]->Clear();
+	}
+	inline void ReleaseUnused() {
+		if(this->Used)
+			return;
+
+		for(int i = 0; i < this->GroupMDEntriesCount; i++)
+			this->GroupMDEntries[i]->ReleaseUnused();
+	}
 };
 
 class FastTLSFONDItemInfo{
 public:
 	UINT64							PresenceMap;
+	LinkedPointer<FastTLSFONDItemInfo>							*Pointer;
+	AutoAllocatePointerList<FastTLSFONDItemInfo>							*Allocator;
+	bool							Used;
 	char*							MDEntryType;			// id=269  
 	int							MDEntryTypeLength;
 	char*							MDEntryID;			// id=278  presence=optional  
@@ -602,14 +726,27 @@ public:
 	int							TradingSessionIDLength;
 	bool							AllowTradingSessionID;
 
-	FastTLSFONDItemInfo(){ }
+	FastTLSFONDItemInfo(){
+		this->Used = false;
+	}
 	~FastTLSFONDItemInfo(){ }
-	inline void Clear() { }
+	inline void Clear() {
+		this->Allocator->FreeItem(this->Pointer);
+	}
+	inline void ReleaseUnused() {
+		if(this->Used)
+			return;
+
+		this->Allocator->FreeItem(this->Pointer);
+	}
 };
 
 class FastTLSFONDInfo{
 public:
 	UINT64							PresenceMap;
+	LinkedPointer<FastTLSFONDInfo>							*Pointer;
+	AutoAllocatePointerList<FastTLSFONDInfo>							*Allocator;
+	bool							Used;
 	char*							MessageType;			// id=35    constant has constant value = W
 	int							MessageTypeLength;
 	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
@@ -641,14 +778,29 @@ public:
 	int							GroupMDEntriesCount;
 	FastTLSFONDItemInfo* GroupMDEntries[64];
 
-	FastTLSFONDInfo(){ }
+	FastTLSFONDInfo(){
+		this->Used = false;
+	}
 	~FastTLSFONDInfo(){ }
-	inline void Clear() { }
+	inline void Clear() {
+		for(int i = 0; i < this->GroupMDEntriesCount; i++)
+			this->GroupMDEntries[i]->Clear();
+	}
+	inline void ReleaseUnused() {
+		if(this->Used)
+			return;
+
+		for(int i = 0; i < this->GroupMDEntriesCount; i++)
+			this->GroupMDEntries[i]->ReleaseUnused();
+	}
 };
 
 class FastTLSCURRItemInfo{
 public:
 	UINT64							PresenceMap;
+	LinkedPointer<FastTLSCURRItemInfo>							*Pointer;
+	AutoAllocatePointerList<FastTLSCURRItemInfo>							*Allocator;
+	bool							Used;
 	char*							MDEntryType;			// id=269  
 	int							MDEntryTypeLength;
 	char*							MDEntryID;			// id=278  presence=optional  
@@ -698,14 +850,27 @@ public:
 	int							TradingSessionIDLength;
 	bool							AllowTradingSessionID;
 
-	FastTLSCURRItemInfo(){ }
+	FastTLSCURRItemInfo(){
+		this->Used = false;
+	}
 	~FastTLSCURRItemInfo(){ }
-	inline void Clear() { }
+	inline void Clear() {
+		this->Allocator->FreeItem(this->Pointer);
+	}
+	inline void ReleaseUnused() {
+		if(this->Used)
+			return;
+
+		this->Allocator->FreeItem(this->Pointer);
+	}
 };
 
 class FastTLSCURRInfo{
 public:
 	UINT64							PresenceMap;
+	LinkedPointer<FastTLSCURRInfo>							*Pointer;
+	AutoAllocatePointerList<FastTLSCURRInfo>							*Allocator;
+	bool							Used;
 	char*							MessageType;			// id=35    constant has constant value = W
 	int							MessageTypeLength;
 	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
@@ -735,14 +900,29 @@ public:
 	int							GroupMDEntriesCount;
 	FastTLSCURRItemInfo* GroupMDEntries[64];
 
-	FastTLSCURRInfo(){ }
+	FastTLSCURRInfo(){
+		this->Used = false;
+	}
 	~FastTLSCURRInfo(){ }
-	inline void Clear() { }
+	inline void Clear() {
+		for(int i = 0; i < this->GroupMDEntriesCount; i++)
+			this->GroupMDEntries[i]->Clear();
+	}
+	inline void ReleaseUnused() {
+		if(this->Used)
+			return;
+
+		for(int i = 0; i < this->GroupMDEntriesCount; i++)
+			this->GroupMDEntries[i]->ReleaseUnused();
+	}
 };
 
 class FastOBSFONDItemInfo{
 public:
 	UINT64							PresenceMap;
+	LinkedPointer<FastOBSFONDItemInfo>							*Pointer;
+	AutoAllocatePointerList<FastOBSFONDItemInfo>							*Allocator;
+	bool							Used;
 	char*							MDEntryType;			// id=269  presence=optional  
 	int							MDEntryTypeLength;
 	bool							AllowMDEntryType;
@@ -777,14 +957,27 @@ public:
 	int							TradingSessionIDLength;
 	bool							AllowTradingSessionID;
 
-	FastOBSFONDItemInfo(){ }
+	FastOBSFONDItemInfo(){
+		this->Used = false;
+	}
 	~FastOBSFONDItemInfo(){ }
-	inline void Clear() { }
+	inline void Clear() {
+		this->Allocator->FreeItem(this->Pointer);
+	}
+	inline void ReleaseUnused() {
+		if(this->Used)
+			return;
+
+		this->Allocator->FreeItem(this->Pointer);
+	}
 };
 
 class FastOBSFONDInfo{
 public:
 	UINT64							PresenceMap;
+	LinkedPointer<FastOBSFONDInfo>							*Pointer;
+	AutoAllocatePointerList<FastOBSFONDInfo>							*Allocator;
+	bool							Used;
 	char*							MessageType;			// id=35    constant has constant value = W
 	int							MessageTypeLength;
 	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
@@ -816,14 +1009,29 @@ public:
 	int							GroupMDEntriesCount;
 	FastOBSFONDItemInfo* GroupMDEntries[64];
 
-	FastOBSFONDInfo(){ }
+	FastOBSFONDInfo(){
+		this->Used = false;
+	}
 	~FastOBSFONDInfo(){ }
-	inline void Clear() { }
+	inline void Clear() {
+		for(int i = 0; i < this->GroupMDEntriesCount; i++)
+			this->GroupMDEntries[i]->Clear();
+	}
+	inline void ReleaseUnused() {
+		if(this->Used)
+			return;
+
+		for(int i = 0; i < this->GroupMDEntriesCount; i++)
+			this->GroupMDEntries[i]->ReleaseUnused();
+	}
 };
 
 class FastOBSCURRItemInfo{
 public:
 	UINT64							PresenceMap;
+	LinkedPointer<FastOBSCURRItemInfo>							*Pointer;
+	AutoAllocatePointerList<FastOBSCURRItemInfo>							*Allocator;
+	bool							Used;
 	char*							MDEntryType;			// id=269  presence=optional  
 	int							MDEntryTypeLength;
 	bool							AllowMDEntryType;
@@ -852,14 +1060,27 @@ public:
 	int							TradingSessionIDLength;
 	bool							AllowTradingSessionID;
 
-	FastOBSCURRItemInfo(){ }
+	FastOBSCURRItemInfo(){
+		this->Used = false;
+	}
 	~FastOBSCURRItemInfo(){ }
-	inline void Clear() { }
+	inline void Clear() {
+		this->Allocator->FreeItem(this->Pointer);
+	}
+	inline void ReleaseUnused() {
+		if(this->Used)
+			return;
+
+		this->Allocator->FreeItem(this->Pointer);
+	}
 };
 
 class FastOBSCURRInfo{
 public:
 	UINT64							PresenceMap;
+	LinkedPointer<FastOBSCURRInfo>							*Pointer;
+	AutoAllocatePointerList<FastOBSCURRInfo>							*Allocator;
+	bool							Used;
 	char*							MessageType;			// id=35    constant has constant value = W
 	int							MessageTypeLength;
 	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
@@ -889,14 +1110,29 @@ public:
 	int							GroupMDEntriesCount;
 	FastOBSCURRItemInfo* GroupMDEntries[64];
 
-	FastOBSCURRInfo(){ }
+	FastOBSCURRInfo(){
+		this->Used = false;
+	}
 	~FastOBSCURRInfo(){ }
-	inline void Clear() { }
+	inline void Clear() {
+		for(int i = 0; i < this->GroupMDEntriesCount; i++)
+			this->GroupMDEntries[i]->Clear();
+	}
+	inline void ReleaseUnused() {
+		if(this->Used)
+			return;
+
+		for(int i = 0; i < this->GroupMDEntriesCount; i++)
+			this->GroupMDEntries[i]->ReleaseUnused();
+	}
 };
 
 class FastIncrementalMSRFONDItemInfo{
 public:
 	UINT64							PresenceMap;
+	LinkedPointer<FastIncrementalMSRFONDItemInfo>							*Pointer;
+	AutoAllocatePointerList<FastIncrementalMSRFONDItemInfo>							*Allocator;
+	bool							Used;
 	UINT32							MDUpdateAction;			// id=279  presence=optional  
 	bool							AllowMDUpdateAction;
 	char*							MDEntryType;			// id=269  presence=optional  
@@ -977,14 +1213,27 @@ public:
 	int							TradingSessionSubIDLength;
 	bool							AllowTradingSessionSubID;
 
-	FastIncrementalMSRFONDItemInfo(){ }
+	FastIncrementalMSRFONDItemInfo(){
+		this->Used = false;
+	}
 	~FastIncrementalMSRFONDItemInfo(){ }
-	inline void Clear() { }
+	inline void Clear() {
+		this->Allocator->FreeItem(this->Pointer);
+	}
+	inline void ReleaseUnused() {
+		if(this->Used)
+			return;
+
+		this->Allocator->FreeItem(this->Pointer);
+	}
 };
 
 class FastIncrementalMSRFONDInfo{
 public:
 	UINT64							PresenceMap;
+	LinkedPointer<FastIncrementalMSRFONDInfo>							*Pointer;
+	AutoAllocatePointerList<FastIncrementalMSRFONDInfo>							*Allocator;
+	bool							Used;
 	char*							MessageType;			// id=35    constant has constant value = X
 	int							MessageTypeLength;
 	char*							ApplVerID;			// id=1128    constant has constant value = 9
@@ -998,14 +1247,29 @@ public:
 	int							GroupMDEntriesCount;
 	FastIncrementalMSRFONDItemInfo* GroupMDEntries[64];
 
-	FastIncrementalMSRFONDInfo(){ }
+	FastIncrementalMSRFONDInfo(){
+		this->Used = false;
+	}
 	~FastIncrementalMSRFONDInfo(){ }
-	inline void Clear() { }
+	inline void Clear() {
+		for(int i = 0; i < this->GroupMDEntriesCount; i++)
+			this->GroupMDEntries[i]->Clear();
+	}
+	inline void ReleaseUnused() {
+		if(this->Used)
+			return;
+
+		for(int i = 0; i < this->GroupMDEntriesCount; i++)
+			this->GroupMDEntries[i]->ReleaseUnused();
+	}
 };
 
 class FastIncrementalMSRCURRItemInfo{
 public:
 	UINT64							PresenceMap;
+	LinkedPointer<FastIncrementalMSRCURRItemInfo>							*Pointer;
+	AutoAllocatePointerList<FastIncrementalMSRCURRItemInfo>							*Allocator;
+	bool							Used;
 	UINT32							MDUpdateAction;			// id=279  presence=optional  
 	bool							AllowMDUpdateAction;
 	char*							MDEntryType;			// id=269  presence=optional  
@@ -1070,14 +1334,27 @@ public:
 	int							TradingSessionSubIDLength;
 	bool							AllowTradingSessionSubID;
 
-	FastIncrementalMSRCURRItemInfo(){ }
+	FastIncrementalMSRCURRItemInfo(){
+		this->Used = false;
+	}
 	~FastIncrementalMSRCURRItemInfo(){ }
-	inline void Clear() { }
+	inline void Clear() {
+		this->Allocator->FreeItem(this->Pointer);
+	}
+	inline void ReleaseUnused() {
+		if(this->Used)
+			return;
+
+		this->Allocator->FreeItem(this->Pointer);
+	}
 };
 
 class FastIncrementalMSRCURRInfo{
 public:
 	UINT64							PresenceMap;
+	LinkedPointer<FastIncrementalMSRCURRInfo>							*Pointer;
+	AutoAllocatePointerList<FastIncrementalMSRCURRInfo>							*Allocator;
+	bool							Used;
 	char*							MessageType;			// id=35    constant has constant value = X
 	int							MessageTypeLength;
 	char*							ApplVerID;			// id=1128    constant has constant value = 9
@@ -1091,14 +1368,29 @@ public:
 	int							GroupMDEntriesCount;
 	FastIncrementalMSRCURRItemInfo* GroupMDEntries[64];
 
-	FastIncrementalMSRCURRInfo(){ }
+	FastIncrementalMSRCURRInfo(){
+		this->Used = false;
+	}
 	~FastIncrementalMSRCURRInfo(){ }
-	inline void Clear() { }
+	inline void Clear() {
+		for(int i = 0; i < this->GroupMDEntriesCount; i++)
+			this->GroupMDEntries[i]->Clear();
+	}
+	inline void ReleaseUnused() {
+		if(this->Used)
+			return;
+
+		for(int i = 0; i < this->GroupMDEntriesCount; i++)
+			this->GroupMDEntries[i]->ReleaseUnused();
+	}
 };
 
 class FastIncrementalOLRFONDInfo{
 public:
 	UINT64							PresenceMap;
+	LinkedPointer<FastIncrementalOLRFONDInfo>							*Pointer;
+	AutoAllocatePointerList<FastIncrementalOLRFONDInfo>							*Allocator;
+	bool							Used;
 	char*							MessageType;			// id=35    constant has constant value = X
 	int							MessageTypeLength;
 	char*							ApplVerID;			// id=1128    constant has constant value = 9
@@ -1112,14 +1404,29 @@ public:
 	int							GroupMDEntriesCount;
 	FastOLSFONDItemInfo* GroupMDEntries[64];
 
-	FastIncrementalOLRFONDInfo(){ }
+	FastIncrementalOLRFONDInfo(){
+		this->Used = false;
+	}
 	~FastIncrementalOLRFONDInfo(){ }
-	inline void Clear() { }
+	inline void Clear() {
+		for(int i = 0; i < this->GroupMDEntriesCount; i++)
+			this->GroupMDEntries[i]->Clear();
+	}
+	inline void ReleaseUnused() {
+		if(this->Used)
+			return;
+
+		for(int i = 0; i < this->GroupMDEntriesCount; i++)
+			this->GroupMDEntries[i]->ReleaseUnused();
+	}
 };
 
 class FastIncrementalOLRCURRInfo{
 public:
 	UINT64							PresenceMap;
+	LinkedPointer<FastIncrementalOLRCURRInfo>							*Pointer;
+	AutoAllocatePointerList<FastIncrementalOLRCURRInfo>							*Allocator;
+	bool							Used;
 	char*							MessageType;			// id=35    constant has constant value = X
 	int							MessageTypeLength;
 	char*							ApplVerID;			// id=1128    constant has constant value = 9
@@ -1133,14 +1440,29 @@ public:
 	int							GroupMDEntriesCount;
 	FastOLSCURRItemInfo* GroupMDEntries[64];
 
-	FastIncrementalOLRCURRInfo(){ }
+	FastIncrementalOLRCURRInfo(){
+		this->Used = false;
+	}
 	~FastIncrementalOLRCURRInfo(){ }
-	inline void Clear() { }
+	inline void Clear() {
+		for(int i = 0; i < this->GroupMDEntriesCount; i++)
+			this->GroupMDEntries[i]->Clear();
+	}
+	inline void ReleaseUnused() {
+		if(this->Used)
+			return;
+
+		for(int i = 0; i < this->GroupMDEntriesCount; i++)
+			this->GroupMDEntries[i]->ReleaseUnused();
+	}
 };
 
 class FastIncrementalOBRFONDInfo{
 public:
 	UINT64							PresenceMap;
+	LinkedPointer<FastIncrementalOBRFONDInfo>							*Pointer;
+	AutoAllocatePointerList<FastIncrementalOBRFONDInfo>							*Allocator;
+	bool							Used;
 	char*							MessageType;			// id=35    constant has constant value = X
 	int							MessageTypeLength;
 	char*							ApplVerID;			// id=1128    constant has constant value = 9
@@ -1154,14 +1476,29 @@ public:
 	int							GroupMDEntriesCount;
 	FastOBSFONDItemInfo* GroupMDEntries[64];
 
-	FastIncrementalOBRFONDInfo(){ }
+	FastIncrementalOBRFONDInfo(){
+		this->Used = false;
+	}
 	~FastIncrementalOBRFONDInfo(){ }
-	inline void Clear() { }
+	inline void Clear() {
+		for(int i = 0; i < this->GroupMDEntriesCount; i++)
+			this->GroupMDEntries[i]->Clear();
+	}
+	inline void ReleaseUnused() {
+		if(this->Used)
+			return;
+
+		for(int i = 0; i < this->GroupMDEntriesCount; i++)
+			this->GroupMDEntries[i]->ReleaseUnused();
+	}
 };
 
 class FastIncrementalOBRCURRInfo{
 public:
 	UINT64							PresenceMap;
+	LinkedPointer<FastIncrementalOBRCURRInfo>							*Pointer;
+	AutoAllocatePointerList<FastIncrementalOBRCURRInfo>							*Allocator;
+	bool							Used;
 	char*							MessageType;			// id=35    constant has constant value = X
 	int							MessageTypeLength;
 	char*							ApplVerID;			// id=1128    constant has constant value = 9
@@ -1175,14 +1512,29 @@ public:
 	int							GroupMDEntriesCount;
 	FastOBSCURRItemInfo* GroupMDEntries[64];
 
-	FastIncrementalOBRCURRInfo(){ }
+	FastIncrementalOBRCURRInfo(){
+		this->Used = false;
+	}
 	~FastIncrementalOBRCURRInfo(){ }
-	inline void Clear() { }
+	inline void Clear() {
+		for(int i = 0; i < this->GroupMDEntriesCount; i++)
+			this->GroupMDEntries[i]->Clear();
+	}
+	inline void ReleaseUnused() {
+		if(this->Used)
+			return;
+
+		for(int i = 0; i < this->GroupMDEntriesCount; i++)
+			this->GroupMDEntries[i]->ReleaseUnused();
+	}
 };
 
 class FastIncrementalTLRFONDInfo{
 public:
 	UINT64							PresenceMap;
+	LinkedPointer<FastIncrementalTLRFONDInfo>							*Pointer;
+	AutoAllocatePointerList<FastIncrementalTLRFONDInfo>							*Allocator;
+	bool							Used;
 	char*							MessageType;			// id=35    constant has constant value = X
 	int							MessageTypeLength;
 	char*							ApplVerID;			// id=1128    constant has constant value = 9
@@ -1196,14 +1548,29 @@ public:
 	int							GroupMDEntriesCount;
 	FastTLSFONDItemInfo* GroupMDEntries[64];
 
-	FastIncrementalTLRFONDInfo(){ }
+	FastIncrementalTLRFONDInfo(){
+		this->Used = false;
+	}
 	~FastIncrementalTLRFONDInfo(){ }
-	inline void Clear() { }
+	inline void Clear() {
+		for(int i = 0; i < this->GroupMDEntriesCount; i++)
+			this->GroupMDEntries[i]->Clear();
+	}
+	inline void ReleaseUnused() {
+		if(this->Used)
+			return;
+
+		for(int i = 0; i < this->GroupMDEntriesCount; i++)
+			this->GroupMDEntries[i]->ReleaseUnused();
+	}
 };
 
 class FastIncrementalTLRCURRInfo{
 public:
 	UINT64							PresenceMap;
+	LinkedPointer<FastIncrementalTLRCURRInfo>							*Pointer;
+	AutoAllocatePointerList<FastIncrementalTLRCURRInfo>							*Allocator;
+	bool							Used;
 	char*							MessageType;			// id=35    constant has constant value = X
 	int							MessageTypeLength;
 	char*							ApplVerID;			// id=1128    constant has constant value = 9
@@ -1217,27 +1584,55 @@ public:
 	int							GroupMDEntriesCount;
 	FastTLSCURRItemInfo* GroupMDEntries[64];
 
-	FastIncrementalTLRCURRInfo(){ }
+	FastIncrementalTLRCURRInfo(){
+		this->Used = false;
+	}
 	~FastIncrementalTLRCURRInfo(){ }
-	inline void Clear() { }
+	inline void Clear() {
+		for(int i = 0; i < this->GroupMDEntriesCount; i++)
+			this->GroupMDEntries[i]->Clear();
+	}
+	inline void ReleaseUnused() {
+		if(this->Used)
+			return;
+
+		for(int i = 0; i < this->GroupMDEntriesCount; i++)
+			this->GroupMDEntries[i]->ReleaseUnused();
+	}
 };
 
 class FastSecurityDefinitionGroupInstrAttribItemInfo{
 public:
 	UINT64							PresenceMap;
+	LinkedPointer<FastSecurityDefinitionGroupInstrAttribItemInfo>							*Pointer;
+	AutoAllocatePointerList<FastSecurityDefinitionGroupInstrAttribItemInfo>							*Allocator;
+	bool							Used;
 	INT32							InstrAttribType;			// id=871  
 	BYTE*							InstrAttribValue;			// id=872  presence=optional  
 	int							InstrAttribValueLength;
 	bool							AllowInstrAttribValue;
 
-	FastSecurityDefinitionGroupInstrAttribItemInfo(){ }
+	FastSecurityDefinitionGroupInstrAttribItemInfo(){
+		this->Used = false;
+	}
 	~FastSecurityDefinitionGroupInstrAttribItemInfo(){ }
-	inline void Clear() { }
+	inline void Clear() {
+		this->Allocator->FreeItem(this->Pointer);
+	}
+	inline void ReleaseUnused() {
+		if(this->Used)
+			return;
+
+		this->Allocator->FreeItem(this->Pointer);
+	}
 };
 
 class FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo{
 public:
 	UINT64							PresenceMap;
+	LinkedPointer<FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo>							*Pointer;
+	AutoAllocatePointerList<FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo>							*Allocator;
+	bool							Used;
 	char*							TradingSessionID;			// id=336  
 	int							TradingSessionIDLength;
 	char*							TradingSessionSubID;			// id=625  presence=optional  
@@ -1248,28 +1643,58 @@ public:
 	INT32							OrderNote;			// id=9680  presence=optional  
 	bool							AllowOrderNote;
 
-	FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo(){ }
+	FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo(){
+		this->Used = false;
+	}
 	~FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo(){ }
-	inline void Clear() { }
+	inline void Clear() {
+		this->Allocator->FreeItem(this->Pointer);
+	}
+	inline void ReleaseUnused() {
+		if(this->Used)
+			return;
+
+		this->Allocator->FreeItem(this->Pointer);
+	}
 };
 
 class FastSecurityDefinitionMarketSegmentGrpItemInfo{
 public:
 	UINT64							PresenceMap;
+	LinkedPointer<FastSecurityDefinitionMarketSegmentGrpItemInfo>							*Pointer;
+	AutoAllocatePointerList<FastSecurityDefinitionMarketSegmentGrpItemInfo>							*Allocator;
+	bool							Used;
 	Decimal							RoundLot;			// id=561  presence=optional  
 	bool							AllowRoundLot;
 	int							TradingSessionRulesGrpCount;			// presence=optional  
 	FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo* TradingSessionRulesGrp[64];			// presence=optional  
 	bool							AllowTradingSessionRulesGrp;
 
-	FastSecurityDefinitionMarketSegmentGrpItemInfo(){ }
+	FastSecurityDefinitionMarketSegmentGrpItemInfo(){
+		this->Used = false;
+	}
 	~FastSecurityDefinitionMarketSegmentGrpItemInfo(){ }
-	inline void Clear() { }
+	inline void Clear() {
+		this->Allocator->FreeItem(this->Pointer);
+		for(int i = 0; i < this->TradingSessionRulesGrpCount; i++)
+			this->TradingSessionRulesGrp[i]->Clear();
+	}
+	inline void ReleaseUnused() {
+		if(this->Used)
+			return;
+
+		this->Allocator->FreeItem(this->Pointer);
+		for(int i = 0; i < this->TradingSessionRulesGrpCount; i++)
+			this->TradingSessionRulesGrp[i]->ReleaseUnused();
+	}
 };
 
 class FastSecurityDefinitionInfo{
 public:
 	UINT64							PresenceMap;
+	LinkedPointer<FastSecurityDefinitionInfo>							*Pointer;
+	AutoAllocatePointerList<FastSecurityDefinitionInfo>							*Allocator;
+	bool							Used;
 	char*							MessageType;			// id=35    constant has constant value = d
 	int							MessageTypeLength;
 	char*							ApplVerID;			// id=1128    constant has constant value = 9
@@ -1379,14 +1804,33 @@ public:
 	INT32							NumOfDaysToMaturity;			// id=10508  presence=optional  
 	bool							AllowNumOfDaysToMaturity;
 
-	FastSecurityDefinitionInfo(){ }
+	FastSecurityDefinitionInfo(){
+		this->Used = false;
+	}
 	~FastSecurityDefinitionInfo(){ }
-	inline void Clear() { }
+	inline void Clear() {
+		for(int i = 0; i < this->GroupInstrAttribCount; i++)
+			this->GroupInstrAttrib[i]->Clear();
+		for(int i = 0; i < this->MarketSegmentGrpCount; i++)
+			this->MarketSegmentGrp[i]->Clear();
+	}
+	inline void ReleaseUnused() {
+		if(this->Used)
+			return;
+
+		for(int i = 0; i < this->GroupInstrAttribCount; i++)
+			this->GroupInstrAttrib[i]->ReleaseUnused();
+		for(int i = 0; i < this->MarketSegmentGrpCount; i++)
+			this->MarketSegmentGrp[i]->ReleaseUnused();
+	}
 };
 
 class FastSecurityStatusInfo{
 public:
 	UINT64							PresenceMap;
+	LinkedPointer<FastSecurityStatusInfo>							*Pointer;
+	AutoAllocatePointerList<FastSecurityStatusInfo>							*Allocator;
+	bool							Used;
 	char*							MessageType;			// id=35    constant has constant value = f
 	int							MessageTypeLength;
 	char*							ApplVerID;			// id=1128    constant has constant value = 9
@@ -1410,14 +1854,25 @@ public:
 	UINT32							AuctionIndicator;			// id=5509  presence=optional  
 	bool							AllowAuctionIndicator;
 
-	FastSecurityStatusInfo(){ }
+	FastSecurityStatusInfo(){
+		this->Used = false;
+	}
 	~FastSecurityStatusInfo(){ }
-	inline void Clear() { }
+	inline void Clear() {
+	}
+	inline void ReleaseUnused() {
+		if(this->Used)
+			return;
+
+	}
 };
 
 class FastTradingSessionStatusInfo{
 public:
 	UINT64							PresenceMap;
+	LinkedPointer<FastTradingSessionStatusInfo>							*Pointer;
+	AutoAllocatePointerList<FastTradingSessionStatusInfo>							*Allocator;
+	bool							Used;
 	char*							MessageType;			// id=35    constant has constant value = h
 	int							MessageTypeLength;
 	char*							ApplVerID;			// id=1128    constant has constant value = 9
@@ -1435,14 +1890,25 @@ public:
 	char*							TradingSessionID;			// id=336  
 	int							TradingSessionIDLength;
 
-	FastTradingSessionStatusInfo(){ }
+	FastTradingSessionStatusInfo(){
+		this->Used = false;
+	}
 	~FastTradingSessionStatusInfo(){ }
-	inline void Clear() { }
+	inline void Clear() {
+	}
+	inline void ReleaseUnused() {
+		if(this->Used)
+			return;
+
+	}
 };
 
 class FastHeartbeatInfo{
 public:
 	UINT64							PresenceMap;
+	LinkedPointer<FastHeartbeatInfo>							*Pointer;
+	AutoAllocatePointerList<FastHeartbeatInfo>							*Allocator;
+	bool							Used;
 	char*							MessageType;			// id=35    constant has constant value = 0
 	int							MessageTypeLength;
 	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
@@ -1452,9 +1918,17 @@ public:
 	UINT32							MsgSeqNum;			// id=34  
 	UINT64							SendingTime;			// id=52  
 
-	FastHeartbeatInfo(){ }
+	FastHeartbeatInfo(){
+		this->Used = false;
+	}
 	~FastHeartbeatInfo(){ }
-	inline void Clear() { }
+	inline void Clear() {
+	}
+	inline void ReleaseUnused() {
+		if(this->Used)
+			return;
+
+	}
 };
 
 #pragma endregion

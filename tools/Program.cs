@@ -355,8 +355,9 @@ namespace prebuild {
 				WriteLine("\tinline " + str.Name + "* " + str.GetFreeMethodName + "() {");
 
 				if(str.IsSequence) {
-					WriteLine("\t\tthis->" + str.CurrentItemValueName + "++;");
-					WriteLine("\t\treturn this->" + str.CurrentItemValueName + ";");
+					WriteLine("\t\treturn this->" + str.ValueName + "->NewItem();");
+					//WriteLine("\t\tthis->" + str.CurrentItemValueName + "++;");
+					//WriteLine("\t\treturn this->" + str.CurrentItemValueName + ";");
 				} else {
 					WriteLine("\t\treturn this->" + str.ValueName + ";");
 				}
@@ -378,12 +379,15 @@ namespace prebuild {
 		}
 
 		private void WriteReleaseItemCode (XmlNode templatesNode) {
-			WriteLine("\tinline void Reset() {");
 			foreach(StructureInfo str in Structures) {
-				if(!str.IsSequence)
-					continue;
-				WriteLine("\t\tthis->" + str.CurrentItemValueName + " = this->" + str.ValueName + ";");
+				WriteLine("\tvoid " + str.ReleaseMethodName + "() {");
+				WriteLine("\t\t((" + str.Name + "*)this->LastDecodeInfo())->ReleaseUnused();");
+				WriteLine("\t}");
 			}
+			int minId = CalcMinTemplateId(templatesNode);
+			WriteLine("\tinline void Reset() {");
+			WriteLine("\t\tFastReleaseMethodPointer funcPtr = this->ReleaseMethods[this->m_templateId - " + minId + "];");
+			WriteLine("\t\t(this->*funcPtr)();");
 			WriteLine("\t}");
 		}
 
@@ -805,10 +809,12 @@ namespace prebuild {
 		private  void WriteEntireMethodAddressArrays (XmlNode templatesNode) {
 			SetPosition(Decode_Method_Pointer_Definition_GeneratedCode);
 			WriteLine("typedef void* (FastProtocolManager::*FastDecodeMethodPointer)();");
+			WriteLine("typedef void* (FastProtocolManager::*FastReleaseMethodPointer)();");
 			WriteLine("typedef FastSnapshotInfo* (FastProtocolManager::*FastGetSnapshotInfoMethodPointer)();");
 
 			SetPosition(Decode_Method_Pointer_Arrays_GeneratedCode);
 			WriteLine("\tFastDecodeMethodPointer* DecodeMethods;");
+			WriteLine("\tFastReleaseMethodPointer* ReleaseMethods;");
 			WriteLine("\tFastGetSnapshotInfoMethodPointer* GetSnapshotInfoMethods;");
 			WriteLine("");
 			WriteLine("\tvoid InitializeDecodeMethodPointers() {");
@@ -818,6 +824,7 @@ namespace prebuild {
 
 			WriteLine("\t\tint ptCount = " + count + ";");
 			WriteLine("\t\tthis->DecodeMethods = new FastDecodeMethodPointer[ptCount];");
+			WriteLine("\t\tthis->ReleaseMethods = new FastReleaseMethodPointer[ptCount];");
 			WriteLine("\t\tthis->GetSnapshotInfoMethods = new FastGetSnapshotInfoMethodPointer[ptCount];");
 
 			WriteLine("");
@@ -829,6 +836,9 @@ namespace prebuild {
 			List<DecodeMessageInfo> methods = GetDecodeMessageMethods(templatesNode);
 			foreach(DecodeMessageInfo info in methods) {
 				WriteLine("\t\tthis->DecodeMethods[" + info.TemplateId + " - " + minId + "] = &FastProtocolManager::" + info.FullDecodeMethodName + ";");
+			}
+			foreach(DecodeMessageInfo info in methods) {
+				WriteLine("\t\tthis->ReleaseMethods[" + info.TemplateId + " - " + minId + "] = &FastProtocolManager::" + info.FullDecodeMethodName + ";");
 			}
 			foreach(DecodeMessageInfo info in methods) {
 				if(!info.HasGetSnapshotInfoMethod)
@@ -874,6 +884,7 @@ namespace prebuild {
 			public string MsgType { get; set; }
 			public int TemplateId { get; set; }
 			public string FullDecodeMethodName { get { return "Decode" + NameCore; } }
+			public string FullReleaseMethodName { get { return "Release" + NameCore; } }
 			public bool HasGetSnapshotInfoMethod { get { return FullDecodeMethodName.Contains("FullRefresh"); } }
 			public string FullGetSnapshotInfoMethod { get { return "GetSnapshotInfo" + NameCore; } }
 			public string PrintMethodName { get { return "Print" + NameCore; } }
@@ -955,8 +966,9 @@ namespace prebuild {
 		}
 
 		private void WritePointerCode(StructureInfo info) {
-			//WriteLine("\tLinkedPointer<" + info.Name + ">" + StuctFieldsSpacing + "*Pointer;");
-			//WriteLine("\tbool" + StuctFieldsSpacing + "Used;");
+			WriteLine("\tLinkedPointer<" + info.Name + ">" + StuctFieldsSpacing + "*Pointer;");
+			WriteLine("\tAutoAllocatePointerList<" + info.Name + ">" + StuctFieldsSpacing + "*Allocator;");
+			WriteLine("\tbool" + StuctFieldsSpacing + "Used;");
 		}
 
 		private  void WriteStructureFieldsDefinitionCode (StructureInfo info, string parentName) {
@@ -987,9 +999,38 @@ namespace prebuild {
 			}
 
 			WriteLine("");
-			WriteLine("\t" + info.Name + "(){ }");
+			WriteLine("\t" + info.Name + "(){");
+			WriteLine("\t\tthis->Used = false;");
+			WriteLine("\t}");
 			WriteLine("\t~" + info.Name + "(){ }");
-			WriteLine("\tinline void Clear() { }");
+			WriteClearCode(info);
+		}
+
+		private void WriteClearCode(StructureInfo info) {
+			WriteLine("\tinline void Clear() {");
+			if(info.IsSequence)
+				WriteLine("\t\tthis->Allocator->FreeItem(this->Pointer);");
+			foreach(XmlNode field in info.Fields) {
+				if(field.Name != "sequence")
+					continue;
+				WriteLine("\t\tfor(int i = 0; i < this->" + Name(field) + "Count; i++)");
+				WriteLine("\t\t\tthis->" + Name(field) + "[i]->Clear();");
+			}
+			WriteLine("\t}");			
+
+			WriteLine("\tinline void ReleaseUnused() {");
+			WriteLine("\t\tif(this->Used)");
+			WriteLine("\t\t\treturn;");
+			WriteLine("");
+			if(info.IsSequence)
+				WriteLine("\t\tthis->Allocator->FreeItem(this->Pointer);");
+			foreach(XmlNode field in info.Fields) {
+				if(field.Name != "sequence")
+					continue;
+				WriteLine("\t\tfor(int i = 0; i < this->" + Name(field) + "Count; i++)");
+				WriteLine("\t\t\tthis->" + Name(field) + "[i]->ReleaseUnused();");
+			}
+			WriteLine("\t}");			
 		}
 
 		string StuctFieldsSpacing { get{ return "\t\t\t\t\t\t\t"; } }

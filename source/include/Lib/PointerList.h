@@ -59,7 +59,7 @@ public:
         this->m_poolHead = new LinkedPointer<T>;
         this->m_poolTail = this->m_poolHead;
 
-        for(int i = 0; i < this->m_capacity; i++) {
+        for(int i = 0; i < this->m_capacity + 1; i++) {
             LinkedPointer<T> *ptr = new LinkedPointer<T>;
             ptr->Owner(this);
             this->Push(ptr);

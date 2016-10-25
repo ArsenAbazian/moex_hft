@@ -26,6 +26,9 @@ public:
         FastOBSFONDItemInfo *item3 = CreateFastOBRFondItemInfo("SMB1", "TRADING001", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "ENTRYID003");
         FastOBSFONDItemInfo *item4 = CreateFastOBRFondItemInfo("SMB1", "TRADING001", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "ENTRYID004");
 
+        if(!item4->Used)
+            throw;
+
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item1;
 
@@ -204,6 +207,10 @@ public:
         info->GroupMDEntries[0] = item4;
 
         fc->OnIncrementalRefresh_OBR_FOND(info);
+        if(item4->Used)
+            throw;
+        if(item4->Allocator->Count() != 0)
+            throw;
 
         if(fc->OrderBookFond()->UsedItemCount() != 1)
             throw;
@@ -298,6 +305,13 @@ public:
 
         fc->OnIncrementalRefresh_OBR_FOND(info);
 
+        if(item2->Used || item2->Allocator->Count() != 0)
+            throw;
+        if(!item5->Used)
+            throw;
+        if(item5->Allocator->Count() != 1)
+            throw;
+
         OrderBookTableItem<FastOBSFONDItemInfo> *obi = fc->OrderBookFond()->GetItem("SMB1", 4, "TRADING001", 10);
 
         FastOBSFONDItemInfo *qt1 = obi->BuyQuotes()->Item(0);
@@ -350,19 +364,19 @@ public:
         fc->OnIncrementalRefresh_OBR_FOND(info);
 
         fc->OrderBookFond()->Clear();
+        if(item1->Used || item2->Used || item3->Used || item4->Used)
+            throw;
+        if(item1->Allocator->Count() != 0 ||
+                item2->Allocator->Count() != 0 ||
+                item3->Allocator->Count() != 0 ||
+                item4->Allocator->Count() != 0)
+            throw;
         if(fc->OrderBookFond()->UsedItemCount() != 0)
             throw;
 
         OrderBookTableItem<FastOBSFONDItemInfo> *obi = fc->OrderBookFond()->GetItem("SMB1", 4, "TRADING001", 10);
         if(obi->BuyQuotes()->Count() != 0)
             throw;
-    }
-
-    void Test_OnIncrementalRefresh_OBR_FOND() {
-        Test_OnIncrementalRefresh_OBR_FOND_Add();
-        Test_OnIncrementalRefresh_OBR_FOND_Remove();
-        Test_OnIncrementalRefresh_OBR_FOND_Change();
-        Test_Clear();
     }
 
     FastOBSFONDInfo* CreateFastOBSFondInfo(const char *symbol, const char *trading) {
@@ -385,7 +399,8 @@ public:
 
     FastOBSFONDItemInfo* CreateFastOBSFondItemInfo(INT64 priceMantissa, INT32 priceExponenta, INT64 sizeMantissa, INT64 sizeExponenta, MDEntryType entryType, const char *entryId) {
 
-        FastOBSFONDItemInfo *info = new FastOBSFONDItemInfo();
+        AutoAllocatePointerList<FastOBSFONDItemInfo> *list = new AutoAllocatePointerList<FastOBSFONDItemInfo>(1, 1);
+        FastOBSFONDItemInfo *info = list->NewItem();
 
         char *id = new char[strlen(entryId) + 1];
         strcpy(id, entryId);
@@ -444,7 +459,8 @@ public:
 
     FastOBSCURRItemInfo* CreateFastOBSCurrItemInfo(INT64 priceMantissa, INT32 priceExponenta, INT64 sizeMantissa, INT64 sizeExponenta, MDEntryType entryType, const char *entryId) {
 
-        FastOBSCURRItemInfo *info = new FastOBSCURRItemInfo();
+        AutoAllocatePointerList<FastOBSCURRItemInfo> *list = new AutoAllocatePointerList<FastOBSCURRItemInfo>(1, 1);
+        FastOBSCURRItemInfo *info = list->NewItem();
 
         char *id = new char[strlen(entryId) + 1];
         strcpy(id, entryId);
@@ -1287,13 +1303,6 @@ public:
             throw;
     }
 
-    void Test_OnIncrementalRefresh_OBR_CURR() {
-        Test_OnIncrementalRefresh_OBR_CURR_Add();
-        Test_OnIncrementalRefresh_OBR_CURR_Remove();
-        Test_OnIncrementalRefresh_OBR_CURR_Change();
-        Test_Clear_Curr();
-    }
-
     void Test_OnFullRefresh_OBS_CURR() {
         FeedConnection_CURR_OBR *fc = new FeedConnection_CURR_OBR("OBR", "Refresh Incremental", 'I',
                                                                   FeedConnectionProtocol::UDP_IP,
@@ -1749,31 +1758,69 @@ public:
             throw;
     }
 
+    void Test_OnIncrementalRefresh_OBR_FOND() {
+        printf("Test_OnIncrementalRefresh_OBR_FOND_Add\n");
+        Test_OnIncrementalRefresh_OBR_FOND_Add();
+        printf("Test_OnIncrementalRefresh_OBR_FOND_Remove\n");
+        Test_OnIncrementalRefresh_OBR_FOND_Remove();
+        printf("Test_OnIncrementalRefresh_OBR_FOND_Change\n");
+        Test_OnIncrementalRefresh_OBR_FOND_Change();
+        printf("Test_Clear\n");
+        Test_Clear();
+    }
+
+    void Test_OnIncrementalRefresh_OBR_FOND_SellQuotes() {
+        printf("Test_OnIncrementalRefresh_OBR_FOND_Add_SellQuotes\n");
+        Test_OnIncrementalRefresh_OBR_FOND_Add_SellQuotes();
+        printf("Test_OnIncrementalRefresh_OBR_FOND_Remove_SellQuotes\n");
+        Test_OnIncrementalRefresh_OBR_FOND_Remove_SellQuotes();
+        printf("Test_OnIncrementalRefresh_OBR_FOND_Change_SellQuotes\n");
+        Test_OnIncrementalRefresh_OBR_FOND_Change_SellQuotes();
+        printf("Test_Clear_SellQuotes\n");
+        Test_Clear_SellQuotes();
+    }
+
+    void Test_OnIncrementalRefresh_OBR_CURR() {
+        printf("Test_OnIncrementalRefresh_OBR_CURR_Add\n");
+        Test_OnIncrementalRefresh_OBR_CURR_Add();
+        printf("Test_OnIncrementalRefresh_OBR_CURR_Remove\n");
+        Test_OnIncrementalRefresh_OBR_CURR_Remove();
+        printf("Test_OnIncrementalRefresh_OBR_CURR_Change\n");
+        Test_OnIncrementalRefresh_OBR_CURR_Change();
+        printf("Test_Clear_Curr\n");
+        Test_Clear_Curr();
+    }
+
     void Test_OnIncrementalRefresh_OBR_CURR_SellQuotes() {
+        printf("Test_OnIncrementalRefresh_OBR_CURR_Add_SellQuotes\n");
         Test_OnIncrementalRefresh_OBR_CURR_Add_SellQuotes();
+        printf("Test_OnIncrementalRefresh_OBR_CURR_Remove_SellQuotes\n");
         Test_OnIncrementalRefresh_OBR_CURR_Remove_SellQuotes();
+        printf("Test_OnIncrementalRefresh_OBR_CURR_Change_SellQuotes\n");
         Test_OnIncrementalRefresh_OBR_CURR_Change_SellQuotes();
+        printf("Test_Clear_SellQuotes\n");
         Test_Clear_SellQuotes();
     }
 
     void Test_OBR_CURR() {
+        printf("Test_OnIncrementalRefresh_OBR_CURR\n");
         Test_OnIncrementalRefresh_OBR_CURR();
+        printf("Test_OnFullRefresh_OBS_CURR\n");
         Test_OnFullRefresh_OBS_CURR();
+        printf("Test_OnIncrementalRefresh_OBR_CURR_SellQuotes\n");
         Test_OnIncrementalRefresh_OBR_CURR_SellQuotes();
+        printf("Test_OnFullRefresh_OBS_CURR_SellQuotes\n");
         Test_OnFullRefresh_OBS_CURR_SellQuotes();
-    }
-    
-    void Test_OnIncrementalRefresh_OBR_FOND_SellQuotes() {
-        Test_OnIncrementalRefresh_OBR_FOND_Add_SellQuotes();
-        Test_OnIncrementalRefresh_OBR_FOND_Remove_SellQuotes();
-        Test_OnIncrementalRefresh_OBR_FOND_Change_SellQuotes();
-        Test_Clear_SellQuotes();
     }
 
     void Test_OBR_FOND() {
+        printf("Test_OnIncrementalRefresh_OBR_FOND\n");
         Test_OnIncrementalRefresh_OBR_FOND();
+        printf("Test_OnFullRefresh_OBS_FOND\n");
         Test_OnFullRefresh_OBS_FOND();
+        printf("Test_OnIncrementalRefresh_OBR_FOND_SellQuotes\n");
         Test_OnIncrementalRefresh_OBR_FOND_SellQuotes();
+        printf("Test_OnFullRefresh_OBS_FOND_SellQuotes\n");
         Test_OnFullRefresh_OBS_FOND_SellQuotes();
     }
     

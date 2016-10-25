@@ -46,9 +46,21 @@ public:
     inline PointerList<T>* BuyQuotes() { return this->m_buyQuoteList; }
     inline bool Used() { return this->m_used; }
     inline void Used(bool used) { this->m_used = used; }
+    inline void Clear(PointerList<T> *list) {
+        if(list->Count() == 0)
+            return;
+        LinkedPointer<T> *node = list->Start();
+        while(true) {
+            node->Data()->Clear();
+            if(node == list->End())
+                break;
+            node = node->Next();
+        }
+        list->Clear();
+    }
     inline void Clear() {
-        this->m_sellQuoteList->Clear();
-        this->m_buyQuoteList->Clear();
+        Clear(this->m_sellQuoteList);
+        Clear(this->m_buyQuoteList);
     }
 
     inline LinkedPointer<T>* AddBuyQuote(Decimal *price) {
@@ -132,6 +144,7 @@ public:
             T *data = node->Data();
             if(StringIdComparer::Equal(data->MDEntryID, data->MDEntryIDLength, info->MDEntryID, info->MDEntryIDLength)) {
                 this->m_buyQuoteList->Remove(node);
+                data->Clear();
                 return node;
             }
             if(node == this->m_buyQuoteList->End())
@@ -149,6 +162,7 @@ public:
             T *data = node->Data();
             if(StringIdComparer::Equal(data->MDEntryID, data->MDEntryIDLength, info->MDEntryID, info->MDEntryIDLength)) {
                 this->m_sellQuoteList->Remove(node);
+                data->Clear();
                 return node;
             }
             if(node == this->m_buyQuoteList->End())
