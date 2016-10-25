@@ -307,12 +307,12 @@ public:
 };
 
 
-template <typename TABLEITEM, typename INFO, typename ITEMINFO> class MarketDataTable {
+template <template<typename ITEMINFO> class TABLEITEM, typename INFO, typename ITEMINFO> class MarketDataTable {
     HashTable<TABLEITEM<ITEMINFO>>                *m_table;
 
 public:
     MarketDataTable() {
-        this->m_table = new HashTable<OrderBookTableItem<ITEMINFO>>();
+        this->m_table = new HashTable<TABLEITEM<ITEMINFO>>();
     }
     ~MarketDataTable() {
         delete this->m_table;
