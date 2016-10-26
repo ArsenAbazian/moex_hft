@@ -46,7 +46,6 @@ FeedConnection::FeedConnection(const char *id, const char *name, char value, Fee
 }
 
 FeedConnection::~FeedConnection() {
-    this->ClearSocketBufferProvider();
     delete this->m_packets;
     delete this->m_fastProtocolManager;
     delete this->m_stopwatch;

@@ -44,16 +44,30 @@ class SocketBufferProvider : public ISocketBufferProvider {
 	unsigned int 			m_sendItemsCount;
 	unsigned int			m_recvItemsCount;
 	SocketBufferManager		*m_manager;
+	SocketBuffer 			*m_sendBuffer;
+	SocketBuffer			*m_recvBuffer;
 public:
 	SocketBufferProvider(SocketBufferManager *manager, unsigned int sendSize, unsigned int sendItemsCount, unsigned int recvSize, unsigned int recvItemsCount)
 			: m_manager(manager),
 			m_sendSize(sendSize),
 			m_recvSize(recvSize),
 			m_sendItemsCount(sendItemsCount),
-			m_recvItemsCount(recvItemsCount) { }
+			m_recvItemsCount(recvItemsCount) {
+		this->m_sendBuffer = this->m_recvBuffer = 0;
+	}
+	~SocketBufferProvider() {
+	}
 
-	SocketBuffer *SendBuffer() { return this->m_manager->GetFreeBuffer(this->m_sendSize, this->m_sendItemsCount); }
-	SocketBuffer *RecvBuffer() { return this->m_manager->GetFreeBuffer(this->m_recvSize, this->m_recvItemsCount); }
+	SocketBuffer *SendBuffer() {
+		if(this->m_sendBuffer == 0)
+			this->m_sendBuffer = this->m_manager->GetFreeBuffer(this->m_sendSize, this->m_sendItemsCount);
+		return this->m_sendBuffer;
+	}
+	SocketBuffer *RecvBuffer() {
+		if(this->m_recvBuffer == 0)
+			this->m_recvBuffer = this->m_manager->GetFreeBuffer(this->m_recvSize, this->m_recvItemsCount);
+		return this->m_recvBuffer;
+	}
 };
 
 class WinSockManager;

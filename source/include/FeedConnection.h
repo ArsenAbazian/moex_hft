@@ -303,7 +303,7 @@ private:
 											RobotSettings::DefaultFeedConnectionRecvItemsCount);
 	}
 	virtual void ClearSocketBufferProvider() {
-		delete (SocketBufferProvider*)this->m_socketABufferProvider;
+		//delete (SocketBufferProvider*)this->m_socketABufferProvider;
 	}
 	inline void SetState(FeedConnectionState state, FeedConnectionWorkAtomPtr funcPtr) {
 		this->m_state = state;
@@ -767,7 +767,6 @@ public:
 		this->m_orderBookTableCurr = new MarketDataTable<OrderBookTableItem, FastOBSCURRInfo, FastOBSCURRItemInfo>();
     }
 	~FeedConnection_CURR_OBR() {
-		FeedConnection::~FeedConnection();
 		delete this->m_orderBookTableCurr;
 	}
 	ISocketBufferProvider* CreateSocketBufferProvider() {
@@ -833,7 +832,6 @@ public:
 		this->m_orderTableCurr = new MarketDataTable<OrderTableItem, FastOLSCURRInfo, FastOLSCURRItemInfo>();
     }
 	~FeedConnection_CURR_OLR() {
-		FeedConnection::~FeedConnection();
 		delete this->m_orderTableCurr;
 	}
 	ISocketBufferProvider* CreateSocketBufferProvider() {
@@ -883,7 +881,6 @@ public:
 		this->m_tradeTableCurr = new MarketDataTable<TradeTableItem, FastTLSCURRInfo, FastTLSCURRItemInfo>();
     }
 	~FeedConnection_CURR_TLS() {
-		FeedConnection::~FeedConnection();
 		delete this->m_tradeTableCurr;
 	}
 	ISocketBufferProvider* CreateSocketBufferProvider() {
@@ -903,7 +900,6 @@ public:
 		this->m_orderBookTableFond = new MarketDataTable<OrderBookTableItem, FastOBSFONDInfo, FastOBSFONDItemInfo>();
     }
 	~FeedConnection_FOND_OBR() {
-		FeedConnection::~FeedConnection();
 		delete this->m_orderBookTableFond;
 	}
 	ISocketBufferProvider* CreateSocketBufferProvider() {
@@ -968,7 +964,6 @@ public:
 		this->m_orderTableFond = new MarketDataTable<OrderTableItem, FastOLSFONDInfo, FastOLSFONDItemInfo>();
     }
 	~FeedConnection_FOND_OLR() {
-		FeedConnection::~FeedConnection();
 		delete this->m_orderTableFond;
 	}
 	ISocketBufferProvider* CreateSocketBufferProvider() {
@@ -1003,7 +998,6 @@ public:
 		this->m_tradeTableFond = new MarketDataTable<TradeTableItem, FastTLSFONDInfo, FastTLSFONDItemInfo>();
     }
 	~FeedConnection_FOND_TLR() {
-		FeedConnection::~FeedConnection();
 		delete this->m_tradeTableFond;
 	}
 	ISocketBufferProvider* CreateSocketBufferProvider() {

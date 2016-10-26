@@ -90,15 +90,14 @@ public:
         }
     }
     ~PointerList() {
-        while(this->m_head != this->m_tail)
-            this->Remove(this->m_head->Next());
+        this->Clear();
 
         LinkedPointer<T> *node = this->m_poolHead;
         do {
             delete node;
             node = node->Next();
         }
-        while(node != this->m_tail);
+        while(node != this->m_poolTail);
     }
 
     inline LinkedPointer<T>* Add(T *data) {
@@ -115,6 +114,7 @@ public:
         this->m_tail->Next(node);
         node->Prev(this->m_tail);
         this->m_tail = node;
+        this->m_tail->Next(0);
         return node;
     }
 
