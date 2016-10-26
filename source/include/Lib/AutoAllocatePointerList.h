@@ -34,12 +34,12 @@ public:
             this->Allocate(node, this->m_list->PoolEnd());
         }
         T *item = this->m_list->Pop()->Data();
-        item->Used = true;
         return item;
     }
     inline PointerList<T>* ListCore() { return this->m_list; }
     inline void FreeItem(LinkedPointer<T> *node) {
-        node->Data()->Used = false;
+        if(node->Data()->Used)
+            return;
         this->m_list->Push(node);
     }
     inline int Count() { return this->m_list->Count(); }

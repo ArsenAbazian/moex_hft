@@ -215,15 +215,20 @@ public:
     }
 
     inline void Clear() {
+        if(this->m_usedItems->Count() == 0)
+            return;
         LinkedPointer<TableItemClassName> *node = this->m_usedItems->Start();
         while(true) {
             TableItemClassName *item = node->Data();
+            item->Used(false);
             item->Clear();
             if(node == this->m_usedItems->End())
                 break;
             node = this->m_usedItems->Next(node);
         }
         this->m_usedItems->Clear();
+        this->m_symbolsCount = 0;
+        this->m_tradingSessionsCount = 0;
     }
 
     inline LinkedPointer<TableItemClassName>* GetUsedItem(TableItemClassName *item) {

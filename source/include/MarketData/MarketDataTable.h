@@ -89,12 +89,14 @@ public:
 
     inline LinkedPointer<T>* AddBuyQuote(T *item) {
         LinkedPointer<T> *res = AddBuyQuote(&(item->MDEntryPx));
+        item->Used = true;
         res->Data(item);
         return res;
     }
 
     inline LinkedPointer<T>* AddSellQuote(T *item) {
         LinkedPointer<T> *res = AddSellQuote(&(item->MDEntryPx));
+        item->Used = true;
         res->Data(item);
         return res;
     }
@@ -219,17 +221,21 @@ public:
     }
 
     inline LinkedPointer<T>* AddBuyQuote(T *item) {
+        item->Used = true;
         return this->m_buyQuoteList->Add(item);
     }
 
     inline LinkedPointer<T>* AddSellQuote(T *item) {
+        item->Used = true;
         return this->m_sellQuoteList->Add(item);
     }
 
     inline LinkedPointer<T>* Add(T *info) {
         if(info->MDEntryType[0] == mdetBuyQuote)
             return this->AddBuyQuote(info);
-        return this->AddSellQuote(info);
+        else if(info->MDEntryType[0] == mdetSellQuote)
+            return this->AddSellQuote(info);
+        return 0;
     }
 
     inline LinkedPointer<T>* GetQuote(PointerList<T> *list, T *info) {
@@ -237,7 +243,8 @@ public:
         if(node == 0)
             return 0;
         while(true) {
-            if(node->Data()->Id->Equal(info->MDEntryID, info->MDEntryIDLength))
+            T *info2 = node->Data();
+            if(StringIdComparer::Equal(info2->MDEntryID, info2->MDEntryIDLength, info->MDEntryID, info->MDEntryIDLength))
                 return node;
             if(node == list->End())
                 return 0;
@@ -282,27 +289,69 @@ public:
     }
 
     inline void ChangeBuyQuote(T *info) {
-        this->RemoveBuyQuote(info);
-        this->AddBuyQuote(info);
+        LinkedPointer<T> *ptr = GetQuote(this->m_buyQuoteList, info);
+        info->Used = true;
+        ptr->Data()->Clear();
+        ptr->Data(info);
     }
 
     inline void ChangeSellQuote(T *info) {
-        this->RemoveSellQuote(info);
-        this->AddSellQuote(info);
+        LinkedPointer<T> *ptr = GetQuote(this->m_sellQuoteList, info);
+        info->Used = true;
+        ptr->Data()->Clear();
+        ptr->Data(info);
     }
 
     inline void Remove(T *info) {
         if(info->MDEntryType[0] == mdetBuyQuote)
             this->RemoveBuyQuote(info);
-        else
+        else if(info->MDEntryType[0] == mdetSellQuote)
             this->RemoveSellQuote(info);
     }
 
     inline void Change(T *info) {
         if(info->MDEntryType[0] == mdetBuyQuote)
             this->ChangeBuyQuote(info);
-        else
+        else if(info->MDEntryType[0] == mdetSellQuote)
             this->ChangeSellQuote(info);
+    }
+};
+
+
+template <typename T> class TradeTableItem {
+    PointerList<T>      *m_tradeList;
+
+    bool                 m_used;
+
+public:
+    TradeTableItem() {
+        this->m_tradeList = new PointerList<T>(128);
+    }
+    ~TradeTableItem() {
+        delete this->m_tradeList;
+    }
+
+    inline PointerList<T>* Trades() { return this->m_tradeList; }
+    inline bool Used() { return this->m_used; }
+    inline void Used(bool used) { this->m_used = used; }
+    inline void Clear(PointerList<T> *list) {
+        if(list->Count() == 0)
+            return;
+        LinkedPointer<T> *node = list->Start();
+        while(true) {
+            node->Data()->Clear();
+            if(node == list->End())
+                break;
+            node = node->Next();
+        }
+        list->Clear();
+    }
+    inline void Clear() {
+        Clear(this->m_tradeList);
+    }
+
+    inline LinkedPointer<T>* Add(T *info) {
+        return this->m_tradeList->Add(info);
     }
 };
 

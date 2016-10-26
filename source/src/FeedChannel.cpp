@@ -105,16 +105,16 @@ bool FeedChannel::Connect() {
 		DefaultLogManager::Default->EndLog(false);
 		return false;
 	}
+	if (!this->Connect(this->tradesIncremental)) {
+		DefaultLogManager::Default->EndLog(false);
+		return false;
+	}
     /*
 	if (!this->Connect(this->statisticsIncremental)) {
 		DefaultLogManager::Default->EndLog(false);
 		return false;
 	}
-	if (!this->Connect(this->tradesIncremental)) {
-		DefaultLogManager::Default->EndLog(false);
-		return false;
-	}
-	if (!this->Connect(this->instrumentStatus)) { 
+	if (!this->Connect(this->instrumentStatus)) {
 		DefaultLogManager::Default->EndLog(false);
 		return false;
 	}
@@ -144,8 +144,9 @@ bool FeedChannel::Connect() {
 
 	this->orderBookIncremental->Start();
 	this->ordersIncremental->Start();
+	this->tradesIncremental->Start();
+
 	//this->statisticsIncremental->Start();
-	//this->tradesIncremental->Start();
 	//this->instrumentStatus->Start();
 
 	// not needed....

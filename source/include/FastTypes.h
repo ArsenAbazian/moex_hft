@@ -165,6 +165,7 @@ public:
 	}
 	~FastLogonInfo(){ }
 	inline void Clear() {
+		this->Used = false;
 	}
 	inline void ReleaseUnused() {
 		if(this->Used)
@@ -198,6 +199,7 @@ public:
 	}
 	~FastLogoutInfo(){ }
 	inline void Clear() {
+		this->Used = false;
 	}
 	inline void ReleaseUnused() {
 		if(this->Used)
@@ -332,6 +334,7 @@ public:
 	}
 	~FastGenericItemInfo(){ }
 	inline void Clear() {
+		this->Used = false;
 		this->Allocator->FreeItem(this->Pointer);
 	}
 	inline void ReleaseUnused() {
@@ -386,6 +389,7 @@ public:
 	}
 	~FastGenericInfo(){ }
 	inline void Clear() {
+		this->Used = false;
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->Clear();
 	}
@@ -422,6 +426,7 @@ public:
 	}
 	~FastIncrementalGenericInfo(){ }
 	inline void Clear() {
+		this->Used = false;
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->Clear();
 	}
@@ -491,6 +496,7 @@ public:
 	}
 	~FastOLSFONDItemInfo(){ }
 	inline void Clear() {
+		this->Used = false;
 		this->Allocator->FreeItem(this->Pointer);
 	}
 	inline void ReleaseUnused() {
@@ -543,6 +549,7 @@ public:
 	}
 	~FastOLSFONDInfo(){ }
 	inline void Clear() {
+		this->Used = false;
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->Clear();
 	}
@@ -605,6 +612,7 @@ public:
 	}
 	~FastOLSCURRItemInfo(){ }
 	inline void Clear() {
+		this->Used = false;
 		this->Allocator->FreeItem(this->Pointer);
 	}
 	inline void ReleaseUnused() {
@@ -655,6 +663,7 @@ public:
 	}
 	~FastOLSCURRInfo(){ }
 	inline void Clear() {
+		this->Used = false;
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->Clear();
 	}
@@ -731,6 +740,7 @@ public:
 	}
 	~FastTLSFONDItemInfo(){ }
 	inline void Clear() {
+		this->Used = false;
 		this->Allocator->FreeItem(this->Pointer);
 	}
 	inline void ReleaseUnused() {
@@ -783,6 +793,7 @@ public:
 	}
 	~FastTLSFONDInfo(){ }
 	inline void Clear() {
+		this->Used = false;
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->Clear();
 	}
@@ -855,6 +866,7 @@ public:
 	}
 	~FastTLSCURRItemInfo(){ }
 	inline void Clear() {
+		this->Used = false;
 		this->Allocator->FreeItem(this->Pointer);
 	}
 	inline void ReleaseUnused() {
@@ -905,6 +917,7 @@ public:
 	}
 	~FastTLSCURRInfo(){ }
 	inline void Clear() {
+		this->Used = false;
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->Clear();
 	}
@@ -962,6 +975,7 @@ public:
 	}
 	~FastOBSFONDItemInfo(){ }
 	inline void Clear() {
+		this->Used = false;
 		this->Allocator->FreeItem(this->Pointer);
 	}
 	inline void ReleaseUnused() {
@@ -1014,6 +1028,7 @@ public:
 	}
 	~FastOBSFONDInfo(){ }
 	inline void Clear() {
+		this->Used = false;
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->Clear();
 	}
@@ -1065,6 +1080,7 @@ public:
 	}
 	~FastOBSCURRItemInfo(){ }
 	inline void Clear() {
+		this->Used = false;
 		this->Allocator->FreeItem(this->Pointer);
 	}
 	inline void ReleaseUnused() {
@@ -1115,6 +1131,7 @@ public:
 	}
 	~FastOBSCURRInfo(){ }
 	inline void Clear() {
+		this->Used = false;
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->Clear();
 	}
@@ -1218,6 +1235,7 @@ public:
 	}
 	~FastIncrementalMSRFONDItemInfo(){ }
 	inline void Clear() {
+		this->Used = false;
 		this->Allocator->FreeItem(this->Pointer);
 	}
 	inline void ReleaseUnused() {
@@ -1252,6 +1270,7 @@ public:
 	}
 	~FastIncrementalMSRFONDInfo(){ }
 	inline void Clear() {
+		this->Used = false;
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->Clear();
 	}
@@ -1339,6 +1358,7 @@ public:
 	}
 	~FastIncrementalMSRCURRItemInfo(){ }
 	inline void Clear() {
+		this->Used = false;
 		this->Allocator->FreeItem(this->Pointer);
 	}
 	inline void ReleaseUnused() {
@@ -1373,6 +1393,7 @@ public:
 	}
 	~FastIncrementalMSRCURRInfo(){ }
 	inline void Clear() {
+		this->Used = false;
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->Clear();
 	}
@@ -1409,6 +1430,7 @@ public:
 	}
 	~FastIncrementalOLRFONDInfo(){ }
 	inline void Clear() {
+		this->Used = false;
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->Clear();
 	}
@@ -1445,6 +1467,7 @@ public:
 	}
 	~FastIncrementalOLRCURRInfo(){ }
 	inline void Clear() {
+		this->Used = false;
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->Clear();
 	}
@@ -1481,6 +1504,7 @@ public:
 	}
 	~FastIncrementalOBRFONDInfo(){ }
 	inline void Clear() {
+		this->Used = false;
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->Clear();
 	}
@@ -1517,6 +1541,7 @@ public:
 	}
 	~FastIncrementalOBRCURRInfo(){ }
 	inline void Clear() {
+		this->Used = false;
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->Clear();
 	}
@@ -1553,6 +1578,7 @@ public:
 	}
 	~FastIncrementalTLRFONDInfo(){ }
 	inline void Clear() {
+		this->Used = false;
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->Clear();
 	}
@@ -1589,6 +1615,7 @@ public:
 	}
 	~FastIncrementalTLRCURRInfo(){ }
 	inline void Clear() {
+		this->Used = false;
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->Clear();
 	}
@@ -1617,6 +1644,7 @@ public:
 	}
 	~FastSecurityDefinitionGroupInstrAttribItemInfo(){ }
 	inline void Clear() {
+		this->Used = false;
 		this->Allocator->FreeItem(this->Pointer);
 	}
 	inline void ReleaseUnused() {
@@ -1648,6 +1676,7 @@ public:
 	}
 	~FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo(){ }
 	inline void Clear() {
+		this->Used = false;
 		this->Allocator->FreeItem(this->Pointer);
 	}
 	inline void ReleaseUnused() {
@@ -1675,6 +1704,7 @@ public:
 	}
 	~FastSecurityDefinitionMarketSegmentGrpItemInfo(){ }
 	inline void Clear() {
+		this->Used = false;
 		this->Allocator->FreeItem(this->Pointer);
 		for(int i = 0; i < this->TradingSessionRulesGrpCount; i++)
 			this->TradingSessionRulesGrp[i]->Clear();
@@ -1809,6 +1839,7 @@ public:
 	}
 	~FastSecurityDefinitionInfo(){ }
 	inline void Clear() {
+		this->Used = false;
 		for(int i = 0; i < this->GroupInstrAttribCount; i++)
 			this->GroupInstrAttrib[i]->Clear();
 		for(int i = 0; i < this->MarketSegmentGrpCount; i++)
@@ -1859,6 +1890,7 @@ public:
 	}
 	~FastSecurityStatusInfo(){ }
 	inline void Clear() {
+		this->Used = false;
 	}
 	inline void ReleaseUnused() {
 		if(this->Used)
@@ -1895,6 +1927,7 @@ public:
 	}
 	~FastTradingSessionStatusInfo(){ }
 	inline void Clear() {
+		this->Used = false;
 	}
 	inline void ReleaseUnused() {
 		if(this->Used)
@@ -1923,6 +1956,7 @@ public:
 	}
 	~FastHeartbeatInfo(){ }
 	inline void Clear() {
+		this->Used = false;
 	}
 	inline void ReleaseUnused() {
 		if(this->Used)

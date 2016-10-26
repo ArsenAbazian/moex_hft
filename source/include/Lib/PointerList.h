@@ -107,6 +107,7 @@ public:
         this->m_tail->Next(node);
         node->Prev(this->m_tail);
         this->m_tail = node;
+        this->m_tail->Next(0);
         return node;
     }
 
@@ -161,8 +162,14 @@ public:
     inline void Remove(LinkedPointer<T> *node) {
         LinkedPointer<T> *prev = node->Prev();
         LinkedPointer<T> *next = node->Next();
-        prev->Next(next);
-        next->Prev(prev);
+        if(node == this->m_tail) {
+            prev->Next(0);
+            this->m_tail = prev;
+        }
+        else {
+            prev->Next(next);
+            next->Prev(prev);
+        }
         this->Push(node);
     }
 
@@ -196,10 +203,13 @@ public:
     inline void Clear() {
         if(this->m_head == this->m_tail)
             return;
-        LinkedPointer<T> *st = this->m_head->Next();
-        LinkedPointer<T> *end = this->m_tail;
+        LinkedPointer<T> *st = this->Start();
+        LinkedPointer<T> *end = this->End();
         this->m_poolTail->Next(st);
         this->m_poolTail = end;
+        this->m_tail = this->m_head;
+        this->m_head->Next(0);
+        this->m_head->Prev(0);
         this->m_count = 0;
     }
 

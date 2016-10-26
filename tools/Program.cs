@@ -1008,6 +1008,7 @@ namespace prebuild {
 
 		private void WriteClearCode(StructureInfo info) {
 			WriteLine("\tinline void Clear() {");
+			WriteLine("\t\tthis->Used = false;");
 			if(info.IsSequence)
 				WriteLine("\t\tthis->Allocator->FreeItem(this->Pointer);");
 			foreach(XmlNode field in info.Fields) {
