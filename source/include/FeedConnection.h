@@ -53,9 +53,13 @@ typedef enum _FeedConnectionType {
 
 class OrderBookTester;
 class OrderTester;
+class TradeTester;
+
 class FeedConnection {
 	friend class OrderBookTester;
     friend class OrderTester;
+	friend class TradeTester;
+	friend class FeedConnectionTester;
 
 	const int MaxReceiveBufferSize 				= 1500;
     const int WaitIncrementalMaxTimeSec         = 5;
@@ -597,6 +601,17 @@ private:
 		return true;
 	}
 
+	inline bool ProcessMessageCore(unsigned char *buffer, int length) {
+		this->m_fastProtocolManager->SetNewBuffer(buffer, length);
+		this->m_fastProtocolManager->ReadMsgSeqNumber();
+
+		this->m_fastProtocolManager->Decode();
+		//this->m_fastProtocolManager->Print();
+		this->ApplyDecodedMessage();
+
+		return true;
+	}
+
 	inline bool ProcessMessage(BinaryLogItem *item) {
         unsigned char *buffer = this->m_recvABuffer->Item(item->m_itemIndex);
 
@@ -612,17 +627,15 @@ private:
 		fflush(this->obrLogFile);
 		//till this
 
-		this->m_fastProtocolManager->SetNewBuffer(buffer, this->m_recvABuffer->ItemLength(item->m_itemIndex));
-        this->m_fastProtocolManager->ReadMsgSeqNumber();
 		DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Decode);
-		this->m_fastProtocolManager->Decode();
-		this->m_fastProtocolManager->Print();
-		this->ApplyDecodedMessage();
-		DefaultLogManager::Default->EndLog(true);
-        return true;
+		bool res = this->ProcessMessageCore(buffer, this->m_recvABuffer->ItemLength(item->m_itemIndex));
+		DefaultLogManager::Default->EndLog(res);
+
+		return res;
 	}
 public:
 	FeedConnection(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort);
+	FeedConnection();
 	~FeedConnection();
 
     inline int LastMsgSeqNumProcessed() { return this->m_lastMsgSeqNumProcessed; }
@@ -766,6 +779,9 @@ public:
 		this->SetType(FeedConnectionType::Incremental);
 		this->m_orderBookTableCurr = new MarketDataTable<OrderBookTableItem, FastOBSCURRInfo, FastOBSCURRItemInfo>();
     }
+	FeedConnection_CURR_OBR() : FeedConnection() {
+		this->m_orderBookTableCurr = new MarketDataTable<OrderBookTableItem, FastOBSCURRInfo, FastOBSCURRItemInfo>();
+	}
 	~FeedConnection_CURR_OBR() {
 		delete this->m_orderBookTableCurr;
 	}
@@ -782,9 +798,9 @@ class FeedConnection_CURR_OBS : public FeedConnection {
 public:
 	FeedConnection_CURR_OBS(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
 		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
-
 		this->SetType(FeedConnectionType::Snapshot);
     }
+	FeedConnection_CURR_OBS() : FeedConnection() { }
 	ISocketBufferProvider* CreateSocketBufferProvider() {
 		return new SocketBufferProvider(DefaultSocketBufferManager::Default,
 										RobotSettings::DefaultFeedConnectionSendBufferSize,
@@ -800,6 +816,7 @@ public:
 		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
 		this->SetType(FeedConnectionType::Incremental);
     }
+	FeedConnection_CURR_MSR() : FeedConnection() { }
 	ISocketBufferProvider* CreateSocketBufferProvider() {
 		return new SocketBufferProvider(DefaultSocketBufferManager::Default,
 										RobotSettings::DefaultFeedConnectionSendBufferSize,
@@ -815,6 +832,7 @@ public:
 		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
 		this->SetType(FeedConnectionType::Snapshot);
     }
+	FeedConnection_CURR_MSS() : FeedConnection() { }
 	ISocketBufferProvider* CreateSocketBufferProvider() {
 		return new SocketBufferProvider(DefaultSocketBufferManager::Default,
 										RobotSettings::DefaultFeedConnectionSendBufferSize,
@@ -831,6 +849,9 @@ public:
 		this->SetType(FeedConnectionType::Incremental);
 		this->m_orderTableCurr = new MarketDataTable<OrderTableItem, FastOLSCURRInfo, FastOLSCURRItemInfo>();
     }
+	FeedConnection_CURR_OLR() : FeedConnection() {
+		this->m_orderTableCurr = new MarketDataTable<OrderTableItem, FastOLSCURRInfo, FastOLSCURRItemInfo>();
+	}
 	~FeedConnection_CURR_OLR() {
 		delete this->m_orderTableCurr;
 	}
@@ -849,6 +870,7 @@ public:
 		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
 		this->SetType(FeedConnectionType::Snapshot);
     }
+	FeedConnection_CURR_OLS() : FeedConnection() { }
 	ISocketBufferProvider* CreateSocketBufferProvider() {
 		return new SocketBufferProvider(DefaultSocketBufferManager::Default,
 										RobotSettings::DefaultFeedConnectionSendBufferSize,
@@ -863,7 +885,14 @@ public:
 	FeedConnection_CURR_TLR(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
 		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
 		this->SetType(FeedConnectionType::Incremental);
+		this->m_tradeTableCurr = new MarketDataTable<TradeTableItem, FastTLSCURRInfo, FastTLSCURRItemInfo>();
     }
+	FeedConnection_CURR_TLR() : FeedConnection() {
+		this->m_tradeTableCurr = new MarketDataTable<TradeTableItem, FastTLSCURRInfo, FastTLSCURRItemInfo>();
+	}
+	~FeedConnection_CURR_TLR() {
+		delete this->m_tradeTableCurr;
+	}
 	ISocketBufferProvider* CreateSocketBufferProvider() {
 		return new SocketBufferProvider(DefaultSocketBufferManager::Default,
 										RobotSettings::DefaultFeedConnectionSendBufferSize,
@@ -878,11 +907,9 @@ public:
 	FeedConnection_CURR_TLS(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
 		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
 		this->SetType(FeedConnectionType::Snapshot);
-		this->m_tradeTableCurr = new MarketDataTable<TradeTableItem, FastTLSCURRInfo, FastTLSCURRItemInfo>();
+
     }
-	~FeedConnection_CURR_TLS() {
-		delete this->m_tradeTableCurr;
-	}
+	FeedConnection_CURR_TLS() : FeedConnection() { }
 	ISocketBufferProvider* CreateSocketBufferProvider() {
 		return new SocketBufferProvider(DefaultSocketBufferManager::Default,
 										RobotSettings::DefaultFeedConnectionSendBufferSize,
@@ -899,6 +926,9 @@ public:
 		this->SetType(FeedConnectionType::Incremental);
 		this->m_orderBookTableFond = new MarketDataTable<OrderBookTableItem, FastOBSFONDInfo, FastOBSFONDItemInfo>();
     }
+	FeedConnection_FOND_OBR() : FeedConnection() {
+		this->m_orderBookTableFond = new MarketDataTable<OrderBookTableItem, FastOBSFONDInfo, FastOBSFONDItemInfo>();
+	}
 	~FeedConnection_FOND_OBR() {
 		delete this->m_orderBookTableFond;
 	}
@@ -917,6 +947,7 @@ public:
 		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
 		this->SetType(FeedConnectionType::Snapshot);
     }
+	FeedConnection_FOND_OBS() : FeedConnection() { }
 	ISocketBufferProvider* CreateSocketBufferProvider() {
 		return new SocketBufferProvider(DefaultSocketBufferManager::Default,
 										RobotSettings::DefaultFeedConnectionSendBufferSize,
@@ -932,6 +963,7 @@ public:
 		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
 		this->SetType(FeedConnectionType::Incremental);
     }
+	FeedConnection_FOND_MSR() : FeedConnection() { }
 	ISocketBufferProvider* CreateSocketBufferProvider() {
 		return new SocketBufferProvider(DefaultSocketBufferManager::Default,
 										RobotSettings::DefaultFeedConnectionSendBufferSize,
@@ -947,6 +979,7 @@ public:
 		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
 		this->SetType(FeedConnectionType::Snapshot);
     }
+	FeedConnection_FOND_MSS() : FeedConnection() { }
 	ISocketBufferProvider* CreateSocketBufferProvider() {
 		return new SocketBufferProvider(DefaultSocketBufferManager::Default,
 										RobotSettings::DefaultFeedConnectionSendBufferSize,
@@ -963,6 +996,9 @@ public:
 		this->SetType(FeedConnectionType::Incremental);
 		this->m_orderTableFond = new MarketDataTable<OrderTableItem, FastOLSFONDInfo, FastOLSFONDItemInfo>();
     }
+	FeedConnection_FOND_OLR() : FeedConnection() {
+		this->m_orderTableFond = new MarketDataTable<OrderTableItem, FastOLSFONDInfo, FastOLSFONDItemInfo>();
+	}
 	~FeedConnection_FOND_OLR() {
 		delete this->m_orderTableFond;
 	}
@@ -981,6 +1017,7 @@ public:
 		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
 		this->SetType(FeedConnectionType::Snapshot);
     }
+	FeedConnection_FOND_OLS() : FeedConnection() { }
 	ISocketBufferProvider* CreateSocketBufferProvider() {
 		return new SocketBufferProvider(DefaultSocketBufferManager::Default,
 										RobotSettings::DefaultFeedConnectionSendBufferSize,
@@ -997,6 +1034,9 @@ public:
 		this->SetType(FeedConnectionType::Incremental);
 		this->m_tradeTableFond = new MarketDataTable<TradeTableItem, FastTLSFONDInfo, FastTLSFONDItemInfo>();
     }
+	FeedConnection_FOND_TLR() : FeedConnection() {
+		this->m_tradeTableFond = new MarketDataTable<TradeTableItem, FastTLSFONDInfo, FastTLSFONDItemInfo>();
+	}
 	~FeedConnection_FOND_TLR() {
 		delete this->m_tradeTableFond;
 	}
@@ -1015,6 +1055,7 @@ public:
 		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
 		this->SetType(FeedConnectionType::Snapshot);
     }
+	FeedConnection_FOND_TLS() : FeedConnection() { }
 	ISocketBufferProvider* CreateSocketBufferProvider() {
 		return new SocketBufferProvider(DefaultSocketBufferManager::Default,
 										RobotSettings::DefaultFeedConnectionSendBufferSize,

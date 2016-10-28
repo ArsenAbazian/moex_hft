@@ -45,6 +45,24 @@ FeedConnection::FeedConnection(const char *id, const char *name, char value, Fee
     this->obrLogFile = fopen("obr_log_file.txt", "wt");
 }
 
+FeedConnection::FeedConnection() {
+    this->m_fastProtocolManager = new FastProtocolManager();
+    this->m_fastLogonInfo = new FastLogonInfo();
+
+    this->m_stopwatch = new Stopwatch();
+    this->m_waitTimer = new Stopwatch();
+
+    this->m_tval = new struct timeval;
+
+    this->m_waitingSnapshot = false;
+    this->m_currentMsgSeqNum = 1;
+    this->m_maxRecvMsgSeqNum = 0;
+    this->m_listenPtr = &FeedConnection::Listen_Atom_Incremental;
+    this->m_type = FeedConnectionType::Incremental;
+
+    this->SetState(FeedConnectionState::fcsSuspend, &FeedConnection::Suspend_Atom);
+}
+
 FeedConnection::~FeedConnection() {
     delete this->m_packets;
     delete this->m_fastProtocolManager;

@@ -12,7 +12,7 @@ FastProtocolManager::FastProtocolManager() {
 
 
 FastProtocolManager::~FastProtocolManager() {
-	delete[] this->buffer;
+
 }
 
 void FastProtocolManager::PrintTabs(int tabCount) {

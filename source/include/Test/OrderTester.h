@@ -28,7 +28,6 @@ public:
     }
 
     void Test_OnIncrementalRefresh_OLR_FOND_Add() {
-
         this->fcf->OrderFond()->Clear();
         FastIncrementalOLRFONDInfo *info = new FastIncrementalOLRFONDInfo;
 

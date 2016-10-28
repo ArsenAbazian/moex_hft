@@ -41,6 +41,9 @@ template <typename T> class PointerList {
 
 public:
     inline LinkedPointer<T>* Pop() {
+        if(this->m_poolHead == this->m_poolTail) {
+            this->Append(this->m_capacity);
+        }
         LinkedPointer<T> *node = this->m_poolHead;
         this->m_poolHead = this->m_poolHead->Next();
         this->m_count++;

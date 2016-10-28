@@ -13,14 +13,15 @@ template<typename T> class AutoAllocatePointerList {
     int             m_addCapacity;
 
     inline void Allocate(LinkedPointer<T> *start, LinkedPointer<T> *end) {
-        do {
+        while(true) {
             T *t = new T;
             t->Pointer = start;
             t->Allocator = this;
             start->Data(t);
+            if(start == end)
+                break;
             start = start->Next();
         }
-        while(start != end);
     }
 public:
     AutoAllocatePointerList(int capacity, int additionalCapacity) {
@@ -33,7 +34,8 @@ public:
             LinkedPointer<T> *node = this->m_list->Append(this->m_addCapacity);
             this->Allocate(node, this->m_list->PoolEnd());
         }
-        T *item = this->m_list->Pop()->Data();
+        ;
+        T *item = this->m_list->Add(this->m_list->Pop())->Data();
         return item;
     }
     inline PointerList<T>* ListCore() { return this->m_list; }
