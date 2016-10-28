@@ -210,9 +210,9 @@ private:
         bool processed = false;
         while(i <= this->m_maxRecvMsgSeqNum) {
             if(this->m_packets[i] == 0) {
-				i++; continue; // TODO remove this code
-                //this->m_currentMsgSeqNum = i; // TODO uncomment this code
-                //return processed;
+				//i++; continue; // TODO remove this code
+                this->m_currentMsgSeqNum = i; // TODO uncomment this code
+                return processed;
             }
             this->ProcessMessage(this->m_packets[i]);
             processed = true;
@@ -601,6 +601,7 @@ private:
         unsigned char *buffer = this->m_recvABuffer->Item(item->m_itemIndex);
 
 		//TODO remove unused logging
+		/*
 		int length = this->m_recvABuffer->ItemLength(item->m_itemIndex);
 		fprintf(this->obrLogFile, "unsigned char *msg%d = new unsigned char [%d] { ", item->m_itemIndex, length);
 		for(int i = 0; i < length; i++) {
@@ -610,13 +611,14 @@ private:
 		}
 		fprintf(this->obrLogFile, "};\n");
 		fflush(this->obrLogFile);
+		*/
 		//till this
 
 		this->m_fastProtocolManager->SetNewBuffer(buffer, this->m_recvABuffer->ItemLength(item->m_itemIndex));
         this->m_fastProtocolManager->ReadMsgSeqNumber();
 		DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Decode);
 		this->m_fastProtocolManager->Decode();
-		this->m_fastProtocolManager->Print();
+		//this->m_fastProtocolManager->Print();
 		this->ApplyDecodedMessage();
 		DefaultLogManager::Default->EndLog(true);
         return true;

@@ -235,6 +235,13 @@ private:
 		this->ReleaseMethods[2106 - 2101] = &FastProtocolManager::DecodeSecurityStatus;
 		this->ReleaseMethods[2107 - 2101] = &FastProtocolManager::DecodeTradingSessionStatus;
 		this->ReleaseMethods[2108 - 2101] = &FastProtocolManager::DecodeHeartbeat;
+		this->GetSnapshotInfoMethods[2103 - 2101] = &FastProtocolManager::GetSnapshotInfoGeneric;
+		this->GetSnapshotInfoMethods[2410 - 2101] = &FastProtocolManager::GetSnapshotInfoOLSFOND;
+		this->GetSnapshotInfoMethods[3500 - 2101] = &FastProtocolManager::GetSnapshotInfoOLSCURR;
+		this->GetSnapshotInfoMethods[2411 - 2101] = &FastProtocolManager::GetSnapshotInfoTLSFOND;
+		this->GetSnapshotInfoMethods[3501 - 2101] = &FastProtocolManager::GetSnapshotInfoTLSCURR;
+		this->GetSnapshotInfoMethods[2412 - 2101] = &FastProtocolManager::GetSnapshotInfoOBSFOND;
+		this->GetSnapshotInfoMethods[3502 - 2101] = &FastProtocolManager::GetSnapshotInfoOBSCURR;
 
 	}
 
