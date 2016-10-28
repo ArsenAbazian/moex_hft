@@ -885,7 +885,7 @@ namespace prebuild {
 			public int TemplateId { get; set; }
 			public string FullDecodeMethodName { get { return "Decode" + NameCore; } }
 			public string FullReleaseMethodName { get { return "Release" + NameCore; } }
-			public bool HasGetSnapshotInfoMethod { get { return FullDecodeMethodName.Contains("FullRefresh"); } }
+			public bool HasGetSnapshotInfoMethod { get; set; } 
 			public string FullGetSnapshotInfoMethod { get { return "GetSnapshotInfo" + NameCore; } }
 			public string PrintMethodName { get { return "Print" + NameCore; } }
 			public string PrintXmlMethodName { get { return "PrintXml" + NameCore; } }
@@ -940,6 +940,7 @@ namespace prebuild {
 				info.MsgType = node.Attributes["name"].Value.Substring(0, 1);
 				info.TemplateId = Int32.Parse(node.Attributes["id"].Value);
 				info.NameCore = GetTemplateName(node.PreviousSibling.Value);
+				info.HasGetSnapshotInfoMethod = node.PreviousSibling.Value.Contains("Snapshot");
 				res.Add(info);
 			}
 			return res;

@@ -42,7 +42,7 @@ FeedConnection::FeedConnection(const char *id, const char *name, char value, Fee
 
 	this->SetState(FeedConnectionState::fcsSuspend, &FeedConnection::Suspend_Atom);
 
-    this->obrLogFile = fopen("obr_log_file.txt", "wt");
+    this->obrLogFile = fopen("~Documents/hft_robot/logs/obr_log_file.txt", "wt");
 }
 
 FeedConnection::FeedConnection() {
