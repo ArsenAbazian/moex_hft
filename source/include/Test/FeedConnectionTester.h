@@ -180,10 +180,25 @@ public:
             ptr = ptr->Next();
             processedMsgCount++;
         }
+
+
+        delete obr_fond;
+        delete obr_curr;
+        delete obs_fond;
+        delete obs_curr;
+        delete olr_fond;
+        delete olr_curr;
+        delete ols_fond;
+        delete ols_curr;
+        delete tlr_fond;
+        delete tlr_curr;
+        delete tls_fond;
+        delete tls_curr;
     }
 
     void Test() {
         TestLog("/home/arsen/Documents/hft_robot/hft/test/log5");
+        TestLog("/home/arsen/Documents/hft_robot/hft/test/log6");
         OrderTester ot;
         ot.Test();
         OrderBookTester obt;

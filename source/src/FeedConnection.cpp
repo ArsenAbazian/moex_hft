@@ -46,6 +46,8 @@ FeedConnection::FeedConnection(const char *id, const char *name, char value, Fee
 }
 
 FeedConnection::FeedConnection() {
+    this->m_packets = 0;
+
     this->m_fastProtocolManager = new FastProtocolManager();
     this->m_fastLogonInfo = new FastLogonInfo();
 
@@ -64,11 +66,16 @@ FeedConnection::FeedConnection() {
 }
 
 FeedConnection::~FeedConnection() {
-    delete this->m_packets;
-    delete this->m_fastProtocolManager;
-    delete this->m_stopwatch;
-    delete this->m_waitTimer;
-    delete this->m_fastLogonInfo;
+    if(this->m_packets != 0)
+        delete this->m_packets;
+    if(this->m_fastProtocolManager != 0)
+        delete this->m_fastProtocolManager;
+    if(this->m_stopwatch != 0)
+        delete this->m_stopwatch;
+    if(this->m_waitTimer != 0)
+        delete this->m_waitTimer;
+    if(this->m_fastLogonInfo != 0)
+        delete this->m_fastLogonInfo;
 }
 
 bool FeedConnection::InitializeSockets() {
