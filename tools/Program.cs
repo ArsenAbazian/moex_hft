@@ -1925,6 +1925,11 @@ namespace prebuild {
 				}
 				parsed.Add(Name(value));
 			}
+			if(ShouldWriteCheckPresenceMapCode(value)) {
+				string name = HasOptionalPresence(value)? "CheckOptionalFieldPresence": "CheckMandatoryFieldPresence";
+				WriteLine(tabString + "if(" + name + "(" + objectValueName + "->PresenceMap, " + objectValueName + "->" + Name(value) + "PresenceIndex)) {");
+				tabString += "\t";
+			}
 			if(value.Name == "string")
 				ParseStringValue(value, objectValueName, tabString);
 			else if(value.Name == "uInt32")
@@ -1948,6 +1953,10 @@ namespace prebuild {
 			}
 			if(HasConstantAttribute(value))
 				WriteConstantValueCheckingCode(value, objectValueName, classCoreName, tabString);
+			if(ShouldWriteCheckPresenceMapCode(value)) {
+				tabString = tabString.Substring(1);
+				WriteLine(tabString + "}");
+			}
 		}
 
 		private  void PrintStringValue (XmlNode value, string info, string tabString, int tabsCount) {

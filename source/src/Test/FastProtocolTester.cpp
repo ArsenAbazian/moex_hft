@@ -362,7 +362,7 @@ void FastProtocolTester::TestMessages() {
     manager->Decode();
     manager->Print();
     
-    message = new unsigned char[60] {
+    message = new unsigned char[55] {
             0x25, 0x29, 0x04, 0x00, 0xe0, 0x12, 0xf4, 0x10, 0x52, 0xa5,
             0x23, 0x68, 0x0b, 0x0f, 0x04, 0x7e, 0x58, 0xa2, 0x81, 0x80,
             0x83, 0xb1, 0x33, 0x35, 0x35, 0x31, 0x34, 0xb8, 0x42, 0x47,
@@ -371,12 +371,42 @@ void FastProtocolTester::TestMessages() {
             0x54, 0x51, 0x44, 0xc5, 0xce
     };
 
-    manager->SetNewBuffer(message, 65);
+    manager->SetNewBuffer(message, 55);
     msgSeqNo = manager->ReadMsgSeqNumber();
     manager->Decode();
     manager->Print();
 
     if(manager->TemplateId() != 2420)
+        throw;
+
+    FastIncrementalOLRFONDInfo *olrfondInfo = (FastIncrementalOLRFONDInfo*)manager->LastDecodeInfo();
+    if(olrfondInfo->GroupMDEntriesCount != 1)
+        throw;
+    if(olrfondInfo->GroupMDEntries[0]->TradingSessionID == 0)
+        throw;
+    if(manager->MessageLength() != 55)
+        throw;
+
+    message = new unsigned char[57] {
+            0x64, 0x0c, 0x04, 0x00, 0xe0, 0x12, 0xf4, 0x10, 0x18, 0xe4,
+            0x23, 0x68, 0x0b, 0x12, 0x63, 0x2e, 0x2d, 0xc4, 0x81, 0x80,
+            0x81, 0xb1, 0x33, 0x36, 0x30, 0x38, 0x36, 0xb0, 0x55, 0x54,
+            0x53, 0xd9, 0x1d, 0xef, 0x80, 0x61, 0x31, 0x59, 0xb1, 0x1d,
+            0x01, 0x9e, 0xfe, 0x03, 0xbc, 0x81, 0x0d, 0x9d, 0x80, 0xcf,
+            0x80, 0x80, 0x54, 0x51, 0x44, 0xc5, 0xce
+    };
+
+    manager->SetNewBuffer(message, 57);
+    msgSeqNo = manager->ReadMsgSeqNumber();
+    manager->Decode();
+    manager->Print();
+
+    olrfondInfo = (FastIncrementalOLRFONDInfo*)manager->LastDecodeInfo();
+    if(olrfondInfo->GroupMDEntriesCount != 1)
+        throw;
+    if(olrfondInfo->GroupMDEntries[0]->TradingSessionID == 0)
+        throw;
+    if(manager->MessageLength() != 57)
         throw;
 }
 

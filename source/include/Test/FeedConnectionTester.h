@@ -19,6 +19,7 @@ public:
     int                                         Count;
 
     unsigned char                               Bytes[1700];
+    char                                        Text[1700];
 };
 
 class FeedConnectionTester {
@@ -81,14 +82,17 @@ public:
             if(msg == 0)
                 throw;
             int index = 0;
+            int textIndex = 0;
             UINT64 pmap[4];
             while(true) {
-                fread(data, 1, 3, fp);
-                bool isEnd = data[2] == '\'';
-                int value = this->AsciToValue(data[0]) * 16 + this->AsciToValue((data[1]));
+                fread((msg->Text + textIndex), 1, 3, fp);
+                bool isEnd = msg->Text[textIndex + 2] == '\'';
+                int value = this->AsciToValue(msg->Text[textIndex]) * 16 + this->AsciToValue(msg->Text[textIndex + 1]);
                 msg->Bytes[index] = (unsigned char)value;
                 msg->Count = index + 1;
+                textIndex += 3;
                 if(isEnd) {
+                    msg->Text[textIndex] = '\0';
                     manager.SetNewBuffer(msg->Bytes, msg->Count);
                     manager.ReadMsgSeqNumber();
                     manager.ParsePresenceMap(pmap);
@@ -166,11 +170,11 @@ public:
                     fc = tlr_curr;
                     break;
             }
-            if(processedMsgCount == 9) {
-                int a = 5;
-            }
             if(!fc->ProcessMessageCore(msg->Bytes, msg->Count))
                 throw;
+            if(fc->m_fastProtocolManager->MessageLength() != msg->Count)
+                throw;
+            fc->m_fastProtocolManager->Print();
             if(ptr == end)
                 break;
             ptr = ptr->Next();

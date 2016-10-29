@@ -616,6 +616,7 @@ private:
         unsigned char *buffer = this->m_recvABuffer->Item(item->m_itemIndex);
 
 		//TODO remove unused logging
+		/*
 		int length = this->m_recvABuffer->ItemLength(item->m_itemIndex);
 		fprintf(this->obrLogFile, "unsigned char *msg%d = new unsigned char [%d] { ", item->m_itemIndex, length);
 		for(int i = 0; i < length; i++) {
@@ -626,7 +627,7 @@ private:
 		fprintf(this->obrLogFile, "};\n");
 		fflush(this->obrLogFile);
 		//till this
-
+		*/
 		DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Decode);
 		bool res = this->ProcessMessageCore(buffer, this->m_recvABuffer->ItemLength(item->m_itemIndex));
 		DefaultLogManager::Default->EndLog(res);
