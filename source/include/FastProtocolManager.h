@@ -33,6 +33,9 @@ class FastProtocolManager {
     FastSnapshotInfo *m_snapshotInfo;
 	void			*m_lastDecodedInfo;
 
+	UINT32			m_skipTemplateId[8];
+	int				m_skipTemplateIdCount;
+
 #pragma region String_Constant_Declaration_GeneratedCode
 public:
 	char	MessageEncodingConstString[6];
@@ -501,6 +504,19 @@ private:
 #pragma endregion
 
 public:
+
+	inline void SkipTemplateId(UINT32 templateId) {
+		this->m_skipTemplateId[this->m_skipTemplateIdCount] = templateId;
+		this->m_skipTemplateIdCount++;
+	}
+
+	inline bool ShouldSkipTemplate() {
+		for (int i = 1; i < this->m_skipTemplateIdCount; i++) {
+			if (this->m_skipTemplateId[i] == this->m_templateId)
+				return true;
+		}
+		return false;
+	}
 
     inline unsigned int SendMsgSeqNo() { return this->m_sendMsgSeqNo; }
     inline void IncSendMsgSeqNo() { this->m_sendMsgSeqNo++; }
@@ -4303,6 +4319,8 @@ public:
 	}
 	inline void* Decode() {
 		this->DecodeHeader();
+		if(this->ShouldSkipTemplate())
+			return 0;
 		FastDecodeMethodPointer funcPtr = this->DecodeMethods[this->m_templateId - 2101];
 		this->m_lastDecodedInfo = (this->*funcPtr)();
 		return this->m_lastDecodedInfo;

@@ -8,6 +8,7 @@ FastProtocolManager::FastProtocolManager() {
 	this->InitializeDecodeMethodPointers();
 	this->InitializeMessageInfo();
 	this->m_snapshotInfo = new FastSnapshotInfo();
+	this->m_skipTemplateIdCount = 0;
 }
 
 

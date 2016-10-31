@@ -24,6 +24,8 @@ FeedConnection::FeedConnection(const char *id, const char *name, char value, Fee
 	this->m_sendABuffer = this->m_socketABufferProvider->SendBuffer();
 	this->m_recvABuffer = this->m_socketABufferProvider->RecvBuffer();
 
+    this->m_fastProtocolManager->SkipTemplateId(fcmHeartBeat);
+
     this->socketAManager = NULL;
     this->socketBManager = NULL;
 
@@ -49,6 +51,7 @@ FeedConnection::FeedConnection() {
     this->m_packets = 0;
 
     this->m_fastProtocolManager = new FastProtocolManager();
+    this->m_fastProtocolManager->SkipTemplateId(fcmHeartBeat);
     this->m_fastLogonInfo = new FastLogonInfo();
 
     this->m_stopwatch = new Stopwatch();

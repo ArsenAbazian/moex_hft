@@ -896,6 +896,8 @@ namespace prebuild {
 			int minId = CalcMinTemplateId(templatesNode);
 			WriteLine("\tinline void* Decode() {");
 			WriteLine("\t\tthis->DecodeHeader();");
+			WriteLine("\t\tif(this->ShouldSkipTemplate())");
+			WriteLine("\t\t\treturn 0;");
 			WriteLine("\t\tFastDecodeMethodPointer funcPtr = this->DecodeMethods[this->m_templateId - " + minId + "];");
 			WriteLine("\t\tthis->m_lastDecodedInfo = (this->*funcPtr)();");
 			WriteLine("\t\treturn this->m_lastDecodedInfo;");

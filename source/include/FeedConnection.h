@@ -605,7 +605,8 @@ private:
 		this->m_fastProtocolManager->SetNewBuffer(buffer, length);
 		this->m_fastProtocolManager->ReadMsgSeqNumber();
 
-		this->m_fastProtocolManager->Decode();
+		if(this->m_fastProtocolManager->Decode() == 0)
+			return true;
 		//this->m_fastProtocolManager->Print();
 		this->ApplyDecodedMessage();
 
