@@ -128,10 +128,15 @@ typedef struct _FastSnapshotInfo {
 	UINT64				PresenceMap;
 	int				TemplateId;
 	INT32				RptSeq;
+	bool				AllowRptSeq;
 	UINT32				LastFragment;
+	bool				AllowLastFragment;
 	UINT32				RouteFirst;
+	bool				AllowRouteFirst;
 	UINT32				LastMsgSeqNumProcessed;
+	bool				AllowLastMsgSeqNumProcessed;
 	UINT64				SendingTime;
+	bool				AllowSendingTime;
 }FastSnapshotInfo;
 
 class FastLogonInfo{

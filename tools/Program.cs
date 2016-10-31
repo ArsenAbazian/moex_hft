@@ -767,6 +767,7 @@ namespace prebuild {
 			InitializeSnapshotInfoFields(templatesNode);
 			foreach(SnapshotFieldInfo info in SnapshotInfoFields) {
 				WriteLine("\t" + info.FieldType + "\t\t\t\t" + info.FieldName + ";");
+				WriteLine("\tbool\t\t\t\tAllow" + info.FieldName + ";");
 			}
 			WriteLine("}FastSnapshotInfo;");
 
@@ -1554,7 +1555,9 @@ namespace prebuild {
 			"\"" + GetFieldConstantValue(value) + "\"" + ", " + GetFieldConstantValue(value).Count() + ""
 			+ ")) this->LogError(\"" + parentName + "Info::" + Name(value) + " != " + GetFieldConstantValue(value) + "\");");
 		}
-
+		bool ShouldSkipField(XmlNode node) {
+			return node.Attributes["skip"] != null && node.Attributes["skip"].Value.ToLower() == "true";
+		}
 		string Name (XmlNode node) {
 			return node.Attributes["name"] != null ? node.Attributes["name"].Value : "";
 		}
@@ -1630,13 +1633,18 @@ namespace prebuild {
 
 		private  void ParseByteVectorValue (XmlNode value, string info, string tabString) {
 			if(ShouldWriteNullCheckCode(value)) {
-				WriteLine(tabString + "if(!CheckProcessNullByteVector())");
+				WriteLine(tabString + "if((" + info + "->Allow" + Name(value) + " = !CheckProcessNullByteVector()))");
 				tabString += "\t";
 			}
-			if(HasOptionalPresence(value))
-				WriteLine(tabString + "ReadByteVector_Optional(&(" + info + "->" + Name(value) + "), &(" + info + "->" + Name(value) + "Length)" + ");");
-			else
-				WriteLine(tabString + "ReadByteVector_Mandatory(&(" + info + "->" + Name(value) + "), &(" + info + "->" + Name(value) + "Length)" + ");");
+			if(ShouldSkipField(value)) {
+				WriteLine(tabString + "SkipToNextField(); // " + Name(value) + " Length");
+				WriteLine(tabString + "SkipToNextField(); // " + Name(value) + " Data");
+			} else {
+				if(HasOptionalPresence(value))
+					WriteLine(tabString + "ReadByteVector_Optional(&(" + info + "->" + Name(value) + "), &(" + info + "->" + Name(value) + "Length)" + ");");
+				else
+					WriteLine(tabString + "ReadByteVector_Mandatory(&(" + info + "->" + Name(value) + "), &(" + info + "->" + Name(value) + "Length)" + ");");
+			}
 			if(ShouldWriteNullCheckCode(value)) {
 				tabString = tabString.Substring(1);
 				if(HasOperators(value)) {
@@ -1650,15 +1658,20 @@ namespace prebuild {
 
 		private  void ParseDecimalValue (XmlNode value, string info, string tabString) {
 			if(ShouldWriteNullCheckCode(value)) {
-				WriteLine(tabString + "if(!CheckProcessNullDecimal())");
+				WriteLine(tabString + "if((" + info + "->Allow" + Name(value) + " = !CheckProcessNullDecimal()))");
 				tabString += "\t";
 			}
 			if(ExtendedDecimal(value))
 				throw new Exception("Extended deciamal detected in template!");
-			if(HasOptionalPresence(value))
-				WriteLine(tabString + "ReadDecimal_Optional(&(" + info + "->" + Name(value) + "));");
-			else
-				WriteLine(tabString + "ReadDecimal_Mandatory(&(" + info + "->" + Name(value) + "));");
+			if(ShouldSkipField(value)) {
+				WriteLine(tabString + "SkipToNextField(); // " + Name(value) + " Mantissa");
+				WriteLine(tabString + "SkipToNextField(); // " + Name(value) + " Exponent");
+			} else {
+				if(HasOptionalPresence(value))
+					WriteLine(tabString + "ReadDecimal_Optional(&(" + info + "->" + Name(value) + "));");
+				else
+					WriteLine(tabString + "ReadDecimal_Mandatory(&(" + info + "->" + Name(value) + "));");
+			}
 			if(ShouldWriteNullCheckCode(value)) {
 				tabString = tabString.Substring(1);
 				if(HasOperators(value)) {
@@ -1672,13 +1685,17 @@ namespace prebuild {
 
 		private  void ParseInt64Value (XmlNode value, string info, string tabString) {
 			if(ShouldWriteNullCheckCode(value)) {
-				WriteLine(tabString + "if(!CheckProcessNullInt64())");
+				WriteLine(tabString + "if((" + info + "->Allow" + Name(value) + " = !CheckProcessNullInt64()))");
 				tabString += "\t";
 			}
-			if(HasOptionalPresence(value))
-				WriteLine(tabString + info + "->" + Name(value) + " = ReadInt64_Optional();");
-			else
-				WriteLine(tabString + info + "->" + Name(value) + " = ReadInt64_Mandatory();");
+			if(ShouldSkipField(value)) {
+				WriteLine(tabString + "SkipToNextField(); // " + Name(value));
+			} else {
+				if(HasOptionalPresence(value))
+					WriteLine(tabString + info + "->" + Name(value) + " = ReadInt64_Optional();");
+				else
+					WriteLine(tabString + info + "->" + Name(value) + " = ReadInt64_Mandatory();");
+			}
 			if(ShouldWriteNullCheckCode(value)) {
 				tabString = tabString.Substring(1);
 				if(HasOperators(value)) {
@@ -1692,13 +1709,17 @@ namespace prebuild {
 
 		private  void ParseUint64Value (XmlNode value, string info, string tabString) {
 			if(ShouldWriteNullCheckCode(value)) {
-				WriteLine(tabString + "if(!CheckProcessNullUInt64())");
+				WriteLine(tabString + "if((" + info + "->Allow" + Name(value) + " = !CheckProcessNullUInt64()))");
 				tabString += "\t";
 			}
-			if(HasOptionalPresence(value))
-				WriteLine(tabString + info + "->" + Name(value) + " = ReadUInt64_Optional();");
-			else
-				WriteLine(tabString + info + "->" + Name(value) + " = ReadUInt64_Mandatory();");
+			if(ShouldSkipField(value)) {
+				WriteLine(tabString + "SkipToNextField(); // " + Name(value));
+			} else {
+				if(HasOptionalPresence(value))
+					WriteLine(tabString + info + "->" + Name(value) + " = ReadUInt64_Optional();");
+				else
+					WriteLine(tabString + info + "->" + Name(value) + " = ReadUInt64_Mandatory();");
+			}
 			if(ShouldWriteNullCheckCode(value)) {
 				tabString = tabString.Substring(1);
 				if(HasOperators(value)) {
@@ -1712,13 +1733,17 @@ namespace prebuild {
 
 		private  void ParseInt32Value (XmlNode value, string info, string tabString) {
 			if(ShouldWriteNullCheckCode(value)) {
-				WriteLine(tabString + "if(!CheckProcessNullInt32())");
+				WriteLine(tabString + "if((" + info + "->Allow" + Name(value) + " = !CheckProcessNullInt32()))");
 				tabString += "\t";
 			}
-			if(HasOptionalPresence(value))
-				WriteLine(tabString + info + "->" + Name(value) + " = ReadInt32_Optional();");
-			else
-				WriteLine(tabString + info + "->" + Name(value) + " = ReadInt32_Mandatory();");
+			if(ShouldSkipField(value)) {
+				WriteLine(tabString + "SkipToNextField(); // " + Name(value));
+			} else {
+				if(HasOptionalPresence(value))
+					WriteLine(tabString + info + "->" + Name(value) + " = ReadInt32_Optional();");
+				else
+					WriteLine(tabString + info + "->" + Name(value) + " = ReadInt32_Mandatory();");
+			}
 			if(ShouldWriteNullCheckCode(value)) {
 				tabString = tabString.Substring(1);
 				if(HasOperators(value)) {
@@ -1732,13 +1757,17 @@ namespace prebuild {
 
 		private  void ParseUint32Value (XmlNode value, string info, string tabString) {
 			if(ShouldWriteNullCheckCode(value)) {
-				WriteLine(tabString + "if(!CheckProcessNullUInt32())");
+				WriteLine(tabString + "if((" + info + "->Allow" + Name(value) + " = !CheckProcessNullUInt32()))");
 				tabString += "\t";
 			}
-			if(HasOptionalPresence(value))
-				WriteLine(tabString + info + "->" + Name(value) + " = ReadUInt32_Optional();");
-			else
-				WriteLine(tabString + info + "->" + Name(value) + " = ReadUInt32_Mandatory();");
+			if(ShouldSkipField(value)) {
+				WriteLine(tabString + "SkipToNextField(); // " + Name(value));
+			} else {
+				if(HasOptionalPresence(value))
+					WriteLine(tabString + info + "->" + Name(value) + " = ReadUInt32_Optional();");
+				else
+					WriteLine(tabString + info + "->" + Name(value) + " = ReadUInt32_Mandatory();");
+			}
 			if(ShouldWriteNullCheckCode(value)) {
 				tabString = tabString.Substring(1);
 				if(HasOperators(value)) {
@@ -1752,13 +1781,17 @@ namespace prebuild {
 
 		private  void ParseStringValue (XmlNode value, string info, string tabString) {
 			if(ShouldWriteNullCheckCode(value)) {
-				WriteLine(tabString + "if(!CheckProcessNullString())");
+				WriteLine(tabString + "if((" + info + "->Allow" + Name(value) + " = !CheckProcessNullString()))");
 				tabString += "\t";
 			}
-			if(HasOptionalPresence(value))
-				WriteLine(tabString + "ReadString_Optional(&(" + info + "->" + Name(value) + "), &(" + info + "->" + Name(value) + "Length)" + ");");
-			else
-				WriteLine(tabString + "ReadString_Mandatory(&(" + info + "->" + Name(value) + "), &(" + info + "->" + Name(value) + "Length)" + ");");
+			if(ShouldSkipField(value)) {
+				WriteLine(tabString + "SkipToNextField(); //" + Name(value));
+			} else {
+				if(HasOptionalPresence(value))
+					WriteLine(tabString + "ReadString_Optional(&(" + info + "->" + Name(value) + "), &(" + info + "->" + Name(value) + "Length)" + ");");
+				else
+					WriteLine(tabString + "ReadString_Mandatory(&(" + info + "->" + Name(value) + "), &(" + info + "->" + Name(value) + "Length)" + ");");
+			}
 			if(ShouldWriteNullCheckCode(value)) {
 				tabString = tabString.Substring(1);
 				if(HasOperators(value)) {
@@ -1919,7 +1952,7 @@ namespace prebuild {
 			// skip constant value WHY??????!!!!!
 			if(!CanParseValue(value))
 				return;
-
+						
 			if(skipNonAllowed) { 
 				if(!Contains(allowedFields, value)) {
 					WriteSkipCode(tabString, Name(value));
@@ -1958,6 +1991,8 @@ namespace prebuild {
 			if(ShouldWriteCheckPresenceMapCode(value)) {
 				tabString = tabString.Substring(1);
 				WriteLine(tabString + "}");
+				WriteLine(tabString + "else");
+				WriteLine(tabString + "\t" + objectValueName + "-> Allow" + Name(value) + " = false;");
 			}
 		}
 
@@ -2078,6 +2113,10 @@ namespace prebuild {
 			// skip constant value WHY??????!!!!!
 			if(HasConstantAttribute(value))
 				return;
+			if(ShouldWriteNullCheckCode(value)) { 
+				WriteLine(tabString + "if(" + objectValueName + "->Allow" + Name(value) + ")");
+				tabString += "\t";
+			}
 
 			if(value.Name == "string")
 				PrintStringValue(value, objectValueName, tabString, tabsCount);
@@ -2100,6 +2139,8 @@ namespace prebuild {
 				Console.WriteLine("ERROR: found undefined field " + value.Name);
 				throw new NotImplementedException("ERROR: found undefined field " + value.Name);
 			}
+			if(ShouldWriteNullCheckCode(value))
+				tabString = tabString.Substring(1);
 		}
 
 		private  void PrintXmlValue (XmlNode value, string objectValueName, string classCoreName, string tabString) {
@@ -2110,6 +2151,10 @@ namespace prebuild {
 			if(HasConstantAttribute(value))
 				return;
 
+			if(ShouldWriteNullCheckCode(value)) {
+				WriteLine(tabString + "if(" + objectValueName + "->Allow" + Name(value) + ")");
+				tabString += "\t";
+			}
 			if(value.Name == "string")
 				PrintXmlStringValue(value, objectValueName, tabString);
 			else if(value.Name == "uInt32")
@@ -2131,6 +2176,8 @@ namespace prebuild {
 				Console.WriteLine("ERROR: found undefined field " + value.Name);
 				throw new NotImplementedException("ERROR: found undefined field " + value.Name);
 			}
+			if(ShouldWriteNullCheckCode(value))
+				tabString = tabString.Substring(1);
 		}
 
 		private  void WriteOperatorsCode (XmlNode value, string objectValueName, string classCoreName, string tabString) {

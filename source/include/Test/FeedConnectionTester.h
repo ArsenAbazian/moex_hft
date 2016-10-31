@@ -197,14 +197,14 @@ public:
     }
 
     void Test() {
-        TestLog("/home/arsen/Documents/hft_robot/hft/test/log5");
-        TestLog("/home/arsen/Documents/hft_robot/hft/test/log6");
         OrderTester ot;
         ot.Test();
         OrderBookTester obt;
         obt.Test();
         TradeTester tt;
         tt.Test();
+        TestLog("/home/arsen/Documents/hft_robot/hft/test/log5");
+        TestLog("/home/arsen/Documents/hft_robot/hft/test/log6");
     }
 };
 

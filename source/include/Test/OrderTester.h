@@ -27,8 +27,134 @@ public:
         delete this->fcc;
     }
 
-    void Test_OnIncrementalRefresh_OLR_FOND_Add() {
+    FastOLSFONDInfo* CreateFastOLSFondInfo(const char *symbol, const char *trading) {
+        FastOLSFONDInfo *info = new FastOLSFONDInfo();
+
+        char *smb = new char[strlen(symbol) + 1];
+        strcpy(smb, symbol);
+
+        char *trd = new char[strlen(trading) + 1];
+        strcpy(trd, trading);
+
+        info->Symbol = smb;
+        info->SymbolLength = strlen(smb);
+
+        info->TradingSessionID = trd;
+        info->TradingSessionIDLength = strlen(trd);
+
+        return info;
+    }
+
+    FastOLSFONDItemInfo* CreateFastOLSFondItemInfo(INT64 priceMantissa, INT32 priceExponenta, INT64 sizeMantissa, INT64 sizeExponenta, MDEntryType entryType, const char *entryId) {
+
+        AutoAllocatePointerList<FastOLSFONDItemInfo> *list = new AutoAllocatePointerList<FastOLSFONDItemInfo>(1, 1);
+        FastOLSFONDItemInfo *info = list->NewItem();
+
+        char *id = new char[strlen(entryId) + 1];
+        strcpy(id, entryId);
+
+        char *type = new char[1];
+        type[0] = (char) entryType;
+
+        info->MDEntryID = id;
+        info->MDEntryIDLength = strlen(id);
+        info->MDEntryType = type;
+        info->MDEntryTypeLength = 1;
+        info->MDEntryPx.Set(priceMantissa, priceExponenta);
+        info->MDEntrySize.Set(sizeMantissa, sizeExponenta);
+
+        return info;
+    }
+
+    FastOLSFONDItemInfo* CreateFastOLRFondItemInfo(const char *symbol, const char *trading, INT64 priceMantissa, INT32 priceExponenta, INT64 sizeMantissa, INT64 sizeExponenta, MDUpdateAction updateAction, MDEntryType entryType, const char *entryId) {
+        FastOLSFONDItemInfo *info = CreateFastOLSFondItemInfo(priceMantissa, priceExponenta, sizeMantissa, sizeExponenta, entryType, entryId);
+
+        char *smb = new char[strlen(symbol) + 1];
+        strcpy(smb, symbol);
+
+        char *trd = new char[strlen(trading) + 1];
+        strcpy(trd, trading);
+
+        info->Symbol = smb;
+        info->SymbolLength = strlen(smb);
+
+        info->TradingSessionID = trd;
+        info->TradingSessionIDLength = strlen(trd);
+
+        info->MDUpdateAction = updateAction;
+
+        return info;
+    }
+
+
+    FastOLSCURRInfo* CreateFastOLSCurrInfo(const char *symbol, const char *trading) {
+        FastOLSCURRInfo *info = new FastOLSCURRInfo();
+
+        char *smb = new char[strlen(symbol) + 1];
+        strcpy(smb, symbol);
+
+        char *trd = new char[strlen(trading) + 1];
+        strcpy(trd, trading);
+
+        info->Symbol = smb;
+        info->SymbolLength = strlen(smb);
+
+        info->TradingSessionID = trd;
+        info->TradingSessionIDLength = strlen(trd);
+
+        return info;
+    }
+
+    FastOLSCURRItemInfo* CreateFastOLSCurrItemInfo(INT64 priceMantissa, INT32 priceExponenta, INT64 sizeMantissa, INT64 sizeExponenta, MDEntryType entryType, const char *entryId) {
+
+        AutoAllocatePointerList<FastOLSCURRItemInfo> *list = new AutoAllocatePointerList<FastOLSCURRItemInfo>(1, 1);
+        FastOLSCURRItemInfo *info = list->NewItem();
+
+        char *id = new char[strlen(entryId) + 1];
+        strcpy(id, entryId);
+
+        char *type = new char[1];
+        type[0] = (char) entryType;
+
+        info->MDEntryID = id;
+        info->MDEntryIDLength = strlen(id);
+        info->MDEntryType = type;
+        info->MDEntryTypeLength = 1;
+        info->MDEntryPx.Set(priceMantissa, priceExponenta);
+        info->MDEntrySize.Set(sizeMantissa, sizeExponenta);
+
+        return info;
+    }
+
+    FastOLSCURRItemInfo* CreateFastOLRCurrItemInfo(const char *symbol, const char *trading, INT64 priceMantissa, INT32 priceExponenta, INT64 sizeMantissa, INT64 sizeExponenta, MDUpdateAction updateAction, MDEntryType entryType, const char *entryId) {
+        FastOLSCURRItemInfo *info = CreateFastOLSCurrItemInfo(priceMantissa, priceExponenta, sizeMantissa, sizeExponenta, entryType, entryId);
+
+        char *smb = new char[strlen(symbol) + 1];
+        strcpy(smb, symbol);
+
+        char *trd = new char[strlen(trading) + 1];
+        strcpy(trd, trading);
+
+        info->Symbol = smb;
+        info->SymbolLength = strlen(smb);
+
+        info->TradingSessionID = trd;
+        info->TradingSessionIDLength = strlen(trd);
+
+        info->MDUpdateAction = updateAction;
+
+        return info;
+    }
+
+    void Clear() { 
         this->fcf->OrderFond()->Clear();
+        this->fcc->OrderCurr()->Clear();
+    }
+    
+    void Test_OnIncrementalRefresh_OLR_FOND_Add() {
+        this->Clear();
+        this->TestDefaults();
+
         FastIncrementalOLRFONDInfo *info = new FastIncrementalOLRFONDInfo;
 
         FastOLSFONDItemInfo *item1 = CreateFastOLRFondItemInfo("SMB1", "TRADING001", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "ENTRYID001");
@@ -189,7 +315,8 @@ public:
     }
 
     void Test_OnIncrementalRefresh_OLR_FOND_Remove() {
-        this->fcf->OrderFond()->Clear();
+        this->Clear();
+        this->TestDefaults();
 
         FastIncrementalOLRFONDInfo *info = new FastIncrementalOLRFONDInfo;
         FastOLSFONDItemInfo *item1 = CreateFastOLRFondItemInfo("SMB1", "TRADING001", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "ENTRYID001");
@@ -278,7 +405,8 @@ public:
     }
 
     void Test_OnIncrementalRefresh_OLR_FOND_Change() {
-        this->fcf->OrderFond()->Clear();
+        this->Clear();
+        this->TestDefaults();
 
         FastIncrementalOLRFONDInfo *info = new FastIncrementalOLRFONDInfo;
         FastOLSFONDItemInfo *item1 = CreateFastOLRFondItemInfo("SMB1", "TRADING001", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "ENTRYID001");
@@ -350,7 +478,8 @@ public:
     }
 
     void Test_Clear() {
-        this->fcf->OrderFond()->Clear();
+        this->Clear();
+        this->TestDefaults();
 
         FastIncrementalOLRFONDInfo *info = new FastIncrementalOLRFONDInfo;
         FastOLSFONDItemInfo *item1 = CreateFastOLRFondItemInfo("SBM1", "TRADING001", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "ENTRYID001");
@@ -366,7 +495,7 @@ public:
 
         this->fcf->OnIncrementalRefresh_OLR_FOND(info);
 
-        this->fcf->OrderFond()->Clear();
+        this->Clear();
         if(item1->Used || item2->Used || item3->Used || item4->Used)
             throw;
         if(item1->Allocator->Count() != 0 ||
@@ -382,128 +511,9 @@ public:
             throw;
     }
 
-    FastOLSFONDInfo* CreateFastOLSFondInfo(const char *symbol, const char *trading) {
-        FastOLSFONDInfo *info = new FastOLSFONDInfo();
-
-        char *smb = new char[strlen(symbol) + 1];
-        strcpy(smb, symbol);
-
-        char *trd = new char[strlen(trading) + 1];
-        strcpy(trd, trading);
-
-        info->Symbol = smb;
-        info->SymbolLength = strlen(smb);
-
-        info->TradingSessionID = trd;
-        info->TradingSessionIDLength = strlen(trd);
-
-        return info;
-    }
-
-    FastOLSFONDItemInfo* CreateFastOLSFondItemInfo(INT64 priceMantissa, INT32 priceExponenta, INT64 sizeMantissa, INT64 sizeExponenta, MDEntryType entryType, const char *entryId) {
-
-        AutoAllocatePointerList<FastOLSFONDItemInfo> *list = new AutoAllocatePointerList<FastOLSFONDItemInfo>(1, 1);
-        FastOLSFONDItemInfo *info = list->NewItem();
-
-        char *id = new char[strlen(entryId) + 1];
-        strcpy(id, entryId);
-
-        char *type = new char[1];
-        type[0] = (char) entryType;
-
-        info->MDEntryID = id;
-        info->MDEntryIDLength = strlen(id);
-        info->MDEntryType = type;
-        info->MDEntryTypeLength = 1;
-        info->MDEntryPx.Set(priceMantissa, priceExponenta);
-        info->MDEntrySize.Set(sizeMantissa, sizeExponenta);
-
-        return info;
-    }
-
-    FastOLSFONDItemInfo* CreateFastOLRFondItemInfo(const char *symbol, const char *trading, INT64 priceMantissa, INT32 priceExponenta, INT64 sizeMantissa, INT64 sizeExponenta, MDUpdateAction updateAction, MDEntryType entryType, const char *entryId) {
-        FastOLSFONDItemInfo *info = CreateFastOLSFondItemInfo(priceMantissa, priceExponenta, sizeMantissa, sizeExponenta, entryType, entryId);
-
-        char *smb = new char[strlen(symbol) + 1];
-        strcpy(smb, symbol);
-
-        char *trd = new char[strlen(trading) + 1];
-        strcpy(trd, trading);
-
-        info->Symbol = smb;
-        info->SymbolLength = strlen(smb);
-
-        info->TradingSessionID = trd;
-        info->TradingSessionIDLength = strlen(trd);
-
-        info->MDUpdateAction = updateAction;
-
-        return info;
-    }
-
-
-    FastOLSCURRInfo* CreateFastOLSCurrInfo(const char *symbol, const char *trading) {
-        FastOLSCURRInfo *info = new FastOLSCURRInfo();
-
-        char *smb = new char[strlen(symbol) + 1];
-        strcpy(smb, symbol);
-
-        char *trd = new char[strlen(trading) + 1];
-        strcpy(trd, trading);
-
-        info->Symbol = smb;
-        info->SymbolLength = strlen(smb);
-
-        info->TradingSessionID = trd;
-        info->TradingSessionIDLength = strlen(trd);
-
-        return info;
-    }
-
-    FastOLSCURRItemInfo* CreateFastOLSCurrItemInfo(INT64 priceMantissa, INT32 priceExponenta, INT64 sizeMantissa, INT64 sizeExponenta, MDEntryType entryType, const char *entryId) {
-
-        AutoAllocatePointerList<FastOLSCURRItemInfo> *list = new AutoAllocatePointerList<FastOLSCURRItemInfo>(1, 1);
-        FastOLSCURRItemInfo *info = list->NewItem();
-
-        char *id = new char[strlen(entryId) + 1];
-        strcpy(id, entryId);
-
-        char *type = new char[1];
-        type[0] = (char) entryType;
-
-        info->MDEntryID = id;
-        info->MDEntryIDLength = strlen(id);
-        info->MDEntryType = type;
-        info->MDEntryTypeLength = 1;
-        info->MDEntryPx.Set(priceMantissa, priceExponenta);
-        info->MDEntrySize.Set(sizeMantissa, sizeExponenta);
-
-        return info;
-    }
-
-    FastOLSCURRItemInfo* CreateFastOLRCurrItemInfo(const char *symbol, const char *trading, INT64 priceMantissa, INT32 priceExponenta, INT64 sizeMantissa, INT64 sizeExponenta, MDUpdateAction updateAction, MDEntryType entryType, const char *entryId) {
-        FastOLSCURRItemInfo *info = CreateFastOLSCurrItemInfo(priceMantissa, priceExponenta, sizeMantissa, sizeExponenta, entryType, entryId);
-
-        char *smb = new char[strlen(symbol) + 1];
-        strcpy(smb, symbol);
-
-        char *trd = new char[strlen(trading) + 1];
-        strcpy(trd, trading);
-
-        info->Symbol = smb;
-        info->SymbolLength = strlen(smb);
-
-        info->TradingSessionID = trd;
-        info->TradingSessionIDLength = strlen(trd);
-
-        info->MDUpdateAction = updateAction;
-
-        return info;
-    }
-
-
     void Test_OnFullRefresh_OLS_FOND() {
-        this->fcf->OrderFond()->Clear();
+        this->Clear();
+        this->TestDefaults();
 
         FastIncrementalOLRFONDInfo *info = new FastIncrementalOLRFONDInfo;
         FastOLSFONDItemInfo *item1 = CreateFastOLRFondItemInfo("SBM1", "TRADING001", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "ENTRYID001");
@@ -556,7 +566,8 @@ public:
     }
 
     void Test_OnIncrementalRefresh_OLR_FOND_Add_SellQuotes() {
-        this->fcf->OrderFond()->Clear();
+        this->Clear();
+        this->TestDefaults();
 
         FastIncrementalOLRFONDInfo *info = new FastIncrementalOLRFONDInfo;
 
@@ -714,7 +725,8 @@ public:
     }
 
     void Test_OnIncrementalRefresh_OLR_FOND_Remove_SellQuotes() {
-        this->fcf->OrderFond()->Clear();
+        this->Clear();
+        this->TestDefaults();
 
         FastIncrementalOLRFONDInfo *info = new FastIncrementalOLRFONDInfo;
         FastOLSFONDItemInfo *item1 = CreateFastOLRFondItemInfo("SMB1", "TRADING001", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "ENTRYID001");
@@ -798,7 +810,8 @@ public:
     }
 
     void Test_OnIncrementalRefresh_OLR_FOND_Change_SellQuotes() {
-        this->fcf->OrderFond()->Clear();
+        this->Clear();
+        this->TestDefaults();
 
         FastIncrementalOLRFONDInfo *info = new FastIncrementalOLRFONDInfo;
         FastOLSFONDItemInfo *item1 = CreateFastOLRFondItemInfo("SMB1", "TRADING001", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "ENTRYID001");
@@ -863,7 +876,8 @@ public:
     }
 
     void Test_Clear_SellQuotes() {
-        this->fcf->OrderFond()->Clear();
+        this->Clear();
+        this->TestDefaults();
 
         FastIncrementalOLRFONDInfo *info = new FastIncrementalOLRFONDInfo;
         FastOLSFONDItemInfo *item1 = CreateFastOLRFondItemInfo("SBM1", "TRADING001", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "ENTRYID001");
@@ -879,7 +893,7 @@ public:
 
         this->fcf->OnIncrementalRefresh_OLR_FOND(info);
 
-        this->fcf->OrderFond()->Clear();
+        this->Clear();
         if(this->fcf->OrderFond()->UsedItemCount() != 0)
             throw;
 
@@ -889,7 +903,8 @@ public:
     }
 
     void Test_OnFullRefresh_OLS_FOND_SellQuotes() {
-        this->fcf->OrderFond()->Clear();
+        this->Clear();
+        this->TestDefaults();
 
         FastIncrementalOLRFONDInfo *info = new FastIncrementalOLRFONDInfo;
         FastOLSFONDItemInfo *item1 = CreateFastOLRFondItemInfo("SBM1", "TRADING001", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "ENTRYID001");
@@ -941,11 +956,9 @@ public:
             throw;
     }
 
-    
-    /***********************************/
-
     void Test_OnIncrementalRefresh_OLR_CURR_Add() {
-        this->fcc->OrderCurr()->Clear();
+        this->Clear();
+        this->TestDefaults();
 
         FastIncrementalOLRCURRInfo *info = new FastIncrementalOLRCURRInfo;
 
@@ -1105,7 +1118,8 @@ public:
     }
 
     void Test_OnIncrementalRefresh_OLR_CURR_Remove() {
-        this->fcc->OrderCurr()->Clear();
+        this->Clear();
+        this->TestDefaults();
 
         FastIncrementalOLRCURRInfo *info = new FastIncrementalOLRCURRInfo;
         FastOLSCURRItemInfo *item1 = CreateFastOLRCurrItemInfo("SMB1", "TRADING001", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "ENTRYID001");
@@ -1188,7 +1202,8 @@ public:
     }
 
     void Test_OnIncrementalRefresh_OLR_CURR_Change() {
-        this->fcc->OrderCurr()->Clear();
+        this->Clear();
+        this->TestDefaults();
 
         FastIncrementalOLRCURRInfo *info = new FastIncrementalOLRCURRInfo;
         FastOLSCURRItemInfo *item1 = CreateFastOLRCurrItemInfo("SMB1", "TRADING001", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "ENTRYID001");
@@ -1253,7 +1268,8 @@ public:
     }
 
     void Test_Clear_Curr() {
-        this->fcc->OrderCurr()->Clear();
+        this->Clear();
+        this->TestDefaults();
 
         FastIncrementalOLRCURRInfo *info = new FastIncrementalOLRCURRInfo;
         FastOLSCURRItemInfo *item1 = CreateFastOLRCurrItemInfo("SBM1", "TRADING001", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "ENTRYID001");
@@ -1269,7 +1285,7 @@ public:
 
         this->fcc->OnIncrementalRefresh_OLR_CURR(info);
 
-        this->fcc->OrderCurr()->Clear();
+        this->Clear();
         if(this->fcc->OrderCurr()->UsedItemCount() != 0)
             throw;
 
@@ -1279,7 +1295,8 @@ public:
     }
 
     void Test_OnFullRefresh_OLS_CURR() {
-        this->fcc->OrderCurr()->Clear();
+        this->Clear();
+        this->TestDefaults();
 
         FastIncrementalOLRCURRInfo *info = new FastIncrementalOLRCURRInfo;
         FastOLSCURRItemInfo *item1 = CreateFastOLRCurrItemInfo("SBM1", "TRADING001", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "ENTRYID001");
@@ -1332,7 +1349,8 @@ public:
     }
 
     void Test_OnIncrementalRefresh_OLR_CURR_Add_SellQuotes() {
-        this->fcc->OrderCurr()->Clear();
+        this->Clear();
+        this->TestDefaults();
 
         FastIncrementalOLRCURRInfo *info = new FastIncrementalOLRCURRInfo;
 
@@ -1490,7 +1508,8 @@ public:
     }
 
     void Test_OnIncrementalRefresh_OLR_CURR_Remove_SellQuotes() {
-        this->fcc->OrderCurr()->Clear();
+        this->Clear();
+        this->TestDefaults();
 
         FastIncrementalOLRCURRInfo *info = new FastIncrementalOLRCURRInfo;
         FastOLSCURRItemInfo *item1 = CreateFastOLRCurrItemInfo("SMB1", "TRADING001", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "ENTRYID001");
@@ -1573,7 +1592,8 @@ public:
     }
 
     void Test_OnIncrementalRefresh_OLR_CURR_Change_SellQuotes() {
-        this->fcc->OrderCurr()->Clear();
+        this->Clear();
+        this->TestDefaults();
 
         FastIncrementalOLRCURRInfo *info = new FastIncrementalOLRCURRInfo;
         FastOLSCURRItemInfo *item1 = CreateFastOLRCurrItemInfo("SMB1", "TRADING001", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "ENTRYID001");
@@ -1638,7 +1658,8 @@ public:
     }
 
     void Test_Clear_Curr_SellQuotes() {
-        this->fcc->OrderCurr()->Clear();
+        this->Clear();
+        this->TestDefaults();
 
         FastIncrementalOLRCURRInfo *info = new FastIncrementalOLRCURRInfo;
         FastOLSCURRItemInfo *item1 = CreateFastOLRCurrItemInfo("SBM1", "TRADING001", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "ENTRYID001");
@@ -1654,7 +1675,7 @@ public:
 
         this->fcc->OnIncrementalRefresh_OLR_CURR(info);
 
-        this->fcc->OrderCurr()->Clear();
+        this->Clear();
         if(this->fcc->OrderCurr()->UsedItemCount() != 0)
             throw;
 
@@ -1664,7 +1685,8 @@ public:
     }
 
     void Test_OnFullRefresh_OLS_CURR_SellQuotes() {
-        this->fcc->OrderCurr()->Clear();
+        this->Clear();
+        this->TestDefaults();
 
         FastIncrementalOLRCURRInfo *info = new FastIncrementalOLRCURRInfo;
         FastOLSCURRItemInfo *item1 = CreateFastOLRCurrItemInfo("SBM1", "TRADING001", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "ENTRYID001");
@@ -1781,8 +1803,20 @@ public:
         printf("Test_OnFullRefresh_OLS_FOND_SellQuotes\n");
         Test_OnFullRefresh_OLS_FOND_SellQuotes();
     }
+
+    void TestDefaults() {
+        if(this->fcf->OrderFond()->SymbolsCount() != 0)
+            throw;
+        if(this->fcf->OrderFond()->TradingSessionsCount() != 0)
+            throw;
+        if(this->fcc->OrderCurr()->SymbolsCount() != 0)
+            throw;
+        if(this->fcc->OrderCurr()->TradingSessionsCount() != 0)
+            throw;
+    }
     
     void Test() {
+        TestDefaults();
         Test_OLR_FOND();
         Test_OLR_CURR();
     }

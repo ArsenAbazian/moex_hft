@@ -187,6 +187,8 @@ public:
                 this->m_table[i][j] = new TableItemClassName();
             }
         };
+        this->m_symbolsCount = 0;
+        this->m_tradingSessionsCount = 0;
         this->m_usedItems = new PointerList<TableItemClassName>(MAX_SYMBOLS_COUNT * MAX_TRADING_SESSIONS_COUNT + 10);
     }
     ~HashTable() {
@@ -215,6 +217,8 @@ public:
     }
 
     inline void Clear() {
+        this->m_symbolsCount = 0;
+        this->m_tradingSessionsCount = 0;
         if(this->m_usedItems->Count() == 0)
             return;
         LinkedPointer<TableItemClassName> *node = this->m_usedItems->Start();
@@ -227,8 +231,6 @@ public:
             node = this->m_usedItems->Next(node);
         }
         this->m_usedItems->Clear();
-        this->m_symbolsCount = 0;
-        this->m_tradingSessionsCount = 0;
     }
 
     inline LinkedPointer<TableItemClassName>* GetUsedItem(TableItemClassName *item) {

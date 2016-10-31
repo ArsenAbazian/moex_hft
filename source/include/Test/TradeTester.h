@@ -146,9 +146,16 @@ public:
 
         return info;
     }
-    
-    void Test_OnIncrementalRefresh_TLR_FOND_Add() {
+
+    void Clear() {
         this->fcf->TradeFond()->Clear();
+        this->fcc->TradeCurr()->Clear();
+    }
+
+    void Test_OnIncrementalRefresh_TLR_FOND_Add() {
+        this->Clear();
+        this->TestDefaults();
+
         FastIncrementalTLRFONDInfo *info = new FastIncrementalTLRFONDInfo;
 
         FastTLSFONDItemInfo *item1 = CreateFastTLRFondItemInfo("SMB1", "TRADING001", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "ENTRYID001");
@@ -309,7 +316,8 @@ public:
     }
 
     void Test_Clear() {
-        this->fcf->TradeFond()->Clear();
+        this->Clear();
+        this->TestDefaults();
 
         FastIncrementalTLRFONDInfo *info = new FastIncrementalTLRFONDInfo;
         FastTLSFONDItemInfo *item1 = CreateFastTLRFondItemInfo("SBM1", "TRADING001", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "ENTRYID001");
@@ -325,7 +333,7 @@ public:
 
         this->fcf->OnIncrementalRefresh_TLR_FOND(info);
 
-        this->fcf->TradeFond()->Clear();
+        this->Clear();
         if(item1->Used || item2->Used || item3->Used || item4->Used)
             throw;
         if(item1->Allocator->Count() != 0 ||
@@ -342,7 +350,8 @@ public:
     }
 
     void Test_OnFullRefresh_TLS_FOND() {
-        this->fcf->TradeFond()->Clear();
+        this->Clear();
+        this->TestDefaults();
 
         FastIncrementalTLRFONDInfo *info = new FastIncrementalTLRFONDInfo;
         FastTLSFONDItemInfo *item1 = CreateFastTLRFondItemInfo("SBM1", "TRADING001", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "ENTRYID001");
@@ -394,10 +403,9 @@ public:
             throw;
     }
 
-    /***********************************/
-
     void Test_OnIncrementalRefresh_TLR_CURR_Add() {
-        this->fcc->TradeCurr()->Clear();
+        this->Clear();
+        this->TestDefaults();
 
         FastIncrementalTLRCURRInfo *info = new FastIncrementalTLRCURRInfo;
 
@@ -557,7 +565,8 @@ public:
     }
 
     void Test_Clear_Curr() {
-        this->fcc->TradeCurr()->Clear();
+        this->Clear();
+        this->TestDefaults();
 
         FastIncrementalTLRCURRInfo *info = new FastIncrementalTLRCURRInfo;
         FastTLSCURRItemInfo *item1 = CreateFastTLRCurrItemInfo("SBM1", "TRADING001", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "ENTRYID001");
@@ -573,7 +582,7 @@ public:
 
         this->fcc->OnIncrementalRefresh_TLR_CURR(info);
 
-        this->fcc->TradeCurr()->Clear();
+        this->Clear();
         if(this->fcc->TradeCurr()->UsedItemCount() != 0)
             throw;
 
@@ -583,7 +592,8 @@ public:
     }
 
     void Test_OnFullRefresh_TLS_CURR() {
-        this->fcc->TradeCurr()->Clear();
+        this->Clear();
+        this->TestDefaults();
 
         FastIncrementalTLRCURRInfo *info = new FastIncrementalTLRCURRInfo;
         FastTLSCURRItemInfo *item1 = CreateFastTLRCurrItemInfo("SBM1", "TRADING001", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "ENTRYID001");
@@ -663,7 +673,15 @@ public:
         Test_OnFullRefresh_TLS_FOND();
     }
 
+    void TestDefaults() {
+        if(this->fcf->TradeFond()->SymbolsCount() != 0)
+            throw;
+        if(this->fcc->TradeCurr()->TradingSessionsCount() != 0)
+            throw;
+    }
+
     void Test() {
+        TestDefaults();
         Test_TLR_FOND();
         Test_TLR_CURR();
     }

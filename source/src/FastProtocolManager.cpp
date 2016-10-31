@@ -314,8 +314,10 @@ void FastProtocolManager::PrintLogon(FastLogonInfo *info) {
 	PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 	PrintUInt64("SendingTime", info->SendingTime, 1);
 	PrintInt32("HeartBtInt", info->HeartBtInt, 1);
-	PrintString("Username", info->Username, info->UsernameLength, 1);
-	PrintString("Password", info->Password, info->PasswordLength, 1);
+	if(info->AllowUsername)
+		PrintString("Username", info->Username, info->UsernameLength, 1);
+	if(info->AllowPassword)
+		PrintString("Password", info->Password, info->PasswordLength, 1);
 	PrintString("DefaultApplVerID", info->DefaultApplVerID, info->DefaultApplVerIDLength, 1);
 	printf("}\n");
 }
@@ -326,7 +328,8 @@ void FastProtocolManager::PrintLogout(FastLogoutInfo *info) {
 	PrintString("TargetCompID", info->TargetCompID, info->TargetCompIDLength, 1);
 	PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 	PrintUInt64("SendingTime", info->SendingTime, 1);
-	PrintString("Text", info->Text, info->TextLength, 1);
+	if(info->AllowText)
+		PrintString("Text", info->Text, info->TextLength, 1);
 	printf("}\n");
 }
 void FastProtocolManager::PrintGeneric(FastGenericInfo *info) {
@@ -335,16 +338,24 @@ void FastProtocolManager::PrintGeneric(FastGenericInfo *info) {
 	PrintInt32("TemplateId", 2103, 1);
 	PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 	PrintUInt64("SendingTime", info->SendingTime, 1);
-	PrintString("TradingSessionID", info->TradingSessionID, info->TradingSessionIDLength, 1);
+	if(info->AllowTradingSessionID)
+		PrintString("TradingSessionID", info->TradingSessionID, info->TradingSessionIDLength, 1);
 	PrintString("Symbol", info->Symbol, info->SymbolLength, 1);
-	PrintUInt32("LastMsgSeqNumProcessed", info->LastMsgSeqNumProcessed, 1);
+	if(info->AllowLastMsgSeqNumProcessed)
+		PrintUInt32("LastMsgSeqNumProcessed", info->LastMsgSeqNumProcessed, 1);
 	PrintInt32("RptSeq", info->RptSeq, 1);
-	PrintUInt32("LastFragment", info->LastFragment, 1);
-	PrintUInt32("RouteFirst", info->RouteFirst, 1);
-	PrintInt32("TradSesStatus", info->TradSesStatus, 1);
-	PrintInt32("MDSecurityTradingStatus", info->MDSecurityTradingStatus, 1);
-	PrintUInt32("AuctionIndicator", info->AuctionIndicator, 1);
-	PrintDecimal("NetChgPrevDay", &(info->NetChgPrevDay), 1);
+	if(info->AllowLastFragment)
+		PrintUInt32("LastFragment", info->LastFragment, 1);
+	if(info->AllowRouteFirst)
+		PrintUInt32("RouteFirst", info->RouteFirst, 1);
+	if(info->AllowTradSesStatus)
+		PrintInt32("TradSesStatus", info->TradSesStatus, 1);
+	if(info->AllowMDSecurityTradingStatus)
+		PrintInt32("MDSecurityTradingStatus", info->MDSecurityTradingStatus, 1);
+	if(info->AllowAuctionIndicator)
+		PrintUInt32("AuctionIndicator", info->AuctionIndicator, 1);
+	if(info->AllowNetChgPrevDay)
+		PrintDecimal("NetChgPrevDay", &(info->NetChgPrevDay), 1);
 	PrintInt32("GroupMDEntriesCount", info->GroupMDEntriesCount, 1);
 
 	FastGenericItemInfo* gmdeItemInfo = NULL;
@@ -352,48 +363,90 @@ void FastProtocolManager::PrintGeneric(FastGenericInfo *info) {
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 		gmdeItemInfo = info->GroupMDEntries[i];
 		PrintItemBegin("item", i, 1);
-		PrintString("MDEntryType", gmdeItemInfo->MDEntryType, gmdeItemInfo->MDEntryTypeLength, 2);
-		PrintString("MDEntryID", gmdeItemInfo->MDEntryID, gmdeItemInfo->MDEntryIDLength, 2);
-		PrintUInt32("MDEntryDate", gmdeItemInfo->MDEntryDate, 2);
-		PrintUInt32("MDEntryTime", gmdeItemInfo->MDEntryTime, 2);
-		PrintUInt32("OrigTime", gmdeItemInfo->OrigTime, 2);
-		PrintDecimal("MDEntryPx", &(gmdeItemInfo->MDEntryPx), 2);
-		PrintDecimal("MDEntrySize", &(gmdeItemInfo->MDEntrySize), 2);
-		PrintString("QuoteCondition", gmdeItemInfo->QuoteCondition, gmdeItemInfo->QuoteConditionLength, 2);
-		PrintString("TradeCondition", gmdeItemInfo->TradeCondition, gmdeItemInfo->TradeConditionLength, 2);
-		PrintString("OpenCloseSettlFlag", gmdeItemInfo->OpenCloseSettlFlag, gmdeItemInfo->OpenCloseSettlFlagLength, 2);
-		PrintString("OrdType", gmdeItemInfo->OrdType, gmdeItemInfo->OrdTypeLength, 2);
-		PrintUInt32("EffectiveTime", gmdeItemInfo->EffectiveTime, 2);
-		PrintUInt32("StartTime", gmdeItemInfo->StartTime, 2);
-		PrintDecimal("AccruedInterestAmt", &(gmdeItemInfo->AccruedInterestAmt), 2);
-		PrintDecimal("ChgFromWAPrice", &(gmdeItemInfo->ChgFromWAPrice), 2);
-		PrintDecimal("ChgOpenInterest", &(gmdeItemInfo->ChgOpenInterest), 2);
-		PrintDecimal("BidMarketSize", &(gmdeItemInfo->BidMarketSize), 2);
-		PrintDecimal("AskMarketSize", &(gmdeItemInfo->AskMarketSize), 2);
-		PrintInt32("TotalNumOfTrades", gmdeItemInfo->TotalNumOfTrades, 2);
-		PrintDecimal("TradeValue", &(gmdeItemInfo->TradeValue), 2);
-		PrintDecimal("Yield", &(gmdeItemInfo->Yield), 2);
-		PrintDecimal("TotalVolume", &(gmdeItemInfo->TotalVolume), 2);
-		PrintInt32("OfferNbOr", gmdeItemInfo->OfferNbOr, 2);
-		PrintInt32("BidNbOr", gmdeItemInfo->BidNbOr, 2);
-		PrintDecimal("ChgFromSettlmnt", &(gmdeItemInfo->ChgFromSettlmnt), 2);
-		PrintUInt32("SettlDate", gmdeItemInfo->SettlDate, 2);
-		PrintString("SettleType", gmdeItemInfo->SettleType, gmdeItemInfo->SettleTypeLength, 2);
-		PrintInt32("SumQtyOfBest", gmdeItemInfo->SumQtyOfBest, 2);
-		PrintString("OrderSide", gmdeItemInfo->OrderSide, gmdeItemInfo->OrderSideLength, 2);
-		PrintString("OrderStatus", gmdeItemInfo->OrderStatus, gmdeItemInfo->OrderStatusLength, 2);
-		PrintDecimal("MinCurrPx", &(gmdeItemInfo->MinCurrPx), 2);
-		PrintUInt32("MinCurrPxChgTime", gmdeItemInfo->MinCurrPxChgTime, 2);
-		PrintUInt32("VolumeIndicator", gmdeItemInfo->VolumeIndicator, 2);
-		PrintDecimal("Price", &(gmdeItemInfo->Price), 2);
-		PrintInt32("PriceType", gmdeItemInfo->PriceType, 2);
-		PrintDecimal("NominalValue", &(gmdeItemInfo->NominalValue), 2);
-		PrintDecimal("RepoToPx", &(gmdeItemInfo->RepoToPx), 2);
-		PrintDecimal("BuyBackPx", &(gmdeItemInfo->BuyBackPx), 2);
-		PrintUInt32("BuyBackDate", gmdeItemInfo->BuyBackDate, 2);
-		PrintString("DealNumber", gmdeItemInfo->DealNumber, gmdeItemInfo->DealNumberLength, 2);
-		PrintString("CXFlag", gmdeItemInfo->CXFlag, gmdeItemInfo->CXFlagLength, 2);
-		PrintString("TradingSessionSubID", gmdeItemInfo->TradingSessionSubID, gmdeItemInfo->TradingSessionSubIDLength, 2);
+		if(gmdeItemInfo->AllowMDEntryType)
+			PrintString("MDEntryType", gmdeItemInfo->MDEntryType, gmdeItemInfo->MDEntryTypeLength, 2);
+		if(gmdeItemInfo->AllowMDEntryID)
+			PrintString("MDEntryID", gmdeItemInfo->MDEntryID, gmdeItemInfo->MDEntryIDLength, 2);
+		if(gmdeItemInfo->AllowMDEntryDate)
+			PrintUInt32("MDEntryDate", gmdeItemInfo->MDEntryDate, 2);
+		if(gmdeItemInfo->AllowMDEntryTime)
+			PrintUInt32("MDEntryTime", gmdeItemInfo->MDEntryTime, 2);
+		if(gmdeItemInfo->AllowOrigTime)
+			PrintUInt32("OrigTime", gmdeItemInfo->OrigTime, 2);
+		if(gmdeItemInfo->AllowMDEntryPx)
+			PrintDecimal("MDEntryPx", &(gmdeItemInfo->MDEntryPx), 2);
+		if(gmdeItemInfo->AllowMDEntrySize)
+			PrintDecimal("MDEntrySize", &(gmdeItemInfo->MDEntrySize), 2);
+		if(gmdeItemInfo->AllowQuoteCondition)
+			PrintString("QuoteCondition", gmdeItemInfo->QuoteCondition, gmdeItemInfo->QuoteConditionLength, 2);
+		if(gmdeItemInfo->AllowTradeCondition)
+			PrintString("TradeCondition", gmdeItemInfo->TradeCondition, gmdeItemInfo->TradeConditionLength, 2);
+		if(gmdeItemInfo->AllowOpenCloseSettlFlag)
+			PrintString("OpenCloseSettlFlag", gmdeItemInfo->OpenCloseSettlFlag, gmdeItemInfo->OpenCloseSettlFlagLength, 2);
+		if(gmdeItemInfo->AllowOrdType)
+			PrintString("OrdType", gmdeItemInfo->OrdType, gmdeItemInfo->OrdTypeLength, 2);
+		if(gmdeItemInfo->AllowEffectiveTime)
+			PrintUInt32("EffectiveTime", gmdeItemInfo->EffectiveTime, 2);
+		if(gmdeItemInfo->AllowStartTime)
+			PrintUInt32("StartTime", gmdeItemInfo->StartTime, 2);
+		if(gmdeItemInfo->AllowAccruedInterestAmt)
+			PrintDecimal("AccruedInterestAmt", &(gmdeItemInfo->AccruedInterestAmt), 2);
+		if(gmdeItemInfo->AllowChgFromWAPrice)
+			PrintDecimal("ChgFromWAPrice", &(gmdeItemInfo->ChgFromWAPrice), 2);
+		if(gmdeItemInfo->AllowChgOpenInterest)
+			PrintDecimal("ChgOpenInterest", &(gmdeItemInfo->ChgOpenInterest), 2);
+		if(gmdeItemInfo->AllowBidMarketSize)
+			PrintDecimal("BidMarketSize", &(gmdeItemInfo->BidMarketSize), 2);
+		if(gmdeItemInfo->AllowAskMarketSize)
+			PrintDecimal("AskMarketSize", &(gmdeItemInfo->AskMarketSize), 2);
+		if(gmdeItemInfo->AllowTotalNumOfTrades)
+			PrintInt32("TotalNumOfTrades", gmdeItemInfo->TotalNumOfTrades, 2);
+		if(gmdeItemInfo->AllowTradeValue)
+			PrintDecimal("TradeValue", &(gmdeItemInfo->TradeValue), 2);
+		if(gmdeItemInfo->AllowYield)
+			PrintDecimal("Yield", &(gmdeItemInfo->Yield), 2);
+		if(gmdeItemInfo->AllowTotalVolume)
+			PrintDecimal("TotalVolume", &(gmdeItemInfo->TotalVolume), 2);
+		if(gmdeItemInfo->AllowOfferNbOr)
+			PrintInt32("OfferNbOr", gmdeItemInfo->OfferNbOr, 2);
+		if(gmdeItemInfo->AllowBidNbOr)
+			PrintInt32("BidNbOr", gmdeItemInfo->BidNbOr, 2);
+		if(gmdeItemInfo->AllowChgFromSettlmnt)
+			PrintDecimal("ChgFromSettlmnt", &(gmdeItemInfo->ChgFromSettlmnt), 2);
+		if(gmdeItemInfo->AllowSettlDate)
+			PrintUInt32("SettlDate", gmdeItemInfo->SettlDate, 2);
+		if(gmdeItemInfo->AllowSettleType)
+			PrintString("SettleType", gmdeItemInfo->SettleType, gmdeItemInfo->SettleTypeLength, 2);
+		if(gmdeItemInfo->AllowSumQtyOfBest)
+			PrintInt32("SumQtyOfBest", gmdeItemInfo->SumQtyOfBest, 2);
+		if(gmdeItemInfo->AllowOrderSide)
+			PrintString("OrderSide", gmdeItemInfo->OrderSide, gmdeItemInfo->OrderSideLength, 2);
+		if(gmdeItemInfo->AllowOrderStatus)
+			PrintString("OrderStatus", gmdeItemInfo->OrderStatus, gmdeItemInfo->OrderStatusLength, 2);
+		if(gmdeItemInfo->AllowMinCurrPx)
+			PrintDecimal("MinCurrPx", &(gmdeItemInfo->MinCurrPx), 2);
+		if(gmdeItemInfo->AllowMinCurrPxChgTime)
+			PrintUInt32("MinCurrPxChgTime", gmdeItemInfo->MinCurrPxChgTime, 2);
+		if(gmdeItemInfo->AllowVolumeIndicator)
+			PrintUInt32("VolumeIndicator", gmdeItemInfo->VolumeIndicator, 2);
+		if(gmdeItemInfo->AllowPrice)
+			PrintDecimal("Price", &(gmdeItemInfo->Price), 2);
+		if(gmdeItemInfo->AllowPriceType)
+			PrintInt32("PriceType", gmdeItemInfo->PriceType, 2);
+		if(gmdeItemInfo->AllowNominalValue)
+			PrintDecimal("NominalValue", &(gmdeItemInfo->NominalValue), 2);
+		if(gmdeItemInfo->AllowRepoToPx)
+			PrintDecimal("RepoToPx", &(gmdeItemInfo->RepoToPx), 2);
+		if(gmdeItemInfo->AllowBuyBackPx)
+			PrintDecimal("BuyBackPx", &(gmdeItemInfo->BuyBackPx), 2);
+		if(gmdeItemInfo->AllowBuyBackDate)
+			PrintUInt32("BuyBackDate", gmdeItemInfo->BuyBackDate, 2);
+		if(gmdeItemInfo->AllowDealNumber)
+			PrintString("DealNumber", gmdeItemInfo->DealNumber, gmdeItemInfo->DealNumberLength, 2);
+		if(gmdeItemInfo->AllowCXFlag)
+			PrintString("CXFlag", gmdeItemInfo->CXFlag, gmdeItemInfo->CXFlagLength, 2);
+		if(gmdeItemInfo->AllowTradingSessionSubID)
+			PrintString("TradingSessionSubID", gmdeItemInfo->TradingSessionSubID, gmdeItemInfo->TradingSessionSubIDLength, 2);
 		PrintItemEnd(1);
 	}
 
@@ -412,53 +465,100 @@ void FastProtocolManager::PrintIncrementalGeneric(FastIncrementalGenericInfo *in
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 		gmdeItemInfo = info->GroupMDEntries[i];
 		PrintItemBegin("item", i, 1);
-		PrintUInt32("MDUpdateAction", gmdeItemInfo->MDUpdateAction, 2);
-		PrintString("MDEntryType", gmdeItemInfo->MDEntryType, gmdeItemInfo->MDEntryTypeLength, 2);
-		PrintString("MDEntryID", gmdeItemInfo->MDEntryID, gmdeItemInfo->MDEntryIDLength, 2);
-		PrintInt32("RptSeq", gmdeItemInfo->RptSeq, 2);
-		PrintUInt32("MDEntryDate", gmdeItemInfo->MDEntryDate, 2);
-		PrintUInt32("OrigTime", gmdeItemInfo->OrigTime, 2);
-		PrintUInt32("SettlDate", gmdeItemInfo->SettlDate, 2);
-		PrintString("SettleType", gmdeItemInfo->SettleType, gmdeItemInfo->SettleTypeLength, 2);
-		PrintUInt32("MDEntryTime", gmdeItemInfo->MDEntryTime, 2);
-		PrintUInt32("EffectiveTime", gmdeItemInfo->EffectiveTime, 2);
-		PrintUInt32("StartTime", gmdeItemInfo->StartTime, 2);
-		PrintString("Symbol", gmdeItemInfo->Symbol, gmdeItemInfo->SymbolLength, 2);
-		PrintDecimal("MDEntryPx", &(gmdeItemInfo->MDEntryPx), 2);
-		PrintDecimal("MDEntrySize", &(gmdeItemInfo->MDEntrySize), 2);
-		PrintString("QuoteCondition", gmdeItemInfo->QuoteCondition, gmdeItemInfo->QuoteConditionLength, 2);
-		PrintString("TradeCondition", gmdeItemInfo->TradeCondition, gmdeItemInfo->TradeConditionLength, 2);
-		PrintString("OpenCloseSettlFlag", gmdeItemInfo->OpenCloseSettlFlag, gmdeItemInfo->OpenCloseSettlFlagLength, 2);
-		PrintString("OrdType", gmdeItemInfo->OrdType, gmdeItemInfo->OrdTypeLength, 2);
-		PrintDecimal("NetChgPrevDay", &(gmdeItemInfo->NetChgPrevDay), 2);
-		PrintDecimal("AccruedInterestAmt", &(gmdeItemInfo->AccruedInterestAmt), 2);
-		PrintDecimal("ChgFromWAPrice", &(gmdeItemInfo->ChgFromWAPrice), 2);
-		PrintDecimal("ChgOpenInterest", &(gmdeItemInfo->ChgOpenInterest), 2);
-		PrintDecimal("BidMarketSize", &(gmdeItemInfo->BidMarketSize), 2);
-		PrintDecimal("AskMarketSize", &(gmdeItemInfo->AskMarketSize), 2);
-		PrintInt32("TotalNumOfTrades", gmdeItemInfo->TotalNumOfTrades, 2);
-		PrintDecimal("TradeValue", &(gmdeItemInfo->TradeValue), 2);
-		PrintDecimal("Yield", &(gmdeItemInfo->Yield), 2);
-		PrintDecimal("TotalVolume", &(gmdeItemInfo->TotalVolume), 2);
-		PrintInt32("OfferNbOr", gmdeItemInfo->OfferNbOr, 2);
-		PrintInt32("BidNbOr", gmdeItemInfo->BidNbOr, 2);
-		PrintDecimal("ChgFromSettlmnt", &(gmdeItemInfo->ChgFromSettlmnt), 2);
-		PrintInt32("SumQtyOfBest", gmdeItemInfo->SumQtyOfBest, 2);
-		PrintString("OrderSide", gmdeItemInfo->OrderSide, gmdeItemInfo->OrderSideLength, 2);
-		PrintString("OrderStatus", gmdeItemInfo->OrderStatus, gmdeItemInfo->OrderStatusLength, 2);
-		PrintDecimal("MinCurrPx", &(gmdeItemInfo->MinCurrPx), 2);
-		PrintUInt32("MinCurrPxChgTime", gmdeItemInfo->MinCurrPxChgTime, 2);
-		PrintUInt32("VolumeIndicator", gmdeItemInfo->VolumeIndicator, 2);
-		PrintDecimal("Price", &(gmdeItemInfo->Price), 2);
-		PrintInt32("PriceType", gmdeItemInfo->PriceType, 2);
-		PrintDecimal("NominalValue", &(gmdeItemInfo->NominalValue), 2);
-		PrintDecimal("RepoToPx", &(gmdeItemInfo->RepoToPx), 2);
-		PrintDecimal("BuyBackPx", &(gmdeItemInfo->BuyBackPx), 2);
-		PrintUInt32("BuyBackDate", gmdeItemInfo->BuyBackDate, 2);
-		PrintString("DealNumber", gmdeItemInfo->DealNumber, gmdeItemInfo->DealNumberLength, 2);
-		PrintString("CXFlag", gmdeItemInfo->CXFlag, gmdeItemInfo->CXFlagLength, 2);
-		PrintString("TradingSessionID", gmdeItemInfo->TradingSessionID, gmdeItemInfo->TradingSessionIDLength, 2);
-		PrintString("TradingSessionSubID", gmdeItemInfo->TradingSessionSubID, gmdeItemInfo->TradingSessionSubIDLength, 2);
+		if(gmdeItemInfo->AllowMDUpdateAction)
+			PrintUInt32("MDUpdateAction", gmdeItemInfo->MDUpdateAction, 2);
+		if(gmdeItemInfo->AllowMDEntryType)
+			PrintString("MDEntryType", gmdeItemInfo->MDEntryType, gmdeItemInfo->MDEntryTypeLength, 2);
+		if(gmdeItemInfo->AllowMDEntryID)
+			PrintString("MDEntryID", gmdeItemInfo->MDEntryID, gmdeItemInfo->MDEntryIDLength, 2);
+		if(gmdeItemInfo->AllowRptSeq)
+			PrintInt32("RptSeq", gmdeItemInfo->RptSeq, 2);
+		if(gmdeItemInfo->AllowMDEntryDate)
+			PrintUInt32("MDEntryDate", gmdeItemInfo->MDEntryDate, 2);
+		if(gmdeItemInfo->AllowOrigTime)
+			PrintUInt32("OrigTime", gmdeItemInfo->OrigTime, 2);
+		if(gmdeItemInfo->AllowSettlDate)
+			PrintUInt32("SettlDate", gmdeItemInfo->SettlDate, 2);
+		if(gmdeItemInfo->AllowSettleType)
+			PrintString("SettleType", gmdeItemInfo->SettleType, gmdeItemInfo->SettleTypeLength, 2);
+		if(gmdeItemInfo->AllowMDEntryTime)
+			PrintUInt32("MDEntryTime", gmdeItemInfo->MDEntryTime, 2);
+		if(gmdeItemInfo->AllowEffectiveTime)
+			PrintUInt32("EffectiveTime", gmdeItemInfo->EffectiveTime, 2);
+		if(gmdeItemInfo->AllowStartTime)
+			PrintUInt32("StartTime", gmdeItemInfo->StartTime, 2);
+		if(gmdeItemInfo->AllowSymbol)
+			PrintString("Symbol", gmdeItemInfo->Symbol, gmdeItemInfo->SymbolLength, 2);
+		if(gmdeItemInfo->AllowMDEntryPx)
+			PrintDecimal("MDEntryPx", &(gmdeItemInfo->MDEntryPx), 2);
+		if(gmdeItemInfo->AllowMDEntrySize)
+			PrintDecimal("MDEntrySize", &(gmdeItemInfo->MDEntrySize), 2);
+		if(gmdeItemInfo->AllowQuoteCondition)
+			PrintString("QuoteCondition", gmdeItemInfo->QuoteCondition, gmdeItemInfo->QuoteConditionLength, 2);
+		if(gmdeItemInfo->AllowTradeCondition)
+			PrintString("TradeCondition", gmdeItemInfo->TradeCondition, gmdeItemInfo->TradeConditionLength, 2);
+		if(gmdeItemInfo->AllowOpenCloseSettlFlag)
+			PrintString("OpenCloseSettlFlag", gmdeItemInfo->OpenCloseSettlFlag, gmdeItemInfo->OpenCloseSettlFlagLength, 2);
+		if(gmdeItemInfo->AllowOrdType)
+			PrintString("OrdType", gmdeItemInfo->OrdType, gmdeItemInfo->OrdTypeLength, 2);
+		if(gmdeItemInfo->AllowNetChgPrevDay)
+			PrintDecimal("NetChgPrevDay", &(gmdeItemInfo->NetChgPrevDay), 2);
+		if(gmdeItemInfo->AllowAccruedInterestAmt)
+			PrintDecimal("AccruedInterestAmt", &(gmdeItemInfo->AccruedInterestAmt), 2);
+		if(gmdeItemInfo->AllowChgFromWAPrice)
+			PrintDecimal("ChgFromWAPrice", &(gmdeItemInfo->ChgFromWAPrice), 2);
+		if(gmdeItemInfo->AllowChgOpenInterest)
+			PrintDecimal("ChgOpenInterest", &(gmdeItemInfo->ChgOpenInterest), 2);
+		if(gmdeItemInfo->AllowBidMarketSize)
+			PrintDecimal("BidMarketSize", &(gmdeItemInfo->BidMarketSize), 2);
+		if(gmdeItemInfo->AllowAskMarketSize)
+			PrintDecimal("AskMarketSize", &(gmdeItemInfo->AskMarketSize), 2);
+		if(gmdeItemInfo->AllowTotalNumOfTrades)
+			PrintInt32("TotalNumOfTrades", gmdeItemInfo->TotalNumOfTrades, 2);
+		if(gmdeItemInfo->AllowTradeValue)
+			PrintDecimal("TradeValue", &(gmdeItemInfo->TradeValue), 2);
+		if(gmdeItemInfo->AllowYield)
+			PrintDecimal("Yield", &(gmdeItemInfo->Yield), 2);
+		if(gmdeItemInfo->AllowTotalVolume)
+			PrintDecimal("TotalVolume", &(gmdeItemInfo->TotalVolume), 2);
+		if(gmdeItemInfo->AllowOfferNbOr)
+			PrintInt32("OfferNbOr", gmdeItemInfo->OfferNbOr, 2);
+		if(gmdeItemInfo->AllowBidNbOr)
+			PrintInt32("BidNbOr", gmdeItemInfo->BidNbOr, 2);
+		if(gmdeItemInfo->AllowChgFromSettlmnt)
+			PrintDecimal("ChgFromSettlmnt", &(gmdeItemInfo->ChgFromSettlmnt), 2);
+		if(gmdeItemInfo->AllowSumQtyOfBest)
+			PrintInt32("SumQtyOfBest", gmdeItemInfo->SumQtyOfBest, 2);
+		if(gmdeItemInfo->AllowOrderSide)
+			PrintString("OrderSide", gmdeItemInfo->OrderSide, gmdeItemInfo->OrderSideLength, 2);
+		if(gmdeItemInfo->AllowOrderStatus)
+			PrintString("OrderStatus", gmdeItemInfo->OrderStatus, gmdeItemInfo->OrderStatusLength, 2);
+		if(gmdeItemInfo->AllowMinCurrPx)
+			PrintDecimal("MinCurrPx", &(gmdeItemInfo->MinCurrPx), 2);
+		if(gmdeItemInfo->AllowMinCurrPxChgTime)
+			PrintUInt32("MinCurrPxChgTime", gmdeItemInfo->MinCurrPxChgTime, 2);
+		if(gmdeItemInfo->AllowVolumeIndicator)
+			PrintUInt32("VolumeIndicator", gmdeItemInfo->VolumeIndicator, 2);
+		if(gmdeItemInfo->AllowPrice)
+			PrintDecimal("Price", &(gmdeItemInfo->Price), 2);
+		if(gmdeItemInfo->AllowPriceType)
+			PrintInt32("PriceType", gmdeItemInfo->PriceType, 2);
+		if(gmdeItemInfo->AllowNominalValue)
+			PrintDecimal("NominalValue", &(gmdeItemInfo->NominalValue), 2);
+		if(gmdeItemInfo->AllowRepoToPx)
+			PrintDecimal("RepoToPx", &(gmdeItemInfo->RepoToPx), 2);
+		if(gmdeItemInfo->AllowBuyBackPx)
+			PrintDecimal("BuyBackPx", &(gmdeItemInfo->BuyBackPx), 2);
+		if(gmdeItemInfo->AllowBuyBackDate)
+			PrintUInt32("BuyBackDate", gmdeItemInfo->BuyBackDate, 2);
+		if(gmdeItemInfo->AllowDealNumber)
+			PrintString("DealNumber", gmdeItemInfo->DealNumber, gmdeItemInfo->DealNumberLength, 2);
+		if(gmdeItemInfo->AllowCXFlag)
+			PrintString("CXFlag", gmdeItemInfo->CXFlag, gmdeItemInfo->CXFlagLength, 2);
+		if(gmdeItemInfo->AllowTradingSessionID)
+			PrintString("TradingSessionID", gmdeItemInfo->TradingSessionID, gmdeItemInfo->TradingSessionIDLength, 2);
+		if(gmdeItemInfo->AllowTradingSessionSubID)
+			PrintString("TradingSessionSubID", gmdeItemInfo->TradingSessionSubID, gmdeItemInfo->TradingSessionSubIDLength, 2);
 		PrintItemEnd(1);
 	}
 
@@ -470,15 +570,22 @@ void FastProtocolManager::PrintOLSFOND(FastOLSFONDInfo *info) {
 	PrintInt32("TemplateId", 2410, 1);
 	PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 	PrintUInt64("SendingTime", info->SendingTime, 1);
-	PrintUInt32("LastMsgSeqNumProcessed", info->LastMsgSeqNumProcessed, 1);
+	if(info->AllowLastMsgSeqNumProcessed)
+		PrintUInt32("LastMsgSeqNumProcessed", info->LastMsgSeqNumProcessed, 1);
 	PrintInt32("RptSeq", info->RptSeq, 1);
-	PrintUInt32("LastFragment", info->LastFragment, 1);
-	PrintUInt32("RouteFirst", info->RouteFirst, 1);
-	PrintInt32("TradSesStatus", info->TradSesStatus, 1);
-	PrintString("TradingSessionID", info->TradingSessionID, info->TradingSessionIDLength, 1);
+	if(info->AllowLastFragment)
+		PrintUInt32("LastFragment", info->LastFragment, 1);
+	if(info->AllowRouteFirst)
+		PrintUInt32("RouteFirst", info->RouteFirst, 1);
+	if(info->AllowTradSesStatus)
+		PrintInt32("TradSesStatus", info->TradSesStatus, 1);
+	if(info->AllowTradingSessionID)
+		PrintString("TradingSessionID", info->TradingSessionID, info->TradingSessionIDLength, 1);
 	PrintString("Symbol", info->Symbol, info->SymbolLength, 1);
-	PrintInt32("MDSecurityTradingStatus", info->MDSecurityTradingStatus, 1);
-	PrintUInt32("AuctionIndicator", info->AuctionIndicator, 1);
+	if(info->AllowMDSecurityTradingStatus)
+		PrintInt32("MDSecurityTradingStatus", info->MDSecurityTradingStatus, 1);
+	if(info->AllowAuctionIndicator)
+		PrintUInt32("AuctionIndicator", info->AuctionIndicator, 1);
 	PrintInt32("GroupMDEntriesCount", info->GroupMDEntriesCount, 1);
 
 	FastOLSFONDItemInfo* gmdeItemInfo = NULL;
@@ -486,19 +593,32 @@ void FastProtocolManager::PrintOLSFOND(FastOLSFONDInfo *info) {
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 		gmdeItemInfo = info->GroupMDEntries[i];
 		PrintItemBegin("item", i, 1);
-		PrintString("MDEntryType", gmdeItemInfo->MDEntryType, gmdeItemInfo->MDEntryTypeLength, 2);
-		PrintString("MDEntryID", gmdeItemInfo->MDEntryID, gmdeItemInfo->MDEntryIDLength, 2);
-		PrintUInt32("MDEntryDate", gmdeItemInfo->MDEntryDate, 2);
-		PrintUInt32("MDEntryTime", gmdeItemInfo->MDEntryTime, 2);
-		PrintUInt32("OrigTime", gmdeItemInfo->OrigTime, 2);
-		PrintDecimal("MDEntryPx", &(gmdeItemInfo->MDEntryPx), 2);
-		PrintDecimal("MDEntrySize", &(gmdeItemInfo->MDEntrySize), 2);
-		PrintString("DealNumber", gmdeItemInfo->DealNumber, gmdeItemInfo->DealNumberLength, 2);
-		PrintDecimal("Yield", &(gmdeItemInfo->Yield), 2);
-		PrintString("OrderStatus", gmdeItemInfo->OrderStatus, gmdeItemInfo->OrderStatusLength, 2);
-		PrintString("OrdType", gmdeItemInfo->OrdType, gmdeItemInfo->OrdTypeLength, 2);
-		PrintDecimal("TotalVolume", &(gmdeItemInfo->TotalVolume), 2);
-		PrintString("TradingSessionSubID", gmdeItemInfo->TradingSessionSubID, gmdeItemInfo->TradingSessionSubIDLength, 2);
+		if(gmdeItemInfo->AllowMDEntryType)
+			PrintString("MDEntryType", gmdeItemInfo->MDEntryType, gmdeItemInfo->MDEntryTypeLength, 2);
+		if(gmdeItemInfo->AllowMDEntryID)
+			PrintString("MDEntryID", gmdeItemInfo->MDEntryID, gmdeItemInfo->MDEntryIDLength, 2);
+		if(gmdeItemInfo->AllowMDEntryDate)
+			PrintUInt32("MDEntryDate", gmdeItemInfo->MDEntryDate, 2);
+		if(gmdeItemInfo->AllowMDEntryTime)
+			PrintUInt32("MDEntryTime", gmdeItemInfo->MDEntryTime, 2);
+		if(gmdeItemInfo->AllowOrigTime)
+			PrintUInt32("OrigTime", gmdeItemInfo->OrigTime, 2);
+		if(gmdeItemInfo->AllowMDEntryPx)
+			PrintDecimal("MDEntryPx", &(gmdeItemInfo->MDEntryPx), 2);
+		if(gmdeItemInfo->AllowMDEntrySize)
+			PrintDecimal("MDEntrySize", &(gmdeItemInfo->MDEntrySize), 2);
+		if(gmdeItemInfo->AllowDealNumber)
+			PrintString("DealNumber", gmdeItemInfo->DealNumber, gmdeItemInfo->DealNumberLength, 2);
+		if(gmdeItemInfo->AllowYield)
+			PrintDecimal("Yield", &(gmdeItemInfo->Yield), 2);
+		if(gmdeItemInfo->AllowOrderStatus)
+			PrintString("OrderStatus", gmdeItemInfo->OrderStatus, gmdeItemInfo->OrderStatusLength, 2);
+		if(gmdeItemInfo->AllowOrdType)
+			PrintString("OrdType", gmdeItemInfo->OrdType, gmdeItemInfo->OrdTypeLength, 2);
+		if(gmdeItemInfo->AllowTotalVolume)
+			PrintDecimal("TotalVolume", &(gmdeItemInfo->TotalVolume), 2);
+		if(gmdeItemInfo->AllowTradingSessionSubID)
+			PrintString("TradingSessionSubID", gmdeItemInfo->TradingSessionSubID, gmdeItemInfo->TradingSessionSubIDLength, 2);
 		PrintItemEnd(1);
 	}
 
@@ -510,14 +630,20 @@ void FastProtocolManager::PrintOLSCURR(FastOLSCURRInfo *info) {
 	PrintInt32("TemplateId", 3500, 1);
 	PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 	PrintUInt64("SendingTime", info->SendingTime, 1);
-	PrintUInt32("LastMsgSeqNumProcessed", info->LastMsgSeqNumProcessed, 1);
+	if(info->AllowLastMsgSeqNumProcessed)
+		PrintUInt32("LastMsgSeqNumProcessed", info->LastMsgSeqNumProcessed, 1);
 	PrintInt32("RptSeq", info->RptSeq, 1);
-	PrintUInt32("LastFragment", info->LastFragment, 1);
-	PrintUInt32("RouteFirst", info->RouteFirst, 1);
-	PrintInt32("TradSesStatus", info->TradSesStatus, 1);
-	PrintString("TradingSessionID", info->TradingSessionID, info->TradingSessionIDLength, 1);
+	if(info->AllowLastFragment)
+		PrintUInt32("LastFragment", info->LastFragment, 1);
+	if(info->AllowRouteFirst)
+		PrintUInt32("RouteFirst", info->RouteFirst, 1);
+	if(info->AllowTradSesStatus)
+		PrintInt32("TradSesStatus", info->TradSesStatus, 1);
+	if(info->AllowTradingSessionID)
+		PrintString("TradingSessionID", info->TradingSessionID, info->TradingSessionIDLength, 1);
 	PrintString("Symbol", info->Symbol, info->SymbolLength, 1);
-	PrintInt32("MDSecurityTradingStatus", info->MDSecurityTradingStatus, 1);
+	if(info->AllowMDSecurityTradingStatus)
+		PrintInt32("MDSecurityTradingStatus", info->MDSecurityTradingStatus, 1);
 	PrintInt32("GroupMDEntriesCount", info->GroupMDEntriesCount, 1);
 
 	FastOLSCURRItemInfo* gmdeItemInfo = NULL;
@@ -525,16 +651,26 @@ void FastProtocolManager::PrintOLSCURR(FastOLSCURRInfo *info) {
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 		gmdeItemInfo = info->GroupMDEntries[i];
 		PrintItemBegin("item", i, 1);
-		PrintString("MDEntryType", gmdeItemInfo->MDEntryType, gmdeItemInfo->MDEntryTypeLength, 2);
-		PrintString("MDEntryID", gmdeItemInfo->MDEntryID, gmdeItemInfo->MDEntryIDLength, 2);
-		PrintUInt32("MDEntryDate", gmdeItemInfo->MDEntryDate, 2);
-		PrintUInt32("MDEntryTime", gmdeItemInfo->MDEntryTime, 2);
-		PrintUInt32("OrigTime", gmdeItemInfo->OrigTime, 2);
-		PrintDecimal("MDEntryPx", &(gmdeItemInfo->MDEntryPx), 2);
-		PrintDecimal("MDEntrySize", &(gmdeItemInfo->MDEntrySize), 2);
-		PrintString("DealNumber", gmdeItemInfo->DealNumber, gmdeItemInfo->DealNumberLength, 2);
-		PrintString("OrderStatus", gmdeItemInfo->OrderStatus, gmdeItemInfo->OrderStatusLength, 2);
-		PrintString("TradingSessionSubID", gmdeItemInfo->TradingSessionSubID, gmdeItemInfo->TradingSessionSubIDLength, 2);
+		if(gmdeItemInfo->AllowMDEntryType)
+			PrintString("MDEntryType", gmdeItemInfo->MDEntryType, gmdeItemInfo->MDEntryTypeLength, 2);
+		if(gmdeItemInfo->AllowMDEntryID)
+			PrintString("MDEntryID", gmdeItemInfo->MDEntryID, gmdeItemInfo->MDEntryIDLength, 2);
+		if(gmdeItemInfo->AllowMDEntryDate)
+			PrintUInt32("MDEntryDate", gmdeItemInfo->MDEntryDate, 2);
+		if(gmdeItemInfo->AllowMDEntryTime)
+			PrintUInt32("MDEntryTime", gmdeItemInfo->MDEntryTime, 2);
+		if(gmdeItemInfo->AllowOrigTime)
+			PrintUInt32("OrigTime", gmdeItemInfo->OrigTime, 2);
+		if(gmdeItemInfo->AllowMDEntryPx)
+			PrintDecimal("MDEntryPx", &(gmdeItemInfo->MDEntryPx), 2);
+		if(gmdeItemInfo->AllowMDEntrySize)
+			PrintDecimal("MDEntrySize", &(gmdeItemInfo->MDEntrySize), 2);
+		if(gmdeItemInfo->AllowDealNumber)
+			PrintString("DealNumber", gmdeItemInfo->DealNumber, gmdeItemInfo->DealNumberLength, 2);
+		if(gmdeItemInfo->AllowOrderStatus)
+			PrintString("OrderStatus", gmdeItemInfo->OrderStatus, gmdeItemInfo->OrderStatusLength, 2);
+		if(gmdeItemInfo->AllowTradingSessionSubID)
+			PrintString("TradingSessionSubID", gmdeItemInfo->TradingSessionSubID, gmdeItemInfo->TradingSessionSubIDLength, 2);
 		PrintItemEnd(1);
 	}
 
@@ -546,15 +682,22 @@ void FastProtocolManager::PrintTLSFOND(FastTLSFONDInfo *info) {
 	PrintInt32("TemplateId", 2411, 1);
 	PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 	PrintUInt64("SendingTime", info->SendingTime, 1);
-	PrintUInt32("LastMsgSeqNumProcessed", info->LastMsgSeqNumProcessed, 1);
+	if(info->AllowLastMsgSeqNumProcessed)
+		PrintUInt32("LastMsgSeqNumProcessed", info->LastMsgSeqNumProcessed, 1);
 	PrintInt32("RptSeq", info->RptSeq, 1);
-	PrintUInt32("LastFragment", info->LastFragment, 1);
-	PrintUInt32("RouteFirst", info->RouteFirst, 1);
-	PrintInt32("TradSesStatus", info->TradSesStatus, 1);
-	PrintString("TradingSessionID", info->TradingSessionID, info->TradingSessionIDLength, 1);
+	if(info->AllowLastFragment)
+		PrintUInt32("LastFragment", info->LastFragment, 1);
+	if(info->AllowRouteFirst)
+		PrintUInt32("RouteFirst", info->RouteFirst, 1);
+	if(info->AllowTradSesStatus)
+		PrintInt32("TradSesStatus", info->TradSesStatus, 1);
+	if(info->AllowTradingSessionID)
+		PrintString("TradingSessionID", info->TradingSessionID, info->TradingSessionIDLength, 1);
 	PrintString("Symbol", info->Symbol, info->SymbolLength, 1);
-	PrintInt32("MDSecurityTradingStatus", info->MDSecurityTradingStatus, 1);
-	PrintUInt32("AuctionIndicator", info->AuctionIndicator, 1);
+	if(info->AllowMDSecurityTradingStatus)
+		PrintInt32("MDSecurityTradingStatus", info->MDSecurityTradingStatus, 1);
+	if(info->AllowAuctionIndicator)
+		PrintUInt32("AuctionIndicator", info->AuctionIndicator, 1);
 	PrintInt32("GroupMDEntriesCount", info->GroupMDEntriesCount, 1);
 
 	FastTLSFONDItemInfo* gmdeItemInfo = NULL;
@@ -563,24 +706,42 @@ void FastProtocolManager::PrintTLSFOND(FastTLSFONDInfo *info) {
 		gmdeItemInfo = info->GroupMDEntries[i];
 		PrintItemBegin("item", i, 1);
 		PrintString("MDEntryType", gmdeItemInfo->MDEntryType, gmdeItemInfo->MDEntryTypeLength, 2);
-		PrintString("MDEntryID", gmdeItemInfo->MDEntryID, gmdeItemInfo->MDEntryIDLength, 2);
-		PrintUInt32("MDEntryDate", gmdeItemInfo->MDEntryDate, 2);
-		PrintUInt32("MDEntryTime", gmdeItemInfo->MDEntryTime, 2);
-		PrintUInt32("OrigTime", gmdeItemInfo->OrigTime, 2);
-		PrintString("OrderSide", gmdeItemInfo->OrderSide, gmdeItemInfo->OrderSideLength, 2);
-		PrintDecimal("MDEntryPx", &(gmdeItemInfo->MDEntryPx), 2);
-		PrintDecimal("MDEntrySize", &(gmdeItemInfo->MDEntrySize), 2);
-		PrintDecimal("AccruedInterestAmt", &(gmdeItemInfo->AccruedInterestAmt), 2);
-		PrintDecimal("TradeValue", &(gmdeItemInfo->TradeValue), 2);
-		PrintDecimal("Yield", &(gmdeItemInfo->Yield), 2);
-		PrintUInt32("SettlDate", gmdeItemInfo->SettlDate, 2);
-		PrintString("SettleType", gmdeItemInfo->SettleType, gmdeItemInfo->SettleTypeLength, 2);
-		PrintDecimal("Price", &(gmdeItemInfo->Price), 2);
-		PrintInt32("PriceType", gmdeItemInfo->PriceType, 2);
-		PrintDecimal("RepoToPx", &(gmdeItemInfo->RepoToPx), 2);
-		PrintDecimal("BuyBackPx", &(gmdeItemInfo->BuyBackPx), 2);
-		PrintUInt32("BuyBackDate", gmdeItemInfo->BuyBackDate, 2);
-		PrintString("TradingSessionSubID", gmdeItemInfo->TradingSessionSubID, gmdeItemInfo->TradingSessionSubIDLength, 2);
+		if(gmdeItemInfo->AllowMDEntryID)
+			PrintString("MDEntryID", gmdeItemInfo->MDEntryID, gmdeItemInfo->MDEntryIDLength, 2);
+		if(gmdeItemInfo->AllowMDEntryDate)
+			PrintUInt32("MDEntryDate", gmdeItemInfo->MDEntryDate, 2);
+		if(gmdeItemInfo->AllowMDEntryTime)
+			PrintUInt32("MDEntryTime", gmdeItemInfo->MDEntryTime, 2);
+		if(gmdeItemInfo->AllowOrigTime)
+			PrintUInt32("OrigTime", gmdeItemInfo->OrigTime, 2);
+		if(gmdeItemInfo->AllowOrderSide)
+			PrintString("OrderSide", gmdeItemInfo->OrderSide, gmdeItemInfo->OrderSideLength, 2);
+		if(gmdeItemInfo->AllowMDEntryPx)
+			PrintDecimal("MDEntryPx", &(gmdeItemInfo->MDEntryPx), 2);
+		if(gmdeItemInfo->AllowMDEntrySize)
+			PrintDecimal("MDEntrySize", &(gmdeItemInfo->MDEntrySize), 2);
+		if(gmdeItemInfo->AllowAccruedInterestAmt)
+			PrintDecimal("AccruedInterestAmt", &(gmdeItemInfo->AccruedInterestAmt), 2);
+		if(gmdeItemInfo->AllowTradeValue)
+			PrintDecimal("TradeValue", &(gmdeItemInfo->TradeValue), 2);
+		if(gmdeItemInfo->AllowYield)
+			PrintDecimal("Yield", &(gmdeItemInfo->Yield), 2);
+		if(gmdeItemInfo->AllowSettlDate)
+			PrintUInt32("SettlDate", gmdeItemInfo->SettlDate, 2);
+		if(gmdeItemInfo->AllowSettleType)
+			PrintString("SettleType", gmdeItemInfo->SettleType, gmdeItemInfo->SettleTypeLength, 2);
+		if(gmdeItemInfo->AllowPrice)
+			PrintDecimal("Price", &(gmdeItemInfo->Price), 2);
+		if(gmdeItemInfo->AllowPriceType)
+			PrintInt32("PriceType", gmdeItemInfo->PriceType, 2);
+		if(gmdeItemInfo->AllowRepoToPx)
+			PrintDecimal("RepoToPx", &(gmdeItemInfo->RepoToPx), 2);
+		if(gmdeItemInfo->AllowBuyBackPx)
+			PrintDecimal("BuyBackPx", &(gmdeItemInfo->BuyBackPx), 2);
+		if(gmdeItemInfo->AllowBuyBackDate)
+			PrintUInt32("BuyBackDate", gmdeItemInfo->BuyBackDate, 2);
+		if(gmdeItemInfo->AllowTradingSessionSubID)
+			PrintString("TradingSessionSubID", gmdeItemInfo->TradingSessionSubID, gmdeItemInfo->TradingSessionSubIDLength, 2);
 		PrintItemEnd(1);
 	}
 
@@ -592,14 +753,20 @@ void FastProtocolManager::PrintTLSCURR(FastTLSCURRInfo *info) {
 	PrintInt32("TemplateId", 3501, 1);
 	PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 	PrintUInt64("SendingTime", info->SendingTime, 1);
-	PrintUInt32("LastMsgSeqNumProcessed", info->LastMsgSeqNumProcessed, 1);
+	if(info->AllowLastMsgSeqNumProcessed)
+		PrintUInt32("LastMsgSeqNumProcessed", info->LastMsgSeqNumProcessed, 1);
 	PrintInt32("RptSeq", info->RptSeq, 1);
-	PrintUInt32("LastFragment", info->LastFragment, 1);
-	PrintUInt32("RouteFirst", info->RouteFirst, 1);
-	PrintInt32("TradSesStatus", info->TradSesStatus, 1);
-	PrintString("TradingSessionID", info->TradingSessionID, info->TradingSessionIDLength, 1);
+	if(info->AllowLastFragment)
+		PrintUInt32("LastFragment", info->LastFragment, 1);
+	if(info->AllowRouteFirst)
+		PrintUInt32("RouteFirst", info->RouteFirst, 1);
+	if(info->AllowTradSesStatus)
+		PrintInt32("TradSesStatus", info->TradSesStatus, 1);
+	if(info->AllowTradingSessionID)
+		PrintString("TradingSessionID", info->TradingSessionID, info->TradingSessionIDLength, 1);
 	PrintString("Symbol", info->Symbol, info->SymbolLength, 1);
-	PrintInt32("MDSecurityTradingStatus", info->MDSecurityTradingStatus, 1);
+	if(info->AllowMDSecurityTradingStatus)
+		PrintInt32("MDSecurityTradingStatus", info->MDSecurityTradingStatus, 1);
 	PrintInt32("GroupMDEntriesCount", info->GroupMDEntriesCount, 1);
 
 	FastTLSCURRItemInfo* gmdeItemInfo = NULL;
@@ -608,22 +775,38 @@ void FastProtocolManager::PrintTLSCURR(FastTLSCURRInfo *info) {
 		gmdeItemInfo = info->GroupMDEntries[i];
 		PrintItemBegin("item", i, 1);
 		PrintString("MDEntryType", gmdeItemInfo->MDEntryType, gmdeItemInfo->MDEntryTypeLength, 2);
-		PrintString("MDEntryID", gmdeItemInfo->MDEntryID, gmdeItemInfo->MDEntryIDLength, 2);
-		PrintUInt32("MDEntryDate", gmdeItemInfo->MDEntryDate, 2);
-		PrintUInt32("MDEntryTime", gmdeItemInfo->MDEntryTime, 2);
-		PrintUInt32("OrigTime", gmdeItemInfo->OrigTime, 2);
-		PrintString("OrderSide", gmdeItemInfo->OrderSide, gmdeItemInfo->OrderSideLength, 2);
-		PrintDecimal("MDEntryPx", &(gmdeItemInfo->MDEntryPx), 2);
-		PrintDecimal("MDEntrySize", &(gmdeItemInfo->MDEntrySize), 2);
-		PrintDecimal("TradeValue", &(gmdeItemInfo->TradeValue), 2);
-		PrintUInt32("SettlDate", gmdeItemInfo->SettlDate, 2);
-		PrintString("SettleType", gmdeItemInfo->SettleType, gmdeItemInfo->SettleTypeLength, 2);
-		PrintDecimal("Price", &(gmdeItemInfo->Price), 2);
-		PrintInt32("PriceType", gmdeItemInfo->PriceType, 2);
-		PrintDecimal("RepoToPx", &(gmdeItemInfo->RepoToPx), 2);
-		PrintDecimal("BuyBackPx", &(gmdeItemInfo->BuyBackPx), 2);
-		PrintUInt32("BuyBackDate", gmdeItemInfo->BuyBackDate, 2);
-		PrintString("TradingSessionSubID", gmdeItemInfo->TradingSessionSubID, gmdeItemInfo->TradingSessionSubIDLength, 2);
+		if(gmdeItemInfo->AllowMDEntryID)
+			PrintString("MDEntryID", gmdeItemInfo->MDEntryID, gmdeItemInfo->MDEntryIDLength, 2);
+		if(gmdeItemInfo->AllowMDEntryDate)
+			PrintUInt32("MDEntryDate", gmdeItemInfo->MDEntryDate, 2);
+		if(gmdeItemInfo->AllowMDEntryTime)
+			PrintUInt32("MDEntryTime", gmdeItemInfo->MDEntryTime, 2);
+		if(gmdeItemInfo->AllowOrigTime)
+			PrintUInt32("OrigTime", gmdeItemInfo->OrigTime, 2);
+		if(gmdeItemInfo->AllowOrderSide)
+			PrintString("OrderSide", gmdeItemInfo->OrderSide, gmdeItemInfo->OrderSideLength, 2);
+		if(gmdeItemInfo->AllowMDEntryPx)
+			PrintDecimal("MDEntryPx", &(gmdeItemInfo->MDEntryPx), 2);
+		if(gmdeItemInfo->AllowMDEntrySize)
+			PrintDecimal("MDEntrySize", &(gmdeItemInfo->MDEntrySize), 2);
+		if(gmdeItemInfo->AllowTradeValue)
+			PrintDecimal("TradeValue", &(gmdeItemInfo->TradeValue), 2);
+		if(gmdeItemInfo->AllowSettlDate)
+			PrintUInt32("SettlDate", gmdeItemInfo->SettlDate, 2);
+		if(gmdeItemInfo->AllowSettleType)
+			PrintString("SettleType", gmdeItemInfo->SettleType, gmdeItemInfo->SettleTypeLength, 2);
+		if(gmdeItemInfo->AllowPrice)
+			PrintDecimal("Price", &(gmdeItemInfo->Price), 2);
+		if(gmdeItemInfo->AllowPriceType)
+			PrintInt32("PriceType", gmdeItemInfo->PriceType, 2);
+		if(gmdeItemInfo->AllowRepoToPx)
+			PrintDecimal("RepoToPx", &(gmdeItemInfo->RepoToPx), 2);
+		if(gmdeItemInfo->AllowBuyBackPx)
+			PrintDecimal("BuyBackPx", &(gmdeItemInfo->BuyBackPx), 2);
+		if(gmdeItemInfo->AllowBuyBackDate)
+			PrintUInt32("BuyBackDate", gmdeItemInfo->BuyBackDate, 2);
+		if(gmdeItemInfo->AllowTradingSessionSubID)
+			PrintString("TradingSessionSubID", gmdeItemInfo->TradingSessionSubID, gmdeItemInfo->TradingSessionSubIDLength, 2);
 		PrintItemEnd(1);
 	}
 
@@ -635,15 +818,22 @@ void FastProtocolManager::PrintOBSFOND(FastOBSFONDInfo *info) {
 	PrintInt32("TemplateId", 2412, 1);
 	PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 	PrintUInt64("SendingTime", info->SendingTime, 1);
-	PrintUInt32("LastMsgSeqNumProcessed", info->LastMsgSeqNumProcessed, 1);
+	if(info->AllowLastMsgSeqNumProcessed)
+		PrintUInt32("LastMsgSeqNumProcessed", info->LastMsgSeqNumProcessed, 1);
 	PrintInt32("RptSeq", info->RptSeq, 1);
-	PrintInt32("TradSesStatus", info->TradSesStatus, 1);
-	PrintString("TradingSessionID", info->TradingSessionID, info->TradingSessionIDLength, 1);
+	if(info->AllowTradSesStatus)
+		PrintInt32("TradSesStatus", info->TradSesStatus, 1);
+	if(info->AllowTradingSessionID)
+		PrintString("TradingSessionID", info->TradingSessionID, info->TradingSessionIDLength, 1);
 	PrintString("Symbol", info->Symbol, info->SymbolLength, 1);
-	PrintUInt32("LastFragment", info->LastFragment, 1);
-	PrintUInt32("RouteFirst", info->RouteFirst, 1);
-	PrintInt32("MDSecurityTradingStatus", info->MDSecurityTradingStatus, 1);
-	PrintUInt32("AuctionIndicator", info->AuctionIndicator, 1);
+	if(info->AllowLastFragment)
+		PrintUInt32("LastFragment", info->LastFragment, 1);
+	if(info->AllowRouteFirst)
+		PrintUInt32("RouteFirst", info->RouteFirst, 1);
+	if(info->AllowMDSecurityTradingStatus)
+		PrintInt32("MDSecurityTradingStatus", info->MDSecurityTradingStatus, 1);
+	if(info->AllowAuctionIndicator)
+		PrintUInt32("AuctionIndicator", info->AuctionIndicator, 1);
 	PrintInt32("GroupMDEntriesCount", info->GroupMDEntriesCount, 1);
 
 	FastOBSFONDItemInfo* gmdeItemInfo = NULL;
@@ -651,16 +841,26 @@ void FastProtocolManager::PrintOBSFOND(FastOBSFONDInfo *info) {
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 		gmdeItemInfo = info->GroupMDEntries[i];
 		PrintItemBegin("item", i, 1);
-		PrintString("MDEntryType", gmdeItemInfo->MDEntryType, gmdeItemInfo->MDEntryTypeLength, 2);
-		PrintString("MDEntryID", gmdeItemInfo->MDEntryID, gmdeItemInfo->MDEntryIDLength, 2);
-		PrintDecimal("MDEntryPx", &(gmdeItemInfo->MDEntryPx), 2);
-		PrintDecimal("MDEntrySize", &(gmdeItemInfo->MDEntrySize), 2);
-		PrintUInt32("MDEntryTime", gmdeItemInfo->MDEntryTime, 2);
-		PrintUInt32("OrigTime", gmdeItemInfo->OrigTime, 2);
-		PrintDecimal("Yield", &(gmdeItemInfo->Yield), 2);
-		PrintUInt32("EffectiveTime", gmdeItemInfo->EffectiveTime, 2);
-		PrintDecimal("NominalValue", &(gmdeItemInfo->NominalValue), 2);
-		PrintString("TradingSessionSubID", gmdeItemInfo->TradingSessionSubID, gmdeItemInfo->TradingSessionSubIDLength, 2);
+		if(gmdeItemInfo->AllowMDEntryType)
+			PrintString("MDEntryType", gmdeItemInfo->MDEntryType, gmdeItemInfo->MDEntryTypeLength, 2);
+		if(gmdeItemInfo->AllowMDEntryID)
+			PrintString("MDEntryID", gmdeItemInfo->MDEntryID, gmdeItemInfo->MDEntryIDLength, 2);
+		if(gmdeItemInfo->AllowMDEntryPx)
+			PrintDecimal("MDEntryPx", &(gmdeItemInfo->MDEntryPx), 2);
+		if(gmdeItemInfo->AllowMDEntrySize)
+			PrintDecimal("MDEntrySize", &(gmdeItemInfo->MDEntrySize), 2);
+		if(gmdeItemInfo->AllowMDEntryTime)
+			PrintUInt32("MDEntryTime", gmdeItemInfo->MDEntryTime, 2);
+		if(gmdeItemInfo->AllowOrigTime)
+			PrintUInt32("OrigTime", gmdeItemInfo->OrigTime, 2);
+		if(gmdeItemInfo->AllowYield)
+			PrintDecimal("Yield", &(gmdeItemInfo->Yield), 2);
+		if(gmdeItemInfo->AllowEffectiveTime)
+			PrintUInt32("EffectiveTime", gmdeItemInfo->EffectiveTime, 2);
+		if(gmdeItemInfo->AllowNominalValue)
+			PrintDecimal("NominalValue", &(gmdeItemInfo->NominalValue), 2);
+		if(gmdeItemInfo->AllowTradingSessionSubID)
+			PrintString("TradingSessionSubID", gmdeItemInfo->TradingSessionSubID, gmdeItemInfo->TradingSessionSubIDLength, 2);
 		PrintItemEnd(1);
 	}
 
@@ -672,14 +872,20 @@ void FastProtocolManager::PrintOBSCURR(FastOBSCURRInfo *info) {
 	PrintInt32("TemplateId", 3502, 1);
 	PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 	PrintUInt64("SendingTime", info->SendingTime, 1);
-	PrintUInt32("LastMsgSeqNumProcessed", info->LastMsgSeqNumProcessed, 1);
+	if(info->AllowLastMsgSeqNumProcessed)
+		PrintUInt32("LastMsgSeqNumProcessed", info->LastMsgSeqNumProcessed, 1);
 	PrintInt32("RptSeq", info->RptSeq, 1);
-	PrintInt32("TradSesStatus", info->TradSesStatus, 1);
-	PrintString("TradingSessionID", info->TradingSessionID, info->TradingSessionIDLength, 1);
+	if(info->AllowTradSesStatus)
+		PrintInt32("TradSesStatus", info->TradSesStatus, 1);
+	if(info->AllowTradingSessionID)
+		PrintString("TradingSessionID", info->TradingSessionID, info->TradingSessionIDLength, 1);
 	PrintString("Symbol", info->Symbol, info->SymbolLength, 1);
-	PrintUInt32("LastFragment", info->LastFragment, 1);
-	PrintUInt32("RouteFirst", info->RouteFirst, 1);
-	PrintInt32("MDSecurityTradingStatus", info->MDSecurityTradingStatus, 1);
+	if(info->AllowLastFragment)
+		PrintUInt32("LastFragment", info->LastFragment, 1);
+	if(info->AllowRouteFirst)
+		PrintUInt32("RouteFirst", info->RouteFirst, 1);
+	if(info->AllowMDSecurityTradingStatus)
+		PrintInt32("MDSecurityTradingStatus", info->MDSecurityTradingStatus, 1);
 	PrintInt32("GroupMDEntriesCount", info->GroupMDEntriesCount, 1);
 
 	FastOBSCURRItemInfo* gmdeItemInfo = NULL;
@@ -687,13 +893,20 @@ void FastProtocolManager::PrintOBSCURR(FastOBSCURRInfo *info) {
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 		gmdeItemInfo = info->GroupMDEntries[i];
 		PrintItemBegin("item", i, 1);
-		PrintString("MDEntryType", gmdeItemInfo->MDEntryType, gmdeItemInfo->MDEntryTypeLength, 2);
-		PrintString("MDEntryID", gmdeItemInfo->MDEntryID, gmdeItemInfo->MDEntryIDLength, 2);
-		PrintDecimal("MDEntryPx", &(gmdeItemInfo->MDEntryPx), 2);
-		PrintDecimal("MDEntrySize", &(gmdeItemInfo->MDEntrySize), 2);
-		PrintUInt32("MDEntryTime", gmdeItemInfo->MDEntryTime, 2);
-		PrintUInt32("OrigTime", gmdeItemInfo->OrigTime, 2);
-		PrintString("TradingSessionSubID", gmdeItemInfo->TradingSessionSubID, gmdeItemInfo->TradingSessionSubIDLength, 2);
+		if(gmdeItemInfo->AllowMDEntryType)
+			PrintString("MDEntryType", gmdeItemInfo->MDEntryType, gmdeItemInfo->MDEntryTypeLength, 2);
+		if(gmdeItemInfo->AllowMDEntryID)
+			PrintString("MDEntryID", gmdeItemInfo->MDEntryID, gmdeItemInfo->MDEntryIDLength, 2);
+		if(gmdeItemInfo->AllowMDEntryPx)
+			PrintDecimal("MDEntryPx", &(gmdeItemInfo->MDEntryPx), 2);
+		if(gmdeItemInfo->AllowMDEntrySize)
+			PrintDecimal("MDEntrySize", &(gmdeItemInfo->MDEntrySize), 2);
+		if(gmdeItemInfo->AllowMDEntryTime)
+			PrintUInt32("MDEntryTime", gmdeItemInfo->MDEntryTime, 2);
+		if(gmdeItemInfo->AllowOrigTime)
+			PrintUInt32("OrigTime", gmdeItemInfo->OrigTime, 2);
+		if(gmdeItemInfo->AllowTradingSessionSubID)
+			PrintString("TradingSessionSubID", gmdeItemInfo->TradingSessionSubID, gmdeItemInfo->TradingSessionSubIDLength, 2);
 		PrintItemEnd(1);
 	}
 
@@ -712,39 +925,72 @@ void FastProtocolManager::PrintIncrementalMSRFOND(FastIncrementalMSRFONDInfo *in
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 		gmdeItemInfo = info->GroupMDEntries[i];
 		PrintItemBegin("item", i, 1);
-		PrintUInt32("MDUpdateAction", gmdeItemInfo->MDUpdateAction, 2);
-		PrintString("MDEntryType", gmdeItemInfo->MDEntryType, gmdeItemInfo->MDEntryTypeLength, 2);
-		PrintString("MDEntryID", gmdeItemInfo->MDEntryID, gmdeItemInfo->MDEntryIDLength, 2);
-		PrintString("Symbol", gmdeItemInfo->Symbol, gmdeItemInfo->SymbolLength, 2);
-		PrintInt32("RptSeq", gmdeItemInfo->RptSeq, 2);
-		PrintDecimal("MDEntryPx", &(gmdeItemInfo->MDEntryPx), 2);
-		PrintDecimal("MDEntrySize", &(gmdeItemInfo->MDEntrySize), 2);
-		PrintUInt32("MDEntryDate", gmdeItemInfo->MDEntryDate, 2);
-		PrintUInt32("MDEntryTime", gmdeItemInfo->MDEntryTime, 2);
-		PrintUInt32("StartTime", gmdeItemInfo->StartTime, 2);
-		PrintString("QuoteCondition", gmdeItemInfo->QuoteCondition, gmdeItemInfo->QuoteConditionLength, 2);
-		PrintString("TradeCondition", gmdeItemInfo->TradeCondition, gmdeItemInfo->TradeConditionLength, 2);
-		PrintString("OpenCloseSettlFlag", gmdeItemInfo->OpenCloseSettlFlag, gmdeItemInfo->OpenCloseSettlFlagLength, 2);
-		PrintDecimal("NetChgPrevDay", &(gmdeItemInfo->NetChgPrevDay), 2);
-		PrintDecimal("AccruedInterestAmt", &(gmdeItemInfo->AccruedInterestAmt), 2);
-		PrintDecimal("ChgFromWAPrice", &(gmdeItemInfo->ChgFromWAPrice), 2);
-		PrintDecimal("ChgOpenInterest", &(gmdeItemInfo->ChgOpenInterest), 2);
-		PrintDecimal("BidMarketSize", &(gmdeItemInfo->BidMarketSize), 2);
-		PrintDecimal("AskMarketSize", &(gmdeItemInfo->AskMarketSize), 2);
-		PrintInt32("TotalNumOfTrades", gmdeItemInfo->TotalNumOfTrades, 2);
-		PrintDecimal("TradeValue", &(gmdeItemInfo->TradeValue), 2);
-		PrintDecimal("Yield", &(gmdeItemInfo->Yield), 2);
-		PrintInt32("OfferNbOr", gmdeItemInfo->OfferNbOr, 2);
-		PrintInt32("BidNbOr", gmdeItemInfo->BidNbOr, 2);
-		PrintDecimal("ChgFromSettlmnt", &(gmdeItemInfo->ChgFromSettlmnt), 2);
-		PrintDecimal("MinCurrPx", &(gmdeItemInfo->MinCurrPx), 2);
-		PrintUInt32("MinCurrPxChgTime", gmdeItemInfo->MinCurrPxChgTime, 2);
-		PrintUInt32("VolumeIndicator", gmdeItemInfo->VolumeIndicator, 2);
-		PrintUInt32("SettlDate", gmdeItemInfo->SettlDate, 2);
-		PrintString("SettleType", gmdeItemInfo->SettleType, gmdeItemInfo->SettleTypeLength, 2);
-		PrintString("CXFlag", gmdeItemInfo->CXFlag, gmdeItemInfo->CXFlagLength, 2);
-		PrintString("TradingSessionID", gmdeItemInfo->TradingSessionID, gmdeItemInfo->TradingSessionIDLength, 2);
-		PrintString("TradingSessionSubID", gmdeItemInfo->TradingSessionSubID, gmdeItemInfo->TradingSessionSubIDLength, 2);
+		if(gmdeItemInfo->AllowMDUpdateAction)
+			PrintUInt32("MDUpdateAction", gmdeItemInfo->MDUpdateAction, 2);
+		if(gmdeItemInfo->AllowMDEntryType)
+			PrintString("MDEntryType", gmdeItemInfo->MDEntryType, gmdeItemInfo->MDEntryTypeLength, 2);
+		if(gmdeItemInfo->AllowMDEntryID)
+			PrintString("MDEntryID", gmdeItemInfo->MDEntryID, gmdeItemInfo->MDEntryIDLength, 2);
+		if(gmdeItemInfo->AllowSymbol)
+			PrintString("Symbol", gmdeItemInfo->Symbol, gmdeItemInfo->SymbolLength, 2);
+		if(gmdeItemInfo->AllowRptSeq)
+			PrintInt32("RptSeq", gmdeItemInfo->RptSeq, 2);
+		if(gmdeItemInfo->AllowMDEntryPx)
+			PrintDecimal("MDEntryPx", &(gmdeItemInfo->MDEntryPx), 2);
+		if(gmdeItemInfo->AllowMDEntrySize)
+			PrintDecimal("MDEntrySize", &(gmdeItemInfo->MDEntrySize), 2);
+		if(gmdeItemInfo->AllowMDEntryDate)
+			PrintUInt32("MDEntryDate", gmdeItemInfo->MDEntryDate, 2);
+		if(gmdeItemInfo->AllowMDEntryTime)
+			PrintUInt32("MDEntryTime", gmdeItemInfo->MDEntryTime, 2);
+		if(gmdeItemInfo->AllowStartTime)
+			PrintUInt32("StartTime", gmdeItemInfo->StartTime, 2);
+		if(gmdeItemInfo->AllowQuoteCondition)
+			PrintString("QuoteCondition", gmdeItemInfo->QuoteCondition, gmdeItemInfo->QuoteConditionLength, 2);
+		if(gmdeItemInfo->AllowTradeCondition)
+			PrintString("TradeCondition", gmdeItemInfo->TradeCondition, gmdeItemInfo->TradeConditionLength, 2);
+		if(gmdeItemInfo->AllowOpenCloseSettlFlag)
+			PrintString("OpenCloseSettlFlag", gmdeItemInfo->OpenCloseSettlFlag, gmdeItemInfo->OpenCloseSettlFlagLength, 2);
+		if(gmdeItemInfo->AllowNetChgPrevDay)
+			PrintDecimal("NetChgPrevDay", &(gmdeItemInfo->NetChgPrevDay), 2);
+		if(gmdeItemInfo->AllowAccruedInterestAmt)
+			PrintDecimal("AccruedInterestAmt", &(gmdeItemInfo->AccruedInterestAmt), 2);
+		if(gmdeItemInfo->AllowChgFromWAPrice)
+			PrintDecimal("ChgFromWAPrice", &(gmdeItemInfo->ChgFromWAPrice), 2);
+		if(gmdeItemInfo->AllowChgOpenInterest)
+			PrintDecimal("ChgOpenInterest", &(gmdeItemInfo->ChgOpenInterest), 2);
+		if(gmdeItemInfo->AllowBidMarketSize)
+			PrintDecimal("BidMarketSize", &(gmdeItemInfo->BidMarketSize), 2);
+		if(gmdeItemInfo->AllowAskMarketSize)
+			PrintDecimal("AskMarketSize", &(gmdeItemInfo->AskMarketSize), 2);
+		if(gmdeItemInfo->AllowTotalNumOfTrades)
+			PrintInt32("TotalNumOfTrades", gmdeItemInfo->TotalNumOfTrades, 2);
+		if(gmdeItemInfo->AllowTradeValue)
+			PrintDecimal("TradeValue", &(gmdeItemInfo->TradeValue), 2);
+		if(gmdeItemInfo->AllowYield)
+			PrintDecimal("Yield", &(gmdeItemInfo->Yield), 2);
+		if(gmdeItemInfo->AllowOfferNbOr)
+			PrintInt32("OfferNbOr", gmdeItemInfo->OfferNbOr, 2);
+		if(gmdeItemInfo->AllowBidNbOr)
+			PrintInt32("BidNbOr", gmdeItemInfo->BidNbOr, 2);
+		if(gmdeItemInfo->AllowChgFromSettlmnt)
+			PrintDecimal("ChgFromSettlmnt", &(gmdeItemInfo->ChgFromSettlmnt), 2);
+		if(gmdeItemInfo->AllowMinCurrPx)
+			PrintDecimal("MinCurrPx", &(gmdeItemInfo->MinCurrPx), 2);
+		if(gmdeItemInfo->AllowMinCurrPxChgTime)
+			PrintUInt32("MinCurrPxChgTime", gmdeItemInfo->MinCurrPxChgTime, 2);
+		if(gmdeItemInfo->AllowVolumeIndicator)
+			PrintUInt32("VolumeIndicator", gmdeItemInfo->VolumeIndicator, 2);
+		if(gmdeItemInfo->AllowSettlDate)
+			PrintUInt32("SettlDate", gmdeItemInfo->SettlDate, 2);
+		if(gmdeItemInfo->AllowSettleType)
+			PrintString("SettleType", gmdeItemInfo->SettleType, gmdeItemInfo->SettleTypeLength, 2);
+		if(gmdeItemInfo->AllowCXFlag)
+			PrintString("CXFlag", gmdeItemInfo->CXFlag, gmdeItemInfo->CXFlagLength, 2);
+		if(gmdeItemInfo->AllowTradingSessionID)
+			PrintString("TradingSessionID", gmdeItemInfo->TradingSessionID, gmdeItemInfo->TradingSessionIDLength, 2);
+		if(gmdeItemInfo->AllowTradingSessionSubID)
+			PrintString("TradingSessionSubID", gmdeItemInfo->TradingSessionSubID, gmdeItemInfo->TradingSessionSubIDLength, 2);
 		PrintItemEnd(1);
 	}
 
@@ -763,31 +1009,56 @@ void FastProtocolManager::PrintIncrementalMSRCURR(FastIncrementalMSRCURRInfo *in
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 		gmdeItemInfo = info->GroupMDEntries[i];
 		PrintItemBegin("item", i, 1);
-		PrintUInt32("MDUpdateAction", gmdeItemInfo->MDUpdateAction, 2);
-		PrintString("MDEntryType", gmdeItemInfo->MDEntryType, gmdeItemInfo->MDEntryTypeLength, 2);
-		PrintString("MDEntryID", gmdeItemInfo->MDEntryID, gmdeItemInfo->MDEntryIDLength, 2);
-		PrintString("Symbol", gmdeItemInfo->Symbol, gmdeItemInfo->SymbolLength, 2);
-		PrintInt32("RptSeq", gmdeItemInfo->RptSeq, 2);
-		PrintDecimal("MDEntryPx", &(gmdeItemInfo->MDEntryPx), 2);
-		PrintDecimal("MDEntrySize", &(gmdeItemInfo->MDEntrySize), 2);
-		PrintUInt32("MDEntryDate", gmdeItemInfo->MDEntryDate, 2);
-		PrintUInt32("MDEntryTime", gmdeItemInfo->MDEntryTime, 2);
-		PrintString("QuoteCondition", gmdeItemInfo->QuoteCondition, gmdeItemInfo->QuoteConditionLength, 2);
-		PrintString("TradeCondition", gmdeItemInfo->TradeCondition, gmdeItemInfo->TradeConditionLength, 2);
-		PrintString("OpenCloseSettlFlag", gmdeItemInfo->OpenCloseSettlFlag, gmdeItemInfo->OpenCloseSettlFlagLength, 2);
-		PrintDecimal("NetChgPrevDay", &(gmdeItemInfo->NetChgPrevDay), 2);
-		PrintDecimal("ChgFromWAPrice", &(gmdeItemInfo->ChgFromWAPrice), 2);
-		PrintDecimal("ChgOpenInterest", &(gmdeItemInfo->ChgOpenInterest), 2);
-		PrintInt32("TotalNumOfTrades", gmdeItemInfo->TotalNumOfTrades, 2);
-		PrintDecimal("TradeValue", &(gmdeItemInfo->TradeValue), 2);
-		PrintInt32("OfferNbOr", gmdeItemInfo->OfferNbOr, 2);
-		PrintInt32("BidNbOr", gmdeItemInfo->BidNbOr, 2);
-		PrintDecimal("ChgFromSettlmnt", &(gmdeItemInfo->ChgFromSettlmnt), 2);
-		PrintUInt32("SettlDate", gmdeItemInfo->SettlDate, 2);
-		PrintString("SettleType", gmdeItemInfo->SettleType, gmdeItemInfo->SettleTypeLength, 2);
-		PrintString("CXFlag", gmdeItemInfo->CXFlag, gmdeItemInfo->CXFlagLength, 2);
-		PrintString("TradingSessionID", gmdeItemInfo->TradingSessionID, gmdeItemInfo->TradingSessionIDLength, 2);
-		PrintString("TradingSessionSubID", gmdeItemInfo->TradingSessionSubID, gmdeItemInfo->TradingSessionSubIDLength, 2);
+		if(gmdeItemInfo->AllowMDUpdateAction)
+			PrintUInt32("MDUpdateAction", gmdeItemInfo->MDUpdateAction, 2);
+		if(gmdeItemInfo->AllowMDEntryType)
+			PrintString("MDEntryType", gmdeItemInfo->MDEntryType, gmdeItemInfo->MDEntryTypeLength, 2);
+		if(gmdeItemInfo->AllowMDEntryID)
+			PrintString("MDEntryID", gmdeItemInfo->MDEntryID, gmdeItemInfo->MDEntryIDLength, 2);
+		if(gmdeItemInfo->AllowSymbol)
+			PrintString("Symbol", gmdeItemInfo->Symbol, gmdeItemInfo->SymbolLength, 2);
+		if(gmdeItemInfo->AllowRptSeq)
+			PrintInt32("RptSeq", gmdeItemInfo->RptSeq, 2);
+		if(gmdeItemInfo->AllowMDEntryPx)
+			PrintDecimal("MDEntryPx", &(gmdeItemInfo->MDEntryPx), 2);
+		if(gmdeItemInfo->AllowMDEntrySize)
+			PrintDecimal("MDEntrySize", &(gmdeItemInfo->MDEntrySize), 2);
+		if(gmdeItemInfo->AllowMDEntryDate)
+			PrintUInt32("MDEntryDate", gmdeItemInfo->MDEntryDate, 2);
+		if(gmdeItemInfo->AllowMDEntryTime)
+			PrintUInt32("MDEntryTime", gmdeItemInfo->MDEntryTime, 2);
+		if(gmdeItemInfo->AllowQuoteCondition)
+			PrintString("QuoteCondition", gmdeItemInfo->QuoteCondition, gmdeItemInfo->QuoteConditionLength, 2);
+		if(gmdeItemInfo->AllowTradeCondition)
+			PrintString("TradeCondition", gmdeItemInfo->TradeCondition, gmdeItemInfo->TradeConditionLength, 2);
+		if(gmdeItemInfo->AllowOpenCloseSettlFlag)
+			PrintString("OpenCloseSettlFlag", gmdeItemInfo->OpenCloseSettlFlag, gmdeItemInfo->OpenCloseSettlFlagLength, 2);
+		if(gmdeItemInfo->AllowNetChgPrevDay)
+			PrintDecimal("NetChgPrevDay", &(gmdeItemInfo->NetChgPrevDay), 2);
+		if(gmdeItemInfo->AllowChgFromWAPrice)
+			PrintDecimal("ChgFromWAPrice", &(gmdeItemInfo->ChgFromWAPrice), 2);
+		if(gmdeItemInfo->AllowChgOpenInterest)
+			PrintDecimal("ChgOpenInterest", &(gmdeItemInfo->ChgOpenInterest), 2);
+		if(gmdeItemInfo->AllowTotalNumOfTrades)
+			PrintInt32("TotalNumOfTrades", gmdeItemInfo->TotalNumOfTrades, 2);
+		if(gmdeItemInfo->AllowTradeValue)
+			PrintDecimal("TradeValue", &(gmdeItemInfo->TradeValue), 2);
+		if(gmdeItemInfo->AllowOfferNbOr)
+			PrintInt32("OfferNbOr", gmdeItemInfo->OfferNbOr, 2);
+		if(gmdeItemInfo->AllowBidNbOr)
+			PrintInt32("BidNbOr", gmdeItemInfo->BidNbOr, 2);
+		if(gmdeItemInfo->AllowChgFromSettlmnt)
+			PrintDecimal("ChgFromSettlmnt", &(gmdeItemInfo->ChgFromSettlmnt), 2);
+		if(gmdeItemInfo->AllowSettlDate)
+			PrintUInt32("SettlDate", gmdeItemInfo->SettlDate, 2);
+		if(gmdeItemInfo->AllowSettleType)
+			PrintString("SettleType", gmdeItemInfo->SettleType, gmdeItemInfo->SettleTypeLength, 2);
+		if(gmdeItemInfo->AllowCXFlag)
+			PrintString("CXFlag", gmdeItemInfo->CXFlag, gmdeItemInfo->CXFlagLength, 2);
+		if(gmdeItemInfo->AllowTradingSessionID)
+			PrintString("TradingSessionID", gmdeItemInfo->TradingSessionID, gmdeItemInfo->TradingSessionIDLength, 2);
+		if(gmdeItemInfo->AllowTradingSessionSubID)
+			PrintString("TradingSessionSubID", gmdeItemInfo->TradingSessionSubID, gmdeItemInfo->TradingSessionSubIDLength, 2);
 		PrintItemEnd(1);
 	}
 
@@ -806,23 +1077,40 @@ void FastProtocolManager::PrintIncrementalOLRFOND(FastIncrementalOLRFONDInfo *in
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 		gmdeItemInfo = info->GroupMDEntries[i];
 		PrintItemBegin("item", i, 1);
-		PrintUInt32("MDUpdateAction", gmdeItemInfo->MDUpdateAction, 2);
-		PrintString("MDEntryType", gmdeItemInfo->MDEntryType, gmdeItemInfo->MDEntryTypeLength, 2);
-		PrintString("MDEntryID", gmdeItemInfo->MDEntryID, gmdeItemInfo->MDEntryIDLength, 2);
-		PrintString("Symbol", gmdeItemInfo->Symbol, gmdeItemInfo->SymbolLength, 2);
-		PrintInt32("RptSeq", gmdeItemInfo->RptSeq, 2);
-		PrintUInt32("MDEntryDate", gmdeItemInfo->MDEntryDate, 2);
-		PrintUInt32("MDEntryTime", gmdeItemInfo->MDEntryTime, 2);
-		PrintUInt32("OrigTime", gmdeItemInfo->OrigTime, 2);
-		PrintDecimal("MDEntryPx", &(gmdeItemInfo->MDEntryPx), 2);
-		PrintDecimal("MDEntrySize", &(gmdeItemInfo->MDEntrySize), 2);
-		PrintString("DealNumber", gmdeItemInfo->DealNumber, gmdeItemInfo->DealNumberLength, 2);
-		PrintDecimal("Yield", &(gmdeItemInfo->Yield), 2);
-		PrintString("OrderStatus", gmdeItemInfo->OrderStatus, gmdeItemInfo->OrderStatusLength, 2);
-		PrintString("OrdType", gmdeItemInfo->OrdType, gmdeItemInfo->OrdTypeLength, 2);
-		PrintDecimal("TotalVolume", &(gmdeItemInfo->TotalVolume), 2);
-		PrintString("TradingSessionID", gmdeItemInfo->TradingSessionID, gmdeItemInfo->TradingSessionIDLength, 2);
-		PrintString("TradingSessionSubID", gmdeItemInfo->TradingSessionSubID, gmdeItemInfo->TradingSessionSubIDLength, 2);
+		if(gmdeItemInfo->AllowMDUpdateAction)
+			PrintUInt32("MDUpdateAction", gmdeItemInfo->MDUpdateAction, 2);
+		if(gmdeItemInfo->AllowMDEntryType)
+			PrintString("MDEntryType", gmdeItemInfo->MDEntryType, gmdeItemInfo->MDEntryTypeLength, 2);
+		if(gmdeItemInfo->AllowMDEntryID)
+			PrintString("MDEntryID", gmdeItemInfo->MDEntryID, gmdeItemInfo->MDEntryIDLength, 2);
+		if(gmdeItemInfo->AllowSymbol)
+			PrintString("Symbol", gmdeItemInfo->Symbol, gmdeItemInfo->SymbolLength, 2);
+		if(gmdeItemInfo->AllowRptSeq)
+			PrintInt32("RptSeq", gmdeItemInfo->RptSeq, 2);
+		if(gmdeItemInfo->AllowMDEntryDate)
+			PrintUInt32("MDEntryDate", gmdeItemInfo->MDEntryDate, 2);
+		if(gmdeItemInfo->AllowMDEntryTime)
+			PrintUInt32("MDEntryTime", gmdeItemInfo->MDEntryTime, 2);
+		if(gmdeItemInfo->AllowOrigTime)
+			PrintUInt32("OrigTime", gmdeItemInfo->OrigTime, 2);
+		if(gmdeItemInfo->AllowMDEntryPx)
+			PrintDecimal("MDEntryPx", &(gmdeItemInfo->MDEntryPx), 2);
+		if(gmdeItemInfo->AllowMDEntrySize)
+			PrintDecimal("MDEntrySize", &(gmdeItemInfo->MDEntrySize), 2);
+		if(gmdeItemInfo->AllowDealNumber)
+			PrintString("DealNumber", gmdeItemInfo->DealNumber, gmdeItemInfo->DealNumberLength, 2);
+		if(gmdeItemInfo->AllowYield)
+			PrintDecimal("Yield", &(gmdeItemInfo->Yield), 2);
+		if(gmdeItemInfo->AllowOrderStatus)
+			PrintString("OrderStatus", gmdeItemInfo->OrderStatus, gmdeItemInfo->OrderStatusLength, 2);
+		if(gmdeItemInfo->AllowOrdType)
+			PrintString("OrdType", gmdeItemInfo->OrdType, gmdeItemInfo->OrdTypeLength, 2);
+		if(gmdeItemInfo->AllowTotalVolume)
+			PrintDecimal("TotalVolume", &(gmdeItemInfo->TotalVolume), 2);
+		if(gmdeItemInfo->AllowTradingSessionID)
+			PrintString("TradingSessionID", gmdeItemInfo->TradingSessionID, gmdeItemInfo->TradingSessionIDLength, 2);
+		if(gmdeItemInfo->AllowTradingSessionSubID)
+			PrintString("TradingSessionSubID", gmdeItemInfo->TradingSessionSubID, gmdeItemInfo->TradingSessionSubIDLength, 2);
 		PrintItemEnd(1);
 	}
 
@@ -841,20 +1129,34 @@ void FastProtocolManager::PrintIncrementalOLRCURR(FastIncrementalOLRCURRInfo *in
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 		gmdeItemInfo = info->GroupMDEntries[i];
 		PrintItemBegin("item", i, 1);
-		PrintUInt32("MDUpdateAction", gmdeItemInfo->MDUpdateAction, 2);
-		PrintString("MDEntryType", gmdeItemInfo->MDEntryType, gmdeItemInfo->MDEntryTypeLength, 2);
-		PrintString("MDEntryID", gmdeItemInfo->MDEntryID, gmdeItemInfo->MDEntryIDLength, 2);
-		PrintString("Symbol", gmdeItemInfo->Symbol, gmdeItemInfo->SymbolLength, 2);
-		PrintInt32("RptSeq", gmdeItemInfo->RptSeq, 2);
-		PrintUInt32("MDEntryDate", gmdeItemInfo->MDEntryDate, 2);
-		PrintUInt32("MDEntryTime", gmdeItemInfo->MDEntryTime, 2);
-		PrintUInt32("OrigTime", gmdeItemInfo->OrigTime, 2);
-		PrintDecimal("MDEntryPx", &(gmdeItemInfo->MDEntryPx), 2);
-		PrintDecimal("MDEntrySize", &(gmdeItemInfo->MDEntrySize), 2);
-		PrintString("DealNumber", gmdeItemInfo->DealNumber, gmdeItemInfo->DealNumberLength, 2);
-		PrintString("OrderStatus", gmdeItemInfo->OrderStatus, gmdeItemInfo->OrderStatusLength, 2);
-		PrintString("TradingSessionID", gmdeItemInfo->TradingSessionID, gmdeItemInfo->TradingSessionIDLength, 2);
-		PrintString("TradingSessionSubID", gmdeItemInfo->TradingSessionSubID, gmdeItemInfo->TradingSessionSubIDLength, 2);
+		if(gmdeItemInfo->AllowMDUpdateAction)
+			PrintUInt32("MDUpdateAction", gmdeItemInfo->MDUpdateAction, 2);
+		if(gmdeItemInfo->AllowMDEntryType)
+			PrintString("MDEntryType", gmdeItemInfo->MDEntryType, gmdeItemInfo->MDEntryTypeLength, 2);
+		if(gmdeItemInfo->AllowMDEntryID)
+			PrintString("MDEntryID", gmdeItemInfo->MDEntryID, gmdeItemInfo->MDEntryIDLength, 2);
+		if(gmdeItemInfo->AllowSymbol)
+			PrintString("Symbol", gmdeItemInfo->Symbol, gmdeItemInfo->SymbolLength, 2);
+		if(gmdeItemInfo->AllowRptSeq)
+			PrintInt32("RptSeq", gmdeItemInfo->RptSeq, 2);
+		if(gmdeItemInfo->AllowMDEntryDate)
+			PrintUInt32("MDEntryDate", gmdeItemInfo->MDEntryDate, 2);
+		if(gmdeItemInfo->AllowMDEntryTime)
+			PrintUInt32("MDEntryTime", gmdeItemInfo->MDEntryTime, 2);
+		if(gmdeItemInfo->AllowOrigTime)
+			PrintUInt32("OrigTime", gmdeItemInfo->OrigTime, 2);
+		if(gmdeItemInfo->AllowMDEntryPx)
+			PrintDecimal("MDEntryPx", &(gmdeItemInfo->MDEntryPx), 2);
+		if(gmdeItemInfo->AllowMDEntrySize)
+			PrintDecimal("MDEntrySize", &(gmdeItemInfo->MDEntrySize), 2);
+		if(gmdeItemInfo->AllowDealNumber)
+			PrintString("DealNumber", gmdeItemInfo->DealNumber, gmdeItemInfo->DealNumberLength, 2);
+		if(gmdeItemInfo->AllowOrderStatus)
+			PrintString("OrderStatus", gmdeItemInfo->OrderStatus, gmdeItemInfo->OrderStatusLength, 2);
+		if(gmdeItemInfo->AllowTradingSessionID)
+			PrintString("TradingSessionID", gmdeItemInfo->TradingSessionID, gmdeItemInfo->TradingSessionIDLength, 2);
+		if(gmdeItemInfo->AllowTradingSessionSubID)
+			PrintString("TradingSessionSubID", gmdeItemInfo->TradingSessionSubID, gmdeItemInfo->TradingSessionSubIDLength, 2);
 		PrintItemEnd(1);
 	}
 
@@ -873,20 +1175,34 @@ void FastProtocolManager::PrintIncrementalOBRFOND(FastIncrementalOBRFONDInfo *in
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 		gmdeItemInfo = info->GroupMDEntries[i];
 		PrintItemBegin("item", i, 1);
-		PrintUInt32("MDUpdateAction", gmdeItemInfo->MDUpdateAction, 2);
-		PrintString("MDEntryType", gmdeItemInfo->MDEntryType, gmdeItemInfo->MDEntryTypeLength, 2);
-		PrintString("MDEntryID", gmdeItemInfo->MDEntryID, gmdeItemInfo->MDEntryIDLength, 2);
-		PrintString("Symbol", gmdeItemInfo->Symbol, gmdeItemInfo->SymbolLength, 2);
-		PrintInt32("RptSeq", gmdeItemInfo->RptSeq, 2);
-		PrintDecimal("MDEntryPx", &(gmdeItemInfo->MDEntryPx), 2);
-		PrintDecimal("MDEntrySize", &(gmdeItemInfo->MDEntrySize), 2);
-		PrintUInt32("MDEntryTime", gmdeItemInfo->MDEntryTime, 2);
-		PrintUInt32("OrigTime", gmdeItemInfo->OrigTime, 2);
-		PrintDecimal("Yield", &(gmdeItemInfo->Yield), 2);
-		PrintUInt32("EffectiveTime", gmdeItemInfo->EffectiveTime, 2);
-		PrintDecimal("NominalValue", &(gmdeItemInfo->NominalValue), 2);
-		PrintString("TradingSessionID", gmdeItemInfo->TradingSessionID, gmdeItemInfo->TradingSessionIDLength, 2);
-		PrintString("TradingSessionSubID", gmdeItemInfo->TradingSessionSubID, gmdeItemInfo->TradingSessionSubIDLength, 2);
+		if(gmdeItemInfo->AllowMDUpdateAction)
+			PrintUInt32("MDUpdateAction", gmdeItemInfo->MDUpdateAction, 2);
+		if(gmdeItemInfo->AllowMDEntryType)
+			PrintString("MDEntryType", gmdeItemInfo->MDEntryType, gmdeItemInfo->MDEntryTypeLength, 2);
+		if(gmdeItemInfo->AllowMDEntryID)
+			PrintString("MDEntryID", gmdeItemInfo->MDEntryID, gmdeItemInfo->MDEntryIDLength, 2);
+		if(gmdeItemInfo->AllowSymbol)
+			PrintString("Symbol", gmdeItemInfo->Symbol, gmdeItemInfo->SymbolLength, 2);
+		if(gmdeItemInfo->AllowRptSeq)
+			PrintInt32("RptSeq", gmdeItemInfo->RptSeq, 2);
+		if(gmdeItemInfo->AllowMDEntryPx)
+			PrintDecimal("MDEntryPx", &(gmdeItemInfo->MDEntryPx), 2);
+		if(gmdeItemInfo->AllowMDEntrySize)
+			PrintDecimal("MDEntrySize", &(gmdeItemInfo->MDEntrySize), 2);
+		if(gmdeItemInfo->AllowMDEntryTime)
+			PrintUInt32("MDEntryTime", gmdeItemInfo->MDEntryTime, 2);
+		if(gmdeItemInfo->AllowOrigTime)
+			PrintUInt32("OrigTime", gmdeItemInfo->OrigTime, 2);
+		if(gmdeItemInfo->AllowYield)
+			PrintDecimal("Yield", &(gmdeItemInfo->Yield), 2);
+		if(gmdeItemInfo->AllowEffectiveTime)
+			PrintUInt32("EffectiveTime", gmdeItemInfo->EffectiveTime, 2);
+		if(gmdeItemInfo->AllowNominalValue)
+			PrintDecimal("NominalValue", &(gmdeItemInfo->NominalValue), 2);
+		if(gmdeItemInfo->AllowTradingSessionID)
+			PrintString("TradingSessionID", gmdeItemInfo->TradingSessionID, gmdeItemInfo->TradingSessionIDLength, 2);
+		if(gmdeItemInfo->AllowTradingSessionSubID)
+			PrintString("TradingSessionSubID", gmdeItemInfo->TradingSessionSubID, gmdeItemInfo->TradingSessionSubIDLength, 2);
 		PrintItemEnd(1);
 	}
 
@@ -905,17 +1221,28 @@ void FastProtocolManager::PrintIncrementalOBRCURR(FastIncrementalOBRCURRInfo *in
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 		gmdeItemInfo = info->GroupMDEntries[i];
 		PrintItemBegin("item", i, 1);
-		PrintUInt32("MDUpdateAction", gmdeItemInfo->MDUpdateAction, 2);
-		PrintString("MDEntryType", gmdeItemInfo->MDEntryType, gmdeItemInfo->MDEntryTypeLength, 2);
-		PrintString("MDEntryID", gmdeItemInfo->MDEntryID, gmdeItemInfo->MDEntryIDLength, 2);
-		PrintString("Symbol", gmdeItemInfo->Symbol, gmdeItemInfo->SymbolLength, 2);
-		PrintInt32("RptSeq", gmdeItemInfo->RptSeq, 2);
-		PrintDecimal("MDEntryPx", &(gmdeItemInfo->MDEntryPx), 2);
-		PrintDecimal("MDEntrySize", &(gmdeItemInfo->MDEntrySize), 2);
-		PrintUInt32("MDEntryTime", gmdeItemInfo->MDEntryTime, 2);
-		PrintUInt32("OrigTime", gmdeItemInfo->OrigTime, 2);
-		PrintString("TradingSessionID", gmdeItemInfo->TradingSessionID, gmdeItemInfo->TradingSessionIDLength, 2);
-		PrintString("TradingSessionSubID", gmdeItemInfo->TradingSessionSubID, gmdeItemInfo->TradingSessionSubIDLength, 2);
+		if(gmdeItemInfo->AllowMDUpdateAction)
+			PrintUInt32("MDUpdateAction", gmdeItemInfo->MDUpdateAction, 2);
+		if(gmdeItemInfo->AllowMDEntryType)
+			PrintString("MDEntryType", gmdeItemInfo->MDEntryType, gmdeItemInfo->MDEntryTypeLength, 2);
+		if(gmdeItemInfo->AllowMDEntryID)
+			PrintString("MDEntryID", gmdeItemInfo->MDEntryID, gmdeItemInfo->MDEntryIDLength, 2);
+		if(gmdeItemInfo->AllowSymbol)
+			PrintString("Symbol", gmdeItemInfo->Symbol, gmdeItemInfo->SymbolLength, 2);
+		if(gmdeItemInfo->AllowRptSeq)
+			PrintInt32("RptSeq", gmdeItemInfo->RptSeq, 2);
+		if(gmdeItemInfo->AllowMDEntryPx)
+			PrintDecimal("MDEntryPx", &(gmdeItemInfo->MDEntryPx), 2);
+		if(gmdeItemInfo->AllowMDEntrySize)
+			PrintDecimal("MDEntrySize", &(gmdeItemInfo->MDEntrySize), 2);
+		if(gmdeItemInfo->AllowMDEntryTime)
+			PrintUInt32("MDEntryTime", gmdeItemInfo->MDEntryTime, 2);
+		if(gmdeItemInfo->AllowOrigTime)
+			PrintUInt32("OrigTime", gmdeItemInfo->OrigTime, 2);
+		if(gmdeItemInfo->AllowTradingSessionID)
+			PrintString("TradingSessionID", gmdeItemInfo->TradingSessionID, gmdeItemInfo->TradingSessionIDLength, 2);
+		if(gmdeItemInfo->AllowTradingSessionSubID)
+			PrintString("TradingSessionSubID", gmdeItemInfo->TradingSessionSubID, gmdeItemInfo->TradingSessionSubIDLength, 2);
 		PrintItemEnd(1);
 	}
 
@@ -934,29 +1261,51 @@ void FastProtocolManager::PrintIncrementalTLRFOND(FastIncrementalTLRFONDInfo *in
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 		gmdeItemInfo = info->GroupMDEntries[i];
 		PrintItemBegin("item", i, 1);
-		PrintUInt32("MDUpdateAction", gmdeItemInfo->MDUpdateAction, 2);
+		if(gmdeItemInfo->AllowMDUpdateAction)
+			PrintUInt32("MDUpdateAction", gmdeItemInfo->MDUpdateAction, 2);
 		PrintString("MDEntryType", gmdeItemInfo->MDEntryType, gmdeItemInfo->MDEntryTypeLength, 2);
-		PrintString("MDEntryID", gmdeItemInfo->MDEntryID, gmdeItemInfo->MDEntryIDLength, 2);
-		PrintString("Symbol", gmdeItemInfo->Symbol, gmdeItemInfo->SymbolLength, 2);
-		PrintInt32("RptSeq", gmdeItemInfo->RptSeq, 2);
-		PrintUInt32("MDEntryDate", gmdeItemInfo->MDEntryDate, 2);
-		PrintUInt32("MDEntryTime", gmdeItemInfo->MDEntryTime, 2);
-		PrintUInt32("OrigTime", gmdeItemInfo->OrigTime, 2);
-		PrintString("OrderSide", gmdeItemInfo->OrderSide, gmdeItemInfo->OrderSideLength, 2);
-		PrintDecimal("MDEntryPx", &(gmdeItemInfo->MDEntryPx), 2);
-		PrintDecimal("MDEntrySize", &(gmdeItemInfo->MDEntrySize), 2);
-		PrintDecimal("AccruedInterestAmt", &(gmdeItemInfo->AccruedInterestAmt), 2);
-		PrintDecimal("TradeValue", &(gmdeItemInfo->TradeValue), 2);
-		PrintDecimal("Yield", &(gmdeItemInfo->Yield), 2);
-		PrintUInt32("SettlDate", gmdeItemInfo->SettlDate, 2);
-		PrintString("SettleType", gmdeItemInfo->SettleType, gmdeItemInfo->SettleTypeLength, 2);
-		PrintDecimal("Price", &(gmdeItemInfo->Price), 2);
-		PrintInt32("PriceType", gmdeItemInfo->PriceType, 2);
-		PrintDecimal("RepoToPx", &(gmdeItemInfo->RepoToPx), 2);
-		PrintDecimal("BuyBackPx", &(gmdeItemInfo->BuyBackPx), 2);
-		PrintUInt32("BuyBackDate", gmdeItemInfo->BuyBackDate, 2);
-		PrintString("TradingSessionID", gmdeItemInfo->TradingSessionID, gmdeItemInfo->TradingSessionIDLength, 2);
-		PrintString("TradingSessionSubID", gmdeItemInfo->TradingSessionSubID, gmdeItemInfo->TradingSessionSubIDLength, 2);
+		if(gmdeItemInfo->AllowMDEntryID)
+			PrintString("MDEntryID", gmdeItemInfo->MDEntryID, gmdeItemInfo->MDEntryIDLength, 2);
+		if(gmdeItemInfo->AllowSymbol)
+			PrintString("Symbol", gmdeItemInfo->Symbol, gmdeItemInfo->SymbolLength, 2);
+		if(gmdeItemInfo->AllowRptSeq)
+			PrintInt32("RptSeq", gmdeItemInfo->RptSeq, 2);
+		if(gmdeItemInfo->AllowMDEntryDate)
+			PrintUInt32("MDEntryDate", gmdeItemInfo->MDEntryDate, 2);
+		if(gmdeItemInfo->AllowMDEntryTime)
+			PrintUInt32("MDEntryTime", gmdeItemInfo->MDEntryTime, 2);
+		if(gmdeItemInfo->AllowOrigTime)
+			PrintUInt32("OrigTime", gmdeItemInfo->OrigTime, 2);
+		if(gmdeItemInfo->AllowOrderSide)
+			PrintString("OrderSide", gmdeItemInfo->OrderSide, gmdeItemInfo->OrderSideLength, 2);
+		if(gmdeItemInfo->AllowMDEntryPx)
+			PrintDecimal("MDEntryPx", &(gmdeItemInfo->MDEntryPx), 2);
+		if(gmdeItemInfo->AllowMDEntrySize)
+			PrintDecimal("MDEntrySize", &(gmdeItemInfo->MDEntrySize), 2);
+		if(gmdeItemInfo->AllowAccruedInterestAmt)
+			PrintDecimal("AccruedInterestAmt", &(gmdeItemInfo->AccruedInterestAmt), 2);
+		if(gmdeItemInfo->AllowTradeValue)
+			PrintDecimal("TradeValue", &(gmdeItemInfo->TradeValue), 2);
+		if(gmdeItemInfo->AllowYield)
+			PrintDecimal("Yield", &(gmdeItemInfo->Yield), 2);
+		if(gmdeItemInfo->AllowSettlDate)
+			PrintUInt32("SettlDate", gmdeItemInfo->SettlDate, 2);
+		if(gmdeItemInfo->AllowSettleType)
+			PrintString("SettleType", gmdeItemInfo->SettleType, gmdeItemInfo->SettleTypeLength, 2);
+		if(gmdeItemInfo->AllowPrice)
+			PrintDecimal("Price", &(gmdeItemInfo->Price), 2);
+		if(gmdeItemInfo->AllowPriceType)
+			PrintInt32("PriceType", gmdeItemInfo->PriceType, 2);
+		if(gmdeItemInfo->AllowRepoToPx)
+			PrintDecimal("RepoToPx", &(gmdeItemInfo->RepoToPx), 2);
+		if(gmdeItemInfo->AllowBuyBackPx)
+			PrintDecimal("BuyBackPx", &(gmdeItemInfo->BuyBackPx), 2);
+		if(gmdeItemInfo->AllowBuyBackDate)
+			PrintUInt32("BuyBackDate", gmdeItemInfo->BuyBackDate, 2);
+		if(gmdeItemInfo->AllowTradingSessionID)
+			PrintString("TradingSessionID", gmdeItemInfo->TradingSessionID, gmdeItemInfo->TradingSessionIDLength, 2);
+		if(gmdeItemInfo->AllowTradingSessionSubID)
+			PrintString("TradingSessionSubID", gmdeItemInfo->TradingSessionSubID, gmdeItemInfo->TradingSessionSubIDLength, 2);
 		PrintItemEnd(1);
 	}
 
@@ -975,27 +1324,47 @@ void FastProtocolManager::PrintIncrementalTLRCURR(FastIncrementalTLRCURRInfo *in
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 		gmdeItemInfo = info->GroupMDEntries[i];
 		PrintItemBegin("item", i, 1);
-		PrintUInt32("MDUpdateAction", gmdeItemInfo->MDUpdateAction, 2);
+		if(gmdeItemInfo->AllowMDUpdateAction)
+			PrintUInt32("MDUpdateAction", gmdeItemInfo->MDUpdateAction, 2);
 		PrintString("MDEntryType", gmdeItemInfo->MDEntryType, gmdeItemInfo->MDEntryTypeLength, 2);
-		PrintString("MDEntryID", gmdeItemInfo->MDEntryID, gmdeItemInfo->MDEntryIDLength, 2);
-		PrintString("Symbol", gmdeItemInfo->Symbol, gmdeItemInfo->SymbolLength, 2);
-		PrintInt32("RptSeq", gmdeItemInfo->RptSeq, 2);
-		PrintUInt32("MDEntryDate", gmdeItemInfo->MDEntryDate, 2);
-		PrintUInt32("MDEntryTime", gmdeItemInfo->MDEntryTime, 2);
-		PrintUInt32("OrigTime", gmdeItemInfo->OrigTime, 2);
-		PrintString("OrderSide", gmdeItemInfo->OrderSide, gmdeItemInfo->OrderSideLength, 2);
-		PrintDecimal("MDEntryPx", &(gmdeItemInfo->MDEntryPx), 2);
-		PrintDecimal("MDEntrySize", &(gmdeItemInfo->MDEntrySize), 2);
-		PrintDecimal("TradeValue", &(gmdeItemInfo->TradeValue), 2);
-		PrintUInt32("SettlDate", gmdeItemInfo->SettlDate, 2);
-		PrintString("SettleType", gmdeItemInfo->SettleType, gmdeItemInfo->SettleTypeLength, 2);
-		PrintDecimal("Price", &(gmdeItemInfo->Price), 2);
-		PrintInt32("PriceType", gmdeItemInfo->PriceType, 2);
-		PrintDecimal("RepoToPx", &(gmdeItemInfo->RepoToPx), 2);
-		PrintDecimal("BuyBackPx", &(gmdeItemInfo->BuyBackPx), 2);
-		PrintUInt32("BuyBackDate", gmdeItemInfo->BuyBackDate, 2);
-		PrintString("TradingSessionID", gmdeItemInfo->TradingSessionID, gmdeItemInfo->TradingSessionIDLength, 2);
-		PrintString("TradingSessionSubID", gmdeItemInfo->TradingSessionSubID, gmdeItemInfo->TradingSessionSubIDLength, 2);
+		if(gmdeItemInfo->AllowMDEntryID)
+			PrintString("MDEntryID", gmdeItemInfo->MDEntryID, gmdeItemInfo->MDEntryIDLength, 2);
+		if(gmdeItemInfo->AllowSymbol)
+			PrintString("Symbol", gmdeItemInfo->Symbol, gmdeItemInfo->SymbolLength, 2);
+		if(gmdeItemInfo->AllowRptSeq)
+			PrintInt32("RptSeq", gmdeItemInfo->RptSeq, 2);
+		if(gmdeItemInfo->AllowMDEntryDate)
+			PrintUInt32("MDEntryDate", gmdeItemInfo->MDEntryDate, 2);
+		if(gmdeItemInfo->AllowMDEntryTime)
+			PrintUInt32("MDEntryTime", gmdeItemInfo->MDEntryTime, 2);
+		if(gmdeItemInfo->AllowOrigTime)
+			PrintUInt32("OrigTime", gmdeItemInfo->OrigTime, 2);
+		if(gmdeItemInfo->AllowOrderSide)
+			PrintString("OrderSide", gmdeItemInfo->OrderSide, gmdeItemInfo->OrderSideLength, 2);
+		if(gmdeItemInfo->AllowMDEntryPx)
+			PrintDecimal("MDEntryPx", &(gmdeItemInfo->MDEntryPx), 2);
+		if(gmdeItemInfo->AllowMDEntrySize)
+			PrintDecimal("MDEntrySize", &(gmdeItemInfo->MDEntrySize), 2);
+		if(gmdeItemInfo->AllowTradeValue)
+			PrintDecimal("TradeValue", &(gmdeItemInfo->TradeValue), 2);
+		if(gmdeItemInfo->AllowSettlDate)
+			PrintUInt32("SettlDate", gmdeItemInfo->SettlDate, 2);
+		if(gmdeItemInfo->AllowSettleType)
+			PrintString("SettleType", gmdeItemInfo->SettleType, gmdeItemInfo->SettleTypeLength, 2);
+		if(gmdeItemInfo->AllowPrice)
+			PrintDecimal("Price", &(gmdeItemInfo->Price), 2);
+		if(gmdeItemInfo->AllowPriceType)
+			PrintInt32("PriceType", gmdeItemInfo->PriceType, 2);
+		if(gmdeItemInfo->AllowRepoToPx)
+			PrintDecimal("RepoToPx", &(gmdeItemInfo->RepoToPx), 2);
+		if(gmdeItemInfo->AllowBuyBackPx)
+			PrintDecimal("BuyBackPx", &(gmdeItemInfo->BuyBackPx), 2);
+		if(gmdeItemInfo->AllowBuyBackDate)
+			PrintUInt32("BuyBackDate", gmdeItemInfo->BuyBackDate, 2);
+		if(gmdeItemInfo->AllowTradingSessionID)
+			PrintString("TradingSessionID", gmdeItemInfo->TradingSessionID, gmdeItemInfo->TradingSessionIDLength, 2);
+		if(gmdeItemInfo->AllowTradingSessionSubID)
+			PrintString("TradingSessionSubID", gmdeItemInfo->TradingSessionSubID, gmdeItemInfo->TradingSessionSubIDLength, 2);
 		PrintItemEnd(1);
 	}
 
@@ -1008,81 +1377,127 @@ void FastProtocolManager::PrintSecurityDefinition(FastSecurityDefinitionInfo *in
 	PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 	PrintUInt64("SendingTime", info->SendingTime, 1);
 	PrintString("MessageEncoding", info->MessageEncoding, info->MessageEncodingLength, 1);
-	PrintInt32("TotNumReports", info->TotNumReports, 1);
-	PrintString("Symbol", info->Symbol, info->SymbolLength, 1);
-	PrintByteVector("SecurityID", info->SecurityID, info->SecurityIDLength, 1);
-	PrintByteVector("SecurityIDSource", info->SecurityIDSource, info->SecurityIDSourceLength, 1);
-	PrintInt32("Product", info->Product, 1);
-	PrintByteVector("CFICode", info->CFICode, info->CFICodeLength, 1);
-	PrintByteVector("SecurityType", info->SecurityType, info->SecurityTypeLength, 1);
-	PrintUInt32("MaturityDate", info->MaturityDate, 1);
-	PrintUInt32("SettlDate", info->SettlDate, 1);
-	PrintString("SettleType", info->SettleType, info->SettleTypeLength, 1);
-	PrintDecimal("OrigIssueAmt", &(info->OrigIssueAmt), 1);
-	PrintUInt32("CouponPaymentDate", info->CouponPaymentDate, 1);
-	PrintDecimal("CouponRate", &(info->CouponRate), 1);
-	PrintUInt32("SettlFixingDate", info->SettlFixingDate, 1);
-	PrintDecimal("DividendNetPx", &(info->DividendNetPx), 1);
-	PrintByteVector("SecurityDesc", info->SecurityDesc, info->SecurityDescLength, 1);
-	PrintByteVector("EncodedSecurityDesc", info->EncodedSecurityDesc, info->EncodedSecurityDescLength, 1);
-	PrintByteVector("QuoteText", info->QuoteText, info->QuoteTextLength, 1);
-	PrintInt32("GroupInstrAttribCount", info->GroupInstrAttribCount, 1);
+	if(info->AllowTotNumReports)
+		PrintInt32("TotNumReports", info->TotNumReports, 1);
+	if(info->AllowSymbol)
+		PrintString("Symbol", info->Symbol, info->SymbolLength, 1);
+	if(info->AllowSecurityID)
+		PrintByteVector("SecurityID", info->SecurityID, info->SecurityIDLength, 1);
+	if(info->AllowSecurityIDSource)
+		PrintByteVector("SecurityIDSource", info->SecurityIDSource, info->SecurityIDSourceLength, 1);
+	if(info->AllowProduct)
+		PrintInt32("Product", info->Product, 1);
+	if(info->AllowCFICode)
+		PrintByteVector("CFICode", info->CFICode, info->CFICodeLength, 1);
+	if(info->AllowSecurityType)
+		PrintByteVector("SecurityType", info->SecurityType, info->SecurityTypeLength, 1);
+	if(info->AllowMaturityDate)
+		PrintUInt32("MaturityDate", info->MaturityDate, 1);
+	if(info->AllowSettlDate)
+		PrintUInt32("SettlDate", info->SettlDate, 1);
+	if(info->AllowSettleType)
+		PrintString("SettleType", info->SettleType, info->SettleTypeLength, 1);
+	if(info->AllowOrigIssueAmt)
+		PrintDecimal("OrigIssueAmt", &(info->OrigIssueAmt), 1);
+	if(info->AllowCouponPaymentDate)
+		PrintUInt32("CouponPaymentDate", info->CouponPaymentDate, 1);
+	if(info->AllowCouponRate)
+		PrintDecimal("CouponRate", &(info->CouponRate), 1);
+	if(info->AllowSettlFixingDate)
+		PrintUInt32("SettlFixingDate", info->SettlFixingDate, 1);
+	if(info->AllowDividendNetPx)
+		PrintDecimal("DividendNetPx", &(info->DividendNetPx), 1);
+	if(info->AllowSecurityDesc)
+		PrintByteVector("SecurityDesc", info->SecurityDesc, info->SecurityDescLength, 1);
+	if(info->AllowEncodedSecurityDesc)
+		PrintByteVector("EncodedSecurityDesc", info->EncodedSecurityDesc, info->EncodedSecurityDescLength, 1);
+	if(info->AllowQuoteText)
+		PrintByteVector("QuoteText", info->QuoteText, info->QuoteTextLength, 1);
+	if(info->AllowGroupInstrAttrib)
+		PrintInt32("GroupInstrAttribCount", info->GroupInstrAttribCount, 1);
 
-	FastSecurityDefinitionGroupInstrAttribItemInfo* giaItemInfo = NULL;
+		FastSecurityDefinitionGroupInstrAttribItemInfo* giaItemInfo = NULL;
 
-	for(int i = 0; i < info->GroupInstrAttribCount; i++) {
-		giaItemInfo = info->GroupInstrAttrib[i];
-		PrintItemBegin("item", i, 1);
-		PrintInt32("InstrAttribType", giaItemInfo->InstrAttribType, 2);
-		PrintByteVector("InstrAttribValue", giaItemInfo->InstrAttribValue, giaItemInfo->InstrAttribValueLength, 2);
-		PrintItemEnd(1);
-	}
-
-	PrintString("Currency", info->Currency, info->CurrencyLength, 1);
-	PrintInt32("MarketSegmentGrpCount", info->MarketSegmentGrpCount, 1);
-
-	FastSecurityDefinitionMarketSegmentGrpItemInfo* msgItemInfo = NULL;
-
-	for(int i = 0; i < info->MarketSegmentGrpCount; i++) {
-		msgItemInfo = info->MarketSegmentGrp[i];
-		PrintItemBegin("item", i, 1);
-		PrintDecimal("RoundLot", &(msgItemInfo->RoundLot), 2);
-		PrintInt32("TradingSessionRulesGrpCount", msgItemInfo->TradingSessionRulesGrpCount, 2);
-
-		FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo* tsrgItemInfo = NULL;
-
-		for(int i = 0; i < msgItemInfo->TradingSessionRulesGrpCount; i++) {
-			tsrgItemInfo = msgItemInfo->TradingSessionRulesGrp[i];
-			PrintItemBegin("item", i, 2);
-			PrintString("TradingSessionID", tsrgItemInfo->TradingSessionID, tsrgItemInfo->TradingSessionIDLength, 3);
-			PrintString("TradingSessionSubID", tsrgItemInfo->TradingSessionSubID, tsrgItemInfo->TradingSessionSubIDLength, 3);
-			PrintInt32("SecurityTradingStatus", tsrgItemInfo->SecurityTradingStatus, 3);
-			PrintInt32("OrderNote", tsrgItemInfo->OrderNote, 3);
-			PrintItemEnd(2);
+		for(int i = 0; i < info->GroupInstrAttribCount; i++) {
+			giaItemInfo = info->GroupInstrAttrib[i];
+			PrintItemBegin("item", i, 1);
+			PrintInt32("InstrAttribType", giaItemInfo->InstrAttribType, 2);
+			if(giaItemInfo->AllowInstrAttribValue)
+				PrintByteVector("InstrAttribValue", giaItemInfo->InstrAttribValue, giaItemInfo->InstrAttribValueLength, 2);
+			PrintItemEnd(1);
 		}
 
-		PrintItemEnd(1);
-	}
+	if(info->AllowCurrency)
+		PrintString("Currency", info->Currency, info->CurrencyLength, 1);
+	if(info->AllowMarketSegmentGrp)
+		PrintInt32("MarketSegmentGrpCount", info->MarketSegmentGrpCount, 1);
 
-	PrintString("SettlCurrency", info->SettlCurrency, info->SettlCurrencyLength, 1);
-	PrintInt32("PriceType", info->PriceType, 1);
-	PrintString("StateSecurityID", info->StateSecurityID, info->StateSecurityIDLength, 1);
-	PrintByteVector("EncodedShortSecurityDesc", info->EncodedShortSecurityDesc, info->EncodedShortSecurityDescLength, 1);
-	PrintByteVector("MarketCode", info->MarketCode, info->MarketCodeLength, 1);
-	PrintDecimal("MinPriceIncrement", &(info->MinPriceIncrement), 1);
-	PrintDecimal("MktShareLimit", &(info->MktShareLimit), 1);
-	PrintDecimal("MktShareThreshold", &(info->MktShareThreshold), 1);
-	PrintDecimal("MaxOrdersVolume", &(info->MaxOrdersVolume), 1);
-	PrintDecimal("PriceMvmLimit", &(info->PriceMvmLimit), 1);
-	PrintDecimal("FaceValue", &(info->FaceValue), 1);
-	PrintDecimal("BaseSwapPx", &(info->BaseSwapPx), 1);
-	PrintDecimal("RepoToPx", &(info->RepoToPx), 1);
-	PrintDecimal("BuyBackPx", &(info->BuyBackPx), 1);
-	PrintUInt32("BuyBackDate", info->BuyBackDate, 1);
-	PrintDecimal("NoSharesIssued", &(info->NoSharesIssued), 1);
-	PrintDecimal("HighLimit", &(info->HighLimit), 1);
-	PrintDecimal("LowLimit", &(info->LowLimit), 1);
-	PrintInt32("NumOfDaysToMaturity", info->NumOfDaysToMaturity, 1);
+		FastSecurityDefinitionMarketSegmentGrpItemInfo* msgItemInfo = NULL;
+
+		for(int i = 0; i < info->MarketSegmentGrpCount; i++) {
+			msgItemInfo = info->MarketSegmentGrp[i];
+			PrintItemBegin("item", i, 1);
+			if(msgItemInfo->AllowRoundLot)
+				PrintDecimal("RoundLot", &(msgItemInfo->RoundLot), 2);
+			if(msgItemInfo->AllowTradingSessionRulesGrp)
+				PrintInt32("TradingSessionRulesGrpCount", msgItemInfo->TradingSessionRulesGrpCount, 2);
+
+				FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo* tsrgItemInfo = NULL;
+
+				for(int i = 0; i < msgItemInfo->TradingSessionRulesGrpCount; i++) {
+					tsrgItemInfo = msgItemInfo->TradingSessionRulesGrp[i];
+					PrintItemBegin("item", i, 2);
+					PrintString("TradingSessionID", tsrgItemInfo->TradingSessionID, tsrgItemInfo->TradingSessionIDLength, 3);
+					if(tsrgItemInfo->AllowTradingSessionSubID)
+						PrintString("TradingSessionSubID", tsrgItemInfo->TradingSessionSubID, tsrgItemInfo->TradingSessionSubIDLength, 3);
+					if(tsrgItemInfo->AllowSecurityTradingStatus)
+						PrintInt32("SecurityTradingStatus", tsrgItemInfo->SecurityTradingStatus, 3);
+					if(tsrgItemInfo->AllowOrderNote)
+						PrintInt32("OrderNote", tsrgItemInfo->OrderNote, 3);
+					PrintItemEnd(2);
+				}
+
+			PrintItemEnd(1);
+		}
+
+	if(info->AllowSettlCurrency)
+		PrintString("SettlCurrency", info->SettlCurrency, info->SettlCurrencyLength, 1);
+	if(info->AllowPriceType)
+		PrintInt32("PriceType", info->PriceType, 1);
+	if(info->AllowStateSecurityID)
+		PrintString("StateSecurityID", info->StateSecurityID, info->StateSecurityIDLength, 1);
+	if(info->AllowEncodedShortSecurityDesc)
+		PrintByteVector("EncodedShortSecurityDesc", info->EncodedShortSecurityDesc, info->EncodedShortSecurityDescLength, 1);
+	if(info->AllowMarketCode)
+		PrintByteVector("MarketCode", info->MarketCode, info->MarketCodeLength, 1);
+	if(info->AllowMinPriceIncrement)
+		PrintDecimal("MinPriceIncrement", &(info->MinPriceIncrement), 1);
+	if(info->AllowMktShareLimit)
+		PrintDecimal("MktShareLimit", &(info->MktShareLimit), 1);
+	if(info->AllowMktShareThreshold)
+		PrintDecimal("MktShareThreshold", &(info->MktShareThreshold), 1);
+	if(info->AllowMaxOrdersVolume)
+		PrintDecimal("MaxOrdersVolume", &(info->MaxOrdersVolume), 1);
+	if(info->AllowPriceMvmLimit)
+		PrintDecimal("PriceMvmLimit", &(info->PriceMvmLimit), 1);
+	if(info->AllowFaceValue)
+		PrintDecimal("FaceValue", &(info->FaceValue), 1);
+	if(info->AllowBaseSwapPx)
+		PrintDecimal("BaseSwapPx", &(info->BaseSwapPx), 1);
+	if(info->AllowRepoToPx)
+		PrintDecimal("RepoToPx", &(info->RepoToPx), 1);
+	if(info->AllowBuyBackPx)
+		PrintDecimal("BuyBackPx", &(info->BuyBackPx), 1);
+	if(info->AllowBuyBackDate)
+		PrintUInt32("BuyBackDate", info->BuyBackDate, 1);
+	if(info->AllowNoSharesIssued)
+		PrintDecimal("NoSharesIssued", &(info->NoSharesIssued), 1);
+	if(info->AllowHighLimit)
+		PrintDecimal("HighLimit", &(info->HighLimit), 1);
+	if(info->AllowLowLimit)
+		PrintDecimal("LowLimit", &(info->LowLimit), 1);
+	if(info->AllowNumOfDaysToMaturity)
+		PrintInt32("NumOfDaysToMaturity", info->NumOfDaysToMaturity, 1);
 	printf("}\n");
 }
 void FastProtocolManager::PrintSecurityStatus(FastSecurityStatusInfo *info) {
@@ -1092,10 +1507,14 @@ void FastProtocolManager::PrintSecurityStatus(FastSecurityStatusInfo *info) {
 	PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 	PrintUInt64("SendingTime", info->SendingTime, 1);
 	PrintString("Symbol", info->Symbol, info->SymbolLength, 1);
-	PrintString("TradingSessionID", info->TradingSessionID, info->TradingSessionIDLength, 1);
-	PrintString("TradingSessionSubID", info->TradingSessionSubID, info->TradingSessionSubIDLength, 1);
-	PrintInt32("SecurityTradingStatus", info->SecurityTradingStatus, 1);
-	PrintUInt32("AuctionIndicator", info->AuctionIndicator, 1);
+	if(info->AllowTradingSessionID)
+		PrintString("TradingSessionID", info->TradingSessionID, info->TradingSessionIDLength, 1);
+	if(info->AllowTradingSessionSubID)
+		PrintString("TradingSessionSubID", info->TradingSessionSubID, info->TradingSessionSubIDLength, 1);
+	if(info->AllowSecurityTradingStatus)
+		PrintInt32("SecurityTradingStatus", info->SecurityTradingStatus, 1);
+	if(info->AllowAuctionIndicator)
+		PrintUInt32("AuctionIndicator", info->AuctionIndicator, 1);
 	printf("}\n");
 }
 void FastProtocolManager::PrintTradingSessionStatus(FastTradingSessionStatusInfo *info) {
@@ -1105,7 +1524,8 @@ void FastProtocolManager::PrintTradingSessionStatus(FastTradingSessionStatusInfo
 	PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 	PrintUInt64("SendingTime", info->SendingTime, 1);
 	PrintInt32("TradSesStatus", info->TradSesStatus, 1);
-	PrintString("Text", info->Text, info->TextLength, 1);
+	if(info->AllowText)
+		PrintString("Text", info->Text, info->TextLength, 1);
 	PrintString("TradingSessionID", info->TradingSessionID, info->TradingSessionIDLength, 1);
 	printf("}\n");
 }
@@ -1125,8 +1545,10 @@ void FastProtocolManager::PrintXmlLogon(FastLogonInfo *info) {
 	PrintXmlUInt32("MsgSeqNum", info->MsgSeqNum);
 	PrintXmlUInt64("SendingTime", info->SendingTime);
 	PrintXmlInt32("HeartBtInt", info->HeartBtInt);
-	PrintXmlString("Username", info->Username, info->UsernameLength);
-	PrintXmlString("Password", info->Password, info->PasswordLength);
+	if(info->AllowUsername)
+		PrintXmlString("Username", info->Username, info->UsernameLength);
+	if(info->AllowPassword)
+		PrintXmlString("Password", info->Password, info->PasswordLength);
 	PrintXmlString("DefaultApplVerID", info->DefaultApplVerID, info->DefaultApplVerIDLength);
 	PrintXmlItemEnd("FastLogonInfo");
 }
@@ -1137,7 +1559,8 @@ void FastProtocolManager::PrintXmlLogout(FastLogoutInfo *info) {
 	PrintXmlString("TargetCompID", info->TargetCompID, info->TargetCompIDLength);
 	PrintXmlUInt32("MsgSeqNum", info->MsgSeqNum);
 	PrintXmlUInt64("SendingTime", info->SendingTime);
-	PrintXmlString("Text", info->Text, info->TextLength);
+	if(info->AllowText)
+		PrintXmlString("Text", info->Text, info->TextLength);
 	PrintXmlItemEnd("FastLogoutInfo");
 }
 void FastProtocolManager::PrintXmlGeneric(FastGenericInfo *info) {
@@ -1146,16 +1569,24 @@ void FastProtocolManager::PrintXmlGeneric(FastGenericInfo *info) {
 	PrintXmlInt32("TemplateId", 2103);
 	PrintXmlUInt32("MsgSeqNum", info->MsgSeqNum);
 	PrintXmlUInt64("SendingTime", info->SendingTime);
-	PrintXmlString("TradingSessionID", info->TradingSessionID, info->TradingSessionIDLength);
+	if(info->AllowTradingSessionID)
+		PrintXmlString("TradingSessionID", info->TradingSessionID, info->TradingSessionIDLength);
 	PrintXmlString("Symbol", info->Symbol, info->SymbolLength);
-	PrintXmlUInt32("LastMsgSeqNumProcessed", info->LastMsgSeqNumProcessed);
+	if(info->AllowLastMsgSeqNumProcessed)
+		PrintXmlUInt32("LastMsgSeqNumProcessed", info->LastMsgSeqNumProcessed);
 	PrintXmlInt32("RptSeq", info->RptSeq);
-	PrintXmlUInt32("LastFragment", info->LastFragment);
-	PrintXmlUInt32("RouteFirst", info->RouteFirst);
-	PrintXmlInt32("TradSesStatus", info->TradSesStatus);
-	PrintXmlInt32("MDSecurityTradingStatus", info->MDSecurityTradingStatus);
-	PrintXmlUInt32("AuctionIndicator", info->AuctionIndicator);
-	PrintXmlDecimal("NetChgPrevDay", &(info->NetChgPrevDay));
+	if(info->AllowLastFragment)
+		PrintXmlUInt32("LastFragment", info->LastFragment);
+	if(info->AllowRouteFirst)
+		PrintXmlUInt32("RouteFirst", info->RouteFirst);
+	if(info->AllowTradSesStatus)
+		PrintXmlInt32("TradSesStatus", info->TradSesStatus);
+	if(info->AllowMDSecurityTradingStatus)
+		PrintXmlInt32("MDSecurityTradingStatus", info->MDSecurityTradingStatus);
+	if(info->AllowAuctionIndicator)
+		PrintXmlUInt32("AuctionIndicator", info->AuctionIndicator);
+	if(info->AllowNetChgPrevDay)
+		PrintXmlDecimal("NetChgPrevDay", &(info->NetChgPrevDay));
 	PrintXmlInt32("GroupMDEntriesCount", info->GroupMDEntriesCount);
 
 	FastGenericItemInfo* gmdeItemInfo = NULL;
@@ -1163,48 +1594,90 @@ void FastProtocolManager::PrintXmlGeneric(FastGenericInfo *info) {
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 		gmdeItemInfo = info->GroupMDEntries[i];
 		PrintXmlItemBegin("item", i);
-		PrintXmlString("MDEntryType", gmdeItemInfo->MDEntryType, gmdeItemInfo->MDEntryTypeLength);
-		PrintXmlString("MDEntryID", gmdeItemInfo->MDEntryID, gmdeItemInfo->MDEntryIDLength);
-		PrintXmlUInt32("MDEntryDate", gmdeItemInfo->MDEntryDate);
-		PrintXmlUInt32("MDEntryTime", gmdeItemInfo->MDEntryTime);
-		PrintXmlUInt32("OrigTime", gmdeItemInfo->OrigTime);
-		PrintXmlDecimal("MDEntryPx", &(gmdeItemInfo->MDEntryPx));
-		PrintXmlDecimal("MDEntrySize", &(gmdeItemInfo->MDEntrySize));
-		PrintXmlString("QuoteCondition", gmdeItemInfo->QuoteCondition, gmdeItemInfo->QuoteConditionLength);
-		PrintXmlString("TradeCondition", gmdeItemInfo->TradeCondition, gmdeItemInfo->TradeConditionLength);
-		PrintXmlString("OpenCloseSettlFlag", gmdeItemInfo->OpenCloseSettlFlag, gmdeItemInfo->OpenCloseSettlFlagLength);
-		PrintXmlString("OrdType", gmdeItemInfo->OrdType, gmdeItemInfo->OrdTypeLength);
-		PrintXmlUInt32("EffectiveTime", gmdeItemInfo->EffectiveTime);
-		PrintXmlUInt32("StartTime", gmdeItemInfo->StartTime);
-		PrintXmlDecimal("AccruedInterestAmt", &(gmdeItemInfo->AccruedInterestAmt));
-		PrintXmlDecimal("ChgFromWAPrice", &(gmdeItemInfo->ChgFromWAPrice));
-		PrintXmlDecimal("ChgOpenInterest", &(gmdeItemInfo->ChgOpenInterest));
-		PrintXmlDecimal("BidMarketSize", &(gmdeItemInfo->BidMarketSize));
-		PrintXmlDecimal("AskMarketSize", &(gmdeItemInfo->AskMarketSize));
-		PrintXmlInt32("TotalNumOfTrades", gmdeItemInfo->TotalNumOfTrades);
-		PrintXmlDecimal("TradeValue", &(gmdeItemInfo->TradeValue));
-		PrintXmlDecimal("Yield", &(gmdeItemInfo->Yield));
-		PrintXmlDecimal("TotalVolume", &(gmdeItemInfo->TotalVolume));
-		PrintXmlInt32("OfferNbOr", gmdeItemInfo->OfferNbOr);
-		PrintXmlInt32("BidNbOr", gmdeItemInfo->BidNbOr);
-		PrintXmlDecimal("ChgFromSettlmnt", &(gmdeItemInfo->ChgFromSettlmnt));
-		PrintXmlUInt32("SettlDate", gmdeItemInfo->SettlDate);
-		PrintXmlString("SettleType", gmdeItemInfo->SettleType, gmdeItemInfo->SettleTypeLength);
-		PrintXmlInt32("SumQtyOfBest", gmdeItemInfo->SumQtyOfBest);
-		PrintXmlString("OrderSide", gmdeItemInfo->OrderSide, gmdeItemInfo->OrderSideLength);
-		PrintXmlString("OrderStatus", gmdeItemInfo->OrderStatus, gmdeItemInfo->OrderStatusLength);
-		PrintXmlDecimal("MinCurrPx", &(gmdeItemInfo->MinCurrPx));
-		PrintXmlUInt32("MinCurrPxChgTime", gmdeItemInfo->MinCurrPxChgTime);
-		PrintXmlUInt32("VolumeIndicator", gmdeItemInfo->VolumeIndicator);
-		PrintXmlDecimal("Price", &(gmdeItemInfo->Price));
-		PrintXmlInt32("PriceType", gmdeItemInfo->PriceType);
-		PrintXmlDecimal("NominalValue", &(gmdeItemInfo->NominalValue));
-		PrintXmlDecimal("RepoToPx", &(gmdeItemInfo->RepoToPx));
-		PrintXmlDecimal("BuyBackPx", &(gmdeItemInfo->BuyBackPx));
-		PrintXmlUInt32("BuyBackDate", gmdeItemInfo->BuyBackDate);
-		PrintXmlString("DealNumber", gmdeItemInfo->DealNumber, gmdeItemInfo->DealNumberLength);
-		PrintXmlString("CXFlag", gmdeItemInfo->CXFlag, gmdeItemInfo->CXFlagLength);
-		PrintXmlString("TradingSessionSubID", gmdeItemInfo->TradingSessionSubID, gmdeItemInfo->TradingSessionSubIDLength);
+		if(gmdeItemInfo->AllowMDEntryType)
+			PrintXmlString("MDEntryType", gmdeItemInfo->MDEntryType, gmdeItemInfo->MDEntryTypeLength);
+		if(gmdeItemInfo->AllowMDEntryID)
+			PrintXmlString("MDEntryID", gmdeItemInfo->MDEntryID, gmdeItemInfo->MDEntryIDLength);
+		if(gmdeItemInfo->AllowMDEntryDate)
+			PrintXmlUInt32("MDEntryDate", gmdeItemInfo->MDEntryDate);
+		if(gmdeItemInfo->AllowMDEntryTime)
+			PrintXmlUInt32("MDEntryTime", gmdeItemInfo->MDEntryTime);
+		if(gmdeItemInfo->AllowOrigTime)
+			PrintXmlUInt32("OrigTime", gmdeItemInfo->OrigTime);
+		if(gmdeItemInfo->AllowMDEntryPx)
+			PrintXmlDecimal("MDEntryPx", &(gmdeItemInfo->MDEntryPx));
+		if(gmdeItemInfo->AllowMDEntrySize)
+			PrintXmlDecimal("MDEntrySize", &(gmdeItemInfo->MDEntrySize));
+		if(gmdeItemInfo->AllowQuoteCondition)
+			PrintXmlString("QuoteCondition", gmdeItemInfo->QuoteCondition, gmdeItemInfo->QuoteConditionLength);
+		if(gmdeItemInfo->AllowTradeCondition)
+			PrintXmlString("TradeCondition", gmdeItemInfo->TradeCondition, gmdeItemInfo->TradeConditionLength);
+		if(gmdeItemInfo->AllowOpenCloseSettlFlag)
+			PrintXmlString("OpenCloseSettlFlag", gmdeItemInfo->OpenCloseSettlFlag, gmdeItemInfo->OpenCloseSettlFlagLength);
+		if(gmdeItemInfo->AllowOrdType)
+			PrintXmlString("OrdType", gmdeItemInfo->OrdType, gmdeItemInfo->OrdTypeLength);
+		if(gmdeItemInfo->AllowEffectiveTime)
+			PrintXmlUInt32("EffectiveTime", gmdeItemInfo->EffectiveTime);
+		if(gmdeItemInfo->AllowStartTime)
+			PrintXmlUInt32("StartTime", gmdeItemInfo->StartTime);
+		if(gmdeItemInfo->AllowAccruedInterestAmt)
+			PrintXmlDecimal("AccruedInterestAmt", &(gmdeItemInfo->AccruedInterestAmt));
+		if(gmdeItemInfo->AllowChgFromWAPrice)
+			PrintXmlDecimal("ChgFromWAPrice", &(gmdeItemInfo->ChgFromWAPrice));
+		if(gmdeItemInfo->AllowChgOpenInterest)
+			PrintXmlDecimal("ChgOpenInterest", &(gmdeItemInfo->ChgOpenInterest));
+		if(gmdeItemInfo->AllowBidMarketSize)
+			PrintXmlDecimal("BidMarketSize", &(gmdeItemInfo->BidMarketSize));
+		if(gmdeItemInfo->AllowAskMarketSize)
+			PrintXmlDecimal("AskMarketSize", &(gmdeItemInfo->AskMarketSize));
+		if(gmdeItemInfo->AllowTotalNumOfTrades)
+			PrintXmlInt32("TotalNumOfTrades", gmdeItemInfo->TotalNumOfTrades);
+		if(gmdeItemInfo->AllowTradeValue)
+			PrintXmlDecimal("TradeValue", &(gmdeItemInfo->TradeValue));
+		if(gmdeItemInfo->AllowYield)
+			PrintXmlDecimal("Yield", &(gmdeItemInfo->Yield));
+		if(gmdeItemInfo->AllowTotalVolume)
+			PrintXmlDecimal("TotalVolume", &(gmdeItemInfo->TotalVolume));
+		if(gmdeItemInfo->AllowOfferNbOr)
+			PrintXmlInt32("OfferNbOr", gmdeItemInfo->OfferNbOr);
+		if(gmdeItemInfo->AllowBidNbOr)
+			PrintXmlInt32("BidNbOr", gmdeItemInfo->BidNbOr);
+		if(gmdeItemInfo->AllowChgFromSettlmnt)
+			PrintXmlDecimal("ChgFromSettlmnt", &(gmdeItemInfo->ChgFromSettlmnt));
+		if(gmdeItemInfo->AllowSettlDate)
+			PrintXmlUInt32("SettlDate", gmdeItemInfo->SettlDate);
+		if(gmdeItemInfo->AllowSettleType)
+			PrintXmlString("SettleType", gmdeItemInfo->SettleType, gmdeItemInfo->SettleTypeLength);
+		if(gmdeItemInfo->AllowSumQtyOfBest)
+			PrintXmlInt32("SumQtyOfBest", gmdeItemInfo->SumQtyOfBest);
+		if(gmdeItemInfo->AllowOrderSide)
+			PrintXmlString("OrderSide", gmdeItemInfo->OrderSide, gmdeItemInfo->OrderSideLength);
+		if(gmdeItemInfo->AllowOrderStatus)
+			PrintXmlString("OrderStatus", gmdeItemInfo->OrderStatus, gmdeItemInfo->OrderStatusLength);
+		if(gmdeItemInfo->AllowMinCurrPx)
+			PrintXmlDecimal("MinCurrPx", &(gmdeItemInfo->MinCurrPx));
+		if(gmdeItemInfo->AllowMinCurrPxChgTime)
+			PrintXmlUInt32("MinCurrPxChgTime", gmdeItemInfo->MinCurrPxChgTime);
+		if(gmdeItemInfo->AllowVolumeIndicator)
+			PrintXmlUInt32("VolumeIndicator", gmdeItemInfo->VolumeIndicator);
+		if(gmdeItemInfo->AllowPrice)
+			PrintXmlDecimal("Price", &(gmdeItemInfo->Price));
+		if(gmdeItemInfo->AllowPriceType)
+			PrintXmlInt32("PriceType", gmdeItemInfo->PriceType);
+		if(gmdeItemInfo->AllowNominalValue)
+			PrintXmlDecimal("NominalValue", &(gmdeItemInfo->NominalValue));
+		if(gmdeItemInfo->AllowRepoToPx)
+			PrintXmlDecimal("RepoToPx", &(gmdeItemInfo->RepoToPx));
+		if(gmdeItemInfo->AllowBuyBackPx)
+			PrintXmlDecimal("BuyBackPx", &(gmdeItemInfo->BuyBackPx));
+		if(gmdeItemInfo->AllowBuyBackDate)
+			PrintXmlUInt32("BuyBackDate", gmdeItemInfo->BuyBackDate);
+		if(gmdeItemInfo->AllowDealNumber)
+			PrintXmlString("DealNumber", gmdeItemInfo->DealNumber, gmdeItemInfo->DealNumberLength);
+		if(gmdeItemInfo->AllowCXFlag)
+			PrintXmlString("CXFlag", gmdeItemInfo->CXFlag, gmdeItemInfo->CXFlagLength);
+		if(gmdeItemInfo->AllowTradingSessionSubID)
+			PrintXmlString("TradingSessionSubID", gmdeItemInfo->TradingSessionSubID, gmdeItemInfo->TradingSessionSubIDLength);
 		PrintXmlItemEnd("item", i);
 	}
 
@@ -1223,53 +1696,100 @@ void FastProtocolManager::PrintXmlIncrementalGeneric(FastIncrementalGenericInfo 
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 		gmdeItemInfo = info->GroupMDEntries[i];
 		PrintXmlItemBegin("item", i);
-		PrintXmlUInt32("MDUpdateAction", gmdeItemInfo->MDUpdateAction);
-		PrintXmlString("MDEntryType", gmdeItemInfo->MDEntryType, gmdeItemInfo->MDEntryTypeLength);
-		PrintXmlString("MDEntryID", gmdeItemInfo->MDEntryID, gmdeItemInfo->MDEntryIDLength);
-		PrintXmlInt32("RptSeq", gmdeItemInfo->RptSeq);
-		PrintXmlUInt32("MDEntryDate", gmdeItemInfo->MDEntryDate);
-		PrintXmlUInt32("OrigTime", gmdeItemInfo->OrigTime);
-		PrintXmlUInt32("SettlDate", gmdeItemInfo->SettlDate);
-		PrintXmlString("SettleType", gmdeItemInfo->SettleType, gmdeItemInfo->SettleTypeLength);
-		PrintXmlUInt32("MDEntryTime", gmdeItemInfo->MDEntryTime);
-		PrintXmlUInt32("EffectiveTime", gmdeItemInfo->EffectiveTime);
-		PrintXmlUInt32("StartTime", gmdeItemInfo->StartTime);
-		PrintXmlString("Symbol", gmdeItemInfo->Symbol, gmdeItemInfo->SymbolLength);
-		PrintXmlDecimal("MDEntryPx", &(gmdeItemInfo->MDEntryPx));
-		PrintXmlDecimal("MDEntrySize", &(gmdeItemInfo->MDEntrySize));
-		PrintXmlString("QuoteCondition", gmdeItemInfo->QuoteCondition, gmdeItemInfo->QuoteConditionLength);
-		PrintXmlString("TradeCondition", gmdeItemInfo->TradeCondition, gmdeItemInfo->TradeConditionLength);
-		PrintXmlString("OpenCloseSettlFlag", gmdeItemInfo->OpenCloseSettlFlag, gmdeItemInfo->OpenCloseSettlFlagLength);
-		PrintXmlString("OrdType", gmdeItemInfo->OrdType, gmdeItemInfo->OrdTypeLength);
-		PrintXmlDecimal("NetChgPrevDay", &(gmdeItemInfo->NetChgPrevDay));
-		PrintXmlDecimal("AccruedInterestAmt", &(gmdeItemInfo->AccruedInterestAmt));
-		PrintXmlDecimal("ChgFromWAPrice", &(gmdeItemInfo->ChgFromWAPrice));
-		PrintXmlDecimal("ChgOpenInterest", &(gmdeItemInfo->ChgOpenInterest));
-		PrintXmlDecimal("BidMarketSize", &(gmdeItemInfo->BidMarketSize));
-		PrintXmlDecimal("AskMarketSize", &(gmdeItemInfo->AskMarketSize));
-		PrintXmlInt32("TotalNumOfTrades", gmdeItemInfo->TotalNumOfTrades);
-		PrintXmlDecimal("TradeValue", &(gmdeItemInfo->TradeValue));
-		PrintXmlDecimal("Yield", &(gmdeItemInfo->Yield));
-		PrintXmlDecimal("TotalVolume", &(gmdeItemInfo->TotalVolume));
-		PrintXmlInt32("OfferNbOr", gmdeItemInfo->OfferNbOr);
-		PrintXmlInt32("BidNbOr", gmdeItemInfo->BidNbOr);
-		PrintXmlDecimal("ChgFromSettlmnt", &(gmdeItemInfo->ChgFromSettlmnt));
-		PrintXmlInt32("SumQtyOfBest", gmdeItemInfo->SumQtyOfBest);
-		PrintXmlString("OrderSide", gmdeItemInfo->OrderSide, gmdeItemInfo->OrderSideLength);
-		PrintXmlString("OrderStatus", gmdeItemInfo->OrderStatus, gmdeItemInfo->OrderStatusLength);
-		PrintXmlDecimal("MinCurrPx", &(gmdeItemInfo->MinCurrPx));
-		PrintXmlUInt32("MinCurrPxChgTime", gmdeItemInfo->MinCurrPxChgTime);
-		PrintXmlUInt32("VolumeIndicator", gmdeItemInfo->VolumeIndicator);
-		PrintXmlDecimal("Price", &(gmdeItemInfo->Price));
-		PrintXmlInt32("PriceType", gmdeItemInfo->PriceType);
-		PrintXmlDecimal("NominalValue", &(gmdeItemInfo->NominalValue));
-		PrintXmlDecimal("RepoToPx", &(gmdeItemInfo->RepoToPx));
-		PrintXmlDecimal("BuyBackPx", &(gmdeItemInfo->BuyBackPx));
-		PrintXmlUInt32("BuyBackDate", gmdeItemInfo->BuyBackDate);
-		PrintXmlString("DealNumber", gmdeItemInfo->DealNumber, gmdeItemInfo->DealNumberLength);
-		PrintXmlString("CXFlag", gmdeItemInfo->CXFlag, gmdeItemInfo->CXFlagLength);
-		PrintXmlString("TradingSessionID", gmdeItemInfo->TradingSessionID, gmdeItemInfo->TradingSessionIDLength);
-		PrintXmlString("TradingSessionSubID", gmdeItemInfo->TradingSessionSubID, gmdeItemInfo->TradingSessionSubIDLength);
+		if(gmdeItemInfo->AllowMDUpdateAction)
+			PrintXmlUInt32("MDUpdateAction", gmdeItemInfo->MDUpdateAction);
+		if(gmdeItemInfo->AllowMDEntryType)
+			PrintXmlString("MDEntryType", gmdeItemInfo->MDEntryType, gmdeItemInfo->MDEntryTypeLength);
+		if(gmdeItemInfo->AllowMDEntryID)
+			PrintXmlString("MDEntryID", gmdeItemInfo->MDEntryID, gmdeItemInfo->MDEntryIDLength);
+		if(gmdeItemInfo->AllowRptSeq)
+			PrintXmlInt32("RptSeq", gmdeItemInfo->RptSeq);
+		if(gmdeItemInfo->AllowMDEntryDate)
+			PrintXmlUInt32("MDEntryDate", gmdeItemInfo->MDEntryDate);
+		if(gmdeItemInfo->AllowOrigTime)
+			PrintXmlUInt32("OrigTime", gmdeItemInfo->OrigTime);
+		if(gmdeItemInfo->AllowSettlDate)
+			PrintXmlUInt32("SettlDate", gmdeItemInfo->SettlDate);
+		if(gmdeItemInfo->AllowSettleType)
+			PrintXmlString("SettleType", gmdeItemInfo->SettleType, gmdeItemInfo->SettleTypeLength);
+		if(gmdeItemInfo->AllowMDEntryTime)
+			PrintXmlUInt32("MDEntryTime", gmdeItemInfo->MDEntryTime);
+		if(gmdeItemInfo->AllowEffectiveTime)
+			PrintXmlUInt32("EffectiveTime", gmdeItemInfo->EffectiveTime);
+		if(gmdeItemInfo->AllowStartTime)
+			PrintXmlUInt32("StartTime", gmdeItemInfo->StartTime);
+		if(gmdeItemInfo->AllowSymbol)
+			PrintXmlString("Symbol", gmdeItemInfo->Symbol, gmdeItemInfo->SymbolLength);
+		if(gmdeItemInfo->AllowMDEntryPx)
+			PrintXmlDecimal("MDEntryPx", &(gmdeItemInfo->MDEntryPx));
+		if(gmdeItemInfo->AllowMDEntrySize)
+			PrintXmlDecimal("MDEntrySize", &(gmdeItemInfo->MDEntrySize));
+		if(gmdeItemInfo->AllowQuoteCondition)
+			PrintXmlString("QuoteCondition", gmdeItemInfo->QuoteCondition, gmdeItemInfo->QuoteConditionLength);
+		if(gmdeItemInfo->AllowTradeCondition)
+			PrintXmlString("TradeCondition", gmdeItemInfo->TradeCondition, gmdeItemInfo->TradeConditionLength);
+		if(gmdeItemInfo->AllowOpenCloseSettlFlag)
+			PrintXmlString("OpenCloseSettlFlag", gmdeItemInfo->OpenCloseSettlFlag, gmdeItemInfo->OpenCloseSettlFlagLength);
+		if(gmdeItemInfo->AllowOrdType)
+			PrintXmlString("OrdType", gmdeItemInfo->OrdType, gmdeItemInfo->OrdTypeLength);
+		if(gmdeItemInfo->AllowNetChgPrevDay)
+			PrintXmlDecimal("NetChgPrevDay", &(gmdeItemInfo->NetChgPrevDay));
+		if(gmdeItemInfo->AllowAccruedInterestAmt)
+			PrintXmlDecimal("AccruedInterestAmt", &(gmdeItemInfo->AccruedInterestAmt));
+		if(gmdeItemInfo->AllowChgFromWAPrice)
+			PrintXmlDecimal("ChgFromWAPrice", &(gmdeItemInfo->ChgFromWAPrice));
+		if(gmdeItemInfo->AllowChgOpenInterest)
+			PrintXmlDecimal("ChgOpenInterest", &(gmdeItemInfo->ChgOpenInterest));
+		if(gmdeItemInfo->AllowBidMarketSize)
+			PrintXmlDecimal("BidMarketSize", &(gmdeItemInfo->BidMarketSize));
+		if(gmdeItemInfo->AllowAskMarketSize)
+			PrintXmlDecimal("AskMarketSize", &(gmdeItemInfo->AskMarketSize));
+		if(gmdeItemInfo->AllowTotalNumOfTrades)
+			PrintXmlInt32("TotalNumOfTrades", gmdeItemInfo->TotalNumOfTrades);
+		if(gmdeItemInfo->AllowTradeValue)
+			PrintXmlDecimal("TradeValue", &(gmdeItemInfo->TradeValue));
+		if(gmdeItemInfo->AllowYield)
+			PrintXmlDecimal("Yield", &(gmdeItemInfo->Yield));
+		if(gmdeItemInfo->AllowTotalVolume)
+			PrintXmlDecimal("TotalVolume", &(gmdeItemInfo->TotalVolume));
+		if(gmdeItemInfo->AllowOfferNbOr)
+			PrintXmlInt32("OfferNbOr", gmdeItemInfo->OfferNbOr);
+		if(gmdeItemInfo->AllowBidNbOr)
+			PrintXmlInt32("BidNbOr", gmdeItemInfo->BidNbOr);
+		if(gmdeItemInfo->AllowChgFromSettlmnt)
+			PrintXmlDecimal("ChgFromSettlmnt", &(gmdeItemInfo->ChgFromSettlmnt));
+		if(gmdeItemInfo->AllowSumQtyOfBest)
+			PrintXmlInt32("SumQtyOfBest", gmdeItemInfo->SumQtyOfBest);
+		if(gmdeItemInfo->AllowOrderSide)
+			PrintXmlString("OrderSide", gmdeItemInfo->OrderSide, gmdeItemInfo->OrderSideLength);
+		if(gmdeItemInfo->AllowOrderStatus)
+			PrintXmlString("OrderStatus", gmdeItemInfo->OrderStatus, gmdeItemInfo->OrderStatusLength);
+		if(gmdeItemInfo->AllowMinCurrPx)
+			PrintXmlDecimal("MinCurrPx", &(gmdeItemInfo->MinCurrPx));
+		if(gmdeItemInfo->AllowMinCurrPxChgTime)
+			PrintXmlUInt32("MinCurrPxChgTime", gmdeItemInfo->MinCurrPxChgTime);
+		if(gmdeItemInfo->AllowVolumeIndicator)
+			PrintXmlUInt32("VolumeIndicator", gmdeItemInfo->VolumeIndicator);
+		if(gmdeItemInfo->AllowPrice)
+			PrintXmlDecimal("Price", &(gmdeItemInfo->Price));
+		if(gmdeItemInfo->AllowPriceType)
+			PrintXmlInt32("PriceType", gmdeItemInfo->PriceType);
+		if(gmdeItemInfo->AllowNominalValue)
+			PrintXmlDecimal("NominalValue", &(gmdeItemInfo->NominalValue));
+		if(gmdeItemInfo->AllowRepoToPx)
+			PrintXmlDecimal("RepoToPx", &(gmdeItemInfo->RepoToPx));
+		if(gmdeItemInfo->AllowBuyBackPx)
+			PrintXmlDecimal("BuyBackPx", &(gmdeItemInfo->BuyBackPx));
+		if(gmdeItemInfo->AllowBuyBackDate)
+			PrintXmlUInt32("BuyBackDate", gmdeItemInfo->BuyBackDate);
+		if(gmdeItemInfo->AllowDealNumber)
+			PrintXmlString("DealNumber", gmdeItemInfo->DealNumber, gmdeItemInfo->DealNumberLength);
+		if(gmdeItemInfo->AllowCXFlag)
+			PrintXmlString("CXFlag", gmdeItemInfo->CXFlag, gmdeItemInfo->CXFlagLength);
+		if(gmdeItemInfo->AllowTradingSessionID)
+			PrintXmlString("TradingSessionID", gmdeItemInfo->TradingSessionID, gmdeItemInfo->TradingSessionIDLength);
+		if(gmdeItemInfo->AllowTradingSessionSubID)
+			PrintXmlString("TradingSessionSubID", gmdeItemInfo->TradingSessionSubID, gmdeItemInfo->TradingSessionSubIDLength);
 		PrintXmlItemEnd("item", i);
 	}
 
@@ -1281,15 +1801,22 @@ void FastProtocolManager::PrintXmlOLSFOND(FastOLSFONDInfo *info) {
 	PrintXmlInt32("TemplateId", 2410);
 	PrintXmlUInt32("MsgSeqNum", info->MsgSeqNum);
 	PrintXmlUInt64("SendingTime", info->SendingTime);
-	PrintXmlUInt32("LastMsgSeqNumProcessed", info->LastMsgSeqNumProcessed);
+	if(info->AllowLastMsgSeqNumProcessed)
+		PrintXmlUInt32("LastMsgSeqNumProcessed", info->LastMsgSeqNumProcessed);
 	PrintXmlInt32("RptSeq", info->RptSeq);
-	PrintXmlUInt32("LastFragment", info->LastFragment);
-	PrintXmlUInt32("RouteFirst", info->RouteFirst);
-	PrintXmlInt32("TradSesStatus", info->TradSesStatus);
-	PrintXmlString("TradingSessionID", info->TradingSessionID, info->TradingSessionIDLength);
+	if(info->AllowLastFragment)
+		PrintXmlUInt32("LastFragment", info->LastFragment);
+	if(info->AllowRouteFirst)
+		PrintXmlUInt32("RouteFirst", info->RouteFirst);
+	if(info->AllowTradSesStatus)
+		PrintXmlInt32("TradSesStatus", info->TradSesStatus);
+	if(info->AllowTradingSessionID)
+		PrintXmlString("TradingSessionID", info->TradingSessionID, info->TradingSessionIDLength);
 	PrintXmlString("Symbol", info->Symbol, info->SymbolLength);
-	PrintXmlInt32("MDSecurityTradingStatus", info->MDSecurityTradingStatus);
-	PrintXmlUInt32("AuctionIndicator", info->AuctionIndicator);
+	if(info->AllowMDSecurityTradingStatus)
+		PrintXmlInt32("MDSecurityTradingStatus", info->MDSecurityTradingStatus);
+	if(info->AllowAuctionIndicator)
+		PrintXmlUInt32("AuctionIndicator", info->AuctionIndicator);
 	PrintXmlInt32("GroupMDEntriesCount", info->GroupMDEntriesCount);
 
 	FastOLSFONDItemInfo* gmdeItemInfo = NULL;
@@ -1297,19 +1824,32 @@ void FastProtocolManager::PrintXmlOLSFOND(FastOLSFONDInfo *info) {
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 		gmdeItemInfo = info->GroupMDEntries[i];
 		PrintXmlItemBegin("item", i);
-		PrintXmlString("MDEntryType", gmdeItemInfo->MDEntryType, gmdeItemInfo->MDEntryTypeLength);
-		PrintXmlString("MDEntryID", gmdeItemInfo->MDEntryID, gmdeItemInfo->MDEntryIDLength);
-		PrintXmlUInt32("MDEntryDate", gmdeItemInfo->MDEntryDate);
-		PrintXmlUInt32("MDEntryTime", gmdeItemInfo->MDEntryTime);
-		PrintXmlUInt32("OrigTime", gmdeItemInfo->OrigTime);
-		PrintXmlDecimal("MDEntryPx", &(gmdeItemInfo->MDEntryPx));
-		PrintXmlDecimal("MDEntrySize", &(gmdeItemInfo->MDEntrySize));
-		PrintXmlString("DealNumber", gmdeItemInfo->DealNumber, gmdeItemInfo->DealNumberLength);
-		PrintXmlDecimal("Yield", &(gmdeItemInfo->Yield));
-		PrintXmlString("OrderStatus", gmdeItemInfo->OrderStatus, gmdeItemInfo->OrderStatusLength);
-		PrintXmlString("OrdType", gmdeItemInfo->OrdType, gmdeItemInfo->OrdTypeLength);
-		PrintXmlDecimal("TotalVolume", &(gmdeItemInfo->TotalVolume));
-		PrintXmlString("TradingSessionSubID", gmdeItemInfo->TradingSessionSubID, gmdeItemInfo->TradingSessionSubIDLength);
+		if(gmdeItemInfo->AllowMDEntryType)
+			PrintXmlString("MDEntryType", gmdeItemInfo->MDEntryType, gmdeItemInfo->MDEntryTypeLength);
+		if(gmdeItemInfo->AllowMDEntryID)
+			PrintXmlString("MDEntryID", gmdeItemInfo->MDEntryID, gmdeItemInfo->MDEntryIDLength);
+		if(gmdeItemInfo->AllowMDEntryDate)
+			PrintXmlUInt32("MDEntryDate", gmdeItemInfo->MDEntryDate);
+		if(gmdeItemInfo->AllowMDEntryTime)
+			PrintXmlUInt32("MDEntryTime", gmdeItemInfo->MDEntryTime);
+		if(gmdeItemInfo->AllowOrigTime)
+			PrintXmlUInt32("OrigTime", gmdeItemInfo->OrigTime);
+		if(gmdeItemInfo->AllowMDEntryPx)
+			PrintXmlDecimal("MDEntryPx", &(gmdeItemInfo->MDEntryPx));
+		if(gmdeItemInfo->AllowMDEntrySize)
+			PrintXmlDecimal("MDEntrySize", &(gmdeItemInfo->MDEntrySize));
+		if(gmdeItemInfo->AllowDealNumber)
+			PrintXmlString("DealNumber", gmdeItemInfo->DealNumber, gmdeItemInfo->DealNumberLength);
+		if(gmdeItemInfo->AllowYield)
+			PrintXmlDecimal("Yield", &(gmdeItemInfo->Yield));
+		if(gmdeItemInfo->AllowOrderStatus)
+			PrintXmlString("OrderStatus", gmdeItemInfo->OrderStatus, gmdeItemInfo->OrderStatusLength);
+		if(gmdeItemInfo->AllowOrdType)
+			PrintXmlString("OrdType", gmdeItemInfo->OrdType, gmdeItemInfo->OrdTypeLength);
+		if(gmdeItemInfo->AllowTotalVolume)
+			PrintXmlDecimal("TotalVolume", &(gmdeItemInfo->TotalVolume));
+		if(gmdeItemInfo->AllowTradingSessionSubID)
+			PrintXmlString("TradingSessionSubID", gmdeItemInfo->TradingSessionSubID, gmdeItemInfo->TradingSessionSubIDLength);
 		PrintXmlItemEnd("item", i);
 	}
 
@@ -1321,14 +1861,20 @@ void FastProtocolManager::PrintXmlOLSCURR(FastOLSCURRInfo *info) {
 	PrintXmlInt32("TemplateId", 3500);
 	PrintXmlUInt32("MsgSeqNum", info->MsgSeqNum);
 	PrintXmlUInt64("SendingTime", info->SendingTime);
-	PrintXmlUInt32("LastMsgSeqNumProcessed", info->LastMsgSeqNumProcessed);
+	if(info->AllowLastMsgSeqNumProcessed)
+		PrintXmlUInt32("LastMsgSeqNumProcessed", info->LastMsgSeqNumProcessed);
 	PrintXmlInt32("RptSeq", info->RptSeq);
-	PrintXmlUInt32("LastFragment", info->LastFragment);
-	PrintXmlUInt32("RouteFirst", info->RouteFirst);
-	PrintXmlInt32("TradSesStatus", info->TradSesStatus);
-	PrintXmlString("TradingSessionID", info->TradingSessionID, info->TradingSessionIDLength);
+	if(info->AllowLastFragment)
+		PrintXmlUInt32("LastFragment", info->LastFragment);
+	if(info->AllowRouteFirst)
+		PrintXmlUInt32("RouteFirst", info->RouteFirst);
+	if(info->AllowTradSesStatus)
+		PrintXmlInt32("TradSesStatus", info->TradSesStatus);
+	if(info->AllowTradingSessionID)
+		PrintXmlString("TradingSessionID", info->TradingSessionID, info->TradingSessionIDLength);
 	PrintXmlString("Symbol", info->Symbol, info->SymbolLength);
-	PrintXmlInt32("MDSecurityTradingStatus", info->MDSecurityTradingStatus);
+	if(info->AllowMDSecurityTradingStatus)
+		PrintXmlInt32("MDSecurityTradingStatus", info->MDSecurityTradingStatus);
 	PrintXmlInt32("GroupMDEntriesCount", info->GroupMDEntriesCount);
 
 	FastOLSCURRItemInfo* gmdeItemInfo = NULL;
@@ -1336,16 +1882,26 @@ void FastProtocolManager::PrintXmlOLSCURR(FastOLSCURRInfo *info) {
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 		gmdeItemInfo = info->GroupMDEntries[i];
 		PrintXmlItemBegin("item", i);
-		PrintXmlString("MDEntryType", gmdeItemInfo->MDEntryType, gmdeItemInfo->MDEntryTypeLength);
-		PrintXmlString("MDEntryID", gmdeItemInfo->MDEntryID, gmdeItemInfo->MDEntryIDLength);
-		PrintXmlUInt32("MDEntryDate", gmdeItemInfo->MDEntryDate);
-		PrintXmlUInt32("MDEntryTime", gmdeItemInfo->MDEntryTime);
-		PrintXmlUInt32("OrigTime", gmdeItemInfo->OrigTime);
-		PrintXmlDecimal("MDEntryPx", &(gmdeItemInfo->MDEntryPx));
-		PrintXmlDecimal("MDEntrySize", &(gmdeItemInfo->MDEntrySize));
-		PrintXmlString("DealNumber", gmdeItemInfo->DealNumber, gmdeItemInfo->DealNumberLength);
-		PrintXmlString("OrderStatus", gmdeItemInfo->OrderStatus, gmdeItemInfo->OrderStatusLength);
-		PrintXmlString("TradingSessionSubID", gmdeItemInfo->TradingSessionSubID, gmdeItemInfo->TradingSessionSubIDLength);
+		if(gmdeItemInfo->AllowMDEntryType)
+			PrintXmlString("MDEntryType", gmdeItemInfo->MDEntryType, gmdeItemInfo->MDEntryTypeLength);
+		if(gmdeItemInfo->AllowMDEntryID)
+			PrintXmlString("MDEntryID", gmdeItemInfo->MDEntryID, gmdeItemInfo->MDEntryIDLength);
+		if(gmdeItemInfo->AllowMDEntryDate)
+			PrintXmlUInt32("MDEntryDate", gmdeItemInfo->MDEntryDate);
+		if(gmdeItemInfo->AllowMDEntryTime)
+			PrintXmlUInt32("MDEntryTime", gmdeItemInfo->MDEntryTime);
+		if(gmdeItemInfo->AllowOrigTime)
+			PrintXmlUInt32("OrigTime", gmdeItemInfo->OrigTime);
+		if(gmdeItemInfo->AllowMDEntryPx)
+			PrintXmlDecimal("MDEntryPx", &(gmdeItemInfo->MDEntryPx));
+		if(gmdeItemInfo->AllowMDEntrySize)
+			PrintXmlDecimal("MDEntrySize", &(gmdeItemInfo->MDEntrySize));
+		if(gmdeItemInfo->AllowDealNumber)
+			PrintXmlString("DealNumber", gmdeItemInfo->DealNumber, gmdeItemInfo->DealNumberLength);
+		if(gmdeItemInfo->AllowOrderStatus)
+			PrintXmlString("OrderStatus", gmdeItemInfo->OrderStatus, gmdeItemInfo->OrderStatusLength);
+		if(gmdeItemInfo->AllowTradingSessionSubID)
+			PrintXmlString("TradingSessionSubID", gmdeItemInfo->TradingSessionSubID, gmdeItemInfo->TradingSessionSubIDLength);
 		PrintXmlItemEnd("item", i);
 	}
 
@@ -1357,15 +1913,22 @@ void FastProtocolManager::PrintXmlTLSFOND(FastTLSFONDInfo *info) {
 	PrintXmlInt32("TemplateId", 2411);
 	PrintXmlUInt32("MsgSeqNum", info->MsgSeqNum);
 	PrintXmlUInt64("SendingTime", info->SendingTime);
-	PrintXmlUInt32("LastMsgSeqNumProcessed", info->LastMsgSeqNumProcessed);
+	if(info->AllowLastMsgSeqNumProcessed)
+		PrintXmlUInt32("LastMsgSeqNumProcessed", info->LastMsgSeqNumProcessed);
 	PrintXmlInt32("RptSeq", info->RptSeq);
-	PrintXmlUInt32("LastFragment", info->LastFragment);
-	PrintXmlUInt32("RouteFirst", info->RouteFirst);
-	PrintXmlInt32("TradSesStatus", info->TradSesStatus);
-	PrintXmlString("TradingSessionID", info->TradingSessionID, info->TradingSessionIDLength);
+	if(info->AllowLastFragment)
+		PrintXmlUInt32("LastFragment", info->LastFragment);
+	if(info->AllowRouteFirst)
+		PrintXmlUInt32("RouteFirst", info->RouteFirst);
+	if(info->AllowTradSesStatus)
+		PrintXmlInt32("TradSesStatus", info->TradSesStatus);
+	if(info->AllowTradingSessionID)
+		PrintXmlString("TradingSessionID", info->TradingSessionID, info->TradingSessionIDLength);
 	PrintXmlString("Symbol", info->Symbol, info->SymbolLength);
-	PrintXmlInt32("MDSecurityTradingStatus", info->MDSecurityTradingStatus);
-	PrintXmlUInt32("AuctionIndicator", info->AuctionIndicator);
+	if(info->AllowMDSecurityTradingStatus)
+		PrintXmlInt32("MDSecurityTradingStatus", info->MDSecurityTradingStatus);
+	if(info->AllowAuctionIndicator)
+		PrintXmlUInt32("AuctionIndicator", info->AuctionIndicator);
 	PrintXmlInt32("GroupMDEntriesCount", info->GroupMDEntriesCount);
 
 	FastTLSFONDItemInfo* gmdeItemInfo = NULL;
@@ -1374,24 +1937,42 @@ void FastProtocolManager::PrintXmlTLSFOND(FastTLSFONDInfo *info) {
 		gmdeItemInfo = info->GroupMDEntries[i];
 		PrintXmlItemBegin("item", i);
 		PrintXmlString("MDEntryType", gmdeItemInfo->MDEntryType, gmdeItemInfo->MDEntryTypeLength);
-		PrintXmlString("MDEntryID", gmdeItemInfo->MDEntryID, gmdeItemInfo->MDEntryIDLength);
-		PrintXmlUInt32("MDEntryDate", gmdeItemInfo->MDEntryDate);
-		PrintXmlUInt32("MDEntryTime", gmdeItemInfo->MDEntryTime);
-		PrintXmlUInt32("OrigTime", gmdeItemInfo->OrigTime);
-		PrintXmlString("OrderSide", gmdeItemInfo->OrderSide, gmdeItemInfo->OrderSideLength);
-		PrintXmlDecimal("MDEntryPx", &(gmdeItemInfo->MDEntryPx));
-		PrintXmlDecimal("MDEntrySize", &(gmdeItemInfo->MDEntrySize));
-		PrintXmlDecimal("AccruedInterestAmt", &(gmdeItemInfo->AccruedInterestAmt));
-		PrintXmlDecimal("TradeValue", &(gmdeItemInfo->TradeValue));
-		PrintXmlDecimal("Yield", &(gmdeItemInfo->Yield));
-		PrintXmlUInt32("SettlDate", gmdeItemInfo->SettlDate);
-		PrintXmlString("SettleType", gmdeItemInfo->SettleType, gmdeItemInfo->SettleTypeLength);
-		PrintXmlDecimal("Price", &(gmdeItemInfo->Price));
-		PrintXmlInt32("PriceType", gmdeItemInfo->PriceType);
-		PrintXmlDecimal("RepoToPx", &(gmdeItemInfo->RepoToPx));
-		PrintXmlDecimal("BuyBackPx", &(gmdeItemInfo->BuyBackPx));
-		PrintXmlUInt32("BuyBackDate", gmdeItemInfo->BuyBackDate);
-		PrintXmlString("TradingSessionSubID", gmdeItemInfo->TradingSessionSubID, gmdeItemInfo->TradingSessionSubIDLength);
+		if(gmdeItemInfo->AllowMDEntryID)
+			PrintXmlString("MDEntryID", gmdeItemInfo->MDEntryID, gmdeItemInfo->MDEntryIDLength);
+		if(gmdeItemInfo->AllowMDEntryDate)
+			PrintXmlUInt32("MDEntryDate", gmdeItemInfo->MDEntryDate);
+		if(gmdeItemInfo->AllowMDEntryTime)
+			PrintXmlUInt32("MDEntryTime", gmdeItemInfo->MDEntryTime);
+		if(gmdeItemInfo->AllowOrigTime)
+			PrintXmlUInt32("OrigTime", gmdeItemInfo->OrigTime);
+		if(gmdeItemInfo->AllowOrderSide)
+			PrintXmlString("OrderSide", gmdeItemInfo->OrderSide, gmdeItemInfo->OrderSideLength);
+		if(gmdeItemInfo->AllowMDEntryPx)
+			PrintXmlDecimal("MDEntryPx", &(gmdeItemInfo->MDEntryPx));
+		if(gmdeItemInfo->AllowMDEntrySize)
+			PrintXmlDecimal("MDEntrySize", &(gmdeItemInfo->MDEntrySize));
+		if(gmdeItemInfo->AllowAccruedInterestAmt)
+			PrintXmlDecimal("AccruedInterestAmt", &(gmdeItemInfo->AccruedInterestAmt));
+		if(gmdeItemInfo->AllowTradeValue)
+			PrintXmlDecimal("TradeValue", &(gmdeItemInfo->TradeValue));
+		if(gmdeItemInfo->AllowYield)
+			PrintXmlDecimal("Yield", &(gmdeItemInfo->Yield));
+		if(gmdeItemInfo->AllowSettlDate)
+			PrintXmlUInt32("SettlDate", gmdeItemInfo->SettlDate);
+		if(gmdeItemInfo->AllowSettleType)
+			PrintXmlString("SettleType", gmdeItemInfo->SettleType, gmdeItemInfo->SettleTypeLength);
+		if(gmdeItemInfo->AllowPrice)
+			PrintXmlDecimal("Price", &(gmdeItemInfo->Price));
+		if(gmdeItemInfo->AllowPriceType)
+			PrintXmlInt32("PriceType", gmdeItemInfo->PriceType);
+		if(gmdeItemInfo->AllowRepoToPx)
+			PrintXmlDecimal("RepoToPx", &(gmdeItemInfo->RepoToPx));
+		if(gmdeItemInfo->AllowBuyBackPx)
+			PrintXmlDecimal("BuyBackPx", &(gmdeItemInfo->BuyBackPx));
+		if(gmdeItemInfo->AllowBuyBackDate)
+			PrintXmlUInt32("BuyBackDate", gmdeItemInfo->BuyBackDate);
+		if(gmdeItemInfo->AllowTradingSessionSubID)
+			PrintXmlString("TradingSessionSubID", gmdeItemInfo->TradingSessionSubID, gmdeItemInfo->TradingSessionSubIDLength);
 		PrintXmlItemEnd("item", i);
 	}
 
@@ -1403,14 +1984,20 @@ void FastProtocolManager::PrintXmlTLSCURR(FastTLSCURRInfo *info) {
 	PrintXmlInt32("TemplateId", 3501);
 	PrintXmlUInt32("MsgSeqNum", info->MsgSeqNum);
 	PrintXmlUInt64("SendingTime", info->SendingTime);
-	PrintXmlUInt32("LastMsgSeqNumProcessed", info->LastMsgSeqNumProcessed);
+	if(info->AllowLastMsgSeqNumProcessed)
+		PrintXmlUInt32("LastMsgSeqNumProcessed", info->LastMsgSeqNumProcessed);
 	PrintXmlInt32("RptSeq", info->RptSeq);
-	PrintXmlUInt32("LastFragment", info->LastFragment);
-	PrintXmlUInt32("RouteFirst", info->RouteFirst);
-	PrintXmlInt32("TradSesStatus", info->TradSesStatus);
-	PrintXmlString("TradingSessionID", info->TradingSessionID, info->TradingSessionIDLength);
+	if(info->AllowLastFragment)
+		PrintXmlUInt32("LastFragment", info->LastFragment);
+	if(info->AllowRouteFirst)
+		PrintXmlUInt32("RouteFirst", info->RouteFirst);
+	if(info->AllowTradSesStatus)
+		PrintXmlInt32("TradSesStatus", info->TradSesStatus);
+	if(info->AllowTradingSessionID)
+		PrintXmlString("TradingSessionID", info->TradingSessionID, info->TradingSessionIDLength);
 	PrintXmlString("Symbol", info->Symbol, info->SymbolLength);
-	PrintXmlInt32("MDSecurityTradingStatus", info->MDSecurityTradingStatus);
+	if(info->AllowMDSecurityTradingStatus)
+		PrintXmlInt32("MDSecurityTradingStatus", info->MDSecurityTradingStatus);
 	PrintXmlInt32("GroupMDEntriesCount", info->GroupMDEntriesCount);
 
 	FastTLSCURRItemInfo* gmdeItemInfo = NULL;
@@ -1419,22 +2006,38 @@ void FastProtocolManager::PrintXmlTLSCURR(FastTLSCURRInfo *info) {
 		gmdeItemInfo = info->GroupMDEntries[i];
 		PrintXmlItemBegin("item", i);
 		PrintXmlString("MDEntryType", gmdeItemInfo->MDEntryType, gmdeItemInfo->MDEntryTypeLength);
-		PrintXmlString("MDEntryID", gmdeItemInfo->MDEntryID, gmdeItemInfo->MDEntryIDLength);
-		PrintXmlUInt32("MDEntryDate", gmdeItemInfo->MDEntryDate);
-		PrintXmlUInt32("MDEntryTime", gmdeItemInfo->MDEntryTime);
-		PrintXmlUInt32("OrigTime", gmdeItemInfo->OrigTime);
-		PrintXmlString("OrderSide", gmdeItemInfo->OrderSide, gmdeItemInfo->OrderSideLength);
-		PrintXmlDecimal("MDEntryPx", &(gmdeItemInfo->MDEntryPx));
-		PrintXmlDecimal("MDEntrySize", &(gmdeItemInfo->MDEntrySize));
-		PrintXmlDecimal("TradeValue", &(gmdeItemInfo->TradeValue));
-		PrintXmlUInt32("SettlDate", gmdeItemInfo->SettlDate);
-		PrintXmlString("SettleType", gmdeItemInfo->SettleType, gmdeItemInfo->SettleTypeLength);
-		PrintXmlDecimal("Price", &(gmdeItemInfo->Price));
-		PrintXmlInt32("PriceType", gmdeItemInfo->PriceType);
-		PrintXmlDecimal("RepoToPx", &(gmdeItemInfo->RepoToPx));
-		PrintXmlDecimal("BuyBackPx", &(gmdeItemInfo->BuyBackPx));
-		PrintXmlUInt32("BuyBackDate", gmdeItemInfo->BuyBackDate);
-		PrintXmlString("TradingSessionSubID", gmdeItemInfo->TradingSessionSubID, gmdeItemInfo->TradingSessionSubIDLength);
+		if(gmdeItemInfo->AllowMDEntryID)
+			PrintXmlString("MDEntryID", gmdeItemInfo->MDEntryID, gmdeItemInfo->MDEntryIDLength);
+		if(gmdeItemInfo->AllowMDEntryDate)
+			PrintXmlUInt32("MDEntryDate", gmdeItemInfo->MDEntryDate);
+		if(gmdeItemInfo->AllowMDEntryTime)
+			PrintXmlUInt32("MDEntryTime", gmdeItemInfo->MDEntryTime);
+		if(gmdeItemInfo->AllowOrigTime)
+			PrintXmlUInt32("OrigTime", gmdeItemInfo->OrigTime);
+		if(gmdeItemInfo->AllowOrderSide)
+			PrintXmlString("OrderSide", gmdeItemInfo->OrderSide, gmdeItemInfo->OrderSideLength);
+		if(gmdeItemInfo->AllowMDEntryPx)
+			PrintXmlDecimal("MDEntryPx", &(gmdeItemInfo->MDEntryPx));
+		if(gmdeItemInfo->AllowMDEntrySize)
+			PrintXmlDecimal("MDEntrySize", &(gmdeItemInfo->MDEntrySize));
+		if(gmdeItemInfo->AllowTradeValue)
+			PrintXmlDecimal("TradeValue", &(gmdeItemInfo->TradeValue));
+		if(gmdeItemInfo->AllowSettlDate)
+			PrintXmlUInt32("SettlDate", gmdeItemInfo->SettlDate);
+		if(gmdeItemInfo->AllowSettleType)
+			PrintXmlString("SettleType", gmdeItemInfo->SettleType, gmdeItemInfo->SettleTypeLength);
+		if(gmdeItemInfo->AllowPrice)
+			PrintXmlDecimal("Price", &(gmdeItemInfo->Price));
+		if(gmdeItemInfo->AllowPriceType)
+			PrintXmlInt32("PriceType", gmdeItemInfo->PriceType);
+		if(gmdeItemInfo->AllowRepoToPx)
+			PrintXmlDecimal("RepoToPx", &(gmdeItemInfo->RepoToPx));
+		if(gmdeItemInfo->AllowBuyBackPx)
+			PrintXmlDecimal("BuyBackPx", &(gmdeItemInfo->BuyBackPx));
+		if(gmdeItemInfo->AllowBuyBackDate)
+			PrintXmlUInt32("BuyBackDate", gmdeItemInfo->BuyBackDate);
+		if(gmdeItemInfo->AllowTradingSessionSubID)
+			PrintXmlString("TradingSessionSubID", gmdeItemInfo->TradingSessionSubID, gmdeItemInfo->TradingSessionSubIDLength);
 		PrintXmlItemEnd("item", i);
 	}
 
@@ -1446,15 +2049,22 @@ void FastProtocolManager::PrintXmlOBSFOND(FastOBSFONDInfo *info) {
 	PrintXmlInt32("TemplateId", 2412);
 	PrintXmlUInt32("MsgSeqNum", info->MsgSeqNum);
 	PrintXmlUInt64("SendingTime", info->SendingTime);
-	PrintXmlUInt32("LastMsgSeqNumProcessed", info->LastMsgSeqNumProcessed);
+	if(info->AllowLastMsgSeqNumProcessed)
+		PrintXmlUInt32("LastMsgSeqNumProcessed", info->LastMsgSeqNumProcessed);
 	PrintXmlInt32("RptSeq", info->RptSeq);
-	PrintXmlInt32("TradSesStatus", info->TradSesStatus);
-	PrintXmlString("TradingSessionID", info->TradingSessionID, info->TradingSessionIDLength);
+	if(info->AllowTradSesStatus)
+		PrintXmlInt32("TradSesStatus", info->TradSesStatus);
+	if(info->AllowTradingSessionID)
+		PrintXmlString("TradingSessionID", info->TradingSessionID, info->TradingSessionIDLength);
 	PrintXmlString("Symbol", info->Symbol, info->SymbolLength);
-	PrintXmlUInt32("LastFragment", info->LastFragment);
-	PrintXmlUInt32("RouteFirst", info->RouteFirst);
-	PrintXmlInt32("MDSecurityTradingStatus", info->MDSecurityTradingStatus);
-	PrintXmlUInt32("AuctionIndicator", info->AuctionIndicator);
+	if(info->AllowLastFragment)
+		PrintXmlUInt32("LastFragment", info->LastFragment);
+	if(info->AllowRouteFirst)
+		PrintXmlUInt32("RouteFirst", info->RouteFirst);
+	if(info->AllowMDSecurityTradingStatus)
+		PrintXmlInt32("MDSecurityTradingStatus", info->MDSecurityTradingStatus);
+	if(info->AllowAuctionIndicator)
+		PrintXmlUInt32("AuctionIndicator", info->AuctionIndicator);
 	PrintXmlInt32("GroupMDEntriesCount", info->GroupMDEntriesCount);
 
 	FastOBSFONDItemInfo* gmdeItemInfo = NULL;
@@ -1462,16 +2072,26 @@ void FastProtocolManager::PrintXmlOBSFOND(FastOBSFONDInfo *info) {
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 		gmdeItemInfo = info->GroupMDEntries[i];
 		PrintXmlItemBegin("item", i);
-		PrintXmlString("MDEntryType", gmdeItemInfo->MDEntryType, gmdeItemInfo->MDEntryTypeLength);
-		PrintXmlString("MDEntryID", gmdeItemInfo->MDEntryID, gmdeItemInfo->MDEntryIDLength);
-		PrintXmlDecimal("MDEntryPx", &(gmdeItemInfo->MDEntryPx));
-		PrintXmlDecimal("MDEntrySize", &(gmdeItemInfo->MDEntrySize));
-		PrintXmlUInt32("MDEntryTime", gmdeItemInfo->MDEntryTime);
-		PrintXmlUInt32("OrigTime", gmdeItemInfo->OrigTime);
-		PrintXmlDecimal("Yield", &(gmdeItemInfo->Yield));
-		PrintXmlUInt32("EffectiveTime", gmdeItemInfo->EffectiveTime);
-		PrintXmlDecimal("NominalValue", &(gmdeItemInfo->NominalValue));
-		PrintXmlString("TradingSessionSubID", gmdeItemInfo->TradingSessionSubID, gmdeItemInfo->TradingSessionSubIDLength);
+		if(gmdeItemInfo->AllowMDEntryType)
+			PrintXmlString("MDEntryType", gmdeItemInfo->MDEntryType, gmdeItemInfo->MDEntryTypeLength);
+		if(gmdeItemInfo->AllowMDEntryID)
+			PrintXmlString("MDEntryID", gmdeItemInfo->MDEntryID, gmdeItemInfo->MDEntryIDLength);
+		if(gmdeItemInfo->AllowMDEntryPx)
+			PrintXmlDecimal("MDEntryPx", &(gmdeItemInfo->MDEntryPx));
+		if(gmdeItemInfo->AllowMDEntrySize)
+			PrintXmlDecimal("MDEntrySize", &(gmdeItemInfo->MDEntrySize));
+		if(gmdeItemInfo->AllowMDEntryTime)
+			PrintXmlUInt32("MDEntryTime", gmdeItemInfo->MDEntryTime);
+		if(gmdeItemInfo->AllowOrigTime)
+			PrintXmlUInt32("OrigTime", gmdeItemInfo->OrigTime);
+		if(gmdeItemInfo->AllowYield)
+			PrintXmlDecimal("Yield", &(gmdeItemInfo->Yield));
+		if(gmdeItemInfo->AllowEffectiveTime)
+			PrintXmlUInt32("EffectiveTime", gmdeItemInfo->EffectiveTime);
+		if(gmdeItemInfo->AllowNominalValue)
+			PrintXmlDecimal("NominalValue", &(gmdeItemInfo->NominalValue));
+		if(gmdeItemInfo->AllowTradingSessionSubID)
+			PrintXmlString("TradingSessionSubID", gmdeItemInfo->TradingSessionSubID, gmdeItemInfo->TradingSessionSubIDLength);
 		PrintXmlItemEnd("item", i);
 	}
 
@@ -1483,14 +2103,20 @@ void FastProtocolManager::PrintXmlOBSCURR(FastOBSCURRInfo *info) {
 	PrintXmlInt32("TemplateId", 3502);
 	PrintXmlUInt32("MsgSeqNum", info->MsgSeqNum);
 	PrintXmlUInt64("SendingTime", info->SendingTime);
-	PrintXmlUInt32("LastMsgSeqNumProcessed", info->LastMsgSeqNumProcessed);
+	if(info->AllowLastMsgSeqNumProcessed)
+		PrintXmlUInt32("LastMsgSeqNumProcessed", info->LastMsgSeqNumProcessed);
 	PrintXmlInt32("RptSeq", info->RptSeq);
-	PrintXmlInt32("TradSesStatus", info->TradSesStatus);
-	PrintXmlString("TradingSessionID", info->TradingSessionID, info->TradingSessionIDLength);
+	if(info->AllowTradSesStatus)
+		PrintXmlInt32("TradSesStatus", info->TradSesStatus);
+	if(info->AllowTradingSessionID)
+		PrintXmlString("TradingSessionID", info->TradingSessionID, info->TradingSessionIDLength);
 	PrintXmlString("Symbol", info->Symbol, info->SymbolLength);
-	PrintXmlUInt32("LastFragment", info->LastFragment);
-	PrintXmlUInt32("RouteFirst", info->RouteFirst);
-	PrintXmlInt32("MDSecurityTradingStatus", info->MDSecurityTradingStatus);
+	if(info->AllowLastFragment)
+		PrintXmlUInt32("LastFragment", info->LastFragment);
+	if(info->AllowRouteFirst)
+		PrintXmlUInt32("RouteFirst", info->RouteFirst);
+	if(info->AllowMDSecurityTradingStatus)
+		PrintXmlInt32("MDSecurityTradingStatus", info->MDSecurityTradingStatus);
 	PrintXmlInt32("GroupMDEntriesCount", info->GroupMDEntriesCount);
 
 	FastOBSCURRItemInfo* gmdeItemInfo = NULL;
@@ -1498,13 +2124,20 @@ void FastProtocolManager::PrintXmlOBSCURR(FastOBSCURRInfo *info) {
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 		gmdeItemInfo = info->GroupMDEntries[i];
 		PrintXmlItemBegin("item", i);
-		PrintXmlString("MDEntryType", gmdeItemInfo->MDEntryType, gmdeItemInfo->MDEntryTypeLength);
-		PrintXmlString("MDEntryID", gmdeItemInfo->MDEntryID, gmdeItemInfo->MDEntryIDLength);
-		PrintXmlDecimal("MDEntryPx", &(gmdeItemInfo->MDEntryPx));
-		PrintXmlDecimal("MDEntrySize", &(gmdeItemInfo->MDEntrySize));
-		PrintXmlUInt32("MDEntryTime", gmdeItemInfo->MDEntryTime);
-		PrintXmlUInt32("OrigTime", gmdeItemInfo->OrigTime);
-		PrintXmlString("TradingSessionSubID", gmdeItemInfo->TradingSessionSubID, gmdeItemInfo->TradingSessionSubIDLength);
+		if(gmdeItemInfo->AllowMDEntryType)
+			PrintXmlString("MDEntryType", gmdeItemInfo->MDEntryType, gmdeItemInfo->MDEntryTypeLength);
+		if(gmdeItemInfo->AllowMDEntryID)
+			PrintXmlString("MDEntryID", gmdeItemInfo->MDEntryID, gmdeItemInfo->MDEntryIDLength);
+		if(gmdeItemInfo->AllowMDEntryPx)
+			PrintXmlDecimal("MDEntryPx", &(gmdeItemInfo->MDEntryPx));
+		if(gmdeItemInfo->AllowMDEntrySize)
+			PrintXmlDecimal("MDEntrySize", &(gmdeItemInfo->MDEntrySize));
+		if(gmdeItemInfo->AllowMDEntryTime)
+			PrintXmlUInt32("MDEntryTime", gmdeItemInfo->MDEntryTime);
+		if(gmdeItemInfo->AllowOrigTime)
+			PrintXmlUInt32("OrigTime", gmdeItemInfo->OrigTime);
+		if(gmdeItemInfo->AllowTradingSessionSubID)
+			PrintXmlString("TradingSessionSubID", gmdeItemInfo->TradingSessionSubID, gmdeItemInfo->TradingSessionSubIDLength);
 		PrintXmlItemEnd("item", i);
 	}
 
@@ -1523,39 +2156,72 @@ void FastProtocolManager::PrintXmlIncrementalMSRFOND(FastIncrementalMSRFONDInfo 
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 		gmdeItemInfo = info->GroupMDEntries[i];
 		PrintXmlItemBegin("item", i);
-		PrintXmlUInt32("MDUpdateAction", gmdeItemInfo->MDUpdateAction);
-		PrintXmlString("MDEntryType", gmdeItemInfo->MDEntryType, gmdeItemInfo->MDEntryTypeLength);
-		PrintXmlString("MDEntryID", gmdeItemInfo->MDEntryID, gmdeItemInfo->MDEntryIDLength);
-		PrintXmlString("Symbol", gmdeItemInfo->Symbol, gmdeItemInfo->SymbolLength);
-		PrintXmlInt32("RptSeq", gmdeItemInfo->RptSeq);
-		PrintXmlDecimal("MDEntryPx", &(gmdeItemInfo->MDEntryPx));
-		PrintXmlDecimal("MDEntrySize", &(gmdeItemInfo->MDEntrySize));
-		PrintXmlUInt32("MDEntryDate", gmdeItemInfo->MDEntryDate);
-		PrintXmlUInt32("MDEntryTime", gmdeItemInfo->MDEntryTime);
-		PrintXmlUInt32("StartTime", gmdeItemInfo->StartTime);
-		PrintXmlString("QuoteCondition", gmdeItemInfo->QuoteCondition, gmdeItemInfo->QuoteConditionLength);
-		PrintXmlString("TradeCondition", gmdeItemInfo->TradeCondition, gmdeItemInfo->TradeConditionLength);
-		PrintXmlString("OpenCloseSettlFlag", gmdeItemInfo->OpenCloseSettlFlag, gmdeItemInfo->OpenCloseSettlFlagLength);
-		PrintXmlDecimal("NetChgPrevDay", &(gmdeItemInfo->NetChgPrevDay));
-		PrintXmlDecimal("AccruedInterestAmt", &(gmdeItemInfo->AccruedInterestAmt));
-		PrintXmlDecimal("ChgFromWAPrice", &(gmdeItemInfo->ChgFromWAPrice));
-		PrintXmlDecimal("ChgOpenInterest", &(gmdeItemInfo->ChgOpenInterest));
-		PrintXmlDecimal("BidMarketSize", &(gmdeItemInfo->BidMarketSize));
-		PrintXmlDecimal("AskMarketSize", &(gmdeItemInfo->AskMarketSize));
-		PrintXmlInt32("TotalNumOfTrades", gmdeItemInfo->TotalNumOfTrades);
-		PrintXmlDecimal("TradeValue", &(gmdeItemInfo->TradeValue));
-		PrintXmlDecimal("Yield", &(gmdeItemInfo->Yield));
-		PrintXmlInt32("OfferNbOr", gmdeItemInfo->OfferNbOr);
-		PrintXmlInt32("BidNbOr", gmdeItemInfo->BidNbOr);
-		PrintXmlDecimal("ChgFromSettlmnt", &(gmdeItemInfo->ChgFromSettlmnt));
-		PrintXmlDecimal("MinCurrPx", &(gmdeItemInfo->MinCurrPx));
-		PrintXmlUInt32("MinCurrPxChgTime", gmdeItemInfo->MinCurrPxChgTime);
-		PrintXmlUInt32("VolumeIndicator", gmdeItemInfo->VolumeIndicator);
-		PrintXmlUInt32("SettlDate", gmdeItemInfo->SettlDate);
-		PrintXmlString("SettleType", gmdeItemInfo->SettleType, gmdeItemInfo->SettleTypeLength);
-		PrintXmlString("CXFlag", gmdeItemInfo->CXFlag, gmdeItemInfo->CXFlagLength);
-		PrintXmlString("TradingSessionID", gmdeItemInfo->TradingSessionID, gmdeItemInfo->TradingSessionIDLength);
-		PrintXmlString("TradingSessionSubID", gmdeItemInfo->TradingSessionSubID, gmdeItemInfo->TradingSessionSubIDLength);
+		if(gmdeItemInfo->AllowMDUpdateAction)
+			PrintXmlUInt32("MDUpdateAction", gmdeItemInfo->MDUpdateAction);
+		if(gmdeItemInfo->AllowMDEntryType)
+			PrintXmlString("MDEntryType", gmdeItemInfo->MDEntryType, gmdeItemInfo->MDEntryTypeLength);
+		if(gmdeItemInfo->AllowMDEntryID)
+			PrintXmlString("MDEntryID", gmdeItemInfo->MDEntryID, gmdeItemInfo->MDEntryIDLength);
+		if(gmdeItemInfo->AllowSymbol)
+			PrintXmlString("Symbol", gmdeItemInfo->Symbol, gmdeItemInfo->SymbolLength);
+		if(gmdeItemInfo->AllowRptSeq)
+			PrintXmlInt32("RptSeq", gmdeItemInfo->RptSeq);
+		if(gmdeItemInfo->AllowMDEntryPx)
+			PrintXmlDecimal("MDEntryPx", &(gmdeItemInfo->MDEntryPx));
+		if(gmdeItemInfo->AllowMDEntrySize)
+			PrintXmlDecimal("MDEntrySize", &(gmdeItemInfo->MDEntrySize));
+		if(gmdeItemInfo->AllowMDEntryDate)
+			PrintXmlUInt32("MDEntryDate", gmdeItemInfo->MDEntryDate);
+		if(gmdeItemInfo->AllowMDEntryTime)
+			PrintXmlUInt32("MDEntryTime", gmdeItemInfo->MDEntryTime);
+		if(gmdeItemInfo->AllowStartTime)
+			PrintXmlUInt32("StartTime", gmdeItemInfo->StartTime);
+		if(gmdeItemInfo->AllowQuoteCondition)
+			PrintXmlString("QuoteCondition", gmdeItemInfo->QuoteCondition, gmdeItemInfo->QuoteConditionLength);
+		if(gmdeItemInfo->AllowTradeCondition)
+			PrintXmlString("TradeCondition", gmdeItemInfo->TradeCondition, gmdeItemInfo->TradeConditionLength);
+		if(gmdeItemInfo->AllowOpenCloseSettlFlag)
+			PrintXmlString("OpenCloseSettlFlag", gmdeItemInfo->OpenCloseSettlFlag, gmdeItemInfo->OpenCloseSettlFlagLength);
+		if(gmdeItemInfo->AllowNetChgPrevDay)
+			PrintXmlDecimal("NetChgPrevDay", &(gmdeItemInfo->NetChgPrevDay));
+		if(gmdeItemInfo->AllowAccruedInterestAmt)
+			PrintXmlDecimal("AccruedInterestAmt", &(gmdeItemInfo->AccruedInterestAmt));
+		if(gmdeItemInfo->AllowChgFromWAPrice)
+			PrintXmlDecimal("ChgFromWAPrice", &(gmdeItemInfo->ChgFromWAPrice));
+		if(gmdeItemInfo->AllowChgOpenInterest)
+			PrintXmlDecimal("ChgOpenInterest", &(gmdeItemInfo->ChgOpenInterest));
+		if(gmdeItemInfo->AllowBidMarketSize)
+			PrintXmlDecimal("BidMarketSize", &(gmdeItemInfo->BidMarketSize));
+		if(gmdeItemInfo->AllowAskMarketSize)
+			PrintXmlDecimal("AskMarketSize", &(gmdeItemInfo->AskMarketSize));
+		if(gmdeItemInfo->AllowTotalNumOfTrades)
+			PrintXmlInt32("TotalNumOfTrades", gmdeItemInfo->TotalNumOfTrades);
+		if(gmdeItemInfo->AllowTradeValue)
+			PrintXmlDecimal("TradeValue", &(gmdeItemInfo->TradeValue));
+		if(gmdeItemInfo->AllowYield)
+			PrintXmlDecimal("Yield", &(gmdeItemInfo->Yield));
+		if(gmdeItemInfo->AllowOfferNbOr)
+			PrintXmlInt32("OfferNbOr", gmdeItemInfo->OfferNbOr);
+		if(gmdeItemInfo->AllowBidNbOr)
+			PrintXmlInt32("BidNbOr", gmdeItemInfo->BidNbOr);
+		if(gmdeItemInfo->AllowChgFromSettlmnt)
+			PrintXmlDecimal("ChgFromSettlmnt", &(gmdeItemInfo->ChgFromSettlmnt));
+		if(gmdeItemInfo->AllowMinCurrPx)
+			PrintXmlDecimal("MinCurrPx", &(gmdeItemInfo->MinCurrPx));
+		if(gmdeItemInfo->AllowMinCurrPxChgTime)
+			PrintXmlUInt32("MinCurrPxChgTime", gmdeItemInfo->MinCurrPxChgTime);
+		if(gmdeItemInfo->AllowVolumeIndicator)
+			PrintXmlUInt32("VolumeIndicator", gmdeItemInfo->VolumeIndicator);
+		if(gmdeItemInfo->AllowSettlDate)
+			PrintXmlUInt32("SettlDate", gmdeItemInfo->SettlDate);
+		if(gmdeItemInfo->AllowSettleType)
+			PrintXmlString("SettleType", gmdeItemInfo->SettleType, gmdeItemInfo->SettleTypeLength);
+		if(gmdeItemInfo->AllowCXFlag)
+			PrintXmlString("CXFlag", gmdeItemInfo->CXFlag, gmdeItemInfo->CXFlagLength);
+		if(gmdeItemInfo->AllowTradingSessionID)
+			PrintXmlString("TradingSessionID", gmdeItemInfo->TradingSessionID, gmdeItemInfo->TradingSessionIDLength);
+		if(gmdeItemInfo->AllowTradingSessionSubID)
+			PrintXmlString("TradingSessionSubID", gmdeItemInfo->TradingSessionSubID, gmdeItemInfo->TradingSessionSubIDLength);
 		PrintXmlItemEnd("item", i);
 	}
 
@@ -1574,31 +2240,56 @@ void FastProtocolManager::PrintXmlIncrementalMSRCURR(FastIncrementalMSRCURRInfo 
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 		gmdeItemInfo = info->GroupMDEntries[i];
 		PrintXmlItemBegin("item", i);
-		PrintXmlUInt32("MDUpdateAction", gmdeItemInfo->MDUpdateAction);
-		PrintXmlString("MDEntryType", gmdeItemInfo->MDEntryType, gmdeItemInfo->MDEntryTypeLength);
-		PrintXmlString("MDEntryID", gmdeItemInfo->MDEntryID, gmdeItemInfo->MDEntryIDLength);
-		PrintXmlString("Symbol", gmdeItemInfo->Symbol, gmdeItemInfo->SymbolLength);
-		PrintXmlInt32("RptSeq", gmdeItemInfo->RptSeq);
-		PrintXmlDecimal("MDEntryPx", &(gmdeItemInfo->MDEntryPx));
-		PrintXmlDecimal("MDEntrySize", &(gmdeItemInfo->MDEntrySize));
-		PrintXmlUInt32("MDEntryDate", gmdeItemInfo->MDEntryDate);
-		PrintXmlUInt32("MDEntryTime", gmdeItemInfo->MDEntryTime);
-		PrintXmlString("QuoteCondition", gmdeItemInfo->QuoteCondition, gmdeItemInfo->QuoteConditionLength);
-		PrintXmlString("TradeCondition", gmdeItemInfo->TradeCondition, gmdeItemInfo->TradeConditionLength);
-		PrintXmlString("OpenCloseSettlFlag", gmdeItemInfo->OpenCloseSettlFlag, gmdeItemInfo->OpenCloseSettlFlagLength);
-		PrintXmlDecimal("NetChgPrevDay", &(gmdeItemInfo->NetChgPrevDay));
-		PrintXmlDecimal("ChgFromWAPrice", &(gmdeItemInfo->ChgFromWAPrice));
-		PrintXmlDecimal("ChgOpenInterest", &(gmdeItemInfo->ChgOpenInterest));
-		PrintXmlInt32("TotalNumOfTrades", gmdeItemInfo->TotalNumOfTrades);
-		PrintXmlDecimal("TradeValue", &(gmdeItemInfo->TradeValue));
-		PrintXmlInt32("OfferNbOr", gmdeItemInfo->OfferNbOr);
-		PrintXmlInt32("BidNbOr", gmdeItemInfo->BidNbOr);
-		PrintXmlDecimal("ChgFromSettlmnt", &(gmdeItemInfo->ChgFromSettlmnt));
-		PrintXmlUInt32("SettlDate", gmdeItemInfo->SettlDate);
-		PrintXmlString("SettleType", gmdeItemInfo->SettleType, gmdeItemInfo->SettleTypeLength);
-		PrintXmlString("CXFlag", gmdeItemInfo->CXFlag, gmdeItemInfo->CXFlagLength);
-		PrintXmlString("TradingSessionID", gmdeItemInfo->TradingSessionID, gmdeItemInfo->TradingSessionIDLength);
-		PrintXmlString("TradingSessionSubID", gmdeItemInfo->TradingSessionSubID, gmdeItemInfo->TradingSessionSubIDLength);
+		if(gmdeItemInfo->AllowMDUpdateAction)
+			PrintXmlUInt32("MDUpdateAction", gmdeItemInfo->MDUpdateAction);
+		if(gmdeItemInfo->AllowMDEntryType)
+			PrintXmlString("MDEntryType", gmdeItemInfo->MDEntryType, gmdeItemInfo->MDEntryTypeLength);
+		if(gmdeItemInfo->AllowMDEntryID)
+			PrintXmlString("MDEntryID", gmdeItemInfo->MDEntryID, gmdeItemInfo->MDEntryIDLength);
+		if(gmdeItemInfo->AllowSymbol)
+			PrintXmlString("Symbol", gmdeItemInfo->Symbol, gmdeItemInfo->SymbolLength);
+		if(gmdeItemInfo->AllowRptSeq)
+			PrintXmlInt32("RptSeq", gmdeItemInfo->RptSeq);
+		if(gmdeItemInfo->AllowMDEntryPx)
+			PrintXmlDecimal("MDEntryPx", &(gmdeItemInfo->MDEntryPx));
+		if(gmdeItemInfo->AllowMDEntrySize)
+			PrintXmlDecimal("MDEntrySize", &(gmdeItemInfo->MDEntrySize));
+		if(gmdeItemInfo->AllowMDEntryDate)
+			PrintXmlUInt32("MDEntryDate", gmdeItemInfo->MDEntryDate);
+		if(gmdeItemInfo->AllowMDEntryTime)
+			PrintXmlUInt32("MDEntryTime", gmdeItemInfo->MDEntryTime);
+		if(gmdeItemInfo->AllowQuoteCondition)
+			PrintXmlString("QuoteCondition", gmdeItemInfo->QuoteCondition, gmdeItemInfo->QuoteConditionLength);
+		if(gmdeItemInfo->AllowTradeCondition)
+			PrintXmlString("TradeCondition", gmdeItemInfo->TradeCondition, gmdeItemInfo->TradeConditionLength);
+		if(gmdeItemInfo->AllowOpenCloseSettlFlag)
+			PrintXmlString("OpenCloseSettlFlag", gmdeItemInfo->OpenCloseSettlFlag, gmdeItemInfo->OpenCloseSettlFlagLength);
+		if(gmdeItemInfo->AllowNetChgPrevDay)
+			PrintXmlDecimal("NetChgPrevDay", &(gmdeItemInfo->NetChgPrevDay));
+		if(gmdeItemInfo->AllowChgFromWAPrice)
+			PrintXmlDecimal("ChgFromWAPrice", &(gmdeItemInfo->ChgFromWAPrice));
+		if(gmdeItemInfo->AllowChgOpenInterest)
+			PrintXmlDecimal("ChgOpenInterest", &(gmdeItemInfo->ChgOpenInterest));
+		if(gmdeItemInfo->AllowTotalNumOfTrades)
+			PrintXmlInt32("TotalNumOfTrades", gmdeItemInfo->TotalNumOfTrades);
+		if(gmdeItemInfo->AllowTradeValue)
+			PrintXmlDecimal("TradeValue", &(gmdeItemInfo->TradeValue));
+		if(gmdeItemInfo->AllowOfferNbOr)
+			PrintXmlInt32("OfferNbOr", gmdeItemInfo->OfferNbOr);
+		if(gmdeItemInfo->AllowBidNbOr)
+			PrintXmlInt32("BidNbOr", gmdeItemInfo->BidNbOr);
+		if(gmdeItemInfo->AllowChgFromSettlmnt)
+			PrintXmlDecimal("ChgFromSettlmnt", &(gmdeItemInfo->ChgFromSettlmnt));
+		if(gmdeItemInfo->AllowSettlDate)
+			PrintXmlUInt32("SettlDate", gmdeItemInfo->SettlDate);
+		if(gmdeItemInfo->AllowSettleType)
+			PrintXmlString("SettleType", gmdeItemInfo->SettleType, gmdeItemInfo->SettleTypeLength);
+		if(gmdeItemInfo->AllowCXFlag)
+			PrintXmlString("CXFlag", gmdeItemInfo->CXFlag, gmdeItemInfo->CXFlagLength);
+		if(gmdeItemInfo->AllowTradingSessionID)
+			PrintXmlString("TradingSessionID", gmdeItemInfo->TradingSessionID, gmdeItemInfo->TradingSessionIDLength);
+		if(gmdeItemInfo->AllowTradingSessionSubID)
+			PrintXmlString("TradingSessionSubID", gmdeItemInfo->TradingSessionSubID, gmdeItemInfo->TradingSessionSubIDLength);
 		PrintXmlItemEnd("item", i);
 	}
 
@@ -1617,23 +2308,40 @@ void FastProtocolManager::PrintXmlIncrementalOLRFOND(FastIncrementalOLRFONDInfo 
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 		gmdeItemInfo = info->GroupMDEntries[i];
 		PrintXmlItemBegin("item", i);
-		PrintXmlUInt32("MDUpdateAction", gmdeItemInfo->MDUpdateAction);
-		PrintXmlString("MDEntryType", gmdeItemInfo->MDEntryType, gmdeItemInfo->MDEntryTypeLength);
-		PrintXmlString("MDEntryID", gmdeItemInfo->MDEntryID, gmdeItemInfo->MDEntryIDLength);
-		PrintXmlString("Symbol", gmdeItemInfo->Symbol, gmdeItemInfo->SymbolLength);
-		PrintXmlInt32("RptSeq", gmdeItemInfo->RptSeq);
-		PrintXmlUInt32("MDEntryDate", gmdeItemInfo->MDEntryDate);
-		PrintXmlUInt32("MDEntryTime", gmdeItemInfo->MDEntryTime);
-		PrintXmlUInt32("OrigTime", gmdeItemInfo->OrigTime);
-		PrintXmlDecimal("MDEntryPx", &(gmdeItemInfo->MDEntryPx));
-		PrintXmlDecimal("MDEntrySize", &(gmdeItemInfo->MDEntrySize));
-		PrintXmlString("DealNumber", gmdeItemInfo->DealNumber, gmdeItemInfo->DealNumberLength);
-		PrintXmlDecimal("Yield", &(gmdeItemInfo->Yield));
-		PrintXmlString("OrderStatus", gmdeItemInfo->OrderStatus, gmdeItemInfo->OrderStatusLength);
-		PrintXmlString("OrdType", gmdeItemInfo->OrdType, gmdeItemInfo->OrdTypeLength);
-		PrintXmlDecimal("TotalVolume", &(gmdeItemInfo->TotalVolume));
-		PrintXmlString("TradingSessionID", gmdeItemInfo->TradingSessionID, gmdeItemInfo->TradingSessionIDLength);
-		PrintXmlString("TradingSessionSubID", gmdeItemInfo->TradingSessionSubID, gmdeItemInfo->TradingSessionSubIDLength);
+		if(gmdeItemInfo->AllowMDUpdateAction)
+			PrintXmlUInt32("MDUpdateAction", gmdeItemInfo->MDUpdateAction);
+		if(gmdeItemInfo->AllowMDEntryType)
+			PrintXmlString("MDEntryType", gmdeItemInfo->MDEntryType, gmdeItemInfo->MDEntryTypeLength);
+		if(gmdeItemInfo->AllowMDEntryID)
+			PrintXmlString("MDEntryID", gmdeItemInfo->MDEntryID, gmdeItemInfo->MDEntryIDLength);
+		if(gmdeItemInfo->AllowSymbol)
+			PrintXmlString("Symbol", gmdeItemInfo->Symbol, gmdeItemInfo->SymbolLength);
+		if(gmdeItemInfo->AllowRptSeq)
+			PrintXmlInt32("RptSeq", gmdeItemInfo->RptSeq);
+		if(gmdeItemInfo->AllowMDEntryDate)
+			PrintXmlUInt32("MDEntryDate", gmdeItemInfo->MDEntryDate);
+		if(gmdeItemInfo->AllowMDEntryTime)
+			PrintXmlUInt32("MDEntryTime", gmdeItemInfo->MDEntryTime);
+		if(gmdeItemInfo->AllowOrigTime)
+			PrintXmlUInt32("OrigTime", gmdeItemInfo->OrigTime);
+		if(gmdeItemInfo->AllowMDEntryPx)
+			PrintXmlDecimal("MDEntryPx", &(gmdeItemInfo->MDEntryPx));
+		if(gmdeItemInfo->AllowMDEntrySize)
+			PrintXmlDecimal("MDEntrySize", &(gmdeItemInfo->MDEntrySize));
+		if(gmdeItemInfo->AllowDealNumber)
+			PrintXmlString("DealNumber", gmdeItemInfo->DealNumber, gmdeItemInfo->DealNumberLength);
+		if(gmdeItemInfo->AllowYield)
+			PrintXmlDecimal("Yield", &(gmdeItemInfo->Yield));
+		if(gmdeItemInfo->AllowOrderStatus)
+			PrintXmlString("OrderStatus", gmdeItemInfo->OrderStatus, gmdeItemInfo->OrderStatusLength);
+		if(gmdeItemInfo->AllowOrdType)
+			PrintXmlString("OrdType", gmdeItemInfo->OrdType, gmdeItemInfo->OrdTypeLength);
+		if(gmdeItemInfo->AllowTotalVolume)
+			PrintXmlDecimal("TotalVolume", &(gmdeItemInfo->TotalVolume));
+		if(gmdeItemInfo->AllowTradingSessionID)
+			PrintXmlString("TradingSessionID", gmdeItemInfo->TradingSessionID, gmdeItemInfo->TradingSessionIDLength);
+		if(gmdeItemInfo->AllowTradingSessionSubID)
+			PrintXmlString("TradingSessionSubID", gmdeItemInfo->TradingSessionSubID, gmdeItemInfo->TradingSessionSubIDLength);
 		PrintXmlItemEnd("item", i);
 	}
 
@@ -1652,20 +2360,34 @@ void FastProtocolManager::PrintXmlIncrementalOLRCURR(FastIncrementalOLRCURRInfo 
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 		gmdeItemInfo = info->GroupMDEntries[i];
 		PrintXmlItemBegin("item", i);
-		PrintXmlUInt32("MDUpdateAction", gmdeItemInfo->MDUpdateAction);
-		PrintXmlString("MDEntryType", gmdeItemInfo->MDEntryType, gmdeItemInfo->MDEntryTypeLength);
-		PrintXmlString("MDEntryID", gmdeItemInfo->MDEntryID, gmdeItemInfo->MDEntryIDLength);
-		PrintXmlString("Symbol", gmdeItemInfo->Symbol, gmdeItemInfo->SymbolLength);
-		PrintXmlInt32("RptSeq", gmdeItemInfo->RptSeq);
-		PrintXmlUInt32("MDEntryDate", gmdeItemInfo->MDEntryDate);
-		PrintXmlUInt32("MDEntryTime", gmdeItemInfo->MDEntryTime);
-		PrintXmlUInt32("OrigTime", gmdeItemInfo->OrigTime);
-		PrintXmlDecimal("MDEntryPx", &(gmdeItemInfo->MDEntryPx));
-		PrintXmlDecimal("MDEntrySize", &(gmdeItemInfo->MDEntrySize));
-		PrintXmlString("DealNumber", gmdeItemInfo->DealNumber, gmdeItemInfo->DealNumberLength);
-		PrintXmlString("OrderStatus", gmdeItemInfo->OrderStatus, gmdeItemInfo->OrderStatusLength);
-		PrintXmlString("TradingSessionID", gmdeItemInfo->TradingSessionID, gmdeItemInfo->TradingSessionIDLength);
-		PrintXmlString("TradingSessionSubID", gmdeItemInfo->TradingSessionSubID, gmdeItemInfo->TradingSessionSubIDLength);
+		if(gmdeItemInfo->AllowMDUpdateAction)
+			PrintXmlUInt32("MDUpdateAction", gmdeItemInfo->MDUpdateAction);
+		if(gmdeItemInfo->AllowMDEntryType)
+			PrintXmlString("MDEntryType", gmdeItemInfo->MDEntryType, gmdeItemInfo->MDEntryTypeLength);
+		if(gmdeItemInfo->AllowMDEntryID)
+			PrintXmlString("MDEntryID", gmdeItemInfo->MDEntryID, gmdeItemInfo->MDEntryIDLength);
+		if(gmdeItemInfo->AllowSymbol)
+			PrintXmlString("Symbol", gmdeItemInfo->Symbol, gmdeItemInfo->SymbolLength);
+		if(gmdeItemInfo->AllowRptSeq)
+			PrintXmlInt32("RptSeq", gmdeItemInfo->RptSeq);
+		if(gmdeItemInfo->AllowMDEntryDate)
+			PrintXmlUInt32("MDEntryDate", gmdeItemInfo->MDEntryDate);
+		if(gmdeItemInfo->AllowMDEntryTime)
+			PrintXmlUInt32("MDEntryTime", gmdeItemInfo->MDEntryTime);
+		if(gmdeItemInfo->AllowOrigTime)
+			PrintXmlUInt32("OrigTime", gmdeItemInfo->OrigTime);
+		if(gmdeItemInfo->AllowMDEntryPx)
+			PrintXmlDecimal("MDEntryPx", &(gmdeItemInfo->MDEntryPx));
+		if(gmdeItemInfo->AllowMDEntrySize)
+			PrintXmlDecimal("MDEntrySize", &(gmdeItemInfo->MDEntrySize));
+		if(gmdeItemInfo->AllowDealNumber)
+			PrintXmlString("DealNumber", gmdeItemInfo->DealNumber, gmdeItemInfo->DealNumberLength);
+		if(gmdeItemInfo->AllowOrderStatus)
+			PrintXmlString("OrderStatus", gmdeItemInfo->OrderStatus, gmdeItemInfo->OrderStatusLength);
+		if(gmdeItemInfo->AllowTradingSessionID)
+			PrintXmlString("TradingSessionID", gmdeItemInfo->TradingSessionID, gmdeItemInfo->TradingSessionIDLength);
+		if(gmdeItemInfo->AllowTradingSessionSubID)
+			PrintXmlString("TradingSessionSubID", gmdeItemInfo->TradingSessionSubID, gmdeItemInfo->TradingSessionSubIDLength);
 		PrintXmlItemEnd("item", i);
 	}
 
@@ -1684,20 +2406,34 @@ void FastProtocolManager::PrintXmlIncrementalOBRFOND(FastIncrementalOBRFONDInfo 
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 		gmdeItemInfo = info->GroupMDEntries[i];
 		PrintXmlItemBegin("item", i);
-		PrintXmlUInt32("MDUpdateAction", gmdeItemInfo->MDUpdateAction);
-		PrintXmlString("MDEntryType", gmdeItemInfo->MDEntryType, gmdeItemInfo->MDEntryTypeLength);
-		PrintXmlString("MDEntryID", gmdeItemInfo->MDEntryID, gmdeItemInfo->MDEntryIDLength);
-		PrintXmlString("Symbol", gmdeItemInfo->Symbol, gmdeItemInfo->SymbolLength);
-		PrintXmlInt32("RptSeq", gmdeItemInfo->RptSeq);
-		PrintXmlDecimal("MDEntryPx", &(gmdeItemInfo->MDEntryPx));
-		PrintXmlDecimal("MDEntrySize", &(gmdeItemInfo->MDEntrySize));
-		PrintXmlUInt32("MDEntryTime", gmdeItemInfo->MDEntryTime);
-		PrintXmlUInt32("OrigTime", gmdeItemInfo->OrigTime);
-		PrintXmlDecimal("Yield", &(gmdeItemInfo->Yield));
-		PrintXmlUInt32("EffectiveTime", gmdeItemInfo->EffectiveTime);
-		PrintXmlDecimal("NominalValue", &(gmdeItemInfo->NominalValue));
-		PrintXmlString("TradingSessionID", gmdeItemInfo->TradingSessionID, gmdeItemInfo->TradingSessionIDLength);
-		PrintXmlString("TradingSessionSubID", gmdeItemInfo->TradingSessionSubID, gmdeItemInfo->TradingSessionSubIDLength);
+		if(gmdeItemInfo->AllowMDUpdateAction)
+			PrintXmlUInt32("MDUpdateAction", gmdeItemInfo->MDUpdateAction);
+		if(gmdeItemInfo->AllowMDEntryType)
+			PrintXmlString("MDEntryType", gmdeItemInfo->MDEntryType, gmdeItemInfo->MDEntryTypeLength);
+		if(gmdeItemInfo->AllowMDEntryID)
+			PrintXmlString("MDEntryID", gmdeItemInfo->MDEntryID, gmdeItemInfo->MDEntryIDLength);
+		if(gmdeItemInfo->AllowSymbol)
+			PrintXmlString("Symbol", gmdeItemInfo->Symbol, gmdeItemInfo->SymbolLength);
+		if(gmdeItemInfo->AllowRptSeq)
+			PrintXmlInt32("RptSeq", gmdeItemInfo->RptSeq);
+		if(gmdeItemInfo->AllowMDEntryPx)
+			PrintXmlDecimal("MDEntryPx", &(gmdeItemInfo->MDEntryPx));
+		if(gmdeItemInfo->AllowMDEntrySize)
+			PrintXmlDecimal("MDEntrySize", &(gmdeItemInfo->MDEntrySize));
+		if(gmdeItemInfo->AllowMDEntryTime)
+			PrintXmlUInt32("MDEntryTime", gmdeItemInfo->MDEntryTime);
+		if(gmdeItemInfo->AllowOrigTime)
+			PrintXmlUInt32("OrigTime", gmdeItemInfo->OrigTime);
+		if(gmdeItemInfo->AllowYield)
+			PrintXmlDecimal("Yield", &(gmdeItemInfo->Yield));
+		if(gmdeItemInfo->AllowEffectiveTime)
+			PrintXmlUInt32("EffectiveTime", gmdeItemInfo->EffectiveTime);
+		if(gmdeItemInfo->AllowNominalValue)
+			PrintXmlDecimal("NominalValue", &(gmdeItemInfo->NominalValue));
+		if(gmdeItemInfo->AllowTradingSessionID)
+			PrintXmlString("TradingSessionID", gmdeItemInfo->TradingSessionID, gmdeItemInfo->TradingSessionIDLength);
+		if(gmdeItemInfo->AllowTradingSessionSubID)
+			PrintXmlString("TradingSessionSubID", gmdeItemInfo->TradingSessionSubID, gmdeItemInfo->TradingSessionSubIDLength);
 		PrintXmlItemEnd("item", i);
 	}
 
@@ -1716,17 +2452,28 @@ void FastProtocolManager::PrintXmlIncrementalOBRCURR(FastIncrementalOBRCURRInfo 
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 		gmdeItemInfo = info->GroupMDEntries[i];
 		PrintXmlItemBegin("item", i);
-		PrintXmlUInt32("MDUpdateAction", gmdeItemInfo->MDUpdateAction);
-		PrintXmlString("MDEntryType", gmdeItemInfo->MDEntryType, gmdeItemInfo->MDEntryTypeLength);
-		PrintXmlString("MDEntryID", gmdeItemInfo->MDEntryID, gmdeItemInfo->MDEntryIDLength);
-		PrintXmlString("Symbol", gmdeItemInfo->Symbol, gmdeItemInfo->SymbolLength);
-		PrintXmlInt32("RptSeq", gmdeItemInfo->RptSeq);
-		PrintXmlDecimal("MDEntryPx", &(gmdeItemInfo->MDEntryPx));
-		PrintXmlDecimal("MDEntrySize", &(gmdeItemInfo->MDEntrySize));
-		PrintXmlUInt32("MDEntryTime", gmdeItemInfo->MDEntryTime);
-		PrintXmlUInt32("OrigTime", gmdeItemInfo->OrigTime);
-		PrintXmlString("TradingSessionID", gmdeItemInfo->TradingSessionID, gmdeItemInfo->TradingSessionIDLength);
-		PrintXmlString("TradingSessionSubID", gmdeItemInfo->TradingSessionSubID, gmdeItemInfo->TradingSessionSubIDLength);
+		if(gmdeItemInfo->AllowMDUpdateAction)
+			PrintXmlUInt32("MDUpdateAction", gmdeItemInfo->MDUpdateAction);
+		if(gmdeItemInfo->AllowMDEntryType)
+			PrintXmlString("MDEntryType", gmdeItemInfo->MDEntryType, gmdeItemInfo->MDEntryTypeLength);
+		if(gmdeItemInfo->AllowMDEntryID)
+			PrintXmlString("MDEntryID", gmdeItemInfo->MDEntryID, gmdeItemInfo->MDEntryIDLength);
+		if(gmdeItemInfo->AllowSymbol)
+			PrintXmlString("Symbol", gmdeItemInfo->Symbol, gmdeItemInfo->SymbolLength);
+		if(gmdeItemInfo->AllowRptSeq)
+			PrintXmlInt32("RptSeq", gmdeItemInfo->RptSeq);
+		if(gmdeItemInfo->AllowMDEntryPx)
+			PrintXmlDecimal("MDEntryPx", &(gmdeItemInfo->MDEntryPx));
+		if(gmdeItemInfo->AllowMDEntrySize)
+			PrintXmlDecimal("MDEntrySize", &(gmdeItemInfo->MDEntrySize));
+		if(gmdeItemInfo->AllowMDEntryTime)
+			PrintXmlUInt32("MDEntryTime", gmdeItemInfo->MDEntryTime);
+		if(gmdeItemInfo->AllowOrigTime)
+			PrintXmlUInt32("OrigTime", gmdeItemInfo->OrigTime);
+		if(gmdeItemInfo->AllowTradingSessionID)
+			PrintXmlString("TradingSessionID", gmdeItemInfo->TradingSessionID, gmdeItemInfo->TradingSessionIDLength);
+		if(gmdeItemInfo->AllowTradingSessionSubID)
+			PrintXmlString("TradingSessionSubID", gmdeItemInfo->TradingSessionSubID, gmdeItemInfo->TradingSessionSubIDLength);
 		PrintXmlItemEnd("item", i);
 	}
 
@@ -1745,29 +2492,51 @@ void FastProtocolManager::PrintXmlIncrementalTLRFOND(FastIncrementalTLRFONDInfo 
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 		gmdeItemInfo = info->GroupMDEntries[i];
 		PrintXmlItemBegin("item", i);
-		PrintXmlUInt32("MDUpdateAction", gmdeItemInfo->MDUpdateAction);
+		if(gmdeItemInfo->AllowMDUpdateAction)
+			PrintXmlUInt32("MDUpdateAction", gmdeItemInfo->MDUpdateAction);
 		PrintXmlString("MDEntryType", gmdeItemInfo->MDEntryType, gmdeItemInfo->MDEntryTypeLength);
-		PrintXmlString("MDEntryID", gmdeItemInfo->MDEntryID, gmdeItemInfo->MDEntryIDLength);
-		PrintXmlString("Symbol", gmdeItemInfo->Symbol, gmdeItemInfo->SymbolLength);
-		PrintXmlInt32("RptSeq", gmdeItemInfo->RptSeq);
-		PrintXmlUInt32("MDEntryDate", gmdeItemInfo->MDEntryDate);
-		PrintXmlUInt32("MDEntryTime", gmdeItemInfo->MDEntryTime);
-		PrintXmlUInt32("OrigTime", gmdeItemInfo->OrigTime);
-		PrintXmlString("OrderSide", gmdeItemInfo->OrderSide, gmdeItemInfo->OrderSideLength);
-		PrintXmlDecimal("MDEntryPx", &(gmdeItemInfo->MDEntryPx));
-		PrintXmlDecimal("MDEntrySize", &(gmdeItemInfo->MDEntrySize));
-		PrintXmlDecimal("AccruedInterestAmt", &(gmdeItemInfo->AccruedInterestAmt));
-		PrintXmlDecimal("TradeValue", &(gmdeItemInfo->TradeValue));
-		PrintXmlDecimal("Yield", &(gmdeItemInfo->Yield));
-		PrintXmlUInt32("SettlDate", gmdeItemInfo->SettlDate);
-		PrintXmlString("SettleType", gmdeItemInfo->SettleType, gmdeItemInfo->SettleTypeLength);
-		PrintXmlDecimal("Price", &(gmdeItemInfo->Price));
-		PrintXmlInt32("PriceType", gmdeItemInfo->PriceType);
-		PrintXmlDecimal("RepoToPx", &(gmdeItemInfo->RepoToPx));
-		PrintXmlDecimal("BuyBackPx", &(gmdeItemInfo->BuyBackPx));
-		PrintXmlUInt32("BuyBackDate", gmdeItemInfo->BuyBackDate);
-		PrintXmlString("TradingSessionID", gmdeItemInfo->TradingSessionID, gmdeItemInfo->TradingSessionIDLength);
-		PrintXmlString("TradingSessionSubID", gmdeItemInfo->TradingSessionSubID, gmdeItemInfo->TradingSessionSubIDLength);
+		if(gmdeItemInfo->AllowMDEntryID)
+			PrintXmlString("MDEntryID", gmdeItemInfo->MDEntryID, gmdeItemInfo->MDEntryIDLength);
+		if(gmdeItemInfo->AllowSymbol)
+			PrintXmlString("Symbol", gmdeItemInfo->Symbol, gmdeItemInfo->SymbolLength);
+		if(gmdeItemInfo->AllowRptSeq)
+			PrintXmlInt32("RptSeq", gmdeItemInfo->RptSeq);
+		if(gmdeItemInfo->AllowMDEntryDate)
+			PrintXmlUInt32("MDEntryDate", gmdeItemInfo->MDEntryDate);
+		if(gmdeItemInfo->AllowMDEntryTime)
+			PrintXmlUInt32("MDEntryTime", gmdeItemInfo->MDEntryTime);
+		if(gmdeItemInfo->AllowOrigTime)
+			PrintXmlUInt32("OrigTime", gmdeItemInfo->OrigTime);
+		if(gmdeItemInfo->AllowOrderSide)
+			PrintXmlString("OrderSide", gmdeItemInfo->OrderSide, gmdeItemInfo->OrderSideLength);
+		if(gmdeItemInfo->AllowMDEntryPx)
+			PrintXmlDecimal("MDEntryPx", &(gmdeItemInfo->MDEntryPx));
+		if(gmdeItemInfo->AllowMDEntrySize)
+			PrintXmlDecimal("MDEntrySize", &(gmdeItemInfo->MDEntrySize));
+		if(gmdeItemInfo->AllowAccruedInterestAmt)
+			PrintXmlDecimal("AccruedInterestAmt", &(gmdeItemInfo->AccruedInterestAmt));
+		if(gmdeItemInfo->AllowTradeValue)
+			PrintXmlDecimal("TradeValue", &(gmdeItemInfo->TradeValue));
+		if(gmdeItemInfo->AllowYield)
+			PrintXmlDecimal("Yield", &(gmdeItemInfo->Yield));
+		if(gmdeItemInfo->AllowSettlDate)
+			PrintXmlUInt32("SettlDate", gmdeItemInfo->SettlDate);
+		if(gmdeItemInfo->AllowSettleType)
+			PrintXmlString("SettleType", gmdeItemInfo->SettleType, gmdeItemInfo->SettleTypeLength);
+		if(gmdeItemInfo->AllowPrice)
+			PrintXmlDecimal("Price", &(gmdeItemInfo->Price));
+		if(gmdeItemInfo->AllowPriceType)
+			PrintXmlInt32("PriceType", gmdeItemInfo->PriceType);
+		if(gmdeItemInfo->AllowRepoToPx)
+			PrintXmlDecimal("RepoToPx", &(gmdeItemInfo->RepoToPx));
+		if(gmdeItemInfo->AllowBuyBackPx)
+			PrintXmlDecimal("BuyBackPx", &(gmdeItemInfo->BuyBackPx));
+		if(gmdeItemInfo->AllowBuyBackDate)
+			PrintXmlUInt32("BuyBackDate", gmdeItemInfo->BuyBackDate);
+		if(gmdeItemInfo->AllowTradingSessionID)
+			PrintXmlString("TradingSessionID", gmdeItemInfo->TradingSessionID, gmdeItemInfo->TradingSessionIDLength);
+		if(gmdeItemInfo->AllowTradingSessionSubID)
+			PrintXmlString("TradingSessionSubID", gmdeItemInfo->TradingSessionSubID, gmdeItemInfo->TradingSessionSubIDLength);
 		PrintXmlItemEnd("item", i);
 	}
 
@@ -1786,27 +2555,47 @@ void FastProtocolManager::PrintXmlIncrementalTLRCURR(FastIncrementalTLRCURRInfo 
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 		gmdeItemInfo = info->GroupMDEntries[i];
 		PrintXmlItemBegin("item", i);
-		PrintXmlUInt32("MDUpdateAction", gmdeItemInfo->MDUpdateAction);
+		if(gmdeItemInfo->AllowMDUpdateAction)
+			PrintXmlUInt32("MDUpdateAction", gmdeItemInfo->MDUpdateAction);
 		PrintXmlString("MDEntryType", gmdeItemInfo->MDEntryType, gmdeItemInfo->MDEntryTypeLength);
-		PrintXmlString("MDEntryID", gmdeItemInfo->MDEntryID, gmdeItemInfo->MDEntryIDLength);
-		PrintXmlString("Symbol", gmdeItemInfo->Symbol, gmdeItemInfo->SymbolLength);
-		PrintXmlInt32("RptSeq", gmdeItemInfo->RptSeq);
-		PrintXmlUInt32("MDEntryDate", gmdeItemInfo->MDEntryDate);
-		PrintXmlUInt32("MDEntryTime", gmdeItemInfo->MDEntryTime);
-		PrintXmlUInt32("OrigTime", gmdeItemInfo->OrigTime);
-		PrintXmlString("OrderSide", gmdeItemInfo->OrderSide, gmdeItemInfo->OrderSideLength);
-		PrintXmlDecimal("MDEntryPx", &(gmdeItemInfo->MDEntryPx));
-		PrintXmlDecimal("MDEntrySize", &(gmdeItemInfo->MDEntrySize));
-		PrintXmlDecimal("TradeValue", &(gmdeItemInfo->TradeValue));
-		PrintXmlUInt32("SettlDate", gmdeItemInfo->SettlDate);
-		PrintXmlString("SettleType", gmdeItemInfo->SettleType, gmdeItemInfo->SettleTypeLength);
-		PrintXmlDecimal("Price", &(gmdeItemInfo->Price));
-		PrintXmlInt32("PriceType", gmdeItemInfo->PriceType);
-		PrintXmlDecimal("RepoToPx", &(gmdeItemInfo->RepoToPx));
-		PrintXmlDecimal("BuyBackPx", &(gmdeItemInfo->BuyBackPx));
-		PrintXmlUInt32("BuyBackDate", gmdeItemInfo->BuyBackDate);
-		PrintXmlString("TradingSessionID", gmdeItemInfo->TradingSessionID, gmdeItemInfo->TradingSessionIDLength);
-		PrintXmlString("TradingSessionSubID", gmdeItemInfo->TradingSessionSubID, gmdeItemInfo->TradingSessionSubIDLength);
+		if(gmdeItemInfo->AllowMDEntryID)
+			PrintXmlString("MDEntryID", gmdeItemInfo->MDEntryID, gmdeItemInfo->MDEntryIDLength);
+		if(gmdeItemInfo->AllowSymbol)
+			PrintXmlString("Symbol", gmdeItemInfo->Symbol, gmdeItemInfo->SymbolLength);
+		if(gmdeItemInfo->AllowRptSeq)
+			PrintXmlInt32("RptSeq", gmdeItemInfo->RptSeq);
+		if(gmdeItemInfo->AllowMDEntryDate)
+			PrintXmlUInt32("MDEntryDate", gmdeItemInfo->MDEntryDate);
+		if(gmdeItemInfo->AllowMDEntryTime)
+			PrintXmlUInt32("MDEntryTime", gmdeItemInfo->MDEntryTime);
+		if(gmdeItemInfo->AllowOrigTime)
+			PrintXmlUInt32("OrigTime", gmdeItemInfo->OrigTime);
+		if(gmdeItemInfo->AllowOrderSide)
+			PrintXmlString("OrderSide", gmdeItemInfo->OrderSide, gmdeItemInfo->OrderSideLength);
+		if(gmdeItemInfo->AllowMDEntryPx)
+			PrintXmlDecimal("MDEntryPx", &(gmdeItemInfo->MDEntryPx));
+		if(gmdeItemInfo->AllowMDEntrySize)
+			PrintXmlDecimal("MDEntrySize", &(gmdeItemInfo->MDEntrySize));
+		if(gmdeItemInfo->AllowTradeValue)
+			PrintXmlDecimal("TradeValue", &(gmdeItemInfo->TradeValue));
+		if(gmdeItemInfo->AllowSettlDate)
+			PrintXmlUInt32("SettlDate", gmdeItemInfo->SettlDate);
+		if(gmdeItemInfo->AllowSettleType)
+			PrintXmlString("SettleType", gmdeItemInfo->SettleType, gmdeItemInfo->SettleTypeLength);
+		if(gmdeItemInfo->AllowPrice)
+			PrintXmlDecimal("Price", &(gmdeItemInfo->Price));
+		if(gmdeItemInfo->AllowPriceType)
+			PrintXmlInt32("PriceType", gmdeItemInfo->PriceType);
+		if(gmdeItemInfo->AllowRepoToPx)
+			PrintXmlDecimal("RepoToPx", &(gmdeItemInfo->RepoToPx));
+		if(gmdeItemInfo->AllowBuyBackPx)
+			PrintXmlDecimal("BuyBackPx", &(gmdeItemInfo->BuyBackPx));
+		if(gmdeItemInfo->AllowBuyBackDate)
+			PrintXmlUInt32("BuyBackDate", gmdeItemInfo->BuyBackDate);
+		if(gmdeItemInfo->AllowTradingSessionID)
+			PrintXmlString("TradingSessionID", gmdeItemInfo->TradingSessionID, gmdeItemInfo->TradingSessionIDLength);
+		if(gmdeItemInfo->AllowTradingSessionSubID)
+			PrintXmlString("TradingSessionSubID", gmdeItemInfo->TradingSessionSubID, gmdeItemInfo->TradingSessionSubIDLength);
 		PrintXmlItemEnd("item", i);
 	}
 
@@ -1819,81 +2608,127 @@ void FastProtocolManager::PrintXmlSecurityDefinition(FastSecurityDefinitionInfo 
 	PrintXmlUInt32("MsgSeqNum", info->MsgSeqNum);
 	PrintXmlUInt64("SendingTime", info->SendingTime);
 	PrintXmlString("MessageEncoding", info->MessageEncoding, info->MessageEncodingLength);
-	PrintXmlInt32("TotNumReports", info->TotNumReports);
-	PrintXmlString("Symbol", info->Symbol, info->SymbolLength);
-	PrintXmlByteVector("SecurityID", info->SecurityID, info->SecurityIDLength);
-	PrintXmlByteVector("SecurityIDSource", info->SecurityIDSource, info->SecurityIDSourceLength);
-	PrintXmlInt32("Product", info->Product);
-	PrintXmlByteVector("CFICode", info->CFICode, info->CFICodeLength);
-	PrintXmlByteVector("SecurityType", info->SecurityType, info->SecurityTypeLength);
-	PrintXmlUInt32("MaturityDate", info->MaturityDate);
-	PrintXmlUInt32("SettlDate", info->SettlDate);
-	PrintXmlString("SettleType", info->SettleType, info->SettleTypeLength);
-	PrintXmlDecimal("OrigIssueAmt", &(info->OrigIssueAmt));
-	PrintXmlUInt32("CouponPaymentDate", info->CouponPaymentDate);
-	PrintXmlDecimal("CouponRate", &(info->CouponRate));
-	PrintXmlUInt32("SettlFixingDate", info->SettlFixingDate);
-	PrintXmlDecimal("DividendNetPx", &(info->DividendNetPx));
-	PrintXmlByteVector("SecurityDesc", info->SecurityDesc, info->SecurityDescLength);
-	PrintXmlByteVector("EncodedSecurityDesc", info->EncodedSecurityDesc, info->EncodedSecurityDescLength);
-	PrintXmlByteVector("QuoteText", info->QuoteText, info->QuoteTextLength);
-	PrintXmlInt32("GroupInstrAttribCount", info->GroupInstrAttribCount);
+	if(info->AllowTotNumReports)
+		PrintXmlInt32("TotNumReports", info->TotNumReports);
+	if(info->AllowSymbol)
+		PrintXmlString("Symbol", info->Symbol, info->SymbolLength);
+	if(info->AllowSecurityID)
+		PrintXmlByteVector("SecurityID", info->SecurityID, info->SecurityIDLength);
+	if(info->AllowSecurityIDSource)
+		PrintXmlByteVector("SecurityIDSource", info->SecurityIDSource, info->SecurityIDSourceLength);
+	if(info->AllowProduct)
+		PrintXmlInt32("Product", info->Product);
+	if(info->AllowCFICode)
+		PrintXmlByteVector("CFICode", info->CFICode, info->CFICodeLength);
+	if(info->AllowSecurityType)
+		PrintXmlByteVector("SecurityType", info->SecurityType, info->SecurityTypeLength);
+	if(info->AllowMaturityDate)
+		PrintXmlUInt32("MaturityDate", info->MaturityDate);
+	if(info->AllowSettlDate)
+		PrintXmlUInt32("SettlDate", info->SettlDate);
+	if(info->AllowSettleType)
+		PrintXmlString("SettleType", info->SettleType, info->SettleTypeLength);
+	if(info->AllowOrigIssueAmt)
+		PrintXmlDecimal("OrigIssueAmt", &(info->OrigIssueAmt));
+	if(info->AllowCouponPaymentDate)
+		PrintXmlUInt32("CouponPaymentDate", info->CouponPaymentDate);
+	if(info->AllowCouponRate)
+		PrintXmlDecimal("CouponRate", &(info->CouponRate));
+	if(info->AllowSettlFixingDate)
+		PrintXmlUInt32("SettlFixingDate", info->SettlFixingDate);
+	if(info->AllowDividendNetPx)
+		PrintXmlDecimal("DividendNetPx", &(info->DividendNetPx));
+	if(info->AllowSecurityDesc)
+		PrintXmlByteVector("SecurityDesc", info->SecurityDesc, info->SecurityDescLength);
+	if(info->AllowEncodedSecurityDesc)
+		PrintXmlByteVector("EncodedSecurityDesc", info->EncodedSecurityDesc, info->EncodedSecurityDescLength);
+	if(info->AllowQuoteText)
+		PrintXmlByteVector("QuoteText", info->QuoteText, info->QuoteTextLength);
+	if(info->AllowGroupInstrAttrib)
+		PrintXmlInt32("GroupInstrAttribCount", info->GroupInstrAttribCount);
 
-	FastSecurityDefinitionGroupInstrAttribItemInfo* giaItemInfo = NULL;
+		FastSecurityDefinitionGroupInstrAttribItemInfo* giaItemInfo = NULL;
 
-	for(int i = 0; i < info->GroupInstrAttribCount; i++) {
-		giaItemInfo = info->GroupInstrAttrib[i];
-		PrintXmlItemBegin("item", i);
-		PrintXmlInt32("InstrAttribType", giaItemInfo->InstrAttribType);
-		PrintXmlByteVector("InstrAttribValue", giaItemInfo->InstrAttribValue, giaItemInfo->InstrAttribValueLength);
-		PrintXmlItemEnd("item", i);
-	}
-
-	PrintXmlString("Currency", info->Currency, info->CurrencyLength);
-	PrintXmlInt32("MarketSegmentGrpCount", info->MarketSegmentGrpCount);
-
-	FastSecurityDefinitionMarketSegmentGrpItemInfo* msgItemInfo = NULL;
-
-	for(int i = 0; i < info->MarketSegmentGrpCount; i++) {
-		msgItemInfo = info->MarketSegmentGrp[i];
-		PrintXmlItemBegin("item", i);
-		PrintXmlDecimal("RoundLot", &(msgItemInfo->RoundLot));
-		PrintXmlInt32("TradingSessionRulesGrpCount", msgItemInfo->TradingSessionRulesGrpCount);
-
-		FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo* tsrgItemInfo = NULL;
-
-		for(int i = 0; i < msgItemInfo->TradingSessionRulesGrpCount; i++) {
-			tsrgItemInfo = msgItemInfo->TradingSessionRulesGrp[i];
+		for(int i = 0; i < info->GroupInstrAttribCount; i++) {
+			giaItemInfo = info->GroupInstrAttrib[i];
 			PrintXmlItemBegin("item", i);
-			PrintXmlString("TradingSessionID", tsrgItemInfo->TradingSessionID, tsrgItemInfo->TradingSessionIDLength);
-			PrintXmlString("TradingSessionSubID", tsrgItemInfo->TradingSessionSubID, tsrgItemInfo->TradingSessionSubIDLength);
-			PrintXmlInt32("SecurityTradingStatus", tsrgItemInfo->SecurityTradingStatus);
-			PrintXmlInt32("OrderNote", tsrgItemInfo->OrderNote);
+			PrintXmlInt32("InstrAttribType", giaItemInfo->InstrAttribType);
+			if(giaItemInfo->AllowInstrAttribValue)
+				PrintXmlByteVector("InstrAttribValue", giaItemInfo->InstrAttribValue, giaItemInfo->InstrAttribValueLength);
 			PrintXmlItemEnd("item", i);
 		}
 
-		PrintXmlItemEnd("item", i);
-	}
+	if(info->AllowCurrency)
+		PrintXmlString("Currency", info->Currency, info->CurrencyLength);
+	if(info->AllowMarketSegmentGrp)
+		PrintXmlInt32("MarketSegmentGrpCount", info->MarketSegmentGrpCount);
 
-	PrintXmlString("SettlCurrency", info->SettlCurrency, info->SettlCurrencyLength);
-	PrintXmlInt32("PriceType", info->PriceType);
-	PrintXmlString("StateSecurityID", info->StateSecurityID, info->StateSecurityIDLength);
-	PrintXmlByteVector("EncodedShortSecurityDesc", info->EncodedShortSecurityDesc, info->EncodedShortSecurityDescLength);
-	PrintXmlByteVector("MarketCode", info->MarketCode, info->MarketCodeLength);
-	PrintXmlDecimal("MinPriceIncrement", &(info->MinPriceIncrement));
-	PrintXmlDecimal("MktShareLimit", &(info->MktShareLimit));
-	PrintXmlDecimal("MktShareThreshold", &(info->MktShareThreshold));
-	PrintXmlDecimal("MaxOrdersVolume", &(info->MaxOrdersVolume));
-	PrintXmlDecimal("PriceMvmLimit", &(info->PriceMvmLimit));
-	PrintXmlDecimal("FaceValue", &(info->FaceValue));
-	PrintXmlDecimal("BaseSwapPx", &(info->BaseSwapPx));
-	PrintXmlDecimal("RepoToPx", &(info->RepoToPx));
-	PrintXmlDecimal("BuyBackPx", &(info->BuyBackPx));
-	PrintXmlUInt32("BuyBackDate", info->BuyBackDate);
-	PrintXmlDecimal("NoSharesIssued", &(info->NoSharesIssued));
-	PrintXmlDecimal("HighLimit", &(info->HighLimit));
-	PrintXmlDecimal("LowLimit", &(info->LowLimit));
-	PrintXmlInt32("NumOfDaysToMaturity", info->NumOfDaysToMaturity);
+		FastSecurityDefinitionMarketSegmentGrpItemInfo* msgItemInfo = NULL;
+
+		for(int i = 0; i < info->MarketSegmentGrpCount; i++) {
+			msgItemInfo = info->MarketSegmentGrp[i];
+			PrintXmlItemBegin("item", i);
+			if(msgItemInfo->AllowRoundLot)
+				PrintXmlDecimal("RoundLot", &(msgItemInfo->RoundLot));
+			if(msgItemInfo->AllowTradingSessionRulesGrp)
+				PrintXmlInt32("TradingSessionRulesGrpCount", msgItemInfo->TradingSessionRulesGrpCount);
+
+				FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo* tsrgItemInfo = NULL;
+
+				for(int i = 0; i < msgItemInfo->TradingSessionRulesGrpCount; i++) {
+					tsrgItemInfo = msgItemInfo->TradingSessionRulesGrp[i];
+					PrintXmlItemBegin("item", i);
+					PrintXmlString("TradingSessionID", tsrgItemInfo->TradingSessionID, tsrgItemInfo->TradingSessionIDLength);
+					if(tsrgItemInfo->AllowTradingSessionSubID)
+						PrintXmlString("TradingSessionSubID", tsrgItemInfo->TradingSessionSubID, tsrgItemInfo->TradingSessionSubIDLength);
+					if(tsrgItemInfo->AllowSecurityTradingStatus)
+						PrintXmlInt32("SecurityTradingStatus", tsrgItemInfo->SecurityTradingStatus);
+					if(tsrgItemInfo->AllowOrderNote)
+						PrintXmlInt32("OrderNote", tsrgItemInfo->OrderNote);
+					PrintXmlItemEnd("item", i);
+				}
+
+			PrintXmlItemEnd("item", i);
+		}
+
+	if(info->AllowSettlCurrency)
+		PrintXmlString("SettlCurrency", info->SettlCurrency, info->SettlCurrencyLength);
+	if(info->AllowPriceType)
+		PrintXmlInt32("PriceType", info->PriceType);
+	if(info->AllowStateSecurityID)
+		PrintXmlString("StateSecurityID", info->StateSecurityID, info->StateSecurityIDLength);
+	if(info->AllowEncodedShortSecurityDesc)
+		PrintXmlByteVector("EncodedShortSecurityDesc", info->EncodedShortSecurityDesc, info->EncodedShortSecurityDescLength);
+	if(info->AllowMarketCode)
+		PrintXmlByteVector("MarketCode", info->MarketCode, info->MarketCodeLength);
+	if(info->AllowMinPriceIncrement)
+		PrintXmlDecimal("MinPriceIncrement", &(info->MinPriceIncrement));
+	if(info->AllowMktShareLimit)
+		PrintXmlDecimal("MktShareLimit", &(info->MktShareLimit));
+	if(info->AllowMktShareThreshold)
+		PrintXmlDecimal("MktShareThreshold", &(info->MktShareThreshold));
+	if(info->AllowMaxOrdersVolume)
+		PrintXmlDecimal("MaxOrdersVolume", &(info->MaxOrdersVolume));
+	if(info->AllowPriceMvmLimit)
+		PrintXmlDecimal("PriceMvmLimit", &(info->PriceMvmLimit));
+	if(info->AllowFaceValue)
+		PrintXmlDecimal("FaceValue", &(info->FaceValue));
+	if(info->AllowBaseSwapPx)
+		PrintXmlDecimal("BaseSwapPx", &(info->BaseSwapPx));
+	if(info->AllowRepoToPx)
+		PrintXmlDecimal("RepoToPx", &(info->RepoToPx));
+	if(info->AllowBuyBackPx)
+		PrintXmlDecimal("BuyBackPx", &(info->BuyBackPx));
+	if(info->AllowBuyBackDate)
+		PrintXmlUInt32("BuyBackDate", info->BuyBackDate);
+	if(info->AllowNoSharesIssued)
+		PrintXmlDecimal("NoSharesIssued", &(info->NoSharesIssued));
+	if(info->AllowHighLimit)
+		PrintXmlDecimal("HighLimit", &(info->HighLimit));
+	if(info->AllowLowLimit)
+		PrintXmlDecimal("LowLimit", &(info->LowLimit));
+	if(info->AllowNumOfDaysToMaturity)
+		PrintXmlInt32("NumOfDaysToMaturity", info->NumOfDaysToMaturity);
 	PrintXmlItemEnd("FastSecurityDefinitionInfo");
 }
 void FastProtocolManager::PrintXmlSecurityStatus(FastSecurityStatusInfo *info) {
@@ -1903,10 +2738,14 @@ void FastProtocolManager::PrintXmlSecurityStatus(FastSecurityStatusInfo *info) {
 	PrintXmlUInt32("MsgSeqNum", info->MsgSeqNum);
 	PrintXmlUInt64("SendingTime", info->SendingTime);
 	PrintXmlString("Symbol", info->Symbol, info->SymbolLength);
-	PrintXmlString("TradingSessionID", info->TradingSessionID, info->TradingSessionIDLength);
-	PrintXmlString("TradingSessionSubID", info->TradingSessionSubID, info->TradingSessionSubIDLength);
-	PrintXmlInt32("SecurityTradingStatus", info->SecurityTradingStatus);
-	PrintXmlUInt32("AuctionIndicator", info->AuctionIndicator);
+	if(info->AllowTradingSessionID)
+		PrintXmlString("TradingSessionID", info->TradingSessionID, info->TradingSessionIDLength);
+	if(info->AllowTradingSessionSubID)
+		PrintXmlString("TradingSessionSubID", info->TradingSessionSubID, info->TradingSessionSubIDLength);
+	if(info->AllowSecurityTradingStatus)
+		PrintXmlInt32("SecurityTradingStatus", info->SecurityTradingStatus);
+	if(info->AllowAuctionIndicator)
+		PrintXmlUInt32("AuctionIndicator", info->AuctionIndicator);
 	PrintXmlItemEnd("FastSecurityStatusInfo");
 }
 void FastProtocolManager::PrintXmlTradingSessionStatus(FastTradingSessionStatusInfo *info) {
@@ -1916,7 +2755,8 @@ void FastProtocolManager::PrintXmlTradingSessionStatus(FastTradingSessionStatusI
 	PrintXmlUInt32("MsgSeqNum", info->MsgSeqNum);
 	PrintXmlUInt64("SendingTime", info->SendingTime);
 	PrintXmlInt32("TradSesStatus", info->TradSesStatus);
-	PrintXmlString("Text", info->Text, info->TextLength);
+	if(info->AllowText)
+		PrintXmlString("Text", info->Text, info->TextLength);
 	PrintXmlString("TradingSessionID", info->TradingSessionID, info->TradingSessionIDLength);
 	PrintXmlItemEnd("FastTradingSessionStatusInfo");
 }
