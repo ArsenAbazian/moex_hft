@@ -191,20 +191,59 @@ private:
     inline bool WaitingSnapshot() { return this->m_waitingSnapshot; }
     inline bool SnapshotAvailable() { return this->m_snapshotAvailable; }
 
-	inline bool ApplyOrderBookSnapshot_FOND() {
-        this->m_orderBookTableFond->Clear();
-        for(int i = this->m_snapshotRouteFirst; i <= this->m_snapshotLastFragment; i++) {
-            this->ProcessMessage(this->m_packets[i]);
-        }
-        //FastOBSFONDInfo *info = (FastOBSFONDInfo*)this->m_snapshot->m_fastProtocolManager->LastDecodeInfo();
-		//this->m_orderBookTable->Add(info->Symbol, info->TradingSessionID, (void**)info->GroupMDEntries, info->GroupMDEntriesCount);
+	inline bool ApplySnapshotCore() {
+		for(int index = this->m_snapshotRouteFirst; index <= this->m_snapshotLastFragment; index++) {
+			int i = this->m_packets[index]->m_itemIndex;
+			return this->m_incremental->ProcessMessage(this->m_recvABuffer->Item(i),
+													   this->m_recvABuffer->ItemLength(i));
+		}
 		return true;
+	}
+
+	inline bool ApplyOrderBookSnapshot_FOND() {
+        this->m_incremental->OrderBookFond()->Clear();
+        return this->ApplySnapshotCore();
+	}
+
+	inline bool ApplyOrderBookSnapshot_CURR() {
+		this->m_incremental->OrderBookCurr()->Clear();
+		return this->ApplySnapshotCore();
+	}
+
+	inline bool ApplyOrderSnapshot_FOND() {
+		this->m_incremental->OrderFond()->Clear();
+		return this->ApplySnapshotCore();
+	}
+
+	inline bool ApplyOrderSnapshot_CURR() {
+		this->m_incremental->OrderCurr()->Clear();
+		return this->ApplySnapshotCore();
+	}
+
+	inline bool ApplyTradeSnapshot_FOND() {
+		this->m_incremental->TradeFond()->Clear();
+		return this->ApplySnapshotCore();
+	}
+
+	inline bool ApplyTradeSnapshot_CURR() {
+		this->m_incremental->TradeCurr()->Clear();
+		return this->ApplySnapshotCore();
 	}
 
     inline bool ApplySnapshot() {
         switch(this->m_fastProtocolManager->TemplateId()) {
 			case FeedConnectionMessage::fmcFullRefresh_OBS_FOND:
 				return this->ApplyOrderBookSnapshot_FOND();
+			case FeedConnectionMessage::fmcFullRefresh_OBS_CURR:
+				return this->ApplyOrderBookSnapshot_CURR();
+			case FeedConnectionMessage::fmcFullRefresh_OLS_FOND:
+				return this->ApplyOrderSnapshot_FOND();
+			case FeedConnectionMessage::fmcFullRefresh_OLS_CURR:
+				return this->ApplyOrderSnapshot_CURR();
+			case FeedConnectionMessage::fmcFullRefresh_TLS_FOND:
+				return this->ApplyTradeSnapshot_FOND();
+			case FeedConnectionMessage::fmcFullRefresh_TLS_CURR:
+				return this->ApplyTradeSnapshot_CURR();
 		}
 		return true;
 	}
@@ -214,9 +253,9 @@ private:
         bool processed = false;
         while(i <= this->m_maxRecvMsgSeqNum) {
             if(this->m_packets[i] == 0) {
-				i++; continue; // TODO remove this code
-                //this->m_currentMsgSeqNum = i; // TODO uncomment this code
-                //return processed;
+				//i++; continue; // TODO remove this code
+                this->m_currentMsgSeqNum = i; // TODO uncomment this code
+                return processed;
             }
             this->ProcessMessage(this->m_packets[i]);
             processed = true;
@@ -613,8 +652,22 @@ private:
 		return true;
 	}
 
+	inline bool ShouldSkipMessage(unsigned char *buffer) {
+		unsigned short *templateId = (unsigned short*)(buffer + 5);
+		return (*templateId) == 0xbc10;
+	}
+
+	inline bool ProcessMessage(unsigned char *buffer, int length) {
+		DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Decode);
+		bool res = this->ProcessMessageCore(buffer, length);
+		DefaultLogManager::Default->EndLog(res);
+		return res;
+	}
+
 	inline bool ProcessMessage(BinaryLogItem *item) {
         unsigned char *buffer = this->m_recvABuffer->Item(item->m_itemIndex);
+		if(this->ShouldSkipMessage(buffer))
+			return true;  // TODO - take this message into account, becasue it determines feed alive
 
 		//TODO remove unused logging
 		/*
@@ -629,11 +682,8 @@ private:
 		fflush(this->obrLogFile);
 		//till this
 		*/
-		DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Decode);
-		bool res = this->ProcessMessageCore(buffer, this->m_recvABuffer->ItemLength(item->m_itemIndex));
-		DefaultLogManager::Default->EndLog(res);
 
-		return res;
+		return this->ProcessMessage(buffer, this->m_recvABuffer->ItemLength(item->m_itemIndex));
 	}
 public:
 	FeedConnection(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort);

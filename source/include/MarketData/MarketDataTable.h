@@ -149,7 +149,7 @@ public:
                 data->Clear();
                 return node;
             }
-            if(node == this->m_buyQuoteList->End())
+            if(node == this->m_sellQuoteList->End())
                 break;
             node = node->Next();
         }
@@ -281,7 +281,7 @@ public:
                 data->Clear();
                 return node;
             }
-            if(node == this->m_buyQuoteList->End())
+            if(node == this->m_sellQuoteList->End())
                 break;
             node = node->Next();
         }
