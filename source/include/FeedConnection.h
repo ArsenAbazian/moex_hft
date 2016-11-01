@@ -171,9 +171,7 @@ private:
                                                                     this->m_recvABuffer->BufferIndex(),
                                                                     this->m_recvABuffer->CurrentItemIndex());
         if(this->m_type == FeedConnectionType::Incremental) {
-            //if(this->m_currentMsgSeqNum == 1)
-            //    this->m_currentMsgSeqNum = msgSeqNum;  // TODO - remove after debug end
-            if (this->m_maxRecvMsgSeqNum < msgSeqNum)
+            if(this->m_maxRecvMsgSeqNum < msgSeqNum)
                 this->m_maxRecvMsgSeqNum = msgSeqNum;
         }
         else {

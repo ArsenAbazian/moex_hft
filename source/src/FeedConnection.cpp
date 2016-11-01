@@ -244,18 +244,22 @@ bool FeedConnection::Listen_Atom_Snapshot() {
                    this->m_snapshotRouteFirst,
                    this->m_snapshotLastFragment, info->LastMsgSeqNumProcessed, info->RptSeq);
             if(info->LastMsgSeqNumProcessed == 0 && info->RptSeq == 0) { //empty snapshot - no data
+                printf("\t\tEmpty Snapshot -> Apply\n");
                 this->m_waitTimer->Stop();
                 this->m_snapshotAvailable = true;
                 return true;
             }
             if(info->LastMsgSeqNumProcessed < this->m_incremental->m_currentMsgSeqNum) {
+                printf("\t\tOutdated Snapshot -> Continue\n");
                 this->m_snapshotRouteFirst = -1;
                 this->m_snapshotLastFragment = -1;
                 this->m_snapshotStartMsgSeqNum = i + 1;
                 continue;
             }
+            printf("\t\tCorrect Snapshot - > Apply\n");
             this->m_lastMsgSeqNumProcessed = info->LastMsgSeqNumProcessed;
             this->m_rptSeq = info->RptSeq;
+            this->m_snapshotAvailable = true;
 
             break;
         }
