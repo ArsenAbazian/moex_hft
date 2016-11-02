@@ -250,13 +250,13 @@ bool FeedConnection::Listen_Atom_Snapshot() {
                 return true;
             }
             if(info->LastMsgSeqNumProcessed < this->m_incremental->m_currentMsgSeqNum) {
-                printf("\t\tOutdated Snapshot -> Continue\n");
+                printf("\t\tOutdated Snapshot. Need %d vs %d -> Continue\n", this->m_incremental->m_currentMsgSeqNum, info->LastMsgSeqNumProcessed);
                 this->m_snapshotRouteFirst = -1;
                 this->m_snapshotLastFragment = -1;
                 this->m_snapshotStartMsgSeqNum = i + 1;
                 continue;
             }
-            printf("\t\tCorrect Snapshot - > Apply\n");
+            printf("\t\tCorrect Snapshot. Need %d vs %d - > Apply\n", this->m_incremental->m_currentMsgSeqNum, info->LastMsgSeqNumProcessed);
             this->m_lastMsgSeqNumProcessed = info->LastMsgSeqNumProcessed;
             this->m_rptSeq = info->RptSeq;
             this->m_snapshotAvailable = true;

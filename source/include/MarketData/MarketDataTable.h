@@ -355,6 +355,35 @@ public:
     }
 };
 
+template <typename T> class StatisticsTableItem {
+    T               *m_item;
+    bool            m_used;
+public:
+    StatisticsTableItem() {
+        this->m_item = 0;
+        this->m_used = false;
+    }
+
+    inline bool Used() { return this->m_used; }
+    inline void Used(bool used) { this->m_used = used; }
+
+    inline T* Item() { return this->m_item; }
+
+    inline void Add(T *item) {
+        this->m_item = item;
+        this->m_item->Used(true);
+    }
+    inline void Change(T *item) {
+        switch(item->MDEntryType) {
+            case MDEntryType::mdetBuyQuote:
+                this->m_item->
+        }
+    }
+    inline void Remove(T *item) {
+        item->Clear();
+        this->m_item = 0;
+    }
+};
 
 template <template<typename ITEMINFO> class TABLEITEM, typename INFO, typename ITEMINFO> class MarketDataTable {
     HashTable<TABLEITEM<ITEMINFO>>                *m_table;

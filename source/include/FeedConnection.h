@@ -251,8 +251,7 @@ private:
         bool processed = false;
         while(i <= this->m_maxRecvMsgSeqNum) {
             if(this->m_packets[i] == 0) {
-				//i++; continue; // TODO remove this code
-                this->m_currentMsgSeqNum = i; // TODO uncomment this code
+                this->m_currentMsgSeqNum = i;
                 return processed;
             }
             this->ProcessMessage(this->m_packets[i]);
