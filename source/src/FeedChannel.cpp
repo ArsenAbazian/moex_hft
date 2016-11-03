@@ -97,6 +97,7 @@ bool FeedChannel::Connect() {
 	this->ordersIncremental->SetSnapshot(this->ordersSnapshot);
 	this->instrumentReplay->SetSnapshot(this->instrumentStatus);
 
+	/*
 	if (!this->Connect(this->orderBookIncremental)) {
 		DefaultLogManager::Default->EndLog(false);
 		return false;
@@ -104,7 +105,7 @@ bool FeedChannel::Connect() {
 	if (!this->Connect(this->ordersIncremental)) {
 		DefaultLogManager::Default->EndLog(false);
 		return false;
-	}
+	}*/
 	if (!this->Connect(this->tradesIncremental)) {
 		DefaultLogManager::Default->EndLog(false);
 		return false;
@@ -142,8 +143,8 @@ bool FeedChannel::Connect() {
     }
     */
 
-	this->orderBookIncremental->Start();
-	this->ordersIncremental->Start();
+	//this->orderBookIncremental->Start();
+	//this->ordersIncremental->Start();
 	this->tradesIncremental->Start();
 
 	//this->statisticsIncremental->Start();

@@ -408,6 +408,17 @@ void FastProtocolTester::TestMessages() {
         throw;
     if(manager->MessageLength() != 57)
         throw;
+
+    message = new unsigned char[18] {
+            0x32, 0x77, 0x03, 0x00, 0xe0, 0x12, 0xf4, 0x0d, 0x6e, 0xb2,
+            0x23, 0x68, 0x0d, 0x26, 0x2f, 0x55, 0x09, 0x83
+    };
+
+    manager->SetNewBuffer(message, 18);
+    manager->SetNewBuffer(message, 18);
+    msgSeqNo = manager->ReadMsgSeqNumber();
+    manager->Decode();
+    manager->Print();
 }
 
 bool FastProtocolTester::CompareStrings(char* str1, const char *str2) {

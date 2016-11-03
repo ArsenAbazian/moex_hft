@@ -163,7 +163,7 @@ private:
             return false;
         int msgSeqNum = *((UINT*)socketManager->RecvBytes());
         if(this->m_packets[msgSeqNum] != 0)
-            return false;
+			return false;
 
         this->m_recvABuffer->SetCurrentItemSize(size);
         BinaryLogItem *item = DefaultLogManager::Default->WriteFast(this->m_idLogIndex,
@@ -179,8 +179,6 @@ private:
                 this->m_snapshotStartMsgSeqNum = msgSeqNum;
             if(this->m_snapshotEndMsgSeqNum < msgSeqNum)
                 this->m_snapshotEndMsgSeqNum = msgSeqNum;
-			if(this->m_snapshotStartMsgSeqNum > this->m_snapshotEndMsgSeqNum)
-				this->m_snapshotStartMsgSeqNum = this->m_snapshotEndMsgSeqNum; // TODO unbelievable - remove then
         }
         this->m_packets[msgSeqNum] = item;
         this->m_recvABuffer->Next(size);
@@ -190,11 +188,14 @@ private:
     inline bool SnapshotAvailable() { return this->m_snapshotAvailable; }
 
 	inline bool ApplySnapshotCore() {
+		printf("start apply snapshot\n");
 		for(int index = this->m_snapshotRouteFirst; index <= this->m_snapshotLastFragment; index++) {
+			printf("snap process packet %d\n", index);
 			int i = this->m_packets[index]->m_itemIndex;
 			return this->m_incremental->ProcessMessage(this->m_recvABuffer->Item(i),
 													   this->m_recvABuffer->ItemLength(i));
 		}
+		printf("end apply snapshot\n");
 		return true;
 	}
 
@@ -229,7 +230,7 @@ private:
 	}
 
     inline bool ApplySnapshot() {
-        switch(this->m_fastProtocolManager->TemplateId()) {
+		switch(this->m_fastProtocolManager->TemplateId()) {
 			case FeedConnectionMessage::fmcFullRefresh_OBS_FOND:
 				return this->ApplyOrderBookSnapshot_FOND();
 			case FeedConnectionMessage::fmcFullRefresh_OBS_CURR:
@@ -249,15 +250,20 @@ private:
     inline bool ApplyPacketSequence() {
         int i = this->m_currentMsgSeqNum;
         bool processed = false;
-        while(i <= this->m_maxRecvMsgSeqNum) {
+		while(i <= this->m_maxRecvMsgSeqNum) {
             if(this->m_packets[i] == 0) {
                 this->m_currentMsgSeqNum = i;
                 return processed;
             }
+			printf("  inc apply msg %d\n", i);
             this->ProcessMessage(this->m_packets[i]);
             processed = true;
             i++;
         }
+		if(!processed) {
+			printf("no message applied. expected %d, max %d\n", this->m_currentMsgSeqNum, this->m_maxRecvMsgSeqNum);
+		}
+		//printf("end apply packet seq. new expected msg %d\n", i);
         this->m_currentMsgSeqNum = i;
         return processed;
     }
@@ -279,56 +285,14 @@ private:
 		DefaultLogManager::Default->WriteSuccess(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_StopListenSnapshot, true);
 		return true;
 	}
-	inline bool CheckForRouteFirst(BinaryLogItem *item) {
-		unsigned char *buffer = this->m_recvABuffer->Item(item->m_itemIndex);
-		this->m_fastProtocolManager->SetNewBuffer(buffer, this->m_recvABuffer->ItemLength(item->m_itemIndex));
-		this->m_fastProtocolManager->ReadMsgSeqNumber();
-		FastSnapshotInfo* info = this->m_fastProtocolManager->GetSnapshotInfo();
-        return info == NULL? false: info->RouteFirst == 1;
-    }
-    inline bool CheckForLastFragment(BinaryLogItem *item, int *refMsgSeqNum) {
-        unsigned char *buffer = this->m_recvABuffer->Item(item->m_itemIndex);
-        this->m_fastProtocolManager->SetNewBuffer(buffer, this->m_recvABuffer->ItemLength(item->m_itemIndex));
-		this->m_fastProtocolManager->ReadMsgSeqNumber();
-        FastSnapshotInfo* info = this->m_fastProtocolManager->GetSnapshotInfo();
-        if(info == NULL)
-			return false;
-		*refMsgSeqNum = info->LastMsgSeqNumProcessed;
-        return info->LastFragment == 1;
-    }
-	inline int GetRouteFirst() {
-		if(this->m_snapshotStartMsgSeqNum == -1)
-			return -1;
-		while(this->m_snapshotStartMsgSeqNum <= this->m_snapshotEndMsgSeqNum) {
-			if(this->CheckForRouteFirst(this->m_packets[this->m_snapshotStartMsgSeqNum])) {
-                DefaultLogManager::Default->WriteSuccess(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_GetRouteFirst, true);
-                return this->m_snapshotStartMsgSeqNum;
-            }
-            this->m_snapshotStartMsgSeqNum++;
-		}
-		return -1;
-	}
 	inline FastSnapshotInfo* GetSnapshotInfo(int index) {
-		if(this->m_packets[index] == NULL)
-			return NULL;
 		BinaryLogItem *item = this->m_packets[index];
 		unsigned char *buffer = this->m_recvABuffer->Item(item->m_itemIndex);
 		this->m_fastProtocolManager->SetNewBuffer(buffer, this->m_recvABuffer->ItemLength(item->m_itemIndex));
 		this->m_fastProtocolManager->ReadMsgSeqNumber();
 		return this->m_fastProtocolManager->GetSnapshotInfo();
 	}
-    inline int GetLastFragment(int *refMsgSeqNum) {
-		if(this->m_snapshotStartMsgSeqNum == -1)
-			return -1;
-        while(this->m_snapshotStartMsgSeqNum <= this->m_snapshotEndMsgSeqNum) {
-            if (this->CheckForLastFragment(this->m_packets[this->m_snapshotStartMsgSeqNum], refMsgSeqNum)) {
-                DefaultLogManager::Default->WriteSuccess(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_GetLastFragment, false);
-                return this->m_snapshotStartMsgSeqNum;
-            }
-            this->m_snapshotStartMsgSeqNum++;
-        }
-        return -1;
-    }
+
     inline void ResetWaitTime() { this->m_waitTimer->Start(); }
     inline void StartWaitIncremental() { this->m_waitingSnapshot = false; }
     inline bool ActualMsgSeqNum() { return this->m_currentMsgSeqNum == this->m_maxRecvMsgSeqNum; }

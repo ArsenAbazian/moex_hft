@@ -355,35 +355,196 @@ public:
     }
 };
 
+/*
 template <typename T> class StatisticsTableItem {
-    T               *m_item;
     bool            m_used;
+    Decimal         *m_buyQuote;
+    Decimal         *m_sellQuote;
+
 public:
     StatisticsTableItem() {
-        this->m_item = 0;
         this->m_used = false;
     }
 
     inline bool Used() { return this->m_used; }
     inline void Used(bool used) { this->m_used = used; }
 
-    inline T* Item() { return this->m_item; }
+    inline void SetProperty(MDEntryType entryType, T *item) {
+        if(entryType <= MDEntryType::mdetOLSTradeAskAuctionOpenClose) {
+            if(entryType <= MDEntryType::mdetDisbalance) {
+                if(entryType <= MDEntryType::mdetPriceOpenFirst) {
+                    if(entryType <= MDEntryType::mdetLastDealInfo) {
+                        if(entryType <= MDEntryType::mdetSellQuote) {
+                            if(entryType == MDEntryType::mdetBuyQuote) {
+                                this->m_buyQuote->Assign(item->MDEntryPx);
+                            }
+                            else { // mdetSellQuote
+                                this->m_sellQuote->Assign(item->MDEntryPx);
+                            }
+                        }
+                        else {
+                            // mdetLastDealInfo
 
-    inline void Add(T *item) {
-        this->m_item = item;
-        this->m_item->Used(true);
-    }
-    inline void Change(T *item) {
-        switch(item->MDEntryType) {
-            case MDEntryType::mdetBuyQuote:
-                this->m_item->
+                        }
+                    }
+                    else {
+                        if(entryType == MDEntryType::mdetIndicesList) {
+                        }
+                        else { // mdetPriceOpenFirst
+                        }
+                    }
+                }
+                else {
+                    if(entryType <= MDEntryType::mdetPriceMin) {
+                        if(entryType <= MDEntryType::mdetPriceMax) {
+                            if(entryType == MDEntryType::mdetPriceCloseLast) {
+                            }
+                            else { // mdetPriceMax
+                            }
+                        }
+                        else {
+                            // mdetPriceMin
+                        }
+                    }
+                    else {
+                        if(entryType == MDEntryType::mdetPriceAve) {
+                        }
+                        else { // mdetDisbalance
+                        }
+                    }
+                }
+            }
+            else {
+                if(entryType <= MDEntryType::mdetAuctionPriceCalculated) {
+                    if(entryType <= MDEntryType::mdetAskPriceMax) {
+                        if(entryType <= MDEntryType::mdetEmptyBook) {
+                            if(entryType == MDEntryType::mdetTransactionsMagnitude) {
+                            }
+                            else { // mdetEmptyBook
+                            }
+                        }
+                        else {
+                            // mdetAskPriceMax
+                        }
+                    }
+                    else {
+                        if(entryType == MDEntryType::mdetBidPriceMin) {
+                        }
+                        else { // mdetAuctionPriceCalculated
+                        }
+                    }
+                }
+                else {
+                    if(entryType <= MDEntryType::mdetMSSTradingDenyNotEnoughMoney) {
+                        if(entryType <= MDEntryType::mdetAuctionMagnitudeClose) {
+                            if(entryType == MDEntryType::mdetAuctionPriceClose) {
+                            }
+                            else { // mdetAuctionMagnitudeClose
+                            }
+                        }
+                        else {
+                            // mdetMSSTradingDenyNotEnoughMoney
+                        }
+                    }
+                    else {
+                        if(entryType == MDEntryType::mdetMSSTradeAskAuctionMagnitudeOpenClose) {
+                        }
+                        else { // mdetOLSTradeAskAuctionOpenClose
+                        }
+                    }
+                }
+            }
+        }
+        else {
+            if(entryType <= MDEntryType::mdetPriceCurrentOfficial) {
+                if(entryType <= MDEntryType::mdetSessionBid) {
+                    if(entryType <= MDEntryType::mdetPreTradePeriodPrice) {
+                        if(entryType <= MDEntryType::mdetOLSTradeBidAuctionOpenClose) {
+                            if(entryType == MDEntryType::mdetMSSTradeBidAuctionMagnitudeOpenClose) {
+                            }
+                            else { // mdetOLSTradeBidAuctionOpenClose
+                            }
+                        }
+                        else {
+                            // mdetPreTradePeriodPrice
+                        }
+                    }
+                    else {
+                        if(entryType == MDEntryType::mdetSessionAsk) {
+                        }
+                        else { // mdetSessionBid
+                        }
+                    }
+                }
+                else {
+                    if(entryType <= MDEntryType::mdetTradePrice) {
+                        if(entryType <= MDEntryType::mdetTradePrice2) {
+                            if(entryType == MDEntryType::mdetPostTradePeriodPrice) {
+                            }
+                            else { // mdetTradePrice2
+                            }
+                        }
+                        else {
+                            // mdetTradePrice
+                        }
+                    }
+                    else {
+                        if(entryType == MDEntryType::mdetPriceOpenOfficial) {
+                        }
+                        else { // mdetPriceCurrentOfficial
+                        }
+                    }
+                }
+            }
+            else {
+                if(entryType <= MDEntryType::mdetAskTotal) {
+                    if(entryType <= MDEntryType::mdetAuctionPriceBigPackets) {
+                        if(entryType <= MDEntryType::mdetPriceCloseOfficial) {
+                            if(entryType == MDEntryType::mdetLegitimQuote) {
+                            }
+                            else { // mdetPriceCloseOfficial
+                            }
+                        }
+                        else {
+                            // mdetAuctionPriceBigPackets
+                        }
+                    }
+                    else {
+                        if(entryType == MDEntryType::mdetDuration) {
+                        }
+                        else { // mdetAskTotal
+                        }
+                    }
+                }
+                else {
+                    if(entryType <= MDEntryType::mdetAuctionMagnitudeBigPackets) {
+                        if(entryType == MDEntryType::mdetBidTotal) {
+                        }
+                        else { // mdetAuctionMagnitudeBigPackets
+                        }
+                    }
+                    else {
+                        if(entryType == MDEntryType::mdetCumulativeCouponDebit) {
+                        }
+                        else { // mdetAllDeals
+                        }
+                    }
+                }
+            }
         }
     }
+    
+    inline void Add(T *item) {
+        SetProperty(item->MDentryType[0], item);
+    }
+    inline void Change(T *item) {
+        SetProperty(item->MDentryType[0], item);
+    }
     inline void Remove(T *item) {
-        item->Clear();
-        this->m_item = 0;
+
     }
 };
+*/
 
 template <template<typename ITEMINFO> class TABLEITEM, typename INFO, typename ITEMINFO> class MarketDataTable {
     HashTable<TABLEITEM<ITEMINFO>>                *m_table;

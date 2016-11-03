@@ -13,6 +13,7 @@ void BinaryLogManager::Print() {
 }
 
 void BinaryLogManager::Print(BinaryLogItem *item) {
+    /*
     printf("%s", this->m_tabs);
     printf("%d: ", item->m_index);
 
@@ -43,13 +44,12 @@ void BinaryLogManager::Print(BinaryLogItem *item) {
         }
     }
     else if(item->m_type == BinaryLogItemType::NodeFast) {
-        /*
         if(item->m_bufferIndex == -1)
             printf("null");
         else {
             unsigned char *itemText = DefaultSocketBufferManager::Default->Buffer(item->m_bufferIndex)->Item(item->m_itemIndex);
             int itemSize = DefaultSocketBufferManager::Default->Buffer(item->m_bufferIndex)->ItemLength(item->m_itemIndex);
-            printf("  %d -> %d bytes", *((int*)itemText), itemSize);
+            printf("  %d", *((int*)itemText));
             printf(" '");
             for(int i = 0; i < itemSize; i++) {
                 if(i == itemSize - 1)
@@ -59,7 +59,6 @@ void BinaryLogManager::Print(BinaryLogItem *item) {
             }
             printf("'");
         }
-        */
     }
     else if(item->m_type != BinaryLogItemType::NodeStart) {
         if(item->m_result != NullableBoolean::nbNull) {
@@ -81,7 +80,7 @@ void BinaryLogManager::Print(BinaryLogItem *item) {
         }
     }
 
-    printf("\n");
+    printf("\n");*/
 }
 
 BinaryLogManager* DefaultLogManager::Default = new BinaryLogManager();

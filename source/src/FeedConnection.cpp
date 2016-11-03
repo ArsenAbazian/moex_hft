@@ -173,10 +173,13 @@ bool FeedConnection::Listen_Atom_Incremental() {
 		if(this->m_snapshot->SnapshotAvailable()) {
 			this->m_snapshot->ApplySnapshot();
 			this->m_currentMsgSeqNum = this->m_snapshot->LastMsgSeqNumProcessed() + 1;
+            printf("snapshot applied. new expected message %d. max received msg %d\n", this->m_currentMsgSeqNum, this->m_maxRecvMsgSeqNum);
+            printf("start apply inc packets after snapshot\n");
             this->ApplyPacketSequence();
+            printf("end apply inc packets after snapshot\n");
             if(!this->StopListenSnapshot())
                 return false;
-			this->StartWaitIncremental();
+            this->StartWaitIncremental();
 		}
 	}
 	else {
@@ -190,6 +193,7 @@ bool FeedConnection::Listen_Atom_Incremental() {
         }
         else {
             if(this->m_waitTimer->ElapsedSeconds() > 3) {
+                printf("inc no message apply. time expired\n");
                 if(!this->StartListenSnapshot())
                     return false;
                 this->m_waitTimer->Stop();
@@ -224,63 +228,76 @@ bool FeedConnection::Listen_Atom_Snapshot() {
 
     if(this->m_snapshotStartMsgSeqNum == -1)
         return true;
-    for(int i = this->m_snapshotStartMsgSeqNum; i <= this->m_snapshotEndMsgSeqNum; i++) {
-        FastSnapshotInfo *info = this->GetSnapshotInfo(i);
-        if(info == NULL)
-            continue;
-        if(this->m_snapshotRouteFirst == -1) {
-            this->m_snapshotStartMsgSeqNum = i + 1;
-            if(info->RouteFirst == 1)
-                this->m_snapshotRouteFirst = i;
-            else
-                continue;
-        }
-        if(info->LastFragment == 1) {
-            this->m_snapshotLastFragment = i;
-            printf("\t\tFound Snapshot -> MsgSeqNum = %d, TemplateId = %d, SendingTime = %lu RouteFirst = %d, LastFragment = %d, LastMsgSeqProcessed = %d, RptSeq = %d\n",
-                   i,
-                   info->TemplateId,
-                   info->SendingTime,
-                   this->m_snapshotRouteFirst,
-                   this->m_snapshotLastFragment, info->LastMsgSeqNumProcessed, info->RptSeq);
-            if(info->LastMsgSeqNumProcessed == 0 && info->RptSeq == 0) { //empty snapshot - no data
-                printf("\t\tEmpty Snapshot -> Apply\n");
+
+    while(this->m_snapshotStartMsgSeqNum <= this->m_snapshotEndMsgSeqNum) {
+        if(this->m_packets[this->m_snapshotStartMsgSeqNum] == 0) {
+            if (!this->m_waitTimer->Active()) {
+                this->m_waitTimer->Start();
+            }
+            if (this->m_waitTimer->ElapsedSeconds() > 3) {
+                printf("  snapshot has empty packets.\n");
                 this->m_waitTimer->Stop();
-                this->m_snapshotAvailable = true;
-                return true;
+                this->StartNewSnapshot();
             }
-            if(info->LastMsgSeqNumProcessed < this->m_incremental->m_currentMsgSeqNum) {
-                printf("\t\tOutdated Snapshot. Need %d vs %d -> Continue\n", this->m_incremental->m_currentMsgSeqNum, info->LastMsgSeqNumProcessed);
-                this->m_snapshotRouteFirst = -1;
-                this->m_snapshotLastFragment = -1;
-                this->m_snapshotStartMsgSeqNum = i + 1;
+            return true;
+        }
+        FastSnapshotInfo *info = this->GetSnapshotInfo(this->m_snapshotStartMsgSeqNum);
+        if(info == 0) {
+            this->m_snapshotStartMsgSeqNum++;
+            continue;
+        }
+        printf("\t\t  message -> MsgSeqNum = %d, TemplateId = %d, SendingTime = %lu IsRouteFirst = %d, IsLastFragment = %d, LastMsgSeqProcessed = %d, RptSeq = %d\n",
+               this->m_snapshotStartMsgSeqNum,
+               info->TemplateId,
+               info->SendingTime,
+               info->RouteFirst,
+               info->LastFragment, info->LastMsgSeqNumProcessed, info->RptSeq);
+        if(this->m_snapshotRouteFirst == -1) {
+            if (info->RouteFirst == 1) {
+                this->m_snapshotRouteFirst = this->m_snapshotStartMsgSeqNum;
+            }
+            else {
+                this->m_snapshotStartMsgSeqNum++;
                 continue;
             }
-            printf("\t\tCorrect Snapshot. Need %d vs %d - > Apply\n", this->m_incremental->m_currentMsgSeqNum, info->LastMsgSeqNumProcessed);
-            this->m_lastMsgSeqNumProcessed = info->LastMsgSeqNumProcessed;
-            this->m_rptSeq = info->RptSeq;
+        }
+        if (info->LastFragment == 0) {
+            this->m_snapshotStartMsgSeqNum++;
+            continue;
+        }
+        this->m_snapshotLastFragment = this->m_snapshotStartMsgSeqNum;
+        this->m_snapshotStartMsgSeqNum++;
+        printf("\t\tFound Snapshot -> MsgSeqNum = %d, TemplateId = %d, SendingTime = %lu RouteFirst = %d, LastFragment = %d, LastMsgSeqProcessed = %d, RptSeq = %d\n",
+               this->m_snapshotStartMsgSeqNum - 1,
+               info->TemplateId,
+               info->SendingTime,
+               this->m_snapshotRouteFirst,
+               this->m_snapshotLastFragment, info->LastMsgSeqNumProcessed, info->RptSeq);
+        if (info->LastMsgSeqNumProcessed == 0 && info->RptSeq == 0) {
+            printf("\t\tEmpty Snapshot -> Apply\n");
+            this->m_waitTimer->Stop();
             this->m_snapshotAvailable = true;
-
-            break;
+            return true;
         }
-    }
-
-    if(this->m_snapshotRouteFirst != -1 && this->m_snapshotLastFragment != -1) {
-        for(int i = this->m_snapshotRouteFirst + 1; i < this->m_snapshotLastFragment; i++) {
-            if(this->m_packets[i] == NULL) {
-                if(!this->m_waitTimer->Active()) {
-                    this->m_waitTimer->Start();
-                    return true;
-                }
-                if(this->m_waitTimer->ElapsedSeconds() > 2) {
-                    this->m_waitTimer->Stop();
-                    this->StartNewSnapshot();
-                }
-                return true;
-            }
+        if (info->LastMsgSeqNumProcessed < this->m_incremental->m_currentMsgSeqNum) {
+            printf("\t\tOutdated Snapshot. Need %d vs %d -> Continue\n",
+                   this->m_incremental->m_currentMsgSeqNum,
+                   info->LastMsgSeqNumProcessed);
+            this->m_snapshotRouteFirst = -1;
+            this->m_snapshotLastFragment = -1;
+            continue;
         }
+        printf("\t\tCorrect Snapshot. Need %d vs %d - > Apply\n",
+               this->m_incremental->m_currentMsgSeqNum,
+               info->LastMsgSeqNumProcessed);
+
+        this->m_lastMsgSeqNumProcessed = info->LastMsgSeqNumProcessed;
+        this->m_rptSeq = info->RptSeq;
+
         this->m_waitTimer->Stop();
         this->m_snapshotAvailable = true;
+
+        return true;
     }
 
 	return true;
