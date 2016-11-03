@@ -8,20 +8,71 @@
 #include "../Lib/HashTable.h"
 #include "../FastTypes.h"
 
+#define MDENTRYINFO_INCREMENTAL_ENTRIES_BUFFER_LENGTH 2000
+
+template <typename T> class MDEntryInfo {
+    T           **m_incEntries;
+    int         m_incEntriesCount;
+    int         m_incEntriesMaxIndex;
+    int         m_incStartRptSeq;
+
+public:
+    MDEntryInfo() {
+        this->m_incEntries = new T*[MDENTRYINFO_INCREMENTAL_ENTRIES_BUFFER_LENGTH];
+        this->m_incEntriesCount = MDENTRYINFO_INCREMENTAL_ENTRIES_BUFFER_LENGTH;
+        bzero(this->m_incEntries, sizeof(T*) * this->m_incEntriesCount);
+        this->m_incEntriesMaxIndex = -1;
+        this->m_incStartRptSeq = 0;
+    }
+    ~MDEntryInfo() {
+        delete this->m_incEntries;
+    }
+
+    inline void AddEntry(T *entry) {
+        if(this->m_incStartRptSeq == 0)
+            this->m_incStartRptSeq = entry->RptSeq;
+        int index = entry->RptSeq - this->m_incStartRptSeq;
+        this->m_incEntries[index] = entry;
+        if(index > this->m_incEntriesMaxIndex)
+            this->m_incEntriesMaxIndex = index;
+    }
+
+    inline void Reset() {
+        bzero(this->m_incEntries, sizeof(T*) * this->m_incEntriesCount);
+        this->m_incEntriesMaxIndex = -1;
+        this->m_incStartRptSeq = 0;
+    }
+
+    inline void Clear() {
+        T **ptr = this->m_incEntries;
+        for(int i = 0; i < this->m_incEntriesCount; i++)
+            (*ptr)->Clear();
+        this->Reset();
+    }
+
+    inline int MaxIndex() { return this->m_incEntriesMaxIndex; }
+    inline T** Entries() { return this->m_incEntries; }
+    inline int RptSeq() { return this->m_incStartRptSeq; }
+};
+
 template <typename T> class OrderBookTableItem {
     PointerList<T>      *m_sellQuoteList;
     PointerList<T>      *m_buyQuoteList;
+
+    MDEntryInfo<T>      *m_entryInfo;
 
     bool                 m_used;
     int                  m_rptSeq;
 
 public:
     OrderBookTableItem() {
+        this->m_entryInfo = new MDEntryInfo<T>();
         this->m_sellQuoteList = new PointerList<T>(128);
         this->m_buyQuoteList = new PointerList<T>(128);
         this->m_rptSeq = 0;
     }
     ~OrderBookTableItem() {
+        delete this->m_entryInfo;
         delete this->m_sellQuoteList;
         delete this->m_buyQuoteList;
     }
@@ -182,8 +233,79 @@ public:
         else
             this->ChangeSellQuote(info);
     }
-};
 
+    inline MDEntryInfo<T>* EntriesQueue() { return this->m_entryInfo; }
+
+    inline bool IsNextMessage(T *info) {
+        return info->RptSeq - this->m_rptSeq == 1;
+    }
+
+    inline void PushMessageToQueue(T *info) {
+        this->m_entryInfo->AddEntry(info);
+    }
+
+    inline void ForceProcessMessage(T *info) {
+        if(info->MDUpdateAction == mduaAdd)
+            this->Add(info);
+        else if(info->MDUpdateAction == mduaChange)
+            this->Change(info);
+        else
+            this->Remove(info);
+    }
+
+    inline bool ProcessIncrementalMessage(T *info) {
+        if(!this->IsNextMessage(info)) {
+            this->PushMessageToQueue(info);
+            return false;
+        }
+        this->m_rptSeq = info->RptSeq;
+        this->ForceProcessMessage(info);
+        return true;
+    }
+
+    inline void StartProcessSnapshotMessages() {
+        this->Clear();
+    }
+
+    inline void ProcessSnapshotMessage(T *info) {
+        this->ForceProcessMessage(info);
+        this->m_rptSeq = info->RptSeq;
+    }
+
+    inline bool ProcessQueueMessages() {
+        T **entry = this->m_entryInfo->Entries();
+        int incRptSeq = this->m_entryInfo->RptSeq();
+        int maxIndex = this->m_entryInfo->MaxIndex();
+        if(this->m_rptSeq < incRptSeq)
+            return false;
+        int startIndex = this->m_rptSeq + 1 - incRptSeq;
+        for(int i = 0; i < startIndex; i++) {
+            (*entry)->Clear();
+            entry++;
+        }
+        for(int index = startIndex; index <= maxIndex; index++) {
+            ForceProcessMessage(*entry);
+            this->m_rptSeq = (*entry)->RptSeq;
+            entry++;
+        }
+        this->m_entryInfo->Reset();
+        return true;
+    }
+
+    inline bool EndProcessSnapshotMessages() {
+        return this->ProcessQueueMessages();
+    }
+
+    inline bool ProcessSnapshotMessages(T **entries, int count) {
+        T **entry = entries;
+        this->StartProcessSnapshotMessages();
+        for(int i = 0; i < count; i++) {
+            this->ProcessSnapshotMessage(*entry);
+            entry++;
+        }
+        return this->EndProcessSnapshotMessages();
+    }
+};
 
 
 template <typename T> class OrderTableItem {

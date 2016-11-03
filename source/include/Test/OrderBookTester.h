@@ -1812,7 +1812,136 @@ public:
             throw;
     }
 
+    void TestTableItem_CorrectBegin() {
+        OrderBookTableItem<FastOBSFONDItemInfo> *tb = new OrderBookTableItem<FastOBSFONDItemInfo>();
+
+        FastOBSFONDItemInfo *item1 = CreateFastOBSFondItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "ENTRYID001");
+        item1->RptSeq = 1;
+        item1->MDUpdateAction = mduaAdd;
+
+        if(!tb->ProcessIncrementalMessage(item1))
+            throw;
+        if(tb->EntriesQueue()->MaxIndex() != -1)
+            throw;
+        if(tb->EntriesQueue()->RptSeq() != 0)
+            throw;
+        if(tb->RptSeq() != 1)
+            throw;
+
+        delete tb;
+    }
+
+    void TestTableItem_IncorrectBegin() {
+        OrderBookTableItem<FastOBSFONDItemInfo> *tb = new OrderBookTableItem<FastOBSFONDItemInfo>();
+
+        FastOBSFONDItemInfo *item1 = CreateFastOBSFondItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "ENTRYID001");
+        item1->RptSeq = 2;
+        item1->MDUpdateAction = mduaAdd;
+
+        if(tb->ProcessIncrementalMessage(item1))
+            throw;
+        if(tb->EntriesQueue()->MaxIndex() != 0)
+            throw;
+        if(tb->EntriesQueue()->RptSeq() != 2)
+            throw;
+        if(tb->RptSeq() != 0)
+            throw;
+
+        delete tb;
+    }
+
+    void TestTableItem_SkipMessage() {
+        OrderBookTableItem<FastOBSFONDItemInfo> *tb = new OrderBookTableItem<FastOBSFONDItemInfo>();
+
+        FastOBSFONDItemInfo *item1 = CreateFastOBSFondItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "ENTRYID001");
+        item1->RptSeq = 1;
+        item1->MDUpdateAction = mduaAdd;
+
+        tb->ProcessIncrementalMessage(item1);
+
+        FastOBSFONDItemInfo *item2 = CreateFastOBSFondItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "ENTRYID002");
+        item2->RptSeq = 3;
+        item2->MDUpdateAction = mduaAdd;
+
+        if(tb->ProcessIncrementalMessage(item2))
+            throw;
+        if(tb->EntriesQueue()->MaxIndex() != 0)
+            throw;
+        if(tb->EntriesQueue()->RptSeq() != 3)
+            throw;
+        if(tb->RptSeq() != 1)
+            throw;
+
+        FastOBSFONDItemInfo *item3 = CreateFastOBSFondItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "ENTRYID003");
+        item3->RptSeq = 4;
+        item3->MDUpdateAction = mduaAdd;
+
+        if(tb->ProcessIncrementalMessage(item3))
+            throw;
+        if(tb->EntriesQueue()->MaxIndex() != 1)
+            throw;
+        if(tb->EntriesQueue()->RptSeq() != 3)
+            throw;
+        if(tb->RptSeq() != 1)
+            throw;
+
+        delete tb;
+    }
+
+    void TestTableItem_CorrectApplySnapshot() {
+        OrderBookTableItem<FastOBSFONDItemInfo> *tb = new OrderBookTableItem<FastOBSFONDItemInfo>();
+
+        FastOBSFONDItemInfo *item1 = CreateFastOBSFondItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "ENTRYID001");
+        item1->RptSeq = 1;
+        item1->MDUpdateAction = mduaAdd;
+
+        tb->ProcessIncrementalMessage(item1);
+
+        FastOBSFONDItemInfo *item2 = CreateFastOBSFondItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "ENTRYID002");
+        item2->RptSeq = 3;
+        item2->MDUpdateAction = mduaAdd;
+
+        if(tb->ProcessIncrementalMessage(item2))
+            throw;
+
+        FastOBSFONDItemInfo *item3 = CreateFastOBSFondItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "ENTRYID003");
+        item3->RptSeq = 4;
+        item3->MDUpdateAction = mduaAdd;
+
+        if(tb->ProcessIncrementalMessage(item3))
+            throw;
+
+        FastOBSFONDItemInfo *item4 = CreateFastOBSFondItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "ENTRYID004");
+        item4->RptSeq = 5;
+        item4->MDUpdateAction = mduaAdd;
+
+        if(tb->ProcessIncrementalMessage(item4))
+            throw;
+
+        FastOBSFONDItemInfo *item5 = CreateFastOBSFondItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "ENTRYID005");
+        item5->RptSeq = 3;
+        item5->MDUpdateAction = mduaAdd;
+
+        tb->ProcessSnapshotMessages(&item5, 1);
+        if(tb->RptSeq() != 5)
+            throw;
+        if(tb->BuyQuotes()->Count() != 3)
+            throw;
+        if(tb->EntriesQueue()->RptSeq() != 0)
+            throw;
+        if(tb->EntriesQueue()->MaxIndex() != -1)
+            throw;
+    }
+
+    void TestOrderBookTableItem() {
+        TestTableItem_CorrectBegin();
+        TestTableItem_IncorrectBegin();
+        TestTableItem_SkipMessage();
+        TestTableItem_CorrectApplySnapshot();
+    }
+
     void Test() {
+        TestOrderBookTableItem();
         TestDefaults();
         Test_OBR_FOND();
         Test_OBR_CURR();
