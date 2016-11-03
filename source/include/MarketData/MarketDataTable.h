@@ -13,11 +13,13 @@ template <typename T> class OrderBookTableItem {
     PointerList<T>      *m_buyQuoteList;
 
     bool                 m_used;
+    int                  m_rptSeq;
 
 public:
     OrderBookTableItem() {
         this->m_sellQuoteList = new PointerList<T>(128);
         this->m_buyQuoteList = new PointerList<T>(128);
+        this->m_rptSeq = 0;
     }
     ~OrderBookTableItem() {
         delete this->m_sellQuoteList;
@@ -28,6 +30,7 @@ public:
     inline PointerList<T>* BuyQuotes() { return this->m_buyQuoteList; }
     inline bool Used() { return this->m_used; }
     inline void Used(bool used) { this->m_used = used; }
+    inline int RptSeq() { return this->m_rptSeq; }
     inline void Clear(PointerList<T> *list) {
         if(list->Count() == 0)
             return;
