@@ -103,27 +103,54 @@ public:
         UINT64 *u1 = (UINT64*)s1;
         UINT64 *u2 = (UINT64*)s2;
 
-        int i;
-        for(i = 0; i < l1; i+= 8) {
-            if(*u1 != *u2)
-                return false;
-            u1++;
-            u2++;
+        int len = l1;
+        int count = len >> 3;
+
+        if(len >= 8) {
+            int i;
+            for (i = 0; i < count; i ++) {
+                if (*u1 != *u2)
+                    return false;
+                u1++;
+                u2++;
+            }
+            len = len - (count << 3);
         }
-        int len = 8 - (i - l1);
-        u1--;
-        u2--;
-        short *sh1 = (short*)u1;
-        short *sh2 = (short*)u2;
-        for( i = i - 8; i < l1; i+= 2) {
-            if(*sh1 != *sh2)
-                return false;
-            sh1++;
-            sh2++;
+        if(len == 0)
+            return true;
+        UINT32 *d1 = (UINT32*)u1;
+        UINT32 *d2 = (UINT32*)u2;
+        count = len >> 2;
+        if(len >= 4) {
+            int i;
+            for (i = 0; i < count; i ++) {
+                if (*d1 != *d2)
+                    return false;
+                d1++;
+                d2++;
+            }
+            len = len - (count << 2);
         }
-        if(len % 2 != 0)
-            return s1[l1 - 1] == s2[l1 - 1];
-        return true;
+        if(len == 0)
+            return true;
+
+        short *sh1 = (short*)d1;
+        short *sh2 = (short*)d2;
+        count = len >> 1;
+        if(len >= 2) {
+            int i;
+            for (i = 0; i < count; i ++) {
+                if (*sh1 != *sh2)
+                    return false;
+                sh1++;
+                sh2++;
+            }
+            len = len - (count << 1);
+        }
+
+        if(len == 0)
+            return true;
+        return s1[l1 - 1] == s2[l1 - 1];
     }
 };
 

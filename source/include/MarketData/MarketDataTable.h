@@ -276,7 +276,7 @@ public:
         T **entry = this->m_entryInfo->Entries();
         int incRptSeq = this->m_entryInfo->RptSeq();
         int maxIndex = this->m_entryInfo->MaxIndex();
-        if(this->m_rptSeq < incRptSeq)
+        if(this->m_rptSeq + 1 < incRptSeq)
             return false;
         int startIndex = this->m_rptSeq + 1 - incRptSeq;
         for(int i = 0; i < startIndex; i++) {
@@ -284,6 +284,8 @@ public:
             entry++;
         }
         for(int index = startIndex; index <= maxIndex; index++) {
+            if((*entry) == 0)
+                return false;
             ForceProcessMessage(*entry);
             this->m_rptSeq = (*entry)->RptSeq;
             entry++;
@@ -672,14 +674,35 @@ public:
 */
 
 template <template<typename ITEMINFO> class TABLEITEM, typename INFO, typename ITEMINFO> class MarketDataTable {
-    HashTable<TABLEITEM<ITEMINFO>>                *m_table;
-
+    HashTable<TABLEITEM<ITEMINFO>>              *m_table;
+    TABLEITEM<ITEMINFO>                         *m_snapshotItem;
 public:
     MarketDataTable() {
         this->m_table = new HashTable<TABLEITEM<ITEMINFO>>();
     }
     ~MarketDataTable() {
         delete this->m_table;
+    }
+    inline bool ProcessIncremental(ITEMINFO *info) {
+        TABLEITEM<ITEMINFO> *tableItem = this->m_table->GetItem(info->Symbol, info->SymbolLength, info->TradingSessionID, info->TradingSessionIDLength);
+        if(tableItem->ProcessIncrementalMessage(info)) {
+            this->m_table->AddUsed(tableItem);
+            return true;
+        }
+        return false;
+    }
+    inline void StartProcessSnapshot(INFO *info) {
+        this->m_snapshotItem = this->m_table->GetItem(info->Symbol, info->SymbolLength, info->TradingSessionID, info->TradingSessionIDLength);
+        this->m_snapshotItem->StartProcessSnapshotMessages();
+    }
+    inline bool EndProcessSnapshot(){
+        return this->m_snapshotItem->EndProcessSnapshotMessages();
+    }
+    inline void ProcessSnapshot(ITEMINFO **item, int count) {
+        for(int j = 0; j < count; j++) {
+            this->m_snapshotItem->ProcessSnapshotMessage(*item);
+            item++;
+        }
     }
     inline void Add(const char *symbol, int symbolLen, const char *tradingSession, int tradingLen, ITEMINFO *item) {
         TABLEITEM<ITEMINFO> *tableItem = this->m_table->GetItem(symbol, symbolLen, tradingSession, tradingLen);
@@ -725,6 +748,7 @@ public:
     inline int TradingSessionsCount() { return this->m_table->TradingSessionsCount(); }
     inline int UsedItemCount() { return this->m_table->UsedItemCount(); }
     inline TABLEITEM<ITEMINFO>* GetItem(const char *symbol, int symbolLen, const char *tradingSession, int tradingSessionLen) { return this->m_table->GetItem(symbol, symbolLen, tradingSession, tradingSessionLen);  }
+    inline TABLEITEM<ITEMINFO>* SnapshotItem() { return this->m_snapshotItem; }
 };
 
 #endif //HFT_ROBOT_ORDERBOOKTABLE_H

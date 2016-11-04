@@ -105,6 +105,7 @@ endif(DPDK_FOUND)
 
 find_package(TinyXML2)
 message(STATUS "${Red} ${TINYXML_FOUND}${ColourReset}")
+# set(TINYXML_FOUND FALSE)
 if(TINYXML_FOUND)
     include_directories("${TINYXML_INCLUDE_DIR}")
     add_custom_target(tinyxml)

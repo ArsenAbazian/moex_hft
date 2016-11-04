@@ -1933,14 +1933,239 @@ public:
             throw;
     }
 
+    void TestTable_CorrectBegin() {
+
+        MarketDataTable<OrderBookTableItem, FastOBSFONDInfo, FastOBSFONDItemInfo> *table = new MarketDataTable<OrderBookTableItem, FastOBSFONDInfo, FastOBSFONDItemInfo>();
+
+        FastOBSFONDItemInfo *item1 = CreateFastOBRFondItemInfo("SYMBOL", "TRADING", 8, 1, 8, 1, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "ENTRYID001");
+        item1->RptSeq = 1;
+
+        if(!table->ProcessIncremental(item1))
+            throw;
+
+        delete table;
+    }
+
+    void TestTable_IncorrectBegin() {
+        MarketDataTable<OrderBookTableItem, FastOBSFONDInfo, FastOBSFONDItemInfo> *table = new MarketDataTable<OrderBookTableItem, FastOBSFONDInfo, FastOBSFONDItemInfo>();
+
+        FastOBSFONDItemInfo *item1 = CreateFastOBRFondItemInfo("SYMBOL", "TRADING", 8, 1, 8, 1, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "ENTRYID001");
+        item1->RptSeq = 2;
+
+        if(table->ProcessIncremental(item1))
+            throw;
+
+        delete table;
+    }
+
+    void TestTable_SkipMessages() {
+        MarketDataTable<OrderBookTableItem, FastOBSFONDInfo, FastOBSFONDItemInfo> *table = new MarketDataTable<OrderBookTableItem, FastOBSFONDInfo, FastOBSFONDItemInfo>();
+
+        FastOBSFONDItemInfo *item1 = CreateFastOBRFondItemInfo("SYMBOL", "TRADING", 8, 1, 8, 1, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "ENTRYID001");
+        item1->RptSeq = 1;
+
+        if(!table->ProcessIncremental(item1))
+            throw;
+
+        FastOBSFONDItemInfo *item2 = CreateFastOBRFondItemInfo("SYMBOL", "TRADING", 8, 1, 8, 1, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "ENTRYID001");
+        item2->RptSeq = 3;
+
+        if(table->ProcessIncremental(item2))
+            throw;
+
+        delete table;
+    }
+
+    void TestTable_CorrectApplySnapshot() {
+        MarketDataTable<OrderBookTableItem, FastOBSFONDInfo, FastOBSFONDItemInfo> *table = new MarketDataTable<OrderBookTableItem, FastOBSFONDInfo, FastOBSFONDItemInfo>();
+
+        FastOBSFONDItemInfo *item1 = CreateFastOBRFondItemInfo("SYMBOL", "TRADING", 8, 1, 8, 1, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "ENTRYID001");
+        item1->RptSeq = 1;
+
+        table->ProcessIncremental(item1);
+
+        FastOBSFONDItemInfo *item2 = CreateFastOBRFondItemInfo("SYMBOL", "TRADING", 8, 1, 8, 1, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "ENTRYID002");
+        item2->RptSeq = 3;
+
+        if(table->ProcessIncremental(item2))
+            throw;
+
+        FastOBSFONDItemInfo *item3 = CreateFastOBRFondItemInfo("SYMBOL", "TRADING", 8, 1, 8, 1, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "ENTRYID003");
+        item3->RptSeq = 4;
+
+        if(table->ProcessIncremental(item3))
+            throw;
+
+        FastOBSFONDItemInfo *item4 = CreateFastOBRFondItemInfo("SYMBOL", "TRADING", 8, 1, 8, 1, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "ENTRYID004");
+        item4->RptSeq = 5;
+
+        if(table->ProcessIncremental(item4))
+            throw;
+
+        FastOBSFONDItemInfo *item5 = CreateFastOBRFondItemInfo("SYMBOL", "TRADING", 8, 1, 8, 1, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "ENTRYID005");
+        item5->RptSeq = 3;
+
+        FastOBSFONDInfo *info = CreateFastOBSFondInfo("SYMBOL", "TRADING");
+        info->GroupMDEntriesCount = 1;
+        info->GroupMDEntries[0] = item5;
+
+        OrderBookTableItem<FastOBSFONDItemInfo> *tb = table->GetItem("SYMBOL", 6, "TRADING", 7);
+
+        table->StartProcessSnapshot(info);
+        if(tb != table->SnapshotItem())
+            throw;
+        if(tb->BuyQuotes()->Count() != 0)
+            throw;
+        if(tb->SellQuotes()->Count() != 0)
+            throw;
+
+        table->ProcessSnapshot(info->GroupMDEntries, 1);
+        if(tb->BuyQuotes()->Count() != 1)
+            throw;
+        if(tb->RptSeq() != 3)
+            throw;
+        if(!table->EndProcessSnapshot())
+            throw;
+
+        if(tb->RptSeq() != 5)
+            throw;
+        if(tb->BuyQuotes()->Count() != 3)
+            throw;
+        if(tb->EntriesQueue()->RptSeq() != 0)
+            throw;
+        if(tb->EntriesQueue()->MaxIndex() != -1)
+            throw;
+    }
+
+    void TestTable_IncorrectApplySnapshot() {
+        MarketDataTable<OrderBookTableItem, FastOBSFONDInfo, FastOBSFONDItemInfo> *table = new MarketDataTable<OrderBookTableItem, FastOBSFONDInfo, FastOBSFONDItemInfo>();
+
+        FastOBSFONDItemInfo *item1 = CreateFastOBRFondItemInfo("SYMBOL", "TRADING", 8, 1, 8, 1, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "ENTRYID001");
+        item1->RptSeq = 1;
+
+        table->ProcessIncremental(item1);
+
+        FastOBSFONDItemInfo *item2 = CreateFastOBRFondItemInfo("SYMBOL", "TRADING", 8, 1, 8, 1, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "ENTRYID002");
+        item2->RptSeq = 4;
+
+        if(table->ProcessIncremental(item2))
+            throw;
+
+        FastOBSFONDItemInfo *item3 = CreateFastOBRFondItemInfo("SYMBOL", "TRADING", 8, 1, 8, 1, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "ENTRYID003");
+        item3->RptSeq = 5;
+
+        if(table->ProcessIncremental(item3))
+            throw;
+
+        FastOBSFONDItemInfo *item4 = CreateFastOBRFondItemInfo("SYMBOL", "TRADING", 8, 1, 8, 1, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "ENTRYID004");
+        item4->RptSeq = 6;
+
+        if(table->ProcessIncremental(item4))
+            throw;
+
+        FastOBSFONDItemInfo *item5 = CreateFastOBRFondItemInfo("SYMBOL", "TRADING", 8, 1, 8, 1, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "ENTRYID005");
+        item5->RptSeq = 2;
+
+        FastOBSFONDInfo *info = CreateFastOBSFondInfo("SYMBOL", "TRADING");
+        info->GroupMDEntriesCount = 1;
+        info->GroupMDEntries[0] = item5;
+
+        OrderBookTableItem<FastOBSFONDItemInfo> *tb = table->GetItem("SYMBOL", 6, "TRADING", 7);
+
+        table->StartProcessSnapshot(info);
+        if(tb != table->SnapshotItem())
+            throw;
+        if(tb->BuyQuotes()->Count() != 0)
+            throw;
+        if(tb->SellQuotes()->Count() != 0)
+            throw;
+
+        table->ProcessSnapshot(info->GroupMDEntries, 1);
+        if(tb->BuyQuotes()->Count() != 1)
+            throw;
+        if(tb->RptSeq() != 2)
+            throw;
+        if(table->EndProcessSnapshot())
+            throw;
+
+        if(tb->RptSeq() != 2)
+            throw;
+    }
+
+    void TestTable_IncorrectApplySnapshot_WhenMessageSkipped() {
+        MarketDataTable<OrderBookTableItem, FastOBSFONDInfo, FastOBSFONDItemInfo> *table = new MarketDataTable<OrderBookTableItem, FastOBSFONDInfo, FastOBSFONDItemInfo>();
+
+        FastOBSFONDItemInfo *item1 = CreateFastOBRFondItemInfo("SYMBOL", "TRADING", 8, 1, 8, 1, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "ENTRYID001");
+        item1->RptSeq = 1;
+
+        table->ProcessIncremental(item1);
+
+        FastOBSFONDItemInfo *item2 = CreateFastOBRFondItemInfo("SYMBOL", "TRADING", 8, 1, 8, 1, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "ENTRYID002");
+        item2->RptSeq = 4;
+
+        if(table->ProcessIncremental(item2))
+            throw;
+
+        FastOBSFONDItemInfo *item4 = CreateFastOBRFondItemInfo("SYMBOL", "TRADING", 8, 1, 8, 1, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "ENTRYID004");
+        item4->RptSeq = 6;
+
+        if(table->ProcessIncremental(item4))
+            throw;
+
+        FastOBSFONDItemInfo *item5 = CreateFastOBRFondItemInfo("SYMBOL", "TRADING", 8, 1, 8, 1, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "ENTRYID005");
+        item5->RptSeq = 3;
+
+        FastOBSFONDInfo *info = CreateFastOBSFondInfo("SYMBOL", "TRADING");
+        info->GroupMDEntriesCount = 1;
+        info->GroupMDEntries[0] = item5;
+
+        OrderBookTableItem<FastOBSFONDItemInfo> *tb = table->GetItem("SYMBOL", 6, "TRADING", 7);
+
+        table->StartProcessSnapshot(info);
+        if(tb != table->SnapshotItem())
+            throw;
+        if(tb->BuyQuotes()->Count() != 0)
+            throw;
+        if(tb->SellQuotes()->Count() != 0)
+            throw;
+
+        table->ProcessSnapshot(info->GroupMDEntries, 1);
+        if(tb->BuyQuotes()->Count() != 1)
+            throw;
+        if(tb->RptSeq() != 3)
+            throw;
+        if(table->EndProcessSnapshot())
+            throw;
+        if(tb->RptSeq() != 4)
+            throw;
+    }
+
     void TestOrderBookTableItem() {
         TestTableItem_CorrectBegin();
         TestTableItem_IncorrectBegin();
         TestTableItem_SkipMessage();
         TestTableItem_CorrectApplySnapshot();
+        TestTable_CorrectBegin();
+        TestTable_IncorrectBegin();
+        TestTable_SkipMessages();
+        TestTable_CorrectApplySnapshot();
+        TestTable_IncorrectApplySnapshot();
+        TestTable_IncorrectApplySnapshot_WhenMessageSkipped();
+    }
+
+    void TestStringIdComparer() {
+        char buf[128];
+        for(int i = 1; i < 128; i++) {
+            buf[i] = (char)(0x30 + i);
+        }
+        for(int i = 1; i < 128; i++) {
+            if(!StringIdComparer::Equal(buf, i, buf, i))
+                throw;
+        }
     }
 
     void Test() {
+        TestStringIdComparer();
         TestOrderBookTableItem();
         TestDefaults();
         Test_OBR_FOND();
