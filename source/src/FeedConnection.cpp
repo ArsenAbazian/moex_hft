@@ -155,14 +155,10 @@ bool FeedConnection::Listen_Atom_Incremental() {
     recv |= this->ProcessServerB();
 
     if(!recv) {
-        if(!this->m_waitTimer->Active(1)) {
-            this->m_waitTimer->Start(1);
-        }
-        else {
-            if(this->m_waitTimer->ElapsedSeconds(1) > this->WaitAnyPacketMaxTimeSec) {
-                DefaultLogManager::Default->WriteSuccess(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_Listen_Atom_Incremental, false);
-                return false;
-            }
+        this->m_waitTimer->Activate(1);
+        if(this->m_waitTimer->ElapsedSeconds(1) > this->WaitAnyPacketMaxTimeSec) {
+            DefaultLogManager::Default->WriteSuccess(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_Listen_Atom_Incremental, false);
+            return false;
         }
     }
     else {
@@ -188,16 +184,12 @@ bool FeedConnection::Listen_Atom_Incremental() {
             return true;
         }
         /* TODO REMOVE!!!! */
-        if(!this->m_waitTimer->Active()) {
-            this->m_waitTimer->Start();
-        }
-        else {
-            if(this->m_waitTimer->ElapsedSeconds() > 3) {
-                printf("inc no message apply. time expired\n");
-                if(!this->StartListenSnapshot())
-                    return false;
-                this->m_waitTimer->Stop();
-            }
+        this->m_waitTimer->Activate();
+        if(this->m_waitTimer->ElapsedSeconds() > 3) {
+            printf("inc no message apply. time expired\n");
+            if(!this->StartListenSnapshot())
+                return false;
+            this->m_waitTimer->Stop();
         }
 		return true;
 	}

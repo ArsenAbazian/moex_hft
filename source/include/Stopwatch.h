@@ -35,6 +35,16 @@ public:
         clock_gettime(CLOCK_REALTIME, this->m_specStart[0]);
         this->m_enabled[0] = true;
     }
+    inline void Activate(int index) {
+        if(this->Active(index))
+            return;
+        this->Start(index);
+    }
+    inline void Activate() {
+        if(this->Active())
+            return;
+        this->Start();
+    }
     inline void Stop(int index) {
         this->m_enabled[index] = false;
     }

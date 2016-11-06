@@ -10,21 +10,21 @@
 
 #define MDENTRYINFO_INCREMENTAL_ENTRIES_BUFFER_LENGTH 2000
 
-template <typename T> class MDEntryInfo {
+template <typename T> class MDEntrQueue {
     T           **m_incEntries;
     int         m_incEntriesCount;
     int         m_incEntriesMaxIndex;
     int         m_incStartRptSeq;
 
 public:
-    MDEntryInfo() {
+    MDEntrQueue() {
         this->m_incEntries = new T*[MDENTRYINFO_INCREMENTAL_ENTRIES_BUFFER_LENGTH];
         this->m_incEntriesCount = MDENTRYINFO_INCREMENTAL_ENTRIES_BUFFER_LENGTH;
         bzero(this->m_incEntries, sizeof(T*) * this->m_incEntriesCount);
         this->m_incEntriesMaxIndex = -1;
         this->m_incStartRptSeq = 0;
     }
-    ~MDEntryInfo() {
+    ~MDEntrQueue() {
         delete this->m_incEntries;
     }
 
@@ -59,14 +59,14 @@ template <typename T> class OrderBookTableItem {
     PointerList<T>      *m_sellQuoteList;
     PointerList<T>      *m_buyQuoteList;
 
-    MDEntryInfo<T>      *m_entryInfo;
+    MDEntrQueue<T>      *m_entryInfo;
 
     bool                 m_used;
     int                  m_rptSeq;
 
 public:
     OrderBookTableItem() {
-        this->m_entryInfo = new MDEntryInfo<T>();
+        this->m_entryInfo = new MDEntrQueue<T>();
         this->m_sellQuoteList = new PointerList<T>(128);
         this->m_buyQuoteList = new PointerList<T>(128);
         this->m_rptSeq = 0;
@@ -234,7 +234,7 @@ public:
             this->ChangeSellQuote(info);
     }
 
-    inline MDEntryInfo<T>* EntriesQueue() { return this->m_entryInfo; }
+    inline MDEntrQueue<T>* EntriesQueue() { return this->m_entryInfo; }
 
     inline bool IsNextMessage(T *info) {
         return info->RptSeq - this->m_rptSeq == 1;

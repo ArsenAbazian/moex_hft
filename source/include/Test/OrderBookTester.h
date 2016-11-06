@@ -2138,6 +2138,13 @@ public:
             throw;
         if(tb->RptSeq() != 4)
             throw;
+        if(table->EndProcessSnapshot())
+            throw;
+    }
+
+    void TestTable_Test1() {
+        fcf->OrderFond()->Clear();
+        fcf->Listen_Atom_Incremental()
     }
 
     void TestOrderBookTableItem() {
