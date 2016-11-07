@@ -110,6 +110,7 @@ protected:
 	WinSockManager								*socketBManager;
 	FastProtocolManager 						*m_fastProtocolManager;
     FastLogonInfo                               *m_fastLogonInfo;
+    bool                                        m_fakeConnect;
 
 
 	ISocketBufferProvider						*m_socketABufferProvider;
@@ -148,22 +149,10 @@ private:
 
     inline bool ProcessServerA() { return this->ProcessServer(this->socketAManager, LogMessageCode::lmcsocketA); }
     inline bool ProcessServerB() { return this->ProcessServer(this->socketBManager, LogMessageCode::lmcsocketB); }
-    inline bool ProcessServer(WinSockManager *socketManager, LogMessageCode socketName) {
-        if(!socketManager->ShouldRecv())
-            return false;
-        if(!socketManager->Recv(this->m_recvABuffer->CurrentPos())) {
-            DefaultLogManager::Default->WriteSuccess(socketName,
-                                                     LogMessageCode::lmcFeedConnection_Listen_Atom,
-                                                     false)->m_errno = errno;
-            socketManager->Reconnect();
-            return false;
-        }
-        int size = socketManager->RecvSize();
-        if(size == 0)
-            return false;
-        int msgSeqNum = *((UINT*)socketManager->RecvBytes());
+    inline bool ProcessServerCore(int size) {
+        int msgSeqNum = *((UINT*)this->m_recvABuffer->CurrentPos()); // socketManager->RecvBytes());
         if(this->m_packets[msgSeqNum] != 0)
-			return false;
+            return false;
 
         this->m_recvABuffer->SetCurrentItemSize(size);
         BinaryLogItem *item = DefaultLogManager::Default->WriteFast(this->m_idLogIndex,
@@ -183,6 +172,21 @@ private:
         this->m_packets[msgSeqNum] = item;
         this->m_recvABuffer->Next(size);
         return true;
+    }
+    inline bool ProcessServer(WinSockManager *socketManager, LogMessageCode socketName) {
+        if(!socketManager->ShouldRecv())
+            return false;
+        if(!socketManager->Recv(this->m_recvABuffer->CurrentPos())) {
+            DefaultLogManager::Default->WriteSuccess(socketName,
+                                                     LogMessageCode::lmcFeedConnection_Listen_Atom,
+                                                     false)->m_errno = errno;
+            socketManager->Reconnect();
+            return false;
+        }
+        int size = socketManager->RecvSize();
+        if(size == 0)
+            return false;
+        return this->ProcessServerCore(size);
     }
     inline bool WaitingSnapshot() { return this->m_waitingSnapshot; }
     inline bool SnapshotAvailable() { return this->m_snapshotAvailable; }
@@ -651,6 +655,7 @@ public:
 	FeedConnection();
 	~FeedConnection();
 
+    inline void FakeConnect(bool value) { this->m_fakeConnect = value; }
     inline int LastMsgSeqNumProcessed() { return this->m_lastMsgSeqNumProcessed; }
 	inline MarketDataTable<OrderBookTableItem, FastOBSFONDInfo, FastOBSFONDItemInfo> *OrderBookFond() { return this->m_orderBookTableFond; }
 	inline MarketDataTable<OrderBookTableItem, FastOBSCURRInfo, FastOBSCURRItemInfo> *OrderBookCurr() { return this->m_orderBookTableCurr; }
@@ -658,6 +663,13 @@ public:
 	inline MarketDataTable<OrderTableItem, FastOLSCURRInfo, FastOLSCURRItemInfo> *OrderCurr() { return this->m_orderTableCurr; }
 	inline MarketDataTable<TradeTableItem, FastTLSFONDInfo, FastTLSFONDItemInfo> *TradeFond() { return this->m_tradeTableFond; }
 	inline MarketDataTable<TradeTableItem, FastTLSCURRInfo, FastTLSCURRItemInfo> *TradeCurr() { return this->m_tradeTableCurr; }
+
+    inline void ClearMessages() {
+        bzero(this->m_packets, sizeof(BinaryLogItem*) * RobotSettings::DefaultFeedConnectionPacketCount);
+        this->m_waitingSnapshot = false;
+        this->m_currentMsgSeqNum = 1;
+        this->m_maxRecvMsgSeqNum = 0;
+    }
 
     inline void StartNewSnapshot() {
         DefaultLogManager::Default->WriteSuccess(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_StartNewSnapshot, true);
@@ -697,7 +709,9 @@ public:
     inline FeedConnection *Snapshot() { return this->m_snapshot; }
 
 	inline bool Connect() {
-		if(this->socketAManager != NULL && this->socketAManager->IsConnected())
+		if(this->m_fakeConnect)
+            return true;
+        if(this->socketAManager != NULL && this->socketAManager->IsConnected())
 			return true;
 		if(this->socketAManager == NULL && !this->InitializeSockets())
 			return false;

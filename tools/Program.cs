@@ -97,6 +97,7 @@ namespace prebuild {
 		string Decode_Methods_Definition_GeneratedCode = "Decode_Methods_Definition_GeneratedCode";
 		string Get_Free_Item_Methods_GeneratedCode = "Get_Free_Item_Methods_GeneratedCode";
 		string Encode_Methods_Definition_GeneratedCode = "Encode_Methods_Definition_GeneratedCode";
+		string Encode_Methods_Declaration_GeneratedCode = "Encode_Methods_Declaration_GeneratedCode";
 		string String_Constant_Declaration_GeneratedCode = "String_Constant_Declaration_GeneratedCode";
 		string Print_Methods_Definition_GeneratedCode = "Print_Methods_Definition_GeneratedCode";
 		string Print_Methods_Declaration_GeneratedCode = "Print_Methods_Declaration_GeneratedCode";
@@ -110,6 +111,7 @@ namespace prebuild {
 				Get_Free_Item_Methods_GeneratedCode,
 				Decode_Methods_Definition_GeneratedCode,
 				Encode_Methods_Definition_GeneratedCode,
+				Encode_Methods_Declaration_GeneratedCode,
 				String_Constant_Declaration_GeneratedCode,
 				Print_Methods_Declaration_GeneratedCode,
 				Print_Methods_Definition_GeneratedCode
@@ -204,30 +206,35 @@ namespace prebuild {
 			if(EncodeMessages == null || EncodeMessages.Count == 0) {
 				return;
 			}
-			SetPosition(Encode_Methods_Definition_GeneratedCode);
+			SetPosition(Encode_Methods_Declaration_GeneratedCode);
 			List<XmlNode> messages = GetAllMessages(templatesNode);
 			foreach(XmlNode message in messages) {
-				string msgName = message.PreviousSibling.Value.Trim();
-				if(!EncodeMessages.Contains(msgName)) {
-					continue;
-				}
+				WriteEncodeMethodDeclarationMethodCode(message);
+			}
+			SetPosition(Encode_Methods_Definition_GeneratedCode);
+			foreach(XmlNode message in messages) {
 				WriteEncodeMethodCode(message);
 			}
 		}
 
+		private  void WriteEncodeMethodDeclarationMethodCode (XmlNode message) {
+			StructureInfo info = new StructureInfo() { NameCore = GetTemplateName(message.PreviousSibling.Value) };
+			WriteLine("\tvoid " + info.EncodeMethodName + "(" + info.Name + "* info);");
+		}
+
 		private  void WriteEncodeMethodCode (XmlNode message) {
 			StructureInfo info = new StructureInfo() { NameCore = GetTemplateName(message.PreviousSibling.Value) };
-			WriteLine("\tinline void " + info.EncodeMethodName + "(" + info.Name + "* info) {");
-			WriteLine("\t\tResetBuffer();");
+			WriteLine("void FastProtocolManager::" + info.EncodeMethodName + "(" + info.Name + "* info) {");
+			WriteLine("\tResetBuffer();");
 			WriteLine("\t\tWriteMsgSeqNumber(this->m_sendMsgSeqNo);");
 			int presenceByteCount = CalcPresenceMapByteCount(message);
 			if(GetMaxPresenceBitCount(message) > 0)
-				WriteLine("\t\tWritePresenceMap" + presenceByteCount + "(info->PresenceMap);");
+				WriteLine("\tWritePresenceMap" + presenceByteCount + "(info->PresenceMap);");
 			foreach(XmlNode node in message.ChildNodes) {
 				info.Parent = null;
-				WriteEncodeValueCode(node, info, "\t\t");
+				WriteEncodeValueCode(node, info, "\t");
 			}
-			WriteLine("\t}");
+			WriteLine("}");
 		}
 
 		private void WriteNullValueCode(string tabs, XmlNode value) {
@@ -291,8 +298,11 @@ namespace prebuild {
 		private  void WriteSequenceEncodeMethodCode (XmlNode field, StructureInfo si, string tabs) {
 			string itemInfo = GetIemInfoPrefix(field) + "ItemInfo";
 			StructureInfo info = new StructureInfo() { InCodeValueName = "(*" + itemInfo + ")", NameCore = si.NameCore + ItemName(field), IsSequence = true };
+			StructureInfo item = GetOriginalStruct(field);
+			if(item == null)
+				item = info;
 			WriteLine(tabs + "WriteUInt32_Mandatory(" + si.InCodeValueName + "->" + Name(field) + "Count);");
-			WriteLine(tabs + info.Name + " **" + itemInfo + " = " + si.InCodeValueName + "->" + Name(field) + ";");
+			WriteLine(tabs + item.Name + " **" + itemInfo + " = " + si.InCodeValueName + "->" + Name(field) + ";");
 			WriteLine(tabs + "for(int i = 0; i < " + si.InCodeValueName + "->" + Name(field) + "Count; i++) {");
 			foreach(XmlNode node in field.ChildNodes) {
 				WriteEncodeValueCode(node, info, tabs + "\t");

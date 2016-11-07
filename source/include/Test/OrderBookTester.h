@@ -8,8 +8,51 @@
 #include "../FeedConnection.h"
 #include <stdio.h>
 
+class TestTemplateItemInfo {
+public:
+    MDUpdateAction  m_action;
+    const char*     m_symbol;
+    const char*     m_tradingSession;
+    MDEntryType     m_entryType;
+    const char*     m_entryId;
+    Decimal         m_entryPx;
+    Decimal         m_entrySize;
+
+    TestTemplateItemInfo(MDUpdateAction action, MDEntryType entryType, const char *symbol, const char *sessionId, const char *entryId, int pxm, INT64 pxe, int sizem, INT64 sizee) {
+        this->m_action = action;
+        this->m_entryType = entryType;
+        this->m_symbol = symbol;
+        this->m_tradingSession = sessionId;
+        this->m_entryPx.Set(pxm, pxe);
+        this->m_entrySize.Set(sizem, sizee);
+    }
+};
+
+class TestTemplateInfo {
+public:
+    FeedConnectionMessage   m_templateId;
+    bool                    m_msgSeqNo;
+    bool                    m_routeFirst;
+    bool                    m_lastMessage;
+    int                     m_rptSeq;
+    int                     m_itemsCount;
+    TestTemplateItemInfo*   m_items[8];
+
+    TestTemplateInfo(FeedConnectionMessage templateId, int msgSeqNo) {
+        this->m_templateId = templateId;
+        this->m_msgSeqNo = msgSeqNo;
+        this->m_itemsCount = 0;
+    }
+    TestTemplateInfo(FeedConnectionMessage templateId, int msgSeqNo, TestTemplateItemInfo **items, int itemCount) : TestTemplateInfo(templateId, msgSeqNo) {
+        this->m_itemsCount = itemCount;
+        for(int i = 0; i < itemCount; i++)
+            this->m_items[i] = items[i];
+    }
+};
+
 class OrderBookTester {
     FeedConnection_FOND_OBR *fcf;
+    FeedConnection_FOND_OBS *fcs;
     FeedConnection_CURR_OBR *fcc;
 public:
     OrderBookTester() {
@@ -21,6 +64,11 @@ public:
                                                     FeedConnectionProtocol::UDP_IP,
                                                     "10.50.129.200", "239.192.113.3", 9113,
                                                     "10.50.129.200", "239.192.113.131", 9313);
+        this->fcs = new FeedConnection_FOND_OBS("OBS", "Full Refresh", 'I',
+                                                FeedConnectionProtocol::UDP_IP,
+                                                "10.50.129.200", "239.192.113.3", 9113,
+                                                "10.50.129.200", "239.192.113.131", 9313);
+
     }
     ~OrderBookTester() {
         delete this->fcf;
@@ -2142,9 +2190,132 @@ public:
             throw;
     }
 
-    void TestTable_Test1() {
-        fcf->OrderFond()->Clear();
-        fcf->Listen_Atom_Incremental()
+    void SendHearthBeatMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
+        FastHeartbeatInfo *info = new FastHeartbeatInfo();
+        info->MsgSeqNum = tmp->m_msgSeqNo;
+        conn->m_fastProtocolManager->SetNewBuffer(conn->m_recvABuffer->CurrentPos(), 2000);
+        conn->m_fastProtocolManager->EncodeHeartbeatInfo(info);
+        conn->ProcessServerCore(conn->m_fastProtocolManager->MessageLength());
+    }
+
+    FastOBSFONDItemInfo* CreateObrFondItemInfo(TestTemplateItemInfo *tmp) {
+        FastOBSFONDItemInfo *info = new FastOBSFONDItemInfo();
+        info->AllowMDUpdateAction = true;
+        info->MDUpdateAction = tmp->m_action;
+        info->AllowMDEntryType = true;
+        info->MDEntryType = new char[1];
+        info->MDEntryType[0] = (char)tmp->m_entryType;
+        info->MDEntryTypeLength = 1;
+        info->AllowMDEntryPx = true;
+        info->MDEntryPx.Assign(&tmp->m_entryPx);
+        info->AllowMDEntrySize = true;
+        info->MDEntrySize.Assign(&tmp->m_entrySize);
+        if(tmp->m_symbol != 0) {
+            info->AllowSymbol = true;
+            info->SymbolLength = strlen(tmp->m_symbol);
+            info->Symbol = new char[info->SymbolLength + 1];
+            strcpy(info->Symbol, tmp->m_symbol);
+        }
+        if(tmp->m_tradingSession != 0) {
+            info->AllowTradingSessionID = true;
+            info->TradingSessionIDLength = strlen(tmp->m_tradingSession);
+            info->TradingSessionID = new char[info->TradingSessionIDLength + 1];
+            strcpy(info->TradingSessionID, tmp->m_tradingSession);
+        }
+        if(tmp->m_entryId != 0) {
+            info->AllowMDEntryID = true;
+            info->MDEntryIDLength = strlen(tmp->m_entryId);
+            info->MDEntryID = new char[info->MDEntryIDLength + 1];
+            strcpy(info->MDEntryID, tmp->m_entryId);
+        }
+        return info;
+    }
+
+    void SendObrFondMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
+        FastIncrementalOBRFONDInfo *info = new FastIncrementalOBRFONDInfo();
+        info->MsgSeqNum = tmp->m_msgSeqNo;
+        info->GroupMDEntriesCount = tmp->m_itemsCount;
+        for(int i = 0; i < tmp->m_itemsCount; i++) {
+            info->GroupMDEntries[i] = CreateObrFondItemInfo(tmp->m_items[i]);
+        }
+        conn->m_fastProtocolManager->SetNewBuffer(conn->m_recvABuffer->CurrentPos(), 2000);
+        conn->m_fastProtocolManager->EncodeIncrementalOBRFONDInfo(info);
+        conn->ProcessServerCore(conn->m_fastProtocolManager->MessageLength());
+
+    }
+    void SendObsFondMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
+        FastOBSFONDInfo *info = new FastOBSFONDInfo();
+        info->MsgSeqNum = tmp->m_msgSeqNo;
+        info->GroupMDEntriesCount = tmp->m_itemsCount;
+        for(int i = 0; i < tmp->m_itemsCount; i++) {
+            info->GroupMDEntries[i] = CreateObrFondItemInfo(tmp->m_items[i]);
+        }
+        conn->m_fastProtocolManager->SetNewBuffer(conn->m_recvABuffer->CurrentPos(), 2000);
+        conn->m_fastProtocolManager->EncodeOBSFONDInfo(info);
+        conn->ProcessServerCore(conn->m_fastProtocolManager->MessageLength());
+    }
+
+    void SendIncrementalMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
+        switch(tmp->m_templateId) {
+            case FeedConnectionMessage::fcmHeartBeat:
+                SendHearthBeatMessage(conn, tmp);
+                break;
+            case FeedConnectionMessage::fmcIncrementalRefresh_OBR_FOND:
+                SendObrFondMessage(conn, tmp);
+                break;
+            case FeedConnectionMessage::fmcFullRefresh_OBS_FOND:
+                SendObsFondMessage(conn, tmp);
+            default:
+                break;
+        }
+    }
+
+    void SendMessages(FeedConnection *conn, TestTemplateInfo **templates, int templatesCount) {
+        for(int i = 0; i < templatesCount; i++)
+            SendIncrementalMessage(conn, templates[i]);
+    }
+
+    void TestConnection_EmptyTest() {
+        fcf->SetSnapshot(this->fcs);
+        fcf->OrderBookFond()->Clear();
+
+        SendMessages(fcf, new TestTemplateInfo*[3] {
+                new TestTemplateInfo(FeedConnectionMessage::fcmHeartBeat, 1),
+                new TestTemplateInfo(FeedConnectionMessage::fcmHeartBeat, 2),
+                new TestTemplateInfo(FeedConnectionMessage::fcmHeartBeat, 3)}, 3);
+
+    }
+
+    void TestConnection_TestCorrectIncMessages() {
+        fcf->SetSnapshot(this->fcs);
+        fcf->OrderBookFond()->Clear();
+        fcf->ClearMessages();
+
+        SendMessages(fcf, new TestTemplateInfo*[3] {
+            new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OBR_FOND, 1,
+                                 new TestTemplateItemInfo*[2] {
+                                    new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "SYMBOL1", "SESSION1", "ENTRY1", 1, 1, 1, 1),
+                                    new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "SYMBOL1", "SESSION1", "ENTRY2", 2, 1, 2, 1),
+                                 }, 2),
+            new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OBR_FOND, 2,
+                                 new TestTemplateItemInfo*[1] {
+                                         new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "SYMBOL1", "SESSION1", "ENTRY1", 3, 1, 3, 1),
+                                 }, 1),
+            new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OBR_FOND, 3,
+                                 new TestTemplateItemInfo*[1] {
+                                         new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "SYMBOL1", "SESSION1", "ENTRY1", 3, 1, 3, 1),
+                                 }, 1)
+        }, 3);
+
+        if(!fcf->ApplyPacketSequence())
+            throw;
+        if(fcf->OrderBookFond()->GetItem("SYMBOL1", "SESSION1")->BuyQuotes()->Count() != 3)
+            throw;
+    }
+
+    void TestConnection() {
+        TestConnection_EmptyTest();
+        TestConnection_TestCorrectIncMessages();
     }
 
     void TestOrderBookTableItem() {
@@ -2174,6 +2345,7 @@ public:
     void Test() {
         TestStringIdComparer();
         TestOrderBookTableItem();
+        TestConnection();
         TestDefaults();
         Test_OBR_FOND();
         Test_OBR_CURR();

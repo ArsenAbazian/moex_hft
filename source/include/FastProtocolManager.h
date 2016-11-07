@@ -2403,299 +2403,6 @@ public:
 	inline int BufferLength() { return this->bufferLength; }
 	inline int MessageLength() { return this->currentPos - this->buffer; }
 	inline void SetBufferLength(int value) { this->bufferLength = value; }
-#pragma endregion
-
-#pragma region Encode_Methods_Definition_GeneratedCode
-	inline void EncodeLogonInfo(FastLogonInfo* info) {
-		ResetBuffer();
-		WriteMsgSeqNumber(this->m_sendMsgSeqNo);
-		WriteString_Mandatory("A", 1);
-		WriteString_Mandatory("FIXT.1.1", 8);
-		WriteString_Mandatory("MOEX", 4);
-		WriteString_Mandatory(info->TargetCompID, info->TargetCompIDLength);
-		WriteUInt32_Mandatory(info->MsgSeqNum);
-		WriteUInt64_Mandatory(info->SendingTime);
-		WriteInt32_Mandatory(info->HeartBtInt);
-		if(!info->AllowUsername)
-			this->WriteNull();
-		else
-			WriteString_Optional(info->Username, info->UsernameLength);
-		if(!info->AllowPassword)
-			this->WriteNull();
-		else
-			WriteString_Optional(info->Password, info->PasswordLength);
-		WriteString_Mandatory(info->DefaultApplVerID, info->DefaultApplVerIDLength);
-	}
-	inline void EncodeLogoutInfo(FastLogoutInfo* info) {
-		ResetBuffer();
-		WriteMsgSeqNumber(this->m_sendMsgSeqNo);
-		WriteString_Mandatory("5", 1);
-		WriteString_Mandatory("FIXT.1.1", 8);
-		WriteString_Mandatory("MOEX", 4);
-		WriteString_Mandatory(info->TargetCompID, info->TargetCompIDLength);
-		WriteUInt32_Mandatory(info->MsgSeqNum);
-		WriteUInt64_Mandatory(info->SendingTime);
-		if(!info->AllowText)
-			this->WriteNull();
-		else
-			WriteString_Optional(info->Text, info->TextLength);
-	}
-	inline void EncodeSecurityDefinitionInfo(FastSecurityDefinitionInfo* info) {
-		ResetBuffer();
-		WriteMsgSeqNumber(this->m_sendMsgSeqNo);
-		WriteString_Mandatory("d", 1);
-		WriteString_Mandatory("9", 1);
-		WriteString_Mandatory("FIXT.1.1", 8);
-		WriteString_Mandatory("MOEX", 4);
-		WriteUInt32_Mandatory(info->MsgSeqNum);
-		WriteUInt64_Mandatory(info->SendingTime);
-		WriteString_Mandatory(info->MessageEncoding, info->MessageEncodingLength);
-		if(!info->AllowTotNumReports)
-			this->WriteNull();
-		else
-			WriteInt32_Optional(info->TotNumReports);
-		if(!info->AllowSymbol)
-			this->WriteNull();
-		else
-			WriteString_Optional(info->Symbol, info->SymbolLength);
-		if(!info->AllowSecurityID)
-			this->WriteNull();
-		else
-			WriteByteVector_Optional(info->SecurityID, info->SecurityIDLength);
-		if(!info->AllowSecurityIDSource)
-			this->WriteNull();
-		else
-			WriteByteVector_Optional(info->SecurityIDSource, info->SecurityIDSourceLength);
-		if(!info->AllowProduct)
-			this->WriteNull();
-		else
-			WriteInt32_Optional(info->Product);
-		if(!info->AllowCFICode)
-			this->WriteNull();
-		else
-			WriteByteVector_Optional(info->CFICode, info->CFICodeLength);
-		if(!info->AllowSecurityType)
-			this->WriteNull();
-		else
-			WriteByteVector_Optional(info->SecurityType, info->SecurityTypeLength);
-		if(!info->AllowMaturityDate)
-			this->WriteNull();
-		else
-			WriteUInt32_Optional(info->MaturityDate);
-		if(!info->AllowSettlDate)
-			this->WriteNull();
-		else
-			WriteUInt32_Optional(info->SettlDate);
-		if(!info->AllowSettleType)
-			this->WriteNull();
-		else
-			WriteString_Optional(info->SettleType, info->SettleTypeLength);
-		if(!info->AllowOrigIssueAmt)
-			this->WriteNull();
-		else
-			WriteDecimal_Optional(&(info->OrigIssueAmt));
-		if(!info->AllowCouponPaymentDate)
-			this->WriteNull();
-		else
-			WriteUInt32_Optional(info->CouponPaymentDate);
-		if(!info->AllowCouponRate)
-			this->WriteNull();
-		else
-			WriteDecimal_Optional(&(info->CouponRate));
-		if(!info->AllowSettlFixingDate)
-			this->WriteNull();
-		else
-			WriteUInt32_Optional(info->SettlFixingDate);
-		if(!info->AllowDividendNetPx)
-			this->WriteNull();
-		else
-			WriteDecimal_Optional(&(info->DividendNetPx));
-		if(!info->AllowSecurityDesc)
-			this->WriteNull();
-		else
-			WriteByteVector_Optional(info->SecurityDesc, info->SecurityDescLength);
-		if(!info->AllowEncodedSecurityDesc)
-			this->WriteNull();
-		else
-			WriteByteVector_Optional(info->EncodedSecurityDesc, info->EncodedSecurityDescLength);
-		if(!info->AllowQuoteText)
-			this->WriteNull();
-		else
-			WriteByteVector_Optional(info->QuoteText, info->QuoteTextLength);
-		if(!info->AllowGroupInstrAttrib)
-			this->WriteNull();
-		else {
-			WriteUInt32_Mandatory(info->GroupInstrAttribCount);
-			FastSecurityDefinitionGroupInstrAttribItemInfo **giaItemInfo = info->GroupInstrAttrib;
-			for(int i = 0; i < info->GroupInstrAttribCount; i++) {
-				WriteInt32_Mandatory((*giaItemInfo)->InstrAttribType);
-				if(!(*giaItemInfo)->AllowInstrAttribValue)
-					this->WriteNull();
-				else
-					WriteByteVector_Optional((*giaItemInfo)->InstrAttribValue, (*giaItemInfo)->InstrAttribValueLength);
-				giaItemInfo++;
-			}
-		}
-		if(!info->AllowCurrency)
-			this->WriteNull();
-		else
-			WriteString_Optional(info->Currency, info->CurrencyLength);
-		if(!info->AllowMarketSegmentGrp)
-			this->WriteNull();
-		else {
-			WriteUInt32_Mandatory(info->MarketSegmentGrpCount);
-			FastSecurityDefinitionMarketSegmentGrpItemInfo **msgItemInfo = info->MarketSegmentGrp;
-			for(int i = 0; i < info->MarketSegmentGrpCount; i++) {
-				if(!(*msgItemInfo)->AllowRoundLot)
-					this->WriteNull();
-				else
-					WriteDecimal_Optional(&((*msgItemInfo)->RoundLot));
-				if(!(*msgItemInfo)->AllowTradingSessionRulesGrp)
-					this->WriteNull();
-				else {
-					WriteUInt32_Mandatory((*msgItemInfo)->TradingSessionRulesGrpCount);
-					FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo **tsrgItemInfo = (*msgItemInfo)->TradingSessionRulesGrp;
-					for(int i = 0; i < (*msgItemInfo)->TradingSessionRulesGrpCount; i++) {
-						WriteString_Mandatory((*tsrgItemInfo)->TradingSessionID, (*tsrgItemInfo)->TradingSessionIDLength);
-						if(!(*tsrgItemInfo)->AllowTradingSessionSubID)
-							this->WriteNull();
-						else
-							WriteString_Optional((*tsrgItemInfo)->TradingSessionSubID, (*tsrgItemInfo)->TradingSessionSubIDLength);
-						if(!(*tsrgItemInfo)->AllowSecurityTradingStatus)
-							this->WriteNull();
-						else
-							WriteInt32_Optional((*tsrgItemInfo)->SecurityTradingStatus);
-						if(!(*tsrgItemInfo)->AllowOrderNote)
-							this->WriteNull();
-						else
-							WriteInt32_Optional((*tsrgItemInfo)->OrderNote);
-						tsrgItemInfo++;
-					}
-				}
-				msgItemInfo++;
-			}
-		}
-		if(!info->AllowSettlCurrency)
-			this->WriteNull();
-		else
-			WriteString_Optional(info->SettlCurrency, info->SettlCurrencyLength);
-		if(!info->AllowPriceType)
-			this->WriteNull();
-		else
-			WriteInt32_Optional(info->PriceType);
-		if(!info->AllowStateSecurityID)
-			this->WriteNull();
-		else
-			WriteString_Optional(info->StateSecurityID, info->StateSecurityIDLength);
-		if(!info->AllowEncodedShortSecurityDesc)
-			this->WriteNull();
-		else
-			WriteByteVector_Optional(info->EncodedShortSecurityDesc, info->EncodedShortSecurityDescLength);
-		if(!info->AllowMarketCode)
-			this->WriteNull();
-		else
-			WriteByteVector_Optional(info->MarketCode, info->MarketCodeLength);
-		if(!info->AllowMinPriceIncrement)
-			this->WriteNull();
-		else
-			WriteDecimal_Optional(&(info->MinPriceIncrement));
-		if(!info->AllowMktShareLimit)
-			this->WriteNull();
-		else
-			WriteDecimal_Optional(&(info->MktShareLimit));
-		if(!info->AllowMktShareThreshold)
-			this->WriteNull();
-		else
-			WriteDecimal_Optional(&(info->MktShareThreshold));
-		if(!info->AllowMaxOrdersVolume)
-			this->WriteNull();
-		else
-			WriteDecimal_Optional(&(info->MaxOrdersVolume));
-		if(!info->AllowPriceMvmLimit)
-			this->WriteNull();
-		else
-			WriteDecimal_Optional(&(info->PriceMvmLimit));
-		if(!info->AllowFaceValue)
-			this->WriteNull();
-		else
-			WriteDecimal_Optional(&(info->FaceValue));
-		if(!info->AllowBaseSwapPx)
-			this->WriteNull();
-		else
-			WriteDecimal_Optional(&(info->BaseSwapPx));
-		if(!info->AllowRepoToPx)
-			this->WriteNull();
-		else
-			WriteDecimal_Optional(&(info->RepoToPx));
-		if(!info->AllowBuyBackPx)
-			this->WriteNull();
-		else
-			WriteDecimal_Optional(&(info->BuyBackPx));
-		if(!info->AllowBuyBackDate)
-			this->WriteNull();
-		else
-			WriteUInt32_Optional(info->BuyBackDate);
-		if(!info->AllowNoSharesIssued)
-			this->WriteNull();
-		else
-			WriteDecimal_Optional(&(info->NoSharesIssued));
-		if(!info->AllowHighLimit)
-			this->WriteNull();
-		else
-			WriteDecimal_Optional(&(info->HighLimit));
-		if(!info->AllowLowLimit)
-			this->WriteNull();
-		else
-			WriteDecimal_Optional(&(info->LowLimit));
-		if(!info->AllowNumOfDaysToMaturity)
-			this->WriteNull();
-		else
-			WriteInt32_Optional(info->NumOfDaysToMaturity);
-	}
-	inline void EncodeSecurityStatusInfo(FastSecurityStatusInfo* info) {
-		ResetBuffer();
-		WriteMsgSeqNumber(this->m_sendMsgSeqNo);
-		WriteString_Mandatory("f", 1);
-		WriteString_Mandatory("9", 1);
-		WriteString_Mandatory("FIXT.1.1", 8);
-		WriteString_Mandatory("MOEX", 4);
-		WriteUInt32_Mandatory(info->MsgSeqNum);
-		WriteUInt64_Mandatory(info->SendingTime);
-		WriteString_Mandatory(info->Symbol, info->SymbolLength);
-		if(!info->AllowTradingSessionID)
-			this->WriteNull();
-		else
-			WriteString_Optional(info->TradingSessionID, info->TradingSessionIDLength);
-		if(!info->AllowTradingSessionSubID)
-			this->WriteNull();
-		else
-			WriteString_Optional(info->TradingSessionSubID, info->TradingSessionSubIDLength);
-		if(!info->AllowSecurityTradingStatus)
-			this->WriteNull();
-		else
-			WriteInt32_Optional(info->SecurityTradingStatus);
-		if(!info->AllowAuctionIndicator)
-			this->WriteNull();
-		else
-			WriteUInt32_Optional(info->AuctionIndicator);
-	}
-	inline void EncodeTradingSessionStatusInfo(FastTradingSessionStatusInfo* info) {
-		ResetBuffer();
-		WriteMsgSeqNumber(this->m_sendMsgSeqNo);
-		WriteString_Mandatory("h", 1);
-		WriteString_Mandatory("9", 1);
-		WriteString_Mandatory("FIXT.1.1", 8);
-		WriteString_Mandatory("MOEX", 4);
-		WriteUInt32_Mandatory(info->MsgSeqNum);
-		WriteUInt64_Mandatory(info->SendingTime);
-		WriteInt32_Mandatory(info->TradSesStatus);
-		if(!info->AllowText)
-			this->WriteNull();
-		else
-			WriteString_Optional(info->Text, info->TextLength);
-		WriteString_Mandatory(info->TradingSessionID, info->TradingSessionIDLength);
-	}
-#pragma endregion
 
     void* DecodeUnsupportedMessage() {
         return NULL;
@@ -2704,6 +2411,31 @@ public:
 	FastSnapshotInfo* GetSnapshotInfoUnsupported() {
 		return 0;
 	}
+
+#pragma region Encode_Methods_Declaration_GeneratedCode
+	void EncodeLogonInfo(FastLogonInfo* info);
+	void EncodeLogoutInfo(FastLogoutInfo* info);
+	void EncodeGenericInfo(FastGenericInfo* info);
+	void EncodeIncrementalGenericInfo(FastIncrementalGenericInfo* info);
+	void EncodeOLSFONDInfo(FastOLSFONDInfo* info);
+	void EncodeOLSCURRInfo(FastOLSCURRInfo* info);
+	void EncodeTLSFONDInfo(FastTLSFONDInfo* info);
+	void EncodeTLSCURRInfo(FastTLSCURRInfo* info);
+	void EncodeOBSFONDInfo(FastOBSFONDInfo* info);
+	void EncodeOBSCURRInfo(FastOBSCURRInfo* info);
+	void EncodeIncrementalMSRFONDInfo(FastIncrementalMSRFONDInfo* info);
+	void EncodeIncrementalMSRCURRInfo(FastIncrementalMSRCURRInfo* info);
+	void EncodeIncrementalOLRFONDInfo(FastIncrementalOLRFONDInfo* info);
+	void EncodeIncrementalOLRCURRInfo(FastIncrementalOLRCURRInfo* info);
+	void EncodeIncrementalOBRFONDInfo(FastIncrementalOBRFONDInfo* info);
+	void EncodeIncrementalOBRCURRInfo(FastIncrementalOBRCURRInfo* info);
+	void EncodeIncrementalTLRFONDInfo(FastIncrementalTLRFONDInfo* info);
+	void EncodeIncrementalTLRCURRInfo(FastIncrementalTLRCURRInfo* info);
+	void EncodeSecurityDefinitionInfo(FastSecurityDefinitionInfo* info);
+	void EncodeSecurityStatusInfo(FastSecurityStatusInfo* info);
+	void EncodeTradingSessionStatusInfo(FastTradingSessionStatusInfo* info);
+	void EncodeHeartbeatInfo(FastHeartbeatInfo* info);
+#pragma endregion
 
 #pragma region Print_Methods_Declaration_GeneratedCode
 	void PrintLogon(FastLogonInfo *info);

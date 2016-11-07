@@ -748,6 +748,7 @@ public:
     inline int TradingSessionsCount() { return this->m_table->TradingSessionsCount(); }
     inline int UsedItemCount() { return this->m_table->UsedItemCount(); }
     inline TABLEITEM<ITEMINFO>* GetItem(const char *symbol, int symbolLen, const char *tradingSession, int tradingSessionLen) { return this->m_table->GetItem(symbol, symbolLen, tradingSession, tradingSessionLen);  }
+    inline TABLEITEM<ITEMINFO>* GetItem(const char *symbol, const char *tradingSession) { return this->m_table->GetItem(symbol, strlen(symbol), tradingSession, strlen(tradingSession));  }
     inline TABLEITEM<ITEMINFO>* SnapshotItem() { return this->m_snapshotItem; }
 };
 
