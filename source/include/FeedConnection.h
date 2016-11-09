@@ -150,7 +150,7 @@ private:
     inline bool ProcessServerA() { return this->ProcessServer(this->socketAManager, LogMessageCode::lmcsocketA); }
     inline bool ProcessServerB() { return this->ProcessServer(this->socketBManager, LogMessageCode::lmcsocketB); }
     inline bool ProcessServerCore(int size) {
-        int msgSeqNum = *((UINT*)this->m_recvABuffer->CurrentPos()); // socketManager->RecvBytes());
+        int msgSeqNum = *((UINT*)this->m_recvABuffer->CurrentPos());
         if(this->m_packets[msgSeqNum] != 0)
             return false;
 
@@ -355,7 +355,7 @@ private:
         return true;
     }
 
-	inline void AddOrderBookInfoFond(FastOBSFONDItemInfo *info) {
+	/*inline void AddOrderBookInfoFond(FastOBSFONDItemInfo *info) {
 		this->m_orderBookTableFond->Add(info);
 	}
 
@@ -365,7 +365,7 @@ private:
 
 	inline void RemoveOrderBookInfoFond(FastOBSFONDItemInfo *info) {
 		this->m_orderBookTableFond->Remove(info);
-	}
+	}*/
 
 	inline void AddOrderBookInfoCurr(FastOBSCURRItemInfo *info) {
 		this->m_orderBookTableCurr->Add(info);
@@ -413,7 +413,9 @@ private:
 
 	FILE *obrLogFile;
 	inline bool OnIncrementalRefresh_OBR_FOND(FastOBSFONDItemInfo *info) {
-		if(info->MDUpdateAction == MDUpdateAction::mduaAdd) {
+        this->m_orderBookTableFond->ProcessIncremental(info);
+		/*
+        if(info->MDUpdateAction == MDUpdateAction::mduaAdd) {
 			AddOrderBookInfoFond(info);
 		}
 		else if(info->MDUpdateAction == MDUpdateAction::mduaChange) {
@@ -422,7 +424,7 @@ private:
 		else if(info->MDUpdateAction == MDUpdateAction::mduaDelete) {
 			RemoveOrderBookInfoFond(info);
 		}
-
+        */
 		return true;
 	}
 
@@ -611,7 +613,6 @@ private:
 
 		if(this->m_fastProtocolManager->Decode() == 0)
 			return true;
-		//this->m_fastProtocolManager->Print();
 		this->ApplyDecodedMessage();
 
 		return true;

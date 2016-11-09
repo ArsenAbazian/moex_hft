@@ -17,14 +17,16 @@ public:
     const char*     m_entryId;
     Decimal         m_entryPx;
     Decimal         m_entrySize;
+    int             m_rptSeq;
 
-    TestTemplateItemInfo(MDUpdateAction action, MDEntryType entryType, const char *symbol, const char *sessionId, const char *entryId, int pxm, INT64 pxe, int sizem, INT64 sizee) {
+    TestTemplateItemInfo(MDUpdateAction action, MDEntryType entryType, const char *symbol, const char *sessionId, const char *entryId, int rptSeq, int pxm, INT64 pxe, int sizem, INT64 sizee) {
         this->m_action = action;
         this->m_entryType = entryType;
         this->m_symbol = symbol;
         this->m_tradingSession = sessionId;
         this->m_entryPx.Set(pxm, pxe);
         this->m_entrySize.Set(sizem, sizee);
+        this->m_rptSeq = rptSeq;
     }
 };
 
@@ -34,7 +36,6 @@ public:
     bool                    m_msgSeqNo;
     bool                    m_routeFirst;
     bool                    m_lastMessage;
-    int                     m_rptSeq;
     int                     m_itemsCount;
     TestTemplateItemInfo*   m_items[8];
 
@@ -2210,6 +2211,8 @@ public:
         info->MDEntryPx.Assign(&tmp->m_entryPx);
         info->AllowMDEntrySize = true;
         info->MDEntrySize.Assign(&tmp->m_entrySize);
+        info->AllowRptSeq = true;
+        info->RptSeq = tmp->m_rptSeq;
         if(tmp->m_symbol != 0) {
             info->AllowSymbol = true;
             info->SymbolLength = strlen(tmp->m_symbol);
@@ -2294,16 +2297,16 @@ public:
         SendMessages(fcf, new TestTemplateInfo*[3] {
             new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OBR_FOND, 1,
                                  new TestTemplateItemInfo*[2] {
-                                    new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "SYMBOL1", "SESSION1", "ENTRY1", 1, 1, 1, 1),
-                                    new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "SYMBOL1", "SESSION1", "ENTRY2", 2, 1, 2, 1),
+                                    new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "SYMBOL1", "SESSION1", "ENTRY1", 1, 1, 1, 1, 1),
+                                    new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "SYMBOL1", "SESSION1", "ENTRY2", 2, 2, 1, 2, 1),
                                  }, 2),
             new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OBR_FOND, 2,
                                  new TestTemplateItemInfo*[1] {
-                                         new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "SYMBOL1", "SESSION1", "ENTRY1", 3, 1, 3, 1),
+                                         new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "SYMBOL1", "SESSION1", "ENTRY1", 3, 3, 1, 3, 1),
                                  }, 1),
             new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OBR_FOND, 3,
                                  new TestTemplateItemInfo*[1] {
-                                         new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "SYMBOL1", "SESSION1", "ENTRY1", 3, 1, 3, 1),
+                                         new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "SYMBOL1", "SESSION1", "ENTRY1", 4, 3, 1, 3, 1),
                                  }, 1)
         }, 3);
 

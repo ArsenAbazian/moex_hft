@@ -226,7 +226,9 @@ namespace prebuild {
 			StructureInfo info = new StructureInfo() { NameCore = GetTemplateName(message.PreviousSibling.Value) };
 			WriteLine("void FastProtocolManager::" + info.EncodeMethodName + "(" + info.Name + "* info) {");
 			WriteLine("\tResetBuffer();");
-			WriteLine("\t\tWriteMsgSeqNumber(this->m_sendMsgSeqNo);");
+			WriteLine("\tWriteMsgSeqNumber(this->m_sendMsgSeqNo);");
+			WriteLine("\tWriteUInt32_Mandatory(0); // Presence Map hack");
+			WriteLine("\tWriteUInt32_Mandatory(" + message.Attributes["id"].Value + ");");
 			int presenceByteCount = CalcPresenceMapByteCount(message);
 			if(GetMaxPresenceBitCount(message) > 0)
 				WriteLine("\tWritePresenceMap" + presenceByteCount + "(info->PresenceMap);");
@@ -244,6 +246,8 @@ namespace prebuild {
 		private  void WriteEncodeValueCode (XmlNode field, StructureInfo si, string tabs) {
 			bool nullCheck = ShouldWriteNullCheckCode(field);
 			bool presenceCheck = ShouldWriteCheckPresenceMapCode(field);
+			if(!CanParseValue(field))
+				return;
 			if(presenceCheck) {
 				string bracket = nullCheck ? " {" : "";
 				string checkPresenceMethodName = HasOptionalPresence(field)? "CheckOptionalFieldPresence": "CheckMandatoryFieldPresence";
@@ -304,6 +308,10 @@ namespace prebuild {
 			WriteLine(tabs + "WriteUInt32_Mandatory(" + si.InCodeValueName + "->" + Name(field) + "Count);");
 			WriteLine(tabs + item.Name + " **" + itemInfo + " = " + si.InCodeValueName + "->" + Name(field) + ";");
 			WriteLine(tabs + "for(int i = 0; i < " + si.InCodeValueName + "->" + Name(field) + "Count; i++) {");
+			if(GetMaxPresenceBitCount(field) > 0) {
+				WriteLine(tabs + "WriteUInt32_Mandatory(0); // Presence Map hack");
+				WriteLine("");
+			}
 			foreach(XmlNode node in field.ChildNodes) {
 				WriteEncodeValueCode(node, info, tabs + "\t");
 			}
@@ -554,17 +562,17 @@ namespace prebuild {
 			 
 			for(int i = 0; i < templates[0].ChildNodes.Count; i++) {
 				string tagId = templates[0].ChildNodes[i].Attributes["id"].Value;
-				Console.WriteLine("checking " + tagId);
+				//Console.WriteLine("checking " + tagId);
 				for(int j = 1; j < templates.Count; j++) {
 					if(i >= templates[j].ChildNodes.Count)
 						return headerTags;
 					string tagId2 = templates[j].ChildNodes[i].Attributes["id"].Value;
 					if(tagId != tagId2) {
-						Console.WriteLine("non header tag expected " + tagId + " but found " + tagId2);
+						//Console.WriteLine("non header tag expected " + tagId + " but found " + tagId2);
 						return headerTags;
 					}
 				}
-				Console.WriteLine("add header tag " + templates[0].ChildNodes[i].Attributes["name"].Value);
+				//Console.WriteLine("add header tag " + templates[0].ChildNodes[i].Attributes["name"].Value);
 				headerTags.Add(templates[0].ChildNodes[i].Attributes["id"].Value);
 			}
 			return headerTags;
@@ -647,13 +655,13 @@ namespace prebuild {
 				return null;
 			string infoParentName = parentNode.Attributes["name"].Value;
 
-			Console.WriteLine("Seek similar for " + infoParentName);
+			//Console.WriteLine("Seek similar for " + infoParentName);
 			foreach(StructureInfo info2 in str) { 
 				XmlNode parentNode2 = info2.Node.ParentNode;
 				if(parentNode2.Name != "template")
 					continue;
 				string infoParentName2 = parentNode2.Attributes["name"].Value;
-				Console.WriteLine("checking " + infoParentName2);
+				//Console.WriteLine("checking " + infoParentName2);
 
 				string nameToCheck = string.Empty;
 				if(!SimilarTemplates.TryGetValue(infoParentName, out nameToCheck))
@@ -679,7 +687,7 @@ namespace prebuild {
 					res.Add(info);
 					continue;
 				}
-				Console.WriteLine("Found Similar Structures " + info.Name + " = " + info2.Name);
+				//Console.WriteLine("Found Similar Structures " + info.Name + " = " + info2.Name);
 				strToRemove.Add(info2);
 				info.SimilarStruct = info2;
 				foreach(XmlNode node2 in info2.Fields) {
@@ -2453,7 +2461,7 @@ namespace prebuild {
 				Console.WriteLine(e.Message);
 			}
 			foreach(string k in m_params.Keys) {
-				Console.WriteLine(k + " " + m_params[k]);
+				//Console.WriteLine(k + " " + m_params[k]);
 			}
 			if(!CopyFastServerConfigurationFile()) {
 				Console.WriteLine("exit.");

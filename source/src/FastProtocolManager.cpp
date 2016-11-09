@@ -2773,10 +2773,9 @@ void FastProtocolManager::PrintXmlHeartbeat(FastHeartbeatInfo *info) {
 #pragma region Encode_Methods_Definition_GeneratedCode
 void FastProtocolManager::EncodeLogonInfo(FastLogonInfo* info) {
 	ResetBuffer();
-		WriteMsgSeqNumber(this->m_sendMsgSeqNo);
-	WriteString_Mandatory("A", 1);
-	WriteString_Mandatory("FIXT.1.1", 8);
-	WriteString_Mandatory("MOEX", 4);
+	WriteMsgSeqNumber(this->m_sendMsgSeqNo);
+	WriteUInt32_Mandatory(0); // Presence Map hack
+	WriteUInt32_Mandatory(2101);
 	WriteString_Mandatory(info->TargetCompID, info->TargetCompIDLength);
 	WriteUInt32_Mandatory(info->MsgSeqNum);
 	WriteUInt64_Mandatory(info->SendingTime);
@@ -2793,10 +2792,9 @@ void FastProtocolManager::EncodeLogonInfo(FastLogonInfo* info) {
 }
 void FastProtocolManager::EncodeLogoutInfo(FastLogoutInfo* info) {
 	ResetBuffer();
-		WriteMsgSeqNumber(this->m_sendMsgSeqNo);
-	WriteString_Mandatory("5", 1);
-	WriteString_Mandatory("FIXT.1.1", 8);
-	WriteString_Mandatory("MOEX", 4);
+	WriteMsgSeqNumber(this->m_sendMsgSeqNo);
+	WriteUInt32_Mandatory(0); // Presence Map hack
+	WriteUInt32_Mandatory(2102);
 	WriteString_Mandatory(info->TargetCompID, info->TargetCompIDLength);
 	WriteUInt32_Mandatory(info->MsgSeqNum);
 	WriteUInt64_Mandatory(info->SendingTime);
@@ -2807,11 +2805,9 @@ void FastProtocolManager::EncodeLogoutInfo(FastLogoutInfo* info) {
 }
 void FastProtocolManager::EncodeGenericInfo(FastGenericInfo* info) {
 	ResetBuffer();
-		WriteMsgSeqNumber(this->m_sendMsgSeqNo);
-	WriteString_Mandatory("W", 1);
-	WriteString_Mandatory("FIXT.1.1", 8);
-	WriteString_Mandatory("9", 1);
-	WriteString_Mandatory("MOEX", 4);
+	WriteMsgSeqNumber(this->m_sendMsgSeqNo);
+	WriteUInt32_Mandatory(0); // Presence Map hack
+	WriteUInt32_Mandatory(2103);
 	WriteUInt32_Mandatory(info->MsgSeqNum);
 	WriteUInt64_Mandatory(info->SendingTime);
 	if(!info->AllowTradingSessionID)
@@ -2851,6 +2847,8 @@ void FastProtocolManager::EncodeGenericInfo(FastGenericInfo* info) {
 	WriteUInt32_Mandatory(info->GroupMDEntriesCount);
 	FastGenericItemInfo **gmdeItemInfo = info->GroupMDEntries;
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
+	WriteUInt32_Mandatory(0); // Presence Map hack
+
 		if(!(*gmdeItemInfo)->AllowMDEntryType)
 			this->WriteNull();
 		else
@@ -3028,16 +3026,16 @@ void FastProtocolManager::EncodeGenericInfo(FastGenericInfo* info) {
 }
 void FastProtocolManager::EncodeIncrementalGenericInfo(FastIncrementalGenericInfo* info) {
 	ResetBuffer();
-		WriteMsgSeqNumber(this->m_sendMsgSeqNo);
-	WriteString_Mandatory("X", 1);
-	WriteString_Mandatory("9", 1);
-	WriteString_Mandatory("FIXT.1.1", 8);
-	WriteString_Mandatory("MOEX", 4);
+	WriteMsgSeqNumber(this->m_sendMsgSeqNo);
+	WriteUInt32_Mandatory(0); // Presence Map hack
+	WriteUInt32_Mandatory(2104);
 	WriteUInt32_Mandatory(info->MsgSeqNum);
 	WriteUInt64_Mandatory(info->SendingTime);
 	WriteUInt32_Mandatory(info->GroupMDEntriesCount);
 	FastGenericItemInfo **gmdeItemInfo = info->GroupMDEntries;
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
+	WriteUInt32_Mandatory(0); // Presence Map hack
+
 		if(!(*gmdeItemInfo)->AllowMDUpdateAction)
 			this->WriteNull();
 		else
@@ -3235,11 +3233,9 @@ void FastProtocolManager::EncodeIncrementalGenericInfo(FastIncrementalGenericInf
 }
 void FastProtocolManager::EncodeOLSFONDInfo(FastOLSFONDInfo* info) {
 	ResetBuffer();
-		WriteMsgSeqNumber(this->m_sendMsgSeqNo);
-	WriteString_Mandatory("W", 1);
-	WriteString_Mandatory("FIXT.1.1", 8);
-	WriteString_Mandatory("9", 1);
-	WriteString_Mandatory("MOEX", 4);
+	WriteMsgSeqNumber(this->m_sendMsgSeqNo);
+	WriteUInt32_Mandatory(0); // Presence Map hack
+	WriteUInt32_Mandatory(2410);
 	WriteUInt32_Mandatory(info->MsgSeqNum);
 	WriteUInt64_Mandatory(info->SendingTime);
 	if(!info->AllowLastMsgSeqNumProcessed)
@@ -3275,6 +3271,8 @@ void FastProtocolManager::EncodeOLSFONDInfo(FastOLSFONDInfo* info) {
 	WriteUInt32_Mandatory(info->GroupMDEntriesCount);
 	FastOLSFONDItemInfo **gmdeItemInfo = info->GroupMDEntries;
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
+	WriteUInt32_Mandatory(0); // Presence Map hack
+
 		if(!(*gmdeItemInfo)->AllowMDEntryType)
 			this->WriteNull();
 		else
@@ -3334,11 +3332,9 @@ void FastProtocolManager::EncodeOLSFONDInfo(FastOLSFONDInfo* info) {
 }
 void FastProtocolManager::EncodeOLSCURRInfo(FastOLSCURRInfo* info) {
 	ResetBuffer();
-		WriteMsgSeqNumber(this->m_sendMsgSeqNo);
-	WriteString_Mandatory("W", 1);
-	WriteString_Mandatory("FIXT.1.1", 8);
-	WriteString_Mandatory("9", 1);
-	WriteString_Mandatory("MOEX", 4);
+	WriteMsgSeqNumber(this->m_sendMsgSeqNo);
+	WriteUInt32_Mandatory(0); // Presence Map hack
+	WriteUInt32_Mandatory(3500);
 	WriteUInt32_Mandatory(info->MsgSeqNum);
 	WriteUInt64_Mandatory(info->SendingTime);
 	if(!info->AllowLastMsgSeqNumProcessed)
@@ -3370,6 +3366,8 @@ void FastProtocolManager::EncodeOLSCURRInfo(FastOLSCURRInfo* info) {
 	WriteUInt32_Mandatory(info->GroupMDEntriesCount);
 	FastOLSCURRItemInfo **gmdeItemInfo = info->GroupMDEntries;
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
+	WriteUInt32_Mandatory(0); // Presence Map hack
+
 		if(!(*gmdeItemInfo)->AllowMDEntryType)
 			this->WriteNull();
 		else
@@ -3417,11 +3415,9 @@ void FastProtocolManager::EncodeOLSCURRInfo(FastOLSCURRInfo* info) {
 }
 void FastProtocolManager::EncodeTLSFONDInfo(FastTLSFONDInfo* info) {
 	ResetBuffer();
-		WriteMsgSeqNumber(this->m_sendMsgSeqNo);
-	WriteString_Mandatory("W", 1);
-	WriteString_Mandatory("FIXT.1.1", 8);
-	WriteString_Mandatory("9", 1);
-	WriteString_Mandatory("MOEX", 4);
+	WriteMsgSeqNumber(this->m_sendMsgSeqNo);
+	WriteUInt32_Mandatory(0); // Presence Map hack
+	WriteUInt32_Mandatory(2411);
 	WriteUInt32_Mandatory(info->MsgSeqNum);
 	WriteUInt64_Mandatory(info->SendingTime);
 	if(!info->AllowLastMsgSeqNumProcessed)
@@ -3535,11 +3531,9 @@ void FastProtocolManager::EncodeTLSFONDInfo(FastTLSFONDInfo* info) {
 }
 void FastProtocolManager::EncodeTLSCURRInfo(FastTLSCURRInfo* info) {
 	ResetBuffer();
-		WriteMsgSeqNumber(this->m_sendMsgSeqNo);
-	WriteString_Mandatory("W", 1);
-	WriteString_Mandatory("FIXT.1.1", 8);
-	WriteString_Mandatory("9", 1);
-	WriteString_Mandatory("MOEX", 4);
+	WriteMsgSeqNumber(this->m_sendMsgSeqNo);
+	WriteUInt32_Mandatory(0); // Presence Map hack
+	WriteUInt32_Mandatory(3501);
 	WriteUInt32_Mandatory(info->MsgSeqNum);
 	WriteUInt64_Mandatory(info->SendingTime);
 	if(!info->AllowLastMsgSeqNumProcessed)
@@ -3641,11 +3635,9 @@ void FastProtocolManager::EncodeTLSCURRInfo(FastTLSCURRInfo* info) {
 }
 void FastProtocolManager::EncodeOBSFONDInfo(FastOBSFONDInfo* info) {
 	ResetBuffer();
-		WriteMsgSeqNumber(this->m_sendMsgSeqNo);
-	WriteString_Mandatory("W", 1);
-	WriteString_Mandatory("FIXT.1.1", 8);
-	WriteString_Mandatory("9", 1);
-	WriteString_Mandatory("MOEX", 4);
+	WriteMsgSeqNumber(this->m_sendMsgSeqNo);
+	WriteUInt32_Mandatory(0); // Presence Map hack
+	WriteUInt32_Mandatory(2412);
 	WriteUInt32_Mandatory(info->MsgSeqNum);
 	WriteUInt64_Mandatory(info->SendingTime);
 	if(!info->AllowLastMsgSeqNumProcessed)
@@ -3726,11 +3718,9 @@ void FastProtocolManager::EncodeOBSFONDInfo(FastOBSFONDInfo* info) {
 }
 void FastProtocolManager::EncodeOBSCURRInfo(FastOBSCURRInfo* info) {
 	ResetBuffer();
-		WriteMsgSeqNumber(this->m_sendMsgSeqNo);
-	WriteString_Mandatory("W", 1);
-	WriteString_Mandatory("FIXT.1.1", 8);
-	WriteString_Mandatory("9", 1);
-	WriteString_Mandatory("MOEX", 4);
+	WriteMsgSeqNumber(this->m_sendMsgSeqNo);
+	WriteUInt32_Mandatory(0); // Presence Map hack
+	WriteUInt32_Mandatory(3502);
 	WriteUInt32_Mandatory(info->MsgSeqNum);
 	WriteUInt64_Mandatory(info->SendingTime);
 	if(!info->AllowLastMsgSeqNumProcessed)
@@ -3795,16 +3785,16 @@ void FastProtocolManager::EncodeOBSCURRInfo(FastOBSCURRInfo* info) {
 }
 void FastProtocolManager::EncodeIncrementalMSRFONDInfo(FastIncrementalMSRFONDInfo* info) {
 	ResetBuffer();
-		WriteMsgSeqNumber(this->m_sendMsgSeqNo);
-	WriteString_Mandatory("X", 1);
-	WriteString_Mandatory("9", 1);
-	WriteString_Mandatory("FIXT.1.1", 8);
-	WriteString_Mandatory("MOEX", 4);
+	WriteMsgSeqNumber(this->m_sendMsgSeqNo);
+	WriteUInt32_Mandatory(0); // Presence Map hack
+	WriteUInt32_Mandatory(2423);
 	WriteUInt32_Mandatory(info->MsgSeqNum);
 	WriteUInt64_Mandatory(info->SendingTime);
 	WriteUInt32_Mandatory(info->GroupMDEntriesCount);
 	FastIncrementalMSRFONDItemInfo **gmdeItemInfo = info->GroupMDEntries;
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
+	WriteUInt32_Mandatory(0); // Presence Map hack
+
 		if(!(*gmdeItemInfo)->AllowMDUpdateAction)
 			this->WriteNull();
 		else
@@ -3944,16 +3934,16 @@ void FastProtocolManager::EncodeIncrementalMSRFONDInfo(FastIncrementalMSRFONDInf
 }
 void FastProtocolManager::EncodeIncrementalMSRCURRInfo(FastIncrementalMSRCURRInfo* info) {
 	ResetBuffer();
-		WriteMsgSeqNumber(this->m_sendMsgSeqNo);
-	WriteString_Mandatory("X", 1);
-	WriteString_Mandatory("9", 1);
-	WriteString_Mandatory("FIXT.1.1", 8);
-	WriteString_Mandatory("MOEX", 4);
+	WriteMsgSeqNumber(this->m_sendMsgSeqNo);
+	WriteUInt32_Mandatory(0); // Presence Map hack
+	WriteUInt32_Mandatory(3513);
 	WriteUInt32_Mandatory(info->MsgSeqNum);
 	WriteUInt64_Mandatory(info->SendingTime);
 	WriteUInt32_Mandatory(info->GroupMDEntriesCount);
 	FastIncrementalMSRCURRItemInfo **gmdeItemInfo = info->GroupMDEntries;
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
+	WriteUInt32_Mandatory(0); // Presence Map hack
+
 		if(!(*gmdeItemInfo)->AllowMDUpdateAction)
 			this->WriteNull();
 		else
@@ -4061,16 +4051,16 @@ void FastProtocolManager::EncodeIncrementalMSRCURRInfo(FastIncrementalMSRCURRInf
 }
 void FastProtocolManager::EncodeIncrementalOLRFONDInfo(FastIncrementalOLRFONDInfo* info) {
 	ResetBuffer();
-		WriteMsgSeqNumber(this->m_sendMsgSeqNo);
-	WriteString_Mandatory("X", 1);
-	WriteString_Mandatory("9", 1);
-	WriteString_Mandatory("FIXT.1.1", 8);
-	WriteString_Mandatory("MOEX", 4);
+	WriteMsgSeqNumber(this->m_sendMsgSeqNo);
+	WriteUInt32_Mandatory(0); // Presence Map hack
+	WriteUInt32_Mandatory(2420);
 	WriteUInt32_Mandatory(info->MsgSeqNum);
 	WriteUInt64_Mandatory(info->SendingTime);
 	WriteUInt32_Mandatory(info->GroupMDEntriesCount);
 	FastOLSFONDItemInfo **gmdeItemInfo = info->GroupMDEntries;
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
+	WriteUInt32_Mandatory(0); // Presence Map hack
+
 		if(!(*gmdeItemInfo)->AllowMDUpdateAction)
 			this->WriteNull();
 		else
@@ -4146,16 +4136,16 @@ void FastProtocolManager::EncodeIncrementalOLRFONDInfo(FastIncrementalOLRFONDInf
 }
 void FastProtocolManager::EncodeIncrementalOLRCURRInfo(FastIncrementalOLRCURRInfo* info) {
 	ResetBuffer();
-		WriteMsgSeqNumber(this->m_sendMsgSeqNo);
-	WriteString_Mandatory("X", 1);
-	WriteString_Mandatory("9", 1);
-	WriteString_Mandatory("FIXT.1.1", 8);
-	WriteString_Mandatory("MOEX", 4);
+	WriteMsgSeqNumber(this->m_sendMsgSeqNo);
+	WriteUInt32_Mandatory(0); // Presence Map hack
+	WriteUInt32_Mandatory(3510);
 	WriteUInt32_Mandatory(info->MsgSeqNum);
 	WriteUInt64_Mandatory(info->SendingTime);
 	WriteUInt32_Mandatory(info->GroupMDEntriesCount);
 	FastOLSCURRItemInfo **gmdeItemInfo = info->GroupMDEntries;
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
+	WriteUInt32_Mandatory(0); // Presence Map hack
+
 		if(!(*gmdeItemInfo)->AllowMDUpdateAction)
 			this->WriteNull();
 		else
@@ -4219,11 +4209,9 @@ void FastProtocolManager::EncodeIncrementalOLRCURRInfo(FastIncrementalOLRCURRInf
 }
 void FastProtocolManager::EncodeIncrementalOBRFONDInfo(FastIncrementalOBRFONDInfo* info) {
 	ResetBuffer();
-		WriteMsgSeqNumber(this->m_sendMsgSeqNo);
-	WriteString_Mandatory("X", 1);
-	WriteString_Mandatory("9", 1);
-	WriteString_Mandatory("FIXT.1.1", 8);
-	WriteString_Mandatory("MOEX", 4);
+	WriteMsgSeqNumber(this->m_sendMsgSeqNo);
+	WriteUInt32_Mandatory(0); // Presence Map hack
+	WriteUInt32_Mandatory(2422);
 	WriteUInt32_Mandatory(info->MsgSeqNum);
 	WriteUInt64_Mandatory(info->SendingTime);
 	WriteUInt32_Mandatory(info->GroupMDEntriesCount);
@@ -4290,11 +4278,9 @@ void FastProtocolManager::EncodeIncrementalOBRFONDInfo(FastIncrementalOBRFONDInf
 }
 void FastProtocolManager::EncodeIncrementalOBRCURRInfo(FastIncrementalOBRCURRInfo* info) {
 	ResetBuffer();
-		WriteMsgSeqNumber(this->m_sendMsgSeqNo);
-	WriteString_Mandatory("X", 1);
-	WriteString_Mandatory("9", 1);
-	WriteString_Mandatory("FIXT.1.1", 8);
-	WriteString_Mandatory("MOEX", 4);
+	WriteMsgSeqNumber(this->m_sendMsgSeqNo);
+	WriteUInt32_Mandatory(0); // Presence Map hack
+	WriteUInt32_Mandatory(3512);
 	WriteUInt32_Mandatory(info->MsgSeqNum);
 	WriteUInt64_Mandatory(info->SendingTime);
 	WriteUInt32_Mandatory(info->GroupMDEntriesCount);
@@ -4349,11 +4335,9 @@ void FastProtocolManager::EncodeIncrementalOBRCURRInfo(FastIncrementalOBRCURRInf
 }
 void FastProtocolManager::EncodeIncrementalTLRFONDInfo(FastIncrementalTLRFONDInfo* info) {
 	ResetBuffer();
-		WriteMsgSeqNumber(this->m_sendMsgSeqNo);
-	WriteString_Mandatory("X", 1);
-	WriteString_Mandatory("9", 1);
-	WriteString_Mandatory("FIXT.1.1", 8);
-	WriteString_Mandatory("MOEX", 4);
+	WriteMsgSeqNumber(this->m_sendMsgSeqNo);
+	WriteUInt32_Mandatory(0); // Presence Map hack
+	WriteUInt32_Mandatory(2421);
 	WriteUInt32_Mandatory(info->MsgSeqNum);
 	WriteUInt64_Mandatory(info->SendingTime);
 	WriteUInt32_Mandatory(info->GroupMDEntriesCount);
@@ -4453,11 +4437,9 @@ void FastProtocolManager::EncodeIncrementalTLRFONDInfo(FastIncrementalTLRFONDInf
 }
 void FastProtocolManager::EncodeIncrementalTLRCURRInfo(FastIncrementalTLRCURRInfo* info) {
 	ResetBuffer();
-		WriteMsgSeqNumber(this->m_sendMsgSeqNo);
-	WriteString_Mandatory("X", 1);
-	WriteString_Mandatory("9", 1);
-	WriteString_Mandatory("FIXT.1.1", 8);
-	WriteString_Mandatory("MOEX", 4);
+	WriteMsgSeqNumber(this->m_sendMsgSeqNo);
+	WriteUInt32_Mandatory(0); // Presence Map hack
+	WriteUInt32_Mandatory(3511);
 	WriteUInt32_Mandatory(info->MsgSeqNum);
 	WriteUInt64_Mandatory(info->SendingTime);
 	WriteUInt32_Mandatory(info->GroupMDEntriesCount);
@@ -4549,14 +4531,11 @@ void FastProtocolManager::EncodeIncrementalTLRCURRInfo(FastIncrementalTLRCURRInf
 }
 void FastProtocolManager::EncodeSecurityDefinitionInfo(FastSecurityDefinitionInfo* info) {
 	ResetBuffer();
-		WriteMsgSeqNumber(this->m_sendMsgSeqNo);
-	WriteString_Mandatory("d", 1);
-	WriteString_Mandatory("9", 1);
-	WriteString_Mandatory("FIXT.1.1", 8);
-	WriteString_Mandatory("MOEX", 4);
+	WriteMsgSeqNumber(this->m_sendMsgSeqNo);
+	WriteUInt32_Mandatory(0); // Presence Map hack
+	WriteUInt32_Mandatory(2115);
 	WriteUInt32_Mandatory(info->MsgSeqNum);
 	WriteUInt64_Mandatory(info->SendingTime);
-	WriteString_Mandatory(info->MessageEncoding, info->MessageEncodingLength);
 	if(!info->AllowTotNumReports)
 		this->WriteNull();
 	else
@@ -4761,11 +4740,9 @@ void FastProtocolManager::EncodeSecurityDefinitionInfo(FastSecurityDefinitionInf
 }
 void FastProtocolManager::EncodeSecurityStatusInfo(FastSecurityStatusInfo* info) {
 	ResetBuffer();
-		WriteMsgSeqNumber(this->m_sendMsgSeqNo);
-	WriteString_Mandatory("f", 1);
-	WriteString_Mandatory("9", 1);
-	WriteString_Mandatory("FIXT.1.1", 8);
-	WriteString_Mandatory("MOEX", 4);
+	WriteMsgSeqNumber(this->m_sendMsgSeqNo);
+	WriteUInt32_Mandatory(0); // Presence Map hack
+	WriteUInt32_Mandatory(2106);
 	WriteUInt32_Mandatory(info->MsgSeqNum);
 	WriteUInt64_Mandatory(info->SendingTime);
 	WriteString_Mandatory(info->Symbol, info->SymbolLength);
@@ -4788,11 +4765,9 @@ void FastProtocolManager::EncodeSecurityStatusInfo(FastSecurityStatusInfo* info)
 }
 void FastProtocolManager::EncodeTradingSessionStatusInfo(FastTradingSessionStatusInfo* info) {
 	ResetBuffer();
-		WriteMsgSeqNumber(this->m_sendMsgSeqNo);
-	WriteString_Mandatory("h", 1);
-	WriteString_Mandatory("9", 1);
-	WriteString_Mandatory("FIXT.1.1", 8);
-	WriteString_Mandatory("MOEX", 4);
+	WriteMsgSeqNumber(this->m_sendMsgSeqNo);
+	WriteUInt32_Mandatory(0); // Presence Map hack
+	WriteUInt32_Mandatory(2107);
 	WriteUInt32_Mandatory(info->MsgSeqNum);
 	WriteUInt64_Mandatory(info->SendingTime);
 	WriteInt32_Mandatory(info->TradSesStatus);
@@ -4804,10 +4779,9 @@ void FastProtocolManager::EncodeTradingSessionStatusInfo(FastTradingSessionStatu
 }
 void FastProtocolManager::EncodeHeartbeatInfo(FastHeartbeatInfo* info) {
 	ResetBuffer();
-		WriteMsgSeqNumber(this->m_sendMsgSeqNo);
-	WriteString_Mandatory("0", 1);
-	WriteString_Mandatory("FIXT.1.1", 8);
-	WriteString_Mandatory("MOEX", 4);
+	WriteMsgSeqNumber(this->m_sendMsgSeqNo);
+	WriteUInt32_Mandatory(0); // Presence Map hack
+	WriteUInt32_Mandatory(2108);
 	WriteUInt32_Mandatory(info->MsgSeqNum);
 	WriteUInt64_Mandatory(info->SendingTime);
 }
