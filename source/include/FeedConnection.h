@@ -51,6 +51,11 @@ typedef enum _FeedConnectionType {
     Snapshot
 }FeedConnectionType;
 
+typedef struct _FeedConnectionMessageInfo {
+    BinaryLogItem       *m_item;
+    bool                 m_processed;
+}FeedConnectionMessageInfo;
+
 class OrderBookTester;
 class OrderTester;
 class TradeTester;
@@ -79,7 +84,7 @@ protected:
 	int											m_rptSeq;
     int                                         m_snapshotAvailable;
 
-    BinaryLogItem                               **m_packets;
+    FeedConnectionMessageInfo                   **m_packets;
 
 	int     									m_idLogIndex;
 	int 										m_feedTypeNameLogIndex;
@@ -169,7 +174,7 @@ private:
             if(this->m_snapshotEndMsgSeqNum < msgSeqNum)
                 this->m_snapshotEndMsgSeqNum = msgSeqNum;
         }
-        this->m_packets[msgSeqNum] = item;
+        this->m_packets[msgSeqNum]->m_item = item;
         this->m_recvABuffer->Next(size);
         return true;
     }
