@@ -83,6 +83,7 @@ public:
     inline void Used(bool used) { this->m_used = used; }
     inline int RptSeq() { return this->m_rptSeq; }
     inline void Clear(PointerList<T> *list) {
+        this->m_rptSeq = 0;
         if(list->Count() == 0)
             return;
         LinkedPointer<T> *node = list->Start();

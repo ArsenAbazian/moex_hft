@@ -2317,9 +2317,62 @@ public:
             throw;
     }
 
+    /*
+     * Incremental message num 2 is lost. This means that for item symbol1 and session1 only first two MDEntryItems will apply and
+     * MDEntryItem with rptseq = 4 will be added to que
+     * */
+    void TestConnection_TestIncMessagesLost_OnlyOneTool() {
+        fcf->SetSnapshot(this->fcs);
+        fcf->OrderBookFond()->Clear();
+        fcf->ClearMessages();
+
+        SendMessages(fcf, new TestTemplateInfo*[2] {
+                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OBR_FOND, 1,
+                                     new TestTemplateItemInfo*[2] {
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "entry1", 1, 1, 1, 1, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "entry2", 2, 2, 1, 2, 1),
+                                     }, 2),
+                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OBR_FOND, 3,
+                                     new TestTemplateItemInfo*[1] {
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "entry3", 4, 3, 1, 3, 1),
+                                     }, 1)
+        }, 2);
+        if(!fcf->ApplyPacketSequence())
+            throw;
+        OrderBookTableItem<FastOBSFONDItemInfo> *item = fcf->OrderBookFond()->GetItem("symbol1", "session1");
+        if(item->BuyQuotes()->Count() != 2)
+            throw;
+        if(item->EntriesQueue()->MaxIndex() != 0) // only one item
+            throw;
+        if(item->EntriesQueue()->Entries()[0]->RptSeq != 4) // item with
+            throw;
+
+        SendMessages(fcf, new TestTemplateInfo*[1] {
+                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OBR_FOND, 4,
+                                     new TestTemplateItemInfo*[2] {
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "entry4", 5, 1, 1, 1, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "entry5", 6, 2, 1, 2, 1),
+                                     }, 2)
+        }, 1);
+
+        if(!fcf->ApplyPacketSequence())
+            throw;
+        if(item->BuyQuotes()->Count() != 2)
+            throw;
+        if(item->EntriesQueue()->MaxIndex() != 2) // now 3 items
+            throw;
+        if(item->EntriesQueue()->Entries()[0]->RptSeq != 4) // item with
+            throw;
+        if(item->EntriesQueue()->Entries()[1]->RptSeq != 5) // item with
+            throw;
+        if(item->EntriesQueue()->Entries()[2]->RptSeq != 6) // item with
+            throw;
+    }
+
     void TestConnection() {
         TestConnection_EmptyTest();
         TestConnection_TestCorrectIncMessages();
+        TestConnection_TestIncMessagesLost_OnlyOneTool();
     }
 
     void TestOrderBookTableItem() {
