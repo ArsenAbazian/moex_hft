@@ -26,8 +26,6 @@ class FastProtocolManager {
     UINT            m_templateId;
     UINT64          m_presenceMap;
 
-    unsigned int    m_sendMsgSeqNo;
-    unsigned int    m_recvMsgSeqNo;
     FILE            *m_xmlFilePtr;
 
     FastSnapshotInfo *m_snapshotInfo;
@@ -517,12 +515,6 @@ public:
 		}
 		return false;
 	}
-
-    inline unsigned int SendMsgSeqNo() { return this->m_sendMsgSeqNo; }
-    inline void IncSendMsgSeqNo() { this->m_sendMsgSeqNo++; }
-
-    inline unsigned int RecvMsgSeqNo() { return this->m_recvMsgSeqNo; }
-    inline void IncRecvMsgSeqNo() { this->m_recvMsgSeqNo++; }
 
 	inline void* LastDecodeInfo() { return this->m_lastDecodedInfo; }
 

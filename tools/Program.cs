@@ -226,7 +226,7 @@ namespace prebuild {
 			StructureInfo info = new StructureInfo() { NameCore = GetTemplateName(message.PreviousSibling.Value) };
 			WriteLine("void FastProtocolManager::" + info.EncodeMethodName + "(" + info.Name + "* info) {");
 			WriteLine("\tResetBuffer();");
-			WriteLine("\tWriteMsgSeqNumber(this->m_sendMsgSeqNo);");
+			WriteLine("\tWriteMsgSeqNumber(info->MsgSeqNum);");
 			WriteLine("\tWriteUInt32_Mandatory(0); // Presence Map hack");
 			WriteLine("\tWriteUInt32_Mandatory(" + message.Attributes["id"].Value + ");");
 			int presenceByteCount = CalcPresenceMapByteCount(message);

@@ -33,7 +33,7 @@ public:
 class TestTemplateInfo {
 public:
     FeedConnectionMessage   m_templateId;
-    bool                    m_msgSeqNo;
+    int                     m_msgSeqNo;
     bool                    m_routeFirst;
     bool                    m_lastMessage;
     int                     m_itemsCount;
@@ -2302,17 +2302,18 @@ public:
                                  }, 2),
             new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OBR_FOND, 2,
                                  new TestTemplateItemInfo*[1] {
-                                         new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "SYMBOL1", "SESSION1", "ENTRY1", 3, 3, 1, 3, 1),
+                                         new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "SYMBOL1", "SESSION1", "ENTRY3", 3, 3, 1, 3, 1),
                                  }, 1),
             new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OBR_FOND, 3,
                                  new TestTemplateItemInfo*[1] {
-                                         new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "SYMBOL1", "SESSION1", "ENTRY1", 4, 3, 1, 3, 1),
+                                         new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "SYMBOL1", "SESSION1", "ENTRY4", 4, 3, 1, 3, 1),
                                  }, 1)
         }, 3);
 
+
         if(!fcf->ApplyPacketSequence())
             throw;
-        if(fcf->OrderBookFond()->GetItem("SYMBOL1", "SESSION1")->BuyQuotes()->Count() != 3)
+        if(fcf->OrderBookFond()->GetItem("SYMBOL1", "SESSION1")->BuyQuotes()->Count() != 4)
             throw;
     }
 
@@ -2346,10 +2347,10 @@ public:
     }
 
     void Test() {
+        TestDefaults();
         TestStringIdComparer();
         TestOrderBookTableItem();
         TestConnection();
-        TestDefaults();
         Test_OBR_FOND();
         Test_OBR_CURR();
     }

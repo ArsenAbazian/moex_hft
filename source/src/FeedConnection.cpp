@@ -97,30 +97,6 @@ bool FeedConnection::Suspend_Atom() {
 	return true;
 }
 
-bool FeedConnection::SendLogon_Atom() {
-    DefaultLogManager::Default->StartLog(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_SendLogon_Atom);
-
-    this->m_fastLogonInfo->AllowPassword = true;
-    this->m_fastLogonInfo->AllowUsername = true;
-    this->m_fastLogonInfo->SenderCompID = (char*)this->m_senderCompId;
-    this->m_fastLogonInfo->SenderCompIDLength = this->m_senderCompIdLength;
-    this->m_fastLogonInfo->Password = (char*)this->m_password;
-    this->m_fastLogonInfo->PasswordLength = this->m_passwordLength;
-    this->m_fastLogonInfo->HeartBtInt = 60;
-    this->m_fastLogonInfo->MsgSeqNum = this->m_fastProtocolManager->SendMsgSeqNo();
-    this->GetCurrentTime(&(this->m_fastLogonInfo->SendingTime));
-
-    this->m_fastProtocolManager->SetNewBuffer(this->m_sendABuffer->CurrentPos(), 8192);
-    this->m_fastProtocolManager->ResetBuffer();
-    this->m_fastProtocolManager->EncodeLogonInfo(this->m_fastLogonInfo);
-
-	this->m_stopwatch->Start();
-	this->m_shouldReceiveAnswer = true;
-	this->m_fastProtocolManager->IncSendMsgSeqNo();
-
-	return this->SendCore();
-}
-
 bool FeedConnection::ResendLastMessage_Atom() {
     DefaultLogManager::Default->StartLog(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_ResendLastMessage_Atom);
 
