@@ -25,6 +25,7 @@ FeedConnection::FeedConnection(const char *id, const char *name, char value, Fee
 	this->m_recvABuffer = this->m_socketABufferProvider->RecvBuffer();
 
     this->m_fastProtocolManager->SkipTemplateId(fcmHeartBeat);
+    this->m_waitIncrementalMaxTimeMs = 3000;
 
     this->socketAManager = NULL;
     this->socketBManager = NULL;
@@ -33,12 +34,13 @@ FeedConnection::FeedConnection(const char *id, const char *name, char value, Fee
     this->m_waitTimer = new Stopwatch();
 
     this->m_tval = new struct timeval;
-	this->m_packets = new BinaryLogItem*[RobotSettings::DefaultFeedConnectionPacketCount];
-	bzero(this->m_packets, sizeof(BinaryLogItem*) * RobotSettings::DefaultFeedConnectionPacketCount);
+	this->m_packets = new FeedConnectionMessageInfo*[RobotSettings::DefaultFeedConnectionPacketCount];
+	for(int i = 0; i < RobotSettings::DefaultFeedConnectionPacketCount; i++)
+        this->m_packets[i] = new FeedConnectionMessageInfo();
 
 	this->m_waitingSnapshot = false;
-	this->m_currentMsgSeqNum = 1;
-	this->m_maxRecvMsgSeqNum = 0;
+	this->m_startMsgSeqNum = 1;
+	this->m_endMsgSeqNum = 0;
     this->m_listenPtr = &FeedConnection::Listen_Atom_Incremental;
     this->m_type = FeedConnectionType::Incremental;
 
@@ -48,7 +50,8 @@ FeedConnection::FeedConnection(const char *id, const char *name, char value, Fee
 }
 
 FeedConnection::FeedConnection() {
-    this->m_packets = 0;
+    for(int i = 0; i < RobotSettings::DefaultFeedConnectionPacketCount; i++)
+        this->m_packets[i] = new FeedConnectionMessageInfo();
 
     this->m_fastProtocolManager = new FastProtocolManager();
     this->m_fastProtocolManager->SkipTemplateId(fcmHeartBeat);
@@ -56,12 +59,13 @@ FeedConnection::FeedConnection() {
 
     this->m_stopwatch = new Stopwatch();
     this->m_waitTimer = new Stopwatch();
+    this->m_waitIncrementalMaxTimeMs = 3000;
 
     this->m_tval = new struct timeval;
 
     this->m_waitingSnapshot = false;
-    this->m_currentMsgSeqNum = 1;
-    this->m_maxRecvMsgSeqNum = 0;
+    this->m_startMsgSeqNum = 1;
+    this->m_endMsgSeqNum = 0;
     this->m_listenPtr = &FeedConnection::Listen_Atom_Incremental;
     this->m_type = FeedConnectionType::Incremental;
 
@@ -69,8 +73,11 @@ FeedConnection::FeedConnection() {
 }
 
 FeedConnection::~FeedConnection() {
-    if(this->m_packets != 0)
+    if(this->m_packets != 0) {
+        for(int i = 0; i < RobotSettings::DefaultFeedConnectionPacketCount; i++)
+            delete this->m_packets[i];
         delete this->m_packets;
+    }
     if(this->m_fastProtocolManager != 0)
         delete this->m_fastProtocolManager;
     if(this->m_stopwatch != 0)
@@ -141,35 +148,7 @@ bool FeedConnection::Listen_Atom_Incremental() {
         this->m_waitTimer->Stop(1);
     }
 
-    if(this->WaitingSnapshot()) {
-		if(this->m_snapshot->SnapshotAvailable()) {
-			this->m_snapshot->ApplySnapshot();
-			this->m_currentMsgSeqNum = this->m_snapshot->LastMsgSeqNumProcessed() + 1;
-            printf("snapshot applied. new expected message %d. max received msg %d\n", this->m_currentMsgSeqNum, this->m_maxRecvMsgSeqNum);
-            printf("start apply inc packets after snapshot\n");
-            this->ApplyPacketSequence();
-            printf("end apply inc packets after snapshot\n");
-            if(!this->StopListenSnapshot())
-                return false;
-            this->StartWaitIncremental();
-		}
-	}
-	else {
-        if(this->ApplyPacketSequence()) {
-            this->m_waitTimer->Stop();
-            return true;
-        }
-        /* TODO REMOVE!!!! */
-        this->m_waitTimer->Activate();
-        if(this->m_waitTimer->ElapsedSeconds() > 3) {
-            printf("inc no message apply. time expired\n");
-            if(!this->StartListenSnapshot())
-                return false;
-            this->m_waitTimer->Stop();
-        }
-		return true;
-	}
-	return true;
+    return this->Listen_Atom_Incremental_Core();
 }
 
 bool FeedConnection::Listen_Atom_Snapshot() {
@@ -194,79 +173,5 @@ bool FeedConnection::Listen_Atom_Snapshot() {
         this->m_waitTimer->Stop(1);
     }
 
-    if(this->m_snapshotStartMsgSeqNum == -1)
-        return true;
-
-    while(this->m_snapshotStartMsgSeqNum <= this->m_snapshotEndMsgSeqNum) {
-        if(this->m_packets[this->m_snapshotStartMsgSeqNum] == 0) {
-            if (!this->m_waitTimer->Active()) {
-                this->m_waitTimer->Start();
-            }
-            if (this->m_waitTimer->ElapsedSeconds() > 3) {
-                printf("  snapshot has empty packets.\n");
-                this->m_waitTimer->Stop();
-                this->StartNewSnapshot();
-            }
-            return true;
-        }
-        FastSnapshotInfo *info = this->GetSnapshotInfo(this->m_snapshotStartMsgSeqNum);
-        if(info == 0) {
-            this->m_snapshotStartMsgSeqNum++;
-            continue;
-        }
-        printf("\t\t  message -> MsgSeqNum = %d, TemplateId = %d, SendingTime = %lu IsRouteFirst = %d, IsLastFragment = %d, LastMsgSeqProcessed = %d, RptSeq = %d\n",
-               this->m_snapshotStartMsgSeqNum,
-               info->TemplateId,
-               info->SendingTime,
-               info->RouteFirst,
-               info->LastFragment, info->LastMsgSeqNumProcessed, info->RptSeq);
-        if(this->m_snapshotRouteFirst == -1) {
-            if (info->RouteFirst == 1) {
-                this->m_snapshotRouteFirst = this->m_snapshotStartMsgSeqNum;
-            }
-            else {
-                this->m_snapshotStartMsgSeqNum++;
-                continue;
-            }
-        }
-        if (info->LastFragment == 0) {
-            this->m_snapshotStartMsgSeqNum++;
-            continue;
-        }
-        this->m_snapshotLastFragment = this->m_snapshotStartMsgSeqNum;
-        this->m_snapshotStartMsgSeqNum++;
-        printf("\t\tFound Snapshot -> MsgSeqNum = %d, TemplateId = %d, SendingTime = %lu RouteFirst = %d, LastFragment = %d, LastMsgSeqProcessed = %d, RptSeq = %d\n",
-               this->m_snapshotStartMsgSeqNum - 1,
-               info->TemplateId,
-               info->SendingTime,
-               this->m_snapshotRouteFirst,
-               this->m_snapshotLastFragment, info->LastMsgSeqNumProcessed, info->RptSeq);
-        if (info->LastMsgSeqNumProcessed == 0 && info->RptSeq == 0) {
-            printf("\t\tEmpty Snapshot -> Apply\n");
-            this->m_waitTimer->Stop();
-            this->m_snapshotAvailable = true;
-            return true;
-        }
-        if (info->LastMsgSeqNumProcessed < this->m_incremental->m_currentMsgSeqNum) {
-            printf("\t\tOutdated Snapshot. Need %d vs %d -> Continue\n",
-                   this->m_incremental->m_currentMsgSeqNum,
-                   info->LastMsgSeqNumProcessed);
-            this->m_snapshotRouteFirst = -1;
-            this->m_snapshotLastFragment = -1;
-            continue;
-        }
-        printf("\t\tCorrect Snapshot. Need %d vs %d - > Apply\n",
-               this->m_incremental->m_currentMsgSeqNum,
-               info->LastMsgSeqNumProcessed);
-
-        this->m_lastMsgSeqNumProcessed = info->LastMsgSeqNumProcessed;
-        this->m_rptSeq = info->RptSeq;
-
-        this->m_waitTimer->Stop();
-        this->m_snapshotAvailable = true;
-
-        return true;
-    }
-
-	return true;
+    return this->Listen_Atom_Snapshot_Core();
 }

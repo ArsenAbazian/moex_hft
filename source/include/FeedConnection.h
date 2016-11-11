@@ -51,10 +51,19 @@ typedef enum _FeedConnectionType {
     Snapshot
 }FeedConnectionType;
 
-typedef struct _FeedConnectionMessageInfo {
+class FeedConnectionMessageInfo {
+public:
+    FeedConnectionMessageInfo() {
+        this->m_item = 0;
+        this->m_processed = false;
+    }
     BinaryLogItem       *m_item;
     bool                 m_processed;
-}FeedConnectionMessageInfo;
+    inline void Clear() {
+        this->m_item = 0;
+        this->m_processed = false;
+    }
+};
 
 class OrderBookTester;
 class OrderTester;
@@ -66,8 +75,8 @@ class FeedConnection {
 	friend class TradeTester;
 	friend class FeedConnectionTester;
 
+public:
 	const int MaxReceiveBufferSize 				= 1500;
-    const int WaitIncrementalMaxTimeSec         = 5;
     const int WaitAnyPacketMaxTimeSec           = 10;
 protected:
 	char										id[16];
@@ -76,13 +85,13 @@ protected:
     FeedConnectionType                          m_type;
     FeedConnection                              *m_incremental;
     FeedConnection                              *m_snapshot;
-	int 										m_snapshotStartMsgSeqNum;
-	int											m_snapshotEndMsgSeqNum;
     int                                         m_snapshotRouteFirst;
     int                                         m_snapshotLastFragment;
     int                                         m_lastMsgSeqNumProcessed;
 	int											m_rptSeq;
     int                                         m_snapshotAvailable;
+
+    int                                         m_waitIncrementalMaxTimeMs;
 
     FeedConnectionMessageInfo                   **m_packets;
 
@@ -101,8 +110,8 @@ protected:
 	char										feedBIp[64];
 	int											feedBPort;
 
-	int											m_currentMsgSeqNum;
-    int                                         m_maxRecvMsgSeqNum;
+	int											m_startMsgSeqNum;
+    int                                         m_endMsgSeqNum;
 
     const char                                  *m_senderCompId;
     int                                         m_senderCompIdLength;
@@ -156,7 +165,7 @@ private:
     inline bool ProcessServerB() { return this->ProcessServer(this->socketBManager, LogMessageCode::lmcsocketB); }
     inline bool ProcessServerCore(int size) {
         int msgSeqNum = *((UINT*)this->m_recvABuffer->CurrentPos());
-        if(this->m_packets[msgSeqNum] != 0)
+        if(this->m_packets[msgSeqNum]->m_item != 0)
             return false;
 
         this->m_recvABuffer->SetCurrentItemSize(size);
@@ -165,14 +174,14 @@ private:
                                                                     this->m_recvABuffer->BufferIndex(),
                                                                     this->m_recvABuffer->CurrentItemIndex());
         if(this->m_type == FeedConnectionType::Incremental) {
-            if(this->m_maxRecvMsgSeqNum < msgSeqNum)
-                this->m_maxRecvMsgSeqNum = msgSeqNum;
+            if(this->m_endMsgSeqNum < msgSeqNum)
+                this->m_endMsgSeqNum = msgSeqNum;
         }
         else {
-            if(this->m_snapshotStartMsgSeqNum == -1)
-                this->m_snapshotStartMsgSeqNum = msgSeqNum;
-            if(this->m_snapshotEndMsgSeqNum < msgSeqNum)
-                this->m_snapshotEndMsgSeqNum = msgSeqNum;
+            if(this->m_startMsgSeqNum == -1)
+                this->m_startMsgSeqNum = msgSeqNum;
+            if(this->m_endMsgSeqNum < msgSeqNum)
+                this->m_endMsgSeqNum = msgSeqNum;
         }
         this->m_packets[msgSeqNum]->m_item = item;
         this->m_recvABuffer->Next(size);
@@ -200,7 +209,7 @@ private:
 		printf("start apply snapshot\n");
 		for(int index = this->m_snapshotRouteFirst; index <= this->m_snapshotLastFragment; index++) {
 			printf("snap process packet %d\n", index);
-			int i = this->m_packets[index]->m_itemIndex;
+			int i = this->m_packets[index]->m_item->m_itemIndex;
 			return this->m_incremental->ProcessMessage(this->m_recvABuffer->Item(i),
 													   this->m_recvABuffer->ItemLength(i));
 		}
@@ -257,24 +266,35 @@ private:
 	}
 
     inline bool ApplyPacketSequence() {
-        int i = this->m_currentMsgSeqNum;
-        bool processed = false;
-		while(i <= this->m_maxRecvMsgSeqNum) {
-            if(this->m_packets[i] == 0) {
-                this->m_currentMsgSeqNum = i;
-                return processed;
+        int i = this->m_startMsgSeqNum;
+		int newStartMsgSeqNum = -1;
+
+        while(i <= this->m_endMsgSeqNum) {
+            if(this->m_packets[i]->m_processed) {
+                i++; continue;
             }
-			printf("  inc apply msg %d\n", i);
-            this->ProcessMessage(this->m_packets[i]);
-            processed = true;
+            if(this->m_packets[i]->m_item == 0) {
+                newStartMsgSeqNum = i;
+                break;
+            }
+            if(!this->ProcessMessage(this->m_packets[i]))
+                return false;
             i++;
         }
-		if(!processed) {
-			printf("no message applied. expected %d, max %d\n", this->m_currentMsgSeqNum, this->m_maxRecvMsgSeqNum);
-		}
-		//printf("end apply packet seq. new expected msg %d\n", i);
-        this->m_currentMsgSeqNum = i;
-        return processed;
+
+        while(i <= this->m_endMsgSeqNum) {
+            if(this->m_packets[i]->m_processed || this->m_packets[i]->m_item == 0) {
+                i++; continue;
+            }
+            if(!this->ProcessMessage(this->m_packets[i]))
+                return false;
+            i++;
+        }
+        if(newStartMsgSeqNum != -1)
+            this->m_startMsgSeqNum = newStartMsgSeqNum;
+        else
+            this->m_startMsgSeqNum = i;
+        return true;
     }
     inline bool StartListenSnapshot() {
 		if(!this->m_snapshot->Start()) {
@@ -295,7 +315,7 @@ private:
 		return true;
 	}
 	inline FastSnapshotInfo* GetSnapshotInfo(int index) {
-		BinaryLogItem *item = this->m_packets[index];
+		BinaryLogItem *item = this->m_packets[index]->m_item;
 		unsigned char *buffer = this->m_recvABuffer->Item(item->m_itemIndex);
 		this->m_fastProtocolManager->SetNewBuffer(buffer, this->m_recvABuffer->ItemLength(item->m_itemIndex));
 		this->m_fastProtocolManager->ReadMsgSeqNumber();
@@ -304,9 +324,9 @@ private:
 
     inline void ResetWaitTime() { this->m_waitTimer->Start(); }
     inline void StartWaitIncremental() { this->m_waitingSnapshot = false; }
-    inline bool ActualMsgSeqNum() { return this->m_currentMsgSeqNum == this->m_maxRecvMsgSeqNum; }
+    inline bool ActualMsgSeqNum() { return this->m_startMsgSeqNum == this->m_endMsgSeqNum; }
 
-	inline void IncrementMsgSeqNo() { this->m_currentMsgSeqNum++; }
+	inline void IncrementMsgSeqNo() { this->m_startMsgSeqNum++; }
 	bool InitializeSockets();
 	virtual ISocketBufferProvider* CreateSocketBufferProvider() {
 			return new SocketBufferProvider(DefaultSocketBufferManager::Default,
@@ -327,6 +347,112 @@ private:
 		this->m_nextWorkAtomPtr = funcPtr;
 		this->m_shouldUseNextState = true;
 	}
+
+    inline bool Listen_Atom_Snapshot_Core() {
+        if(this->m_startMsgSeqNum == -1)
+            return true;
+
+        while(this->m_startMsgSeqNum <= this->m_endMsgSeqNum) {
+            if(this->m_packets[this->m_startMsgSeqNum] == 0) {
+                if (!this->m_waitTimer->Active()) {
+                    this->m_waitTimer->Start();
+                }
+                if (this->m_waitTimer->ElapsedSeconds() > 3) {
+                    printf("  snapshot has empty packets.\n");
+                    this->m_waitTimer->Stop();
+                    this->StartNewSnapshot();
+                }
+                return true;
+            }
+            FastSnapshotInfo *info = this->GetSnapshotInfo(this->m_startMsgSeqNum);
+            if(info == 0) {
+                this->m_startMsgSeqNum++;
+                continue;
+            }
+            printf("\t\t  message -> MsgSeqNum = %d, TemplateId = %d, SendingTime = %lu IsRouteFirst = %d, IsLastFragment = %d, LastMsgSeqProcessed = %d, RptSeq = %d\n",
+                   this->m_startMsgSeqNum,
+                   info->TemplateId,
+                   info->SendingTime,
+                   info->RouteFirst,
+                   info->LastFragment, info->LastMsgSeqNumProcessed, info->RptSeq);
+            if(this->m_snapshotRouteFirst == -1) {
+                if (info->RouteFirst == 1) {
+                    this->m_snapshotRouteFirst = this->m_startMsgSeqNum;
+                }
+                else {
+                    this->m_startMsgSeqNum++;
+                    continue;
+                }
+            }
+            if (info->LastFragment == 0) {
+                this->m_startMsgSeqNum++;
+                continue;
+            }
+            this->m_snapshotLastFragment = this->m_startMsgSeqNum;
+            this->m_startMsgSeqNum++;
+            printf("\t\tFound Snapshot -> MsgSeqNum = %d, TemplateId = %d, SendingTime = %lu RouteFirst = %d, LastFragment = %d, LastMsgSeqProcessed = %d, RptSeq = %d\n",
+                   this->m_startMsgSeqNum - 1,
+                   info->TemplateId,
+                   info->SendingTime,
+                   this->m_snapshotRouteFirst,
+                   this->m_snapshotLastFragment, info->LastMsgSeqNumProcessed, info->RptSeq);
+            if (info->LastMsgSeqNumProcessed == 0 && info->RptSeq == 0) {
+                printf("\t\tEmpty Snapshot -> Apply\n");
+                this->m_waitTimer->Stop();
+                this->m_snapshotAvailable = true;
+                return true;
+            }
+            if (info->LastMsgSeqNumProcessed < this->m_incremental->m_startMsgSeqNum) {
+                printf("\t\tOutdated Snapshot. Need %d vs %d -> Continue\n",
+                       this->m_incremental->m_startMsgSeqNum,
+                       info->LastMsgSeqNumProcessed);
+                this->m_snapshotRouteFirst = -1;
+                this->m_snapshotLastFragment = -1;
+                continue;
+            }
+            printf("\t\tCorrect Snapshot. Need %d vs %d - > Apply\n",
+                   this->m_incremental->m_startMsgSeqNum,
+                   info->LastMsgSeqNumProcessed);
+
+            this->m_lastMsgSeqNumProcessed = info->LastMsgSeqNumProcessed;
+            this->m_rptSeq = info->RptSeq;
+
+            this->m_waitTimer->Stop();
+            this->m_snapshotAvailable = true;
+
+            return true;
+        }
+
+        return true;
+    }
+
+    inline bool Listen_Atom_Incremental_Core() {
+        if(this->WaitingSnapshot()) {
+            if(this->m_snapshot->SnapshotAvailable()) {
+                this->m_snapshot->ApplySnapshot();
+                this->m_startMsgSeqNum = this->m_snapshot->LastMsgSeqNumProcessed() + 1;
+                this->ApplyPacketSequence();
+                if(!this->StopListenSnapshot())
+                    return false;
+                this->StartWaitIncremental();
+            }
+        }
+        else {
+            if(!this->ApplyPacketSequence())
+                return false;
+            if(this->m_startMsgSeqNum > this->m_endMsgSeqNum) {
+                this->m_waitTimer->Stop();
+                return true;
+            }
+            this->m_waitTimer->Activate();
+            if(this->m_waitTimer->ElapsedMilliseconds() > this->m_waitIncrementalMaxTimeMs) {
+                if(!this->StartListenSnapshot())
+                    return false;
+                this->m_waitTimer->Stop();
+            }
+        }
+        return true;
+    }
 
 	bool Suspend_Atom();
 	bool Listen_Atom();
@@ -635,8 +761,8 @@ private:
 		return res;
 	}
 
-	inline bool ProcessMessage(BinaryLogItem *item) {
-        unsigned char *buffer = this->m_recvABuffer->Item(item->m_itemIndex);
+	inline bool ProcessMessage(FeedConnectionMessageInfo *info) {
+        unsigned char *buffer = this->m_recvABuffer->Item(info->m_item->m_itemIndex);
 		if(this->ShouldSkipMessage(buffer))
 			return true;  // TODO - take this message into account, becasue it determines feed alive
 
@@ -653,8 +779,8 @@ private:
 		fflush(this->obrLogFile);
 		//till this
 		*/
-
-		return this->ProcessMessage(buffer, this->m_recvABuffer->ItemLength(item->m_itemIndex));
+        info->m_processed = true;
+		return this->ProcessMessage(buffer, this->m_recvABuffer->ItemLength(info->m_item->m_itemIndex));
 	}
 public:
 	FeedConnection(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort);
@@ -669,19 +795,22 @@ public:
 	inline MarketDataTable<OrderTableItem, FastOLSCURRInfo, FastOLSCURRItemInfo> *OrderCurr() { return this->m_orderTableCurr; }
 	inline MarketDataTable<TradeTableItem, FastTLSFONDInfo, FastTLSFONDItemInfo> *TradeFond() { return this->m_tradeTableFond; }
 	inline MarketDataTable<TradeTableItem, FastTLSCURRInfo, FastTLSCURRItemInfo> *TradeCurr() { return this->m_tradeTableCurr; }
+    inline void WaitIncrementalMaxTimeMs(int timeMs) { this->m_waitIncrementalMaxTimeMs = timeMs; }
+    inline int WaitIncrementalMaxTimeMs() { return this->m_waitIncrementalMaxTimeMs; }
 
     inline void ClearMessages() {
-        bzero(this->m_packets, sizeof(BinaryLogItem*) * RobotSettings::DefaultFeedConnectionPacketCount);
+        for(int i = 0;i < RobotSettings::DefaultFeedConnectionPacketCount; i++)
+            this->m_packets[i]->Clear();
         this->m_waitingSnapshot = false;
-        this->m_currentMsgSeqNum = 1;
-        this->m_maxRecvMsgSeqNum = 0;
+        this->m_startMsgSeqNum = 1;
+        this->m_endMsgSeqNum = 0;
     }
 
     inline void StartNewSnapshot() {
         DefaultLogManager::Default->WriteSuccess(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_StartNewSnapshot, true);
         this->m_snapshotAvailable = false;
-        this->m_snapshotEndMsgSeqNum = -1;
-        this->m_snapshotStartMsgSeqNum = -1;
+        this->m_endMsgSeqNum = -1;
+        this->m_startMsgSeqNum = -1;
         this->m_snapshotRouteFirst = -1;
         this->m_snapshotLastFragment = -1;
     }
@@ -775,8 +904,8 @@ public:
 		DefaultLogManager::Default->EndLog(true);
 	}
 
-	inline int MsgSeqNo() { return this->m_currentMsgSeqNum; }
-	inline int ExpectedMsgSeqNo() { return this->m_currentMsgSeqNum + 1; }
+	inline int MsgSeqNo() { return this->m_startMsgSeqNum; }
+	inline int ExpectedMsgSeqNo() { return this->m_startMsgSeqNum + 1; }
 
 	inline bool DoWorkAtom() {
 		return (this->*m_workAtomPtr)();

@@ -28,6 +28,15 @@ public:
         this->m_entrySize.Set(sizem, sizee);
         this->m_rptSeq = rptSeq;
     }
+    TestTemplateItemInfo(const char *symbol, const char *entryId, int rptSeq) {
+        this->m_action = MDUpdateAction::mduaAdd;
+        this->m_entryType = MDEntryType::mdetBuyQuote;
+        this->m_symbol = symbol;
+        this->m_tradingSession = "session1";
+        this->m_entryPx.Set(1, 1);
+        this->m_entrySize.Set(1, 1);
+        this->m_rptSeq = rptSeq;
+    }
 };
 
 class TestTemplateInfo {
@@ -37,6 +46,7 @@ public:
     bool                    m_routeFirst;
     bool                    m_lastMessage;
     int                     m_itemsCount;
+    int                     m_rptSec;
     TestTemplateItemInfo*   m_items[8];
 
     TestTemplateInfo(FeedConnectionMessage templateId, int msgSeqNo) {
@@ -48,6 +58,9 @@ public:
         this->m_itemsCount = itemCount;
         for(int i = 0; i < itemCount; i++)
             this->m_items[i] = items[i];
+    }
+    TestTemplateInfo(FeedConnectionMessage templateId, int msgSeqNo, TestTemplateItemInfo **items, int itemCount, int rptSeq) : TestTemplateInfo(templateId, msgSeqNo, items, itemCount) {
+        this->m_rptSec = rptSeq;
     }
 };
 
@@ -1889,9 +1902,11 @@ public:
 
         if(tb->ProcessIncrementalMessage(item1))
             throw;
-        if(tb->EntriesQueue()->MaxIndex() != 0)
+        if(tb->EntriesQueue()->MaxIndex() != 1)
             throw;
-        if(tb->EntriesQueue()->RptSeq() != 2)
+        if(tb->EntriesQueue()->StartRptSeq() != 1)
+            throw;
+        if(tb->EntriesQueue()->RptSeq() != 1)
             throw;
         if(tb->RptSeq() != 0)
             throw;
@@ -1914,9 +1929,9 @@ public:
 
         if(tb->ProcessIncrementalMessage(item2))
             throw;
-        if(tb->EntriesQueue()->MaxIndex() != 0)
+        if(tb->EntriesQueue()->MaxIndex() != 1)
             throw;
-        if(tb->EntriesQueue()->RptSeq() != 3)
+        if(tb->EntriesQueue()->RptSeq() != 2)
             throw;
         if(tb->RptSeq() != 1)
             throw;
@@ -1927,9 +1942,9 @@ public:
 
         if(tb->ProcessIncrementalMessage(item3))
             throw;
-        if(tb->EntriesQueue()->MaxIndex() != 1)
+        if(tb->EntriesQueue()->MaxIndex() != 2)
             throw;
-        if(tb->EntriesQueue()->RptSeq() != 3)
+        if(tb->EntriesQueue()->RptSeq() != 2)
             throw;
         if(tb->RptSeq() != 1)
             throw;
@@ -2313,15 +2328,18 @@ public:
 
         if(!fcf->ApplyPacketSequence())
             throw;
+        if(fcf->m_waitTimer->Active()) // everything is ok = timer should not be activated
+            throw;
         if(fcf->OrderBookFond()->GetItem("SYMBOL1", "SESSION1")->BuyQuotes()->Count() != 4)
             throw;
     }
 
     /*
-     * Incremental message num 2 is lost. This means that for item symbol1 and session1 only first two MDEntryItems will apply and
+     * Incremental message num 2 is lost. This means that for item symbol1 and session1 only first two MDEntryItems will be applied and
      * MDEntryItem with rptseq = 4 will be added to que
+     * and then we receive msg num 3 and apply all
      * */
-    void TestConnection_TestIncMessagesLost_OnlyOneTool() {
+    void TestConnection_TestIncMessagesLost_AndWhenAppeared() {
         fcf->SetSnapshot(this->fcs);
         fcf->OrderBookFond()->Clear();
         fcf->ClearMessages();
@@ -2337,54 +2355,353 @@ public:
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "entry3", 4, 3, 1, 3, 1),
                                      }, 1)
         }, 2);
-        if(!fcf->ApplyPacketSequence())
+        if(!fcf->Listen_Atom_Incremental_Core())
             throw;
         OrderBookTableItem<FastOBSFONDItemInfo> *item = fcf->OrderBookFond()->GetItem("symbol1", "session1");
         if(item->BuyQuotes()->Count() != 2)
             throw;
-        if(item->EntriesQueue()->MaxIndex() != 0) // only one item
+        if(!fcf->m_waitTimer->Active()) // not all messages was processed - some messages was skipped
             throw;
-        if(item->EntriesQueue()->Entries()[0]->RptSeq != 4) // item with
+        if(item->EntriesQueue()->StartRptSeq() != 3) // should be first lost RptSeq
+            throw;
+        if(item->EntriesQueue()->MaxIndex() != 1) // cell for rptseq 3 is empty but cell for pushed message is filled with mdentry 4
+            throw;
+        if(item->EntriesQueue()->Entries()[0] != 0) // cell for rptseq 3 is empty
+            throw;
+        if(item->EntriesQueue()->Entries()[1]->RptSeq != 4)
             throw;
 
+        // lost message finally appeared before wait timer elapsed
         SendMessages(fcf, new TestTemplateInfo*[1] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OBR_FOND, 4,
+                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OBR_FOND, 2,
+                                     new TestTemplateItemInfo*[1] {
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "entry4", 3, 1, 1, 1, 1),
+                                     }, 1)
+        }, 1);
+
+        if(!fcf->Listen_Atom_Incremental_Core())
+            throw;
+        if(fcf->m_waitTimer->Active()) // wait timer should be deactivated because we received all lost messages
+            throw;
+        if(item->BuyQuotes()->Count() != 4) // all messages from que should be applied
+            throw;
+        if(item->EntriesQueue()->MaxIndex() != -1) // should be reset
+            throw;
+    }
+
+    void TestConnection_TestInc2MessagesLost_AppearedThen2Messages() {
+        fcf->SetSnapshot(this->fcs);
+        fcf->OrderBookFond()->Clear();
+        fcf->ClearMessages();
+
+        SendMessages(fcf, new TestTemplateInfo*[2] {
+                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OBR_FOND, 1,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "entry4", 5, 1, 1, 1, 1),
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "entry5", 6, 2, 1, 2, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "entry1", 1, 1, 1, 1, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "entry2", 2, 2, 1, 2, 1),
+                                     }, 2),
+                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OBR_FOND, 3,
+                                     new TestTemplateItemInfo*[1] {
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "entry5", 5, 3, 1, 3, 1),
+                                     }, 1)
+        }, 2);
+        if(!fcf->Listen_Atom_Incremental_Core())
+            throw;
+        OrderBookTableItem<FastOBSFONDItemInfo> *item = fcf->OrderBookFond()->GetItem("symbol1", "session1");
+        if(item->BuyQuotes()->Count() != 2)
+            throw;
+        if(!fcf->m_waitTimer->Active()) // not all messages was processed - some messages was skipped
+            throw;
+        if(item->EntriesQueue()->StartRptSeq() != 3) // should be first lost RptSeq
+            throw;
+        if(item->EntriesQueue()->MaxIndex() != 2) // cells for rptseq 3 and 4 is empty but cell for pushed message is filled with mdentry 4
+            throw;
+        if(item->EntriesQueue()->Entries()[0] != 0) // cell for rptseq 3 is empty
+            throw;
+        if(item->EntriesQueue()->Entries()[1] != 0) // cell for rptseq 4 is empty
+            throw;
+        if(item->EntriesQueue()->Entries()[2]->RptSeq != 5)
+            throw;
+
+        // lost message finally appeared before wait timer elapsed
+        SendMessages(fcf, new TestTemplateInfo*[1] {
+                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OBR_FOND, 2,
+                                     new TestTemplateItemInfo*[2] {
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "entry3", 3, 1, 1, 1, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "entry4", 4, 1, 1, 1, 1),
                                      }, 2)
         }, 1);
 
-        if(!fcf->ApplyPacketSequence())
+        if(!fcf->Listen_Atom_Incremental_Core())
             throw;
-        if(item->BuyQuotes()->Count() != 2)
+        if(fcf->m_waitTimer->Active()) // wait timer should be deactivated because we received all lost messages
             throw;
-        if(item->EntriesQueue()->MaxIndex() != 2) // now 3 items
+        if(item->BuyQuotes()->Count() != 5) // all messages from que should be applied
             throw;
-        if(item->EntriesQueue()->Entries()[0]->RptSeq != 4) // item with
-            throw;
-        if(item->EntriesQueue()->Entries()[1]->RptSeq != 5) // item with
-            throw;
-        if(item->EntriesQueue()->Entries()[2]->RptSeq != 6) // item with
+        if(item->EntriesQueue()->MaxIndex() != -1) // should be reset
             throw;
     }
 
+    void TestConnection_TestInc2MessagesLost_AppearedSeparately_1_2() {
+        fcf->SetSnapshot(this->fcs);
+        fcf->OrderBookFond()->Clear();
+        fcf->ClearMessages();
+
+        SendMessages(fcf, new TestTemplateInfo*[2] {
+                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OBR_FOND, 1,
+                                     new TestTemplateItemInfo*[2] {
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "entry1", 1, 1, 1, 1, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "entry2", 2, 2, 1, 2, 1),
+                                     }, 2),
+                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OBR_FOND, 4,
+                                     new TestTemplateItemInfo*[1] {
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "entry5", 5, 3, 1, 3, 1),
+                                     }, 1)
+        }, 2);
+        if(!fcf->Listen_Atom_Incremental_Core())
+            throw;
+        OrderBookTableItem<FastOBSFONDItemInfo> *item = fcf->OrderBookFond()->GetItem("symbol1", "session1");
+        if(item->BuyQuotes()->Count() != 2)
+            throw;
+        if(!fcf->m_waitTimer->Active()) // not all messages was processed - some messages was skipped
+            throw;
+        if(item->EntriesQueue()->StartRptSeq() != 3) // should be first lost RptSeq
+            throw;
+        if(item->EntriesQueue()->MaxIndex() != 2) // cells for rptseq 3 and 4 is empty but cell for pushed message is filled with mdentry 4
+            throw;
+        if(item->EntriesQueue()->Entries()[0] != 0) // cell for rptseq 3 is empty
+            throw;
+        if(item->EntriesQueue()->Entries()[1] != 0) // cell for rptseq 4 is empty
+            throw;
+        if(item->EntriesQueue()->Entries()[2]->RptSeq != 5)
+            throw;
+
+        // lost message finally appeared before wait timer elapsed
+        SendMessages(fcf, new TestTemplateInfo*[1] {
+                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OBR_FOND, 2,
+                                     new TestTemplateItemInfo*[1] {
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "entry3", 3, 1, 1, 1, 1),
+                                     }, 1)
+        }, 1);
+
+        if(!fcf->Listen_Atom_Incremental_Core())
+            throw;
+        if(!fcf->m_waitTimer->Active()) // wait timer should be active because 2 messages lost but received 1
+            throw;
+        if(item->BuyQuotes()->Count() != 3) // at least one message is applied
+            throw;
+        if(!item->EntriesQueue()->HasEntries()) // should have entries
+            throw;
+        if(item->EntriesQueue()->MaxIndex() != 2) // should be reset
+            throw;
+        if(item->RptSeq() != 3) // now rpt seq should be 3
+            throw;
+
+        SendMessages(fcf, new TestTemplateInfo*[1] {
+                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OBR_FOND, 3,
+                                     new TestTemplateItemInfo*[1] {
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "entry3", 4, 1, 1, 1, 1),
+                                     }, 1)
+        }, 1);
+
+        if(!fcf->Listen_Atom_Incremental_Core())
+            throw;
+        if(fcf->m_waitTimer->Active()) // now wait timer should be deactivated because we received all messages
+            throw;
+        if(item->BuyQuotes()->Count() != 5) // all messages applied
+            throw;
+        if(item->EntriesQueue()->HasEntries()) // should have entries
+            throw;
+        if(item->RptSeq() != 5) // last processed msg
+            throw;
+    }
+
+    void TestConnection_TestInc2MessagesLost_AppearedSeparately_2_1() {
+        fcf->SetSnapshot(this->fcs);
+        fcf->OrderBookFond()->Clear();
+        fcf->ClearMessages();
+
+        SendMessages(fcf, new TestTemplateInfo*[2] {
+                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OBR_FOND, 1,
+                                     new TestTemplateItemInfo*[2] {
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "entry1", 1, 1, 1, 1, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "entry2", 2, 2, 1, 2, 1),
+                                     }, 2),
+                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OBR_FOND, 4,
+                                     new TestTemplateItemInfo*[1] {
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "entry5", 5, 3, 1, 3, 1),
+                                     }, 1)
+        }, 2);
+        if(!fcf->Listen_Atom_Incremental_Core())
+            throw;
+        OrderBookTableItem<FastOBSFONDItemInfo> *item = fcf->OrderBookFond()->GetItem("symbol1", "session1");
+        if(item->BuyQuotes()->Count() != 2)
+            throw;
+        if(!fcf->m_waitTimer->Active()) // not all messages was processed - some messages was skipped
+            throw;
+        if(item->EntriesQueue()->StartRptSeq() != 3) // should be first lost RptSeq
+            throw;
+        if(item->EntriesQueue()->MaxIndex() != 2) // cells for rptseq 3 and 4 is empty but cell for pushed message is filled with mdentry 4
+            throw;
+        if(item->EntriesQueue()->Entries()[0] != 0) // cell for rptseq 3 is empty
+            throw;
+        if(item->EntriesQueue()->Entries()[1] != 0) // cell for rptseq 4 is empty
+            throw;
+        if(item->EntriesQueue()->Entries()[2]->RptSeq != 5)
+            throw;
+
+        // lost message finally appeared before wait timer elapsed
+        SendMessages(fcf, new TestTemplateInfo*[1] {
+                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OBR_FOND, 3,
+                                     new TestTemplateItemInfo*[1] {
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "entry3", 4, 1, 1, 1, 1),
+                                     }, 1)
+        }, 1);
+
+        if(!fcf->Listen_Atom_Incremental_Core())
+            throw;
+        if(!fcf->m_waitTimer->Active()) // wait timer should be active because 2 messages lost but received 1
+            throw;
+        if(item->BuyQuotes()->Count() != 2) // nothing encreased because first message skipped
+            throw;
+        if(!item->EntriesQueue()->HasEntries()) // should have entries
+            throw;
+        if(item->EntriesQueue()->MaxIndex() != 2)
+            throw;
+        if(item->RptSeq() != 2) // because nothing was applied
+            throw;
+
+        SendMessages(fcf, new TestTemplateInfo*[1] {
+                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OBR_FOND, 2,
+                                     new TestTemplateItemInfo*[1] {
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "entry3", 3, 1, 1, 1, 1),
+                                     }, 1)
+        }, 1);
+
+        if(!fcf->Listen_Atom_Incremental_Core())
+            throw;
+        if(fcf->m_waitTimer->Active()) // now wait timer should be deactivated because we received all messages
+            throw;
+        if(item->BuyQuotes()->Count() != 5) // applied two messages
+            throw;
+        if(item->EntriesQueue()->HasEntries()) // should have entries
+            throw;
+        if(item->RptSeq() != 5) // last processed msg
+            throw;
+    }
+
+    void TestConnection_TestIncMessageLost_AndWaitTimerElapsed() {
+        fcf->SetSnapshot(this->fcs);
+        fcf->OrderBookFond()->Clear();
+        fcf->ClearMessages();
+        fcf->WaitIncrementalMaxTimeMs(200);
+
+        SendMessages(fcf, new TestTemplateInfo*[2] {
+                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OBR_FOND, 1,
+                                     new TestTemplateItemInfo*[2] {
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "entry1", 1, 1, 1, 1, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "entry2", 2, 2, 1, 2, 1),
+                                     }, 2),
+                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OBR_FOND, 4,
+                                     new TestTemplateItemInfo*[1] {
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "entry5", 5, 3, 1, 3, 1),
+                                     }, 1)
+        }, 2);
+        if(!fcf->Listen_Atom_Incremental_Core())
+            throw;
+        OrderBookTableItem<FastOBSFONDItemInfo> *item = fcf->OrderBookFond()->GetItem("symbol1", "session1");
+        if(!fcf->m_waitTimer->Active()) // not all messages was processed - some messages was skipped
+            throw;
+        // wait
+        while(fcf->m_waitTimer->ElapsedMilliseconds() < fcf->WaitIncrementalMaxTimeMs());
+        if(!fcf->Listen_Atom_Incremental_Core())
+            throw;
+        //entering snapshot mode
+        if(!fcf->WaitingSnapshot())
+            throw;
+        // timer should be stopped
+        if(fcf->m_waitTimer->Active())
+            throw;
+    }
+    /*
+     * Snapshot received for only one item, this means that snapshot connection should not be stopped
+     * */
+    void TestConnection_TestMessagesLost_2Items_SnapshotReceivedForOneItem() {
+        fcf->SetSnapshot(this->fcs);
+        fcf->OrderBookFond()->Clear();
+        fcf->ClearMessages();
+        fcf->WaitIncrementalMaxTimeMs(50);
+
+        SendMessages(fcf, new TestTemplateInfo*[4] {
+                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OBR_FOND, 1,
+                                     new TestTemplateItemInfo*[2] {
+                                             new TestTemplateItemInfo("symbol1", "entry1", 1),
+                                             new TestTemplateItemInfo("symbol2", "entry1", 1),
+                                     }, 2),
+                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OBR_FOND, 4,
+                                     new TestTemplateItemInfo*[2] {
+                                             new TestTemplateItemInfo("symbol1", "entry1", 5),
+                                             new TestTemplateItemInfo("symbol2", "entry1", 5),
+                                     }, 2)
+        }, 2);
+
+        if(!fcf->Listen_Atom_Incremental_Core())
+            throw;
+        if(!fcf->m_waitTimer->Active()) // not all messages was processed - some messages was skipped
+            throw;
+        // wait
+        while(fcf->m_waitTimer->ElapsedMilliseconds() < fcf->WaitIncrementalMaxTimeMs());
+
+        // sending snapshot for only one item and rpt seq before last incremental message
+        SendMessages(fcs, new TestTemplateInfo*[4] {
+                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OBS_FOND, 2,
+                                     new TestTemplateItemInfo*[2] {
+                                             new TestTemplateItemInfo("symbol1", "entry1", 2),
+                                             new TestTemplateItemInfo("symbol1", "entry1", 3),
+                                     }, 2, 4)
+        }, 1);
+        if(!fcs->Listen_Atom_Snapshot_Core())
+            throw;
+    }
     void TestConnection() {
+        printf("TestConnection_EmptyTest\n");
         TestConnection_EmptyTest();
+        printf("TestConnection_TestCorrectIncMessages\n");
         TestConnection_TestCorrectIncMessages();
-        TestConnection_TestIncMessagesLost_OnlyOneTool();
+        printf("TestConnection_TestIncMessagesLost_AndWhenAppeared\n");
+        TestConnection_TestIncMessagesLost_AndWhenAppeared();
+        printf("TestConnection_TestInc2MessagesLost_AppearedThen2Messages\n");
+        TestConnection_TestInc2MessagesLost_AppearedThen2Messages();
+        printf("TestConnection_TestInc2MessagesLost_AppearedSeparately_1_2\n");
+        TestConnection_TestInc2MessagesLost_AppearedSeparately_1_2();
+        printf("TestConnection_TestInc2MessagesLost_AppearedSeparately_2_1\n");
+        TestConnection_TestInc2MessagesLost_AppearedSeparately_2_1();
+        printf("TestConnection_TestIncMessageLost_AndWaitTimerElapsed\n");
+        TestConnection_TestIncMessageLost_AndWaitTimerElapsed();
+        printf("TestConnection_TestMessagesLost_2Items_SnapshotReceivedForOneItem\n");
+        TestConnection_TestMessagesLost_2Items_SnapshotReceivedForOneItem();
     }
 
     void TestOrderBookTableItem() {
+        printf("TestTableItem_CorrectBegin\n");
         TestTableItem_CorrectBegin();
+        printf("TestTableItem_IncorrectBegin\n");
         TestTableItem_IncorrectBegin();
+        printf("TestTableItem_SkipMessage\n");
         TestTableItem_SkipMessage();
+        printf("TestTableItem_CorrectApplySnapshot\n");
         TestTableItem_CorrectApplySnapshot();
+        printf("TestTable_CorrectBegin\n");
         TestTable_CorrectBegin();
+        printf("TestTable_IncorrectBegin\n");
         TestTable_IncorrectBegin();
+        printf("TestTable_SkipMessages\n");
         TestTable_SkipMessages();
+        printf("TestTable_CorrectApplySnapshot\n");
         TestTable_CorrectApplySnapshot();
+        printf("TestTable_IncorrectApplySnapshot\n");
         TestTable_IncorrectApplySnapshot();
+        printf("TestTable_IncorrectApplySnapshot_WhenMessageSkipped\n");
         TestTable_IncorrectApplySnapshot_WhenMessageSkipped();
     }
 

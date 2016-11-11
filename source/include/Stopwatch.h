@@ -54,12 +54,12 @@ public:
     inline time_t ElapsedMilliseconds() {
         if(this->m_enabled[0])
             clock_gettime(CLOCK_REALTIME, this->m_specEnd);
-        return  (this->m_specEnd->tv_nsec - (*(this->m_specStart))->tv_nsec) * 1000000;
+        return  (this->m_specEnd->tv_nsec - (*(this->m_specStart))->tv_nsec) / 1000000;
     }
     inline time_t ElapsedMicroseconds() {
         if(this->m_enabled[0])
             clock_gettime(CLOCK_REALTIME, this->m_specEnd);
-        return  (this->m_specEnd->tv_nsec - (*(this->m_specStart))->tv_nsec) * 1000;
+        return  (this->m_specEnd->tv_nsec - (*(this->m_specStart))->tv_nsec) / 1000;
     }
     inline time_t ElapsedSeconds() {
         if(this->m_enabled[0])
@@ -69,12 +69,12 @@ public:
     inline time_t ElapsedMilliseconds(int index) {
         if(this->m_enabled[index])
             clock_gettime(CLOCK_REALTIME, this->m_specEnd);
-        return  (this->m_specEnd->tv_nsec - this->m_specStart[index]->tv_nsec) * 1000000;
+        return  (this->m_specEnd->tv_nsec - this->m_specStart[index]->tv_nsec) / 1000000;
     }
     inline time_t ElapsedMicroseconds(int index) {
         if(this->m_enabled[index])
             clock_gettime(CLOCK_REALTIME, this->m_specEnd);
-        return  (this->m_specEnd->tv_nsec - this->m_specStart[index]->tv_nsec) * 1000;
+        return  (this->m_specEnd->tv_nsec - this->m_specStart[index]->tv_nsec) / 1000;
     }
     inline time_t ElapsedSeconds(int index) {
         if(this->m_enabled[index])

@@ -28,9 +28,13 @@ public:
         delete this->m_incEntries;
     }
 
+    inline void StartRptSeq(int rptSeq) {
+        this->m_incStartRptSeq = rptSeq;
+    }
+
+    inline int StartRptSeq() { return this->m_incStartRptSeq; }
+
     inline void AddEntry(T *entry) {
-        if(this->m_incStartRptSeq == 0)
-            this->m_incStartRptSeq = entry->RptSeq;
         int index = entry->RptSeq - this->m_incStartRptSeq;
         this->m_incEntries[index] = entry;
         if(index > this->m_incEntriesMaxIndex)
@@ -51,6 +55,7 @@ public:
     }
 
     inline int MaxIndex() { return this->m_incEntriesMaxIndex; }
+    inline bool HasEntries() { return this->m_incEntriesMaxIndex != -1; };
     inline T** Entries() { return this->m_incEntries; }
     inline int RptSeq() { return this->m_incStartRptSeq; }
 };
@@ -242,6 +247,7 @@ public:
     }
 
     inline void PushMessageToQueue(T *info) {
+        this->m_entryInfo->StartRptSeq(this->m_rptSeq + 1);
         this->m_entryInfo->AddEntry(info);
     }
 
@@ -261,6 +267,8 @@ public:
         }
         this->m_rptSeq = info->RptSeq;
         this->ForceProcessMessage(info);
+        if(this->m_entryInfo->HasEntries())
+            return this->ProcessQueueMessages();
         return true;
     }
 
@@ -280,9 +288,8 @@ public:
         if(this->m_rptSeq + 1 < incRptSeq)
             return false;
         int startIndex = this->m_rptSeq + 1 - incRptSeq;
-        for(int i = 0; i < startIndex; i++) {
-            (*entry)->Clear();
-            entry++;
+        for(int i = 0; i < startIndex; i++, entry++) {
+            if((*entry) != 0) (*entry)->Clear();
         }
         for(int index = startIndex; index <= maxIndex; index++) {
             if((*entry) == 0)
