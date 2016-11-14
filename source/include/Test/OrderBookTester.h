@@ -62,6 +62,11 @@ public:
     TestTemplateInfo(FeedConnectionMessage templateId, int msgSeqNo, TestTemplateItemInfo **items, int itemCount, int rptSeq) : TestTemplateInfo(templateId, msgSeqNo, items, itemCount) {
         this->m_rptSec = rptSeq;
     }
+    TestTemplateInfo(FeedConnectionMessage templateId, int msgSeqNo, bool routeFirst, bool lastMessage, TestTemplateItemInfo **items, int itemCount, int rptSeq) :
+            TestTemplateInfo(templateId, msgSeqNo, items, itemCount, rptSeq) {
+        this->m_routeFirst = routeFirst;
+        this->m_lastMessage = lastMessage;
+    }
 };
 
 class OrderBookTester {
@@ -2273,7 +2278,7 @@ public:
         conn->ProcessServerCore(conn->m_fastProtocolManager->MessageLength());
     }
 
-    void SendIncrementalMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
+    void SendMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
         switch(tmp->m_templateId) {
             case FeedConnectionMessage::fcmHeartBeat:
                 SendHearthBeatMessage(conn, tmp);
@@ -2290,7 +2295,7 @@ public:
 
     void SendMessages(FeedConnection *conn, TestTemplateInfo **templates, int templatesCount) {
         for(int i = 0; i < templatesCount; i++)
-            SendIncrementalMessage(conn, templates[i]);
+            SendMessage(conn, templates[i]);
     }
 
     void TestConnection_EmptyTest() {
@@ -2595,6 +2600,11 @@ public:
         fcf->OrderBookFond()->Clear();
         fcf->ClearMessages();
         fcf->WaitIncrementalMaxTimeMs(200);
+        fcs->WaitSnapshotMaxTimeMs(200);
+        fcs->Stop();
+
+        if(fcs->State() != FeedConnectionState::fcsSuspend)
+            throw;
 
         SendMessages(fcf, new TestTemplateInfo*[2] {
                 new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OBR_FOND, 1,
@@ -2617,7 +2627,7 @@ public:
         if(!fcf->Listen_Atom_Incremental_Core())
             throw;
         //entering snapshot mode
-        if(!fcf->WaitingSnapshot())
+        if(fcs->State() != FeedConnectionState::fcsListen)
             throw;
         // timer should be stopped
         if(fcf->m_waitTimer->Active())
@@ -2638,10 +2648,10 @@ public:
                                              new TestTemplateItemInfo("symbol1", "entry1", 1),
                                              new TestTemplateItemInfo("symbol2", "entry1", 1),
                                      }, 2),
-                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OBR_FOND, 4,
+                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OBR_FOND, 3,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo("symbol1", "entry1", 5),
-                                             new TestTemplateItemInfo("symbol2", "entry1", 5),
+                                             new TestTemplateItemInfo("symbol1", "entry1", 4),
+                                             new TestTemplateItemInfo("symbol2", "entry1", 4),
                                      }, 2)
         }, 2);
 
@@ -2654,13 +2664,21 @@ public:
 
         // sending snapshot for only one item and rpt seq before last incremental message
         SendMessages(fcs, new TestTemplateInfo*[4] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OBS_FOND, 2,
+                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OBS_FOND, 2, true, true,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("symbol1", "entry1", 2),
                                              new TestTemplateItemInfo("symbol1", "entry1", 3),
                                      }, 2, 4)
         }, 1);
         if(!fcs->Listen_Atom_Snapshot_Core())
+            throw;
+        // snapshot for first item should be received and immediately applied then, should be applied incremental messages in que,
+        // but connection should not be closed - because not all items were updated
+        OrderBookTableItem<FastOBSFONDItemInfo> *item1 = fcf->OrderBookFond()->GetItem("symbol1", "session1");
+        OrderBookTableItem<FastOBSFONDItemInfo> *item2 = fcf->OrderBookFond()->GetItem("symbol2", "session1");
+        if(item1->EntriesQueue()->HasEntries())
+            throw;
+        if(!item2->EntriesQueue()->HasEntries())
             throw;
     }
     void TestConnection() {

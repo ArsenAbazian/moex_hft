@@ -26,6 +26,7 @@ FeedConnection::FeedConnection(const char *id, const char *name, char value, Fee
 
     this->m_fastProtocolManager->SkipTemplateId(fcmHeartBeat);
     this->m_waitIncrementalMaxTimeMs = 3000;
+    this->m_snapshotMaxTimeMs = 3000;
 
     this->socketAManager = NULL;
     this->socketBManager = NULL;
@@ -38,7 +39,6 @@ FeedConnection::FeedConnection(const char *id, const char *name, char value, Fee
 	for(int i = 0; i < RobotSettings::DefaultFeedConnectionPacketCount; i++)
         this->m_packets[i] = new FeedConnectionMessageInfo();
 
-	this->m_waitingSnapshot = false;
 	this->m_startMsgSeqNum = 1;
 	this->m_endMsgSeqNum = 0;
     this->m_listenPtr = &FeedConnection::Listen_Atom_Incremental;
@@ -60,10 +60,10 @@ FeedConnection::FeedConnection() {
     this->m_stopwatch = new Stopwatch();
     this->m_waitTimer = new Stopwatch();
     this->m_waitIncrementalMaxTimeMs = 3000;
+    this->m_snapshotMaxTimeMs = 3000;
 
     this->m_tval = new struct timeval;
 
-    this->m_waitingSnapshot = false;
     this->m_startMsgSeqNum = 1;
     this->m_endMsgSeqNum = 0;
     this->m_listenPtr = &FeedConnection::Listen_Atom_Incremental;
@@ -152,9 +152,6 @@ bool FeedConnection::Listen_Atom_Incremental() {
 }
 
 bool FeedConnection::Listen_Atom_Snapshot() {
-    if(this->m_snapshotAvailable)
-        return true;
-
     bool recv = this->ProcessServerA();
     recv |= this->ProcessServerB();
 

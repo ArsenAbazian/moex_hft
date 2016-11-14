@@ -170,7 +170,7 @@ public:
                     fc = tlr_curr;
                     break;
             }
-            if(!fc->ProcessMessageCore(msg->Bytes, msg->Count))
+            if(!fc->ProcessIncrementalCore(msg->Bytes, msg->Count))
                 throw;
             if(fc->m_fastProtocolManager->MessageLength() != msg->Count)
                 throw;
