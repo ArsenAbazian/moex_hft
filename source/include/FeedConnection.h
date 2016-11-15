@@ -202,7 +202,7 @@ private:
     }
 
     inline bool ApplySnapshot_OBS_FOND() {
-        for(int i = this->m_snapshotRouteFirst; i < this->m_snapshotLastFragment; i++) {
+        for(int i = this->m_snapshotRouteFirst; i <= this->m_snapshotLastFragment; i++) {
             FeedConnectionMessageInfo *info = this->m_packets[i];
             int index = info->m_item->m_itemIndex;
             unsigned char *buffer = this->m_recvABuffer->Item(index);
@@ -211,13 +211,14 @@ private:
             int size = this->m_recvABuffer->ItemLength(index);
             this->m_fastProtocolManager->SetNewBuffer(buffer, size);
             this->m_fastProtocolManager->ReadMsgSeqNumber();
+            this->m_fastProtocolManager->DecodeHeader();
             FastOBSFONDInfo *finfo = (FastOBSFONDInfo*)this->m_fastProtocolManager->DecodeOBSFOND();
-            this->OnFullRefresh_OBS_FOND(finfo);
+            this->m_incremental->OnFullRefresh_OBS_FOND(finfo);
         }
         return true;
     }
     inline bool ApplySnapshot_OBS_CURR() {
-        for(int i = this->m_snapshotRouteFirst; i < this->m_snapshotLastFragment; i++) {
+        for(int i = this->m_snapshotRouteFirst; i <= this->m_snapshotLastFragment; i++) {
             FeedConnectionMessageInfo *info = this->m_packets[i];
             int index = info->m_item->m_itemIndex;
             unsigned char *buffer = this->m_recvABuffer->Item(index);
@@ -226,13 +227,14 @@ private:
             int size = this->m_recvABuffer->ItemLength(index);
             this->m_fastProtocolManager->SetNewBuffer(buffer, size);
             this->m_fastProtocolManager->ReadMsgSeqNumber();
+            this->m_fastProtocolManager->DecodeHeader();
             FastOBSCURRInfo *finfo = (FastOBSCURRInfo*)this->m_fastProtocolManager->DecodeOBSCURR();
-            this->OnFullRefresh_OBS_CURR(finfo);
+            this->m_incremental->OnFullRefresh_OBS_CURR(finfo);
         }
         return true;
     }
     inline bool ApplySnapshot_OLS_FOND() {
-        for(int i = this->m_snapshotRouteFirst; i < this->m_snapshotLastFragment; i++) {
+        for(int i = this->m_snapshotRouteFirst; i <= this->m_snapshotLastFragment; i++) {
             FeedConnectionMessageInfo *info = this->m_packets[i];
             int index = info->m_item->m_itemIndex;
             unsigned char *buffer = this->m_recvABuffer->Item(index);
@@ -241,13 +243,14 @@ private:
             int size = this->m_recvABuffer->ItemLength(index);
             this->m_fastProtocolManager->SetNewBuffer(buffer, size);
             this->m_fastProtocolManager->ReadMsgSeqNumber();
+            this->m_fastProtocolManager->DecodeHeader();
             FastOLSFONDInfo *finfo = (FastOLSFONDInfo*)this->m_fastProtocolManager->DecodeOLSFOND();
-            this->OnFullRefresh_OLS_FOND(finfo);
+            this->m_incremental->OnFullRefresh_OLS_FOND(finfo);
         }
         return true;
     }
     inline bool ApplySnapshot_OLS_CURR() {
-        for(int i = this->m_snapshotRouteFirst; i < this->m_snapshotLastFragment; i++) {
+        for(int i = this->m_snapshotRouteFirst; i <= this->m_snapshotLastFragment; i++) {
             FeedConnectionMessageInfo *info = this->m_packets[i];
             int index = info->m_item->m_itemIndex;
             unsigned char *buffer = this->m_recvABuffer->Item(index);
@@ -256,13 +259,14 @@ private:
             int size = this->m_recvABuffer->ItemLength(index);
             this->m_fastProtocolManager->SetNewBuffer(buffer, size);
             this->m_fastProtocolManager->ReadMsgSeqNumber();
+            this->m_fastProtocolManager->DecodeHeader();
             FastOLSCURRInfo *finfo = (FastOLSCURRInfo*)this->m_fastProtocolManager->DecodeOLSCURR();
-            this->OnFullRefresh_OLS_CURR(finfo);
+            this->m_incremental->OnFullRefresh_OLS_CURR(finfo);
         }
         return true;
     }
     inline bool ApplySnapshot_TLS_FOND() {
-        for(int i = this->m_snapshotRouteFirst; i < this->m_snapshotLastFragment; i++) {
+        for(int i = this->m_snapshotRouteFirst; i <= this->m_snapshotLastFragment; i++) {
             FeedConnectionMessageInfo *info = this->m_packets[i];
             int index = info->m_item->m_itemIndex;
             unsigned char *buffer = this->m_recvABuffer->Item(index);
@@ -271,13 +275,14 @@ private:
             int size = this->m_recvABuffer->ItemLength(index);
             this->m_fastProtocolManager->SetNewBuffer(buffer, size);
             this->m_fastProtocolManager->ReadMsgSeqNumber();
+            this->m_fastProtocolManager->DecodeHeader();
             FastTLSFONDInfo *finfo = (FastTLSFONDInfo*)this->m_fastProtocolManager->DecodeTLSFOND();
-            this->OnFullRefresh_TLS_FOND(finfo);
+            this->m_incremental->OnFullRefresh_TLS_FOND(finfo);
         }
         return true;
     }
     inline bool ApplySnapshot_TLS_CURR() {
-        for(int i = this->m_snapshotRouteFirst; i < this->m_snapshotLastFragment; i++) {
+        for(int i = this->m_snapshotRouteFirst; i <= this->m_snapshotLastFragment; i++) {
             FeedConnectionMessageInfo *info = this->m_packets[i];
             int index = info->m_item->m_itemIndex;
             unsigned char *buffer = this->m_recvABuffer->Item(index);
@@ -286,8 +291,9 @@ private:
             int size = this->m_recvABuffer->ItemLength(index);
             this->m_fastProtocolManager->SetNewBuffer(buffer, size);
             this->m_fastProtocolManager->ReadMsgSeqNumber();
+            this->m_fastProtocolManager->DecodeHeader();
             FastTLSCURRInfo *finfo = (FastTLSCURRInfo*)this->m_fastProtocolManager->DecodeTLSCURR();
-            this->OnFullRefresh_TLS_CURR(finfo);
+            this->m_incremental->OnFullRefresh_TLS_CURR(finfo);
         }
         return true;
     }
@@ -341,7 +347,7 @@ private:
 		return this->ApplySnapshotCore();
 	}
 
-    inline bool ApplyPacketSequence() {
+    inline bool ProcessIncrementalMessages() {
         int i = this->m_startMsgSeqNum;
 		int newStartMsgSeqNum = -1;
 
@@ -578,14 +584,14 @@ private:
     }
 
     inline bool Listen_Atom_Incremental_Core() {
-        if(!this->ApplyPacketSequence())
+        if(!this->ProcessIncrementalMessages())
             return false;
         if(this->m_startMsgSeqNum > this->m_endMsgSeqNum) {
             this->m_waitTimer->Stop();
             return true;
         }
         this->m_waitTimer->Activate();
-        if(this->m_waitTimer->ElapsedMilliseconds() > this->m_waitIncrementalMaxTimeMs) {
+        if(this->m_waitTimer->ElapsedMilliseconds() >= this->m_waitIncrementalMaxTimeMs) {
             if(!this->StartListenSnapshot())
                 return false;
             this->m_waitTimer->Stop();
@@ -770,8 +776,9 @@ private:
 	}
 
     inline bool OnFullRefresh_OBS_FOND(FastOBSFONDInfo *info) {
-        this->m_orderBookTableFond->Clear();
-		this->m_orderBookTableFond->Add(info);
+        this->m_orderBookTableFond->StartProcessSnapshot(info);
+        this->m_orderBookTableFond->ProcessSnapshot(info->GroupMDEntries, info->GroupMDEntriesCount);
+        this->m_orderBookTableFond->EndProcessSnapshot();
         return true;
     }
 

@@ -24,6 +24,7 @@ public:
         this->m_entryType = entryType;
         this->m_symbol = symbol;
         this->m_tradingSession = sessionId;
+        this->m_entryId = entryId;
         this->m_entryPx.Set(pxm, pxe);
         this->m_entrySize.Set(sizem, sizee);
         this->m_rptSeq = rptSeq;
@@ -33,9 +34,17 @@ public:
         this->m_entryType = MDEntryType::mdetBuyQuote;
         this->m_symbol = symbol;
         this->m_tradingSession = "session1";
+        this->m_entryId = entryId;
         this->m_entryPx.Set(1, 1);
         this->m_entrySize.Set(1, 1);
         this->m_rptSeq = rptSeq;
+    }
+    TestTemplateItemInfo(const char *entryId) {
+        this->m_action = MDUpdateAction::mduaAdd;
+        this->m_entryType = MDEntryType::mdetBuyQuote;
+        this->m_entryId = entryId;
+        this->m_entryPx.Set(1, 1);
+        this->m_entrySize.Set(1, 1);
     }
 };
 
@@ -48,6 +57,8 @@ public:
     int                     m_itemsCount;
     int                     m_rptSec;
     TestTemplateItemInfo*   m_items[8];
+    const char              *m_symbol;
+    const char              *m_session;
 
     TestTemplateInfo(FeedConnectionMessage templateId, int msgSeqNo) {
         this->m_templateId = templateId;
@@ -62,8 +73,10 @@ public:
     TestTemplateInfo(FeedConnectionMessage templateId, int msgSeqNo, TestTemplateItemInfo **items, int itemCount, int rptSeq) : TestTemplateInfo(templateId, msgSeqNo, items, itemCount) {
         this->m_rptSec = rptSeq;
     }
-    TestTemplateInfo(FeedConnectionMessage templateId, int msgSeqNo, bool routeFirst, bool lastMessage, TestTemplateItemInfo **items, int itemCount, int rptSeq) :
+    TestTemplateInfo(FeedConnectionMessage templateId, int msgSeqNo, const char *symbol, const char *session, bool routeFirst, bool lastMessage, TestTemplateItemInfo **items, int itemCount, int rptSeq) :
             TestTemplateInfo(templateId, msgSeqNo, items, itemCount, rptSeq) {
+        this->m_symbol = symbol;
+        this->m_session = session;
         this->m_routeFirst = routeFirst;
         this->m_lastMessage = lastMessage;
     }
@@ -87,6 +100,7 @@ public:
                                                 FeedConnectionProtocol::UDP_IP,
                                                 "10.50.129.200", "239.192.113.3", 9113,
                                                 "10.50.129.200", "239.192.113.131", 9313);
+        this->fcs->m_fakeConnect = true;
 
     }
     ~OrderBookTester() {
@@ -2270,6 +2284,24 @@ public:
         FastOBSFONDInfo *info = new FastOBSFONDInfo();
         info->MsgSeqNum = tmp->m_msgSeqNo;
         info->GroupMDEntriesCount = tmp->m_itemsCount;
+        info->AllowRouteFirst = true;
+        info->AllowLastFragment = true;
+
+        if(tmp->m_symbol != 0) {
+            info->SymbolLength = strlen(tmp->m_symbol);
+            info->Symbol = new char[info->SymbolLength + 1];
+            strcpy(info->Symbol, tmp->m_symbol);
+        }
+        if(tmp->m_session != 0) {
+            info->AllowTradingSessionID = true;
+            info->TradingSessionIDLength = strlen(tmp->m_session);
+            info->TradingSessionID = new char[info->TradingSessionIDLength + 1];
+            strcpy(info->TradingSessionID, tmp->m_session);
+        }
+
+        info->RptSeq = tmp->m_rptSec;
+        info->RouteFirst = tmp->m_routeFirst;
+        info->LastFragment = tmp->m_lastMessage;
         for(int i = 0; i < tmp->m_itemsCount; i++) {
             info->GroupMDEntries[i] = CreateObrFondItemInfo(tmp->m_items[i]);
         }
@@ -2331,7 +2363,7 @@ public:
         }, 3);
 
 
-        if(!fcf->ApplyPacketSequence())
+        if(!fcf->ProcessIncrementalMessages())
             throw;
         if(fcf->m_waitTimer->Active()) // everything is ok = timer should not be activated
             throw;
@@ -2629,8 +2661,51 @@ public:
         //entering snapshot mode
         if(fcs->State() != FeedConnectionState::fcsListen)
             throw;
+        if(!fcs->m_waitTimer->Active())
+            throw;
         // timer should be stopped
         if(fcf->m_waitTimer->Active())
+            throw;
+        if(fcs->m_startMsgSeqNum != -1)
+            throw;
+        if(fcs->m_endMsgSeqNum != -1)
+            throw;
+    }
+    void TestConnection_TestSnapshotCollect() {
+        fcf->SetSnapshot(this->fcs);
+        fcf->OrderBookFond()->Clear();
+        fcf->ClearMessages();
+        fcf->WaitIncrementalMaxTimeMs(50);
+        fcs->ClearMessages();
+        fcs->WaitSnapshotMaxTimeMs(50);
+        fcf->StartListenSnapshot();
+
+        SendMessages(fcs, new TestTemplateInfo*[1] {
+                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OBS_FOND, 2, "symbol1", "session1", true, true,
+                                     new TestTemplateItemInfo*[2] {
+                                             new TestTemplateItemInfo("entry1"),
+                                             new TestTemplateItemInfo("entry2"),
+                                     }, 2, 4)
+        }, 1);
+
+        if(fcs->m_startMsgSeqNum != 2)
+            throw;
+        if(fcs->m_endMsgSeqNum != 2)
+            throw;
+
+        fcs->Listen_Atom_Snapshot_Core();
+        //snapshot received and should be applied
+        OrderBookTableItem<FastOBSFONDItemInfo> *tableItem = fcf->OrderBookFond()->GetItem("symbol1", "session1");
+
+        if(tableItem->BuyQuotes()->Count() != 2)
+            throw;
+        if(fcs->m_snapshotRouteFirst != -1)
+            throw;
+        if(fcs->m_snapshotLastFragment != -1)
+            throw;
+        if(fcs->m_startMsgSeqNum != 3)
+            throw;
+        if(fcs->m_endMsgSeqNum != 2)
             throw;
     }
     /*
@@ -2641,6 +2716,9 @@ public:
         fcf->OrderBookFond()->Clear();
         fcf->ClearMessages();
         fcf->WaitIncrementalMaxTimeMs(50);
+        fcs->ClearMessages();
+        fcs->WaitSnapshotMaxTimeMs(50);
+        fcf->StartListenSnapshot();
 
         SendMessages(fcf, new TestTemplateInfo*[4] {
                 new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OBR_FOND, 1,
@@ -2664,10 +2742,10 @@ public:
 
         // sending snapshot for only one item and rpt seq before last incremental message
         SendMessages(fcs, new TestTemplateInfo*[4] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OBS_FOND, 2, true, true,
+                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OBS_FOND, 2, "symbol1", "session1", true, true,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo("symbol1", "entry1", 2),
-                                             new TestTemplateItemInfo("symbol1", "entry1", 3),
+                                             new TestTemplateItemInfo("entry1"),
+                                             new TestTemplateItemInfo("entry1"),
                                      }, 2, 4)
         }, 1);
         if(!fcs->Listen_Atom_Snapshot_Core())
@@ -2682,6 +2760,13 @@ public:
             throw;
     }
     void TestConnection() {
+        printf("TestConnection_TestIncMessageLost_AndWaitTimerElapsed\n");
+        TestConnection_TestIncMessageLost_AndWaitTimerElapsed();
+        printf("TestConnection_TestSnapshotCollect\n");
+        TestConnection_TestSnapshotCollect();
+        printf("TestConnection_TestMessagesLost_2Items_SnapshotReceivedForOneItem\n");
+        TestConnection_TestMessagesLost_2Items_SnapshotReceivedForOneItem();
+
         printf("TestConnection_EmptyTest\n");
         TestConnection_EmptyTest();
         printf("TestConnection_TestCorrectIncMessages\n");
@@ -2694,10 +2779,6 @@ public:
         TestConnection_TestInc2MessagesLost_AppearedSeparately_1_2();
         printf("TestConnection_TestInc2MessagesLost_AppearedSeparately_2_1\n");
         TestConnection_TestInc2MessagesLost_AppearedSeparately_2_1();
-        printf("TestConnection_TestIncMessageLost_AndWaitTimerElapsed\n");
-        TestConnection_TestIncMessageLost_AndWaitTimerElapsed();
-        printf("TestConnection_TestMessagesLost_2Items_SnapshotReceivedForOneItem\n");
-        TestConnection_TestMessagesLost_2Items_SnapshotReceivedForOneItem();
     }
 
     void TestOrderBookTableItem() {
@@ -2737,8 +2818,8 @@ public:
     void Test() {
         TestDefaults();
         TestStringIdComparer();
-        TestOrderBookTableItem();
         TestConnection();
+        TestOrderBookTableItem();
         Test_OBR_FOND();
         Test_OBR_CURR();
     }

@@ -197,10 +197,10 @@ public:
     }
 
     void Test() {
-        OrderTester ot;
-        ot.Test();
         OrderBookTester obt;
         obt.Test();
+        OrderTester ot;
+        ot.Test();
         TradeTester tt;
         tt.Test();
         TestLog("/home/arsen/Documents/hft_robot/hft/test/log5");
