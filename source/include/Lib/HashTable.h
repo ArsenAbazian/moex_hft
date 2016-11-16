@@ -234,12 +234,14 @@ public:
         };
     }
 
+    inline TableItemClassName*** TableCore() { return (TableItemClassName***)this->m_table; }
     inline int SymbolsCount() { return this->m_symbolsCount; }
     inline int TradingSessionsCount() { return this->m_tradingSessionsCount; }
     inline TableItemClassName* Item(int symbolIndex, int tradingSessionIndex) {
         return this->m_table[symbolIndex][tradingSessionIndex];
     }
     inline int UsedItemCount() { return this->m_usedItems->Count(); }
+    inline PointerList<TableItemClassName>* UsedItems() { return this->m_usedItems; }
 
     inline TableItemClassName* GetCachedItem(const char *symbol, int symbolLen, const char *tradingSession, int tradingSessionLen) {
         if(this->m_lastObtainedItem == 0)

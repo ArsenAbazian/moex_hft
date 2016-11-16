@@ -227,6 +227,37 @@ public:
         return info;
     }
 
+    void TestItem(OrderBookTableItem<FastOBSFONDItemInfo> *tableItem) {
+        for(int i = 0; i < tableItem->BuyQuotes()->Count(); i++)
+            if(tableItem->BuyQuotes()->Item(i)->Allocator == 0)
+                throw;
+        for(int i = 0; i < tableItem->SellQuotes()->Count(); i++)
+            if(tableItem->SellQuotes()->Item(i)->Allocator == 0)
+                throw;
+    }
+
+    void TestTableItemsAllocator(MarketDataTable<OrderBookTableItem, FastOBSFONDInfo, FastOBSFONDItemInfo> *table) {
+        for(int i = 0; i < table->UsedItemCount(); i++) {
+            OrderBookTableItem<FastOBSFONDItemInfo> *item = table->UsedItem(i);
+            TestItem(item);
+        }
+        for(int i = 0; i < MAX_SYMBOLS_COUNT; i++) {
+            for(int j = 0; j < MAX_TRADING_SESSIONS_COUNT; j++) {
+                bool found = false;
+                OrderBookTableItem<FastOBSFONDItemInfo> *titem = table->Item(i, j);
+                for(int u = 0; u < table->UsedItemCount(); u++) {
+                    OrderBookTableItem<FastOBSFONDItemInfo> *item = table->UsedItem(i);
+
+                    if(item == titem)
+                        found = true;
+                }
+
+                if(titem->Used() != found)
+                    throw;
+            }
+        }
+    }
+
     void Clear() {
         this->fcf->OrderBookFond()->Clear();
         this->fcc->OrderBookCurr()->Clear();
@@ -1891,6 +1922,8 @@ public:
             throw;
         if(this->fcc->OrderBookCurr()->TradingSessionsCount() != 0)
             throw;
+        this->TestTableItemsAllocator(fcf->OrderBookFond());
+        //this->TestTableItemsAllocator(fcc->OrderBookCurr());
     }
 
     void TestTableItem_CorrectBegin() {
@@ -2016,6 +2049,15 @@ public:
             throw;
     }
 
+    void TestTable_Default() {
+
+        MarketDataTable<OrderBookTableItem, FastOBSFONDInfo, FastOBSFONDItemInfo> *table = new MarketDataTable<OrderBookTableItem, FastOBSFONDInfo, FastOBSFONDItemInfo>();
+
+        TestTableItemsAllocator(table);
+
+        delete table;
+    }
+
     void TestTable_CorrectBegin() {
 
         MarketDataTable<OrderBookTableItem, FastOBSFONDInfo, FastOBSFONDItemInfo> *table = new MarketDataTable<OrderBookTableItem, FastOBSFONDInfo, FastOBSFONDItemInfo>();
@@ -2054,6 +2096,27 @@ public:
         item2->RptSeq = 3;
 
         if(table->ProcessIncremental(item2))
+            throw;
+
+        delete table;
+    }
+
+    void Test_2UsedItemsAfter2IncrementalMessages() {
+        MarketDataTable<OrderBookTableItem, FastOBSFONDInfo, FastOBSFONDItemInfo> *table = new MarketDataTable<OrderBookTableItem, FastOBSFONDInfo, FastOBSFONDItemInfo>();
+
+        FastOBSFONDItemInfo *item1 = CreateFastOBRFondItemInfo("SYMBOL", "TRADING", 8, 1, 8, 1, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "ENTRYID001");
+        item1->RptSeq = 1;
+
+        if(!table->ProcessIncremental(item1))
+            throw;
+
+        FastOBSFONDItemInfo *item2 = CreateFastOBRFondItemInfo("SYMBOL2", "TRADING", 8, 1, 8, 1, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "ENTRYID001");
+        item2->RptSeq = 1;
+
+        if(!table->ProcessIncremental(item2))
+            throw;
+
+        if(table->UsedItemCount() != 2)
             throw;
 
         delete table;
@@ -2365,6 +2428,9 @@ public:
 
         if(!fcf->ProcessIncrementalMessages())
             throw;
+
+        this->TestTableItemsAllocator(fcf->OrderBookFond());
+
         if(fcf->m_waitTimer->Active()) // everything is ok = timer should not be activated
             throw;
         if(fcf->OrderBookFond()->GetItem("SYMBOL1", "SESSION1")->BuyQuotes()->Count() != 4)
@@ -2394,6 +2460,9 @@ public:
         }, 2);
         if(!fcf->Listen_Atom_Incremental_Core())
             throw;
+
+        this->TestTableItemsAllocator(fcf->OrderBookFond());
+
         OrderBookTableItem<FastOBSFONDItemInfo> *item = fcf->OrderBookFond()->GetItem("symbol1", "session1");
         if(item->BuyQuotes()->Count() != 2)
             throw;
@@ -2418,6 +2487,9 @@ public:
 
         if(!fcf->Listen_Atom_Incremental_Core())
             throw;
+
+        this->TestTableItemsAllocator(fcf->OrderBookFond());
+
         if(fcf->m_waitTimer->Active()) // wait timer should be deactivated because we received all lost messages
             throw;
         if(item->BuyQuotes()->Count() != 4) // all messages from que should be applied
@@ -2444,6 +2516,9 @@ public:
         }, 2);
         if(!fcf->Listen_Atom_Incremental_Core())
             throw;
+
+        this->TestTableItemsAllocator(fcf->OrderBookFond());
+
         OrderBookTableItem<FastOBSFONDItemInfo> *item = fcf->OrderBookFond()->GetItem("symbol1", "session1");
         if(item->BuyQuotes()->Count() != 2)
             throw;
@@ -2471,6 +2546,9 @@ public:
 
         if(!fcf->Listen_Atom_Incremental_Core())
             throw;
+
+        this->TestTableItemsAllocator(fcf->OrderBookFond());
+
         if(fcf->m_waitTimer->Active()) // wait timer should be deactivated because we received all lost messages
             throw;
         if(item->BuyQuotes()->Count() != 5) // all messages from que should be applied
@@ -2497,6 +2575,9 @@ public:
         }, 2);
         if(!fcf->Listen_Atom_Incremental_Core())
             throw;
+
+        this->TestTableItemsAllocator(fcf->OrderBookFond());
+
         OrderBookTableItem<FastOBSFONDItemInfo> *item = fcf->OrderBookFond()->GetItem("symbol1", "session1");
         if(item->BuyQuotes()->Count() != 2)
             throw;
@@ -2523,6 +2604,9 @@ public:
 
         if(!fcf->Listen_Atom_Incremental_Core())
             throw;
+
+        this->TestTableItemsAllocator(fcf->OrderBookFond());
+
         if(!fcf->m_waitTimer->Active()) // wait timer should be active because 2 messages lost but received 1
             throw;
         if(item->BuyQuotes()->Count() != 3) // at least one message is applied
@@ -2543,6 +2627,9 @@ public:
 
         if(!fcf->Listen_Atom_Incremental_Core())
             throw;
+
+        this->TestTableItemsAllocator(fcf->OrderBookFond());
+
         if(fcf->m_waitTimer->Active()) // now wait timer should be deactivated because we received all messages
             throw;
         if(item->BuyQuotes()->Count() != 5) // all messages applied
@@ -2571,6 +2658,9 @@ public:
         }, 2);
         if(!fcf->Listen_Atom_Incremental_Core())
             throw;
+
+        this->TestTableItemsAllocator(fcf->OrderBookFond());
+
         OrderBookTableItem<FastOBSFONDItemInfo> *item = fcf->OrderBookFond()->GetItem("symbol1", "session1");
         if(item->BuyQuotes()->Count() != 2)
             throw;
@@ -2597,6 +2687,9 @@ public:
 
         if(!fcf->Listen_Atom_Incremental_Core())
             throw;
+
+        this->TestTableItemsAllocator(fcf->OrderBookFond());
+
         if(!fcf->m_waitTimer->Active()) // wait timer should be active because 2 messages lost but received 1
             throw;
         if(item->BuyQuotes()->Count() != 2) // nothing encreased because first message skipped
@@ -2617,6 +2710,9 @@ public:
 
         if(!fcf->Listen_Atom_Incremental_Core())
             throw;
+
+        this->TestTableItemsAllocator(fcf->OrderBookFond());
+
         if(fcf->m_waitTimer->Active()) // now wait timer should be deactivated because we received all messages
             throw;
         if(item->BuyQuotes()->Count() != 5) // applied two messages
@@ -2651,6 +2747,9 @@ public:
         }, 2);
         if(!fcf->Listen_Atom_Incremental_Core())
             throw;
+
+        this->TestTableItemsAllocator(fcf->OrderBookFond());
+
         OrderBookTableItem<FastOBSFONDItemInfo> *item = fcf->OrderBookFond()->GetItem("symbol1", "session1");
         if(!fcf->m_waitTimer->Active()) // not all messages was processed - some messages was skipped
             throw;
@@ -2697,6 +2796,11 @@ public:
         //snapshot received and should be applied
         OrderBookTableItem<FastOBSFONDItemInfo> *tableItem = fcf->OrderBookFond()->GetItem("symbol1", "session1");
 
+        this->TestTableItemsAllocator(fcf->OrderBookFond());
+
+        if(fcf->OrderBookFond()->UsedItemCount() != 1)
+            throw;
+
         if(tableItem->BuyQuotes()->Count() != 2)
             throw;
         if(fcs->m_snapshotRouteFirst != -1)
@@ -2720,6 +2824,8 @@ public:
         fcs->WaitSnapshotMaxTimeMs(50);
         fcf->StartListenSnapshot();
 
+        this->TestTableItemsAllocator(fcf->OrderBookFond());
+
         SendMessages(fcf, new TestTemplateInfo*[4] {
                 new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OBR_FOND, 1,
                                      new TestTemplateItemInfo*[2] {
@@ -2735,6 +2841,12 @@ public:
 
         if(!fcf->Listen_Atom_Incremental_Core())
             throw;
+
+        this->TestTableItemsAllocator(fcf->OrderBookFond());
+
+        if(fcf->OrderBookFond()->UsedItemCount() != 2)
+            throw;
+
         if(!fcf->m_waitTimer->Active()) // not all messages was processed - some messages was skipped
             throw;
         // wait
@@ -2750,6 +2862,9 @@ public:
         }, 1);
         if(!fcs->Listen_Atom_Snapshot_Core())
             throw;
+
+        this->TestTableItemsAllocator(fcf->OrderBookFond());
+
         // snapshot for first item should be received and immediately applied then, should be applied incremental messages in que,
         // but connection should not be closed - because not all items were updated
         OrderBookTableItem<FastOBSFONDItemInfo> *item1 = fcf->OrderBookFond()->GetItem("symbol1", "session1");
@@ -2758,8 +2873,52 @@ public:
             throw;
         if(!item2->EntriesQueue()->HasEntries())
             throw;
+
+        for(int i = 0; i < item1->BuyQuotes()->Count(); i++)
+            if(item1->BuyQuotes()->Item(i)->Allocator == 0)
+                throw;
+        for(int i = 0; i < item2->BuyQuotes()->Count(); i++)
+            if(item2->BuyQuotes()->Item(i)->Allocator == 0)
+                throw;
     }
+
+    void TestConnection_Clear_AfterIncremental() {
+        this->TestTableItemsAllocator(fcf->OrderBookFond());
+
+        fcf->SetSnapshot(this->fcs);
+        fcf->OrderBookFond()->Clear();
+        fcf->ClearMessages();
+        fcf->WaitIncrementalMaxTimeMs(50);
+        fcs->ClearMessages();
+        fcs->WaitSnapshotMaxTimeMs(50);
+        fcf->StartListenSnapshot();
+
+        this->TestTableItemsAllocator(fcf->OrderBookFond());
+
+        SendMessages(fcf, new TestTemplateInfo*[4] {
+                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OBR_FOND, 1,
+                                     new TestTemplateItemInfo*[2] {
+                                             new TestTemplateItemInfo("symbol1", "entry1", 1),
+                                             new TestTemplateItemInfo("symbol2", "entry1", 1),
+                                     }, 2),
+                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OBR_FOND, 3,
+                                     new TestTemplateItemInfo*[2] {
+                                             new TestTemplateItemInfo("symbol1", "entry1", 4),
+                                             new TestTemplateItemInfo("symbol2", "entry1", 4),
+                                     }, 2)
+        }, 2);
+
+        if(!fcf->Listen_Atom_Incremental_Core())
+            throw;
+
+        this->TestTableItemsAllocator(fcf->OrderBookFond());
+
+        fcf->OrderBookFond()->Clear();
+    }
+
     void TestConnection() {
+        printf("TestConnection_Clear_AfterIncremental\n");
+        TestConnection_Clear_AfterIncremental();
         printf("TestConnection_TestIncMessageLost_AndWaitTimerElapsed\n");
         TestConnection_TestIncMessageLost_AndWaitTimerElapsed();
         printf("TestConnection_TestSnapshotCollect\n");
@@ -2790,12 +2949,16 @@ public:
         TestTableItem_SkipMessage();
         printf("TestTableItem_CorrectApplySnapshot\n");
         TestTableItem_CorrectApplySnapshot();
+        printf("TestTable_Default\n");
+        TestTable_Default();
         printf("TestTable_CorrectBegin\n");
         TestTable_CorrectBegin();
         printf("TestTable_IncorrectBegin\n");
         TestTable_IncorrectBegin();
         printf("TestTable_SkipMessages\n");
         TestTable_SkipMessages();
+        printf("Test_2UsedItemsAfter2IncrementalMessages\n");
+        Test_2UsedItemsAfter2IncrementalMessages();
         printf("TestTable_CorrectApplySnapshot\n");
         TestTable_CorrectApplySnapshot();
         printf("TestTable_IncorrectApplySnapshot\n");
