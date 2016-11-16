@@ -776,10 +776,7 @@ private:
 	}
 
     inline bool OnFullRefresh_OBS_FOND(FastOBSFONDInfo *info) {
-        this->m_orderBookTableFond->StartProcessSnapshot(info);
-        this->m_orderBookTableFond->ProcessSnapshot(info->GroupMDEntries, info->GroupMDEntriesCount);
-        this->m_orderBookTableFond->EndProcessSnapshot();
-        return true;
+        return this->m_orderBookTableFond->ProcessSnapshot(info);
     }
 
 	inline bool OnIncrementalRefresh_OBR_CURR(FastIncrementalOBRCURRInfo *info) {

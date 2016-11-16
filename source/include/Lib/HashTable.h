@@ -12,49 +12,6 @@
 #define MAX_TRADING_SESSIONS_COUNT      128
 #define MAX_TABLE_LIST_COUNT            256
 
-template <typename T> class HashTableItem {
-    PointerList<T>     *m_items;
-    LinkedPointer<HashTableItem<T>>   *m_usedPointer;
-public:
-    HashTableItem() {
-        this->m_items = new PointerList<T>(MAX_TABLE_LIST_COUNT);
-        this->m_usedPointer = 0;
-    }
-    ~HashTableItem() {
-        delete this->m_items;
-    }
-
-    inline PointerList<T>* Items() { return this->m_items; }
-    inline LinkedPointer<HashTableItem<T>>* UsedListPointer(){ return this->m_usedPointer; }
-    inline void UsedListPointer(LinkedPointer<HashTableItem<T>> *usedPointer) { this->m_usedPointer = usedPointer; }
-    inline void RemoveFromUsed() {
-        this->m_usedPointer->Owner()->Remove(this->m_usedPointer);
-        this->m_usedPointer = 0;
-    }
-    inline void Clear() {
-        LinkedPointer<T> *start = this->m_items->Start();
-        LinkedPointer<T> *end = this->m_items->End();
-        while(true) {
-            start->Data()->Pointer->Owner()->Push(start->Data()->Pointer);
-            if(start == end)
-                break;
-            start = start->Next();
-        }
-        this->m_items->Clear();
-        this->RemoveFromUsed();
-    }
-
-    inline LinkedPointer<T>* Start() { return this->m_items->Start(); }
-    inline LinkedPointer<T>* End() { return this->m_items->End(); }
-    inline int Count() { return this->m_items->Count(); }
-    inline void Remove(LinkedPointer<T> *item) {
-        item->Data()->Pointer->Owner()->Push(item->Data()->Pointer);
-        this->m_items->Remove(item);
-        if(this->m_items->Count() == 0)
-            this->RemoveFromUsed();
-    }
-};
-
 class StringIdComparer {
 public:
     static inline bool IsEquals4(const char *s1, const char *s2) {
@@ -172,18 +129,62 @@ public:
     }
 };
 
+template <typename T> class HashTableItem {
+    PointerList<T>     *m_items;
+    LinkedPointer<HashTableItem<T>>     *m_usedPointer;
+public:
+    HashTableItem() {
+        this->m_items = new PointerList<T>(MAX_TABLE_LIST_COUNT);
+        this->m_usedPointer = 0;
+    }
+    ~HashTableItem() {
+        delete this->m_items;
+    }
+
+    inline PointerList<T>* Items() { return this->m_items; }
+    inline LinkedPointer<HashTableItem<T>>* UsedListPointer(){ return this->m_usedPointer; }
+    inline void UsedListPointer(LinkedPointer<HashTableItem<T>> *usedPointer) { this->m_usedPointer = usedPointer; }
+    inline void RemoveFromUsed() {
+        this->m_usedPointer->Owner()->Remove(this->m_usedPointer);
+        this->m_usedPointer = 0;
+    }
+    inline void Clear() {
+        LinkedPointer<T> *start = this->m_items->Start();
+        LinkedPointer<T> *end = this->m_items->End();
+        while(true) {
+            start->Data()->Pointer->Owner()->Push(start->Data()->Pointer);
+            if(start == end)
+                break;
+            start = start->Next();
+        }
+        this->m_items->Clear();
+        this->RemoveFromUsed();
+    }
+
+    inline LinkedPointer<T>* Start() { return this->m_items->Start(); }
+    inline LinkedPointer<T>* End() { return this->m_items->End(); }
+    inline int Count() { return this->m_items->Count(); }
+    inline void Remove(LinkedPointer<T> *item) {
+        item->Data()->Pointer->Owner()->Push(item->Data()->Pointer);
+        this->m_items->Remove(item);
+        if(this->m_items->Count() == 0)
+            this->RemoveFromUsed();
+    }
+};
+
 template<typename TableItemClassName> class HashTable {
 
     SizedArray*                         m_symbols[MAX_SYMBOLS_COUNT];
     SizedArray*                         m_tradingSession[MAX_TRADING_SESSIONS_COUNT];
     int                                 m_symbolsCount;
     int                                 m_tradingSessionsCount;
+    TableItemClassName                  *m_lastObtainedItem;
 
     TableItemClassName*                    m_table[MAX_SYMBOLS_COUNT][MAX_TRADING_SESSIONS_COUNT];
     PointerList<TableItemClassName>*       m_usedItems;
 
 public:
-    inline int GetSymbolIndex(const char *symbol, int length) {
+    inline int GetSymbolIndex(const char *symbol, int length, bool *found) {
         for(int i = 0; i < this->m_symbolsCount; i++) {
             if(this->m_symbols[i]->Equal(symbol, length))
                 return i;
@@ -191,9 +192,10 @@ public:
         this->m_symbols[this->m_symbolsCount]->m_text = symbol;
         this->m_symbols[this->m_symbolsCount]->m_length = length;
         this->m_symbolsCount++;
+        *found = false;
         return this->m_symbolsCount - 1;
     }
-    inline int GetTradingSessionIdIndex(const char *tradingSessionId, int length) {
+    inline int GetTradingSessionIdIndex(const char *tradingSessionId, int length, bool *found) {
         for(int i = 0; i < this->m_tradingSessionsCount; i++) {
             if(this->m_tradingSession[i]->Equal(tradingSessionId, length))
                 return i;
@@ -201,6 +203,7 @@ public:
         this->m_tradingSession[this->m_tradingSessionsCount]->m_text = tradingSessionId;
         this->m_tradingSession[this->m_tradingSessionsCount]->m_length = length;
         this->m_tradingSessionsCount++;
+        *found = false;
         return this->m_tradingSessionsCount - 1;
     }
 
@@ -214,6 +217,7 @@ public:
                 this->m_table[i][j] = new TableItemClassName();
             }
         };
+        this->m_lastObtainedItem = 0;
         this->m_symbolsCount = 0;
         this->m_tradingSessionsCount = 0;
         this->m_usedItems = new PointerList<TableItemClassName>(MAX_SYMBOLS_COUNT * MAX_TRADING_SESSIONS_COUNT + 10);
@@ -237,13 +241,28 @@ public:
     }
     inline int UsedItemCount() { return this->m_usedItems->Count(); }
 
+    inline TableItemClassName* GetCachedItem(const char *symbol, int symbolLen, const char *tradingSession, int tradingSessionLen) {
+        if(this->m_lastObtainedItem == 0)
+            return 0;
+        if(this->m_lastObtainedItem->Symbol()->Equal(symbol, symbolLen) && this->m_lastObtainedItem->TradingSession()->Equal(tradingSession, tradingSessionLen))
+            return this->m_lastObtainedItem;
+        return 0;
+    }
+
     inline TableItemClassName* GetItem(const char *symbol, int symbolLen, const char *tradingSession, int tradingSessionLen) {
-        int symbolIndex = GetSymbolIndex(symbol, symbolLen);
-        int tradingSessionIndex = GetTradingSessionIdIndex(tradingSession, tradingSessionLen);
-        return this->m_table[symbolIndex][tradingSessionIndex];
+        bool found = true;
+        int sindex = GetSymbolIndex(symbol, symbolLen, &found);
+        int tindex = GetTradingSessionIdIndex(tradingSession, tradingSessionLen, &found);
+        this->m_lastObtainedItem = this->m_table[sindex][tindex];
+        if(!found) {
+            this->m_lastObtainedItem->Symbol(this->m_symbols[sindex]);
+            this->m_lastObtainedItem->TradingSession(this->m_tradingSession[tindex]);
+        }
+        return this->m_lastObtainedItem;
     }
 
     inline void Clear() {
+        this->m_lastObtainedItem = 0;
         this->m_symbolsCount = 0;
         this->m_tradingSessionsCount = 0;
         if(this->m_usedItems->Count() == 0)

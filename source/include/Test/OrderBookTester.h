@@ -2102,7 +2102,7 @@ public:
         if(tb->SellQuotes()->Count() != 0)
             throw;
 
-        table->ProcessSnapshot(info->GroupMDEntries, 1);
+        table->ProcessSnapshot(info->GroupMDEntries, 1, 3);
         if(tb->BuyQuotes()->Count() != 1)
             throw;
         if(tb->RptSeq() != 3)
@@ -2163,7 +2163,7 @@ public:
         if(tb->SellQuotes()->Count() != 0)
             throw;
 
-        table->ProcessSnapshot(info->GroupMDEntries, 1);
+        table->ProcessSnapshot(info->GroupMDEntries, 1, 2);
         if(tb->BuyQuotes()->Count() != 1)
             throw;
         if(tb->RptSeq() != 2)
@@ -2212,7 +2212,7 @@ public:
         if(tb->SellQuotes()->Count() != 0)
             throw;
 
-        table->ProcessSnapshot(info->GroupMDEntries, 1);
+        table->ProcessSnapshot(info->GroupMDEntries, 1, 3);
         if(tb->BuyQuotes()->Count() != 1)
             throw;
         if(tb->RptSeq() != 3)
