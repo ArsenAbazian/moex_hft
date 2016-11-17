@@ -2769,6 +2769,7 @@ public:
         if(fcs->m_endMsgSeqNum != -1)
             throw;
     }
+
     void TestConnection_TestSnapshotCollect() {
         this->Clear();
         fcf->StartListenSnapshot();
@@ -2780,6 +2781,49 @@ public:
                                              new TestTemplateItemInfo("entry2"),
                                      }, 2, 4)
         }, 1);
+
+        if(fcs->m_startMsgSeqNum != 2)
+            throw;
+        if(fcs->m_endMsgSeqNum != 2)
+            throw;
+
+        fcs->Listen_Atom_Snapshot_Core();
+        //snapshot received and should be applied
+        OrderBookTableItem<FastOBSFONDItemInfo> *tableItem = fcf->OrderBookFond()->GetItem("symbol1", "session1");
+
+        this->TestTableItemsAllocator(fcf->OrderBookFond());
+
+        if(fcf->OrderBookFond()->UsedItemCount() != 1)
+            throw;
+
+        if(tableItem->BuyQuotes()->Count() != 2)
+            throw;
+        if(fcs->m_snapshotRouteFirst != -1)
+            throw;
+        if(fcs->m_snapshotLastFragment != -1)
+            throw;
+        if(fcs->m_startMsgSeqNum != 3)
+            throw;
+        if(fcs->m_endMsgSeqNum != 2)
+            throw;
+    }
+
+    void TestConnection_TestSnapshotMessageLostAndTimeExpired() {
+        this->Clear();
+        fcf->StartListenSnapshot();
+
+        SendMessages(fcs, new TestTemplateInfo*[2] {
+                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OBS_FOND, 2, "symbol1", "session1", true, false,
+                                     new TestTemplateItemInfo*[2] {
+                                             new TestTemplateItemInfo("entry1"),
+                                             new TestTemplateItemInfo("entry2"),
+                                     }, 2, 4),
+                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OBS_FOND, 2, "symbol1", "session1", false, true,
+                                     new TestTemplateItemInfo*[2] {
+                                             new TestTemplateItemInfo("entry1"),
+                                             new TestTemplateItemInfo("entry2"),
+                                     }, 2, 6),
+        }, 2);
 
         if(fcs->m_startMsgSeqNum != 2)
             throw;
@@ -2900,12 +2944,16 @@ public:
     }
 
     void TestConnection() {
+
+
         printf("TestConnection_Clear_AfterIncremental\n");
         TestConnection_Clear_AfterIncremental();
         printf("TestConnection_TestIncMessageLost_AndWaitTimerElapsed\n");
         TestConnection_TestIncMessageLost_AndWaitTimerElapsed();
         printf("TestConnection_TestSnapshotCollect\n");
         TestConnection_TestSnapshotCollect();
+        printf("TestConnection_TestSnapshotNotCollect\n");
+        TestConnection_TestSnapshotMessageLostAndTimeExpired();
         printf("TestConnection_TestMessagesLost_2Items_SnapshotReceivedForOneItem\n");
         TestConnection_TestMessagesLost_2Items_SnapshotReceivedForOneItem();
 
@@ -2963,11 +3011,11 @@ public:
 
     void Test() {
         TestDefaults();
-        Test_OBR_FOND();
-        Test_OBR_CURR();
         TestStringIdComparer();
         TestConnection();
         TestOrderBookTableItem();
+        Test_OBR_FOND();
+        Test_OBR_CURR();
     }
 };
 
