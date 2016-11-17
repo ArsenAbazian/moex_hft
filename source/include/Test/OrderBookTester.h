@@ -2396,6 +2396,13 @@ public:
     void TestConnection_EmptyTest() {
         fcf->SetSnapshot(this->fcs);
         fcf->OrderBookFond()->Clear();
+        fcf->ClearMessages();
+        fcf->WaitIncrementalMaxTimeMs(50);
+        fcf->m_waitTimer->Stop();
+        fcs->ClearMessages();
+        fcs->WaitSnapshotMaxTimeMs(50);
+        fcf->StartListenSnapshot();
+        fcs->m_waitTimer->Stop();
 
         SendMessages(fcf, new TestTemplateInfo*[3] {
                 new TestTemplateInfo(FeedConnectionMessage::fcmHeartBeat, 1),
