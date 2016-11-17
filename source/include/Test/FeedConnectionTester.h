@@ -203,8 +203,8 @@ public:
         ot.Test();
         TradeTester tt;
         tt.Test();
-        TestLog("/home/arsen/Documents/hft_robot/hft/test/log5");
-        TestLog("/home/arsen/Documents/hft_robot/hft/test/log6");
+        //TestLog("/home/arsen/Documents/hft_robot/hft/test/log5");
+        //TestLog("/home/arsen/Documents/hft_robot/hft/test/log6");
     }
 };
 

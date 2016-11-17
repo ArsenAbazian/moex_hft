@@ -296,6 +296,8 @@ public:
     }
 
     inline bool ProcessQueueMessages() {
+        if(!this->m_entryInfo->HasEntries())
+            return false;
         T **entry = this->m_entryInfo->Entries();
         int incRptSeq = this->m_entryInfo->RptSeq();
         int maxIndex = this->m_entryInfo->MaxIndex();
@@ -318,16 +320,6 @@ public:
 
     inline bool EndProcessSnapshotMessages() {
         return this->ProcessQueueMessages();
-    }
-
-    inline bool ProcessSnapshotMessages(T **entries, int count) {
-        T **entry = entries;
-        this->StartProcessSnapshotMessages();
-        for(int i = 0; i < count; i++) {
-            this->ProcessSnapshotMessage(*entry);
-            entry++;
-        }
-        return this->EndProcessSnapshotMessages();
     }
 };
 
