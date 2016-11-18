@@ -508,9 +508,12 @@ private:
         if(this->m_startMsgSeqNum == -1)
             return true;
 
-        while(this->m_startMsgSeqNum <= this->m_endMsgSeqNum) {
-            if(!TryFindAndApplySnapshot())
-                break;
+        int snapshotCount = 0;
+        while(TryFindAndApplySnapshot())
+            foundSnapshot++;
+
+        if(snapshotCount == 0) {
+
         }
 
         while(this->m_startMsgSeqNum <= this->m_endMsgSeqNum) {
