@@ -509,7 +509,8 @@ private:
             return true;
 
         while(this->m_startMsgSeqNum <= this->m_endMsgSeqNum) {
-            TryFindAndApplySnapshot();
+            if(!TryFindAndApplySnapshot())
+                break;
         }
 
         while(this->m_startMsgSeqNum <= this->m_endMsgSeqNum) {

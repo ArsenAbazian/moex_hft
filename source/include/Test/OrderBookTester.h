@@ -2810,15 +2810,20 @@ public:
 
     void TestConnection_TestSnapshotMessageLostAndTimeExpired() {
         this->Clear();
+        fcs->WaitSnapshotMaxTimeMs(100);
         fcf->StartListenSnapshot();
 
+        if(!fcs->m_waitTimer->Active())
+            throw;
+
+        fcs->m_waitTimer->Stop();
         SendMessages(fcs, new TestTemplateInfo*[2] {
                 new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OBS_FOND, 2, "symbol1", "session1", true, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("entry1"),
                                              new TestTemplateItemInfo("entry2"),
                                      }, 2, 4),
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OBS_FOND, 2, "symbol1", "session1", false, true,
+                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OBS_FOND, 4, "symbol1", "session1", false, true,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("entry1"),
                                              new TestTemplateItemInfo("entry2"),
@@ -2827,27 +2832,20 @@ public:
 
         if(fcs->m_startMsgSeqNum != 2)
             throw;
-        if(fcs->m_endMsgSeqNum != 2)
+        if(fcs->m_endMsgSeqNum != 4)
+            throw;
+        if(fcs->m_waitTimer->Active())
             throw;
 
         fcs->Listen_Atom_Snapshot_Core();
-        //snapshot received and should be applied
-        OrderBookTableItem<FastOBSFONDItemInfo> *tableItem = fcf->OrderBookFond()->GetItem("symbol1", "session1");
 
-        this->TestTableItemsAllocator(fcf->OrderBookFond());
-
-        if(fcf->OrderBookFond()->UsedItemCount() != 1)
+        if(!fcs->m_waitTimer->Active()) // there is a lost message so we should start timer and wait
             throw;
 
-        if(tableItem->BuyQuotes()->Count() != 2)
+        if(fcs->m_snapshotRouteFirst != 2)
             throw;
-        if(fcs->m_snapshotRouteFirst != -1)
-            throw;
+
         if(fcs->m_snapshotLastFragment != -1)
-            throw;
-        if(fcs->m_startMsgSeqNum != 3)
-            throw;
-        if(fcs->m_endMsgSeqNum != 2)
             throw;
     }
     /*
