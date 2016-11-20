@@ -41,10 +41,9 @@ FeedConnection::FeedConnection(const char *id, const char *name, char value, Fee
 
 	this->m_startMsgSeqNum = 1;
 	this->m_endMsgSeqNum = 0;
-    this->m_listenPtr = &FeedConnection::Listen_Atom_Incremental;
     this->m_type = FeedConnectionType::Incremental;
 
-	this->SetState(FeedConnectionState::fcsSuspend, &FeedConnection::Suspend_Atom);
+	this->SetState(FeedConnectionState::fcsSuspend);
 
     this->obrLogFile = fopen("~Documents/hft_robot/logs/obr_log_file.txt", "wt");
 }
@@ -66,10 +65,9 @@ FeedConnection::FeedConnection() {
 
     this->m_startMsgSeqNum = 1;
     this->m_endMsgSeqNum = 0;
-    this->m_listenPtr = &FeedConnection::Listen_Atom_Incremental;
     this->m_type = FeedConnectionType::Incremental;
 
-    this->SetState(FeedConnectionState::fcsSuspend, &FeedConnection::Suspend_Atom);
+    this->SetState(FeedConnectionState::fcsSuspend);
 }
 
 FeedConnection::~FeedConnection() {
@@ -104,6 +102,7 @@ bool FeedConnection::Suspend_Atom() {
 	return true;
 }
 
+/*
 bool FeedConnection::ResendLastMessage_Atom() {
     DefaultLogManager::Default->StartLog(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_ResendLastMessage_Atom);
 
@@ -118,16 +117,21 @@ bool FeedConnection::ResendLastMessage_Atom() {
     DefaultLogManager::Default->EndLog(true);
     return true;
 }
-
+*/
 bool FeedConnection::Reconnect_Atom() {
     DefaultLogManager::Default->StartLog(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_Reconnect_Atom);
 
-    if(!this->socketAManager->Reconnect()) {
-        DefaultLogManager::Default->EndLog(false);
-        return true;
+    if(!this->m_fakeConnect) {
+        if(!this->socketAManager->Reconnect()) {
+            DefaultLogManager::Default->EndLog(false);
+            return true;
+        }
     }
 
-    this->SetState(this->m_nextState, this->m_nextWorkAtomPtr);
+    this->SetState(this->m_nextState);
+    this->m_waitTimer->Start();
+    this->m_startMsgSeqNum = -1;
+    this->m_endMsgSeqNum = -1;
     DefaultLogManager::Default->EndLog(true);
     return true;
 }

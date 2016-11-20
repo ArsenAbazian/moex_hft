@@ -31,9 +31,8 @@ typedef enum _FeedConnectionProtocol {
 
 typedef enum _FeedConnectionState {
 	fcsSuspend,
-	fcsListen,
-    fcsSendLogon,
-    fcsResendLastMessage,
+	fcsListenIncremental,
+    fcsListenSnapshot,
     fcsConnect
 } FeedConnectionState;
 
@@ -130,13 +129,9 @@ protected:
 	SocketBuffer								*m_recvABuffer;
 
 	FeedConnectionState							m_state;
-	FeedConnectionWorkAtomPtr					m_workAtomPtr;
-
 	FeedConnectionState							m_nextState;
-	FeedConnectionWorkAtomPtr					m_nextWorkAtomPtr;
-	bool										m_shouldUseNextState;
 
-	FeedConnectionWorkAtomPtr					m_listenPtr;
+    bool										m_shouldUseNextState;
 
     struct timeval                              *m_tval;
     Stopwatch                                   *m_stopwatch;
@@ -176,6 +171,7 @@ private:
                 this->m_endMsgSeqNum = msgSeqNum;
         }
         else {
+            this->m_waitTimer->Start();
             if(this->m_startMsgSeqNum == -1)
                 this->m_startMsgSeqNum = msgSeqNum;
             if(this->m_endMsgSeqNum < msgSeqNum)
@@ -418,13 +414,11 @@ private:
 	virtual void ClearSocketBufferProvider() {
 		//delete (SocketBufferProvider*)this->m_socketABufferProvider;
 	}
-	inline void SetState(FeedConnectionState state, FeedConnectionWorkAtomPtr funcPtr) {
+	inline void SetState(FeedConnectionState state) {
 		this->m_state = state;
-		this->m_workAtomPtr = funcPtr;
 	}
-	inline void SetNextState(FeedConnectionState state, FeedConnectionWorkAtomPtr funcPtr) {
+	inline void SetNextState(FeedConnectionState state) {
 		this->m_nextState = state;
-		this->m_nextWorkAtomPtr = funcPtr;
 		this->m_shouldUseNextState = true;
 	}
 
@@ -454,7 +448,6 @@ private:
             if (this->m_lastSnapshotInfo != 0 && this->m_lastSnapshotInfo->RouteFirst == 1) {
                 this->m_startMsgSeqNum = i;
                 this->m_snapshotRouteFirst = i;
-                this->m_waitTimer->Stop();
                 return true;
             }
         }
@@ -481,7 +474,6 @@ private:
             if(this->m_lastSnapshotInfo != 0 && this->m_lastSnapshotInfo->LastFragment == 1) {
                 this->m_startMsgSeqNum = i + 1;
                 this->m_snapshotLastFragment = i;
-                this->m_waitTimer->Stop();
                 return true;
             }
         }
@@ -505,17 +497,24 @@ private:
     }
 
     inline bool Listen_Atom_Snapshot_Core() {
+        if(this->m_waitTimer->IsElapsedMilliseconds(this->m_snapshotMaxTimeMs)) {
+            this->m_waitTimer->Stop();
+            this->ReconnectSetNextState(FeedConnectionState::fcsListenSnapshot);
+            return true;
+        }
+
         if(this->m_startMsgSeqNum == -1)
             return true;
 
         int snapshotCount = 0;
         while(TryFindAndApplySnapshot())
-            foundSnapshot++;
+            snapshotCount++;
 
         if(snapshotCount == 0) {
 
         }
 
+        /*
         while(this->m_startMsgSeqNum <= this->m_endMsgSeqNum) {
             if(this->m_packets[this->m_startMsgSeqNum] == 0) {
                 if (!this->m_waitTimer->Active()) {
@@ -583,6 +582,7 @@ private:
             this->m_waitTimer->Stop();
             return true;
         }
+        */
 
         return true;
     }
@@ -611,20 +611,22 @@ private:
     bool ResendLastMessage_Atom();
     bool Reconnect_Atom();
 
-    inline void ReconnectSetNextState(FeedConnectionState state, FeedConnectionWorkAtomPtr funcPtr) {
-        this->SetNextState(state, funcPtr);
-        this->SetState(FeedConnectionState::fcsConnect, &FeedConnection::Reconnect_Atom);
+    inline void ReconnectSetNextState(FeedConnectionState state) {
+        this->m_waitTimer->Stop();
+        this->SetNextState(state);
+        this->SetState(FeedConnectionState::fcsConnect);
     }
 
     inline void JumpNextState() {
-        this->SetState(this->m_nextState, this->m_nextWorkAtomPtr);
+        this->SetState(this->m_nextState);
     }
 
+    /*
     inline bool SendCore() {
         this->m_sendABuffer->SetCurrentItemSize(this->m_fastProtocolManager->MessageLength());
         DefaultLogManager::Default->WriteFast(LogMessageCode::lmcFeedConnection_SendCore, this->m_sendABuffer->BufferIndex(), this->m_sendABuffer->CurrentItemIndex());
         if(!this->socketAManager->Send(this->m_fastProtocolManager->Buffer(), this->m_fastProtocolManager->MessageLength())) {
-            this->SetState(FeedConnectionState::fcsResendLastMessage, &FeedConnection::ResendLastMessage_Atom);
+            this->SetState(FeedConnectionState::fcsResendLastMessage);
             DefaultLogManager::Default->EndLog(false);
             return true;
         }
@@ -634,7 +636,7 @@ private:
         DefaultLogManager::Default->EndLog(true);
         return true;
     }
-
+    */
 	/*inline void AddOrderBookInfoFond(FastOBSFONDItemInfo *info) {
 		this->m_orderBookTableFond->Add(info);
 	}
@@ -952,11 +954,12 @@ public:
 
     inline void SetType(FeedConnectionType type) {
         this->m_type = type;
-        this->m_listenPtr = this->m_type == FeedConnectionType::Incremental? &FeedConnection::Listen_Atom_Incremental: &FeedConnection::Listen_Atom_Snapshot;
-		if(this->m_state == FeedConnectionState::fcsListen)
-			this->SetState(this->m_state, this->m_listenPtr);
-		else if(this->m_nextState == FeedConnectionState::fcsListen)
-			this->SetNextState(this->m_state, this->m_listenPtr);
+		if(this->m_state == FeedConnectionState::fcsListenIncremental ||
+                this->m_state == FeedConnectionState::fcsListenSnapshot)
+			this->SetState(this->m_state);
+		else if(this->m_nextState == FeedConnectionState::fcsListenIncremental ||
+                this->m_nextState == FeedConnectionState::fcsListenSnapshot)
+			this->SetNextState(this->m_state);
     }
     inline FeedConnectionType Type() { return this->m_type; }
 
@@ -1043,13 +1046,26 @@ public:
 	inline int ExpectedMsgSeqNo() { return this->m_startMsgSeqNum + 1; }
 
 	inline bool DoWorkAtom() {
-		return (this->*m_workAtomPtr)();
+		FeedConnectionState st = this->m_state;
+        if(st == FeedConnectionState::fcsListenIncremental)
+            return this->Listen_Atom_Incremental();
+        if(st == FeedConnectionState::fcsListenSnapshot)
+            return this->Listen_Atom_Snapshot();
+        if(st == FeedConnectionState::fcsSuspend)
+            return true;
+        if(st == FeedConnectionState::fcsConnect)
+            return this->Reconnect_Atom();
+        return true;
+
 	}
 	inline void Listen() {
+        FeedConnectionState st = this->m_type == FeedConnectionType::Incremental?
+                                FeedConnectionState::fcsListenIncremental:
+                                FeedConnectionState::fcsListenSnapshot;
 		if(this->m_state == FeedConnectionState::fcsSuspend)
-			this->SetState(FeedConnectionState::fcsListen, this->m_listenPtr);
+			this->SetState(st);
 		else
-			this->SetNextState(FeedConnectionState::fcsListen, this->m_listenPtr);
+			this->SetNextState(st);
 	}
     inline bool Start() {
         if(!this->Connect())
@@ -1061,7 +1077,7 @@ public:
 		return true;
     }
 	inline bool Stop() {
-		this->SetState(FeedConnectionState::fcsSuspend, &FeedConnection::Suspend_Atom);
+		this->SetState(FeedConnectionState::fcsSuspend);
 		if(!this->Disconnect())
 			return false;
 		return true;

@@ -56,6 +56,9 @@ public:
             clock_gettime(CLOCK_REALTIME, this->m_specEnd);
         return  (this->m_specEnd->tv_sec - (*(this->m_specStart))->tv_sec) * 1000 + (this->m_specEnd->tv_nsec - (*(this->m_specStart))->tv_nsec) / 1000000;
     }
+    inline bool IsElapsedMilliseconds(time_t ms) {
+        return this->ElapsedMilliseconds() > ms;
+    }
     inline time_t ElapsedMicroseconds() {
         if(this->m_enabled[0])
             clock_gettime(CLOCK_REALTIME, this->m_specEnd);
