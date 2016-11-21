@@ -59,6 +59,9 @@ public:
     inline bool IsElapsedMilliseconds(time_t ms) {
         return this->ElapsedMilliseconds() > ms;
     }
+    inline bool IsElapsedMilliseconds(int index, time_t ms) {
+        return this->ElapsedMilliseconds(index) > ms;
+    }
     inline time_t ElapsedMicroseconds() {
         if(this->m_enabled[0])
             clock_gettime(CLOCK_REALTIME, this->m_specEnd);

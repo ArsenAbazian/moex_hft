@@ -130,6 +130,7 @@ bool FeedConnection::Reconnect_Atom() {
 
     this->SetState(this->m_nextState);
     this->m_waitTimer->Start();
+    this->m_waitTimer->Stop(1);
     this->m_startMsgSeqNum = -1;
     this->m_endMsgSeqNum = -1;
     DefaultLogManager::Default->EndLog(true);

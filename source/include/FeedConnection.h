@@ -496,6 +496,21 @@ private:
         return true;
     }
 
+    inline bool HasPotentiallyLostPackets() {
+        if(this->m_startMsgSeqNum > this->m_endMsgSeqNum)
+            return true;
+        return this->m_packets[this->m_startMsgSeqNum]->m_item == 0;
+    }
+
+    inline void SkipLostPackets() {
+        for(int i = this->m_startMsgSeqNum; i <= this->m_endMsgSeqNum; i++) {
+            if(this->m_packets[i]->m_item != 0) {
+                this->m_startMsgSeqNum = i;
+                break;
+            }
+        }
+    }
+
     inline bool Listen_Atom_Snapshot_Core() {
         if(this->m_waitTimer->IsElapsedMilliseconds(this->m_snapshotMaxTimeMs)) {
             this->m_waitTimer->Stop();
@@ -506,13 +521,19 @@ private:
         if(this->m_startMsgSeqNum == -1)
             return true;
 
+        if(this->HasPotentiallyLostPackets())
+            this->m_waitTimer->Activate(1);
+        else
+            this->m_waitTimer->Stop(1);
+        if(this->m_waitTimer->IsElapsedMilliseconds(1, this->WaitSnapshotMaxTimeMs())) {
+            this->SkipLostPackets();
+            this->m_waitTimer->Stop(1);
+        }
+
         int snapshotCount = 0;
         while(TryFindAndApplySnapshot())
             snapshotCount++;
 
-        if(snapshotCount == 0) {
-
-        }
 
         /*
         while(this->m_startMsgSeqNum <= this->m_endMsgSeqNum) {
@@ -1073,6 +1094,7 @@ public:
 		if(this->m_state != FeedConnectionState::fcsSuspend)
             return true;
         this->m_waitTimer->Start();
+        this->m_waitTimer->Stop(1);
         this->Listen();
 		return true;
     }

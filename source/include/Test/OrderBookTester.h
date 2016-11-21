@@ -268,6 +268,7 @@ public:
         fcf->ClearMessages();
         fcf->WaitIncrementalMaxTimeMs(50);
         fcf->m_waitTimer->Stop();
+        fcf->m_waitTimer->Stop(1);
         fcs->ClearMessages();
         fcs->WaitSnapshotMaxTimeMs(50);
         fcf->StartListenSnapshot();
@@ -3012,6 +3013,165 @@ public:
             throw;
     }
 
+    void TestConnection_LastFragmentReceivedBeforeRouteFirst() {
+        this->Clear();
+        fcf->StartListenSnapshot();
+
+        SendMessages(fcs, new TestTemplateInfo*[1] {
+                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OBS_FOND, 1, "symbol1", "session1", false, true,
+                                     new TestTemplateItemInfo*[2] {
+                                             new TestTemplateItemInfo("entry1"),
+                                             new TestTemplateItemInfo("entry2"),
+                                     }, 2, 4)
+        }, 1);
+
+        if(!fcs->Listen_Atom_Snapshot_Core())
+            throw;
+        if(fcs->m_state != FeedConnectionState::fcsListenSnapshot)
+            throw;
+        if(fcs->m_startMsgSeqNum != 2)
+            throw;
+        if(fcs->m_endMsgSeqNum != 1)
+            throw;
+        if(fcs->m_snapshotRouteFirst != -1)
+            throw;
+        if(fcs->m_snapshotLastFragment != -1)
+            throw;
+        if(!fcs->m_waitTimer->Active())
+            throw;
+    }
+
+    void TestConnection_SnapshotSomeMessagesNotReceived() {
+        this->Clear();
+        fcf->StartListenSnapshot();
+
+        SendMessages(fcs, new TestTemplateInfo*[1] {
+                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OBS_FOND, 1, "symbol1", "session1", false, false,
+                                     new TestTemplateItemInfo*[2] {
+                                             new TestTemplateItemInfo("entry1"),
+                                             new TestTemplateItemInfo("entry2"),
+                                     }, 2, 4)
+        }, 1);
+
+        fcs->Listen_Atom_Snapshot_Core();
+
+        // message seq 2 lost
+        SendMessages(fcs, new TestTemplateInfo*[1] {
+                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OBS_FOND, 3, "symbol1", "session1", false, false,
+                                     new TestTemplateItemInfo*[2] {
+                                             new TestTemplateItemInfo("entry1"),
+                                             new TestTemplateItemInfo("entry2"),
+                                     }, 2, 4)
+        }, 1);
+
+        fcs->Listen_Atom_Snapshot_Core();
+
+        if(fcs->m_startMsgSeqNum != 2)
+            throw;
+        if(fcs->m_endMsgSeqNum != 3)
+            throw;
+        if(fcs->m_state != FeedConnectionState::fcsListenSnapshot)
+            throw;
+        if(!fcs->m_waitTimer->Active())
+            throw;
+        if(!fcs->m_waitTimer->Active(1)) // we have to activate another timer to watch lost message
+            throw;
+
+        // now wait some time and after that we have to skip lost message to get other snapshot
+        while(!fcs->m_waitTimer->IsElapsedMilliseconds(1, fcs->WaitSnapshotMaxTimeMs())) {
+            fcs->m_waitTimer->Start(); // reset timer 0 to avoid simulate situation when no packet received
+            fcs->Listen_Atom_Snapshot_Core();
+        }
+
+        fcs->Listen_Atom_Snapshot_Core();
+        if(fcs->m_startMsgSeqNum != 4)
+            throw;
+        if(fcs->m_endMsgSeqNum != 3)
+            throw;
+        if(fcs->m_waitTimer->Active(1))
+            throw;
+    }
+
+    void TestConnection_SnapshotSomeMessagesReceivedLater() {
+        this->Clear();
+        fcf->StartListenSnapshot();
+
+        SendMessages(fcs, new TestTemplateInfo*[1] {
+                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OBS_FOND, 1, "symbol1", "session1", false, false,
+                                     new TestTemplateItemInfo*[2] {
+                                             new TestTemplateItemInfo("entry1"),
+                                             new TestTemplateItemInfo("entry2"),
+                                     }, 2, 4)
+        }, 1);
+
+        fcs->Listen_Atom_Snapshot_Core();
+
+        // message seq 2 lost
+        SendMessages(fcs, new TestTemplateInfo*[1] {
+                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OBS_FOND, 3, "symbol1", "session1", false, false,
+                                     new TestTemplateItemInfo*[2] {
+                                             new TestTemplateItemInfo("entry1"),
+                                             new TestTemplateItemInfo("entry2"),
+                                     }, 2, 4)
+        }, 1);
+
+        if(!fcs->Listen_Atom_Snapshot_Core())
+            throw;
+
+        if(fcs->m_startMsgSeqNum != 2)
+            throw;
+        if(fcs->m_endMsgSeqNum != 3)
+            throw;
+        if(fcs->m_state != FeedConnectionState::fcsListenSnapshot)
+            throw;
+        if(!fcs->m_waitTimer->Active())
+            throw;
+        if(!fcs->m_waitTimer->Active(1)) // we have to activate another timer to watch lost message
+            throw;
+
+        // wait some time and then receive lost packet
+        while(!fcs->m_waitTimer->IsElapsedMilliseconds(1, fcs->WaitSnapshotMaxTimeMs() / 2)) {
+            fcs->m_waitTimer->Start(); // reset timer 0 to avoid simulate situation when no packet received
+            if(!fcs->Listen_Atom_Snapshot_Core())
+                throw;
+        }
+
+        if(!fcs->m_waitTimer->Active(1)) // we have to activate another timer to watch lost message
+            throw;
+
+        SendMessages(fcs, new TestTemplateInfo*[1] {
+                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OBS_FOND, 2, "symbol1", "session1", false, false,
+                                     new TestTemplateItemInfo*[2] {
+                                             new TestTemplateItemInfo("entry1"),
+                                             new TestTemplateItemInfo("entry2"),
+                                     }, 2, 4)
+        }, 1);
+
+        if(!fcs->Listen_Atom_Snapshot_Core())
+            throw;
+        if(fcs->m_startMsgSeqNum != 4)
+            throw;
+        if(fcs->m_endMsgSeqNum != 3)
+            throw;
+        if(fcs->m_waitTimer->Active(1)) // we have to activate another timer to watch lost message
+            throw;
+    }
+
+    void TestConnection_StopTimersAfterReconnect() {
+        this->Clear();
+        fcf->StartListenSnapshot();
+
+        // manually activate timer 1
+        fcs->m_waitTimer->Activate(1);
+        fcs->ReconnectSetNextState(FeedConnectionState::fcsListenSnapshot);
+        fcs->DoWorkAtom();
+
+        if(!fcs->m_waitTimer->Active())
+            throw;
+        if(fcs->m_waitTimer->Active(1))
+            throw;
+    }
+
     void TestConnection_TestSnapshotCollect() {
         this->Clear();
         fcf->StartListenSnapshot();
@@ -3185,6 +3345,14 @@ public:
 
     void TestConnection() {
 
+        printf("TestConnection_StopTimersAfterReconnect\n");
+        TestConnection_StopTimersAfterReconnect();
+        printf("TestConnection_SnapshotSomeMessagesReceivedLater\n");
+        TestConnection_SnapshotSomeMessagesReceivedLater();
+        printf("TestConnection_SnapshotSomeMessagesNotReceived\n");
+        TestConnection_SnapshotSomeMessagesNotReceived();
+        printf("TestConnection_LastFragmentReceivedBeforeRouteFirst\n");
+        TestConnection_LastFragmentReceivedBeforeRouteFirst();
         printf("TestConnection_RouteFirstReceived_AfterSomeDummyMessages\n");
         TestConnection_RouteFirstReceived_AfterSomeDummyMessages();
         printf("TestConnection_RouteFirstReceived_Empty\n");
