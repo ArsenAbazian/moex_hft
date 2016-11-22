@@ -2409,6 +2409,13 @@ public:
             SendMessage(conn, templates[i]);
     }
 
+
+    void SendSimpleIncrementalMessage(FeedConnection *fc, FeedConnectionMessage msg, const char *symbol, int msgSeqNum, int rptSeq) {
+        TestTemplateItemInfo *item = new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, symbol, "session1", "entry1", rptSeq, 1, 1, 1, 1);
+        TestTemplateInfo *info = new TestTemplateInfo(msg, msgSeqNum, &item, 1);
+        SendMessages(fc, &info, 1);
+    }
+
     void TestConnection_EmptyTest() {
         this->Clear();
 
@@ -3077,9 +3084,9 @@ public:
         if(!fcs->m_waitTimer->Active(1)) // we have to activate another timer to watch lost message
             throw;
 
+        fcs->m_waitTimer->Stop(); // reset timer 0 to avoid simulate situation when no packet received
         // now wait some time and after that we have to skip lost message to get other snapshot
         while(!fcs->m_waitTimer->IsElapsedMilliseconds(1, fcs->WaitSnapshotMaxTimeMs())) {
-            fcs->m_waitTimer->Start(); // reset timer 0 to avoid simulate situation when no packet received
             fcs->Listen_Atom_Snapshot_Core();
         }
 
@@ -3232,6 +3239,8 @@ public:
                                      }, 2, 6),
         }, 2);
 
+        if(fcs->m_packets[3]->m_item != 0)
+            throw;
         if(fcs->m_startMsgSeqNum != 2)
             throw;
         if(fcs->m_endMsgSeqNum != 4)
@@ -3239,15 +3248,33 @@ public:
         if(!fcs->m_waitTimer->Active())
             throw;
 
+        fcs->m_waitTimer->Reset();
         fcs->Listen_Atom_Snapshot_Core();
 
         if(!fcs->m_waitTimer->Active())
             throw;
-
+        if(fcs->m_waitTimer->Active(1))
+            throw;
+        if(fcs->m_startMsgSeqNum != 3)
+            throw;
         if(fcs->m_snapshotRouteFirst != 2)
             throw;
-
         if(fcs->m_snapshotLastFragment != -1)
+            throw;
+
+        fcs->Listen_Atom_Snapshot_Core();
+        if(!fcs->m_waitTimer->Active(1))
+            throw;
+        while(fcs->m_waitTimer->ElapsedMilliseconds(1) <= fcs->WaitSnapshotMaxTimeMs())
+            fcs->Listen_Atom_Snapshot_Core();
+
+        fcs->Listen_Atom_Snapshot_Core();
+        // reset
+        if(fcs->m_snapshotRouteFirst != -1)
+            throw;
+        if(fcs->m_snapshotLastFragment != -1)
+            throw;
+        if(fcs->m_waitTimer->Active(1))
             throw;
     }
     /*
@@ -3315,6 +3342,92 @@ public:
                 throw;
     }
 
+    int CalcMsgCount(const char *msg) {
+        int len = strlen(msg);
+        int res = 0;
+        for(int i = 0; i < len; i++) {
+            if(msg[i] == ',')
+                res++;
+        }
+        return res + 1;
+    }
+
+    int CalcWordLength(const char *msg, int startIndex) {
+        int res = 0;
+        for(int i = startIndex; msg[i] != ',' && msg[i] != '\0'; i++)
+            res++;
+        return res;
+    }
+
+    void TrimWord(const char *msg, int startIndex, int len, int *start, int *end) {
+        *start = startIndex;
+        *end = startIndex + len - 1;
+
+        while(msg[*start] == ' ')
+            (*start)++;
+        while(msg[*end] == ' ')
+            (*end)--;
+        return ;
+    }
+
+    int SkipToNextWord(const char *msg, int start) {
+        while(msg[start] == ' ')
+            start++;
+        return start;
+    }
+
+    char** Split(const char *msg, int start, int end, int *count) {
+        char **keys = new char*[100];
+        *count = 0;
+        for(int i = start; i <= end; i++) {
+            if(msg[i] == ' ' || i == end) {
+                keys[*count] = new char[i - start];
+                memcpy(keys[*count], &msg[start], i - start);
+                keys[*count][i-start] = '\0';
+                if(i == end)
+                    break;
+                *count++;
+                start = SkipToNextWord(msg, i);
+                i = start - 1;
+            }
+        }
+        return keys;
+    }
+
+    TestTemplateInfo *CreateTemplate(char **keys, int keysCount) {
+        TestTemplateInfo *info = new TestTemplateInfo
+    }
+
+    void FillMsg(TestTemplateInfo **temp, int count, const char *msg) {
+        int startIndex = 0;
+        for(int i = 0; i < count; i++) {
+            int len = CalcWordLength(msg, startIndex);
+            int start = 0, end = 0;
+            TrimWord(msg, startIndex, len, &start, &end);
+            int keysCount = 0;
+            char **keys = Split(msg, start, end, &keysCount);
+            temp[i] = CreateTemplate(keys, keysCount);
+            startIndex += len + 1;
+        }
+    }
+
+    void SendMessages(FeedConnection *fci, FeedConnection *fcs, const char *inc, const char *snap) {
+        int incMsgCount = CalcMsgCount(inc);
+        int snapMsgCount = CalcMsgCount(snap);
+
+        TestTemplateInfo **inc_msg = new TestTemplateInfo*[incMsgCount];
+        TestTemplateInfo **snap_msg = new TestTemplateInfo*[snapMsgCount];
+
+        FillMsg(inc_msg, incMsgCount, inc);
+    }
+
+    void TestConnection_StopListeningSnapshotBecauseAllItemsIsUpToDate() {
+        this->Clear();
+
+        "inc symbol1, lost symbol1, heartbeat, hearthbeat"
+        "sbegin symbol1, snap, snap, snap, send"
+    }
+
     void TestConnection_Clear_AfterIncremental() {
         this->TestTableItemsAllocator(fcf->OrderBookFond());
         this->Clear();
@@ -3345,6 +3458,8 @@ public:
 
     void TestConnection() {
 
+        printf("TestConnection_StopListeningSnapshotBecauseAllItemsIsUpToDate\n");
+        TestConnection_StopListeningSnapshotBecauseAllItemsIsUpToDate();
         printf("TestConnection_StopTimersAfterReconnect\n");
         TestConnection_StopTimersAfterReconnect();
         printf("TestConnection_SnapshotSomeMessagesReceivedLater\n");

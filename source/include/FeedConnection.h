@@ -438,10 +438,7 @@ private:
     inline bool FindRouteFirst() {
         for(int i = this->m_startMsgSeqNum; i <= this->m_endMsgSeqNum; i++) {
             if (this->m_packets[i]->m_item == 0) {
-                if (SnapshotMessageWaitTimeElapsed()) {
-                    this->m_startMsgSeqNum = i + 1;
-                    return false;
-                }
+                this->m_startMsgSeqNum = i;
                 return false;
             }
             this->m_lastSnapshotInfo = this->GetSnapshotInfo(i);
@@ -463,11 +460,7 @@ private:
         }
         for(int i = this->m_startMsgSeqNum; i <= this->m_endMsgSeqNum; i++) {
             if (this->m_packets[i]->m_item == 0) {
-                if (SnapshotMessageWaitTimeElapsed()) {
-                    this->m_snapshotRouteFirst = -1;
-                    this->m_startMsgSeqNum = i + 1;
-                    return false;
-                }
+                this->m_startMsgSeqNum = i;
                 return false;
             }
             this->m_lastSnapshotInfo = this->GetSnapshotInfo(i);
@@ -528,6 +521,8 @@ private:
         if(this->m_waitTimer->IsElapsedMilliseconds(1, this->WaitSnapshotMaxTimeMs())) {
             this->SkipLostPackets();
             this->m_waitTimer->Stop(1);
+            this->m_snapshotRouteFirst = -1;
+            this->m_snapshotLastFragment = -1;
         }
 
         int snapshotCount = 0;

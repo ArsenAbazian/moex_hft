@@ -57,9 +57,13 @@ public:
         return  (this->m_specEnd->tv_sec - (*(this->m_specStart))->tv_sec) * 1000 + (this->m_specEnd->tv_nsec - (*(this->m_specStart))->tv_nsec) / 1000000;
     }
     inline bool IsElapsedMilliseconds(time_t ms) {
+        if(!this->m_enabled[0])
+            return false;
         return this->ElapsedMilliseconds() > ms;
     }
     inline bool IsElapsedMilliseconds(int index, time_t ms) {
+        if(!this->m_enabled[index])
+            return false;
         return this->ElapsedMilliseconds(index) > ms;
     }
     inline time_t ElapsedMicroseconds() {
@@ -94,6 +98,14 @@ public:
     }
     inline bool Active(int index) { return this->m_enabled[index]; }
     inline bool Active() { return this->m_enabled[0]; }
+    inline void Reset() {
+        if(Active())
+            this->Start();
+    }
+    inline void Reset(int index) {
+        if(Active(index))
+            this->Start(index);
+    }
 };
 
 class DefaultStopwatch {
