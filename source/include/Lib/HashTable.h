@@ -46,6 +46,10 @@ public:
         return (*sh1) == (*sh2);
     }
 
+    static inline bool Equal(const char *s1, const char *s2) {
+        return Equal(s1, strlen(s1), s2, strlen(s2));
+    }
+
     static inline bool Equal(const char *s1, int l1, const char *s2, int l2) {
         if(l1 != l2)
             return false;

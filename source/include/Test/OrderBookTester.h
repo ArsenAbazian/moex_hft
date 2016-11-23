@@ -53,7 +53,7 @@ public:
     FeedConnectionMessage   m_templateId;
     int                     m_msgSeqNo;
     bool                    m_routeFirst;
-    bool                    m_lastMessage;
+    bool                    m_lastFragment;
     int                     m_itemsCount;
     int                     m_rptSec;
     TestTemplateItemInfo*   m_items[8];
@@ -78,7 +78,7 @@ public:
         this->m_symbol = symbol;
         this->m_session = session;
         this->m_routeFirst = routeFirst;
-        this->m_lastMessage = lastMessage;
+        this->m_lastFragment = lastMessage;
     }
 };
 
@@ -2380,7 +2380,7 @@ public:
 
         info->RptSeq = tmp->m_rptSec;
         info->RouteFirst = tmp->m_routeFirst;
-        info->LastFragment = tmp->m_lastMessage;
+        info->LastFragment = tmp->m_lastFragment;
         for(int i = 0; i < tmp->m_itemsCount; i++) {
             info->GroupMDEntries[i] = CreateObrFondItemInfo(tmp->m_items[i]);
         }
@@ -3395,7 +3395,32 @@ public:
     }
 
     TestTemplateInfo *CreateTemplate(char **keys, int keysCount) {
-        TestTemplateInfo *info = new TestTemplateInfo
+        TestTemplateInfo *info = new TestTemplateInfo();
+
+        int commandIndex = 0;
+        if(StringIdComparer::Equal(keys[0], "lost")) {
+            commandIndex = 1;
+        }
+
+        if(StringIdComparer::Equal(keys[commandIndex], "inc")) {
+
+        }
+        if(StringIdComparer::Equal(keys[commandIndex], "sbegin")) {
+            info->m_routeFirst = true;
+        }
+        if(StringIdComparer::Equal(keys[commandIndex], "send")) {
+            info->m_lastFragment = true;
+        }
+        if(StringIdComparer::Equal(keys[commandIndex], "snap")) {
+
+        }
+        if(StringIdComparer::Equal(keys[commandIndex], "hbeat")) {
+
+        }
+
+
+
+        return info;
     }
 
     void FillMsg(TestTemplateInfo **temp, int count, const char *msg) {
