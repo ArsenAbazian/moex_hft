@@ -21,10 +21,7 @@
   <component name="ChangeListManager">
     <list default="true" id="32604c03-98a8-42cf-80f6-771ec2ce84cc" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/FeedConnection.h" afterPath="$PROJECT_DIR$/source/include/FeedConnection.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/Stopwatch.h" afterPath="$PROJECT_DIR$/source/include/Stopwatch.h" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/Test/OrderBookTester.h" afterPath="$PROJECT_DIR$/source/include/Test/OrderBookTester.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/src/FeedConnection.cpp" afterPath="$PROJECT_DIR$/source/src/FeedConnection.cpp" />
     </list>
     <ignored path="hft_robot.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -66,7 +63,7 @@
         <entry file="file://$PROJECT_DIR$/source/include/Lib/HashTable.h">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="4860">
-              <caret line="270" column="0" selection-start-line="270" selection-start-column="0" selection-end-line="270" selection-end-column="0" />
+              <caret line="275" column="0" selection-start-line="275" selection-start-column="0" selection-end-line="275" selection-end-column="0" />
               <folding>
                 <element signature="e#112#140#0" expanded="true" />
                 <element signature="e#294#2705#1" expanded="false" />
@@ -81,30 +78,10 @@
       <file leaf-file-name="OrderBookTester.h" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/source/include/Test/OrderBookTester.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1123">
-              <caret line="3052" column="45" selection-start-line="3052" selection-start-column="45" selection-end-line="3052" selection-end-column="45" />
+            <state relative-caret-position="270">
+              <caret line="3488" column="25" selection-start-line="3488" selection-start-column="25" selection-end-line="3488" selection-end-column="25" />
               <folding>
-                <element signature="e#4512#5000#0" expanded="false" />
-                <element signature="e#5006#5798#0" expanded="false" />
-                <element signature="e#6896#7384#0" expanded="false" />
-                <element signature="e#7390#8182#0" expanded="false" />
-                <element signature="e#8993#9372#0" expanded="false" />
-                <element signature="e#9378#10255#0" expanded="false" />
-                <element signature="e#77866#78410#0" expanded="false" />
-                <element signature="e#79332#79815#0" expanded="false" />
-                <element signature="e#79821#80421#0" expanded="false" />
-                <element signature="e#80427#81097#0" expanded="false" />
-                <element signature="e#81103#82369#0" expanded="false" />
-                <element signature="e#82375#82644#0" expanded="false" />
-                <element signature="e#93116#93532#0" expanded="false" />
-                <element signature="e#93538#95042#0" expanded="false" />
-                <element signature="e#95048#95685#0" expanded="false" />
-                <element signature="e#97763#98119#0" expanded="false" />
-                <element signature="e#98125#99863#0" expanded="false" />
-                <element signature="e#99869#103044#0" expanded="false" />
-                <element signature="e#103050#106251#0" expanded="false" />
-                <element signature="e#106257#110402#0" expanded="false" />
-                <element signature="e#110408#114554#0" expanded="false" />
+                <marker date="1479933979250" expanded="false" signature="127:167" ph="..." />
               </folding>
             </state>
           </provider>
@@ -133,8 +110,8 @@
       <file leaf-file-name="FeedConnection.h" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/source/include/FeedConnection.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="209">
-              <caret line="528" column="21" selection-start-line="528" selection-start-column="21" selection-end-line="528" selection-end-column="21" />
+            <state relative-caret-position="119">
+              <caret line="523" column="21" selection-start-line="523" selection-start-column="21" selection-end-line="523" selection-end-column="21" />
               <folding>
                 <element signature="e#13#40#0" expanded="true" />
               </folding>
@@ -165,8 +142,8 @@
       <file leaf-file-name="Stopwatch.h" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/source/include/Stopwatch.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="392">
-              <caret line="49" column="0" selection-start-line="49" selection-start-column="0" selection-end-line="49" selection-end-column="0" />
+            <state relative-caret-position="608">
+              <caret line="61" column="0" selection-start-line="61" selection-start-column="0" selection-end-line="61" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -323,6 +300,117 @@
       <recent name="$PROJECT_DIR$/source/include" />
       <recent name="$PROJECT_DIR$/source/src" />
     </key>
+  </component>
+  <component name="RestoreUpdateTree" date="Moments ago" ActionInfo="_Update">
+    <UpdatedFiles>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Updated from server" />
+        <option name="myStatusName" value="Changed on server" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="CHANGED_ON_SERVER" />
+        <FILE-GROUP>
+          <option name="myUpdateName" value="Updated" />
+          <option name="myStatusName" value="Changed" />
+          <option name="mySupportsDeletion" value="false" />
+          <option name="myCanBeAbsent" value="false" />
+          <option name="myId" value="UPDATED" />
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/source/include/Lib/HashTable.h</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/source/include/Test/OrderBookTester.h</PATH>
+        </FILE-GROUP>
+        <FILE-GROUP>
+          <option name="myUpdateName" value="Created" />
+          <option name="myStatusName" value="Created" />
+          <option name="mySupportsDeletion" value="false" />
+          <option name="myCanBeAbsent" value="false" />
+          <option name="myId" value="CREATED" />
+        </FILE-GROUP>
+        <FILE-GROUP>
+          <option name="myUpdateName" value="Deleted" />
+          <option name="myStatusName" value="Deleted" />
+          <option name="mySupportsDeletion" value="false" />
+          <option name="myCanBeAbsent" value="true" />
+          <option name="myId" value="REMOVED_FROM_REPOSITORY" />
+        </FILE-GROUP>
+        <FILE-GROUP>
+          <option name="myUpdateName" value="Restored" />
+          <option name="myStatusName" value="Will be restored" />
+          <option name="mySupportsDeletion" value="false" />
+          <option name="myCanBeAbsent" value="false" />
+          <option name="myId" value="RESTORED" />
+        </FILE-GROUP>
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Modified" />
+        <option name="myStatusName" value="Modified" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="MODIFIED" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Skipped" />
+        <option name="myStatusName" value="Skipped" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="SKIPPED" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Merged with conflicts" />
+        <option name="myStatusName" value="Will be merged with conflicts" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="MERGED_WITH_CONFLICTS" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Merged with tree conflicts" />
+        <option name="myStatusName" value="Merged with tree conflicts" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="MERGED_WITH_TREE_CONFLICT" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Merged with property conflicts" />
+        <option name="myStatusName" value="Will be merged with property conflicts" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="MERGED_WITH_PROPERTY_CONFLICT" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Merged" />
+        <option name="myStatusName" value="Will be merged" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="MERGED" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Not in repository" />
+        <option name="myStatusName" value="Not in repository" />
+        <option name="mySupportsDeletion" value="true" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="UNKNOWN" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Locally added" />
+        <option name="myStatusName" value="Locally added" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="LOCALLY_ADDED" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Locally removed" />
+        <option name="myStatusName" value="Locally removed" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="LOCALLY_REMOVED" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Switched" />
+        <option name="myStatusName" value="Switched" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="SWITCHED" />
+      </FILE-GROUP>
+    </UpdatedFiles>
   </component>
   <component name="RunManager" selected="Application.Build All">
     <configuration default="true" type="CMakeGoogleTestRunConfigurationType" factoryName="Google Test" PASS_PARENT_ENVS_2="true" PROJECT_NAME="hft_robot" TARGET_NAME="hft_robot" CONFIG_NAME="Debug" TEST_MODE="SUITE_TEST">
@@ -623,14 +711,7 @@
       <workItem from="1479315086341" duration="7533000" />
       <workItem from="1479369534539" duration="562000" />
       <workItem from="1479382976734" duration="8624000" />
-      <workItem from="1479661403737" duration="9083000" />
-    </task>
-    <task id="LOCAL-00031" summary="1. Refactore presence map, working on decoding fast protocol messages&#10;">
-      <created>1471882146144</created>
-      <option name="number" value="00031" />
-      <option name="presentableId" value="LOCAL-00031" />
-      <option name="project" value="LOCAL" />
-      <updated>1471882146144</updated>
+      <workItem from="1479661403737" duration="13517000" />
     </task>
     <task id="LOCAL-00032" summary="1. Add Printing to Console  for FAST messages... going to work on exporting messages to xml&#10;">
       <created>1471897349799</created>
@@ -968,11 +1049,18 @@
       <option name="project" value="LOCAL" />
       <updated>1479668349691</updated>
     </task>
-    <option name="localTasksCounter" value="80" />
+    <task id="LOCAL-00080" summary="Big Refactoring continue... tests - break tests">
+      <created>1479763030464</created>
+      <option name="number" value="00080" />
+      <option name="presentableId" value="LOCAL-00080" />
+      <option name="project" value="LOCAL" />
+      <updated>1479763030464</updated>
+    </task>
+    <option name="localTasksCounter" value="81" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="820439000" />
+    <option name="totallyTimeSpent" value="824873000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -989,15 +1077,15 @@
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.21793194" sideWeight="0.493007" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32942554" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.5318656" sideWeight="0.3907068" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25608343" sideWeight="0.3907068" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="CMake" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2838934" sideWeight="0.4384817" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3511008" sideWeight="0.4365183" order="8" side_tool="true" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3481829" sideWeight="0.61189955" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.34762457" sideWeight="0.61189955" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.61313015" sideWeight="0.48689955" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32942554" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.235262" sideWeight="0.506993" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2363847" sideWeight="0.5634817" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.35457706" sideWeight="0.5634817" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -1105,7 +1193,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/source/include/Test/OrderBookTester.h</url>
-          <line>3171</line>
+          <line>3291</line>
           <option name="timeStamp" value="660" />
         </line-breakpoint>
       </breakpoints>
@@ -1399,7 +1487,7 @@
     <entry file="file://$PROJECT_DIR$/source/include/Lib/HashTable.h">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="4860">
-          <caret line="270" column="0" selection-start-line="270" selection-start-column="0" selection-end-line="270" selection-end-column="0" />
+          <caret line="275" column="0" selection-start-line="275" selection-start-column="0" selection-end-line="275" selection-end-column="0" />
           <folding>
             <element signature="e#112#140#0" expanded="true" />
             <element signature="e#294#2705#1" expanded="false" />
@@ -1452,8 +1540,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/source/include/Stopwatch.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="392">
-          <caret line="49" column="0" selection-start-line="49" selection-start-column="0" selection-end-line="49" selection-end-column="0" />
+        <state relative-caret-position="608">
+          <caret line="61" column="0" selection-start-line="61" selection-start-column="0" selection-end-line="61" selection-end-column="0" />
           <folding />
         </state>
       </provider>
@@ -1468,8 +1556,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/source/include/FeedConnection.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="209">
-          <caret line="528" column="21" selection-start-line="528" selection-start-column="21" selection-end-line="528" selection-end-column="21" />
+        <state relative-caret-position="119">
+          <caret line="523" column="21" selection-start-line="523" selection-start-column="21" selection-end-line="523" selection-end-column="21" />
           <folding>
             <element signature="e#13#40#0" expanded="true" />
           </folding>
@@ -1478,30 +1566,10 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/source/include/Test/OrderBookTester.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1123">
-          <caret line="3052" column="45" selection-start-line="3052" selection-start-column="45" selection-end-line="3052" selection-end-column="45" />
+        <state relative-caret-position="270">
+          <caret line="3488" column="25" selection-start-line="3488" selection-start-column="25" selection-end-line="3488" selection-end-column="25" />
           <folding>
-            <element signature="e#4512#5000#0" expanded="false" />
-            <element signature="e#5006#5798#0" expanded="false" />
-            <element signature="e#6896#7384#0" expanded="false" />
-            <element signature="e#7390#8182#0" expanded="false" />
-            <element signature="e#8993#9372#0" expanded="false" />
-            <element signature="e#9378#10255#0" expanded="false" />
-            <element signature="e#77866#78410#0" expanded="false" />
-            <element signature="e#79332#79815#0" expanded="false" />
-            <element signature="e#79821#80421#0" expanded="false" />
-            <element signature="e#80427#81097#0" expanded="false" />
-            <element signature="e#81103#82369#0" expanded="false" />
-            <element signature="e#82375#82644#0" expanded="false" />
-            <element signature="e#93116#93532#0" expanded="false" />
-            <element signature="e#93538#95042#0" expanded="false" />
-            <element signature="e#95048#95685#0" expanded="false" />
-            <element signature="e#97763#98119#0" expanded="false" />
-            <element signature="e#98125#99863#0" expanded="false" />
-            <element signature="e#99869#103044#0" expanded="false" />
-            <element signature="e#103050#106251#0" expanded="false" />
-            <element signature="e#106257#110402#0" expanded="false" />
-            <element signature="e#110408#114554#0" expanded="false" />
+            <marker date="1479933979250" expanded="false" signature="127:167" ph="..." />
           </folding>
         </state>
       </provider>

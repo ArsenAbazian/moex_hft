@@ -19,6 +19,8 @@ public:
     Decimal         m_entrySize;
     int             m_rptSeq;
 
+    TestTemplateItemInfo() { }
+
     TestTemplateItemInfo(MDUpdateAction action, MDEntryType entryType, const char *symbol, const char *sessionId, const char *entryId, int rptSeq, int pxm, INT64 pxe, int sizem, INT64 sizee) {
         this->m_action = action;
         this->m_entryType = entryType;
@@ -59,6 +61,9 @@ public:
     TestTemplateItemInfo*   m_items[8];
     const char              *m_symbol;
     const char              *m_session;
+    bool                    m_lost;
+
+    TestTemplateInfo() { }
 
     TestTemplateInfo(FeedConnectionMessage templateId, int msgSeqNo) {
         this->m_templateId = templateId;
@@ -3386,7 +3391,7 @@ public:
                 keys[*count][i-start] = '\0';
                 if(i == end)
                     break;
-                *count++;
+                (*count)++;
                 start = SkipToNextWord(msg, i);
                 i = start - 1;
             }
@@ -3394,31 +3399,61 @@ public:
         return keys;
     }
 
+    int KeyIndex(char **keys, int keysCount, const char *key) {
+        for(int i = 0; i < keysCount; i++) {
+            if(StringIdComparer::Equal(keys[i], key))
+                return i;
+        }
+        return -1;
+    }
+
+    int KeyIndex(char **keys, int keysCount, const char *key, int startIndex) {
+        for(int i = startIndex; i < keysCount; i++) {
+            if(StringIdComparer::Equal(keys[i], key))
+                return i;
+        }
+        return -1;
+    }
+
+    bool HasKey(char **keys, int keysCount, const char *key) {
+        return KeyIndex(keys, keysCount, key) != -1;
+    }
+
     TestTemplateInfo *CreateTemplate(char **keys, int keysCount) {
         TestTemplateInfo *info = new TestTemplateInfo();
 
-        int commandIndex = 0;
-        if(StringIdComparer::Equal(keys[0], "lost")) {
-            commandIndex = 1;
+        info->m_lost = HasKey(keys, keysCount, "lost");
+        if(HasKey(keys, keysCount, "obr")) {
+            info->m_templateId = FeedConnectionMessage::fmcIncrementalRefresh_OBR_FOND;
+        }
+        else if(HasKey(keys, keysCount, "obs")) {
+            info->m_templateId = FeedConnectionMessage::fmcFullRefresh_OBS_FOND;
+            if(HasKey(keys, keysCount, "begin"))
+                info->m_routeFirst = true;
+            if(HasKey(keys, keysCount, "end"))
+                info->m_lastFragment = true;
+        }
+        else if(HasKey(keys, keysCount, "hbeat")) {
+            info->m_templateId = FeedConnectionMessage::fcmHeartBeat;
+            return info;
         }
 
-        if(StringIdComparer::Equal(keys[commandIndex], "inc")) {
+        int entryIndex = -1;
+        TestTemplateItemInfo **items = new TestTemplateItemInfo*[10];
+        int itemIndex = 0;
+        while((entryIndex = KeyIndex(keys, keysCount, "entry", entryIndex + 1)) != -1) {
+            TestTemplateItemInfo *item = new TestTemplateItemInfo();
+            item->m_tradingSession = "session1";
+            item->m_symbol = keys[entryIndex + 1];
+            item->m_action = MDUpdateAction::mduaAdd;
+            item->m_entryId = keys[entryIndex + 2];
+            item->m_entryType = MDEntryType::mdetBuyQuote;
+            item->m_entryPx.Set(1, 1);
+            item->m_entrySize.Set(1, 1);
+            items[itemIndex] = item;
 
+            itemIndex++;
         }
-        if(StringIdComparer::Equal(keys[commandIndex], "sbegin")) {
-            info->m_routeFirst = true;
-        }
-        if(StringIdComparer::Equal(keys[commandIndex], "send")) {
-            info->m_lastFragment = true;
-        }
-        if(StringIdComparer::Equal(keys[commandIndex], "snap")) {
-
-        }
-        if(StringIdComparer::Equal(keys[commandIndex], "hbeat")) {
-
-        }
-
-
 
         return info;
     }
@@ -3436,7 +3471,7 @@ public:
         }
     }
 
-    void SendMessages(FeedConnection *fci, FeedConnection *fcs, const char *inc, const char *snap) {
+    void SendMessages(FeedConnection *fci, FeedConnection *fcs, const char *inc, const char *snap, int delay) {
         int incMsgCount = CalcMsgCount(inc);
         int snapMsgCount = CalcMsgCount(snap);
 
@@ -3444,13 +3479,35 @@ public:
         TestTemplateInfo **snap_msg = new TestTemplateInfo*[snapMsgCount];
 
         FillMsg(inc_msg, incMsgCount, inc);
+
+        int inc_index = 0;
+        int snap_index = 0;
+
+        Stopwatch w;
+        while(inc_index < incMsgCount || snap_index < snapMsgCount) {
+            if(inc_index < incMsgCount && !inc_msg[inc_index]->m_lost) {
+                SendMessage(fci, inc_msg[inc_index]);
+            }
+            inc_index++;
+            fci->Listen_Atom_Incremental_Core();
+            if(snap_index < snapMsgCount && !snap_msg[snap_index]->m_lost) {
+                SendMessage(fcs, snap_msg[snap_index]);
+            }
+            snap_index++;
+            fcs->Listen_Atom_Snapshot_Core();
+            w.Start();
+            while(!w.IsElapsedMilliseconds(delay));
+            w.Stop();
+        }
     }
 
     void TestConnection_StopListeningSnapshotBecauseAllItemsIsUpToDate() {
         this->Clear();
 
-        "inc symbol1, lost symbol1, heartbeat, hearthbeat"
-        "sbegin symbol1, snap, snap, snap, send"
+        SendMessages(fcf, fcs,
+        "hbeat, hbeat, hbeat",
+        "hbeat, hbeat, hbeat",
+        30);
     }
 
     void TestConnection_Clear_AfterIncremental() {
