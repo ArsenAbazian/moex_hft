@@ -279,6 +279,11 @@ public:
         fcf->StartListenSnapshot();
         fcs->m_waitTimer->Stop();
         fcs->Stop();
+        this->symbolsCount = 0;
+        for(int i = 0; i < 100; i++) {
+            this->symbols[i] = 0;
+            this->rptSeq[i] = 0;
+        }
     }
 
     void Test_OnIncrementalRefresh_OBR_FOND_Add() {
@@ -3386,7 +3391,8 @@ public:
         *count = 0;
         for(int i = start; i <= end; i++) {
             if(msg[i] == ' ' || i == end) {
-                keys[*count] = new char[i - start];
+                if(i == end) i++;
+                keys[*count] = new char[i - start + 1];
                 memcpy(keys[*count], &msg[start], i - start);
                 keys[*count][i-start] = '\0';
                 if(i == end)
@@ -3428,8 +3434,12 @@ public:
         }
         else if(HasKey(keys, keysCount, "obs")) {
             info->m_templateId = FeedConnectionMessage::fmcFullRefresh_OBS_FOND;
-            if(HasKey(keys, keysCount, "begin"))
+            if(HasKey(keys, keysCount, "begin")) {
                 info->m_routeFirst = true;
+            }
+            if(HasKey(keys, keysCount, "rpt")) {
+                info->m_rptSec = atoi((const char *)(keys[KeyIndex(keys, keysCount, "rpt") + 1]));
+            }
             if(HasKey(keys, keysCount, "end"))
                 info->m_lastFragment = true;
         }
@@ -3439,7 +3449,6 @@ public:
         }
 
         int entryIndex = -1;
-        TestTemplateItemInfo **items = new TestTemplateItemInfo*[10];
         int itemIndex = 0;
         while((entryIndex = KeyIndex(keys, keysCount, "entry", entryIndex + 1)) != -1) {
             TestTemplateItemInfo *item = new TestTemplateItemInfo();
@@ -3450,7 +3459,8 @@ public:
             item->m_entryType = MDEntryType::mdetBuyQuote;
             item->m_entryPx.Set(1, 1);
             item->m_entrySize.Set(1, 1);
-            items[itemIndex] = item;
+            info->m_items[itemIndex] = item;
+            info->m_itemsCount++;
 
             itemIndex++;
         }
@@ -3471,6 +3481,31 @@ public:
         }
     }
 
+    const char *symbols[100];
+    int rptSeq[100];
+    int symbolsCount = 0;
+
+    int GetRptSeqFor(const char *symbol) {
+        for(int i = 0; i < this->symbolsCount; i++) {
+            if(StringIdComparer::Equal(this->symbols[i], symbol)) {
+                rptSeq[i]++;
+                return rptSeq[i];
+            }
+        }
+        rptSeq[symbolsCount] = 1;
+        symbols[symbolsCount] = symbol;
+        symbolsCount++;
+        return 1;
+    }
+
+    void FillRptSeq(TestTemplateInfo **msg, int count) {
+        for(int i = 0; i < count; i++) {
+            for(int j = 0; j < msg[i]->m_itemsCount; j++) {
+                msg[i]->m_items[j]->m_rptSeq = GetRptSeqFor(msg[i]->m_items[j]->m_symbol);
+            }
+        }
+    }
+
     void SendMessages(FeedConnection *fci, FeedConnection *fcs, const char *inc, const char *snap, int delay) {
         int incMsgCount = CalcMsgCount(inc);
         int snapMsgCount = CalcMsgCount(snap);
@@ -3479,6 +3514,8 @@ public:
         TestTemplateInfo **snap_msg = new TestTemplateInfo*[snapMsgCount];
 
         FillMsg(inc_msg, incMsgCount, inc);
+        FillMsg(snap_msg, snapMsgCount, snap);
+        FillRptSeq(inc_msg, incMsgCount);
 
         int inc_index = 0;
         int snap_index = 0;
@@ -3486,11 +3523,13 @@ public:
         Stopwatch w;
         while(inc_index < incMsgCount || snap_index < snapMsgCount) {
             if(inc_index < incMsgCount && !inc_msg[inc_index]->m_lost) {
+                inc_msg[inc_index]->m_msgSeqNo = inc_index + 1;
                 SendMessage(fci, inc_msg[inc_index]);
             }
             inc_index++;
             fci->Listen_Atom_Incremental_Core();
             if(snap_index < snapMsgCount && !snap_msg[snap_index]->m_lost) {
+                snap_msg[snap_index]->m_msgSeqNo = snap_index + 1;
                 SendMessage(fcs, snap_msg[snap_index]);
             }
             snap_index++;
@@ -3501,13 +3540,43 @@ public:
         }
     }
 
-    void TestConnection_StopListeningSnapshotBecauseAllItemsIsUpToDate() {
+    void TestConnection_SkipHearthBeatMessages_Incremental() {
+        this->Clear();
+        this->fcf->StartListenSnapshot();
+
+        SendMessages(fcf, fcs,
+                     "hbeat, hbeat, hbeat",
+                     "hbeat, hbeat, hbeat",
+                     30);
+        if(fcf->m_packets[1]->m_item == 0 || fcf->m_packets[2]->m_item == 0 || fcf->m_packets[3]->m_item == 0)
+            throw;
+        if(fcf->m_packets[1]->m_processed || fcf->m_packets[2]->m_processed || fcf->m_packets[3]->m_processed)
+            throw;
+        if(fcs->m_packets[1]->m_item == 0 || fcs->m_packets[2]->m_item == 0 || fcs->m_packets[3]->m_item == 0)
+            throw;
+        if(fcs->m_packets[1]->m_processed || fcs->m_packets[2]->m_processed || fcs->m_packets[3]->m_processed)
+            throw;
+    }
+
+    void TestConnection_AllSymbolsAreOk() {
         this->Clear();
 
         SendMessages(fcf, fcs,
-        "hbeat, hbeat, hbeat",
-        "hbeat, hbeat, hbeat",
-        30);
+                     "obr entry symbol1 e1, obr entry symbol1 e2, obr entry symbol1 e3, obr entry symbol2 e1, obr entry symbol2 e2",
+                     "",
+                     30);
+        if(fcf->m_orderBookTableFond->UsedItemCount() != 2)
+            throw;
+        if(fcf->m_orderBookTableFond->UsedItem(0)->EntriesQueue()->HasEntries())
+            throw;
+        if(fcf->m_orderBookTableFond->UsedItem(1)->EntriesQueue()->HasEntries())
+            throw;
+        if(!fcf->CanStopListeningSnapshot())
+            throw;
+    }
+
+    void TestConnection_StopListeningSnapshotBecauseAllItemsIsUpToDate() {
+
     }
 
     void TestConnection_Clear_AfterIncremental() {
@@ -3540,6 +3609,10 @@ public:
 
     void TestConnection() {
 
+        printf("TestConnection_SkipHearthBeatMessages_Incremental\n");
+        TestConnection_SkipHearthBeatMessages_Incremental();
+        printf("TestConnection_AllSymbolsAreOk\n");
+        TestConnection_AllSymbolsAreOk();
         printf("TestConnection_StopListeningSnapshotBecauseAllItemsIsUpToDate\n");
         TestConnection_StopListeningSnapshotBecauseAllItemsIsUpToDate();
         printf("TestConnection_StopTimersAfterReconnect\n");

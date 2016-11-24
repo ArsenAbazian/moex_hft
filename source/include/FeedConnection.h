@@ -197,6 +197,22 @@ private:
         return this->ProcessServerCore(size);
     }
 
+    inline bool CanStopListeningSnapshot() {
+        if(this->m_orderBookTableFond != 0)
+            return !this->m_orderBookTableFond->HasQueueEntries();
+        else if(this->m_orderBookTableCurr != 0)
+            return !this->m_orderBookTableCurr->HasQueueEntries();
+        else if(this->m_orderTableFond != 0)
+            return !this->m_orderTableFond->HasQueueEntries();
+        else if(this->m_orderTableCurr != 0)
+            return !this->m_orderTableCurr->HasQueueEntries();
+        else if(this->m_tradeTableFond != 0)
+            return !this->m_tradeTableFond->HasQueueEntries();
+        else if(this->m_tradeTableCurr != 0)
+            return !this->m_tradeTableCurr->HasQueueEntries();
+        return false;
+    }
+
     inline bool ApplySnapshot_OBS_FOND() {
         for(int i = this->m_snapshotRouteFirst; i <= this->m_snapshotLastFragment; i++) {
             FeedConnectionMessageInfo *info = this->m_packets[i];
