@@ -62,6 +62,7 @@ public:
     const char              *m_symbol;
     const char              *m_session;
     bool                    m_lost;
+    bool                    m_wait;
 
     TestTemplateInfo() { }
 
@@ -3354,6 +3355,8 @@ public:
 
     int CalcMsgCount(const char *msg) {
         int len = strlen(msg);
+        if(len == 0)
+            return 0;
         int res = 0;
         for(int i = 0; i < len; i++) {
             if(msg[i] == ',')
@@ -3436,12 +3439,18 @@ public:
             info->m_templateId = FeedConnectionMessage::fmcFullRefresh_OBS_FOND;
             if(HasKey(keys, keysCount, "begin")) {
                 info->m_routeFirst = true;
+                info->m_symbol = keys[KeyIndex(keys, keysCount, "rpt") + 1];
             }
             if(HasKey(keys, keysCount, "rpt")) {
                 info->m_rptSec = atoi((const char *)(keys[KeyIndex(keys, keysCount, "rpt") + 1]));
             }
             if(HasKey(keys, keysCount, "end"))
                 info->m_lastFragment = true;
+        }
+        else if(HasKey(keys, keysCount, "wait_snap")) {
+            info->m_templateId = FeedConnectionMessage::fcmHeartBeat;
+            info->m_wait = true;
+            return info;
         }
         else if(HasKey(keys, keysCount, "hbeat")) {
             info->m_templateId = FeedConnectionMessage::fcmHeartBeat;
@@ -3526,18 +3535,26 @@ public:
                 inc_msg[inc_index]->m_msgSeqNo = inc_index + 1;
                 SendMessage(fci, inc_msg[inc_index]);
             }
-            inc_index++;
             fci->Listen_Atom_Incremental_Core();
-            if(snap_index < snapMsgCount && !snap_msg[snap_index]->m_lost) {
-                snap_msg[snap_index]->m_msgSeqNo = snap_index + 1;
-                SendMessage(fcs, snap_msg[snap_index]);
+            if(inc_index < incMsgCount && inc_msg[inc_index]->m_wait) {
+                while(!fci->m_waitTimer->IsElapsedMilliseconds(fci->WaitIncrementalMaxTimeMs()))
+                    fci->Listen_Atom_Incremental_Core();
+                fci->Listen_Atom_Incremental_Core();
             }
-            snap_index++;
-            fcs->Listen_Atom_Snapshot_Core();
+            inc_index++;
+            if(fcs->State() == FeedConnectionState::fcsListenSnapshot) {
+                if (snap_index < snapMsgCount && !snap_msg[snap_index]->m_lost) {
+                    snap_msg[snap_index]->m_msgSeqNo = snap_index + 1;
+                    SendMessage(fcs, snap_msg[snap_index]);
+                }
+                snap_index++;
+                fcs->Listen_Atom_Snapshot_Core();
+            }
             w.Start();
             while(!w.IsElapsedMilliseconds(delay));
             w.Stop();
         }
+        fci->Listen_Atom_Incremental_Core(); // emulate endless loop
     }
 
     void TestConnection_SkipHearthBeatMessages_Incremental() {
@@ -3573,6 +3590,156 @@ public:
             throw;
         if(!fcf->CanStopListeningSnapshot())
             throw;
+    }
+
+    void TestConnection_NotAllSymbolsAreOk() {
+        this->Clear();
+
+        SendMessages(fcf, fcs,
+                     "obr entry symbol1 e1, lost obr entry symbol1 e2, obr entry symbol1 e3, obr entry symbol2 e1, obr entry symbol2 e2",
+                     "",
+                     30);
+        if(fcf->m_orderBookTableFond->UsedItemCount() != 2)
+            throw;
+        if(!fcf->m_orderBookTableFond->UsedItem(0)->EntriesQueue()->HasEntries())
+            throw;
+        if(fcf->m_orderBookTableFond->UsedItem(1)->EntriesQueue()->HasEntries())
+            throw;
+        if(!fcf->ShouldStartSnapshot())
+            throw;
+        if(fcf->CanStopListeningSnapshot())
+            throw;
+    }
+
+    void TestConnection_AllSymbolsAreOkButOneMessageLost() {
+        this->Clear();
+
+        SendMessages(fcf, fcs,
+                     "obr entry symbol1 e1, lost obr entry symbol3 e2, obr entry symbol1 e3, obr entry symbol2 e1, obr entry symbol2 e2",
+                     "",
+                     30);
+
+        if(fcf->m_orderBookTableFond->UsedItemCount() != 2)
+            throw;
+        if(fcf->m_orderBookTableFond->UsedItem(0)->EntriesQueue()->HasEntries())
+            throw;
+        if(fcf->m_orderBookTableFond->UsedItem(1)->EntriesQueue()->HasEntries())
+            throw;
+        if(!fcf->ShouldStartSnapshot())
+            throw;
+    }
+
+    void TestConnection_ParallelWorkingIncrementalAndSnapshot_1() {
+        this->Clear();
+
+        if(fcs->State() != FeedConnectionState::fcsSuspend)
+            throw;
+        SendMessages(fcf, fcs,
+                     "obr entry symbol1 e1, lost obr entry symbol3 e1",
+                     "",
+                     30);
+        if(fcf->ShouldStartSnapshot())
+            throw;
+        if(fcs->State() != FeedConnectionState::fcsSuspend)
+            throw;
+    }
+
+    void TestConnection_ParallelWorkingIncrementalAndSnapshot_2() {
+        this->Clear();
+
+        if(fcs->State() != FeedConnectionState::fcsSuspend)
+            throw;
+        SendMessages(fcf, fcs,
+                     "obr entry symbol1 e1, lost obr entry symbol3 e1, hbeat",
+                     "",
+                     30);
+        if(!fcf->ShouldStartSnapshot())
+            throw;
+        if(!fcf->m_waitTimer->Active())
+            throw;
+        if(fcf->m_waitTimer->IsElapsedMilliseconds(fcf->m_waitIncrementalMaxTimeMs))
+            throw;
+        if(fcs->State() != FeedConnectionState::fcsSuspend)
+            throw;
+    }
+
+    void TestConnection_ParallelWorkingIncrementalAndSnapshot_3() {
+        this->Clear();
+
+        if(fcs->State() != FeedConnectionState::fcsSuspend)
+            throw;
+        SendMessages(fcf, fcs,
+                     "obr entry symbol1 e1, lost obr entry symbol3 e1, hbeat, hbeat, hbeat",
+                     "",
+                     30);
+        if(fcf->m_waitTimer->Active())
+            throw;
+        if(fcs->State() != FeedConnectionState::fcsListenSnapshot)
+            throw;
+        if(!fcf->ShouldStartSnapshot())
+            throw;
+    }
+
+    void TestConnection_ParallelWorkingIncrementalAndSnapshot_4() {
+        this->Clear();
+
+        if(fcs->State() != FeedConnectionState::fcsSuspend)
+            throw;
+        SendMessages(fcf, fcs,
+                     "obr entry symbol1 e1, lost obr entry symbol3 e1, wait_snap",
+                     "",
+                     30);
+        if(fcf->m_waitTimer->Active())
+            throw;
+        if(fcs->State() != FeedConnectionState::fcsListenSnapshot)
+            throw;
+        if(!fcf->ShouldStartSnapshot())
+            throw;
+    }
+
+    void TestConnection_ParallelWorkingIncrementalAndSnapshot_5() {
+        this->Clear();
+
+        if(fcs->State() != FeedConnectionState::fcsSuspend)
+            throw;
+        SendMessages(fcf, fcs,
+                     "obr entry symbol1 e1, lost obr entry symbol3 e1, wait_snap, obr entry symbol1 e3,    obr entry symbol2 e1, obr entry symbol2 e2",
+                     "                                                            obs begin symbol3 rpt 1, obs entry symbol3 e1, obs end",
+                     30);
+
+        if(!fcf->CanStopListeningSnapshot())
+            throw;
+        if(fcs->State() != FeedConnectionState::fcsSuspend)
+            throw;
+        if(fcf->m_orderBookTableFond->UsedItemCount() != 3)
+            throw;
+        if(fcf->m_orderBookTableFond->GetItem("symbol1", "session1")->BuyQuotes()->Count() != 2)
+            throw;
+        if(fcf->m_orderBookTableFond->GetItem("symbol2", "session1")->BuyQuotes()->Count() != 2)
+            throw;
+        if(fcf->m_orderBookTableFond->GetItem("symbol3", "session1")->BuyQuotes()->Count() != 1)
+            throw;
+        if(fcf->m_startMsgSeqNum != 8)
+            throw;
+        if(fcf->m_endMsgSeqNum != 7)
+            throw;
+        if(fcs->m_startMsgSeqNum != 4)
+            throw;
+        if(fcs->m_endMsgSeqNum != 3)
+            throw;
+    }
+
+    void TestConnection_ParallelWorkingIncrementalAndSnapshot() {
+        printf("TestConnection_ParallelWorkingIncrementalAndSnapshot_1\n");
+        TestConnection_ParallelWorkingIncrementalAndSnapshot_1();
+        printf("TestConnection_ParallelWorkingIncrementalAndSnapshot_2\n");
+        TestConnection_ParallelWorkingIncrementalAndSnapshot_2();
+        printf("TestConnection_ParallelWorkingIncrementalAndSnapshot_3\n");
+        TestConnection_ParallelWorkingIncrementalAndSnapshot_3();
+        printf("TestConnection_ParallelWorkingIncrementalAndSnapshot_4\n");
+        TestConnection_ParallelWorkingIncrementalAndSnapshot_4();
+        printf("TestConnection_ParallelWorkingIncrementalAndSnapshot_5\n");
+        TestConnection_ParallelWorkingIncrementalAndSnapshot_5();
     }
 
     void TestConnection_ResetEntriesQueueIfNullSnapshotIsReceived() {
@@ -3613,8 +3780,14 @@ public:
 
     void TestConnection() {
 
+        printf("TestConnection_ParallelWorkingIncrementalAndSnapshot\n");
+        TestConnection_ParallelWorkingIncrementalAndSnapshot();
+        printf("TestConnection_AllSymbolsAreOkButOneMessageLost\n");
+        TestConnection_AllSymbolsAreOkButOneMessageLost();
         printf("TestConnection_SkipHearthBeatMessages_Incremental\n");
         TestConnection_SkipHearthBeatMessages_Incremental();
+        printf("TestConnection_NotAllSymbolsAreOk\n");
+        TestConnection_NotAllSymbolsAreOk();
         printf("TestConnection_AllSymbolsAreOk\n");
         TestConnection_AllSymbolsAreOk();
         printf("TestConnection_StopListeningSnapshotBecauseAllItemsIsUpToDate\n");

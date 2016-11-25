@@ -197,20 +197,28 @@ private:
         return this->ProcessServerCore(size);
     }
 
-    inline bool CanStopListeningSnapshot() {
+    inline bool HasQueueEntries() {
         if(this->m_orderBookTableFond != 0)
-            return !this->m_orderBookTableFond->HasQueueEntries();
+            return this->m_orderBookTableFond->HasQueueEntries();
         else if(this->m_orderBookTableCurr != 0)
-            return !this->m_orderBookTableCurr->HasQueueEntries();
+            return this->m_orderBookTableCurr->HasQueueEntries();
         else if(this->m_orderTableFond != 0)
-            return !this->m_orderTableFond->HasQueueEntries();
+            return this->m_orderTableFond->HasQueueEntries();
         else if(this->m_orderTableCurr != 0)
-            return !this->m_orderTableCurr->HasQueueEntries();
+            return this->m_orderTableCurr->HasQueueEntries();
         else if(this->m_tradeTableFond != 0)
-            return !this->m_tradeTableFond->HasQueueEntries();
+            return this->m_tradeTableFond->HasQueueEntries();
         else if(this->m_tradeTableCurr != 0)
-            return !this->m_tradeTableCurr->HasQueueEntries();
+            return this->m_tradeTableCurr->HasQueueEntries();
         return false;
+    }
+
+    inline bool ShouldStartSnapshot() {
+        return this->HasQueueEntries() || this->HasPotentiallyLostPackets();
+    }
+
+    inline bool CanStopListeningSnapshot() {
+        return !this->HasQueueEntries();
     }
 
     inline bool ApplySnapshot_OBS_FOND() {
@@ -507,7 +515,7 @@ private:
 
     inline bool HasPotentiallyLostPackets() {
         if(this->m_startMsgSeqNum > this->m_endMsgSeqNum)
-            return true;
+            return false;
         return this->m_packets[this->m_startMsgSeqNum]->m_item == 0;
     }
 
@@ -622,15 +630,22 @@ private:
     inline bool Listen_Atom_Incremental_Core() {
         if(!this->ProcessIncrementalMessages())
             return false;
-        if(this->m_startMsgSeqNum > this->m_endMsgSeqNum) {
+        if(!this->ShouldStartSnapshot()) {
             this->m_waitTimer->Stop();
             return true;
         }
-        this->m_waitTimer->Activate();
-        if(this->m_waitTimer->ElapsedMilliseconds() >= this->m_waitIncrementalMaxTimeMs) {
-            if(!this->StartListenSnapshot())
-                return false;
-            this->m_waitTimer->Stop();
+        if(this->m_snapshot->State() == FeedConnectionState::fcsSuspend) {
+            this->m_waitTimer->Activate();
+            if (this->m_waitTimer->ElapsedMilliseconds() >= this->m_waitIncrementalMaxTimeMs) {
+                if (!this->StartListenSnapshot())
+                    return false;
+                this->m_waitTimer->Stop();
+            }
+        }
+        else {
+            if(this->CanStopListeningSnapshot()) {
+                this->StopListenSnapshot();
+            }
         }
         return true;
     }
