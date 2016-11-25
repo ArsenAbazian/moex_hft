@@ -630,11 +630,11 @@ private:
     inline bool Listen_Atom_Incremental_Core() {
         if(!this->ProcessIncrementalMessages())
             return false;
-        if(!this->ShouldStartSnapshot()) {
-            this->m_waitTimer->Stop();
-            return true;
-        }
         if(this->m_snapshot->State() == FeedConnectionState::fcsSuspend) {
+            if(!this->ShouldStartSnapshot()) {
+                this->m_waitTimer->Stop();
+                return true;
+            }
             this->m_waitTimer->Activate();
             if (this->m_waitTimer->ElapsedMilliseconds() >= this->m_waitIncrementalMaxTimeMs) {
                 if (!this->StartListenSnapshot())
@@ -645,6 +645,7 @@ private:
         else {
             if(this->CanStopListeningSnapshot()) {
                 this->StopListenSnapshot();
+                this->m_waitTimer->Activate();
             }
         }
         return true;

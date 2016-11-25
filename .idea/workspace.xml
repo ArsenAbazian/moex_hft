@@ -22,7 +22,6 @@
     <list default="true" id="32604c03-98a8-42cf-80f6-771ec2ce84cc" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/FeedConnection.h" afterPath="$PROJECT_DIR$/source/include/FeedConnection.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/Test/OrderBookTester.h" afterPath="$PROJECT_DIR$/source/include/Test/OrderBookTester.h" />
     </list>
     <ignored path="hft_robot.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -122,8 +121,8 @@
       <file leaf-file-name="FeedConnection.h" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/source/include/FeedConnection.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="85">
-              <caret line="632" column="31" selection-start-line="632" selection-start-column="31" selection-end-line="632" selection-end-column="31" />
+            <state relative-caret-position="319">
+              <caret line="645" column="44" selection-start-line="645" selection-start-column="44" selection-end-line="645" selection-end-column="44" />
               <folding>
                 <element signature="e#13#40#0" expanded="true" />
               </folding>
@@ -218,8 +217,8 @@
         <option value="$PROJECT_DIR$/source/include/Stopwatch.h" />
         <option value="$PROJECT_DIR$/source/src/FeedConnection.cpp" />
         <option value="$PROJECT_DIR$/source/include/MarketData/MarketDataTable.h" />
-        <option value="$PROJECT_DIR$/source/include/FeedConnection.h" />
         <option value="$PROJECT_DIR$/source/include/Test/OrderBookTester.h" />
+        <option value="$PROJECT_DIR$/source/include/FeedConnection.h" />
       </list>
     </option>
   </component>
@@ -603,14 +602,7 @@
       <workItem from="1479369534539" duration="562000" />
       <workItem from="1479382976734" duration="8624000" />
       <workItem from="1479661403737" duration="13517000" />
-      <workItem from="1480000176868" duration="11290000" />
-    </task>
-    <task id="LOCAL-00034" summary="1. Parsing other FAST messages, Fucking MOEX dialect, lot of incorrect template behavior.....&#10;2. Testing SecurityDefinition. Not finished yet">
-      <created>1471985708261</created>
-      <option name="number" value="00034" />
-      <option name="presentableId" value="LOCAL-00034" />
-      <option name="project" value="LOCAL" />
-      <updated>1471985708263</updated>
+      <workItem from="1480000176868" duration="11504000" />
     </task>
     <task id="LOCAL-00035" summary="Continue parsing FAST messages">
       <created>1471993374498</created>
@@ -948,11 +940,18 @@
       <option name="project" value="LOCAL" />
       <updated>1480086956686</updated>
     </task>
-    <option name="localTasksCounter" value="83" />
+    <task id="LOCAL-00083" summary="Big Refactoring continue... tests - break tests">
+      <created>1480092549383</created>
+      <option name="number" value="00083" />
+      <option name="presentableId" value="LOCAL-00083" />
+      <option name="project" value="LOCAL" />
+      <updated>1480092549383</updated>
+    </task>
+    <option name="localTasksCounter" value="84" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="836163000" />
+    <option name="totallyTimeSpent" value="836377000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -1462,8 +1461,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/source/include/FeedConnection.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="85">
-          <caret line="632" column="31" selection-start-line="632" selection-start-column="31" selection-end-line="632" selection-end-column="31" />
+        <state relative-caret-position="319">
+          <caret line="645" column="44" selection-start-line="645" selection-start-column="44" selection-end-line="645" selection-end-column="44" />
           <folding>
             <element signature="e#13#40#0" expanded="true" />
           </folding>
