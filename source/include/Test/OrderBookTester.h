@@ -3676,6 +3676,7 @@ public:
             throw;
         if(fcs->State() != FeedConnectionState::fcsListenSnapshot)
             throw;
+        // somewhere should be a list of all instruments and for all these instruments there should be no queue entries
         if(!fcf->ShouldStartSnapshot())
             throw;
     }
