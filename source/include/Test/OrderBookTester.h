@@ -3575,6 +3575,10 @@ public:
             throw;
     }
 
+    void TestConnection_ResetEntriesQueueIfNullSnapshotIsReceived() {
+
+    }
+
     void TestConnection_StopListeningSnapshotBecauseAllItemsIsUpToDate() {
 
     }
