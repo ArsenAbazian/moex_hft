@@ -140,12 +140,12 @@ protected:
     bool                                        m_shouldReceiveAnswer;
 
 protected:
-	MarketDataTable<OrderBookTableItem, FastOBSFONDInfo, FastOBSFONDItemInfo>		*m_orderBookTableFond;
-	MarketDataTable<OrderBookTableItem,FastOBSCURRInfo, FastOBSCURRItemInfo>        *m_orderBookTableCurr;
-	MarketDataTable<OrderTableItem, FastOLSFONDInfo, FastOLSFONDItemInfo>			*m_orderTableFond;
-	MarketDataTable<OrderTableItem, FastOLSCURRInfo, FastOLSCURRItemInfo>			*m_orderTableCurr;
-	MarketDataTable<TradeTableItem, FastTLSFONDInfo, FastTLSFONDItemInfo>			*m_tradeTableFond;
-	MarketDataTable<TradeTableItem, FastTLSCURRInfo, FastTLSCURRItemInfo>			*m_tradeTableCurr;
+	MarketDataTable<OrderBookSession, FastOBSFONDInfo, FastOBSFONDItemInfo>		*m_orderBookTableFond;
+	MarketDataTable<OrderBookSession,FastOBSCURRInfo, FastOBSCURRItemInfo>        *m_orderBookTableCurr;
+	MarketDataTable<OrderSession, FastOLSFONDInfo, FastOLSFONDItemInfo>			*m_orderTableFond;
+	MarketDataTable<OrderSession, FastOLSCURRInfo, FastOLSCURRItemInfo>			*m_orderTableCurr;
+	MarketDataTable<TradeSession, FastTLSFONDInfo, FastTLSFONDItemInfo>			*m_tradeTableFond;
+	MarketDataTable<TradeSession, FastTLSCURRInfo, FastTLSCURRItemInfo>			*m_tradeTableCurr;
 private:
 
     inline void GetCurrentTime(UINT64 *time) {
@@ -975,12 +975,12 @@ public:
 
     inline void FakeConnect(bool value) { this->m_fakeConnect = value; }
     inline int LastMsgSeqNumProcessed() { return this->m_lastMsgSeqNumProcessed; }
-	inline MarketDataTable<OrderBookTableItem, FastOBSFONDInfo, FastOBSFONDItemInfo> *OrderBookFond() { return this->m_orderBookTableFond; }
-	inline MarketDataTable<OrderBookTableItem, FastOBSCURRInfo, FastOBSCURRItemInfo> *OrderBookCurr() { return this->m_orderBookTableCurr; }
-	inline MarketDataTable<OrderTableItem, FastOLSFONDInfo, FastOLSFONDItemInfo> *OrderFond() { return this->m_orderTableFond; }
-	inline MarketDataTable<OrderTableItem, FastOLSCURRInfo, FastOLSCURRItemInfo> *OrderCurr() { return this->m_orderTableCurr; }
-	inline MarketDataTable<TradeTableItem, FastTLSFONDInfo, FastTLSFONDItemInfo> *TradeFond() { return this->m_tradeTableFond; }
-	inline MarketDataTable<TradeTableItem, FastTLSCURRInfo, FastTLSCURRItemInfo> *TradeCurr() { return this->m_tradeTableCurr; }
+	inline MarketDataTable<OrderBookSession, FastOBSFONDInfo, FastOBSFONDItemInfo> *OrderBookFond() { return this->m_orderBookTableFond; }
+	inline MarketDataTable<OrderBookSession, FastOBSCURRInfo, FastOBSCURRItemInfo> *OrderBookCurr() { return this->m_orderBookTableCurr; }
+	inline MarketDataTable<OrderSession, FastOLSFONDInfo, FastOLSFONDItemInfo> *OrderFond() { return this->m_orderTableFond; }
+	inline MarketDataTable<OrderSession, FastOLSCURRInfo, FastOLSCURRItemInfo> *OrderCurr() { return this->m_orderTableCurr; }
+	inline MarketDataTable<TradeSession, FastTLSFONDInfo, FastTLSFONDItemInfo> *TradeFond() { return this->m_tradeTableFond; }
+	inline MarketDataTable<TradeSession, FastTLSCURRInfo, FastTLSCURRItemInfo> *TradeCurr() { return this->m_tradeTableCurr; }
     inline void WaitIncrementalMaxTimeMs(int timeMs) { this->m_waitIncrementalMaxTimeMs = timeMs; }
     inline int WaitIncrementalMaxTimeMs() { return this->m_waitIncrementalMaxTimeMs; }
     inline void WaitSnapshotMaxTimeMs(int timeMs) { this->m_snapshotMaxTimeMs = timeMs; }
@@ -1141,10 +1141,10 @@ public:
 		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
 
 		this->SetType(FeedConnectionType::Incremental);
-		this->m_orderBookTableCurr = new MarketDataTable<OrderBookTableItem, FastOBSCURRInfo, FastOBSCURRItemInfo>();
+		this->m_orderBookTableCurr = new MarketDataTable<OrderBookSession, FastOBSCURRInfo, FastOBSCURRItemInfo>();
     }
 	FeedConnection_CURR_OBR() : FeedConnection() {
-		this->m_orderBookTableCurr = new MarketDataTable<OrderBookTableItem, FastOBSCURRInfo, FastOBSCURRItemInfo>();
+		this->m_orderBookTableCurr = new MarketDataTable<OrderBookSession, FastOBSCURRInfo, FastOBSCURRItemInfo>();
 	}
 	~FeedConnection_CURR_OBR() {
 		delete this->m_orderBookTableCurr;
@@ -1211,10 +1211,10 @@ public:
 	FeedConnection_CURR_OLR(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
 		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
 		this->SetType(FeedConnectionType::Incremental);
-		this->m_orderTableCurr = new MarketDataTable<OrderTableItem, FastOLSCURRInfo, FastOLSCURRItemInfo>();
+		this->m_orderTableCurr = new MarketDataTable<OrderSession, FastOLSCURRInfo, FastOLSCURRItemInfo>();
     }
 	FeedConnection_CURR_OLR() : FeedConnection() {
-		this->m_orderTableCurr = new MarketDataTable<OrderTableItem, FastOLSCURRInfo, FastOLSCURRItemInfo>();
+		this->m_orderTableCurr = new MarketDataTable<OrderSession, FastOLSCURRInfo, FastOLSCURRItemInfo>();
 	}
 	~FeedConnection_CURR_OLR() {
 		delete this->m_orderTableCurr;
@@ -1249,10 +1249,10 @@ public:
 	FeedConnection_CURR_TLR(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
 		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
 		this->SetType(FeedConnectionType::Incremental);
-		this->m_tradeTableCurr = new MarketDataTable<TradeTableItem, FastTLSCURRInfo, FastTLSCURRItemInfo>();
+		this->m_tradeTableCurr = new MarketDataTable<TradeSession, FastTLSCURRInfo, FastTLSCURRItemInfo>();
     }
 	FeedConnection_CURR_TLR() : FeedConnection() {
-		this->m_tradeTableCurr = new MarketDataTable<TradeTableItem, FastTLSCURRInfo, FastTLSCURRItemInfo>();
+		this->m_tradeTableCurr = new MarketDataTable<TradeSession, FastTLSCURRInfo, FastTLSCURRItemInfo>();
 	}
 	~FeedConnection_CURR_TLR() {
 		delete this->m_tradeTableCurr;
@@ -1288,10 +1288,10 @@ public:
 	FeedConnection_FOND_OBR(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
 		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
 		this->SetType(FeedConnectionType::Incremental);
-		this->m_orderBookTableFond = new MarketDataTable<OrderBookTableItem, FastOBSFONDInfo, FastOBSFONDItemInfo>();
+		this->m_orderBookTableFond = new MarketDataTable<OrderBookSession, FastOBSFONDInfo, FastOBSFONDItemInfo>();
     }
 	FeedConnection_FOND_OBR() : FeedConnection() {
-		this->m_orderBookTableFond = new MarketDataTable<OrderBookTableItem, FastOBSFONDInfo, FastOBSFONDItemInfo>();
+		this->m_orderBookTableFond = new MarketDataTable<OrderBookSession, FastOBSFONDInfo, FastOBSFONDItemInfo>();
 	}
 	~FeedConnection_FOND_OBR() {
 		delete this->m_orderBookTableFond;
@@ -1358,10 +1358,10 @@ public:
 	FeedConnection_FOND_OLR(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
 		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
 		this->SetType(FeedConnectionType::Incremental);
-		this->m_orderTableFond = new MarketDataTable<OrderTableItem, FastOLSFONDInfo, FastOLSFONDItemInfo>();
+		this->m_orderTableFond = new MarketDataTable<OrderSession, FastOLSFONDInfo, FastOLSFONDItemInfo>();
     }
 	FeedConnection_FOND_OLR() : FeedConnection() {
-		this->m_orderTableFond = new MarketDataTable<OrderTableItem, FastOLSFONDInfo, FastOLSFONDItemInfo>();
+		this->m_orderTableFond = new MarketDataTable<OrderSession, FastOLSFONDInfo, FastOLSFONDItemInfo>();
 	}
 	~FeedConnection_FOND_OLR() {
 		delete this->m_orderTableFond;
@@ -1396,10 +1396,10 @@ public:
 	FeedConnection_FOND_TLR(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
 		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
 		this->SetType(FeedConnectionType::Incremental);
-		this->m_tradeTableFond = new MarketDataTable<TradeTableItem, FastTLSFONDInfo, FastTLSFONDItemInfo>();
+		this->m_tradeTableFond = new MarketDataTable<TradeSession, FastTLSFONDInfo, FastTLSFONDItemInfo>();
     }
 	FeedConnection_FOND_TLR() : FeedConnection() {
-		this->m_tradeTableFond = new MarketDataTable<TradeTableItem, FastTLSFONDInfo, FastTLSFONDItemInfo>();
+		this->m_tradeTableFond = new MarketDataTable<TradeSession, FastTLSFONDInfo, FastTLSFONDItemInfo>();
 	}
 	~FeedConnection_FOND_TLR() {
 		delete this->m_tradeTableFond;
