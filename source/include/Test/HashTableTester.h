@@ -174,7 +174,7 @@ public:
 
         int count = list->Count();
         int usedCount = table->UsedItemCount();
-        HashTableItem<FastOBSFONDItemInfo> *item = table->GetItem("SMB1", "TRADING001");
+        HashTableItem<FastOBSFONDItemInfo> *item = table->GetSession("SMB1", "TRADING001");
         item->Clear();
         if(list->Count() != count - 3)
             throw;
@@ -197,7 +197,7 @@ public:
         table->Add("SMB1", "TRADING002", list->NewItem());
 
         int usedCount = table->UsedItemCount();
-        HashTableItem<FastOBSFONDItemInfo> *item = table->GetItem("SMB1", "TRADING001");
+        HashTableItem<FastOBSFONDItemInfo> *item = table->Session("SMB1", "TRADING001");
 
         int count = list->Count();
         int itemCount = item->Count();

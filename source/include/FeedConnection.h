@@ -91,6 +91,7 @@ protected:
 
     int                                         m_waitIncrementalMaxTimeMs;
     int                                         m_snapshotMaxTimeMs;
+    bool                                        m_isLastIncrementalRecv;
 
     FeedConnectionMessageInfo                   **m_packets;
 
@@ -214,11 +215,11 @@ private:
     }
 
     inline bool ShouldStartSnapshot() {
-        return this->HasQueueEntries() || this->HasPotentiallyLostPackets();
+        return this->HasPotentiallyLostPackets() || this->HasQueueEntries();
     }
 
     inline bool CanStopListeningSnapshot() {
-        return !this->HasQueueEntries();
+        return !this->HasPotentiallyLostPackets() && !this->HasQueueEntries();
     }
 
     inline bool ApplySnapshot_OBS_FOND() {
@@ -695,7 +696,7 @@ private:
 
 	inline void RemoveOrderBookInfoFond(FastOBSFONDItemInfo *info) {
 		this->m_orderBookTableFond->Remove(info);
-	}*/
+	}
 
 	inline void AddOrderBookInfoCurr(FastOBSCURRItemInfo *info) {
 		this->m_orderBookTableCurr->Add(info);
@@ -740,7 +741,7 @@ private:
 	inline void AddTradeInfoFond(FastTLSFONDItemInfo *info) {
 		this->m_tradeTableFond->Add(info);
 	}
-
+    */
 	FILE *obrLogFile;
 	inline bool OnIncrementalRefresh_OBR_FOND(FastOBSFONDItemInfo *info) {
         this->m_orderBookTableFond->ProcessIncremental(info);
@@ -759,7 +760,7 @@ private:
 	}
 
 	inline bool OnIncrementalRefresh_OBR_CURR(FastOBSCURRItemInfo *info) {
-		if(info->MDUpdateAction == MDUpdateAction::mduaAdd) {
+		/*if(info->MDUpdateAction == MDUpdateAction::mduaAdd) {
 			AddOrderBookInfoCurr(info);
 		}
 		else if(info->MDUpdateAction == MDUpdateAction::mduaChange) {
@@ -767,7 +768,7 @@ private:
 		}
 		else if(info->MDUpdateAction == MDUpdateAction::mduaDelete) {
 			RemoveOrderBookInfoCurr(info);
-		}
+		}*/
 
 		return true;
 	}
@@ -776,7 +777,7 @@ private:
 		if(info->MDEntryType[0] == mdetEmptyBook) { // fatal!!!!!
 			return true; // TODO!!!!!
 		}
-		if(info->MDUpdateAction == MDUpdateAction::mduaAdd) {
+		/*if(info->MDUpdateAction == MDUpdateAction::mduaAdd) {
 			AddOrderInfoFond(info);
 		}
 		else if(info->MDUpdateAction == MDUpdateAction::mduaChange) {
@@ -784,7 +785,7 @@ private:
 		}
 		else if(info->MDUpdateAction == MDUpdateAction::mduaDelete) {
 			RemoveOrderInfoFond(info);
-		}
+		}*/
 
 		return true;
 	}
@@ -793,7 +794,7 @@ private:
 		if(info->MDEntryType[0] == mdetEmptyBook) { // fatal!!!!!
 			return true; // TODO!!!!!
 		}
-		if(info->MDUpdateAction == MDUpdateAction::mduaAdd) {
+		/*if(info->MDUpdateAction == MDUpdateAction::mduaAdd) {
 			AddOrderInfoCurr(info);
 		}
 		else if(info->MDUpdateAction == MDUpdateAction::mduaChange) {
@@ -801,22 +802,22 @@ private:
 		}
 		else if(info->MDUpdateAction == MDUpdateAction::mduaDelete) {
 			RemoveOrderInfoCurr(info);
-		}
+		}*/
 
 		return true;
 	}
 
 	inline bool OnIncrementalRefresh_TLR_FOND(FastTLSFONDItemInfo *info) {
-		if(info->MDUpdateAction == MDUpdateAction::mduaAdd) {
+		/*if(info->MDUpdateAction == MDUpdateAction::mduaAdd) {
 			AddTradeInfoFond(info);
-		}
+		}*/
 		return true;
 	}
 
 	inline bool OnIncrementalRefresh_TLR_CURR(FastTLSCURRItemInfo *info) {
-		if(info->MDUpdateAction == MDUpdateAction::mduaAdd) {
+		/*if(info->MDUpdateAction == MDUpdateAction::mduaAdd) {
 			AddTradeInfoCurr(info);
-		}
+		}*/
 
 		return true;
 	}
@@ -842,8 +843,8 @@ private:
 	}
 
 	inline bool OnFullRefresh_OBS_CURR(FastOBSCURRInfo *info) {
-		this->m_orderBookTableCurr->Clear();
-		this->m_orderBookTableCurr->Add(info);
+		/*this->m_orderBookTableCurr->Clear();
+		this->m_orderBookTableCurr->Add(info);*/
 		return true;
 	}
 
@@ -856,8 +857,8 @@ private:
 	}
 
 	inline bool OnFullRefresh_OLS_FOND(FastOLSFONDInfo *info) {
-		this->m_orderTableFond->Clear();
-		this->m_orderTableFond->Add(info);
+		/*this->m_orderTableFond->Clear();
+		this->m_orderTableFond->Add(info);*/
 		return true;
 	}
 
@@ -870,8 +871,8 @@ private:
 	}
 
 	inline bool OnFullRefresh_OLS_CURR(FastOLSCURRInfo *info) {
-		this->m_orderTableCurr->Clear();
-		this->m_orderTableCurr->Add(info);
+		/*this->m_orderTableCurr->Clear();
+		this->m_orderTableCurr->Add(info);*/
 		return true;
 	}
 
@@ -884,8 +885,8 @@ private:
 	}
 
 	inline bool OnFullRefresh_TLS_FOND(FastTLSFONDInfo *info) {
-		this->m_tradeTableFond->Clear();
-		this->m_tradeTableFond->Add(info);
+		/*this->m_tradeTableFond->Clear();
+		this->m_tradeTableFond->Add(info);*/
 		return true;
 	}
 
@@ -898,8 +899,8 @@ private:
 	}
 
 	inline bool OnFullRefresh_TLS_CURR(FastTLSCURRInfo *info) {
-		this->m_tradeTableCurr->Clear();
-		this->m_tradeTableCurr->Add(info);
+		/*this->m_tradeTableCurr->Clear();
+		this->m_tradeTableCurr->Add(info);*/
 		return true;
 	}
 

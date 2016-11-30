@@ -141,12 +141,13 @@ bool FeedConnection::Listen_Atom_Incremental() {
 
     bool recv = this->ProcessServerA();
     recv |= this->ProcessServerB();
+    this->m_isLastIncrementalRecv = recv;
 
-    if(!recv) {
+    if(!this->m_isLastIncrementalRecv) {
         this->m_waitTimer->Activate(1);
         if(this->m_waitTimer->ElapsedSeconds(1) > this->WaitAnyPacketMaxTimeSec) {
-            DefaultLogManager::Default->WriteSuccess(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_Listen_Atom_Incremental, false);
-            return false;
+            this->StartListenSnapshot();
+            return true;
         }
     }
     else {

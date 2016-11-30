@@ -72,8 +72,8 @@ template <typename T> class OrderBookTableItem {
     bool                 m_used;
     int                  m_rptSeq;
 
-    SizedArray          *m_symbol;
     SizedArray          *m_tradingSession;
+    SizedArray          *m_symbol;
 public:
     OrderBookTableItem() {
         this->m_entryInfo = new MDEntrQueue<T>();
@@ -81,6 +81,7 @@ public:
         this->m_buyQuoteList = new PointerList<T>(128);
         this->m_rptSeq = 0;
         this->m_used = false;
+        this->m_tradingSession = new SizedArray();
     }
     ~OrderBookTableItem() {
         delete this->m_entryInfo;
@@ -88,11 +89,9 @@ public:
         delete this->m_buyQuoteList;
     }
 
+    inline SizedArray* TradingSession() { return this->m_tradingSession; }
     inline SizedArray* Symbol() { return this->m_symbol; }
     inline void Symbol(SizedArray *symbol) { this->m_symbol = symbol; }
-    inline SizedArray* TradingSession() { return this->m_tradingSession; }
-    inline void TradingSession(SizedArray *session) { this->m_tradingSession = session; }
-
     inline MDEntrQueue<T>* QueueEntries() { return this->m_entryInfo; }
 
     inline PointerList<T>* SellQuotes() { return this->m_sellQuoteList; }
@@ -701,21 +700,82 @@ public:
 };
 */
 
+template <typename T> class MarketSymbolInfo {
+    T                                  *m_items[MAX_TRADING_SESSIONS_COUNT];
+    SizedArray                         *m_symbol;
+    int                                 m_count;
+public:
+    MarketSymbolInfo() {
+        this->m_count = 0;
+        for(int i = 0; i < MAX_TRADING_SESSIONS_COUNT; i++) {
+            this->m_items[i] = new T();
+        }
+        this->m_symbol = new SizedArray();
+    }
+    ~MarketSymbolInfo() {
+        for(int i = 0; i < MAX_TRADING_SESSIONS_COUNT; i++)
+            delete this->m_items[i];
+        delete this->m_symbol;
+    }
+    inline int Count() { return this->m_count; }
+    inline T* Session(int index) { return this->m_items[index]; }
+    inline T* GetSession(const char *session, int sessionLength) {
+        T **item = this->m_items;
+        for(int i = 0; i < this->m_count; i++, item++) {
+            if((*item)->TradingSession()->Equal(session, sessionLength))
+                return *item;
+        }
+        T* res = this->m_items[this->m_count];
+        res->Symbol(this->m_symbol);
+        res->TradingSession()->Set(session, sessionLength);
+        this->m_count++;
+        return res;
+    }
+    inline SizedArray *Symbol() { return this->m_symbol; }
+    inline bool Equals(const char *symbol, int symbolLen) { return this->m_symbol->Equal(symbol, symbolLen); }
+    inline void Clear() {
+        T **item = this->m_items;
+        for(int i = 0; i < this->m_count; i++, item++) {
+            (*item)->Used(false);
+            (*item)->Clear();
+        }
+        this->m_count = 0;
+    }
+};
+
 template <template<typename ITEMINFO> class TABLEITEM, typename INFO, typename ITEMINFO> class MarketDataTable {
-    HashTable<TABLEITEM<ITEMINFO>>              *m_table;
+    MarketSymbolInfo<TABLEITEM<ITEMINFO>>       *m_symbols[MAX_SYMBOLS_COUNT];
+    int                                         m_symbolsCount;
     TABLEITEM<ITEMINFO>                         *m_snapshotItem;
+    TABLEITEM<ITEMINFO>                         *m_cachedItem;
     int                                         m_queueItemsCount;
+
+    inline void AddUsed(TABLEITEM<ITEMINFO> *tableItem) {
+        tableItem->Used(true);
+    }
 public:
     MarketDataTable() {
-        this->m_table = new HashTable<TABLEITEM<ITEMINFO>>();
+        for(int i = 0; i < MAX_SYMBOLS_COUNT; i++)
+            this->m_symbols[i] = new MarketSymbolInfo<TABLEITEM<ITEMINFO>>();
+        this->m_symbolsCount = 0;
         this->m_queueItemsCount = 0;
+        this->m_cachedItem = 0;
     }
     ~MarketDataTable() {
-        delete this->m_table;
+        for(int i = 0; i < MAX_SYMBOLS_COUNT; i++)
+            delete this->m_symbols[i];
     }
+    inline TABLEITEM<ITEMINFO>* GetCachedItem(const char *symbol, int symbolLen, const char *tradingSession, int tradingSessionLen) {
+        if(this->m_cachedItem == 0)
+            return 0;
+        if(this->m_cachedItem->Symbol()->Equal(symbol, symbolLen) && this->m_cachedItem->TradingSession()->Equal(tradingSession, tradingSessionLen))
+            return this->m_cachedItem;
+        return 0;
+    }
+
     inline bool ProcessIncremental(ITEMINFO *info) {
-        TABLEITEM<ITEMINFO> *tableItem = this->m_table->GetItem(info->Symbol, info->SymbolLength, info->TradingSessionID, info->TradingSessionIDLength);
-        this->m_table->AddUsed(tableItem);
+        TABLEITEM<ITEMINFO> *tableItem = GetItem(info->Symbol, info->SymbolLength, info->TradingSessionID, info->TradingSessionIDLength);
+        this->AddUsed(tableItem);
         bool prevHasEntries = tableItem->QueueEntries()->HasEntries();
         bool res = tableItem->ProcessIncrementalMessage(info);
         bool hasEntries = tableItem->QueueEntries()->HasEntries();
@@ -726,10 +786,10 @@ public:
         return res;
     }
     inline void StartProcessSnapshot(INFO *info) {
-        this->m_snapshotItem = this->m_table->GetCachedItem(info->Symbol, info->SymbolLength, info->TradingSessionID, info->TradingSessionIDLength);
+        this->m_snapshotItem = this->GetCachedItem(info->Symbol, info->SymbolLength, info->TradingSessionID, info->TradingSessionIDLength);
         if(this->m_snapshotItem == 0)
-            this->m_snapshotItem = this->m_table->GetItem(info->Symbol, info->SymbolLength, info->TradingSessionID, info->TradingSessionIDLength);
-        this->m_table->AddUsed(this->m_snapshotItem);
+            this->m_snapshotItem = this->GetItem(info->Symbol, info->SymbolLength, info->TradingSessionID, info->TradingSessionIDLength);
+        this->AddUsed(this->m_snapshotItem);
         this->m_snapshotItem->StartProcessSnapshotMessages();
     }
     inline bool EndProcessSnapshot(){
@@ -750,54 +810,43 @@ public:
         this->ProcessSnapshot(info->GroupMDEntries, info->GroupMDEntriesCount, info->RptSeq);
         return this->EndProcessSnapshot();
     }
-    inline void Add(const char *symbol, int symbolLen, const char *tradingSession, int tradingLen, ITEMINFO *item) {
-        TABLEITEM<ITEMINFO> *tableItem = this->m_table->GetItem(symbol, symbolLen, tradingSession, tradingLen);
-        this->m_table->AddUsed(tableItem);
-        tableItem->Add(item);
-    }
-    inline void Add(const char *symbol, int symbolLen, const char *tradingSession, int tradingLen, ITEMINFO **items) {
-        TABLEITEM<ITEMINFO> *tableItem = this->m_table->GetItem(symbol, symbolLen, tradingSession, tradingLen);
-        this->m_table->AddUsed(tableItem);
-        tableItem->Add(items);
-    }
-    inline void Add(ITEMINFO *info) {
-        TABLEITEM<ITEMINFO> *tableItem = this->m_table->GetItem(info->Symbol, info->SymbolLength, info->TradingSessionID, info->TradingSessionIDLength);
-        this->m_table->AddUsed(tableItem);
-        tableItem->Add(info);
-    }
-    inline void Add(INFO *info) {
-        TABLEITEM<ITEMINFO> *tableItem = this->m_table->GetItem(info->Symbol, info->SymbolLength, info->TradingSessionID, info->TradingSessionIDLength);
-        this->m_table->AddUsed(tableItem);
-        ITEMINFO **item = info->GroupMDEntries;
-
-        for(int i = 0; i < info->GroupMDEntriesCount; i++, item++) {
-            tableItem->Add(*item);
-        }
-    }
-    inline void Remove(ITEMINFO *info) {
-        TABLEITEM<ITEMINFO> *tableItem = this->m_table->GetItem(info->Symbol, info->SymbolLength, info->TradingSessionID, info->TradingSessionIDLength);
-        tableItem->Remove(info);
-    }
-    inline void Change(ITEMINFO *info) {
-        TABLEITEM<ITEMINFO> *tableItem = this->m_table->GetItem(info->Symbol, info->SymbolLength, info->TradingSessionID, info->TradingSessionIDLength);
-        tableItem->Change(info);
-    }
     inline void Clear() {
-        this->m_table->Clear();
+        MarketSymbolInfo<TABLEITEM<ITEMINFO>> **s = this->m_symbols;
+        for(int i = 0; i < this->m_symbolsCount; i++, s++)
+            (*s)->Clear();
+        this->m_symbolsCount = 0;
     }
-    inline void ClearItem(const char *symbol, int symbolLen, const char *tradingSession, int tradingSessionLen) {
-        TABLEITEM<ITEMINFO> *tableItem = this->m_table->GetItem(symbol, symbolLen, tradingSession, tradingSessionLen);
-        this->m_table->RemoveUsed(tableItem);
-        tableItem->Clear();
+    inline int SymbolsCount() { return this->m_symbolsCount; }
+    inline MarketSymbolInfo<TABLEITEM<ITEMINFO>>* Symbol(int index) { return this->m_symbols[index]; }
+    inline TABLEITEM<ITEMINFO>* Item(int sindex, int tindex) { return this->m_symbols[sindex]->Session(tindex); }
+
+    inline MarketSymbolInfo<TABLEITEM<ITEMINFO>> *GetSymbol(const char *symbol, int symbolLen) {
+        MarketSymbolInfo<TABLEITEM<ITEMINFO>> **s = this->m_symbols;
+        for(int i = 0; i < this->m_symbolsCount; i++, s++) {
+            if((*s)->Equals(symbol, symbolLen))
+                return (*s);
+        }
+        MarketSymbolInfo<TABLEITEM<ITEMINFO>> *res = this->m_symbols[this->m_symbolsCount];
+        res->Symbol()->Set(symbol, symbolLen);
+        this->m_symbolsCount++;
+        return res;
     }
-    inline TABLEITEM<ITEMINFO>*** TableCore() { return this->m_table->TableCore(); }
-    inline int SymbolsCount() { return this->m_table->SymbolsCount(); }
-    inline int TradingSessionsCount() { return this->m_table->TradingSessionsCount(); }
-    inline int UsedItemCount() { return this->m_table->UsedItemCount(); }
-    inline TABLEITEM<ITEMINFO>* Item(int sindex, int tindex) { return this->m_table->Item(sindex, tindex); }
-    inline TABLEITEM<ITEMINFO>* UsedItem(int index) { return this->m_table->UsedItems()->Item(index); }
-    inline TABLEITEM<ITEMINFO>* GetItem(const char *symbol, int symbolLen, const char *tradingSession, int tradingSessionLen) { return this->m_table->GetItem(symbol, symbolLen, tradingSession, tradingSessionLen);  }
-    inline TABLEITEM<ITEMINFO>* GetItem(const char *symbol, const char *tradingSession) { return this->m_table->GetItem(symbol, strlen(symbol), tradingSession, strlen(tradingSession));  }
+    inline TABLEITEM<ITEMINFO>* GetItem(const char *symbol, int symbolLen, const char *tradingSession, int tradingSessionLen) {
+        TABLEITEM<ITEMINFO> *item = 0;
+        MarketSymbolInfo<TABLEITEM<ITEMINFO>> *s = GetSymbol(symbol, symbolLen);
+        TABLEITEM<ITEMINFO>* res = s->GetSession(tradingSession, tradingSessionLen);
+        this->m_cachedItem = res;
+        return res;
+    }
+    inline TABLEITEM<ITEMINFO>* GetItem(const char *symbol, const char *tradingSession) {
+        return this->GetItem(symbol, strlen(symbol), tradingSession, strlen(tradingSession));
+    }
+    inline int UsedItemCount() {
+        int res = 0;
+        for(int i = 0; i < this->m_symbolsCount; i++)
+            res += this->m_symbols[i]->Count();
+        return res;
+    }
     inline TABLEITEM<ITEMINFO>* SnapshotItem() { return this->m_snapshotItem; }
     inline bool HasQueueEntries() {
         return this->m_queueItemsCount > 0;

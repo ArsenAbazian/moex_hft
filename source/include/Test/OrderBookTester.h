@@ -246,11 +246,13 @@ public:
     }
 
     void TestTableItemsAllocator(MarketDataTable<OrderBookTableItem, FastOBSFONDInfo, FastOBSFONDItemInfo> *table) {
-        for(int i = 0; i < table->UsedItemCount(); i++) {
-            OrderBookTableItem<FastOBSFONDItemInfo> *item = table->UsedItem(i);
-            TestItem(item);
+        for(int i = 0; i < table->SymbolsCount(); i++) {
+            for(int j = 0; j < table->Symbol(i)->Count(); j++) {
+                OrderBookTableItem<FastOBSFONDItemInfo> *item = table->Item(i, j);
+                TestItem(item);
+            }
         }
-        for(int i = 0; i < MAX_SYMBOLS_COUNT; i++) {
+        /*for(int i = 0; i < MAX_SYMBOLS_COUNT; i++) {
             for(int j = 0; j < MAX_TRADING_SESSIONS_COUNT; j++) {
                 bool found = false;
                 OrderBookTableItem<FastOBSFONDItemInfo> *titem = table->Item(i, j);
@@ -264,7 +266,7 @@ public:
                 if(titem->Used() != found)
                     throw;
             }
-        }
+        }*/
     }
 
     void Clear() {
@@ -312,7 +314,7 @@ public:
             throw;
         if(this->fcf->OrderBookFond()->SymbolsCount() != 1)
             throw;
-        if(this->fcf->OrderBookFond()->TradingSessionsCount() != 1)
+        if(this->fcf->OrderBookFond()->Symbol(0)->Count() != 1)
             throw;
         OrderBookTableItem<FastOBSFONDItemInfo> *obi = this->fcf->OrderBookFond()->GetItem("SMB1", 4, "TRADING001", 10);
         if(obi == 0)
@@ -338,7 +340,7 @@ public:
             throw;
         if(this->fcf->OrderBookFond()->SymbolsCount() != 1)
             throw;
-        if(this->fcf->OrderBookFond()->TradingSessionsCount() != 1)
+        if(this->fcf->OrderBookFond()->Symbol(0)->Count() != 1)
             throw;
         obi = this->fcf->OrderBookFond()->GetItem("SMB1", 4, "TRADING001", 10);
         if(obi == 0)
@@ -363,7 +365,7 @@ public:
             throw;
         if(this->fcf->OrderBookFond()->SymbolsCount() != 1)
             throw;
-        if(this->fcf->OrderBookFond()->TradingSessionsCount() != 1)
+        if(this->fcf->OrderBookFond()->Symbol(0)->Count() != 1)
             throw;
         obi = this->fcf->OrderBookFond()->GetItem("SMB1", 4, "TRADING001", 10);
         if(obi == 0)
@@ -407,7 +409,7 @@ public:
             throw;
         if(this->fcf->OrderBookFond()->SymbolsCount() != 1)
             throw;
-        if(this->fcf->OrderBookFond()->TradingSessionsCount() != 1)
+        if(this->fcf->OrderBookFond()->Symbol(0)->Count() != 1)
             throw;
         obi = this->fcf->OrderBookFond()->GetItem("SMB1", 4, "TRADING001", 10);
         if(obi == 0)
@@ -731,7 +733,7 @@ public:
             throw;
         if(this->fcf->OrderBookFond()->SymbolsCount() != 1)
             throw;
-        if(this->fcf->OrderBookFond()->TradingSessionsCount() != 1)
+        if(this->fcf->OrderBookFond()->Symbol(0)->Count() != 1)
             throw;
         OrderBookTableItem<FastOBSFONDItemInfo> *obi = this->fcf->OrderBookFond()->GetItem("SMB1", 4, "TRADING001", 10);
         if(obi == 0)
@@ -755,7 +757,7 @@ public:
             throw;
         if(this->fcf->OrderBookFond()->SymbolsCount() != 1)
             throw;
-        if(this->fcf->OrderBookFond()->TradingSessionsCount() != 1)
+        if(this->fcf->OrderBookFond()->Symbol(0)->Count() != 1)
             throw;
         obi = this->fcf->OrderBookFond()->GetItem("SMB1", 4, "TRADING001", 10);
         if(obi == 0)
@@ -787,7 +789,7 @@ public:
             throw;
         if(this->fcf->OrderBookFond()->SymbolsCount() != 1)
             throw;
-        if(this->fcf->OrderBookFond()->TradingSessionsCount() != 1)
+        if(this->fcf->OrderBookFond()->Symbol(0)->Count() != 1)
             throw;
         obi = this->fcf->OrderBookFond()->GetItem("SMB1", 4, "TRADING001", 10);
         if(obi == 0)
@@ -828,7 +830,7 @@ public:
             throw;
         if(this->fcf->OrderBookFond()->SymbolsCount() != 1)
             throw;
-        if(this->fcf->OrderBookFond()->TradingSessionsCount() != 1)
+        if(this->fcf->OrderBookFond()->Symbol(0)->Count() != 1)
             throw;
         obi = this->fcf->OrderBookFond()->GetItem("SMB1", 4, "TRADING001", 10);
         if(obi == 0)
@@ -1125,7 +1127,7 @@ public:
             throw;
         if(this->fcc->OrderBookCurr()->SymbolsCount() != 1)
             throw;
-        if(this->fcc->OrderBookCurr()->TradingSessionsCount() != 1)
+        if(this->fcc->OrderBookCurr()->Symbol(0)->Count() != 1)
             throw;
         OrderBookTableItem<FastOBSCURRItemInfo> *obi = this->fcc->OrderBookCurr()->GetItem("SMB1", 4, "TRADING001", 10);
         if(obi == 0)
@@ -1151,7 +1153,7 @@ public:
             throw;
         if(this->fcc->OrderBookCurr()->SymbolsCount() != 1)
             throw;
-        if(this->fcc->OrderBookCurr()->TradingSessionsCount() != 1)
+        if(this->fcc->OrderBookCurr()->Symbol(0)->Count() != 1)
             throw;
         obi = this->fcc->OrderBookCurr()->GetItem("SMB1", 4, "TRADING001", 10);
         if(obi == 0)
@@ -1176,7 +1178,7 @@ public:
             throw;
         if(this->fcc->OrderBookCurr()->SymbolsCount() != 1)
             throw;
-        if(this->fcc->OrderBookCurr()->TradingSessionsCount() != 1)
+        if(this->fcc->OrderBookCurr()->Symbol(0)->Count() != 1)
             throw;
         obi = this->fcc->OrderBookCurr()->GetItem("SMB1", 4, "TRADING001", 10);
         if(obi == 0)
@@ -1220,7 +1222,7 @@ public:
             throw;
         if(this->fcc->OrderBookCurr()->SymbolsCount() != 1)
             throw;
-        if(this->fcc->OrderBookCurr()->TradingSessionsCount() != 1)
+        if(this->fcc->OrderBookCurr()->Symbol(0)->Count() != 1)
             throw;
         obi = this->fcc->OrderBookCurr()->GetItem("SMB1", 4, "TRADING001", 10);
         if(obi == 0)
@@ -1516,7 +1518,7 @@ public:
             throw;
         if(this->fcc->OrderBookCurr()->SymbolsCount() != 1)
             throw;
-        if(this->fcc->OrderBookCurr()->TradingSessionsCount() != 1)
+        if(this->fcc->OrderBookCurr()->Symbol(0)->Count() != 1)
             throw;
         OrderBookTableItem<FastOBSCURRItemInfo> *obi = this->fcc->OrderBookCurr()->GetItem("SMB1", 4, "TRADING001", 10);
         if(obi == 0)
@@ -1540,7 +1542,7 @@ public:
             throw;
         if(this->fcc->OrderBookCurr()->SymbolsCount() != 1)
             throw;
-        if(this->fcc->OrderBookCurr()->TradingSessionsCount() != 1)
+        if(this->fcc->OrderBookCurr()->Symbol(0)->Count() != 1)
             throw;
         obi = this->fcc->OrderBookCurr()->GetItem("SMB1", 4, "TRADING001", 10);
         if(obi == 0)
@@ -1572,7 +1574,7 @@ public:
             throw;
         if(this->fcc->OrderBookCurr()->SymbolsCount() != 1)
             throw;
-        if(this->fcc->OrderBookCurr()->TradingSessionsCount() != 1)
+        if(this->fcc->OrderBookCurr()->Symbol(0)->Count() != 1)
             throw;
         obi = this->fcc->OrderBookCurr()->GetItem("SMB1", 4, "TRADING001", 10);
         if(obi == 0)
@@ -1613,7 +1615,7 @@ public:
             throw;
         if(this->fcc->OrderBookCurr()->SymbolsCount() != 1)
             throw;
-        if(this->fcc->OrderBookCurr()->TradingSessionsCount() != 1)
+        if(this->fcc->OrderBookCurr()->Symbol(0)->Count() != 1)
             throw;
         obi = this->fcc->OrderBookCurr()->GetItem("SMB1", 4, "TRADING001", 10);
         if(obi == 0)
@@ -1954,11 +1956,7 @@ public:
     void TestDefaults() {
         if(this->fcf->OrderBookFond()->SymbolsCount() != 0)
             throw;
-        if(this->fcf->OrderBookFond()->TradingSessionsCount() != 0)
-            throw;
         if(this->fcc->OrderBookCurr()->SymbolsCount() != 0)
-            throw;
-        if(this->fcc->OrderBookCurr()->TradingSessionsCount() != 0)
             throw;
         this->TestTableItemsAllocator(fcf->OrderBookFond());
         //this->TestTableItemsAllocator(fcc->OrderBookCurr());
@@ -3437,9 +3435,11 @@ public:
         }
         else if(HasKey(keys, keysCount, "obs")) {
             info->m_templateId = FeedConnectionMessage::fmcFullRefresh_OBS_FOND;
+            info->m_symbol = keys[KeyIndex(keys, keysCount, "obs") + 1];
+            info->m_session = "session1";
             if(HasKey(keys, keysCount, "begin")) {
                 info->m_routeFirst = true;
-                info->m_symbol = keys[KeyIndex(keys, keysCount, "rpt") + 1];
+                //info->m_symbol = keys[KeyIndex(keys, keysCount, "rpt") + 2];
             }
             if(HasKey(keys, keysCount, "rpt")) {
                 info->m_rptSec = atoi((const char *)(keys[KeyIndex(keys, keysCount, "rpt") + 1]));
@@ -3537,7 +3537,9 @@ public:
             }
             fci->Listen_Atom_Incremental_Core();
             if(inc_index < incMsgCount && inc_msg[inc_index]->m_wait) {
-                while(!fci->m_waitTimer->IsElapsedMilliseconds(fci->WaitIncrementalMaxTimeMs()))
+                if(!fcf->m_waitTimer->Active())
+                    throw;
+                while(!fci->m_waitTimer->IsElapsedMilliseconds(fci->WaitIncrementalMaxTimeMs()) && fcs->State() == FeedConnectionState::fcsSuspend)
                     fci->Listen_Atom_Incremental_Core();
                 fci->Listen_Atom_Incremental_Core();
             }
@@ -3545,6 +3547,9 @@ public:
             if(fcs->State() == FeedConnectionState::fcsListenSnapshot) {
                 if (snap_index < snapMsgCount && !snap_msg[snap_index]->m_lost) {
                     snap_msg[snap_index]->m_msgSeqNo = snap_index + 1;
+                    if(snap_msg[snap_index]->m_symbol == 0 ||
+                            snap_msg[snap_index]->m_session == 0)
+                        throw;
                     SendMessage(fcs, snap_msg[snap_index]);
                 }
                 snap_index++;
@@ -3584,9 +3589,9 @@ public:
                      30);
         if(fcf->m_orderBookTableFond->UsedItemCount() != 2)
             throw;
-        if(fcf->m_orderBookTableFond->UsedItem(0)->EntriesQueue()->HasEntries())
+        if(fcf->m_orderBookTableFond->Symbol(0)->Session(0)->EntriesQueue()->HasEntries())
             throw;
-        if(fcf->m_orderBookTableFond->UsedItem(1)->EntriesQueue()->HasEntries())
+        if(fcf->m_orderBookTableFond->Symbol(1)->Session(0)->EntriesQueue()->HasEntries())
             throw;
         if(!fcf->CanStopListeningSnapshot())
             throw;
@@ -3601,9 +3606,9 @@ public:
                      30);
         if(fcf->m_orderBookTableFond->UsedItemCount() != 2)
             throw;
-        if(!fcf->m_orderBookTableFond->UsedItem(0)->EntriesQueue()->HasEntries())
+        if(!fcf->m_orderBookTableFond->Symbol(0)->Session(0)->EntriesQueue()->HasEntries())
             throw;
-        if(fcf->m_orderBookTableFond->UsedItem(1)->EntriesQueue()->HasEntries())
+        if(fcf->m_orderBookTableFond->Symbol(1)->Session(0)->EntriesQueue()->HasEntries())
             throw;
         if(!fcf->ShouldStartSnapshot())
             throw;
@@ -3621,9 +3626,9 @@ public:
 
         if(fcf->m_orderBookTableFond->UsedItemCount() != 2)
             throw;
-        if(fcf->m_orderBookTableFond->UsedItem(0)->EntriesQueue()->HasEntries())
+        if(fcf->m_orderBookTableFond->Symbol(0)->Session(0)->EntriesQueue()->HasEntries())
             throw;
-        if(fcf->m_orderBookTableFond->UsedItem(1)->EntriesQueue()->HasEntries())
+        if(fcf->m_orderBookTableFond->Symbol(1)->Session(0)->EntriesQueue()->HasEntries())
             throw;
         if(!fcf->ShouldStartSnapshot())
             throw;
@@ -3638,6 +3643,8 @@ public:
                      "obr entry symbol1 e1, lost obr entry symbol3 e1",
                      "",
                      30);
+        if(fcf->HasPotentiallyLostPackets())
+            throw;
         if(fcf->ShouldStartSnapshot())
             throw;
         if(fcs->State() != FeedConnectionState::fcsSuspend)
@@ -3653,6 +3660,8 @@ public:
                      "obr entry symbol1 e1, lost obr entry symbol3 e1, hbeat",
                      "",
                      30);
+        if(!fcf->HasPotentiallyLostPackets())
+            throw;
         if(!fcf->ShouldStartSnapshot())
             throw;
         if(!fcf->m_waitTimer->Active())
@@ -3663,6 +3672,25 @@ public:
             throw;
     }
 
+    void TestConnection_ParallelWorkingIncrementalAndSnapshot_2_1() {
+        this->Clear();
+
+        if(fcs->State() != FeedConnectionState::fcsSuspend)
+            throw;
+        SendMessages(fcf, fcs,
+                     "obr entry symbol1 e1, lost obr entry symbol3 e1, hbeat, hbeat",
+                     "",
+                     30);
+        if(!fcf->HasPotentiallyLostPackets())
+            throw;
+        if(!fcf->ShouldStartSnapshot())
+            throw;
+        if(fcf->m_waitTimer->Active())
+            throw;
+        if(fcs->State() != FeedConnectionState::fcsListenSnapshot)
+            throw;
+    }
+    // snapshot should not be stopped
     void TestConnection_ParallelWorkingIncrementalAndSnapshot_3() {
         this->Clear();
 
@@ -3672,12 +3700,32 @@ public:
                      "obr entry symbol1 e1, lost obr entry symbol3 e1, hbeat, hbeat, hbeat",
                      "",
                      30);
+        if(!fcf->HasPotentiallyLostPackets())
+            throw;
+        if(!fcf->ShouldStartSnapshot())
+            throw;
         if(fcf->m_waitTimer->Active())
             throw;
         if(fcs->State() != FeedConnectionState::fcsListenSnapshot)
             throw;
-        // somewhere should be a list of all instruments and for all these instruments there should be no queue entries
+    }
+    // exceeded connection time
+    void TestConnection_ParallelWorkingIncrementalAndSnapshot_3_1() {
+        this->Clear();
+
+        if(fcs->State() != FeedConnectionState::fcsSuspend)
+            throw;
+        SendMessages(fcf, fcs,
+                     "obr entry symbol1 e1, lost obr entry symbol3 e1, hbeat, hbeat, hbeat, hbeat, hbeat, hbeat, hbeat, hbeat, hbeat",
+                     "",
+                     30);
+        if(!fcf->HasPotentiallyLostPackets())
+            throw;
         if(!fcf->ShouldStartSnapshot())
+            throw;
+        if(fcf->m_waitTimer->Active())
+            throw;
+        if(fcs->State() != FeedConnectionState::fcsConnect)
             throw;
     }
 
@@ -3697,17 +3745,19 @@ public:
         if(!fcf->ShouldStartSnapshot())
             throw;
     }
-
+    // snapshot should be closed because all symbols are actual
+    // do not forget about shifting startMsgSeqNum!
     void TestConnection_ParallelWorkingIncrementalAndSnapshot_5() {
         this->Clear();
 
         if(fcs->State() != FeedConnectionState::fcsSuspend)
             throw;
         SendMessages(fcf, fcs,
-                     "obr entry symbol1 e1, lost obr entry symbol3 e1, wait_snap, obr entry symbol1 e3,    obr entry symbol2 e1, obr entry symbol2 e2",
-                     "                                                            obs begin symbol3 rpt 1, obs entry symbol3 e1, obs end",
+                     "obr entry symbol1 e1, lost obr entry symbol3 e1, wait_snap, obr entry symbol1 e3,    obr entry symbol2 e1,               obr entry symbol2 e2",
+                     "                                                            obs symbol3 begin rpt 1, obs symbol3 rpt 1 entry symbol3 e1, obs symbol3 rpt 1 end",
                      30);
-
+        if(fcf->HasQueueEntries())
+            throw;
         if(!fcf->CanStopListeningSnapshot())
             throw;
         if(fcs->State() != FeedConnectionState::fcsSuspend)
@@ -3735,8 +3785,12 @@ public:
         TestConnection_ParallelWorkingIncrementalAndSnapshot_1();
         printf("TestConnection_ParallelWorkingIncrementalAndSnapshot_2\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_2();
+        printf("TestConnection_ParallelWorkingIncrementalAndSnapshot_2_1\n");
+        TestConnection_ParallelWorkingIncrementalAndSnapshot_2_1();
         printf("TestConnection_ParallelWorkingIncrementalAndSnapshot_3\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_3();
+        printf("TestConnection_ParallelWorkingIncrementalAndSnapshot_3_1\n");
+        TestConnection_ParallelWorkingIncrementalAndSnapshot_3_1();
         printf("TestConnection_ParallelWorkingIncrementalAndSnapshot_4\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_4();
         printf("TestConnection_ParallelWorkingIncrementalAndSnapshot_5\n");

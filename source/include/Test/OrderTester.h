@@ -174,7 +174,7 @@ public:
             throw;
         if(this->fcf->OrderFond()->SymbolsCount() != 1)
             throw;
-        if(this->fcf->OrderFond()->TradingSessionsCount() != 1)
+        if(this->fcf->OrderFond()->Symbol(0)->Count() != 1)
             throw;
         OrderTableItem<FastOLSFONDItemInfo> *obi = this->fcf->OrderFond()->GetItem("SMB1", 4, "TRADING001", 10);
         if(obi == 0)
@@ -200,7 +200,7 @@ public:
             throw;
         if(this->fcf->OrderFond()->SymbolsCount() != 1)
             throw;
-        if(this->fcf->OrderFond()->TradingSessionsCount() != 1)
+        if(this->fcf->OrderFond()->Symbol(0)->Count() != 1)
             throw;
         obi = this->fcf->OrderFond()->GetItem("SMB1", 4, "TRADING001", 10);
         if(obi == 0)
@@ -225,7 +225,7 @@ public:
             throw;
         if(this->fcf->OrderFond()->SymbolsCount() != 1)
             throw;
-        if(this->fcf->OrderFond()->TradingSessionsCount() != 1)
+        if(this->fcf->OrderFond()->Symbol(0)->Count() != 1)
             throw;
         obi = this->fcf->OrderFond()->GetItem("SMB1", 4, "TRADING001", 10);
         if(obi == 0)
@@ -269,7 +269,7 @@ public:
             throw;
         if(this->fcf->OrderFond()->SymbolsCount() != 1)
             throw;
-        if(this->fcf->OrderFond()->TradingSessionsCount() != 1)
+        if(this->fcf->OrderFond()->Symbol(0)->Count() != 1)
             throw;
         obi = this->fcf->OrderFond()->GetItem("SMB1", 4, "TRADING001", 10);
         if(obi == 0)
@@ -585,7 +585,7 @@ public:
             throw;
         if(this->fcf->OrderFond()->SymbolsCount() != 1)
             throw;
-        if(this->fcf->OrderFond()->TradingSessionsCount() != 1)
+        if(this->fcf->OrderFond()->Symbol(0)->Count() != 1)
             throw;
         OrderTableItem<FastOLSFONDItemInfo> *obi = this->fcf->OrderFond()->GetItem("SMB1", 4, "TRADING001", 10);
         if(obi == 0)
@@ -609,7 +609,7 @@ public:
             throw;
         if(this->fcf->OrderFond()->SymbolsCount() != 1)
             throw;
-        if(this->fcf->OrderFond()->TradingSessionsCount() != 1)
+        if(this->fcf->OrderFond()->Symbol(0)->Count() != 1)
             throw;
         obi = this->fcf->OrderFond()->GetItem("SMB1", 4, "TRADING001", 10);
         if(obi == 0)
@@ -641,7 +641,7 @@ public:
             throw;
         if(this->fcf->OrderFond()->SymbolsCount() != 1)
             throw;
-        if(this->fcf->OrderFond()->TradingSessionsCount() != 1)
+        if(this->fcf->OrderFond()->Symbol(0)->Count() != 1)
             throw;
 
         obi = this->fcf->OrderFond()->GetItem("SMB1", 4, "TRADING001", 10);
@@ -683,7 +683,7 @@ public:
             throw;
         if(this->fcf->OrderFond()->SymbolsCount() != 1)
             throw;
-        if(this->fcf->OrderFond()->TradingSessionsCount() != 1)
+        if(this->fcf->OrderFond()->Symbol(0)->Count() != 1)
             throw;
         obi = this->fcf->OrderFond()->GetItem("SMB1", 4, "TRADING001", 10);
         if(obi == 0)
@@ -976,7 +976,7 @@ public:
             throw;
         if(this->fcc->OrderCurr()->SymbolsCount() != 1)
             throw;
-        if(this->fcc->OrderCurr()->TradingSessionsCount() != 1)
+        if(this->fcc->OrderCurr()->Symbol(0)->Count() != 1)
             throw;
         OrderTableItem<FastOLSCURRItemInfo> *obi = this->fcc->OrderCurr()->GetItem("SMB1", 4, "TRADING001", 10);
         if(obi == 0)
@@ -1002,7 +1002,7 @@ public:
             throw;
         if(this->fcc->OrderCurr()->SymbolsCount() != 1)
             throw;
-        if(this->fcc->OrderCurr()->TradingSessionsCount() != 1)
+        if(this->fcc->OrderCurr()->Symbol(0)->Count() != 1)
             throw;
         obi = this->fcc->OrderCurr()->GetItem("SMB1", 4, "TRADING001", 10);
         if(obi == 0)
@@ -1028,7 +1028,7 @@ public:
             throw;
         if(this->fcc->OrderCurr()->SymbolsCount() != 1)
             throw;
-        if(this->fcc->OrderCurr()->TradingSessionsCount() != 1)
+        if(this->fcc->OrderCurr()->Symbol(0)->Count() != 1)
             throw;
         obi = this->fcc->OrderCurr()->GetItem("SMB1", 4, "TRADING001", 10);
         if(obi == 0)
@@ -1072,7 +1072,7 @@ public:
             throw;
         if(this->fcc->OrderCurr()->SymbolsCount() != 1)
             throw;
-        if(this->fcc->OrderCurr()->TradingSessionsCount() != 1)
+        if(this->fcc->OrderCurr()->Symbol(0)->Count() != 1)
             throw;
         obi = this->fcc->OrderCurr()->GetItem("SMB1", 4, "TRADING001", 10);
         if(obi == 0)
@@ -1368,7 +1368,7 @@ public:
             throw;
         if(this->fcc->OrderCurr()->SymbolsCount() != 1)
             throw;
-        if(this->fcc->OrderCurr()->TradingSessionsCount() != 1)
+        if(this->fcc->OrderCurr()->Symbol(0)->Count() != 1)
             throw;
         OrderTableItem<FastOLSCURRItemInfo> *obi = this->fcc->OrderCurr()->GetItem("SMB1", 4, "TRADING001", 10);
         if(obi == 0)
@@ -1392,7 +1392,7 @@ public:
             throw;
         if(this->fcc->OrderCurr()->SymbolsCount() != 1)
             throw;
-        if(this->fcc->OrderCurr()->TradingSessionsCount() != 1)
+        if(this->fcc->OrderCurr()->Symbol(0)->Count() != 1)
             throw;
         obi = this->fcc->OrderCurr()->GetItem("SMB1", 4, "TRADING001", 10);
         if(obi == 0)
@@ -1425,7 +1425,7 @@ public:
             throw;
         if(this->fcc->OrderCurr()->SymbolsCount() != 1)
             throw;
-        if(this->fcc->OrderCurr()->TradingSessionsCount() != 1)
+        if(this->fcc->OrderCurr()->Symbol(0)->Count() != 1)
             throw;
         obi = this->fcc->OrderCurr()->GetItem("SMB1", 4, "TRADING001", 10);
         if(obi == 0)
@@ -1466,7 +1466,7 @@ public:
             throw;
         if(this->fcc->OrderCurr()->SymbolsCount() != 1)
             throw;
-        if(this->fcc->OrderCurr()->TradingSessionsCount() != 1)
+        if(this->fcc->OrderCurr()->Symbol(0)->Count() != 1)
             throw;
         obi = this->fcc->OrderCurr()->GetItem("SMB1", 4, "TRADING001", 10);
         if(obi == 0)
@@ -1807,11 +1807,7 @@ public:
     void TestDefaults() {
         if(this->fcf->OrderFond()->SymbolsCount() != 0)
             throw;
-        if(this->fcf->OrderFond()->TradingSessionsCount() != 0)
-            throw;
         if(this->fcc->OrderCurr()->SymbolsCount() != 0)
-            throw;
-        if(this->fcc->OrderCurr()->TradingSessionsCount() != 0)
             throw;
     }
     

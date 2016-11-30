@@ -175,7 +175,7 @@ public:
             throw;
         if(this->fcf->TradeFond()->SymbolsCount() != 1)
             throw;
-        if(this->fcf->TradeFond()->TradingSessionsCount() != 1)
+        if(this->fcf->TradeFond()->Symbol(0)->Count() != 1)
             throw;
         TradeTableItem<FastTLSFONDItemInfo> *obi = this->fcf->TradeFond()->GetItem("SMB1", 4, "TRADING001", 10);
         if(obi == 0)
@@ -201,7 +201,7 @@ public:
             throw;
         if(this->fcf->TradeFond()->SymbolsCount() != 1)
             throw;
-        if(this->fcf->TradeFond()->TradingSessionsCount() != 1)
+        if(this->fcf->TradeFond()->Symbol(0)->Count() != 1)
             throw;
         obi = this->fcf->TradeFond()->GetItem("SMB1", 4, "TRADING001", 10);
         if(obi == 0)
@@ -226,7 +226,7 @@ public:
             throw;
         if(this->fcf->TradeFond()->SymbolsCount() != 1)
             throw;
-        if(this->fcf->TradeFond()->TradingSessionsCount() != 1)
+        if(this->fcf->TradeFond()->Symbol(0)->Count() != 1)
             throw;
         obi = this->fcf->TradeFond()->GetItem("SMB1", 4, "TRADING001", 10);
         if(obi == 0)
@@ -270,7 +270,7 @@ public:
             throw;
         if(this->fcf->TradeFond()->SymbolsCount() != 1)
             throw;
-        if(this->fcf->TradeFond()->TradingSessionsCount() != 1)
+        if(this->fcf->TradeFond()->Symbol(0)->Count() != 1)
             throw;
         obi = this->fcf->TradeFond()->GetItem("SMB1", 4, "TRADING001", 10);
         if(obi == 0)
@@ -423,7 +423,7 @@ public:
             throw;
         if(this->fcc->TradeCurr()->SymbolsCount() != 1)
             throw;
-        if(this->fcc->TradeCurr()->TradingSessionsCount() != 1)
+        if(this->fcc->TradeCurr()->Symbol(0)->Count() != 1)
             throw;
         TradeTableItem<FastTLSCURRItemInfo> *obi = this->fcc->TradeCurr()->GetItem("SMB1", 4, "TRADING001", 10);
         if(obi == 0)
@@ -449,7 +449,7 @@ public:
             throw;
         if(this->fcc->TradeCurr()->SymbolsCount() != 1)
             throw;
-        if(this->fcc->TradeCurr()->TradingSessionsCount() != 1)
+        if(this->fcc->TradeCurr()->Symbol(0)->Count() != 1)
             throw;
         obi = this->fcc->TradeCurr()->GetItem("SMB1", 4, "TRADING001", 10);
         if(obi == 0)
@@ -475,7 +475,7 @@ public:
             throw;
         if(this->fcc->TradeCurr()->SymbolsCount() != 1)
             throw;
-        if(this->fcc->TradeCurr()->TradingSessionsCount() != 1)
+        if(this->fcc->TradeCurr()->Symbol(0)->Count() != 1)
             throw;
         obi = this->fcc->TradeCurr()->GetItem("SMB1", 4, "TRADING001", 10);
         if(obi == 0)
@@ -519,7 +519,7 @@ public:
             throw;
         if(this->fcc->TradeCurr()->SymbolsCount() != 1)
             throw;
-        if(this->fcc->TradeCurr()->TradingSessionsCount() != 1)
+        if(this->fcc->TradeCurr()->Symbol(0)->Count() != 1)
             throw;
         obi = this->fcc->TradeCurr()->GetItem("SMB1", 4, "TRADING001", 10);
         if(obi == 0)
@@ -676,7 +676,7 @@ public:
     void TestDefaults() {
         if(this->fcf->TradeFond()->SymbolsCount() != 0)
             throw;
-        if(this->fcc->TradeCurr()->TradingSessionsCount() != 0)
+        if(this->fcc->TradeCurr()->SymbolsCount() != 0)
             throw;
     }
 

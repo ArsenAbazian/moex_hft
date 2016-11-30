@@ -125,6 +125,8 @@ public:
         this->m_length = 0;
     }
 
+    inline void Set(const char *text, int length) { this->m_text = text; this->m_length = length; }
+
     inline bool Equal(const char *text) {
         return StringIdComparer::Equal(this->m_text, this->m_length, text, strlen(text));
     }
