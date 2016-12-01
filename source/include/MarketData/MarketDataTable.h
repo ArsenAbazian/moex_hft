@@ -63,8 +63,7 @@ public:
     inline int RptSeq() { return this->m_incStartRptSeq; }
 };
 
-template <template<typename ITEMINFO> class T> class MarketSymbolInfo;
-template <typename T> class OrderBookSession;
+template <typename T> class MarketSymbolInfo;
 
 template <typename T> class OrderBookSession {
     PointerList<T>      *m_sellQuoteList;
@@ -337,7 +336,7 @@ template <typename T> class OrderSession {
     PointerList<T>      *m_buyQuoteList;
 
     bool                 m_used;
-    MarketSymbolInfo<OrderBookSession<T>>    *m_symbolInfo;
+    MarketSymbolInfo<OrderSession<T>>    *m_symbolInfo;
     SizedArray          *m_tradingSession;
 public:
     OrderSession() {
@@ -351,8 +350,8 @@ public:
 
     inline SizedArray* TradingSession() { return this->m_tradingSession; }
     inline SizedArray* Symbol() { return this->m_symbolInfo->Symbol(); }
-    inline MarketSymbolInfo<OrderBookSession<T>>* SymbolInfo() { return this->m_symbolInfo; }
-    inline void SymbolInfo(MarketSymbolInfo<OrderBookSession<T>>* symbolInfo) { this->m_symbolInfo = symbolInfo; }
+    inline MarketSymbolInfo<OrderSession<T>>* SymbolInfo() { return this->m_symbolInfo; }
+    inline void SymbolInfo(MarketSymbolInfo<OrderSession<T>>* symbolInfo) { this->m_symbolInfo = symbolInfo; }
 
     inline PointerList<T>* SellQuotes() { return this->m_sellQuoteList; }
     inline PointerList<T>* BuyQuotes() { return this->m_buyQuoteList; }
@@ -477,7 +476,7 @@ template <typename T> class TradeSession {
     PointerList<T>      *m_tradeList;
 
     bool                 m_used;
-    MarketSymbolInfo<OrderBookSession<T>>    *m_symbolInfo;
+    MarketSymbolInfo<TradeSession<T>>    *m_symbolInfo;
     SizedArray          *m_tradingSession;
 public:
     TradeSession() {
@@ -489,8 +488,8 @@ public:
 
     inline SizedArray* TradingSession() { return this->m_tradingSession; }
     inline SizedArray* Symbol() { return this->m_symbolInfo->Symbol(); }
-    inline MarketSymbolInfo<OrderBookSession<T>>* SymbolInfo() { return this->m_symbolInfo; }
-    inline void SymbolInfo(MarketSymbolInfo<OrderBookSession<T>>* symbolInfo) { this->m_symbolInfo = symbolInfo; }
+    inline MarketSymbolInfo<TradeSession<T>>* SymbolInfo() { return this->m_symbolInfo; }
+    inline void SymbolInfo(MarketSymbolInfo<TradeSession<T>>* symbolInfo) { this->m_symbolInfo = symbolInfo; }
 
     inline PointerList<T>* Trades() { return this->m_tradeList; }
     inline bool Used() { return this->m_used; }
@@ -707,11 +706,10 @@ public:
 };
 */
 
-template <template<typename ITEMINFO> class T> class MarketSymbolInfo {
+template <typename T> class MarketSymbolInfo {
     T                                  *m_items[MAX_TRADING_SESSIONS_COUNT];
     SizedArray                         *m_symbol;
     int                                 m_count;
-    int                                 m_sessionsToCheck;
 public:
     MarketSymbolInfo() {
         this->m_count = 0;
@@ -720,7 +718,6 @@ public:
             this->m_items[i]->SymbolInfo(this);
         }
         this->m_symbol = new SizedArray();
-        this->m_sessionsToCheck = 0;
     }
     ~MarketSymbolInfo() {
         for(int i = 0; i < MAX_TRADING_SESSIONS_COUNT; i++)
@@ -728,8 +725,6 @@ public:
         delete this->m_symbol;
     }
     inline int Count() { return this->m_count; }
-    inline void StartCheckSessions() { this->m_sessionsToCheck = this->m_count; }
-    inline bool AllSessionsChecked() { return this->m_sessionsToCheck == 0; }
     inline T* Session(int index) { return this->m_items[index]; }
     inline T* GetSession(const char *session, int sessionLength) {
         T **item = this->m_items;
@@ -760,7 +755,6 @@ template <template<typename ITEMINFO> class TABLEITEM, typename INFO, typename I
     TABLEITEM<ITEMINFO>                         *m_snapshotItem;
     TABLEITEM<ITEMINFO>                         *m_cachedItem;
     int                                         m_queueItemsCount;
-    int                                         m_symbolsToCheck;
 
     inline void AddUsed(TABLEITEM<ITEMINFO> *tableItem) {
         tableItem->Used(true);
@@ -772,7 +766,6 @@ public:
         this->m_symbolsCount = 0;
         this->m_queueItemsCount = 0;
         this->m_cachedItem = 0;
-        this->m_symbolsToCheck = 0;
     }
     ~MarketDataTable() {
         for(int i = 0; i < MAX_SYMBOLS_COUNT; i++)
@@ -785,13 +778,6 @@ public:
             return this->m_cachedItem;
         return 0;
     }
-    inline void StartCheckSymbols() {
-        this->m_symbolsToCheck = this->m_symbolsCount;
-        MarketSymbolInfo<TABLEITEM<ITEMINFO>> **s = this->m_symbols;
-        for(int i = 0; i < this->m_symbolsCount; i++, s++)
-            (*s)->StartCheckSessions();
-    }
-    inline bool IsAllSymbolsChecked() { return this->m_symbolsToCheck == 0; }
     inline bool ProcessIncremental(ITEMINFO *info) {
         TABLEITEM<ITEMINFO> *tableItem = GetItem(info->Symbol, info->SymbolLength, info->TradingSessionID, info->TradingSessionIDLength);
         this->AddUsed(tableItem);
@@ -815,7 +801,6 @@ public:
         bool res = this->m_snapshotItem->EndProcessSnapshotMessages();
         if(!this->m_snapshotItem->EntriesQueue()->HasEntries()) {
             this->m_queueItemsCount--;
-
         }
         return res;
     }
@@ -872,7 +857,7 @@ public:
     inline bool HasQueueEntries() {
         return this->m_queueItemsCount > 0;
     }
-    inline int QueueItemsCount() { return this->m_queueItemsCount; }
+    inline int QueueEntriesCount() { return this->m_queueItemsCount; }
 };
 
 #endif //HFT_ROBOT_ORDERBOOKTABLE_H
