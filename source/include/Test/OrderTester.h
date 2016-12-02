@@ -176,7 +176,7 @@ public:
             throw;
         if(this->fcf->OrderFond()->Symbol(0)->Count() != 1)
             throw;
-        OrderSession<FastOLSFONDItemInfo> *obi = this->fcf->OrderFond()->GetItem("SMB1", 4, "TRADING001", 10);
+        OrderInfo<FastOLSFONDItemInfo> *obi = this->fcf->OrderFond()->GetItem("SMB1", 4, "TRADING001", 10);
         if(obi == 0)
             throw;
         if(obi->BuyQuotes()->Count() != 1)
@@ -351,7 +351,7 @@ public:
         if(this->fcf->OrderFond()->UsedItemCount() != 1)
             throw;
 
-        OrderSession<FastOLSFONDItemInfo> *obi = this->fcf->OrderFond()->GetItem("SMB1", 4, "TRADING001", 10);
+        OrderInfo<FastOLSFONDItemInfo> *obi = this->fcf->OrderFond()->GetItem("SMB1", 4, "TRADING001", 10);
         if(obi->BuyQuotes()->Count() != 3)
             throw;
         if(!StringIdComparer::Equal(obi->BuyQuotes()->Item(0)->MDEntryID, 10, "ENTRYID001", 10))
@@ -422,7 +422,7 @@ public:
 
         this->fcf->OnIncrementalRefresh_OLR_FOND(info);
 
-        OrderSession<FastOLSFONDItemInfo> *obi2 = this->fcf->OrderFond()->GetItem("SMB1", 4, "TRADING001", 10);
+        OrderInfo<FastOLSFONDItemInfo> *obi2 = this->fcf->OrderFond()->GetItem("SMB1", 4, "TRADING001", 10);
         if(!StringIdComparer::Equal(obi2->BuyQuotes()->Item(0)->MDEntryID, 10, "ENTRYID001", 10))
             throw;
         if(!StringIdComparer::Equal(obi2->BuyQuotes()->Item(1)->MDEntryID, 10, "ENTRYID002", 10))
@@ -446,7 +446,7 @@ public:
         if(item5->Allocator->Count() != 1)
             throw;
 
-        OrderSession<FastOLSFONDItemInfo> *obi = this->fcf->OrderFond()->GetItem("SMB1", 4, "TRADING001", 10);
+        OrderInfo<FastOLSFONDItemInfo> *obi = this->fcf->OrderFond()->GetItem("SMB1", 4, "TRADING001", 10);
 
         FastOLSFONDItemInfo *qt1 = obi->BuyQuotes()->Item(0);
         FastOLSFONDItemInfo *qt2 = obi->BuyQuotes()->Item(1);
@@ -506,7 +506,7 @@ public:
         if(this->fcf->OrderFond()->UsedItemCount() != 0)
             throw;
 
-        OrderSession<FastOLSFONDItemInfo> *obi = this->fcf->OrderFond()->GetItem("SMB1", 4, "TRADING001", 10);
+        OrderInfo<FastOLSFONDItemInfo> *obi = this->fcf->OrderFond()->GetItem("SMB1", 4, "TRADING001", 10);
         if(obi->BuyQuotes()->Count() != 0)
             throw;
     }
@@ -542,11 +542,11 @@ public:
         if(this->fcf->OrderFond()->UsedItemCount() != 1)
             throw;
 
-        OrderSession<FastOLSFONDItemInfo> *obi3 = this->fcf->OrderFond()->GetItem("SMB1", 4, "TRADING001", 10);
+        OrderInfo<FastOLSFONDItemInfo> *obi3 = this->fcf->OrderFond()->GetItem("SMB1", 4, "TRADING001", 10);
         if(obi3->BuyQuotes()->Count() != 0)
             throw;
 
-        OrderSession<FastOLSFONDItemInfo> *obi = this->fcf->OrderFond()->GetItem("SMB2", 4, "TRADING001", 10);
+        OrderInfo<FastOLSFONDItemInfo> *obi = this->fcf->OrderFond()->GetItem("SMB2", 4, "TRADING001", 10);
         if(obi->BuyQuotes()->Count() != 2)
             throw;
 
@@ -587,7 +587,7 @@ public:
             throw;
         if(this->fcf->OrderFond()->Symbol(0)->Count() != 1)
             throw;
-        OrderSession<FastOLSFONDItemInfo> *obi = this->fcf->OrderFond()->GetItem("SMB1", 4, "TRADING001", 10);
+        OrderInfo<FastOLSFONDItemInfo> *obi = this->fcf->OrderFond()->GetItem("SMB1", 4, "TRADING001", 10);
         if(obi == 0)
             throw;
         if(obi->SellQuotes()->Count() != 1)
@@ -755,7 +755,7 @@ public:
         if(this->fcf->OrderFond()->UsedItemCount() != 1)
             throw;
 
-        OrderSession<FastOLSFONDItemInfo> *obi = this->fcf->OrderFond()->GetItem("SMB1", 4, "TRADING001", 10);
+        OrderInfo<FastOLSFONDItemInfo> *obi = this->fcf->OrderFond()->GetItem("SMB1", 4, "TRADING001", 10);
         if(obi->SellQuotes()->Count() != 3)
             throw;
 
@@ -827,7 +827,7 @@ public:
 
         this->fcf->OnIncrementalRefresh_OLR_FOND(info);
 
-        OrderSession<FastOLSFONDItemInfo> *obi2 = this->fcf->OrderFond()->GetItem("SMB1", 4, "TRADING001", 10);
+        OrderInfo<FastOLSFONDItemInfo> *obi2 = this->fcf->OrderFond()->GetItem("SMB1", 4, "TRADING001", 10);
         if(!StringIdComparer::Equal(obi2->SellQuotes()->Item(0)->MDEntryID, 10, "ENTRYID001", 10))
             throw;
         if(!StringIdComparer::Equal(obi2->SellQuotes()->Item(1)->MDEntryID, 10, "ENTRYID002", 10))
@@ -844,7 +844,7 @@ public:
 
         this->fcf->OnIncrementalRefresh_OLR_FOND(info);
 
-        OrderSession<FastOLSFONDItemInfo> *obi = this->fcf->OrderFond()->GetItem("SMB1", 4, "TRADING001", 10);
+        OrderInfo<FastOLSFONDItemInfo> *obi = this->fcf->OrderFond()->GetItem("SMB1", 4, "TRADING001", 10);
 
         FastOLSFONDItemInfo *qt1 = obi->SellQuotes()->Item(0);
         FastOLSFONDItemInfo *qt2 = obi->SellQuotes()->Item(1);
@@ -897,7 +897,7 @@ public:
         if(this->fcf->OrderFond()->UsedItemCount() != 0)
             throw;
 
-        OrderSession<FastOLSFONDItemInfo> *obi = this->fcf->OrderFond()->GetItem("SMB1", 4, "TRADING001", 10);
+        OrderInfo<FastOLSFONDItemInfo> *obi = this->fcf->OrderFond()->GetItem("SMB1", 4, "TRADING001", 10);
         if(obi->SellQuotes()->Count() != 0)
             throw;
     }
@@ -933,11 +933,11 @@ public:
         if(this->fcf->OrderFond()->UsedItemCount() != 1)
             throw;
 
-        OrderSession<FastOLSFONDItemInfo> *obi3 = this->fcf->OrderFond()->GetItem("SMB1", 4, "TRADING001", 10);
+        OrderInfo<FastOLSFONDItemInfo> *obi3 = this->fcf->OrderFond()->GetItem("SMB1", 4, "TRADING001", 10);
         if(obi3->SellQuotes()->Count() != 0)
             throw;
 
-        OrderSession<FastOLSFONDItemInfo> *obi = this->fcf->OrderFond()->GetItem("SMB2", 4, "TRADING001", 10);
+        OrderInfo<FastOLSFONDItemInfo> *obi = this->fcf->OrderFond()->GetItem("SMB2", 4, "TRADING001", 10);
         if(obi->SellQuotes()->Count() != 2)
             throw;
 
@@ -978,7 +978,7 @@ public:
             throw;
         if(this->fcc->OrderCurr()->Symbol(0)->Count() != 1)
             throw;
-        OrderSession<FastOLSCURRItemInfo> *obi = this->fcc->OrderCurr()->GetItem("SMB1", 4, "TRADING001", 10);
+        OrderInfo<FastOLSCURRItemInfo> *obi = this->fcc->OrderCurr()->GetItem("SMB1", 4, "TRADING001", 10);
         if(obi == 0)
             throw;
         if(obi->BuyQuotes()->Count() != 1)
@@ -1148,7 +1148,7 @@ public:
         if(this->fcc->OrderCurr()->UsedItemCount() != 1)
             throw;
 
-        OrderSession<FastOLSCURRItemInfo> *obi = this->fcc->OrderCurr()->GetItem("SMB1", 4, "TRADING001", 10);
+        OrderInfo<FastOLSCURRItemInfo> *obi = this->fcc->OrderCurr()->GetItem("SMB1", 4, "TRADING001", 10);
         if(obi->BuyQuotes()->Count() != 3)
             throw;
         if(!StringIdComparer::Equal(obi->BuyQuotes()->Item(0)->MDEntryID, 10, "ENTRYID001", 10))
@@ -1219,7 +1219,7 @@ public:
 
         this->fcc->OnIncrementalRefresh_OLR_CURR(info);
 
-        OrderSession<FastOLSCURRItemInfo> *obi2 = this->fcc->OrderCurr()->GetItem("SMB1", 4, "TRADING001", 10);
+        OrderInfo<FastOLSCURRItemInfo> *obi2 = this->fcc->OrderCurr()->GetItem("SMB1", 4, "TRADING001", 10);
         if(!StringIdComparer::Equal(obi2->BuyQuotes()->Item(0)->MDEntryID, 10, "ENTRYID001", 10))
             throw;
         if(!StringIdComparer::Equal(obi2->BuyQuotes()->Item(1)->MDEntryID, 10, "ENTRYID002", 10))
@@ -1236,7 +1236,7 @@ public:
 
         this->fcc->OnIncrementalRefresh_OLR_CURR(info);
 
-        OrderSession<FastOLSCURRItemInfo> *obi = this->fcc->OrderCurr()->GetItem("SMB1", 4, "TRADING001", 10);
+        OrderInfo<FastOLSCURRItemInfo> *obi = this->fcc->OrderCurr()->GetItem("SMB1", 4, "TRADING001", 10);
 
         FastOLSCURRItemInfo *qt1 = obi->BuyQuotes()->Item(0);
         FastOLSCURRItemInfo *qt2 = obi->BuyQuotes()->Item(1);
@@ -1289,7 +1289,7 @@ public:
         if(this->fcc->OrderCurr()->UsedItemCount() != 0)
             throw;
 
-        OrderSession<FastOLSCURRItemInfo> *obi = this->fcc->OrderCurr()->GetItem("SMB1", 4, "TRADING001", 10);
+        OrderInfo<FastOLSCURRItemInfo> *obi = this->fcc->OrderCurr()->GetItem("SMB1", 4, "TRADING001", 10);
         if(obi->BuyQuotes()->Count() != 0)
             throw;
     }
@@ -1325,11 +1325,11 @@ public:
         if(this->fcc->OrderCurr()->UsedItemCount() != 1)
             throw;
 
-        OrderSession<FastOLSCURRItemInfo> *obi3 = this->fcc->OrderCurr()->GetItem("SMB1", 4, "TRADING001", 10);
+        OrderInfo<FastOLSCURRItemInfo> *obi3 = this->fcc->OrderCurr()->GetItem("SMB1", 4, "TRADING001", 10);
         if(obi3->BuyQuotes()->Count() != 0)
             throw;
 
-        OrderSession<FastOLSCURRItemInfo> *obi = this->fcc->OrderCurr()->GetItem("SMB2", 4, "TRADING001", 10);
+        OrderInfo<FastOLSCURRItemInfo> *obi = this->fcc->OrderCurr()->GetItem("SMB2", 4, "TRADING001", 10);
         if(obi->BuyQuotes()->Count() != 2)
             throw;
 
@@ -1370,7 +1370,7 @@ public:
             throw;
         if(this->fcc->OrderCurr()->Symbol(0)->Count() != 1)
             throw;
-        OrderSession<FastOLSCURRItemInfo> *obi = this->fcc->OrderCurr()->GetItem("SMB1", 4, "TRADING001", 10);
+        OrderInfo<FastOLSCURRItemInfo> *obi = this->fcc->OrderCurr()->GetItem("SMB1", 4, "TRADING001", 10);
         if(obi == 0)
             throw;
         if(obi->SellQuotes()->Count() != 1)
@@ -1538,7 +1538,7 @@ public:
         if(this->fcc->OrderCurr()->UsedItemCount() != 1)
             throw;
 
-        OrderSession<FastOLSCURRItemInfo> *obi = this->fcc->OrderCurr()->GetItem("SMB1", 4, "TRADING001", 10);
+        OrderInfo<FastOLSCURRItemInfo> *obi = this->fcc->OrderCurr()->GetItem("SMB1", 4, "TRADING001", 10);
         if(obi->SellQuotes()->Count() != 3)
             throw;
         if(!StringIdComparer::Equal(obi->SellQuotes()->Item(0)->MDEntryID, 10, "ENTRYID001", 10))
@@ -1609,7 +1609,7 @@ public:
 
         this->fcc->OnIncrementalRefresh_OLR_CURR(info);
 
-        OrderSession<FastOLSCURRItemInfo> *obi2 = this->fcc->OrderCurr()->GetItem("SMB1", 4, "TRADING001", 10);
+        OrderInfo<FastOLSCURRItemInfo> *obi2 = this->fcc->OrderCurr()->GetItem("SMB1", 4, "TRADING001", 10);
         if(!StringIdComparer::Equal(obi2->SellQuotes()->Item(0)->MDEntryID, 10, "ENTRYID001", 10))
             throw;
         if(!StringIdComparer::Equal(obi2->SellQuotes()->Item(1)->MDEntryID, 10, "ENTRYID002", 10))
@@ -1626,7 +1626,7 @@ public:
 
         this->fcc->OnIncrementalRefresh_OLR_CURR(info);
 
-        OrderSession<FastOLSCURRItemInfo> *obi = this->fcc->OrderCurr()->GetItem("SMB1", 4, "TRADING001", 10);
+        OrderInfo<FastOLSCURRItemInfo> *obi = this->fcc->OrderCurr()->GetItem("SMB1", 4, "TRADING001", 10);
 
         FastOLSCURRItemInfo *qt1 = obi->SellQuotes()->Item(0);
         FastOLSCURRItemInfo *qt2 = obi->SellQuotes()->Item(1);
@@ -1679,7 +1679,7 @@ public:
         if(this->fcc->OrderCurr()->UsedItemCount() != 0)
             throw;
 
-        OrderSession<FastOLSCURRItemInfo> *obi = this->fcc->OrderCurr()->GetItem("SMB1", 4, "TRADING001", 10);
+        OrderInfo<FastOLSCURRItemInfo> *obi = this->fcc->OrderCurr()->GetItem("SMB1", 4, "TRADING001", 10);
         if(obi->BuyQuotes()->Count() != 0)
             throw;
     }
@@ -1715,11 +1715,11 @@ public:
         if(this->fcc->OrderCurr()->UsedItemCount() != 1)
             throw;
 
-        OrderSession<FastOLSCURRItemInfo> *obi3 = this->fcc->OrderCurr()->GetItem("SMB1", 4, "TRADING001", 10);
+        OrderInfo<FastOLSCURRItemInfo> *obi3 = this->fcc->OrderCurr()->GetItem("SMB1", 4, "TRADING001", 10);
         if(obi3->SellQuotes()->Count() != 0)
             throw;
 
-        OrderSession<FastOLSCURRItemInfo> *obi = this->fcc->OrderCurr()->GetItem("SMB2", 4, "TRADING001", 10);
+        OrderInfo<FastOLSCURRItemInfo> *obi = this->fcc->OrderCurr()->GetItem("SMB2", 4, "TRADING001", 10);
         if(obi->SellQuotes()->Count() != 2)
             throw;
 

@@ -177,7 +177,7 @@ public:
             throw;
         if(this->fcf->TradeFond()->Symbol(0)->Count() != 1)
             throw;
-        TradeSession<FastTLSFONDItemInfo> *obi = this->fcf->TradeFond()->GetItem("SMB1", 4, "TRADING001", 10);
+        TradeInfo<FastTLSFONDItemInfo> *obi = this->fcf->TradeFond()->GetItem("SMB1", 4, "TRADING001", 10);
         if(obi == 0)
             throw;
         if(obi->Trades()->Count() != 1)
@@ -344,7 +344,7 @@ public:
         if(this->fcf->TradeFond()->UsedItemCount() != 0)
             throw;
 
-        TradeSession<FastTLSFONDItemInfo> *obi = this->fcf->TradeFond()->GetItem("SMB1", 4, "TRADING001", 10);
+        TradeInfo<FastTLSFONDItemInfo> *obi = this->fcf->TradeFond()->GetItem("SMB1", 4, "TRADING001", 10);
         if(obi->Trades()->Count() != 0)
             throw;
     }
@@ -380,11 +380,11 @@ public:
         if(this->fcf->TradeFond()->UsedItemCount() != 1)
             throw;
 
-        TradeSession<FastTLSFONDItemInfo> *obi3 = this->fcf->TradeFond()->GetItem("SMB1", 4, "TRADING001", 10);
+        TradeInfo<FastTLSFONDItemInfo> *obi3 = this->fcf->TradeFond()->GetItem("SMB1", 4, "TRADING001", 10);
         if(obi3->Trades()->Count() != 0)
             throw;
 
-        TradeSession<FastTLSFONDItemInfo> *obi = this->fcf->TradeFond()->GetItem("SMB2", 4, "TRADING001", 10);
+        TradeInfo<FastTLSFONDItemInfo> *obi = this->fcf->TradeFond()->GetItem("SMB2", 4, "TRADING001", 10);
         if(obi->Trades()->Count() != 2)
             throw;
 
@@ -425,7 +425,7 @@ public:
             throw;
         if(this->fcc->TradeCurr()->Symbol(0)->Count() != 1)
             throw;
-        TradeSession<FastTLSCURRItemInfo> *obi = this->fcc->TradeCurr()->GetItem("SMB1", 4, "TRADING001", 10);
+        TradeInfo<FastTLSCURRItemInfo> *obi = this->fcc->TradeCurr()->GetItem("SMB1", 4, "TRADING001", 10);
         if(obi == 0)
             throw;
         if(obi->Trades()->Count() != 1)
@@ -586,7 +586,7 @@ public:
         if(this->fcc->TradeCurr()->UsedItemCount() != 0)
             throw;
 
-        TradeSession<FastTLSCURRItemInfo> *obi = this->fcc->TradeCurr()->GetItem("SMB1", 4, "TRADING001", 10);
+        TradeInfo<FastTLSCURRItemInfo> *obi = this->fcc->TradeCurr()->GetItem("SMB1", 4, "TRADING001", 10);
         if(obi->Trades()->Count() != 0)
             throw;
     }
@@ -622,11 +622,11 @@ public:
         if(this->fcc->TradeCurr()->UsedItemCount() != 1)
             throw;
 
-        TradeSession<FastTLSCURRItemInfo> *obi3 = this->fcc->TradeCurr()->GetItem("SMB1", 4, "TRADING001", 10);
+        TradeInfo<FastTLSCURRItemInfo> *obi3 = this->fcc->TradeCurr()->GetItem("SMB1", 4, "TRADING001", 10);
         if(obi3->Trades()->Count() != 0)
             throw;
 
-        TradeSession<FastTLSCURRItemInfo> *obi = this->fcc->TradeCurr()->GetItem("SMB2", 4, "TRADING001", 10);
+        TradeInfo<FastTLSCURRItemInfo> *obi = this->fcc->TradeCurr()->GetItem("SMB2", 4, "TRADING001", 10);
         if(obi->Trades()->Count() != 2)
             throw;
 

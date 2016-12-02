@@ -236,7 +236,7 @@ public:
         return info;
     }
 
-    void TestItem(OrderBookSession<FastOBSFONDItemInfo> *tableItem) {
+    void TestItem(OrderBookInfo<FastOBSFONDItemInfo> *tableItem) {
         for(int i = 0; i < tableItem->BuyQuotes()->Count(); i++)
             if(tableItem->BuyQuotes()->Item(i)->Allocator == 0)
                 throw;
@@ -245,19 +245,19 @@ public:
                 throw;
     }
 
-    void TestTableItemsAllocator(MarketDataTable<OrderBookSession, FastOBSFONDInfo, FastOBSFONDItemInfo> *table) {
+    void TestTableItemsAllocator(MarketDataTable<OrderBookInfo, FastOBSFONDInfo, FastOBSFONDItemInfo> *table) {
         for(int i = 0; i < table->SymbolsCount(); i++) {
             for(int j = 0; j < table->Symbol(i)->Count(); j++) {
-                OrderBookSession<FastOBSFONDItemInfo> *item = table->Item(i, j);
+                OrderBookInfo<FastOBSFONDItemInfo> *item = table->Item(i, j);
                 TestItem(item);
             }
         }
         /*for(int i = 0; i < MAX_SYMBOLS_COUNT; i++) {
             for(int j = 0; j < MAX_TRADING_SESSIONS_COUNT; j++) {
                 bool found = false;
-                OrderBookSession<FastOBSFONDItemInfo> *titem = table->Item(i, j);
+                OrderBookInfo<FastOBSFONDItemInfo> *titem = table->Item(i, j);
                 for(int u = 0; u < table->UsedItemCount(); u++) {
-                    OrderBookSession<FastOBSFONDItemInfo> *item = table->UsedItem(i);
+                    OrderBookInfo<FastOBSFONDItemInfo> *item = table->UsedItem(i);
 
                     if(item == titem)
                         found = true;
@@ -316,7 +316,7 @@ public:
             throw;
         if(this->fcf->OrderBookFond()->Symbol(0)->Count() != 1)
             throw;
-        OrderBookSession<FastOBSFONDItemInfo> *obi = this->fcf->OrderBookFond()->GetItem("SMB1", 4, "TRADING001", 10);
+        OrderBookInfo<FastOBSFONDItemInfo> *obi = this->fcf->OrderBookFond()->GetItem("SMB1", 4, "TRADING001", 10);
         if(obi == 0)
             throw;
         if(obi->BuyQuotes()->Count() != 1)
@@ -490,7 +490,7 @@ public:
         if(this->fcf->OrderBookFond()->UsedItemCount() != 1)
             throw;
 
-        OrderBookSession<FastOBSFONDItemInfo> *obi = this->fcf->OrderBookFond()->GetItem("SMB1", 4, "TRADING001", 10);
+        OrderBookInfo<FastOBSFONDItemInfo> *obi = this->fcf->OrderBookFond()->GetItem("SMB1", 4, "TRADING001", 10);
         if(obi->BuyQuotes()->Count() != 3)
             throw;
         if(!StringIdComparer::Equal(obi->BuyQuotes()->Item(0)->MDEntryID, 10, "ENTRYID002", 10))
@@ -564,7 +564,7 @@ public:
 
         this->fcf->OnIncrementalRefresh_OBR_FOND(info);
 
-        OrderBookSession<FastOBSFONDItemInfo> *obi2 = this->fcf->OrderBookFond()->GetItem("SMB1", 4, "TRADING001", 10);
+        OrderBookInfo<FastOBSFONDItemInfo> *obi2 = this->fcf->OrderBookFond()->GetItem("SMB1", 4, "TRADING001", 10);
         if(!StringIdComparer::Equal(obi2->BuyQuotes()->Item(0)->MDEntryID, 10, "ENTRYID002", 10))
             throw;
         if(!StringIdComparer::Equal(obi2->BuyQuotes()->Item(1)->MDEntryID, 10, "ENTRYID001", 10))
@@ -589,7 +589,7 @@ public:
         if(item5->Allocator->Count() != 1)
             throw;
 
-        OrderBookSession<FastOBSFONDItemInfo> *obi = this->fcf->OrderBookFond()->GetItem("SMB1", 4, "TRADING001", 10);
+        OrderBookInfo<FastOBSFONDItemInfo> *obi = this->fcf->OrderBookFond()->GetItem("SMB1", 4, "TRADING001", 10);
 
         FastOBSFONDItemInfo *qt1 = obi->BuyQuotes()->Item(0);
         FastOBSFONDItemInfo *qt2 = obi->BuyQuotes()->Item(1);
@@ -649,7 +649,7 @@ public:
         if(this->fcf->OrderBookFond()->UsedItemCount() != 0)
             throw;
 
-        OrderBookSession<FastOBSFONDItemInfo> *obi = this->fcf->OrderBookFond()->GetItem("SMB1", 4, "TRADING001", 10);
+        OrderBookInfo<FastOBSFONDItemInfo> *obi = this->fcf->OrderBookFond()->GetItem("SMB1", 4, "TRADING001", 10);
         if(obi->BuyQuotes()->Count() != 0)
             throw;
     }
@@ -672,7 +672,7 @@ public:
 
         this->fcf->OnIncrementalRefresh_OBR_FOND(info);
 
-        OrderBookSession<FastOBSFONDItemInfo> *obi2 = this->fcf->OrderBookFond()->GetItem("SMB1", 4, "TRADING001", 10);
+        OrderBookInfo<FastOBSFONDItemInfo> *obi2 = this->fcf->OrderBookFond()->GetItem("SMB1", 4, "TRADING001", 10);
         if(obi2->BuyQuotes()->Count() != 4)
             throw;
 
@@ -690,11 +690,11 @@ public:
         if(this->fcf->OrderBookFond()->UsedItemCount() != 2)
             throw;
 
-        OrderBookSession<FastOBSFONDItemInfo> *obi3 = this->fcf->OrderBookFond()->GetItem("SMB1", 4, "TRADING001", 10);
+        OrderBookInfo<FastOBSFONDItemInfo> *obi3 = this->fcf->OrderBookFond()->GetItem("SMB1", 4, "TRADING001", 10);
         if(obi3->BuyQuotes()->Count() != 4)
             throw;
 
-        OrderBookSession<FastOBSFONDItemInfo> *obi = this->fcf->OrderBookFond()->GetItem("SMB2", 4, "TRADING001", 10);
+        OrderBookInfo<FastOBSFONDItemInfo> *obi = this->fcf->OrderBookFond()->GetItem("SMB2", 4, "TRADING001", 10);
         if(obi->BuyQuotes()->Count() != 2)
             throw;
 
@@ -735,7 +735,7 @@ public:
             throw;
         if(this->fcf->OrderBookFond()->Symbol(0)->Count() != 1)
             throw;
-        OrderBookSession<FastOBSFONDItemInfo> *obi = this->fcf->OrderBookFond()->GetItem("SMB1", 4, "TRADING001", 10);
+        OrderBookInfo<FastOBSFONDItemInfo> *obi = this->fcf->OrderBookFond()->GetItem("SMB1", 4, "TRADING001", 10);
         if(obi == 0)
             throw;
         if(obi->SellQuotes()->Count() != 1)
@@ -903,7 +903,7 @@ public:
         if(this->fcf->OrderBookFond()->UsedItemCount() != 1)
             throw;
 
-        OrderBookSession<FastOBSFONDItemInfo> *obi = this->fcf->OrderBookFond()->GetItem("SMB1", 4, "TRADING001", 10);
+        OrderBookInfo<FastOBSFONDItemInfo> *obi = this->fcf->OrderBookFond()->GetItem("SMB1", 4, "TRADING001", 10);
         if(obi->SellQuotes()->Count() != 3)
             throw;
 
@@ -978,7 +978,7 @@ public:
 
         this->fcf->OnIncrementalRefresh_OBR_FOND(info);
 
-        OrderBookSession<FastOBSFONDItemInfo> *obi2 = this->fcf->OrderBookFond()->GetItem("SMB1", 4, "TRADING001", 10);
+        OrderBookInfo<FastOBSFONDItemInfo> *obi2 = this->fcf->OrderBookFond()->GetItem("SMB1", 4, "TRADING001", 10);
         if(!StringIdComparer::Equal(obi2->SellQuotes()->Item(0)->MDEntryID, 10, "ENTRYID003", 10))
             throw;
         if(!StringIdComparer::Equal(obi2->SellQuotes()->Item(1)->MDEntryID, 10, "ENTRYID004", 10))
@@ -995,7 +995,7 @@ public:
 
         this->fcf->OnIncrementalRefresh_OBR_FOND(info);
 
-        OrderBookSession<FastOBSFONDItemInfo> *obi = this->fcf->OrderBookFond()->GetItem("SMB1", 4, "TRADING001", 10);
+        OrderBookInfo<FastOBSFONDItemInfo> *obi = this->fcf->OrderBookFond()->GetItem("SMB1", 4, "TRADING001", 10);
 
         FastOBSFONDItemInfo *qt1 = obi->SellQuotes()->Item(0);
         FastOBSFONDItemInfo *qt2 = obi->SellQuotes()->Item(1);
@@ -1048,7 +1048,7 @@ public:
         if(this->fcf->OrderBookFond()->UsedItemCount() != 0)
             throw;
 
-        OrderBookSession<FastOBSFONDItemInfo> *obi = this->fcf->OrderBookFond()->GetItem("SMB1", 4, "TRADING001", 10);
+        OrderBookInfo<FastOBSFONDItemInfo> *obi = this->fcf->OrderBookFond()->GetItem("SMB1", 4, "TRADING001", 10);
         if(obi->SellQuotes()->Count() != 0)
             throw;
     }
@@ -1084,11 +1084,11 @@ public:
         if(this->fcf->OrderBookFond()->UsedItemCount() != 2)
             throw;
 
-        OrderBookSession<FastOBSFONDItemInfo> *obi3 = this->fcf->OrderBookFond()->GetItem("SMB1", 4, "TRADING001", 10);
+        OrderBookInfo<FastOBSFONDItemInfo> *obi3 = this->fcf->OrderBookFond()->GetItem("SMB1", 4, "TRADING001", 10);
         if(obi3->SellQuotes()->Count() != 4)
             throw;
 
-        OrderBookSession<FastOBSFONDItemInfo> *obi = this->fcf->OrderBookFond()->GetItem("SMB2", 4, "TRADING001", 10);
+        OrderBookInfo<FastOBSFONDItemInfo> *obi = this->fcf->OrderBookFond()->GetItem("SMB2", 4, "TRADING001", 10);
         if(obi->SellQuotes()->Count() != 2)
             throw;
 
@@ -1129,7 +1129,7 @@ public:
             throw;
         if(this->fcc->OrderBookCurr()->Symbol(0)->Count() != 1)
             throw;
-        OrderBookSession<FastOBSCURRItemInfo> *obi = this->fcc->OrderBookCurr()->GetItem("SMB1", 4, "TRADING001", 10);
+        OrderBookInfo<FastOBSCURRItemInfo> *obi = this->fcc->OrderBookCurr()->GetItem("SMB1", 4, "TRADING001", 10);
         if(obi == 0)
             throw;
         if(obi->BuyQuotes()->Count() != 1)
@@ -1298,7 +1298,7 @@ public:
         if(this->fcc->OrderBookCurr()->UsedItemCount() != 1)
             throw;
 
-        OrderBookSession<FastOBSCURRItemInfo> *obi = this->fcc->OrderBookCurr()->GetItem("SMB1", 4, "TRADING001", 10);
+        OrderBookInfo<FastOBSCURRItemInfo> *obi = this->fcc->OrderBookCurr()->GetItem("SMB1", 4, "TRADING001", 10);
         if(obi->BuyQuotes()->Count() != 3)
             throw;
         if(!StringIdComparer::Equal(obi->BuyQuotes()->Item(0)->MDEntryID, 10, "ENTRYID002", 10))
@@ -1369,7 +1369,7 @@ public:
 
         this->fcc->OnIncrementalRefresh_OBR_CURR(info);
 
-        OrderBookSession<FastOBSCURRItemInfo> *obi2 = this->fcc->OrderBookCurr()->GetItem("SMB1", 4, "TRADING001", 10);
+        OrderBookInfo<FastOBSCURRItemInfo> *obi2 = this->fcc->OrderBookCurr()->GetItem("SMB1", 4, "TRADING001", 10);
         if(!StringIdComparer::Equal(obi2->BuyQuotes()->Item(0)->MDEntryID, 10, "ENTRYID002", 10))
             throw;
         if(!StringIdComparer::Equal(obi2->BuyQuotes()->Item(1)->MDEntryID, 10, "ENTRYID001", 10))
@@ -1386,7 +1386,7 @@ public:
 
         this->fcc->OnIncrementalRefresh_OBR_CURR(info);
 
-        OrderBookSession<FastOBSCURRItemInfo> *obi = this->fcc->OrderBookCurr()->GetItem("SMB1", 4, "TRADING001", 10);
+        OrderBookInfo<FastOBSCURRItemInfo> *obi = this->fcc->OrderBookCurr()->GetItem("SMB1", 4, "TRADING001", 10);
 
         FastOBSCURRItemInfo *qt1 = obi->BuyQuotes()->Item(0);
         FastOBSCURRItemInfo *qt2 = obi->BuyQuotes()->Item(1);
@@ -1439,7 +1439,7 @@ public:
         if(this->fcc->OrderBookCurr()->UsedItemCount() != 0)
             throw;
 
-        OrderBookSession<FastOBSCURRItemInfo> *obi = this->fcc->OrderBookCurr()->GetItem("SMB1", 4, "TRADING001", 10);
+        OrderBookInfo<FastOBSCURRItemInfo> *obi = this->fcc->OrderBookCurr()->GetItem("SMB1", 4, "TRADING001", 10);
         if(obi->BuyQuotes()->Count() != 0)
             throw;
     }
@@ -1475,11 +1475,11 @@ public:
         if(this->fcc->OrderBookCurr()->UsedItemCount() != 1)
             throw;
 
-        OrderBookSession<FastOBSCURRItemInfo> *obi3 = this->fcc->OrderBookCurr()->GetItem("SMB1", 4, "TRADING001", 10);
+        OrderBookInfo<FastOBSCURRItemInfo> *obi3 = this->fcc->OrderBookCurr()->GetItem("SMB1", 4, "TRADING001", 10);
         if(obi3->BuyQuotes()->Count() != 0)
             throw;
 
-        OrderBookSession<FastOBSCURRItemInfo> *obi = this->fcc->OrderBookCurr()->GetItem("SMB2", 4, "TRADING001", 10);
+        OrderBookInfo<FastOBSCURRItemInfo> *obi = this->fcc->OrderBookCurr()->GetItem("SMB2", 4, "TRADING001", 10);
         if(obi->BuyQuotes()->Count() != 2)
             throw;
 
@@ -1520,7 +1520,7 @@ public:
             throw;
         if(this->fcc->OrderBookCurr()->Symbol(0)->Count() != 1)
             throw;
-        OrderBookSession<FastOBSCURRItemInfo> *obi = this->fcc->OrderBookCurr()->GetItem("SMB1", 4, "TRADING001", 10);
+        OrderBookInfo<FastOBSCURRItemInfo> *obi = this->fcc->OrderBookCurr()->GetItem("SMB1", 4, "TRADING001", 10);
         if(obi == 0)
             throw;
         if(obi->SellQuotes()->Count() != 1)
@@ -1687,7 +1687,7 @@ public:
         if(this->fcc->OrderBookCurr()->UsedItemCount() != 1)
             throw;
 
-        OrderBookSession<FastOBSCURRItemInfo> *obi = this->fcc->OrderBookCurr()->GetItem("SMB1", 4, "TRADING001", 10);
+        OrderBookInfo<FastOBSCURRItemInfo> *obi = this->fcc->OrderBookCurr()->GetItem("SMB1", 4, "TRADING001", 10);
         if(obi->SellQuotes()->Count() != 3)
             throw;
         if(!StringIdComparer::Equal(obi->SellQuotes()->Item(0)->MDEntryID, 10, "ENTRYID003", 10))
@@ -1758,7 +1758,7 @@ public:
 
         this->fcc->OnIncrementalRefresh_OBR_CURR(info);
 
-        OrderBookSession<FastOBSCURRItemInfo> *obi2 = this->fcc->OrderBookCurr()->GetItem("SMB1", 4, "TRADING001", 10);
+        OrderBookInfo<FastOBSCURRItemInfo> *obi2 = this->fcc->OrderBookCurr()->GetItem("SMB1", 4, "TRADING001", 10);
         if(!StringIdComparer::Equal(obi2->SellQuotes()->Item(0)->MDEntryID, 10, "ENTRYID003", 10))
             throw;
         if(!StringIdComparer::Equal(obi2->SellQuotes()->Item(1)->MDEntryID, 10, "ENTRYID004", 10))
@@ -1775,7 +1775,7 @@ public:
 
         this->fcc->OnIncrementalRefresh_OBR_CURR(info);
 
-        OrderBookSession<FastOBSCURRItemInfo> *obi = this->fcc->OrderBookCurr()->GetItem("SMB1", 4, "TRADING001", 10);
+        OrderBookInfo<FastOBSCURRItemInfo> *obi = this->fcc->OrderBookCurr()->GetItem("SMB1", 4, "TRADING001", 10);
 
         FastOBSCURRItemInfo *qt1 = obi->SellQuotes()->Item(0);
         FastOBSCURRItemInfo *qt2 = obi->SellQuotes()->Item(1);
@@ -1828,7 +1828,7 @@ public:
         if(this->fcc->OrderBookCurr()->UsedItemCount() != 0)
             throw;
 
-        OrderBookSession<FastOBSCURRItemInfo> *obi = this->fcc->OrderBookCurr()->GetItem("SMB1", 4, "TRADING001", 10);
+        OrderBookInfo<FastOBSCURRItemInfo> *obi = this->fcc->OrderBookCurr()->GetItem("SMB1", 4, "TRADING001", 10);
         if(obi->BuyQuotes()->Count() != 0)
             throw;
     }
@@ -1864,11 +1864,11 @@ public:
         if(this->fcc->OrderBookCurr()->UsedItemCount() != 1)
             throw;
 
-        OrderBookSession<FastOBSCURRItemInfo> *obi3 = this->fcc->OrderBookCurr()->GetItem("SMB1", 4, "TRADING001", 10);
+        OrderBookInfo<FastOBSCURRItemInfo> *obi3 = this->fcc->OrderBookCurr()->GetItem("SMB1", 4, "TRADING001", 10);
         if(obi3->SellQuotes()->Count() != 0)
             throw;
 
-        OrderBookSession<FastOBSCURRItemInfo> *obi = this->fcc->OrderBookCurr()->GetItem("SMB2", 4, "TRADING001", 10);
+        OrderBookInfo<FastOBSCURRItemInfo> *obi = this->fcc->OrderBookCurr()->GetItem("SMB2", 4, "TRADING001", 10);
         if(obi->SellQuotes()->Count() != 2)
             throw;
 
@@ -1963,7 +1963,7 @@ public:
     }
 
     void TestTableItem_CorrectBegin() {
-        OrderBookSession<FastOBSFONDItemInfo> *tb = new OrderBookSession<FastOBSFONDItemInfo>();
+        OrderBookInfo<FastOBSFONDItemInfo> *tb = new OrderBookInfo<FastOBSFONDItemInfo>();
 
         FastOBSFONDItemInfo *item1 = CreateFastOBSFondItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "ENTRYID001");
         item1->RptSeq = 1;
@@ -1982,7 +1982,7 @@ public:
     }
 
     void TestTableItem_IncorrectBegin() {
-        OrderBookSession<FastOBSFONDItemInfo> *tb = new OrderBookSession<FastOBSFONDItemInfo>();
+        OrderBookInfo<FastOBSFONDItemInfo> *tb = new OrderBookInfo<FastOBSFONDItemInfo>();
 
         FastOBSFONDItemInfo *item1 = CreateFastOBSFondItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "ENTRYID001");
         item1->RptSeq = 2;
@@ -2003,7 +2003,7 @@ public:
     }
 
     void TestTableItem_SkipMessage() {
-        OrderBookSession<FastOBSFONDItemInfo> *tb = new OrderBookSession<FastOBSFONDItemInfo>();
+        OrderBookInfo<FastOBSFONDItemInfo> *tb = new OrderBookInfo<FastOBSFONDItemInfo>();
 
         FastOBSFONDItemInfo *item1 = CreateFastOBSFondItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "ENTRYID001");
         item1->RptSeq = 1;
@@ -2042,7 +2042,7 @@ public:
 
     void TestTable_Default() {
 
-        MarketDataTable<OrderBookSession, FastOBSFONDInfo, FastOBSFONDItemInfo> *table = new MarketDataTable<OrderBookSession, FastOBSFONDInfo, FastOBSFONDItemInfo>();
+        MarketDataTable<OrderBookInfo, FastOBSFONDInfo, FastOBSFONDItemInfo> *table = new MarketDataTable<OrderBookInfo, FastOBSFONDInfo, FastOBSFONDItemInfo>();
 
         TestTableItemsAllocator(table);
 
@@ -2050,7 +2050,7 @@ public:
     }
 
     void TestTable_AfterClear() {
-        MarketDataTable<OrderBookSession, FastOBSFONDInfo, FastOBSFONDItemInfo> *table = new MarketDataTable<OrderBookSession, FastOBSFONDInfo, FastOBSFONDItemInfo>();
+        MarketDataTable<OrderBookInfo, FastOBSFONDInfo, FastOBSFONDItemInfo> *table = new MarketDataTable<OrderBookInfo, FastOBSFONDInfo, FastOBSFONDItemInfo>();
 
         FastOBSFONDItemInfo *item = CreateFastOBRFondItemInfo("symbol1", "session1", "entry1");
         item->RptSeq = 1;
@@ -2067,7 +2067,7 @@ public:
 
         if(table->UsedItemCount() != 1)
             throw;
-        OrderBookSession<FastOBSFONDItemInfo> *tableItem = table->GetItem("symbol1", "session1");
+        OrderBookInfo<FastOBSFONDItemInfo> *tableItem = table->GetItem("symbol1", "session1");
         if(tableItem->EntriesQueue()->MaxIndex() != 1) // 3 is empty and 4 has value
             throw;
         table->Clear();
@@ -2085,7 +2085,7 @@ public:
 
     void TestTable_CorrectBegin() {
 
-        MarketDataTable<OrderBookSession, FastOBSFONDInfo, FastOBSFONDItemInfo> *table = new MarketDataTable<OrderBookSession, FastOBSFONDInfo, FastOBSFONDItemInfo>();
+        MarketDataTable<OrderBookInfo, FastOBSFONDInfo, FastOBSFONDItemInfo> *table = new MarketDataTable<OrderBookInfo, FastOBSFONDInfo, FastOBSFONDItemInfo>();
 
         FastOBSFONDItemInfo *item1 = CreateFastOBRFondItemInfo("SYMBOL", "TRADING", 8, 1, 8, 1, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "ENTRYID001", 1);
         item1->RptSeq = 1;
@@ -2097,7 +2097,7 @@ public:
     }
 
     void TestTable_IncorrectBegin() {
-        MarketDataTable<OrderBookSession, FastOBSFONDInfo, FastOBSFONDItemInfo> *table = new MarketDataTable<OrderBookSession, FastOBSFONDInfo, FastOBSFONDItemInfo>();
+        MarketDataTable<OrderBookInfo, FastOBSFONDInfo, FastOBSFONDItemInfo> *table = new MarketDataTable<OrderBookInfo, FastOBSFONDInfo, FastOBSFONDItemInfo>();
 
         FastOBSFONDItemInfo *item1 = CreateFastOBRFondItemInfo("SYMBOL", "TRADING", 8, 1, 8, 1, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "ENTRYID001", 1);
         item1->RptSeq = 2;
@@ -2109,7 +2109,7 @@ public:
     }
 
     void TestTable_SkipMessages() {
-        MarketDataTable<OrderBookSession, FastOBSFONDInfo, FastOBSFONDItemInfo> *table = new MarketDataTable<OrderBookSession, FastOBSFONDInfo, FastOBSFONDItemInfo>();
+        MarketDataTable<OrderBookInfo, FastOBSFONDInfo, FastOBSFONDItemInfo> *table = new MarketDataTable<OrderBookInfo, FastOBSFONDInfo, FastOBSFONDItemInfo>();
 
         FastOBSFONDItemInfo *item1 = CreateFastOBRFondItemInfo("SYMBOL", "TRADING", 8, 1, 8, 1, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "ENTRYID001", 1);
         item1->RptSeq = 1;
@@ -2127,7 +2127,7 @@ public:
     }
 
     void Test_2UsedItemsAfter2IncrementalMessages() {
-        MarketDataTable<OrderBookSession, FastOBSFONDInfo, FastOBSFONDItemInfo> *table = new MarketDataTable<OrderBookSession, FastOBSFONDInfo, FastOBSFONDItemInfo>();
+        MarketDataTable<OrderBookInfo, FastOBSFONDInfo, FastOBSFONDItemInfo> *table = new MarketDataTable<OrderBookInfo, FastOBSFONDInfo, FastOBSFONDItemInfo>();
 
         FastOBSFONDItemInfo *item1 = CreateFastOBRFondItemInfo("SYMBOL", "TRADING", 8, 1, 8, 1, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "ENTRYID001", 1);
         item1->RptSeq = 1;
@@ -2148,7 +2148,7 @@ public:
     }
 
     void TestTable_CorrectApplySnapshot() {
-        MarketDataTable<OrderBookSession, FastOBSFONDInfo, FastOBSFONDItemInfo> *table = new MarketDataTable<OrderBookSession, FastOBSFONDInfo, FastOBSFONDItemInfo>();
+        MarketDataTable<OrderBookInfo, FastOBSFONDInfo, FastOBSFONDItemInfo> *table = new MarketDataTable<OrderBookInfo, FastOBSFONDInfo, FastOBSFONDItemInfo>();
 
         FastOBSFONDItemInfo *item1 = CreateFastOBRFondItemInfo("SYMBOL", "TRADING", 8, 1, 8, 1, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "ENTRYID001", 1);
         item1->RptSeq = 1;
@@ -2180,7 +2180,7 @@ public:
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item5;
 
-        OrderBookSession<FastOBSFONDItemInfo> *tb = table->GetItem("SYMBOL", 6, "TRADING", 7);
+        OrderBookInfo<FastOBSFONDItemInfo> *tb = table->GetItem("SYMBOL", 6, "TRADING", 7);
 
         table->StartProcessSnapshot(info);
         if(tb != table->SnapshotItem())
@@ -2208,8 +2208,61 @@ public:
             throw;
     }
 
+    void TestTable_CorrectApplySnapshot_2() {
+
+        MarketDataTable<OrderBookInfo, FastOBSFONDInfo, FastOBSFONDItemInfo> *table = new MarketDataTable<OrderBookInfo, FastOBSFONDInfo, FastOBSFONDItemInfo>();
+
+        FastOBSFONDItemInfo *item1 = CreateFastOBRFondItemInfo("SYMBOL", "TRADING", 8, 1, 8, 1, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "ENTRYID001", 1);
+        item1->RptSeq = 1;
+
+        table->ProcessIncremental(item1);
+
+        FastOBSFONDItemInfo *item3 = CreateFastOBRFondItemInfo("SYMBOL", "TRADING", 8, 1, 8, 1, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "ENTRYID003", 4);
+        item3->RptSeq = 4;
+
+        if(table->ProcessIncremental(item3))
+            throw;
+
+        FastOBSFONDItemInfo *item4 = CreateFastOBRFondItemInfo("SYMBOL", "TRADING", 8, 1, 8, 1, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "ENTRYID004", 5);
+        item4->RptSeq = 5;
+
+        if(table->ProcessIncremental(item4))
+            throw;
+
+        FastOBSFONDInfo *info1 = CreateFastOBSFondInfo("SYMBOL", "TRADING");
+        info1->GroupMDEntriesCount = 1;
+        info1->RptSeq = 3;
+        info1->RouteFirst = true;
+        info1->GroupMDEntries[0] = CreateFastOBSFondItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "ENTRYID002");
+
+        FastOBSFONDInfo *info2 = CreateFastOBSFondInfo("SYMBOL", "TRADING");
+        info2->GroupMDEntriesCount = 1;
+        info2->RptSeq = 3;
+        info2->RouteFirst = true;
+        info2->GroupMDEntries[0] = CreateFastOBSFondItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "ENTRYID002");
+
+        OrderBookInfo<FastOBSFONDItemInfo> *tb = table->GetItem("SYMBOL", 6, "TRADING", 7);
+
+        table->StartProcessSnapshot(info1);
+        if(tb != table->SnapshotItem())
+            throw;
+        if(tb->BuyQuotes()->Count() != 0)
+            throw;
+        if(tb->SellQuotes()->Count() != 0)
+            throw;
+
+        table->ProcessSnapshot(info1);
+        table->ProcessSnapshot(info2);
+        if(!table->EndProcessSnapshot())
+            throw;
+        if(tb->RptSeq() != 5)
+            throw;
+        if(tb->BuyQuotes()->Count() != 4)
+            throw;
+    }
+
     void TestTable_IncorrectApplySnapshot() {
-        MarketDataTable<OrderBookSession, FastOBSFONDInfo, FastOBSFONDItemInfo> *table = new MarketDataTable<OrderBookSession, FastOBSFONDInfo, FastOBSFONDItemInfo>();
+        MarketDataTable<OrderBookInfo, FastOBSFONDInfo, FastOBSFONDItemInfo> *table = new MarketDataTable<OrderBookInfo, FastOBSFONDInfo, FastOBSFONDItemInfo>();
 
         FastOBSFONDItemInfo *item1 = CreateFastOBRFondItemInfo("SYMBOL", "TRADING", 8, 1, 8, 1, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "ENTRYID001", 1);
         item1->RptSeq = 1;
@@ -2241,7 +2294,7 @@ public:
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item5;
 
-        OrderBookSession<FastOBSFONDItemInfo> *tb = table->GetItem("SYMBOL", 6, "TRADING", 7);
+        OrderBookInfo<FastOBSFONDItemInfo> *tb = table->GetItem("SYMBOL", 6, "TRADING", 7);
 
         table->StartProcessSnapshot(info);
         if(tb != table->SnapshotItem())
@@ -2264,7 +2317,7 @@ public:
     }
 
     void TestTable_IncorrectApplySnapshot_WhenMessageSkipped() {
-        MarketDataTable<OrderBookSession, FastOBSFONDInfo, FastOBSFONDItemInfo> *table = new MarketDataTable<OrderBookSession, FastOBSFONDInfo, FastOBSFONDItemInfo>();
+        MarketDataTable<OrderBookInfo, FastOBSFONDInfo, FastOBSFONDItemInfo> *table = new MarketDataTable<OrderBookInfo, FastOBSFONDInfo, FastOBSFONDItemInfo>();
 
         FastOBSFONDItemInfo *item1 = CreateFastOBRFondItemInfo("SYMBOL", "TRADING", 8, 1, 8, 1, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "ENTRYID001", 1);
         item1->RptSeq = 1;
@@ -2290,7 +2343,7 @@ public:
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item5;
 
-        OrderBookSession<FastOBSFONDItemInfo> *tb = table->GetItem("SYMBOL", 6, "TRADING", 7);
+        OrderBookInfo<FastOBSFONDItemInfo> *tb = table->GetItem("SYMBOL", 6, "TRADING", 7);
 
         table->StartProcessSnapshot(info);
         if(tb != table->SnapshotItem())
@@ -2490,7 +2543,7 @@ public:
 
         this->TestTableItemsAllocator(fcf->OrderBookFond());
 
-        OrderBookSession<FastOBSFONDItemInfo> *item = fcf->OrderBookFond()->GetItem("symbol1", "session1");
+        OrderBookInfo<FastOBSFONDItemInfo> *item = fcf->OrderBookFond()->GetItem("symbol1", "session1");
         if(item->BuyQuotes()->Count() != 2)
             throw;
         if(!fcf->m_waitTimer->Active()) // not all messages was processed - some messages was skipped
@@ -2544,7 +2597,7 @@ public:
 
         this->TestTableItemsAllocator(fcf->OrderBookFond());
 
-        OrderBookSession<FastOBSFONDItemInfo> *item = fcf->OrderBookFond()->GetItem("symbol1", "session1");
+        OrderBookInfo<FastOBSFONDItemInfo> *item = fcf->OrderBookFond()->GetItem("symbol1", "session1");
         if(item->BuyQuotes()->Count() != 2)
             throw;
         if(!fcf->m_waitTimer->Active()) // not all messages was processed - some messages was skipped
@@ -2601,7 +2654,7 @@ public:
 
         this->TestTableItemsAllocator(fcf->OrderBookFond());
 
-        OrderBookSession<FastOBSFONDItemInfo> *item = fcf->OrderBookFond()->GetItem("symbol1", "session1");
+        OrderBookInfo<FastOBSFONDItemInfo> *item = fcf->OrderBookFond()->GetItem("symbol1", "session1");
         if(item->BuyQuotes()->Count() != 2)
             throw;
         if(!fcf->m_waitTimer->Active()) // not all messages was processed - some messages was skipped
@@ -2682,7 +2735,7 @@ public:
 
         this->TestTableItemsAllocator(fcf->OrderBookFond());
 
-        OrderBookSession<FastOBSFONDItemInfo> *item = fcf->OrderBookFond()->GetItem("symbol1", "session1");
+        OrderBookInfo<FastOBSFONDItemInfo> *item = fcf->OrderBookFond()->GetItem("symbol1", "session1");
         if(item->BuyQuotes()->Count() != 2)
             throw;
         if(!fcf->m_waitTimer->Active()) // not all messages was processed - some messages was skipped
@@ -2766,7 +2819,7 @@ public:
 
         this->TestTableItemsAllocator(fcf->OrderBookFond());
 
-        OrderBookSession<FastOBSFONDItemInfo> *item = fcf->OrderBookFond()->GetItem("symbol1", "session1");
+        OrderBookInfo<FastOBSFONDItemInfo> *item = fcf->OrderBookFond()->GetItem("symbol1", "session1");
         if(!fcf->m_waitTimer->Active()) // not all messages was processed - some messages was skipped
             throw;
         // wait
@@ -3207,7 +3260,7 @@ public:
 
         fcs->Listen_Atom_Snapshot_Core();
         //snapshot received and should be applied
-        OrderBookSession<FastOBSFONDItemInfo> *tableItem = fcf->OrderBookFond()->GetItem("symbol1", "session1");
+        OrderBookInfo<FastOBSFONDItemInfo> *tableItem = fcf->OrderBookFond()->GetItem("symbol1", "session1");
 
         this->TestTableItemsAllocator(fcf->OrderBookFond());
 
@@ -3336,8 +3389,8 @@ public:
 
         // snapshot for first item should be received and immediately applied then, should be applied incremental messages in que,
         // but connection should not be closed - because not all items were updated
-        OrderBookSession<FastOBSFONDItemInfo> *item1 = fcf->OrderBookFond()->GetItem("symbol1", "session1");
-        OrderBookSession<FastOBSFONDItemInfo> *item2 = fcf->OrderBookFond()->GetItem("symbol2", "session1");
+        OrderBookInfo<FastOBSFONDItemInfo> *item1 = fcf->OrderBookFond()->GetItem("symbol1", "session1");
+        OrderBookInfo<FastOBSFONDItemInfo> *item2 = fcf->OrderBookFond()->GetItem("symbol2", "session1");
         if(item1->EntriesQueue()->HasEntries())
             throw;
         if(!item2->EntriesQueue()->HasEntries())
@@ -3675,12 +3728,17 @@ public:
     void TestConnection_ParallelWorkingIncrementalAndSnapshot_2_1() {
         this->Clear();
 
+        fcf->OrderBookFond()->Add("symbol1", "session1");
+        fcf->OrderBookFond()->Add("symbol3", "session1");
+
         if(fcs->State() != FeedConnectionState::fcsSuspend)
             throw;
         SendMessages(fcf, fcs,
                      "obr entry symbol1 e1, lost obr entry symbol3 e1, hbeat, hbeat",
                      "",
                      30);
+        if(fcf->SymbolsToRecvSnapshotCount() != 2)
+            throw;
         if(!fcf->HasPotentiallyLostPackets())
             throw;
         if(!fcf->ShouldStartSnapshot())
@@ -3689,10 +3747,19 @@ public:
             throw;
         if(fcs->State() != FeedConnectionState::fcsListenSnapshot)
             throw;
+        if(fcf->OrderBookFond()->SymbolsToRecvSnapshotCount() != 2)
+            throw;
+        if(fcf->OrderBookFond()->Symbol(0)->SessionsToRecvSnapshotCount() != 1)
+            throw;
+        if(fcf->OrderBookFond()->Symbol(1)->SessionsToRecvSnapshotCount() != 1)
+            throw;
     }
     // snapshot should not be stopped
     void TestConnection_ParallelWorkingIncrementalAndSnapshot_3() {
         this->Clear();
+
+        fcf->OrderBookFond()->Add("symbol1", "session1");
+        fcf->OrderBookFond()->Add("symbol3", "session1");
 
         if(fcs->State() != FeedConnectionState::fcsSuspend)
             throw;
@@ -3700,6 +3767,8 @@ public:
                      "obr entry symbol1 e1, lost obr entry symbol3 e1, hbeat, hbeat, hbeat",
                      "",
                      30);
+        if(fcf->SymbolsToRecvSnapshotCount() != 2)
+            throw;
         if(!fcf->HasPotentiallyLostPackets())
             throw;
         if(!fcf->ShouldStartSnapshot())
@@ -3708,10 +3777,19 @@ public:
             throw;
         if(fcs->State() != FeedConnectionState::fcsListenSnapshot)
             throw;
+        if(fcf->OrderBookFond()->SymbolsToRecvSnapshotCount() != 2)
+            throw;
+        if(fcf->OrderBookFond()->Symbol(0)->SessionsToRecvSnapshotCount() != 1)
+            throw;
+        if(fcf->OrderBookFond()->Symbol(1)->SessionsToRecvSnapshotCount() != 1)
+            throw;
     }
     // exceeded connection time
     void TestConnection_ParallelWorkingIncrementalAndSnapshot_3_1() {
         this->Clear();
+
+        fcf->OrderBookFond()->Add("symbol1", "session1");
+        fcf->OrderBookFond()->Add("symbol3", "session1");
 
         if(fcs->State() != FeedConnectionState::fcsSuspend)
             throw;
@@ -3719,6 +3797,8 @@ public:
                      "obr entry symbol1 e1, lost obr entry symbol3 e1, hbeat, hbeat, hbeat, hbeat, hbeat, hbeat, hbeat, hbeat, hbeat",
                      "",
                      30);
+        if(fcf->SymbolsToRecvSnapshotCount() != 2)
+            throw;
         if(!fcf->HasPotentiallyLostPackets())
             throw;
         if(!fcf->ShouldStartSnapshot())
@@ -3727,10 +3807,19 @@ public:
             throw;
         if(fcs->State() != FeedConnectionState::fcsConnect)
             throw;
+        if(fcf->OrderBookFond()->SymbolsToRecvSnapshotCount() != 2)
+            throw;
+        if(fcf->OrderBookFond()->Symbol(0)->SessionsToRecvSnapshotCount() != 1)
+            throw;
+        if(fcf->OrderBookFond()->Symbol(1)->SessionsToRecvSnapshotCount() != 1)
+            throw;
     }
 
     void TestConnection_ParallelWorkingIncrementalAndSnapshot_4() {
         this->Clear();
+
+        fcf->OrderBookFond()->Add("symbol1", "session1");
+        fcf->OrderBookFond()->Add("symbol3", "session1");
 
         if(fcs->State() != FeedConnectionState::fcsSuspend)
             throw;
@@ -3740,15 +3829,62 @@ public:
                      30);
         if(fcf->m_waitTimer->Active())
             throw;
+        if(fcf->SymbolsToRecvSnapshotCount() != 2)
+            throw;
         if(fcs->State() != FeedConnectionState::fcsListenSnapshot)
             throw;
         if(!fcf->ShouldStartSnapshot())
             throw;
+        if(fcf->OrderBookFond()->SymbolsToRecvSnapshotCount() != 2)
+            throw;
+        if(fcf->OrderBookFond()->Symbol(1)->SessionsToRecvSnapshotCount() != 1)
+            throw;
+        if(fcf->OrderBookFond()->Symbol(1)->SessionsToRecvSnapshotCount() != 1)
+            throw;
     }
-    // snapshot should be closed because all symbols are actual
-    // do not forget about shifting startMsgSeqNum!
+
+    void TestConnection_ParallelWorkingIncrementalAndSnapshot_5_1() {
+        this->Clear();
+
+        fcf->OrderBookFond()->Add("symbol1", "session1");
+
+        if(fcs->State() != FeedConnectionState::fcsSuspend)
+            throw;
+        SendMessages(fcf, fcs,
+                     "lost obr entry symbol1 e1, wait_snap",
+                     "obs symbol1 begin rpt 1, obs symbol1 rpt 1 entry symbol1 e1, obs symbol1 rpt 1 end",
+                     30);
+        if(fcf->HasQueueEntries())
+            throw;
+        if(fcf->OrderBookFond()->SymbolsToRecvSnapshotCount() != 0)
+            throw;
+        if(fcf->SymbolsToRecvSnapshotCount() != 0)
+            throw;
+        if(!fcf->CanStopListeningSnapshot())
+            throw;
+        if(fcs->State() != FeedConnectionState::fcsSuspend)
+            throw;
+        if(fcf->m_orderBookTableFond->UsedItemCount() != 1)
+            throw;
+        if(fcf->m_orderBookTableFond->GetItem("symbol1", "session1")->BuyQuotes()->Count() != 1)
+            throw;
+        if(fcf->m_startMsgSeqNum != 2)
+            throw;
+        if(fcf->m_endMsgSeqNum != 1)
+            throw;
+        if(fcs->m_startMsgSeqNum != 4)
+            throw;
+        if(fcs->m_endMsgSeqNum != 3)
+            throw;
+    }
+    // we should receive at least one snapshot for all items
+    // we received snapshot for one item
     void TestConnection_ParallelWorkingIncrementalAndSnapshot_5() {
         this->Clear();
+
+        fcf->OrderBookFond()->Add("symbol1", "session1");
+        fcf->OrderBookFond()->Add("symbol2", "session1");
+        fcf->OrderBookFond()->Add("symbol3", "session1");
 
         if(fcs->State() != FeedConnectionState::fcsSuspend)
             throw;
@@ -3793,6 +3929,8 @@ public:
         TestConnection_ParallelWorkingIncrementalAndSnapshot_3_1();
         printf("TestConnection_ParallelWorkingIncrementalAndSnapshot_4\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_4();
+        printf("TestConnection_ParallelWorkingIncrementalAndSnapshot_5_1\n");
+        TestConnection_ParallelWorkingIncrementalAndSnapshot_5_1();
         printf("TestConnection_ParallelWorkingIncrementalAndSnapshot_5\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_5();
     }
@@ -3909,6 +4047,8 @@ public:
         Test_2UsedItemsAfter2IncrementalMessages();
         printf("TestTable_CorrectApplySnapshot\n");
         TestTable_CorrectApplySnapshot();
+        printf("TestTable_CorrectApplySnapshot_2\n");
+        TestTable_CorrectApplySnapshot_2();
         printf("TestTable_IncorrectApplySnapshot\n");
         TestTable_IncorrectApplySnapshot();
         printf("TestTable_IncorrectApplySnapshot_WhenMessageSkipped\n");
