@@ -428,13 +428,17 @@ private:
 		DefaultLogManager::Default->WriteSuccess(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_StartListenSnapshot, true);
 		return true;
 	}
+    inline void UpdateMessageSeqNoAfterSnapshot() {
+        this->m_startMsgSeqNum = this->m_endMsgSeqNum + 1;
+    }
 	inline bool StopListenSnapshot() {
 		if(!this->m_snapshot->Stop()) {
 			DefaultLogManager::Default->WriteSuccess(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_StopListenSnapshot, false);
 			return false;
 		}
         this->MarketTableExitSnapshotMode();
-		DefaultLogManager::Default->WriteSuccess(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_StopListenSnapshot, true);
+		this->UpdateMessageSeqNoAfterSnapshot();
+        DefaultLogManager::Default->WriteSuccess(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_StopListenSnapshot, true);
 		return true;
 	}
 	inline FastSnapshotInfo* GetSnapshotInfo(int index) {
