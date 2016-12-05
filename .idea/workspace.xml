@@ -49,13 +49,11 @@
         <entry file="file://$PROJECT_DIR$/source/include/MarketData/MarketDataTable.h">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="187">
-              <caret line="547" column="2" selection-start-line="547" selection-start-column="2" selection-end-line="547" selection-end-column="2" />
+              <caret line="916" column="0" selection-start-line="916" selection-start-column="0" selection-end-line="916" selection-end-column="0" />
               <folding>
                 <element signature="e#236#248#0" expanded="true" />
-                <element signature="e#249#1907#1" expanded="false" />
                 <element signature="e#1919#1931#0" expanded="true" />
                 <element signature="e#1966#1978#0" expanded="true" />
-                <element signature="e#1979#10977#1" expanded="false" />
                 <element signature="e#4167#4906#0" expanded="false" />
                 <element signature="e#4912#5658#0" expanded="false" />
                 <element signature="e#5664#5854#0" expanded="false" />
@@ -74,15 +72,14 @@
                 <element signature="e#9068#9437#0" expanded="false" />
                 <element signature="e#9443#9566#0" expanded="false" />
                 <element signature="e#9572#9664#0" expanded="false" />
-                <element signature="e#10989#11001#0" expanded="true" />
-                <element signature="e#11002#15894#1" expanded="false" />
-                <element signature="e#15906#15918#0" expanded="true" />
-                <element signature="e#15919#17601#1" expanded="false" />
-                <element signature="e#17604#24892#0" expanded="false" />
-                <element signature="e#25046#25144#0" expanded="true" />
-                <element signature="e#26259#26271#0" expanded="true" />
-                <element signature="e#28819#28898#0" expanded="true" />
-                <element signature="e#28828#28847#0" expanded="true" />
+                <element signature="e#11292#11304#0" expanded="true" />
+                <element signature="e#16742#16754#0" expanded="true" />
+                <element signature="e#18989#26277#0" expanded="false" />
+                <element signature="e#26431#26529#0" expanded="true" />
+                <element signature="e#27644#27656#0" expanded="true" />
+                <element signature="e#30204#30283#0" expanded="true" />
+                <element signature="e#30213#30232#0" expanded="true" />
+                <marker date="1480961216501" expanded="true" signature="33059:33626" ph="{...}" />
               </folding>
             </state>
           </provider>
@@ -113,7 +110,7 @@
       <file leaf-file-name="HashTable.h" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/source/include/Lib/HashTable.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="261">
+            <state relative-caret-position="3402">
               <caret line="189" column="36" selection-start-line="189" selection-start-column="36" selection-end-line="189" selection-end-column="36" />
               <folding>
                 <element signature="e#112#140#0" expanded="true" />
@@ -127,8 +124,8 @@
       <file leaf-file-name="OrderBookTester.h" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/source/include/Test/OrderBookTester.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="290">
-              <caret line="3870" column="38" selection-start-line="3870" selection-start-column="38" selection-end-line="3870" selection-end-column="38" />
+            <state relative-caret-position="140">
+              <caret line="4041" column="0" selection-start-line="4041" selection-start-column="0" selection-end-line="4041" selection-end-column="0" />
               <folding>
                 <element signature="e#169#1671#1" expanded="false" />
               </folding>
@@ -139,8 +136,18 @@
       <file leaf-file-name="OrderTester.h" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/source/include/Test/OrderTester.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2274">
-              <caret line="1806" column="25" selection-start-line="1806" selection-start-column="25" selection-end-line="1806" selection-end-column="25" />
+            <state relative-caret-position="163">
+              <caret line="930" column="24" selection-start-line="930" selection-start-column="24" selection-end-line="930" selection-end-column="24" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="TradeTester.h" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/source/include/Test/TradeTester.h">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="204">
+              <caret line="619" column="55" selection-start-line="619" selection-start-column="55" selection-end-line="619" selection-end-column="55" />
               <folding />
             </state>
           </provider>
@@ -149,7 +156,7 @@
       <file leaf-file-name="FastProtocolManager.h" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/source/include/FastProtocolManager.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-160">
+            <state relative-caret-position="54810">
               <caret line="3045" column="10" selection-start-line="3045" selection-start-column="10" selection-end-line="3045" selection-end-column="10" />
               <folding />
             </state>
@@ -159,8 +166,8 @@
       <file leaf-file-name="FeedConnection.h" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/source/include/FeedConnection.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="466">
-              <caret line="391" column="12" selection-start-line="391" selection-start-column="12" selection-end-line="391" selection-end-column="12" />
+            <state relative-caret-position="180">
+              <caret line="221" column="17" selection-start-line="221" selection-start-column="17" selection-end-line="221" selection-end-column="17" />
               <folding>
                 <element signature="e#13#40#0" expanded="true" />
               </folding>
@@ -171,18 +178,8 @@
       <file leaf-file-name="FeedConnection.cpp" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/source/src/FeedConnection.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="461">
+            <state relative-caret-position="2754">
               <caret line="153" column="11" selection-start-line="153" selection-start-column="11" selection-end-line="153" selection-end-column="11" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Stopwatch.h" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/source/include/Stopwatch.h">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="537">
-              <caret line="53" column="17" selection-start-line="53" selection-start-column="11" selection-end-line="53" selection-end-column="17" />
               <folding />
             </state>
           </provider>
@@ -241,12 +238,12 @@
         <option value="$PROJECT_DIR$/source/include/Test/FeedConnectionTester.h" />
         <option value="$PROJECT_DIR$/source/include/Stopwatch.h" />
         <option value="$PROJECT_DIR$/source/include/Lib/HashTable.h" />
+        <option value="$PROJECT_DIR$/source/src/FeedConnection.cpp" />
         <option value="$PROJECT_DIR$/source/include/Test/TradeTester.h" />
         <option value="$PROJECT_DIR$/source/include/Test/OrderTester.h" />
-        <option value="$PROJECT_DIR$/source/src/FeedConnection.cpp" />
+        <option value="$PROJECT_DIR$/source/include/FeedConnection.h" />
         <option value="$PROJECT_DIR$/source/include/MarketData/MarketDataTable.h" />
         <option value="$PROJECT_DIR$/source/include/Test/OrderBookTester.h" />
-        <option value="$PROJECT_DIR$/source/include/FeedConnection.h" />
       </list>
     </option>
   </component>
@@ -630,14 +627,8 @@
       <workItem from="1479369534539" duration="562000" />
       <workItem from="1479382976734" duration="8624000" />
       <workItem from="1479661403737" duration="13517000" />
-      <workItem from="1480000176868" duration="50906000" />
-    </task>
-    <task id="LOCAL-00040" summary="1. GetSnapshotInfo - not finished  compilable... and half working">
-      <created>1474828019856</created>
-      <option name="number" value="00040" />
-      <option name="presentableId" value="LOCAL-00040" />
-      <option name="project" value="LOCAL" />
-      <updated>1474828019856</updated>
+      <workItem from="1480000176868" duration="55787000" />
+      <workItem from="1480948398876" duration="10681000" />
     </task>
     <task id="LOCAL-00041" summary="1. GetSnapshotInfo - not finished  compilable... and half working">
       <created>1475508561754</created>
@@ -975,11 +966,18 @@
       <option name="project" value="LOCAL" />
       <updated>1480607978733</updated>
     </task>
-    <option name="localTasksCounter" value="89" />
+    <task id="LOCAL-00089" summary="Big Refactoring continue... tests - break tests">
+      <created>1480696477119</created>
+      <option name="number" value="00089" />
+      <option name="presentableId" value="LOCAL-00089" />
+      <option name="project" value="LOCAL" />
+      <updated>1480696477119</updated>
+    </task>
+    <option name="localTasksCounter" value="90" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="875779000" />
+    <option name="totallyTimeSpent" value="891341000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -992,12 +990,11 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="65" y="24" width="1855" height="951" extended-state="6" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.22325328" sideWeight="0.493007" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32942554" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.15257049" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33411488" sideWeight="0.3907068" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39390388" sideWeight="0.3907068" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="CMake" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.28370458" sideWeight="0.4384817" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3511008" sideWeight="0.4365183" order="8" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.34762457" sideWeight="0.61189955" order="9" side_tool="false" content_ui="tabs" />
@@ -1005,11 +1002,12 @@
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32942554" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.235262" sideWeight="0.506993" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25908557" sideWeight="0.5634817" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.47127783" sideWeight="0.5634817" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.15257049" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3270809" sideWeight="0.49344978" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
@@ -1114,11 +1112,13 @@
       <breakpoints-dialog>
         <breakpoints-dialog />
       </breakpoints-dialog>
-      <option name="time" value="723" />
+      <option name="time" value="745" />
     </breakpoint-manager>
     <watches-manager>
       <configuration name="CMakeRunConfiguration">
-        <watch expression="snap_msg[0]" language="ObjectiveC" />
+        <watch expression="fcf-&gt;OrderBookFond()-&gt;GetItem(&quot;s1&quot;, &quot;session1&quot;)-&gt;RptSeq()" />
+        <watch expression="tableItem" language="ObjectiveC" />
+        <watch expression="fcs-&gt;m_startMsgSeqNum" />
       </configuration>
     </watches-manager>
   </component>
@@ -1348,7 +1348,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="630">
           <caret line="35" column="0" selection-start-line="35" selection-start-column="0" selection-end-line="35" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1364,7 +1363,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="3762">
           <caret line="209" column="16" selection-start-line="209" selection-start-column="16" selection-end-line="209" selection-end-column="16" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1372,7 +1370,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="142">
           <caret line="72" column="23" selection-start-line="72" selection-start-column="23" selection-end-line="72" selection-end-column="23" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1380,21 +1377,12 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="36">
           <caret line="2" column="64" selection-start-line="2" selection-start-column="64" selection-end-line="2" selection-end-column="64" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/source/include/Test/TradeTester.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="148">
-          <caret line="678" column="49" selection-start-line="678" selection-start-column="49" selection-end-line="678" selection-end-column="49" />
-          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/source/include/Stopwatch.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="537">
+        <state relative-caret-position="954">
           <caret line="53" column="17" selection-start-line="53" selection-start-column="11" selection-end-line="53" selection-end-column="17" />
           <folding />
         </state>
@@ -1402,23 +1390,15 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/source/src/FeedConnection.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="461">
+        <state relative-caret-position="2754">
           <caret line="153" column="11" selection-start-line="153" selection-start-column="11" selection-end-line="153" selection-end-column="11" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/source/include/Test/OrderTester.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2274">
-          <caret line="1806" column="25" selection-start-line="1806" selection-start-column="25" selection-end-line="1806" selection-end-column="25" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/source/include/Lib/HashTable.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="261">
+        <state relative-caret-position="3402">
           <caret line="189" column="36" selection-start-line="189" selection-start-column="36" selection-end-line="189" selection-end-column="36" />
           <folding>
             <element signature="e#112#140#0" expanded="true" />
@@ -1430,7 +1410,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/source/include/FastProtocolManager.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-160">
+        <state relative-caret-position="54810">
           <caret line="3045" column="10" selection-start-line="3045" selection-start-column="10" selection-end-line="3045" selection-end-column="10" />
           <folding />
         </state>
@@ -1454,16 +1434,40 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/source/include/Test/TradeTester.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="204">
+          <caret line="619" column="55" selection-start-line="619" selection-start-column="55" selection-end-line="619" selection-end-column="55" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/include/Test/OrderTester.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="163">
+          <caret line="930" column="24" selection-start-line="930" selection-start-column="24" selection-end-line="930" selection-end-column="24" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/include/FeedConnection.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="180">
+          <caret line="221" column="17" selection-start-line="221" selection-start-column="17" selection-end-line="221" selection-end-column="17" />
+          <folding>
+            <element signature="e#13#40#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/source/include/MarketData/MarketDataTable.h">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="187">
-          <caret line="547" column="2" selection-start-line="547" selection-start-column="2" selection-end-line="547" selection-end-column="2" />
+          <caret line="916" column="0" selection-start-line="916" selection-start-column="0" selection-end-line="916" selection-end-column="0" />
           <folding>
             <element signature="e#236#248#0" expanded="true" />
-            <element signature="e#249#1907#1" expanded="false" />
             <element signature="e#1919#1931#0" expanded="true" />
             <element signature="e#1966#1978#0" expanded="true" />
-            <element signature="e#1979#10977#1" expanded="false" />
             <element signature="e#4167#4906#0" expanded="false" />
             <element signature="e#4912#5658#0" expanded="false" />
             <element signature="e#5664#5854#0" expanded="false" />
@@ -1482,33 +1486,22 @@
             <element signature="e#9068#9437#0" expanded="false" />
             <element signature="e#9443#9566#0" expanded="false" />
             <element signature="e#9572#9664#0" expanded="false" />
-            <element signature="e#10989#11001#0" expanded="true" />
-            <element signature="e#11002#15894#1" expanded="false" />
-            <element signature="e#15906#15918#0" expanded="true" />
-            <element signature="e#15919#17601#1" expanded="false" />
-            <element signature="e#17604#24892#0" expanded="false" />
-            <element signature="e#25046#25144#0" expanded="true" />
-            <element signature="e#26259#26271#0" expanded="true" />
-            <element signature="e#28819#28898#0" expanded="true" />
-            <element signature="e#28828#28847#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/source/include/FeedConnection.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="466">
-          <caret line="391" column="12" selection-start-line="391" selection-start-column="12" selection-end-line="391" selection-end-column="12" />
-          <folding>
-            <element signature="e#13#40#0" expanded="true" />
+            <element signature="e#11292#11304#0" expanded="true" />
+            <element signature="e#16742#16754#0" expanded="true" />
+            <element signature="e#18989#26277#0" expanded="false" />
+            <element signature="e#26431#26529#0" expanded="true" />
+            <element signature="e#27644#27656#0" expanded="true" />
+            <element signature="e#30204#30283#0" expanded="true" />
+            <element signature="e#30213#30232#0" expanded="true" />
+            <marker date="1480961216501" expanded="true" signature="33059:33626" ph="{...}" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/source/include/Test/OrderBookTester.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="290">
-          <caret line="3870" column="38" selection-start-line="3870" selection-start-column="38" selection-end-line="3870" selection-end-column="38" />
+        <state relative-caret-position="140">
+          <caret line="4041" column="0" selection-start-line="4041" selection-start-column="0" selection-end-line="4041" selection-end-column="0" />
           <folding>
             <element signature="e#169#1671#1" expanded="false" />
           </folding>

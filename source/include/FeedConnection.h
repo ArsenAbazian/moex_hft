@@ -238,85 +238,115 @@ private:
     inline bool ApplySnapshot_OBS_FOND() {
         this->PrepareDecodeSnapshotMessage(this->m_snapshotRouteFirst);
         FastOBSFONDInfo *info = (FastOBSFONDInfo *) this->m_fastProtocolManager->DecodeOBSFOND();
-        this->m_incremental->OnFullRefresh_OBS_FOND_Start(info);
-        this->m_incremental->OnFullRefresh_OBS_FOND(info);
+        this->m_incremental->OrderBookFond()->ObtainSnapshotItem(info);
+        if(this->m_incremental->OrderBookFond()->CheckProcessIfSessionInActualState(info))
+            return true;
+        if(!this->m_incremental->OrderBookFond()->ShouldProcessSnapshot(info))
+            return true;
+        this->m_incremental->OrderBookFond()->StartProcessSnapshot(info);
+        this->m_incremental->OrderBookFond()->ProcessSnapshot(info);
         for(int i = this->m_snapshotRouteFirst + 1; i <= this->m_snapshotLastFragment; i++) {
             if(!this->PrepareDecodeSnapshotMessage(i))
                 continue;
-            this->m_incremental->OnFullRefresh_OBS_FOND(
+            this->m_incremental->OrderBookFond()->ProcessSnapshot(
                     (FastOBSFONDInfo *) this->m_fastProtocolManager->DecodeOBSFOND());
         }
-        this->m_incremental->OnFullRefresh_OBS_FOND_End();
+        this->m_incremental->OrderBookFond()->EndProcessSnapshot();
         return true;
     }
     inline bool ApplySnapshot_OBS_CURR() {
-        this->PrepareDecodeSnapshotMessage(this->m_snapshotRouteFirst);
+        /*this->PrepareDecodeSnapshotMessage(this->m_snapshotRouteFirst);
         FastOBSCURRInfo *info = (FastOBSCURRInfo *) this->m_fastProtocolManager->DecodeOBSCURR();
-        this->m_incremental->OnFullRefresh_OBS_CURR_Start(info);
-        this->m_incremental->OnFullRefresh_OBS_CURR(info);
+         this->m_incremental->OrderBookCurr()->ObtainSnapshotItem(info);
+         if(this->m_incremental->OrderBookCurr()->CheckProcessIfSessionInActualState(info))
+            return true;
+        if(!this->m_incremental->OrderBookCurr()->ShouldProcessSnapshot(info))
+            return true;
+        this->m_incremental->OrderBookCurr()->StartProcessSnapshot(info);
+        this->m_incremental->OrderBookCurr()->ProcessSnapshot(info);
         for(int i = this->m_snapshotRouteFirst + 1; i <= this->m_snapshotLastFragment; i++) {
             if(!this->PrepareDecodeSnapshotMessage(i))
                 continue;
-            this->m_incremental->OnFullRefresh_OBS_CURR(
+            this->m_incremental->OrderBookCurr()->ProcessSnapshot(
                     (FastOBSCURRInfo *) this->m_fastProtocolManager->DecodeOBSCURR());
         }
-        this->m_incremental->OnFullRefresh_OBS_CURR_End();
+        this->m_incremental->OrderBookCurr()->EndProcessSnapshot();*/
         return true;
     }
     inline bool ApplySnapshot_OLS_FOND() {
-        this->PrepareDecodeSnapshotMessage(this->m_snapshotRouteFirst);
+        /*this->PrepareDecodeSnapshotMessage(this->m_snapshotRouteFirst);
         FastOLSFONDInfo *info = (FastOLSFONDInfo *) this->m_fastProtocolManager->DecodeOLSFOND();
-        this->m_incremental->OnFullRefresh_OLS_FOND_Start(info);
-        this->m_incremental->OnFullRefresh_OLS_FOND(info);
+         this->m_incremental->OrderFond()->ObtainSnapshotItem(info);
+         if(this->m_incremental->OrderFond()->CheckProcessIfSessionInActualState(info))
+            return true;
+        if(!this->m_incremental->OrderFond()->ShouldProcessSnapshot(info))
+            return true;
+        this->m_incremental->OrderFond()->StartProcessSnapshot(info);
+        this->m_incremental->OrderFond()->ProcessSnapshot(info);
         for(int i = this->m_snapshotRouteFirst + 1; i <= this->m_snapshotLastFragment; i++) {
             if(!this->PrepareDecodeSnapshotMessage(i))
                 continue;
-            this->m_incremental->OnFullRefresh_OLS_FOND(
+            this->m_incremental->OrderFond()->ProcessSnapshot(
                     (FastOLSFONDInfo *) this->m_fastProtocolManager->DecodeOLSFOND());
         }
-        this->m_incremental->OnFullRefresh_OLS_FOND_End();
+        this->m_incremental->OrderFond()->EndProcessSnapshot();*/
         return true;
     }
     inline bool ApplySnapshot_OLS_CURR() {
-        this->PrepareDecodeSnapshotMessage(this->m_snapshotRouteFirst);
+        /*this->PrepareDecodeSnapshotMessage(this->m_snapshotRouteFirst);
         FastOLSCURRInfo *info = (FastOLSCURRInfo *) this->m_fastProtocolManager->DecodeOLSCURR();
-        this->m_incremental->OnFullRefresh_OLS_CURR_Start(info);
-        this->m_incremental->OnFullRefresh_OLS_CURR(info);
+        this->m_incremental->OrderCurr()->ObtainSnapshotItem(info);
+        if(this->m_incremental->OrderCurr()->CheckProcessIfSessionInActualState(info))
+            return true;
+        if(!this->m_incremental->OrderCurr()->ShouldProcessSnapshot(info))
+            return true;
+        this->m_incremental->OrderCurr()->StartProcessSnapshot(info);
+        this->m_incremental->OrderCurr()->ProcessSnapshot(info);
         for(int i = this->m_snapshotRouteFirst + 1; i <= this->m_snapshotLastFragment; i++) {
             if(!this->PrepareDecodeSnapshotMessage(i))
                 continue;
-            this->m_incremental->OnFullRefresh_OLS_CURR(
+            this->m_incremental->OrderCurr()->ProcessSnapshot(
                     (FastOLSCURRInfo *) this->m_fastProtocolManager->DecodeOLSCURR());
         }
-        this->m_incremental->OnFullRefresh_OLS_CURR_End();
+        this->m_incremental->OrderCurr()->EndProcessSnapshot();*/
         return true;
     }
     inline bool ApplySnapshot_TLS_FOND() {
-        this->PrepareDecodeSnapshotMessage(this->m_snapshotRouteFirst);
+        /*this->PrepareDecodeSnapshotMessage(this->m_snapshotRouteFirst);
         FastTLSFONDInfo *info = (FastTLSFONDInfo *) this->m_fastProtocolManager->DecodeTLSFOND();
-        this->m_incremental->OnFullRefresh_TLS_FOND_Start(info);
-        this->m_incremental->OnFullRefresh_TLS_FOND(info);
+        this->m_incremental->TradeFond()->ObtainSnapshotItem(info);
+        if(this->m_incremental->TradeFond()->CheckProcessIfSessionInActualState(info))
+            return true;
+        if(!this->m_incremental->TradeFond()->ShouldProcessSnapshot(info))
+            return true;
+        this->m_incremental->TradeFond()->StartProcessSnapshot(info);
+        this->m_incremental->TradeFond()->ProcessSnapshot(info);
         for(int i = this->m_snapshotRouteFirst + 1; i <= this->m_snapshotLastFragment; i++) {
             if(!this->PrepareDecodeSnapshotMessage(i))
                 continue;
-            this->m_incremental->OnFullRefresh_TLS_FOND(
+            this->m_incremental->TradeFond()->ProcessSnapshot(
                     (FastTLSFONDInfo *) this->m_fastProtocolManager->DecodeTLSFOND());
         }
-        this->m_incremental->OnFullRefresh_TLS_FOND_End();
+        this->m_incremental->TradeFond()->EndProcessSnapshot();*/
         return true;
     }
     inline bool ApplySnapshot_TLS_CURR() {
-        this->PrepareDecodeSnapshotMessage(this->m_snapshotRouteFirst);
+        /*this->PrepareDecodeSnapshotMessage(this->m_snapshotRouteFirst);
         FastTLSCURRInfo *info = (FastTLSCURRInfo *) this->m_fastProtocolManager->DecodeTLSCURR();
-        this->m_incremental->OnFullRefresh_TLS_CURR_Start(info);
-        this->m_incremental->OnFullRefresh_TLS_CURR(info);
+        this->m_incremental->TradeCurr()->ObtainSnapshotItem(info);
+        if(this->m_incremental->TradeCurr()->CheckProcessIfSessionInActualState(info))
+            return true;
+        if(!this->m_incremental->TradeCurr()->ShouldProcessSnapshot(info))
+            return true;
+        this->m_incremental->TradeCurr()->StartProcessSnapshot(info);
+        this->m_incremental->TradeCurr()->ProcessSnapshot(info);
         for(int i = this->m_snapshotRouteFirst + 1; i <= this->m_snapshotLastFragment; i++) {
             if(!this->PrepareDecodeSnapshotMessage(i))
                 continue;
-            this->m_incremental->OnFullRefresh_TLS_CURR(
+            this->m_incremental->TradeCurr()->ProcessSnapshot(
                     (FastTLSCURRInfo *) this->m_fastProtocolManager->DecodeTLSCURR());
         }
-        this->m_incremental->OnFullRefresh_TLS_CURR_End();
+        this->m_incremental->TradeCurr()->EndProcessSnapshot();*/
         return true;
     }
 
@@ -433,6 +463,7 @@ private:
 			DefaultLogManager::Default->WriteSuccess(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_StopListenSnapshot, false);
 			return false;
 		}
+        this->m_startMsgSeqNum = this->m_endMsgSeqNum + 1;
         this->MarketTableExitSnapshotMode();
 		DefaultLogManager::Default->WriteSuccess(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_StopListenSnapshot, true);
 		return true;
@@ -794,94 +825,7 @@ private:
         return res;
     }
 
-    inline void OnFullRefresh_OBS_FOND_Start(FastOBSFONDInfo *info) {
-        this->m_orderBookTableFond->StartProcessSnapshot(info);
-    }
-
-    inline void OnFullRefresh_OBS_FOND_End() {
-        this->m_orderBookTableFond->EndProcessSnapshot();
-    }
-
-    inline void OnFullRefresh_OBS_FOND(FastOBSFONDInfo *info) {
-        this->m_orderBookTableFond->ProcessSnapshot(info);
-    }
-
-    inline void OnFullRefresh_OBS_CURR_Start(FastOBSCURRInfo *info) {
-        // TODO!!!!!
-        //this->m_orderBookTableCurr->StartProcessSnapshot(info);
-    }
-
-    inline void OnFullRefresh_OBS_CURR_End() {
-        // TODO!!!!!
-        this->m_orderBookTableCurr->EndProcessSnapshot();
-    }
-    
-    inline void OnFullRefresh_OBS_CURR(FastOBSCURRInfo *info) {
-        // TODO!!!!!
-        //return this->m_orderBookTableCurr->ProcessSnapshot(info);
-	}
-
-    inline void OnFullRefresh_OLS_FOND_Start(FastOLSFONDInfo *info) {
-        // TODO!!!!!
-        //this->m_orderTableFond->StartProcessSnapshot(info);
-    }
-
-    inline void OnFullRefresh_OLS_FOND_End() {
-        // TODO!!!!!
-        //this->m_orderTableFond->EndProcessSnapshot();
-    }
-    
-	inline void OnFullRefresh_OLS_FOND(FastOLSFONDInfo *info) {
-        // TODO!!!!!
-		//return this->m_orderTableFond->ProcessSnapshot(info);
-	}
-
-    inline void OnFullRefresh_OLS_CURR_Start(FastOLSCURRInfo *info) {
-        // TODO!!!!!
-        //this->m_orderTableCurr->StartProcessSnapshot(info);
-    }
-
-    inline void OnFullRefresh_OLS_CURR_End() {
-        // TODO!!!!!
-        //this->m_orderTableCurr->EndProcessSnapshot();
-    }
-    
-	inline void OnFullRefresh_OLS_CURR(FastOLSCURRInfo *info) {
-        // TODO!!!!!
-		//return this->m_orderTableCurr->ProcessSnapshot(info);
-	}
-
-    inline void OnFullRefresh_TLS_FOND_Start(FastTLSFONDInfo *info) {
-        // TODO!!!!!
-        //this->m_tradeTableFond->StartProcessSnapshot(info);
-    }
-    
-    inline void OnFullRefresh_TLS_FOND_End() {
-        // TODO!!!!!
-        //this->m_tradeTableFond->EndProcessSnapshot();
-    }
-
-	inline void OnFullRefresh_TLS_FOND(FastTLSFONDInfo *info) {
-        // TODO!!!!!
-		//return this->m_tradeTableFond->ProcessSnapshot(info);
-	}
-
-    inline void OnFullRefresh_TLS_CURR_Start(FastTLSCURRInfo *info) {
-        // TODO!!!!!
-        //this->m_tradeTableCurr->StartProcessSnapshot(info);
-    }
-
-    inline void OnFullRefresh_TLS_CURR_End() {
-        // TODO!!!!!
-        //this->m_tradeTableCurr->EndProcessSnapshot();
-    }
-    
-	inline void OnFullRefresh_TLS_CURR(FastTLSCURRInfo *info) {
-        // TODO!!!!!
-        //return this->m_tradeTableCurr->ProcessSnapshot(info);
-	}
-
-	inline bool ApplyIncrementalCore() {
+    inline bool ApplyIncrementalCore() {
 		switch(this->m_fastProtocolManager->TemplateId()) {
 			case FeedConnectionMessage::fcmHeartBeat:
 				break;
