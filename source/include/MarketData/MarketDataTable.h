@@ -327,13 +327,17 @@ public:
         return true;
     }
 
-    inline bool EndProcessSnapshotMessages() {
-        bool res = this->ProcessQueueMessages();
-        if(res) {
-            if(this->m_shouldProcessSnapshot)
-                SymbolInfo()->DecSessionsToRecvSnapshotCount();
+    inline void DecSessionsToRecvSnapshotCount() {
+        if(this->m_shouldProcessSnapshot) {
+            SymbolInfo()->DecSessionsToRecvSnapshotCount();
             this->m_shouldProcessSnapshot = false;
         }
+    }
+
+    inline bool EndProcessSnapshotMessages() {
+        bool res = this->ProcessQueueMessages();
+        if(res)
+            this->DecSessionsToRecvSnapshotCount();
         return res;
     }
 
@@ -919,10 +923,22 @@ public:
         bool prevHasEntries = tableItem->QueueEntries()->HasEntries();
         bool res = tableItem->ProcessIncrementalMessage(info);
         bool hasEntries = tableItem->QueueEntries()->HasEntries();
-        if(!prevHasEntries && hasEntries)
-            this->m_queueItemsCount++;
-        else if(prevHasEntries && !hasEntries)
-            this->m_queueItemsCount--;
+        if(hasEntries) {
+            if(!prevHasEntries)
+                this->m_queueItemsCount++;
+        }
+        else {
+            if(prevHasEntries)
+                this->m_queueItemsCount--;
+            if(tableItem->ShouldProcessSnapshot()) {
+                MarketSymbolInfo<TABLEITEM<ITEMINFO>> *smb = tableItem->SymbolInfo();
+                bool allItemsRecvSnapshot = smb->AllSessionsRecvSnapshot();
+                tableItem->DecSessionsToRecvSnapshotCount();
+                if (!allItemsRecvSnapshot && smb->AllSessionsRecvSnapshot())
+                    this->m_symbolsToRecvSnapshot--;
+            }
+        }
+
         return res;
     }
     inline bool ShouldProcessSnapshot(INFO *info) {
