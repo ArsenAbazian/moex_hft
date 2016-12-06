@@ -973,6 +973,8 @@ public:
         for(int i = 0; i < this->m_symbolsCount; i++, s++)
             (*s)->Clear();
         this->m_symbolsCount = 0;
+        this->m_queueItemsCount = 0;
+        this->m_symbolsToRecvSnapshot = 0;
     }
     inline int SymbolsCount() { return this->m_symbolsCount; }
     inline MarketSymbolInfo<TABLEITEM<ITEMINFO>>* Symbol(int index) { return this->m_symbols[index]; }

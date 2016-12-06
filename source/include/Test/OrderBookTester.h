@@ -4037,9 +4037,57 @@ public:
         if(fcs->m_startMsgSeqNum != 2) // detect that
             throw;
     }
-    // we received snapshot for item but item has gap and snapshot is partially actual
+    // we received snapshot for item but item has 2 gaps and snapshot is partially actual
     void TestConnection_ParallelWorkingIncrementalAndSnapshot_5_4() {
-        throw;
+        this->Clear();
+
+        fcf->WaitIncrementalMaxTimeMs(500);
+        fcf->OrderBookFond()->Add("s1", "session1");
+        fcf->Start();
+
+        SendMessages(fcf, fcs,
+                     "obr entry s1 e1, obr entry s1 e2, lost obr entry s1 e3, obr entry s1 e4, lost obr entry s1 e5, obr entry s1 e6, wait_snap, ",
+                     "                                                                                                                           obs s1 begin rpt 4 entry s1 e4 end",
+        30);
+        if(fcf->OrderBookFond()->SymbolsToRecvSnapshotCount() != 1)
+            throw;
+        if(fcf->CanStopListeningSnapshot())
+            throw;
+        if(fcs->State() != FeedConnectionState::fcsListenSnapshot)
+            throw;
+        if(!fcf->OrderBookFond()->GetItem("s1", "session1")->QueueEntries()->HasEntries())
+            throw;
+        if(fcf->OrderBookFond()->GetItem("s1", "session1")->RptSeq() != 4)
+            throw;
+        if(fcf->OrderBookFond()->GetItem("s1", "session1")->BuyQuotes()->Count() != 1)
+            throw;
+    }
+    // almost the same as 5_4 but we received new snapshot for item but item has 2 gaps and snapshot is fully actual
+    void TestConnection_ParallelWorkingIncrementalAndSnapshot_5_4_1() {
+        this->Clear();
+
+        fcf->WaitIncrementalMaxTimeMs(500);
+        fcf->OrderBookFond()->Add("s1", "session1");
+        fcf->Start();
+
+        SendMessages(fcf, fcs,
+                     "obr entry s1 e1, obr entry s1 e2, lost obr entry s1 e3, obr entry s1 e4, lost obr entry s1 e5, obr entry s1 e6, wait_snap, ",
+                     "                                                                                                                           obs s1 begin rpt 5 entry s1 e5 end",
+                     30);
+        if(fcf->OrderBookFond()->SymbolsToRecvSnapshotCount() != 0)
+            throw;
+        if(fcf->HasQueueEntries())
+            throw;
+        if(!fcf->CanStopListeningSnapshot())
+            throw;
+        if(fcs->State() != FeedConnectionState::fcsSuspend)
+            throw;
+        if(fcf->OrderBookFond()->GetItem("s1", "session1")->QueueEntries()->HasEntries())
+            throw;
+        if(fcf->OrderBookFond()->GetItem("s1", "session1")->RptSeq() != 6)
+            throw;
+        if(fcf->OrderBookFond()->GetItem("s1", "session1")->BuyQuotes()->Count() != 2)
+            throw;
     }
     // we have received snapshot and almost ok but next incremental message during snapshot has greater RptSeq
     void TestConnection_ParallelWorkingIncrementalAndSnapshot_5_5() {
@@ -4088,6 +4136,8 @@ public:
         TestConnection_ParallelWorkingIncrementalAndSnapshot_5_3();
         printf("TestConnection_ParallelWorkingIncrementalAndSnapshot_5_4\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_5_4();
+        printf("TestConnection_ParallelWorkingIncrementalAndSnapshot_5_4_1\n");
+        TestConnection_ParallelWorkingIncrementalAndSnapshot_5_4_1();
         printf("TestConnection_ParallelWorkingIncrementalAndSnapshot_5_5\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_5_5();
         printf("TestConnection_ParallelWorkingIncrementalAndSnapshot_5_6\n");
