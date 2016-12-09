@@ -241,6 +241,8 @@ private:
         this->m_incremental->OrderBookFond()->ObtainSnapshotItem(info);
         if(this->m_incremental->OrderBookFond()->CheckProcessIfSessionInActualState(info))
             return true;
+        if(this->m_incremental->OrderBookFond()->CheckProcessNullSnapshot(info))
+            return true;
         if(!this->m_incremental->OrderBookFond()->ShouldProcessSnapshot(info))
             return true;
         this->m_incremental->OrderBookFond()->StartProcessSnapshot(info);
@@ -259,6 +261,8 @@ private:
         FastOBSCURRInfo *info = (FastOBSCURRInfo *) this->m_fastProtocolManager->DecodeOBSCURR();
          this->m_incremental->OrderBookCurr()->ObtainSnapshotItem(info);
          if(this->m_incremental->OrderBookCurr()->CheckProcessIfSessionInActualState(info))
+            return true;
+        if(this->m_incremental->OrderBookCurr()->CheckProcessNullSnapshot(info))
             return true;
         if(!this->m_incremental->OrderBookCurr()->ShouldProcessSnapshot(info))
             return true;
@@ -279,6 +283,8 @@ private:
          this->m_incremental->OrderFond()->ObtainSnapshotItem(info);
          if(this->m_incremental->OrderFond()->CheckProcessIfSessionInActualState(info))
             return true;
+        if(this->m_incremental->OrderFond()->CheckProcessNullSnapshot(info))
+            return true;
         if(!this->m_incremental->OrderFond()->ShouldProcessSnapshot(info))
             return true;
         this->m_incremental->OrderFond()->StartProcessSnapshot(info);
@@ -297,6 +303,8 @@ private:
         FastOLSCURRInfo *info = (FastOLSCURRInfo *) this->m_fastProtocolManager->DecodeOLSCURR();
         this->m_incremental->OrderCurr()->ObtainSnapshotItem(info);
         if(this->m_incremental->OrderCurr()->CheckProcessIfSessionInActualState(info))
+            return true;
+        if(this->m_incremental->OrderCurr()->CheckProcessNullSnapshot(info))
             return true;
         if(!this->m_incremental->OrderCurr()->ShouldProcessSnapshot(info))
             return true;
@@ -317,6 +325,8 @@ private:
         this->m_incremental->TradeFond()->ObtainSnapshotItem(info);
         if(this->m_incremental->TradeFond()->CheckProcessIfSessionInActualState(info))
             return true;
+        if(this->m_incremental->TradeFond()->CheckProcessNullSnapshot(info))
+            return true;
         if(!this->m_incremental->TradeFond()->ShouldProcessSnapshot(info))
             return true;
         this->m_incremental->TradeFond()->StartProcessSnapshot(info);
@@ -335,6 +345,8 @@ private:
         FastTLSCURRInfo *info = (FastTLSCURRInfo *) this->m_fastProtocolManager->DecodeTLSCURR();
         this->m_incremental->TradeCurr()->ObtainSnapshotItem(info);
         if(this->m_incremental->TradeCurr()->CheckProcessIfSessionInActualState(info))
+            return true;
+        if(this->m_incremental->TradeCurr()->CheckProcessNullSnapshot(info))
             return true;
         if(!this->m_incremental->TradeCurr()->ShouldProcessSnapshot(info))
             return true;
@@ -471,7 +483,9 @@ private:
 	inline FastSnapshotInfo* GetSnapshotInfo(int index) {
 		BinaryLogItem *item = this->m_packets[index]->m_item;
 		unsigned char *buffer = this->m_recvABuffer->Item(item->m_itemIndex);
-		this->m_fastProtocolManager->SetNewBuffer(buffer, this->m_recvABuffer->ItemLength(item->m_itemIndex));
+		if(this->ShouldSkipMessage(buffer))
+            return 0;
+        this->m_fastProtocolManager->SetNewBuffer(buffer, this->m_recvABuffer->ItemLength(item->m_itemIndex));
 		this->m_fastProtocolManager->ReadMsgSeqNumber();
 		return this->m_fastProtocolManager->GetSnapshotInfo();
 	}
@@ -765,10 +779,14 @@ private:
         return res;
     }
 
+    inline bool OnHearthBeatMessage() {
+        throw; // there is no need to apply message just check
+    }
+
     inline bool ApplyIncrementalCore() {
 		switch(this->m_fastProtocolManager->TemplateId()) {
 			case FeedConnectionMessage::fcmHeartBeat:
-				break;
+                return this->OnHearthBeatMessage();
 			case FeedConnectionMessage::fmcIncrementalRefresh_OBR_FOND:
 				return this->OnIncrementalRefresh_OBR_FOND((FastIncrementalOBRFONDInfo*)this->m_fastProtocolManager->LastDecodeInfo());
 			case FeedConnectionMessage::fmcIncrementalRefresh_OBR_CURR:
@@ -810,8 +828,10 @@ private:
 
 	inline bool ProcessIncremental(FeedConnectionMessageInfo *info) {
         unsigned char *buffer = this->m_recvABuffer->Item(info->m_item->m_itemIndex);
-		if(this->ShouldSkipMessage(buffer))
-			return true;  // TODO - take this message into account, becasue it determines feed alive
+		if(this->ShouldSkipMessage(buffer)) {
+            info->m_processed = true;
+            return true;  // TODO - take this message into account, becasue it determines feed alive
+        }
 
 		//TODO remove unused logging
 		/*

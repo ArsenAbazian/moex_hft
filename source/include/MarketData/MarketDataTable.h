@@ -885,6 +885,8 @@ template <template<typename ITEMINFO> class TABLEITEM, typename INFO, typename I
     int                                         m_symbolsCount;
     TABLEITEM<ITEMINFO>                         *m_snapshotItem;
     TABLEITEM<ITEMINFO>                         *m_cachedItem;
+    MDEntrQueue<ITEMINFO>                       *m_snapshotEntries;
+    MarketSymbolInfo<TABLEITEM<ITEMINFO>>       *m_snapshotSymbol;
     int                                         m_queueItemsCount;
     int                                         m_symbolsToRecvSnapshot;
     bool                                        m_snapshotItemHasQueueEntries;
@@ -915,6 +917,8 @@ public:
         this->m_snapshotItem = this->GetCachedItem(info->Symbol, info->SymbolLength, info->TradingSessionID, info->TradingSessionIDLength);
         if(this->m_snapshotItem == 0)
             this->m_snapshotItem = this->GetItem(info->Symbol, info->SymbolLength, info->TradingSessionID, info->TradingSessionIDLength);
+        this->m_snapshotEntries = this->m_snapshotItem->QueueEntries();
+        this->m_snapshotSymbol = this->m_snapshotItem->SymbolInfo();
         this->AddUsed(this->m_snapshotItem);
     }
     inline bool ProcessIncremental(ITEMINFO *info) {
@@ -942,12 +946,12 @@ public:
         return res;
     }
     inline bool ShouldProcessSnapshot(INFO *info) {
-        if(!this->m_snapshotItem->QueueEntries()->HasEntries())
+        if(!this->m_snapshotEntries->HasEntries())
             return this->m_snapshotItem->RptSeq() < info->RptSeq;
-        return this->m_snapshotItem->QueueEntries()->StartRptSeq() <= info->RptSeq;
+        return this->m_snapshotEntries->StartRptSeq() <= info->RptSeq;
     }
     inline bool CheckProcessIfSessionInActualState(INFO *info) {
-        if(this->m_snapshotItem->QueueEntries()->HasEntries())
+        if(this->m_snapshotEntries->HasEntries())
             return false;
         if(this->m_snapshotItem->RptSeq() != info->RptSeq)
             return false;
@@ -960,16 +964,34 @@ public:
         this->m_snapshotItem = 0;
         return true;
     }
+    inline bool IsNullSnapshot(INFO *info) {
+        return info->RptSeq == 0 && info->LastMsgSeqNumProcessed == 0;
+    }
+    inline bool CheckProcessNullSnapshot(INFO *info) {
+        if(IsNullSnapshot(info)) {
+            bool allItemsRecvSnapshot = this->m_snapshotSymbol->AllSessionsRecvSnapshot();
+            this->m_snapshotItemHasQueueEntries = this->m_snapshotEntries->HasEntries();
+            this->m_snapshotEntries->Clear();
+            this->m_snapshotItem->DecSessionsToRecvSnapshotCount();
+            if(this->m_snapshotItemHasQueueEntries && !this->m_snapshotEntries->HasEntries())
+                this->m_queueItemsCount--;
+            if(!allItemsRecvSnapshot && this->m_snapshotSymbol->AllSessionsRecvSnapshot())
+                this->m_symbolsToRecvSnapshot--;
+            this->m_snapshotItem = 0;
+            return true;
+        }
+        return false;
+    }
     inline void StartProcessSnapshot(INFO *info) {
-        this->m_snapshotItemHasQueueEntries = this->m_snapshotItem->EntriesQueue()->HasEntries();
+        this->m_snapshotItemHasQueueEntries = this->m_snapshotEntries->HasEntries();
         this->m_snapshotItem->StartProcessSnapshotMessages();
     }
     inline bool EndProcessSnapshot() {
-        bool allItemsRecvSnapshot = this->m_snapshotItem->SymbolInfo()->AllSessionsRecvSnapshot();
+        bool allItemsRecvSnapshot = this->m_snapshotSymbol->AllSessionsRecvSnapshot();
         bool res = this->m_snapshotItem->EndProcessSnapshotMessages();
-        if(this->m_snapshotItemHasQueueEntries && !this->m_snapshotItem->EntriesQueue()->HasEntries())
+        if(this->m_snapshotItemHasQueueEntries && !this->m_snapshotEntries->HasEntries())
             this->m_queueItemsCount--;
-        if(!allItemsRecvSnapshot && this->m_snapshotItem->SymbolInfo()->AllSessionsRecvSnapshot())
+        if(!allItemsRecvSnapshot && this->m_snapshotSymbol->AllSessionsRecvSnapshot())
             this->m_symbolsToRecvSnapshot--;
         this->m_snapshotItem = 0;
         return res;
