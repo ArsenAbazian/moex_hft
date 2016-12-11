@@ -1304,7 +1304,7 @@ public:
 		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
 		this->SetType(FeedConnectionType::Snapshot);
     }
-	FeedConnection_FOND_TLS() : FeedConnection() { }
+	FeedConnection_FOND_TLS() { }
 	ISocketBufferProvider* CreateSocketBufferProvider() {
 		return new SocketBufferProvider(DefaultSocketBufferManager::Default,
 										RobotSettings::DefaultFeedConnectionSendBufferSize,
@@ -1312,5 +1312,27 @@ public:
 										RobotSettings::DefaultFeedConnectionRecvBufferSize,
 										RobotSettings::DefaultFeedConnectionRecvItemsCount);
 	}
+};
+
+class FeedConnection_FOND_IDF : public FeedConnection{
+public:
+    FeedConnection_FOND_IDF(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
+            FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
+        this->SetType(FeedConnectionType::Snapshot);
+    }
+    ~FeedConnection_FOND_IDF() {
+        throw;
+    }
+};
+
+class FeedConnection_CURR_IDF : public FeedConnection{
+public:
+    FeedConnection_CURR_IDF(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
+            FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
+        this->SetType(FeedConnectionType::Snapshot);
+    }
+    ~FeedConnection_CURR_IDF() {
+        throw;
+    }
 };
 

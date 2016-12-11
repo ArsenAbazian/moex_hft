@@ -131,6 +131,8 @@ FeedConnection* Robot::CreateConnectionCore(const char *feedChannelId, const cha
             return new FeedConnection_CURR_TLR(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort);
         if (strcmp(id, "TLS") == 0)
             return new FeedConnection_CURR_TLS(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort);
+        if (strcmp(id, "IDF") == 0)
+            return new FeedConnection_CURR_IDF(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort);
     }
     else { // FOND
         if (strcmp(id, "OBR") == 0)
@@ -149,6 +151,8 @@ FeedConnection* Robot::CreateConnectionCore(const char *feedChannelId, const cha
             return new FeedConnection_FOND_TLR(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort);
         if (strcmp(id, "TLS") == 0)
             return new FeedConnection_FOND_TLS(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort);
+        if (strcmp(id, "IDF") == 0)
+            return new FeedConnection_FOND_IDF(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort);
     }
     return new FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort);
 }

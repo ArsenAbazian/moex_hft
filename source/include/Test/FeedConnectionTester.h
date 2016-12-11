@@ -5,6 +5,7 @@
 #ifndef HFT_ROBOT_FEEDCONNECTIONTESTER_H
 #define HFT_ROBOT_FEEDCONNECTIONTESTER_H
 
+#include "InstrumentDefinitionTester.h"
 #include "OrderBookTester.h"
 #include "OrderTester.h"
 #include "TradeTester.h"
@@ -58,6 +59,12 @@ class FeedConnectionTester {
         return 0;
     }
 public:
+    FeedConnectionTester() {
+        RobotSettings::DefaultFeedConnectionSendBufferSize = 1 * 1024 * 1024;
+        RobotSettings::DefaultFeedConnectionSendItemsCount = 100;
+        RobotSettings::DefaultFeedConnectionRecvBufferSize = 2 * 1024 * 1024;
+        RobotSettings::DefaultFeedConnectionRecvItemsCount = 500;
+    }
     AutoAllocatePointerList<TestFeedMessage>* GetMessagesFromLog(const char *fileName) {
         FILE *fp = fopen(fileName, "rt");
         if(fp == 0)
@@ -197,6 +204,8 @@ public:
     }
 
     void Test() {
+        InstrumentDefinitionTester ids = new InstrumentDefinitionTester();
+        ids.Test();
         OrderBookTester obt;
         obt.Test();
         OrderTester ot;
