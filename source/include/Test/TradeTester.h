@@ -375,7 +375,7 @@ public:
         info2->GroupMDEntries[0] = newItem1;
         info2->GroupMDEntries[1] = newItem2;
 
-        this->fcf->OnFullRefresh_TLS_FOND(info2);
+        this->fcf->TradeFond()->ProcessSnapshot(info2);
 
         if(this->fcf->TradeFond()->UsedItemCount() != 1)
             throw;
@@ -617,7 +617,7 @@ public:
         info2->GroupMDEntries[0] = newItem1;
         info2->GroupMDEntries[1] = newItem2;
 
-        this->fcc->OnFullRefresh_TLS_CURR(info2);
+        this->fcc->TradeCurr()->ProcessSnapshot(info2);
 
         if(this->fcc->TradeCurr()->UsedItemCount() != 1)
             throw;

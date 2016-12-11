@@ -327,13 +327,17 @@ public:
         return true;
     }
 
-    inline bool EndProcessSnapshotMessages() {
-        bool res = this->ProcessQueueMessages();
-        if(res) {
-            if(this->m_shouldProcessSnapshot)
-                SymbolInfo()->DecSessionsToRecvSnapshotCount();
+    inline void DecSessionsToRecvSnapshotCount() {
+        if(this->m_shouldProcessSnapshot) {
+            SymbolInfo()->DecSessionsToRecvSnapshotCount();
             this->m_shouldProcessSnapshot = false;
         }
+    }
+
+    inline bool EndProcessSnapshotMessages() {
+        bool res = this->ProcessQueueMessages();
+        if(res)
+            this->DecSessionsToRecvSnapshotCount();
         return res;
     }
 
@@ -344,6 +348,15 @@ public:
     inline void ExitSnapshotMode() {
         this->m_shouldProcessSnapshot = false;
     }
+
+    inline bool ShouldProcessSnapshot() { return this->m_shouldProcessSnapshot; }
+
+    inline void ProcessActualSnapshotState() {
+        if(!this->m_shouldProcessSnapshot)
+            return;
+        this->m_shouldProcessSnapshot = false;
+        SymbolInfo()->DecSessionsToRecvSnapshotCount();
+    }
 };
 
 template <typename T> class OrderInfo {
@@ -352,6 +365,7 @@ template <typename T> class OrderInfo {
 
     bool                 m_used;
     bool                 m_shouldProcessSnapshot;
+    int                  m_rptSeq;
     MarketSymbolInfo<OrderInfo<T>>    *m_symbolInfo;
     SizedArray          *m_tradingSession;
 public:
@@ -359,6 +373,7 @@ public:
         this->m_sellQuoteList = new PointerList<T>(128);
         this->m_buyQuoteList = new PointerList<T>(128);
         this->m_shouldProcessSnapshot = false;
+        this->m_rptSeq = 0;
     }
     ~OrderInfo() {
         delete this->m_sellQuoteList;
@@ -369,6 +384,8 @@ public:
     inline SizedArray* Symbol() { return this->m_symbolInfo->Symbol(); }
     inline MarketSymbolInfo<OrderInfo<T>>* SymbolInfo() { return this->m_symbolInfo; }
     inline void SymbolInfo(MarketSymbolInfo<OrderInfo<T>>* symbolInfo) { this->m_symbolInfo = symbolInfo; }
+    inline int RptSeq() { return this->m_rptSeq; }
+    inline void RptSeq(int rptSeq) { this->m_rptSeq = rptSeq; }
 
     inline PointerList<T>* SellQuotes() { return this->m_sellQuoteList; }
     inline PointerList<T>* BuyQuotes() { return this->m_buyQuoteList; }
@@ -490,8 +507,18 @@ public:
         this->m_shouldProcessSnapshot = true;
     }
 
+    inline bool ShouldProcessSnapshot() { return this->m_shouldProcessSnapshot; }
+
     inline void ExitSnapshotMode() {
         this->m_shouldProcessSnapshot = false;
+    }
+    inline void ProcessSnapshotMessage(T *info) { }
+
+    inline void ProcessActualSnapshotState() {
+        if(!this->m_shouldProcessSnapshot)
+            return;
+        this->m_shouldProcessSnapshot = false;
+        SymbolInfo()->DecSessionsToRecvSnapshotCount();
     }
 };
 
@@ -500,12 +527,14 @@ template <typename T> class TradeInfo {
 
     bool                                m_used;
     bool                                m_shouldProcessSnapshot;
+    int                                 m_rptSeq;
     MarketSymbolInfo<TradeInfo<T>>    *m_symbolInfo;
     SizedArray                          *m_tradingSession;
 public:
     TradeInfo() {
         this->m_tradeList = new PointerList<T>(128);
         this->m_shouldProcessSnapshot = false;
+        this->m_rptSeq = 0;
     }
     ~TradeInfo() {
         delete this->m_tradeList;
@@ -515,6 +544,8 @@ public:
     inline SizedArray* Symbol() { return this->m_symbolInfo->Symbol(); }
     inline MarketSymbolInfo<TradeInfo<T>>* SymbolInfo() { return this->m_symbolInfo; }
     inline void SymbolInfo(MarketSymbolInfo<TradeInfo<T>>* symbolInfo) { this->m_symbolInfo = symbolInfo; }
+    inline int RptSeq() { return this->m_rptSeq; }
+    inline void RptSeq(int rptSeq) { this->m_rptSeq = rptSeq; }
 
     inline PointerList<T>* Trades() { return this->m_tradeList; }
     inline bool Used() { return this->m_used; }
@@ -542,8 +573,19 @@ public:
         this->m_shouldProcessSnapshot = true;
     }
 
+    inline bool ShouldProcessSnapshot() { return this->m_shouldProcessSnapshot; }
+
     inline void ExitSnapshotMode() {
         this->m_shouldProcessSnapshot = false;
+    }
+
+    inline void ProcessSnapshotMessage(T *info) { }
+
+    inline void ProcessActualSnapshotState() {
+        if(!this->m_shouldProcessSnapshot)
+            return;
+        this->m_shouldProcessSnapshot = false;
+        SymbolInfo()->DecSessionsToRecvSnapshotCount();
     }
 };
 
@@ -843,6 +885,8 @@ template <template<typename ITEMINFO> class TABLEITEM, typename INFO, typename I
     int                                         m_symbolsCount;
     TABLEITEM<ITEMINFO>                         *m_snapshotItem;
     TABLEITEM<ITEMINFO>                         *m_cachedItem;
+    MDEntrQueue<ITEMINFO>                       *m_snapshotEntries;
+    MarketSymbolInfo<TABLEITEM<ITEMINFO>>       *m_snapshotSymbol;
     int                                         m_queueItemsCount;
     int                                         m_symbolsToRecvSnapshot;
     bool                                        m_snapshotItemHasQueueEntries;
@@ -869,33 +913,87 @@ public:
             return this->m_cachedItem;
         return 0;
     }
+    inline void ObtainSnapshotItem(INFO *info) {
+        this->m_snapshotItem = this->GetCachedItem(info->Symbol, info->SymbolLength, info->TradingSessionID, info->TradingSessionIDLength);
+        if(this->m_snapshotItem == 0)
+            this->m_snapshotItem = this->GetItem(info->Symbol, info->SymbolLength, info->TradingSessionID, info->TradingSessionIDLength);
+        this->m_snapshotEntries = this->m_snapshotItem->QueueEntries();
+        this->m_snapshotSymbol = this->m_snapshotItem->SymbolInfo();
+        this->AddUsed(this->m_snapshotItem);
+    }
     inline bool ProcessIncremental(ITEMINFO *info) {
         TABLEITEM<ITEMINFO> *tableItem = GetItem(info->Symbol, info->SymbolLength, info->TradingSessionID, info->TradingSessionIDLength);
         this->AddUsed(tableItem);
         bool prevHasEntries = tableItem->QueueEntries()->HasEntries();
         bool res = tableItem->ProcessIncrementalMessage(info);
         bool hasEntries = tableItem->QueueEntries()->HasEntries();
-        if(!prevHasEntries && hasEntries)
-            this->m_queueItemsCount++;
-        else if(prevHasEntries && !hasEntries)
-            this->m_queueItemsCount--;
+        if(hasEntries) {
+            if(!prevHasEntries)
+                this->m_queueItemsCount++;
+        }
+        else {
+            if(prevHasEntries)
+                this->m_queueItemsCount--;
+            if(tableItem->ShouldProcessSnapshot()) {
+                MarketSymbolInfo<TABLEITEM<ITEMINFO>> *smb = tableItem->SymbolInfo();
+                bool allItemsRecvSnapshot = smb->AllSessionsRecvSnapshot();
+                tableItem->DecSessionsToRecvSnapshotCount();
+                if (!allItemsRecvSnapshot && smb->AllSessionsRecvSnapshot())
+                    this->m_symbolsToRecvSnapshot--;
+            }
+        }
+
         return res;
     }
+    inline bool ShouldProcessSnapshot(INFO *info) {
+        if(!this->m_snapshotEntries->HasEntries())
+            return this->m_snapshotItem->RptSeq() < info->RptSeq;
+        return this->m_snapshotEntries->StartRptSeq() <= info->RptSeq;
+    }
+    inline bool CheckProcessIfSessionInActualState(INFO *info) {
+        if(this->m_snapshotEntries->HasEntries())
+            return false;
+        if(this->m_snapshotItem->RptSeq() != info->RptSeq)
+            return false;
+
+        MarketSymbolInfo<TABLEITEM<ITEMINFO>> *smb = this->m_snapshotItem->SymbolInfo();
+        bool allItemsRecvSnapshot = smb->AllSessionsRecvSnapshot();
+        this->m_snapshotItem->ProcessActualSnapshotState();
+        if (!allItemsRecvSnapshot && smb->AllSessionsRecvSnapshot())
+            this->m_symbolsToRecvSnapshot--;
+        this->m_snapshotItem = 0;
+        return true;
+    }
+    inline bool IsNullSnapshot(INFO *info) {
+        return info->RptSeq == 0 && info->LastMsgSeqNumProcessed == 0;
+    }
+    inline bool CheckProcessNullSnapshot(INFO *info) {
+        if(IsNullSnapshot(info)) {
+            bool allItemsRecvSnapshot = this->m_snapshotSymbol->AllSessionsRecvSnapshot();
+            this->m_snapshotItemHasQueueEntries = this->m_snapshotEntries->HasEntries();
+            this->m_snapshotEntries->Clear();
+            this->m_snapshotItem->DecSessionsToRecvSnapshotCount();
+            if(this->m_snapshotItemHasQueueEntries && !this->m_snapshotEntries->HasEntries())
+                this->m_queueItemsCount--;
+            if(!allItemsRecvSnapshot && this->m_snapshotSymbol->AllSessionsRecvSnapshot())
+                this->m_symbolsToRecvSnapshot--;
+            this->m_snapshotItem = 0;
+            return true;
+        }
+        return false;
+    }
     inline void StartProcessSnapshot(INFO *info) {
-        this->m_snapshotItem = this->GetCachedItem(info->Symbol, info->SymbolLength, info->TradingSessionID, info->TradingSessionIDLength);
-        if(this->m_snapshotItem == 0)
-            this->m_snapshotItem = this->GetItem(info->Symbol, info->SymbolLength, info->TradingSessionID, info->TradingSessionIDLength);
-        this->AddUsed(this->m_snapshotItem);
-        this->m_snapshotItemHasQueueEntries = this->m_snapshotItem->EntriesQueue()->HasEntries();
+        this->m_snapshotItemHasQueueEntries = this->m_snapshotEntries->HasEntries();
         this->m_snapshotItem->StartProcessSnapshotMessages();
     }
     inline bool EndProcessSnapshot() {
-        bool allItemsRecvSnapshot = this->m_snapshotItem->SymbolInfo()->AllSessionsRecvSnapshot();
+        bool allItemsRecvSnapshot = this->m_snapshotSymbol->AllSessionsRecvSnapshot();
         bool res = this->m_snapshotItem->EndProcessSnapshotMessages();
-        if(this->m_snapshotItemHasQueueEntries && !this->m_snapshotItem->EntriesQueue()->HasEntries())
+        if(this->m_snapshotItemHasQueueEntries && !this->m_snapshotEntries->HasEntries())
             this->m_queueItemsCount--;
-        if(!allItemsRecvSnapshot && this->m_snapshotItem->SymbolInfo()->AllSessionsRecvSnapshot())
+        if(!allItemsRecvSnapshot && this->m_snapshotSymbol->AllSessionsRecvSnapshot())
             this->m_symbolsToRecvSnapshot--;
+        this->m_snapshotItem = 0;
         return res;
     }
     inline void ProcessSnapshot(ITEMINFO **item, int count, int rptSeq) {
@@ -913,6 +1011,8 @@ public:
         for(int i = 0; i < this->m_symbolsCount; i++, s++)
             (*s)->Clear();
         this->m_symbolsCount = 0;
+        this->m_queueItemsCount = 0;
+        this->m_symbolsToRecvSnapshot = 0;
     }
     inline int SymbolsCount() { return this->m_symbolsCount; }
     inline MarketSymbolInfo<TABLEITEM<ITEMINFO>>* Symbol(int index) { return this->m_symbols[index]; }

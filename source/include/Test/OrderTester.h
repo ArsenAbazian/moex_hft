@@ -537,7 +537,7 @@ public:
         info2->GroupMDEntries[0] = newItem1;
         info2->GroupMDEntries[1] = newItem2;
 
-        this->fcf->OnFullRefresh_OLS_FOND(info2);
+        this->fcf->OrderFond()->ProcessSnapshot(info2);
 
         if(this->fcf->OrderFond()->UsedItemCount() != 1)
             throw;
@@ -928,7 +928,7 @@ public:
         info2->GroupMDEntries[0] = newItem1;
         info2->GroupMDEntries[1] = newItem2;
 
-        this->fcf->OnFullRefresh_OLS_FOND(info2);
+        this->fcf->OrderFond()->ProcessSnapshot(info2);
 
         if(this->fcf->OrderFond()->UsedItemCount() != 1)
             throw;
@@ -1320,7 +1320,7 @@ public:
         info2->GroupMDEntries[0] = newItem1;
         info2->GroupMDEntries[1] = newItem2;
 
-        this->fcc->OnFullRefresh_OLS_CURR(info2);
+        this->fcc->OrderCurr()->ProcessSnapshot(info2);
 
         if(this->fcc->OrderCurr()->UsedItemCount() != 1)
             throw;
@@ -1710,7 +1710,7 @@ public:
         info2->GroupMDEntries[0] = newItem1;
         info2->GroupMDEntries[1] = newItem2;
 
-        this->fcc->OnFullRefresh_OLS_CURR(info2);
+        this->fcc->OrderCurr()->ProcessSnapshot(info2);
 
         if(this->fcc->OrderCurr()->UsedItemCount() != 1)
             throw;

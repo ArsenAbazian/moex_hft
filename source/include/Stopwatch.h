@@ -28,11 +28,11 @@ public:
         delete this->m_specEnd;
     }
     inline void Start(int index) {
-        clock_gettime(CLOCK_REALTIME, this->m_specStart[index]);
+        clock_gettime(CLOCK_REALTIME_COARSE, this->m_specStart[index]);
         this->m_enabled[index] = true;
     }
     inline void Start() {
-        clock_gettime(CLOCK_REALTIME, this->m_specStart[0]);
+        clock_gettime(CLOCK_REALTIME_COARSE, this->m_specStart[0]);
         this->m_enabled[0] = true;
     }
     inline void Activate(int index) {
@@ -53,7 +53,7 @@ public:
     }
     inline time_t ElapsedMilliseconds() {
         if(this->m_enabled[0])
-            clock_gettime(CLOCK_REALTIME, this->m_specEnd);
+            clock_gettime(CLOCK_REALTIME_COARSE, this->m_specEnd);
         return  (this->m_specEnd->tv_sec - (*(this->m_specStart))->tv_sec) * 1000 + (this->m_specEnd->tv_nsec - (*(this->m_specStart))->tv_nsec) / 1000000;
     }
     inline bool IsElapsedMilliseconds(time_t ms) {
@@ -68,32 +68,32 @@ public:
     }
     inline time_t ElapsedMicroseconds() {
         if(this->m_enabled[0])
-            clock_gettime(CLOCK_REALTIME, this->m_specEnd);
+            clock_gettime(CLOCK_REALTIME_COARSE, this->m_specEnd);
         return (this->m_specEnd->tv_sec - (*(this->m_specStart))->tv_sec) * 1000000 + (this->m_specEnd->tv_nsec - (*(this->m_specStart))->tv_nsec) / 1000;
     }
     inline time_t ElapsedSeconds() {
         if(this->m_enabled[0])
-            clock_gettime(CLOCK_REALTIME, this->m_specEnd);
+            clock_gettime(CLOCK_REALTIME_COARSE, this->m_specEnd);
         return  this->m_specEnd->tv_sec - (*(this->m_specStart))->tv_sec;
     }
     inline time_t ElapsedMilliseconds(int index) {
         if(this->m_enabled[index])
-            clock_gettime(CLOCK_REALTIME, this->m_specEnd);
+            clock_gettime(CLOCK_REALTIME_COARSE, this->m_specEnd);
         return (this->m_specEnd->tv_sec - this->m_specStart[index]->tv_sec) * 1000 + (this->m_specEnd->tv_nsec - this->m_specStart[index]->tv_nsec) / 1000000;
     }
     inline time_t ElapsedMicroseconds(int index) {
         if(this->m_enabled[index])
-            clock_gettime(CLOCK_REALTIME, this->m_specEnd);
+            clock_gettime(CLOCK_REALTIME_COARSE, this->m_specEnd);
         return (this->m_specEnd->tv_sec - this->m_specStart[index]->tv_sec) * 1000000 +  (this->m_specEnd->tv_nsec - this->m_specStart[index]->tv_nsec) / 1000;
     }
     inline time_t ElapsedSeconds(int index) {
         if(this->m_enabled[index])
-            clock_gettime(CLOCK_REALTIME, this->m_specEnd);
+            clock_gettime(CLOCK_REALTIME_COARSE, this->m_specEnd);
         return  this->m_specEnd->tv_sec - this->m_specStart[index]->tv_sec;
     }
     inline time_t NowSeconds() {
         if(this->m_enabled[0])
-            clock_gettime(CLOCK_REALTIME, this->m_specEnd);
+            clock_gettime(CLOCK_REALTIME_COARSE, this->m_specEnd);
         return this->m_specEnd->tv_sec;
     }
     inline bool Active(int index) { return this->m_enabled[index]; }

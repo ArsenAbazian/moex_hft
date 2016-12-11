@@ -58,15 +58,30 @@ public:
     bool                    m_lastFragment;
     int                     m_itemsCount;
     int                     m_rptSec;
+    int                     m_lastMsgSeqNoProcessed;
     TestTemplateItemInfo*   m_items[8];
     const char              *m_symbol;
     const char              *m_session;
     bool                    m_lost;
     bool                    m_wait;
+    bool                    m_skip;
 
-    TestTemplateInfo() { }
+    TestTemplateInfo() {
+        this->m_templateId = FeedConnectionMessage::fcmHeartBeat;
+        this->m_msgSeqNo = 0;
+        this->m_routeFirst = false;
+        this->m_lastFragment = false;
+        this->m_itemsCount = 0;
+        this->m_rptSec = 0;
+        this->m_lastMsgSeqNoProcessed = 0;
+        this->m_symbol = 0;
+        this->m_session = 0;
+        this->m_lost = false;
+        this->m_wait = false;
+        this->m_skip = false;
+    }
 
-    TestTemplateInfo(FeedConnectionMessage templateId, int msgSeqNo) {
+    TestTemplateInfo(FeedConnectionMessage templateId, int msgSeqNo) : TestTemplateInfo() {
         this->m_templateId = templateId;
         this->m_msgSeqNo = msgSeqNo;
         this->m_itemsCount = 0;
@@ -282,11 +297,13 @@ public:
         fcf->StartListenSnapshot();
         fcs->m_waitTimer->Stop();
         fcs->Stop();
+        fcf->Stop();
         this->symbolsCount = 0;
         for(int i = 0; i < 100; i++) {
             this->symbols[i] = 0;
             this->rptSeq[i] = 0;
         }
+        fcf->Start();
     }
 
     void Test_OnIncrementalRefresh_OBR_FOND_Add() {
@@ -685,7 +702,7 @@ public:
         info2->GroupMDEntries[0] = newItem1;
         info2->GroupMDEntries[1] = newItem2;
 
-        this->fcf->OnFullRefresh_OBS_FOND(info2);
+        this->fcf->OrderBookFond()->ProcessSnapshot(info2);
 
         if(this->fcf->OrderBookFond()->UsedItemCount() != 2)
             throw;
@@ -1079,7 +1096,7 @@ public:
         info2->GroupMDEntries[0] = newItem1;
         info2->GroupMDEntries[1] = newItem2;
 
-        this->fcf->OnFullRefresh_OBS_FOND(info2);
+        this->fcf->OrderBookFond()->ProcessSnapshot(info2);
 
         if(this->fcf->OrderBookFond()->UsedItemCount() != 2)
             throw;
@@ -1470,7 +1487,7 @@ public:
         info2->GroupMDEntries[0] = newItem1;
         info2->GroupMDEntries[1] = newItem2;
 
-        this->fcc->OnFullRefresh_OBS_CURR(info2);
+        this->fcc->OrderBookCurr()->ProcessSnapshot(info2);
 
         if(this->fcc->OrderBookCurr()->UsedItemCount() != 1)
             throw;
@@ -1859,7 +1876,7 @@ public:
         info2->GroupMDEntries[0] = newItem1;
         info2->GroupMDEntries[1] = newItem2;
 
-        this->fcc->OnFullRefresh_OBS_CURR(info2);
+        this->fcc->OrderBookCurr()->ProcessSnapshot(info2);
 
         if(this->fcc->OrderBookCurr()->UsedItemCount() != 1)
             throw;
@@ -2427,6 +2444,8 @@ public:
         info->GroupMDEntriesCount = tmp->m_itemsCount;
         info->AllowRouteFirst = true;
         info->AllowLastFragment = true;
+        info->AllowLastMsgSeqNumProcessed = true;
+        info->LastMsgSeqNumProcessed = tmp->m_lastMsgSeqNoProcessed;
 
         if(tmp->m_symbol != 0) {
             info->SymbolLength = strlen(tmp->m_symbol);
@@ -3483,6 +3502,7 @@ public:
         TestTemplateInfo *info = new TestTemplateInfo();
 
         info->m_lost = HasKey(keys, keysCount, "lost");
+        info->m_skip = HasKey(keys, keysCount, "skip_if_suspend");
         if(HasKey(keys, keysCount, "obr")) {
             info->m_templateId = FeedConnectionMessage::fmcIncrementalRefresh_OBR_FOND;
         }
@@ -3497,6 +3517,10 @@ public:
             if(HasKey(keys, keysCount, "rpt")) {
                 info->m_rptSec = atoi((const char *)(keys[KeyIndex(keys, keysCount, "rpt") + 1]));
             }
+            if(HasKey(keys, keysCount, "lastmsg")) {
+                info->m_lastMsgSeqNoProcessed = atoi((const char *)(keys[KeyIndex(keys, keysCount, "lastmsg") + 1]));
+            }
+            else info->m_lastMsgSeqNoProcessed = 1;
             if(HasKey(keys, keysCount, "end"))
                 info->m_lastFragment = true;
         }
@@ -3583,6 +3607,7 @@ public:
         int snap_index = 0;
 
         Stopwatch w;
+        w.Start(1);
         while(inc_index < incMsgCount || snap_index < snapMsgCount) {
             if(inc_index < incMsgCount && !inc_msg[inc_index]->m_lost) {
                 inc_msg[inc_index]->m_msgSeqNo = inc_index + 1;
@@ -3590,47 +3615,61 @@ public:
             }
             fci->Listen_Atom_Incremental_Core();
             if(inc_index < incMsgCount && inc_msg[inc_index]->m_wait) {
-                //if(!fci->m_waitTimer->Active())
-                //    throw;
+                if(!fcf->m_waitTimer->Active())
+                    throw;
                 while(!fci->m_waitTimer->IsElapsedMilliseconds(fci->WaitIncrementalMaxTimeMs()) && fcs->State() == FeedConnectionState::fcsSuspend)
                     fci->Listen_Atom_Incremental_Core();
                 fci->Listen_Atom_Incremental_Core();
             }
-            inc_index++;
+            if(inc_index < incMsgCount)
+                inc_index++;
             if(fcs->State() == FeedConnectionState::fcsListenSnapshot) {
                 if (snap_index < snapMsgCount && !snap_msg[snap_index]->m_lost) {
                     snap_msg[snap_index]->m_msgSeqNo = snap_index + 1;
-                    if(snap_msg[snap_index]->m_symbol == 0 ||
-                            snap_msg[snap_index]->m_session == 0)
+                    if(snap_msg[snap_index]->m_templateId != FeedConnectionMessage::fcmHeartBeat && (snap_msg[snap_index]->m_symbol == 0 || snap_msg[snap_index]->m_session == 0))
                         throw;
                     SendMessage(fcs, snap_msg[snap_index]);
                 }
-                snap_index++;
+                if(snap_index < snapMsgCount)
+                    snap_index++;
                 fcs->Listen_Atom_Snapshot_Core();
+            }
+            else {
+                if (snap_index < snapMsgCount && snap_msg[snap_index]->m_skip) {
+                    snap_index++;
+                }
             }
             w.Start();
             while(!w.IsElapsedMilliseconds(delay));
             w.Stop();
+            if(w.ElapsedMilliseconds(1) > 5000)
+                throw;
         }
         fci->Listen_Atom_Incremental_Core(); // emulate endless loop
+        this->TestSnapshotPacketsCleared();
     }
 
     void TestConnection_SkipHearthBeatMessages_Incremental() {
         this->Clear();
-        this->fcf->StartListenSnapshot();
 
+        this->fcf->OrderBookFond()->Add("s1", "session1");
+        this->fcf->StartListenSnapshot();
+        if(fcs->State() != FeedConnectionState::fcsListenSnapshot)
+            throw;
         SendMessages(fcf, fcs,
-                     "hbeat, hbeat, hbeat",
-                     "hbeat, hbeat, hbeat",
+                     "obr entry s1 e1, lost obr entry s1 e2, wait_snap, hbeat, hbeat, hbeat",
+                     "                                                  hbeat, hbeat, hbeat",
                      30);
-        if(fcf->m_packets[1]->m_item == 0 || fcf->m_packets[2]->m_item == 0 || fcf->m_packets[3]->m_item == 0)
+        if(fcf->m_packets[4]->m_item == 0 || fcf->m_packets[5]->m_item == 0 || fcf->m_packets[6]->m_item == 0)
             throw;
-        if(fcf->m_packets[1]->m_processed || fcf->m_packets[2]->m_processed || fcf->m_packets[3]->m_processed)
+        if(!fcf->m_packets[4]->m_processed || !fcf->m_packets[5]->m_processed || !fcf->m_packets[6]->m_processed)
             throw;
-        if(fcs->m_packets[1]->m_item == 0 || fcs->m_packets[2]->m_item == 0 || fcs->m_packets[3]->m_item == 0)
-            throw;
-        if(fcs->m_packets[1]->m_processed || fcs->m_packets[2]->m_processed || fcs->m_packets[3]->m_processed)
-            throw;
+        // do not check Snapshot Feed Connection because it immediately cleares packets after processing,
+        // because it can receive packet with the same message number again and again (cycle)
+        //if(fcs->m_packets[1]->m_item == 0 || fcs->m_packets[2]->m_item == 0 || fcs->m_packets[3]->m_item == 0)
+        //    throw;
+        //if(!fcs->m_packets[1]->m_processed || !fcs->m_packets[2]->m_processed || !fcs->m_packets[3]->m_processed)
+        //    throw;
     }
 
     void TestConnection_AllSymbolsAreOk() {
@@ -3645,6 +3684,10 @@ public:
         if(fcf->m_orderBookTableFond->Symbol(0)->Session(0)->EntriesQueue()->HasEntries())
             throw;
         if(fcf->m_orderBookTableFond->Symbol(1)->Session(0)->EntriesQueue()->HasEntries())
+            throw;
+        if(fcf->OrderBookFond()->SymbolsToRecvSnapshotCount() != 0)
+            throw;
+        if(fcs->State() != FeedConnectionState::fcsSuspend)
             throw;
         if(!fcf->CanStopListeningSnapshot())
             throw;
@@ -3842,7 +3885,45 @@ public:
         if(fcf->OrderBookFond()->Symbol(1)->SessionsToRecvSnapshotCount() != 1)
             throw;
     }
+    // we should receive at least one snapshot for all items
+    // we received snapshot for one item
+    // and we did not receive incremental messages for symbol 2 after snapshot
+    void TestConnection_ParallelWorkingIncrementalAndSnapshot_5() {
+        this->Clear();
 
+        fcf->OrderBookFond()->Add("symbol1", "session1");
+        fcf->OrderBookFond()->Add("symbol2", "session1");
+        fcf->OrderBookFond()->Add("symbol3", "session1");
+
+        if(fcs->State() != FeedConnectionState::fcsSuspend)
+            throw;
+        SendMessages(fcf, fcs,
+                     "obr entry symbol1 e1, lost obr entry symbol3 e1, wait_snap, obr entry symbol1 e3,    hbeat,                              hbeat",
+                     "                                                            obs symbol3 begin rpt 1, obs symbol3 rpt 1 entry symbol3 e1, obs symbol3 rpt 1 end",
+                     30);
+        if(fcf->HasQueueEntries())
+            throw;
+        if(fcf->CanStopListeningSnapshot()) // because we did not receive all snapshots for all symbols
+            throw;
+        if(fcs->State() == FeedConnectionState::fcsSuspend)
+            throw;
+        if(fcf->m_orderBookTableFond->UsedItemCount() != 3)
+            throw;
+        if(fcf->m_orderBookTableFond->GetItem("symbol1", "session1")->BuyQuotes()->Count() != 2)
+            throw;
+        if(fcf->m_orderBookTableFond->GetItem("symbol2", "session1")->BuyQuotes()->Count() != 0)
+            throw;
+        if(fcf->m_orderBookTableFond->GetItem("symbol3", "session1")->BuyQuotes()->Count() != 1)
+            throw;
+        if(fcf->m_startMsgSeqNum != 2)
+            throw;
+        if(fcf->m_endMsgSeqNum != 6)
+            throw;
+        if(fcs->m_startMsgSeqNum != 4)
+            throw;
+        if(fcs->m_endMsgSeqNum != 3)
+            throw;
+    }
     void TestConnection_ParallelWorkingIncrementalAndSnapshot_5_1() {
         this->Clear();
 
@@ -3851,7 +3932,7 @@ public:
         if(fcs->State() != FeedConnectionState::fcsSuspend)
             throw;
         SendMessages(fcf, fcs,
-                     "lost obr entry symbol1 e1, wait_snap",
+                     "lost obr entry symbol1 e1, lost hbeat, wait_snap",
                      "obs symbol1 begin rpt 1, obs symbol1 rpt 1 entry symbol1 e1, obs symbol1 rpt 1 end",
                      30);
         if(fcf->HasQueueEntries())
@@ -3868,17 +3949,16 @@ public:
             throw;
         if(fcf->m_orderBookTableFond->GetItem("symbol1", "session1")->BuyQuotes()->Count() != 1)
             throw;
-        if(fcf->m_startMsgSeqNum != 3)
+        if(fcf->m_startMsgSeqNum != 4)
             throw;
-        if(fcf->m_endMsgSeqNum != 2)
+        if(fcf->m_endMsgSeqNum != 3)
             throw;
         if(fcs->m_startMsgSeqNum != 4)
             throw;
         if(fcs->m_endMsgSeqNum != 3)
             throw;
     }
-    // we should receive at least one snapshot for all items
-    // we received snapshot for one item
+    // snapshot completed because we received snapshot for all items
     void TestConnection_ParallelWorkingIncrementalAndSnapshot_5_2() {
         this->Clear();
 
@@ -3888,17 +3968,86 @@ public:
 
         if(fcs->State() != FeedConnectionState::fcsSuspend)
             throw;
+        if(fcf->OrderBookFond()->UsedItemCount() != 3)
+            throw;
         SendMessages(fcf, fcs,
-                     "obr entry symbol1 e1, lost obr entry symbol3 e1, wait_snap, obr entry symbol1 e3,    obr entry symbol2 e1,               obr entry symbol2 e2",
-                     "                                                            obs symbol3 begin rpt 1, obs symbol3 rpt 1 entry symbol3 e1, obs symbol3 rpt 1 end",
+                     "obr entry symbol1 e1, lost obr entry symbol3 e1, wait_snap, obr entry symbol1 e3,                         hbeat,                                        hbeat",
+                     "                                                            obs symbol3 begin rpt 1 end entry symbol3 e1, obs symbol1 begin rpt 2 end entry symbol1 e1, hbeat, obs symbol2 begin rpt 2 end entry symbol2 e1",
                      30);
         if(fcf->HasQueueEntries())
             throw;
-        if(fcf->CanStopListeningSnapshot())
+        if(fcf->m_orderBookTableFond->GetItem("symbol1", "session1")->RptSeq() != 2)
             throw;
-        if(fcs->State() != FeedConnectionState::fcsListenSnapshot)
+        if(fcf->m_orderBookTableFond->GetItem("symbol3", "session1")->RptSeq() != 1)
             throw;
-        if(fcf->OrderBookFond()->SymbolsToRecvSnapshotCount() != 2)
+        if(fcf->m_orderBookTableFond->GetItem("symbol2", "session1")->RptSeq() != 2)
+            throw;
+        if(!fcf->CanStopListeningSnapshot())
+            throw;
+        if(fcs->State() != FeedConnectionState::fcsSuspend)
+            throw;
+        if(fcf->m_orderBookTableFond->UsedItemCount() != 3)
+            throw;
+        if(fcf->m_orderBookTableFond->GetItem("symbol1", "session1")->BuyQuotes()->Count() != 2) // snapshot applied virtually actually skipped
+            throw;
+        if(fcf->m_orderBookTableFond->GetItem("symbol2", "session1")->BuyQuotes()->Count() != 1)
+            throw;
+        if(fcf->m_orderBookTableFond->GetItem("symbol3", "session1")->BuyQuotes()->Count() != 1)
+            throw;
+        if(fcf->m_startMsgSeqNum != 7)
+            throw;
+        if(fcf->m_endMsgSeqNum != 6)
+            throw;
+        if(fcs->m_startMsgSeqNum != 5)
+            throw;
+        if(fcs->m_endMsgSeqNum != 4)
+            throw;
+    }
+    // snapshot completed because we received snapshot for all items
+    // almost the same as TestConnection_ParallelWorkingIncrementalAndSnapshot_5_2
+    // however there is no heartbeat msg in snap channel so symbol 2 receives snapshot earlier than his second message so it buyquotes count == 1
+    void TestConnection_ParallelWorkingIncrementalAndSnapshot_5_2_2() {
+        this->Clear();
+
+        fcf->OrderBookFond()->Add("symbol1", "session1");
+        fcf->OrderBookFond()->Add("symbol2", "session1");
+        fcf->OrderBookFond()->Add("symbol3", "session1");
+
+        if(fcs->State() != FeedConnectionState::fcsSuspend)
+            throw;
+        if(fcf->OrderBookFond()->UsedItemCount() != 3)
+            throw;
+        SendMessages(fcf, fcs,
+                     "obr entry symbol1 e1, lost obr entry symbol3 e1, wait_snap, obr entry symbol1 e3,                         obr entry symbol2 e1,                         obr entry symbol2 e2",
+                     "                                                            obs symbol3 begin rpt 1 end entry symbol3 e1, obs symbol1 begin rpt 2 end entry symbol1 e1, obs symbol2 begin rpt 2 end entry symbol2 e1 skip_if_suspend",
+                     30);
+        if(fcf->HasQueueEntries())
+            throw;
+        if(fcf->m_orderBookTableFond->GetItem("symbol1", "session1")->RptSeq() != 2)
+            throw;
+        if(fcf->m_orderBookTableFond->GetItem("symbol3", "session1")->RptSeq() != 1)
+            throw;
+        if(fcf->m_orderBookTableFond->GetItem("symbol2", "session1")->RptSeq() != 2)
+            throw;
+        if(!fcf->CanStopListeningSnapshot())
+            throw;
+        if(fcs->State() != FeedConnectionState::fcsSuspend)
+            throw;
+        if(fcf->m_orderBookTableFond->UsedItemCount() != 3)
+            throw;
+        if(fcf->m_orderBookTableFond->GetItem("symbol1", "session1")->BuyQuotes()->Count() != 2) // snapshot applied virtually actually skipped
+            throw;
+        if(fcf->m_orderBookTableFond->GetItem("symbol2", "session1")->BuyQuotes()->Count() != 2)
+            throw;
+        if(fcf->m_orderBookTableFond->GetItem("symbol3", "session1")->BuyQuotes()->Count() != 1)
+            throw;
+        if(fcf->m_startMsgSeqNum != 7)
+            throw;
+        if(fcf->m_endMsgSeqNum != 6)
+            throw;
+        if(fcs->m_startMsgSeqNum != 3)
+            throw;
+        if(fcs->m_endMsgSeqNum != 2)
             throw;
     }
     // we receive snapshot which rpt seq is less than incremental actual rpt seq
@@ -3911,68 +4060,321 @@ public:
         if(!fcf->m_waitTimer->Active())
             throw;
         SendMessages(fcf, fcs,
-                    "obr entry symbol s1 e1, obr entry symbol s1 e2, obr entry symbol s1 e3, wait_snap, hbeat",
-                    "                                                                                   obs s1 begin rpt 1 entry s1 e1 end",
-                    50);
+                     "obr entry s1 e1, obr entry s1 e2, obr entry s1 e3, lost hbeat, wait_snap, hbeat",
+                     "                                                                          obs s1 begin rpt 1 entry s1 e1 end",
+                     50);
         if(fcf->HasQueueEntries())
             throw;
-        if(!fcs->CanStopListeningSnapshot())
+        if(fcf->OrderBookFond()->SymbolsToRecvSnapshotCount() != 1)
+            throw;
+        if(fcf->CanStopListeningSnapshot())
             throw;
         if(fcf->OrderBookFond()->GetItem("s1", "session1")->RptSeq() != 3)
             throw;
         if(fcf->OrderBookFond()->GetItem("s1", "session1")->BuyQuotes()->Count() != 3)
             throw;
-        if(fcs->State() != FeedConnectionState::fcsSuspend)
+        if(fcs->m_startMsgSeqNum != 2)
+            throw;
+        if(fcs->m_endMsgSeqNum != 1)
+            throw;
+        if(fcs->State() == FeedConnectionState::fcsSuspend)
             throw;
         if(fcs->m_startMsgSeqNum != 2) // detect that
             throw;
     }
-    // we should receive at least one snapshot for all items
-    // and we receive snapshot for all symbols
-    void TestConnection_ParallelWorkingIncrementalAndSnapshot_5() {
+    // we received snapshot for item but item has 2 gaps and snapshot is partially actual
+    void TestConnection_ParallelWorkingIncrementalAndSnapshot_5_4() {
         this->Clear();
 
-        fcf->OrderBookFond()->Add("symbol1", "session1");
-        fcf->OrderBookFond()->Add("symbol2", "session1");
-        fcf->OrderBookFond()->Add("symbol3", "session1");
+        fcf->WaitIncrementalMaxTimeMs(500);
+        fcf->OrderBookFond()->Add("s1", "session1");
+        fcf->Start();
 
-        if(fcs->State() != FeedConnectionState::fcsSuspend)
-            throw;
         SendMessages(fcf, fcs,
-                     "obr entry symbol1 e1, lost obr entry symbol3 e1, wait_snap, obr entry symbol1 e3,    obr entry symbol2 e1,               obr entry symbol2 e2,  hbeat,                                        hbeat,                                     hbeat",
-                     "                                                            obs symbol3 begin rpt 1, obs symbol3 rpt 1 entry symbol3 e1, obs symbol3 rpt 1 end, obs symbol1 begin rpt 1 entry symbol1 e1 end, obs symbol2 begin rpt 2 entry symbol2 e1 , obs symbol2 rpt 2 entry symbol2 e2 end",
+                     "obr entry s1 e1, obr entry s1 e2, lost obr entry s1 e3, obr entry s1 e4, lost obr entry s1 e5, obr entry s1 e6, wait_snap, ",
+                     "                                                                                                                           obs s1 begin rpt 4 entry s1 e4 end",
+        30);
+        if(fcf->OrderBookFond()->SymbolsToRecvSnapshotCount() != 1)
+            throw;
+        if(fcf->CanStopListeningSnapshot())
+            throw;
+        if(fcs->State() != FeedConnectionState::fcsListenSnapshot)
+            throw;
+        if(!fcf->OrderBookFond()->GetItem("s1", "session1")->QueueEntries()->HasEntries())
+            throw;
+        if(fcf->OrderBookFond()->GetItem("s1", "session1")->RptSeq() != 4)
+            throw;
+        if(fcf->OrderBookFond()->GetItem("s1", "session1")->BuyQuotes()->Count() != 1)
+            throw;
+    }
+    // almost the same as 5_4 but we received new snapshot for item but item has 2 gaps and snapshot is fully actual
+    void TestConnection_ParallelWorkingIncrementalAndSnapshot_5_4_1() {
+        this->Clear();
+
+        fcf->WaitIncrementalMaxTimeMs(500);
+        fcf->OrderBookFond()->Add("s1", "session1");
+        fcf->Start();
+
+        SendMessages(fcf, fcs,
+                     "obr entry s1 e1, obr entry s1 e2, lost obr entry s1 e3, obr entry s1 e4, lost obr entry s1 e5, obr entry s1 e6, wait_snap, ",
+                     "                                                                                                                           obs s1 begin rpt 5 entry s1 e5 end",
                      30);
+        if(fcf->OrderBookFond()->SymbolsToRecvSnapshotCount() != 0)
+            throw;
         if(fcf->HasQueueEntries())
             throw;
         if(!fcf->CanStopListeningSnapshot())
             throw;
         if(fcs->State() != FeedConnectionState::fcsSuspend)
             throw;
-        if(fcf->m_orderBookTableFond->UsedItemCount() != 3)
+        if(fcf->OrderBookFond()->GetItem("s1", "session1")->QueueEntries()->HasEntries())
             throw;
-        if(fcf->m_orderBookTableFond->GetItem("symbol1", "session1")->RptSeq() != 2)
+        if(fcf->OrderBookFond()->GetItem("s1", "session1")->RptSeq() != 6)
             throw;
-        if(fcf->m_orderBookTableFond->GetItem("symbol2", "session1")->RptSeq() != 2)
-            throw;
-        if(fcf->m_orderBookTableFond->GetItem("symbol3", "session1")->RptSeq() != 2)
-            throw;
-        if(fcf->m_orderBookTableFond->GetItem("symbol1", "session1")->BuyQuotes()->Count() != 1)
-            throw;
-        if(fcf->m_orderBookTableFond->GetItem("symbol2", "session1")->BuyQuotes()->Count() != 2)
-            throw;
-        if(fcf->m_orderBookTableFond->GetItem("symbol3", "session1")->BuyQuotes()->Count() != 1)
-            throw;
-        if(fcf->m_startMsgSeqNum != 10)
-            throw;
-        if(fcf->m_endMsgSeqNum != 9)
-            throw;
-        if(fcs->m_startMsgSeqNum != 7)
-            throw;
-        if(fcs->m_endMsgSeqNum != 6)
+        if(fcf->OrderBookFond()->GetItem("s1", "session1")->BuyQuotes()->Count() != 2)
             throw;
     }
+    // almost the same as 5_4_1 but we received new snapshot with rptseq 6
+    void TestConnection_ParallelWorkingIncrementalAndSnapshot_5_4_2() {
+        this->Clear();
 
+        fcf->WaitIncrementalMaxTimeMs(500);
+        fcf->OrderBookFond()->Add("s1", "session1");
+        fcf->Start();
+
+        SendMessages(fcf, fcs,
+                     "obr entry s1 e1, obr entry s1 e2, lost obr entry s1 e3, obr entry s1 e4, lost obr entry s1 e5, obr entry s1 e6, wait_snap, ",
+                     "                                                                                                                           obs s1 begin rpt 6 entry s1 e6 end",
+                     30);
+        if(fcf->OrderBookFond()->SymbolsToRecvSnapshotCount() != 0)
+            throw;
+        if(fcf->HasQueueEntries())
+            throw;
+        if(!fcf->CanStopListeningSnapshot())
+            throw;
+        if(fcs->State() != FeedConnectionState::fcsSuspend)
+            throw;
+        if(fcf->OrderBookFond()->GetItem("s1", "session1")->QueueEntries()->HasEntries())
+            throw;
+        if(fcf->OrderBookFond()->GetItem("s1", "session1")->RptSeq() != 6)
+            throw;
+        if(fcf->OrderBookFond()->GetItem("s1", "session1")->BuyQuotes()->Count() != 1)
+            throw;
+    }
+    // we have received snapshot and almost ok but next incremental message during snapshot has greater RptSeq
+    void TestConnection_ParallelWorkingIncrementalAndSnapshot_5_5() {
+        this->Clear();
+
+        fcf->WaitIncrementalMaxTimeMs(500);
+        fcf->OrderBookFond()->Add("s1", "session1");
+        fcf->OrderBookFond()->Add("s2", "session1");
+        fcf->Start();
+
+        SendMessages(fcf, fcs,
+                     "obr entry s1 e1, obr entry s2 e1, lost obr entry s1 e2, wait_snap, hbeat                               lost obr entry s1 e3,               obr entry s1 e4",
+                     "                                                                   obs s1 begin rpt 2 entry s1 e2 end, obs s2 begin rpt 1 entry s2 e1 end, hbeat",
+                     30);
+        if(fcf->CanStopListeningSnapshot())
+            throw;
+        if(fcs->State() != FeedConnectionState::fcsListenSnapshot)
+            throw;
+        if(fcf->OrderBookFond()->GetItem("s1", "session1")->RptSeq() != 2)
+            throw;
+        if(!fcf->OrderBookFond()->GetItem("s1", "session1")->QueueEntries()->HasEntries())
+            throw;
+        if(fcf->OrderBookFond()->GetItem("s1", "session1")->QueueEntries()->StartRptSeq() != 3)
+            throw;
+        if(fcf->OrderBookFond()->GetItem("s1", "session1")->QueueEntries()->MaxIndex() != 1)
+            throw;
+        if(fcf->OrderBookFond()->GetItem("s2", "session1")->RptSeq() != 1)
+            throw;
+        if(fcf->OrderBookFond()->QueueEntriesCount() != 1)
+            throw;
+    }
+    // we have received snapshot and almost ok but next incremental message during snapshot has greater RptSeq
+    // and we receive second time snapshot for s1
+    void TestConnection_ParallelWorkingIncrementalAndSnapshot_5_5_1() {
+        this->Clear();
+
+        fcf->OrderBookFond()->Add("s1", "session1");
+        fcf->OrderBookFond()->Add("s2", "session1");
+        fcf->Start();
+
+        SendMessages(fcf, fcs,
+                     "obr entry s1 e1, obr entry s2 e1, lost obr entry s1 e2, wait_snap, hbeat                               lost obr entry s1 e3,               obr entry s1 e4, hbeat ",
+                     "                                                                   obs s1 begin rpt 2 entry s1 e2 end, obs s2 begin rpt 1 entry s2 e1 end, hbeat          , obs s1 begin rpt 3 entry s1 e3 end",
+                     30);
+        if(!fcf->CanStopListeningSnapshot())
+            throw;
+        if(fcs->State() != FeedConnectionState::fcsSuspend)
+            throw;
+        if(fcf->OrderBookFond()->GetItem("s1", "session1")->RptSeq() != 4)
+            throw;
+        if(fcf->OrderBookFond()->GetItem("s1", "session1")->QueueEntries()->HasEntries())
+            throw;
+        if(fcf->OrderBookFond()->QueueEntriesCount() != 0)
+            throw;
+        if(fcf->OrderBookFond()->SymbolsToRecvSnapshotCount() != 0)
+            throw;
+    }
+    // we have received incremental message after entering snapshot mode for item and item in is actual state - so it do not need snapshot
+    void TestConnection_ParallelWorkingIncrementalAndSnapshot_5_6() {
+        this->Clear();
+
+        fcf->OrderBookFond()->Add("s1", "session1");
+        fcf->OrderBookFond()->Add("s2", "session1");
+        fcf->Start();
+
+        SendMessages(fcf, fcs,
+                     "obr entry s1 e1, obr entry s2 e1, lost obr entry s1 e2, wait_snap, obr entry s2 e2, hbeat",
+                     "                                                        hbeat,     hbeat,           hbeat",
+                     30);
+        if(fcf->CanStopListeningSnapshot())
+            throw;
+        if(fcs->State() != FeedConnectionState::fcsListenSnapshot)
+            throw;
+        if(fcf->OrderBookFond()->SymbolsToRecvSnapshotCount() != 1)
+            throw;
+        if(fcf->OrderBookFond()->GetItem("s2", "session1")->ShouldProcessSnapshot())
+            throw;
+    }
+    // we have received twice the same snapshot (rpt seq num = the same value) which means that item did not receive incremental message so item state is actual
+    void TestConnection_ParallelWorkingIncrementalAndSnapshot_5_7() {
+        // do nothing. lets consider that after receiving snapshot item will be in actual state if there is no queue entries
+    }
+    // we can receive null snapshot i.e. snapshot with LastMsgSeqNumProcessed = 0 RptSeq = 0
+    // this means that item has NO DATA
+    // so just clear queue entries and decrease session to recv snapshot value
+    void TestConnection_ResetEntriesQueueIfNullSnapshotIsReceived() {
+        this->Clear();
+
+        /*
+        unsigned char *msg = new unsigned char[52] {
+                0x65, 0x23, 0x00, 0x00, 0xe0, 0x12, 0xec, 0x46, 0xe5, 0x23,
+                0x68, 0x08, 0x12, 0x7f, 0x4c, 0x74, 0xc0, 0x81, 0x80, 0x00,
+                0xe5, 0x52, 0x50, 0x4d, 0xcf, 0x52, 0x55, 0x30, 0x30, 0x30,
+                0x41, 0x30, 0x4a, 0x54, 0x5a, 0x46, 0xb1, 0x82, 0x82, 0x93,
+                0x80, 0x81, 0xca, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80,
+                0x80, 0x80
+        };
+        fcf->m_fastProtocolManager->SetNewBuffer(msg, 52);
+        fcf->m_fastProtocolManager->ReadMsgSeqNumber();
+        fcf->m_fastProtocolManager->Decode();
+        fcf->m_fastProtocolManager->Print();
+        */
+
+        fcf->OrderBookFond()->Add("s1", "session1");
+        fcf->Start();
+
+        SendMessages(fcf, fcs,
+                     "obr entry s1 e1, lost obr entry s1 e2, obr entry s1 e2, wait_snap, hbeat",
+                     "                                       hbeat,           hbeat,     obs s1 begin rpt 0 lastmsg 0 entry s1 e1 end",
+                     30);
+        if(fcf->OrderBookFond()->SymbolsToRecvSnapshotCount() != 0)
+            throw;
+        if(!fcf->CanStopListeningSnapshot())
+            throw;
+        if(fcs->State() != FeedConnectionState::fcsSuspend)
+            throw;
+    }
+    void TestConnection_StopListeningSnapshotBecauseAllItemsIsUpToDate() {
+
+    }
+    void TestConnection_EnterSnapshotMode() {
+        this->Clear();
+
+        fcf->OrderBookFond()->Add("s1", "session1");
+        fcf->OrderBookFond()->EnterSnapshotMode();
+        if(!fcf->OrderBookFond()->GetItem("s1", "session1")->ShouldProcessSnapshot())
+            throw;
+    }
+    // clear after apply snapshot
+    void TestConnection_ClearSnapshotMessages_1() {
+        this->Clear();
+
+        fcf->OrderBookFond()->Add("s1", "session1");
+        SendMessages(fcf, fcs,
+                     "obr entry s1 e1, lost obr entry s1 e2, wait_snap, hbeat",
+                     "                                                  obs s1 begin rpt 2 entry s1 e2 end",
+                     30);
+        if(fcs->m_packets[1]->m_item != 0)
+            throw;
+        if(fcs->m_packets[1]->m_processed != false)
+            throw;
+    }
+    // clear unitl not found route first
+    void TestConnection_ClearSnapshotMessages_2() {
+        this->Clear();
+
+        fcf->OrderBookFond()->Add("s1", "session1");
+        SendMessages(fcf, fcs,
+                     "obr entry s1 e1, lost obr entry s1 e2, wait_snap, hbeat",
+                     "                                                  hbeat, hbeat, obs s1 begin rpt 2 entry s1 e2 end",
+                     30);
+        if(fcs->m_packets[1]->m_item != 0 ||
+                fcs->m_packets[2]->m_item != 0 ||
+                fcs->m_packets[3]->m_item != 0)
+            throw;
+        if(fcs->m_packets[1]->m_processed != false ||
+           fcs->m_packets[2]->m_processed != false ||
+           fcs->m_packets[3]->m_processed != false)
+            throw;
+    }
+    // clear if skip lost packets in snapshot
+    void TestConnection_ClearSnapshotMessages_3() {
+        this->Clear();
+
+        fcf->OrderBookFond()->Add("s1", "session1");
+        fcs->WaitSnapshotMaxTimeMs(50);
+        SendMessages(fcf, fcs,
+                     "obr entry s1 e1, lost obr entry s1 e2, wait_snap, hbeat",
+                     "                                                  obs s1 begin rpt 2 entry s1 e2, lost obs s1 rpt 2 entry s1 e2, hbeat, hbeat, hbeat, hbeat, hbeat",
+                     30);
+        for(int i = 1; i < 100; i++) {
+            if(fcs->m_packets[i]->m_item != 0 || fcs->m_packets[i]->m_processed != false)
+                throw;
+        }
+    }
+    // clear if skip lost packets in snapshot and apply snapshot
+    void TestConnection_ClearSnapshotMessages_4() {
+        this->Clear();
+
+        fcf->OrderBookFond()->Add("s1", "session1");
+        fcs->WaitSnapshotMaxTimeMs(50);
+        SendMessages(fcf, fcs,
+                     "obr entry s1 e1, lost obr entry s1 e2, wait_snap, hbeat                           hbeat,                         hbeat, hbeat, hbeat, hbeat, hbeat,                           hbeat",
+                     "                                                  obs s1 begin rpt 2 entry s1 e2, lost obs s1 rpt 2 entry s1 e2, hbeat, hbeat, hbeat, hbeat, hbeat, obs s1 rpt 2 entry s1 e2, obs s1 begin rpt 2 entry s1 e2 end",
+                     30);
+        if(fcf->OrderBookFond()->UsedItemCount() != 1)
+            throw;
+        if(fcs->State() != FeedConnectionState::fcsSuspend)
+            throw;
+        if(!fcf->CanStopListeningSnapshot())
+            throw;
+        TestSnapshotPacketsCleared();
+    }
+    void TestSnapshotPacketsCleared() {
+        for(int i = 1; i < 100; i++) {
+            if(fcs->m_packets[i]->m_item != 0 || fcs->m_packets[i]->m_processed != false)
+                throw;
+        }
+    }
+    // messages should be clear in snapshot connection because the are repeat
+    void TestConnection_ClearSnapshotMessages() {
+        printf("TestConnection_ClearSnapshotMessages_1\n");
+        TestConnection_ClearSnapshotMessages_1();
+        printf("TestConnection_ClearSnapshotMessages_2\n");
+        TestConnection_ClearSnapshotMessages_2();
+        printf("TestConnection_ClearSnapshotMessages_3\n");
+        TestConnection_ClearSnapshotMessages_3();
+        printf("TestConnection_ClearSnapshotMessages_4\n");
+        TestConnection_ClearSnapshotMessages_4();
+    }
     void TestConnection_ParallelWorkingIncrementalAndSnapshot() {
+        printf("TestConnection_EnterSnapshotMode\n");
+        TestConnection_EnterSnapshotMode();
+        printf("TestConnection_ClearSnapshotMessages\n");
+        TestConnection_ClearSnapshotMessages();
         printf("TestConnection_ParallelWorkingIncrementalAndSnapshot_1\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_1();
         printf("TestConnection_ParallelWorkingIncrementalAndSnapshot_2\n");
@@ -3985,22 +4387,30 @@ public:
         TestConnection_ParallelWorkingIncrementalAndSnapshot_3_1();
         printf("TestConnection_ParallelWorkingIncrementalAndSnapshot_4\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_4();
+        printf("TestConnection_ParallelWorkingIncrementalAndSnapshot_5\n");
+        TestConnection_ParallelWorkingIncrementalAndSnapshot_5();
         printf("TestConnection_ParallelWorkingIncrementalAndSnapshot_5_1\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_5_1();
         printf("TestConnection_ParallelWorkingIncrementalAndSnapshot_5_2\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_5_2();
+        printf("TestConnection_ParallelWorkingIncrementalAndSnapshot_5_2_2\n");
+        TestConnection_ParallelWorkingIncrementalAndSnapshot_5_2_2();
         printf("TestConnection_ParallelWorkingIncrementalAndSnapshot_5_3\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_5_3();
-        printf("TestConnection_ParallelWorkingIncrementalAndSnapshot_5\n");
-        TestConnection_ParallelWorkingIncrementalAndSnapshot_5();
-    }
-
-    void TestConnection_ResetEntriesQueueIfNullSnapshotIsReceived() {
-
-    }
-
-    void TestConnection_StopListeningSnapshotBecauseAllItemsIsUpToDate() {
-
+        printf("TestConnection_ParallelWorkingIncrementalAndSnapshot_5_4\n");
+        TestConnection_ParallelWorkingIncrementalAndSnapshot_5_4();
+        printf("TestConnection_ParallelWorkingIncrementalAndSnapshot_5_4_1\n");
+        TestConnection_ParallelWorkingIncrementalAndSnapshot_5_4_1();
+        printf("TestConnection_ParallelWorkingIncrementalAndSnapshot_5_4_2\n");
+        TestConnection_ParallelWorkingIncrementalAndSnapshot_5_4_2();
+        printf("TestConnection_ParallelWorkingIncrementalAndSnapshot_5_5\n");
+        TestConnection_ParallelWorkingIncrementalAndSnapshot_5_5();
+        printf("TestConnection_ParallelWorkingIncrementalAndSnapshot_5_5_1\n");
+        TestConnection_ParallelWorkingIncrementalAndSnapshot_5_5_1();
+        printf("TestConnection_ParallelWorkingIncrementalAndSnapshot_5_6\n");
+        TestConnection_ParallelWorkingIncrementalAndSnapshot_5_6();
+        printf("TestConnection_ParallelWorkingIncrementalAndSnapshot_5_7\n");
+        TestConnection_ParallelWorkingIncrementalAndSnapshot_5_7();
     }
 
     void TestConnection_Clear_AfterIncremental() {
@@ -4032,17 +4442,18 @@ public:
     }
 
     void TestConnection() {
-
-        printf("TestConnection_ParallelWorkingIncrementalAndSnapshot\n");
-        TestConnection_ParallelWorkingIncrementalAndSnapshot();
+        printf("TestConnection_AllSymbolsAreOk\n");
+        TestConnection_AllSymbolsAreOk();
+        printf("TestConnection_ResetEntriesQueueIfNullSnapshotIsReceived\n");
+        TestConnection_ResetEntriesQueueIfNullSnapshotIsReceived();
         printf("TestConnection_AllSymbolsAreOkButOneMessageLost\n");
         TestConnection_AllSymbolsAreOkButOneMessageLost();
         printf("TestConnection_SkipHearthBeatMessages_Incremental\n");
         TestConnection_SkipHearthBeatMessages_Incremental();
+        printf("TestConnection_ParallelWorkingIncrementalAndSnapshot\n");
+        TestConnection_ParallelWorkingIncrementalAndSnapshot();
         printf("TestConnection_NotAllSymbolsAreOk\n");
         TestConnection_NotAllSymbolsAreOk();
-        printf("TestConnection_AllSymbolsAreOk\n");
-        TestConnection_AllSymbolsAreOk();
         printf("TestConnection_StopListeningSnapshotBecauseAllItemsIsUpToDate\n");
         TestConnection_StopListeningSnapshotBecauseAllItemsIsUpToDate();
         printf("TestConnection_StopTimersAfterReconnect\n");
