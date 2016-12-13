@@ -58,6 +58,14 @@ public:
                                                 "10.50.129.200", "239.192.113.3", 9113,
                                                 "10.50.129.200", "239.192.113.131", 9313);
 
+        this->idf->AddConnectionToRecvSymbol(this->obr);
+        this->idf->AddConnectionToRecvSymbol(this->obs);
+        this->idf->AddConnectionToRecvSymbol(this->olr);
+        this->idf->AddConnectionToRecvSymbol(this->ols);
+        this->idf->AddConnectionToRecvSymbol(this->msr);
+        this->idf->AddConnectionToRecvSymbol(this->mss);
+        this->idf->AddConnectionToRecvSymbol(this->tlr);
+        this->idf->AddConnectionToRecvSymbol(this->tls);
     }
     ~InstrumentDefinitionTester() {
         delete this->obr;
@@ -72,26 +80,37 @@ public:
     }
 
     void TestDefaults() {
-        if(this->idf->FeedObr() == 0)
+        if(this->idf->ConnectionsToRecvSymbolsCount() != 8)
             throw;
-        if(this->idf->FeedObs() == 0)
+        if(this->idf->ConnectionsToRecvSymbols()[0] != this->obr)
             throw;
-        if(this->idf->FeedOlr() == 0)
+        if(this->idf->ConnectionsToRecvSymbols()[1] != this->obs)
             throw;
-        if(this->idf->FeedOls() == 0)
+        if(this->idf->ConnectionsToRecvSymbols()[2] != this->olr)
             throw;
-        if(this->idf->FeedTlr() == 0)
+        if(this->idf->ConnectionsToRecvSymbols()[3] != this->ols)
             throw;
-        if(this->idf->FeedTls() == 0)
+        if(this->idf->ConnectionsToRecvSymbols()[4] != this->msr)
             throw;
-        if(this->idf->FeedMsr() == 0)
+        if(this->idf->ConnectionsToRecvSymbols()[5] != this->mss)
             throw;
-        if(this->idf->FeedMss() == 0)
+        if(this->idf->ConnectionsToRecvSymbols()[6] != this->tlr)
+            throw;
+        if(this->idf->ConnectionsToRecvSymbols()[7] != this->tls)
+            throw;
+        if(this->idf->Type() != FeedConnectionType::InstrumentDefinition)
+            throw;
+    }
+
+    void TestAddSymbol() {
+        FastSecurityDefinitionInfo *info = new FastSecurityDefinitionInfo();
+        if(!this->idf->ProcessSecurityDefinition(info))
             throw;
     }
 
     void Test() {
         TestDefaults();
+        TestAddSymbol();
     }
 };
 

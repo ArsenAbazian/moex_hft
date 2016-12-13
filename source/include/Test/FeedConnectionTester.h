@@ -204,7 +204,7 @@ public:
     }
 
     void Test() {
-        InstrumentDefinitionTester ids = new InstrumentDefinitionTester();
+        InstrumentDefinitionTester ids;
         ids.Test();
         OrderBookTester obt;
         obt.Test();

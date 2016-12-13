@@ -47,7 +47,8 @@ typedef bool (FeedConnection::*FeedConnectionWorkAtomPtr)();
 
 typedef enum _FeedConnectionType {
     Incremental,
-    Snapshot
+    Snapshot,
+    InstrumentDefinition
 }FeedConnectionType;
 
 class FeedConnectionMessageInfo {
@@ -82,8 +83,13 @@ protected:
 	char										feedTypeName[64];
 
     FeedConnectionType                          m_type;
+
     FeedConnection                              *m_incremental;
     FeedConnection                              *m_snapshot;
+
+    FeedConnection                              *m_connectionsToRecvSymbols[32];
+    int                                         m_connectionsToRecvSymbolsCount;
+
     int                                         m_snapshotRouteFirst;
     int                                         m_snapshotLastFragment;
     int                                         m_lastMsgSeqNumProcessed;
@@ -915,6 +921,17 @@ public:
 	}
     inline FeedConnection *Snapshot() { return this->m_snapshot; }
 
+    inline FeedConnection** ConnectionsToRecvSymbols() { return this->m_connectionsToRecvSymbols; }
+    inline int ConnectionsToRecvSymbolsCount() { return this->m_connectionsToRecvSymbolsCount; }
+    inline void AddConnectionToRecvSymbol(FeedConnection *conn) {
+        this->m_connectionsToRecvSymbols[this->m_connectionsToRecvSymbolsCount] = conn;
+        this->m_connectionsToRecvSymbolsCount++;
+    }
+
+    inline bool ProcessSecurityDefinition(FastSecurityDefinitionInfo *info) {
+        return false;
+    }
+
 	inline bool Connect() {
 		if(this->m_fakeConnect)
             return true;
@@ -1318,7 +1335,7 @@ class FeedConnection_FOND_IDF : public FeedConnection{
 public:
     FeedConnection_FOND_IDF(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
             FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
-        this->SetType(FeedConnectionType::Snapshot);
+        this->SetType(FeedConnectionType::InstrumentDefinition);
     }
     ~FeedConnection_FOND_IDF() {
         throw;
@@ -1329,7 +1346,7 @@ class FeedConnection_CURR_IDF : public FeedConnection{
 public:
     FeedConnection_CURR_IDF(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
             FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
-        this->SetType(FeedConnectionType::Snapshot);
+        this->SetType(FeedConnectionType::InstrumentDefinition);
     }
     ~FeedConnection_CURR_IDF() {
         throw;

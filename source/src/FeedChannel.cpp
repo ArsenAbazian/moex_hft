@@ -80,6 +80,9 @@ bool FeedChannel::CheckConnections() {
 	if(this->tradesSnapshot->Type() != FeedConnectionType::Snapshot)
 		return false;
 
+    if(this->instrumentReplay->Type() != FeedConnectionType::InstrumentDefinition)
+        return false;
+
 	return true;
 }
 
@@ -95,8 +98,7 @@ bool FeedChannel::Connect() {
 	this->statisticsIncremental->SetSnapshot(this->statisticsSnapshot);
 	this->tradesIncremental->SetSnapshot(this->tradesSnapshot);
 	this->ordersIncremental->SetSnapshot(this->ordersSnapshot);
-	this->instrumentReplay->SetSnapshot(this->instrumentStatus);
-
+	//this->instrumentReplay->SetSnapshot(this->instrumentStatus);
 
 	if (!this->Connect(this->orderBookIncremental)) {
 		DefaultLogManager::Default->EndLog(false);

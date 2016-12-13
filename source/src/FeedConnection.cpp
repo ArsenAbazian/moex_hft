@@ -28,6 +28,10 @@ FeedConnection::FeedConnection(const char *id, const char *name, char value, Fee
     this->m_waitIncrementalMaxTimeMs = 3000;
     this->m_snapshotMaxTimeMs = 3000;
 
+    this->m_incremental = 0;
+    this->m_snapshot = 0;
+    this->m_connectionsToRecvSymbolsCount = 0;
+
     this->socketAManager = NULL;
     this->socketBManager = NULL;
 
@@ -62,6 +66,10 @@ FeedConnection::FeedConnection() {
     this->m_snapshotMaxTimeMs = 3000;
 
     this->m_tval = new struct timeval;
+
+    this->m_incremental = 0;
+    this->m_snapshot = 0;
+    this->m_connectionsToRecvSymbolsCount = 0;
 
     this->m_startMsgSeqNum = 1;
     this->m_endMsgSeqNum = 0;
