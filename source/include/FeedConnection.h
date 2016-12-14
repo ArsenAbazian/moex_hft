@@ -284,7 +284,7 @@ private:
         return true;
     }
     inline bool ApplySnapshot_OLS_FOND() {
-        /*this->PrepareDecodeSnapshotMessage(this->m_snapshotRouteFirst);
+        this->PrepareDecodeSnapshotMessage(this->m_snapshotRouteFirst);
         FastOLSFONDInfo *info = (FastOLSFONDInfo *) this->m_fastProtocolManager->DecodeOLSFOND();
          this->m_incremental->OrderFond()->ObtainSnapshotItem(info);
          if(this->m_incremental->OrderFond()->CheckProcessIfSessionInActualState(info))
@@ -301,7 +301,7 @@ private:
             this->m_incremental->OrderFond()->ProcessSnapshot(
                     (FastOLSFONDInfo *) this->m_fastProtocolManager->DecodeOLSFOND());
         }
-        this->m_incremental->OrderFond()->EndProcessSnapshot();*/
+        this->m_incremental->OrderFond()->EndProcessSnapshot();
         return true;
     }
     inline bool ApplySnapshot_OLS_CURR() {
@@ -718,16 +718,14 @@ private:
 		if(info->MDEntryType[0] == mdetEmptyBook) { // fatal!!!!!
 			return true; // TODO!!!!!
 		}
-        return true; // TODO!!!!!
-		//return this->m_orderTableFond->ProcessIncremental(info);
+		return this->m_orderTableFond->ProcessIncremental(info);
 	}
 
 	inline bool OnIncrementalRefresh_OLR_CURR(FastOLSCURRItemInfo *info) {
 		if(info->MDEntryType[0] == mdetEmptyBook) { // fatal!!!!!
 			return true; // TODO!!!!!
 		}
-        return true; // TODO!!!!!
-		//return this->m_orderTableCurr->ProcessIncremental(info);
+		return this->m_orderTableCurr->ProcessIncremental(info);
 	}
 
 	inline bool OnIncrementalRefresh_TLR_FOND(FastTLSFONDItemInfo *info) {

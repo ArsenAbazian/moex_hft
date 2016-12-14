@@ -204,10 +204,10 @@ public:
     }
 
     void Test() {
-        OrderBookTester obt;
-        obt.Test();
         OrderTester ot;
         ot.Test();
+        OrderBookTester obt;
+        obt.Test();
         TradeTester tt;
         tt.Test();
         InstrumentDefinitionTester ids;

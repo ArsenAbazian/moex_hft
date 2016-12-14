@@ -22,9 +22,10 @@
     <list default="true" id="32604c03-98a8-42cf-80f6-771ec2ce84cc" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/FeedConnection.h" afterPath="$PROJECT_DIR$/source/include/FeedConnection.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/MarketData/MarketDataTable.h" afterPath="$PROJECT_DIR$/source/include/MarketData/MarketDataTable.h" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/Test/FeedConnectionTester.h" afterPath="$PROJECT_DIR$/source/include/Test/FeedConnectionTester.h" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/Test/OrderBookTester.h" afterPath="$PROJECT_DIR$/source/include/Test/OrderBookTester.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tools/Program.cs" afterPath="$PROJECT_DIR$/tools/Program.cs" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/Test/OrderTester.h" afterPath="$PROJECT_DIR$/source/include/Test/OrderTester.h" />
     </list>
     <ignored path="hft_robot.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -47,31 +48,47 @@
       <file leaf-file-name="MarketDataTable.h" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/source/include/MarketData/MarketDataTable.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="209">
-              <caret line="1048" column="0" selection-start-line="1048" selection-start-column="0" selection-end-line="1048" selection-end-column="0" />
+            <state relative-caret-position="162">
+              <caret line="1122" column="36" selection-start-line="1122" selection-start-column="36" selection-end-line="1122" selection-end-column="36" />
               <folding>
                 <element signature="e#236#248#0" expanded="true" />
+                <element signature="e#249#1907#1" expanded="false" />
                 <element signature="e#1919#1931#0" expanded="true" />
                 <element signature="e#1966#1978#0" expanded="true" />
-                <element signature="e#4912#5658#0" expanded="false" />
-                <element signature="e#5664#5854#0" expanded="false" />
-                <element signature="e#5860#6052#0" expanded="false" />
-                <element signature="e#6058#6237#0" expanded="false" />
-                <element signature="e#6243#6643#0" expanded="false" />
-                <element signature="e#6649#7255#0" expanded="false" />
-                <element signature="e#7261#7871#0" expanded="false" />
-                <element signature="e#7877#7989#0" expanded="false" />
-                <element signature="e#7995#8110#0" expanded="false" />
-                <element signature="e#8116#8294#0" expanded="false" />
-                <element signature="e#8300#8478#0" expanded="false" />
-                <element signature="e#9443#9566#0" expanded="false" />
-                <element signature="e#11394#11406#0" expanded="true" />
-                <element signature="e#16844#16856#0" expanded="true" />
-                <element signature="e#19091#26379#0" expanded="false" />
-                <element signature="e#26533#26631#0" expanded="true" />
-                <element signature="e#27746#27758#0" expanded="true" />
-                <element signature="e#30306#30385#0" expanded="true" />
-                <element signature="e#30315#30334#0" expanded="true" />
+                <element signature="e#1979#11309#1" expanded="false" />
+                <element signature="e#3561#3917#0" expanded="false" />
+                <element signature="e#3922#4088#0" expanded="false" />
+                <element signature="e#4094#4833#0" expanded="false" />
+                <element signature="e#5985#6164#0" expanded="false" />
+                <element signature="e#8583#8733#0" expanded="false" />
+                <element signature="e#8739#8989#0" expanded="false" />
+                <element signature="e#8995#9364#0" expanded="false" />
+                <element signature="e#9499#9591#0" expanded="false" />
+                <element signature="e#9597#10408#0" expanded="false" />
+                <element signature="e#10414#10631#0" expanded="false" />
+                <element signature="e#10637#10822#0" expanded="false" />
+                <element signature="e#10828#10913#0" expanded="false" />
+                <element signature="e#10919#11004#0" expanded="false" />
+                <element signature="e#11093#11307#0" expanded="false" />
+                <element signature="e#11321#11333#0" expanded="true" />
+                <element signature="e#17424#17547#0" expanded="false" />
+                <element signature="e#19375#19387#0" expanded="true" />
+                <element signature="e#21622#28910#0" expanded="false" />
+                <element signature="e#29064#29162#0" expanded="true" />
+                <element signature="e#30277#30289#0" expanded="true" />
+                <element signature="e#32837#32916#0" expanded="true" />
+                <element signature="e#32846#32865#0" expanded="true" />
+                <marker date="1481735355210" expanded="false" signature="4893:5585" ph="{...}" />
+                <marker date="1481735355210" expanded="false" signature="5637:5781" ph="{...}" />
+                <marker date="1481735355210" expanded="false" signature="5834:5979" ph="{...}" />
+                <marker date="1481735355210" expanded="false" signature="6235:6570" ph="{...}" />
+                <marker date="1481735355210" expanded="false" signature="6625:7182" ph="{...}" />
+                <marker date="1481735355210" expanded="false" signature="7238:7798" ph="{...}" />
+                <marker date="1481735355210" expanded="false" signature="7840:7916" ph="{...}" />
+                <marker date="1481735355210" expanded="false" signature="7959:8037" ph="{...}" />
+                <marker date="1481735355210" expanded="false" signature="8071:8221" ph="{...}" />
+                <marker date="1481735355210" expanded="false" signature="8255:8405" ph="{...}" />
+                <marker date="1481735355210" expanded="false" signature="9413:9493" ph="{...}" />
               </folding>
             </state>
           </provider>
@@ -92,8 +109,8 @@
       <file leaf-file-name="OrderBookTester.h" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/source/include/Test/OrderBookTester.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="375">
-              <caret line="251" column="63" selection-start-line="251" selection-start-column="63" selection-end-line="251" selection-end-column="63" />
+            <state relative-caret-position="270">
+              <caret line="18" column="34" selection-start-line="18" selection-start-column="34" selection-end-line="18" selection-end-column="34" />
               <folding>
                 <element signature="e#179050#179342#0" expanded="false" />
                 <element signature="e#179347#179913#0" expanded="false" />
@@ -102,6 +119,18 @@
                 <element signature="e#181457#182472#0" expanded="false" />
                 <element signature="e#182477#182690#0" expanded="false" />
                 <element signature="e#182695#183264#0" expanded="false" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="HashTable.h" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/source/include/Lib/HashTable.h">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="152">
+              <caret line="127" column="0" selection-start-line="127" selection-start-column="0" selection-end-line="127" selection-end-column="0" />
+              <folding>
+                <element signature="e#3366#4923#1" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -120,18 +149,18 @@
       <file leaf-file-name="FeedConnectionTester.h" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/source/include/Test/FeedConnectionTester.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="170">
-              <caret line="193" column="24" selection-start-line="193" selection-start-column="24" selection-end-line="193" selection-end-column="24" />
+            <state relative-caret-position="154">
+              <caret line="208" column="27" selection-start-line="208" selection-start-column="26" selection-end-line="208" selection-end-column="27" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="FastProtocolManager.h" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/source/include/FastProtocolManager.h">
+      <file leaf-file-name="OrderTester.h" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/source/include/Test/OrderTester.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="73134">
-              <caret line="4063" column="17" selection-start-line="4063" selection-start-column="17" selection-end-line="4063" selection-end-column="17" />
+            <state relative-caret-position="220">
+              <caret line="4266" column="22" selection-start-line="4266" selection-start-column="22" selection-end-line="4266" selection-end-column="22" />
               <folding />
             </state>
           </provider>
@@ -140,8 +169,8 @@
       <file leaf-file-name="FeedConnection.h" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/source/include/FeedConnection.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="155">
-              <caret line="868" column="0" selection-start-line="868" selection-start-column="0" selection-end-line="868" selection-end-column="0" />
+            <state relative-caret-position="25">
+              <caret line="285" column="42" selection-start-line="285" selection-start-column="42" selection-end-line="285" selection-end-column="42" />
               <folding />
             </state>
           </provider>
@@ -160,18 +189,8 @@
       <file leaf-file-name="Stopwatch.h" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/source/include/Stopwatch.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="193">
+            <state relative-caret-position="918">
               <caret line="51" column="16" selection-start-line="51" selection-start-column="16" selection-end-line="51" selection-end-column="16" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="UTCTimeConverter.h" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/source/include/UTCTimeConverter.h">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="810">
-              <caret line="45" column="19" selection-start-line="45" selection-start-column="19" selection-end-line="45" selection-end-column="19" />
               <folding />
             </state>
           </provider>
@@ -227,15 +246,15 @@
         <option value="$PROJECT_DIR$/source/include/SocketBufferManager.h" />
         <option value="$PROJECT_DIR$/source/include/Lib/HashTable.h" />
         <option value="$PROJECT_DIR$/source/include/Test/TradeTester.h" />
-        <option value="$PROJECT_DIR$/source/include/Test/OrderTester.h" />
         <option value="$PROJECT_DIR$/source/include/Stopwatch.h" />
-        <option value="$PROJECT_DIR$/source/include/MarketData/MarketDataTable.h" />
         <option value="$PROJECT_DIR$/source/src/FeedConnection.cpp" />
         <option value="$PROJECT_DIR$/source/src/FeedChannel.cpp" />
         <option value="$PROJECT_DIR$/source/include/Test/InstrumentDefinitionTester.h" />
         <option value="$PROJECT_DIR$/source/include/Test/FeedConnectionTester.h" />
-        <option value="$PROJECT_DIR$/source/include/FeedConnection.h" />
+        <option value="$PROJECT_DIR$/source/include/MarketData/MarketDataTable.h" />
         <option value="$PROJECT_DIR$/source/include/Test/OrderBookTester.h" />
+        <option value="$PROJECT_DIR$/source/include/Test/OrderTester.h" />
+        <option value="$PROJECT_DIR$/source/include/FeedConnection.h" />
       </list>
     </option>
   </component>
@@ -249,8 +268,8 @@
   <component name="ProjectFrameBounds">
     <option name="x" value="65" />
     <option name="y" value="24" />
-    <option name="width" value="575" />
-    <option name="height" value="456" />
+    <option name="width" value="1855" />
+    <option name="height" value="951" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="false">
     <OptionsSetting value="true" id="Add" />
@@ -278,7 +297,100 @@
     </navigator>
     <panes>
       <pane id="ProjectPane">
-        <subPane />
+        <subPane>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="hft" />
+              <option name="myItemType" value="com.jetbrains.cidr.projectView.CidrFilesViewHelper$MyProjectTreeStructure$1" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="hft" />
+              <option name="myItemType" value="com.jetbrains.cidr.projectView.CidrFilesViewHelper$MyProjectTreeStructure$1" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="hft" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="hft" />
+              <option name="myItemType" value="com.jetbrains.cidr.projectView.CidrFilesViewHelper$MyProjectTreeStructure$1" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="hft" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="source" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="hft" />
+              <option name="myItemType" value="com.jetbrains.cidr.projectView.CidrFilesViewHelper$MyProjectTreeStructure$1" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="hft" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="source" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="include" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="hft" />
+              <option name="myItemType" value="com.jetbrains.cidr.projectView.CidrFilesViewHelper$MyProjectTreeStructure$1" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="hft" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="source" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="include" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Test" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="hft" />
+              <option name="myItemType" value="com.jetbrains.cidr.projectView.CidrFilesViewHelper$MyProjectTreeStructure$1" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="hft" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="source" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="include" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="MarketData" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+        </subPane>
       </pane>
     </panes>
   </component>
@@ -623,6 +735,7 @@
       <workItem from="1480948398876" duration="45115000" />
       <workItem from="1481645950556" duration="364000" />
       <workItem from="1481646347502" duration="6421000" />
+      <workItem from="1481731508835" duration="6894000" />
     </task>
     <task id="LOCAL-00047" summary="1. GetSnapshotInfo - not finished  compilable... and half working">
       <created>1476377013606</created>
@@ -971,7 +1084,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="932560000" />
+    <option name="totallyTimeSpent" value="939454000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -983,21 +1096,21 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="65" y="24" width="575" height="456" extended-state="6" />
+    <frame x="65" y="24" width="1855" height="951" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25078124" sideWeight="0.493007" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.22762008" sideWeight="0.493007" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32920793" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.38242576" sideWeight="0.3907068" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="CMake" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.28341585" sideWeight="0.4384817" order="11" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3985932" sideWeight="0.3907068" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="CMake" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.28253224" sideWeight="0.4384817" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3511008" sideWeight="0.4365183" order="8" side_tool="true" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.46927375" sideWeight="0.49344978" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.45720986" sideWeight="0.49344978" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.34653464" sideWeight="0.61189955" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.52403283" sideWeight="0.48689955" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3423913" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.28984717" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32920793" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.235262" sideWeight="0.506993" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3019802" sideWeight="0.5634817" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.34935522" sideWeight="0.5634817" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -1102,25 +1215,15 @@
           <line>199</line>
           <option name="timeStamp" value="311" />
         </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/source/include/MarketData/MarketDataTable.h</url>
-          <line>512</line>
-          <option name="timeStamp" value="774" />
-        </line-breakpoint>
       </breakpoints>
       <breakpoints-dialog>
         <breakpoints-dialog />
       </breakpoints-dialog>
-      <option name="time" value="820" />
+      <option name="time" value="824" />
     </breakpoint-manager>
     <watches-manager>
       <configuration name="CMakeRunConfiguration">
-        <watch expression="fcf-&gt;State()" language="ObjectiveC" />
-        <watch expression="this-&gt;fcc-&gt;OrderBookCurr()-&gt;UsedItemCount()" language="ObjectiveC" />
-        <watch expression="obi-&gt;BuyQuotes()-&gt;Count()" />
-        <watch expression=" info-&gt;RptSeq " />
-        <watch expression="m_rptSeq" />
-        <watch expression="item1-&gt;RptSeq" language="ObjectiveC" />
+        <watch expression="this-&gt;m_symbols" language="ObjectiveC" />
       </configuration>
     </watches-manager>
   </component>
@@ -1358,18 +1461,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/source/include/Lib/HashTable.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3402">
-          <caret line="189" column="36" selection-start-line="189" selection-start-column="36" selection-end-line="189" selection-end-column="36" />
-          <folding>
-            <element signature="e#112#140#0" expanded="false" />
-            <element signature="e#3366#4923#1" expanded="false" />
-            <element signature="e#4934#4963#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/source/include/FeedChannel.h">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="18">
@@ -1381,14 +1472,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="204">
           <caret line="619" column="55" selection-start-line="619" selection-start-column="55" selection-end-line="619" selection-end-column="55" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/source/include/Test/OrderTester.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="163">
-          <caret line="930" column="24" selection-start-line="930" selection-start-column="24" selection-end-line="930" selection-end-column="24" />
           <folding />
         </state>
       </provider>
@@ -1435,65 +1518,99 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/source/include/Test/FeedConnectionTester.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="170">
-          <caret line="193" column="24" selection-start-line="193" selection-start-column="24" selection-end-line="193" selection-end-column="24" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/source/include/Stopwatch.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="193">
+        <state relative-caret-position="918">
           <caret line="51" column="16" selection-start-line="51" selection-start-column="16" selection-end-line="51" selection-end-column="16" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/source/include/FeedConnection.h">
+    <entry file="file://$PROJECT_DIR$/source/include/Lib/HashTable.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="155">
-          <caret line="868" column="0" selection-start-line="868" selection-start-column="0" selection-end-line="868" selection-end-column="0" />
+        <state relative-caret-position="152">
+          <caret line="127" column="0" selection-start-line="127" selection-start-column="0" selection-end-line="127" selection-end-column="0" />
+          <folding>
+            <element signature="e#3366#4923#1" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/include/Test/OrderTester.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="220">
+          <caret line="4266" column="22" selection-start-line="4266" selection-start-column="22" selection-end-line="4266" selection-end-column="22" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/source/include/MarketData/MarketDataTable.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="209">
-          <caret line="1048" column="0" selection-start-line="1048" selection-start-column="0" selection-end-line="1048" selection-end-column="0" />
+        <state relative-caret-position="162">
+          <caret line="1122" column="36" selection-start-line="1122" selection-start-column="36" selection-end-line="1122" selection-end-column="36" />
           <folding>
             <element signature="e#236#248#0" expanded="true" />
+            <element signature="e#249#1907#1" expanded="false" />
             <element signature="e#1919#1931#0" expanded="true" />
             <element signature="e#1966#1978#0" expanded="true" />
-            <element signature="e#4912#5658#0" expanded="false" />
-            <element signature="e#5664#5854#0" expanded="false" />
-            <element signature="e#5860#6052#0" expanded="false" />
-            <element signature="e#6058#6237#0" expanded="false" />
-            <element signature="e#6243#6643#0" expanded="false" />
-            <element signature="e#6649#7255#0" expanded="false" />
-            <element signature="e#7261#7871#0" expanded="false" />
-            <element signature="e#7877#7989#0" expanded="false" />
-            <element signature="e#7995#8110#0" expanded="false" />
-            <element signature="e#8116#8294#0" expanded="false" />
-            <element signature="e#8300#8478#0" expanded="false" />
-            <element signature="e#9443#9566#0" expanded="false" />
-            <element signature="e#11394#11406#0" expanded="true" />
-            <element signature="e#16844#16856#0" expanded="true" />
-            <element signature="e#19091#26379#0" expanded="false" />
-            <element signature="e#26533#26631#0" expanded="true" />
-            <element signature="e#27746#27758#0" expanded="true" />
-            <element signature="e#30306#30385#0" expanded="true" />
-            <element signature="e#30315#30334#0" expanded="true" />
+            <element signature="e#1979#11309#1" expanded="false" />
+            <element signature="e#3561#3917#0" expanded="false" />
+            <element signature="e#3922#4088#0" expanded="false" />
+            <element signature="e#4094#4833#0" expanded="false" />
+            <element signature="e#5985#6164#0" expanded="false" />
+            <element signature="e#8583#8733#0" expanded="false" />
+            <element signature="e#8739#8989#0" expanded="false" />
+            <element signature="e#8995#9364#0" expanded="false" />
+            <element signature="e#9499#9591#0" expanded="false" />
+            <element signature="e#9597#10408#0" expanded="false" />
+            <element signature="e#10414#10631#0" expanded="false" />
+            <element signature="e#10637#10822#0" expanded="false" />
+            <element signature="e#10828#10913#0" expanded="false" />
+            <element signature="e#10919#11004#0" expanded="false" />
+            <element signature="e#11093#11307#0" expanded="false" />
+            <element signature="e#11321#11333#0" expanded="true" />
+            <element signature="e#17424#17547#0" expanded="false" />
+            <element signature="e#19375#19387#0" expanded="true" />
+            <element signature="e#21622#28910#0" expanded="false" />
+            <element signature="e#29064#29162#0" expanded="true" />
+            <element signature="e#30277#30289#0" expanded="true" />
+            <element signature="e#32837#32916#0" expanded="true" />
+            <element signature="e#32846#32865#0" expanded="true" />
+            <marker date="1481735355210" expanded="false" signature="4893:5585" ph="{...}" />
+            <marker date="1481735355210" expanded="false" signature="5637:5781" ph="{...}" />
+            <marker date="1481735355210" expanded="false" signature="5834:5979" ph="{...}" />
+            <marker date="1481735355210" expanded="false" signature="6235:6570" ph="{...}" />
+            <marker date="1481735355210" expanded="false" signature="6625:7182" ph="{...}" />
+            <marker date="1481735355210" expanded="false" signature="7238:7798" ph="{...}" />
+            <marker date="1481735355210" expanded="false" signature="7840:7916" ph="{...}" />
+            <marker date="1481735355210" expanded="false" signature="7959:8037" ph="{...}" />
+            <marker date="1481735355210" expanded="false" signature="8071:8221" ph="{...}" />
+            <marker date="1481735355210" expanded="false" signature="8255:8405" ph="{...}" />
+            <marker date="1481735355210" expanded="false" signature="9413:9493" ph="{...}" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/include/FeedConnection.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="25">
+          <caret line="285" column="42" selection-start-line="285" selection-start-column="42" selection-end-line="285" selection-end-column="42" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/include/Test/FeedConnectionTester.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="154">
+          <caret line="208" column="27" selection-start-line="208" selection-start-column="26" selection-end-line="208" selection-end-column="27" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/source/include/Test/OrderBookTester.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="375">
-          <caret line="251" column="63" selection-start-line="251" selection-start-column="63" selection-end-line="251" selection-end-column="63" />
+        <state relative-caret-position="270">
+          <caret line="18" column="34" selection-start-line="18" selection-start-column="34" selection-end-line="18" selection-end-column="34" />
           <folding>
             <element signature="e#179050#179342#0" expanded="false" />
             <element signature="e#179347#179913#0" expanded="false" />
