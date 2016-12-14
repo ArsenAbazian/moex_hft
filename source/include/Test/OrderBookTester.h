@@ -2178,7 +2178,7 @@ public:
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item5;
 
-        OrderBookInfo<FastOBSFONDItemInfo> *tb = table->GetItem("s1", 6, "session", 7);
+        OrderBookInfo<FastOBSFONDItemInfo> *tb = table->GetItem("s1", "session");
 
         table->ObtainSnapshotItem(info);
         table->StartProcessSnapshot(info);
@@ -2243,7 +2243,7 @@ public:
         info2->RouteFirst = true;
         info2->GroupMDEntries[0] = CreateFastOBSFondItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e2");
 
-        OrderBookInfo<FastOBSFONDItemInfo> *tb = table->GetItem("s1", 6, "session", 7);
+        OrderBookInfo<FastOBSFONDItemInfo> *tb = table->GetItem("s1", "session");
 
         table->ObtainSnapshotItem(info1);
         table->StartProcessSnapshot(info1);
@@ -2302,7 +2302,7 @@ public:
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item5;
 
-        OrderBookInfo<FastOBSFONDItemInfo> *tb = table->GetItem("s1", 6, "session", 7);
+        OrderBookInfo<FastOBSFONDItemInfo> *tb = table->GetItem("s1", "session");
 
         table->ObtainSnapshotItem(info);
         table->StartProcessSnapshot(info);
@@ -2356,7 +2356,7 @@ public:
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item5;
 
-        OrderBookInfo<FastOBSFONDItemInfo> *tb = table->GetItem("s1", 6, "session", 7);
+        OrderBookInfo<FastOBSFONDItemInfo> *tb = table->GetItem("s1", "session");
 
         table->ObtainSnapshotItem(info);
         table->StartProcessSnapshot(info);
