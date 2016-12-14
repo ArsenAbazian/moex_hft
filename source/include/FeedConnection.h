@@ -711,8 +711,7 @@ private:
 	}
 
 	inline bool OnIncrementalRefresh_OBR_CURR(FastOBSCURRItemInfo *info) {
-		return true; // TODO!!!!!
-        //return this->m_orderBookTableCurr->ProcessIncremental(info);
+        return this->m_orderBookTableCurr->ProcessIncremental(info);
 	}
 
 	inline bool OnIncrementalRefresh_OLR_FOND(FastOLSFONDItemInfo *info) {

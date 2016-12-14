@@ -204,14 +204,14 @@ public:
     }
 
     void Test() {
-        InstrumentDefinitionTester ids;
-        ids.Test();
         OrderBookTester obt;
         obt.Test();
         OrderTester ot;
         ot.Test();
         TradeTester tt;
         tt.Test();
+        InstrumentDefinitionTester ids;
+        ids.Test();
         //TestLog("/home/arsen/Documents/hft_robot/hft/test/log5");
         //TestLog("/home/arsen/Documents/hft_robot/hft/test/log6");
     }

@@ -2449,8 +2449,8 @@ namespace prebuild {
 					v => m_params.Add("fc", v)
 				}, {"ft|fast_types=", "Path to FastTypes.h file",
 					v => m_params.Add("ft", v)
-				}, {"fcc|fast_check_const", "Write constant checking code in fast protocol files", 
-					v => m_params.Add("fcc", v)
+				}, {"incCurr|fast_check_const", "Write constant checking code in fast protocol files",
+					v => m_params.Add("incCurr", v)
 				}, {"fwe|fast_write_encode=", "Write encdode methods for messages",
 					v => m_params.Add("fwe", v)
 				}
@@ -2478,7 +2478,7 @@ namespace prebuild {
 				return;
 			}
 			FastTemplatesCodeGenerator generator = new FastTemplatesCodeGenerator();
-			generator.WriteConstantCheckingCode = m_params.TryGetValue("fcc", out value);
+			generator.WriteConstantCheckingCode = m_params.TryGetValue("incCurr", out value);
 
 			if(!m_params.TryGetValue("fc", out value)) {
 				Console.WriteLine("FastProtocolManager.cpp file not specified. skip generation.");
