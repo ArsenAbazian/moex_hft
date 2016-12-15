@@ -1023,13 +1023,32 @@ namespace prebuild {
 			WriteLine("");
 			WriteLine("\t" + info.Name + "(){");
 			WriteLine("\t\tthis->Used = false;");
+			WriteClearFieldsCode(info);
 			WriteLine("\t}");
 			WriteLine("\t~" + info.Name + "(){ }");
 			WriteClearCode(info);
 		}
 
+		private void WriteClearFieldsCode(StructureInfo info) {
+			foreach(XmlNode field in info.Fields) {
+				if(ShouldWriteNullCheckCode(field))
+					WriteLine("\t\tthis->Allow" + Name(field) + " = false;");
+
+				if(field.Name == "string")
+					WriteClearStringCode(field);
+			}
+		}
+
+		private void WriteClearStringCode(XmlNode field) {
+			WriteLine("\t\tthis->" + Name(field) + " = 0;");
+			WriteLine("\t\tthis->" + Name(field) + "Length = 0;");
+		}
+
 		private void WriteClearCode(StructureInfo info) {
 			WriteLine("\tinline void Clear() {");
+
+			WriteClearFieldsCode(info);
+
 			WriteLine("\t\tthis->Used = false;");
 			if(info.IsSequence)
 				WriteLine("\t\tthis->Allocator->FreeItem(this->Pointer);");
