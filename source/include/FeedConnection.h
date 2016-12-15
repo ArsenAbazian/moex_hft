@@ -68,12 +68,14 @@ public:
 class OrderBookTester;
 class OrderTester;
 class TradeTester;
+class TestMessagesHelper;
 
 class FeedConnection {
 	friend class OrderBookTester;
     friend class OrderTester;
 	friend class TradeTester;
 	friend class FeedConnectionTester;
+    friend class TestMessagesHelper;
 
 public:
 	const int MaxReceiveBufferSize 				= 1500;

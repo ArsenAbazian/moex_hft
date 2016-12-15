@@ -34,12 +34,13 @@
       <sourceFolder url="file://$MODULE_DIR$/source/src/HftConsole.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/include/Stopwatch.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/include/Test/DecimalTester.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/source/include/Test/TestMessagesHelper.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/include/Test/FeedConnectionTester.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/source/include/Test/OrderTester.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/include/Test/HashTableTester.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/include/Test/TradeTester.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/include/Test/InstrumentDefinitionTester.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/include/Test/FixProtocolManagerTester.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/source/include/Test/OrderTester.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/include/Test/OrderBookTester.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/include/Test/TestTemplateInfo.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/include/Lib/AutoAllocatePointerList.h" isTestSource="false" />
