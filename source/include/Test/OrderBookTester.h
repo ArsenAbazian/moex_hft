@@ -1749,68 +1749,68 @@ public:
     }
 
     void Test_OnIncrementalRefresh_OBR_FOND() {
-        printf("Test_OnIncrementalRefresh_OBR_FOND_Add\n");
+        printf("OBR Test_OnIncrementalRefresh_OBR_FOND_Add\n");
         Test_OnIncrementalRefresh_OBR_FOND_Add();
-        printf("Test_OnIncrementalRefresh_OBR_FOND_Remove\n");
+        printf("OBR Test_OnIncrementalRefresh_OBR_FOND_Remove\n");
         Test_OnIncrementalRefresh_OBR_FOND_Remove();
-        printf("Test_OnIncrementalRefresh_OBR_FOND_Change\n");
+        printf("OBR Test_OnIncrementalRefresh_OBR_FOND_Change\n");
         Test_OnIncrementalRefresh_OBR_FOND_Change();
-        printf("Test_Clear\n");
+        printf("OBR Test_Clear\n");
         Test_Clear();
     }
 
     void Test_OnIncrementalRefresh_OBR_FOND_SellQuotes() {
-        printf("Test_OnIncrementalRefresh_OBR_FOND_Add_SellQuotes\n");
+        printf("OBR Test_OnIncrementalRefresh_OBR_FOND_Add_SellQuotes\n");
         Test_OnIncrementalRefresh_OBR_FOND_Add_SellQuotes();
-        printf("Test_OnIncrementalRefresh_OBR_FOND_Remove_SellQuotes\n");
+        printf("OBR Test_OnIncrementalRefresh_OBR_FOND_Remove_SellQuotes\n");
         Test_OnIncrementalRefresh_OBR_FOND_Remove_SellQuotes();
-        printf("Test_OnIncrementalRefresh_OBR_FOND_Change_SellQuotes\n");
+        printf("OBR Test_OnIncrementalRefresh_OBR_FOND_Change_SellQuotes\n");
         Test_OnIncrementalRefresh_OBR_FOND_Change_SellQuotes();
-        printf("Test_Clear_SellQuotes\n");
+        printf("OBR Test_Clear_SellQuotes\n");
         Test_Clear_SellQuotes();
     }
 
     void Test_OnIncrementalRefresh_OBR_CURR() {
-        printf("Test_OnIncrementalRefresh_OBR_CURR_Add\n");
+        printf("OBR Test_OnIncrementalRefresh_OBR_CURR_Add\n");
         Test_OnIncrementalRefresh_OBR_CURR_Add();
-        printf("Test_OnIncrementalRefresh_OBR_CURR_Remove\n");
+        printf("OBR Test_OnIncrementalRefresh_OBR_CURR_Remove\n");
         Test_OnIncrementalRefresh_OBR_CURR_Remove();
-        printf("Test_OnIncrementalRefresh_OBR_CURR_Change\n");
+        printf("OBR Test_OnIncrementalRefresh_OBR_CURR_Change\n");
         Test_OnIncrementalRefresh_OBR_CURR_Change();
-        printf("Test_Clear_Curr\n");
+        printf("OBR Test_Clear_Curr\n");
         Test_Clear_Curr();
     }
 
     void Test_OnIncrementalRefresh_OBR_CURR_SellQuotes() {
-        printf("Test_OnIncrementalRefresh_OBR_CURR_Add_SellQuotes\n");
+        printf("OBR Test_OnIncrementalRefresh_OBR_CURR_Add_SellQuotes\n");
         Test_OnIncrementalRefresh_OBR_CURR_Add_SellQuotes();
-        printf("Test_OnIncrementalRefresh_OBR_CURR_Remove_SellQuotes\n");
+        printf("OBR Test_OnIncrementalRefresh_OBR_CURR_Remove_SellQuotes\n");
         Test_OnIncrementalRefresh_OBR_CURR_Remove_SellQuotes();
-        printf("Test_OnIncrementalRefresh_OBR_CURR_Change_SellQuotes\n");
+        printf("OBR Test_OnIncrementalRefresh_OBR_CURR_Change_SellQuotes\n");
         Test_OnIncrementalRefresh_OBR_CURR_Change_SellQuotes();
-        printf("Test_Clear_SellQuotes\n");
+        printf("OBR Test_Clear_SellQuotes\n");
         Test_Clear_SellQuotes();
     }
 
     void Test_OBR_CURR() {
-        printf("Test_OnIncrementalRefresh_OBR_CURR\n");
+        printf("OBR Test_OnIncrementalRefresh_OBR_CURR\n");
         Test_OnIncrementalRefresh_OBR_CURR();
-        printf("Test_OnFullRefresh_OBS_CURR\n");
+        printf("OBR Test_OnFullRefresh_OBS_CURR\n");
         Test_OnFullRefresh_OBS_CURR();
-        printf("Test_OnIncrementalRefresh_OBR_CURR_SellQuotes\n");
+        printf("OBR Test_OnIncrementalRefresh_OBR_CURR_SellQuotes\n");
         Test_OnIncrementalRefresh_OBR_CURR_SellQuotes();
-        printf("Test_OnFullRefresh_OBS_CURR_SellQuotes\n");
+        printf("OBR Test_OnFullRefresh_OBS_CURR_SellQuotes\n");
         Test_OnFullRefresh_OBS_CURR_SellQuotes();
     }
 
     void Test_OBR_FOND() {
-        printf("Test_OnIncrementalRefresh_OBR_FOND\n");
+        printf("OBR Test_OnIncrementalRefresh_OBR_FOND\n");
         Test_OnIncrementalRefresh_OBR_FOND();
-        printf("Test_OnFullRefresh_OBS_FOND\n");
+        printf("OBR Test_OnFullRefresh_OBS_FOND\n");
         Test_OnFullRefresh_OBS_FOND();
-        printf("Test_OnIncrementalRefresh_OBR_FOND_SellQuotes\n");
+        printf("OBR Test_OnIncrementalRefresh_OBR_FOND_SellQuotes\n");
         Test_OnIncrementalRefresh_OBR_FOND_SellQuotes();
-        printf("Test_OnFullRefresh_OBS_FOND_SellQuotes\n");
+        printf("OBR Test_OnFullRefresh_OBS_FOND_SellQuotes\n");
         Test_OnFullRefresh_OBS_FOND_SellQuotes();
     }
 
@@ -3115,6 +3115,7 @@ public:
         snapFond->Listen_Atom_Snapshot_Core();
         if(!snapFond->m_waitTimer->Active(1))
             throw;
+        snapFond->m_waitTimer->Stop(); //TODO check!!!!
         while(snapFond->m_waitTimer->ElapsedMilliseconds(1) <= snapFond->WaitSnapshotMaxTimeMs())
             snapFond->Listen_Atom_Snapshot_Core();
 
@@ -3905,55 +3906,55 @@ public:
     }
     // messages should be clear in snapshot connection because the are repeat
     void TestConnection_ClearSnapshotMessages() {
-        printf("TestConnection_ClearSnapshotMessages_1\n");
+        printf("OBR TestConnection_ClearSnapshotMessages_1\n");
         TestConnection_ClearSnapshotMessages_1();
-        printf("TestConnection_ClearSnapshotMessages_2\n");
+        printf("OBR TestConnection_ClearSnapshotMessages_2\n");
         TestConnection_ClearSnapshotMessages_2();
-        printf("TestConnection_ClearSnapshotMessages_3\n");
+        printf("OBR TestConnection_ClearSnapshotMessages_3\n");
         TestConnection_ClearSnapshotMessages_3();
-        printf("TestConnection_ClearSnapshotMessages_4\n");
+        printf("OBR TestConnection_ClearSnapshotMessages_4\n");
         TestConnection_ClearSnapshotMessages_4();
     }
     void TestConnection_ParallelWorkingIncrementalAndSnapshot() {
-        printf("TestConnection_EnterSnapshotMode\n");
+        printf("OBR TestConnection_EnterSnapshotMode\n");
         TestConnection_EnterSnapshotMode();
-        printf("TestConnection_ClearSnapshotMessages\n");
+        printf("OBR TestConnection_ClearSnapshotMessages\n");
         TestConnection_ClearSnapshotMessages();
-        printf("TestConnection_ParallelWorkingIncrementalAndSnapshot_1\n");
+        printf("OBR TestConnection_ParallelWorkingIncrementalAndSnapshot_1\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_1();
-        printf("TestConnection_ParallelWorkingIncrementalAndSnapshot_2\n");
+        printf("OBR TestConnection_ParallelWorkingIncrementalAndSnapshot_2\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_2();
-        printf("TestConnection_ParallelWorkingIncrementalAndSnapshot_2_1\n");
+        printf("OBR TestConnection_ParallelWorkingIncrementalAndSnapshot_2_1\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_2_1();
-        printf("TestConnection_ParallelWorkingIncrementalAndSnapshot_3\n");
+        printf("OBR TestConnection_ParallelWorkingIncrementalAndSnapshot_3\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_3();
-        printf("TestConnection_ParallelWorkingIncrementalAndSnapshot_3_1\n");
+        printf("OBR TestConnection_ParallelWorkingIncrementalAndSnapshot_3_1\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_3_1();
-        printf("TestConnection_ParallelWorkingIncrementalAndSnapshot_4\n");
+        printf("OBR TestConnection_ParallelWorkingIncrementalAndSnapshot_4\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_4();
-        printf("TestConnection_ParallelWorkingIncrementalAndSnapshot_5\n");
+        printf("OBR TestConnection_ParallelWorkingIncrementalAndSnapshot_5\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_5();
-        printf("TestConnection_ParallelWorkingIncrementalAndSnapshot_5_1\n");
+        printf("OBR TestConnection_ParallelWorkingIncrementalAndSnapshot_5_1\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_5_1();
-        printf("TestConnection_ParallelWorkingIncrementalAndSnapshot_5_2\n");
+        printf("OBR TestConnection_ParallelWorkingIncrementalAndSnapshot_5_2\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_5_2();
-        printf("TestConnection_ParallelWorkingIncrementalAndSnapshot_5_2_2\n");
+        printf("OBR TestConnection_ParallelWorkingIncrementalAndSnapshot_5_2_2\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_5_2_2();
-        printf("TestConnection_ParallelWorkingIncrementalAndSnapshot_5_3\n");
+        printf("OBR TestConnection_ParallelWorkingIncrementalAndSnapshot_5_3\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_5_3();
-        printf("TestConnection_ParallelWorkingIncrementalAndSnapshot_5_4\n");
+        printf("OBR TestConnection_ParallelWorkingIncrementalAndSnapshot_5_4\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_5_4();
-        printf("TestConnection_ParallelWorkingIncrementalAndSnapshot_5_4_1\n");
+        printf("OBR TestConnection_ParallelWorkingIncrementalAndSnapshot_5_4_1\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_5_4_1();
-        printf("TestConnection_ParallelWorkingIncrementalAndSnapshot_5_4_2\n");
+        printf("OBR TestConnection_ParallelWorkingIncrementalAndSnapshot_5_4_2\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_5_4_2();
-        printf("TestConnection_ParallelWorkingIncrementalAndSnapshot_5_5\n");
+        printf("OBR TestConnection_ParallelWorkingIncrementalAndSnapshot_5_5\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_5_5();
-        printf("TestConnection_ParallelWorkingIncrementalAndSnapshot_5_5_1\n");
+        printf("OBR TestConnection_ParallelWorkingIncrementalAndSnapshot_5_5_1\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_5_5_1();
-        printf("TestConnection_ParallelWorkingIncrementalAndSnapshot_5_6\n");
+        printf("OBR TestConnection_ParallelWorkingIncrementalAndSnapshot_5_6\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_5_6();
-        printf("TestConnection_ParallelWorkingIncrementalAndSnapshot_5_7\n");
+        printf("OBR TestConnection_ParallelWorkingIncrementalAndSnapshot_5_7\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_5_7();
     }
 
@@ -3986,87 +3987,87 @@ public:
     }
 
     void TestConnection() {
-        printf("TestConnection_AllSymbolsAreOk\n");
+        printf("OBR TestConnection_AllSymbolsAreOk\n");
         TestConnection_AllSymbolsAreOk();
-        printf("TestConnection_ResetEntriesQueueIfNullSnapshotIsReceived\n");
+        printf("OBR TestConnection_ResetEntriesQueueIfNullSnapshotIsReceived\n");
         TestConnection_ResetEntriesQueueIfNullSnapshotIsReceived();
-        printf("TestConnection_AllSymbolsAreOkButOneMessageLost\n");
+        printf("OBR TestConnection_AllSymbolsAreOkButOneMessageLost\n");
         TestConnection_AllSymbolsAreOkButOneMessageLost();
-        printf("TestConnection_SkipHearthBeatMessages_Incremental\n");
+        printf("OBR TestConnection_SkipHearthBeatMessages_Incremental\n");
         TestConnection_SkipHearthBeatMessages_Incremental();
-        printf("TestConnection_ParallelWorkingIncrementalAndSnapshot\n");
+        printf("OBR TestConnection_ParallelWorkingIncrementalAndSnapshot\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot();
-        printf("TestConnection_NotAllSymbolsAreOk\n");
+        printf("OBR TestConnection_NotAllSymbolsAreOk\n");
         TestConnection_NotAllSymbolsAreOk();
-        printf("TestConnection_StopListeningSnapshotBecauseAllItemsIsUpToDate\n");
+        printf("OBR TestConnection_StopListeningSnapshotBecauseAllItemsIsUpToDate\n");
         TestConnection_StopListeningSnapshotBecauseAllItemsIsUpToDate();
-        printf("TestConnection_StopTimersAfterReconnect\n");
+        printf("OBR TestConnection_StopTimersAfterReconnect\n");
         TestConnection_StopTimersAfterReconnect();
-        printf("TestConnection_SnapshotSomeMessagesReceivedLater\n");
+        printf("OBR TestConnection_SnapshotSomeMessagesReceivedLater\n");
         TestConnection_SnapshotSomeMessagesReceivedLater();
-        printf("TestConnection_SnapshotSomeMessagesNotReceived\n");
+        printf("OBR TestConnection_SnapshotSomeMessagesNotReceived\n");
         TestConnection_SnapshotSomeMessagesNotReceived();
-        printf("TestConnection_LastFragmentReceivedBeforeRouteFirst\n");
+        printf("OBR TestConnection_LastFragmentReceivedBeforeRouteFirst\n");
         TestConnection_LastFragmentReceivedBeforeRouteFirst();
-        printf("TestConnection_RouteFirstReceived_AfterSomeDummyMessages\n");
+        printf("OBR TestConnection_RouteFirstReceived_AfterSomeDummyMessages\n");
         TestConnection_RouteFirstReceived_AfterSomeDummyMessages();
-        printf("TestConnection_RouteFirstReceived_Empty\n");
+        printf("OBR TestConnection_RouteFirstReceived_Empty\n");
         TestConnection_RouteFirstReceived_Empty();
-        printf("TestConnection_TestSnapshotNoMessagesAtAll\n");
+        printf("OBR TestConnection_TestSnapshotNoMessagesAtAll\n");
         TestConnection_TestSnapshotNoMessagesAtAll();
-        printf("TestConnection_OneMessageReceived\n");
+        printf("OBR TestConnection_OneMessageReceived\n");
         TestConnection_OneMessageReceived();
-        printf("TestConnection_Clear_AfterIncremental\n");
+        printf("OBR TestConnection_Clear_AfterIncremental\n");
         TestConnection_Clear_AfterIncremental();
-        printf("TestConnection_TestIncMessageLost_AndWaitTimerElapsed\n");
+        printf("OBR TestConnection_TestIncMessageLost_AndWaitTimerElapsed\n");
         TestConnection_TestIncMessageLost_AndWaitTimerElapsed();
-        printf("TestConnection_TestSnapshotCollect\n");
+        printf("OBR TestConnection_TestSnapshotCollect\n");
         TestConnection_TestSnapshotCollect();
-        printf("TestConnection_TestSnapshotNotCollect\n");
+        printf("OBR TestConnection_TestSnapshotNotCollect\n");
         TestConnection_TestSnapshotMessageLostAndTimeExpired();
-        printf("TestConnection_TestMessagesLost_2Items_SnapshotReceivedForOneItem\n");
+        printf("OBR TestConnection_TestMessagesLost_2Items_SnapshotReceivedForOneItem\n");
         TestConnection_TestMessagesLost_2Items_SnapshotReceivedForOneItem();
 
-        printf("TestConnection_EmptyTest\n");
+        printf("OBR TestConnection_EmptyTest\n");
         TestConnection_EmptyTest();
-        printf("TestConnection_TestCorrectIncMessages\n");
+        printf("OBR TestConnection_TestCorrectIncMessages\n");
         TestConnection_TestCorrectIncMessages();
-        printf("TestConnection_TestIncMessagesLost_AndWhenAppeared\n");
+        printf("OBR TestConnection_TestIncMessagesLost_AndWhenAppeared\n");
         TestConnection_TestIncMessagesLost_AndWhenAppeared();
-        printf("TestConnection_TestInc2MessagesLost_AppearedThen2Messages\n");
+        printf("OBR TestConnection_TestInc2MessagesLost_AppearedThen2Messages\n");
         TestConnection_TestInc2MessagesLost_AppearedThen2Messages();
-        printf("TestConnection_TestInc2MessagesLost_AppearedSeparately_1_2\n");
+        printf("OBR TestConnection_TestInc2MessagesLost_AppearedSeparately_1_2\n");
         TestConnection_TestInc2MessagesLost_AppearedSeparately_1_2();
-        printf("TestConnection_TestInc2MessagesLost_AppearedSeparately_2_1\n");
+        printf("OBR TestConnection_TestInc2MessagesLost_AppearedSeparately_2_1\n");
         TestConnection_TestInc2MessagesLost_AppearedSeparately_2_1();
     }
 
     void TestOrderBookTableItem() {
-        printf("TestTableItem_CorrectBegin\n");
+        printf("OBR TestTableItem_CorrectBegin\n");
         TestTableItem_CorrectBegin();
-        printf("TestTableItem_IncorrectBegin\n");
+        printf("OBR TestTableItem_IncorrectBegin\n");
         TestTableItem_IncorrectBegin();
-        printf("TestTableItem_SkipMessage\n");
+        printf("OBR TestTableItem_SkipMessage\n");
         TestTableItem_SkipMessage();
-        printf("TestTable_Default\n");
+        printf("OBR TestTable_Default\n");
         TestTable_Default();
-        printf("TestTable_AfterClear\n");
+        printf("OBR TestTable_AfterClear\n");
         TestTable_AfterClear();
-        printf("TestTable_CorrectBegin\n");
+        printf("OBR TestTable_CorrectBegin\n");
         TestTable_CorrectBegin();
-        printf("TestTable_IncorrectBegin\n");
+        printf("OBR TestTable_IncorrectBegin\n");
         TestTable_IncorrectBegin();
-        printf("TestTable_SkipMessages\n");
+        printf("OBR TestTable_SkipMessages\n");
         TestTable_SkipMessages();
-        printf("Test_2UsedItemsAfter2IncrementalMessages\n");
+        printf("OBR Test_2UsedItemsAfter2IncrementalMessages\n");
         Test_2UsedItemsAfter2IncrementalMessages();
-        printf("TestTable_CorrectApplySnapshot\n");
+        printf("OBR TestTable_CorrectApplySnapshot\n");
         TestTable_CorrectApplySnapshot();
-        printf("TestTable_CorrectApplySnapshot_2\n");
+        printf("OBR TestTable_CorrectApplySnapshot_2\n");
         TestTable_CorrectApplySnapshot_2();
-        printf("TestTable_IncorrectApplySnapshot\n");
+        printf("OBR TestTable_IncorrectApplySnapshot\n");
         TestTable_IncorrectApplySnapshot();
-        printf("TestTable_IncorrectApplySnapshot_WhenMessageSkipped\n");
+        printf("OBR TestTable_IncorrectApplySnapshot_WhenMessageSkipped\n");
         TestTable_IncorrectApplySnapshot_WhenMessageSkipped();
     }
 

@@ -26,6 +26,9 @@ public:
     static unsigned int DefaultMarketSendItemsCount;
     static unsigned int DefaultMarketRecvItemsCount;
     static unsigned int DefaultFeedConnectionPacketCount;
+    static int MarketDataMaxSymbolsCount;
+    static int MarketDataMaxSessionsCount;
+    static int MarketDataMaxEntriesCount;
 };
 
 

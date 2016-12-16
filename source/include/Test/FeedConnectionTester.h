@@ -204,6 +204,10 @@ public:
     }
 
     void Test() {
+        RobotSettings::MarketDataMaxSymbolsCount = 10;
+        RobotSettings::MarketDataMaxSessionsCount = 5;
+        RobotSettings::MarketDataMaxEntriesCount = 32;
+
         OrderTester ot;
         ot.Test();
         OrderBookTester obt;
@@ -214,6 +218,10 @@ public:
         ids.Test();
         //TestLog("/home/arsen/Documents/hft_robot/hft/test/log5");
         //TestLog("/home/arsen/Documents/hft_robot/hft/test/log6");
+
+        RobotSettings::MarketDataMaxSymbolsCount = 128;
+        RobotSettings::MarketDataMaxSessionsCount = 128;
+        RobotSettings::MarketDataMaxEntriesCount = 256;
     }
 };
 

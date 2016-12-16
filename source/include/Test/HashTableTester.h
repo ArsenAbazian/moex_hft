@@ -6,7 +6,7 @@
 #define HFT_ROBOT_HASHTABLETESTER_H
 
 #include <FastTypes.h>
-#include "../Lib/HashTable.h"
+#include "Lib/StringIdComparer.h"
 #include "../FastTypes.h"
 #include "../Lib/PointerList.h"
 #include "../Lib/AutoAllocatePointerList.h"

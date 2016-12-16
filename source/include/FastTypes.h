@@ -167,6 +167,7 @@ public:
 
 	FastLogonInfo(){
 		this->Used = false;
+		this->PresenceMap = 0;
 		this->MessageType = 0;
 		this->MessageTypeLength = 0;
 		this->BeginString = 0;
@@ -186,6 +187,7 @@ public:
 	}
 	~FastLogonInfo(){ }
 	inline void Clear() {
+		this->PresenceMap = 0;
 		this->MessageType = 0;
 		this->MessageTypeLength = 0;
 		this->BeginString = 0;
@@ -233,6 +235,7 @@ public:
 
 	FastLogoutInfo(){
 		this->Used = false;
+		this->PresenceMap = 0;
 		this->MessageType = 0;
 		this->MessageTypeLength = 0;
 		this->BeginString = 0;
@@ -247,6 +250,7 @@ public:
 	}
 	~FastLogoutInfo(){ }
 	inline void Clear() {
+		this->PresenceMap = 0;
 		this->MessageType = 0;
 		this->MessageTypeLength = 0;
 		this->BeginString = 0;
@@ -390,6 +394,7 @@ public:
 
 	FastGenericItemInfo(){
 		this->Used = false;
+		this->PresenceMap = 0;
 		this->AllowMDEntryType = false;
 		this->MDEntryType = 0;
 		this->MDEntryTypeLength = 0;
@@ -468,6 +473,7 @@ public:
 	}
 	~FastGenericItemInfo(){ }
 	inline void Clear() {
+		this->PresenceMap = 0;
 		this->AllowMDEntryType = false;
 		this->MDEntryType = 0;
 		this->MDEntryTypeLength = 0;
@@ -595,6 +601,7 @@ public:
 
 	FastGenericInfo(){
 		this->Used = false;
+		this->PresenceMap = 0;
 		this->MessageType = 0;
 		this->MessageTypeLength = 0;
 		this->BeginString = 0;
@@ -618,6 +625,7 @@ public:
 	}
 	~FastGenericInfo(){ }
 	inline void Clear() {
+		this->PresenceMap = 0;
 		this->MessageType = 0;
 		this->MessageTypeLength = 0;
 		this->BeginString = 0;
@@ -672,6 +680,7 @@ public:
 
 	FastIncrementalGenericInfo(){
 		this->Used = false;
+		this->PresenceMap = 0;
 		this->MessageType = 0;
 		this->MessageTypeLength = 0;
 		this->ApplVerID = 0;
@@ -683,6 +692,7 @@ public:
 	}
 	~FastIncrementalGenericInfo(){ }
 	inline void Clear() {
+		this->PresenceMap = 0;
 		this->MessageType = 0;
 		this->MessageTypeLength = 0;
 		this->ApplVerID = 0;
@@ -758,6 +768,7 @@ public:
 
 	FastOLSFONDItemInfo(){
 		this->Used = false;
+		this->PresenceMap = 0;
 		this->AllowMDEntryType = false;
 		this->MDEntryType = 0;
 		this->MDEntryTypeLength = 0;
@@ -794,6 +805,7 @@ public:
 	}
 	~FastOLSFONDItemInfo(){ }
 	inline void Clear() {
+		this->PresenceMap = 0;
 		this->AllowMDEntryType = false;
 		this->MDEntryType = 0;
 		this->MDEntryTypeLength = 0;
@@ -877,6 +889,7 @@ public:
 
 	FastOLSFONDInfo(){
 		this->Used = false;
+		this->PresenceMap = 0;
 		this->MessageType = 0;
 		this->MessageTypeLength = 0;
 		this->BeginString = 0;
@@ -899,6 +912,7 @@ public:
 	}
 	~FastOLSFONDInfo(){ }
 	inline void Clear() {
+		this->PresenceMap = 0;
 		this->MessageType = 0;
 		this->MessageTypeLength = 0;
 		this->BeginString = 0;
@@ -978,6 +992,7 @@ public:
 
 	FastOLSCURRItemInfo(){
 		this->Used = false;
+		this->PresenceMap = 0;
 		this->AllowMDEntryType = false;
 		this->MDEntryType = 0;
 		this->MDEntryTypeLength = 0;
@@ -1009,6 +1024,7 @@ public:
 	}
 	~FastOLSCURRItemInfo(){ }
 	inline void Clear() {
+		this->PresenceMap = 0;
 		this->AllowMDEntryType = false;
 		this->MDEntryType = 0;
 		this->MDEntryTypeLength = 0;
@@ -1085,6 +1101,7 @@ public:
 
 	FastOLSCURRInfo(){
 		this->Used = false;
+		this->PresenceMap = 0;
 		this->MessageType = 0;
 		this->MessageTypeLength = 0;
 		this->BeginString = 0;
@@ -1106,6 +1123,7 @@ public:
 	}
 	~FastOLSCURRInfo(){ }
 	inline void Clear() {
+		this->PresenceMap = 0;
 		this->MessageType = 0;
 		this->MessageTypeLength = 0;
 		this->BeginString = 0;
@@ -1198,6 +1216,7 @@ public:
 
 	FastTLSFONDItemInfo(){
 		this->Used = false;
+		this->PresenceMap = 0;
 		this->MDEntryType = 0;
 		this->MDEntryTypeLength = 0;
 		this->AllowMDEntryID = false;
@@ -1237,6 +1256,7 @@ public:
 	}
 	~FastTLSFONDItemInfo(){ }
 	inline void Clear() {
+		this->PresenceMap = 0;
 		this->MDEntryType = 0;
 		this->MDEntryTypeLength = 0;
 		this->AllowMDEntryID = false;
@@ -1323,6 +1343,7 @@ public:
 
 	FastTLSFONDInfo(){
 		this->Used = false;
+		this->PresenceMap = 0;
 		this->MessageType = 0;
 		this->MessageTypeLength = 0;
 		this->BeginString = 0;
@@ -1345,6 +1366,7 @@ public:
 	}
 	~FastTLSFONDInfo(){ }
 	inline void Clear() {
+		this->PresenceMap = 0;
 		this->MessageType = 0;
 		this->MessageTypeLength = 0;
 		this->BeginString = 0;
@@ -1434,6 +1456,7 @@ public:
 
 	FastTLSCURRItemInfo(){
 		this->Used = false;
+		this->PresenceMap = 0;
 		this->MDEntryType = 0;
 		this->MDEntryTypeLength = 0;
 		this->AllowMDEntryID = false;
@@ -1471,6 +1494,7 @@ public:
 	}
 	~FastTLSCURRItemInfo(){ }
 	inline void Clear() {
+		this->PresenceMap = 0;
 		this->MDEntryType = 0;
 		this->MDEntryTypeLength = 0;
 		this->AllowMDEntryID = false;
@@ -1553,6 +1577,7 @@ public:
 
 	FastTLSCURRInfo(){
 		this->Used = false;
+		this->PresenceMap = 0;
 		this->MessageType = 0;
 		this->MessageTypeLength = 0;
 		this->BeginString = 0;
@@ -1574,6 +1599,7 @@ public:
 	}
 	~FastTLSCURRInfo(){ }
 	inline void Clear() {
+		this->PresenceMap = 0;
 		this->MessageType = 0;
 		this->MessageTypeLength = 0;
 		this->BeginString = 0;
@@ -1647,6 +1673,7 @@ public:
 
 	FastOBSFONDItemInfo(){
 		this->Used = false;
+		this->PresenceMap = 0;
 		this->AllowMDEntryType = false;
 		this->MDEntryType = 0;
 		this->MDEntryTypeLength = 0;
@@ -1674,6 +1701,7 @@ public:
 	}
 	~FastOBSFONDItemInfo(){ }
 	inline void Clear() {
+		this->PresenceMap = 0;
 		this->AllowMDEntryType = false;
 		this->MDEntryType = 0;
 		this->MDEntryTypeLength = 0;
@@ -1748,6 +1776,7 @@ public:
 
 	FastOBSFONDInfo(){
 		this->Used = false;
+		this->PresenceMap = 0;
 		this->MessageType = 0;
 		this->MessageTypeLength = 0;
 		this->BeginString = 0;
@@ -1770,6 +1799,7 @@ public:
 	}
 	~FastOBSFONDInfo(){ }
 	inline void Clear() {
+		this->PresenceMap = 0;
 		this->MessageType = 0;
 		this->MessageTypeLength = 0;
 		this->BeginString = 0;
@@ -1838,6 +1868,7 @@ public:
 
 	FastOBSCURRItemInfo(){
 		this->Used = false;
+		this->PresenceMap = 0;
 		this->AllowMDEntryType = false;
 		this->MDEntryType = 0;
 		this->MDEntryTypeLength = 0;
@@ -1862,6 +1893,7 @@ public:
 	}
 	~FastOBSCURRItemInfo(){ }
 	inline void Clear() {
+		this->PresenceMap = 0;
 		this->AllowMDEntryType = false;
 		this->MDEntryType = 0;
 		this->MDEntryTypeLength = 0;
@@ -1931,6 +1963,7 @@ public:
 
 	FastOBSCURRInfo(){
 		this->Used = false;
+		this->PresenceMap = 0;
 		this->MessageType = 0;
 		this->MessageTypeLength = 0;
 		this->BeginString = 0;
@@ -1952,6 +1985,7 @@ public:
 	}
 	~FastOBSCURRInfo(){ }
 	inline void Clear() {
+		this->PresenceMap = 0;
 		this->MessageType = 0;
 		this->MessageTypeLength = 0;
 		this->BeginString = 0;
@@ -2071,6 +2105,7 @@ public:
 
 	FastIncrementalMSRFONDItemInfo(){
 		this->Used = false;
+		this->PresenceMap = 0;
 		this->AllowMDUpdateAction = false;
 		this->AllowMDEntryType = false;
 		this->MDEntryType = 0;
@@ -2127,6 +2162,7 @@ public:
 	}
 	~FastIncrementalMSRFONDItemInfo(){ }
 	inline void Clear() {
+		this->PresenceMap = 0;
 		this->AllowMDUpdateAction = false;
 		this->AllowMDEntryType = false;
 		this->MDEntryType = 0;
@@ -2212,6 +2248,7 @@ public:
 
 	FastIncrementalMSRFONDInfo(){
 		this->Used = false;
+		this->PresenceMap = 0;
 		this->MessageType = 0;
 		this->MessageTypeLength = 0;
 		this->ApplVerID = 0;
@@ -2223,6 +2260,7 @@ public:
 	}
 	~FastIncrementalMSRFONDInfo(){ }
 	inline void Clear() {
+		this->PresenceMap = 0;
 		this->MessageType = 0;
 		this->MessageTypeLength = 0;
 		this->ApplVerID = 0;
@@ -2316,6 +2354,7 @@ public:
 
 	FastIncrementalMSRCURRItemInfo(){
 		this->Used = false;
+		this->PresenceMap = 0;
 		this->AllowMDUpdateAction = false;
 		this->AllowMDEntryType = false;
 		this->MDEntryType = 0;
@@ -2364,6 +2403,7 @@ public:
 	}
 	~FastIncrementalMSRCURRItemInfo(){ }
 	inline void Clear() {
+		this->PresenceMap = 0;
 		this->AllowMDUpdateAction = false;
 		this->AllowMDEntryType = false;
 		this->MDEntryType = 0;
@@ -2441,6 +2481,7 @@ public:
 
 	FastIncrementalMSRCURRInfo(){
 		this->Used = false;
+		this->PresenceMap = 0;
 		this->MessageType = 0;
 		this->MessageTypeLength = 0;
 		this->ApplVerID = 0;
@@ -2452,6 +2493,7 @@ public:
 	}
 	~FastIncrementalMSRCURRInfo(){ }
 	inline void Clear() {
+		this->PresenceMap = 0;
 		this->MessageType = 0;
 		this->MessageTypeLength = 0;
 		this->ApplVerID = 0;
@@ -2494,6 +2536,7 @@ public:
 
 	FastIncrementalOLRFONDInfo(){
 		this->Used = false;
+		this->PresenceMap = 0;
 		this->MessageType = 0;
 		this->MessageTypeLength = 0;
 		this->ApplVerID = 0;
@@ -2505,6 +2548,7 @@ public:
 	}
 	~FastIncrementalOLRFONDInfo(){ }
 	inline void Clear() {
+		this->PresenceMap = 0;
 		this->MessageType = 0;
 		this->MessageTypeLength = 0;
 		this->ApplVerID = 0;
@@ -2547,6 +2591,7 @@ public:
 
 	FastIncrementalOLRCURRInfo(){
 		this->Used = false;
+		this->PresenceMap = 0;
 		this->MessageType = 0;
 		this->MessageTypeLength = 0;
 		this->ApplVerID = 0;
@@ -2558,6 +2603,7 @@ public:
 	}
 	~FastIncrementalOLRCURRInfo(){ }
 	inline void Clear() {
+		this->PresenceMap = 0;
 		this->MessageType = 0;
 		this->MessageTypeLength = 0;
 		this->ApplVerID = 0;
@@ -2600,6 +2646,7 @@ public:
 
 	FastIncrementalOBRFONDInfo(){
 		this->Used = false;
+		this->PresenceMap = 0;
 		this->MessageType = 0;
 		this->MessageTypeLength = 0;
 		this->ApplVerID = 0;
@@ -2611,6 +2658,7 @@ public:
 	}
 	~FastIncrementalOBRFONDInfo(){ }
 	inline void Clear() {
+		this->PresenceMap = 0;
 		this->MessageType = 0;
 		this->MessageTypeLength = 0;
 		this->ApplVerID = 0;
@@ -2653,6 +2701,7 @@ public:
 
 	FastIncrementalOBRCURRInfo(){
 		this->Used = false;
+		this->PresenceMap = 0;
 		this->MessageType = 0;
 		this->MessageTypeLength = 0;
 		this->ApplVerID = 0;
@@ -2664,6 +2713,7 @@ public:
 	}
 	~FastIncrementalOBRCURRInfo(){ }
 	inline void Clear() {
+		this->PresenceMap = 0;
 		this->MessageType = 0;
 		this->MessageTypeLength = 0;
 		this->ApplVerID = 0;
@@ -2706,6 +2756,7 @@ public:
 
 	FastIncrementalTLRFONDInfo(){
 		this->Used = false;
+		this->PresenceMap = 0;
 		this->MessageType = 0;
 		this->MessageTypeLength = 0;
 		this->ApplVerID = 0;
@@ -2717,6 +2768,7 @@ public:
 	}
 	~FastIncrementalTLRFONDInfo(){ }
 	inline void Clear() {
+		this->PresenceMap = 0;
 		this->MessageType = 0;
 		this->MessageTypeLength = 0;
 		this->ApplVerID = 0;
@@ -2759,6 +2811,7 @@ public:
 
 	FastIncrementalTLRCURRInfo(){
 		this->Used = false;
+		this->PresenceMap = 0;
 		this->MessageType = 0;
 		this->MessageTypeLength = 0;
 		this->ApplVerID = 0;
@@ -2770,6 +2823,7 @@ public:
 	}
 	~FastIncrementalTLRCURRInfo(){ }
 	inline void Clear() {
+		this->PresenceMap = 0;
 		this->MessageType = 0;
 		this->MessageTypeLength = 0;
 		this->ApplVerID = 0;
@@ -2804,10 +2858,12 @@ public:
 
 	FastSecurityDefinitionGroupInstrAttribItemInfo(){
 		this->Used = false;
+		this->PresenceMap = 0;
 		this->AllowInstrAttribValue = false;
 	}
 	~FastSecurityDefinitionGroupInstrAttribItemInfo(){ }
 	inline void Clear() {
+		this->PresenceMap = 0;
 		this->AllowInstrAttribValue = false;
 		this->Used = false;
 		this->Allocator->FreeItem(this->Pointer);
@@ -2838,6 +2894,7 @@ public:
 
 	FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo(){
 		this->Used = false;
+		this->PresenceMap = 0;
 		this->TradingSessionID = 0;
 		this->TradingSessionIDLength = 0;
 		this->AllowTradingSessionSubID = false;
@@ -2848,6 +2905,7 @@ public:
 	}
 	~FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo(){ }
 	inline void Clear() {
+		this->PresenceMap = 0;
 		this->TradingSessionID = 0;
 		this->TradingSessionIDLength = 0;
 		this->AllowTradingSessionSubID = false;
@@ -2880,11 +2938,13 @@ public:
 
 	FastSecurityDefinitionMarketSegmentGrpItemInfo(){
 		this->Used = false;
+		this->PresenceMap = 0;
 		this->AllowRoundLot = false;
 		this->AllowTradingSessionRulesGrp = false;
 	}
 	~FastSecurityDefinitionMarketSegmentGrpItemInfo(){ }
 	inline void Clear() {
+		this->PresenceMap = 0;
 		this->AllowRoundLot = false;
 		this->AllowTradingSessionRulesGrp = false;
 		this->Used = false;
@@ -3019,6 +3079,7 @@ public:
 
 	FastSecurityDefinitionInfo(){
 		this->Used = false;
+		this->PresenceMap = 0;
 		this->MessageType = 0;
 		this->MessageTypeLength = 0;
 		this->ApplVerID = 0;
@@ -3082,6 +3143,7 @@ public:
 	}
 	~FastSecurityDefinitionInfo(){ }
 	inline void Clear() {
+		this->PresenceMap = 0;
 		this->MessageType = 0;
 		this->MessageTypeLength = 0;
 		this->ApplVerID = 0;
@@ -3190,6 +3252,7 @@ public:
 
 	FastSecurityStatusInfo(){
 		this->Used = false;
+		this->PresenceMap = 0;
 		this->MessageType = 0;
 		this->MessageTypeLength = 0;
 		this->ApplVerID = 0;
@@ -3211,6 +3274,7 @@ public:
 	}
 	~FastSecurityStatusInfo(){ }
 	inline void Clear() {
+		this->PresenceMap = 0;
 		this->MessageType = 0;
 		this->MessageTypeLength = 0;
 		this->ApplVerID = 0;
@@ -3263,6 +3327,7 @@ public:
 
 	FastTradingSessionStatusInfo(){
 		this->Used = false;
+		this->PresenceMap = 0;
 		this->MessageType = 0;
 		this->MessageTypeLength = 0;
 		this->ApplVerID = 0;
@@ -3279,6 +3344,7 @@ public:
 	}
 	~FastTradingSessionStatusInfo(){ }
 	inline void Clear() {
+		this->PresenceMap = 0;
 		this->MessageType = 0;
 		this->MessageTypeLength = 0;
 		this->ApplVerID = 0;
@@ -3318,6 +3384,7 @@ public:
 
 	FastHeartbeatInfo(){
 		this->Used = false;
+		this->PresenceMap = 0;
 		this->MessageType = 0;
 		this->MessageTypeLength = 0;
 		this->BeginString = 0;
@@ -3327,6 +3394,7 @@ public:
 	}
 	~FastHeartbeatInfo(){ }
 	inline void Clear() {
+		this->PresenceMap = 0;
 		this->MessageType = 0;
 		this->MessageTypeLength = 0;
 		this->BeginString = 0;

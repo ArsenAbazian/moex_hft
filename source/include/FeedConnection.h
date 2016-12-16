@@ -5,7 +5,7 @@
 #include <sys/time.h>
 #include "Stopwatch.h"
 #include "Lib/AutoAllocatePointerList.h"
-#include "Lib/HashTable.h"
+#include "Lib/StringIdComparer.h"
 #include "MarketData/MarketDataTable.h"
 
 typedef enum _FeedConnectionMessage {

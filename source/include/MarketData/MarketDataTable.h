@@ -5,7 +5,7 @@
 #ifndef HFT_ROBOT_ORDERBOOKTABLE_H
 #define HFT_ROBOT_ORDERBOOKTABLE_H
 
-#include "../Lib/HashTable.h"
+#include "Lib/StringIdComparer.h"
 #include "../FastTypes.h"
 
 #define MDENTRYINFO_INCREMENTAL_ENTRIES_BUFFER_LENGTH 2000
@@ -80,8 +80,8 @@ template <typename T> class OrderBookInfo {
 public:
     OrderBookInfo() {
         this->m_entryInfo = new MDEntrQueue<T>();
-        this->m_sellQuoteList = new PointerList<T>(128);
-        this->m_buyQuoteList = new PointerList<T>(128);
+        this->m_sellQuoteList = new PointerList<T>(RobotSettings::MarketDataMaxEntriesCount);
+        this->m_buyQuoteList = new PointerList<T>(RobotSettings::MarketDataMaxEntriesCount);
         this->m_rptSeq = 0;
         this->m_used = false;
         this->m_tradingSession = new SizedArray();
@@ -371,8 +371,8 @@ template <typename T> class OrderInfo {
 public:
     OrderInfo() {
         this->m_entryInfo = new MDEntrQueue<T>();
-        this->m_sellQuoteList = new PointerList<T>(128);
-        this->m_buyQuoteList = new PointerList<T>(128);
+        this->m_sellQuoteList = new PointerList<T>(RobotSettings::MarketDataMaxEntriesCount);
+        this->m_buyQuoteList = new PointerList<T>(RobotSettings::MarketDataMaxEntriesCount);
         this->m_tradingSession = new SizedArray();
         this->m_shouldProcessSnapshot = false;
         this->m_rptSeq = 0;
@@ -900,23 +900,25 @@ public:
 };
 
 template <typename T> class MarketSymbolInfo {
-    T                                  *m_items[MAX_TRADING_SESSIONS_COUNT];
+    T                                  **m_items;
     SizedArray                         *m_symbol;
     int                                 m_count;
     int                                 m_sessionsToRecvSnapshot;
 public:
     MarketSymbolInfo() {
         this->m_count = 0;
-        for(int i = 0; i < MAX_TRADING_SESSIONS_COUNT; i++) {
+        this->m_items = new T*[RobotSettings::MarketDataMaxSessionsCount];
+        for(int i = 0; i < RobotSettings::MarketDataMaxSessionsCount; i++) {
             this->m_items[i] = new T();
             this->m_items[i]->SymbolInfo(this);
         }
         this->m_symbol = new SizedArray();
     }
     ~MarketSymbolInfo() {
-        for(int i = 0; i < MAX_TRADING_SESSIONS_COUNT; i++)
+        for(int i = 0; i < RobotSettings::MarketDataMaxSessionsCount; i++)
             delete this->m_items[i];
         delete this->m_symbol;
+        delete this->m_items;
     }
     inline int Count() { return this->m_count; }
     inline T* Session(int index) { return this->m_items[index]; }
@@ -964,7 +966,7 @@ public:
 };
 
 template <template<typename ITEMINFO> class TABLEITEM, typename INFO, typename ITEMINFO> class MarketDataTable {
-    MarketSymbolInfo<TABLEITEM<ITEMINFO>>       *m_symbols[MAX_SYMBOLS_COUNT];
+    MarketSymbolInfo<TABLEITEM<ITEMINFO>>       **m_symbols;
     int                                         m_symbolsCount;
     TABLEITEM<ITEMINFO>                         *m_snapshotItem;
     TABLEITEM<ITEMINFO>                         *m_cachedItem;
@@ -979,15 +981,17 @@ template <template<typename ITEMINFO> class TABLEITEM, typename INFO, typename I
     }
 public:
     MarketDataTable() {
-        for(int i = 0; i < MAX_SYMBOLS_COUNT; i++)
+        this->m_symbols = new MarketSymbolInfo<TABLEITEM<ITEMINFO>>*[RobotSettings::MarketDataMaxSymbolsCount];
+        for(int i = 0; i < RobotSettings::MarketDataMaxSymbolsCount; i++)
             this->m_symbols[i] = new MarketSymbolInfo<TABLEITEM<ITEMINFO>>();
         this->m_symbolsCount = 0;
         this->m_queueItemsCount = 0;
         this->m_cachedItem = 0;
     }
     ~MarketDataTable() {
-        for(int i = 0; i < MAX_SYMBOLS_COUNT; i++)
+        for(int i = 0; i < RobotSettings::MarketDataMaxSymbolsCount; i++)
             delete this->m_symbols[i];
+        delete this->m_symbols;
     }
     inline TABLEITEM<ITEMINFO>* GetCachedItem(const char *symbol, int symbolLen, const char *tradingSession, int tradingSessionLen) {
         if(this->m_cachedItem == 0)

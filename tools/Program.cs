@@ -1030,6 +1030,7 @@ namespace prebuild {
 		}
 
 		private void WriteClearFieldsCode(StructureInfo info) {
+			WriteLine("\t\tthis->PresenceMap = 0;");
 			foreach(XmlNode field in info.Fields) {
 				if(ShouldWriteNullCheckCode(field))
 					WriteLine("\t\tthis->Allow" + Name(field) + " = false;");
