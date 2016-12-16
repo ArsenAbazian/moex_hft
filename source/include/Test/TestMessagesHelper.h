@@ -101,6 +101,9 @@ class TestMessagesHelper {
         else if(HasKey(keys, keysCount, "olr")) {
             info->m_templateId = FeedConnectionMessage::fmcIncrementalRefresh_OLR_FOND;
         }
+        else if(HasKey(keys, keysCount, "tlr")) {
+            info->m_templateId = FeedConnectionMessage::fmcIncrementalRefresh_TLR_FOND;
+        }
         else if(HasKey(keys, keysCount, "obs")) {
             info->m_templateId = FeedConnectionMessage::fmcFullRefresh_OBS_FOND;
             info->m_symbol = keys[KeyIndex(keys, keysCount, "obs") + 1];
@@ -108,6 +111,10 @@ class TestMessagesHelper {
         else if(HasKey(keys, keysCount, "ols")) {
             info->m_templateId = FeedConnectionMessage::fmcFullRefresh_OLS_FOND;
             info->m_symbol = keys[KeyIndex(keys, keysCount, "ols") + 1];
+        }
+        else if(HasKey(keys, keysCount, "tls")) {
+            info->m_templateId = FeedConnectionMessage::fmcFullRefresh_TLS_FOND;
+            info->m_symbol = keys[KeyIndex(keys, keysCount, "tls") + 1];
         }
         else if(HasKey(keys, keysCount, "wait_snap")) {
             info->m_templateId = FeedConnectionMessage::fcmHeartBeat;
@@ -119,7 +126,7 @@ class TestMessagesHelper {
             return info;
         }
 
-        bool isSnap = HasKey(keys, keysCount, "obs") || HasKey(keys, keysCount, "ols");
+        bool isSnap = HasKey(keys, keysCount, "obs") || HasKey(keys, keysCount, "ols") || HasKey(keys, keysCount, "tls");
         if(isSnap) {
             info->m_session = "session1";
             if(HasKey(keys, keysCount, "begin")) {
@@ -192,7 +199,7 @@ class TestMessagesHelper {
 
 public:
 
-    FastOLSFONDInfo* CreateFastOLSFondInfo(const char *symbol, const char *trading) {
+    FastOLSFONDInfo* CreateOLSFondInfo(const char *symbol, const char *trading) {
         FastOLSFONDInfo *info = new FastOLSFONDInfo();
 
         char *smb = new char[strlen(symbol) + 1];
@@ -210,7 +217,7 @@ public:
         return info;
     }
 
-    FastOLSFONDItemInfo* CreateFastOLSFondItemInfo(INT64 priceMantissa, INT32 priceExponenta, INT64 sizeMantissa, INT64 sizeExponenta, MDEntryType entryType, const char *entryId) {
+    FastOLSFONDItemInfo* CreateOLSFondItemInfo(INT64 priceMantissa, INT32 priceExponenta, INT64 sizeMantissa, INT64 sizeExponenta, MDEntryType entryType, const char *entryId) {
 
         AutoAllocatePointerList<FastOLSFONDItemInfo> *list = new AutoAllocatePointerList<FastOLSFONDItemInfo>(1, 1);
         FastOLSFONDItemInfo *info = list->NewItem();
@@ -235,7 +242,7 @@ public:
                                                INT32 priceExponenta, INT64 sizeMantissa, INT64 sizeExponenta,
                                                MDUpdateAction updateAction, MDEntryType entryType, const char *entryId,
                                                int rptSeq) {
-        FastOLSFONDItemInfo *info = CreateFastOLSFondItemInfo(priceMantissa, priceExponenta, sizeMantissa, sizeExponenta, entryType, entryId);
+        FastOLSFONDItemInfo *info = CreateOLSFondItemInfo(priceMantissa, priceExponenta, sizeMantissa, sizeExponenta, entryType, entryId);
 
         char *smb = new char[strlen(symbol) + 1];
         strcpy(smb, symbol);
@@ -255,11 +262,11 @@ public:
         return info;
     }
 
-    FastOLSFONDItemInfo* CreateFastOLRFondItemInfo(const char *symbol, const char *trading, const char *entryId) {
+    FastOLSFONDItemInfo* CreateOLRFondItemInfo(const char *symbol, const char *trading, const char *entryId) {
         return CreateOLRFondItemInfo(symbol, trading, 1, 1, 1, 1, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote,
                                      entryId, 1);
     }
-    FastOLSCURRInfo* CreateFastOLSCurrInfo(const char *symbol, const char *trading) {
+    FastOLSCURRInfo* CreateOLSCurrInfo(const char *symbol, const char *trading) {
         FastOLSCURRInfo *info = new FastOLSCURRInfo();
 
         char *smb = new char[strlen(symbol) + 1];
@@ -277,7 +284,7 @@ public:
         return info;
     }
 
-    FastOLSCURRItemInfo* CreateFastOLSCurrItemInfo(INT64 priceMantissa, INT32 priceExponenta, INT64 sizeMantissa, INT64 sizeExponenta, MDEntryType entryType, const char *entryId) {
+    FastOLSCURRItemInfo* CreateOLSCurrItemInfo(INT64 priceMantissa, INT32 priceExponenta, INT64 sizeMantissa, INT64 sizeExponenta, MDEntryType entryType, const char *entryId) {
 
         AutoAllocatePointerList<FastOLSCURRItemInfo> *list = new AutoAllocatePointerList<FastOLSCURRItemInfo>(1, 1);
         FastOLSCURRItemInfo *info = list->NewItem();
@@ -302,7 +309,7 @@ public:
                                                INT32 priceExponenta, INT64 sizeMantissa, INT64 sizeExponenta,
                                                MDUpdateAction updateAction, MDEntryType entryType, const char *entryId,
                                                int rptSeq) {
-        FastOLSCURRItemInfo *info = CreateFastOLSCurrItemInfo(priceMantissa, priceExponenta, sizeMantissa, sizeExponenta, entryType, entryId);
+        FastOLSCURRItemInfo *info = CreateOLSCurrItemInfo(priceMantissa, priceExponenta, sizeMantissa, sizeExponenta, entryType, entryId);
 
         char *smb = new char[strlen(symbol) + 1];
         strcpy(smb, symbol);
@@ -322,7 +329,7 @@ public:
         return info;
     }
 
-    FastOBSFONDInfo* CreateFastOBSFondInfo(const char *symbol, const char *trading) {
+    FastOBSFONDInfo* CreateOBSFondInfo(const char *symbol, const char *trading) {
         FastOBSFONDInfo *info = new FastOBSFONDInfo();
 
         char *smb = new char[strlen(symbol) + 1];
@@ -340,7 +347,7 @@ public:
         return info;
     }
 
-    FastOBSFONDItemInfo* CreateFastOBSFondItemInfo(INT64 priceMantissa, INT32 priceExponenta, INT64 sizeMantissa, INT64 sizeExponenta, MDEntryType entryType, const char *entryId) {
+    FastOBSFONDItemInfo* CreateOBSFondItemInfo(INT64 priceMantissa, INT32 priceExponenta, INT64 sizeMantissa, INT64 sizeExponenta, MDEntryType entryType, const char *entryId) {
 
         AutoAllocatePointerList<FastOBSFONDItemInfo> *list = new AutoAllocatePointerList<FastOBSFONDItemInfo>(1, 1);
         FastOBSFONDItemInfo *info = list->NewItem();
@@ -365,7 +372,7 @@ public:
                                                INT32 priceExponenta, INT64 sizeMantissa, INT64 sizeExponenta,
                                                MDUpdateAction updateAction, MDEntryType entryType, const char *entryId,
                                                int rptSeq) {
-        FastOBSFONDItemInfo *info = CreateFastOBSFondItemInfo(priceMantissa, priceExponenta, sizeMantissa, sizeExponenta, entryType, entryId);
+        FastOBSFONDItemInfo *info = CreateOBSFondItemInfo(priceMantissa, priceExponenta, sizeMantissa, sizeExponenta, entryType, entryId);
 
         char *smb = new char[strlen(symbol) + 1];
         strcpy(smb, symbol);
@@ -385,11 +392,11 @@ public:
         return info;
     }
 
-    FastOBSFONDItemInfo* CreateFastOBRFondItemInfo(const char *symbol, const char *trading, const char *entryId) {
+    FastOBSFONDItemInfo* CreateOBRFondItemInfo(const char *symbol, const char *trading, const char *entryId) {
         return CreateOBRFondItemInfo(symbol, trading, 1, 1, 1, 1, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote,
                                      entryId, 1);
     }
-    FastOBSCURRInfo* CreateFastOBSCurrInfo(const char *symbol, const char *trading) {
+    FastOBSCURRInfo* CreateOBSCurrInfo(const char *symbol, const char *trading) {
         FastOBSCURRInfo *info = new FastOBSCURRInfo();
 
         char *smb = new char[strlen(symbol) + 1];
@@ -407,7 +414,7 @@ public:
         return info;
     }
 
-    FastOBSCURRItemInfo* CreateFastOBSCurrItemInfo(INT64 priceMantissa, INT32 priceExponenta, INT64 sizeMantissa, INT64 sizeExponenta, MDEntryType entryType, const char *entryId) {
+    FastOBSCURRItemInfo* CreateOBSCurrItemInfo(INT64 priceMantissa, INT32 priceExponenta, INT64 sizeMantissa, INT64 sizeExponenta, MDEntryType entryType, const char *entryId) {
 
         AutoAllocatePointerList<FastOBSCURRItemInfo> *list = new AutoAllocatePointerList<FastOBSCURRItemInfo>(1, 1);
         FastOBSCURRItemInfo *info = list->NewItem();
@@ -432,7 +439,129 @@ public:
                                                INT32 priceExponenta, INT64 sizeMantissa, INT64 sizeExponenta,
                                                MDUpdateAction updateAction, MDEntryType entryType, const char *entryId,
                                                int rptSeq) {
-        FastOBSCURRItemInfo *info = CreateFastOBSCurrItemInfo(priceMantissa, priceExponenta, sizeMantissa, sizeExponenta, entryType, entryId);
+        FastOBSCURRItemInfo *info = CreateOBSCurrItemInfo(priceMantissa, priceExponenta, sizeMantissa, sizeExponenta, entryType, entryId);
+
+        char *smb = new char[strlen(symbol) + 1];
+        strcpy(smb, symbol);
+
+        char *trd = new char[strlen(trading) + 1];
+        strcpy(trd, trading);
+
+        info->Symbol = smb;
+        info->SymbolLength = strlen(smb);
+
+        info->TradingSessionID = trd;
+        info->TradingSessionIDLength = strlen(trd);
+
+        info->MDUpdateAction = updateAction;
+        info->RptSeq = rptSeq;
+
+        return info;
+    }
+
+    FastTLSFONDInfo* CreateTLSFondInfo(const char *symbol, const char *trading) {
+        FastTLSFONDInfo *info = new FastTLSFONDInfo();
+
+        char *smb = new char[strlen(symbol) + 1];
+        strcpy(smb, symbol);
+
+        char *trd = new char[strlen(trading) + 1];
+        strcpy(trd, trading);
+
+        info->Symbol = smb;
+        info->SymbolLength = strlen(smb);
+
+        info->TradingSessionID = trd;
+        info->TradingSessionIDLength = strlen(trd);
+
+        return info;
+    }
+
+    FastTLSFONDItemInfo* CreateTLSFondItemInfo(INT64 priceMantissa, INT32 priceExponenta, INT64 sizeMantissa, INT64 sizeExponenta, MDEntryType entryType, const char *entryId) {
+
+        AutoAllocatePointerList<FastTLSFONDItemInfo> *list = new AutoAllocatePointerList<FastTLSFONDItemInfo>(1, 1);
+        FastTLSFONDItemInfo *info = list->NewItem();
+
+        char *id = new char[strlen(entryId) + 1];
+        strcpy(id, entryId);
+
+        char *type = new char[1];
+        type[0] = (char) entryType;
+
+        info->MDEntryID = id;
+        info->MDEntryIDLength = strlen(id);
+        info->MDEntryType = type;
+        info->MDEntryTypeLength = 1;
+        info->MDEntryPx.Set(priceMantissa, priceExponenta);
+        info->MDEntrySize.Set(sizeMantissa, sizeExponenta);
+
+        return info;
+    }
+
+    FastTLSFONDItemInfo* CreateTLRFondItemInfo(const char *symbol, const char *trading, INT64 priceMantissa, INT32 priceExponenta, INT64 sizeMantissa, INT64 sizeExponenta, MDUpdateAction updateAction, MDEntryType entryType, const char *entryId, int rptSeq) {
+        FastTLSFONDItemInfo *info = CreateTLSFondItemInfo(priceMantissa, priceExponenta, sizeMantissa, sizeExponenta, entryType, entryId);
+
+        char *smb = new char[strlen(symbol) + 1];
+        strcpy(smb, symbol);
+
+        char *trd = new char[strlen(trading) + 1];
+        strcpy(trd, trading);
+
+        info->Symbol = smb;
+        info->SymbolLength = strlen(smb);
+
+        info->TradingSessionID = trd;
+        info->TradingSessionIDLength = strlen(trd);
+
+        info->MDUpdateAction = updateAction;
+        info->RptSeq = rptSeq;
+
+        return info;
+    }
+
+
+    FastTLSCURRInfo* CreateTLSCurrInfo(const char *symbol, const char *trading) {
+        FastTLSCURRInfo *info = new FastTLSCURRInfo();
+
+        char *smb = new char[strlen(symbol) + 1];
+        strcpy(smb, symbol);
+
+        char *trd = new char[strlen(trading) + 1];
+        strcpy(trd, trading);
+
+        info->Symbol = smb;
+        info->SymbolLength = strlen(smb);
+
+        info->TradingSessionID = trd;
+        info->TradingSessionIDLength = strlen(trd);
+
+        return info;
+    }
+
+    FastTLSCURRItemInfo* CreateTLSCurrItemInfo(INT64 priceMantissa, INT32 priceExponenta, INT64 sizeMantissa, INT64 sizeExponenta, MDEntryType entryType, const char *entryId, int rptSeq) {
+
+        AutoAllocatePointerList<FastTLSCURRItemInfo> *list = new AutoAllocatePointerList<FastTLSCURRItemInfo>(1, 1);
+        FastTLSCURRItemInfo *info = list->NewItem();
+
+        char *id = new char[strlen(entryId) + 1];
+        strcpy(id, entryId);
+
+        char *type = new char[1];
+        type[0] = (char) entryType;
+
+        info->MDEntryID = id;
+        info->MDEntryIDLength = strlen(id);
+        info->MDEntryType = type;
+        info->MDEntryTypeLength = 1;
+        info->MDEntryPx.Set(priceMantissa, priceExponenta);
+        info->MDEntrySize.Set(sizeMantissa, sizeExponenta);
+        info->RptSeq = rptSeq;
+
+        return info;
+    }
+
+    FastTLSCURRItemInfo* CreateTLRCurrItemInfo(const char *symbol, const char *trading, INT64 priceMantissa, INT32 priceExponenta, INT64 sizeMantissa, INT64 sizeExponenta, MDUpdateAction updateAction, MDEntryType entryType, const char *entryId, int rptSeq) {
+        FastTLSCURRItemInfo *info = CreateTLSCurrItemInfo(priceMantissa, priceExponenta, sizeMantissa, sizeExponenta, entryType, entryId, rptSeq);
 
         char *smb = new char[strlen(symbol) + 1];
         strcpy(smb, symbol);
@@ -492,6 +621,41 @@ public:
         info->AllowMDUpdateAction = true;
         info->MDUpdateAction = tmp->m_action;
         info->AllowMDEntryType = true;
+        info->MDEntryType = new char[1];
+        info->MDEntryType[0] = (char)tmp->m_entryType;
+        info->MDEntryTypeLength = 1;
+        info->AllowMDEntryPx = true;
+        info->MDEntryPx.Assign(&tmp->m_entryPx);
+        info->AllowMDEntrySize = true;
+        info->MDEntrySize.Assign(&tmp->m_entrySize);
+        info->AllowRptSeq = true;
+        info->RptSeq = tmp->m_rptSeq;
+        if(tmp->m_symbol != 0) {
+            info->AllowSymbol = true;
+            info->SymbolLength = strlen(tmp->m_symbol);
+            info->Symbol = new char[info->SymbolLength + 1];
+            strcpy(info->Symbol, tmp->m_symbol);
+        }
+        if(tmp->m_tradingSession != 0) {
+            info->AllowTradingSessionID = true;
+            info->TradingSessionIDLength = strlen(tmp->m_tradingSession);
+            info->TradingSessionID = new char[info->TradingSessionIDLength + 1];
+            strcpy(info->TradingSessionID, tmp->m_tradingSession);
+        }
+        if(tmp->m_entryId != 0) {
+            info->AllowMDEntryID = true;
+            info->MDEntryIDLength = strlen(tmp->m_entryId);
+            info->MDEntryID = new char[info->MDEntryIDLength + 1];
+            strcpy(info->MDEntryID, tmp->m_entryId);
+        }
+        return info;
+    }
+
+    FastTLSFONDItemInfo* CreateTLRFondItemInfo(TestTemplateItemInfo *tmp) {
+        FastTLSFONDItemInfo *info = new FastTLSFONDItemInfo();
+        info->AllowMDUpdateAction = true;
+        info->MDUpdateAction = tmp->m_action;
+        //info->AllowMDEntryType = true;
         info->MDEntryType = new char[1];
         info->MDEntryType[0] = (char)tmp->m_entryType;
         info->MDEntryTypeLength = 1;
@@ -586,6 +750,7 @@ public:
         conn->ProcessServerCore(conn->m_fastProtocolManager->MessageLength());
 
     }
+
     void SendOLSFondMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
         FastOLSFONDInfo *info = new FastOLSFONDInfo();
         info->MsgSeqNum = tmp->m_msgSeqNo;
@@ -618,6 +783,51 @@ public:
         conn->ProcessServerCore(conn->m_fastProtocolManager->MessageLength());
     }
 
+    void SendTLRFondMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
+        FastIncrementalTLRFONDInfo *info = new FastIncrementalTLRFONDInfo();
+        info->MsgSeqNum = tmp->m_msgSeqNo;
+        info->GroupMDEntriesCount = tmp->m_itemsCount;
+        for(int i = 0; i < tmp->m_itemsCount; i++) {
+            info->GroupMDEntries[i] = CreateTLRFondItemInfo(tmp->m_items[i]);
+        }
+        conn->m_fastProtocolManager->SetNewBuffer(conn->m_recvABuffer->CurrentPos(), 2000);
+        conn->m_fastProtocolManager->EncodeIncrementalTLRFONDInfo(info);
+        conn->ProcessServerCore(conn->m_fastProtocolManager->MessageLength());
+
+    }
+
+    void SendTLSFondMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
+        FastTLSFONDInfo *info = new FastTLSFONDInfo();
+        info->MsgSeqNum = tmp->m_msgSeqNo;
+        info->GroupMDEntriesCount = tmp->m_itemsCount;
+        info->AllowRouteFirst = true;
+        info->AllowLastFragment = true;
+        info->AllowLastMsgSeqNumProcessed = true;
+        info->LastMsgSeqNumProcessed = tmp->m_lastMsgSeqNoProcessed;
+
+        if(tmp->m_symbol != 0) {
+            info->SymbolLength = strlen(tmp->m_symbol);
+            info->Symbol = new char[info->SymbolLength + 1];
+            strcpy(info->Symbol, tmp->m_symbol);
+        }
+        if(tmp->m_session != 0) {
+            info->AllowTradingSessionID = true;
+            info->TradingSessionIDLength = strlen(tmp->m_session);
+            info->TradingSessionID = new char[info->TradingSessionIDLength + 1];
+            strcpy(info->TradingSessionID, tmp->m_session);
+        }
+
+        info->RptSeq = tmp->m_rptSec;
+        info->RouteFirst = tmp->m_routeFirst;
+        info->LastFragment = tmp->m_lastFragment;
+        for(int i = 0; i < tmp->m_itemsCount; i++) {
+            info->GroupMDEntries[i] = CreateTLRFondItemInfo(tmp->m_items[i]);
+        }
+        conn->m_fastProtocolManager->SetNewBuffer(conn->m_recvABuffer->CurrentPos(), 2000);
+        conn->m_fastProtocolManager->EncodeTLSFONDInfo(info);
+        conn->ProcessServerCore(conn->m_fastProtocolManager->MessageLength());
+    }
+
     void SendMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
         switch(tmp->m_templateId) {
             case FeedConnectionMessage::fcmHeartBeat:
@@ -634,6 +844,12 @@ public:
                 break;
             case FeedConnectionMessage::fmcFullRefresh_OLS_FOND:
                 SendOLSFondMessage(conn, tmp);
+                break;
+            case FeedConnectionMessage::fmcIncrementalRefresh_TLR_FOND:
+                SendTLRFondMessage(conn, tmp);
+                break;
+            case FeedConnectionMessage::fmcFullRefresh_TLS_FOND:
+                SendTLSFondMessage(conn, tmp);
                 break;
             default:
                 break;

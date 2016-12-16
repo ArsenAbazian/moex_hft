@@ -476,9 +476,9 @@ public:
         if(obi2->BuyQuotes()->Count() != 4)
             throw;
 
-        FastOLSFONDInfo *info2 = this->m_helper->CreateFastOLSFondInfo("t1s2", "t1");
-        FastOLSFONDItemInfo *newItem1 = this->m_helper->CreateFastOLSFondItemInfo(7,-2, 1, 2, mdetBuyQuote, "e7");
-        FastOLSFONDItemInfo *newItem2 = this->m_helper->CreateFastOLSFondItemInfo(8,-2, 1, 2, mdetBuyQuote, "e8");
+        FastOLSFONDInfo *info2 = this->m_helper->CreateOLSFondInfo("t1s2", "t1");
+        FastOLSFONDItemInfo *newItem1 = this->m_helper->CreateOLSFondItemInfo(7,-2, 1, 2, mdetBuyQuote, "e7");
+        FastOLSFONDItemInfo *newItem2 = this->m_helper->CreateOLSFondItemInfo(8,-2, 1, 2, mdetBuyQuote, "e8");
         info2->RptSeq = 5;
 
         info2->GroupMDEntriesCount = 2;
@@ -872,9 +872,9 @@ public:
 
         this->incFond->OnIncrementalRefresh_OLR_FOND(info);
 
-        FastOLSFONDInfo *info2 = this->m_helper->CreateFastOLSFondInfo("t1s2", "t1");
-        FastOLSFONDItemInfo *newItem1 = this->m_helper->CreateFastOLSFondItemInfo(7,-2, 1, 2, mdetSellQuote, "e7");
-        FastOLSFONDItemInfo *newItem2 = this->m_helper->CreateFastOLSFondItemInfo(8,-2, 1, 2, mdetSellQuote, "e8");
+        FastOLSFONDInfo *info2 = this->m_helper->CreateOLSFondInfo("t1s2", "t1");
+        FastOLSFONDItemInfo *newItem1 = this->m_helper->CreateOLSFondItemInfo(7,-2, 1, 2, mdetSellQuote, "e7");
+        FastOLSFONDItemInfo *newItem2 = this->m_helper->CreateOLSFondItemInfo(8,-2, 1, 2, mdetSellQuote, "e8");
 
         info2->GroupMDEntriesCount = 2;
         info2->GroupMDEntries[0] = newItem1;
@@ -1294,9 +1294,9 @@ public:
 
         this->incCurr->OnIncrementalRefresh_OLR_CURR(info);
 
-        FastOLSCURRInfo *info2 = this->m_helper->CreateFastOLSCurrInfo("t1s2", "t1");
-        FastOLSCURRItemInfo *newItem1 = this->m_helper->CreateFastOLSCurrItemInfo(7,-2, 1, 2, mdetBuyQuote, "e7");
-        FastOLSCURRItemInfo *newItem2 = this->m_helper->CreateFastOLSCurrItemInfo(8,-2, 1, 2, mdetBuyQuote, "e8");
+        FastOLSCURRInfo *info2 = this->m_helper->CreateOLSCurrInfo("t1s2", "t1");
+        FastOLSCURRItemInfo *newItem1 = this->m_helper->CreateOLSCurrItemInfo(7,-2, 1, 2, mdetBuyQuote, "e7");
+        FastOLSCURRItemInfo *newItem2 = this->m_helper->CreateOLSCurrItemInfo(8,-2, 1, 2, mdetBuyQuote, "e8");
 
         info2->RptSeq = 5;
         info2->GroupMDEntriesCount = 2;
@@ -1710,9 +1710,9 @@ public:
 
         this->incCurr->OnIncrementalRefresh_OLR_CURR(info);
 
-        FastOLSCURRInfo *info2 = this->m_helper->CreateFastOLSCurrInfo("t1s2", "t1");
-        FastOLSCURRItemInfo *newItem1 = this->m_helper->CreateFastOLSCurrItemInfo(7,-2, 1, 2, mdetSellQuote, "e7");
-        FastOLSCURRItemInfo *newItem2 = this->m_helper->CreateFastOLSCurrItemInfo(8,-2, 1, 2, mdetSellQuote, "e8");
+        FastOLSCURRInfo *info2 = this->m_helper->CreateOLSCurrInfo("t1s2", "t1");
+        FastOLSCURRItemInfo *newItem1 = this->m_helper->CreateOLSCurrItemInfo(7,-2, 1, 2, mdetSellQuote, "e7");
+        FastOLSCURRItemInfo *newItem2 = this->m_helper->CreateOLSCurrItemInfo(8,-2, 1, 2, mdetSellQuote, "e8");
 
         info2->GroupMDEntriesCount = 2;
         info2->GroupMDEntries[0] = newItem1;
@@ -1824,7 +1824,7 @@ public:
     void TestTableItem_CorrectBegin() {
         OrderInfo<FastOLSFONDItemInfo> *tb = new OrderInfo<FastOLSFONDItemInfo>();
 
-        FastOLSFONDItemInfo *item1 = this->m_helper->CreateFastOLSFondItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e1");
+        FastOLSFONDItemInfo *item1 = this->m_helper->CreateOLSFondItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e1");
         item1->RptSeq = 1;
         item1->MDUpdateAction = mduaAdd;
 
@@ -1843,7 +1843,7 @@ public:
     void TestTableItem_IncorrectBegin() {
         OrderInfo<FastOLSFONDItemInfo> *tb = new OrderInfo<FastOLSFONDItemInfo>();
 
-        FastOLSFONDItemInfo *item1 = this->m_helper->CreateFastOLSFondItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e1");
+        FastOLSFONDItemInfo *item1 = this->m_helper->CreateOLSFondItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e1");
         item1->RptSeq = 2;
         item1->MDUpdateAction = mduaAdd;
 
@@ -1864,13 +1864,13 @@ public:
     void TestTableItem_SkipMessage() {
         OrderInfo<FastOLSFONDItemInfo> *tb = new OrderInfo<FastOLSFONDItemInfo>();
 
-        FastOLSFONDItemInfo *item1 = this->m_helper->CreateFastOLSFondItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e1");
+        FastOLSFONDItemInfo *item1 = this->m_helper->CreateOLSFondItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e1");
         item1->RptSeq = 1;
         item1->MDUpdateAction = mduaAdd;
 
         tb->ProcessIncrementalMessage(item1);
 
-        FastOLSFONDItemInfo *item2 = this->m_helper->CreateFastOLSFondItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e2");
+        FastOLSFONDItemInfo *item2 = this->m_helper->CreateOLSFondItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e2");
         item2->RptSeq = 3;
         item2->MDUpdateAction = mduaAdd;
 
@@ -1883,7 +1883,7 @@ public:
         if(tb->RptSeq() != 1)
             throw;
 
-        FastOLSFONDItemInfo *item3 = this->m_helper->CreateFastOLSFondItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e3");
+        FastOLSFONDItemInfo *item3 = this->m_helper->CreateOLSFondItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e3");
         item3->RptSeq = 4;
         item3->MDUpdateAction = mduaAdd;
 
@@ -1911,13 +1911,13 @@ public:
     void TestTable_AfterClear() {
         this->m_table_fond->Clear();
 
-        FastOLSFONDItemInfo *item = this->m_helper->CreateFastOLRFondItemInfo("s1", "session1", "e1");
+        FastOLSFONDItemInfo *item = this->m_helper->CreateOLRFondItemInfo("s1", "session1", "e1");
         item->RptSeq = 1;
 
-        FastOLSFONDItemInfo *item2 = this->m_helper->CreateFastOLRFondItemInfo("s1", "session1", "e1");
+        FastOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("s1", "session1", "e1");
         item2->RptSeq = 2;
 
-        FastOLSFONDItemInfo *item3 = this->m_helper->CreateFastOLRFondItemInfo("s1", "session1", "e1");
+        FastOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("s1", "session1", "e1");
         item3->RptSeq = 4;
 
         this->m_table_fond->ProcessIncremental(item);
@@ -2046,7 +2046,7 @@ public:
                                                            MDEntryType::mdetBuyQuote, "e5", 3);
         item5->RptSeq = 3;
 
-        FastOLSFONDInfo *info = this->m_helper->CreateFastOLSFondInfo("s1", "session1");
+        FastOLSFONDInfo *info = this->m_helper->CreateOLSFondInfo("s1", "session1");
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item5;
 
@@ -2103,17 +2103,17 @@ public:
         if(this->m_table_fond->ProcessIncremental(item4))
             throw;
 
-        FastOLSFONDInfo *info1 = this->m_helper->CreateFastOLSFondInfo("s1", "session1");
+        FastOLSFONDInfo *info1 = this->m_helper->CreateOLSFondInfo("s1", "session1");
         info1->GroupMDEntriesCount = 1;
         info1->RptSeq = 3;
         info1->RouteFirst = true;
-        info1->GroupMDEntries[0] = this->m_helper->CreateFastOLSFondItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e2");
+        info1->GroupMDEntries[0] = this->m_helper->CreateOLSFondItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e2");
 
-        FastOLSFONDInfo *info2 = this->m_helper->CreateFastOLSFondInfo("s1", "session1");
+        FastOLSFONDInfo *info2 = this->m_helper->CreateOLSFondInfo("s1", "session1");
         info2->GroupMDEntriesCount = 1;
         info2->RptSeq = 3;
         info2->RouteFirst = true;
-        info2->GroupMDEntries[0] = this->m_helper->CreateFastOLSFondItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e2");
+        info2->GroupMDEntries[0] = this->m_helper->CreateOLSFondItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e2");
 
         OrderInfo<FastOLSFONDItemInfo> *tb = this->m_table_fond->GetItem("s1", "session1");
 
@@ -2170,7 +2170,7 @@ public:
                                                            MDEntryType::mdetBuyQuote, "e5", 2);
         item5->RptSeq = 2;
 
-        FastOLSFONDInfo *info = this->m_helper->CreateFastOLSFondInfo("s1", "session1");
+        FastOLSFONDInfo *info = this->m_helper->CreateOLSFondInfo("s1", "session1");
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item5;
 
@@ -2224,7 +2224,7 @@ public:
                                                            MDEntryType::mdetBuyQuote, "e5", 3);
         item5->RptSeq = 3;
 
-        FastOLSFONDInfo *info = this->m_helper->CreateFastOLSFondInfo("s1", "session1");
+        FastOLSFONDInfo *info = this->m_helper->CreateOLSFondInfo("s1", "session1");
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item5;
 
