@@ -519,6 +519,15 @@ public:
         return info;
     }
 
+    FastTLSFONDItemInfo* CreateTLRFondItemInfo(const char *symbol, const char *trading, const char *entryId) {
+        return CreateTLRFondItemInfo(symbol, trading, 1, 1, 1, 1, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote,
+                                     entryId, 1);
+    }
+
+    FastTLSFONDItemInfo* CreateTLRFondItemInfo(const char *symbol, const char *trading, const char *entryId, int rptSec) {
+        return CreateTLRFondItemInfo(symbol, trading, 1, 1, 1, 1, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote,
+                                     entryId, rptSec);
+    }
 
     FastTLSCURRInfo* CreateTLSCurrInfo(const char *symbol, const char *trading) {
         FastTLSCURRInfo *info = new FastTLSCURRInfo();

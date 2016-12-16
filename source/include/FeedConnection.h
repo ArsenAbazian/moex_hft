@@ -265,7 +265,7 @@ private:
         return true;
     }
     inline bool ApplySnapshot_OBS_CURR() {
-        /*this->PrepareDecodeSnapshotMessage(this->m_snapshotRouteFirst);
+        this->PrepareDecodeSnapshotMessage(this->m_snapshotRouteFirst);
         FastOBSCURRInfo *info = (FastOBSCURRInfo *) this->m_fastProtocolManager->DecodeOBSCURR();
          this->m_incremental->OrderBookCurr()->ObtainSnapshotItem(info);
          if(this->m_incremental->OrderBookCurr()->CheckProcessIfSessionInActualState(info))
@@ -282,7 +282,7 @@ private:
             this->m_incremental->OrderBookCurr()->ProcessSnapshot(
                     (FastOBSCURRInfo *) this->m_fastProtocolManager->DecodeOBSCURR());
         }
-        this->m_incremental->OrderBookCurr()->EndProcessSnapshot();*/
+        this->m_incremental->OrderBookCurr()->EndProcessSnapshot();
         return true;
     }
     inline bool ApplySnapshot_OLS_FOND() {
@@ -307,7 +307,7 @@ private:
         return true;
     }
     inline bool ApplySnapshot_OLS_CURR() {
-        /*this->PrepareDecodeSnapshotMessage(this->m_snapshotRouteFirst);
+        this->PrepareDecodeSnapshotMessage(this->m_snapshotRouteFirst);
         FastOLSCURRInfo *info = (FastOLSCURRInfo *) this->m_fastProtocolManager->DecodeOLSCURR();
         this->m_incremental->OrderCurr()->ObtainSnapshotItem(info);
         if(this->m_incremental->OrderCurr()->CheckProcessIfSessionInActualState(info))
@@ -324,11 +324,11 @@ private:
             this->m_incremental->OrderCurr()->ProcessSnapshot(
                     (FastOLSCURRInfo *) this->m_fastProtocolManager->DecodeOLSCURR());
         }
-        this->m_incremental->OrderCurr()->EndProcessSnapshot();*/
+        this->m_incremental->OrderCurr()->EndProcessSnapshot();
         return true;
     }
     inline bool ApplySnapshot_TLS_FOND() {
-        /*this->PrepareDecodeSnapshotMessage(this->m_snapshotRouteFirst);
+        this->PrepareDecodeSnapshotMessage(this->m_snapshotRouteFirst);
         FastTLSFONDInfo *info = (FastTLSFONDInfo *) this->m_fastProtocolManager->DecodeTLSFOND();
         this->m_incremental->TradeFond()->ObtainSnapshotItem(info);
         if(this->m_incremental->TradeFond()->CheckProcessIfSessionInActualState(info))
@@ -345,11 +345,11 @@ private:
             this->m_incremental->TradeFond()->ProcessSnapshot(
                     (FastTLSFONDInfo *) this->m_fastProtocolManager->DecodeTLSFOND());
         }
-        this->m_incremental->TradeFond()->EndProcessSnapshot();*/
+        this->m_incremental->TradeFond()->EndProcessSnapshot();
         return true;
     }
     inline bool ApplySnapshot_TLS_CURR() {
-        /*this->PrepareDecodeSnapshotMessage(this->m_snapshotRouteFirst);
+        this->PrepareDecodeSnapshotMessage(this->m_snapshotRouteFirst);
         FastTLSCURRInfo *info = (FastTLSCURRInfo *) this->m_fastProtocolManager->DecodeTLSCURR();
         this->m_incremental->TradeCurr()->ObtainSnapshotItem(info);
         if(this->m_incremental->TradeCurr()->CheckProcessIfSessionInActualState(info))
@@ -366,7 +366,7 @@ private:
             this->m_incremental->TradeCurr()->ProcessSnapshot(
                     (FastTLSCURRInfo *) this->m_fastProtocolManager->DecodeTLSCURR());
         }
-        this->m_incremental->TradeCurr()->EndProcessSnapshot();*/
+        this->m_incremental->TradeCurr()->EndProcessSnapshot();
         return true;
     }
 
@@ -460,11 +460,11 @@ private:
             return;
         }
         if(this->m_tradeTableFond != 0) {
-            this->m_orderTableFond->ExitSnapshotMode();
+            this->m_tradeTableFond->ExitSnapshotMode();
             return;
         }
-        if(this->m_orderTableCurr != 0) {
-            this->m_orderTableCurr->ExitSnapshotMode();
+        if(this->m_tradeTableCurr != 0) {
+            this->m_tradeTableCurr->ExitSnapshotMode();
             return;
         }
     }
@@ -731,13 +731,11 @@ private:
 	}
 
 	inline bool OnIncrementalRefresh_TLR_FOND(FastTLSFONDItemInfo *info) {
-        return true; // TODO!!!!!
-		//return this->m_tradeTableFond->ProcessIncremental(info);
+		return this->m_tradeTableFond->ProcessIncremental(info);
 	}
 
 	inline bool OnIncrementalRefresh_TLR_CURR(FastTLSCURRItemInfo *info) {
-        return true; // TODO!!!!!
-		//return this->m_tradeTableCurr->ProcessIncremental(info);
+        return this->m_tradeTableCurr->ProcessIncremental(info);
 	}
 
 	inline bool OnIncrementalRefresh_OBR_FOND(FastIncrementalOBRFONDInfo *info) {

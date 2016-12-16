@@ -20,19 +20,19 @@ public:
     TradeTester() {
         this->m_helper = new TestMessagesHelper();
         this->m_table_fond = new MarketDataTable<TradeInfo, FastTLSFONDInfo, FastTLSFONDItemInfo>();
-        this->incFond = new FeedConnection_FOND_TLR("OBR", "Refresh Incremental", 'I',
+        this->incFond = new FeedConnection_FOND_TLR("TLR", "Refresh Incremental", 'I',
                                                     FeedConnectionProtocol::UDP_IP,
                                                     "10.50.129.200", "239.192.113.3", 9113,
                                                     "10.50.129.200", "239.192.113.131", 9313);
-        this->incCurr = new FeedConnection_CURR_TLR("OBR", "Refresh Incremental", 'I',
+        this->incCurr = new FeedConnection_CURR_TLR("TLR", "Refresh Incremental", 'I',
                                                     FeedConnectionProtocol::UDP_IP,
                                                     "10.50.129.200", "239.192.113.3", 9113,
                                                     "10.50.129.200", "239.192.113.131", 9313);
-        this->snapFond = new FeedConnection_FOND_TLS("OBS", "Full Refresh", 'I',
+        this->snapFond = new FeedConnection_FOND_TLS("TLS", "Full Refresh", 'I',
                                                      FeedConnectionProtocol::UDP_IP,
                                                      "10.50.129.200", "239.192.113.3", 9113,
                                                      "10.50.129.200", "239.192.113.131", 9313);
-        this->snapCurr = new FeedConnection_CURR_TLS("OBS", "Full Refresh", 'I',
+        this->snapCurr = new FeedConnection_CURR_TLS("TLS", "Full Refresh", 'I',
                                                      FeedConnectionProtocol::UDP_IP,
                                                      "10.50.129.200", "239.192.113.3", 9113,
                                                      "10.50.129.200", "239.192.113.131", 9313);
@@ -144,13 +144,13 @@ public:
             throw;
         if(obi->Trades()->Count() != 2)
             throw;
-        quote = obi->Trades()->Start()->Data();
-        price.Set(4, -2);
+        quote = obi->Trades()->Item(0);
+        price.Set(3, -2);
         if(!quote->MDEntryPx.Equal(&price))
             throw;
         if(!quote->MDEntrySize.Equal(&size))
             throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, quote->MDEntryIDLength, "e2", 2))
+        if(!StringIdComparer::Equal(quote->MDEntryID, quote->MDEntryIDLength, "e1", 2))
             throw;
 
         info->GroupMDEntriesCount = 1;
@@ -170,22 +170,22 @@ public:
         if(obi->Trades()->Count() != 3)
             throw;
 
-        quote = obi->Trades()->Start()->Data();
-        price.Set(4, -2);
-        if(!quote->MDEntryPx.Equal(&price))
-            throw;
-        if(!quote->MDEntrySize.Equal(&size))
-            throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, quote->MDEntryIDLength, "e2", 2))
-            throw;
-
-        quote = obi->Trades()->Start()->Next()->Data();
+        quote = obi->Trades()->Item(0);
         price.Set(3, -2);
         if(!quote->MDEntryPx.Equal(&price))
             throw;
         if(!quote->MDEntrySize.Equal(&size))
             throw;
         if(!StringIdComparer::Equal(quote->MDEntryID, quote->MDEntryIDLength, "e1", 2))
+            throw;
+
+        quote = obi->Trades()->Item(1);
+        price.Set(4, -2);
+        if(!quote->MDEntryPx.Equal(&price))
+            throw;
+        if(!quote->MDEntrySize.Equal(&size))
+            throw;
+        if(!StringIdComparer::Equal(quote->MDEntryID, quote->MDEntryIDLength, "e2", 2))
             throw;
 
         quote = obi->Trades()->End()->Data();
@@ -214,16 +214,7 @@ public:
         if(obi->Trades()->Count() != 4)
             throw;
 
-        quote = obi->Trades()->Start()->Data();
-        price.Set(4, -2);
-        if(!quote->MDEntryPx.Equal(&price))
-            throw;
-        if(!quote->MDEntrySize.Equal(&size))
-            throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, quote->MDEntryIDLength, "e2", 2))
-            throw;
-
-        quote = obi->Trades()->Start()->Next()->Data();
+        quote = obi->Trades()->Item(0);
         price.Set(3, -2);
         if(!quote->MDEntryPx.Equal(&price))
             throw;
@@ -232,188 +223,31 @@ public:
         if(!StringIdComparer::Equal(quote->MDEntryID, quote->MDEntryIDLength, "e1", 2))
             throw;
 
+        quote = obi->Trades()->Item(1);
+        price.Set(4, -2);
+        if(!quote->MDEntryPx.Equal(&price))
+            throw;
+        if(!quote->MDEntrySize.Equal(&size))
+            throw;
+        if(!StringIdComparer::Equal(quote->MDEntryID, quote->MDEntryIDLength, "e2", 2))
+            throw;
+
         quote = obi->Trades()->Start()->Next()->Next()->Data();
+        price.Set(2, -2);
+        if(!quote->MDEntryPx.Equal(&price))
+            throw;
+        if(!quote->MDEntrySize.Equal(&size))
+            throw;
+        if(!StringIdComparer::Equal(quote->MDEntryID, quote->MDEntryIDLength, "e3", 2))
+            throw;
+
+        quote = obi->Trades()->End()->Data();
         price.Set(25, -3);
         if(!quote->MDEntryPx.Equal(&price))
             throw;
         if(!quote->MDEntrySize.Equal(&size))
             throw;
         if(!StringIdComparer::Equal(quote->MDEntryID, quote->MDEntryIDLength, "e4", 2))
-            throw;
-
-        quote = obi->Trades()->End()->Data();
-        price.Set(2, -2);
-        if(!quote->MDEntryPx.Equal(&price))
-            throw;
-        if(!quote->MDEntrySize.Equal(&size))
-            throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, quote->MDEntryIDLength, "e3", 2))
-            throw;
-    }
-
-    void Test_OnIncrementalRefresh_TLR_FOND_Remove() {
-        this->Clear();
-        this->TestDefaults();
-
-        FastIncrementalTLRFONDInfo *info = new FastIncrementalTLRFONDInfo;
-        FastTLSFONDItemInfo *item1 = this->m_helper->CreateTLRFondItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
-        FastTLSFONDItemInfo *item2 = this->m_helper->CreateTLRFondItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
-        FastTLSFONDItemInfo *item3 = this->m_helper->CreateTLRFondItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
-        FastTLSFONDItemInfo *item4 = this->m_helper->CreateTLRFondItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "e4", 4);
-
-        info->GroupMDEntriesCount = 4;
-        info->GroupMDEntries[0] = item1;
-        info->GroupMDEntries[1] = item2;
-        info->GroupMDEntries[2] = item3;
-        info->GroupMDEntries[3] = item4;
-
-        this->incFond->OnIncrementalRefresh_TLR_FOND(info);
-
-        item1->MDUpdateAction = mduaDelete;
-        item2->MDUpdateAction = mduaDelete;
-        item3->MDUpdateAction = mduaDelete;
-        item4->MDUpdateAction = mduaDelete;
-
-        info->GroupMDEntriesCount = 1;
-        info->GroupMDEntries[0] = item4;
-        item4->RptSeq = 5;
-
-        this->incFond->OnIncrementalRefresh_TLR_FOND(info);
-        if(item4->Used)
-            throw;
-        if(item4->Allocator->Count() != 0)
-            throw;
-
-        if(this->incFond->TradeFond()->UsedItemCount() != 1)
-            throw;
-
-        TradeInfo<FastTLSFONDItemInfo> *obi = this->incFond->TradeFond()->GetItem("s1", "t1");
-        if(obi->Trades()->Count() != 3)
-            throw;
-        if(!StringIdComparer::Equal(obi->Trades()->Item(0)->MDEntryID, 2, "e2", 2))
-            throw;
-        if(!StringIdComparer::Equal(obi->Trades()->Item(1)->MDEntryID, 2, "e1", 2))
-            throw;
-        if(!StringIdComparer::Equal(obi->Trades()->Item(2)->MDEntryID, 2, "e3", 2))
-            throw;
-
-        info->GroupMDEntriesCount = 1;
-        info->GroupMDEntries[0] = item3;
-        item3->RptSeq = 6;
-
-        this->incFond->OnIncrementalRefresh_TLR_FOND(info);
-
-        if(this->incFond->TradeFond()->UsedItemCount() != 1)
-            throw;
-
-        obi = this->incFond->TradeFond()->GetItem("s1", "t1");
-        if(obi->Trades()->Count() != 2)
-            throw;
-        if(!StringIdComparer::Equal(obi->Trades()->Item(0)->MDEntryID, 2, "e2", 2))
-            throw;
-        if(!StringIdComparer::Equal(obi->Trades()->Item(1)->MDEntryID, 2, "e1", 2))
-            throw;
-
-        info->GroupMDEntriesCount = 1;
-        info->GroupMDEntries[0] = item2;
-        item2->RptSeq = 7;
-
-        this->incFond->OnIncrementalRefresh_TLR_FOND(info);
-
-        if(this->incFond->TradeFond()->UsedItemCount() != 1)
-            throw;
-
-        obi = this->incFond->TradeFond()->GetItem("s1", "t1");
-        if(obi->Trades()->Count() != 1)
-            throw;
-        if(!StringIdComparer::Equal(obi->Trades()->Item(0)->MDEntryID, 2, "e1", 2))
-            throw;
-
-        info->GroupMDEntriesCount = 1;
-        info->GroupMDEntries[0] = item1;
-        item1->RptSeq = 8;
-
-        this->incFond->OnIncrementalRefresh_TLR_FOND(info);
-
-        if(this->incFond->TradeFond()->UsedItemCount() != 1)
-            throw;
-
-        obi = this->incFond->TradeFond()->GetItem("s1", "t1");
-        if(obi->Trades()->Count() != 0)
-            throw;
-    }
-
-    void Test_OnIncrementalRefresh_TLR_FOND_Change() {
-        this->Clear();
-        this->TestDefaults();
-
-        FastIncrementalTLRFONDInfo *info = new FastIncrementalTLRFONDInfo;
-        FastTLSFONDItemInfo *item1 = this->m_helper->CreateTLRFondItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
-        FastTLSFONDItemInfo *item2 = this->m_helper->CreateTLRFondItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
-        FastTLSFONDItemInfo *item3 = this->m_helper->CreateTLRFondItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
-        FastTLSFONDItemInfo *item4 = this->m_helper->CreateTLRFondItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "e4", 4);
-
-        info->GroupMDEntriesCount = 4;
-        info->GroupMDEntries[0] = item1;
-        info->GroupMDEntries[1] = item2;
-        info->GroupMDEntries[2] = item3;
-        info->GroupMDEntries[3] = item4;
-
-        this->incFond->OnIncrementalRefresh_TLR_FOND(info);
-
-        TradeInfo<FastTLSFONDItemInfo> *obi2 = this->incFond->TradeFond()->GetItem("s1", "t1");
-        if(!StringIdComparer::Equal(obi2->Trades()->Item(0)->MDEntryID, 2, "e2", 2))
-            throw;
-        if(!StringIdComparer::Equal(obi2->Trades()->Item(1)->MDEntryID, 2, "e1", 2))
-            throw;
-        if(!StringIdComparer::Equal(obi2->Trades()->Item(2)->MDEntryID, 2, "e4", 2))
-            throw;
-        if(!StringIdComparer::Equal(obi2->Trades()->Item(3)->MDEntryID, 2, "e3", 2))
-            throw;
-
-        FastTLSFONDItemInfo *item5 = this->m_helper->CreateTLRFondItemInfo("s1", "t1", 24, -3, 1, 3, mduaChange, mdetBuyQuote, "e2", 5);
-
-        info->GroupMDEntriesCount = 1;
-        info->GroupMDEntries[0] = item5;
-        item5->RptSeq = 5;
-
-        this->incFond->OnIncrementalRefresh_TLR_FOND(info);
-
-        if(item2->Used || item2->Allocator->Count() != 0)
-            throw;
-        if(!item5->Used)
-            throw;
-        if(item5->Allocator->Count() != 1)
-            throw;
-
-        TradeInfo<FastTLSFONDItemInfo> *obi = this->incFond->TradeFond()->GetItem("s1", "t1");
-
-        FastTLSFONDItemInfo *qt1 = obi->Trades()->Item(0);
-        FastTLSFONDItemInfo *qt2 = obi->Trades()->Item(1);
-        FastTLSFONDItemInfo *qt3 = obi->Trades()->Item(2);
-        FastTLSFONDItemInfo *qt4 = obi->Trades()->Item(3);
-
-        if(this->incFond->TradeFond()->UsedItemCount() != 1)
-            throw;
-        if(obi->Trades()->Count() != 4)
-            throw;
-        if(!StringIdComparer::Equal(qt1->MDEntryID, 2, "e1", 2))
-            throw;
-        if(!StringIdComparer::Equal(qt2->MDEntryID, 2, "e4", 2))
-            throw;
-        if(!StringIdComparer::Equal(qt3->MDEntryID, 2, "e2", 2))
-            throw;
-        if(!StringIdComparer::Equal(qt4->MDEntryID, 2, "e3", 2))
-            throw;
-
-        if(qt1->MDEntryPx.Mantissa != item1->MDEntryPx.Mantissa)
-            throw;
-        if(qt1->MDEntryPx.Exponent != item1->MDEntryPx.Exponent)
-            throw;
-
-        if(qt3->MDEntryPx.Mantissa != item5->MDEntryPx.Mantissa)
-            throw;
-        if(qt3->MDEntryPx.Exponent != item5->MDEntryPx.Exponent)
             throw;
     }
 
@@ -451,7 +285,7 @@ public:
             throw;
     }
 
-    void Test_OnFullRefresh_OBS_FOND() {
+    void Test_OnFullRefresh_TLS_FOND() {
         this->Clear();
         this->TestDefaults();
 
@@ -473,9 +307,9 @@ public:
         if(obi2->Trades()->Count() != 4)
             throw;
 
-        FastTLSFONDInfo *info2 = this->m_helper->CreateTLSFONDInfo("t1s2", "t1");
-        FastTLSFONDItemInfo *newItem1 = this->m_helper->CreateTLSFONDItemInfo(7,-2, 1, 2, mdetBuyQuote, "e7");
-        FastTLSFONDItemInfo *newItem2 = this->m_helper->CreateTLSFONDItemInfo(8,-2, 1, 2, mdetBuyQuote, "e8");
+        FastTLSFONDInfo *info2 = this->m_helper->CreateTLSFondInfo("t1s2", "t1");
+        FastTLSFONDItemInfo *newItem1 = this->m_helper->CreateTLSFondItemInfo(7,-2, 1, 2, mdetBuyQuote, "e7");
+        FastTLSFONDItemInfo *newItem2 = this->m_helper->CreateTLSFondItemInfo(8,-2, 1, 2, mdetBuyQuote, "e8");
         info2->RptSeq = 5;
 
         info2->GroupMDEntriesCount = 2;
@@ -496,403 +330,8 @@ public:
         if(obi->Trades()->Count() != 2)
             throw;
 
-        FastTLSFONDItemInfo *qt1 = obi->Trades()->Start()->Data();
-        FastTLSFONDItemInfo *qt2 = obi->Trades()->Start()->Next()->Data();
-
-        if(!StringIdComparer::Equal(qt1->MDEntryID, 2, "e8", 2))
-            throw;
-        if(!StringIdComparer::Equal(qt2->MDEntryID, 2, "e7", 2))
-            throw;
-        if(!qt1->MDEntryPx.Equal(8, -2))
-            throw;
-        if(!qt1->MDEntrySize.Equal(1, 2))
-            throw;
-        if(!qt2->MDEntryPx.Equal(7, -2))
-            throw;
-    }
-
-    void Test_OnIncrementalRefresh_TLR_FOND_Add_SellQuotes() {
-        this->Clear();
-        this->TestDefaults();
-
-        FastIncrementalTLRFONDInfo *info = new FastIncrementalTLRFONDInfo;
-
-        FastTLSFONDItemInfo *item1 = this->m_helper->CreateTLRFondItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "e1", 1);
-        FastTLSFONDItemInfo *item2 = this->m_helper->CreateTLRFondItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "e2", 2);
-        FastTLSFONDItemInfo *item3 = this->m_helper->CreateTLRFondItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "e3", 3);
-        FastTLSFONDItemInfo *item4 = this->m_helper->CreateTLRFondItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "e4", 4);
-
-        info->GroupMDEntriesCount = 1;
-        info->GroupMDEntries[0] = item1;
-
-        this->incFond->OnIncrementalRefresh_TLR_FOND(info);
-
-        if(this->incFond->TradeFond()->UsedItemCount() != 1)
-            throw;
-        if(this->incFond->TradeFond()->SymbolsCount() != 1)
-            throw;
-        if(this->incFond->TradeFond()->Symbol(0)->Count() != 1)
-            throw;
-        TradeInfo<FastTLSFONDItemInfo> *obi = this->incFond->TradeFond()->GetItem("s1", "t1");
-        if(obi == 0)
-            throw;
-        if(obi->SellQuotes()->Count() != 1)
-            throw;
-        FastTLSFONDItemInfo *quote = obi->SellQuotes()->Start()->Data();
-        if(!quote->MDEntryPx.Equal(3, -2))
-            throw;
-        if(!quote->MDEntrySize.Equal(1, 2))
-            throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, 2, "e1", 2))
-            throw;
-
-        info->GroupMDEntriesCount = 1;
-        info->GroupMDEntries[0] = item2;
-
-        this->incFond->OnIncrementalRefresh_TLR_FOND(info);
-
-        if(this->incFond->TradeFond()->UsedItemCount() != 1)
-            throw;
-        if(this->incFond->TradeFond()->SymbolsCount() != 1)
-            throw;
-        if(this->incFond->TradeFond()->Symbol(0)->Count() != 1)
-            throw;
-        obi = this->incFond->TradeFond()->GetItem("s1", "t1");
-        if(obi == 0)
-            throw;
-        if(obi->SellQuotes()->Count() != 2)
-            throw;
-        quote = obi->SellQuotes()->Start()->Data();
-        if(!quote->MDEntryPx.Equal(3, -2))
-            throw;
-        if(!quote->MDEntrySize.Equal(1, 2))
-            throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, 2, "e1", 2))
-            throw;
-
-        quote = obi->SellQuotes()->Item(1);
-        if(!quote->MDEntryPx.Equal(4, -2))
-            throw;
-        if(!quote->MDEntrySize.Equal(1, 2))
-            throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, 2, "e2", 2))
-            throw;
-
-        info->GroupMDEntriesCount = 1;
-        info->GroupMDEntries[0] = item3;
-
-        this->incFond->OnIncrementalRefresh_TLR_FOND(info);
-
-        if(this->incFond->TradeFond()->UsedItemCount() != 1)
-            throw;
-        if(this->incFond->TradeFond()->SymbolsCount() != 1)
-            throw;
-        if(this->incFond->TradeFond()->Symbol(0)->Count() != 1)
-            throw;
-        obi = this->incFond->TradeFond()->GetItem("s1", "t1");
-        if(obi == 0)
-            throw;
-        if(obi->SellQuotes()->Count() != 3)
-            throw;
-
-        quote = obi->SellQuotes()->Start()->Data();
-        if(!quote->MDEntryPx.Equal(2, -2))
-            throw;
-        if(!quote->MDEntrySize.Equal(1, 2))
-            throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, 2, "e3", 2))
-            throw;
-
-        quote = obi->SellQuotes()->Start()->Next()->Data();
-        if(!quote->MDEntryPx.Equal(3, -2))
-            throw;
-        if(!quote->MDEntrySize.Equal(1, 2))
-            throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, 2, "e1", 2))
-            throw;
-
-        quote = obi->SellQuotes()->End()->Data();
-        if(!quote->MDEntryPx.Equal(4, -2))
-            throw;
-        if(!quote->MDEntrySize.Equal(1, 2))
-            throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, 2, "e2", 2))
-            throw;
-
-        info->GroupMDEntriesCount = 1;
-        info->GroupMDEntries[0] = item4;
-
-        this->incFond->OnIncrementalRefresh_TLR_FOND(info);
-
-        if(this->incFond->TradeFond()->UsedItemCount() != 1)
-            throw;
-        if(this->incFond->TradeFond()->SymbolsCount() != 1)
-            throw;
-        if(this->incFond->TradeFond()->Symbol(0)->Count() != 1)
-            throw;
-        obi = this->incFond->TradeFond()->GetItem("s1", "t1");
-        if(obi == 0)
-            throw;
-        if(obi->SellQuotes()->Count() != 4)
-            throw;
-
-        quote = obi->SellQuotes()->Start()->Data();
-        if(!quote->MDEntryPx.Equal(2, -2))
-            throw;
-        if(!quote->MDEntrySize.Equal(1, 2))
-            throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, 2, "e3", 2))
-            throw;
-
-        quote = obi->SellQuotes()->Start()->Next()->Data();
-        if(!quote->MDEntryPx.Equal(25, -3))
-            throw;
-        if(!quote->MDEntrySize.Equal(1, 2))
-            throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, 2, "e4", 2))
-            throw;
-
-        quote = obi->SellQuotes()->Start()->Next()->Next()->Data();
-        if(!quote->MDEntryPx.Equal(3, -2))
-            throw;
-        if(!quote->MDEntrySize.Equal(1, 2))
-            throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, 2, "e1", 2))
-            throw;
-
-        quote = obi->SellQuotes()->End()->Data();
-        if(!quote->MDEntryPx.Equal(4, -2))
-            throw;
-        if(!quote->MDEntrySize.Equal(1, 2))
-            throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, 2, "e2", 2))
-            throw;
-    }
-
-    void Test_OnIncrementalRefresh_TLR_FOND_Remove_SellQuotes() {
-        this->Clear();
-        this->TestDefaults();
-
-        FastIncrementalTLRFONDInfo *info = new FastIncrementalTLRFONDInfo;
-        FastTLSFONDItemInfo *item1 = this->m_helper->CreateTLRFondItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "e1", 1);
-        FastTLSFONDItemInfo *item2 = this->m_helper->CreateTLRFondItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "e2", 2);
-        FastTLSFONDItemInfo *item3 = this->m_helper->CreateTLRFondItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "e3", 3);
-        FastTLSFONDItemInfo *item4 = this->m_helper->CreateTLRFondItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "e4", 4);
-
-        info->GroupMDEntriesCount = 4;
-        info->GroupMDEntries[0] = item1;
-        info->GroupMDEntries[1] = item2;
-        info->GroupMDEntries[2] = item3;
-        info->GroupMDEntries[3] = item4;
-
-        this->incFond->OnIncrementalRefresh_TLR_FOND(info);
-
-        item1->MDUpdateAction = mduaDelete;
-        item2->MDUpdateAction = mduaDelete;
-        item3->MDUpdateAction = mduaDelete;
-        item4->MDUpdateAction = mduaDelete;
-
-        info->GroupMDEntriesCount = 1;
-        info->GroupMDEntries[0] = item4;
-        item4->RptSeq = 5;
-
-        this->incFond->OnIncrementalRefresh_TLR_FOND(info);
-
-        if(this->incFond->TradeFond()->UsedItemCount() != 1)
-            throw;
-
-        TradeInfo<FastTLSFONDItemInfo> *obi = this->incFond->TradeFond()->GetItem("s1", "t1");
-        if(obi->SellQuotes()->Count() != 3)
-            throw;
-
-        if(!StringIdComparer::Equal(obi->SellQuotes()->Item(0)->MDEntryID, 2,"e3", 2))
-            throw;
-        if(!StringIdComparer::Equal(obi->SellQuotes()->Item(1)->MDEntryID, 2,"e1", 2))
-            throw;
-        if(!StringIdComparer::Equal(obi->SellQuotes()->Item(2)->MDEntryID, 2,"e2", 2))
-            throw;
-
-        info->GroupMDEntriesCount = 1;
-        info->GroupMDEntries[0] = item3;
-        item3->RptSeq = 6;
-
-        this->incFond->OnIncrementalRefresh_TLR_FOND(info);
-
-        if(this->incFond->TradeFond()->UsedItemCount() != 1)
-            throw;
-
-        obi = this->incFond->TradeFond()->GetItem("s1", "t1");
-        if(obi->SellQuotes()->Count() != 2)
-            throw;
-        if(!StringIdComparer::Equal(obi->SellQuotes()->Item(0)->MDEntryID, 2,"e1", 2))
-            throw;
-        if(!StringIdComparer::Equal(obi->SellQuotes()->Item(1)->MDEntryID, 2,"e2", 2))
-            throw;
-
-        info->GroupMDEntriesCount = 1;
-        info->GroupMDEntries[0] = item2;
-        item2->RptSeq = 7;
-
-        this->incFond->OnIncrementalRefresh_TLR_FOND(info);
-
-        if(this->incFond->TradeFond()->UsedItemCount() != 1)
-            throw;
-
-        obi = this->incFond->TradeFond()->GetItem("s1", "t1");
-        if(obi->SellQuotes()->Count() != 1)
-            throw;
-        if(!StringIdComparer::Equal(obi->SellQuotes()->Item(0)->MDEntryID, 2,"e1", 2))
-            throw;
-
-        info->GroupMDEntriesCount = 1;
-        info->GroupMDEntries[0] = item1;
-        item1->RptSeq = 8;
-
-        this->incFond->OnIncrementalRefresh_TLR_FOND(info);
-
-        if(this->incFond->TradeFond()->UsedItemCount() != 1)
-            throw;
-
-        obi = this->incFond->TradeFond()->GetItem("s1", "t1");
-        if(obi->SellQuotes()->Count() != 0)
-            throw;
-    }
-
-    void Test_OnIncrementalRefresh_TLR_FOND_Change_SellQuotes() {
-        this->Clear();
-        this->TestDefaults();
-
-        FastIncrementalTLRFONDInfo *info = new FastIncrementalTLRFONDInfo;
-        FastTLSFONDItemInfo *item1 = this->m_helper->CreateTLRFondItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "e1", 1);
-        FastTLSFONDItemInfo *item2 = this->m_helper->CreateTLRFondItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "e2", 2);
-        FastTLSFONDItemInfo *item3 = this->m_helper->CreateTLRFondItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "e3", 3);
-        FastTLSFONDItemInfo *item4 = this->m_helper->CreateTLRFondItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "e4", 4);
-
-        info->GroupMDEntriesCount = 4;
-        info->GroupMDEntries[0] = item1;
-        info->GroupMDEntries[1] = item2;
-        info->GroupMDEntries[2] = item3;
-        info->GroupMDEntries[3] = item4;
-
-        this->incFond->OnIncrementalRefresh_TLR_FOND(info);
-
-        TradeInfo<FastTLSFONDItemInfo> *obi2 = this->incFond->TradeFond()->GetItem("s1", "t1");
-        if(!StringIdComparer::Equal(obi2->SellQuotes()->Item(0)->MDEntryID, 2, "e3", 2))
-            throw;
-        if(!StringIdComparer::Equal(obi2->SellQuotes()->Item(1)->MDEntryID, 2, "e4", 2))
-            throw;
-        if(!StringIdComparer::Equal(obi2->SellQuotes()->Item(2)->MDEntryID, 2, "e1", 2))
-            throw;
-        if(!StringIdComparer::Equal(obi2->SellQuotes()->Item(3)->MDEntryID, 2, "e2", 2))
-            throw;
-
-        FastTLSFONDItemInfo *item5 = this->m_helper->CreateTLRFondItemInfo("s1", "t1", 24, -3, 1, 3, mduaChange, mdetSellQuote, "e2", 5);
-
-        info->GroupMDEntriesCount = 1;
-        info->GroupMDEntries[0] = item5;
-
-        this->incFond->OnIncrementalRefresh_TLR_FOND(info);
-
-        TradeInfo<FastTLSFONDItemInfo> *obi = this->incFond->TradeFond()->GetItem("s1", "t1");
-
-        FastTLSFONDItemInfo *qt1 = obi->SellQuotes()->Item(0);
-        FastTLSFONDItemInfo *qt2 = obi->SellQuotes()->Item(1);
-        FastTLSFONDItemInfo *qt3 = obi->SellQuotes()->Item(2);
-        FastTLSFONDItemInfo *qt4 = obi->SellQuotes()->Item(3);
-
-        if(this->incFond->TradeFond()->UsedItemCount() != 1)
-            throw;
-        if(obi->SellQuotes()->Count() != 4)
-            throw;
-        if(!StringIdComparer::Equal(qt1->MDEntryID, 2, "e3", 2))
-            throw;
-        if(!StringIdComparer::Equal(qt2->MDEntryID, 2, "e2", 2))
-            throw;
-        if(!StringIdComparer::Equal(qt3->MDEntryID, 2, "e4", 2))
-            throw;
-        if(!StringIdComparer::Equal(qt4->MDEntryID, 2, "e1", 2))
-            throw;
-
-        if(qt1->MDEntryPx.Mantissa != item3->MDEntryPx.Mantissa)
-            throw;
-        if(qt1->MDEntryPx.Exponent != item3->MDEntryPx.Exponent)
-            throw;
-
-        if(qt2->MDEntryPx.Mantissa != item5->MDEntryPx.Mantissa)
-            throw;
-        if(qt2->MDEntryPx.Exponent != item5->MDEntryPx.Exponent)
-            throw;
-    }
-
-    void Test_Clear_SellQuotes() {
-        this->Clear();
-        this->TestDefaults();
-
-        FastIncrementalTLRFONDInfo *info = new FastIncrementalTLRFONDInfo;
-        FastTLSFONDItemInfo *item1 = this->m_helper->CreateTLRFondItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "e1", 1);
-        FastTLSFONDItemInfo *item2 = this->m_helper->CreateTLRFondItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "e2", 2);
-        FastTLSFONDItemInfo *item3 = this->m_helper->CreateTLRFondItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "e3", 3);
-        FastTLSFONDItemInfo *item4 = this->m_helper->CreateTLRFondItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "e4", 4);
-
-        info->GroupMDEntriesCount = 4;
-        info->GroupMDEntries[0] = item1;
-        info->GroupMDEntries[1] = item2;
-        info->GroupMDEntries[2] = item3;
-        info->GroupMDEntries[3] = item4;
-
-        this->incFond->OnIncrementalRefresh_TLR_FOND(info);
-
-        this->incFond->TradeFond()->Clear();
-        if(this->incFond->TradeFond()->UsedItemCount() != 0)
-            throw;
-
-        TradeInfo<FastTLSFONDItemInfo> *obi = this->incFond->TradeFond()->GetItem("s1", "t1");
-        if(obi->SellQuotes()->Count() != 0)
-            throw;
-    }
-
-    void Test_OnFullRefresh_OBS_FOND_SellQuotes() {
-        this->Clear();
-        this->TestDefaults();
-
-        FastIncrementalTLRFONDInfo *info = new FastIncrementalTLRFONDInfo;
-        FastTLSFONDItemInfo *item1 = this->m_helper->CreateTLRFondItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "e1", 1);
-        FastTLSFONDItemInfo *item2 = this->m_helper->CreateTLRFondItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "e2", 2);
-        FastTLSFONDItemInfo *item3 = this->m_helper->CreateTLRFondItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "e3", 3);
-        FastTLSFONDItemInfo *item4 = this->m_helper->CreateTLRFondItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "e4", 4);
-
-        info->GroupMDEntriesCount = 4;
-        info->GroupMDEntries[0] = item1;
-        info->GroupMDEntries[1] = item2;
-        info->GroupMDEntries[2] = item3;
-        info->GroupMDEntries[3] = item4;
-
-        this->incFond->OnIncrementalRefresh_TLR_FOND(info);
-
-        FastTLSFONDInfo *info2 = this->m_helper->CreateTLSFONDInfo("t1s2", "t1");
-        FastTLSFONDItemInfo *newItem1 = this->m_helper->CreateTLSFONDItemInfo(7,-2, 1, 2, mdetSellQuote, "e7");
-        FastTLSFONDItemInfo *newItem2 = this->m_helper->CreateTLSFONDItemInfo(8,-2, 1, 2, mdetSellQuote, "e8");
-
-        info2->GroupMDEntriesCount = 2;
-        info2->GroupMDEntries[0] = newItem1;
-        info2->GroupMDEntries[1] = newItem2;
-
-        this->incFond->TradeFond()->ObtainSnapshotItem(info2);
-        this->incFond->TradeFond()->ProcessSnapshot(info2);
-
-        if(this->incFond->TradeFond()->UsedItemCount() != 2)
-            throw;
-
-        TradeInfo<FastTLSFONDItemInfo> *obi3 = this->incFond->TradeFond()->GetItem("s1", "t1");
-        if(obi3->SellQuotes()->Count() != 4)
-            throw;
-
-        TradeInfo<FastTLSFONDItemInfo> *obi = this->incFond->TradeFond()->GetItem("t1s2", 4, "t1", 2);
-        if(obi->SellQuotes()->Count() != 2)
-            throw;
-
-        FastTLSFONDItemInfo *qt1 = obi->SellQuotes()->Start()->Data();
-        FastTLSFONDItemInfo *qt2 = obi->SellQuotes()->Start()->Next()->Data();
+        FastTLSFONDItemInfo *qt1 = obi->Trades()->Item(0);
+        FastTLSFONDItemInfo *qt2 = obi->Trades()->Item(1);
 
         if(!StringIdComparer::Equal(qt1->MDEntryID, 2, "e7", 2))
             throw;
@@ -906,19 +345,19 @@ public:
             throw;
     }
 
-    void Test_OnIncrementalRefresh_OBR_CURR_Add() {
+    void Test_OnIncrementalRefresh_TLR_CURR_Add() {
         this->Clear();
         this->TestDefaults();
 
-        FastIncrementalOBRCURRInfo *info = new FastIncrementalOBRCURRInfo;
+        FastIncrementalTLRCURRInfo *info = new FastIncrementalTLRCURRInfo;
 
-        FastOBSCURRItemInfo *item1 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote,
+        FastTLSCURRItemInfo *item1 = this->m_helper->CreateTLRCurrItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote,
                                                                            "e1", 1);
-        FastOBSCURRItemInfo *item2 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote,
+        FastTLSCURRItemInfo *item2 = this->m_helper->CreateTLRCurrItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote,
                                                                            "e2", 2);
-        FastOBSCURRItemInfo *item3 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote,
+        FastTLSCURRItemInfo *item3 = this->m_helper->CreateTLRCurrItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote,
                                                                            "e3", 3);
-        FastOBSCURRItemInfo *item4 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote,
+        FastTLSCURRItemInfo *item4 = this->m_helper->CreateTLRCurrItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote,
                                                                            "e4", 4);
 
         item1->RptSeq = 1;
@@ -929,7 +368,7 @@ public:
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item1;
 
-        this->incCurr->OnIncrementalRefresh_OBR_CURR(info);
+        this->incCurr->OnIncrementalRefresh_TLR_CURR(info);
 
         if(this->incCurr->TradeCurr()->UsedItemCount() != 1)
             throw;
@@ -937,12 +376,12 @@ public:
             throw;
         if(this->incCurr->TradeCurr()->Symbol(0)->Count() != 1)
             throw;
-        TradeInfo<FastOBSCURRItemInfo> *obi = this->incCurr->TradeCurr()->GetItem("s1", "t1");
+        TradeInfo<FastTLSCURRItemInfo> *obi = this->incCurr->TradeCurr()->GetItem("s1", "t1");
         if(obi == 0)
             throw;
         if(obi->Trades()->Count() != 1)
             throw;
-        FastOBSCURRItemInfo *quote = obi->Trades()->Start()->Data();
+        FastTLSCURRItemInfo *quote = obi->Trades()->Item(0);
         Decimal price(3, -2);
         Decimal size(1, 2);
         if(!quote->MDEntryPx.Equal(&price))
@@ -955,7 +394,7 @@ public:
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item2;
 
-        this->incCurr->OnIncrementalRefresh_OBR_CURR(info);
+        this->incCurr->OnIncrementalRefresh_TLR_CURR(info);
 
         if(this->incCurr->TradeCurr()->UsedItemCount() != 1)
             throw;
@@ -968,19 +407,19 @@ public:
             throw;
         if(obi->Trades()->Count() != 2)
             throw;
-        quote = obi->Trades()->Start()->Data();
-        price.Set(4, -2);
+        quote = obi->Trades()->Item(0);
+        price.Set(3, -2);
         if(!quote->MDEntryPx.Equal(&price))
             throw;
         if(!quote->MDEntrySize.Equal(&size))
             throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, 2, "e2", 2))
+        if(!StringIdComparer::Equal(quote->MDEntryID, 2, "e1", 2))
             throw;
 
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item3;
 
-        this->incCurr->OnIncrementalRefresh_OBR_CURR(info);
+        this->incCurr->OnIncrementalRefresh_TLR_CURR(info);
 
         if(this->incCurr->TradeCurr()->UsedItemCount() != 1)
             throw;
@@ -994,22 +433,22 @@ public:
         if(obi->Trades()->Count() != 3)
             throw;
 
-        quote = obi->Trades()->Start()->Data();
-        price.Set(4, -2);
-        if(!quote->MDEntryPx.Equal(&price))
-            throw;
-        if(!quote->MDEntrySize.Equal(&size))
-            throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, 2, "e2", 2))
-            throw;
-
-        quote = obi->Trades()->Start()->Next()->Data();
+        quote = obi->Trades()->Item(0);
         price.Set(3, -2);
         if(!quote->MDEntryPx.Equal(&price))
             throw;
         if(!quote->MDEntrySize.Equal(&size))
             throw;
         if(!StringIdComparer::Equal(quote->MDEntryID, 2, "e1", 2))
+            throw;
+
+        quote = obi->Trades()->Item(1);
+        price.Set(4, -2);
+        if(!quote->MDEntryPx.Equal(&price))
+            throw;
+        if(!quote->MDEntrySize.Equal(&size))
+            throw;
+        if(!StringIdComparer::Equal(quote->MDEntryID, 2, "e2", 2))
             throw;
 
         quote = obi->Trades()->End()->Data();
@@ -1024,7 +463,7 @@ public:
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item4;
 
-        this->incCurr->OnIncrementalRefresh_OBR_CURR(info);
+        this->incCurr->OnIncrementalRefresh_TLR_CURR(info);
 
         if(this->incCurr->TradeCurr()->UsedItemCount() != 1)
             throw;
@@ -1038,16 +477,7 @@ public:
         if(obi->Trades()->Count() != 4)
             throw;
 
-        quote = obi->Trades()->Start()->Data();
-        price.Set(4, -2);
-        if(!quote->MDEntryPx.Equal(&price))
-            throw;
-        if(!quote->MDEntrySize.Equal(&size))
-            throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, 2, "e2", 2))
-            throw;
-
-        quote = obi->Trades()->Start()->Next()->Data();
+        quote = obi->Trades()->Item(0);
         price.Set(3, -2);
         if(!quote->MDEntryPx.Equal(&price))
             throw;
@@ -1056,7 +486,25 @@ public:
         if(!StringIdComparer::Equal(quote->MDEntryID, 2, "e1", 2))
             throw;
 
+        quote = obi->Trades()->Item(1);
+        price.Set(4, -2);
+        if(!quote->MDEntryPx.Equal(&price))
+            throw;
+        if(!quote->MDEntrySize.Equal(&size))
+            throw;
+        if(!StringIdComparer::Equal(quote->MDEntryID, 2, "e2", 2))
+            throw;
+
         quote = obi->Trades()->Start()->Next()->Next()->Data();
+        price.Set(2, -2);
+        if(!quote->MDEntryPx.Equal(&price))
+            throw;
+        if(!quote->MDEntrySize.Equal(&size))
+            throw;
+        if(!StringIdComparer::Equal(quote->MDEntryID, 2, "e3", 2))
+            throw;
+
+        quote = obi->Trades()->End()->Data();
         price.Set(25, -3);
         if(!quote->MDEntryPx.Equal(&price))
             throw;
@@ -1064,192 +512,20 @@ public:
             throw;
         if(!StringIdComparer::Equal(quote->MDEntryID, 2, "e4", 2))
             throw;
-
-        quote = obi->Trades()->End()->Data();
-        price.Set(2, -2);
-        if(!quote->MDEntryPx.Equal(&price))
-            throw;
-        if(!quote->MDEntrySize.Equal(&size))
-            throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, 2, "e3", 2))
-            throw;
-    }
-
-    void Test_OnIncrementalRefresh_OBR_CURR_Remove() {
-        this->Clear();
-        this->TestDefaults();
-
-        FastIncrementalOBRCURRInfo *info = new FastIncrementalOBRCURRInfo;
-        FastOBSCURRItemInfo *item1 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote,
-                                                                           "e1", 1);
-        FastOBSCURRItemInfo *item2 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote,
-                                                                           "e2", 2);
-        FastOBSCURRItemInfo *item3 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote,
-                                                                           "e3", 3);
-        FastOBSCURRItemInfo *item4 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote,
-                                                                           "e4", 4);
-
-        info->GroupMDEntriesCount = 4;
-        info->GroupMDEntries[0] = item1;
-        info->GroupMDEntries[1] = item2;
-        info->GroupMDEntries[2] = item3;
-        info->GroupMDEntries[3] = item4;
-
-        this->incCurr->OnIncrementalRefresh_OBR_CURR(info);
-
-        item1->MDUpdateAction = mduaDelete;
-        item2->MDUpdateAction = mduaDelete;
-        item3->MDUpdateAction = mduaDelete;
-        item4->MDUpdateAction = mduaDelete;
-
-        info->GroupMDEntriesCount = 1;
-        info->GroupMDEntries[0] = item4;
-        item4->RptSeq = 5;
-
-        this->incCurr->OnIncrementalRefresh_OBR_CURR(info);
-
-        if(this->incCurr->TradeCurr()->UsedItemCount() != 1)
-            throw;
-
-        TradeInfo<FastOBSCURRItemInfo> *obi = this->incCurr->TradeCurr()->GetItem("s1", "t1");
-        if(obi->Trades()->Count() != 3)
-            throw;
-        if(!StringIdComparer::Equal(obi->Trades()->Item(0)->MDEntryID, 2, "e2", 2))
-            throw;
-        if(!StringIdComparer::Equal(obi->Trades()->Item(1)->MDEntryID, 2, "e1", 2))
-            throw;
-        if(!StringIdComparer::Equal(obi->Trades()->Item(2)->MDEntryID, 2, "e3", 2))
-            throw;
-
-        info->GroupMDEntriesCount = 1;
-        info->GroupMDEntries[0] = item3;
-        item3->RptSeq = 6;
-
-        this->incCurr->OnIncrementalRefresh_OBR_CURR(info);
-
-        if(this->incCurr->TradeCurr()->UsedItemCount() != 1)
-            throw;
-
-        obi = this->incCurr->TradeCurr()->GetItem("s1", "t1");
-        if(obi->Trades()->Count() != 2)
-            throw;
-        if(!StringIdComparer::Equal(obi->Trades()->Item(0)->MDEntryID, 2, "e2", 2))
-            throw;
-        if(!StringIdComparer::Equal(obi->Trades()->Item(1)->MDEntryID, 2, "e1", 2))
-            throw;
-
-        info->GroupMDEntriesCount = 1;
-        info->GroupMDEntries[0] = item2;
-        item2->RptSeq = 7;
-
-        this->incCurr->OnIncrementalRefresh_OBR_CURR(info);
-
-        if(this->incCurr->TradeCurr()->UsedItemCount() != 1)
-            throw;
-
-        obi = this->incCurr->TradeCurr()->GetItem("s1", "t1");
-        if(obi->Trades()->Count() != 1)
-            throw;
-        if(!StringIdComparer::Equal(obi->Trades()->Item(0)->MDEntryID, 2, "e1", 2))
-            throw;
-
-        info->GroupMDEntriesCount = 1;
-        info->GroupMDEntries[0] = item1;
-        item1->RptSeq = 8;
-
-        this->incCurr->OnIncrementalRefresh_OBR_CURR(info);
-
-        if(this->incCurr->TradeCurr()->UsedItemCount() != 1)
-            throw;
-
-        obi = this->incCurr->TradeCurr()->GetItem("s1", "t1");
-        if(obi->Trades()->Count() != 0)
-            throw;
-    }
-
-    void Test_OnIncrementalRefresh_OBR_CURR_Change() {
-        this->Clear();
-        this->TestDefaults();
-
-        FastIncrementalOBRCURRInfo *info = new FastIncrementalOBRCURRInfo;
-        FastOBSCURRItemInfo *item1 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote,
-                                                                           "e1", 1);
-        FastOBSCURRItemInfo *item2 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote,
-                                                                           "e2", 2);
-        FastOBSCURRItemInfo *item3 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote,
-                                                                           "e3", 3);
-        FastOBSCURRItemInfo *item4 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote,
-                                                                           "e4", 4);
-
-        info->GroupMDEntriesCount = 4;
-        info->GroupMDEntries[0] = item1;
-        info->GroupMDEntries[1] = item2;
-        info->GroupMDEntries[2] = item3;
-        info->GroupMDEntries[3] = item4;
-
-        this->incCurr->OnIncrementalRefresh_OBR_CURR(info);
-
-        TradeInfo<FastOBSCURRItemInfo> *obi2 = this->incCurr->TradeCurr()->GetItem("s1", "t1");
-        if(!StringIdComparer::Equal(obi2->Trades()->Item(0)->MDEntryID, 2, "e2", 2))
-            throw;
-        if(!StringIdComparer::Equal(obi2->Trades()->Item(1)->MDEntryID, 2, "e1", 2))
-            throw;
-        if(!StringIdComparer::Equal(obi2->Trades()->Item(2)->MDEntryID, 2, "e4", 2))
-            throw;
-        if(!StringIdComparer::Equal(obi2->Trades()->Item(3)->MDEntryID, 2, "e3", 2))
-            throw;
-
-        FastOBSCURRItemInfo *item5 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 24, -3, 1, 3, mduaChange, mdetBuyQuote,
-                                                                           "e2", 5);
-
-        info->GroupMDEntriesCount = 1;
-        info->GroupMDEntries[0] = item5;
-
-        this->incCurr->OnIncrementalRefresh_OBR_CURR(info);
-
-        TradeInfo<FastOBSCURRItemInfo> *obi = this->incCurr->TradeCurr()->GetItem("s1", "t1");
-
-        FastOBSCURRItemInfo *qt1 = obi->Trades()->Item(0);
-        FastOBSCURRItemInfo *qt2 = obi->Trades()->Item(1);
-        FastOBSCURRItemInfo *qt3 = obi->Trades()->Item(2);
-        FastOBSCURRItemInfo *qt4 = obi->Trades()->Item(3);
-
-        if(this->incCurr->TradeCurr()->UsedItemCount() != 1)
-            throw;
-        if(obi->Trades()->Count() != 4)
-            throw;
-        if(!StringIdComparer::Equal(qt1->MDEntryID, 2, "e1", 2))
-            throw;
-        if(!StringIdComparer::Equal(qt2->MDEntryID, 2, "e4", 2))
-            throw;
-        if(!StringIdComparer::Equal(qt3->MDEntryID, 2, "e2", 2))
-            throw;
-        if(!StringIdComparer::Equal(qt4->MDEntryID, 2, "e3", 2))
-            throw;
-
-        if(qt1->MDEntryPx.Mantissa != item1->MDEntryPx.Mantissa)
-            throw;
-        if(qt1->MDEntryPx.Exponent != item1->MDEntryPx.Exponent)
-            throw;
-
-        if(qt3->MDEntryPx.Mantissa != item5->MDEntryPx.Mantissa)
-            throw;
-        if(qt3->MDEntryPx.Exponent != item5->MDEntryPx.Exponent)
-            throw;
     }
 
     void Test_Clear_Curr() {
         this->Clear();
         this->TestDefaults();
 
-        FastIncrementalOBRCURRInfo *info = new FastIncrementalOBRCURRInfo;
-        FastOBSCURRItemInfo *item1 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote,
+        FastIncrementalTLRCURRInfo *info = new FastIncrementalTLRCURRInfo;
+        FastTLSCURRItemInfo *item1 = this->m_helper->CreateTLRCurrItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote,
                                                                            "e1", 1);
-        FastOBSCURRItemInfo *item2 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote,
+        FastTLSCURRItemInfo *item2 = this->m_helper->CreateTLRCurrItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote,
                                                                            "e2", 2);
-        FastOBSCURRItemInfo *item3 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote,
+        FastTLSCURRItemInfo *item3 = this->m_helper->CreateTLRCurrItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote,
                                                                            "e3", 3);
-        FastOBSCURRItemInfo *item4 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote,
+        FastTLSCURRItemInfo *item4 = this->m_helper->CreateTLRCurrItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote,
                                                                            "e4", 4);
 
         info->GroupMDEntriesCount = 4;
@@ -1258,29 +534,29 @@ public:
         info->GroupMDEntries[2] = item3;
         info->GroupMDEntries[3] = item4;
 
-        this->incCurr->OnIncrementalRefresh_OBR_CURR(info);
+        this->incCurr->OnIncrementalRefresh_TLR_CURR(info);
 
         this->incCurr->TradeCurr()->Clear();
         if(this->incCurr->TradeCurr()->UsedItemCount() != 0)
             throw;
 
-        TradeInfo<FastOBSCURRItemInfo> *obi = this->incCurr->TradeCurr()->GetItem("s1", "t1");
+        TradeInfo<FastTLSCURRItemInfo> *obi = this->incCurr->TradeCurr()->GetItem("s1", "t1");
         if(obi->Trades()->Count() != 0)
             throw;
     }
 
-    void Test_OnFullRefresh_OBS_CURR() {
+    void Test_OnFullRefresh_TLS_CURR() {
         this->Clear();
         this->TestDefaults();
 
-        FastIncrementalOBRCURRInfo *info = new FastIncrementalOBRCURRInfo;
-        FastOBSCURRItemInfo *item1 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote,
+        FastIncrementalTLRCURRInfo *info = new FastIncrementalTLRCURRInfo;
+        FastTLSCURRItemInfo *item1 = this->m_helper->CreateTLRCurrItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote,
                                                                            "e1", 1);
-        FastOBSCURRItemInfo *item2 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote,
+        FastTLSCURRItemInfo *item2 = this->m_helper->CreateTLRCurrItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote,
                                                                            "e2", 2);
-        FastOBSCURRItemInfo *item3 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote,
+        FastTLSCURRItemInfo *item3 = this->m_helper->CreateTLRCurrItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote,
                                                                            "e3", 3);
-        FastOBSCURRItemInfo *item4 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote,
+        FastTLSCURRItemInfo *item4 = this->m_helper->CreateTLRCurrItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote,
                                                                            "e4", 4);
 
         info->GroupMDEntriesCount = 4;
@@ -1289,11 +565,11 @@ public:
         info->GroupMDEntries[2] = item3;
         info->GroupMDEntries[3] = item4;
 
-        this->incCurr->OnIncrementalRefresh_OBR_CURR(info);
+        this->incCurr->OnIncrementalRefresh_TLR_CURR(info);
 
-        FastOBSCURRInfo *info2 = this->m_helper->CreateOBSCurrInfo("t1s2", "t1");
-        FastOBSCURRItemInfo *newItem1 = this->m_helper->CreateOBSCurrItemInfo(7,-2, 1, 2, mdetBuyQuote, "e7");
-        FastOBSCURRItemInfo *newItem2 = this->m_helper->CreateOBSCurrItemInfo(8,-2, 1, 2, mdetBuyQuote, "e8");
+        FastTLSCURRInfo *info2 = this->m_helper->CreateTLSCurrInfo("t1s2", "t1");
+        FastTLSCURRItemInfo *newItem1 = this->m_helper->CreateTLSCurrItemInfo(7,-2, 1, 2, mdetBuyQuote, "e7", 5);
+        FastTLSCURRItemInfo *newItem2 = this->m_helper->CreateTLSCurrItemInfo(8,-2, 1, 2, mdetBuyQuote, "e8", 6);
 
         info2->RptSeq = 5;
         info2->GroupMDEntriesCount = 2;
@@ -1306,430 +582,16 @@ public:
         if(this->incCurr->TradeCurr()->UsedItemCount() != 2)
             throw;
 
-        TradeInfo<FastOBSCURRItemInfo> *obi3 = this->incCurr->TradeCurr()->GetItem("s1", "t1");
+        TradeInfo<FastTLSCURRItemInfo> *obi3 = this->incCurr->TradeCurr()->GetItem("s1", "t1");
         if(obi3->Trades()->Count() != 4)
             throw;
 
-        TradeInfo<FastOBSCURRItemInfo> *obi = this->incCurr->TradeCurr()->GetItem("t1s2", 4, "t1", 2);
+        TradeInfo<FastTLSCURRItemInfo> *obi = this->incCurr->TradeCurr()->GetItem("t1s2", 4, "t1", 2);
         if(obi->Trades()->Count() != 2)
             throw;
 
-        FastOBSCURRItemInfo *qt1 = obi->Trades()->Start()->Data();
-        FastOBSCURRItemInfo *qt2 = obi->Trades()->Start()->Next()->Data();
-
-        if(!StringIdComparer::Equal(qt1->MDEntryID, 2, "e8", 2))
-            throw;
-        if(!StringIdComparer::Equal(qt2->MDEntryID, 2, "e7", 2))
-            throw;
-        if(!qt1->MDEntryPx.Equal(8, -2))
-            throw;
-        if(!qt1->MDEntrySize.Equal(1, 2))
-            throw;
-        if(!qt2->MDEntryPx.Equal(7, -2))
-            throw;
-    }
-
-    void Test_OnIncrementalRefresh_OBR_CURR_Add_SellQuotes() {
-        this->Clear();
-        this->TestDefaults();
-
-        FastIncrementalOBRCURRInfo *info = new FastIncrementalOBRCURRInfo;
-
-        FastOBSCURRItemInfo *item1 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote,
-                                                                           "e1", 1);
-        FastOBSCURRItemInfo *item2 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote,
-                                                                           "e2", 2);
-        FastOBSCURRItemInfo *item3 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote,
-                                                                           "e3", 3);
-        FastOBSCURRItemInfo *item4 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote,
-                                                                           "e4", 4);
-
-        info->GroupMDEntriesCount = 1;
-        info->GroupMDEntries[0] = item1;
-
-        this->incCurr->OnIncrementalRefresh_OBR_CURR(info);
-
-        if(this->incCurr->TradeCurr()->UsedItemCount() != 1)
-            throw;
-        if(this->incCurr->TradeCurr()->SymbolsCount() != 1)
-            throw;
-        if(this->incCurr->TradeCurr()->Symbol(0)->Count() != 1)
-            throw;
-        TradeInfo<FastOBSCURRItemInfo> *obi = this->incCurr->TradeCurr()->GetItem("s1", "t1");
-        if(obi == 0)
-            throw;
-        if(obi->SellQuotes()->Count() != 1)
-            throw;
-        FastOBSCURRItemInfo *quote = obi->SellQuotes()->Start()->Data();
-        if(!quote->MDEntryPx.Equal(3, -2))
-            throw;
-        if(!quote->MDEntrySize.Equal(1, 2))
-            throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, 2, "e1", 2))
-            throw;
-
-        info->GroupMDEntriesCount = 1;
-        info->GroupMDEntries[0] = item2;
-
-        this->incCurr->OnIncrementalRefresh_OBR_CURR(info);
-
-        if(this->incCurr->TradeCurr()->UsedItemCount() != 1)
-            throw;
-        if(this->incCurr->TradeCurr()->SymbolsCount() != 1)
-            throw;
-        if(this->incCurr->TradeCurr()->Symbol(0)->Count() != 1)
-            throw;
-        obi = this->incCurr->TradeCurr()->GetItem("s1", "t1");
-        if(obi == 0)
-            throw;
-        if(obi->SellQuotes()->Count() != 2)
-            throw;
-        quote = obi->SellQuotes()->Start()->Data();
-        if(!quote->MDEntryPx.Equal(3, -2))
-            throw;
-        if(!quote->MDEntrySize.Equal(1, 2))
-            throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, 2, "e1", 2))
-            throw;
-
-        quote = obi->SellQuotes()->Item(1);
-        if(!quote->MDEntryPx.Equal(4, -2))
-            throw;
-        if(!quote->MDEntrySize.Equal(1, 2))
-            throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, 2, "e2", 2))
-            throw;
-
-        info->GroupMDEntriesCount = 1;
-        info->GroupMDEntries[0] = item3;
-
-        this->incCurr->OnIncrementalRefresh_OBR_CURR(info);
-
-        if(this->incCurr->TradeCurr()->UsedItemCount() != 1)
-            throw;
-        if(this->incCurr->TradeCurr()->SymbolsCount() != 1)
-            throw;
-        if(this->incCurr->TradeCurr()->Symbol(0)->Count() != 1)
-            throw;
-        obi = this->incCurr->TradeCurr()->GetItem("s1", "t1");
-        if(obi == 0)
-            throw;
-        if(obi->SellQuotes()->Count() != 3)
-            throw;
-
-        quote = obi->SellQuotes()->Start()->Data();
-        if(!quote->MDEntryPx.Equal(2, -2))
-            throw;
-        if(!quote->MDEntrySize.Equal(1, 2))
-            throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, 2, "e3", 2))
-            throw;
-
-        quote = obi->SellQuotes()->Start()->Next()->Data();
-        if(!quote->MDEntryPx.Equal(3, -2))
-            throw;
-        if(!quote->MDEntrySize.Equal(1, 2))
-            throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, 2, "e1", 2))
-            throw;
-
-        quote = obi->SellQuotes()->End()->Data();
-        if(!quote->MDEntryPx.Equal(4, -2))
-            throw;
-        if(!quote->MDEntrySize.Equal(1, 2))
-            throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, 2, "e2", 2))
-            throw;
-
-        info->GroupMDEntriesCount = 1;
-        info->GroupMDEntries[0] = item4;
-
-        this->incCurr->OnIncrementalRefresh_OBR_CURR(info);
-
-        if(this->incCurr->TradeCurr()->UsedItemCount() != 1)
-            throw;
-        if(this->incCurr->TradeCurr()->SymbolsCount() != 1)
-            throw;
-        if(this->incCurr->TradeCurr()->Symbol(0)->Count() != 1)
-            throw;
-        obi = this->incCurr->TradeCurr()->GetItem("s1", "t1");
-        if(obi == 0)
-            throw;
-        if(obi->SellQuotes()->Count() != 4)
-            throw;
-
-        quote = obi->SellQuotes()->Start()->Data();
-        if(!quote->MDEntryPx.Equal(2, -2))
-            throw;
-        if(!quote->MDEntrySize.Equal(1, 2))
-            throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, 2, "e3", 2))
-            throw;
-
-        quote = obi->SellQuotes()->Start()->Next()->Data();
-        if(!quote->MDEntryPx.Equal(25, -3))
-            throw;
-        if(!quote->MDEntrySize.Equal(1, 2))
-            throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, 2, "e4", 2))
-            throw;
-
-        quote = obi->SellQuotes()->Start()->Next()->Next()->Data();
-        if(!quote->MDEntryPx.Equal(3, -2))
-            throw;
-        if(!quote->MDEntrySize.Equal(1, 2))
-            throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, 2, "e1", 2))
-            throw;
-
-        quote = obi->SellQuotes()->End()->Data();
-        if(!quote->MDEntryPx.Equal(4, -2))
-            throw;
-        if(!quote->MDEntrySize.Equal(1, 2))
-            throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, 2, "e2", 2))
-            throw;
-    }
-
-    void Test_OnIncrementalRefresh_OBR_CURR_Remove_SellQuotes() {
-        this->Clear();
-        this->TestDefaults();
-
-        FastIncrementalOBRCURRInfo *info = new FastIncrementalOBRCURRInfo;
-        FastOBSCURRItemInfo *item1 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote,
-                                                                           "e1", 1);
-        FastOBSCURRItemInfo *item2 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote,
-                                                                           "e2", 2);
-        FastOBSCURRItemInfo *item3 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote,
-                                                                           "e3", 3);
-        FastOBSCURRItemInfo *item4 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote,
-                                                                           "e4", 4);
-
-        info->GroupMDEntriesCount = 4;
-        info->GroupMDEntries[0] = item1;
-        info->GroupMDEntries[1] = item2;
-        info->GroupMDEntries[2] = item3;
-        info->GroupMDEntries[3] = item4;
-
-        this->incCurr->OnIncrementalRefresh_OBR_CURR(info);
-
-        item1->MDUpdateAction = mduaDelete;
-        item2->MDUpdateAction = mduaDelete;
-        item3->MDUpdateAction = mduaDelete;
-        item4->MDUpdateAction = mduaDelete;
-
-        info->GroupMDEntriesCount = 1;
-        info->GroupMDEntries[0] = item4;
-        item4->RptSeq = 5;
-
-        this->incCurr->OnIncrementalRefresh_OBR_CURR(info);
-
-        if(this->incCurr->TradeCurr()->UsedItemCount() != 1)
-            throw;
-
-        TradeInfo<FastOBSCURRItemInfo> *obi = this->incCurr->TradeCurr()->GetItem("s1", "t1");
-        if(obi->SellQuotes()->Count() != 3)
-            throw;
-        if(!StringIdComparer::Equal(obi->SellQuotes()->Item(0)->MDEntryID, 2, "e3", 2))
-            throw;
-        if(!StringIdComparer::Equal(obi->SellQuotes()->Item(1)->MDEntryID, 2, "e1", 2))
-            throw;
-        if(!StringIdComparer::Equal(obi->SellQuotes()->Item(2)->MDEntryID, 2, "e2", 2))
-            throw;
-
-        info->GroupMDEntriesCount = 1;
-        info->GroupMDEntries[0] = item3;
-        item3->RptSeq = 6;
-
-        this->incCurr->OnIncrementalRefresh_OBR_CURR(info);
-
-        if(this->incCurr->TradeCurr()->UsedItemCount() != 1)
-            throw;
-
-        obi = this->incCurr->TradeCurr()->GetItem("s1", "t1");
-        if(obi->SellQuotes()->Count() != 2)
-            throw;
-        if(!StringIdComparer::Equal(obi->SellQuotes()->Item(0)->MDEntryID, 2, "e1", 2))
-            throw;
-        if(!StringIdComparer::Equal(obi->SellQuotes()->Item(1)->MDEntryID, 2, "e2", 2))
-            throw;
-
-        info->GroupMDEntriesCount = 1;
-        info->GroupMDEntries[0] = item2;
-        item2->RptSeq = 7;
-
-        this->incCurr->OnIncrementalRefresh_OBR_CURR(info);
-
-        if(this->incCurr->TradeCurr()->UsedItemCount() != 1)
-            throw;
-
-        obi = this->incCurr->TradeCurr()->GetItem("s1", "t1");
-        if(obi->SellQuotes()->Count() != 1)
-            throw;
-        if(!StringIdComparer::Equal(obi->SellQuotes()->Item(0)->MDEntryID, 2, "e1", 2))
-            throw;
-
-        info->GroupMDEntriesCount = 1;
-        info->GroupMDEntries[0] = item1;
-        item1->RptSeq = 8;
-
-        this->incCurr->OnIncrementalRefresh_OBR_CURR(info);
-
-        if(this->incCurr->TradeCurr()->UsedItemCount() != 1)
-            throw;
-
-        obi = this->incCurr->TradeCurr()->GetItem("s1", "t1");
-        if(obi->SellQuotes()->Count() != 0)
-            throw;
-    }
-
-    void Test_OnIncrementalRefresh_OBR_CURR_Change_SellQuotes() {
-        this->Clear();
-        this->TestDefaults();
-
-        FastIncrementalOBRCURRInfo *info = new FastIncrementalOBRCURRInfo;
-        FastOBSCURRItemInfo *item1 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote,
-                                                                           "e1", 1);
-        FastOBSCURRItemInfo *item2 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote,
-                                                                           "e2", 2);
-        FastOBSCURRItemInfo *item3 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote,
-                                                                           "e3", 3);
-        FastOBSCURRItemInfo *item4 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote,
-                                                                           "e4", 4);
-
-        info->GroupMDEntriesCount = 4;
-        info->GroupMDEntries[0] = item1;
-        info->GroupMDEntries[1] = item2;
-        info->GroupMDEntries[2] = item3;
-        info->GroupMDEntries[3] = item4;
-
-        this->incCurr->OnIncrementalRefresh_OBR_CURR(info);
-
-        TradeInfo<FastOBSCURRItemInfo> *obi2 = this->incCurr->TradeCurr()->GetItem("s1", "t1");
-        if(!StringIdComparer::Equal(obi2->SellQuotes()->Item(0)->MDEntryID, 2, "e3", 2))
-            throw;
-        if(!StringIdComparer::Equal(obi2->SellQuotes()->Item(1)->MDEntryID, 2, "e4", 2))
-            throw;
-        if(!StringIdComparer::Equal(obi2->SellQuotes()->Item(2)->MDEntryID, 2, "e1", 2))
-            throw;
-        if(!StringIdComparer::Equal(obi2->SellQuotes()->Item(3)->MDEntryID, 2, "e2", 2))
-            throw;
-
-        FastOBSCURRItemInfo *item5 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 24, -3, 1, 3, mduaChange,
-                                                                           mdetSellQuote, "e2", 5);
-
-        info->GroupMDEntriesCount = 1;
-        info->GroupMDEntries[0] = item5;
-
-        this->incCurr->OnIncrementalRefresh_OBR_CURR(info);
-
-        TradeInfo<FastOBSCURRItemInfo> *obi = this->incCurr->TradeCurr()->GetItem("s1", "t1");
-
-        FastOBSCURRItemInfo *qt1 = obi->SellQuotes()->Item(0);
-        FastOBSCURRItemInfo *qt2 = obi->SellQuotes()->Item(1);
-        FastOBSCURRItemInfo *qt3 = obi->SellQuotes()->Item(2);
-        FastOBSCURRItemInfo *qt4 = obi->SellQuotes()->Item(3);
-
-        if(this->incCurr->TradeCurr()->UsedItemCount() != 1)
-            throw;
-        if(obi->SellQuotes()->Count() != 4)
-            throw;
-        if(!StringIdComparer::Equal(qt1->MDEntryID, 2, "e3", 2))
-            throw;
-        if(!StringIdComparer::Equal(qt2->MDEntryID, 2, "e2", 2))
-            throw;
-        if(!StringIdComparer::Equal(qt3->MDEntryID, 2, "e4", 2))
-            throw;
-        if(!StringIdComparer::Equal(qt4->MDEntryID, 2, "e1", 2))
-            throw;
-
-        if(qt1->MDEntryPx.Mantissa != item3->MDEntryPx.Mantissa)
-            throw;
-        if(qt1->MDEntryPx.Exponent != item3->MDEntryPx.Exponent)
-            throw;
-
-        if(qt2->MDEntryPx.Mantissa != item5->MDEntryPx.Mantissa)
-            throw;
-        if(qt2->MDEntryPx.Exponent != item5->MDEntryPx.Exponent)
-            throw;
-    }
-
-    void Test_Clear_Curr_SellQuotes() {
-        this->Clear();
-        this->TestDefaults();
-
-        FastIncrementalOBRCURRInfo *info = new FastIncrementalOBRCURRInfo;
-        FastOBSCURRItemInfo *item1 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote,
-                                                                           "e1", 1);
-        FastOBSCURRItemInfo *item2 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote,
-                                                                           "e2", 2);
-        FastOBSCURRItemInfo *item3 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote,
-                                                                           "e3", 3);
-        FastOBSCURRItemInfo *item4 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote,
-                                                                           "e4", 4);
-
-        info->GroupMDEntriesCount = 4;
-        info->GroupMDEntries[0] = item1;
-        info->GroupMDEntries[1] = item2;
-        info->GroupMDEntries[2] = item3;
-        info->GroupMDEntries[3] = item4;
-
-        this->incCurr->OnIncrementalRefresh_OBR_CURR(info);
-
-        this->incCurr->TradeCurr()->Clear();
-        if(this->incCurr->TradeCurr()->UsedItemCount() != 0)
-            throw;
-
-        TradeInfo<FastOBSCURRItemInfo> *obi = this->incCurr->TradeCurr()->GetItem("s1", "t1");
-        if(obi->Trades()->Count() != 0)
-            throw;
-    }
-
-    void Test_OnFullRefresh_OBS_CURR_SellQuotes() {
-        this->Clear();
-        this->TestDefaults();
-
-        FastIncrementalOBRCURRInfo *info = new FastIncrementalOBRCURRInfo;
-        FastOBSCURRItemInfo *item1 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote,
-                                                                           "e1", 1);
-        FastOBSCURRItemInfo *item2 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote,
-                                                                           "e2", 2);
-        FastOBSCURRItemInfo *item3 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote,
-                                                                           "e3", 3);
-        FastOBSCURRItemInfo *item4 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote,
-                                                                           "e4", 4);
-
-        info->GroupMDEntriesCount = 4;
-        info->GroupMDEntries[0] = item1;
-        info->GroupMDEntries[1] = item2;
-        info->GroupMDEntries[2] = item3;
-        info->GroupMDEntries[3] = item4;
-
-        this->incCurr->OnIncrementalRefresh_OBR_CURR(info);
-
-        FastOBSCURRInfo *info2 = this->m_helper->CreateOBSCurrInfo("t1s2", "t1");
-        FastOBSCURRItemInfo *newItem1 = this->m_helper->CreateOBSCurrItemInfo(7,-2, 1, 2, mdetSellQuote, "e7");
-        FastOBSCURRItemInfo *newItem2 = this->m_helper->CreateOBSCurrItemInfo(8,-2, 1, 2, mdetSellQuote, "e8");
-
-        info2->GroupMDEntriesCount = 2;
-        info2->GroupMDEntries[0] = newItem1;
-        info2->GroupMDEntries[1] = newItem2;
-
-        this->incCurr->TradeCurr()->ProcessSnapshot(info2);
-
-        if(this->incCurr->TradeCurr()->UsedItemCount() != 1)
-            throw;
-
-        TradeInfo<FastOBSCURRItemInfo> *obi3 = this->incCurr->TradeCurr()->GetItem("s1", "t1");
-        if(obi3->SellQuotes()->Count() != 4)
-            throw;
-
-        TradeInfo<FastOBSCURRItemInfo> *obi = this->incCurr->TradeCurr()->GetItem("t1s2", 4, "t1", 2);
-        if(obi->SellQuotes()->Count() != 2)
-            throw;
-
-        FastOBSCURRItemInfo *qt1 = obi->SellQuotes()->Item(0);
-        FastOBSCURRItemInfo *qt2 = obi->SellQuotes()->Item(1);
+        FastTLSCURRItemInfo *qt1 = obi->Trades()->Item(0);
+        FastTLSCURRItemInfo *qt2 = obi->Trades()->Item(1);
 
         if(!StringIdComparer::Equal(qt1->MDEntryID, 2, "e7", 2))
             throw;
@@ -1744,69 +606,31 @@ public:
     }
 
     void Test_OnIncrementalRefresh_TLR_FOND() {
-        printf("OBR Test_OnIncrementalRefresh_TLR_FOND_Add\n");
+        printf("TLR Test_OnIncrementalRefresh_TLR_FOND_Add\n");
         Test_OnIncrementalRefresh_TLR_FOND_Add();
-        printf("OBR Test_OnIncrementalRefresh_TLR_FOND_Remove\n");
-        Test_OnIncrementalRefresh_TLR_FOND_Remove();
-        printf("OBR Test_OnIncrementalRefresh_TLR_FOND_Change\n");
-        Test_OnIncrementalRefresh_TLR_FOND_Change();
-        printf("OBR Test_Clear\n");
+        printf("TLR Test_Clear\n");
         Test_Clear();
     }
 
-    void Test_OnIncrementalRefresh_TLR_FOND_SellQuotes() {
-        printf("OBR Test_OnIncrementalRefresh_TLR_FOND_Add_SellQuotes\n");
-        Test_OnIncrementalRefresh_TLR_FOND_Add_SellQuotes();
-        printf("OBR Test_OnIncrementalRefresh_TLR_FOND_Remove_SellQuotes\n");
-        Test_OnIncrementalRefresh_TLR_FOND_Remove_SellQuotes();
-        printf("OBR Test_OnIncrementalRefresh_TLR_FOND_Change_SellQuotes\n");
-        Test_OnIncrementalRefresh_TLR_FOND_Change_SellQuotes();
-        printf("OBR Test_Clear_SellQuotes\n");
-        Test_Clear_SellQuotes();
-    }
-
-    void Test_OnIncrementalRefresh_OBR_CURR() {
-        printf("OBR Test_OnIncrementalRefresh_OBR_CURR_Add\n");
-        Test_OnIncrementalRefresh_OBR_CURR_Add();
-        printf("OBR Test_OnIncrementalRefresh_OBR_CURR_Remove\n");
-        Test_OnIncrementalRefresh_OBR_CURR_Remove();
-        printf("OBR Test_OnIncrementalRefresh_OBR_CURR_Change\n");
-        Test_OnIncrementalRefresh_OBR_CURR_Change();
-        printf("OBR Test_Clear_Curr\n");
+    void Test_OnIncrementalRefresh_TLR_CURR() {
+        printf("TLR Test_OnIncrementalRefresh_TLR_CURR_Add\n");
+        Test_OnIncrementalRefresh_TLR_CURR_Add();
+        printf("TLR Test_Clear_Curr\n");
         Test_Clear_Curr();
     }
 
-    void Test_OnIncrementalRefresh_OBR_CURR_SellQuotes() {
-        printf("OBR Test_OnIncrementalRefresh_OBR_CURR_Add_SellQuotes\n");
-        Test_OnIncrementalRefresh_OBR_CURR_Add_SellQuotes();
-        printf("OBR Test_OnIncrementalRefresh_OBR_CURR_Remove_SellQuotes\n");
-        Test_OnIncrementalRefresh_OBR_CURR_Remove_SellQuotes();
-        printf("OBR Test_OnIncrementalRefresh_OBR_CURR_Change_SellQuotes\n");
-        Test_OnIncrementalRefresh_OBR_CURR_Change_SellQuotes();
-        printf("OBR Test_Clear_SellQuotes\n");
-        Test_Clear_SellQuotes();
-    }
-
-    void Test_OBR_CURR() {
-        printf("OBR Test_OnIncrementalRefresh_OBR_CURR\n");
-        Test_OnIncrementalRefresh_OBR_CURR();
-        printf("OBR Test_OnFullRefresh_OBS_CURR\n");
-        Test_OnFullRefresh_OBS_CURR();
-        printf("OBR Test_OnIncrementalRefresh_OBR_CURR_SellQuotes\n");
-        Test_OnIncrementalRefresh_OBR_CURR_SellQuotes();
-        printf("OBR Test_OnFullRefresh_OBS_CURR_SellQuotes\n");
-        Test_OnFullRefresh_OBS_CURR_SellQuotes();
+    void Test_TLR_CURR() {
+        printf("TLR Test_OnIncrementalRefresh_TLR_CURR\n");
+        Test_OnIncrementalRefresh_TLR_CURR();
+        printf("TLR Test_OnFullRefresh_TLS_CURR\n");
+        Test_OnFullRefresh_TLS_CURR();
     }
 
     void Test_TLR_FOND() {
-        printf("OBR Test_OnIncrementalRefresh_TLR_FOND\n");
+        printf("TLR Test_OnIncrementalRefresh_TLR_FOND\n");
         Test_OnIncrementalRefresh_TLR_FOND();
-        printf("OBR Test_OnFullRefresh_OBS_FOND\n");
-        Test_OnFullRefresh_OBS_FOND();
-        printf("OBR Test_OnIncrementalRefresh_TLR_FOND_SellQuotes\n");
-        Test_OnIncrementalRefresh_TLR_FOND_SellQuotes();
-        printf("OBR Test_OnFullRefresh_OBS_FOND_SellQuotes\n");
-        Test_OnFullRefresh_OBS_FOND_SellQuotes();
+        printf("TLR Test_OnFullRefresh_TLS_FOND\n");
+        Test_OnFullRefresh_TLS_FOND();
     }
 
     void TestDefaults() {
@@ -1821,7 +645,7 @@ public:
     void TestTableItem_CorrectBegin() {
         TradeInfo<FastTLSFONDItemInfo> *tb = new TradeInfo<FastTLSFONDItemInfo>();
 
-        FastTLSFONDItemInfo *item1 = this->m_helper->CreateTLSFONDItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e1");
+        FastTLSFONDItemInfo *item1 = this->m_helper->CreateTLSFondItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e1");
         item1->RptSeq = 1;
         item1->MDUpdateAction = mduaAdd;
 
@@ -1840,7 +664,7 @@ public:
     void TestTableItem_IncorrectBegin() {
         TradeInfo<FastTLSFONDItemInfo> *tb = new TradeInfo<FastTLSFONDItemInfo>();
 
-        FastTLSFONDItemInfo *item1 = this->m_helper->CreateTLSFONDItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e1");
+        FastTLSFONDItemInfo *item1 = this->m_helper->CreateTLSFondItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e1");
         item1->RptSeq = 2;
         item1->MDUpdateAction = mduaAdd;
 
@@ -1861,13 +685,13 @@ public:
     void TestTableItem_SkipMessage() {
         TradeInfo<FastTLSFONDItemInfo> *tb = new TradeInfo<FastTLSFONDItemInfo>();
 
-        FastTLSFONDItemInfo *item1 = this->m_helper->CreateTLSFONDItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e1");
+        FastTLSFONDItemInfo *item1 = this->m_helper->CreateTLSFondItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e1");
         item1->RptSeq = 1;
         item1->MDUpdateAction = mduaAdd;
 
         tb->ProcessIncrementalMessage(item1);
 
-        FastTLSFONDItemInfo *item2 = this->m_helper->CreateTLSFONDItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e2");
+        FastTLSFONDItemInfo *item2 = this->m_helper->CreateTLSFondItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e2");
         item2->RptSeq = 3;
         item2->MDUpdateAction = mduaAdd;
 
@@ -1880,7 +704,7 @@ public:
         if(tb->RptSeq() != 1)
             throw;
 
-        FastTLSFONDItemInfo *item3 = this->m_helper->CreateTLSFONDItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e3");
+        FastTLSFONDItemInfo *item3 = this->m_helper->CreateTLSFondItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e3");
         item3->RptSeq = 4;
         item3->MDUpdateAction = mduaAdd;
 
@@ -1908,13 +732,13 @@ public:
     void TestTable_AfterClear() {
         this->m_table_fond->Clear();
 
-        FastTLSFONDItemInfo *item = this->m_helper->CreateTLRFONDItemInfo("s1", "session1", "e1");
+        FastTLSFONDItemInfo *item = this->m_helper->CreateTLRFondItemInfo("s1", "session1", "e1", 1);
         item->RptSeq = 1;
 
-        FastTLSFONDItemInfo *item2 = this->m_helper->CreateTLRFONDItemInfo("s1", "session1", "e1");
+        FastTLSFONDItemInfo *item2 = this->m_helper->CreateTLRFondItemInfo("s1", "session1", "e1", 2);
         item2->RptSeq = 2;
 
-        FastTLSFONDItemInfo *item3 = this->m_helper->CreateTLRFONDItemInfo("s1", "session1", "e1");
+        FastTLSFONDItemInfo *item3 = this->m_helper->CreateTLRFondItemInfo("s1", "session1", "e1", 4);
         item3->RptSeq = 4;
 
         this->m_table_fond->ProcessIncremental(item);
@@ -2043,7 +867,7 @@ public:
                                                                            MDEntryType::mdetBuyQuote, "e5", 3);
         item5->RptSeq = 3;
 
-        FastTLSFONDInfo *info = this->m_helper->CreateTLSFONDInfo("s1", "session");
+        FastTLSFONDInfo *info = this->m_helper->CreateTLSFondInfo("s1", "session");
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item5;
 
@@ -2054,8 +878,6 @@ public:
         if(tb != this->m_table_fond->SnapshotItem())
             throw;
         if(tb->Trades()->Count() != 0)
-            throw;
-        if(tb->SellQuotes()->Count() != 0)
             throw;
 
         this->m_table_fond->ProcessSnapshot(info->GroupMDEntries, 1, 3);
@@ -2100,17 +922,17 @@ public:
         if(this->m_table_fond->ProcessIncremental(item4))
             throw;
 
-        FastTLSFONDInfo *info1 = this->m_helper->CreateTLSFONDInfo("s1", "session");
+        FastTLSFONDInfo *info1 = this->m_helper->CreateTLSFondInfo("s1", "session");
         info1->GroupMDEntriesCount = 1;
         info1->RptSeq = 3;
         info1->RouteFirst = true;
-        info1->GroupMDEntries[0] = this->m_helper->CreateTLSFONDItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e2");
+        info1->GroupMDEntries[0] = this->m_helper->CreateTLSFondItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e2");
 
-        FastTLSFONDInfo *info2 = this->m_helper->CreateTLSFONDInfo("s1", "session");
+        FastTLSFONDInfo *info2 = this->m_helper->CreateTLSFondInfo("s1", "session");
         info2->GroupMDEntriesCount = 1;
         info2->RptSeq = 3;
         info2->RouteFirst = true;
-        info2->GroupMDEntries[0] = this->m_helper->CreateTLSFONDItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e2");
+        info2->GroupMDEntries[0] = this->m_helper->CreateTLSFondItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e2");
 
         TradeInfo<FastTLSFONDItemInfo> *tb = this->m_table_fond->GetItem("s1", "session");
 
@@ -2119,8 +941,6 @@ public:
         if(tb != this->m_table_fond->SnapshotItem())
             throw;
         if(tb->Trades()->Count() != 0)
-            throw;
-        if(tb->SellQuotes()->Count() != 0)
             throw;
 
         this->m_table_fond->ProcessSnapshot(info1);
@@ -2167,7 +987,7 @@ public:
                                                                            MDEntryType::mdetBuyQuote, "e5", 2);
         item5->RptSeq = 2;
 
-        FastTLSFONDInfo *info = this->m_helper->CreateTLSFONDInfo("s1", "session");
+        FastTLSFONDInfo *info = this->m_helper->CreateTLSFondInfo("s1", "session");
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item5;
 
@@ -2178,8 +998,6 @@ public:
         if(tb != this->m_table_fond->SnapshotItem())
             throw;
         if(tb->Trades()->Count() != 0)
-            throw;
-        if(tb->SellQuotes()->Count() != 0)
             throw;
 
         this->m_table_fond->ProcessSnapshot(info->GroupMDEntries, 1, 2);
@@ -2221,7 +1039,7 @@ public:
                                                                            MDEntryType::mdetBuyQuote, "e5", 3);
         item5->RptSeq = 3;
 
-        FastTLSFONDInfo *info = this->m_helper->CreateTLSFONDInfo("s1", "session");
+        FastTLSFONDInfo *info = this->m_helper->CreateTLSFondInfo("s1", "session");
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item5;
 
@@ -2232,8 +1050,6 @@ public:
         if(tb != this->m_table_fond->SnapshotItem())
             throw;
         if(tb->Trades()->Count() != 0)
-            throw;
-        if(tb->SellQuotes()->Count() != 0)
             throw;
 
         this->m_table_fond->ProcessSnapshot(info->GroupMDEntries, 1, 3);
@@ -2677,7 +1493,7 @@ public:
         }
 
         SendMessages(snapFond, new TestTemplateInfo*[1] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OBS_FOND, 2, "s1", "session1", false, false,
+                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_TLS_FOND, 2, "s1", "session1", false, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -2704,7 +1520,7 @@ public:
         incFond->StartListenSnapshot();
 
         SendMessages(snapFond, new TestTemplateInfo*[1] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OBS_FOND, 2, "s1", "session1", true, false,
+                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_TLS_FOND, 2, "s1", "session1", true, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -2750,7 +1566,7 @@ public:
         incFond->StartListenSnapshot();
 
         SendMessages(snapFond, new TestTemplateInfo*[1] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OBS_FOND, 1, "s1", "session1", false, false,
+                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_TLS_FOND, 1, "s1", "session1", false, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -2771,7 +1587,7 @@ public:
             throw;
 
         SendMessages(snapFond, new TestTemplateInfo*[1] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OBS_FOND, 2, "s1", "session1", false, false,
+                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_TLS_FOND, 2, "s1", "session1", false, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -2792,12 +1608,12 @@ public:
             throw;
 
         SendMessages(snapFond, new TestTemplateInfo*[2] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OBS_FOND, 3, "s1", "session1", false, false,
+                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_TLS_FOND, 3, "s1", "session1", false, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
                                      }, 2, 4),
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OBS_FOND, 4, "s1", "session1", false, false,
+                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_TLS_FOND, 4, "s1", "session1", false, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -2818,12 +1634,12 @@ public:
             throw;
 
         SendMessages(snapFond, new TestTemplateInfo*[2] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OBS_FOND, 5, "s1", "session1", false, false,
+                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_TLS_FOND, 5, "s1", "session1", false, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
                                      }, 2, 4),
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OBS_FOND, 6, "s1", "session1", true, false,
+                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_TLS_FOND, 6, "s1", "session1", true, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -2868,7 +1684,7 @@ public:
         incFond->StartListenSnapshot();
 
         SendMessages(snapFond, new TestTemplateInfo*[1] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OBS_FOND, 1, "s1", "session1", false, true,
+                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_TLS_FOND, 1, "s1", "session1", false, true,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -2896,7 +1712,7 @@ public:
         incFond->StartListenSnapshot();
 
         SendMessages(snapFond, new TestTemplateInfo*[1] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OBS_FOND, 1, "s1", "session1", false, false,
+                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_TLS_FOND, 1, "s1", "session1", false, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -2907,7 +1723,7 @@ public:
 
         // message seq 2 lost
         SendMessages(snapFond, new TestTemplateInfo*[1] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OBS_FOND, 3, "s1", "session1", false, false,
+                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_TLS_FOND, 3, "s1", "session1", false, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -2949,7 +1765,7 @@ public:
         incFond->StartListenSnapshot();
 
         SendMessages(snapFond, new TestTemplateInfo*[1] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OBS_FOND, 1, "s1", "session1", false, false,
+                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_TLS_FOND, 1, "s1", "session1", false, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -2960,7 +1776,7 @@ public:
 
         // message seq 2 lost
         SendMessages(snapFond, new TestTemplateInfo*[1] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OBS_FOND, 3, "s1", "session1", false, false,
+                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_TLS_FOND, 3, "s1", "session1", false, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -2992,7 +1808,7 @@ public:
             throw;
 
         SendMessages(snapFond, new TestTemplateInfo*[1] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OBS_FOND, 2, "s1", "session1", false, false,
+                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_TLS_FOND, 2, "s1", "session1", false, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -3029,7 +1845,7 @@ public:
         incFond->StartListenSnapshot();
 
         SendMessages(snapFond, new TestTemplateInfo*[1] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OBS_FOND, 2, "s1", "session1", true, true,
+                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_TLS_FOND, 2, "s1", "session1", true, true,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -3072,12 +1888,12 @@ public:
 
         snapFond->m_waitTimer->Stop();
         SendMessages(snapFond, new TestTemplateInfo*[2] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OBS_FOND, 2, "s1", "session1", true, false,
+                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_TLS_FOND, 2, "s1", "session1", true, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
                                      }, 2, 4),
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OBS_FOND, 4, "s1", "session1", false, true,
+                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_TLS_FOND, 4, "s1", "session1", false, true,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -3160,7 +1976,7 @@ public:
 
         // sending snapshot for only one item and rpt seq before last incremental message
         SendMessages(snapFond, new TestTemplateInfo*[4] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OBS_FOND, 2, "s1", "session1", true, true,
+                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_TLS_FOND, 2, "s1", "session1", true, true,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e1"),
@@ -3198,7 +2014,7 @@ public:
         if(snapFond->State() != FeedConnectionState::fcsListenSnapshot)
             throw;
         SendMessages(incFond, snapFond,
-                     "obr entry s1 e1, lost obr entry s1 e2, wait_snap, hbeat, hbeat, hbeat",
+                     "tlr entry s1 e1, lost tlr entry s1 e2, wait_snap, hbeat, hbeat, hbeat",
                      "                                                  hbeat, hbeat, hbeat",
                      30);
         if(incFond->m_packets[4]->m_item == 0 || incFond->m_packets[5]->m_item == 0 || incFond->m_packets[6]->m_item == 0)
@@ -3217,14 +2033,14 @@ public:
         this->Clear();
 
         SendMessages(incFond, snapFond,
-                     "obr entry s1 e1, obr entry s1 e2, obr entry s1 e3, obr entry s2 e1, obr entry s2 e2",
+                     "tlr entry s1 e1, tlr entry s1 e2, tlr entry s1 e3, tlr entry s2 e1, tlr entry s2 e2",
                      "",
                      30);
-        if(incFond->m_TradeTableFond->UsedItemCount() != 2)
+        if(incFond->TradeFond()->UsedItemCount() != 2)
             throw;
-        if(incFond->m_TradeTableFond->Symbol(0)->Session(0)->EntriesQueue()->HasEntries())
+        if(incFond->TradeFond()->Symbol(0)->Session(0)->EntriesQueue()->HasEntries())
             throw;
-        if(incFond->m_TradeTableFond->Symbol(1)->Session(0)->EntriesQueue()->HasEntries())
+        if(incFond->TradeFond()->Symbol(1)->Session(0)->EntriesQueue()->HasEntries())
             throw;
         if(incFond->TradeFond()->SymbolsToRecvSnapshotCount() != 0)
             throw;
@@ -3238,14 +2054,14 @@ public:
         this->Clear();
 
         SendMessages(incFond, snapFond,
-                     "obr entry s1 e1, lost obr entry s1 e2, obr entry s1 e3, obr entry s2 e1, obr entry s2 e2",
+                     "tlr entry s1 e1, lost tlr entry s1 e2, tlr entry s1 e3, tlr entry s2 e1, tlr entry s2 e2",
                      "",
                      30);
-        if(incFond->m_TradeTableFond->UsedItemCount() != 2)
+        if(incFond->TradeFond()->UsedItemCount() != 2)
             throw;
-        if(!incFond->m_TradeTableFond->Symbol(0)->Session(0)->EntriesQueue()->HasEntries())
+        if(!incFond->TradeFond()->Symbol(0)->Session(0)->EntriesQueue()->HasEntries())
             throw;
-        if(incFond->m_TradeTableFond->Symbol(1)->Session(0)->EntriesQueue()->HasEntries())
+        if(incFond->TradeFond()->Symbol(1)->Session(0)->EntriesQueue()->HasEntries())
             throw;
         if(!incFond->ShouldStartSnapshot())
             throw;
@@ -3257,15 +2073,15 @@ public:
         this->Clear();
 
         SendMessages(incFond, snapFond,
-                     "obr entry s1 e1, lost obr entry symbol3 e2, obr entry s1 e3, obr entry s2 e1, obr entry s2 e2",
+                     "tlr entry s1 e1, lost tlr entry symbol3 e2, tlr entry s1 e3, tlr entry s2 e1, tlr entry s2 e2",
                      "",
                      30);
 
-        if(incFond->m_TradeTableFond->UsedItemCount() != 2)
+        if(incFond->TradeFond()->UsedItemCount() != 2)
             throw;
-        if(incFond->m_TradeTableFond->Symbol(0)->Session(0)->EntriesQueue()->HasEntries())
+        if(incFond->TradeFond()->Symbol(0)->Session(0)->EntriesQueue()->HasEntries())
             throw;
-        if(incFond->m_TradeTableFond->Symbol(1)->Session(0)->EntriesQueue()->HasEntries())
+        if(incFond->TradeFond()->Symbol(1)->Session(0)->EntriesQueue()->HasEntries())
             throw;
         if(!incFond->ShouldStartSnapshot())
             throw;
@@ -3277,7 +2093,7 @@ public:
         if(snapFond->State() != FeedConnectionState::fcsSuspend)
             throw;
         SendMessages(incFond, snapFond,
-                     "obr entry s1 e1, lost obr entry symbol3 e1",
+                     "tlr entry s1 e1, lost tlr entry symbol3 e1",
                      "",
                      30);
         if(incFond->HasPotentiallyLostPackets())
@@ -3294,7 +2110,7 @@ public:
         if(snapFond->State() != FeedConnectionState::fcsSuspend)
             throw;
         SendMessages(incFond, snapFond,
-                     "obr entry s1 e1, lost obr entry symbol3 e1, hbeat",
+                     "tlr entry s1 e1, lost tlr entry symbol3 e1, hbeat",
                      "",
                      30);
         if(!incFond->HasPotentiallyLostPackets())
@@ -3318,7 +2134,7 @@ public:
         if(snapFond->State() != FeedConnectionState::fcsSuspend)
             throw;
         SendMessages(incFond, snapFond,
-                     "obr entry s1 e1, lost obr entry symbol3 e1, hbeat, hbeat",
+                     "tlr entry s1 e1, lost tlr entry symbol3 e1, hbeat, hbeat",
                      "",
                      30);
         if(incFond->SymbolsToRecvSnapshotCount() != 2)
@@ -3348,7 +2164,7 @@ public:
         if(snapFond->State() != FeedConnectionState::fcsSuspend)
             throw;
         SendMessages(incFond, snapFond,
-                     "obr entry s1 e1, lost obr entry symbol3 e1, hbeat, hbeat, hbeat",
+                     "tlr entry s1 e1, lost tlr entry symbol3 e1, hbeat, hbeat, hbeat",
                      "",
                      30);
         if(incFond->SymbolsToRecvSnapshotCount() != 2)
@@ -3378,7 +2194,7 @@ public:
         if(snapFond->State() != FeedConnectionState::fcsSuspend)
             throw;
         SendMessages(incFond, snapFond,
-                     "obr entry s1 e1, lost obr entry symbol3 e1, hbeat, hbeat, hbeat, hbeat, hbeat, hbeat, hbeat, hbeat, hbeat",
+                     "tlr entry s1 e1, lost tlr entry symbol3 e1, hbeat, hbeat, hbeat, hbeat, hbeat, hbeat, hbeat, hbeat, hbeat",
                      "",
                      30);
         if(incFond->SymbolsToRecvSnapshotCount() != 2)
@@ -3408,7 +2224,7 @@ public:
         if(snapFond->State() != FeedConnectionState::fcsSuspend)
             throw;
         SendMessages(incFond, snapFond,
-                     "obr entry s1 e1, lost obr entry symbol3 e1, wait_snap",
+                     "tlr entry s1 e1, lost tlr entry symbol3 e1, wait_snap",
                      "",
                      30);
         if(incFond->m_waitTimer->Active())
@@ -3439,8 +2255,8 @@ public:
         if(snapFond->State() != FeedConnectionState::fcsSuspend)
             throw;
         SendMessages(incFond, snapFond,
-                     "obr entry s1 e1, lost obr entry symbol3 e1, wait_snap, obr entry s1 e3,    hbeat,                              hbeat",
-                     "                                                            obs symbol3 begin rpt 1, obs symbol3 rpt 1 entry symbol3 e1, obs symbol3 rpt 1 end",
+                     "tlr entry s1 e1, lost tlr entry symbol3 e1, wait_snap, tlr entry s1 e3,    hbeat,                              hbeat",
+                     "                                                            tls symbol3 begin rpt 1, tls symbol3 rpt 1 entry symbol3 e1, tls symbol3 rpt 1 end",
                      30);
         if(incFond->HasQueueEntries())
             throw;
@@ -3448,13 +2264,13 @@ public:
             throw;
         if(snapFond->State() == FeedConnectionState::fcsSuspend)
             throw;
-        if(incFond->m_TradeTableFond->UsedItemCount() != 3)
+        if(incFond->TradeFond()->UsedItemCount() != 3)
             throw;
-        if(incFond->m_TradeTableFond->GetItem("s1", "session1")->Trades()->Count() != 2)
+        if(incFond->TradeFond()->GetItem("s1", "session1")->Trades()->Count() != 2)
             throw;
-        if(incFond->m_TradeTableFond->GetItem("s2", "session1")->Trades()->Count() != 0)
+        if(incFond->TradeFond()->GetItem("s2", "session1")->Trades()->Count() != 0)
             throw;
-        if(incFond->m_TradeTableFond->GetItem("symbol3", "session1")->Trades()->Count() != 1)
+        if(incFond->TradeFond()->GetItem("symbol3", "session1")->Trades()->Count() != 1)
             throw;
         if(incFond->m_startMsgSeqNum != 2)
             throw;
@@ -3473,8 +2289,8 @@ public:
         if(snapFond->State() != FeedConnectionState::fcsSuspend)
             throw;
         SendMessages(incFond, snapFond,
-                     "lost obr entry s1 e1, lost hbeat, wait_snap",
-                     "obs s1 begin rpt 1, obs s1 rpt 1 entry s1 e1, obs s1 rpt 1 end",
+                     "lost tlr entry s1 e1, lost hbeat, wait_snap",
+                     "tls s1 begin rpt 1, tls s1 rpt 1 entry s1 e1, tls s1 rpt 1 end",
                      30);
         if(incFond->HasQueueEntries())
             throw;
@@ -3486,9 +2302,9 @@ public:
             throw;
         if(snapFond->State() != FeedConnectionState::fcsSuspend)
             throw;
-        if(incFond->m_TradeTableFond->UsedItemCount() != 1)
+        if(incFond->TradeFond()->UsedItemCount() != 1)
             throw;
-        if(incFond->m_TradeTableFond->GetItem("s1", "session1")->Trades()->Count() != 1)
+        if(incFond->TradeFond()->GetItem("s1", "session1")->Trades()->Count() != 1)
             throw;
         if(incFond->m_startMsgSeqNum != 4)
             throw;
@@ -3512,28 +2328,28 @@ public:
         if(incFond->TradeFond()->UsedItemCount() != 3)
             throw;
         SendMessages(incFond, snapFond,
-                     "obr entry s1 e1, lost obr entry symbol3 e1, wait_snap, obr entry s1 e3,                         hbeat,                                        hbeat",
-                     "                                                            obs symbol3 begin rpt 1 end entry symbol3 e1, obs s1 begin rpt 2 end entry s1 e1, hbeat, obs s2 begin rpt 2 end entry s2 e1",
+                     "tlr entry s1 e1, lost tlr entry symbol3 e1, wait_snap, tlr entry s1 e3,                         hbeat,                                        hbeat",
+                     "                                                            tls symbol3 begin rpt 1 end entry symbol3 e1, tls s1 begin rpt 2 end entry s1 e1, hbeat, tls s2 begin rpt 2 end entry s2 e1",
                      30);
         if(incFond->HasQueueEntries())
             throw;
-        if(incFond->m_TradeTableFond->GetItem("s1", "session1")->RptSeq() != 2)
+        if(incFond->TradeFond()->GetItem("s1", "session1")->RptSeq() != 2)
             throw;
-        if(incFond->m_TradeTableFond->GetItem("symbol3", "session1")->RptSeq() != 1)
+        if(incFond->TradeFond()->GetItem("symbol3", "session1")->RptSeq() != 1)
             throw;
-        if(incFond->m_TradeTableFond->GetItem("s2", "session1")->RptSeq() != 2)
+        if(incFond->TradeFond()->GetItem("s2", "session1")->RptSeq() != 2)
             throw;
         if(!incFond->CanStopListeningSnapshot())
             throw;
         if(snapFond->State() != FeedConnectionState::fcsSuspend)
             throw;
-        if(incFond->m_TradeTableFond->UsedItemCount() != 3)
+        if(incFond->TradeFond()->UsedItemCount() != 3)
             throw;
-        if(incFond->m_TradeTableFond->GetItem("s1", "session1")->Trades()->Count() != 2) // snapshot applied virtually actually skipped
+        if(incFond->TradeFond()->GetItem("s1", "session1")->Trades()->Count() != 2) // snapshot applied virtually actually skipped
             throw;
-        if(incFond->m_TradeTableFond->GetItem("s2", "session1")->Trades()->Count() != 1)
+        if(incFond->TradeFond()->GetItem("s2", "session1")->Trades()->Count() != 1)
             throw;
-        if(incFond->m_TradeTableFond->GetItem("symbol3", "session1")->Trades()->Count() != 1)
+        if(incFond->TradeFond()->GetItem("symbol3", "session1")->Trades()->Count() != 1)
             throw;
         if(incFond->m_startMsgSeqNum != 7)
             throw;
@@ -3559,28 +2375,28 @@ public:
         if(incFond->TradeFond()->UsedItemCount() != 3)
             throw;
         SendMessages(incFond, snapFond,
-                     "obr entry s1 e1, lost obr entry symbol3 e1, wait_snap, obr entry s1 e3,                         obr entry s2 e1,                         obr entry s2 e2",
-                     "                                                            obs symbol3 begin rpt 1 end entry symbol3 e1, obs s1 begin rpt 2 end entry s1 e1, obs s2 begin rpt 2 end entry s2 e1 skip_if_suspend",
+                     "tlr entry s1 e1, lost tlr entry symbol3 e1, wait_snap, tlr entry s1 e3,                         tlr entry s2 e1,                         tlr entry s2 e2",
+                     "                                                            tls symbol3 begin rpt 1 end entry symbol3 e1, tls s1 begin rpt 2 end entry s1 e1, tls s2 begin rpt 2 end entry s2 e1 skip_if_suspend",
                      30);
         if(incFond->HasQueueEntries())
             throw;
-        if(incFond->m_TradeTableFond->GetItem("s1", "session1")->RptSeq() != 2)
+        if(incFond->TradeFond()->GetItem("s1", "session1")->RptSeq() != 2)
             throw;
-        if(incFond->m_TradeTableFond->GetItem("symbol3", "session1")->RptSeq() != 1)
+        if(incFond->TradeFond()->GetItem("symbol3", "session1")->RptSeq() != 1)
             throw;
-        if(incFond->m_TradeTableFond->GetItem("s2", "session1")->RptSeq() != 2)
+        if(incFond->TradeFond()->GetItem("s2", "session1")->RptSeq() != 2)
             throw;
         if(!incFond->CanStopListeningSnapshot())
             throw;
         if(snapFond->State() != FeedConnectionState::fcsSuspend)
             throw;
-        if(incFond->m_TradeTableFond->UsedItemCount() != 3)
+        if(incFond->TradeFond()->UsedItemCount() != 3)
             throw;
-        if(incFond->m_TradeTableFond->GetItem("s1", "session1")->Trades()->Count() != 2) // snapshot applied virtually actually skipped
+        if(incFond->TradeFond()->GetItem("s1", "session1")->Trades()->Count() != 2) // snapshot applied virtually actually skipped
             throw;
-        if(incFond->m_TradeTableFond->GetItem("s2", "session1")->Trades()->Count() != 2)
+        if(incFond->TradeFond()->GetItem("s2", "session1")->Trades()->Count() != 2)
             throw;
-        if(incFond->m_TradeTableFond->GetItem("symbol3", "session1")->Trades()->Count() != 1)
+        if(incFond->TradeFond()->GetItem("symbol3", "session1")->Trades()->Count() != 1)
             throw;
         if(incFond->m_startMsgSeqNum != 7)
             throw;
@@ -3600,8 +2416,8 @@ public:
         if(!incFond->m_waitTimer->Active())
             throw;
         SendMessages(incFond, snapFond,
-                     "obr entry s1 e1, obr entry s1 e2, obr entry s1 e3, lost hbeat, wait_snap, hbeat",
-                     "                                                                          obs s1 begin rpt 1 entry s1 e1 end",
+                     "tlr entry s1 e1, tlr entry s1 e2, tlr entry s1 e3, lost hbeat, wait_snap, hbeat",
+                     "                                                                          tls s1 begin rpt 1 entry s1 e1 end",
                      50);
         if(incFond->HasQueueEntries())
             throw;
@@ -3631,8 +2447,8 @@ public:
         incFond->Start();
 
         SendMessages(incFond, snapFond,
-                     "obr entry s1 e1, obr entry s1 e2, lost obr entry s1 e3, obr entry s1 e4, lost obr entry s1 e5, obr entry s1 e6, wait_snap, ",
-                     "                                                                                                                           obs s1 begin rpt 4 entry s1 e4 end",
+                     "tlr entry s1 e1, tlr entry s1 e2, lost tlr entry s1 e3, tlr entry s1 e4, lost tlr entry s1 e5, tlr entry s1 e6, wait_snap, ",
+                     "                                                                                                                           tls s1 begin rpt 4 entry s1 e4 end",
                      30);
         if(incFond->TradeFond()->SymbolsToRecvSnapshotCount() != 1)
             throw;
@@ -3656,8 +2472,8 @@ public:
         incFond->Start();
 
         SendMessages(incFond, snapFond,
-                     "obr entry s1 e1, obr entry s1 e2, lost obr entry s1 e3, obr entry s1 e4, lost obr entry s1 e5, obr entry s1 e6, wait_snap, ",
-                     "                                                                                                                           obs s1 begin rpt 5 entry s1 e5 end",
+                     "tlr entry s1 e1, tlr entry s1 e2, lost tlr entry s1 e3, tlr entry s1 e4, lost tlr entry s1 e5, tlr entry s1 e6, wait_snap, ",
+                     "                                                                                                                           tls s1 begin rpt 5 entry s1 e5 end",
                      30);
         if(incFond->TradeFond()->SymbolsToRecvSnapshotCount() != 0)
             throw;
@@ -3683,8 +2499,8 @@ public:
         incFond->Start();
 
         SendMessages(incFond, snapFond,
-                     "obr entry s1 e1, obr entry s1 e2, lost obr entry s1 e3, obr entry s1 e4, lost obr entry s1 e5, obr entry s1 e6, wait_snap, ",
-                     "                                                                                                                           obs s1 begin rpt 6 entry s1 e6 end",
+                     "tlr entry s1 e1, tlr entry s1 e2, lost tlr entry s1 e3, tlr entry s1 e4, lost tlr entry s1 e5, tlr entry s1 e6, wait_snap, ",
+                     "                                                                                                                           tls s1 begin rpt 6 entry s1 e6 end",
                      30);
         if(incFond->TradeFond()->SymbolsToRecvSnapshotCount() != 0)
             throw;
@@ -3711,8 +2527,8 @@ public:
         incFond->Start();
 
         SendMessages(incFond, snapFond,
-                     "obr entry s1 e1, obr entry s2 e1, lost obr entry s1 e2, wait_snap, hbeat                               lost obr entry s1 e3,               obr entry s1 e4",
-                     "                                                                   obs s1 begin rpt 2 entry s1 e2 end, obs s2 begin rpt 1 entry s2 e1 end, hbeat",
+                     "tlr entry s1 e1, tlr entry s2 e1, lost tlr entry s1 e2, wait_snap, hbeat                               lost tlr entry s1 e3,               tlr entry s1 e4",
+                     "                                                                   tls s1 begin rpt 2 entry s1 e2 end, tls s2 begin rpt 1 entry s2 e1 end, hbeat",
                      30);
         if(incFond->CanStopListeningSnapshot())
             throw;
@@ -3741,8 +2557,8 @@ public:
         incFond->Start();
 
         SendMessages(incFond, snapFond,
-                     "obr entry s1 e1, obr entry s2 e1, lost obr entry s1 e2, wait_snap, hbeat                               lost obr entry s1 e3,               obr entry s1 e4, hbeat ",
-                     "                                                                   obs s1 begin rpt 2 entry s1 e2 end, obs s2 begin rpt 1 entry s2 e1 end, hbeat          , obs s1 begin rpt 3 entry s1 e3 end",
+                     "tlr entry s1 e1, tlr entry s2 e1, lost tlr entry s1 e2, wait_snap, hbeat                               lost tlr entry s1 e3,               tlr entry s1 e4, hbeat ",
+                     "                                                                   tls s1 begin rpt 2 entry s1 e2 end, tls s2 begin rpt 1 entry s2 e1 end, hbeat          , tls s1 begin rpt 3 entry s1 e3 end",
                      30);
         if(!incFond->CanStopListeningSnapshot())
             throw;
@@ -3766,7 +2582,7 @@ public:
         incFond->Start();
 
         SendMessages(incFond, snapFond,
-                     "obr entry s1 e1, obr entry s2 e1, lost obr entry s1 e2, wait_snap, obr entry s2 e2, hbeat",
+                     "tlr entry s1 e1, tlr entry s2 e1, lost tlr entry s1 e2, wait_snap, tlr entry s2 e2, hbeat",
                      "                                                        hbeat,     hbeat,           hbeat",
                      30);
         if(incFond->CanStopListeningSnapshot())
@@ -3807,8 +2623,8 @@ public:
         incFond->Start();
 
         SendMessages(incFond, snapFond,
-                     "obr entry s1 e1, lost obr entry s1 e2, obr entry s1 e2, wait_snap, hbeat",
-                     "                                       hbeat,           hbeat,     obs s1 begin rpt 0 lastmsg 0 entry s1 e1 end",
+                     "tlr entry s1 e1, lost tlr entry s1 e2, tlr entry s1 e2, wait_snap, hbeat",
+                     "                                       hbeat,           hbeat,     tls s1 begin rpt 0 lastmsg 0 entry s1 e1 end",
                      30);
         if(incFond->TradeFond()->SymbolsToRecvSnapshotCount() != 0)
             throw;
@@ -3834,8 +2650,8 @@ public:
 
         incFond->TradeFond()->Add("s1", "session1");
         SendMessages(incFond, snapFond,
-                     "obr entry s1 e1, lost obr entry s1 e2, wait_snap, hbeat",
-                     "                                                  obs s1 begin rpt 2 entry s1 e2 end",
+                     "tlr entry s1 e1, lost tlr entry s1 e2, wait_snap, hbeat",
+                     "                                                  tls s1 begin rpt 2 entry s1 e2 end",
                      30);
         if(snapFond->m_packets[1]->m_item != 0)
             throw;
@@ -3848,8 +2664,8 @@ public:
 
         incFond->TradeFond()->Add("s1", "session1");
         SendMessages(incFond, snapFond,
-                     "obr entry s1 e1, lost obr entry s1 e2, wait_snap, hbeat",
-                     "                                                  hbeat, hbeat, obs s1 begin rpt 2 entry s1 e2 end",
+                     "tlr entry s1 e1, lost tlr entry s1 e2, wait_snap, hbeat",
+                     "                                                  hbeat, hbeat, tls s1 begin rpt 2 entry s1 e2 end",
                      30);
         if(snapFond->m_packets[1]->m_item != 0 ||
            snapFond->m_packets[2]->m_item != 0 ||
@@ -3867,8 +2683,8 @@ public:
         incFond->TradeFond()->Add("s1", "session1");
         snapFond->WaitSnapshotMaxTimeMs(50);
         SendMessages(incFond, snapFond,
-                     "obr entry s1 e1, lost obr entry s1 e2, wait_snap, hbeat",
-                     "                                                  obs s1 begin rpt 2 entry s1 e2, lost obs s1 rpt 2 entry s1 e2, hbeat, hbeat, hbeat, hbeat, hbeat",
+                     "tlr entry s1 e1, lost tlr entry s1 e2, wait_snap, hbeat",
+                     "                                                  tls s1 begin rpt 2 entry s1 e2, lost tls s1 rpt 2 entry s1 e2, hbeat, hbeat, hbeat, hbeat, hbeat",
                      30);
         for(int i = 1; i < 100; i++) {
             if(snapFond->m_packets[i]->m_item != 0 || snapFond->m_packets[i]->m_processed != false)
@@ -3882,8 +2698,8 @@ public:
         incFond->TradeFond()->Add("s1", "session1");
         snapFond->WaitSnapshotMaxTimeMs(50);
         SendMessages(incFond, snapFond,
-                     "obr entry s1 e1, lost obr entry s1 e2, wait_snap, hbeat                           hbeat,                         hbeat, hbeat, hbeat, hbeat, hbeat,                           hbeat",
-                     "                                                  obs s1 begin rpt 2 entry s1 e2, lost obs s1 rpt 2 entry s1 e2, hbeat, hbeat, hbeat, hbeat, hbeat, obs s1 rpt 2 entry s1 e2, obs s1 begin rpt 2 entry s1 e2 end",
+                     "tlr entry s1 e1, lost tlr entry s1 e2, wait_snap, hbeat                           hbeat,                         hbeat, hbeat, hbeat, hbeat, hbeat,                           hbeat",
+                     "                                                  tls s1 begin rpt 2 entry s1 e2, lost tls s1 rpt 2 entry s1 e2, hbeat, hbeat, hbeat, hbeat, hbeat, tls s1 rpt 2 entry s1 e2, tls s1 begin rpt 2 entry s1 e2 end",
                      30);
         if(incFond->TradeFond()->UsedItemCount() != 1)
             throw;
@@ -3901,55 +2717,55 @@ public:
     }
     // messages should be clear in snapshot connection because the are repeat
     void TestConnection_ClearSnapshotMessages() {
-        printf("OBR TestConnection_ClearSnapshotMessages_1\n");
+        printf("TLR TestConnection_ClearSnapshotMessages_1\n");
         TestConnection_ClearSnapshotMessages_1();
-        printf("OBR TestConnection_ClearSnapshotMessages_2\n");
+        printf("TLR TestConnection_ClearSnapshotMessages_2\n");
         TestConnection_ClearSnapshotMessages_2();
-        printf("OBR TestConnection_ClearSnapshotMessages_3\n");
+        printf("TLR TestConnection_ClearSnapshotMessages_3\n");
         TestConnection_ClearSnapshotMessages_3();
-        printf("OBR TestConnection_ClearSnapshotMessages_4\n");
+        printf("TLR TestConnection_ClearSnapshotMessages_4\n");
         TestConnection_ClearSnapshotMessages_4();
     }
     void TestConnection_ParallelWorkingIncrementalAndSnapshot() {
-        printf("OBR TestConnection_EnterSnapshotMode\n");
+        printf("TLR TestConnection_EnterSnapshotMode\n");
         TestConnection_EnterSnapshotMode();
-        printf("OBR TestConnection_ClearSnapshotMessages\n");
+        printf("TLR TestConnection_ClearSnapshotMessages\n");
         TestConnection_ClearSnapshotMessages();
-        printf("OBR TestConnection_ParallelWorkingIncrementalAndSnapshot_1\n");
+        printf("TLR TestConnection_ParallelWorkingIncrementalAndSnapshot_1\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_1();
-        printf("OBR TestConnection_ParallelWorkingIncrementalAndSnapshot_2\n");
+        printf("TLR TestConnection_ParallelWorkingIncrementalAndSnapshot_2\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_2();
-        printf("OBR TestConnection_ParallelWorkingIncrementalAndSnapshot_2_1\n");
+        printf("TLR TestConnection_ParallelWorkingIncrementalAndSnapshot_2_1\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_2_1();
-        printf("OBR TestConnection_ParallelWorkingIncrementalAndSnapshot_3\n");
+        printf("TLR TestConnection_ParallelWorkingIncrementalAndSnapshot_3\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_3();
-        printf("OBR TestConnection_ParallelWorkingIncrementalAndSnapshot_3_1\n");
+        printf("TLR TestConnection_ParallelWorkingIncrementalAndSnapshot_3_1\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_3_1();
-        printf("OBR TestConnection_ParallelWorkingIncrementalAndSnapshot_4\n");
+        printf("TLR TestConnection_ParallelWorkingIncrementalAndSnapshot_4\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_4();
-        printf("OBR TestConnection_ParallelWorkingIncrementalAndSnapshot_5\n");
+        printf("TLR TestConnection_ParallelWorkingIncrementalAndSnapshot_5\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_5();
-        printf("OBR TestConnection_ParallelWorkingIncrementalAndSnapshot_5_1\n");
+        printf("TLR TestConnection_ParallelWorkingIncrementalAndSnapshot_5_1\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_5_1();
-        printf("OBR TestConnection_ParallelWorkingIncrementalAndSnapshot_5_2\n");
+        printf("TLR TestConnection_ParallelWorkingIncrementalAndSnapshot_5_2\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_5_2();
-        printf("OBR TestConnection_ParallelWorkingIncrementalAndSnapshot_5_2_2\n");
+        printf("TLR TestConnection_ParallelWorkingIncrementalAndSnapshot_5_2_2\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_5_2_2();
-        printf("OBR TestConnection_ParallelWorkingIncrementalAndSnapshot_5_3\n");
+        printf("TLR TestConnection_ParallelWorkingIncrementalAndSnapshot_5_3\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_5_3();
-        printf("OBR TestConnection_ParallelWorkingIncrementalAndSnapshot_5_4\n");
+        printf("TLR TestConnection_ParallelWorkingIncrementalAndSnapshot_5_4\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_5_4();
-        printf("OBR TestConnection_ParallelWorkingIncrementalAndSnapshot_5_4_1\n");
+        printf("TLR TestConnection_ParallelWorkingIncrementalAndSnapshot_5_4_1\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_5_4_1();
-        printf("OBR TestConnection_ParallelWorkingIncrementalAndSnapshot_5_4_2\n");
+        printf("TLR TestConnection_ParallelWorkingIncrementalAndSnapshot_5_4_2\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_5_4_2();
-        printf("OBR TestConnection_ParallelWorkingIncrementalAndSnapshot_5_5\n");
+        printf("TLR TestConnection_ParallelWorkingIncrementalAndSnapshot_5_5\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_5_5();
-        printf("OBR TestConnection_ParallelWorkingIncrementalAndSnapshot_5_5_1\n");
+        printf("TLR TestConnection_ParallelWorkingIncrementalAndSnapshot_5_5_1\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_5_5_1();
-        printf("OBR TestConnection_ParallelWorkingIncrementalAndSnapshot_5_6\n");
+        printf("TLR TestConnection_ParallelWorkingIncrementalAndSnapshot_5_6\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_5_6();
-        printf("OBR TestConnection_ParallelWorkingIncrementalAndSnapshot_5_7\n");
+        printf("TLR TestConnection_ParallelWorkingIncrementalAndSnapshot_5_7\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_5_7();
     }
 
@@ -3982,87 +2798,87 @@ public:
     }
 
     void TestConnection() {
-        printf("OBR TestConnection_AllSymbolsAreOk\n");
+        printf("TLR TestConnection_AllSymbolsAreOk\n");
         TestConnection_AllSymbolsAreOk();
-        printf("OBR TestConnection_ResetEntriesQueueIfNullSnapshotIsReceived\n");
+        printf("TLR TestConnection_ResetEntriesQueueIfNullSnapshotIsReceived\n");
         TestConnection_ResetEntriesQueueIfNullSnapshotIsReceived();
-        printf("OBR TestConnection_AllSymbolsAreOkButOneMessageLost\n");
+        printf("TLR TestConnection_AllSymbolsAreOkButOneMessageLost\n");
         TestConnection_AllSymbolsAreOkButOneMessageLost();
-        printf("OBR TestConnection_SkipHearthBeatMessages_Incremental\n");
+        printf("TLR TestConnection_SkipHearthBeatMessages_Incremental\n");
         TestConnection_SkipHearthBeatMessages_Incremental();
-        printf("OBR TestConnection_ParallelWorkingIncrementalAndSnapshot\n");
+        printf("TLR TestConnection_ParallelWorkingIncrementalAndSnapshot\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot();
-        printf("OBR TestConnection_NotAllSymbolsAreOk\n");
+        printf("TLR TestConnection_NotAllSymbolsAreOk\n");
         TestConnection_NotAllSymbolsAreOk();
-        printf("OBR TestConnection_StopListeningSnapshotBecauseAllItemsIsUpToDate\n");
+        printf("TLR TestConnection_StopListeningSnapshotBecauseAllItemsIsUpToDate\n");
         TestConnection_StopListeningSnapshotBecauseAllItemsIsUpToDate();
-        printf("OBR TestConnection_StopTimersAfterReconnect\n");
+        printf("TLR TestConnection_StopTimersAfterReconnect\n");
         TestConnection_StopTimersAfterReconnect();
-        printf("OBR TestConnection_SnapshotSomeMessagesReceivedLater\n");
+        printf("TLR TestConnection_SnapshotSomeMessagesReceivedLater\n");
         TestConnection_SnapshotSomeMessagesReceivedLater();
-        printf("OBR TestConnection_SnapshotSomeMessagesNotReceived\n");
+        printf("TLR TestConnection_SnapshotSomeMessagesNotReceived\n");
         TestConnection_SnapshotSomeMessagesNotReceived();
-        printf("OBR TestConnection_LastFragmentReceivedBeforeRouteFirst\n");
+        printf("TLR TestConnection_LastFragmentReceivedBeforeRouteFirst\n");
         TestConnection_LastFragmentReceivedBeforeRouteFirst();
-        printf("OBR TestConnection_RouteFirstReceived_AfterSomeDummyMessages\n");
+        printf("TLR TestConnection_RouteFirstReceived_AfterSomeDummyMessages\n");
         TestConnection_RouteFirstReceived_AfterSomeDummyMessages();
-        printf("OBR TestConnection_RouteFirstReceived_Empty\n");
+        printf("TLR TestConnection_RouteFirstReceived_Empty\n");
         TestConnection_RouteFirstReceived_Empty();
-        printf("OBR TestConnection_TestSnapshotNoMessagesAtAll\n");
+        printf("TLR TestConnection_TestSnapshotNoMessagesAtAll\n");
         TestConnection_TestSnapshotNoMessagesAtAll();
-        printf("OBR TestConnection_OneMessageReceived\n");
+        printf("TLR TestConnection_OneMessageReceived\n");
         TestConnection_OneMessageReceived();
-        printf("OBR TestConnection_Clear_AfterIncremental\n");
+        printf("TLR TestConnection_Clear_AfterIncremental\n");
         TestConnection_Clear_AfterIncremental();
-        printf("OBR TestConnection_TestIncMessageLost_AndWaitTimerElapsed\n");
+        printf("TLR TestConnection_TestIncMessageLost_AndWaitTimerElapsed\n");
         TestConnection_TestIncMessageLost_AndWaitTimerElapsed();
-        printf("OBR TestConnection_TestSnapshotCollect\n");
+        printf("TLR TestConnection_TestSnapshotCollect\n");
         TestConnection_TestSnapshotCollect();
-        printf("OBR TestConnection_TestSnapshotNotCollect\n");
+        printf("TLR TestConnection_TestSnapshotNotCollect\n");
         TestConnection_TestSnapshotMessageLostAndTimeExpired();
-        printf("OBR TestConnection_TestMessagesLost_2Items_SnapshotReceivedForOneItem\n");
+        printf("TLR TestConnection_TestMessagesLost_2Items_SnapshotReceivedForOneItem\n");
         TestConnection_TestMessagesLost_2Items_SnapshotReceivedForOneItem();
 
-        printf("OBR TestConnection_EmptyTest\n");
+        printf("TLR TestConnection_EmptyTest\n");
         TestConnection_EmptyTest();
-        printf("OBR TestConnection_TestCorrectIncMessages\n");
+        printf("TLR TestConnection_TestCorrectIncMessages\n");
         TestConnection_TestCorrectIncMessages();
-        printf("OBR TestConnection_TestIncMessagesLost_AndWhenAppeared\n");
+        printf("TLR TestConnection_TestIncMessagesLost_AndWhenAppeared\n");
         TestConnection_TestIncMessagesLost_AndWhenAppeared();
-        printf("OBR TestConnection_TestInc2MessagesLost_AppearedThen2Messages\n");
+        printf("TLR TestConnection_TestInc2MessagesLost_AppearedThen2Messages\n");
         TestConnection_TestInc2MessagesLost_AppearedThen2Messages();
-        printf("OBR TestConnection_TestInc2MessagesLost_AppearedSeparately_1_2\n");
+        printf("TLR TestConnection_TestInc2MessagesLost_AppearedSeparately_1_2\n");
         TestConnection_TestInc2MessagesLost_AppearedSeparately_1_2();
-        printf("OBR TestConnection_TestInc2MessagesLost_AppearedSeparately_2_1\n");
+        printf("TLR TestConnection_TestInc2MessagesLost_AppearedSeparately_2_1\n");
         TestConnection_TestInc2MessagesLost_AppearedSeparately_2_1();
     }
 
     void TestTradeTableItem() {
-        printf("OBR TestTableItem_CorrectBegin\n");
+        printf("TLR TestTableItem_CorrectBegin\n");
         TestTableItem_CorrectBegin();
-        printf("OBR TestTableItem_IncorrectBegin\n");
+        printf("TLR TestTableItem_IncorrectBegin\n");
         TestTableItem_IncorrectBegin();
-        printf("OBR TestTableItem_SkipMessage\n");
+        printf("TLR TestTableItem_SkipMessage\n");
         TestTableItem_SkipMessage();
-        printf("OBR TestTable_Default\n");
+        printf("TLR TestTable_Default\n");
         TestTable_Default();
-        printf("OBR TestTable_AfterClear\n");
+        printf("TLR TestTable_AfterClear\n");
         TestTable_AfterClear();
-        printf("OBR TestTable_CorrectBegin\n");
+        printf("TLR TestTable_CorrectBegin\n");
         TestTable_CorrectBegin();
-        printf("OBR TestTable_IncorrectBegin\n");
+        printf("TLR TestTable_IncorrectBegin\n");
         TestTable_IncorrectBegin();
-        printf("OBR TestTable_SkipMessages\n");
+        printf("TLR TestTable_SkipMessages\n");
         TestTable_SkipMessages();
-        printf("OBR Test_2UsedItemsAfter2IncrementalMessages\n");
+        printf("TLR Test_2UsedItemsAfter2IncrementalMessages\n");
         Test_2UsedItemsAfter2IncrementalMessages();
-        printf("OBR TestTable_CorrectApplySnapshot\n");
+        printf("TLR TestTable_CorrectApplySnapshot\n");
         TestTable_CorrectApplySnapshot();
-        printf("OBR TestTable_CorrectApplySnapshot_2\n");
+        printf("TLR TestTable_CorrectApplySnapshot_2\n");
         TestTable_CorrectApplySnapshot_2();
-        printf("OBR TestTable_IncorrectApplySnapshot\n");
+        printf("TLR TestTable_IncorrectApplySnapshot\n");
         TestTable_IncorrectApplySnapshot();
-        printf("OBR TestTable_IncorrectApplySnapshot_WhenMessageSkipped\n");
+        printf("TLR TestTable_IncorrectApplySnapshot_WhenMessageSkipped\n");
         TestTable_IncorrectApplySnapshot_WhenMessageSkipped();
     }
 
@@ -4081,7 +2897,7 @@ public:
         TestDefaults();
         TestStringIdComparer();
         Test_TLR_FOND();
-        Test_OBR_CURR();
+        Test_TLR_CURR();
         TestTradeTableItem();
         TestConnection();
     }

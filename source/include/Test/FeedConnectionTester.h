@@ -208,12 +208,12 @@ public:
         RobotSettings::MarketDataMaxSessionsCount = 5;
         RobotSettings::MarketDataMaxEntriesCount = 32;
 
+        TradeTester tt;
+        tt.Test();
         OrderTester ot;
         ot.Test();
         OrderBookTester obt;
         obt.Test();
-        TradeTester tt;
-        tt.Test();
         InstrumentDefinitionTester ids;
         ids.Test();
         //TestLog("/home/arsen/Documents/hft_robot/hft/test/log5");
