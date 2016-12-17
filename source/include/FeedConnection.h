@@ -25,7 +25,11 @@ typedef enum _FeedConnectionMessage {
 	fmcFullRefresh_TLS_FOND = 2411,
 	fmcIncrementalRefresh_TLR_FOND = 2421,
 	fmcFullRefresh_TLS_CURR = 3501,
-	fmcIncrementalRefresh_TLR_CURR = 3511
+	fmcIncrementalRefresh_TLR_CURR = 3511,
+    fmcFullRefresh_MSS_FOND = 0,
+    fmcIncrementalRefresh_MSR_FOND = 2423,
+    fmcFullRefresh_MSS_CURR = 0,
+    fmcIncrementalRefresh_MSR_CURR = 3513,
 }FeedConnectionMessage;
 
 typedef enum _FeedConnectionProtocol {
@@ -73,6 +77,7 @@ class OrderBookTester;
 class OrderTester;
 class TradeTester;
 class TestMessagesHelper;
+class StatisticsTester;
 
 class FeedConnection {
 	friend class OrderBookTester;
@@ -80,6 +85,7 @@ class FeedConnection {
 	friend class TradeTester;
 	friend class FeedConnectionTester;
     friend class TestMessagesHelper;
+    friend class StatisticsTester;
 
 public:
 	const int MaxReceiveBufferSize 				= 1500;
@@ -158,6 +164,8 @@ protected:
 	MarketDataTable<OrderInfo, FastOLSCURRInfo, FastOLSCURRItemInfo>			*m_orderTableCurr;
 	MarketDataTable<TradeInfo, FastTLSFONDInfo, FastTLSFONDItemInfo>			*m_tradeTableFond;
 	MarketDataTable<TradeInfo, FastTLSCURRInfo, FastTLSCURRItemInfo>			*m_tradeTableCurr;
+    MarketDataTable<StatisticsInfo, FastIncrementalMSRFONDInfo, FastIncrementalMSRFONDItemInfo>     *m_statTableFond;
+    MarketDataTable<StatisticsInfo, FastIncrementalMSRCURRInfo, FastIncrementalMSRCURRItemInfo>     *m_statTableCurr;
 private:
 
     inline void GetCurrentTime(UINT64 *time) {
@@ -430,6 +438,14 @@ private:
             this->m_orderTableCurr->EnterSnapshotMode();
             return;
         }
+        if(this->m_statTableFond != 0) {
+            this->m_statTableFond->EnterSnapshotMode();
+            return;
+        }
+        if(this->m_statTableCurr != 0) {
+            this->m_statTableCurr->EnterSnapshotMode();
+            return;
+        }
     }
     inline int SymbolsToRecvSnapshotCount() {
         if(this->m_orderBookTableFond != 0)
@@ -444,6 +460,10 @@ private:
             return this->m_tradeTableFond->SymbolsToRecvSnapshotCount();
         if(this->m_orderTableCurr != 0)
             return this->m_tradeTableCurr->SymbolsToRecvSnapshotCount();
+        if(this->m_statTableFond != 0)
+            return this->m_statTableFond->SymbolsToRecvSnapshotCount();
+        if(this->m_statTableCurr != 0)
+            return this->m_statTableCurr->SymbolsToRecvSnapshotCount();
         return 0;
     }
     inline void MarketTableExitSnapshotMode() {
@@ -469,6 +489,14 @@ private:
         }
         if(this->m_tradeTableCurr != 0) {
             this->m_tradeTableCurr->ExitSnapshotMode();
+            return;
+        }
+        if(this->m_statTableFond != 0) {
+            this->m_statTableFond->ExitSnapshotMode();
+            return;
+        }
+        if(this->m_statTableCurr != 0) {
+            this->m_statTableCurr->ExitSnapshotMode();
             return;
         }
     }
@@ -742,6 +770,14 @@ private:
         return this->m_tradeTableCurr->ProcessIncremental(info);
 	}
 
+    inline bool OnIncrementalRefresh_MSR_FOND(FastIncrementalMSRFONDItemInfo *info) {
+        throw;//return this->m_tradeTableFond->ProcessIncremental(info);
+    }
+
+    inline bool OnIncrementalRefresh_MSR_CURR(FastIncrementalMSRCURRItemInfo *info) {
+        throw;//return this->m_tradeTableCurr->ProcessIncremental(info);
+    }
+
 	inline bool OnIncrementalRefresh_OBR_FOND(FastIncrementalOBRFONDInfo *info) {
 		bool res = true;
 		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
@@ -790,6 +826,22 @@ private:
         return res;
     }
 
+    inline bool OnIncrementalRefresh_MSR_FOND(FastIncrementalMSRFONDInfo *info) {
+        bool res = true;
+        for(int i = 0; i < info->GroupMDEntriesCount; i++) {
+            res |= this->OnIncrementalRefresh_MSR_FOND(info->GroupMDEntries[i]);
+        }
+        return res;
+    }
+
+    inline bool OnIncrementalRefresh_MSR_CURR(FastIncrementalMSRCURRInfo *info) {
+        bool res = true;
+        for(int i = 0; i < info->GroupMDEntriesCount; i++) {
+            res |= this->OnIncrementalRefresh_MSR_CURR(info->GroupMDEntries[i]);
+        }
+        return res;
+    }
+
     inline bool OnHearthBeatMessage() {
         throw; // there is no need to apply message just check
     }
@@ -810,6 +862,10 @@ private:
 				return this->OnIncrementalRefresh_TLR_FOND((FastIncrementalTLRFONDInfo*)this->m_fastProtocolManager->LastDecodeInfo());
 			case FeedConnectionMessage::fmcIncrementalRefresh_TLR_CURR:
 				return this->OnIncrementalRefresh_TLR_CURR((FastIncrementalTLRCURRInfo*)this->m_fastProtocolManager->LastDecodeInfo());
+            case FeedConnectionMessage::fmcIncrementalRefresh_MSR_FOND:
+                return this->OnIncrementalRefresh_MSR_FOND((FastIncrementalMSRFONDInfo*)this->m_fastProtocolManager->LastDecodeInfo());
+            case FeedConnectionMessage::fmcIncrementalRefresh_MSR_CURR:
+                return this->OnIncrementalRefresh_MSR_CURR((FastIncrementalMSRCURRInfo*)this->m_fastProtocolManager->LastDecodeInfo());
 		}
 		return true;
 	}
@@ -873,6 +929,8 @@ public:
 	inline MarketDataTable<OrderInfo, FastOLSCURRInfo, FastOLSCURRItemInfo> *OrderCurr() { return this->m_orderTableCurr; }
 	inline MarketDataTable<TradeInfo, FastTLSFONDInfo, FastTLSFONDItemInfo> *TradeFond() { return this->m_tradeTableFond; }
 	inline MarketDataTable<TradeInfo, FastTLSCURRInfo, FastTLSCURRItemInfo> *TradeCurr() { return this->m_tradeTableCurr; }
+    inline MarketDataTable<StatisticsInfo, FastIncrementalMSRFONDInfo, FastIncrementalMSRFONDItemInfo> *StatFond() { return this->m_statTableFond; }
+    inline MarketDataTable<StatisticsInfo, FastIncrementalMSRCURRInfo, FastIncrementalMSRCURRItemInfo> *StatCurr() { return this->m_statTableCurr; }
     inline void WaitIncrementalMaxTimeMs(int timeMs) { this->m_waitIncrementalMaxTimeMs = timeMs; }
     inline int WaitIncrementalMaxTimeMs() { return this->m_waitIncrementalMaxTimeMs; }
     inline void WaitSnapshotMaxTimeMs(int timeMs) { this->m_snapshotMaxTimeMs = timeMs; }
@@ -1082,8 +1140,11 @@ public:
 	FeedConnection_CURR_MSR(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
 		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
 		this->SetType(FeedConnectionType::Incremental);
+        this->m_statTableCurr = new MarketDataTable<StatisticsInfo, FastIncrementalMSRCURRInfo, FastIncrementalMSRCURRItemInfo>();
     }
-	FeedConnection_CURR_MSR() : FeedConnection() { }
+	FeedConnection_CURR_MSR() : FeedConnection() {
+        this->m_statTableCurr = new MarketDataTable<StatisticsInfo, FastIncrementalMSRCURRInfo, FastIncrementalMSRCURRItemInfo>();
+    }
 	ISocketBufferProvider* CreateSocketBufferProvider() {
 		return new SocketBufferProvider(DefaultSocketBufferManager::Default,
 										RobotSettings::DefaultFeedConnectionSendBufferSize,
@@ -1229,8 +1290,11 @@ public:
 	FeedConnection_FOND_MSR(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
 		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
 		this->SetType(FeedConnectionType::Incremental);
+        this->m_statTableFond = new MarketDataTable<StatisticsInfo, FastIncrementalMSRFONDInfo, FastIncrementalMSRFONDItemInfo>();
     }
-	FeedConnection_FOND_MSR() : FeedConnection() { }
+	FeedConnection_FOND_MSR() : FeedConnection() {
+        this->m_statTableFond = new MarketDataTable<StatisticsInfo, FastIncrementalMSRFONDInfo, FastIncrementalMSRFONDItemInfo>();
+    }
 	ISocketBufferProvider* CreateSocketBufferProvider() {
 		return new SocketBufferProvider(DefaultSocketBufferManager::Default,
 										RobotSettings::DefaultFeedConnectionSendBufferSize,

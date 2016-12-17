@@ -33,8 +33,8 @@ public:
 
     inline SizedArray* TradingSession() { return this->m_tradingSession; }
     inline SizedArray* Symbol() { return this->m_symbolInfo->Symbol(); }
-    inline MarketSymbolInfo<OrderInfo<T>>* SymbolInfo() { return this->m_symbolInfo; }
-    inline void SymbolInfo(MarketSymbolInfo<OrderInfo<T>>* symbolInfo) { this->m_symbolInfo = symbolInfo; }
+    inline MarketSymbolInfo<StatisticsInfo<T>>* SymbolInfo() { return this->m_symbolInfo; }
+    inline void SymbolInfo(MarketSymbolInfo<StatisticsInfo<T>>* symbolInfo) { this->m_symbolInfo = symbolInfo; }
     inline int RptSeq() { return this->m_rptSeq; }
     inline void RptSeq(int rptSeq) { this->m_rptSeq = rptSeq; }
 

@@ -9,6 +9,7 @@
 #include "OrderBookTester.h"
 #include "OrderTester.h"
 #include "TradeTester.h"
+#include "StatisticsTester.h"
 
 class TestFeedMessage{
 public:
