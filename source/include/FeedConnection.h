@@ -7,6 +7,10 @@
 #include "Lib/AutoAllocatePointerList.h"
 #include "Lib/StringIdComparer.h"
 #include "MarketData/MarketDataTable.h"
+#include "MarketData/OrderBookInfo.h"
+#include "MarketData/OrderInfo.h"
+#include "MarketData/TradeInfo.h"
+#include "MarketData/StatisticInfo.h"
 
 typedef enum _FeedConnectionMessage {
 	fcmHeartBeat = 2108,
