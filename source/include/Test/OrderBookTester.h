@@ -4082,8 +4082,71 @@ public:
         }
     }
 
+    void TestInfoAndItemInfoUsageAndAllocation_1() {
+        this->Clear();
+
+        this->incFond->OrderBookFond()->Add("s1", "session1");
+        int prevCount = this->incFond->m_fastProtocolManager->m_oBSFONDItems->Count();
+        this->SendMessages(this->incFond, this->snapFond,
+                           "obr entry s1 e1",
+                           "",
+                           30);
+
+        int newCount = this->incFond->m_fastProtocolManager->m_oBSFONDItems->Count();
+        if(newCount != prevCount + 1)
+            throw;
+    }
+
+    void TestInfoAndItemInfoUsageAndAllocation_2() {
+        this->Clear();
+
+        this->incFond->OrderBookFond()->Add("s1", "session1");
+        int prevCount = this->incFond->m_fastProtocolManager->m_oBSFONDItems->Count();
+        this->SendMessages(this->incFond, this->snapFond,
+                           "obr entry s1 e1, obr entry s1 e2",
+                           "",
+                           30);
+
+        int newCount = this->incFond->m_fastProtocolManager->m_oBSFONDItems->Count();
+        if(newCount != prevCount + 2)
+            throw;
+        this->incFond->OrderBookFond()->Clear();
+        newCount = this->incFond->m_fastProtocolManager->m_oBSFONDItems->Count();
+        if(newCount != prevCount)
+            throw;
+    }
+
+    void TestInfoAndItemInfoUsageAndAllocation_3() {
+        this->Clear();
+
+        this->incFond->OrderBookFond()->Add("s1", "session1");
+        int prevCount = this->incFond->m_fastProtocolManager->m_oBSFONDItems->Count();
+        this->SendMessages(this->incFond, this->snapFond,
+                           "obr entry s1 e1, obr entry s1 e2, obr entry del s1 e1",
+                           "",
+                           30);
+
+        int newCount = this->incFond->m_fastProtocolManager->m_oBSFONDItems->Count();
+        if(newCount != prevCount + 1)
+            throw;
+        this->incFond->OrderBookFond()->Clear();
+        newCount = this->incFond->m_fastProtocolManager->m_oBSFONDItems->Count();
+        if(newCount != prevCount)
+            throw;
+    }
+
+    void TestInfoAndItemInfoUsageAndAllocation() {
+        printf("TestInfoAndItemInfoUsageAndAllocation_1\n");
+        TestInfoAndItemInfoUsageAndAllocation_1();
+        printf("TestInfoAndItemInfoUsageAndAllocation_2\n");
+        TestInfoAndItemInfoUsageAndAllocation_2();
+        printf("TestInfoAndItemInfoUsageAndAllocation_3\n");
+        TestInfoAndItemInfoUsageAndAllocation_3();
+    }
+
     void Test() {
         TestDefaults();
+        TestInfoAndItemInfoUsageAndAllocation();
         TestStringIdComparer();
         Test_OBR_FOND();
         Test_OBR_CURR();

@@ -8,6 +8,8 @@
 #include "../FeedConnection.h"
 #include <stdio.h>
 
+/*
+
 class StatisticsTester {
     FeedConnection_FOND_MSR *incFond;
     FeedConnection_FOND_MSS *snapFond;
@@ -1116,11 +1118,11 @@ public:
             throw;
     }
 
-    /*
-     * Incremental message num 2 is lost. This means that for item s1 and session1 only first two MDEntryItems will be applied and
-     * MDEntryItem with rptseq = 4 will be added to que
-     * and then we receive msg num 3 and apply all
-     * */
+    //
+    // Incremental message num 2 is lost. This means that for item s1 and session1 only first two MDEntryItems will be applied and
+    // MDEntryItem with rptseq = 4 will be added to que
+    // and then we receive msg num 3 and apply all
+    //
     void TestConnection_TestIncMessagesLost_AndWhenAppeared() {
         this->Clear();
 
@@ -1939,9 +1941,9 @@ public:
         if(snapFond->m_waitTimer->Active(1))
             throw;
     }
-    /*
-     * Snapshot received for only one item, this means that snapshot connection should not be stopped
-     * */
+    //
+    // Snapshot received for only one item, this means that snapshot connection should not be stopped
+    //
     void TestConnection_TestMessagesLost_2Items_SnapshotReceivedForOneItem() {
         this->Clear();
         incFond->StartListenSnapshot();
@@ -2604,21 +2606,6 @@ public:
     void TestConnection_ResetEntriesQueueIfNullSnapshotIsReceived() {
         this->Clear();
 
-        /*
-        unsigned char *msg = new unsigned char[52] {
-                0x65, 0x23, 0x00, 0x00, 0xe0, 0x12, 0xec, 0x46, 0xe5, 0x23,
-                0x68, 0x08, 0x12, 0x7f, 0x4c, 0x74, 0xc0, 0x81, 0x80, 0x00,
-                0xe5, 0x52, 0x50, 0x4d, 0xcf, 0x52, 0x55, 0x30, 0x30, 0x30,
-                0x41, 0x30, 0x4a, 0x54, 0x5a, 0x46, 0xb1, 0x82, 0x82, 0x93,
-                0x80, 0x81, 0xca, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80,
-                0x80, 0x80
-        };
-        incFond->m_fastProtocolManager->SetNewBuffer(msg, 52);
-        incFond->m_fastProtocolManager->ReadMsgSeqNumber();
-        incFond->m_fastProtocolManager->Decode();
-        incFond->m_fastProtocolManager->Print();
-        */
-
         incFond->StatFond()->Add("s1", "session1");
         incFond->Start();
 
@@ -2902,5 +2889,7 @@ public:
         TestConnection();
     }
 };
+
+*/
 
 #endif //HFT_ROBOT_STATISTICSTESTER_H

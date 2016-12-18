@@ -148,8 +148,16 @@ class TestMessagesHelper {
         while((entryIndex = KeyIndex(keys, keysCount, "entry", entryIndex + 1)) != -1) {
             TestTemplateItemInfo *item = new TestTemplateItemInfo();
             item->m_tradingSession = "session1";
-            item->m_symbol = keys[entryIndex + 1];
             item->m_action = MDUpdateAction::mduaAdd;
+            if(StringIdComparer::Equal("del", keys[entryIndex + 1])) {
+                item->m_action = MDUpdateAction::mduaDelete;
+                entryIndex++;
+            }
+            else if(StringIdComparer::Equal("change", keys[entryIndex + 1])) {
+                item->m_action = MDUpdateAction::mduaDelete;
+                entryIndex++;
+            }
+            item->m_symbol = keys[entryIndex + 1];
             item->m_entryId = keys[entryIndex + 2];
             item->m_entryType = MDEntryType::mdetBuyQuote;
             item->m_entryPx.Set(1, 1);
@@ -599,11 +607,11 @@ public:
         char *trd = new char[strlen(trading) + 1];
         strcpy(trd, trading);
 
-        info->Symbol = smb;
+        /*info->Symbol = smb;
         info->SymbolLength = strlen(smb);
 
         info->TradingSessionID = trd;
-        info->TradingSessionIDLength = strlen(trd);
+        info->TradingSessionIDLength = strlen(trd);*/
 
         return info;
     }
@@ -669,11 +677,11 @@ public:
         char *trd = new char[strlen(trading) + 1];
         strcpy(trd, trading);
 
-        info->Symbol = smb;
+        /*info->Symbol = smb;
         info->SymbolLength = strlen(smb);
 
         info->TradingSessionID = trd;
-        info->TradingSessionIDLength = strlen(trd);
+        info->TradingSessionIDLength = strlen(trd);*/
 
         return info;
     }

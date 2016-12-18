@@ -6,6 +6,9 @@
 #include <inttypes.h>
 
 class FastProtocolManager;
+class OrderBookTester;
+class OrderTester;
+class TradeTester;
 
 #pragma region Decode_Method_Pointer_Definition_GeneratedCode
 typedef void* (FastProtocolManager::*FastDecodeMethodPointer)();
@@ -19,6 +22,10 @@ typedef FastSnapshotInfo* (FastProtocolManager::*FastGetSnapshotInfoMethodPointe
 #pragma endregion
 
 class FastProtocolManager {
+	friend class OrderBookTester;
+	friend class OrderTester;
+	friend class TradeTester;
+
 	const int maxBufferLength = 16000;
 	BYTE	        *buffer;
 	BYTE	        *currentPos;
