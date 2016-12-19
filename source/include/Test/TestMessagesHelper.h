@@ -281,6 +281,7 @@ public:
         return CreateOLRFondItemInfo(symbol, trading, 1, 1, 1, 1, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote,
                                      entryId, 1);
     }
+    
     FastOLSCURRInfo* CreateOLSCurrInfo(const char *symbol, const char *trading) {
         FastOLSCURRInfo *info = new FastOLSCURRInfo();
 
@@ -344,6 +345,11 @@ public:
         return info;
     }
 
+    FastOLSCURRItemInfo* CreateOLRCurrItemInfo(const char *symbol, const char *trading, const char *entryId) {
+        return CreateOLRCurrItemInfo(symbol, trading, 1, 1, 1, 1, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote,
+                                     entryId, 1);
+    }
+    
     FastOBSFONDInfo* CreateOBSFondInfo(const char *symbol, const char *trading) {
         FastOBSFONDInfo *info = new FastOBSFONDInfo();
 
@@ -411,6 +417,7 @@ public:
         return CreateOBRFondItemInfo(symbol, trading, 1, 1, 1, 1, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote,
                                      entryId, 1);
     }
+
     FastOBSCURRInfo* CreateOBSCurrInfo(const char *symbol, const char *trading) {
         FastOBSCURRInfo *info = new FastOBSCURRInfo();
 
@@ -472,6 +479,11 @@ public:
         info->RptSeq = rptSeq;
 
         return info;
+    }
+
+    FastOBSCURRItemInfo* CreateOBRCurrItemInfo(const char *symbol, const char *trading, const char *entryId) {
+        return CreateOBRCurrItemInfo(symbol, trading, 1, 1, 1, 1, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote,
+                                     entryId, 1);
     }
 
     FastTLSFONDInfo* CreateTLSFondInfo(const char *symbol, const char *trading) {
@@ -562,7 +574,7 @@ public:
         return info;
     }
 
-    FastTLSCURRItemInfo* CreateTLSCurrItemInfo(INT64 priceMantissa, INT32 priceExponenta, INT64 sizeMantissa, INT64 sizeExponenta, MDEntryType entryType, const char *entryId, int rptSeq) {
+    FastTLSCURRItemInfo* CreateTLSCurrItemInfo(INT64 priceMantissa, INT32 priceExponenta, INT64 sizeMantissa, INT64 sizeExponenta, MDEntryType entryType, const char *entryId) {
 
         AutoAllocatePointerList<FastTLSCURRItemInfo> *list = new AutoAllocatePointerList<FastTLSCURRItemInfo>(1, 1);
         FastTLSCURRItemInfo *info = list->NewItem();
@@ -579,13 +591,12 @@ public:
         info->MDEntryTypeLength = 1;
         info->MDEntryPx.Set(priceMantissa, priceExponenta);
         info->MDEntrySize.Set(sizeMantissa, sizeExponenta);
-        info->RptSeq = rptSeq;
 
         return info;
     }
 
-    FastTLSCURRItemInfo* CreateTLRCurrItemInfo(const char *symbol, const char *trading, INT64 priceMantissa, INT32 priceExponenta, INT64 sizeMantissa, INT64 sizeExponenta, MDUpdateAction updateAction, MDEntryType entryType, const char *entryId, int rptSeq) {
-        FastTLSCURRItemInfo *info = CreateTLSCurrItemInfo(priceMantissa, priceExponenta, sizeMantissa, sizeExponenta, entryType, entryId, rptSeq);
+    FastTLSCURRItemInfo* CreateTLSCurrItemInfo(const char *symbol, const char *trading, INT64 priceMantissa, INT32 priceExponenta, INT64 sizeMantissa, INT64 sizeExponenta, MDUpdateAction updateAction, MDEntryType entryType, const char *entryId, int rptSeq) {
+        FastTLSCURRItemInfo *info = CreateTLSCurrItemInfo(priceMantissa, priceExponenta, sizeMantissa, sizeExponenta, entryType, entryId);
 
         char *smb = new char[strlen(symbol) + 1];
         strcpy(smb, symbol);
@@ -605,6 +616,16 @@ public:
         return info;
     }
 
+    FastTLSCURRItemInfo* CreateTLSCurrItemInfo(const char *symbol, const char *trading, const char *entryId) {
+        return CreateTLSCurrItemInfo(symbol, trading, 1, 1, 1, 1, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote,
+                                     entryId, 1);
+    }
+
+    FastTLSCURRItemInfo* CreateTLSCurrItemInfo(const char *symbol, const char *trading, const char *entryId, int rptSec) {
+        return CreateTLSCurrItemInfo(symbol, trading, 1, 1, 1, 1, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote,
+                                     entryId, rptSec);
+    }
+    
     FastIncrementalMSRFONDInfo* CreateMSSFondInfo(const char *symbol, const char *trading) {
         FastIncrementalMSRFONDInfo *info = new FastIncrementalMSRFONDInfo();
 

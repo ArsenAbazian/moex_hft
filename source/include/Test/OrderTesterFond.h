@@ -9,22 +9,17 @@
 #include "TestMessagesHelper.h"
 #include <stdio.h>
 
-class OrderTester {
+class OrderTesterFond {
     TestMessagesHelper      *m_helper;
     FeedConnection_FOND_OLR *incFond;
     FeedConnection_FOND_OLS *snapFond;
-    FeedConnection_CURR_OLR *incCurr;
-    FeedConnection_CURR_OLS *snapCurr;
-    MarketDataTable<OrderInfo, FastOLSFONDInfo, FastOLSFONDItemInfo> *m_table_fond;
+    MarketDataTable<OrderInfo, FastOLSFONDInfo, FastOLSFONDItemInfo> *m_table;
 public:
-    OrderTester() {
+    OrderTesterFond() {
         this->m_helper = new TestMessagesHelper();
-        this->m_table_fond = new MarketDataTable<OrderInfo, FastOLSFONDInfo, FastOLSFONDItemInfo>();
+        this->m_helper->SetFondMode();
+        this->m_table = new MarketDataTable<OrderInfo, FastOLSFONDInfo, FastOLSFONDItemInfo>();
         this->incFond = new FeedConnection_FOND_OLR("OLR", "Refresh Incremental", 'I',
-                                                    FeedConnectionProtocol::UDP_IP,
-                                                    "10.50.129.200", "239.192.113.3", 9113,
-                                                    "10.50.129.200", "239.192.113.131", 9313);
-        this->incCurr = new FeedConnection_CURR_OLR("OLR", "Refresh Incremental", 'I',
                                                     FeedConnectionProtocol::UDP_IP,
                                                     "10.50.129.200", "239.192.113.3", 9113,
                                                     "10.50.129.200", "239.192.113.131", 9313);
@@ -32,24 +27,14 @@ public:
                                                      FeedConnectionProtocol::UDP_IP,
                                                      "10.50.129.200", "239.192.113.3", 9113,
                                                      "10.50.129.200", "239.192.113.131", 9313);
-        this->snapCurr = new FeedConnection_CURR_OLS("OLS", "Full Refresh", 'I',
-                                                     FeedConnectionProtocol::UDP_IP,
-                                                     "10.50.129.200", "239.192.113.3", 9113,
-                                                     "10.50.129.200", "239.192.113.131", 9313);
-
         this->snapFond->m_fakeConnect = true;
         this->incFond->m_fakeConnect = true;
-        this->incCurr->m_fakeConnect = true;
-        this->snapCurr->m_fakeConnect = true;
-
     }
-    ~OrderTester() {
+    ~OrderTesterFond() {
         delete this->incFond;
-        delete this->incCurr;
         delete this->snapFond;
-        delete this->snapCurr;
         delete this->m_helper;
-        delete this->m_table_fond;
+        delete this->m_table;
     }
 
     void TestItem(OrderInfo<FastOLSFONDItemInfo> *tableItem) {
@@ -62,9 +47,9 @@ public:
     }
 
     void TestTableItemsAllocator(MarketDataTable<OrderInfo, FastOLSFONDInfo, FastOLSFONDItemInfo> *table) {
-        for(int i = 0; i < this->m_table_fond->SymbolsCount(); i++) {
-            for(int j = 0; j < this->m_table_fond->Symbol(i)->Count(); j++) {
-                OrderInfo<FastOLSFONDItemInfo> *item = this->m_table_fond->Item(i, j);
+        for(int i = 0; i < this->m_table->SymbolsCount(); i++) {
+            for(int j = 0; j < this->m_table->Symbol(i)->Count(); j++) {
+                OrderInfo<FastOLSFONDItemInfo> *item = this->m_table->Item(i, j);
                 TestItem(item);
             }
         }
@@ -73,7 +58,6 @@ public:
     void Clear() {
         incFond->SetSnapshot(this->snapFond);
         incFond->OrderFond()->Clear();
-        incCurr->OrderCurr()->Clear();
         incFond->ClearMessages();
         incFond->WaitIncrementalMaxTimeMs(50);
         incFond->m_waitTimer->Stop();
@@ -909,916 +893,43 @@ public:
             throw;
     }
 
-    void Test_OnIncrementalRefresh_OLR_CURR_Add() {
-        this->Clear();
-        this->TestDefaults();
-
-        FastIncrementalOLRCURRInfo *info = new FastIncrementalOLRCURRInfo;
-
-        FastOLSCURRItemInfo *item1 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote,
-                                                           "e1", 1);
-        FastOLSCURRItemInfo *item2 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote,
-                                                           "e2", 2);
-        FastOLSCURRItemInfo *item3 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote,
-                                                           "e3", 3);
-        FastOLSCURRItemInfo *item4 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote,
-                                                           "e4", 4);
-
-        item1->RptSeq = 1;
-        item2->RptSeq = 2;
-        item3->RptSeq = 3;
-        item4->RptSeq = 4;
-
-        info->GroupMDEntriesCount = 1;
-        info->GroupMDEntries[0] = item1;
-
-        this->incCurr->OnIncrementalRefresh_OLR_CURR(info);
-
-        if(this->incCurr->OrderCurr()->UsedItemCount() != 1)
-            throw;
-        if(this->incCurr->OrderCurr()->SymbolsCount() != 1)
-            throw;
-        if(this->incCurr->OrderCurr()->Symbol(0)->Count() != 1)
-            throw;
-        OrderInfo<FastOLSCURRItemInfo> *obi = this->incCurr->OrderCurr()->GetItem("s1", "t1");
-        if(obi == 0)
-            throw;
-        if(obi->BuyQuotes()->Count() != 1)
-            throw;
-        FastOLSCURRItemInfo *quote = obi->BuyQuotes()->Start()->Data();
-        Decimal price(3, -2);
-        Decimal size(1, 2);
-        if(!quote->MDEntryPx.Equal(&price))
-            throw;
-        if(!quote->MDEntrySize.Equal(&size))
-            throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, 2, "e1", 2))
-            throw;
-
-        info->GroupMDEntriesCount = 1;
-        info->GroupMDEntries[0] = item2;
-
-        this->incCurr->OnIncrementalRefresh_OLR_CURR(info);
-
-        if(this->incCurr->OrderCurr()->UsedItemCount() != 1)
-            throw;
-        if(this->incCurr->OrderCurr()->SymbolsCount() != 1)
-            throw;
-        if(this->incCurr->OrderCurr()->Symbol(0)->Count() != 1)
-            throw;
-        obi = this->incCurr->OrderCurr()->GetItem("s1", "t1");
-        if(obi == 0)
-            throw;
-        if(obi->BuyQuotes()->Count() != 2)
-            throw;
-        quote = obi->BuyQuotes()->Item(0);
-        price.Set(3, -2);
-        if(!quote->MDEntryPx.Equal(&price))
-            throw;
-        if(!quote->MDEntrySize.Equal(&size))
-            throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, 2, "e1", 2))
-            throw;
-
-        info->GroupMDEntriesCount = 1;
-        info->GroupMDEntries[0] = item3;
-
-        this->incCurr->OnIncrementalRefresh_OLR_CURR(info);
-
-        if(this->incCurr->OrderCurr()->UsedItemCount() != 1)
-            throw;
-        if(this->incCurr->OrderCurr()->SymbolsCount() != 1)
-            throw;
-        if(this->incCurr->OrderCurr()->Symbol(0)->Count() != 1)
-            throw;
-        obi = this->incCurr->OrderCurr()->GetItem("s1", "t1");
-        if(obi == 0)
-            throw;
-        if(obi->BuyQuotes()->Count() != 3)
-            throw;
-
-        quote = obi->BuyQuotes()->Item(0);
-        price.Set(3, -2);
-        if(!quote->MDEntryPx.Equal(&price))
-            throw;
-        if(!quote->MDEntrySize.Equal(&size))
-            throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, 2, "e1", 2))
-            throw;
-
-        quote = obi->BuyQuotes()->Item(1);
-        price.Set(4, -2);
-        if(!quote->MDEntryPx.Equal(&price))
-            throw;
-        if(!quote->MDEntrySize.Equal(&size))
-            throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, 2, "e2", 2))
-            throw;
-
-        quote = obi->BuyQuotes()->Item(2);
-        price.Set(2, -2);
-        if(!quote->MDEntryPx.Equal(&price))
-            throw;
-        if(!quote->MDEntrySize.Equal(&size))
-            throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, 2, "e3", 2))
-            throw;
-
-        info->GroupMDEntriesCount = 1;
-        info->GroupMDEntries[0] = item4;
-
-        this->incCurr->OnIncrementalRefresh_OLR_CURR(info);
-
-        if(this->incCurr->OrderCurr()->UsedItemCount() != 1)
-            throw;
-        if(this->incCurr->OrderCurr()->SymbolsCount() != 1)
-            throw;
-        if(this->incCurr->OrderCurr()->Symbol(0)->Count() != 1)
-            throw;
-        obi = this->incCurr->OrderCurr()->GetItem("s1", "t1");
-        if(obi == 0)
-            throw;
-        if(obi->BuyQuotes()->Count() != 4)
-            throw;
-
-        quote = obi->BuyQuotes()->Item(0);
-        price.Set(3, -2);
-        if(!quote->MDEntryPx.Equal(&price))
-            throw;
-        if(!quote->MDEntrySize.Equal(&size))
-            throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, 2, "e1", 2))
-            throw;
-
-        quote = obi->BuyQuotes()->Item(1);
-        price.Set(4, -2);
-        if(!quote->MDEntryPx.Equal(&price))
-            throw;
-        if(!quote->MDEntrySize.Equal(&size))
-            throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, 2, "e2", 2))
-            throw;
-
-        quote = obi->BuyQuotes()->Item(2);
-        price.Set(2, -2);
-        if(!quote->MDEntryPx.Equal(&price))
-            throw;
-        if(!quote->MDEntrySize.Equal(&size))
-            throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, 2, "e3", 2))
-            throw;
-
-        quote = obi->BuyQuotes()->Item(3);
-        price.Set(25, -3);
-        if(!quote->MDEntryPx.Equal(&price))
-            throw;
-        if(!quote->MDEntrySize.Equal(&size))
-            throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, 2, "e4", 2))
-            throw;
-    }
-
-    void Test_OnIncrementalRefresh_OLR_CURR_Remove() {
-        this->Clear();
-        this->TestDefaults();
-
-        FastIncrementalOLRCURRInfo *info = new FastIncrementalOLRCURRInfo;
-        FastOLSCURRItemInfo *item1 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote,
-                                                           "e1", 1);
-        FastOLSCURRItemInfo *item2 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote,
-                                                           "e2", 2);
-        FastOLSCURRItemInfo *item3 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote,
-                                                           "e3", 3);
-        FastOLSCURRItemInfo *item4 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote,
-                                                           "e4", 4);
-
-        info->GroupMDEntriesCount = 4;
-        info->GroupMDEntries[0] = item1;
-        info->GroupMDEntries[1] = item2;
-        info->GroupMDEntries[2] = item3;
-        info->GroupMDEntries[3] = item4;
-
-        this->incCurr->OnIncrementalRefresh_OLR_CURR(info);
-
-        item1->MDUpdateAction = mduaDelete;
-        item2->MDUpdateAction = mduaDelete;
-        item3->MDUpdateAction = mduaDelete;
-        item4->MDUpdateAction = mduaDelete;
-
-        info->GroupMDEntriesCount = 1;
-        info->GroupMDEntries[0] = item4;
-        item4->RptSeq = 5;
-
-        this->incCurr->OnIncrementalRefresh_OLR_CURR(info);
-
-        if(this->incCurr->OrderCurr()->UsedItemCount() != 1)
-            throw;
-
-        OrderInfo<FastOLSCURRItemInfo> *obi = this->incCurr->OrderCurr()->GetItem("s1", "t1");
-        if(obi->BuyQuotes()->Count() != 3)
-            throw;
-        if(!StringIdComparer::Equal(obi->BuyQuotes()->Item(0)->MDEntryID, 2, "e1", 2))
-            throw;
-        if(!StringIdComparer::Equal(obi->BuyQuotes()->Item(1)->MDEntryID, 2, "e2", 2))
-            throw;
-        if(!StringIdComparer::Equal(obi->BuyQuotes()->Item(2)->MDEntryID, 2, "e3", 2))
-            throw;
-
-        info->GroupMDEntriesCount = 1;
-        info->GroupMDEntries[0] = item3;
-        item3->RptSeq = 6;
-
-        this->incCurr->OnIncrementalRefresh_OLR_CURR(info);
-
-        if(this->incCurr->OrderCurr()->UsedItemCount() != 1)
-            throw;
-
-        obi = this->incCurr->OrderCurr()->GetItem("s1", "t1");
-        if(obi->BuyQuotes()->Count() != 2)
-            throw;
-        if(!StringIdComparer::Equal(obi->BuyQuotes()->Item(0)->MDEntryID, 2, "e1", 2))
-            throw;
-        if(!StringIdComparer::Equal(obi->BuyQuotes()->Item(1)->MDEntryID, 2, "e2", 2))
-            throw;
-
-        info->GroupMDEntriesCount = 1;
-        info->GroupMDEntries[0] = item2;
-        item2->RptSeq = 7;
-
-        this->incCurr->OnIncrementalRefresh_OLR_CURR(info);
-
-        if(this->incCurr->OrderCurr()->UsedItemCount() != 1)
-            throw;
-
-        obi = this->incCurr->OrderCurr()->GetItem("s1", "t1");
-        if(obi->BuyQuotes()->Count() != 1)
-            throw;
-        if(!StringIdComparer::Equal(obi->BuyQuotes()->Item(0)->MDEntryID, 2, "e1", 2))
-            throw;
-
-        info->GroupMDEntriesCount = 1;
-        info->GroupMDEntries[0] = item1;
-        item1->RptSeq = 8;
-
-        this->incCurr->OnIncrementalRefresh_OLR_CURR(info);
-
-        if(this->incCurr->OrderCurr()->UsedItemCount() != 1)
-            throw;
-
-        obi = this->incCurr->OrderCurr()->GetItem("s1", "t1");
-        if(obi->BuyQuotes()->Count() != 0)
-            throw;
-    }
-
-    void Test_OnIncrementalRefresh_OLR_CURR_Change() {
-        this->Clear();
-        this->TestDefaults();
-
-        FastIncrementalOLRCURRInfo *info = new FastIncrementalOLRCURRInfo;
-        FastOLSCURRItemInfo *item1 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote,
-                                                           "e1", 1);
-        FastOLSCURRItemInfo *item2 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote,
-                                                           "e2", 2);
-        FastOLSCURRItemInfo *item3 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote,
-                                                           "e3", 3);
-        FastOLSCURRItemInfo *item4 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote,
-                                                           "e4", 4);
-
-        info->GroupMDEntriesCount = 4;
-        info->GroupMDEntries[0] = item1;
-        info->GroupMDEntries[1] = item2;
-        info->GroupMDEntries[2] = item3;
-        info->GroupMDEntries[3] = item4;
-
-        this->incCurr->OnIncrementalRefresh_OLR_CURR(info);
-
-        OrderInfo<FastOLSCURRItemInfo> *obi2 = this->incCurr->OrderCurr()->GetItem("s1", "t1");
-        if(!StringIdComparer::Equal(obi2->BuyQuotes()->Item(0)->MDEntryID, 2, "e1", 2))
-            throw;
-        if(!StringIdComparer::Equal(obi2->BuyQuotes()->Item(1)->MDEntryID, 2, "e2", 2))
-            throw;
-        if(!StringIdComparer::Equal(obi2->BuyQuotes()->Item(2)->MDEntryID, 2, "e3", 2))
-            throw;
-        if(!StringIdComparer::Equal(obi2->BuyQuotes()->Item(3)->MDEntryID, 2, "e4", 2))
-            throw;
-
-        FastOLSCURRItemInfo *item5 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 24, -3, 1, 3, mduaChange, mdetBuyQuote,
-                                                           "e2", 5);
-
-        info->GroupMDEntriesCount = 1;
-        info->GroupMDEntries[0] = item5;
-
-        this->incCurr->OnIncrementalRefresh_OLR_CURR(info);
-
-        OrderInfo<FastOLSCURRItemInfo> *obi = this->incCurr->OrderCurr()->GetItem("s1", "t1");
-
-        FastOLSCURRItemInfo *qt1 = obi->BuyQuotes()->Item(0);
-        FastOLSCURRItemInfo *qt2 = obi->BuyQuotes()->Item(1);
-        FastOLSCURRItemInfo *qt3 = obi->BuyQuotes()->Item(2);
-        FastOLSCURRItemInfo *qt4 = obi->BuyQuotes()->Item(3);
-
-        if(this->incCurr->OrderCurr()->UsedItemCount() != 1)
-            throw;
-        if(obi->BuyQuotes()->Count() != 4)
-            throw;
-        if(!StringIdComparer::Equal(qt1->MDEntryID, 2, "e1", 2))
-            throw;
-        if(!StringIdComparer::Equal(qt2->MDEntryID, 2, "e2", 2))
-            throw;
-        if(!StringIdComparer::Equal(qt3->MDEntryID, 2, "e3", 2))
-            throw;
-        if(!StringIdComparer::Equal(qt4->MDEntryID, 2, "e4", 2))
-            throw;
-
-        if(qt1->MDEntryPx.Mantissa != item1->MDEntryPx.Mantissa)
-            throw;
-        if(qt1->MDEntryPx.Exponent != item1->MDEntryPx.Exponent)
-            throw;
-
-        if(qt2->MDEntryPx.Mantissa != item5->MDEntryPx.Mantissa)
-            throw;
-        if(qt2->MDEntryPx.Exponent != item5->MDEntryPx.Exponent)
-            throw;
-    }
-
-    void Test_Clear_Curr() {
-        this->Clear();
-        this->TestDefaults();
-
-        FastIncrementalOLRCURRInfo *info = new FastIncrementalOLRCURRInfo;
-        FastOLSCURRItemInfo *item1 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote,
-                                                           "e1", 1);
-        FastOLSCURRItemInfo *item2 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote,
-                                                           "e2", 2);
-        FastOLSCURRItemInfo *item3 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote,
-                                                           "e3", 3);
-        FastOLSCURRItemInfo *item4 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote,
-                                                           "e4", 4);
-
-        info->GroupMDEntriesCount = 4;
-        info->GroupMDEntries[0] = item1;
-        info->GroupMDEntries[1] = item2;
-        info->GroupMDEntries[2] = item3;
-        info->GroupMDEntries[3] = item4;
-
-        this->incCurr->OnIncrementalRefresh_OLR_CURR(info);
-
-        this->incCurr->OrderCurr()->Clear();
-        if(this->incCurr->OrderCurr()->UsedItemCount() != 0)
-            throw;
-
-        OrderInfo<FastOLSCURRItemInfo> *obi = this->incCurr->OrderCurr()->GetItem("s1", "t1");
-        if(obi->BuyQuotes()->Count() != 0)
-            throw;
-    }
-
-    void Test_OnFullRefresh_OLS_CURR() {
-        this->Clear();
-        this->TestDefaults();
-
-        FastIncrementalOLRCURRInfo *info = new FastIncrementalOLRCURRInfo;
-        FastOLSCURRItemInfo *item1 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote,
-                                                           "e1", 1);
-        FastOLSCURRItemInfo *item2 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote,
-                                                           "e2", 2);
-        FastOLSCURRItemInfo *item3 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote,
-                                                           "e3", 3);
-        FastOLSCURRItemInfo *item4 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote,
-                                                           "e4", 4);
-
-        info->GroupMDEntriesCount = 4;
-        info->GroupMDEntries[0] = item1;
-        info->GroupMDEntries[1] = item2;
-        info->GroupMDEntries[2] = item3;
-        info->GroupMDEntries[3] = item4;
-
-        this->incCurr->OnIncrementalRefresh_OLR_CURR(info);
-
-        FastOLSCURRInfo *info2 = this->m_helper->CreateOLSCurrInfo("t1s2", "t1");
-        FastOLSCURRItemInfo *newItem1 = this->m_helper->CreateOLSCurrItemInfo(7,-2, 1, 2, mdetBuyQuote, "e7");
-        FastOLSCURRItemInfo *newItem2 = this->m_helper->CreateOLSCurrItemInfo(8,-2, 1, 2, mdetBuyQuote, "e8");
-
-        info2->RptSeq = 5;
-        info2->GroupMDEntriesCount = 2;
-        info2->GroupMDEntries[0] = newItem1;
-        info2->GroupMDEntries[1] = newItem2;
-
-        this->incCurr->OrderCurr()->ObtainSnapshotItem(info2);
-        this->incCurr->OrderCurr()->ProcessSnapshot(info2);
-
-        if(this->incCurr->OrderCurr()->UsedItemCount() != 2)
-            throw;
-
-        OrderInfo<FastOLSCURRItemInfo> *obi3 = this->incCurr->OrderCurr()->GetItem("s1", "t1");
-        if(obi3->BuyQuotes()->Count() != 4)
-            throw;
-
-        OrderInfo<FastOLSCURRItemInfo> *obi = this->incCurr->OrderCurr()->GetItem("t1s2", 4, "t1", 2);
-        if(obi->BuyQuotes()->Count() != 2)
-            throw;
-
-        FastOLSCURRItemInfo *qt1 = obi->BuyQuotes()->Item(0);
-        FastOLSCURRItemInfo *qt2 = obi->BuyQuotes()->Item(1);
-
-        if(!StringIdComparer::Equal(qt1->MDEntryID, 2, "e7", 2))
-            throw;
-        if(!StringIdComparer::Equal(qt2->MDEntryID, 2, "e8", 2))
-            throw;
-        if(!qt1->MDEntryPx.Equal(7, -2))
-            throw;
-        if(!qt1->MDEntrySize.Equal(1, 2))
-            throw;
-        if(!qt2->MDEntryPx.Equal(8, -2))
-            throw;
-    }
-
-    void Test_OnIncrementalRefresh_OLR_CURR_Add_SellQuotes() {
-        this->Clear();
-        this->TestDefaults();
-
-        FastIncrementalOLRCURRInfo *info = new FastIncrementalOLRCURRInfo;
-
-        FastOLSCURRItemInfo *item1 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote,
-                                                           "e1", 1);
-        FastOLSCURRItemInfo *item2 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote,
-                                                           "e2", 2);
-        FastOLSCURRItemInfo *item3 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote,
-                                                           "e3", 3);
-        FastOLSCURRItemInfo *item4 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote,
-                                                           "e4", 4);
-
-        info->GroupMDEntriesCount = 1;
-        info->GroupMDEntries[0] = item1;
-
-        this->incCurr->OnIncrementalRefresh_OLR_CURR(info);
-
-        if(this->incCurr->OrderCurr()->UsedItemCount() != 1)
-            throw;
-        if(this->incCurr->OrderCurr()->SymbolsCount() != 1)
-            throw;
-        if(this->incCurr->OrderCurr()->Symbol(0)->Count() != 1)
-            throw;
-        OrderInfo<FastOLSCURRItemInfo> *obi = this->incCurr->OrderCurr()->GetItem("s1", "t1");
-        if(obi == 0)
-            throw;
-        if(obi->SellQuotes()->Count() != 1)
-            throw;
-        FastOLSCURRItemInfo *quote = obi->SellQuotes()->Start()->Data();
-        if(!quote->MDEntryPx.Equal(3, -2))
-            throw;
-        if(!quote->MDEntrySize.Equal(1, 2))
-            throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, 2, "e1", 2))
-            throw;
-
-        info->GroupMDEntriesCount = 1;
-        info->GroupMDEntries[0] = item2;
-
-        this->incCurr->OnIncrementalRefresh_OLR_CURR(info);
-
-        if(this->incCurr->OrderCurr()->UsedItemCount() != 1)
-            throw;
-        if(this->incCurr->OrderCurr()->SymbolsCount() != 1)
-            throw;
-        if(this->incCurr->OrderCurr()->Symbol(0)->Count() != 1)
-            throw;
-        obi = this->incCurr->OrderCurr()->GetItem("s1", "t1");
-        if(obi == 0)
-            throw;
-        if(obi->SellQuotes()->Count() != 2)
-            throw;
-        quote = obi->SellQuotes()->Start()->Data();
-        if(!quote->MDEntryPx.Equal(3, -2))
-            throw;
-        if(!quote->MDEntrySize.Equal(1, 2))
-            throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, 2, "e1", 2))
-            throw;
-
-        quote = obi->SellQuotes()->Item(1);
-        if(!quote->MDEntryPx.Equal(4, -2))
-            throw;
-        if(!quote->MDEntrySize.Equal(1, 2))
-            throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, 2, "e2", 2))
-            throw;
-
-        info->GroupMDEntriesCount = 1;
-        info->GroupMDEntries[0] = item3;
-
-        this->incCurr->OnIncrementalRefresh_OLR_CURR(info);
-
-        if(this->incCurr->OrderCurr()->UsedItemCount() != 1)
-            throw;
-        if(this->incCurr->OrderCurr()->SymbolsCount() != 1)
-            throw;
-        if(this->incCurr->OrderCurr()->Symbol(0)->Count() != 1)
-            throw;
-        obi = this->incCurr->OrderCurr()->GetItem("s1", "t1");
-        if(obi == 0)
-            throw;
-        if(obi->SellQuotes()->Count() != 3)
-            throw;
-
-        quote = obi->SellQuotes()->Item(0);
-        if(!quote->MDEntryPx.Equal(3, -2))
-            throw;
-        if(!quote->MDEntrySize.Equal(1, 2))
-            throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, 2, "e1", 2))
-            throw;
-
-        quote = obi->SellQuotes()->Item(1);
-        if(!quote->MDEntryPx.Equal(4, -2))
-            throw;
-        if(!quote->MDEntrySize.Equal(1, 2))
-            throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, 2, "e2", 2))
-            throw;
-
-        quote = obi->SellQuotes()->Item(2);
-        if(!quote->MDEntryPx.Equal(2, -2))
-            throw;
-        if(!quote->MDEntrySize.Equal(1, 2))
-            throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, 2, "e3", 2))
-            throw;
-
-        info->GroupMDEntriesCount = 1;
-        info->GroupMDEntries[0] = item4;
-
-        this->incCurr->OnIncrementalRefresh_OLR_CURR(info);
-
-        if(this->incCurr->OrderCurr()->UsedItemCount() != 1)
-            throw;
-        if(this->incCurr->OrderCurr()->SymbolsCount() != 1)
-            throw;
-        if(this->incCurr->OrderCurr()->Symbol(0)->Count() != 1)
-            throw;
-        obi = this->incCurr->OrderCurr()->GetItem("s1", "t1");
-        if(obi == 0)
-            throw;
-        if(obi->SellQuotes()->Count() != 4)
-            throw;
-
-        quote = obi->SellQuotes()->Item(0);
-        if(!quote->MDEntryPx.Equal(3, -2))
-            throw;
-        if(!quote->MDEntrySize.Equal(1, 2))
-            throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, 2, "e1", 2))
-            throw;
-
-        quote = obi->SellQuotes()->Item(1);
-        if(!quote->MDEntryPx.Equal(4, -2))
-            throw;
-        if(!quote->MDEntrySize.Equal(1, 2))
-            throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, 2, "e2", 2))
-            throw;
-
-        quote = obi->SellQuotes()->Item(2);
-        if(!quote->MDEntryPx.Equal(2, -2))
-            throw;
-        if(!quote->MDEntrySize.Equal(1, 2))
-            throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, 2, "e3", 2))
-            throw;
-
-        quote = obi->SellQuotes()->Item(3);
-        if(!quote->MDEntryPx.Equal(25, -3))
-            throw;
-        if(!quote->MDEntrySize.Equal(1, 2))
-            throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, 2, "e4", 2))
-            throw;
-    }
-
-    void Test_OnIncrementalRefresh_OLR_CURR_Remove_SellQuotes() {
-        this->Clear();
-        this->TestDefaults();
-
-        FastIncrementalOLRCURRInfo *info = new FastIncrementalOLRCURRInfo;
-        FastOLSCURRItemInfo *item1 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote,
-                                                           "e1", 1);
-        FastOLSCURRItemInfo *item2 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote,
-                                                           "e2", 2);
-        FastOLSCURRItemInfo *item3 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote,
-                                                           "e3", 3);
-        FastOLSCURRItemInfo *item4 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote,
-                                                           "e4", 4);
-
-        info->GroupMDEntriesCount = 4;
-        info->GroupMDEntries[0] = item1;
-        info->GroupMDEntries[1] = item2;
-        info->GroupMDEntries[2] = item3;
-        info->GroupMDEntries[3] = item4;
-
-        this->incCurr->OnIncrementalRefresh_OLR_CURR(info);
-
-        item1->MDUpdateAction = mduaDelete;
-        item2->MDUpdateAction = mduaDelete;
-        item3->MDUpdateAction = mduaDelete;
-        item4->MDUpdateAction = mduaDelete;
-
-        info->GroupMDEntriesCount = 1;
-        info->GroupMDEntries[0] = item4;
-        item4->RptSeq = 5;
-
-        this->incCurr->OnIncrementalRefresh_OLR_CURR(info);
-
-        if(this->incCurr->OrderCurr()->UsedItemCount() != 1)
-            throw;
-
-        OrderInfo<FastOLSCURRItemInfo> *obi = this->incCurr->OrderCurr()->GetItem("s1", "t1");
-        if(obi->SellQuotes()->Count() != 3)
-            throw;
-        if(!StringIdComparer::Equal(obi->SellQuotes()->Item(0)->MDEntryID, 2, "e1", 2))
-            throw;
-        if(!StringIdComparer::Equal(obi->SellQuotes()->Item(1)->MDEntryID, 2, "e2", 2))
-            throw;
-        if(!StringIdComparer::Equal(obi->SellQuotes()->Item(2)->MDEntryID, 2, "e3", 2))
-            throw;
-
-        info->GroupMDEntriesCount = 1;
-        info->GroupMDEntries[0] = item3;
-        item3->RptSeq = 6;
-
-        this->incCurr->OnIncrementalRefresh_OLR_CURR(info);
-
-        if(this->incCurr->OrderCurr()->UsedItemCount() != 1)
-            throw;
-
-        obi = this->incCurr->OrderCurr()->GetItem("s1", "t1");
-        if(obi->SellQuotes()->Count() != 2)
-            throw;
-        if(!StringIdComparer::Equal(obi->SellQuotes()->Item(0)->MDEntryID, 2, "e1", 2))
-            throw;
-        if(!StringIdComparer::Equal(obi->SellQuotes()->Item(1)->MDEntryID, 2, "e2", 2))
-            throw;
-
-        info->GroupMDEntriesCount = 1;
-        info->GroupMDEntries[0] = item2;
-        item2->RptSeq = 7;
-
-        this->incCurr->OnIncrementalRefresh_OLR_CURR(info);
-
-        if(this->incCurr->OrderCurr()->UsedItemCount() != 1)
-            throw;
-
-        obi = this->incCurr->OrderCurr()->GetItem("s1", "t1");
-        if(obi->SellQuotes()->Count() != 1)
-            throw;
-        if(!StringIdComparer::Equal(obi->SellQuotes()->Item(0)->MDEntryID, 2, "e1", 2))
-            throw;
-
-        info->GroupMDEntriesCount = 1;
-        info->GroupMDEntries[0] = item1;
-        item1->RptSeq = 8;
-
-        this->incCurr->OnIncrementalRefresh_OLR_CURR(info);
-
-        if(this->incCurr->OrderCurr()->UsedItemCount() != 1)
-            throw;
-
-        obi = this->incCurr->OrderCurr()->GetItem("s1", "t1");
-        if(obi->SellQuotes()->Count() != 0)
-            throw;
-    }
-
-    void Test_OnIncrementalRefresh_OLR_CURR_Change_SellQuotes() {
-        this->Clear();
-        this->TestDefaults();
-
-        FastIncrementalOLRCURRInfo *info = new FastIncrementalOLRCURRInfo;
-        FastOLSCURRItemInfo *item1 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote,
-                                                           "e1", 1);
-        FastOLSCURRItemInfo *item2 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote,
-                                                           "e2", 2);
-        FastOLSCURRItemInfo *item3 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote,
-                                                           "e3", 3);
-        FastOLSCURRItemInfo *item4 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote,
-                                                           "e4", 4);
-
-        info->GroupMDEntriesCount = 4;
-        info->GroupMDEntries[0] = item1;
-        info->GroupMDEntries[1] = item2;
-        info->GroupMDEntries[2] = item3;
-        info->GroupMDEntries[3] = item4;
-
-        this->incCurr->OnIncrementalRefresh_OLR_CURR(info);
-
-        OrderInfo<FastOLSCURRItemInfo> *obi2 = this->incCurr->OrderCurr()->GetItem("s1", "t1");
-        if(!StringIdComparer::Equal(obi2->SellQuotes()->Item(0)->MDEntryID, 2, "e1", 2))
-            throw;
-        if(!StringIdComparer::Equal(obi2->SellQuotes()->Item(1)->MDEntryID, 2, "e2", 2))
-            throw;
-        if(!StringIdComparer::Equal(obi2->SellQuotes()->Item(2)->MDEntryID, 2, "e3", 2))
-            throw;
-        if(!StringIdComparer::Equal(obi2->SellQuotes()->Item(3)->MDEntryID, 2, "e4", 2))
-            throw;
-
-        FastOLSCURRItemInfo *item5 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 24, -3, 1, 3, mduaChange,
-                                                           mdetSellQuote, "e2", 5);
-
-        info->GroupMDEntriesCount = 1;
-        info->GroupMDEntries[0] = item5;
-
-        this->incCurr->OnIncrementalRefresh_OLR_CURR(info);
-
-        OrderInfo<FastOLSCURRItemInfo> *obi = this->incCurr->OrderCurr()->GetItem("s1", "t1");
-
-        FastOLSCURRItemInfo *qt1 = obi->SellQuotes()->Item(0);
-        FastOLSCURRItemInfo *qt2 = obi->SellQuotes()->Item(1);
-        FastOLSCURRItemInfo *qt3 = obi->SellQuotes()->Item(2);
-        FastOLSCURRItemInfo *qt4 = obi->SellQuotes()->Item(3);
-
-        if(this->incCurr->OrderCurr()->UsedItemCount() != 1)
-            throw;
-        if(obi->SellQuotes()->Count() != 4)
-            throw;
-        if(!StringIdComparer::Equal(qt1->MDEntryID, 2, "e1", 2))
-            throw;
-        if(!StringIdComparer::Equal(qt2->MDEntryID, 2, "e2", 2))
-            throw;
-        if(!StringIdComparer::Equal(qt3->MDEntryID, 2, "e3", 2))
-            throw;
-        if(!StringIdComparer::Equal(qt4->MDEntryID, 2, "e4", 2))
-            throw;
-
-        if(qt1->MDEntryPx.Mantissa != item1->MDEntryPx.Mantissa)
-            throw;
-        if(qt1->MDEntryPx.Exponent != item1->MDEntryPx.Exponent)
-            throw;
-
-        if(qt2->MDEntryPx.Mantissa != item5->MDEntryPx.Mantissa)
-            throw;
-        if(qt2->MDEntryPx.Exponent != item5->MDEntryPx.Exponent)
-            throw;
-    }
-
-    void Test_Clear_Curr_SellQuotes() {
-        this->Clear();
-        this->TestDefaults();
-
-        FastIncrementalOLRCURRInfo *info = new FastIncrementalOLRCURRInfo;
-        FastOLSCURRItemInfo *item1 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote,
-                                                           "e1", 1);
-        FastOLSCURRItemInfo *item2 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote,
-                                                           "e2", 2);
-        FastOLSCURRItemInfo *item3 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote,
-                                                           "e3", 3);
-        FastOLSCURRItemInfo *item4 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote,
-                                                           "e4", 4);
-
-        info->GroupMDEntriesCount = 4;
-        info->GroupMDEntries[0] = item1;
-        info->GroupMDEntries[1] = item2;
-        info->GroupMDEntries[2] = item3;
-        info->GroupMDEntries[3] = item4;
-
-        this->incCurr->OnIncrementalRefresh_OLR_CURR(info);
-
-        this->incCurr->OrderCurr()->Clear();
-        if(this->incCurr->OrderCurr()->UsedItemCount() != 0)
-            throw;
-
-        OrderInfo<FastOLSCURRItemInfo> *obi = this->incCurr->OrderCurr()->GetItem("s1", "t1");
-        if(obi->BuyQuotes()->Count() != 0)
-            throw;
-    }
-
-    void Test_OnFullRefresh_OLS_CURR_SellQuotes() {
-        this->Clear();
-        this->TestDefaults();
-
-        FastIncrementalOLRCURRInfo *info = new FastIncrementalOLRCURRInfo;
-        FastOLSCURRItemInfo *item1 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote,
-                                                           "e1", 1);
-        FastOLSCURRItemInfo *item2 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote,
-                                                           "e2", 2);
-        FastOLSCURRItemInfo *item3 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote,
-                                                           "e3", 3);
-        FastOLSCURRItemInfo *item4 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote,
-                                                           "e4", 4);
-
-        info->GroupMDEntriesCount = 4;
-        info->GroupMDEntries[0] = item1;
-        info->GroupMDEntries[1] = item2;
-        info->GroupMDEntries[2] = item3;
-        info->GroupMDEntries[3] = item4;
-
-        this->incCurr->OnIncrementalRefresh_OLR_CURR(info);
-
-        FastOLSCURRInfo *info2 = this->m_helper->CreateOLSCurrInfo("t1s2", "t1");
-        FastOLSCURRItemInfo *newItem1 = this->m_helper->CreateOLSCurrItemInfo(7,-2, 1, 2, mdetSellQuote, "e7");
-        FastOLSCURRItemInfo *newItem2 = this->m_helper->CreateOLSCurrItemInfo(8,-2, 1, 2, mdetSellQuote, "e8");
-
-        info2->GroupMDEntriesCount = 2;
-        info2->GroupMDEntries[0] = newItem1;
-        info2->GroupMDEntries[1] = newItem2;
-
-        this->incCurr->OrderCurr()->ProcessSnapshot(info2);
-
-        if(this->incCurr->OrderCurr()->UsedItemCount() != 1)
-            throw;
-
-        OrderInfo<FastOLSCURRItemInfo> *obi3 = this->incCurr->OrderCurr()->GetItem("s1", "t1");
-        if(obi3->SellQuotes()->Count() != 4)
-            throw;
-
-        OrderInfo<FastOLSCURRItemInfo> *obi = this->incCurr->OrderCurr()->GetItem("t1s2", 4, "t1", 2);
-        if(obi->SellQuotes()->Count() != 2)
-            throw;
-
-        FastOLSCURRItemInfo *qt1 = obi->SellQuotes()->Item(0);
-        FastOLSCURRItemInfo *qt2 = obi->SellQuotes()->Item(1);
-
-        if(!StringIdComparer::Equal(qt1->MDEntryID, 2, "e7", 2))
-            throw;
-        if(!StringIdComparer::Equal(qt2->MDEntryID, 2, "e8", 2))
-            throw;
-        if(!qt1->MDEntryPx.Equal(7, -2))
-            throw;
-        if(!qt1->MDEntrySize.Equal(1, 2))
-            throw;
-        if(!qt2->MDEntryPx.Equal(8, -2))
-            throw;
-    }
-
     void Test_OnIncrementalRefresh_OLR_FOND() {
-        printf("OLR Test_OnIncrementalRefresh_OLR_FOND_Add\n");
+        printf("OLR FOND Test_OnIncrementalRefresh_OLR_FOND_Add\n");
         Test_OnIncrementalRefresh_OLR_FOND_Add();
-        printf("OLR Test_OnIncrementalRefresh_OLR_FOND_Remove\n");
+        printf("OLR FOND Test_OnIncrementalRefresh_OLR_FOND_Remove\n");
         Test_OnIncrementalRefresh_OLR_FOND_Remove();
-        printf("OLR Test_OnIncrementalRefresh_OLR_FOND_Change\n");
+        printf("OLR FOND Test_OnIncrementalRefresh_OLR_FOND_Change\n");
         Test_OnIncrementalRefresh_OLR_FOND_Change();
-        printf("OLR Test_Clear\n");
+        printf("OLR FOND Test_Clear\n");
         Test_Clear();
     }
 
     void Test_OnIncrementalRefresh_OLR_FOND_SellQuotes() {
-        printf("OLR Test_OnIncrementalRefresh_OLR_FOND_Add_SellQuotes\n");
+        printf("OLR FOND Test_OnIncrementalRefresh_OLR_FOND_Add_SellQuotes\n");
         Test_OnIncrementalRefresh_OLR_FOND_Add_SellQuotes();
-        printf("OLR Test_OnIncrementalRefresh_OLR_FOND_Remove_SellQuotes\n");
+        printf("OLR FOND Test_OnIncrementalRefresh_OLR_FOND_Remove_SellQuotes\n");
         Test_OnIncrementalRefresh_OLR_FOND_Remove_SellQuotes();
-        printf("OLR Test_OnIncrementalRefresh_OLR_FOND_Change_SellQuotes\n");
+        printf("OLR FOND Test_OnIncrementalRefresh_OLR_FOND_Change_SellQuotes\n");
         Test_OnIncrementalRefresh_OLR_FOND_Change_SellQuotes();
-        printf("OLR Test_Clear_SellQuotes\n");
+        printf("OLR FOND Test_Clear_SellQuotes\n");
         Test_Clear_SellQuotes();
-    }
-
-    void Test_OnIncrementalRefresh_OLR_CURR() {
-        printf("OLR Test_OnIncrementalRefresh_OLR_CURR_Add\n");
-        Test_OnIncrementalRefresh_OLR_CURR_Add();
-        printf("OLR Test_OnIncrementalRefresh_OLR_CURR_Remove\n");
-        Test_OnIncrementalRefresh_OLR_CURR_Remove();
-        printf("OLR Test_OnIncrementalRefresh_OLR_CURR_Change\n");
-        Test_OnIncrementalRefresh_OLR_CURR_Change();
-        printf("OLR Test_Clear_Curr\n");
-        Test_Clear_Curr();
-    }
-
-    void Test_OnIncrementalRefresh_OLR_CURR_SellQuotes() {
-        printf("OLR Test_OnIncrementalRefresh_OLR_CURR_Add_SellQuotes\n");
-        Test_OnIncrementalRefresh_OLR_CURR_Add_SellQuotes();
-        printf("OLR Test_OnIncrementalRefresh_OLR_CURR_Remove_SellQuotes\n");
-        Test_OnIncrementalRefresh_OLR_CURR_Remove_SellQuotes();
-        printf("OLR Test_OnIncrementalRefresh_OLR_CURR_Change_SellQuotes\n");
-        Test_OnIncrementalRefresh_OLR_CURR_Change_SellQuotes();
-        printf("OLR Test_Clear_SellQuotes\n");
-        Test_Clear_SellQuotes();
-    }
-
-    void Test_OLR_CURR() {
-        printf("OLR Test_OnIncrementalRefresh_OLR_CURR\n");
-        Test_OnIncrementalRefresh_OLR_CURR();
-        printf("OLR Test_OnFullRefresh_OLS_CURR\n");
-        Test_OnFullRefresh_OLS_CURR();
-        printf("OLR Test_OnIncrementalRefresh_OLR_CURR_SellQuotes\n");
-        Test_OnIncrementalRefresh_OLR_CURR_SellQuotes();
-        printf("OLR Test_OnFullRefresh_OLS_CURR_SellQuotes\n");
-        Test_OnFullRefresh_OLS_CURR_SellQuotes();
     }
 
     void Test_OLR_FOND() {
-        printf("OLR Test_OnIncrementalRefresh_OLR_FOND\n");
+        printf("OLR FOND Test_OnIncrementalRefresh_OLR_FOND\n");
         Test_OnIncrementalRefresh_OLR_FOND();
-        printf("OLR Test_OnFullRefresh_OLS_FOND\n");
+        printf("OLR FOND Test_OnFullRefresh_OLS_FOND\n");
         Test_OnFullRefresh_OLS_FOND();
-        printf("OLR Test_OnIncrementalRefresh_OLR_FOND_SellQuotes\n");
+        printf("OLR FOND Test_OnIncrementalRefresh_OLR_FOND_SellQuotes\n");
         Test_OnIncrementalRefresh_OLR_FOND_SellQuotes();
-        printf("OLR Test_OnFullRefresh_OLS_FOND_SellQuotes\n");
+        printf("OLR FOND Test_OnFullRefresh_OLS_FOND_SellQuotes\n");
         Test_OnFullRefresh_OLS_FOND_SellQuotes();
     }
 
     void TestDefaults() {
         if(this->incFond->OrderFond()->SymbolsCount() != 0)
             throw;
-        if(this->incCurr->OrderCurr()->SymbolsCount() != 0)
-            throw;
         this->TestTableItemsAllocator(incFond->OrderFond());
-        //this->TestTableItemsAllocator(incCurr->OrderCurr());
     }
 
     void TestTableItem_CorrectBegin() {
@@ -1901,15 +1012,15 @@ public:
 
     void TestTable_Default() {
 
-        this->m_table_fond->Clear();
+        this->m_table->Clear();
 
-        TestTableItemsAllocator(this->m_table_fond);
+        TestTableItemsAllocator(this->m_table);
 
         
     }
 
     void TestTable_AfterClear() {
-        this->m_table_fond->Clear();
+        this->m_table->Clear();
 
         FastOLSFONDItemInfo *item = this->m_helper->CreateOLRFondItemInfo("s1", "session1", "e1");
         item->RptSeq = 1;
@@ -1920,17 +1031,17 @@ public:
         FastOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("s1", "session1", "e1");
         item3->RptSeq = 4;
 
-        this->m_table_fond->ProcessIncremental(item);
-        this->m_table_fond->ProcessIncremental(item2);
-        this->m_table_fond->ProcessIncremental(item3);
+        this->m_table->ProcessIncremental(item);
+        this->m_table->ProcessIncremental(item2);
+        this->m_table->ProcessIncremental(item3);
 
-        if(this->m_table_fond->UsedItemCount() != 1)
+        if(this->m_table->UsedItemCount() != 1)
             throw;
-        OrderInfo<FastOLSFONDItemInfo> *tableItem = this->m_table_fond->GetItem("s1", "session1");
+        OrderInfo<FastOLSFONDItemInfo> *tableItem = this->m_table->GetItem("s1", "session1");
         if(tableItem->EntriesQueue()->MaxIndex() != 1) // 3 is empty and 4 has value
             throw;
-        this->m_table_fond->Clear();;
-        if(this->m_table_fond->UsedItemCount() != 0)
+        this->m_table->Clear();;
+        if(this->m_table->UsedItemCount() != 0)
             throw;
         if(tableItem->RptSeq() != 0)
             throw;
@@ -1944,102 +1055,102 @@ public:
 
     void TestTable_CorrectBegin() {
 
-        this->m_table_fond->Clear();
+        this->m_table->Clear();
 
         FastOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 1;
 
-        if(!this->m_table_fond->ProcessIncremental(item1))
+        if(!this->m_table->ProcessIncremental(item1))
             throw;
 
         
     }
 
     void TestTable_IncorrectBegin() {
-        this->m_table_fond->Clear();
+        this->m_table->Clear();
 
         FastOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 2;
 
-        if(this->m_table_fond->ProcessIncremental(item1))
+        if(this->m_table->ProcessIncremental(item1))
             throw;
 
         
     }
 
     void TestTable_SkipMessages() {
-        this->m_table_fond->Clear();
+        this->m_table->Clear();
 
         FastOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 1;
 
-        if(!this->m_table_fond->ProcessIncremental(item1))
+        if(!this->m_table->ProcessIncremental(item1))
             throw;
 
         FastOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                            MDEntryType::mdetBuyQuote, "e1", 3);
         item2->RptSeq = 3;
 
-        if(this->m_table_fond->ProcessIncremental(item2))
+        if(this->m_table->ProcessIncremental(item2))
             throw;
 
         
     }
 
     void Test_2UsedItemsAfter2IncrementalMessages() {
-        this->m_table_fond->Clear();
+        this->m_table->Clear();
 
         FastOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 1;
 
-        if(!this->m_table_fond->ProcessIncremental(item1))
+        if(!this->m_table->ProcessIncremental(item1))
             throw;
 
         FastOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("SYMBOL2", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item2->RptSeq = 1;
 
-        if(!this->m_table_fond->ProcessIncremental(item2))
+        if(!this->m_table->ProcessIncremental(item2))
             throw;
 
-        if(this->m_table_fond->UsedItemCount() != 2)
+        if(this->m_table->UsedItemCount() != 2)
             throw;
 
         
     }
 
     void TestTable_CorrectApplySnapshot() {
-        this->m_table_fond->Clear();
+        this->m_table->Clear();
 
         FastOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 1;
 
-        this->m_table_fond->ProcessIncremental(item1);
+        this->m_table->ProcessIncremental(item1);
 
         FastOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                            MDEntryType::mdetBuyQuote, "e2", 3);
         item2->RptSeq = 3;
 
-        if(this->m_table_fond->ProcessIncremental(item2))
+        if(this->m_table->ProcessIncremental(item2))
             throw;
 
         FastOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                            MDEntryType::mdetBuyQuote, "e3", 4);
         item3->RptSeq = 4;
 
-        if(this->m_table_fond->ProcessIncremental(item3))
+        if(this->m_table->ProcessIncremental(item3))
             throw;
 
         FastOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                            MDEntryType::mdetBuyQuote, "e4", 5);
         item4->RptSeq = 5;
 
-        if(this->m_table_fond->ProcessIncremental(item4))
+        if(this->m_table->ProcessIncremental(item4))
             throw;
 
         FastOLSFONDItemInfo *item5 = this->m_helper->CreateOLRFondItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
@@ -2050,23 +1161,23 @@ public:
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item5;
 
-        OrderInfo<FastOLSFONDItemInfo> *tb = this->m_table_fond->GetItem("s1", "session1");
+        OrderInfo<FastOLSFONDItemInfo> *tb = this->m_table->GetItem("s1", "session1");
 
-        this->m_table_fond->ObtainSnapshotItem(info);
-        this->m_table_fond->StartProcessSnapshot(info);
-        if(tb != this->m_table_fond->SnapshotItem())
+        this->m_table->ObtainSnapshotItem(info);
+        this->m_table->StartProcessSnapshot(info);
+        if(tb != this->m_table->SnapshotItem())
             throw;
         if(tb->BuyQuotes()->Count() != 0)
             throw;
         if(tb->SellQuotes()->Count() != 0)
             throw;
 
-        this->m_table_fond->ProcessSnapshot(info->GroupMDEntries, 1, 3);
+        this->m_table->ProcessSnapshot(info->GroupMDEntries, 1, 3);
         if(tb->BuyQuotes()->Count() != 1)
             throw;
         if(tb->RptSeq() != 3)
             throw;
-        if(!this->m_table_fond->EndProcessSnapshot())
+        if(!this->m_table->EndProcessSnapshot())
             throw;
 
         if(tb->RptSeq() != 5)
@@ -2081,26 +1192,26 @@ public:
 
     void TestTable_CorrectApplySnapshot_2() {
 
-        this->m_table_fond->Clear();
+        this->m_table->Clear();
 
         FastOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 1;
 
-        this->m_table_fond->ProcessIncremental(item1);
+        this->m_table->ProcessIncremental(item1);
 
         FastOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                            MDEntryType::mdetBuyQuote, "e3", 4);
         item3->RptSeq = 4;
 
-        if(this->m_table_fond->ProcessIncremental(item3))
+        if(this->m_table->ProcessIncremental(item3))
             throw;
 
         FastOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                            MDEntryType::mdetBuyQuote, "e4", 5);
         item4->RptSeq = 5;
 
-        if(this->m_table_fond->ProcessIncremental(item4))
+        if(this->m_table->ProcessIncremental(item4))
             throw;
 
         FastOLSFONDInfo *info1 = this->m_helper->CreateOLSFondInfo("s1", "session1");
@@ -2115,20 +1226,20 @@ public:
         info2->RouteFirst = true;
         info2->GroupMDEntries[0] = this->m_helper->CreateOLSFondItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e2");
 
-        OrderInfo<FastOLSFONDItemInfo> *tb = this->m_table_fond->GetItem("s1", "session1");
+        OrderInfo<FastOLSFONDItemInfo> *tb = this->m_table->GetItem("s1", "session1");
 
-        this->m_table_fond->ObtainSnapshotItem(info1);
-        this->m_table_fond->StartProcessSnapshot(info1);
-        if(tb != this->m_table_fond->SnapshotItem())
+        this->m_table->ObtainSnapshotItem(info1);
+        this->m_table->StartProcessSnapshot(info1);
+        if(tb != this->m_table->SnapshotItem())
             throw;
         if(tb->BuyQuotes()->Count() != 0)
             throw;
         if(tb->SellQuotes()->Count() != 0)
             throw;
 
-        this->m_table_fond->ProcessSnapshot(info1);
-        this->m_table_fond->ProcessSnapshot(info2);
-        if(!this->m_table_fond->EndProcessSnapshot())
+        this->m_table->ProcessSnapshot(info1);
+        this->m_table->ProcessSnapshot(info2);
+        if(!this->m_table->EndProcessSnapshot())
             throw;
         if(tb->RptSeq() != 5)
             throw;
@@ -2137,33 +1248,33 @@ public:
     }
 
     void TestTable_IncorrectApplySnapshot() {
-        this->m_table_fond->Clear();
+        this->m_table->Clear();
 
         FastOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 1;
 
-        this->m_table_fond->ProcessIncremental(item1);
+        this->m_table->ProcessIncremental(item1);
 
         FastOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                            MDEntryType::mdetBuyQuote, "e2", 4);
         item2->RptSeq = 4;
 
-        if(this->m_table_fond->ProcessIncremental(item2))
+        if(this->m_table->ProcessIncremental(item2))
             throw;
 
         FastOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                            MDEntryType::mdetBuyQuote, "e3", 5);
         item3->RptSeq = 5;
 
-        if(this->m_table_fond->ProcessIncremental(item3))
+        if(this->m_table->ProcessIncremental(item3))
             throw;
 
         FastOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                            MDEntryType::mdetBuyQuote, "e4", 6);
         item4->RptSeq = 6;
 
-        if(this->m_table_fond->ProcessIncremental(item4))
+        if(this->m_table->ProcessIncremental(item4))
             throw;
 
         FastOLSFONDItemInfo *item5 = this->m_helper->CreateOLRFondItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
@@ -2174,23 +1285,23 @@ public:
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item5;
 
-        OrderInfo<FastOLSFONDItemInfo> *tb = this->m_table_fond->GetItem("s1", "session1");
+        OrderInfo<FastOLSFONDItemInfo> *tb = this->m_table->GetItem("s1", "session1");
 
-        this->m_table_fond->ObtainSnapshotItem(info);
-        this->m_table_fond->StartProcessSnapshot(info);
-        if(tb != this->m_table_fond->SnapshotItem())
+        this->m_table->ObtainSnapshotItem(info);
+        this->m_table->StartProcessSnapshot(info);
+        if(tb != this->m_table->SnapshotItem())
             throw;
         if(tb->BuyQuotes()->Count() != 0)
             throw;
         if(tb->SellQuotes()->Count() != 0)
             throw;
 
-        this->m_table_fond->ProcessSnapshot(info->GroupMDEntries, 1, 2);
+        this->m_table->ProcessSnapshot(info->GroupMDEntries, 1, 2);
         if(tb->BuyQuotes()->Count() != 1)
             throw;
         if(tb->RptSeq() != 2)
             throw;
-        if(this->m_table_fond->EndProcessSnapshot())
+        if(this->m_table->EndProcessSnapshot())
             throw;
 
         if(tb->RptSeq() != 2)
@@ -2198,26 +1309,26 @@ public:
     }
 
     void TestTable_IncorrectApplySnapshot_WhenMessageSkipped() {
-        this->m_table_fond->Clear();
+        this->m_table->Clear();
 
         FastOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 1;
 
-        this->m_table_fond->ProcessIncremental(item1);
+        this->m_table->ProcessIncremental(item1);
 
         FastOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                            MDEntryType::mdetBuyQuote, "e2", 4);
         item2->RptSeq = 4;
 
-        if(this->m_table_fond->ProcessIncremental(item2))
+        if(this->m_table->ProcessIncremental(item2))
             throw;
 
         FastOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                            MDEntryType::mdetBuyQuote, "e4", 6);
         item4->RptSeq = 6;
 
-        if(this->m_table_fond->ProcessIncremental(item4))
+        if(this->m_table->ProcessIncremental(item4))
             throw;
 
         FastOLSFONDItemInfo *item5 = this->m_helper->CreateOLRFondItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
@@ -2228,28 +1339,28 @@ public:
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item5;
 
-        OrderInfo<FastOLSFONDItemInfo> *tb = this->m_table_fond->GetItem("s1", "session1");
+        OrderInfo<FastOLSFONDItemInfo> *tb = this->m_table->GetItem("s1", "session1");
 
-        this->m_table_fond->ObtainSnapshotItem(info);
-        this->m_table_fond->StartProcessSnapshot(info);
-        if(tb != this->m_table_fond->SnapshotItem())
+        this->m_table->ObtainSnapshotItem(info);
+        this->m_table->StartProcessSnapshot(info);
+        if(tb != this->m_table->SnapshotItem())
             throw;
         if(tb->BuyQuotes()->Count() != 0)
             throw;
         if(tb->SellQuotes()->Count() != 0)
             throw;
 
-        this->m_table_fond->ProcessSnapshot(info->GroupMDEntries, 1, 3);
+        this->m_table->ProcessSnapshot(info->GroupMDEntries, 1, 3);
         if(tb->BuyQuotes()->Count() != 1)
             throw;
         if(tb->RptSeq() != 3)
             throw;
-        if(this->m_table_fond->EndProcessSnapshot())
+        if(this->m_table->EndProcessSnapshot())
             throw;
         if(tb->RptSeq() != 4)
             throw;
-        this->m_table_fond->ObtainSnapshotItem(info);
-        if(this->m_table_fond->EndProcessSnapshot())
+        this->m_table->ObtainSnapshotItem(info);
+        if(this->m_table->EndProcessSnapshot())
             throw;
     }
 
@@ -3902,55 +3013,55 @@ public:
     }
     // messages should be clear in snapshot connection because the are repeat
     void TestConnection_ClearSnapshotMessages() {
-        printf("OLR TestConnection_ClearSnapshotMessages_1\n");
+        printf("OLR FOND TestConnection_ClearSnapshotMessages_1\n");
         TestConnection_ClearSnapshotMessages_1();
-        printf("OLR TestConnection_ClearSnapshotMessages_2\n");
+        printf("OLR FOND TestConnection_ClearSnapshotMessages_2\n");
         TestConnection_ClearSnapshotMessages_2();
-        printf("OLR TestConnection_ClearSnapshotMessages_3\n");
+        printf("OLR FOND TestConnection_ClearSnapshotMessages_3\n");
         TestConnection_ClearSnapshotMessages_3();
-        printf("OLR TestConnection_ClearSnapshotMessages_4\n");
+        printf("OLR FOND TestConnection_ClearSnapshotMessages_4\n");
         TestConnection_ClearSnapshotMessages_4();
     }
     void TestConnection_ParallelWorkingIncrementalAndSnapshot() {
-        printf("OLR TestConnection_EnterSnapshotMode\n");
+        printf("OLR FOND TestConnection_EnterSnapshotMode\n");
         TestConnection_EnterSnapshotMode();
-        printf("OLR TestConnection_ClearSnapshotMessages\n");
+        printf("OLR FOND TestConnection_ClearSnapshotMessages\n");
         TestConnection_ClearSnapshotMessages();
-        printf("OLR TestConnection_ParallelWorkingIncrementalAndSnapshot_1\n");
+        printf("OLR FOND TestConnection_ParallelWorkingIncrementalAndSnapshot_1\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_1();
-        printf("OLR TestConnection_ParallelWorkingIncrementalAndSnapshot_2\n");
+        printf("OLR FOND TestConnection_ParallelWorkingIncrementalAndSnapshot_2\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_2();
-        printf("OLR TestConnection_ParallelWorkingIncrementalAndSnapshot_2_1\n");
+        printf("OLR FOND TestConnection_ParallelWorkingIncrementalAndSnapshot_2_1\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_2_1();
-        printf("OLR TestConnection_ParallelWorkingIncrementalAndSnapshot_3\n");
+        printf("OLR FOND TestConnection_ParallelWorkingIncrementalAndSnapshot_3\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_3();
-        printf("OLR TestConnection_ParallelWorkingIncrementalAndSnapshot_3_1\n");
+        printf("OLR FOND TestConnection_ParallelWorkingIncrementalAndSnapshot_3_1\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_3_1();
-        printf("OLR TestConnection_ParallelWorkingIncrementalAndSnapshot_4\n");
+        printf("OLR FOND TestConnection_ParallelWorkingIncrementalAndSnapshot_4\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_4();
-        printf("OLR TestConnection_ParallelWorkingIncrementalAndSnapshot_5\n");
+        printf("OLR FOND TestConnection_ParallelWorkingIncrementalAndSnapshot_5\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_5();
-        printf("OLR TestConnection_ParallelWorkingIncrementalAndSnapshot_5_1\n");
+        printf("OLR FOND TestConnection_ParallelWorkingIncrementalAndSnapshot_5_1\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_5_1();
-        printf("OLR TestConnection_ParallelWorkingIncrementalAndSnapshot_5_2\n");
+        printf("OLR FOND TestConnection_ParallelWorkingIncrementalAndSnapshot_5_2\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_5_2();
-        printf("OLR TestConnection_ParallelWorkingIncrementalAndSnapshot_5_2_2\n");
+        printf("OLR FOND TestConnection_ParallelWorkingIncrementalAndSnapshot_5_2_2\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_5_2_2();
-        printf("OLR TestConnection_ParallelWorkingIncrementalAndSnapshot_5_3\n");
+        printf("OLR FOND TestConnection_ParallelWorkingIncrementalAndSnapshot_5_3\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_5_3();
-        printf("OLR TestConnection_ParallelWorkingIncrementalAndSnapshot_5_4\n");
+        printf("OLR FOND TestConnection_ParallelWorkingIncrementalAndSnapshot_5_4\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_5_4();
-        printf("OLR TestConnection_ParallelWorkingIncrementalAndSnapshot_5_4_1\n");
+        printf("OLR FOND TestConnection_ParallelWorkingIncrementalAndSnapshot_5_4_1\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_5_4_1();
-        printf("OLR TestConnection_ParallelWorkingIncrementalAndSnapshot_5_4_2\n");
+        printf("OLR FOND TestConnection_ParallelWorkingIncrementalAndSnapshot_5_4_2\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_5_4_2();
-        printf("OLR TestConnection_ParallelWorkingIncrementalAndSnapshot_5_5\n");
+        printf("OLR FOND TestConnection_ParallelWorkingIncrementalAndSnapshot_5_5\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_5_5();
-        printf("OLR TestConnection_ParallelWorkingIncrementalAndSnapshot_5_5_1\n");
+        printf("OLR FOND TestConnection_ParallelWorkingIncrementalAndSnapshot_5_5_1\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_5_5_1();
-        printf("OLR TestConnection_ParallelWorkingIncrementalAndSnapshot_5_6\n");
+        printf("OLR FOND TestConnection_ParallelWorkingIncrementalAndSnapshot_5_6\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_5_6();
-        printf("OLR TestConnection_ParallelWorkingIncrementalAndSnapshot_5_7\n");
+        printf("OLR FOND TestConnection_ParallelWorkingIncrementalAndSnapshot_5_7\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_5_7();
     }
 
@@ -3983,87 +3094,87 @@ public:
     }
 
     void TestConnection() {
-        printf("OLR TestConnection_AllSymbolsAreOk\n");
+        printf("OLR FOND TestConnection_AllSymbolsAreOk\n");
         TestConnection_AllSymbolsAreOk();
-        printf("OLR TestConnection_ResetEntriesQueueIfNullSnapshotIsReceived\n");
+        printf("OLR FOND TestConnection_ResetEntriesQueueIfNullSnapshotIsReceived\n");
         TestConnection_ResetEntriesQueueIfNullSnapshotIsReceived();
-        printf("OLR TestConnection_AllSymbolsAreOkButOneMessageLost\n");
+        printf("OLR FOND TestConnection_AllSymbolsAreOkButOneMessageLost\n");
         TestConnection_AllSymbolsAreOkButOneMessageLost();
-        printf("OLR TestConnection_SkipHearthBeatMessages_Incremental\n");
+        printf("OLR FOND TestConnection_SkipHearthBeatMessages_Incremental\n");
         TestConnection_SkipHearthBeatMessages_Incremental();
-        printf("OLR TestConnection_ParallelWorkingIncrementalAndSnapshot\n");
+        printf("OLR FOND TestConnection_ParallelWorkingIncrementalAndSnapshot\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot();
-        printf("OLR TestConnection_NotAllSymbolsAreOk\n");
+        printf("OLR FOND TestConnection_NotAllSymbolsAreOk\n");
         TestConnection_NotAllSymbolsAreOk();
-        printf("OLR TestConnection_StopListeningSnapshotBecauseAllItemsIsUpToDate\n");
+        printf("OLR FOND TestConnection_StopListeningSnapshotBecauseAllItemsIsUpToDate\n");
         TestConnection_StopListeningSnapshotBecauseAllItemsIsUpToDate();
-        printf("OLR TestConnection_StopTimersAfterReconnect\n");
+        printf("OLR FOND TestConnection_StopTimersAfterReconnect\n");
         TestConnection_StopTimersAfterReconnect();
-        printf("OLR TestConnection_SnapshotSomeMessagesReceivedLater\n");
+        printf("OLR FOND TestConnection_SnapshotSomeMessagesReceivedLater\n");
         TestConnection_SnapshotSomeMessagesReceivedLater();
-        printf("OLR TestConnection_SnapshotSomeMessagesNotReceived\n");
+        printf("OLR FOND TestConnection_SnapshotSomeMessagesNotReceived\n");
         TestConnection_SnapshotSomeMessagesNotReceived();
-        printf("OLR TestConnection_LastFragmentReceivedBeforeRouteFirst\n");
+        printf("OLR FOND TestConnection_LastFragmentReceivedBeforeRouteFirst\n");
         TestConnection_LastFragmentReceivedBeforeRouteFirst();
-        printf("OLR TestConnection_RouteFirstReceived_AfterSomeDummyMessages\n");
+        printf("OLR FOND TestConnection_RouteFirstReceived_AfterSomeDummyMessages\n");
         TestConnection_RouteFirstReceived_AfterSomeDummyMessages();
-        printf("OLR TestConnection_RouteFirstReceived_Empty\n");
+        printf("OLR FOND TestConnection_RouteFirstReceived_Empty\n");
         TestConnection_RouteFirstReceived_Empty();
-        printf("OLR TestConnection_TestSnapshotNoMessagesAtAll\n");
+        printf("OLR FOND TestConnection_TestSnapshotNoMessagesAtAll\n");
         TestConnection_TestSnapshotNoMessagesAtAll();
-        printf("OLR TestConnection_OneMessageReceived\n");
+        printf("OLR FOND TestConnection_OneMessageReceived\n");
         TestConnection_OneMessageReceived();
-        printf("OLR TestConnection_Clear_AfterIncremental\n");
+        printf("OLR FOND TestConnection_Clear_AfterIncremental\n");
         TestConnection_Clear_AfterIncremental();
-        printf("OLR TestConnection_TestIncMessageLost_AndWaitTimerElapsed\n");
+        printf("OLR FOND TestConnection_TestIncMessageLost_AndWaitTimerElapsed\n");
         TestConnection_TestIncMessageLost_AndWaitTimerElapsed();
-        printf("OLR TestConnection_TestSnapshotCollect\n");
+        printf("OLR FOND TestConnection_TestSnapshotCollect\n");
         TestConnection_TestSnapshotCollect();
-        printf("OLR TestConnection_TestSnapshotNotCollect\n");
+        printf("OLR FOND TestConnection_TestSnapshotNotCollect\n");
         TestConnection_TestSnapshotMessageLostAndTimeExpired();
-        printf("OLR TestConnection_TestMessagesLost_2Items_SnapshotReceivedForOneItem\n");
+        printf("OLR FOND TestConnection_TestMessagesLost_2Items_SnapshotReceivedForOneItem\n");
         TestConnection_TestMessagesLost_2Items_SnapshotReceivedForOneItem();
 
-        printf("OLR TestConnection_EmptyTest\n");
+        printf("OLR FOND TestConnection_EmptyTest\n");
         TestConnection_EmptyTest();
-        printf("OLR TestConnection_TestCorrectIncMessages\n");
+        printf("OLR FOND TestConnection_TestCorrectIncMessages\n");
         TestConnection_TestCorrectIncMessages();
-        printf("OLR TestConnection_TestIncMessagesLost_AndWhenAppeared\n");
+        printf("OLR FOND TestConnection_TestIncMessagesLost_AndWhenAppeared\n");
         TestConnection_TestIncMessagesLost_AndWhenAppeared();
-        printf("OLR TestConnection_TestInc2MessagesLost_AppearedThen2Messages\n");
+        printf("OLR FOND TestConnection_TestInc2MessagesLost_AppearedThen2Messages\n");
         TestConnection_TestInc2MessagesLost_AppearedThen2Messages();
-        printf("OLR TestConnection_TestInc2MessagesLost_AppearedSeparately_1_2\n");
+        printf("OLR FOND TestConnection_TestInc2MessagesLost_AppearedSeparately_1_2\n");
         TestConnection_TestInc2MessagesLost_AppearedSeparately_1_2();
-        printf("OLR TestConnection_TestInc2MessagesLost_AppearedSeparately_2_1\n");
+        printf("OLR FOND TestConnection_TestInc2MessagesLost_AppearedSeparately_2_1\n");
         TestConnection_TestInc2MessagesLost_AppearedSeparately_2_1();
     }
 
     void TestOrderTableItem() {
-        printf("OLR TestTableItem_CorrectBegin\n");
+        printf("OLR FOND TestTableItem_CorrectBegin\n");
         TestTableItem_CorrectBegin();
-        printf("OLR TestTableItem_IncorrectBegin\n");
+        printf("OLR FOND TestTableItem_IncorrectBegin\n");
         TestTableItem_IncorrectBegin();
-        printf("OLR TestTableItem_SkipMessage\n");
+        printf("OLR FOND TestTableItem_SkipMessage\n");
         TestTableItem_SkipMessage();
-        printf("OLR TestTable_Default\n");
+        printf("OLR FOND TestTable_Default\n");
         TestTable_Default();
-        printf("OLR TestTable_AfterClear\n");
+        printf("OLR FOND TestTable_AfterClear\n");
         TestTable_AfterClear();
-        printf("OLR TestTable_CorrectBegin\n");
+        printf("OLR FOND TestTable_CorrectBegin\n");
         TestTable_CorrectBegin();
-        printf("OLR TestTable_IncorrectBegin\n");
+        printf("OLR FOND TestTable_IncorrectBegin\n");
         TestTable_IncorrectBegin();
-        printf("OLR TestTable_SkipMessages\n");
+        printf("OLR FOND TestTable_SkipMessages\n");
         TestTable_SkipMessages();
-        printf("OLR Test_2UsedItemsAfter2IncrementalMessages\n");
+        printf("OLR FOND Test_2UsedItemsAfter2IncrementalMessages\n");
         Test_2UsedItemsAfter2IncrementalMessages();
-        printf("OLR TestTable_CorrectApplySnapshot\n");
+        printf("OLR FOND TestTable_CorrectApplySnapshot\n");
         TestTable_CorrectApplySnapshot();
-        printf("OLR TestTable_CorrectApplySnapshot_2\n");
+        printf("OLR FOND TestTable_CorrectApplySnapshot_2\n");
         TestTable_CorrectApplySnapshot_2();
-        printf("OLR TestTable_IncorrectApplySnapshot\n");
+        printf("OLR FOND TestTable_IncorrectApplySnapshot\n");
         TestTable_IncorrectApplySnapshot();
-        printf("OLR TestTable_IncorrectApplySnapshot_WhenMessageSkipped\n");
+        printf("OLR FOND TestTable_IncorrectApplySnapshot_WhenMessageSkipped\n");
         TestTable_IncorrectApplySnapshot_WhenMessageSkipped();
     }
 
@@ -4078,11 +3189,217 @@ public:
         }
     }
 
+    void TestInfoAndItemInfoUsageAndAllocationFond_Inc_1() {
+        this->Clear();
+
+        this->incFond->OrderFond()->Add("s1", "session1");
+        int prevCount = this->incFond->m_fastProtocolManager->m_oLSFONDItems->Count();
+        this->SendMessages(this->incFond, this->snapFond,
+                           "olr entry s1 e1",
+                           "",
+                           30);
+
+        int newCount = this->incFond->m_fastProtocolManager->m_oLSFONDItems->Count();
+        if(newCount != prevCount + 1)
+            throw;
+    }
+
+    void TestInfoAndItemInfoUsageAndAllocationFond_Inc_2() {
+        this->Clear();
+
+        this->incFond->OrderFond()->Add("s1", "session1");
+        int prevCount = this->incFond->m_fastProtocolManager->m_oLSFONDItems->Count();
+        this->SendMessages(this->incFond, this->snapFond,
+                           "olr entry s1 e1, olr entry s1 e2",
+                           "",
+                           30);
+
+        int newCount = this->incFond->m_fastProtocolManager->m_oLSFONDItems->Count();
+        if(newCount != prevCount + 2)
+            throw;
+        this->incFond->OrderFond()->Clear();
+        newCount = this->incFond->m_fastProtocolManager->m_oLSFONDItems->Count();
+        if(newCount != prevCount)
+            throw;
+    }
+
+    void TestInfoAndItemInfoUsageAndAllocationFond_Inc_3() {
+        this->Clear();
+
+        this->incFond->OrderFond()->Add("s1", "session1");
+        int prevCount = this->incFond->m_fastProtocolManager->m_oLSFONDItems->Count();
+        this->SendMessages(this->incFond, this->snapFond,
+                           "olr entry s1 e1, olr entry s1 e2, olr entry del s1 e1",
+                           "",
+                           30);
+
+        int newCount = this->incFond->m_fastProtocolManager->m_oLSFONDItems->Count();
+        if(newCount != prevCount + 1)
+            throw;
+        this->incFond->OrderFond()->Clear();
+        newCount = this->incFond->m_fastProtocolManager->m_oLSFONDItems->Count();
+        if(newCount != prevCount)
+            throw;
+    }
+
+    void TestInfoAndItemInfoUsageAndAllocationFond_Inc_4() {
+        FastOBSFONDItemInfo *info = this->m_helper->CreateOBSFondItemInfo(1, 1, 1, 1, MDEntryType::mdetBuyQuote, "e1");
+        if(info->Allocator->Count() != 1)
+            throw;
+        info->Used = false;
+        info->ReleaseUnused();
+        if(info->Allocator->Count() != 0)
+            throw;
+        info->ReleaseUnused();
+        if(info->Allocator->Count() != 0)
+            throw;
+    }
+
+    void TestInfoAndItemInfoUsageAndAllocationFond_Inc_5() {
+        this->Clear();
+
+        this->incFond->OrderFond()->Add("s1", "session1");
+        int prevCount = this->incFond->m_fastProtocolManager->m_oLSFONDItems->Count();
+        this->SendMessages(this->incFond, this->snapFond,
+                           "olr entry s1 e1, olr entry s1 e2, olr entry change s1 e1",
+                           "",
+                           30);
+
+        int newCount = this->incFond->m_fastProtocolManager->m_oLSFONDItems->Count();
+        if(newCount != prevCount + 2)
+            throw;
+        this->incFond->OrderFond()->Clear();
+        newCount = this->incFond->m_fastProtocolManager->m_oLSFONDItems->Count();
+        if(newCount != prevCount)
+            throw;
+    }
+
+    void TestInfoAndItemInfoUsageAndAllocationFond_Snap_1() {
+        this->Clear();
+
+        this->incFond->OrderFond()->Add("s1", "session1");
+        int prevCount = this->snapFond->m_fastProtocolManager->m_oLSFONDItems->Count();
+        this->SendMessages(this->incFond, this->snapFond,
+                           "olr entry s1 e1, lost olr entry s1 e2, wait_snap, hbeat",
+                           "                                                  ols begin s1 entry s1 e2 rpt 2 end",
+                           30);
+
+        int newCount = this->snapFond->m_fastProtocolManager->m_oLSFONDItems->Count();
+        if(newCount != prevCount + 1)
+            throw;
+    }
+
+    void TestInfoAndItemInfoUsageAndAllocationFond_Snap_2() {
+        this->Clear();
+
+        this->incFond->OrderFond()->Add("s1", "session1");
+        int prevCount = this->snapFond->m_fastProtocolManager->m_oLSFONDItems->Count();
+        this->SendMessages(this->incFond, this->snapFond,
+                           "olr entry s1 e1, lost olr entry s1 e2 entry s1 e3, wait_snap, hbeat",
+                           "                                                   ols begin s1 entry s1 e2 rpt 2, ols s1 entry s1 e3 end",
+                           30);
+
+        int newCount = this->snapFond->m_fastProtocolManager->m_oLSFONDItems->Count();
+        if(newCount != prevCount + 2)
+            throw;
+    }
+
+    void TestInfoAndItemInfoUsageAndAllocationFond_Snap_3() {
+        // there is no UpdateAction in snap messages so we don't have to check these cases
+        /*this->Clear();
+
+        this->incFond->OrderFond()->Add("s1", "session1");
+        int prevCount = this->snapFond->m_fastProtocolManager->m_oLSFONDItems->Count();
+        this->SendMessages(this->incFond, this->snapFond,
+                           "olr entry s1 e1, olr entry s1 e2, lost olr entry s1 e4 entry s1 e4, wait_snap, hbeat",
+                           "                                                   ols begin s1 entry s1 e1 rpt 2, ols s1 entry s1 e2, ols s1 entry s1 e3, ols s1 entry del s1 e2 end",
+                           30);
+
+        int newCount = this->snapFond->m_fastProtocolManager->m_oLSFONDItems->Count();
+        if(newCount != prevCount + 3)
+            throw;*/
+    }
+
+    // check in case CheckProcessIfSessionInActualState returns true
+    void TestInfoAndItemInfoUsageAndAllocationFond_Snap_4() {
+        this->Clear();
+
+        incFond->OrderFond()->Add("s1", "session1");
+        incFond->OrderFond()->Add("s2", "session1");
+        incFond->OrderFond()->Add("symbol3", "session1");
+
+        int prevCount = this->snapFond->m_fastProtocolManager->m_oLSFONDItems->Count();
+        SendMessages(incFond, snapFond,
+                     "olr entry s1 e1, lost olr entry symbol3 e1, wait_snap, olr entry s1 e3,                              hbeat,                              hbeat",
+                     "                                                       ols symbol3 begin rpt 1 end entry symbol3 e1, ols s1 begin rpt 2 end entry s1 e1, hbeat, ols s2 begin rpt 2 end entry s2 e1",
+                     30);
+        int newCount = this->snapFond->m_fastProtocolManager->m_oLSFONDItems->Count();
+        if(newCount != prevCount + 2)
+            throw;
+    }
+    // check in case CheckProcessNullSnapshot
+    void TestInfoAndItemInfoUsageAndAllocationFond_Snap_5() {
+        this->Clear();
+        incFond->OrderFond()->Add("s1", "session1");
+        incFond->Start();
+
+        int prevCount = this->snapFond->m_fastProtocolManager->m_oLSFONDItems->Count();
+        SendMessages(incFond, snapFond,
+                     "olr entry s1 e1, lost olr entry s1 e2, olr entry s1 e2, wait_snap, hbeat",
+                     "                                       hbeat,           hbeat,     ols s1 begin rpt 0 lastmsg 0 entry s1 e1 end",
+                     30);
+        int newCount = this->snapFond->m_fastProtocolManager->m_oLSFONDItems->Count();
+        if(newCount != prevCount)
+            throw;
+    }
+
+    // check in case ShouldProcessSnapshot
+    void TestInfoAndItemInfoUsageAndAllocationFond_Snap_6() {
+        this->Clear();
+
+        incFond->OrderFond()->Add("s1", "session1");
+
+        int prevCount = this->snapFond->m_fastProtocolManager->m_oLSFONDItems->Count();
+        SendMessages(incFond, snapFond,
+                     "olr entry s1 e1, olr entry s1 e2, olr entry s1 e3, lost hbeat, wait_snap, hbeat",
+                     "                                                                          ols s1 begin rpt 1 entry s1 e1 end",
+                     50);
+        int newCount = this->snapFond->m_fastProtocolManager->m_oLSFONDItems->Count();
+        if(newCount != prevCount)
+            throw;
+    }
+
+    void TestInfoAndItemInfoUsageAndAllocationFond() {
+        this->m_helper->SetFondMode();
+        printf("OLR FOND TestInfoAndItemInfoUsageAndAllocationFond_Inc_1\n");
+        TestInfoAndItemInfoUsageAndAllocationFond_Inc_1();
+        printf("OLR FOND TestInfoAndItemInfoUsageAndAllocationFond_Inc_2\n");
+        TestInfoAndItemInfoUsageAndAllocationFond_Inc_2();
+        printf("OLR FOND TestInfoAndItemInfoUsageAndAllocationFond_Inc_3\n");
+        TestInfoAndItemInfoUsageAndAllocationFond_Inc_3();
+        printf("OLR FOND TestInfoAndItemInfoUsageAndAllocationFond_Inc_4\n");
+        TestInfoAndItemInfoUsageAndAllocationFond_Inc_4();
+        printf("OLR FOND TestInfoAndItemInfoUsageAndAllocationFond_Inc_5\n");
+        TestInfoAndItemInfoUsageAndAllocationFond_Inc_5();
+        printf("OLR FOND TestInfoAndItemInfoUsageAndAllocationFond_Snap_1\n");
+        TestInfoAndItemInfoUsageAndAllocationFond_Snap_1();
+        printf("OLR FOND TestInfoAndItemInfoUsageAndAllocationFond_Snap_2\n");
+        TestInfoAndItemInfoUsageAndAllocationFond_Snap_2();
+        printf("OLR FOND TestInfoAndItemInfoUsageAndAllocationFond_Snap_3\n");
+        TestInfoAndItemInfoUsageAndAllocationFond_Snap_3();
+        printf("OLR FOND TestInfoAndItemInfoUsageAndAllocationFond_Snap_4\n");
+        TestInfoAndItemInfoUsageAndAllocationFond_Snap_4();
+        printf("OLR FOND TestInfoAndItemInfoUsageAndAllocationFond_Snap_5\n");
+        TestInfoAndItemInfoUsageAndAllocationFond_Snap_5();
+        printf("OLR FOND TestInfoAndItemInfoUsageAndAllocationFond_Snap_6\n");
+        TestInfoAndItemInfoUsageAndAllocationFond_Snap_6();
+    }
+    
     void Test() {
         TestDefaults();
         TestStringIdComparer();
+        TestInfoAndItemInfoUsageAndAllocationFond();
         Test_OLR_FOND();
-        Test_OLR_CURR();
         TestOrderTableItem();
         TestConnection();
     }

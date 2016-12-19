@@ -6,25 +6,20 @@
 #define HFT_ROBOT_TRADETESTER_H
 
 #include "../FeedConnection.h"
+#include "TestMessagesHelper.h"
 #include <stdio.h>
 
-class TradeTester {
+class TradeTesterFond {
     FeedConnection_FOND_TLR *incFond;
     FeedConnection_FOND_TLS *snapFond;
-    FeedConnection_CURR_TLR *incCurr;
-    FeedConnection_CURR_TLS *snapCurr;
     TestMessagesHelper      *m_helper;
-    MarketDataTable<TradeInfo, FastTLSFONDInfo, FastTLSFONDItemInfo> *m_table_fond;
+    MarketDataTable<TradeInfo, FastTLSFONDInfo, FastTLSFONDItemInfo> *m_table;
 
 public:
-    TradeTester() {
+    TradeTesterFond() {
         this->m_helper = new TestMessagesHelper();
-        this->m_table_fond = new MarketDataTable<TradeInfo, FastTLSFONDInfo, FastTLSFONDItemInfo>();
+        this->m_table = new MarketDataTable<TradeInfo, FastTLSFONDInfo, FastTLSFONDItemInfo>();
         this->incFond = new FeedConnection_FOND_TLR("TLR", "Refresh Incremental", 'I',
-                                                    FeedConnectionProtocol::UDP_IP,
-                                                    "10.50.129.200", "239.192.113.3", 9113,
-                                                    "10.50.129.200", "239.192.113.131", 9313);
-        this->incCurr = new FeedConnection_CURR_TLR("TLR", "Refresh Incremental", 'I',
                                                     FeedConnectionProtocol::UDP_IP,
                                                     "10.50.129.200", "239.192.113.3", 9113,
                                                     "10.50.129.200", "239.192.113.131", 9313);
@@ -32,24 +27,14 @@ public:
                                                      FeedConnectionProtocol::UDP_IP,
                                                      "10.50.129.200", "239.192.113.3", 9113,
                                                      "10.50.129.200", "239.192.113.131", 9313);
-        this->snapCurr = new FeedConnection_CURR_TLS("TLS", "Full Refresh", 'I',
-                                                     FeedConnectionProtocol::UDP_IP,
-                                                     "10.50.129.200", "239.192.113.3", 9113,
-                                                     "10.50.129.200", "239.192.113.131", 9313);
-
         this->snapFond->m_fakeConnect = true;
         this->incFond->m_fakeConnect = true;
-        this->incCurr->m_fakeConnect = true;
-        this->snapCurr->m_fakeConnect = true;
-
     }
-    ~TradeTester() {
+    ~TradeTesterFond() {
         delete this->incFond;
-        delete this->incCurr;
         delete this->snapFond;
-        delete this->snapCurr;
         delete this->m_helper;
-        delete this->m_table_fond;
+        delete this->m_table;
     }
 
     void TestItem(TradeInfo<FastTLSFONDItemInfo> *tableItem) {
@@ -70,7 +55,6 @@ public:
     void Clear() {
         incFond->SetSnapshot(this->snapFond);
         incFond->TradeFond()->Clear();
-        incCurr->TradeCurr()->Clear();
         incFond->ClearMessages();
         incFond->WaitIncrementalMaxTimeMs(50);
         incFond->m_waitTimer->Stop();
@@ -345,301 +329,24 @@ public:
             throw;
     }
 
-    void Test_OnIncrementalRefresh_TLR_CURR_Add() {
-        this->Clear();
-        this->TestDefaults();
-
-        FastIncrementalTLRCURRInfo *info = new FastIncrementalTLRCURRInfo;
-
-        FastTLSCURRItemInfo *item1 = this->m_helper->CreateTLRCurrItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote,
-                                                                           "e1", 1);
-        FastTLSCURRItemInfo *item2 = this->m_helper->CreateTLRCurrItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote,
-                                                                           "e2", 2);
-        FastTLSCURRItemInfo *item3 = this->m_helper->CreateTLRCurrItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote,
-                                                                           "e3", 3);
-        FastTLSCURRItemInfo *item4 = this->m_helper->CreateTLRCurrItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote,
-                                                                           "e4", 4);
-
-        item1->RptSeq = 1;
-        item2->RptSeq = 2;
-        item3->RptSeq = 3;
-        item4->RptSeq = 4;
-
-        info->GroupMDEntriesCount = 1;
-        info->GroupMDEntries[0] = item1;
-
-        this->incCurr->OnIncrementalRefresh_TLR_CURR(info);
-
-        if(this->incCurr->TradeCurr()->UsedItemCount() != 1)
-            throw;
-        if(this->incCurr->TradeCurr()->SymbolsCount() != 1)
-            throw;
-        if(this->incCurr->TradeCurr()->Symbol(0)->Count() != 1)
-            throw;
-        TradeInfo<FastTLSCURRItemInfo> *obi = this->incCurr->TradeCurr()->GetItem("s1", "t1");
-        if(obi == 0)
-            throw;
-        if(obi->Trades()->Count() != 1)
-            throw;
-        FastTLSCURRItemInfo *quote = obi->Trades()->Item(0);
-        Decimal price(3, -2);
-        Decimal size(1, 2);
-        if(!quote->MDEntryPx.Equal(&price))
-            throw;
-        if(!quote->MDEntrySize.Equal(&size))
-            throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, 2, "e1", 2))
-            throw;
-
-        info->GroupMDEntriesCount = 1;
-        info->GroupMDEntries[0] = item2;
-
-        this->incCurr->OnIncrementalRefresh_TLR_CURR(info);
-
-        if(this->incCurr->TradeCurr()->UsedItemCount() != 1)
-            throw;
-        if(this->incCurr->TradeCurr()->SymbolsCount() != 1)
-            throw;
-        if(this->incCurr->TradeCurr()->Symbol(0)->Count() != 1)
-            throw;
-        obi = this->incCurr->TradeCurr()->GetItem("s1", "t1");
-        if(obi == 0)
-            throw;
-        if(obi->Trades()->Count() != 2)
-            throw;
-        quote = obi->Trades()->Item(0);
-        price.Set(3, -2);
-        if(!quote->MDEntryPx.Equal(&price))
-            throw;
-        if(!quote->MDEntrySize.Equal(&size))
-            throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, 2, "e1", 2))
-            throw;
-
-        info->GroupMDEntriesCount = 1;
-        info->GroupMDEntries[0] = item3;
-
-        this->incCurr->OnIncrementalRefresh_TLR_CURR(info);
-
-        if(this->incCurr->TradeCurr()->UsedItemCount() != 1)
-            throw;
-        if(this->incCurr->TradeCurr()->SymbolsCount() != 1)
-            throw;
-        if(this->incCurr->TradeCurr()->Symbol(0)->Count() != 1)
-            throw;
-        obi = this->incCurr->TradeCurr()->GetItem("s1", "t1");
-        if(obi == 0)
-            throw;
-        if(obi->Trades()->Count() != 3)
-            throw;
-
-        quote = obi->Trades()->Item(0);
-        price.Set(3, -2);
-        if(!quote->MDEntryPx.Equal(&price))
-            throw;
-        if(!quote->MDEntrySize.Equal(&size))
-            throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, 2, "e1", 2))
-            throw;
-
-        quote = obi->Trades()->Item(1);
-        price.Set(4, -2);
-        if(!quote->MDEntryPx.Equal(&price))
-            throw;
-        if(!quote->MDEntrySize.Equal(&size))
-            throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, 2, "e2", 2))
-            throw;
-
-        quote = obi->Trades()->End()->Data();
-        price.Set(2, -2);
-        if(!quote->MDEntryPx.Equal(&price))
-            throw;
-        if(!quote->MDEntrySize.Equal(&size))
-            throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, 2, "e3", 2))
-            throw;
-
-        info->GroupMDEntriesCount = 1;
-        info->GroupMDEntries[0] = item4;
-
-        this->incCurr->OnIncrementalRefresh_TLR_CURR(info);
-
-        if(this->incCurr->TradeCurr()->UsedItemCount() != 1)
-            throw;
-        if(this->incCurr->TradeCurr()->SymbolsCount() != 1)
-            throw;
-        if(this->incCurr->TradeCurr()->Symbol(0)->Count() != 1)
-            throw;
-        obi = this->incCurr->TradeCurr()->GetItem("s1", "t1");
-        if(obi == 0)
-            throw;
-        if(obi->Trades()->Count() != 4)
-            throw;
-
-        quote = obi->Trades()->Item(0);
-        price.Set(3, -2);
-        if(!quote->MDEntryPx.Equal(&price))
-            throw;
-        if(!quote->MDEntrySize.Equal(&size))
-            throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, 2, "e1", 2))
-            throw;
-
-        quote = obi->Trades()->Item(1);
-        price.Set(4, -2);
-        if(!quote->MDEntryPx.Equal(&price))
-            throw;
-        if(!quote->MDEntrySize.Equal(&size))
-            throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, 2, "e2", 2))
-            throw;
-
-        quote = obi->Trades()->Start()->Next()->Next()->Data();
-        price.Set(2, -2);
-        if(!quote->MDEntryPx.Equal(&price))
-            throw;
-        if(!quote->MDEntrySize.Equal(&size))
-            throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, 2, "e3", 2))
-            throw;
-
-        quote = obi->Trades()->End()->Data();
-        price.Set(25, -3);
-        if(!quote->MDEntryPx.Equal(&price))
-            throw;
-        if(!quote->MDEntrySize.Equal(&size))
-            throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, 2, "e4", 2))
-            throw;
-    }
-
-    void Test_Clear_Curr() {
-        this->Clear();
-        this->TestDefaults();
-
-        FastIncrementalTLRCURRInfo *info = new FastIncrementalTLRCURRInfo;
-        FastTLSCURRItemInfo *item1 = this->m_helper->CreateTLRCurrItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote,
-                                                                           "e1", 1);
-        FastTLSCURRItemInfo *item2 = this->m_helper->CreateTLRCurrItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote,
-                                                                           "e2", 2);
-        FastTLSCURRItemInfo *item3 = this->m_helper->CreateTLRCurrItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote,
-                                                                           "e3", 3);
-        FastTLSCURRItemInfo *item4 = this->m_helper->CreateTLRCurrItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote,
-                                                                           "e4", 4);
-
-        info->GroupMDEntriesCount = 4;
-        info->GroupMDEntries[0] = item1;
-        info->GroupMDEntries[1] = item2;
-        info->GroupMDEntries[2] = item3;
-        info->GroupMDEntries[3] = item4;
-
-        this->incCurr->OnIncrementalRefresh_TLR_CURR(info);
-
-        this->incCurr->TradeCurr()->Clear();
-        if(this->incCurr->TradeCurr()->UsedItemCount() != 0)
-            throw;
-
-        TradeInfo<FastTLSCURRItemInfo> *obi = this->incCurr->TradeCurr()->GetItem("s1", "t1");
-        if(obi->Trades()->Count() != 0)
-            throw;
-    }
-
-    void Test_OnFullRefresh_TLS_CURR() {
-        this->Clear();
-        this->TestDefaults();
-
-        FastIncrementalTLRCURRInfo *info = new FastIncrementalTLRCURRInfo;
-        FastTLSCURRItemInfo *item1 = this->m_helper->CreateTLRCurrItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote,
-                                                                           "e1", 1);
-        FastTLSCURRItemInfo *item2 = this->m_helper->CreateTLRCurrItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote,
-                                                                           "e2", 2);
-        FastTLSCURRItemInfo *item3 = this->m_helper->CreateTLRCurrItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote,
-                                                                           "e3", 3);
-        FastTLSCURRItemInfo *item4 = this->m_helper->CreateTLRCurrItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote,
-                                                                           "e4", 4);
-
-        info->GroupMDEntriesCount = 4;
-        info->GroupMDEntries[0] = item1;
-        info->GroupMDEntries[1] = item2;
-        info->GroupMDEntries[2] = item3;
-        info->GroupMDEntries[3] = item4;
-
-        this->incCurr->OnIncrementalRefresh_TLR_CURR(info);
-
-        FastTLSCURRInfo *info2 = this->m_helper->CreateTLSCurrInfo("t1s2", "t1");
-        FastTLSCURRItemInfo *newItem1 = this->m_helper->CreateTLSCurrItemInfo(7,-2, 1, 2, mdetBuyQuote, "e7", 5);
-        FastTLSCURRItemInfo *newItem2 = this->m_helper->CreateTLSCurrItemInfo(8,-2, 1, 2, mdetBuyQuote, "e8", 6);
-
-        info2->RptSeq = 5;
-        info2->GroupMDEntriesCount = 2;
-        info2->GroupMDEntries[0] = newItem1;
-        info2->GroupMDEntries[1] = newItem2;
-
-        this->incCurr->TradeCurr()->ObtainSnapshotItem(info2);
-        this->incCurr->TradeCurr()->ProcessSnapshot(info2);
-
-        if(this->incCurr->TradeCurr()->UsedItemCount() != 2)
-            throw;
-
-        TradeInfo<FastTLSCURRItemInfo> *obi3 = this->incCurr->TradeCurr()->GetItem("s1", "t1");
-        if(obi3->Trades()->Count() != 4)
-            throw;
-
-        TradeInfo<FastTLSCURRItemInfo> *obi = this->incCurr->TradeCurr()->GetItem("t1s2", 4, "t1", 2);
-        if(obi->Trades()->Count() != 2)
-            throw;
-
-        FastTLSCURRItemInfo *qt1 = obi->Trades()->Item(0);
-        FastTLSCURRItemInfo *qt2 = obi->Trades()->Item(1);
-
-        if(!StringIdComparer::Equal(qt1->MDEntryID, 2, "e7", 2))
-            throw;
-        if(!StringIdComparer::Equal(qt2->MDEntryID, 2, "e8", 2))
-            throw;
-        if(!qt1->MDEntryPx.Equal(7, -2))
-            throw;
-        if(!qt1->MDEntrySize.Equal(1, 2))
-            throw;
-        if(!qt2->MDEntryPx.Equal(8, -2))
-            throw;
-    }
-
     void Test_OnIncrementalRefresh_TLR_FOND() {
-        printf("TLR Test_OnIncrementalRefresh_TLR_FOND_Add\n");
+        printf("TLR FOND Test_OnIncrementalRefresh_TLR_FOND_Add\n");
         Test_OnIncrementalRefresh_TLR_FOND_Add();
-        printf("TLR Test_Clear\n");
+        printf("TLR FOND Test_Clear\n");
         Test_Clear();
     }
 
-    void Test_OnIncrementalRefresh_TLR_CURR() {
-        printf("TLR Test_OnIncrementalRefresh_TLR_CURR_Add\n");
-        Test_OnIncrementalRefresh_TLR_CURR_Add();
-        printf("TLR Test_Clear_Curr\n");
-        Test_Clear_Curr();
-    }
-
-    void Test_TLR_CURR() {
-        printf("TLR Test_OnIncrementalRefresh_TLR_CURR\n");
-        Test_OnIncrementalRefresh_TLR_CURR();
-        printf("TLR Test_OnFullRefresh_TLS_CURR\n");
-        Test_OnFullRefresh_TLS_CURR();
-    }
-
     void Test_TLR_FOND() {
-        printf("TLR Test_OnIncrementalRefresh_TLR_FOND\n");
+        printf("TLR FOND Test_OnIncrementalRefresh_TLR_FOND\n");
         Test_OnIncrementalRefresh_TLR_FOND();
-        printf("TLR Test_OnFullRefresh_TLS_FOND\n");
+        printf("TLR FOND Test_OnFullRefresh_TLS_FOND\n");
         Test_OnFullRefresh_TLS_FOND();
     }
 
     void TestDefaults() {
         if(this->incFond->TradeFond()->SymbolsCount() != 0)
             throw;
-        if(this->incCurr->TradeCurr()->SymbolsCount() != 0)
-            throw;
         this->TestTableItemsAllocator(incFond->TradeFond());
-        //this->TestTableItemsAllocator(incCurr->TradeCurr());
     }
 
     void TestTableItem_CorrectBegin() {
@@ -722,15 +429,15 @@ public:
 
     void TestTable_Default() {
 
-        this->m_table_fond->Clear();
+        this->m_table->Clear();
 
-        TestTableItemsAllocator(this->m_table_fond);
+        TestTableItemsAllocator(this->m_table);
 
 
     }
 
     void TestTable_AfterClear() {
-        this->m_table_fond->Clear();
+        this->m_table->Clear();
 
         FastTLSFONDItemInfo *item = this->m_helper->CreateTLRFondItemInfo("s1", "session1", "e1", 1);
         item->RptSeq = 1;
@@ -741,17 +448,17 @@ public:
         FastTLSFONDItemInfo *item3 = this->m_helper->CreateTLRFondItemInfo("s1", "session1", "e1", 4);
         item3->RptSeq = 4;
 
-        this->m_table_fond->ProcessIncremental(item);
-        this->m_table_fond->ProcessIncremental(item2);
-        this->m_table_fond->ProcessIncremental(item3);
+        this->m_table->ProcessIncremental(item);
+        this->m_table->ProcessIncremental(item2);
+        this->m_table->ProcessIncremental(item3);
 
-        if(this->m_table_fond->UsedItemCount() != 1)
+        if(this->m_table->UsedItemCount() != 1)
             throw;
-        TradeInfo<FastTLSFONDItemInfo> *tableItem = this->m_table_fond->GetItem("s1", "session1");
+        TradeInfo<FastTLSFONDItemInfo> *tableItem = this->m_table->GetItem("s1", "session1");
         if(tableItem->EntriesQueue()->MaxIndex() != 1) // 3 is empty and 4 has value
             throw;
-        this->m_table_fond->Clear();
-        if(this->m_table_fond->UsedItemCount() != 0)
+        this->m_table->Clear();
+        if(this->m_table->UsedItemCount() != 0)
             throw;
         if(tableItem->RptSeq() != 0)
             throw;
@@ -765,102 +472,102 @@ public:
 
     void TestTable_CorrectBegin() {
 
-        this->m_table_fond->Clear();
+        this->m_table->Clear();
 
         FastTLSFONDItemInfo *item1 = this->m_helper->CreateTLRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 1;
 
-        if(!this->m_table_fond->ProcessIncremental(item1))
+        if(!this->m_table->ProcessIncremental(item1))
             throw;
 
 
     }
 
     void TestTable_IncorrectBegin() {
-        this->m_table_fond->Clear();
+        this->m_table->Clear();
 
         FastTLSFONDItemInfo *item1 = this->m_helper->CreateTLRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 2;
 
-        if(this->m_table_fond->ProcessIncremental(item1))
+        if(this->m_table->ProcessIncremental(item1))
             throw;
 
 
     }
 
     void TestTable_SkipMessages() {
-        this->m_table_fond->Clear();
+        this->m_table->Clear();
 
         FastTLSFONDItemInfo *item1 = this->m_helper->CreateTLRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 1;
 
-        if(!this->m_table_fond->ProcessIncremental(item1))
+        if(!this->m_table->ProcessIncremental(item1))
             throw;
 
         FastTLSFONDItemInfo *item2 = this->m_helper->CreateTLRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 3);
         item2->RptSeq = 3;
 
-        if(this->m_table_fond->ProcessIncremental(item2))
+        if(this->m_table->ProcessIncremental(item2))
             throw;
 
 
     }
 
     void Test_2UsedItemsAfter2IncrementalMessages() {
-        this->m_table_fond->Clear();
+        this->m_table->Clear();
 
         FastTLSFONDItemInfo *item1 = this->m_helper->CreateTLRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 1;
 
-        if(!this->m_table_fond->ProcessIncremental(item1))
+        if(!this->m_table->ProcessIncremental(item1))
             throw;
 
         FastTLSFONDItemInfo *item2 = this->m_helper->CreateTLRFondItemInfo("s2", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item2->RptSeq = 1;
 
-        if(!this->m_table_fond->ProcessIncremental(item2))
+        if(!this->m_table->ProcessIncremental(item2))
             throw;
 
-        if(this->m_table_fond->UsedItemCount() != 2)
+        if(this->m_table->UsedItemCount() != 2)
             throw;
 
 
     }
 
     void TestTable_CorrectApplySnapshot() {
-        this->m_table_fond->Clear();
+        this->m_table->Clear();
 
         FastTLSFONDItemInfo *item1 = this->m_helper->CreateTLRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 1;
 
-        this->m_table_fond->ProcessIncremental(item1);
+        this->m_table->ProcessIncremental(item1);
 
         FastTLSFONDItemInfo *item2 = this->m_helper->CreateTLRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e2", 3);
         item2->RptSeq = 3;
 
-        if(this->m_table_fond->ProcessIncremental(item2))
+        if(this->m_table->ProcessIncremental(item2))
             throw;
 
         FastTLSFONDItemInfo *item3 = this->m_helper->CreateTLRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e3", 4);
         item3->RptSeq = 4;
 
-        if(this->m_table_fond->ProcessIncremental(item3))
+        if(this->m_table->ProcessIncremental(item3))
             throw;
 
         FastTLSFONDItemInfo *item4 = this->m_helper->CreateTLRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e4", 5);
         item4->RptSeq = 5;
 
-        if(this->m_table_fond->ProcessIncremental(item4))
+        if(this->m_table->ProcessIncremental(item4))
             throw;
 
         FastTLSFONDItemInfo *item5 = this->m_helper->CreateTLRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
@@ -871,21 +578,21 @@ public:
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item5;
 
-        TradeInfo<FastTLSFONDItemInfo> *tb = this->m_table_fond->GetItem("s1", "session");
+        TradeInfo<FastTLSFONDItemInfo> *tb = this->m_table->GetItem("s1", "session");
 
-        this->m_table_fond->ObtainSnapshotItem(info);
-        this->m_table_fond->StartProcessSnapshot(info);
-        if(tb != this->m_table_fond->SnapshotItem())
+        this->m_table->ObtainSnapshotItem(info);
+        this->m_table->StartProcessSnapshot(info);
+        if(tb != this->m_table->SnapshotItem())
             throw;
         if(tb->Trades()->Count() != 0)
             throw;
 
-        this->m_table_fond->ProcessSnapshot(info->GroupMDEntries, 1, 3);
+        this->m_table->ProcessSnapshot(info->GroupMDEntries, 1, 3);
         if(tb->Trades()->Count() != 1)
             throw;
         if(tb->RptSeq() != 3)
             throw;
-        if(!this->m_table_fond->EndProcessSnapshot())
+        if(!this->m_table->EndProcessSnapshot())
             throw;
 
         if(tb->RptSeq() != 5)
@@ -900,26 +607,26 @@ public:
 
     void TestTable_CorrectApplySnapshot_2() {
 
-        this->m_table_fond->Clear();
+        this->m_table->Clear();
 
         FastTLSFONDItemInfo *item1 = this->m_helper->CreateTLRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 1;
 
-        this->m_table_fond->ProcessIncremental(item1);
+        this->m_table->ProcessIncremental(item1);
 
         FastTLSFONDItemInfo *item3 = this->m_helper->CreateTLRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e3", 4);
         item3->RptSeq = 4;
 
-        if(this->m_table_fond->ProcessIncremental(item3))
+        if(this->m_table->ProcessIncremental(item3))
             throw;
 
         FastTLSFONDItemInfo *item4 = this->m_helper->CreateTLRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e4", 5);
         item4->RptSeq = 5;
 
-        if(this->m_table_fond->ProcessIncremental(item4))
+        if(this->m_table->ProcessIncremental(item4))
             throw;
 
         FastTLSFONDInfo *info1 = this->m_helper->CreateTLSFondInfo("s1", "session");
@@ -934,18 +641,18 @@ public:
         info2->RouteFirst = true;
         info2->GroupMDEntries[0] = this->m_helper->CreateTLSFondItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e2");
 
-        TradeInfo<FastTLSFONDItemInfo> *tb = this->m_table_fond->GetItem("s1", "session");
+        TradeInfo<FastTLSFONDItemInfo> *tb = this->m_table->GetItem("s1", "session");
 
-        this->m_table_fond->ObtainSnapshotItem(info1);
-        this->m_table_fond->StartProcessSnapshot(info1);
-        if(tb != this->m_table_fond->SnapshotItem())
+        this->m_table->ObtainSnapshotItem(info1);
+        this->m_table->StartProcessSnapshot(info1);
+        if(tb != this->m_table->SnapshotItem())
             throw;
         if(tb->Trades()->Count() != 0)
             throw;
 
-        this->m_table_fond->ProcessSnapshot(info1);
-        this->m_table_fond->ProcessSnapshot(info2);
-        if(!this->m_table_fond->EndProcessSnapshot())
+        this->m_table->ProcessSnapshot(info1);
+        this->m_table->ProcessSnapshot(info2);
+        if(!this->m_table->EndProcessSnapshot())
             throw;
         if(tb->RptSeq() != 5)
             throw;
@@ -954,33 +661,33 @@ public:
     }
 
     void TestTable_IncorrectApplySnapshot() {
-        this->m_table_fond->Clear();
+        this->m_table->Clear();
 
         FastTLSFONDItemInfo *item1 = this->m_helper->CreateTLRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 1;
 
-        this->m_table_fond->ProcessIncremental(item1);
+        this->m_table->ProcessIncremental(item1);
 
         FastTLSFONDItemInfo *item2 = this->m_helper->CreateTLRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e2", 4);
         item2->RptSeq = 4;
 
-        if(this->m_table_fond->ProcessIncremental(item2))
+        if(this->m_table->ProcessIncremental(item2))
             throw;
 
         FastTLSFONDItemInfo *item3 = this->m_helper->CreateTLRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e3", 5);
         item3->RptSeq = 5;
 
-        if(this->m_table_fond->ProcessIncremental(item3))
+        if(this->m_table->ProcessIncremental(item3))
             throw;
 
         FastTLSFONDItemInfo *item4 = this->m_helper->CreateTLRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e4", 6);
         item4->RptSeq = 6;
 
-        if(this->m_table_fond->ProcessIncremental(item4))
+        if(this->m_table->ProcessIncremental(item4))
             throw;
 
         FastTLSFONDItemInfo *item5 = this->m_helper->CreateTLRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
@@ -991,21 +698,21 @@ public:
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item5;
 
-        TradeInfo<FastTLSFONDItemInfo> *tb = this->m_table_fond->GetItem("s1", "session");
+        TradeInfo<FastTLSFONDItemInfo> *tb = this->m_table->GetItem("s1", "session");
 
-        this->m_table_fond->ObtainSnapshotItem(info);
-        this->m_table_fond->StartProcessSnapshot(info);
-        if(tb != this->m_table_fond->SnapshotItem())
+        this->m_table->ObtainSnapshotItem(info);
+        this->m_table->StartProcessSnapshot(info);
+        if(tb != this->m_table->SnapshotItem())
             throw;
         if(tb->Trades()->Count() != 0)
             throw;
 
-        this->m_table_fond->ProcessSnapshot(info->GroupMDEntries, 1, 2);
+        this->m_table->ProcessSnapshot(info->GroupMDEntries, 1, 2);
         if(tb->Trades()->Count() != 1)
             throw;
         if(tb->RptSeq() != 2)
             throw;
-        if(this->m_table_fond->EndProcessSnapshot())
+        if(this->m_table->EndProcessSnapshot())
             throw;
 
         if(tb->RptSeq() != 2)
@@ -1013,26 +720,26 @@ public:
     }
 
     void TestTable_IncorrectApplySnapshot_WhenMessageSkipped() {
-        this->m_table_fond->Clear();
+        this->m_table->Clear();
 
         FastTLSFONDItemInfo *item1 = this->m_helper->CreateTLRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 1;
 
-        this->m_table_fond->ProcessIncremental(item1);
+        this->m_table->ProcessIncremental(item1);
 
         FastTLSFONDItemInfo *item2 = this->m_helper->CreateTLRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e2", 4);
         item2->RptSeq = 4;
 
-        if(this->m_table_fond->ProcessIncremental(item2))
+        if(this->m_table->ProcessIncremental(item2))
             throw;
 
         FastTLSFONDItemInfo *item4 = this->m_helper->CreateTLRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e4", 6);
         item4->RptSeq = 6;
 
-        if(this->m_table_fond->ProcessIncremental(item4))
+        if(this->m_table->ProcessIncremental(item4))
             throw;
 
         FastTLSFONDItemInfo *item5 = this->m_helper->CreateTLRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
@@ -1043,26 +750,26 @@ public:
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item5;
 
-        TradeInfo<FastTLSFONDItemInfo> *tb = this->m_table_fond->GetItem("s1", "session");
+        TradeInfo<FastTLSFONDItemInfo> *tb = this->m_table->GetItem("s1", "session");
 
-        this->m_table_fond->ObtainSnapshotItem(info);
-        this->m_table_fond->StartProcessSnapshot(info);
-        if(tb != this->m_table_fond->SnapshotItem())
+        this->m_table->ObtainSnapshotItem(info);
+        this->m_table->StartProcessSnapshot(info);
+        if(tb != this->m_table->SnapshotItem())
             throw;
         if(tb->Trades()->Count() != 0)
             throw;
 
-        this->m_table_fond->ProcessSnapshot(info->GroupMDEntries, 1, 3);
+        this->m_table->ProcessSnapshot(info->GroupMDEntries, 1, 3);
         if(tb->Trades()->Count() != 1)
             throw;
         if(tb->RptSeq() != 3)
             throw;
-        if(this->m_table_fond->EndProcessSnapshot())
+        if(this->m_table->EndProcessSnapshot())
             throw;
         if(tb->RptSeq() != 4)
             throw;
-        this->m_table_fond->ObtainSnapshotItem(info);
-        if(this->m_table_fond->EndProcessSnapshot())
+        this->m_table->ObtainSnapshotItem(info);
+        if(this->m_table->EndProcessSnapshot())
             throw;
     }
 
@@ -2717,55 +2424,55 @@ public:
     }
     // messages should be clear in snapshot connection because the are repeat
     void TestConnection_ClearSnapshotMessages() {
-        printf("TLR TestConnection_ClearSnapshotMessages_1\n");
+        printf("TLR FOND TestConnection_ClearSnapshotMessages_1\n");
         TestConnection_ClearSnapshotMessages_1();
-        printf("TLR TestConnection_ClearSnapshotMessages_2\n");
+        printf("TLR FOND TestConnection_ClearSnapshotMessages_2\n");
         TestConnection_ClearSnapshotMessages_2();
-        printf("TLR TestConnection_ClearSnapshotMessages_3\n");
+        printf("TLR FOND TestConnection_ClearSnapshotMessages_3\n");
         TestConnection_ClearSnapshotMessages_3();
-        printf("TLR TestConnection_ClearSnapshotMessages_4\n");
+        printf("TLR FOND TestConnection_ClearSnapshotMessages_4\n");
         TestConnection_ClearSnapshotMessages_4();
     }
     void TestConnection_ParallelWorkingIncrementalAndSnapshot() {
-        printf("TLR TestConnection_EnterSnapshotMode\n");
+        printf("TLR FOND TestConnection_EnterSnapshotMode\n");
         TestConnection_EnterSnapshotMode();
-        printf("TLR TestConnection_ClearSnapshotMessages\n");
+        printf("TLR FOND TestConnection_ClearSnapshotMessages\n");
         TestConnection_ClearSnapshotMessages();
-        printf("TLR TestConnection_ParallelWorkingIncrementalAndSnapshot_1\n");
+        printf("TLR FOND TestConnection_ParallelWorkingIncrementalAndSnapshot_1\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_1();
-        printf("TLR TestConnection_ParallelWorkingIncrementalAndSnapshot_2\n");
+        printf("TLR FOND TestConnection_ParallelWorkingIncrementalAndSnapshot_2\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_2();
-        printf("TLR TestConnection_ParallelWorkingIncrementalAndSnapshot_2_1\n");
+        printf("TLR FOND TestConnection_ParallelWorkingIncrementalAndSnapshot_2_1\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_2_1();
-        printf("TLR TestConnection_ParallelWorkingIncrementalAndSnapshot_3\n");
+        printf("TLR FOND TestConnection_ParallelWorkingIncrementalAndSnapshot_3\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_3();
-        printf("TLR TestConnection_ParallelWorkingIncrementalAndSnapshot_3_1\n");
+        printf("TLR FOND TestConnection_ParallelWorkingIncrementalAndSnapshot_3_1\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_3_1();
-        printf("TLR TestConnection_ParallelWorkingIncrementalAndSnapshot_4\n");
+        printf("TLR FOND TestConnection_ParallelWorkingIncrementalAndSnapshot_4\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_4();
-        printf("TLR TestConnection_ParallelWorkingIncrementalAndSnapshot_5\n");
+        printf("TLR FOND TestConnection_ParallelWorkingIncrementalAndSnapshot_5\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_5();
-        printf("TLR TestConnection_ParallelWorkingIncrementalAndSnapshot_5_1\n");
+        printf("TLR FOND TestConnection_ParallelWorkingIncrementalAndSnapshot_5_1\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_5_1();
-        printf("TLR TestConnection_ParallelWorkingIncrementalAndSnapshot_5_2\n");
+        printf("TLR FOND TestConnection_ParallelWorkingIncrementalAndSnapshot_5_2\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_5_2();
-        printf("TLR TestConnection_ParallelWorkingIncrementalAndSnapshot_5_2_2\n");
+        printf("TLR FOND TestConnection_ParallelWorkingIncrementalAndSnapshot_5_2_2\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_5_2_2();
-        printf("TLR TestConnection_ParallelWorkingIncrementalAndSnapshot_5_3\n");
+        printf("TLR FOND TestConnection_ParallelWorkingIncrementalAndSnapshot_5_3\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_5_3();
-        printf("TLR TestConnection_ParallelWorkingIncrementalAndSnapshot_5_4\n");
+        printf("TLR FOND TestConnection_ParallelWorkingIncrementalAndSnapshot_5_4\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_5_4();
-        printf("TLR TestConnection_ParallelWorkingIncrementalAndSnapshot_5_4_1\n");
+        printf("TLR FOND TestConnection_ParallelWorkingIncrementalAndSnapshot_5_4_1\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_5_4_1();
-        printf("TLR TestConnection_ParallelWorkingIncrementalAndSnapshot_5_4_2\n");
+        printf("TLR FOND TestConnection_ParallelWorkingIncrementalAndSnapshot_5_4_2\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_5_4_2();
-        printf("TLR TestConnection_ParallelWorkingIncrementalAndSnapshot_5_5\n");
+        printf("TLR FOND TestConnection_ParallelWorkingIncrementalAndSnapshot_5_5\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_5_5();
-        printf("TLR TestConnection_ParallelWorkingIncrementalAndSnapshot_5_5_1\n");
+        printf("TLR FOND TestConnection_ParallelWorkingIncrementalAndSnapshot_5_5_1\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_5_5_1();
-        printf("TLR TestConnection_ParallelWorkingIncrementalAndSnapshot_5_6\n");
+        printf("TLR FOND TestConnection_ParallelWorkingIncrementalAndSnapshot_5_6\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_5_6();
-        printf("TLR TestConnection_ParallelWorkingIncrementalAndSnapshot_5_7\n");
+        printf("TLR FOND TestConnection_ParallelWorkingIncrementalAndSnapshot_5_7\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_5_7();
     }
 
@@ -2798,87 +2505,87 @@ public:
     }
 
     void TestConnection() {
-        printf("TLR TestConnection_AllSymbolsAreOk\n");
+        printf("TLR FOND TestConnection_AllSymbolsAreOk\n");
         TestConnection_AllSymbolsAreOk();
-        printf("TLR TestConnection_ResetEntriesQueueIfNullSnapshotIsReceived\n");
+        printf("TLR FOND TestConnection_ResetEntriesQueueIfNullSnapshotIsReceived\n");
         TestConnection_ResetEntriesQueueIfNullSnapshotIsReceived();
-        printf("TLR TestConnection_AllSymbolsAreOkButOneMessageLost\n");
+        printf("TLR FOND TestConnection_AllSymbolsAreOkButOneMessageLost\n");
         TestConnection_AllSymbolsAreOkButOneMessageLost();
-        printf("TLR TestConnection_SkipHearthBeatMessages_Incremental\n");
+        printf("TLR FOND TestConnection_SkipHearthBeatMessages_Incremental\n");
         TestConnection_SkipHearthBeatMessages_Incremental();
-        printf("TLR TestConnection_ParallelWorkingIncrementalAndSnapshot\n");
+        printf("TLR FOND TestConnection_ParallelWorkingIncrementalAndSnapshot\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot();
-        printf("TLR TestConnection_NotAllSymbolsAreOk\n");
+        printf("TLR FOND TestConnection_NotAllSymbolsAreOk\n");
         TestConnection_NotAllSymbolsAreOk();
-        printf("TLR TestConnection_StopListeningSnapshotBecauseAllItemsIsUpToDate\n");
+        printf("TLR FOND TestConnection_StopListeningSnapshotBecauseAllItemsIsUpToDate\n");
         TestConnection_StopListeningSnapshotBecauseAllItemsIsUpToDate();
-        printf("TLR TestConnection_StopTimersAfterReconnect\n");
+        printf("TLR FOND TestConnection_StopTimersAfterReconnect\n");
         TestConnection_StopTimersAfterReconnect();
-        printf("TLR TestConnection_SnapshotSomeMessagesReceivedLater\n");
+        printf("TLR FOND TestConnection_SnapshotSomeMessagesReceivedLater\n");
         TestConnection_SnapshotSomeMessagesReceivedLater();
-        printf("TLR TestConnection_SnapshotSomeMessagesNotReceived\n");
+        printf("TLR FOND TestConnection_SnapshotSomeMessagesNotReceived\n");
         TestConnection_SnapshotSomeMessagesNotReceived();
-        printf("TLR TestConnection_LastFragmentReceivedBeforeRouteFirst\n");
+        printf("TLR FOND TestConnection_LastFragmentReceivedBeforeRouteFirst\n");
         TestConnection_LastFragmentReceivedBeforeRouteFirst();
-        printf("TLR TestConnection_RouteFirstReceived_AfterSomeDummyMessages\n");
+        printf("TLR FOND TestConnection_RouteFirstReceived_AfterSomeDummyMessages\n");
         TestConnection_RouteFirstReceived_AfterSomeDummyMessages();
-        printf("TLR TestConnection_RouteFirstReceived_Empty\n");
+        printf("TLR FOND TestConnection_RouteFirstReceived_Empty\n");
         TestConnection_RouteFirstReceived_Empty();
-        printf("TLR TestConnection_TestSnapshotNoMessagesAtAll\n");
+        printf("TLR FOND TestConnection_TestSnapshotNoMessagesAtAll\n");
         TestConnection_TestSnapshotNoMessagesAtAll();
-        printf("TLR TestConnection_OneMessageReceived\n");
+        printf("TLR FOND TestConnection_OneMessageReceived\n");
         TestConnection_OneMessageReceived();
-        printf("TLR TestConnection_Clear_AfterIncremental\n");
+        printf("TLR FOND TestConnection_Clear_AfterIncremental\n");
         TestConnection_Clear_AfterIncremental();
-        printf("TLR TestConnection_TestIncMessageLost_AndWaitTimerElapsed\n");
+        printf("TLR FOND TestConnection_TestIncMessageLost_AndWaitTimerElapsed\n");
         TestConnection_TestIncMessageLost_AndWaitTimerElapsed();
-        printf("TLR TestConnection_TestSnapshotCollect\n");
+        printf("TLR FOND TestConnection_TestSnapshotCollect\n");
         TestConnection_TestSnapshotCollect();
-        printf("TLR TestConnection_TestSnapshotNotCollect\n");
+        printf("TLR FOND TestConnection_TestSnapshotNotCollect\n");
         TestConnection_TestSnapshotMessageLostAndTimeExpired();
-        printf("TLR TestConnection_TestMessagesLost_2Items_SnapshotReceivedForOneItem\n");
+        printf("TLR FOND TestConnection_TestMessagesLost_2Items_SnapshotReceivedForOneItem\n");
         TestConnection_TestMessagesLost_2Items_SnapshotReceivedForOneItem();
 
-        printf("TLR TestConnection_EmptyTest\n");
+        printf("TLR FOND TestConnection_EmptyTest\n");
         TestConnection_EmptyTest();
-        printf("TLR TestConnection_TestCorrectIncMessages\n");
+        printf("TLR FOND TestConnection_TestCorrectIncMessages\n");
         TestConnection_TestCorrectIncMessages();
-        printf("TLR TestConnection_TestIncMessagesLost_AndWhenAppeared\n");
+        printf("TLR FOND TestConnection_TestIncMessagesLost_AndWhenAppeared\n");
         TestConnection_TestIncMessagesLost_AndWhenAppeared();
-        printf("TLR TestConnection_TestInc2MessagesLost_AppearedThen2Messages\n");
+        printf("TLR FOND TestConnection_TestInc2MessagesLost_AppearedThen2Messages\n");
         TestConnection_TestInc2MessagesLost_AppearedThen2Messages();
-        printf("TLR TestConnection_TestInc2MessagesLost_AppearedSeparately_1_2\n");
+        printf("TLR FOND TestConnection_TestInc2MessagesLost_AppearedSeparately_1_2\n");
         TestConnection_TestInc2MessagesLost_AppearedSeparately_1_2();
-        printf("TLR TestConnection_TestInc2MessagesLost_AppearedSeparately_2_1\n");
+        printf("TLR FOND TestConnection_TestInc2MessagesLost_AppearedSeparately_2_1\n");
         TestConnection_TestInc2MessagesLost_AppearedSeparately_2_1();
     }
 
     void TestTradeTableItem() {
-        printf("TLR TestTableItem_CorrectBegin\n");
+        printf("TLR FOND TestTableItem_CorrectBegin\n");
         TestTableItem_CorrectBegin();
-        printf("TLR TestTableItem_IncorrectBegin\n");
+        printf("TLR FOND TestTableItem_IncorrectBegin\n");
         TestTableItem_IncorrectBegin();
-        printf("TLR TestTableItem_SkipMessage\n");
+        printf("TLR FOND TestTableItem_SkipMessage\n");
         TestTableItem_SkipMessage();
-        printf("TLR TestTable_Default\n");
+        printf("TLR FOND TestTable_Default\n");
         TestTable_Default();
-        printf("TLR TestTable_AfterClear\n");
+        printf("TLR FOND TestTable_AfterClear\n");
         TestTable_AfterClear();
-        printf("TLR TestTable_CorrectBegin\n");
+        printf("TLR FOND TestTable_CorrectBegin\n");
         TestTable_CorrectBegin();
-        printf("TLR TestTable_IncorrectBegin\n");
+        printf("TLR FOND TestTable_IncorrectBegin\n");
         TestTable_IncorrectBegin();
-        printf("TLR TestTable_SkipMessages\n");
+        printf("TLR FOND TestTable_SkipMessages\n");
         TestTable_SkipMessages();
-        printf("TLR Test_2UsedItemsAfter2IncrementalMessages\n");
+        printf("TLR FOND Test_2UsedItemsAfter2IncrementalMessages\n");
         Test_2UsedItemsAfter2IncrementalMessages();
-        printf("TLR TestTable_CorrectApplySnapshot\n");
+        printf("TLR FOND TestTable_CorrectApplySnapshot\n");
         TestTable_CorrectApplySnapshot();
-        printf("TLR TestTable_CorrectApplySnapshot_2\n");
+        printf("TLR FOND TestTable_CorrectApplySnapshot_2\n");
         TestTable_CorrectApplySnapshot_2();
-        printf("TLR TestTable_IncorrectApplySnapshot\n");
+        printf("TLR FOND TestTable_IncorrectApplySnapshot\n");
         TestTable_IncorrectApplySnapshot();
-        printf("TLR TestTable_IncorrectApplySnapshot_WhenMessageSkipped\n");
+        printf("TLR FOND TestTable_IncorrectApplySnapshot_WhenMessageSkipped\n");
         TestTable_IncorrectApplySnapshot_WhenMessageSkipped();
     }
 
@@ -2893,11 +2600,187 @@ public:
         }
     }
 
+    void TestInfoAndItemInfoUsageAndAllocationFond_Inc_1() {
+        this->Clear();
+
+        this->incFond->TradeFond()->Add("s1", "session1");
+        int prevCount = this->incFond->m_fastProtocolManager->m_tLSFONDItems->Count();
+        this->SendMessages(this->incFond, this->snapFond,
+                           "tlr entry s1 e1",
+                           "",
+                           30);
+
+        int newCount = this->incFond->m_fastProtocolManager->m_tLSFONDItems->Count();
+        if(newCount != prevCount + 1)
+            throw;
+    }
+
+    void TestInfoAndItemInfoUsageAndAllocationFond_Inc_2() {
+        this->Clear();
+
+        this->incFond->TradeFond()->Add("s1", "session1");
+        int prevCount = this->incFond->m_fastProtocolManager->m_tLSFONDItems->Count();
+        this->SendMessages(this->incFond, this->snapFond,
+                           "tlr entry s1 e1, tlr entry s1 e2",
+                           "",
+                           30);
+
+        int newCount = this->incFond->m_fastProtocolManager->m_tLSFONDItems->Count();
+        if(newCount != prevCount + 2)
+            throw;
+        this->incFond->TradeFond()->Clear();
+        newCount = this->incFond->m_fastProtocolManager->m_tLSFONDItems->Count();
+        if(newCount != prevCount)
+            throw;
+    }
+
+    void TestInfoAndItemInfoUsageAndAllocationFond_Inc_3() {
+        // there is no delete update action in trades
+    }
+
+    void TestInfoAndItemInfoUsageAndAllocationFond_Inc_4() {
+        FastOBSFONDItemInfo *info = this->m_helper->CreateOBSFondItemInfo(1, 1, 1, 1, MDEntryType::mdetBuyQuote, "e1");
+        if(info->Allocator->Count() != 1)
+            throw;
+        info->Used = false;
+        info->ReleaseUnused();
+        if(info->Allocator->Count() != 0)
+            throw;
+        info->ReleaseUnused();
+        if(info->Allocator->Count() != 0)
+            throw;
+    }
+
+    void TestInfoAndItemInfoUsageAndAllocationFond_Inc_5() {
+        // there is no change action in trades incremental
+    }
+
+    void TestInfoAndItemInfoUsageAndAllocationFond_Snap_1() {
+        this->Clear();
+
+        this->incFond->TradeFond()->Add("s1", "session1");
+        int prevCount = this->snapFond->m_fastProtocolManager->m_tLSFONDItems->Count();
+        this->SendMessages(this->incFond, this->snapFond,
+                           "tlr entry s1 e1, lost tlr entry s1 e2, wait_snap, hbeat",
+                           "                                                  tls begin s1 entry s1 e2 rpt 2 end",
+                           30);
+
+        int newCount = this->snapFond->m_fastProtocolManager->m_tLSFONDItems->Count();
+        if(newCount != prevCount + 1)
+            throw;
+    }
+
+    void TestInfoAndItemInfoUsageAndAllocationFond_Snap_2() {
+        this->Clear();
+
+        this->incFond->TradeFond()->Add("s1", "session1");
+        int prevCount = this->snapFond->m_fastProtocolManager->m_tLSFONDItems->Count();
+        this->SendMessages(this->incFond, this->snapFond,
+                           "tlr entry s1 e1, lost tlr entry s1 e2 entry s1 e3, wait_snap, hbeat",
+                           "                                                   tls begin s1 entry s1 e2 rpt 2, tls s1 entry s1 e3 end",
+                           30);
+
+        int newCount = this->snapFond->m_fastProtocolManager->m_tLSFONDItems->Count();
+        if(newCount != prevCount + 2)
+            throw;
+    }
+
+    void TestInfoAndItemInfoUsageAndAllocationFond_Snap_3() {
+        // there is no UpdateAction in snap messages so we don't have to check these cases
+        /*this->Clear();
+
+        this->incFond->TradeFond()->Add("s1", "session1");
+        int prevCount = this->snapFond->m_fastProtocolManager->m_tLSFONDItems->Count();
+        this->SendMessages(this->incFond, this->snapFond,
+                           "tlr entry s1 e1, tlr entry s1 e2, lost tlr entry s1 e4 entry s1 e4, wait_snap, hbeat",
+                           "                                                   tls begin s1 entry s1 e1 rpt 2, tls s1 entry s1 e2, tls s1 entry s1 e3, tls s1 entry del s1 e2 end",
+                           30);
+
+        int newCount = this->snapFond->m_fastProtocolManager->m_tLSFONDItems->Count();
+        if(newCount != prevCount + 3)
+            throw;*/
+    }
+
+    // check in case CheckProcessIfSessionInActualState returns true
+    void TestInfoAndItemInfoUsageAndAllocationFond_Snap_4() {
+        this->Clear();
+
+        incFond->TradeFond()->Add("s1", "session1");
+        incFond->TradeFond()->Add("s2", "session1");
+        incFond->TradeFond()->Add("symbol3", "session1");
+
+        int prevCount = this->snapFond->m_fastProtocolManager->m_tLSFONDItems->Count();
+        SendMessages(incFond, snapFond,
+                     "tlr entry s1 e1, lost tlr entry symbol3 e1, wait_snap, tlr entry s1 e3,                              hbeat,                              hbeat",
+                     "                                                       tls symbol3 begin rpt 1 end entry symbol3 e1, tls s1 begin rpt 2 end entry s1 e1, hbeat, tls s2 begin rpt 2 end entry s2 e1",
+                     30);
+        int newCount = this->snapFond->m_fastProtocolManager->m_tLSFONDItems->Count();
+        if(newCount != prevCount + 2)
+            throw;
+    }
+    // check in case CheckProcessNullSnapshot
+    void TestInfoAndItemInfoUsageAndAllocationFond_Snap_5() {
+        this->Clear();
+        incFond->TradeFond()->Add("s1", "session1");
+        incFond->Start();
+
+        int prevCount = this->snapFond->m_fastProtocolManager->m_tLSFONDItems->Count();
+        SendMessages(incFond, snapFond,
+                     "tlr entry s1 e1, lost tlr entry s1 e2, tlr entry s1 e2, wait_snap, hbeat",
+                     "                                       hbeat,           hbeat,     tls s1 begin rpt 0 lastmsg 0 entry s1 e1 end",
+                     30);
+        int newCount = this->snapFond->m_fastProtocolManager->m_tLSFONDItems->Count();
+        if(newCount != prevCount)
+            throw;
+    }
+
+    // check in case ShouldProcessSnapshot
+    void TestInfoAndItemInfoUsageAndAllocationFond_Snap_6() {
+        this->Clear();
+
+        incFond->TradeFond()->Add("s1", "session1");
+
+        int prevCount = this->snapFond->m_fastProtocolManager->m_tLSFONDItems->Count();
+        SendMessages(incFond, snapFond,
+                     "tlr entry s1 e1, tlr entry s1 e2, tlr entry s1 e3, lost hbeat, wait_snap, hbeat",
+                     "                                                                          tls s1 begin rpt 1 entry s1 e1 end",
+                     50);
+        int newCount = this->snapFond->m_fastProtocolManager->m_tLSFONDItems->Count();
+        if(newCount != prevCount)
+            throw;
+    }
+
+    void TestInfoAndItemInfoUsageAndAllocationFond() {
+        this->m_helper->SetFondMode();
+        printf("TLR FOND TestInfoAndItemInfoUsageAndAllocationFond_Inc_1\n");
+        TestInfoAndItemInfoUsageAndAllocationFond_Inc_1();
+        printf("TLR FOND TestInfoAndItemInfoUsageAndAllocationFond_Inc_2\n");
+        TestInfoAndItemInfoUsageAndAllocationFond_Inc_2();
+        printf("TLR FOND TestInfoAndItemInfoUsageAndAllocationFond_Inc_3\n");
+        TestInfoAndItemInfoUsageAndAllocationFond_Inc_3();
+        printf("TLR FOND TestInfoAndItemInfoUsageAndAllocationFond_Inc_4\n");
+        TestInfoAndItemInfoUsageAndAllocationFond_Inc_4();
+        printf("TLR FOND TestInfoAndItemInfoUsageAndAllocationFond_Inc_5\n");
+        TestInfoAndItemInfoUsageAndAllocationFond_Inc_5();
+        printf("TLR FOND TestInfoAndItemInfoUsageAndAllocationFond_Snap_1\n");
+        TestInfoAndItemInfoUsageAndAllocationFond_Snap_1();
+        printf("TLR FOND TestInfoAndItemInfoUsageAndAllocationFond_Snap_2\n");
+        TestInfoAndItemInfoUsageAndAllocationFond_Snap_2();
+        printf("TLR FOND TestInfoAndItemInfoUsageAndAllocationFond_Snap_3\n");
+        TestInfoAndItemInfoUsageAndAllocationFond_Snap_3();
+        printf("TLR FOND TestInfoAndItemInfoUsageAndAllocationFond_Snap_4\n");
+        TestInfoAndItemInfoUsageAndAllocationFond_Snap_4();
+        printf("TLR FOND TestInfoAndItemInfoUsageAndAllocationFond_Snap_5\n");
+        TestInfoAndItemInfoUsageAndAllocationFond_Snap_5();
+        printf("TLR FOND TestInfoAndItemInfoUsageAndAllocationFond_Snap_6\n");
+        TestInfoAndItemInfoUsageAndAllocationFond_Snap_6();
+    }
+
     void Test() {
         TestDefaults();
         TestStringIdComparer();
+        TestInfoAndItemInfoUsageAndAllocationFond();
         Test_TLR_FOND();
-        Test_TLR_CURR();
         TestTradeTableItem();
         TestConnection();
     }

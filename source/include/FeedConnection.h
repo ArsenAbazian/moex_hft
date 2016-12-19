@@ -73,16 +73,22 @@ public:
     }
 };
 
-class OrderBookTester;
-class OrderTester;
-class TradeTester;
+class OrderBookTesterFond;
+class OrderBookTesterCurr;
+class OrderTesterFond;
+class OrderTesterCurr;
+class TradeTesterFond;
+class TradeTesterCurr;
 class TestMessagesHelper;
 class StatisticsTester;
 
 class FeedConnection {
-	friend class OrderBookTester;
-    friend class OrderTester;
-	friend class TradeTester;
+	friend class OrderBookTesterFond;
+    friend class OrderBookTesterCurr;
+    friend class OrderTesterFond;
+    friend class OrderTesterCurr;
+	friend class TradeTesterFond;
+    friend class TradeTesterCurr;
 	friend class FeedConnectionTester;
     friend class TestMessagesHelper;
     friend class StatisticsTester;

@@ -6,9 +6,12 @@
 #define HFT_ROBOT_FEEDCONNECTIONTESTER_H
 
 #include "InstrumentDefinitionTester.h"
-#include "OrderBookTester.h"
-#include "OrderTester.h"
-#include "TradeTester.h"
+#include "OrderBookTesterFond.h"
+#include "OrderBookTesterCurr.h"
+#include "OrderTesterFond.h"
+#include "OrderTesterCurr.h"
+#include "TradeTesterFond.h"
+#include "TradeTesterCurr.h"
 #include "StatisticsTester.h"
 
 class TestFeedMessage{
@@ -209,12 +212,21 @@ public:
         RobotSettings::MarketDataMaxSessionsCount = 5;
         RobotSettings::MarketDataMaxEntriesCount = 32;
 
-        OrderBookTester obt;
-        obt.Test();
-        TradeTester tt;
-        tt.Test();
-        OrderTester ot;
-        ot.Test();
+        TradeTesterFond ttFond;
+        ttFond.Test();
+        TradeTesterCurr ttCurr;
+        ttCurr.Test();
+
+        OrderBookTesterFond obtFond;
+        obtFond.Test();
+        OrderBookTesterCurr obtCurr;
+        obtCurr.Test();
+
+        OrderTesterFond otFond;
+        otFond.Test();
+        OrderTesterCurr otCurr;
+        otCurr.Test();
+
         InstrumentDefinitionTester ids;
         ids.Test();
         //TestLog("/home/arsen/Documents/hft_robot/hft/test/log5");
