@@ -259,19 +259,27 @@ private:
         this->PrepareDecodeSnapshotMessage(this->m_snapshotRouteFirst);
         FastOBSFONDInfo *info = (FastOBSFONDInfo *) this->m_fastProtocolManager->DecodeOBSFOND();
         this->m_incremental->OrderBookFond()->ObtainSnapshotItem(info);
-        if(this->m_incremental->OrderBookFond()->CheckProcessIfSessionInActualState(info))
+        if(this->m_incremental->OrderBookFond()->CheckProcessIfSessionInActualState(info)) {
+            info->ReleaseUnused();
             return true;
-        if(this->m_incremental->OrderBookFond()->CheckProcessNullSnapshot(info))
+        }
+        if(this->m_incremental->OrderBookFond()->CheckProcessNullSnapshot(info)) {
+            info->ReleaseUnused();
             return true;
-        if(!this->m_incremental->OrderBookFond()->ShouldProcessSnapshot(info))
+        }
+        if(!this->m_incremental->OrderBookFond()->ShouldProcessSnapshot(info)) {
+            info->ReleaseUnused();
             return true;
+        }
         this->m_incremental->OrderBookFond()->StartProcessSnapshot(info);
         this->m_incremental->OrderBookFond()->ProcessSnapshot(info);
+        info->ReleaseUnused();
         for(int i = this->m_snapshotRouteFirst + 1; i <= this->m_snapshotLastFragment; i++) {
             if(!this->PrepareDecodeSnapshotMessage(i))
                 continue;
-            this->m_incremental->OrderBookFond()->ProcessSnapshot(
-                    (FastOBSFONDInfo *) this->m_fastProtocolManager->DecodeOBSFOND());
+            info = (FastOBSFONDInfo *)this->m_fastProtocolManager->DecodeOBSFOND();
+            this->m_incremental->OrderBookFond()->ProcessSnapshot(info);
+            info->ReleaseUnused();
         }
         this->m_incremental->OrderBookFond()->EndProcessSnapshot();
         return true;
@@ -280,19 +288,27 @@ private:
         this->PrepareDecodeSnapshotMessage(this->m_snapshotRouteFirst);
         FastOBSCURRInfo *info = (FastOBSCURRInfo *) this->m_fastProtocolManager->DecodeOBSCURR();
          this->m_incremental->OrderBookCurr()->ObtainSnapshotItem(info);
-         if(this->m_incremental->OrderBookCurr()->CheckProcessIfSessionInActualState(info))
+         if(this->m_incremental->OrderBookCurr()->CheckProcessIfSessionInActualState(info)) {
+             info->ReleaseUnused();
+             return true;
+         }
+        if(this->m_incremental->OrderBookCurr()->CheckProcessNullSnapshot(info)) {
+            info->ReleaseUnused();
             return true;
-        if(this->m_incremental->OrderBookCurr()->CheckProcessNullSnapshot(info))
+        }
+        if(!this->m_incremental->OrderBookCurr()->ShouldProcessSnapshot(info)) {
+            info->ReleaseUnused();
             return true;
-        if(!this->m_incremental->OrderBookCurr()->ShouldProcessSnapshot(info))
-            return true;
+        }
         this->m_incremental->OrderBookCurr()->StartProcessSnapshot(info);
         this->m_incremental->OrderBookCurr()->ProcessSnapshot(info);
+        info->ReleaseUnused();
         for(int i = this->m_snapshotRouteFirst + 1; i <= this->m_snapshotLastFragment; i++) {
             if(!this->PrepareDecodeSnapshotMessage(i))
                 continue;
-            this->m_incremental->OrderBookCurr()->ProcessSnapshot(
-                    (FastOBSCURRInfo *) this->m_fastProtocolManager->DecodeOBSCURR());
+            info = (FastOBSCURRInfo *) this->m_fastProtocolManager->DecodeOBSCURR();
+            this->m_incremental->OrderBookCurr()->ProcessSnapshot(info);
+            info->ReleaseUnused();
         }
         this->m_incremental->OrderBookCurr()->EndProcessSnapshot();
         return true;
@@ -301,19 +317,27 @@ private:
         this->PrepareDecodeSnapshotMessage(this->m_snapshotRouteFirst);
         FastOLSFONDInfo *info = (FastOLSFONDInfo *) this->m_fastProtocolManager->DecodeOLSFOND();
          this->m_incremental->OrderFond()->ObtainSnapshotItem(info);
-         if(this->m_incremental->OrderFond()->CheckProcessIfSessionInActualState(info))
+         if(this->m_incremental->OrderFond()->CheckProcessIfSessionInActualState(info)) {
+             info->ReleaseUnused();
+             return true;
+         }
+        if(this->m_incremental->OrderFond()->CheckProcessNullSnapshot(info)) {
+            info->ReleaseUnused();
             return true;
-        if(this->m_incremental->OrderFond()->CheckProcessNullSnapshot(info))
+        }
+        if(!this->m_incremental->OrderFond()->ShouldProcessSnapshot(info)) {
+            info->ReleaseUnused();
             return true;
-        if(!this->m_incremental->OrderFond()->ShouldProcessSnapshot(info))
-            return true;
+        }
         this->m_incremental->OrderFond()->StartProcessSnapshot(info);
         this->m_incremental->OrderFond()->ProcessSnapshot(info);
+        info->ReleaseUnused();
         for(int i = this->m_snapshotRouteFirst + 1; i <= this->m_snapshotLastFragment; i++) {
             if(!this->PrepareDecodeSnapshotMessage(i))
                 continue;
-            this->m_incremental->OrderFond()->ProcessSnapshot(
-                    (FastOLSFONDInfo *) this->m_fastProtocolManager->DecodeOLSFOND());
+            info = (FastOLSFONDInfo *) this->m_fastProtocolManager->DecodeOLSFOND();
+            this->m_incremental->OrderFond()->ProcessSnapshot(info);
+            info->ReleaseUnused();
         }
         this->m_incremental->OrderFond()->EndProcessSnapshot();
         return true;
@@ -322,19 +346,27 @@ private:
         this->PrepareDecodeSnapshotMessage(this->m_snapshotRouteFirst);
         FastOLSCURRInfo *info = (FastOLSCURRInfo *) this->m_fastProtocolManager->DecodeOLSCURR();
         this->m_incremental->OrderCurr()->ObtainSnapshotItem(info);
-        if(this->m_incremental->OrderCurr()->CheckProcessIfSessionInActualState(info))
+        if(this->m_incremental->OrderCurr()->CheckProcessIfSessionInActualState(info)) {
+            info->ReleaseUnused();
             return true;
-        if(this->m_incremental->OrderCurr()->CheckProcessNullSnapshot(info))
+        }
+        if(this->m_incremental->OrderCurr()->CheckProcessNullSnapshot(info)) {
+            info->ReleaseUnused();
             return true;
-        if(!this->m_incremental->OrderCurr()->ShouldProcessSnapshot(info))
+        }
+        if(!this->m_incremental->OrderCurr()->ShouldProcessSnapshot(info)) {
+            info->ReleaseUnused();
             return true;
+        }
         this->m_incremental->OrderCurr()->StartProcessSnapshot(info);
         this->m_incremental->OrderCurr()->ProcessSnapshot(info);
+        info->ReleaseUnused();
         for(int i = this->m_snapshotRouteFirst + 1; i <= this->m_snapshotLastFragment; i++) {
             if(!this->PrepareDecodeSnapshotMessage(i))
                 continue;
-            this->m_incremental->OrderCurr()->ProcessSnapshot(
-                    (FastOLSCURRInfo *) this->m_fastProtocolManager->DecodeOLSCURR());
+            info = (FastOLSCURRInfo *) this->m_fastProtocolManager->DecodeOLSCURR();
+            this->m_incremental->OrderCurr()->ProcessSnapshot(info);
+            info->ReleaseUnused();
         }
         this->m_incremental->OrderCurr()->EndProcessSnapshot();
         return true;
@@ -343,19 +375,27 @@ private:
         this->PrepareDecodeSnapshotMessage(this->m_snapshotRouteFirst);
         FastTLSFONDInfo *info = (FastTLSFONDInfo *) this->m_fastProtocolManager->DecodeTLSFOND();
         this->m_incremental->TradeFond()->ObtainSnapshotItem(info);
-        if(this->m_incremental->TradeFond()->CheckProcessIfSessionInActualState(info))
+        if(this->m_incremental->TradeFond()->CheckProcessIfSessionInActualState(info)) {
+            info->ReleaseUnused();
             return true;
-        if(this->m_incremental->TradeFond()->CheckProcessNullSnapshot(info))
+        }
+        if(this->m_incremental->TradeFond()->CheckProcessNullSnapshot(info)) {
+            info->ReleaseUnused();
             return true;
-        if(!this->m_incremental->TradeFond()->ShouldProcessSnapshot(info))
+        }
+        if(!this->m_incremental->TradeFond()->ShouldProcessSnapshot(info)) {
+            info->ReleaseUnused();
             return true;
+        }
         this->m_incremental->TradeFond()->StartProcessSnapshot(info);
         this->m_incremental->TradeFond()->ProcessSnapshot(info);
+        info->ReleaseUnused();
         for(int i = this->m_snapshotRouteFirst + 1; i <= this->m_snapshotLastFragment; i++) {
             if(!this->PrepareDecodeSnapshotMessage(i))
                 continue;
-            this->m_incremental->TradeFond()->ProcessSnapshot(
-                    (FastTLSFONDInfo *) this->m_fastProtocolManager->DecodeTLSFOND());
+            info = (FastTLSFONDInfo *) this->m_fastProtocolManager->DecodeTLSFOND();
+            this->m_incremental->TradeFond()->ProcessSnapshot(info);
+            info->ReleaseUnused();
         }
         this->m_incremental->TradeFond()->EndProcessSnapshot();
         return true;
@@ -364,19 +404,27 @@ private:
         this->PrepareDecodeSnapshotMessage(this->m_snapshotRouteFirst);
         FastTLSCURRInfo *info = (FastTLSCURRInfo *) this->m_fastProtocolManager->DecodeTLSCURR();
         this->m_incremental->TradeCurr()->ObtainSnapshotItem(info);
-        if(this->m_incremental->TradeCurr()->CheckProcessIfSessionInActualState(info))
+        if(this->m_incremental->TradeCurr()->CheckProcessIfSessionInActualState(info)) {
+            info->ReleaseUnused();
             return true;
-        if(this->m_incremental->TradeCurr()->CheckProcessNullSnapshot(info))
+        }
+        if(this->m_incremental->TradeCurr()->CheckProcessNullSnapshot(info)) {
+            info->ReleaseUnused();
             return true;
-        if(!this->m_incremental->TradeCurr()->ShouldProcessSnapshot(info))
+        }
+        if(!this->m_incremental->TradeCurr()->ShouldProcessSnapshot(info)) {
+            info->ReleaseUnused();
             return true;
+        }
         this->m_incremental->TradeCurr()->StartProcessSnapshot(info);
         this->m_incremental->TradeCurr()->ProcessSnapshot(info);
+        info->ReleaseUnused();
         for(int i = this->m_snapshotRouteFirst + 1; i <= this->m_snapshotLastFragment; i++) {
             if(!this->PrepareDecodeSnapshotMessage(i))
                 continue;
-            this->m_incremental->TradeCurr()->ProcessSnapshot(
-                    (FastTLSCURRInfo *) this->m_fastProtocolManager->DecodeTLSCURR());
+            info = (FastTLSCURRInfo *) this->m_fastProtocolManager->DecodeTLSCURR();
+            this->m_incremental->TradeCurr()->ProcessSnapshot(info);
+            info->ReleaseUnused();
         }
         this->m_incremental->TradeCurr()->EndProcessSnapshot();
         return true;

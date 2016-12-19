@@ -3817,13 +3817,7 @@ public:
         incFond->m_fastProtocolManager->Print();
         */
 
-        incFond->OrderBookFond()->Add("s1", "session1");
-        incFond->Start();
 
-        SendMessages(incFond, snapFond,
-                     "obr entry s1 e1, lost obr entry s1 e2, obr entry s1 e2, wait_snap, hbeat",
-                     "                                       hbeat,           hbeat,     obs s1 begin rpt 0 lastmsg 0 entry s1 e1 end",
-                     30);
         if(incFond->OrderBookFond()->SymbolsToRecvSnapshotCount() != 0)
             throw;
         if(!incFond->CanStopListeningSnapshot())
@@ -4207,7 +4201,68 @@ public:
     }
 
     void TestInfoAndItemInfoUsageAndAllocation_Snap_3() {
-        throw;
+        // there is no UpdateAction in snap messages so we don't have to check these cases
+        /*this->Clear();
+
+        this->incFond->OrderBookFond()->Add("s1", "session1");
+        int prevCount = this->snapFond->m_fastProtocolManager->m_oBSFONDItems->Count();
+        this->SendMessages(this->incFond, this->snapFond,
+                           "obr entry s1 e1, obr entry s1 e2, lost obr entry s1 e4 entry s1 e4, wait_snap, hbeat",
+                           "                                                   obs begin s1 entry s1 e1 rpt 2, obs s1 entry s1 e2, obs s1 entry s1 e3, obs s1 entry del s1 e2 end",
+                           30);
+
+        int newCount = this->snapFond->m_fastProtocolManager->m_oBSFONDItems->Count();
+        if(newCount != prevCount + 3)
+            throw;*/
+    }
+
+    // check in case CheckProcessIfSessionInActualState returns true
+    void TestInfoAndItemInfoUsageAndAllocation_Snap_4() {
+        this->Clear();
+
+        incFond->OrderBookFond()->Add("s1", "session1");
+        incFond->OrderBookFond()->Add("s2", "session1");
+        incFond->OrderBookFond()->Add("symbol3", "session1");
+
+        int prevCount = this->snapFond->m_fastProtocolManager->m_oBSFONDItems->Count();
+        SendMessages(incFond, snapFond,
+                     "obr entry s1 e1, lost obr entry symbol3 e1, wait_snap, obr entry s1 e3,                              hbeat,                              hbeat",
+                     "                                                       obs symbol3 begin rpt 1 end entry symbol3 e1, obs s1 begin rpt 2 end entry s1 e1, hbeat, obs s2 begin rpt 2 end entry s2 e1",
+                     30);
+        int newCount = this->snapFond->m_fastProtocolManager->m_oBSFONDItems->Count();
+        if(newCount != prevCount + 2)
+            throw;
+    }
+    // check in case CheckProcessNullSnapshot
+    void TestInfoAndItemInfoUsageAndAllocation_Snap_5() {
+        this->Clear();
+        incFond->OrderBookFond()->Add("s1", "session1");
+        incFond->Start();
+
+        int prevCount = this->snapFond->m_fastProtocolManager->m_oBSFONDItems->Count();
+        SendMessages(incFond, snapFond,
+                     "obr entry s1 e1, lost obr entry s1 e2, obr entry s1 e2, wait_snap, hbeat",
+                     "                                       hbeat,           hbeat,     obs s1 begin rpt 0 lastmsg 0 entry s1 e1 end",
+                     30);
+        int newCount = this->snapFond->m_fastProtocolManager->m_oBSFONDItems->Count();
+        if(newCount != prevCount)
+            throw;
+    }
+
+    // check in case ShouldProcessSnapshot
+    void TestInfoAndItemInfoUsageAndAllocation_Snap_6() {
+        this->Clear();
+
+        incFond->OrderBookFond()->Add("s1", "session1");
+
+        int prevCount = this->snapFond->m_fastProtocolManager->m_oBSFONDItems->Count();
+        SendMessages(incFond, snapFond,
+                     "obr entry s1 e1, obr entry s1 e2, obr entry s1 e3, lost hbeat, wait_snap, hbeat",
+                     "                                                                          obs s1 begin rpt 1 entry s1 e1 end",
+                     50);
+        int newCount = this->snapFond->m_fastProtocolManager->m_oBSFONDItems->Count();
+        if(newCount != prevCount)
+            throw;
     }
 
     void TestInfoAndItemInfoUsageAndAllocation() {
@@ -4227,6 +4282,12 @@ public:
         TestInfoAndItemInfoUsageAndAllocation_Snap_2();
         printf("TestInfoAndItemInfoUsageAndAllocation_Snap_3\n");
         TestInfoAndItemInfoUsageAndAllocation_Snap_3();
+        printf("TestInfoAndItemInfoUsageAndAllocation_Snap_4\n");
+        TestInfoAndItemInfoUsageAndAllocation_Snap_4();
+        printf("TestInfoAndItemInfoUsageAndAllocation_Snap_5\n");
+        TestInfoAndItemInfoUsageAndAllocation_Snap_5();
+        printf("TestInfoAndItemInfoUsageAndAllocation_Snap_6\n");
+        TestInfoAndItemInfoUsageAndAllocation_Snap_6();
     }
 
     void Test() {
