@@ -14,6 +14,7 @@ class TestMessagesHelper {
     const char *symbols[100];
     int rptSeq[100];
     int symbolsCount = 0;
+    bool m_curr = false;
 
     int CalcMsgCount(const char *msg) {
         int len = strlen(msg);
@@ -96,24 +97,30 @@ class TestMessagesHelper {
         info->m_lost = HasKey(keys, keysCount, "lost");
         info->m_skip = HasKey(keys, keysCount, "skip_if_suspend");
         if(HasKey(keys, keysCount, "obr")) {
-            info->m_templateId = FeedConnectionMessage::fmcIncrementalRefresh_OBR_FOND;
+            info->m_templateId = this->m_curr? FeedConnectionMessage::fmcIncrementalRefresh_OBR_CURR:
+                                 FeedConnectionMessage::fmcIncrementalRefresh_OBR_FOND;
         }
         else if(HasKey(keys, keysCount, "olr")) {
-            info->m_templateId = FeedConnectionMessage::fmcIncrementalRefresh_OLR_FOND;
+            info->m_templateId = this->m_curr? FeedConnectionMessage::fmcIncrementalRefresh_OLR_CURR:
+                                 FeedConnectionMessage::fmcIncrementalRefresh_OLR_FOND;
         }
         else if(HasKey(keys, keysCount, "tlr")) {
-            info->m_templateId = FeedConnectionMessage::fmcIncrementalRefresh_TLR_FOND;
+            info->m_templateId = this->m_curr? FeedConnectionMessage::fmcIncrementalRefresh_TLR_CURR:
+                                 FeedConnectionMessage::fmcIncrementalRefresh_TLR_FOND;
         }
         else if(HasKey(keys, keysCount, "obs")) {
-            info->m_templateId = FeedConnectionMessage::fmcFullRefresh_OBS_FOND;
+            info->m_templateId = this->m_curr? FeedConnectionMessage::fmcFullRefresh_OBS_CURR:
+                                 FeedConnectionMessage::fmcFullRefresh_OBS_FOND;
             info->m_symbol = keys[KeyIndex(keys, keysCount, "obs") + 1];
         }
         else if(HasKey(keys, keysCount, "ols")) {
-            info->m_templateId = FeedConnectionMessage::fmcFullRefresh_OLS_FOND;
+            info->m_templateId = this->m_curr? FeedConnectionMessage::fmcFullRefresh_OLS_CURR:
+                                 FeedConnectionMessage::fmcFullRefresh_OLS_FOND;
             info->m_symbol = keys[KeyIndex(keys, keysCount, "ols") + 1];
         }
         else if(HasKey(keys, keysCount, "tls")) {
-            info->m_templateId = FeedConnectionMessage::fmcFullRefresh_TLS_FOND;
+            info->m_templateId = this->m_curr? FeedConnectionMessage::fmcFullRefresh_TLS_CURR:
+                                 FeedConnectionMessage::fmcFullRefresh_TLS_FOND;
             info->m_symbol = keys[KeyIndex(keys, keysCount, "tls") + 1];
         }
         else if(HasKey(keys, keysCount, "wait_snap")) {
@@ -834,6 +841,112 @@ public:
         return info;
     }
 
+
+    FastOLSCURRItemInfo* CreateOLRCurrItemInfo(TestTemplateItemInfo *tmp) {
+        FastOLSCURRItemInfo *info = new FastOLSCURRItemInfo();
+        info->AllowMDUpdateAction = true;
+        info->MDUpdateAction = tmp->m_action;
+        info->AllowMDEntryType = true;
+        info->MDEntryType = new char[1];
+        info->MDEntryType[0] = (char)tmp->m_entryType;
+        info->MDEntryTypeLength = 1;
+        info->AllowMDEntryPx = true;
+        info->MDEntryPx.Assign(&tmp->m_entryPx);
+        info->AllowMDEntrySize = true;
+        info->MDEntrySize.Assign(&tmp->m_entrySize);
+        info->AllowRptSeq = true;
+        info->RptSeq = tmp->m_rptSeq;
+        if(tmp->m_symbol != 0) {
+            info->AllowSymbol = true;
+            info->SymbolLength = strlen(tmp->m_symbol);
+            info->Symbol = new char[info->SymbolLength + 1];
+            strcpy(info->Symbol, tmp->m_symbol);
+        }
+        if(tmp->m_tradingSession != 0) {
+            info->AllowTradingSessionID = true;
+            info->TradingSessionIDLength = strlen(tmp->m_tradingSession);
+            info->TradingSessionID = new char[info->TradingSessionIDLength + 1];
+            strcpy(info->TradingSessionID, tmp->m_tradingSession);
+        }
+        if(tmp->m_entryId != 0) {
+            info->AllowMDEntryID = true;
+            info->MDEntryIDLength = strlen(tmp->m_entryId);
+            info->MDEntryID = new char[info->MDEntryIDLength + 1];
+            strcpy(info->MDEntryID, tmp->m_entryId);
+        }
+        return info;
+    }
+
+    FastOBSCURRItemInfo* CreateObrCurrItemInfo(TestTemplateItemInfo *tmp) {
+        FastOBSCURRItemInfo *info = new FastOBSCURRItemInfo();
+        info->AllowMDUpdateAction = true;
+        info->MDUpdateAction = tmp->m_action;
+        info->AllowMDEntryType = true;
+        info->MDEntryType = new char[1];
+        info->MDEntryType[0] = (char)tmp->m_entryType;
+        info->MDEntryTypeLength = 1;
+        info->AllowMDEntryPx = true;
+        info->MDEntryPx.Assign(&tmp->m_entryPx);
+        info->AllowMDEntrySize = true;
+        info->MDEntrySize.Assign(&tmp->m_entrySize);
+        info->AllowRptSeq = true;
+        info->RptSeq = tmp->m_rptSeq;
+        if(tmp->m_symbol != 0) {
+            info->AllowSymbol = true;
+            info->SymbolLength = strlen(tmp->m_symbol);
+            info->Symbol = new char[info->SymbolLength + 1];
+            strcpy(info->Symbol, tmp->m_symbol);
+        }
+        if(tmp->m_tradingSession != 0) {
+            info->AllowTradingSessionID = true;
+            info->TradingSessionIDLength = strlen(tmp->m_tradingSession);
+            info->TradingSessionID = new char[info->TradingSessionIDLength + 1];
+            strcpy(info->TradingSessionID, tmp->m_tradingSession);
+        }
+        if(tmp->m_entryId != 0) {
+            info->AllowMDEntryID = true;
+            info->MDEntryIDLength = strlen(tmp->m_entryId);
+            info->MDEntryID = new char[info->MDEntryIDLength + 1];
+            strcpy(info->MDEntryID, tmp->m_entryId);
+        }
+        return info;
+    }
+
+    FastTLSCURRItemInfo* CreateTLRCurrItemInfo(TestTemplateItemInfo *tmp) {
+        FastTLSCURRItemInfo *info = new FastTLSCURRItemInfo();
+        info->AllowMDUpdateAction = true;
+        info->MDUpdateAction = tmp->m_action;
+        //info->AllowMDEntryType = true;
+        info->MDEntryType = new char[1];
+        info->MDEntryType[0] = (char)tmp->m_entryType;
+        info->MDEntryTypeLength = 1;
+        info->AllowMDEntryPx = true;
+        info->MDEntryPx.Assign(&tmp->m_entryPx);
+        info->AllowMDEntrySize = true;
+        info->MDEntrySize.Assign(&tmp->m_entrySize);
+        info->AllowRptSeq = true;
+        info->RptSeq = tmp->m_rptSeq;
+        if(tmp->m_symbol != 0) {
+            info->AllowSymbol = true;
+            info->SymbolLength = strlen(tmp->m_symbol);
+            info->Symbol = new char[info->SymbolLength + 1];
+            strcpy(info->Symbol, tmp->m_symbol);
+        }
+        if(tmp->m_tradingSession != 0) {
+            info->AllowTradingSessionID = true;
+            info->TradingSessionIDLength = strlen(tmp->m_tradingSession);
+            info->TradingSessionID = new char[info->TradingSessionIDLength + 1];
+            strcpy(info->TradingSessionID, tmp->m_tradingSession);
+        }
+        if(tmp->m_entryId != 0) {
+            info->AllowMDEntryID = true;
+            info->MDEntryIDLength = strlen(tmp->m_entryId);
+            info->MDEntryID = new char[info->MDEntryIDLength + 1];
+            strcpy(info->MDEntryID, tmp->m_entryId);
+        }
+        return info;
+    }
+
     void SendHearthBeatMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
         FastHeartbeatInfo *info = new FastHeartbeatInfo();
         info->MsgSeqNum = tmp->m_msgSeqNo;
@@ -854,6 +967,7 @@ public:
         conn->ProcessServerCore(conn->m_fastProtocolManager->MessageLength());
 
     }
+
     void SendObsFondMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
         FastOBSFONDInfo *info = new FastOBSFONDInfo();
         info->MsgSeqNum = tmp->m_msgSeqNo;
@@ -976,6 +1090,142 @@ public:
         conn->ProcessServerCore(conn->m_fastProtocolManager->MessageLength());
     }
 
+
+    void SendObrCurrMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
+        FastIncrementalOBRCURRInfo *info = new FastIncrementalOBRCURRInfo();
+        info->MsgSeqNum = tmp->m_msgSeqNo;
+        info->GroupMDEntriesCount = tmp->m_itemsCount;
+        for(int i = 0; i < tmp->m_itemsCount; i++) {
+            info->GroupMDEntries[i] = CreateObrCurrItemInfo(tmp->m_items[i]);
+        }
+        conn->m_fastProtocolManager->SetNewBuffer(conn->m_recvABuffer->CurrentPos(), 2000);
+        conn->m_fastProtocolManager->EncodeIncrementalOBRCURRInfo(info);
+        conn->ProcessServerCore(conn->m_fastProtocolManager->MessageLength());
+
+    }
+
+    void SendObsCurrMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
+        FastOBSCURRInfo *info = new FastOBSCURRInfo();
+        info->MsgSeqNum = tmp->m_msgSeqNo;
+        info->GroupMDEntriesCount = tmp->m_itemsCount;
+        info->AllowRouteFirst = true;
+        info->AllowLastFragment = true;
+        info->AllowLastMsgSeqNumProcessed = true;
+        info->LastMsgSeqNumProcessed = tmp->m_lastMsgSeqNoProcessed;
+
+        if(tmp->m_symbol != 0) {
+            info->SymbolLength = strlen(tmp->m_symbol);
+            info->Symbol = new char[info->SymbolLength + 1];
+            strcpy(info->Symbol, tmp->m_symbol);
+        }
+        if(tmp->m_session != 0) {
+            info->AllowTradingSessionID = true;
+            info->TradingSessionIDLength = strlen(tmp->m_session);
+            info->TradingSessionID = new char[info->TradingSessionIDLength + 1];
+            strcpy(info->TradingSessionID, tmp->m_session);
+        }
+
+        info->RptSeq = tmp->m_rptSec;
+        info->RouteFirst = tmp->m_routeFirst;
+        info->LastFragment = tmp->m_lastFragment;
+        for(int i = 0; i < tmp->m_itemsCount; i++) {
+            info->GroupMDEntries[i] = CreateObrCurrItemInfo(tmp->m_items[i]);
+        }
+        conn->m_fastProtocolManager->SetNewBuffer(conn->m_recvABuffer->CurrentPos(), 2000);
+        conn->m_fastProtocolManager->EncodeOBSCURRInfo(info);
+        conn->ProcessServerCore(conn->m_fastProtocolManager->MessageLength());
+    }
+
+    void SendOLRCurrMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
+        FastIncrementalOLRCURRInfo *info = new FastIncrementalOLRCURRInfo();
+        info->MsgSeqNum = tmp->m_msgSeqNo;
+        info->GroupMDEntriesCount = tmp->m_itemsCount;
+        for(int i = 0; i < tmp->m_itemsCount; i++) {
+            info->GroupMDEntries[i] = CreateOLRCurrItemInfo(tmp->m_items[i]);
+        }
+        conn->m_fastProtocolManager->SetNewBuffer(conn->m_recvABuffer->CurrentPos(), 2000);
+        conn->m_fastProtocolManager->EncodeIncrementalOLRCURRInfo(info);
+        conn->ProcessServerCore(conn->m_fastProtocolManager->MessageLength());
+
+    }
+
+    void SendOLSCurrMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
+        FastOLSCURRInfo *info = new FastOLSCURRInfo();
+        info->MsgSeqNum = tmp->m_msgSeqNo;
+        info->GroupMDEntriesCount = tmp->m_itemsCount;
+        info->AllowRouteFirst = true;
+        info->AllowLastFragment = true;
+        info->AllowLastMsgSeqNumProcessed = true;
+        info->LastMsgSeqNumProcessed = tmp->m_lastMsgSeqNoProcessed;
+
+        if(tmp->m_symbol != 0) {
+            info->SymbolLength = strlen(tmp->m_symbol);
+            info->Symbol = new char[info->SymbolLength + 1];
+            strcpy(info->Symbol, tmp->m_symbol);
+        }
+        if(tmp->m_session != 0) {
+            info->AllowTradingSessionID = true;
+            info->TradingSessionIDLength = strlen(tmp->m_session);
+            info->TradingSessionID = new char[info->TradingSessionIDLength + 1];
+            strcpy(info->TradingSessionID, tmp->m_session);
+        }
+
+        info->RptSeq = tmp->m_rptSec;
+        info->RouteFirst = tmp->m_routeFirst;
+        info->LastFragment = tmp->m_lastFragment;
+        for(int i = 0; i < tmp->m_itemsCount; i++) {
+            info->GroupMDEntries[i] = CreateOLRCurrItemInfo(tmp->m_items[i]);
+        }
+        conn->m_fastProtocolManager->SetNewBuffer(conn->m_recvABuffer->CurrentPos(), 2000);
+        conn->m_fastProtocolManager->EncodeOLSCURRInfo(info);
+        conn->ProcessServerCore(conn->m_fastProtocolManager->MessageLength());
+    }
+
+    void SendTLRCurrMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
+        FastIncrementalTLRCURRInfo *info = new FastIncrementalTLRCURRInfo();
+        info->MsgSeqNum = tmp->m_msgSeqNo;
+        info->GroupMDEntriesCount = tmp->m_itemsCount;
+        for(int i = 0; i < tmp->m_itemsCount; i++) {
+            info->GroupMDEntries[i] = CreateTLRCurrItemInfo(tmp->m_items[i]);
+        }
+        conn->m_fastProtocolManager->SetNewBuffer(conn->m_recvABuffer->CurrentPos(), 2000);
+        conn->m_fastProtocolManager->EncodeIncrementalTLRCURRInfo(info);
+        conn->ProcessServerCore(conn->m_fastProtocolManager->MessageLength());
+
+    }
+
+    void SendTLSCurrMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
+        FastTLSCURRInfo *info = new FastTLSCURRInfo();
+        info->MsgSeqNum = tmp->m_msgSeqNo;
+        info->GroupMDEntriesCount = tmp->m_itemsCount;
+        info->AllowRouteFirst = true;
+        info->AllowLastFragment = true;
+        info->AllowLastMsgSeqNumProcessed = true;
+        info->LastMsgSeqNumProcessed = tmp->m_lastMsgSeqNoProcessed;
+
+        if(tmp->m_symbol != 0) {
+            info->SymbolLength = strlen(tmp->m_symbol);
+            info->Symbol = new char[info->SymbolLength + 1];
+            strcpy(info->Symbol, tmp->m_symbol);
+        }
+        if(tmp->m_session != 0) {
+            info->AllowTradingSessionID = true;
+            info->TradingSessionIDLength = strlen(tmp->m_session);
+            info->TradingSessionID = new char[info->TradingSessionIDLength + 1];
+            strcpy(info->TradingSessionID, tmp->m_session);
+        }
+
+        info->RptSeq = tmp->m_rptSec;
+        info->RouteFirst = tmp->m_routeFirst;
+        info->LastFragment = tmp->m_lastFragment;
+        for(int i = 0; i < tmp->m_itemsCount; i++) {
+            info->GroupMDEntries[i] = CreateTLRCurrItemInfo(tmp->m_items[i]);
+        }
+        conn->m_fastProtocolManager->SetNewBuffer(conn->m_recvABuffer->CurrentPos(), 2000);
+        conn->m_fastProtocolManager->EncodeTLSCURRInfo(info);
+        conn->ProcessServerCore(conn->m_fastProtocolManager->MessageLength());
+    }
+
     void SendMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
         switch(tmp->m_templateId) {
             case FeedConnectionMessage::fcmHeartBeat:
@@ -998,6 +1248,24 @@ public:
                 break;
             case FeedConnectionMessage::fmcFullRefresh_TLS_FOND:
                 SendTLSFondMessage(conn, tmp);
+                break;
+            case FeedConnectionMessage::fmcIncrementalRefresh_OBR_CURR:
+                SendObrCurrMessage(conn, tmp);
+                break;
+            case FeedConnectionMessage::fmcFullRefresh_OBS_CURR:
+                SendObsCurrMessage(conn, tmp);
+                break;
+            case FeedConnectionMessage::fmcIncrementalRefresh_OLR_CURR:
+                SendOLRCurrMessage(conn, tmp);
+                break;
+            case FeedConnectionMessage::fmcFullRefresh_OLS_CURR:
+                SendOLSCurrMessage(conn, tmp);
+                break;
+            case FeedConnectionMessage::fmcIncrementalRefresh_TLR_CURR:
+                SendTLRCurrMessage(conn, tmp);
+                break;
+            case FeedConnectionMessage::fmcFullRefresh_TLS_CURR:
+                SendTLSCurrMessage(conn, tmp);
                 break;
             default:
                 break;
@@ -1072,6 +1340,9 @@ public:
             this->rptSeq[i] = 0;
         }
     }
+
+    inline void SetCurrMode() { this->m_curr = true; }
+    inline void SetFondMode() { this->m_curr = false; }
 };
 
 #endif //HFT_ROBOT_TESTMESSAGESHELPER_H
