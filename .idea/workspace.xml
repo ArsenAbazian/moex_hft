@@ -44,8 +44,8 @@
       <file leaf-file-name="OrderBookTester.h" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/source/include/Test/OrderBookTester.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="321">
-              <caret line="4208" column="53" selection-start-line="4208" selection-start-column="53" selection-end-line="4208" selection-end-column="53" />
+            <state relative-caret-position="339">
+              <caret line="4209" column="14" selection-start-line="4209" selection-start-column="14" selection-end-line="4209" selection-end-column="14" />
               <folding />
             </state>
           </provider>
@@ -701,14 +701,7 @@
       <workItem from="1481739349544" duration="597000" />
       <workItem from="1481740015589" duration="17443000" />
       <workItem from="1481914777199" duration="19402000" />
-      <workItem from="1482140951632" duration="5288000" />
-    </task>
-    <task id="LOCAL-00058" summary="Refactoring....">
-      <created>1477412960587</created>
-      <option name="number" value="00058" />
-      <option name="presentableId" value="LOCAL-00058" />
-      <option name="project" value="LOCAL" />
-      <updated>1477412960592</updated>
+      <workItem from="1482140951632" duration="5301000" />
     </task>
     <task id="LOCAL-00059" summary="Refactoring....">
       <created>1477414220653</created>
@@ -1046,11 +1039,18 @@
       <option name="project" value="LOCAL" />
       <updated>1482161341432</updated>
     </task>
-    <option name="localTasksCounter" value="107" />
+    <task id="LOCAL-00107" summary="Working on MSR/MSS&#10;1. Build is broken - comment all StatisticsTester class for success compile">
+      <created>1482162263762</created>
+      <option name="number" value="00107" />
+      <option name="presentableId" value="LOCAL-00107" />
+      <option name="project" value="LOCAL" />
+      <updated>1482162263762</updated>
+    </task>
+    <option name="localTasksCounter" value="108" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="982380000" />
+    <option name="totallyTimeSpent" value="982393000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -1614,8 +1614,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/source/include/Test/OrderBookTester.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="321">
-          <caret line="4208" column="53" selection-start-line="4208" selection-start-column="53" selection-end-line="4208" selection-end-column="53" />
+        <state relative-caret-position="339">
+          <caret line="4209" column="14" selection-start-line="4209" selection-start-column="14" selection-end-line="4209" selection-end-column="14" />
           <folding />
         </state>
       </provider>

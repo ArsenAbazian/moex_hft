@@ -4207,7 +4207,7 @@ public:
     }
 
     void TestInfoAndItemInfoUsageAndAllocation_Snap_3() {
-
+        throw;
     }
 
     void TestInfoAndItemInfoUsageAndAllocation() {
