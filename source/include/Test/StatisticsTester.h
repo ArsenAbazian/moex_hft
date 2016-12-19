@@ -16,12 +16,12 @@ class StatisticsTester {
     FeedConnection_CURR_MSR *incCurr;
     FeedConnection_CURR_MSS *snapCurr;
     TestMessagesHelper      *m_helper;
-    MarketDataTable<StatisticsInfo, FastIncrementalMSRFONDInfo, FastIncrementalMSRFONDItemInfo> *m_table_fond;
+    MarketDataTable<StatisticsInfo, FastIncrementalMSRFONDInfo, FastIncrementalMSRFONDItemInfo> *m_table;
 
 public:
     StatisticsTester() {
         this->m_helper = new TestMessagesHelper();
-        this->m_table_fond = new MarketDataTable<StatisticsInfo, FastIncrementalMSRFONDInfo, FastIncrementalMSRFONDItemInfo>();
+        this->m_table = new MarketDataTable<StatisticsInfo, FastIncrementalMSRFONDInfo, FastIncrementalMSRFONDItemInfo>();
         this->incFond = new FeedConnection_FOND_MSR("MSR", "Refresh Incremental", 'I',
                                                     FeedConnectionProtocol::UDP_IP,
                                                     "10.50.129.200", "239.192.113.3", 9113,
@@ -51,7 +51,7 @@ public:
         delete this->snapFond;
         delete this->snapCurr;
         delete this->m_helper;
-        delete this->m_table_fond;
+        delete this->m_table;
     }
 
     void TestItem(StatisticsInfo<FastIncrementalMSRFONDItemInfo> *tableItem) {
@@ -724,15 +724,15 @@ public:
 
     void TestTable_Default() {
 
-        this->m_table_fond->Clear();
+        this->m_table->Clear();
 
-        TestTableItemsAllocator(this->m_table_fond);
+        TestTableItemsAllocator(this->m_table);
 
 
     }
 
     void TestTable_AfterClear() {
-        this->m_table_fond->Clear();
+        this->m_table->Clear();
 
         FastIncrementalMSRFONDItemInfo *item = this->m_helper->CreateMSRFondItemInfo("s1", "session1", "e1", 1);
         item->RptSeq = 1;
@@ -743,17 +743,17 @@ public:
         FastIncrementalMSRFONDItemInfo *item3 = this->m_helper->CreateMSRFondItemInfo("s1", "session1", "e1", 4);
         item3->RptSeq = 4;
 
-        this->m_table_fond->ProcessIncremental(item);
-        this->m_table_fond->ProcessIncremental(item2);
-        this->m_table_fond->ProcessIncremental(item3);
+        this->m_table->ProcessIncremental(item);
+        this->m_table->ProcessIncremental(item2);
+        this->m_table->ProcessIncremental(item3);
 
-        if(this->m_table_fond->UsedItemCount() != 1)
+        if(this->m_table->UsedItemCount() != 1)
             throw;
-        StatisticsInfo<FastIncrementalMSRFONDItemInfo> *tableItem = this->m_table_fond->GetItem("s1", "session1");
+        StatisticsInfo<FastIncrementalMSRFONDItemInfo> *tableItem = this->m_table->GetItem("s1", "session1");
         if(tableItem->EntriesQueue()->MaxIndex() != 1) // 3 is empty and 4 has value
             throw;
-        this->m_table_fond->Clear();
-        if(this->m_table_fond->UsedItemCount() != 0)
+        this->m_table->Clear();
+        if(this->m_table->UsedItemCount() != 0)
             throw;
         if(tableItem->RptSeq() != 0)
             throw;
@@ -767,102 +767,102 @@ public:
 
     void TestTable_CorrectBegin() {
 
-        this->m_table_fond->Clear();
+        this->m_table->Clear();
 
         FastIncrementalMSRFONDItemInfo *item1 = this->m_helper->CreateMSRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 1;
 
-        if(!this->m_table_fond->ProcessIncremental(item1))
+        if(!this->m_table->ProcessIncremental(item1))
             throw;
 
 
     }
 
     void TestTable_IncorrectBegin() {
-        this->m_table_fond->Clear();
+        this->m_table->Clear();
 
         FastIncrementalMSRFONDItemInfo *item1 = this->m_helper->CreateMSRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 2;
 
-        if(this->m_table_fond->ProcessIncremental(item1))
+        if(this->m_table->ProcessIncremental(item1))
             throw;
 
 
     }
 
     void TestTable_SkipMessages() {
-        this->m_table_fond->Clear();
+        this->m_table->Clear();
 
         FastIncrementalMSRFONDItemInfo *item1 = this->m_helper->CreateMSRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 1;
 
-        if(!this->m_table_fond->ProcessIncremental(item1))
+        if(!this->m_table->ProcessIncremental(item1))
             throw;
 
         FastIncrementalMSRFONDItemInfo *item2 = this->m_helper->CreateMSRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 3);
         item2->RptSeq = 3;
 
-        if(this->m_table_fond->ProcessIncremental(item2))
+        if(this->m_table->ProcessIncremental(item2))
             throw;
 
 
     }
 
     void Test_2UsedItemsAfter2IncrementalMessages() {
-        this->m_table_fond->Clear();
+        this->m_table->Clear();
 
         FastIncrementalMSRFONDItemInfo *item1 = this->m_helper->CreateMSRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 1;
 
-        if(!this->m_table_fond->ProcessIncremental(item1))
+        if(!this->m_table->ProcessIncremental(item1))
             throw;
 
         FastIncrementalMSRFONDItemInfo *item2 = this->m_helper->CreateMSRFondItemInfo("s2", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item2->RptSeq = 1;
 
-        if(!this->m_table_fond->ProcessIncremental(item2))
+        if(!this->m_table->ProcessIncremental(item2))
             throw;
 
-        if(this->m_table_fond->UsedItemCount() != 2)
+        if(this->m_table->UsedItemCount() != 2)
             throw;
 
 
     }
 
     void TestTable_CorrectApplySnapshot() {
-        this->m_table_fond->Clear();
+        this->m_table->Clear();
 
         FastIncrementalMSRFONDItemInfo *item1 = this->m_helper->CreateMSRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 1;
 
-        this->m_table_fond->ProcessIncremental(item1);
+        this->m_table->ProcessIncremental(item1);
 
         FastIncrementalMSRFONDItemInfo *item2 = this->m_helper->CreateMSRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e2", 3);
         item2->RptSeq = 3;
 
-        if(this->m_table_fond->ProcessIncremental(item2))
+        if(this->m_table->ProcessIncremental(item2))
             throw;
 
         FastIncrementalMSRFONDItemInfo *item3 = this->m_helper->CreateMSRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e3", 4);
         item3->RptSeq = 4;
 
-        if(this->m_table_fond->ProcessIncremental(item3))
+        if(this->m_table->ProcessIncremental(item3))
             throw;
 
         FastIncrementalMSRFONDItemInfo *item4 = this->m_helper->CreateMSRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e4", 5);
         item4->RptSeq = 5;
 
-        if(this->m_table_fond->ProcessIncremental(item4))
+        if(this->m_table->ProcessIncremental(item4))
             throw;
 
         FastIncrementalMSRFONDItemInfo *item5 = this->m_helper->CreateMSRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
@@ -873,21 +873,21 @@ public:
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item5;
 
-        StatisticsInfo<FastIncrementalMSRFONDItemInfo> *tb = this->m_table_fond->GetItem("s1", "session");
+        StatisticsInfo<FastIncrementalMSRFONDItemInfo> *tb = this->m_table->GetItem("s1", "session");
 
-        this->m_table_fond->ObtainSnapshotItem(info);
-        this->m_table_fond->StartProcessSnapshot(info);
-        if(tb != this->m_table_fond->SnapshotItem())
+        this->m_table->ObtainSnapshotItem(info);
+        this->m_table->StartProcessSnapshot(info);
+        if(tb != this->m_table->SnapshotItem())
             throw;
         if(tb->Trades()->Count() != 0)
             throw;
 
-        this->m_table_fond->ProcessSnapshot(info->GroupMDEntries, 1, 3);
+        this->m_table->ProcessSnapshot(info->GroupMDEntries, 1, 3);
         if(tb->Trades()->Count() != 1)
             throw;
         if(tb->RptSeq() != 3)
             throw;
-        if(!this->m_table_fond->EndProcessSnapshot())
+        if(!this->m_table->EndProcessSnapshot())
             throw;
 
         if(tb->RptSeq() != 5)
@@ -902,26 +902,26 @@ public:
 
     void TestTable_CorrectApplySnapshot_2() {
 
-        this->m_table_fond->Clear();
+        this->m_table->Clear();
 
         FastIncrementalMSRFONDItemInfo *item1 = this->m_helper->CreateMSRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 1;
 
-        this->m_table_fond->ProcessIncremental(item1);
+        this->m_table->ProcessIncremental(item1);
 
         FastIncrementalMSRFONDItemInfo *item3 = this->m_helper->CreateMSRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e3", 4);
         item3->RptSeq = 4;
 
-        if(this->m_table_fond->ProcessIncremental(item3))
+        if(this->m_table->ProcessIncremental(item3))
             throw;
 
         FastIncrementalMSRFONDItemInfo *item4 = this->m_helper->CreateMSRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e4", 5);
         item4->RptSeq = 5;
 
-        if(this->m_table_fond->ProcessIncremental(item4))
+        if(this->m_table->ProcessIncremental(item4))
             throw;
 
         FastIncrementalMSRFONDInfo *info1 = this->m_helper->CreateMSSFondInfo("s1", "session");
@@ -936,18 +936,18 @@ public:
         info2->RouteFirst = true;
         info2->GroupMDEntries[0] = this->m_helper->CreateMSRFondItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e2");
 
-        StatisticsInfo<FastIncrementalMSRFONDItemInfo> *tb = this->m_table_fond->GetItem("s1", "session");
+        StatisticsInfo<FastIncrementalMSRFONDItemInfo> *tb = this->m_table->GetItem("s1", "session");
 
-        this->m_table_fond->ObtainSnapshotItem(info1);
-        this->m_table_fond->StartProcessSnapshot(info1);
-        if(tb != this->m_table_fond->SnapshotItem())
+        this->m_table->ObtainSnapshotItem(info1);
+        this->m_table->StartProcessSnapshot(info1);
+        if(tb != this->m_table->SnapshotItem())
             throw;
         if(tb->Trades()->Count() != 0)
             throw;
 
-        this->m_table_fond->ProcessSnapshot(info1);
-        this->m_table_fond->ProcessSnapshot(info2);
-        if(!this->m_table_fond->EndProcessSnapshot())
+        this->m_table->ProcessSnapshot(info1);
+        this->m_table->ProcessSnapshot(info2);
+        if(!this->m_table->EndProcessSnapshot())
             throw;
         if(tb->RptSeq() != 5)
             throw;
@@ -956,33 +956,33 @@ public:
     }
 
     void TestTable_IncorrectApplySnapshot() {
-        this->m_table_fond->Clear();
+        this->m_table->Clear();
 
         FastIncrementalMSRFONDItemInfo *item1 = this->m_helper->CreateMSRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 1;
 
-        this->m_table_fond->ProcessIncremental(item1);
+        this->m_table->ProcessIncremental(item1);
 
         FastIncrementalMSRFONDItemInfo *item2 = this->m_helper->CreateMSRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e2", 4);
         item2->RptSeq = 4;
 
-        if(this->m_table_fond->ProcessIncremental(item2))
+        if(this->m_table->ProcessIncremental(item2))
             throw;
 
         FastIncrementalMSRFONDItemInfo *item3 = this->m_helper->CreateMSRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e3", 5);
         item3->RptSeq = 5;
 
-        if(this->m_table_fond->ProcessIncremental(item3))
+        if(this->m_table->ProcessIncremental(item3))
             throw;
 
         FastIncrementalMSRFONDItemInfo *item4 = this->m_helper->CreateMSRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e4", 6);
         item4->RptSeq = 6;
 
-        if(this->m_table_fond->ProcessIncremental(item4))
+        if(this->m_table->ProcessIncremental(item4))
             throw;
 
         FastIncrementalMSRFONDItemInfo *item5 = this->m_helper->CreateMSRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
@@ -993,21 +993,21 @@ public:
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item5;
 
-        StatisticsInfo<FastIncrementalMSRFONDItemInfo> *tb = this->m_table_fond->GetItem("s1", "session");
+        StatisticsInfo<FastIncrementalMSRFONDItemInfo> *tb = this->m_table->GetItem("s1", "session");
 
-        this->m_table_fond->ObtainSnapshotItem(info);
-        this->m_table_fond->StartProcessSnapshot(info);
-        if(tb != this->m_table_fond->SnapshotItem())
+        this->m_table->ObtainSnapshotItem(info);
+        this->m_table->StartProcessSnapshot(info);
+        if(tb != this->m_table->SnapshotItem())
             throw;
         if(tb->Trades()->Count() != 0)
             throw;
 
-        this->m_table_fond->ProcessSnapshot(info->GroupMDEntries, 1, 2);
+        this->m_table->ProcessSnapshot(info->GroupMDEntries, 1, 2);
         if(tb->Trades()->Count() != 1)
             throw;
         if(tb->RptSeq() != 2)
             throw;
-        if(this->m_table_fond->EndProcessSnapshot())
+        if(this->m_table->EndProcessSnapshot())
             throw;
 
         if(tb->RptSeq() != 2)
@@ -1015,26 +1015,26 @@ public:
     }
 
     void TestTable_IncorrectApplySnapshot_WhenMessageSkipped() {
-        this->m_table_fond->Clear();
+        this->m_table->Clear();
 
         FastIncrementalMSRFONDItemInfo *item1 = this->m_helper->CreateMSRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 1;
 
-        this->m_table_fond->ProcessIncremental(item1);
+        this->m_table->ProcessIncremental(item1);
 
         FastIncrementalMSRFONDItemInfo *item2 = this->m_helper->CreateMSRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e2", 4);
         item2->RptSeq = 4;
 
-        if(this->m_table_fond->ProcessIncremental(item2))
+        if(this->m_table->ProcessIncremental(item2))
             throw;
 
         FastIncrementalMSRFONDItemInfo *item4 = this->m_helper->CreateMSRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e4", 6);
         item4->RptSeq = 6;
 
-        if(this->m_table_fond->ProcessIncremental(item4))
+        if(this->m_table->ProcessIncremental(item4))
             throw;
 
         FastIncrementalMSRFONDItemInfo *item5 = this->m_helper->CreateMSRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
@@ -1045,26 +1045,26 @@ public:
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item5;
 
-        StatisticsInfo<FastIncrementalMSRFONDItemInfo> *tb = this->m_table_fond->GetItem("s1", "session");
+        StatisticsInfo<FastIncrementalMSRFONDItemInfo> *tb = this->m_table->GetItem("s1", "session");
 
-        this->m_table_fond->ObtainSnapshotItem(info);
-        this->m_table_fond->StartProcessSnapshot(info);
-        if(tb != this->m_table_fond->SnapshotItem())
+        this->m_table->ObtainSnapshotItem(info);
+        this->m_table->StartProcessSnapshot(info);
+        if(tb != this->m_table->SnapshotItem())
             throw;
         if(tb->Trades()->Count() != 0)
             throw;
 
-        this->m_table_fond->ProcessSnapshot(info->GroupMDEntries, 1, 3);
+        this->m_table->ProcessSnapshot(info->GroupMDEntries, 1, 3);
         if(tb->Trades()->Count() != 1)
             throw;
         if(tb->RptSeq() != 3)
             throw;
-        if(this->m_table_fond->EndProcessSnapshot())
+        if(this->m_table->EndProcessSnapshot())
             throw;
         if(tb->RptSeq() != 4)
             throw;
-        this->m_table_fond->ObtainSnapshotItem(info);
-        if(this->m_table_fond->EndProcessSnapshot())
+        this->m_table->ObtainSnapshotItem(info);
+        if(this->m_table->EndProcessSnapshot())
             throw;
     }
 

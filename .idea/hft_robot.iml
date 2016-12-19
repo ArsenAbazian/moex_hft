@@ -43,6 +43,7 @@
       <sourceFolder url="file://$MODULE_DIR$/source/include/Test/FeedConnectionTester.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/include/Test/FixProtocolManagerTester.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/include/Test/OrderTester.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/source/include/Test/OrderBookTesterCurr.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/include/Test/TestTemplateInfo.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/include/Test/StatisticsTester.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/include/Lib/StringIdComparer.h" isTestSource="false" />
