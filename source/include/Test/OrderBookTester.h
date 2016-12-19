@@ -274,6 +274,15 @@ public:
 
         this->incFond->OnIncrementalRefresh_OBR_FOND(info);
 
+        if(item1->Allocator->Count() != 1)
+            throw;
+        if(item2->Allocator->Count() != 1)
+            throw;
+        if(item3->Allocator->Count() != 1)
+            throw;
+        if(item4->Allocator->Count() != 1)
+            throw;
+
         item1->MDUpdateAction = mduaDelete;
         item2->MDUpdateAction = mduaDelete;
         item3->MDUpdateAction = mduaDelete;
@@ -4135,6 +4144,19 @@ public:
             throw;
     }
 
+    void TestInfoAndItemInfoUsageAndAllocation_4() {
+        FastOBSFONDItemInfo *info = this->m_helper->CreateOBSFondItemInfo(1, 1, 1, 1, MDEntryType::mdetBuyQuote, "e1");
+        if(info->Allocator->Count() != 1)
+            throw;
+        info->Used = false;
+        info->ReleaseUnused();
+        if(info->Allocator->Count() != 0)
+            throw;
+        info->ReleaseUnused();
+        if(info->Allocator->Count() != 0)
+            throw;
+    }
+
     void TestInfoAndItemInfoUsageAndAllocation() {
         printf("TestInfoAndItemInfoUsageAndAllocation_1\n");
         TestInfoAndItemInfoUsageAndAllocation_1();
@@ -4142,6 +4164,8 @@ public:
         TestInfoAndItemInfoUsageAndAllocation_2();
         printf("TestInfoAndItemInfoUsageAndAllocation_3\n");
         TestInfoAndItemInfoUsageAndAllocation_3();
+        printf("TestInfoAndItemInfoUsageAndAllocation_4\n");
+        TestInfoAndItemInfoUsageAndAllocation_4();
     }
 
     void Test() {

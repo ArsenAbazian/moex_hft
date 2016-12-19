@@ -12,11 +12,13 @@ template <typename T> class LinkedPointer {
     LinkedPointer   *m_next;
     LinkedPointer   *m_prev;
     T               *m_data;
+    bool             m_released;
 public:
     LinkedPointer() {
         this->m_next = 0;
         this->m_data = 0;
         this->m_prev = 0;
+        this->m_released = true;
     }
 
     inline LinkedPointer* Next() { return this->m_next; }
@@ -27,6 +29,8 @@ public:
     inline void Data(T *data) { this->m_data = data; }
     inline PointerList<T>* Owner() { return this->m_owner; }
     inline void Owner(PointerList<T> *owner) { this->m_owner = owner; }
+    inline bool Released() { return this->m_released; }
+    inline void Released(bool released) { this->m_released = released; }
 };
 
 template <typename T> class PointerList {
@@ -47,10 +51,14 @@ public:
         LinkedPointer<T> *node = this->m_poolHead;
         this->m_poolHead = this->m_poolHead->Next();
         this->m_count++;
+        node->Released(false);
         return node;
     }
 
     inline void Push(LinkedPointer<T> *node) {
+        if(node->Released())
+            return;
+        node->Released(true);
         this->m_poolTail->Next(node);
         this->m_poolTail = node;
         this->m_count--;
@@ -208,6 +216,13 @@ public:
             return;
         LinkedPointer<T> *st = this->Start();
         LinkedPointer<T> *end = this->End();
+        LinkedPointer<T> *node = st;
+        while(true) {
+            node->Released(true);
+            if(node == end)
+                break;
+            node = node->Next();
+        }
         this->m_poolTail->Next(st);
         this->m_poolTail = end;
         this->m_tail = this->m_head;

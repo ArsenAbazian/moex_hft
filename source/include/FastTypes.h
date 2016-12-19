@@ -188,23 +188,6 @@ public:
 	}
 	~FastLogonInfo(){ }
 	inline void Clear() {
-		this->PresenceMap = 0;
-		this->MessageType = 0;
-		this->MessageTypeLength = 0;
-		this->BeginString = 0;
-		this->BeginStringLength = 0;
-		this->SenderCompID = 0;
-		this->SenderCompIDLength = 0;
-		this->TargetCompID = 0;
-		this->TargetCompIDLength = 0;
-		this->AllowUsername = false;
-		this->Username = 0;
-		this->UsernameLength = 0;
-		this->AllowPassword = false;
-		this->Password = 0;
-		this->PasswordLength = 0;
-		this->DefaultApplVerID = 0;
-		this->DefaultApplVerIDLength = 0;
 		this->Used = false;
 	}
 	inline void ReleaseUnused() {
@@ -251,18 +234,6 @@ public:
 	}
 	~FastLogoutInfo(){ }
 	inline void Clear() {
-		this->PresenceMap = 0;
-		this->MessageType = 0;
-		this->MessageTypeLength = 0;
-		this->BeginString = 0;
-		this->BeginStringLength = 0;
-		this->SenderCompID = 0;
-		this->SenderCompIDLength = 0;
-		this->TargetCompID = 0;
-		this->TargetCompIDLength = 0;
-		this->AllowText = false;
-		this->Text = 0;
-		this->TextLength = 0;
 		this->Used = false;
 	}
 	inline void ReleaseUnused() {
@@ -474,82 +445,6 @@ public:
 	}
 	~FastGenericItemInfo(){ }
 	inline void Clear() {
-		this->PresenceMap = 0;
-		this->AllowMDEntryType = false;
-		this->MDEntryType = 0;
-		this->MDEntryTypeLength = 0;
-		this->AllowMDEntryID = false;
-		this->MDEntryID = 0;
-		this->MDEntryIDLength = 0;
-		this->AllowMDEntryDate = false;
-		this->AllowMDEntryTime = false;
-		this->AllowOrigTime = false;
-		this->AllowMDEntryPx = false;
-		this->AllowMDEntrySize = false;
-		this->AllowQuoteCondition = false;
-		this->QuoteCondition = 0;
-		this->QuoteConditionLength = 0;
-		this->AllowTradeCondition = false;
-		this->TradeCondition = 0;
-		this->TradeConditionLength = 0;
-		this->AllowOpenCloseSettlFlag = false;
-		this->OpenCloseSettlFlag = 0;
-		this->OpenCloseSettlFlagLength = 0;
-		this->AllowOrdType = false;
-		this->OrdType = 0;
-		this->OrdTypeLength = 0;
-		this->AllowEffectiveTime = false;
-		this->AllowStartTime = false;
-		this->AllowAccruedInterestAmt = false;
-		this->AllowChgFromWAPrice = false;
-		this->AllowChgOpenInterest = false;
-		this->AllowBidMarketSize = false;
-		this->AllowAskMarketSize = false;
-		this->AllowTotalNumOfTrades = false;
-		this->AllowTradeValue = false;
-		this->AllowYield = false;
-		this->AllowTotalVolume = false;
-		this->AllowOfferNbOr = false;
-		this->AllowBidNbOr = false;
-		this->AllowChgFromSettlmnt = false;
-		this->AllowSettlDate = false;
-		this->AllowSettleType = false;
-		this->SettleType = 0;
-		this->SettleTypeLength = 0;
-		this->AllowSumQtyOfBest = false;
-		this->AllowOrderSide = false;
-		this->OrderSide = 0;
-		this->OrderSideLength = 0;
-		this->AllowOrderStatus = false;
-		this->OrderStatus = 0;
-		this->OrderStatusLength = 0;
-		this->AllowMinCurrPx = false;
-		this->AllowMinCurrPxChgTime = false;
-		this->AllowVolumeIndicator = false;
-		this->AllowPrice = false;
-		this->AllowPriceType = false;
-		this->AllowNominalValue = false;
-		this->AllowRepoToPx = false;
-		this->AllowBuyBackPx = false;
-		this->AllowBuyBackDate = false;
-		this->AllowDealNumber = false;
-		this->DealNumber = 0;
-		this->DealNumberLength = 0;
-		this->AllowCXFlag = false;
-		this->CXFlag = 0;
-		this->CXFlagLength = 0;
-		this->AllowTradingSessionSubID = false;
-		this->TradingSessionSubID = 0;
-		this->TradingSessionSubIDLength = 0;
-		this->AllowMDUpdateAction = false;
-		this->AllowRptSeq = false;
-		this->AllowSymbol = false;
-		this->Symbol = 0;
-		this->SymbolLength = 0;
-		this->AllowNetChgPrevDay = false;
-		this->AllowTradingSessionID = false;
-		this->TradingSessionID = 0;
-		this->TradingSessionIDLength = 0;
 		this->Used = false;
 		this->Allocator->FreeItem(this->Pointer);
 	}
@@ -626,27 +521,6 @@ public:
 	}
 	~FastGenericInfo(){ }
 	inline void Clear() {
-		this->PresenceMap = 0;
-		this->MessageType = 0;
-		this->MessageTypeLength = 0;
-		this->BeginString = 0;
-		this->BeginStringLength = 0;
-		this->ApplVerID = 0;
-		this->ApplVerIDLength = 0;
-		this->SenderCompID = 0;
-		this->SenderCompIDLength = 0;
-		this->AllowTradingSessionID = false;
-		this->TradingSessionID = 0;
-		this->TradingSessionIDLength = 0;
-		this->Symbol = 0;
-		this->SymbolLength = 0;
-		this->AllowLastMsgSeqNumProcessed = false;
-		this->AllowLastFragment = false;
-		this->AllowRouteFirst = false;
-		this->AllowTradSesStatus = false;
-		this->AllowMDSecurityTradingStatus = false;
-		this->AllowAuctionIndicator = false;
-		this->AllowNetChgPrevDay = false;
 		this->Used = false;
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->Clear();
@@ -693,15 +567,6 @@ public:
 	}
 	~FastIncrementalGenericInfo(){ }
 	inline void Clear() {
-		this->PresenceMap = 0;
-		this->MessageType = 0;
-		this->MessageTypeLength = 0;
-		this->ApplVerID = 0;
-		this->ApplVerIDLength = 0;
-		this->BeginString = 0;
-		this->BeginStringLength = 0;
-		this->SenderCompID = 0;
-		this->SenderCompIDLength = 0;
 		this->Used = false;
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->Clear();
@@ -806,40 +671,6 @@ public:
 	}
 	~FastOLSFONDItemInfo(){ }
 	inline void Clear() {
-		this->PresenceMap = 0;
-		this->AllowMDEntryType = false;
-		this->MDEntryType = 0;
-		this->MDEntryTypeLength = 0;
-		this->AllowMDEntryID = false;
-		this->MDEntryID = 0;
-		this->MDEntryIDLength = 0;
-		this->AllowMDEntryDate = false;
-		this->AllowMDEntryTime = false;
-		this->AllowOrigTime = false;
-		this->AllowMDEntryPx = false;
-		this->AllowMDEntrySize = false;
-		this->AllowDealNumber = false;
-		this->DealNumber = 0;
-		this->DealNumberLength = 0;
-		this->AllowYield = false;
-		this->AllowOrderStatus = false;
-		this->OrderStatus = 0;
-		this->OrderStatusLength = 0;
-		this->AllowOrdType = false;
-		this->OrdType = 0;
-		this->OrdTypeLength = 0;
-		this->AllowTotalVolume = false;
-		this->AllowTradingSessionSubID = false;
-		this->TradingSessionSubID = 0;
-		this->TradingSessionSubIDLength = 0;
-		this->AllowMDUpdateAction = false;
-		this->AllowSymbol = false;
-		this->Symbol = 0;
-		this->SymbolLength = 0;
-		this->AllowRptSeq = false;
-		this->AllowTradingSessionID = false;
-		this->TradingSessionID = 0;
-		this->TradingSessionIDLength = 0;
 		this->Used = false;
 		this->Allocator->FreeItem(this->Pointer);
 	}
@@ -913,26 +744,6 @@ public:
 	}
 	~FastOLSFONDInfo(){ }
 	inline void Clear() {
-		this->PresenceMap = 0;
-		this->MessageType = 0;
-		this->MessageTypeLength = 0;
-		this->BeginString = 0;
-		this->BeginStringLength = 0;
-		this->ApplVerID = 0;
-		this->ApplVerIDLength = 0;
-		this->SenderCompID = 0;
-		this->SenderCompIDLength = 0;
-		this->AllowLastMsgSeqNumProcessed = false;
-		this->AllowLastFragment = false;
-		this->AllowRouteFirst = false;
-		this->AllowTradSesStatus = false;
-		this->AllowTradingSessionID = false;
-		this->TradingSessionID = 0;
-		this->TradingSessionIDLength = 0;
-		this->Symbol = 0;
-		this->SymbolLength = 0;
-		this->AllowMDSecurityTradingStatus = false;
-		this->AllowAuctionIndicator = false;
 		this->Used = false;
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->Clear();
@@ -1025,35 +836,6 @@ public:
 	}
 	~FastOLSCURRItemInfo(){ }
 	inline void Clear() {
-		this->PresenceMap = 0;
-		this->AllowMDEntryType = false;
-		this->MDEntryType = 0;
-		this->MDEntryTypeLength = 0;
-		this->AllowMDEntryID = false;
-		this->MDEntryID = 0;
-		this->MDEntryIDLength = 0;
-		this->AllowMDEntryDate = false;
-		this->AllowMDEntryTime = false;
-		this->AllowOrigTime = false;
-		this->AllowMDEntryPx = false;
-		this->AllowMDEntrySize = false;
-		this->AllowDealNumber = false;
-		this->DealNumber = 0;
-		this->DealNumberLength = 0;
-		this->AllowOrderStatus = false;
-		this->OrderStatus = 0;
-		this->OrderStatusLength = 0;
-		this->AllowTradingSessionSubID = false;
-		this->TradingSessionSubID = 0;
-		this->TradingSessionSubIDLength = 0;
-		this->AllowMDUpdateAction = false;
-		this->AllowSymbol = false;
-		this->Symbol = 0;
-		this->SymbolLength = 0;
-		this->AllowRptSeq = false;
-		this->AllowTradingSessionID = false;
-		this->TradingSessionID = 0;
-		this->TradingSessionIDLength = 0;
 		this->Used = false;
 		this->Allocator->FreeItem(this->Pointer);
 	}
@@ -1124,25 +906,6 @@ public:
 	}
 	~FastOLSCURRInfo(){ }
 	inline void Clear() {
-		this->PresenceMap = 0;
-		this->MessageType = 0;
-		this->MessageTypeLength = 0;
-		this->BeginString = 0;
-		this->BeginStringLength = 0;
-		this->ApplVerID = 0;
-		this->ApplVerIDLength = 0;
-		this->SenderCompID = 0;
-		this->SenderCompIDLength = 0;
-		this->AllowLastMsgSeqNumProcessed = false;
-		this->AllowLastFragment = false;
-		this->AllowRouteFirst = false;
-		this->AllowTradSesStatus = false;
-		this->AllowTradingSessionID = false;
-		this->TradingSessionID = 0;
-		this->TradingSessionIDLength = 0;
-		this->Symbol = 0;
-		this->SymbolLength = 0;
-		this->AllowMDSecurityTradingStatus = false;
 		this->Used = false;
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->Clear();
@@ -1257,43 +1020,6 @@ public:
 	}
 	~FastTLSFONDItemInfo(){ }
 	inline void Clear() {
-		this->PresenceMap = 0;
-		this->MDEntryType = 0;
-		this->MDEntryTypeLength = 0;
-		this->AllowMDEntryID = false;
-		this->MDEntryID = 0;
-		this->MDEntryIDLength = 0;
-		this->AllowMDEntryDate = false;
-		this->AllowMDEntryTime = false;
-		this->AllowOrigTime = false;
-		this->AllowOrderSide = false;
-		this->OrderSide = 0;
-		this->OrderSideLength = 0;
-		this->AllowMDEntryPx = false;
-		this->AllowMDEntrySize = false;
-		this->AllowAccruedInterestAmt = false;
-		this->AllowTradeValue = false;
-		this->AllowYield = false;
-		this->AllowSettlDate = false;
-		this->AllowSettleType = false;
-		this->SettleType = 0;
-		this->SettleTypeLength = 0;
-		this->AllowPrice = false;
-		this->AllowPriceType = false;
-		this->AllowRepoToPx = false;
-		this->AllowBuyBackPx = false;
-		this->AllowBuyBackDate = false;
-		this->AllowTradingSessionSubID = false;
-		this->TradingSessionSubID = 0;
-		this->TradingSessionSubIDLength = 0;
-		this->AllowMDUpdateAction = false;
-		this->AllowSymbol = false;
-		this->Symbol = 0;
-		this->SymbolLength = 0;
-		this->AllowRptSeq = false;
-		this->AllowTradingSessionID = false;
-		this->TradingSessionID = 0;
-		this->TradingSessionIDLength = 0;
 		this->Used = false;
 		this->Allocator->FreeItem(this->Pointer);
 	}
@@ -1367,26 +1093,6 @@ public:
 	}
 	~FastTLSFONDInfo(){ }
 	inline void Clear() {
-		this->PresenceMap = 0;
-		this->MessageType = 0;
-		this->MessageTypeLength = 0;
-		this->BeginString = 0;
-		this->BeginStringLength = 0;
-		this->ApplVerID = 0;
-		this->ApplVerIDLength = 0;
-		this->SenderCompID = 0;
-		this->SenderCompIDLength = 0;
-		this->AllowLastMsgSeqNumProcessed = false;
-		this->AllowLastFragment = false;
-		this->AllowRouteFirst = false;
-		this->AllowTradSesStatus = false;
-		this->AllowTradingSessionID = false;
-		this->TradingSessionID = 0;
-		this->TradingSessionIDLength = 0;
-		this->Symbol = 0;
-		this->SymbolLength = 0;
-		this->AllowMDSecurityTradingStatus = false;
-		this->AllowAuctionIndicator = false;
 		this->Used = false;
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->Clear();
@@ -1495,41 +1201,6 @@ public:
 	}
 	~FastTLSCURRItemInfo(){ }
 	inline void Clear() {
-		this->PresenceMap = 0;
-		this->MDEntryType = 0;
-		this->MDEntryTypeLength = 0;
-		this->AllowMDEntryID = false;
-		this->MDEntryID = 0;
-		this->MDEntryIDLength = 0;
-		this->AllowMDEntryDate = false;
-		this->AllowMDEntryTime = false;
-		this->AllowOrigTime = false;
-		this->AllowOrderSide = false;
-		this->OrderSide = 0;
-		this->OrderSideLength = 0;
-		this->AllowMDEntryPx = false;
-		this->AllowMDEntrySize = false;
-		this->AllowTradeValue = false;
-		this->AllowSettlDate = false;
-		this->AllowSettleType = false;
-		this->SettleType = 0;
-		this->SettleTypeLength = 0;
-		this->AllowPrice = false;
-		this->AllowPriceType = false;
-		this->AllowRepoToPx = false;
-		this->AllowBuyBackPx = false;
-		this->AllowBuyBackDate = false;
-		this->AllowTradingSessionSubID = false;
-		this->TradingSessionSubID = 0;
-		this->TradingSessionSubIDLength = 0;
-		this->AllowMDUpdateAction = false;
-		this->AllowSymbol = false;
-		this->Symbol = 0;
-		this->SymbolLength = 0;
-		this->AllowRptSeq = false;
-		this->AllowTradingSessionID = false;
-		this->TradingSessionID = 0;
-		this->TradingSessionIDLength = 0;
 		this->Used = false;
 		this->Allocator->FreeItem(this->Pointer);
 	}
@@ -1600,25 +1271,6 @@ public:
 	}
 	~FastTLSCURRInfo(){ }
 	inline void Clear() {
-		this->PresenceMap = 0;
-		this->MessageType = 0;
-		this->MessageTypeLength = 0;
-		this->BeginString = 0;
-		this->BeginStringLength = 0;
-		this->ApplVerID = 0;
-		this->ApplVerIDLength = 0;
-		this->SenderCompID = 0;
-		this->SenderCompIDLength = 0;
-		this->AllowLastMsgSeqNumProcessed = false;
-		this->AllowLastFragment = false;
-		this->AllowRouteFirst = false;
-		this->AllowTradSesStatus = false;
-		this->AllowTradingSessionID = false;
-		this->TradingSessionID = 0;
-		this->TradingSessionIDLength = 0;
-		this->Symbol = 0;
-		this->SymbolLength = 0;
-		this->AllowMDSecurityTradingStatus = false;
 		this->Used = false;
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->Clear();
@@ -1702,31 +1354,6 @@ public:
 	}
 	~FastOBSFONDItemInfo(){ }
 	inline void Clear() {
-		this->PresenceMap = 0;
-		this->AllowMDEntryType = false;
-		this->MDEntryType = 0;
-		this->MDEntryTypeLength = 0;
-		this->AllowMDEntryID = false;
-		this->MDEntryID = 0;
-		this->MDEntryIDLength = 0;
-		this->AllowMDEntryPx = false;
-		this->AllowMDEntrySize = false;
-		this->AllowMDEntryTime = false;
-		this->AllowOrigTime = false;
-		this->AllowYield = false;
-		this->AllowEffectiveTime = false;
-		this->AllowNominalValue = false;
-		this->AllowTradingSessionSubID = false;
-		this->TradingSessionSubID = 0;
-		this->TradingSessionSubIDLength = 0;
-		this->AllowMDUpdateAction = false;
-		this->AllowSymbol = false;
-		this->Symbol = 0;
-		this->SymbolLength = 0;
-		this->AllowRptSeq = false;
-		this->AllowTradingSessionID = false;
-		this->TradingSessionID = 0;
-		this->TradingSessionIDLength = 0;
 		this->Used = false;
 		this->Allocator->FreeItem(this->Pointer);
 	}
@@ -1800,26 +1427,6 @@ public:
 	}
 	~FastOBSFONDInfo(){ }
 	inline void Clear() {
-		this->PresenceMap = 0;
-		this->MessageType = 0;
-		this->MessageTypeLength = 0;
-		this->BeginString = 0;
-		this->BeginStringLength = 0;
-		this->ApplVerID = 0;
-		this->ApplVerIDLength = 0;
-		this->SenderCompID = 0;
-		this->SenderCompIDLength = 0;
-		this->AllowLastMsgSeqNumProcessed = false;
-		this->AllowTradSesStatus = false;
-		this->AllowTradingSessionID = false;
-		this->TradingSessionID = 0;
-		this->TradingSessionIDLength = 0;
-		this->Symbol = 0;
-		this->SymbolLength = 0;
-		this->AllowLastFragment = false;
-		this->AllowRouteFirst = false;
-		this->AllowMDSecurityTradingStatus = false;
-		this->AllowAuctionIndicator = false;
 		this->Used = false;
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->Clear();
@@ -1894,28 +1501,6 @@ public:
 	}
 	~FastOBSCURRItemInfo(){ }
 	inline void Clear() {
-		this->PresenceMap = 0;
-		this->AllowMDEntryType = false;
-		this->MDEntryType = 0;
-		this->MDEntryTypeLength = 0;
-		this->AllowMDEntryID = false;
-		this->MDEntryID = 0;
-		this->MDEntryIDLength = 0;
-		this->AllowMDEntryPx = false;
-		this->AllowMDEntrySize = false;
-		this->AllowMDEntryTime = false;
-		this->AllowOrigTime = false;
-		this->AllowTradingSessionSubID = false;
-		this->TradingSessionSubID = 0;
-		this->TradingSessionSubIDLength = 0;
-		this->AllowMDUpdateAction = false;
-		this->AllowSymbol = false;
-		this->Symbol = 0;
-		this->SymbolLength = 0;
-		this->AllowRptSeq = false;
-		this->AllowTradingSessionID = false;
-		this->TradingSessionID = 0;
-		this->TradingSessionIDLength = 0;
 		this->Used = false;
 		this->Allocator->FreeItem(this->Pointer);
 	}
@@ -1986,25 +1571,6 @@ public:
 	}
 	~FastOBSCURRInfo(){ }
 	inline void Clear() {
-		this->PresenceMap = 0;
-		this->MessageType = 0;
-		this->MessageTypeLength = 0;
-		this->BeginString = 0;
-		this->BeginStringLength = 0;
-		this->ApplVerID = 0;
-		this->ApplVerIDLength = 0;
-		this->SenderCompID = 0;
-		this->SenderCompIDLength = 0;
-		this->AllowLastMsgSeqNumProcessed = false;
-		this->AllowTradSesStatus = false;
-		this->AllowTradingSessionID = false;
-		this->TradingSessionID = 0;
-		this->TradingSessionIDLength = 0;
-		this->Symbol = 0;
-		this->SymbolLength = 0;
-		this->AllowLastFragment = false;
-		this->AllowRouteFirst = false;
-		this->AllowMDSecurityTradingStatus = false;
 		this->Used = false;
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->Clear();
@@ -2163,60 +1729,6 @@ public:
 	}
 	~FastIncrementalMSRFONDItemInfo(){ }
 	inline void Clear() {
-		this->PresenceMap = 0;
-		this->AllowMDUpdateAction = false;
-		this->AllowMDEntryType = false;
-		this->MDEntryType = 0;
-		this->MDEntryTypeLength = 0;
-		this->AllowMDEntryID = false;
-		this->MDEntryID = 0;
-		this->MDEntryIDLength = 0;
-		this->AllowSymbol = false;
-		this->Symbol = 0;
-		this->SymbolLength = 0;
-		this->AllowRptSeq = false;
-		this->AllowMDEntryPx = false;
-		this->AllowMDEntrySize = false;
-		this->AllowMDEntryDate = false;
-		this->AllowMDEntryTime = false;
-		this->AllowStartTime = false;
-		this->AllowQuoteCondition = false;
-		this->QuoteCondition = 0;
-		this->QuoteConditionLength = 0;
-		this->AllowTradeCondition = false;
-		this->TradeCondition = 0;
-		this->TradeConditionLength = 0;
-		this->AllowOpenCloseSettlFlag = false;
-		this->OpenCloseSettlFlag = 0;
-		this->OpenCloseSettlFlagLength = 0;
-		this->AllowNetChgPrevDay = false;
-		this->AllowAccruedInterestAmt = false;
-		this->AllowChgFromWAPrice = false;
-		this->AllowChgOpenInterest = false;
-		this->AllowBidMarketSize = false;
-		this->AllowAskMarketSize = false;
-		this->AllowTotalNumOfTrades = false;
-		this->AllowTradeValue = false;
-		this->AllowYield = false;
-		this->AllowOfferNbOr = false;
-		this->AllowBidNbOr = false;
-		this->AllowChgFromSettlmnt = false;
-		this->AllowMinCurrPx = false;
-		this->AllowMinCurrPxChgTime = false;
-		this->AllowVolumeIndicator = false;
-		this->AllowSettlDate = false;
-		this->AllowSettleType = false;
-		this->SettleType = 0;
-		this->SettleTypeLength = 0;
-		this->AllowCXFlag = false;
-		this->CXFlag = 0;
-		this->CXFlagLength = 0;
-		this->AllowTradingSessionID = false;
-		this->TradingSessionID = 0;
-		this->TradingSessionIDLength = 0;
-		this->AllowTradingSessionSubID = false;
-		this->TradingSessionSubID = 0;
-		this->TradingSessionSubIDLength = 0;
 		this->Used = false;
 		this->Allocator->FreeItem(this->Pointer);
 	}
@@ -2261,15 +1773,6 @@ public:
 	}
 	~FastIncrementalMSRFONDInfo(){ }
 	inline void Clear() {
-		this->PresenceMap = 0;
-		this->MessageType = 0;
-		this->MessageTypeLength = 0;
-		this->ApplVerID = 0;
-		this->ApplVerIDLength = 0;
-		this->BeginString = 0;
-		this->BeginStringLength = 0;
-		this->SenderCompID = 0;
-		this->SenderCompIDLength = 0;
 		this->Used = false;
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->Clear();
@@ -2404,52 +1907,6 @@ public:
 	}
 	~FastIncrementalMSRCURRItemInfo(){ }
 	inline void Clear() {
-		this->PresenceMap = 0;
-		this->AllowMDUpdateAction = false;
-		this->AllowMDEntryType = false;
-		this->MDEntryType = 0;
-		this->MDEntryTypeLength = 0;
-		this->AllowMDEntryID = false;
-		this->MDEntryID = 0;
-		this->MDEntryIDLength = 0;
-		this->AllowSymbol = false;
-		this->Symbol = 0;
-		this->SymbolLength = 0;
-		this->AllowRptSeq = false;
-		this->AllowMDEntryPx = false;
-		this->AllowMDEntrySize = false;
-		this->AllowMDEntryDate = false;
-		this->AllowMDEntryTime = false;
-		this->AllowQuoteCondition = false;
-		this->QuoteCondition = 0;
-		this->QuoteConditionLength = 0;
-		this->AllowTradeCondition = false;
-		this->TradeCondition = 0;
-		this->TradeConditionLength = 0;
-		this->AllowOpenCloseSettlFlag = false;
-		this->OpenCloseSettlFlag = 0;
-		this->OpenCloseSettlFlagLength = 0;
-		this->AllowNetChgPrevDay = false;
-		this->AllowChgFromWAPrice = false;
-		this->AllowChgOpenInterest = false;
-		this->AllowTotalNumOfTrades = false;
-		this->AllowTradeValue = false;
-		this->AllowOfferNbOr = false;
-		this->AllowBidNbOr = false;
-		this->AllowChgFromSettlmnt = false;
-		this->AllowSettlDate = false;
-		this->AllowSettleType = false;
-		this->SettleType = 0;
-		this->SettleTypeLength = 0;
-		this->AllowCXFlag = false;
-		this->CXFlag = 0;
-		this->CXFlagLength = 0;
-		this->AllowTradingSessionID = false;
-		this->TradingSessionID = 0;
-		this->TradingSessionIDLength = 0;
-		this->AllowTradingSessionSubID = false;
-		this->TradingSessionSubID = 0;
-		this->TradingSessionSubIDLength = 0;
 		this->Used = false;
 		this->Allocator->FreeItem(this->Pointer);
 	}
@@ -2494,15 +1951,6 @@ public:
 	}
 	~FastIncrementalMSRCURRInfo(){ }
 	inline void Clear() {
-		this->PresenceMap = 0;
-		this->MessageType = 0;
-		this->MessageTypeLength = 0;
-		this->ApplVerID = 0;
-		this->ApplVerIDLength = 0;
-		this->BeginString = 0;
-		this->BeginStringLength = 0;
-		this->SenderCompID = 0;
-		this->SenderCompIDLength = 0;
 		this->Used = false;
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->Clear();
@@ -2549,15 +1997,6 @@ public:
 	}
 	~FastIncrementalOLRFONDInfo(){ }
 	inline void Clear() {
-		this->PresenceMap = 0;
-		this->MessageType = 0;
-		this->MessageTypeLength = 0;
-		this->ApplVerID = 0;
-		this->ApplVerIDLength = 0;
-		this->BeginString = 0;
-		this->BeginStringLength = 0;
-		this->SenderCompID = 0;
-		this->SenderCompIDLength = 0;
 		this->Used = false;
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->Clear();
@@ -2604,15 +2043,6 @@ public:
 	}
 	~FastIncrementalOLRCURRInfo(){ }
 	inline void Clear() {
-		this->PresenceMap = 0;
-		this->MessageType = 0;
-		this->MessageTypeLength = 0;
-		this->ApplVerID = 0;
-		this->ApplVerIDLength = 0;
-		this->BeginString = 0;
-		this->BeginStringLength = 0;
-		this->SenderCompID = 0;
-		this->SenderCompIDLength = 0;
 		this->Used = false;
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->Clear();
@@ -2659,15 +2089,6 @@ public:
 	}
 	~FastIncrementalOBRFONDInfo(){ }
 	inline void Clear() {
-		this->PresenceMap = 0;
-		this->MessageType = 0;
-		this->MessageTypeLength = 0;
-		this->ApplVerID = 0;
-		this->ApplVerIDLength = 0;
-		this->BeginString = 0;
-		this->BeginStringLength = 0;
-		this->SenderCompID = 0;
-		this->SenderCompIDLength = 0;
 		this->Used = false;
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->Clear();
@@ -2714,15 +2135,6 @@ public:
 	}
 	~FastIncrementalOBRCURRInfo(){ }
 	inline void Clear() {
-		this->PresenceMap = 0;
-		this->MessageType = 0;
-		this->MessageTypeLength = 0;
-		this->ApplVerID = 0;
-		this->ApplVerIDLength = 0;
-		this->BeginString = 0;
-		this->BeginStringLength = 0;
-		this->SenderCompID = 0;
-		this->SenderCompIDLength = 0;
 		this->Used = false;
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->Clear();
@@ -2769,15 +2181,6 @@ public:
 	}
 	~FastIncrementalTLRFONDInfo(){ }
 	inline void Clear() {
-		this->PresenceMap = 0;
-		this->MessageType = 0;
-		this->MessageTypeLength = 0;
-		this->ApplVerID = 0;
-		this->ApplVerIDLength = 0;
-		this->BeginString = 0;
-		this->BeginStringLength = 0;
-		this->SenderCompID = 0;
-		this->SenderCompIDLength = 0;
 		this->Used = false;
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->Clear();
@@ -2824,15 +2227,6 @@ public:
 	}
 	~FastIncrementalTLRCURRInfo(){ }
 	inline void Clear() {
-		this->PresenceMap = 0;
-		this->MessageType = 0;
-		this->MessageTypeLength = 0;
-		this->ApplVerID = 0;
-		this->ApplVerIDLength = 0;
-		this->BeginString = 0;
-		this->BeginStringLength = 0;
-		this->SenderCompID = 0;
-		this->SenderCompIDLength = 0;
 		this->Used = false;
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->Clear();
@@ -2864,8 +2258,6 @@ public:
 	}
 	~FastSecurityDefinitionGroupInstrAttribItemInfo(){ }
 	inline void Clear() {
-		this->PresenceMap = 0;
-		this->AllowInstrAttribValue = false;
 		this->Used = false;
 		this->Allocator->FreeItem(this->Pointer);
 	}
@@ -2906,14 +2298,6 @@ public:
 	}
 	~FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo(){ }
 	inline void Clear() {
-		this->PresenceMap = 0;
-		this->TradingSessionID = 0;
-		this->TradingSessionIDLength = 0;
-		this->AllowTradingSessionSubID = false;
-		this->TradingSessionSubID = 0;
-		this->TradingSessionSubIDLength = 0;
-		this->AllowSecurityTradingStatus = false;
-		this->AllowOrderNote = false;
 		this->Used = false;
 		this->Allocator->FreeItem(this->Pointer);
 	}
@@ -2945,9 +2329,6 @@ public:
 	}
 	~FastSecurityDefinitionMarketSegmentGrpItemInfo(){ }
 	inline void Clear() {
-		this->PresenceMap = 0;
-		this->AllowRoundLot = false;
-		this->AllowTradingSessionRulesGrp = false;
 		this->Used = false;
 		this->Allocator->FreeItem(this->Pointer);
 		for(int i = 0; i < this->TradingSessionRulesGrpCount; i++)
@@ -3144,67 +2525,6 @@ public:
 	}
 	~FastSecurityDefinitionInfo(){ }
 	inline void Clear() {
-		this->PresenceMap = 0;
-		this->MessageType = 0;
-		this->MessageTypeLength = 0;
-		this->ApplVerID = 0;
-		this->ApplVerIDLength = 0;
-		this->BeginString = 0;
-		this->BeginStringLength = 0;
-		this->SenderCompID = 0;
-		this->SenderCompIDLength = 0;
-		this->MessageEncoding = 0;
-		this->MessageEncodingLength = 0;
-		this->AllowTotNumReports = false;
-		this->AllowSymbol = false;
-		this->Symbol = 0;
-		this->SymbolLength = 0;
-		this->AllowSecurityID = false;
-		this->AllowSecurityIDSource = false;
-		this->AllowProduct = false;
-		this->AllowCFICode = false;
-		this->AllowSecurityType = false;
-		this->AllowMaturityDate = false;
-		this->AllowSettlDate = false;
-		this->AllowSettleType = false;
-		this->SettleType = 0;
-		this->SettleTypeLength = 0;
-		this->AllowOrigIssueAmt = false;
-		this->AllowCouponPaymentDate = false;
-		this->AllowCouponRate = false;
-		this->AllowSettlFixingDate = false;
-		this->AllowDividendNetPx = false;
-		this->AllowSecurityDesc = false;
-		this->AllowEncodedSecurityDesc = false;
-		this->AllowQuoteText = false;
-		this->AllowGroupInstrAttrib = false;
-		this->AllowCurrency = false;
-		this->Currency = 0;
-		this->CurrencyLength = 0;
-		this->AllowMarketSegmentGrp = false;
-		this->AllowSettlCurrency = false;
-		this->SettlCurrency = 0;
-		this->SettlCurrencyLength = 0;
-		this->AllowPriceType = false;
-		this->AllowStateSecurityID = false;
-		this->StateSecurityID = 0;
-		this->StateSecurityIDLength = 0;
-		this->AllowEncodedShortSecurityDesc = false;
-		this->AllowMarketCode = false;
-		this->AllowMinPriceIncrement = false;
-		this->AllowMktShareLimit = false;
-		this->AllowMktShareThreshold = false;
-		this->AllowMaxOrdersVolume = false;
-		this->AllowPriceMvmLimit = false;
-		this->AllowFaceValue = false;
-		this->AllowBaseSwapPx = false;
-		this->AllowRepoToPx = false;
-		this->AllowBuyBackPx = false;
-		this->AllowBuyBackDate = false;
-		this->AllowNoSharesIssued = false;
-		this->AllowHighLimit = false;
-		this->AllowLowLimit = false;
-		this->AllowNumOfDaysToMaturity = false;
 		this->Used = false;
 		for(int i = 0; i < this->GroupInstrAttribCount; i++)
 			this->GroupInstrAttrib[i]->Clear();
@@ -3275,25 +2595,6 @@ public:
 	}
 	~FastSecurityStatusInfo(){ }
 	inline void Clear() {
-		this->PresenceMap = 0;
-		this->MessageType = 0;
-		this->MessageTypeLength = 0;
-		this->ApplVerID = 0;
-		this->ApplVerIDLength = 0;
-		this->BeginString = 0;
-		this->BeginStringLength = 0;
-		this->SenderCompID = 0;
-		this->SenderCompIDLength = 0;
-		this->Symbol = 0;
-		this->SymbolLength = 0;
-		this->AllowTradingSessionID = false;
-		this->TradingSessionID = 0;
-		this->TradingSessionIDLength = 0;
-		this->AllowTradingSessionSubID = false;
-		this->TradingSessionSubID = 0;
-		this->TradingSessionSubIDLength = 0;
-		this->AllowSecurityTradingStatus = false;
-		this->AllowAuctionIndicator = false;
 		this->Used = false;
 	}
 	inline void ReleaseUnused() {
@@ -3345,20 +2646,6 @@ public:
 	}
 	~FastTradingSessionStatusInfo(){ }
 	inline void Clear() {
-		this->PresenceMap = 0;
-		this->MessageType = 0;
-		this->MessageTypeLength = 0;
-		this->ApplVerID = 0;
-		this->ApplVerIDLength = 0;
-		this->BeginString = 0;
-		this->BeginStringLength = 0;
-		this->SenderCompID = 0;
-		this->SenderCompIDLength = 0;
-		this->AllowText = false;
-		this->Text = 0;
-		this->TextLength = 0;
-		this->TradingSessionID = 0;
-		this->TradingSessionIDLength = 0;
 		this->Used = false;
 	}
 	inline void ReleaseUnused() {
@@ -3395,13 +2682,6 @@ public:
 	}
 	~FastHeartbeatInfo(){ }
 	inline void Clear() {
-		this->PresenceMap = 0;
-		this->MessageType = 0;
-		this->MessageTypeLength = 0;
-		this->BeginString = 0;
-		this->BeginStringLength = 0;
-		this->SenderCompID = 0;
-		this->SenderCompIDLength = 0;
 		this->Used = false;
 	}
 	inline void ReleaseUnused() {

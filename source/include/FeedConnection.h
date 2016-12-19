@@ -783,6 +783,7 @@ private:
 		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 			res |= this->OnIncrementalRefresh_OBR_FOND(info->GroupMDEntries[i]);
 		}
+        info->ReleaseUnused();
 		return res;
 	}
 
@@ -791,6 +792,7 @@ private:
         for(int i = 0; i < info->GroupMDEntriesCount; i++) {
             res |= this->OnIncrementalRefresh_OBR_CURR(info->GroupMDEntries[i]);
         }
+        info->ReleaseUnused();
         return res;
     }
 
@@ -799,6 +801,7 @@ private:
         for(int i = 0; i < info->GroupMDEntriesCount; i++) {
             res |= this->OnIncrementalRefresh_OLR_FOND(info->GroupMDEntries[i]);
         }
+        info->ReleaseUnused();
         return res;
     }
 
@@ -807,6 +810,7 @@ private:
         for(int i = 0; i < info->GroupMDEntriesCount; i++) {
             res |= this->OnIncrementalRefresh_OLR_CURR(info->GroupMDEntries[i]);
         }
+        info->ReleaseUnused();
         return res;
     }
 
@@ -815,6 +819,7 @@ private:
         for(int i = 0; i < info->GroupMDEntriesCount; i++) {
             res |= this->OnIncrementalRefresh_TLR_FOND(info->GroupMDEntries[i]);
         }
+        info->ReleaseUnused();
         return res;
     }
 
@@ -823,6 +828,7 @@ private:
         for(int i = 0; i < info->GroupMDEntriesCount; i++) {
             res |= this->OnIncrementalRefresh_TLR_CURR(info->GroupMDEntries[i]);
         }
+        info->ReleaseUnused();
         return res;
     }
 
@@ -831,6 +837,7 @@ private:
         for(int i = 0; i < info->GroupMDEntriesCount; i++) {
             res |= this->OnIncrementalRefresh_MSR_FOND(info->GroupMDEntries[i]);
         }
+        info->ReleaseUnused();
         return res;
     }
 
@@ -839,17 +846,18 @@ private:
         for(int i = 0; i < info->GroupMDEntriesCount; i++) {
             res |= this->OnIncrementalRefresh_MSR_CURR(info->GroupMDEntries[i]);
         }
+        info->ReleaseUnused();
         return res;
     }
 
-    inline bool OnHearthBeatMessage() {
+    inline bool OnHearthBeatMessage(FastHeartbeatInfo *info) {
         throw; // there is no need to apply message just check
     }
 
     inline bool ApplyIncrementalCore() {
 		switch(this->m_fastProtocolManager->TemplateId()) {
 			case FeedConnectionMessage::fcmHeartBeat:
-                return this->OnHearthBeatMessage();
+                return this->OnHearthBeatMessage((FastHeartbeatInfo*)this->m_fastProtocolManager->LastDecodeInfo());
 			case FeedConnectionMessage::fmcIncrementalRefresh_OBR_FOND:
 				return this->OnIncrementalRefresh_OBR_FOND((FastIncrementalOBRFONDInfo*)this->m_fastProtocolManager->LastDecodeInfo());
 			case FeedConnectionMessage::fmcIncrementalRefresh_OBR_CURR:
@@ -877,7 +885,6 @@ private:
 		if(this->m_fastProtocolManager->Decode() == 0)
 			return true;
 		this->ApplyIncrementalCore();
-
 		return true;
 	}
 

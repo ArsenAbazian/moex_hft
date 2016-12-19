@@ -1048,7 +1048,7 @@ namespace prebuild {
 		private void WriteClearCode(StructureInfo info) {
 			WriteLine("\tinline void Clear() {");
 
-			WriteClearFieldsCode(info);
+			//WriteClearFieldsCode(info);
 
 			WriteLine("\t\tthis->Used = false;");
 			if(info.IsSequence)
