@@ -154,7 +154,7 @@ class TestMessagesHelper {
                 entryIndex++;
             }
             else if(StringIdComparer::Equal("change", keys[entryIndex + 1])) {
-                item->m_action = MDUpdateAction::mduaDelete;
+                item->m_action = MDUpdateAction::mduaChange;
                 entryIndex++;
             }
             item->m_symbol = keys[entryIndex + 1];

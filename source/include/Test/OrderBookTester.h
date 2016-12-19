@@ -4157,6 +4157,30 @@ public:
             throw;
     }
 
+    void TestInfoAndItemInfoUsageAndAllocation_5() {
+        this->Clear();
+
+        this->incFond->OrderBookFond()->Add("s1", "session1");
+        int prevCount = this->incFond->m_fastProtocolManager->m_oBSFONDItems->Count();
+        this->SendMessages(this->incFond, this->snapFond,
+                           "obr entry s1 e1, obr entry s1 e2, obr entry change s1 e1",
+                           "",
+                           30);
+
+        int newCount = this->incFond->m_fastProtocolManager->m_oBSFONDItems->Count();
+        if(newCount != prevCount + 2)
+            throw;
+        this->incFond->OrderBookFond()->Clear();
+        newCount = this->incFond->m_fastProtocolManager->m_oBSFONDItems->Count();
+        if(newCount != prevCount)
+            throw;
+    }
+
+    void TestInfoAndItemInfoUsageAndAllocation_6() {
+        // snapshot feed
+        throw;
+    }
+
     void TestInfoAndItemInfoUsageAndAllocation() {
         printf("TestInfoAndItemInfoUsageAndAllocation_1\n");
         TestInfoAndItemInfoUsageAndAllocation_1();
@@ -4166,6 +4190,10 @@ public:
         TestInfoAndItemInfoUsageAndAllocation_3();
         printf("TestInfoAndItemInfoUsageAndAllocation_4\n");
         TestInfoAndItemInfoUsageAndAllocation_4();
+        printf("TestInfoAndItemInfoUsageAndAllocation_5\n");
+        TestInfoAndItemInfoUsageAndAllocation_5();
+        printf("TestInfoAndItemInfoUsageAndAllocation_6\n");
+        TestInfoAndItemInfoUsageAndAllocation_6();
     }
 
     void Test() {
