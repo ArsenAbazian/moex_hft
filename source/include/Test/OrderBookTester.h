@@ -4091,7 +4091,7 @@ public:
         }
     }
 
-    void TestInfoAndItemInfoUsageAndAllocation_1() {
+    void TestInfoAndItemInfoUsageAndAllocation_Inc_1() {
         this->Clear();
 
         this->incFond->OrderBookFond()->Add("s1", "session1");
@@ -4106,7 +4106,7 @@ public:
             throw;
     }
 
-    void TestInfoAndItemInfoUsageAndAllocation_2() {
+    void TestInfoAndItemInfoUsageAndAllocation_Inc_2() {
         this->Clear();
 
         this->incFond->OrderBookFond()->Add("s1", "session1");
@@ -4125,7 +4125,7 @@ public:
             throw;
     }
 
-    void TestInfoAndItemInfoUsageAndAllocation_3() {
+    void TestInfoAndItemInfoUsageAndAllocation_Inc_3() {
         this->Clear();
 
         this->incFond->OrderBookFond()->Add("s1", "session1");
@@ -4144,7 +4144,7 @@ public:
             throw;
     }
 
-    void TestInfoAndItemInfoUsageAndAllocation_4() {
+    void TestInfoAndItemInfoUsageAndAllocation_Inc_4() {
         FastOBSFONDItemInfo *info = this->m_helper->CreateOBSFondItemInfo(1, 1, 1, 1, MDEntryType::mdetBuyQuote, "e1");
         if(info->Allocator->Count() != 1)
             throw;
@@ -4157,7 +4157,7 @@ public:
             throw;
     }
 
-    void TestInfoAndItemInfoUsageAndAllocation_5() {
+    void TestInfoAndItemInfoUsageAndAllocation_Inc_5() {
         this->Clear();
 
         this->incFond->OrderBookFond()->Add("s1", "session1");
@@ -4176,24 +4176,57 @@ public:
             throw;
     }
 
-    void TestInfoAndItemInfoUsageAndAllocation_6() {
-        // snapshot feed
-        throw;
+    void TestInfoAndItemInfoUsageAndAllocation_Snap_1() {
+        this->Clear();
+
+        this->incFond->OrderBookFond()->Add("s1", "session1");
+        int prevCount = this->snapFond->m_fastProtocolManager->m_oBSFONDItems->Count();
+        this->SendMessages(this->incFond, this->snapFond,
+                           "obr entry s1 e1, lost obr entry s1 e2, wait_snap, hbeat",
+                           "                                                  obs begin s1 entry s1 e2 rpt 2 end",
+                           30);
+
+        int newCount = this->snapFond->m_fastProtocolManager->m_oBSFONDItems->Count();
+        if(newCount != prevCount + 1)
+            throw;
+    }
+
+    void TestInfoAndItemInfoUsageAndAllocation_Snap_2() {
+        this->Clear();
+
+        this->incFond->OrderBookFond()->Add("s1", "session1");
+        int prevCount = this->snapFond->m_fastProtocolManager->m_oBSFONDItems->Count();
+        this->SendMessages(this->incFond, this->snapFond,
+                           "obr entry s1 e1, lost obr entry s1 e2 entry s1 e3, wait_snap, hbeat",
+                           "                                                   obs begin s1 entry s1 e2 rpt 2, obs s1 entry s1 e3 end",
+                           30);
+
+        int newCount = this->snapFond->m_fastProtocolManager->m_oBSFONDItems->Count();
+        if(newCount != prevCount + 2)
+            throw;
+    }
+
+    void TestInfoAndItemInfoUsageAndAllocation_Snap_3() {
+
     }
 
     void TestInfoAndItemInfoUsageAndAllocation() {
-        printf("TestInfoAndItemInfoUsageAndAllocation_1\n");
-        TestInfoAndItemInfoUsageAndAllocation_1();
-        printf("TestInfoAndItemInfoUsageAndAllocation_2\n");
-        TestInfoAndItemInfoUsageAndAllocation_2();
-        printf("TestInfoAndItemInfoUsageAndAllocation_3\n");
-        TestInfoAndItemInfoUsageAndAllocation_3();
-        printf("TestInfoAndItemInfoUsageAndAllocation_4\n");
-        TestInfoAndItemInfoUsageAndAllocation_4();
-        printf("TestInfoAndItemInfoUsageAndAllocation_5\n");
-        TestInfoAndItemInfoUsageAndAllocation_5();
-        printf("TestInfoAndItemInfoUsageAndAllocation_6\n");
-        TestInfoAndItemInfoUsageAndAllocation_6();
+        printf("TestInfoAndItemInfoUsageAndAllocation_Inc_1\n");
+        TestInfoAndItemInfoUsageAndAllocation_Inc_1();
+        printf("TestInfoAndItemInfoUsageAndAllocation_Inc_2\n");
+        TestInfoAndItemInfoUsageAndAllocation_Inc_2();
+        printf("TestInfoAndItemInfoUsageAndAllocation_Inc_3\n");
+        TestInfoAndItemInfoUsageAndAllocation_Inc_3();
+        printf("TestInfoAndItemInfoUsageAndAllocation_Inc_4\n");
+        TestInfoAndItemInfoUsageAndAllocation_Inc_4();
+        printf("TestInfoAndItemInfoUsageAndAllocation_Inc_5\n");
+        TestInfoAndItemInfoUsageAndAllocation_Inc_5();
+        printf("TestInfoAndItemInfoUsageAndAllocation_Snap_1\n");
+        TestInfoAndItemInfoUsageAndAllocation_Snap_1();
+        printf("TestInfoAndItemInfoUsageAndAllocation_Snap_2\n");
+        TestInfoAndItemInfoUsageAndAllocation_Snap_2();
+        printf("TestInfoAndItemInfoUsageAndAllocation_Snap_3\n");
+        TestInfoAndItemInfoUsageAndAllocation_Snap_3();
     }
 
     void Test() {
