@@ -512,7 +512,7 @@ private:
             return this->m_orderTableCurr->SymbolsToRecvSnapshotCount();
         if(this->m_tradeTableFond != 0)
             return this->m_tradeTableFond->SymbolsToRecvSnapshotCount();
-        if(this->m_orderTableCurr != 0)
+        if(this->m_tradeTableCurr != 0)
             return this->m_tradeTableCurr->SymbolsToRecvSnapshotCount();
         if(this->m_statTableFond != 0)
             return this->m_statTableFond->SymbolsToRecvSnapshotCount();

@@ -773,9 +773,14 @@ public:
             throw;
     }
 
-    void SendMessages(FeedConnection *fci, FeedConnection *fcs, const char *inc, const char *snap, int delay) {
+    void SendMessages(FeedConnection *fci, FeedConnection *fcs, const char *inc, const char *snap, int delay, bool testSnapshotPackets) {
         this->m_helper->SendMessages(fci, fcs, inc, snap, delay);
-        this->TestSnapshotPacketsCleared();
+        if(testSnapshotPackets)
+            this->TestSnapshotPacketsCleared();
+    }
+
+    void SendMessages(FeedConnection *fci, FeedConnection *fcs, const char *inc, const char *snap, int delay) {
+        SendMessages(fci, fcs, inc, snap, delay, true);
     }
 
     void SendMessages(FeedConnection *c, TestTemplateInfo **items, int count) {
@@ -2716,7 +2721,7 @@ public:
         this->SendMessages(this->incCurr, this->snapCurr,
                            "tlr entry s1 e1, lost tlr entry s1 e2 entry s1 e3, wait_snap, hbeat",
                            "                                                              tls begin s1 entry s1 e2 rpt 2",
-                           30);
+                           30, false);
         if(this->incCurr->TradeCurr()->SymbolsToRecvSnapshotCount() != 1)
             throw;
         if(!this->incCurr->HasPotentiallyLostPackets())
@@ -2735,14 +2740,14 @@ public:
         this->SendMessages(this->incCurr, this->snapCurr,
                            "tlr entry s1 e1, lost tlr entry s1 e2 entry s1 e3, wait_snap, hbeat,                        hbeat",
                            "                                                              tls begin s1 entry s1 e2 rpt 2",
-                           30);
+                           30, false);
         if(this->incCurr->TradeCurr()->SymbolsToRecvSnapshotCount() != 1)
             throw;
         if(!this->incCurr->HasPotentiallyLostPackets())
             throw;
         if(this->incCurr->TradeCurr()->SymbolsToRecvSnapshotCount() != 1)
             throw;
-        if(this->snapCurr->State() != FeedConnectionState::fcsListenSnapshot)
+        if(this->snapCurr->State() == FeedConnectionState::fcsSuspend)
             throw;
     }
 

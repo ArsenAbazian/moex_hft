@@ -212,10 +212,10 @@ public:
         RobotSettings::MarketDataMaxSessionsCount = 5;
         RobotSettings::MarketDataMaxEntriesCount = 32;
 
-        TradeTesterFond ttFond;
-        ttFond.Test();
         TradeTesterCurr ttCurr;
         ttCurr.Test();
+        TradeTesterFond ttFond;
+        ttFond.Test();
 
         OrderBookTesterFond obtFond;
         obtFond.Test();
