@@ -2670,19 +2670,108 @@ public:
             throw;
     }
 
-    void TestInfoAndItemInfoUsageAndAllocationCurr_Snap_2() {
+    void TestInfoAndItemInfoUsageAndAllocationCurr_Snap_2_1() {
+        this->Clear();
+
+        this->incCurr->TradeCurr()->Add("s1", "session1");
+        int prevCount = this->snapCurr->m_fastProtocolManager->m_tLSCURRItems->Count();
+        this->SendMessages(this->incCurr, this->snapCurr,
+                           "tlr entry s1 e1, lost tlr entry s1 e2 entry s1 e3, wait_snap",
+                           "                                                            ",
+                           30);
+        if(this->incCurr->TradeCurr()->SymbolsToRecvSnapshotCount() != 1)
+            throw;
+        if(!this->incCurr->HasPotentiallyLostPackets())
+            throw;
+        if(this->incCurr->TradeCurr()->SymbolsToRecvSnapshotCount() != 1)
+            throw;
+        if(this->snapCurr->State() != FeedConnectionState::fcsListenSnapshot)
+            throw;
+    }
+
+    void TestInfoAndItemInfoUsageAndAllocationCurr_Snap_2_2() {
         this->Clear();
 
         this->incCurr->TradeCurr()->Add("s1", "session1");
         int prevCount = this->snapCurr->m_fastProtocolManager->m_tLSCURRItems->Count();
         this->SendMessages(this->incCurr, this->snapCurr,
                            "tlr entry s1 e1, lost tlr entry s1 e2 entry s1 e3, wait_snap, hbeat",
-                           "                                                   tls begin s1 entry s1 e2 rpt 2, tls s1 entry s1 e3 end",
+                           "                                                                   ",
+                           30);
+        if(this->incCurr->TradeCurr()->SymbolsToRecvSnapshotCount() != 1)
+            throw;
+        if(!this->incCurr->HasPotentiallyLostPackets())
+            throw;
+        if(this->incCurr->TradeCurr()->SymbolsToRecvSnapshotCount() != 1)
+            throw;
+        if(this->snapCurr->State() != FeedConnectionState::fcsListenSnapshot)
+            throw;
+    }
+
+    void TestInfoAndItemInfoUsageAndAllocationCurr_Snap_2_3() {
+        this->Clear();
+
+        this->incCurr->TradeCurr()->Add("s1", "session1");
+        int prevCount = this->snapCurr->m_fastProtocolManager->m_tLSCURRItems->Count();
+        this->SendMessages(this->incCurr, this->snapCurr,
+                           "tlr entry s1 e1, lost tlr entry s1 e2 entry s1 e3, wait_snap, hbeat",
+                           "                                                              tls begin s1 entry s1 e2 rpt 2",
+                           30);
+        if(this->incCurr->TradeCurr()->SymbolsToRecvSnapshotCount() != 1)
+            throw;
+        if(!this->incCurr->HasPotentiallyLostPackets())
+            throw;
+        if(this->incCurr->TradeCurr()->SymbolsToRecvSnapshotCount() != 1)
+            throw;
+        if(this->snapCurr->State() != FeedConnectionState::fcsListenSnapshot)
+            throw;
+    }
+
+    void TestInfoAndItemInfoUsageAndAllocationCurr_Snap_2_4() {
+        this->Clear();
+
+        this->incCurr->TradeCurr()->Add("s1", "session1");
+        int prevCount = this->snapCurr->m_fastProtocolManager->m_tLSCURRItems->Count();
+        this->SendMessages(this->incCurr, this->snapCurr,
+                           "tlr entry s1 e1, lost tlr entry s1 e2 entry s1 e3, wait_snap, hbeat,                        hbeat",
+                           "                                                              tls begin s1 entry s1 e2 rpt 2",
+                           30);
+        if(this->incCurr->TradeCurr()->SymbolsToRecvSnapshotCount() != 1)
+            throw;
+        if(!this->incCurr->HasPotentiallyLostPackets())
+            throw;
+        if(this->incCurr->TradeCurr()->SymbolsToRecvSnapshotCount() != 1)
+            throw;
+        if(this->snapCurr->State() != FeedConnectionState::fcsListenSnapshot)
+            throw;
+    }
+
+    void TestInfoAndItemInfoUsageAndAllocationCurr_Snap_2_5() {
+        this->Clear();
+
+        this->incCurr->TradeCurr()->Add("s1", "session1");
+        int prevCount = this->snapCurr->m_fastProtocolManager->m_tLSCURRItems->Count();
+        this->SendMessages(this->incCurr, this->snapCurr,
+                           "tlr entry s1 e1, lost tlr entry s1 e2 entry s1 e3, wait_snap, hbeat,                          hbeat",
+                           "                                                              tls begin s1 entry s1 e2 rpt 2, tls s1 entry s1 e3 end",
                            30);
 
         int newCount = this->snapCurr->m_fastProtocolManager->m_tLSCURRItems->Count();
         if(newCount != prevCount + 2)
             throw;
+    }
+
+    void TestInfoAndItemInfoUsageAndAllocationCurr_Snap_2() {
+        printf("TLR CURR TestInfoAndItemInfoUsageAndAllocationCurr_Snap_2_1\n");
+        TestInfoAndItemInfoUsageAndAllocationCurr_Snap_2_1();
+        printf("TLR CURR TestInfoAndItemInfoUsageAndAllocationCurr_Snap_2_2\n");
+        TestInfoAndItemInfoUsageAndAllocationCurr_Snap_2_2();
+        printf("TLR CURR TestInfoAndItemInfoUsageAndAllocationCurr_Snap_2_3\n");
+        TestInfoAndItemInfoUsageAndAllocationCurr_Snap_2_3();
+        printf("TLR CURR TestInfoAndItemInfoUsageAndAllocationCurr_Snap_2_4\n");
+        TestInfoAndItemInfoUsageAndAllocationCurr_Snap_2_4();
+        printf("TLR CURR TestInfoAndItemInfoUsageAndAllocationCurr_Snap_2_5\n");
+        TestInfoAndItemInfoUsageAndAllocationCurr_Snap_2_5();
     }
 
     void TestInfoAndItemInfoUsageAndAllocationCurr_Snap_3() {

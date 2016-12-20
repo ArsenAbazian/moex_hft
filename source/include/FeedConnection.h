@@ -488,8 +488,8 @@ private:
             this->m_tradeTableFond->EnterSnapshotMode();
             return;
         }
-        if(this->m_orderTableCurr != 0) {
-            this->m_orderTableCurr->EnterSnapshotMode();
+        if(this->m_tradeTableCurr != 0) {
+            this->m_tradeTableCurr->EnterSnapshotMode();
             return;
         }
         if(this->m_statTableFond != 0) {

@@ -1314,18 +1314,27 @@ public:
 
         Stopwatch w;
         w.Start(1);
+        bool snapshotStarterd = false;
         while(inc_index < incMsgCount || snap_index < snapMsgCount) {
             if(inc_index < incMsgCount && !inc_msg[inc_index]->m_lost) {
                 inc_msg[inc_index]->m_msgSeqNo = inc_index + 1;
                 SendMessage(fci, inc_msg[inc_index]);
             }
             fci->Listen_Atom_Incremental_Core();
+            if(snapshotStarterd && fcs->State() == FeedConnectionState::fcsSuspend && snap_index < snapMsgCount && !snap_msg[snap_index]->m_skip)
+                throw;
             if(inc_index < incMsgCount && inc_msg[inc_index]->m_wait) {
                 if(!fci->m_waitTimer->Active())
                     throw;
+                if(fcs->State() != FeedConnectionState::fcsSuspend)
+                    throw;
                 while(!fci->m_waitTimer->IsElapsedMilliseconds(fci->WaitIncrementalMaxTimeMs()) && fcs->State() == FeedConnectionState::fcsSuspend)
                     fci->Listen_Atom_Incremental_Core();
-                fci->Listen_Atom_Incremental_Core();
+                if(fcs->State() == FeedConnectionState::fcsSuspend)
+                    fci->Listen_Atom_Incremental_Core();
+                if(fcs->State() != FeedConnectionState::fcsListenSnapshot)
+                    throw;
+                snapshotStarterd = true;
             }
             if(inc_index < incMsgCount)
                 inc_index++;

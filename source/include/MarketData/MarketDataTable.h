@@ -53,6 +53,9 @@ public:
         this->m_snapshotSymbol = this->m_snapshotItem->SymbolInfo();
         this->AddUsed(this->m_snapshotItem);
     }
+    inline void DecSymbolsToRecvSnapshotCount() {
+        this->m_symbolsToRecvSnapshot--;
+    }
     inline bool ProcessIncremental(ITEMINFO *info) {
         TABLEITEM<ITEMINFO> *tableItem = GetItem(info->Symbol, info->SymbolLength, info->TradingSessionID, info->TradingSessionIDLength);
         this->AddUsed(tableItem);
@@ -71,7 +74,7 @@ public:
                 bool allItemsRecvSnapshot = smb->AllSessionsRecvSnapshot();
                 tableItem->DecSessionsToRecvSnapshotCount();
                 if (!allItemsRecvSnapshot && smb->AllSessionsRecvSnapshot())
-                    this->m_symbolsToRecvSnapshot--;
+                    this->DecSymbolsToRecvSnapshotCount();
             }
         }
 
@@ -92,7 +95,7 @@ public:
         bool allItemsRecvSnapshot = smb->AllSessionsRecvSnapshot();
         this->m_snapshotItem->ProcessActualSnapshotState();
         if (!allItemsRecvSnapshot && smb->AllSessionsRecvSnapshot())
-            this->m_symbolsToRecvSnapshot--;
+            this->DecSymbolsToRecvSnapshotCount();
         this->m_snapshotItem = 0;
         return true;
     }
@@ -108,7 +111,7 @@ public:
             if(this->m_snapshotItemHasEntriesQueue && !this->m_snapshotEntries->HasEntries())
                 this->m_queueItemsCount--;
             if(!allItemsRecvSnapshot && this->m_snapshotSymbol->AllSessionsRecvSnapshot())
-                this->m_symbolsToRecvSnapshot--;
+                this->DecSymbolsToRecvSnapshotCount();
             this->m_snapshotItem = 0;
             return true;
         }
@@ -124,7 +127,7 @@ public:
         if(this->m_snapshotItemHasEntriesQueue && !this->m_snapshotEntries->HasEntries())
             this->m_queueItemsCount--;
         if(!allItemsRecvSnapshot && this->m_snapshotSymbol->AllSessionsRecvSnapshot())
-            this->m_symbolsToRecvSnapshot--;
+            this->DecSymbolsToRecvSnapshotCount();
         this->m_snapshotItem = 0;
         return res;
     }

@@ -2082,8 +2082,8 @@ public:
         if(incFond->TradeFond()->UsedItemCount() != 3)
             throw;
         SendMessages(incFond, snapFond,
-                     "tlr entry s1 e1, lost tlr entry symbol3 e1, wait_snap, tlr entry s1 e3,                         tlr entry s2 e1,                         tlr entry s2 e2",
-                     "                                                            tls symbol3 begin rpt 1 end entry symbol3 e1, tls s1 begin rpt 2 end entry s1 e1, tls s2 begin rpt 2 end entry s2 e1 skip_if_suspend",
+                     "tlr entry s1 e1, lost tlr entry symbol3 e1, wait_snap, tlr entry s1 e3,                              tlr entry s2 e1,                    tlr entry s2 e2",
+                     "                                                       tls symbol3 begin rpt 1 end entry symbol3 e1, tls s1 begin rpt 2 end entry s1 e1, tls s2 begin rpt 2 end entry s2 e1 skip_if_suspend",
                      30);
         if(incFond->HasQueueEntries())
             throw;
@@ -2329,6 +2329,8 @@ public:
         incFond->TradeFond()->Add("s1", "session1");
         incFond->Start();
 
+        if(!incFond->m_waitTimer->Active())
+            throw;
         SendMessages(incFond, snapFond,
                      "tlr entry s1 e1, lost tlr entry s1 e2, tlr entry s1 e2, wait_snap, hbeat",
                      "                                       hbeat,           hbeat,     tls s1 begin rpt 0 lastmsg 0 entry s1 e1 end",
