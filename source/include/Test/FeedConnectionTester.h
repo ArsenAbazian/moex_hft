@@ -12,7 +12,8 @@
 #include "OrderTesterCurr.h"
 #include "TradeTesterFond.h"
 #include "TradeTesterCurr.h"
-#include "StatisticsTester.h"
+#include "StatisticsTesterFond.h"
+#include "StatisticsTesterCurr.h"
 
 class TestFeedMessage{
 public:
@@ -212,10 +213,13 @@ public:
         RobotSettings::MarketDataMaxSessionsCount = 5;
         RobotSettings::MarketDataMaxEntriesCount = 32;
 
-        TradeTesterCurr ttCurr;
-        ttCurr.Test();
+        StatisticsTesterFond stFond;
+        stFond.Test();
+
         TradeTesterFond ttFond;
         ttFond.Test();
+        TradeTesterCurr ttCurr;
+        ttCurr.Test();
 
         OrderBookTesterFond obtFond;
         obtFond.Test();

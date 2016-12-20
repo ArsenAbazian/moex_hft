@@ -455,7 +455,34 @@ namespace prebuild {
 			}
 
 			public StructureInfo Parent { get; set; }
-			public StructureInfo SimilarStruct { get; set; }
+			List<StructureInfo> incStruct;
+			public List<StructureInfo> IncrementalStructures { 
+				get { 
+					if(incStruct == null)
+						incStruct = new List<StructureInfo>();
+					return incStruct;
+				}
+			}
+			public bool HasIncrementalStruct(XmlNode node) {
+				if(IncrementalStructures.Count == 0)
+					return false;
+				XmlNode parentNode = node.ParentNode;
+				if(parentNode == null || parentNode.Attributes["name"] == null)
+					return false;
+				//Console.WriteLine("Seeking inc " + parentNode.Attributes["name"].Value);
+				foreach(StructureInfo info in IncrementalStructures) {
+					XmlNode pn = info.Node.ParentNode;
+					//if(pn == null)
+					//	Console.WriteLine("pn == null");
+					//Console.WriteLine("Check " + pn.Attributes["name"].Value);
+					if(pn == parentNode) {
+						//Console.WriteLine("found.");
+						return true;
+					}
+				}
+				//Console.WriteLine("not found");
+				return false;
+			}
 			public string InStructFieldName { get; set; }
 			string inCodeValueName = "info";
 			public string InCodeValueName { 
@@ -631,44 +658,48 @@ namespace prebuild {
 		}
 
 		Dictionary<string, string> similarTemplates;
-		protected Dictionary<string, string> SimilarTemplates { 
+		protected Dictionary<string, string> TemplatesMap { 
 			get { 
 				if(similarTemplates == null) {
 					similarTemplates = new Dictionary<string, string>();
-					similarTemplates.Add("W-Generic", "X-Generic");
+					similarTemplates.Add("X-Generic", "W-Generic");
 
-					similarTemplates.Add("W-OLS-FOND", "X-OLR-FOND");
-					similarTemplates.Add("W-TLS-FOND", "X-TLR-FOND");
-					similarTemplates.Add("W-OBS-FOND", "X-OBR-FOND");
+					similarTemplates.Add("X-OLR-FOND", "W-OLS-FOND");
+					similarTemplates.Add("X-TLR-FOND", "W-TLS-FOND");
+					similarTemplates.Add("X-OBR-FOND", "W-OBS-FOND");
+					similarTemplates.Add("X-MSR-FOND", "W-Generic");
 
-					similarTemplates.Add("W-OLS-CURR", "X-OLR-CURR");
-					similarTemplates.Add("W-TLS-CURR", "X-TLR-CURR");
-					similarTemplates.Add("W-OBS-CURR", "X-OBR-CURR");
+					similarTemplates.Add("X-OLR-CURR", "W-OLS-CURR");
+					similarTemplates.Add("X-TLR-CURR", "W-TLS-CURR");
+					similarTemplates.Add("X-OBR-CURR", "W-OBS-CURR");
+					similarTemplates.Add("X-MSR-CURR", "W-Generic");
 				}
 				return similarTemplates;
 			}
 		}
 
-		StructureInfo FindSimilarStructure(List<StructureInfo> str, StructureInfo info){
-			XmlNode parentNode = info.Node.ParentNode;
-			if(parentNode.Name != "template")
+		StructureInfo FindIncrementalStructForTemplate(List<StructureInfo> str, StructureInfo snap){
+			XmlNode snapeParentNode = snap.Node.ParentNode;
+			if(snapeParentNode.Name != "template")
 				return null;
-			string infoParentName = parentNode.Attributes["name"].Value;
+			string snapParentName = snapeParentNode.Attributes["name"].Value;
 
 			//Console.WriteLine("Seek similar for " + infoParentName);
-			foreach(StructureInfo info2 in str) { 
-				XmlNode parentNode2 = info2.Node.ParentNode;
-				if(parentNode2.Name != "template")
+			foreach(StructureInfo incInfo in str) { 
+				XmlNode incParentNode = incInfo.Node.ParentNode;
+				if(incParentNode.Name != "template")
 					continue;
-				string infoParentName2 = parentNode2.Attributes["name"].Value;
+				string incParentName = incParentNode.Attributes["name"].Value;
 				//Console.WriteLine("checking " + infoParentName2);
 
 				string nameToCheck = string.Empty;
-				if(!SimilarTemplates.TryGetValue(infoParentName, out nameToCheck))
+				if(!TemplatesMap.TryGetValue(incParentName, out nameToCheck))
 					continue;
-				if(nameToCheck == infoParentName2) {
-					return info2;
-				}
+				if(nameToCheck != snapParentName)
+					continue;
+				if(snap.HasIncrementalStruct(incInfo.Node))
+					continue;
+				return incInfo;
 			}
 			
 			return null;
@@ -682,31 +713,47 @@ namespace prebuild {
 					res.Add(info);
 					continue;
 				}
-				StructureInfo info2 = FindSimilarStructure(str, info);
-				if(info2 == null) {
-					res.Add(info);
-					continue;
-				}
-				//Console.WriteLine("Found Similar Structures " + info.Name + " = " + info2.Name);
-				strToRemove.Add(info2);
-				info.SimilarStruct = info2;
-				foreach(XmlNode node2 in info2.Fields) {
-					bool foundField = false;
-					foreach(XmlNode node in info.Fields) {
-						if(Name(node) == Name(node2)) {
-							foundField = true;
-							break;
-						}
+
+				while(true) {
+					StructureInfo info2 = FindIncrementalStructForTemplate(str, info);
+					if(info2 == null) {
+						res.Add(info);
+						break;
 					}
-					if(!foundField)
-						info.Fields.Add(node2);
+					//Console.WriteLine("Found Incrementsal Structure for " + info.Name + " -> " + info2.Name);
+					strToRemove.Add(info2);
+					if(info.IncrementalStructures.Contains(info2)) {
+						throw new Exception("Structure found twice");
+					}
+					info.IncrementalStructures.Add(info2);
+				
+					foreach(XmlNode node2 in info2.Fields) {
+						bool foundField = false;
+						foreach(XmlNode node in info.Fields) {
+							if(Name(node) == Name(node2)) {
+								foundField = true;
+								break;
+							}
+						}
+						if(!foundField)
+							info.Fields.Add(node2);
+					}
 				}
-				res.Add(info);
 			}
 			foreach(StructureInfo info in strToRemove) {
 				res.Remove(info);
 			}
-
+			//Console.WriteLine("Count after merge = " + res.Count);
+			//foreach(StructureInfo info in res) {
+				//Console.WriteLine("Incremental str count for " + info.Name + " = " + info.IncrementalStructures.Count);
+				//if(info.IncrementalStructures.Count == 0)
+				//	continue;
+				//Console.WriteLine("Found inc for " + info.Name);
+				//foreach(StructureInfo inc in info.IncrementalStructures) {
+				//	Console.WriteLine(inc.Name);
+				//}
+				//Console.WriteLine("---");
+			//}
 			return res;
 		}
 
@@ -1155,8 +1202,11 @@ namespace prebuild {
 		}
 
 		StructureInfo GetOriginalStruct(XmlNode field) {
+			if(field.ParentNode == null || field.ParentNode.Attributes["name"] == null)
+				return null;
+			//Console.WriteLine("Get original struct for " + field.ParentNode.Attributes["name"].Value);
 			foreach(StructureInfo info in Structures) {
-				if(info.SimilarStruct != null && info.SimilarStruct.Node == field)
+				if(info.HasIncrementalStruct(field))
 					return info;
 			}
 			return null;
@@ -1624,6 +1674,9 @@ namespace prebuild {
 			StructureInfo info = GetOriginalStruct(value);
 			if(info == null)
 				info = GetStruct(value);
+			if(info == null) {
+				Console.WriteLine("Error: no struct found for " + value.ParentNode.Attributes["name"].Value);
+			}
 			string itemInfo = GetIemInfoPrefix(value) + "ItemInfo";
 			WriteLine("");
 			if(ShouldWriteNullCheckCode(value)) {

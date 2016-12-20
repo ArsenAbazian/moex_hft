@@ -918,7 +918,7 @@ void FastProtocolManager::PrintIncrementalMSRFOND(FastIncrementalMSRFONDInfo *in
 	PrintUInt64("SendingTime", info->SendingTime, 1);
 	PrintInt32("GroupMDEntriesCount", info->GroupMDEntriesCount, 1);
 
-	FastIncrementalMSRFONDItemInfo* gmdeItemInfo = NULL;
+	FastGenericItemInfo* gmdeItemInfo = NULL;
 
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 		gmdeItemInfo = info->GroupMDEntries[i];
@@ -1002,7 +1002,7 @@ void FastProtocolManager::PrintIncrementalMSRCURR(FastIncrementalMSRCURRInfo *in
 	PrintUInt64("SendingTime", info->SendingTime, 1);
 	PrintInt32("GroupMDEntriesCount", info->GroupMDEntriesCount, 1);
 
-	FastIncrementalMSRCURRItemInfo* gmdeItemInfo = NULL;
+	FastGenericItemInfo* gmdeItemInfo = NULL;
 
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 		gmdeItemInfo = info->GroupMDEntries[i];
@@ -2149,7 +2149,7 @@ void FastProtocolManager::PrintXmlIncrementalMSRFOND(FastIncrementalMSRFONDInfo 
 	PrintXmlUInt64("SendingTime", info->SendingTime);
 	PrintXmlInt32("GroupMDEntriesCount", info->GroupMDEntriesCount);
 
-	FastIncrementalMSRFONDItemInfo* gmdeItemInfo = NULL;
+	FastGenericItemInfo* gmdeItemInfo = NULL;
 
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 		gmdeItemInfo = info->GroupMDEntries[i];
@@ -2233,7 +2233,7 @@ void FastProtocolManager::PrintXmlIncrementalMSRCURR(FastIncrementalMSRCURRInfo 
 	PrintXmlUInt64("SendingTime", info->SendingTime);
 	PrintXmlInt32("GroupMDEntriesCount", info->GroupMDEntriesCount);
 
-	FastIncrementalMSRCURRItemInfo* gmdeItemInfo = NULL;
+	FastGenericItemInfo* gmdeItemInfo = NULL;
 
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 		gmdeItemInfo = info->GroupMDEntries[i];
@@ -3789,7 +3789,7 @@ void FastProtocolManager::EncodeIncrementalMSRFONDInfo(FastIncrementalMSRFONDInf
 	WriteUInt32_Mandatory(info->MsgSeqNum);
 	WriteUInt64_Mandatory(info->SendingTime);
 	WriteUInt32_Mandatory(info->GroupMDEntriesCount);
-	FastIncrementalMSRFONDItemInfo **gmdeItemInfo = info->GroupMDEntries;
+	FastGenericItemInfo **gmdeItemInfo = info->GroupMDEntries;
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 	WriteUInt32_Mandatory(0); // Presence Map hack
 
@@ -3938,7 +3938,7 @@ void FastProtocolManager::EncodeIncrementalMSRCURRInfo(FastIncrementalMSRCURRInf
 	WriteUInt32_Mandatory(info->MsgSeqNum);
 	WriteUInt64_Mandatory(info->SendingTime);
 	WriteUInt32_Mandatory(info->GroupMDEntriesCount);
-	FastIncrementalMSRCURRItemInfo **gmdeItemInfo = info->GroupMDEntries;
+	FastGenericItemInfo **gmdeItemInfo = info->GroupMDEntries;
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 	WriteUInt32_Mandatory(0); // Presence Map hack
 

@@ -625,9 +625,9 @@ public:
         return CreateTLSCurrItemInfo(symbol, trading, 1, 1, 1, 1, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote,
                                      entryId, rptSec);
     }
-    
-    FastIncrementalMSRFONDInfo* CreateMSSFondInfo(const char *symbol, const char *trading) {
-        FastIncrementalMSRFONDInfo *info = new FastIncrementalMSRFONDInfo();
+
+    FastGenericInfo* CreateMSSFondInfo(const char *symbol, const char *trading) {
+        FastGenericInfo *info = new FastGenericInfo();
 
         char *smb = new char[strlen(symbol) + 1];
         strcpy(smb, symbol);
@@ -635,19 +635,19 @@ public:
         char *trd = new char[strlen(trading) + 1];
         strcpy(trd, trading);
 
-        /*info->Symbol = smb;
+        info->Symbol = smb;
         info->SymbolLength = strlen(smb);
 
         info->TradingSessionID = trd;
-        info->TradingSessionIDLength = strlen(trd);*/
+        info->TradingSessionIDLength = strlen(trd);
 
         return info;
     }
 
-    FastIncrementalMSRFONDItemInfo* CreateMSRFondItemInfo(INT64 priceMantissa, INT32 priceExponenta, INT64 sizeMantissa, INT64 sizeExponenta, MDEntryType entryType, const char *entryId) {
+    FastGenericItemInfo* CreateGenericItemInfo(INT64 priceMantissa, INT32 priceExponenta, INT64 sizeMantissa, INT64 sizeExponenta, MDEntryType entryType, const char *entryId) {
 
-        AutoAllocatePointerList<FastIncrementalMSRFONDItemInfo> *list = new AutoAllocatePointerList<FastIncrementalMSRFONDItemInfo>(1, 1);
-        FastIncrementalMSRFONDItemInfo *info = list->NewItem();
+        AutoAllocatePointerList<FastGenericItemInfo> *list = new AutoAllocatePointerList<FastGenericItemInfo>(1, 1);
+        FastGenericItemInfo *info = list->NewItem();
 
         char *id = new char[strlen(entryId) + 1];
         strcpy(id, entryId);
@@ -665,8 +665,8 @@ public:
         return info;
     }
 
-    FastIncrementalMSRFONDItemInfo* CreateMSRFondItemInfo(const char *symbol, const char *trading, INT64 priceMantissa, INT32 priceExponenta, INT64 sizeMantissa, INT64 sizeExponenta, MDUpdateAction updateAction, MDEntryType entryType, const char *entryId, int rptSeq) {
-        FastIncrementalMSRFONDItemInfo *info = CreateMSRFondItemInfo(priceMantissa, priceExponenta, sizeMantissa, sizeExponenta, entryType, entryId);
+    FastGenericItemInfo* CreateGenericItemInfo(const char *symbol, const char *trading, INT64 priceMantissa, INT32 priceExponenta, INT64 sizeMantissa, INT64 sizeExponenta, MDUpdateAction updateAction, MDEntryType entryType, const char *entryId, int rptSeq) {
+        FastGenericItemInfo *info = CreateGenericItemInfo(priceMantissa, priceExponenta, sizeMantissa, sizeExponenta, entryType, entryId);
 
         char *smb = new char[strlen(symbol) + 1];
         strcpy(smb, symbol);
@@ -686,58 +686,18 @@ public:
         return info;
     }
 
-    FastIncrementalMSRFONDItemInfo* CreateMSRFondItemInfo(const char *symbol, const char *trading, const char *entryId) {
-        return CreateMSRFondItemInfo(symbol, trading, 1, 1, 1, 1, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote,
+    FastGenericItemInfo* CreateGenericItemInfo(const char *symbol, const char *trading, const char *entryId) {
+        return CreateGenericItemInfo(symbol, trading, 1, 1, 1, 1, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote,
                                      entryId, 1);
     }
 
-    FastIncrementalMSRFONDItemInfo* CreateMSRFondItemInfo(const char *symbol, const char *trading, const char *entryId, int rptSec) {
-        return CreateMSRFondItemInfo(symbol, trading, 1, 1, 1, 1, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote,
+    FastGenericItemInfo* CreateGenericItemInfo(const char *symbol, const char *trading, const char *entryId, int rptSec) {
+        return CreateGenericItemInfo(symbol, trading, 1, 1, 1, 1, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote,
                                      entryId, rptSec);
     }
 
-    FastIncrementalMSRCURRInfo* CreateMSSCurrInfo(const char *symbol, const char *trading) {
-        FastIncrementalMSRCURRInfo *info = new FastIncrementalMSRCURRInfo();
-
-        char *smb = new char[strlen(symbol) + 1];
-        strcpy(smb, symbol);
-
-        char *trd = new char[strlen(trading) + 1];
-        strcpy(trd, trading);
-
-        /*info->Symbol = smb;
-        info->SymbolLength = strlen(smb);
-
-        info->TradingSessionID = trd;
-        info->TradingSessionIDLength = strlen(trd);*/
-
-        return info;
-    }
-
-    FastIncrementalMSRCURRItemInfo* CreateMSRCurrItemInfo(INT64 priceMantissa, INT32 priceExponenta, INT64 sizeMantissa, INT64 sizeExponenta, MDEntryType entryType, const char *entryId, int rptSeq) {
-
-        AutoAllocatePointerList<FastIncrementalMSRCURRItemInfo> *list = new AutoAllocatePointerList<FastIncrementalMSRCURRItemInfo>(1, 1);
-        FastIncrementalMSRCURRItemInfo *info = list->NewItem();
-
-        char *id = new char[strlen(entryId) + 1];
-        strcpy(id, entryId);
-
-        char *type = new char[1];
-        type[0] = (char) entryType;
-
-        info->MDEntryID = id;
-        info->MDEntryIDLength = strlen(id);
-        info->MDEntryType = type;
-        info->MDEntryTypeLength = 1;
-        info->MDEntryPx.Set(priceMantissa, priceExponenta);
-        info->MDEntrySize.Set(sizeMantissa, sizeExponenta);
-        info->RptSeq = rptSeq;
-
-        return info;
-    }
-
-    FastIncrementalMSRCURRItemInfo* CreateMSRCurrItemInfo(const char *symbol, const char *trading, INT64 priceMantissa, INT32 priceExponenta, INT64 sizeMantissa, INT64 sizeExponenta, MDUpdateAction updateAction, MDEntryType entryType, const char *entryId, int rptSeq) {
-        FastIncrementalMSRCURRItemInfo *info = CreateMSRCurrItemInfo(priceMantissa, priceExponenta, sizeMantissa, sizeExponenta, entryType, entryId, rptSeq);
+    FastGenericInfo* CreateMSSCurrInfo(const char *symbol, const char *trading) {
+        FastGenericInfo *info = new FastGenericInfo();
 
         char *smb = new char[strlen(symbol) + 1];
         strcpy(smb, symbol);
@@ -751,7 +711,26 @@ public:
         info->TradingSessionID = trd;
         info->TradingSessionIDLength = strlen(trd);
 
-        info->MDUpdateAction = updateAction;
+        return info;
+    }
+
+    FastGenericItemInfo* CreateGenericItemInfo(INT64 priceMantissa, INT32 priceExponenta, INT64 sizeMantissa, INT64 sizeExponenta, MDEntryType entryType, const char *entryId, int rptSeq) {
+
+        AutoAllocatePointerList<FastGenericItemInfo> *list = new AutoAllocatePointerList<FastGenericItemInfo>(1, 1);
+        FastGenericItemInfo *info = list->NewItem();
+
+        char *id = new char[strlen(entryId) + 1];
+        strcpy(id, entryId);
+
+        char *type = new char[1];
+        type[0] = (char) entryType;
+
+        info->MDEntryID = id;
+        info->MDEntryIDLength = strlen(id);
+        info->MDEntryType = type;
+        info->MDEntryTypeLength = 1;
+        info->MDEntryPx.Set(priceMantissa, priceExponenta);
+        info->MDEntrySize.Set(sizeMantissa, sizeExponenta);
         info->RptSeq = rptSeq;
 
         return info;

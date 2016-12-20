@@ -12,6 +12,8 @@ class OrderTesterFond;
 class OrderTesterCurr;
 class TradeTesterFond;
 class TradeTesterCurr;
+class StatisticsTesterFond;
+class StatisticsTesterCurr;
 
 #pragma region Decode_Method_Pointer_Definition_GeneratedCode
 typedef void* (FastProtocolManager::*FastDecodeMethodPointer)();
@@ -31,6 +33,8 @@ class FastProtocolManager {
 	friend class OrderTesterCurr;
 	friend class TradeTesterFond;
 	friend class TradeTesterCurr;
+	friend class StatisticsTesterFond;
+	friend class StatisticsTesterCurr;
 
 	const int maxBufferLength = 16000;
 	BYTE	        *buffer;
@@ -76,9 +80,7 @@ private:
 	FastOBSFONDInfo*	m_oBSFOND;
 	AutoAllocatePointerList<FastOBSCURRItemInfo>	*m_oBSCURRItems;
 	FastOBSCURRInfo*	m_oBSCURR;
-	AutoAllocatePointerList<FastIncrementalMSRFONDItemInfo>	*m_incrementalMSRFONDItems;
 	FastIncrementalMSRFONDInfo*	m_incrementalMSRFOND;
-	AutoAllocatePointerList<FastIncrementalMSRCURRItemInfo>	*m_incrementalMSRCURRItems;
 	FastIncrementalMSRCURRInfo*	m_incrementalMSRCURR;
 	FastIncrementalOLRFONDInfo*	m_incrementalOLRFOND;
 	FastIncrementalOLRCURRInfo*	m_incrementalOLRCURR;
@@ -139,12 +141,8 @@ private:
 		this->m_oBSCURR = new FastOBSCURRInfo();
 		memset(this->m_oBSCURR, 0, sizeof(FastOBSCURRInfo));
 
-		this->m_incrementalMSRFONDItems = new AutoAllocatePointerList<FastIncrementalMSRFONDItemInfo>(128, 256);
-
 		this->m_incrementalMSRFOND = new FastIncrementalMSRFONDInfo();
 		memset(this->m_incrementalMSRFOND, 0, sizeof(FastIncrementalMSRFONDInfo));
-
-		this->m_incrementalMSRCURRItems = new AutoAllocatePointerList<FastIncrementalMSRCURRItemInfo>(128, 256);
 
 		this->m_incrementalMSRCURR = new FastIncrementalMSRCURRInfo();
 		memset(this->m_incrementalMSRCURR, 0, sizeof(FastIncrementalMSRCURRInfo));
@@ -338,16 +336,8 @@ private:
 		return this->m_oBSCURR;
 	}
 
-	inline FastIncrementalMSRFONDItemInfo* GetFreeIncrementalMSRFONDItemInfo() {
-		return this->m_incrementalMSRFONDItems->NewItem();
-	}
-
 	inline FastIncrementalMSRFONDInfo* GetFreeIncrementalMSRFONDInfo() {
 		return this->m_incrementalMSRFOND;
-	}
-
-	inline FastIncrementalMSRCURRItemInfo* GetFreeIncrementalMSRCURRItemInfo() {
-		return this->m_incrementalMSRCURRItems->NewItem();
 	}
 
 	inline FastIncrementalMSRCURRInfo* GetFreeIncrementalMSRCURRInfo() {
@@ -457,14 +447,8 @@ private:
 	void ReleaseOBSCURRInfo() {
 		((FastOBSCURRInfo*)this->LastDecodeInfo())->ReleaseUnused();
 	}
-	void ReleaseIncrementalMSRFONDItemInfo() {
-		((FastIncrementalMSRFONDItemInfo*)this->LastDecodeInfo())->ReleaseUnused();
-	}
 	void ReleaseIncrementalMSRFONDInfo() {
 		((FastIncrementalMSRFONDInfo*)this->LastDecodeInfo())->ReleaseUnused();
-	}
-	void ReleaseIncrementalMSRCURRItemInfo() {
-		((FastIncrementalMSRCURRItemInfo*)this->LastDecodeInfo())->ReleaseUnused();
 	}
 	void ReleaseIncrementalMSRCURRInfo() {
 		((FastIncrementalMSRCURRInfo*)this->LastDecodeInfo())->ReleaseUnused();
@@ -3162,10 +3146,10 @@ public:
 		info->SendingTime = ReadUInt64_Mandatory();
 
 		info->GroupMDEntriesCount = ReadUInt32_Mandatory();
-		FastIncrementalMSRFONDItemInfo* gmdeItemInfo = NULL;
+		FastGenericItemInfo* gmdeItemInfo = NULL;
 
 		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
-			gmdeItemInfo = GetFreeIncrementalMSRFONDItemInfo();
+			gmdeItemInfo = GetFreeGenericItemInfo();
 			info->GroupMDEntries[i] = gmdeItemInfo;
 
 			this->ParsePresenceMap(&(gmdeItemInfo->PresenceMap));
@@ -3256,10 +3240,10 @@ public:
 		info->SendingTime = ReadUInt64_Mandatory();
 
 		info->GroupMDEntriesCount = ReadUInt32_Mandatory();
-		FastIncrementalMSRCURRItemInfo* gmdeItemInfo = NULL;
+		FastGenericItemInfo* gmdeItemInfo = NULL;
 
 		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
-			gmdeItemInfo = GetFreeIncrementalMSRCURRItemInfo();
+			gmdeItemInfo = GetFreeGenericItemInfo();
 			info->GroupMDEntries[i] = gmdeItemInfo;
 
 			this->ParsePresenceMap(&(gmdeItemInfo->PresenceMap));

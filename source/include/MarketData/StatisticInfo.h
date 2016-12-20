@@ -59,6 +59,9 @@ public:
         this->m_rptSeq = 0;
     }
 
+    inline PointerList<T>* BuyQuotes() { throw; }
+    inline PointerList<T>* SellQuotes() { throw; }
+
     inline void AddBuyQuote(T *item) { throw; }
     inline void AddSellQuote(T *item) { throw; }
     inline void AddLastDealInfo(T *item) { throw; }
@@ -780,13 +783,13 @@ public:
     }
 
     inline void Add(T *item) {
-        AddProperty(item->MDentryType[0], item);
+        AddProperty((MDEntryType)(item->MDEntryType[0]), item);
     }
     inline void Change(T *item) {
-        ChangeProperty(item->MDentryType[0], item);
+        ChangeProperty((MDEntryType)(item->MDEntryType[0]), item);
     }
     inline void Remove(T *item) {
-        RemoveProperty(item->MDentryType[0], item);
+        RemoveProperty((MDEntryType)(item->MDEntryType[0]), item);
     }
 
     inline bool IsNextMessage(T *info) {

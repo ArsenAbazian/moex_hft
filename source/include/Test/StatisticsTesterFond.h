@@ -6,27 +6,20 @@
 #define HFT_ROBOT_STATISTICSTESTER_H
 
 #include "../FeedConnection.h"
+#include "TestMessagesHelper.h"
 #include <stdio.h>
 
-/*
-
-class StatisticsTester {
+class StatisticsTesterFond {
     FeedConnection_FOND_MSR *incFond;
     FeedConnection_FOND_MSS *snapFond;
-    FeedConnection_CURR_MSR *incCurr;
-    FeedConnection_CURR_MSS *snapCurr;
     TestMessagesHelper      *m_helper;
-    MarketDataTable<StatisticsInfo, FastIncrementalMSRFONDInfo, FastIncrementalMSRFONDItemInfo> *m_table;
+    MarketDataTable<StatisticsInfo, FastGenericInfo, FastGenericItemInfo> *m_table;
 
 public:
-    StatisticsTester() {
+    StatisticsTesterFond() {
         this->m_helper = new TestMessagesHelper();
-        this->m_table = new MarketDataTable<StatisticsInfo, FastIncrementalMSRFONDInfo, FastIncrementalMSRFONDItemInfo>();
+        this->m_table = new MarketDataTable<StatisticsInfo, FastGenericInfo, FastGenericItemInfo>();
         this->incFond = new FeedConnection_FOND_MSR("MSR", "Refresh Incremental", 'I',
-                                                    FeedConnectionProtocol::UDP_IP,
-                                                    "10.50.129.200", "239.192.113.3", 9113,
-                                                    "10.50.129.200", "239.192.113.131", 9313);
-        this->incCurr = new FeedConnection_CURR_MSR("MSR", "Refresh Incremental", 'I',
                                                     FeedConnectionProtocol::UDP_IP,
                                                     "10.50.129.200", "239.192.113.3", 9113,
                                                     "10.50.129.200", "239.192.113.131", 9313);
@@ -34,36 +27,30 @@ public:
                                                      FeedConnectionProtocol::UDP_IP,
                                                      "10.50.129.200", "239.192.113.3", 9113,
                                                      "10.50.129.200", "239.192.113.131", 9313);
-        this->snapCurr = new FeedConnection_CURR_MSS("MSS", "Full Refresh", 'I',
-                                                     FeedConnectionProtocol::UDP_IP,
-                                                     "10.50.129.200", "239.192.113.3", 9113,
-                                                     "10.50.129.200", "239.192.113.131", 9313);
 
         this->snapFond->m_fakeConnect = true;
         this->incFond->m_fakeConnect = true;
-        this->incCurr->m_fakeConnect = true;
-        this->snapCurr->m_fakeConnect = true;
-
     }
-    ~StatisticsTester() {
+    ~StatisticsTesterFond() {
         delete this->incFond;
-        delete this->incCurr;
         delete this->snapFond;
-        delete this->snapCurr;
         delete this->m_helper;
         delete this->m_table;
     }
 
-    void TestItem(StatisticsInfo<FastIncrementalMSRFONDItemInfo> *tableItem) {
-        for(int i = 0; i < tableItem->Trades()->Count(); i++)
-            if(tableItem->Trades()->Item(i)->Allocator == 0)
+    void TestItem(StatisticsInfo<FastGenericItemInfo> *tableItem) {
+        for(int i = 0; i < tableItem->BuyQuotes()->Count(); i++)
+            if(tableItem->BuyQuotes()->Item(i)->Allocator == 0)
+                throw;
+        for(int i = 0; i < tableItem->SellQuotes()->Count(); i++)
+            if(tableItem->SellQuotes()->Item(i)->Allocator == 0)
                 throw;
     }
 
-    void TestTableItemsAllocator(MarketDataTable<StatisticsInfo, FastIncrementalMSRFONDInfo, FastIncrementalMSRFONDItemInfo> *table) {
+    void TestTableItemsAllocator(MarketDataTable<StatisticsInfo, FastGenericInfo, FastGenericItemInfo> *table) {
         for(int i = 0; i < table->SymbolsCount(); i++) {
             for(int j = 0; j < table->Symbol(i)->Count(); j++) {
-                StatisticsInfo<FastIncrementalMSRFONDItemInfo> *item = table->Item(i, j);
+                StatisticsInfo<FastGenericItemInfo> *item = table->Item(i, j);
                 TestItem(item);
             }
         }
@@ -71,8 +58,7 @@ public:
 
     void Clear() {
         incFond->SetSnapshot(this->snapFond);
-        incFond->StatFond()->Clear();
-        incCurr->TradeCurr()->Clear();
+        incFond->StatisticFond()->Clear();
         incFond->ClearMessages();
         incFond->WaitIncrementalMaxTimeMs(50);
         incFond->m_waitTimer->Stop();
@@ -94,10 +80,10 @@ public:
 
         FastIncrementalMSRFONDInfo *info = new FastIncrementalMSRFONDInfo;
 
-        FastIncrementalMSRFONDItemInfo *item1 = this->m_helper->CreateMSRFondItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
-        FastIncrementalMSRFONDItemInfo *item2 = this->m_helper->CreateMSRFondItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
-        FastIncrementalMSRFONDItemInfo *item3 = this->m_helper->CreateMSRFondItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
-        FastIncrementalMSRFONDItemInfo *item4 = this->m_helper->CreateMSRFondItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "e4", 4);
+        FastGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
+        FastGenericItemInfo *item2 = this->m_helper->CreateGenericItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
+        FastGenericItemInfo *item3 = this->m_helper->CreateGenericItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
+        FastGenericItemInfo *item4 = this->m_helper->CreateGenericItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "e4", 4);
 
         if(item4->Used)
             throw;
@@ -109,18 +95,18 @@ public:
 
         if(!item1->Used)
             throw;
-        if(this->incFond->StatFond()->UsedItemCount() != 1)
+        if(this->incFond->StatisticFond()->UsedItemCount() != 1)
             throw;
-        if(this->incFond->StatFond()->SymbolsCount() != 1)
+        if(this->incFond->StatisticFond()->SymbolsCount() != 1)
             throw;
-        if(this->incFond->StatFond()->Symbol(0)->Count() != 1)
+        if(this->incFond->StatisticFond()->Symbol(0)->Count() != 1)
             throw;
-        StatisticsInfo<FastIncrementalMSRFONDItemInfo> *obi = this->incFond->StatFond()->GetItem("s1", "t1");
+        StatisticsInfo<FastGenericItemInfo> *obi = this->incFond->StatisticFond()->GetItem("s1", "t1");
         if(obi == 0)
             throw;
-        if(obi->Trades()->Count() != 1)
+        if(obi->BuyQuotes()->Count() != 1)
             throw;
-        FastIncrementalMSRFONDItemInfo *quote = obi->Trades()->Item(0);
+        FastGenericItemInfo *quote = obi->BuyQuotes()->Item(0);
         Decimal price(3, -2);
         Decimal size(1, 2);
         if(!quote->MDEntryPx.Equal(&price))
@@ -135,53 +121,18 @@ public:
 
         this->incFond->OnIncrementalRefresh_MSR_FOND(info);
 
-        if(this->incFond->StatFond()->UsedItemCount() != 1)
+        if(this->incFond->StatisticFond()->UsedItemCount() != 1)
             throw;
-        if(this->incFond->StatFond()->SymbolsCount() != 1)
+        if(this->incFond->StatisticFond()->SymbolsCount() != 1)
             throw;
-        if(this->incFond->StatFond()->Symbol(0)->Count() != 1)
+        if(this->incFond->StatisticFond()->Symbol(0)->Count() != 1)
             throw;
-        obi = this->incFond->StatFond()->GetItem("s1", "t1");
+        obi = this->incFond->StatisticFond()->GetItem("s1", "t1");
         if(obi == 0)
             throw;
-        if(obi->Trades()->Count() != 2)
+        if(obi->BuyQuotes()->Count() != 2)
             throw;
-        quote = obi->Trades()->Item(0);
-        price.Set(3, -2);
-        if(!quote->MDEntryPx.Equal(&price))
-            throw;
-        if(!quote->MDEntrySize.Equal(&size))
-            throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, quote->MDEntryIDLength, "e1", 2))
-            throw;
-
-        info->GroupMDEntriesCount = 1;
-        info->GroupMDEntries[0] = item3;
-
-        this->incFond->OnIncrementalRefresh_MSR_FOND(info);
-
-        if(this->incFond->StatFond()->UsedItemCount() != 1)
-            throw;
-        if(this->incFond->StatFond()->SymbolsCount() != 1)
-            throw;
-        if(this->incFond->StatFond()->Symbol(0)->Count() != 1)
-            throw;
-        obi = this->incFond->StatFond()->GetItem("s1", "t1");
-        if(obi == 0)
-            throw;
-        if(obi->Trades()->Count() != 3)
-            throw;
-
-        quote = obi->Trades()->Item(0);
-        price.Set(3, -2);
-        if(!quote->MDEntryPx.Equal(&price))
-            throw;
-        if(!quote->MDEntrySize.Equal(&size))
-            throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, quote->MDEntryIDLength, "e1", 2))
-            throw;
-
-        quote = obi->Trades()->Item(1);
+        quote = obi->BuyQuotes()->Start()->Data();
         price.Set(4, -2);
         if(!quote->MDEntryPx.Equal(&price))
             throw;
@@ -190,7 +141,42 @@ public:
         if(!StringIdComparer::Equal(quote->MDEntryID, quote->MDEntryIDLength, "e2", 2))
             throw;
 
-        quote = obi->Trades()->End()->Data();
+        info->GroupMDEntriesCount = 1;
+        info->GroupMDEntries[0] = item3;
+
+        this->incFond->OnIncrementalRefresh_MSR_FOND(info);
+
+        if(this->incFond->StatisticFond()->UsedItemCount() != 1)
+            throw;
+        if(this->incFond->StatisticFond()->SymbolsCount() != 1)
+            throw;
+        if(this->incFond->StatisticFond()->Symbol(0)->Count() != 1)
+            throw;
+        obi = this->incFond->StatisticFond()->GetItem("s1", "t1");
+        if(obi == 0)
+            throw;
+        if(obi->BuyQuotes()->Count() != 3)
+            throw;
+
+        quote = obi->BuyQuotes()->Start()->Data();
+        price.Set(4, -2);
+        if(!quote->MDEntryPx.Equal(&price))
+            throw;
+        if(!quote->MDEntrySize.Equal(&size))
+            throw;
+        if(!StringIdComparer::Equal(quote->MDEntryID, quote->MDEntryIDLength, "e2", 2))
+            throw;
+
+        quote = obi->BuyQuotes()->Start()->Next()->Data();
+        price.Set(3, -2);
+        if(!quote->MDEntryPx.Equal(&price))
+            throw;
+        if(!quote->MDEntrySize.Equal(&size))
+            throw;
+        if(!StringIdComparer::Equal(quote->MDEntryID, quote->MDEntryIDLength, "e1", 2))
+            throw;
+
+        quote = obi->BuyQuotes()->End()->Data();
         price.Set(2, -2);
         if(!quote->MDEntryPx.Equal(&price))
             throw;
@@ -204,28 +190,19 @@ public:
 
         this->incFond->OnIncrementalRefresh_MSR_FOND(info);
 
-        if(this->incFond->StatFond()->UsedItemCount() != 1)
+        if(this->incFond->StatisticFond()->UsedItemCount() != 1)
             throw;
-        if(this->incFond->StatFond()->SymbolsCount() != 1)
+        if(this->incFond->StatisticFond()->SymbolsCount() != 1)
             throw;
-        if(this->incFond->StatFond()->Symbol(0)->Count() != 1)
+        if(this->incFond->StatisticFond()->Symbol(0)->Count() != 1)
             throw;
-        obi = this->incFond->StatFond()->GetItem("s1", "t1");
+        obi = this->incFond->StatisticFond()->GetItem("s1", "t1");
         if(obi == 0)
             throw;
-        if(obi->Trades()->Count() != 4)
+        if(obi->BuyQuotes()->Count() != 4)
             throw;
 
-        quote = obi->Trades()->Item(0);
-        price.Set(3, -2);
-        if(!quote->MDEntryPx.Equal(&price))
-            throw;
-        if(!quote->MDEntrySize.Equal(&size))
-            throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, quote->MDEntryIDLength, "e1", 2))
-            throw;
-
-        quote = obi->Trades()->Item(1);
+        quote = obi->BuyQuotes()->Start()->Data();
         price.Set(4, -2);
         if(!quote->MDEntryPx.Equal(&price))
             throw;
@@ -234,7 +211,25 @@ public:
         if(!StringIdComparer::Equal(quote->MDEntryID, quote->MDEntryIDLength, "e2", 2))
             throw;
 
-        quote = obi->Trades()->Start()->Next()->Next()->Data();
+        quote = obi->BuyQuotes()->Start()->Next()->Data();
+        price.Set(3, -2);
+        if(!quote->MDEntryPx.Equal(&price))
+            throw;
+        if(!quote->MDEntrySize.Equal(&size))
+            throw;
+        if(!StringIdComparer::Equal(quote->MDEntryID, quote->MDEntryIDLength, "e1", 2))
+            throw;
+
+        quote = obi->BuyQuotes()->Start()->Next()->Next()->Data();
+        price.Set(25, -3);
+        if(!quote->MDEntryPx.Equal(&price))
+            throw;
+        if(!quote->MDEntrySize.Equal(&size))
+            throw;
+        if(!StringIdComparer::Equal(quote->MDEntryID, quote->MDEntryIDLength, "e4", 2))
+            throw;
+
+        quote = obi->BuyQuotes()->End()->Data();
         price.Set(2, -2);
         if(!quote->MDEntryPx.Equal(&price))
             throw;
@@ -242,14 +237,180 @@ public:
             throw;
         if(!StringIdComparer::Equal(quote->MDEntryID, quote->MDEntryIDLength, "e3", 2))
             throw;
+    }
 
-        quote = obi->Trades()->End()->Data();
-        price.Set(25, -3);
-        if(!quote->MDEntryPx.Equal(&price))
+    void Test_OnIncrementalRefresh_MSR_FOND_Remove() {
+        this->Clear();
+        this->TestDefaults();
+
+        FastIncrementalMSRFONDInfo *info = new FastIncrementalMSRFONDInfo;
+        FastGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
+        FastGenericItemInfo *item2 = this->m_helper->CreateGenericItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
+        FastGenericItemInfo *item3 = this->m_helper->CreateGenericItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
+        FastGenericItemInfo *item4 = this->m_helper->CreateGenericItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "e4", 4);
+
+        info->GroupMDEntriesCount = 4;
+        info->GroupMDEntries[0] = item1;
+        info->GroupMDEntries[1] = item2;
+        info->GroupMDEntries[2] = item3;
+        info->GroupMDEntries[3] = item4;
+
+        this->incFond->OnIncrementalRefresh_MSR_FOND(info);
+
+        if(item1->Allocator->Count() != 1)
             throw;
-        if(!quote->MDEntrySize.Equal(&size))
+        if(item2->Allocator->Count() != 1)
             throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, quote->MDEntryIDLength, "e4", 2))
+        if(item3->Allocator->Count() != 1)
+            throw;
+        if(item4->Allocator->Count() != 1)
+            throw;
+
+        item1->MDUpdateAction = mduaDelete;
+        item2->MDUpdateAction = mduaDelete;
+        item3->MDUpdateAction = mduaDelete;
+        item4->MDUpdateAction = mduaDelete;
+
+        info->GroupMDEntriesCount = 1;
+        info->GroupMDEntries[0] = item4;
+        item4->RptSeq = 5;
+
+        this->incFond->OnIncrementalRefresh_MSR_FOND(info);
+        if(item4->Used)
+            throw;
+        if(item4->Allocator->Count() != 0)
+            throw;
+
+        if(this->incFond->StatisticFond()->UsedItemCount() != 1)
+            throw;
+
+        StatisticsInfo<FastGenericItemInfo> *obi = this->incFond->StatisticFond()->GetItem("s1", "t1");
+        if(obi->BuyQuotes()->Count() != 3)
+            throw;
+        if(!StringIdComparer::Equal(obi->BuyQuotes()->Item(0)->MDEntryID, 2, "e2", 2))
+            throw;
+        if(!StringIdComparer::Equal(obi->BuyQuotes()->Item(1)->MDEntryID, 2, "e1", 2))
+            throw;
+        if(!StringIdComparer::Equal(obi->BuyQuotes()->Item(2)->MDEntryID, 2, "e3", 2))
+            throw;
+
+        info->GroupMDEntriesCount = 1;
+        info->GroupMDEntries[0] = item3;
+        item3->RptSeq = 6;
+
+        this->incFond->OnIncrementalRefresh_MSR_FOND(info);
+
+        if(this->incFond->StatisticFond()->UsedItemCount() != 1)
+            throw;
+
+        obi = this->incFond->StatisticFond()->GetItem("s1", "t1");
+        if(obi->BuyQuotes()->Count() != 2)
+            throw;
+        if(!StringIdComparer::Equal(obi->BuyQuotes()->Item(0)->MDEntryID, 2, "e2", 2))
+            throw;
+        if(!StringIdComparer::Equal(obi->BuyQuotes()->Item(1)->MDEntryID, 2, "e1", 2))
+            throw;
+
+        info->GroupMDEntriesCount = 1;
+        info->GroupMDEntries[0] = item2;
+        item2->RptSeq = 7;
+
+        this->incFond->OnIncrementalRefresh_MSR_FOND(info);
+
+        if(this->incFond->StatisticFond()->UsedItemCount() != 1)
+            throw;
+
+        obi = this->incFond->StatisticFond()->GetItem("s1", "t1");
+        if(obi->BuyQuotes()->Count() != 1)
+            throw;
+        if(!StringIdComparer::Equal(obi->BuyQuotes()->Item(0)->MDEntryID, 2, "e1", 2))
+            throw;
+
+        info->GroupMDEntriesCount = 1;
+        info->GroupMDEntries[0] = item1;
+        item1->RptSeq = 8;
+
+        this->incFond->OnIncrementalRefresh_MSR_FOND(info);
+
+        if(this->incFond->StatisticFond()->UsedItemCount() != 1)
+            throw;
+
+        obi = this->incFond->StatisticFond()->GetItem("s1", "t1");
+        if(obi->BuyQuotes()->Count() != 0)
+            throw;
+    }
+
+    void Test_OnIncrementalRefresh_MSR_FOND_Change() {
+        this->Clear();
+        this->TestDefaults();
+
+        FastIncrementalMSRFONDInfo *info = new FastIncrementalMSRFONDInfo;
+        FastGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
+        FastGenericItemInfo *item2 = this->m_helper->CreateGenericItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
+        FastGenericItemInfo *item3 = this->m_helper->CreateGenericItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
+        FastGenericItemInfo *item4 = this->m_helper->CreateGenericItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "e4", 4);
+
+        info->GroupMDEntriesCount = 4;
+        info->GroupMDEntries[0] = item1;
+        info->GroupMDEntries[1] = item2;
+        info->GroupMDEntries[2] = item3;
+        info->GroupMDEntries[3] = item4;
+
+        this->incFond->OnIncrementalRefresh_MSR_FOND(info);
+
+        StatisticsInfo<FastGenericItemInfo> *obi2 = this->incFond->StatisticFond()->GetItem("s1", "t1");
+        if(!StringIdComparer::Equal(obi2->BuyQuotes()->Item(0)->MDEntryID, 2, "e2", 2))
+            throw;
+        if(!StringIdComparer::Equal(obi2->BuyQuotes()->Item(1)->MDEntryID, 2, "e1", 2))
+            throw;
+        if(!StringIdComparer::Equal(obi2->BuyQuotes()->Item(2)->MDEntryID, 2, "e4", 2))
+            throw;
+        if(!StringIdComparer::Equal(obi2->BuyQuotes()->Item(3)->MDEntryID, 2, "e3", 2))
+            throw;
+
+        FastGenericItemInfo *item5 = this->m_helper->CreateGenericItemInfo("s1", "t1", 24, -3, 1, 3, mduaChange, mdetBuyQuote, "e2", 5);
+
+        info->GroupMDEntriesCount = 1;
+        info->GroupMDEntries[0] = item5;
+        item5->RptSeq = 5;
+
+        this->incFond->OnIncrementalRefresh_MSR_FOND(info);
+
+        if(item2->Used || item2->Allocator->Count() != 0)
+            throw;
+        if(!item5->Used)
+            throw;
+        if(item5->Allocator->Count() != 1)
+            throw;
+
+        StatisticsInfo<FastGenericItemInfo> *obi = this->incFond->StatisticFond()->GetItem("s1", "t1");
+
+        FastGenericItemInfo *qt1 = obi->BuyQuotes()->Item(0);
+        FastGenericItemInfo *qt2 = obi->BuyQuotes()->Item(1);
+        FastGenericItemInfo *qt3 = obi->BuyQuotes()->Item(2);
+        FastGenericItemInfo *qt4 = obi->BuyQuotes()->Item(3);
+
+        if(this->incFond->StatisticFond()->UsedItemCount() != 1)
+            throw;
+        if(obi->BuyQuotes()->Count() != 4)
+            throw;
+        if(!StringIdComparer::Equal(qt1->MDEntryID, 2, "e1", 2))
+            throw;
+        if(!StringIdComparer::Equal(qt2->MDEntryID, 2, "e4", 2))
+            throw;
+        if(!StringIdComparer::Equal(qt3->MDEntryID, 2, "e2", 2))
+            throw;
+        if(!StringIdComparer::Equal(qt4->MDEntryID, 2, "e3", 2))
+            throw;
+
+        if(qt1->MDEntryPx.Mantissa != item1->MDEntryPx.Mantissa)
+            throw;
+        if(qt1->MDEntryPx.Exponent != item1->MDEntryPx.Exponent)
+            throw;
+
+        if(qt3->MDEntryPx.Mantissa != item5->MDEntryPx.Mantissa)
+            throw;
+        if(qt3->MDEntryPx.Exponent != item5->MDEntryPx.Exponent)
             throw;
     }
 
@@ -258,10 +419,10 @@ public:
         this->TestDefaults();
 
         FastIncrementalMSRFONDInfo *info = new FastIncrementalMSRFONDInfo;
-        FastIncrementalMSRFONDItemInfo *item1 = this->m_helper->CreateMSRFondItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
-        FastIncrementalMSRFONDItemInfo *item2 = this->m_helper->CreateMSRFondItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
-        FastIncrementalMSRFONDItemInfo *item3 = this->m_helper->CreateMSRFondItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
-        FastIncrementalMSRFONDItemInfo *item4 = this->m_helper->CreateMSRFondItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "e4", 4);
+        FastGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
+        FastGenericItemInfo *item2 = this->m_helper->CreateGenericItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
+        FastGenericItemInfo *item3 = this->m_helper->CreateGenericItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
+        FastGenericItemInfo *item4 = this->m_helper->CreateGenericItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "e4", 4);
 
         info->GroupMDEntriesCount = 4;
         info->GroupMDEntries[0] = item1;
@@ -271,7 +432,7 @@ public:
 
         this->incFond->OnIncrementalRefresh_MSR_FOND(info);
 
-        this->incFond->StatFond()->Clear();
+        this->incFond->StatisticFond()->Clear();
         if(item1->Used || item2->Used || item3->Used || item4->Used)
             throw;
         if(item1->Allocator->Count() != 0 ||
@@ -279,11 +440,11 @@ public:
            item3->Allocator->Count() != 0 ||
            item4->Allocator->Count() != 0)
             throw;
-        if(this->incFond->StatFond()->UsedItemCount() != 0)
+        if(this->incFond->StatisticFond()->UsedItemCount() != 0)
             throw;
 
-        StatisticsInfo<FastIncrementalMSRFONDItemInfo> *obi = this->incFond->StatFond()->GetItem("s1", "t1");
-        if(obi->Trades()->Count() != 0)
+        StatisticsInfo<FastGenericItemInfo> *obi = this->incFond->StatisticFond()->GetItem("s1", "t1");
+        if(obi->BuyQuotes()->Count() != 0)
             throw;
     }
 
@@ -292,10 +453,10 @@ public:
         this->TestDefaults();
 
         FastIncrementalMSRFONDInfo *info = new FastIncrementalMSRFONDInfo;
-        FastIncrementalMSRFONDItemInfo *item1 = this->m_helper->CreateMSRFondItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
-        FastIncrementalMSRFONDItemInfo *item2 = this->m_helper->CreateMSRFondItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
-        FastIncrementalMSRFONDItemInfo *item3 = this->m_helper->CreateMSRFondItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
-        FastIncrementalMSRFONDItemInfo *item4 = this->m_helper->CreateMSRFondItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "e4", 4);
+        FastGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
+        FastGenericItemInfo *item2 = this->m_helper->CreateGenericItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
+        FastGenericItemInfo *item3 = this->m_helper->CreateGenericItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
+        FastGenericItemInfo *item4 = this->m_helper->CreateGenericItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "e4", 4);
 
         info->GroupMDEntriesCount = 4;
         info->GroupMDEntries[0] = item1;
@@ -305,90 +466,79 @@ public:
 
         this->incFond->OnIncrementalRefresh_MSR_FOND(info);
 
-        StatisticsInfo<FastIncrementalMSRFONDItemInfo> *obi2 = this->incFond->StatFond()->GetItem("s1", "t1");
-        if(obi2->Trades()->Count() != 4)
+        StatisticsInfo<FastGenericItemInfo> *obi2 = this->incFond->StatisticFond()->GetItem("s1", "t1");
+        if(obi2->BuyQuotes()->Count() != 4)
             throw;
 
-        FastIncrementalMSRFONDInfo *info2 = this->m_helper->CreateMSSFondInfo("t1s2", "t1");
-        FastIncrementalMSRFONDItemInfo *newItem1 = this->m_helper->CreateMSRFondItemInfo(7,-2, 1, 2, mdetBuyQuote, "e7");
-        FastIncrementalMSRFONDItemInfo *newItem2 = this->m_helper->CreateMSRFondItemInfo(8,-2, 1, 2, mdetBuyQuote, "e8");
+        FastGenericInfo *info2 = this->m_helper->CreateMSSFondInfo("t1s2", "t1");
+        FastGenericItemInfo *newItem1 = this->m_helper->CreateGenericItemInfo(7,-2, 1, 2, mdetBuyQuote, "e7");
+        FastGenericItemInfo *newItem2 = this->m_helper->CreateGenericItemInfo(8,-2, 1, 2, mdetBuyQuote, "e8");
         info2->RptSeq = 5;
 
         info2->GroupMDEntriesCount = 2;
         info2->GroupMDEntries[0] = newItem1;
         info2->GroupMDEntries[1] = newItem2;
 
-        this->incFond->StatFond()->ObtainSnapshotItem(info2);
-        this->incFond->StatFond()->ProcessSnapshot(info2);
+        this->incFond->StatisticFond()->ObtainSnapshotItem(info2);
+        this->incFond->StatisticFond()->ProcessSnapshot(info2);
 
-        if(this->incFond->StatFond()->UsedItemCount() != 2)
+        if(this->incFond->StatisticFond()->UsedItemCount() != 2)
             throw;
 
-        StatisticsInfo<FastIncrementalMSRFONDItemInfo> *obi3 = this->incFond->StatFond()->GetItem("s1", "t1");
-        if(obi3->Trades()->Count() != 4)
+        StatisticsInfo<FastGenericItemInfo> *obi3 = this->incFond->StatisticFond()->GetItem("s1", "t1");
+        if(obi3->BuyQuotes()->Count() != 4)
             throw;
 
-        StatisticsInfo<FastIncrementalMSRFONDItemInfo> *obi = this->incFond->StatFond()->GetItem("t1s2", 4, "t1", 2);
-        if(obi->Trades()->Count() != 2)
+        StatisticsInfo<FastGenericItemInfo> *obi = this->incFond->StatisticFond()->GetItem("t1s2", 4, "t1", 2);
+        if(obi->BuyQuotes()->Count() != 2)
             throw;
 
-        FastIncrementalMSRFONDItemInfo *qt1 = obi->Trades()->Item(0);
-        FastIncrementalMSRFONDItemInfo *qt2 = obi->Trades()->Item(1);
+        FastGenericItemInfo *qt1 = obi->BuyQuotes()->Start()->Data();
+        FastGenericItemInfo *qt2 = obi->BuyQuotes()->Start()->Next()->Data();
 
-        if(!StringIdComparer::Equal(qt1->MDEntryID, 2, "e7", 2))
+        if(!StringIdComparer::Equal(qt1->MDEntryID, 2, "e8", 2))
             throw;
-        if(!StringIdComparer::Equal(qt2->MDEntryID, 2, "e8", 2))
+        if(!StringIdComparer::Equal(qt2->MDEntryID, 2, "e7", 2))
             throw;
-        if(!qt1->MDEntryPx.Equal(7, -2))
+        if(!qt1->MDEntryPx.Equal(8, -2))
             throw;
         if(!qt1->MDEntrySize.Equal(1, 2))
             throw;
-        if(!qt2->MDEntryPx.Equal(8, -2))
+        if(!qt2->MDEntryPx.Equal(7, -2))
             throw;
     }
 
-    void Test_OnIncrementalRefresh_MSR_CURR_Add() {
+    void Test_OnIncrementalRefresh_MSR_FOND_Add_SellQuotes() {
         this->Clear();
         this->TestDefaults();
 
-        FastIncrementalMSRCURRInfo *info = new FastIncrementalMSRCURRInfo;
+        FastIncrementalMSRFONDInfo *info = new FastIncrementalMSRFONDInfo;
 
-        FastIncrementalMSRCURRItemInfo *item1 = this->m_helper->CreateMSRCurrItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote,
-                                                                           "e1", 1);
-        FastIncrementalMSRCURRItemInfo *item2 = this->m_helper->CreateMSRCurrItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote,
-                                                                           "e2", 2);
-        FastIncrementalMSRCURRItemInfo *item3 = this->m_helper->CreateMSRCurrItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote,
-                                                                           "e3", 3);
-        FastIncrementalMSRCURRItemInfo *item4 = this->m_helper->CreateMSRCurrItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote,
-                                                                           "e4", 4);
-
-        item1->RptSeq = 1;
-        item2->RptSeq = 2;
-        item3->RptSeq = 3;
-        item4->RptSeq = 4;
+        FastGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "e1", 1);
+        FastGenericItemInfo *item2 = this->m_helper->CreateGenericItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "e2", 2);
+        FastGenericItemInfo *item3 = this->m_helper->CreateGenericItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "e3", 3);
+        FastGenericItemInfo *item4 = this->m_helper->CreateGenericItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "e4", 4);
 
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item1;
 
-        this->incCurr->OnIncrementalRefresh_MSR_CURR(info);
+        this->incFond->OnIncrementalRefresh_MSR_FOND(info);
 
-        if(this->incCurr->TradeCurr()->UsedItemCount() != 1)
+        if(this->incFond->StatisticFond()->UsedItemCount() != 1)
             throw;
-        if(this->incCurr->TradeCurr()->SymbolsCount() != 1)
+        if(this->incFond->StatisticFond()->SymbolsCount() != 1)
             throw;
-        if(this->incCurr->TradeCurr()->Symbol(0)->Count() != 1)
+        if(this->incFond->StatisticFond()->Symbol(0)->Count() != 1)
             throw;
-        StatisticsInfo<FastIncrementalMSRCURRItemInfo> *obi = this->incCurr->TradeCurr()->GetItem("s1", "t1");
+        StatisticsInfo<FastGenericItemInfo> *obi = this->incFond->StatisticFond()->GetItem("s1", "t1");
         if(obi == 0)
             throw;
-        if(obi->Trades()->Count() != 1)
+        if(obi->SellQuotes()->Count() != 1)
             throw;
-        FastIncrementalMSRCURRItemInfo *quote = obi->Trades()->Item(0);
-        Decimal price(3, -2);
-        Decimal size(1, 2);
-        if(!quote->MDEntryPx.Equal(&price))
+        FastGenericItemInfo *quote = obi->SellQuotes()->Start()->Data();
+        if(!quote->MDEntryPx.Equal(3, -2))
             throw;
-        if(!quote->MDEntrySize.Equal(&size))
+        if(!quote->MDEntrySize.Equal(1, 2))
             throw;
         if(!StringIdComparer::Equal(quote->MDEntryID, 2, "e1", 2))
             throw;
@@ -396,139 +546,135 @@ public:
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item2;
 
-        this->incCurr->OnIncrementalRefresh_MSR_CURR(info);
+        this->incFond->OnIncrementalRefresh_MSR_FOND(info);
 
-        if(this->incCurr->TradeCurr()->UsedItemCount() != 1)
+        if(this->incFond->StatisticFond()->UsedItemCount() != 1)
             throw;
-        if(this->incCurr->TradeCurr()->SymbolsCount() != 1)
+        if(this->incFond->StatisticFond()->SymbolsCount() != 1)
             throw;
-        if(this->incCurr->TradeCurr()->Symbol(0)->Count() != 1)
+        if(this->incFond->StatisticFond()->Symbol(0)->Count() != 1)
             throw;
-        obi = this->incCurr->TradeCurr()->GetItem("s1", "t1");
+        obi = this->incFond->StatisticFond()->GetItem("s1", "t1");
         if(obi == 0)
             throw;
-        if(obi->Trades()->Count() != 2)
+        if(obi->SellQuotes()->Count() != 2)
             throw;
-        quote = obi->Trades()->Item(0);
-        price.Set(3, -2);
-        if(!quote->MDEntryPx.Equal(&price))
+        quote = obi->SellQuotes()->Start()->Data();
+        if(!quote->MDEntryPx.Equal(3, -2))
             throw;
-        if(!quote->MDEntrySize.Equal(&size))
+        if(!quote->MDEntrySize.Equal(1, 2))
             throw;
         if(!StringIdComparer::Equal(quote->MDEntryID, 2, "e1", 2))
+            throw;
+
+        quote = obi->SellQuotes()->Item(1);
+        if(!quote->MDEntryPx.Equal(4, -2))
+            throw;
+        if(!quote->MDEntrySize.Equal(1, 2))
+            throw;
+        if(!StringIdComparer::Equal(quote->MDEntryID, 2, "e2", 2))
             throw;
 
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item3;
 
-        this->incCurr->OnIncrementalRefresh_MSR_CURR(info);
+        this->incFond->OnIncrementalRefresh_MSR_FOND(info);
 
-        if(this->incCurr->TradeCurr()->UsedItemCount() != 1)
+        if(this->incFond->StatisticFond()->UsedItemCount() != 1)
             throw;
-        if(this->incCurr->TradeCurr()->SymbolsCount() != 1)
+        if(this->incFond->StatisticFond()->SymbolsCount() != 1)
             throw;
-        if(this->incCurr->TradeCurr()->Symbol(0)->Count() != 1)
+        if(this->incFond->StatisticFond()->Symbol(0)->Count() != 1)
             throw;
-        obi = this->incCurr->TradeCurr()->GetItem("s1", "t1");
+        obi = this->incFond->StatisticFond()->GetItem("s1", "t1");
         if(obi == 0)
             throw;
-        if(obi->Trades()->Count() != 3)
+        if(obi->SellQuotes()->Count() != 3)
             throw;
 
-        quote = obi->Trades()->Item(0);
-        price.Set(3, -2);
-        if(!quote->MDEntryPx.Equal(&price))
+        quote = obi->SellQuotes()->Start()->Data();
+        if(!quote->MDEntryPx.Equal(2, -2))
             throw;
-        if(!quote->MDEntrySize.Equal(&size))
+        if(!quote->MDEntrySize.Equal(1, 2))
+            throw;
+        if(!StringIdComparer::Equal(quote->MDEntryID, 2, "e3", 2))
+            throw;
+
+        quote = obi->SellQuotes()->Start()->Next()->Data();
+        if(!quote->MDEntryPx.Equal(3, -2))
+            throw;
+        if(!quote->MDEntrySize.Equal(1, 2))
             throw;
         if(!StringIdComparer::Equal(quote->MDEntryID, 2, "e1", 2))
             throw;
 
-        quote = obi->Trades()->Item(1);
-        price.Set(4, -2);
-        if(!quote->MDEntryPx.Equal(&price))
+        quote = obi->SellQuotes()->End()->Data();
+        if(!quote->MDEntryPx.Equal(4, -2))
             throw;
-        if(!quote->MDEntrySize.Equal(&size))
+        if(!quote->MDEntrySize.Equal(1, 2))
             throw;
         if(!StringIdComparer::Equal(quote->MDEntryID, 2, "e2", 2))
-            throw;
-
-        quote = obi->Trades()->End()->Data();
-        price.Set(2, -2);
-        if(!quote->MDEntryPx.Equal(&price))
-            throw;
-        if(!quote->MDEntrySize.Equal(&size))
-            throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, 2, "e3", 2))
             throw;
 
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item4;
 
-        this->incCurr->OnIncrementalRefresh_MSR_CURR(info);
+        this->incFond->OnIncrementalRefresh_MSR_FOND(info);
 
-        if(this->incCurr->TradeCurr()->UsedItemCount() != 1)
+        if(this->incFond->StatisticFond()->UsedItemCount() != 1)
             throw;
-        if(this->incCurr->TradeCurr()->SymbolsCount() != 1)
+        if(this->incFond->StatisticFond()->SymbolsCount() != 1)
             throw;
-        if(this->incCurr->TradeCurr()->Symbol(0)->Count() != 1)
+        if(this->incFond->StatisticFond()->Symbol(0)->Count() != 1)
             throw;
-        obi = this->incCurr->TradeCurr()->GetItem("s1", "t1");
+        obi = this->incFond->StatisticFond()->GetItem("s1", "t1");
         if(obi == 0)
             throw;
-        if(obi->Trades()->Count() != 4)
+        if(obi->SellQuotes()->Count() != 4)
             throw;
 
-        quote = obi->Trades()->Item(0);
-        price.Set(3, -2);
-        if(!quote->MDEntryPx.Equal(&price))
+        quote = obi->SellQuotes()->Start()->Data();
+        if(!quote->MDEntryPx.Equal(2, -2))
             throw;
-        if(!quote->MDEntrySize.Equal(&size))
-            throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, 2, "e1", 2))
-            throw;
-
-        quote = obi->Trades()->Item(1);
-        price.Set(4, -2);
-        if(!quote->MDEntryPx.Equal(&price))
-            throw;
-        if(!quote->MDEntrySize.Equal(&size))
-            throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, 2, "e2", 2))
-            throw;
-
-        quote = obi->Trades()->Start()->Next()->Next()->Data();
-        price.Set(2, -2);
-        if(!quote->MDEntryPx.Equal(&price))
-            throw;
-        if(!quote->MDEntrySize.Equal(&size))
+        if(!quote->MDEntrySize.Equal(1, 2))
             throw;
         if(!StringIdComparer::Equal(quote->MDEntryID, 2, "e3", 2))
             throw;
 
-        quote = obi->Trades()->End()->Data();
-        price.Set(25, -3);
-        if(!quote->MDEntryPx.Equal(&price))
+        quote = obi->SellQuotes()->Start()->Next()->Data();
+        if(!quote->MDEntryPx.Equal(25, -3))
             throw;
-        if(!quote->MDEntrySize.Equal(&size))
+        if(!quote->MDEntrySize.Equal(1, 2))
             throw;
         if(!StringIdComparer::Equal(quote->MDEntryID, 2, "e4", 2))
             throw;
+
+        quote = obi->SellQuotes()->Start()->Next()->Next()->Data();
+        if(!quote->MDEntryPx.Equal(3, -2))
+            throw;
+        if(!quote->MDEntrySize.Equal(1, 2))
+            throw;
+        if(!StringIdComparer::Equal(quote->MDEntryID, 2, "e1", 2))
+            throw;
+
+        quote = obi->SellQuotes()->End()->Data();
+        if(!quote->MDEntryPx.Equal(4, -2))
+            throw;
+        if(!quote->MDEntrySize.Equal(1, 2))
+            throw;
+        if(!StringIdComparer::Equal(quote->MDEntryID, 2, "e2", 2))
+            throw;
     }
 
-    void Test_Clear_Curr() {
+    void Test_OnIncrementalRefresh_MSR_FOND_Remove_SellQuotes() {
         this->Clear();
         this->TestDefaults();
 
-        FastIncrementalMSRCURRInfo *info = new FastIncrementalMSRCURRInfo;
-        FastIncrementalMSRCURRItemInfo *item1 = this->m_helper->CreateMSRCurrItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote,
-                                                                           "e1", 1);
-        FastIncrementalMSRCURRItemInfo *item2 = this->m_helper->CreateMSRCurrItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote,
-                                                                           "e2", 2);
-        FastIncrementalMSRCURRItemInfo *item3 = this->m_helper->CreateMSRCurrItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote,
-                                                                           "e3", 3);
-        FastIncrementalMSRCURRItemInfo *item4 = this->m_helper->CreateMSRCurrItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote,
-                                                                           "e4", 4);
+        FastIncrementalMSRFONDInfo *info = new FastIncrementalMSRFONDInfo;
+        FastGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "e1", 1);
+        FastGenericItemInfo *item2 = this->m_helper->CreateGenericItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "e2", 2);
+        FastGenericItemInfo *item3 = this->m_helper->CreateGenericItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "e3", 3);
+        FastGenericItemInfo *item4 = this->m_helper->CreateGenericItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "e4", 4);
 
         info->GroupMDEntriesCount = 4;
         info->GroupMDEntries[0] = item1;
@@ -536,30 +682,88 @@ public:
         info->GroupMDEntries[2] = item3;
         info->GroupMDEntries[3] = item4;
 
-        this->incCurr->OnIncrementalRefresh_MSR_CURR(info);
+        this->incFond->OnIncrementalRefresh_MSR_FOND(info);
 
-        this->incCurr->TradeCurr()->Clear();
-        if(this->incCurr->TradeCurr()->UsedItemCount() != 0)
+        item1->MDUpdateAction = mduaDelete;
+        item2->MDUpdateAction = mduaDelete;
+        item3->MDUpdateAction = mduaDelete;
+        item4->MDUpdateAction = mduaDelete;
+
+        info->GroupMDEntriesCount = 1;
+        info->GroupMDEntries[0] = item4;
+        item4->RptSeq = 5;
+
+        this->incFond->OnIncrementalRefresh_MSR_FOND(info);
+
+        if(this->incFond->StatisticFond()->UsedItemCount() != 1)
             throw;
 
-        StatisticsInfo<FastIncrementalMSRCURRItemInfo> *obi = this->incCurr->TradeCurr()->GetItem("s1", "t1");
-        if(obi->Trades()->Count() != 0)
+        StatisticsInfo<FastGenericItemInfo> *obi = this->incFond->StatisticFond()->GetItem("s1", "t1");
+        if(obi->SellQuotes()->Count() != 3)
+            throw;
+
+        if(!StringIdComparer::Equal(obi->SellQuotes()->Item(0)->MDEntryID, 2,"e3", 2))
+            throw;
+        if(!StringIdComparer::Equal(obi->SellQuotes()->Item(1)->MDEntryID, 2,"e1", 2))
+            throw;
+        if(!StringIdComparer::Equal(obi->SellQuotes()->Item(2)->MDEntryID, 2,"e2", 2))
+            throw;
+
+        info->GroupMDEntriesCount = 1;
+        info->GroupMDEntries[0] = item3;
+        item3->RptSeq = 6;
+
+        this->incFond->OnIncrementalRefresh_MSR_FOND(info);
+
+        if(this->incFond->StatisticFond()->UsedItemCount() != 1)
+            throw;
+
+        obi = this->incFond->StatisticFond()->GetItem("s1", "t1");
+        if(obi->SellQuotes()->Count() != 2)
+            throw;
+        if(!StringIdComparer::Equal(obi->SellQuotes()->Item(0)->MDEntryID, 2,"e1", 2))
+            throw;
+        if(!StringIdComparer::Equal(obi->SellQuotes()->Item(1)->MDEntryID, 2,"e2", 2))
+            throw;
+
+        info->GroupMDEntriesCount = 1;
+        info->GroupMDEntries[0] = item2;
+        item2->RptSeq = 7;
+
+        this->incFond->OnIncrementalRefresh_MSR_FOND(info);
+
+        if(this->incFond->StatisticFond()->UsedItemCount() != 1)
+            throw;
+
+        obi = this->incFond->StatisticFond()->GetItem("s1", "t1");
+        if(obi->SellQuotes()->Count() != 1)
+            throw;
+        if(!StringIdComparer::Equal(obi->SellQuotes()->Item(0)->MDEntryID, 2,"e1", 2))
+            throw;
+
+        info->GroupMDEntriesCount = 1;
+        info->GroupMDEntries[0] = item1;
+        item1->RptSeq = 8;
+
+        this->incFond->OnIncrementalRefresh_MSR_FOND(info);
+
+        if(this->incFond->StatisticFond()->UsedItemCount() != 1)
+            throw;
+
+        obi = this->incFond->StatisticFond()->GetItem("s1", "t1");
+        if(obi->SellQuotes()->Count() != 0)
             throw;
     }
 
-    void Test_OnFullRefresh_MSS_CURR() {
+    void Test_OnIncrementalRefresh_MSR_FOND_Change_SellQuotes() {
         this->Clear();
         this->TestDefaults();
 
-        FastIncrementalMSRCURRInfo *info = new FastIncrementalMSRCURRInfo;
-        FastIncrementalMSRCURRItemInfo *item1 = this->m_helper->CreateMSRCurrItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote,
-                                                                           "e1", 1);
-        FastIncrementalMSRCURRItemInfo *item2 = this->m_helper->CreateMSRCurrItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote,
-                                                                           "e2", 2);
-        FastIncrementalMSRCURRItemInfo *item3 = this->m_helper->CreateMSRCurrItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote,
-                                                                           "e3", 3);
-        FastIncrementalMSRCURRItemInfo *item4 = this->m_helper->CreateMSRCurrItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote,
-                                                                           "e4", 4);
+        FastIncrementalMSRFONDInfo *info = new FastIncrementalMSRFONDInfo;
+        FastGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "e1", 1);
+        FastGenericItemInfo *item2 = this->m_helper->CreateGenericItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "e2", 2);
+        FastGenericItemInfo *item3 = this->m_helper->CreateGenericItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "e3", 3);
+        FastGenericItemInfo *item4 = this->m_helper->CreateGenericItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "e4", 4);
 
         info->GroupMDEntriesCount = 4;
         info->GroupMDEntries[0] = item1;
@@ -567,33 +771,125 @@ public:
         info->GroupMDEntries[2] = item3;
         info->GroupMDEntries[3] = item4;
 
-        this->incCurr->OnIncrementalRefresh_MSR_CURR(info);
+        this->incFond->OnIncrementalRefresh_MSR_FOND(info);
 
-        FastIncrementalMSRCURRInfo *info2 = this->m_helper->CreateMSSCurrInfo("t1s2", "t1");
-        FastIncrementalMSRCURRItemInfo *newItem1 = this->m_helper->CreateMSSCurrItemInfo(7,-2, 1, 2, mdetBuyQuote, "e7", 5);
-        FastIncrementalMSRCURRItemInfo *newItem2 = this->m_helper->CreateMSSCurrItemInfo(8,-2, 1, 2, mdetBuyQuote, "e8", 6);
+        StatisticsInfo<FastGenericItemInfo> *obi2 = this->incFond->StatisticFond()->GetItem("s1", "t1");
+        if(!StringIdComparer::Equal(obi2->SellQuotes()->Item(0)->MDEntryID, 2, "e3", 2))
+            throw;
+        if(!StringIdComparer::Equal(obi2->SellQuotes()->Item(1)->MDEntryID, 2, "e4", 2))
+            throw;
+        if(!StringIdComparer::Equal(obi2->SellQuotes()->Item(2)->MDEntryID, 2, "e1", 2))
+            throw;
+        if(!StringIdComparer::Equal(obi2->SellQuotes()->Item(3)->MDEntryID, 2, "e2", 2))
+            throw;
 
-        info2->RptSeq = 5;
+        FastGenericItemInfo *item5 = this->m_helper->CreateGenericItemInfo("s1", "t1", 24, -3, 1, 3, mduaChange, mdetSellQuote, "e2", 5);
+
+        info->GroupMDEntriesCount = 1;
+        info->GroupMDEntries[0] = item5;
+
+        this->incFond->OnIncrementalRefresh_MSR_FOND(info);
+
+        StatisticsInfo<FastGenericItemInfo> *obi = this->incFond->StatisticFond()->GetItem("s1", "t1");
+
+        FastGenericItemInfo *qt1 = obi->SellQuotes()->Item(0);
+        FastGenericItemInfo *qt2 = obi->SellQuotes()->Item(1);
+        FastGenericItemInfo *qt3 = obi->SellQuotes()->Item(2);
+        FastGenericItemInfo *qt4 = obi->SellQuotes()->Item(3);
+
+        if(this->incFond->StatisticFond()->UsedItemCount() != 1)
+            throw;
+        if(obi->SellQuotes()->Count() != 4)
+            throw;
+        if(!StringIdComparer::Equal(qt1->MDEntryID, 2, "e3", 2))
+            throw;
+        if(!StringIdComparer::Equal(qt2->MDEntryID, 2, "e2", 2))
+            throw;
+        if(!StringIdComparer::Equal(qt3->MDEntryID, 2, "e4", 2))
+            throw;
+        if(!StringIdComparer::Equal(qt4->MDEntryID, 2, "e1", 2))
+            throw;
+
+        if(qt1->MDEntryPx.Mantissa != item3->MDEntryPx.Mantissa)
+            throw;
+        if(qt1->MDEntryPx.Exponent != item3->MDEntryPx.Exponent)
+            throw;
+
+        if(qt2->MDEntryPx.Mantissa != item5->MDEntryPx.Mantissa)
+            throw;
+        if(qt2->MDEntryPx.Exponent != item5->MDEntryPx.Exponent)
+            throw;
+    }
+
+    void Test_Clear_SellQuotes() {
+        this->Clear();
+        this->TestDefaults();
+
+        FastIncrementalMSRFONDInfo *info = new FastIncrementalMSRFONDInfo;
+        FastGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "e1", 1);
+        FastGenericItemInfo *item2 = this->m_helper->CreateGenericItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "e2", 2);
+        FastGenericItemInfo *item3 = this->m_helper->CreateGenericItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "e3", 3);
+        FastGenericItemInfo *item4 = this->m_helper->CreateGenericItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "e4", 4);
+
+        info->GroupMDEntriesCount = 4;
+        info->GroupMDEntries[0] = item1;
+        info->GroupMDEntries[1] = item2;
+        info->GroupMDEntries[2] = item3;
+        info->GroupMDEntries[3] = item4;
+
+        this->incFond->OnIncrementalRefresh_MSR_FOND(info);
+
+        this->incFond->StatisticFond()->Clear();
+        if(this->incFond->StatisticFond()->UsedItemCount() != 0)
+            throw;
+
+        StatisticsInfo<FastGenericItemInfo> *obi = this->incFond->StatisticFond()->GetItem("s1", "t1");
+        if(obi->SellQuotes()->Count() != 0)
+            throw;
+    }
+
+    void Test_OnFullRefresh_MSS_FOND_SellQuotes() {
+        this->Clear();
+        this->TestDefaults();
+
+        FastIncrementalMSRFONDInfo *info = new FastIncrementalMSRFONDInfo;
+        FastGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "e1", 1);
+        FastGenericItemInfo *item2 = this->m_helper->CreateGenericItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "e2", 2);
+        FastGenericItemInfo *item3 = this->m_helper->CreateGenericItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "e3", 3);
+        FastGenericItemInfo *item4 = this->m_helper->CreateGenericItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "e4", 4);
+
+        info->GroupMDEntriesCount = 4;
+        info->GroupMDEntries[0] = item1;
+        info->GroupMDEntries[1] = item2;
+        info->GroupMDEntries[2] = item3;
+        info->GroupMDEntries[3] = item4;
+
+        this->incFond->OnIncrementalRefresh_MSR_FOND(info);
+
+        FastGenericInfo *info2 = this->m_helper->CreateMSSFondInfo("t1s2", "t1");
+        FastGenericItemInfo *newItem1 = this->m_helper->CreateGenericItemInfo(7,-2, 1, 2, mdetSellQuote, "e7");
+        FastGenericItemInfo *newItem2 = this->m_helper->CreateGenericItemInfo(8,-2, 1, 2, mdetSellQuote, "e8");
+
         info2->GroupMDEntriesCount = 2;
         info2->GroupMDEntries[0] = newItem1;
         info2->GroupMDEntries[1] = newItem2;
 
-        this->incCurr->TradeCurr()->ObtainSnapshotItem(info2);
-        this->incCurr->TradeCurr()->ProcessSnapshot(info2);
+        this->incFond->StatisticFond()->ObtainSnapshotItem(info2);
+        this->incFond->StatisticFond()->ProcessSnapshot(info2);
 
-        if(this->incCurr->TradeCurr()->UsedItemCount() != 2)
+        if(this->incFond->StatisticFond()->UsedItemCount() != 2)
             throw;
 
-        StatisticsInfo<FastIncrementalMSRCURRItemInfo> *obi3 = this->incCurr->TradeCurr()->GetItem("s1", "t1");
-        if(obi3->Trades()->Count() != 4)
+        StatisticsInfo<FastGenericItemInfo> *obi3 = this->incFond->StatisticFond()->GetItem("s1", "t1");
+        if(obi3->SellQuotes()->Count() != 4)
             throw;
 
-        StatisticsInfo<FastIncrementalMSRCURRItemInfo> *obi = this->incCurr->TradeCurr()->GetItem("t1s2", 4, "t1", 2);
-        if(obi->Trades()->Count() != 2)
+        StatisticsInfo<FastGenericItemInfo> *obi = this->incFond->StatisticFond()->GetItem("t1s2", 4, "t1", 2);
+        if(obi->SellQuotes()->Count() != 2)
             throw;
 
-        FastIncrementalMSRCURRItemInfo *qt1 = obi->Trades()->Item(0);
-        FastIncrementalMSRCURRItemInfo *qt2 = obi->Trades()->Item(1);
+        FastGenericItemInfo *qt1 = obi->SellQuotes()->Start()->Data();
+        FastGenericItemInfo *qt2 = obi->SellQuotes()->Start()->Next()->Data();
 
         if(!StringIdComparer::Equal(qt1->MDEntryID, 2, "e7", 2))
             throw;
@@ -608,46 +904,49 @@ public:
     }
 
     void Test_OnIncrementalRefresh_MSR_FOND() {
-        printf("MSR Test_OnIncrementalRefresh_MSR_FOND_Add\n");
+        printf("MSR FOND Test_OnIncrementalRefresh_MSR_FOND_Add\n");
         Test_OnIncrementalRefresh_MSR_FOND_Add();
-        printf("MSR Test_Clear\n");
+        printf("MSR FOND Test_OnIncrementalRefresh_MSR_FOND_Remove\n");
+        Test_OnIncrementalRefresh_MSR_FOND_Remove();
+        printf("MSR FOND Test_OnIncrementalRefresh_MSR_FOND_Change\n");
+        Test_OnIncrementalRefresh_MSR_FOND_Change();
+        printf("MSR FOND Test_Clear\n");
         Test_Clear();
     }
 
-    void Test_OnIncrementalRefresh_MSR_CURR() {
-        printf("MSR Test_OnIncrementalRefresh_MSR_CURR_Add\n");
-        Test_OnIncrementalRefresh_MSR_CURR_Add();
-        printf("MSR Test_Clear_Curr\n");
-        Test_Clear_Curr();
-    }
-
-    void Test_MSR_CURR() {
-        printf("MSR Test_OnIncrementalRefresh_MSR_CURR\n");
-        Test_OnIncrementalRefresh_MSR_CURR();
-        printf("MSR Test_OnFullRefresh_MSS_CURR\n");
-        Test_OnFullRefresh_MSS_CURR();
+    void Test_OnIncrementalRefresh_MSR_FOND_SellQuotes() {
+        printf("MSR FOND Test_OnIncrementalRefresh_MSR_FOND_Add_SellQuotes\n");
+        Test_OnIncrementalRefresh_MSR_FOND_Add_SellQuotes();
+        printf("MSR FOND Test_OnIncrementalRefresh_MSR_FOND_Remove_SellQuotes\n");
+        Test_OnIncrementalRefresh_MSR_FOND_Remove_SellQuotes();
+        printf("MSR FOND Test_OnIncrementalRefresh_MSR_FOND_Change_SellQuotes\n");
+        Test_OnIncrementalRefresh_MSR_FOND_Change_SellQuotes();
+        printf("MSR FOND Test_Clear_SellQuotes\n");
+        Test_Clear_SellQuotes();
     }
 
     void Test_MSR_FOND() {
-        printf("MSR Test_OnIncrementalRefresh_MSR_FOND\n");
+        this->m_helper->SetFondMode();
+        printf("MSR FOND Test_OnIncrementalRefresh_MSR_FOND\n");
         Test_OnIncrementalRefresh_MSR_FOND();
-        printf("MSR Test_OnFullRefresh_MSS_FOND\n");
+        printf("MSR FOND Test_OnFullRefresh_MSS_FOND\n");
         Test_OnFullRefresh_MSS_FOND();
+        printf("MSR FOND Test_OnIncrementalRefresh_MSR_FOND_SellQuotes\n");
+        Test_OnIncrementalRefresh_MSR_FOND_SellQuotes();
+        printf("MSR FOND Test_OnFullRefresh_MSS_FOND_SellQuotes\n");
+        Test_OnFullRefresh_MSS_FOND_SellQuotes();
     }
 
     void TestDefaults() {
-        if(this->incFond->StatFond()->SymbolsCount() != 0)
+        if(this->incFond->StatisticFond()->SymbolsCount() != 0)
             throw;
-        if(this->incCurr->TradeCurr()->SymbolsCount() != 0)
-            throw;
-        this->TestTableItemsAllocator(incFond->StatFond());
-        //this->TestTableItemsAllocator(incCurr->TradeCurr());
+        this->TestTableItemsAllocator(incFond->StatisticFond());
     }
 
     void TestTableItem_CorrectBegin() {
-        StatisticsInfo<FastIncrementalMSRFONDItemInfo> *tb = new StatisticsInfo<FastIncrementalMSRFONDItemInfo>();
+        StatisticsInfo<FastGenericItemInfo> *tb = new StatisticsInfo<FastGenericItemInfo>();
 
-        FastIncrementalMSRFONDItemInfo *item1 = this->m_helper->CreateMSRFondItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e1");
+        FastGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e1");
         item1->RptSeq = 1;
         item1->MDUpdateAction = mduaAdd;
 
@@ -664,9 +963,9 @@ public:
     }
 
     void TestTableItem_IncorrectBegin() {
-        StatisticsInfo<FastIncrementalMSRFONDItemInfo> *tb = new StatisticsInfo<FastIncrementalMSRFONDItemInfo>();
+        StatisticsInfo<FastGenericItemInfo> *tb = new StatisticsInfo<FastGenericItemInfo>();
 
-        FastIncrementalMSRFONDItemInfo *item1 = this->m_helper->CreateMSRFondItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e1");
+        FastGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e1");
         item1->RptSeq = 2;
         item1->MDUpdateAction = mduaAdd;
 
@@ -685,15 +984,15 @@ public:
     }
 
     void TestTableItem_SkipMessage() {
-        StatisticsInfo<FastIncrementalMSRFONDItemInfo> *tb = new StatisticsInfo<FastIncrementalMSRFONDItemInfo>();
+        StatisticsInfo<FastGenericItemInfo> *tb = new StatisticsInfo<FastGenericItemInfo>();
 
-        FastIncrementalMSRFONDItemInfo *item1 = this->m_helper->CreateMSRFondItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e1");
+        FastGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e1");
         item1->RptSeq = 1;
         item1->MDUpdateAction = mduaAdd;
 
         tb->ProcessIncrementalMessage(item1);
 
-        FastIncrementalMSRFONDItemInfo *item2 = this->m_helper->CreateMSRFondItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e2");
+        FastGenericItemInfo *item2 = this->m_helper->CreateGenericItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e2");
         item2->RptSeq = 3;
         item2->MDUpdateAction = mduaAdd;
 
@@ -706,7 +1005,7 @@ public:
         if(tb->RptSeq() != 1)
             throw;
 
-        FastIncrementalMSRFONDItemInfo *item3 = this->m_helper->CreateMSRFondItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e3");
+        FastGenericItemInfo *item3 = this->m_helper->CreateGenericItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e3");
         item3->RptSeq = 4;
         item3->MDUpdateAction = mduaAdd;
 
@@ -734,13 +1033,13 @@ public:
     void TestTable_AfterClear() {
         this->m_table->Clear();
 
-        FastIncrementalMSRFONDItemInfo *item = this->m_helper->CreateMSRFondItemInfo("s1", "session1", "e1", 1);
+        FastGenericItemInfo *item = this->m_helper->CreateGenericItemInfo("s1", "session1", "e1");
         item->RptSeq = 1;
 
-        FastIncrementalMSRFONDItemInfo *item2 = this->m_helper->CreateMSRFondItemInfo("s1", "session1", "e1", 2);
+        FastGenericItemInfo *item2 = this->m_helper->CreateGenericItemInfo("s1", "session1", "e1");
         item2->RptSeq = 2;
 
-        FastIncrementalMSRFONDItemInfo *item3 = this->m_helper->CreateMSRFondItemInfo("s1", "session1", "e1", 4);
+        FastGenericItemInfo *item3 = this->m_helper->CreateGenericItemInfo("s1", "session1", "e1");
         item3->RptSeq = 4;
 
         this->m_table->ProcessIncremental(item);
@@ -749,7 +1048,7 @@ public:
 
         if(this->m_table->UsedItemCount() != 1)
             throw;
-        StatisticsInfo<FastIncrementalMSRFONDItemInfo> *tableItem = this->m_table->GetItem("s1", "session1");
+        StatisticsInfo<FastGenericItemInfo> *tableItem = this->m_table->GetItem("s1", "session1");
         if(tableItem->EntriesQueue()->MaxIndex() != 1) // 3 is empty and 4 has value
             throw;
         this->m_table->Clear();
@@ -757,7 +1056,7 @@ public:
             throw;
         if(tableItem->RptSeq() != 0)
             throw;
-        if(tableItem->Trades()->Count() != 0)
+        if(tableItem->BuyQuotes()->Count() != 0)
             throw;
         if(tableItem->EntriesQueue()->MaxIndex() != -1)
             throw;
@@ -769,7 +1068,7 @@ public:
 
         this->m_table->Clear();
 
-        FastIncrementalMSRFONDItemInfo *item1 = this->m_helper->CreateMSRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        FastGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 1;
 
@@ -782,7 +1081,7 @@ public:
     void TestTable_IncorrectBegin() {
         this->m_table->Clear();
 
-        FastIncrementalMSRFONDItemInfo *item1 = this->m_helper->CreateMSRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        FastGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 2;
 
@@ -795,14 +1094,14 @@ public:
     void TestTable_SkipMessages() {
         this->m_table->Clear();
 
-        FastIncrementalMSRFONDItemInfo *item1 = this->m_helper->CreateMSRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        FastGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 1;
 
         if(!this->m_table->ProcessIncremental(item1))
             throw;
 
-        FastIncrementalMSRFONDItemInfo *item2 = this->m_helper->CreateMSRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        FastGenericItemInfo *item2 = this->m_helper->CreateGenericItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 3);
         item2->RptSeq = 3;
 
@@ -815,14 +1114,14 @@ public:
     void Test_2UsedItemsAfter2IncrementalMessages() {
         this->m_table->Clear();
 
-        FastIncrementalMSRFONDItemInfo *item1 = this->m_helper->CreateMSRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        FastGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 1;
 
         if(!this->m_table->ProcessIncremental(item1))
             throw;
 
-        FastIncrementalMSRFONDItemInfo *item2 = this->m_helper->CreateMSRFondItemInfo("s2", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        FastGenericItemInfo *item2 = this->m_helper->CreateGenericItemInfo("s2", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item2->RptSeq = 1;
 
@@ -838,52 +1137,54 @@ public:
     void TestTable_CorrectApplySnapshot() {
         this->m_table->Clear();
 
-        FastIncrementalMSRFONDItemInfo *item1 = this->m_helper->CreateMSRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        FastGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 1;
 
         this->m_table->ProcessIncremental(item1);
 
-        FastIncrementalMSRFONDItemInfo *item2 = this->m_helper->CreateMSRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        FastGenericItemInfo *item2 = this->m_helper->CreateGenericItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e2", 3);
         item2->RptSeq = 3;
 
         if(this->m_table->ProcessIncremental(item2))
             throw;
 
-        FastIncrementalMSRFONDItemInfo *item3 = this->m_helper->CreateMSRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        FastGenericItemInfo *item3 = this->m_helper->CreateGenericItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e3", 4);
         item3->RptSeq = 4;
 
         if(this->m_table->ProcessIncremental(item3))
             throw;
 
-        FastIncrementalMSRFONDItemInfo *item4 = this->m_helper->CreateMSRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        FastGenericItemInfo *item4 = this->m_helper->CreateGenericItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e4", 5);
         item4->RptSeq = 5;
 
         if(this->m_table->ProcessIncremental(item4))
             throw;
 
-        FastIncrementalMSRFONDItemInfo *item5 = this->m_helper->CreateMSRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        FastGenericItemInfo *item5 = this->m_helper->CreateGenericItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e5", 3);
         item5->RptSeq = 3;
 
-        FastIncrementalMSRFONDInfo *info = this->m_helper->CreateMSSFondInfo("s1", "session");
+        FastGenericInfo *info = this->m_helper->CreateMSSFondInfo("s1", "session");
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item5;
 
-        StatisticsInfo<FastIncrementalMSRFONDItemInfo> *tb = this->m_table->GetItem("s1", "session");
+        StatisticsInfo<FastGenericItemInfo> *tb = this->m_table->GetItem("s1", "session");
 
         this->m_table->ObtainSnapshotItem(info);
         this->m_table->StartProcessSnapshot(info);
         if(tb != this->m_table->SnapshotItem())
             throw;
-        if(tb->Trades()->Count() != 0)
+        if(tb->BuyQuotes()->Count() != 0)
+            throw;
+        if(tb->SellQuotes()->Count() != 0)
             throw;
 
         this->m_table->ProcessSnapshot(info->GroupMDEntries, 1, 3);
-        if(tb->Trades()->Count() != 1)
+        if(tb->BuyQuotes()->Count() != 1)
             throw;
         if(tb->RptSeq() != 3)
             throw;
@@ -892,7 +1193,7 @@ public:
 
         if(tb->RptSeq() != 5)
             throw;
-        if(tb->Trades()->Count() != 3)
+        if(tb->BuyQuotes()->Count() != 3)
             throw;
         if(tb->EntriesQueue()->RptSeq() != 0)
             throw;
@@ -904,45 +1205,47 @@ public:
 
         this->m_table->Clear();
 
-        FastIncrementalMSRFONDItemInfo *item1 = this->m_helper->CreateMSRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        FastGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 1;
 
         this->m_table->ProcessIncremental(item1);
 
-        FastIncrementalMSRFONDItemInfo *item3 = this->m_helper->CreateMSRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        FastGenericItemInfo *item3 = this->m_helper->CreateGenericItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e3", 4);
         item3->RptSeq = 4;
 
         if(this->m_table->ProcessIncremental(item3))
             throw;
 
-        FastIncrementalMSRFONDItemInfo *item4 = this->m_helper->CreateMSRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        FastGenericItemInfo *item4 = this->m_helper->CreateGenericItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e4", 5);
         item4->RptSeq = 5;
 
         if(this->m_table->ProcessIncremental(item4))
             throw;
 
-        FastIncrementalMSRFONDInfo *info1 = this->m_helper->CreateMSSFondInfo("s1", "session");
+        FastGenericInfo *info1 = this->m_helper->CreateMSSFondInfo("s1", "session");
         info1->GroupMDEntriesCount = 1;
         info1->RptSeq = 3;
         info1->RouteFirst = true;
-        info1->GroupMDEntries[0] = this->m_helper->CreateMSRFondItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e2");
+        info1->GroupMDEntries[0] = this->m_helper->CreateGenericItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e2");
 
-        FastIncrementalMSRFONDInfo *info2 = this->m_helper->CreateMSSFondInfo("s1", "session");
+        FastGenericInfo *info2 = this->m_helper->CreateMSSFondInfo("s1", "session");
         info2->GroupMDEntriesCount = 1;
         info2->RptSeq = 3;
         info2->RouteFirst = true;
-        info2->GroupMDEntries[0] = this->m_helper->CreateMSRFondItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e2");
+        info2->GroupMDEntries[0] = this->m_helper->CreateGenericItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e2");
 
-        StatisticsInfo<FastIncrementalMSRFONDItemInfo> *tb = this->m_table->GetItem("s1", "session");
+        StatisticsInfo<FastGenericItemInfo> *tb = this->m_table->GetItem("s1", "session");
 
         this->m_table->ObtainSnapshotItem(info1);
         this->m_table->StartProcessSnapshot(info1);
         if(tb != this->m_table->SnapshotItem())
             throw;
-        if(tb->Trades()->Count() != 0)
+        if(tb->BuyQuotes()->Count() != 0)
+            throw;
+        if(tb->SellQuotes()->Count() != 0)
             throw;
 
         this->m_table->ProcessSnapshot(info1);
@@ -951,59 +1254,61 @@ public:
             throw;
         if(tb->RptSeq() != 5)
             throw;
-        if(tb->Trades()->Count() != 4)
+        if(tb->BuyQuotes()->Count() != 4)
             throw;
     }
 
     void TestTable_IncorrectApplySnapshot() {
         this->m_table->Clear();
 
-        FastIncrementalMSRFONDItemInfo *item1 = this->m_helper->CreateMSRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        FastGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 1;
 
         this->m_table->ProcessIncremental(item1);
 
-        FastIncrementalMSRFONDItemInfo *item2 = this->m_helper->CreateMSRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        FastGenericItemInfo *item2 = this->m_helper->CreateGenericItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e2", 4);
         item2->RptSeq = 4;
 
         if(this->m_table->ProcessIncremental(item2))
             throw;
 
-        FastIncrementalMSRFONDItemInfo *item3 = this->m_helper->CreateMSRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        FastGenericItemInfo *item3 = this->m_helper->CreateGenericItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e3", 5);
         item3->RptSeq = 5;
 
         if(this->m_table->ProcessIncremental(item3))
             throw;
 
-        FastIncrementalMSRFONDItemInfo *item4 = this->m_helper->CreateMSRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        FastGenericItemInfo *item4 = this->m_helper->CreateGenericItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e4", 6);
         item4->RptSeq = 6;
 
         if(this->m_table->ProcessIncremental(item4))
             throw;
 
-        FastIncrementalMSRFONDItemInfo *item5 = this->m_helper->CreateMSRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        FastGenericItemInfo *item5 = this->m_helper->CreateGenericItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e5", 2);
         item5->RptSeq = 2;
 
-        FastIncrementalMSRFONDInfo *info = this->m_helper->CreateMSSFondInfo("s1", "session");
+        FastGenericInfo *info = this->m_helper->CreateMSSFondInfo("s1", "session");
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item5;
 
-        StatisticsInfo<FastIncrementalMSRFONDItemInfo> *tb = this->m_table->GetItem("s1", "session");
+        StatisticsInfo<FastGenericItemInfo> *tb = this->m_table->GetItem("s1", "session");
 
         this->m_table->ObtainSnapshotItem(info);
         this->m_table->StartProcessSnapshot(info);
         if(tb != this->m_table->SnapshotItem())
             throw;
-        if(tb->Trades()->Count() != 0)
+        if(tb->BuyQuotes()->Count() != 0)
+            throw;
+        if(tb->SellQuotes()->Count() != 0)
             throw;
 
         this->m_table->ProcessSnapshot(info->GroupMDEntries, 1, 2);
-        if(tb->Trades()->Count() != 1)
+        if(tb->BuyQuotes()->Count() != 1)
             throw;
         if(tb->RptSeq() != 2)
             throw;
@@ -1017,45 +1322,47 @@ public:
     void TestTable_IncorrectApplySnapshot_WhenMessageSkipped() {
         this->m_table->Clear();
 
-        FastIncrementalMSRFONDItemInfo *item1 = this->m_helper->CreateMSRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        FastGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 1;
 
         this->m_table->ProcessIncremental(item1);
 
-        FastIncrementalMSRFONDItemInfo *item2 = this->m_helper->CreateMSRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        FastGenericItemInfo *item2 = this->m_helper->CreateGenericItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e2", 4);
         item2->RptSeq = 4;
 
         if(this->m_table->ProcessIncremental(item2))
             throw;
 
-        FastIncrementalMSRFONDItemInfo *item4 = this->m_helper->CreateMSRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        FastGenericItemInfo *item4 = this->m_helper->CreateGenericItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e4", 6);
         item4->RptSeq = 6;
 
         if(this->m_table->ProcessIncremental(item4))
             throw;
 
-        FastIncrementalMSRFONDItemInfo *item5 = this->m_helper->CreateMSRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        FastGenericItemInfo *item5 = this->m_helper->CreateGenericItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e5", 3);
         item5->RptSeq = 3;
 
-        FastIncrementalMSRFONDInfo *info = this->m_helper->CreateMSSFondInfo("s1", "session");
+        FastGenericInfo *info = this->m_helper->CreateMSSFondInfo("s1", "session");
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item5;
 
-        StatisticsInfo<FastIncrementalMSRFONDItemInfo> *tb = this->m_table->GetItem("s1", "session");
+        StatisticsInfo<FastGenericItemInfo> *tb = this->m_table->GetItem("s1", "session");
 
         this->m_table->ObtainSnapshotItem(info);
         this->m_table->StartProcessSnapshot(info);
         if(tb != this->m_table->SnapshotItem())
             throw;
-        if(tb->Trades()->Count() != 0)
+        if(tb->BuyQuotes()->Count() != 0)
+            throw;
+        if(tb->SellQuotes()->Count() != 0)
             throw;
 
         this->m_table->ProcessSnapshot(info->GroupMDEntries, 1, 3);
-        if(tb->Trades()->Count() != 1)
+        if(tb->BuyQuotes()->Count() != 1)
             throw;
         if(tb->RptSeq() != 3)
             throw;
@@ -1077,7 +1384,7 @@ public:
         this->m_helper->SendMessages(c, items, count);
     }
 
-    void TestConnection_EmptyTest() {
+    void TestConnectionFond_EmptyTest() {
         this->Clear();
 
         SendMessages(incFond, new TestTemplateInfo*[3] {
@@ -1087,7 +1394,7 @@ public:
 
     }
 
-    void TestConnection_TestCorrectIncMessages() {
+    void TestConnectionFond_TestCorrectIncMessages() {
         this->Clear();
 
         SendMessages(incFond, new TestTemplateInfo*[3] {
@@ -1110,20 +1417,20 @@ public:
         if(!incFond->Listen_Atom_Incremental_Core())
             throw;
 
-        this->TestTableItemsAllocator(incFond->StatFond());
+        this->TestTableItemsAllocator(incFond->StatisticFond());
 
         if(incFond->m_waitTimer->Active()) // everything is ok = timer should not be activated
             throw;
-        if(incFond->StatFond()->GetItem("s1", "session1")->Trades()->Count() != 4)
+        if(incFond->StatisticFond()->GetItem("s1", "session1")->BuyQuotes()->Count() != 4)
             throw;
     }
 
-    //
-    // Incremental message num 2 is lost. This means that for item s1 and session1 only first two MDEntryItems will be applied and
-    // MDEntryItem with rptseq = 4 will be added to que
-    // and then we receive msg num 3 and apply all
-    //
-    void TestConnection_TestIncMessagesLost_AndWhenAppeared() {
+    /*
+     * Incremental message num 2 is lost. This means that for item s1 and session1 only first two MDEntryItems will be applied and
+     * MDEntryItem with rptseq = 4 will be added to que
+     * and then we receive msg num 3 and apply all
+     * */
+    void TestConnectionFond_TestIncMessagesLost_AndWhenAppeared() {
         this->Clear();
 
         SendMessages(incFond, new TestTemplateInfo*[2] {
@@ -1140,10 +1447,10 @@ public:
         if(!incFond->Listen_Atom_Incremental_Core())
             throw;
 
-        this->TestTableItemsAllocator(incFond->StatFond());
+        this->TestTableItemsAllocator(incFond->StatisticFond());
 
-        StatisticsInfo<FastIncrementalMSRFONDItemInfo> *item = incFond->StatFond()->GetItem("s1", "session1");
-        if(item->Trades()->Count() != 2)
+        StatisticsInfo<FastGenericItemInfo> *item = incFond->StatisticFond()->GetItem("s1", "session1");
+        if(item->BuyQuotes()->Count() != 2)
             throw;
         if(!incFond->m_waitTimer->Active()) // not all messages was processed - some messages was skipped
             throw;
@@ -1167,17 +1474,17 @@ public:
         if(!incFond->Listen_Atom_Incremental_Core())
             throw;
 
-        this->TestTableItemsAllocator(incFond->StatFond());
+        this->TestTableItemsAllocator(incFond->StatisticFond());
 
         if(incFond->m_waitTimer->Active()) // wait timer should be deactivated because we received all lost messages
             throw;
-        if(item->Trades()->Count() != 4) // all messages from que should be applied
+        if(item->BuyQuotes()->Count() != 4) // all messages from que should be applied
             throw;
         if(item->EntriesQueue()->MaxIndex() != -1) // should be reset
             throw;
     }
 
-    void TestConnection_TestInc2MessagesLost_AppearedThen2Messages() {
+    void TestConnectionFond_TestInc2MessagesLost_AppearedThen2Messages() {
         this->Clear();
 
         SendMessages(incFond, new TestTemplateInfo*[2] {
@@ -1194,10 +1501,10 @@ public:
         if(!incFond->Listen_Atom_Incremental_Core())
             throw;
 
-        this->TestTableItemsAllocator(incFond->StatFond());
+        this->TestTableItemsAllocator(incFond->StatisticFond());
 
-        StatisticsInfo<FastIncrementalMSRFONDItemInfo> *item = incFond->StatFond()->GetItem("s1", "session1");
-        if(item->Trades()->Count() != 2)
+        StatisticsInfo<FastGenericItemInfo> *item = incFond->StatisticFond()->GetItem("s1", "session1");
+        if(item->BuyQuotes()->Count() != 2)
             throw;
         if(!incFond->m_waitTimer->Active()) // not all messages was processed - some messages was skipped
             throw;
@@ -1224,17 +1531,17 @@ public:
         if(!incFond->Listen_Atom_Incremental_Core())
             throw;
 
-        this->TestTableItemsAllocator(incFond->StatFond());
+        this->TestTableItemsAllocator(incFond->StatisticFond());
 
         if(incFond->m_waitTimer->Active()) // wait timer should be deactivated because we received all lost messages
             throw;
-        if(item->Trades()->Count() != 5) // all messages from que should be applied
+        if(item->BuyQuotes()->Count() != 5) // all messages from que should be applied
             throw;
         if(item->EntriesQueue()->MaxIndex() != -1) // should be reset
             throw;
     }
 
-    void TestConnection_TestInc2MessagesLost_AppearedSeparately_1_2() {
+    void TestConnectionFond_TestInc2MessagesLost_AppearedSeparately_1_2() {
         this->Clear();
 
         SendMessages(incFond, new TestTemplateInfo*[2] {
@@ -1251,10 +1558,10 @@ public:
         if(!incFond->Listen_Atom_Incremental_Core())
             throw;
 
-        this->TestTableItemsAllocator(incFond->StatFond());
+        this->TestTableItemsAllocator(incFond->StatisticFond());
 
-        StatisticsInfo<FastIncrementalMSRFONDItemInfo> *item = incFond->StatFond()->GetItem("s1", "session1");
-        if(item->Trades()->Count() != 2)
+        StatisticsInfo<FastGenericItemInfo> *item = incFond->StatisticFond()->GetItem("s1", "session1");
+        if(item->BuyQuotes()->Count() != 2)
             throw;
         if(!incFond->m_waitTimer->Active()) // not all messages was processed - some messages was skipped
             throw;
@@ -1280,11 +1587,11 @@ public:
         if(!incFond->Listen_Atom_Incremental_Core())
             throw;
 
-        this->TestTableItemsAllocator(incFond->StatFond());
+        this->TestTableItemsAllocator(incFond->StatisticFond());
 
         if(!incFond->m_waitTimer->Active()) // wait timer should be active because 2 messages lost but received 1
             throw;
-        if(item->Trades()->Count() != 3) // at least one message is applied
+        if(item->BuyQuotes()->Count() != 3) // at least one message is applied
             throw;
         if(!item->EntriesQueue()->HasEntries()) // should have entries
             throw;
@@ -1303,11 +1610,11 @@ public:
         if(!incFond->Listen_Atom_Incremental_Core())
             throw;
 
-        this->TestTableItemsAllocator(incFond->StatFond());
+        this->TestTableItemsAllocator(incFond->StatisticFond());
 
         if(incFond->m_waitTimer->Active()) // now wait timer should be deactivated because we received all messages
             throw;
-        if(item->Trades()->Count() != 5) // all messages applied
+        if(item->BuyQuotes()->Count() != 5) // all messages applied
             throw;
         if(item->EntriesQueue()->HasEntries()) // should have entries
             throw;
@@ -1315,7 +1622,7 @@ public:
             throw;
     }
 
-    void TestConnection_TestInc2MessagesLost_AppearedSeparately_2_1() {
+    void TestConnectionFond_TestInc2MessagesLost_AppearedSeparately_2_1() {
         this->Clear();
 
         SendMessages(incFond, new TestTemplateInfo*[2] {
@@ -1332,10 +1639,10 @@ public:
         if(!incFond->Listen_Atom_Incremental_Core())
             throw;
 
-        this->TestTableItemsAllocator(incFond->StatFond());
+        this->TestTableItemsAllocator(incFond->StatisticFond());
 
-        StatisticsInfo<FastIncrementalMSRFONDItemInfo> *item = incFond->StatFond()->GetItem("s1", "session1");
-        if(item->Trades()->Count() != 2)
+        StatisticsInfo<FastGenericItemInfo> *item = incFond->StatisticFond()->GetItem("s1", "session1");
+        if(item->BuyQuotes()->Count() != 2)
             throw;
         if(!incFond->m_waitTimer->Active()) // not all messages was processed - some messages was skipped
             throw;
@@ -1361,11 +1668,11 @@ public:
         if(!incFond->Listen_Atom_Incremental_Core())
             throw;
 
-        this->TestTableItemsAllocator(incFond->StatFond());
+        this->TestTableItemsAllocator(incFond->StatisticFond());
 
         if(!incFond->m_waitTimer->Active()) // wait timer should be active because 2 messages lost but received 1
             throw;
-        if(item->Trades()->Count() != 2) // nothing encreased because first message skipped
+        if(item->BuyQuotes()->Count() != 2) // nothing encreased because first message skipped
             throw;
         if(!item->EntriesQueue()->HasEntries()) // should have entries
             throw;
@@ -1384,11 +1691,11 @@ public:
         if(!incFond->Listen_Atom_Incremental_Core())
             throw;
 
-        this->TestTableItemsAllocator(incFond->StatFond());
+        this->TestTableItemsAllocator(incFond->StatisticFond());
 
         if(incFond->m_waitTimer->Active()) // now wait timer should be deactivated because we received all messages
             throw;
-        if(item->Trades()->Count() != 5) // applied two messages
+        if(item->BuyQuotes()->Count() != 5) // applied two messages
             throw;
         if(item->EntriesQueue()->HasEntries()) // should have entries
             throw;
@@ -1396,7 +1703,7 @@ public:
             throw;
     }
 
-    void TestConnection_TestIncMessageLost_AndWaitTimerElapsed() {
+    void TestConnectionFond_TestIncMessageLost_AndWaitTimerElapsed() {
         this->Clear();
 
         if(snapFond->State() != FeedConnectionState::fcsSuspend)
@@ -1416,9 +1723,9 @@ public:
         if(!incFond->Listen_Atom_Incremental_Core())
             throw;
 
-        this->TestTableItemsAllocator(incFond->StatFond());
+        this->TestTableItemsAllocator(incFond->StatisticFond());
 
-        StatisticsInfo<FastIncrementalMSRFONDItemInfo> *item = incFond->StatFond()->GetItem("s1", "session1");
+        StatisticsInfo<FastGenericItemInfo> *item = incFond->StatisticFond()->GetItem("s1", "session1");
         if(!incFond->m_waitTimer->Active()) // not all messages was processed - some messages was skipped
             throw;
         // wait
@@ -1439,7 +1746,7 @@ public:
             throw;
     }
 
-    void TestConnection_TestSnapshotNoMessagesAtAll() {
+    void TestConnectionFond_TestSnapshotNoMessagesAtAll() {
         this->Clear();
 
         incFond->StartListenSnapshot();
@@ -1478,7 +1785,7 @@ public:
             throw;
     }
 
-    void TestConnection_OneMessageReceived() {
+    void TestConnectionFond_OneMessageReceived() {
         this->Clear();
         incFond->StartListenSnapshot();
 
@@ -1516,7 +1823,7 @@ public:
             throw; // nothing should be happens
     }
 
-    void TestConnection_RouteFirstReceived_Empty() {
+    void TestConnectionFond_RouteFirstReceived_Empty() {
 
         this->Clear();
         incFond->StartListenSnapshot();
@@ -1563,7 +1870,7 @@ public:
             throw;
     }
 
-    void TestConnection_RouteFirstReceived_AfterSomeDummyMessages() {
+    void TestConnectionFond_RouteFirstReceived_AfterSomeDummyMessages() {
         this->Clear();
         incFond->StartListenSnapshot();
 
@@ -1681,7 +1988,7 @@ public:
             throw;
     }
 
-    void TestConnection_LastFragmentReceivedBeforeRouteFirst() {
+    void TestConnectionFond_LastFragmentReceivedBeforeRouteFirst() {
         this->Clear();
         incFond->StartListenSnapshot();
 
@@ -1709,7 +2016,7 @@ public:
             throw;
     }
 
-    void TestConnection_SnapshotSomeMessagesNotReceived() {
+    void TestConnectionFond_SnapshotSomeMessagesNotReceived() {
         this->Clear();
         incFond->StartListenSnapshot();
 
@@ -1762,7 +2069,7 @@ public:
             throw;
     }
 
-    void TestConnection_SnapshotSomeMessagesReceivedLater() {
+    void TestConnectionFond_SnapshotSomeMessagesReceivedLater() {
         this->Clear();
         incFond->StartListenSnapshot();
 
@@ -1827,7 +2134,7 @@ public:
             throw;
     }
 
-    void TestConnection_StopTimersAfterReconnect() {
+    void TestConnectionFond_StopTimersAfterReconnect() {
         this->Clear();
         incFond->StartListenSnapshot();
 
@@ -1842,7 +2149,7 @@ public:
             throw;
     }
 
-    void TestConnection_TestSnapshotCollect() {
+    void TestConnectionFond_TestSnapshotCollect() {
         this->Clear();
         incFond->StartListenSnapshot();
 
@@ -1861,14 +2168,14 @@ public:
 
         snapFond->Listen_Atom_Snapshot_Core();
         //snapshot received and should be applied
-        StatisticsInfo<FastIncrementalMSRFONDItemInfo> *tableItem = incFond->StatFond()->GetItem("s1", "session1");
+        StatisticsInfo<FastGenericItemInfo> *tableItem = incFond->StatisticFond()->GetItem("s1", "session1");
 
-        this->TestTableItemsAllocator(incFond->StatFond());
+        this->TestTableItemsAllocator(incFond->StatisticFond());
 
-        if(incFond->StatFond()->UsedItemCount() != 1)
+        if(incFond->StatisticFond()->UsedItemCount() != 1)
             throw;
 
-        if(tableItem->Trades()->Count() != 2)
+        if(tableItem->BuyQuotes()->Count() != 2)
             throw;
         if(snapFond->m_snapshotRouteFirst != -1)
             throw;
@@ -1880,7 +2187,7 @@ public:
             throw;
     }
 
-    void TestConnection_TestSnapshotMessageLostAndTimeExpired() {
+    void TestConnectionFond_TestSnapshotMessageLostAndTimeExpired() {
         this->Clear();
         snapFond->WaitSnapshotMaxTimeMs(100);
         incFond->StartListenSnapshot();
@@ -1941,14 +2248,14 @@ public:
         if(snapFond->m_waitTimer->Active(1))
             throw;
     }
-    //
-    // Snapshot received for only one item, this means that snapshot connection should not be stopped
-    //
-    void TestConnection_TestMessagesLost_2Items_SnapshotReceivedForOneItem() {
+    /*
+     * Snapshot received for only one item, this means that snapshot connection should not be stopped
+     * */
+    void TestConnectionFond_TestMessagesLost_2Items_SnapshotReceivedForOneItem() {
         this->Clear();
         incFond->StartListenSnapshot();
 
-        this->TestTableItemsAllocator(incFond->StatFond());
+        this->TestTableItemsAllocator(incFond->StatisticFond());
 
         SendMessages(incFond, new TestTemplateInfo*[4] {
                 new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_MSR_FOND, 1,
@@ -1966,9 +2273,9 @@ public:
         if(!incFond->Listen_Atom_Incremental_Core())
             throw;
 
-        this->TestTableItemsAllocator(incFond->StatFond());
+        this->TestTableItemsAllocator(incFond->StatisticFond());
 
-        if(incFond->StatFond()->UsedItemCount() != 2)
+        if(incFond->StatisticFond()->UsedItemCount() != 2)
             throw;
 
         if(!incFond->m_waitTimer->Active()) // not all messages was processed - some messages was skipped
@@ -1987,36 +2294,36 @@ public:
         if(!snapFond->Listen_Atom_Snapshot_Core())
             throw;
 
-        this->TestTableItemsAllocator(incFond->StatFond());
+        this->TestTableItemsAllocator(incFond->StatisticFond());
 
         // snapshot for first item should be received and immediately applied then, should be applied incremental messages in que,
         // but connection should not be closed - because not all items were updated
-        StatisticsInfo<FastIncrementalMSRFONDItemInfo> *item1 = incFond->StatFond()->GetItem("s1", "session1");
-        StatisticsInfo<FastIncrementalMSRFONDItemInfo> *item2 = incFond->StatFond()->GetItem("s2", "session1");
+        StatisticsInfo<FastGenericItemInfo> *item1 = incFond->StatisticFond()->GetItem("s1", "session1");
+        StatisticsInfo<FastGenericItemInfo> *item2 = incFond->StatisticFond()->GetItem("s2", "session1");
         if(item1->EntriesQueue()->HasEntries())
             throw;
         if(!item2->EntriesQueue()->HasEntries())
             throw;
 
-        for(int i = 0; i < item1->Trades()->Count(); i++)
-            if(item1->Trades()->Item(i)->Allocator == 0)
+        for(int i = 0; i < item1->BuyQuotes()->Count(); i++)
+            if(item1->BuyQuotes()->Item(i)->Allocator == 0)
                 throw;
-        for(int i = 0; i < item2->Trades()->Count(); i++)
-            if(item2->Trades()->Item(i)->Allocator == 0)
+        for(int i = 0; i < item2->BuyQuotes()->Count(); i++)
+            if(item2->BuyQuotes()->Item(i)->Allocator == 0)
                 throw;
     }
 
 
 
-    void TestConnection_SkipHearthBeatMessages_Incremental() {
+    void TestConnectionFond_SkipHearthBeatMessages_Incremental() {
         this->Clear();
 
-        this->incFond->StatFond()->Add("s1", "session1");
+        this->incFond->StatisticFond()->Add("s1", "session1");
         this->incFond->StartListenSnapshot();
         if(snapFond->State() != FeedConnectionState::fcsListenSnapshot)
             throw;
         SendMessages(incFond, snapFond,
-                     "tlr entry s1 e1, lost tlr entry s1 e2, wait_snap, hbeat, hbeat, hbeat",
+                     "obr entry s1 e1, lost obr entry s1 e2, wait_snap, hbeat, hbeat, hbeat",
                      "                                                  hbeat, hbeat, hbeat",
                      30);
         if(incFond->m_packets[4]->m_item == 0 || incFond->m_packets[5]->m_item == 0 || incFond->m_packets[6]->m_item == 0)
@@ -2031,20 +2338,20 @@ public:
         //    throw;
     }
 
-    void TestConnection_AllSymbolsAreOk() {
+    void TestConnectionFond_AllSymbolsAreOk() {
         this->Clear();
 
         SendMessages(incFond, snapFond,
-                     "tlr entry s1 e1, tlr entry s1 e2, tlr entry s1 e3, tlr entry s2 e1, tlr entry s2 e2",
+                     "obr entry s1 e1, obr entry s1 e2, obr entry s1 e3, obr entry s2 e1, obr entry s2 e2",
                      "",
                      30);
-        if(incFond->StatFond()->UsedItemCount() != 2)
+        if(incFond->m_orderBookTableFond->UsedItemCount() != 2)
             throw;
-        if(incFond->StatFond()->Symbol(0)->Session(0)->EntriesQueue()->HasEntries())
+        if(incFond->m_orderBookTableFond->Symbol(0)->Session(0)->EntriesQueue()->HasEntries())
             throw;
-        if(incFond->StatFond()->Symbol(1)->Session(0)->EntriesQueue()->HasEntries())
+        if(incFond->m_orderBookTableFond->Symbol(1)->Session(0)->EntriesQueue()->HasEntries())
             throw;
-        if(incFond->StatFond()->SymbolsToRecvSnapshotCount() != 0)
+        if(incFond->StatisticFond()->SymbolsToRecvSnapshotCount() != 0)
             throw;
         if(snapFond->State() != FeedConnectionState::fcsSuspend)
             throw;
@@ -2052,18 +2359,18 @@ public:
             throw;
     }
 
-    void TestConnection_NotAllSymbolsAreOk() {
+    void TestConnectionFond_NotAllSymbolsAreOk() {
         this->Clear();
 
         SendMessages(incFond, snapFond,
-                     "tlr entry s1 e1, lost tlr entry s1 e2, tlr entry s1 e3, tlr entry s2 e1, tlr entry s2 e2",
+                     "obr entry s1 e1, lost obr entry s1 e2, obr entry s1 e3, obr entry s2 e1, obr entry s2 e2",
                      "",
                      30);
-        if(incFond->StatFond()->UsedItemCount() != 2)
+        if(incFond->m_orderBookTableFond->UsedItemCount() != 2)
             throw;
-        if(!incFond->StatFond()->Symbol(0)->Session(0)->EntriesQueue()->HasEntries())
+        if(!incFond->m_orderBookTableFond->Symbol(0)->Session(0)->EntriesQueue()->HasEntries())
             throw;
-        if(incFond->StatFond()->Symbol(1)->Session(0)->EntriesQueue()->HasEntries())
+        if(incFond->m_orderBookTableFond->Symbol(1)->Session(0)->EntriesQueue()->HasEntries())
             throw;
         if(!incFond->ShouldStartSnapshot())
             throw;
@@ -2071,31 +2378,31 @@ public:
             throw;
     }
 
-    void TestConnection_AllSymbolsAreOkButOneMessageLost() {
+    void TestConnectionFond_AllSymbolsAreOkButOneMessageLost() {
         this->Clear();
 
         SendMessages(incFond, snapFond,
-                     "tlr entry s1 e1, lost tlr entry symbol3 e2, tlr entry s1 e3, tlr entry s2 e1, tlr entry s2 e2",
+                     "obr entry s1 e1, lost obr entry symbol3 e2, obr entry s1 e3, obr entry s2 e1, obr entry s2 e2",
                      "",
                      30);
 
-        if(incFond->StatFond()->UsedItemCount() != 2)
+        if(incFond->m_orderBookTableFond->UsedItemCount() != 2)
             throw;
-        if(incFond->StatFond()->Symbol(0)->Session(0)->EntriesQueue()->HasEntries())
+        if(incFond->m_orderBookTableFond->Symbol(0)->Session(0)->EntriesQueue()->HasEntries())
             throw;
-        if(incFond->StatFond()->Symbol(1)->Session(0)->EntriesQueue()->HasEntries())
+        if(incFond->m_orderBookTableFond->Symbol(1)->Session(0)->EntriesQueue()->HasEntries())
             throw;
         if(!incFond->ShouldStartSnapshot())
             throw;
     }
 
-    void TestConnection_ParallelWorkingIncrementalAndSnapshot_1() {
+    void TestConnectionFond_ParallelWorkingIncrementalAndSnapshot_1() {
         this->Clear();
 
         if(snapFond->State() != FeedConnectionState::fcsSuspend)
             throw;
         SendMessages(incFond, snapFond,
-                     "tlr entry s1 e1, lost tlr entry symbol3 e1",
+                     "obr entry s1 e1, lost obr entry symbol3 e1",
                      "",
                      30);
         if(incFond->HasPotentiallyLostPackets())
@@ -2106,13 +2413,13 @@ public:
             throw;
     }
 
-    void TestConnection_ParallelWorkingIncrementalAndSnapshot_2() {
+    void TestConnectionFond_ParallelWorkingIncrementalAndSnapshot_2() {
         this->Clear();
 
         if(snapFond->State() != FeedConnectionState::fcsSuspend)
             throw;
         SendMessages(incFond, snapFond,
-                     "tlr entry s1 e1, lost tlr entry symbol3 e1, hbeat",
+                     "obr entry s1 e1, lost obr entry symbol3 e1, hbeat",
                      "",
                      30);
         if(!incFond->HasPotentiallyLostPackets())
@@ -2127,16 +2434,16 @@ public:
             throw;
     }
 
-    void TestConnection_ParallelWorkingIncrementalAndSnapshot_2_1() {
+    void TestConnectionFond_ParallelWorkingIncrementalAndSnapshot_2_1() {
         this->Clear();
 
-        incFond->StatFond()->Add("s1", "session1");
-        incFond->StatFond()->Add("symbol3", "session1");
+        incFond->StatisticFond()->Add("s1", "session1");
+        incFond->StatisticFond()->Add("symbol3", "session1");
 
         if(snapFond->State() != FeedConnectionState::fcsSuspend)
             throw;
         SendMessages(incFond, snapFond,
-                     "tlr entry s1 e1, lost tlr entry symbol3 e1, hbeat, hbeat",
+                     "obr entry s1 e1, lost obr entry symbol3 e1, hbeat, hbeat",
                      "",
                      30);
         if(incFond->SymbolsToRecvSnapshotCount() != 2)
@@ -2149,24 +2456,24 @@ public:
             throw;
         if(snapFond->State() != FeedConnectionState::fcsListenSnapshot)
             throw;
-        if(incFond->StatFond()->SymbolsToRecvSnapshotCount() != 2)
+        if(incFond->StatisticFond()->SymbolsToRecvSnapshotCount() != 2)
             throw;
-        if(incFond->StatFond()->Symbol(0)->SessionsToRecvSnapshotCount() != 1)
+        if(incFond->StatisticFond()->Symbol(0)->SessionsToRecvSnapshotCount() != 1)
             throw;
-        if(incFond->StatFond()->Symbol(1)->SessionsToRecvSnapshotCount() != 1)
+        if(incFond->StatisticFond()->Symbol(1)->SessionsToRecvSnapshotCount() != 1)
             throw;
     }
     // snapshot should not be stopped
-    void TestConnection_ParallelWorkingIncrementalAndSnapshot_3() {
+    void TestConnectionFond_ParallelWorkingIncrementalAndSnapshot_3() {
         this->Clear();
 
-        incFond->StatFond()->Add("s1", "session1");
-        incFond->StatFond()->Add("symbol3", "session1");
+        incFond->StatisticFond()->Add("s1", "session1");
+        incFond->StatisticFond()->Add("symbol3", "session1");
 
         if(snapFond->State() != FeedConnectionState::fcsSuspend)
             throw;
         SendMessages(incFond, snapFond,
-                     "tlr entry s1 e1, lost tlr entry symbol3 e1, hbeat, hbeat, hbeat",
+                     "obr entry s1 e1, lost obr entry symbol3 e1, hbeat, hbeat, hbeat",
                      "",
                      30);
         if(incFond->SymbolsToRecvSnapshotCount() != 2)
@@ -2179,24 +2486,24 @@ public:
             throw;
         if(snapFond->State() != FeedConnectionState::fcsListenSnapshot)
             throw;
-        if(incFond->StatFond()->SymbolsToRecvSnapshotCount() != 2)
+        if(incFond->StatisticFond()->SymbolsToRecvSnapshotCount() != 2)
             throw;
-        if(incFond->StatFond()->Symbol(0)->SessionsToRecvSnapshotCount() != 1)
+        if(incFond->StatisticFond()->Symbol(0)->SessionsToRecvSnapshotCount() != 1)
             throw;
-        if(incFond->StatFond()->Symbol(1)->SessionsToRecvSnapshotCount() != 1)
+        if(incFond->StatisticFond()->Symbol(1)->SessionsToRecvSnapshotCount() != 1)
             throw;
     }
     // exceeded connection time
-    void TestConnection_ParallelWorkingIncrementalAndSnapshot_3_1() {
+    void TestConnectionFond_ParallelWorkingIncrementalAndSnapshot_3_1() {
         this->Clear();
 
-        incFond->StatFond()->Add("s1", "session1");
-        incFond->StatFond()->Add("symbol3", "session1");
+        incFond->StatisticFond()->Add("s1", "session1");
+        incFond->StatisticFond()->Add("symbol3", "session1");
 
         if(snapFond->State() != FeedConnectionState::fcsSuspend)
             throw;
         SendMessages(incFond, snapFond,
-                     "tlr entry s1 e1, lost tlr entry symbol3 e1, hbeat, hbeat, hbeat, hbeat, hbeat, hbeat, hbeat, hbeat, hbeat",
+                     "obr entry s1 e1, lost obr entry symbol3 e1, hbeat, hbeat, hbeat, hbeat, hbeat, hbeat, hbeat, hbeat, hbeat",
                      "",
                      30);
         if(incFond->SymbolsToRecvSnapshotCount() != 2)
@@ -2209,24 +2516,24 @@ public:
             throw;
         if(snapFond->State() != FeedConnectionState::fcsConnect)
             throw;
-        if(incFond->StatFond()->SymbolsToRecvSnapshotCount() != 2)
+        if(incFond->StatisticFond()->SymbolsToRecvSnapshotCount() != 2)
             throw;
-        if(incFond->StatFond()->Symbol(0)->SessionsToRecvSnapshotCount() != 1)
+        if(incFond->StatisticFond()->Symbol(0)->SessionsToRecvSnapshotCount() != 1)
             throw;
-        if(incFond->StatFond()->Symbol(1)->SessionsToRecvSnapshotCount() != 1)
+        if(incFond->StatisticFond()->Symbol(1)->SessionsToRecvSnapshotCount() != 1)
             throw;
     }
 
-    void TestConnection_ParallelWorkingIncrementalAndSnapshot_4() {
+    void TestConnectionFond_ParallelWorkingIncrementalAndSnapshot_4() {
         this->Clear();
 
-        incFond->StatFond()->Add("s1", "session1");
-        incFond->StatFond()->Add("symbol3", "session1");
+        incFond->StatisticFond()->Add("s1", "session1");
+        incFond->StatisticFond()->Add("symbol3", "session1");
 
         if(snapFond->State() != FeedConnectionState::fcsSuspend)
             throw;
         SendMessages(incFond, snapFond,
-                     "tlr entry s1 e1, lost tlr entry symbol3 e1, wait_snap",
+                     "obr entry s1 e1, lost obr entry symbol3 e1, wait_snap",
                      "",
                      30);
         if(incFond->m_waitTimer->Active())
@@ -2237,28 +2544,28 @@ public:
             throw;
         if(!incFond->ShouldStartSnapshot())
             throw;
-        if(incFond->StatFond()->SymbolsToRecvSnapshotCount() != 2)
+        if(incFond->StatisticFond()->SymbolsToRecvSnapshotCount() != 2)
             throw;
-        if(incFond->StatFond()->Symbol(1)->SessionsToRecvSnapshotCount() != 1)
+        if(incFond->StatisticFond()->Symbol(1)->SessionsToRecvSnapshotCount() != 1)
             throw;
-        if(incFond->StatFond()->Symbol(1)->SessionsToRecvSnapshotCount() != 1)
+        if(incFond->StatisticFond()->Symbol(1)->SessionsToRecvSnapshotCount() != 1)
             throw;
     }
     // we should receive at least one snapshot for all items
     // we received snapshot for one item
     // and we did not receive incremental messages for symbol 2 after snapshot
-    void TestConnection_ParallelWorkingIncrementalAndSnapshot_5() {
+    void TestConnectionFond_ParallelWorkingIncrementalAndSnapshot_5() {
         this->Clear();
 
-        incFond->StatFond()->Add("s1", "session1");
-        incFond->StatFond()->Add("s2", "session1");
-        incFond->StatFond()->Add("symbol3", "session1");
+        incFond->StatisticFond()->Add("s1", "session1");
+        incFond->StatisticFond()->Add("s2", "session1");
+        incFond->StatisticFond()->Add("symbol3", "session1");
 
         if(snapFond->State() != FeedConnectionState::fcsSuspend)
             throw;
         SendMessages(incFond, snapFond,
-                     "tlr entry s1 e1, lost tlr entry symbol3 e1, wait_snap, tlr entry s1 e3,    hbeat,                              hbeat",
-                     "                                                            tls symbol3 begin rpt 1, tls symbol3 rpt 1 entry symbol3 e1, tls symbol3 rpt 1 end",
+                     "obr entry s1 e1, lost obr entry symbol3 e1, wait_snap, obr entry s1 e3,    hbeat,                              hbeat",
+                     "                                                            obs symbol3 begin rpt 1, obs symbol3 rpt 1 entry symbol3 e1, obs symbol3 rpt 1 end",
                      30);
         if(incFond->HasQueueEntries())
             throw;
@@ -2266,13 +2573,13 @@ public:
             throw;
         if(snapFond->State() == FeedConnectionState::fcsSuspend)
             throw;
-        if(incFond->StatFond()->UsedItemCount() != 3)
+        if(incFond->m_orderBookTableFond->UsedItemCount() != 3)
             throw;
-        if(incFond->StatFond()->GetItem("s1", "session1")->Trades()->Count() != 2)
+        if(incFond->m_orderBookTableFond->GetItem("s1", "session1")->BuyQuotes()->Count() != 2)
             throw;
-        if(incFond->StatFond()->GetItem("s2", "session1")->Trades()->Count() != 0)
+        if(incFond->m_orderBookTableFond->GetItem("s2", "session1")->BuyQuotes()->Count() != 0)
             throw;
-        if(incFond->StatFond()->GetItem("symbol3", "session1")->Trades()->Count() != 1)
+        if(incFond->m_orderBookTableFond->GetItem("symbol3", "session1")->BuyQuotes()->Count() != 1)
             throw;
         if(incFond->m_startMsgSeqNum != 2)
             throw;
@@ -2283,20 +2590,20 @@ public:
         if(snapFond->m_endMsgSeqNum != 3)
             throw;
     }
-    void TestConnection_ParallelWorkingIncrementalAndSnapshot_5_1() {
+    void TestConnectionFond_ParallelWorkingIncrementalAndSnapshot_5_1() {
         this->Clear();
 
-        incFond->StatFond()->Add("s1", "session1");
+        incFond->StatisticFond()->Add("s1", "session1");
 
         if(snapFond->State() != FeedConnectionState::fcsSuspend)
             throw;
         SendMessages(incFond, snapFond,
-                     "lost tlr entry s1 e1, lost hbeat, wait_snap",
-                     "tls s1 begin rpt 1, tls s1 rpt 1 entry s1 e1, tls s1 rpt 1 end",
+                     "lost obr entry s1 e1, lost hbeat, wait_snap",
+                     "obs s1 begin rpt 1, obs s1 rpt 1 entry s1 e1, obs s1 rpt 1 end",
                      30);
         if(incFond->HasQueueEntries())
             throw;
-        if(incFond->StatFond()->SymbolsToRecvSnapshotCount() != 0)
+        if(incFond->StatisticFond()->SymbolsToRecvSnapshotCount() != 0)
             throw;
         if(incFond->SymbolsToRecvSnapshotCount() != 0)
             throw;
@@ -2304,9 +2611,9 @@ public:
             throw;
         if(snapFond->State() != FeedConnectionState::fcsSuspend)
             throw;
-        if(incFond->StatFond()->UsedItemCount() != 1)
+        if(incFond->m_orderBookTableFond->UsedItemCount() != 1)
             throw;
-        if(incFond->StatFond()->GetItem("s1", "session1")->Trades()->Count() != 1)
+        if(incFond->m_orderBookTableFond->GetItem("s1", "session1")->BuyQuotes()->Count() != 1)
             throw;
         if(incFond->m_startMsgSeqNum != 4)
             throw;
@@ -2318,40 +2625,40 @@ public:
             throw;
     }
     // snapshot completed because we received snapshot for all items
-    void TestConnection_ParallelWorkingIncrementalAndSnapshot_5_2() {
+    void TestConnectionFond_ParallelWorkingIncrementalAndSnapshot_5_2() {
         this->Clear();
 
-        incFond->StatFond()->Add("s1", "session1");
-        incFond->StatFond()->Add("s2", "session1");
-        incFond->StatFond()->Add("symbol3", "session1");
+        incFond->StatisticFond()->Add("s1", "session1");
+        incFond->StatisticFond()->Add("s2", "session1");
+        incFond->StatisticFond()->Add("symbol3", "session1");
 
         if(snapFond->State() != FeedConnectionState::fcsSuspend)
             throw;
-        if(incFond->StatFond()->UsedItemCount() != 3)
+        if(incFond->StatisticFond()->UsedItemCount() != 3)
             throw;
         SendMessages(incFond, snapFond,
-                     "tlr entry s1 e1, lost tlr entry symbol3 e1, wait_snap, tlr entry s1 e3,                         hbeat,                                        hbeat",
-                     "                                                            tls symbol3 begin rpt 1 end entry symbol3 e1, tls s1 begin rpt 2 end entry s1 e1, hbeat, tls s2 begin rpt 2 end entry s2 e1",
+                     "obr entry s1 e1, lost obr entry symbol3 e1, wait_snap, obr entry s1 e3,                         hbeat,                                        hbeat",
+                     "                                                            obs symbol3 begin rpt 1 end entry symbol3 e1, obs s1 begin rpt 2 end entry s1 e1, hbeat, obs s2 begin rpt 2 end entry s2 e1",
                      30);
         if(incFond->HasQueueEntries())
             throw;
-        if(incFond->StatFond()->GetItem("s1", "session1")->RptSeq() != 2)
+        if(incFond->m_orderBookTableFond->GetItem("s1", "session1")->RptSeq() != 2)
             throw;
-        if(incFond->StatFond()->GetItem("symbol3", "session1")->RptSeq() != 1)
+        if(incFond->m_orderBookTableFond->GetItem("symbol3", "session1")->RptSeq() != 1)
             throw;
-        if(incFond->StatFond()->GetItem("s2", "session1")->RptSeq() != 2)
+        if(incFond->m_orderBookTableFond->GetItem("s2", "session1")->RptSeq() != 2)
             throw;
         if(!incFond->CanStopListeningSnapshot())
             throw;
         if(snapFond->State() != FeedConnectionState::fcsSuspend)
             throw;
-        if(incFond->StatFond()->UsedItemCount() != 3)
+        if(incFond->m_orderBookTableFond->UsedItemCount() != 3)
             throw;
-        if(incFond->StatFond()->GetItem("s1", "session1")->Trades()->Count() != 2) // snapshot applied virtually actually skipped
+        if(incFond->m_orderBookTableFond->GetItem("s1", "session1")->BuyQuotes()->Count() != 2) // snapshot applied virtually actually skipped
             throw;
-        if(incFond->StatFond()->GetItem("s2", "session1")->Trades()->Count() != 1)
+        if(incFond->m_orderBookTableFond->GetItem("s2", "session1")->BuyQuotes()->Count() != 1)
             throw;
-        if(incFond->StatFond()->GetItem("symbol3", "session1")->Trades()->Count() != 1)
+        if(incFond->m_orderBookTableFond->GetItem("symbol3", "session1")->BuyQuotes()->Count() != 1)
             throw;
         if(incFond->m_startMsgSeqNum != 7)
             throw;
@@ -2363,42 +2670,42 @@ public:
             throw;
     }
     // snapshot completed because we received snapshot for all items
-    // almost the same as TestConnection_ParallelWorkingIncrementalAndSnapshot_5_2
+    // almost the same as TestConnectionFond_ParallelWorkingIncrementalAndSnapshot_5_2
     // however there is no heartbeat msg in snap channel so symbol 2 receives snapshot earlier than his second message so it buyquotes count == 1
-    void TestConnection_ParallelWorkingIncrementalAndSnapshot_5_2_2() {
+    void TestConnectionFond_ParallelWorkingIncrementalAndSnapshot_5_2_2() {
         this->Clear();
 
-        incFond->StatFond()->Add("s1", "session1");
-        incFond->StatFond()->Add("s2", "session1");
-        incFond->StatFond()->Add("symbol3", "session1");
+        incFond->StatisticFond()->Add("s1", "session1");
+        incFond->StatisticFond()->Add("s2", "session1");
+        incFond->StatisticFond()->Add("symbol3", "session1");
 
         if(snapFond->State() != FeedConnectionState::fcsSuspend)
             throw;
-        if(incFond->StatFond()->UsedItemCount() != 3)
+        if(incFond->StatisticFond()->UsedItemCount() != 3)
             throw;
         SendMessages(incFond, snapFond,
-                     "tlr entry s1 e1, lost tlr entry symbol3 e1, wait_snap, tlr entry s1 e3,                         tlr entry s2 e1,                         tlr entry s2 e2",
-                     "                                                            tls symbol3 begin rpt 1 end entry symbol3 e1, tls s1 begin rpt 2 end entry s1 e1, tls s2 begin rpt 2 end entry s2 e1 skip_if_suspend",
+                     "obr entry s1 e1, lost obr entry symbol3 e1, wait_snap, obr entry s1 e3,                         obr entry s2 e1,                         obr entry s2 e2",
+                     "                                                            obs symbol3 begin rpt 1 end entry symbol3 e1, obs s1 begin rpt 2 end entry s1 e1, obs s2 begin rpt 2 end entry s2 e1 skip_if_suspend",
                      30);
         if(incFond->HasQueueEntries())
             throw;
-        if(incFond->StatFond()->GetItem("s1", "session1")->RptSeq() != 2)
+        if(incFond->m_orderBookTableFond->GetItem("s1", "session1")->RptSeq() != 2)
             throw;
-        if(incFond->StatFond()->GetItem("symbol3", "session1")->RptSeq() != 1)
+        if(incFond->m_orderBookTableFond->GetItem("symbol3", "session1")->RptSeq() != 1)
             throw;
-        if(incFond->StatFond()->GetItem("s2", "session1")->RptSeq() != 2)
+        if(incFond->m_orderBookTableFond->GetItem("s2", "session1")->RptSeq() != 2)
             throw;
         if(!incFond->CanStopListeningSnapshot())
             throw;
         if(snapFond->State() != FeedConnectionState::fcsSuspend)
             throw;
-        if(incFond->StatFond()->UsedItemCount() != 3)
+        if(incFond->m_orderBookTableFond->UsedItemCount() != 3)
             throw;
-        if(incFond->StatFond()->GetItem("s1", "session1")->Trades()->Count() != 2) // snapshot applied virtually actually skipped
+        if(incFond->m_orderBookTableFond->GetItem("s1", "session1")->BuyQuotes()->Count() != 2) // snapshot applied virtually actually skipped
             throw;
-        if(incFond->StatFond()->GetItem("s2", "session1")->Trades()->Count() != 2)
+        if(incFond->m_orderBookTableFond->GetItem("s2", "session1")->BuyQuotes()->Count() != 2)
             throw;
-        if(incFond->StatFond()->GetItem("symbol3", "session1")->Trades()->Count() != 1)
+        if(incFond->m_orderBookTableFond->GetItem("symbol3", "session1")->BuyQuotes()->Count() != 1)
             throw;
         if(incFond->m_startMsgSeqNum != 7)
             throw;
@@ -2410,26 +2717,26 @@ public:
             throw;
     }
     // we receive snapshot which rpt seq is less than incremental actual rpt seq
-    void TestConnection_ParallelWorkingIncrementalAndSnapshot_5_3() {
+    void TestConnectionFond_ParallelWorkingIncrementalAndSnapshot_5_3() {
         this->Clear();
 
-        incFond->StatFond()->Add("s1", "session1");
+        incFond->StatisticFond()->Add("s1", "session1");
 
         if(!incFond->m_waitTimer->Active())
             throw;
         SendMessages(incFond, snapFond,
-                     "tlr entry s1 e1, tlr entry s1 e2, tlr entry s1 e3, lost hbeat, wait_snap, hbeat",
-                     "                                                                          tls s1 begin rpt 1 entry s1 e1 end",
+                     "obr entry s1 e1, obr entry s1 e2, obr entry s1 e3, lost hbeat, wait_snap, hbeat",
+                     "                                                                          obs s1 begin rpt 1 entry s1 e1 end",
                      50);
         if(incFond->HasQueueEntries())
             throw;
-        if(incFond->StatFond()->SymbolsToRecvSnapshotCount() != 1)
+        if(incFond->StatisticFond()->SymbolsToRecvSnapshotCount() != 1)
             throw;
         if(incFond->CanStopListeningSnapshot())
             throw;
-        if(incFond->StatFond()->GetItem("s1", "session1")->RptSeq() != 3)
+        if(incFond->StatisticFond()->GetItem("s1", "session1")->RptSeq() != 3)
             throw;
-        if(incFond->StatFond()->GetItem("s1", "session1")->Trades()->Count() != 3)
+        if(incFond->StatisticFond()->GetItem("s1", "session1")->BuyQuotes()->Count() != 3)
             throw;
         if(snapFond->m_startMsgSeqNum != 2)
             throw;
@@ -2441,43 +2748,43 @@ public:
             throw;
     }
     // we received snapshot for item but item has 2 gaps and snapshot is partially actual
-    void TestConnection_ParallelWorkingIncrementalAndSnapshot_5_4() {
+    void TestConnectionFond_ParallelWorkingIncrementalAndSnapshot_5_4() {
         this->Clear();
 
         incFond->WaitIncrementalMaxTimeMs(500);
-        incFond->StatFond()->Add("s1", "session1");
+        incFond->StatisticFond()->Add("s1", "session1");
         incFond->Start();
 
         SendMessages(incFond, snapFond,
-                     "tlr entry s1 e1, tlr entry s1 e2, lost tlr entry s1 e3, tlr entry s1 e4, lost tlr entry s1 e5, tlr entry s1 e6, wait_snap, ",
-                     "                                                                                                                           tls s1 begin rpt 4 entry s1 e4 end",
+                     "obr entry s1 e1, obr entry s1 e2, lost obr entry s1 e3, obr entry s1 e4, lost obr entry s1 e5, obr entry s1 e6, wait_snap, ",
+                     "                                                                                                                           obs s1 begin rpt 4 entry s1 e4 end",
                      30);
-        if(incFond->StatFond()->SymbolsToRecvSnapshotCount() != 1)
+        if(incFond->StatisticFond()->SymbolsToRecvSnapshotCount() != 1)
             throw;
         if(incFond->CanStopListeningSnapshot())
             throw;
         if(snapFond->State() != FeedConnectionState::fcsListenSnapshot)
             throw;
-        if(!incFond->StatFond()->GetItem("s1", "session1")->EntriesQueue()->HasEntries())
+        if(!incFond->StatisticFond()->GetItem("s1", "session1")->EntriesQueue()->HasEntries())
             throw;
-        if(incFond->StatFond()->GetItem("s1", "session1")->RptSeq() != 4)
+        if(incFond->StatisticFond()->GetItem("s1", "session1")->RptSeq() != 4)
             throw;
-        if(incFond->StatFond()->GetItem("s1", "session1")->Trades()->Count() != 1)
+        if(incFond->StatisticFond()->GetItem("s1", "session1")->BuyQuotes()->Count() != 1)
             throw;
     }
     // almost the same as 5_4 but we received new snapshot for item but item has 2 gaps and snapshot is fully actual
-    void TestConnection_ParallelWorkingIncrementalAndSnapshot_5_4_1() {
+    void TestConnectionFond_ParallelWorkingIncrementalAndSnapshot_5_4_1() {
         this->Clear();
 
         incFond->WaitIncrementalMaxTimeMs(500);
-        incFond->StatFond()->Add("s1", "session1");
+        incFond->StatisticFond()->Add("s1", "session1");
         incFond->Start();
 
         SendMessages(incFond, snapFond,
-                     "tlr entry s1 e1, tlr entry s1 e2, lost tlr entry s1 e3, tlr entry s1 e4, lost tlr entry s1 e5, tlr entry s1 e6, wait_snap, ",
-                     "                                                                                                                           tls s1 begin rpt 5 entry s1 e5 end",
+                     "obr entry s1 e1, obr entry s1 e2, lost obr entry s1 e3, obr entry s1 e4, lost obr entry s1 e5, obr entry s1 e6, wait_snap, ",
+                     "                                                                                                                           obs s1 begin rpt 5 entry s1 e5 end",
                      30);
-        if(incFond->StatFond()->SymbolsToRecvSnapshotCount() != 0)
+        if(incFond->StatisticFond()->SymbolsToRecvSnapshotCount() != 0)
             throw;
         if(incFond->HasQueueEntries())
             throw;
@@ -2485,26 +2792,26 @@ public:
             throw;
         if(snapFond->State() != FeedConnectionState::fcsSuspend)
             throw;
-        if(incFond->StatFond()->GetItem("s1", "session1")->EntriesQueue()->HasEntries())
+        if(incFond->StatisticFond()->GetItem("s1", "session1")->EntriesQueue()->HasEntries())
             throw;
-        if(incFond->StatFond()->GetItem("s1", "session1")->RptSeq() != 6)
+        if(incFond->StatisticFond()->GetItem("s1", "session1")->RptSeq() != 6)
             throw;
-        if(incFond->StatFond()->GetItem("s1", "session1")->Trades()->Count() != 2)
+        if(incFond->StatisticFond()->GetItem("s1", "session1")->BuyQuotes()->Count() != 2)
             throw;
     }
     // almost the same as 5_4_1 but we received new snapshot with rptseq 6
-    void TestConnection_ParallelWorkingIncrementalAndSnapshot_5_4_2() {
+    void TestConnectionFond_ParallelWorkingIncrementalAndSnapshot_5_4_2() {
         this->Clear();
 
         incFond->WaitIncrementalMaxTimeMs(500);
-        incFond->StatFond()->Add("s1", "session1");
+        incFond->StatisticFond()->Add("s1", "session1");
         incFond->Start();
 
         SendMessages(incFond, snapFond,
-                     "tlr entry s1 e1, tlr entry s1 e2, lost tlr entry s1 e3, tlr entry s1 e4, lost tlr entry s1 e5, tlr entry s1 e6, wait_snap, ",
-                     "                                                                                                                           tls s1 begin rpt 6 entry s1 e6 end",
+                     "obr entry s1 e1, obr entry s1 e2, lost obr entry s1 e3, obr entry s1 e4, lost obr entry s1 e5, obr entry s1 e6, wait_snap, ",
+                     "                                                                                                                           obs s1 begin rpt 6 entry s1 e6 end",
                      30);
-        if(incFond->StatFond()->SymbolsToRecvSnapshotCount() != 0)
+        if(incFond->StatisticFond()->SymbolsToRecvSnapshotCount() != 0)
             throw;
         if(incFond->HasQueueEntries())
             throw;
@@ -2512,133 +2819,142 @@ public:
             throw;
         if(snapFond->State() != FeedConnectionState::fcsSuspend)
             throw;
-        if(incFond->StatFond()->GetItem("s1", "session1")->EntriesQueue()->HasEntries())
+        if(incFond->StatisticFond()->GetItem("s1", "session1")->EntriesQueue()->HasEntries())
             throw;
-        if(incFond->StatFond()->GetItem("s1", "session1")->RptSeq() != 6)
+        if(incFond->StatisticFond()->GetItem("s1", "session1")->RptSeq() != 6)
             throw;
-        if(incFond->StatFond()->GetItem("s1", "session1")->Trades()->Count() != 1)
+        if(incFond->StatisticFond()->GetItem("s1", "session1")->BuyQuotes()->Count() != 1)
             throw;
     }
     // we have received snapshot and almost ok but next incremental message during snapshot has greater RptSeq
-    void TestConnection_ParallelWorkingIncrementalAndSnapshot_5_5() {
+    void TestConnectionFond_ParallelWorkingIncrementalAndSnapshot_5_5() {
         this->Clear();
 
         incFond->WaitIncrementalMaxTimeMs(500);
-        incFond->StatFond()->Add("s1", "session1");
-        incFond->StatFond()->Add("s2", "session1");
+        incFond->StatisticFond()->Add("s1", "session1");
+        incFond->StatisticFond()->Add("s2", "session1");
         incFond->Start();
 
         SendMessages(incFond, snapFond,
-                     "tlr entry s1 e1, tlr entry s2 e1, lost tlr entry s1 e2, wait_snap, hbeat                               lost tlr entry s1 e3,               tlr entry s1 e4",
-                     "                                                                   tls s1 begin rpt 2 entry s1 e2 end, tls s2 begin rpt 1 entry s2 e1 end, hbeat",
+                     "obr entry s1 e1, obr entry s2 e1, lost obr entry s1 e2, wait_snap, hbeat                               lost obr entry s1 e3,               obr entry s1 e4",
+                     "                                                                   obs s1 begin rpt 2 entry s1 e2 end, obs s2 begin rpt 1 entry s2 e1 end, hbeat",
                      30);
         if(incFond->CanStopListeningSnapshot())
             throw;
         if(snapFond->State() != FeedConnectionState::fcsListenSnapshot)
             throw;
-        if(incFond->StatFond()->GetItem("s1", "session1")->RptSeq() != 2)
+        if(incFond->StatisticFond()->GetItem("s1", "session1")->RptSeq() != 2)
             throw;
-        if(!incFond->StatFond()->GetItem("s1", "session1")->EntriesQueue()->HasEntries())
+        if(!incFond->StatisticFond()->GetItem("s1", "session1")->EntriesQueue()->HasEntries())
             throw;
-        if(incFond->StatFond()->GetItem("s1", "session1")->EntriesQueue()->StartRptSeq() != 3)
+        if(incFond->StatisticFond()->GetItem("s1", "session1")->EntriesQueue()->StartRptSeq() != 3)
             throw;
-        if(incFond->StatFond()->GetItem("s1", "session1")->EntriesQueue()->MaxIndex() != 1)
+        if(incFond->StatisticFond()->GetItem("s1", "session1")->EntriesQueue()->MaxIndex() != 1)
             throw;
-        if(incFond->StatFond()->GetItem("s2", "session1")->RptSeq() != 1)
+        if(incFond->StatisticFond()->GetItem("s2", "session1")->RptSeq() != 1)
             throw;
-        if(incFond->StatFond()->QueueEntriesCount() != 1)
+        if(incFond->StatisticFond()->QueueEntriesCount() != 1)
             throw;
     }
     // we have received snapshot and almost ok but next incremental message during snapshot has greater RptSeq
     // and we receive second time snapshot for s1
-    void TestConnection_ParallelWorkingIncrementalAndSnapshot_5_5_1() {
+    void TestConnectionFond_ParallelWorkingIncrementalAndSnapshot_5_5_1() {
         this->Clear();
 
-        incFond->StatFond()->Add("s1", "session1");
-        incFond->StatFond()->Add("s2", "session1");
+        incFond->StatisticFond()->Add("s1", "session1");
+        incFond->StatisticFond()->Add("s2", "session1");
         incFond->Start();
 
         SendMessages(incFond, snapFond,
-                     "tlr entry s1 e1, tlr entry s2 e1, lost tlr entry s1 e2, wait_snap, hbeat                               lost tlr entry s1 e3,               tlr entry s1 e4, hbeat ",
-                     "                                                                   tls s1 begin rpt 2 entry s1 e2 end, tls s2 begin rpt 1 entry s2 e1 end, hbeat          , tls s1 begin rpt 3 entry s1 e3 end",
+                     "obr entry s1 e1, obr entry s2 e1, lost obr entry s1 e2, wait_snap, hbeat                               lost obr entry s1 e3,               obr entry s1 e4, hbeat ",
+                     "                                                                   obs s1 begin rpt 2 entry s1 e2 end, obs s2 begin rpt 1 entry s2 e1 end, hbeat          , obs s1 begin rpt 3 entry s1 e3 end",
                      30);
         if(!incFond->CanStopListeningSnapshot())
             throw;
         if(snapFond->State() != FeedConnectionState::fcsSuspend)
             throw;
-        if(incFond->StatFond()->GetItem("s1", "session1")->RptSeq() != 4)
+        if(incFond->StatisticFond()->GetItem("s1", "session1")->RptSeq() != 4)
             throw;
-        if(incFond->StatFond()->GetItem("s1", "session1")->EntriesQueue()->HasEntries())
+        if(incFond->StatisticFond()->GetItem("s1", "session1")->EntriesQueue()->HasEntries())
             throw;
-        if(incFond->StatFond()->QueueEntriesCount() != 0)
+        if(incFond->StatisticFond()->QueueEntriesCount() != 0)
             throw;
-        if(incFond->StatFond()->SymbolsToRecvSnapshotCount() != 0)
+        if(incFond->StatisticFond()->SymbolsToRecvSnapshotCount() != 0)
             throw;
     }
     // we have received incremental message after entering snapshot mode for item and item in is actual state - so it do not need snapshot
-    void TestConnection_ParallelWorkingIncrementalAndSnapshot_5_6() {
+    void TestConnectionFond_ParallelWorkingIncrementalAndSnapshot_5_6() {
         this->Clear();
 
-        incFond->StatFond()->Add("s1", "session1");
-        incFond->StatFond()->Add("s2", "session1");
+        incFond->StatisticFond()->Add("s1", "session1");
+        incFond->StatisticFond()->Add("s2", "session1");
         incFond->Start();
 
         SendMessages(incFond, snapFond,
-                     "tlr entry s1 e1, tlr entry s2 e1, lost tlr entry s1 e2, wait_snap, tlr entry s2 e2, hbeat",
+                     "obr entry s1 e1, obr entry s2 e1, lost obr entry s1 e2, wait_snap, obr entry s2 e2, hbeat",
                      "                                                        hbeat,     hbeat,           hbeat",
                      30);
         if(incFond->CanStopListeningSnapshot())
             throw;
         if(snapFond->State() != FeedConnectionState::fcsListenSnapshot)
             throw;
-        if(incFond->StatFond()->SymbolsToRecvSnapshotCount() != 1)
+        if(incFond->StatisticFond()->SymbolsToRecvSnapshotCount() != 1)
             throw;
-        if(incFond->StatFond()->GetItem("s2", "session1")->ShouldProcessSnapshot())
+        if(incFond->StatisticFond()->GetItem("s2", "session1")->ShouldProcessSnapshot())
             throw;
     }
     // we have received twice the same snapshot (rpt seq num = the same value) which means that item did not receive incremental message so item state is actual
-    void TestConnection_ParallelWorkingIncrementalAndSnapshot_5_7() {
+    void TestConnectionFond_ParallelWorkingIncrementalAndSnapshot_5_7() {
         // do nothing. lets consider that after receiving snapshot item will be in actual state if there is no queue entries
     }
     // we can receive null snapshot i.e. snapshot with LastMsgSeqNumProcessed = 0 RptSeq = 0
     // this means that item has NO DATA
     // so just clear queue entries and decrease session to recv snapshot value
-    void TestConnection_ResetEntriesQueueIfNullSnapshotIsReceived() {
+    void TestConnectionFond_ResetEntriesQueueIfNullSnapshotIsReceived() {
         this->Clear();
 
-        incFond->StatFond()->Add("s1", "session1");
-        incFond->Start();
+        /*
+        unsigned char *msg = new unsigned char[52] {
+                0x65, 0x23, 0x00, 0x00, 0xe0, 0x12, 0xec, 0x46, 0xe5, 0x23,
+                0x68, 0x08, 0x12, 0x7f, 0x4c, 0x74, 0xc0, 0x81, 0x80, 0x00,
+                0xe5, 0x52, 0x50, 0x4d, 0xcf, 0x52, 0x55, 0x30, 0x30, 0x30,
+                0x41, 0x30, 0x4a, 0x54, 0x5a, 0x46, 0xb1, 0x82, 0x82, 0x93,
+                0x80, 0x81, 0xca, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80,
+                0x80, 0x80
+        };
+        incFond->m_fastProtocolManager->SetNewBuffer(msg, 52);
+        incFond->m_fastProtocolManager->ReadMsgSeqNumber();
+        incFond->m_fastProtocolManager->Decode();
+        incFond->m_fastProtocolManager->Print();
+        */
 
-        SendMessages(incFond, snapFond,
-                     "tlr entry s1 e1, lost tlr entry s1 e2, tlr entry s1 e2, wait_snap, hbeat",
-                     "                                       hbeat,           hbeat,     tls s1 begin rpt 0 lastmsg 0 entry s1 e1 end",
-                     30);
-        if(incFond->StatFond()->SymbolsToRecvSnapshotCount() != 0)
+
+        if(incFond->StatisticFond()->SymbolsToRecvSnapshotCount() != 0)
             throw;
         if(!incFond->CanStopListeningSnapshot())
             throw;
         if(snapFond->State() != FeedConnectionState::fcsSuspend)
             throw;
     }
-    void TestConnection_StopListeningSnapshotBecauseAllItemsIsUpToDate() {
+    void TestConnectionFond_StopListeningSnapshotBecauseAllItemsIsUpToDate() {
 
     }
-    void TestConnection_EnterSnapshotMode() {
+    void TestConnectionFond_EnterSnapshotMode() {
         this->Clear();
 
-        incFond->StatFond()->Add("s1", "session1");
-        incFond->StatFond()->EnterSnapshotMode();
-        if(!incFond->StatFond()->GetItem("s1", "session1")->ShouldProcessSnapshot())
+        incFond->StatisticFond()->Add("s1", "session1");
+        incFond->StatisticFond()->EnterSnapshotMode();
+        if(!incFond->StatisticFond()->GetItem("s1", "session1")->ShouldProcessSnapshot())
             throw;
     }
     // clear after apply snapshot
-    void TestConnection_ClearSnapshotMessages_1() {
+    void TestConnectionFond_ClearSnapshotMessages_1() {
         this->Clear();
 
-        incFond->StatFond()->Add("s1", "session1");
+        incFond->StatisticFond()->Add("s1", "session1");
         SendMessages(incFond, snapFond,
-                     "tlr entry s1 e1, lost tlr entry s1 e2, wait_snap, hbeat",
-                     "                                                  tls s1 begin rpt 2 entry s1 e2 end",
+                     "obr entry s1 e1, lost obr entry s1 e2, wait_snap, hbeat",
+                     "                                                  obs s1 begin rpt 2 entry s1 e2 end",
                      30);
         if(snapFond->m_packets[1]->m_item != 0)
             throw;
@@ -2646,13 +2962,13 @@ public:
             throw;
     }
     // clear unitl not found route first
-    void TestConnection_ClearSnapshotMessages_2() {
+    void TestConnectionFond_ClearSnapshotMessages_2() {
         this->Clear();
 
-        incFond->StatFond()->Add("s1", "session1");
+        incFond->StatisticFond()->Add("s1", "session1");
         SendMessages(incFond, snapFond,
-                     "tlr entry s1 e1, lost tlr entry s1 e2, wait_snap, hbeat",
-                     "                                                  hbeat, hbeat, tls s1 begin rpt 2 entry s1 e2 end",
+                     "obr entry s1 e1, lost obr entry s1 e2, wait_snap, hbeat",
+                     "                                                  hbeat, hbeat, obs s1 begin rpt 2 entry s1 e2 end",
                      30);
         if(snapFond->m_packets[1]->m_item != 0 ||
            snapFond->m_packets[2]->m_item != 0 ||
@@ -2664,14 +2980,14 @@ public:
             throw;
     }
     // clear if skip lost packets in snapshot
-    void TestConnection_ClearSnapshotMessages_3() {
+    void TestConnectionFond_ClearSnapshotMessages_3() {
         this->Clear();
 
-        incFond->StatFond()->Add("s1", "session1");
+        incFond->StatisticFond()->Add("s1", "session1");
         snapFond->WaitSnapshotMaxTimeMs(50);
         SendMessages(incFond, snapFond,
-                     "tlr entry s1 e1, lost tlr entry s1 e2, wait_snap, hbeat",
-                     "                                                  tls s1 begin rpt 2 entry s1 e2, lost tls s1 rpt 2 entry s1 e2, hbeat, hbeat, hbeat, hbeat, hbeat",
+                     "obr entry s1 e1, lost obr entry s1 e2, wait_snap, hbeat",
+                     "                                                  obs s1 begin rpt 2 entry s1 e2, lost obs s1 rpt 2 entry s1 e2, hbeat, hbeat, hbeat, hbeat, hbeat",
                      30);
         for(int i = 1; i < 100; i++) {
             if(snapFond->m_packets[i]->m_item != 0 || snapFond->m_packets[i]->m_processed != false)
@@ -2679,16 +2995,16 @@ public:
         }
     }
     // clear if skip lost packets in snapshot and apply snapshot
-    void TestConnection_ClearSnapshotMessages_4() {
+    void TestConnectionFond_ClearSnapshotMessages_4() {
         this->Clear();
 
-        incFond->StatFond()->Add("s1", "session1");
+        incFond->StatisticFond()->Add("s1", "session1");
         snapFond->WaitSnapshotMaxTimeMs(50);
         SendMessages(incFond, snapFond,
-                     "tlr entry s1 e1, lost tlr entry s1 e2, wait_snap, hbeat                           hbeat,                         hbeat, hbeat, hbeat, hbeat, hbeat,                           hbeat",
-                     "                                                  tls s1 begin rpt 2 entry s1 e2, lost tls s1 rpt 2 entry s1 e2, hbeat, hbeat, hbeat, hbeat, hbeat, tls s1 rpt 2 entry s1 e2, tls s1 begin rpt 2 entry s1 e2 end",
+                     "obr entry s1 e1, lost obr entry s1 e2, wait_snap, hbeat                           hbeat,                         hbeat, hbeat, hbeat, hbeat, hbeat,                           hbeat",
+                     "                                                  obs s1 begin rpt 2 entry s1 e2, lost obs s1 rpt 2 entry s1 e2, hbeat, hbeat, hbeat, hbeat, hbeat, obs s1 rpt 2 entry s1 e2, obs s1 begin rpt 2 entry s1 e2 end",
                      30);
-        if(incFond->StatFond()->UsedItemCount() != 1)
+        if(incFond->StatisticFond()->UsedItemCount() != 1)
             throw;
         if(snapFond->State() != FeedConnectionState::fcsSuspend)
             throw;
@@ -2703,65 +3019,65 @@ public:
         }
     }
     // messages should be clear in snapshot connection because the are repeat
-    void TestConnection_ClearSnapshotMessages() {
-        printf("MSR TestConnection_ClearSnapshotMessages_1\n");
-        TestConnection_ClearSnapshotMessages_1();
-        printf("MSR TestConnection_ClearSnapshotMessages_2\n");
-        TestConnection_ClearSnapshotMessages_2();
-        printf("MSR TestConnection_ClearSnapshotMessages_3\n");
-        TestConnection_ClearSnapshotMessages_3();
-        printf("MSR TestConnection_ClearSnapshotMessages_4\n");
-        TestConnection_ClearSnapshotMessages_4();
+    void TestConnectionFond_ClearSnapshotMessages() {
+        printf("MSR FOND TestConnectionFond_ClearSnapshotMessages_1\n");
+        TestConnectionFond_ClearSnapshotMessages_1();
+        printf("MSR FOND TestConnectionFond_ClearSnapshotMessages_2\n");
+        TestConnectionFond_ClearSnapshotMessages_2();
+        printf("MSR FOND TestConnectionFond_ClearSnapshotMessages_3\n");
+        TestConnectionFond_ClearSnapshotMessages_3();
+        printf("MSR FOND TestConnectionFond_ClearSnapshotMessages_4\n");
+        TestConnectionFond_ClearSnapshotMessages_4();
     }
-    void TestConnection_ParallelWorkingIncrementalAndSnapshot() {
-        printf("MSR TestConnection_EnterSnapshotMode\n");
-        TestConnection_EnterSnapshotMode();
-        printf("MSR TestConnection_ClearSnapshotMessages\n");
-        TestConnection_ClearSnapshotMessages();
-        printf("MSR TestConnection_ParallelWorkingIncrementalAndSnapshot_1\n");
-        TestConnection_ParallelWorkingIncrementalAndSnapshot_1();
-        printf("MSR TestConnection_ParallelWorkingIncrementalAndSnapshot_2\n");
-        TestConnection_ParallelWorkingIncrementalAndSnapshot_2();
-        printf("MSR TestConnection_ParallelWorkingIncrementalAndSnapshot_2_1\n");
-        TestConnection_ParallelWorkingIncrementalAndSnapshot_2_1();
-        printf("MSR TestConnection_ParallelWorkingIncrementalAndSnapshot_3\n");
-        TestConnection_ParallelWorkingIncrementalAndSnapshot_3();
-        printf("MSR TestConnection_ParallelWorkingIncrementalAndSnapshot_3_1\n");
-        TestConnection_ParallelWorkingIncrementalAndSnapshot_3_1();
-        printf("MSR TestConnection_ParallelWorkingIncrementalAndSnapshot_4\n");
-        TestConnection_ParallelWorkingIncrementalAndSnapshot_4();
-        printf("MSR TestConnection_ParallelWorkingIncrementalAndSnapshot_5\n");
-        TestConnection_ParallelWorkingIncrementalAndSnapshot_5();
-        printf("MSR TestConnection_ParallelWorkingIncrementalAndSnapshot_5_1\n");
-        TestConnection_ParallelWorkingIncrementalAndSnapshot_5_1();
-        printf("MSR TestConnection_ParallelWorkingIncrementalAndSnapshot_5_2\n");
-        TestConnection_ParallelWorkingIncrementalAndSnapshot_5_2();
-        printf("MSR TestConnection_ParallelWorkingIncrementalAndSnapshot_5_2_2\n");
-        TestConnection_ParallelWorkingIncrementalAndSnapshot_5_2_2();
-        printf("MSR TestConnection_ParallelWorkingIncrementalAndSnapshot_5_3\n");
-        TestConnection_ParallelWorkingIncrementalAndSnapshot_5_3();
-        printf("MSR TestConnection_ParallelWorkingIncrementalAndSnapshot_5_4\n");
-        TestConnection_ParallelWorkingIncrementalAndSnapshot_5_4();
-        printf("MSR TestConnection_ParallelWorkingIncrementalAndSnapshot_5_4_1\n");
-        TestConnection_ParallelWorkingIncrementalAndSnapshot_5_4_1();
-        printf("MSR TestConnection_ParallelWorkingIncrementalAndSnapshot_5_4_2\n");
-        TestConnection_ParallelWorkingIncrementalAndSnapshot_5_4_2();
-        printf("MSR TestConnection_ParallelWorkingIncrementalAndSnapshot_5_5\n");
-        TestConnection_ParallelWorkingIncrementalAndSnapshot_5_5();
-        printf("MSR TestConnection_ParallelWorkingIncrementalAndSnapshot_5_5_1\n");
-        TestConnection_ParallelWorkingIncrementalAndSnapshot_5_5_1();
-        printf("MSR TestConnection_ParallelWorkingIncrementalAndSnapshot_5_6\n");
-        TestConnection_ParallelWorkingIncrementalAndSnapshot_5_6();
-        printf("MSR TestConnection_ParallelWorkingIncrementalAndSnapshot_5_7\n");
-        TestConnection_ParallelWorkingIncrementalAndSnapshot_5_7();
+    void TestConnectionFond_ParallelWorkingIncrementalAndSnapshot() {
+        printf("MSR FOND TestConnectionFond_EnterSnapshotMode\n");
+        TestConnectionFond_EnterSnapshotMode();
+        printf("MSR FOND TestConnectionFond_ClearSnapshotMessages\n");
+        TestConnectionFond_ClearSnapshotMessages();
+        printf("MSR FOND TestConnectionFond_ParallelWorkingIncrementalAndSnapshot_1\n");
+        TestConnectionFond_ParallelWorkingIncrementalAndSnapshot_1();
+        printf("MSR FOND TestConnectionFond_ParallelWorkingIncrementalAndSnapshot_2\n");
+        TestConnectionFond_ParallelWorkingIncrementalAndSnapshot_2();
+        printf("MSR FOND TestConnectionFond_ParallelWorkingIncrementalAndSnapshot_2_1\n");
+        TestConnectionFond_ParallelWorkingIncrementalAndSnapshot_2_1();
+        printf("MSR FOND TestConnectionFond_ParallelWorkingIncrementalAndSnapshot_3\n");
+        TestConnectionFond_ParallelWorkingIncrementalAndSnapshot_3();
+        printf("MSR FOND TestConnectionFond_ParallelWorkingIncrementalAndSnapshot_3_1\n");
+        TestConnectionFond_ParallelWorkingIncrementalAndSnapshot_3_1();
+        printf("MSR FOND TestConnectionFond_ParallelWorkingIncrementalAndSnapshot_4\n");
+        TestConnectionFond_ParallelWorkingIncrementalAndSnapshot_4();
+        printf("MSR FOND TestConnectionFond_ParallelWorkingIncrementalAndSnapshot_5\n");
+        TestConnectionFond_ParallelWorkingIncrementalAndSnapshot_5();
+        printf("MSR FOND TestConnectionFond_ParallelWorkingIncrementalAndSnapshot_5_1\n");
+        TestConnectionFond_ParallelWorkingIncrementalAndSnapshot_5_1();
+        printf("MSR FOND TestConnectionFond_ParallelWorkingIncrementalAndSnapshot_5_2\n");
+        TestConnectionFond_ParallelWorkingIncrementalAndSnapshot_5_2();
+        printf("MSR FOND TestConnectionFond_ParallelWorkingIncrementalAndSnapshot_5_2_2\n");
+        TestConnectionFond_ParallelWorkingIncrementalAndSnapshot_5_2_2();
+        printf("MSR FOND TestConnectionFond_ParallelWorkingIncrementalAndSnapshot_5_3\n");
+        TestConnectionFond_ParallelWorkingIncrementalAndSnapshot_5_3();
+        printf("MSR FOND TestConnectionFond_ParallelWorkingIncrementalAndSnapshot_5_4\n");
+        TestConnectionFond_ParallelWorkingIncrementalAndSnapshot_5_4();
+        printf("MSR FOND TestConnectionFond_ParallelWorkingIncrementalAndSnapshot_5_4_1\n");
+        TestConnectionFond_ParallelWorkingIncrementalAndSnapshot_5_4_1();
+        printf("MSR FOND TestConnectionFond_ParallelWorkingIncrementalAndSnapshot_5_4_2\n");
+        TestConnectionFond_ParallelWorkingIncrementalAndSnapshot_5_4_2();
+        printf("MSR FOND TestConnectionFond_ParallelWorkingIncrementalAndSnapshot_5_5\n");
+        TestConnectionFond_ParallelWorkingIncrementalAndSnapshot_5_5();
+        printf("MSR FOND TestConnectionFond_ParallelWorkingIncrementalAndSnapshot_5_5_1\n");
+        TestConnectionFond_ParallelWorkingIncrementalAndSnapshot_5_5_1();
+        printf("MSR FOND TestConnectionFond_ParallelWorkingIncrementalAndSnapshot_5_6\n");
+        TestConnectionFond_ParallelWorkingIncrementalAndSnapshot_5_6();
+        printf("MSR FOND TestConnectionFond_ParallelWorkingIncrementalAndSnapshot_5_7\n");
+        TestConnectionFond_ParallelWorkingIncrementalAndSnapshot_5_7();
     }
 
-    void TestConnection_Clear_AfterIncremental() {
-        this->TestTableItemsAllocator(incFond->StatFond());
+    void TestConnectionFond_Clear_AfterIncremental() {
+        this->TestTableItemsAllocator(incFond->StatisticFond());
         this->Clear();
         incFond->StartListenSnapshot();
 
-        this->TestTableItemsAllocator(incFond->StatFond());
+        this->TestTableItemsAllocator(incFond->StatisticFond());
 
         SendMessages(incFond, new TestTemplateInfo*[4] {
                 new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_MSR_FOND, 1,
@@ -2779,93 +3095,94 @@ public:
         if(!incFond->Listen_Atom_Incremental_Core())
             throw;
 
-        this->TestTableItemsAllocator(incFond->StatFond());
+        this->TestTableItemsAllocator(incFond->StatisticFond());
 
-        incFond->StatFond()->Clear();
+        incFond->StatisticFond()->Clear();
     }
 
-    void TestConnection() {
-        printf("MSR TestConnection_AllSymbolsAreOk\n");
-        TestConnection_AllSymbolsAreOk();
-        printf("MSR TestConnection_ResetEntriesQueueIfNullSnapshotIsReceived\n");
-        TestConnection_ResetEntriesQueueIfNullSnapshotIsReceived();
-        printf("MSR TestConnection_AllSymbolsAreOkButOneMessageLost\n");
-        TestConnection_AllSymbolsAreOkButOneMessageLost();
-        printf("MSR TestConnection_SkipHearthBeatMessages_Incremental\n");
-        TestConnection_SkipHearthBeatMessages_Incremental();
-        printf("MSR TestConnection_ParallelWorkingIncrementalAndSnapshot\n");
-        TestConnection_ParallelWorkingIncrementalAndSnapshot();
-        printf("MSR TestConnection_NotAllSymbolsAreOk\n");
-        TestConnection_NotAllSymbolsAreOk();
-        printf("MSR TestConnection_StopListeningSnapshotBecauseAllItemsIsUpToDate\n");
-        TestConnection_StopListeningSnapshotBecauseAllItemsIsUpToDate();
-        printf("MSR TestConnection_StopTimersAfterReconnect\n");
-        TestConnection_StopTimersAfterReconnect();
-        printf("MSR TestConnection_SnapshotSomeMessagesReceivedLater\n");
-        TestConnection_SnapshotSomeMessagesReceivedLater();
-        printf("MSR TestConnection_SnapshotSomeMessagesNotReceived\n");
-        TestConnection_SnapshotSomeMessagesNotReceived();
-        printf("MSR TestConnection_LastFragmentReceivedBeforeRouteFirst\n");
-        TestConnection_LastFragmentReceivedBeforeRouteFirst();
-        printf("MSR TestConnection_RouteFirstReceived_AfterSomeDummyMessages\n");
-        TestConnection_RouteFirstReceived_AfterSomeDummyMessages();
-        printf("MSR TestConnection_RouteFirstReceived_Empty\n");
-        TestConnection_RouteFirstReceived_Empty();
-        printf("MSR TestConnection_TestSnapshotNoMessagesAtAll\n");
-        TestConnection_TestSnapshotNoMessagesAtAll();
-        printf("MSR TestConnection_OneMessageReceived\n");
-        TestConnection_OneMessageReceived();
-        printf("MSR TestConnection_Clear_AfterIncremental\n");
-        TestConnection_Clear_AfterIncremental();
-        printf("MSR TestConnection_TestIncMessageLost_AndWaitTimerElapsed\n");
-        TestConnection_TestIncMessageLost_AndWaitTimerElapsed();
-        printf("MSR TestConnection_TestSnapshotCollect\n");
-        TestConnection_TestSnapshotCollect();
-        printf("MSR TestConnection_TestSnapshotNotCollect\n");
-        TestConnection_TestSnapshotMessageLostAndTimeExpired();
-        printf("MSR TestConnection_TestMessagesLost_2Items_SnapshotReceivedForOneItem\n");
-        TestConnection_TestMessagesLost_2Items_SnapshotReceivedForOneItem();
+    void TestConnectionFond() {
+        this->m_helper->SetFondMode();
+        printf("MSR FOND TestConnectionFond_AllSymbolsAreOk\n");
+        TestConnectionFond_AllSymbolsAreOk();
+        printf("MSR FOND TestConnectionFond_ResetEntriesQueueIfNullSnapshotIsReceived\n");
+        TestConnectionFond_ResetEntriesQueueIfNullSnapshotIsReceived();
+        printf("MSR FOND TestConnectionFond_AllSymbolsAreOkButOneMessageLost\n");
+        TestConnectionFond_AllSymbolsAreOkButOneMessageLost();
+        printf("MSR FOND TestConnectionFond_SkipHearthBeatMessages_Incremental\n");
+        TestConnectionFond_SkipHearthBeatMessages_Incremental();
+        printf("MSR FOND TestConnectionFond_ParallelWorkingIncrementalAndSnapshot\n");
+        TestConnectionFond_ParallelWorkingIncrementalAndSnapshot();
+        printf("MSR FOND TestConnectionFond_NotAllSymbolsAreOk\n");
+        TestConnectionFond_NotAllSymbolsAreOk();
+        printf("MSR FOND TestConnectionFond_StopListeningSnapshotBecauseAllItemsIsUpToDate\n");
+        TestConnectionFond_StopListeningSnapshotBecauseAllItemsIsUpToDate();
+        printf("MSR FOND TestConnectionFond_StopTimersAfterReconnect\n");
+        TestConnectionFond_StopTimersAfterReconnect();
+        printf("MSR FOND TestConnectionFond_SnapshotSomeMessagesReceivedLater\n");
+        TestConnectionFond_SnapshotSomeMessagesReceivedLater();
+        printf("MSR FOND TestConnectionFond_SnapshotSomeMessagesNotReceived\n");
+        TestConnectionFond_SnapshotSomeMessagesNotReceived();
+        printf("MSR FOND TestConnectionFond_LastFragmentReceivedBeforeRouteFirst\n");
+        TestConnectionFond_LastFragmentReceivedBeforeRouteFirst();
+        printf("MSR FOND TestConnectionFond_RouteFirstReceived_AfterSomeDummyMessages\n");
+        TestConnectionFond_RouteFirstReceived_AfterSomeDummyMessages();
+        printf("MSR FOND TestConnectionFond_RouteFirstReceived_Empty\n");
+        TestConnectionFond_RouteFirstReceived_Empty();
+        printf("MSR FOND TestConnectionFond_TestSnapshotNoMessagesAtAll\n");
+        TestConnectionFond_TestSnapshotNoMessagesAtAll();
+        printf("MSR FOND TestConnectionFond_OneMessageReceived\n");
+        TestConnectionFond_OneMessageReceived();
+        printf("MSR FOND TestConnectionFond_Clear_AfterIncremental\n");
+        TestConnectionFond_Clear_AfterIncremental();
+        printf("MSR FOND TestConnectionFond_TestIncMessageLost_AndWaitTimerElapsed\n");
+        TestConnectionFond_TestIncMessageLost_AndWaitTimerElapsed();
+        printf("MSR FOND TestConnectionFond_TestSnapshotCollect\n");
+        TestConnectionFond_TestSnapshotCollect();
+        printf("MSR FOND TestConnectionFond_TestSnapshotNotCollect\n");
+        TestConnectionFond_TestSnapshotMessageLostAndTimeExpired();
+        printf("MSR FOND TestConnectionFond_TestMessagesLost_2Items_SnapshotReceivedForOneItem\n");
+        TestConnectionFond_TestMessagesLost_2Items_SnapshotReceivedForOneItem();
 
-        printf("MSR TestConnection_EmptyTest\n");
-        TestConnection_EmptyTest();
-        printf("MSR TestConnection_TestCorrectIncMessages\n");
-        TestConnection_TestCorrectIncMessages();
-        printf("MSR TestConnection_TestIncMessagesLost_AndWhenAppeared\n");
-        TestConnection_TestIncMessagesLost_AndWhenAppeared();
-        printf("MSR TestConnection_TestInc2MessagesLost_AppearedThen2Messages\n");
-        TestConnection_TestInc2MessagesLost_AppearedThen2Messages();
-        printf("MSR TestConnection_TestInc2MessagesLost_AppearedSeparately_1_2\n");
-        TestConnection_TestInc2MessagesLost_AppearedSeparately_1_2();
-        printf("MSR TestConnection_TestInc2MessagesLost_AppearedSeparately_2_1\n");
-        TestConnection_TestInc2MessagesLost_AppearedSeparately_2_1();
+        printf("MSR FOND TestConnectionFond_EmptyTest\n");
+        TestConnectionFond_EmptyTest();
+        printf("MSR FOND TestConnectionFond_TestCorrectIncMessages\n");
+        TestConnectionFond_TestCorrectIncMessages();
+        printf("MSR FOND TestConnectionFond_TestIncMessagesLost_AndWhenAppeared\n");
+        TestConnectionFond_TestIncMessagesLost_AndWhenAppeared();
+        printf("MSR FOND TestConnectionFond_TestInc2MessagesLost_AppearedThen2Messages\n");
+        TestConnectionFond_TestInc2MessagesLost_AppearedThen2Messages();
+        printf("MSR FOND TestConnectionFond_TestInc2MessagesLost_AppearedSeparately_1_2\n");
+        TestConnectionFond_TestInc2MessagesLost_AppearedSeparately_1_2();
+        printf("MSR FOND TestConnectionFond_TestInc2MessagesLost_AppearedSeparately_2_1\n");
+        TestConnectionFond_TestInc2MessagesLost_AppearedSeparately_2_1();
     }
 
-    void TestTradeTableItem() {
-        printf("MSR TestTableItem_CorrectBegin\n");
+    void TestOrderBookTableItem() {
+        printf("MSR FOND TestTableItem_CorrectBegin\n");
         TestTableItem_CorrectBegin();
-        printf("MSR TestTableItem_IncorrectBegin\n");
+        printf("MSR FOND TestTableItem_IncorrectBegin\n");
         TestTableItem_IncorrectBegin();
-        printf("MSR TestTableItem_SkipMessage\n");
+        printf("MSR FOND TestTableItem_SkipMessage\n");
         TestTableItem_SkipMessage();
-        printf("MSR TestTable_Default\n");
+        printf("MSR FOND TestTable_Default\n");
         TestTable_Default();
-        printf("MSR TestTable_AfterClear\n");
+        printf("MSR FOND TestTable_AfterClear\n");
         TestTable_AfterClear();
-        printf("MSR TestTable_CorrectBegin\n");
+        printf("MSR FOND TestTable_CorrectBegin\n");
         TestTable_CorrectBegin();
-        printf("MSR TestTable_IncorrectBegin\n");
+        printf("MSR FOND TestTable_IncorrectBegin\n");
         TestTable_IncorrectBegin();
-        printf("MSR TestTable_SkipMessages\n");
+        printf("MSR FOND TestTable_SkipMessages\n");
         TestTable_SkipMessages();
-        printf("MSR Test_2UsedItemsAfter2IncrementalMessages\n");
+        printf("MSR FOND Test_2UsedItemsAfter2IncrementalMessages\n");
         Test_2UsedItemsAfter2IncrementalMessages();
-        printf("MSR TestTable_CorrectApplySnapshot\n");
+        printf("MSR FOND TestTable_CorrectApplySnapshot\n");
         TestTable_CorrectApplySnapshot();
-        printf("MSR TestTable_CorrectApplySnapshot_2\n");
+        printf("MSR FOND TestTable_CorrectApplySnapshot_2\n");
         TestTable_CorrectApplySnapshot_2();
-        printf("MSR TestTable_IncorrectApplySnapshot\n");
+        printf("MSR FOND TestTable_IncorrectApplySnapshot\n");
         TestTable_IncorrectApplySnapshot();
-        printf("MSR TestTable_IncorrectApplySnapshot_WhenMessageSkipped\n");
+        printf("MSR FOND TestTable_IncorrectApplySnapshot_WhenMessageSkipped\n");
         TestTable_IncorrectApplySnapshot_WhenMessageSkipped();
     }
 
@@ -2880,16 +3197,220 @@ public:
         }
     }
 
+    void TestInfoAndItemInfoUsageAndAllocationFond_Inc_1() {
+        this->Clear();
+
+        this->incFond->StatisticFond()->Add("s1", "session1");
+        int prevCount = this->incFond->m_fastProtocolManager->m_oBSFONDItems->Count();
+        this->SendMessages(this->incFond, this->snapFond,
+                           "obr entry s1 e1",
+                           "",
+                           30);
+
+        int newCount = this->incFond->m_fastProtocolManager->m_oBSFONDItems->Count();
+        if(newCount != prevCount + 1)
+            throw;
+    }
+
+    void TestInfoAndItemInfoUsageAndAllocationFond_Inc_2() {
+        this->Clear();
+
+        this->incFond->StatisticFond()->Add("s1", "session1");
+        int prevCount = this->incFond->m_fastProtocolManager->m_oBSFONDItems->Count();
+        this->SendMessages(this->incFond, this->snapFond,
+                           "obr entry s1 e1, obr entry s1 e2",
+                           "",
+                           30);
+
+        int newCount = this->incFond->m_fastProtocolManager->m_oBSFONDItems->Count();
+        if(newCount != prevCount + 2)
+            throw;
+        this->incFond->StatisticFond()->Clear();
+        newCount = this->incFond->m_fastProtocolManager->m_oBSFONDItems->Count();
+        if(newCount != prevCount)
+            throw;
+    }
+
+    void TestInfoAndItemInfoUsageAndAllocationFond_Inc_3() {
+        this->Clear();
+
+        this->incFond->StatisticFond()->Add("s1", "session1");
+        int prevCount = this->incFond->m_fastProtocolManager->m_oBSFONDItems->Count();
+        this->SendMessages(this->incFond, this->snapFond,
+                           "obr entry s1 e1, obr entry s1 e2, obr entry del s1 e1",
+                           "",
+                           30);
+
+        int newCount = this->incFond->m_fastProtocolManager->m_oBSFONDItems->Count();
+        if(newCount != prevCount + 1)
+            throw;
+        this->incFond->StatisticFond()->Clear();
+        newCount = this->incFond->m_fastProtocolManager->m_oBSFONDItems->Count();
+        if(newCount != prevCount)
+            throw;
+    }
+
+    void TestInfoAndItemInfoUsageAndAllocationFond_Inc_4() {
+        FastGenericItemInfo *info = this->m_helper->CreateGenericItemInfo(1, 1, 1, 1, MDEntryType::mdetBuyQuote, "e1");
+        if(info->Allocator->Count() != 1)
+            throw;
+        info->Used = false;
+        info->ReleaseUnused();
+        if(info->Allocator->Count() != 0)
+            throw;
+        info->ReleaseUnused();
+        if(info->Allocator->Count() != 0)
+            throw;
+    }
+
+    void TestInfoAndItemInfoUsageAndAllocationFond_Inc_5() {
+        this->Clear();
+
+        this->incFond->StatisticFond()->Add("s1", "session1");
+        int prevCount = this->incFond->m_fastProtocolManager->m_oBSFONDItems->Count();
+        this->SendMessages(this->incFond, this->snapFond,
+                           "obr entry s1 e1, obr entry s1 e2, obr entry change s1 e1",
+                           "",
+                           30);
+
+        int newCount = this->incFond->m_fastProtocolManager->m_oBSFONDItems->Count();
+        if(newCount != prevCount + 2)
+            throw;
+        this->incFond->StatisticFond()->Clear();
+        newCount = this->incFond->m_fastProtocolManager->m_oBSFONDItems->Count();
+        if(newCount != prevCount)
+            throw;
+    }
+
+    void TestInfoAndItemInfoUsageAndAllocationFond_Snap_1() {
+        this->Clear();
+
+        this->incFond->StatisticFond()->Add("s1", "session1");
+        int prevCount = this->snapFond->m_fastProtocolManager->m_oBSFONDItems->Count();
+        this->SendMessages(this->incFond, this->snapFond,
+                           "obr entry s1 e1, lost obr entry s1 e2, wait_snap, hbeat",
+                           "                                                  obs begin s1 entry s1 e2 rpt 2 end",
+                           30);
+
+        int newCount = this->snapFond->m_fastProtocolManager->m_oBSFONDItems->Count();
+        if(newCount != prevCount + 1)
+            throw;
+    }
+
+    void TestInfoAndItemInfoUsageAndAllocationFond_Snap_2() {
+        this->Clear();
+
+        this->incFond->StatisticFond()->Add("s1", "session1");
+        int prevCount = this->snapFond->m_fastProtocolManager->m_oBSFONDItems->Count();
+        this->SendMessages(this->incFond, this->snapFond,
+                           "obr entry s1 e1, lost obr entry s1 e2 entry s1 e3, wait_snap, hbeat",
+                           "                                                   obs begin s1 entry s1 e2 rpt 2, obs s1 entry s1 e3 end",
+                           30);
+
+        int newCount = this->snapFond->m_fastProtocolManager->m_oBSFONDItems->Count();
+        if(newCount != prevCount + 2)
+            throw;
+    }
+
+    void TestInfoAndItemInfoUsageAndAllocationFond_Snap_3() {
+        // there is no UpdateAction in snap messages so we don't have to check these cases
+        /*this->Clear();
+
+        this->incFond->StatisticFond()->Add("s1", "session1");
+        int prevCount = this->snapFond->m_fastProtocolManager->m_oBSFONDItems->Count();
+        this->SendMessages(this->incFond, this->snapFond,
+                           "obr entry s1 e1, obr entry s1 e2, lost obr entry s1 e4 entry s1 e4, wait_snap, hbeat",
+                           "                                                   obs begin s1 entry s1 e1 rpt 2, obs s1 entry s1 e2, obs s1 entry s1 e3, obs s1 entry del s1 e2 end",
+                           30);
+
+        int newCount = this->snapFond->m_fastProtocolManager->m_oBSFONDItems->Count();
+        if(newCount != prevCount + 3)
+            throw;*/
+    }
+
+    // check in case CheckProcessIfSessionInActualState returns true
+    void TestInfoAndItemInfoUsageAndAllocationFond_Snap_4() {
+        this->Clear();
+
+        incFond->StatisticFond()->Add("s1", "session1");
+        incFond->StatisticFond()->Add("s2", "session1");
+        incFond->StatisticFond()->Add("symbol3", "session1");
+
+        int prevCount = this->snapFond->m_fastProtocolManager->m_oBSFONDItems->Count();
+        SendMessages(incFond, snapFond,
+                     "obr entry s1 e1, lost obr entry symbol3 e1, wait_snap, obr entry s1 e3,                              hbeat,                              hbeat",
+                     "                                                       obs symbol3 begin rpt 1 end entry symbol3 e1, obs s1 begin rpt 2 end entry s1 e1, hbeat, obs s2 begin rpt 2 end entry s2 e1",
+                     30);
+        int newCount = this->snapFond->m_fastProtocolManager->m_oBSFONDItems->Count();
+        if(newCount != prevCount + 2)
+            throw;
+    }
+    // check in case CheckProcessNullSnapshot
+    void TestInfoAndItemInfoUsageAndAllocationFond_Snap_5() {
+        this->Clear();
+        incFond->StatisticFond()->Add("s1", "session1");
+        incFond->Start();
+
+        int prevCount = this->snapFond->m_fastProtocolManager->m_oBSFONDItems->Count();
+        SendMessages(incFond, snapFond,
+                     "obr entry s1 e1, lost obr entry s1 e2, obr entry s1 e2, wait_snap, hbeat",
+                     "                                       hbeat,           hbeat,     obs s1 begin rpt 0 lastmsg 0 entry s1 e1 end",
+                     30);
+        int newCount = this->snapFond->m_fastProtocolManager->m_oBSFONDItems->Count();
+        if(newCount != prevCount)
+            throw;
+    }
+
+    // check in case ShouldProcessSnapshot
+    void TestInfoAndItemInfoUsageAndAllocationFond_Snap_6() {
+        this->Clear();
+
+        incFond->StatisticFond()->Add("s1", "session1");
+
+        int prevCount = this->snapFond->m_fastProtocolManager->m_oBSFONDItems->Count();
+        SendMessages(incFond, snapFond,
+                     "obr entry s1 e1, obr entry s1 e2, obr entry s1 e3, lost hbeat, wait_snap, hbeat",
+                     "                                                                          obs s1 begin rpt 1 entry s1 e1 end",
+                     50);
+        int newCount = this->snapFond->m_fastProtocolManager->m_oBSFONDItems->Count();
+        if(newCount != prevCount)
+            throw;
+    }
+
+    void TestInfoAndItemInfoUsageAndAllocationFond() {
+        this->m_helper->SetFondMode();
+        printf("MSR FOND TestInfoAndItemInfoUsageAndAllocationFond_Inc_1\n");
+        TestInfoAndItemInfoUsageAndAllocationFond_Inc_1();
+        printf("MSR FOND TestInfoAndItemInfoUsageAndAllocationFond_Inc_2\n");
+        TestInfoAndItemInfoUsageAndAllocationFond_Inc_2();
+        printf("MSR FOND TestInfoAndItemInfoUsageAndAllocationFond_Inc_3\n");
+        TestInfoAndItemInfoUsageAndAllocationFond_Inc_3();
+        printf("MSR FOND TestInfoAndItemInfoUsageAndAllocationFond_Inc_4\n");
+        TestInfoAndItemInfoUsageAndAllocationFond_Inc_4();
+        printf("MSR FOND TestInfoAndItemInfoUsageAndAllocationFond_Inc_5\n");
+        TestInfoAndItemInfoUsageAndAllocationFond_Inc_5();
+        printf("MSR FOND TestInfoAndItemInfoUsageAndAllocationFond_Snap_1\n");
+        TestInfoAndItemInfoUsageAndAllocationFond_Snap_1();
+        printf("MSR FOND TestInfoAndItemInfoUsageAndAllocationFond_Snap_2\n");
+        TestInfoAndItemInfoUsageAndAllocationFond_Snap_2();
+        printf("MSR FOND TestInfoAndItemInfoUsageAndAllocationFond_Snap_3\n");
+        TestInfoAndItemInfoUsageAndAllocationFond_Snap_3();
+        printf("MSR FOND TestInfoAndItemInfoUsageAndAllocationFond_Snap_4\n");
+        TestInfoAndItemInfoUsageAndAllocationFond_Snap_4();
+        printf("MSR FOND TestInfoAndItemInfoUsageAndAllocationFond_Snap_5\n");
+        TestInfoAndItemInfoUsageAndAllocationFond_Snap_5();
+        printf("MSR FOND TestInfoAndItemInfoUsageAndAllocationFond_Snap_6\n");
+        TestInfoAndItemInfoUsageAndAllocationFond_Snap_6();
+    }
+
     void Test() {
         TestDefaults();
+        TestInfoAndItemInfoUsageAndAllocationFond();
         TestStringIdComparer();
         Test_MSR_FOND();
-        Test_MSR_CURR();
-        TestTradeTableItem();
-        TestConnection();
+        TestOrderBookTableItem();
+        TestConnectionFond();
     }
 };
-
-*/
 
 #endif //HFT_ROBOT_STATISTICSTESTER_H
