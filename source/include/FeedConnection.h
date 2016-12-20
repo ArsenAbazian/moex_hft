@@ -653,7 +653,6 @@ private:
     inline bool ActualMsgSeqNum() { return this->m_startMsgSeqNum == this->m_endMsgSeqNum; }
 
 	inline void IncrementMsgSeqNo() { this->m_startMsgSeqNum++; }
-	bool InitializeSockets();
 	virtual ISocketBufferProvider* CreateSocketBufferProvider() {
 			return new SocketBufferProvider(DefaultSocketBufferManager::Default,
 											RobotSettings::DefaultFeedConnectionSendBufferSize,
@@ -840,13 +839,82 @@ private:
         return true;
     }
 
-	bool Suspend_Atom();
-	bool Listen_Atom();
-    bool Listen_Atom_Incremental();
-    bool Listen_Atom_Snapshot();
-    bool SendLogon_Atom();
-    bool ResendLastMessage_Atom();
-    bool Reconnect_Atom();
+    inline bool InitializeSockets() {
+        if(this->socketAManager != NULL)
+            return true;
+        DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_InitializeSockets);
+
+        this->socketAManager = new WinSockManager();
+        this->socketBManager = new WinSockManager();
+
+        DefaultLogManager::Default->EndLog(true);
+        return true;
+    }
+
+    inline bool Suspend_Atom() {
+        return true;
+    }
+
+    inline bool Reconnect_Atom() {
+        DefaultLogManager::Default->StartLog(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_Reconnect_Atom);
+
+        if(!this->m_fakeConnect) {
+            if(!this->socketAManager->Reconnect()) {
+                DefaultLogManager::Default->EndLog(false);
+                return true;
+            }
+        }
+
+        this->SetState(this->m_nextState);
+        this->m_waitTimer->Start();
+        this->m_waitTimer->Stop(1);
+        this->m_startMsgSeqNum = -1;
+        this->m_endMsgSeqNum = -1;
+        DefaultLogManager::Default->EndLog(true);
+        return true;
+    }
+
+    inline bool Listen_Atom_Incremental() {
+
+        bool recv = this->ProcessServerA();
+        recv |= this->ProcessServerB();
+        this->m_isLastIncrementalRecv = recv;
+
+        if(!this->m_isLastIncrementalRecv) {
+            this->m_waitTimer->Activate(1);
+            if(this->m_waitTimer->ElapsedSeconds(1) > this->WaitAnyPacketMaxTimeSec) {
+                this->StartListenSnapshot();
+                return true;
+            }
+        }
+        else {
+            this->m_waitTimer->Stop(1);
+        }
+
+        return this->Listen_Atom_Incremental_Core();
+    }
+
+    inline bool Listen_Atom_Snapshot() {
+        bool recv = this->ProcessServerA();
+        recv |= this->ProcessServerB();
+
+        if(!recv) {
+            if(!this->m_waitTimer->Active(1)) {
+                this->m_waitTimer->Start(1);
+            }
+            else {
+                if(this->m_waitTimer->ElapsedSeconds(1) > this->WaitAnyPacketMaxTimeSec) {
+                    DefaultLogManager::Default->WriteSuccess(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_Listen_Atom_Snapshot, false);
+                    return false;
+                }
+            }
+        }
+        else {
+            this->m_waitTimer->Stop(1);
+        }
+
+        return this->Listen_Atom_Snapshot_Core();
+    }
 
     inline void ReconnectSetNextState(FeedConnectionState state) {
         this->m_waitTimer->Stop();
