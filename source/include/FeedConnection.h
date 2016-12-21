@@ -119,6 +119,8 @@ protected:
     int                                         m_snapshotMaxTimeMs;
     bool                                        m_isLastIncrementalRecv;
 
+    bool                                        m_doNotCheckIncrementalActuality;
+
     FeedConnectionMessageInfo                   **m_packets;
 
 	int     									m_idLogIndex;
@@ -243,6 +245,8 @@ private:
     }
 
     inline bool ShouldStartSnapshot() {
+        if(this->m_doNotCheckIncrementalActuality)
+            return false;
         return this->HasPotentiallyLostPackets() || this->HasQueueEntries();
     }
 
@@ -525,6 +529,8 @@ private:
         if(newStartMsgSeqNum != -1)
             this->m_startMsgSeqNum = newStartMsgSeqNum;
         else
+            this->m_startMsgSeqNum = i;
+        if(this->m_doNotCheckIncrementalActuality)
             this->m_startMsgSeqNum = i;
         return true;
     }
@@ -1020,12 +1026,14 @@ private:
     }
 
     inline bool OnIncrementalRefresh_MSR_FOND(FastIncrementalMSRFONDInfo *info) {
-        bool res = true;
+        this->m_fastProtocolManager->PrintIncrementalMSRFOND(info);
+        return true;
+        /*bool res = true;
         for(int i = 0; i < info->GroupMDEntriesCount; i++) {
             res |= this->OnIncrementalRefresh_MSR_FOND(info->GroupMDEntries[i]);
         }
         info->ReleaseUnused();
-        return res;
+        return res;*/
     }
 
     inline bool OnIncrementalRefresh_MSR_CURR(FastIncrementalMSRCURRInfo *info) {
@@ -1288,6 +1296,9 @@ public:
 		return true;
 	}
     inline FeedConnectionState State() { return this->m_state; }
+    inline void DoNotCheckIncrementalActuality(bool value) {
+        this->m_doNotCheckIncrementalActuality = value;
+    }
 };
 
 class FeedConnection_CURR_OBR : public FeedConnection {
