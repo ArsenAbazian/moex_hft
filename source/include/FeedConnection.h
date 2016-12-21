@@ -27,7 +27,7 @@ typedef enum _FeedConnectionMessage {
 	fmcFullRefresh_TLS_CURR = 3501,
 	fmcIncrementalRefresh_TLR_CURR = 3511,
     fmcFullRefresh_MSS_FOND = 2103,
-    fmcIncrementalRefresh_MSR_FOND = 2423,
+    fmcIncrementalRefresh_MSR_FOND = 2523,
     fmcFullRefresh_MSS_CURR = 2103,
     fmcIncrementalRefresh_MSR_CURR = 3513,
 }FeedConnectionMessage;
@@ -1077,8 +1077,10 @@ private:
 		this->m_fastProtocolManager->SetNewBuffer(buffer, length);
 		this->m_fastProtocolManager->ReadMsgSeqNumber();
 
-		if(this->m_fastProtocolManager->Decode() == 0)
-			return true;
+		if(this->m_fastProtocolManager->Decode() == 0) {
+            printf("unknown template: %d\n", this->m_fastProtocolManager->TemplateId());
+            return true;
+        }
 		this->ApplyIncrementalCore();
 		return true;
 	}
@@ -1115,6 +1117,7 @@ private:
 		fflush(this->obrLogFile);
 		//till this
 		*/
+        DefaultLogManager::Default->WriteFast(this->m_idLogIndex, this->m_recvABuffer->BufferIndex(), info->m_item->m_itemIndex);
         info->m_processed = true;
 		return this->ProcessIncremental(buffer, this->m_recvABuffer->ItemLength(info->m_item->m_itemIndex));
 	}

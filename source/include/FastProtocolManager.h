@@ -213,7 +213,7 @@ private:
 		this->DecodeMethods[3501 - 2101] = &FastProtocolManager::DecodeTLSCURR;
 		this->DecodeMethods[2412 - 2101] = &FastProtocolManager::DecodeOBSFOND;
 		this->DecodeMethods[3502 - 2101] = &FastProtocolManager::DecodeOBSCURR;
-		this->DecodeMethods[2423 - 2101] = &FastProtocolManager::DecodeIncrementalMSRFOND;
+		this->DecodeMethods[2523 - 2101] = &FastProtocolManager::DecodeIncrementalMSRFOND;
 		this->DecodeMethods[3513 - 2101] = &FastProtocolManager::DecodeIncrementalMSRCURR;
 		this->DecodeMethods[2420 - 2101] = &FastProtocolManager::DecodeIncrementalOLRFOND;
 		this->DecodeMethods[3510 - 2101] = &FastProtocolManager::DecodeIncrementalOLRCURR;
@@ -235,7 +235,7 @@ private:
 		this->ReleaseMethods[3501 - 2101] = &FastProtocolManager::DecodeTLSCURR;
 		this->ReleaseMethods[2412 - 2101] = &FastProtocolManager::DecodeOBSFOND;
 		this->ReleaseMethods[3502 - 2101] = &FastProtocolManager::DecodeOBSCURR;
-		this->ReleaseMethods[2423 - 2101] = &FastProtocolManager::DecodeIncrementalMSRFOND;
+		this->ReleaseMethods[2523 - 2101] = &FastProtocolManager::DecodeIncrementalMSRFOND;
 		this->ReleaseMethods[3513 - 2101] = &FastProtocolManager::DecodeIncrementalMSRCURR;
 		this->ReleaseMethods[2420 - 2101] = &FastProtocolManager::DecodeIncrementalOLRFOND;
 		this->ReleaseMethods[3510 - 2101] = &FastProtocolManager::DecodeIncrementalOLRCURR;
@@ -3151,9 +3151,6 @@ public:
 		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 			gmdeItemInfo = GetFreeGenericItemInfo();
 			info->GroupMDEntries[i] = gmdeItemInfo;
-
-			this->ParsePresenceMap(&(gmdeItemInfo->PresenceMap));
-
 			if((gmdeItemInfo->AllowMDUpdateAction = !CheckProcessNullUInt32()))
 				gmdeItemInfo->MDUpdateAction = ReadUInt32_Optional();
 			if((gmdeItemInfo->AllowMDEntryType = !CheckProcessNullString()))
@@ -3214,16 +3211,12 @@ public:
 				gmdeItemInfo->SettlDate = ReadUInt32_Optional();
 			if((gmdeItemInfo->AllowSettleType = !CheckProcessNullString()))
 				ReadString_Optional(&(gmdeItemInfo->SettleType), &(gmdeItemInfo->SettleTypeLength));
-			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, gmdeItemInfo->CXFlagPresenceIndex)) {
-				if((gmdeItemInfo->AllowCXFlag = !CheckProcessNullString()))
-					ReadString_Optional(&(gmdeItemInfo->CXFlag), &(gmdeItemInfo->CXFlagLength));
-				else {
-					gmdeItemInfo->CXFlag = gmdeItemInfo->PrevCXFlag;
-					gmdeItemInfo->CXFlagLength = gmdeItemInfo->PrevCXFlagLength;
-				}
+			if((gmdeItemInfo->AllowCXFlag = !CheckProcessNullString()))
+				ReadString_Optional(&(gmdeItemInfo->CXFlag), &(gmdeItemInfo->CXFlagLength));
+			else {
+				gmdeItemInfo->CXFlag = gmdeItemInfo->PrevCXFlag;
+				gmdeItemInfo->CXFlagLength = gmdeItemInfo->PrevCXFlagLength;
 			}
-			else
-				gmdeItemInfo-> AllowCXFlag = false;
 			if((gmdeItemInfo->AllowTradingSessionID = !CheckProcessNullString()))
 				ReadString_Optional(&(gmdeItemInfo->TradingSessionID), &(gmdeItemInfo->TradingSessionIDLength));
 			if((gmdeItemInfo->AllowTradingSessionSubID = !CheckProcessNullString()))
@@ -3245,9 +3238,6 @@ public:
 		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 			gmdeItemInfo = GetFreeGenericItemInfo();
 			info->GroupMDEntries[i] = gmdeItemInfo;
-
-			this->ParsePresenceMap(&(gmdeItemInfo->PresenceMap));
-
 			if((gmdeItemInfo->AllowMDUpdateAction = !CheckProcessNullUInt32()))
 				gmdeItemInfo->MDUpdateAction = ReadUInt32_Optional();
 			if((gmdeItemInfo->AllowMDEntryType = !CheckProcessNullString()))
@@ -3292,16 +3282,12 @@ public:
 				gmdeItemInfo->SettlDate = ReadUInt32_Optional();
 			if((gmdeItemInfo->AllowSettleType = !CheckProcessNullString()))
 				ReadString_Optional(&(gmdeItemInfo->SettleType), &(gmdeItemInfo->SettleTypeLength));
-			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, gmdeItemInfo->CXFlagPresenceIndex)) {
-				if((gmdeItemInfo->AllowCXFlag = !CheckProcessNullString()))
-					ReadString_Optional(&(gmdeItemInfo->CXFlag), &(gmdeItemInfo->CXFlagLength));
-				else {
-					gmdeItemInfo->CXFlag = gmdeItemInfo->PrevCXFlag;
-					gmdeItemInfo->CXFlagLength = gmdeItemInfo->PrevCXFlagLength;
-				}
+			if((gmdeItemInfo->AllowCXFlag = !CheckProcessNullString()))
+				ReadString_Optional(&(gmdeItemInfo->CXFlag), &(gmdeItemInfo->CXFlagLength));
+			else {
+				gmdeItemInfo->CXFlag = gmdeItemInfo->PrevCXFlag;
+				gmdeItemInfo->CXFlagLength = gmdeItemInfo->PrevCXFlagLength;
 			}
-			else
-				gmdeItemInfo-> AllowCXFlag = false;
 			if((gmdeItemInfo->AllowTradingSessionID = !CheckProcessNullString()))
 				ReadString_Optional(&(gmdeItemInfo->TradingSessionID), &(gmdeItemInfo->TradingSessionIDLength));
 			if((gmdeItemInfo->AllowTradingSessionSubID = !CheckProcessNullString()))
@@ -4099,7 +4085,7 @@ public:
 			case 3502:
 				PrintOBSCURR((FastOBSCURRInfo*)this->m_lastDecodedInfo);
 				break;
-			case 2423:
+			case 2523:
 				PrintIncrementalMSRFOND((FastIncrementalMSRFONDInfo*)this->m_lastDecodedInfo);
 				break;
 			case 3513:
@@ -4170,7 +4156,7 @@ public:
 			case 3502:
 				PrintXmlOBSCURR((FastOBSCURRInfo*)this->m_lastDecodedInfo);
 				break;
-			case 2423:
+			case 2523:
 				PrintXmlIncrementalMSRFOND((FastIncrementalMSRFONDInfo*)this->m_lastDecodedInfo);
 				break;
 			case 3513:

@@ -1584,6 +1584,20 @@ namespace prebuild {
 			return false;
 		}
 
+		private bool IsExceptionHasCopyOperatorInMSR(XmlNode value) {
+			if(!HasOptionalPresence(value))
+				return false;
+			if(!HasCopyValueAttribute(value))
+				return false;
+			if(value.ParentNode == null ||
+			   value.ParentNode.Attributes["name"] == null ||
+			   value.ParentNode.Attributes["name"].Value != "GroupMDEntries")
+				return false;
+			if(value.ParentNode.ParentNode.Attributes["name"].Value.Contains("MSR"))
+				return true;
+			return false;
+		}
+
 		private  bool ShouldWriteCheckPresenceMapCode (XmlNode value) {
 			string[] forbidden = new string[] { "MsgSeqNum", "MessageEncoding" };
 			for(int i = 0; i < forbidden.Length; i++) {
@@ -1606,6 +1620,9 @@ namespace prebuild {
 			if(HasMandatoryPresence(value)) {
 				if(HasCopyValueAttribute(value) || HasDefaultValueAttribute(value) || HasIncrementValueAttribute(value))
 					return true;
+			}
+			if(IsExceptionHasCopyOperatorInMSR(value)) {
+				return false; // TODO WHY!!!!!!!!!!!!!!!!!!!!!
 			}
 			if(HasOptionalPresence(value)) {
 				if(HasCopyValueAttribute(value) || HasDefaultValueAttribute(value) || HasIncrementValueAttribute(value))

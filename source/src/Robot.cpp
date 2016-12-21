@@ -42,6 +42,7 @@ bool Robot::DisconnectMarkets() {
 }
 
 bool Robot::AddDefaultTestChannels() {
+
     DefaultLogManager::Default->StartLog(LogMessageCode::lmcRobot_AddDefaultTestChannels);
     tinyxml2::XMLDocument doc;
     tinyxml2::XMLError res = doc.LoadFile("/tmp/config_test.xml");
@@ -50,6 +51,7 @@ bool Robot::AddDefaultTestChannels() {
         DefaultLogManager::Default->EndLog(false, strerror(errno));
         return false;
     }
+    Stopwatch *w = new Stopwatch();
     tinyxml2::XMLElement *cfgNode = doc.FirstChildElement("configuration");
     tinyxml2::XMLElement *channel = cfgNode->FirstChildElement("channel");
     while(channel != 0) {
@@ -74,33 +76,57 @@ bool Robot::AddDefaultTestChannels() {
                 tinyxml2::XMLNode *ipB = feedB->FirstChildElement("ip")->FirstChild();
                 tinyxml2::XMLNode *portB = feedB->FirstChildElement("port")->FirstChild();
 
-                fconn = CreateConnectionCore(fc->Id(),
-                                             connection->Attribute("id"),
-                                             type->Attribute("feed-type"),
-                                             type->FirstChild()->Value()[0],
+                const char *feedChannelId = fc->Id();
+                const char *id = connection->Attribute("id");
+                const char *feedType = type->Attribute("feed-type");
+                char value = type->FirstChild()->Value()[0];
+                const char *srcIpAString = srcIpA->Value();
+                const char *ipAString = ipA->Value();
+                int portAValue = atoi(portA->Value());
+                const char *srcIpBString = srcIpB->Value();
+                const char *ipBString = ipB->Value();
+                int portBValue = atoi(portB->Value());
+
+                printf("Creating Connection %s-%s... \n", id, feedChannelId);
+                w->Start();
+                fconn = CreateConnectionCore(feedChannelId,
+                                             id,
+                                             feedType,
+                                             value,
                                              pt,
-                                             srcIpA->Value(),
-                                             ipA->Value(),
-                                             atoi(portA->Value()),
-                                             srcIpB->Value(),
-                                             ipB->Value(),
-                                             atoi(portB->Value()));
+                                             srcIpAString,
+                                             ipAString,
+                                             portAValue,
+                                             srcIpBString,
+                                             ipBString,
+                                             portBValue);
+                printf("Done in %d sec\n", w->ElapsedSeconds());
             }
             else {
                 tinyxml2::XMLNode *ip = connection->FirstChildElement("ip")->FirstChild();
                 tinyxml2::XMLNode *port = connection->FirstChildElement("port")->FirstChild();
 
-                fconn = CreateConnectionCore(fc->Id(),
-                                             connection->Attribute("id"),
-                                             type->Attribute("feed-type"),
-                                             type->FirstChild()->Value()[0],
+                const char *feedChannelId = fc->Id();
+                const char *id = connection->Attribute("id");
+                const char *feedType = type->Attribute("feed-type");
+                char value = type->FirstChild()->Value()[0];
+                const char *ipString = ip->Value();
+                int portValue = atoi(port->Value());
+
+                printf("Creating Connection %s-%s... \n", id, feedChannelId);
+                w->Start();
+                fconn = CreateConnectionCore(feedChannelId,
+                                             id,
+                                             feedType,
+                                             value,
                                              pt,
                                              "",
-                                             ip->Value(),
-                                             atoi(port->Value()),
+                                             ipString,
+                                             portValue,
                                              "",
                                              "",
                                              0);
+                printf("Done in %d sec\n", w->ElapsedSeconds());
             }
             fc->SetConnection(fconn);
             connection = connection->NextSiblingElement("connection");
@@ -110,6 +136,7 @@ bool Robot::AddDefaultTestChannels() {
         channel = channel->NextSiblingElement("channel");
     }
     DefaultLogManager::Default->EndLog(true);
+    delete w;
     return true;
 }
 

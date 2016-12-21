@@ -913,7 +913,7 @@ void FastProtocolManager::PrintOBSCURR(FastOBSCURRInfo *info) {
 void FastProtocolManager::PrintIncrementalMSRFOND(FastIncrementalMSRFONDInfo *info) {
 
 	printf("FastIncrementalMSRFONDInfo {\n");
-	PrintInt32("TemplateId", 2423, 1);
+	PrintInt32("TemplateId", 2523, 1);
 	PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 	PrintUInt64("SendingTime", info->SendingTime, 1);
 	PrintInt32("GroupMDEntriesCount", info->GroupMDEntriesCount, 1);
@@ -2144,7 +2144,7 @@ void FastProtocolManager::PrintXmlOBSCURR(FastOBSCURRInfo *info) {
 void FastProtocolManager::PrintXmlIncrementalMSRFOND(FastIncrementalMSRFONDInfo *info) {
 
 	PrintXmlItemBegin("FastIncrementalMSRFONDInfo");
-	PrintXmlInt32("TemplateId", 2423);
+	PrintXmlInt32("TemplateId", 2523);
 	PrintXmlUInt32("MsgSeqNum", info->MsgSeqNum);
 	PrintXmlUInt64("SendingTime", info->SendingTime);
 	PrintXmlInt32("GroupMDEntriesCount", info->GroupMDEntriesCount);
@@ -3785,14 +3785,12 @@ void FastProtocolManager::EncodeIncrementalMSRFONDInfo(FastIncrementalMSRFONDInf
 	ResetBuffer();
 	WriteMsgSeqNumber(info->MsgSeqNum);
 	WriteUInt32_Mandatory(0); // Presence Map hack
-	WriteUInt32_Mandatory(2423);
+	WriteUInt32_Mandatory(2523);
 	WriteUInt32_Mandatory(info->MsgSeqNum);
 	WriteUInt64_Mandatory(info->SendingTime);
 	WriteUInt32_Mandatory(info->GroupMDEntriesCount);
 	FastGenericItemInfo **gmdeItemInfo = info->GroupMDEntries;
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
-	WriteUInt32_Mandatory(0); // Presence Map hack
-
 		if(!(*gmdeItemInfo)->AllowMDUpdateAction)
 			this->WriteNull();
 		else
@@ -3913,12 +3911,10 @@ void FastProtocolManager::EncodeIncrementalMSRFONDInfo(FastIncrementalMSRFONDInf
 			this->WriteNull();
 		else
 			WriteString_Optional((*gmdeItemInfo)->SettleType, (*gmdeItemInfo)->SettleTypeLength);
-		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, (*gmdeItemInfo)->CXFlagPresenceIndex)) {
-			if(!(*gmdeItemInfo)->AllowCXFlag)
-				this->WriteNull();
-			else
-				WriteString_Optional((*gmdeItemInfo)->CXFlag, (*gmdeItemInfo)->CXFlagLength);
-			}
+		if(!(*gmdeItemInfo)->AllowCXFlag)
+			this->WriteNull();
+		else
+			WriteString_Optional((*gmdeItemInfo)->CXFlag, (*gmdeItemInfo)->CXFlagLength);
 		if(!(*gmdeItemInfo)->AllowTradingSessionID)
 			this->WriteNull();
 		else
@@ -3940,8 +3936,6 @@ void FastProtocolManager::EncodeIncrementalMSRCURRInfo(FastIncrementalMSRCURRInf
 	WriteUInt32_Mandatory(info->GroupMDEntriesCount);
 	FastGenericItemInfo **gmdeItemInfo = info->GroupMDEntries;
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
-	WriteUInt32_Mandatory(0); // Presence Map hack
-
 		if(!(*gmdeItemInfo)->AllowMDUpdateAction)
 			this->WriteNull();
 		else
@@ -4030,12 +4024,10 @@ void FastProtocolManager::EncodeIncrementalMSRCURRInfo(FastIncrementalMSRCURRInf
 			this->WriteNull();
 		else
 			WriteString_Optional((*gmdeItemInfo)->SettleType, (*gmdeItemInfo)->SettleTypeLength);
-		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, (*gmdeItemInfo)->CXFlagPresenceIndex)) {
-			if(!(*gmdeItemInfo)->AllowCXFlag)
-				this->WriteNull();
-			else
-				WriteString_Optional((*gmdeItemInfo)->CXFlag, (*gmdeItemInfo)->CXFlagLength);
-			}
+		if(!(*gmdeItemInfo)->AllowCXFlag)
+			this->WriteNull();
+		else
+			WriteString_Optional((*gmdeItemInfo)->CXFlag, (*gmdeItemInfo)->CXFlagLength);
 		if(!(*gmdeItemInfo)->AllowTradingSessionID)
 			this->WriteNull();
 		else

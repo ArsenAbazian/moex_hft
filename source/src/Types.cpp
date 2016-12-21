@@ -15,6 +15,6 @@ unsigned int RobotSettings::DefaultMarketSendItemsCount = 4 * 1024 * 1024;
 unsigned int RobotSettings::DefaultMarketRecvItemsCount = 4 * 1024 * 1024;
 unsigned int RobotSettings::DefaultFeedConnectionPacketCount = 500000;
 
-int RobotSettings::MarketDataMaxSymbolsCount = 128;
-int RobotSettings::MarketDataMaxSessionsCount = 128;
+int RobotSettings::MarketDataMaxSymbolsCount = 64;
+int RobotSettings::MarketDataMaxSessionsCount = 32;
 int RobotSettings::MarketDataMaxEntriesCount = 256;

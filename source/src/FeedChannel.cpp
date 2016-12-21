@@ -8,6 +8,9 @@ FeedChannel::FeedChannel(const char *id, const char *name) {
     this->m_idLogIndex = DefaultLogMessageProvider::Default->RegisterText(this->id);
     this->m_nameLogIndex = DefaultLogMessageProvider::Default->RegisterText(this->name);
 
+	this->m_senderCompId = 0;
+	this->m_password = 0;
+
 	this->orderBookIncremental = NULL;
 	this->orderBookSnapshot = NULL;
 	this->statisticsIncremental = NULL;
