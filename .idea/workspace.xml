@@ -21,9 +21,6 @@
   <component name="ChangeListManager">
     <list default="true" id="32604c03-98a8-42cf-80f6-771ec2ce84cc" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/FastTypes.h" afterPath="$PROJECT_DIR$/source/include/FastTypes.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/src/FastProtocolManager.cpp" afterPath="$PROJECT_DIR$/source/src/FastProtocolManager.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tools/Program.cs" afterPath="$PROJECT_DIR$/tools/Program.cs" />
     </list>
     <ignored path="hft_robot.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -747,14 +744,7 @@
       <workItem from="1482224149329" duration="4170000" />
       <workItem from="1482254225760" duration="3780000" />
       <workItem from="1482262178048" duration="10689000" />
-      <workItem from="1482426897448" duration="11160000" />
-    </task>
-    <task id="LOCAL-00066" summary="BugFix">
-      <created>1477982145879</created>
-      <option name="number" value="00066" />
-      <option name="presentableId" value="LOCAL-00066" />
-      <option name="project" value="LOCAL" />
-      <updated>1477982145886</updated>
+      <workItem from="1482426897448" duration="11205000" />
     </task>
     <task id="LOCAL-00067" summary="Some BugFix">
       <created>1478037586846</created>
@@ -1092,11 +1082,18 @@
       <option name="project" value="LOCAL" />
       <updated>1482441420046</updated>
     </task>
-    <option name="localTasksCounter" value="115" />
+    <task id="LOCAL-00115" summary="All templates have changed... Fix All Tests!!!!!!!!">
+      <created>1482441834216</created>
+      <option name="number" value="00115" />
+      <option name="presentableId" value="LOCAL-00115" />
+      <option name="project" value="LOCAL" />
+      <updated>1482441834218</updated>
+    </task>
+    <option name="localTasksCounter" value="116" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="1024033000" />
+    <option name="totallyTimeSpent" value="1024078000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -1122,7 +1119,7 @@
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.28984717" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32920793" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.235262" sideWeight="0.506993" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.4797219" sideWeight="0.5634817" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.594438" sideWeight="0.5634817" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -1182,7 +1179,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
-    <MESSAGE value="1. Change stupid blocked send and receive with poll :) (evil laugh)&#10;2. But polling code now placed in WinSockManager (dont know if it should be extracted to separate class )" />
     <MESSAGE value="1. adding some files needed to generate fast encoding methods" />
     <MESSAGE value="1. Almost done EncodeMethods generation for FastProtocolManager.... And It is compilable&#10;" />
     <MESSAGE value="1. Refactore presence map, working on decoding fast protocol messages&#10;" />
@@ -1207,7 +1203,8 @@
     <MESSAGE value="Make some methods inline :)" />
     <MESSAGE value="Working on MSR/MSS&#10;1. Fixed bug - in MSR template there is no PresenceMap in GroupMDEntries, BUT SHOULD BECAUSE OF (FUUUUUUCK!!!!) optional presence with copy operator.&#10;2. Wrote some tests" />
     <MESSAGE value="All templates have changed... Broke tests.... Still working on them" />
-    <option name="LAST_COMMIT_MESSAGE" value="All templates have changed... Broke tests.... Still working on them" />
+    <MESSAGE value="All templates have changed... Fix All Tests!!!!!!!!" />
+    <option name="LAST_COMMIT_MESSAGE" value="All templates have changed... Fix All Tests!!!!!!!!" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
