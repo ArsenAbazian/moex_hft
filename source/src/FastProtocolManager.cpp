@@ -439,8 +439,6 @@ void FastProtocolManager::PrintGeneric(FastGenericInfo *info) {
 			PrintDecimal("BuyBackPx", &(gmdeItemInfo->BuyBackPx), 2);
 		if(gmdeItemInfo->AllowBuyBackDate)
 			PrintUInt32("BuyBackDate", gmdeItemInfo->BuyBackDate, 2);
-		if(gmdeItemInfo->AllowDealNumber)
-			PrintString("DealNumber", gmdeItemInfo->DealNumber, gmdeItemInfo->DealNumberLength, 2);
 		if(gmdeItemInfo->AllowCXFlag)
 			PrintString("CXFlag", gmdeItemInfo->CXFlag, gmdeItemInfo->CXFlagLength, 2);
 		if(gmdeItemInfo->AllowTradingSessionSubID)
@@ -549,8 +547,6 @@ void FastProtocolManager::PrintIncrementalGeneric(FastIncrementalGenericInfo *in
 			PrintDecimal("BuyBackPx", &(gmdeItemInfo->BuyBackPx), 2);
 		if(gmdeItemInfo->AllowBuyBackDate)
 			PrintUInt32("BuyBackDate", gmdeItemInfo->BuyBackDate, 2);
-		if(gmdeItemInfo->AllowDealNumber)
-			PrintString("DealNumber", gmdeItemInfo->DealNumber, gmdeItemInfo->DealNumberLength, 2);
 		if(gmdeItemInfo->AllowCXFlag)
 			PrintString("CXFlag", gmdeItemInfo->CXFlag, gmdeItemInfo->CXFlagLength, 2);
 		if(gmdeItemInfo->AllowTradingSessionID)
@@ -565,7 +561,7 @@ void FastProtocolManager::PrintIncrementalGeneric(FastIncrementalGenericInfo *in
 void FastProtocolManager::PrintOLSFOND(FastOLSFONDInfo *info) {
 
 	printf("FastOLSFONDInfo {\n");
-	PrintInt32("TemplateId", 2410, 1);
+	PrintInt32("TemplateId", 2510, 1);
 	PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 	PrintUInt64("SendingTime", info->SendingTime, 1);
 	if(info->AllowLastMsgSeqNumProcessed)
@@ -605,8 +601,6 @@ void FastProtocolManager::PrintOLSFOND(FastOLSFONDInfo *info) {
 			PrintDecimal("MDEntryPx", &(gmdeItemInfo->MDEntryPx), 2);
 		if(gmdeItemInfo->AllowMDEntrySize)
 			PrintDecimal("MDEntrySize", &(gmdeItemInfo->MDEntrySize), 2);
-		if(gmdeItemInfo->AllowDealNumber)
-			PrintString("DealNumber", gmdeItemInfo->DealNumber, gmdeItemInfo->DealNumberLength, 2);
 		if(gmdeItemInfo->AllowYield)
 			PrintDecimal("Yield", &(gmdeItemInfo->Yield), 2);
 		if(gmdeItemInfo->AllowOrderStatus)
@@ -625,7 +619,7 @@ void FastProtocolManager::PrintOLSFOND(FastOLSFONDInfo *info) {
 void FastProtocolManager::PrintOLSCURR(FastOLSCURRInfo *info) {
 
 	printf("FastOLSCURRInfo {\n");
-	PrintInt32("TemplateId", 3500, 1);
+	PrintInt32("TemplateId", 3600, 1);
 	PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 	PrintUInt64("SendingTime", info->SendingTime, 1);
 	if(info->AllowLastMsgSeqNumProcessed)
@@ -663,8 +657,6 @@ void FastProtocolManager::PrintOLSCURR(FastOLSCURRInfo *info) {
 			PrintDecimal("MDEntryPx", &(gmdeItemInfo->MDEntryPx), 2);
 		if(gmdeItemInfo->AllowMDEntrySize)
 			PrintDecimal("MDEntrySize", &(gmdeItemInfo->MDEntrySize), 2);
-		if(gmdeItemInfo->AllowDealNumber)
-			PrintString("DealNumber", gmdeItemInfo->DealNumber, gmdeItemInfo->DealNumberLength, 2);
 		if(gmdeItemInfo->AllowOrderStatus)
 			PrintString("OrderStatus", gmdeItemInfo->OrderStatus, gmdeItemInfo->OrderStatusLength, 2);
 		if(gmdeItemInfo->AllowTradingSessionSubID)
@@ -677,7 +669,7 @@ void FastProtocolManager::PrintOLSCURR(FastOLSCURRInfo *info) {
 void FastProtocolManager::PrintTLSFOND(FastTLSFONDInfo *info) {
 
 	printf("FastTLSFONDInfo {\n");
-	PrintInt32("TemplateId", 2411, 1);
+	PrintInt32("TemplateId", 2511, 1);
 	PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 	PrintUInt64("SendingTime", info->SendingTime, 1);
 	if(info->AllowLastMsgSeqNumProcessed)
@@ -740,6 +732,8 @@ void FastProtocolManager::PrintTLSFOND(FastTLSFONDInfo *info) {
 			PrintUInt32("BuyBackDate", gmdeItemInfo->BuyBackDate, 2);
 		if(gmdeItemInfo->AllowTradingSessionSubID)
 			PrintString("TradingSessionSubID", gmdeItemInfo->TradingSessionSubID, gmdeItemInfo->TradingSessionSubIDLength, 2);
+		if(gmdeItemInfo->AllowRefOrderID)
+			PrintString("RefOrderID", gmdeItemInfo->RefOrderID, gmdeItemInfo->RefOrderIDLength, 2);
 		PrintItemEnd(1);
 	}
 
@@ -748,7 +742,7 @@ void FastProtocolManager::PrintTLSFOND(FastTLSFONDInfo *info) {
 void FastProtocolManager::PrintTLSCURR(FastTLSCURRInfo *info) {
 
 	printf("FastTLSCURRInfo {\n");
-	PrintInt32("TemplateId", 3501, 1);
+	PrintInt32("TemplateId", 3601, 1);
 	PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 	PrintUInt64("SendingTime", info->SendingTime, 1);
 	if(info->AllowLastMsgSeqNumProcessed)
@@ -805,106 +799,8 @@ void FastProtocolManager::PrintTLSCURR(FastTLSCURRInfo *info) {
 			PrintUInt32("BuyBackDate", gmdeItemInfo->BuyBackDate, 2);
 		if(gmdeItemInfo->AllowTradingSessionSubID)
 			PrintString("TradingSessionSubID", gmdeItemInfo->TradingSessionSubID, gmdeItemInfo->TradingSessionSubIDLength, 2);
-		PrintItemEnd(1);
-	}
-
-	printf("}\n");
-}
-void FastProtocolManager::PrintOBSFOND(FastOBSFONDInfo *info) {
-
-	printf("FastOBSFONDInfo {\n");
-	PrintInt32("TemplateId", 2412, 1);
-	PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
-	PrintUInt64("SendingTime", info->SendingTime, 1);
-	if(info->AllowLastMsgSeqNumProcessed)
-		PrintUInt32("LastMsgSeqNumProcessed", info->LastMsgSeqNumProcessed, 1);
-	PrintInt32("RptSeq", info->RptSeq, 1);
-	if(info->AllowTradSesStatus)
-		PrintInt32("TradSesStatus", info->TradSesStatus, 1);
-	if(info->AllowTradingSessionID)
-		PrintString("TradingSessionID", info->TradingSessionID, info->TradingSessionIDLength, 1);
-	PrintString("Symbol", info->Symbol, info->SymbolLength, 1);
-	if(info->AllowLastFragment)
-		PrintUInt32("LastFragment", info->LastFragment, 1);
-	if(info->AllowRouteFirst)
-		PrintUInt32("RouteFirst", info->RouteFirst, 1);
-	if(info->AllowMDSecurityTradingStatus)
-		PrintInt32("MDSecurityTradingStatus", info->MDSecurityTradingStatus, 1);
-	if(info->AllowAuctionIndicator)
-		PrintUInt32("AuctionIndicator", info->AuctionIndicator, 1);
-	PrintInt32("GroupMDEntriesCount", info->GroupMDEntriesCount, 1);
-
-	FastOBSFONDItemInfo* gmdeItemInfo = NULL;
-
-	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
-		gmdeItemInfo = info->GroupMDEntries[i];
-		PrintItemBegin("item", i, 1);
-		if(gmdeItemInfo->AllowMDEntryType)
-			PrintString("MDEntryType", gmdeItemInfo->MDEntryType, gmdeItemInfo->MDEntryTypeLength, 2);
-		if(gmdeItemInfo->AllowMDEntryID)
-			PrintString("MDEntryID", gmdeItemInfo->MDEntryID, gmdeItemInfo->MDEntryIDLength, 2);
-		if(gmdeItemInfo->AllowMDEntryPx)
-			PrintDecimal("MDEntryPx", &(gmdeItemInfo->MDEntryPx), 2);
-		if(gmdeItemInfo->AllowMDEntrySize)
-			PrintDecimal("MDEntrySize", &(gmdeItemInfo->MDEntrySize), 2);
-		if(gmdeItemInfo->AllowMDEntryTime)
-			PrintUInt32("MDEntryTime", gmdeItemInfo->MDEntryTime, 2);
-		if(gmdeItemInfo->AllowOrigTime)
-			PrintUInt32("OrigTime", gmdeItemInfo->OrigTime, 2);
-		if(gmdeItemInfo->AllowYield)
-			PrintDecimal("Yield", &(gmdeItemInfo->Yield), 2);
-		if(gmdeItemInfo->AllowEffectiveTime)
-			PrintUInt32("EffectiveTime", gmdeItemInfo->EffectiveTime, 2);
-		if(gmdeItemInfo->AllowNominalValue)
-			PrintDecimal("NominalValue", &(gmdeItemInfo->NominalValue), 2);
-		if(gmdeItemInfo->AllowTradingSessionSubID)
-			PrintString("TradingSessionSubID", gmdeItemInfo->TradingSessionSubID, gmdeItemInfo->TradingSessionSubIDLength, 2);
-		PrintItemEnd(1);
-	}
-
-	printf("}\n");
-}
-void FastProtocolManager::PrintOBSCURR(FastOBSCURRInfo *info) {
-
-	printf("FastOBSCURRInfo {\n");
-	PrintInt32("TemplateId", 3502, 1);
-	PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
-	PrintUInt64("SendingTime", info->SendingTime, 1);
-	if(info->AllowLastMsgSeqNumProcessed)
-		PrintUInt32("LastMsgSeqNumProcessed", info->LastMsgSeqNumProcessed, 1);
-	PrintInt32("RptSeq", info->RptSeq, 1);
-	if(info->AllowTradSesStatus)
-		PrintInt32("TradSesStatus", info->TradSesStatus, 1);
-	if(info->AllowTradingSessionID)
-		PrintString("TradingSessionID", info->TradingSessionID, info->TradingSessionIDLength, 1);
-	PrintString("Symbol", info->Symbol, info->SymbolLength, 1);
-	if(info->AllowLastFragment)
-		PrintUInt32("LastFragment", info->LastFragment, 1);
-	if(info->AllowRouteFirst)
-		PrintUInt32("RouteFirst", info->RouteFirst, 1);
-	if(info->AllowMDSecurityTradingStatus)
-		PrintInt32("MDSecurityTradingStatus", info->MDSecurityTradingStatus, 1);
-	PrintInt32("GroupMDEntriesCount", info->GroupMDEntriesCount, 1);
-
-	FastOBSCURRItemInfo* gmdeItemInfo = NULL;
-
-	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
-		gmdeItemInfo = info->GroupMDEntries[i];
-		PrintItemBegin("item", i, 1);
-		if(gmdeItemInfo->AllowMDEntryType)
-			PrintString("MDEntryType", gmdeItemInfo->MDEntryType, gmdeItemInfo->MDEntryTypeLength, 2);
-		if(gmdeItemInfo->AllowMDEntryID)
-			PrintString("MDEntryID", gmdeItemInfo->MDEntryID, gmdeItemInfo->MDEntryIDLength, 2);
-		if(gmdeItemInfo->AllowMDEntryPx)
-			PrintDecimal("MDEntryPx", &(gmdeItemInfo->MDEntryPx), 2);
-		if(gmdeItemInfo->AllowMDEntrySize)
-			PrintDecimal("MDEntrySize", &(gmdeItemInfo->MDEntrySize), 2);
-		if(gmdeItemInfo->AllowMDEntryTime)
-			PrintUInt32("MDEntryTime", gmdeItemInfo->MDEntryTime, 2);
-		if(gmdeItemInfo->AllowOrigTime)
-			PrintUInt32("OrigTime", gmdeItemInfo->OrigTime, 2);
-		if(gmdeItemInfo->AllowTradingSessionSubID)
-			PrintString("TradingSessionSubID", gmdeItemInfo->TradingSessionSubID, gmdeItemInfo->TradingSessionSubIDLength, 2);
+		if(gmdeItemInfo->AllowRefOrderID)
+			PrintString("RefOrderID", gmdeItemInfo->RefOrderID, gmdeItemInfo->RefOrderIDLength, 2);
 		PrintItemEnd(1);
 	}
 
@@ -997,7 +893,7 @@ void FastProtocolManager::PrintIncrementalMSRFOND(FastIncrementalMSRFONDInfo *in
 void FastProtocolManager::PrintIncrementalMSRCURR(FastIncrementalMSRCURRInfo *info) {
 
 	printf("FastIncrementalMSRCURRInfo {\n");
-	PrintInt32("TemplateId", 3513, 1);
+	PrintInt32("TemplateId", 3613, 1);
 	PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 	PrintUInt64("SendingTime", info->SendingTime, 1);
 	PrintInt32("GroupMDEntriesCount", info->GroupMDEntriesCount, 1);
@@ -1025,6 +921,8 @@ void FastProtocolManager::PrintIncrementalMSRCURR(FastIncrementalMSRCURRInfo *in
 			PrintUInt32("MDEntryDate", gmdeItemInfo->MDEntryDate, 2);
 		if(gmdeItemInfo->AllowMDEntryTime)
 			PrintUInt32("MDEntryTime", gmdeItemInfo->MDEntryTime, 2);
+		if(gmdeItemInfo->AllowStartTime)
+			PrintUInt32("StartTime", gmdeItemInfo->StartTime, 2);
 		if(gmdeItemInfo->AllowQuoteCondition)
 			PrintString("QuoteCondition", gmdeItemInfo->QuoteCondition, gmdeItemInfo->QuoteConditionLength, 2);
 		if(gmdeItemInfo->AllowTradeCondition)
@@ -1037,6 +935,10 @@ void FastProtocolManager::PrintIncrementalMSRCURR(FastIncrementalMSRCURRInfo *in
 			PrintDecimal("ChgFromWAPrice", &(gmdeItemInfo->ChgFromWAPrice), 2);
 		if(gmdeItemInfo->AllowChgOpenInterest)
 			PrintDecimal("ChgOpenInterest", &(gmdeItemInfo->ChgOpenInterest), 2);
+		if(gmdeItemInfo->AllowBidMarketSize)
+			PrintDecimal("BidMarketSize", &(gmdeItemInfo->BidMarketSize), 2);
+		if(gmdeItemInfo->AllowAskMarketSize)
+			PrintDecimal("AskMarketSize", &(gmdeItemInfo->AskMarketSize), 2);
 		if(gmdeItemInfo->AllowTotalNumOfTrades)
 			PrintInt32("TotalNumOfTrades", gmdeItemInfo->TotalNumOfTrades, 2);
 		if(gmdeItemInfo->AllowTradeValue)
@@ -1065,7 +967,7 @@ void FastProtocolManager::PrintIncrementalMSRCURR(FastIncrementalMSRCURRInfo *in
 void FastProtocolManager::PrintIncrementalOLRFOND(FastIncrementalOLRFONDInfo *info) {
 
 	printf("FastIncrementalOLRFONDInfo {\n");
-	PrintInt32("TemplateId", 2420, 1);
+	PrintInt32("TemplateId", 2520, 1);
 	PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 	PrintUInt64("SendingTime", info->SendingTime, 1);
 	PrintInt32("GroupMDEntriesCount", info->GroupMDEntriesCount, 1);
@@ -1095,8 +997,6 @@ void FastProtocolManager::PrintIncrementalOLRFOND(FastIncrementalOLRFONDInfo *in
 			PrintDecimal("MDEntryPx", &(gmdeItemInfo->MDEntryPx), 2);
 		if(gmdeItemInfo->AllowMDEntrySize)
 			PrintDecimal("MDEntrySize", &(gmdeItemInfo->MDEntrySize), 2);
-		if(gmdeItemInfo->AllowDealNumber)
-			PrintString("DealNumber", gmdeItemInfo->DealNumber, gmdeItemInfo->DealNumberLength, 2);
 		if(gmdeItemInfo->AllowYield)
 			PrintDecimal("Yield", &(gmdeItemInfo->Yield), 2);
 		if(gmdeItemInfo->AllowOrderStatus)
@@ -1117,7 +1017,7 @@ void FastProtocolManager::PrintIncrementalOLRFOND(FastIncrementalOLRFONDInfo *in
 void FastProtocolManager::PrintIncrementalOLRCURR(FastIncrementalOLRCURRInfo *info) {
 
 	printf("FastIncrementalOLRCURRInfo {\n");
-	PrintInt32("TemplateId", 3510, 1);
+	PrintInt32("TemplateId", 3610, 1);
 	PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 	PrintUInt64("SendingTime", info->SendingTime, 1);
 	PrintInt32("GroupMDEntriesCount", info->GroupMDEntriesCount, 1);
@@ -1147,96 +1047,8 @@ void FastProtocolManager::PrintIncrementalOLRCURR(FastIncrementalOLRCURRInfo *in
 			PrintDecimal("MDEntryPx", &(gmdeItemInfo->MDEntryPx), 2);
 		if(gmdeItemInfo->AllowMDEntrySize)
 			PrintDecimal("MDEntrySize", &(gmdeItemInfo->MDEntrySize), 2);
-		if(gmdeItemInfo->AllowDealNumber)
-			PrintString("DealNumber", gmdeItemInfo->DealNumber, gmdeItemInfo->DealNumberLength, 2);
 		if(gmdeItemInfo->AllowOrderStatus)
 			PrintString("OrderStatus", gmdeItemInfo->OrderStatus, gmdeItemInfo->OrderStatusLength, 2);
-		if(gmdeItemInfo->AllowTradingSessionID)
-			PrintString("TradingSessionID", gmdeItemInfo->TradingSessionID, gmdeItemInfo->TradingSessionIDLength, 2);
-		if(gmdeItemInfo->AllowTradingSessionSubID)
-			PrintString("TradingSessionSubID", gmdeItemInfo->TradingSessionSubID, gmdeItemInfo->TradingSessionSubIDLength, 2);
-		PrintItemEnd(1);
-	}
-
-	printf("}\n");
-}
-void FastProtocolManager::PrintIncrementalOBRFOND(FastIncrementalOBRFONDInfo *info) {
-
-	printf("FastIncrementalOBRFONDInfo {\n");
-	PrintInt32("TemplateId", 2422, 1);
-	PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
-	PrintUInt64("SendingTime", info->SendingTime, 1);
-	PrintInt32("GroupMDEntriesCount", info->GroupMDEntriesCount, 1);
-
-	FastOBSFONDItemInfo* gmdeItemInfo = NULL;
-
-	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
-		gmdeItemInfo = info->GroupMDEntries[i];
-		PrintItemBegin("item", i, 1);
-		if(gmdeItemInfo->AllowMDUpdateAction)
-			PrintUInt32("MDUpdateAction", gmdeItemInfo->MDUpdateAction, 2);
-		if(gmdeItemInfo->AllowMDEntryType)
-			PrintString("MDEntryType", gmdeItemInfo->MDEntryType, gmdeItemInfo->MDEntryTypeLength, 2);
-		if(gmdeItemInfo->AllowMDEntryID)
-			PrintString("MDEntryID", gmdeItemInfo->MDEntryID, gmdeItemInfo->MDEntryIDLength, 2);
-		if(gmdeItemInfo->AllowSymbol)
-			PrintString("Symbol", gmdeItemInfo->Symbol, gmdeItemInfo->SymbolLength, 2);
-		if(gmdeItemInfo->AllowRptSeq)
-			PrintInt32("RptSeq", gmdeItemInfo->RptSeq, 2);
-		if(gmdeItemInfo->AllowMDEntryPx)
-			PrintDecimal("MDEntryPx", &(gmdeItemInfo->MDEntryPx), 2);
-		if(gmdeItemInfo->AllowMDEntrySize)
-			PrintDecimal("MDEntrySize", &(gmdeItemInfo->MDEntrySize), 2);
-		if(gmdeItemInfo->AllowMDEntryTime)
-			PrintUInt32("MDEntryTime", gmdeItemInfo->MDEntryTime, 2);
-		if(gmdeItemInfo->AllowOrigTime)
-			PrintUInt32("OrigTime", gmdeItemInfo->OrigTime, 2);
-		if(gmdeItemInfo->AllowYield)
-			PrintDecimal("Yield", &(gmdeItemInfo->Yield), 2);
-		if(gmdeItemInfo->AllowEffectiveTime)
-			PrintUInt32("EffectiveTime", gmdeItemInfo->EffectiveTime, 2);
-		if(gmdeItemInfo->AllowNominalValue)
-			PrintDecimal("NominalValue", &(gmdeItemInfo->NominalValue), 2);
-		if(gmdeItemInfo->AllowTradingSessionID)
-			PrintString("TradingSessionID", gmdeItemInfo->TradingSessionID, gmdeItemInfo->TradingSessionIDLength, 2);
-		if(gmdeItemInfo->AllowTradingSessionSubID)
-			PrintString("TradingSessionSubID", gmdeItemInfo->TradingSessionSubID, gmdeItemInfo->TradingSessionSubIDLength, 2);
-		PrintItemEnd(1);
-	}
-
-	printf("}\n");
-}
-void FastProtocolManager::PrintIncrementalOBRCURR(FastIncrementalOBRCURRInfo *info) {
-
-	printf("FastIncrementalOBRCURRInfo {\n");
-	PrintInt32("TemplateId", 3512, 1);
-	PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
-	PrintUInt64("SendingTime", info->SendingTime, 1);
-	PrintInt32("GroupMDEntriesCount", info->GroupMDEntriesCount, 1);
-
-	FastOBSCURRItemInfo* gmdeItemInfo = NULL;
-
-	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
-		gmdeItemInfo = info->GroupMDEntries[i];
-		PrintItemBegin("item", i, 1);
-		if(gmdeItemInfo->AllowMDUpdateAction)
-			PrintUInt32("MDUpdateAction", gmdeItemInfo->MDUpdateAction, 2);
-		if(gmdeItemInfo->AllowMDEntryType)
-			PrintString("MDEntryType", gmdeItemInfo->MDEntryType, gmdeItemInfo->MDEntryTypeLength, 2);
-		if(gmdeItemInfo->AllowMDEntryID)
-			PrintString("MDEntryID", gmdeItemInfo->MDEntryID, gmdeItemInfo->MDEntryIDLength, 2);
-		if(gmdeItemInfo->AllowSymbol)
-			PrintString("Symbol", gmdeItemInfo->Symbol, gmdeItemInfo->SymbolLength, 2);
-		if(gmdeItemInfo->AllowRptSeq)
-			PrintInt32("RptSeq", gmdeItemInfo->RptSeq, 2);
-		if(gmdeItemInfo->AllowMDEntryPx)
-			PrintDecimal("MDEntryPx", &(gmdeItemInfo->MDEntryPx), 2);
-		if(gmdeItemInfo->AllowMDEntrySize)
-			PrintDecimal("MDEntrySize", &(gmdeItemInfo->MDEntrySize), 2);
-		if(gmdeItemInfo->AllowMDEntryTime)
-			PrintUInt32("MDEntryTime", gmdeItemInfo->MDEntryTime, 2);
-		if(gmdeItemInfo->AllowOrigTime)
-			PrintUInt32("OrigTime", gmdeItemInfo->OrigTime, 2);
 		if(gmdeItemInfo->AllowTradingSessionID)
 			PrintString("TradingSessionID", gmdeItemInfo->TradingSessionID, gmdeItemInfo->TradingSessionIDLength, 2);
 		if(gmdeItemInfo->AllowTradingSessionSubID)
@@ -1249,7 +1061,7 @@ void FastProtocolManager::PrintIncrementalOBRCURR(FastIncrementalOBRCURRInfo *in
 void FastProtocolManager::PrintIncrementalTLRFOND(FastIncrementalTLRFONDInfo *info) {
 
 	printf("FastIncrementalTLRFONDInfo {\n");
-	PrintInt32("TemplateId", 2421, 1);
+	PrintInt32("TemplateId", 2521, 1);
 	PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 	PrintUInt64("SendingTime", info->SendingTime, 1);
 	PrintInt32("GroupMDEntriesCount", info->GroupMDEntriesCount, 1);
@@ -1304,6 +1116,8 @@ void FastProtocolManager::PrintIncrementalTLRFOND(FastIncrementalTLRFONDInfo *in
 			PrintString("TradingSessionID", gmdeItemInfo->TradingSessionID, gmdeItemInfo->TradingSessionIDLength, 2);
 		if(gmdeItemInfo->AllowTradingSessionSubID)
 			PrintString("TradingSessionSubID", gmdeItemInfo->TradingSessionSubID, gmdeItemInfo->TradingSessionSubIDLength, 2);
+		if(gmdeItemInfo->AllowRefOrderID)
+			PrintString("RefOrderID", gmdeItemInfo->RefOrderID, gmdeItemInfo->RefOrderIDLength, 2);
 		PrintItemEnd(1);
 	}
 
@@ -1312,7 +1126,7 @@ void FastProtocolManager::PrintIncrementalTLRFOND(FastIncrementalTLRFONDInfo *in
 void FastProtocolManager::PrintIncrementalTLRCURR(FastIncrementalTLRCURRInfo *info) {
 
 	printf("FastIncrementalTLRCURRInfo {\n");
-	PrintInt32("TemplateId", 3511, 1);
+	PrintInt32("TemplateId", 3611, 1);
 	PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 	PrintUInt64("SendingTime", info->SendingTime, 1);
 	PrintInt32("GroupMDEntriesCount", info->GroupMDEntriesCount, 1);
@@ -1363,6 +1177,8 @@ void FastProtocolManager::PrintIncrementalTLRCURR(FastIncrementalTLRCURRInfo *in
 			PrintString("TradingSessionID", gmdeItemInfo->TradingSessionID, gmdeItemInfo->TradingSessionIDLength, 2);
 		if(gmdeItemInfo->AllowTradingSessionSubID)
 			PrintString("TradingSessionSubID", gmdeItemInfo->TradingSessionSubID, gmdeItemInfo->TradingSessionSubIDLength, 2);
+		if(gmdeItemInfo->AllowRefOrderID)
+			PrintString("RefOrderID", gmdeItemInfo->RefOrderID, gmdeItemInfo->RefOrderIDLength, 2);
 		PrintItemEnd(1);
 	}
 
@@ -1670,8 +1486,6 @@ void FastProtocolManager::PrintXmlGeneric(FastGenericInfo *info) {
 			PrintXmlDecimal("BuyBackPx", &(gmdeItemInfo->BuyBackPx));
 		if(gmdeItemInfo->AllowBuyBackDate)
 			PrintXmlUInt32("BuyBackDate", gmdeItemInfo->BuyBackDate);
-		if(gmdeItemInfo->AllowDealNumber)
-			PrintXmlString("DealNumber", gmdeItemInfo->DealNumber, gmdeItemInfo->DealNumberLength);
 		if(gmdeItemInfo->AllowCXFlag)
 			PrintXmlString("CXFlag", gmdeItemInfo->CXFlag, gmdeItemInfo->CXFlagLength);
 		if(gmdeItemInfo->AllowTradingSessionSubID)
@@ -1780,8 +1594,6 @@ void FastProtocolManager::PrintXmlIncrementalGeneric(FastIncrementalGenericInfo 
 			PrintXmlDecimal("BuyBackPx", &(gmdeItemInfo->BuyBackPx));
 		if(gmdeItemInfo->AllowBuyBackDate)
 			PrintXmlUInt32("BuyBackDate", gmdeItemInfo->BuyBackDate);
-		if(gmdeItemInfo->AllowDealNumber)
-			PrintXmlString("DealNumber", gmdeItemInfo->DealNumber, gmdeItemInfo->DealNumberLength);
 		if(gmdeItemInfo->AllowCXFlag)
 			PrintXmlString("CXFlag", gmdeItemInfo->CXFlag, gmdeItemInfo->CXFlagLength);
 		if(gmdeItemInfo->AllowTradingSessionID)
@@ -1796,7 +1608,7 @@ void FastProtocolManager::PrintXmlIncrementalGeneric(FastIncrementalGenericInfo 
 void FastProtocolManager::PrintXmlOLSFOND(FastOLSFONDInfo *info) {
 
 	PrintXmlItemBegin("FastOLSFONDInfo");
-	PrintXmlInt32("TemplateId", 2410);
+	PrintXmlInt32("TemplateId", 2510);
 	PrintXmlUInt32("MsgSeqNum", info->MsgSeqNum);
 	PrintXmlUInt64("SendingTime", info->SendingTime);
 	if(info->AllowLastMsgSeqNumProcessed)
@@ -1836,8 +1648,6 @@ void FastProtocolManager::PrintXmlOLSFOND(FastOLSFONDInfo *info) {
 			PrintXmlDecimal("MDEntryPx", &(gmdeItemInfo->MDEntryPx));
 		if(gmdeItemInfo->AllowMDEntrySize)
 			PrintXmlDecimal("MDEntrySize", &(gmdeItemInfo->MDEntrySize));
-		if(gmdeItemInfo->AllowDealNumber)
-			PrintXmlString("DealNumber", gmdeItemInfo->DealNumber, gmdeItemInfo->DealNumberLength);
 		if(gmdeItemInfo->AllowYield)
 			PrintXmlDecimal("Yield", &(gmdeItemInfo->Yield));
 		if(gmdeItemInfo->AllowOrderStatus)
@@ -1856,7 +1666,7 @@ void FastProtocolManager::PrintXmlOLSFOND(FastOLSFONDInfo *info) {
 void FastProtocolManager::PrintXmlOLSCURR(FastOLSCURRInfo *info) {
 
 	PrintXmlItemBegin("FastOLSCURRInfo");
-	PrintXmlInt32("TemplateId", 3500);
+	PrintXmlInt32("TemplateId", 3600);
 	PrintXmlUInt32("MsgSeqNum", info->MsgSeqNum);
 	PrintXmlUInt64("SendingTime", info->SendingTime);
 	if(info->AllowLastMsgSeqNumProcessed)
@@ -1894,8 +1704,6 @@ void FastProtocolManager::PrintXmlOLSCURR(FastOLSCURRInfo *info) {
 			PrintXmlDecimal("MDEntryPx", &(gmdeItemInfo->MDEntryPx));
 		if(gmdeItemInfo->AllowMDEntrySize)
 			PrintXmlDecimal("MDEntrySize", &(gmdeItemInfo->MDEntrySize));
-		if(gmdeItemInfo->AllowDealNumber)
-			PrintXmlString("DealNumber", gmdeItemInfo->DealNumber, gmdeItemInfo->DealNumberLength);
 		if(gmdeItemInfo->AllowOrderStatus)
 			PrintXmlString("OrderStatus", gmdeItemInfo->OrderStatus, gmdeItemInfo->OrderStatusLength);
 		if(gmdeItemInfo->AllowTradingSessionSubID)
@@ -1908,7 +1716,7 @@ void FastProtocolManager::PrintXmlOLSCURR(FastOLSCURRInfo *info) {
 void FastProtocolManager::PrintXmlTLSFOND(FastTLSFONDInfo *info) {
 
 	PrintXmlItemBegin("FastTLSFONDInfo");
-	PrintXmlInt32("TemplateId", 2411);
+	PrintXmlInt32("TemplateId", 2511);
 	PrintXmlUInt32("MsgSeqNum", info->MsgSeqNum);
 	PrintXmlUInt64("SendingTime", info->SendingTime);
 	if(info->AllowLastMsgSeqNumProcessed)
@@ -1971,6 +1779,8 @@ void FastProtocolManager::PrintXmlTLSFOND(FastTLSFONDInfo *info) {
 			PrintXmlUInt32("BuyBackDate", gmdeItemInfo->BuyBackDate);
 		if(gmdeItemInfo->AllowTradingSessionSubID)
 			PrintXmlString("TradingSessionSubID", gmdeItemInfo->TradingSessionSubID, gmdeItemInfo->TradingSessionSubIDLength);
+		if(gmdeItemInfo->AllowRefOrderID)
+			PrintXmlString("RefOrderID", gmdeItemInfo->RefOrderID, gmdeItemInfo->RefOrderIDLength);
 		PrintXmlItemEnd("item", i);
 	}
 
@@ -1979,7 +1789,7 @@ void FastProtocolManager::PrintXmlTLSFOND(FastTLSFONDInfo *info) {
 void FastProtocolManager::PrintXmlTLSCURR(FastTLSCURRInfo *info) {
 
 	PrintXmlItemBegin("FastTLSCURRInfo");
-	PrintXmlInt32("TemplateId", 3501);
+	PrintXmlInt32("TemplateId", 3601);
 	PrintXmlUInt32("MsgSeqNum", info->MsgSeqNum);
 	PrintXmlUInt64("SendingTime", info->SendingTime);
 	if(info->AllowLastMsgSeqNumProcessed)
@@ -2036,110 +1846,12 @@ void FastProtocolManager::PrintXmlTLSCURR(FastTLSCURRInfo *info) {
 			PrintXmlUInt32("BuyBackDate", gmdeItemInfo->BuyBackDate);
 		if(gmdeItemInfo->AllowTradingSessionSubID)
 			PrintXmlString("TradingSessionSubID", gmdeItemInfo->TradingSessionSubID, gmdeItemInfo->TradingSessionSubIDLength);
+		if(gmdeItemInfo->AllowRefOrderID)
+			PrintXmlString("RefOrderID", gmdeItemInfo->RefOrderID, gmdeItemInfo->RefOrderIDLength);
 		PrintXmlItemEnd("item", i);
 	}
 
 	PrintXmlItemEnd("FastTLSCURRInfo");
-}
-void FastProtocolManager::PrintXmlOBSFOND(FastOBSFONDInfo *info) {
-
-	PrintXmlItemBegin("FastOBSFONDInfo");
-	PrintXmlInt32("TemplateId", 2412);
-	PrintXmlUInt32("MsgSeqNum", info->MsgSeqNum);
-	PrintXmlUInt64("SendingTime", info->SendingTime);
-	if(info->AllowLastMsgSeqNumProcessed)
-		PrintXmlUInt32("LastMsgSeqNumProcessed", info->LastMsgSeqNumProcessed);
-	PrintXmlInt32("RptSeq", info->RptSeq);
-	if(info->AllowTradSesStatus)
-		PrintXmlInt32("TradSesStatus", info->TradSesStatus);
-	if(info->AllowTradingSessionID)
-		PrintXmlString("TradingSessionID", info->TradingSessionID, info->TradingSessionIDLength);
-	PrintXmlString("Symbol", info->Symbol, info->SymbolLength);
-	if(info->AllowLastFragment)
-		PrintXmlUInt32("LastFragment", info->LastFragment);
-	if(info->AllowRouteFirst)
-		PrintXmlUInt32("RouteFirst", info->RouteFirst);
-	if(info->AllowMDSecurityTradingStatus)
-		PrintXmlInt32("MDSecurityTradingStatus", info->MDSecurityTradingStatus);
-	if(info->AllowAuctionIndicator)
-		PrintXmlUInt32("AuctionIndicator", info->AuctionIndicator);
-	PrintXmlInt32("GroupMDEntriesCount", info->GroupMDEntriesCount);
-
-	FastOBSFONDItemInfo* gmdeItemInfo = NULL;
-
-	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
-		gmdeItemInfo = info->GroupMDEntries[i];
-		PrintXmlItemBegin("item", i);
-		if(gmdeItemInfo->AllowMDEntryType)
-			PrintXmlString("MDEntryType", gmdeItemInfo->MDEntryType, gmdeItemInfo->MDEntryTypeLength);
-		if(gmdeItemInfo->AllowMDEntryID)
-			PrintXmlString("MDEntryID", gmdeItemInfo->MDEntryID, gmdeItemInfo->MDEntryIDLength);
-		if(gmdeItemInfo->AllowMDEntryPx)
-			PrintXmlDecimal("MDEntryPx", &(gmdeItemInfo->MDEntryPx));
-		if(gmdeItemInfo->AllowMDEntrySize)
-			PrintXmlDecimal("MDEntrySize", &(gmdeItemInfo->MDEntrySize));
-		if(gmdeItemInfo->AllowMDEntryTime)
-			PrintXmlUInt32("MDEntryTime", gmdeItemInfo->MDEntryTime);
-		if(gmdeItemInfo->AllowOrigTime)
-			PrintXmlUInt32("OrigTime", gmdeItemInfo->OrigTime);
-		if(gmdeItemInfo->AllowYield)
-			PrintXmlDecimal("Yield", &(gmdeItemInfo->Yield));
-		if(gmdeItemInfo->AllowEffectiveTime)
-			PrintXmlUInt32("EffectiveTime", gmdeItemInfo->EffectiveTime);
-		if(gmdeItemInfo->AllowNominalValue)
-			PrintXmlDecimal("NominalValue", &(gmdeItemInfo->NominalValue));
-		if(gmdeItemInfo->AllowTradingSessionSubID)
-			PrintXmlString("TradingSessionSubID", gmdeItemInfo->TradingSessionSubID, gmdeItemInfo->TradingSessionSubIDLength);
-		PrintXmlItemEnd("item", i);
-	}
-
-	PrintXmlItemEnd("FastOBSFONDInfo");
-}
-void FastProtocolManager::PrintXmlOBSCURR(FastOBSCURRInfo *info) {
-
-	PrintXmlItemBegin("FastOBSCURRInfo");
-	PrintXmlInt32("TemplateId", 3502);
-	PrintXmlUInt32("MsgSeqNum", info->MsgSeqNum);
-	PrintXmlUInt64("SendingTime", info->SendingTime);
-	if(info->AllowLastMsgSeqNumProcessed)
-		PrintXmlUInt32("LastMsgSeqNumProcessed", info->LastMsgSeqNumProcessed);
-	PrintXmlInt32("RptSeq", info->RptSeq);
-	if(info->AllowTradSesStatus)
-		PrintXmlInt32("TradSesStatus", info->TradSesStatus);
-	if(info->AllowTradingSessionID)
-		PrintXmlString("TradingSessionID", info->TradingSessionID, info->TradingSessionIDLength);
-	PrintXmlString("Symbol", info->Symbol, info->SymbolLength);
-	if(info->AllowLastFragment)
-		PrintXmlUInt32("LastFragment", info->LastFragment);
-	if(info->AllowRouteFirst)
-		PrintXmlUInt32("RouteFirst", info->RouteFirst);
-	if(info->AllowMDSecurityTradingStatus)
-		PrintXmlInt32("MDSecurityTradingStatus", info->MDSecurityTradingStatus);
-	PrintXmlInt32("GroupMDEntriesCount", info->GroupMDEntriesCount);
-
-	FastOBSCURRItemInfo* gmdeItemInfo = NULL;
-
-	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
-		gmdeItemInfo = info->GroupMDEntries[i];
-		PrintXmlItemBegin("item", i);
-		if(gmdeItemInfo->AllowMDEntryType)
-			PrintXmlString("MDEntryType", gmdeItemInfo->MDEntryType, gmdeItemInfo->MDEntryTypeLength);
-		if(gmdeItemInfo->AllowMDEntryID)
-			PrintXmlString("MDEntryID", gmdeItemInfo->MDEntryID, gmdeItemInfo->MDEntryIDLength);
-		if(gmdeItemInfo->AllowMDEntryPx)
-			PrintXmlDecimal("MDEntryPx", &(gmdeItemInfo->MDEntryPx));
-		if(gmdeItemInfo->AllowMDEntrySize)
-			PrintXmlDecimal("MDEntrySize", &(gmdeItemInfo->MDEntrySize));
-		if(gmdeItemInfo->AllowMDEntryTime)
-			PrintXmlUInt32("MDEntryTime", gmdeItemInfo->MDEntryTime);
-		if(gmdeItemInfo->AllowOrigTime)
-			PrintXmlUInt32("OrigTime", gmdeItemInfo->OrigTime);
-		if(gmdeItemInfo->AllowTradingSessionSubID)
-			PrintXmlString("TradingSessionSubID", gmdeItemInfo->TradingSessionSubID, gmdeItemInfo->TradingSessionSubIDLength);
-		PrintXmlItemEnd("item", i);
-	}
-
-	PrintXmlItemEnd("FastOBSCURRInfo");
 }
 void FastProtocolManager::PrintXmlIncrementalMSRFOND(FastIncrementalMSRFONDInfo *info) {
 
@@ -2228,7 +1940,7 @@ void FastProtocolManager::PrintXmlIncrementalMSRFOND(FastIncrementalMSRFONDInfo 
 void FastProtocolManager::PrintXmlIncrementalMSRCURR(FastIncrementalMSRCURRInfo *info) {
 
 	PrintXmlItemBegin("FastIncrementalMSRCURRInfo");
-	PrintXmlInt32("TemplateId", 3513);
+	PrintXmlInt32("TemplateId", 3613);
 	PrintXmlUInt32("MsgSeqNum", info->MsgSeqNum);
 	PrintXmlUInt64("SendingTime", info->SendingTime);
 	PrintXmlInt32("GroupMDEntriesCount", info->GroupMDEntriesCount);
@@ -2256,6 +1968,8 @@ void FastProtocolManager::PrintXmlIncrementalMSRCURR(FastIncrementalMSRCURRInfo 
 			PrintXmlUInt32("MDEntryDate", gmdeItemInfo->MDEntryDate);
 		if(gmdeItemInfo->AllowMDEntryTime)
 			PrintXmlUInt32("MDEntryTime", gmdeItemInfo->MDEntryTime);
+		if(gmdeItemInfo->AllowStartTime)
+			PrintXmlUInt32("StartTime", gmdeItemInfo->StartTime);
 		if(gmdeItemInfo->AllowQuoteCondition)
 			PrintXmlString("QuoteCondition", gmdeItemInfo->QuoteCondition, gmdeItemInfo->QuoteConditionLength);
 		if(gmdeItemInfo->AllowTradeCondition)
@@ -2268,6 +1982,10 @@ void FastProtocolManager::PrintXmlIncrementalMSRCURR(FastIncrementalMSRCURRInfo 
 			PrintXmlDecimal("ChgFromWAPrice", &(gmdeItemInfo->ChgFromWAPrice));
 		if(gmdeItemInfo->AllowChgOpenInterest)
 			PrintXmlDecimal("ChgOpenInterest", &(gmdeItemInfo->ChgOpenInterest));
+		if(gmdeItemInfo->AllowBidMarketSize)
+			PrintXmlDecimal("BidMarketSize", &(gmdeItemInfo->BidMarketSize));
+		if(gmdeItemInfo->AllowAskMarketSize)
+			PrintXmlDecimal("AskMarketSize", &(gmdeItemInfo->AskMarketSize));
 		if(gmdeItemInfo->AllowTotalNumOfTrades)
 			PrintXmlInt32("TotalNumOfTrades", gmdeItemInfo->TotalNumOfTrades);
 		if(gmdeItemInfo->AllowTradeValue)
@@ -2296,7 +2014,7 @@ void FastProtocolManager::PrintXmlIncrementalMSRCURR(FastIncrementalMSRCURRInfo 
 void FastProtocolManager::PrintXmlIncrementalOLRFOND(FastIncrementalOLRFONDInfo *info) {
 
 	PrintXmlItemBegin("FastIncrementalOLRFONDInfo");
-	PrintXmlInt32("TemplateId", 2420);
+	PrintXmlInt32("TemplateId", 2520);
 	PrintXmlUInt32("MsgSeqNum", info->MsgSeqNum);
 	PrintXmlUInt64("SendingTime", info->SendingTime);
 	PrintXmlInt32("GroupMDEntriesCount", info->GroupMDEntriesCount);
@@ -2326,8 +2044,6 @@ void FastProtocolManager::PrintXmlIncrementalOLRFOND(FastIncrementalOLRFONDInfo 
 			PrintXmlDecimal("MDEntryPx", &(gmdeItemInfo->MDEntryPx));
 		if(gmdeItemInfo->AllowMDEntrySize)
 			PrintXmlDecimal("MDEntrySize", &(gmdeItemInfo->MDEntrySize));
-		if(gmdeItemInfo->AllowDealNumber)
-			PrintXmlString("DealNumber", gmdeItemInfo->DealNumber, gmdeItemInfo->DealNumberLength);
 		if(gmdeItemInfo->AllowYield)
 			PrintXmlDecimal("Yield", &(gmdeItemInfo->Yield));
 		if(gmdeItemInfo->AllowOrderStatus)
@@ -2348,7 +2064,7 @@ void FastProtocolManager::PrintXmlIncrementalOLRFOND(FastIncrementalOLRFONDInfo 
 void FastProtocolManager::PrintXmlIncrementalOLRCURR(FastIncrementalOLRCURRInfo *info) {
 
 	PrintXmlItemBegin("FastIncrementalOLRCURRInfo");
-	PrintXmlInt32("TemplateId", 3510);
+	PrintXmlInt32("TemplateId", 3610);
 	PrintXmlUInt32("MsgSeqNum", info->MsgSeqNum);
 	PrintXmlUInt64("SendingTime", info->SendingTime);
 	PrintXmlInt32("GroupMDEntriesCount", info->GroupMDEntriesCount);
@@ -2378,8 +2094,6 @@ void FastProtocolManager::PrintXmlIncrementalOLRCURR(FastIncrementalOLRCURRInfo 
 			PrintXmlDecimal("MDEntryPx", &(gmdeItemInfo->MDEntryPx));
 		if(gmdeItemInfo->AllowMDEntrySize)
 			PrintXmlDecimal("MDEntrySize", &(gmdeItemInfo->MDEntrySize));
-		if(gmdeItemInfo->AllowDealNumber)
-			PrintXmlString("DealNumber", gmdeItemInfo->DealNumber, gmdeItemInfo->DealNumberLength);
 		if(gmdeItemInfo->AllowOrderStatus)
 			PrintXmlString("OrderStatus", gmdeItemInfo->OrderStatus, gmdeItemInfo->OrderStatusLength);
 		if(gmdeItemInfo->AllowTradingSessionID)
@@ -2391,96 +2105,10 @@ void FastProtocolManager::PrintXmlIncrementalOLRCURR(FastIncrementalOLRCURRInfo 
 
 	PrintXmlItemEnd("FastIncrementalOLRCURRInfo");
 }
-void FastProtocolManager::PrintXmlIncrementalOBRFOND(FastIncrementalOBRFONDInfo *info) {
-
-	PrintXmlItemBegin("FastIncrementalOBRFONDInfo");
-	PrintXmlInt32("TemplateId", 2422);
-	PrintXmlUInt32("MsgSeqNum", info->MsgSeqNum);
-	PrintXmlUInt64("SendingTime", info->SendingTime);
-	PrintXmlInt32("GroupMDEntriesCount", info->GroupMDEntriesCount);
-
-	FastOBSFONDItemInfo* gmdeItemInfo = NULL;
-
-	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
-		gmdeItemInfo = info->GroupMDEntries[i];
-		PrintXmlItemBegin("item", i);
-		if(gmdeItemInfo->AllowMDUpdateAction)
-			PrintXmlUInt32("MDUpdateAction", gmdeItemInfo->MDUpdateAction);
-		if(gmdeItemInfo->AllowMDEntryType)
-			PrintXmlString("MDEntryType", gmdeItemInfo->MDEntryType, gmdeItemInfo->MDEntryTypeLength);
-		if(gmdeItemInfo->AllowMDEntryID)
-			PrintXmlString("MDEntryID", gmdeItemInfo->MDEntryID, gmdeItemInfo->MDEntryIDLength);
-		if(gmdeItemInfo->AllowSymbol)
-			PrintXmlString("Symbol", gmdeItemInfo->Symbol, gmdeItemInfo->SymbolLength);
-		if(gmdeItemInfo->AllowRptSeq)
-			PrintXmlInt32("RptSeq", gmdeItemInfo->RptSeq);
-		if(gmdeItemInfo->AllowMDEntryPx)
-			PrintXmlDecimal("MDEntryPx", &(gmdeItemInfo->MDEntryPx));
-		if(gmdeItemInfo->AllowMDEntrySize)
-			PrintXmlDecimal("MDEntrySize", &(gmdeItemInfo->MDEntrySize));
-		if(gmdeItemInfo->AllowMDEntryTime)
-			PrintXmlUInt32("MDEntryTime", gmdeItemInfo->MDEntryTime);
-		if(gmdeItemInfo->AllowOrigTime)
-			PrintXmlUInt32("OrigTime", gmdeItemInfo->OrigTime);
-		if(gmdeItemInfo->AllowYield)
-			PrintXmlDecimal("Yield", &(gmdeItemInfo->Yield));
-		if(gmdeItemInfo->AllowEffectiveTime)
-			PrintXmlUInt32("EffectiveTime", gmdeItemInfo->EffectiveTime);
-		if(gmdeItemInfo->AllowNominalValue)
-			PrintXmlDecimal("NominalValue", &(gmdeItemInfo->NominalValue));
-		if(gmdeItemInfo->AllowTradingSessionID)
-			PrintXmlString("TradingSessionID", gmdeItemInfo->TradingSessionID, gmdeItemInfo->TradingSessionIDLength);
-		if(gmdeItemInfo->AllowTradingSessionSubID)
-			PrintXmlString("TradingSessionSubID", gmdeItemInfo->TradingSessionSubID, gmdeItemInfo->TradingSessionSubIDLength);
-		PrintXmlItemEnd("item", i);
-	}
-
-	PrintXmlItemEnd("FastIncrementalOBRFONDInfo");
-}
-void FastProtocolManager::PrintXmlIncrementalOBRCURR(FastIncrementalOBRCURRInfo *info) {
-
-	PrintXmlItemBegin("FastIncrementalOBRCURRInfo");
-	PrintXmlInt32("TemplateId", 3512);
-	PrintXmlUInt32("MsgSeqNum", info->MsgSeqNum);
-	PrintXmlUInt64("SendingTime", info->SendingTime);
-	PrintXmlInt32("GroupMDEntriesCount", info->GroupMDEntriesCount);
-
-	FastOBSCURRItemInfo* gmdeItemInfo = NULL;
-
-	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
-		gmdeItemInfo = info->GroupMDEntries[i];
-		PrintXmlItemBegin("item", i);
-		if(gmdeItemInfo->AllowMDUpdateAction)
-			PrintXmlUInt32("MDUpdateAction", gmdeItemInfo->MDUpdateAction);
-		if(gmdeItemInfo->AllowMDEntryType)
-			PrintXmlString("MDEntryType", gmdeItemInfo->MDEntryType, gmdeItemInfo->MDEntryTypeLength);
-		if(gmdeItemInfo->AllowMDEntryID)
-			PrintXmlString("MDEntryID", gmdeItemInfo->MDEntryID, gmdeItemInfo->MDEntryIDLength);
-		if(gmdeItemInfo->AllowSymbol)
-			PrintXmlString("Symbol", gmdeItemInfo->Symbol, gmdeItemInfo->SymbolLength);
-		if(gmdeItemInfo->AllowRptSeq)
-			PrintXmlInt32("RptSeq", gmdeItemInfo->RptSeq);
-		if(gmdeItemInfo->AllowMDEntryPx)
-			PrintXmlDecimal("MDEntryPx", &(gmdeItemInfo->MDEntryPx));
-		if(gmdeItemInfo->AllowMDEntrySize)
-			PrintXmlDecimal("MDEntrySize", &(gmdeItemInfo->MDEntrySize));
-		if(gmdeItemInfo->AllowMDEntryTime)
-			PrintXmlUInt32("MDEntryTime", gmdeItemInfo->MDEntryTime);
-		if(gmdeItemInfo->AllowOrigTime)
-			PrintXmlUInt32("OrigTime", gmdeItemInfo->OrigTime);
-		if(gmdeItemInfo->AllowTradingSessionID)
-			PrintXmlString("TradingSessionID", gmdeItemInfo->TradingSessionID, gmdeItemInfo->TradingSessionIDLength);
-		if(gmdeItemInfo->AllowTradingSessionSubID)
-			PrintXmlString("TradingSessionSubID", gmdeItemInfo->TradingSessionSubID, gmdeItemInfo->TradingSessionSubIDLength);
-		PrintXmlItemEnd("item", i);
-	}
-
-	PrintXmlItemEnd("FastIncrementalOBRCURRInfo");
-}
 void FastProtocolManager::PrintXmlIncrementalTLRFOND(FastIncrementalTLRFONDInfo *info) {
 
 	PrintXmlItemBegin("FastIncrementalTLRFONDInfo");
-	PrintXmlInt32("TemplateId", 2421);
+	PrintXmlInt32("TemplateId", 2521);
 	PrintXmlUInt32("MsgSeqNum", info->MsgSeqNum);
 	PrintXmlUInt64("SendingTime", info->SendingTime);
 	PrintXmlInt32("GroupMDEntriesCount", info->GroupMDEntriesCount);
@@ -2535,6 +2163,8 @@ void FastProtocolManager::PrintXmlIncrementalTLRFOND(FastIncrementalTLRFONDInfo 
 			PrintXmlString("TradingSessionID", gmdeItemInfo->TradingSessionID, gmdeItemInfo->TradingSessionIDLength);
 		if(gmdeItemInfo->AllowTradingSessionSubID)
 			PrintXmlString("TradingSessionSubID", gmdeItemInfo->TradingSessionSubID, gmdeItemInfo->TradingSessionSubIDLength);
+		if(gmdeItemInfo->AllowRefOrderID)
+			PrintXmlString("RefOrderID", gmdeItemInfo->RefOrderID, gmdeItemInfo->RefOrderIDLength);
 		PrintXmlItemEnd("item", i);
 	}
 
@@ -2543,7 +2173,7 @@ void FastProtocolManager::PrintXmlIncrementalTLRFOND(FastIncrementalTLRFONDInfo 
 void FastProtocolManager::PrintXmlIncrementalTLRCURR(FastIncrementalTLRCURRInfo *info) {
 
 	PrintXmlItemBegin("FastIncrementalTLRCURRInfo");
-	PrintXmlInt32("TemplateId", 3511);
+	PrintXmlInt32("TemplateId", 3611);
 	PrintXmlUInt32("MsgSeqNum", info->MsgSeqNum);
 	PrintXmlUInt64("SendingTime", info->SendingTime);
 	PrintXmlInt32("GroupMDEntriesCount", info->GroupMDEntriesCount);
@@ -2594,6 +2224,8 @@ void FastProtocolManager::PrintXmlIncrementalTLRCURR(FastIncrementalTLRCURRInfo 
 			PrintXmlString("TradingSessionID", gmdeItemInfo->TradingSessionID, gmdeItemInfo->TradingSessionIDLength);
 		if(gmdeItemInfo->AllowTradingSessionSubID)
 			PrintXmlString("TradingSessionSubID", gmdeItemInfo->TradingSessionSubID, gmdeItemInfo->TradingSessionSubIDLength);
+		if(gmdeItemInfo->AllowRefOrderID)
+			PrintXmlString("RefOrderID", gmdeItemInfo->RefOrderID, gmdeItemInfo->RefOrderIDLength);
 		PrintXmlItemEnd("item", i);
 	}
 
@@ -2772,7 +2404,7 @@ void FastProtocolManager::PrintXmlHeartbeat(FastHeartbeatInfo *info) {
 void FastProtocolManager::EncodeLogonInfo(FastLogonInfo* info) {
 	ResetBuffer();
 	WriteMsgSeqNumber(info->MsgSeqNum);
-	WriteUInt32_Mandatory(0); // Presence Map hack
+	WriteUInt64_Mandatory(info->PresenceMap); // Presence Map hack
 	WriteUInt32_Mandatory(2101);
 	WriteString_Mandatory(info->TargetCompID, info->TargetCompIDLength);
 	WriteUInt32_Mandatory(info->MsgSeqNum);
@@ -2791,7 +2423,7 @@ void FastProtocolManager::EncodeLogonInfo(FastLogonInfo* info) {
 void FastProtocolManager::EncodeLogoutInfo(FastLogoutInfo* info) {
 	ResetBuffer();
 	WriteMsgSeqNumber(info->MsgSeqNum);
-	WriteUInt32_Mandatory(0); // Presence Map hack
+	WriteUInt64_Mandatory(info->PresenceMap); // Presence Map hack
 	WriteUInt32_Mandatory(2102);
 	WriteString_Mandatory(info->TargetCompID, info->TargetCompIDLength);
 	WriteUInt32_Mandatory(info->MsgSeqNum);
@@ -2804,7 +2436,7 @@ void FastProtocolManager::EncodeLogoutInfo(FastLogoutInfo* info) {
 void FastProtocolManager::EncodeGenericInfo(FastGenericInfo* info) {
 	ResetBuffer();
 	WriteMsgSeqNumber(info->MsgSeqNum);
-	WriteUInt32_Mandatory(0); // Presence Map hack
+	WriteUInt64_Mandatory(info->PresenceMap); // Presence Map hack
 	WriteUInt32_Mandatory(2103);
 	WriteUInt32_Mandatory(info->MsgSeqNum);
 	WriteUInt64_Mandatory(info->SendingTime);
@@ -2845,8 +2477,6 @@ void FastProtocolManager::EncodeGenericInfo(FastGenericInfo* info) {
 	WriteUInt32_Mandatory(info->GroupMDEntriesCount);
 	FastGenericItemInfo **gmdeItemInfo = info->GroupMDEntries;
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
-	WriteUInt32_Mandatory(0); // Presence Map hack
-
 		if(!(*gmdeItemInfo)->AllowMDEntryType)
 			this->WriteNull();
 		else
@@ -3003,18 +2633,10 @@ void FastProtocolManager::EncodeGenericInfo(FastGenericInfo* info) {
 			this->WriteNull();
 		else
 			WriteUInt32_Optional((*gmdeItemInfo)->BuyBackDate);
-		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, (*gmdeItemInfo)->DealNumberPresenceIndex)) {
-			if(!(*gmdeItemInfo)->AllowDealNumber)
-				this->WriteNull();
-			else
-				WriteString_Optional((*gmdeItemInfo)->DealNumber, (*gmdeItemInfo)->DealNumberLength);
-			}
-		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, (*gmdeItemInfo)->CXFlagPresenceIndex)) {
-			if(!(*gmdeItemInfo)->AllowCXFlag)
-				this->WriteNull();
-			else
-				WriteString_Optional((*gmdeItemInfo)->CXFlag, (*gmdeItemInfo)->CXFlagLength);
-			}
+		if(!(*gmdeItemInfo)->AllowCXFlag)
+			this->WriteNull();
+		else
+			WriteString_Optional((*gmdeItemInfo)->CXFlag, (*gmdeItemInfo)->CXFlagLength);
 		if(!(*gmdeItemInfo)->AllowTradingSessionSubID)
 			this->WriteNull();
 		else
@@ -3025,15 +2647,13 @@ void FastProtocolManager::EncodeGenericInfo(FastGenericInfo* info) {
 void FastProtocolManager::EncodeIncrementalGenericInfo(FastIncrementalGenericInfo* info) {
 	ResetBuffer();
 	WriteMsgSeqNumber(info->MsgSeqNum);
-	WriteUInt32_Mandatory(0); // Presence Map hack
+	WriteUInt64_Mandatory(info->PresenceMap); // Presence Map hack
 	WriteUInt32_Mandatory(2104);
 	WriteUInt32_Mandatory(info->MsgSeqNum);
 	WriteUInt64_Mandatory(info->SendingTime);
 	WriteUInt32_Mandatory(info->GroupMDEntriesCount);
 	FastGenericItemInfo **gmdeItemInfo = info->GroupMDEntries;
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
-	WriteUInt32_Mandatory(0); // Presence Map hack
-
 		if(!(*gmdeItemInfo)->AllowMDUpdateAction)
 			this->WriteNull();
 		else
@@ -3206,18 +2826,10 @@ void FastProtocolManager::EncodeIncrementalGenericInfo(FastIncrementalGenericInf
 			this->WriteNull();
 		else
 			WriteUInt32_Optional((*gmdeItemInfo)->BuyBackDate);
-		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, (*gmdeItemInfo)->DealNumberPresenceIndex)) {
-			if(!(*gmdeItemInfo)->AllowDealNumber)
-				this->WriteNull();
-			else
-				WriteString_Optional((*gmdeItemInfo)->DealNumber, (*gmdeItemInfo)->DealNumberLength);
-			}
-		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, (*gmdeItemInfo)->CXFlagPresenceIndex)) {
-			if(!(*gmdeItemInfo)->AllowCXFlag)
-				this->WriteNull();
-			else
-				WriteString_Optional((*gmdeItemInfo)->CXFlag, (*gmdeItemInfo)->CXFlagLength);
-			}
+		if(!(*gmdeItemInfo)->AllowCXFlag)
+			this->WriteNull();
+		else
+			WriteString_Optional((*gmdeItemInfo)->CXFlag, (*gmdeItemInfo)->CXFlagLength);
 		if(!(*gmdeItemInfo)->AllowTradingSessionID)
 			this->WriteNull();
 		else
@@ -3232,8 +2844,8 @@ void FastProtocolManager::EncodeIncrementalGenericInfo(FastIncrementalGenericInf
 void FastProtocolManager::EncodeOLSFONDInfo(FastOLSFONDInfo* info) {
 	ResetBuffer();
 	WriteMsgSeqNumber(info->MsgSeqNum);
-	WriteUInt32_Mandatory(0); // Presence Map hack
-	WriteUInt32_Mandatory(2410);
+	WriteUInt64_Mandatory(info->PresenceMap); // Presence Map hack
+	WriteUInt32_Mandatory(2510);
 	WriteUInt32_Mandatory(info->MsgSeqNum);
 	WriteUInt64_Mandatory(info->SendingTime);
 	if(!info->AllowLastMsgSeqNumProcessed)
@@ -3269,70 +2881,86 @@ void FastProtocolManager::EncodeOLSFONDInfo(FastOLSFONDInfo* info) {
 	WriteUInt32_Mandatory(info->GroupMDEntriesCount);
 	FastOLSFONDItemInfo **gmdeItemInfo = info->GroupMDEntries;
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
-	WriteUInt32_Mandatory(0); // Presence Map hack
+		WriteUInt64_Mandatory((*gmdeItemInfo)->PresenceMap); // Presence Map hack
 
-		if(!(*gmdeItemInfo)->AllowMDEntryType)
-			this->WriteNull();
-		else
-			WriteString_Optional((*gmdeItemInfo)->MDEntryType, (*gmdeItemInfo)->MDEntryTypeLength);
+		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, (*gmdeItemInfo)->MDEntryTypePresenceIndex)) {
+			if(!(*gmdeItemInfo)->AllowMDEntryType)
+				this->WriteNull();
+			else
+				WriteString_Optional((*gmdeItemInfo)->MDEntryType, (*gmdeItemInfo)->MDEntryTypeLength);
+			}
 		if(!(*gmdeItemInfo)->AllowMDEntryID)
 			this->WriteNull();
 		else
 			WriteString_Optional((*gmdeItemInfo)->MDEntryID, (*gmdeItemInfo)->MDEntryIDLength);
-		if(!(*gmdeItemInfo)->AllowMDEntryDate)
-			this->WriteNull();
-		else
-			WriteUInt32_Optional((*gmdeItemInfo)->MDEntryDate);
-		if(!(*gmdeItemInfo)->AllowMDEntryTime)
-			this->WriteNull();
-		else
-			WriteUInt32_Optional((*gmdeItemInfo)->MDEntryTime);
-		if(!(*gmdeItemInfo)->AllowOrigTime)
-			this->WriteNull();
-		else
-			WriteUInt32_Optional((*gmdeItemInfo)->OrigTime);
-		if(!(*gmdeItemInfo)->AllowMDEntryPx)
-			this->WriteNull();
-		else
-			WriteDecimal_Optional(&((*gmdeItemInfo)->MDEntryPx));
-		if(!(*gmdeItemInfo)->AllowMDEntrySize)
-			this->WriteNull();
-		else
-			WriteDecimal_Optional(&((*gmdeItemInfo)->MDEntrySize));
-		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, (*gmdeItemInfo)->DealNumberPresenceIndex)) {
-			if(!(*gmdeItemInfo)->AllowDealNumber)
+		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, (*gmdeItemInfo)->MDEntryDatePresenceIndex)) {
+			if(!(*gmdeItemInfo)->AllowMDEntryDate)
 				this->WriteNull();
 			else
-				WriteString_Optional((*gmdeItemInfo)->DealNumber, (*gmdeItemInfo)->DealNumberLength);
+				WriteUInt32_Optional((*gmdeItemInfo)->MDEntryDate);
 			}
-		if(!(*gmdeItemInfo)->AllowYield)
-			this->WriteNull();
-		else
-			WriteDecimal_Optional(&((*gmdeItemInfo)->Yield));
-		if(!(*gmdeItemInfo)->AllowOrderStatus)
-			this->WriteNull();
-		else
-			WriteString_Optional((*gmdeItemInfo)->OrderStatus, (*gmdeItemInfo)->OrderStatusLength);
-		if(!(*gmdeItemInfo)->AllowOrdType)
-			this->WriteNull();
-		else
-			WriteString_Optional((*gmdeItemInfo)->OrdType, (*gmdeItemInfo)->OrdTypeLength);
-		if(!(*gmdeItemInfo)->AllowTotalVolume)
-			this->WriteNull();
-		else
-			WriteDecimal_Optional(&((*gmdeItemInfo)->TotalVolume));
-		if(!(*gmdeItemInfo)->AllowTradingSessionSubID)
-			this->WriteNull();
-		else
-			WriteString_Optional((*gmdeItemInfo)->TradingSessionSubID, (*gmdeItemInfo)->TradingSessionSubIDLength);
+		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, (*gmdeItemInfo)->MDEntryTimePresenceIndex)) {
+			if(!(*gmdeItemInfo)->AllowMDEntryTime)
+				this->WriteNull();
+			else
+				WriteUInt32_Optional((*gmdeItemInfo)->MDEntryTime);
+			}
+		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, (*gmdeItemInfo)->OrigTimePresenceIndex)) {
+			if(!(*gmdeItemInfo)->AllowOrigTime)
+				this->WriteNull();
+			else
+				WriteUInt32_Optional((*gmdeItemInfo)->OrigTime);
+			}
+		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, (*gmdeItemInfo)->MDEntryPxPresenceIndex)) {
+			if(!(*gmdeItemInfo)->AllowMDEntryPx)
+				this->WriteNull();
+			else
+				WriteDecimal_Optional(&((*gmdeItemInfo)->MDEntryPx));
+			}
+		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, (*gmdeItemInfo)->MDEntrySizePresenceIndex)) {
+			if(!(*gmdeItemInfo)->AllowMDEntrySize)
+				this->WriteNull();
+			else
+				WriteDecimal_Optional(&((*gmdeItemInfo)->MDEntrySize));
+			}
+		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, (*gmdeItemInfo)->YieldPresenceIndex)) {
+			if(!(*gmdeItemInfo)->AllowYield)
+				this->WriteNull();
+			else
+				WriteDecimal_Optional(&((*gmdeItemInfo)->Yield));
+			}
+		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, (*gmdeItemInfo)->OrderStatusPresenceIndex)) {
+			if(!(*gmdeItemInfo)->AllowOrderStatus)
+				this->WriteNull();
+			else
+				WriteString_Optional((*gmdeItemInfo)->OrderStatus, (*gmdeItemInfo)->OrderStatusLength);
+			}
+		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, (*gmdeItemInfo)->OrdTypePresenceIndex)) {
+			if(!(*gmdeItemInfo)->AllowOrdType)
+				this->WriteNull();
+			else
+				WriteString_Optional((*gmdeItemInfo)->OrdType, (*gmdeItemInfo)->OrdTypeLength);
+			}
+		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, (*gmdeItemInfo)->TotalVolumePresenceIndex)) {
+			if(!(*gmdeItemInfo)->AllowTotalVolume)
+				this->WriteNull();
+			else
+				WriteDecimal_Optional(&((*gmdeItemInfo)->TotalVolume));
+			}
+		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, (*gmdeItemInfo)->TradingSessionSubIDPresenceIndex)) {
+			if(!(*gmdeItemInfo)->AllowTradingSessionSubID)
+				this->WriteNull();
+			else
+				WriteString_Optional((*gmdeItemInfo)->TradingSessionSubID, (*gmdeItemInfo)->TradingSessionSubIDLength);
+			}
 		gmdeItemInfo++;
 	}
 }
 void FastProtocolManager::EncodeOLSCURRInfo(FastOLSCURRInfo* info) {
 	ResetBuffer();
 	WriteMsgSeqNumber(info->MsgSeqNum);
-	WriteUInt32_Mandatory(0); // Presence Map hack
-	WriteUInt32_Mandatory(3500);
+	WriteUInt64_Mandatory(info->PresenceMap); // Presence Map hack
+	WriteUInt32_Mandatory(3600);
 	WriteUInt32_Mandatory(info->MsgSeqNum);
 	WriteUInt64_Mandatory(info->SendingTime);
 	if(!info->AllowLastMsgSeqNumProcessed)
@@ -3364,58 +2992,68 @@ void FastProtocolManager::EncodeOLSCURRInfo(FastOLSCURRInfo* info) {
 	WriteUInt32_Mandatory(info->GroupMDEntriesCount);
 	FastOLSCURRItemInfo **gmdeItemInfo = info->GroupMDEntries;
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
-	WriteUInt32_Mandatory(0); // Presence Map hack
+		WriteUInt64_Mandatory((*gmdeItemInfo)->PresenceMap); // Presence Map hack
 
-		if(!(*gmdeItemInfo)->AllowMDEntryType)
-			this->WriteNull();
-		else
-			WriteString_Optional((*gmdeItemInfo)->MDEntryType, (*gmdeItemInfo)->MDEntryTypeLength);
+		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, (*gmdeItemInfo)->MDEntryTypePresenceIndex)) {
+			if(!(*gmdeItemInfo)->AllowMDEntryType)
+				this->WriteNull();
+			else
+				WriteString_Optional((*gmdeItemInfo)->MDEntryType, (*gmdeItemInfo)->MDEntryTypeLength);
+			}
 		if(!(*gmdeItemInfo)->AllowMDEntryID)
 			this->WriteNull();
 		else
 			WriteString_Optional((*gmdeItemInfo)->MDEntryID, (*gmdeItemInfo)->MDEntryIDLength);
-		if(!(*gmdeItemInfo)->AllowMDEntryDate)
-			this->WriteNull();
-		else
-			WriteUInt32_Optional((*gmdeItemInfo)->MDEntryDate);
-		if(!(*gmdeItemInfo)->AllowMDEntryTime)
-			this->WriteNull();
-		else
-			WriteUInt32_Optional((*gmdeItemInfo)->MDEntryTime);
-		if(!(*gmdeItemInfo)->AllowOrigTime)
-			this->WriteNull();
-		else
-			WriteUInt32_Optional((*gmdeItemInfo)->OrigTime);
-		if(!(*gmdeItemInfo)->AllowMDEntryPx)
-			this->WriteNull();
-		else
-			WriteDecimal_Optional(&((*gmdeItemInfo)->MDEntryPx));
-		if(!(*gmdeItemInfo)->AllowMDEntrySize)
-			this->WriteNull();
-		else
-			WriteDecimal_Optional(&((*gmdeItemInfo)->MDEntrySize));
-		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, (*gmdeItemInfo)->DealNumberPresenceIndex)) {
-			if(!(*gmdeItemInfo)->AllowDealNumber)
+		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, (*gmdeItemInfo)->MDEntryDatePresenceIndex)) {
+			if(!(*gmdeItemInfo)->AllowMDEntryDate)
 				this->WriteNull();
 			else
-				WriteString_Optional((*gmdeItemInfo)->DealNumber, (*gmdeItemInfo)->DealNumberLength);
+				WriteUInt32_Optional((*gmdeItemInfo)->MDEntryDate);
 			}
-		if(!(*gmdeItemInfo)->AllowOrderStatus)
-			this->WriteNull();
-		else
-			WriteString_Optional((*gmdeItemInfo)->OrderStatus, (*gmdeItemInfo)->OrderStatusLength);
-		if(!(*gmdeItemInfo)->AllowTradingSessionSubID)
-			this->WriteNull();
-		else
-			WriteString_Optional((*gmdeItemInfo)->TradingSessionSubID, (*gmdeItemInfo)->TradingSessionSubIDLength);
+		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, (*gmdeItemInfo)->MDEntryTimePresenceIndex)) {
+			if(!(*gmdeItemInfo)->AllowMDEntryTime)
+				this->WriteNull();
+			else
+				WriteUInt32_Optional((*gmdeItemInfo)->MDEntryTime);
+			}
+		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, (*gmdeItemInfo)->OrigTimePresenceIndex)) {
+			if(!(*gmdeItemInfo)->AllowOrigTime)
+				this->WriteNull();
+			else
+				WriteUInt32_Optional((*gmdeItemInfo)->OrigTime);
+			}
+		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, (*gmdeItemInfo)->MDEntryPxPresenceIndex)) {
+			if(!(*gmdeItemInfo)->AllowMDEntryPx)
+				this->WriteNull();
+			else
+				WriteDecimal_Optional(&((*gmdeItemInfo)->MDEntryPx));
+			}
+		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, (*gmdeItemInfo)->MDEntrySizePresenceIndex)) {
+			if(!(*gmdeItemInfo)->AllowMDEntrySize)
+				this->WriteNull();
+			else
+				WriteDecimal_Optional(&((*gmdeItemInfo)->MDEntrySize));
+			}
+		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, (*gmdeItemInfo)->OrderStatusPresenceIndex)) {
+			if(!(*gmdeItemInfo)->AllowOrderStatus)
+				this->WriteNull();
+			else
+				WriteString_Optional((*gmdeItemInfo)->OrderStatus, (*gmdeItemInfo)->OrderStatusLength);
+			}
+		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, (*gmdeItemInfo)->TradingSessionSubIDPresenceIndex)) {
+			if(!(*gmdeItemInfo)->AllowTradingSessionSubID)
+				this->WriteNull();
+			else
+				WriteString_Optional((*gmdeItemInfo)->TradingSessionSubID, (*gmdeItemInfo)->TradingSessionSubIDLength);
+			}
 		gmdeItemInfo++;
 	}
 }
 void FastProtocolManager::EncodeTLSFONDInfo(FastTLSFONDInfo* info) {
 	ResetBuffer();
 	WriteMsgSeqNumber(info->MsgSeqNum);
-	WriteUInt32_Mandatory(0); // Presence Map hack
-	WriteUInt32_Mandatory(2411);
+	WriteUInt64_Mandatory(info->PresenceMap); // Presence Map hack
+	WriteUInt32_Mandatory(2511);
 	WriteUInt32_Mandatory(info->MsgSeqNum);
 	WriteUInt64_Mandatory(info->SendingTime);
 	if(!info->AllowLastMsgSeqNumProcessed)
@@ -3451,87 +3089,129 @@ void FastProtocolManager::EncodeTLSFONDInfo(FastTLSFONDInfo* info) {
 	WriteUInt32_Mandatory(info->GroupMDEntriesCount);
 	FastTLSFONDItemInfo **gmdeItemInfo = info->GroupMDEntries;
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
+		WriteUInt64_Mandatory((*gmdeItemInfo)->PresenceMap); // Presence Map hack
+
 		WriteString_Mandatory((*gmdeItemInfo)->MDEntryType, (*gmdeItemInfo)->MDEntryTypeLength);
 		if(!(*gmdeItemInfo)->AllowMDEntryID)
 			this->WriteNull();
 		else
 			WriteString_Optional((*gmdeItemInfo)->MDEntryID, (*gmdeItemInfo)->MDEntryIDLength);
-		if(!(*gmdeItemInfo)->AllowMDEntryDate)
-			this->WriteNull();
-		else
-			WriteUInt32_Optional((*gmdeItemInfo)->MDEntryDate);
-		if(!(*gmdeItemInfo)->AllowMDEntryTime)
-			this->WriteNull();
-		else
-			WriteUInt32_Optional((*gmdeItemInfo)->MDEntryTime);
-		if(!(*gmdeItemInfo)->AllowOrigTime)
-			this->WriteNull();
-		else
-			WriteUInt32_Optional((*gmdeItemInfo)->OrigTime);
-		if(!(*gmdeItemInfo)->AllowOrderSide)
-			this->WriteNull();
-		else
-			WriteString_Optional((*gmdeItemInfo)->OrderSide, (*gmdeItemInfo)->OrderSideLength);
-		if(!(*gmdeItemInfo)->AllowMDEntryPx)
-			this->WriteNull();
-		else
-			WriteDecimal_Optional(&((*gmdeItemInfo)->MDEntryPx));
-		if(!(*gmdeItemInfo)->AllowMDEntrySize)
-			this->WriteNull();
-		else
-			WriteDecimal_Optional(&((*gmdeItemInfo)->MDEntrySize));
-		if(!(*gmdeItemInfo)->AllowAccruedInterestAmt)
-			this->WriteNull();
-		else
-			WriteDecimal_Optional(&((*gmdeItemInfo)->AccruedInterestAmt));
-		if(!(*gmdeItemInfo)->AllowTradeValue)
-			this->WriteNull();
-		else
-			WriteDecimal_Optional(&((*gmdeItemInfo)->TradeValue));
-		if(!(*gmdeItemInfo)->AllowYield)
-			this->WriteNull();
-		else
-			WriteDecimal_Optional(&((*gmdeItemInfo)->Yield));
-		if(!(*gmdeItemInfo)->AllowSettlDate)
-			this->WriteNull();
-		else
-			WriteUInt32_Optional((*gmdeItemInfo)->SettlDate);
-		if(!(*gmdeItemInfo)->AllowSettleType)
-			this->WriteNull();
-		else
-			WriteString_Optional((*gmdeItemInfo)->SettleType, (*gmdeItemInfo)->SettleTypeLength);
-		if(!(*gmdeItemInfo)->AllowPrice)
-			this->WriteNull();
-		else
-			WriteDecimal_Optional(&((*gmdeItemInfo)->Price));
-		if(!(*gmdeItemInfo)->AllowPriceType)
-			this->WriteNull();
-		else
-			WriteInt32_Optional((*gmdeItemInfo)->PriceType);
-		if(!(*gmdeItemInfo)->AllowRepoToPx)
-			this->WriteNull();
-		else
-			WriteDecimal_Optional(&((*gmdeItemInfo)->RepoToPx));
-		if(!(*gmdeItemInfo)->AllowBuyBackPx)
-			this->WriteNull();
-		else
-			WriteDecimal_Optional(&((*gmdeItemInfo)->BuyBackPx));
-		if(!(*gmdeItemInfo)->AllowBuyBackDate)
-			this->WriteNull();
-		else
-			WriteUInt32_Optional((*gmdeItemInfo)->BuyBackDate);
-		if(!(*gmdeItemInfo)->AllowTradingSessionSubID)
-			this->WriteNull();
-		else
-			WriteString_Optional((*gmdeItemInfo)->TradingSessionSubID, (*gmdeItemInfo)->TradingSessionSubIDLength);
+		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, (*gmdeItemInfo)->MDEntryDatePresenceIndex)) {
+			if(!(*gmdeItemInfo)->AllowMDEntryDate)
+				this->WriteNull();
+			else
+				WriteUInt32_Optional((*gmdeItemInfo)->MDEntryDate);
+			}
+		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, (*gmdeItemInfo)->MDEntryTimePresenceIndex)) {
+			if(!(*gmdeItemInfo)->AllowMDEntryTime)
+				this->WriteNull();
+			else
+				WriteUInt32_Optional((*gmdeItemInfo)->MDEntryTime);
+			}
+		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, (*gmdeItemInfo)->OrigTimePresenceIndex)) {
+			if(!(*gmdeItemInfo)->AllowOrigTime)
+				this->WriteNull();
+			else
+				WriteUInt32_Optional((*gmdeItemInfo)->OrigTime);
+			}
+		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, (*gmdeItemInfo)->OrderSidePresenceIndex)) {
+			if(!(*gmdeItemInfo)->AllowOrderSide)
+				this->WriteNull();
+			else
+				WriteString_Optional((*gmdeItemInfo)->OrderSide, (*gmdeItemInfo)->OrderSideLength);
+			}
+		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, (*gmdeItemInfo)->MDEntryPxPresenceIndex)) {
+			if(!(*gmdeItemInfo)->AllowMDEntryPx)
+				this->WriteNull();
+			else
+				WriteDecimal_Optional(&((*gmdeItemInfo)->MDEntryPx));
+			}
+		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, (*gmdeItemInfo)->MDEntrySizePresenceIndex)) {
+			if(!(*gmdeItemInfo)->AllowMDEntrySize)
+				this->WriteNull();
+			else
+				WriteDecimal_Optional(&((*gmdeItemInfo)->MDEntrySize));
+			}
+		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, (*gmdeItemInfo)->AccruedInterestAmtPresenceIndex)) {
+			if(!(*gmdeItemInfo)->AllowAccruedInterestAmt)
+				this->WriteNull();
+			else
+				WriteDecimal_Optional(&((*gmdeItemInfo)->AccruedInterestAmt));
+			}
+		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, (*gmdeItemInfo)->TradeValuePresenceIndex)) {
+			if(!(*gmdeItemInfo)->AllowTradeValue)
+				this->WriteNull();
+			else
+				WriteDecimal_Optional(&((*gmdeItemInfo)->TradeValue));
+			}
+		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, (*gmdeItemInfo)->YieldPresenceIndex)) {
+			if(!(*gmdeItemInfo)->AllowYield)
+				this->WriteNull();
+			else
+				WriteDecimal_Optional(&((*gmdeItemInfo)->Yield));
+			}
+		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, (*gmdeItemInfo)->SettlDatePresenceIndex)) {
+			if(!(*gmdeItemInfo)->AllowSettlDate)
+				this->WriteNull();
+			else
+				WriteUInt32_Optional((*gmdeItemInfo)->SettlDate);
+			}
+		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, (*gmdeItemInfo)->SettleTypePresenceIndex)) {
+			if(!(*gmdeItemInfo)->AllowSettleType)
+				this->WriteNull();
+			else
+				WriteString_Optional((*gmdeItemInfo)->SettleType, (*gmdeItemInfo)->SettleTypeLength);
+			}
+		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, (*gmdeItemInfo)->PricePresenceIndex)) {
+			if(!(*gmdeItemInfo)->AllowPrice)
+				this->WriteNull();
+			else
+				WriteDecimal_Optional(&((*gmdeItemInfo)->Price));
+			}
+		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, (*gmdeItemInfo)->PriceTypePresenceIndex)) {
+			if(!(*gmdeItemInfo)->AllowPriceType)
+				this->WriteNull();
+			else
+				WriteInt32_Optional((*gmdeItemInfo)->PriceType);
+			}
+		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, (*gmdeItemInfo)->RepoToPxPresenceIndex)) {
+			if(!(*gmdeItemInfo)->AllowRepoToPx)
+				this->WriteNull();
+			else
+				WriteDecimal_Optional(&((*gmdeItemInfo)->RepoToPx));
+			}
+		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, (*gmdeItemInfo)->BuyBackPxPresenceIndex)) {
+			if(!(*gmdeItemInfo)->AllowBuyBackPx)
+				this->WriteNull();
+			else
+				WriteDecimal_Optional(&((*gmdeItemInfo)->BuyBackPx));
+			}
+		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, (*gmdeItemInfo)->BuyBackDatePresenceIndex)) {
+			if(!(*gmdeItemInfo)->AllowBuyBackDate)
+				this->WriteNull();
+			else
+				WriteUInt32_Optional((*gmdeItemInfo)->BuyBackDate);
+			}
+		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, (*gmdeItemInfo)->TradingSessionSubIDPresenceIndex)) {
+			if(!(*gmdeItemInfo)->AllowTradingSessionSubID)
+				this->WriteNull();
+			else
+				WriteString_Optional((*gmdeItemInfo)->TradingSessionSubID, (*gmdeItemInfo)->TradingSessionSubIDLength);
+			}
+		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, (*gmdeItemInfo)->RefOrderIDPresenceIndex)) {
+			if(!(*gmdeItemInfo)->AllowRefOrderID)
+				this->WriteNull();
+			else
+				WriteString_Optional((*gmdeItemInfo)->RefOrderID, (*gmdeItemInfo)->RefOrderIDLength);
+			}
 		gmdeItemInfo++;
 	}
 }
 void FastProtocolManager::EncodeTLSCURRInfo(FastTLSCURRInfo* info) {
 	ResetBuffer();
 	WriteMsgSeqNumber(info->MsgSeqNum);
-	WriteUInt32_Mandatory(0); // Presence Map hack
-	WriteUInt32_Mandatory(3501);
+	WriteUInt64_Mandatory(info->PresenceMap); // Presence Map hack
+	WriteUInt32_Mandatory(3601);
 	WriteUInt32_Mandatory(info->MsgSeqNum);
 	WriteUInt64_Mandatory(info->SendingTime);
 	if(!info->AllowLastMsgSeqNumProcessed)
@@ -3563,228 +3243,116 @@ void FastProtocolManager::EncodeTLSCURRInfo(FastTLSCURRInfo* info) {
 	WriteUInt32_Mandatory(info->GroupMDEntriesCount);
 	FastTLSCURRItemInfo **gmdeItemInfo = info->GroupMDEntries;
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
+		WriteUInt64_Mandatory((*gmdeItemInfo)->PresenceMap); // Presence Map hack
+
 		WriteString_Mandatory((*gmdeItemInfo)->MDEntryType, (*gmdeItemInfo)->MDEntryTypeLength);
 		if(!(*gmdeItemInfo)->AllowMDEntryID)
 			this->WriteNull();
 		else
 			WriteString_Optional((*gmdeItemInfo)->MDEntryID, (*gmdeItemInfo)->MDEntryIDLength);
-		if(!(*gmdeItemInfo)->AllowMDEntryDate)
-			this->WriteNull();
-		else
-			WriteUInt32_Optional((*gmdeItemInfo)->MDEntryDate);
-		if(!(*gmdeItemInfo)->AllowMDEntryTime)
-			this->WriteNull();
-		else
-			WriteUInt32_Optional((*gmdeItemInfo)->MDEntryTime);
-		if(!(*gmdeItemInfo)->AllowOrigTime)
-			this->WriteNull();
-		else
-			WriteUInt32_Optional((*gmdeItemInfo)->OrigTime);
-		if(!(*gmdeItemInfo)->AllowOrderSide)
-			this->WriteNull();
-		else
-			WriteString_Optional((*gmdeItemInfo)->OrderSide, (*gmdeItemInfo)->OrderSideLength);
-		if(!(*gmdeItemInfo)->AllowMDEntryPx)
-			this->WriteNull();
-		else
-			WriteDecimal_Optional(&((*gmdeItemInfo)->MDEntryPx));
-		if(!(*gmdeItemInfo)->AllowMDEntrySize)
-			this->WriteNull();
-		else
-			WriteDecimal_Optional(&((*gmdeItemInfo)->MDEntrySize));
-		if(!(*gmdeItemInfo)->AllowTradeValue)
-			this->WriteNull();
-		else
-			WriteDecimal_Optional(&((*gmdeItemInfo)->TradeValue));
-		if(!(*gmdeItemInfo)->AllowSettlDate)
-			this->WriteNull();
-		else
-			WriteUInt32_Optional((*gmdeItemInfo)->SettlDate);
-		if(!(*gmdeItemInfo)->AllowSettleType)
-			this->WriteNull();
-		else
-			WriteString_Optional((*gmdeItemInfo)->SettleType, (*gmdeItemInfo)->SettleTypeLength);
-		if(!(*gmdeItemInfo)->AllowPrice)
-			this->WriteNull();
-		else
-			WriteDecimal_Optional(&((*gmdeItemInfo)->Price));
-		if(!(*gmdeItemInfo)->AllowPriceType)
-			this->WriteNull();
-		else
-			WriteInt32_Optional((*gmdeItemInfo)->PriceType);
-		if(!(*gmdeItemInfo)->AllowRepoToPx)
-			this->WriteNull();
-		else
-			WriteDecimal_Optional(&((*gmdeItemInfo)->RepoToPx));
-		if(!(*gmdeItemInfo)->AllowBuyBackPx)
-			this->WriteNull();
-		else
-			WriteDecimal_Optional(&((*gmdeItemInfo)->BuyBackPx));
-		if(!(*gmdeItemInfo)->AllowBuyBackDate)
-			this->WriteNull();
-		else
-			WriteUInt32_Optional((*gmdeItemInfo)->BuyBackDate);
-		if(!(*gmdeItemInfo)->AllowTradingSessionSubID)
-			this->WriteNull();
-		else
-			WriteString_Optional((*gmdeItemInfo)->TradingSessionSubID, (*gmdeItemInfo)->TradingSessionSubIDLength);
-		gmdeItemInfo++;
-	}
-}
-void FastProtocolManager::EncodeOBSFONDInfo(FastOBSFONDInfo* info) {
-	ResetBuffer();
-	WriteMsgSeqNumber(info->MsgSeqNum);
-	WriteUInt32_Mandatory(0); // Presence Map hack
-	WriteUInt32_Mandatory(2412);
-	WriteUInt32_Mandatory(info->MsgSeqNum);
-	WriteUInt64_Mandatory(info->SendingTime);
-	if(!info->AllowLastMsgSeqNumProcessed)
-		this->WriteNull();
-	else
-		WriteUInt32_Optional(info->LastMsgSeqNumProcessed);
-	WriteInt32_Mandatory(info->RptSeq);
-	if(!info->AllowTradSesStatus)
-		this->WriteNull();
-	else
-		WriteInt32_Optional(info->TradSesStatus);
-	if(!info->AllowTradingSessionID)
-		this->WriteNull();
-	else
-		WriteString_Optional(info->TradingSessionID, info->TradingSessionIDLength);
-	WriteString_Mandatory(info->Symbol, info->SymbolLength);
-	if(!info->AllowLastFragment)
-		this->WriteNull();
-	else
-		WriteUInt32_Optional(info->LastFragment);
-	if(!info->AllowRouteFirst)
-		this->WriteNull();
-	else
-		WriteUInt32_Optional(info->RouteFirst);
-	if(!info->AllowMDSecurityTradingStatus)
-		this->WriteNull();
-	else
-		WriteInt32_Optional(info->MDSecurityTradingStatus);
-	if(!info->AllowAuctionIndicator)
-		this->WriteNull();
-	else
-		WriteUInt32_Optional(info->AuctionIndicator);
-	WriteUInt32_Mandatory(info->GroupMDEntriesCount);
-	FastOBSFONDItemInfo **gmdeItemInfo = info->GroupMDEntries;
-	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
-		if(!(*gmdeItemInfo)->AllowMDEntryType)
-			this->WriteNull();
-		else
-			WriteString_Optional((*gmdeItemInfo)->MDEntryType, (*gmdeItemInfo)->MDEntryTypeLength);
-		if(!(*gmdeItemInfo)->AllowMDEntryID)
-			this->WriteNull();
-		else
-			WriteString_Optional((*gmdeItemInfo)->MDEntryID, (*gmdeItemInfo)->MDEntryIDLength);
-		if(!(*gmdeItemInfo)->AllowMDEntryPx)
-			this->WriteNull();
-		else
-			WriteDecimal_Optional(&((*gmdeItemInfo)->MDEntryPx));
-		if(!(*gmdeItemInfo)->AllowMDEntrySize)
-			this->WriteNull();
-		else
-			WriteDecimal_Optional(&((*gmdeItemInfo)->MDEntrySize));
-		if(!(*gmdeItemInfo)->AllowMDEntryTime)
-			this->WriteNull();
-		else
-			WriteUInt32_Optional((*gmdeItemInfo)->MDEntryTime);
-		if(!(*gmdeItemInfo)->AllowOrigTime)
-			this->WriteNull();
-		else
-			WriteUInt32_Optional((*gmdeItemInfo)->OrigTime);
-		if(!(*gmdeItemInfo)->AllowYield)
-			this->WriteNull();
-		else
-			WriteDecimal_Optional(&((*gmdeItemInfo)->Yield));
-		if(!(*gmdeItemInfo)->AllowEffectiveTime)
-			this->WriteNull();
-		else
-			WriteUInt32_Optional((*gmdeItemInfo)->EffectiveTime);
-		if(!(*gmdeItemInfo)->AllowNominalValue)
-			this->WriteNull();
-		else
-			WriteDecimal_Optional(&((*gmdeItemInfo)->NominalValue));
-		if(!(*gmdeItemInfo)->AllowTradingSessionSubID)
-			this->WriteNull();
-		else
-			WriteString_Optional((*gmdeItemInfo)->TradingSessionSubID, (*gmdeItemInfo)->TradingSessionSubIDLength);
-		gmdeItemInfo++;
-	}
-}
-void FastProtocolManager::EncodeOBSCURRInfo(FastOBSCURRInfo* info) {
-	ResetBuffer();
-	WriteMsgSeqNumber(info->MsgSeqNum);
-	WriteUInt32_Mandatory(0); // Presence Map hack
-	WriteUInt32_Mandatory(3502);
-	WriteUInt32_Mandatory(info->MsgSeqNum);
-	WriteUInt64_Mandatory(info->SendingTime);
-	if(!info->AllowLastMsgSeqNumProcessed)
-		this->WriteNull();
-	else
-		WriteUInt32_Optional(info->LastMsgSeqNumProcessed);
-	WriteInt32_Mandatory(info->RptSeq);
-	if(!info->AllowTradSesStatus)
-		this->WriteNull();
-	else
-		WriteInt32_Optional(info->TradSesStatus);
-	if(!info->AllowTradingSessionID)
-		this->WriteNull();
-	else
-		WriteString_Optional(info->TradingSessionID, info->TradingSessionIDLength);
-	WriteString_Mandatory(info->Symbol, info->SymbolLength);
-	if(!info->AllowLastFragment)
-		this->WriteNull();
-	else
-		WriteUInt32_Optional(info->LastFragment);
-	if(!info->AllowRouteFirst)
-		this->WriteNull();
-	else
-		WriteUInt32_Optional(info->RouteFirst);
-	if(!info->AllowMDSecurityTradingStatus)
-		this->WriteNull();
-	else
-		WriteInt32_Optional(info->MDSecurityTradingStatus);
-	WriteUInt32_Mandatory(info->GroupMDEntriesCount);
-	FastOBSCURRItemInfo **gmdeItemInfo = info->GroupMDEntries;
-	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
-		if(!(*gmdeItemInfo)->AllowMDEntryType)
-			this->WriteNull();
-		else
-			WriteString_Optional((*gmdeItemInfo)->MDEntryType, (*gmdeItemInfo)->MDEntryTypeLength);
-		if(!(*gmdeItemInfo)->AllowMDEntryID)
-			this->WriteNull();
-		else
-			WriteString_Optional((*gmdeItemInfo)->MDEntryID, (*gmdeItemInfo)->MDEntryIDLength);
-		if(!(*gmdeItemInfo)->AllowMDEntryPx)
-			this->WriteNull();
-		else
-			WriteDecimal_Optional(&((*gmdeItemInfo)->MDEntryPx));
-		if(!(*gmdeItemInfo)->AllowMDEntrySize)
-			this->WriteNull();
-		else
-			WriteDecimal_Optional(&((*gmdeItemInfo)->MDEntrySize));
-		if(!(*gmdeItemInfo)->AllowMDEntryTime)
-			this->WriteNull();
-		else
-			WriteUInt32_Optional((*gmdeItemInfo)->MDEntryTime);
-		if(!(*gmdeItemInfo)->AllowOrigTime)
-			this->WriteNull();
-		else
-			WriteUInt32_Optional((*gmdeItemInfo)->OrigTime);
-		if(!(*gmdeItemInfo)->AllowTradingSessionSubID)
-			this->WriteNull();
-		else
-			WriteString_Optional((*gmdeItemInfo)->TradingSessionSubID, (*gmdeItemInfo)->TradingSessionSubIDLength);
+		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, (*gmdeItemInfo)->MDEntryDatePresenceIndex)) {
+			if(!(*gmdeItemInfo)->AllowMDEntryDate)
+				this->WriteNull();
+			else
+				WriteUInt32_Optional((*gmdeItemInfo)->MDEntryDate);
+			}
+		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, (*gmdeItemInfo)->MDEntryTimePresenceIndex)) {
+			if(!(*gmdeItemInfo)->AllowMDEntryTime)
+				this->WriteNull();
+			else
+				WriteUInt32_Optional((*gmdeItemInfo)->MDEntryTime);
+			}
+		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, (*gmdeItemInfo)->OrigTimePresenceIndex)) {
+			if(!(*gmdeItemInfo)->AllowOrigTime)
+				this->WriteNull();
+			else
+				WriteUInt32_Optional((*gmdeItemInfo)->OrigTime);
+			}
+		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, (*gmdeItemInfo)->OrderSidePresenceIndex)) {
+			if(!(*gmdeItemInfo)->AllowOrderSide)
+				this->WriteNull();
+			else
+				WriteString_Optional((*gmdeItemInfo)->OrderSide, (*gmdeItemInfo)->OrderSideLength);
+			}
+		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, (*gmdeItemInfo)->MDEntryPxPresenceIndex)) {
+			if(!(*gmdeItemInfo)->AllowMDEntryPx)
+				this->WriteNull();
+			else
+				WriteDecimal_Optional(&((*gmdeItemInfo)->MDEntryPx));
+			}
+		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, (*gmdeItemInfo)->MDEntrySizePresenceIndex)) {
+			if(!(*gmdeItemInfo)->AllowMDEntrySize)
+				this->WriteNull();
+			else
+				WriteDecimal_Optional(&((*gmdeItemInfo)->MDEntrySize));
+			}
+		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, (*gmdeItemInfo)->TradeValuePresenceIndex)) {
+			if(!(*gmdeItemInfo)->AllowTradeValue)
+				this->WriteNull();
+			else
+				WriteDecimal_Optional(&((*gmdeItemInfo)->TradeValue));
+			}
+		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, (*gmdeItemInfo)->SettlDatePresenceIndex)) {
+			if(!(*gmdeItemInfo)->AllowSettlDate)
+				this->WriteNull();
+			else
+				WriteUInt32_Optional((*gmdeItemInfo)->SettlDate);
+			}
+		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, (*gmdeItemInfo)->SettleTypePresenceIndex)) {
+			if(!(*gmdeItemInfo)->AllowSettleType)
+				this->WriteNull();
+			else
+				WriteString_Optional((*gmdeItemInfo)->SettleType, (*gmdeItemInfo)->SettleTypeLength);
+			}
+		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, (*gmdeItemInfo)->PricePresenceIndex)) {
+			if(!(*gmdeItemInfo)->AllowPrice)
+				this->WriteNull();
+			else
+				WriteDecimal_Optional(&((*gmdeItemInfo)->Price));
+			}
+		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, (*gmdeItemInfo)->PriceTypePresenceIndex)) {
+			if(!(*gmdeItemInfo)->AllowPriceType)
+				this->WriteNull();
+			else
+				WriteInt32_Optional((*gmdeItemInfo)->PriceType);
+			}
+		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, (*gmdeItemInfo)->RepoToPxPresenceIndex)) {
+			if(!(*gmdeItemInfo)->AllowRepoToPx)
+				this->WriteNull();
+			else
+				WriteDecimal_Optional(&((*gmdeItemInfo)->RepoToPx));
+			}
+		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, (*gmdeItemInfo)->BuyBackPxPresenceIndex)) {
+			if(!(*gmdeItemInfo)->AllowBuyBackPx)
+				this->WriteNull();
+			else
+				WriteDecimal_Optional(&((*gmdeItemInfo)->BuyBackPx));
+			}
+		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, (*gmdeItemInfo)->BuyBackDatePresenceIndex)) {
+			if(!(*gmdeItemInfo)->AllowBuyBackDate)
+				this->WriteNull();
+			else
+				WriteUInt32_Optional((*gmdeItemInfo)->BuyBackDate);
+			}
+		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, (*gmdeItemInfo)->TradingSessionSubIDPresenceIndex)) {
+			if(!(*gmdeItemInfo)->AllowTradingSessionSubID)
+				this->WriteNull();
+			else
+				WriteString_Optional((*gmdeItemInfo)->TradingSessionSubID, (*gmdeItemInfo)->TradingSessionSubIDLength);
+			}
+		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, (*gmdeItemInfo)->RefOrderIDPresenceIndex)) {
+			if(!(*gmdeItemInfo)->AllowRefOrderID)
+				this->WriteNull();
+			else
+				WriteString_Optional((*gmdeItemInfo)->RefOrderID, (*gmdeItemInfo)->RefOrderIDLength);
+			}
 		gmdeItemInfo++;
 	}
 }
 void FastProtocolManager::EncodeIncrementalMSRFONDInfo(FastIncrementalMSRFONDInfo* info) {
 	ResetBuffer();
 	WriteMsgSeqNumber(info->MsgSeqNum);
-	WriteUInt32_Mandatory(0); // Presence Map hack
+	WriteUInt64_Mandatory(info->PresenceMap); // Presence Map hack
 	WriteUInt32_Mandatory(2523);
 	WriteUInt32_Mandatory(info->MsgSeqNum);
 	WriteUInt64_Mandatory(info->SendingTime);
@@ -3929,8 +3497,8 @@ void FastProtocolManager::EncodeIncrementalMSRFONDInfo(FastIncrementalMSRFONDInf
 void FastProtocolManager::EncodeIncrementalMSRCURRInfo(FastIncrementalMSRCURRInfo* info) {
 	ResetBuffer();
 	WriteMsgSeqNumber(info->MsgSeqNum);
-	WriteUInt32_Mandatory(0); // Presence Map hack
-	WriteUInt32_Mandatory(3513);
+	WriteUInt64_Mandatory(info->PresenceMap); // Presence Map hack
+	WriteUInt32_Mandatory(3613);
 	WriteUInt32_Mandatory(info->MsgSeqNum);
 	WriteUInt64_Mandatory(info->SendingTime);
 	WriteUInt32_Mandatory(info->GroupMDEntriesCount);
@@ -3972,6 +3540,10 @@ void FastProtocolManager::EncodeIncrementalMSRCURRInfo(FastIncrementalMSRCURRInf
 			this->WriteNull();
 		else
 			WriteUInt32_Optional((*gmdeItemInfo)->MDEntryTime);
+		if(!(*gmdeItemInfo)->AllowStartTime)
+			this->WriteNull();
+		else
+			WriteUInt32_Optional((*gmdeItemInfo)->StartTime);
 		if(!(*gmdeItemInfo)->AllowQuoteCondition)
 			this->WriteNull();
 		else
@@ -3996,6 +3568,14 @@ void FastProtocolManager::EncodeIncrementalMSRCURRInfo(FastIncrementalMSRCURRInf
 			this->WriteNull();
 		else
 			WriteDecimal_Optional(&((*gmdeItemInfo)->ChgOpenInterest));
+		if(!(*gmdeItemInfo)->AllowBidMarketSize)
+			this->WriteNull();
+		else
+			WriteDecimal_Optional(&((*gmdeItemInfo)->BidMarketSize));
+		if(!(*gmdeItemInfo)->AllowAskMarketSize)
+			this->WriteNull();
+		else
+			WriteDecimal_Optional(&((*gmdeItemInfo)->AskMarketSize));
 		if(!(*gmdeItemInfo)->AllowTotalNumOfTrades)
 			this->WriteNull();
 		else
@@ -4042,292 +3622,202 @@ void FastProtocolManager::EncodeIncrementalMSRCURRInfo(FastIncrementalMSRCURRInf
 void FastProtocolManager::EncodeIncrementalOLRFONDInfo(FastIncrementalOLRFONDInfo* info) {
 	ResetBuffer();
 	WriteMsgSeqNumber(info->MsgSeqNum);
-	WriteUInt32_Mandatory(0); // Presence Map hack
-	WriteUInt32_Mandatory(2420);
+	WriteUInt64_Mandatory(info->PresenceMap); // Presence Map hack
+	WriteUInt32_Mandatory(2520);
 	WriteUInt32_Mandatory(info->MsgSeqNum);
 	WriteUInt64_Mandatory(info->SendingTime);
 	WriteUInt32_Mandatory(info->GroupMDEntriesCount);
 	FastOLSFONDItemInfo **gmdeItemInfo = info->GroupMDEntries;
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
-	WriteUInt32_Mandatory(0); // Presence Map hack
+		WriteUInt64_Mandatory((*gmdeItemInfo)->PresenceMap); // Presence Map hack
 
 		if(!(*gmdeItemInfo)->AllowMDUpdateAction)
 			this->WriteNull();
 		else
 			WriteUInt32_Optional((*gmdeItemInfo)->MDUpdateAction);
-		if(!(*gmdeItemInfo)->AllowMDEntryType)
-			this->WriteNull();
-		else
-			WriteString_Optional((*gmdeItemInfo)->MDEntryType, (*gmdeItemInfo)->MDEntryTypeLength);
+		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, (*gmdeItemInfo)->MDEntryTypePresenceIndex)) {
+			if(!(*gmdeItemInfo)->AllowMDEntryType)
+				this->WriteNull();
+			else
+				WriteString_Optional((*gmdeItemInfo)->MDEntryType, (*gmdeItemInfo)->MDEntryTypeLength);
+			}
 		if(!(*gmdeItemInfo)->AllowMDEntryID)
 			this->WriteNull();
 		else
 			WriteString_Optional((*gmdeItemInfo)->MDEntryID, (*gmdeItemInfo)->MDEntryIDLength);
-		if(!(*gmdeItemInfo)->AllowSymbol)
-			this->WriteNull();
-		else
-			WriteString_Optional((*gmdeItemInfo)->Symbol, (*gmdeItemInfo)->SymbolLength);
+		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, (*gmdeItemInfo)->SymbolPresenceIndex)) {
+			if(!(*gmdeItemInfo)->AllowSymbol)
+				this->WriteNull();
+			else
+				WriteString_Optional((*gmdeItemInfo)->Symbol, (*gmdeItemInfo)->SymbolLength);
+			}
 		if(!(*gmdeItemInfo)->AllowRptSeq)
 			this->WriteNull();
 		else
 			WriteInt32_Optional((*gmdeItemInfo)->RptSeq);
-		if(!(*gmdeItemInfo)->AllowMDEntryDate)
-			this->WriteNull();
-		else
-			WriteUInt32_Optional((*gmdeItemInfo)->MDEntryDate);
-		if(!(*gmdeItemInfo)->AllowMDEntryTime)
-			this->WriteNull();
-		else
-			WriteUInt32_Optional((*gmdeItemInfo)->MDEntryTime);
-		if(!(*gmdeItemInfo)->AllowOrigTime)
-			this->WriteNull();
-		else
-			WriteUInt32_Optional((*gmdeItemInfo)->OrigTime);
-		if(!(*gmdeItemInfo)->AllowMDEntryPx)
-			this->WriteNull();
-		else
-			WriteDecimal_Optional(&((*gmdeItemInfo)->MDEntryPx));
-		if(!(*gmdeItemInfo)->AllowMDEntrySize)
-			this->WriteNull();
-		else
-			WriteDecimal_Optional(&((*gmdeItemInfo)->MDEntrySize));
-		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, (*gmdeItemInfo)->DealNumberPresenceIndex)) {
-			if(!(*gmdeItemInfo)->AllowDealNumber)
+		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, (*gmdeItemInfo)->MDEntryDatePresenceIndex)) {
+			if(!(*gmdeItemInfo)->AllowMDEntryDate)
 				this->WriteNull();
 			else
-				WriteString_Optional((*gmdeItemInfo)->DealNumber, (*gmdeItemInfo)->DealNumberLength);
+				WriteUInt32_Optional((*gmdeItemInfo)->MDEntryDate);
 			}
-		if(!(*gmdeItemInfo)->AllowYield)
-			this->WriteNull();
-		else
-			WriteDecimal_Optional(&((*gmdeItemInfo)->Yield));
-		if(!(*gmdeItemInfo)->AllowOrderStatus)
-			this->WriteNull();
-		else
-			WriteString_Optional((*gmdeItemInfo)->OrderStatus, (*gmdeItemInfo)->OrderStatusLength);
-		if(!(*gmdeItemInfo)->AllowOrdType)
-			this->WriteNull();
-		else
-			WriteString_Optional((*gmdeItemInfo)->OrdType, (*gmdeItemInfo)->OrdTypeLength);
-		if(!(*gmdeItemInfo)->AllowTotalVolume)
-			this->WriteNull();
-		else
-			WriteDecimal_Optional(&((*gmdeItemInfo)->TotalVolume));
-		if(!(*gmdeItemInfo)->AllowTradingSessionID)
-			this->WriteNull();
-		else
-			WriteString_Optional((*gmdeItemInfo)->TradingSessionID, (*gmdeItemInfo)->TradingSessionIDLength);
-		if(!(*gmdeItemInfo)->AllowTradingSessionSubID)
-			this->WriteNull();
-		else
-			WriteString_Optional((*gmdeItemInfo)->TradingSessionSubID, (*gmdeItemInfo)->TradingSessionSubIDLength);
+		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, (*gmdeItemInfo)->MDEntryTimePresenceIndex)) {
+			if(!(*gmdeItemInfo)->AllowMDEntryTime)
+				this->WriteNull();
+			else
+				WriteUInt32_Optional((*gmdeItemInfo)->MDEntryTime);
+			}
+		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, (*gmdeItemInfo)->OrigTimePresenceIndex)) {
+			if(!(*gmdeItemInfo)->AllowOrigTime)
+				this->WriteNull();
+			else
+				WriteUInt32_Optional((*gmdeItemInfo)->OrigTime);
+			}
+		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, (*gmdeItemInfo)->MDEntryPxPresenceIndex)) {
+			if(!(*gmdeItemInfo)->AllowMDEntryPx)
+				this->WriteNull();
+			else
+				WriteDecimal_Optional(&((*gmdeItemInfo)->MDEntryPx));
+			}
+		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, (*gmdeItemInfo)->MDEntrySizePresenceIndex)) {
+			if(!(*gmdeItemInfo)->AllowMDEntrySize)
+				this->WriteNull();
+			else
+				WriteDecimal_Optional(&((*gmdeItemInfo)->MDEntrySize));
+			}
+		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, (*gmdeItemInfo)->YieldPresenceIndex)) {
+			if(!(*gmdeItemInfo)->AllowYield)
+				this->WriteNull();
+			else
+				WriteDecimal_Optional(&((*gmdeItemInfo)->Yield));
+			}
+		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, (*gmdeItemInfo)->OrderStatusPresenceIndex)) {
+			if(!(*gmdeItemInfo)->AllowOrderStatus)
+				this->WriteNull();
+			else
+				WriteString_Optional((*gmdeItemInfo)->OrderStatus, (*gmdeItemInfo)->OrderStatusLength);
+			}
+		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, (*gmdeItemInfo)->OrdTypePresenceIndex)) {
+			if(!(*gmdeItemInfo)->AllowOrdType)
+				this->WriteNull();
+			else
+				WriteString_Optional((*gmdeItemInfo)->OrdType, (*gmdeItemInfo)->OrdTypeLength);
+			}
+		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, (*gmdeItemInfo)->TotalVolumePresenceIndex)) {
+			if(!(*gmdeItemInfo)->AllowTotalVolume)
+				this->WriteNull();
+			else
+				WriteDecimal_Optional(&((*gmdeItemInfo)->TotalVolume));
+			}
+		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, (*gmdeItemInfo)->TradingSessionIDPresenceIndex)) {
+			if(!(*gmdeItemInfo)->AllowTradingSessionID)
+				this->WriteNull();
+			else
+				WriteString_Optional((*gmdeItemInfo)->TradingSessionID, (*gmdeItemInfo)->TradingSessionIDLength);
+			}
+		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, (*gmdeItemInfo)->TradingSessionSubIDPresenceIndex)) {
+			if(!(*gmdeItemInfo)->AllowTradingSessionSubID)
+				this->WriteNull();
+			else
+				WriteString_Optional((*gmdeItemInfo)->TradingSessionSubID, (*gmdeItemInfo)->TradingSessionSubIDLength);
+			}
 		gmdeItemInfo++;
 	}
 }
 void FastProtocolManager::EncodeIncrementalOLRCURRInfo(FastIncrementalOLRCURRInfo* info) {
 	ResetBuffer();
 	WriteMsgSeqNumber(info->MsgSeqNum);
-	WriteUInt32_Mandatory(0); // Presence Map hack
-	WriteUInt32_Mandatory(3510);
+	WriteUInt64_Mandatory(info->PresenceMap); // Presence Map hack
+	WriteUInt32_Mandatory(3610);
 	WriteUInt32_Mandatory(info->MsgSeqNum);
 	WriteUInt64_Mandatory(info->SendingTime);
 	WriteUInt32_Mandatory(info->GroupMDEntriesCount);
 	FastOLSCURRItemInfo **gmdeItemInfo = info->GroupMDEntries;
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
-	WriteUInt32_Mandatory(0); // Presence Map hack
+		WriteUInt64_Mandatory((*gmdeItemInfo)->PresenceMap); // Presence Map hack
 
-		if(!(*gmdeItemInfo)->AllowMDUpdateAction)
-			this->WriteNull();
-		else
-			WriteUInt32_Optional((*gmdeItemInfo)->MDUpdateAction);
-		if(!(*gmdeItemInfo)->AllowMDEntryType)
-			this->WriteNull();
-		else
-			WriteString_Optional((*gmdeItemInfo)->MDEntryType, (*gmdeItemInfo)->MDEntryTypeLength);
-		if(!(*gmdeItemInfo)->AllowMDEntryID)
-			this->WriteNull();
-		else
-			WriteString_Optional((*gmdeItemInfo)->MDEntryID, (*gmdeItemInfo)->MDEntryIDLength);
-		if(!(*gmdeItemInfo)->AllowSymbol)
-			this->WriteNull();
-		else
-			WriteString_Optional((*gmdeItemInfo)->Symbol, (*gmdeItemInfo)->SymbolLength);
-		if(!(*gmdeItemInfo)->AllowRptSeq)
-			this->WriteNull();
-		else
-			WriteInt32_Optional((*gmdeItemInfo)->RptSeq);
-		if(!(*gmdeItemInfo)->AllowMDEntryDate)
-			this->WriteNull();
-		else
-			WriteUInt32_Optional((*gmdeItemInfo)->MDEntryDate);
-		if(!(*gmdeItemInfo)->AllowMDEntryTime)
-			this->WriteNull();
-		else
-			WriteUInt32_Optional((*gmdeItemInfo)->MDEntryTime);
-		if(!(*gmdeItemInfo)->AllowOrigTime)
-			this->WriteNull();
-		else
-			WriteUInt32_Optional((*gmdeItemInfo)->OrigTime);
-		if(!(*gmdeItemInfo)->AllowMDEntryPx)
-			this->WriteNull();
-		else
-			WriteDecimal_Optional(&((*gmdeItemInfo)->MDEntryPx));
-		if(!(*gmdeItemInfo)->AllowMDEntrySize)
-			this->WriteNull();
-		else
-			WriteDecimal_Optional(&((*gmdeItemInfo)->MDEntrySize));
-		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, (*gmdeItemInfo)->DealNumberPresenceIndex)) {
-			if(!(*gmdeItemInfo)->AllowDealNumber)
+		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, (*gmdeItemInfo)->MDUpdateActionPresenceIndex)) {
+			if(!(*gmdeItemInfo)->AllowMDUpdateAction)
 				this->WriteNull();
 			else
-				WriteString_Optional((*gmdeItemInfo)->DealNumber, (*gmdeItemInfo)->DealNumberLength);
+				WriteUInt32_Optional((*gmdeItemInfo)->MDUpdateAction);
 			}
-		if(!(*gmdeItemInfo)->AllowOrderStatus)
-			this->WriteNull();
-		else
-			WriteString_Optional((*gmdeItemInfo)->OrderStatus, (*gmdeItemInfo)->OrderStatusLength);
-		if(!(*gmdeItemInfo)->AllowTradingSessionID)
-			this->WriteNull();
-		else
-			WriteString_Optional((*gmdeItemInfo)->TradingSessionID, (*gmdeItemInfo)->TradingSessionIDLength);
-		if(!(*gmdeItemInfo)->AllowTradingSessionSubID)
-			this->WriteNull();
-		else
-			WriteString_Optional((*gmdeItemInfo)->TradingSessionSubID, (*gmdeItemInfo)->TradingSessionSubIDLength);
-		gmdeItemInfo++;
-	}
-}
-void FastProtocolManager::EncodeIncrementalOBRFONDInfo(FastIncrementalOBRFONDInfo* info) {
-	ResetBuffer();
-	WriteMsgSeqNumber(info->MsgSeqNum);
-	WriteUInt32_Mandatory(0); // Presence Map hack
-	WriteUInt32_Mandatory(2422);
-	WriteUInt32_Mandatory(info->MsgSeqNum);
-	WriteUInt64_Mandatory(info->SendingTime);
-	WriteUInt32_Mandatory(info->GroupMDEntriesCount);
-	FastOBSFONDItemInfo **gmdeItemInfo = info->GroupMDEntries;
-	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
-		if(!(*gmdeItemInfo)->AllowMDUpdateAction)
-			this->WriteNull();
-		else
-			WriteUInt32_Optional((*gmdeItemInfo)->MDUpdateAction);
-		if(!(*gmdeItemInfo)->AllowMDEntryType)
-			this->WriteNull();
-		else
-			WriteString_Optional((*gmdeItemInfo)->MDEntryType, (*gmdeItemInfo)->MDEntryTypeLength);
+		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, (*gmdeItemInfo)->MDEntryTypePresenceIndex)) {
+			if(!(*gmdeItemInfo)->AllowMDEntryType)
+				this->WriteNull();
+			else
+				WriteString_Optional((*gmdeItemInfo)->MDEntryType, (*gmdeItemInfo)->MDEntryTypeLength);
+			}
 		if(!(*gmdeItemInfo)->AllowMDEntryID)
 			this->WriteNull();
 		else
 			WriteString_Optional((*gmdeItemInfo)->MDEntryID, (*gmdeItemInfo)->MDEntryIDLength);
-		if(!(*gmdeItemInfo)->AllowSymbol)
-			this->WriteNull();
-		else
-			WriteString_Optional((*gmdeItemInfo)->Symbol, (*gmdeItemInfo)->SymbolLength);
+		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, (*gmdeItemInfo)->SymbolPresenceIndex)) {
+			if(!(*gmdeItemInfo)->AllowSymbol)
+				this->WriteNull();
+			else
+				WriteString_Optional((*gmdeItemInfo)->Symbol, (*gmdeItemInfo)->SymbolLength);
+			}
 		if(!(*gmdeItemInfo)->AllowRptSeq)
 			this->WriteNull();
 		else
 			WriteInt32_Optional((*gmdeItemInfo)->RptSeq);
-		if(!(*gmdeItemInfo)->AllowMDEntryPx)
-			this->WriteNull();
-		else
-			WriteDecimal_Optional(&((*gmdeItemInfo)->MDEntryPx));
-		if(!(*gmdeItemInfo)->AllowMDEntrySize)
-			this->WriteNull();
-		else
-			WriteDecimal_Optional(&((*gmdeItemInfo)->MDEntrySize));
-		if(!(*gmdeItemInfo)->AllowMDEntryTime)
-			this->WriteNull();
-		else
-			WriteUInt32_Optional((*gmdeItemInfo)->MDEntryTime);
-		if(!(*gmdeItemInfo)->AllowOrigTime)
-			this->WriteNull();
-		else
-			WriteUInt32_Optional((*gmdeItemInfo)->OrigTime);
-		if(!(*gmdeItemInfo)->AllowYield)
-			this->WriteNull();
-		else
-			WriteDecimal_Optional(&((*gmdeItemInfo)->Yield));
-		if(!(*gmdeItemInfo)->AllowEffectiveTime)
-			this->WriteNull();
-		else
-			WriteUInt32_Optional((*gmdeItemInfo)->EffectiveTime);
-		if(!(*gmdeItemInfo)->AllowNominalValue)
-			this->WriteNull();
-		else
-			WriteDecimal_Optional(&((*gmdeItemInfo)->NominalValue));
-		if(!(*gmdeItemInfo)->AllowTradingSessionID)
-			this->WriteNull();
-		else
-			WriteString_Optional((*gmdeItemInfo)->TradingSessionID, (*gmdeItemInfo)->TradingSessionIDLength);
-		if(!(*gmdeItemInfo)->AllowTradingSessionSubID)
-			this->WriteNull();
-		else
-			WriteString_Optional((*gmdeItemInfo)->TradingSessionSubID, (*gmdeItemInfo)->TradingSessionSubIDLength);
-		gmdeItemInfo++;
-	}
-}
-void FastProtocolManager::EncodeIncrementalOBRCURRInfo(FastIncrementalOBRCURRInfo* info) {
-	ResetBuffer();
-	WriteMsgSeqNumber(info->MsgSeqNum);
-	WriteUInt32_Mandatory(0); // Presence Map hack
-	WriteUInt32_Mandatory(3512);
-	WriteUInt32_Mandatory(info->MsgSeqNum);
-	WriteUInt64_Mandatory(info->SendingTime);
-	WriteUInt32_Mandatory(info->GroupMDEntriesCount);
-	FastOBSCURRItemInfo **gmdeItemInfo = info->GroupMDEntries;
-	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
-		if(!(*gmdeItemInfo)->AllowMDUpdateAction)
-			this->WriteNull();
-		else
-			WriteUInt32_Optional((*gmdeItemInfo)->MDUpdateAction);
-		if(!(*gmdeItemInfo)->AllowMDEntryType)
-			this->WriteNull();
-		else
-			WriteString_Optional((*gmdeItemInfo)->MDEntryType, (*gmdeItemInfo)->MDEntryTypeLength);
-		if(!(*gmdeItemInfo)->AllowMDEntryID)
-			this->WriteNull();
-		else
-			WriteString_Optional((*gmdeItemInfo)->MDEntryID, (*gmdeItemInfo)->MDEntryIDLength);
-		if(!(*gmdeItemInfo)->AllowSymbol)
-			this->WriteNull();
-		else
-			WriteString_Optional((*gmdeItemInfo)->Symbol, (*gmdeItemInfo)->SymbolLength);
-		if(!(*gmdeItemInfo)->AllowRptSeq)
-			this->WriteNull();
-		else
-			WriteInt32_Optional((*gmdeItemInfo)->RptSeq);
-		if(!(*gmdeItemInfo)->AllowMDEntryPx)
-			this->WriteNull();
-		else
-			WriteDecimal_Optional(&((*gmdeItemInfo)->MDEntryPx));
-		if(!(*gmdeItemInfo)->AllowMDEntrySize)
-			this->WriteNull();
-		else
-			WriteDecimal_Optional(&((*gmdeItemInfo)->MDEntrySize));
-		if(!(*gmdeItemInfo)->AllowMDEntryTime)
-			this->WriteNull();
-		else
-			WriteUInt32_Optional((*gmdeItemInfo)->MDEntryTime);
-		if(!(*gmdeItemInfo)->AllowOrigTime)
-			this->WriteNull();
-		else
-			WriteUInt32_Optional((*gmdeItemInfo)->OrigTime);
-		if(!(*gmdeItemInfo)->AllowTradingSessionID)
-			this->WriteNull();
-		else
-			WriteString_Optional((*gmdeItemInfo)->TradingSessionID, (*gmdeItemInfo)->TradingSessionIDLength);
-		if(!(*gmdeItemInfo)->AllowTradingSessionSubID)
-			this->WriteNull();
-		else
-			WriteString_Optional((*gmdeItemInfo)->TradingSessionSubID, (*gmdeItemInfo)->TradingSessionSubIDLength);
+		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, (*gmdeItemInfo)->MDEntryDatePresenceIndex)) {
+			if(!(*gmdeItemInfo)->AllowMDEntryDate)
+				this->WriteNull();
+			else
+				WriteUInt32_Optional((*gmdeItemInfo)->MDEntryDate);
+			}
+		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, (*gmdeItemInfo)->MDEntryTimePresenceIndex)) {
+			if(!(*gmdeItemInfo)->AllowMDEntryTime)
+				this->WriteNull();
+			else
+				WriteUInt32_Optional((*gmdeItemInfo)->MDEntryTime);
+			}
+		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, (*gmdeItemInfo)->OrigTimePresenceIndex)) {
+			if(!(*gmdeItemInfo)->AllowOrigTime)
+				this->WriteNull();
+			else
+				WriteUInt32_Optional((*gmdeItemInfo)->OrigTime);
+			}
+		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, (*gmdeItemInfo)->MDEntryPxPresenceIndex)) {
+			if(!(*gmdeItemInfo)->AllowMDEntryPx)
+				this->WriteNull();
+			else
+				WriteDecimal_Optional(&((*gmdeItemInfo)->MDEntryPx));
+			}
+		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, (*gmdeItemInfo)->MDEntrySizePresenceIndex)) {
+			if(!(*gmdeItemInfo)->AllowMDEntrySize)
+				this->WriteNull();
+			else
+				WriteDecimal_Optional(&((*gmdeItemInfo)->MDEntrySize));
+			}
+		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, (*gmdeItemInfo)->OrderStatusPresenceIndex)) {
+			if(!(*gmdeItemInfo)->AllowOrderStatus)
+				this->WriteNull();
+			else
+				WriteString_Optional((*gmdeItemInfo)->OrderStatus, (*gmdeItemInfo)->OrderStatusLength);
+			}
+		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, (*gmdeItemInfo)->TradingSessionIDPresenceIndex)) {
+			if(!(*gmdeItemInfo)->AllowTradingSessionID)
+				this->WriteNull();
+			else
+				WriteString_Optional((*gmdeItemInfo)->TradingSessionID, (*gmdeItemInfo)->TradingSessionIDLength);
+			}
+		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, (*gmdeItemInfo)->TradingSessionSubIDPresenceIndex)) {
+			if(!(*gmdeItemInfo)->AllowTradingSessionSubID)
+				this->WriteNull();
+			else
+				WriteString_Optional((*gmdeItemInfo)->TradingSessionSubID, (*gmdeItemInfo)->TradingSessionSubIDLength);
+			}
 		gmdeItemInfo++;
 	}
 }
 void FastProtocolManager::EncodeIncrementalTLRFONDInfo(FastIncrementalTLRFONDInfo* info) {
 	ResetBuffer();
 	WriteMsgSeqNumber(info->MsgSeqNum);
-	WriteUInt32_Mandatory(0); // Presence Map hack
-	WriteUInt32_Mandatory(2421);
+	WriteUInt64_Mandatory(info->PresenceMap); // Presence Map hack
+	WriteUInt32_Mandatory(2521);
 	WriteUInt32_Mandatory(info->MsgSeqNum);
 	WriteUInt64_Mandatory(info->SendingTime);
 	WriteUInt32_Mandatory(info->GroupMDEntriesCount);
@@ -4422,14 +3912,18 @@ void FastProtocolManager::EncodeIncrementalTLRFONDInfo(FastIncrementalTLRFONDInf
 			this->WriteNull();
 		else
 			WriteString_Optional((*gmdeItemInfo)->TradingSessionSubID, (*gmdeItemInfo)->TradingSessionSubIDLength);
+		if(!(*gmdeItemInfo)->AllowRefOrderID)
+			this->WriteNull();
+		else
+			WriteString_Optional((*gmdeItemInfo)->RefOrderID, (*gmdeItemInfo)->RefOrderIDLength);
 		gmdeItemInfo++;
 	}
 }
 void FastProtocolManager::EncodeIncrementalTLRCURRInfo(FastIncrementalTLRCURRInfo* info) {
 	ResetBuffer();
 	WriteMsgSeqNumber(info->MsgSeqNum);
-	WriteUInt32_Mandatory(0); // Presence Map hack
-	WriteUInt32_Mandatory(3511);
+	WriteUInt64_Mandatory(info->PresenceMap); // Presence Map hack
+	WriteUInt32_Mandatory(3611);
 	WriteUInt32_Mandatory(info->MsgSeqNum);
 	WriteUInt64_Mandatory(info->SendingTime);
 	WriteUInt32_Mandatory(info->GroupMDEntriesCount);
@@ -4516,13 +4010,17 @@ void FastProtocolManager::EncodeIncrementalTLRCURRInfo(FastIncrementalTLRCURRInf
 			this->WriteNull();
 		else
 			WriteString_Optional((*gmdeItemInfo)->TradingSessionSubID, (*gmdeItemInfo)->TradingSessionSubIDLength);
+		if(!(*gmdeItemInfo)->AllowRefOrderID)
+			this->WriteNull();
+		else
+			WriteString_Optional((*gmdeItemInfo)->RefOrderID, (*gmdeItemInfo)->RefOrderIDLength);
 		gmdeItemInfo++;
 	}
 }
 void FastProtocolManager::EncodeSecurityDefinitionInfo(FastSecurityDefinitionInfo* info) {
 	ResetBuffer();
 	WriteMsgSeqNumber(info->MsgSeqNum);
-	WriteUInt32_Mandatory(0); // Presence Map hack
+	WriteUInt64_Mandatory(info->PresenceMap); // Presence Map hack
 	WriteUInt32_Mandatory(2115);
 	WriteUInt32_Mandatory(info->MsgSeqNum);
 	WriteUInt64_Mandatory(info->SendingTime);
@@ -4731,7 +4229,7 @@ void FastProtocolManager::EncodeSecurityDefinitionInfo(FastSecurityDefinitionInf
 void FastProtocolManager::EncodeSecurityStatusInfo(FastSecurityStatusInfo* info) {
 	ResetBuffer();
 	WriteMsgSeqNumber(info->MsgSeqNum);
-	WriteUInt32_Mandatory(0); // Presence Map hack
+	WriteUInt64_Mandatory(info->PresenceMap); // Presence Map hack
 	WriteUInt32_Mandatory(2106);
 	WriteUInt32_Mandatory(info->MsgSeqNum);
 	WriteUInt64_Mandatory(info->SendingTime);
@@ -4756,7 +4254,7 @@ void FastProtocolManager::EncodeSecurityStatusInfo(FastSecurityStatusInfo* info)
 void FastProtocolManager::EncodeTradingSessionStatusInfo(FastTradingSessionStatusInfo* info) {
 	ResetBuffer();
 	WriteMsgSeqNumber(info->MsgSeqNum);
-	WriteUInt32_Mandatory(0); // Presence Map hack
+	WriteUInt64_Mandatory(info->PresenceMap); // Presence Map hack
 	WriteUInt32_Mandatory(2107);
 	WriteUInt32_Mandatory(info->MsgSeqNum);
 	WriteUInt64_Mandatory(info->SendingTime);
@@ -4770,7 +4268,7 @@ void FastProtocolManager::EncodeTradingSessionStatusInfo(FastTradingSessionStatu
 void FastProtocolManager::EncodeHeartbeatInfo(FastHeartbeatInfo* info) {
 	ResetBuffer();
 	WriteMsgSeqNumber(info->MsgSeqNum);
-	WriteUInt32_Mandatory(0); // Presence Map hack
+	WriteUInt64_Mandatory(info->PresenceMap); // Presence Map hack
 	WriteUInt32_Mandatory(2108);
 	WriteUInt32_Mandatory(info->MsgSeqNum);
 	WriteUInt64_Mandatory(info->SendingTime);

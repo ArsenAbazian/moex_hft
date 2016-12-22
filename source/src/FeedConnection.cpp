@@ -2,10 +2,10 @@
 #include "LogManager.h"
 
 FeedConnection::FeedConnection(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) {
-	strcpy(this->id, id);
+	strcpy(this->m_idName, id);
 	strcpy(this->feedTypeName, name);
 
-	this->m_idLogIndex = DefaultLogMessageProvider::Default->RegisterText(this->id);
+	this->m_idLogIndex = DefaultLogMessageProvider::Default->RegisterText(this->m_idName);
 	this->m_feedTypeNameLogIndex = DefaultLogMessageProvider::Default->RegisterText(this->feedTypeName);
 
 	this->feedTypeValue = value;

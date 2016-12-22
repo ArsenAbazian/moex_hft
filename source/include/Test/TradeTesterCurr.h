@@ -2644,7 +2644,7 @@ public:
     }
 
     void TestInfoAndItemInfoUsageAndAllocationCurr_Inc_4() {
-        FastOBSCURRItemInfo *info = this->m_helper->CreateOBSCurrItemInfo(1, 1, 1, 1, MDEntryType::mdetBuyQuote, "e1");
+        FastTLSCURRItemInfo *info = this->m_helper->CreateTLSCurrItemInfo(1, 1, 1, 1, MDEntryType::mdetBuyQuote, "e1");
         if(info->Allocator->Count() != 1)
             throw;
         info->Used = false;

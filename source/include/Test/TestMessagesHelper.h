@@ -97,8 +97,7 @@ class TestMessagesHelper {
         info->m_lost = HasKey(keys, keysCount, "lost");
         info->m_skip = HasKey(keys, keysCount, "skip_if_suspend");
         if(HasKey(keys, keysCount, "obr")) {
-            info->m_templateId = this->m_curr? FeedConnectionMessage::fmcIncrementalRefresh_OBR_CURR:
-                                 FeedConnectionMessage::fmcIncrementalRefresh_OBR_FOND;
+            info->m_templateId = FeedConnectionMessage::fmcIncrementalRefresh_Generic;
         }
         else if(HasKey(keys, keysCount, "olr")) {
             info->m_templateId = this->m_curr? FeedConnectionMessage::fmcIncrementalRefresh_OLR_CURR:
@@ -109,8 +108,7 @@ class TestMessagesHelper {
                                  FeedConnectionMessage::fmcIncrementalRefresh_TLR_FOND;
         }
         else if(HasKey(keys, keysCount, "obs")) {
-            info->m_templateId = this->m_curr? FeedConnectionMessage::fmcFullRefresh_OBS_CURR:
-                                 FeedConnectionMessage::fmcFullRefresh_OBS_FOND;
+            info->m_templateId = FeedConnectionMessage::fmcFullRefresh_Generic;
             info->m_symbol = keys[KeyIndex(keys, keysCount, "obs") + 1];
         }
         else if(HasKey(keys, keysCount, "ols")) {
@@ -350,8 +348,8 @@ public:
                                      entryId, 1);
     }
     
-    FastOBSFONDInfo* CreateOBSFondInfo(const char *symbol, const char *trading) {
-        FastOBSFONDInfo *info = new FastOBSFONDInfo();
+    FastGenericInfo* CreateOBSFondInfo(const char *symbol, const char *trading) {
+        FastGenericInfo *info = new FastGenericInfo();
 
         char *smb = new char[strlen(symbol) + 1];
         strcpy(smb, symbol);
@@ -368,10 +366,10 @@ public:
         return info;
     }
 
-    FastOBSFONDItemInfo* CreateOBSFondItemInfo(INT64 priceMantissa, INT32 priceExponenta, INT64 sizeMantissa, INT64 sizeExponenta, MDEntryType entryType, const char *entryId) {
+    FastGenericItemInfo* CreateOBSFondItemInfo(INT64 priceMantissa, INT32 priceExponenta, INT64 sizeMantissa, INT64 sizeExponenta, MDEntryType entryType, const char *entryId) {
 
-        AutoAllocatePointerList<FastOBSFONDItemInfo> *list = new AutoAllocatePointerList<FastOBSFONDItemInfo>(1, 1);
-        FastOBSFONDItemInfo *info = list->NewItem();
+        AutoAllocatePointerList<FastGenericItemInfo> *list = new AutoAllocatePointerList<FastGenericItemInfo>(1, 1);
+        FastGenericItemInfo *info = list->NewItem();
 
         char *id = new char[strlen(entryId) + 1];
         strcpy(id, entryId);
@@ -389,11 +387,11 @@ public:
         return info;
     }
 
-    FastOBSFONDItemInfo* CreateOBRFondItemInfo(const char *symbol, const char *trading, INT64 priceMantissa,
+    FastGenericItemInfo* CreateOBRFondItemInfo(const char *symbol, const char *trading, INT64 priceMantissa,
                                                INT32 priceExponenta, INT64 sizeMantissa, INT64 sizeExponenta,
                                                MDUpdateAction updateAction, MDEntryType entryType, const char *entryId,
                                                int rptSeq) {
-        FastOBSFONDItemInfo *info = CreateOBSFondItemInfo(priceMantissa, priceExponenta, sizeMantissa, sizeExponenta, entryType, entryId);
+        FastGenericItemInfo *info = CreateOBSFondItemInfo(priceMantissa, priceExponenta, sizeMantissa, sizeExponenta, entryType, entryId);
 
         char *smb = new char[strlen(symbol) + 1];
         strcpy(smb, symbol);
@@ -413,13 +411,13 @@ public:
         return info;
     }
 
-    FastOBSFONDItemInfo* CreateOBRFondItemInfo(const char *symbol, const char *trading, const char *entryId) {
+    FastGenericItemInfo* CreateOBRFondItemInfo(const char *symbol, const char *trading, const char *entryId) {
         return CreateOBRFondItemInfo(symbol, trading, 1, 1, 1, 1, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote,
                                      entryId, 1);
     }
 
-    FastOBSCURRInfo* CreateOBSCurrInfo(const char *symbol, const char *trading) {
-        FastOBSCURRInfo *info = new FastOBSCURRInfo();
+    FastGenericInfo* CreateOBSCurrInfo(const char *symbol, const char *trading) {
+        FastGenericInfo *info = new FastGenericInfo();
 
         char *smb = new char[strlen(symbol) + 1];
         strcpy(smb, symbol);
@@ -436,10 +434,10 @@ public:
         return info;
     }
 
-    FastOBSCURRItemInfo* CreateOBSCurrItemInfo(INT64 priceMantissa, INT32 priceExponenta, INT64 sizeMantissa, INT64 sizeExponenta, MDEntryType entryType, const char *entryId) {
+    FastGenericItemInfo* CreateOBSCurrItemInfo(INT64 priceMantissa, INT32 priceExponenta, INT64 sizeMantissa, INT64 sizeExponenta, MDEntryType entryType, const char *entryId) {
 
-        AutoAllocatePointerList<FastOBSCURRItemInfo> *list = new AutoAllocatePointerList<FastOBSCURRItemInfo>(1, 1);
-        FastOBSCURRItemInfo *info = list->NewItem();
+        AutoAllocatePointerList<FastGenericItemInfo> *list = new AutoAllocatePointerList<FastGenericItemInfo>(1, 1);
+        FastGenericItemInfo *info = list->NewItem();
 
         char *id = new char[strlen(entryId) + 1];
         strcpy(id, entryId);
@@ -457,11 +455,11 @@ public:
         return info;
     }
 
-    FastOBSCURRItemInfo* CreateOBRCurrItemInfo(const char *symbol, const char *trading, INT64 priceMantissa,
+    FastGenericItemInfo* CreateOBRCurrItemInfo(const char *symbol, const char *trading, INT64 priceMantissa,
                                                INT32 priceExponenta, INT64 sizeMantissa, INT64 sizeExponenta,
                                                MDUpdateAction updateAction, MDEntryType entryType, const char *entryId,
                                                int rptSeq) {
-        FastOBSCURRItemInfo *info = CreateOBSCurrItemInfo(priceMantissa, priceExponenta, sizeMantissa, sizeExponenta, entryType, entryId);
+        FastGenericItemInfo *info = CreateOBSCurrItemInfo(priceMantissa, priceExponenta, sizeMantissa, sizeExponenta, entryType, entryId);
 
         char *smb = new char[strlen(symbol) + 1];
         strcpy(smb, symbol);
@@ -481,7 +479,7 @@ public:
         return info;
     }
 
-    FastOBSCURRItemInfo* CreateOBRCurrItemInfo(const char *symbol, const char *trading, const char *entryId) {
+    FastGenericItemInfo* CreateOBRCurrItemInfo(const char *symbol, const char *trading, const char *entryId) {
         return CreateOBRCurrItemInfo(symbol, trading, 1, 1, 1, 1, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote,
                                      entryId, 1);
     }
@@ -738,26 +736,36 @@ public:
 
     FastOLSFONDItemInfo* CreateOLRFondItemInfo(TestTemplateItemInfo *tmp) {
         FastOLSFONDItemInfo *info = new FastOLSFONDItemInfo();
+
         info->AllowMDUpdateAction = true;
         info->MDUpdateAction = tmp->m_action;
+
         info->AllowMDEntryType = true;
+        info->PresenceMap |= info->MDEntryTypePresenceIndex;
         info->MDEntryType = new char[1];
         info->MDEntryType[0] = (char)tmp->m_entryType;
         info->MDEntryTypeLength = 1;
+
         info->AllowMDEntryPx = true;
+        info->PresenceMap |= info->MDEntryPxPresenceIndex;
         info->MDEntryPx.Assign(&tmp->m_entryPx);
+
         info->AllowMDEntrySize = true;
+        info->PresenceMap |= info->MDEntrySizePresenceIndex;
         info->MDEntrySize.Assign(&tmp->m_entrySize);
+
         info->AllowRptSeq = true;
         info->RptSeq = tmp->m_rptSeq;
         if(tmp->m_symbol != 0) {
             info->AllowSymbol = true;
+            info->PresenceMap |= info->SymbolPresenceIndex;
             info->SymbolLength = strlen(tmp->m_symbol);
             info->Symbol = new char[info->SymbolLength + 1];
             strcpy(info->Symbol, tmp->m_symbol);
         }
         if(tmp->m_tradingSession != 0) {
             info->AllowTradingSessionID = true;
+            info->PresenceMap |= info->TradingSessionIDPresenceIndex;
             info->TradingSessionIDLength = strlen(tmp->m_tradingSession);
             info->TradingSessionID = new char[info->TradingSessionIDLength + 1];
             strcpy(info->TradingSessionID, tmp->m_tradingSession);
@@ -771,8 +779,8 @@ public:
         return info;
     }
 
-    FastOBSFONDItemInfo* CreateObrFondItemInfo(TestTemplateItemInfo *tmp) {
-        FastOBSFONDItemInfo *info = new FastOBSFONDItemInfo();
+    FastGenericItemInfo* CreateObrFondItemInfo(TestTemplateItemInfo *tmp) {
+        FastGenericItemInfo *info = new FastGenericItemInfo();
         info->AllowMDUpdateAction = true;
         info->MDUpdateAction = tmp->m_action;
         info->AllowMDEntryType = true;
@@ -810,14 +818,19 @@ public:
         FastTLSFONDItemInfo *info = new FastTLSFONDItemInfo();
         info->AllowMDUpdateAction = true;
         info->MDUpdateAction = tmp->m_action;
-        //info->AllowMDEntryType = true;
+
         info->MDEntryType = new char[1];
         info->MDEntryType[0] = (char)tmp->m_entryType;
         info->MDEntryTypeLength = 1;
+
         info->AllowMDEntryPx = true;
+        info->PresenceMap |= info->MDEntryPxPresenceIndex;
         info->MDEntryPx.Assign(&tmp->m_entryPx);
+
         info->AllowMDEntrySize = true;
+        info->PresenceMap |= info->MDEntrySizePresenceIndex;
         info->MDEntrySize.Assign(&tmp->m_entrySize);
+
         info->AllowRptSeq = true;
         info->RptSeq = tmp->m_rptSeq;
         if(tmp->m_symbol != 0) {
@@ -840,30 +853,38 @@ public:
         }
         return info;
     }
-
 
     FastOLSCURRItemInfo* CreateOLRCurrItemInfo(TestTemplateItemInfo *tmp) {
         FastOLSCURRItemInfo *info = new FastOLSCURRItemInfo();
         info->AllowMDUpdateAction = true;
         info->MDUpdateAction = tmp->m_action;
+
         info->AllowMDEntryType = true;
+        info->PresenceMap |= info->MDEntryTypePresenceIndex;
         info->MDEntryType = new char[1];
         info->MDEntryType[0] = (char)tmp->m_entryType;
         info->MDEntryTypeLength = 1;
+
         info->AllowMDEntryPx = true;
+        info->PresenceMap |= info->MDEntryPxPresenceIndex;
         info->MDEntryPx.Assign(&tmp->m_entryPx);
+
         info->AllowMDEntrySize = true;
+        info->PresenceMap |= info->MDEntrySizePresenceIndex;
         info->MDEntrySize.Assign(&tmp->m_entrySize);
+
         info->AllowRptSeq = true;
         info->RptSeq = tmp->m_rptSeq;
         if(tmp->m_symbol != 0) {
             info->AllowSymbol = true;
+            info->PresenceMap |= info->SymbolPresenceIndex;
             info->SymbolLength = strlen(tmp->m_symbol);
             info->Symbol = new char[info->SymbolLength + 1];
             strcpy(info->Symbol, tmp->m_symbol);
         }
         if(tmp->m_tradingSession != 0) {
             info->AllowTradingSessionID = true;
+            info->PresenceMap |= info->TradingSessionIDPresenceIndex;
             info->TradingSessionIDLength = strlen(tmp->m_tradingSession);
             info->TradingSessionID = new char[info->TradingSessionIDLength + 1];
             strcpy(info->TradingSessionID, tmp->m_tradingSession);
@@ -877,8 +898,8 @@ public:
         return info;
     }
 
-    FastOBSCURRItemInfo* CreateObrCurrItemInfo(TestTemplateItemInfo *tmp) {
-        FastOBSCURRItemInfo *info = new FastOBSCURRItemInfo();
+    FastGenericItemInfo* CreateObrCurrItemInfo(TestTemplateItemInfo *tmp) {
+        FastGenericItemInfo *info = new FastGenericItemInfo();
         info->AllowMDUpdateAction = true;
         info->MDUpdateAction = tmp->m_action;
         info->AllowMDEntryType = true;
@@ -916,14 +937,19 @@ public:
         FastTLSCURRItemInfo *info = new FastTLSCURRItemInfo();
         info->AllowMDUpdateAction = true;
         info->MDUpdateAction = tmp->m_action;
-        //info->AllowMDEntryType = true;
+
         info->MDEntryType = new char[1];
         info->MDEntryType[0] = (char)tmp->m_entryType;
         info->MDEntryTypeLength = 1;
+
         info->AllowMDEntryPx = true;
+        info->PresenceMap |= info->MDEntryPxPresenceIndex;
         info->MDEntryPx.Assign(&tmp->m_entryPx);
+
         info->AllowMDEntrySize = true;
+        info->PresenceMap |= info->MDEntrySizePresenceIndex;
         info->MDEntrySize.Assign(&tmp->m_entrySize);
+
         info->AllowRptSeq = true;
         info->RptSeq = tmp->m_rptSeq;
         if(tmp->m_symbol != 0) {
@@ -955,21 +981,21 @@ public:
         conn->ProcessServerCore(conn->m_fastProtocolManager->MessageLength());
     }
 
-    void SendObrFondMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
-        FastIncrementalOBRFONDInfo *info = new FastIncrementalOBRFONDInfo();
+    void SendIncrementalGenericMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
+        FastIncrementalGenericInfo *info = new FastIncrementalGenericInfo();
         info->MsgSeqNum = tmp->m_msgSeqNo;
         info->GroupMDEntriesCount = tmp->m_itemsCount;
         for(int i = 0; i < tmp->m_itemsCount; i++) {
             info->GroupMDEntries[i] = CreateObrFondItemInfo(tmp->m_items[i]);
         }
         conn->m_fastProtocolManager->SetNewBuffer(conn->m_recvABuffer->CurrentPos(), 2000);
-        conn->m_fastProtocolManager->EncodeIncrementalOBRFONDInfo(info);
+        conn->m_fastProtocolManager->EncodeIncrementalGenericInfo(info);
         conn->ProcessServerCore(conn->m_fastProtocolManager->MessageLength());
 
     }
 
-    void SendObsFondMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
-        FastOBSFONDInfo *info = new FastOBSFONDInfo();
+    void SendSnapshotGenericMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
+        FastGenericInfo *info = new FastGenericInfo();
         info->MsgSeqNum = tmp->m_msgSeqNo;
         info->GroupMDEntriesCount = tmp->m_itemsCount;
         info->AllowRouteFirst = true;
@@ -996,7 +1022,7 @@ public:
             info->GroupMDEntries[i] = CreateObrFondItemInfo(tmp->m_items[i]);
         }
         conn->m_fastProtocolManager->SetNewBuffer(conn->m_recvABuffer->CurrentPos(), 2000);
-        conn->m_fastProtocolManager->EncodeOBSFONDInfo(info);
+        conn->m_fastProtocolManager->EncodeGenericInfo(info);
         conn->ProcessServerCore(conn->m_fastProtocolManager->MessageLength());
     }
 
@@ -1092,20 +1118,20 @@ public:
 
 
     void SendObrCurrMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
-        FastIncrementalOBRCURRInfo *info = new FastIncrementalOBRCURRInfo();
+        FastIncrementalGenericInfo *info = new FastIncrementalGenericInfo();
         info->MsgSeqNum = tmp->m_msgSeqNo;
         info->GroupMDEntriesCount = tmp->m_itemsCount;
         for(int i = 0; i < tmp->m_itemsCount; i++) {
             info->GroupMDEntries[i] = CreateObrCurrItemInfo(tmp->m_items[i]);
         }
         conn->m_fastProtocolManager->SetNewBuffer(conn->m_recvABuffer->CurrentPos(), 2000);
-        conn->m_fastProtocolManager->EncodeIncrementalOBRCURRInfo(info);
+        conn->m_fastProtocolManager->EncodeIncrementalGenericInfo(info);
         conn->ProcessServerCore(conn->m_fastProtocolManager->MessageLength());
 
     }
 
     void SendObsCurrMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
-        FastOBSCURRInfo *info = new FastOBSCURRInfo();
+        FastGenericInfo *info = new FastGenericInfo();
         info->MsgSeqNum = tmp->m_msgSeqNo;
         info->GroupMDEntriesCount = tmp->m_itemsCount;
         info->AllowRouteFirst = true;
@@ -1132,7 +1158,7 @@ public:
             info->GroupMDEntries[i] = CreateObrCurrItemInfo(tmp->m_items[i]);
         }
         conn->m_fastProtocolManager->SetNewBuffer(conn->m_recvABuffer->CurrentPos(), 2000);
-        conn->m_fastProtocolManager->EncodeOBSCURRInfo(info);
+        conn->m_fastProtocolManager->EncodeGenericInfo(info);
         conn->ProcessServerCore(conn->m_fastProtocolManager->MessageLength());
     }
 
@@ -1231,11 +1257,11 @@ public:
             case FeedConnectionMessage::fcmHeartBeat:
                 SendHearthBeatMessage(conn, tmp);
                 break;
-            case FeedConnectionMessage::fmcIncrementalRefresh_OBR_FOND:
-                SendObrFondMessage(conn, tmp);
+            case FeedConnectionMessage::fmcIncrementalRefresh_Generic:
+                SendIncrementalGenericMessage(conn, tmp);
                 break;
-            case FeedConnectionMessage::fmcFullRefresh_OBS_FOND:
-                SendObsFondMessage(conn, tmp);
+            case FeedConnectionMessage::fmcFullRefresh_Generic:
+                SendSnapshotGenericMessage(conn, tmp);
                 break;
             case FeedConnectionMessage::fmcIncrementalRefresh_OLR_FOND:
                 SendOLRFondMessage(conn, tmp);
@@ -1248,12 +1274,6 @@ public:
                 break;
             case FeedConnectionMessage::fmcFullRefresh_TLS_FOND:
                 SendTLSFondMessage(conn, tmp);
-                break;
-            case FeedConnectionMessage::fmcIncrementalRefresh_OBR_CURR:
-                SendObrCurrMessage(conn, tmp);
-                break;
-            case FeedConnectionMessage::fmcFullRefresh_OBS_CURR:
-                SendObsCurrMessage(conn, tmp);
                 break;
             case FeedConnectionMessage::fmcIncrementalRefresh_OLR_CURR:
                 SendOLRCurrMessage(conn, tmp);

@@ -14,12 +14,12 @@ class OrderBookTesterCurr {
     FeedConnection_CURR_OBR *incCurr;
     FeedConnection_CURR_OBS *snapCurr;
     TestMessagesHelper      *m_helper;
-    MarketDataTable<OrderBookInfo, FastOBSCURRInfo, FastOBSCURRItemInfo> *m_table;
+    MarketDataTable<OrderBookInfo, FastGenericInfo, FastGenericItemInfo> *m_table;
 
 public:
     OrderBookTesterCurr() {
         this->m_helper = new TestMessagesHelper();
-        this->m_table = new MarketDataTable<OrderBookInfo, FastOBSCURRInfo, FastOBSCURRItemInfo>();
+        this->m_table = new MarketDataTable<OrderBookInfo, FastGenericInfo, FastGenericItemInfo>();
         this->incCurr = new FeedConnection_CURR_OBR("OBR", "Refresh Incremental", 'I',
                                                     FeedConnectionProtocol::UDP_IP,
                                                     "10.50.129.200", "239.192.113.3", 9113,
@@ -39,7 +39,7 @@ public:
         delete this->m_table;
     }
 
-    void TestItem(OrderBookInfo<FastOBSCURRItemInfo> *tableItem) {
+    void TestItem(OrderBookInfo<FastGenericItemInfo> *tableItem) {
         for(int i = 0; i < tableItem->BuyQuotes()->Count(); i++)
             if(tableItem->BuyQuotes()->Item(i)->Allocator == 0)
                 throw;
@@ -48,10 +48,10 @@ public:
                 throw;
     }
 
-    void TestTableItemsAllocator(MarketDataTable<OrderBookInfo, FastOBSCURRInfo, FastOBSCURRItemInfo> *table) {
+    void TestTableItemsAllocator(MarketDataTable<OrderBookInfo, FastGenericInfo, FastGenericItemInfo> *table) {
         for(int i = 0; i < table->SymbolsCount(); i++) {
             for(int j = 0; j < table->Symbol(i)->Count(); j++) {
-                OrderBookInfo<FastOBSCURRItemInfo> *item = table->Item(i, j);
+                OrderBookInfo<FastGenericItemInfo> *item = table->Item(i, j);
                 TestItem(item);
             }
         }
@@ -79,12 +79,12 @@ public:
         this->Clear();
         this->TestDefaults();
 
-        FastIncrementalOBRCURRInfo *info = new FastIncrementalOBRCURRInfo;
+        FastIncrementalGenericInfo *info = new FastIncrementalGenericInfo;
 
-        FastOBSCURRItemInfo *item1 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
-        FastOBSCURRItemInfo *item2 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
-        FastOBSCURRItemInfo *item3 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
-        FastOBSCURRItemInfo *item4 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "e4", 4);
+        FastGenericItemInfo *item1 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
+        FastGenericItemInfo *item2 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
+        FastGenericItemInfo *item3 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
+        FastGenericItemInfo *item4 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "e4", 4);
 
         if(item4->Used)
             throw;
@@ -102,12 +102,12 @@ public:
             throw;
         if(this->incCurr->OrderBookCurr()->Symbol(0)->Count() != 1)
             throw;
-        OrderBookInfo<FastOBSCURRItemInfo> *obi = this->incCurr->OrderBookCurr()->GetItem("s1", "t1");
+        OrderBookInfo<FastGenericItemInfo> *obi = this->incCurr->OrderBookCurr()->GetItem("s1", "t1");
         if(obi == 0)
             throw;
         if(obi->BuyQuotes()->Count() != 1)
             throw;
-        FastOBSCURRItemInfo *quote = obi->BuyQuotes()->Item(0);
+        FastGenericItemInfo *quote = obi->BuyQuotes()->Item(0);
         Decimal price(3, -2);
         Decimal size(1, 2);
         if(!quote->MDEntryPx.Equal(&price))
@@ -244,11 +244,11 @@ public:
         this->Clear();
         this->TestDefaults();
 
-        FastIncrementalOBRCURRInfo *info = new FastIncrementalOBRCURRInfo;
-        FastOBSCURRItemInfo *item1 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
-        FastOBSCURRItemInfo *item2 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
-        FastOBSCURRItemInfo *item3 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
-        FastOBSCURRItemInfo *item4 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "e4", 4);
+        FastIncrementalGenericInfo *info = new FastIncrementalGenericInfo;
+        FastGenericItemInfo *item1 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
+        FastGenericItemInfo *item2 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
+        FastGenericItemInfo *item3 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
+        FastGenericItemInfo *item4 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "e4", 4);
 
         info->GroupMDEntriesCount = 4;
         info->GroupMDEntries[0] = item1;
@@ -285,7 +285,7 @@ public:
         if(this->incCurr->OrderBookCurr()->UsedItemCount() != 1)
             throw;
 
-        OrderBookInfo<FastOBSCURRItemInfo> *obi = this->incCurr->OrderBookCurr()->GetItem("s1", "t1");
+        OrderBookInfo<FastGenericItemInfo> *obi = this->incCurr->OrderBookCurr()->GetItem("s1", "t1");
         if(obi->BuyQuotes()->Count() != 3)
             throw;
         if(!StringIdComparer::Equal(obi->BuyQuotes()->Item(0)->MDEntryID, 2, "e2", 2))
@@ -345,11 +345,11 @@ public:
         this->Clear();
         this->TestDefaults();
 
-        FastIncrementalOBRCURRInfo *info = new FastIncrementalOBRCURRInfo;
-        FastOBSCURRItemInfo *item1 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
-        FastOBSCURRItemInfo *item2 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
-        FastOBSCURRItemInfo *item3 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
-        FastOBSCURRItemInfo *item4 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "e4", 4);
+        FastIncrementalGenericInfo *info = new FastIncrementalGenericInfo;
+        FastGenericItemInfo *item1 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
+        FastGenericItemInfo *item2 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
+        FastGenericItemInfo *item3 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
+        FastGenericItemInfo *item4 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "e4", 4);
 
         info->GroupMDEntriesCount = 4;
         info->GroupMDEntries[0] = item1;
@@ -359,7 +359,7 @@ public:
 
         this->incCurr->OnIncrementalRefresh_OBR_CURR(info);
 
-        OrderBookInfo<FastOBSCURRItemInfo> *obi2 = this->incCurr->OrderBookCurr()->GetItem("s1", "t1");
+        OrderBookInfo<FastGenericItemInfo> *obi2 = this->incCurr->OrderBookCurr()->GetItem("s1", "t1");
         if(!StringIdComparer::Equal(obi2->BuyQuotes()->Item(0)->MDEntryID, 2, "e2", 2))
             throw;
         if(!StringIdComparer::Equal(obi2->BuyQuotes()->Item(1)->MDEntryID, 2, "e1", 2))
@@ -369,7 +369,7 @@ public:
         if(!StringIdComparer::Equal(obi2->BuyQuotes()->Item(3)->MDEntryID, 2, "e3", 2))
             throw;
 
-        FastOBSCURRItemInfo *item5 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 24, -3, 1, 3, mduaChange, mdetBuyQuote, "e2", 5);
+        FastGenericItemInfo *item5 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 24, -3, 1, 3, mduaChange, mdetBuyQuote, "e2", 5);
 
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item5;
@@ -384,12 +384,12 @@ public:
         if(item5->Allocator->Count() != 1)
             throw;
 
-        OrderBookInfo<FastOBSCURRItemInfo> *obi = this->incCurr->OrderBookCurr()->GetItem("s1", "t1");
+        OrderBookInfo<FastGenericItemInfo> *obi = this->incCurr->OrderBookCurr()->GetItem("s1", "t1");
 
-        FastOBSCURRItemInfo *qt1 = obi->BuyQuotes()->Item(0);
-        FastOBSCURRItemInfo *qt2 = obi->BuyQuotes()->Item(1);
-        FastOBSCURRItemInfo *qt3 = obi->BuyQuotes()->Item(2);
-        FastOBSCURRItemInfo *qt4 = obi->BuyQuotes()->Item(3);
+        FastGenericItemInfo *qt1 = obi->BuyQuotes()->Item(0);
+        FastGenericItemInfo *qt2 = obi->BuyQuotes()->Item(1);
+        FastGenericItemInfo *qt3 = obi->BuyQuotes()->Item(2);
+        FastGenericItemInfo *qt4 = obi->BuyQuotes()->Item(3);
 
         if(this->incCurr->OrderBookCurr()->UsedItemCount() != 1)
             throw;
@@ -419,11 +419,11 @@ public:
         this->Clear();
         this->TestDefaults();
 
-        FastIncrementalOBRCURRInfo *info = new FastIncrementalOBRCURRInfo;
-        FastOBSCURRItemInfo *item1 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
-        FastOBSCURRItemInfo *item2 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
-        FastOBSCURRItemInfo *item3 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
-        FastOBSCURRItemInfo *item4 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "e4", 4);
+        FastIncrementalGenericInfo *info = new FastIncrementalGenericInfo;
+        FastGenericItemInfo *item1 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
+        FastGenericItemInfo *item2 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
+        FastGenericItemInfo *item3 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
+        FastGenericItemInfo *item4 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "e4", 4);
 
         info->GroupMDEntriesCount = 4;
         info->GroupMDEntries[0] = item1;
@@ -444,7 +444,7 @@ public:
         if(this->incCurr->OrderBookCurr()->UsedItemCount() != 0)
             throw;
 
-        OrderBookInfo<FastOBSCURRItemInfo> *obi = this->incCurr->OrderBookCurr()->GetItem("s1", "t1");
+        OrderBookInfo<FastGenericItemInfo> *obi = this->incCurr->OrderBookCurr()->GetItem("s1", "t1");
         if(obi->BuyQuotes()->Count() != 0)
             throw;
     }
@@ -453,11 +453,11 @@ public:
         this->Clear();
         this->TestDefaults();
 
-        FastIncrementalOBRCURRInfo *info = new FastIncrementalOBRCURRInfo;
-        FastOBSCURRItemInfo *item1 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
-        FastOBSCURRItemInfo *item2 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
-        FastOBSCURRItemInfo *item3 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
-        FastOBSCURRItemInfo *item4 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "e4", 4);
+        FastIncrementalGenericInfo *info = new FastIncrementalGenericInfo;
+        FastGenericItemInfo *item1 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
+        FastGenericItemInfo *item2 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
+        FastGenericItemInfo *item3 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
+        FastGenericItemInfo *item4 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "e4", 4);
 
         info->GroupMDEntriesCount = 4;
         info->GroupMDEntries[0] = item1;
@@ -467,13 +467,13 @@ public:
 
         this->incCurr->OnIncrementalRefresh_OBR_CURR(info);
 
-        OrderBookInfo<FastOBSCURRItemInfo> *obi2 = this->incCurr->OrderBookCurr()->GetItem("s1", "t1");
+        OrderBookInfo<FastGenericItemInfo> *obi2 = this->incCurr->OrderBookCurr()->GetItem("s1", "t1");
         if(obi2->BuyQuotes()->Count() != 4)
             throw;
 
-        FastOBSCURRInfo *info2 = this->m_helper->CreateOBSCurrInfo("t1s2", "t1");
-        FastOBSCURRItemInfo *newItem1 = this->m_helper->CreateOBSCurrItemInfo(7,-2, 1, 2, mdetBuyQuote, "e7");
-        FastOBSCURRItemInfo *newItem2 = this->m_helper->CreateOBSCurrItemInfo(8,-2, 1, 2, mdetBuyQuote, "e8");
+        FastGenericInfo *info2 = this->m_helper->CreateOBSCurrInfo("t1s2", "t1");
+        FastGenericItemInfo *newItem1 = this->m_helper->CreateOBSCurrItemInfo(7,-2, 1, 2, mdetBuyQuote, "e7");
+        FastGenericItemInfo *newItem2 = this->m_helper->CreateOBSCurrItemInfo(8,-2, 1, 2, mdetBuyQuote, "e8");
         info2->RptSeq = 5;
 
         info2->GroupMDEntriesCount = 2;
@@ -486,16 +486,16 @@ public:
         if(this->incCurr->OrderBookCurr()->UsedItemCount() != 2)
             throw;
 
-        OrderBookInfo<FastOBSCURRItemInfo> *obi3 = this->incCurr->OrderBookCurr()->GetItem("s1", "t1");
+        OrderBookInfo<FastGenericItemInfo> *obi3 = this->incCurr->OrderBookCurr()->GetItem("s1", "t1");
         if(obi3->BuyQuotes()->Count() != 4)
             throw;
 
-        OrderBookInfo<FastOBSCURRItemInfo> *obi = this->incCurr->OrderBookCurr()->GetItem("t1s2", 4, "t1", 2);
+        OrderBookInfo<FastGenericItemInfo> *obi = this->incCurr->OrderBookCurr()->GetItem("t1s2", 4, "t1", 2);
         if(obi->BuyQuotes()->Count() != 2)
             throw;
 
-        FastOBSCURRItemInfo *qt1 = obi->BuyQuotes()->Start()->Data();
-        FastOBSCURRItemInfo *qt2 = obi->BuyQuotes()->Start()->Next()->Data();
+        FastGenericItemInfo *qt1 = obi->BuyQuotes()->Start()->Data();
+        FastGenericItemInfo *qt2 = obi->BuyQuotes()->Start()->Next()->Data();
 
         if(!StringIdComparer::Equal(qt1->MDEntryID, 2, "e8", 2))
             throw;
@@ -513,12 +513,12 @@ public:
         this->Clear();
         this->TestDefaults();
 
-        FastIncrementalOBRCURRInfo *info = new FastIncrementalOBRCURRInfo;
+        FastIncrementalGenericInfo *info = new FastIncrementalGenericInfo;
 
-        FastOBSCURRItemInfo *item1 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "e1", 1);
-        FastOBSCURRItemInfo *item2 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "e2", 2);
-        FastOBSCURRItemInfo *item3 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "e3", 3);
-        FastOBSCURRItemInfo *item4 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "e4", 4);
+        FastGenericItemInfo *item1 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "e1", 1);
+        FastGenericItemInfo *item2 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "e2", 2);
+        FastGenericItemInfo *item3 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "e3", 3);
+        FastGenericItemInfo *item4 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "e4", 4);
 
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item1;
@@ -531,12 +531,12 @@ public:
             throw;
         if(this->incCurr->OrderBookCurr()->Symbol(0)->Count() != 1)
             throw;
-        OrderBookInfo<FastOBSCURRItemInfo> *obi = this->incCurr->OrderBookCurr()->GetItem("s1", "t1");
+        OrderBookInfo<FastGenericItemInfo> *obi = this->incCurr->OrderBookCurr()->GetItem("s1", "t1");
         if(obi == 0)
             throw;
         if(obi->SellQuotes()->Count() != 1)
             throw;
-        FastOBSCURRItemInfo *quote = obi->SellQuotes()->Start()->Data();
+        FastGenericItemInfo *quote = obi->SellQuotes()->Start()->Data();
         if(!quote->MDEntryPx.Equal(3, -2))
             throw;
         if(!quote->MDEntrySize.Equal(1, 2))
@@ -671,11 +671,11 @@ public:
         this->Clear();
         this->TestDefaults();
 
-        FastIncrementalOBRCURRInfo *info = new FastIncrementalOBRCURRInfo;
-        FastOBSCURRItemInfo *item1 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "e1", 1);
-        FastOBSCURRItemInfo *item2 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "e2", 2);
-        FastOBSCURRItemInfo *item3 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "e3", 3);
-        FastOBSCURRItemInfo *item4 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "e4", 4);
+        FastIncrementalGenericInfo *info = new FastIncrementalGenericInfo;
+        FastGenericItemInfo *item1 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "e1", 1);
+        FastGenericItemInfo *item2 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "e2", 2);
+        FastGenericItemInfo *item3 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "e3", 3);
+        FastGenericItemInfo *item4 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "e4", 4);
 
         info->GroupMDEntriesCount = 4;
         info->GroupMDEntries[0] = item1;
@@ -699,7 +699,7 @@ public:
         if(this->incCurr->OrderBookCurr()->UsedItemCount() != 1)
             throw;
 
-        OrderBookInfo<FastOBSCURRItemInfo> *obi = this->incCurr->OrderBookCurr()->GetItem("s1", "t1");
+        OrderBookInfo<FastGenericItemInfo> *obi = this->incCurr->OrderBookCurr()->GetItem("s1", "t1");
         if(obi->SellQuotes()->Count() != 3)
             throw;
 
@@ -760,11 +760,11 @@ public:
         this->Clear();
         this->TestDefaults();
 
-        FastIncrementalOBRCURRInfo *info = new FastIncrementalOBRCURRInfo;
-        FastOBSCURRItemInfo *item1 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "e1", 1);
-        FastOBSCURRItemInfo *item2 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "e2", 2);
-        FastOBSCURRItemInfo *item3 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "e3", 3);
-        FastOBSCURRItemInfo *item4 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "e4", 4);
+        FastIncrementalGenericInfo *info = new FastIncrementalGenericInfo;
+        FastGenericItemInfo *item1 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "e1", 1);
+        FastGenericItemInfo *item2 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "e2", 2);
+        FastGenericItemInfo *item3 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "e3", 3);
+        FastGenericItemInfo *item4 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "e4", 4);
 
         info->GroupMDEntriesCount = 4;
         info->GroupMDEntries[0] = item1;
@@ -774,7 +774,7 @@ public:
 
         this->incCurr->OnIncrementalRefresh_OBR_CURR(info);
 
-        OrderBookInfo<FastOBSCURRItemInfo> *obi2 = this->incCurr->OrderBookCurr()->GetItem("s1", "t1");
+        OrderBookInfo<FastGenericItemInfo> *obi2 = this->incCurr->OrderBookCurr()->GetItem("s1", "t1");
         if(!StringIdComparer::Equal(obi2->SellQuotes()->Item(0)->MDEntryID, 2, "e3", 2))
             throw;
         if(!StringIdComparer::Equal(obi2->SellQuotes()->Item(1)->MDEntryID, 2, "e4", 2))
@@ -784,19 +784,19 @@ public:
         if(!StringIdComparer::Equal(obi2->SellQuotes()->Item(3)->MDEntryID, 2, "e2", 2))
             throw;
 
-        FastOBSCURRItemInfo *item5 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 24, -3, 1, 3, mduaChange, mdetSellQuote, "e2", 5);
+        FastGenericItemInfo *item5 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 24, -3, 1, 3, mduaChange, mdetSellQuote, "e2", 5);
 
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item5;
 
         this->incCurr->OnIncrementalRefresh_OBR_CURR(info);
 
-        OrderBookInfo<FastOBSCURRItemInfo> *obi = this->incCurr->OrderBookCurr()->GetItem("s1", "t1");
+        OrderBookInfo<FastGenericItemInfo> *obi = this->incCurr->OrderBookCurr()->GetItem("s1", "t1");
 
-        FastOBSCURRItemInfo *qt1 = obi->SellQuotes()->Item(0);
-        FastOBSCURRItemInfo *qt2 = obi->SellQuotes()->Item(1);
-        FastOBSCURRItemInfo *qt3 = obi->SellQuotes()->Item(2);
-        FastOBSCURRItemInfo *qt4 = obi->SellQuotes()->Item(3);
+        FastGenericItemInfo *qt1 = obi->SellQuotes()->Item(0);
+        FastGenericItemInfo *qt2 = obi->SellQuotes()->Item(1);
+        FastGenericItemInfo *qt3 = obi->SellQuotes()->Item(2);
+        FastGenericItemInfo *qt4 = obi->SellQuotes()->Item(3);
 
         if(this->incCurr->OrderBookCurr()->UsedItemCount() != 1)
             throw;
@@ -826,11 +826,11 @@ public:
         this->Clear();
         this->TestDefaults();
 
-        FastIncrementalOBRCURRInfo *info = new FastIncrementalOBRCURRInfo;
-        FastOBSCURRItemInfo *item1 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "e1", 1);
-        FastOBSCURRItemInfo *item2 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "e2", 2);
-        FastOBSCURRItemInfo *item3 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "e3", 3);
-        FastOBSCURRItemInfo *item4 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "e4", 4);
+        FastIncrementalGenericInfo *info = new FastIncrementalGenericInfo;
+        FastGenericItemInfo *item1 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "e1", 1);
+        FastGenericItemInfo *item2 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "e2", 2);
+        FastGenericItemInfo *item3 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "e3", 3);
+        FastGenericItemInfo *item4 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "e4", 4);
 
         info->GroupMDEntriesCount = 4;
         info->GroupMDEntries[0] = item1;
@@ -844,7 +844,7 @@ public:
         if(this->incCurr->OrderBookCurr()->UsedItemCount() != 0)
             throw;
 
-        OrderBookInfo<FastOBSCURRItemInfo> *obi = this->incCurr->OrderBookCurr()->GetItem("s1", "t1");
+        OrderBookInfo<FastGenericItemInfo> *obi = this->incCurr->OrderBookCurr()->GetItem("s1", "t1");
         if(obi->SellQuotes()->Count() != 0)
             throw;
     }
@@ -853,11 +853,11 @@ public:
         this->Clear();
         this->TestDefaults();
 
-        FastIncrementalOBRCURRInfo *info = new FastIncrementalOBRCURRInfo;
-        FastOBSCURRItemInfo *item1 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "e1", 1);
-        FastOBSCURRItemInfo *item2 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "e2", 2);
-        FastOBSCURRItemInfo *item3 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "e3", 3);
-        FastOBSCURRItemInfo *item4 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "e4", 4);
+        FastIncrementalGenericInfo *info = new FastIncrementalGenericInfo;
+        FastGenericItemInfo *item1 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "e1", 1);
+        FastGenericItemInfo *item2 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "e2", 2);
+        FastGenericItemInfo *item3 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "e3", 3);
+        FastGenericItemInfo *item4 = this->m_helper->CreateOBRCurrItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "e4", 4);
 
         info->GroupMDEntriesCount = 4;
         info->GroupMDEntries[0] = item1;
@@ -867,9 +867,9 @@ public:
 
         this->incCurr->OnIncrementalRefresh_OBR_CURR(info);
 
-        FastOBSCURRInfo *info2 = this->m_helper->CreateOBSCurrInfo("t1s2", "t1");
-        FastOBSCURRItemInfo *newItem1 = this->m_helper->CreateOBSCurrItemInfo(7,-2, 1, 2, mdetSellQuote, "e7");
-        FastOBSCURRItemInfo *newItem2 = this->m_helper->CreateOBSCurrItemInfo(8,-2, 1, 2, mdetSellQuote, "e8");
+        FastGenericInfo *info2 = this->m_helper->CreateOBSCurrInfo("t1s2", "t1");
+        FastGenericItemInfo *newItem1 = this->m_helper->CreateOBSCurrItemInfo(7,-2, 1, 2, mdetSellQuote, "e7");
+        FastGenericItemInfo *newItem2 = this->m_helper->CreateOBSCurrItemInfo(8,-2, 1, 2, mdetSellQuote, "e8");
 
         info2->GroupMDEntriesCount = 2;
         info2->GroupMDEntries[0] = newItem1;
@@ -881,16 +881,16 @@ public:
         if(this->incCurr->OrderBookCurr()->UsedItemCount() != 2)
             throw;
 
-        OrderBookInfo<FastOBSCURRItemInfo> *obi3 = this->incCurr->OrderBookCurr()->GetItem("s1", "t1");
+        OrderBookInfo<FastGenericItemInfo> *obi3 = this->incCurr->OrderBookCurr()->GetItem("s1", "t1");
         if(obi3->SellQuotes()->Count() != 4)
             throw;
 
-        OrderBookInfo<FastOBSCURRItemInfo> *obi = this->incCurr->OrderBookCurr()->GetItem("t1s2", 4, "t1", 2);
+        OrderBookInfo<FastGenericItemInfo> *obi = this->incCurr->OrderBookCurr()->GetItem("t1s2", 4, "t1", 2);
         if(obi->SellQuotes()->Count() != 2)
             throw;
 
-        FastOBSCURRItemInfo *qt1 = obi->SellQuotes()->Start()->Data();
-        FastOBSCURRItemInfo *qt2 = obi->SellQuotes()->Start()->Next()->Data();
+        FastGenericItemInfo *qt1 = obi->SellQuotes()->Start()->Data();
+        FastGenericItemInfo *qt2 = obi->SellQuotes()->Start()->Next()->Data();
 
         if(!StringIdComparer::Equal(qt1->MDEntryID, 2, "e7", 2))
             throw;
@@ -945,9 +945,9 @@ public:
     }
 
     void TestTableItem_CorrectBegin() {
-        OrderBookInfo<FastOBSCURRItemInfo> *tb = new OrderBookInfo<FastOBSCURRItemInfo>();
+        OrderBookInfo<FastGenericItemInfo> *tb = new OrderBookInfo<FastGenericItemInfo>();
 
-        FastOBSCURRItemInfo *item1 = this->m_helper->CreateOBSCurrItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e1");
+        FastGenericItemInfo *item1 = this->m_helper->CreateOBSCurrItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e1");
         item1->RptSeq = 1;
         item1->MDUpdateAction = mduaAdd;
 
@@ -964,9 +964,9 @@ public:
     }
 
     void TestTableItem_IncorrectBegin() {
-        OrderBookInfo<FastOBSCURRItemInfo> *tb = new OrderBookInfo<FastOBSCURRItemInfo>();
+        OrderBookInfo<FastGenericItemInfo> *tb = new OrderBookInfo<FastGenericItemInfo>();
 
-        FastOBSCURRItemInfo *item1 = this->m_helper->CreateOBSCurrItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e1");
+        FastGenericItemInfo *item1 = this->m_helper->CreateOBSCurrItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e1");
         item1->RptSeq = 2;
         item1->MDUpdateAction = mduaAdd;
 
@@ -985,15 +985,15 @@ public:
     }
 
     void TestTableItem_SkipMessage() {
-        OrderBookInfo<FastOBSCURRItemInfo> *tb = new OrderBookInfo<FastOBSCURRItemInfo>();
+        OrderBookInfo<FastGenericItemInfo> *tb = new OrderBookInfo<FastGenericItemInfo>();
 
-        FastOBSCURRItemInfo *item1 = this->m_helper->CreateOBSCurrItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e1");
+        FastGenericItemInfo *item1 = this->m_helper->CreateOBSCurrItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e1");
         item1->RptSeq = 1;
         item1->MDUpdateAction = mduaAdd;
 
         tb->ProcessIncrementalMessage(item1);
 
-        FastOBSCURRItemInfo *item2 = this->m_helper->CreateOBSCurrItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e2");
+        FastGenericItemInfo *item2 = this->m_helper->CreateOBSCurrItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e2");
         item2->RptSeq = 3;
         item2->MDUpdateAction = mduaAdd;
 
@@ -1006,7 +1006,7 @@ public:
         if(tb->RptSeq() != 1)
             throw;
 
-        FastOBSCURRItemInfo *item3 = this->m_helper->CreateOBSCurrItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e3");
+        FastGenericItemInfo *item3 = this->m_helper->CreateOBSCurrItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e3");
         item3->RptSeq = 4;
         item3->MDUpdateAction = mduaAdd;
 
@@ -1034,13 +1034,13 @@ public:
     void TestTable_AfterClear() {
         this->m_table->Clear();
 
-        FastOBSCURRItemInfo *item = this->m_helper->CreateOBRCurrItemInfo("s1", "session1", "e1");
+        FastGenericItemInfo *item = this->m_helper->CreateOBRCurrItemInfo("s1", "session1", "e1");
         item->RptSeq = 1;
 
-        FastOBSCURRItemInfo *item2 = this->m_helper->CreateOBRCurrItemInfo("s1", "session1", "e1");
+        FastGenericItemInfo *item2 = this->m_helper->CreateOBRCurrItemInfo("s1", "session1", "e1");
         item2->RptSeq = 2;
 
-        FastOBSCURRItemInfo *item3 = this->m_helper->CreateOBRCurrItemInfo("s1", "session1", "e1");
+        FastGenericItemInfo *item3 = this->m_helper->CreateOBRCurrItemInfo("s1", "session1", "e1");
         item3->RptSeq = 4;
 
         this->m_table->ProcessIncremental(item);
@@ -1049,7 +1049,7 @@ public:
 
         if(this->m_table->UsedItemCount() != 1)
             throw;
-        OrderBookInfo<FastOBSCURRItemInfo> *tableItem = this->m_table->GetItem("s1", "session1");
+        OrderBookInfo<FastGenericItemInfo> *tableItem = this->m_table->GetItem("s1", "session1");
         if(tableItem->EntriesQueue()->MaxIndex() != 1) // 3 is empty and 4 has value
             throw;
         this->m_table->Clear();
@@ -1069,7 +1069,7 @@ public:
 
         this->m_table->Clear();
 
-        FastOBSCURRItemInfo *item1 = this->m_helper->CreateOBRCurrItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        FastGenericItemInfo *item1 = this->m_helper->CreateOBRCurrItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 1;
 
@@ -1082,7 +1082,7 @@ public:
     void TestTable_IncorrectBegin() {
         this->m_table->Clear();
 
-        FastOBSCURRItemInfo *item1 = this->m_helper->CreateOBRCurrItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        FastGenericItemInfo *item1 = this->m_helper->CreateOBRCurrItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 2;
 
@@ -1095,14 +1095,14 @@ public:
     void TestTable_SkipMessages() {
         this->m_table->Clear();
 
-        FastOBSCURRItemInfo *item1 = this->m_helper->CreateOBRCurrItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        FastGenericItemInfo *item1 = this->m_helper->CreateOBRCurrItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 1;
 
         if(!this->m_table->ProcessIncremental(item1))
             throw;
 
-        FastOBSCURRItemInfo *item2 = this->m_helper->CreateOBRCurrItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        FastGenericItemInfo *item2 = this->m_helper->CreateOBRCurrItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 3);
         item2->RptSeq = 3;
 
@@ -1115,14 +1115,14 @@ public:
     void Test_2UsedItemsAfter2IncrementalMessages() {
         this->m_table->Clear();
 
-        FastOBSCURRItemInfo *item1 = this->m_helper->CreateOBRCurrItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        FastGenericItemInfo *item1 = this->m_helper->CreateOBRCurrItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 1;
 
         if(!this->m_table->ProcessIncremental(item1))
             throw;
 
-        FastOBSCURRItemInfo *item2 = this->m_helper->CreateOBRCurrItemInfo("s2", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        FastGenericItemInfo *item2 = this->m_helper->CreateOBRCurrItemInfo("s2", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item2->RptSeq = 1;
 
@@ -1138,42 +1138,42 @@ public:
     void TestTable_CorrectApplySnapshot() {
         this->m_table->Clear();
 
-        FastOBSCURRItemInfo *item1 = this->m_helper->CreateOBRCurrItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        FastGenericItemInfo *item1 = this->m_helper->CreateOBRCurrItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 1;
 
         this->m_table->ProcessIncremental(item1);
 
-        FastOBSCURRItemInfo *item2 = this->m_helper->CreateOBRCurrItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        FastGenericItemInfo *item2 = this->m_helper->CreateOBRCurrItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e2", 3);
         item2->RptSeq = 3;
 
         if(this->m_table->ProcessIncremental(item2))
             throw;
 
-        FastOBSCURRItemInfo *item3 = this->m_helper->CreateOBRCurrItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        FastGenericItemInfo *item3 = this->m_helper->CreateOBRCurrItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e3", 4);
         item3->RptSeq = 4;
 
         if(this->m_table->ProcessIncremental(item3))
             throw;
 
-        FastOBSCURRItemInfo *item4 = this->m_helper->CreateOBRCurrItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        FastGenericItemInfo *item4 = this->m_helper->CreateOBRCurrItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e4", 5);
         item4->RptSeq = 5;
 
         if(this->m_table->ProcessIncremental(item4))
             throw;
 
-        FastOBSCURRItemInfo *item5 = this->m_helper->CreateOBRCurrItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        FastGenericItemInfo *item5 = this->m_helper->CreateOBRCurrItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e5", 3);
         item5->RptSeq = 3;
 
-        FastOBSCURRInfo *info = this->m_helper->CreateOBSCurrInfo("s1", "session");
+        FastGenericInfo *info = this->m_helper->CreateOBSCurrInfo("s1", "session");
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item5;
 
-        OrderBookInfo<FastOBSCURRItemInfo> *tb = this->m_table->GetItem("s1", "session");
+        OrderBookInfo<FastGenericItemInfo> *tb = this->m_table->GetItem("s1", "session");
 
         this->m_table->ObtainSnapshotItem(info);
         this->m_table->StartProcessSnapshot(info);
@@ -1206,39 +1206,39 @@ public:
 
         this->m_table->Clear();
 
-        FastOBSCURRItemInfo *item1 = this->m_helper->CreateOBRCurrItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        FastGenericItemInfo *item1 = this->m_helper->CreateOBRCurrItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 1;
 
         this->m_table->ProcessIncremental(item1);
 
-        FastOBSCURRItemInfo *item3 = this->m_helper->CreateOBRCurrItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        FastGenericItemInfo *item3 = this->m_helper->CreateOBRCurrItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e3", 4);
         item3->RptSeq = 4;
 
         if(this->m_table->ProcessIncremental(item3))
             throw;
 
-        FastOBSCURRItemInfo *item4 = this->m_helper->CreateOBRCurrItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        FastGenericItemInfo *item4 = this->m_helper->CreateOBRCurrItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e4", 5);
         item4->RptSeq = 5;
 
         if(this->m_table->ProcessIncremental(item4))
             throw;
 
-        FastOBSCURRInfo *info1 = this->m_helper->CreateOBSCurrInfo("s1", "session");
+        FastGenericInfo *info1 = this->m_helper->CreateOBSCurrInfo("s1", "session");
         info1->GroupMDEntriesCount = 1;
         info1->RptSeq = 3;
         info1->RouteFirst = true;
         info1->GroupMDEntries[0] = this->m_helper->CreateOBSCurrItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e2");
 
-        FastOBSCURRInfo *info2 = this->m_helper->CreateOBSCurrInfo("s1", "session");
+        FastGenericInfo *info2 = this->m_helper->CreateOBSCurrInfo("s1", "session");
         info2->GroupMDEntriesCount = 1;
         info2->RptSeq = 3;
         info2->RouteFirst = true;
         info2->GroupMDEntries[0] = this->m_helper->CreateOBSCurrItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e2");
 
-        OrderBookInfo<FastOBSCURRItemInfo> *tb = this->m_table->GetItem("s1", "session");
+        OrderBookInfo<FastGenericItemInfo> *tb = this->m_table->GetItem("s1", "session");
 
         this->m_table->ObtainSnapshotItem(info1);
         this->m_table->StartProcessSnapshot(info1);
@@ -1262,42 +1262,42 @@ public:
     void TestTable_IncorrectApplySnapshot() {
         this->m_table->Clear();
 
-        FastOBSCURRItemInfo *item1 = this->m_helper->CreateOBRCurrItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        FastGenericItemInfo *item1 = this->m_helper->CreateOBRCurrItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 1;
 
         this->m_table->ProcessIncremental(item1);
 
-        FastOBSCURRItemInfo *item2 = this->m_helper->CreateOBRCurrItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        FastGenericItemInfo *item2 = this->m_helper->CreateOBRCurrItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e2", 4);
         item2->RptSeq = 4;
 
         if(this->m_table->ProcessIncremental(item2))
             throw;
 
-        FastOBSCURRItemInfo *item3 = this->m_helper->CreateOBRCurrItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        FastGenericItemInfo *item3 = this->m_helper->CreateOBRCurrItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e3", 5);
         item3->RptSeq = 5;
 
         if(this->m_table->ProcessIncremental(item3))
             throw;
 
-        FastOBSCURRItemInfo *item4 = this->m_helper->CreateOBRCurrItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        FastGenericItemInfo *item4 = this->m_helper->CreateOBRCurrItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e4", 6);
         item4->RptSeq = 6;
 
         if(this->m_table->ProcessIncremental(item4))
             throw;
 
-        FastOBSCURRItemInfo *item5 = this->m_helper->CreateOBRCurrItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        FastGenericItemInfo *item5 = this->m_helper->CreateOBRCurrItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e5", 2);
         item5->RptSeq = 2;
 
-        FastOBSCURRInfo *info = this->m_helper->CreateOBSCurrInfo("s1", "session");
+        FastGenericInfo *info = this->m_helper->CreateOBSCurrInfo("s1", "session");
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item5;
 
-        OrderBookInfo<FastOBSCURRItemInfo> *tb = this->m_table->GetItem("s1", "session");
+        OrderBookInfo<FastGenericItemInfo> *tb = this->m_table->GetItem("s1", "session");
 
         this->m_table->ObtainSnapshotItem(info);
         this->m_table->StartProcessSnapshot(info);
@@ -1323,35 +1323,35 @@ public:
     void TestTable_IncorrectApplySnapshot_WhenMessageSkipped() {
         this->m_table->Clear();
 
-        FastOBSCURRItemInfo *item1 = this->m_helper->CreateOBRCurrItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        FastGenericItemInfo *item1 = this->m_helper->CreateOBRCurrItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 1;
 
         this->m_table->ProcessIncremental(item1);
 
-        FastOBSCURRItemInfo *item2 = this->m_helper->CreateOBRCurrItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        FastGenericItemInfo *item2 = this->m_helper->CreateOBRCurrItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e2", 4);
         item2->RptSeq = 4;
 
         if(this->m_table->ProcessIncremental(item2))
             throw;
 
-        FastOBSCURRItemInfo *item4 = this->m_helper->CreateOBRCurrItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        FastGenericItemInfo *item4 = this->m_helper->CreateOBRCurrItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e4", 6);
         item4->RptSeq = 6;
 
         if(this->m_table->ProcessIncremental(item4))
             throw;
 
-        FastOBSCURRItemInfo *item5 = this->m_helper->CreateOBRCurrItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        FastGenericItemInfo *item5 = this->m_helper->CreateOBRCurrItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e5", 3);
         item5->RptSeq = 3;
 
-        FastOBSCURRInfo *info = this->m_helper->CreateOBSCurrInfo("s1", "session");
+        FastGenericInfo *info = this->m_helper->CreateOBSCurrInfo("s1", "session");
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item5;
 
-        OrderBookInfo<FastOBSCURRItemInfo> *tb = this->m_table->GetItem("s1", "session");
+        OrderBookInfo<FastGenericItemInfo> *tb = this->m_table->GetItem("s1", "session");
 
         this->m_table->ObtainSnapshotItem(info);
         this->m_table->StartProcessSnapshot(info);
@@ -1399,16 +1399,16 @@ public:
         this->Clear();
 
         SendMessages(incCurr, new TestTemplateInfo*[3] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OBR_CURR, 1,
+                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_Generic, 1,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "session1", "e1", 1, 1, 1, 1, 1),
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "session1", "e2", 2, 2, 1, 2, 1),
                                      }, 2),
-                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OBR_CURR, 2,
+                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_Generic, 2,
                                      new TestTemplateItemInfo*[1] {
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "session1", "e3", 3, 3, 1, 3, 1),
                                      }, 1),
-                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OBR_CURR, 3,
+                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_Generic, 3,
                                      new TestTemplateItemInfo*[1] {
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "session1", "e4", 4, 3, 1, 3, 1),
                                      }, 1)
@@ -1435,12 +1435,12 @@ public:
         this->Clear();
 
         SendMessages(incCurr, new TestTemplateInfo*[2] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OBR_CURR, 1,
+                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_Generic, 1,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "session1", "e1", 1, 1, 1, 1, 1),
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "session1", "e2", 2, 2, 1, 2, 1),
                                      }, 2),
-                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OBR_CURR, 3,
+                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_Generic, 3,
                                      new TestTemplateItemInfo*[1] {
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "session1", "e3", 4, 3, 1, 3, 1),
                                      }, 1)
@@ -1450,7 +1450,7 @@ public:
 
         this->TestTableItemsAllocator(incCurr->OrderBookCurr());
 
-        OrderBookInfo<FastOBSCURRItemInfo> *item = incCurr->OrderBookCurr()->GetItem("s1", "session1");
+        OrderBookInfo<FastGenericItemInfo> *item = incCurr->OrderBookCurr()->GetItem("s1", "session1");
         if(item->BuyQuotes()->Count() != 2)
             throw;
         if(!incCurr->m_waitTimer->Active()) // not all messages was processed - some messages was skipped
@@ -1466,7 +1466,7 @@ public:
 
         // lost message finally appeared before wait timer elapsed
         SendMessages(incCurr, new TestTemplateInfo*[1] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OBR_CURR, 2,
+                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_Generic, 2,
                                      new TestTemplateItemInfo*[1] {
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "session1", "e4", 3, 1, 1, 1, 1),
                                      }, 1)
@@ -1489,12 +1489,12 @@ public:
         this->Clear();
 
         SendMessages(incCurr, new TestTemplateInfo*[2] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OBR_CURR, 1,
+                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_Generic, 1,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "session1", "e1", 1, 1, 1, 1, 1),
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "session1", "e2", 2, 2, 1, 2, 1),
                                      }, 2),
-                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OBR_CURR, 3,
+                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_Generic, 3,
                                      new TestTemplateItemInfo*[1] {
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "session1", "e5", 5, 3, 1, 3, 1),
                                      }, 1)
@@ -1504,7 +1504,7 @@ public:
 
         this->TestTableItemsAllocator(incCurr->OrderBookCurr());
 
-        OrderBookInfo<FastOBSCURRItemInfo> *item = incCurr->OrderBookCurr()->GetItem("s1", "session1");
+        OrderBookInfo<FastGenericItemInfo> *item = incCurr->OrderBookCurr()->GetItem("s1", "session1");
         if(item->BuyQuotes()->Count() != 2)
             throw;
         if(!incCurr->m_waitTimer->Active()) // not all messages was processed - some messages was skipped
@@ -1522,7 +1522,7 @@ public:
 
         // lost message finally appeared before wait timer elapsed
         SendMessages(incCurr, new TestTemplateInfo*[1] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OBR_CURR, 2,
+                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_Generic, 2,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "session1", "e3", 3, 1, 1, 1, 1),
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "session1", "e4", 4, 1, 1, 1, 1),
@@ -1546,12 +1546,12 @@ public:
         this->Clear();
 
         SendMessages(incCurr, new TestTemplateInfo*[2] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OBR_CURR, 1,
+                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_Generic, 1,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "session1", "e1", 1, 1, 1, 1, 1),
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "session1", "e2", 2, 2, 1, 2, 1),
                                      }, 2),
-                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OBR_CURR, 4,
+                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_Generic, 4,
                                      new TestTemplateItemInfo*[1] {
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "session1", "e5", 5, 3, 1, 3, 1),
                                      }, 1)
@@ -1561,7 +1561,7 @@ public:
 
         this->TestTableItemsAllocator(incCurr->OrderBookCurr());
 
-        OrderBookInfo<FastOBSCURRItemInfo> *item = incCurr->OrderBookCurr()->GetItem("s1", "session1");
+        OrderBookInfo<FastGenericItemInfo> *item = incCurr->OrderBookCurr()->GetItem("s1", "session1");
         if(item->BuyQuotes()->Count() != 2)
             throw;
         if(!incCurr->m_waitTimer->Active()) // not all messages was processed - some messages was skipped
@@ -1579,7 +1579,7 @@ public:
 
         // lost message finally appeared before wait timer elapsed
         SendMessages(incCurr, new TestTemplateInfo*[1] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OBR_CURR, 2,
+                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_Generic, 2,
                                      new TestTemplateItemInfo*[1] {
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "session1", "e3", 3, 1, 1, 1, 1),
                                      }, 1)
@@ -1602,7 +1602,7 @@ public:
             throw;
 
         SendMessages(incCurr, new TestTemplateInfo*[1] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OBR_CURR, 3,
+                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_Generic, 3,
                                      new TestTemplateItemInfo*[1] {
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "session1", "e3", 4, 1, 1, 1, 1),
                                      }, 1)
@@ -1627,12 +1627,12 @@ public:
         this->Clear();
 
         SendMessages(incCurr, new TestTemplateInfo*[2] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OBR_CURR, 1,
+                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_Generic, 1,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "session1", "e1", 1, 1, 1, 1, 1),
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "session1", "e2", 2, 2, 1, 2, 1),
                                      }, 2),
-                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OBR_CURR, 4,
+                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_Generic, 4,
                                      new TestTemplateItemInfo*[1] {
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "session1", "e5", 5, 3, 1, 3, 1),
                                      }, 1)
@@ -1642,7 +1642,7 @@ public:
 
         this->TestTableItemsAllocator(incCurr->OrderBookCurr());
 
-        OrderBookInfo<FastOBSCURRItemInfo> *item = incCurr->OrderBookCurr()->GetItem("s1", "session1");
+        OrderBookInfo<FastGenericItemInfo> *item = incCurr->OrderBookCurr()->GetItem("s1", "session1");
         if(item->BuyQuotes()->Count() != 2)
             throw;
         if(!incCurr->m_waitTimer->Active()) // not all messages was processed - some messages was skipped
@@ -1660,7 +1660,7 @@ public:
 
         // lost message finally appeared before wait timer elapsed
         SendMessages(incCurr, new TestTemplateInfo*[1] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OBR_CURR, 3,
+                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_Generic, 3,
                                      new TestTemplateItemInfo*[1] {
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "session1", "e3", 4, 1, 1, 1, 1),
                                      }, 1)
@@ -1683,7 +1683,7 @@ public:
             throw;
 
         SendMessages(incCurr, new TestTemplateInfo*[1] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OBR_CURR, 2,
+                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_Generic, 2,
                                      new TestTemplateItemInfo*[1] {
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "session1", "e3", 3, 1, 1, 1, 1),
                                      }, 1)
@@ -1711,12 +1711,12 @@ public:
             throw;
 
         SendMessages(incCurr, new TestTemplateInfo*[2] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OBR_CURR, 1,
+                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_Generic, 1,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "session1", "e1", 1, 1, 1, 1, 1),
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "session1", "e2", 2, 2, 1, 2, 1),
                                      }, 2),
-                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OBR_CURR, 4,
+                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_Generic, 4,
                                      new TestTemplateItemInfo*[1] {
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "session1", "e5", 5, 3, 1, 3, 1),
                                      }, 1)
@@ -1726,7 +1726,7 @@ public:
 
         this->TestTableItemsAllocator(incCurr->OrderBookCurr());
 
-        OrderBookInfo<FastOBSCURRItemInfo> *item = incCurr->OrderBookCurr()->GetItem("s1", "session1");
+        OrderBookInfo<FastGenericItemInfo> *item = incCurr->OrderBookCurr()->GetItem("s1", "session1");
         if(!incCurr->m_waitTimer->Active()) // not all messages was processed - some messages was skipped
             throw;
         // wait
@@ -1803,7 +1803,7 @@ public:
         }
 
         SendMessages(snapCurr, new TestTemplateInfo*[1] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OBS_CURR, 2, "s1", "session1", false, false,
+                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_Generic, 2, "s1", "session1", false, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -1830,7 +1830,7 @@ public:
         incCurr->StartListenSnapshot();
 
         SendMessages(snapCurr, new TestTemplateInfo*[1] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OBS_CURR, 2, "s1", "session1", true, false,
+                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_Generic, 2, "s1", "session1", true, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -1876,7 +1876,7 @@ public:
         incCurr->StartListenSnapshot();
 
         SendMessages(snapCurr, new TestTemplateInfo*[1] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OBS_CURR, 1, "s1", "session1", false, false,
+                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_Generic, 1, "s1", "session1", false, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -1897,7 +1897,7 @@ public:
             throw;
 
         SendMessages(snapCurr, new TestTemplateInfo*[1] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OBS_CURR, 2, "s1", "session1", false, false,
+                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_Generic, 2, "s1", "session1", false, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -1918,12 +1918,12 @@ public:
             throw;
 
         SendMessages(snapCurr, new TestTemplateInfo*[2] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OBS_CURR, 3, "s1", "session1", false, false,
+                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_Generic, 3, "s1", "session1", false, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
                                      }, 2, 4),
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OBS_CURR, 4, "s1", "session1", false, false,
+                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_Generic, 4, "s1", "session1", false, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -1944,12 +1944,12 @@ public:
             throw;
 
         SendMessages(snapCurr, new TestTemplateInfo*[2] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OBS_CURR, 5, "s1", "session1", false, false,
+                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_Generic, 5, "s1", "session1", false, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
                                      }, 2, 4),
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OBS_CURR, 6, "s1", "session1", true, false,
+                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_Generic, 6, "s1", "session1", true, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -1994,7 +1994,7 @@ public:
         incCurr->StartListenSnapshot();
 
         SendMessages(snapCurr, new TestTemplateInfo*[1] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OBS_CURR, 1, "s1", "session1", false, true,
+                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_Generic, 1, "s1", "session1", false, true,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -2022,7 +2022,7 @@ public:
         incCurr->StartListenSnapshot();
 
         SendMessages(snapCurr, new TestTemplateInfo*[1] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OBS_CURR, 1, "s1", "session1", false, false,
+                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_Generic, 1, "s1", "session1", false, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -2033,7 +2033,7 @@ public:
 
         // message seq 2 lost
         SendMessages(snapCurr, new TestTemplateInfo*[1] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OBS_CURR, 3, "s1", "session1", false, false,
+                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_Generic, 3, "s1", "session1", false, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -2075,7 +2075,7 @@ public:
         incCurr->StartListenSnapshot();
 
         SendMessages(snapCurr, new TestTemplateInfo*[1] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OBS_CURR, 1, "s1", "session1", false, false,
+                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_Generic, 1, "s1", "session1", false, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -2086,7 +2086,7 @@ public:
 
         // message seq 2 lost
         SendMessages(snapCurr, new TestTemplateInfo*[1] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OBS_CURR, 3, "s1", "session1", false, false,
+                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_Generic, 3, "s1", "session1", false, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -2118,7 +2118,7 @@ public:
             throw;
 
         SendMessages(snapCurr, new TestTemplateInfo*[1] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OBS_CURR, 2, "s1", "session1", false, false,
+                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_Generic, 2, "s1", "session1", false, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -2155,7 +2155,7 @@ public:
         incCurr->StartListenSnapshot();
 
         SendMessages(snapCurr, new TestTemplateInfo*[1] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OBS_CURR, 2, "s1", "session1", true, true,
+                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_Generic, 2, "s1", "session1", true, true,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -2169,7 +2169,7 @@ public:
 
         snapCurr->Listen_Atom_Snapshot_Core();
         //snapshot received and should be applied
-        OrderBookInfo<FastOBSCURRItemInfo> *tableItem = incCurr->OrderBookCurr()->GetItem("s1", "session1");
+        OrderBookInfo<FastGenericItemInfo> *tableItem = incCurr->OrderBookCurr()->GetItem("s1", "session1");
 
         this->TestTableItemsAllocator(incCurr->OrderBookCurr());
 
@@ -2198,12 +2198,12 @@ public:
 
         snapCurr->m_waitTimer->Stop();
         SendMessages(snapCurr, new TestTemplateInfo*[2] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OBS_CURR, 2, "s1", "session1", true, false,
+                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_Generic, 2, "s1", "session1", true, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
                                      }, 2, 4),
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OBS_CURR, 4, "s1", "session1", false, true,
+                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_Generic, 4, "s1", "session1", false, true,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -2259,12 +2259,12 @@ public:
         this->TestTableItemsAllocator(incCurr->OrderBookCurr());
 
         SendMessages(incCurr, new TestTemplateInfo*[4] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OBR_CURR, 1,
+                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_Generic, 1,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("s1", "e1", 1),
                                              new TestTemplateItemInfo("s2", "e1", 1),
                                      }, 2),
-                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OBR_CURR, 3,
+                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_Generic, 3,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("s1", "e1", 4),
                                              new TestTemplateItemInfo("s2", "e1", 4),
@@ -2286,7 +2286,7 @@ public:
 
         // sending snapshot for only one item and rpt seq before last incremental message
         SendMessages(snapCurr, new TestTemplateInfo*[4] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OBS_CURR, 2, "s1", "session1", true, true,
+                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_Generic, 2, "s1", "session1", true, true,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e1"),
@@ -2299,8 +2299,8 @@ public:
 
         // snapshot for first item should be received and immediately applied then, should be applied incremental messages in que,
         // but connection should not be closed - because not all items were updated
-        OrderBookInfo<FastOBSCURRItemInfo> *item1 = incCurr->OrderBookCurr()->GetItem("s1", "session1");
-        OrderBookInfo<FastOBSCURRItemInfo> *item2 = incCurr->OrderBookCurr()->GetItem("s2", "session1");
+        OrderBookInfo<FastGenericItemInfo> *item1 = incCurr->OrderBookCurr()->GetItem("s1", "session1");
+        OrderBookInfo<FastGenericItemInfo> *item2 = incCurr->OrderBookCurr()->GetItem("s2", "session1");
         if(item1->EntriesQueue()->HasEntries())
             throw;
         if(!item2->EntriesQueue()->HasEntries())
@@ -3081,12 +3081,12 @@ public:
         this->TestTableItemsAllocator(incCurr->OrderBookCurr());
 
         SendMessages(incCurr, new TestTemplateInfo*[4] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OBR_CURR, 1,
+                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_Generic, 1,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("s1", "e1", 1),
                                              new TestTemplateItemInfo("s2", "e1", 1),
                                      }, 2),
-                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OBR_CURR, 3,
+                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_Generic, 3,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("s1", "e1", 4),
                                              new TestTemplateItemInfo("s2", "e1", 4),
@@ -3202,13 +3202,13 @@ public:
         this->Clear();
 
         this->incCurr->OrderBookCurr()->Add("s1", "session1");
-        int prevCount = this->incCurr->m_fastProtocolManager->m_oBSCURRItems->Count();
+        int prevCount = this->incCurr->m_fastProtocolManager->m_genericItems->Count();
         this->SendMessages(this->incCurr, this->snapCurr,
                            "obr entry s1 e1",
                            "",
                            30);
 
-        int newCount = this->incCurr->m_fastProtocolManager->m_oBSCURRItems->Count();
+        int newCount = this->incCurr->m_fastProtocolManager->m_genericItems->Count();
         if(newCount != prevCount + 1)
             throw;
     }
@@ -3217,17 +3217,17 @@ public:
         this->Clear();
 
         this->incCurr->OrderBookCurr()->Add("s1", "session1");
-        int prevCount = this->incCurr->m_fastProtocolManager->m_oBSCURRItems->Count();
+        int prevCount = this->incCurr->m_fastProtocolManager->m_genericItems->Count();
         this->SendMessages(this->incCurr, this->snapCurr,
                            "obr entry s1 e1, obr entry s1 e2",
                            "",
                            30);
 
-        int newCount = this->incCurr->m_fastProtocolManager->m_oBSCURRItems->Count();
+        int newCount = this->incCurr->m_fastProtocolManager->m_genericItems->Count();
         if(newCount != prevCount + 2)
             throw;
         this->incCurr->OrderBookCurr()->Clear();
-        newCount = this->incCurr->m_fastProtocolManager->m_oBSCURRItems->Count();
+        newCount = this->incCurr->m_fastProtocolManager->m_genericItems->Count();
         if(newCount != prevCount)
             throw;
     }
@@ -3236,23 +3236,23 @@ public:
         this->Clear();
 
         this->incCurr->OrderBookCurr()->Add("s1", "session1");
-        int prevCount = this->incCurr->m_fastProtocolManager->m_oBSCURRItems->Count();
+        int prevCount = this->incCurr->m_fastProtocolManager->m_genericItems->Count();
         this->SendMessages(this->incCurr, this->snapCurr,
                            "obr entry s1 e1, obr entry s1 e2, obr entry del s1 e1",
                            "",
                            30);
 
-        int newCount = this->incCurr->m_fastProtocolManager->m_oBSCURRItems->Count();
+        int newCount = this->incCurr->m_fastProtocolManager->m_genericItems->Count();
         if(newCount != prevCount + 1)
             throw;
         this->incCurr->OrderBookCurr()->Clear();
-        newCount = this->incCurr->m_fastProtocolManager->m_oBSCURRItems->Count();
+        newCount = this->incCurr->m_fastProtocolManager->m_genericItems->Count();
         if(newCount != prevCount)
             throw;
     }
 
     void TestInfoAndItemInfoUsageAndAllocationCurr_Inc_4() {
-        FastOBSCURRItemInfo *info = this->m_helper->CreateOBSCurrItemInfo(1, 1, 1, 1, MDEntryType::mdetBuyQuote, "e1");
+        FastGenericItemInfo *info = this->m_helper->CreateOBSCurrItemInfo(1, 1, 1, 1, MDEntryType::mdetBuyQuote, "e1");
         if(info->Allocator->Count() != 1)
             throw;
         info->Used = false;
@@ -3268,17 +3268,17 @@ public:
         this->Clear();
 
         this->incCurr->OrderBookCurr()->Add("s1", "session1");
-        int prevCount = this->incCurr->m_fastProtocolManager->m_oBSCURRItems->Count();
+        int prevCount = this->incCurr->m_fastProtocolManager->m_genericItems->Count();
         this->SendMessages(this->incCurr, this->snapCurr,
                            "obr entry s1 e1, obr entry s1 e2, obr entry change s1 e1",
                            "",
                            30);
 
-        int newCount = this->incCurr->m_fastProtocolManager->m_oBSCURRItems->Count();
+        int newCount = this->incCurr->m_fastProtocolManager->m_genericItems->Count();
         if(newCount != prevCount + 2)
             throw;
         this->incCurr->OrderBookCurr()->Clear();
-        newCount = this->incCurr->m_fastProtocolManager->m_oBSCURRItems->Count();
+        newCount = this->incCurr->m_fastProtocolManager->m_genericItems->Count();
         if(newCount != prevCount)
             throw;
     }
@@ -3287,13 +3287,13 @@ public:
         this->Clear();
 
         this->incCurr->OrderBookCurr()->Add("s1", "session1");
-        int prevCount = this->snapCurr->m_fastProtocolManager->m_oBSCURRItems->Count();
+        int prevCount = this->snapCurr->m_fastProtocolManager->m_genericItems->Count();
         this->SendMessages(this->incCurr, this->snapCurr,
                            "obr entry s1 e1, lost obr entry s1 e2, wait_snap, hbeat",
                            "                                                  obs begin s1 entry s1 e2 rpt 2 end",
                            30);
 
-        int newCount = this->snapCurr->m_fastProtocolManager->m_oBSCURRItems->Count();
+        int newCount = this->snapCurr->m_fastProtocolManager->m_genericItems->Count();
         if(newCount != prevCount + 1)
             throw;
     }
@@ -3302,13 +3302,13 @@ public:
         this->Clear();
 
         this->incCurr->OrderBookCurr()->Add("s1", "session1");
-        int prevCount = this->snapCurr->m_fastProtocolManager->m_oBSCURRItems->Count();
+        int prevCount = this->snapCurr->m_fastProtocolManager->m_genericItems->Count();
         this->SendMessages(this->incCurr, this->snapCurr,
                            "obr entry s1 e1, lost obr entry s1 e2 entry s1 e3, wait_snap, hbeat",
                            "                                                   obs begin s1 entry s1 e2 rpt 2, obs s1 entry s1 e3 end",
                            30);
 
-        int newCount = this->snapCurr->m_fastProtocolManager->m_oBSCURRItems->Count();
+        int newCount = this->snapCurr->m_fastProtocolManager->m_genericItems->Count();
         if(newCount != prevCount + 2)
             throw;
     }
@@ -3318,13 +3318,13 @@ public:
         /*this->Clear();
 
         this->incCurr->OrderBookCurr()->Add("s1", "session1");
-        int prevCount = this->snapCurr->m_fastProtocolManager->m_oBSCURRItems->Count();
+        int prevCount = this->snapCurr->m_fastProtocolManager->m_genericItems->Count();
         this->SendMessages(this->incCurr, this->snapCurr,
                            "obr entry s1 e1, obr entry s1 e2, lost obr entry s1 e4 entry s1 e4, wait_snap, hbeat",
                            "                                                   obs begin s1 entry s1 e1 rpt 2, obs s1 entry s1 e2, obs s1 entry s1 e3, obs s1 entry del s1 e2 end",
                            30);
 
-        int newCount = this->snapCurr->m_fastProtocolManager->m_oBSCURRItems->Count();
+        int newCount = this->snapCurr->m_fastProtocolManager->m_genericItems->Count();
         if(newCount != prevCount + 3)
             throw;*/
     }
@@ -3337,12 +3337,12 @@ public:
         incCurr->OrderBookCurr()->Add("s2", "session1");
         incCurr->OrderBookCurr()->Add("symbol3", "session1");
 
-        int prevCount = this->snapCurr->m_fastProtocolManager->m_oBSCURRItems->Count();
+        int prevCount = this->snapCurr->m_fastProtocolManager->m_genericItems->Count();
         SendMessages(incCurr, snapCurr,
                      "obr entry s1 e1, lost obr entry symbol3 e1, wait_snap, obr entry s1 e3,                              hbeat,                              hbeat",
                      "                                                       obs symbol3 begin rpt 1 end entry symbol3 e1, obs s1 begin rpt 2 end entry s1 e1, hbeat, obs s2 begin rpt 2 end entry s2 e1",
                      30);
-        int newCount = this->snapCurr->m_fastProtocolManager->m_oBSCURRItems->Count();
+        int newCount = this->snapCurr->m_fastProtocolManager->m_genericItems->Count();
         if(newCount != prevCount + 2)
             throw;
     }
@@ -3352,12 +3352,12 @@ public:
         incCurr->OrderBookCurr()->Add("s1", "session1");
         incCurr->Start();
 
-        int prevCount = this->snapCurr->m_fastProtocolManager->m_oBSCURRItems->Count();
+        int prevCount = this->snapCurr->m_fastProtocolManager->m_genericItems->Count();
         SendMessages(incCurr, snapCurr,
                      "obr entry s1 e1, lost obr entry s1 e2, obr entry s1 e2, wait_snap, hbeat",
                      "                                       hbeat,           hbeat,     obs s1 begin rpt 0 lastmsg 0 entry s1 e1 end",
                      30);
-        int newCount = this->snapCurr->m_fastProtocolManager->m_oBSCURRItems->Count();
+        int newCount = this->snapCurr->m_fastProtocolManager->m_genericItems->Count();
         if(newCount != prevCount)
             throw;
     }
@@ -3368,12 +3368,12 @@ public:
 
         incCurr->OrderBookCurr()->Add("s1", "session1");
 
-        int prevCount = this->snapCurr->m_fastProtocolManager->m_oBSCURRItems->Count();
+        int prevCount = this->snapCurr->m_fastProtocolManager->m_genericItems->Count();
         SendMessages(incCurr, snapCurr,
                      "obr entry s1 e1, obr entry s1 e2, obr entry s1 e3, lost hbeat, wait_snap, hbeat",
                      "                                                                          obs s1 begin rpt 1 entry s1 e1 end",
                      50);
-        int newCount = this->snapCurr->m_fastProtocolManager->m_oBSCURRItems->Count();
+        int newCount = this->snapCurr->m_fastProtocolManager->m_genericItems->Count();
         if(newCount != prevCount)
             throw;
     }

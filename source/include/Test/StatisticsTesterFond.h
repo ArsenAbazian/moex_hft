@@ -1802,7 +1802,7 @@ public:
         }
 
         SendMessages(snapFond, new TestTemplateInfo*[1] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_MSS_FOND, 2, "s1", "session1", false, false,
+                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_Generic, 2, "s1", "session1", false, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -1829,7 +1829,7 @@ public:
         incFond->StartListenSnapshot();
 
         SendMessages(snapFond, new TestTemplateInfo*[1] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_MSS_FOND, 2, "s1", "session1", true, false,
+                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_Generic, 2, "s1", "session1", true, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -1875,7 +1875,7 @@ public:
         incFond->StartListenSnapshot();
 
         SendMessages(snapFond, new TestTemplateInfo*[1] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_MSS_FOND, 1, "s1", "session1", false, false,
+                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_Generic, 1, "s1", "session1", false, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -1896,7 +1896,7 @@ public:
             throw;
 
         SendMessages(snapFond, new TestTemplateInfo*[1] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_MSS_FOND, 2, "s1", "session1", false, false,
+                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_Generic, 2, "s1", "session1", false, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -1917,12 +1917,12 @@ public:
             throw;
 
         SendMessages(snapFond, new TestTemplateInfo*[2] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_MSS_FOND, 3, "s1", "session1", false, false,
+                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_Generic, 3, "s1", "session1", false, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
                                      }, 2, 4),
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_MSS_FOND, 4, "s1", "session1", false, false,
+                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_Generic, 4, "s1", "session1", false, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -1943,12 +1943,12 @@ public:
             throw;
 
         SendMessages(snapFond, new TestTemplateInfo*[2] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_MSS_FOND, 5, "s1", "session1", false, false,
+                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_Generic, 5, "s1", "session1", false, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
                                      }, 2, 4),
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_MSS_FOND, 6, "s1", "session1", true, false,
+                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_Generic, 6, "s1", "session1", true, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -1993,7 +1993,7 @@ public:
         incFond->StartListenSnapshot();
 
         SendMessages(snapFond, new TestTemplateInfo*[1] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_MSS_FOND, 1, "s1", "session1", false, true,
+                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_Generic, 1, "s1", "session1", false, true,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -2021,7 +2021,7 @@ public:
         incFond->StartListenSnapshot();
 
         SendMessages(snapFond, new TestTemplateInfo*[1] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_MSS_FOND, 1, "s1", "session1", false, false,
+                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_Generic, 1, "s1", "session1", false, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -2032,7 +2032,7 @@ public:
 
         // message seq 2 lost
         SendMessages(snapFond, new TestTemplateInfo*[1] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_MSS_FOND, 3, "s1", "session1", false, false,
+                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_Generic, 3, "s1", "session1", false, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -2074,7 +2074,7 @@ public:
         incFond->StartListenSnapshot();
 
         SendMessages(snapFond, new TestTemplateInfo*[1] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_MSS_FOND, 1, "s1", "session1", false, false,
+                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_Generic, 1, "s1", "session1", false, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -2085,7 +2085,7 @@ public:
 
         // message seq 2 lost
         SendMessages(snapFond, new TestTemplateInfo*[1] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_MSS_FOND, 3, "s1", "session1", false, false,
+                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_Generic, 3, "s1", "session1", false, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -2117,7 +2117,7 @@ public:
             throw;
 
         SendMessages(snapFond, new TestTemplateInfo*[1] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_MSS_FOND, 2, "s1", "session1", false, false,
+                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_Generic, 2, "s1", "session1", false, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -2154,7 +2154,7 @@ public:
         incFond->StartListenSnapshot();
 
         SendMessages(snapFond, new TestTemplateInfo*[1] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_MSS_FOND, 2, "s1", "session1", true, true,
+                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_Generic, 2, "s1", "session1", true, true,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -2197,12 +2197,12 @@ public:
 
         snapFond->m_waitTimer->Stop();
         SendMessages(snapFond, new TestTemplateInfo*[2] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_MSS_FOND, 2, "s1", "session1", true, false,
+                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_Generic, 2, "s1", "session1", true, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
                                      }, 2, 4),
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_MSS_FOND, 4, "s1", "session1", false, true,
+                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_Generic, 4, "s1", "session1", false, true,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -2285,7 +2285,7 @@ public:
 
         // sending snapshot for only one item and rpt seq before last incremental message
         SendMessages(snapFond, new TestTemplateInfo*[4] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_MSS_FOND, 2, "s1", "session1", true, true,
+                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_Generic, 2, "s1", "session1", true, true,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e1"),
@@ -3201,13 +3201,13 @@ public:
         this->Clear();
 
         this->incFond->StatisticFond()->Add("s1", "session1");
-        int prevCount = this->incFond->m_fastProtocolManager->m_oBSFONDItems->Count();
+        int prevCount = this->incFond->m_fastProtocolManager->m_genericItems->Count();
         this->SendMessages(this->incFond, this->snapFond,
                            "obr entry s1 e1",
                            "",
                            30);
 
-        int newCount = this->incFond->m_fastProtocolManager->m_oBSFONDItems->Count();
+        int newCount = this->incFond->m_fastProtocolManager->m_genericItems->Count();
         if(newCount != prevCount + 1)
             throw;
     }
@@ -3216,17 +3216,17 @@ public:
         this->Clear();
 
         this->incFond->StatisticFond()->Add("s1", "session1");
-        int prevCount = this->incFond->m_fastProtocolManager->m_oBSFONDItems->Count();
+        int prevCount = this->incFond->m_fastProtocolManager->m_genericItems->Count();
         this->SendMessages(this->incFond, this->snapFond,
                            "obr entry s1 e1, obr entry s1 e2",
                            "",
                            30);
 
-        int newCount = this->incFond->m_fastProtocolManager->m_oBSFONDItems->Count();
+        int newCount = this->incFond->m_fastProtocolManager->m_genericItems->Count();
         if(newCount != prevCount + 2)
             throw;
         this->incFond->StatisticFond()->Clear();
-        newCount = this->incFond->m_fastProtocolManager->m_oBSFONDItems->Count();
+        newCount = this->incFond->m_fastProtocolManager->m_genericItems->Count();
         if(newCount != prevCount)
             throw;
     }
@@ -3235,17 +3235,17 @@ public:
         this->Clear();
 
         this->incFond->StatisticFond()->Add("s1", "session1");
-        int prevCount = this->incFond->m_fastProtocolManager->m_oBSFONDItems->Count();
+        int prevCount = this->incFond->m_fastProtocolManager->m_genericItems->Count();
         this->SendMessages(this->incFond, this->snapFond,
                            "obr entry s1 e1, obr entry s1 e2, obr entry del s1 e1",
                            "",
                            30);
 
-        int newCount = this->incFond->m_fastProtocolManager->m_oBSFONDItems->Count();
+        int newCount = this->incFond->m_fastProtocolManager->m_genericItems->Count();
         if(newCount != prevCount + 1)
             throw;
         this->incFond->StatisticFond()->Clear();
-        newCount = this->incFond->m_fastProtocolManager->m_oBSFONDItems->Count();
+        newCount = this->incFond->m_fastProtocolManager->m_genericItems->Count();
         if(newCount != prevCount)
             throw;
     }
@@ -3267,17 +3267,17 @@ public:
         this->Clear();
 
         this->incFond->StatisticFond()->Add("s1", "session1");
-        int prevCount = this->incFond->m_fastProtocolManager->m_oBSFONDItems->Count();
+        int prevCount = this->incFond->m_fastProtocolManager->m_genericItems->Count();
         this->SendMessages(this->incFond, this->snapFond,
                            "obr entry s1 e1, obr entry s1 e2, obr entry change s1 e1",
                            "",
                            30);
 
-        int newCount = this->incFond->m_fastProtocolManager->m_oBSFONDItems->Count();
+        int newCount = this->incFond->m_fastProtocolManager->m_genericItems->Count();
         if(newCount != prevCount + 2)
             throw;
         this->incFond->StatisticFond()->Clear();
-        newCount = this->incFond->m_fastProtocolManager->m_oBSFONDItems->Count();
+        newCount = this->incFond->m_fastProtocolManager->m_genericItems->Count();
         if(newCount != prevCount)
             throw;
     }
@@ -3286,13 +3286,13 @@ public:
         this->Clear();
 
         this->incFond->StatisticFond()->Add("s1", "session1");
-        int prevCount = this->snapFond->m_fastProtocolManager->m_oBSFONDItems->Count();
+        int prevCount = this->snapFond->m_fastProtocolManager->m_genericItems->Count();
         this->SendMessages(this->incFond, this->snapFond,
                            "obr entry s1 e1, lost obr entry s1 e2, wait_snap, hbeat",
                            "                                                  obs begin s1 entry s1 e2 rpt 2 end",
                            30);
 
-        int newCount = this->snapFond->m_fastProtocolManager->m_oBSFONDItems->Count();
+        int newCount = this->snapFond->m_fastProtocolManager->m_genericItems->Count();
         if(newCount != prevCount + 1)
             throw;
     }
@@ -3301,13 +3301,13 @@ public:
         this->Clear();
 
         this->incFond->StatisticFond()->Add("s1", "session1");
-        int prevCount = this->snapFond->m_fastProtocolManager->m_oBSFONDItems->Count();
+        int prevCount = this->snapFond->m_fastProtocolManager->m_genericItems->Count();
         this->SendMessages(this->incFond, this->snapFond,
                            "obr entry s1 e1, lost obr entry s1 e2 entry s1 e3, wait_snap, hbeat",
                            "                                                   obs begin s1 entry s1 e2 rpt 2, obs s1 entry s1 e3 end",
                            30);
 
-        int newCount = this->snapFond->m_fastProtocolManager->m_oBSFONDItems->Count();
+        int newCount = this->snapFond->m_fastProtocolManager->m_genericItems->Count();
         if(newCount != prevCount + 2)
             throw;
     }
@@ -3317,13 +3317,13 @@ public:
         /*this->Clear();
 
         this->incFond->StatisticFond()->Add("s1", "session1");
-        int prevCount = this->snapFond->m_fastProtocolManager->m_oBSFONDItems->Count();
+        int prevCount = this->snapFond->m_fastProtocolManager->m_genericItems->Count();
         this->SendMessages(this->incFond, this->snapFond,
                            "obr entry s1 e1, obr entry s1 e2, lost obr entry s1 e4 entry s1 e4, wait_snap, hbeat",
                            "                                                   obs begin s1 entry s1 e1 rpt 2, obs s1 entry s1 e2, obs s1 entry s1 e3, obs s1 entry del s1 e2 end",
                            30);
 
-        int newCount = this->snapFond->m_fastProtocolManager->m_oBSFONDItems->Count();
+        int newCount = this->snapFond->m_fastProtocolManager->m_genericItems->Count();
         if(newCount != prevCount + 3)
             throw;*/
     }
@@ -3336,12 +3336,12 @@ public:
         incFond->StatisticFond()->Add("s2", "session1");
         incFond->StatisticFond()->Add("symbol3", "session1");
 
-        int prevCount = this->snapFond->m_fastProtocolManager->m_oBSFONDItems->Count();
+        int prevCount = this->snapFond->m_fastProtocolManager->m_genericItems->Count();
         SendMessages(incFond, snapFond,
                      "obr entry s1 e1, lost obr entry symbol3 e1, wait_snap, obr entry s1 e3,                              hbeat,                              hbeat",
                      "                                                       obs symbol3 begin rpt 1 end entry symbol3 e1, obs s1 begin rpt 2 end entry s1 e1, hbeat, obs s2 begin rpt 2 end entry s2 e1",
                      30);
-        int newCount = this->snapFond->m_fastProtocolManager->m_oBSFONDItems->Count();
+        int newCount = this->snapFond->m_fastProtocolManager->m_genericItems->Count();
         if(newCount != prevCount + 2)
             throw;
     }
@@ -3351,12 +3351,12 @@ public:
         incFond->StatisticFond()->Add("s1", "session1");
         incFond->Start();
 
-        int prevCount = this->snapFond->m_fastProtocolManager->m_oBSFONDItems->Count();
+        int prevCount = this->snapFond->m_fastProtocolManager->m_genericItems->Count();
         SendMessages(incFond, snapFond,
                      "obr entry s1 e1, lost obr entry s1 e2, obr entry s1 e2, wait_snap, hbeat",
                      "                                       hbeat,           hbeat,     obs s1 begin rpt 0 lastmsg 0 entry s1 e1 end",
                      30);
-        int newCount = this->snapFond->m_fastProtocolManager->m_oBSFONDItems->Count();
+        int newCount = this->snapFond->m_fastProtocolManager->m_genericItems->Count();
         if(newCount != prevCount)
             throw;
     }
@@ -3367,12 +3367,12 @@ public:
 
         incFond->StatisticFond()->Add("s1", "session1");
 
-        int prevCount = this->snapFond->m_fastProtocolManager->m_oBSFONDItems->Count();
+        int prevCount = this->snapFond->m_fastProtocolManager->m_genericItems->Count();
         SendMessages(incFond, snapFond,
                      "obr entry s1 e1, obr entry s1 e2, obr entry s1 e3, lost hbeat, wait_snap, hbeat",
                      "                                                                          obs s1 begin rpt 1 entry s1 e1 end",
                      50);
-        int newCount = this->snapFond->m_fastProtocolManager->m_oBSFONDItems->Count();
+        int newCount = this->snapFond->m_fastProtocolManager->m_genericItems->Count();
         if(newCount != prevCount)
             throw;
     }

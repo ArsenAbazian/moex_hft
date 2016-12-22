@@ -13,7 +13,7 @@ void BinaryLogManager::Print() {
 }
 
 void BinaryLogManager::Print(BinaryLogItem *item) {
-
+    /*
     printf("%s", this->m_tabs);
     printf("%d: ", item->m_index);
 
@@ -80,7 +80,7 @@ void BinaryLogManager::Print(BinaryLogItem *item) {
         }
     }
 
-    printf("\n");
+    printf("\n");*/
 }
 
 BinaryLogManager* DefaultLogManager::Default = new BinaryLogManager();
