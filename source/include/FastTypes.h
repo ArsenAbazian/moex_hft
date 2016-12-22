@@ -591,67 +591,67 @@ public:
 	int							MDEntryTypeLength;
 	bool							CopyMDEntryType; // copy flag
 	bool							AllowMDEntryType;
-	const UINT							MDEntryTypePresenceIndex = PRESENCE_MAP_INDEX0;
+	const UINT64							MDEntryTypePresenceIndex = PRESENCE_MAP_INDEX0;
 	char*							MDEntryID;			// id=278  presence=optional  
 	int							MDEntryIDLength;
 	bool							AllowMDEntryID;
 	UINT32							MDEntryDate;			// id=272  presence=optional    copy
 	bool							CopyMDEntryDate; // copy flag
 	bool							AllowMDEntryDate;
-	const UINT							MDEntryDatePresenceIndex = PRESENCE_MAP_INDEX1;
+	const UINT64							MDEntryDatePresenceIndex = PRESENCE_MAP_INDEX1;
 	UINT32							MDEntryTime;			// id=273  presence=optional    copy
 	bool							CopyMDEntryTime; // copy flag
 	bool							AllowMDEntryTime;
-	const UINT							MDEntryTimePresenceIndex = PRESENCE_MAP_INDEX2;
+	const UINT64							MDEntryTimePresenceIndex = PRESENCE_MAP_INDEX2;
 	UINT32							OrigTime;			// id=9412  presence=optional    copy
 	bool							CopyOrigTime; // copy flag
 	bool							AllowOrigTime;
-	const UINT							OrigTimePresenceIndex = PRESENCE_MAP_INDEX3;
+	const UINT64							OrigTimePresenceIndex = PRESENCE_MAP_INDEX3;
 	Decimal							MDEntryPx;			// id=270  presence=optional    copy
 	bool							CopyMDEntryPx; // copy flag
 	bool							AllowMDEntryPx;
-	const UINT							MDEntryPxPresenceIndex = PRESENCE_MAP_INDEX4;
+	const UINT64							MDEntryPxPresenceIndex = PRESENCE_MAP_INDEX4;
 	Decimal							MDEntrySize;			// id=271  presence=optional    copy
 	bool							CopyMDEntrySize; // copy flag
 	bool							AllowMDEntrySize;
-	const UINT							MDEntrySizePresenceIndex = PRESENCE_MAP_INDEX5;
+	const UINT64							MDEntrySizePresenceIndex = PRESENCE_MAP_INDEX5;
 	Decimal							Yield;			// id=236  presence=optional    copy
 	bool							CopyYield; // copy flag
 	bool							AllowYield;
-	const UINT							YieldPresenceIndex = PRESENCE_MAP_INDEX6;
+	const UINT64							YieldPresenceIndex = PRESENCE_MAP_INDEX6;
 	char*							OrderStatus;			// id=10505  presence=optional    copy
 	int							OrderStatusLength;
 	bool							CopyOrderStatus; // copy flag
 	bool							AllowOrderStatus;
-	const UINT							OrderStatusPresenceIndex = PRESENCE_MAP_INDEX7;
+	const UINT64							OrderStatusPresenceIndex = PRESENCE_MAP_INDEX7;
 	char*							OrdType;			// id=40  presence=optional    copy
 	int							OrdTypeLength;
 	bool							CopyOrdType; // copy flag
 	bool							AllowOrdType;
-	const UINT							OrdTypePresenceIndex = PRESENCE_MAP_INDEX8;
+	const UINT64							OrdTypePresenceIndex = PRESENCE_MAP_INDEX8;
 	Decimal							TotalVolume;			// id=5791  presence=optional    copy
 	bool							CopyTotalVolume; // copy flag
 	bool							AllowTotalVolume;
-	const UINT							TotalVolumePresenceIndex = PRESENCE_MAP_INDEX9;
+	const UINT64							TotalVolumePresenceIndex = PRESENCE_MAP_INDEX9;
 	char*							TradingSessionSubID;			// id=625  presence=optional    copy
 	int							TradingSessionSubIDLength;
 	bool							CopyTradingSessionSubID; // copy flag
 	bool							AllowTradingSessionSubID;
-	const UINT							TradingSessionSubIDPresenceIndex = PRESENCE_MAP_INDEX10;
+	const UINT64							TradingSessionSubIDPresenceIndex = PRESENCE_MAP_INDEX10;
 	UINT32							MDUpdateAction;			// id=279  presence=optional  
 	bool							AllowMDUpdateAction;
 	char*							Symbol;			// id=55  presence=optional    copy
 	int							SymbolLength;
 	bool							CopySymbol; // copy flag
 	bool							AllowSymbol;
-	const UINT							SymbolPresenceIndex = PRESENCE_MAP_INDEX1;
+	const UINT64							SymbolPresenceIndex = PRESENCE_MAP_INDEX1;
 	INT32							RptSeq;			// id=83  presence=optional  
 	bool							AllowRptSeq;
 	char*							TradingSessionID;			// id=336  presence=optional    copy
 	int							TradingSessionIDLength;
 	bool							CopyTradingSessionID; // copy flag
 	bool							AllowTradingSessionID;
-	const UINT							TradingSessionIDPresenceIndex = PRESENCE_MAP_INDEX11;
+	const UINT64							TradingSessionIDPresenceIndex = PRESENCE_MAP_INDEX11;
 
 	FastOLSFONDItemInfo(){
 		this->Used = false;
@@ -790,56 +790,56 @@ public:
 	int							MDEntryTypeLength;
 	bool							CopyMDEntryType; // copy flag
 	bool							AllowMDEntryType;
-	const UINT							MDEntryTypePresenceIndex = PRESENCE_MAP_INDEX0;
+	const UINT64							MDEntryTypePresenceIndex = PRESENCE_MAP_INDEX0;
 	char*							MDEntryID;			// id=278  presence=optional  
 	int							MDEntryIDLength;
 	bool							AllowMDEntryID;
 	UINT32							MDEntryDate;			// id=272  presence=optional    copy
 	bool							CopyMDEntryDate; // copy flag
 	bool							AllowMDEntryDate;
-	const UINT							MDEntryDatePresenceIndex = PRESENCE_MAP_INDEX1;
+	const UINT64							MDEntryDatePresenceIndex = PRESENCE_MAP_INDEX1;
 	UINT32							MDEntryTime;			// id=273  presence=optional    copy
 	bool							CopyMDEntryTime; // copy flag
 	bool							AllowMDEntryTime;
-	const UINT							MDEntryTimePresenceIndex = PRESENCE_MAP_INDEX2;
+	const UINT64							MDEntryTimePresenceIndex = PRESENCE_MAP_INDEX2;
 	UINT32							OrigTime;			// id=9412  presence=optional    copy
 	bool							CopyOrigTime; // copy flag
 	bool							AllowOrigTime;
-	const UINT							OrigTimePresenceIndex = PRESENCE_MAP_INDEX3;
+	const UINT64							OrigTimePresenceIndex = PRESENCE_MAP_INDEX3;
 	Decimal							MDEntryPx;			// id=270  presence=optional    copy
 	bool							CopyMDEntryPx; // copy flag
 	bool							AllowMDEntryPx;
-	const UINT							MDEntryPxPresenceIndex = PRESENCE_MAP_INDEX4;
+	const UINT64							MDEntryPxPresenceIndex = PRESENCE_MAP_INDEX4;
 	Decimal							MDEntrySize;			// id=271  presence=optional    copy
 	bool							CopyMDEntrySize; // copy flag
 	bool							AllowMDEntrySize;
-	const UINT							MDEntrySizePresenceIndex = PRESENCE_MAP_INDEX5;
+	const UINT64							MDEntrySizePresenceIndex = PRESENCE_MAP_INDEX5;
 	char*							OrderStatus;			// id=10505  presence=optional    copy
 	int							OrderStatusLength;
 	bool							CopyOrderStatus; // copy flag
 	bool							AllowOrderStatus;
-	const UINT							OrderStatusPresenceIndex = PRESENCE_MAP_INDEX6;
+	const UINT64							OrderStatusPresenceIndex = PRESENCE_MAP_INDEX6;
 	char*							TradingSessionSubID;			// id=625  presence=optional    copy
 	int							TradingSessionSubIDLength;
 	bool							CopyTradingSessionSubID; // copy flag
 	bool							AllowTradingSessionSubID;
-	const UINT							TradingSessionSubIDPresenceIndex = PRESENCE_MAP_INDEX7;
+	const UINT64							TradingSessionSubIDPresenceIndex = PRESENCE_MAP_INDEX7;
 	UINT32							MDUpdateAction;			// id=279  presence=optional    copy
 	bool							CopyMDUpdateAction; // copy flag
 	bool							AllowMDUpdateAction;
-	const UINT							MDUpdateActionPresenceIndex = PRESENCE_MAP_INDEX0;
+	const UINT64							MDUpdateActionPresenceIndex = PRESENCE_MAP_INDEX0;
 	char*							Symbol;			// id=55  presence=optional    copy
 	int							SymbolLength;
 	bool							CopySymbol; // copy flag
 	bool							AllowSymbol;
-	const UINT							SymbolPresenceIndex = PRESENCE_MAP_INDEX2;
+	const UINT64							SymbolPresenceIndex = PRESENCE_MAP_INDEX2;
 	INT32							RptSeq;			// id=83  presence=optional  
 	bool							AllowRptSeq;
 	char*							TradingSessionID;			// id=336  presence=optional    copy
 	int							TradingSessionIDLength;
 	bool							CopyTradingSessionID; // copy flag
 	bool							AllowTradingSessionID;
-	const UINT							TradingSessionIDPresenceIndex = PRESENCE_MAP_INDEX9;
+	const UINT64							TradingSessionIDPresenceIndex = PRESENCE_MAP_INDEX9;
 
 	FastOLSCURRItemInfo(){
 		this->Used = false;
@@ -974,79 +974,79 @@ public:
 	UINT32							MDEntryDate;			// id=272  presence=optional    copy
 	bool							CopyMDEntryDate; // copy flag
 	bool							AllowMDEntryDate;
-	const UINT							MDEntryDatePresenceIndex = PRESENCE_MAP_INDEX0;
+	const UINT64							MDEntryDatePresenceIndex = PRESENCE_MAP_INDEX0;
 	UINT32							MDEntryTime;			// id=273  presence=optional    copy
 	bool							CopyMDEntryTime; // copy flag
 	bool							AllowMDEntryTime;
-	const UINT							MDEntryTimePresenceIndex = PRESENCE_MAP_INDEX1;
+	const UINT64							MDEntryTimePresenceIndex = PRESENCE_MAP_INDEX1;
 	UINT32							OrigTime;			// id=9412  presence=optional    copy
 	bool							CopyOrigTime; // copy flag
 	bool							AllowOrigTime;
-	const UINT							OrigTimePresenceIndex = PRESENCE_MAP_INDEX2;
+	const UINT64							OrigTimePresenceIndex = PRESENCE_MAP_INDEX2;
 	char*							OrderSide;			// id=10504  presence=optional    copy
 	int							OrderSideLength;
 	bool							CopyOrderSide; // copy flag
 	bool							AllowOrderSide;
-	const UINT							OrderSidePresenceIndex = PRESENCE_MAP_INDEX3;
+	const UINT64							OrderSidePresenceIndex = PRESENCE_MAP_INDEX3;
 	Decimal							MDEntryPx;			// id=270  presence=optional    copy
 	bool							CopyMDEntryPx; // copy flag
 	bool							AllowMDEntryPx;
-	const UINT							MDEntryPxPresenceIndex = PRESENCE_MAP_INDEX4;
+	const UINT64							MDEntryPxPresenceIndex = PRESENCE_MAP_INDEX4;
 	Decimal							MDEntrySize;			// id=271  presence=optional    copy
 	bool							CopyMDEntrySize; // copy flag
 	bool							AllowMDEntrySize;
-	const UINT							MDEntrySizePresenceIndex = PRESENCE_MAP_INDEX5;
+	const UINT64							MDEntrySizePresenceIndex = PRESENCE_MAP_INDEX5;
 	Decimal							AccruedInterestAmt;			// id=5384  presence=optional    copy
 	bool							CopyAccruedInterestAmt; // copy flag
 	bool							AllowAccruedInterestAmt;
-	const UINT							AccruedInterestAmtPresenceIndex = PRESENCE_MAP_INDEX6;
+	const UINT64							AccruedInterestAmtPresenceIndex = PRESENCE_MAP_INDEX6;
 	Decimal							TradeValue;			// id=6143  presence=optional    copy
 	bool							CopyTradeValue; // copy flag
 	bool							AllowTradeValue;
-	const UINT							TradeValuePresenceIndex = PRESENCE_MAP_INDEX7;
+	const UINT64							TradeValuePresenceIndex = PRESENCE_MAP_INDEX7;
 	Decimal							Yield;			// id=236  presence=optional    copy
 	bool							CopyYield; // copy flag
 	bool							AllowYield;
-	const UINT							YieldPresenceIndex = PRESENCE_MAP_INDEX8;
+	const UINT64							YieldPresenceIndex = PRESENCE_MAP_INDEX8;
 	UINT32							SettlDate;			// id=64  presence=optional    copy
 	bool							CopySettlDate; // copy flag
 	bool							AllowSettlDate;
-	const UINT							SettlDatePresenceIndex = PRESENCE_MAP_INDEX9;
+	const UINT64							SettlDatePresenceIndex = PRESENCE_MAP_INDEX9;
 	char*							SettleType;			// id=5459  presence=optional    copy
 	int							SettleTypeLength;
 	bool							CopySettleType; // copy flag
 	bool							AllowSettleType;
-	const UINT							SettleTypePresenceIndex = PRESENCE_MAP_INDEX10;
+	const UINT64							SettleTypePresenceIndex = PRESENCE_MAP_INDEX10;
 	Decimal							Price;			// id=44  presence=optional    copy
 	bool							CopyPrice; // copy flag
 	bool							AllowPrice;
-	const UINT							PricePresenceIndex = PRESENCE_MAP_INDEX11;
+	const UINT64							PricePresenceIndex = PRESENCE_MAP_INDEX11;
 	INT32							PriceType;			// id=423  presence=optional    copy
 	bool							CopyPriceType; // copy flag
 	bool							AllowPriceType;
-	const UINT							PriceTypePresenceIndex = PRESENCE_MAP_INDEX12;
+	const UINT64							PriceTypePresenceIndex = PRESENCE_MAP_INDEX12;
 	Decimal							RepoToPx;			// id=5677  presence=optional    copy
 	bool							CopyRepoToPx; // copy flag
 	bool							AllowRepoToPx;
-	const UINT							RepoToPxPresenceIndex = PRESENCE_MAP_INDEX13;
+	const UINT64							RepoToPxPresenceIndex = PRESENCE_MAP_INDEX13;
 	Decimal							BuyBackPx;			// id=5558  presence=optional    copy
 	bool							CopyBuyBackPx; // copy flag
 	bool							AllowBuyBackPx;
-	const UINT							BuyBackPxPresenceIndex = PRESENCE_MAP_INDEX14;
+	const UINT64							BuyBackPxPresenceIndex = PRESENCE_MAP_INDEX14;
 	UINT32							BuyBackDate;			// id=5559  presence=optional    copy
 	bool							CopyBuyBackDate; // copy flag
 	bool							AllowBuyBackDate;
-	const UINT							BuyBackDatePresenceIndex = PRESENCE_MAP_INDEX15;
+	const UINT64							BuyBackDatePresenceIndex = PRESENCE_MAP_INDEX15;
 	char*							TradingSessionSubID;			// id=625  presence=optional    copy
 	int							TradingSessionSubIDLength;
 	bool							CopyTradingSessionSubID; // copy flag
 	bool							AllowTradingSessionSubID;
-	const UINT							TradingSessionSubIDPresenceIndex = PRESENCE_MAP_INDEX16;
+	const UINT64							TradingSessionSubIDPresenceIndex = PRESENCE_MAP_INDEX16;
 	char*							RefOrderID;			// id=1080  presence=optional    copy
 	int							RefOrderIDLength;
 	bool							CopyRefOrderID; // copy flag
 	bool							AllowRefOrderID;
-	const UINT							RefOrderIDPresenceIndex = PRESENCE_MAP_INDEX17;
+	const UINT64							RefOrderIDPresenceIndex = PRESENCE_MAP_INDEX17;
 	UINT32							MDUpdateAction;			// id=279  presence=optional  
 	bool							AllowMDUpdateAction;
 	char*							Symbol;			// id=55  presence=optional  
@@ -1208,71 +1208,71 @@ public:
 	UINT32							MDEntryDate;			// id=272  presence=optional    copy
 	bool							CopyMDEntryDate; // copy flag
 	bool							AllowMDEntryDate;
-	const UINT							MDEntryDatePresenceIndex = PRESENCE_MAP_INDEX0;
+	const UINT64							MDEntryDatePresenceIndex = PRESENCE_MAP_INDEX0;
 	UINT32							MDEntryTime;			// id=273  presence=optional    copy
 	bool							CopyMDEntryTime; // copy flag
 	bool							AllowMDEntryTime;
-	const UINT							MDEntryTimePresenceIndex = PRESENCE_MAP_INDEX1;
+	const UINT64							MDEntryTimePresenceIndex = PRESENCE_MAP_INDEX1;
 	UINT32							OrigTime;			// id=9412  presence=optional    copy
 	bool							CopyOrigTime; // copy flag
 	bool							AllowOrigTime;
-	const UINT							OrigTimePresenceIndex = PRESENCE_MAP_INDEX2;
+	const UINT64							OrigTimePresenceIndex = PRESENCE_MAP_INDEX2;
 	char*							OrderSide;			// id=10504  presence=optional    copy
 	int							OrderSideLength;
 	bool							CopyOrderSide; // copy flag
 	bool							AllowOrderSide;
-	const UINT							OrderSidePresenceIndex = PRESENCE_MAP_INDEX3;
+	const UINT64							OrderSidePresenceIndex = PRESENCE_MAP_INDEX3;
 	Decimal							MDEntryPx;			// id=270  presence=optional    copy
 	bool							CopyMDEntryPx; // copy flag
 	bool							AllowMDEntryPx;
-	const UINT							MDEntryPxPresenceIndex = PRESENCE_MAP_INDEX4;
+	const UINT64							MDEntryPxPresenceIndex = PRESENCE_MAP_INDEX4;
 	Decimal							MDEntrySize;			// id=271  presence=optional    copy
 	bool							CopyMDEntrySize; // copy flag
 	bool							AllowMDEntrySize;
-	const UINT							MDEntrySizePresenceIndex = PRESENCE_MAP_INDEX5;
+	const UINT64							MDEntrySizePresenceIndex = PRESENCE_MAP_INDEX5;
 	Decimal							TradeValue;			// id=6143  presence=optional    copy
 	bool							CopyTradeValue; // copy flag
 	bool							AllowTradeValue;
-	const UINT							TradeValuePresenceIndex = PRESENCE_MAP_INDEX6;
+	const UINT64							TradeValuePresenceIndex = PRESENCE_MAP_INDEX6;
 	UINT32							SettlDate;			// id=64  presence=optional    copy
 	bool							CopySettlDate; // copy flag
 	bool							AllowSettlDate;
-	const UINT							SettlDatePresenceIndex = PRESENCE_MAP_INDEX7;
+	const UINT64							SettlDatePresenceIndex = PRESENCE_MAP_INDEX7;
 	char*							SettleType;			// id=5459  presence=optional    copy
 	int							SettleTypeLength;
 	bool							CopySettleType; // copy flag
 	bool							AllowSettleType;
-	const UINT							SettleTypePresenceIndex = PRESENCE_MAP_INDEX8;
+	const UINT64							SettleTypePresenceIndex = PRESENCE_MAP_INDEX8;
 	Decimal							Price;			// id=44  presence=optional    copy
 	bool							CopyPrice; // copy flag
 	bool							AllowPrice;
-	const UINT							PricePresenceIndex = PRESENCE_MAP_INDEX9;
+	const UINT64							PricePresenceIndex = PRESENCE_MAP_INDEX9;
 	INT32							PriceType;			// id=423  presence=optional    copy
 	bool							CopyPriceType; // copy flag
 	bool							AllowPriceType;
-	const UINT							PriceTypePresenceIndex = PRESENCE_MAP_INDEX10;
+	const UINT64							PriceTypePresenceIndex = PRESENCE_MAP_INDEX10;
 	Decimal							RepoToPx;			// id=5677  presence=optional    copy
 	bool							CopyRepoToPx; // copy flag
 	bool							AllowRepoToPx;
-	const UINT							RepoToPxPresenceIndex = PRESENCE_MAP_INDEX11;
+	const UINT64							RepoToPxPresenceIndex = PRESENCE_MAP_INDEX11;
 	Decimal							BuyBackPx;			// id=5558  presence=optional    copy
 	bool							CopyBuyBackPx; // copy flag
 	bool							AllowBuyBackPx;
-	const UINT							BuyBackPxPresenceIndex = PRESENCE_MAP_INDEX12;
+	const UINT64							BuyBackPxPresenceIndex = PRESENCE_MAP_INDEX12;
 	UINT32							BuyBackDate;			// id=5559  presence=optional    copy
 	bool							CopyBuyBackDate; // copy flag
 	bool							AllowBuyBackDate;
-	const UINT							BuyBackDatePresenceIndex = PRESENCE_MAP_INDEX13;
+	const UINT64							BuyBackDatePresenceIndex = PRESENCE_MAP_INDEX13;
 	char*							TradingSessionSubID;			// id=625  presence=optional    copy
 	int							TradingSessionSubIDLength;
 	bool							CopyTradingSessionSubID; // copy flag
 	bool							AllowTradingSessionSubID;
-	const UINT							TradingSessionSubIDPresenceIndex = PRESENCE_MAP_INDEX14;
+	const UINT64							TradingSessionSubIDPresenceIndex = PRESENCE_MAP_INDEX14;
 	char*							RefOrderID;			// id=1080  presence=optional    copy
 	int							RefOrderIDLength;
 	bool							CopyRefOrderID; // copy flag
 	bool							AllowRefOrderID;
-	const UINT							RefOrderIDPresenceIndex = PRESENCE_MAP_INDEX15;
+	const UINT64							RefOrderIDPresenceIndex = PRESENCE_MAP_INDEX15;
 	UINT32							MDUpdateAction;			// id=279  presence=optional  
 	bool							AllowMDUpdateAction;
 	char*							Symbol;			// id=55  presence=optional  

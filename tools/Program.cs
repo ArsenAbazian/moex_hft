@@ -309,7 +309,7 @@ namespace prebuild {
 			WriteLine(tabs + item.Name + " **" + itemInfo + " = " + si.InCodeValueName + "->" + Name(field) + ";");
 			WriteLine(tabs + "for(int i = 0; i < " + si.InCodeValueName + "->" + Name(field) + "Count; i++) {");
 			if(GetMaxPresenceBitCount(field) > 0) {
-				WriteLine(tabs + "\tWriteUInt64_Mandatory((*" + itemInfo + ")->PresenceMap); // Presence Map hack");
+				WriteLine(tabs + "\tWritePresenceMap((*" + itemInfo + ")->PresenceMap); // Presence Map hack");
 				WriteLine("");
 			}
 			foreach(XmlNode node in field.ChildNodes) {
