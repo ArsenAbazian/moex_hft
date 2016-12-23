@@ -420,42 +420,159 @@ public:
         this->Exponent = exponent;
         //this->Update();
     }
-    inline void CalcMantissaDigitCount() {
-        if(Mantissa > 99999) { // 6 digits and above
-            if(MantissaDigitCount > 9999999) { // 8 and above
-                if(MantissaDigitCount > 99999999999) { // 10 and above
-                    if(MantissaDigitCount < 10000000000)
+    inline void Set(Decimal *value) {
+        this->Mantissa = value->Mantissa;
+        this->Exponent = value->Exponent;
+    }
+    inline int CalcMantissaDigitCount() {
+        INT64 m = Mantissa;
+        if(m > 99999) { // 6 digits and above
+            if(m > 9999999) { // 8 and above
+                if(m > 99999999999) { // 10 and above
+                    if(m < 10000000000)
                         MantissaDigitCount = 10;
                     throw;
                 }
                 else {
-                    if(MantissaDigitCount > 99999999)
+                    if(m > 99999999)
                         MantissaDigitCount = 9;
                     else
                         MantissaDigitCount = 8;
                 }
             }
             else {
-                if(MantissaDigitCount > 999999)
+                if(m > 999999)
                     MantissaDigitCount = 7;
                 else
                     MantissaDigitCount = 6;
             }
         }
         else {
-            if(Mantissa > 999) { // 4 digits and above
-                if(Mantissa > 9999)
+            if(m > 999) { // 4 digits and above
+                if(m > 9999)
                     MantissaDigitCount = 5;
                 else
                     MantissaDigitCount = 4;
             }
             else {
-                if(Mantissa > 99)
+                if(m > 99)
                     MantissaDigitCount = 3;
-                else if(Mantissa > 9)
+                else if(m > 9)
                     MantissaDigitCount = 2;
                 else
                     MantissaDigitCount = 1;
+            }
+        }
+        return MantissaDigitCount;
+    }
+    inline double DivOf10Func(int value) {
+        if(value > 4) {
+            if(value > 7) {
+                if(value > 8)
+                    return 0.000000001;  // 9
+                else
+                    return 0.00000001;   // 8
+            }
+            else {
+                if(value > 5) {
+                    if(value > 6)
+                        return 0.0000001;  // 7
+                    else
+                        return 0.000001;   // 6
+                }
+                else
+                    return 0.00001;  // 5
+            }
+        }
+        else {
+            if(value > 2) {
+                if(value > 3)
+                    return 0.0001;  // 4
+                else
+                    return 0.001;   // 3
+            }
+            else {
+                if(value > 1)
+                    return 0.01;  // 2
+                else {
+                    if(value == 1)
+                        return 0.1;  // 1
+                    return 1.0;  // 0
+                }
+            }
+        }
+    }
+    inline INT64 PowOf10Func(int value) {
+        if(value > 4) {
+            if(value > 7) {
+                if(value > 8)
+                    return 1000000000;  // 9
+                else
+                    return 100000000;   // 8
+            }
+            else {
+                if(value > 5) {
+                    if(value > 6)
+                        return 10000000;  // 7
+                    else
+                        return 1000000;   // 6
+                }
+                else
+                    return 100000;  // 5
+            }
+        }
+        else {
+            if(value > 2) {
+                if(value > 3)
+                    return 10000;  // 4
+                else
+                    return 1000;   // 3
+            }
+            else {
+                if(value > 1)
+                    return 100;  // 2
+                else {
+                    if(value == 1)
+                        return 10;  // 1
+                    return 1;  // 0
+                }
+            }
+        }
+    }
+    inline double MulOf10Func(int value) {
+        if(value > 4) {
+            if(value > 7) {
+                if(value > 8)
+                    return 1000000000.0;  // 9
+                else
+                    return 100000000.0;   // 8
+            }
+            else {
+                if(value > 5) {
+                    if(value > 6)
+                        return 10000000.0;  // 7
+                    else
+                        return 1000000.0;   // 6
+                }
+                else
+                    return 100000.0;  // 5
+            }
+        }
+        else {
+            if(value > 2) {
+                if(value > 3)
+                    return 10000.0;  // 4
+                else
+                    return 1000.0;   // 3
+            }
+            else {
+                if(value > 1)
+                    return 100.0;  // 2
+                else {
+                    if(value == 1)
+                        return 10.0;  // 1
+                    return 1.0;  // 0
+                }
             }
         }
     }
@@ -466,10 +583,21 @@ public:
             Value = ((double)Mantissa) * MulOf10[Exponent];
         return Value;
     }
+    inline double CalculateFunc() {
+        if(Exponent < 0)
+            Value = ((double)Mantissa) * DivOf10Func(-Exponent);
+        else
+            Value = ((double)Mantissa) * MulOf10Func(Exponent);
+        return Value;
+    }
     inline double Calculate(INT64 mantissa, INT32 exponent) {
         if(Exponent < 0)
             return ((double)mantissa) * DivOf10[-exponent];
         return ((double)mantissa) * MulOf10[exponent];
+    }
+    inline INT64 CalculatePositiveInteger() {
+        int mul = PowOf10[this->Exponent];
+        return this->Mantissa * mul;
     }
     inline bool Less(Decimal *value) {
         return this->Calculate() < value->Calculate();
