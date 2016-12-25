@@ -7,7 +7,6 @@
 #include "Lib/AutoAllocatePointerList.h"
 #include "Lib/StringIdComparer.h"
 #include "MarketData/MarketDataTable.h"
-#include "MarketData/OrderBookInfo.h"
 #include "MarketData/OrderInfo.h"
 #include "MarketData/TradeInfo.h"
 #include "MarketData/StatisticInfo.h"
@@ -96,8 +95,6 @@ public:
     }
 };
 
-class OrderBookTesterFond;
-class OrderBookTesterCurr;
 class OrderTesterFond;
 class OrderTesterCurr;
 class TradeTesterFond;
@@ -107,8 +104,6 @@ class StatisticsTesterFond;
 class StatisticsTesterCurr;
 
 class FeedConnection {
-	friend class OrderBookTesterFond;
-    friend class OrderBookTesterCurr;
     friend class OrderTesterFond;
     friend class OrderTesterCurr;
 	friend class TradeTesterFond;
@@ -192,8 +187,6 @@ protected:
     bool                                        m_shouldReceiveAnswer;
 
 protected:
-	MarketDataTable<OrderBookInfo, FastGenericInfo, FastGenericItemInfo>		*m_orderBookTableFond;
-	MarketDataTable<OrderBookInfo,FastGenericInfo, FastGenericItemInfo>         *m_orderBookTableCurr;
 	MarketDataTable<OrderInfo, FastOLSFONDInfo, FastOLSFONDItemInfo>			*m_orderTableFond;
 	MarketDataTable<OrderInfo, FastOLSCURRInfo, FastOLSCURRItemInfo>			*m_orderTableCurr;
 	MarketDataTable<TradeInfo, FastTLSFONDInfo, FastTLSFONDItemInfo>			*m_tradeTableFond;
@@ -253,11 +246,7 @@ private:
     }
 
     inline bool HasQueueEntries() {
-        if(this->m_orderBookTableFond != 0)
-            return this->m_orderBookTableFond->HasQueueEntries();
-        else if(this->m_orderBookTableCurr != 0)
-            return this->m_orderBookTableCurr->HasQueueEntries();
-        else if(this->m_orderTableFond != 0)
+        if(this->m_orderTableFond != 0)
             return this->m_orderTableFond->HasQueueEntries();
         else if(this->m_orderTableCurr != 0)
             return this->m_orderTableCurr->HasQueueEntries();
@@ -291,64 +280,6 @@ private:
         return true;
     }
 
-    inline bool ApplySnapshot_OBS_FOND() {
-        this->PrepareDecodeSnapshotMessage(this->m_snapshotRouteFirst);
-        FastGenericInfo *info = (FastGenericInfo *) this->m_fastProtocolManager->DecodeGeneric();
-        this->m_incremental->OrderBookFond()->ObtainSnapshotItem(info);
-        if(this->m_incremental->OrderBookFond()->CheckProcessIfSessionInActualState(info)) {
-            info->ReleaseUnused();
-            return true;
-        }
-        if(this->m_incremental->OrderBookFond()->CheckProcessNullSnapshot(info)) {
-            info->ReleaseUnused();
-            return true;
-        }
-        if(!this->m_incremental->OrderBookFond()->ShouldProcessSnapshot(info)) {
-            info->ReleaseUnused();
-            return true;
-        }
-        this->m_incremental->OrderBookFond()->StartProcessSnapshot(info);
-        this->m_incremental->OrderBookFond()->ProcessSnapshot(info);
-        info->ReleaseUnused();
-        for(int i = this->m_snapshotRouteFirst + 1; i <= this->m_snapshotLastFragment; i++) {
-            if(!this->PrepareDecodeSnapshotMessage(i))
-                continue;
-            info = (FastGenericInfo *)this->m_fastProtocolManager->DecodeGeneric();
-            this->m_incremental->OrderBookFond()->ProcessSnapshot(info);
-            info->ReleaseUnused();
-        }
-        this->m_incremental->OrderBookFond()->EndProcessSnapshot();
-        return true;
-    }
-    inline bool ApplySnapshot_OBS_CURR() {
-        this->PrepareDecodeSnapshotMessage(this->m_snapshotRouteFirst);
-        FastGenericInfo *info = (FastGenericInfo *) this->m_fastProtocolManager->DecodeGeneric();
-         this->m_incremental->OrderBookCurr()->ObtainSnapshotItem(info);
-         if(this->m_incremental->OrderBookCurr()->CheckProcessIfSessionInActualState(info)) {
-             info->ReleaseUnused();
-             return true;
-         }
-        if(this->m_incremental->OrderBookCurr()->CheckProcessNullSnapshot(info)) {
-            info->ReleaseUnused();
-            return true;
-        }
-        if(!this->m_incremental->OrderBookCurr()->ShouldProcessSnapshot(info)) {
-            info->ReleaseUnused();
-            return true;
-        }
-        this->m_incremental->OrderBookCurr()->StartProcessSnapshot(info);
-        this->m_incremental->OrderBookCurr()->ProcessSnapshot(info);
-        info->ReleaseUnused();
-        for(int i = this->m_snapshotRouteFirst + 1; i <= this->m_snapshotLastFragment; i++) {
-            if(!this->PrepareDecodeSnapshotMessage(i))
-                continue;
-            info = (FastGenericInfo *) this->m_fastProtocolManager->DecodeGeneric();
-            this->m_incremental->OrderBookCurr()->ProcessSnapshot(info);
-            info->ReleaseUnused();
-        }
-        this->m_incremental->OrderBookCurr()->EndProcessSnapshot();
-        return true;
-    }
     inline bool ApplySnapshot_OLS_FOND() {
         this->PrepareDecodeSnapshotMessage(this->m_snapshotRouteFirst);
         FastOLSFONDInfo *info = (FastOLSFONDInfo *) this->m_fastProtocolManager->DecodeOLSFOND();
@@ -559,14 +490,6 @@ private:
         return true;
     }
     inline void MarketTableEnterSnapshotMode() {
-        if(this->m_orderBookTableFond != 0) {
-            this->m_orderBookTableFond->EnterSnapshotMode();
-            return;
-        }
-        if(this->m_orderBookTableCurr != 0) {
-            this->m_orderBookTableCurr->EnterSnapshotMode();
-            return;
-        }
         if(this->m_orderTableFond != 0) {
             this->m_orderTableFond->EnterSnapshotMode();
             return;
@@ -593,10 +516,6 @@ private:
         }
     }
     inline int SymbolsToRecvSnapshotCount() {
-        if(this->m_orderBookTableFond != 0)
-            return this->m_orderBookTableFond->SymbolsToRecvSnapshotCount();
-        if(this->m_orderBookTableCurr != 0)
-            return this->m_orderBookTableCurr->SymbolsToRecvSnapshotCount();
         if(this->m_orderTableFond != 0)
             return this->m_orderTableFond->SymbolsToRecvSnapshotCount();
         if(this->m_orderTableCurr != 0)
@@ -612,14 +531,6 @@ private:
         return 0;
     }
     inline void MarketTableExitSnapshotMode() {
-        if(this->m_orderBookTableFond != 0) {
-            this->m_orderBookTableFond->ExitSnapshotMode();
-            return;
-        }
-        if(this->m_orderBookTableCurr != 0) {
-            this->m_orderBookTableCurr->ExitSnapshotMode();
-            return;
-        }
         if(this->m_orderTableFond != 0) {
             this->m_orderTableFond->ExitSnapshotMode();
             return;
@@ -758,10 +669,6 @@ private:
         switch(this->m_lastSnapshotInfo->TemplateId) {
             case FeedConnectionMessage::fmcFullRefresh_Generic:
                 switch(this->m_id) {
-                    case FeedConnectionId::fcidObsFond:
-                        return this->ApplySnapshot_OBS_FOND();
-                    case FeedConnectionId::fcidObsCurr:
-                        return this->ApplySnapshot_OBS_CURR();
                     case FeedConnectionId::fcidMssFond:
                         return this->ApplySnapshot_MSS_FOND();
                     case FeedConnectionId::fcidMssCurr:
@@ -963,13 +870,6 @@ private:
     }
 
 	FILE *obrLogFile;
-	inline bool OnIncrementalRefresh_OBR_FOND(FastGenericItemInfo *info) {
-        return this->m_orderBookTableFond->ProcessIncremental(info);
-	}
-
-	inline bool OnIncrementalRefresh_OBR_CURR(FastGenericItemInfo *info) {
-        return this->m_orderBookTableCurr->ProcessIncremental(info);
-	}
 
 	inline bool OnIncrementalRefresh_OLR_FOND(FastOLSFONDItemInfo *info) {
 		if(info->MDEntryType[0] == mdetEmptyBook) { // fatal!!!!!
@@ -999,24 +899,6 @@ private:
 
     inline bool OnIncrementalRefresh_MSR_CURR(FastGenericItemInfo *info) {
         return this->m_statTableCurr->ProcessIncremental(info);
-    }
-
-	inline bool OnIncrementalRefresh_OBR_FOND(FastIncrementalGenericInfo *info) {
-		bool res = true;
-		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
-			res |= this->OnIncrementalRefresh_OBR_FOND(info->GroupMDEntries[i]);
-		}
-        info->ReleaseUnused();
-		return res;
-	}
-
-    inline bool OnIncrementalRefresh_OBR_CURR(FastIncrementalGenericInfo *info) {
-        bool res = true;
-        for(int i = 0; i < info->GroupMDEntriesCount; i++) {
-            res |= this->OnIncrementalRefresh_OBR_CURR(info->GroupMDEntries[i]);
-        }
-        info->ReleaseUnused();
-        return res;
     }
 
     inline bool OnIncrementalRefresh_OLR_FOND(FastIncrementalOLRFONDInfo *info) {
@@ -1083,16 +965,6 @@ private:
 		switch(this->m_fastProtocolManager->TemplateId()) {
 			case FeedConnectionMessage::fcmHeartBeat:
                 return this->OnHearthBeatMessage((FastHeartbeatInfo*)this->m_fastProtocolManager->LastDecodeInfo());
-            case FeedConnectionMessage::fmcIncrementalRefresh_Generic:
-                switch(this->m_id) {
-                    case FeedConnectionId::fcidObrFond:
-                        return this->OnIncrementalRefresh_OBR_FOND((FastIncrementalGenericInfo*)this->m_fastProtocolManager->LastDecodeInfo());
-                    case FeedConnectionId::fcidObrCurr:
-                        return this->OnIncrementalRefresh_OBR_CURR((FastIncrementalGenericInfo*)this->m_fastProtocolManager->LastDecodeInfo());
-                    default:
-                        return false;
-                }
-                break;
 			case FeedConnectionMessage::fmcIncrementalRefresh_OLR_FOND:
 				return this->OnIncrementalRefresh_OLR_FOND((FastIncrementalOLRFONDInfo*)this->m_fastProtocolManager->LastDecodeInfo());
 			case FeedConnectionMessage::fmcIncrementalRefresh_OLR_CURR:
@@ -1164,9 +1036,7 @@ public:
 
     inline void FakeConnect(bool value) { this->m_fakeConnect = value; }
     inline int LastMsgSeqNumProcessed() { return this->m_lastMsgSeqNumProcessed; }
-	inline MarketDataTable<OrderBookInfo, FastGenericInfo, FastGenericItemInfo> *OrderBookFond() { return this->m_orderBookTableFond; }
-	inline MarketDataTable<OrderBookInfo, FastGenericInfo, FastGenericItemInfo> *OrderBookCurr() { return this->m_orderBookTableCurr; }
-	inline MarketDataTable<OrderInfo, FastOLSFONDInfo, FastOLSFONDItemInfo> *OrderFond() { return this->m_orderTableFond; }
+    inline MarketDataTable<OrderInfo, FastOLSFONDInfo, FastOLSFONDItemInfo> *OrderFond() { return this->m_orderTableFond; }
 	inline MarketDataTable<OrderInfo, FastOLSCURRInfo, FastOLSCURRItemInfo> *OrderCurr() { return this->m_orderTableCurr; }
 	inline MarketDataTable<TradeInfo, FastTLSFONDInfo, FastTLSFONDItemInfo> *TradeFond() { return this->m_tradeTableFond; }
 	inline MarketDataTable<TradeInfo, FastTLSCURRInfo, FastTLSCURRItemInfo> *TradeCurr() { return this->m_tradeTableCurr; }
@@ -1341,51 +1211,6 @@ public:
     }
 };
 
-class FeedConnection_CURR_OBR : public FeedConnection {
-public:
-	FeedConnection_CURR_OBR(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
-		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
-		this->SetType(FeedConnectionType::Incremental);
-		this->m_orderBookTableCurr = new MarketDataTable<OrderBookInfo, FastGenericInfo, FastGenericItemInfo>();
-        this->m_id = FeedConnectionId::fcidObrCurr;
-    }
-	FeedConnection_CURR_OBR() : FeedConnection() {
-		this->m_orderBookTableCurr = new MarketDataTable<OrderBookInfo, FastGenericInfo, FastGenericItemInfo>();
-        this->SetType(FeedConnectionType::Incremental);
-        this->m_id = FeedConnectionId::fcidObrCurr;
-	}
-	~FeedConnection_CURR_OBR() {
-		delete this->m_orderBookTableCurr;
-	}
-	ISocketBufferProvider* CreateSocketBufferProvider() {
-		return new SocketBufferProvider(DefaultSocketBufferManager::Default,
-										RobotSettings::DefaultFeedConnectionSendBufferSize,
-										RobotSettings::DefaultFeedConnectionSendItemsCount,
-										RobotSettings::DefaultFeedConnectionRecvBufferSize,
-										RobotSettings::DefaultFeedConnectionRecvItemsCount);
-	}
-};
-
-class FeedConnection_CURR_OBS : public FeedConnection {
-public:
-	FeedConnection_CURR_OBS(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
-		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
-		this->SetType(FeedConnectionType::Snapshot);
-        this->m_id = FeedConnectionId::fcidObsCurr;
-    }
-	FeedConnection_CURR_OBS() : FeedConnection() {
-        this->SetType(FeedConnectionType::Snapshot);
-        this->m_id = FeedConnectionId::fcidObsCurr;
-    }
-	ISocketBufferProvider* CreateSocketBufferProvider() {
-		return new SocketBufferProvider(DefaultSocketBufferManager::Default,
-										RobotSettings::DefaultFeedConnectionSendBufferSize,
-										RobotSettings::DefaultFeedConnectionSendItemsCount,
-										RobotSettings::DefaultFeedConnectionRecvBufferSize,
-										RobotSettings::DefaultFeedConnectionRecvItemsCount);
-	}
-};
-
 class FeedConnection_CURR_MSR : public FeedConnection {
 public:
 	FeedConnection_CURR_MSR(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
@@ -1509,51 +1334,6 @@ public:
 	FeedConnection_CURR_TLS() : FeedConnection() {
         this->SetType(FeedConnectionType::Snapshot);
         this->m_id = FeedConnectionId::fcidTlsCurr;
-    }
-	ISocketBufferProvider* CreateSocketBufferProvider() {
-		return new SocketBufferProvider(DefaultSocketBufferManager::Default,
-										RobotSettings::DefaultFeedConnectionSendBufferSize,
-										RobotSettings::DefaultFeedConnectionSendItemsCount,
-										RobotSettings::DefaultFeedConnectionRecvBufferSize,
-										RobotSettings::DefaultFeedConnectionRecvItemsCount);
-	}
-};
-
-class FeedConnection_FOND_OBR : public FeedConnection {
-public:
-	FeedConnection_FOND_OBR(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
-		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
-		this->SetType(FeedConnectionType::Incremental);
-		this->m_orderBookTableFond = new MarketDataTable<OrderBookInfo, FastGenericInfo, FastGenericItemInfo>();
-        this->m_id = FeedConnectionId::fcidObrFond;
-    }
-	FeedConnection_FOND_OBR() : FeedConnection() {
-        this->SetType(FeedConnectionType::Incremental);
-		this->m_orderBookTableFond = new MarketDataTable<OrderBookInfo, FastGenericInfo, FastGenericItemInfo>();
-        this->m_id = FeedConnectionId::fcidObrFond;
-	}
-	~FeedConnection_FOND_OBR() {
-		delete this->m_orderBookTableFond;
-	}
-	ISocketBufferProvider* CreateSocketBufferProvider() {
-		return new SocketBufferProvider(DefaultSocketBufferManager::Default,
-										RobotSettings::DefaultFeedConnectionSendBufferSize,
-										RobotSettings::DefaultFeedConnectionSendItemsCount,
-										RobotSettings::DefaultFeedConnectionRecvBufferSize,
-										RobotSettings::DefaultFeedConnectionRecvItemsCount);
-	}
-};
-
-class FeedConnection_FOND_OBS : public FeedConnection {
-public:
-	FeedConnection_FOND_OBS(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
-		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
-		this->SetType(FeedConnectionType::Snapshot);
-        this->m_id = FeedConnectionId::fcidObsFond;
-    }
-	FeedConnection_FOND_OBS() : FeedConnection() {
-        this->SetType(FeedConnectionType::Snapshot);
-        this->m_id = FeedConnectionId::fcidObsFond;
     }
 	ISocketBufferProvider* CreateSocketBufferProvider() {
 		return new SocketBufferProvider(DefaultSocketBufferManager::Default,

@@ -6,8 +6,6 @@
 #include <inttypes.h>
 
 class FastProtocolManager;
-class OrderBookTesterFond;
-class OrderBookTesterCurr;
 class OrderTesterFond;
 class OrderTesterCurr;
 class TradeTesterFond;
@@ -27,8 +25,6 @@ typedef FastSnapshotInfo* (FastProtocolManager::*FastGetSnapshotInfoMethodPointe
 #pragma endregion
 
 class FastProtocolManager {
-	friend class OrderBookTesterFond;
-	friend class OrderBookTesterCurr;
 	friend class OrderTesterFond;
 	friend class OrderTesterCurr;
 	friend class TradeTesterFond;

@@ -9,8 +9,6 @@
 #include <stdio.h>
 
 class InstrumentDefinitionTester{
-    FeedConnection *obr;
-    FeedConnection *obs;
     FeedConnection *olr;
     FeedConnection *ols;
     FeedConnection *tlr;
@@ -21,14 +19,6 @@ class InstrumentDefinitionTester{
 
 public:
     InstrumentDefinitionTester() {
-        this->obr = new FeedConnection_FOND_OBR("OBR", "Refresh Incremental", 'I',
-                                                FeedConnectionProtocol::UDP_IP,
-                                                "10.50.129.200", "239.192.113.3", 9113,
-                                                "10.50.129.200", "239.192.113.131", 9313);
-        this->obs = new FeedConnection_FOND_OBS("OBS", "Full Refresh", 'I',
-                                                FeedConnectionProtocol::UDP_IP,
-                                                "10.50.129.200", "239.192.113.3", 9113,
-                                                "10.50.129.200", "239.192.113.131", 9313);
         this->olr = new FeedConnection_FOND_OLR("OLR", "Refresh Incremental", 'I',
                                                 FeedConnectionProtocol::UDP_IP,
                                                 "10.50.129.200", "239.192.113.3", 9113,
@@ -58,8 +48,6 @@ public:
                                                 "10.50.129.200", "239.192.113.3", 9113,
                                                 "10.50.129.200", "239.192.113.131", 9313);
 
-        this->idf->AddConnectionToRecvSymbol(this->obr);
-        this->idf->AddConnectionToRecvSymbol(this->obs);
         this->idf->AddConnectionToRecvSymbol(this->olr);
         this->idf->AddConnectionToRecvSymbol(this->ols);
         this->idf->AddConnectionToRecvSymbol(this->msr);
@@ -68,8 +56,6 @@ public:
         this->idf->AddConnectionToRecvSymbol(this->tls);
     }
     ~InstrumentDefinitionTester() {
-        delete this->obr;
-        delete this->obs;
         delete this->olr;
         delete this->ols;
         delete this->tlr;
@@ -81,10 +67,6 @@ public:
 
     void TestDefaults() {
         if(this->idf->ConnectionsToRecvSymbolsCount() != 8)
-            throw;
-        if(this->idf->ConnectionsToRecvSymbols()[0] != this->obr)
-            throw;
-        if(this->idf->ConnectionsToRecvSymbols()[1] != this->obs)
             throw;
         if(this->idf->ConnectionsToRecvSymbols()[2] != this->olr)
             throw;

@@ -32,6 +32,7 @@ public:
     }
     inline void Price(Decimal *price) {
         this->m_pricePtr->Set(price);
+        this->m_pricePtr->Calculate();
     }
     inline void Price(INT64 mantissa, INT32 exponent) {
         this->m_pricePtr->Mantissa = mantissa;
@@ -42,6 +43,7 @@ public:
     inline void Size(int size) {
         this->m_size = size;
     }
+    inline int Size() { return this->m_size; }
     inline void Size(Decimal *size) {
         int count = size->CalcMantissaDigitCount();
 

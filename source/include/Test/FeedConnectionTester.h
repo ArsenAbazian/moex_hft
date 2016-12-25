@@ -6,8 +6,6 @@
 #define HFT_ROBOT_FEEDCONNECTIONTESTER_H
 
 #include "InstrumentDefinitionTester.h"
-#include "OrderBookTesterFond.h"
-#include "OrderBookTesterCurr.h"
 #include "OrderTesterFond.h"
 #include "OrderTesterCurr.h"
 #include "TradeTesterFond.h"
@@ -123,10 +121,6 @@ public:
         LinkedPointer<TestFeedMessage> *ptr = messages->ListCore()->Start();
         LinkedPointer<TestFeedMessage> *end = messages->ListCore()->End();
 
-        FeedConnection_FOND_OBR *obr_fond = new FeedConnection_FOND_OBR();
-        FeedConnection_CURR_OBR *obr_curr = new FeedConnection_CURR_OBR();
-        FeedConnection_FOND_OBS *obs_fond = new FeedConnection_FOND_OBS();
-        FeedConnection_CURR_OBS *obs_curr = new FeedConnection_CURR_OBS();
         FeedConnection_FOND_OLR *olr_fond = new FeedConnection_FOND_OLR();
         FeedConnection_CURR_OLR *olr_curr = new FeedConnection_CURR_OLR();
         FeedConnection_FOND_OLS *ols_fond = new FeedConnection_FOND_OLS();
@@ -145,18 +139,6 @@ public:
                 case 2101:
                 case 2102:
                 case 2422:
-                case 2108:
-                    fc = obr_fond;
-                    break;
-                case 3512:
-                    fc = obr_curr;
-                    break;
-                case 2412:
-                    fc = obs_fond;
-                    break;
-                case 3502:
-                    fc = obs_curr;
-                    break;
                 case 2410:
                     fc = ols_fond;
                     break;
@@ -194,10 +176,6 @@ public:
         }
 
 
-        delete obr_fond;
-        delete obr_curr;
-        delete obs_fond;
-        delete obs_curr;
         delete olr_fond;
         delete olr_curr;
         delete ols_fond;
@@ -220,11 +198,6 @@ public:
         otFond.Test();
         OrderTesterCurr otCurr;
         otCurr.Test();
-
-        OrderBookTesterFond obtFond;
-        obtFond.Test();
-        OrderBookTesterCurr obtCurr;
-        obtCurr.Test();
 
         TradeTesterFond ttFond;
         ttFond.Test();

@@ -142,10 +142,6 @@ bool Robot::AddDefaultTestChannels() {
 
 FeedConnection* Robot::CreateConnectionCore(const char *feedChannelId, const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) {
     if (strcmp(feedChannelId, "CURR") == 0) { // CURR
-        if (strcmp(id, "OBR") == 0)
-            return new FeedConnection_CURR_OBR(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort);
-        if (strcmp(id, "OBS") == 0)
-            return new FeedConnection_CURR_OBS(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort);
         if (strcmp(id, "MSR") == 0)
             return new FeedConnection_CURR_MSR(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort);
         if (strcmp(id, "MSS") == 0)
@@ -162,10 +158,6 @@ FeedConnection* Robot::CreateConnectionCore(const char *feedChannelId, const cha
             return new FeedConnection_CURR_IDF(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort);
     }
     else { // FOND
-        if (strcmp(id, "OBR") == 0)
-            return new FeedConnection_FOND_OBR(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort);
-        if (strcmp(id, "OBS") == 0)
-            return new FeedConnection_FOND_OBS(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort);
         if (strcmp(id, "MSR") == 0)
             return new FeedConnection_FOND_MSR(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort);
         if (strcmp(id, "MSS") == 0)

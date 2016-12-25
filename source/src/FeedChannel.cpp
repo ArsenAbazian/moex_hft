@@ -11,8 +11,6 @@ FeedChannel::FeedChannel(const char *id, const char *name) {
 	this->m_senderCompId = 0;
 	this->m_password = 0;
 
-	this->orderBookIncremental = NULL;
-	this->orderBookSnapshot = NULL;
 	this->statisticsIncremental = NULL;
 	this->statisticsSnapshot = NULL;
 	this->ordersIncremental = NULL;
@@ -29,10 +27,6 @@ FeedChannel::~FeedChannel() {
 
 void FeedChannel::SetConnection(FeedConnection *conn) { 
 	conn->SetSenderCompId(this->m_senderCompId);
-	if (strcmp(conn->IdName(), "OBR") == 0)
-		this->orderBookIncremental = conn;
-	if (strcmp(conn->IdName(), "OBS") == 0)
-		this->orderBookSnapshot = conn;
 	if (strcmp(conn->IdName(), "MSR") == 0)
 		this->statisticsIncremental = conn;
 	if (strcmp(conn->IdName(), "MSS") == 0)
@@ -65,8 +59,6 @@ bool FeedChannel::Disconnect(FeedConnection *conn) {
 }
 
 bool FeedChannel::CheckConnections() {
-	if(this->orderBookIncremental->Type() != FeedConnectionType::Incremental)
-		return false;
 	if(this->ordersIncremental->Type() != FeedConnectionType::Incremental)
 		return false;
 	if(this->statisticsIncremental->Type() != FeedConnectionType::Incremental)
@@ -74,8 +66,6 @@ bool FeedChannel::CheckConnections() {
 	if(this->tradesIncremental->Type() != FeedConnectionType::Incremental)
 		return false;
 
-	if(this->orderBookSnapshot->Type() != FeedConnectionType::Snapshot)
-		return false;
 	if(this->ordersSnapshot->Type() != FeedConnectionType::Snapshot)
 		return false;
 	if(this->statisticsSnapshot->Type() != FeedConnectionType::Snapshot)
@@ -97,16 +87,11 @@ bool FeedChannel::Connect() {
 		return false;
 	}
 
-	this->orderBookIncremental->SetSnapshot(this->orderBookSnapshot);
 	this->statisticsIncremental->SetSnapshot(this->statisticsSnapshot);
 	this->tradesIncremental->SetSnapshot(this->tradesSnapshot);
 	this->ordersIncremental->SetSnapshot(this->ordersSnapshot);
 	//this->instrumentReplay->SetSnapshot(this->instrumentStatus);
 
-	/*if (!this->Connect(this->orderBookIncremental)) {
-		DefaultLogManager::Default->EndLog(false);
-		return false;
-	}*/
 	/*
 	if (!this->Connect(this->ordersIncremental)) {
 		DefaultLogManager::Default->EndLog(false);
@@ -127,10 +112,6 @@ bool FeedChannel::Connect() {
 	}
     */
     /*
-    if(!this->Connect(this->orderBookSnapshot)) {
-        DefaultLogManager::Default->EndLog(false);
-        return false;
-    }
     if(!this->Connect(this->statisticsSnapshot)) {
         DefaultLogManager::Default->EndLog(false);
         return false;
@@ -149,7 +130,6 @@ bool FeedChannel::Connect() {
     }
     */
 
-	//this->orderBookIncremental->Start();
 	//this->ordersIncremental->Start();
 	//this->tradesIncremental->Start();
 	this->statisticsIncremental->DoNotCheckIncrementalActuality(true);
@@ -158,7 +138,6 @@ bool FeedChannel::Connect() {
 	//this->instrumentStatus->Start();
 
 	// not needed....
-	//this->orderBookSnapshot->Start();
 	//this->statisticsSnapshot->Start();
 	//this->ordersSnapshot->Start();
 	//this->tradesSnapshot->Start();
@@ -173,8 +152,6 @@ bool FeedChannel::Disconnect() {
 
 	bool result = true;
 	
-	result &= this->Disconnect(this->orderBookIncremental);
-	result &= this->Disconnect(this->orderBookSnapshot);
 	result &= this->Disconnect(this->statisticsIncremental);
 	result &= this->Disconnect(this->statisticsSnapshot);
 	result &= this->Disconnect(this->ordersIncremental);

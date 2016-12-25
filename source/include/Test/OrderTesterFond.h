@@ -3394,12 +3394,799 @@ public:
         printf("OLR FOND TestInfoAndItemInfoUsageAndAllocationFond_Snap_6\n");
         TestInfoAndItemInfoUsageAndAllocationFond_Snap_6();
     }
+
+
+
+    void Test_OnIncrementalRefresh_OLR_FOND_Add_Aggregated() {
+        this->Clear();
+        this->TestDefaults();
+
+        FastIncrementalOLRFONDInfo *info = new FastIncrementalOLRFONDInfo;
+
+        FastOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
+        FastOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
+        FastOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
+        FastOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "e4", 4);
+
+        if(item4->Used)
+            throw;
+
+        info->GroupMDEntriesCount = 1;
+        info->GroupMDEntries[0] = item1;
+
+        this->incFond->OnIncrementalRefresh_OLR_FOND(info);
+
+        if(!item1->Used)
+            throw;
+        if(this->incFond->OrderFond()->UsedItemCount() != 1)
+            throw;
+        if(this->incFond->OrderFond()->SymbolsCount() != 1)
+            throw;
+        if(this->incFond->OrderFond()->Symbol(0)->Count() != 1)
+            throw;
+        OrderInfo<FastOLSFONDItemInfo> *obi = this->incFond->OrderFond()->GetItem("s1", "t1");
+        if(obi == 0)
+            throw;
+        if(obi->AggregatedBuyQuotes()->Count() != 1)
+            throw;
+        QuoteInfo *quote = obi->AggregatedBuyQuotes()->Item(0);
+        Decimal price(3, -2);
+        if(!quote->Price()->Equal(&price))
+            throw;
+        if(quote->Size() != 100)
+            throw;
+
+        info->GroupMDEntriesCount = 1;
+        info->GroupMDEntries[0] = item2;
+
+        this->incFond->OnIncrementalRefresh_OLR_FOND(info);
+
+        if(this->incFond->OrderFond()->UsedItemCount() != 1)
+            throw;
+        if(this->incFond->OrderFond()->SymbolsCount() != 1)
+            throw;
+        if(this->incFond->OrderFond()->Symbol(0)->Count() != 1)
+            throw;
+        obi = this->incFond->OrderFond()->GetItem("s1", "t1");
+        if(obi == 0)
+            throw;
+        if(obi->AggregatedBuyQuotes()->Count() != 2)
+            throw;
+        quote = obi->AggregatedBuyQuotes()->Start()->Data();
+        price.Set(4, -2);
+        if(!quote->Price()->Equal(&price))
+            throw;
+        if(quote->Size() != 100)
+            throw;
+
+        info->GroupMDEntriesCount = 1;
+        info->GroupMDEntries[0] = item3;
+
+        this->incFond->OnIncrementalRefresh_OLR_FOND(info);
+
+        if(this->incFond->OrderFond()->UsedItemCount() != 1)
+            throw;
+        if(this->incFond->OrderFond()->SymbolsCount() != 1)
+            throw;
+        if(this->incFond->OrderFond()->Symbol(0)->Count() != 1)
+            throw;
+        obi = this->incFond->OrderFond()->GetItem("s1", "t1");
+        if(obi == 0)
+            throw;
+        if(obi->AggregatedBuyQuotes()->Count() != 3)
+            throw;
+
+        quote = obi->AggregatedBuyQuotes()->Start()->Data();
+        price.Set(4, -2);
+        if(!quote->Price()->Equal(&price))
+            throw;
+        if(quote->Size() != 100)
+            throw;
+
+        quote = obi->AggregatedBuyQuotes()->Start()->Next()->Data();
+        price.Set(3, -2);
+        if(!quote->Price()->Equal(&price))
+            throw;
+        if(quote->Size() != 100)
+            throw;
+
+        quote = obi->AggregatedBuyQuotes()->End()->Data();
+        price.Set(2, -2);
+        if(!quote->Price()->Equal(&price))
+            throw;
+        if(quote->Size() != 100)
+            throw;
+
+        info->GroupMDEntriesCount = 1;
+        info->GroupMDEntries[0] = item4;
+
+        this->incFond->OnIncrementalRefresh_OLR_FOND(info);
+
+        if(this->incFond->OrderFond()->UsedItemCount() != 1)
+            throw;
+        if(this->incFond->OrderFond()->SymbolsCount() != 1)
+            throw;
+        if(this->incFond->OrderFond()->Symbol(0)->Count() != 1)
+            throw;
+        obi = this->incFond->OrderFond()->GetItem("s1", "t1");
+        if(obi == 0)
+            throw;
+        if(obi->AggregatedBuyQuotes()->Count() != 4)
+            throw;
+
+        quote = obi->AggregatedBuyQuotes()->Start()->Data();
+        price.Set(4, -2);
+        if(!quote->Price()->Equal(&price))
+            throw;
+        if(quote->Size() != 100)
+            throw;
+
+        quote = obi->AggregatedBuyQuotes()->Start()->Next()->Data();
+        price.Set(3, -2);
+        if(!quote->Price()->Equal(&price))
+            throw;
+        if(quote->Size() != 100)
+            throw;
+
+        quote = obi->AggregatedBuyQuotes()->Start()->Next()->Next()->Data();
+        price.Set(25, -3);
+        if(!quote->Price()->Equal(&price))
+            throw;
+        if(quote->Size() != 100)
+            throw;
+
+        quote = obi->AggregatedBuyQuotes()->End()->Data();
+        price.Set(2, -2);
+        if(!quote->Price()->Equal(&price))
+            throw;
+        if(quote->Size() != 100)
+            throw;
+    }
+
+    void Test_OnIncrementalRefresh_OLR_FOND_Remove_Aggregated() {
+        this->Clear();
+        this->TestDefaults();
+
+        FastIncrementalOLRFONDInfo *info = new FastIncrementalOLRFONDInfo;
+        FastOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
+        FastOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
+        FastOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
+        FastOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "e4", 4);
+
+        info->GroupMDEntriesCount = 4;
+        info->GroupMDEntries[0] = item1;
+        info->GroupMDEntries[1] = item2;
+        info->GroupMDEntries[2] = item3;
+        info->GroupMDEntries[3] = item4;
+
+        this->incFond->OnIncrementalRefresh_OLR_FOND(info);
+
+        if(item1->Allocator->Count() != 1)
+            throw;
+        if(item2->Allocator->Count() != 1)
+            throw;
+        if(item3->Allocator->Count() != 1)
+            throw;
+        if(item4->Allocator->Count() != 1)
+            throw;
+
+        OrderInfo<FastOLSFONDItemInfo> *ob = this->incFond->OrderFond()->GetItem("s1", "t1");
+        if(!ob->AggregatedBuyQuotes()->Item(0)->Price()->Equal(4, -2))
+            throw;
+        if(!ob->AggregatedBuyQuotes()->Item(1)->Price()->Equal(3, -2))
+            throw;
+        if(!ob->AggregatedBuyQuotes()->Item(2)->Price()->Equal(25, -3))
+            throw;
+        if(!ob->AggregatedBuyQuotes()->Item(3)->Price()->Equal(2, -2))
+            throw;
+
+        item1->MDUpdateAction = mduaDelete;
+        item2->MDUpdateAction = mduaDelete;
+        item3->MDUpdateAction = mduaDelete;
+        item4->MDUpdateAction = mduaDelete;
+
+        info->GroupMDEntriesCount = 1;
+        info->GroupMDEntries[0] = item4;
+        item4->RptSeq = 5;
+
+        this->incFond->OnIncrementalRefresh_OLR_FOND(info);
+        if(item4->Used)
+            throw;
+        if(item4->Allocator->Count() != 0)
+            throw;
+
+        if(this->incFond->OrderFond()->UsedItemCount() != 1)
+            throw;
+
+        OrderInfo<FastOLSFONDItemInfo> *obi = this->incFond->OrderFond()->GetItem("s1", "t1");
+        if(obi->AggregatedBuyQuotes()->Count() != 3)
+            throw;
+        if(!obi->AggregatedBuyQuotes()->Item(0)->Price()->Equal(4, -2))
+            throw;
+        if(!obi->AggregatedBuyQuotes()->Item(1)->Price()->Equal(3, -2))
+            throw;
+        if(!obi->AggregatedBuyQuotes()->Item(2)->Price()->Equal(2, -2))
+            throw;
+
+        info->GroupMDEntriesCount = 1;
+        info->GroupMDEntries[0] = item3;
+        item3->RptSeq = 6;
+
+        this->incFond->OnIncrementalRefresh_OLR_FOND(info);
+
+        if(this->incFond->OrderFond()->UsedItemCount() != 1)
+            throw;
+
+        obi = this->incFond->OrderFond()->GetItem("s1", "t1");
+        if(obi->AggregatedBuyQuotes()->Count() != 2)
+            throw;
+        if(!obi->AggregatedBuyQuotes()->Item(0)->Price()->Equal(4, -2))
+            throw;
+        if(!obi->AggregatedBuyQuotes()->Item(1)->Price()->Equal(3, -2))
+            throw;
+
+        info->GroupMDEntriesCount = 1;
+        info->GroupMDEntries[0] = item2;
+        item2->RptSeq = 7;
+
+        this->incFond->OnIncrementalRefresh_OLR_FOND(info);
+
+        if(this->incFond->OrderFond()->UsedItemCount() != 1)
+            throw;
+
+        obi = this->incFond->OrderFond()->GetItem("s1", "t1");
+        if(obi->AggregatedBuyQuotes()->Count() != 1)
+            throw;
+        if(!obi->AggregatedBuyQuotes()->Item(0)->Price()->Equal(3, -2))
+            throw;
+
+        info->GroupMDEntriesCount = 1;
+        info->GroupMDEntries[0] = item1;
+        item1->RptSeq = 8;
+
+        this->incFond->OnIncrementalRefresh_OLR_FOND(info);
+
+        if(this->incFond->OrderFond()->UsedItemCount() != 1)
+            throw;
+
+        obi = this->incFond->OrderFond()->GetItem("s1", "t1");
+        if(obi->AggregatedBuyQuotes()->Count() != 0)
+            throw;
+    }
+
+    void Test_OnIncrementalRefresh_OLR_FOND_Change_Aggregated() {
+        this->Clear();
+        this->TestDefaults();
+
+        FastIncrementalOLRFONDInfo *info = new FastIncrementalOLRFONDInfo;
+        FastOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
+        FastOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
+        FastOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
+        FastOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "e4", 4);
+
+        info->GroupMDEntriesCount = 4;
+        info->GroupMDEntries[0] = item1;
+        info->GroupMDEntries[1] = item2;
+        info->GroupMDEntries[2] = item3;
+        info->GroupMDEntries[3] = item4;
+
+        this->incFond->OnIncrementalRefresh_OLR_FOND(info);
+
+        OrderInfo<FastOLSFONDItemInfo> *obi2 = this->incFond->OrderFond()->GetItem("s1", "t1");
+        if(!obi2->AggregatedBuyQuotes()->Item(0)->Price()->Equal(4, -2))
+            throw;
+        if(!obi2->AggregatedBuyQuotes()->Item(1)->Price()->Equal(3, -2))
+            throw;
+        if(!obi2->AggregatedBuyQuotes()->Item(2)->Price()->Equal(25, -3))
+            throw;
+        if(!obi2->AggregatedBuyQuotes()->Item(3)->Price()->Equal(2, -2))
+            throw;
+
+        FastOLSFONDItemInfo *item5 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 24, -3, 1, 3, mduaChange, mdetBuyQuote, "e2", 5);
+
+        info->GroupMDEntriesCount = 1;
+        info->GroupMDEntries[0] = item5;
+        item5->RptSeq = 5;
+
+        this->incFond->OnIncrementalRefresh_OLR_FOND(info);
+
+        if(item2->Used || item2->Allocator->Count() != 0)
+            throw;
+        if(!item5->Used)
+            throw;
+        if(item5->Allocator->Count() != 1)
+            throw;
+
+        OrderInfo<FastOLSFONDItemInfo> *obi = this->incFond->OrderFond()->GetItem("s1", "t1");
+
+        QuoteInfo *qt1 = obi->AggregatedBuyQuotes()->Item(0);
+        QuoteInfo *qt2 = obi->AggregatedBuyQuotes()->Item(1);
+        QuoteInfo *qt3 = obi->AggregatedBuyQuotes()->Item(2);
+        QuoteInfo *qt4 = obi->AggregatedBuyQuotes()->Item(3);
+
+        if(this->incFond->OrderFond()->UsedItemCount() != 1)
+            throw;
+        if(obi->AggregatedBuyQuotes()->Count() != 4)
+            throw;
+        if(!qt1->Price()->Equal(3, -2))
+            throw;
+        if(!qt2->Price()->Equal(25, -3))
+            throw;
+        if(!qt3->Price()->Equal(24, -3))
+            throw;
+        if(!qt4->Price()->Equal(2, -2))
+            throw;
+    }
+
+    void Test_Clear_Aggregated() {
+        this->Clear();
+        this->TestDefaults();
+
+        FastIncrementalOLRFONDInfo *info = new FastIncrementalOLRFONDInfo;
+        FastOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
+        FastOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
+        FastOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
+        FastOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "e4", 4);
+
+        info->GroupMDEntriesCount = 4;
+        info->GroupMDEntries[0] = item1;
+        info->GroupMDEntries[1] = item2;
+        info->GroupMDEntries[2] = item3;
+        info->GroupMDEntries[3] = item4;
+
+        this->incFond->OnIncrementalRefresh_OLR_FOND(info);
+
+        this->incFond->OrderFond()->Clear();
+        if(item1->Used || item2->Used || item3->Used || item4->Used)
+            throw;
+        if(item1->Allocator->Count() != 0 ||
+           item2->Allocator->Count() != 0 ||
+           item3->Allocator->Count() != 0 ||
+           item4->Allocator->Count() != 0)
+            throw;
+        if(this->incFond->OrderFond()->UsedItemCount() != 0)
+            throw;
+
+        OrderInfo<FastOLSFONDItemInfo> *obi = this->incFond->OrderFond()->GetItem("s1", "t1");
+        if(obi->AggregatedBuyQuotes()->Count() != 0)
+            throw;
+    }
+
+    void Test_OnFullRefresh_OBS_FOND_Aggregated() {
+        this->Clear();
+        this->TestDefaults();
+
+        FastIncrementalOLRFONDInfo *info = new FastIncrementalOLRFONDInfo;
+        FastOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
+        FastOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
+        FastOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
+        FastOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "e4", 4);
+
+        info->GroupMDEntriesCount = 4;
+        info->GroupMDEntries[0] = item1;
+        info->GroupMDEntries[1] = item2;
+        info->GroupMDEntries[2] = item3;
+        info->GroupMDEntries[3] = item4;
+
+        this->incFond->OnIncrementalRefresh_OLR_FOND(info);
+
+        OrderInfo<FastOLSFONDItemInfo> *obi2 = this->incFond->OrderFond()->GetItem("s1", "t1");
+        if(obi2->AggregatedBuyQuotes()->Count() != 4)
+            throw;
+
+        FastOLSFONDInfo *info2 = this->m_helper->CreateOLSFondInfo("t1s2", "t1");
+        FastOLSFONDItemInfo *newItem1 = this->m_helper->CreateOLSFondItemInfo(7,-2, 1, 2, mdetBuyQuote, "e7");
+        FastOLSFONDItemInfo *newItem2 = this->m_helper->CreateOLSFondItemInfo(8,-2, 1, 2, mdetBuyQuote, "e8");
+        info2->RptSeq = 5;
+
+        info2->GroupMDEntriesCount = 2;
+        info2->GroupMDEntries[0] = newItem1;
+        info2->GroupMDEntries[1] = newItem2;
+
+        this->incFond->OrderFond()->ObtainSnapshotItem(info2);
+        this->incFond->OrderFond()->ProcessSnapshot(info2);
+
+        if(this->incFond->OrderFond()->UsedItemCount() != 2)
+            throw;
+
+        OrderInfo<FastOLSFONDItemInfo> *obi3 = this->incFond->OrderFond()->GetItem("s1", "t1");
+        if(obi3->AggregatedBuyQuotes()->Count() != 4)
+            throw;
+
+        OrderInfo<FastOLSFONDItemInfo> *obi = this->incFond->OrderFond()->GetItem("t1s2", 4, "t1", 2);
+        if(obi->AggregatedBuyQuotes()->Count() != 2)
+            throw;
+
+        QuoteInfo *qt1 = obi->AggregatedBuyQuotes()->Start()->Data();
+        QuoteInfo *qt2 = obi->AggregatedBuyQuotes()->Start()->Next()->Data();
+
+        if(!qt1->Price()->Equal(8, -2))
+            throw;
+        if(!qt2->Price()->Equal(7, -2))
+            throw;
+    }
+
+    void Test_OnIncrementalRefresh_OLR_FOND_Add_SellQuotes_Aggregated() {
+        this->Clear();
+        this->TestDefaults();
+
+        FastIncrementalOLRFONDInfo *info = new FastIncrementalOLRFONDInfo;
+
+        FastOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "e1", 1);
+        FastOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "e2", 2);
+        FastOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "e3", 3);
+        FastOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "e4", 4);
+
+        info->GroupMDEntriesCount = 1;
+        info->GroupMDEntries[0] = item1;
+
+        this->incFond->OnIncrementalRefresh_OLR_FOND(info);
+
+        if(this->incFond->OrderFond()->UsedItemCount() != 1)
+            throw;
+        if(this->incFond->OrderFond()->SymbolsCount() != 1)
+            throw;
+        if(this->incFond->OrderFond()->Symbol(0)->Count() != 1)
+            throw;
+        OrderInfo<FastOLSFONDItemInfo> *obi = this->incFond->OrderFond()->GetItem("s1", "t1");
+        if(obi == 0)
+            throw;
+        if(obi->AggregatedSellQuotes()->Count() != 1)
+            throw;
+        QuoteInfo *quote = obi->AggregatedSellQuotes()->Start()->Data();
+        if(!quote->Price()->Equal(3, -2))
+            throw;
+
+        info->GroupMDEntriesCount = 1;
+        info->GroupMDEntries[0] = item2;
+
+        this->incFond->OnIncrementalRefresh_OLR_FOND(info);
+
+        if(this->incFond->OrderFond()->UsedItemCount() != 1)
+            throw;
+        if(this->incFond->OrderFond()->SymbolsCount() != 1)
+            throw;
+        if(this->incFond->OrderFond()->Symbol(0)->Count() != 1)
+            throw;
+        obi = this->incFond->OrderFond()->GetItem("s1", "t1");
+        if(obi == 0)
+            throw;
+        if(obi->AggregatedSellQuotes()->Count() != 2)
+            throw;
+        quote = obi->AggregatedSellQuotes()->Start()->Data();
+        if(!quote->Price()->Equal(3, -2))
+            throw;
+
+        quote = obi->AggregatedSellQuotes()->Item(1);
+        if(!quote->Price()->Equal(4, -2))
+            throw;
+
+        info->GroupMDEntriesCount = 1;
+        info->GroupMDEntries[0] = item3;
+
+        this->incFond->OnIncrementalRefresh_OLR_FOND(info);
+
+        if(this->incFond->OrderFond()->UsedItemCount() != 1)
+            throw;
+        if(this->incFond->OrderFond()->SymbolsCount() != 1)
+            throw;
+        if(this->incFond->OrderFond()->Symbol(0)->Count() != 1)
+            throw;
+        obi = this->incFond->OrderFond()->GetItem("s1", "t1");
+        if(obi == 0)
+            throw;
+        if(obi->AggregatedSellQuotes()->Count() != 3)
+            throw;
+
+        quote = obi->AggregatedSellQuotes()->Start()->Data();
+        if(!quote->Price()->Equal(2, -2))
+            throw;
+
+        quote = obi->AggregatedSellQuotes()->Start()->Next()->Data();
+        if(!quote->Price()->Equal(3, -2))
+            throw;
+
+        quote = obi->AggregatedSellQuotes()->End()->Data();
+        if(!quote->Price()->Equal(4, -2))
+            throw;
+
+        info->GroupMDEntriesCount = 1;
+        info->GroupMDEntries[0] = item4;
+
+        this->incFond->OnIncrementalRefresh_OLR_FOND(info);
+
+        if(this->incFond->OrderFond()->UsedItemCount() != 1)
+            throw;
+        if(this->incFond->OrderFond()->SymbolsCount() != 1)
+            throw;
+        if(this->incFond->OrderFond()->Symbol(0)->Count() != 1)
+            throw;
+        obi = this->incFond->OrderFond()->GetItem("s1", "t1");
+        if(obi == 0)
+            throw;
+        if(obi->AggregatedSellQuotes()->Count() != 4)
+            throw;
+
+        quote = obi->AggregatedSellQuotes()->Start()->Data();
+        if(!quote->Price()->Equal(2, -2))
+            throw;
+
+        quote = obi->AggregatedSellQuotes()->Start()->Next()->Data();
+        if(!quote->Price()->Equal(25, -3))
+            throw;
+
+        quote = obi->AggregatedSellQuotes()->Start()->Next()->Next()->Data();
+        if(!quote->Price()->Equal(3, -2))
+            throw;
+
+        quote = obi->AggregatedSellQuotes()->End()->Data();
+        if(!quote->Price()->Equal(4, -2))
+            throw;
+    }
+
+    void Test_OnIncrementalRefresh_OLR_FOND_Remove_SellQuotes_Aggregated() {
+        this->Clear();
+        this->TestDefaults();
+
+        FastIncrementalOLRFONDInfo *info = new FastIncrementalOLRFONDInfo;
+        FastOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "e1", 1);
+        FastOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "e2", 2);
+        FastOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "e3", 3);
+        FastOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "e4", 4);
+
+        info->GroupMDEntriesCount = 4;
+        info->GroupMDEntries[0] = item1;
+        info->GroupMDEntries[1] = item2;
+        info->GroupMDEntries[2] = item3;
+        info->GroupMDEntries[3] = item4;
+
+        this->incFond->OnIncrementalRefresh_OLR_FOND(info);
+
+        item1->MDUpdateAction = mduaDelete;
+        item2->MDUpdateAction = mduaDelete;
+        item3->MDUpdateAction = mduaDelete;
+        item4->MDUpdateAction = mduaDelete;
+
+        info->GroupMDEntriesCount = 1;
+        info->GroupMDEntries[0] = item4;
+        item4->RptSeq = 5;
+
+        this->incFond->OnIncrementalRefresh_OLR_FOND(info);
+
+        if(this->incFond->OrderFond()->UsedItemCount() != 1)
+            throw;
+
+        OrderInfo<FastOLSFONDItemInfo> *obi = this->incFond->OrderFond()->GetItem("s1", "t1");
+        if(obi->AggregatedSellQuotes()->Count() != 3)
+            throw;
+
+        if(!obi->AggregatedSellQuotes()->Item(0)->Price()->Equal(2, -2))
+            throw;
+        if(!obi->AggregatedSellQuotes()->Item(1)->Price()->Equal(3, -2))
+            throw;
+        if(!obi->AggregatedSellQuotes()->Item(2)->Price()->Equal(4, -2))
+            throw;
+
+        info->GroupMDEntriesCount = 1;
+        info->GroupMDEntries[0] = item3;
+        item3->RptSeq = 6;
+
+        this->incFond->OnIncrementalRefresh_OLR_FOND(info);
+
+        if(this->incFond->OrderFond()->UsedItemCount() != 1)
+            throw;
+
+        obi = this->incFond->OrderFond()->GetItem("s1", "t1");
+        if(obi->AggregatedSellQuotes()->Count() != 2)
+            throw;
+        if(!obi->AggregatedSellQuotes()->Item(0)->Price()->Equal(3, -2))
+            throw;
+        if(!obi->AggregatedSellQuotes()->Item(1)->Price()->Equal(4, -2))
+            throw;
+
+        info->GroupMDEntriesCount = 1;
+        info->GroupMDEntries[0] = item2;
+        item2->RptSeq = 7;
+
+        this->incFond->OnIncrementalRefresh_OLR_FOND(info);
+
+        if(this->incFond->OrderFond()->UsedItemCount() != 1)
+            throw;
+
+        obi = this->incFond->OrderFond()->GetItem("s1", "t1");
+        if(obi->AggregatedSellQuotes()->Count() != 1)
+            throw;
+        if(!obi->AggregatedSellQuotes()->Item(0)->Price()->Equal(3, -2))
+            throw;
+
+        info->GroupMDEntriesCount = 1;
+        info->GroupMDEntries[0] = item1;
+        item1->RptSeq = 8;
+
+        this->incFond->OnIncrementalRefresh_OLR_FOND(info);
+
+        if(this->incFond->OrderFond()->UsedItemCount() != 1)
+            throw;
+
+        obi = this->incFond->OrderFond()->GetItem("s1", "t1");
+        if(obi->AggregatedSellQuotes()->Count() != 0)
+            throw;
+    }
+
+    void Test_OnIncrementalRefresh_OLR_FOND_Change_SellQuotes_Aggregated() {
+        this->Clear();
+        this->TestDefaults();
+
+        FastIncrementalOLRFONDInfo *info = new FastIncrementalOLRFONDInfo;
+        FastOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "e1", 1);
+        FastOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "e2", 2);
+        FastOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "e3", 3);
+        FastOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "e4", 4);
+
+        info->GroupMDEntriesCount = 4;
+        info->GroupMDEntries[0] = item1;
+        info->GroupMDEntries[1] = item2;
+        info->GroupMDEntries[2] = item3;
+        info->GroupMDEntries[3] = item4;
+
+        this->incFond->OnIncrementalRefresh_OLR_FOND(info);
+
+        OrderInfo<FastOLSFONDItemInfo> *obi2 = this->incFond->OrderFond()->GetItem("s1", "t1");
+        if(!obi2->AggregatedSellQuotes()->Item(0)->Price()->Equal(2, -2))
+            throw;
+        if(!obi2->AggregatedSellQuotes()->Item(1)->Price()->Equal(25, -3))
+            throw;
+        if(!obi2->AggregatedSellQuotes()->Item(2)->Price()->Equal(3, -2))
+            throw;
+        if(!obi2->AggregatedSellQuotes()->Item(3)->Price()->Equal(4, -2))
+            throw;
+
+        FastOLSFONDItemInfo *item5 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 24, -3, 1, 3, mduaChange, mdetSellQuote, "e2", 5);
+
+        info->GroupMDEntriesCount = 1;
+        info->GroupMDEntries[0] = item5;
+
+        this->incFond->OnIncrementalRefresh_OLR_FOND(info);
+
+        OrderInfo<FastOLSFONDItemInfo> *obi = this->incFond->OrderFond()->GetItem("s1", "t1");
+
+        QuoteInfo *qt1 = obi->AggregatedSellQuotes()->Item(0);
+        QuoteInfo *qt2 = obi->AggregatedSellQuotes()->Item(1);
+        QuoteInfo *qt3 = obi->AggregatedSellQuotes()->Item(2);
+        QuoteInfo *qt4 = obi->AggregatedSellQuotes()->Item(3);
+
+        if(this->incFond->OrderFond()->UsedItemCount() != 1)
+            throw;
+        if(obi->AggregatedSellQuotes()->Count() != 4)
+            throw;
+        if(!qt1->Price()->Equal(2, -2))
+            throw;
+        if(!qt2->Price()->Equal(24, -3))
+            throw;
+        if(!qt3->Price()->Equal(25, -3))
+            throw;
+        if(!qt4->Price()->Equal(3, -2))
+            throw;
+    }
+
+    void Test_Clear_SellQuotes_Aggregated() {
+        this->Clear();
+        this->TestDefaults();
+
+        FastIncrementalOLRFONDInfo *info = new FastIncrementalOLRFONDInfo;
+        FastOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "e1", 1);
+        FastOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "e2", 2);
+        FastOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "e3", 3);
+        FastOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "e4", 4);
+
+        info->GroupMDEntriesCount = 4;
+        info->GroupMDEntries[0] = item1;
+        info->GroupMDEntries[1] = item2;
+        info->GroupMDEntries[2] = item3;
+        info->GroupMDEntries[3] = item4;
+
+        this->incFond->OnIncrementalRefresh_OLR_FOND(info);
+
+        this->incFond->OrderFond()->Clear();
+        if(this->incFond->OrderFond()->UsedItemCount() != 0)
+            throw;
+
+        OrderInfo<FastOLSFONDItemInfo> *obi = this->incFond->OrderFond()->GetItem("s1", "t1");
+        if(obi->AggregatedSellQuotes()->Count() != 0)
+            throw;
+    }
+
+    void Test_OnFullRefresh_OBS_FOND_SellQuotes_Aggregated() {
+        this->Clear();
+        this->TestDefaults();
+
+        FastIncrementalOLRFONDInfo *info = new FastIncrementalOLRFONDInfo;
+        FastOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "e1", 1);
+        FastOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "e2", 2);
+        FastOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "e3", 3);
+        FastOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "e4", 4);
+
+        info->GroupMDEntriesCount = 4;
+        info->GroupMDEntries[0] = item1;
+        info->GroupMDEntries[1] = item2;
+        info->GroupMDEntries[2] = item3;
+        info->GroupMDEntries[3] = item4;
+
+        this->incFond->OnIncrementalRefresh_OLR_FOND(info);
+
+        FastOLSFONDInfo *info2 = this->m_helper->CreateOLSFondInfo("t1s2", "t1");
+        FastOLSFONDItemInfo *newItem1 = this->m_helper->CreateOLSFondItemInfo(7,-2, 1, 2, mdetSellQuote, "e7");
+        FastOLSFONDItemInfo *newItem2 = this->m_helper->CreateOLSFondItemInfo(8,-2, 1, 2, mdetSellQuote, "e8");
+
+        info2->GroupMDEntriesCount = 2;
+        info2->GroupMDEntries[0] = newItem1;
+        info2->GroupMDEntries[1] = newItem2;
+
+        this->incFond->OrderFond()->ObtainSnapshotItem(info2);
+        this->incFond->OrderFond()->ProcessSnapshot(info2);
+
+        if(this->incFond->OrderFond()->UsedItemCount() != 2)
+            throw;
+
+        OrderInfo<FastOLSFONDItemInfo> *obi3 = this->incFond->OrderFond()->GetItem("s1", "t1");
+        if(obi3->AggregatedSellQuotes()->Count() != 4)
+            throw;
+
+        OrderInfo<FastOLSFONDItemInfo> *obi = this->incFond->OrderFond()->GetItem("t1s2", 4, "t1", 2);
+        if(obi->AggregatedSellQuotes()->Count() != 2)
+            throw;
+
+        QuoteInfo *qt1 = obi->AggregatedSellQuotes()->Start()->Data();
+        QuoteInfo *qt2 = obi->AggregatedSellQuotes()->Start()->Next()->Data();
+
+        if(!qt1->Price()->Equal(7, -2))
+            throw;
+        if(!qt2->Price()->Equal(8, -2))
+            throw;
+    }
+
+    
+    void Test_OnIncrementalRefresh_OLR_FOND_Aggregated() {
+        printf("OLR FOND Test_OnIncrementalRefresh_OLR_FOND_Add_Aggregated\n");
+        Test_OnIncrementalRefresh_OLR_FOND_Add_Aggregated();
+        printf("OLR FOND Test_OnIncrementalRefresh_OLR_FOND_Remove_Aggregated\n");
+        Test_OnIncrementalRefresh_OLR_FOND_Remove_Aggregated();
+        printf("OLR FOND Test_OnIncrementalRefresh_OLR_FOND_Change_Aggregated\n");
+        Test_OnIncrementalRefresh_OLR_FOND_Change_Aggregated();
+        printf("OLR FOND Test_Clear_Aggregated\n");
+        Test_Clear();
+    }
+
+    void Test_OnIncrementalRefresh_OLR_FOND_SellQuotes_Aggregated() {
+        printf("OLR FOND Test_OnIncrementalRefresh_OLR_FOND_Add_SellQuotes_Aggregated\n");
+        Test_OnIncrementalRefresh_OLR_FOND_Add_SellQuotes_Aggregated();
+        printf("OLR FOND Test_OnIncrementalRefresh_OLR_FOND_Remove_SellQuotes_Aggregated\n");
+        Test_OnIncrementalRefresh_OLR_FOND_Remove_SellQuotes_Aggregated();
+        printf("OLR FOND Test_OnIncrementalRefresh_OLR_FOND_Change_SellQuotes_Aggregated\n");
+        Test_OnIncrementalRefresh_OLR_FOND_Change_SellQuotes_Aggregated();
+        printf("OLR FOND Test_Clear_SellQuotes_Aggregated\n");
+        Test_Clear_SellQuotes();
+    }
+
+    void Test_Aggregated() {
+        this->m_helper->SetFondMode();
+        printf("OLR FOND Test_OnIncrementalRefresh_OLR_FOND\n");
+        Test_OnIncrementalRefresh_OLR_FOND_Aggregated();
+        printf("OLR FOND Test_OnFullRefresh_OBS_FOND\n");
+        Test_OnFullRefresh_OBS_FOND_Aggregated();
+        printf("OLR FOND Test_OnIncrementalRefresh_OLR_FOND_SellQuotes\n");
+        Test_OnIncrementalRefresh_OLR_FOND_SellQuotes_Aggregated();
+        printf("OLR FOND Test_OnFullRefresh_OBS_FOND_SellQuotes\n");
+        Test_OnFullRefresh_OBS_FOND_SellQuotes_Aggregated();
+    }
+    
     
     void Test() {
         TestDefaults();
         TestStringIdComparer();
         TestInfoAndItemInfoUsageAndAllocationFond();
         Test_OLR_FOND();
+        Test_Aggregated();
         TestOrderTableItem();
         TestConnection();
     }

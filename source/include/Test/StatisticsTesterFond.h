@@ -2345,11 +2345,11 @@ public:
                      "obr entry s1 e1, obr entry s1 e2, obr entry s1 e3, obr entry s2 e1, obr entry s2 e2",
                      "",
                      30);
-        if(incFond->m_orderBookTableFond->UsedItemCount() != 2)
+        if(incFond->m_statTableFond->UsedItemCount() != 2)
             throw;
-        if(incFond->m_orderBookTableFond->Symbol(0)->Session(0)->EntriesQueue()->HasEntries())
+        if(incFond->m_statTableFond->Symbol(0)->Session(0)->EntriesQueue()->HasEntries())
             throw;
-        if(incFond->m_orderBookTableFond->Symbol(1)->Session(0)->EntriesQueue()->HasEntries())
+        if(incFond->m_statTableFond->Symbol(1)->Session(0)->EntriesQueue()->HasEntries())
             throw;
         if(incFond->StatisticFond()->SymbolsToRecvSnapshotCount() != 0)
             throw;
@@ -2366,11 +2366,11 @@ public:
                      "obr entry s1 e1, lost obr entry s1 e2, obr entry s1 e3, obr entry s2 e1, obr entry s2 e2",
                      "",
                      30);
-        if(incFond->m_orderBookTableFond->UsedItemCount() != 2)
+        if(incFond->m_statTableFond->UsedItemCount() != 2)
             throw;
-        if(!incFond->m_orderBookTableFond->Symbol(0)->Session(0)->EntriesQueue()->HasEntries())
+        if(!incFond->m_statTableFond->Symbol(0)->Session(0)->EntriesQueue()->HasEntries())
             throw;
-        if(incFond->m_orderBookTableFond->Symbol(1)->Session(0)->EntriesQueue()->HasEntries())
+        if(incFond->m_statTableFond->Symbol(1)->Session(0)->EntriesQueue()->HasEntries())
             throw;
         if(!incFond->ShouldStartSnapshot())
             throw;
@@ -2386,11 +2386,11 @@ public:
                      "",
                      30);
 
-        if(incFond->m_orderBookTableFond->UsedItemCount() != 2)
+        if(incFond->m_statTableFond->UsedItemCount() != 2)
             throw;
-        if(incFond->m_orderBookTableFond->Symbol(0)->Session(0)->EntriesQueue()->HasEntries())
+        if(incFond->m_statTableFond->Symbol(0)->Session(0)->EntriesQueue()->HasEntries())
             throw;
-        if(incFond->m_orderBookTableFond->Symbol(1)->Session(0)->EntriesQueue()->HasEntries())
+        if(incFond->m_statTableFond->Symbol(1)->Session(0)->EntriesQueue()->HasEntries())
             throw;
         if(!incFond->ShouldStartSnapshot())
             throw;
@@ -2573,13 +2573,13 @@ public:
             throw;
         if(snapFond->State() == FeedConnectionState::fcsSuspend)
             throw;
-        if(incFond->m_orderBookTableFond->UsedItemCount() != 3)
+        if(incFond->m_statTableFond->UsedItemCount() != 3)
             throw;
-        if(incFond->m_orderBookTableFond->GetItem("s1", "session1")->BuyQuotes()->Count() != 2)
+        if(incFond->m_statTableFond->GetItem("s1", "session1")->BuyQuotes()->Count() != 2)
             throw;
-        if(incFond->m_orderBookTableFond->GetItem("s2", "session1")->BuyQuotes()->Count() != 0)
+        if(incFond->m_statTableFond->GetItem("s2", "session1")->BuyQuotes()->Count() != 0)
             throw;
-        if(incFond->m_orderBookTableFond->GetItem("symbol3", "session1")->BuyQuotes()->Count() != 1)
+        if(incFond->m_statTableFond->GetItem("symbol3", "session1")->BuyQuotes()->Count() != 1)
             throw;
         if(incFond->m_startMsgSeqNum != 2)
             throw;
@@ -2611,9 +2611,9 @@ public:
             throw;
         if(snapFond->State() != FeedConnectionState::fcsSuspend)
             throw;
-        if(incFond->m_orderBookTableFond->UsedItemCount() != 1)
+        if(incFond->m_statTableFond->UsedItemCount() != 1)
             throw;
-        if(incFond->m_orderBookTableFond->GetItem("s1", "session1")->BuyQuotes()->Count() != 1)
+        if(incFond->m_statTableFond->GetItem("s1", "session1")->BuyQuotes()->Count() != 1)
             throw;
         if(incFond->m_startMsgSeqNum != 4)
             throw;
@@ -2642,23 +2642,23 @@ public:
                      30);
         if(incFond->HasQueueEntries())
             throw;
-        if(incFond->m_orderBookTableFond->GetItem("s1", "session1")->RptSeq() != 2)
+        if(incFond->m_statTableFond->GetItem("s1", "session1")->RptSeq() != 2)
             throw;
-        if(incFond->m_orderBookTableFond->GetItem("symbol3", "session1")->RptSeq() != 1)
+        if(incFond->m_statTableFond->GetItem("symbol3", "session1")->RptSeq() != 1)
             throw;
-        if(incFond->m_orderBookTableFond->GetItem("s2", "session1")->RptSeq() != 2)
+        if(incFond->m_statTableFond->GetItem("s2", "session1")->RptSeq() != 2)
             throw;
         if(!incFond->CanStopListeningSnapshot())
             throw;
         if(snapFond->State() != FeedConnectionState::fcsSuspend)
             throw;
-        if(incFond->m_orderBookTableFond->UsedItemCount() != 3)
+        if(incFond->m_statTableFond->UsedItemCount() != 3)
             throw;
-        if(incFond->m_orderBookTableFond->GetItem("s1", "session1")->BuyQuotes()->Count() != 2) // snapshot applied virtually actually skipped
+        if(incFond->m_statTableFond->GetItem("s1", "session1")->BuyQuotes()->Count() != 2) // snapshot applied virtually actually skipped
             throw;
-        if(incFond->m_orderBookTableFond->GetItem("s2", "session1")->BuyQuotes()->Count() != 1)
+        if(incFond->m_statTableFond->GetItem("s2", "session1")->BuyQuotes()->Count() != 1)
             throw;
-        if(incFond->m_orderBookTableFond->GetItem("symbol3", "session1")->BuyQuotes()->Count() != 1)
+        if(incFond->m_statTableFond->GetItem("symbol3", "session1")->BuyQuotes()->Count() != 1)
             throw;
         if(incFond->m_startMsgSeqNum != 7)
             throw;
@@ -2689,23 +2689,23 @@ public:
                      30);
         if(incFond->HasQueueEntries())
             throw;
-        if(incFond->m_orderBookTableFond->GetItem("s1", "session1")->RptSeq() != 2)
+        if(incFond->m_statTableFond->GetItem("s1", "session1")->RptSeq() != 2)
             throw;
-        if(incFond->m_orderBookTableFond->GetItem("symbol3", "session1")->RptSeq() != 1)
+        if(incFond->m_statTableFond->GetItem("symbol3", "session1")->RptSeq() != 1)
             throw;
-        if(incFond->m_orderBookTableFond->GetItem("s2", "session1")->RptSeq() != 2)
+        if(incFond->m_statTableFond->GetItem("s2", "session1")->RptSeq() != 2)
             throw;
         if(!incFond->CanStopListeningSnapshot())
             throw;
         if(snapFond->State() != FeedConnectionState::fcsSuspend)
             throw;
-        if(incFond->m_orderBookTableFond->UsedItemCount() != 3)
+        if(incFond->m_statTableFond->UsedItemCount() != 3)
             throw;
-        if(incFond->m_orderBookTableFond->GetItem("s1", "session1")->BuyQuotes()->Count() != 2) // snapshot applied virtually actually skipped
+        if(incFond->m_statTableFond->GetItem("s1", "session1")->BuyQuotes()->Count() != 2) // snapshot applied virtually actually skipped
             throw;
-        if(incFond->m_orderBookTableFond->GetItem("s2", "session1")->BuyQuotes()->Count() != 2)
+        if(incFond->m_statTableFond->GetItem("s2", "session1")->BuyQuotes()->Count() != 2)
             throw;
-        if(incFond->m_orderBookTableFond->GetItem("symbol3", "session1")->BuyQuotes()->Count() != 1)
+        if(incFond->m_statTableFond->GetItem("symbol3", "session1")->BuyQuotes()->Count() != 1)
             throw;
         if(incFond->m_startMsgSeqNum != 7)
             throw;

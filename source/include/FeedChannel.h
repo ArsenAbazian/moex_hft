@@ -9,8 +9,6 @@ class FeedChannel {
 	const char *m_senderCompId;
 	const char *m_password;
 
-	FeedConnection *orderBookIncremental;
-	FeedConnection *orderBookSnapshot;
 	FeedConnection *statisticsIncremental;
 	FeedConnection *statisticsSnapshot;
 	FeedConnection *ordersIncremental;
@@ -29,10 +27,6 @@ public:
 
 	void SetPassword(const char *password) {
 		this->m_password = password;
-		if(this->orderBookIncremental != NULL)
-			this->orderBookIncremental->SetPassword(this->m_password);
-		if(this->orderBookIncremental != NULL)
-			this->orderBookSnapshot->SetPassword(this->m_password);
 		if(this->statisticsIncremental != NULL)
 			this->statisticsIncremental->SetPassword(this->m_password);
 		if(this->statisticsSnapshot != NULL)
@@ -56,10 +50,6 @@ public:
 	void SetSenderCompId(const char *senderCompId) {
 		this->m_senderCompId = senderCompId;
 
-		if(this->orderBookIncremental != NULL)
-			this->orderBookIncremental->SetSenderCompId(this->m_senderCompId);
-		if(this->orderBookIncremental != NULL)
-			this->orderBookSnapshot->SetSenderCompId(this->m_senderCompId);
 		if(this->statisticsIncremental != NULL)
 			this->statisticsIncremental->SetSenderCompId(this->m_senderCompId);
 		if(this->statisticsSnapshot != NULL)
@@ -94,9 +84,7 @@ public:
 	bool Logout();
 
 	inline bool DoWorkAtom() {
-		bool res = this->orderBookIncremental->DoWorkAtom();
-		res &= this->orderBookSnapshot->DoWorkAtom();
-		res &= this->statisticsIncremental->DoWorkAtom();
+		bool res = this->statisticsIncremental->DoWorkAtom();
 		res &= this->statisticsSnapshot->DoWorkAtom();
 		res &= this->ordersIncremental->DoWorkAtom();
 		res &= this->ordersSnapshot->DoWorkAtom();
