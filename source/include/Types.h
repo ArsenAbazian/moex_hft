@@ -29,6 +29,7 @@ public:
     static int MarketDataMaxSymbolsCount;
     static int MarketDataMaxSessionsCount;
     static int MarketDataMaxEntriesCount;
+    static int MaxSecurityDefinitionCount;
 };
 
 

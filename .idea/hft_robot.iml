@@ -58,8 +58,9 @@
       <sourceFolder url="file://$MODULE_DIR$/source/include/MarketData/MarketDataTable.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/include/MarketData/OrderInfo.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/include/MarketData/QuoteInfo.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/source/include/MarketData/MarketSymbolInfo.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/source/include/MarketData/SecurityDefinitionInfo.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/include/MarketData/MarketDataEntryQueue.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/source/include/MarketData/MarketSymbolInfo.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/include/FixProtocolMacros.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/include/FastTypes.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/include/FixMessage.h" isTestSource="false" />

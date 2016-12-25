@@ -13,6 +13,7 @@ template <typename T> class MarketSymbolInfo {
     SizedArray                         *m_symbol;
     int                                 m_count;
     int                                 m_sessionsToRecvSnapshot;
+    FastSecurityDefinitionInfo         *m_securityDefinition;
 public:
     MarketSymbolInfo() {
         this->m_count = 0;
@@ -22,6 +23,7 @@ public:
             this->m_items[i]->SymbolInfo(this);
         }
         this->m_symbol = new SizedArray();
+        this->m_securityDefinition = 0;
     }
     ~MarketSymbolInfo() {
         for(int i = 0; i < RobotSettings::MarketDataMaxSessionsCount; i++)
@@ -42,6 +44,8 @@ public:
         this->m_count++;
         return res;
     }
+    inline void SecurityDefinition(FastSecurityDefinitionInfo *info) { this->m_securityDefinition = info; }
+    inline FastSecurityDefinitionInfo* SecurityDefinition() { return this->m_securityDefinition; }
     inline SizedArray *Symbol() { return this->m_symbol; }
     inline bool Equals(const char *symbol, int symbolLen) { return this->m_symbol->Equal(symbol, symbolLen); }
     inline void Clear() {

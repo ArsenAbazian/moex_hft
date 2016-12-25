@@ -191,6 +191,9 @@ public:
         RobotSettings::MarketDataMaxSessionsCount = 5;
         RobotSettings::MarketDataMaxEntriesCount = 32;
 
+        InstrumentDefinitionTester ids;
+        ids.Test();
+
         //StatisticsTesterFond stFond;
         //stFond.Test();
 
@@ -204,8 +207,7 @@ public:
         TradeTesterCurr ttCurr;
         ttCurr.Test();
 
-        InstrumentDefinitionTester ids;
-        ids.Test();
+
         //TestLog("/home/arsen/Documents/hft_robot/hft/test/log5");
         //TestLog("/home/arsen/Documents/hft_robot/hft/test/log6");
 

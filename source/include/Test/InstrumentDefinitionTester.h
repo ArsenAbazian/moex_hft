@@ -6,6 +6,7 @@
 #define HFT_ROBOT_INSTRUMENTDEFINITIONTESTER_H
 
 #include "../FeedConnection.h"
+#include "TestMessagesHelper.h"
 #include <stdio.h>
 
 class InstrumentDefinitionTester{
@@ -17,13 +18,13 @@ class InstrumentDefinitionTester{
     FeedConnection *mss;
     FeedConnection *idf;
 
+    TestMessagesHelper *m_helper;
+
 public:
     InstrumentDefinitionTester() {
+        this->m_helper = new TestMessagesHelper();
+
         this->olr = new FeedConnection_FOND_OLR("OLR", "Refresh Incremental", 'I',
-                                                FeedConnectionProtocol::UDP_IP,
-                                                "10.50.129.200", "239.192.113.3", 9113,
-                                                "10.50.129.200", "239.192.113.131", 9313);
-        this->ols = new FeedConnection_FOND_OLS("OLS", "Full Refresh", 'I',
                                                 FeedConnectionProtocol::UDP_IP,
                                                 "10.50.129.200", "239.192.113.3", 9113,
                                                 "10.50.129.200", "239.192.113.131", 9313);
@@ -31,15 +32,7 @@ public:
                                                 FeedConnectionProtocol::UDP_IP,
                                                 "10.50.129.200", "239.192.113.3", 9113,
                                                 "10.50.129.200", "239.192.113.131", 9313);
-        this->tls = new FeedConnection_FOND_TLS("TSS", "Full Refresh", 'I',
-                                                FeedConnectionProtocol::UDP_IP,
-                                                "10.50.129.200", "239.192.113.3", 9113,
-                                                "10.50.129.200", "239.192.113.131", 9313);
         this->msr = new FeedConnection_FOND_MSR("MSR", "Refresh Incremental", 'I',
-                                                FeedConnectionProtocol::UDP_IP,
-                                                "10.50.129.200", "239.192.113.3", 9113,
-                                                "10.50.129.200", "239.192.113.131", 9313);
-        this->mss = new FeedConnection_FOND_MSS("MSS", "Full Refresh", 'I',
                                                 FeedConnectionProtocol::UDP_IP,
                                                 "10.50.129.200", "239.192.113.3", 9113,
                                                 "10.50.129.200", "239.192.113.131", 9313);
@@ -49,44 +42,47 @@ public:
                                                 "10.50.129.200", "239.192.113.131", 9313);
 
         this->idf->AddConnectionToRecvSymbol(this->olr);
-        this->idf->AddConnectionToRecvSymbol(this->ols);
         this->idf->AddConnectionToRecvSymbol(this->msr);
-        this->idf->AddConnectionToRecvSymbol(this->mss);
         this->idf->AddConnectionToRecvSymbol(this->tlr);
-        this->idf->AddConnectionToRecvSymbol(this->tls);
     }
     ~InstrumentDefinitionTester() {
         delete this->olr;
-        delete this->ols;
         delete this->tlr;
-        delete this->tls;
         delete this->msr;
-        delete this->mss;
         delete this->idf;
     }
 
     void TestDefaults() {
-        if(this->idf->ConnectionsToRecvSymbolsCount() != 6)
+        if(this->idf->ConnectionsToRecvSymbolsCount() != 3)
             throw;
         if(this->idf->ConnectionsToRecvSymbols()[0] != this->olr)
             throw;
-        if(this->idf->ConnectionsToRecvSymbols()[1] != this->ols)
+        if(this->idf->ConnectionsToRecvSymbols()[1] != this->msr)
             throw;
-        if(this->idf->ConnectionsToRecvSymbols()[2] != this->msr)
-            throw;
-        if(this->idf->ConnectionsToRecvSymbols()[3] != this->mss)
-            throw;
-        if(this->idf->ConnectionsToRecvSymbols()[4] != this->tlr)
-            throw;
-        if(this->idf->ConnectionsToRecvSymbols()[5] != this->tls)
+        if(this->idf->ConnectionsToRecvSymbols()[2] != this->tlr)
             throw;
         if(this->idf->Type() != FeedConnectionType::InstrumentDefinition)
             throw;
     }
 
     void TestAddSymbol() {
-        FastSecurityDefinitionInfo *info = new FastSecurityDefinitionInfo();
+        FastSecurityDefinitionInfo *info = this->m_helper->CreateSecurityDefinitionInfo("s1");
+        this->m_helper->AddMarketSegemntGroup(info);
+        this->m_helper->AddMarketSegemntGroup(info);
+
+        this->m_helper->AddTradingSession(info, 0, "t1");
+        this->m_helper->AddTradingSession(info, 0, "t2");
+        this->m_helper->AddTradingSession(info, 1, "t3");
+        this->m_helper->AddTradingSession(info, 1, "t4");
+
         if(!this->idf->ProcessSecurityDefinition(info))
+            throw;
+
+        if(this->olr->OrderFond()->SymbolsCount() != 4)
+            throw;
+        if(this->tlr->OrderFond()->SymbolsCount() != 4)
+            throw;
+        if(this->msr->OrderFond()->SymbolsCount() != 4)
             throw;
     }
 

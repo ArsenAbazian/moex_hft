@@ -17,7 +17,7 @@ FeedChannel::FeedChannel(const char *id, const char *name) {
 	this->ordersSnapshot = NULL;
 	this->tradesIncremental = NULL;
 	this->tradesSnapshot = NULL;
-	this->instrumentReplay = NULL;
+	this->instrumentDefinition = NULL;
 	this->instrumentStatus = NULL;
 	this->historicalReplay = NULL;
 }
@@ -40,7 +40,7 @@ void FeedChannel::SetConnection(FeedConnection *conn) {
 	if (strcmp(conn->IdName(), "TLS") == 0)
 		this->tradesSnapshot = conn;
 	if (strcmp(conn->IdName(), "IDF") == 0)
-		this->instrumentReplay = conn;
+		this->instrumentDefinition = conn;
 	if (strcmp(conn->IdName(), "ISF") == 0)
 		this->instrumentStatus = conn;
 	if (strcmp(conn->IdName(), "H") == 0)
@@ -73,7 +73,7 @@ bool FeedChannel::CheckConnections() {
 	if(this->tradesSnapshot->Type() != FeedConnectionType::Snapshot)
 		return false;
 
-    if(this->instrumentReplay->Type() != FeedConnectionType::InstrumentDefinition)
+    if(this->instrumentDefinition->Type() != FeedConnectionType::InstrumentDefinition)
         return false;
 
 	return true;
@@ -101,10 +101,11 @@ bool FeedChannel::Connect() {
 		DefaultLogManager::Default->EndLog(false);
 		return false;
 	}*/
-	if (!this->Connect(this->statisticsIncremental)) {
+	/*
+    if (!this->Connect(this->statisticsIncremental)) {
 		DefaultLogManager::Default->EndLog(false);
 		return false;
-	}
+	}*/
 	/*
 	if (!this->Connect(this->instrumentStatus)) {
 		DefaultLogManager::Default->EndLog(false);
@@ -132,8 +133,10 @@ bool FeedChannel::Connect() {
 
 	//this->ordersIncremental->Start();
 	//this->tradesIncremental->Start();
-	this->statisticsIncremental->DoNotCheckIncrementalActuality(true);
-	this->statisticsIncremental->Start();
+	//this->statisticsIncremental->DoNotCheckIncrementalActuality(true);
+	//this->statisticsIncremental->Start();
+    this->instrumentDefinition->DoNotCheckIncrementalActuality(true);
+    this->instrumentDefinition->Start();
 
 	//this->instrumentStatus->Start();
 
@@ -158,7 +161,7 @@ bool FeedChannel::Disconnect() {
 	result &= this->Disconnect(this->ordersSnapshot);
 	result &= this->Disconnect(this->tradesIncremental);
 	result &= this->Disconnect(this->tradesSnapshot);
-	result &= this->Disconnect(this->instrumentReplay);
+	result &= this->Disconnect(this->instrumentDefinition);
 	result &= this->Disconnect(this->instrumentStatus);
 	result &= this->Disconnect(this->historicalReplay);
 

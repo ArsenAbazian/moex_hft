@@ -734,6 +734,36 @@ public:
         return info;
     }
 
+    void AddTradingSession(FastSecurityDefinitionInfo *info, int marketIndex, const char *tradingSession) {
+        int newIndex = info->MarketSegmentGrp[marketIndex]->TradingSessionRulesGrpCount;
+        info->MarketSegmentGrp[marketIndex]->TradingSessionRulesGrpCount++;
+        FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo *item = new FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo();
+        info->MarketSegmentGrp[marketIndex]->TradingSessionRulesGrp[newIndex] = item;
+
+        char *trd = new char[strlen(tradingSession) + 1];
+        strcpy(trd, tradingSession);
+
+        item->TradingSessionID = trd;
+        item->TradingSessionIDLength = strlen(trd);
+    }
+
+    void AddMarketSegemntGroup(FastSecurityDefinitionInfo *info) {
+        info->MarketSegmentGrp[info->MarketSegmentGrpCount] = new FastSecurityDefinitionMarketSegmentGrpItemInfo();
+        info->MarketSegmentGrpCount++;
+    }
+
+    FastSecurityDefinitionInfo* CreateSecurityDefinitionInfo(const char *symbol) {
+        FastSecurityDefinitionInfo *info = new FastSecurityDefinitionInfo();
+
+        char *smb = new char[strlen(symbol) + 1];
+        strcpy(smb, symbol);
+
+        info->Symbol = smb;
+        info->SymbolLength = strlen(symbol);
+
+        return info;
+    }
+
     FastOLSFONDItemInfo* CreateOLRFondItemInfo(TestTemplateItemInfo *tmp) {
         FastOLSFONDItemInfo *info = new FastOLSFONDItemInfo();
 

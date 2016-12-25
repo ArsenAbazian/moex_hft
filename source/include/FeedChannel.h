@@ -15,7 +15,7 @@ class FeedChannel {
 	FeedConnection *ordersSnapshot;
 	FeedConnection *tradesIncremental;
 	FeedConnection *tradesSnapshot;
-	FeedConnection *instrumentReplay;
+	FeedConnection *instrumentDefinition;
 	FeedConnection *instrumentStatus;
 	FeedConnection *historicalReplay;
 
@@ -39,8 +39,8 @@ public:
 			this->tradesIncremental->SetPassword(this->m_password);
 		if(this->tradesSnapshot != NULL)
 			this->tradesSnapshot->SetPassword(this->m_password);
-		if(this->instrumentReplay != NULL)
-			this->instrumentReplay->SetPassword(this->m_password);
+		if(this->instrumentDefinition != NULL)
+			this->instrumentDefinition->SetPassword(this->m_password);
 		if(this->instrumentStatus != NULL)
 			this->instrumentStatus->SetPassword(this->m_password);
 		if(this->historicalReplay != NULL)
@@ -62,8 +62,8 @@ public:
 			this->tradesIncremental->SetSenderCompId(this->m_senderCompId);
 		if(this->tradesSnapshot != NULL)
 			this->tradesSnapshot->SetSenderCompId(this->m_senderCompId);
-		if(this->instrumentReplay != NULL)
-			this->instrumentReplay->SetSenderCompId(this->m_senderCompId);
+		if(this->instrumentDefinition != NULL)
+			this->instrumentDefinition->SetSenderCompId(this->m_senderCompId);
 		if(this->instrumentStatus != NULL)
 			this->instrumentStatus->SetSenderCompId(this->m_senderCompId);
 		if(this->historicalReplay != NULL)
@@ -90,7 +90,7 @@ public:
 		res &= this->ordersSnapshot->DoWorkAtom();
 		res &= this->tradesIncremental->DoWorkAtom();
 		res &= this->tradesSnapshot->DoWorkAtom();
-		res &= this->instrumentReplay->DoWorkAtom();
+		res &= this->instrumentDefinition->DoWorkAtom();
 		res &= this->instrumentStatus->DoWorkAtom();
 		res &= this->historicalReplay->DoWorkAtom();
 
