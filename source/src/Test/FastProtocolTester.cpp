@@ -6,6 +6,7 @@
 #include "FastProtocolManager.h"
 #include "Test/FastProtocolTester.h"
 #include <sys/time.h>
+#include <Lib/StringIdComparer.h>
 
 FastProtocolTester::FastProtocolTester()
 {
@@ -19,8 +20,59 @@ FastProtocolTester::~FastProtocolTester()
 void FastProtocolTester::TestMessages() {
     FastProtocolManager *manager = new FastProtocolManager();
 
+    unsigned char *message = new unsigned char[182] {
+            0x4f, 0x9f, 0x03, 0x00, 0xc0, 0x13, 0xdb, 0x0e, 0x3e, 0xcf,
+            0x02, 0x15, 0x55, 0x15, 0x12, 0x1c, 0x55, 0x88, 0x83, 0x83,
+            0xb1, 0x80, 0x52, 0x55, 0x30, 0x30, 0x30, 0x41, 0x30, 0x4a,
+            0x56, 0x56, 0x4c, 0xb4, 0x15, 0x80, 0xfe, 0x00, 0x5b, 0xc5,
+            0x81, 0x20, 0xf8, 0x80, 0x80, 0x80, 0xc3, 0x80, 0x80, 0x80,
+            0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80,
+            0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x45, 0x51, 0x44,
+            0xc2, 0x80, 0x82, 0xf7, 0x80, 0x52, 0x55, 0x30, 0x30, 0x30,
+            0x41, 0x30, 0x4a, 0x56, 0x56, 0x4c, 0xb4, 0x15, 0x81, 0x80,
+            0x81, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80,
+            0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x81, 0x80, 0x80,
+            0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x45, 0x51, 0x44, 0xc2,
+            0x80, 0x83, 0xea, 0x80, 0x52, 0x55, 0x30, 0x30, 0x30, 0x41,
+            0x30, 0x4a, 0x56, 0x56, 0x4c, 0xb4, 0x15, 0x82, 0xfe, 0x00,
+            0x5b, 0xc5, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80,
+            0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80,
+            0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x45, 0x51, 0x44,
+            0xc2, 0xce
+    };
 
-    unsigned char *message = new unsigned char[225] {
+    manager->SetNewBuffer(message, 225);
+    int msgSeqNo = manager->ReadMsgSeqNumber();
+    FastIncrementalMSRFONDInfo *msr = (FastIncrementalMSRFONDInfo*)manager->Decode();
+    manager->PrintIncrementalMSRFOND(msr);
+
+    if(msr->GroupMDEntries[0]->MDUpdateAction != MDUpdateAction::mduaDelete)
+        throw;
+    if(msr->GroupMDEntries[0]->MDEntryType[0] != MDEntryType::mdetSellQuote)
+        throw;
+    if(msr->GroupMDEntries[0]->MDEntryID[0] != '\0')
+        throw;
+    if(!StringIdComparer::Equal(msr->GroupMDEntries[0]->Symbol, msr->GroupMDEntries[0]->SymbolLength, "RU000A0JVVL4", 12))
+        throw;
+    if(msr->GroupMDEntries[0]->RptSeq != 2687)
+        throw;
+    if(msr->GroupMDEntries[0]->QuoteCondition[0] != 'C')
+        throw;
+    if(msr->GroupMDEntries[0]->QuoteConditionLength != 1)
+        throw;
+    if(!StringIdComparer::Equal(msr->GroupMDEntries[0]->TradingSessionID, msr->GroupMDEntries[0]->TradingSessionIDLength, "EQDB", 4))
+        throw;
+
+    message = new unsigned char[18] {
+            0x4c, 0x9f, 0x03, 0x00, 0xc0, 0x10, 0xbc, 0x0e, 0x3e, 0xcc,
+            0x02, 0x15, 0x55, 0x15, 0x10, 0x77, 0x61, 0x90
+    };
+    manager->SetNewBuffer(message, 18);
+    msgSeqNo = manager->ReadMsgSeqNumber();
+    FastHeartbeatInfo *hb = (FastHeartbeatInfo*)manager->Decode();
+    manager->PrintHeartbeat(hb);
+
+    message = new unsigned char[225] {
             0x8d, 0x23, 0x00, 0x00, 0xe0, 0x10, 0xc3, 0x47, 0x8d, 0x23,
             0x68, 0x05, 0x17, 0x15, 0x66, 0x29, 0xad, 0x00, 0x5e, 0xed,
             0x52, 0x55, 0x30, 0x30, 0x30, 0x41, 0x30, 0x4a, 0x55, 0x36,
@@ -47,7 +99,7 @@ void FastProtocolTester::TestMessages() {
     };
 
     manager->SetNewBuffer(message, 225);
-    int msgSeqNo = manager->ReadMsgSeqNumber();
+    msgSeqNo = manager->ReadMsgSeqNumber();
     FastSecurityDefinitionInfo *sd = (FastSecurityDefinitionInfo*)manager->Decode();
     manager->PrintSecurityDefinition(sd);
     if(manager->MessageLength() != 225)
@@ -78,8 +130,8 @@ void FastProtocolTester::TestMessages() {
 
     manager->SetNewBuffer(message, 111);
     msgSeqNo = manager->ReadMsgSeqNumber();
-    FastIncrementalOBRCURRInfo *info = (FastIncrementalOBRCURRInfo*)manager->Decode();
-    manager->PrintIncrementalOBRCURR(info);
+    FastIncrementalGenericInfo *info = (FastIncrementalGenericInfo*)manager->Decode();
+    manager->PrintIncrementalGeneric(info);
 
     if(info->MsgSeqNum != msgSeqNo)
         throw;
@@ -91,8 +143,8 @@ void FastProtocolTester::TestMessages() {
     if(manager->MessageLength() != 111)
         throw;
 
-    FastOBSCURRItemInfo *itemInfo1 = info->GroupMDEntries[0];
-    FastOBSCURRItemInfo *itemInfo2 = info->GroupMDEntries[1];
+    FastGenericItemInfo *itemInfo1 = info->GroupMDEntries[0];
+    FastGenericItemInfo *itemInfo2 = info->GroupMDEntries[1];
 
     if(itemInfo1->MDUpdateAction != mduaAdd)
         throw;
@@ -185,9 +237,9 @@ void FastProtocolTester::TestMessages() {
     manager->SetNewBuffer(message, 107);
 
     msgSeqNo = manager->ReadMsgSeqNumber();
-    info = (FastIncrementalOBRCURRInfo*)manager->Decode();
+    info = (FastIncrementalGenericInfo*)manager->Decode();
 
-    manager->PrintIncrementalOBRCURR(info);
+    manager->PrintIncrementalGeneric(info);
 
     if(info->MsgSeqNum != msgSeqNo)
         throw;

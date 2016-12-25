@@ -213,23 +213,23 @@ public:
         RobotSettings::MarketDataMaxSessionsCount = 5;
         RobotSettings::MarketDataMaxEntriesCount = 32;
 
-        StatisticsTesterFond stFond;
-        stFond.Test();
+        //StatisticsTesterFond stFond;
+        //stFond.Test();
 
-        TradeTesterFond ttFond;
-        ttFond.Test();
-        TradeTesterCurr ttCurr;
-        ttCurr.Test();
+        OrderTesterFond otFond;
+        otFond.Test();
+        OrderTesterCurr otCurr;
+        otCurr.Test();
 
         OrderBookTesterFond obtFond;
         obtFond.Test();
         OrderBookTesterCurr obtCurr;
         obtCurr.Test();
 
-        OrderTesterFond otFond;
-        otFond.Test();
-        OrderTesterCurr otCurr;
-        otCurr.Test();
+        TradeTesterFond ttFond;
+        ttFond.Test();
+        TradeTesterCurr ttCurr;
+        ttCurr.Test();
 
         InstrumentDefinitionTester ids;
         ids.Test();

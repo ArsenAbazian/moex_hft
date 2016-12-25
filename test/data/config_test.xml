@@ -1,35 +1,7 @@
 <?xml version="1.0"?>
-<configuration environment="TestFeed_Internet" updated="2015/11/30-16:00:00">
+<configuration environment="TestFeed_Internet" updated="2016/12/19-16:00:00">
 	<channel id="CURR" label="Currency Exchange Market">
 		<connections>
-			<connection id="OBR">
-				<type feed-type="Order Book Incremental">I</type>
-				<protocol>UDP/IP</protocol>
-				<feed id="A">
-					<src-ip>10.50.129.200</src-ip>
-					<ip>239.192.112.3</ip>
-					<port>9023</port>
-				</feed>
-				<feed id="B">
-					<src-ip>10.50.129.200</src-ip>
-					<ip>239.192.112.131</ip>
-					<port>9223</port>
-				</feed>
-          </connection>
-			<connection id="OBS">
-				<type feed-type="Order Book Snapshot">S</type>
-				<protocol>UDP/IP</protocol>
-				<feed id="A">
-					<src-ip>10.50.129.200</src-ip>
-					<ip>239.192.112.4</ip>
-					<port>9024</port>
-				</feed>
-				<feed id="B">
-					<src-ip>10.50.129.200</src-ip>
-					<ip>239.192.112.132</ip>
-					<port>9224</port>
-				</feed>
-			</connection>
 			<connection id="MSR">
 				<type feed-type="Statisctics Incremental">I</type>
 				<protocol>UDP/IP</protocol>
@@ -152,34 +124,6 @@
 		</connections>
 	</channel>	<channel id="FOND" label="Stock Exchange Market">
 		<connections>
-			<connection id="OBR">
-				<type feed-type="Order Book Incremental">I</type>
-				<protocol>UDP/IP</protocol>
-				<feed id="A">
-					<src-ip>10.50.129.200</src-ip>
-					<ip>239.192.113.3</ip>
-					<port>9113</port>
-				</feed>
-				<feed id="B">
-					<src-ip>10.50.129.200</src-ip>
-					<ip>239.192.113.131</ip>
-					<port>9313</port>
-				</feed>
-			</connection>
-			<connection id="OBS">
-				<type feed-type="Order Book Snapshot">S</type>
-				<protocol>UDP/IP</protocol>
-				<feed id="A">
-					<src-ip>10.50.129.200</src-ip>
-					<ip>239.192.113.4</ip>
-					<port>9114</port>
-				</feed>
-				<feed id="B">
-					<src-ip>10.50.129.200</src-ip>
-					<ip>239.192.113.132</ip>
-					<port>9314</port>
-				</feed>
-			</connection>
 			<connection id="MSR">
 				<type feed-type="Statisctics Incremental">I</type>
 				<protocol>UDP/IP</protocol>

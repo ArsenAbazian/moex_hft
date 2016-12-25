@@ -2641,7 +2641,7 @@ public:
     }
 
     void TestInfoAndItemInfoUsageAndAllocationFond_Inc_4() {
-        FastOBSFONDItemInfo *info = this->m_helper->CreateOBSFondItemInfo(1, 1, 1, 1, MDEntryType::mdetBuyQuote, "e1");
+        FastTLSFONDItemInfo *info = this->m_helper->CreateTLSFondItemInfo(1, 1, 1, 1, MDEntryType::mdetBuyQuote, "e1");
         if(info->Allocator->Count() != 1)
             throw;
         info->Used = false;

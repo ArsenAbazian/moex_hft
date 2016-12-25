@@ -8,6 +8,9 @@ FeedChannel::FeedChannel(const char *id, const char *name) {
     this->m_idLogIndex = DefaultLogMessageProvider::Default->RegisterText(this->id);
     this->m_nameLogIndex = DefaultLogMessageProvider::Default->RegisterText(this->name);
 
+	this->m_senderCompId = 0;
+	this->m_password = 0;
+
 	this->orderBookIncremental = NULL;
 	this->orderBookSnapshot = NULL;
 	this->statisticsIncremental = NULL;
@@ -26,27 +29,27 @@ FeedChannel::~FeedChannel() {
 
 void FeedChannel::SetConnection(FeedConnection *conn) { 
 	conn->SetSenderCompId(this->m_senderCompId);
-	if (strcmp(conn->Id(), "OBR") == 0)
+	if (strcmp(conn->IdName(), "OBR") == 0)
 		this->orderBookIncremental = conn;
-	if (strcmp(conn->Id(), "OBS") == 0)
+	if (strcmp(conn->IdName(), "OBS") == 0)
 		this->orderBookSnapshot = conn;
-	if (strcmp(conn->Id(), "MSR") == 0)
+	if (strcmp(conn->IdName(), "MSR") == 0)
 		this->statisticsIncremental = conn;
-	if (strcmp(conn->Id(), "MSS") == 0)
+	if (strcmp(conn->IdName(), "MSS") == 0)
 		this->statisticsSnapshot = conn;
-	if (strcmp(conn->Id(), "OLR") == 0)
+	if (strcmp(conn->IdName(), "OLR") == 0)
 		this->ordersIncremental = conn;
-	if (strcmp(conn->Id(), "OLS") == 0)
+	if (strcmp(conn->IdName(), "OLS") == 0)
 		this->ordersSnapshot = conn;
-	if (strcmp(conn->Id(), "TLR") == 0)
+	if (strcmp(conn->IdName(), "TLR") == 0)
 		this->tradesIncremental = conn;
-	if (strcmp(conn->Id(), "TLS") == 0)
+	if (strcmp(conn->IdName(), "TLS") == 0)
 		this->tradesSnapshot = conn;
-	if (strcmp(conn->Id(), "IDF") == 0)
+	if (strcmp(conn->IdName(), "IDF") == 0)
 		this->instrumentReplay = conn;
-	if (strcmp(conn->Id(), "ISF") == 0)
+	if (strcmp(conn->IdName(), "ISF") == 0)
 		this->instrumentStatus = conn;
-	if (strcmp(conn->Id(), "H") == 0)
+	if (strcmp(conn->IdName(), "H") == 0)
 		this->historicalReplay = conn;
 }
 

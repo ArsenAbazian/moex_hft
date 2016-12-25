@@ -227,7 +227,7 @@ namespace prebuild {
 			WriteLine("void FastProtocolManager::" + info.EncodeMethodName + "(" + info.Name + "* info) {");
 			WriteLine("\tResetBuffer();");
 			WriteLine("\tWriteMsgSeqNumber(info->MsgSeqNum);");
-			WriteLine("\tWriteUInt32_Mandatory(0); // Presence Map hack");
+			WriteLine("\tWritePresenceMap(info->PresenceMap); // Presence Map hack");
 			WriteLine("\tWriteUInt32_Mandatory(" + message.Attributes["id"].Value + ");");
 			int presenceByteCount = CalcPresenceMapByteCount(message);
 			if(GetMaxPresenceBitCount(message) > 0)
@@ -309,7 +309,7 @@ namespace prebuild {
 			WriteLine(tabs + item.Name + " **" + itemInfo + " = " + si.InCodeValueName + "->" + Name(field) + ";");
 			WriteLine(tabs + "for(int i = 0; i < " + si.InCodeValueName + "->" + Name(field) + "Count; i++) {");
 			if(GetMaxPresenceBitCount(field) > 0) {
-				WriteLine(tabs + "WriteUInt32_Mandatory(0); // Presence Map hack");
+				WriteLine(tabs + "\tWritePresenceMap((*" + itemInfo + ")->PresenceMap); // Presence Map hack");
 				WriteLine("");
 			}
 			foreach(XmlNode node in field.ChildNodes) {
@@ -1042,6 +1042,7 @@ namespace prebuild {
 
 		private  void WriteStructureFieldsDefinitionCode (StructureInfo info, string parentName) {
 			WritePresenceMapDefinition();
+			WriteCopyCountDefinition();
 			WritePointerCode(info);
 			foreach(XmlNode field in info.Fields) {
 				if(field.Name == "string")
@@ -1078,12 +1079,15 @@ namespace prebuild {
 
 		private void WriteClearFieldsCode(StructureInfo info) {
 			WriteLine("\t\tthis->PresenceMap = 0;");
+			WriteLine("\t\tthis->CopyCount = 0;");
 			foreach(XmlNode field in info.Fields) {
 				if(ShouldWriteNullCheckCode(field))
 					WriteLine("\t\tthis->Allow" + Name(field) + " = false;");
 
 				if(field.Name == "string")
 					WriteClearStringCode(field);
+				if(field.Name == "sequence")
+					WriteLine("\t\tthis->" + Name(field) + "Count = 0;");
 			}
 		}
 
@@ -1130,12 +1134,16 @@ namespace prebuild {
 				WriteLine("\tbool" + StuctFieldsSpacing + AllowFlagName(field) + ";");
 			}
 			if(ShouldWriteCheckPresenceMapCode(field)) {
-				WriteLine("\tconst UINT" + StuctFieldsSpacing + PresenceIndexName(field) + " = PRESENCE_MAP_INDEX" + CalcFieldPresenceIndex(field) + ";");
+				WriteLine("\tconst UINT64" + StuctFieldsSpacing + PresenceIndexName(field) + " = PRESENCE_MAP_INDEX" + CalcFieldPresenceIndex(field) + ";");
 			}			
 		} 
 
 		private  void WritePresenceMapDefinition () {
 			WriteLine("\tUINT64" + StuctFieldsSpacing + "PresenceMap;");
+		}
+
+		private void WriteCopyCountDefinition() {
+			WriteLine("\tint" + StuctFieldsSpacing + "CopyCount;");
 		}
 
 		int CalcPresenceMapByteCount(XmlNode node) {
@@ -1232,44 +1240,44 @@ namespace prebuild {
 		private  void WriteByteVectorField (XmlNode field) {
 			WriteLine("\tBYTE*" + StuctFieldsSpacing + Name(field) + ";" + GetCommentLine(field));
 			WriteLine("\tint" + StuctFieldsSpacing + Name(field) + "Length;");
+
 			if(HasCopyValueAttribute(field)) {
-				WriteLine("\tBYTE* " + StuctFieldsSpacing + "Prev" + Name(field) + "; // copy");
-				WriteLine("\tint" + StuctFieldsSpacing + "Prev" + Name(field) + "Length;// copy");
+				WriteLine("\tbool" + StuctFieldsSpacing + "Copy" + Name(field) + "; // copy flag");
 			}
 		}
 
 		private  void WriteDecimalField (XmlNode field) {
 			WriteLine("\tDecimal" + StuctFieldsSpacing + Name(field) + ";" + GetCommentLine(field));
 			if(HasCopyValueAttribute(field)) {
-				WriteLine("\tDecimal" + StuctFieldsSpacing + "Prev" + Name(field) + "; // copy");
+				WriteLine("\tbool" + StuctFieldsSpacing + "Copy" + Name(field) + "; // copy flag");
 			}
 		}
 
 		private  void WriteInt64Field (XmlNode field) {
 			WriteLine("\tUINT64" + StuctFieldsSpacing + Name(field) + ";" + GetCommentLine(field));
 			if(HasCopyValueAttribute(field)) {
-				WriteLine("\tUINT64" + StuctFieldsSpacing + "Prev" + Name(field) + "; // copy");
+				WriteLine("\tbool" + StuctFieldsSpacing + "Copy" + Name(field) + "; // copy flag");
 			}
 		}
 
 		private  void WriteUint64Field (XmlNode field) {
 			WriteLine("\tUINT64" + StuctFieldsSpacing + Name(field) + ";" + GetCommentLine(field));
 			if(HasCopyValueAttribute(field)) {
-				WriteLine("\tUINT64" + StuctFieldsSpacing + "Prev" + Name(field) + "; // copy");
+				WriteLine("\tbool" + StuctFieldsSpacing + "Copy" + Name(field) + "; // copy flag");
 			}
 		}
 
 		private  void WriteInt32Field (XmlNode field) {
 			WriteLine("\tINT32" + StuctFieldsSpacing + Name(field) + ";" + GetCommentLine(field));
 			if(HasCopyValueAttribute(field)) {
-				WriteLine("\tINT32" + StuctFieldsSpacing + "Prev" + Name(field) + "; // copy");
+				WriteLine("\tbool" + StuctFieldsSpacing + "Copy" + Name(field) + "; // copy flag");
 			}
 		}
 
 		private  void WriteUint32Field (XmlNode field) {
 			WriteLine("\tUINT32" + StuctFieldsSpacing + Name(field) + ";" + GetCommentLine(field));
 			if(HasCopyValueAttribute(field)) {
-				WriteLine("\tUINT32" + StuctFieldsSpacing + "Prev" + Name(field) + "; // copy");
+				WriteLine("\tbool" + StuctFieldsSpacing + "Copy" + Name(field) + "; // copy flag");
 			}
 		}
 
@@ -1277,8 +1285,7 @@ namespace prebuild {
 			WriteLine("\tchar*" + StuctFieldsSpacing + Name(field) + ";" + GetCommentLine(field));
 			WriteLine("\tint" + StuctFieldsSpacing + Name(field) + "Length;");
 			if(HasCopyValueAttribute(field)) {
-				WriteLine("\tchar*" + StuctFieldsSpacing + "Prev" + Name(field) + "; // copy");
-				WriteLine("\tint" + StuctFieldsSpacing + "Prev" + Name(field) + "Length; // copy");
+				WriteLine("\tbool" + StuctFieldsSpacing + "Copy" + Name(field) + "; // copy flag");
 			}
 		}
 
@@ -1926,7 +1933,7 @@ namespace prebuild {
 				WriteUint32ValueDefault(value, info, tabString);
 			}
 			if(HasCopyValueAttribute(value)) {
-				WriteSimplePrevValueAssignCode(value, info, tabString);
+				WriteSetCopyFlagCode(value, info, tabString);
 			}
 			if(HasIncrementValueAttribute(value)) {
 				WriteSimpleIncrementValueCode(value, info, tabString);
@@ -1938,11 +1945,16 @@ namespace prebuild {
 				WriteInt32ValueDefault(value, info, tabString);
 			}
 			if(HasCopyValueAttribute(value)) {
-				WriteSimplePrevValueAssignCode(value, info, tabString);
+				WriteSetCopyFlagCode(value, info, tabString);
 			}
 			if(HasIncrementValueAttribute(value)) {
 				WriteSimpleIncrementValueCode(value, info, tabString);
 			}
+		}
+
+		private void WriteSetCopyFlagCode(XmlNode value, string info, string tabString) {
+			WriteLine(tabString + info + "->Copy" + Name(value) + " = true;");
+			WriteLine(tabString + info + "->CopyCount++;");
 		}
 
 		private  void WriteSimplePrevValueAssignCode (XmlNode value, string info, string tabString) {
@@ -1954,7 +1966,7 @@ namespace prebuild {
 				WriteDecimalValueDefault(value, info, tabString);
 			}
 			if(HasCopyValueAttribute(value)) {
-				WriteDecimalCopyOperatorCode(value, info, tabString);
+				WriteSetCopyFlagCode(value, info, tabString);
 			}
 			if(HasIncrementValueAttribute(value))
 				throw new Exception("TODO Increment decimal");
@@ -1966,7 +1978,7 @@ namespace prebuild {
 
 		private  void WriteByteVectorValueOperatorsCode (XmlNode value, string info, string tabString) {
 			if(HasCopyValueAttribute(value)) {
-				WriteSimplePrevValueAssignCode(value, info, tabString);
+				WriteSetCopyFlagCode(value, info, tabString);
 			}
 		}
 
@@ -1975,7 +1987,7 @@ namespace prebuild {
 				WriteInt64ValueDefault(value, info, tabString);
 			}
 			if(HasCopyValueAttribute(value)) {
-				WriteSimplePrevValueAssignCode(value, info, tabString);
+				WriteSetCopyFlagCode(value, info, tabString);
 			}
 			if(HasIncrementValueAttribute(value)) {
 				WriteSimpleIncrementValueCode(value, info, tabString);
@@ -1990,7 +2002,7 @@ namespace prebuild {
 				WriteUint64ValueDefault(value, info, tabString);
 			}
 			if(HasCopyValueAttribute(value)) {
-				WriteSimplePrevValueAssignCode(value, info, tabString);
+				WriteSetCopyFlagCode(value, info, tabString);
 			}
 			if(HasIncrementValueAttribute(value)) {
 				WriteSimpleIncrementValueCode(value, info, tabString);
@@ -2005,7 +2017,7 @@ namespace prebuild {
 			if(HasDefaultValueAttribute(value)) { 
 				WriteStringValueDefault(value, info, tabString);
 			} else if(HasCopyValueAttribute(value)) {
-				WriteStringCopyValueCode(value, info, tabString);
+				WriteSetCopyFlagCode(value, info, tabString);
 			}
 		}
 

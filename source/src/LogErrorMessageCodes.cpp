@@ -113,7 +113,7 @@ LogMessageProvider::~LogMessageProvider() {
 }
 
 int LogMessageProvider::RegisterText(const char *text) {
-    for(int i = this->m_dynamicLogMessageStartIndex; i < this->m_dynamicLogMessageCount; i++) {
+    for(int i = this->m_dynamicLogMessageStartIndex; i < this->m_dynamicLogMessageStartIndex + this->m_dynamicLogMessageCount; i++) {
         if(strcmp(this->m_logMessageText[i], text) == 0)
             return i;
     }

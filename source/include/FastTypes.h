@@ -143,6 +143,7 @@ typedef struct _FastSnapshotInfo {
 class FastLogonInfo{
 public:
 	UINT64							PresenceMap;
+	int							CopyCount;
 	LinkedPointer<FastLogonInfo>							*Pointer;
 	AutoAllocatePointerList<FastLogonInfo>							*Allocator;
 	bool							Used;
@@ -169,6 +170,7 @@ public:
 	FastLogonInfo(){
 		this->Used = false;
 		this->PresenceMap = 0;
+		this->CopyCount = 0;
 		this->MessageType = 0;
 		this->MessageTypeLength = 0;
 		this->BeginString = 0;
@@ -200,6 +202,7 @@ public:
 class FastLogoutInfo{
 public:
 	UINT64							PresenceMap;
+	int							CopyCount;
 	LinkedPointer<FastLogoutInfo>							*Pointer;
 	AutoAllocatePointerList<FastLogoutInfo>							*Allocator;
 	bool							Used;
@@ -220,6 +223,7 @@ public:
 	FastLogoutInfo(){
 		this->Used = false;
 		this->PresenceMap = 0;
+		this->CopyCount = 0;
 		this->MessageType = 0;
 		this->MessageTypeLength = 0;
 		this->BeginString = 0;
@@ -246,6 +250,7 @@ public:
 class FastGenericItemInfo{
 public:
 	UINT64							PresenceMap;
+	int							CopyCount;
 	LinkedPointer<FastGenericItemInfo>							*Pointer;
 	AutoAllocatePointerList<FastGenericItemInfo>							*Allocator;
 	bool							Used;
@@ -336,18 +341,9 @@ public:
 	bool							AllowBuyBackPx;
 	UINT32							BuyBackDate;			// id=5559  presence=optional  
 	bool							AllowBuyBackDate;
-	char*							DealNumber;			// id=9885  presence=optional    copy
-	int							DealNumberLength;
-	char*							PrevDealNumber; // copy
-	int							PrevDealNumberLength; // copy
-	bool							AllowDealNumber;
-	const UINT							DealNumberPresenceIndex = PRESENCE_MAP_INDEX0;
-	char*							CXFlag;			// id=5154  presence=optional    copy
+	char*							CXFlag;			// id=5154  presence=optional  
 	int							CXFlagLength;
-	char*							PrevCXFlag; // copy
-	int							PrevCXFlagLength; // copy
 	bool							AllowCXFlag;
-	const UINT							CXFlagPresenceIndex = PRESENCE_MAP_INDEX1;
 	char*							TradingSessionSubID;			// id=625  presence=optional  
 	int							TradingSessionSubIDLength;
 	bool							AllowTradingSessionSubID;
@@ -367,6 +363,7 @@ public:
 	FastGenericItemInfo(){
 		this->Used = false;
 		this->PresenceMap = 0;
+		this->CopyCount = 0;
 		this->AllowMDEntryType = false;
 		this->MDEntryType = 0;
 		this->MDEntryTypeLength = 0;
@@ -424,9 +421,6 @@ public:
 		this->AllowRepoToPx = false;
 		this->AllowBuyBackPx = false;
 		this->AllowBuyBackDate = false;
-		this->AllowDealNumber = false;
-		this->DealNumber = 0;
-		this->DealNumberLength = 0;
 		this->AllowCXFlag = false;
 		this->CXFlag = 0;
 		this->CXFlagLength = 0;
@@ -459,6 +453,7 @@ public:
 class FastGenericInfo{
 public:
 	UINT64							PresenceMap;
+	int							CopyCount;
 	LinkedPointer<FastGenericInfo>							*Pointer;
 	AutoAllocatePointerList<FastGenericInfo>							*Allocator;
 	bool							Used;
@@ -498,6 +493,7 @@ public:
 	FastGenericInfo(){
 		this->Used = false;
 		this->PresenceMap = 0;
+		this->CopyCount = 0;
 		this->MessageType = 0;
 		this->MessageTypeLength = 0;
 		this->BeginString = 0;
@@ -518,6 +514,7 @@ public:
 		this->AllowMDSecurityTradingStatus = false;
 		this->AllowAuctionIndicator = false;
 		this->AllowNetChgPrevDay = false;
+		this->GroupMDEntriesCount = 0;
 	}
 	~FastGenericInfo(){ }
 	inline void Clear() {
@@ -537,6 +534,7 @@ public:
 class FastIncrementalGenericInfo{
 public:
 	UINT64							PresenceMap;
+	int							CopyCount;
 	LinkedPointer<FastIncrementalGenericInfo>							*Pointer;
 	AutoAllocatePointerList<FastIncrementalGenericInfo>							*Allocator;
 	bool							Used;
@@ -556,6 +554,7 @@ public:
 	FastIncrementalGenericInfo(){
 		this->Used = false;
 		this->PresenceMap = 0;
+		this->CopyCount = 0;
 		this->MessageType = 0;
 		this->MessageTypeLength = 0;
 		this->ApplVerID = 0;
@@ -564,6 +563,7 @@ public:
 		this->BeginStringLength = 0;
 		this->SenderCompID = 0;
 		this->SenderCompIDLength = 0;
+		this->GroupMDEntriesCount = 0;
 	}
 	~FastIncrementalGenericInfo(){ }
 	inline void Clear() {
@@ -583,58 +583,80 @@ public:
 class FastOLSFONDItemInfo{
 public:
 	UINT64							PresenceMap;
+	int							CopyCount;
 	LinkedPointer<FastOLSFONDItemInfo>							*Pointer;
 	AutoAllocatePointerList<FastOLSFONDItemInfo>							*Allocator;
 	bool							Used;
-	char*							MDEntryType;			// id=269  presence=optional  
+	char*							MDEntryType;			// id=269  presence=optional    copy
 	int							MDEntryTypeLength;
+	bool							CopyMDEntryType; // copy flag
 	bool							AllowMDEntryType;
+	const UINT64							MDEntryTypePresenceIndex = PRESENCE_MAP_INDEX0;
 	char*							MDEntryID;			// id=278  presence=optional  
 	int							MDEntryIDLength;
 	bool							AllowMDEntryID;
-	UINT32							MDEntryDate;			// id=272  presence=optional  
+	UINT32							MDEntryDate;			// id=272  presence=optional    copy
+	bool							CopyMDEntryDate; // copy flag
 	bool							AllowMDEntryDate;
-	UINT32							MDEntryTime;			// id=273  presence=optional  
+	const UINT64							MDEntryDatePresenceIndex = PRESENCE_MAP_INDEX1;
+	UINT32							MDEntryTime;			// id=273  presence=optional    copy
+	bool							CopyMDEntryTime; // copy flag
 	bool							AllowMDEntryTime;
-	UINT32							OrigTime;			// id=9412  presence=optional  
+	const UINT64							MDEntryTimePresenceIndex = PRESENCE_MAP_INDEX2;
+	UINT32							OrigTime;			// id=9412  presence=optional    copy
+	bool							CopyOrigTime; // copy flag
 	bool							AllowOrigTime;
-	Decimal							MDEntryPx;			// id=270  presence=optional  
+	const UINT64							OrigTimePresenceIndex = PRESENCE_MAP_INDEX3;
+	Decimal							MDEntryPx;			// id=270  presence=optional    copy
+	bool							CopyMDEntryPx; // copy flag
 	bool							AllowMDEntryPx;
-	Decimal							MDEntrySize;			// id=271  presence=optional  
+	const UINT64							MDEntryPxPresenceIndex = PRESENCE_MAP_INDEX4;
+	Decimal							MDEntrySize;			// id=271  presence=optional    copy
+	bool							CopyMDEntrySize; // copy flag
 	bool							AllowMDEntrySize;
-	char*							DealNumber;			// id=9885  presence=optional    copy
-	int							DealNumberLength;
-	char*							PrevDealNumber; // copy
-	int							PrevDealNumberLength; // copy
-	bool							AllowDealNumber;
-	const UINT							DealNumberPresenceIndex = PRESENCE_MAP_INDEX0;
-	Decimal							Yield;			// id=236  presence=optional  
+	const UINT64							MDEntrySizePresenceIndex = PRESENCE_MAP_INDEX5;
+	Decimal							Yield;			// id=236  presence=optional    copy
+	bool							CopyYield; // copy flag
 	bool							AllowYield;
-	char*							OrderStatus;			// id=10505  presence=optional  
+	const UINT64							YieldPresenceIndex = PRESENCE_MAP_INDEX6;
+	char*							OrderStatus;			// id=10505  presence=optional    copy
 	int							OrderStatusLength;
+	bool							CopyOrderStatus; // copy flag
 	bool							AllowOrderStatus;
-	char*							OrdType;			// id=40  presence=optional  
+	const UINT64							OrderStatusPresenceIndex = PRESENCE_MAP_INDEX7;
+	char*							OrdType;			// id=40  presence=optional    copy
 	int							OrdTypeLength;
+	bool							CopyOrdType; // copy flag
 	bool							AllowOrdType;
-	Decimal							TotalVolume;			// id=5791  presence=optional  
+	const UINT64							OrdTypePresenceIndex = PRESENCE_MAP_INDEX8;
+	Decimal							TotalVolume;			// id=5791  presence=optional    copy
+	bool							CopyTotalVolume; // copy flag
 	bool							AllowTotalVolume;
-	char*							TradingSessionSubID;			// id=625  presence=optional  
+	const UINT64							TotalVolumePresenceIndex = PRESENCE_MAP_INDEX9;
+	char*							TradingSessionSubID;			// id=625  presence=optional    copy
 	int							TradingSessionSubIDLength;
+	bool							CopyTradingSessionSubID; // copy flag
 	bool							AllowTradingSessionSubID;
+	const UINT64							TradingSessionSubIDPresenceIndex = PRESENCE_MAP_INDEX10;
 	UINT32							MDUpdateAction;			// id=279  presence=optional  
 	bool							AllowMDUpdateAction;
-	char*							Symbol;			// id=55  presence=optional  
+	char*							Symbol;			// id=55  presence=optional    copy
 	int							SymbolLength;
+	bool							CopySymbol; // copy flag
 	bool							AllowSymbol;
+	const UINT64							SymbolPresenceIndex = PRESENCE_MAP_INDEX1;
 	INT32							RptSeq;			// id=83  presence=optional  
 	bool							AllowRptSeq;
-	char*							TradingSessionID;			// id=336  presence=optional  
+	char*							TradingSessionID;			// id=336  presence=optional    copy
 	int							TradingSessionIDLength;
+	bool							CopyTradingSessionID; // copy flag
 	bool							AllowTradingSessionID;
+	const UINT64							TradingSessionIDPresenceIndex = PRESENCE_MAP_INDEX11;
 
 	FastOLSFONDItemInfo(){
 		this->Used = false;
 		this->PresenceMap = 0;
+		this->CopyCount = 0;
 		this->AllowMDEntryType = false;
 		this->MDEntryType = 0;
 		this->MDEntryTypeLength = 0;
@@ -646,9 +668,6 @@ public:
 		this->AllowOrigTime = false;
 		this->AllowMDEntryPx = false;
 		this->AllowMDEntrySize = false;
-		this->AllowDealNumber = false;
-		this->DealNumber = 0;
-		this->DealNumberLength = 0;
 		this->AllowYield = false;
 		this->AllowOrderStatus = false;
 		this->OrderStatus = 0;
@@ -685,6 +704,7 @@ public:
 class FastOLSFONDInfo{
 public:
 	UINT64							PresenceMap;
+	int							CopyCount;
 	LinkedPointer<FastOLSFONDInfo>							*Pointer;
 	AutoAllocatePointerList<FastOLSFONDInfo>							*Allocator;
 	bool							Used;
@@ -722,6 +742,7 @@ public:
 	FastOLSFONDInfo(){
 		this->Used = false;
 		this->PresenceMap = 0;
+		this->CopyCount = 0;
 		this->MessageType = 0;
 		this->MessageTypeLength = 0;
 		this->BeginString = 0;
@@ -741,6 +762,7 @@ public:
 		this->SymbolLength = 0;
 		this->AllowMDSecurityTradingStatus = false;
 		this->AllowAuctionIndicator = false;
+		this->GroupMDEntriesCount = 0;
 	}
 	~FastOLSFONDInfo(){ }
 	inline void Clear() {
@@ -760,51 +782,69 @@ public:
 class FastOLSCURRItemInfo{
 public:
 	UINT64							PresenceMap;
+	int							CopyCount;
 	LinkedPointer<FastOLSCURRItemInfo>							*Pointer;
 	AutoAllocatePointerList<FastOLSCURRItemInfo>							*Allocator;
 	bool							Used;
-	char*							MDEntryType;			// id=269  presence=optional  
+	char*							MDEntryType;			// id=269  presence=optional    copy
 	int							MDEntryTypeLength;
+	bool							CopyMDEntryType; // copy flag
 	bool							AllowMDEntryType;
+	const UINT64							MDEntryTypePresenceIndex = PRESENCE_MAP_INDEX0;
 	char*							MDEntryID;			// id=278  presence=optional  
 	int							MDEntryIDLength;
 	bool							AllowMDEntryID;
-	UINT32							MDEntryDate;			// id=272  presence=optional  
+	UINT32							MDEntryDate;			// id=272  presence=optional    copy
+	bool							CopyMDEntryDate; // copy flag
 	bool							AllowMDEntryDate;
-	UINT32							MDEntryTime;			// id=273  presence=optional  
+	const UINT64							MDEntryDatePresenceIndex = PRESENCE_MAP_INDEX1;
+	UINT32							MDEntryTime;			// id=273  presence=optional    copy
+	bool							CopyMDEntryTime; // copy flag
 	bool							AllowMDEntryTime;
-	UINT32							OrigTime;			// id=9412  presence=optional  
+	const UINT64							MDEntryTimePresenceIndex = PRESENCE_MAP_INDEX2;
+	UINT32							OrigTime;			// id=9412  presence=optional    copy
+	bool							CopyOrigTime; // copy flag
 	bool							AllowOrigTime;
-	Decimal							MDEntryPx;			// id=270  presence=optional  
+	const UINT64							OrigTimePresenceIndex = PRESENCE_MAP_INDEX3;
+	Decimal							MDEntryPx;			// id=270  presence=optional    copy
+	bool							CopyMDEntryPx; // copy flag
 	bool							AllowMDEntryPx;
-	Decimal							MDEntrySize;			// id=271  presence=optional  
+	const UINT64							MDEntryPxPresenceIndex = PRESENCE_MAP_INDEX4;
+	Decimal							MDEntrySize;			// id=271  presence=optional    copy
+	bool							CopyMDEntrySize; // copy flag
 	bool							AllowMDEntrySize;
-	char*							DealNumber;			// id=9885  presence=optional    copy
-	int							DealNumberLength;
-	char*							PrevDealNumber; // copy
-	int							PrevDealNumberLength; // copy
-	bool							AllowDealNumber;
-	const UINT							DealNumberPresenceIndex = PRESENCE_MAP_INDEX0;
-	char*							OrderStatus;			// id=10505  presence=optional  
+	const UINT64							MDEntrySizePresenceIndex = PRESENCE_MAP_INDEX5;
+	char*							OrderStatus;			// id=10505  presence=optional    copy
 	int							OrderStatusLength;
+	bool							CopyOrderStatus; // copy flag
 	bool							AllowOrderStatus;
-	char*							TradingSessionSubID;			// id=625  presence=optional  
+	const UINT64							OrderStatusPresenceIndex = PRESENCE_MAP_INDEX6;
+	char*							TradingSessionSubID;			// id=625  presence=optional    copy
 	int							TradingSessionSubIDLength;
+	bool							CopyTradingSessionSubID; // copy flag
 	bool							AllowTradingSessionSubID;
-	UINT32							MDUpdateAction;			// id=279  presence=optional  
+	const UINT64							TradingSessionSubIDPresenceIndex = PRESENCE_MAP_INDEX7;
+	UINT32							MDUpdateAction;			// id=279  presence=optional    copy
+	bool							CopyMDUpdateAction; // copy flag
 	bool							AllowMDUpdateAction;
-	char*							Symbol;			// id=55  presence=optional  
+	const UINT64							MDUpdateActionPresenceIndex = PRESENCE_MAP_INDEX0;
+	char*							Symbol;			// id=55  presence=optional    copy
 	int							SymbolLength;
+	bool							CopySymbol; // copy flag
 	bool							AllowSymbol;
+	const UINT64							SymbolPresenceIndex = PRESENCE_MAP_INDEX2;
 	INT32							RptSeq;			// id=83  presence=optional  
 	bool							AllowRptSeq;
-	char*							TradingSessionID;			// id=336  presence=optional  
+	char*							TradingSessionID;			// id=336  presence=optional    copy
 	int							TradingSessionIDLength;
+	bool							CopyTradingSessionID; // copy flag
 	bool							AllowTradingSessionID;
+	const UINT64							TradingSessionIDPresenceIndex = PRESENCE_MAP_INDEX9;
 
 	FastOLSCURRItemInfo(){
 		this->Used = false;
 		this->PresenceMap = 0;
+		this->CopyCount = 0;
 		this->AllowMDEntryType = false;
 		this->MDEntryType = 0;
 		this->MDEntryTypeLength = 0;
@@ -816,9 +856,6 @@ public:
 		this->AllowOrigTime = false;
 		this->AllowMDEntryPx = false;
 		this->AllowMDEntrySize = false;
-		this->AllowDealNumber = false;
-		this->DealNumber = 0;
-		this->DealNumberLength = 0;
 		this->AllowOrderStatus = false;
 		this->OrderStatus = 0;
 		this->OrderStatusLength = 0;
@@ -850,6 +887,7 @@ public:
 class FastOLSCURRInfo{
 public:
 	UINT64							PresenceMap;
+	int							CopyCount;
 	LinkedPointer<FastOLSCURRInfo>							*Pointer;
 	AutoAllocatePointerList<FastOLSCURRInfo>							*Allocator;
 	bool							Used;
@@ -885,6 +923,7 @@ public:
 	FastOLSCURRInfo(){
 		this->Used = false;
 		this->PresenceMap = 0;
+		this->CopyCount = 0;
 		this->MessageType = 0;
 		this->MessageTypeLength = 0;
 		this->BeginString = 0;
@@ -903,6 +942,7 @@ public:
 		this->Symbol = 0;
 		this->SymbolLength = 0;
 		this->AllowMDSecurityTradingStatus = false;
+		this->GroupMDEntriesCount = 0;
 	}
 	~FastOLSCURRInfo(){ }
 	inline void Clear() {
@@ -922,6 +962,7 @@ public:
 class FastTLSFONDItemInfo{
 public:
 	UINT64							PresenceMap;
+	int							CopyCount;
 	LinkedPointer<FastTLSFONDItemInfo>							*Pointer;
 	AutoAllocatePointerList<FastTLSFONDItemInfo>							*Allocator;
 	bool							Used;
@@ -930,43 +971,82 @@ public:
 	char*							MDEntryID;			// id=278  presence=optional  
 	int							MDEntryIDLength;
 	bool							AllowMDEntryID;
-	UINT32							MDEntryDate;			// id=272  presence=optional  
+	UINT32							MDEntryDate;			// id=272  presence=optional    copy
+	bool							CopyMDEntryDate; // copy flag
 	bool							AllowMDEntryDate;
-	UINT32							MDEntryTime;			// id=273  presence=optional  
+	const UINT64							MDEntryDatePresenceIndex = PRESENCE_MAP_INDEX0;
+	UINT32							MDEntryTime;			// id=273  presence=optional    copy
+	bool							CopyMDEntryTime; // copy flag
 	bool							AllowMDEntryTime;
-	UINT32							OrigTime;			// id=9412  presence=optional  
+	const UINT64							MDEntryTimePresenceIndex = PRESENCE_MAP_INDEX1;
+	UINT32							OrigTime;			// id=9412  presence=optional    copy
+	bool							CopyOrigTime; // copy flag
 	bool							AllowOrigTime;
-	char*							OrderSide;			// id=10504  presence=optional  
+	const UINT64							OrigTimePresenceIndex = PRESENCE_MAP_INDEX2;
+	char*							OrderSide;			// id=10504  presence=optional    copy
 	int							OrderSideLength;
+	bool							CopyOrderSide; // copy flag
 	bool							AllowOrderSide;
-	Decimal							MDEntryPx;			// id=270  presence=optional  
+	const UINT64							OrderSidePresenceIndex = PRESENCE_MAP_INDEX3;
+	Decimal							MDEntryPx;			// id=270  presence=optional    copy
+	bool							CopyMDEntryPx; // copy flag
 	bool							AllowMDEntryPx;
-	Decimal							MDEntrySize;			// id=271  presence=optional  
+	const UINT64							MDEntryPxPresenceIndex = PRESENCE_MAP_INDEX4;
+	Decimal							MDEntrySize;			// id=271  presence=optional    copy
+	bool							CopyMDEntrySize; // copy flag
 	bool							AllowMDEntrySize;
-	Decimal							AccruedInterestAmt;			// id=5384  presence=optional  
+	const UINT64							MDEntrySizePresenceIndex = PRESENCE_MAP_INDEX5;
+	Decimal							AccruedInterestAmt;			// id=5384  presence=optional    copy
+	bool							CopyAccruedInterestAmt; // copy flag
 	bool							AllowAccruedInterestAmt;
-	Decimal							TradeValue;			// id=6143  presence=optional  
+	const UINT64							AccruedInterestAmtPresenceIndex = PRESENCE_MAP_INDEX6;
+	Decimal							TradeValue;			// id=6143  presence=optional    copy
+	bool							CopyTradeValue; // copy flag
 	bool							AllowTradeValue;
-	Decimal							Yield;			// id=236  presence=optional  
+	const UINT64							TradeValuePresenceIndex = PRESENCE_MAP_INDEX7;
+	Decimal							Yield;			// id=236  presence=optional    copy
+	bool							CopyYield; // copy flag
 	bool							AllowYield;
-	UINT32							SettlDate;			// id=64  presence=optional  
+	const UINT64							YieldPresenceIndex = PRESENCE_MAP_INDEX8;
+	UINT32							SettlDate;			// id=64  presence=optional    copy
+	bool							CopySettlDate; // copy flag
 	bool							AllowSettlDate;
-	char*							SettleType;			// id=5459  presence=optional  
+	const UINT64							SettlDatePresenceIndex = PRESENCE_MAP_INDEX9;
+	char*							SettleType;			// id=5459  presence=optional    copy
 	int							SettleTypeLength;
+	bool							CopySettleType; // copy flag
 	bool							AllowSettleType;
-	Decimal							Price;			// id=44  presence=optional  
+	const UINT64							SettleTypePresenceIndex = PRESENCE_MAP_INDEX10;
+	Decimal							Price;			// id=44  presence=optional    copy
+	bool							CopyPrice; // copy flag
 	bool							AllowPrice;
-	INT32							PriceType;			// id=423  presence=optional  
+	const UINT64							PricePresenceIndex = PRESENCE_MAP_INDEX11;
+	INT32							PriceType;			// id=423  presence=optional    copy
+	bool							CopyPriceType; // copy flag
 	bool							AllowPriceType;
-	Decimal							RepoToPx;			// id=5677  presence=optional  
+	const UINT64							PriceTypePresenceIndex = PRESENCE_MAP_INDEX12;
+	Decimal							RepoToPx;			// id=5677  presence=optional    copy
+	bool							CopyRepoToPx; // copy flag
 	bool							AllowRepoToPx;
-	Decimal							BuyBackPx;			// id=5558  presence=optional  
+	const UINT64							RepoToPxPresenceIndex = PRESENCE_MAP_INDEX13;
+	Decimal							BuyBackPx;			// id=5558  presence=optional    copy
+	bool							CopyBuyBackPx; // copy flag
 	bool							AllowBuyBackPx;
-	UINT32							BuyBackDate;			// id=5559  presence=optional  
+	const UINT64							BuyBackPxPresenceIndex = PRESENCE_MAP_INDEX14;
+	UINT32							BuyBackDate;			// id=5559  presence=optional    copy
+	bool							CopyBuyBackDate; // copy flag
 	bool							AllowBuyBackDate;
-	char*							TradingSessionSubID;			// id=625  presence=optional  
+	const UINT64							BuyBackDatePresenceIndex = PRESENCE_MAP_INDEX15;
+	char*							TradingSessionSubID;			// id=625  presence=optional    copy
 	int							TradingSessionSubIDLength;
+	bool							CopyTradingSessionSubID; // copy flag
 	bool							AllowTradingSessionSubID;
+	const UINT64							TradingSessionSubIDPresenceIndex = PRESENCE_MAP_INDEX16;
+	char*							RefOrderID;			// id=1080  presence=optional    copy
+	int							RefOrderIDLength;
+	bool							CopyRefOrderID; // copy flag
+	bool							AllowRefOrderID;
+	const UINT64							RefOrderIDPresenceIndex = PRESENCE_MAP_INDEX17;
 	UINT32							MDUpdateAction;			// id=279  presence=optional  
 	bool							AllowMDUpdateAction;
 	char*							Symbol;			// id=55  presence=optional  
@@ -981,6 +1061,7 @@ public:
 	FastTLSFONDItemInfo(){
 		this->Used = false;
 		this->PresenceMap = 0;
+		this->CopyCount = 0;
 		this->MDEntryType = 0;
 		this->MDEntryTypeLength = 0;
 		this->AllowMDEntryID = false;
@@ -1009,6 +1090,9 @@ public:
 		this->AllowTradingSessionSubID = false;
 		this->TradingSessionSubID = 0;
 		this->TradingSessionSubIDLength = 0;
+		this->AllowRefOrderID = false;
+		this->RefOrderID = 0;
+		this->RefOrderIDLength = 0;
 		this->AllowMDUpdateAction = false;
 		this->AllowSymbol = false;
 		this->Symbol = 0;
@@ -1034,6 +1118,7 @@ public:
 class FastTLSFONDInfo{
 public:
 	UINT64							PresenceMap;
+	int							CopyCount;
 	LinkedPointer<FastTLSFONDInfo>							*Pointer;
 	AutoAllocatePointerList<FastTLSFONDInfo>							*Allocator;
 	bool							Used;
@@ -1071,6 +1156,7 @@ public:
 	FastTLSFONDInfo(){
 		this->Used = false;
 		this->PresenceMap = 0;
+		this->CopyCount = 0;
 		this->MessageType = 0;
 		this->MessageTypeLength = 0;
 		this->BeginString = 0;
@@ -1090,6 +1176,7 @@ public:
 		this->SymbolLength = 0;
 		this->AllowMDSecurityTradingStatus = false;
 		this->AllowAuctionIndicator = false;
+		this->GroupMDEntriesCount = 0;
 	}
 	~FastTLSFONDInfo(){ }
 	inline void Clear() {
@@ -1109,6 +1196,7 @@ public:
 class FastTLSCURRItemInfo{
 public:
 	UINT64							PresenceMap;
+	int							CopyCount;
 	LinkedPointer<FastTLSCURRItemInfo>							*Pointer;
 	AutoAllocatePointerList<FastTLSCURRItemInfo>							*Allocator;
 	bool							Used;
@@ -1117,39 +1205,74 @@ public:
 	char*							MDEntryID;			// id=278  presence=optional  
 	int							MDEntryIDLength;
 	bool							AllowMDEntryID;
-	UINT32							MDEntryDate;			// id=272  presence=optional  
+	UINT32							MDEntryDate;			// id=272  presence=optional    copy
+	bool							CopyMDEntryDate; // copy flag
 	bool							AllowMDEntryDate;
-	UINT32							MDEntryTime;			// id=273  presence=optional  
+	const UINT64							MDEntryDatePresenceIndex = PRESENCE_MAP_INDEX0;
+	UINT32							MDEntryTime;			// id=273  presence=optional    copy
+	bool							CopyMDEntryTime; // copy flag
 	bool							AllowMDEntryTime;
-	UINT32							OrigTime;			// id=9412  presence=optional  
+	const UINT64							MDEntryTimePresenceIndex = PRESENCE_MAP_INDEX1;
+	UINT32							OrigTime;			// id=9412  presence=optional    copy
+	bool							CopyOrigTime; // copy flag
 	bool							AllowOrigTime;
-	char*							OrderSide;			// id=10504  presence=optional  
+	const UINT64							OrigTimePresenceIndex = PRESENCE_MAP_INDEX2;
+	char*							OrderSide;			// id=10504  presence=optional    copy
 	int							OrderSideLength;
+	bool							CopyOrderSide; // copy flag
 	bool							AllowOrderSide;
-	Decimal							MDEntryPx;			// id=270  presence=optional  
+	const UINT64							OrderSidePresenceIndex = PRESENCE_MAP_INDEX3;
+	Decimal							MDEntryPx;			// id=270  presence=optional    copy
+	bool							CopyMDEntryPx; // copy flag
 	bool							AllowMDEntryPx;
-	Decimal							MDEntrySize;			// id=271  presence=optional  
+	const UINT64							MDEntryPxPresenceIndex = PRESENCE_MAP_INDEX4;
+	Decimal							MDEntrySize;			// id=271  presence=optional    copy
+	bool							CopyMDEntrySize; // copy flag
 	bool							AllowMDEntrySize;
-	Decimal							TradeValue;			// id=6143  presence=optional  
+	const UINT64							MDEntrySizePresenceIndex = PRESENCE_MAP_INDEX5;
+	Decimal							TradeValue;			// id=6143  presence=optional    copy
+	bool							CopyTradeValue; // copy flag
 	bool							AllowTradeValue;
-	UINT32							SettlDate;			// id=64  presence=optional  
+	const UINT64							TradeValuePresenceIndex = PRESENCE_MAP_INDEX6;
+	UINT32							SettlDate;			// id=64  presence=optional    copy
+	bool							CopySettlDate; // copy flag
 	bool							AllowSettlDate;
-	char*							SettleType;			// id=5459  presence=optional  
+	const UINT64							SettlDatePresenceIndex = PRESENCE_MAP_INDEX7;
+	char*							SettleType;			// id=5459  presence=optional    copy
 	int							SettleTypeLength;
+	bool							CopySettleType; // copy flag
 	bool							AllowSettleType;
-	Decimal							Price;			// id=44  presence=optional  
+	const UINT64							SettleTypePresenceIndex = PRESENCE_MAP_INDEX8;
+	Decimal							Price;			// id=44  presence=optional    copy
+	bool							CopyPrice; // copy flag
 	bool							AllowPrice;
-	INT32							PriceType;			// id=423  presence=optional  
+	const UINT64							PricePresenceIndex = PRESENCE_MAP_INDEX9;
+	INT32							PriceType;			// id=423  presence=optional    copy
+	bool							CopyPriceType; // copy flag
 	bool							AllowPriceType;
-	Decimal							RepoToPx;			// id=5677  presence=optional  
+	const UINT64							PriceTypePresenceIndex = PRESENCE_MAP_INDEX10;
+	Decimal							RepoToPx;			// id=5677  presence=optional    copy
+	bool							CopyRepoToPx; // copy flag
 	bool							AllowRepoToPx;
-	Decimal							BuyBackPx;			// id=5558  presence=optional  
+	const UINT64							RepoToPxPresenceIndex = PRESENCE_MAP_INDEX11;
+	Decimal							BuyBackPx;			// id=5558  presence=optional    copy
+	bool							CopyBuyBackPx; // copy flag
 	bool							AllowBuyBackPx;
-	UINT32							BuyBackDate;			// id=5559  presence=optional  
+	const UINT64							BuyBackPxPresenceIndex = PRESENCE_MAP_INDEX12;
+	UINT32							BuyBackDate;			// id=5559  presence=optional    copy
+	bool							CopyBuyBackDate; // copy flag
 	bool							AllowBuyBackDate;
-	char*							TradingSessionSubID;			// id=625  presence=optional  
+	const UINT64							BuyBackDatePresenceIndex = PRESENCE_MAP_INDEX13;
+	char*							TradingSessionSubID;			// id=625  presence=optional    copy
 	int							TradingSessionSubIDLength;
+	bool							CopyTradingSessionSubID; // copy flag
 	bool							AllowTradingSessionSubID;
+	const UINT64							TradingSessionSubIDPresenceIndex = PRESENCE_MAP_INDEX14;
+	char*							RefOrderID;			// id=1080  presence=optional    copy
+	int							RefOrderIDLength;
+	bool							CopyRefOrderID; // copy flag
+	bool							AllowRefOrderID;
+	const UINT64							RefOrderIDPresenceIndex = PRESENCE_MAP_INDEX15;
 	UINT32							MDUpdateAction;			// id=279  presence=optional  
 	bool							AllowMDUpdateAction;
 	char*							Symbol;			// id=55  presence=optional  
@@ -1164,6 +1287,7 @@ public:
 	FastTLSCURRItemInfo(){
 		this->Used = false;
 		this->PresenceMap = 0;
+		this->CopyCount = 0;
 		this->MDEntryType = 0;
 		this->MDEntryTypeLength = 0;
 		this->AllowMDEntryID = false;
@@ -1190,6 +1314,9 @@ public:
 		this->AllowTradingSessionSubID = false;
 		this->TradingSessionSubID = 0;
 		this->TradingSessionSubIDLength = 0;
+		this->AllowRefOrderID = false;
+		this->RefOrderID = 0;
+		this->RefOrderIDLength = 0;
 		this->AllowMDUpdateAction = false;
 		this->AllowSymbol = false;
 		this->Symbol = 0;
@@ -1215,6 +1342,7 @@ public:
 class FastTLSCURRInfo{
 public:
 	UINT64							PresenceMap;
+	int							CopyCount;
 	LinkedPointer<FastTLSCURRInfo>							*Pointer;
 	AutoAllocatePointerList<FastTLSCURRInfo>							*Allocator;
 	bool							Used;
@@ -1250,6 +1378,7 @@ public:
 	FastTLSCURRInfo(){
 		this->Used = false;
 		this->PresenceMap = 0;
+		this->CopyCount = 0;
 		this->MessageType = 0;
 		this->MessageTypeLength = 0;
 		this->BeginString = 0;
@@ -1268,308 +1397,9 @@ public:
 		this->Symbol = 0;
 		this->SymbolLength = 0;
 		this->AllowMDSecurityTradingStatus = false;
+		this->GroupMDEntriesCount = 0;
 	}
 	~FastTLSCURRInfo(){ }
-	inline void Clear() {
-		this->Used = false;
-		for(int i = 0; i < this->GroupMDEntriesCount; i++)
-			this->GroupMDEntries[i]->Clear();
-	}
-	inline void ReleaseUnused() {
-		if(this->Used)
-			return;
-
-		for(int i = 0; i < this->GroupMDEntriesCount; i++)
-			this->GroupMDEntries[i]->ReleaseUnused();
-	}
-};
-
-class FastOBSFONDItemInfo{
-public:
-	UINT64							PresenceMap;
-	LinkedPointer<FastOBSFONDItemInfo>							*Pointer;
-	AutoAllocatePointerList<FastOBSFONDItemInfo>							*Allocator;
-	bool							Used;
-	char*							MDEntryType;			// id=269  presence=optional  
-	int							MDEntryTypeLength;
-	bool							AllowMDEntryType;
-	char*							MDEntryID;			// id=278  presence=optional  
-	int							MDEntryIDLength;
-	bool							AllowMDEntryID;
-	Decimal							MDEntryPx;			// id=270  presence=optional  
-	bool							AllowMDEntryPx;
-	Decimal							MDEntrySize;			// id=271  presence=optional  
-	bool							AllowMDEntrySize;
-	UINT32							MDEntryTime;			// id=273  presence=optional  
-	bool							AllowMDEntryTime;
-	UINT32							OrigTime;			// id=9412  presence=optional  
-	bool							AllowOrigTime;
-	Decimal							Yield;			// id=236  presence=optional  
-	bool							AllowYield;
-	UINT32							EffectiveTime;			// id=5902  presence=optional  
-	bool							AllowEffectiveTime;
-	Decimal							NominalValue;			// id=9280  presence=optional  
-	bool							AllowNominalValue;
-	char*							TradingSessionSubID;			// id=625  presence=optional  
-	int							TradingSessionSubIDLength;
-	bool							AllowTradingSessionSubID;
-	UINT32							MDUpdateAction;			// id=279  presence=optional  
-	bool							AllowMDUpdateAction;
-	char*							Symbol;			// id=55  presence=optional  
-	int							SymbolLength;
-	bool							AllowSymbol;
-	INT32							RptSeq;			// id=83  presence=optional  
-	bool							AllowRptSeq;
-	char*							TradingSessionID;			// id=336  presence=optional  
-	int							TradingSessionIDLength;
-	bool							AllowTradingSessionID;
-
-	FastOBSFONDItemInfo(){
-		this->Used = false;
-		this->PresenceMap = 0;
-		this->AllowMDEntryType = false;
-		this->MDEntryType = 0;
-		this->MDEntryTypeLength = 0;
-		this->AllowMDEntryID = false;
-		this->MDEntryID = 0;
-		this->MDEntryIDLength = 0;
-		this->AllowMDEntryPx = false;
-		this->AllowMDEntrySize = false;
-		this->AllowMDEntryTime = false;
-		this->AllowOrigTime = false;
-		this->AllowYield = false;
-		this->AllowEffectiveTime = false;
-		this->AllowNominalValue = false;
-		this->AllowTradingSessionSubID = false;
-		this->TradingSessionSubID = 0;
-		this->TradingSessionSubIDLength = 0;
-		this->AllowMDUpdateAction = false;
-		this->AllowSymbol = false;
-		this->Symbol = 0;
-		this->SymbolLength = 0;
-		this->AllowRptSeq = false;
-		this->AllowTradingSessionID = false;
-		this->TradingSessionID = 0;
-		this->TradingSessionIDLength = 0;
-	}
-	~FastOBSFONDItemInfo(){ }
-	inline void Clear() {
-		this->Used = false;
-		this->Allocator->FreeItem(this->Pointer);
-	}
-	inline void ReleaseUnused() {
-		if(this->Used)
-			return;
-
-		this->Allocator->FreeItem(this->Pointer);
-	}
-};
-
-class FastOBSFONDInfo{
-public:
-	UINT64							PresenceMap;
-	LinkedPointer<FastOBSFONDInfo>							*Pointer;
-	AutoAllocatePointerList<FastOBSFONDInfo>							*Allocator;
-	bool							Used;
-	char*							MessageType;			// id=35    constant has constant value = W
-	int							MessageTypeLength;
-	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
-	int							BeginStringLength;
-	char*							ApplVerID;			// id=1128    constant has constant value = 9
-	int							ApplVerIDLength;
-	char*							SenderCompID;			// id=49    constant has constant value = MOEX
-	int							SenderCompIDLength;
-	UINT32							MsgSeqNum;			// id=34  
-	UINT64							SendingTime;			// id=52  
-	UINT32							LastMsgSeqNumProcessed;			// id=369  presence=optional  
-	bool							AllowLastMsgSeqNumProcessed;
-	INT32							RptSeq;			// id=83  
-	INT32							TradSesStatus;			// id=340  presence=optional  
-	bool							AllowTradSesStatus;
-	char*							TradingSessionID;			// id=336  presence=optional  
-	int							TradingSessionIDLength;
-	bool							AllowTradingSessionID;
-	char*							Symbol;			// id=55  
-	int							SymbolLength;
-	UINT32							LastFragment;			// id=893  presence=optional  
-	bool							AllowLastFragment;
-	UINT32							RouteFirst;			// id=7944  presence=optional  
-	bool							AllowRouteFirst;
-	INT32							MDSecurityTradingStatus;			// id=1682  presence=optional  
-	bool							AllowMDSecurityTradingStatus;
-	UINT32							AuctionIndicator;			// id=5509  presence=optional  
-	bool							AllowAuctionIndicator;
-	int							GroupMDEntriesCount;
-	FastOBSFONDItemInfo* GroupMDEntries[64];
-
-	FastOBSFONDInfo(){
-		this->Used = false;
-		this->PresenceMap = 0;
-		this->MessageType = 0;
-		this->MessageTypeLength = 0;
-		this->BeginString = 0;
-		this->BeginStringLength = 0;
-		this->ApplVerID = 0;
-		this->ApplVerIDLength = 0;
-		this->SenderCompID = 0;
-		this->SenderCompIDLength = 0;
-		this->AllowLastMsgSeqNumProcessed = false;
-		this->AllowTradSesStatus = false;
-		this->AllowTradingSessionID = false;
-		this->TradingSessionID = 0;
-		this->TradingSessionIDLength = 0;
-		this->Symbol = 0;
-		this->SymbolLength = 0;
-		this->AllowLastFragment = false;
-		this->AllowRouteFirst = false;
-		this->AllowMDSecurityTradingStatus = false;
-		this->AllowAuctionIndicator = false;
-	}
-	~FastOBSFONDInfo(){ }
-	inline void Clear() {
-		this->Used = false;
-		for(int i = 0; i < this->GroupMDEntriesCount; i++)
-			this->GroupMDEntries[i]->Clear();
-	}
-	inline void ReleaseUnused() {
-		if(this->Used)
-			return;
-
-		for(int i = 0; i < this->GroupMDEntriesCount; i++)
-			this->GroupMDEntries[i]->ReleaseUnused();
-	}
-};
-
-class FastOBSCURRItemInfo{
-public:
-	UINT64							PresenceMap;
-	LinkedPointer<FastOBSCURRItemInfo>							*Pointer;
-	AutoAllocatePointerList<FastOBSCURRItemInfo>							*Allocator;
-	bool							Used;
-	char*							MDEntryType;			// id=269  presence=optional  
-	int							MDEntryTypeLength;
-	bool							AllowMDEntryType;
-	char*							MDEntryID;			// id=278  presence=optional  
-	int							MDEntryIDLength;
-	bool							AllowMDEntryID;
-	Decimal							MDEntryPx;			// id=270  presence=optional  
-	bool							AllowMDEntryPx;
-	Decimal							MDEntrySize;			// id=271  presence=optional  
-	bool							AllowMDEntrySize;
-	UINT32							MDEntryTime;			// id=273  presence=optional  
-	bool							AllowMDEntryTime;
-	UINT32							OrigTime;			// id=9412  presence=optional  
-	bool							AllowOrigTime;
-	char*							TradingSessionSubID;			// id=625  presence=optional  
-	int							TradingSessionSubIDLength;
-	bool							AllowTradingSessionSubID;
-	UINT32							MDUpdateAction;			// id=279  presence=optional  
-	bool							AllowMDUpdateAction;
-	char*							Symbol;			// id=55  presence=optional  
-	int							SymbolLength;
-	bool							AllowSymbol;
-	INT32							RptSeq;			// id=83  presence=optional  
-	bool							AllowRptSeq;
-	char*							TradingSessionID;			// id=336  presence=optional  
-	int							TradingSessionIDLength;
-	bool							AllowTradingSessionID;
-
-	FastOBSCURRItemInfo(){
-		this->Used = false;
-		this->PresenceMap = 0;
-		this->AllowMDEntryType = false;
-		this->MDEntryType = 0;
-		this->MDEntryTypeLength = 0;
-		this->AllowMDEntryID = false;
-		this->MDEntryID = 0;
-		this->MDEntryIDLength = 0;
-		this->AllowMDEntryPx = false;
-		this->AllowMDEntrySize = false;
-		this->AllowMDEntryTime = false;
-		this->AllowOrigTime = false;
-		this->AllowTradingSessionSubID = false;
-		this->TradingSessionSubID = 0;
-		this->TradingSessionSubIDLength = 0;
-		this->AllowMDUpdateAction = false;
-		this->AllowSymbol = false;
-		this->Symbol = 0;
-		this->SymbolLength = 0;
-		this->AllowRptSeq = false;
-		this->AllowTradingSessionID = false;
-		this->TradingSessionID = 0;
-		this->TradingSessionIDLength = 0;
-	}
-	~FastOBSCURRItemInfo(){ }
-	inline void Clear() {
-		this->Used = false;
-		this->Allocator->FreeItem(this->Pointer);
-	}
-	inline void ReleaseUnused() {
-		if(this->Used)
-			return;
-
-		this->Allocator->FreeItem(this->Pointer);
-	}
-};
-
-class FastOBSCURRInfo{
-public:
-	UINT64							PresenceMap;
-	LinkedPointer<FastOBSCURRInfo>							*Pointer;
-	AutoAllocatePointerList<FastOBSCURRInfo>							*Allocator;
-	bool							Used;
-	char*							MessageType;			// id=35    constant has constant value = W
-	int							MessageTypeLength;
-	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
-	int							BeginStringLength;
-	char*							ApplVerID;			// id=1128    constant has constant value = 9
-	int							ApplVerIDLength;
-	char*							SenderCompID;			// id=49    constant has constant value = MOEX
-	int							SenderCompIDLength;
-	UINT32							MsgSeqNum;			// id=34  
-	UINT64							SendingTime;			// id=52  
-	UINT32							LastMsgSeqNumProcessed;			// id=369  presence=optional  
-	bool							AllowLastMsgSeqNumProcessed;
-	INT32							RptSeq;			// id=83  
-	INT32							TradSesStatus;			// id=340  presence=optional  
-	bool							AllowTradSesStatus;
-	char*							TradingSessionID;			// id=336  presence=optional  
-	int							TradingSessionIDLength;
-	bool							AllowTradingSessionID;
-	char*							Symbol;			// id=55  
-	int							SymbolLength;
-	UINT32							LastFragment;			// id=893  presence=optional  
-	bool							AllowLastFragment;
-	UINT32							RouteFirst;			// id=7944  presence=optional  
-	bool							AllowRouteFirst;
-	INT32							MDSecurityTradingStatus;			// id=1682  presence=optional  
-	bool							AllowMDSecurityTradingStatus;
-	int							GroupMDEntriesCount;
-	FastOBSCURRItemInfo* GroupMDEntries[64];
-
-	FastOBSCURRInfo(){
-		this->Used = false;
-		this->PresenceMap = 0;
-		this->MessageType = 0;
-		this->MessageTypeLength = 0;
-		this->BeginString = 0;
-		this->BeginStringLength = 0;
-		this->ApplVerID = 0;
-		this->ApplVerIDLength = 0;
-		this->SenderCompID = 0;
-		this->SenderCompIDLength = 0;
-		this->AllowLastMsgSeqNumProcessed = false;
-		this->AllowTradSesStatus = false;
-		this->AllowTradingSessionID = false;
-		this->TradingSessionID = 0;
-		this->TradingSessionIDLength = 0;
-		this->Symbol = 0;
-		this->SymbolLength = 0;
-		this->AllowLastFragment = false;
-		this->AllowRouteFirst = false;
-		this->AllowMDSecurityTradingStatus = false;
-	}
-	~FastOBSCURRInfo(){ }
 	inline void Clear() {
 		this->Used = false;
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
@@ -1587,6 +1417,7 @@ public:
 class FastIncrementalMSRFONDInfo{
 public:
 	UINT64							PresenceMap;
+	int							CopyCount;
 	LinkedPointer<FastIncrementalMSRFONDInfo>							*Pointer;
 	AutoAllocatePointerList<FastIncrementalMSRFONDInfo>							*Allocator;
 	bool							Used;
@@ -1606,6 +1437,7 @@ public:
 	FastIncrementalMSRFONDInfo(){
 		this->Used = false;
 		this->PresenceMap = 0;
+		this->CopyCount = 0;
 		this->MessageType = 0;
 		this->MessageTypeLength = 0;
 		this->ApplVerID = 0;
@@ -1614,6 +1446,7 @@ public:
 		this->BeginStringLength = 0;
 		this->SenderCompID = 0;
 		this->SenderCompIDLength = 0;
+		this->GroupMDEntriesCount = 0;
 	}
 	~FastIncrementalMSRFONDInfo(){ }
 	inline void Clear() {
@@ -1633,6 +1466,7 @@ public:
 class FastIncrementalMSRCURRInfo{
 public:
 	UINT64							PresenceMap;
+	int							CopyCount;
 	LinkedPointer<FastIncrementalMSRCURRInfo>							*Pointer;
 	AutoAllocatePointerList<FastIncrementalMSRCURRInfo>							*Allocator;
 	bool							Used;
@@ -1652,6 +1486,7 @@ public:
 	FastIncrementalMSRCURRInfo(){
 		this->Used = false;
 		this->PresenceMap = 0;
+		this->CopyCount = 0;
 		this->MessageType = 0;
 		this->MessageTypeLength = 0;
 		this->ApplVerID = 0;
@@ -1660,6 +1495,7 @@ public:
 		this->BeginStringLength = 0;
 		this->SenderCompID = 0;
 		this->SenderCompIDLength = 0;
+		this->GroupMDEntriesCount = 0;
 	}
 	~FastIncrementalMSRCURRInfo(){ }
 	inline void Clear() {
@@ -1679,6 +1515,7 @@ public:
 class FastIncrementalOLRFONDInfo{
 public:
 	UINT64							PresenceMap;
+	int							CopyCount;
 	LinkedPointer<FastIncrementalOLRFONDInfo>							*Pointer;
 	AutoAllocatePointerList<FastIncrementalOLRFONDInfo>							*Allocator;
 	bool							Used;
@@ -1698,6 +1535,7 @@ public:
 	FastIncrementalOLRFONDInfo(){
 		this->Used = false;
 		this->PresenceMap = 0;
+		this->CopyCount = 0;
 		this->MessageType = 0;
 		this->MessageTypeLength = 0;
 		this->ApplVerID = 0;
@@ -1706,6 +1544,7 @@ public:
 		this->BeginStringLength = 0;
 		this->SenderCompID = 0;
 		this->SenderCompIDLength = 0;
+		this->GroupMDEntriesCount = 0;
 	}
 	~FastIncrementalOLRFONDInfo(){ }
 	inline void Clear() {
@@ -1725,6 +1564,7 @@ public:
 class FastIncrementalOLRCURRInfo{
 public:
 	UINT64							PresenceMap;
+	int							CopyCount;
 	LinkedPointer<FastIncrementalOLRCURRInfo>							*Pointer;
 	AutoAllocatePointerList<FastIncrementalOLRCURRInfo>							*Allocator;
 	bool							Used;
@@ -1744,6 +1584,7 @@ public:
 	FastIncrementalOLRCURRInfo(){
 		this->Used = false;
 		this->PresenceMap = 0;
+		this->CopyCount = 0;
 		this->MessageType = 0;
 		this->MessageTypeLength = 0;
 		this->ApplVerID = 0;
@@ -1752,100 +1593,9 @@ public:
 		this->BeginStringLength = 0;
 		this->SenderCompID = 0;
 		this->SenderCompIDLength = 0;
+		this->GroupMDEntriesCount = 0;
 	}
 	~FastIncrementalOLRCURRInfo(){ }
-	inline void Clear() {
-		this->Used = false;
-		for(int i = 0; i < this->GroupMDEntriesCount; i++)
-			this->GroupMDEntries[i]->Clear();
-	}
-	inline void ReleaseUnused() {
-		if(this->Used)
-			return;
-
-		for(int i = 0; i < this->GroupMDEntriesCount; i++)
-			this->GroupMDEntries[i]->ReleaseUnused();
-	}
-};
-
-class FastIncrementalOBRFONDInfo{
-public:
-	UINT64							PresenceMap;
-	LinkedPointer<FastIncrementalOBRFONDInfo>							*Pointer;
-	AutoAllocatePointerList<FastIncrementalOBRFONDInfo>							*Allocator;
-	bool							Used;
-	char*							MessageType;			// id=35    constant has constant value = X
-	int							MessageTypeLength;
-	char*							ApplVerID;			// id=1128    constant has constant value = 9
-	int							ApplVerIDLength;
-	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
-	int							BeginStringLength;
-	char*							SenderCompID;			// id=49    constant has constant value = MOEX
-	int							SenderCompIDLength;
-	UINT32							MsgSeqNum;			// id=34  
-	UINT64							SendingTime;			// id=52  
-	int							GroupMDEntriesCount;
-	FastOBSFONDItemInfo* GroupMDEntries[64];
-
-	FastIncrementalOBRFONDInfo(){
-		this->Used = false;
-		this->PresenceMap = 0;
-		this->MessageType = 0;
-		this->MessageTypeLength = 0;
-		this->ApplVerID = 0;
-		this->ApplVerIDLength = 0;
-		this->BeginString = 0;
-		this->BeginStringLength = 0;
-		this->SenderCompID = 0;
-		this->SenderCompIDLength = 0;
-	}
-	~FastIncrementalOBRFONDInfo(){ }
-	inline void Clear() {
-		this->Used = false;
-		for(int i = 0; i < this->GroupMDEntriesCount; i++)
-			this->GroupMDEntries[i]->Clear();
-	}
-	inline void ReleaseUnused() {
-		if(this->Used)
-			return;
-
-		for(int i = 0; i < this->GroupMDEntriesCount; i++)
-			this->GroupMDEntries[i]->ReleaseUnused();
-	}
-};
-
-class FastIncrementalOBRCURRInfo{
-public:
-	UINT64							PresenceMap;
-	LinkedPointer<FastIncrementalOBRCURRInfo>							*Pointer;
-	AutoAllocatePointerList<FastIncrementalOBRCURRInfo>							*Allocator;
-	bool							Used;
-	char*							MessageType;			// id=35    constant has constant value = X
-	int							MessageTypeLength;
-	char*							ApplVerID;			// id=1128    constant has constant value = 9
-	int							ApplVerIDLength;
-	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
-	int							BeginStringLength;
-	char*							SenderCompID;			// id=49    constant has constant value = MOEX
-	int							SenderCompIDLength;
-	UINT32							MsgSeqNum;			// id=34  
-	UINT64							SendingTime;			// id=52  
-	int							GroupMDEntriesCount;
-	FastOBSCURRItemInfo* GroupMDEntries[64];
-
-	FastIncrementalOBRCURRInfo(){
-		this->Used = false;
-		this->PresenceMap = 0;
-		this->MessageType = 0;
-		this->MessageTypeLength = 0;
-		this->ApplVerID = 0;
-		this->ApplVerIDLength = 0;
-		this->BeginString = 0;
-		this->BeginStringLength = 0;
-		this->SenderCompID = 0;
-		this->SenderCompIDLength = 0;
-	}
-	~FastIncrementalOBRCURRInfo(){ }
 	inline void Clear() {
 		this->Used = false;
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
@@ -1863,6 +1613,7 @@ public:
 class FastIncrementalTLRFONDInfo{
 public:
 	UINT64							PresenceMap;
+	int							CopyCount;
 	LinkedPointer<FastIncrementalTLRFONDInfo>							*Pointer;
 	AutoAllocatePointerList<FastIncrementalTLRFONDInfo>							*Allocator;
 	bool							Used;
@@ -1882,6 +1633,7 @@ public:
 	FastIncrementalTLRFONDInfo(){
 		this->Used = false;
 		this->PresenceMap = 0;
+		this->CopyCount = 0;
 		this->MessageType = 0;
 		this->MessageTypeLength = 0;
 		this->ApplVerID = 0;
@@ -1890,6 +1642,7 @@ public:
 		this->BeginStringLength = 0;
 		this->SenderCompID = 0;
 		this->SenderCompIDLength = 0;
+		this->GroupMDEntriesCount = 0;
 	}
 	~FastIncrementalTLRFONDInfo(){ }
 	inline void Clear() {
@@ -1909,6 +1662,7 @@ public:
 class FastIncrementalTLRCURRInfo{
 public:
 	UINT64							PresenceMap;
+	int							CopyCount;
 	LinkedPointer<FastIncrementalTLRCURRInfo>							*Pointer;
 	AutoAllocatePointerList<FastIncrementalTLRCURRInfo>							*Allocator;
 	bool							Used;
@@ -1928,6 +1682,7 @@ public:
 	FastIncrementalTLRCURRInfo(){
 		this->Used = false;
 		this->PresenceMap = 0;
+		this->CopyCount = 0;
 		this->MessageType = 0;
 		this->MessageTypeLength = 0;
 		this->ApplVerID = 0;
@@ -1936,6 +1691,7 @@ public:
 		this->BeginStringLength = 0;
 		this->SenderCompID = 0;
 		this->SenderCompIDLength = 0;
+		this->GroupMDEntriesCount = 0;
 	}
 	~FastIncrementalTLRCURRInfo(){ }
 	inline void Clear() {
@@ -1955,6 +1711,7 @@ public:
 class FastSecurityDefinitionGroupInstrAttribItemInfo{
 public:
 	UINT64							PresenceMap;
+	int							CopyCount;
 	LinkedPointer<FastSecurityDefinitionGroupInstrAttribItemInfo>							*Pointer;
 	AutoAllocatePointerList<FastSecurityDefinitionGroupInstrAttribItemInfo>							*Allocator;
 	bool							Used;
@@ -1966,6 +1723,7 @@ public:
 	FastSecurityDefinitionGroupInstrAttribItemInfo(){
 		this->Used = false;
 		this->PresenceMap = 0;
+		this->CopyCount = 0;
 		this->AllowInstrAttribValue = false;
 	}
 	~FastSecurityDefinitionGroupInstrAttribItemInfo(){ }
@@ -1984,6 +1742,7 @@ public:
 class FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo{
 public:
 	UINT64							PresenceMap;
+	int							CopyCount;
 	LinkedPointer<FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo>							*Pointer;
 	AutoAllocatePointerList<FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo>							*Allocator;
 	bool							Used;
@@ -2000,6 +1759,7 @@ public:
 	FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo(){
 		this->Used = false;
 		this->PresenceMap = 0;
+		this->CopyCount = 0;
 		this->TradingSessionID = 0;
 		this->TradingSessionIDLength = 0;
 		this->AllowTradingSessionSubID = false;
@@ -2024,6 +1784,7 @@ public:
 class FastSecurityDefinitionMarketSegmentGrpItemInfo{
 public:
 	UINT64							PresenceMap;
+	int							CopyCount;
 	LinkedPointer<FastSecurityDefinitionMarketSegmentGrpItemInfo>							*Pointer;
 	AutoAllocatePointerList<FastSecurityDefinitionMarketSegmentGrpItemInfo>							*Allocator;
 	bool							Used;
@@ -2036,8 +1797,10 @@ public:
 	FastSecurityDefinitionMarketSegmentGrpItemInfo(){
 		this->Used = false;
 		this->PresenceMap = 0;
+		this->CopyCount = 0;
 		this->AllowRoundLot = false;
 		this->AllowTradingSessionRulesGrp = false;
+		this->TradingSessionRulesGrpCount = 0;
 	}
 	~FastSecurityDefinitionMarketSegmentGrpItemInfo(){ }
 	inline void Clear() {
@@ -2059,6 +1822,7 @@ public:
 class FastSecurityDefinitionInfo{
 public:
 	UINT64							PresenceMap;
+	int							CopyCount;
 	LinkedPointer<FastSecurityDefinitionInfo>							*Pointer;
 	AutoAllocatePointerList<FastSecurityDefinitionInfo>							*Allocator;
 	bool							Used;
@@ -2174,6 +1938,7 @@ public:
 	FastSecurityDefinitionInfo(){
 		this->Used = false;
 		this->PresenceMap = 0;
+		this->CopyCount = 0;
 		this->MessageType = 0;
 		this->MessageTypeLength = 0;
 		this->ApplVerID = 0;
@@ -2207,10 +1972,12 @@ public:
 		this->AllowEncodedSecurityDesc = false;
 		this->AllowQuoteText = false;
 		this->AllowGroupInstrAttrib = false;
+		this->GroupInstrAttribCount = 0;
 		this->AllowCurrency = false;
 		this->Currency = 0;
 		this->CurrencyLength = 0;
 		this->AllowMarketSegmentGrp = false;
+		this->MarketSegmentGrpCount = 0;
 		this->AllowSettlCurrency = false;
 		this->SettlCurrency = 0;
 		this->SettlCurrencyLength = 0;
@@ -2257,6 +2024,7 @@ public:
 class FastSecurityStatusInfo{
 public:
 	UINT64							PresenceMap;
+	int							CopyCount;
 	LinkedPointer<FastSecurityStatusInfo>							*Pointer;
 	AutoAllocatePointerList<FastSecurityStatusInfo>							*Allocator;
 	bool							Used;
@@ -2286,6 +2054,7 @@ public:
 	FastSecurityStatusInfo(){
 		this->Used = false;
 		this->PresenceMap = 0;
+		this->CopyCount = 0;
 		this->MessageType = 0;
 		this->MessageTypeLength = 0;
 		this->ApplVerID = 0;
@@ -2319,6 +2088,7 @@ public:
 class FastTradingSessionStatusInfo{
 public:
 	UINT64							PresenceMap;
+	int							CopyCount;
 	LinkedPointer<FastTradingSessionStatusInfo>							*Pointer;
 	AutoAllocatePointerList<FastTradingSessionStatusInfo>							*Allocator;
 	bool							Used;
@@ -2342,6 +2112,7 @@ public:
 	FastTradingSessionStatusInfo(){
 		this->Used = false;
 		this->PresenceMap = 0;
+		this->CopyCount = 0;
 		this->MessageType = 0;
 		this->MessageTypeLength = 0;
 		this->ApplVerID = 0;
@@ -2370,6 +2141,7 @@ public:
 class FastHeartbeatInfo{
 public:
 	UINT64							PresenceMap;
+	int							CopyCount;
 	LinkedPointer<FastHeartbeatInfo>							*Pointer;
 	AutoAllocatePointerList<FastHeartbeatInfo>							*Allocator;
 	bool							Used;
@@ -2385,6 +2157,7 @@ public:
 	FastHeartbeatInfo(){
 		this->Used = false;
 		this->PresenceMap = 0;
+		this->CopyCount = 0;
 		this->MessageType = 0;
 		this->MessageTypeLength = 0;
 		this->BeginString = 0;
