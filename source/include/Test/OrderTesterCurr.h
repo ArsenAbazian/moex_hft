@@ -4168,6 +4168,52 @@ public:
         Test_Clear_SellQuotes();
     }
 
+    void Test_Aggregation_Logic() {
+        this->Clear();
+
+        OrderInfo<FastOLSCURRItemInfo> *item = this->m_table->Add("s1", "t1");
+
+        FastOLSCURRItemInfo *info = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 100, 0, 200, 0, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "e1", 1);
+        item->ProcessIncrementalMessage(info);
+
+        if(item->AggregatedBuyQuotes()->Count() != 1)
+            throw;
+        if(!item->AggregatedBuyQuotes()->Item(0)->Price()->Equal(100, 0))
+            throw;
+        if(item->AggregatedBuyQuotes()->Item(0)->Size() != 200)
+            throw;
+
+        info = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 100, 0, 100, 0, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "e2", 2);
+        item->ProcessIncrementalMessage(info);
+
+        if(item->AggregatedBuyQuotes()->Count() != 1)
+            throw;
+        if(!item->AggregatedBuyQuotes()->Item(0)->Price()->Equal(100, 0))
+            throw;
+        if(item->AggregatedBuyQuotes()->Item(0)->Size() != 300)
+            throw;
+
+        info = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 100, 0, 50, 0, MDUpdateAction::mduaDelete, MDEntryType::mdetBuyQuote, "e2", 3);
+        item->ProcessIncrementalMessage(info);
+
+        if(item->AggregatedBuyQuotes()->Count() != 1)
+            throw;
+        if(!item->AggregatedBuyQuotes()->Item(0)->Price()->Equal(100, 0))
+            throw;
+        if(item->AggregatedBuyQuotes()->Item(0)->Size() != 200)
+            throw;
+
+        info = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 100, 0, 50, 0, MDUpdateAction::mduaChange, MDEntryType::mdetBuyQuote, "e1", 4);
+        item->ProcessIncrementalMessage(info);
+
+        if(item->AggregatedBuyQuotes()->Count() != 1)
+            throw;
+        if(!item->AggregatedBuyQuotes()->Item(0)->Price()->Equal(100, 0))
+            throw;
+        if(item->AggregatedBuyQuotes()->Item(0)->Size() != 50)
+            throw;
+    }
+
     void Test_Aggregated() {
         this->m_helper->SetCurrMode();
         printf("OLR CURR Test_OnIncrementalRefresh_OLR_CURR\n");
@@ -4178,6 +4224,8 @@ public:
         Test_OnIncrementalRefresh_OLR_CURR_SellQuotes_Aggregated();
         printf("OLR CURR Test_OnFullRefresh_OBS_CURR_SellQuotes\n");
         Test_OnFullRefresh_OBS_CURR_SellQuotes_Aggregated();
+        printf("OLR CURR Test_Aggregation_Logic\n");
+        Test_Aggregation_Logic();
     }
     
     

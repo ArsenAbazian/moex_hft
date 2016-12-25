@@ -66,19 +66,19 @@ public:
     }
 
     void TestDefaults() {
-        if(this->idf->ConnectionsToRecvSymbolsCount() != 8)
+        if(this->idf->ConnectionsToRecvSymbolsCount() != 6)
             throw;
-        if(this->idf->ConnectionsToRecvSymbols()[2] != this->olr)
+        if(this->idf->ConnectionsToRecvSymbols()[0] != this->olr)
             throw;
-        if(this->idf->ConnectionsToRecvSymbols()[3] != this->ols)
+        if(this->idf->ConnectionsToRecvSymbols()[1] != this->ols)
             throw;
-        if(this->idf->ConnectionsToRecvSymbols()[4] != this->msr)
+        if(this->idf->ConnectionsToRecvSymbols()[2] != this->msr)
             throw;
-        if(this->idf->ConnectionsToRecvSymbols()[5] != this->mss)
+        if(this->idf->ConnectionsToRecvSymbols()[3] != this->mss)
             throw;
-        if(this->idf->ConnectionsToRecvSymbols()[6] != this->tlr)
+        if(this->idf->ConnectionsToRecvSymbols()[4] != this->tlr)
             throw;
-        if(this->idf->ConnectionsToRecvSymbols()[7] != this->tls)
+        if(this->idf->ConnectionsToRecvSymbols()[5] != this->tls)
             throw;
         if(this->idf->Type() != FeedConnectionType::InstrumentDefinition)
             throw;
