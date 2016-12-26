@@ -32,6 +32,7 @@ public:
         delete this->m_items;
     }
     inline int Count() { return this->m_count; }
+    inline int SessionCount() { return this->m_count; }
     inline T* Session(int index) { return this->m_items[index]; }
     inline T* GetSession(const char *session, int sessionLength) {
         T **item = this->m_items;
@@ -46,6 +47,12 @@ public:
     }
     inline void SecurityDefinition(FastSecurityDefinitionInfo *info) { this->m_securityDefinition = info; }
     inline FastSecurityDefinitionInfo* SecurityDefinition() { return this->m_securityDefinition; }
+    inline void AppendSecurityDefinition(FastSecurityDefinitionInfo *info) {
+        for(int i = 0; i < info->MarketSegmentGrpCount; i++) {
+            info->MarketSegmentGrp[i]->Used = true;
+            this->m_securityDefinition->MarketSegmentGrp[this->m_securityDefinition->MarketSegmentGrpCount] = info->MarketSegmentGrp[i];
+        }
+    }
     inline SizedArray *Symbol() { return this->m_symbol; }
     inline bool Equals(const char *symbol, int symbolLen) { return this->m_symbol->Equal(symbol, symbolLen); }
     inline void Clear() {

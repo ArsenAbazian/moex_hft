@@ -75,15 +75,109 @@ public:
         this->m_helper->AddTradingSession(info, 1, "t3");
         this->m_helper->AddTradingSession(info, 1, "t4");
 
+        if(info->MarketSegmentGrpCount != 2)
+            throw;
+
         if(!this->idf->ProcessSecurityDefinition(info))
             throw;
 
-        if(this->olr->OrderFond()->SymbolsCount() != 4)
+        if(this->olr->OrderFond()->SymbolsCount() != 1)
             throw;
-        if(this->tlr->OrderFond()->SymbolsCount() != 4)
+        if(this->tlr->TradeFond()->SymbolsCount() != 1)
             throw;
-        if(this->msr->OrderFond()->SymbolsCount() != 4)
+        if(this->msr->StatisticFond()->SymbolsCount() != 1)
             throw;
+
+        if(this->olr->OrderFond()->Symbol(0)->SessionCount() != 4)
+            throw;
+        if(this->tlr->TradeFond()->Symbol(0)->SessionCount() != 4)
+            throw;
+        if(this->msr->StatisticFond()->Symbol(0)->SessionCount() != 4)
+            throw;
+
+        if(!this->olr->OrderFond()->Symbol(0)->SecurityDefinition()->Used)
+            throw;
+        if(!this->tlr->TradeFond()->Symbol(0)->SecurityDefinition()->Used)
+            throw;
+        if(!this->msr->StatisticFond()->Symbol(0)->SecurityDefinition()->Used)
+            throw;
+
+        for(int i = 0; i < info->MarketSegmentGrpCount; i++) {
+            if(!this->olr->OrderFond()->Symbol(0)->SecurityDefinition()->MarketSegmentGrp[i]->Used)
+                throw;
+            if(!this->tlr->TradeFond()->Symbol(0)->SecurityDefinition()->MarketSegmentGrp[i]->Used)
+                throw;
+            if(!this->msr->StatisticFond()->Symbol(0)->SecurityDefinition()->MarketSegmentGrp[i]->Used)
+                throw;
+            for(int j = 0; j < info->MarketSegmentGrp[i]->TradingSessionRulesGrpCount; j++) {
+                if(!this->olr->OrderFond()->Symbol(0)->SecurityDefinition()->MarketSegmentGrp[i]->TradingSessionRulesGrp[j]->Used)
+                    throw;
+                if(!this->tlr->TradeFond()->Symbol(0)->SecurityDefinition()->MarketSegmentGrp[i]->TradingSessionRulesGrp[j]->Used)
+                    throw;
+                if(!this->msr->StatisticFond()->Symbol(0)->SecurityDefinition()->MarketSegmentGrp[i]->TradingSessionRulesGrp[j]->Used)
+                    throw;
+            }
+        }
+
+        FastSecurityDefinitionInfo *info2 = this->m_helper->CreateSecurityDefinitionInfo("s1");
+        this->m_helper->AddMarketSegemntGroup(info2);
+        this->m_helper->AddMarketSegemntGroup(info2);
+
+        this->m_helper->AddTradingSession(info2, 0, "t5");
+        this->m_helper->AddTradingSession(info2, 0, "t6");
+        this->m_helper->AddTradingSession(info2, 1, "t7");
+        this->m_helper->AddTradingSession(info2, 1, "t8");
+
+        if(!this->idf->ProcessSecurityDefinition(info))
+            throw;
+
+        if(this->olr->OrderFond()->SymbolsCount() != 1)
+            throw;
+        if(this->tlr->TradeFond()->SymbolsCount() != 1)
+            throw;
+        if(this->msr->StatisticFond()->SymbolsCount() != 1)
+            throw;
+
+        if(this->olr->OrderFond()->Symbol(0)->SessionCount() != 8)
+            throw;
+        if(this->tlr->TradeFond()->Symbol(0)->SessionCount() != 8)
+            throw;
+        if(this->msr->StatisticFond()->Symbol(0)->SessionCount() != 8)
+            throw;
+
+        if(!this->olr->OrderFond()->Symbol(0)->SecurityDefinition()->Used)
+            throw;
+        if(!this->tlr->TradeFond()->Symbol(0)->SecurityDefinition()->Used)
+            throw;
+        if(!this->msr->StatisticFond()->Symbol(0)->SecurityDefinition()->Used)
+            throw;
+
+        if(this->olr->OrderFond()->Symbol(0)->SecurityDefinition() != info)
+            throw;
+        if(this->tlr->TradeFond()->Symbol(0)->SecurityDefinition() != info)
+            throw;
+        if(this->msr->StatisticFond()->Symbol(0)->SecurityDefinition() != info)
+            throw;
+
+        if(info->MarketSegmentGrpCount != 4)
+            throw;
+
+        for(int i = 0; i < info->MarketSegmentGrpCount; i++) {
+            if(!this->olr->OrderFond()->Symbol(0)->SecurityDefinition()->MarketSegmentGrp[i]->Used)
+                throw;
+            if(!this->tlr->TradeFond()->Symbol(0)->SecurityDefinition()->MarketSegmentGrp[i]->Used)
+                throw;
+            if(!this->msr->StatisticFond()->Symbol(0)->SecurityDefinition()->MarketSegmentGrp[i]->Used)
+                throw;
+            for(int j = 0; j < info->MarketSegmentGrp[i]->TradingSessionRulesGrpCount; j++) {
+                if(!this->olr->OrderFond()->Symbol(0)->SecurityDefinition()->MarketSegmentGrp[i]->TradingSessionRulesGrp[j]->Used)
+                    throw;
+                if(!this->tlr->TradeFond()->Symbol(0)->SecurityDefinition()->MarketSegmentGrp[i]->TradingSessionRulesGrp[j]->Used)
+                    throw;
+                if(!this->msr->StatisticFond()->Symbol(0)->SecurityDefinition()->MarketSegmentGrp[i]->TradingSessionRulesGrp[j]->Used)
+                    throw;
+            }
+        }
     }
 
     void Test() {

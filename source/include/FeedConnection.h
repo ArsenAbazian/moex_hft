@@ -1106,6 +1106,8 @@ public:
             MarketSymbolInfo<OrderInfo<FastOLSFONDItemInfo>> *symbol = this->m_orderTableFond->AddSymbol(info->Symbol, info->SymbolLength);
             if(symbol->SecurityDefinition() == 0)
                 symbol->SecurityDefinition(info);
+            else
+                symbol->AppendSecurityDefinition(info);
             symbol->AddSession(trading->TradingSessionID, trading->TradingSessionIDLength);
             return;
         }
@@ -1113,6 +1115,8 @@ public:
             MarketSymbolInfo<OrderInfo<FastOLSCURRItemInfo>> *symbol = this->m_orderTableCurr->AddSymbol(info->Symbol, info->SymbolLength);
             if(symbol->SecurityDefinition() == 0)
                 symbol->SecurityDefinition(info);
+            else
+                symbol->AppendSecurityDefinition(info);
             symbol->AddSession(trading->TradingSessionID, trading->TradingSessionIDLength);
             return;
         }
@@ -1120,6 +1124,8 @@ public:
             MarketSymbolInfo<TradeInfo<FastTLSFONDItemInfo>> *symbol = this->m_tradeTableFond->AddSymbol(info->Symbol, info->SymbolLength);
             if(symbol->SecurityDefinition() == 0)
                 symbol->SecurityDefinition(info);
+            else
+                symbol->AppendSecurityDefinition(info);
             symbol->AddSession(trading->TradingSessionID, trading->TradingSessionIDLength);
             return;
         }
@@ -1127,6 +1133,8 @@ public:
             MarketSymbolInfo<TradeInfo<FastTLSCURRItemInfo>> *symbol = this->m_tradeTableCurr->AddSymbol(info->Symbol, info->SymbolLength);
             if(symbol->SecurityDefinition() == 0)
                 symbol->SecurityDefinition(info);
+            else
+                symbol->AppendSecurityDefinition(info);
             symbol->AddSession(trading->TradingSessionID, trading->TradingSessionIDLength);
             return;
         }
@@ -1134,6 +1142,8 @@ public:
             MarketSymbolInfo<StatisticsInfo<FastGenericItemInfo>> *symbol = this->m_statTableFond->AddSymbol(info->Symbol, info->SymbolLength);
             if(symbol->SecurityDefinition() == 0)
                 symbol->SecurityDefinition(info);
+            else
+                symbol->AppendSecurityDefinition(info);
             symbol->AddSession(trading->TradingSessionID, trading->TradingSessionIDLength);
             return;
         }
@@ -1141,6 +1151,8 @@ public:
             MarketSymbolInfo<StatisticsInfo<FastGenericItemInfo>> *symbol = this->m_statTableCurr->AddSymbol(info->Symbol, info->SymbolLength);
             if(symbol->SecurityDefinition() == 0)
                 symbol->SecurityDefinition(info);
+            else
+                symbol->AppendSecurityDefinition(info);
             symbol->AddSession(trading->TradingSessionID, trading->TradingSessionIDLength);
             return;
         }
@@ -1153,8 +1165,10 @@ public:
         FastSecurityDefinitionMarketSegmentGrpItemInfo **market = info->MarketSegmentGrp;
         for(int i = 0; i < info->MarketSegmentGrpCount; i++, market++) {
             FastSecurityDefinitionMarketSegmentGrpItemInfo *m = *market;
+            m->Used = true;
             FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo **trading = m->TradingSessionRulesGrp;
-            for(int j = 0; j < m->TradingSessionRulesGrpCount; i++, trading++) {
+            for(int j = 0; j < m->TradingSessionRulesGrpCount; j++, trading++) {
+                (*trading)->Used = true;
                 for(int c = 0; c < this->m_connectionsToRecvSymbolsCount; c++) {
                     this->m_connectionsToRecvSymbols[c]->AddSymbol(info, (*trading));
                 }
