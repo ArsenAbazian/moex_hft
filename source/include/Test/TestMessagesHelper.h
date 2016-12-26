@@ -109,17 +109,26 @@ class TestMessagesHelper {
         }
         else if(HasKey(keys, keysCount, "obs")) {
             info->m_templateId = FeedConnectionMessage::fmcFullRefresh_Generic;
-            info->m_symbol = keys[KeyIndex(keys, keysCount, "obs") + 1];
+            int snapIndex = KeyIndex(keys, keysCount, "obs");
+            if(KeyIndex(keys, keysCount, "begin") == snapIndex + 1)
+                snapIndex++;
+            info->m_symbol = keys[snapIndex + 1];
         }
         else if(HasKey(keys, keysCount, "ols")) {
             info->m_templateId = this->m_curr? FeedConnectionMessage::fmcFullRefresh_OLS_CURR:
                                  FeedConnectionMessage::fmcFullRefresh_OLS_FOND;
-            info->m_symbol = keys[KeyIndex(keys, keysCount, "ols") + 1];
+            int snapIndex = KeyIndex(keys, keysCount, "ols");
+            if(KeyIndex(keys, keysCount, "begin") == snapIndex + 1)
+                snapIndex++;
+            info->m_symbol = keys[snapIndex + 1];
         }
         else if(HasKey(keys, keysCount, "tls")) {
             info->m_templateId = this->m_curr? FeedConnectionMessage::fmcFullRefresh_TLS_CURR:
                                  FeedConnectionMessage::fmcFullRefresh_TLS_FOND;
-            info->m_symbol = keys[KeyIndex(keys, keysCount, "tls") + 1];
+            int snapIndex = KeyIndex(keys, keysCount, "tls");
+            if(KeyIndex(keys, keysCount, "begin") == snapIndex + 1)
+                snapIndex++;
+            info->m_symbol = keys[snapIndex + 1];
         }
         else if(HasKey(keys, keysCount, "wait_snap")) {
             info->m_templateId = FeedConnectionMessage::fcmHeartBeat;

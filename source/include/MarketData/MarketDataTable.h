@@ -204,7 +204,10 @@ public:
     }
     inline int QueueEntriesCount() { return this->m_queueItemsCount; }
     inline TABLEITEM<ITEMINFO>* Add(const char *symbol, const char *session) {
-        return GetItem(symbol, session);
+        MarketSymbolInfo<TABLEITEM<ITEMINFO>> *symbolInfo = GetSymbol(symbol, strlen(symbol));
+        if(symbolInfo->MaxSessionCount() == 0)
+            symbolInfo->InitSessions(10);
+        return symbolInfo->GetSession(session, strlen(session));
     }
     inline MarketSymbolInfo<TABLEITEM<ITEMINFO>>* AddSymbol(const char *symbol, int symbolLength) {
         MarketSymbolInfo<TABLEITEM<ITEMINFO>> *s = new MarketSymbolInfo<TABLEITEM<ITEMINFO>>();
