@@ -737,7 +737,8 @@ public:
     void AddTradingSession(FastSecurityDefinitionInfo *info, int marketIndex, const char *tradingSession) {
         int newIndex = info->MarketSegmentGrp[marketIndex]->TradingSessionRulesGrpCount;
         info->MarketSegmentGrp[marketIndex]->TradingSessionRulesGrpCount++;
-        FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo *item = new FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo();
+        AutoAllocatePointerList<FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo> *list = new AutoAllocatePointerList<FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo>(1, 1);
+        FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo *item = list->NewItem();
         info->MarketSegmentGrp[marketIndex]->TradingSessionRulesGrp[newIndex] = item;
 
         char *trd = new char[strlen(tradingSession) + 1];
@@ -748,12 +749,14 @@ public:
     }
 
     void AddMarketSegemntGroup(FastSecurityDefinitionInfo *info) {
-        info->MarketSegmentGrp[info->MarketSegmentGrpCount] = new FastSecurityDefinitionMarketSegmentGrpItemInfo();
+        AutoAllocatePointerList<FastSecurityDefinitionMarketSegmentGrpItemInfo> *list = new AutoAllocatePointerList<FastSecurityDefinitionMarketSegmentGrpItemInfo>(1, 1);
+        info->MarketSegmentGrp[info->MarketSegmentGrpCount] = list->NewItem();
         info->MarketSegmentGrpCount++;
     }
 
     FastSecurityDefinitionInfo* CreateSecurityDefinitionInfo(const char *symbol) {
-        FastSecurityDefinitionInfo *info = new FastSecurityDefinitionInfo();
+        AutoAllocatePointerList<FastSecurityDefinitionInfo> *list = new AutoAllocatePointerList<FastSecurityDefinitionInfo>(1, 1);
+        FastSecurityDefinitionInfo *info = list->NewItem();
 
         char *smb = new char[strlen(symbol) + 1];
         strcpy(smb, symbol);

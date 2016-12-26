@@ -13,6 +13,7 @@
 template <template<typename ITEMINFO> class TABLEITEM, typename INFO, typename ITEMINFO> class MarketDataTable {
     MarketSymbolInfo<TABLEITEM<ITEMINFO>>       **m_symbols;
     int                                         m_symbolsCount;
+    int                                         m_symbolsMaxCount;
     TABLEITEM<ITEMINFO>                         *m_snapshotItem;
     TABLEITEM<ITEMINFO>                         *m_cachedItem;
     MDEntrQueue<ITEMINFO>                       *m_snapshotEntries;
@@ -25,18 +26,21 @@ template <template<typename ITEMINFO> class TABLEITEM, typename INFO, typename I
         tableItem->Used(true);
     }
 public:
-    MarketDataTable() {
-        this->m_symbols = new MarketSymbolInfo<TABLEITEM<ITEMINFO>>*[RobotSettings::MarketDataMaxSymbolsCount];
-        for(int i = 0; i < RobotSettings::MarketDataMaxSymbolsCount; i++)
+    inline void InitSymbols(int count) {
+        this->m_symbolsMaxCount = count;
+        this->m_symbols = new MarketSymbolInfo<TABLEITEM<ITEMINFO>>*[count];
+        for(int i = 0; i < this->m_symbolsMaxCount; i++)
             this->m_symbols[i] = new MarketSymbolInfo<TABLEITEM<ITEMINFO>>();
+    }
+    MarketDataTable() {
+        this->m_symbols = 0;
         this->m_symbolsCount = 0;
         this->m_queueItemsCount = 0;
         this->m_cachedItem = 0;
+        this->m_symbolsMaxCount = 0;
     }
     ~MarketDataTable() {
-        for(int i = 0; i < RobotSettings::MarketDataMaxSymbolsCount; i++)
-            delete this->m_symbols[i];
-        delete this->m_symbols;
+        this->Release();
     }
     inline TABLEITEM<ITEMINFO>* GetCachedItem(const char *symbol, int symbolLen, const char *tradingSession, int tradingSessionLen) {
         if(this->m_cachedItem == 0)
@@ -149,7 +153,18 @@ public:
         this->m_queueItemsCount = 0;
         this->m_symbolsToRecvSnapshot = 0;
     }
+    inline void Release() {
+        if(this->m_symbols == 0)
+            return;
+        int symbCount = this->m_symbolsCount;
+        this->Clear();
+        for(int i = 0; i < symbCount; i++)
+            delete this->m_symbols[i];
+        delete this->m_symbols;
+        this->m_symbolsMaxCount = 0;
+    }
     inline int SymbolsCount() { return this->m_symbolsCount; }
+    inline int MaxSymbolsCount() { return this->m_symbolsMaxCount; }
     inline MarketSymbolInfo<TABLEITEM<ITEMINFO>>* Symbol(int index) { return this->m_symbols[index]; }
     inline TABLEITEM<ITEMINFO>* Item(int sindex, int tindex) { return this->m_symbols[sindex]->Session(tindex); }
 
@@ -192,7 +207,10 @@ public:
         return GetItem(symbol, session);
     }
     inline MarketSymbolInfo<TABLEITEM<ITEMINFO>>* AddSymbol(const char *symbol, int symbolLength) {
-        return GetSymbol(symbol, symbolLength);
+        MarketSymbolInfo<TABLEITEM<ITEMINFO>> *s = new MarketSymbolInfo<TABLEITEM<ITEMINFO>>();
+        this->m_symbols[this->m_symbolsCount] = s;
+        this->m_symbolsCount++;
+        return s;
     }
     inline MarketSymbolInfo<TABLEITEM<ITEMINFO>>* AddSymbol(const char *symbol) {
         return AddSymbol(symbol, strlen(symbol));

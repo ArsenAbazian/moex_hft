@@ -371,14 +371,7 @@ namespace prebuild {
 
 			foreach(StructureInfo str in Structures) {
 				WriteLine("\tinline " + str.Name + "* " + str.GetFreeMethodName + "() {");
-
-				if(str.IsSequence) {
-					WriteLine("\t\treturn this->" + str.ValueName + "->NewItem();");
-					//WriteLine("\t\tthis->" + str.CurrentItemValueName + "++;");
-					//WriteLine("\t\treturn this->" + str.CurrentItemValueName + ";");
-				} else {
-					WriteLine("\t\treturn this->" + str.ValueName + ";");
-				}
+				WriteLine("\t\treturn this->" + str.ValueName + "->NewItem();");
 				WriteLine("\t}");
 				WriteLine("");
 			}
@@ -544,11 +537,7 @@ namespace prebuild {
 			SetPosition(Structure_Objects_Declaration_GeneratedCode);
 
 			foreach(StructureInfo str in Structures) {
-				if(!str.IsSequence)
-					WriteLine("\t" + str.Name + "*\t" + str.ValueName + ";");
-				else {
-					WriteLine("\tAutoAllocatePointerList<" + str.Name + ">\t*" + str.ValueName + ";");
-				}
+				WriteLine("\tAutoAllocatePointerList<" + str.Name + ">\t*" + str.ValueName + ";");
 			}
 
 			//WriteLine("");
@@ -558,15 +547,7 @@ namespace prebuild {
 			WriteLine("");
 			WriteLine("\tvoid InitializeMessageInfo() {");
 			foreach(StructureInfo str in structures) {
-				if(str.IsSequence) {
-					WriteLine("\t\tthis->" + str.ValueName + " = new AutoAllocatePointerList<" + str.Name + ">(128, 256);");
-					//WriteLine("\t\tmemset(this->" + str.ValueName + ", 0, 32 * sizeof(" + str.Name + "));");
-					//WriteLine("\t\tthis->" + str.CurrentItemValueName + " = this->" + str.ValueName + ";");
-				} else {
-					WriteLine("\t\tthis->" + str.ValueName + " = new " + str.Name + "();");
-					WriteLine("\t\tmemset(this->" + str.ValueName + ", 0, sizeof(" + str.Name + "));");
-				}
-				WriteLine("");
+				WriteLine("\t\tthis->" + str.ValueName + " = new AutoAllocatePointerList<" + str.Name + ">(128, 256);");
 			}
 			WriteLine("\t}");
 
@@ -1102,8 +1083,7 @@ namespace prebuild {
 			//WriteClearFieldsCode(info);
 
 			WriteLine("\t\tthis->Used = false;");
-			if(info.IsSequence)
-				WriteLine("\t\tthis->Allocator->FreeItem(this->Pointer);");
+			WriteLine("\t\tthis->Allocator->FreeItem(this->Pointer);");
 			foreach(XmlNode field in info.Fields) {
 				if(field.Name != "sequence")
 					continue;
@@ -1116,8 +1096,7 @@ namespace prebuild {
 			WriteLine("\t\tif(this->Used)");
 			WriteLine("\t\t\treturn;");
 			WriteLine("");
-			if(info.IsSequence)
-				WriteLine("\t\tthis->Allocator->FreeItem(this->Pointer);");
+			WriteLine("\t\tthis->Allocator->FreeItem(this->Pointer);");
 			foreach(XmlNode field in info.Fields) {
 				if(field.Name != "sequence")
 					continue;

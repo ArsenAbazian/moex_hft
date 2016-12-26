@@ -12,27 +12,45 @@ template <typename T> class MarketSymbolInfo {
     T                                  **m_items;
     SizedArray                         *m_symbol;
     int                                 m_count;
+    int                                 m_maxCount;
     int                                 m_sessionsToRecvSnapshot;
     FastSecurityDefinitionInfo         *m_securityDefinition;
 public:
     MarketSymbolInfo() {
         this->m_count = 0;
-        this->m_items = new T*[RobotSettings::MarketDataMaxSessionsCount];
-        for(int i = 0; i < RobotSettings::MarketDataMaxSessionsCount; i++) {
-            this->m_items[i] = new T();
-            this->m_items[i]->SymbolInfo(this);
-        }
+        this->m_maxCount = 0;
+        this->m_items = 0;
         this->m_symbol = new SizedArray();
         this->m_securityDefinition = 0;
     }
-    ~MarketSymbolInfo() {
-        for(int i = 0; i < RobotSettings::MarketDataMaxSessionsCount; i++)
+    inline void InitSessions(int count) {
+        Release();
+        this->m_maxCount = count;
+        this->m_items = new T*[this->m_maxCount];
+        this->m_count = 0;
+        for(int i = 0; i < this->m_maxCount; i++) {
+            this->m_items[i] = new T();
+            this->m_items[i]->SymbolInfo(this);
+        }
+    }
+    inline void Release() {
+        if(this->m_items == 0)
+            return;
+        for(int i = 0; i < this->m_maxCount; i++)
             delete this->m_items[i];
-        delete this->m_symbol;
         delete this->m_items;
+        if(this->m_securityDefinition != 0)
+            this->m_securityDefinition->Clear();
+        this->m_securityDefinition = 0;
+    }
+    ~MarketSymbolInfo() {
+        Release();
+        delete this->m_symbol;
+
     }
     inline int Count() { return this->m_count; }
     inline int SessionCount() { return this->m_count; }
+    inline int MaxSessionCount() { return this->m_maxCount; }
     inline T* Session(int index) { return this->m_items[index]; }
     inline T* GetSession(const char *session, int sessionLength) {
         T **item = this->m_items;
@@ -47,12 +65,6 @@ public:
     }
     inline void SecurityDefinition(FastSecurityDefinitionInfo *info) { this->m_securityDefinition = info; }
     inline FastSecurityDefinitionInfo* SecurityDefinition() { return this->m_securityDefinition; }
-    inline void AppendSecurityDefinition(FastSecurityDefinitionInfo *info) {
-        for(int i = 0; i < info->MarketSegmentGrpCount; i++) {
-            info->MarketSegmentGrp[i]->Used = true;
-            this->m_securityDefinition->MarketSegmentGrp[this->m_securityDefinition->MarketSegmentGrpCount] = info->MarketSegmentGrp[i];
-        }
-    }
     inline SizedArray *Symbol() { return this->m_symbol; }
     inline bool Equals(const char *symbol, int symbolLen) { return this->m_symbol->Equal(symbol, symbolLen); }
     inline void Clear() {

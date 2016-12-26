@@ -188,11 +188,15 @@ public:
 
     void Test() {
         RobotSettings::MarketDataMaxSymbolsCount = 10;
-        RobotSettings::MarketDataMaxSessionsCount = 5;
+        RobotSettings::MarketDataMaxSessionsCount = 32;
         RobotSettings::MarketDataMaxEntriesCount = 32;
 
         InstrumentDefinitionTester ids;
         ids.Test();
+
+        RobotSettings::MarketDataMaxSymbolsCount = 10;
+        RobotSettings::MarketDataMaxSessionsCount = 5;
+        RobotSettings::MarketDataMaxEntriesCount = 32;
 
         //StatisticsTesterFond stFond;
         //stFond.Test();

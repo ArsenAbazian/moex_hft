@@ -191,11 +191,13 @@ public:
 	~FastLogonInfo(){ }
 	inline void Clear() {
 		this->Used = false;
+		this->Allocator->FreeItem(this->Pointer);
 	}
 	inline void ReleaseUnused() {
 		if(this->Used)
 			return;
 
+		this->Allocator->FreeItem(this->Pointer);
 	}
 };
 
@@ -239,11 +241,13 @@ public:
 	~FastLogoutInfo(){ }
 	inline void Clear() {
 		this->Used = false;
+		this->Allocator->FreeItem(this->Pointer);
 	}
 	inline void ReleaseUnused() {
 		if(this->Used)
 			return;
 
+		this->Allocator->FreeItem(this->Pointer);
 	}
 };
 
@@ -519,6 +523,7 @@ public:
 	~FastGenericInfo(){ }
 	inline void Clear() {
 		this->Used = false;
+		this->Allocator->FreeItem(this->Pointer);
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->Clear();
 	}
@@ -526,6 +531,7 @@ public:
 		if(this->Used)
 			return;
 
+		this->Allocator->FreeItem(this->Pointer);
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->ReleaseUnused();
 	}
@@ -568,6 +574,7 @@ public:
 	~FastIncrementalGenericInfo(){ }
 	inline void Clear() {
 		this->Used = false;
+		this->Allocator->FreeItem(this->Pointer);
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->Clear();
 	}
@@ -575,6 +582,7 @@ public:
 		if(this->Used)
 			return;
 
+		this->Allocator->FreeItem(this->Pointer);
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->ReleaseUnused();
 	}
@@ -767,6 +775,7 @@ public:
 	~FastOLSFONDInfo(){ }
 	inline void Clear() {
 		this->Used = false;
+		this->Allocator->FreeItem(this->Pointer);
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->Clear();
 	}
@@ -774,6 +783,7 @@ public:
 		if(this->Used)
 			return;
 
+		this->Allocator->FreeItem(this->Pointer);
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->ReleaseUnused();
 	}
@@ -947,6 +957,7 @@ public:
 	~FastOLSCURRInfo(){ }
 	inline void Clear() {
 		this->Used = false;
+		this->Allocator->FreeItem(this->Pointer);
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->Clear();
 	}
@@ -954,6 +965,7 @@ public:
 		if(this->Used)
 			return;
 
+		this->Allocator->FreeItem(this->Pointer);
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->ReleaseUnused();
 	}
@@ -1181,6 +1193,7 @@ public:
 	~FastTLSFONDInfo(){ }
 	inline void Clear() {
 		this->Used = false;
+		this->Allocator->FreeItem(this->Pointer);
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->Clear();
 	}
@@ -1188,6 +1201,7 @@ public:
 		if(this->Used)
 			return;
 
+		this->Allocator->FreeItem(this->Pointer);
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->ReleaseUnused();
 	}
@@ -1402,6 +1416,7 @@ public:
 	~FastTLSCURRInfo(){ }
 	inline void Clear() {
 		this->Used = false;
+		this->Allocator->FreeItem(this->Pointer);
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->Clear();
 	}
@@ -1409,6 +1424,7 @@ public:
 		if(this->Used)
 			return;
 
+		this->Allocator->FreeItem(this->Pointer);
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->ReleaseUnused();
 	}
@@ -1451,6 +1467,7 @@ public:
 	~FastIncrementalMSRFONDInfo(){ }
 	inline void Clear() {
 		this->Used = false;
+		this->Allocator->FreeItem(this->Pointer);
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->Clear();
 	}
@@ -1458,6 +1475,7 @@ public:
 		if(this->Used)
 			return;
 
+		this->Allocator->FreeItem(this->Pointer);
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->ReleaseUnused();
 	}
@@ -1500,6 +1518,7 @@ public:
 	~FastIncrementalMSRCURRInfo(){ }
 	inline void Clear() {
 		this->Used = false;
+		this->Allocator->FreeItem(this->Pointer);
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->Clear();
 	}
@@ -1507,6 +1526,7 @@ public:
 		if(this->Used)
 			return;
 
+		this->Allocator->FreeItem(this->Pointer);
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->ReleaseUnused();
 	}
@@ -1549,6 +1569,7 @@ public:
 	~FastIncrementalOLRFONDInfo(){ }
 	inline void Clear() {
 		this->Used = false;
+		this->Allocator->FreeItem(this->Pointer);
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->Clear();
 	}
@@ -1556,6 +1577,7 @@ public:
 		if(this->Used)
 			return;
 
+		this->Allocator->FreeItem(this->Pointer);
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->ReleaseUnused();
 	}
@@ -1598,6 +1620,7 @@ public:
 	~FastIncrementalOLRCURRInfo(){ }
 	inline void Clear() {
 		this->Used = false;
+		this->Allocator->FreeItem(this->Pointer);
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->Clear();
 	}
@@ -1605,6 +1628,7 @@ public:
 		if(this->Used)
 			return;
 
+		this->Allocator->FreeItem(this->Pointer);
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->ReleaseUnused();
 	}
@@ -1647,6 +1671,7 @@ public:
 	~FastIncrementalTLRFONDInfo(){ }
 	inline void Clear() {
 		this->Used = false;
+		this->Allocator->FreeItem(this->Pointer);
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->Clear();
 	}
@@ -1654,6 +1679,7 @@ public:
 		if(this->Used)
 			return;
 
+		this->Allocator->FreeItem(this->Pointer);
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->ReleaseUnused();
 	}
@@ -1696,6 +1722,7 @@ public:
 	~FastIncrementalTLRCURRInfo(){ }
 	inline void Clear() {
 		this->Used = false;
+		this->Allocator->FreeItem(this->Pointer);
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->Clear();
 	}
@@ -1703,6 +1730,7 @@ public:
 		if(this->Used)
 			return;
 
+		this->Allocator->FreeItem(this->Pointer);
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->ReleaseUnused();
 	}
@@ -2005,6 +2033,7 @@ public:
 	~FastSecurityDefinitionInfo(){ }
 	inline void Clear() {
 		this->Used = false;
+		this->Allocator->FreeItem(this->Pointer);
 		for(int i = 0; i < this->GroupInstrAttribCount; i++)
 			this->GroupInstrAttrib[i]->Clear();
 		for(int i = 0; i < this->MarketSegmentGrpCount; i++)
@@ -2014,6 +2043,7 @@ public:
 		if(this->Used)
 			return;
 
+		this->Allocator->FreeItem(this->Pointer);
 		for(int i = 0; i < this->GroupInstrAttribCount; i++)
 			this->GroupInstrAttrib[i]->ReleaseUnused();
 		for(int i = 0; i < this->MarketSegmentGrpCount; i++)
@@ -2077,11 +2107,13 @@ public:
 	~FastSecurityStatusInfo(){ }
 	inline void Clear() {
 		this->Used = false;
+		this->Allocator->FreeItem(this->Pointer);
 	}
 	inline void ReleaseUnused() {
 		if(this->Used)
 			return;
 
+		this->Allocator->FreeItem(this->Pointer);
 	}
 };
 
@@ -2130,11 +2162,13 @@ public:
 	~FastTradingSessionStatusInfo(){ }
 	inline void Clear() {
 		this->Used = false;
+		this->Allocator->FreeItem(this->Pointer);
 	}
 	inline void ReleaseUnused() {
 		if(this->Used)
 			return;
 
+		this->Allocator->FreeItem(this->Pointer);
 	}
 };
 
@@ -2168,11 +2202,13 @@ public:
 	~FastHeartbeatInfo(){ }
 	inline void Clear() {
 		this->Used = false;
+		this->Allocator->FreeItem(this->Pointer);
 	}
 	inline void ReleaseUnused() {
 		if(this->Used)
 			return;
 
+		this->Allocator->FreeItem(this->Pointer);
 	}
 };
 

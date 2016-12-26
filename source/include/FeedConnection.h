@@ -1101,61 +1101,121 @@ public:
         this->m_connectionsToRecvSymbolsCount++;
     }
 
-    inline void AddSymbol(FastSecurityDefinitionInfo *info, FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo *trading) {
+    inline int CalcSessionsCount(FastSecurityDefinitionInfo *info) {
+        int res = 0;
+        FastSecurityDefinitionMarketSegmentGrpItemInfo **market = info->MarketSegmentGrp;
+        for(int i = 0; i < info->MarketSegmentGrpCount; i++, market++) {
+            res += info->MarketSegmentGrp[i]->TradingSessionRulesGrpCount;
+        }
+        return res;
+    }
+
+    inline void AddSymbol(FastSecurityDefinitionInfo *info) {
         if(this->m_orderTableFond != 0) {
             MarketSymbolInfo<OrderInfo<FastOLSFONDItemInfo>> *symbol = this->m_orderTableFond->AddSymbol(info->Symbol, info->SymbolLength);
-            if(symbol->SecurityDefinition() == 0)
-                symbol->SecurityDefinition(info);
-            else
-                symbol->AppendSecurityDefinition(info);
-            symbol->AddSession(trading->TradingSessionID, trading->TradingSessionIDLength);
+
+            symbol->SecurityDefinition(info);
+            symbol->InitSessions(CalcSessionsCount(info));
+
+            FastSecurityDefinitionMarketSegmentGrpItemInfo **market = info->MarketSegmentGrp;
+            for(int i = 0; i < info->MarketSegmentGrpCount; i++, market++) {
+                FastSecurityDefinitionMarketSegmentGrpItemInfo *m = *market;
+                FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo **trading = m->TradingSessionRulesGrp;
+                for(int j = 0; j < m->TradingSessionRulesGrpCount; j++, trading++) {
+                    symbol->AddSession((*trading)->TradingSessionID, (*trading)->TradingSessionIDLength);
+                }
+            }
             return;
         }
         if(this->m_orderTableCurr != 0) {
             MarketSymbolInfo<OrderInfo<FastOLSCURRItemInfo>> *symbol = this->m_orderTableCurr->AddSymbol(info->Symbol, info->SymbolLength);
-            if(symbol->SecurityDefinition() == 0)
-                symbol->SecurityDefinition(info);
-            else
-                symbol->AppendSecurityDefinition(info);
-            symbol->AddSession(trading->TradingSessionID, trading->TradingSessionIDLength);
+
+            symbol->SecurityDefinition(info);
+            symbol->InitSessions(CalcSessionsCount(info));
+
+            FastSecurityDefinitionMarketSegmentGrpItemInfo **market = info->MarketSegmentGrp;
+            for(int i = 0; i < info->MarketSegmentGrpCount; i++, market++) {
+                FastSecurityDefinitionMarketSegmentGrpItemInfo *m = *market;
+                FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo **trading = m->TradingSessionRulesGrp;
+                for(int j = 0; j < m->TradingSessionRulesGrpCount; j++, trading++) {
+                    symbol->AddSession((*trading)->TradingSessionID, (*trading)->TradingSessionIDLength);
+                }
+            }
             return;
         }
         if(this->m_tradeTableFond != 0) {
             MarketSymbolInfo<TradeInfo<FastTLSFONDItemInfo>> *symbol = this->m_tradeTableFond->AddSymbol(info->Symbol, info->SymbolLength);
-            if(symbol->SecurityDefinition() == 0)
-                symbol->SecurityDefinition(info);
-            else
-                symbol->AppendSecurityDefinition(info);
-            symbol->AddSession(trading->TradingSessionID, trading->TradingSessionIDLength);
+
+            symbol->SecurityDefinition(info);
+            symbol->InitSessions(CalcSessionsCount(info));
+
+            FastSecurityDefinitionMarketSegmentGrpItemInfo **market = info->MarketSegmentGrp;
+            for(int i = 0; i < info->MarketSegmentGrpCount; i++, market++) {
+                FastSecurityDefinitionMarketSegmentGrpItemInfo *m = *market;
+                FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo **trading = m->TradingSessionRulesGrp;
+                for(int j = 0; j < m->TradingSessionRulesGrpCount; j++, trading++) {
+                    symbol->AddSession((*trading)->TradingSessionID, (*trading)->TradingSessionIDLength);
+                }
+            }
             return;
         }
         if(this->m_tradeTableCurr != 0) {
             MarketSymbolInfo<TradeInfo<FastTLSCURRItemInfo>> *symbol = this->m_tradeTableCurr->AddSymbol(info->Symbol, info->SymbolLength);
-            if(symbol->SecurityDefinition() == 0)
-                symbol->SecurityDefinition(info);
-            else
-                symbol->AppendSecurityDefinition(info);
-            symbol->AddSession(trading->TradingSessionID, trading->TradingSessionIDLength);
+
+            symbol->SecurityDefinition(info);
+            symbol->InitSessions(CalcSessionsCount(info));
+
+            FastSecurityDefinitionMarketSegmentGrpItemInfo **market = info->MarketSegmentGrp;
+            for(int i = 0; i < info->MarketSegmentGrpCount; i++, market++) {
+                FastSecurityDefinitionMarketSegmentGrpItemInfo *m = *market;
+                FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo **trading = m->TradingSessionRulesGrp;
+                for(int j = 0; j < m->TradingSessionRulesGrpCount; j++, trading++) {
+                    symbol->AddSession((*trading)->TradingSessionID, (*trading)->TradingSessionIDLength);
+                }
+            }
             return;
         }
         if(this->m_statTableFond != 0) {
             MarketSymbolInfo<StatisticsInfo<FastGenericItemInfo>> *symbol = this->m_statTableFond->AddSymbol(info->Symbol, info->SymbolLength);
-            if(symbol->SecurityDefinition() == 0)
-                symbol->SecurityDefinition(info);
-            else
-                symbol->AppendSecurityDefinition(info);
-            symbol->AddSession(trading->TradingSessionID, trading->TradingSessionIDLength);
+
+            symbol->SecurityDefinition(info);
+            symbol->InitSessions(CalcSessionsCount(info));
+
+            FastSecurityDefinitionMarketSegmentGrpItemInfo **market = info->MarketSegmentGrp;
+            for(int i = 0; i < info->MarketSegmentGrpCount; i++, market++) {
+                FastSecurityDefinitionMarketSegmentGrpItemInfo *m = *market;
+                FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo **trading = m->TradingSessionRulesGrp;
+                for(int j = 0; j < m->TradingSessionRulesGrpCount; j++, trading++) {
+                    symbol->AddSession((*trading)->TradingSessionID, (*trading)->TradingSessionIDLength);
+                }
+            }
             return;
         }
-        if(this->m_tradeTableCurr != 0) {
+        if(this->m_statTableCurr != 0) {
             MarketSymbolInfo<StatisticsInfo<FastGenericItemInfo>> *symbol = this->m_statTableCurr->AddSymbol(info->Symbol, info->SymbolLength);
-            if(symbol->SecurityDefinition() == 0)
-                symbol->SecurityDefinition(info);
-            else
-                symbol->AppendSecurityDefinition(info);
-            symbol->AddSession(trading->TradingSessionID, trading->TradingSessionIDLength);
+
+            symbol->SecurityDefinition(info);
+            symbol->InitSessions(CalcSessionsCount(info));
+
+            FastSecurityDefinitionMarketSegmentGrpItemInfo **market = info->MarketSegmentGrp;
+            for(int i = 0; i < info->MarketSegmentGrpCount; i++, market++) {
+                FastSecurityDefinitionMarketSegmentGrpItemInfo *m = *market;
+                FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo **trading = m->TradingSessionRulesGrp;
+                for(int j = 0; j < m->TradingSessionRulesGrpCount; j++, trading++) {
+                    symbol->AddSession((*trading)->TradingSessionID, (*trading)->TradingSessionIDLength);
+                }
+            }
             return;
         }
+    }
+
+    FastSecurityDefinitionInfo* GetSecurityDefinition(const char *symbol, int symbolCount) {
+        LinkedPointer<FastSecurityDefinitionInfo> *node = this->m_securityDefinitions->Start();
+        while(true) {
+            if(StringIdComparer::Equal(node->Data()->Symbol, node->Data()->SymbolLength, symbol, symbolCount))
+                return node->Data();
+        }
+        return 0;
     }
 
     inline bool ProcessSecurityDefinition(FastSecurityDefinitionInfo *info) {
@@ -1169,12 +1229,90 @@ public:
             FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo **trading = m->TradingSessionRulesGrp;
             for(int j = 0; j < m->TradingSessionRulesGrpCount; j++, trading++) {
                 (*trading)->Used = true;
-                for(int c = 0; c < this->m_connectionsToRecvSymbolsCount; c++) {
-                    this->m_connectionsToRecvSymbols[c]->AddSymbol(info, (*trading));
-                }
             }
         }
         return true;
+    }
+
+    inline void AddSymbols(int count) {
+        if(this->m_orderTableFond != 0) {
+            this->m_orderTableFond->InitSymbols(count);
+            return;
+        }
+        if(this->m_orderTableCurr != 0) {
+            this->m_orderTableCurr->InitSymbols(count);
+            return;
+        }
+        if(this->m_tradeTableFond != 0) {
+            this->m_tradeTableFond->InitSymbols(count);
+            return;
+        }
+        if(this->m_tradeTableCurr != 0) {
+            this->m_tradeTableCurr->InitSymbols(count);
+            return;
+        }
+        if(this->m_statTableFond != 0) {
+            this->m_statTableFond->InitSymbols(count);
+            return;
+        }
+        if(this->m_tradeTableCurr != 0) {
+            this->m_statTableCurr->InitSymbols(count);
+            return;
+        }
+    }
+
+    inline void ClearMarketData() {
+        if(this->m_orderTableFond != 0) {
+            this->m_orderTableFond->Release();
+            return;
+        }
+        if(this->m_orderTableCurr != 0) {
+            this->m_orderTableCurr->Release();
+            return;
+        }
+        if(this->m_tradeTableFond != 0) {
+            this->m_tradeTableFond->Release();
+            return;
+        }
+        if(this->m_tradeTableCurr != 0) {
+            this->m_tradeTableCurr->Release();
+            return;
+        }
+        if(this->m_statTableFond != 0) {
+            this->m_statTableFond->Release();
+            return;
+        }
+        if(this->m_tradeTableCurr != 0) {
+            this->m_statTableCurr->Release();
+            return;
+        }
+    }
+
+    inline void BeforeProcessSecurityDefinitions() {
+        this->m_securityDefinitions->Clear();
+        for(int c = 0; c < this->m_connectionsToRecvSymbolsCount; c++) {
+            this->m_connectionsToRecvSymbols[c]->ClearMarketData();
+        }
+    }
+
+    inline void AddSecurityDefinition(FastSecurityDefinitionInfo *info) {
+        FastSecurityDefinitionMarketSegmentGrpItemInfo **market = info->MarketSegmentGrp;
+        for(int c = 0; c < this->m_connectionsToRecvSymbolsCount; c++)
+            this->m_connectionsToRecvSymbols[c]->AddSymbol(info);
+
+    }
+
+    inline void AfterProcessSecurityDefinitions() {
+        for(int i = 0; i < this->m_connectionsToRecvSymbolsCount; i++)
+            this->m_connectionsToRecvSymbols[i]->AddSymbols(this->m_securityDefinitions->Count());
+
+        LinkedPointer<FastSecurityDefinitionInfo> *node = this->m_securityDefinitions->Start();
+        while(true) {
+            FastSecurityDefinitionInfo *info = node->Data();
+            this->AddSecurityDefinition(info);
+            if(node == this->m_securityDefinitions->End())
+                break;
+        }
     }
 
 	inline bool Connect() {

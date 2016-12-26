@@ -19,6 +19,7 @@ public:
         this->m_helper = new TestMessagesHelper();
         this->m_helper->SetFondMode();
         this->m_table = new MarketDataTable<OrderInfo, FastOLSFONDInfo, FastOLSFONDItemInfo>();
+        this->m_table->InitSymbols(10);
         this->incFond = new FeedConnection_FOND_OLR("OLR", "Refresh Incremental", 'I',
                                                     FeedConnectionProtocol::UDP_IP,
                                                     "10.50.129.200", "239.192.113.3", 9113,
@@ -27,6 +28,7 @@ public:
                                                      FeedConnectionProtocol::UDP_IP,
                                                      "10.50.129.200", "239.192.113.3", 9113,
                                                      "10.50.129.200", "239.192.113.131", 9313);
+        this->incFond->OrderFond()->InitSymbols(10);
         this->snapFond->m_fakeConnect = true;
         this->incFond->m_fakeConnect = true;
     }
