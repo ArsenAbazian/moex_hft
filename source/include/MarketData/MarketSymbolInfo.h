@@ -14,14 +14,14 @@ template <typename T> class MarketSymbolInfo {
     int                                 m_count;
     int                                 m_maxCount;
     int                                 m_sessionsToRecvSnapshot;
-    FastSecurityDefinitionInfo         *m_securityDefinition;
+    LinkedPointer<FastSecurityDefinitionInfo> *m_securityDefinitionPtr;
 public:
     MarketSymbolInfo() {
         this->m_count = 0;
         this->m_maxCount = 0;
         this->m_items = 0;
         this->m_symbol = new SizedArray();
-        this->m_securityDefinition = 0;
+        this->m_securityDefinitionPtr = 0;
     }
     inline void InitSessions(int count) {
         Release();
@@ -39,9 +39,7 @@ public:
         for(int i = 0; i < this->m_maxCount; i++)
             delete this->m_items[i];
         delete this->m_items;
-        if(this->m_securityDefinition != 0)
-            this->m_securityDefinition->Clear();
-        this->m_securityDefinition = 0;
+        this->m_securityDefinitionPtr = 0;
     }
     ~MarketSymbolInfo() {
         Release();
@@ -63,8 +61,8 @@ public:
         this->m_count++;
         return res;
     }
-    inline void SecurityDefinition(FastSecurityDefinitionInfo *info) { this->m_securityDefinition = info; }
-    inline FastSecurityDefinitionInfo* SecurityDefinition() { return this->m_securityDefinition; }
+    inline void SecurityDefinitionPtr(LinkedPointer<FastSecurityDefinitionInfo> *ptr) { this->m_securityDefinitionPtr = ptr; }
+    inline FastSecurityDefinitionInfo* SecurityDefinition() { return this->m_securityDefinitionPtr->Data(); }
     inline SizedArray *Symbol() { return this->m_symbol; }
     inline bool Equals(const char *symbol, int symbolLen) { return this->m_symbol->Equal(symbol, symbolLen); }
     inline void Clear() {

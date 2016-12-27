@@ -193,7 +193,9 @@ protected:
 	MarketDataTable<TradeInfo, FastTLSCURRInfo, FastTLSCURRItemInfo>			*m_tradeTableCurr;
     MarketDataTable<StatisticsInfo, FastGenericInfo, FastGenericItemInfo>       *m_statTableFond;
     MarketDataTable<StatisticsInfo, FastGenericInfo, FastGenericItemInfo>       *m_statTableCurr;
-    PointerList<FastSecurityDefinitionInfo>                                     *m_securityDefinitions;
+    LinkedPointer<FastSecurityDefinitionInfo>                                   **m_securityDefinitions;
+    int                                          m_securityDefinitionsCount;
+    int                                          m_lastUpdatedSecurityDefinitionIndex;
 
 private:
 
@@ -1044,7 +1046,9 @@ public:
 	inline MarketDataTable<TradeInfo, FastTLSCURRInfo, FastTLSCURRItemInfo> *TradeCurr() { return this->m_tradeTableCurr; }
     inline MarketDataTable<StatisticsInfo, FastGenericInfo, FastGenericItemInfo> *StatisticFond() { return this->m_statTableFond; }
     inline MarketDataTable<StatisticsInfo, FastGenericInfo, FastGenericItemInfo> *StatisticCurr() { return this->m_statTableCurr; }
-    inline PointerList<FastSecurityDefinitionInfo>* SecurityDefinitions() { return this->m_securityDefinitions; }
+    inline LinkedPointer<FastSecurityDefinitionInfo>** SecurityDefinitions() { return this->m_securityDefinitions; }
+    inline FastSecurityDefinitionInfo* SecurityDefinition(int index) { return this->m_securityDefinitions[index]->Data(); }
+    inline int SecurityDefinitionsCount() { return this->m_securityDefinitionsCount; }
     inline void WaitIncrementalMaxTimeMs(int timeMs) { this->m_waitIncrementalMaxTimeMs = timeMs; }
     inline int WaitIncrementalMaxTimeMs() { return this->m_waitIncrementalMaxTimeMs; }
     inline void WaitSnapshotMaxTimeMs(int timeMs) { this->m_snapshotMaxTimeMs = timeMs; }
@@ -1110,53 +1114,12 @@ public:
         return res;
     }
 
-    inline void UpdateSymbol(FastSecurityDefinitionInfo *info) {
-        if(this->m_orderTableFond != 0) {
-            MarketSymbolInfo<OrderInfo<FastOLSFONDItemInfo>> *symbol = this->m_orderTableFond->GetSymbol(info->Symbol,
-                                                                                                         info->SymbolLength);
-            symbol->SecurityDefinition(info);
-            return;
-        }
-        if(this->m_orderTableCurr != 0) {
-            MarketSymbolInfo<OrderInfo<FastOLSCURRItemInfo>> *symbol = this->m_orderTableCurr->GetSymbol(info->Symbol,
-                                                                                                         info->SymbolLength);
-            symbol->SecurityDefinition(info);
-            return;
-        }
-        if(this->m_tradeTableFond != 0) {
-            MarketSymbolInfo<TradeInfo<FastTLSFONDItemInfo>> *symbol = this->m_tradeTableFond->GetSymbol(info->Symbol,
-                                                                                                         info->SymbolLength);
-            symbol->SecurityDefinition(info);
-            return;
-        }
-        if(this->m_tradeTableCurr != 0) {
-            MarketSymbolInfo<TradeInfo<FastTLSCURRItemInfo>> *symbol = this->m_tradeTableCurr->GetSymbol(info->Symbol,
-                                                                                                         info->SymbolLength);
-
-            symbol->SecurityDefinition(info);
-            return;
-        }
-        if(this->m_statTableFond != 0) {
-            MarketSymbolInfo<StatisticsInfo<FastGenericItemInfo>> *symbol = this->m_statTableFond->GetSymbol(info->Symbol,
-                                                                                                             info->SymbolLength);
-
-            symbol->SecurityDefinition(info);
-            return;
-        }
-        if(this->m_statTableCurr != 0) {
-            MarketSymbolInfo<StatisticsInfo<FastGenericItemInfo>> *symbol = this->m_statTableCurr->GetSymbol(info->Symbol,
-                                                                                                             info->SymbolLength);
-
-            symbol->SecurityDefinition(info);
-            return;
-        }
-    }
-
-    inline void AddSymbol(FastSecurityDefinitionInfo *info) {
+    inline void AddSymbol(LinkedPointer<FastSecurityDefinitionInfo> *ptr) {
+        FastSecurityDefinitionInfo *info = ptr->Data();
         if(this->m_orderTableFond != 0) {
             MarketSymbolInfo<OrderInfo<FastOLSFONDItemInfo>> *symbol = this->m_orderTableFond->AddSymbol(info->Symbol, info->SymbolLength);
 
-            symbol->SecurityDefinition(info);
+            symbol->SecurityDefinitionPtr(ptr);
             symbol->InitSessions(CalcSessionsCount(info));
 
             FastSecurityDefinitionMarketSegmentGrpItemInfo **market = info->MarketSegmentGrp;
@@ -1172,7 +1135,7 @@ public:
         if(this->m_orderTableCurr != 0) {
             MarketSymbolInfo<OrderInfo<FastOLSCURRItemInfo>> *symbol = this->m_orderTableCurr->AddSymbol(info->Symbol, info->SymbolLength);
 
-            symbol->SecurityDefinition(info);
+            symbol->SecurityDefinitionPtr(ptr);
             symbol->InitSessions(CalcSessionsCount(info));
 
             FastSecurityDefinitionMarketSegmentGrpItemInfo **market = info->MarketSegmentGrp;
@@ -1188,7 +1151,7 @@ public:
         if(this->m_tradeTableFond != 0) {
             MarketSymbolInfo<TradeInfo<FastTLSFONDItemInfo>> *symbol = this->m_tradeTableFond->AddSymbol(info->Symbol, info->SymbolLength);
 
-            symbol->SecurityDefinition(info);
+            symbol->SecurityDefinitionPtr(ptr);
             symbol->InitSessions(CalcSessionsCount(info));
 
             FastSecurityDefinitionMarketSegmentGrpItemInfo **market = info->MarketSegmentGrp;
@@ -1204,7 +1167,7 @@ public:
         if(this->m_tradeTableCurr != 0) {
             MarketSymbolInfo<TradeInfo<FastTLSCURRItemInfo>> *symbol = this->m_tradeTableCurr->AddSymbol(info->Symbol, info->SymbolLength);
 
-            symbol->SecurityDefinition(info);
+            symbol->SecurityDefinitionPtr(ptr);
             symbol->InitSessions(CalcSessionsCount(info));
 
             FastSecurityDefinitionMarketSegmentGrpItemInfo **market = info->MarketSegmentGrp;
@@ -1220,7 +1183,7 @@ public:
         if(this->m_statTableFond != 0) {
             MarketSymbolInfo<StatisticsInfo<FastGenericItemInfo>> *symbol = this->m_statTableFond->AddSymbol(info->Symbol, info->SymbolLength);
 
-            symbol->SecurityDefinition(info);
+            symbol->SecurityDefinitionPtr(ptr);
             symbol->InitSessions(CalcSessionsCount(info));
 
             FastSecurityDefinitionMarketSegmentGrpItemInfo **market = info->MarketSegmentGrp;
@@ -1236,7 +1199,7 @@ public:
         if(this->m_statTableCurr != 0) {
             MarketSymbolInfo<StatisticsInfo<FastGenericItemInfo>> *symbol = this->m_statTableCurr->AddSymbol(info->Symbol, info->SymbolLength);
 
-            symbol->SecurityDefinition(info);
+            symbol->SecurityDefinitionPtr(ptr);
             symbol->InitSessions(CalcSessionsCount(info));
 
             FastSecurityDefinitionMarketSegmentGrpItemInfo **market = info->MarketSegmentGrp;
@@ -1251,21 +1214,14 @@ public:
         }
     }
 
-    FastSecurityDefinitionInfo* GetSecurityDefinition(const char *symbol, int symbolCount) {
-        LinkedPointer<FastSecurityDefinitionInfo> *node = this->m_securityDefinitions->Start();
-        while(true) {
-            if(StringIdComparer::Equal(node->Data()->Symbol, node->Data()->SymbolLength, symbol, symbolCount))
-                return node->Data();
-            if(node == this->m_securityDefinitions->End())
-                break;
-            node = node->Next();
-        }
-        return 0;
+    inline void AddSecurityDefinitionToList(FastSecurityDefinitionInfo *info) {
+        this->m_securityDefinitions[this->m_securityDefinitionsCount]->Data(info);
+        this->m_securityDefinitionsCount++;
     }
 
     inline bool ProcessSecurityDefinition(FastSecurityDefinitionInfo *info) {
         info->Used = true;
-        this->m_securityDefinitions->Add(info);
+        this->AddSecurityDefinitionToList(info);
 
         FastSecurityDefinitionMarketSegmentGrpItemInfo **market = info->MarketSegmentGrp;
         for(int i = 0; i < info->MarketSegmentGrpCount; i++, market++) {
@@ -1333,38 +1289,54 @@ public:
         }
     }
 
+    inline void ClearSecurityDefinitions() {
+        for(int i = 0; i < this->m_securityDefinitionsCount; i++)
+            this->m_securityDefinitions[i]->Data()->Clear();
+        this->m_securityDefinitionsCount = 0;
+    }
+
     inline void BeforeProcessSecurityDefinitions() {
-        this->m_securityDefinitions->Clear();
+        this->ClearSecurityDefinitions();
         for(int c = 0; c < this->m_connectionsToRecvSymbolsCount; c++) {
             this->m_connectionsToRecvSymbols[c]->ClearMarketData();
         }
     }
 
-    inline void AddSecurityDefinition(FastSecurityDefinitionInfo *info) {
-        FastSecurityDefinitionMarketSegmentGrpItemInfo **market = info->MarketSegmentGrp;
+    inline void AddSecurityDefinition(LinkedPointer<FastSecurityDefinitionInfo> *ptr) {
         for(int c = 0; c < this->m_connectionsToRecvSymbolsCount; c++)
-            this->m_connectionsToRecvSymbols[c]->AddSymbol(info);
+            this->m_connectionsToRecvSymbols[c]->AddSymbol(ptr);
+    }
 
+    inline int GetSecurityDefinitionIndex(int startIndex, const char *symbol, int length) {
+        for(int i = startIndex + 1; i < this->m_securityDefinitionsCount; i++) {
+            FastSecurityDefinitionInfo *prev = this->m_securityDefinitions[i]->Data();
+            if(StringIdComparer::Equal(prev->Symbol, prev->SymbolLength, symbol, length))
+                return i;
+        }
+        for(int i = 0; i < startIndex + 1; i++) {
+            FastSecurityDefinitionInfo *prev = this->m_securityDefinitions[i]->Data();
+            if(StringIdComparer::Equal(prev->Symbol, prev->SymbolLength, symbol, length))
+                return i;
+        }
+        return -1;
     }
 
     inline void UpdateSecurityDefinition(FastSecurityDefinitionInfo *info) {
-        FastSecurityDefinitionMarketSegmentGrpItemInfo **market = info->MarketSegmentGrp;
-        for(int c = 0; c < this->m_connectionsToRecvSymbolsCount; c++)
-            this->m_connectionsToRecvSymbols[c]->UpdateSymbol(info);
+        this->m_lastUpdatedSecurityDefinitionIndex = this->GetSecurityDefinitionIndex(this->m_lastUpdatedSecurityDefinitionIndex + 1, info->Symbol, info->SymbolLength);
+        if(this->m_lastUpdatedSecurityDefinitionIndex != -1) {
+            this->m_securityDefinitions[this->m_lastUpdatedSecurityDefinitionIndex]->Data()->Clear();
+            this->m_securityDefinitions[this->m_lastUpdatedSecurityDefinitionIndex]->Data(info);
+        }
     }
 
     inline void AfterProcessSecurityDefinitions() {
         for(int i = 0; i < this->m_connectionsToRecvSymbolsCount; i++)
-            this->m_connectionsToRecvSymbols[i]->AddSymbols(this->m_securityDefinitions->Count());
+            this->m_connectionsToRecvSymbols[i]->AddSymbols(this->m_securityDefinitionsCount);
 
-        LinkedPointer<FastSecurityDefinitionInfo> *node = this->m_securityDefinitions->Start();
-        while(true) {
-            FastSecurityDefinitionInfo *info = node->Data();
-            this->AddSecurityDefinition(info);
-            if(node == this->m_securityDefinitions->End())
-                break;
-            node = node->Next();
-        }
+        LinkedPointer<FastSecurityDefinitionInfo> **ptr = this->m_securityDefinitions;
+        for(int i = 0; i < this->m_securityDefinitionsCount; i++, ptr++)
+            this->AddSecurityDefinition(*ptr);
+        this->m_lastUpdatedSecurityDefinitionIndex = -1;
     }
 
 	inline bool Connect() {
@@ -1747,10 +1719,15 @@ public:
             FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
         this->SetType(FeedConnectionType::InstrumentDefinition);
         this->m_id = FeedConnectionId::fcidIdfFond;
-        this->m_securityDefinitions = new PointerList<FastSecurityDefinitionInfo>(512);
+        this->m_securityDefinitions = new LinkedPointer<FastSecurityDefinitionInfo>*[RobotSettings::MaxSecurityDefinitionCount];
+        for(int i = 0; i < RobotSettings::MaxSecurityDefinitionCount; i++)
+            this->m_securityDefinitions[i] = new LinkedPointer<FastSecurityDefinitionInfo>();
+        this->m_securityDefinitionsCount = 0;
     }
     ~FeedConnection_FOND_IDF() {
-        throw;
+        for(int i = 0; i < RobotSettings::MaxSecurityDefinitionCount; i++)
+            delete this->m_securityDefinitions[i];
+        delete this->m_securityDefinitions;
     }
 };
 
@@ -1760,10 +1737,15 @@ public:
             FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
         this->SetType(FeedConnectionType::InstrumentDefinition);
         this->m_id = FeedConnectionId::fcidIdfCurr;
-        this->m_securityDefinitions = new PointerList<FastSecurityDefinitionInfo>(512);
+        this->m_securityDefinitions = new LinkedPointer<FastSecurityDefinitionInfo>*[RobotSettings::MaxSecurityDefinitionCount];
+        for(int i = 0; i < RobotSettings::MaxSecurityDefinitionCount; i++)
+            this->m_securityDefinitions[i] = new LinkedPointer<FastSecurityDefinitionInfo>();
+        this->m_securityDefinitionsCount = 0;
     }
     ~FeedConnection_CURR_IDF() {
-        throw;
+        for(int i = 0; i < RobotSettings::MaxSecurityDefinitionCount; i++)
+            delete this->m_securityDefinitions[i];
+        delete this->m_securityDefinitions;
     }
 };
 

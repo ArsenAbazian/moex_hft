@@ -87,7 +87,17 @@ public:
             throw;
 
         this->idf->BeforeProcessSecurityDefinitions();
+        if(!StringIdComparer::Equal(info->Symbol, 2, "s1", 2))
+            throw;
         if(!this->idf->ProcessSecurityDefinition(info))
+            throw;
+        if(!StringIdComparer::Equal(info->Symbol, 2, "s1", 2))
+            throw;
+        if(this->idf->SecurityDefinitions()[0]->Data() != info)
+            throw;
+        if(this->idf->SecurityDefinitionsCount() != 1)
+            throw;
+        if(!StringIdComparer::Equal(info->Symbol, 2, "s1", 2))
             throw;
         this->idf->AfterProcessSecurityDefinitions();
 
@@ -238,7 +248,7 @@ public:
     void TestClearBeforeStart() {
         this->TestAddSymbol();
 
-        FastSecurityDefinitionInfo *info = this->idf->SecurityDefinitions()->Item(0);
+        FastSecurityDefinitionInfo *info = this->idf->SecurityDefinition(0);
         this->idf->BeforeProcessSecurityDefinitions();
 
         if(info->Used)
@@ -258,7 +268,7 @@ public:
             }
         }
 
-        if(this->idf->SecurityDefinitions()->Count() != 0)
+        if(this->idf->SecurityDefinitionsCount() != 0)
             throw;
         if(this->olr->OrderFond()->SymbolsCount() != 0)
             throw;

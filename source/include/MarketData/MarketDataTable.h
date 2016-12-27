@@ -167,6 +167,7 @@ public:
         for(int i = 0; i < symbCount; i++)
             delete this->m_symbols[i];
         delete this->m_symbols;
+        this->m_symbols = 0;
         this->m_symbolsMaxCount = 0;
     }
     inline int SymbolsCount() { return this->m_symbolsCount; }

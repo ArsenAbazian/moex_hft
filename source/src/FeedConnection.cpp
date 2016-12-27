@@ -49,6 +49,13 @@ FeedConnection::FeedConnection(const char *id, const char *name, char value, Fee
 
 	this->SetState(FeedConnectionState::fcsSuspend);
 
+    this->m_orderTableFond = 0;
+    this->m_orderTableCurr = 0;
+    this->m_tradeTableFond = 0;
+    this->m_tradeTableCurr = 0;
+    this->m_statTableFond = 0;
+    this->m_statTableCurr = 0;
+
     //this->obrLogFile = fopen("~Documents/hft_robot/logs/obr_log_file.txt", "wt"); TODO remove!
 }
 
