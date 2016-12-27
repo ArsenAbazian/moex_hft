@@ -29,6 +29,8 @@ public:
                                                      "10.50.129.200", "239.192.113.131", 9313);
         this->snapCurr->m_fakeConnect = true;
         this->incCurr->m_fakeConnect = true;
+        this->m_table->InitSymbols(10, 10);
+        this->incCurr->TradeCurr()->InitSymbols(10, 10);
     }
     ~TradeTesterCurr() {
         delete this->incCurr;
@@ -74,7 +76,7 @@ public:
         this->Clear();
         this->TestDefaults();
 
-        FastIncrementalTLRCURRInfo *info = new FastIncrementalTLRCURRInfo;
+        FastIncrementalTLRCURRInfo *info = this->m_helper->CreateFastIncrementalTLRCURRInfo();
 
         FastTLSCURRItemInfo *item1 = this->m_helper->CreateTLSCurrItemInfo("s1", "t1", 3, -2, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "e1", 1);
         FastTLSCURRItemInfo *item2 = this->m_helper->CreateTLSCurrItemInfo("s1", "t1", 4, -2, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "e2", 2);
@@ -239,7 +241,7 @@ public:
         this->Clear();
         this->TestDefaults();
 
-        FastIncrementalTLRCURRInfo *info = new FastIncrementalTLRCURRInfo;
+        FastIncrementalTLRCURRInfo *info = this->m_helper->CreateFastIncrementalTLRCURRInfo();
         FastTLSCURRItemInfo *item1 = this->m_helper->CreateTLSCurrItemInfo("s1", "t1", 3, -2, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "e1", 1);
         FastTLSCURRItemInfo *item2 = this->m_helper->CreateTLSCurrItemInfo("s1", "t1", 4, -2, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "e2", 2);
         FastTLSCURRItemInfo *item3 = this->m_helper->CreateTLSCurrItemInfo("s1", "t1", 2, -2, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "e3", 3);
@@ -273,7 +275,7 @@ public:
         this->Clear();
         this->TestDefaults();
 
-        FastIncrementalTLRCURRInfo *info = new FastIncrementalTLRCURRInfo;
+        FastIncrementalTLRCURRInfo *info = this->m_helper->CreateFastIncrementalTLRCURRInfo();
         FastTLSCURRItemInfo *item1 = this->m_helper->CreateTLSCurrItemInfo("s1", "t1", 3, -2, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "e1", 1);
         FastTLSCURRItemInfo *item2 = this->m_helper->CreateTLSCurrItemInfo("s1", "t1", 4, -2, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "e2", 2);
         FastTLSCURRItemInfo *item3 = this->m_helper->CreateTLSCurrItemInfo("s1", "t1", 2, -2, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "e3", 3);

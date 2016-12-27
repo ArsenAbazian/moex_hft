@@ -19,7 +19,7 @@ public:
         this->m_helper = new TestMessagesHelper();
         this->m_helper->SetFondMode();
         this->m_table = new MarketDataTable<OrderInfo, FastOLSFONDInfo, FastOLSFONDItemInfo>();
-        this->m_table->InitSymbols(10);
+        this->m_table->InitSymbols(10, 10);
         this->incFond = new FeedConnection_FOND_OLR("OLR", "Refresh Incremental", 'I',
                                                     FeedConnectionProtocol::UDP_IP,
                                                     "10.50.129.200", "239.192.113.3", 9113,
@@ -28,7 +28,7 @@ public:
                                                      FeedConnectionProtocol::UDP_IP,
                                                      "10.50.129.200", "239.192.113.3", 9113,
                                                      "10.50.129.200", "239.192.113.131", 9313);
-        this->incFond->OrderFond()->InitSymbols(10);
+        this->incFond->OrderFond()->InitSymbols(10, 10);
         this->snapFond->m_fakeConnect = true;
         this->incFond->m_fakeConnect = true;
     }
@@ -79,7 +79,7 @@ public:
         this->Clear();
         this->TestDefaults();
 
-        FastIncrementalOLRFONDInfo *info = new FastIncrementalOLRFONDInfo;
+        FastIncrementalOLRFONDInfo *info = this->m_helper->CreateFastIncrementalOLRFONDInfo();
 
         FastOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
         FastOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
@@ -244,7 +244,7 @@ public:
         this->Clear();
         this->TestDefaults();
 
-        FastIncrementalOLRFONDInfo *info = new FastIncrementalOLRFONDInfo;
+        FastIncrementalOLRFONDInfo *info = this->m_helper->CreateFastIncrementalOLRFONDInfo();
         FastOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
         FastOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
         FastOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
@@ -336,7 +336,7 @@ public:
         this->Clear();
         this->TestDefaults();
 
-        FastIncrementalOLRFONDInfo *info = new FastIncrementalOLRFONDInfo;
+        FastIncrementalOLRFONDInfo *info = this->m_helper->CreateFastIncrementalOLRFONDInfo();
         FastOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
         FastOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
         FastOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
@@ -410,7 +410,7 @@ public:
         this->Clear();
         this->TestDefaults();
 
-        FastIncrementalOLRFONDInfo *info = new FastIncrementalOLRFONDInfo;
+        FastIncrementalOLRFONDInfo *info = this->m_helper->CreateFastIncrementalOLRFONDInfo();
         FastOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
         FastOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
         FastOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
@@ -444,7 +444,7 @@ public:
         this->Clear();
         this->TestDefaults();
 
-        FastIncrementalOLRFONDInfo *info = new FastIncrementalOLRFONDInfo;
+        FastIncrementalOLRFONDInfo *info = this->m_helper->CreateFastIncrementalOLRFONDInfo();
         FastOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
         FastOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
         FastOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
@@ -504,7 +504,7 @@ public:
         this->Clear();
         this->TestDefaults();
 
-        FastIncrementalOLRFONDInfo *info = new FastIncrementalOLRFONDInfo;
+        FastIncrementalOLRFONDInfo *info = this->m_helper->CreateFastIncrementalOLRFONDInfo();
 
         FastOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "e1", 1);
         FastOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "e2", 2);
@@ -662,7 +662,7 @@ public:
         this->Clear();
         this->TestDefaults();
 
-        FastIncrementalOLRFONDInfo *info = new FastIncrementalOLRFONDInfo;
+        FastIncrementalOLRFONDInfo *info = this->m_helper->CreateFastIncrementalOLRFONDInfo();
         FastOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "e1", 1);
         FastOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "e2", 2);
         FastOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "e3", 3);
@@ -751,7 +751,7 @@ public:
         this->Clear();
         this->TestDefaults();
 
-        FastIncrementalOLRFONDInfo *info = new FastIncrementalOLRFONDInfo;
+        FastIncrementalOLRFONDInfo *info = this->m_helper->CreateFastIncrementalOLRFONDInfo();
         FastOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "e1", 1);
         FastOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "e2", 2);
         FastOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "e3", 3);
@@ -817,7 +817,7 @@ public:
         this->Clear();
         this->TestDefaults();
 
-        FastIncrementalOLRFONDInfo *info = new FastIncrementalOLRFONDInfo;
+        FastIncrementalOLRFONDInfo *info = this->m_helper->CreateFastIncrementalOLRFONDInfo();
         FastOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "e1", 1);
         FastOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "e2", 2);
         FastOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "e3", 3);
@@ -844,7 +844,7 @@ public:
         this->Clear();
         this->TestDefaults();
 
-        FastIncrementalOLRFONDInfo *info = new FastIncrementalOLRFONDInfo;
+        FastIncrementalOLRFONDInfo *info = this->m_helper->CreateFastIncrementalOLRFONDInfo();
         FastOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "e1", 1);
         FastOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "e2", 2);
         FastOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "e3", 3);
@@ -1042,7 +1042,7 @@ public:
         OrderInfo<FastOLSFONDItemInfo> *tableItem = this->m_table->GetItem("s1", "session1");
         if(tableItem->EntriesQueue()->MaxIndex() != 1) // 3 is empty and 4 has value
             throw;
-        this->m_table->Clear();;
+        this->m_table->Clear();
         if(this->m_table->UsedItemCount() != 0)
             throw;
         if(tableItem->RptSeq() != 0)
@@ -3403,7 +3403,7 @@ public:
         this->Clear();
         this->TestDefaults();
 
-        FastIncrementalOLRFONDInfo *info = new FastIncrementalOLRFONDInfo;
+        FastIncrementalOLRFONDInfo *info = this->m_helper->CreateFastIncrementalOLRFONDInfo();
 
         FastOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
         FastOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
@@ -3549,7 +3549,7 @@ public:
         this->Clear();
         this->TestDefaults();
 
-        FastIncrementalOLRFONDInfo *info = new FastIncrementalOLRFONDInfo;
+        FastIncrementalOLRFONDInfo *info = this->m_helper->CreateFastIncrementalOLRFONDInfo();
         FastOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
         FastOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
         FastOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
@@ -3660,7 +3660,7 @@ public:
         this->Clear();
         this->TestDefaults();
 
-        FastIncrementalOLRFONDInfo *info = new FastIncrementalOLRFONDInfo;
+        FastIncrementalOLRFONDInfo *info = this->m_helper->CreateFastIncrementalOLRFONDInfo();
         FastOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
         FastOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
         FastOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
@@ -3724,7 +3724,7 @@ public:
         this->Clear();
         this->TestDefaults();
 
-        FastIncrementalOLRFONDInfo *info = new FastIncrementalOLRFONDInfo;
+        FastIncrementalOLRFONDInfo *info = this->m_helper->CreateFastIncrementalOLRFONDInfo();
         FastOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
         FastOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
         FastOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
@@ -3758,7 +3758,7 @@ public:
         this->Clear();
         this->TestDefaults();
 
-        FastIncrementalOLRFONDInfo *info = new FastIncrementalOLRFONDInfo;
+        FastIncrementalOLRFONDInfo *info = this->m_helper->CreateFastIncrementalOLRFONDInfo();
         FastOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
         FastOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
         FastOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
@@ -3812,7 +3812,7 @@ public:
         this->Clear();
         this->TestDefaults();
 
-        FastIncrementalOLRFONDInfo *info = new FastIncrementalOLRFONDInfo;
+        FastIncrementalOLRFONDInfo *info = this->m_helper->CreateFastIncrementalOLRFONDInfo();
 
         FastOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "e1", 1);
         FastOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "e2", 2);
@@ -3930,7 +3930,7 @@ public:
         this->Clear();
         this->TestDefaults();
 
-        FastIncrementalOLRFONDInfo *info = new FastIncrementalOLRFONDInfo;
+        FastIncrementalOLRFONDInfo *info = this->m_helper->CreateFastIncrementalOLRFONDInfo();
         FastOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "e1", 1);
         FastOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "e2", 2);
         FastOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "e3", 3);
@@ -4019,7 +4019,7 @@ public:
         this->Clear();
         this->TestDefaults();
 
-        FastIncrementalOLRFONDInfo *info = new FastIncrementalOLRFONDInfo;
+        FastIncrementalOLRFONDInfo *info = this->m_helper->CreateFastIncrementalOLRFONDInfo();
         FastOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "e1", 1);
         FastOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "e2", 2);
         FastOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "e3", 3);
@@ -4075,7 +4075,7 @@ public:
         this->Clear();
         this->TestDefaults();
 
-        FastIncrementalOLRFONDInfo *info = new FastIncrementalOLRFONDInfo;
+        FastIncrementalOLRFONDInfo *info = this->m_helper->CreateFastIncrementalOLRFONDInfo();
         FastOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "e1", 1);
         FastOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "e2", 2);
         FastOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "e3", 3);
@@ -4102,7 +4102,7 @@ public:
         this->Clear();
         this->TestDefaults();
 
-        FastIncrementalOLRFONDInfo *info = new FastIncrementalOLRFONDInfo;
+        FastIncrementalOLRFONDInfo *info = this->m_helper->CreateFastIncrementalOLRFONDInfo();
         FastOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "e1", 1);
         FastOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "e2", 2);
         FastOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "e3", 3);

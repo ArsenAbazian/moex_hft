@@ -32,6 +32,12 @@ public:
         for(int i = 0; i < this->m_symbolsMaxCount; i++)
             this->m_symbols[i] = new MarketSymbolInfo<TABLEITEM<ITEMINFO>>();
     }
+    inline void InitSymbols(int symbolsCount, int sessionsCount) {
+        this->InitSymbols(symbolsCount);
+        for(int i = 0; i < symbolsCount; i++) {
+            this->m_symbols[i]->InitSessions(sessionsCount);
+        }
+    }
     MarketDataTable() {
         this->m_symbols = 0;
         this->m_symbolsCount = 0;
@@ -205,8 +211,6 @@ public:
     inline int QueueEntriesCount() { return this->m_queueItemsCount; }
     inline TABLEITEM<ITEMINFO>* Add(const char *symbol, const char *session) {
         MarketSymbolInfo<TABLEITEM<ITEMINFO>> *symbolInfo = GetSymbol(symbol, strlen(symbol));
-        if(symbolInfo->MaxSessionCount() == 0)
-            symbolInfo->InitSessions(10);
         return symbolInfo->GetSession(session, strlen(session));
     }
     inline MarketSymbolInfo<TABLEITEM<ITEMINFO>>* AddSymbol(const char *symbol, int symbolLength) {

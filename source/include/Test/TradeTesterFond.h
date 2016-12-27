@@ -29,6 +29,8 @@ public:
                                                      "10.50.129.200", "239.192.113.131", 9313);
         this->snapFond->m_fakeConnect = true;
         this->incFond->m_fakeConnect = true;
+        this->m_table->InitSymbols(10, 10);
+        this->incFond->TradeFond()->InitSymbols(10, 10);
     }
     ~TradeTesterFond() {
         delete this->incFond;
@@ -74,7 +76,7 @@ public:
         this->Clear();
         this->TestDefaults();
 
-        FastIncrementalTLRFONDInfo *info = new FastIncrementalTLRFONDInfo;
+        FastIncrementalTLRFONDInfo *info = this->m_helper->CreateFastIncrementalTLRFONDInfo();
 
         FastTLSFONDItemInfo *item1 = this->m_helper->CreateTLRFondItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
         FastTLSFONDItemInfo *item2 = this->m_helper->CreateTLRFondItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
@@ -239,7 +241,7 @@ public:
         this->Clear();
         this->TestDefaults();
 
-        FastIncrementalTLRFONDInfo *info = new FastIncrementalTLRFONDInfo;
+        FastIncrementalTLRFONDInfo *info = this->m_helper->CreateFastIncrementalTLRFONDInfo();
         FastTLSFONDItemInfo *item1 = this->m_helper->CreateTLRFondItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
         FastTLSFONDItemInfo *item2 = this->m_helper->CreateTLRFondItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
         FastTLSFONDItemInfo *item3 = this->m_helper->CreateTLRFondItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
@@ -273,7 +275,7 @@ public:
         this->Clear();
         this->TestDefaults();
 
-        FastIncrementalTLRFONDInfo *info = new FastIncrementalTLRFONDInfo;
+        FastIncrementalTLRFONDInfo *info = this->m_helper->CreateFastIncrementalTLRFONDInfo();
         FastTLSFONDItemInfo *item1 = this->m_helper->CreateTLRFondItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
         FastTLSFONDItemInfo *item2 = this->m_helper->CreateTLRFondItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
         FastTLSFONDItemInfo *item3 = this->m_helper->CreateTLRFondItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);

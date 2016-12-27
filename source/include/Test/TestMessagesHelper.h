@@ -260,6 +260,26 @@ public:
         return info;
     }
 
+    FastIncrementalOLRFONDInfo* CreateFastIncrementalOLRFONDInfo() {
+        AutoAllocatePointerList<FastIncrementalOLRFONDInfo> *list = new AutoAllocatePointerList<FastIncrementalOLRFONDInfo>(1, 1);
+        return list->NewItem();
+    }
+
+    FastIncrementalOLRCURRInfo* CreateFastIncrementalOLRCURRInfo() {
+        AutoAllocatePointerList<FastIncrementalOLRCURRInfo> *list = new AutoAllocatePointerList<FastIncrementalOLRCURRInfo>(1, 1);
+        return list->NewItem();
+    }
+
+    FastIncrementalTLRFONDInfo* CreateFastIncrementalTLRFONDInfo() {
+        AutoAllocatePointerList<FastIncrementalTLRFONDInfo> *list = new AutoAllocatePointerList<FastIncrementalTLRFONDInfo>(1, 1);
+        return list->NewItem();
+    }
+
+    FastIncrementalTLRCURRInfo* CreateFastIncrementalTLRCURRInfo() {
+        AutoAllocatePointerList<FastIncrementalTLRCURRInfo> *list = new AutoAllocatePointerList<FastIncrementalTLRCURRInfo>(1, 1);
+        return list->NewItem();
+    }
+
     FastOLSFONDItemInfo* CreateOLRFondItemInfo(const char *symbol, const char *trading, INT64 priceMantissa,
                                                INT32 priceExponenta, INT64 sizeMantissa, INT64 sizeExponenta,
                                                MDUpdateAction updateAction, MDEntryType entryType, const char *entryId,

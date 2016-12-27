@@ -29,6 +29,8 @@ public:
                                                      "10.50.129.200", "239.192.113.131", 9313);
         this->snapCurr->m_fakeConnect = true;
         this->incCurr->m_fakeConnect = true;
+        this->m_table->InitSymbols(10, 10);
+        this->incCurr->OrderCurr()->InitSymbols(10, 10);
     }
     ~OrderTesterCurr() {
         delete this->incCurr;
@@ -77,7 +79,7 @@ public:
         this->Clear();
         this->TestDefaults();
 
-        FastIncrementalOLRCURRInfo *info = new FastIncrementalOLRCURRInfo;
+        FastIncrementalOLRCURRInfo *info = this->m_helper->CreateFastIncrementalOLRCURRInfo();
 
         FastOLSCURRItemInfo *item1 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
         FastOLSCURRItemInfo *item2 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
@@ -242,7 +244,7 @@ public:
         this->Clear();
         this->TestDefaults();
 
-        FastIncrementalOLRCURRInfo *info = new FastIncrementalOLRCURRInfo;
+        FastIncrementalOLRCURRInfo *info = this->m_helper->CreateFastIncrementalOLRCURRInfo();
         FastOLSCURRItemInfo *item1 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
         FastOLSCURRItemInfo *item2 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
         FastOLSCURRItemInfo *item3 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
@@ -334,7 +336,7 @@ public:
         this->Clear();
         this->TestDefaults();
 
-        FastIncrementalOLRCURRInfo *info = new FastIncrementalOLRCURRInfo;
+        FastIncrementalOLRCURRInfo *info = this->m_helper->CreateFastIncrementalOLRCURRInfo();
         FastOLSCURRItemInfo *item1 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
         FastOLSCURRItemInfo *item2 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
         FastOLSCURRItemInfo *item3 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
@@ -408,7 +410,7 @@ public:
         this->Clear();
         this->TestDefaults();
 
-        FastIncrementalOLRCURRInfo *info = new FastIncrementalOLRCURRInfo;
+        FastIncrementalOLRCURRInfo *info = this->m_helper->CreateFastIncrementalOLRCURRInfo();
         FastOLSCURRItemInfo *item1 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
         FastOLSCURRItemInfo *item2 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
         FastOLSCURRItemInfo *item3 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
@@ -442,7 +444,7 @@ public:
         this->Clear();
         this->TestDefaults();
 
-        FastIncrementalOLRCURRInfo *info = new FastIncrementalOLRCURRInfo;
+        FastIncrementalOLRCURRInfo *info = this->m_helper->CreateFastIncrementalOLRCURRInfo();
         FastOLSCURRItemInfo *item1 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
         FastOLSCURRItemInfo *item2 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
         FastOLSCURRItemInfo *item3 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
@@ -502,7 +504,7 @@ public:
         this->Clear();
         this->TestDefaults();
 
-        FastIncrementalOLRCURRInfo *info = new FastIncrementalOLRCURRInfo;
+        FastIncrementalOLRCURRInfo *info = this->m_helper->CreateFastIncrementalOLRCURRInfo();
 
         FastOLSCURRItemInfo *item1 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "e1", 1);
         FastOLSCURRItemInfo *item2 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "e2", 2);
@@ -660,7 +662,7 @@ public:
         this->Clear();
         this->TestDefaults();
 
-        FastIncrementalOLRCURRInfo *info = new FastIncrementalOLRCURRInfo;
+        FastIncrementalOLRCURRInfo *info = this->m_helper->CreateFastIncrementalOLRCURRInfo();
         FastOLSCURRItemInfo *item1 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "e1", 1);
         FastOLSCURRItemInfo *item2 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "e2", 2);
         FastOLSCURRItemInfo *item3 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "e3", 3);
@@ -749,7 +751,7 @@ public:
         this->Clear();
         this->TestDefaults();
 
-        FastIncrementalOLRCURRInfo *info = new FastIncrementalOLRCURRInfo;
+        FastIncrementalOLRCURRInfo *info = this->m_helper->CreateFastIncrementalOLRCURRInfo();
         FastOLSCURRItemInfo *item1 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "e1", 1);
         FastOLSCURRItemInfo *item2 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "e2", 2);
         FastOLSCURRItemInfo *item3 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "e3", 3);
@@ -815,7 +817,7 @@ public:
         this->Clear();
         this->TestDefaults();
 
-        FastIncrementalOLRCURRInfo *info = new FastIncrementalOLRCURRInfo;
+        FastIncrementalOLRCURRInfo *info = this->m_helper->CreateFastIncrementalOLRCURRInfo();
         FastOLSCURRItemInfo *item1 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "e1", 1);
         FastOLSCURRItemInfo *item2 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "e2", 2);
         FastOLSCURRItemInfo *item3 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "e3", 3);
@@ -842,7 +844,7 @@ public:
         this->Clear();
         this->TestDefaults();
 
-        FastIncrementalOLRCURRInfo *info = new FastIncrementalOLRCURRInfo;
+        FastIncrementalOLRCURRInfo *info = this->m_helper->CreateFastIncrementalOLRCURRInfo();
         FastOLSCURRItemInfo *item1 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "e1", 1);
         FastOLSCURRItemInfo *item2 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "e2", 2);
         FastOLSCURRItemInfo *item3 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "e3", 3);
@@ -3401,7 +3403,7 @@ public:
         this->Clear();
         this->TestDefaults();
 
-        FastIncrementalOLRCURRInfo *info = new FastIncrementalOLRCURRInfo;
+        FastIncrementalOLRCURRInfo *info = this->m_helper->CreateFastIncrementalOLRCURRInfo();
 
         FastOLSCURRItemInfo *item1 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
         FastOLSCURRItemInfo *item2 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
@@ -3547,7 +3549,7 @@ public:
         this->Clear();
         this->TestDefaults();
 
-        FastIncrementalOLRCURRInfo *info = new FastIncrementalOLRCURRInfo;
+        FastIncrementalOLRCURRInfo *info = this->m_helper->CreateFastIncrementalOLRCURRInfo();
         FastOLSCURRItemInfo *item1 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
         FastOLSCURRItemInfo *item2 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
         FastOLSCURRItemInfo *item3 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
@@ -3658,7 +3660,7 @@ public:
         this->Clear();
         this->TestDefaults();
 
-        FastIncrementalOLRCURRInfo *info = new FastIncrementalOLRCURRInfo;
+        FastIncrementalOLRCURRInfo *info = this->m_helper->CreateFastIncrementalOLRCURRInfo();
         FastOLSCURRItemInfo *item1 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
         FastOLSCURRItemInfo *item2 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
         FastOLSCURRItemInfo *item3 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
@@ -3722,7 +3724,7 @@ public:
         this->Clear();
         this->TestDefaults();
 
-        FastIncrementalOLRCURRInfo *info = new FastIncrementalOLRCURRInfo;
+        FastIncrementalOLRCURRInfo *info = this->m_helper->CreateFastIncrementalOLRCURRInfo();
         FastOLSCURRItemInfo *item1 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
         FastOLSCURRItemInfo *item2 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
         FastOLSCURRItemInfo *item3 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
@@ -3756,7 +3758,7 @@ public:
         this->Clear();
         this->TestDefaults();
 
-        FastIncrementalOLRCURRInfo *info = new FastIncrementalOLRCURRInfo;
+        FastIncrementalOLRCURRInfo *info = this->m_helper->CreateFastIncrementalOLRCURRInfo();
         FastOLSCURRItemInfo *item1 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
         FastOLSCURRItemInfo *item2 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
         FastOLSCURRItemInfo *item3 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
@@ -3810,7 +3812,7 @@ public:
         this->Clear();
         this->TestDefaults();
 
-        FastIncrementalOLRCURRInfo *info = new FastIncrementalOLRCURRInfo;
+        FastIncrementalOLRCURRInfo *info = this->m_helper->CreateFastIncrementalOLRCURRInfo();
 
         FastOLSCURRItemInfo *item1 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "e1", 1);
         FastOLSCURRItemInfo *item2 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "e2", 2);
@@ -3928,7 +3930,7 @@ public:
         this->Clear();
         this->TestDefaults();
 
-        FastIncrementalOLRCURRInfo *info = new FastIncrementalOLRCURRInfo;
+        FastIncrementalOLRCURRInfo *info = this->m_helper->CreateFastIncrementalOLRCURRInfo();
         FastOLSCURRItemInfo *item1 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "e1", 1);
         FastOLSCURRItemInfo *item2 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "e2", 2);
         FastOLSCURRItemInfo *item3 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "e3", 3);
@@ -4017,7 +4019,7 @@ public:
         this->Clear();
         this->TestDefaults();
 
-        FastIncrementalOLRCURRInfo *info = new FastIncrementalOLRCURRInfo;
+        FastIncrementalOLRCURRInfo *info = this->m_helper->CreateFastIncrementalOLRCURRInfo();
         FastOLSCURRItemInfo *item1 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "e1", 1);
         FastOLSCURRItemInfo *item2 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "e2", 2);
         FastOLSCURRItemInfo *item3 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "e3", 3);
@@ -4073,7 +4075,7 @@ public:
         this->Clear();
         this->TestDefaults();
 
-        FastIncrementalOLRCURRInfo *info = new FastIncrementalOLRCURRInfo;
+        FastIncrementalOLRCURRInfo *info = this->m_helper->CreateFastIncrementalOLRCURRInfo();
         FastOLSCURRItemInfo *item1 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "e1", 1);
         FastOLSCURRItemInfo *item2 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "e2", 2);
         FastOLSCURRItemInfo *item3 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "e3", 3);
@@ -4100,7 +4102,7 @@ public:
         this->Clear();
         this->TestDefaults();
 
-        FastIncrementalOLRCURRInfo *info = new FastIncrementalOLRCURRInfo;
+        FastIncrementalOLRCURRInfo *info = this->m_helper->CreateFastIncrementalOLRCURRInfo();
         FastOLSCURRItemInfo *item1 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "e1", 1);
         FastOLSCURRItemInfo *item2 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "e2", 2);
         FastOLSCURRItemInfo *item3 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "e3", 3);
