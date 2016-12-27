@@ -123,6 +123,12 @@ public:
             throw;
         if(!this->msr->StatisticFond()->Symbol(0)->SecurityDefinition()->Used)
             throw;
+        if(!this->olr->OrderFond()->Symbol(0)->Symbol()->Equal("s1"))
+            throw;
+        if(!this->tlr->TradeFond()->Symbol(0)->Symbol()->Equal("s1"))
+            throw;
+        if(!this->msr->StatisticFond()->Symbol(0)->Symbol()->Equal("s1"))
+            throw;
 
         for(int i = 0; i < info->MarketSegmentGrpCount; i++) {
             if(!this->olr->OrderFond()->Symbol(0)->SecurityDefinition()->MarketSegmentGrp[i]->Used)
@@ -268,6 +274,41 @@ public:
             throw;
     }
 
+    void TestUpdateSecurityDefinition() {
+        TestAddSymbol();
+
+        FastSecurityDefinitionInfo *info = this->m_helper->CreateSecurityDefinitionInfo("s1");
+        this->m_helper->AddMarketSegemntGroup(info);
+
+        this->m_helper->AddTradingSession(info, 0, "t11");
+        this->m_helper->AddTradingSession(info, 0, "t12");
+
+        FastSecurityDefinitionInfo *prev = this->olr->OrderFond()->Symbol(0)->SecurityDefinition();
+        this->idf->UpdateSecurityDefinition(info);
+
+        if(this->olr->OrderFond()->Symbol(0)->SecurityDefinition() != info)
+            throw;
+        if(this->tlr->TradeFond()->Symbol(0)->SecurityDefinition() != info)
+            throw;
+        if(this->msr->StatisticFond()->Symbol(0)->SecurityDefinition() != info)
+            throw;
+
+        if(prev->Used)
+            throw;
+        if(prev->MarketSegmentGrp[0]->Used)
+            throw;
+        if(prev->MarketSegmentGrp[1]->Used)
+            throw;
+        if(prev->MarketSegmentGrp[0]->TradingSessionRulesGrp[0]->Used)
+            throw;
+        if(prev->MarketSegmentGrp[0]->TradingSessionRulesGrp[1]->Used)
+            throw;
+        if(prev->MarketSegmentGrp[1]->TradingSessionRulesGrp[0]->Used)
+            throw;
+        if(prev->MarketSegmentGrp[1]->TradingSessionRulesGrp[1]->Used)
+            throw;
+    }
+
     void Test() {
         printf("IDF FOND TestDefaults\n");
         TestDefaults();
@@ -277,6 +318,8 @@ public:
         TestAddSymbol_2();
         printf("IDF FOND TestClearBeforeStart\n");
         TestClearBeforeStart();
+        printf("IDF FOND TestUpdateSecurityDefinition\n");
+        TestUpdateSecurityDefinition();
     }
 };
 

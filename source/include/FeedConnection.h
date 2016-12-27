@@ -1110,6 +1110,48 @@ public:
         return res;
     }
 
+    inline void UpdateSymbol(FastSecurityDefinitionInfo *info) {
+        if(this->m_orderTableFond != 0) {
+            MarketSymbolInfo<OrderInfo<FastOLSFONDItemInfo>> *symbol = this->m_orderTableFond->GetSymbol(info->Symbol,
+                                                                                                         info->SymbolLength);
+            symbol->SecurityDefinition(info);
+            return;
+        }
+        if(this->m_orderTableCurr != 0) {
+            MarketSymbolInfo<OrderInfo<FastOLSCURRItemInfo>> *symbol = this->m_orderTableCurr->GetSymbol(info->Symbol,
+                                                                                                         info->SymbolLength);
+            symbol->SecurityDefinition(info);
+            return;
+        }
+        if(this->m_tradeTableFond != 0) {
+            MarketSymbolInfo<TradeInfo<FastTLSFONDItemInfo>> *symbol = this->m_tradeTableFond->GetSymbol(info->Symbol,
+                                                                                                         info->SymbolLength);
+            symbol->SecurityDefinition(info);
+            return;
+        }
+        if(this->m_tradeTableCurr != 0) {
+            MarketSymbolInfo<TradeInfo<FastTLSCURRItemInfo>> *symbol = this->m_tradeTableCurr->GetSymbol(info->Symbol,
+                                                                                                         info->SymbolLength);
+
+            symbol->SecurityDefinition(info);
+            return;
+        }
+        if(this->m_statTableFond != 0) {
+            MarketSymbolInfo<StatisticsInfo<FastGenericItemInfo>> *symbol = this->m_statTableFond->GetSymbol(info->Symbol,
+                                                                                                             info->SymbolLength);
+
+            symbol->SecurityDefinition(info);
+            return;
+        }
+        if(this->m_statTableCurr != 0) {
+            MarketSymbolInfo<StatisticsInfo<FastGenericItemInfo>> *symbol = this->m_statTableCurr->GetSymbol(info->Symbol,
+                                                                                                             info->SymbolLength);
+
+            symbol->SecurityDefinition(info);
+            return;
+        }
+    }
+
     inline void AddSymbol(FastSecurityDefinitionInfo *info) {
         if(this->m_orderTableFond != 0) {
             MarketSymbolInfo<OrderInfo<FastOLSFONDItemInfo>> *symbol = this->m_orderTableFond->AddSymbol(info->Symbol, info->SymbolLength);
@@ -1214,6 +1256,9 @@ public:
         while(true) {
             if(StringIdComparer::Equal(node->Data()->Symbol, node->Data()->SymbolLength, symbol, symbolCount))
                 return node->Data();
+            if(node == this->m_securityDefinitions->End())
+                break;
+            node = node->Next();
         }
         return 0;
     }
@@ -1300,6 +1345,12 @@ public:
         for(int c = 0; c < this->m_connectionsToRecvSymbolsCount; c++)
             this->m_connectionsToRecvSymbols[c]->AddSymbol(info);
 
+    }
+
+    inline void UpdateSecurityDefinition(FastSecurityDefinitionInfo *info) {
+        FastSecurityDefinitionMarketSegmentGrpItemInfo **market = info->MarketSegmentGrp;
+        for(int c = 0; c < this->m_connectionsToRecvSymbolsCount; c++)
+            this->m_connectionsToRecvSymbols[c]->UpdateSymbol(info);
     }
 
     inline void AfterProcessSecurityDefinitions() {

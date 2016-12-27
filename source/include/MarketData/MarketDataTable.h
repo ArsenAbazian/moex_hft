@@ -214,10 +214,10 @@ public:
         return symbolInfo->GetSession(session, strlen(session));
     }
     inline MarketSymbolInfo<TABLEITEM<ITEMINFO>>* AddSymbol(const char *symbol, int symbolLength) {
-        MarketSymbolInfo<TABLEITEM<ITEMINFO>> *s = new MarketSymbolInfo<TABLEITEM<ITEMINFO>>();
-        this->m_symbols[this->m_symbolsCount] = s;
+        MarketSymbolInfo<TABLEITEM<ITEMINFO>> *newItem = this->m_symbols[this->m_symbolsCount];
+        newItem->Symbol()->Set(symbol, symbolLength);
         this->m_symbolsCount++;
-        return s;
+        return newItem;
     }
     inline MarketSymbolInfo<TABLEITEM<ITEMINFO>>* AddSymbol(const char *symbol) {
         return AddSymbol(symbol, strlen(symbol));
