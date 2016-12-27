@@ -142,6 +142,93 @@ public:
         }
     }
 
+    void TestAddSymbol_2_Core(int symbolIndex, FastSecurityDefinitionInfo *info) {
+        if(this->olr->OrderFond()->Symbol(symbolIndex)->SessionCount() != 4)
+            throw;
+        if(this->tlr->TradeFond()->Symbol(symbolIndex)->SessionCount() != 4)
+            throw;
+        if(this->msr->StatisticFond()->Symbol(symbolIndex)->SessionCount() != 4)
+            throw;
+        if(this->olr->OrderFond()->Symbol(symbolIndex)->MaxSessionCount() != 4)
+            throw;
+        if(this->tlr->TradeFond()->Symbol(symbolIndex)->MaxSessionCount() != 4)
+            throw;
+        if(this->msr->StatisticFond()->Symbol(symbolIndex)->MaxSessionCount() != 4)
+            throw;
+
+        if(!this->olr->OrderFond()->Symbol(symbolIndex)->SecurityDefinition()->Used)
+            throw;
+        if(!this->tlr->TradeFond()->Symbol(symbolIndex)->SecurityDefinition()->Used)
+            throw;
+        if(!this->msr->StatisticFond()->Symbol(symbolIndex)->SecurityDefinition()->Used)
+            throw;
+
+        for(int i = 0; i < info->MarketSegmentGrpCount; i++) {
+            if(!this->olr->OrderFond()->Symbol(symbolIndex)->SecurityDefinition()->MarketSegmentGrp[i]->Used)
+                throw;
+            if(!this->tlr->TradeFond()->Symbol(symbolIndex)->SecurityDefinition()->MarketSegmentGrp[i]->Used)
+                throw;
+            if(!this->msr->StatisticFond()->Symbol(symbolIndex)->SecurityDefinition()->MarketSegmentGrp[i]->Used)
+                throw;
+            for(int j = 0; j < info->MarketSegmentGrp[i]->TradingSessionRulesGrpCount; j++) {
+                if(!this->olr->OrderFond()->Symbol(symbolIndex)->SecurityDefinition()->MarketSegmentGrp[i]->TradingSessionRulesGrp[j]->Used)
+                    throw;
+                if(!this->tlr->TradeFond()->Symbol(symbolIndex)->SecurityDefinition()->MarketSegmentGrp[i]->TradingSessionRulesGrp[j]->Used)
+                    throw;
+                if(!this->msr->StatisticFond()->Symbol(symbolIndex)->SecurityDefinition()->MarketSegmentGrp[i]->TradingSessionRulesGrp[j]->Used)
+                    throw;
+            }
+        }
+    }
+
+    void TestAddSymbol_2() {
+        this->Clear();
+
+        FastSecurityDefinitionInfo *info = this->m_helper->CreateSecurityDefinitionInfo("s1");
+        this->m_helper->AddMarketSegemntGroup(info);
+        this->m_helper->AddMarketSegemntGroup(info);
+
+        this->m_helper->AddTradingSession(info, 0, "t1");
+        this->m_helper->AddTradingSession(info, 0, "t2");
+        this->m_helper->AddTradingSession(info, 1, "t3");
+        this->m_helper->AddTradingSession(info, 1, "t4");
+
+        FastSecurityDefinitionInfo *info2 = this->m_helper->CreateSecurityDefinitionInfo("s2");
+        this->m_helper->AddMarketSegemntGroup(info2);
+        this->m_helper->AddMarketSegemntGroup(info2);
+
+        this->m_helper->AddTradingSession(info2, 0, "t1");
+        this->m_helper->AddTradingSession(info2, 0, "t2");
+        this->m_helper->AddTradingSession(info2, 1, "t3");
+        this->m_helper->AddTradingSession(info2, 1, "t4");
+
+        if(info->MarketSegmentGrpCount != 2)
+            throw;
+
+        this->idf->BeforeProcessSecurityDefinitions();
+        if(!this->idf->ProcessSecurityDefinition(info))
+            throw;
+        if(!this->idf->ProcessSecurityDefinition(info2))
+            throw;
+        this->idf->AfterProcessSecurityDefinitions();
+
+        if(this->olr->OrderFond()->SymbolsCount() != 2)
+            throw;
+        if(this->tlr->TradeFond()->SymbolsCount() != 2)
+            throw;
+        if(this->msr->StatisticFond()->SymbolsCount() != 2)
+            throw;
+        if(this->olr->OrderFond()->MaxSymbolsCount() != 2)
+            throw;
+        if(this->tlr->TradeFond()->MaxSymbolsCount() != 2)
+            throw;
+        if(this->msr->StatisticFond()->MaxSymbolsCount() != 2)
+            throw;
+
+        TestAddSymbol_2_Core(0, info);
+        TestAddSymbol_2_Core(1, info2);
+    }
+
     void TestClearBeforeStart() {
         this->TestAddSymbol();
 
@@ -182,8 +269,13 @@ public:
     }
 
     void Test() {
+        printf("IDF FOND TestDefaults\n");
         TestDefaults();
+        printf("IDF FOND TestAddSymbol\n");
         TestAddSymbol();
+        printf("IDF FOND TestAddSymbol_2\n");
+        TestAddSymbol_2();
+        printf("IDF FOND TestClearBeforeStart\n");
         TestClearBeforeStart();
     }
 };

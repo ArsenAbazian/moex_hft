@@ -1312,6 +1312,7 @@ public:
             this->AddSecurityDefinition(info);
             if(node == this->m_securityDefinitions->End())
                 break;
+            node = node->Next();
         }
     }
 
