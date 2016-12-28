@@ -341,13 +341,15 @@ public:
             throw;
     }
 
+    // no packet was lost, symbol repeats, so symbols ended....
     void TestInstrumentDefinitionCollectDataCompleted_1() {
         this->idf->Stop();
         this->idf->m_idfMode = FeedConnectionSecurityDefinitionMode::sdmCollectData;
         this->idf->Start();
 
         this->m_helper->SendMessages(this->idf, "idf s1 session t1 session t2, idf s2 session t1 session t2, idf s1 session t1 session t2", 30);
-        this->idf->Listen_Atom_SecurityDefinition_Core();
+        if(!this->idf->IsIdfDataCollected())
+            throw;
     }
 
     void TestInstrumentDefinitionCollectDataCompleted() {

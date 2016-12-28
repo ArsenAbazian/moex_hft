@@ -744,8 +744,78 @@ private:
         }
     }
 
+    inline bool ProcessSecurityDefinitionCore(unsigned char *buffer, int length) {
+        this->m_fastProtocolManager->SetNewBuffer(buffer, length);
+        this->m_fastProtocolManager->ReadMsgSeqNumber();
+
+        this->m_fastProtocolManager->DecodeHeader();
+        if(this->m_fastProtocolManager->TemplateId() != FeedConnectionMessage::fmcSecurityDefinition) {
+            printf("not an security definition template: %d\n", this->m_fastProtocolManager->TemplateId());
+            return true;
+        }
+        return this->ProcessSecurityDefinition((FastSecurityDefinitionInfo*)this->m_fastProtocolManager->DecodeSecurityDefinition());
+    }
+
+    inline bool ProcessSecurityDefinition(unsigned char *buffer, int length) {
+        DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Decode);
+        bool res = this->ProcessSecurityDefinitionCore(buffer, length);
+        DefaultLogManager::Default->EndLog(res);
+        return res;
+    }
+
+    inline bool ProcessSecurityDefinition(FeedConnectionMessageInfo *info) {
+        unsigned char *buffer = this->m_recvABuffer->Item(info->m_item->m_itemIndex);
+        if(this->ShouldSkipMessage(buffer)) {
+            info->m_processed = true;
+            return true;  // TODO - take this message into account, becasue it determines feed alive
+        }
+
+        DefaultLogManager::Default->WriteFast(this->m_idLogIndex, this->m_recvABuffer->BufferIndex(), info->m_item->m_itemIndex);
+        info->m_processed = true;
+        return this->ProcessSecurityDefinition(buffer, this->m_recvABuffer->ItemLength(info->m_item->m_itemIndex));
+    }
+
+    inline bool ProcessSecurityDefinitionMessages() {
+        int i = this->m_startMsgSeqNum;
+        int newStartMsgSeqNum = -1;
+
+        while(i <= this->m_endMsgSeqNum) {
+            if(this->m_packets[i]->m_processed) {
+                i++; continue;
+            }
+            if(this->m_packets[i]->m_item == 0) {
+                newStartMsgSeqNum = i;
+                break;
+            }
+            if(!this->ProcessSecurityDefinition(this->m_packets[i]))
+                return false;
+            i++;
+        }
+
+        /*
+        while(i <= this->m_endMsgSeqNum) {
+            if(this->m_packets[i]->m_processed || this->m_packets[i]->m_item == 0) {
+                i++; continue;
+            }
+            if(!this->ProcessSecurityDefinition(this->m_packets[i]))
+                return false;
+            i++;
+        }
+         */
+
+        if(newStartMsgSeqNum != -1)
+            this->m_startMsgSeqNum = newStartMsgSeqNum;
+        else
+            this->m_startMsgSeqNum = i;
+        if(this->m_doNotCheckIncrementalActuality)
+            this->m_startMsgSeqNum = i;
+        return true;
+    }
+
     inline bool Listen_Atom_SecurityDefinition_Core() {
-        return false;
+        if(!this->ProcessSecurityDefinitionMessages())
+            return false;
+        return true;
     }
 
     inline bool Listen_Atom_Snapshot_Core() {
@@ -1376,6 +1446,17 @@ public:
             this->AddSecurityDefinition(*ptr);
         this->m_lastUpdatedSecurityDefinitionIndex = -1;
     }
+
+    inline bool HasLostPackets(int msgStart, int msgEnd) {
+        FeedConnectionMessageInfo **msg = (this->m_packets + msgStart);
+        for(int i = msgStart; i <= msgEnd; i++, msg++) {
+            if((*msg)->m_item == 0)
+                return true;
+        }
+        return false;
+    }
+
+    inline bool IsIdfDataCollected() { return this->m_idfDataCollected; }
 
 	inline bool Connect() {
 		if(this->m_fakeConnect)

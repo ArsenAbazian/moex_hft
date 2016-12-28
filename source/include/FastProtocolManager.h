@@ -392,6 +392,7 @@ public:
 	}
 
 	inline void* LastDecodeInfo() { return this->m_lastDecodedInfo; }
+	inline void LastDecodeInfo(void *info) { this->m_lastDecodedInfo = info; }
 
 #pragma region Core_Methods
 	inline bool FastCompareString1(char *str1, char *str2) { return *str1 == *str2; }

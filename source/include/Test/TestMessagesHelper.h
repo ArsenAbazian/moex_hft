@@ -826,19 +826,11 @@ public:
 
         info->MsgSeqNum = tmp->m_msgSeqNo;
         info->AllowMarketSegmentGrp = true;
-        info->MarketSegmentGrpCount = 1;
-        info->MarketSegmentGrp[0] = new FastSecurityDefinitionMarketSegmentGrpItemInfo();
-        info->MarketSegmentGrp[0]->TradingSessionRulesGrpCount = tmp->m_itemsCount;
+        this->AddMarketSegemntGroup(info);
         info->MarketSegmentGrp[0]->AllowTradingSessionRulesGrp = true;
 
         for(int i = 0; i < tmp->m_itemsCount; i++) {
-            FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo *item = new FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo();
-
-            item->TradingSessionIDLength = strlen(tmp->m_items[i]->m_tradingSession);
-            item->TradingSessionID = new char[item->TradingSessionIDLength + 1];
-            strcpy(item->TradingSessionID, tmp->m_items[i]->m_tradingSession);
-
-            info->MarketSegmentGrp[0]->TradingSessionRulesGrp[i] = item;
+            this->AddTradingSession(info, 0, tmp->m_items[i]->m_tradingSession);
         }
         return info;
     }
@@ -1428,6 +1420,7 @@ public:
             SendMessage(fif, idf_msg[idf_index]);
             if(!fif->Listen_Atom_SecurityDefinition_Core())
                 throw;
+            idf_index++;
 
             w.Start();
             while(!w.IsElapsedMilliseconds(delay));
