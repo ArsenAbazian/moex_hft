@@ -33,26 +33,22 @@
       <sourceFolder url="file://$MODULE_DIR$/source/src/ConsoleManager.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/src/HftConsole.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/include/Stopwatch.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/source/include/Test/TradeTesterCurr.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/source/include/Test/TestTemplateInfo.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/source/include/Test/OrderTesterFond.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/source/include/Test/FixProtocolManagerTester.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/source/include/Test/OrderTesterCurr.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/source/include/Test/StatisticsTesterCurr.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/include/Test/DecimalTester.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/source/include/Test/OrderTesterFond.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/source/include/Test/TradeTesterCurr.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/include/Test/TradeTesterFond.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/source/include/Test/HashTableTester.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/include/Test/FeedConnectionTester.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/source/include/Test/OrderBookTesterFond.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/include/Test/InstrumentDefinitionTester.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/include/Test/StatisticsTesterFond.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/source/include/Test/HashTableTester.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/source/include/Test/StatisticsTesterCurr.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/source/include/Test/OrderBookTesterCurr.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/source/include/Test/FixProtocolManagerTester.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/source/include/Test/TestTemplateInfo.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/include/Test/TestMessagesHelper.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/source/include/Test/StatisticsTester.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/source/include/Test/OrderTesterCurr.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/include/Lib/StringIdComparer.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/include/Lib/AutoAllocatePointerList.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/include/Lib/PointerList.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/source/include/MarketData/OrderBookInfo.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/include/MarketData/TradeInfo.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/include/MarketData/StatisticInfo.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/include/MarketData/MarketDataTable.h" isTestSource="false" />

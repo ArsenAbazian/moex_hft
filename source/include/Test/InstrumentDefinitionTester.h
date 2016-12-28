@@ -44,6 +44,11 @@ public:
         this->idf->AddConnectionToRecvSymbol(this->olr);
         this->idf->AddConnectionToRecvSymbol(this->msr);
         this->idf->AddConnectionToRecvSymbol(this->tlr);
+
+        this->idf->m_fakeConnect = true;
+        this->olr->m_fakeConnect = true;
+        this->tlr->m_fakeConnect = true;
+        this->msr->m_fakeConnect = true;
     }
     ~InstrumentDefinitionTester() {
         delete this->olr;
@@ -68,6 +73,8 @@ public:
         if(this->idf->ConnectionsToRecvSymbols()[2] != this->tlr)
             throw;
         if(this->idf->Type() != FeedConnectionType::InstrumentDefinition)
+            throw;
+        if(this->idf->SecurityDefinitionMode() != FeedConnectionSecurityDefinitionMode::sdmCollectData)
             throw;
     }
 
@@ -319,7 +326,41 @@ public:
             throw;
     }
 
+    void TestInstrumentDefinitionStartInCollectDataMode() {
+        this->idf->Stop();
+
+        this->idf->m_idfMode = FeedConnectionSecurityDefinitionMode::sdmCollectData;
+        this->idf->Start();
+        if(this->idf->State() != FeedConnectionState::fcsListenSecurityDefinition)
+            throw;
+        if(this->idf->m_idfDataCollected)
+            throw;
+        if(this->idf->m_securityDefinitionsCount != 0)
+            throw;
+        if(this->idf->m_idfMode != FeedConnectionSecurityDefinitionMode::sdmCollectData)
+            throw;
+    }
+
+    void TestInstrumentDefinitionCollectDataCompleted_1() {
+        this->idf->Stop();
+        this->idf->m_idfMode = FeedConnectionSecurityDefinitionMode::sdmCollectData;
+        this->idf->Start();
+
+        this->m_helper->SendMessages(this->idf, "idf s1 session t1 session t2, idf s2 session t1 session t2, idf s1 session t1 session t2", 30);
+        this->idf->Listen_Atom_SecurityDefinition_Core();
+    }
+
+    void TestInstrumentDefinitionCollectDataCompleted() {
+        printf("IDF FOND TestInstrumentDefinitionCollectDataCompleted_1\n");
+        TestInstrumentDefinitionCollectDataCompleted_1();
+    }
+
     void Test() {
+        printf("IDF FOND TestInstrumentDefinitionStartInCollectDataMode\n");
+        TestInstrumentDefinitionStartInCollectDataMode();
+        printf("IDF FOND TestInstrumentDefinitionCollectDataCompleted\n");
+        TestInstrumentDefinitionCollectDataCompleted();
+
         printf("IDF FOND TestDefaults\n");
         TestDefaults();
         printf("IDF FOND TestAddSymbol\n");

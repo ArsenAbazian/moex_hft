@@ -63,6 +63,7 @@ typedef enum _FeedConnectionState {
 	fcsSuspend,
 	fcsListenIncremental,
     fcsListenSnapshot,
+    fcsListenSecurityDefinition,
     fcsConnect
 } FeedConnectionState;
 
@@ -71,6 +72,11 @@ typedef enum _FeedConnectionProcessMessageResultValue {
 	fcMsgResFailed,
 	fcMsgResProcessedExit
 }FeedConnectionProcessMessageResultValue;
+
+typedef enum _FeedConnectionSecurityDefinitionMode {
+    sdmCollectData,
+    sdmUpdateData
+}FeedConnectionSecurityDefinitionMode;
 
 class FeedConnection;
 typedef bool (FeedConnection::*FeedConnectionWorkAtomPtr)();
@@ -102,6 +108,7 @@ class TradeTesterCurr;
 class TestMessagesHelper;
 class StatisticsTesterFond;
 class StatisticsTesterCurr;
+class InstrumentDefinitionTester;
 
 class FeedConnection {
     friend class OrderTesterFond;
@@ -112,6 +119,7 @@ class FeedConnection {
     friend class TestMessagesHelper;
     friend class StatisticsTesterFond;
     friend class StatisticsTesterCurr;
+    friend class InstrumentDefinitionTester;
 
 public:
 	const int MaxReceiveBufferSize 				= 1500;
@@ -139,6 +147,10 @@ protected:
     bool                                        m_isLastIncrementalRecv;
 
     bool                                        m_doNotCheckIncrementalActuality;
+
+    FeedConnectionSecurityDefinitionMode        m_idfMode;
+    bool                                        m_idfDataCollected;
+    bool                                        m_allowUpdateIdfData;
 
     FeedConnectionMessageInfo                   **m_packets;
 
@@ -732,6 +744,10 @@ private:
         }
     }
 
+    inline bool Listen_Atom_SecurityDefinition_Core() {
+        return false;
+    }
+
     inline bool Listen_Atom_Snapshot_Core() {
         if(this->m_waitTimer->IsElapsedMilliseconds(this->m_snapshotMaxTimeMs)) {
             this->m_waitTimer->Stop();
@@ -839,6 +855,27 @@ private:
         }
 
         return this->Listen_Atom_Incremental_Core();
+    }
+
+    inline bool Listen_Atom_SecurityDefinition(){
+        bool recv = this->ProcessServerA();
+        recv |= this->ProcessServerB();
+
+        if(!recv) {
+            if(!this->m_waitTimer->Active(1)) {
+                this->m_waitTimer->Start(1);
+            }
+            else {
+                if(this->m_waitTimer->ElapsedSeconds(1) > this->WaitAnyPacketMaxTimeSec) {
+                    DefaultLogManager::Default->WriteSuccess(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_Listen_Atom_SecurityDefinition, false);
+                    return false;
+                }
+            }
+        }
+        else {
+            this->m_waitTimer->Stop(1);
+        }
+        return this->Listen_Atom_SecurityDefinition_Core();
     }
 
     inline bool Listen_Atom_Snapshot() {
@@ -1049,6 +1086,7 @@ public:
     inline LinkedPointer<FastSecurityDefinitionInfo>** SecurityDefinitions() { return this->m_securityDefinitions; }
     inline FastSecurityDefinitionInfo* SecurityDefinition(int index) { return this->m_securityDefinitions[index]->Data(); }
     inline int SecurityDefinitionsCount() { return this->m_securityDefinitionsCount; }
+    inline FeedConnectionSecurityDefinitionMode SecurityDefinitionMode() { return this->m_idfMode; }
     inline void WaitIncrementalMaxTimeMs(int timeMs) { this->m_waitIncrementalMaxTimeMs = timeMs; }
     inline int WaitIncrementalMaxTimeMs() { return this->m_waitIncrementalMaxTimeMs; }
     inline void WaitSnapshotMaxTimeMs(int timeMs) { this->m_snapshotMaxTimeMs = timeMs; }
@@ -1408,6 +1446,8 @@ public:
 		FeedConnectionState st = this->m_state;
         if(st == FeedConnectionState::fcsListenIncremental)
             return this->Listen_Atom_Incremental();
+        if(st == FeedConnectionState::fcsListenSecurityDefinition)
+            return this->Listen_Atom_SecurityDefinition();
         if(st == FeedConnectionState::fcsListenSnapshot)
             return this->Listen_Atom_Snapshot();
         if(st == FeedConnectionState::fcsSuspend)
@@ -1417,10 +1457,15 @@ public:
         return true;
 
 	}
+    inline FeedConnectionState CalcListenStateByType() {
+        if(m_type == FeedConnectionType::InstrumentDefinition)
+            return FeedConnectionState::fcsListenSecurityDefinition;
+        else if(m_type == FeedConnectionType::Snapshot)
+            return FeedConnectionState::fcsListenSnapshot;
+        return FeedConnectionState::fcsListenIncremental;
+    }
 	inline void Listen() {
-        FeedConnectionState st = this->m_type == FeedConnectionType::Incremental?
-                                FeedConnectionState::fcsListenIncremental:
-                                FeedConnectionState::fcsListenSnapshot;
+        FeedConnectionState st = CalcListenStateByType();
 		if(this->m_state == FeedConnectionState::fcsSuspend)
 			this->SetState(st);
 		else
@@ -1723,6 +1768,7 @@ public:
         for(int i = 0; i < RobotSettings::MaxSecurityDefinitionCount; i++)
             this->m_securityDefinitions[i] = new LinkedPointer<FastSecurityDefinitionInfo>();
         this->m_securityDefinitionsCount = 0;
+        this->m_idfMode = FeedConnectionSecurityDefinitionMode::sdmCollectData;
     }
     ~FeedConnection_FOND_IDF() {
         for(int i = 0; i < RobotSettings::MaxSecurityDefinitionCount; i++)
@@ -1741,6 +1787,7 @@ public:
         for(int i = 0; i < RobotSettings::MaxSecurityDefinitionCount; i++)
             this->m_securityDefinitions[i] = new LinkedPointer<FastSecurityDefinitionInfo>();
         this->m_securityDefinitionsCount = 0;
+        this->m_idfMode = FeedConnectionSecurityDefinitionMode::sdmCollectData;
     }
     ~FeedConnection_CURR_IDF() {
         for(int i = 0; i < RobotSettings::MaxSecurityDefinitionCount; i++)

@@ -96,7 +96,8 @@ typedef enum _LogMessageCode {
 	lmcFeedConnection_GetLastFragment = 86,
 	lmcFeedConnection_StartNewSnapshot = 87,
 	lmcFeedConnection_Listen_Atom_Snapshot = 88,
-	lmcFeedConnection_StopListenSnapshot = 89
+	lmcFeedConnection_StopListenSnapshot = 89,
+	lmcFeedConnection_Listen_Atom_SecurityDefinition = 90
 #pragma  endregion
 }LogMessageCode;
 

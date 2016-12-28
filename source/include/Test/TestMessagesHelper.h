@@ -90,31 +90,34 @@ class TestMessagesHelper {
     bool HasKey(char **keys, int keysCount, const char *key) {
         return KeyIndex(keys, keysCount, key) != -1;
     }
+    bool StartKey(char **keys, const char *key) {
+        return KeyIndex(keys, 1, key) != -1;
+    }
 
     TestTemplateInfo *CreateTemplate(char **keys, int keysCount) {
         TestTemplateInfo *info = new TestTemplateInfo();
 
         info->m_lost = HasKey(keys, keysCount, "lost");
         info->m_skip = HasKey(keys, keysCount, "skip_if_suspend");
-        if(HasKey(keys, keysCount, "obr")) {
+        if(StartKey(keys, "obr")) {
             info->m_templateId = FeedConnectionMessage::fmcIncrementalRefresh_Generic;
         }
-        else if(HasKey(keys, keysCount, "olr")) {
+        else if(StartKey(keys, "olr")) {
             info->m_templateId = this->m_curr? FeedConnectionMessage::fmcIncrementalRefresh_OLR_CURR:
                                  FeedConnectionMessage::fmcIncrementalRefresh_OLR_FOND;
         }
-        else if(HasKey(keys, keysCount, "tlr")) {
+        else if(StartKey(keys, "tlr")) {
             info->m_templateId = this->m_curr? FeedConnectionMessage::fmcIncrementalRefresh_TLR_CURR:
                                  FeedConnectionMessage::fmcIncrementalRefresh_TLR_FOND;
         }
-        else if(HasKey(keys, keysCount, "obs")) {
+        else if(StartKey(keys, "obs")) {
             info->m_templateId = FeedConnectionMessage::fmcFullRefresh_Generic;
             int snapIndex = KeyIndex(keys, keysCount, "obs");
             if(KeyIndex(keys, keysCount, "begin") == snapIndex + 1)
                 snapIndex++;
             info->m_symbol = keys[snapIndex + 1];
         }
-        else if(HasKey(keys, keysCount, "ols")) {
+        else if(StartKey(keys, "ols")) {
             info->m_templateId = this->m_curr? FeedConnectionMessage::fmcFullRefresh_OLS_CURR:
                                  FeedConnectionMessage::fmcFullRefresh_OLS_FOND;
             int snapIndex = KeyIndex(keys, keysCount, "ols");
@@ -122,13 +125,17 @@ class TestMessagesHelper {
                 snapIndex++;
             info->m_symbol = keys[snapIndex + 1];
         }
-        else if(HasKey(keys, keysCount, "tls")) {
-            info->m_templateId = this->m_curr? FeedConnectionMessage::fmcFullRefresh_TLS_CURR:
+        else if(StartKey(keys, "tls")) {
+            info->m_templateId = this->m_curr ? FeedConnectionMessage::fmcFullRefresh_TLS_CURR :
                                  FeedConnectionMessage::fmcFullRefresh_TLS_FOND;
             int snapIndex = KeyIndex(keys, keysCount, "tls");
-            if(KeyIndex(keys, keysCount, "begin") == snapIndex + 1)
+            if (KeyIndex(keys, keysCount, "begin") == snapIndex + 1)
                 snapIndex++;
             info->m_symbol = keys[snapIndex + 1];
+        }
+        else if(StartKey(keys, "idf")) {
+            info->m_templateId = FeedConnectionMessage::fmcSecurityDefinition;
+            info->m_symbol = keys[1];
         }
         else if(HasKey(keys, keysCount, "wait_snap")) {
             info->m_templateId = FeedConnectionMessage::fcmHeartBeat;
@@ -141,6 +148,7 @@ class TestMessagesHelper {
         }
 
         bool isSnap = HasKey(keys, keysCount, "obs") || HasKey(keys, keysCount, "ols") || HasKey(keys, keysCount, "tls");
+        bool isIdf = StartKey(keys, "idf");
         if(isSnap) {
             info->m_session = "session1";
             if(HasKey(keys, keysCount, "begin")) {
@@ -155,6 +163,23 @@ class TestMessagesHelper {
             else info->m_lastMsgSeqNoProcessed = 1;
             if(HasKey(keys, keysCount, "end"))
                 info->m_lastFragment = true;
+        }
+
+        if(isIdf) {
+            int entryIndex = -1;
+            int itemIndex = 0;
+
+            while((entryIndex = KeyIndex(keys, keysCount, "session", entryIndex + 1)) != -1) {
+                TestTemplateItemInfo *item = new TestTemplateItemInfo();
+                item->m_tradingSession = keys[entryIndex + 1];
+                entryIndex++;
+
+                info->m_items[itemIndex] = item;
+                info->m_itemsCount++;
+
+                itemIndex++;
+            }
+            return info;
         }
 
         int entryIndex = -1;
@@ -796,6 +821,28 @@ public:
         return info;
     }
 
+    FastSecurityDefinitionInfo* CreateSecurityDefinitionInfo(TestTemplateInfo *tmp) {
+        FastSecurityDefinitionInfo *info = CreateSecurityDefinitionInfo(tmp->m_symbol);
+
+        info->MsgSeqNum = tmp->m_msgSeqNo;
+        info->AllowMarketSegmentGrp = true;
+        info->MarketSegmentGrpCount = 1;
+        info->MarketSegmentGrp[0] = new FastSecurityDefinitionMarketSegmentGrpItemInfo();
+        info->MarketSegmentGrp[0]->TradingSessionRulesGrpCount = tmp->m_itemsCount;
+        info->MarketSegmentGrp[0]->AllowTradingSessionRulesGrp = true;
+
+        for(int i = 0; i < tmp->m_itemsCount; i++) {
+            FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo *item = new FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo();
+
+            item->TradingSessionIDLength = strlen(tmp->m_items[i]->m_tradingSession);
+            item->TradingSessionID = new char[item->TradingSessionIDLength + 1];
+            strcpy(item->TradingSessionID, tmp->m_items[i]->m_tradingSession);
+
+            info->MarketSegmentGrp[0]->TradingSessionRulesGrp[i] = item;
+        }
+        return info;
+    }
+
     FastOLSFONDItemInfo* CreateOLRFondItemInfo(TestTemplateItemInfo *tmp) {
         FastOLSFONDItemInfo *info = new FastOLSFONDItemInfo();
 
@@ -1101,6 +1148,13 @@ public:
 
     }
 
+    void SendSecurityDefinitionMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
+        FastSecurityDefinitionInfo *info = CreateSecurityDefinitionInfo(tmp);
+        conn->m_fastProtocolManager->SetNewBuffer(conn->m_recvABuffer->CurrentPos(), 2000);
+        conn->m_fastProtocolManager->EncodeSecurityDefinitionInfo(info);
+        conn->ProcessServerCore(conn->m_fastProtocolManager->MessageLength());
+    }
+
     void SendOLSFondMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
         FastOLSFONDInfo *info = new FastOLSFONDInfo();
         info->MsgSeqNum = tmp->m_msgSeqNo;
@@ -1349,6 +1403,8 @@ public:
             case FeedConnectionMessage::fmcFullRefresh_TLS_CURR:
                 SendTLSCurrMessage(conn, tmp);
                 break;
+            case FeedConnectionMessage::fmcSecurityDefinition:
+                SendSecurityDefinitionMessage(conn, tmp);
             default:
                 break;
         }
@@ -1357,6 +1413,28 @@ public:
     void SendMessages(FeedConnection *conn, TestTemplateInfo **templates, int templatesCount) {
         for(int i = 0; i < templatesCount; i++)
             SendMessage(conn, templates[i]);
+    }
+
+    void SendMessages(FeedConnection *fif, const char *idf, int delay) {
+        int idfMsgCount = CalcMsgCount(idf);
+        TestTemplateInfo **idf_msg = new TestTemplateInfo*[idfMsgCount];
+        FillMsg(idf_msg, idfMsgCount, idf);
+
+        int idf_index = 0;
+        Stopwatch w;
+        w.Start(1);
+        while(idf_index < idfMsgCount) {
+            idf_msg[idf_index]->m_msgSeqNo = idf_index + 1;
+            SendMessage(fif, idf_msg[idf_index]);
+            if(!fif->Listen_Atom_SecurityDefinition_Core())
+                throw;
+
+            w.Start();
+            while(!w.IsElapsedMilliseconds(delay));
+            w.Stop();
+            if(w.ElapsedMilliseconds(1) > 5000)
+                throw;
+        }
     }
 
     void SendMessages(FeedConnection *fci, FeedConnection *fcs, const char *inc, const char *snap, int delay) {
