@@ -95,6 +95,8 @@ public:
     }
     BinaryLogItem       *m_item;
     bool                 m_processed;
+    unsigned char       *m_address;
+    int                  m_size;
     inline void Clear() {
         this->m_item = 0;
         this->m_processed = false;
@@ -242,6 +244,8 @@ private:
                 this->m_endMsgSeqNum = msgSeqNum;
         }
         this->m_packets[msgSeqNum]->m_item = item;
+        this->m_packets[msgSeqNum]->m_address = this->m_recvABuffer->CurrentPos();
+        this->m_packets[msgSeqNum]->m_size = size;
         this->m_recvABuffer->Next(size);
         return true;
     }
@@ -285,12 +289,10 @@ private:
 
     inline bool PrepareDecodeSnapshotMessage(int packetIndex) {
         FeedConnectionMessageInfo *info = this->m_packets[packetIndex];
-        int index = info->m_item->m_itemIndex;
-        unsigned char *buffer = this->m_recvABuffer->Item(index);
+        unsigned char *buffer = info->m_address;
         if(this->ShouldSkipMessage(buffer))
             return false;
-        int size = this->m_recvABuffer->ItemLength(index);
-        this->m_fastProtocolManager->SetNewBuffer(buffer, size);
+        this->m_fastProtocolManager->SetNewBuffer(buffer, info->m_size);
         this->m_fastProtocolManager->ReadMsgSeqNumber();
         this->m_fastProtocolManager->DecodeHeader();
         return true;
@@ -597,11 +599,11 @@ private:
 		return true;
 	}
 	inline FastSnapshotInfo* GetSnapshotInfo(int index) {
-		BinaryLogItem *item = this->m_packets[index]->m_item;
-		unsigned char *buffer = this->m_recvABuffer->Item(item->m_itemIndex);
+		FeedConnectionMessageInfo *item = this->m_packets[index];
+		unsigned char *buffer = item->m_address;
 		if(this->ShouldSkipMessage(buffer))
             return 0;
-        this->m_fastProtocolManager->SetNewBuffer(buffer, this->m_recvABuffer->ItemLength(item->m_itemIndex));
+        this->m_fastProtocolManager->SetNewBuffer(buffer, item->m_size);
 		this->m_fastProtocolManager->ReadMsgSeqNumber();
 		return this->m_fastProtocolManager->GetSnapshotInfo();
 	}
@@ -764,7 +766,7 @@ private:
     }
 
     inline bool ProcessSecurityDefinition(FeedConnectionMessageInfo *info) {
-        unsigned char *buffer = this->m_recvABuffer->Item(info->m_item->m_itemIndex);
+        unsigned char *buffer = info->m_address;
         if(this->ShouldSkipMessage(buffer)) {
             info->m_processed = true;
             return true;  // TODO - take this message into account, becasue it determines feed alive
@@ -772,7 +774,7 @@ private:
 
         DefaultLogManager::Default->WriteFast(this->m_idLogIndex, this->m_recvABuffer->BufferIndex(), info->m_item->m_itemIndex);
         info->m_processed = true;
-        return this->ProcessSecurityDefinition(buffer, this->m_recvABuffer->ItemLength(info->m_item->m_itemIndex));
+        return this->ProcessSecurityDefinition(buffer, info->m_size);
     }
 
     inline bool ProcessSecurityDefinitionMessages() {
@@ -1117,7 +1119,7 @@ private:
 	}
 
 	inline bool ProcessIncremental(FeedConnectionMessageInfo *info) {
-        unsigned char *buffer = this->m_recvABuffer->Item(info->m_item->m_itemIndex);
+        unsigned char *buffer = info->m_address;
 		if(this->ShouldSkipMessage(buffer)) {
             info->m_processed = true;
             return true;  // TODO - take this message into account, becasue it determines feed alive
@@ -1138,7 +1140,7 @@ private:
 		*/
         DefaultLogManager::Default->WriteFast(this->m_idLogIndex, this->m_recvABuffer->BufferIndex(), info->m_item->m_itemIndex);
         info->m_processed = true;
-		return this->ProcessIncremental(buffer, this->m_recvABuffer->ItemLength(info->m_item->m_itemIndex));
+		return this->ProcessIncremental(buffer, info->m_size);
 	}
 public:
 	FeedConnection(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort);

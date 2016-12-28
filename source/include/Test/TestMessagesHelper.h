@@ -96,28 +96,30 @@ class TestMessagesHelper {
 
     TestTemplateInfo *CreateTemplate(char **keys, int keysCount) {
         TestTemplateInfo *info = new TestTemplateInfo();
+        if(keysCount == 0)
+            return info;
 
         info->m_lost = HasKey(keys, keysCount, "lost");
         info->m_skip = HasKey(keys, keysCount, "skip_if_suspend");
-        if(StartKey(keys, "obr")) {
+        if(HasKey(keys, keysCount, "obr")) {
             info->m_templateId = FeedConnectionMessage::fmcIncrementalRefresh_Generic;
         }
-        else if(StartKey(keys, "olr")) {
+        else if(HasKey(keys, keysCount, "olr")) {
             info->m_templateId = this->m_curr? FeedConnectionMessage::fmcIncrementalRefresh_OLR_CURR:
                                  FeedConnectionMessage::fmcIncrementalRefresh_OLR_FOND;
         }
-        else if(StartKey(keys, "tlr")) {
+        else if(HasKey(keys, keysCount, "tlr")) {
             info->m_templateId = this->m_curr? FeedConnectionMessage::fmcIncrementalRefresh_TLR_CURR:
                                  FeedConnectionMessage::fmcIncrementalRefresh_TLR_FOND;
         }
-        else if(StartKey(keys, "obs")) {
+        else if(HasKey(keys, keysCount, "obs")) {
             info->m_templateId = FeedConnectionMessage::fmcFullRefresh_Generic;
             int snapIndex = KeyIndex(keys, keysCount, "obs");
             if(KeyIndex(keys, keysCount, "begin") == snapIndex + 1)
                 snapIndex++;
             info->m_symbol = keys[snapIndex + 1];
         }
-        else if(StartKey(keys, "ols")) {
+        else if(HasKey(keys, keysCount, "ols")) {
             info->m_templateId = this->m_curr? FeedConnectionMessage::fmcFullRefresh_OLS_CURR:
                                  FeedConnectionMessage::fmcFullRefresh_OLS_FOND;
             int snapIndex = KeyIndex(keys, keysCount, "ols");
@@ -125,7 +127,7 @@ class TestMessagesHelper {
                 snapIndex++;
             info->m_symbol = keys[snapIndex + 1];
         }
-        else if(StartKey(keys, "tls")) {
+        else if(HasKey(keys, keysCount, "tls")) {
             info->m_templateId = this->m_curr ? FeedConnectionMessage::fmcFullRefresh_TLS_CURR :
                                  FeedConnectionMessage::fmcFullRefresh_TLS_FOND;
             int snapIndex = KeyIndex(keys, keysCount, "tls");
@@ -133,7 +135,7 @@ class TestMessagesHelper {
                 snapIndex++;
             info->m_symbol = keys[snapIndex + 1];
         }
-        else if(StartKey(keys, "idf")) {
+        else if(HasKey(keys, keysCount, "idf")) {
             info->m_templateId = FeedConnectionMessage::fmcSecurityDefinition;
             info->m_symbol = keys[1];
         }
@@ -148,7 +150,7 @@ class TestMessagesHelper {
         }
 
         bool isSnap = HasKey(keys, keysCount, "obs") || HasKey(keys, keysCount, "ols") || HasKey(keys, keysCount, "tls");
-        bool isIdf = StartKey(keys, "idf");
+        bool isIdf = HasKey(keys, keysCount, "idf");
         if(isSnap) {
             info->m_session = "session1";
             if(HasKey(keys, keysCount, "begin")) {
