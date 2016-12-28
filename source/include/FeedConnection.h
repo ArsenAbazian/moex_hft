@@ -1331,7 +1331,8 @@ public:
 
     inline bool ProcessSecurityDefinition(FastSecurityDefinitionInfo *info) {
         info->Used = true;
-        this->AddSecurityDefinitionToList(info);
+        if(this->GetSecurityDefinitionIndex(0, info->Symbol, info->SymbolLength) == -1)
+            this->AddSecurityDefinitionToList(info);
 
         FastSecurityDefinitionMarketSegmentGrpItemInfo **market = info->MarketSegmentGrp;
         for(int i = 0; i < info->MarketSegmentGrpCount; i++, market++) {
@@ -1418,6 +1419,8 @@ public:
     }
 
     inline int GetSecurityDefinitionIndex(int startIndex, const char *symbol, int length) {
+        if(this->m_securityDefinitionsCount == 0)
+            return -1;
         for(int i = startIndex + 1; i < this->m_securityDefinitionsCount; i++) {
             FastSecurityDefinitionInfo *prev = this->m_securityDefinitions[i]->Data();
             if(StringIdComparer::Equal(prev->Symbol, prev->SymbolLength, symbol, length))

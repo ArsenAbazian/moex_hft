@@ -19,7 +19,7 @@
     </ADDITIONAL_GENERATION_ENVIRONMENT>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="32604c03-98a8-42cf-80f6-771ec2ce84cc" name="Default" comment="1. Continue working on SecurityDefinitionInfo&#10; &#10;">
+    <list default="true" id="32604c03-98a8-42cf-80f6-771ec2ce84cc" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/FeedConnection.h" afterPath="$PROJECT_DIR$/source/include/FeedConnection.h" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/Test/InstrumentDefinitionTester.h" afterPath="$PROJECT_DIR$/source/include/Test/InstrumentDefinitionTester.h" />
@@ -46,21 +46,19 @@
       <file leaf-file-name="FeedConnection.h" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/source/include/FeedConnection.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="218">
-              <caret line="753" column="0" selection-start-line="753" selection-start-column="0" selection-end-line="753" selection-end-column="0" />
+            <state relative-caret-position="203">
+              <caret line="757" column="0" selection-start-line="757" selection-start-column="0" selection-end-line="757" selection-end-column="0" />
               <folding>
                 <element signature="e#13#40#0" expanded="true" />
-                <element signature="e#58315#58601#0" expanded="false" />
-                <marker date="1482958159531" expanded="false" signature="47852:53417" ph="{...}" />
-                <marker date="1482958159531" expanded="false" signature="53709:54344" ph="{...}" />
-                <marker date="1482958159531" expanded="false" signature="54384:55156" ph="{...}" />
-                <marker date="1482958159531" expanded="false" signature="55192:55910" ph="{...}" />
-                <marker date="1482958159531" expanded="false" signature="55955:56135" ph="{...}" />
-                <marker date="1482958159531" expanded="false" signature="56188:56388" ph="{...}" />
-                <marker date="1482958159531" expanded="false" signature="56476:56619" ph="{...}" />
-                <marker date="1482958159531" expanded="false" signature="56711:57294" ph="{...}" />
-                <marker date="1482958159531" expanded="false" signature="57371:57819" ph="{...}" />
-                <marker date="1482958159531" expanded="false" signature="57871:58309" ph="{...}" />
+                <element signature="e#56486#56711#0" expanded="false" />
+                <element signature="e#58480#58766#0" expanded="false" />
+                <marker date="1482960070238" expanded="false" signature="47852:53417" ph="{...}" />
+                <marker date="1482960070238" expanded="false" signature="54476:55248" ph="{...}" />
+                <marker date="1482960070238" expanded="false" signature="55284:56002" ph="{...}" />
+                <marker date="1482960070238" expanded="false" signature="56047:56227" ph="{...}" />
+                <marker date="1482960070238" expanded="false" signature="56280:56480" ph="{...}" />
+                <marker date="1482960070238" expanded="false" signature="57536:57984" ph="{...}" />
+                <marker date="1482960070238" expanded="false" signature="58036:58474" ph="{...}" />
               </folding>
             </state>
           </provider>
@@ -69,21 +67,9 @@
       <file leaf-file-name="FastProtocolManager.h" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/source/include/FastProtocolManager.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="245">
-              <caret line="2413" column="52" selection-start-line="2413" selection-start-column="52" selection-end-line="2413" selection-end-column="52" />
+            <state relative-caret-position="-204">
+              <caret line="563" column="7" selection-start-line="563" selection-start-column="7" selection-end-line="563" selection-end-column="7" />
               <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="FeedConnection.cpp" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/source/src/FeedConnection.cpp">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="90">
-              <caret line="5" column="18" selection-start-line="5" selection-start-column="18" selection-end-line="5" selection-end-column="18" />
-              <folding>
-                <element signature="e#0#27#0" expanded="true" />
-              </folding>
             </state>
           </provider>
         </entry>
@@ -101,8 +87,8 @@
       <file leaf-file-name="InstrumentDefinitionTester.h" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/source/include/Test/InstrumentDefinitionTester.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="207">
-              <caret line="351" column="10" selection-start-line="351" selection-start-column="10" selection-end-line="351" selection-end-column="10" />
+            <state relative-caret-position="127">
+              <caret line="356" column="17" selection-start-line="356" selection-start-column="17" selection-end-line="356" selection-end-column="17" />
               <folding>
                 <element signature="e#134#164#0" expanded="true" />
               </folding>
@@ -133,8 +119,18 @@
       <file leaf-file-name="TestMessagesHelper.h" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/source/include/Test/TestMessagesHelper.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="567">
-              <caret line="171" column="30" selection-start-line="171" selection-start-column="30" selection-end-line="171" selection-end-column="30" />
+            <state relative-caret-position="318">
+              <caret line="820" column="44" selection-start-line="820" selection-start-column="44" selection-end-line="820" selection-end-column="44" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="FastProtocolManager.cpp" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/source/src/FastProtocolManager.cpp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="210">
+              <caret line="4097" column="73" selection-start-line="4097" selection-start-column="73" selection-end-line="4097" selection-end-column="73" />
               <folding />
             </state>
           </provider>
@@ -150,7 +146,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="OrderTesterFond.h" pinned="false" current-in-tab="true">
+      <file leaf-file-name="OrderTesterFond.h" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/source/include/Test/OrderTesterFond.h">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="429">
@@ -214,11 +210,11 @@
         <option value="$PROJECT_DIR$/source/include/MarketData/MarketSymbolInfo.h" />
         <option value="$PROJECT_DIR$/source/include/FastProtocolManager.h" />
         <option value="$PROJECT_DIR$/source/include/Test/DecimalTester.h" />
-        <option value="$PROJECT_DIR$/source/include/FeedConnection.h" />
-        <option value="$PROJECT_DIR$/source/include/Test/InstrumentDefinitionTester.h" />
         <option value="$PROJECT_DIR$/source/include/Test/OrderTesterCurr.h" />
         <option value="$PROJECT_DIR$/source/include/Test/OrderTesterFond.h" />
+        <option value="$PROJECT_DIR$/source/include/FeedConnection.h" />
         <option value="$PROJECT_DIR$/source/include/Test/TestMessagesHelper.h" />
+        <option value="$PROJECT_DIR$/source/include/Test/InstrumentDefinitionTester.h" />
       </list>
     </option>
   </component>
@@ -275,38 +271,6 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="hft" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="hft" />
-              <option name="myItemType" value="com.jetbrains.cidr.projectView.CidrFilesViewHelper$MyProjectTreeStructure$1" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="hft" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="test" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="hft" />
-              <option name="myItemType" value="com.jetbrains.cidr.projectView.CidrFilesViewHelper$MyProjectTreeStructure$1" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="hft" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="test" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="data" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -888,14 +852,7 @@
       <workItem from="1482823066980" duration="6914000" />
       <workItem from="1482848469077" duration="4175000" />
       <workItem from="1482867594131" duration="1283000" />
-      <workItem from="1482868970059" duration="8001000" />
-    </task>
-    <task id="LOCAL-00077" summary="Big Refactoring continue... tests - break tests">
-      <created>1479401696528</created>
-      <option name="number" value="00077" />
-      <option name="presentableId" value="LOCAL-00077" />
-      <option name="project" value="LOCAL" />
-      <updated>1479401696528</updated>
+      <workItem from="1482868970059" duration="10025000" />
     </task>
     <task id="LOCAL-00078" summary="Big Refactoring continue... tests - break tests">
       <created>1479486116043</created>
@@ -1233,11 +1190,18 @@
       <option name="project" value="LOCAL" />
       <updated>1482957671561</updated>
     </task>
-    <option name="localTasksCounter" value="126" />
+    <task id="LOCAL-00126" summary="1. Continue working on SecurityDefinitionInfo&#10; 2. Fix Tests&#10;">
+      <created>1482959547566</created>
+      <option name="number" value="00126" />
+      <option name="presentableId" value="LOCAL-00126" />
+      <option name="project" value="LOCAL" />
+      <updated>1482959547566</updated>
+    </task>
+    <option name="localTasksCounter" value="127" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="1075708000" />
+    <option name="totallyTimeSpent" value="1077732000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -1252,7 +1216,7 @@
     <frame x="65" y="24" width="1551" height="961" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24149215" sideWeight="0.493007" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24149215" sideWeight="0.493007" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32920793" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.5052144" sideWeight="0.3907068" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="CMake" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.27114716" sideWeight="0.4384817" order="11" side_tool="false" content_ui="tabs" />
@@ -1262,7 +1226,7 @@
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.28984717" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32920793" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.235262" sideWeight="0.506993" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.35921204" sideWeight="0.5634817" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.4391657" sideWeight="0.5634817" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -1323,7 +1287,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
-    <MESSAGE value="1. GetSnapshotInfo - not finished not compilable..." />
     <MESSAGE value="1. GetSnapshotInfo - not finished  compilable..." />
     <MESSAGE value="1. GetSnapshotInfo - not finished  compilable... and half working" />
     <MESSAGE value="Refactoring...." />
@@ -1348,7 +1311,8 @@
     <MESSAGE value="1. Continue working on SecurityDefinitionInfo&#10;2. All incremental tests passed &#10;" />
     <MESSAGE value="1. Continue working on SecurityDefinitionInfo&#10;2. All incremental tests passed&#10;3. Wrote some tests on IDF&#10;4. Optimized IDF &#10;" />
     <MESSAGE value="1. Continue working on SecurityDefinitionInfo&#10; &#10;" />
-    <option name="LAST_COMMIT_MESSAGE" value="1. Continue working on SecurityDefinitionInfo&#10; &#10;" />
+    <MESSAGE value="1. Continue working on SecurityDefinitionInfo&#10; 2. Fix Tests&#10;" />
+    <option name="LAST_COMMIT_MESSAGE" value="1. Continue working on SecurityDefinitionInfo&#10; 2. Fix Tests&#10;" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1358,13 +1322,28 @@
           <line>192</line>
           <option name="timeStamp" value="70" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/source/include/FastProtocolManager.h</url>
+          <line>3871</line>
+          <option name="timeStamp" value="1059" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/source/include/FastProtocolManager.h</url>
+          <line>3924</line>
+          <option name="timeStamp" value="1061" />
+        </line-breakpoint>
       </breakpoints>
       <breakpoints-dialog>
         <breakpoints-dialog />
       </breakpoints-dialog>
-      <option name="time" value="1053" />
+      <option name="time" value="1062" />
     </breakpoint-manager>
-    <watches-manager />
+    <watches-manager>
+      <configuration name="CMakeRunConfiguration">
+        <watch expression="m_securityDefinitionsCount" />
+        <watch expression="this-&gt;idf-&gt;SecurityDefinitions()[0]-&gt;Data()-&gt;MarketSegmentGrpCount" />
+      </configuration>
+    </watches-manager>
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/source/include/ConnectionParameters.h">
@@ -1526,13 +1505,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/source/src/FastProtocolManager.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="8172">
-          <caret line="454" column="49" selection-start-line="454" selection-start-column="49" selection-end-line="454" selection-end-column="49" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/source/include/MarketData/TradeInfo.h">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="216">
@@ -1656,16 +1628,8 @@
         <state relative-caret-position="90">
           <caret line="5" column="18" selection-start-line="5" selection-start-column="18" selection-end-line="5" selection-end-column="18" />
           <folding>
-            <element signature="e#0#27#0" expanded="true" />
+            <element signature="e#0#27#0" expanded="false" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/source/include/FastProtocolManager.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="245">
-          <caret line="2413" column="52" selection-start-line="2413" selection-start-column="52" selection-end-line="2413" selection-end-column="52" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1674,16 +1638,6 @@
         <state relative-caret-position="635">
           <caret line="100" column="10" selection-start-line="100" selection-start-column="10" selection-end-line="100" selection-end-column="10" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/source/include/Test/InstrumentDefinitionTester.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="207">
-          <caret line="351" column="10" selection-start-line="351" selection-start-column="10" selection-end-line="351" selection-end-column="10" />
-          <folding>
-            <element signature="e#134#164#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1703,27 +1657,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/source/include/FeedConnection.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="218">
-          <caret line="753" column="0" selection-start-line="753" selection-start-column="0" selection-end-line="753" selection-end-column="0" />
-          <folding>
-            <element signature="e#13#40#0" expanded="true" />
-            <element signature="e#58315#58601#0" expanded="false" />
-            <marker date="1482958159531" expanded="false" signature="47852:53417" ph="{...}" />
-            <marker date="1482958159531" expanded="false" signature="53709:54344" ph="{...}" />
-            <marker date="1482958159531" expanded="false" signature="54384:55156" ph="{...}" />
-            <marker date="1482958159531" expanded="false" signature="55192:55910" ph="{...}" />
-            <marker date="1482958159531" expanded="false" signature="55955:56135" ph="{...}" />
-            <marker date="1482958159531" expanded="false" signature="56188:56388" ph="{...}" />
-            <marker date="1482958159531" expanded="false" signature="56476:56619" ph="{...}" />
-            <marker date="1482958159531" expanded="false" signature="56711:57294" ph="{...}" />
-            <marker date="1482958159531" expanded="false" signature="57371:57819" ph="{...}" />
-            <marker date="1482958159531" expanded="false" signature="57871:58309" ph="{...}" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/source/include/Test/OrderTesterCurr.h">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="231">
@@ -1732,18 +1665,63 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/source/include/Test/TestMessagesHelper.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="567">
-          <caret line="171" column="30" selection-start-line="171" selection-start-column="30" selection-end-line="171" selection-end-column="30" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/source/include/Test/OrderTesterFond.h">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="429">
           <caret line="2857" column="183" selection-start-line="2857" selection-start-column="183" selection-end-line="2857" selection-end-column="183" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/include/Test/TestMessagesHelper.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="318">
+          <caret line="820" column="44" selection-start-line="820" selection-start-column="44" selection-end-line="820" selection-end-column="44" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/include/Test/InstrumentDefinitionTester.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="127">
+          <caret line="356" column="17" selection-start-line="356" selection-start-column="17" selection-end-line="356" selection-end-column="17" />
+          <folding>
+            <element signature="e#134#164#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/include/FeedConnection.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="203">
+          <caret line="757" column="0" selection-start-line="757" selection-start-column="0" selection-end-line="757" selection-end-column="0" />
+          <folding>
+            <element signature="e#13#40#0" expanded="true" />
+            <element signature="e#56486#56711#0" expanded="false" />
+            <element signature="e#58480#58766#0" expanded="false" />
+            <marker date="1482960070238" expanded="false" signature="47852:53417" ph="{...}" />
+            <marker date="1482960070238" expanded="false" signature="54476:55248" ph="{...}" />
+            <marker date="1482960070238" expanded="false" signature="55284:56002" ph="{...}" />
+            <marker date="1482960070238" expanded="false" signature="56047:56227" ph="{...}" />
+            <marker date="1482960070238" expanded="false" signature="56280:56480" ph="{...}" />
+            <marker date="1482960070238" expanded="false" signature="57536:57984" ph="{...}" />
+            <marker date="1482960070238" expanded="false" signature="58036:58474" ph="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/include/FastProtocolManager.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-204">
+          <caret line="563" column="7" selection-start-line="563" selection-start-column="7" selection-end-line="563" selection-end-column="7" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/src/FastProtocolManager.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="210">
+          <caret line="4097" column="73" selection-start-line="4097" selection-start-column="73" selection-end-line="4097" selection-end-column="73" />
           <folding />
         </state>
       </provider>

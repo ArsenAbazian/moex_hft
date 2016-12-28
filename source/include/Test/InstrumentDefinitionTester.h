@@ -348,8 +348,37 @@ public:
         this->idf->Start();
 
         this->m_helper->SendMessages(this->idf, "idf s1 session t1 session t2, idf s2 session t1 session t2, idf s1 session t1 session t2", 30);
-        //if(!this->idf->IsIdfDataCollected())
-        //    throw;
+        if(this->idf->m_startMsgSeqNum != 4)
+            throw;
+        if(this->idf->m_endMsgSeqNum != 3)
+            throw;
+        if(this->idf->SecurityDefinitionsCount() != 2)
+            throw;
+        if(this->idf->SecurityDefinitions()[0]->Data()->MarketSegmentGrpCount != 1)
+            throw;
+        if(this->idf->SecurityDefinitions()[1]->Data()->MarketSegmentGrpCount != 1)
+            throw;
+        if(this->idf->SecurityDefinitions()[0]->Data()->MarketSegmentGrp[0]->TradingSessionRulesGrpCount != 2)
+            throw;
+        if(this->idf->SecurityDefinitions()[0]->Data()->MarketSegmentGrp[1]->TradingSessionRulesGrpCount != 2)
+            throw;
+        if(!StringIdComparer::Equal(this->idf->SecurityDefinitions()[0]->Data()->MarketSegmentGrp[0]->TradingSessionRulesGrp[0]->TradingSessionID,
+                                    this->idf->SecurityDefinitions()[0]->Data()->MarketSegmentGrp[0]->TradingSessionRulesGrp[0]->TradingSessionIDLength,
+                                    "t1", 2))
+            throw;
+        if(!StringIdComparer::Equal(this->idf->SecurityDefinitions()[0]->Data()->MarketSegmentGrp[0]->TradingSessionRulesGrp[1]->TradingSessionID,
+                                    this->idf->SecurityDefinitions()[0]->Data()->MarketSegmentGrp[0]->TradingSessionRulesGrp[1]->TradingSessionIDLength,
+                                    "t2", 2))
+            throw;
+        if(!StringIdComparer::Equal(this->idf->SecurityDefinitions()[1]->Data()->MarketSegmentGrp[0]->TradingSessionRulesGrp[0]->TradingSessionID,
+                                    this->idf->SecurityDefinitions()[1]->Data()->MarketSegmentGrp[0]->TradingSessionRulesGrp[0]->TradingSessionIDLength,
+                                    "t1", 2))
+            throw;
+        if(!StringIdComparer::Equal(this->idf->SecurityDefinitions()[1]->Data()->MarketSegmentGrp[0]->TradingSessionRulesGrp[1]->TradingSessionID,
+                                    this->idf->SecurityDefinitions()[1]->Data()->MarketSegmentGrp[0]->TradingSessionRulesGrp[1]->TradingSessionIDLength,
+                                    "t2", 2))
+        if(!this->idf->IsIdfDataCollected())
+            throw;
     }
 
     void TestInstrumentDefinitionCollectDataCompleted() {

@@ -819,6 +819,7 @@ public:
 
         info->Symbol = smb;
         info->SymbolLength = strlen(symbol);
+        info->AllowSymbol = true;
 
         return info;
     }
