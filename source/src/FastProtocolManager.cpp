@@ -4099,7 +4099,7 @@ void FastProtocolManager::EncodeSecurityDefinitionInfo(FastSecurityDefinitionInf
 	if(!info->AllowGroupInstrAttrib)
 		this->WriteNull();
 	else {
-		WriteUInt32_Mandatory(info->GroupInstrAttribCount);
+		WriteUInt32_Optional(info->GroupInstrAttribCount);
 		FastSecurityDefinitionGroupInstrAttribItemInfo **giaItemInfo = info->GroupInstrAttrib;
 		for(int i = 0; i < info->GroupInstrAttribCount; i++) {
 			WriteInt32_Mandatory((*giaItemInfo)->InstrAttribType);
@@ -4117,7 +4117,7 @@ void FastProtocolManager::EncodeSecurityDefinitionInfo(FastSecurityDefinitionInf
 	if(!info->AllowMarketSegmentGrp)
 		this->WriteNull();
 	else {
-		WriteUInt32_Mandatory(info->MarketSegmentGrpCount);
+		WriteUInt32_Optional(info->MarketSegmentGrpCount);
 		FastSecurityDefinitionMarketSegmentGrpItemInfo **msgItemInfo = info->MarketSegmentGrp;
 		for(int i = 0; i < info->MarketSegmentGrpCount; i++) {
 			if(!(*msgItemInfo)->AllowRoundLot)
@@ -4127,7 +4127,7 @@ void FastProtocolManager::EncodeSecurityDefinitionInfo(FastSecurityDefinitionInf
 			if(!(*msgItemInfo)->AllowTradingSessionRulesGrp)
 				this->WriteNull();
 			else {
-				WriteUInt32_Mandatory((*msgItemInfo)->TradingSessionRulesGrpCount);
+				WriteUInt32_Optional((*msgItemInfo)->TradingSessionRulesGrpCount);
 				FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo **tsrgItemInfo = (*msgItemInfo)->TradingSessionRulesGrp;
 				for(int i = 0; i < (*msgItemInfo)->TradingSessionRulesGrpCount; i++) {
 					WriteString_Mandatory((*tsrgItemInfo)->TradingSessionID, (*tsrgItemInfo)->TradingSessionIDLength);

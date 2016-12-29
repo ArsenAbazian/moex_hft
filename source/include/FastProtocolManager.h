@@ -600,16 +600,17 @@ public:
 	}
 	inline bool CheckProcessNullString() {
 		WORD str = *((WORD*)this->currentPos);
-		if (str == 0x0000)
-			return false;
-        if(str == 0x0080) {
-            this->currentPos++;
+		//if (str == 0x0000)
+		//	return false;
+        if(str == 0x8000) {
+            this->currentPos+=2;
             return true;
         }
+		/*
 		if ((str & 0xFF) == 0x00) {
 			this->currentPos++;
 			return true;
-		}
+		}*/
 		return false;
 	}
 	inline bool CheckProcessNullByteVector() {

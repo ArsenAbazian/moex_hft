@@ -308,7 +308,8 @@ namespace prebuild {
 			StructureInfo item = GetOriginalStruct(field);
 			if(item == null)
 				item = info;
-			WriteLine(tabs + "WriteUInt32_Mandatory(" + si.InCodeValueName + "->" + Name(field) + "Count);");
+			string methodName = HasOptionalPresence(field)? "WriteUInt32_Optional": "WriteUInt32_Mandatory";
+			WriteLine(tabs + methodName + "(" + si.InCodeValueName + "->" + Name(field) + "Count);");
 			WriteLine(tabs + item.Name + " **" + itemInfo + " = " + si.InCodeValueName + "->" + Name(field) + ";");
 			WriteLine(tabs + "for(int i = 0; i < " + si.InCodeValueName + "->" + Name(field) + "Count; i++) {");
 			if(GetMaxPresenceBitCount(field) > 0) {

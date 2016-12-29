@@ -341,26 +341,14 @@ public:
             throw;
     }
 
-    // no packet was lost, symbol repeats, so symbols ended....
-    void TestInstrumentDefinitionCollectDataCompleted_1() {
-        this->idf->Stop();
-        this->idf->m_idfMode = FeedConnectionSecurityDefinitionMode::sdmCollectData;
-        this->idf->Start();
-
-        this->m_helper->SendMessages(this->idf, "idf s1 session t1 session t2, idf s2 session t1 session t2, idf s1 session t1 session t2", 30);
-        if(this->idf->m_startMsgSeqNum != 4)
-            throw;
-        if(this->idf->m_endMsgSeqNum != 3)
-            throw;
-        if(this->idf->SecurityDefinitionsCount() != 2)
-            throw;
+    void TestInstrumentDefinitionCollectDataCompleted_1_Core(FastSecurityDefinitionInfo *info) {
         if(this->idf->SecurityDefinitions()[0]->Data()->MarketSegmentGrpCount != 1)
             throw;
         if(this->idf->SecurityDefinitions()[1]->Data()->MarketSegmentGrpCount != 1)
             throw;
         if(this->idf->SecurityDefinitions()[0]->Data()->MarketSegmentGrp[0]->TradingSessionRulesGrpCount != 2)
             throw;
-        if(this->idf->SecurityDefinitions()[0]->Data()->MarketSegmentGrp[1]->TradingSessionRulesGrpCount != 2)
+        if(this->idf->SecurityDefinitions()[1]->Data()->MarketSegmentGrp[0]->TradingSessionRulesGrpCount != 2)
             throw;
         if(!StringIdComparer::Equal(this->idf->SecurityDefinitions()[0]->Data()->MarketSegmentGrp[0]->TradingSessionRulesGrp[0]->TradingSessionID,
                                     this->idf->SecurityDefinitions()[0]->Data()->MarketSegmentGrp[0]->TradingSessionRulesGrp[0]->TradingSessionIDLength,
@@ -377,6 +365,24 @@ public:
         if(!StringIdComparer::Equal(this->idf->SecurityDefinitions()[1]->Data()->MarketSegmentGrp[0]->TradingSessionRulesGrp[1]->TradingSessionID,
                                     this->idf->SecurityDefinitions()[1]->Data()->MarketSegmentGrp[0]->TradingSessionRulesGrp[1]->TradingSessionIDLength,
                                     "t2", 2))
+            throw;
+    }
+
+    // no packet was lost, symbol repeats, so symbols ended....
+    void TestInstrumentDefinitionCollectDataCompleted_1() {
+        this->idf->Stop();
+        this->idf->m_idfMode = FeedConnectionSecurityDefinitionMode::sdmCollectData;
+        this->idf->Start();
+
+        if(this->idf->IsIdfDataCollected())
+            throw;
+        this->m_helper->SendMessages(this->idf, "idf s1 session t1 session t2, idf s2 session t1 session t2, idf s1 session t1 session t2", 30);
+        if(this->idf->m_startMsgSeqNum != 4)
+            throw;
+        if(this->idf->m_endMsgSeqNum != 3)
+            throw;
+        if(this->idf->SecurityDefinitionsCount() != 2)
+            throw;
         if(!this->idf->IsIdfDataCollected())
             throw;
     }
