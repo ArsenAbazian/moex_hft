@@ -559,6 +559,12 @@ public:
     void PrintByteVector(const char *name, unsigned char *data, int count, int tabCount);
     void PrintDecimal(const char *name, Decimal *value, int tabCount);
 
+    inline void WriteNullString() {
+        *(this->currentPos) = 0x00;
+        *(this->currentPos + 1) = 0x80;
+        this->currentPos += 2;
+    }
+
     inline void WriteNull() {
         *(this->currentPos) = 0x80;
         this->currentPos++;
@@ -596,6 +602,10 @@ public:
 		WORD str = *((WORD*)this->currentPos);
 		if (str == 0x0000)
 			return false;
+        if(str == 0x0080) {
+            this->currentPos++;
+            return true;
+        }
 		if ((str & 0xFF) == 0x00) {
 			this->currentPos++;
 			return true;

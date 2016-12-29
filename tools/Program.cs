@@ -240,7 +240,10 @@ namespace prebuild {
 		}
 
 		private void WriteNullValueCode(string tabs, XmlNode value) {
-			WriteLine(tabs + "this->WriteNull();");
+			if(value.Name == "string")
+				WriteLine(tabs + "this->WriteNullString();");
+			else 
+				WriteLine(tabs + "this->WriteNull();");
 		}
 
 		private  void WriteEncodeValueCode (XmlNode field, StructureInfo si, string tabs) {
