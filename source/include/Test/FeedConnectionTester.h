@@ -12,6 +12,7 @@
 #include "TradeTesterCurr.h"
 #include "StatisticsTesterFond.h"
 #include "StatisticsTesterCurr.h"
+#include "HashStringTester.h"
 
 class TestFeedMessage{
 public:
@@ -37,16 +38,17 @@ class FeedConnectionTester {
         return false;
     }
     const char* IsFeedName(const char *feed_abr) {
-        static const char* feeds[6] {
+        static const char* feeds[7] {
                 "OBR",
                 "OBS",
                 "TLR",
                 "TLS",
                 "OLS",
-                "OLR"
+                "OLR",
+                "IDF"
         };
 
-        for(int i = 0; i < 6; i++) {
+        for(int i = 0; i < 7; i++) {
             if(feeds[i][0] == feed_abr[0] && feeds[i][1] == feed_abr[1] && feeds[i][2] == feed_abr[2] && feed_abr[3] == '\'')
                 return feeds[i];
         }
@@ -186,7 +188,38 @@ public:
         delete tls_curr;
     }
 
+    void TestSaveIdfSymbols() {
+        AutoAllocatePointerList<TestFeedMessage> *messages = GetMessagesFromLog("/home/arsen/Documents/hft_robot/hft/test/idf_log");
+        LinkedPointer<TestFeedMessage> *ptr = messages->ListCore()->Start();
+        LinkedPointer<TestFeedMessage> *end = messages->ListCore()->End();
+
+        //FeedConnection_FOND_IDF *idf = new FeedConnection_FOND_IDF();
+        FastProtocolManager *manager = new FastProtocolManager();
+        while(true) {
+
+            FeedConnection *fc = 0;
+            TestFeedMessage *msg = ptr->Data();
+            if(msg->TemplateId == FeedConnectionMessage::fmcSecurityDefinition) {
+                manager->SetNewBuffer(msg->Bytes, msg->Count);
+                manager->ReadMsgSeqNumber();
+                manager->DecodeHeader();
+                FastSecurityDefinitionInfo *info = (FastSecurityDefinitionInfo *)manager->DecodeSecurityDefinition();
+                //manager->PrintSecurityDefinition(info);
+                info->Symbol[info->SymbolLength] = '\0';
+                printf("%s\n", info->Symbol);
+            }
+            if(ptr == end)
+                break;
+            ptr = ptr->Next();
+        }
+    }
+
     void Test() {
+
+        HashStringTester ht;
+        ht.Test();
+        //TestSaveIdfSymbols();
+
         RobotSettings::MarketDataMaxSymbolsCount = 10;
         RobotSettings::MarketDataMaxSessionsCount = 32;
         RobotSettings::MarketDataMaxEntriesCount = 32;
