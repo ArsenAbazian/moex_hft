@@ -987,6 +987,7 @@ private:
             return this->HistoricalReplay_SendLogout();
         if(this->m_hsState == FeedConnectionHistoricalReplayState::hsSuspend)
             return this->HistoricalReplay_Suspend();
+        return true;
     }
 
     inline bool Listen_Atom_Incremental() {
@@ -1721,7 +1722,7 @@ public:
             printf("Wait for First Security Definition\n"); // TODO remove debug
         }
         if(this->m_type == FeedConnectionType::HistoricalReplay) {
-            this->hsState = FeedConnectionHistoricalReplayState::hsSendLogon;
+            this->m_hsState = FeedConnectionHistoricalReplayState::hsSendLogon;
             printf("Start Historical Replay\n");
         }
     }
