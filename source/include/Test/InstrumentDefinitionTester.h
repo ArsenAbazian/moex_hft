@@ -392,6 +392,14 @@ public:
         TestInstrumentDefinitionCollectDataCompleted_1();
     }
 
+    void TestStart() {
+        idf->Stop();
+        idf->m_idfMode = FeedConnectionSecurityDefinitionMode::sdmCollectData;
+        idf->Start();
+        if(idf->IdfState() != FeedConnectionSecurityDefinitionState::sdsWaitForFirstMessage)
+            throw;
+    }
+
     void Test() {
         printf("IDF FOND TestInstrumentDefinitionStartInCollectDataMode\n");
         TestInstrumentDefinitionStartInCollectDataMode();
@@ -408,6 +416,8 @@ public:
         TestClearBeforeStart();
         printf("IDF FOND TestUpdateSecurityDefinition\n");
         TestUpdateSecurityDefinition();
+        printf("IDF FOND TestStart()\n");
+        TestStart();
     }
 };
 

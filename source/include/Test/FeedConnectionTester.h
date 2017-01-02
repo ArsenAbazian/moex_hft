@@ -12,7 +12,7 @@
 #include "TradeTesterCurr.h"
 #include "StatisticsTesterFond.h"
 #include "StatisticsTesterCurr.h"
-#include "HashStringTester.h"
+#include "SymbolManagerTester.h"
 
 class TestFeedMessage{
 public:
@@ -216,7 +216,7 @@ public:
 
     void Test() {
 
-        HashStringTester ht;
+        SymbolManagerTester ht;
         ht.Test();
         //TestSaveIdfSymbols();
 

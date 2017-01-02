@@ -2200,7 +2200,7 @@ public:
                                      }, 2, 6),
         }, 2);
 
-        if(snapCurr->m_packets[3]->m_item != 0)
+        if(snapCurr->m_packets[3]->m_address != 0)
             throw;
         if(snapCurr->m_startMsgSeqNum != 2)
             throw;
@@ -2315,13 +2315,13 @@ public:
                      "olr entry s1 e1, lost olr entry s1 e2, wait_snap, hbeat, hbeat, hbeat",
                      "                                                  hbeat, hbeat, hbeat",
                      30);
-        if(incCurr->m_packets[4]->m_item == 0 || incCurr->m_packets[5]->m_item == 0 || incCurr->m_packets[6]->m_item == 0)
+        if(incCurr->m_packets[4]->m_address == 0 || incCurr->m_packets[5]->m_address == 0 || incCurr->m_packets[6]->m_address == 0)
             throw;
         if(!incCurr->m_packets[4]->m_processed || !incCurr->m_packets[5]->m_processed || !incCurr->m_packets[6]->m_processed)
             throw;
         // do not check Snapshot Feed Connection because it immediately cleares packets after processing,
         // because it can receive packet with the same message number again and again (cycle)
-        //if(snapCurr->m_packets[1]->m_item == 0 || snapCurr->m_packets[2]->m_item == 0 || snapCurr->m_packets[3]->m_item == 0)
+        //if(snapCurr->m_packets[1]->m_address == 0 || snapCurr->m_packets[2]->m_address == 0 || snapCurr->m_packets[3]->m_address == 0)
         //    throw;
         //if(!snapCurr->m_packets[1]->m_processed || !snapCurr->m_packets[2]->m_processed || !snapCurr->m_packets[3]->m_processed)
         //    throw;
@@ -2951,7 +2951,7 @@ public:
                      "olr entry s1 e1, lost olr entry s1 e2, wait_snap, hbeat",
                      "                                                  ols s1 begin rpt 2 entry s1 e2 end",
                      30);
-        if(snapCurr->m_packets[1]->m_item != 0)
+        if(snapCurr->m_packets[1]->m_address != 0)
             throw;
         if(snapCurr->m_packets[1]->m_processed != false)
             throw;
@@ -2965,9 +2965,9 @@ public:
                      "olr entry s1 e1, lost olr entry s1 e2, wait_snap, hbeat",
                      "                                                  hbeat, hbeat, ols s1 begin rpt 2 entry s1 e2 end",
                      30);
-        if(snapCurr->m_packets[1]->m_item != 0 ||
-           snapCurr->m_packets[2]->m_item != 0 ||
-           snapCurr->m_packets[3]->m_item != 0)
+        if(snapCurr->m_packets[1]->m_address != 0 ||
+           snapCurr->m_packets[2]->m_address != 0 ||
+           snapCurr->m_packets[3]->m_address != 0)
             throw;
         if(snapCurr->m_packets[1]->m_processed != false ||
            snapCurr->m_packets[2]->m_processed != false ||
@@ -2985,7 +2985,7 @@ public:
                      "                                                  ols s1 begin rpt 2 entry s1 e2, lost ols s1 rpt 2 entry s1 e2, hbeat, hbeat, hbeat, hbeat, hbeat",
                      30);
         for(int i = 1; i < 100; i++) {
-            if(snapCurr->m_packets[i]->m_item != 0 || snapCurr->m_packets[i]->m_processed != false)
+            if(snapCurr->m_packets[i]->m_address != 0 || snapCurr->m_packets[i]->m_processed != false)
                 throw;
         }
     }
@@ -3009,7 +3009,7 @@ public:
     }
     void TestSnapshotPacketsCleared() {
         for(int i = 1; i < 100; i++) {
-            if(snapCurr->m_packets[i]->m_item != 0 || snapCurr->m_packets[i]->m_processed != false)
+            if(snapCurr->m_packets[i]->m_address != 0 || snapCurr->m_packets[i]->m_processed != false)
                 throw;
         }
     }

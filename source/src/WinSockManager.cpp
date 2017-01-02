@@ -1,16 +1,16 @@
 #include "WinSockManager.h"
 
-int WinSockManager::m_pollFdCount = 128;
-struct pollfd* WinSockManager::m_pollFd = new struct pollfd[128];
-int* WinSockManager::m_recvCount = new int[128];
+int WinSockManager::m_pollFdCount = 256;
+struct pollfd* WinSockManager::m_pollFd = new struct pollfd[256];
+int* WinSockManager::m_recvCount = new int[256];
 int WinSockManager::m_registeredCount = 0;
-WinSockManager** WinSockManager::m_registeredManagers = new WinSockManager*[128];
+WinSockManager** WinSockManager::m_registeredManagers = new WinSockManager*[256];
 int WinSockManager::m_pollRes = 0;
 
 void WinSockManager::InitializePollInfo() {
-	bzero(WinSockManager::m_pollFd, sizeof(struct pollfd) * 128);
-	bzero(WinSockManager::m_recvCount, sizeof(int) * 128);
-	bzero(WinSockManager::m_registeredManagers, sizeof(WinSockManager*) * 128);
+	bzero(WinSockManager::m_pollFd, sizeof(struct pollfd) * 256);
+	bzero(WinSockManager::m_recvCount, sizeof(int) * 256);
+	bzero(WinSockManager::m_registeredManagers, sizeof(WinSockManager*) * 256);
 }
 
 WinSockManager::WinSockManager() {
@@ -125,6 +125,7 @@ void WinSockManager::RegisterPoll() {
 	WinSockManager::m_pollFd[this->m_pollIndex].fd = this->m_socket;
 	WinSockManager::m_pollFd[this->m_pollIndex].events = POLLIN;
 	WinSockManager::m_registeredManagers[this->m_pollIndex] = this;
+
 
 	WinSockManager::IncPollIndex();
 	return;

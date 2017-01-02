@@ -1,7 +1,6 @@
 // HftConsole.cpp : Defines the entry point for the console application.
 //
 
-#include <Test/HashTableTester.h>
 #include "Test/ItoaTester.h"
 #include "Test/UTCTimeConverterTester.h"
 #include "Test/FastProtocolTester.h"
@@ -66,9 +65,6 @@ int main(int argc, char** argv)
 	}
 
 	if(test_feed || test_all) {
-		HashTableTester tester;
-		tester.Test();
-
 		FeedConnectionTester tester2;
 		tester2.Test();
 	}

@@ -194,9 +194,12 @@ public:
 		}
 		else if(WinSockManager::m_pollRes == 0)
 			return true;
-		for(int i = 0; i < WinSockManager::m_pollFdCount; i++) {
-			WinSockManager::m_recvCount[i] += WinSockManager::m_pollFd[i].revents;
-			WinSockManager::m_pollFd[i].revents = 0;
+
+		int *recv = WinSockManager::m_recvCount;
+		struct pollfd *pl = WinSockManager::m_pollFd;
+		for(int i = 0; i < WinSockManager::m_registeredCount; i++, recv++, pl++) {
+			*recv += pl->revents;
+			pl->revents = 0;
 		}
 		return true;
 	}

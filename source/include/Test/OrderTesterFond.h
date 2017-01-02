@@ -2200,7 +2200,7 @@ public:
                                      }, 2, 6),
         }, 2);
 
-        if(snapFond->m_packets[3]->m_item != 0)
+        if(snapFond->m_packets[3]->m_address != 0)
             throw;
         if(snapFond->m_startMsgSeqNum != 2)
             throw;
@@ -2315,7 +2315,7 @@ public:
                      "olr entry s1 e1, lost olr entry s1 e2, wait_snap, hbeat, hbeat, hbeat",
                      "                                                  hbeat, hbeat, hbeat",
                      30);
-        if(incFond->m_packets[4]->m_item == 0 || incFond->m_packets[5]->m_item == 0 || incFond->m_packets[6]->m_item == 0)
+        if(incFond->m_packets[4]->m_address == 0 || incFond->m_packets[5]->m_address == 0 || incFond->m_packets[6]->m_address == 0)
             throw;
         if(!incFond->m_packets[4]->m_processed || !incFond->m_packets[5]->m_processed || !incFond->m_packets[6]->m_processed)
             throw;
@@ -2951,7 +2951,7 @@ public:
                      "olr entry s1 e1, lost olr entry s1 e2, wait_snap, hbeat",
                      "                                                  ols s1 begin rpt 2 entry s1 e2 end",
                      30);
-        if(snapFond->m_packets[1]->m_item != 0)
+        if(snapFond->m_packets[1]->m_address != 0)
             throw;
         if(snapFond->m_packets[1]->m_processed != false)
             throw;
@@ -2965,9 +2965,9 @@ public:
                      "olr entry s1 e1, lost olr entry s1 e2, wait_snap, hbeat",
                      "                                                  hbeat, hbeat, ols s1 begin rpt 2 entry s1 e2 end",
                      30);
-        if(snapFond->m_packets[1]->m_item != 0 ||
-           snapFond->m_packets[2]->m_item != 0 ||
-           snapFond->m_packets[3]->m_item != 0)
+        if(snapFond->m_packets[1]->m_address != 0 ||
+           snapFond->m_packets[2]->m_address != 0 ||
+           snapFond->m_packets[3]->m_address != 0)
             throw;
         if(snapFond->m_packets[1]->m_processed != false ||
            snapFond->m_packets[2]->m_processed != false ||
@@ -2985,7 +2985,7 @@ public:
                      "                                                  ols s1 begin rpt 2 entry s1 e2, lost ols s1 rpt 2 entry s1 e2, hbeat, hbeat, hbeat, hbeat, hbeat",
                      30);
         for(int i = 1; i < 100; i++) {
-            if(snapFond->m_packets[i]->m_item != 0 || snapFond->m_packets[i]->m_processed != false)
+            if(snapFond->m_packets[i]->m_address != 0 || snapFond->m_packets[i]->m_processed != false)
                 throw;
         }
     }
@@ -3009,7 +3009,7 @@ public:
     }
     void TestSnapshotPacketsCleared() {
         for(int i = 1; i < 100; i++) {
-            if(snapFond->m_packets[i]->m_item != 0 || snapFond->m_packets[i]->m_processed != false)
+            if(snapFond->m_packets[i]->m_address != 0 || snapFond->m_packets[i]->m_processed != false)
                 throw;
         }
     }

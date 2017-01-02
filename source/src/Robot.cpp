@@ -87,7 +87,6 @@ bool Robot::AddDefaultTestChannels() {
                 const char *ipBString = ipB->Value();
                 int portBValue = atoi(portB->Value());
 
-                printf("Creating Connection %s-%s... \n", id, feedChannelId);
                 w->Start();
                 fconn = CreateConnectionCore(feedChannelId,
                                              id,
@@ -100,7 +99,6 @@ bool Robot::AddDefaultTestChannels() {
                                              srcIpBString,
                                              ipBString,
                                              portBValue);
-                printf("Done in %d sec\n", w->ElapsedSeconds());
             }
             else {
                 tinyxml2::XMLNode *ip = connection->FirstChildElement("ip")->FirstChild();
@@ -113,7 +111,6 @@ bool Robot::AddDefaultTestChannels() {
                 const char *ipString = ip->Value();
                 int portValue = atoi(port->Value());
 
-                printf("Creating Connection %s-%s... \n", id, feedChannelId);
                 w->Start();
                 fconn = CreateConnectionCore(feedChannelId,
                                              id,
@@ -126,7 +123,6 @@ bool Robot::AddDefaultTestChannels() {
                                              "",
                                              "",
                                              0);
-                printf("Done in %d sec\n", w->ElapsedSeconds());
             }
             fc->SetConnection(fconn);
             connection = connection->NextSiblingElement("connection");

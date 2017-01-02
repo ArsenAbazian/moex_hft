@@ -10,6 +10,7 @@
 #include "MarketData/OrderInfo.h"
 #include "MarketData/TradeInfo.h"
 #include "MarketData/StatisticInfo.h"
+#include "MarketData/SymbolManager.h"
 
 typedef enum _FeedConnectionMessage {
 	fmcLogon = 2101,
@@ -78,6 +79,11 @@ typedef enum _FeedConnectionSecurityDefinitionMode {
     sdmUpdateData
 }FeedConnectionSecurityDefinitionMode;
 
+typedef enum _FeedConnectionSecurityDefinitionState {
+    sdsWaitForFirstMessage,
+    sdsProcessing
+}FeedConnectionSecurityDefinitionState;
+
 class FeedConnection;
 typedef bool (FeedConnection::*FeedConnectionWorkAtomPtr)();
 
@@ -90,15 +96,14 @@ typedef enum _FeedConnectionType {
 class FeedConnectionMessageInfo {
 public:
     FeedConnectionMessageInfo() {
-        this->m_item = 0;
+        this->m_address = 0;
         this->m_processed = false;
     }
-    BinaryLogItem       *m_item;
     bool                 m_processed;
     unsigned char       *m_address;
     int                  m_size;
     inline void Clear() {
-        this->m_item = 0;
+        this->m_address = 0;
         this->m_processed = false;
     }
 };
@@ -151,8 +156,11 @@ protected:
     bool                                        m_doNotCheckIncrementalActuality;
 
     FeedConnectionSecurityDefinitionMode        m_idfMode;
+    FeedConnectionSecurityDefinitionState       m_idfState;
+
     bool                                        m_idfDataCollected;
     bool                                        m_allowUpdateIdfData;
+    SymbolManager                               *m_symbolManager;
 
     FeedConnectionMessageInfo                   **m_packets;
 
@@ -224,17 +232,32 @@ private:
     inline bool ProcessServerB() { return this->ProcessServer(this->socketBManager, LogMessageCode::lmcsocketB); }
     inline bool ProcessServerCore(int size) {
         int msgSeqNum = *((UINT*)this->m_recvABuffer->CurrentPos());
-        if(this->m_packets[msgSeqNum]->m_item != 0)
-            return false;
+        if(this->m_packets[msgSeqNum]->m_address != 0)
+            return true;
 
         this->m_recvABuffer->SetCurrentItemSize(size);
+        /*
         BinaryLogItem *item = DefaultLogManager::Default->WriteFast(this->m_idLogIndex,
                                                                     LogMessageCode::lmcFeedConnection_ProcessMessage,
                                                                     this->m_recvABuffer->BufferIndex(),
                                                                     this->m_recvABuffer->CurrentItemIndex());
+                                                                    */
         if(this->m_type == FeedConnectionType::Incremental) {
             if(this->m_endMsgSeqNum < msgSeqNum)
                 this->m_endMsgSeqNum = msgSeqNum;
+        }
+        else if(this->m_type == FeedConnectionType::InstrumentDefinition) {
+            if(this->m_idfState == FeedConnectionSecurityDefinitionState::sdsWaitForFirstMessage) {
+                if(msgSeqNum != 1)
+                    return true;
+                this->m_startMsgSeqNum = 1;
+                this->m_endMsgSeqNum = 1;
+                this->m_idfState = FeedConnectionSecurityDefinitionState::sdsProcessing;
+            }
+            else {
+                if(this->m_endMsgSeqNum < msgSeqNum)
+                    this->m_endMsgSeqNum = msgSeqNum;
+            }
         }
         else {
             this->m_waitTimer->Start();
@@ -243,7 +266,6 @@ private:
             if(this->m_endMsgSeqNum < msgSeqNum)
                 this->m_endMsgSeqNum = msgSeqNum;
         }
-        this->m_packets[msgSeqNum]->m_item = item;
         this->m_packets[msgSeqNum]->m_address = this->m_recvABuffer->CurrentPos();
         this->m_packets[msgSeqNum]->m_size = size;
         this->m_recvABuffer->Next(size);
@@ -482,7 +504,7 @@ private:
             if(this->m_packets[i]->m_processed) {
                 i++; continue;
             }
-            if(this->m_packets[i]->m_item == 0) {
+            if(this->m_packets[i]->m_address == 0) {
                 newStartMsgSeqNum = i;
                 break;
             }
@@ -492,7 +514,7 @@ private:
         }
 
         while(i <= this->m_endMsgSeqNum) {
-            if(this->m_packets[i]->m_processed || this->m_packets[i]->m_item == 0) {
+            if(this->m_packets[i]->m_processed || this->m_packets[i]->m_address == 0) {
                 i++; continue;
             }
             if(!this->ProcessIncremental(this->m_packets[i]))
@@ -581,7 +603,7 @@ private:
 		}
         this->MarketTableEnterSnapshotMode();
         this->m_snapshot->StartNewSnapshot();
-		DefaultLogManager::Default->WriteSuccess(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_StartListenSnapshot, true);
+		//DefaultLogManager::Default->WriteSuccess(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_StartListenSnapshot, true);
 		return true;
 	}
     inline void UpdateMessageSeqNoAfterSnapshot() {
@@ -595,7 +617,7 @@ private:
         this->m_startMsgSeqNum = this->m_endMsgSeqNum + 1;
         this->MarketTableExitSnapshotMode();
 		this->UpdateMessageSeqNoAfterSnapshot();
-        DefaultLogManager::Default->WriteSuccess(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_StopListenSnapshot, true);
+        //DefaultLogManager::Default->WriteSuccess(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_StopListenSnapshot, true);
 		return true;
 	}
 	inline FastSnapshotInfo* GetSnapshotInfo(int index) {
@@ -645,7 +667,7 @@ private:
     FastSnapshotInfo *m_lastSnapshotInfo;
     inline bool FindRouteFirst() {
         for(int i = this->m_startMsgSeqNum; i <= this->m_endMsgSeqNum; i++) {
-            if (this->m_packets[i]->m_item == 0) {
+            if (this->m_packets[i]->m_address == 0) {
                 this->m_startMsgSeqNum = i;
                 return false;
             }
@@ -668,7 +690,7 @@ private:
             return true;
         }
         for(int i = this->m_startMsgSeqNum; i <= this->m_endMsgSeqNum; i++) {
-            if (this->m_packets[i]->m_item == 0) {
+            if (this->m_packets[i]->m_address == 0) {
                 this->m_startMsgSeqNum = i;
                 return false;
             }
@@ -727,12 +749,12 @@ private:
     inline bool HasPotentiallyLostPackets() {
         if(this->m_startMsgSeqNum > this->m_endMsgSeqNum)
             return false;
-        return this->m_packets[this->m_startMsgSeqNum]->m_item == 0;
+        return this->m_packets[this->m_startMsgSeqNum]->m_address == 0;
     }
 
     inline void SkipLostPackets() {
         for(int i = this->m_startMsgSeqNum; i <= this->m_endMsgSeqNum; i++) {
-            if(this->m_packets[i]->m_item != 0) {
+            if(this->m_packets[i]->m_address != 0) {
                 this->m_startMsgSeqNum = i;
                 return;
             }
@@ -741,8 +763,9 @@ private:
     }
 
     inline void ClearPackets(int start, int end) {
-        for(int i = start; i <= end; i++) {
-            this->m_packets[i]->Clear();
+        FeedConnectionMessageInfo **info = (this->m_packets + start);
+        for(int i = start; i <= end; i++, info++) {
+            (*info)->Clear();
         }
     }
 
@@ -759,9 +782,9 @@ private:
     }
 
     inline bool ProcessSecurityDefinition(unsigned char *buffer, int length) {
-        DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Decode);
+        //DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Decode);
         bool res = this->ProcessSecurityDefinitionCore(buffer, length);
-        DefaultLogManager::Default->EndLog(res);
+        //DefaultLogManager::Default->EndLog(res);
         return res;
     }
 
@@ -772,12 +795,14 @@ private:
             return true;  // TODO - take this message into account, becasue it determines feed alive
         }
 
-        DefaultLogManager::Default->WriteFast(this->m_idLogIndex, this->m_recvABuffer->BufferIndex(), info->m_item->m_itemIndex);
+        //DefaultLogManager::Default->WriteFast(this->m_idLogIndex, this->m_recvABuffer->BufferIndex(), info->m_item->m_itemIndex);
         info->m_processed = true;
         return this->ProcessSecurityDefinition(buffer, info->m_size);
     }
 
     inline bool ProcessSecurityDefinitionMessages() {
+
+
         int i = this->m_startMsgSeqNum;
         int newStartMsgSeqNum = -1;
 
@@ -785,9 +810,11 @@ private:
             if(this->m_packets[i]->m_processed) {
                 i++; continue;
             }
-            if(this->m_packets[i]->m_item == 0) {
-                newStartMsgSeqNum = i;
-                break;
+            if(this->m_packets[i]->m_address == 0) {
+                printf("msg %d not received\n", i);
+                i++; continue;
+                //newStartMsgSeqNum = i;
+                //break;
             }
             if(!this->ProcessSecurityDefinition(this->m_packets[i]))
                 return false;
@@ -877,12 +904,12 @@ private:
     inline bool InitializeSockets() {
         if(this->socketAManager != NULL)
             return true;
-        DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_InitializeSockets);
+        //DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_InitializeSockets);
 
         this->socketAManager = new WinSockManager();
         this->socketBManager = new WinSockManager();
 
-        DefaultLogManager::Default->EndLog(true);
+        //DefaultLogManager::Default->EndLog(true);
         return true;
     }
 
@@ -929,7 +956,32 @@ private:
         return this->Listen_Atom_Incremental_Core();
     }
 
-    inline bool Listen_Atom_SecurityDefinition(){
+    inline bool Listen_Atom_SecurityDefinition_WaitForMessage() {
+        bool recv = this->ProcessServerA();
+        recv |= this->ProcessServerB();
+        if(!recv) {
+            if(!this->m_waitTimer->Active(1)) {
+                this->m_waitTimer->Start(1);
+            }
+            else {
+                if(this->m_waitTimer->ElapsedSeconds(1) > this->WaitAnyPacketMaxTimeSec) {
+                    printf("Timeout 10 sec... Reconnect...\n");
+                    DefaultLogManager::Default->WriteSuccess(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_Listen_Atom_SecurityDefinition, false);
+                    this->ReconnectSetNextState(FeedConnectionState::fcsListenSecurityDefinition);
+                    return true;
+                }
+            }
+        }
+        else {
+            this->m_waitTimer->Stop(1);
+        }
+        if(this->m_idfState == FeedConnectionSecurityDefinitionState::sdsProcessing) { // TODO debug remove
+            printf("Start processing security definition\n");
+        }
+        return true;
+    }
+
+    inline bool Listen_Atom_SecurityDefinition_Processing() {
         bool recv = this->ProcessServerA();
         recv |= this->ProcessServerB();
 
@@ -939,8 +991,10 @@ private:
             }
             else {
                 if(this->m_waitTimer->ElapsedSeconds(1) > this->WaitAnyPacketMaxTimeSec) {
+                    printf("Timeout 10 sec... Reconnect...\n");
                     DefaultLogManager::Default->WriteSuccess(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_Listen_Atom_SecurityDefinition, false);
-                    return false;
+                    this->ReconnectSetNextState(FeedConnectionState::fcsListenSecurityDefinition);
+                    return true;
                 }
             }
         }
@@ -948,6 +1002,12 @@ private:
             this->m_waitTimer->Stop(1);
         }
         return this->Listen_Atom_SecurityDefinition_Core();
+    }
+
+    inline bool Listen_Atom_SecurityDefinition() {
+        if(this->m_idfState == FeedConnectionSecurityDefinitionState::sdsWaitForFirstMessage)
+            return this->Listen_Atom_SecurityDefinition_WaitForMessage();
+        return this->Listen_Atom_SecurityDefinition_Processing();
     }
 
     inline bool Listen_Atom_Snapshot() {
@@ -1112,9 +1172,9 @@ private:
 	}
 
 	inline bool ProcessIncremental(unsigned char *buffer, int length) {
-		DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Decode);
+		//DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Decode);
 		bool res = this->ProcessIncrementalCore(buffer, length);
-		DefaultLogManager::Default->EndLog(res);
+		//DefaultLogManager::Default->EndLog(res);
 		return res;
 	}
 
@@ -1125,20 +1185,7 @@ private:
             return true;  // TODO - take this message into account, becasue it determines feed alive
         }
 
-		//TODO remove unused logging
-		/*
-		int length = this->m_recvABuffer->ItemLength(item->m_itemIndex);
-		fprintf(this->obrLogFile, "unsigned char *msg%d = new unsigned char [%d] { ", item->m_itemIndex, length);
-		for(int i = 0; i < length; i++) {
-			fprintf(this->obrLogFile, "0x%2.2x", buffer[i]);
-			if(i < length - 1)
-				fprintf(this->obrLogFile, ", ");
-		}
-		fprintf(this->obrLogFile, "};\n");
-		fflush(this->obrLogFile);
-		//till this
-		*/
-        DefaultLogManager::Default->WriteFast(this->m_idLogIndex, this->m_recvABuffer->BufferIndex(), info->m_item->m_itemIndex);
+        //DefaultLogManager::Default->WriteFast(this->m_idLogIndex, this->m_recvABuffer->BufferIndex(), info->m_item->m_itemIndex);
         info->m_processed = true;
 		return this->ProcessIncremental(buffer, info->m_size);
 	}
@@ -1324,25 +1371,74 @@ public:
         }
     }
 
-    inline void AddSecurityDefinitionToList(FastSecurityDefinitionInfo *info) {
-        this->m_securityDefinitions[this->m_securityDefinitionsCount]->Data(info);
-        this->m_securityDefinitionsCount++;
+    inline void AddSecurityDefinitionToList(FastSecurityDefinitionInfo *info, int index) {
+        this->m_securityDefinitions[index]->Data(info);
+        this->m_securityDefinitionsCount = index + 1;
+    }
+
+    inline void MakeUsed(FastSecurityDefinitionMarketSegmentGrpItemInfo *m, bool used) {
+        m->Used = used;
+        FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo **trading = m->TradingSessionRulesGrp;
+        for(int j = 0; j < m->TradingSessionRulesGrpCount; j++, trading++) {
+            (*trading)->Used = used;
+        }
+    }
+
+    inline void MakeUsed(FastSecurityDefinitionInfo *info, bool used) {
+        info->Used = used;
+
+        FastSecurityDefinitionMarketSegmentGrpItemInfo **market = info->MarketSegmentGrp;
+        for(int i = 0; i < info->MarketSegmentGrpCount; i++, market++)
+            MakeUsed(*market, used);
+    }
+
+    inline void MergeSecurityDefinition(FastSecurityDefinitionInfo *parent, FastSecurityDefinitionInfo *child) {
+        int freeIndex = parent->MarketSegmentGrpCount;
+        FastSecurityDefinitionMarketSegmentGrpItemInfo **market = child->MarketSegmentGrp;
+        for(int i = 0; i < child->MarketSegmentGrpCount; i++, market++) {
+            MakeUsed(*market, true);
+            parent->MarketSegmentGrp[freeIndex] = *market;
+        }
+        child->MarketSegmentGrpCount = 0;
+    }
+
+    inline bool IsLastSecurityDefinitionMessageRecv(FastSecurityDefinitionInfo *info) {
+        return info->TotNumReports == this->m_endMsgSeqNum;
+    }
+
+    inline void PrintSymbolManagerDebug() {
+        printf("Collected %d symbols\n", this->m_securityDefinitionsCount);
+        for(int i = 0; i < this->m_symbolManager->BucketListCount(); i++) {
+            int count = this->m_symbolManager->CalcBucketCollisitonCount(i);
+            if(count != 0)
+                printf("Collision %d = %d\n", i, count);
+        }
+        printf("Collected %d symbols\n", this->m_securityDefinitionsCount);
+    }
+
+    inline void OnSecurityDefinitionRecvAllMessages() {
+        this->Stop();
+        this->ClearPackets(0, this->m_endMsgSeqNum);
+        this->PrintSymbolManagerDebug();  // TODO debug messages
+        this->AfterProcessSecurityDefinitions();
     }
 
     inline bool ProcessSecurityDefinition(FastSecurityDefinitionInfo *info) {
-        info->Used = true;
-        if(this->GetSecurityDefinitionIndex(0, info->Symbol, info->SymbolLength) == -1)
-            this->AddSecurityDefinitionToList(info);
+        bool wasNewlyAdded = false;
+        SymbolInfo *smb = this->m_symbolManager->GetSymbol(info->Symbol, info->SymbolLength, &wasNewlyAdded);
 
-        FastSecurityDefinitionMarketSegmentGrpItemInfo **market = info->MarketSegmentGrp;
-        for(int i = 0; i < info->MarketSegmentGrpCount; i++, market++) {
-            FastSecurityDefinitionMarketSegmentGrpItemInfo *m = *market;
-            m->Used = true;
-            FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo **trading = m->TradingSessionRulesGrp;
-            for(int j = 0; j < m->TradingSessionRulesGrpCount; j++, trading++) {
-                (*trading)->Used = true;
-            }
+        MakeUsed(info, true);
+        if(wasNewlyAdded) {
+            this->AddSecurityDefinitionToList(info, smb->m_index);
         }
+        else {
+            LinkedPointer<FastSecurityDefinitionInfo> *ptr = this->m_securityDefinitions[smb->m_index];
+            MergeSecurityDefinition(ptr->Data(), info);
+        }
+        info->ReleaseUnused();
+        if(IsLastSecurityDefinitionMessageRecv(info))
+            this->OnSecurityDefinitionRecvAllMessages();
+
         return true;
     }
 
@@ -1455,13 +1551,15 @@ public:
     inline bool HasLostPackets(int msgStart, int msgEnd) {
         FeedConnectionMessageInfo **msg = (this->m_packets + msgStart);
         for(int i = msgStart; i <= msgEnd; i++, msg++) {
-            if((*msg)->m_item == 0)
+            if((*msg)->m_address == 0)
                 return true;
         }
         return false;
     }
 
     inline bool IsIdfDataCollected() { return this->m_idfDataCollected; }
+    inline FeedConnectionSecurityDefinitionMode IdfMode() { return this->m_idfMode; }
+    inline FeedConnectionSecurityDefinitionState IdfState() { return this->m_idfState; }
 
 	inline bool Connect() {
 		if(this->m_fakeConnect)
@@ -1557,6 +1655,12 @@ public:
 		else
 			this->SetNextState(st);
 	}
+    inline void BeforeListen() {
+        if(this->m_type == FeedConnectionType::InstrumentDefinition) {
+            this->m_idfState = FeedConnectionSecurityDefinitionState::sdsWaitForFirstMessage;
+            printf("Wait for First Security Definition\n"); // TODO remove debug
+        }
+    }
     inline bool Start() {
         if(!this->Connect())
 			return false;
@@ -1564,6 +1668,7 @@ public:
             return true;
         this->m_waitTimer->Start();
         this->m_waitTimer->Stop(1);
+        this->BeforeListen();
         this->Listen();
 		return true;
     }
@@ -1855,6 +1960,7 @@ public:
             this->m_securityDefinitions[i] = new LinkedPointer<FastSecurityDefinitionInfo>();
         this->m_securityDefinitionsCount = 0;
         this->m_idfMode = FeedConnectionSecurityDefinitionMode::sdmCollectData;
+        this->m_symbolManager = new SymbolManager(RobotSettings::MarketDataMaxSymbolsCount);
     }
     ~FeedConnection_FOND_IDF() {
         for(int i = 0; i < RobotSettings::MaxSecurityDefinitionCount; i++)
@@ -1874,6 +1980,7 @@ public:
             this->m_securityDefinitions[i] = new LinkedPointer<FastSecurityDefinitionInfo>();
         this->m_securityDefinitionsCount = 0;
         this->m_idfMode = FeedConnectionSecurityDefinitionMode::sdmCollectData;
+        this->m_symbolManager = new SymbolManager(RobotSettings::MarketDataMaxSymbolsCount);
     }
     ~FeedConnection_CURR_IDF() {
         for(int i = 0; i < RobotSettings::MaxSecurityDefinitionCount; i++)

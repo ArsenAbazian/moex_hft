@@ -20,7 +20,7 @@ public:
         this->m_prev = 0;
         this->m_released = true;
     }
-
+    inline bool HasNext() { return this->m_next != 0; }
     inline LinkedPointer* Next() { return this->m_next; }
     inline void Next(LinkedPointer *node) { this->m_next = node; }
     inline LinkedPointer* Prev() { return this->m_prev; }
