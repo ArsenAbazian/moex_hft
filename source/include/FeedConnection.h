@@ -65,6 +65,7 @@ typedef enum _FeedConnectionState {
 	fcsListenIncremental,
     fcsListenSnapshot,
     fcsListenSecurityDefinition,
+    fcsHistoricalReplay,
     fcsConnect
 } FeedConnectionState;
 
@@ -84,13 +85,23 @@ typedef enum _FeedConnectionSecurityDefinitionState {
     sdsProcessing
 }FeedConnectionSecurityDefinitionState;
 
+typedef enum _FeedConnectionHistoricalReplayState {
+    hsSendLogon,
+    hsWaitLogon,
+    hsSendMarketDataRequest,
+    hsRecvMessage,
+    hsSendLogout,
+    hsSuspend
+}FeedConnectionHistoricalReplayState;
+
 class FeedConnection;
 typedef bool (FeedConnection::*FeedConnectionWorkAtomPtr)();
 
 typedef enum _FeedConnectionType {
     Incremental,
     Snapshot,
-    InstrumentDefinition
+    InstrumentDefinition,
+    HistoricalReplay
 }FeedConnectionType;
 
 class FeedConnectionMessageInfo {
@@ -140,6 +151,7 @@ protected:
 
     FeedConnection                              *m_incremental;
     FeedConnection                              *m_snapshot;
+    FeedConnection                              *m_historicalReplay;
 
     FeedConnection                              *m_connectionsToRecvSymbols[32];
     int                                         m_connectionsToRecvSymbolsCount;
@@ -161,6 +173,8 @@ protected:
     bool                                        m_idfDataCollected;
     bool                                        m_allowUpdateIdfData;
     SymbolManager                               *m_symbolManager;
+
+    FeedConnectionHistoricalReplayState         m_hsState;
 
     FeedConnectionMessageInfo                   **m_packets;
 
@@ -936,6 +950,45 @@ private:
         return true;
     }
 
+    inline bool HistoricalReplay_SendLogon() {
+        throw;
+    }
+
+    inline bool HistoricalReplay_WaitLogon() {
+        throw;
+    }
+
+    inline bool HistoricalReplay_SendMarketDataRequest() {
+        throw;
+    }
+
+    inline bool HistoricalReplay_RecvMessage() {
+        throw;
+    }
+
+    inline bool HistoricalReplay_SendLogout() {
+        throw;
+    }
+
+    inline bool HistoricalReplay_Suspend() {
+        throw;
+    }
+
+    inline bool HistoricalReplay_Atom() {
+        if(this->m_hsState == FeedConnectionHistoricalReplayState::hsSendLogon)
+            return this->HistoricalReplay_SendLogon();
+        if(this->m_hsState == FeedConnectionHistoricalReplayState::hsWaitLogon)
+            return this->HistoricalReplay_WaitLogon();
+        if(this->m_hsState == FeedConnectionHistoricalReplayState::hsSendMarketDataRequest)
+            return this->HistoricalReplay_SendMarketDataRequest();
+        if(this->m_hsState == FeedConnectionHistoricalReplayState::hsRecvMessage)
+            return this->HistoricalReplay_RecvMessage();
+        if(this->m_hsState == FeedConnectionHistoricalReplayState::hsSendLogout)
+            return this->HistoricalReplay_SendLogout();
+        if(this->m_hsState == FeedConnectionHistoricalReplayState::hsSuspend)
+            return this->HistoricalReplay_Suspend();
+    }
+
     inline bool Listen_Atom_Incremental() {
 
         bool recv = this->ProcessServerA();
@@ -1253,7 +1306,9 @@ public:
 		if(this->m_snapshot != 0)
 			this->m_snapshot->SetIncremental(this);
 	}
-    inline FeedConnection *Snapshot() { return this->m_snapshot; }
+    inline FeedConnection* Snapshot() { return this->m_snapshot; }
+    inline void SetHistoricalReplay(FeedConnection *historicalReplay) { this->m_historicalReplay = historicalReplay; }
+    inline FeedConnection* HistoricalReplay() { return this->m_historicalReplay; }
 
     inline FeedConnection** ConnectionsToRecvSymbols() { return this->m_connectionsToRecvSymbols; }
     inline int ConnectionsToRecvSymbolsCount() { return this->m_connectionsToRecvSymbolsCount; }
@@ -1421,6 +1476,7 @@ public:
         this->ClearPackets(0, this->m_endMsgSeqNum);
         this->PrintSymbolManagerDebug();  // TODO debug messages
         this->AfterProcessSecurityDefinitions();
+        this->m_idfDataCollected = true;
     }
 
     inline bool ProcessSecurityDefinition(FastSecurityDefinitionInfo *info) {
@@ -1630,6 +1686,8 @@ public:
 		FeedConnectionState st = this->m_state;
         if(st == FeedConnectionState::fcsListenIncremental)
             return this->Listen_Atom_Incremental();
+        if(st == FeedConnectionState::fcsHistoricalReplay)
+            return this->HistoricalReplay_Atom();
         if(st == FeedConnectionState::fcsListenSecurityDefinition)
             return this->Listen_Atom_SecurityDefinition();
         if(st == FeedConnectionState::fcsListenSnapshot)
@@ -1646,6 +1704,8 @@ public:
             return FeedConnectionState::fcsListenSecurityDefinition;
         else if(m_type == FeedConnectionType::Snapshot)
             return FeedConnectionState::fcsListenSnapshot;
+        else if(m_type == FeedConnectionType::HistoricalReplay)
+            return FeedConnectionState::fcsHistoricalReplay;
         return FeedConnectionState::fcsListenIncremental;
     }
 	inline void Listen() {
@@ -1659,6 +1719,10 @@ public:
         if(this->m_type == FeedConnectionType::InstrumentDefinition) {
             this->m_idfState = FeedConnectionSecurityDefinitionState::sdsWaitForFirstMessage;
             printf("Wait for First Security Definition\n"); // TODO remove debug
+        }
+        if(this->m_type == FeedConnectionType::HistoricalReplay) {
+            this->hsState = FeedConnectionHistoricalReplayState::hsSendLogon;
+            printf("Start Historical Replay\n");
         }
     }
     inline bool Start() {

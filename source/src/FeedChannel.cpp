@@ -90,7 +90,14 @@ bool FeedChannel::Connect() {
 	this->statisticsIncremental->SetSnapshot(this->statisticsSnapshot);
 	this->tradesIncremental->SetSnapshot(this->tradesSnapshot);
 	this->ordersIncremental->SetSnapshot(this->ordersSnapshot);
-	//this->instrumentReplay->SetSnapshot(this->instrumentStatus);
+	this->statisticsIncremental->SetHistoricalReplay(this->historicalReplay);
+	this->tradesIncremental->SetHistoricalReplay(this->historicalReplay);
+	this->ordersIncremental->SetHistoricalReplay(this->historicalReplay);
+	this->statisticsSnapshot->SetHistoricalReplay(this->historicalReplay);
+	this->tradesSnapshot->SetHistoricalReplay(this->historicalReplay);
+	this->ordersSnapshot->SetHistoricalReplay(this->historicalReplay);
+	this->instrumentDefinition->SetHistoricalReplay(this->historicalReplay);
+	this->instrumentStatus->SetHistoricalReplay(this->historicalReplay);
 
 	/*
 	if (!this->Connect(this->ordersIncremental)) {
