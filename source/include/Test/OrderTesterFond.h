@@ -29,8 +29,6 @@ public:
                                                      "10.50.129.200", "239.192.113.3", 9113,
                                                      "10.50.129.200", "239.192.113.131", 9313);
         this->incFond->OrderFond()->InitSymbols(10, 10);
-        this->snapFond->m_fakeConnect = true;
-        this->incFond->m_fakeConnect = true;
     }
     ~OrderTesterFond() {
         delete this->incFond;

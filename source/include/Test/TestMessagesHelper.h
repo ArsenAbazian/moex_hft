@@ -5,12 +5,25 @@
 #ifndef HFT_ROBOT_TESTMESSAGESHELPER_H
 #define HFT_ROBOT_TESTMESSAGESHELPER_H
 
+#include "../WinSockManager.h"
 #include "TestTemplateInfo.h"
 #include "../FeedConnection.h"
 #include <stdio.h>
 #include <memory.h>
 
+class SocketMessageInfo {
+public:
+    WinSockManager      *m_manager;
+    bool                m_canRecv;
+    unsigned char       m_buffer[512];
+    int                 m_bufferLength;
+};
+
 class TestMessagesHelper {
+public:
+    static PointerList<SocketMessageInfo> *m_sockMessages;
+private:
+
     const char *symbols[100];
     int rptSeq[100];
     int symbolsCount = 0;
@@ -99,9 +112,29 @@ class TestMessagesHelper {
         if(keysCount == 0)
             return info;
 
+        info->m_msgSeqNo = 0;
         info->m_lost = HasKey(keys, keysCount, "lost");
         info->m_skip = HasKey(keys, keysCount, "skip_if_suspend");
-        if(HasKey(keys, keysCount, "obr")) {
+        if(HasKey(keys, keysCount, "msgSeqNo")) {
+            info->m_msgSeqNo = atoi(keys[KeyIndex(keys, keysCount, "msgSeqNo") + 1]);
+        }
+        if(HasKey(keys, keysCount, "logout")) {
+            info->m_templateId = FeedConnectionMessage::fmcLogout;
+            return info;
+        }
+        else if(HasKey(keys, keysCount, "logon")) {
+            info->m_templateId = FeedConnectionMessage::fmcLogon;
+            if(HasKey(keys, keysCount, "sender"))
+                info->m_senderId = keys[KeyIndex(keys, keysCount, "sender") + 1];
+            else
+                info->m_senderId = 0;
+            if(HasKey(keys, keysCount, "pass"))
+                info->m_pass = keys[KeyIndex(keys, keysCount, "pass") + 1];
+            else
+                info->m_pass = 0;
+            return info;
+        }
+        else if(HasKey(keys, keysCount, "obr")) {
             info->m_templateId = FeedConnectionMessage::fmcIncrementalRefresh_Generic;
         }
         else if(HasKey(keys, keysCount, "olr")) {
@@ -247,6 +280,37 @@ class TestMessagesHelper {
     }
 
 public:
+
+    TestMessagesHelper() {
+        if(TestMessagesHelper::m_sockMessages->PoolStart()->Data() == 0)
+            TestMessagesHelper::m_sockMessages->AllocData();
+    }
+    ~TestMessagesHelper() {
+    }
+
+    FastLogonInfo* CreateLogonMessage(TestTemplateInfo *tmp) {
+        FastLogonInfo *info = new FastLogonInfo();
+
+        int sidLen = strlen(tmp->m_senderId);
+        char *sid = new char[sidLen + 1];
+
+        strcpy(sid, tmp->m_senderId);
+
+        int pLen = strlen(tmp->m_pass);
+        char *p = new char[pLen + 1];
+        strcpy(p, tmp->m_pass);
+
+        info->SenderCompID = sid;
+        info->SenderCompIDLength = sidLen;
+
+        info->AllowPassword = true;
+        info->Password = p;
+        info->PasswordLength = pLen;
+
+        info->MsgSeqNum = tmp->m_msgSeqNo;
+
+        return info;
+    }
 
     FastOLSFONDInfo* CreateOLSFondInfo(const char *symbol, const char *trading) {
         FastOLSFONDInfo *info = new FastOLSFONDInfo();
@@ -1077,6 +1141,14 @@ public:
         return info;
     }
 
+    void EncodeHearthBeatMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
+        FastHeartbeatInfo *info = new FastHeartbeatInfo();
+        info->MsgSeqNum = tmp->m_msgSeqNo;
+        conn->m_fastProtocolManager->SetNewBuffer(conn->m_sendABuffer->CurrentPos(), 2000);
+        conn->m_fastProtocolManager->EncodeHeartbeatInfo(info);
+        conn->m_sendABuffer->Next(conn->m_fastProtocolManager->MessageLength());
+    }
+
     void SendHearthBeatMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
         FastHeartbeatInfo *info = new FastHeartbeatInfo();
         info->MsgSeqNum = tmp->m_msgSeqNo;
@@ -1085,20 +1157,65 @@ public:
         conn->ProcessServerCore(conn->m_fastProtocolManager->MessageLength());
     }
 
-    void SendIncrementalGenericMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
+    void EncodeLogoutMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
+        FastLogoutInfo *info = new FastLogoutInfo();
+        info->MsgSeqNum = tmp->m_msgSeqNo;
+        conn->m_fastProtocolManager->SetNewBuffer(conn->m_sendABuffer->CurrentPos(), 2000);
+        conn->m_fastProtocolManager->EncodeLogoutInfo(info);
+        conn->m_sendABuffer->Next(conn->m_fastProtocolManager->MessageLength());
+    }
+
+    void SendLogoutMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
+        FastLogoutInfo *info = new FastLogoutInfo();
+        info->MsgSeqNum = tmp->m_msgSeqNo;
+        conn->m_fastProtocolManager->SetNewBuffer(conn->m_recvABuffer->CurrentPos(), 2000);
+        conn->m_fastProtocolManager->EncodeLogoutInfo(info);
+        conn->ProcessServerCore(conn->m_fastProtocolManager->MessageLength());
+    }
+
+    void EncodeLogonMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
+        FastLogonInfo *info = CreateLogonMessage(tmp);
+        info->MsgSeqNum = tmp->m_msgSeqNo;
+        conn->m_fastProtocolManager->SetNewBuffer(conn->m_sendABuffer->CurrentPos(), 2000);
+        conn->m_fastProtocolManager->EncodeLogonInfo(info);
+        conn->m_sendABuffer->Next(conn->m_fastProtocolManager->MessageLength());
+    }
+
+    void SendLogonMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
+        FastLogonInfo *info = CreateLogonMessage(tmp);
+        info->MsgSeqNum = tmp->m_msgSeqNo;
+        conn->m_fastProtocolManager->SetNewBuffer(conn->m_recvABuffer->CurrentPos(), 2000);
+        conn->m_fastProtocolManager->EncodeLogonInfo(info);
+        conn->ProcessServerCore(conn->m_fastProtocolManager->MessageLength());
+    }
+
+    FastIncrementalGenericInfo* CreateIncrementalGenericMessageCore(FeedConnection *conn, TestTemplateInfo *tmp) {
         FastIncrementalGenericInfo *info = new FastIncrementalGenericInfo();
         info->MsgSeqNum = tmp->m_msgSeqNo;
         info->GroupMDEntriesCount = tmp->m_itemsCount;
         for(int i = 0; i < tmp->m_itemsCount; i++) {
             info->GroupMDEntries[i] = CreateObrFondItemInfo(tmp->m_items[i]);
         }
+        return info;
+    }
+
+    void EncodeIncrementalGenericMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
+        FastIncrementalGenericInfo *info = CreateIncrementalGenericMessageCore(conn, tmp);
+
+        conn->m_fastProtocolManager->SetNewBuffer(conn->m_sendABuffer->CurrentPos(), 2000);
+        conn->m_fastProtocolManager->EncodeIncrementalGenericInfo(info);
+        conn->m_sendABuffer->Next(conn->m_fastProtocolManager->MessageLength());
+    }
+
+    void SendIncrementalGenericMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
+        FastIncrementalGenericInfo *info = CreateIncrementalGenericMessageCore(conn, tmp);
+
         conn->m_fastProtocolManager->SetNewBuffer(conn->m_recvABuffer->CurrentPos(), 2000);
         conn->m_fastProtocolManager->EncodeIncrementalGenericInfo(info);
         conn->ProcessServerCore(conn->m_fastProtocolManager->MessageLength());
-
     }
 
-    void SendSnapshotGenericMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
+    FastGenericInfo* CreateSnapshotGenericMessageCore(FeedConnection *conn, TestTemplateInfo *tmp) {
         FastGenericInfo *info = new FastGenericInfo();
         info->MsgSeqNum = tmp->m_msgSeqNo;
         info->GroupMDEntriesCount = tmp->m_itemsCount;
@@ -1125,22 +1242,56 @@ public:
         for(int i = 0; i < tmp->m_itemsCount; i++) {
             info->GroupMDEntries[i] = CreateObrFondItemInfo(tmp->m_items[i]);
         }
+        return info;
+    }
+
+    void EncodeSnapshotGenericMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
+        FastGenericInfo *info = CreateSnapshotGenericMessageCore(conn, tmp);
+
+        conn->m_fastProtocolManager->SetNewBuffer(conn->m_sendABuffer->CurrentPos(), 2000);
+        conn->m_fastProtocolManager->EncodeGenericInfo(info);
+        conn->m_sendABuffer->Next(conn->m_fastProtocolManager->MessageLength());
+    }
+
+    void SendSnapshotGenericMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
+        FastGenericInfo *info = CreateSnapshotGenericMessageCore(conn, tmp);
+
         conn->m_fastProtocolManager->SetNewBuffer(conn->m_recvABuffer->CurrentPos(), 2000);
         conn->m_fastProtocolManager->EncodeGenericInfo(info);
         conn->ProcessServerCore(conn->m_fastProtocolManager->MessageLength());
     }
 
-    void SendOLRFondMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
+    FastIncrementalOLRFONDInfo* CreateOLRFondMessageCore(FeedConnection *conn, TestTemplateInfo *tmp) {
         FastIncrementalOLRFONDInfo *info = new FastIncrementalOLRFONDInfo();
         info->MsgSeqNum = tmp->m_msgSeqNo;
         info->GroupMDEntriesCount = tmp->m_itemsCount;
         for(int i = 0; i < tmp->m_itemsCount; i++) {
             info->GroupMDEntries[i] = CreateOLRFondItemInfo(tmp->m_items[i]);
         }
+        return info;
+    }
+
+    void EncodeOLRFondMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
+        FastIncrementalOLRFONDInfo *info = CreateOLRFondMessageCore(conn, tmp);
+
+        conn->m_fastProtocolManager->SetNewBuffer(conn->m_sendABuffer->CurrentPos(), 2000);
+        conn->m_fastProtocolManager->EncodeIncrementalOLRFONDInfo(info);
+        conn->m_sendABuffer->Next(conn->m_fastProtocolManager->MessageLength());
+    }
+
+    void SendOLRFondMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
+        FastIncrementalOLRFONDInfo *info = CreateOLRFondMessageCore(conn, tmp);
+
         conn->m_fastProtocolManager->SetNewBuffer(conn->m_recvABuffer->CurrentPos(), 2000);
         conn->m_fastProtocolManager->EncodeIncrementalOLRFONDInfo(info);
         conn->ProcessServerCore(conn->m_fastProtocolManager->MessageLength());
+    }
 
+    void EncodeSecurityDefinitionMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
+        FastSecurityDefinitionInfo *info = CreateSecurityDefinitionInfo(tmp);
+        conn->m_fastProtocolManager->SetNewBuffer(conn->m_sendABuffer->CurrentPos(), 2000);
+        conn->m_fastProtocolManager->EncodeSecurityDefinitionInfo(info);
+        conn->m_sendABuffer->Next(conn->m_fastProtocolManager->MessageLength());
     }
 
     void SendSecurityDefinitionMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
@@ -1150,7 +1301,7 @@ public:
         conn->ProcessServerCore(conn->m_fastProtocolManager->MessageLength());
     }
 
-    void SendOLSFondMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
+    FastOLSFONDInfo* CreateOLSFondMessage(TestTemplateInfo *tmp) {
         FastOLSFONDInfo *info = new FastOLSFONDInfo();
         info->MsgSeqNum = tmp->m_msgSeqNo;
         info->GroupMDEntriesCount = tmp->m_itemsCount;
@@ -1177,25 +1328,52 @@ public:
         for(int i = 0; i < tmp->m_itemsCount; i++) {
             info->GroupMDEntries[i] = CreateOLRFondItemInfo(tmp->m_items[i]);
         }
+        return info;
+    }
+
+    void EncodeOLSFondMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
+        FastOLSFONDInfo *info = CreateOLSFondMessage(tmp);
+
+        conn->m_fastProtocolManager->SetNewBuffer(conn->m_sendABuffer->CurrentPos(), 2000);
+        conn->m_fastProtocolManager->EncodeOLSFONDInfo(info);
+        conn->m_sendABuffer->Next(conn->m_fastProtocolManager->MessageLength());
+    }
+
+    void SendOLSFondMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
+        FastOLSFONDInfo *info = CreateOLSFondMessage(tmp);
+
         conn->m_fastProtocolManager->SetNewBuffer(conn->m_recvABuffer->CurrentPos(), 2000);
         conn->m_fastProtocolManager->EncodeOLSFONDInfo(info);
         conn->ProcessServerCore(conn->m_fastProtocolManager->MessageLength());
     }
 
-    void SendTLRFondMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
+    FastIncrementalTLRFONDInfo* CreateTLRFondMessageCore(TestTemplateInfo *tmp) {
         FastIncrementalTLRFONDInfo *info = new FastIncrementalTLRFONDInfo();
         info->MsgSeqNum = tmp->m_msgSeqNo;
         info->GroupMDEntriesCount = tmp->m_itemsCount;
         for(int i = 0; i < tmp->m_itemsCount; i++) {
             info->GroupMDEntries[i] = CreateTLRFondItemInfo(tmp->m_items[i]);
         }
+        return info;
+    }
+
+    void EncodeTLRFondMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
+        FastIncrementalTLRFONDInfo *info = CreateTLRFondMessageCore(tmp);
+
+        conn->m_fastProtocolManager->SetNewBuffer(conn->m_sendABuffer->CurrentPos(), 2000);
+        conn->m_fastProtocolManager->EncodeIncrementalTLRFONDInfo(info);
+        conn->m_sendABuffer->Next (conn->m_fastProtocolManager->MessageLength());
+    }
+
+    void SendTLRFondMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
+        FastIncrementalTLRFONDInfo *info = CreateTLRFondMessageCore(tmp);
+
         conn->m_fastProtocolManager->SetNewBuffer(conn->m_recvABuffer->CurrentPos(), 2000);
         conn->m_fastProtocolManager->EncodeIncrementalTLRFONDInfo(info);
         conn->ProcessServerCore(conn->m_fastProtocolManager->MessageLength());
-
     }
 
-    void SendTLSFondMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
+    FastTLSFONDInfo* CreateTLSFondMessageCore(TestTemplateInfo *tmp) {
         FastTLSFONDInfo *info = new FastTLSFONDInfo();
         info->MsgSeqNum = tmp->m_msgSeqNo;
         info->GroupMDEntriesCount = tmp->m_itemsCount;
@@ -1222,71 +1400,52 @@ public:
         for(int i = 0; i < tmp->m_itemsCount; i++) {
             info->GroupMDEntries[i] = CreateTLRFondItemInfo(tmp->m_items[i]);
         }
+        return info;
+    }
+
+    void EncodeTLSFondMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
+        FastTLSFONDInfo *info = CreateTLSFondMessageCore(tmp);
+
+        conn->m_fastProtocolManager->SetNewBuffer(conn->m_sendABuffer->CurrentPos(), 2000);
+        conn->m_fastProtocolManager->EncodeTLSFONDInfo(info);
+        conn->m_sendABuffer->Next(conn->m_fastProtocolManager->MessageLength());
+    }
+
+    void SendTLSFondMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
+        FastTLSFONDInfo *info = CreateTLSFondMessageCore(tmp);
+
         conn->m_fastProtocolManager->SetNewBuffer(conn->m_recvABuffer->CurrentPos(), 2000);
         conn->m_fastProtocolManager->EncodeTLSFONDInfo(info);
         conn->ProcessServerCore(conn->m_fastProtocolManager->MessageLength());
     }
 
-
-    void SendObrCurrMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
-        FastIncrementalGenericInfo *info = new FastIncrementalGenericInfo();
-        info->MsgSeqNum = tmp->m_msgSeqNo;
-        info->GroupMDEntriesCount = tmp->m_itemsCount;
-        for(int i = 0; i < tmp->m_itemsCount; i++) {
-            info->GroupMDEntries[i] = CreateObrCurrItemInfo(tmp->m_items[i]);
-        }
-        conn->m_fastProtocolManager->SetNewBuffer(conn->m_recvABuffer->CurrentPos(), 2000);
-        conn->m_fastProtocolManager->EncodeIncrementalGenericInfo(info);
-        conn->ProcessServerCore(conn->m_fastProtocolManager->MessageLength());
-
-    }
-
-    void SendObsCurrMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
-        FastGenericInfo *info = new FastGenericInfo();
-        info->MsgSeqNum = tmp->m_msgSeqNo;
-        info->GroupMDEntriesCount = tmp->m_itemsCount;
-        info->AllowRouteFirst = true;
-        info->AllowLastFragment = true;
-        info->AllowLastMsgSeqNumProcessed = true;
-        info->LastMsgSeqNumProcessed = tmp->m_lastMsgSeqNoProcessed;
-
-        if(tmp->m_symbol != 0) {
-            info->SymbolLength = strlen(tmp->m_symbol);
-            info->Symbol = new char[info->SymbolLength + 1];
-            strcpy(info->Symbol, tmp->m_symbol);
-        }
-        if(tmp->m_session != 0) {
-            info->AllowTradingSessionID = true;
-            info->TradingSessionIDLength = strlen(tmp->m_session);
-            info->TradingSessionID = new char[info->TradingSessionIDLength + 1];
-            strcpy(info->TradingSessionID, tmp->m_session);
-        }
-
-        info->RptSeq = tmp->m_rptSec;
-        info->RouteFirst = tmp->m_routeFirst;
-        info->LastFragment = tmp->m_lastFragment;
-        for(int i = 0; i < tmp->m_itemsCount; i++) {
-            info->GroupMDEntries[i] = CreateObrCurrItemInfo(tmp->m_items[i]);
-        }
-        conn->m_fastProtocolManager->SetNewBuffer(conn->m_recvABuffer->CurrentPos(), 2000);
-        conn->m_fastProtocolManager->EncodeGenericInfo(info);
-        conn->ProcessServerCore(conn->m_fastProtocolManager->MessageLength());
-    }
-
-    void SendOLRCurrMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
+    FastIncrementalOLRCURRInfo* CreateOLRCurrMessageCore(TestTemplateInfo *tmp) {
         FastIncrementalOLRCURRInfo *info = new FastIncrementalOLRCURRInfo();
         info->MsgSeqNum = tmp->m_msgSeqNo;
         info->GroupMDEntriesCount = tmp->m_itemsCount;
         for(int i = 0; i < tmp->m_itemsCount; i++) {
             info->GroupMDEntries[i] = CreateOLRCurrItemInfo(tmp->m_items[i]);
         }
+        return info;
+    }
+
+    void EncodeOLRCurrMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
+        FastIncrementalOLRCURRInfo* info = CreateOLRCurrMessageCore(tmp);
+
+        conn->m_fastProtocolManager->SetNewBuffer(conn->m_sendABuffer->CurrentPos(), 2000);
+        conn->m_fastProtocolManager->EncodeIncrementalOLRCURRInfo(info);
+        conn->m_sendABuffer->Next(conn->m_fastProtocolManager->MessageLength());
+    }
+
+    void SendOLRCurrMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
+        FastIncrementalOLRCURRInfo* info = CreateOLRCurrMessageCore(tmp);
+
         conn->m_fastProtocolManager->SetNewBuffer(conn->m_recvABuffer->CurrentPos(), 2000);
         conn->m_fastProtocolManager->EncodeIncrementalOLRCURRInfo(info);
         conn->ProcessServerCore(conn->m_fastProtocolManager->MessageLength());
-
     }
 
-    void SendOLSCurrMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
+    FastOLSCURRInfo* CreateOLSCurrMessageCore(TestTemplateInfo *tmp) {
         FastOLSCURRInfo *info = new FastOLSCURRInfo();
         info->MsgSeqNum = tmp->m_msgSeqNo;
         info->GroupMDEntriesCount = tmp->m_itemsCount;
@@ -1313,25 +1472,52 @@ public:
         for(int i = 0; i < tmp->m_itemsCount; i++) {
             info->GroupMDEntries[i] = CreateOLRCurrItemInfo(tmp->m_items[i]);
         }
+        return info;
+    }
+
+    void EncodeOLSCurrMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
+        FastOLSCURRInfo *info = CreateOLSCurrMessageCore(tmp);
+
+        conn->m_fastProtocolManager->SetNewBuffer(conn->m_sendABuffer->CurrentPos(), 2000);
+        conn->m_fastProtocolManager->EncodeOLSCURRInfo(info);
+        conn->m_sendABuffer->Next(conn->m_fastProtocolManager->MessageLength());
+    }
+
+    void SendOLSCurrMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
+        FastOLSCURRInfo *info = CreateOLSCurrMessageCore(tmp);
+
         conn->m_fastProtocolManager->SetNewBuffer(conn->m_recvABuffer->CurrentPos(), 2000);
         conn->m_fastProtocolManager->EncodeOLSCURRInfo(info);
         conn->ProcessServerCore(conn->m_fastProtocolManager->MessageLength());
     }
 
-    void SendTLRCurrMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
+    FastIncrementalTLRCURRInfo* CreateTLRCurrMessageCore(TestTemplateInfo *tmp) {
         FastIncrementalTLRCURRInfo *info = new FastIncrementalTLRCURRInfo();
         info->MsgSeqNum = tmp->m_msgSeqNo;
         info->GroupMDEntriesCount = tmp->m_itemsCount;
         for(int i = 0; i < tmp->m_itemsCount; i++) {
             info->GroupMDEntries[i] = CreateTLRCurrItemInfo(tmp->m_items[i]);
         }
+        return info;
+    }
+
+    void EncodeTLRCurrMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
+        FastIncrementalTLRCURRInfo *info = CreateTLRCurrMessageCore(tmp);
+
+        conn->m_fastProtocolManager->SetNewBuffer(conn->m_sendABuffer->CurrentPos(), 2000);
+        conn->m_fastProtocolManager->EncodeIncrementalTLRCURRInfo(info);
+        conn->m_sendABuffer->Next(conn->m_fastProtocolManager->MessageLength());
+    }
+
+    void SendTLRCurrMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
+        FastIncrementalTLRCURRInfo *info = CreateTLRCurrMessageCore(tmp);
+
         conn->m_fastProtocolManager->SetNewBuffer(conn->m_recvABuffer->CurrentPos(), 2000);
         conn->m_fastProtocolManager->EncodeIncrementalTLRCURRInfo(info);
         conn->ProcessServerCore(conn->m_fastProtocolManager->MessageLength());
-
     }
 
-    void SendTLSCurrMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
+    FastTLSCURRInfo* CreateTLSCurrMessageCore(TestTemplateInfo *tmp) {
         FastTLSCURRInfo *info = new FastTLSCURRInfo();
         info->MsgSeqNum = tmp->m_msgSeqNo;
         info->GroupMDEntriesCount = tmp->m_itemsCount;
@@ -1358,6 +1544,20 @@ public:
         for(int i = 0; i < tmp->m_itemsCount; i++) {
             info->GroupMDEntries[i] = CreateTLRCurrItemInfo(tmp->m_items[i]);
         }
+        return info;
+    }
+
+    void EncodeTLSCurrMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
+        FastTLSCURRInfo *info = CreateTLSCurrMessageCore(tmp);
+
+        conn->m_fastProtocolManager->SetNewBuffer(conn->m_sendABuffer->CurrentPos(), 2000);
+        conn->m_fastProtocolManager->EncodeTLSCURRInfo(info);
+        conn->m_sendABuffer->Next(conn->m_fastProtocolManager->MessageLength());
+    }
+
+    void SendTLSCurrMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
+        FastTLSCURRInfo *info = CreateTLSCurrMessageCore(tmp);
+
         conn->m_fastProtocolManager->SetNewBuffer(conn->m_recvABuffer->CurrentPos(), 2000);
         conn->m_fastProtocolManager->EncodeTLSCURRInfo(info);
         conn->ProcessServerCore(conn->m_fastProtocolManager->MessageLength());
@@ -1400,6 +1600,13 @@ public:
                 break;
             case FeedConnectionMessage::fmcSecurityDefinition:
                 SendSecurityDefinitionMessage(conn, tmp);
+                break;
+            case FeedConnectionMessage::fmcLogon:
+                SendLogonMessage(conn, tmp);
+                break;
+            case FeedConnectionMessage::fmcLogout:
+                SendLogoutMessage(conn, tmp);
+                break;
             default:
                 break;
         }
@@ -1431,6 +1638,63 @@ public:
             if(w.ElapsedMilliseconds(1) > 5000)
                 throw;
         }
+    }
+
+    void EncodeMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
+        switch(tmp->m_templateId) {
+            case FeedConnectionMessage::fcmHeartBeat:
+                EncodeHearthBeatMessage(conn, tmp);
+                break;
+            case FeedConnectionMessage::fmcIncrementalRefresh_Generic:
+                EncodeIncrementalGenericMessage(conn, tmp);
+                break;
+            case FeedConnectionMessage::fmcFullRefresh_Generic:
+                EncodeSnapshotGenericMessage(conn, tmp);
+                break;
+            case FeedConnectionMessage::fmcIncrementalRefresh_OLR_FOND:
+                EncodeOLRFondMessage(conn, tmp);
+                break;
+            case FeedConnectionMessage::fmcFullRefresh_OLS_FOND:
+                EncodeOLSFondMessage(conn, tmp);
+                break;
+            case FeedConnectionMessage::fmcIncrementalRefresh_TLR_FOND:
+                EncodeTLRFondMessage(conn, tmp);
+                break;
+            case FeedConnectionMessage::fmcFullRefresh_TLS_FOND:
+                EncodeTLSFondMessage(conn, tmp);
+                break;
+            case FeedConnectionMessage::fmcIncrementalRefresh_OLR_CURR:
+                EncodeOLRCurrMessage(conn, tmp);
+                break;
+            case FeedConnectionMessage::fmcFullRefresh_OLS_CURR:
+                EncodeOLSCurrMessage(conn, tmp);
+                break;
+            case FeedConnectionMessage::fmcIncrementalRefresh_TLR_CURR:
+                EncodeTLRCurrMessage(conn, tmp);
+                break;
+            case FeedConnectionMessage::fmcFullRefresh_TLS_CURR:
+                EncodeTLSCurrMessage(conn, tmp);
+                break;
+            case FeedConnectionMessage::fmcSecurityDefinition:
+                EncodeSecurityDefinitionMessage(conn, tmp);
+            case FeedConnectionMessage::fmcLogon:
+                EncodeLogonMessage(conn, tmp);
+                break;
+            case FeedConnectionMessage::fmcLogout:
+                EncodeLogoutMessage(conn, tmp);
+                break;
+            default:
+                break;
+        }
+    }
+
+    void EncodeMessage(FeedConnection *fc, const char *msg) {
+        int incMsgCount = CalcMsgCount(msg);
+        TestTemplateInfo **inc_msg = new TestTemplateInfo*[incMsgCount];
+        FillMsg(inc_msg, incMsgCount, msg);
+        FillRptSeq(inc_msg, incMsgCount);
+
+        this->EncodeMessage(fc, inc_msg[0]);
     }
 
     void SendMessages(FeedConnection *fci, FeedConnection *fcs, const char *inc, const char *snap, int delay) {
@@ -1508,6 +1772,50 @@ public:
 
     inline void SetCurrMode() { this->m_curr = true; }
     inline void SetFondMode() { this->m_curr = false; }
+
+    void CreateFixLogonMessage(FeedConnection *fc, const char *senderId, const char *pass) {
+        FixLogonInfo *lg = new FixLogonInfo;
+
+        strcpy(lg->SenderCompID, senderId);
+        lg->SenderCompIDLength = strlen(senderId);
+
+        strcpy(lg->Password, pass);
+        lg->PassLength = strlen(pass);
+
+        fc->m_fixProtocolManager->CreateLogonMessage(lg);
+    }
+
+    void ClearPoll() {
+        for(int i = 0; i < WinSockManager::m_registeredCount; i++) {
+            WinSockManager::m_recvCount[i] = 0;
+        }
+    }
+
+    void SetRecvFor(WinSockManager *m, unsigned char *buffer, int bufferLen) {
+        LinkedPointer<SocketMessageInfo> *ptr = TestMessagesHelper::m_sockMessages->Pop();
+        SocketMessageInfo *msg = ptr->Data();
+
+        msg->m_manager = m;
+        if(buffer != 0)
+            memcpy(msg->m_buffer, buffer, bufferLen);
+        msg->m_canRecv = buffer != 0;
+        msg->m_bufferLength = bufferLen;
+
+        this->m_sockMessages->Add(ptr);
+        for(int i = 0; i < WinSockManager::m_registeredCount; i++) {
+            if(WinSockManager::m_registeredManagers[i] == msg->m_manager) {
+                WinSockManager::m_recvCount[i] = msg->m_canRecv? 1: 0;
+            }
+        }
+    }
+    void SetRecvFixFor(FeedConnection *fc) {
+        this->SetRecvFor(fc->socketAManager, fc->m_fixProtocolManager->SendBuffer(), fc->m_fixProtocolManager->MessageLength());
+    }
+
+    void SetRecvFastFor(FeedConnection *fc) {
+        this->SetRecvFor(fc->socketAManager, fc->m_fastProtocolManager->Buffer(), fc->m_fastProtocolManager->MessageLength());
+    }
+
 };
 
 #endif //HFT_ROBOT_TESTMESSAGESHELPER_H

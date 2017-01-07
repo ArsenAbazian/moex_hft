@@ -44,11 +44,6 @@ public:
         this->idf->AddConnectionToRecvSymbol(this->olr);
         this->idf->AddConnectionToRecvSymbol(this->msr);
         this->idf->AddConnectionToRecvSymbol(this->tlr);
-
-        this->idf->m_fakeConnect = true;
-        this->olr->m_fakeConnect = true;
-        this->tlr->m_fakeConnect = true;
-        this->msr->m_fakeConnect = true;
     }
     ~InstrumentDefinitionTester() {
         delete this->olr;

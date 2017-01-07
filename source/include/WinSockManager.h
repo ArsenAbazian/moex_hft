@@ -46,6 +46,7 @@ class SocketBufferProvider : public ISocketBufferProvider {
 	SocketBufferManager		*m_manager;
 	SocketBuffer 			*m_sendBuffer;
 	SocketBuffer			*m_recvBuffer;
+
 public:
 	SocketBufferProvider(SocketBufferManager *manager, unsigned int sendSize, unsigned int sendItemsCount, unsigned int recvSize, unsigned int recvItemsCount)
 			: m_manager(manager),
@@ -70,8 +71,10 @@ public:
 	}
 };
 
-class WinSockManager;
+class TestMessagesHelper;
 class WinSockManager {
+	friend class TestMessagesHelper;
+
 	static struct pollfd			*m_pollFd;
 	static int 						*m_recvCount;
 	static int 						m_pollFdCount;
@@ -98,6 +101,7 @@ class WinSockManager {
     WinSockStatus                   m_recvStatus;
 
 	int								m_pollIndex;
+private:
 
 	inline int GetFreePollIndex() { return WinSockManager::m_registeredCount; }
 	inline void IncPollIndex() { WinSockManager::m_registeredCount++;  }
@@ -182,11 +186,15 @@ class WinSockManager {
 		DefaultLogManager::Default->EndLog(true);
 		return true;
 	}
+
 public:
 	WinSockManager();
 	~WinSockManager();
 
 	inline static bool UpdateManagersPollStatus() {
+#ifdef TEST
+        return true;
+#else
 		WinSockManager::m_pollRes = poll(WinSockManager::m_pollFd, WinSockManager::m_registeredCount, 0);
 		if(WinSockManager::m_pollRes == -1) {
 			DefaultLogManager::Default->WriteSuccess(LogMessageCode::lmcWinSockManager_UpdateManagersPollStatus, false)->m_errno = errno;
@@ -202,6 +210,7 @@ public:
 			pl->revents = 0;
 		}
 		return true;
+#endif
 	}
 
 	inline static bool HasRecvEvents() { return WinSockManager::m_pollRes > 0; }
@@ -223,9 +232,13 @@ public:
         this->m_sendBytes = buffer;
         this->m_sendSize = size;
         this->m_sendSizeActual = send(this->m_socket, this->m_sendBytes, size, 0);
-        if(this->m_sendSizeActual != this->m_sendSize) {
+#ifdef TEST
+		this->m_sendSizeActual = this->m_sendSize;
+#else
+		if(this->m_sendSizeActual != this->m_sendSize) {
             return false;
         }
+#endif
         return true;
 	}
 
@@ -235,14 +248,20 @@ public:
 			WinSockManager::m_recvCount[this->m_pollIndex] = 0;//--;
 	}
 
+	bool RecvTest(unsigned char *buffer);
+
 	inline bool Recv(unsigned char *buffer) {
 		if(!this->ShouldRecv()) {
 			this->m_recvSize = 0;
 			return true;
 		}
+#ifdef TEST
+        return RecvTest(buffer);
+#else
 		if(this->m_connectionType == WinSockConnectionType::wsTCP)
 			return this->RecvTCP(buffer);
 		return this->RecvUDP(buffer);
+#endif
 	}
 
 	inline bool RecvTCP(unsigned char *buffer) {

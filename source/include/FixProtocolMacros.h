@@ -1,3 +1,5 @@
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "OCUnusedMacroInspection"
 #define TagAccount 1
 #define TagAdvId 2
 #define TagAdvRefID 3
@@ -957,6 +959,9 @@
 #define TagTradeThruTime 5202
 #define TagMaxPriceLevels 1090
 #define TagCancelOrigOnReject 9619
+#define TagApplFeedId 1080
+#define TagApplBeginSeqNum 1082
+#define TagApplEndSeqNum 1083
 #define TagCheckAccount 0x00003d31
 #define TagCheckAdvId 0x00003d32
 #define TagCheckAdvRefID 0x00003d33
@@ -1916,6 +1921,9 @@
 #define TagCheckTradeThruTime 0x32303235
 #define TagCheckMaxPriceLevels 0x30393031
 #define TagCheckCancelOrigOnReject 0x39313639
+#define TagCheckApplFeedId 0x30383031
+#define TagCheckApplBeginSeqNum 0x32383031
+#define TagCheckApplEndSeqNum 0x33383031
 #define TagStrAccount "1"
 #define TagStrAdvId "2"
 #define TagStrAdvRefID "3"
@@ -2875,6 +2883,9 @@
 #define TagStrTradeThruTime "5202"
 #define TagStrMaxPriceLevels "1090"
 #define TagStrCancelOrigOnReject "9619"
+#define TagStrApplFeedId "1080"
+#define TagStrApplBeginSeqNum "1082"
+#define TagStrApplEndSeqNum "1083"
 #define TagLenAccount 1
 #define TagLenAdvId 1
 #define TagLenAdvRefID 1
@@ -3834,6 +3845,9 @@
 #define TagLenTradeThruTime 4
 #define TagLenMaxPriceLevels 4
 #define TagLenCancelOrigOnReject 4
+#define TagLenApplFeedId 4
+#define TagLenApplBeginSeqNUm 4
+#define TagLenApplEndSeqNum 4
 #define AddTagAccount	*((unsigned int*)this->currentPos) = 0x00000031; this->currentPos++;
 #define AddTagAdvId	*((unsigned int*)this->currentPos) = 0x00000032; this->currentPos++;
 #define AddTagAdvRefID	*((unsigned int*)this->currentPos) = 0x00000033; this->currentPos++;
@@ -4793,3 +4807,8 @@
 #define AddTagTradeThruTime	*((unsigned int*)this->currentPos) = 0x32303235; this->currentPos += 4;
 #define AddTagMaxPriceLevels	*((unsigned int*)this->currentPos) = 0x30393031; this->currentPos += 4;
 #define AddTagCancelOrigOnReject	*((unsigned int*)this->currentPos) = 0x39313639; this->currentPos += 4;
+#define AddTagApplFeedId	*((unsigned int*)this->currentPos) = 0x30383031; this->currentPos += 4;
+#define AddTagApplBeginSeqNum	*((unsigned int*)this->currentPos) = 0x32383031; this->currentPos += 4;
+#define AddTagApplEndSeqNum	*((unsigned int*)this->currentPos) = 0x33383031; this->currentPos += 4;
+
+#pragma clang diagnostic pop

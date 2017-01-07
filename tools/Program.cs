@@ -16,11 +16,14 @@ namespace prebuild {
 		public bool WriteConstantCheckingCode { get; set; }
 
 		public List<string> EncodeMessages { get; set; }
+		public string RobotCpp { get; set; }
+		public string ServerConfigFileName { get; set; }
 		public string SourceFileH { get; set; }
 		public string SourceFileCpp { get; set; }
 		public string SourceTypes { get; set; }
 		public string TemplateFile { get; set; }
 
+		protected TextFile RobotCppFile { get; set; }
 		protected TextFile HFile { get; set; }
 		protected TextFile CppFile { get; set; }
 		protected TextFile TypesFile { get; set; }
@@ -35,6 +38,83 @@ namespace prebuild {
 		}
 
 		protected XmlNode TemplatesNode { get; private set; }
+
+		string ConstStr(string str) {
+			return "\"" + str + "\"";
+		}
+		string NodeValue(XmlNode node) {
+			//Console.WriteLine(node.Name + " = " + node.ChildNodes[0].Value.ToString());
+			if(node.ChildNodes.Count == 0 || node.ChildNodes[0].Value == null)
+				return "";
+			return node.ChildNodes[0].Value.ToString();
+		}
+		public bool GenerateAddChannelsCode() {
+			Console.WriteLine("generate add channels code...");
+
+			XmlDocument doc = new XmlDocument();
+			//Console.WriteLine("load condif test xml '" + ServerConfigFileName + "'");
+			doc.Load(ServerConfigFileName);
+
+			SetPosition(AddDefaultChannels_GeneratedCode);
+			XmlNode parent = null;
+			foreach(XmlNode nd in doc.ChildNodes) {
+				if(nd.Name == "configuration") {
+					parent = nd;
+					break;
+				}
+			}
+
+			foreach(XmlNode node in parent.ChildNodes) {
+				string channelName = node.Attributes["id"].Value;
+				//Console.WriteLine("found channel " + channelName);
+				string channelLabel = node.Attributes["label"].Value;
+
+				WriteLine("\tFeedChannel *" + channelName.ToLower() + " = new FeedChannel(" + ConstStr(channelName) + ", " + ConstStr(channelLabel) + ");");
+				WriteLine("");
+				XmlNode connections = node.ChildNodes[0];
+				foreach(XmlNode conn in connections.ChildNodes) {
+					string c_id = conn.Attributes["id"].Value;
+					string feedType = conn.ChildNodes[0].Attributes["feed-type"].Value;
+					string protocol = NodeValue(conn.ChildNodes[1]);
+
+					string protocolValue = protocol == "TCP/IP" ? "FeedConnectionProtocol::TCP_IP" : "FeedConnectionProtocol::UDP_IP";
+					string feedValueName = c_id.ToLower() + "_" + channelName.ToLower();
+					string feedClassName = "FeedConnection_" + channelName + "_" + c_id;
+					string feedValue = "'" + NodeValue(conn.ChildNodes[0]) + "'";
+
+					//Console.WriteLine("found connection " + c_id);
+
+					if(c_id == "H") {
+						string ip = NodeValue(conn.ChildNodes[2]);
+						string port = NodeValue(conn.ChildNodes[3]);
+
+						WriteLine("\tFeedConnection *" + feedValueName + " = new " + feedClassName + "(" + ConstStr(c_id) + ", " + ConstStr(feedType) + ", " + feedValue + ", " + protocolValue + ", " + ConstStr(ip) + ", " + port + ");");
+					} else {
+						string srcIpA = NodeValue(conn.ChildNodes[2].ChildNodes[0]);
+						string ipA = NodeValue(conn.ChildNodes[2].ChildNodes[1]);
+						string portA = NodeValue(conn.ChildNodes[2].ChildNodes[2]);
+
+						string srcIpB = NodeValue(conn.ChildNodes[3].ChildNodes[0]);
+						string ipB = NodeValue(conn.ChildNodes[3].ChildNodes[1]);
+						string portB = NodeValue(conn.ChildNodes[3].ChildNodes[2]);
+					
+						WriteLine("\tFeedConnection *" + feedValueName + " = new " + feedClassName + "(" + ConstStr(c_id) + ", " + ConstStr(feedType) + ", " + feedValue + ", " + protocolValue + ", " +
+							ConstStr(srcIpA) + ", " + ConstStr(ipA) + ", " + portA + ", " + 
+							ConstStr(srcIpB) + ", " + ConstStr(ipB) + ", " + portB +  
+							");");
+					}
+				}
+				WriteLine("");
+				foreach(XmlNode conn in connections.ChildNodes) {
+					string c_id = conn.Attributes["id"].Value;
+					string feedValueName = c_id.ToLower() + "_" + channelName.ToLower();
+					WriteLine("\t" + channelName.ToLower() + "->SetConnection(" + feedValueName + ");");
+				}
+				WriteLine("");
+				WriteLine("\tthis->AddChannel(" + channelName.ToLower() + ");");
+			}
+			return true;
+		}
 
 		public bool Generate () {
 			if(!File.Exists(SourceFileH)) {
@@ -53,6 +133,13 @@ namespace prebuild {
 				Console.WriteLine("template xml file'" + TemplateFile + "' does not exist.");
 				return false;
 			}
+			if(!File.Exists(RobotCpp)) {
+				Console.WriteLine("robot source file '" + RobotCpp + "' does not exist.");
+				return false;
+			}
+			if(!File.Exists(ServerConfigFileName)) {
+				Console.WriteLine("fast server config file '" + ServerConfigFileName + "' does not exist.");
+			}
 			
 			XmlDocument doc = new XmlDocument();
 			doc.Load(TemplateFile);
@@ -60,10 +147,12 @@ namespace prebuild {
 			HFile = new TextFile();
 			CppFile = new TextFile();
 			TypesFile = new TextFile();
+			RobotCppFile = new TextFile();
 
 			HFile.LoadFromFile(SourceFileH);
 			CppFile.LoadFromFile(SourceFileCpp);
 			TypesFile.LoadFromFile(SourceTypes);
+			RobotCppFile.LoadFromFile(RobotCpp);
 
 			ClearPreviouseGeneratedCode();
 
@@ -73,6 +162,8 @@ namespace prebuild {
 				TemplatesNode = node;
 				GenerateTemplatesCode();
 			}
+
+			GenerateAddChannelsCode();
 
 			if(!HFile.Modified)
 				Console.WriteLine(SourceFileH + " - no changes were made. skip update source file.");
@@ -86,6 +177,10 @@ namespace prebuild {
 				Console.WriteLine(SourceTypes + " - no changes were made. skip update source file.");
 			else
 				TypesFile.Save();
+			if(!RobotCppFile.Modified)
+				Console.WriteLine(RobotCppFile + " - no changes were made. skip update source file.");
+			else
+				RobotCppFile.Save();
 
 			return true;
 		}
@@ -101,6 +196,7 @@ namespace prebuild {
 		string String_Constant_Declaration_GeneratedCode = "String_Constant_Declaration_GeneratedCode";
 		string Print_Methods_Definition_GeneratedCode = "Print_Methods_Definition_GeneratedCode";
 		string Print_Methods_Declaration_GeneratedCode = "Print_Methods_Declaration_GeneratedCode";
+		string AddDefaultChannels_GeneratedCode = "AddDefaultChannels_GeneratedCode";
 
 		private  void ClearPreviouseGeneratedCode () {
 			string[] keywords = new string[] { 
@@ -114,7 +210,8 @@ namespace prebuild {
 				Encode_Methods_Declaration_GeneratedCode,
 				String_Constant_Declaration_GeneratedCode,
 				Print_Methods_Declaration_GeneratedCode,
-				Print_Methods_Definition_GeneratedCode
+				Print_Methods_Definition_GeneratedCode,
+				AddDefaultChannels_GeneratedCode
 			};
 			foreach(string keyword in keywords) {
 				SetPosition(keyword);
@@ -905,6 +1002,7 @@ namespace prebuild {
 			HFile.GoTo(0);
 			CppFile.GoTo(0);
 			TypesFile.GoTo(0);
+			RobotCppFile.GoTo(0);
 			int index = HFile.FindString(keyword);
 			if(index >= 0) {
 				HFile.GoTo(index + 1);
@@ -921,6 +1019,12 @@ namespace prebuild {
 			if(index >= 0) {
 				TypesFile.GoTo(index + 1);
 				CurrentFile = TypesFile;
+				return true;
+			}
+			index = RobotCppFile.FindString(keyword);
+			if(index >= 0) {
+				RobotCppFile.GoTo(index + 1);
+				CurrentFile = RobotCppFile;
 				return true;
 			}
 
@@ -2511,12 +2615,16 @@ namespace prebuild {
 					v => m_params.Add("f", v)
 				}, {"fx|fast_xml=", "Path to Fast templates file xml",
 					v => m_params.Add("fx", v)
+				}, {"fcfg|feed_cfg=", "Path to feed config file xml",
+					v => m_params.Add("fcfg", v)
 				}, {"fh|fast__source_h=", "Path to FastProtocolManager.h file",
 					v => m_params.Add("fh", v)
 				}, {"fc|fast__source_cpp=", "Path to FastProtocolManager.cpp file",
 					v => m_params.Add("fc", v)
 				}, {"ft|fast_types=", "Path to FastTypes.h file",
 					v => m_params.Add("ft", v)
+				}, {"rb|robot_source_cpp=", "Path to Robot.cpp file",
+					v => m_params.Add("rb", v)
 				}, {"incCurr|fast_check_const", "Write constant checking code in fast protocol files",
 					v => m_params.Add("incCurr", v)
 				}, {"fwe|fast_write_encode=", "Write encdode methods for messages",
@@ -2535,6 +2643,7 @@ namespace prebuild {
 				Console.WriteLine("exit.");
 				return;
 			}
+
 			GenerateLogMessages();
 			GenerateFast();
 		}
@@ -2568,6 +2677,16 @@ namespace prebuild {
 				return;
 			}
 			generator.TemplateFile = value;
+			if(!m_params.TryGetValue("rb", out value)) {
+				Console.WriteLine("Robot.cpp file not specified. skip generation.");
+				return;
+			}
+			generator.RobotCpp = value;
+			if(!m_params.TryGetValue("fcfg", out value)) {
+				Console.WriteLine("Feed config file not specified. skip generation.");
+				return;
+			}
+			generator.ServerConfigFileName = value;
 			if(m_params.TryGetValue("fwe", out value)) {
 				generator.EncodeMessages = new List<string>();
 				string[] messages = value.Split(',');
@@ -2800,6 +2919,7 @@ namespace prebuild {
 			}
 		}
 
+		static string FastServerConfigurationFile { get; set; }
 		public static bool CopyFastServerConfigurationFile () { 
 			string fileName = "";
 			if(!m_params.TryGetValue("x", out fileName)) {
@@ -2823,6 +2943,7 @@ namespace prebuild {
 			if(File.Exists(inputPath + fileName)) { 
 				Console.WriteLine("copy FAST server test configuration file");
 				File.Copy(inputPath + fileName, outputPath + fileName);
+				FastServerConfigurationFile = outputPath + fileName;
 				return true;
 			} else {
 				Console.WriteLine("error: cannot copy FAST server test configuration file");

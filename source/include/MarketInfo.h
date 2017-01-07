@@ -63,8 +63,8 @@ public:
 		if(!this->Enabled())
 			return true;
         bool res = this->m_feedChannel->DoWorkAtom();
-        this->m_tradeCapture->SetState(MarketServerState::mssEnd, &MarketServerInfo::End_Atom);
-        this->m_dropCopy->SetState(MarketServerState::mssEnd, &MarketServerInfo::End_Atom);
+        this->m_tradeCapture->SetState(MarketServerState::mssEnd);
+        this->m_dropCopy->SetState(MarketServerState::mssEnd);
         res &= this->m_trade->DoWorkAtom();
         //res &= this->m_tradeCapture->DoWorkAtom();
 		//res &= this->m_dropCopy->DoWorkAtom();

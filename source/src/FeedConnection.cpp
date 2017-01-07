@@ -1,5 +1,4 @@
 #include "FeedConnection.h"
-#include "LogManager.h"
 
 FeedConnection::FeedConnection(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) {
 	strcpy(this->m_idName, id);
@@ -11,14 +10,19 @@ FeedConnection::FeedConnection(const char *id, const char *name, char value, Fee
 	this->feedTypeValue = value;
 	this->protocol = protocol;
 	
-	strcpy(this->feedASourceIp, aSourceIp);
-	strcpy(this->feedAIp, aIp);
+	if(aSourceIp != 0)
+        strcpy(this->feedASourceIp, aSourceIp);
+	if(aIp != 0)
+        strcpy(this->feedAIp, aIp);
 	this->feedAPort = aPort;
 
-	strcpy(this->feedBSourceIp, bSourceIp);
-	strcpy(this->feedBIp, bIp);
+	if(bSourceIp != 0)
+        strcpy(this->feedBSourceIp, bSourceIp);
+    if(bIp != 0)
+	    strcpy(this->feedBIp, bIp);
 	this->feedBPort = bPort;
-	this->m_fastProtocolManager = new FastProtocolManager();
+
+    this->m_fastProtocolManager = new FastProtocolManager();
     this->m_fastLogonInfo = new FastLogonInfo();
 	this->m_socketABufferProvider = CreateSocketBufferProvider();
 	this->m_sendABuffer = this->m_socketABufferProvider->SendBuffer();
@@ -39,13 +43,9 @@ FeedConnection::FeedConnection(const char *id, const char *name, char value, Fee
     this->m_waitTimer = new Stopwatch();
 
     this->m_tval = new struct timeval;
-	this->m_packets = new FeedConnectionMessageInfo*[RobotSettings::DefaultFeedConnectionPacketCount];
-	for(int i = 0; i < RobotSettings::DefaultFeedConnectionPacketCount; i++)
-        this->m_packets[i] = new FeedConnectionMessageInfo();
 
 	this->m_startMsgSeqNum = 1;
 	this->m_endMsgSeqNum = 0;
-    this->m_type = FeedConnectionType::Incremental;
 
 	this->SetState(FeedConnectionState::fcsSuspend);
 
@@ -81,6 +81,7 @@ FeedConnection::FeedConnection() {
     this->m_startMsgSeqNum = 1;
     this->m_endMsgSeqNum = 0;
     this->m_type = FeedConnectionType::Incremental;
+    this->m_packets = 0;
 
     this->SetState(FeedConnectionState::fcsSuspend);
 }

@@ -75,6 +75,8 @@ bool FeedChannel::CheckConnections() {
 
     if(this->instrumentDefinition->Type() != FeedConnectionType::InstrumentDefinition)
         return false;
+	if(this->historicalReplay->Type() != FeedConnectionType::HistoricalReplay)
+		return false;
 
 	return true;
 }
@@ -98,6 +100,13 @@ bool FeedChannel::Connect() {
 	this->ordersSnapshot->SetHistoricalReplay(this->historicalReplay);
 	this->instrumentDefinition->SetHistoricalReplay(this->historicalReplay);
 	this->instrumentStatus->SetHistoricalReplay(this->historicalReplay);
+
+	// Also check first that FUCKING HISTORICAL REPLAY IS WORKING!!!!
+	if(!this->Connect(this->historicalReplay)) {
+		DefaultLogManager::Default->EndLog(false);
+		return false;
+	}
+	this->historicalReplay->Disconnect();
 
 	/*
 	if (!this->Connect(this->ordersIncremental)) {
@@ -142,7 +151,7 @@ bool FeedChannel::Connect() {
 	//this->tradesIncremental->Start();
 	//this->statisticsIncremental->DoNotCheckIncrementalActuality(true);
 	//this->statisticsIncremental->Start();
-    this->instrumentDefinition->DoNotCheckIncrementalActuality(true);
+    //this->instrumentDefinition->DoNotCheckIncrementalActuality(true);
     this->instrumentDefinition->Start();
 
 	//this->instrumentStatus->Start();

@@ -1,4 +1,5 @@
 #include "WinSockManager.h"
+#include "Test/TestMessagesHelper.h"
 
 int WinSockManager::m_pollFdCount = 256;
 struct pollfd* WinSockManager::m_pollFd = new struct pollfd[256];
@@ -32,6 +33,9 @@ WinSockManager::~WinSockManager() {
 }
 
 bool WinSockManager::ConnectMulticast(char *sourceIp, char *groupIp, unsigned short groupPort) {
+#ifdef TEST
+    return true;
+#else
 	this->m_connectionType = WinSockConnectionType::wsUDP;
 
 	sprintf(this->m_fullAddress, "%s-%s:%d (UDP)", sourceIp, groupIp, groupPort);
@@ -76,6 +80,7 @@ bool WinSockManager::ConnectMulticast(char *sourceIp, char *groupIp, unsigned sh
 	DefaultLogManager::Default->EndLog(true);
 	this->m_connected = true;
 	return true;
+#endif
 }
 
 bool WinSockManager::Connect(char *server_address, unsigned short server_port) {
@@ -101,12 +106,14 @@ bool WinSockManager::Connect(char *server_address, unsigned short server_port) {
     this->m_adress.sin_family = AF_INET;
 	this->m_adress.sin_port = htons(server_port);
 
-	int result = connect(this->m_socket, (struct sockaddr*)&(this->m_adress), sizeof(this->m_adress));
+#ifndef TEST
+    int result = connect(this->m_socket, (struct sockaddr*)&(this->m_adress), sizeof(this->m_adress));
 	if(result < 0) {
         close(this->m_socket);
 		DefaultLogManager::Default->EndLogErrNo(false, strerror(errno));
 		return false;
 	}
+#endif
 
 	if(this->m_pollIndex == -1)
 		this->RegisterPoll();
@@ -132,6 +139,9 @@ void WinSockManager::RegisterPoll() {
 }
 
 bool WinSockManager::Disconnect() {
+#ifdef TEST
+	return true;
+#else
 	DefaultLogManager::Default->StartLog(LogMessageCode::lmcWinSockManager_Close, this->m_serverAddressLogIndex);
     if(this->m_socket == -1) {
         DefaultLogManager::Default->EndLog(true);
@@ -150,9 +160,26 @@ bool WinSockManager::Disconnect() {
 	}
 	DefaultLogManager::Default->EndLog(true);
 	return true;
+#endif
 }
 
 bool WinSockManager::TryFixSocketError(int errorCode) {
 
 	return this->Reconnect();
+}
+
+bool WinSockManager::RecvTest(unsigned char *buffer) {
+	LinkedPointer<SocketMessageInfo> *ptr = TestMessagesHelper::m_sockMessages->Start();
+	while(true) {
+		if(ptr->Data()->m_manager == this) {
+			this->m_recvSize  = ptr->Data()->m_bufferLength;
+			memcpy(buffer, ptr->Data()->m_buffer, this->m_recvSize);
+            TestMessagesHelper::m_sockMessages->Remove(ptr);
+            return true;
+		}
+        if(!ptr->HasNext())
+            break;
+		ptr = ptr->Next();
+	}
+	return false;
 }

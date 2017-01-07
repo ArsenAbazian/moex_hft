@@ -1,6 +1,7 @@
 #pragma once
 #include "WinSockManager.h"
 #include "FastProtocolManager.h"
+#include "FixProtocolManager.h"
 #include "Types.h"
 #include <sys/time.h>
 #include "Stopwatch.h"
@@ -52,7 +53,11 @@ typedef enum _FeedConnectionId {
     fcidMssCurr,
     fcidUnknown,
     fcidIdfFond,
-    fcidIdfCurr
+    fcidIdfCurr,
+    fcidIsfFond,
+    fcidIsfCurr,
+    fcidHFond,
+    fcidHCurr
 }FeedConnectionId;
 
 typedef enum _FeedConnectionProtocol {
@@ -86,11 +91,9 @@ typedef enum _FeedConnectionSecurityDefinitionState {
 }FeedConnectionSecurityDefinitionState;
 
 typedef enum _FeedConnectionHistoricalReplayState {
-    hsSendLogon,
     hsWaitLogon,
-    hsSendMarketDataRequest,
     hsRecvMessage,
-    hsSendLogout,
+    hsWaitLogout,
     hsSuspend
 }FeedConnectionHistoricalReplayState;
 
@@ -101,6 +104,7 @@ typedef enum _FeedConnectionType {
     Incremental,
     Snapshot,
     InstrumentDefinition,
+    InstrumentStatus,
     HistoricalReplay
 }FeedConnectionType;
 
@@ -119,6 +123,21 @@ public:
     }
 };
 
+class FeedConnectionRequestMessageInfo {
+public:
+    int                         m_msgSeqNo;
+    FeedConnection             *m_conn;
+
+    FeedConnectionRequestMessageInfo() {
+        this->m_msgSeqNo = 0;
+        this->m_conn = 0;
+    }
+    inline void Clear() {
+        this->m_msgSeqNo = 0;
+        this->m_conn = 0;
+    }
+};
+
 class OrderTesterFond;
 class OrderTesterCurr;
 class TradeTesterFond;
@@ -127,6 +146,7 @@ class TestMessagesHelper;
 class StatisticsTesterFond;
 class StatisticsTesterCurr;
 class InstrumentDefinitionTester;
+class HistoricalReplayTester;
 
 class FeedConnection {
     friend class OrderTesterFond;
@@ -138,6 +158,7 @@ class FeedConnection {
     friend class StatisticsTesterFond;
     friend class StatisticsTesterCurr;
     friend class InstrumentDefinitionTester;
+    friend class HistoricalReplayTester;
 
 public:
 	const int MaxReceiveBufferSize 				= 1500;
@@ -174,9 +195,10 @@ protected:
     bool                                        m_allowUpdateIdfData;
     SymbolManager                               *m_symbolManager;
 
-    FeedConnectionHistoricalReplayState         m_hsState;
+    FeedConnectionHistoricalReplayState             m_hsState;
+    PointerList<FeedConnectionRequestMessageInfo>  *m_hsRequestList;
 
-    FeedConnectionMessageInfo                   **m_packets;
+    FeedConnectionMessageInfo                       **m_packets;
 
 	int     									m_idLogIndex;
 	int 										m_feedTypeNameLogIndex;
@@ -205,8 +227,13 @@ protected:
 	WinSockManager								*socketBManager;
 	FastProtocolManager 						*m_fastProtocolManager;
     FastLogonInfo                               *m_fastLogonInfo;
-    bool                                        m_fakeConnect;
 
+    FixProtocolManager                          *m_fixProtocolManager;
+    FixLogonInfo                                *m_hsLogonInfo;
+    FixRejectInfo                               *m_hsRejectInfo;
+    int                                          m_hsMsgSeqNo;
+    SocketBuffer								*m_hsSendABuffer;
+    SocketBuffer								*m_hsRecvABuffer;
 
 	ISocketBufferProvider						*m_socketABufferProvider;
 	SocketBuffer								*m_sendABuffer;
@@ -222,7 +249,6 @@ protected:
     Stopwatch                                   *m_waitTimer;
     bool                                        m_shouldReceiveAnswer;
 
-protected:
 	MarketDataTable<OrderInfo, FastOLSFONDInfo, FastOLSFONDItemInfo>			*m_orderTableFond;
 	MarketDataTable<OrderInfo, FastOLSCURRInfo, FastOLSCURRItemInfo>			*m_orderTableCurr;
 	MarketDataTable<TradeInfo, FastTLSFONDInfo, FastTLSFONDItemInfo>			*m_tradeTableFond;
@@ -233,7 +259,39 @@ protected:
     int                                          m_securityDefinitionsCount;
     int                                          m_lastUpdatedSecurityDefinitionIndex;
 
-private:
+    void InitializeHistoricalReplay() {
+        this->m_hsRequestList = new PointerList<FeedConnectionRequestMessageInfo>(RobotSettings::HistoricalReplayMaxMessageRequestCount);
+        this->m_hsRequestList->AllocData();
+        this->m_fixProtocolManager = new FixProtocolManager(this->m_socketABufferProvider);
+        this->m_hsLogonInfo = new FixLogonInfo();
+        this->m_hsRejectInfo = new FixRejectInfo();
+        this->m_hsMsgSeqNo = 1;
+        PrepareLogonInfo();
+    }
+    void DisposeHistoricalReplay() {
+        this->m_hsRequestList->FreeData();
+        delete this->m_hsRequestList;
+        delete this->m_hsLogonInfo;
+        delete this->m_hsRejectInfo;
+    }
+    void InitializePackets() {
+        this->m_packets = new FeedConnectionMessageInfo*[RobotSettings::DefaultFeedConnectionPacketCount];
+        for(int i = 0; i < RobotSettings::DefaultFeedConnectionPacketCount; i++)
+            this->m_packets[i] = new FeedConnectionMessageInfo();
+    }
+    void InitializeSecurityDefinition() {
+        this->m_securityDefinitions = new LinkedPointer<FastSecurityDefinitionInfo>*[RobotSettings::MaxSecurityDefinitionCount];
+        for(int i = 0; i < RobotSettings::MaxSecurityDefinitionCount; i++)
+            this->m_securityDefinitions[i] = new LinkedPointer<FastSecurityDefinitionInfo>();
+        this->m_securityDefinitionsCount = 0;
+        this->m_idfMode = FeedConnectionSecurityDefinitionMode::sdmCollectData;
+        this->m_symbolManager = new SymbolManager(RobotSettings::MarketDataMaxSymbolsCount);
+    }
+    void DisposeSecurityDefinition() {
+        for(int i = 0; i < RobotSettings::MaxSecurityDefinitionCount; i++)
+            delete this->m_securityDefinitions[i];
+        delete this->m_securityDefinitions;
+    }
 
     inline void GetCurrentTime(UINT64 *time) {
         gettimeofday(this->m_tval, NULL);
@@ -661,6 +719,8 @@ private:
 	inline void SetState(FeedConnectionState state) {
 		this->m_state = state;
 	}
+    inline void SetId(FeedConnectionId id) { this->m_id = id; }
+    inline void SetHsState(FeedConnectionHistoricalReplayState state) { this->m_hsState = state; }
 	inline void SetNextState(FeedConnectionState state) {
 		this->m_nextState = state;
 		this->m_shouldUseNextState = true;
@@ -818,40 +878,37 @@ private:
 
 
         int i = this->m_startMsgSeqNum;
-        int newStartMsgSeqNum = -1;
+        int newStartMsgSeqNo = this->m_endMsgSeqNum;
 
         while(i <= this->m_endMsgSeqNum) {
             if(this->m_packets[i]->m_processed) {
                 i++; continue;
             }
             if(this->m_packets[i]->m_address == 0) {
-                printf("msg %d not received\n", i);
-                i++; continue;
-                //newStartMsgSeqNum = i;
-                //break;
+                newStartMsgSeqNo = i;
+                break;
             }
             if(!this->ProcessSecurityDefinition(this->m_packets[i]))
                 return false;
             i++;
         }
 
-        /*
         while(i <= this->m_endMsgSeqNum) {
-            if(this->m_packets[i]->m_processed || this->m_packets[i]->m_item == 0) {
+            if(this->m_packets[i]->m_processed || this->m_packets[i]->m_address == 0) {
                 i++; continue;
             }
             if(!this->ProcessSecurityDefinition(this->m_packets[i]))
                 return false;
             i++;
         }
-         */
 
-        if(newStartMsgSeqNum != -1)
-            this->m_startMsgSeqNum = newStartMsgSeqNum;
-        else
-            this->m_startMsgSeqNum = i;
+        this->m_startMsgSeqNum = newStartMsgSeqNo;
         if(this->m_doNotCheckIncrementalActuality)
             this->m_startMsgSeqNum = i;
+        if(this->m_startMsgSeqNum <= this->m_endMsgSeqNum) {
+            printf("msg %d not received. request via Historical Replay\n", this->m_startMsgSeqNum);
+            this->m_historicalReplay->HrRequestMessage(this, this->m_startMsgSeqNum);
+        }
         return true;
     }
 
@@ -921,7 +978,9 @@ private:
         //DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_InitializeSockets);
 
         this->socketAManager = new WinSockManager();
-        this->socketBManager = new WinSockManager();
+        if(this->m_id != FeedConnectionId::fcidHFond &&
+                this->m_id != FeedConnectionId::fcidHCurr)
+            this->socketBManager = new WinSockManager();
 
         //DefaultLogManager::Default->EndLog(true);
         return true;
@@ -934,12 +993,12 @@ private:
     inline bool Reconnect_Atom() {
         DefaultLogManager::Default->StartLog(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_Reconnect_Atom);
 
-        if(!this->m_fakeConnect) {
+#ifndef  TEST
             if(!this->socketAManager->Reconnect()) {
                 DefaultLogManager::Default->EndLog(false);
                 return true;
             }
-        }
+#endif
 
         this->SetState(this->m_nextState);
         this->m_waitTimer->Start();
@@ -950,44 +1009,150 @@ private:
         return true;
     }
 
-    inline bool HistoricalReplay_SendLogon() {
-        throw;
+    inline void PrepareLogonInfo() {
+        this->m_hsLogonInfo->HearthBtInt = 60;
+        this->m_hsLogonInfo->ShouldResetSeqNum = false;
     }
 
+    //TODO Socket buffer provider
+    inline bool HistoricalReplay_SendLogon() {
+        this->m_fixProtocolManager->PrepareSendBuffer();
+        this->m_hsLogonInfo->MsgStartSeqNo = this->m_hsMsgSeqNo;
+        this->m_fixProtocolManager->CreateLogonMessage(this->m_hsLogonInfo);
+
+        if(!this->Connect())
+            return false;
+        if(!this->m_fixProtocolManager->SendFix(this->socketAManager)) {
+            this->Disconnect();
+            return true;
+        }
+        this->m_fixProtocolManager->IncSendMsgSeqNo();
+        this->m_hsState = FeedConnectionHistoricalReplayState::hsWaitLogon;
+        return true;
+    }
+
+    inline bool CanRecv() { return this->socketAManager->ShouldRecv(); }
+
     inline bool HistoricalReplay_WaitLogon() {
-        throw;
+        if(!this->CanRecv())
+            return true;
+
+        if(!this->socketAManager->Recv(this->m_recvABuffer->CurrentPos())) {
+            this->Disconnect();
+            this->m_hsState = FeedConnectionHistoricalReplayState::hsSuspend;
+            return true;
+        }
+        this->m_fastProtocolManager->SetNewBuffer(this->m_recvABuffer->CurrentPos(), this->socketAManager->RecvSize());
+        int msgSeqNum = this->m_fastProtocolManager->ReadMsgSeqNumber();
+        this->m_fixProtocolManager->SetRecvMsgSeqNo(msgSeqNum + 1);
+        this->m_fastProtocolManager->Decode();
+        if(this->m_fastProtocolManager->TemplateId() != FeedConnectionMessage::fmcLogon) {
+            this->Disconnect();
+            this->m_hsState = FeedConnectionHistoricalReplayState::hsSuspend;
+            return true;
+        }
+
+        return this->HistoricalReplay_SendMarketDataRequest();
     }
 
     inline bool HistoricalReplay_SendMarketDataRequest() {
-        throw;
+        FeedConnectionRequestMessageInfo *info = this->m_hsRequestList->Start()->Data();
+        this->m_fixProtocolManager->PrepareSendBuffer();
+        this->m_fixProtocolManager->CreateMarketDataRequest(info->m_conn->m_idName, 3, info->m_msgSeqNo, info->m_msgSeqNo);
+
+        if(!this->m_fixProtocolManager->SendFix(this->socketAManager)) {
+            this->m_hsState = FeedConnectionHistoricalReplayState::hsSuspend;
+            this->Disconnect();
+            return true;
+        }
+        this->m_fixProtocolManager->IncSendMsgSeqNo();
+        this->m_hsState = FeedConnectionHistoricalReplayState::hsRecvMessage;
+        return true;
     }
 
     inline bool HistoricalReplay_RecvMessage() {
-        throw;
+        if(!this->CanRecv())
+            return true;
+
+        if(!this->socketAManager->Recv(this->m_recvABuffer->CurrentPos())) {
+            this->Disconnect();
+            this->m_hsState = FeedConnectionHistoricalReplayState::hsSuspend;
+            return true;
+        }
+        int size = this->socketAManager->RecvSize();
+        this->m_fastProtocolManager->SetNewBuffer(this->m_recvABuffer->CurrentPos(), size);
+        int msgSeqNum = this->m_fastProtocolManager->ReadMsgSeqNumber();
+        this->m_fixProtocolManager->SetRecvMsgSeqNo(msgSeqNum + 1);
+        this->m_fastProtocolManager->DecodeHeader();
+        if(this->m_fastProtocolManager->TemplateId() == FeedConnectionMessage::fmcLogout) {
+            this->Disconnect();
+            this->m_hsState = FeedConnectionHistoricalReplayState::hsSuspend;
+            return true;
+        }
+
+        LinkedPointer<FeedConnectionRequestMessageInfo> *ptr = this->m_hsRequestList->Start();
+        FeedConnectionRequestMessageInfo *msg = ptr->Data();
+        msg->m_conn->ProcessServerCore(size);
+
+        this->m_hsRequestList->Remove(ptr);
+        this->m_hsState = FeedConnectionHistoricalReplayState::hsWaitLogout;
+        return true;
+    }
+
+    inline bool HistoricalReplay_WaitLogout() {
+        if(!this->CanRecv())
+            return true;
+
+        if(!this->socketAManager->Recv(this->m_recvABuffer->CurrentPos())) {
+            this->Disconnect();
+            this->m_hsState = FeedConnectionHistoricalReplayState::hsSuspend;
+            return true;
+        }
+        this->m_fastProtocolManager->SetNewBuffer(this->m_recvABuffer->CurrentPos(), this->socketAManager->RecvSize());
+        int msgSeqNum = this->m_fastProtocolManager->ReadMsgSeqNumber();
+
+        this->m_fixProtocolManager->SetRecvMsgSeqNo(msgSeqNum + 1);
+
+        return this->HistoricalReplay_SendLogout();
     }
 
     inline bool HistoricalReplay_SendLogout() {
-        throw;
+        this->m_fixProtocolManager->PrepareSendBuffer();
+        this->m_fixProtocolManager->CreateLogoutMessage("Hasta la vista baby!", 20);
+
+        this->m_fixProtocolManager->SendFix(this->socketAManager);
+        this->m_hsState = FeedConnectionHistoricalReplayState::hsSuspend;
+        this->Disconnect();
+        return true;
     }
 
     inline bool HistoricalReplay_Suspend() {
-        throw;
+        if(this->m_hsRequestList->Count() == 0)
+            return true;
+        FeedConnectionRequestMessageInfo *info = this->m_hsRequestList->Start()->Data();
+        this->m_hsSendABuffer = info->m_conn->m_sendABuffer;
+        this->m_hsRecvABuffer = info->m_conn->m_recvABuffer;
+
+        return this->HistoricalReplay_SendLogon();
     }
 
     inline bool HistoricalReplay_Atom() {
-        if(this->m_hsState == FeedConnectionHistoricalReplayState::hsSendLogon)
-            return this->HistoricalReplay_SendLogon();
-        if(this->m_hsState == FeedConnectionHistoricalReplayState::hsWaitLogon)
-            return this->HistoricalReplay_WaitLogon();
-        if(this->m_hsState == FeedConnectionHistoricalReplayState::hsSendMarketDataRequest)
-            return this->HistoricalReplay_SendMarketDataRequest();
-        if(this->m_hsState == FeedConnectionHistoricalReplayState::hsRecvMessage)
-            return this->HistoricalReplay_RecvMessage();
-        if(this->m_hsState == FeedConnectionHistoricalReplayState::hsSendLogout)
-            return this->HistoricalReplay_SendLogout();
         if(this->m_hsState == FeedConnectionHistoricalReplayState::hsSuspend)
             return this->HistoricalReplay_Suspend();
+        if(this->m_hsState == FeedConnectionHistoricalReplayState::hsWaitLogon)
+            return this->HistoricalReplay_WaitLogon();
+        if(this->m_hsState == FeedConnectionHistoricalReplayState::hsRecvMessage)
+            return this->HistoricalReplay_RecvMessage();
+        if(this->m_hsState == FeedConnectionHistoricalReplayState::hsWaitLogout)
+            return this->HistoricalReplay_WaitLogout();
         return true;
+    }
+
+    inline void HrRequestMessage(FeedConnection *conn, int msgSeqNo) {
+        LinkedPointer<FeedConnectionRequestMessageInfo> *ptr = this->m_hsRequestList->Pop();
+        ptr->Data()->m_conn = conn;
+        ptr->Data()->m_msgSeqNo = msgSeqNo;
+        this->m_hsRequestList->Add(ptr);
     }
 
     inline bool Listen_Atom_Incremental() {
@@ -1248,7 +1413,6 @@ public:
 	FeedConnection();
 	~FeedConnection();
 
-    inline void FakeConnect(bool value) { this->m_fakeConnect = value; }
     inline int LastMsgSeqNumProcessed() { return this->m_lastMsgSeqNumProcessed; }
     inline MarketDataTable<OrderInfo, FastOLSFONDInfo, FastOLSFONDItemInfo> *OrderFond() { return this->m_orderTableFond; }
 	inline MarketDataTable<OrderInfo, FastOLSCURRInfo, FastOLSCURRItemInfo> *OrderCurr() { return this->m_orderTableCurr; }
@@ -1478,10 +1642,18 @@ public:
         this->PrintSymbolManagerDebug();  // TODO debug messages
         this->AfterProcessSecurityDefinitions();
         this->m_idfDataCollected = true;
+
+        for(int i = 1; i < this->m_endMsgSeqNum; i++) {
+            if(this->m_packets[i]->m_address == 0)
+                throw;
+        }
     }
 
     inline bool ProcessSecurityDefinition(FastSecurityDefinitionInfo *info) {
         bool wasNewlyAdded = false;
+
+        printf("process sec_def %d\n", info->MsgSeqNum); // TODO
+
         SymbolInfo *smb = this->m_symbolManager->GetSymbol(info->Symbol, info->SymbolLength, &wasNewlyAdded);
 
         MakeUsed(info, true);
@@ -1619,8 +1791,6 @@ public:
     inline FeedConnectionSecurityDefinitionState IdfState() { return this->m_idfState; }
 
 	inline bool Connect() {
-		if(this->m_fakeConnect)
-            return true;
         if(this->socketAManager != NULL && this->socketAManager->IsConnected())
 			return true;
 		if(this->socketAManager == NULL && !this->InitializeSockets())
@@ -1665,10 +1835,18 @@ public:
             this->m_senderCompIdLength = 0;
         else
             this->m_senderCompIdLength = strlen(this->m_senderCompId);
+        if(this->m_type == FeedConnectionType::HistoricalReplay && this->m_senderCompId != 0) {
+            strcpy(this->m_hsLogonInfo->SenderCompID, this->m_senderCompId);
+            this->m_hsLogonInfo->SenderCompIDLength = this->m_senderCompIdLength;
+        }
     }
     void SetPassword(const char *password) {
         this->m_password = password;
         this->m_passwordLength = strlen(this->m_password);
+        if(this->m_type == FeedConnectionType::HistoricalReplay) {
+            strcpy(this->m_hsLogonInfo->Password, this->m_password);
+            this->m_hsLogonInfo->PassLength = this->m_passwordLength;
+        }
     }
 
     inline char* IdName() { return this->m_idName; }
@@ -1722,11 +1900,13 @@ public:
             printf("Wait for First Security Definition\n"); // TODO remove debug
         }
         if(this->m_type == FeedConnectionType::HistoricalReplay) {
-            this->m_hsState = FeedConnectionHistoricalReplayState::hsSendLogon;
+            this->m_hsState = FeedConnectionHistoricalReplayState::hsSuspend;
             printf("Start Historical Replay\n");
         }
     }
     inline bool Start() {
+        if(this->m_state == FeedConnectionState::fcsHistoricalReplay)
+            return true;
         if(!this->Connect())
 			return false;
 		if(this->m_state != FeedConnectionState::fcsSuspend)
@@ -1738,7 +1918,9 @@ public:
 		return true;
     }
 	inline bool Stop() {
-		this->SetState(FeedConnectionState::fcsSuspend);
+		if(this->m_state == FeedConnectionState::fcsHistoricalReplay)
+            return true;
+        this->SetState(FeedConnectionState::fcsSuspend);
 		if(!this->Disconnect())
 			return false;
 		return true;
@@ -1749,308 +1931,5 @@ public:
     }
 };
 
-class FeedConnection_CURR_MSR : public FeedConnection {
-public:
-	FeedConnection_CURR_MSR(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
-		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
-		this->SetType(FeedConnectionType::Incremental);
-        this->m_statTableCurr = new MarketDataTable<StatisticsInfo, FastGenericInfo, FastGenericItemInfo>();
-        this->m_id = FeedConnectionId::fcidMsrCurr;
-    }
-	FeedConnection_CURR_MSR() : FeedConnection() {
-        this->m_statTableCurr = new MarketDataTable<StatisticsInfo, FastGenericInfo, FastGenericItemInfo>();
-        this->SetType(FeedConnectionType::Incremental);
-        this->m_id = FeedConnectionId::fcidMsrCurr;
-    }
-	ISocketBufferProvider* CreateSocketBufferProvider() {
-		return new SocketBufferProvider(DefaultSocketBufferManager::Default,
-										RobotSettings::DefaultFeedConnectionSendBufferSize,
-										RobotSettings::DefaultFeedConnectionSendItemsCount,
-										RobotSettings::DefaultFeedConnectionRecvBufferSize,
-										RobotSettings::DefaultFeedConnectionRecvItemsCount);
-	}
-};
 
-class FeedConnection_CURR_MSS : public FeedConnection {
-public:
-	FeedConnection_CURR_MSS(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
-		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
-		this->SetType(FeedConnectionType::Snapshot);
-        this->m_id = FeedConnectionId::fcidMssCurr;
-    }
-	FeedConnection_CURR_MSS() : FeedConnection() {
-        this->SetType(FeedConnectionType::Snapshot);
-        this->m_id = FeedConnectionId::fcidMssCurr;
-    }
-	ISocketBufferProvider* CreateSocketBufferProvider() {
-		return new SocketBufferProvider(DefaultSocketBufferManager::Default,
-										RobotSettings::DefaultFeedConnectionSendBufferSize,
-										RobotSettings::DefaultFeedConnectionSendItemsCount,
-										RobotSettings::DefaultFeedConnectionRecvBufferSize,
-										RobotSettings::DefaultFeedConnectionRecvItemsCount);
-	}
-};
-
-class FeedConnection_CURR_OLR : public FeedConnection {
-public:
-	FeedConnection_CURR_OLR(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
-		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
-		this->SetType(FeedConnectionType::Incremental);
-		this->m_orderTableCurr = new MarketDataTable<OrderInfo, FastOLSCURRInfo, FastOLSCURRItemInfo>();
-        this->m_id = FeedConnectionId::fcidOlrCurr;
-    }
-	FeedConnection_CURR_OLR() : FeedConnection() {
-		this->m_orderTableCurr = new MarketDataTable<OrderInfo, FastOLSCURRInfo, FastOLSCURRItemInfo>();
-        this->SetType(FeedConnectionType::Incremental);
-        this->m_id = FeedConnectionId::fcidOlrCurr;
-	}
-	~FeedConnection_CURR_OLR() {
-		delete this->m_orderTableCurr;
-	}
-	ISocketBufferProvider* CreateSocketBufferProvider() {
-		return new SocketBufferProvider(DefaultSocketBufferManager::Default,
-										RobotSettings::DefaultFeedConnectionSendBufferSize,
-										RobotSettings::DefaultFeedConnectionSendItemsCount,
-										RobotSettings::DefaultFeedConnectionRecvBufferSize,
-										RobotSettings::DefaultFeedConnectionRecvItemsCount);
-	}
-};
-
-class FeedConnection_CURR_OLS : public FeedConnection {
-public:
-	FeedConnection_CURR_OLS(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
-		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
-		this->SetType(FeedConnectionType::Snapshot);
-        this->m_id = FeedConnectionId::fcidOlsCurr;
-    }
-	FeedConnection_CURR_OLS() : FeedConnection() {
-        this->SetType(FeedConnectionType::Snapshot);
-        this->m_id = FeedConnectionId::fcidOlsCurr;
-    }
-	ISocketBufferProvider* CreateSocketBufferProvider() {
-		return new SocketBufferProvider(DefaultSocketBufferManager::Default,
-										RobotSettings::DefaultFeedConnectionSendBufferSize,
-										RobotSettings::DefaultFeedConnectionSendItemsCount,
-										RobotSettings::DefaultFeedConnectionRecvBufferSize,
-										RobotSettings::DefaultFeedConnectionRecvItemsCount);
-	}
-};
-
-class FeedConnection_CURR_TLR : public FeedConnection {
-public:
-	FeedConnection_CURR_TLR(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
-		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
-		this->SetType(FeedConnectionType::Incremental);
-		this->m_tradeTableCurr = new MarketDataTable<TradeInfo, FastTLSCURRInfo, FastTLSCURRItemInfo>();
-        this->m_id = FeedConnectionId::fcidTlrCurr;
-    }
-	FeedConnection_CURR_TLR() : FeedConnection() {
-		this->m_tradeTableCurr = new MarketDataTable<TradeInfo, FastTLSCURRInfo, FastTLSCURRItemInfo>();
-        this->SetType(FeedConnectionType::Incremental);
-        this->m_id = FeedConnectionId::fcidTlrCurr;
-	}
-	~FeedConnection_CURR_TLR() {
-		delete this->m_tradeTableCurr;
-	}
-	ISocketBufferProvider* CreateSocketBufferProvider() {
-		return new SocketBufferProvider(DefaultSocketBufferManager::Default,
-										RobotSettings::DefaultFeedConnectionSendBufferSize,
-										RobotSettings::DefaultFeedConnectionSendItemsCount,
-										RobotSettings::DefaultFeedConnectionRecvBufferSize,
-										RobotSettings::DefaultFeedConnectionRecvItemsCount);
-	}
-};
-
-class FeedConnection_CURR_TLS : public FeedConnection {
-public:
-	FeedConnection_CURR_TLS(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
-		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
-		this->SetType(FeedConnectionType::Snapshot);
-        this->m_id = FeedConnectionId::fcidTlsCurr;
-
-    }
-	FeedConnection_CURR_TLS() : FeedConnection() {
-        this->SetType(FeedConnectionType::Snapshot);
-        this->m_id = FeedConnectionId::fcidTlsCurr;
-    }
-	ISocketBufferProvider* CreateSocketBufferProvider() {
-		return new SocketBufferProvider(DefaultSocketBufferManager::Default,
-										RobotSettings::DefaultFeedConnectionSendBufferSize,
-										RobotSettings::DefaultFeedConnectionSendItemsCount,
-										RobotSettings::DefaultFeedConnectionRecvBufferSize,
-										RobotSettings::DefaultFeedConnectionRecvItemsCount);
-	}
-};
-
-class FeedConnection_FOND_MSR : public FeedConnection {
-public:
-	FeedConnection_FOND_MSR(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
-		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
-		this->SetType(FeedConnectionType::Incremental);
-        this->m_statTableFond = new MarketDataTable<StatisticsInfo, FastGenericInfo, FastGenericItemInfo>();
-        this->m_id = FeedConnectionId::fcidMsrFond;
-    }
-	FeedConnection_FOND_MSR() : FeedConnection() {
-        this->SetType(FeedConnectionType::Incremental);
-        this->m_statTableFond = new MarketDataTable<StatisticsInfo, FastGenericInfo, FastGenericItemInfo>();
-        this->m_id = FeedConnectionId::fcidMsrFond;
-    }
-	ISocketBufferProvider* CreateSocketBufferProvider() {
-		return new SocketBufferProvider(DefaultSocketBufferManager::Default,
-										RobotSettings::DefaultFeedConnectionSendBufferSize,
-										RobotSettings::DefaultFeedConnectionSendItemsCount,
-										RobotSettings::DefaultFeedConnectionRecvBufferSize,
-										RobotSettings::DefaultFeedConnectionRecvItemsCount);
-	}
-};
-
-class FeedConnection_FOND_MSS : public FeedConnection {
-public:
-	FeedConnection_FOND_MSS(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
-		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
-		this->SetType(FeedConnectionType::Snapshot);
-        this->m_id = FeedConnectionId::fcidMssFond;
-    }
-	FeedConnection_FOND_MSS() : FeedConnection() {
-        this->SetType(FeedConnectionType::Snapshot);
-        this->m_id = FeedConnectionId::fcidMssFond;
-    }
-	ISocketBufferProvider* CreateSocketBufferProvider() {
-		return new SocketBufferProvider(DefaultSocketBufferManager::Default,
-										RobotSettings::DefaultFeedConnectionSendBufferSize,
-										RobotSettings::DefaultFeedConnectionSendItemsCount,
-										RobotSettings::DefaultFeedConnectionRecvBufferSize,
-										RobotSettings::DefaultFeedConnectionRecvItemsCount);
-	}
-};
-
-class FeedConnection_FOND_OLR : public FeedConnection {
-public:
-	FeedConnection_FOND_OLR(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
-		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
-		this->SetType(FeedConnectionType::Incremental);
-		this->m_orderTableFond = new MarketDataTable<OrderInfo, FastOLSFONDInfo, FastOLSFONDItemInfo>();
-        this->m_id = FeedConnectionId::fcidOlrFond;
-    }
-	FeedConnection_FOND_OLR() : FeedConnection() {
-        this->SetType(FeedConnectionType::Incremental);
-		this->m_orderTableFond = new MarketDataTable<OrderInfo, FastOLSFONDInfo, FastOLSFONDItemInfo>();
-        this->m_id = FeedConnectionId::fcidOlrFond;
-	}
-	~FeedConnection_FOND_OLR() {
-		delete this->m_orderTableFond;
-	}
-	ISocketBufferProvider* CreateSocketBufferProvider() {
-		return new SocketBufferProvider(DefaultSocketBufferManager::Default,
-										RobotSettings::DefaultFeedConnectionSendBufferSize,
-										RobotSettings::DefaultFeedConnectionSendItemsCount,
-										RobotSettings::DefaultFeedConnectionRecvBufferSize,
-										RobotSettings::DefaultFeedConnectionRecvItemsCount);
-	}
-};
-
-class FeedConnection_FOND_OLS : public FeedConnection {
-public:
-	FeedConnection_FOND_OLS(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
-		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
-		this->SetType(FeedConnectionType::Snapshot);
-        this->m_id = FeedConnectionId::fcidOlsFond;
-    }
-	FeedConnection_FOND_OLS() : FeedConnection() {
-        this->SetType(FeedConnectionType::Snapshot);
-        this->m_id = FeedConnectionId::fcidOlsFond;
-    }
-	ISocketBufferProvider* CreateSocketBufferProvider() {
-		return new SocketBufferProvider(DefaultSocketBufferManager::Default,
-										RobotSettings::DefaultFeedConnectionSendBufferSize,
-										RobotSettings::DefaultFeedConnectionSendItemsCount,
-										RobotSettings::DefaultFeedConnectionRecvBufferSize,
-										RobotSettings::DefaultFeedConnectionRecvItemsCount);
-	}
-};
-
-class FeedConnection_FOND_TLR : public FeedConnection {
-public:
-	FeedConnection_FOND_TLR(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
-		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
-		this->SetType(FeedConnectionType::Incremental);
-		this->m_tradeTableFond = new MarketDataTable<TradeInfo, FastTLSFONDInfo, FastTLSFONDItemInfo>();
-        this->m_id = FeedConnectionId::fcidTlrFond;
-    }
-	FeedConnection_FOND_TLR() : FeedConnection() {
-		this->m_tradeTableFond = new MarketDataTable<TradeInfo, FastTLSFONDInfo, FastTLSFONDItemInfo>();
-        this->SetType(FeedConnectionType::Incremental);
-        this->m_id = FeedConnectionId::fcidTlrFond;
-	}
-	~FeedConnection_FOND_TLR() {
-		delete this->m_tradeTableFond;
-	}
-	ISocketBufferProvider* CreateSocketBufferProvider() {
-		return new SocketBufferProvider(DefaultSocketBufferManager::Default,
-										RobotSettings::DefaultFeedConnectionSendBufferSize,
-										RobotSettings::DefaultFeedConnectionSendItemsCount,
-										RobotSettings::DefaultFeedConnectionRecvBufferSize,
-										RobotSettings::DefaultFeedConnectionRecvItemsCount);
-	}
-};
-
-class FeedConnection_FOND_TLS : public FeedConnection {
-public:
-	FeedConnection_FOND_TLS(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
-		FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
-		this->SetType(FeedConnectionType::Snapshot);
-        this->m_id = FeedConnectionId::fcidTlsFond;
-    }
-	FeedConnection_FOND_TLS() : FeedConnection() {
-        this->SetType(FeedConnectionType::Snapshot);
-        this->m_id = FeedConnectionId::fcidTlsFond;
-    }
-	ISocketBufferProvider* CreateSocketBufferProvider() {
-		return new SocketBufferProvider(DefaultSocketBufferManager::Default,
-										RobotSettings::DefaultFeedConnectionSendBufferSize,
-										RobotSettings::DefaultFeedConnectionSendItemsCount,
-										RobotSettings::DefaultFeedConnectionRecvBufferSize,
-										RobotSettings::DefaultFeedConnectionRecvItemsCount);
-	}
-};
-
-class FeedConnection_FOND_IDF : public FeedConnection{
-public:
-    FeedConnection_FOND_IDF(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
-            FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
-        this->SetType(FeedConnectionType::InstrumentDefinition);
-        this->m_id = FeedConnectionId::fcidIdfFond;
-        this->m_securityDefinitions = new LinkedPointer<FastSecurityDefinitionInfo>*[RobotSettings::MaxSecurityDefinitionCount];
-        for(int i = 0; i < RobotSettings::MaxSecurityDefinitionCount; i++)
-            this->m_securityDefinitions[i] = new LinkedPointer<FastSecurityDefinitionInfo>();
-        this->m_securityDefinitionsCount = 0;
-        this->m_idfMode = FeedConnectionSecurityDefinitionMode::sdmCollectData;
-        this->m_symbolManager = new SymbolManager(RobotSettings::MarketDataMaxSymbolsCount);
-    }
-    ~FeedConnection_FOND_IDF() {
-        for(int i = 0; i < RobotSettings::MaxSecurityDefinitionCount; i++)
-            delete this->m_securityDefinitions[i];
-        delete this->m_securityDefinitions;
-    }
-};
-
-class FeedConnection_CURR_IDF : public FeedConnection{
-public:
-    FeedConnection_CURR_IDF(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
-            FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
-        this->SetType(FeedConnectionType::InstrumentDefinition);
-        this->m_id = FeedConnectionId::fcidIdfCurr;
-        this->m_securityDefinitions = new LinkedPointer<FastSecurityDefinitionInfo>*[RobotSettings::MaxSecurityDefinitionCount];
-        for(int i = 0; i < RobotSettings::MaxSecurityDefinitionCount; i++)
-            this->m_securityDefinitions[i] = new LinkedPointer<FastSecurityDefinitionInfo>();
-        this->m_securityDefinitionsCount = 0;
-        this->m_idfMode = FeedConnectionSecurityDefinitionMode::sdmCollectData;
-        this->m_symbolManager = new SymbolManager(RobotSettings::MarketDataMaxSymbolsCount);
-    }
-    ~FeedConnection_CURR_IDF() {
-        for(int i = 0; i < RobotSettings::MaxSecurityDefinitionCount; i++)
-            delete this->m_securityDefinitions[i];
-        delete this->m_securityDefinitions;
-    }
-};
 

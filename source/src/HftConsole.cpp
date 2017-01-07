@@ -39,6 +39,14 @@ int main(int argc, char** argv)
 			test_all = true;
 	}
 
+    bool hasTest = test_itoa || test_ftoa || test_time || test_all || test_fast || test_fix || test_feed || test_decimal;
+#ifndef TEST
+    if(hasTest) {
+        printf("you are trying to run robot in 'test' mode, but TEST macros is not defined. please uncomment TEST macro in file Types.h\n!!!");
+        return 0;
+    }
+#endif
+
 	if (test_itoa || test_all) {
 		ItoaTester tester;
 		tester.Test();
@@ -71,13 +79,17 @@ int main(int argc, char** argv)
 
 	if (test_itoa || test_ftoa || test_time || test_all || test_fast || test_fix || test_feed || test_decimal)
 		return 1;
-
+#ifdef TEST
+    printf("you are trying to run robot in 'full work' mode, but TEST macros is defined. please remove TEST macro in file Types.h\n!!!");
+	return 0;
+#else
 	Robot *robot = new Robot();
 	robot->Run();
     delete robot;
 
 	DefaultLogManager::Default->Print();
     return 0;
+#endif
 }
 
 

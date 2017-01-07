@@ -3,6 +3,7 @@
 #include <cstdint>
 
 #define ROBOT_WORK_ANYWAY
+//#define TEST
 
 #define null 0
 #define BYTE unsigned char
@@ -30,6 +31,7 @@ public:
     static int MarketDataMaxSessionsCount;
     static int MarketDataMaxEntriesCount;
     static int MaxSecurityDefinitionCount;
+    static int HistoricalReplayMaxMessageRequestCount;
 };
 
 

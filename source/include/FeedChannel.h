@@ -1,5 +1,5 @@
 #pragma once
-#include "FeedConnection.h"
+#include "FeedConnections.h"
 
 class FeedChannel {
 	char id[16];

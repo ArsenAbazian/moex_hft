@@ -3,8 +3,8 @@
 
 FixProtocolManager::FixProtocolManager(ISocketBufferProvider *provider) {
 	this->messageBuffer = this->currentPos = NULL;
-    this->m_recvMsgSeqNumber = 1;
-    this->m_sendMsgSeqNumber = 1;
+    this->m_sendMsgSeqNo = 1;
+    this->m_recvMsgSeqNo = 1;
 	this->intConverter = new ItoaConverter();
 	this->doubleConverter = new DtoaConverter();
 	this->timeConverter = new UTCTimeConverter();

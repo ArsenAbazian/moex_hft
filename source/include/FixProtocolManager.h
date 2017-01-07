@@ -39,9 +39,9 @@ class FixProtocolManager {
     FixProtocolMessage              *m_recvMessage[128];
 
     char                            *currentPos;
-	int                             m_sendMsgSeqNumber;
-    int                             m_recvMsgSeqNumber;
-    
+	int                             m_sendMsgSeqNo;
+	int								m_recvMsgSeqNo;
+
 	DtoaConverter                   *doubleConverter;
 	ItoaConverter                   *intConverter;
 
@@ -95,8 +95,12 @@ public:
 
     inline unsigned int SendBufferSize() { return (unsigned int)(this->currentPos - ((char*)this->m_sendMessageBuffer)); }
     inline bool SendFix(WinSockManager *manager) {
-        DefaultLogManager::Default->WriteFix(LogMessageCode::lmcFixProtocolManager_SendFix, this->m_sendBuffer->BufferIndex(), this->m_sendItemStartIndex);
+		DefaultLogManager::Default->WriteFix(LogMessageCode::lmcFixProtocolManager_SendFix, this->m_sendBuffer->BufferIndex(), this->m_sendItemStartIndex);
+#ifdef TEST
+        return true;
+#else
         return manager->Send(this->SendBuffer(), this->SendBufferSize());
+#endif
     }
     inline bool RecvFix(WinSockManager *manager) {
         this->PrepareRecvBuffer();
@@ -187,18 +191,18 @@ public:
     inline int RecvMessageCount() { return this->m_recvMessageCount; }
 	inline FixProtocolMessage* Message(int index) { return this->m_recvMessage[index]; }
     
-    inline void ResetSendMsgSeqNumber() { this->SetSendMsgSeqNumber(1); }
-	inline void SetSendMsgSeqNumber(int value) { this->m_sendMsgSeqNumber = value; }
-    inline void IncSendMsgSeqNumber() { this->m_sendMsgSeqNumber++; }
+    inline void ResetSendMsgSeqNo() { this->SetSendMsgSeqNo(1); }
+	inline void SetSendMsgSeqNo(int value) { this->m_sendMsgSeqNo = value; }
+    inline void IncSendMsgSeqNo() { this->m_sendMsgSeqNo++; }
 
-    inline void ResetRecvMsgSeqNumber() { this->SetRecvMsgSeqNumber(1); }
-    inline void SetRecvMsgSeqNumber(int value) { this->m_recvMsgSeqNumber = value; }
-    inline void IncRecvMsgSeqNumber() { this->m_recvMsgSeqNumber++; }
+	inline void ResetRecvMsgSeqNo() { this->SetRecvMsgSeqNo(1); }
+	inline void SetRecvMsgSeqNo(int value) { this->m_recvMsgSeqNo = value; }
+	inline void IncRecvMsgSeqNo() { this->m_recvMsgSeqNo++; }
 
     inline bool ProcessCheckHeader() { return this->Message(0)->ProcessCheckHeader(); }
     inline FixHeaderInfo* Header() { return this->Message(0)->Header(); }
     inline bool CheckDetectCorrectMsgSeqNumber() {
-		return this->Message(0)->CheckDetectCorrectMsgSeqNumber(&(this->m_sendMsgSeqNumber));
+		return this->Message(0)->CheckDetectCorrectMsgSeqNumber(&(this->m_recvMsgSeqNo));
 	}
 
 	inline void AddArray(char *string, int length) {
@@ -331,7 +335,7 @@ public:
 		AddMessageType(messageType);
 		AddSenderComputerId();
 		AddTargetComputerId();
-		AddMessageSeqNumber(this->m_sendMsgSeqNumber);
+		AddMessageSeqNumber(this->m_sendMsgSeqNo);
 		if (possResend) {
 			AddTagPossResend
             AddEqual(); AddValue('Y');
@@ -767,11 +771,11 @@ public:
 		}
 	}
 
-    inline int SendMsgSeqNumber() { return this->m_sendMsgSeqNumber; }
-    inline int RecvMsgSeqNumber() { return this->m_recvMsgSeqNumber; }
+    inline int SendMsgSeqNo() { return this->m_sendMsgSeqNo; }
+	inline int RecvMsgSeqNo() { return this->m_recvMsgSeqNo; }
 
 	inline void CreateLogonMessage(FixLogonInfo *logon) {
-        this->m_sendMsgSeqNumber = logon->MsgStartSeqNo;
+        this->m_sendMsgSeqNo = logon->MsgStartSeqNo;
 		this->SetSenderComputerId(logon->SenderCompID);
 		AddHeader(MsgTypeLogon);
 		AddGroupLogon(logon);
@@ -779,6 +783,7 @@ public:
 		AddTrail();
         SaveSendMessage();
 	}
+
 	inline void CreateLogoutMessage(const char *text) {
 		CreateLogoutMessage(text, strlen(text));
 	}
@@ -971,6 +976,18 @@ public:
 		UpdateLengthTagValue();
 		AddTrail();
         SaveSendMessage();
+	}
+
+	inline void CreateMarketDataRequest(const char *applFeedId, int applFeedIdLength, int msgStart, int msgEnd) {
+		AddHeader(MsgTypeMarketDataRequest);
+
+		AddTagString2(AddTagApplFeedId, applFeedId, applFeedIdLength);
+		AddTagValue(AddTagApplBeginSeqNum, msgStart);
+		AddTagValue(AddTagApplEndSeqNum, msgEnd);
+
+		UpdateLengthTagValue();
+		AddTrail();
+		SaveSendMessage();
 	}
 };
 

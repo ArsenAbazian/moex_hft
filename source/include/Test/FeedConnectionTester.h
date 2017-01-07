@@ -5,6 +5,7 @@
 #ifndef HFT_ROBOT_FEEDCONNECTIONTESTER_H
 #define HFT_ROBOT_FEEDCONNECTIONTESTER_H
 
+#include "../FeedConnections.h"
 #include "InstrumentDefinitionTester.h"
 #include "OrderTesterFond.h"
 #include "OrderTesterCurr.h"
@@ -13,6 +14,7 @@
 #include "StatisticsTesterFond.h"
 #include "StatisticsTesterCurr.h"
 #include "SymbolManagerTester.h"
+#include "HistoricalReplayTester.h"
 
 class TestFeedMessage{
 public:
@@ -215,6 +217,9 @@ public:
     }
 
     void Test() {
+
+        HistoricalReplayTester hrt;
+        hrt.Test();
 
         SymbolManagerTester ht;
         ht.Test();
