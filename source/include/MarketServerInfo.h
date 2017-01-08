@@ -95,7 +95,7 @@ class MarketServerInfo {
 	}
 
     inline bool AfterFailedRecv() {
-        return true;
+        return this->m_socketManager->Reconnect();
     }
     inline bool AfterSuccessfulRecv() {
         return true;

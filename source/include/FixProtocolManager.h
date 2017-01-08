@@ -25,6 +25,9 @@ class FixProtocolManager {
 	int                             senderComputerIdLength;
 	int                             targetComputerIdLength;
 
+	const char 						*m_protocolVersion;
+	int								m_protocolVersionLength;
+
 	SYSTEMTIME		                *currentTime;
 
     int                             receivedMessageLength;
@@ -56,10 +59,17 @@ class FixProtocolManager {
 	inline void AddTag(const char* tag, int length) { AddArray((char*)tag, length); AddSymbol('='); }
 
 public:
-	FixProtocolManager(ISocketBufferProvider *provider);
+	FixProtocolManager(ISocketBufferProvider *provider) : FixProtocolManager(provider, FixProtocolVersion) { }
+	FixProtocolManager(ISocketBufferProvider *provider, const char *protocolVersion);
 	~FixProtocolManager();
 
     inline FixRejectInfo* RejectInfo() { return this->m_rejectInfo; }
+
+	inline const char* SenderCompId() { return this->senderComputerId; }
+	inline int SenderCompIdLength() { return this->senderComputerIdLength; }
+
+	inline const char* TargetCompId() { return this->targetComputerId; }
+	inline int TargetCompIdLength() { return this->targetComputerIdLength; }
 
 	inline void PrintBufferFromCurrent() {
 		int start = this->currentPos - this->messageBuffer;
@@ -105,10 +115,11 @@ public:
     inline bool RecvFix(WinSockManager *manager) {
         this->PrepareRecvBuffer();
         bool res = manager->Recv(this->RecvBuffer());
-        if(res && manager->RecvSize() > 0) {
-            manager->RecvBytes()[manager->RecvSize()] = '\0';
-            this->SetRecvBufferSize(manager->RecvSize());
-            this->m_recvBuffer->SetCurrentItemSize(manager->RecvSize());
+        int size = manager->RecvSize();
+		if(res && size > 0) {
+            manager->RecvBytes()[size] = '\0';
+            this->SetRecvBufferSize(size);
+            this->m_recvBuffer->SetCurrentItemSize(size);
             DefaultLogManager::Default->WriteFix(LogMessageCode::lmcFixProtocolManager_RecvFix, this->m_recvBuffer->BufferIndex(), this->m_recvBuffer->CurrentItemIndex());
         }
         else {
@@ -234,7 +245,7 @@ public:
 	inline void AddFixHeader() {
 		AddTagBeginString
 		AddEqual();
-		AddArray((char*)FixProtocolVersion, 7);
+		AddArray((char*)this->m_protocolVersion, this->m_protocolVersionLength);
 		AddSeparator();
 	}
 
@@ -309,18 +320,18 @@ public:
 		AddSeparator();
 	}
 
-	inline void SetSenderComputerId(char *senderComputerId) {
+	inline void SetSenderComputerId(const char *senderComputerId) {
 		strcpy(this->senderComputerId, senderComputerId);
 		this->senderComputerIdLength = strlen(senderComputerId);
 	}
 
-	inline void SetTargetComputerId(char *targetComputerId) {
+	inline void SetTargetComputerId(const char *targetComputerId) {
 		strcpy(this->targetComputerId, targetComputerId);
 		this->targetComputerIdLength = strlen(targetComputerId);
 	}
 
 	inline void UpdateLengthTagValue() {
-		const int HeaderTagLength = 10; // 8=FIX.4.4|
+		const int HeaderTagLength = 3 + this->m_protocolVersionLength; // 8=FIX.4.4|
 		const int MessageLengthLength = 6;
 		InToString(&(this->messageBuffer[HeaderTagLength + 2]), this->MessageLength() - HeaderTagLength - MessageLengthLength, 3);
 	}
@@ -771,6 +782,61 @@ public:
 		}
 	}
 
+	inline void AddFastGroupLogon(FixLogonInfo *info) {
+		AddTagEncryptMethod
+		AddEqual();
+		AddValue(info->EncryptionType);	// must be zero not supported by MOEX
+		AddSeparator();
+
+		AddTagHeartBtInt
+		AddEqual();
+		AddValue(info->HearthBtInt);
+		AddSeparator();
+
+		AddTagResetSeqNumFlag
+		AddEqual();
+		AddValue(info->ShouldResetSeqNum);
+		AddSeparator();
+
+		AddTagUsername
+		AddEqual();
+		AddArray(info->UserName, info->UserNameLength);
+		AddSeparator();
+
+		AddTagPassword
+		AddEqual();
+		AddArray(info->Password, info->PassLength);
+		AddSeparator();
+
+		if (info->NewPassLength > 0) {
+			AddTagNewPassword
+			AddEqual();
+			AddArray(info->NewPassword, info->NewPassLength);
+			AddSeparator();
+		}
+
+		if (info->AllowSessionStatus) {
+			AddTagSessionStatus
+			AddEqual();
+			AddValue((int)info->SessionStatus);
+			AddSeparator();
+		}
+
+		if (info->CancelOnDisconnect) {
+			AddTagCancelOnDisconnect
+			AddEqual();
+			AddSymbol('A');
+			AddSeparator();
+		}
+
+		if (info->LanguageId != 0) {
+			AddTagLanguageID
+			AddEqual();
+			AddSymbol(info->LanguageId);
+			AddSeparator();
+		}
+	}
+
     inline int SendMsgSeqNo() { return this->m_sendMsgSeqNo; }
 	inline int RecvMsgSeqNo() { return this->m_recvMsgSeqNo; }
 
@@ -782,6 +848,15 @@ public:
 		UpdateLengthTagValue();
 		AddTrail();
         SaveSendMessage();
+	}
+
+	inline void CreateFastLogonMessage(FixLogonInfo *logon) {
+		this->m_sendMsgSeqNo = logon->MsgStartSeqNo;
+		AddHeader(MsgTypeLogon);
+		AddFastGroupLogon(logon);
+		UpdateLengthTagValue();
+		AddTrail();
+		SaveSendMessage();
 	}
 
 	inline void CreateLogoutMessage(const char *text) {

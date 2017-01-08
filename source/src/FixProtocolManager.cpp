@@ -1,7 +1,7 @@
 #include "FixProtocolManager.h"
 
 
-FixProtocolManager::FixProtocolManager(ISocketBufferProvider *provider) {
+FixProtocolManager::FixProtocolManager(ISocketBufferProvider *provider, const char *protocolVersion) {
 	this->messageBuffer = this->currentPos = NULL;
     this->m_sendMsgSeqNo = 1;
     this->m_recvMsgSeqNo = 1;
@@ -10,6 +10,8 @@ FixProtocolManager::FixProtocolManager(ISocketBufferProvider *provider) {
 	this->timeConverter = new UTCTimeConverter();
 	this->currentTime = new SYSTEMTIME;
     this->m_bufferProvider = provider;
+    this->m_protocolVersion = protocolVersion;
+    this->m_protocolVersionLength = strlen(protocolVersion);
 
     this->m_recvBuffer = this->m_bufferProvider->RecvBuffer();
     this->m_sendBuffer = this->m_bufferProvider->SendBuffer();

@@ -75,58 +75,7 @@ set(CMAKE_C_FLAGS "${common_flags}" CACHE STRING "contains options always passed
 set(CMAKE_CXX_FLAGS "${common_flags}" CACHE STRING "contains options always passed to the C++ compiler." FORCE)
 set(${PROJECT_NAME}_CFLAGS_ARE_CONFIGURED YES CACHE INTERNAL "indicates that the ${PROJECT_NAME} CFLAGS have been configured.")
 
-set(TinyXML_PREFIX "${CMAKE_CURRENT_LIST_DIR}/deps/tinyxml2")
 set(dpdk_PREFIX "${CMAKE_CURRENT_LIST_DIR}/deps/dpdk")
-
-#[[
-set(ENV{RTE_TARGET} "x86_64-native-linuxapp-clang")
-set(ENV{RTE_SDK} "${CMAKE_CURRENT_LIST_DIR}/opt/dpdk")
-set(DPDK_ARCH "x86_64-native-linuxapp-clang")
-find_package(DPDK)
-if(DPDK_FOUND)
-    include_directories("${DPDK_INCLUDE_DIR}")
-    add_custom_target(dpdk)
-else(DPDK_FOUND)
-    ExternalProject_Add(dpdk PREFIX ${dpdk_PREFIX}
-      GIT_REPOSITORY http://dpdk.org/git/dpdk
-      BUILD_IN_SOURCE 1
-      PATCH_COMMAND patch -p1 < ${CMAKE_CURRENT_LIST_DIR}/vendor/dpdk-2.1.0.patch
-      CONFIGURE_COMMAND make config DESTDIR=${CMAKE_CURRENT_LIST_DIR}/opt T=${DPDK_ARCH}
-      BUILD_COMMAND make install DESTDIR=${CMAKE_CURRENT_LIST_DIR}/opt/dpdk T=${DPDK_ARCH}
-      INSTALL_COMMAND make install DESTDIR=${CMAKE_CURRENT_LIST_DIR}/opt/dpdk T=${DPDK_ARCH}
-      INSTALL_DIR "${CMAKE_CURRENT_LIST_DIR}/opt/dpdk"
-    )
-    ExternalProject_Get_Property(dpdk INSTALL_DIR)
-    include_directories("${INSTALL_DIR}/${DPDK_ARCH}/include")
-    link_directories("${INSTALL_DIR}/${DPDK_ARCH}/lib")
-    set(DPDK_LIBRARIES "-lethdev -lrte_malloc -lrte_mbuf -lrte_distributor -lrte_mempool -lrte_ring -lrte_eal -lrte_pmd_ixgbe -lrte_hash -lrte_kvargs -lrte_pmd_pcap")
-endif(DPDK_FOUND)
-]]
-
-find_package(TinyXML2)
-message(STATUS "${Red} ${TINYXML_FOUND}${ColourReset}")
-# set(TINYXML_FOUND FALSE)
-if(TINYXML_FOUND)
-    include_directories("${TINYXML_INCLUDE_DIR}")
-    add_custom_target(tinyxml)
-else(TINYXML_FOUND)
-    message(STATUS "${Yellow}Building TinyXML2${ColourReset}")
-    ExternalProject_Add(tinyxml PREFIX ${TinyXML_PREFIX}
-      GIT_REPOSITORY https://github.com/leethomason/tinyxml2.git
-      GIT_TAG 3.0.0
-      BUILD_IN_SOURCE 1
-      CMAKE_ARGS -DBUILD_SHARED_LIBS:BOOL=OFF -DBUILD_STATIC_LIBS:BOOL=ON -DCMAKE_INSTALL_LIBDIR=${CMAKE_CURRENT_LIST_DIR}/opt/lib -DCMAKE_INSTALL_INCLUDEDIR=${CMAKE_CURRENT_LIST_DIR}/opt/include
-#      BUILD_COMMAND make
-#      CONFIGURE_COMMAND make
-#      INSTALL_COMMAND make install DESTDIR=${CMAKE_CURRENT_LIST_DIR}/opt prefix=
-      INSTALL_DIR "${CMAKE_CURRENT_LIST_DIR}/opt"
-    )
-    ExternalProject_Get_Property(tinyxml INSTALL_DIR)
-    include_directories("${INSTALL_DIR}/include")
-    link_directories("${INSTALL_DIR}/lib")
-    set(TINYXML_LIBRARY "-ltinyxml2")
-endif(TINYXML_FOUND)
-
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${common_params}")
 
 file(GLOB_RECURSE sources source/src/*.c*)
@@ -147,13 +96,12 @@ foreach(inc_dir ${inc_dirs})
 endforeach(inc_dir)
 
 add_executable(hft_robot ${sources} source/src/Stopwatch.cpp source/include/Stopwatch.h source/src/Test/FixProtocolManagerTester.cpp source/include/Test/FixProtocolManagerTester.h source/include/FixProtocolMacros.h source/include/FixMessage.h source/include/FastTypes.h source/include/Lib/StringIdComparer.h source/include/Lib/PointerList.h source/include/Lib/AutoAllocatePointerList.h source/include/MarketData/MarketDataTable.h source/include/Test/DecimalTester.h source/src/FixTypes.cpp source/include/Test/OrderTesterFond.h source/include/Test/FeedConnectionTester.h source/include/Test/TradeTesterFond.h source/include/Test/InstrumentDefinitionTester.h source/include/Test/TestTemplateInfo.h source/include/Test/TestMessagesHelper.h source/include/Test/StatisticsTesterFond.h source/include/MarketData/MarketDataEntryQueue.h source/include/MarketData/OrderInfo.h source/include/MarketData/TradeInfo.h source/include/MarketData/StatisticInfo.h source/include/MarketData/MarketSymbolInfo.h source/include/Test/OrderTesterCurr.h source/include/Test/TradeTesterCurr.h source/include/Test/StatisticsTesterCurr.h source/include/MarketData/QuoteInfo.h source/include/Test/SymbolManagerTester.h source/include/Lib/StringHash.h source/include/MarketData/SymbolManager.h source/include/Test/HistoricalReplayTester.h source/include/FeedConnections.h source/src/Test/TestMessagesHelper.cpp)
-add_dependencies(hft_robot tinyxml fast_generate)
-target_link_libraries(hft_robot ${TINYXML_LIBRARY} dl)
+add_dependencies(hft_robot fast_generate)
 
 add_custom_command(TARGET fast_generate
   PRE_BUILD
   COMMAND ${CSHARP_MONO_INTERPRETER_} ${fast_generator} -d ${CMAKE_CURRENT_LIST_DIR}/test/data/ -s ${CMAKE_CURRENT_LIST_DIR}/source/ -f -fh ${CMAKE_CURRENT_LIST_DIR}/source/include/FastProtocolManager.h -fc ${CMAKE_CURRENT_LIST_DIR}/source/src/FastProtocolManager.cpp -ft ${CMAKE_CURRENT_LIST_DIR}/source/include/FastTypes.h -fx ${CMAKE_CURRENT_LIST_DIR}/test/data/FIX50SP2-2017-Mar.xml -rb ${CMAKE_CURRENT_LIST_DIR}/source/src/Robot.cpp -fcfg ${CMAKE_CURRENT_LIST_DIR}/test/data/config_test.xml -fwe "Logon,Logout,Security Definition,Security Status,Trading Session Status,Hearthbeat"
         COMMENT "generating code...")
 
-#target_link_libraries(hft_robot -Wl,--whole-archive ${TINYXML_LIBRARY} -Wl,--no-whole-archive dl)
+#target_link_libraries(hft_robot -Wl,--whole-archive -Wl,--no-whole-archive dl)
 #set_target_properties(hft_robot PROPERTIES LINKER_LANGUAGE CXX)

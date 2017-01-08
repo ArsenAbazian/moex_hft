@@ -134,20 +134,22 @@ typedef enum _FixSessionStatus  {
 
 
 typedef struct _LogonInfo {
-    int MsgStartSeqNo;
-    int EncryptionType;
-    int HearthBtInt;
-    bool ShouldResetSeqNum;
-    char SenderCompID[32];
-    int SenderCompIDLength;
-    char Password[12];
-    int PassLength;
-    char NewPassword[12];
-    int NewPassLength;
-    bool AllowSessionStatus;
-    FixSessionStatus SessionStatus;
-    bool CancelOnDisconnect;
-    char LanguageId;
+    int                 MsgStartSeqNo;
+    int                 EncryptionType;
+    int                 HearthBtInt;
+    bool                ShouldResetSeqNum;
+    char                SenderCompID[32];
+    int                 SenderCompIDLength;
+    char                UserName[32];
+    int                 UserNameLength;
+    char                Password[12];
+    int                 PassLength;
+    char                NewPassword[12];
+    int                 NewPassLength;
+    bool                AllowSessionStatus;
+    FixSessionStatus    SessionStatus;
+    bool                CancelOnDisconnect;
+    char                LanguageId;
 }FixLogonInfo;
 
 typedef enum _FixSessionRejectReason {

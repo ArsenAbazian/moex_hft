@@ -3,6 +3,11 @@
 static const char*	FundMarketSenderComputerId = "MU9033700003";
 static const char* FundMarketPassword = " ";
 
+static const char*  HistoricalReplayTargetComputerId = "MOEX";
+static const char*	HistoricalReplaySenderComputerId = "MU9033700003";
+static const char*  HistoricalReplayPassword = " ";
+static int HistoricalReplayPasswordLength = 1;
+
 static const char* FundMarketTradeName = "TEST Equities MFIX Trade";
 static const char*	FundMarketTradeServerAddress = "91.208.232.200";
 static const int	FundMarketTradeServerPort = 9120;

@@ -372,6 +372,8 @@ public:
     FeedConnection_FOND_H(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *ip, int port) :
             FeedConnection(id, name, value, protocol, 0, ip, port, 0, 0, 0) {
         InitializeHistoricalReplay();
+        this->m_fixProtocolManager->SetSenderComputerId(FundMarketSenderComputerId);
+        PrepareLogonInfo();
         this->SetType(FeedConnectionType::HistoricalReplay);
         this->SetState(FeedConnectionState::fcsHistoricalReplay);
         this->SetHsState(FeedConnectionHistoricalReplayState::hsSuspend);
@@ -394,6 +396,8 @@ public:
     FeedConnection_CURR_H(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *ip, int port) :
             FeedConnection(id, name, value, protocol, 0, ip, port, 0, 0, 0) {
         InitializeHistoricalReplay();
+        this->m_fixProtocolManager->SetSenderComputerId(CurrencyMarketSenderComputerId);
+        PrepareLogonInfo();
         this->SetType(FeedConnectionType::HistoricalReplay);
         this->SetState(FeedConnectionState::fcsHistoricalReplay);
         this->SetHsState(FeedConnectionHistoricalReplayState::hsSuspend);
