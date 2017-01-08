@@ -23,7 +23,6 @@ class Robot
 	RobotState state;
 
 	FixProtocolManager *protocolManager;
-    FeedConnection* CreateConnectionCore(const char *feedChannelId, const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort);
 
     MarketInfo* FindMarket(const char* name) {
         for(int i = 0; i < this->marketCount; i++) {
