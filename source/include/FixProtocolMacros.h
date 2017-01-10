@@ -962,6 +962,7 @@
 #define TagApplFeedId 1080
 #define TagApplBeginSeqNum 1082
 #define TagApplEndSeqNum 1083
+#define TagApplVerID 1128
 #define TagCheckAccount 0x00003d31
 #define TagCheckAdvId 0x00003d32
 #define TagCheckAdvRefID 0x00003d33
@@ -1924,6 +1925,7 @@
 #define TagCheckApplFeedId 0x30383031
 #define TagCheckApplBeginSeqNum 0x32383031
 #define TagCheckApplEndSeqNum 0x33383031
+#define TagCheckApplVerID 0x38323131
 #define TagStrAccount "1"
 #define TagStrAdvId "2"
 #define TagStrAdvRefID "3"
@@ -2886,6 +2888,7 @@
 #define TagStrApplFeedId "1080"
 #define TagStrApplBeginSeqNum "1082"
 #define TagStrApplEndSeqNum "1083"
+#define TagStrApplVerID "1128"
 #define TagLenAccount 1
 #define TagLenAdvId 1
 #define TagLenAdvRefID 1
@@ -3848,6 +3851,7 @@
 #define TagLenApplFeedId 4
 #define TagLenApplBeginSeqNUm 4
 #define TagLenApplEndSeqNum 4
+#define TagLenApplVerID 4
 #define AddTagAccount	*((unsigned int*)this->currentPos) = 0x00000031; this->currentPos++;
 #define AddTagAdvId	*((unsigned int*)this->currentPos) = 0x00000032; this->currentPos++;
 #define AddTagAdvRefID	*((unsigned int*)this->currentPos) = 0x00000033; this->currentPos++;
@@ -4810,5 +4814,6 @@
 #define AddTagApplFeedId	*((unsigned int*)this->currentPos) = 0x30383031; this->currentPos += 4;
 #define AddTagApplBeginSeqNum	*((unsigned int*)this->currentPos) = 0x32383031; this->currentPos += 4;
 #define AddTagApplEndSeqNum	*((unsigned int*)this->currentPos) = 0x33383031; this->currentPos += 4;
+#define AddTagApplVerID	*((unsigned int*)this->currentPos) = 0x38323131; this->currentPos += 4;
 
 #pragma clang diagnostic pop

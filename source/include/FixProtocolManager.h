@@ -354,6 +354,22 @@ public:
 		AddSendingTime();
 	}
 
+    inline void AddFastHeader(char messageType) {
+        AddFixHeader();
+        AddBodyLength();
+        AddMessageType(messageType);
+
+        AddTagApplVerID
+        AddEqual();
+        AddValue('9');
+        AddSeparator();
+
+        AddSenderComputerId();
+        AddTargetComputerId();
+        AddMessageSeqNumber(this->m_sendMsgSeqNo);
+        AddSendingTime();
+    }
+
 	inline int CalcCheckSum() {
 		int sum = 0;
 		char *buf = this->messageBuffer;
@@ -852,7 +868,7 @@ public:
 
 	inline void CreateFastLogonMessage(FixLogonInfo *logon) {
 		this->m_sendMsgSeqNo = logon->MsgStartSeqNo;
-		AddHeader(MsgTypeLogon);
+		AddFastHeader(MsgTypeLogon);
 		AddFastGroupLogon(logon);
 		UpdateLengthTagValue();
 		AddTrail();
@@ -1054,7 +1070,7 @@ public:
 	}
 
 	inline void CreateMarketDataRequest(const char *applFeedId, int applFeedIdLength, int msgStart, int msgEnd) {
-		AddHeader(MsgTypeMarketDataRequest);
+		AddFastHeader(MsgTypeMarketDataRequest);
 
 		AddTagString2(AddTagApplFeedId, applFeedId, applFeedIdLength);
 		AddTagValue(AddTagApplBeginSeqNum, msgStart);
