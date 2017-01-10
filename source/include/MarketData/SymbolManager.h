@@ -54,7 +54,19 @@ class SymbolManager {
         return ptr;
     }
     inline void ClearBucketList() {
-        bzero(this->m_bucketList, sizeof(LinkedPointer<SymbolInfo>*) * StringHash::HashArrayItemsCount);
+        for(int i = 0; i < StringHash::HashArrayItemsCount; i++) {
+            LinkedPointer<SymbolInfo> *ptr = this->m_bucketList[i];
+            LinkedPointer<SymbolInfo> *prevPtr = 0;
+            if(ptr == 0)
+                continue;
+            while(ptr != 0) {
+                prevPtr = ptr;
+                ptr = ptr->Next();
+                this->m_pool->Push(prevPtr);
+            }
+            this->m_bucketList[i] = 0;
+        }
+        this->m_pool->Clear();
     }
     inline void ClearIndices() {
         bzero(this->m_indices, sizeof(short) * this->m_capacity);

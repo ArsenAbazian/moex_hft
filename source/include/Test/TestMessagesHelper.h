@@ -170,7 +170,13 @@ private:
         }
         else if(HasKey(keys, keysCount, "idf")) {
             info->m_templateId = FeedConnectionMessage::fmcSecurityDefinition;
-            info->m_symbol = keys[1];
+            if(HasKey(keys, keysCount, "totNumReports")) {
+                info->m_totNumReports = atoi(keys[KeyIndex(keys, keysCount, "totNumReports") + 1]);
+                info->m_symbol = keys[3];
+            }
+            else {
+                info->m_symbol = keys[1];
+            }
         }
         else if(HasKey(keys, keysCount, "wait_snap")) {
             info->m_templateId = FeedConnectionMessage::fcmHeartBeat;
@@ -895,6 +901,10 @@ public:
         info->AllowMarketSegmentGrp = true;
         this->AddMarketSegemntGroup(info);
         info->MarketSegmentGrp[0]->AllowTradingSessionRulesGrp = true;
+        if(tmp->m_totNumReports != 0) {
+            info->AllowTotNumReports = true;
+            info->TotNumReports = tmp->m_totNumReports;
+        }
 
         for(int i = 0; i < tmp->m_itemsCount; i++) {
             this->AddTradingSession(info, 0, tmp->m_items[i]->m_tradingSession);
@@ -1626,10 +1636,13 @@ public:
         Stopwatch w;
         w.Start(1);
         while(idf_index < idfMsgCount) {
-            idf_msg[idf_index]->m_msgSeqNo = idf_index + 1;
-            SendMessage(fif, idf_msg[idf_index]);
-            if(!fif->Listen_Atom_SecurityDefinition_Core())
-                throw;
+            if(idf_msg[idf_index]->m_msgSeqNo == 0)
+                idf_msg[idf_index]->m_msgSeqNo = idf_index + 1;
+            if(!idf_msg[idf_index]->m_lost) {
+                SendMessage(fif, idf_msg[idf_index]);
+                if (!fif->Listen_Atom_SecurityDefinition_Core())
+                    throw;
+            }
             idf_index++;
 
             w.Start();

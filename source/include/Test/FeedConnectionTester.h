@@ -217,14 +217,6 @@ public:
     }
 
     void Test() {
-
-        HistoricalReplayTester hrt;
-        hrt.Test();
-
-        SymbolManagerTester ht;
-        ht.Test();
-        //TestSaveIdfSymbols();
-
         RobotSettings::MarketDataMaxSymbolsCount = 10;
         RobotSettings::MarketDataMaxSessionsCount = 32;
         RobotSettings::MarketDataMaxEntriesCount = 32;
@@ -235,6 +227,13 @@ public:
         RobotSettings::MarketDataMaxSymbolsCount = 10;
         RobotSettings::MarketDataMaxSessionsCount = 5;
         RobotSettings::MarketDataMaxEntriesCount = 32;
+
+        HistoricalReplayTester hrt;
+        hrt.Test();
+
+        SymbolManagerTester ht;
+        ht.Test();
+        //TestSaveIdfSymbols();
 
         //StatisticsTesterFond stFond;
         //stFond.Test();

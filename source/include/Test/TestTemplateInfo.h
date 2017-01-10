@@ -66,6 +66,7 @@ public:
     bool                    m_lost;
     bool                    m_wait;
     bool                    m_skip;
+    int                     m_totNumReports;
 
     TestTemplateInfo() {
         this->m_templateId = FeedConnectionMessage::fcmHeartBeat;
@@ -80,6 +81,7 @@ public:
         this->m_lost = false;
         this->m_wait = false;
         this->m_skip = false;
+        this->m_totNumReports = 0;
     }
 
     TestTemplateInfo(FeedConnectionMessage templateId, int msgSeqNo) : TestTemplateInfo() {

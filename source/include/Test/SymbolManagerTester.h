@@ -112,6 +112,7 @@ public:
     }
 
     void TestAddAllSymbols() {
+        this->ClearBusy();
         this->m_manager->Clear();
 
         bool wasNewlyAdded = false;
@@ -119,9 +120,9 @@ public:
         for(int i = 0; i < this->m_itemsCount; i++) {
             int index = this->m_manager->GetSymbolIndex(this->m_items[i].text, this->m_items[i].lenght, &wasNewlyAdded);
             if(!wasNewlyAdded)
-                this->m_busy[index]++;
-            else
                 dublicateItems++;
+            else
+                this->m_busy[index]++;
 
             if(this->m_busy[index] > 1)
                 throw;
@@ -159,6 +160,7 @@ public:
     }
 
     void TestClear() {
+        this->m_manager->Clear();
         TestAddAllSymbols();
         this->m_manager->Clear();
         if(this->m_manager->SymbolCount() != 0)

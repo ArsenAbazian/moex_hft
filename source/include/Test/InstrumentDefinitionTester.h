@@ -71,6 +71,8 @@ public:
             throw;
         if(this->idf->SecurityDefinitionMode() != FeedConnectionSecurityDefinitionMode::sdmCollectData)
             throw;
+        if(this->idf->m_securityDefinitionsCount != 0)
+            throw;
     }
 
     void TestAddSymbol() {
@@ -201,6 +203,8 @@ public:
 
     void TestAddSymbol_2() {
         this->Clear();
+        if(this->idf->m_securityDefinitionsCount != 0)
+            throw;
 
         FastSecurityDefinitionInfo *info = this->m_helper->CreateSecurityDefinitionInfo("s1");
         this->m_helper->AddMarketSegemntGroup(info);
@@ -249,9 +253,12 @@ public:
 
     void TestClearBeforeStart() {
         this->TestAddSymbol();
+        this->idf->m_securityDefinitionsCount = 5;
 
         FastSecurityDefinitionInfo *info = this->idf->SecurityDefinition(0);
         this->idf->BeforeProcessSecurityDefinitions();
+        if(this->idf->m_securityDefinitionsCount != 0)
+            throw;
 
         if(info->Used)
             throw;
@@ -391,17 +398,32 @@ public:
         idf->Stop();
         idf->m_idfMode = FeedConnectionSecurityDefinitionMode::sdmCollectData;
         idf->Start();
-        if(idf->IdfState() != FeedConnectionSecurityDefinitionState::sdsWaitForFirstMessage)
+        if(idf->IdfState() != FeedConnectionSecurityDefinitionState::sdsProcessToEnd)
+            throw;
+        if(this->idf->m_securityDefinitionsCount != 0)
             throw;
     }
 
     void TestInstrumentDefinitionSomeMessagesLost() {
+        this->Clear();
         this->idf->Stop();
         idf->Stop();
         idf->m_idfMode = FeedConnectionSecurityDefinitionMode::sdmCollectData;
         idf->Start();
 
-        this->m_helper->SendMessages(this->idf, "idf s1 session t1 session t2, lost idf s2 session t1 session t2, idf s1 session t1 session t2", 30);
+        this->m_helper->SendMessages(this->idf, "idf totNumReports 3 s1 session t1 session t2, lost idf totNumReports 3 s2 session t1 session t2, idf totNumReports 3 s1 session t1 session t2, msgSeqNo 1 idf totNumReports 3 s1 session t1 session t2", 30);
+        if(this->idf->m_idfDataCollected)
+            throw;
+        if(this->idf->m_idfState != FeedConnectionSecurityDefinitionState::sdsProcessToEnd)
+            throw;
+        this->m_helper->SendMessages(this->idf, "lost idf totNumReports 3 s1 session t1 session t2, lost idf totNumReports 3 s2 session t1 session t2, idf totNumReports 3 s1 session t1 session t2, msgSeqNo 1 idf totNumReports 3 s1 session t1 session t2", 30);
+        if(this->idf->m_idfDataCollected)
+            throw;
+        this->m_helper->SendMessages(this->idf, "idf totNumReports 3 s1 session t1 session t2, idf totNumReports 3 s2 session t1 session t2, idf totNumReports 3 s1 session t1 session t2, msgSeqNo 1 idf totNumReports 3 s1 session t1 session t2", 30);
+        if(!this->idf->m_idfDataCollected)
+            throw;
+        if(this->olr->OrderFond()->SymbolsCount() != 3)
+            throw;
     }
 
     void Test() {

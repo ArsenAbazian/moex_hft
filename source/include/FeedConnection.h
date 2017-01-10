@@ -87,8 +87,8 @@ typedef enum _FeedConnectionSecurityDefinitionMode {
 }FeedConnectionSecurityDefinitionMode;
 
 typedef enum _FeedConnectionSecurityDefinitionState {
-    sdsWaitForFirstMessage,
-    sdsProcessing
+    sdsProcessToEnd,
+    sdsProcessFromStart,
 }FeedConnectionSecurityDefinitionState;
 
 typedef enum _FeedConnectionHistoricalReplayState {
@@ -196,6 +196,8 @@ protected:
 
     FeedConnectionSecurityDefinitionMode        m_idfMode;
     FeedConnectionSecurityDefinitionState       m_idfState;
+    int                                         m_idfMaxMsgSeqNo;
+    int                                         m_idfStartMsgSeqNo;
 
     bool                                        m_idfDataCollected;
     bool                                        m_allowUpdateIdfData;
@@ -305,12 +307,25 @@ protected:
         *time = this->m_tval->tv_usec / 1000;
     }
 
+    inline int TryGetSecurityDefinitionTotNumReports(unsigned char *buffer) {
+        this->m_fastProtocolManager->SetNewBuffer(buffer + 4, 1500);
+        this->m_fastProtocolManager->DecodeHeader();
+        if(this->m_fastProtocolManager->TemplateId() != FeedConnectionMessage::fmcSecurityDefinition)
+            return 0;
+        FastSecurityDefinitionInfo *info = (FastSecurityDefinitionInfo*)this->m_fastProtocolManager->DecodeSecurityDefinition();
+        return info->TotNumReports;
+    }
+
 	inline bool CanListen() { return this->socketAManager->ShouldRecv() || this->socketBManager->ShouldRecv(); }
 
     inline bool ProcessServerA() { return this->ProcessServer(this->socketAManager, LogMessageCode::lmcsocketA); }
     inline bool ProcessServerB() { return this->ProcessServer(this->socketBManager, LogMessageCode::lmcsocketB); }
     inline bool ProcessServerCore(int size) {
         int msgSeqNum = *((UINT*)this->m_recvABuffer->CurrentPos());
+
+        if(this->m_type == FeedConnectionType::InstrumentDefinition)
+            this->m_endMsgSeqNum = msgSeqNum;
+
         if(this->m_packets[msgSeqNum]->m_address != 0)
             return true;
 
@@ -326,17 +341,10 @@ protected:
                 this->m_endMsgSeqNum = msgSeqNum;
         }
         else if(this->m_type == FeedConnectionType::InstrumentDefinition) {
-            if(this->m_idfState == FeedConnectionSecurityDefinitionState::sdsWaitForFirstMessage) {
-                if(msgSeqNum != 1)
-                    return true;
-                this->m_startMsgSeqNum = 1;
-                this->m_endMsgSeqNum = 1;
-                this->m_idfState = FeedConnectionSecurityDefinitionState::sdsProcessing;
-            }
-            else {
-                if(this->m_endMsgSeqNum < msgSeqNum)
-                    this->m_endMsgSeqNum = msgSeqNum;
-            }
+            if(this->m_idfStartMsgSeqNo == 0)
+                this->m_idfStartMsgSeqNo = msgSeqNum;
+            if(this->m_idfMaxMsgSeqNo == 0)
+                this->m_idfMaxMsgSeqNo = TryGetSecurityDefinitionTotNumReports(this->m_recvABuffer->CurrentPos());
         }
         else {
             this->m_waitTimer->Start();
@@ -881,49 +889,34 @@ protected:
         return this->ProcessSecurityDefinition(buffer, info->m_size);
     }
 
-    inline bool ProcessSecurityDefinitionMessages() {
-        int i = this->m_startMsgSeqNum;
-        int newStartMsgSeqNo = this->m_endMsgSeqNum + 1;
-
-        while(i <= this->m_endMsgSeqNum) {
-            if(this->m_packets[i]->m_processed) {
-                i++; continue;
+    inline bool ProcessSecurityDefinitionMessagesFromStart() {
+        if(this->m_endMsgSeqNum == this->m_idfStartMsgSeqNo) {
+            if(this->HasLostPackets(1, this->m_idfMaxMsgSeqNo)) {
+                this->m_idfState = FeedConnectionSecurityDefinitionState::sdsProcessToEnd;
+                return true;
             }
-            if(this->m_packets[i]->m_address == 0) {
-                newStartMsgSeqNo = i;
-                break;
+            FeedConnectionMessageInfo **info = (this->m_packets + 1); // skip zero messsage
+            this->BeforeProcessSecurityDefinitions();
+            for(int i = 1; i <= this->m_idfMaxMsgSeqNo; i++, info++) {
+                if(!this->ProcessSecurityDefinition(*info))
+                    return false;
             }
-            if(!this->ProcessSecurityDefinition(this->m_packets[i]))
-                return false;
-            i++;
-        }
-
-        while(i <= this->m_endMsgSeqNum) {
-            if(this->m_packets[i]->m_processed || this->m_packets[i]->m_address == 0) {
-                i++; continue;
-            }
-            if(!this->ProcessSecurityDefinition(this->m_packets[i]))
-                return false;
-            i++;
-        }
-
-        this->m_startMsgSeqNum = newStartMsgSeqNo;
-        if(this->m_doNotCheckIncrementalActuality)
-            this->m_startMsgSeqNum = i;
-        if(this->m_startMsgSeqNum <= this->m_endMsgSeqNum) {
-            if(!this->m_packets[this->m_startMsgSeqNum]->m_requested) {
-                this->m_packets[this->m_startMsgSeqNum]->m_requested = true;
-                printf("msg %d not received. request via Historical Replay\n", this->m_startMsgSeqNum);
-                this->m_historicalReplay->HrRequestMessage(this, this->m_startMsgSeqNum);
-            }
+            this->AfterProcessSecurityDefinitions();
+            this->OnSecurityDefinitionRecvAllMessages();
         }
         return true;
     }
 
-    inline bool Listen_Atom_SecurityDefinition_Core() {
-        if(!this->ProcessSecurityDefinitionMessages())
-            return false;
+    inline bool ProcessSecurityDefinitionMessagesToEnd() {
+        if(this->m_endMsgSeqNum == this->m_idfMaxMsgSeqNo)
+            this->m_idfState = FeedConnectionSecurityDefinitionState::sdsProcessFromStart;
         return true;
+    }
+
+    inline bool Listen_Atom_SecurityDefinition_Core() {
+        if(this->m_idfState == FeedConnectionSecurityDefinitionState::sdsProcessToEnd)
+            return this->ProcessSecurityDefinitionMessagesToEnd();
+        return this->ProcessSecurityDefinitionMessagesFromStart();
     }
 
     inline bool Listen_Atom_Snapshot_Core() {
@@ -1240,32 +1233,7 @@ protected:
         return this->Listen_Atom_Incremental_Core();
     }
 
-    inline bool Listen_Atom_SecurityDefinition_WaitForMessage() {
-        bool recv = this->ProcessServerA();
-        recv |= this->ProcessServerB();
-        if(!recv) {
-            if(!this->m_waitTimer->Active(1)) {
-                this->m_waitTimer->Start(1);
-            }
-            else {
-                if(this->m_waitTimer->ElapsedSeconds(1) > this->WaitAnyPacketMaxTimeSec) {
-                    printf("Timeout 10 sec... Reconnect...\n");
-                    DefaultLogManager::Default->WriteSuccess(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_Listen_Atom_SecurityDefinition, false);
-                    this->ReconnectSetNextState(FeedConnectionState::fcsListenSecurityDefinition);
-                    return true;
-                }
-            }
-        }
-        else {
-            this->m_waitTimer->Stop(1);
-        }
-        if(this->m_idfState == FeedConnectionSecurityDefinitionState::sdsProcessing) { // TODO debug remove
-            printf("Start processing security definition\n");
-        }
-        return true;
-    }
-
-    inline bool Listen_Atom_SecurityDefinition_Processing() {
+    inline bool Listen_Atom_SecurityDefinition() {
         bool recv = this->ProcessServerA();
         recv |= this->ProcessServerB();
 
@@ -1286,12 +1254,6 @@ protected:
             this->m_waitTimer->Stop(1);
         }
         return this->Listen_Atom_SecurityDefinition_Core();
-    }
-
-    inline bool Listen_Atom_SecurityDefinition() {
-        if(this->m_idfState == FeedConnectionSecurityDefinitionState::sdsWaitForFirstMessage)
-            return this->Listen_Atom_SecurityDefinition_WaitForMessage();
-        return this->Listen_Atom_SecurityDefinition_Processing();
     }
 
     inline bool Listen_Atom_Snapshot() {
@@ -1704,15 +1666,11 @@ public:
     inline void OnSecurityDefinitionRecvAllMessages() {
         this->Stop();
 
-        for(int i = 1; i < this->m_endMsgSeqNum; i++) {
-            if(this->m_packets[i]->m_address == 0)
-                throw;
-        }
-
-        this->ClearPackets(0, this->m_endMsgSeqNum);
+        this->m_idfStartMsgSeqNo = 0;
+        this->ClearPackets(1, this->m_endMsgSeqNum);
         this->PrintSymbolManagerDebug();  // TODO debug messages
-        this->AfterProcessSecurityDefinitions();
         this->m_idfDataCollected = true;
+        this->m_idfMode = FeedConnectionSecurityDefinitionMode::sdmUpdateData;
     }
 
     inline bool ProcessSecurityDefinition(FastSecurityDefinitionInfo *info) {
@@ -1964,8 +1922,10 @@ public:
 	}
     inline void BeforeListen() {
         if(this->m_type == FeedConnectionType::InstrumentDefinition) {
-            this->m_idfState = FeedConnectionSecurityDefinitionState::sdsWaitForFirstMessage;
-            printf("Wait for First Security Definition\n"); // TODO remove debug
+            this->m_idfState = FeedConnectionSecurityDefinitionState::sdsProcessToEnd;
+            this->m_idfStartMsgSeqNo = 0;
+            this->m_idfMaxMsgSeqNo = 0;
+            printf("Security Definition Process To End\n"); // TODO remove debug
         }
         if(this->m_type == FeedConnectionType::HistoricalReplay) {
             this->m_hsState = FeedConnectionHistoricalReplayState::hsSuspend;
