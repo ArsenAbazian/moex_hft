@@ -395,7 +395,18 @@ public:
             throw;
     }
 
+    void TestInstrumentDefinitionSomeMessagesLost() {
+        this->idf->Stop();
+        idf->Stop();
+        idf->m_idfMode = FeedConnectionSecurityDefinitionMode::sdmCollectData;
+        idf->Start();
+
+        this->m_helper->SendMessages(this->idf, "idf s1 session t1 session t2, lost idf s2 session t1 session t2, idf s1 session t1 session t2", 30);
+    }
+
     void Test() {
+        printf("IDF FOND TestInstrumentDefinitionSomeMessagesLost\n");
+        TestInstrumentDefinitionSomeMessagesLost();
         printf("IDF FOND TestInstrumentDefinitionStartInCollectDataMode\n");
         TestInstrumentDefinitionStartInCollectDataMode();
         printf("IDF FOND TestInstrumentDefinitionCollectDataCompleted\n");

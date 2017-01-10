@@ -70,7 +70,7 @@ public:
 
         this->m_helper->ClearPoll();
 
-        this->m_helper->EncodeMessage(this->m_hr, "logon sender MOEX pass 1 msgSeqNo 2");
+        this->m_helper->EncodeMessage(this->m_hr, "logon sender MOEX pass 1 msgSeqNo 1");
         this->m_helper->SetRecvFastFor(this->m_hr);
 
         this->m_hr->DoWorkAtom();
@@ -84,20 +84,20 @@ public:
 
         this->m_helper->ClearPoll();
 
-        this->m_helper->EncodeMessage(this->m_hr, "olr entry s1 e1 msgSeqNo 4");
+        this->m_helper->EncodeMessage(this->m_hr, "olr entry s1 e1 msgSeqNo 2");
         this->m_helper->SetRecvFastFor(this->m_hr);
 
         this->m_hr->DoWorkAtom();
         if(this->m_hr->m_hsState != FeedConnectionHistoricalReplayState::hsWaitLogout)
             throw;
-        if(this->m_hr->m_fixProtocolManager->SendMsgSeqNo() != 4)
+        if(this->m_hr->m_fixProtocolManager->SendMsgSeqNo() != 3)
             throw;
         if(this->m_hr->m_fixProtocolManager->RecvMsgSeqNo() != 3)
             throw;
 
         this->m_helper->ClearPoll();
 
-        this->m_helper->EncodeMessage(this->m_hr, "logout msgSeqNo 5");
+        this->m_helper->EncodeMessage(this->m_hr, "logout msgSeqNo 3");
         this->m_helper->SetRecvFastFor(this->m_hr);
 
         this->m_hr->DoWorkAtom();
@@ -109,18 +109,11 @@ public:
             throw;
     }
 
-    // in this test we receive logout message
-    //void TestAddMessageWithOneRequest_2() {
-
-    //}
-
     void Test() {
         printf("H TestDefaults\n");
         TestDefaults();
         printf("H TestAddMessageWithOneRequest_1\n");
         TestAddMessageWithOneRequest_1();
-        //printf("H TestAddMessageWithOneRequest_2\n");
-        //TestAddMessageWithOneRequest_2();
     }
 };
 

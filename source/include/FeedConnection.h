@@ -882,8 +882,6 @@ protected:
     }
 
     inline bool ProcessSecurityDefinitionMessages() {
-
-
         int i = this->m_startMsgSeqNum;
         int newStartMsgSeqNo = this->m_endMsgSeqNum + 1;
 
@@ -1177,6 +1175,7 @@ protected:
         this->m_fixProtocolManager->CreateLogoutMessage("Hasta la vista baby!", 20);
 
         this->m_fixProtocolManager->SendFix(this->socketAManager);
+        this->m_fixProtocolManager->IncSendMsgSeqNo();
         this->m_hsState = FeedConnectionHistoricalReplayState::hsSuspend;
         this->Disconnect();
         return true;
