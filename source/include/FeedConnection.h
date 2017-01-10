@@ -1138,11 +1138,12 @@ protected:
         }
         this->RecvProcessHistoricalReplayCore(size);
         if(this->m_fastProtocolManager->TemplateId() == FeedConnectionMessage::fmcLogout) {
+            this->OnProcessHistoricalReplayUnexpectedLogoutMessage();
             this->Disconnect();
             this->m_hsState = FeedConnectionHistoricalReplayState::hsSuspend;
             return true;
         }
-
+        this->m_fastProtocolManager->Print();
         LinkedPointer<FeedConnectionRequestMessageInfo> *ptr = this->m_hsRequestList->Start();
         FeedConnectionRequestMessageInfo *msg = ptr->Data();
         msg->m_conn->ProcessServerCore(size);
