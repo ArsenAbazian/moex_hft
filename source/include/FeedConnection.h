@@ -203,6 +203,7 @@ protected:
 
     FeedConnectionHistoricalReplayState             m_hsState;
     PointerList<FeedConnectionRequestMessageInfo>  *m_hsRequestList;
+    int                                             m_hrMessageSeqNo;
 
     FeedConnectionMessageInfo                       **m_packets;
 
@@ -1028,8 +1029,8 @@ protected:
         strcpy(this->m_hsLogonInfo->SenderCompID, this->m_fixProtocolManager->SenderCompId());
         this->m_hsLogonInfo->SenderCompIDLength = this->m_fixProtocolManager->SenderCompIdLength();
 
-        strcpy(this->m_hsLogonInfo->UserName, this->m_fixProtocolManager->SenderCompId());
-        this->m_hsLogonInfo->UserNameLength = this->m_fixProtocolManager->SenderCompIdLength();
+        strcpy(this->m_hsLogonInfo->UserName, HistoricalReplayUserName);
+        this->m_hsLogonInfo->UserNameLength = HistoricalReplayUserNameLength;
     }
 
     //TODO Socket buffer provider
@@ -1046,6 +1047,7 @@ protected:
         }
         this->m_fixProtocolManager->IncSendMsgSeqNo();
         this->m_hsState = FeedConnectionHistoricalReplayState::hsWaitLogon;
+        this->m_hrMessageSeqNo = 0;
         return true;
     }
 
@@ -1058,12 +1060,32 @@ protected:
     }
 
     inline bool IsHrReceiveFailedProcessed() {
-        if(!this->socketAManager->Recv(this->m_recvABuffer->CurrentPos())) {
+        bool res;
+        if(this->m_hrMessageSeqNo != 0)
+            res = this->socketAManager->Recv(this->m_recvABuffer->CurrentPos() + 4);
+        else
+            res = this->socketAManager->Recv(this->m_recvABuffer->CurrentPos());
+        if(!res) {
             this->Disconnect();
             this->m_hsState = FeedConnectionHistoricalReplayState::hsSuspend;
             return true;
         }
         return false;
+    }
+
+    inline void RecvProcessHistoricalReplayCore(int size) {
+        unsigned char *buffer = this->socketAManager->RecvBytes();
+        this->m_fastProtocolManager->SetNewBuffer(buffer, size);
+        if(this->m_hrMessageSeqNo == 0) {
+            this->m_recvABuffer->Next(size + 4);
+            this->m_hrMessageSeqNo = this->m_fastProtocolManager->ReadMsgSeqNumber();
+        }
+        else {
+            this->m_recvABuffer->Next(size);
+        }
+        this->m_fixProtocolManager->SetRecvMsgSeqNo(this->m_hrMessageSeqNo + 1);
+        this->m_hrMessageSeqNo = 0;
+        this->m_fastProtocolManager->Decode();
     }
 
     inline bool HistoricalReplay_WaitLogon() {
@@ -1072,12 +1094,11 @@ protected:
         if(this->IsHrReceiveFailedProcessed())
             return true;
         int size = this->socketAManager->RecvSize();
-        unsigned char *buffer = this->m_recvABuffer->CurrentPos();
-        this->m_fastProtocolManager->SetNewBuffer(buffer, size);
-        this->m_recvABuffer->Next(size);
-        int msgSeqNum = this->m_fastProtocolManager->ReadMsgSeqNumber();
-        this->m_fixProtocolManager->SetRecvMsgSeqNo(msgSeqNum + 1);
-        this->m_fastProtocolManager->Decode();
+        if(size == 4) {
+            this->m_hrMessageSeqNo = *(int*)this->socketAManager->RecvBytes();
+            return true;
+        }
+        this->RecvProcessHistoricalReplayCore(size);
         if(this->m_fastProtocolManager->TemplateId() != FeedConnectionMessage::fmcLogon) {
             this->Disconnect();
             if(this->m_fastProtocolManager->TemplateId() == FeedConnectionMessage::fmcLogout)
@@ -1085,7 +1106,6 @@ protected:
             this->m_hsState = FeedConnectionHistoricalReplayState::hsSuspend;
             return true;
         }
-
         return this->HistoricalReplay_SendMarketDataRequest();
     }
 
@@ -1112,11 +1132,11 @@ protected:
             return true;
 
         int size = this->socketAManager->RecvSize();
-        this->m_fastProtocolManager->SetNewBuffer(this->m_recvABuffer->CurrentPos(), size);
-        this->m_recvABuffer->Next(size);
-        int msgSeqNum = this->m_fastProtocolManager->ReadMsgSeqNumber();
-        this->m_fixProtocolManager->SetRecvMsgSeqNo(msgSeqNum + 1);
-        this->m_fastProtocolManager->DecodeHeader();
+        if(size == 4) {
+            this->m_hrMessageSeqNo = *(int*)this->socketAManager->RecvBytes();
+            return true;
+        }
+        this->RecvProcessHistoricalReplayCore(size);
         if(this->m_fastProtocolManager->TemplateId() == FeedConnectionMessage::fmcLogout) {
             this->Disconnect();
             this->m_hsState = FeedConnectionHistoricalReplayState::hsSuspend;
@@ -1138,12 +1158,15 @@ protected:
 
         if(this->IsHrReceiveFailedProcessed())
             return true;
-
-        this->m_fastProtocolManager->SetNewBuffer(this->m_recvABuffer->CurrentPos(), this->socketAManager->RecvSize());
-        this->m_recvABuffer->Next(this->socketAManager->RecvSize());
-        int msgSeqNum = this->m_fastProtocolManager->ReadMsgSeqNumber();
-
-        this->m_fixProtocolManager->SetRecvMsgSeqNo(msgSeqNum + 1);
+        int size = this->socketAManager->RecvSize();
+        if(size == 4) {
+            this->m_hrMessageSeqNo = *(int*)this->socketAManager->RecvBytes();
+            return true;
+        }
+        if(this->m_hrMessageSeqNo == 0)
+            this->m_hrMessageSeqNo = *(int*)this->socketAManager->RecvBytes();
+        this->m_recvABuffer->Next(size + 4);
+        this->m_fixProtocolManager->SetRecvMsgSeqNo(this->m_hrMessageSeqNo + 1);
 
         return this->HistoricalReplay_SendLogout();
     }
@@ -1884,11 +1907,13 @@ public:
         }
     }
     void SetPassword(const char *password) {
-        this->m_password = password;
-        this->m_passwordLength = strlen(this->m_password);
         if(this->m_type == FeedConnectionType::HistoricalReplay) {
-            strcpy(this->m_hsLogonInfo->Password, this->m_password);
-            this->m_hsLogonInfo->PassLength = this->m_passwordLength;
+            this->m_password = HistoricalReplayPassword;
+            this->m_passwordLength = HistoricalReplayPasswordLength;
+        }
+        else {
+            this->m_password = password;
+            this->m_passwordLength = strlen(this->m_password);
         }
     }
 
