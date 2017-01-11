@@ -2425,6 +2425,12 @@ public:
 		this->m_templateId = ReadUInt32_Mandatory();
 	}
 
+	int GetTotalNumReports() {
+		// ReadMsgNumber and DecodeHeader should be called first
+		SkipToNextField(); // MsgSeqNum
+		SkipToNextField(); // SendingTime
+		return ReadInt32_Optional();
+	}
 	void* DecodeLogon() {
 		FastLogonInfo* info = GetFreeLogonInfo();
 		info->PresenceMap = this->m_presenceMap;

@@ -254,6 +254,7 @@ namespace prebuild {
 
 			WriteEncodeMethodsCode(TemplatesNode);
 			WriteHeaderParsingCode(TemplatesNode);
+			WriteGetTotNumReportsMethod(TemplatesNode);
 			WriteDecodeMethodsCode(TemplatesNode);
 			WritePrintMethodsCode(TemplatesNode);
 		}
@@ -1489,6 +1490,56 @@ namespace prebuild {
 					return true;
 			}
 			return false;
+		}
+
+		private bool HasField(XmlNode template, string name) {
+			foreach(XmlNode node in template.ChildNodes) {
+				if(node.Attributes["name"].Value == name)
+					return true;
+			}
+			return false;
+		}
+
+		private void WriteGetTotNumReportsMethod(XmlNode template) {
+			bool found = false;
+			string templateName = "";
+			foreach(XmlNode node in template.ChildNodes) {
+				if(node.Name != "template")
+					continue;
+				templateName = GetTemplateName(node.PreviousSibling.Value);
+				if(templateName.Contains("SecurityDefinition")) {
+					found = true;
+					template = node;
+					break;
+				}
+			}
+
+			if(!found) {
+				throw new Exception("SecurityDefinition Template not found");
+			}
+
+			WriteLine("\tint GetTotalNumReports() {");
+			if(!HasField(template, "TotNumReports"))
+				throw new Exception("There is no TotNumReports field in " + templateName + " template");
+			WriteLine("\t\t// ReadMsgNumber and DecodeHeader should be called first");
+			foreach(XmlNode value in template.ChildNodes) {
+				string name = Name(value);
+				if(value.Name == "sequence") {
+					throw new Exception("Sequence exceeded. TotNumReports not found");
+				}
+				if(!CanParseValue(value))
+					continue;
+				if(name != "TotNumReports") {
+					WriteSkipCode("\t\t", name);
+					continue;
+				}
+				if(HasOptionalPresence(value))
+						WriteLine("\t\treturn ReadInt32_Optional();");
+					else
+						WriteLine("\t\treturn ReadInt32_Mandatory();");
+				break;
+			}
+			WriteLine("\t}");	
 		}
 
 		private  void WriteGetSnapshotInfoMethod(XmlNode template, string templateName) {

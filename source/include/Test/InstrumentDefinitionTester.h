@@ -411,15 +411,15 @@ public:
         idf->m_idfMode = FeedConnectionSecurityDefinitionMode::sdmCollectData;
         idf->Start();
 
-        this->m_helper->SendMessages(this->idf, "idf totNumReports 3 s1 session t1 session t2, lost idf totNumReports 3 s2 session t1 session t2, idf totNumReports 3 s1 session t1 session t2, msgSeqNo 1 idf totNumReports 3 s1 session t1 session t2", 30);
+        this->m_helper->SendMessages(this->idf, "idf totNumReports 3 s1 session t1 session t2, lost idf totNumReports 3 s2 session t1 session t2, idf totNumReports 3 s3 session t1 session t2, msgSeqNo 1 idf totNumReports 3 s1 session t1 session t2", 30);
         if(this->idf->m_idfDataCollected)
             throw;
         if(this->idf->m_idfState != FeedConnectionSecurityDefinitionState::sdsProcessToEnd)
             throw;
-        this->m_helper->SendMessages(this->idf, "lost idf totNumReports 3 s1 session t1 session t2, lost idf totNumReports 3 s2 session t1 session t2, idf totNumReports 3 s1 session t1 session t2, msgSeqNo 1 idf totNumReports 3 s1 session t1 session t2", 30);
+        this->m_helper->SendMessages(this->idf, "lost idf totNumReports 3 s1 session t1 session t2, lost idf totNumReports 3 s2 session t1 session t2, idf totNumReports 3 s3 session t1 session t2, msgSeqNo 1 idf totNumReports 3 s1 session t1 session t2", 30);
         if(this->idf->m_idfDataCollected)
             throw;
-        this->m_helper->SendMessages(this->idf, "idf totNumReports 3 s1 session t1 session t2, idf totNumReports 3 s2 session t1 session t2, idf totNumReports 3 s1 session t1 session t2, msgSeqNo 1 idf totNumReports 3 s1 session t1 session t2", 30);
+        this->m_helper->SendMessages(this->idf, "idf totNumReports 3 s1 session t1 session t2, idf totNumReports 3 s2 session t1 session t2, idf totNumReports 3 s3 session t1 session t2, msgSeqNo 1 idf totNumReports 3 s1 session t1 session t2", 30);
         if(!this->idf->m_idfDataCollected)
             throw;
         if(this->olr->OrderFond()->SymbolsCount() != 3)

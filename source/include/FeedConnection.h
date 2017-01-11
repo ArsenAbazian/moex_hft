@@ -312,8 +312,7 @@ protected:
         this->m_fastProtocolManager->DecodeHeader();
         if(this->m_fastProtocolManager->TemplateId() != FeedConnectionMessage::fmcSecurityDefinition)
             return 0;
-        FastSecurityDefinitionInfo *info = (FastSecurityDefinitionInfo*)this->m_fastProtocolManager->DecodeSecurityDefinition();
-        return info->TotNumReports;
+        return this->m_fastProtocolManager->GetTotalNumReports();
     }
 
 	inline bool CanListen() { return this->socketAManager->ShouldRecv() || this->socketBManager->ShouldRecv(); }
