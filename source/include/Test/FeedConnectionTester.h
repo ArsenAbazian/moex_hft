@@ -233,7 +233,7 @@ public:
 
         SymbolManagerTester ht;
         ht.Test();
-        //TestSaveIdfSymbols();
+        TestSaveIdfSymbols();
 
         //StatisticsTesterFond stFond;
         //stFond.Test();

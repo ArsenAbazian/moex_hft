@@ -1666,7 +1666,7 @@ public:
         this->Stop();
 
         this->m_idfStartMsgSeqNo = 0;
-        this->ClearPackets(1, this->m_endMsgSeqNum);
+        this->ClearPackets(1, this->m_idfMaxMsgSeqNo);
         this->PrintSymbolManagerDebug();  // TODO debug messages
         this->m_idfDataCollected = true;
         this->m_idfMode = FeedConnectionSecurityDefinitionMode::sdmUpdateData;
@@ -1749,8 +1749,10 @@ public:
     }
 
     inline void ClearSecurityDefinitions() {
-        for(int i = 0; i < this->m_securityDefinitionsCount; i++)
+        for(int i = 0; i < this->m_securityDefinitionsCount; i++) {
             this->m_securityDefinitions[i]->Data()->Clear();
+            this->m_securityDefinitions[i]->Data(0);
+        }
         this->m_securityDefinitionsCount = 0;
     }
 
@@ -1921,14 +1923,18 @@ public:
 	}
     inline void BeforeListen() {
         if(this->m_type == FeedConnectionType::InstrumentDefinition) {
+            this->ClearPackets(1, this->m_idfMaxMsgSeqNo);
+            this->ClearSecurityDefinitions();
+
             this->m_idfState = FeedConnectionSecurityDefinitionState::sdsProcessToEnd;
             this->m_idfStartMsgSeqNo = 0;
             this->m_idfMaxMsgSeqNo = 0;
-            printf("Security Definition Process To End\n"); // TODO remove debug
+            this->m_startMsgSeqNum = 0;
+            this->m_endMsgSeqNum = 0;
+            this->m_idfDataCollected = false;
         }
         if(this->m_type == FeedConnectionType::HistoricalReplay) {
             this->m_hsState = FeedConnectionHistoricalReplayState::hsSuspend;
-            printf("Start Historical Replay\n");
         }
     }
     inline bool Start() {

@@ -210,6 +210,7 @@ public:
     inline LinkedPointer<T>* PoolStart() { return this->m_poolHead; }
     inline LinkedPointer<T>* PoolEnd() { return this->m_poolTail; }
     inline int Count() { return this->m_count; }
+    inline int Capacity() { return this->m_capacity; }
 
     inline void Clear() {
         if(this->m_head == this->m_tail)
@@ -243,6 +244,17 @@ public:
                 return index;
             node = node->Next();
         }
+    }
+    inline int CalcPoolCount() {
+        int sum = 0;
+        LinkedPointer<T> *ptr = this->m_poolHead;
+        while(true) {
+            sum++;
+            if(ptr == this->m_poolTail)
+                break;
+        }
+        // why - 1? becasue capacity = + 1 see constructor
+        return sum - 1;
     }
 };
 

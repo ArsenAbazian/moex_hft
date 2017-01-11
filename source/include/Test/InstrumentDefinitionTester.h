@@ -7,6 +7,7 @@
 
 #include "../FeedConnection.h"
 #include "TestMessagesHelper.h"
+#include "SymbolManagerTester.h"
 #include <stdio.h>
 
 class InstrumentDefinitionTester{
@@ -72,6 +73,16 @@ public:
         if(this->idf->SecurityDefinitionMode() != FeedConnectionSecurityDefinitionMode::sdmCollectData)
             throw;
         if(this->idf->m_securityDefinitionsCount != 0)
+            throw;
+        if(this->idf->m_idfDataCollected)
+            throw;
+        if(this->idf->m_idfMode != FeedConnectionSecurityDefinitionMode::sdmCollectData)
+            throw;
+        if(this->idf->m_idfStartMsgSeqNo != 0)
+            throw;
+        if(this->idf->m_idfMaxMsgSeqNo != 0)
+            throw;
+        if(this->idf->m_idfState != FeedConnectionSecurityDefinitionState::sdsProcessToEnd)
             throw;
     }
 
@@ -378,14 +389,20 @@ public:
 
         if(this->idf->IsIdfDataCollected())
             throw;
-        this->m_helper->SendMessages(this->idf, "idf s1 session t1 session t2, idf s2 session t1 session t2, idf s1 session t1 session t2", 30);
-        if(this->idf->m_startMsgSeqNum != 4)
+        this->m_helper->SendMessages(this->idf, "totNumReports 2 idf s1 session t1 session t2, totNumReports 2 idf s2 session t1 session t2, msgSeqNo 1 totNumReports 2 idf s1 session t1 session t2", 30);
+        if(this->idf->m_startMsgSeqNum != 0)
             throw;
-        if(this->idf->m_endMsgSeqNum != 3)
+        if(this->idf->m_idfStartMsgSeqNo != 0)
+            throw;
+        if(this->idf->m_endMsgSeqNum != 1)
+            throw;
+        if(this->idf->m_idfMaxMsgSeqNo != 2)
             throw;
         if(this->idf->SecurityDefinitionsCount() != 2)
             throw;
         if(!this->idf->IsIdfDataCollected())
+            throw;
+        if(this->idf->State() != FeedConnectionState::fcsSuspend)
             throw;
     }
 
@@ -394,14 +411,52 @@ public:
         TestInstrumentDefinitionCollectDataCompleted_1();
     }
 
-    void TestStart() {
-        idf->Stop();
+    void TestSymbolManagerCleared() {
+        SymbolManager *m = this->idf->m_symbolManager;
+        if(m->SymbolCount() != 0)
+            throw;
+        for(int i = 0; i < m->BucketListCount(); i++)
+            if(m->m_bucketList[i] != 0)
+                throw;
+        if(m->m_pool->CalcPoolCount() != m->m_pool->Capacity())
+            throw;
+    }
+
+    void TestSecondStart() {
+        idf->Stop(); // by the way - make stop. if it is already stopped it will skip
         idf->m_idfMode = FeedConnectionSecurityDefinitionMode::sdmCollectData;
         idf->Start();
-        if(idf->IdfState() != FeedConnectionSecurityDefinitionState::sdsProcessToEnd)
+        if(this->idf->State() == FeedConnectionState::fcsSuspend)
             throw;
-        if(this->idf->m_securityDefinitionsCount != 0)
+        this->m_helper->SendMessages(this->idf, "idf totNumReports 3 s1 session t1 session t2, idf totNumReports 3 s2 session t1 session t2, idf totNumReports 3 s3 session t1 session t2, msgSeqNo 1 idf totNumReports 3 s1 session t1 session t2", 30);
+        // check - stop called? but i dont know if we should stop connection
+        if(this->idf->State() != FeedConnectionState::fcsSuspend)
             throw;
+        // test correct initialization
+        if(this->idf->SecurityDefinitionsCount() != 3)
+            throw;
+        if(this->olr->OrderFond()->SymbolsCount() != 3)
+            throw;
+        if(!this->idf->m_idfDataCollected)
+            throw;
+        // again collect data
+        idf->m_idfMode = FeedConnectionSecurityDefinitionMode::sdmCollectData;
+        idf->Start();
+        if(this->idf->m_idfDataCollected)
+            throw;
+        if(this->idf->m_idfState != FeedConnectionSecurityDefinitionState::sdsProcessToEnd)
+            throw;
+        if(this->idf->m_idfStartMsgSeqNo != 0)
+            throw;
+        if(this->idf->m_idfMaxMsgSeqNo != 0)
+            throw;
+        if(this->idf->m_endMsgSeqNum != 0)
+            throw;
+        if(this->idf->m_startMsgSeqNum != 0)
+            throw;
+        if(this->idf->m_symbolManager->SymbolCount() != 0)
+            throw;
+        this->TestSymbolManagerCleared();
     }
 
     void TestInstrumentDefinitionSomeMessagesLost() {
@@ -426,16 +481,53 @@ public:
             throw;
     }
 
-    void Test() {
-        printf("IDF FOND TestInstrumentDefinitionSomeMessagesLost\n");
-        TestInstrumentDefinitionSomeMessagesLost();
-        printf("IDF FOND TestInstrumentDefinitionStartInCollectDataMode\n");
-        TestInstrumentDefinitionStartInCollectDataMode();
-        printf("IDF FOND TestInstrumentDefinitionCollectDataCompleted\n");
-        TestInstrumentDefinitionCollectDataCompleted();
+    void TestPacketsAreClear() {
+        for(int i = 0; i < RobotSettings::DefaultFeedConnectionPacketCount; i++) {
+            if(this->idf->m_packets[i]->m_address != 0 ||
+                    this->idf->m_packets[i]->m_processed ||
+                    this->idf->m_packets[i]->m_requested)
+                throw;
+        }
+    }
 
+    void TestSecurityDefinitionsAreClear() {
+        for(int i = 0; i < RobotSettings::MaxSecurityDefinitionCount; i++) {
+            if(this->idf->m_securityDefinitions[i]->Data() != 0)
+                throw;
+        }
+    }
+
+    void TestFirstStart() {
+        this->idf->Start();
+        if(this->idf->m_idfMaxMsgSeqNo != 0)
+            throw;
+        if(this->idf->m_idfStartMsgSeqNo != 0)
+            throw;
+        if(this->idf->m_securityDefinitionsCount != 0)
+            throw;
+        if(this->idf->m_idfState != FeedConnectionSecurityDefinitionState::sdsProcessToEnd)
+            throw;
+        if(this->idf->m_startMsgSeqNum != 0)
+            throw;
+        if(this->idf->m_endMsgSeqNum != 0)
+            throw;
+        if(this->idf->m_idfMode != FeedConnectionSecurityDefinitionMode::sdmCollectData)
+            throw;
+        if(this->idf->m_idfDataCollected)
+            throw;
+        this->TestPacketsAreClear();
+        this->TestSecurityDefinitionsAreClear();
+    }
+
+    void Test() {
+        //DONT CHANGE ORDER
         printf("IDF FOND TestDefaults\n");
         TestDefaults();
+        printf("IDF FOND TestFirstStart\n");
+        TestFirstStart();
+        printf("IDF FOND TestSecondStart()\n");
+        TestSecondStart();
+        // UNTIL THIS
         printf("IDF FOND TestAddSymbol\n");
         TestAddSymbol();
         printf("IDF FOND TestAddSymbol_2\n");
@@ -444,8 +536,13 @@ public:
         TestClearBeforeStart();
         printf("IDF FOND TestUpdateSecurityDefinition\n");
         TestUpdateSecurityDefinition();
-        printf("IDF FOND TestStart()\n");
-        TestStart();
+
+        printf("IDF FOND TestInstrumentDefinitionSomeMessagesLost\n");
+        TestInstrumentDefinitionSomeMessagesLost();
+        printf("IDF FOND TestInstrumentDefinitionStartInCollectDataMode\n");
+        TestInstrumentDefinitionStartInCollectDataMode();
+        printf("IDF FOND TestInstrumentDefinitionCollectDataCompleted\n");
+        TestInstrumentDefinitionCollectDataCompleted();
     }
 };
 
