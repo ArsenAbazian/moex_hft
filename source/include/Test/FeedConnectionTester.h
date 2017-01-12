@@ -238,7 +238,7 @@ public:
         HistoricalReplayTester hrt;
         hrt.Test();
 
-        TestSaveIdfSymbols();
+        //TestSaveIdfSymbols();
 
         //StatisticsTesterFond stFond;
         //stFond.Test();

@@ -447,9 +447,8 @@ public:
         this->TestSymbolManagerCleared();
     }
 
-    void TestInstrumentDefinitionSomeMessagesLost() {
+    void TestInstrumentDefinitionSomeMessagesLost_1() {
         this->Clear();
-        this->idf->Stop();
         idf->Stop();
         idf->m_idfMode = FeedConnectionSecurityDefinitionMode::sdmCollectData;
         idf->Start();
@@ -467,6 +466,149 @@ public:
             throw;
         if(this->olr->OrderFond()->SymbolsCount() != 3)
             throw;
+    }
+
+    void TestInstrumentDefinitionSomeMessagesLost_2() {
+        this->Clear();
+        idf->Stop();
+        idf->m_idfAllowUpdateData = false;
+        idf->m_idfMode = FeedConnectionSecurityDefinitionMode::sdmCollectData;
+        idf->Start();
+
+        this->m_helper->SendMessages(this->idf,
+                                     "     msgSeqNo 2 idf s1 totNumReports 4 session t1 session t2,"
+                                     "lost msgSeqNo 3 idf s2 totNumReports 4 session t1 session t2,"
+                                     "lost msgSeqNo 4 idf s3 totNumReports 4 session t1 session t2,"
+                                     "     msgSeqNo 1 idf s1 totNumReports 4 session t1 session t2", 30);
+        if(idf->m_idfState != FeedConnectionSecurityDefinitionState::sdsProcessToEnd)
+            throw;
+        if(idf->State() != FeedConnectionState::fcsListenSecurityDefinition)
+            throw;
+        if(idf->IsIdfDataCollected())
+            throw;
+        this->m_helper->SendMessages(this->idf,
+                                     "     msgSeqNo 2 idf s1 totNumReports 4 session t1 session t2,"
+                                     "     msgSeqNo 3 idf s2 totNumReports 4 session t1 session t2,"
+                                     "     msgSeqNo 4 idf s3 totNumReports 4 session t1 session t2,"
+                                     "     msgSeqNo 1 idf s1 totNumReports 4 session t1 session t2", 30);
+        if(idf->m_idfState != FeedConnectionSecurityDefinitionState::sdsProcessFromStart)
+            throw;
+        if(idf->State() != FeedConnectionState::fcsListenSecurityDefinition)
+            throw;
+        if(idf->IsIdfDataCollected())
+            throw;
+        this->m_helper->SendMessages(this->idf,
+                                     "     msgSeqNo 2 idf s1 totNumReports 4 session t1 session t2"
+                                     , 30);
+        if(idf->State() != FeedConnectionState::fcsSuspend)
+            throw;
+        if(!idf->IsIdfDataCollected())
+            throw;
+    }
+
+    void TestInstrumentDefinitionSomeMessagesLost_3() {
+        this->Clear();
+        idf->Stop();
+        idf->m_idfAllowUpdateData = false;
+        idf->m_idfMode = FeedConnectionSecurityDefinitionMode::sdmCollectData;
+        idf->Start();
+
+        this->m_helper->SendMessages(this->idf,
+                                     "     msgSeqNo 2 idf s1 totNumReports 4 session t1 session t2,"
+                                     "lost msgSeqNo 3 idf s2 totNumReports 4 session t1 session t2,"
+                                     "lost msgSeqNo 4 idf s3 totNumReports 4 session t1 session t2,"
+                                     "     msgSeqNo 1 idf s1 totNumReports 4 session t1 session t2,"
+                                     "     msgSeqNo 2 idf s1 totNumReports 4 session t1 session t2", 30);
+        if(idf->m_idfState != FeedConnectionSecurityDefinitionState::sdsProcessToEnd)
+            throw;
+        if(idf->State() != FeedConnectionState::fcsListenSecurityDefinition)
+            throw;
+        if(idf->IsIdfDataCollected())
+            throw;
+    }
+
+    void TestInstrumentDefinitionSomeMessagesLost_4() {
+        this->Clear();
+        idf->Stop();
+        idf->m_idfAllowUpdateData = false;
+        idf->m_idfMode = FeedConnectionSecurityDefinitionMode::sdmCollectData;
+        idf->Start();
+
+        this->m_helper->SendMessages(this->idf,
+                                     "     msgSeqNo 2 idf s1 totNumReports 4 session t1 session t2,"
+                                     "lost msgSeqNo 3 idf s2 totNumReports 4 session t1 session t2,"
+                                     "     msgSeqNo 4 idf s3 totNumReports 4 session t1 session t2,"
+                                     "     msgSeqNo 1 idf s1 totNumReports 4 session t1 session t2,"
+                                     "     msgSeqNo 2 idf s1 totNumReports 4 session t1 session t2", 30);
+        if(idf->m_idfState != FeedConnectionSecurityDefinitionState::sdsProcessToEnd)
+            throw;
+        if(idf->State() != FeedConnectionState::fcsListenSecurityDefinition)
+            throw;
+        if(idf->IsIdfDataCollected())
+            throw;
+    }
+
+    void TestInstrumentDefinitionSomeMessagesLost_5() {
+        this->Clear();
+        idf->Stop();
+        idf->m_idfAllowUpdateData = false;
+        idf->m_idfMode = FeedConnectionSecurityDefinitionMode::sdmCollectData;
+        idf->Start();
+
+        this->m_helper->SendMessages(this->idf,
+                                     "     msgSeqNo 2 idf s1 totNumReports 4 session t1 session t2,"
+                                     "lost msgSeqNo 3 idf s2 totNumReports 4 session t1 session t2,"
+                                     "     msgSeqNo 4 idf s3 totNumReports 4 session t1 session t2,"
+                                     "     msgSeqNo 1 idf s1 totNumReports 4 session t1 session t2,"
+                                     "     msgSeqNo 2 idf s1 totNumReports 4 session t1 session t2,"
+                                     "     msgSeqNo 3 idf s2 totNumReports 4 session t1 session t2,"
+                                     "lost msgSeqNo 4 idf s3 totNumReports 4 session t1 session t2,"
+                                     "lost msgSeqNo 1 idf s1 totNumReports 4 session t1 session t2,"
+                                     "     msgSeqNo 2 idf s1 totNumReports 4 session t1 session t2", 30);
+        if(idf->State() != FeedConnectionState::fcsListenSecurityDefinition)
+            throw;
+        if(idf->m_idfState != FeedConnectionSecurityDefinitionState::sdsProcessToEnd)
+            throw;
+        if(idf->IsIdfDataCollected())
+            throw;
+    }
+
+    void TestInstrumentDefinitionSomeMessagesLost_6() {
+        this->Clear();
+        idf->Stop();
+        idf->m_idfAllowUpdateData = false;
+        idf->m_idfMode = FeedConnectionSecurityDefinitionMode::sdmCollectData;
+        idf->Start();
+
+        this->m_helper->SendMessages(this->idf,
+                                             "     msgSeqNo 2 idf s1 totNumReports 4 session t1 session t2,"
+                                             "lost msgSeqNo 3 idf s2 totNumReports 4 session t1 session t2,"
+                                             "     msgSeqNo 4 idf s3 totNumReports 4 session t1 session t2,"
+                                             "     msgSeqNo 1 idf s1 totNumReports 4 session t1 session t2,"
+                                             "     msgSeqNo 2 idf s1 totNumReports 4 session t1 session t2,"
+                                             "     msgSeqNo 3 idf s2 totNumReports 4 session t1 session t2,"
+                                             "lost msgSeqNo 4 idf s3 totNumReports 4 session t1 session t2,"
+                                             "lost msgSeqNo 1 idf s1 totNumReports 4 session t1 session t2,"
+                                             "     msgSeqNo 2 idf s1 totNumReports 4 session t1 session t2"
+                                             "lost msgSeqNo 3 idf s2 totNumReports 4 session t1 session t2,"
+                                             "     msgSeqNo 4 idf s3 totNumReports 4 session t1 session t2,"
+                                             "lost msgSeqNo 1 idf s1 totNumReports 4 session t1 session t2,"
+                                             "     msgSeqNo 2 idf s1 totNumReports 4 session t1 session t2,", 30);
+        if(idf->State() != FeedConnectionState::fcsSuspend)
+            throw;
+        if(!idf->IsIdfDataCollected())
+            throw;
+        if(idf->SecurityDefinitionsCount() != 3)
+            throw;
+    }
+
+    void TestInstrumentDefinitionSomeMessagesLost() {
+        TestInstrumentDefinitionSomeMessagesLost_1();
+        TestInstrumentDefinitionSomeMessagesLost_2();
+        TestInstrumentDefinitionSomeMessagesLost_3();
+        TestInstrumentDefinitionSomeMessagesLost_4();
+        TestInstrumentDefinitionSomeMessagesLost_5();
+        TestInstrumentDefinitionSomeMessagesLost_6();
     }
 
     void TestPacketsAreClear() {
@@ -568,6 +710,20 @@ public:
             throw;
         if(this->idf->SecurityDefinition(1)->MarketSegmentGrp[1]->TradingSessionRulesGrpCount != 1)
             throw;
+
+        FastSecurityDefinitionMarketSegmentGrpItemInfo *m = this->idf->SecurityDefinition(0)->MarketSegmentGrp[0];
+        if(!StringIdComparer::Equal(m->TradingSessionRulesGrp[0]->TradingSessionID, m->TradingSessionRulesGrp[0]->TradingSessionIDLength, "t1", 2))
+            throw;
+        m = this->idf->SecurityDefinition(0)->MarketSegmentGrp[1];
+        if(!StringIdComparer::Equal(m->TradingSessionRulesGrp[0]->TradingSessionID, m->TradingSessionRulesGrp[0]->TradingSessionIDLength, "t2", 2))
+            throw;
+
+        m = this->idf->SecurityDefinition(1)->MarketSegmentGrp[0];
+        if(!StringIdComparer::Equal(m->TradingSessionRulesGrp[0]->TradingSessionID, m->TradingSessionRulesGrp[0]->TradingSessionIDLength, "t1", 2))
+            throw;
+        m = this->idf->SecurityDefinition(1)->MarketSegmentGrp[1];
+        if(!StringIdComparer::Equal(m->TradingSessionRulesGrp[0]->TradingSessionID, m->TradingSessionRulesGrp[0]->TradingSessionIDLength, "t2", 2))
+            throw;
     }
 
     void TestSwitchToUpdateDataModeAfterDataCompleted() {
@@ -636,7 +792,7 @@ public:
             throw;
         if(!StringIdComparer::Equal(info1->MarketSegmentGrp[0]->TradingSessionRulesGrp[0]->TradingSessionID, 2, "t1", 2))
             throw;
-        if(!StringIdComparer::Equal(info1->MarketSegmentGrp[0]->TradingSessionRulesGrp[1]->TradingSessionID, 2, "t2", 2))
+        if(!StringIdComparer::Equal(info1->MarketSegmentGrp[1]->TradingSessionRulesGrp[0]->TradingSessionID, 2, "t2", 2))
             throw;
 
         FastSecurityDefinitionInfo *info2 = this->idf->SecurityDefinition(1);
@@ -648,7 +804,7 @@ public:
             throw;
         if(!StringIdComparer::Equal(info2->MarketSegmentGrp[0]->TradingSessionRulesGrp[0]->TradingSessionID, 2, "t1", 2))
             throw;
-        if(!StringIdComparer::Equal(info2->MarketSegmentGrp[0]->TradingSessionRulesGrp[1]->TradingSessionID, 2, "t2", 2))
+        if(!StringIdComparer::Equal(info2->MarketSegmentGrp[1]->TradingSessionRulesGrp[0]->TradingSessionID, 2, "t2", 2))
             throw;
     }
 

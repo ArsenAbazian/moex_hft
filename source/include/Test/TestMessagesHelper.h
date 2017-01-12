@@ -22,6 +22,7 @@ public:
 class TestMessagesHelper {
 public:
     static PointerList<SocketMessageInfo> *m_sockMessages;
+    static bool SkipTimeOutCheck;
 private:
 
     const char *symbols[100];
@@ -1645,7 +1646,7 @@ public:
             w.Start();
             while(!w.IsElapsedMilliseconds(delay));
             w.Stop();
-            if(w.ElapsedMilliseconds(1) > 5000)
+            if(!TestMessagesHelper::SkipTimeOutCheck && w.ElapsedMilliseconds(1) > 5000)
                 throw;
         }
     }
@@ -1766,7 +1767,7 @@ public:
             w.Start();
             while(!w.IsElapsedMilliseconds(delay));
             w.Stop();
-            if(w.ElapsedMilliseconds(1) > 5000)
+            if(!TestMessagesHelper::SkipTimeOutCheck && w.ElapsedMilliseconds(1) > 5000)
                 throw;
         }
         fci->Listen_Atom_Incremental_Core(); // emulate endless loop

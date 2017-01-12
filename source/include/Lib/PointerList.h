@@ -5,6 +5,8 @@
 #ifndef HFT_ROBOT_SIMPLELIST_H
 #define HFT_ROBOT_SIMPLELIST_H
 
+#include <stdio.h>
+
 template <typename T> class PointerList;
 
 template <typename T> class LinkedPointer {
@@ -226,6 +228,7 @@ public:
         }
         this->m_poolTail->Next(start);
         this->m_poolTail = node;
+        printf("!!!unexpected append!!!\n"); //TODO remove debug info
         return start;
     }
     inline LinkedPointer<T>* Start() { return this->m_head->Next(); }
