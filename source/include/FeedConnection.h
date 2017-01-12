@@ -200,7 +200,7 @@ protected:
     int                                         m_idfStartMsgSeqNo;
 
     bool                                        m_idfDataCollected;
-    bool                                        m_allowUpdateIdfData;
+    bool                                        m_idfAllowUpdateData;
     SymbolManager                               *m_symbolManager;
 
     FeedConnectionHistoricalReplayState             m_hsState;
@@ -1641,10 +1641,11 @@ public:
     inline void MergeSecurityDefinition(FastSecurityDefinitionInfo *parent, FastSecurityDefinitionInfo *child) {
         int freeIndex = parent->MarketSegmentGrpCount;
         FastSecurityDefinitionMarketSegmentGrpItemInfo **market = child->MarketSegmentGrp;
-        for(int i = 0; i < child->MarketSegmentGrpCount; i++, market++) {
+        for(int i = 0; i < child->MarketSegmentGrpCount; i++, market++, freeIndex++) {
             MakeUsed(*market, true);
             parent->MarketSegmentGrp[freeIndex] = *market;
         }
+        parent->MarketSegmentGrpCount += child->MarketSegmentGrpCount;
         child->MarketSegmentGrpCount = 0;
     }
 
@@ -1659,13 +1660,16 @@ public:
     }
 
     inline void OnSecurityDefinitionRecvAllMessages() {
-        this->Stop();
-
-        this->m_idfStartMsgSeqNo = 0;
-        this->ClearPackets(1, this->m_idfMaxMsgSeqNo);
-        this->PrintSymbolManagerDebug();  // TODO debug messages
         this->m_idfDataCollected = true;
-        this->m_idfMode = FeedConnectionSecurityDefinitionMode::sdmUpdateData;
+        this->m_idfStartMsgSeqNo = 0;
+        this->PrintSymbolManagerDebug();  // TODO debug messages
+        if(!this->m_idfAllowUpdateData) {
+            this->Stop();
+            this->ClearPackets(1, this->m_idfMaxMsgSeqNo);
+        }
+        else {
+            this->m_idfMode = FeedConnectionSecurityDefinitionMode::sdmUpdateData;
+        }
     }
 
     inline bool ProcessSecurityDefinition(FastSecurityDefinitionInfo *info) {

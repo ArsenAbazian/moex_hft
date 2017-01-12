@@ -24,7 +24,6 @@
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/FeedConnection.h" afterPath="$PROJECT_DIR$/source/include/FeedConnection.h" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/Test/InstrumentDefinitionTester.h" afterPath="$PROJECT_DIR$/source/include/Test/InstrumentDefinitionTester.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/Test/TestMessagesHelper.h" afterPath="$PROJECT_DIR$/source/include/Test/TestMessagesHelper.h" />
     </list>
     <ignored path="hft_robot.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -47,8 +46,8 @@
       <file leaf-file-name="FeedConnection.h" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/source/include/FeedConnection.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="145">
-              <caret line="899" column="0" selection-start-line="899" selection-start-column="0" selection-end-line="899" selection-end-column="0" />
+            <state relative-caret-position="213">
+              <caret line="1640" column="39" selection-start-line="1640" selection-start-column="16" selection-end-line="1640" selection-end-column="39" />
               <folding>
                 <element signature="e#13#40#0" expanded="true" />
               </folding>
@@ -125,8 +124,8 @@
       <file leaf-file-name="TestMessagesHelper.h" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/source/include/Test/TestMessagesHelper.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="151">
-              <caret line="175" column="47" selection-start-line="175" selection-start-column="47" selection-end-line="175" selection-end-column="47" />
+            <state relative-caret-position="144">
+              <caret line="1627" column="0" selection-start-line="1627" selection-start-column="0" selection-end-line="1627" selection-end-column="0" />
               <folding>
                 <element signature="e#649#911#0" expanded="false" />
                 <element signature="e#917#1106#0" expanded="false" />
@@ -150,13 +149,11 @@
       <file leaf-file-name="InstrumentDefinitionTester.h" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/source/include/Test/InstrumentDefinitionTester.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="18">
-              <caret line="366" column="0" selection-start-line="366" selection-start-column="0" selection-end-line="366" selection-end-column="0" />
+            <state relative-caret-position="210">
+              <caret line="635" column="18" selection-start-line="635" selection-start-column="18" selection-end-line="635" selection-end-column="18" />
               <folding>
-                <element signature="e#2525#3586#0" expanded="false" />
-                <element signature="e#3592#7324#0" expanded="false" />
-                <element signature="e#7330#9417#0" expanded="false" />
-                <element signature="e#9423#11301#0" expanded="false" />
+                <element signature="e#7401#9488#0" expanded="false" />
+                <element signature="e#9494#11372#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -228,9 +225,9 @@
         <option value="$PROJECT_DIR$/source/include/Test/SymbolManagerTester.h" />
         <option value="$PROJECT_DIR$/source/include/Lib/PointerList.h" />
         <option value="$PROJECT_DIR$/source/include/Test/PointerListTester.h" />
+        <option value="$PROJECT_DIR$/source/include/Test/TestMessagesHelper.h" />
         <option value="$PROJECT_DIR$/source/include/FeedConnection.h" />
         <option value="$PROJECT_DIR$/source/include/Test/InstrumentDefinitionTester.h" />
-        <option value="$PROJECT_DIR$/source/include/Test/TestMessagesHelper.h" />
       </list>
     </option>
   </component>
@@ -759,14 +756,7 @@
       <workItem from="1483178499381" duration="27347000" />
       <workItem from="1483429546776" duration="72810000" />
       <workItem from="1484004031648" duration="19129000" />
-      <workItem from="1484121378271" duration="18540000" />
-    </task>
-    <task id="LOCAL-00094" summary="Big Refactoring continue... tests - break tests">
-      <created>1481297447478</created>
-      <option name="number" value="00094" />
-      <option name="presentableId" value="LOCAL-00094" />
-      <option name="project" value="LOCAL" />
-      <updated>1481297447491</updated>
+      <workItem from="1484121378271" duration="21665000" />
     </task>
     <task id="LOCAL-00095" summary="Big Refactoring continue... tests - break tests">
       <created>1481307975415</created>
@@ -1104,11 +1094,18 @@
       <option name="project" value="LOCAL" />
       <updated>1484236225706</updated>
     </task>
-    <option name="localTasksCounter" value="143" />
+    <task id="LOCAL-00143" summary="Working on Security Definition&#10;1. Continue writing Security Definition tests&#10;">
+      <created>1484238917935</created>
+      <option name="number" value="00143" />
+      <option name="presentableId" value="LOCAL-00143" />
+      <option name="project" value="LOCAL" />
+      <updated>1484238917935</updated>
+    </task>
+    <option name="localTasksCounter" value="144" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="1233913000" />
+    <option name="totallyTimeSpent" value="1237038000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -1123,9 +1120,9 @@
     <frame x="65" y="24" width="1855" height="951" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.29312226" sideWeight="0.493007" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.1812227" sideWeight="0.493007" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32920793" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.5334115" sideWeight="0.3907068" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32239157" sideWeight="0.3907068" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="CMake" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.30011722" sideWeight="0.4384817" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3511008" sideWeight="0.4365183" order="8" side_tool="true" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.35287222" sideWeight="0.49344978" order="1" side_tool="false" content_ui="tabs" />
@@ -1134,7 +1131,7 @@
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.289267" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3282532" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.235262" sideWeight="0.506993" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.36811253" sideWeight="0.5634817" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3669402" sideWeight="0.5634817" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -1194,7 +1191,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
-    <MESSAGE value="Working on MSR/MSS&#10;1. Preparng code in FeedConnection for MSS FOND and CURR&#10;2. Preparing StatisticsTester for FOND&#10;3. Tests are not passed - please comment StatisticsTesterFond.Test()" />
     <MESSAGE value="Make some methods inline :)" />
     <MESSAGE value="Working on MSR/MSS&#10;1. Fixed bug - in MSR template there is no PresenceMap in GroupMDEntries, BUT SHOULD BECAUSE OF (FUUUUUUCK!!!!) optional presence with copy operator.&#10;2. Wrote some tests" />
     <MESSAGE value="All templates have changed... Broke tests.... Still working on them" />
@@ -1219,7 +1215,8 @@
     <MESSAGE value="Working on Security Definition&#10;1. GetTotalNumRecords now works fast optimal and correct.&#10;2. Continue writing tests" />
     <MESSAGE value="Working on Security Definition&#10;1. Continue writing Security Definition tests" />
     <MESSAGE value="Working on Security Definition&#10;1. Continue writing Security Definition tests&#10;2. PointerList - severe bug fix and wrote tests.. :)" />
-    <option name="LAST_COMMIT_MESSAGE" value="Working on Security Definition&#10;1. Continue writing Security Definition tests&#10;2. PointerList - severe bug fix and wrote tests.. :)" />
+    <MESSAGE value="Working on Security Definition&#10;1. Continue writing Security Definition tests&#10;" />
+    <option name="LAST_COMMIT_MESSAGE" value="Working on Security Definition&#10;1. Continue writing Security Definition tests&#10;" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1234,17 +1231,25 @@
           <line>38</line>
           <option name="timeStamp" value="1065" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/source/include/Test/InstrumentDefinitionTester.h</url>
+          <line>652</line>
+          <option name="timeStamp" value="1263" />
+        </line-breakpoint>
       </breakpoints>
       <breakpoints-dialog>
         <breakpoints-dialog />
       </breakpoints-dialog>
-      <option name="time" value="1257" />
+      <option name="time" value="1264" />
     </breakpoint-manager>
     <watches-manager>
       <configuration name="CMakeRunConfiguration">
         <watch expression="keys[0]" language="ObjectiveC" />
         <watch expression="keys[1]" language="ObjectiveC" />
         <watch expression="keys[2]" language="ObjectiveC" />
+        <watch expression="this-&gt;idf-&gt;SecurityDefinitionsCount()" />
+        <watch expression="this-&gt;idf-&gt;SecurityDefinition(0)" />
+        <watch expression="info1-&gt;MarketSegmentGrp[0]-&gt;TradingSessionRulesGrp[1]-&gt;TradingSessionID" />
       </configuration>
     </watches-manager>
   </component>
@@ -1613,20 +1618,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/source/include/FeedConnection.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="145">
-          <caret line="899" column="0" selection-start-line="899" selection-start-column="0" selection-end-line="899" selection-end-column="0" />
-          <folding>
-            <element signature="e#13#40#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/source/include/Test/TestMessagesHelper.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="151">
-          <caret line="175" column="47" selection-start-line="175" selection-start-column="47" selection-end-line="175" selection-end-column="47" />
+        <state relative-caret-position="144">
+          <caret line="1627" column="0" selection-start-line="1627" selection-start-column="0" selection-end-line="1627" selection-end-column="0" />
           <folding>
             <element signature="e#649#911#0" expanded="false" />
             <element signature="e#917#1106#0" expanded="false" />
@@ -1646,15 +1641,23 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/source/include/FeedConnection.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="213">
+          <caret line="1640" column="39" selection-start-line="1640" selection-start-column="16" selection-end-line="1640" selection-end-column="39" />
+          <folding>
+            <element signature="e#13#40#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/source/include/Test/InstrumentDefinitionTester.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="18">
-          <caret line="366" column="0" selection-start-line="366" selection-start-column="0" selection-end-line="366" selection-end-column="0" />
+        <state relative-caret-position="210">
+          <caret line="635" column="18" selection-start-line="635" selection-start-column="18" selection-end-line="635" selection-end-column="18" />
           <folding>
-            <element signature="e#2525#3586#0" expanded="false" />
-            <element signature="e#3592#7324#0" expanded="false" />
-            <element signature="e#7330#9417#0" expanded="false" />
-            <element signature="e#9423#11301#0" expanded="false" />
+            <element signature="e#7401#9488#0" expanded="false" />
+            <element signature="e#9494#11372#0" expanded="false" />
           </folding>
         </state>
       </provider>

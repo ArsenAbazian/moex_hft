@@ -86,6 +86,8 @@ public:
             throw;
         if(this->idf->m_idfState != FeedConnectionSecurityDefinitionState::sdsProcessToEnd)
             throw;
+        if(this->idf->m_idfAllowUpdateData == true)
+            throw;
     }
 
     void TestAddSymbol() {
@@ -505,6 +507,156 @@ public:
         this->TestSecurityDefinitionsAreClear();
     }
 
+    // do not allow update data so just stop
+    void TestSwitchToUpdateDataModeAfterDataCompleted_1() {
+        this->idf->Stop();
+        this->idf->m_idfMode = FeedConnectionSecurityDefinitionMode::sdmCollectData;
+        this->idf->m_idfAllowUpdateData = false;
+        this->idf->Start();
+
+        this->m_helper->SendMessages(this->idf, "totNumReports 2 idf s1 session t1 session t2, totNumReports 2 idf s2 session t1 session t2, msgSeqNo 1 totNumReports 2 idf s1 session t1 session t2", 30);
+        if(this->idf->m_idfMode != FeedConnectionSecurityDefinitionMode::sdmCollectData)
+            throw;
+        if(this->idf->State() != FeedConnectionState::fcsSuspend)
+            throw;
+        if(this->idf->SecurityDefinitionsCount() != 2)
+            throw;
+    }
+    // switch to update mode
+    void TestSwitchToUpdateDataModeAfterDataCompleted_2() {
+        this->idf->Stop();
+        this->idf->m_idfMode = FeedConnectionSecurityDefinitionMode::sdmCollectData;
+        this->idf->m_idfAllowUpdateData = true;
+        this->idf->Start();
+
+        this->m_helper->SendMessages(this->idf, "totNumReports 2 idf s1 session t1 session t2, totNumReports 2 idf s2 session t1 session t2, msgSeqNo 1 totNumReports 2 idf s1 session t1 session t2", 30);
+        if(this->idf->m_idfMode != FeedConnectionSecurityDefinitionMode::sdmUpdateData)
+            throw;
+        if(this->idf->State() != FeedConnectionState::fcsListenSecurityDefinition)
+            throw;
+        if(this->idf->SecurityDefinitionsCount() != 2)
+            throw;
+    }
+    // continue update security definitions data, do not update trading sessions...
+    void TestSwitchToUpdateDataModeAfterDataCompleted_3() {
+        this->idf->Stop();
+        this->idf->m_idfMode = FeedConnectionSecurityDefinitionMode::sdmCollectData;
+        this->idf->m_idfAllowUpdateData = true;
+        this->idf->Start();
+
+        this->m_helper->SendMessages(this->idf,
+                "msgSeqNo 1 totNumReports 4 idf s1 session t1,"
+                "msgSeqNo 2 totNumReports 4 idf s2 session t1,"
+                "msgSeqNo 3 totNumReports 4 idf s1 session t2,"
+                "msgSeqNo 4 totNumReports 4 idf s2 session t2,"
+                "msgSeqNo 1 totNumReports 4 idf s1 session t1,"
+                "msgSeqNo 2 totNumReports 4 idf s2 session t1",
+                30);
+        if(this->idf->m_idfMode != FeedConnectionSecurityDefinitionMode::sdmUpdateData)
+            throw;
+        if(this->idf->SecurityDefinitionsCount() != 2)
+            throw;
+        if(this->idf->SecurityDefinition(0)->MarketSegmentGrpCount != 2)
+            throw;
+        if(this->idf->SecurityDefinition(1)->MarketSegmentGrpCount != 2)
+            throw;
+        if(this->idf->SecurityDefinition(0)->MarketSegmentGrp[0]->TradingSessionRulesGrpCount != 1)
+            throw;
+        if(this->idf->SecurityDefinition(1)->MarketSegmentGrp[0]->TradingSessionRulesGrpCount != 1)
+            throw;
+        if(this->idf->SecurityDefinition(0)->MarketSegmentGrp[1]->TradingSessionRulesGrpCount != 1)
+            throw;
+        if(this->idf->SecurityDefinition(1)->MarketSegmentGrp[1]->TradingSessionRulesGrpCount != 1)
+            throw;
+    }
+
+    void TestSwitchToUpdateDataModeAfterDataCompleted() {
+        printf("TestSwitchToUpdateDataModeAfterDataCompleted_1\n");
+        TestSwitchToUpdateDataModeAfterDataCompleted_1();
+        printf("TestSwitchToUpdateDataModeAfterDataCompleted_2\n");
+        TestSwitchToUpdateDataModeAfterDataCompleted_2();
+        printf("TestSwitchToUpdateDataModeAfterDataCompleted_3\n");
+        TestSwitchToUpdateDataModeAfterDataCompleted_3();
+    }
+
+    void TestMergeSecurityDefinitions_1() {
+        FastSecurityDefinitionInfo *info = this->m_helper->CreateSecurityDefinitionInfo("s1");
+        this->m_helper->AddMarketSegemntGroup(info);
+
+        this->m_helper->AddTradingSession(info, 0, "t1");
+        this->m_helper->AddTradingSession(info, 0, "t2");
+
+        FastSecurityDefinitionInfo *info2 = this->m_helper->CreateSecurityDefinitionInfo("s1");
+        this->m_helper->AddMarketSegemntGroup(info2);
+        this->m_helper->AddMarketSegemntGroup(info2);
+
+        this->m_helper->AddTradingSession(info2, 0, "t3");
+        this->m_helper->AddTradingSession(info2, 0, "t4");
+
+        this->m_helper->AddTradingSession(info2, 1, "t5");
+        this->m_helper->AddTradingSession(info2, 1, "t6");
+
+        this->idf->MergeSecurityDefinition(info, info2);
+
+        if(info->MarketSegmentGrpCount != 3)
+            throw;
+        if(info->MarketSegmentGrp[1] != info2->MarketSegmentGrp[0])
+            throw;
+        if(info->MarketSegmentGrp[2] != info2->MarketSegmentGrp[1])
+            throw;
+        if(info->MarketSegmentGrp[1] == 0)
+            throw;
+        if(info->MarketSegmentGrp[2] == 0)
+            throw;
+    }
+
+    void TestMergeSecurityDefinitions_2() {
+        this->idf->Stop();
+        this->idf->m_idfMode = FeedConnectionSecurityDefinitionMode::sdmCollectData;
+        this->idf->m_idfAllowUpdateData = false;
+        this->idf->Start();
+
+        this->m_helper->SendMessages(this->idf,
+                                     "msgSeqNo 1 totNumReports 4 idf s1 session t1,"
+                                             "msgSeqNo 2 totNumReports 4 idf s2 session t1,"
+                                             "msgSeqNo 3 totNumReports 4 idf s1 session t2,"
+                                             "msgSeqNo 4 totNumReports 4 idf s2 session t2,"
+                                             "msgSeqNo 1 totNumReports 4 idf s1 session t1",
+                                     30);
+        if(this->idf->State() != FeedConnectionState::fcsSuspend)
+            throw;
+        if(this->idf->SecurityDefinitionsCount() != 2)
+            throw;
+        FastSecurityDefinitionInfo *info1 = this->idf->SecurityDefinition(0);
+        if(info1->MarketSegmentGrpCount != 2)
+            throw;
+        if(info1->MarketSegmentGrp[0]->TradingSessionRulesGrpCount != 1)
+            throw;
+        if(info1->MarketSegmentGrp[1]->TradingSessionRulesGrpCount != 1)
+            throw;
+        if(!StringIdComparer::Equal(info1->MarketSegmentGrp[0]->TradingSessionRulesGrp[0]->TradingSessionID, 2, "t1", 2))
+            throw;
+        if(!StringIdComparer::Equal(info1->MarketSegmentGrp[0]->TradingSessionRulesGrp[1]->TradingSessionID, 2, "t2", 2))
+            throw;
+
+        FastSecurityDefinitionInfo *info2 = this->idf->SecurityDefinition(1);
+        if(info2->MarketSegmentGrpCount != 2)
+            throw;
+        if(info2->MarketSegmentGrp[0]->TradingSessionRulesGrpCount != 1)
+            throw;
+        if(info2->MarketSegmentGrp[1]->TradingSessionRulesGrpCount != 1)
+            throw;
+        if(!StringIdComparer::Equal(info2->MarketSegmentGrp[0]->TradingSessionRulesGrp[0]->TradingSessionID, 2, "t1", 2))
+            throw;
+        if(!StringIdComparer::Equal(info2->MarketSegmentGrp[0]->TradingSessionRulesGrp[1]->TradingSessionID, 2, "t2", 2))
+            throw;
+    }
+
+    void TestMergeSecurityDefinitions() {
+        TestMergeSecurityDefinitions_1();
+        TestMergeSecurityDefinitions_2();
+    }
+
     void Test() {
         //DONT CHANGE ORDER
         printf("IDF FOND TestDefaults\n");
@@ -523,10 +675,15 @@ public:
         printf("IDF FOND TestUpdateSecurityDefinition\n");
         TestUpdateSecurityDefinition();
 
+        printf("TestMergeSecurityDefinitions\n");
+        TestMergeSecurityDefinitions();
+
         printf("IDF FOND TestInstrumentDefinitionSomeMessagesLost\n");
         TestInstrumentDefinitionSomeMessagesLost();
         printf("IDF FOND TestInstrumentDefinitionCollectDataCompleted\n");
         TestInstrumentDefinitionCollectDataCompleted();
+        printf("IDF FOND TestSwitchToUpdateDataModeAfterDataCompleted\n");
+        TestSwitchToUpdateDataModeAfterDataCompleted();
     }
 };
 
