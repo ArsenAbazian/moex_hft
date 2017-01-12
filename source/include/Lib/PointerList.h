@@ -73,7 +73,9 @@ public:
         for(int i = 0; i < this->m_capacity + 1; i++) {
             LinkedPointer<T> *ptr = new LinkedPointer<T>;
             ptr->Owner(this);
-            this->Push(ptr);
+
+            this->m_poolTail->Next(ptr);
+            this->m_poolTail = ptr;
         }
 
         this->m_tail = this->m_head = this->Pop();
@@ -145,6 +147,28 @@ public:
         node->Prev(prev);
         node->Next(before);
         before->Prev(node);
+    }
+
+    inline LinkedPointer<T> *Pointer(int index) {
+        LinkedPointer<T> *node = this->Start();
+        while(index > 0) {
+            if(node == this->End())
+                return 0;
+            node = node->Next();
+            index--;
+        }
+        return node;
+    }
+
+    inline LinkedPointer<T> *PoolPointer(int index) {
+        LinkedPointer<T> *node = this->PoolStart();
+        while(index > 0) {
+            if(node == this->PoolEnd())
+                return 0;
+            node = node->Next();
+            index--;
+        }
+        return node;
     }
 
     inline T* Item(int index) {
@@ -252,6 +276,7 @@ public:
             sum++;
             if(ptr == this->m_poolTail)
                 break;
+            ptr = ptr->Next();
         }
         // why - 1? becasue capacity = + 1 see constructor
         return sum - 1;

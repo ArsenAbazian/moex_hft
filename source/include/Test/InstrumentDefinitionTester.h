@@ -57,6 +57,8 @@ public:
         this->olr->OrderFond()->Clear();
         this->tlr->TradeFond()->Clear();
         this->msr->StatisticFond()->Clear();
+        this->idf->ClearSecurityDefinitions();
+        this->idf->m_symbolManager->Clear();
     }
 
     void TestDefaults() {
@@ -264,13 +266,13 @@ public:
 
     void TestClearBeforeStart() {
         this->TestAddSymbol();
-        this->idf->m_securityDefinitionsCount = 5;
+        if(this->idf->m_securityDefinitionsCount == 0)
+            throw;
 
         FastSecurityDefinitionInfo *info = this->idf->SecurityDefinition(0);
         this->idf->BeforeProcessSecurityDefinitions();
         if(this->idf->m_securityDefinitionsCount != 0)
             throw;
-
         if(info->Used)
             throw;
         if(info->Allocator->Count() != 0)
@@ -453,8 +455,6 @@ public:
         if(this->idf->m_endMsgSeqNum != 0)
             throw;
         if(this->idf->m_startMsgSeqNum != 0)
-            throw;
-        if(this->idf->m_symbolManager->SymbolCount() != 0)
             throw;
         this->TestSymbolManagerCleared();
     }

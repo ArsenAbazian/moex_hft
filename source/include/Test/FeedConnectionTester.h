@@ -15,6 +15,7 @@
 #include "StatisticsTesterCurr.h"
 #include "SymbolManagerTester.h"
 #include "HistoricalReplayTester.h"
+#include "PointerListTester.h"
 
 class TestFeedMessage{
 public:
@@ -217,6 +218,12 @@ public:
     }
 
     void Test() {
+        PointerListTester pt;
+        pt.Test();
+
+        SymbolManagerTester ht;
+        ht.Test();
+
         RobotSettings::MarketDataMaxSymbolsCount = 10;
         RobotSettings::MarketDataMaxSessionsCount = 32;
         RobotSettings::MarketDataMaxEntriesCount = 32;
@@ -231,8 +238,6 @@ public:
         HistoricalReplayTester hrt;
         hrt.Test();
 
-        SymbolManagerTester ht;
-        ht.Test();
         TestSaveIdfSymbols();
 
         //StatisticsTesterFond stFond;

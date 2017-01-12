@@ -167,6 +167,8 @@ public:
             throw;
         if(this->m_manager->m_pool->Count() != 0)
             throw;
+        if(this->m_manager->m_pool->CalcPoolCount() != this->m_manager->m_pool->Capacity())
+            throw;
         if(this->m_manager->m_capacity == 0)
             throw;
         if(this->m_manager->m_freeIndex != -1)
@@ -176,7 +178,28 @@ public:
                 throw;
     }
 
+    void TestClear2() {
+        SymbolManager *m = new SymbolManager(40);
+        bool isNewlyAdded = false;
+
+        // IT IS IMPORTANT!!!! To preven PointerList from appending new items...
+        if(m->m_pool->CalcPoolCount() != m->m_pool->Capacity())
+            throw;
+
+        m->GetSymbol("s1", 2, &isNewlyAdded);
+        m->GetSymbol("s2", 2, &isNewlyAdded);
+
+        if(m->m_pool->CalcPoolCount() != m->m_pool->Capacity() - 2)
+            throw;
+
+        m->Clear();
+        if(m->m_pool->CalcPoolCount() != m->m_pool->Capacity())
+            throw;
+    }
+
     void Test() {
+        printf("SMB TestClear2");
+        TestClear2();
         printf("SMB TestItemsLoaded\n");
         TestItemsLoaded();
         printf("SMB TestCollisionCount\n");

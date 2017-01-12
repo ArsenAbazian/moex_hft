@@ -1932,6 +1932,7 @@ public:
             this->m_startMsgSeqNum = 0;
             this->m_endMsgSeqNum = 0;
             this->m_idfDataCollected = false;
+            this->m_symbolManager->Clear();
         }
         if(this->m_type == FeedConnectionType::HistoricalReplay) {
             this->m_hsState = FeedConnectionHistoricalReplayState::hsSuspend;
