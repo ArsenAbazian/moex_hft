@@ -1648,10 +1648,6 @@ public:
         child->MarketSegmentGrpCount = 0;
     }
 
-    inline bool IsLastSecurityDefinitionMessageRecv(FastSecurityDefinitionInfo *info) {
-        return info->TotNumReports == this->m_endMsgSeqNum;
-    }
-
     inline void PrintSymbolManagerDebug() {
         printf("Collected %d symbols\n", this->m_securityDefinitionsCount);
         for(int i = 0; i < this->m_symbolManager->BucketListCount(); i++) {
@@ -1688,8 +1684,6 @@ public:
             MergeSecurityDefinition(ptr->Data(), info);
         }
         info->ReleaseUnused();
-        if(IsLastSecurityDefinitionMessageRecv(info))
-            this->OnSecurityDefinitionRecvAllMessages();
 
         return true;
     }

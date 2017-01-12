@@ -264,7 +264,7 @@ public:
         TestAddSymbol_2_Core(1, info2);
     }
 
-    void TestClearBeforeStart() {
+    void TestBeforeProcessSecurityDefinitions() {
         this->TestAddSymbol();
         if(this->idf->m_securityDefinitionsCount == 0)
             throw;
@@ -341,48 +341,6 @@ public:
             throw;
     }
 
-    void TestInstrumentDefinitionStartInCollectDataMode() {
-        this->idf->Stop();
-
-        this->idf->m_idfMode = FeedConnectionSecurityDefinitionMode::sdmCollectData;
-        this->idf->Start();
-        if(this->idf->State() != FeedConnectionState::fcsListenSecurityDefinition)
-            throw;
-        if(this->idf->m_idfDataCollected)
-            throw;
-        if(this->idf->m_securityDefinitionsCount != 0)
-            throw;
-        if(this->idf->m_idfMode != FeedConnectionSecurityDefinitionMode::sdmCollectData)
-            throw;
-    }
-
-    void TestInstrumentDefinitionCollectDataCompleted_1_Core(FastSecurityDefinitionInfo *info) {
-        if(this->idf->SecurityDefinitions()[0]->Data()->MarketSegmentGrpCount != 1)
-            throw;
-        if(this->idf->SecurityDefinitions()[1]->Data()->MarketSegmentGrpCount != 1)
-            throw;
-        if(this->idf->SecurityDefinitions()[0]->Data()->MarketSegmentGrp[0]->TradingSessionRulesGrpCount != 2)
-            throw;
-        if(this->idf->SecurityDefinitions()[1]->Data()->MarketSegmentGrp[0]->TradingSessionRulesGrpCount != 2)
-            throw;
-        if(!StringIdComparer::Equal(this->idf->SecurityDefinitions()[0]->Data()->MarketSegmentGrp[0]->TradingSessionRulesGrp[0]->TradingSessionID,
-                                    this->idf->SecurityDefinitions()[0]->Data()->MarketSegmentGrp[0]->TradingSessionRulesGrp[0]->TradingSessionIDLength,
-                                    "t1", 2))
-            throw;
-        if(!StringIdComparer::Equal(this->idf->SecurityDefinitions()[0]->Data()->MarketSegmentGrp[0]->TradingSessionRulesGrp[1]->TradingSessionID,
-                                    this->idf->SecurityDefinitions()[0]->Data()->MarketSegmentGrp[0]->TradingSessionRulesGrp[1]->TradingSessionIDLength,
-                                    "t2", 2))
-            throw;
-        if(!StringIdComparer::Equal(this->idf->SecurityDefinitions()[1]->Data()->MarketSegmentGrp[0]->TradingSessionRulesGrp[0]->TradingSessionID,
-                                    this->idf->SecurityDefinitions()[1]->Data()->MarketSegmentGrp[0]->TradingSessionRulesGrp[0]->TradingSessionIDLength,
-                                    "t1", 2))
-            throw;
-        if(!StringIdComparer::Equal(this->idf->SecurityDefinitions()[1]->Data()->MarketSegmentGrp[0]->TradingSessionRulesGrp[1]->TradingSessionID,
-                                    this->idf->SecurityDefinitions()[1]->Data()->MarketSegmentGrp[0]->TradingSessionRulesGrp[1]->TradingSessionIDLength,
-                                    "t2", 2))
-            throw;
-    }
-
     // no packet was lost, symbol repeats, so symbols ended....
     void TestInstrumentDefinitionCollectDataCompleted_1() {
         this->idf->Stop();
@@ -408,9 +366,37 @@ public:
             throw;
     }
 
+    // same as TestInstrumentDefinitionCollectDataCompleted_1
+    // but message begins from 2 msg THE LAST MESSAGE
+    void TestInstrumentDefinitionCollectDataCompleted_2() {
+        this->idf->Stop();
+        this->idf->m_idfMode = FeedConnectionSecurityDefinitionMode::sdmCollectData;
+        this->idf->Start();
+
+        if(this->idf->IsIdfDataCollected())
+            throw;
+        this->m_helper->SendMessages(this->idf, "msgSeqNo 2 totNumReports 2 idf s1 session t1 session t2, msgSeqNo 1 totNumReports 2 idf s2 session t1 session t2, msgSeqNo 2 totNumReports 2 idf s1 session t1 session t2", 30);
+        if(this->idf->m_startMsgSeqNum != 0)
+            throw;
+        if(this->idf->m_idfStartMsgSeqNo != 0)
+            throw;
+        if(this->idf->m_endMsgSeqNum != 2)
+            throw;
+        if(this->idf->m_idfMaxMsgSeqNo != 2)
+            throw;
+        if(this->idf->SecurityDefinitionsCount() != 2)
+            throw;
+        if(!this->idf->IsIdfDataCollected())
+            throw;
+        if(this->idf->State() != FeedConnectionState::fcsSuspend)
+            throw;
+    }
+
     void TestInstrumentDefinitionCollectDataCompleted() {
         printf("IDF FOND TestInstrumentDefinitionCollectDataCompleted_1\n");
         TestInstrumentDefinitionCollectDataCompleted_1();
+        printf("IDF FOND TestInstrumentDefinitionCollectDataCompleted_2\n");
+        TestInstrumentDefinitionCollectDataCompleted_2();
     }
 
     void TestSymbolManagerCleared() {
@@ -430,7 +416,7 @@ public:
         idf->Start();
         if(this->idf->State() == FeedConnectionState::fcsSuspend)
             throw;
-        this->m_helper->SendMessages(this->idf, "idf totNumReports 3 s1 session t1 session t2, idf totNumReports 3 s2 session t1 session t2, idf totNumReports 3 s3 session t1 session t2, msgSeqNo 1 idf totNumReports 3 s1 session t1 session t2", 30);
+        this->m_helper->SendMessages(this->idf, "idf s1 totNumReports 3 session t1 session t2, idf s2 totNumReports 3 session t1 session t2, idf s3 totNumReports 3 session t1 session t2, msgSeqNo 1 idf s1 totNumReports 3 session t1 session t2", 30);
         // check - stop called? but i dont know if we should stop connection
         if(this->idf->State() != FeedConnectionState::fcsSuspend)
             throw;
@@ -466,15 +452,15 @@ public:
         idf->m_idfMode = FeedConnectionSecurityDefinitionMode::sdmCollectData;
         idf->Start();
 
-        this->m_helper->SendMessages(this->idf, "idf totNumReports 3 s1 session t1 session t2, lost idf totNumReports 3 s2 session t1 session t2, idf totNumReports 3 s3 session t1 session t2, msgSeqNo 1 idf totNumReports 3 s1 session t1 session t2", 30);
+        this->m_helper->SendMessages(this->idf, "idf s1 totNumReports 3 session t1 session t2, lost idf s2 totNumReports 3 session t1 session t2, idf s3 totNumReports 3 session t1 session t2, msgSeqNo 1 idf s1 totNumReports 3 session t1 session t2", 30);
         if(this->idf->m_idfDataCollected)
             throw;
         if(this->idf->m_idfState != FeedConnectionSecurityDefinitionState::sdsProcessToEnd)
             throw;
-        this->m_helper->SendMessages(this->idf, "lost idf totNumReports 3 s1 session t1 session t2, lost idf totNumReports 3 s2 session t1 session t2, idf totNumReports 3 s3 session t1 session t2, msgSeqNo 1 idf totNumReports 3 s1 session t1 session t2", 30);
+        this->m_helper->SendMessages(this->idf, "lost idf s1 totNumReports 3  session t1 session t2, lost idf s2 totNumReports 3  session t1 session t2, idf s3 totNumReports 3 session t1 session t2, msgSeqNo 1 idf s1 totNumReports 3 session t1 session t2", 30);
         if(this->idf->m_idfDataCollected)
             throw;
-        this->m_helper->SendMessages(this->idf, "idf totNumReports 3 s1 session t1 session t2, idf totNumReports 3 s2 session t1 session t2, idf totNumReports 3 s3 session t1 session t2, msgSeqNo 1 idf totNumReports 3 s1 session t1 session t2", 30);
+        this->m_helper->SendMessages(this->idf, "idf s1 totNumReports 3 session t1 session t2, idf s2 totNumReports 3 session t1 session t2, idf s3 totNumReports 3 session t1 session t2, msgSeqNo 1 idf s1 totNumReports 3 session t1 session t2", 30);
         if(!this->idf->m_idfDataCollected)
             throw;
         if(this->olr->OrderFond()->SymbolsCount() != 3)
@@ -532,15 +518,13 @@ public:
         TestAddSymbol();
         printf("IDF FOND TestAddSymbol_2\n");
         TestAddSymbol_2();
-        printf("IDF FOND TestClearBeforeStart\n");
-        TestClearBeforeStart();
+        printf("IDF FOND TestBeforeProcessSecurityDefinitions\n");
+        TestBeforeProcessSecurityDefinitions();
         printf("IDF FOND TestUpdateSecurityDefinition\n");
         TestUpdateSecurityDefinition();
 
         printf("IDF FOND TestInstrumentDefinitionSomeMessagesLost\n");
         TestInstrumentDefinitionSomeMessagesLost();
-        printf("IDF FOND TestInstrumentDefinitionStartInCollectDataMode\n");
-        TestInstrumentDefinitionStartInCollectDataMode();
         printf("IDF FOND TestInstrumentDefinitionCollectDataCompleted\n");
         TestInstrumentDefinitionCollectDataCompleted();
     }

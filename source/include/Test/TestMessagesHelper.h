@@ -170,13 +170,10 @@ private:
         }
         else if(HasKey(keys, keysCount, "idf")) {
             info->m_templateId = FeedConnectionMessage::fmcSecurityDefinition;
-            if(HasKey(keys, keysCount, "totNumReports")) {
+            int idfIndex = KeyIndex(keys, keysCount, "idf");
+            if(HasKey(keys, keysCount, "totNumReports"))
                 info->m_totNumReports = atoi(keys[KeyIndex(keys, keysCount, "totNumReports") + 1]);
-                info->m_symbol = keys[3];
-            }
-            else {
-                info->m_symbol = keys[1];
-            }
+            info->m_symbol = keys[idfIndex + 1];
         }
         else if(HasKey(keys, keysCount, "wait_snap")) {
             info->m_templateId = FeedConnectionMessage::fcmHeartBeat;
