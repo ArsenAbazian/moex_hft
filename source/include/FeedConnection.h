@@ -889,19 +889,24 @@ protected:
     }
 
     inline bool ProcessSecurityDefinitionMessagesFromStart() {
-        if(this->m_endMsgSeqNum == this->m_idfStartMsgSeqNo) {
-            if(this->HasLostPackets(1, this->m_idfMaxMsgSeqNo)) {
-                this->m_idfState = FeedConnectionSecurityDefinitionState::sdsProcessToEnd;
-                return true;
+        if(this->m_idfMode == FeedConnectionSecurityDefinitionMode::sdmUpdateData) {
+            this->UpdateSecurityDefinition(this->m_packets[this->m_endMsgSeqNum]);
+        }
+        else {
+            if (this->m_endMsgSeqNum == this->m_idfStartMsgSeqNo) {
+                if (this->HasLostPackets(1, this->m_idfMaxMsgSeqNo)) {
+                    this->m_idfState = FeedConnectionSecurityDefinitionState::sdsProcessToEnd;
+                    return true;
+                }
+                FeedConnectionMessageInfo **info = (this->m_packets + 1); // skip zero messsage
+                this->BeforeProcessSecurityDefinitions();
+                for (int i = 1; i <= this->m_idfMaxMsgSeqNo; i++, info++) {
+                    if (!this->ProcessSecurityDefinition(*info))
+                        return false;
+                }
+                this->AfterProcessSecurityDefinitions();
+                this->OnSecurityDefinitionRecvAllMessages();
             }
-            FeedConnectionMessageInfo **info = (this->m_packets + 1); // skip zero messsage
-            this->BeforeProcessSecurityDefinitions();
-            for(int i = 1; i <= this->m_idfMaxMsgSeqNo; i++, info++) {
-                if(!this->ProcessSecurityDefinition(*info))
-                    return false;
-            }
-            this->AfterProcessSecurityDefinitions();
-            this->OnSecurityDefinitionRecvAllMessages();
         }
         return true;
     }
@@ -909,6 +914,8 @@ protected:
     inline bool ProcessSecurityDefinitionMessagesToEnd() {
         if(this->m_endMsgSeqNum == this->m_idfMaxMsgSeqNo)
             this->m_idfState = FeedConnectionSecurityDefinitionState::sdsProcessFromStart;
+        if(this->m_idfMode == FeedConnectionSecurityDefinitionMode::sdmUpdateData)
+            this->UpdateSecurityDefinition(this->m_packets[this->m_endMsgSeqNum]);
         return true;
     }
 
@@ -1782,8 +1789,20 @@ public:
         return -1;
     }
 
+    inline void UpdateSecurityDefinition(FeedConnectionMessageInfo *info) {
+        this->m_fastProtocolManager->SetNewBuffer(info->m_address + 4, info->m_size - 4); // skip msg seq num
+        this->m_fastProtocolManager->DecodeHeader();
+        if(this->m_fastProtocolManager->TemplateId() != FeedConnectionMessage::fmcSecurityDefinition)
+            return;
+        FastSecurityDefinitionInfo *fi = (FastSecurityDefinitionInfo *)this->m_fastProtocolManager->DecodeSecurityDefinition();
+        this->UpdateSecurityDefinition(fi);
+        fi->ReleaseUnused();
+    }
+
     inline void UpdateSecurityDefinition(FastSecurityDefinitionInfo *info) {
         this->m_lastUpdatedSecurityDefinitionIndex = this->GetSecurityDefinitionIndex(this->m_lastUpdatedSecurityDefinitionIndex + 1, info->Symbol, info->SymbolLength);
+        throw;
+        // now it is wrong
         if(this->m_lastUpdatedSecurityDefinitionIndex != -1) {
             this->m_securityDefinitions[this->m_lastUpdatedSecurityDefinitionIndex]->Data()->Clear();
             this->m_securityDefinitions[this->m_lastUpdatedSecurityDefinitionIndex]->Data(info);
