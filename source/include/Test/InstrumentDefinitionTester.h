@@ -314,8 +314,8 @@ public:
         FastSecurityDefinitionInfo *info = this->m_helper->CreateSecurityDefinitionInfo("s1");
         this->m_helper->AddMarketSegemntGroup(info);
 
-        this->m_helper->AddTradingSession(info, 0, "t11");
-        this->m_helper->AddTradingSession(info, 0, "t12");
+        this->m_helper->AddTradingSession(info, 0, "t1");
+        this->m_helper->AddTradingSession(info, 0, "t2");
 
         FastSecurityDefinitionInfo *prev = this->olr->OrderFond()->Symbol(0)->SecurityDefinition();
         this->idf->UpdateSecurityDefinition(info);
@@ -331,15 +331,17 @@ public:
             throw;
         if(prev->MarketSegmentGrp[0]->Used)
             throw;
-        if(prev->MarketSegmentGrp[1]->Used)
+        if(!prev->MarketSegmentGrp[1]->Used)
+            throw;
+        if(!info->MarketSegmentGrp[0]->Used)
             throw;
         if(prev->MarketSegmentGrp[0]->TradingSessionRulesGrp[0]->Used)
             throw;
         if(prev->MarketSegmentGrp[0]->TradingSessionRulesGrp[1]->Used)
             throw;
-        if(prev->MarketSegmentGrp[1]->TradingSessionRulesGrp[0]->Used)
+        if(!prev->MarketSegmentGrp[1]->TradingSessionRulesGrp[0]->Used)
             throw;
-        if(prev->MarketSegmentGrp[1]->TradingSessionRulesGrp[1]->Used)
+        if(!prev->MarketSegmentGrp[1]->TradingSessionRulesGrp[1]->Used)
             throw;
     }
 
@@ -813,6 +815,165 @@ public:
         TestMergeSecurityDefinitions_2();
     }
 
+    void TestReplaceMarketSegmentGroupBy_1() {
+        FastSecurityDefinitionInfo *info = this->m_helper->CreateSecurityDefinitionInfo("s1");
+
+        this->m_helper->AddMarketSegemntGroup(info);
+        this->m_helper->AddTradingSession(info, 0, "t1");
+
+        FastSecurityDefinitionInfo *info2 = this->m_helper->CreateSecurityDefinitionInfo("s1");
+
+        this->m_helper->AddMarketSegemntGroup(info2);
+        this->m_helper->AddTradingSession(info2, 0, "t1");
+
+        this->idf->ReplaceMarketSegmentGroupById(info, info2->MarketSegmentGrp[0]);
+        if(info->MarketSegmentGrp[0] != info2->MarketSegmentGrp[0])
+            throw;
+    }
+
+    void TestReplaceMarketSegmentGroupBy_2() {
+        FastSecurityDefinitionInfo *info = this->m_helper->CreateSecurityDefinitionInfo("s1");
+
+        this->m_helper->AddMarketSegemntGroup(info);
+        this->m_helper->AddTradingSession(info, 0, "t1");
+        this->m_helper->AddTradingSession(info, 0, "t2");
+
+        FastSecurityDefinitionInfo *info2 = this->m_helper->CreateSecurityDefinitionInfo("s1");
+
+        this->m_helper->AddMarketSegemntGroup(info2);
+        this->m_helper->AddTradingSession(info2, 0, "t1");
+        this->m_helper->AddTradingSession(info2, 0, "t2");
+
+        this->idf->ReplaceMarketSegmentGroupById(info, info2->MarketSegmentGrp[0]);
+        if(info->MarketSegmentGrp[0] != info2->MarketSegmentGrp[0])
+            throw;
+    }
+
+    void TestReplaceMarketSegmentGroupBy_3() {
+        FastSecurityDefinitionInfo *info = this->m_helper->CreateSecurityDefinitionInfo("s1");
+
+        this->m_helper->AddMarketSegemntGroup(info);
+        this->m_helper->AddTradingSession(info, 0, "t1");
+        this->m_helper->AddTradingSession(info, 0, "t2");
+
+        FastSecurityDefinitionInfo *info2 = this->m_helper->CreateSecurityDefinitionInfo("s1");
+
+        this->m_helper->AddMarketSegemntGroup(info2);
+        this->m_helper->AddTradingSession(info2, 0, "t1");
+
+        this->idf->ReplaceMarketSegmentGroupById(info, info2->MarketSegmentGrp[0]);
+        if(info->MarketSegmentGrp[0] == info2->MarketSegmentGrp[0])
+            throw;
+    }
+
+    void TestReplaceMarketSegmentGroupBy_4() {
+        FastSecurityDefinitionInfo *info = this->m_helper->CreateSecurityDefinitionInfo("s1");
+
+        this->m_helper->AddMarketSegemntGroup(info);
+        this->m_helper->AddTradingSession(info, 0, "t1");
+
+        FastSecurityDefinitionInfo *info2 = this->m_helper->CreateSecurityDefinitionInfo("s1");
+
+        this->m_helper->AddMarketSegemntGroup(info2);
+        this->m_helper->AddTradingSession(info2, 0, "t1");
+        this->m_helper->AddTradingSession(info2, 0, "t2");
+
+        this->idf->ReplaceMarketSegmentGroupById(info, info2->MarketSegmentGrp[0]);
+        if(info->MarketSegmentGrp[0] == info2->MarketSegmentGrp[0])
+            throw;
+    }
+
+    void TestReplaceMarketSegmentGroupBy_5() {
+        FastSecurityDefinitionInfo *info = this->m_helper->CreateSecurityDefinitionInfo("s1");
+
+        this->m_helper->AddMarketSegemntGroup(info);
+        this->m_helper->AddTradingSession(info, 0, "t1");
+        this->m_helper->AddTradingSession(info, 0, "t2");
+
+        FastSecurityDefinitionInfo *info2 = this->m_helper->CreateSecurityDefinitionInfo("s1");
+
+        this->m_helper->AddMarketSegemntGroup(info2);
+        this->m_helper->AddTradingSession(info2, 0, "t2");
+        this->m_helper->AddTradingSession(info2, 0, "t1");
+
+        this->idf->ReplaceMarketSegmentGroupById(info, info2->MarketSegmentGrp[0]);
+        if(info->MarketSegmentGrp[0] == info2->MarketSegmentGrp[0])
+            throw;
+    }
+
+    void TestReplaceMarketSegmentGroupBy_6() {
+        FastSecurityDefinitionInfo *info = this->m_helper->CreateSecurityDefinitionInfo("s1");
+
+        this->m_helper->AddMarketSegemntGroup(info);
+        this->m_helper->AddTradingSession(info, 0, "t1");
+        this->m_helper->AddTradingSession(info, 0, "t2");
+
+        this->m_helper->AddMarketSegemntGroup(info);
+        this->m_helper->AddTradingSession(info, 1, "t2");
+        this->m_helper->AddTradingSession(info, 1, "t1");
+
+        FastSecurityDefinitionInfo *info2 = this->m_helper->CreateSecurityDefinitionInfo("s1");
+
+        this->m_helper->AddMarketSegemntGroup(info2);
+        this->m_helper->AddTradingSession(info2, 0, "t2");
+        this->m_helper->AddTradingSession(info2, 0, "t1");
+
+        this->idf->ReplaceMarketSegmentGroupById(info, info2->MarketSegmentGrp[0]);
+        if(info->MarketSegmentGrp[0] == info2->MarketSegmentGrp[0])
+            throw;
+        if(info->MarketSegmentGrp[1] != info2->MarketSegmentGrp[0])
+            throw;
+    }
+
+    void TestReplaceMarketSegmentGroupBy() {
+        TestReplaceMarketSegmentGroupBy_1();
+        TestReplaceMarketSegmentGroupBy_2();
+        TestReplaceMarketSegmentGroupBy_3();
+        TestReplaceMarketSegmentGroupBy_4();
+        TestReplaceMarketSegmentGroupBy_5();
+        TestReplaceMarketSegmentGroupBy_6();
+    }
+
+    void TestUpdateSecurityDefinition2() {
+        FastSecurityDefinitionInfo *info = this->m_helper->CreateSecurityDefinitionInfo("s1");
+
+        this->m_helper->AddMarketSegemntGroup(info);
+        this->m_helper->AddTradingSession(info, 0, "t1");
+        this->m_helper->AddTradingSession(info, 0, "t2");
+
+        this->m_helper->AddMarketSegemntGroup(info);
+        this->m_helper->AddTradingSession(info, 1, "t3");
+        this->m_helper->AddTradingSession(info, 1, "t4");
+
+        this->m_helper->AddMarketSegemntGroup(info);
+        this->m_helper->AddTradingSession(info, 2, "t5");
+        this->m_helper->AddTradingSession(info, 2, "t6");
+
+        FastSecurityDefinitionInfo *info2 = this->m_helper->CreateSecurityDefinitionInfo("s1");
+
+        this->m_helper->AddMarketSegemntGroup(info2);
+        this->m_helper->AddTradingSession(info2, 0, "t1");
+        this->m_helper->AddTradingSession(info2, 0, "t2");
+
+        this->m_helper->AddMarketSegemntGroup(info2);
+        this->m_helper->AddTradingSession(info2, 1, "t3");
+        this->m_helper->AddTradingSession(info2, 1, "t4");
+
+        LinkedPointer<FastSecurityDefinitionInfo> *ptr = new LinkedPointer<FastSecurityDefinitionInfo>();
+        ptr->Data(info);
+        this->idf->UpdateSecurityDefinition(ptr, info2);
+        if(ptr->Data() != info2)
+            throw;
+        if(info2->MarketSegmentGrpCount != 3)
+            throw;
+        if(info2->MarketSegmentGrp[0] == info->MarketSegmentGrp[0])
+            throw;
+        if(info2->MarketSegmentGrp[1] == info->MarketSegmentGrp[1])
+            throw;
+        if(info2->MarketSegmentGrp[2] != info->MarketSegmentGrp[2])
+            throw;
+    }
+
     void Test() {
         //DONT CHANGE ORDER
         printf("IDF FOND TestDefaults\n");
@@ -822,6 +983,13 @@ public:
         printf("IDF FOND TestSecondStart()\n");
         TestSecondStart();
         // UNTIL THIS
+
+        printf("IDF FOND TestReplaceMarketSegmentGroupBy\n");
+        TestReplaceMarketSegmentGroupBy();
+        printf("IDF FOND TestUpdateSecurityDefinition2\n");
+        TestUpdateSecurityDefinition2();
+
+
         printf("IDF FOND TestAddSymbol\n");
         TestAddSymbol();
         printf("IDF FOND TestAddSymbol_2\n");

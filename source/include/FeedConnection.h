@@ -266,7 +266,6 @@ protected:
     MarketDataTable<StatisticsInfo, FastGenericInfo, FastGenericItemInfo>       *m_statTableCurr;
     LinkedPointer<FastSecurityDefinitionInfo>                                   **m_securityDefinitions;
     int                                          m_securityDefinitionsCount;
-    int                                          m_lastUpdatedSecurityDefinitionIndex;
 
     void InitializeHistoricalReplay() {
         this->m_hsRequestList = new PointerList<FeedConnectionRequestMessageInfo>(RobotSettings::HistoricalReplayMaxMessageRequestCount);
@@ -322,10 +321,11 @@ protected:
     inline bool ProcessServerCore(int size) {
         int msgSeqNum = *((UINT*)this->m_recvABuffer->CurrentPos());
 
-        if(this->m_type == FeedConnectionType::InstrumentDefinition)
+        if(this->m_type == FeedConnectionType::InstrumentDefinition) {
             this->m_endMsgSeqNum = msgSeqNum;
+        }
 
-        if(this->m_packets[msgSeqNum]->m_address != 0)
+        if(this->m_packets[msgSeqNum]->m_address != 0) // TODO
             return true;
 
         this->m_recvABuffer->SetCurrentItemSize(size);
@@ -891,6 +891,7 @@ protected:
     inline bool ProcessSecurityDefinitionMessagesFromStart() {
         if(this->m_idfMode == FeedConnectionSecurityDefinitionMode::sdmUpdateData) {
             this->UpdateSecurityDefinition(this->m_packets[this->m_endMsgSeqNum]);
+            this->m_packets[this->m_endMsgSeqNum]->Clear();
         }
         else {
             if (this->m_endMsgSeqNum == this->m_idfStartMsgSeqNo) {
@@ -914,8 +915,10 @@ protected:
     inline bool ProcessSecurityDefinitionMessagesToEnd() {
         if(this->m_endMsgSeqNum == this->m_idfMaxMsgSeqNo)
             this->m_idfState = FeedConnectionSecurityDefinitionState::sdsProcessFromStart;
-        if(this->m_idfMode == FeedConnectionSecurityDefinitionMode::sdmUpdateData)
+        if(this->m_idfMode == FeedConnectionSecurityDefinitionMode::sdmUpdateData) {
             this->UpdateSecurityDefinition(this->m_packets[this->m_endMsgSeqNum]);
+            this->m_packets[this->m_endMsgSeqNum]->Clear();
+        }
         return true;
     }
 
@@ -1670,9 +1673,9 @@ public:
         this->m_idfDataCollected = true;
         this->m_idfStartMsgSeqNo = 0;
         this->PrintSymbolManagerDebug();  // TODO debug messages
+        this->ClearPackets(1, this->m_idfMaxMsgSeqNo);
         if(!this->m_idfAllowUpdateData) {
             this->Stop();
-            this->ClearPackets(1, this->m_idfMaxMsgSeqNo);
         }
         else {
             this->m_idfMode = FeedConnectionSecurityDefinitionMode::sdmUpdateData;
@@ -1799,14 +1802,57 @@ public:
         fi->ReleaseUnused();
     }
 
-    inline void UpdateSecurityDefinition(FastSecurityDefinitionInfo *info) {
-        this->m_lastUpdatedSecurityDefinitionIndex = this->GetSecurityDefinitionIndex(this->m_lastUpdatedSecurityDefinitionIndex + 1, info->Symbol, info->SymbolLength);
-        throw;
-        // now it is wrong
-        if(this->m_lastUpdatedSecurityDefinitionIndex != -1) {
-            this->m_securityDefinitions[this->m_lastUpdatedSecurityDefinitionIndex]->Data()->Clear();
-            this->m_securityDefinitions[this->m_lastUpdatedSecurityDefinitionIndex]->Data(info);
+    inline void ReplaceMarketSegmentGroupById(FastSecurityDefinitionInfo *info, FastSecurityDefinitionMarketSegmentGrpItemInfo *m) {
+        FastSecurityDefinitionMarketSegmentGrpItemInfo **im = info->MarketSegmentGrp;
+        int sCount = m->TradingSessionRulesGrpCount;
+        bool found;
+        for(int i = 0; i < info->MarketSegmentGrpCount; i++, im++) {
+            if((*im)->TradingSessionRulesGrpCount != m->TradingSessionRulesGrpCount)
+                continue;
+            FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo **is = (*im)->TradingSessionRulesGrp;
+            FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo **s = m->TradingSessionRulesGrp;
+            found = true;
+            for(int i = 0; i < sCount; i++, is++, s++) {
+                if(!StringIdComparer::Equal((*is)->TradingSessionID, (*is)->TradingSessionIDLength, (*s)->TradingSessionID, (*s)->TradingSessionIDLength)) {
+                    found = false;
+                    break;
+                }
+            }
+            if(found) {
+                info->MarketSegmentGrp[i]->Clear();
+                info->MarketSegmentGrp[i] = m;
+                return;
+            }
         }
+    }
+
+    inline void UpdateSecurityDefinition(LinkedPointer<FastSecurityDefinitionInfo> *ptr, FastSecurityDefinitionInfo *curr) {
+        FastSecurityDefinitionInfo *prev = ptr->Data();
+        int mcPrev = prev->MarketSegmentGrpCount;
+        int mcCurr = curr->MarketSegmentGrpCount;
+        for(int i = 0; i < mcCurr; i++) {
+            prev->MarketSegmentGrp[mcPrev + i] = curr->MarketSegmentGrp[i];
+            curr->MarketSegmentGrp[i]->Used = true;
+        }
+        for(int i = 0; i < mcPrev; i++) {
+            curr->MarketSegmentGrp[i] = prev->MarketSegmentGrp[i];
+        }
+        int count = mcPrev + mcCurr;
+        curr->MarketSegmentGrpCount = mcPrev;
+        for(int i = mcPrev; i < count; i++) {
+            ReplaceMarketSegmentGroupById(curr, prev->MarketSegmentGrp[i]);
+        }
+        prev->Used = false;
+        prev->ReleaseUnused();
+        ptr->Data(curr);
+    }
+
+    inline void UpdateSecurityDefinition(FastSecurityDefinitionInfo *info) {
+        bool wasNewlyAdded;
+
+        SymbolInfo *sm = this->m_symbolManager->GetSymbol(info->Symbol, info->SymbolLength, &wasNewlyAdded);
+        LinkedPointer<FastSecurityDefinitionInfo> *orig = this->m_securityDefinitions[sm->m_index];
+        this->UpdateSecurityDefinition(orig, info);
     }
 
     inline void AfterProcessSecurityDefinitions() {
@@ -1816,7 +1862,6 @@ public:
         LinkedPointer<FastSecurityDefinitionInfo> **ptr = this->m_securityDefinitions;
         for(int i = 0; i < this->m_securityDefinitionsCount; i++, ptr++)
             this->AddSecurityDefinition(*ptr);
-        this->m_lastUpdatedSecurityDefinitionIndex = -1;
     }
 
     inline bool HasLostPackets(int msgStart, int msgEnd) {
