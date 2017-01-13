@@ -742,14 +742,7 @@
       <workItem from="1484004031648" duration="19129000" />
       <workItem from="1484121378271" duration="21665000" />
       <workItem from="1484255065007" duration="3342000" />
-      <workItem from="1484287523337" duration="3953000" />
-    </task>
-    <task id="LOCAL-00096" summary="Big Refactoring continue... tests - break tests">
-      <created>1481739092114</created>
-      <option name="number" value="00096" />
-      <option name="presentableId" value="LOCAL-00096" />
-      <option name="project" value="LOCAL" />
-      <updated>1481739092128</updated>
+      <workItem from="1484287523337" duration="3959000" />
     </task>
     <task id="LOCAL-00097" summary="Big Refactoring continue... tests - break tests">
       <created>1481739794772</created>
@@ -1087,11 +1080,18 @@
       <option name="project" value="LOCAL" />
       <updated>1484310578022</updated>
     </task>
-    <option name="localTasksCounter" value="145" />
+    <task id="LOCAL-00145" summary="Working on Security Definition&#10;1. Continue writing Security Definition tests&#10;">
+      <created>1484319179446</created>
+      <option name="number" value="00145" />
+      <option name="presentableId" value="LOCAL-00145" />
+      <option name="project" value="LOCAL" />
+      <updated>1484319179447</updated>
+    </task>
+    <option name="localTasksCounter" value="146" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="1244333000" />
+    <option name="totallyTimeSpent" value="1244339000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
