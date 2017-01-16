@@ -22,9 +22,6 @@
   <component name="ChangeListManager">
     <list default="true" id="32604c03-98a8-42cf-80f6-771ec2ce84cc" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/FeedConnection.h" afterPath="$PROJECT_DIR$/source/include/FeedConnection.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/Types.h" afterPath="$PROJECT_DIR$/source/include/Types.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/src/FeedChannel.cpp" afterPath="$PROJECT_DIR$/source/src/FeedChannel.cpp" />
     </list>
     <ignored path="hft_robot.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -710,14 +707,7 @@
       <workItem from="1484121378271" duration="21665000" />
       <workItem from="1484255065007" duration="3342000" />
       <workItem from="1484287523337" duration="3959000" />
-      <workItem from="1484338050221" duration="21387000" />
-    </task>
-    <task id="LOCAL-00098" summary="Big Refactoring continue... tests - break tests">
-      <created>1481740618469</created>
-      <option name="number" value="00098" />
-      <option name="presentableId" value="LOCAL-00098" />
-      <option name="project" value="LOCAL" />
-      <updated>1481740618477</updated>
+      <workItem from="1484338050221" duration="21444000" />
     </task>
     <task id="LOCAL-00099" summary="Big Refactoring continue... tests - break tests">
       <created>1481818197719</created>
@@ -1055,11 +1045,18 @@
       <option name="project" value="LOCAL" />
       <updated>1484344981835</updated>
     </task>
-    <option name="localTasksCounter" value="147" />
+    <task id="LOCAL-00147" summary="Working on Security Definition&#10;1. Continue writing Security Definition tests&#10;">
+      <created>1484559287137</created>
+      <option name="number" value="00147" />
+      <option name="presentableId" value="LOCAL-00147" />
+      <option name="project" value="LOCAL" />
+      <updated>1484559287138</updated>
+    </task>
+    <option name="localTasksCounter" value="148" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="1265726000" />
+    <option name="totallyTimeSpent" value="1265783000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
