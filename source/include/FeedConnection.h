@@ -896,9 +896,12 @@ protected:
         else {
             if (this->m_endMsgSeqNum == this->m_idfStartMsgSeqNo) {
                 if (this->HasLostPackets(1, this->m_idfMaxMsgSeqNo)) {
+                    int lostPacketCount = CalcLostPacketCount(1, this->m_idfMaxMsgSeqNo);
+                    printf("\t\tlost packet count = %d\n", lostPacketCount);
                     this->m_idfState = FeedConnectionSecurityDefinitionState::sdsProcessToEnd;
                     return true;
                 }
+                printf("\t\tgenerating Security Definitions\n");
                 FeedConnectionMessageInfo **info = (this->m_packets + 1); // skip zero messsage
                 this->BeforeProcessSecurityDefinitions();
                 for (int i = 1; i <= this->m_idfMaxMsgSeqNo; i++, info++) {
@@ -906,6 +909,7 @@ protected:
                         return false;
                 }
                 this->AfterProcessSecurityDefinitions();
+                printf("\t\tdone.\n");
                 this->OnSecurityDefinitionRecvAllMessages();
             }
         }
@@ -923,10 +927,8 @@ protected:
     }
 
     inline bool Listen_Atom_SecurityDefinition_Core() {
-        this->m_fastProtocolManager->SetNewBuffer(this->m_packets[this->m_endMsgSeqNum]->m_address, this->m_packets[this->m_endMsgSeqNum]->m_size);
-        this->m_fastProtocolManager->ReadMsgSeqNumber();
-        this->m_fastProtocolManager->DecodeHeader();
-        printf("last %d, start %d, max %d, id = %d\n", this->m_endMsgSeqNum, this->m_idfStartMsgSeqNo, this->m_idfMaxMsgSeqNo, this->m_fastProtocolManager->TemplateId());
+        if(this->m_endMsgSeqNum % 100 == 0)
+            printf("%d/%d/%d\n", this->m_idfStartMsgSeqNo, this->m_endMsgSeqNum, this->m_idfMaxMsgSeqNo);
         if(this->m_idfState == FeedConnectionSecurityDefinitionState::sdsProcessToEnd)
             return this->ProcessSecurityDefinitionMessagesToEnd();
         return this->ProcessSecurityDefinitionMessagesFromStart();
@@ -1060,7 +1062,7 @@ protected:
     inline void OnProcessHistoricalReplayUnexpectedLogoutMessage() {
         FastLogoutInfo *info = (FastLogoutInfo*)this->m_fastProtocolManager->LastDecodeInfo();
         info->Text[info->TextLength] = 0;
-        printf("Historical Replay - Unexpected Logout: %s\n", info->Text);
+        printf("\t\tHistorical Replay - Unexpected Logout: %s\n", info->Text);
     }
 
     inline bool IsHrReceiveFailedProcessed() {
@@ -1640,6 +1642,7 @@ public:
     }
 
     inline void AddSecurityDefinitionToList(FastSecurityDefinitionInfo *info, int index) {
+        info->Used = true;
         this->m_securityDefinitions[index]->Data(info);
         this->m_securityDefinitionsCount = index + 1;
     }
@@ -1681,6 +1684,20 @@ public:
         printf("Collected %d symbols\n", this->m_securityDefinitionsCount);
     }
 
+    inline void CheckAllSymbols() {
+        for(int i = 0; i < this->m_securityDefinitionsCount; i++) {
+            bool isNewlyAdded = false;
+            SymbolInfo *info = this->m_symbolManager->GetSymbol(
+                    this->m_securityDefinitions[i]->Data()->Symbol,
+                    this->m_securityDefinitions[i]->Data()->SymbolLength, &isNewlyAdded);
+            if(!StringIdComparer::Equal(info->m_text, info->m_length,
+                                        this->m_securityDefinitions[i]->Data()->Symbol,
+                                        this->m_securityDefinitions[i]->Data()->SymbolLength)) {
+                printf("Error: symbol collision\n");
+            }
+        }
+    }
+
     inline void OnSecurityDefinitionRecvAllMessages() {
         this->m_idfDataCollected = true;
         this->m_idfStartMsgSeqNo = 0;
@@ -1692,22 +1709,27 @@ public:
         else {
             this->m_idfMode = FeedConnectionSecurityDefinitionMode::sdmUpdateData;
         }
+        CheckAllSymbols();
     }
 
     inline bool ProcessSecurityDefinition(FastSecurityDefinitionInfo *info) {
         bool wasNewlyAdded = false;
-
-        printf("process sec_def %d\n", info->MsgSeqNum); // TODO
 
         SymbolInfo *smb = this->m_symbolManager->GetSymbol(info->Symbol, info->SymbolLength, &wasNewlyAdded);
 
         MakeUsed(info, true);
         if(wasNewlyAdded) {
             this->AddSecurityDefinitionToList(info, smb->m_index);
+            printf("add sd to list index = %d\n", smb->m_index);
+            printf("new sec_def %d. sc = %d\n", info->MsgSeqNum, info->MarketSegmentGrp[0]->TradingSessionRulesGrp[0]->Allocator->Count()); // TODO
         }
         else {
             LinkedPointer<FastSecurityDefinitionInfo> *ptr = this->m_securityDefinitions[smb->m_index];
-            MergeSecurityDefinition(ptr->Data(), info);
+            if(!StringIdComparer::Equal(ptr->Data()->Symbol, ptr->Data()->SymbolLength, info->Symbol, info->SymbolLength)) {
+                printf("merge symbols are not equal\n");
+            }
+            this->MergeSecurityDefinition(ptr->Data(), info);
+            printf("merge sec_def %d. sc = %d\n", info->MsgSeqNum, info->MarketSegmentGrp[0]->TradingSessionRulesGrp[0]->Allocator->Count()); // TODO
         }
         info->ReleaseUnused();
 
@@ -1788,22 +1810,6 @@ public:
             this->m_connectionsToRecvSymbols[c]->AddSymbol(ptr);
     }
 
-    inline int GetSecurityDefinitionIndex(int startIndex, const char *symbol, int length) {
-        if(this->m_securityDefinitionsCount == 0)
-            return -1;
-        for(int i = startIndex + 1; i < this->m_securityDefinitionsCount; i++) {
-            FastSecurityDefinitionInfo *prev = this->m_securityDefinitions[i]->Data();
-            if(StringIdComparer::Equal(prev->Symbol, prev->SymbolLength, symbol, length))
-                return i;
-        }
-        for(int i = 0; i < startIndex + 1; i++) {
-            FastSecurityDefinitionInfo *prev = this->m_securityDefinitions[i]->Data();
-            if(StringIdComparer::Equal(prev->Symbol, prev->SymbolLength, symbol, length))
-                return i;
-        }
-        return -1;
-    }
-
     inline void UpdateSecurityDefinition(FeedConnectionMessageInfo *info) {
         this->m_fastProtocolManager->SetNewBuffer(info->m_address + 4, info->m_size - 4); // skip msg seq num
         this->m_fastProtocolManager->DecodeHeader();
@@ -1839,6 +1845,7 @@ public:
     }
 
     inline void UpdateSecurityDefinition(LinkedPointer<FastSecurityDefinitionInfo> *ptr, FastSecurityDefinitionInfo *curr) {
+        int sc1 = ptr->Data()->MarketSegmentGrp[0]->TradingSessionRulesGrp[0]->Allocator->Count();
         FastSecurityDefinitionInfo *prev = ptr->Data();
         int mcPrev = prev->MarketSegmentGrpCount;
         int mcCurr = curr->MarketSegmentGrpCount;
@@ -1854,9 +1861,23 @@ public:
         for(int i = mcPrev; i < count; i++) {
             ReplaceMarketSegmentGroupById(curr, prev->MarketSegmentGrp[i]);
         }
+        curr->Used = true;
+
         prev->Used = false;
         prev->ReleaseUnused();
         ptr->Data(curr);
+        int sc2 = curr->MarketSegmentGrp[0]->TradingSessionRulesGrp[0]->Allocator->Count();
+        printf("update sc before %d after %d\n", sc1, sc2);
+    }
+
+    inline int IdfFindBySymbol(const char *symbol, int symbolLength) {
+        LinkedPointer<FastSecurityDefinitionInfo> **ptr = this->m_securityDefinitions;
+        for(int i = 0; i < this->m_securityDefinitionsCount; i++) {
+            if(StringIdComparer::Equal((*ptr)->Data()->Symbol, (*ptr)->Data()->SymbolLength, symbol, symbolLength)) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     inline void UpdateSecurityDefinition(FastSecurityDefinitionInfo *info) {
@@ -1864,6 +1885,10 @@ public:
 
         SymbolInfo *sm = this->m_symbolManager->GetSymbol(info->Symbol, info->SymbolLength, &wasNewlyAdded);
         LinkedPointer<FastSecurityDefinitionInfo> *orig = this->m_securityDefinitions[sm->m_index];
+        if(!StringIdComparer::Equal(orig->Data()->Symbol, orig->Data()->SymbolLength, info->Symbol, info->SymbolLength)) {
+            int symbolIndex = IdfFindBySymbol(info->Symbol, info->SymbolLength);
+            printf("symbols are not equal\n");
+        }
         this->UpdateSecurityDefinition(orig, info);
     }
 
@@ -1883,6 +1908,18 @@ public:
                 return true;
         }
         return false;
+    }
+
+    inline bool CalcLostPacketCount(int msgStart, int msgEnd) {
+        int sum = 0;
+        FeedConnectionMessageInfo **msg = (this->m_packets + msgStart);
+        for(int i = msgStart; i <= msgEnd; i++, msg++) {
+            if((*msg)->m_address == 0) {
+                printf("%d is lost\n", i);
+                sum++;
+            }
+        }
+        return sum;
     }
 
     inline bool IsIdfDataCollected() { return this->m_idfDataCollected; }

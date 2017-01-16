@@ -131,7 +131,7 @@ public:
     inline void SaveSendMessage() {
         AddStringZero();
         this->m_sendBuffer->Next(this->MessageLength());
-        DefaultLogManager::Default->WriteFix(LogMessageCode::lmcFixMessage, this->m_sendBuffer->BufferIndex(), this->m_sendBuffer->CurrentItemIndex() - 1);
+        //DefaultLogManager::Default->WriteFix(LogMessageCode::lmcFixMessage, this->m_sendBuffer->BufferIndex(), this->m_sendBuffer->CurrentItemIndex() - 1);
     }
 
 	inline void StartNewMessage() {
