@@ -205,7 +205,7 @@ protected:
 
     FeedConnectionHistoricalReplayState             m_hsState;
     PointerList<FeedConnectionRequestMessageInfo>  *m_hsRequestList;
-    int                                             m_hrMessageSeqNo;
+    int                                             m_hrMessageSize;
 
     FeedConnectionMessageInfo                       **m_packets;
 
@@ -923,6 +923,10 @@ protected:
     }
 
     inline bool Listen_Atom_SecurityDefinition_Core() {
+        this->m_fastProtocolManager->SetNewBuffer(this->m_packets[this->m_endMsgSeqNum]->m_address, this->m_packets[this->m_endMsgSeqNum]->m_size);
+        this->m_fastProtocolManager->ReadMsgSeqNumber();
+        this->m_fastProtocolManager->DecodeHeader();
+        printf("last %d, start %d, max %d, id = %d\n", this->m_endMsgSeqNum, this->m_idfStartMsgSeqNo, this->m_idfMaxMsgSeqNo, this->m_fastProtocolManager->TemplateId());
         if(this->m_idfState == FeedConnectionSecurityDefinitionState::sdsProcessToEnd)
             return this->ProcessSecurityDefinitionMessagesToEnd();
         return this->ProcessSecurityDefinitionMessagesFromStart();
@@ -1047,7 +1051,7 @@ protected:
         }
         this->m_fixProtocolManager->IncSendMsgSeqNo();
         this->m_hsState = FeedConnectionHistoricalReplayState::hsWaitLogon;
-        this->m_hrMessageSeqNo = 0;
+        this->m_hrMessageSize = 0;
         return true;
     }
 
@@ -1056,12 +1060,12 @@ protected:
     inline void OnProcessHistoricalReplayUnexpectedLogoutMessage() {
         FastLogoutInfo *info = (FastLogoutInfo*)this->m_fastProtocolManager->LastDecodeInfo();
         info->Text[info->TextLength] = 0;
-        printf("Historical Replay - Unexprected Logout: %s\n", info->Text);
+        printf("Historical Replay - Unexpected Logout: %s\n", info->Text);
     }
 
     inline bool IsHrReceiveFailedProcessed() {
         bool res;
-        if(this->m_hrMessageSeqNo != 0)
+        if(this->m_hrMessageSize != 0)
             res = this->socketAManager->Recv(this->m_recvABuffer->CurrentPos() + 4);
         else
             res = this->socketAManager->Recv(this->m_recvABuffer->CurrentPos());
@@ -1076,15 +1080,15 @@ protected:
     inline void RecvProcessHistoricalReplayCore(int size) {
         unsigned char *buffer = this->socketAManager->RecvBytes();
         this->m_fastProtocolManager->SetNewBuffer(buffer, size);
-        if(this->m_hrMessageSeqNo == 0) {
+        if(this->m_hrMessageSize == 0) {
             this->m_recvABuffer->Next(size + 4);
-            this->m_hrMessageSeqNo = this->m_fastProtocolManager->ReadMsgSeqNumber();
+            this->m_hrMessageSize = this->m_fastProtocolManager->ReadMsgSeqNumber();
         }
         else {
             this->m_recvABuffer->Next(size);
         }
-        this->m_fixProtocolManager->SetRecvMsgSeqNo(this->m_hrMessageSeqNo + 1);
-        this->m_hrMessageSeqNo = 0;
+        this->m_fixProtocolManager->SetRecvMsgSeqNo(this->m_hrMessageSize + 1);
+        this->m_hrMessageSize = 0;
         this->m_fastProtocolManager->Decode();
     }
 
@@ -1095,8 +1099,12 @@ protected:
             return true;
         int size = this->socketAManager->RecvSize();
         if(size == 4) {
-            this->m_hrMessageSeqNo = *(int*)this->socketAManager->RecvBytes();
+            this->m_hrMessageSize = *(int*)this->socketAManager->RecvBytes();
+            printf("\t\t\trecv 4 byte. value in 4 byte = %d\n", this->m_hrMessageSize);
             return true;
+        }
+        else {
+            printf("\t\t\tpacket size = %d\n", size);
         }
         this->RecvProcessHistoricalReplayCore(size);
         if(this->m_fastProtocolManager->TemplateId() != FeedConnectionMessage::fmcLogon) {
@@ -1133,8 +1141,12 @@ protected:
 
         int size = this->socketAManager->RecvSize();
         if(size == 4) {
-            this->m_hrMessageSeqNo = *(int*)this->socketAManager->RecvBytes();
+            this->m_hrMessageSize = *(int*)this->socketAManager->RecvBytes();
+            printf("\t\t\trecv 4 byte. value in 4 byte = %d\n", this->m_hrMessageSize);
             return true;
+        }
+        else {
+            printf("\t\t\tpacket size = %d\n", size);
         }
         this->RecvProcessHistoricalReplayCore(size);
         if(this->m_fastProtocolManager->TemplateId() == FeedConnectionMessage::fmcLogout) {
@@ -1161,13 +1173,13 @@ protected:
             return true;
         int size = this->socketAManager->RecvSize();
         if(size == 4) {
-            this->m_hrMessageSeqNo = *(int*)this->socketAManager->RecvBytes();
+            this->m_hrMessageSize = *(int*)this->socketAManager->RecvBytes();
             return true;
         }
-        if(this->m_hrMessageSeqNo == 0)
-            this->m_hrMessageSeqNo = *(int*)this->socketAManager->RecvBytes();
+        if(this->m_hrMessageSize == 0)
+            this->m_hrMessageSize = *(int*)this->socketAManager->RecvBytes();
         this->m_recvABuffer->Next(size + 4);
-        this->m_fixProtocolManager->SetRecvMsgSeqNo(this->m_hrMessageSeqNo + 1);
+        this->m_fixProtocolManager->SetRecvMsgSeqNo(this->m_hrMessageSize + 1);
 
         return this->HistoricalReplay_SendLogout();
     }
@@ -1187,7 +1199,7 @@ protected:
         if(this->m_hsRequestList->Count() == 0)
             return true;
         FeedConnectionRequestMessageInfo *info = this->m_hsRequestList->Start()->Data();
-        if(info->m_requestCount >= 10) {
+        if(info->m_requestCount >= 1) {
             this->m_hsRequestList->Remove(this->m_hsRequestList->Start());
             return true;
         }
@@ -1255,9 +1267,9 @@ protected:
                     printf("Timeout 10 sec... Reconnect...\n");
                     DefaultLogManager::Default->WriteSuccess(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_Listen_Atom_SecurityDefinition, false);
                     this->ReconnectSetNextState(FeedConnectionState::fcsListenSecurityDefinition);
-                    return true;
                 }
             }
+            return true;
         }
         else {
             this->m_waitTimer->Stop(1);
@@ -1874,6 +1886,8 @@ public:
     }
 
     inline bool IsIdfDataCollected() { return this->m_idfDataCollected; }
+    inline bool IdfAllowUpdateData() { return this->m_idfAllowUpdateData; }
+    inline void IdfAllowUpdateData(bool value) { this->m_idfAllowUpdateData = value; }
     inline FeedConnectionSecurityDefinitionMode IdfMode() { return this->m_idfMode; }
     inline FeedConnectionSecurityDefinitionState IdfState() { return this->m_idfState; }
 
