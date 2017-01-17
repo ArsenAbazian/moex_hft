@@ -6,7 +6,7 @@
 #define HFT_ROBOT_ORDERBOOKTABLE_H
 
 #include "Lib/StringIdComparer.h"
-#include "../FastTypes.h"
+#include "Fast/FastTypes.h"
 #include "MarketDataEntryQueue.h"
 #include "MarketSymbolInfo.h"
 

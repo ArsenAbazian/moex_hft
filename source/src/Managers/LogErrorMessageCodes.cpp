@@ -2,7 +2,7 @@
 // Created by root on 18.07.16.
 //
 #include <memory.h>
-#include "LogErrorMessageCodes.h"
+#include "Managers/LogErrorMessageCodes.h"
 
 void LogMessageProvider::InitializeLogMessageText() {
 	this->m_logMessageText = new const char*[this->m_logMessageTextCapacity];

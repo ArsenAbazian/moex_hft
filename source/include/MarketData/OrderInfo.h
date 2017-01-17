@@ -6,7 +6,7 @@
 #define HFT_ROBOT_ORDERINFO_H
 
 #include "../Lib/StringIdComparer.h"
-#include "../FastTypes.h"
+#include "Fast/FastTypes.h"
 #include "../Lib/PointerList.h"
 #include "MarketDataEntryQueue.h"
 #include "QuoteInfo.h"

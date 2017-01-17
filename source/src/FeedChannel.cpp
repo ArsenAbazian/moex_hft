@@ -1,5 +1,5 @@
 #include "FeedChannel.h"
-#include "LogManager.h"
+#include "Managers/LogManager.h"
 
 FeedChannel::FeedChannel(const char *id, const char *name) {
 	strcpy(this->id, id);

@@ -1,7 +1,7 @@
 #pragma once
 
-#include "WinSockManager.h"
-#include "FixProtocolManager.h"
+#include "Managers/WinSockManager.h"
+#include "Fix/FixProtocolManager.h"
 #include "Stopwatch.h"
 
 class MarketServerInfo;

@@ -3,7 +3,7 @@
 #include <exception>
 #include <stdexcept>
 #include <limits.h>
-#include "FastProtocolManager.h"
+#include "Fast/FastProtocolManager.h"
 #include "Test/FastProtocolTester.h"
 #include <sys/time.h>
 #include <Lib/StringIdComparer.h>

@@ -6,7 +6,7 @@
 #define HFT_ROBOT_MARKETDATAENTRYQUEUE_H
 
 #include "../Lib/StringIdComparer.h"
-#include "../FastTypes.h"
+#include "Fast/FastTypes.h"
 
 #define MDENTRYINFO_INCREMENTAL_ENTRIES_BUFFER_LENGTH 2000
 

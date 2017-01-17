@@ -1,6 +1,6 @@
 #include "MarketServerInfo.h"
 #include <stdio.h>
-#include "LogManager.h"
+#include "Managers/LogManager.h"
 #include "Stopwatch.h"
 
 MarketServerInfo::MarketServerInfo(const char *name, const char *internetAddress, int internetPort, const char *senderComputerId, const char *password, const char *targetComputerId, const char *astsServerName) {

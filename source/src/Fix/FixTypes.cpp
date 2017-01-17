@@ -2,7 +2,7 @@
 // Created by root on 16.10.16.
 //
 
-#include "FixTypes.h"
+#include "Fix/FixTypes.h"
 
 INT64 Decimal::PowOf10[10] = { 1,
                                       10,

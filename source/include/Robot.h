@@ -1,8 +1,8 @@
 #pragma once
 #include "FeedChannel.h"
 #include "MarketInfo.h"
-#include "FixProtocolManager.h"
-#include "LogManager.h"
+#include "Fix/FixProtocolManager.h"
+#include "Managers/LogManager.h"
 #include "ConnectionParameters.h"
 
 #define MARKET_INFO_CAPACITY 10

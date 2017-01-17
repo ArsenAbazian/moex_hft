@@ -5,7 +5,7 @@
 #ifndef HFT_ROBOT_DECIMALTESTER_H
 #define HFT_ROBOT_DECIMALTESTER_H
 
-#include "../FixTypes.h"
+#include "Fix/FixTypes.h"
 
 class DecimalTester {
 public:

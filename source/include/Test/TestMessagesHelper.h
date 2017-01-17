@@ -5,7 +5,7 @@
 #ifndef HFT_ROBOT_TESTMESSAGESHELPER_H
 #define HFT_ROBOT_TESTMESSAGESHELPER_H
 
-#include "../WinSockManager.h"
+#include "Managers/WinSockManager.h"
 #include "TestTemplateInfo.h"
 #include "../FeedConnection.h"
 #include <stdio.h>

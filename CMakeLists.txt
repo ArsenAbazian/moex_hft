@@ -95,12 +95,49 @@ foreach(inc_dir ${inc_dirs})
     set(include_path "${include_path} -I${inc_dir}")
 endforeach(inc_dir)
 
-add_executable(hft_robot ${sources} source/src/Stopwatch.cpp source/include/Stopwatch.h source/src/Test/FixProtocolManagerTester.cpp source/include/Test/FixProtocolManagerTester.h source/include/FixProtocolMacros.h source/include/FixMessage.h source/include/FastTypes.h source/include/Lib/StringIdComparer.h source/include/Lib/PointerList.h source/include/Lib/AutoAllocatePointerList.h source/include/MarketData/MarketDataTable.h source/include/Test/DecimalTester.h source/src/FixTypes.cpp source/include/Test/OrderTesterFond.h source/include/Test/FeedConnectionTester.h source/include/Test/TradeTesterFond.h source/include/Test/InstrumentDefinitionTester.h source/include/Test/TestTemplateInfo.h source/include/Test/TestMessagesHelper.h source/include/Test/StatisticsTesterFond.h source/include/MarketData/MarketDataEntryQueue.h source/include/MarketData/OrderInfo.h source/include/MarketData/TradeInfo.h source/include/MarketData/StatisticInfo.h source/include/MarketData/MarketSymbolInfo.h source/include/Test/OrderTesterCurr.h source/include/Test/TradeTesterCurr.h source/include/Test/StatisticsTesterCurr.h source/include/MarketData/QuoteInfo.h source/include/Test/SymbolManagerTester.h source/include/Lib/StringHash.h source/include/MarketData/SymbolManager.h source/include/Test/HistoricalReplayTester.h source/include/FeedConnections.h source/src/Test/TestMessagesHelper.cpp source/include/Test/PointerListTester.h)
+add_executable(hft_robot ${sources}
+        source/src/Stopwatch.cpp
+        source/include/Stopwatch.h
+        source/src/Test/FixProtocolManagerTester.cpp
+        source/include/Test/FixProtocolManagerTester.h
+        source/include/Fix/FixProtocolMacros.h
+        source/include/Fix/FixMessage.h
+        source/include/Fast/FastTypes.h
+        source/include/Lib/StringIdComparer.h
+        source/include/Lib/PointerList.h
+        source/include/Lib/AutoAllocatePointerList.h
+        source/include/MarketData/MarketDataTable.h
+        source/include/Test/DecimalTester.h
+        source/src/Fix/FixTypes.cpp
+        source/include/Test/OrderTesterFond.h
+        source/include/Test/FeedConnectionTester.h
+        source/include/Test/TradeTesterFond.h
+        source/include/Test/InstrumentDefinitionTester.h
+        source/include/Test/TestTemplateInfo.h
+        source/include/Test/TestMessagesHelper.h
+        source/include/Test/StatisticsTesterFond.h
+        source/include/MarketData/MarketDataEntryQueue.h
+        source/include/MarketData/OrderInfo.h
+        source/include/MarketData/TradeInfo.h
+        source/include/MarketData/StatisticInfo.h
+        source/include/MarketData/MarketSymbolInfo.h
+        source/include/Test/OrderTesterCurr.h
+        source/include/Test/TradeTesterCurr.h
+        source/include/Test/StatisticsTesterCurr.h
+        source/include/MarketData/QuoteInfo.h
+        source/include/Test/SymbolManagerTester.h
+        source/include/Lib/StringHash.h
+        source/include/MarketData/SymbolManager.h
+        source/include/Test/HistoricalReplayTester.h
+        source/include/FeedConnections.h
+        source/src/Test/TestMessagesHelper.cpp
+        source/include/Test/PointerListTester.h
+        source/src/Converters/DtoaConverter.cpp)
 add_dependencies(hft_robot fast_generate)
 
 add_custom_command(TARGET fast_generate
   PRE_BUILD
-  COMMAND ${CSHARP_MONO_INTERPRETER_} ${fast_generator} -d ${CMAKE_CURRENT_LIST_DIR}/test/data/ -s ${CMAKE_CURRENT_LIST_DIR}/source/ -f -fh ${CMAKE_CURRENT_LIST_DIR}/source/include/FastProtocolManager.h -fc ${CMAKE_CURRENT_LIST_DIR}/source/src/FastProtocolManager.cpp -ft ${CMAKE_CURRENT_LIST_DIR}/source/include/FastTypes.h -fx ${CMAKE_CURRENT_LIST_DIR}/test/data/FIX50SP2-2017-Mar.xml -rb ${CMAKE_CURRENT_LIST_DIR}/source/src/Robot.cpp -fcfg ${CMAKE_CURRENT_LIST_DIR}/test/data/config_test.xml -fwe "Logon,Logout,Security Definition,Security Status,Trading Session Status,Hearthbeat"
+  COMMAND ${CSHARP_MONO_INTERPRETER_} ${fast_generator} -d ${CMAKE_CURRENT_LIST_DIR}/test/data/ -s ${CMAKE_CURRENT_LIST_DIR}/source/ -f -fh source/include/Fast/FastProtocolManager.h -fc source/src/Fast/FastProtocolManager.cpp -ft source/include/Fast/FastTypes.h -fx ${CMAKE_CURRENT_LIST_DIR}/test/data/FIX50SP2-2017-Mar.xml -rb ${CMAKE_CURRENT_LIST_DIR}/source/src/Robot.cpp -fcfg ${CMAKE_CURRENT_LIST_DIR}/test/data/config_test.xml -fwe "Logon,Logout,Security Definition,Security Status,Trading Session Status,Hearthbeat"
         COMMENT "generating code...")
 
 #target_link_libraries(hft_robot -Wl,--whole-archive -Wl,--no-whole-archive dl)

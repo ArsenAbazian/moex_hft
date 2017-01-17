@@ -1,7 +1,7 @@
 #pragma once
-#include "WinSockManager.h"
-#include "FastProtocolManager.h"
-#include "FixProtocolManager.h"
+#include "Managers/WinSockManager.h"
+#include "Fast/FastProtocolManager.h"
+#include "Fix/FixProtocolManager.h"
 #include "Types.h"
 #include <sys/time.h>
 #include "Stopwatch.h"

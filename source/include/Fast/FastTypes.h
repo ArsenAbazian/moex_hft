@@ -17,7 +17,7 @@
 
 #include "Types.h"
 #include "Lib/AutoAllocatePointerList.h"
-#include "FixTypes.h"
+#include "Fix/FixTypes.h"
 
 typedef enum _MDUpdateAction {
     mduaAdd = 0,
