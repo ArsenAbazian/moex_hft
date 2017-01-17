@@ -52,6 +52,21 @@ public:
             this->m_index[itemCount] = NextIndex();
         }
     }
+    inline void NextExact(int length) {
+        int itemCount = this->m_itemsCount;
+
+        this->m_itemLength[itemCount] = length;
+        this->m_current += length; //NO OPTIMIZE
+
+        itemCount++;
+        if ((itemCount >= this->m_maxItemsCount) || (this->m_current >= this->m_end))
+            this->Reset();
+        else {
+            this->m_itemsCount = itemCount;
+            this->m_items[itemCount] = this->m_current;
+            this->m_index[itemCount] = NextIndex();
+        }
+    }
     void Reset() {
         this->m_current = this->m_buffer;
         this->m_end = this->m_buffer + this->m_size;

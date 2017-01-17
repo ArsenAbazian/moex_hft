@@ -60,6 +60,7 @@ bool MarketInfo::Connect() {
 		DefaultLogManager::Default->EndLog(true);
 		return true;
 	}
+/*
 	if(!this->m_trade->Connect()) {
 #ifndef ROBOT_WORK_ANYWAY
 		DefaultLogManager::Default->EndLog(false);
@@ -78,6 +79,7 @@ bool MarketInfo::Connect() {
 		return false;
 #endif
 	}
+*/
     if(this->m_feedChannel != NULL && !this->m_feedChannel->Connect()) {
 #ifndef ROBOT_WORK_ANYWAY
 		DefaultLogManager::Default->EndLog(false);

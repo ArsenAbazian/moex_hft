@@ -127,21 +127,36 @@ public:
 };
 
 class FeedConnectionRequestMessageInfo {
+    int                         m_startMsgSeqNo;
+    int                         m_endMsgSeqNo;
+    int                         m_lastRecvMsgSeqNo;
 public:
-    int                         m_msgSeqNo;
     FeedConnection             *m_conn;
     int                         m_requestCount;
 
     FeedConnectionRequestMessageInfo() {
         this->m_requestCount = 0;
-        this->m_msgSeqNo = 0;
+        this->m_startMsgSeqNo = 0;
+        this->m_endMsgSeqNo = 0;
         this->m_conn = 0;
     }
     inline void Clear() {
         this->m_requestCount = 0;
-        this->m_msgSeqNo = 0;
+        this->m_startMsgSeqNo = 0;
+        this->m_endMsgSeqNo = 0;
         this->m_conn = 0;
     }
+
+    inline void SetMsgSeq(int start, int end) {
+        this->m_startMsgSeqNo = start;
+        this->m_endMsgSeqNo = end;
+        this->m_lastRecvMsgSeqNo = start - 1;
+    }
+
+    inline int StartMsgSeqNo() { return this->m_startMsgSeqNo; }
+    inline int EndMsgSeqNo() { return this->m_endMsgSeqNo; }
+    inline bool IsAllMessagesReceived() { return this->m_lastRecvMsgSeqNo == this->m_endMsgSeqNo; }
+    inline void IncMsgSeqNo() { this->m_lastRecvMsgSeqNo++; }
 };
 
 class OrderTesterFond;
@@ -1079,21 +1094,6 @@ protected:
         return false;
     }
 
-    inline void RecvProcessHistoricalReplayCore(int size) {
-        unsigned char *buffer = this->socketAManager->RecvBytes();
-        this->m_fastProtocolManager->SetNewBuffer(buffer, size);
-        if(this->m_hrMessageSize == 0) {
-            this->m_recvABuffer->Next(size + 4);
-            this->m_hrMessageSize = this->m_fastProtocolManager->ReadMsgSeqNumber();
-        }
-        else {
-            this->m_recvABuffer->Next(size);
-        }
-        this->m_fixProtocolManager->SetRecvMsgSeqNo(this->m_hrMessageSize + 1);
-        this->m_hrMessageSize = 0;
-        this->m_fastProtocolManager->Decode();
-    }
-
     inline bool HistoricalReplay_WaitLogon() {
         if(!this->CanRecv())
             return true;
@@ -1108,7 +1108,13 @@ protected:
         else {
             printf("\t\t\tpacket size = %d\n", size);
         }
-        this->RecvProcessHistoricalReplayCore(size);
+        unsigned char *buffer = this->socketAManager->RecvBytes();
+        this->m_recvABuffer->Next(size);
+        if(this->m_hrMessageSize == 0) {
+            buffer += 4; size -= 4;
+        }
+        this->m_fastProtocolManager->SetNewBuffer(buffer, size);
+        this->m_fastProtocolManager->Decode();
         if(this->m_fastProtocolManager->TemplateId() != FeedConnectionMessage::fmcLogon) {
             this->Disconnect();
             if(this->m_fastProtocolManager->TemplateId() == FeedConnectionMessage::fmcLogout)
@@ -1122,7 +1128,7 @@ protected:
     inline bool HistoricalReplay_SendMarketDataRequest() {
         FeedConnectionRequestMessageInfo *info = this->m_hsRequestList->Start()->Data();
         this->m_fixProtocolManager->PrepareSendBuffer();
-        this->m_fixProtocolManager->CreateMarketDataRequest(info->m_conn->m_idName, 3, info->m_msgSeqNo, info->m_msgSeqNo);
+        this->m_fixProtocolManager->CreateMarketDataRequest(info->m_conn->m_idName, 3, info->StartMsgSeqNo(), info->EndMsgSeqNo());
 
         if(!this->m_fixProtocolManager->SendFix(this->socketAManager)) {
             this->m_hsState = FeedConnectionHistoricalReplayState::hsSuspend;
@@ -1150,20 +1156,60 @@ protected:
         else {
             printf("\t\t\tpacket size = %d\n", size);
         }
-        this->RecvProcessHistoricalReplayCore(size);
-        if(this->m_fastProtocolManager->TemplateId() == FeedConnectionMessage::fmcLogout) {
-            this->OnProcessHistoricalReplayUnexpectedLogoutMessage();
-            this->Disconnect();
-            this->m_hsState = FeedConnectionHistoricalReplayState::hsSuspend;
-            return true;
-        }
-        this->m_fastProtocolManager->Print();
+
+        unsigned char *buffer = this->socketAManager->RecvBytes();
         LinkedPointer<FeedConnectionRequestMessageInfo> *ptr = this->m_hsRequestList->Start();
         FeedConnectionRequestMessageInfo *msg = ptr->Data();
-        msg->m_conn->ProcessServerCore(size);
 
-        this->m_hsRequestList->Remove(ptr);
-        this->m_hsState = FeedConnectionHistoricalReplayState::hsWaitLogout;
+        if(this->m_hrMessageSize == 0) {
+            this->m_hrMessageSize = *(int*)buffer;
+            buffer += 4; size -= 4;
+            this->m_recvABuffer->NextExact(4);
+        }
+
+        while(size > 0) {
+            printf("msgSize = %d\n", this->m_hrMessageSize);
+            this->m_fastProtocolManager->SetNewBuffer(buffer, this->m_hrMessageSize);
+            this->m_fastProtocolManager->Decode();
+
+            if(this->m_fastProtocolManager->TemplateId() == FeedConnectionMessage::fmcLogout) {
+                if(msg->IsAllMessagesReceived()) {
+                    this->m_hsRequestList->Remove(ptr);
+                    this->m_hsState = FeedConnectionHistoricalReplayState::hsSuspend;
+                    return this->HistoricalReplay_SendLogout();
+                }
+                this->OnProcessHistoricalReplayUnexpectedLogoutMessage();
+                this->Disconnect();
+                this->m_hsState = FeedConnectionHistoricalReplayState::hsSuspend;
+                return true;
+            }
+
+            this->m_fastProtocolManager->Print(); // TODO remove debug info
+            if(this->m_fastProtocolManager->MessageLength() != this->m_hrMessageSize) {
+
+            }
+
+            msg->m_conn->ProcessServerCore(this->m_hrMessageSize);
+            msg->IncMsgSeqNo();
+
+            this->m_recvABuffer->NextExact(this->m_hrMessageSize);
+            size -= this->m_hrMessageSize;
+            buffer += this->m_hrMessageSize;
+            if(size > 0) {
+                this->m_hrMessageSize = *(int*)buffer;
+                buffer += 4; size -= 4;
+                this->m_recvABuffer->NextExact(4);
+            }
+            else {
+                this->m_hrMessageSize = 0;
+            }
+        }
+
+        if(msg->IsAllMessagesReceived()) {
+            this->m_hsRequestList->Remove(ptr);
+            this->m_hsState = FeedConnectionHistoricalReplayState::hsWaitLogout;
+        }
+
         return true;
     }
 
@@ -1178,11 +1224,7 @@ protected:
             this->m_hrMessageSize = *(int*)this->socketAManager->RecvBytes();
             return true;
         }
-        if(this->m_hrMessageSize == 0)
-            this->m_hrMessageSize = *(int*)this->socketAManager->RecvBytes();
-        this->m_recvABuffer->Next(size + 4);
-        this->m_fixProtocolManager->SetRecvMsgSeqNo(this->m_hrMessageSize + 1);
-
+        this->m_recvABuffer->Next(size);
         return this->HistoricalReplay_SendLogout();
     }
 
@@ -1224,16 +1266,19 @@ protected:
         return true;
     }
 public:
-    inline void HrRequestMessage(FeedConnection *conn, int msgSeqNo) {
+    inline void HrRequestMessage(FeedConnection *conn, int start, int end) {
         if(this->m_hsRequestList->IsFull())
             return;
         LinkedPointer<FeedConnectionRequestMessageInfo> *ptr = this->m_hsRequestList->Pop();
         FeedConnectionRequestMessageInfo *info = ptr->Data();
         info->m_conn = conn;
-        info->m_msgSeqNo = msgSeqNo;
+        info->SetMsgSeq(start, end);
         info->m_requestCount = 0;
 
         this->m_hsRequestList->Add(ptr);
+    }
+    inline void HrRequestMessage(FeedConnection *conn, int msgSeqNo) {
+        HrRequestMessage(conn, msgSeqNo, msgSeqNo);
     }
 protected:
     inline bool Listen_Atom_Incremental() {

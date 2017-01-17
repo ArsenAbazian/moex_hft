@@ -145,12 +145,12 @@ bool FeedChannel::Connect() {
 	//this->statisticsIncremental->DoNotCheckIncrementalActuality(true);
 	//this->statisticsIncremental->Start();
     //this->instrumentDefinition->DoNotCheckIncrementalActuality(true);
-    this->instrumentDefinition->IdfAllowUpdateData(true);
-	this->instrumentDefinition->Start();
+    //this->instrumentDefinition->IdfAllowUpdateData(true);
+	//this->instrumentDefinition->Start();
 
-	//this->historicalReplay->HrRequestMessage(this->ordersIncremental, 1); //TODO debug request
-	//this->historicalReplay->HrRequestMessage(this->tradesIncremental, 1); //TODO debug request
-	//this->historicalReplay->HrRequestMessage(this->statisticsIncremental, 1); //TODO debug request
+	//this->historicalReplay->HrRequestMessage(this->ordersIncremental, 1, 500); //TODO debug request
+	this->historicalReplay->HrRequestMessage(this->tradesIncremental, 1, 1000); //TODO debug request
+	//this->historicalReplay->HrRequestMessage(this->statisticsIncremental, 1, 2000); //TODO debug request
 	//this->historicalReplay->HrRequestMessage(this->instrumentDefinition, 1); //TODO debug request
 	//this->historicalReplay->HrRequestMessage(this->instrumentStatus, 1); //TODO debug request
 
