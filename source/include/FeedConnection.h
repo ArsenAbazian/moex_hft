@@ -221,6 +221,7 @@ protected:
     FeedConnectionHistoricalReplayState             m_hsState;
     PointerList<FeedConnectionRequestMessageInfo>  *m_hsRequestList;
     int                                             m_hrMessageSize;
+    int                                             m_hrSizeRemain;
 
     FeedConnectionMessageInfo                       **m_packets;
 
@@ -1137,6 +1138,7 @@ protected:
         }
         this->m_fixProtocolManager->IncSendMsgSeqNo();
         this->m_hsState = FeedConnectionHistoricalReplayState::hsRecvMessage;
+        this->m_hrSizeRemain = 0;
         return true;
     }
 
@@ -1144,33 +1146,26 @@ protected:
         if(!this->CanRecv())
             return true;
 
-        if(this->IsHrReceiveFailedProcessed())
-            return true;
+        unsigned char *buffer = this->m_recvABuffer->CurrentPos();
+        this->socketAManager->Recv(buffer + this->m_hrSizeRemain);
+        this->m_hrSizeRemain += this->socketAManager->RecvSize();
 
-        int size = this->socketAManager->RecvSize();
-        if(size == 4) {
-            this->m_hrMessageSize = *(int*)this->socketAManager->RecvBytes();
-            printf("\t\t\trecv 4 byte. value in 4 byte = %d\n", this->m_hrMessageSize);
-            return true;
-        }
-        else {
-            printf("\t\t\tpacket size = %d\n", size);
-        }
-
-        unsigned char *buffer = this->socketAManager->RecvBytes();
         LinkedPointer<FeedConnectionRequestMessageInfo> *ptr = this->m_hsRequestList->Start();
         FeedConnectionRequestMessageInfo *msg = ptr->Data();
 
-        if(this->m_hrMessageSize == 0) {
-            this->m_hrMessageSize = *(int*)buffer;
-            buffer += 4; size -= 4;
-            this->m_recvABuffer->NextExact(4);
-        }
-
-        while(size > 0) {
-            printf("msgSize = %d\n", this->m_hrMessageSize);
+        while(true) {
+            if(this->m_hrMessageSize == 0) {
+                if(this->m_hrSizeRemain < 4)
+                    break;
+                this->m_hrMessageSize = *(int*)buffer;
+                buffer += 4; this->m_hrSizeRemain -= 4;
+                this->m_recvABuffer->NextExact(4);
+            }
+            if(this->m_hrSizeRemain < this->m_hrMessageSize) {
+                break;
+            }
             this->m_fastProtocolManager->SetNewBuffer(buffer, this->m_hrMessageSize);
-            this->m_fastProtocolManager->Decode();
+            this->m_fastProtocolManager->DecodeHeader();
 
             if(this->m_fastProtocolManager->TemplateId() == FeedConnectionMessage::fmcLogout) {
                 if(msg->IsAllMessagesReceived()) {
@@ -1184,48 +1179,16 @@ protected:
                 return true;
             }
 
-            this->m_fastProtocolManager->Print(); // TODO remove debug info
-            if(this->m_fastProtocolManager->MessageLength() != this->m_hrMessageSize) {
-
-            }
-
             msg->m_conn->ProcessServerCore(this->m_hrMessageSize);
             msg->IncMsgSeqNo();
 
             this->m_recvABuffer->NextExact(this->m_hrMessageSize);
-            size -= this->m_hrMessageSize;
+            this->m_hrSizeRemain -= this->m_hrMessageSize;
             buffer += this->m_hrMessageSize;
-            if(size > 0) {
-                this->m_hrMessageSize = *(int*)buffer;
-                buffer += 4; size -= 4;
-                this->m_recvABuffer->NextExact(4);
-            }
-            else {
-                this->m_hrMessageSize = 0;
-            }
-        }
-
-        if(msg->IsAllMessagesReceived()) {
-            this->m_hsRequestList->Remove(ptr);
-            this->m_hsState = FeedConnectionHistoricalReplayState::hsWaitLogout;
+            this->m_hrMessageSize = 0;
         }
 
         return true;
-    }
-
-    inline bool HistoricalReplay_WaitLogout() {
-        if(!this->CanRecv())
-            return true;
-
-        if(this->IsHrReceiveFailedProcessed())
-            return true;
-        int size = this->socketAManager->RecvSize();
-        if(size == 4) {
-            this->m_hrMessageSize = *(int*)this->socketAManager->RecvBytes();
-            return true;
-        }
-        this->m_recvABuffer->Next(size);
-        return this->HistoricalReplay_SendLogout();
     }
 
     inline bool HistoricalReplay_SendLogout() {
@@ -1261,8 +1224,6 @@ protected:
             return this->HistoricalReplay_WaitLogon();
         if(this->m_hsState == FeedConnectionHistoricalReplayState::hsRecvMessage)
             return this->HistoricalReplay_RecvMessage();
-        if(this->m_hsState == FeedConnectionHistoricalReplayState::hsWaitLogout)
-            return this->HistoricalReplay_WaitLogout();
         return true;
     }
 public:
