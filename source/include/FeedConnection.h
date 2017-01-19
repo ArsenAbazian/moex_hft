@@ -18,7 +18,7 @@ typedef enum _FeedConnectionMessage {
 	fmcLogon = 2101,
     fmcLogout = 2102,
     fcmHeartBeat = 2108,
-    fmcSecuritySratus = 2106,
+    fmcSecurityStatus = 2106,
     fmcTradingSessionStatus = 2107,
     fmcSecurityDefinition = 2115,
 	fmcFullRefresh_Generic = 2103,
@@ -71,6 +71,7 @@ typedef enum _FeedConnectionState {
 	fcsListenIncremental,
     fcsListenSnapshot,
     fcsListenSecurityDefinition,
+    fcsListenSecurityStatus,
     fcsHistoricalReplay,
     fcsConnect
 } FeedConnectionState;
@@ -598,6 +599,27 @@ protected:
         return true;
     }
 
+    inline bool ProcessSecurityStatusMessages() {
+        int i = this->m_startMsgSeqNum;
+
+        while(i <= this->m_endMsgSeqNum) {
+            if(this->m_packets[i]->m_processed) {
+                i++; continue;
+            }
+            if(this->m_packets[i]->m_address == 0) {
+                break;
+            }
+            if(!this->ProcessSecurityStatus(this->m_packets[i]))
+                return false;
+            i++;
+        }
+
+        this->m_startMsgSeqNum = i;
+        if(this->m_doNotCheckIncrementalActuality) // TODO remove this field
+            this->m_startMsgSeqNum = i;
+        return true;
+    }
+
     inline bool ProcessIncrementalMessages() {
         int i = this->m_startMsgSeqNum;
 		int newStartMsgSeqNum = -1;
@@ -627,7 +649,7 @@ protected:
             this->m_startMsgSeqNum = newStartMsgSeqNum;
         else
             this->m_startMsgSeqNum = i;
-        if(this->m_doNotCheckIncrementalActuality)
+        if(this->m_doNotCheckIncrementalActuality) // TODO remove this field
             this->m_startMsgSeqNum = i;
         return true;
     }
@@ -1004,6 +1026,30 @@ protected:
         return true;
     }
 
+    inline bool Listen_Atom_SecurityStatus_Core() {
+        if(!this->ProcessIncrementalMessages())
+            return false;
+//        if(this->m_snapshot->State() == FeedConnectionState::fcsSuspend) {
+//            if(!this->ShouldStartSnapshot()) {
+//                this->m_waitTimer->Stop();
+//                return true;
+//            }
+//            this->m_waitTimer->Activate();
+//            if (this->m_waitTimer->ElapsedMilliseconds() >= this->m_waitIncrementalMaxTimeMs) {
+//                if (!this->StartListenSnapshot())
+//                    return false;
+//                this->m_waitTimer->Stop();
+//            }
+//        }
+//        else {
+//            if(this->CanStopListeningSnapshot()) {
+//                this->StopListenSnapshot();
+//                this->m_waitTimer->Activate();
+//            }
+//        }
+        return true;
+    }
+
     inline bool InitializeSockets() {
         if(this->socketAManager != NULL)
             return true;
@@ -1262,6 +1308,29 @@ protected:
         return this->Listen_Atom_Incremental_Core();
     }
 
+    inline bool Listen_Atom_SecurityStatus() {
+        bool recv = this->ProcessServerA();
+        recv |= this->ProcessServerB();
+
+        if(!recv) {
+            if(!this->m_waitTimer->Active(1)) {
+                this->m_waitTimer->Start(1);
+            }
+            else {
+                if(this->m_waitTimer->ElapsedSeconds(1) > this->WaitAnyPacketMaxTimeSec) {
+                    printf("Timeout 10 sec... Reconnect...\n");
+                    DefaultLogManager::Default->WriteSuccess(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_Listen_Atom_SecurityStatus, false);
+                    this->ReconnectSetNextState(FeedConnectionState::fcsListenSecurityStatus);
+                }
+            }
+            return true;
+        }
+        else {
+            this->m_waitTimer->Stop(1);
+        }
+        return this->Listen_Atom_SecurityStatus_Core();
+    }
+
     inline bool Listen_Atom_SecurityDefinition() {
         bool recv = this->ProcessServerA();
         recv |= this->ProcessServerB();
@@ -1441,16 +1510,29 @@ protected:
 		return true;
 	}
 
+    inline bool ProcessSecurityStatus(FastSecurityStatusInfo *info) {
+        throw;
+    }
+
+    inline bool ProcessSecurityStatus(unsigned char *buffer, int length) {
+        this->m_fastProtocolManager->SetNewBuffer(buffer, length);
+        this->m_fastProtocolManager->ReadMsgSeqNumber();
+
+        if(this->m_fastProtocolManager->Decode() == 0) {
+            printf("unknown template: %d\n", this->m_fastProtocolManager->TemplateId());
+            return true;
+        }
+
+        if(this->m_fastProtocolManager->TemplateId() == FeedConnectionMessage::fmcSecurityStatus) {
+            return this->ProcessSecurityStatus((FastSecurityStatusInfo *)this->m_fastProtocolManager->LastDecodeInfo());
+        }
+
+        return true;
+    }
+
 	inline bool ShouldSkipMessage(unsigned char *buffer) {
 		unsigned short *templateId = (unsigned short*)(buffer + 5);
 		return (*templateId) == 0xbc10;
-	}
-
-	inline bool ProcessIncremental(unsigned char *buffer, int length) {
-		//DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Decode);
-		bool res = this->ProcessIncrementalCore(buffer, length);
-		//DefaultLogManager::Default->EndLog(res);
-		return res;
 	}
 
 	inline bool ProcessIncremental(FeedConnectionMessageInfo *info) {
@@ -1462,8 +1544,21 @@ protected:
 
         //DefaultLogManager::Default->WriteFast(this->m_idLogIndex, this->m_recvABuffer->BufferIndex(), info->m_item->m_itemIndex);
         info->m_processed = true;
-		return this->ProcessIncremental(buffer, info->m_size);
+		return this->ProcessIncrementalCore(buffer, info->m_size);
 	}
+
+    inline bool ProcessSecurityStatus(FeedConnectionMessageInfo *info) {
+        unsigned char *buffer = info->m_address;
+        if(this->ShouldSkipMessage(buffer)) {
+            info->m_processed = true;
+            return true;  // TODO - take this message into account, becasue it determines feed alive
+        }
+
+        //DefaultLogManager::Default->WriteFast(this->m_idLogIndex, this->m_recvABuffer->BufferIndex(), info->m_item->m_itemIndex);
+        info->m_processed = true;
+        return this->ProcessSecurityStatus(buffer, info->m_size);
+    }
+
 public:
 	FeedConnection(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort);
 	FeedConnection();
@@ -2015,6 +2110,8 @@ public:
             return this->HistoricalReplay_Atom();
         if(st == FeedConnectionState::fcsListenSecurityDefinition)
             return this->Listen_Atom_SecurityDefinition();
+        if(st == FeedConnectionState::fcsListenSecurityStatus)
+            return this->Listen_Atom_SecurityStatus();
         if(st == FeedConnectionState::fcsListenSnapshot)
             return this->Listen_Atom_Snapshot();
         if(st == FeedConnectionState::fcsSuspend)

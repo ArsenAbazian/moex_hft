@@ -137,7 +137,17 @@ add_dependencies(hft_robot fast_generate)
 
 add_custom_command(TARGET fast_generate
   PRE_BUILD
-  COMMAND ${CSHARP_MONO_INTERPRETER_} ${fast_generator} -d ${CMAKE_CURRENT_LIST_DIR}/test/data/ -s ${CMAKE_CURRENT_LIST_DIR}/source/ -f -fh source/include/Fast/FastProtocolManager.h -fc source/src/Fast/FastProtocolManager.cpp -ft source/include/Fast/FastTypes.h -fx ${CMAKE_CURRENT_LIST_DIR}/test/data/FIX50SP2-2017-Mar.xml -rb ${CMAKE_CURRENT_LIST_DIR}/source/src/Robot.cpp -fcfg ${CMAKE_CURRENT_LIST_DIR}/test/data/config_test.xml -fwe "Logon,Logout,Security Definition,Security Status,Trading Session Status,Hearthbeat"
+  COMMAND ${CSHARP_MONO_INTERPRETER_} ${fast_generator}
+        -d ${CMAKE_CURRENT_LIST_DIR}/test/data/
+        -s ${CMAKE_CURRENT_LIST_DIR}/source/
+        -f
+        -fh ${CMAKE_CURRENT_LIST_DIR}/source/include/Fast/FastProtocolManager.h
+        -fc ${CMAKE_CURRENT_LIST_DIR}/source/src/Fast/FastProtocolManager.cpp
+        -ft ${CMAKE_CURRENT_LIST_DIR}/source/include/Fast/FastTypes.h
+        -fx ${CMAKE_CURRENT_LIST_DIR}/test/data/FIX50SP2-2017-Mar.xml
+        -rb ${CMAKE_CURRENT_LIST_DIR}/source/src/Robot.cpp
+        -fcfg ${CMAKE_CURRENT_LIST_DIR}/test/data/config_test.xml
+        -fwe "Logon,Logout,Security Definition,Security Status,Trading Session Status,Hearthbeat"
         COMMENT "generating code...")
 
 #target_link_libraries(hft_robot -Wl,--whole-archive -Wl,--no-whole-archive dl)

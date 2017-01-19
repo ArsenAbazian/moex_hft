@@ -97,7 +97,8 @@ typedef enum _LogMessageCode {
 	lmcFeedConnection_StartNewSnapshot = 87,
 	lmcFeedConnection_Listen_Atom_Snapshot = 88,
 	lmcFeedConnection_StopListenSnapshot = 89,
-	lmcFeedConnection_Listen_Atom_SecurityDefinition = 90
+	lmcFeedConnection_Listen_Atom_SecurityDefinition = 90,
+	lmcFeedConnection_Listen_Atom_SecurityStatus = 91
 #pragma  endregion
 }LogMessageCode;
 
