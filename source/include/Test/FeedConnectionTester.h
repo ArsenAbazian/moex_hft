@@ -6,7 +6,7 @@
 #define HFT_ROBOT_FEEDCONNECTIONTESTER_H
 
 #include "../FeedConnections.h"
-#include "InstrumentDefinitionTester.h"
+#include "SecurityDefinitionTester.h"
 #include "OrderTesterFond.h"
 #include "OrderTesterCurr.h"
 #include "TradeTesterFond.h"
@@ -16,6 +16,7 @@
 #include "SymbolManagerTester.h"
 #include "HistoricalReplayTester.h"
 #include "PointerListTester.h"
+#include "SecurityStatusTester.h"
 
 class TestFeedMessage{
 public:
@@ -228,7 +229,10 @@ public:
         RobotSettings::MarketDataMaxSessionsCount = 32;
         RobotSettings::MarketDataMaxEntriesCount = 32;
 
-        InstrumentDefinitionTester ids;
+        SecurityStatusTester ist;
+        ist.Test();
+
+        SecurityDefinitionTester ids;
         ids.Test();
 
         RobotSettings::MarketDataMaxSymbolsCount = 10;

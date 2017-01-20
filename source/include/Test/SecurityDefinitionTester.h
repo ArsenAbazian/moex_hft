@@ -10,7 +10,7 @@
 #include "SymbolManagerTester.h"
 #include <stdio.h>
 
-class InstrumentDefinitionTester{
+class SecurityDefinitionTester{
     FeedConnection *olr;
     FeedConnection *ols;
     FeedConnection *tlr;
@@ -22,7 +22,7 @@ class InstrumentDefinitionTester{
     TestMessagesHelper *m_helper;
 
 public:
-    InstrumentDefinitionTester() {
+    SecurityDefinitionTester() {
         this->m_helper = new TestMessagesHelper();
 
         this->olr = new FeedConnection_FOND_OLR("OLR", "Refresh Incremental", 'I',
@@ -37,7 +37,7 @@ public:
                                                 FeedConnectionProtocol::UDP_IP,
                                                 "10.50.129.200", "239.192.113.3", 9113,
                                                 "10.50.129.200", "239.192.113.131", 9313);
-        this->idf = new FeedConnection_FOND_IDF("IDF", "Full Refresh", 'I',
+        this->idf = new FeedConnection_FOND_IDF("IDF", "Full Refresh", 'S',
                                                 FeedConnectionProtocol::UDP_IP,
                                                 "10.50.129.200", "239.192.113.3", 9113,
                                                 "10.50.129.200", "239.192.113.131", 9313);
@@ -46,7 +46,7 @@ public:
         this->idf->AddConnectionToRecvSymbol(this->msr);
         this->idf->AddConnectionToRecvSymbol(this->tlr);
     }
-    ~InstrumentDefinitionTester() {
+    ~SecurityDefinitionTester() {
         delete this->olr;
         delete this->tlr;
         delete this->msr;
@@ -74,7 +74,7 @@ public:
             throw;
         if(this->idf->SecurityDefinitionMode() != FeedConnectionSecurityDefinitionMode::sdmCollectData)
             throw;
-        if(this->idf->m_securityDefinitionsCount != 0)
+        if(this->idf->m_symbolsCount != 0)
             throw;
         if(this->idf->m_idfDataCollected)
             throw;
@@ -112,9 +112,9 @@ public:
             throw;
         if(!StringIdComparer::Equal(info->Symbol, 2, "s1", 2))
             throw;
-        if(this->idf->SecurityDefinitions()[0]->Data() != info)
+        if(this->idf->Symbols()[0]->Data() != info)
             throw;
-        if(this->idf->SecurityDefinitionsCount() != 1)
+        if(this->idf->SymbolCount() != 1)
             throw;
         if(!StringIdComparer::Equal(info->Symbol, 2, "s1", 2))
             throw;
@@ -218,7 +218,7 @@ public:
 
     void TestAddSymbol_2() {
         this->Clear();
-        if(this->idf->m_securityDefinitionsCount != 0)
+        if(this->idf->m_symbolsCount != 0)
             throw;
 
         FastSecurityDefinitionInfo *info = this->m_helper->CreateSecurityDefinitionInfo("s1");
@@ -268,12 +268,12 @@ public:
 
     void TestBeforeProcessSecurityDefinitions() {
         this->TestAddSymbol();
-        if(this->idf->m_securityDefinitionsCount == 0)
+        if(this->idf->m_symbolsCount == 0)
             throw;
 
-        FastSecurityDefinitionInfo *info = this->idf->SecurityDefinition(0);
+        FastSecurityDefinitionInfo *info = this->idf->Symbol(0);
         this->idf->BeforeProcessSecurityDefinitions();
-        if(this->idf->m_securityDefinitionsCount != 0)
+        if(this->idf->m_symbolsCount != 0)
             throw;
         if(info->Used)
             throw;
@@ -292,7 +292,7 @@ public:
             }
         }
 
-        if(this->idf->SecurityDefinitionsCount() != 0)
+        if(this->idf->SymbolCount() != 0)
             throw;
         if(this->olr->OrderFond()->SymbolsCount() != 0)
             throw;
@@ -353,7 +353,9 @@ public:
 
         if(this->idf->IsIdfDataCollected())
             throw;
-        this->m_helper->SendMessages(this->idf, "totNumReports 2 idf s1 session t1 session t2, totNumReports 2 idf s2 session t1 session t2, msgSeqNo 1 totNumReports 2 idf s1 session t1 session t2", 30);
+        this->m_helper->SendMessagesIdf(this->idf,
+                                        "totNumReports 2 idf s1 session t1 session t2, totNumReports 2 idf s2 session t1 session t2, msgSeqNo 1 totNumReports 2 idf s1 session t1 session t2",
+                                        30);
         if(this->idf->m_startMsgSeqNum != 0)
             throw;
         if(this->idf->m_idfStartMsgSeqNo != 0)
@@ -362,7 +364,7 @@ public:
             throw;
         if(this->idf->m_idfMaxMsgSeqNo != 2)
             throw;
-        if(this->idf->SecurityDefinitionsCount() != 2)
+        if(this->idf->SymbolCount() != 2)
             throw;
         if(!this->idf->IsIdfDataCollected())
             throw;
@@ -379,7 +381,9 @@ public:
 
         if(this->idf->IsIdfDataCollected())
             throw;
-        this->m_helper->SendMessages(this->idf, "msgSeqNo 2 totNumReports 2 idf s1 session t1 session t2, msgSeqNo 1 totNumReports 2 idf s2 session t1 session t2, msgSeqNo 2 totNumReports 2 idf s1 session t1 session t2", 30);
+        this->m_helper->SendMessagesIdf(this->idf,
+                                        "msgSeqNo 2 totNumReports 2 idf s1 session t1 session t2, msgSeqNo 1 totNumReports 2 idf s2 session t1 session t2, msgSeqNo 2 totNumReports 2 idf s1 session t1 session t2",
+                                        30);
         if(this->idf->m_startMsgSeqNum != 0)
             throw;
         if(this->idf->m_idfStartMsgSeqNo != 0)
@@ -388,7 +392,7 @@ public:
             throw;
         if(this->idf->m_idfMaxMsgSeqNo != 2)
             throw;
-        if(this->idf->SecurityDefinitionsCount() != 2)
+        if(this->idf->SymbolCount() != 2)
             throw;
         if(!this->idf->IsIdfDataCollected())
             throw;
@@ -420,12 +424,14 @@ public:
         idf->Start();
         if(this->idf->State() == FeedConnectionState::fcsSuspend)
             throw;
-        this->m_helper->SendMessages(this->idf, "idf s1 totNumReports 3 session t1 session t2, idf s2 totNumReports 3 session t1 session t2, idf s3 totNumReports 3 session t1 session t2, msgSeqNo 1 idf s1 totNumReports 3 session t1 session t2", 30);
+        this->m_helper->SendMessagesIdf(this->idf,
+                                        "idf s1 totNumReports 3 session t1 session t2, idf s2 totNumReports 3 session t1 session t2, idf s3 totNumReports 3 session t1 session t2, msgSeqNo 1 idf s1 totNumReports 3 session t1 session t2",
+                                        30);
         // check - stop called? but i dont know if we should stop connection
         if(this->idf->State() != FeedConnectionState::fcsSuspend)
             throw;
         // test correct initialization
-        if(this->idf->SecurityDefinitionsCount() != 3)
+        if(this->idf->SymbolCount() != 3)
             throw;
         if(this->olr->OrderFond()->SymbolsCount() != 3)
             throw;
@@ -455,15 +461,21 @@ public:
         idf->m_idfMode = FeedConnectionSecurityDefinitionMode::sdmCollectData;
         idf->Start();
 
-        this->m_helper->SendMessages(this->idf, "idf s1 totNumReports 3 session t1 session t2, lost idf s2 totNumReports 3 session t1 session t2, idf s3 totNumReports 3 session t1 session t2, msgSeqNo 1 idf s1 totNumReports 3 session t1 session t2", 30);
+        this->m_helper->SendMessagesIdf(this->idf,
+                                        "idf s1 totNumReports 3 session t1 session t2, lost idf s2 totNumReports 3 session t1 session t2, idf s3 totNumReports 3 session t1 session t2, msgSeqNo 1 idf s1 totNumReports 3 session t1 session t2",
+                                        30);
         if(this->idf->m_idfDataCollected)
             throw;
         if(this->idf->m_idfState != FeedConnectionSecurityDefinitionState::sdsProcessToEnd)
             throw;
-        this->m_helper->SendMessages(this->idf, "lost idf s1 totNumReports 3  session t1 session t2, lost idf s2 totNumReports 3  session t1 session t2, idf s3 totNumReports 3 session t1 session t2, msgSeqNo 1 idf s1 totNumReports 3 session t1 session t2", 30);
+        this->m_helper->SendMessagesIdf(this->idf,
+                                        "lost idf s1 totNumReports 3  session t1 session t2, lost idf s2 totNumReports 3  session t1 session t2, idf s3 totNumReports 3 session t1 session t2, msgSeqNo 1 idf s1 totNumReports 3 session t1 session t2",
+                                        30);
         if(this->idf->m_idfDataCollected)
             throw;
-        this->m_helper->SendMessages(this->idf, "idf s1 totNumReports 3 session t1 session t2, idf s2 totNumReports 3 session t1 session t2, idf s3 totNumReports 3 session t1 session t2, msgSeqNo 1 idf s1 totNumReports 3 session t1 session t2", 30);
+        this->m_helper->SendMessagesIdf(this->idf,
+                                        "idf s1 totNumReports 3 session t1 session t2, idf s2 totNumReports 3 session t1 session t2, idf s3 totNumReports 3 session t1 session t2, msgSeqNo 1 idf s1 totNumReports 3 session t1 session t2",
+                                        30);
         if(!this->idf->m_idfDataCollected)
             throw;
         if(this->olr->OrderFond()->SymbolsCount() != 3)
@@ -477,31 +489,30 @@ public:
         idf->m_idfMode = FeedConnectionSecurityDefinitionMode::sdmCollectData;
         idf->Start();
 
-        this->m_helper->SendMessages(this->idf,
-                                     "     msgSeqNo 2 idf s1 totNumReports 4 session t1 session t2,"
-                                     "lost msgSeqNo 3 idf s2 totNumReports 4 session t1 session t2,"
-                                     "lost msgSeqNo 4 idf s3 totNumReports 4 session t1 session t2,"
-                                     "     msgSeqNo 1 idf s1 totNumReports 4 session t1 session t2", 30);
+        this->m_helper->SendMessagesIdf(this->idf,
+                                        "     msgSeqNo 2 idf s1 totNumReports 4 session t1 session t2,"
+                                                "lost msgSeqNo 3 idf s2 totNumReports 4 session t1 session t2,"
+                                                "lost msgSeqNo 4 idf s3 totNumReports 4 session t1 session t2,"
+                                                "     msgSeqNo 1 idf s1 totNumReports 4 session t1 session t2", 30);
         if(idf->m_idfState != FeedConnectionSecurityDefinitionState::sdsProcessToEnd)
             throw;
         if(idf->State() != FeedConnectionState::fcsListenSecurityDefinition)
             throw;
         if(idf->IsIdfDataCollected())
             throw;
-        this->m_helper->SendMessages(this->idf,
-                                     "     msgSeqNo 2 idf s1 totNumReports 4 session t1 session t2,"
-                                     "     msgSeqNo 3 idf s2 totNumReports 4 session t1 session t2,"
-                                     "     msgSeqNo 4 idf s3 totNumReports 4 session t1 session t2,"
-                                     "     msgSeqNo 1 idf s1 totNumReports 4 session t1 session t2", 30);
+        this->m_helper->SendMessagesIdf(this->idf,
+                                        "     msgSeqNo 2 idf s1 totNumReports 4 session t1 session t2,"
+                                                "     msgSeqNo 3 idf s2 totNumReports 4 session t1 session t2,"
+                                                "     msgSeqNo 4 idf s3 totNumReports 4 session t1 session t2,"
+                                                "     msgSeqNo 1 idf s1 totNumReports 4 session t1 session t2", 30);
         if(idf->m_idfState != FeedConnectionSecurityDefinitionState::sdsProcessFromStart)
             throw;
         if(idf->State() != FeedConnectionState::fcsListenSecurityDefinition)
             throw;
         if(idf->IsIdfDataCollected())
             throw;
-        this->m_helper->SendMessages(this->idf,
-                                     "     msgSeqNo 2 idf s1 totNumReports 4 session t1 session t2"
-                                     , 30);
+        this->m_helper->SendMessagesIdf(this->idf,
+                                        "     msgSeqNo 2 idf s1 totNumReports 4 session t1 session t2", 30);
         if(idf->State() != FeedConnectionState::fcsSuspend)
             throw;
         if(!idf->IsIdfDataCollected())
@@ -515,12 +526,12 @@ public:
         idf->m_idfMode = FeedConnectionSecurityDefinitionMode::sdmCollectData;
         idf->Start();
 
-        this->m_helper->SendMessages(this->idf,
-                                     "     msgSeqNo 2 idf s1 totNumReports 4 session t1 session t2,"
-                                     "lost msgSeqNo 3 idf s2 totNumReports 4 session t1 session t2,"
-                                     "lost msgSeqNo 4 idf s3 totNumReports 4 session t1 session t2,"
-                                     "     msgSeqNo 1 idf s1 totNumReports 4 session t1 session t2,"
-                                     "     msgSeqNo 2 idf s1 totNumReports 4 session t1 session t2", 30);
+        this->m_helper->SendMessagesIdf(this->idf,
+                                        "     msgSeqNo 2 idf s1 totNumReports 4 session t1 session t2,"
+                                                "lost msgSeqNo 3 idf s2 totNumReports 4 session t1 session t2,"
+                                                "lost msgSeqNo 4 idf s3 totNumReports 4 session t1 session t2,"
+                                                "     msgSeqNo 1 idf s1 totNumReports 4 session t1 session t2,"
+                                                "     msgSeqNo 2 idf s1 totNumReports 4 session t1 session t2", 30);
         if(idf->m_idfState != FeedConnectionSecurityDefinitionState::sdsProcessToEnd)
             throw;
         if(idf->State() != FeedConnectionState::fcsListenSecurityDefinition)
@@ -536,12 +547,12 @@ public:
         idf->m_idfMode = FeedConnectionSecurityDefinitionMode::sdmCollectData;
         idf->Start();
 
-        this->m_helper->SendMessages(this->idf,
-                                     "     msgSeqNo 2 idf s1 totNumReports 4 session t1 session t2,"
-                                     "lost msgSeqNo 3 idf s2 totNumReports 4 session t1 session t2,"
-                                     "     msgSeqNo 4 idf s3 totNumReports 4 session t1 session t2,"
-                                     "     msgSeqNo 1 idf s1 totNumReports 4 session t1 session t2,"
-                                     "     msgSeqNo 2 idf s1 totNumReports 4 session t1 session t2", 30);
+        this->m_helper->SendMessagesIdf(this->idf,
+                                        "     msgSeqNo 2 idf s1 totNumReports 4 session t1 session t2,"
+                                                "lost msgSeqNo 3 idf s2 totNumReports 4 session t1 session t2,"
+                                                "     msgSeqNo 4 idf s3 totNumReports 4 session t1 session t2,"
+                                                "     msgSeqNo 1 idf s1 totNumReports 4 session t1 session t2,"
+                                                "     msgSeqNo 2 idf s1 totNumReports 4 session t1 session t2", 30);
         if(idf->m_idfState != FeedConnectionSecurityDefinitionState::sdsProcessToEnd)
             throw;
         if(idf->State() != FeedConnectionState::fcsListenSecurityDefinition)
@@ -557,16 +568,16 @@ public:
         idf->m_idfMode = FeedConnectionSecurityDefinitionMode::sdmCollectData;
         idf->Start();
 
-        this->m_helper->SendMessages(this->idf,
-                                     "     msgSeqNo 2 idf s1 totNumReports 4 session t1 session t2,"
-                                     "lost msgSeqNo 3 idf s2 totNumReports 4 session t1 session t2,"
-                                     "     msgSeqNo 4 idf s3 totNumReports 4 session t1 session t2,"
-                                     "     msgSeqNo 1 idf s1 totNumReports 4 session t1 session t2,"
-                                     "     msgSeqNo 2 idf s1 totNumReports 4 session t1 session t2,"
-                                     "     msgSeqNo 3 idf s2 totNumReports 4 session t1 session t2,"
-                                     "lost msgSeqNo 4 idf s3 totNumReports 4 session t1 session t2,"
-                                     "lost msgSeqNo 1 idf s1 totNumReports 4 session t1 session t2,"
-                                     "     msgSeqNo 2 idf s1 totNumReports 4 session t1 session t2", 30);
+        this->m_helper->SendMessagesIdf(this->idf,
+                                        "     msgSeqNo 2 idf s1 totNumReports 4 session t1 session t2,"
+                                                "lost msgSeqNo 3 idf s2 totNumReports 4 session t1 session t2,"
+                                                "     msgSeqNo 4 idf s3 totNumReports 4 session t1 session t2,"
+                                                "     msgSeqNo 1 idf s1 totNumReports 4 session t1 session t2,"
+                                                "     msgSeqNo 2 idf s1 totNumReports 4 session t1 session t2,"
+                                                "     msgSeqNo 3 idf s2 totNumReports 4 session t1 session t2,"
+                                                "lost msgSeqNo 4 idf s3 totNumReports 4 session t1 session t2,"
+                                                "lost msgSeqNo 1 idf s1 totNumReports 4 session t1 session t2,"
+                                                "     msgSeqNo 2 idf s1 totNumReports 4 session t1 session t2", 30);
         if(idf->State() != FeedConnectionState::fcsListenSecurityDefinition)
             throw;
         if(idf->m_idfState != FeedConnectionSecurityDefinitionState::sdsProcessToEnd)
@@ -582,25 +593,25 @@ public:
         idf->m_idfMode = FeedConnectionSecurityDefinitionMode::sdmCollectData;
         idf->Start();
 
-        this->m_helper->SendMessages(this->idf,
-                                             "     msgSeqNo 2 idf s1 totNumReports 4 session t1 session t2,"
-                                             "lost msgSeqNo 3 idf s2 totNumReports 4 session t1 session t2,"
-                                             "     msgSeqNo 4 idf s3 totNumReports 4 session t1 session t2,"
-                                             "     msgSeqNo 1 idf s1 totNumReports 4 session t1 session t2,"
-                                             "     msgSeqNo 2 idf s1 totNumReports 4 session t1 session t2,"
-                                             "     msgSeqNo 3 idf s2 totNumReports 4 session t1 session t2,"
-                                             "lost msgSeqNo 4 idf s3 totNumReports 4 session t1 session t2,"
-                                             "lost msgSeqNo 1 idf s1 totNumReports 4 session t1 session t2,"
-                                             "     msgSeqNo 2 idf s1 totNumReports 4 session t1 session t2"
-                                             "lost msgSeqNo 3 idf s2 totNumReports 4 session t1 session t2,"
-                                             "     msgSeqNo 4 idf s3 totNumReports 4 session t1 session t2,"
-                                             "lost msgSeqNo 1 idf s1 totNumReports 4 session t1 session t2,"
-                                             "     msgSeqNo 2 idf s1 totNumReports 4 session t1 session t2,", 30);
+        this->m_helper->SendMessagesIdf(this->idf,
+                                        "     msgSeqNo 2 idf s1 totNumReports 4 session t1 session t2,"
+                                                "lost msgSeqNo 3 idf s2 totNumReports 4 session t1 session t2,"
+                                                "     msgSeqNo 4 idf s3 totNumReports 4 session t1 session t2,"
+                                                "     msgSeqNo 1 idf s1 totNumReports 4 session t1 session t2,"
+                                                "     msgSeqNo 2 idf s1 totNumReports 4 session t1 session t2,"
+                                                "     msgSeqNo 3 idf s2 totNumReports 4 session t1 session t2,"
+                                                "lost msgSeqNo 4 idf s3 totNumReports 4 session t1 session t2,"
+                                                "lost msgSeqNo 1 idf s1 totNumReports 4 session t1 session t2,"
+                                                "     msgSeqNo 2 idf s1 totNumReports 4 session t1 session t2"
+                                                "lost msgSeqNo 3 idf s2 totNumReports 4 session t1 session t2,"
+                                                "     msgSeqNo 4 idf s3 totNumReports 4 session t1 session t2,"
+                                                "lost msgSeqNo 1 idf s1 totNumReports 4 session t1 session t2,"
+                                                "     msgSeqNo 2 idf s1 totNumReports 4 session t1 session t2,", 30);
         if(idf->State() != FeedConnectionState::fcsSuspend)
             throw;
         if(!idf->IsIdfDataCollected())
             throw;
-        if(idf->SecurityDefinitionsCount() != 3)
+        if(idf->SymbolCount() != 3)
             throw;
     }
 
@@ -624,7 +635,7 @@ public:
 
     void TestSecurityDefinitionsAreClear() {
         for(int i = 0; i < RobotSettings::MaxSecurityDefinitionCount; i++) {
-            if(this->idf->m_securityDefinitions[i]->Data() != 0)
+            if(this->idf->m_symbols[i]->Data() != 0)
                 throw;
         }
     }
@@ -635,7 +646,7 @@ public:
             throw;
         if(this->idf->m_idfStartMsgSeqNo != 0)
             throw;
-        if(this->idf->m_securityDefinitionsCount != 0)
+        if(this->idf->m_symbolsCount != 0)
             throw;
         if(this->idf->m_idfState != FeedConnectionSecurityDefinitionState::sdsProcessToEnd)
             throw;
@@ -658,12 +669,14 @@ public:
         this->idf->m_idfAllowUpdateData = false;
         this->idf->Start();
 
-        this->m_helper->SendMessages(this->idf, "totNumReports 2 idf s1 session t1 session t2, totNumReports 2 idf s2 session t1 session t2, msgSeqNo 1 totNumReports 2 idf s1 session t1 session t2", 30);
+        this->m_helper->SendMessagesIdf(this->idf,
+                                        "totNumReports 2 idf s1 session t1 session t2, totNumReports 2 idf s2 session t1 session t2, msgSeqNo 1 totNumReports 2 idf s1 session t1 session t2",
+                                        30);
         if(this->idf->m_idfMode != FeedConnectionSecurityDefinitionMode::sdmCollectData)
             throw;
         if(this->idf->State() != FeedConnectionState::fcsSuspend)
             throw;
-        if(this->idf->SecurityDefinitionsCount() != 2)
+        if(this->idf->SymbolCount() != 2)
             throw;
     }
     // switch to update mode
@@ -673,12 +686,14 @@ public:
         this->idf->m_idfAllowUpdateData = true;
         this->idf->Start();
 
-        this->m_helper->SendMessages(this->idf, "totNumReports 2 idf s1 session t1 session t2, totNumReports 2 idf s2 session t1 session t2, msgSeqNo 1 totNumReports 2 idf s1 session t1 session t2", 30);
+        this->m_helper->SendMessagesIdf(this->idf,
+                                        "totNumReports 2 idf s1 session t1 session t2, totNumReports 2 idf s2 session t1 session t2, msgSeqNo 1 totNumReports 2 idf s1 session t1 session t2",
+                                        30);
         if(this->idf->m_idfMode != FeedConnectionSecurityDefinitionMode::sdmUpdateData)
             throw;
         if(this->idf->State() != FeedConnectionState::fcsListenSecurityDefinition)
             throw;
-        if(this->idf->SecurityDefinitionsCount() != 2)
+        if(this->idf->SymbolCount() != 2)
             throw;
     }
     // continue update security definitions data, do not update trading sessions...
@@ -688,42 +703,42 @@ public:
         this->idf->m_idfAllowUpdateData = true;
         this->idf->Start();
 
-        this->m_helper->SendMessages(this->idf,
-                "msgSeqNo 1 totNumReports 4 idf s1 session t1,"
-                "msgSeqNo 2 totNumReports 4 idf s2 session t1,"
-                "msgSeqNo 3 totNumReports 4 idf s1 session t2,"
-                "msgSeqNo 4 totNumReports 4 idf s2 session t2,"
-                "msgSeqNo 1 totNumReports 4 idf s1 session t1,"
-                "msgSeqNo 2 totNumReports 4 idf s2 session t1",
-                30);
+        this->m_helper->SendMessagesIdf(this->idf,
+                                        "msgSeqNo 1 totNumReports 4 idf s1 session t1,"
+                                                "msgSeqNo 2 totNumReports 4 idf s2 session t1,"
+                                                "msgSeqNo 3 totNumReports 4 idf s1 session t2,"
+                                                "msgSeqNo 4 totNumReports 4 idf s2 session t2,"
+                                                "msgSeqNo 1 totNumReports 4 idf s1 session t1,"
+                                                "msgSeqNo 2 totNumReports 4 idf s2 session t1",
+                                        30);
         if(this->idf->m_idfMode != FeedConnectionSecurityDefinitionMode::sdmUpdateData)
             throw;
-        if(this->idf->SecurityDefinitionsCount() != 2)
+        if(this->idf->SymbolCount() != 2)
             throw;
-        if(this->idf->SecurityDefinition(0)->MarketSegmentGrpCount != 2)
+        if(this->idf->Symbol(0)->MarketSegmentGrpCount != 2)
             throw;
-        if(this->idf->SecurityDefinition(1)->MarketSegmentGrpCount != 2)
+        if(this->idf->Symbol(1)->MarketSegmentGrpCount != 2)
             throw;
-        if(this->idf->SecurityDefinition(0)->MarketSegmentGrp[0]->TradingSessionRulesGrpCount != 1)
+        if(this->idf->Symbol(0)->MarketSegmentGrp[0]->TradingSessionRulesGrpCount != 1)
             throw;
-        if(this->idf->SecurityDefinition(1)->MarketSegmentGrp[0]->TradingSessionRulesGrpCount != 1)
+        if(this->idf->Symbol(1)->MarketSegmentGrp[0]->TradingSessionRulesGrpCount != 1)
             throw;
-        if(this->idf->SecurityDefinition(0)->MarketSegmentGrp[1]->TradingSessionRulesGrpCount != 1)
+        if(this->idf->Symbol(0)->MarketSegmentGrp[1]->TradingSessionRulesGrpCount != 1)
             throw;
-        if(this->idf->SecurityDefinition(1)->MarketSegmentGrp[1]->TradingSessionRulesGrpCount != 1)
+        if(this->idf->Symbol(1)->MarketSegmentGrp[1]->TradingSessionRulesGrpCount != 1)
             throw;
 
-        FastSecurityDefinitionMarketSegmentGrpItemInfo *m = this->idf->SecurityDefinition(0)->MarketSegmentGrp[0];
+        FastSecurityDefinitionMarketSegmentGrpItemInfo *m = this->idf->Symbol(0)->MarketSegmentGrp[0];
         if(!StringIdComparer::Equal(m->TradingSessionRulesGrp[0]->TradingSessionID, m->TradingSessionRulesGrp[0]->TradingSessionIDLength, "t1", 2))
             throw;
-        m = this->idf->SecurityDefinition(0)->MarketSegmentGrp[1];
+        m = this->idf->Symbol(0)->MarketSegmentGrp[1];
         if(!StringIdComparer::Equal(m->TradingSessionRulesGrp[0]->TradingSessionID, m->TradingSessionRulesGrp[0]->TradingSessionIDLength, "t2", 2))
             throw;
 
-        m = this->idf->SecurityDefinition(1)->MarketSegmentGrp[0];
+        m = this->idf->Symbol(1)->MarketSegmentGrp[0];
         if(!StringIdComparer::Equal(m->TradingSessionRulesGrp[0]->TradingSessionID, m->TradingSessionRulesGrp[0]->TradingSessionIDLength, "t1", 2))
             throw;
-        m = this->idf->SecurityDefinition(1)->MarketSegmentGrp[1];
+        m = this->idf->Symbol(1)->MarketSegmentGrp[1];
         if(!StringIdComparer::Equal(m->TradingSessionRulesGrp[0]->TradingSessionID, m->TradingSessionRulesGrp[0]->TradingSessionIDLength, "t2", 2))
             throw;
     }
@@ -774,18 +789,18 @@ public:
         this->idf->m_idfAllowUpdateData = false;
         this->idf->Start();
 
-        this->m_helper->SendMessages(this->idf,
-                                     "msgSeqNo 1 totNumReports 4 idf s1 session t1,"
-                                             "msgSeqNo 2 totNumReports 4 idf s2 session t1,"
-                                             "msgSeqNo 3 totNumReports 4 idf s1 session t2,"
-                                             "msgSeqNo 4 totNumReports 4 idf s2 session t2,"
-                                             "msgSeqNo 1 totNumReports 4 idf s1 session t1",
-                                     30);
+        this->m_helper->SendMessagesIdf(this->idf,
+                                        "msgSeqNo 1 totNumReports 4 idf s1 session t1,"
+                                                "msgSeqNo 2 totNumReports 4 idf s2 session t1,"
+                                                "msgSeqNo 3 totNumReports 4 idf s1 session t2,"
+                                                "msgSeqNo 4 totNumReports 4 idf s2 session t2,"
+                                                "msgSeqNo 1 totNumReports 4 idf s1 session t1",
+                                        30);
         if(this->idf->State() != FeedConnectionState::fcsSuspend)
             throw;
-        if(this->idf->SecurityDefinitionsCount() != 2)
+        if(this->idf->SymbolCount() != 2)
             throw;
-        FastSecurityDefinitionInfo *info1 = this->idf->SecurityDefinition(0);
+        FastSecurityDefinitionInfo *info1 = this->idf->Symbol(0);
         if(info1->MarketSegmentGrpCount != 2)
             throw;
         if(info1->MarketSegmentGrp[0]->TradingSessionRulesGrpCount != 1)
@@ -797,7 +812,7 @@ public:
         if(!StringIdComparer::Equal(info1->MarketSegmentGrp[1]->TradingSessionRulesGrp[0]->TradingSessionID, 2, "t2", 2))
             throw;
 
-        FastSecurityDefinitionInfo *info2 = this->idf->SecurityDefinition(1);
+        FastSecurityDefinitionInfo *info2 = this->idf->Symbol(1);
         if(info2->MarketSegmentGrpCount != 2)
             throw;
         if(info2->MarketSegmentGrp[0]->TradingSessionRulesGrpCount != 1)

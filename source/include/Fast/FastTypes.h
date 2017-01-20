@@ -67,6 +67,21 @@ typedef enum _MDEntryType {
     mdetAllDeals = 'z'
 }MDEntryType;
 
+typedef enum _SecurityStatus {
+	ssUndefined = 0,
+	ssNoTrading = 18,
+	ssOpening = 118,
+	ssTradingClosed = 18,
+	ssClosing = 130,
+	ssTradingPaused = 2,
+	ssNormalTrading = 17,
+	ssClosingAuction = 102,
+	ssBigPacketAuction = 106,
+	ssDiscreteAuction = 107,
+	ssOpeningAuction = 119,
+	ssTradingByClosingAuctionPrice = 120
+}SecurityStatus;
+
 #pragma region Message_Info_Structures_Definition_GeneratedCode
 #define PRESENCE_MAP_INDEX0  0x0000000000000040L
 #define PRESENCE_MAP_INDEX1  0x0000000000000020L

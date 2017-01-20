@@ -3310,7 +3310,7 @@ public:
 
         this->incCurr->OrderCurr()->Add("s1", "session1");
         int prevCount = this->snapCurr->m_fastProtocolManager->m_oLSCURRItems->Count();
-        this->SendMessages(this->incCurr, this->snapCurr,
+        this->SendMessagesIdf(this->incCurr, this->snapCurr,
                            "olr entry s1 e1, olr entry s1 e2, lost olr entry s1 e4 entry s1 e4, wait_snap, hbeat",
                            "                                                   ols begin s1 entry s1 e1 rpt 2, ols s1 entry s1 e2, ols s1 entry s1 e3, ols s1 entry del s1 e2 end",
                            30);

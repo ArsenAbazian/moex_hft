@@ -2785,7 +2785,7 @@ public:
 
         this->incCurr->TradeCurr()->Add("s1", "session1");
         int prevCount = this->snapCurr->m_fastProtocolManager->m_tLSCURRItems->Count();
-        this->SendMessages(this->incCurr, this->snapCurr,
+        this->SendMessagesIdf(this->incCurr, this->snapCurr,
                            "tlr entry s1 e1, tlr entry s1 e2, lost tlr entry s1 e4 entry s1 e4, wait_snap, hbeat",
                            "                                                   tls begin s1 entry s1 e1 rpt 2, tls s1 entry s1 e2, tls s1 entry s1 e3, tls s1 entry del s1 e2 end",
                            30);

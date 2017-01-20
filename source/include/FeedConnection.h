@@ -167,8 +167,9 @@ class TradeTesterCurr;
 class TestMessagesHelper;
 class StatisticsTesterFond;
 class StatisticsTesterCurr;
-class InstrumentDefinitionTester;
+class SecurityDefinitionTester;
 class HistoricalReplayTester;
+class SecurityStatusTester;
 
 class FeedConnection {
     friend class OrderTesterFond;
@@ -179,8 +180,9 @@ class FeedConnection {
     friend class TestMessagesHelper;
     friend class StatisticsTesterFond;
     friend class StatisticsTesterCurr;
-    friend class InstrumentDefinitionTester;
+    friend class SecurityDefinitionTester;
     friend class HistoricalReplayTester;
+    friend class SecurityStatusTester;
 
 public:
 	const int MaxReceiveBufferSize 				= 1500;
@@ -195,6 +197,7 @@ protected:
     FeedConnection                              *m_incremental;
     FeedConnection                              *m_snapshot;
     FeedConnection                              *m_historicalReplay;
+    FeedConnection                              *m_securityDefinition;
 
     FeedConnection                              *m_connectionsToRecvSymbols[32];
     int                                         m_connectionsToRecvSymbolsCount;
@@ -281,8 +284,8 @@ protected:
 	MarketDataTable<TradeInfo, FastTLSCURRInfo, FastTLSCURRItemInfo>			*m_tradeTableCurr;
     MarketDataTable<StatisticsInfo, FastGenericInfo, FastGenericItemInfo>       *m_statTableFond;
     MarketDataTable<StatisticsInfo, FastGenericInfo, FastGenericItemInfo>       *m_statTableCurr;
-    LinkedPointer<FastSecurityDefinitionInfo>                                   **m_securityDefinitions;
-    int                                          m_securityDefinitionsCount;
+    LinkedPointer<FastSecurityDefinitionInfo>                                   **m_symbols;
+    int                                                                         m_symbolsCount;
 
     void InitializeHistoricalReplay() {
         this->m_hsRequestList = new PointerList<FeedConnectionRequestMessageInfo>(RobotSettings::HistoricalReplayMaxMessageRequestCount);
@@ -305,17 +308,17 @@ protected:
             this->m_packets[i] = new FeedConnectionMessageInfo();
     }
     void InitializeSecurityDefinition() {
-        this->m_securityDefinitions = new LinkedPointer<FastSecurityDefinitionInfo>*[RobotSettings::MaxSecurityDefinitionCount];
+        this->m_symbols = new LinkedPointer<FastSecurityDefinitionInfo>*[RobotSettings::MaxSecurityDefinitionCount];
         for(int i = 0; i < RobotSettings::MaxSecurityDefinitionCount; i++)
-            this->m_securityDefinitions[i] = new LinkedPointer<FastSecurityDefinitionInfo>();
-        this->m_securityDefinitionsCount = 0;
+            this->m_symbols[i] = new LinkedPointer<FastSecurityDefinitionInfo>();
+        this->m_symbolsCount = 0;
         this->m_idfMode = FeedConnectionSecurityDefinitionMode::sdmCollectData;
         this->m_symbolManager = new SymbolManager(RobotSettings::MarketDataMaxSymbolsCount);
     }
     void DisposeSecurityDefinition() {
         for(int i = 0; i < RobotSettings::MaxSecurityDefinitionCount; i++)
-            delete this->m_securityDefinitions[i];
-        delete this->m_securityDefinitions;
+            delete this->m_symbols[i];
+        delete this->m_symbols;
     }
 
     inline void GetCurrentTime(UINT64 *time) {
@@ -361,6 +364,10 @@ protected:
                 this->m_idfStartMsgSeqNo = msgSeqNum;
             if(this->m_idfMaxMsgSeqNo == 0)
                 this->m_idfMaxMsgSeqNo = TryGetSecurityDefinitionTotNumReports(this->m_recvABuffer->CurrentPos());
+        }
+        else if(this->m_type == FeedConnectionType::InstrumentStatus) {
+            if(this->m_endMsgSeqNum < msgSeqNum)
+                this->m_endMsgSeqNum = msgSeqNum;
         }
         else {
             this->m_waitTimer->Start();
@@ -1027,7 +1034,7 @@ protected:
     }
 
     inline bool Listen_Atom_SecurityStatus_Core() {
-        if(!this->ProcessIncrementalMessages())
+        if(!this->ProcessSecurityStatusMessages())
             return false;
 //        if(this->m_snapshot->State() == FeedConnectionState::fcsSuspend) {
 //            if(!this->ShouldStartSnapshot()) {
@@ -1511,7 +1518,7 @@ protected:
 	}
 
     inline bool ProcessSecurityStatus(FastSecurityStatusInfo *info) {
-        throw;
+        return this->m_securityDefinition->UpdateSecurityDefinition(info);
     }
 
     inline bool ProcessSecurityStatus(unsigned char *buffer, int length) {
@@ -1571,9 +1578,9 @@ public:
 	inline MarketDataTable<TradeInfo, FastTLSCURRInfo, FastTLSCURRItemInfo> *TradeCurr() { return this->m_tradeTableCurr; }
     inline MarketDataTable<StatisticsInfo, FastGenericInfo, FastGenericItemInfo> *StatisticFond() { return this->m_statTableFond; }
     inline MarketDataTable<StatisticsInfo, FastGenericInfo, FastGenericItemInfo> *StatisticCurr() { return this->m_statTableCurr; }
-    inline LinkedPointer<FastSecurityDefinitionInfo>** SecurityDefinitions() { return this->m_securityDefinitions; }
-    inline FastSecurityDefinitionInfo* SecurityDefinition(int index) { return this->m_securityDefinitions[index]->Data(); }
-    inline int SecurityDefinitionsCount() { return this->m_securityDefinitionsCount; }
+    inline LinkedPointer<FastSecurityDefinitionInfo>** Symbols() { return this->m_symbols; }
+    inline FastSecurityDefinitionInfo* Symbol(int index) { return this->m_symbols[index]->Data(); }
+    inline int SymbolCount() { return this->m_symbolsCount; }
     inline FeedConnectionSecurityDefinitionMode SecurityDefinitionMode() { return this->m_idfMode; }
     inline void WaitIncrementalMaxTimeMs(int timeMs) { this->m_waitIncrementalMaxTimeMs = timeMs; }
     inline int WaitIncrementalMaxTimeMs() { return this->m_waitIncrementalMaxTimeMs; }
@@ -1625,6 +1632,9 @@ public:
     inline FeedConnection* Snapshot() { return this->m_snapshot; }
     inline void SetHistoricalReplay(FeedConnection *historicalReplay) { this->m_historicalReplay = historicalReplay; }
     inline FeedConnection* HistoricalReplay() { return this->m_historicalReplay; }
+
+    inline void SetSecurityDefinition(FeedConnection *securityDefinition) { this->m_securityDefinition = securityDefinition; }
+    inline FeedConnection* SecurityDefinition() { return this->m_securityDefinition; }
 
     inline FeedConnection** ConnectionsToRecvSymbols() { return this->m_connectionsToRecvSymbols; }
     inline int ConnectionsToRecvSymbolsCount() { return this->m_connectionsToRecvSymbolsCount; }
@@ -1744,8 +1754,8 @@ public:
 
     inline void AddSecurityDefinitionToList(FastSecurityDefinitionInfo *info, int index) {
         info->Used = true;
-        this->m_securityDefinitions[index]->Data(info);
-        this->m_securityDefinitionsCount = index + 1;
+        this->m_symbols[index]->Data(info);
+        this->m_symbolsCount = index + 1;
     }
 
     inline void MakeUsed(FastSecurityDefinitionMarketSegmentGrpItemInfo *m, bool used) {
@@ -1776,24 +1786,24 @@ public:
     }
 
     inline void PrintSymbolManagerDebug() {
-        printf("Collected %d symbols\n", this->m_securityDefinitionsCount);
+        printf("Collected %d symbols\n", this->m_symbolsCount);
         for(int i = 0; i < this->m_symbolManager->BucketListCount(); i++) {
             int count = this->m_symbolManager->CalcBucketCollisitonCount(i);
             if(count != 0)
                 printf("Collision %d = %d\n", i, count);
         }
-        printf("Collected %d symbols\n", this->m_securityDefinitionsCount);
+        printf("Collected %d symbols\n", this->m_symbolsCount);
     }
 
     inline void CheckAllSymbols() {
-        for(int i = 0; i < this->m_securityDefinitionsCount; i++) {
+        for(int i = 0; i < this->m_symbolsCount; i++) {
             bool isNewlyAdded = false;
             SymbolInfo *info = this->m_symbolManager->GetSymbol(
-                    this->m_securityDefinitions[i]->Data()->Symbol,
-                    this->m_securityDefinitions[i]->Data()->SymbolLength, &isNewlyAdded);
+                    this->m_symbols[i]->Data()->Symbol,
+                    this->m_symbols[i]->Data()->SymbolLength, &isNewlyAdded);
             if(!StringIdComparer::Equal(info->m_text, info->m_length,
-                                        this->m_securityDefinitions[i]->Data()->Symbol,
-                                        this->m_securityDefinitions[i]->Data()->SymbolLength)) {
+                                        this->m_symbols[i]->Data()->Symbol,
+                                        this->m_symbols[i]->Data()->SymbolLength)) {
                 printf("Error: symbol collision\n");
             }
         }
@@ -1825,7 +1835,7 @@ public:
             printf("new sec_def %d. sc = %d\n", info->MsgSeqNum, info->MarketSegmentGrp[0]->TradingSessionRulesGrp[0]->Allocator->Count()); // TODO
         }
         else {
-            LinkedPointer<FastSecurityDefinitionInfo> *ptr = this->m_securityDefinitions[smb->m_index];
+            LinkedPointer<FastSecurityDefinitionInfo> *ptr = this->m_symbols[smb->m_index];
             if(!StringIdComparer::Equal(ptr->Data()->Symbol, ptr->Data()->SymbolLength, info->Symbol, info->SymbolLength)) {
                 printf("merge symbols are not equal\n");
             }
@@ -1892,11 +1902,11 @@ public:
     }
 
     inline void ClearSecurityDefinitions() {
-        for(int i = 0; i < this->m_securityDefinitionsCount; i++) {
-            this->m_securityDefinitions[i]->Data()->Clear();
-            this->m_securityDefinitions[i]->Data(0);
+        for(int i = 0; i < this->m_symbolsCount; i++) {
+            this->m_symbols[i]->Data()->Clear();
+            this->m_symbols[i]->Data(0);
         }
-        this->m_securityDefinitionsCount = 0;
+        this->m_symbolsCount = 0;
     }
 
     inline void BeforeProcessSecurityDefinitions() {
@@ -1909,6 +1919,47 @@ public:
     inline void AddSecurityDefinition(LinkedPointer<FastSecurityDefinitionInfo> *ptr) {
         for(int c = 0; c < this->m_connectionsToRecvSymbolsCount; c++)
             this->m_connectionsToRecvSymbols[c]->AddSymbol(ptr);
+    }
+
+    inline FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo* FindTradingSession(FastSecurityDefinitionInfo *info, const char *tradingSession, int tradingSessionLength) {
+        for(int i = 0; i < info->MarketSegmentGrpCount; i++) {
+            FastSecurityDefinitionMarketSegmentGrpItemInfo *m = info->MarketSegmentGrp[i];
+            for(int j = 0; j < m->TradingSessionRulesGrpCount; j++) {
+                FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo *t = m->TradingSessionRulesGrp[j];
+                if(StringIdComparer::Equal(t->TradingSessionID, t->TradingSessionIDLength, tradingSession, tradingSessionLength))
+                    return t;
+                /*char smb = *(t->TradingSessionSubID);
+                if(smb == *tradingSession) {
+                    if(smb != 'N') // ONLY N subId can have 2 symbol length - 'NA' - other symbols - only one
+                        return t;
+                    if(t->TradingSessionSubIDLength == tradingSessionLength) // if both has 1 symbol 'N' or 2 symbols 'NA'
+                        return t;
+                }*/
+            }
+        }
+        return 0;
+    }
+
+    inline void UpdateTradingSession(FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo *trading, FastSecurityStatusInfo *info) {
+        trading->AllowTradingSessionSubID = info->AllowTradingSessionSubID;
+        trading->TradingSessionSubID = info->TradingSessionSubID;
+        trading->TradingSessionSubIDLength = info->TradingSessionSubIDLength;
+        trading->AllowSecurityTradingStatus = info->AllowSecurityTradingStatus;
+        trading->SecurityTradingStatus = info->SecurityTradingStatus;
+        //Skip AuctionIndicator because there is no data in feed streams for them
+    }
+
+    inline bool UpdateSecurityDefinition(FastSecurityStatusInfo *info) {
+        info->Clear(); // just free object before. Data will not be corrupt
+        int index = this->IdfFindBySymbol(info->Symbol, info->SymbolLength);
+        if(index == -1) // TODO should we do something for unknown symbol? or just skip?
+            return true;
+        FastSecurityDefinitionInfo *sd = this->Symbol(index);
+        FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo *trading = FindTradingSession(sd, info->TradingSessionID, info->TradingSessionIDLength);
+        if(trading == 0) // TODO should we do something for unknow session? or just skip?
+            return true;
+        UpdateTradingSession(trading, info);
+        return true;
     }
 
     inline void UpdateSecurityDefinition(FeedConnectionMessageInfo *info) {
@@ -1972,8 +2023,8 @@ public:
     }
 
     inline int IdfFindBySymbol(const char *symbol, int symbolLength) {
-        LinkedPointer<FastSecurityDefinitionInfo> **ptr = this->m_securityDefinitions;
-        for(int i = 0; i < this->m_securityDefinitionsCount; i++) {
+        LinkedPointer<FastSecurityDefinitionInfo> **ptr = this->m_symbols;
+        for(int i = 0; i < this->m_symbolsCount; i++) {
             if(StringIdComparer::Equal((*ptr)->Data()->Symbol, (*ptr)->Data()->SymbolLength, symbol, symbolLength)) {
                 return i;
             }
@@ -1985,7 +2036,7 @@ public:
         bool wasNewlyAdded;
 
         SymbolInfo *sm = this->m_symbolManager->GetSymbol(info->Symbol, info->SymbolLength, &wasNewlyAdded);
-        LinkedPointer<FastSecurityDefinitionInfo> *orig = this->m_securityDefinitions[sm->m_index];
+        LinkedPointer<FastSecurityDefinitionInfo> *orig = this->m_symbols[sm->m_index];
         if(!StringIdComparer::Equal(orig->Data()->Symbol, orig->Data()->SymbolLength, info->Symbol, info->SymbolLength)) {
             int symbolIndex = IdfFindBySymbol(info->Symbol, info->SymbolLength);
             printf("symbols are not equal\n");
@@ -1995,10 +2046,10 @@ public:
 
     inline void AfterProcessSecurityDefinitions() {
         for(int i = 0; i < this->m_connectionsToRecvSymbolsCount; i++)
-            this->m_connectionsToRecvSymbols[i]->AddSymbols(this->m_securityDefinitionsCount);
+            this->m_connectionsToRecvSymbols[i]->AddSymbols(this->m_symbolsCount);
 
-        LinkedPointer<FastSecurityDefinitionInfo> **ptr = this->m_securityDefinitions;
-        for(int i = 0; i < this->m_securityDefinitionsCount; i++, ptr++)
+        LinkedPointer<FastSecurityDefinitionInfo> **ptr = this->m_symbols;
+        for(int i = 0; i < this->m_symbolsCount; i++, ptr++)
             this->AddSecurityDefinition(*ptr);
     }
 

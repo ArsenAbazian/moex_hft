@@ -112,7 +112,7 @@ add_executable(hft_robot ${sources}
         source/include/Test/OrderTesterFond.h
         source/include/Test/FeedConnectionTester.h
         source/include/Test/TradeTesterFond.h
-        source/include/Test/InstrumentDefinitionTester.h
+        source/include/Test/SecurityDefinitionTester.h
         source/include/Test/TestTemplateInfo.h
         source/include/Test/TestMessagesHelper.h
         source/include/Test/StatisticsTesterFond.h
@@ -132,7 +132,7 @@ add_executable(hft_robot ${sources}
         source/include/FeedConnections.h
         source/src/Test/TestMessagesHelper.cpp
         source/include/Test/PointerListTester.h
-        source/src/Converters/DtoaConverter.cpp)
+        source/src/Converters/DtoaConverter.cpp source/include/Test/SecurityStatusTester.h)
 add_dependencies(hft_robot fast_generate)
 
 add_custom_command(TARGET fast_generate

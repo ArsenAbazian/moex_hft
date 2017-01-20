@@ -29,10 +29,10 @@ public:
 };
 
 class SymbolManagerTester;
-class InstrumentDefinitionTester;
+class SecurityDefinitionTester;
 class SymbolManager {
     friend class SymbolManagerTester;
-    friend class InstrumentDefinitionTester;
+    friend class SecurityDefinitionTester;
 
     int                         m_capacity;
     int                         m_count;

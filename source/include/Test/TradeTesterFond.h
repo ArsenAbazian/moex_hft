@@ -2693,7 +2693,7 @@ public:
 
         this->incFond->TradeFond()->Add("s1", "session1");
         int prevCount = this->snapFond->m_fastProtocolManager->m_tLSFONDItems->Count();
-        this->SendMessages(this->incFond, this->snapFond,
+        this->SendMessagesIdf(this->incFond, this->snapFond,
                            "tlr entry s1 e1, tlr entry s1 e2, lost tlr entry s1 e4 entry s1 e4, wait_snap, hbeat",
                            "                                                   tls begin s1 entry s1 e1 rpt 2, tls s1 entry s1 e2, tls s1 entry s1 e3, tls s1 entry del s1 e2 end",
                            30);

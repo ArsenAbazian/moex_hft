@@ -23,6 +23,9 @@ class TestMessagesHelper {
 public:
     static PointerList<SocketMessageInfo> *m_sockMessages;
     static bool SkipTimeOutCheck;
+
+    char            **m_keys;
+    int               m_keysCount;
 private:
 
     const char *symbols[100];
@@ -66,141 +69,151 @@ private:
         return start;
     }
 
-    char** Split(const char *msg, int start, int end, int *count) {
-        char **keys = new char*[100];
-        *count = 0;
+    void Split(const char *msg, int start, int end) {
+        this->m_keys = new char*[100];
+        this->m_keysCount = 0;
         for(int i = start; i <= end; i++) {
             if(msg[i] == ' ' || i == end) {
                 if(i == end) i++;
-                keys[*count] = new char[i - start + 1];
-                memcpy(keys[*count], &msg[start], i - start);
-                keys[*count][i-start] = '\0';
+                this->m_keys[this->m_keysCount] = new char[i - start + 1];
+                memcpy(this->m_keys[this->m_keysCount], &msg[start], i - start);
+                this->m_keys[this->m_keysCount][i-start] = '\0';
                 if(i == end)
                     break;
-                (*count)++;
+                this->m_keysCount++;
                 start = SkipToNextWord(msg, i);
                 i = start - 1;
             }
         }
-        return keys;
     }
 
-    int KeyIndex(char **keys, int keysCount, const char *key) {
-        for(int i = 0; i < keysCount; i++) {
-            if(StringIdComparer::Equal(keys[i], key))
+    int KeyIndex(const char *key) {
+        for(int i = 0; i < this->m_keysCount; i++) {
+            if(StringIdComparer::Equal(this->m_keys[i], key))
                 return i;
         }
         return -1;
     }
 
-    int KeyIndex(char **keys, int keysCount, const char *key, int startIndex) {
-        for(int i = startIndex; i < keysCount; i++) {
-            if(StringIdComparer::Equal(keys[i], key))
+    int KeyIndex(const char *key, int startIndex) {
+        for(int i = startIndex; i < this->m_keysCount; i++) {
+            if(StringIdComparer::Equal(this->m_keys[i], key))
                 return i;
         }
         return -1;
     }
 
-    bool HasKey(char **keys, int keysCount, const char *key) {
-        return KeyIndex(keys, keysCount, key) != -1;
+    bool HasKey(const char *key) {
+        return KeyIndex(key) != -1;
     }
-    bool StartKey(char **keys, const char *key) {
-        return KeyIndex(keys, 1, key) != -1;
+    bool StartKey(const char *key) {
+        return KeyIndex(key) == 0;
     }
 
-    TestTemplateInfo *CreateTemplate(char **keys, int keysCount) {
+    TestTemplateInfo *CreateTemplate() {
         TestTemplateInfo *info = new TestTemplateInfo();
-        if(keysCount == 0)
+        if(this->m_keysCount == 0)
             return info;
 
         info->m_msgSeqNo = 0;
-        info->m_lost = HasKey(keys, keysCount, "lost");
-        info->m_skip = HasKey(keys, keysCount, "skip_if_suspend");
-        if(HasKey(keys, keysCount, "msgSeqNo")) {
-            info->m_msgSeqNo = atoi(keys[KeyIndex(keys, keysCount, "msgSeqNo") + 1]);
+        info->m_lost = HasKey("lost");
+        info->m_skip = HasKey("skip_if_suspend");
+        if(HasKey("msgSeqNo")) {
+            info->m_msgSeqNo = atoi(this->m_keys[KeyIndex("msgSeqNo") + 1]);
         }
-        if(HasKey(keys, keysCount, "logout")) {
+        if(HasKey("logout")) {
             info->m_templateId = FeedConnectionMessage::fmcLogout;
             return info;
         }
-        else if(HasKey(keys, keysCount, "logon")) {
+        else if(HasKey("logon")) {
             info->m_templateId = FeedConnectionMessage::fmcLogon;
-            if(HasKey(keys, keysCount, "sender"))
-                info->m_senderId = keys[KeyIndex(keys, keysCount, "sender") + 1];
+            if(HasKey("sender"))
+                info->m_senderId = this->m_keys[KeyIndex("sender") + 1];
             else
                 info->m_senderId = 0;
-            if(HasKey(keys, keysCount, "pass"))
-                info->m_pass = keys[KeyIndex(keys, keysCount, "pass") + 1];
+            if(HasKey("pass"))
+                info->m_pass = this->m_keys[KeyIndex("pass") + 1];
             else
                 info->m_pass = 0;
             return info;
         }
-        else if(HasKey(keys, keysCount, "obr")) {
+        else if(HasKey("obr")) {
             info->m_templateId = FeedConnectionMessage::fmcIncrementalRefresh_Generic;
         }
-        else if(HasKey(keys, keysCount, "olr")) {
+        else if(HasKey("olr")) {
             info->m_templateId = this->m_curr? FeedConnectionMessage::fmcIncrementalRefresh_OLR_CURR:
                                  FeedConnectionMessage::fmcIncrementalRefresh_OLR_FOND;
         }
-        else if(HasKey(keys, keysCount, "tlr")) {
+        else if(HasKey("tlr")) {
             info->m_templateId = this->m_curr? FeedConnectionMessage::fmcIncrementalRefresh_TLR_CURR:
                                  FeedConnectionMessage::fmcIncrementalRefresh_TLR_FOND;
         }
-        else if(HasKey(keys, keysCount, "obs")) {
+        else if(HasKey("obs")) {
             info->m_templateId = FeedConnectionMessage::fmcFullRefresh_Generic;
-            int snapIndex = KeyIndex(keys, keysCount, "obs");
-            if(KeyIndex(keys, keysCount, "begin") == snapIndex + 1)
+            int snapIndex = KeyIndex("obs");
+            if(KeyIndex("begin") == snapIndex + 1)
                 snapIndex++;
-            info->m_symbol = keys[snapIndex + 1];
+            info->m_symbol = this->m_keys[snapIndex + 1];
         }
-        else if(HasKey(keys, keysCount, "ols")) {
+        else if(HasKey("ols")) {
             info->m_templateId = this->m_curr? FeedConnectionMessage::fmcFullRefresh_OLS_CURR:
                                  FeedConnectionMessage::fmcFullRefresh_OLS_FOND;
-            int snapIndex = KeyIndex(keys, keysCount, "ols");
-            if(KeyIndex(keys, keysCount, "begin") == snapIndex + 1)
+            int snapIndex = KeyIndex("ols");
+            if(KeyIndex("begin") == snapIndex + 1)
                 snapIndex++;
-            info->m_symbol = keys[snapIndex + 1];
+            info->m_symbol = this->m_keys[snapIndex + 1];
         }
-        else if(HasKey(keys, keysCount, "tls")) {
+        else if(HasKey("tls")) {
             info->m_templateId = this->m_curr ? FeedConnectionMessage::fmcFullRefresh_TLS_CURR :
                                  FeedConnectionMessage::fmcFullRefresh_TLS_FOND;
-            int snapIndex = KeyIndex(keys, keysCount, "tls");
-            if (KeyIndex(keys, keysCount, "begin") == snapIndex + 1)
+            int snapIndex = KeyIndex("tls");
+            if (KeyIndex("begin") == snapIndex + 1)
                 snapIndex++;
-            info->m_symbol = keys[snapIndex + 1];
+            info->m_symbol = this->m_keys[snapIndex + 1];
         }
-        else if(HasKey(keys, keysCount, "idf")) {
+        else if(HasKey("idf")) {
             info->m_templateId = FeedConnectionMessage::fmcSecurityDefinition;
-            int idfIndex = KeyIndex(keys, keysCount, "idf");
-            if(HasKey(keys, keysCount, "totNumReports"))
-                info->m_totNumReports = atoi(keys[KeyIndex(keys, keysCount, "totNumReports") + 1]);
-            info->m_symbol = keys[idfIndex + 1];
+            int idfIndex = KeyIndex("idf");
+            if (HasKey("totNumReports"))
+                info->m_totNumReports = atoi(this->m_keys[KeyIndex("totNumReports") + 1]);
+            info->m_symbol = this->m_keys[idfIndex + 1];
         }
-        else if(HasKey(keys, keysCount, "wait_snap")) {
+        else if(HasKey("isf")) {
+            info->m_templateId = FeedConnectionMessage::fmcSecurityStatus;
+            int isfIndex = KeyIndex("isf");
+            info->m_symbol = this->m_keys[isfIndex + 1];
+            info->m_session = this->m_keys[isfIndex + 2];
+            info->m_sessionSubId = this->m_keys[isfIndex + 3];
+            info->m_sessionStatus = (SecurityStatus)atoi(this->m_keys[isfIndex + 4]);
+            info->m_auctionIndicator = atoi(this->m_keys[isfIndex + 5]);
+
+            return info;
+        }
+        else if(HasKey("wait_snap")) {
             info->m_templateId = FeedConnectionMessage::fcmHeartBeat;
             info->m_wait = true;
             return info;
         }
-        else if(HasKey(keys, keysCount, "hbeat")) {
+        else if(HasKey("hbeat")) {
             info->m_templateId = FeedConnectionMessage::fcmHeartBeat;
             return info;
         }
 
-        bool isSnap = HasKey(keys, keysCount, "obs") || HasKey(keys, keysCount, "ols") || HasKey(keys, keysCount, "tls");
-        bool isIdf = HasKey(keys, keysCount, "idf");
+        bool isSnap = HasKey("obs") || HasKey("ols") || HasKey("tls");
+        bool isIdf = HasKey("idf");
         if(isSnap) {
             info->m_session = "session1";
-            if(HasKey(keys, keysCount, "begin")) {
+            if(HasKey("begin")) {
                 info->m_routeFirst = true;
             }
-            if(HasKey(keys, keysCount, "rpt")) {
-                info->m_rptSec = atoi((const char *)(keys[KeyIndex(keys, keysCount, "rpt") + 1]));
+            if(HasKey("rpt")) {
+                info->m_rptSec = atoi((const char *)(this->m_keys[KeyIndex("rpt") + 1]));
             }
-            if(HasKey(keys, keysCount, "lastmsg")) {
-                info->m_lastMsgSeqNoProcessed = atoi((const char *)(keys[KeyIndex(keys, keysCount, "lastmsg") + 1]));
+            if(HasKey("lastmsg")) {
+                info->m_lastMsgSeqNoProcessed = atoi((const char *)(this->m_keys[KeyIndex("lastmsg") + 1]));
             }
             else info->m_lastMsgSeqNoProcessed = 1;
-            if(HasKey(keys, keysCount, "end"))
+            if(HasKey("end"))
                 info->m_lastFragment = true;
         }
 
@@ -208,9 +221,9 @@ private:
             int entryIndex = -1;
             int itemIndex = 0;
 
-            while((entryIndex = KeyIndex(keys, keysCount, "session", entryIndex + 1)) != -1) {
+            while((entryIndex = KeyIndex("session", entryIndex + 1)) != -1) {
                 TestTemplateItemInfo *item = new TestTemplateItemInfo();
-                item->m_tradingSession = keys[entryIndex + 1];
+                item->m_tradingSession = this->m_keys[entryIndex + 1];
                 entryIndex++;
 
                 info->m_items[itemIndex] = item;
@@ -223,20 +236,20 @@ private:
 
         int entryIndex = -1;
         int itemIndex = 0;
-        while((entryIndex = KeyIndex(keys, keysCount, "entry", entryIndex + 1)) != -1) {
+        while((entryIndex = KeyIndex("entry", entryIndex + 1)) != -1) {
             TestTemplateItemInfo *item = new TestTemplateItemInfo();
             item->m_tradingSession = "session1";
             item->m_action = MDUpdateAction::mduaAdd;
-            if(StringIdComparer::Equal("del", keys[entryIndex + 1])) {
+            if(StringIdComparer::Equal("del", this->m_keys[entryIndex + 1])) {
                 item->m_action = MDUpdateAction::mduaDelete;
                 entryIndex++;
             }
-            else if(StringIdComparer::Equal("change", keys[entryIndex + 1])) {
+            else if(StringIdComparer::Equal("change", this->m_keys[entryIndex + 1])) {
                 item->m_action = MDUpdateAction::mduaChange;
                 entryIndex++;
             }
-            item->m_symbol = keys[entryIndex + 1];
-            item->m_entryId = keys[entryIndex + 2];
+            item->m_symbol = this->m_keys[entryIndex + 1];
+            item->m_entryId = this->m_keys[entryIndex + 2];
             item->m_entryType = MDEntryType::mdetBuyQuote;
             item->m_entryPx.Set(1, 1);
             item->m_entrySize.Set(1, 1);
@@ -255,9 +268,8 @@ private:
             int len = CalcWordLength(msg, startIndex);
             int start = 0, end = 0;
             TrimWord(msg, startIndex, len, &start, &end);
-            int keysCount = 0;
-            char **keys = Split(msg, start, end, &keysCount);
-            temp[i] = CreateTemplate(keys, keysCount);
+            Split(msg, start, end);
+            temp[i] = CreateTemplate();
             startIndex += len + 1;
         }
     }
@@ -892,6 +904,33 @@ public:
         return info;
     }
 
+    FastSecurityStatusInfo* CreateSecurityStatusInfo(const char *symbol, const char *session, const char *sessionSubId) {
+        AutoAllocatePointerList<FastSecurityStatusInfo> *list = new AutoAllocatePointerList<FastSecurityStatusInfo>(1, 1);
+        FastSecurityStatusInfo *info = list->NewItem();
+
+        char *smb = new char[strlen(symbol) + 1];
+        strcpy(smb, symbol);
+
+        char *ss = new char[strlen(session) + 1];
+        strcpy(ss, session);
+
+        char *sub = new char[strlen(sessionSubId) + 1];
+        strcpy(sub, sessionSubId);
+
+        info->Symbol = smb;
+        info->SymbolLength = strlen(symbol);
+
+        info->AllowTradingSessionID = true;
+        info->TradingSessionID = ss;
+        info->TradingSessionIDLength = strlen(session);
+
+        info->AllowTradingSessionSubID = true;
+        info->TradingSessionSubID = sub;
+        info->TradingSessionSubIDLength = strlen(sessionSubId);
+
+        return info;
+    }
+
     FastSecurityDefinitionInfo* CreateSecurityDefinitionInfo(TestTemplateInfo *tmp) {
         FastSecurityDefinitionInfo *info = CreateSecurityDefinitionInfo(tmp->m_symbol);
 
@@ -907,6 +946,20 @@ public:
         for(int i = 0; i < tmp->m_itemsCount; i++) {
             this->AddTradingSession(info, 0, tmp->m_items[i]->m_tradingSession);
         }
+        return info;
+    }
+
+    FastSecurityStatusInfo* CreateSecurityStatusInfo(TestTemplateInfo *tmp) {
+        FastSecurityStatusInfo *info = CreateSecurityStatusInfo(tmp->m_symbol, tmp->m_session, tmp->m_sessionSubId);
+
+        info->AllowSecurityTradingStatus = true;
+        info->SecurityTradingStatus = tmp->m_sessionStatus;
+
+        info->AllowAuctionIndicator = true;
+        info->AuctionIndicator = tmp->m_auctionIndicator;
+
+        info->MsgSeqNum = tmp->m_msgSeqNo;
+
         return info;
     }
 
@@ -1309,6 +1362,20 @@ public:
         conn->ProcessServerCore(conn->m_fastProtocolManager->MessageLength());
     }
 
+    void EncodeSecurityStatusMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
+        FastSecurityStatusInfo *info = CreateSecurityStatusInfo(tmp);
+        conn->m_fastProtocolManager->SetNewBuffer(conn->m_sendABuffer->CurrentPos(), 2000);
+        conn->m_fastProtocolManager->EncodeSecurityStatusInfo(info);
+        conn->m_sendABuffer->Next(conn->m_fastProtocolManager->MessageLength());
+    }
+
+    void SendSecurityStatusMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
+        FastSecurityStatusInfo *info = CreateSecurityStatusInfo(tmp);
+        conn->m_fastProtocolManager->SetNewBuffer(conn->m_recvABuffer->CurrentPos(), 2000);
+        conn->m_fastProtocolManager->EncodeSecurityStatusInfo(info);
+        conn->ProcessServerCore(conn->m_fastProtocolManager->MessageLength());
+    }
+
     FastOLSFONDInfo* CreateOLSFondMessage(TestTemplateInfo *tmp) {
         FastOLSFONDInfo *info = new FastOLSFONDInfo();
         info->MsgSeqNum = tmp->m_msgSeqNo;
@@ -1609,6 +1676,9 @@ public:
             case FeedConnectionMessage::fmcSecurityDefinition:
                 SendSecurityDefinitionMessage(conn, tmp);
                 break;
+            case FeedConnectionMessage::fmcSecurityStatus:
+                SendSecurityStatusMessage(conn, tmp);
+                break;
             case FeedConnectionMessage::fmcLogon:
                 SendLogonMessage(conn, tmp);
                 break;
@@ -1625,7 +1695,7 @@ public:
             SendMessage(conn, templates[i]);
     }
 
-    void SendMessages(FeedConnection *fif, const char *idf, int delay) {
+    void SendMessagesIdf(FeedConnection *fif, const char *idf, int delay) {
         int idfMsgCount = CalcMsgCount(idf);
         TestTemplateInfo **idf_msg = new TestTemplateInfo*[idfMsgCount];
         FillMsg(idf_msg, idfMsgCount, idf);
@@ -1639,6 +1709,32 @@ public:
             if(!idf_msg[idf_index]->m_lost) {
                 SendMessage(fif, idf_msg[idf_index]);
                 if (!fif->Listen_Atom_SecurityDefinition_Core())
+                    throw;
+            }
+            idf_index++;
+
+            w.Start();
+            while(!w.IsElapsedMilliseconds(delay));
+            w.Stop();
+            if(!TestMessagesHelper::SkipTimeOutCheck && w.ElapsedMilliseconds(1) > 5000)
+                throw;
+        }
+    }
+
+    void SendMessagesIsf(FeedConnection *fif, const char *idf, int delay) {
+        int idfMsgCount = CalcMsgCount(idf);
+        TestTemplateInfo **idf_msg = new TestTemplateInfo*[idfMsgCount];
+        FillMsg(idf_msg, idfMsgCount, idf);
+
+        int idf_index = 0;
+        Stopwatch w;
+        w.Start(1);
+        while(idf_index < idfMsgCount) {
+            if(idf_msg[idf_index]->m_msgSeqNo == 0)
+                idf_msg[idf_index]->m_msgSeqNo = idf_index + 1;
+            if(!idf_msg[idf_index]->m_lost) {
+                SendMessage(fif, idf_msg[idf_index]);
+                if (!fif->Listen_Atom_SecurityStatus_Core())
                     throw;
             }
             idf_index++;

@@ -3316,7 +3316,7 @@ public:
 
         this->incFond->StatisticFond()->Add("s1", "session1");
         int prevCount = this->snapFond->m_fastProtocolManager->m_genericItems->Count();
-        this->SendMessages(this->incFond, this->snapFond,
+        this->SendMessagesIdf(this->incFond, this->snapFond,
                            "obr entry s1 e1, obr entry s1 e2, lost obr entry s1 e4 entry s1 e4, wait_snap, hbeat",
                            "                                                   obs begin s1 entry s1 e1 rpt 2, obs s1 entry s1 e2, obs s1 entry s1 e3, obs s1 entry del s1 e2 end",
                            30);

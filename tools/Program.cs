@@ -1515,7 +1515,7 @@ namespace prebuild {
 			}
 
 			if(!found) {
-				throw new Exception("SecurityDefinition Template not found");
+				throw new Exception("Symbol Template not found");
 			}
 
 			WriteLine("\tint GetTotalNumReports() {");

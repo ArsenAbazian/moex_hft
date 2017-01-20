@@ -61,12 +61,15 @@ public:
     TestTemplateItemInfo*   m_items[8];
     const char              *m_symbol;
     const char              *m_session;
+    const char              *m_sessionSubId;
     char                    *m_senderId;
     char                    *m_pass;
     bool                    m_lost;
     bool                    m_wait;
     bool                    m_skip;
     int                     m_totNumReports;
+    SecurityStatus          m_sessionStatus;
+    int                     m_auctionIndicator;
 
     TestTemplateInfo() {
         this->m_templateId = FeedConnectionMessage::fcmHeartBeat;
