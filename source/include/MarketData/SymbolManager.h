@@ -36,7 +36,6 @@ class SymbolManager {
 
     int                         m_capacity;
     int                         m_count;
-    short                       *m_indices;
     short                       m_freeIndex;
 
     PointerList<SymbolInfo>      *m_pool;
@@ -70,9 +69,6 @@ class SymbolManager {
         }
         this->m_pool->Clear();
     }
-    inline void ClearIndices() {
-        bzero(this->m_indices, sizeof(short) * this->m_capacity);
-    }
     inline LinkedPointer<SymbolInfo>* GetBucket(int hash) {
         return this->m_bucketList[hash];
     }
@@ -103,7 +99,6 @@ class SymbolManager {
 public:
     SymbolManager(int capacity) {
         this->m_capacity = capacity;
-        this->m_indices = new short[capacity];
         this->m_count = 0;
         this->m_freeIndex = -1;
 
@@ -112,14 +107,12 @@ public:
         this->m_bucketList = new LinkedPointer<SymbolInfo>*[StringHash::HashArrayItemsCount];
     }
     ~SymbolManager() {
-        delete this->m_indices;
         delete this->m_pool;
     }
     inline void Clear() {
         this->m_freeIndex = -1;
         this->m_count = 0;
         ClearBucketList();
-        ClearIndices();
     }
     inline int SymbolCount() {
         return this->m_count;
@@ -134,9 +127,15 @@ public:
         }
         return count;
     }
+    inline int GetSymbolIndex(const char *symbol, bool *wasNewlyAdded) {
+        return GetSymbolIndex(symbol, strlen(symbol), wasNewlyAdded);
+    }
     inline int GetSymbolIndex(const char *symbol, int length, bool *wasNewlyAdded) {
         SymbolInfo *info = GetSymbol(symbol, length, wasNewlyAdded);
         return info->m_index;
+    }
+    inline SymbolInfo* GetSymbol(const char *symbol, bool *wasNewlyAdded) {
+        return this->GetSymbol(symbol, strlen(symbol), wasNewlyAdded);
     }
     inline SymbolInfo* GetSymbol(const char *symbol, int length, bool *wasNewlyAdded) {
         int hash = StringHash::GetHash(symbol, length);

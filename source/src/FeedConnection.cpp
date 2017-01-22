@@ -22,7 +22,6 @@ FeedConnection::FeedConnection(const char *id, const char *name, char value, Fee
 	    strcpy(this->feedBIp, bIp);
 	this->feedBPort = bPort;
 
-    this->m_fastProtocolManager = new FastProtocolManager();
     this->m_fastLogonInfo = new FastLogonInfo();
 	this->m_socketABufferProvider = CreateSocketBufferProvider();
 	this->m_sendABuffer = this->m_socketABufferProvider->SendBuffer();
@@ -63,8 +62,6 @@ FeedConnection::FeedConnection() {
     for(int i = 0; i < RobotSettings::DefaultFeedConnectionPacketCount; i++)
         this->m_packets[i] = new FeedConnectionMessageInfo();
 
-    this->m_fastProtocolManager = new FastProtocolManager();
-    this->m_fastProtocolManager->SkipTemplateId(fcmHeartBeat);
     this->m_fastLogonInfo = new FastLogonInfo();
 
     this->m_stopwatch = new Stopwatch();

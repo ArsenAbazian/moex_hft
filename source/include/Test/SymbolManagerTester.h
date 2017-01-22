@@ -197,6 +197,23 @@ public:
             throw;
     }
 
+    void TestAddSymbols2() {
+        this->m_manager->Clear();
+        bool isNewlyAdded;
+        SymbolInfo *s1 = this->m_manager->GetSymbol("smb1", &isNewlyAdded);
+        if(s1->m_index != 0)
+            throw;
+        SymbolInfo *s2 = this->m_manager->GetSymbol("smb2", &isNewlyAdded);
+        if(s2->m_index != 1)
+            throw;
+        s1 = this->m_manager->GetSymbol("smb1", &isNewlyAdded);
+        if(s1->m_index != 0)
+            throw;
+        s2 = this->m_manager->GetSymbol("smb2", &isNewlyAdded);
+        if(s2->m_index != 1)
+            throw;
+    }
+
     void Test() {
         printf("SMB TestClear2");
         TestClear2();
@@ -208,6 +225,8 @@ public:
         TestAddAllSymbols();
         printf("SMB TestAddSymbols\n");
         TestAddSymbols();
+        printf("SMB TestAddSymbols2\n");
+        TestAddSymbols2();
         printf("SMB TestClear\n");
         TestClear();
     }

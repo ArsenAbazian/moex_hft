@@ -15,6 +15,7 @@
 class SecurityStatusTester{
     FeedConnection          *idf;
     FeedConnection          *isf;
+    FeedConnection          *hr;
     TestMessagesHelper      *m_helper;
 public:
     SecurityStatusTester() {
@@ -29,6 +30,12 @@ public:
                                                FeedConnectionProtocol::UDP_IP,
                                                "10.50.129.200", "239.192.113.3", 9113,
                                                "10.50.129.200", "239.192.113.131", 9313);
+        this->hr = new FeedConnection_FOND_H("H", "Historical Replay", 'H',
+                                               FeedConnectionProtocol::TCP_IP,
+                                               "1.1.7.200", 20000);
+        this->hr->SetSenderCompId("MyComp");
+
+        this->isf->SetHistoricalReplay(this->hr);
         this->isf->SetSecurityDefinition(this->idf);
 
     }
@@ -59,12 +66,25 @@ public:
     void TestReceiveExistingSymbol() {
         this->idf->Stop();
         this->idf->Start();
+        if(this->idf->m_symbolManager->SymbolCount() != 0)
+            throw;
         this->m_helper->SendMessagesIdf(this->idf,
-                                        "msgSeqNo 1 totNumReports 2 idf s1 session t1 session t2, "
-                                                "msgSeqNo 2 totNumReports 2 idf s2 session t1 session t2, "
-                                                "msgSeqNo 1 totNumReports 2 idf s1 session t1 session t2", 30);
+                                        "msgSeqNo 1 totNumReports 2 idf smb1 session trd1 session trd2, "
+                                                "msgSeqNo 2 totNumReports 2 idf smb2 session trd1 session trd2, "
+                                                "msgSeqNo 1 totNumReports 2 idf smb1 session trd1 session trd2", 30);
 
         if(!this->idf->IsIdfDataCollected())
+            throw;
+        if(this->idf->m_symbolManager->SymbolCount() != 2)
+            throw;
+        bool newlyAdded = false;
+        SymbolInfo *s1 = this->idf->m_symbolManager->GetSymbol("smb1", &newlyAdded);
+        if(s1->m_index != 0 || newlyAdded)
+            throw;
+        SymbolInfo *s2 = this->idf->m_symbolManager->GetSymbol("smb2", &newlyAdded);
+        if(s2->m_index != 1 || newlyAdded)
+            throw;
+        if(this->idf->m_symbolManager->SymbolCount() != 2)
             throw;
 
         FastSecurityDefinitionInfo *info1 = this->idf->Symbol(0);
@@ -81,10 +101,10 @@ public:
         this->m_helper->SendMessagesIsf(this->isf,
                                                 "msgSeqNo 1 hbeat,"
                                                 "msgSeqNo 2 hbeat,"
-                                                "msgSeqNo 3 isf s1 t1 NA 118 0,"
-                                                "msgSeqNo 4 isf s1 t2 O 130 0,"
-                                                "msgSeqNo 5 isf s2 t1 C 17  0,"
-                                                "msgSeqNo 6 isf s2 t2 N 102 0",
+                                                "msgSeqNo 3 isf smb1 trd1 NA 118 0,"
+                                                "msgSeqNo 4 isf smb1 trd2 O 130 0,"
+                                                "msgSeqNo 5 isf smb2 trd1 C 17  0,"
+                                                "msgSeqNo 6 isf smb2 trd2 N 102 0",
                                         30);
 
         if(!EqualsTradingSessionSubId(TradingSession(info1, 0, 0), "NA"))
@@ -106,11 +126,17 @@ public:
             throw;
     }
 
+    void TestCallHistoricalReplayWhenLostMessage() {
+        throw;
+    }
+
     void Test() {
         printf("ISF TestDefaults");
         TestDefaults();
         printf("ISF TestReceiveExistingSymbol");
         TestReceiveExistingSymbol();
+        printf("ISF Call HistoricalReplay when lost message");
+        TestCallHistoricalReplayWhenLostMessage();
     }
 };
 

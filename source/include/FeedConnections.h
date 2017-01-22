@@ -14,12 +14,14 @@ public:
         this->SetType(FeedConnectionType::Incremental);
         this->m_statTableCurr = new MarketDataTable<StatisticsInfo, FastGenericInfo, FastGenericItemInfo>();
         this->SetId(FeedConnectionId::fcidMsrCurr);
+        this->m_fastProtocolManager = new FastProtocolManager(this->CreateFastAllocationInfo());
         InitializePackets();
     }
     FeedConnection_CURR_MSR() : FeedConnection() {
         this->m_statTableCurr = new MarketDataTable<StatisticsInfo, FastGenericInfo, FastGenericItemInfo>();
         this->SetType(FeedConnectionType::Incremental);
         this->SetId(FeedConnectionId::fcidMsrCurr);
+        this->m_fastProtocolManager = new FastProtocolManager(this->CreateFastAllocationInfo());
     }
     ISocketBufferProvider* CreateSocketBufferProvider() {
         return new SocketBufferProvider(DefaultSocketBufferManager::Default,
@@ -27,6 +29,20 @@ public:
                                         RobotSettings::DefaultFeedConnectionSendItemsCount,
                                         RobotSettings::DefaultFeedConnectionRecvBufferSize,
                                         RobotSettings::DefaultFeedConnectionRecvItemsCount);
+    }
+    FastObjectsAllocationInfo* CreateFastAllocationInfo() {
+        FastObjectsAllocationInfo *info = new FastObjectsAllocationInfo();
+
+        info->m_genericCount = 1024;
+        info->m_genericAddCount = 256;
+        info->m_genericItemsCount = 1024;
+        info->m_genericItemsAddCount = 1024;
+        info->m_heartbeatCount = 10;
+        info->m_heartbeatAddCount = 10;
+        info->m_tradingSessionStatusCount = 10;
+        info->m_tradingSessionStatusAddCount = 10;
+
+        return info;
     }
 };
 
@@ -36,11 +52,13 @@ public:
             FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
         this->SetType(FeedConnectionType::Snapshot);
         this->SetId(FeedConnectionId::fcidMssCurr);
+        this->m_fastProtocolManager = new FastProtocolManager(this->CreateFastAllocationInfo());
         InitializePackets();
     }
     FeedConnection_CURR_MSS() : FeedConnection() {
         this->SetType(FeedConnectionType::Snapshot);
         this->SetId(FeedConnectionId::fcidMssCurr);
+        this->m_fastProtocolManager = new FastProtocolManager(this->CreateFastAllocationInfo());
     }
     ISocketBufferProvider* CreateSocketBufferProvider() {
         return new SocketBufferProvider(DefaultSocketBufferManager::Default,
@@ -48,6 +66,20 @@ public:
                                         RobotSettings::DefaultFeedConnectionSendItemsCount,
                                         RobotSettings::DefaultFeedConnectionRecvBufferSize,
                                         RobotSettings::DefaultFeedConnectionRecvItemsCount);
+    }
+    FastObjectsAllocationInfo* CreateFastAllocationInfo() {
+        FastObjectsAllocationInfo *info = new FastObjectsAllocationInfo();
+
+        info->m_genericCount = 1024;
+        info->m_genericAddCount = 256;
+        info->m_genericItemsCount = 1024;
+        info->m_genericItemsAddCount = 256;
+        info->m_heartbeatCount = 10;
+        info->m_heartbeatAddCount = 10;
+        info->m_tradingSessionStatusCount = 10;
+        info->m_tradingSessionStatusAddCount = 10;
+
+        return info;
     }
 };
 
@@ -58,12 +90,14 @@ public:
         this->SetType(FeedConnectionType::Incremental);
         this->m_orderTableCurr = new MarketDataTable<OrderInfo, FastOLSCURRInfo, FastOLSCURRItemInfo>();
         this->SetId(FeedConnectionId::fcidOlrCurr);
+        this->m_fastProtocolManager = new FastProtocolManager(this->CreateFastAllocationInfo());
         InitializePackets();
     }
     FeedConnection_CURR_OLR() : FeedConnection() {
         this->m_orderTableCurr = new MarketDataTable<OrderInfo, FastOLSCURRInfo, FastOLSCURRItemInfo>();
         this->SetType(FeedConnectionType::Incremental);
         this->SetId(FeedConnectionId::fcidOlrCurr);
+        this->m_fastProtocolManager = new FastProtocolManager(this->CreateFastAllocationInfo());
     }
     ~FeedConnection_CURR_OLR() {
         delete this->m_orderTableCurr;
@@ -75,6 +109,20 @@ public:
                                         RobotSettings::DefaultFeedConnectionRecvBufferSize,
                                         RobotSettings::DefaultFeedConnectionRecvItemsCount);
     }
+    FastObjectsAllocationInfo* CreateFastAllocationInfo() {
+        FastObjectsAllocationInfo *info = new FastObjectsAllocationInfo();
+
+        info->m_incrementalOLRCURRCount = 1024;
+        info->m_incrementalOLRCURRAddCount = 256;
+        info->m_oLSCURRItemsCount = 2024;
+        info->m_oLSCURRItemsAddCount = 256;
+        info->m_heartbeatCount = 10;
+        info->m_heartbeatAddCount = 10;
+        info->m_tradingSessionStatusCount = 10;
+        info->m_tradingSessionStatusAddCount = 10;
+
+        return info;
+    }
 };
 
 class FeedConnection_CURR_OLS : public FeedConnection {
@@ -83,11 +131,13 @@ public:
             FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
         this->SetType(FeedConnectionType::Snapshot);
         this->SetId(FeedConnectionId::fcidOlsCurr);
+        this->m_fastProtocolManager = new FastProtocolManager(this->CreateFastAllocationInfo());
         InitializePackets();
     }
     FeedConnection_CURR_OLS() : FeedConnection() {
         this->SetType(FeedConnectionType::Snapshot);
         this->SetId(FeedConnectionId::fcidOlsCurr);
+        this->m_fastProtocolManager = new FastProtocolManager(this->CreateFastAllocationInfo());
     }
     ISocketBufferProvider* CreateSocketBufferProvider() {
         return new SocketBufferProvider(DefaultSocketBufferManager::Default,
@@ -95,6 +145,20 @@ public:
                                         RobotSettings::DefaultFeedConnectionSendItemsCount,
                                         RobotSettings::DefaultFeedConnectionRecvBufferSize,
                                         RobotSettings::DefaultFeedConnectionRecvItemsCount);
+    }
+    FastObjectsAllocationInfo* CreateFastAllocationInfo() {
+        FastObjectsAllocationInfo *info = new FastObjectsAllocationInfo();
+
+        info->m_oLSCURRCount = 1024;
+        info->m_oLSCURRAddCount = 256;
+        info->m_oLSCURRItemsCount = 2024;
+        info->m_oLSCURRItemsAddCount = 256;
+        info->m_heartbeatCount = 10;
+        info->m_heartbeatAddCount = 10;
+        info->m_tradingSessionStatusCount = 10;
+        info->m_tradingSessionStatusAddCount = 10;
+
+        return info;
     }
 };
 
@@ -105,12 +169,14 @@ public:
         this->SetType(FeedConnectionType::Incremental);
         this->m_tradeTableCurr = new MarketDataTable<TradeInfo, FastTLSCURRInfo, FastTLSCURRItemInfo>();
         this->SetId(FeedConnectionId::fcidTlrCurr);
+        this->m_fastProtocolManager = new FastProtocolManager(this->CreateFastAllocationInfo());
         InitializePackets();
     }
     FeedConnection_CURR_TLR() : FeedConnection() {
         this->m_tradeTableCurr = new MarketDataTable<TradeInfo, FastTLSCURRInfo, FastTLSCURRItemInfo>();
         this->SetType(FeedConnectionType::Incremental);
         this->SetId(FeedConnectionId::fcidTlrCurr);
+        this->m_fastProtocolManager = new FastProtocolManager(this->CreateFastAllocationInfo());
     }
     ~FeedConnection_CURR_TLR() {
         delete this->m_tradeTableCurr;
@@ -122,6 +188,20 @@ public:
                                         RobotSettings::DefaultFeedConnectionRecvBufferSize,
                                         RobotSettings::DefaultFeedConnectionRecvItemsCount);
     }
+    FastObjectsAllocationInfo* CreateFastAllocationInfo() {
+        FastObjectsAllocationInfo *info = new FastObjectsAllocationInfo();
+
+        info->m_incrementalTLRCURRCount = 1024;
+        info->m_incrementalTLRCURRAddCount = 256;
+        info->m_tLSCURRItemsCount = 2024;
+        info->m_tLSCURRItemsAddCount = 256;
+        info->m_heartbeatCount = 10;
+        info->m_heartbeatAddCount = 10;
+        info->m_tradingSessionStatusCount = 10;
+        info->m_tradingSessionStatusAddCount = 10;
+
+        return info;
+    }
 };
 
 class FeedConnection_CURR_TLS : public FeedConnection {
@@ -130,11 +210,13 @@ public:
             FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
         this->SetType(FeedConnectionType::Snapshot);
         this->SetId(FeedConnectionId::fcidTlsCurr);
+        this->m_fastProtocolManager = new FastProtocolManager(this->CreateFastAllocationInfo());
         InitializePackets();
     }
     FeedConnection_CURR_TLS() : FeedConnection() {
         this->SetType(FeedConnectionType::Snapshot);
         this->SetId(FeedConnectionId::fcidTlsCurr);
+        this->m_fastProtocolManager = new FastProtocolManager(this->CreateFastAllocationInfo());
     }
     ISocketBufferProvider* CreateSocketBufferProvider() {
         return new SocketBufferProvider(DefaultSocketBufferManager::Default,
@@ -142,6 +224,20 @@ public:
                                         RobotSettings::DefaultFeedConnectionSendItemsCount,
                                         RobotSettings::DefaultFeedConnectionRecvBufferSize,
                                         RobotSettings::DefaultFeedConnectionRecvItemsCount);
+    }
+    FastObjectsAllocationInfo* CreateFastAllocationInfo() {
+        FastObjectsAllocationInfo *info = new FastObjectsAllocationInfo();
+
+        info->m_tLSCURRCount = 1024;
+        info->m_tLSCURRAddCount = 256;
+        info->m_tLSCURRItemsCount = 2024;
+        info->m_tLSCURRItemsAddCount = 256;
+        info->m_heartbeatCount = 10;
+        info->m_heartbeatAddCount = 10;
+        info->m_tradingSessionStatusCount = 10;
+        info->m_tradingSessionStatusAddCount = 10;
+
+        return info;
     }
 };
 
@@ -152,12 +248,14 @@ public:
         this->SetType(FeedConnectionType::Incremental);
         this->m_statTableFond = new MarketDataTable<StatisticsInfo, FastGenericInfo, FastGenericItemInfo>();
         this->SetId(FeedConnectionId::fcidMsrFond);
+        this->m_fastProtocolManager = new FastProtocolManager(this->CreateFastAllocationInfo());
         InitializePackets();
     }
     FeedConnection_FOND_MSR() : FeedConnection() {
         this->SetType(FeedConnectionType::Incremental);
         this->m_statTableFond = new MarketDataTable<StatisticsInfo, FastGenericInfo, FastGenericItemInfo>();
         this->SetId(FeedConnectionId::fcidMsrFond);
+        this->m_fastProtocolManager = new FastProtocolManager(this->CreateFastAllocationInfo());
     }
     ISocketBufferProvider* CreateSocketBufferProvider() {
         return new SocketBufferProvider(DefaultSocketBufferManager::Default,
@@ -165,6 +263,20 @@ public:
                                         RobotSettings::DefaultFeedConnectionSendItemsCount,
                                         RobotSettings::DefaultFeedConnectionRecvBufferSize,
                                         RobotSettings::DefaultFeedConnectionRecvItemsCount);
+    }
+    FastObjectsAllocationInfo* CreateFastAllocationInfo() {
+        FastObjectsAllocationInfo *info = new FastObjectsAllocationInfo();
+
+        info->m_genericCount = 1024;
+        info->m_genericAddCount = 256;
+        info->m_genericItemsCount = 1024;
+        info->m_genericItemsAddCount = 1024;
+        info->m_heartbeatCount = 10;
+        info->m_heartbeatAddCount = 10;
+        info->m_tradingSessionStatusCount = 10;
+        info->m_tradingSessionStatusAddCount = 10;
+
+        return info;
     }
 };
 
@@ -174,11 +286,13 @@ public:
             FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
         this->SetType(FeedConnectionType::Snapshot);
         this->SetId(FeedConnectionId::fcidMssFond);
+        this->m_fastProtocolManager = new FastProtocolManager(this->CreateFastAllocationInfo());
         InitializePackets();
     }
     FeedConnection_FOND_MSS() : FeedConnection() {
         this->SetType(FeedConnectionType::Snapshot);
         this->SetId(FeedConnectionId::fcidMssFond);
+        this->m_fastProtocolManager = new FastProtocolManager(this->CreateFastAllocationInfo());
     }
     ISocketBufferProvider* CreateSocketBufferProvider() {
         return new SocketBufferProvider(DefaultSocketBufferManager::Default,
@@ -186,6 +300,20 @@ public:
                                         RobotSettings::DefaultFeedConnectionSendItemsCount,
                                         RobotSettings::DefaultFeedConnectionRecvBufferSize,
                                         RobotSettings::DefaultFeedConnectionRecvItemsCount);
+    }
+    FastObjectsAllocationInfo* CreateFastAllocationInfo() {
+        FastObjectsAllocationInfo *info = new FastObjectsAllocationInfo();
+
+        info->m_genericCount = 1024;
+        info->m_genericAddCount = 256;
+        info->m_genericItemsCount = 1024;
+        info->m_genericItemsAddCount = 1024;
+        info->m_heartbeatCount = 10;
+        info->m_heartbeatAddCount = 10;
+        info->m_tradingSessionStatusCount = 10;
+        info->m_tradingSessionStatusAddCount = 10;
+
+        return info;
     }
 };
 
@@ -196,12 +324,14 @@ public:
         this->SetType(FeedConnectionType::Incremental);
         this->m_orderTableFond = new MarketDataTable<OrderInfo, FastOLSFONDInfo, FastOLSFONDItemInfo>();
         this->SetId(FeedConnectionId::fcidOlrFond);
+        this->m_fastProtocolManager = new FastProtocolManager(this->CreateFastAllocationInfo());
         InitializePackets();
     }
     FeedConnection_FOND_OLR() : FeedConnection() {
         this->SetType(FeedConnectionType::Incremental);
         this->m_orderTableFond = new MarketDataTable<OrderInfo, FastOLSFONDInfo, FastOLSFONDItemInfo>();
         this->SetId(FeedConnectionId::fcidOlrFond);
+        this->m_fastProtocolManager = new FastProtocolManager(this->CreateFastAllocationInfo());
     }
     ~FeedConnection_FOND_OLR() {
         delete this->m_orderTableFond;
@@ -213,6 +343,20 @@ public:
                                         RobotSettings::DefaultFeedConnectionRecvBufferSize,
                                         RobotSettings::DefaultFeedConnectionRecvItemsCount);
     }
+    FastObjectsAllocationInfo* CreateFastAllocationInfo() {
+        FastObjectsAllocationInfo *info = new FastObjectsAllocationInfo();
+
+        info->m_incrementalOLRFONDCount = 1024;
+        info->m_incrementalOLRFONDAddCount = 256;
+        info->m_oLSFONDItemsCount = 2024;
+        info->m_oLSFONDItemsAddCount = 256;
+        info->m_heartbeatCount = 10;
+        info->m_heartbeatAddCount = 10;
+        info->m_tradingSessionStatusCount = 10;
+        info->m_tradingSessionStatusAddCount = 10;
+
+        return info;
+    }
 };
 
 class FeedConnection_FOND_OLS : public FeedConnection {
@@ -221,11 +365,13 @@ public:
             FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
         this->SetType(FeedConnectionType::Snapshot);
         this->SetId(FeedConnectionId::fcidOlsFond);
+        this->m_fastProtocolManager = new FastProtocolManager(this->CreateFastAllocationInfo());
         InitializePackets();
     }
     FeedConnection_FOND_OLS() : FeedConnection() {
         this->SetType(FeedConnectionType::Snapshot);
         this->SetId(FeedConnectionId::fcidOlsFond);
+        this->m_fastProtocolManager = new FastProtocolManager(this->CreateFastAllocationInfo());
     }
     ISocketBufferProvider* CreateSocketBufferProvider() {
         return new SocketBufferProvider(DefaultSocketBufferManager::Default,
@@ -233,6 +379,20 @@ public:
                                         RobotSettings::DefaultFeedConnectionSendItemsCount,
                                         RobotSettings::DefaultFeedConnectionRecvBufferSize,
                                         RobotSettings::DefaultFeedConnectionRecvItemsCount);
+    }
+    FastObjectsAllocationInfo* CreateFastAllocationInfo() {
+        FastObjectsAllocationInfo *info = new FastObjectsAllocationInfo();
+
+        info->m_oLSFONDCount = 1024;
+        info->m_oLSFONDAddCount = 256;
+        info->m_oLSFONDItemsCount = 2024;
+        info->m_oLSFONDItemsAddCount = 256;
+        info->m_heartbeatCount = 10;
+        info->m_heartbeatAddCount = 10;
+        info->m_tradingSessionStatusCount = 10;
+        info->m_tradingSessionStatusAddCount = 10;
+
+        return info;
     }
 };
 
@@ -243,12 +403,14 @@ public:
         this->SetType(FeedConnectionType::Incremental);
         this->m_tradeTableFond = new MarketDataTable<TradeInfo, FastTLSFONDInfo, FastTLSFONDItemInfo>();
         this->SetId(FeedConnectionId::fcidTlrFond);
+        this->m_fastProtocolManager = new FastProtocolManager(this->CreateFastAllocationInfo());
         InitializePackets();
     }
     FeedConnection_FOND_TLR() : FeedConnection() {
         this->m_tradeTableFond = new MarketDataTable<TradeInfo, FastTLSFONDInfo, FastTLSFONDItemInfo>();
         this->SetType(FeedConnectionType::Incremental);
         this->SetId(FeedConnectionId::fcidTlrFond);
+        this->m_fastProtocolManager = new FastProtocolManager(this->CreateFastAllocationInfo());
     }
     ~FeedConnection_FOND_TLR() {
         delete this->m_tradeTableFond;
@@ -260,6 +422,20 @@ public:
                                         RobotSettings::DefaultFeedConnectionRecvBufferSize,
                                         RobotSettings::DefaultFeedConnectionRecvItemsCount);
     }
+    FastObjectsAllocationInfo* CreateFastAllocationInfo() {
+        FastObjectsAllocationInfo *info = new FastObjectsAllocationInfo();
+
+        info->m_incrementalTLRFONDCount = 1024;
+        info->m_incrementalTLRFONDAddCount = 256;
+        info->m_tLSFONDItemsCount = 2024;
+        info->m_tLSFONDItemsAddCount = 256;
+        info->m_heartbeatCount = 10;
+        info->m_heartbeatAddCount = 10;
+        info->m_tradingSessionStatusCount = 10;
+        info->m_tradingSessionStatusAddCount = 10;
+
+        return info;
+    }
 };
 
 class FeedConnection_FOND_TLS : public FeedConnection {
@@ -268,11 +444,13 @@ public:
             FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
         this->SetType(FeedConnectionType::Snapshot);
         this->SetId(FeedConnectionId::fcidTlsFond);
+        this->m_fastProtocolManager = new FastProtocolManager(this->CreateFastAllocationInfo());
         InitializePackets();
     }
     FeedConnection_FOND_TLS() : FeedConnection() {
         this->SetType(FeedConnectionType::Snapshot);
         this->SetId(FeedConnectionId::fcidTlsFond);
+        this->m_fastProtocolManager = new FastProtocolManager(this->CreateFastAllocationInfo());
     }
     ISocketBufferProvider* CreateSocketBufferProvider() {
         return new SocketBufferProvider(DefaultSocketBufferManager::Default,
@@ -280,6 +458,20 @@ public:
                                         RobotSettings::DefaultFeedConnectionSendItemsCount,
                                         RobotSettings::DefaultFeedConnectionRecvBufferSize,
                                         RobotSettings::DefaultFeedConnectionRecvItemsCount);
+    }
+    FastObjectsAllocationInfo* CreateFastAllocationInfo() {
+        FastObjectsAllocationInfo *info = new FastObjectsAllocationInfo();
+
+        info->m_tLSFONDCount = 1024;
+        info->m_tLSFONDAddCount = 256;
+        info->m_tLSFONDItemsCount = 2024;
+        info->m_tLSFONDItemsAddCount = 256;
+        info->m_heartbeatCount = 10;
+        info->m_heartbeatAddCount = 10;
+        info->m_tradingSessionStatusCount = 10;
+        info->m_tradingSessionStatusAddCount = 10;
+
+        return info;
     }
 };
 
@@ -289,6 +481,7 @@ public:
             FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
         this->SetType(FeedConnectionType::InstrumentDefinition);
         this->SetId(FeedConnectionId::fcidIdfFond);
+        this->m_fastProtocolManager = new FastProtocolManager(this->CreateFastAllocationInfo());
         InitializeSecurityDefinition();
         InitializePackets();
     }
@@ -302,6 +495,24 @@ public:
                                         RobotSettings::DefaultFeedConnectionRecvBufferSize,
                                         RobotSettings::DefaultFeedConnectionRecvItemsCount);
     }
+    FastObjectsAllocationInfo* CreateFastAllocationInfo() {
+        FastObjectsAllocationInfo *info = new FastObjectsAllocationInfo();
+
+        info->m_securityDefinitionCount = 13000;
+        info->m_securityDefinitionAddCount = 256;
+        info->m_securityDefinitionGroupInstrAttribItemsCount = 13000;
+        info->m_securityDefinitionGroupInstrAttribItemsAddCount = 256;
+        info->m_securityDefinitionMarketSegmentGrpItemsCount = 13000;
+        info->m_securityDefinitionMarketSegmentGrpItemsAddCount = 256;
+        info->m_securityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemsCount = 13000;
+        info->m_securityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemsAddCount = 256;
+        info->m_heartbeatCount = 10;
+        info->m_heartbeatAddCount = 10;
+        info->m_tradingSessionStatusCount = 10;
+        info->m_tradingSessionStatusAddCount = 10;
+
+        return info;
+    }
 };
 
 class FeedConnection_CURR_IDF : public FeedConnection{
@@ -310,6 +521,7 @@ public:
             FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
         this->SetType(FeedConnectionType::InstrumentDefinition);
         this->SetId(FeedConnectionId::fcidIdfCurr);
+        this->m_fastProtocolManager = new FastProtocolManager(this->CreateFastAllocationInfo());
         InitializeSecurityDefinition();
         InitializePackets();
     }
@@ -323,6 +535,24 @@ public:
                                         RobotSettings::DefaultFeedConnectionRecvBufferSize,
                                         RobotSettings::DefaultFeedConnectionRecvItemsCount);
     }
+    FastObjectsAllocationInfo* CreateFastAllocationInfo() {
+        FastObjectsAllocationInfo *info = new FastObjectsAllocationInfo();
+
+        info->m_securityDefinitionCount = 13000;
+        info->m_securityDefinitionAddCount = 256;
+        info->m_securityDefinitionGroupInstrAttribItemsCount = 13000;
+        info->m_securityDefinitionGroupInstrAttribItemsAddCount = 256;
+        info->m_securityDefinitionMarketSegmentGrpItemsCount = 13000;
+        info->m_securityDefinitionMarketSegmentGrpItemsAddCount = 256;
+        info->m_securityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemsCount = 13000;
+        info->m_securityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemsAddCount = 256;
+        info->m_heartbeatCount = 10;
+        info->m_heartbeatAddCount = 10;
+        info->m_tradingSessionStatusCount = 10;
+        info->m_tradingSessionStatusAddCount = 10;
+
+        return info;
+    }
 };
 
 class FeedConnection_FOND_ISF : public FeedConnection{
@@ -331,6 +561,7 @@ public:
             FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
         this->SetType(FeedConnectionType::InstrumentStatus);
         this->SetId(FeedConnectionId::fcidIsfFond);
+        this->m_fastProtocolManager = new FastProtocolManager(this->CreateFastAllocationInfo());
         InitializeSecurityDefinition();
         InitializePackets();
     }
@@ -344,6 +575,18 @@ public:
                                         RobotSettings::DefaultFeedConnectionRecvBufferSize,
                                         RobotSettings::DefaultFeedConnectionRecvItemsCount);
     }
+    FastObjectsAllocationInfo* CreateFastAllocationInfo() {
+        FastObjectsAllocationInfo *info = new FastObjectsAllocationInfo();
+
+        info->m_securityStatusCount = 10;
+        info->m_securityStatusAddCount = 10;
+        info->m_tradingSessionStatusCount = 10;
+        info->m_tradingSessionStatusAddCount = 10;
+        info->m_heartbeatCount = 10;
+        info->m_heartbeatAddCount = 10;
+
+        return info;
+    }
 };
 
 class FeedConnection_CURR_ISF : public FeedConnection{
@@ -352,6 +595,7 @@ public:
             FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
         this->SetType(FeedConnectionType::InstrumentStatus);
         this->SetId(FeedConnectionId::fcidIsfCurr);
+        this->m_fastProtocolManager = new FastProtocolManager(this->CreateFastAllocationInfo());
         InitializeSecurityDefinition();
         InitializePackets();
     }
@@ -365,6 +609,18 @@ public:
                                         RobotSettings::DefaultFeedConnectionRecvBufferSize,
                                         RobotSettings::DefaultFeedConnectionRecvItemsCount);
     }
+    FastObjectsAllocationInfo* CreateFastAllocationInfo() {
+        FastObjectsAllocationInfo *info = new FastObjectsAllocationInfo();
+
+        info->m_securityStatusCount = 10;
+        info->m_securityStatusAddCount = 10;
+        info->m_tradingSessionStatusCount = 10;
+        info->m_tradingSessionStatusAddCount = 10;
+        info->m_heartbeatCount = 10;
+        info->m_heartbeatAddCount = 10;
+
+        return info;
+    }
 };
 
 class FeedConnection_FOND_H : public FeedConnection{
@@ -373,6 +629,7 @@ public:
             FeedConnection(id, name, value, protocol, 0, ip, port, 0, 0, 0) {
         InitializeHistoricalReplay();
         this->m_fixProtocolManager->SetSenderComputerId(FundMarketSenderComputerId);
+        this->m_fastProtocolManager = new FastProtocolManager(this->CreateFastAllocationInfo());
         PrepareLogonInfo();
         this->SetType(FeedConnectionType::HistoricalReplay);
         this->SetState(FeedConnectionState::fcsHistoricalReplay);
@@ -389,6 +646,16 @@ public:
                                         RobotSettings::DefaultFeedConnectionRecvBufferSize,
                                         RobotSettings::DefaultFeedConnectionRecvItemsCount);
     }
+    FastObjectsAllocationInfo* CreateFastAllocationInfo() {
+        FastObjectsAllocationInfo *info = new FastObjectsAllocationInfo();
+
+        info->m_logonCount = 10;
+        info->m_logonAddCount = 10;
+        info->m_logoutCount = 10;
+        info->m_logoutAddCount = 10;
+
+        return info;
+    }
 };
 
 class FeedConnection_CURR_H : public FeedConnection{
@@ -397,6 +664,7 @@ public:
             FeedConnection(id, name, value, protocol, 0, ip, port, 0, 0, 0) {
         InitializeHistoricalReplay();
         this->m_fixProtocolManager->SetSenderComputerId(CurrencyMarketSenderComputerId);
+        this->m_fastProtocolManager = new FastProtocolManager(this->CreateFastAllocationInfo());
         PrepareLogonInfo();
         this->SetType(FeedConnectionType::HistoricalReplay);
         this->SetState(FeedConnectionState::fcsHistoricalReplay);
@@ -412,6 +680,16 @@ public:
                                         RobotSettings::DefaultFeedConnectionSendItemsCount,
                                         RobotSettings::DefaultFeedConnectionRecvBufferSize,
                                         RobotSettings::DefaultFeedConnectionRecvItemsCount);
+    }
+    FastObjectsAllocationInfo* CreateFastAllocationInfo() {
+        FastObjectsAllocationInfo *info = new FastObjectsAllocationInfo();
+
+        info->m_logonCount = 10;
+        info->m_logonAddCount = 10;
+        info->m_logoutCount = 10;
+        info->m_logoutAddCount = 10;
+
+        return info;
     }
 };
 

@@ -80,7 +80,7 @@ public:
             throw;
 
         AutoAllocatePointerList<TestFeedMessage> *res = new AutoAllocatePointerList<TestFeedMessage>(128, 128);
-        FastProtocolManager manager;
+        FastProtocolManager manager(new FastObjectsAllocationInfo(128,128));
 
         char feed_abr[4];
         char data[3];
@@ -198,7 +198,7 @@ public:
         LinkedPointer<TestFeedMessage> *end = messages->ListCore()->End();
 
         //FeedConnection_FOND_IDF *idf = new FeedConnection_FOND_IDF();
-        FastProtocolManager *manager = new FastProtocolManager();
+        FastProtocolManager *manager = new FastProtocolManager(new FastObjectsAllocationInfo(128,128));
         while(true) {
 
             FeedConnection *fc = 0;

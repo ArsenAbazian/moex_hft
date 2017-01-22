@@ -161,6 +161,7 @@ namespace prebuild {
 					continue;
 				TemplatesNode = node;
 				GenerateTemplatesCode();
+				break;
 			}
 
 			GenerateAddChannelsCode();
@@ -642,14 +643,10 @@ namespace prebuild {
 				WriteLine("\tAutoAllocatePointerList<" + str.Name + ">\t*" + str.ValueName + ";");
 			}
 
-			//WriteLine("");
-			//foreach(StructureInfo str in Structures) 
-				//WriteLine("\t" + str.Name + "\t*" + str.CurrentItemValueName + ";");
-			
 			WriteLine("");
 			WriteLine("\tvoid InitializeMessageInfo() {");
 			foreach(StructureInfo str in structures) {
-				WriteLine("\t\tthis->" + str.ValueName + " = new AutoAllocatePointerList<" + str.Name + ">(128, 256);");
+				WriteLine("\t\tthis->" + str.ValueName + " = new AutoAllocatePointerList<" + str.Name + ">(this->m_allocationInfo->" + str.ValueName + "Count, this->m_allocationInfo->" + str.ValueName + "AddCount);");
 			}
 			WriteLine("\t}");
 
@@ -924,6 +921,28 @@ namespace prebuild {
 			foreach(StructureInfo info in Structures) { 
 				WriteStructureDefinition(info);
 			}
+
+			WriteLine("class FastObjectsAllocationInfo {");
+			WriteLine("public:");
+			foreach(StructureInfo info in Structures) {
+				WriteLine("\tint\t\t\t\t" + info.ValueName + "Count;");
+				WriteLine("\tint\t\t\t\t" + info.ValueName + "AddCount;");
+			}
+			WriteLine("\tFastObjectsAllocationInfo() {");
+			WriteLine("");
+			foreach(StructureInfo info in Structures) {
+				WriteLine("\tthis->" + info.ValueName + "Count = 0;");
+				WriteLine("\tthis->" + info.ValueName + "AddCount = 0;");
+			}
+			WriteLine("\t}");
+			WriteLine("\tFastObjectsAllocationInfo(int count, int addCount) {");
+			WriteLine("");
+			foreach(StructureInfo info in Structures) {
+				WriteLine("\tthis->" + info.ValueName + "Count = count;");
+				WriteLine("\tthis->" + info.ValueName + "AddCount = addCount;");
+			}
+			WriteLine("\t}");
+			WriteLine("};");
 		}
 
 		List<StructureInfo> structures;

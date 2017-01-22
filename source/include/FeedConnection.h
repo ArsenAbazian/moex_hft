@@ -2023,13 +2023,11 @@ public:
     }
 
     inline int IdfFindBySymbol(const char *symbol, int symbolLength) {
-        LinkedPointer<FastSecurityDefinitionInfo> **ptr = this->m_symbols;
-        for(int i = 0; i < this->m_symbolsCount; i++) {
-            if(StringIdComparer::Equal((*ptr)->Data()->Symbol, (*ptr)->Data()->SymbolLength, symbol, symbolLength)) {
-                return i;
-            }
-        }
-        return -1;
+        bool newlyAdded = false;
+        SymbolInfo *s = this->m_symbolManager->GetSymbol(symbol, symbolLength, &newlyAdded);
+        if(newlyAdded)
+            return -1;
+        return s->m_index;
     }
 
     inline void UpdateSecurityDefinition(FastSecurityDefinitionInfo *info) {

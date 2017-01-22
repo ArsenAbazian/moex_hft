@@ -33,19 +33,20 @@ class FastProtocolManager {
 	friend class StatisticsTesterCurr;
 
 	const int maxBufferLength = 16000;
-	BYTE	        *buffer;
-	BYTE	        *currentPos;
-	int		        bufferLength;
-    UINT            m_templateId;
-    UINT64          m_presenceMap;
+	BYTE	        			*buffer;
+	BYTE	        			*currentPos;
+	int		        			bufferLength;
+    UINT            			m_templateId;
+    UINT64          			m_presenceMap;
 
-    FILE            *m_xmlFilePtr;
+    FILE            			*m_xmlFilePtr;
 
-    FastSnapshotInfo *m_snapshotInfo;
-	void			*m_lastDecodedInfo;
+    FastSnapshotInfo 			*m_snapshotInfo;
+	void						*m_lastDecodedInfo;
 
-	UINT32			m_skipTemplateId[8];
-	int				m_skipTemplateIdCount;
+	UINT32						m_skipTemplateId[8];
+	int							m_skipTemplateIdCount;
+	FastObjectsAllocationInfo	*m_allocationInfo;
 
 #pragma region String_Constant_Declaration_GeneratedCode
 public:
@@ -87,32 +88,32 @@ private:
 	AutoAllocatePointerList<FastHeartbeatInfo>	*m_heartbeat;
 
 	void InitializeMessageInfo() {
-		this->m_logon = new AutoAllocatePointerList<FastLogonInfo>(128, 256);
-		this->m_logout = new AutoAllocatePointerList<FastLogoutInfo>(128, 256);
-		this->m_genericItems = new AutoAllocatePointerList<FastGenericItemInfo>(128, 256);
-		this->m_generic = new AutoAllocatePointerList<FastGenericInfo>(128, 256);
-		this->m_incrementalGeneric = new AutoAllocatePointerList<FastIncrementalGenericInfo>(128, 256);
-		this->m_oLSFONDItems = new AutoAllocatePointerList<FastOLSFONDItemInfo>(128, 256);
-		this->m_oLSFOND = new AutoAllocatePointerList<FastOLSFONDInfo>(128, 256);
-		this->m_oLSCURRItems = new AutoAllocatePointerList<FastOLSCURRItemInfo>(128, 256);
-		this->m_oLSCURR = new AutoAllocatePointerList<FastOLSCURRInfo>(128, 256);
-		this->m_tLSFONDItems = new AutoAllocatePointerList<FastTLSFONDItemInfo>(128, 256);
-		this->m_tLSFOND = new AutoAllocatePointerList<FastTLSFONDInfo>(128, 256);
-		this->m_tLSCURRItems = new AutoAllocatePointerList<FastTLSCURRItemInfo>(128, 256);
-		this->m_tLSCURR = new AutoAllocatePointerList<FastTLSCURRInfo>(128, 256);
-		this->m_incrementalMSRFOND = new AutoAllocatePointerList<FastIncrementalMSRFONDInfo>(128, 256);
-		this->m_incrementalMSRCURR = new AutoAllocatePointerList<FastIncrementalMSRCURRInfo>(128, 256);
-		this->m_incrementalOLRFOND = new AutoAllocatePointerList<FastIncrementalOLRFONDInfo>(128, 256);
-		this->m_incrementalOLRCURR = new AutoAllocatePointerList<FastIncrementalOLRCURRInfo>(128, 256);
-		this->m_incrementalTLRFOND = new AutoAllocatePointerList<FastIncrementalTLRFONDInfo>(128, 256);
-		this->m_incrementalTLRCURR = new AutoAllocatePointerList<FastIncrementalTLRCURRInfo>(128, 256);
-		this->m_securityDefinitionGroupInstrAttribItems = new AutoAllocatePointerList<FastSecurityDefinitionGroupInstrAttribItemInfo>(128, 256);
-		this->m_securityDefinitionMarketSegmentGrpTradingSessionRulesGrpItems = new AutoAllocatePointerList<FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo>(128, 256);
-		this->m_securityDefinitionMarketSegmentGrpItems = new AutoAllocatePointerList<FastSecurityDefinitionMarketSegmentGrpItemInfo>(128, 256);
-		this->m_securityDefinition = new AutoAllocatePointerList<FastSecurityDefinitionInfo>(128, 256);
-		this->m_securityStatus = new AutoAllocatePointerList<FastSecurityStatusInfo>(128, 256);
-		this->m_tradingSessionStatus = new AutoAllocatePointerList<FastTradingSessionStatusInfo>(128, 256);
-		this->m_heartbeat = new AutoAllocatePointerList<FastHeartbeatInfo>(128, 256);
+		this->m_logon = new AutoAllocatePointerList<FastLogonInfo>(this->m_allocationInfo->m_logonCount, this->m_allocationInfo->m_logonAddCount);
+		this->m_logout = new AutoAllocatePointerList<FastLogoutInfo>(this->m_allocationInfo->m_logoutCount, this->m_allocationInfo->m_logoutAddCount);
+		this->m_genericItems = new AutoAllocatePointerList<FastGenericItemInfo>(this->m_allocationInfo->m_genericItemsCount, this->m_allocationInfo->m_genericItemsAddCount);
+		this->m_generic = new AutoAllocatePointerList<FastGenericInfo>(this->m_allocationInfo->m_genericCount, this->m_allocationInfo->m_genericAddCount);
+		this->m_incrementalGeneric = new AutoAllocatePointerList<FastIncrementalGenericInfo>(this->m_allocationInfo->m_incrementalGenericCount, this->m_allocationInfo->m_incrementalGenericAddCount);
+		this->m_oLSFONDItems = new AutoAllocatePointerList<FastOLSFONDItemInfo>(this->m_allocationInfo->m_oLSFONDItemsCount, this->m_allocationInfo->m_oLSFONDItemsAddCount);
+		this->m_oLSFOND = new AutoAllocatePointerList<FastOLSFONDInfo>(this->m_allocationInfo->m_oLSFONDCount, this->m_allocationInfo->m_oLSFONDAddCount);
+		this->m_oLSCURRItems = new AutoAllocatePointerList<FastOLSCURRItemInfo>(this->m_allocationInfo->m_oLSCURRItemsCount, this->m_allocationInfo->m_oLSCURRItemsAddCount);
+		this->m_oLSCURR = new AutoAllocatePointerList<FastOLSCURRInfo>(this->m_allocationInfo->m_oLSCURRCount, this->m_allocationInfo->m_oLSCURRAddCount);
+		this->m_tLSFONDItems = new AutoAllocatePointerList<FastTLSFONDItemInfo>(this->m_allocationInfo->m_tLSFONDItemsCount, this->m_allocationInfo->m_tLSFONDItemsAddCount);
+		this->m_tLSFOND = new AutoAllocatePointerList<FastTLSFONDInfo>(this->m_allocationInfo->m_tLSFONDCount, this->m_allocationInfo->m_tLSFONDAddCount);
+		this->m_tLSCURRItems = new AutoAllocatePointerList<FastTLSCURRItemInfo>(this->m_allocationInfo->m_tLSCURRItemsCount, this->m_allocationInfo->m_tLSCURRItemsAddCount);
+		this->m_tLSCURR = new AutoAllocatePointerList<FastTLSCURRInfo>(this->m_allocationInfo->m_tLSCURRCount, this->m_allocationInfo->m_tLSCURRAddCount);
+		this->m_incrementalMSRFOND = new AutoAllocatePointerList<FastIncrementalMSRFONDInfo>(this->m_allocationInfo->m_incrementalMSRFONDCount, this->m_allocationInfo->m_incrementalMSRFONDAddCount);
+		this->m_incrementalMSRCURR = new AutoAllocatePointerList<FastIncrementalMSRCURRInfo>(this->m_allocationInfo->m_incrementalMSRCURRCount, this->m_allocationInfo->m_incrementalMSRCURRAddCount);
+		this->m_incrementalOLRFOND = new AutoAllocatePointerList<FastIncrementalOLRFONDInfo>(this->m_allocationInfo->m_incrementalOLRFONDCount, this->m_allocationInfo->m_incrementalOLRFONDAddCount);
+		this->m_incrementalOLRCURR = new AutoAllocatePointerList<FastIncrementalOLRCURRInfo>(this->m_allocationInfo->m_incrementalOLRCURRCount, this->m_allocationInfo->m_incrementalOLRCURRAddCount);
+		this->m_incrementalTLRFOND = new AutoAllocatePointerList<FastIncrementalTLRFONDInfo>(this->m_allocationInfo->m_incrementalTLRFONDCount, this->m_allocationInfo->m_incrementalTLRFONDAddCount);
+		this->m_incrementalTLRCURR = new AutoAllocatePointerList<FastIncrementalTLRCURRInfo>(this->m_allocationInfo->m_incrementalTLRCURRCount, this->m_allocationInfo->m_incrementalTLRCURRAddCount);
+		this->m_securityDefinitionGroupInstrAttribItems = new AutoAllocatePointerList<FastSecurityDefinitionGroupInstrAttribItemInfo>(this->m_allocationInfo->m_securityDefinitionGroupInstrAttribItemsCount, this->m_allocationInfo->m_securityDefinitionGroupInstrAttribItemsAddCount);
+		this->m_securityDefinitionMarketSegmentGrpTradingSessionRulesGrpItems = new AutoAllocatePointerList<FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo>(this->m_allocationInfo->m_securityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemsCount, this->m_allocationInfo->m_securityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemsAddCount);
+		this->m_securityDefinitionMarketSegmentGrpItems = new AutoAllocatePointerList<FastSecurityDefinitionMarketSegmentGrpItemInfo>(this->m_allocationInfo->m_securityDefinitionMarketSegmentGrpItemsCount, this->m_allocationInfo->m_securityDefinitionMarketSegmentGrpItemsAddCount);
+		this->m_securityDefinition = new AutoAllocatePointerList<FastSecurityDefinitionInfo>(this->m_allocationInfo->m_securityDefinitionCount, this->m_allocationInfo->m_securityDefinitionAddCount);
+		this->m_securityStatus = new AutoAllocatePointerList<FastSecurityStatusInfo>(this->m_allocationInfo->m_securityStatusCount, this->m_allocationInfo->m_securityStatusAddCount);
+		this->m_tradingSessionStatus = new AutoAllocatePointerList<FastTradingSessionStatusInfo>(this->m_allocationInfo->m_tradingSessionStatusCount, this->m_allocationInfo->m_tradingSessionStatusAddCount);
+		this->m_heartbeat = new AutoAllocatePointerList<FastHeartbeatInfo>(this->m_allocationInfo->m_heartbeatCount, this->m_allocationInfo->m_heartbeatAddCount);
 	}
 
 #pragma endregion
@@ -2341,7 +2342,7 @@ public:
 		return;
 	}
 
-	FastProtocolManager();
+	FastProtocolManager(FastObjectsAllocationInfo *allocInfo);
 	~FastProtocolManager();
 
 	inline BYTE* Buffer() { return this->buffer; }

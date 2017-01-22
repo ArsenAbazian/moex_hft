@@ -18,7 +18,7 @@ FastProtocolTester::~FastProtocolTester()
 }
 
 void FastProtocolTester::TestMessages() {
-    FastProtocolManager *manager = new FastProtocolManager();
+    FastProtocolManager *manager = new FastProtocolManager(new FastObjectsAllocationInfo(128,128));
 
     unsigned char *message = new unsigned char[130] {
             0x89, 0x30, 0x00, 0x00, 0xe0, 0x10, 0xc3, 0x61, 0x89, 0x02,
@@ -349,7 +349,7 @@ bool FastProtocolTester::CompareStrings(char* str1, const char *str2) {
 }
 
 void FastProtocolTester::TestMessageSequenceNumber() { 
-	FastProtocolManager *manager = new FastProtocolManager();
+	FastProtocolManager *manager = new FastProtocolManager(new FastObjectsAllocationInfo(128,128));
 	
 	*((int*)(manager->Buffer())) = 0x12345678;
 	int seq = manager->ReadMsgSeqNumber();
@@ -368,7 +368,7 @@ void FastProtocolTester::TestMessageSequenceNumber() {
 
 void FastProtocolTester::TestReadInt32_Mandatory() { 
 	printf("Test FastProtocolTester::TestReadInt32_Mandatory\n");
-	FastProtocolManager* manager = new FastProtocolManager();
+	FastProtocolManager *manager = new FastProtocolManager(new FastObjectsAllocationInfo(128,128));
 
 	for (int i = 0; i > -2147483630; i -= 5) {
 		manager->ResetBuffer();
@@ -397,7 +397,7 @@ void FastProtocolTester::TestReadInt32_Mandatory() {
 
 void FastProtocolTester::TestReadInt32_Optional() {
 	printf("Test FastProtocolTester::TestReadInt32_Optional\n");
-	FastProtocolManager *manager = new FastProtocolManager();
+	FastProtocolManager *manager = new FastProtocolManager(new FastObjectsAllocationInfo(128,128));
 
 	manager->ResetBuffer();
 	manager->WriteInt32_Optional(942755);
@@ -442,14 +442,14 @@ void FastProtocolTester::TestReadInt32_Optional() {
 
 void FastProtocolTester::TestReadUInt32_Optional() {
 	printf("Test FastProtocolTester::TestReadUInt32_Optional\n");
-	FastProtocolManager *manager = new FastProtocolManager();
+	FastProtocolManager *manager = new FastProtocolManager(new FastObjectsAllocationInfo(128,128));
 
 	delete manager;
 }
 
 void FastProtocolTester::TestReadUInt32_Mandatory() {
 	printf("Test FastProtocolTester::TestReadUInt32_Mandatory\n");
-	FastProtocolManager *manager = new FastProtocolManager();
+	FastProtocolManager *manager = new FastProtocolManager(new FastObjectsAllocationInfo(128,128));
 
 	for (UINT32 i = 0; i < 0xfffffff0; i += 5) {
 		manager->ResetBuffer();
@@ -465,7 +465,7 @@ void FastProtocolTester::TestReadUInt32_Mandatory() {
 
 void FastProtocolTester::TestReadString_Optional() { 
 	printf("Test FastProtocolTester::TestReadString_Optional\n");
-	FastProtocolManager *manager = new FastProtocolManager();
+	FastProtocolManager *manager = new FastProtocolManager(new FastObjectsAllocationInfo(128,128));
 
 	manager->WriteString_Optional((const char*)NULL, 0);
 	if (manager->MessageLength() != 1)
@@ -510,7 +510,7 @@ void FastProtocolTester::TestReadString_Optional() {
 
 void FastProtocolTester::TestReadString_Mandatory() {
 	printf("Test FastProtocolTester::TestReadString_Mandatory\n");
-	FastProtocolManager *manager = new FastProtocolManager();
+	FastProtocolManager *manager = new FastProtocolManager(new FastObjectsAllocationInfo(128,128));
 
 	manager->WriteString_Mandatory((char*)"", 0);
 	if (manager->MessageLength() != 1)
@@ -546,7 +546,7 @@ void FastProtocolTester::TestReadString_Mandatory() {
 
 void FastProtocolTester::TestReadByteVector_Optional() { 
 	printf("Test FastProtocolTester::TestReadByteVector_Optional\n");
-	FastProtocolManager *manager = new FastProtocolManager();
+	FastProtocolManager *manager = new FastProtocolManager(new FastObjectsAllocationInfo(128,128));
 
 	manager->WriteByteVector_Optional(NULL, 0);
 	if (manager->MessageLength() != 1)
@@ -580,7 +580,7 @@ void FastProtocolTester::TestReadByteVector_Optional() {
 
 void FastProtocolTester::TestReadByteVector_Mandatory() {
 	printf("Test FastProtocolTester::TestReadByteVector_Mandatory\n");
-	FastProtocolManager *manager = new FastProtocolManager();
+	FastProtocolManager *manager = new FastProtocolManager(new FastObjectsAllocationInfo(128,128));
 
 	BYTE *buffer = new BYTE[1000];
 	BYTE *buffer2;
@@ -608,7 +608,7 @@ void FastProtocolTester::TestReadByteVector_Mandatory() {
 
 void FastProtocolTester::TestReadDecimal_Optional() { 
 	printf("Test FastProtocolTester::TestReadDecimal_Optional\n");
-	FastProtocolManager *manager = new FastProtocolManager();
+	FastProtocolManager *manager = new FastProtocolManager(new FastObjectsAllocationInfo(128,128));
 
 	Decimal value(942755, 2);
 	manager->WriteDecimal_Optional(&value);
@@ -641,7 +641,7 @@ void FastProtocolTester::TestReadDecimal_Optional() {
 
 void FastProtocolTester::TestReadDecimal_Mandatory() {
 	printf("Test FastProtocolTester::TestReadDecimal_Mandatory\n");
-	FastProtocolManager *manager = new FastProtocolManager();
+	FastProtocolManager *manager = new FastProtocolManager(new FastObjectsAllocationInfo(128,128));
 
 	Decimal value = { 942755, 2 };
 	manager->WriteDecimal_Mandatory(&value);
@@ -674,7 +674,7 @@ void FastProtocolTester::TestReadDecimal_Mandatory() {
 
 void FastProtocolTester::TestReadInt64_Optional() {
 	printf("Test FastProtocolTester::TestReadInt64_Optional\n");
-	FastProtocolManager *manager = new FastProtocolManager();
+	FastProtocolManager *manager = new FastProtocolManager(new FastObjectsAllocationInfo(128,128));
 	
 	BYTE buffer[12];
 	for (int i = 1; i < 10; i++) { // extended positive
@@ -789,7 +789,7 @@ void FastProtocolTester::TestReadInt64_Optional() {
 
 void FastProtocolTester::TestReadInt64_Mandatory() {
 	printf("Test FastProtocolTester::TestReadInt64_Mandatory\n");
-	FastProtocolManager *manager = new FastProtocolManager();
+	FastProtocolManager *manager = new FastProtocolManager(new FastObjectsAllocationInfo(128,128));
 
 	INT64 min = INT64_MIN + 10;
 
@@ -935,7 +935,7 @@ void FastProtocolTester::TestReadInt64_Mandatory() {
 
 void FastProtocolTester::TestReadUInt64_Mandatory() {
 	printf("Test FastProtocolTester::TestReadUInt64_Mandatory\n");
-	FastProtocolManager *manager = new FastProtocolManager();
+	FastProtocolManager *manager = new FastProtocolManager(new FastObjectsAllocationInfo(128,128));
 
 	BYTE buffer[12];
 
@@ -1002,7 +1002,7 @@ void FastProtocolTester::TestReadUInt64_Mandatory() {
 
 void FastProtocolTester::TestReadUInt64_Optional() {
 	printf("Test FastProtocolTester::TestReadUInt64_Optional\n");
-	FastProtocolManager *manager = new FastProtocolManager();
+	FastProtocolManager *manager = new FastProtocolManager(new FastObjectsAllocationInfo(128,128));
 
 	BYTE buffer[12];
 
@@ -1046,7 +1046,7 @@ void FastProtocolTester::TestReadUInt64_Optional() {
 }
 
 void FastProtocolTester::TestParsePresenceMap() {
-	/*FastProtocolManager *manager = new FastProtocolManager();
+	/*FastProtocolManager *manager = new FastProtocolManager(new FastObjectsAllocationInfo(128,128));
 	
 	*(manager->Buffer()) = 0x80;
 	manager->ParsePresenceMap();

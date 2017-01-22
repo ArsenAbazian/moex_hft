@@ -1,7 +1,8 @@
 #include "Fast/FastProtocolManager.h"
 
 
-FastProtocolManager::FastProtocolManager() {
+FastProtocolManager::FastProtocolManager(FastObjectsAllocationInfo *allocInfo) {
+	this->m_allocationInfo = allocInfo;
 	this->InitializeConstantStrings();
 	this->InitializeDecodeMethodPointers();
 	this->InitializeMessageInfo();
