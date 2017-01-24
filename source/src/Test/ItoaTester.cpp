@@ -22,7 +22,7 @@ void ItoaTester::Test() {
 		buf[conv.Convert(buf, i, 3)] = '\0';
 		newValue = conv.From3SymbolUnsigned(buf);
 		if (newValue != i) {
-			printf("print with 3 symbols: expected %d but was %d", i, newValue);
+			printf("print with 3 m_symbols: expected %d but was %d", i, newValue);
 			throw;
 		}
 	}

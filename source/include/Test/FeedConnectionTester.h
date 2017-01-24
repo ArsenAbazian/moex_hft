@@ -222,8 +222,8 @@ public:
         PointerListTester pt;
         pt.Test();
 
-        SymbolManagerTester ht;
-        ht.Test();
+        /*SymbolManagerTester ht;
+        ht.Test();*/
 
         RobotSettings::MarketDataMaxSymbolsCount = 10;
         RobotSettings::MarketDataMaxSessionsCount = 32;

@@ -106,11 +106,7 @@ public:
     inline unsigned int SendBufferSize() { return (unsigned int)(this->currentPos - ((char*)this->m_sendMessageBuffer)); }
     inline bool SendFix(WinSockManager *manager) {
 		DefaultLogManager::Default->WriteFix(LogMessageCode::lmcFixProtocolManager_SendFix, this->m_sendBuffer->BufferIndex(), this->m_sendItemStartIndex);
-#ifdef TEST
-        return true;
-#else
         return manager->Send(this->SendBuffer(), this->SendBufferSize());
-#endif
     }
     inline bool RecvFix(WinSockManager *manager) {
         this->PrepareRecvBuffer();

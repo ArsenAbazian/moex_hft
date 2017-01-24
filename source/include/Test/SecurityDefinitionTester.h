@@ -345,7 +345,7 @@ public:
             throw;
     }
 
-    // no packet was lost, symbol repeats, so symbols ended....
+    // no packet was lost, symbol repeats, so m_symbols ended....
     void TestInstrumentDefinitionCollectDataCompleted_1() {
         this->idf->Stop();
         this->idf->m_idfMode = FeedConnectionSecurityDefinitionMode::sdmCollectData;

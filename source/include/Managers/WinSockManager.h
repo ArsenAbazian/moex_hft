@@ -75,6 +75,12 @@ class TestMessagesHelper;
 class WinSockManager {
 	friend class TestMessagesHelper;
 
+#ifdef TEST
+public:
+	static TestMessagesHelper		*m_testHelper;
+private:
+#endif
+
 	static struct pollfd			*m_pollFd;
 	static int 						*m_recvCount;
 	static int 						m_pollFdCount;
@@ -101,7 +107,6 @@ class WinSockManager {
     WinSockStatus                   m_recvStatus;
 
 	int								m_pollIndex;
-private:
 
 	inline int GetFreePollIndex() { return WinSockManager::m_registeredCount; }
 	inline void IncPollIndex() { WinSockManager::m_registeredCount++;  }
@@ -231,16 +236,21 @@ public:
 	inline bool Send(unsigned char *buffer, int size) {
         this->m_sendBytes = buffer;
         this->m_sendSize = size;
-        this->m_sendSizeActual = send(this->m_socket, this->m_sendBytes, size, 0);
 #ifdef TEST
 		this->m_sendSizeActual = this->m_sendSize;
+		this->SendTest();
 #else
+		this->m_sendSizeActual = send(this->m_socket, this->m_sendBytes, size, 0);
 		if(this->m_sendSizeActual != this->m_sendSize) {
             return false;
         }
 #endif
         return true;
 	}
+
+#ifdef TEST
+    void SendTest();
+#endif
 
 	inline bool ShouldRecv() { return WinSockManager::m_recvCount[this->m_pollIndex] > 0; }
 	inline void OnRecv() {

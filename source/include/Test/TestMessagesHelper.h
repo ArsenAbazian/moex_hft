@@ -11,6 +11,7 @@
 #include <stdio.h>
 #include <memory.h>
 
+class WinSockManager;
 class SocketMessageInfo {
 public:
     WinSockManager      *m_manager;
@@ -19,19 +20,42 @@ public:
     int                 m_bufferLength;
 };
 
+class TestFeedMessageInfo {
+public:
+    FeedConnection      *m_feed;
+    int                  m_templatesCount;
+    TestTemplateInfo    **m_templates;
+};
+
 class TestMessagesHelper {
 public:
     static PointerList<SocketMessageInfo> *m_sockMessages;
-    static bool SkipTimeOutCheck;
+    static bool             SkipTimeOutCheck;
 
-    char            **m_keys;
-    int               m_keysCount;
+    char                    **m_keys;
+    int                     m_keysCount;
+
+    TestFeedMessageInfo     m_feedInfo[10];
+    int                     m_feedInfoCount;
+
+    const char              *m_symbols[100];
+    int                     m_rptSeq[100];
+    int                     m_symbolsCount;
+    bool                    m_curr;
+    FixProtocolManager      *m_fixManager;
+    FastProtocolManager     *m_fastManager;
+
 private:
 
-    const char *symbols[100];
-    int rptSeq[100];
-    int symbolsCount = 0;
-    bool m_curr = false;
+    void ClearFeedInfo() {
+        this->m_feedInfoCount = 0;
+    }
+    void AddFeedInfo(FeedConnection *feed, TestTemplateInfo **tmp, int templatesCount) {
+        this->m_feedInfo[this->m_feedInfoCount].m_feed = feed;
+        this->m_feedInfo[this->m_feedInfoCount].m_templates = tmp;
+        this->m_feedInfo[this->m_feedInfoCount].m_templatesCount = templatesCount;
+        this->m_feedInfoCount++;
+    }
 
     int CalcMsgCount(const char *msg) {
         int len = strlen(msg);
@@ -275,15 +299,15 @@ private:
     }
 
     int GetRptSeqFor(const char *symbol) {
-        for(int i = 0; i < this->symbolsCount; i++) {
-            if(StringIdComparer::Equal(this->symbols[i], symbol)) {
-                rptSeq[i]++;
-                return rptSeq[i];
+        for(int i = 0; i < this->m_symbolsCount; i++) {
+            if(StringIdComparer::Equal(this->m_symbols[i], symbol)) {
+                m_rptSeq[i]++;
+                return m_rptSeq[i];
             }
         }
-        rptSeq[symbolsCount] = 1;
-        symbols[symbolsCount] = symbol;
-        symbolsCount++;
+        m_rptSeq[m_symbolsCount] = 1;
+        m_symbols[m_symbolsCount] = symbol;
+        m_symbolsCount++;
         return 1;
     }
 
@@ -298,10 +322,17 @@ private:
 public:
 
     TestMessagesHelper() {
+        this->m_feedInfoCount = 0;
+        this->m_symbolsCount = 0;
+        this->m_curr = false;
+        this->m_fixManager = new FixProtocolManager(new SocketBufferProvider(DefaultSocketBufferManager::Default, 16000, 100, 16000, 100), FastProtocolVersion);
+        this->m_fastManager = new FastProtocolManager(new FastObjectsAllocationInfo(128, 128));
         if(TestMessagesHelper::m_sockMessages->PoolStart()->Data() == 0)
             TestMessagesHelper::m_sockMessages->AllocData();
     }
     ~TestMessagesHelper() {
+        delete this->m_fixManager;
+        delete this->m_fastManager;
     }
 
     FastLogonInfo* CreateLogonMessage(TestTemplateInfo *tmp) {
@@ -1747,6 +1778,90 @@ public:
         }
     }
 
+    void SetMsgSeqNumbers(TestTemplateInfo **tmp, int count) {
+        for(int i = 0; i < count; i++) {
+            if(tmp[i]->m_msgSeqNo == 0)
+                tmp[i]->m_msgSeqNo = i + 1;
+        }
+    }
+
+    void OnRecvLogon(FixProtocolMessage *msg, WinSockManager *wsManager) {
+
+    }
+
+    void OnRecvLogout(FixProtocolMessage *msg, WinSockManager *wsManager) {
+
+    }
+
+    void OnRecvMarketDataRequest(FixProtocolMessage *msg, WinSockManager *wsManager) {
+
+    }
+
+    void OnRecvFixMessage(char msgType, FixProtocolMessage *msg, WinSockManager *wsManager) {
+        switch(msgType) {
+            case MsgTypeLogon:
+                OnRecvLogon(msg, wsManager);
+                break;
+            case MsgTypeLogout:
+                OnRecvLogout(msg, wsManager);
+                break;
+            case MsgTypeMarketDataRequest:
+                OnRecvMarketDataRequest(msg, wsManager);
+                break;
+        }
+    }
+
+    void OnRecvData(WinSockManager *wsManager, unsigned char *data, int size) {
+        this->m_fixManager->SetMessageBuffer((char*)data);
+        this->m_fixManager->SetRecvBufferSize(size);
+        this->m_fixManager->ProcessSplitRecvMessages();
+        for(int i = 0; i < this->m_fixManager->RecvMessageCount(); i++) {
+            FixProtocolMessage *msg = this->m_fixManager->Message(i);
+            if(!msg->ProcessCheckHeader())
+                throw;
+            OnRecvFixMessage(msg->Header()->msgType, msg, wsManager);
+        }
+    }
+
+    void SendMessagesIsf_Hr(FeedConnection *fif, FeedConnection *hr, const char *idf, int delay) {
+        int idfMsgCount = CalcMsgCount(idf);
+
+        TestTemplateInfo **idf_msg = new TestTemplateInfo*[idfMsgCount];
+        FillMsg(idf_msg, idfMsgCount, idf);
+
+        ClearFeedInfo();
+        SetMsgSeqNumbers(idf_msg, idfMsgCount);
+        AddFeedInfo(fif, idf_msg, idfMsgCount);
+        hr->SetTestMessagesHelper(this);
+
+        int idf_index = 0;
+        Stopwatch w;
+        w.Start(1);
+        while(idf_index < idfMsgCount || hr->m_hsRequestList->Count() > 0) {
+            if(idf_index < idfMsgCount) {
+                if (!idf_msg[idf_index]->m_lost) {
+                    SendMessage(fif, idf_msg[idf_index]);
+                    if (!fif->Listen_Atom_SecurityStatus_Core())
+                        throw;
+                }
+                idf_index++;
+            }
+            else {
+                if (!fif->Listen_Atom_SecurityStatus_Core())
+                    throw;
+            }
+            w.Start();
+            while (!w.IsElapsedMilliseconds(delay)) {
+                hr->DoWorkAtom();
+            }
+            w.Stop();
+            hr->DoWorkAtom();
+
+            if(!TestMessagesHelper::SkipTimeOutCheck && w.ElapsedMilliseconds(1) > 5000)
+                throw;
+        }
+    }
+
     void EncodeMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
         switch(tmp->m_templateId) {
             case FeedConnectionMessage::fcmHeartBeat:
@@ -1870,10 +1985,10 @@ public:
     }
 
     void Clear() {
-        this->symbolsCount = 0;
+        this->m_symbolsCount = 0;
         for(int i = 0; i < 100; i++) {
-            this->symbols[i] = 0;
-            this->rptSeq[i] = 0;
+            this->m_symbols[i] = 0;
+            this->m_rptSeq[i] = 0;
         }
     }
 

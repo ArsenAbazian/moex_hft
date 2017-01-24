@@ -1967,7 +1967,7 @@ public:
                      30);
         if(incFond->HasQueueEntries())
             throw;
-        if(incFond->CanStopListeningSnapshot()) // because we did not receive all snapshots for all symbols
+        if(incFond->CanStopListeningSnapshot()) // because we did not receive all snapshots for all m_symbols
             throw;
         if(snapFond->State() == FeedConnectionState::fcsSuspend)
             throw;

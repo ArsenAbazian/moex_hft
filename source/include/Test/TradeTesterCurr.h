@@ -1972,7 +1972,7 @@ public:
                      30);
         if(incCurr->HasQueueEntries())
             throw;
-        if(incCurr->CanStopListeningSnapshot()) // because we did not receive all snapshots for all symbols
+        if(incCurr->CanStopListeningSnapshot()) // because we did not receive all snapshots for all m_symbols
             throw;
         if(snapCurr->State() == FeedConnectionState::fcsSuspend)
             throw;

@@ -27,7 +27,6 @@ FeedConnection::FeedConnection(const char *id, const char *name, char value, Fee
 	this->m_sendABuffer = this->m_socketABufferProvider->SendBuffer();
 	this->m_recvABuffer = this->m_socketABufferProvider->RecvBuffer();
 
-    this->m_fastProtocolManager->SkipTemplateId(fcmHeartBeat);
     this->m_waitIncrementalMaxTimeMs = 3000;
     this->m_snapshotMaxTimeMs = 3000;
 

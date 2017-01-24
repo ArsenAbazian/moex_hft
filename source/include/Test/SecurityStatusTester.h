@@ -63,7 +63,7 @@ public:
         return t->TradingSessionSubID[0] == tradingSessionSubId[0];
     }
 
-    void TestReceiveExistingSymbol() {
+    void InitSecurityDefinitionCore() {
         this->idf->Stop();
         this->idf->Start();
         if(this->idf->m_symbolManager->SymbolCount() != 0)
@@ -97,7 +97,26 @@ public:
             throw;
         if(TradingSession(info2, 0, 1)->SecurityTradingStatus != SecurityStatus::ssUndefined)
             throw;
+    }
 
+    void Clear() {
+        this->idf->m_startMsgSeqNum = 1;
+        this->idf->m_endMsgSeqNum = 0;
+        this->isf->m_startMsgSeqNum = 1;
+        this->isf->m_endMsgSeqNum = 0;
+        this->idf->Stop();
+        this->idf->ClearPackets(0, 100);
+        this->isf->ClearPackets(0, 100);
+        this->isf->Stop();
+    }
+
+    void TestReceiveExistingSymbol() {
+        this->Clear();
+        this->InitSecurityDefinitionCore();
+
+        FastSecurityDefinitionInfo *info1 = this->idf->Symbol(0);
+        FastSecurityDefinitionInfo *info2 = this->idf->Symbol(1);
+        this->isf->Start();
         this->m_helper->SendMessagesIsf(this->isf,
                                                 "msgSeqNo 1 hbeat,"
                                                 "msgSeqNo 2 hbeat,"
@@ -127,7 +146,39 @@ public:
     }
 
     void TestCallHistoricalReplayWhenLostMessage() {
-        throw;
+        this->Clear();
+        this->InitSecurityDefinitionCore();
+
+        FastSecurityDefinitionInfo *info1 = this->idf->Symbol(0);
+        FastSecurityDefinitionInfo *info2 = this->idf->Symbol(1);
+        this->isf->Start();
+        this->m_helper->SendMessagesIsf_Hr(this->isf,
+                                           this->hr,
+                                                "     msgSeqNo 1 hbeat,"
+                                                "     msgSeqNo 2 hbeat,"
+                                                "     msgSeqNo 3 isf smb1 trd1 NA 118 0,"
+                                                "lost msgSeqNo 4 isf smb1 trd2 O 130 0,"
+                                                "     msgSeqNo 5 isf smb2 trd1 C 17  0,"
+                                                "     msgSeqNo 6 isf smb2 trd2 N 102 0",
+                                        30);
+
+        if(!EqualsTradingSessionSubId(TradingSession(info1, 0, 0), "NA"))
+            throw;
+        if(!EqualsTradingSessionSubId(TradingSession(info1, 0, 1), "O"))
+            throw;
+        if(!EqualsTradingSessionSubId(TradingSession(info2, 0, 0), "C"))
+            throw;
+        if(!EqualsTradingSessionSubId(TradingSession(info2, 0, 1), "N"))
+            throw;
+
+        if(TradingSession(info1, 0, 0)->SecurityTradingStatus != 118)
+            throw;
+        if(TradingSession(info1, 0, 1)->SecurityTradingStatus != 130)
+            throw;
+        if(TradingSession(info2, 0, 0)->SecurityTradingStatus != 17)
+            throw;
+        if(TradingSession(info2, 0, 1)->SecurityTradingStatus != 102)
+            throw;
     }
 
     void Test() {

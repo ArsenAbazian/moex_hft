@@ -7,6 +7,9 @@ int* WinSockManager::m_recvCount = new int[256];
 int WinSockManager::m_registeredCount = 0;
 WinSockManager** WinSockManager::m_registeredManagers = new WinSockManager*[256];
 int WinSockManager::m_pollRes = 0;
+#ifdef TEST
+TestMessagesHelper* WinSockManager::m_testHelper = 0;
+#endif
 
 void WinSockManager::InitializePollInfo() {
 	bzero(WinSockManager::m_pollFd, sizeof(struct pollfd) * 256);
@@ -183,4 +186,8 @@ bool WinSockManager::RecvTest(unsigned char *buffer) {
 		ptr = ptr->Next();
 	}
 	return false;
+}
+
+void WinSockManager::SendTest() {
+	this->m_testHelper->OnRecvData(this, this->m_sendBytes, this->m_sendSize);
 }

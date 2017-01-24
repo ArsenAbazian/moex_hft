@@ -24,7 +24,7 @@ class SymbolManagerTester {
     SymbolManager   *m_manager;
 
     void            LoadItems() {
-        const char *fileName = "/home/arsen/Documents/hft_robot/hft/test/symbols";
+        const char *fileName = "/home/arsen/Documents/hft_robot/hft/test/m_symbols";
         FILE *fp = fopen(fileName, "rt");
 
         this->m_itemsCount = 0;
@@ -127,7 +127,7 @@ public:
             if(this->m_busy[index] > 1)
                 throw;
         }
-        if(this->m_manager->SymbolCount() != this->m_itemsCount - dublicateItems) // sorry some symbols are dublicated
+        if(this->m_manager->SymbolCount() != this->m_itemsCount - dublicateItems) // sorry some m_symbols are dublicated
             throw;
     }
 
