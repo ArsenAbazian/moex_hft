@@ -366,8 +366,8 @@ public:
     }
 
     inline FixHeaderInfo* HeaderInfo() { return this->m_headerInfo; }
-    inline bool ProcessCheckHeader() {
 
+    inline bool ProcessCheckHeaderFix() {
         /* we dont check and read some tags
            because there is no need
         if (!CheckFixHeader(this->Tag(0)))
@@ -425,7 +425,78 @@ public:
             //this->m_headerInfo->origSendingTime = tag->value;
             this->MoveNext();
         }
+
         return true;
+    }
+
+    inline bool ProcessCheckHeaderFast() {
+        /* we dont check and read some tags
+           because there is no need
+        if (!CheckFixHeader(this->Tag(0)))
+            return false;
+
+        if (!ProcessMessageLengthTag(this->Tag(1)))
+            return false;
+        */
+
+        FixTag *tag = this->Tag(2);
+        if(!this->Read2TagSymbol(tag, TagCheckMsgType, TagMsgType))
+            return false;
+        this->m_headerInfo->msgType = tag->charValue;
+
+        /*
+        tag = this->Tag(3);
+        if(!this->ReadCheck2SymbolTag(tag, TagCheckSenderCompID, TagSenderCompID))
+            return false;
+        this->m_headerInfo->senderCompID = tag->value;
+        this->m_headerInfo->senderCompIDLength = tag->valueSize;
+
+        tag = this->Tag(4);
+        if(!this->ReadCheck2SymbolTag(tag, TagCheckTargetCompID, TagTargetCompID))
+            return false;
+        this->m_headerInfo->targetCompID = tag->value;
+        this->m_headerInfo->targetCompIDLength = tag->valueSize;
+        */
+
+        // 6 becasue of ApplId
+        // we just need MsgType nad MsgNumber
+        tag = this->Tag(6);
+        if(!this->Read2TagIntValuePredict234(tag, TagCheckMsgSeqNum, TagMsgSeqNum))
+            return false;
+        this->m_headerInfo->msgSeqNum = tag->intValue;
+
+        this->m_currentTag = 7;
+        tag = this->CurrentTag();
+        if(this->ReadCheckSkip2SymbolBoolean(tag, TagCheckPossDupFlag, TagPossDupFlag)) {
+            //this->m_headerInfo->possDupFlag = tag->boolValue;
+            this->MoveNext();
+        }
+        tag = this->CurrentTag();
+        if(this->ReadCheckSkip2SymbolBoolean(tag, TagCheckPossResend, TagPossResend)) {
+            //this->m_headerInfo->possResend = tag->boolValue;
+            this->MoveNext();
+        }
+        /*
+        tag = this->CurrentTag();
+        if(!this->ReadCheck2SymbolTag(tag, TagCheckSendingTime, TagSendingTime))
+            return false;
+        */
+        this->MoveNext();
+        //this->m_headerInfo->sendingTime = tag->value;
+        tag = this->CurrentTag();
+        if(this->ReadCheck2SymbolTag(tag, TagCheckOrigSendingTime, TagOrigSendingTime)) {
+            //this->m_headerInfo->origSendingTime = tag->value;
+            this->MoveNext();
+        }
+        // user
+        this->MoveNext();
+        // pass
+        this->MoveNext();
+        return true;
+    }
+
+    inline bool ProcessCheckHeader() {
+        return this->ProcessCheckHeaderFix();
     }
 
     inline bool CheckDetectCorrectMsgSeqNumber(int *outValue) {

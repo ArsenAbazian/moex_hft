@@ -42,8 +42,15 @@ public:
     int                     m_rptSeq[100];
     int                     m_symbolsCount;
     bool                    m_curr;
+
     FixProtocolManager      *m_fixManager;
     FastProtocolManager     *m_fastManager;
+    SocketBuffer            *m_buffer;
+    char                    m_applVerId[10];
+    char                    m_msgType[10];
+    char                    m_protocolVersion[10];
+    char                    m_senderCompId[10];
+    char                    m_targetCompId[10];
 
 private:
 
@@ -329,6 +336,7 @@ public:
         this->m_fastManager = new FastProtocolManager(new FastObjectsAllocationInfo(128, 128));
         if(TestMessagesHelper::m_sockMessages->PoolStart()->Data() == 0)
             TestMessagesHelper::m_sockMessages->AllocData();
+        this->m_buffer = DefaultSocketBufferManager::Default->GetFreeBuffer(10000, 100);
     }
     ~TestMessagesHelper() {
         delete this->m_fixManager;
@@ -1787,10 +1795,40 @@ public:
 
     void OnRecvLogon(FixProtocolMessage *msg, WinSockManager *wsManager) {
 
+        this->m_fastManager->SetNewBuffer(this->m_buffer->CurrentPos(), 1000); // overwrite msgseqno
+
+        FastLogonInfo info;
+
+        info.AllowPassword = false;
+        info.AllowUsername = false;
+        strcpy(this->m_protocolVersion, FastProtocolVersion);
+        info.BeginString = this->m_protocolVersion;
+        info.BeginStringLength = FastProtocolVersionLength;
+        strcpy(this->m_applVerId, "9");
+        info.DefaultApplVerID = this->m_applVerId;
+        info.DefaultApplVerIDLength = 1;
+        strcpy(this->m_msgType, "A");
+        info.MessageType = this->m_msgType;
+        info.MessageTypeLength = 1;
+        info.MsgSeqNum = 1;
+        info.PasswordLength = 0;
+        info.UsernameLength = 0;
+        sprintf(this->m_senderCompId, "MOEX");
+        sprintf(this->m_targetCompId, "You!");
+        info.SenderCompID = this->m_senderCompId;
+        info.SenderCompIDLength = 4;
+        info.TargetCompID = this->m_targetCompId;
+        info.TargetCompIDLength = 4;
+
+        this->m_fastManager->EncodeLogonInfo(&info);
+        *((int*)this->m_buffer->CurrentPos()) = this->m_fastManager->MessageLength();
+
+        this->SetRecvFor(wsManager, (unsigned char*)this->m_buffer->CurrentPos(), this->m_fastManager->MessageLength());
+        this->m_buffer->Next(this->m_fixManager->MessageLength());
     }
 
     void OnRecvLogout(FixProtocolMessage *msg, WinSockManager *wsManager) {
-
+        // nothing to do
     }
 
     void OnRecvMarketDataRequest(FixProtocolMessage *msg, WinSockManager *wsManager) {
@@ -1817,7 +1855,7 @@ public:
         this->m_fixManager->ProcessSplitRecvMessages();
         for(int i = 0; i < this->m_fixManager->RecvMessageCount(); i++) {
             FixProtocolMessage *msg = this->m_fixManager->Message(i);
-            if(!msg->ProcessCheckHeader())
+            if(!msg->ProcessCheckHeaderFast())
                 throw;
             OnRecvFixMessage(msg->Header()->msgType, msg, wsManager);
         }
