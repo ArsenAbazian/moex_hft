@@ -252,7 +252,14 @@ public:
     void SendTest();
 #endif
 
-	inline bool ShouldRecv() { return WinSockManager::m_recvCount[this->m_pollIndex] > 0; }
+	inline bool ShouldRecv() {
+#ifdef TEST
+        return ShouldRecvTest();
+#else
+		return WinSockManager::m_recvCount[this->m_pollIndex] > 0;
+#endif
+	}
+	bool ShouldRecvTest();
 	inline void OnRecv() {
 		//if(this->ShouldRecv())
 		WinSockManager::m_recvCount[this->m_pollIndex] = 0;//--;

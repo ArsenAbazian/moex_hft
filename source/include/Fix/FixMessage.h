@@ -81,6 +81,7 @@ public:
     }
     inline FixHeaderInfo* Header() { return this->m_headerInfo; }
     inline FixResendRequestInfo *ResendRequestInfo() { return this->m_resendRequestInfo; }
+    inline FixMarketDataRequestInfo *MarketDataRequestInfo() { return this->m_marketDataRequestInfo; }
     inline FixTag* Tag(int index) { return this->m_tags[index]; }
     inline FixTag* CurrentTag() { return this->Tag(this->m_currentTag); }
     inline int TagsCount() { return this->m_tagsCount; }

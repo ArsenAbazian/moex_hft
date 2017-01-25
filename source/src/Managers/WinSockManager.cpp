@@ -171,6 +171,20 @@ bool WinSockManager::TryFixSocketError(int errorCode) {
 	return this->Reconnect();
 }
 
+bool WinSockManager::ShouldRecvTest() {
+    LinkedPointer<SocketMessageInfo> *ptr = TestMessagesHelper::m_sockMessages->Start();
+    if(ptr == 0)
+        return false;
+    while(true) {
+        if (ptr->Data()->m_manager == this)
+            return true;
+        if(!ptr->HasNext())
+            break;
+        ptr = ptr->Next();
+    }
+    return false;
+}
+
 bool WinSockManager::RecvTest(unsigned char *buffer) {
 	LinkedPointer<SocketMessageInfo> *ptr = TestMessagesHelper::m_sockMessages->Start();
 	while(true) {
