@@ -396,6 +396,13 @@ typedef struct _FixResendRequestInfo {
     int         EndSeqNo;
 }FixResendRequestInfo;
 
+typedef struct _FixMarketDataRequestInfo {
+    char*       FeedId;
+    int         FeedIdLength;
+    int         BeginSeqNo;
+    int         EndSeqNo;
+}FixMarketDataRequestInfo;
+
 class Decimal {
     static INT64 PowOf10[10];
     static double MulOf10[10];

@@ -32,6 +32,7 @@ class FixProtocolMessage {
 
     FixHeaderInfo               *m_headerInfo;
     FixResendRequestInfo        *m_resendRequestInfo;
+    FixMarketDataRequestInfo    *m_marketDataRequestInfo;
     int                         m_size;
     char*                       m_buffer;
     int                         m_tagsCount;
@@ -46,6 +47,7 @@ public:
     FixProtocolMessage(ItoaConverter *intConv, UTCTimeConverter *timeConv, DtoaConverter *doubleConv, FixRejectInfo *rejectInfo) {
         this->m_headerInfo = new FixHeaderInfo;
         this->m_resendRequestInfo = new FixResendRequestInfo;
+        this->m_marketDataRequestInfo = new FixMarketDataRequestInfo();
         this->m_size = 0;
         this->m_buffer = 0;
         this->m_tagsCount = 0;
@@ -58,6 +60,8 @@ public:
     }
     ~FixProtocolMessage() {
         delete this->m_headerInfo;
+        delete this->m_resendRequestInfo;
+        delete this->m_marketDataRequestInfo;
         for(int i = 0; i < this->m_tagsMaxCount; i++)
             delete this->m_tags[i];
     }
@@ -492,6 +496,26 @@ public:
         this->MoveNext();
         // pass
         this->MoveNext();
+        return true;
+    }
+
+    inline bool CheckProcessMarketDataRequest() {
+        if(!this->ReadCheck4SymbolTag(this->m_tags[8], TagCheckApplFeedId, TagApplFeedId))
+            return false;
+        if(!this->ReadCheck4SymbolTag(this->m_tags[9], TagCheckApplBeginSeqNum, TagApplBeginSeqNum))
+            return false;
+        if(!this->ReadCheck4SymbolTag(this->m_tags[10], TagCheckApplEndSeqNum, TagApplEndSeqNum))
+            return false;
+
+        FixTag *tag = this->m_tags[8];
+        this->m_marketDataRequestInfo->FeedId = tag->value;
+        this->m_marketDataRequestInfo->FeedIdLength = tag->valueSize;
+
+        tag = this->m_tags[9];
+        this->m_marketDataRequestInfo->BeginSeqNo = this->m_intConv->FromStringFastUnsigned(tag->value, tag->valueSize);
+        tag = this->m_tags[10];
+        this->m_marketDataRequestInfo->EndSeqNo = this->m_intConv->FromStringFastUnsigned(tag->value, tag->valueSize);
+
         return true;
     }
 

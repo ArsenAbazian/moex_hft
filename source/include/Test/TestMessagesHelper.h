@@ -1832,7 +1832,8 @@ public:
     }
 
     void OnRecvMarketDataRequest(FixProtocolMessage *msg, WinSockManager *wsManager) {
-
+        if(!msg->CheckProcessMarketDataRequest())
+            throw;
     }
 
     void OnRecvFixMessage(char msgType, FixProtocolMessage *msg, WinSockManager *wsManager) {
