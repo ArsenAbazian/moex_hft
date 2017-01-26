@@ -324,8 +324,8 @@ namespace prebuild {
 		private  void WriteEncodeMethodCode (XmlNode message) {
 			StructureInfo info = new StructureInfo() { NameCore = GetTemplateName(message.PreviousSibling.Value) };
 			WriteLine("void FastProtocolManager::" + info.EncodeMethodName + "(" + info.Name + "* info) {");
-			WriteLine("\tResetBuffer();");
-			WriteLine("\tWriteMsgSeqNumber(info->MsgSeqNum);");
+			//WriteLine("\tResetBuffer();");
+			//WriteLine("\tWriteMsgSeqNumber(info->MsgSeqNum);");
 			WriteLine("\tWritePresenceMap(info->PresenceMap); // Presence Map hack");
 			WriteLine("\tWriteUInt32_Mandatory(" + message.Attributes["id"].Value + ");");
 			int presenceByteCount = CalcPresenceMapByteCount(message);

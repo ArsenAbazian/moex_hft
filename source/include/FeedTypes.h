@@ -149,6 +149,7 @@ public:
     inline int EndMsgSeqNo() { return this->m_endMsgSeqNo; }
     inline bool IsAllMessagesReceived() { return this->m_lastRecvMsgSeqNo == this->m_endMsgSeqNo; }
     inline void IncMsgSeqNo() { this->m_lastRecvMsgSeqNo++; }
+    inline int LastRecvMsgSeqNo() { return this->m_lastRecvMsgSeqNo; }
 };
 
 #endif //HFT_ROBOT_FEEDTYPES_H

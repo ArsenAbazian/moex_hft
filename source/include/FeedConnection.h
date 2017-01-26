@@ -200,7 +200,9 @@ protected:
     inline bool ProcessServerB() { return this->ProcessServer(this->socketBManager, LogMessageCode::lmcsocketB); }
     inline bool ProcessServerCore(int size) {
         int msgSeqNum = *((UINT*)this->m_recvABuffer->CurrentPos());
-
+        return this->ProcessServerCore(this->m_recvABuffer, size, msgSeqNum);
+    }
+    inline bool ProcessServerCore(SocketBuffer *buffer, int size, int msgSeqNum) {
         if(this->m_type == FeedConnectionType::InstrumentDefinition) {
             this->m_endMsgSeqNum = msgSeqNum;
         }
@@ -208,7 +210,7 @@ protected:
         if(this->m_packets[msgSeqNum]->m_address != 0) // TODO
             return true;
 
-        this->m_recvABuffer->SetCurrentItemSize(size);
+        buffer->SetCurrentItemSize(size);
         /*
         BinaryLogItem *item = DefaultLogManager::Default->WriteFast(this->m_idLogIndex,
                                                                     LogMessageCode::lmcFeedConnection_ProcessMessage,
@@ -223,7 +225,7 @@ protected:
             if(this->m_idfStartMsgSeqNo == 0)
                 this->m_idfStartMsgSeqNo = msgSeqNum;
             if(this->m_idfMaxMsgSeqNo == 0)
-                this->m_idfMaxMsgSeqNo = TryGetSecurityDefinitionTotNumReports(this->m_recvABuffer->CurrentPos());
+                this->m_idfMaxMsgSeqNo = TryGetSecurityDefinitionTotNumReports(buffer->CurrentPos());
         }
         else if(this->m_type == FeedConnectionType::InstrumentStatus) {
             if(this->m_endMsgSeqNum < msgSeqNum)
@@ -236,9 +238,9 @@ protected:
             if(this->m_endMsgSeqNum < msgSeqNum)
                 this->m_endMsgSeqNum = msgSeqNum;
         }
-        this->m_packets[msgSeqNum]->m_address = this->m_recvABuffer->CurrentPos();
+        this->m_packets[msgSeqNum]->m_address = buffer->CurrentPos();
         this->m_packets[msgSeqNum]->m_size = size;
-        this->m_recvABuffer->Next(size);
+        buffer->Next(size);
         return true;
     }
     inline bool ProcessServer(WinSockManager *socketManager, LogMessageCode socketName) {
@@ -1107,8 +1109,8 @@ protected:
                 return true;
             }
 
-            msg->m_conn->ProcessServerCore(this->m_hrMessageSize);
             msg->IncMsgSeqNo();
+            msg->m_conn->ProcessServerCore(this->m_recvABuffer, this->m_hrMessageSize, msg->LastRecvMsgSeqNo());
 
             this->m_recvABuffer->NextExact(this->m_hrMessageSize);
             this->m_hrSizeRemain -= this->m_hrMessageSize;
@@ -1121,7 +1123,7 @@ protected:
 
     inline bool HistoricalReplay_SendLogout() {
         this->m_fixProtocolManager->PrepareSendBuffer();
-        this->m_fixProtocolManager->CreateLogoutMessage("Hasta la vista baby!", 20);
+        this->m_fixProtocolManager->CreateFastLogoutMessage("Hasta la vista baby!", 20);
 
         this->m_fixProtocolManager->SendFix(this->socketAManager);
         this->m_fixProtocolManager->IncSendMsgSeqNo();
@@ -1134,7 +1136,7 @@ protected:
         if(this->m_hsRequestList->Count() == 0)
             return true;
         FeedConnectionRequestMessageInfo *info = this->m_hsRequestList->Start()->Data();
-        if(info->m_requestCount >= 1) {
+        if(info->m_requestCount >= 5) {
             this->m_hsRequestList->Remove(this->m_hsRequestList->Start());
             return true;
         }
@@ -1380,9 +1382,10 @@ protected:
 		return true;
 	}
 
-	inline bool ProcessIncrementalCore(unsigned char *buffer, int length) {
+	inline bool ProcessIncrementalCore(unsigned char *buffer, int length, bool shouldProcessMsgSeqNumber) {
 		this->m_fastProtocolManager->SetNewBuffer(buffer, length);
-		this->m_fastProtocolManager->ReadMsgSeqNumber();
+		if(shouldProcessMsgSeqNumber)
+            this->m_fastProtocolManager->ReadMsgSeqNumber();
 
 		if(this->m_fastProtocolManager->Decode() == 0) {
             printf("unknown template: %d\n", this->m_fastProtocolManager->TemplateId());
@@ -1396,9 +1399,10 @@ protected:
         return this->m_securityDefinition->UpdateSecurityDefinition(info);
     }
 
-    inline bool ProcessSecurityStatus(unsigned char *buffer, int length) {
+    inline bool ProcessSecurityStatus(unsigned char *buffer, int length, bool processMsgSeqNumber) {
         this->m_fastProtocolManager->SetNewBuffer(buffer, length);
-        this->m_fastProtocolManager->ReadMsgSeqNumber();
+        if(processMsgSeqNumber)
+            this->m_fastProtocolManager->ReadMsgSeqNumber();
 
         if(this->m_fastProtocolManager->Decode() == 0) {
             printf("unknown template: %d\n", this->m_fastProtocolManager->TemplateId());
@@ -1426,7 +1430,7 @@ protected:
 
         //DefaultLogManager::Default->WriteFast(this->m_idLogIndex, this->m_recvABuffer->BufferIndex(), info->m_item->m_itemIndex);
         info->m_processed = true;
-		return this->ProcessIncrementalCore(buffer, info->m_size);
+		return this->ProcessIncrementalCore(buffer, info->m_size, !info->m_requested);
 	}
 
     inline bool ProcessSecurityStatus(FeedConnectionMessageInfo *info) {
@@ -1438,7 +1442,7 @@ protected:
 
         //DefaultLogManager::Default->WriteFast(this->m_idLogIndex, this->m_recvABuffer->BufferIndex(), info->m_item->m_itemIndex);
         info->m_processed = true;
-        return this->ProcessSecurityStatus(buffer, info->m_size);
+        return this->ProcessSecurityStatus(buffer, info->m_size, !info->m_requested);
     }
 
 public:

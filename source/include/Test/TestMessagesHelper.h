@@ -1245,6 +1245,7 @@ public:
         FastHeartbeatInfo *info = new FastHeartbeatInfo();
         info->MsgSeqNum = tmp->m_msgSeqNo;
         conn->m_fastProtocolManager->SetNewBuffer(conn->m_sendABuffer->CurrentPos(), 2000);
+        conn->m_fastProtocolManager->WriteMsgSeqNumber(info->MsgSeqNum);
         conn->m_fastProtocolManager->EncodeHeartbeatInfo(info);
         conn->m_sendABuffer->Next(conn->m_fastProtocolManager->MessageLength());
     }
@@ -1259,6 +1260,7 @@ public:
         FastHeartbeatInfo *info = new FastHeartbeatInfo();
         info->MsgSeqNum = tmp->m_msgSeqNo;
         conn->m_fastProtocolManager->SetNewBuffer(conn->m_recvABuffer->CurrentPos(), 2000);
+        conn->m_fastProtocolManager->WriteMsgSeqNumber(info->MsgSeqNum);
         conn->m_fastProtocolManager->EncodeHeartbeatInfo(info);
         conn->ProcessServerCore(conn->m_fastProtocolManager->MessageLength());
     }
@@ -1267,6 +1269,7 @@ public:
         FastLogoutInfo *info = new FastLogoutInfo();
         info->MsgSeqNum = tmp->m_msgSeqNo;
         conn->m_fastProtocolManager->SetNewBuffer(conn->m_sendABuffer->CurrentPos(), 2000);
+        conn->m_fastProtocolManager->WriteMsgSeqNumber(info->MsgSeqNum);
         conn->m_fastProtocolManager->EncodeLogoutInfo(info);
         conn->m_sendABuffer->Next(conn->m_fastProtocolManager->MessageLength());
     }
@@ -1281,6 +1284,7 @@ public:
         FastLogoutInfo *info = new FastLogoutInfo();
         info->MsgSeqNum = tmp->m_msgSeqNo;
         conn->m_fastProtocolManager->SetNewBuffer(conn->m_recvABuffer->CurrentPos(), 2000);
+        conn->m_fastProtocolManager->WriteMsgSeqNumber(info->MsgSeqNum);
         conn->m_fastProtocolManager->EncodeLogoutInfo(info);
         conn->ProcessServerCore(conn->m_fastProtocolManager->MessageLength());
     }
@@ -1289,6 +1293,7 @@ public:
         FastLogonInfo *info = CreateLogonMessage(tmp);
         info->MsgSeqNum = tmp->m_msgSeqNo;
         conn->m_fastProtocolManager->SetNewBuffer(conn->m_sendABuffer->CurrentPos(), 2000);
+        conn->m_fastProtocolManager->WriteMsgSeqNumber(info->MsgSeqNum);
         conn->m_fastProtocolManager->EncodeLogonInfo(info);
         conn->m_sendABuffer->Next(conn->m_fastProtocolManager->MessageLength());
     }
@@ -1303,6 +1308,7 @@ public:
         FastLogonInfo *info = CreateLogonMessage(tmp);
         info->MsgSeqNum = tmp->m_msgSeqNo;
         conn->m_fastProtocolManager->SetNewBuffer(conn->m_recvABuffer->CurrentPos(), 2000);
+        conn->m_fastProtocolManager->WriteMsgSeqNumber(info->MsgSeqNum);
         conn->m_fastProtocolManager->EncodeLogonInfo(info);
         conn->ProcessServerCore(conn->m_fastProtocolManager->MessageLength());
     }
@@ -1321,6 +1327,7 @@ public:
         FastIncrementalGenericInfo *info = CreateIncrementalGenericMessageCore(tmp);
 
         conn->m_fastProtocolManager->SetNewBuffer(conn->m_sendABuffer->CurrentPos(), 2000);
+        conn->m_fastProtocolManager->WriteMsgSeqNumber(info->MsgSeqNum);
         conn->m_fastProtocolManager->EncodeIncrementalGenericInfo(info);
         conn->m_sendABuffer->Next(conn->m_fastProtocolManager->MessageLength());
     }
@@ -1335,6 +1342,7 @@ public:
         FastIncrementalGenericInfo *info = CreateIncrementalGenericMessageCore(tmp);
 
         conn->m_fastProtocolManager->SetNewBuffer(conn->m_recvABuffer->CurrentPos(), 2000);
+        conn->m_fastProtocolManager->WriteMsgSeqNumber(info->MsgSeqNum);
         conn->m_fastProtocolManager->EncodeIncrementalGenericInfo(info);
         conn->ProcessServerCore(conn->m_fastProtocolManager->MessageLength());
     }
@@ -1373,6 +1381,7 @@ public:
         FastGenericInfo *info = CreateSnapshotGenericMessageCore(tmp);
 
         conn->m_fastProtocolManager->SetNewBuffer(conn->m_sendABuffer->CurrentPos(), 2000);
+        conn->m_fastProtocolManager->WriteMsgSeqNumber(info->MsgSeqNum);
         conn->m_fastProtocolManager->EncodeGenericInfo(info);
         conn->m_sendABuffer->Next(conn->m_fastProtocolManager->MessageLength());
     }
@@ -1387,6 +1396,7 @@ public:
         FastGenericInfo *info = CreateSnapshotGenericMessageCore(tmp);
 
         conn->m_fastProtocolManager->SetNewBuffer(conn->m_recvABuffer->CurrentPos(), 2000);
+        conn->m_fastProtocolManager->WriteMsgSeqNumber(info->MsgSeqNum);
         conn->m_fastProtocolManager->EncodeGenericInfo(info);
         conn->ProcessServerCore(conn->m_fastProtocolManager->MessageLength());
     }
@@ -1405,6 +1415,7 @@ public:
         FastIncrementalOLRFONDInfo *info = CreateOLRFondMessageCore(tmp);
 
         conn->m_fastProtocolManager->SetNewBuffer(conn->m_sendABuffer->CurrentPos(), 2000);
+        conn->m_fastProtocolManager->WriteMsgSeqNumber(info->MsgSeqNum);
         conn->m_fastProtocolManager->EncodeIncrementalOLRFONDInfo(info);
         conn->m_sendABuffer->Next(conn->m_fastProtocolManager->MessageLength());
     }
@@ -1418,6 +1429,7 @@ public:
         FastIncrementalOLRFONDInfo *info = CreateOLRFondMessageCore(tmp);
 
         conn->m_fastProtocolManager->SetNewBuffer(conn->m_recvABuffer->CurrentPos(), 2000);
+        conn->m_fastProtocolManager->WriteMsgSeqNumber(info->MsgSeqNum);
         conn->m_fastProtocolManager->EncodeIncrementalOLRFONDInfo(info);
         conn->ProcessServerCore(conn->m_fastProtocolManager->MessageLength());
     }
@@ -1425,6 +1437,7 @@ public:
     void EncodeSecurityDefinitionMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
         FastSecurityDefinitionInfo *info = CreateSecurityDefinitionInfo(tmp);
         conn->m_fastProtocolManager->SetNewBuffer(conn->m_sendABuffer->CurrentPos(), 2000);
+        conn->m_fastProtocolManager->WriteMsgSeqNumber(info->MsgSeqNum);
         conn->m_fastProtocolManager->EncodeSecurityDefinitionInfo(info);
         conn->m_sendABuffer->Next(conn->m_fastProtocolManager->MessageLength());
     }
@@ -1437,6 +1450,7 @@ public:
     void SendSecurityDefinitionMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
         FastSecurityDefinitionInfo *info = CreateSecurityDefinitionInfo(tmp);
         conn->m_fastProtocolManager->SetNewBuffer(conn->m_recvABuffer->CurrentPos(), 2000);
+        conn->m_fastProtocolManager->WriteMsgSeqNumber(info->MsgSeqNum);
         conn->m_fastProtocolManager->EncodeSecurityDefinitionInfo(info);
         conn->ProcessServerCore(conn->m_fastProtocolManager->MessageLength());
     }
@@ -1444,13 +1458,20 @@ public:
     void EncodeSecurityStatusMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
         FastSecurityStatusInfo *info = CreateSecurityStatusInfo(tmp);
         conn->m_fastProtocolManager->SetNewBuffer(conn->m_sendABuffer->CurrentPos(), 2000);
+        conn->m_fastProtocolManager->WriteMsgSeqNumber(info->MsgSeqNum);
         conn->m_fastProtocolManager->EncodeSecurityStatusInfo(info);
         conn->m_sendABuffer->Next(conn->m_fastProtocolManager->MessageLength());
+    }
+
+    void EncodeSecurityStatusMessage(TestTemplateInfo *tmp) {
+        FastSecurityStatusInfo *info = CreateSecurityStatusInfo(tmp);
+        this->m_fastManager->EncodeSecurityStatusInfo(info);
     }
 
     void SendSecurityStatusMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
         FastSecurityStatusInfo *info = CreateSecurityStatusInfo(tmp);
         conn->m_fastProtocolManager->SetNewBuffer(conn->m_recvABuffer->CurrentPos(), 2000);
+        conn->m_fastProtocolManager->WriteMsgSeqNumber(info->MsgSeqNum);
         conn->m_fastProtocolManager->EncodeSecurityStatusInfo(info);
         conn->ProcessServerCore(conn->m_fastProtocolManager->MessageLength());
     }
@@ -1489,6 +1510,7 @@ public:
         FastOLSFONDInfo *info = CreateOLSFondMessage(tmp);
 
         conn->m_fastProtocolManager->SetNewBuffer(conn->m_sendABuffer->CurrentPos(), 2000);
+        conn->m_fastProtocolManager->WriteMsgSeqNumber(info->MsgSeqNum);
         conn->m_fastProtocolManager->EncodeOLSFONDInfo(info);
         conn->m_sendABuffer->Next(conn->m_fastProtocolManager->MessageLength());
     }
@@ -1502,6 +1524,7 @@ public:
         FastOLSFONDInfo *info = CreateOLSFondMessage(tmp);
 
         conn->m_fastProtocolManager->SetNewBuffer(conn->m_recvABuffer->CurrentPos(), 2000);
+        conn->m_fastProtocolManager->WriteMsgSeqNumber(info->MsgSeqNum);
         conn->m_fastProtocolManager->EncodeOLSFONDInfo(info);
         conn->ProcessServerCore(conn->m_fastProtocolManager->MessageLength());
     }
@@ -1520,6 +1543,7 @@ public:
         FastIncrementalTLRFONDInfo *info = CreateTLRFondMessageCore(tmp);
 
         conn->m_fastProtocolManager->SetNewBuffer(conn->m_sendABuffer->CurrentPos(), 2000);
+        conn->m_fastProtocolManager->WriteMsgSeqNumber(info->MsgSeqNum);
         conn->m_fastProtocolManager->EncodeIncrementalTLRFONDInfo(info);
         conn->m_sendABuffer->Next (conn->m_fastProtocolManager->MessageLength());
     }
@@ -1533,6 +1557,7 @@ public:
         FastIncrementalTLRFONDInfo *info = CreateTLRFondMessageCore(tmp);
 
         conn->m_fastProtocolManager->SetNewBuffer(conn->m_recvABuffer->CurrentPos(), 2000);
+        conn->m_fastProtocolManager->WriteMsgSeqNumber(info->MsgSeqNum);
         conn->m_fastProtocolManager->EncodeIncrementalTLRFONDInfo(info);
         conn->ProcessServerCore(conn->m_fastProtocolManager->MessageLength());
     }
@@ -1571,6 +1596,7 @@ public:
         FastTLSFONDInfo *info = CreateTLSFondMessageCore(tmp);
 
         conn->m_fastProtocolManager->SetNewBuffer(conn->m_sendABuffer->CurrentPos(), 2000);
+        conn->m_fastProtocolManager->WriteMsgSeqNumber(info->MsgSeqNum);
         conn->m_fastProtocolManager->EncodeTLSFONDInfo(info);
         conn->m_sendABuffer->Next(conn->m_fastProtocolManager->MessageLength());
     }
@@ -1584,6 +1610,7 @@ public:
         FastTLSFONDInfo *info = CreateTLSFondMessageCore(tmp);
 
         conn->m_fastProtocolManager->SetNewBuffer(conn->m_recvABuffer->CurrentPos(), 2000);
+        conn->m_fastProtocolManager->WriteMsgSeqNumber(info->MsgSeqNum);
         conn->m_fastProtocolManager->EncodeTLSFONDInfo(info);
         conn->ProcessServerCore(conn->m_fastProtocolManager->MessageLength());
     }
@@ -1602,6 +1629,7 @@ public:
         FastIncrementalOLRCURRInfo* info = CreateOLRCurrMessageCore(tmp);
 
         conn->m_fastProtocolManager->SetNewBuffer(conn->m_sendABuffer->CurrentPos(), 2000);
+        conn->m_fastProtocolManager->WriteMsgSeqNumber(info->MsgSeqNum);
         conn->m_fastProtocolManager->EncodeIncrementalOLRCURRInfo(info);
         conn->m_sendABuffer->Next(conn->m_fastProtocolManager->MessageLength());
     }
@@ -1615,6 +1643,7 @@ public:
         FastIncrementalOLRCURRInfo* info = CreateOLRCurrMessageCore(tmp);
 
         conn->m_fastProtocolManager->SetNewBuffer(conn->m_recvABuffer->CurrentPos(), 2000);
+        conn->m_fastProtocolManager->WriteMsgSeqNumber(info->MsgSeqNum);
         conn->m_fastProtocolManager->EncodeIncrementalOLRCURRInfo(info);
         conn->ProcessServerCore(conn->m_fastProtocolManager->MessageLength());
     }
@@ -1653,6 +1682,7 @@ public:
         FastOLSCURRInfo *info = CreateOLSCurrMessageCore(tmp);
 
         conn->m_fastProtocolManager->SetNewBuffer(conn->m_sendABuffer->CurrentPos(), 2000);
+        conn->m_fastProtocolManager->WriteMsgSeqNumber(info->MsgSeqNum);
         conn->m_fastProtocolManager->EncodeOLSCURRInfo(info);
         conn->m_sendABuffer->Next(conn->m_fastProtocolManager->MessageLength());
     }
@@ -1666,6 +1696,7 @@ public:
         FastOLSCURRInfo *info = CreateOLSCurrMessageCore(tmp);
 
         conn->m_fastProtocolManager->SetNewBuffer(conn->m_recvABuffer->CurrentPos(), 2000);
+        conn->m_fastProtocolManager->WriteMsgSeqNumber(info->MsgSeqNum);
         conn->m_fastProtocolManager->EncodeOLSCURRInfo(info);
         conn->ProcessServerCore(conn->m_fastProtocolManager->MessageLength());
     }
@@ -1684,6 +1715,7 @@ public:
         FastIncrementalTLRCURRInfo *info = CreateTLRCurrMessageCore(tmp);
 
         conn->m_fastProtocolManager->SetNewBuffer(conn->m_sendABuffer->CurrentPos(), 2000);
+        conn->m_fastProtocolManager->WriteMsgSeqNumber(info->MsgSeqNum);
         conn->m_fastProtocolManager->EncodeIncrementalTLRCURRInfo(info);
         conn->m_sendABuffer->Next(conn->m_fastProtocolManager->MessageLength());
     }
@@ -1697,6 +1729,7 @@ public:
         FastIncrementalTLRCURRInfo *info = CreateTLRCurrMessageCore(tmp);
 
         conn->m_fastProtocolManager->SetNewBuffer(conn->m_recvABuffer->CurrentPos(), 2000);
+        conn->m_fastProtocolManager->WriteMsgSeqNumber(info->MsgSeqNum);
         conn->m_fastProtocolManager->EncodeIncrementalTLRCURRInfo(info);
         conn->ProcessServerCore(conn->m_fastProtocolManager->MessageLength());
     }
@@ -1735,6 +1768,7 @@ public:
         FastTLSCURRInfo *info = CreateTLSCurrMessageCore(tmp);
 
         conn->m_fastProtocolManager->SetNewBuffer(conn->m_sendABuffer->CurrentPos(), 2000);
+        conn->m_fastProtocolManager->WriteMsgSeqNumber(info->MsgSeqNum);
         conn->m_fastProtocolManager->EncodeTLSCURRInfo(info);
         conn->m_sendABuffer->Next(conn->m_fastProtocolManager->MessageLength());
     }
@@ -1748,6 +1782,7 @@ public:
         FastTLSCURRInfo *info = CreateTLSCurrMessageCore(tmp);
 
         conn->m_fastProtocolManager->SetNewBuffer(conn->m_recvABuffer->CurrentPos(), 2000);
+        conn->m_fastProtocolManager->WriteMsgSeqNumber(info->MsgSeqNum);
         conn->m_fastProtocolManager->EncodeTLSCURRInfo(info);
         conn->ProcessServerCore(conn->m_fastProtocolManager->MessageLength());
     }
@@ -1870,7 +1905,7 @@ public:
 
     void OnRecvLogon(FixProtocolMessage *msg, WinSockManager *wsManager) {
 
-        this->m_fastManager->SetNewBuffer(this->m_buffer->CurrentPos(), 1000); // overwrite msgseqno
+        this->m_fastManager->SetNewBuffer(this->m_buffer->CurrentPos() + 4, 1000); // overwrite msgseqno
 
         FastLogonInfo info;
 
@@ -1898,8 +1933,8 @@ public:
         this->m_fastManager->EncodeLogonInfo(&info);
         *((int*)this->m_buffer->CurrentPos()) = this->m_fastManager->MessageLength();
 
-        this->SetRecvFor(wsManager, (unsigned char*)this->m_buffer->CurrentPos(), this->m_fastManager->MessageLength());
-        this->m_buffer->Next(this->m_fixManager->MessageLength());
+        this->SetRecvFor(wsManager, (unsigned char*)this->m_buffer->CurrentPos(), this->m_fastManager->MessageLength() + 4);
+        this->m_buffer->Next(this->m_fixManager->MessageLength() + 4);
     }
 
     void OnRecvLogout(FixProtocolMessage *msg, WinSockManager *wsManager) {
@@ -1944,7 +1979,7 @@ public:
         unsigned char *start = this->m_buffer->CurrentPos();
         for(int i = msg->MarketDataRequestInfo()->BeginSeqNo; i <= msg->MarketDataRequestInfo()->EndSeqNo; i++) {
             this->m_fastManager->SetNewBuffer(this->m_buffer->CurrentPos() + 4, 1000);
-            this->EncodeMessage(feed->m_templates[i]);
+            this->EncodeMessage(feed->m_templates[i - 1]);
             *((int*)this->m_buffer->CurrentPos()) = feed->m_feed->m_fastProtocolManager->MessageLength();
             this->m_buffer->NextExact(feed->m_feed->m_fastProtocolManager->MessageLength() + 4);
         }
@@ -2027,6 +2062,8 @@ public:
             if(!TestMessagesHelper::SkipTimeOutCheck && w.ElapsedMilliseconds(1) > 5000)
                 throw;
         }
+        if(!fif->Listen_Atom_SecurityStatus_Core())
+            throw;
     }
 
     void EncodeMessage(TestTemplateInfo *tmp) {
@@ -2066,6 +2103,10 @@ public:
                 break;
             case FeedConnectionMessage::fmcSecurityDefinition:
                 EncodeSecurityDefinitionMessage(tmp);
+                break;
+            case FeedConnectionMessage::fmcSecurityStatus:
+                EncodeSecurityStatusMessage(tmp);
+                break;
             case FeedConnectionMessage::fmcLogon:
                 EncodeLogonMessage(tmp);
                 break;

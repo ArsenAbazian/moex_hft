@@ -2403,8 +2403,6 @@ void FastProtocolManager::PrintXmlHeartbeat(FastHeartbeatInfo *info) {
 
 #pragma region Encode_Methods_Definition_GeneratedCode
 void FastProtocolManager::EncodeLogonInfo(FastLogonInfo* info) {
-	ResetBuffer();
-	WriteMsgSeqNumber(info->MsgSeqNum);
 	WritePresenceMap(info->PresenceMap); // Presence Map hack
 	WriteUInt32_Mandatory(2101);
 	WriteString_Mandatory(info->TargetCompID, info->TargetCompIDLength);
@@ -2422,8 +2420,6 @@ void FastProtocolManager::EncodeLogonInfo(FastLogonInfo* info) {
 	WriteString_Mandatory(info->DefaultApplVerID, info->DefaultApplVerIDLength);
 }
 void FastProtocolManager::EncodeLogoutInfo(FastLogoutInfo* info) {
-	ResetBuffer();
-	WriteMsgSeqNumber(info->MsgSeqNum);
 	WritePresenceMap(info->PresenceMap); // Presence Map hack
 	WriteUInt32_Mandatory(2102);
 	WriteString_Mandatory(info->TargetCompID, info->TargetCompIDLength);
@@ -2435,8 +2431,6 @@ void FastProtocolManager::EncodeLogoutInfo(FastLogoutInfo* info) {
 		WriteString_Optional(info->Text, info->TextLength);
 }
 void FastProtocolManager::EncodeGenericInfo(FastGenericInfo* info) {
-	ResetBuffer();
-	WriteMsgSeqNumber(info->MsgSeqNum);
 	WritePresenceMap(info->PresenceMap); // Presence Map hack
 	WriteUInt32_Mandatory(2103);
 	WriteUInt32_Mandatory(info->MsgSeqNum);
@@ -2646,8 +2640,6 @@ void FastProtocolManager::EncodeGenericInfo(FastGenericInfo* info) {
 	}
 }
 void FastProtocolManager::EncodeIncrementalGenericInfo(FastIncrementalGenericInfo* info) {
-	ResetBuffer();
-	WriteMsgSeqNumber(info->MsgSeqNum);
 	WritePresenceMap(info->PresenceMap); // Presence Map hack
 	WriteUInt32_Mandatory(2104);
 	WriteUInt32_Mandatory(info->MsgSeqNum);
@@ -2843,8 +2835,6 @@ void FastProtocolManager::EncodeIncrementalGenericInfo(FastIncrementalGenericInf
 	}
 }
 void FastProtocolManager::EncodeOLSFONDInfo(FastOLSFONDInfo* info) {
-	ResetBuffer();
-	WriteMsgSeqNumber(info->MsgSeqNum);
 	WritePresenceMap(info->PresenceMap); // Presence Map hack
 	WriteUInt32_Mandatory(2510);
 	WriteUInt32_Mandatory(info->MsgSeqNum);
@@ -2958,8 +2948,6 @@ void FastProtocolManager::EncodeOLSFONDInfo(FastOLSFONDInfo* info) {
 	}
 }
 void FastProtocolManager::EncodeOLSCURRInfo(FastOLSCURRInfo* info) {
-	ResetBuffer();
-	WriteMsgSeqNumber(info->MsgSeqNum);
 	WritePresenceMap(info->PresenceMap); // Presence Map hack
 	WriteUInt32_Mandatory(3600);
 	WriteUInt32_Mandatory(info->MsgSeqNum);
@@ -3051,8 +3039,6 @@ void FastProtocolManager::EncodeOLSCURRInfo(FastOLSCURRInfo* info) {
 	}
 }
 void FastProtocolManager::EncodeTLSFONDInfo(FastTLSFONDInfo* info) {
-	ResetBuffer();
-	WriteMsgSeqNumber(info->MsgSeqNum);
 	WritePresenceMap(info->PresenceMap); // Presence Map hack
 	WriteUInt32_Mandatory(2511);
 	WriteUInt32_Mandatory(info->MsgSeqNum);
@@ -3209,8 +3195,6 @@ void FastProtocolManager::EncodeTLSFONDInfo(FastTLSFONDInfo* info) {
 	}
 }
 void FastProtocolManager::EncodeTLSCURRInfo(FastTLSCURRInfo* info) {
-	ResetBuffer();
-	WriteMsgSeqNumber(info->MsgSeqNum);
 	WritePresenceMap(info->PresenceMap); // Presence Map hack
 	WriteUInt32_Mandatory(3601);
 	WriteUInt32_Mandatory(info->MsgSeqNum);
@@ -3351,8 +3335,6 @@ void FastProtocolManager::EncodeTLSCURRInfo(FastTLSCURRInfo* info) {
 	}
 }
 void FastProtocolManager::EncodeIncrementalMSRFONDInfo(FastIncrementalMSRFONDInfo* info) {
-	ResetBuffer();
-	WriteMsgSeqNumber(info->MsgSeqNum);
 	WritePresenceMap(info->PresenceMap); // Presence Map hack
 	WriteUInt32_Mandatory(2523);
 	WriteUInt32_Mandatory(info->MsgSeqNum);
@@ -3496,8 +3478,6 @@ void FastProtocolManager::EncodeIncrementalMSRFONDInfo(FastIncrementalMSRFONDInf
 	}
 }
 void FastProtocolManager::EncodeIncrementalMSRCURRInfo(FastIncrementalMSRCURRInfo* info) {
-	ResetBuffer();
-	WriteMsgSeqNumber(info->MsgSeqNum);
 	WritePresenceMap(info->PresenceMap); // Presence Map hack
 	WriteUInt32_Mandatory(3613);
 	WriteUInt32_Mandatory(info->MsgSeqNum);
@@ -3621,8 +3601,6 @@ void FastProtocolManager::EncodeIncrementalMSRCURRInfo(FastIncrementalMSRCURRInf
 	}
 }
 void FastProtocolManager::EncodeIncrementalOLRFONDInfo(FastIncrementalOLRFONDInfo* info) {
-	ResetBuffer();
-	WriteMsgSeqNumber(info->MsgSeqNum);
 	WritePresenceMap(info->PresenceMap); // Presence Map hack
 	WriteUInt32_Mandatory(2520);
 	WriteUInt32_Mandatory(info->MsgSeqNum);
@@ -3726,8 +3704,6 @@ void FastProtocolManager::EncodeIncrementalOLRFONDInfo(FastIncrementalOLRFONDInf
 	}
 }
 void FastProtocolManager::EncodeIncrementalOLRCURRInfo(FastIncrementalOLRCURRInfo* info) {
-	ResetBuffer();
-	WriteMsgSeqNumber(info->MsgSeqNum);
 	WritePresenceMap(info->PresenceMap); // Presence Map hack
 	WriteUInt32_Mandatory(3610);
 	WriteUInt32_Mandatory(info->MsgSeqNum);
@@ -3815,8 +3791,6 @@ void FastProtocolManager::EncodeIncrementalOLRCURRInfo(FastIncrementalOLRCURRInf
 	}
 }
 void FastProtocolManager::EncodeIncrementalTLRFONDInfo(FastIncrementalTLRFONDInfo* info) {
-	ResetBuffer();
-	WriteMsgSeqNumber(info->MsgSeqNum);
 	WritePresenceMap(info->PresenceMap); // Presence Map hack
 	WriteUInt32_Mandatory(2521);
 	WriteUInt32_Mandatory(info->MsgSeqNum);
@@ -3921,8 +3895,6 @@ void FastProtocolManager::EncodeIncrementalTLRFONDInfo(FastIncrementalTLRFONDInf
 	}
 }
 void FastProtocolManager::EncodeIncrementalTLRCURRInfo(FastIncrementalTLRCURRInfo* info) {
-	ResetBuffer();
-	WriteMsgSeqNumber(info->MsgSeqNum);
 	WritePresenceMap(info->PresenceMap); // Presence Map hack
 	WriteUInt32_Mandatory(3611);
 	WriteUInt32_Mandatory(info->MsgSeqNum);
@@ -4019,8 +3991,6 @@ void FastProtocolManager::EncodeIncrementalTLRCURRInfo(FastIncrementalTLRCURRInf
 	}
 }
 void FastProtocolManager::EncodeSecurityDefinitionInfo(FastSecurityDefinitionInfo* info) {
-	ResetBuffer();
-	WriteMsgSeqNumber(info->MsgSeqNum);
 	WritePresenceMap(info->PresenceMap); // Presence Map hack
 	WriteUInt32_Mandatory(2115);
 	WriteUInt32_Mandatory(info->MsgSeqNum);
@@ -4228,8 +4198,6 @@ void FastProtocolManager::EncodeSecurityDefinitionInfo(FastSecurityDefinitionInf
 		WriteInt32_Optional(info->NumOfDaysToMaturity);
 }
 void FastProtocolManager::EncodeSecurityStatusInfo(FastSecurityStatusInfo* info) {
-	ResetBuffer();
-	WriteMsgSeqNumber(info->MsgSeqNum);
 	WritePresenceMap(info->PresenceMap); // Presence Map hack
 	WriteUInt32_Mandatory(2106);
 	WriteUInt32_Mandatory(info->MsgSeqNum);
@@ -4253,8 +4221,6 @@ void FastProtocolManager::EncodeSecurityStatusInfo(FastSecurityStatusInfo* info)
 		WriteUInt32_Optional(info->AuctionIndicator);
 }
 void FastProtocolManager::EncodeTradingSessionStatusInfo(FastTradingSessionStatusInfo* info) {
-	ResetBuffer();
-	WriteMsgSeqNumber(info->MsgSeqNum);
 	WritePresenceMap(info->PresenceMap); // Presence Map hack
 	WriteUInt32_Mandatory(2107);
 	WriteUInt32_Mandatory(info->MsgSeqNum);
@@ -4267,8 +4233,6 @@ void FastProtocolManager::EncodeTradingSessionStatusInfo(FastTradingSessionStatu
 	WriteString_Mandatory(info->TradingSessionID, info->TradingSessionIDLength);
 }
 void FastProtocolManager::EncodeHeartbeatInfo(FastHeartbeatInfo* info) {
-	ResetBuffer();
-	WriteMsgSeqNumber(info->MsgSeqNum);
 	WritePresenceMap(info->PresenceMap); // Presence Map hack
 	WriteUInt32_Mandatory(2108);
 	WriteUInt32_Mandatory(info->MsgSeqNum);

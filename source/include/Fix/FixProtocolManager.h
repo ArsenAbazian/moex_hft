@@ -874,6 +874,11 @@ public:
 	inline void CreateLogoutMessage(const char *text) {
 		CreateLogoutMessage(text, strlen(text));
 	}
+
+	inline void CreateFastLogoutMessage(const char *text) {
+		CreateFastLogoutMessage(text, strlen(text));
+	}
+
 	inline void CreateLogoutMessage(const char *text, int textLength) {
 		AddHeader(MsgTypeLogout);
 		if (text != NULL) {
@@ -885,6 +890,19 @@ public:
 		UpdateLengthTagValue();
 		AddTrail();
         SaveSendMessage();
+	}
+
+	inline void CreateFastLogoutMessage(const char *text, int textLength) {
+		AddFastHeader(MsgTypeLogout);
+		if (text != NULL) {
+			AddTagText
+			AddEqual();
+			AddArray(text, textLength);
+			AddSeparator();
+		}
+		UpdateLengthTagValue();
+		AddTrail();
+		SaveSendMessage();
 	}
 
 	inline void CreateOrderStatusRequestMessage(FixOrderStatusRequestInfo *info) {
