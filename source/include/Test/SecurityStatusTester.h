@@ -54,6 +54,8 @@ public:
             throw;
         if(this->isf->SecurityDefinition() != this->idf)
             throw;
+        if(this->isf->MaxLostPacketCountForStartSnapshot() != 0)
+            throw;
     }
 
     //Can be length of 1 or 2.
@@ -269,18 +271,53 @@ public:
     }
 
     void TestCallHistoricalReplayWhenLostMessage() {
+        this->isf->SetMaxLostPacketCountForStartSnapshot(100); // do not start snapshot.... :)
         TestCallHistoricalReplayWhenLostMessage_1();
         TestCallHistoricalReplayWhenLostMessage_2();
         TestCallHistoricalReplayWhenLostMessage_3();
     }
 
+    void TestStartSnapshotInstedOfHistoricalReplay_1() {
+        this->Clear();
+        this->InitSecurityDefinitionCore();
+
+        if(this->idf->State() != FeedConnectionState::fcsSuspend)
+            throw;
+        this->isf->SetMaxLostPacketCountForStartSnapshot(0);
+        this->isf->Start();
+        this->m_helper->SendMessagesIsf_Hr(this->isf,
+                                           this->hr,
+                                           "     msgSeqNo 1 hbeat,"
+                                           "     msgSeqNo 2 hbeat,"
+                                           "     msgSeqNo 3 isf smb1 trd1 NA 118 0,"
+                                           "lost msgSeqNo 4 isf smb1 trd2 O 130 0,"
+                                           "     msgSeqNo 5 isf smb2 trd1 C 17  0,"
+                                           "     msgSeqNo 6 isf smb2 trd2 N 102 0",
+                                           30);
+        if(this->idf->State() != FeedConnectionState::fcsListenSecurityDefinition) // start snapshot mode...
+            throw;
+    }
+
+    void TestStartSnapshotInstedOfHistoricalReplay_2() {
+        throw;
+    }
+
+    void TestStartSnapshotInstedOfHistoricalReplay() {
+        printf("ISF TestStartSnapshotInstedOfHistoricalReplay_1\n");
+        TestStartSnapshotInstedOfHistoricalReplay_1();
+        printf("ISF TestStartSnapshotInstedOfHistoricalReplay_2\n");
+        TestStartSnapshotInstedOfHistoricalReplay_2();
+    }
+
     void Test() {
-        printf("ISF TestDefaults");
+        printf("ISF TestDefaults\n");
         TestDefaults();
-        printf("ISF TestReceiveExistingSymbol");
+        printf("ISF TestReceiveExistingSymbol\n");
         TestReceiveExistingSymbol();
-        printf("ISF Call TestCallHistoricalReplayWhenLostMessage");
+        printf("ISF TestCallHistoricalReplayWhenLostMessage\n");
         TestCallHistoricalReplayWhenLostMessage();
+        printf("ISF TestStartSnapshotInstedOfHistoricalReplay\n");
+        TestStartSnapshotInstedOfHistoricalReplay();
     }
 };
 

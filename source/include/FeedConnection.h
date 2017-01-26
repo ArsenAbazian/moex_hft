@@ -67,6 +67,7 @@ protected:
 
     int                                         m_waitIncrementalMaxTimeMs;
     int                                         m_snapshotMaxTimeMs;
+    int                                         m_maxLostPacketCountForStartSnapshot;
     bool                                        m_isLastIncrementalRecv;
 
     bool                                        m_doNotCheckIncrementalActuality;
@@ -682,9 +683,9 @@ protected:
 	virtual void ClearSocketBufferProvider() {
 
 	}
-	inline void SetState(FeedConnectionState state) {
-		this->m_state = state;
-	}
+    void SetMaxLostPacketCountForStartSnapshot(int count) { this->m_maxLostPacketCountForStartSnapshot = count; }
+    int MaxLostPacketCountForStartSnapshot() { return this->m_maxLostPacketCountForStartSnapshot; }
+	inline void SetState(FeedConnectionState state) { this->m_state = state; }
     inline void SetId(FeedConnectionId id) { this->m_id = id; }
     inline void SetHsState(FeedConnectionHistoricalReplayState state) { this->m_hsState = state; }
 	inline void SetNextState(FeedConnectionState state) {
