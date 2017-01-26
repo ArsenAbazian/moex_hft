@@ -145,7 +145,7 @@ public:
             throw;
     }
 
-    void TestCallHistoricalReplayWhenLostMessage() {
+    void TestCallHistoricalReplayWhenLostMessage_1() {
         this->Clear();
         this->InitSecurityDefinitionCore();
 
@@ -154,13 +154,13 @@ public:
         this->isf->Start();
         this->m_helper->SendMessagesIsf_Hr(this->isf,
                                            this->hr,
-                                                "     msgSeqNo 1 hbeat,"
-                                                "     msgSeqNo 2 hbeat,"
-                                                "     msgSeqNo 3 isf smb1 trd1 NA 118 0,"
-                                                "lost msgSeqNo 4 isf smb1 trd2 O 130 0,"
-                                                "     msgSeqNo 5 isf smb2 trd1 C 17  0,"
-                                                "     msgSeqNo 6 isf smb2 trd2 N 102 0",
-                                        30);
+                                           "     msgSeqNo 1 hbeat,"
+                                                   "     msgSeqNo 2 hbeat,"
+                                                   "     msgSeqNo 3 isf smb1 trd1 NA 118 0,"
+                                                   "lost msgSeqNo 4 isf smb1 trd2 O 130 0,"
+                                                   "     msgSeqNo 5 isf smb2 trd1 C 17  0,"
+                                                   "     msgSeqNo 6 isf smb2 trd2 N 102 0",
+                                           30);
 
         if(!EqualsTradingSessionSubId(TradingSession(info1, 0, 0), "NA"))
             throw;
@@ -181,12 +181,105 @@ public:
             throw;
     }
 
+    void TestCallHistoricalReplayWhenLostMessage_2() {
+        this->Clear();
+        this->InitSecurityDefinitionCore();
+
+        FastSecurityDefinitionInfo *info1 = this->idf->Symbol(0);
+        FastSecurityDefinitionInfo *info2 = this->idf->Symbol(1);
+        this->isf->Start();
+        this->m_helper->SendMessagesIsf_Hr(this->isf,
+                                           this->hr,
+                                           "     msgSeqNo 1 hbeat,"
+                                           "     msgSeqNo 2 hbeat,"
+                                           "     msgSeqNo 3 isf smb1 trd1 NA 118 0,"
+                                           "lost msgSeqNo 4 isf smb1 trd2 O 130 0,"
+                                           "lost msgSeqNo 5 isf smb2 trd1 C 17  0,"
+                                           "     msgSeqNo 6 isf smb2 trd2 N 102 0",
+                                           30);
+
+        if(!EqualsTradingSessionSubId(TradingSession(info1, 0, 0), "NA"))
+            throw;
+        if(!EqualsTradingSessionSubId(TradingSession(info1, 0, 1), "O"))
+            throw;
+        if(!EqualsTradingSessionSubId(TradingSession(info2, 0, 0), "C"))
+            throw;
+        if(!EqualsTradingSessionSubId(TradingSession(info2, 0, 1), "N"))
+            throw;
+
+        if(TradingSession(info1, 0, 0)->SecurityTradingStatus != 118)
+            throw;
+        if(TradingSession(info1, 0, 1)->SecurityTradingStatus != 130)
+            throw;
+        if(TradingSession(info2, 0, 0)->SecurityTradingStatus != 17)
+            throw;
+        if(TradingSession(info2, 0, 1)->SecurityTradingStatus != 102)
+            throw;
+    }
+
+    void TestCallHistoricalReplayWhenLostMessage_3() {
+        this->Clear();
+
+        this->idf->Stop();
+        this->idf->Start();
+        if(this->idf->m_symbolManager->SymbolCount() != 0)
+            throw;
+        this->m_helper->SendMessagesIdf(this->idf,
+                                                "msgSeqNo 1 totNumReports 7 idf smb1 session trd1, "
+                                                "msgSeqNo 2 totNumReports 7 idf smb2 session trd1, "
+                                                "msgSeqNo 3 totNumReports 7 idf smb3 session trd1, "
+                                                "msgSeqNo 4 totNumReports 7 idf smb4 session trd1, "
+                                                "msgSeqNo 5 totNumReports 7 idf smb5 session trd1, "
+                                                "msgSeqNo 6 totNumReports 7 idf smb6 session trd1, "
+                                                "msgSeqNo 7 totNumReports 7 idf smb7 session trd1, "
+                                                "msgSeqNo 1 totNumReports 7 idf smb1 session trd1  ", 30);
+
+        if(!this->idf->IsIdfDataCollected())
+            throw;
+
+        this->isf->Start();
+        this->m_helper->SendMessagesIsf_Hr(this->isf,
+                                           this->hr,
+                                           "     msgSeqNo 1 hbeat,"
+                                           "     msgSeqNo 2 hbeat,"
+                                           "     msgSeqNo 3 isf smb1 trd1 NA 118 0, "
+                                           "lost msgSeqNo 4 isf smb2 trd1 O  130 0, "
+                                           "lost msgSeqNo 5 isf smb3 trd1 C  17  0, "
+                                           "lost msgSeqNo 6 isf smb4 trd1 N  102 0, "
+                                           "lost msgSeqNo 7 isf smb5 trd1 N  102 0, "
+                                           "lost msgSeqNo 8 isf smb6 trd1 C  17  0, "
+                                           "lost msgSeqNo 9 isf smb7 trd1 O  17  0, "
+                                           "     msgSeqNo 10 hbeat",
+                                           30);
+
+        if(TradingSession(this->idf->Symbol(0), 0, 0)->SecurityTradingStatus != 118)
+            throw;
+        if(TradingSession(this->idf->Symbol(1), 0, 0)->SecurityTradingStatus != 130)
+            throw;
+        if(TradingSession(this->idf->Symbol(2), 0, 0)->SecurityTradingStatus != 17)
+            throw;
+        if(TradingSession(this->idf->Symbol(3), 0, 0)->SecurityTradingStatus != 102)
+            throw;
+        if(TradingSession(this->idf->Symbol(4), 0, 0)->SecurityTradingStatus != 102)
+            throw;
+        if(TradingSession(this->idf->Symbol(5), 0, 0)->SecurityTradingStatus != 17)
+            throw;
+        if(TradingSession(this->idf->Symbol(6), 0, 0)->SecurityTradingStatus != 17)
+            throw;
+    }
+
+    void TestCallHistoricalReplayWhenLostMessage() {
+        TestCallHistoricalReplayWhenLostMessage_1();
+        TestCallHistoricalReplayWhenLostMessage_2();
+        TestCallHistoricalReplayWhenLostMessage_3();
+    }
+
     void Test() {
         printf("ISF TestDefaults");
         TestDefaults();
         printf("ISF TestReceiveExistingSymbol");
         TestReceiveExistingSymbol();
-        printf("ISF Call HistoricalReplay when lost message");
+        printf("ISF Call TestCallHistoricalReplayWhenLostMessage");
         TestCallHistoricalReplayWhenLostMessage();
     }
 };

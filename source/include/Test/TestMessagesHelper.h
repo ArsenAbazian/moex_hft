@@ -1980,8 +1980,8 @@ public:
         for(int i = msg->MarketDataRequestInfo()->BeginSeqNo; i <= msg->MarketDataRequestInfo()->EndSeqNo; i++) {
             this->m_fastManager->SetNewBuffer(this->m_buffer->CurrentPos() + 4, 1000);
             this->EncodeMessage(feed->m_templates[i - 1]);
-            *((int*)this->m_buffer->CurrentPos()) = feed->m_feed->m_fastProtocolManager->MessageLength();
-            this->m_buffer->NextExact(feed->m_feed->m_fastProtocolManager->MessageLength() + 4);
+            *((int*)this->m_buffer->CurrentPos()) = this->m_fastManager->MessageLength();
+            this->m_buffer->NextExact(this->m_fastManager->MessageLength() + 4);
         }
         int length = (int)(this->m_buffer->CurrentPos() - start);
         unsigned char *data;
