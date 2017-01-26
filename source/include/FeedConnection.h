@@ -24,7 +24,6 @@ class TestMessagesHelper;
 class StatisticsTesterFond;
 class StatisticsTesterCurr;
 class SecurityDefinitionTester;
-class HistoricalReplayTester;
 class SecurityStatusTester;
 
 class FeedConnection {
@@ -37,7 +36,6 @@ class FeedConnection {
     friend class StatisticsTesterFond;
     friend class StatisticsTesterCurr;
     friend class SecurityDefinitionTester;
-    friend class HistoricalReplayTester;
     friend class SecurityStatusTester;
 
 public:
@@ -121,8 +119,6 @@ protected:
     FixLogonInfo                                *m_hsLogonInfo;
     FixRejectInfo                               *m_hsRejectInfo;
     int                                          m_hsMsgSeqNo;
-    SocketBuffer								*m_hsSendABuffer;
-    SocketBuffer								*m_hsRecvABuffer;
 
 	ISocketBufferProvider						*m_socketABufferProvider;
 	SocketBuffer								*m_sendABuffer;
@@ -1070,11 +1066,11 @@ protected:
         int size = this->socketAManager->RecvSize();
         if(size == 4) {
             this->m_hrMessageSize = *(int*)this->socketAManager->RecvBytes();
-            printf("\t\t\trecv 4 byte. value in 4 byte = %d\n", this->m_hrMessageSize);
+            printf("\t\t\trecv 4 byte. value in 4 byte = %d\n", this->m_hrMessageSize); //TODO remove debug
             return true;
         }
         else {
-            printf("\t\t\tpacket size = %d\n", size);
+            printf("\t\t\tpacket size = %d\n", size); //TODO remove debug
         }
         unsigned char *buffer = this->socketAManager->RecvBytes();
         this->m_recvABuffer->Next(size);
@@ -1082,11 +1078,13 @@ protected:
             buffer += 4; size -= 4;
         }
         this->m_fastProtocolManager->SetNewBuffer(buffer, size);
-        this->m_fastProtocolManager->Decode();
+        this->m_fastProtocolManager->DecodeHeader();
         if(this->m_fastProtocolManager->TemplateId() != FeedConnectionMessage::fmcLogon) {
             this->Disconnect();
-            if(this->m_fastProtocolManager->TemplateId() == FeedConnectionMessage::fmcLogout)
-                OnProcessHistoricalReplayUnexpectedLogoutMessage();
+            if(this->m_fastProtocolManager->TemplateId() == FeedConnectionMessage::fmcLogout) {
+                this->m_fastProtocolManager->DecodeLogout();
+                this->OnProcessHistoricalReplayUnexpectedLogoutMessage();
+            }
             this->m_hsState = FeedConnectionHistoricalReplayState::hsSuspend;
             return true;
         }
@@ -1178,8 +1176,6 @@ protected:
             return true;
         }
         info->m_requestCount++;
-        this->m_hsSendABuffer = info->m_conn->m_sendABuffer;
-        this->m_hsRecvABuffer = info->m_conn->m_recvABuffer;
 
         return this->HistoricalReplay_SendLogon();
     }

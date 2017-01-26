@@ -128,7 +128,6 @@ add_executable(hft_robot ${sources}
         source/include/Test/SymbolManagerTester.h
         source/include/Lib/StringHash.h
         source/include/MarketData/SymbolManager.h
-        source/include/Test/HistoricalReplayTester.h
         source/include/FeedConnections.h
         source/src/Test/TestMessagesHelper.cpp
         source/include/Test/PointerListTester.h

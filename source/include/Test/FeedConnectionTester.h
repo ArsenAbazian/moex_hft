@@ -14,7 +14,6 @@
 #include "StatisticsTesterFond.h"
 #include "StatisticsTesterCurr.h"
 #include "SymbolManagerTester.h"
-#include "HistoricalReplayTester.h"
 #include "PointerListTester.h"
 #include "SecurityStatusTester.h"
 
@@ -239,8 +238,6 @@ public:
         RobotSettings::MarketDataMaxSessionsCount = 5;
         RobotSettings::MarketDataMaxEntriesCount = 32;
 
-        HistoricalReplayTester hrt;
-        hrt.Test();
 
         //TestSaveIdfSymbols();
 

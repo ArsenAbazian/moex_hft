@@ -204,5 +204,5 @@ bool WinSockManager::RecvTest(unsigned char *buffer) {
 }
 
 void WinSockManager::SendTest() {
-	this->m_testHelper->OnRecvData(this, this->m_sendBytes, this->m_sendSize);
+	WinSockManager::m_testHelper->OnRecvData(this, this->m_sendBytes, this->m_sendSize);
 }
