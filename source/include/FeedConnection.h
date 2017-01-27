@@ -231,9 +231,10 @@ protected:
             if(this->m_endMsgSeqNum < msgSeqNum)
                 this->m_endMsgSeqNum = msgSeqNum;
         }
-        this->m_packets[msgSeqNum]->m_address = buffer->CurrentPos();
-        this->m_packets[msgSeqNum]->m_size = size;
-        this->m_packets[msgSeqNum]->m_requested = true;
+        FeedConnectionMessageInfo *info = this->m_packets[msgSeqNum];
+        info->m_address = buffer->CurrentPos();
+        info->m_size = size;
+        info->m_requested = true;
         return true;
     }
     inline bool ProcessServerCore(int size) {
@@ -273,8 +274,10 @@ protected:
             if(this->m_endMsgSeqNum < msgSeqNum)
                 this->m_endMsgSeqNum = msgSeqNum;
         }
-        this->m_packets[msgSeqNum]->m_address = this->m_recvABuffer->CurrentPos();
-        this->m_packets[msgSeqNum]->m_size = size;
+        FeedConnectionMessageInfo *info = this->m_packets[msgSeqNum];
+        info->m_address = this->m_recvABuffer->CurrentPos();
+        info->m_size = size;
+        info->m_requested = false;
         this->m_recvABuffer->Next(size);
         return true;
     }
@@ -511,6 +514,21 @@ protected:
         return start;
     }
 
+    inline int GetRequestMessageStartIndex(int start) {
+        for(int i = start; i <= this->m_endMsgSeqNum; i++) {
+            if(this->m_packets[i]->m_address == 0 && !this->m_packets[i]->m_requested)
+                return i;
+        }
+        return -1;
+    }
+
+    inline void RequestMessages(int start, int end) {
+        FeedConnectionMessageInfo **info = this->m_packets + start;
+        for(int i = start; i <= end; i++, info++)
+            info->m_requested = true;
+        this->m_historicalReplay->HrRequestMessage(this, i, end);
+    }
+
     inline bool ProcessSecurityStatusMessages() {
         int i = this->m_startMsgSeqNum;
 
@@ -518,15 +536,23 @@ protected:
             if(this->m_packets[i]->m_processed) {
                 i++; continue;
             }
-            if(this->m_packets[i]->m_address == 0) {
-                if(!this->m_packets[i]->m_requested) {
-                    this->m_historicalReplay->HrRequestMessage(this, i, GetRequestMessageEndIndex(i));
-                }
+            if(this->m_packets[i]->m_address == 0)
                 break;
-            }
             if(!this->ProcessSecurityStatus(this->m_packets[i]))
                 return false;
             i++;
+        }
+
+        // there is messages that needs to be requested
+        int startIndex = i;
+        while(i <= this->m_endMsgSeqNum) {
+            // first try to get first start index from HistoricalReplay (added early)
+            startIndex = GetRequestMessageStartIndex(i);
+            if(startIndex == -1)
+                break;
+            int endIndex = GetRequestMessageEndIndex(i);
+            this->RequestMessages(startIndex, endIndex);
+            // TODO try append additional messages
         }
 
         this->m_startMsgSeqNum = i;
@@ -1094,6 +1120,7 @@ protected:
 
     inline bool HistoricalReplay_SendMarketDataRequest() {
         FeedConnectionRequestMessageInfo *info = this->m_hsRequestList->Start()->Data();
+        info->m_processing = true;
         this->m_fixProtocolManager->PrepareSendBuffer();
         this->m_fixProtocolManager->CreateMarketDataRequest(info->m_conn->m_idName, 3, info->StartMsgSeqNo(), info->EndMsgSeqNo());
 
@@ -1199,6 +1226,7 @@ public:
         info->m_conn = conn;
         info->SetMsgSeq(start, end);
         info->m_requestCount = 0;
+        info->m_processing = false;
 
         this->m_hsRequestList->Add(ptr);
     }

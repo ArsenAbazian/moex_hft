@@ -125,18 +125,21 @@ class FeedConnectionRequestMessageInfo {
 public:
     FeedConnection             *m_conn;
     int                         m_requestCount;
+    bool                        m_processing;
 
     FeedConnectionRequestMessageInfo() {
         this->m_requestCount = 0;
         this->m_startMsgSeqNo = 0;
         this->m_endMsgSeqNo = 0;
         this->m_conn = 0;
+        this->m_processing = false;
     }
     inline void Clear() {
         this->m_requestCount = 0;
         this->m_startMsgSeqNo = 0;
         this->m_endMsgSeqNo = 0;
         this->m_conn = 0;
+        this->m_processing = false;
     }
 
     inline void SetMsgSeq(int start, int end) {
