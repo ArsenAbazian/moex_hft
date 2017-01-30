@@ -53,11 +53,7 @@ public:
     char                    m_targetCompId[10];
 
 private:
-
-    void ClearFeedInfo() {
-        this->m_feedInfoCount = 0;
-    }
-    void AddFeedInfo(FeedConnection *feed, TestTemplateInfo **tmp, int templatesCount) {
+void AddFeedInfo(FeedConnection *feed, TestTemplateInfo **tmp, int templatesCount) {
         this->m_feedInfo[this->m_feedInfoCount].m_feed = feed;
         this->m_feedInfo[this->m_feedInfoCount].m_templates = tmp;
         this->m_feedInfo[this->m_feedInfoCount].m_templatesCount = templatesCount;
@@ -341,6 +337,10 @@ public:
     ~TestMessagesHelper() {
         delete this->m_fixManager;
         delete this->m_fastManager;
+    }
+
+    void ClearFeedInfo() {
+        this->m_feedInfoCount = 0;
     }
 
     FastLogonInfo* CreateLogonMessage(TestTemplateInfo *tmp) {
@@ -2294,7 +2294,6 @@ public:
     void SetRecvFastFor(FeedConnection *fc) {
         this->SetRecvFor(fc->socketAManager, fc->m_fastProtocolManager->Buffer(), fc->m_fastProtocolManager->MessageLength());
     }
-
 };
 
 #endif //HFT_ROBOT_TESTMESSAGESHELPER_H

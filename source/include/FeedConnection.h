@@ -105,6 +105,7 @@ protected:
 
 	int											m_startMsgSeqNum;
     int                                         m_endMsgSeqNum;
+    int                                         m_requestMessageStartIndex;
 
     const char                                  *m_senderCompId;
     int                                         m_senderCompIdLength;
@@ -529,14 +530,37 @@ protected:
         this->m_historicalReplay->HrRequestMessage(this, start, end);
     }
 
-    inline void CheckRequestLostMessages(int startIndex) {
-        while(startIndex <= this->m_endMsgSeqNum) {
-            // first try to get first start index from HistoricalReplay (added early)
-            startIndex = GetRequestMessageStartIndex(startIndex);
-            if(startIndex == -1)
+    inline void StartSecurityStatusSnapshot() {
+        this->m_securityDefinition->m_idfMode = FeedConnectionSecurityDefinitionMode::sdmUpdateData;
+        this->m_securityDefinition->Start();
+    }
+
+    inline bool IsSecurityStatusSnapshotRun() {
+        return this->m_securityDefinition->m_idfMode == FeedConnectionSecurityDefinitionMode::sdmUpdateData &&
+                this->m_securityDefinition->m_state == FeedConnectionState::fcsListenSecurityDefinition;
+    }
+
+    inline bool ShouldStartSecurityStatusSnapshot(int endIndex) {
+        if(this->m_securityDefinition->m_state != FeedConnectionState::fcsSuspend)
+            return false;
+        if(endIndex - this->m_requestMessageStartIndex < this->m_maxLostPacketCountForStartSnapshot)
+            return false;
+        return true;
+    }
+
+    inline void CheckRequestLostSecurityStatusMessages() {
+        if(this->m_requestMessageStartIndex == -1)
+            return;
+        while(this->m_requestMessageStartIndex <= this->m_endMsgSeqNum) {
+            this->m_requestMessageStartIndex = GetRequestMessageStartIndex(this->m_requestMessageStartIndex);
+            if(this->m_requestMessageStartIndex == -1)
                 break;
-            int endIndex = GetRequestMessageEndIndex(startIndex);
-            this->RequestMessages(startIndex, endIndex);
+            int endIndex = GetRequestMessageEndIndex(this->m_requestMessageStartIndex);
+            if(ShouldStartSecurityStatusSnapshot(endIndex))
+                this->StartSecurityStatusSnapshot();
+            else if(!IsSecurityStatusSnapshotRun())
+                this->RequestMessages(this->m_requestMessageStartIndex, endIndex);
+            this->m_requestMessageStartIndex = endIndex + 1;
         }
     }
 
@@ -547,15 +571,18 @@ protected:
             if(this->m_packets[i]->m_processed) {
                 i++; continue;
             }
-            if(this->m_packets[i]->m_address == 0)
+            if(this->m_packets[i]->m_address == 0) {
+                if(this->m_requestMessageStartIndex < i)
+                    this->m_requestMessageStartIndex = i;
                 break;
+            }
             if(!this->ProcessSecurityStatus(this->m_packets[i]))
                 return false;
             i++;
         }
 
         // there is messages that needs to be requested
-        this->CheckRequestLostMessages(i);
+        this->CheckRequestLostSecurityStatusMessages();
 
         this->m_startMsgSeqNum = i;
         if(this->m_doNotCheckIncrementalActuality) // TODO remove this field

@@ -110,6 +110,7 @@ public:
         this->idf->ClearPackets(0, 100);
         this->isf->ClearPackets(0, 100);
         this->isf->Stop();
+        this->hr->m_hsRequestList->Clear();
     }
 
     void TestReceiveExistingSymbol() {
@@ -337,6 +338,14 @@ public:
         return address;
     }
 
+    bool TestRequestedOnly(int startIndex, int endIndex) {
+        for(int i = startIndex; i <= endIndex; i++) {
+            if(!this->isf->m_packets[i]->m_requested)
+                return false;
+        }
+        return true;
+    }
+
     bool TestRequested(int startIndex, int endIndex) {
         for(int i = startIndex; i <= endIndex; i++) {
             if(!this->isf->m_packets[i]->m_requested)
@@ -379,7 +388,7 @@ public:
     }
 
     bool CheckRequestInfo(int index, FeedConnection *conn, int start, int end) {
-        FeedConnectionRequestMessageInfo *info = this->hr->m_hsRequestList->Item(0);
+        FeedConnectionRequestMessageInfo *info = this->hr->m_hsRequestList->Item(index);
         if(info->m_conn != conn)
             return false;
         if(info->m_requestCount != 0)
@@ -427,6 +436,53 @@ public:
             throw;
     }
 
+    // two GAPs
+    void TestRequestLostMessagesLogic_6() {
+        this->isf->ClearPackets(1, 100);
+        this->hr->m_hsRequestList->Clear();
+        this->isf->m_startMsgSeqNum = 4;
+        this->isf->m_endMsgSeqNum = 24;
+        this->FillMessages(4, 10);
+        this->FillMessages(20, 21);
+        this->FillMessages(23, 24);
+        this->isf->ProcessSecurityStatusMessages();
+        if(!TestRequestedOnly(11,19))
+            throw;
+        if(!TestRequestedOnly(22,22))
+            throw;
+        if(!TestNotRequested(4, 10))
+            throw;
+        if(!TestNotRequested(20, 21))
+            throw;
+        if(this->hr->m_hsRequestList->Count() != 2)
+            throw;
+        if(!CheckRequestInfo(0, this->isf, 11, 19))
+            throw;
+        if(!CheckRequestInfo(1, this->isf, 22, 22))
+            throw;
+    }
+
+    // two GAPs
+    void TestRequestLostMessagesLogic_7() {
+        this->isf->ClearPackets(1, 100);
+        this->hr->m_hsRequestList->Clear();
+        this->isf->m_startMsgSeqNum = 4;
+        this->isf->m_endMsgSeqNum = 24;
+        this->FillMessages(4, 10);
+        this->FillMessages(20, 21);
+        this->FillMessages(23, 24);
+        this->isf->ProcessSecurityStatusMessages();
+        if(this->hr->m_hsRequestList->Count() != 2)
+            throw;
+        if(!CheckRequestInfo(0, this->isf, 11, 19))
+            throw;
+        if(!CheckRequestInfo(1, this->isf, 22, 22))
+            throw;
+        this->isf->ProcessSecurityStatusMessages();
+        if(this->hr->m_hsRequestList->Count() != 2)
+            throw;
+    }
+
     void TestRequestLostMessagesLogic() {
         TestRequestLostMessagesLogic_1();
         TestRequestLostMessagesLogic_2();
@@ -437,6 +493,8 @@ public:
         // TODO try append additional messages - NO!
         // There is no situation when we need append additional messages,
         // because we can request lost message when we receive at least one and detect GAP
+        TestRequestLostMessagesLogic_6();
+        TestRequestLostMessagesLogic_7();
     }
 
     void Test() {
