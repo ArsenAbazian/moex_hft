@@ -525,8 +525,19 @@ protected:
     inline void RequestMessages(int start, int end) {
         FeedConnectionMessageInfo **info = this->m_packets + start;
         for(int i = start; i <= end; i++, info++)
-            info->m_requested = true;
-        this->m_historicalReplay->HrRequestMessage(this, i, end);
+            (*info)->m_requested = true;
+        this->m_historicalReplay->HrRequestMessage(this, start, end);
+    }
+
+    inline void CheckRequestLostMessages(int startIndex) {
+        while(startIndex <= this->m_endMsgSeqNum) {
+            // first try to get first start index from HistoricalReplay (added early)
+            startIndex = GetRequestMessageStartIndex(startIndex);
+            if(startIndex == -1)
+                break;
+            int endIndex = GetRequestMessageEndIndex(startIndex);
+            this->RequestMessages(startIndex, endIndex);
+        }
     }
 
     inline bool ProcessSecurityStatusMessages() {
@@ -544,16 +555,7 @@ protected:
         }
 
         // there is messages that needs to be requested
-        int startIndex = i;
-        while(i <= this->m_endMsgSeqNum) {
-            // first try to get first start index from HistoricalReplay (added early)
-            startIndex = GetRequestMessageStartIndex(i);
-            if(startIndex == -1)
-                break;
-            int endIndex = GetRequestMessageEndIndex(i);
-            this->RequestMessages(startIndex, endIndex);
-            // TODO try append additional messages
-        }
+        this->CheckRequestLostMessages(i);
 
         this->m_startMsgSeqNum = i;
         if(this->m_doNotCheckIncrementalActuality) // TODO remove this field
@@ -1120,7 +1122,6 @@ protected:
 
     inline bool HistoricalReplay_SendMarketDataRequest() {
         FeedConnectionRequestMessageInfo *info = this->m_hsRequestList->Start()->Data();
-        info->m_processing = true;
         this->m_fixProtocolManager->PrepareSendBuffer();
         this->m_fixProtocolManager->CreateMarketDataRequest(info->m_conn->m_idName, 3, info->StartMsgSeqNo(), info->EndMsgSeqNo());
 
@@ -1226,7 +1227,6 @@ public:
         info->m_conn = conn;
         info->SetMsgSeq(start, end);
         info->m_requestCount = 0;
-        info->m_processing = false;
 
         this->m_hsRequestList->Add(ptr);
     }

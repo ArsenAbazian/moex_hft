@@ -1253,6 +1253,7 @@ public:
     void EncodeHearthBeatMessage(TestTemplateInfo *tmp) {
         FastHeartbeatInfo *info = new FastHeartbeatInfo();
         info->MsgSeqNum = tmp->m_msgSeqNo;
+        this->m_fastManager->WriteMsgSeqNumber(info->MsgSeqNum);
         this->m_fastManager->EncodeHeartbeatInfo(info);
     }
 

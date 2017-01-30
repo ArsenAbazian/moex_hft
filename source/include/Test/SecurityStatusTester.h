@@ -309,6 +309,136 @@ public:
         TestStartSnapshotInstedOfHistoricalReplay_2();
     }
 
+    // default
+    void TestRequestLostMessagesLogic_1() {
+        this->isf->m_startMsgSeqNum = 1;
+        this->isf->m_endMsgSeqNum = 0;
+        this->isf->ClearPackets(1, 1);
+        this->isf->ProcessSecurityStatusMessages();
+        if(this->isf->m_packets[1]->m_requested)
+            throw;
+    }
+
+    // do not request
+    void TestRequestLostMessagesLogic_2() {
+        this->isf->m_startMsgSeqNum = 3;
+        this->isf->m_endMsgSeqNum = 2;
+        this->isf->ClearPackets(1, 5);
+        this->isf->ProcessSecurityStatusMessages();
+        if(this->isf->m_packets[3]->m_requested)
+            throw;
+    }
+
+    unsigned char *CreateHearthBeatMessage(int msgIndex) {
+        this->m_helper->m_fastManager->SetNewBuffer(this->m_helper->m_buffer->CurrentPos(), 1000);
+        this->m_helper->EncodeHearthBeatMessage(new TestTemplateInfo(FeedConnectionMessage::fcmHeartBeat, msgIndex));
+        unsigned char *address = this->m_helper->m_buffer->CurrentPos();
+        this->m_helper->m_buffer->Next(this->m_helper->m_fastManager->MessageLength());
+        return address;
+    }
+
+    bool TestRequested(int startIndex, int endIndex) {
+        for(int i = startIndex; i <= endIndex; i++) {
+            if(!this->isf->m_packets[i]->m_requested)
+                return false;
+        }
+        for(int i = 0; i < startIndex; i++) {
+            if(this->isf->m_packets[i]->m_requested)
+                return false;
+        }
+        for(int i = endIndex + 1; i < 1000; i++) {
+            if(this->isf->m_packets[i]->m_requested)
+                return false;
+        }
+        return true;
+    }
+
+    bool TestNotRequested(int startIndex, int endIndex) {
+        for(int i = startIndex; i <= endIndex; i++) {
+            if(this->isf->m_packets[i]->m_requested)
+                return false;
+        }
+        return true;
+    }
+
+    // do not request
+    void TestRequestLostMessagesLogic_3() {
+        this->isf->ClearPackets(1, 100);
+        this->isf->m_startMsgSeqNum = 3;
+        this->isf->m_endMsgSeqNum = 3;
+        this->isf->m_packets[3]->m_address = this->CreateHearthBeatMessage(3);
+        this->isf->ProcessSecurityStatusMessages();
+        if(!TestNotRequested(1, 10))
+            throw;
+    }
+
+    void FillMessages(int startIndex, int endIndex) {
+        this->m_helper->m_buffer->Reset();
+        for(int i = startIndex; i <= endIndex; i++)
+            this->isf->m_packets[i]->m_address = this->CreateHearthBeatMessage(i);
+    }
+
+    bool CheckRequestInfo(int index, FeedConnection *conn, int start, int end) {
+        FeedConnectionRequestMessageInfo *info = this->hr->m_hsRequestList->Item(0);
+        if(info->m_conn != conn)
+            return false;
+        if(info->m_requestCount != 0)
+            return false;
+        if(info->StartMsgSeqNo() != start)
+            return false;
+        if(info->EndMsgSeqNo() != end)
+            return false;
+        return true;
+    }
+
+    // request one message
+    void TestRequestLostMessagesLogic_4() {
+        this->isf->ClearPackets(1, 100);
+        this->isf->m_startMsgSeqNum = 3;
+        this->isf->m_endMsgSeqNum = 4;
+        this->FillMessages(4, 4);
+        this->isf->ProcessSecurityStatusMessages();
+        if(!TestRequested(3,3))
+            throw;
+        if(this->hr->m_hsRequestList->Count() != 1)
+            throw;
+        if(!CheckRequestInfo(0, this->isf, 3, 3))
+            throw;
+    }
+
+    // request some messages
+    void TestRequestLostMessagesLogic_5() {
+        this->isf->ClearPackets(1, 100);
+        this->hr->m_hsRequestList->Clear();
+        this->isf->m_startMsgSeqNum = 4;
+        this->isf->m_endMsgSeqNum = 21;
+        this->FillMessages(4, 10);
+        this->FillMessages(20, 21);
+        this->isf->ProcessSecurityStatusMessages();
+        if(!TestRequested(11,19))
+            throw;
+        if(!TestNotRequested(4, 10))
+            throw;
+        if(!TestNotRequested(20, 21))
+            throw;
+        if(this->hr->m_hsRequestList->Count() != 1)
+            throw;
+        if(!CheckRequestInfo(0, this->isf, 11, 19))
+            throw;
+    }
+
+    void TestRequestLostMessagesLogic() {
+        TestRequestLostMessagesLogic_1();
+        TestRequestLostMessagesLogic_2();
+        TestRequestLostMessagesLogic_3();
+        TestRequestLostMessagesLogic_4();
+        TestRequestLostMessagesLogic_5();
+
+        // TODO try append additional messages - NO!
+        // There is no situation when we need append additional messages,
+        // because we can request lost message when we receive at least one and detect GAP
+    }
+
     void Test() {
         printf("ISF TestDefaults\n");
         TestDefaults();
@@ -316,8 +446,11 @@ public:
         TestReceiveExistingSymbol();
         printf("ISF TestCallHistoricalReplayWhenLostMessage\n");
         TestCallHistoricalReplayWhenLostMessage();
+        printf("ISF TestRequestLostMessagesLogic\n");
+        TestRequestLostMessagesLogic();
         printf("ISF TestStartSnapshotInstedOfHistoricalReplay\n");
         TestStartSnapshotInstedOfHistoricalReplay();
+
     }
 };
 
