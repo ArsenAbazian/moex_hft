@@ -67,6 +67,7 @@ public:
 
     void InitSecurityDefinitionCore() {
         this->idf->Stop();
+        this->idf->m_idfMode = FeedConnectionSecurityDefinitionMode::sdmCollectData;
         this->idf->Start();
         if(this->idf->m_symbolManager->SymbolCount() != 0)
             throw;
@@ -282,24 +283,170 @@ public:
         this->Clear();
         this->InitSecurityDefinitionCore();
 
-        if(this->idf->State() != FeedConnectionState::fcsSuspend)
+        if (this->idf->State() != FeedConnectionState::fcsSuspend)
             throw;
         this->isf->SetMaxLostPacketCountForStartSnapshot(0);
         this->isf->Start();
         this->m_helper->SendMessagesIsf_Hr(this->isf,
                                            this->hr,
                                            "     msgSeqNo 1 hbeat,"
-                                           "     msgSeqNo 2 hbeat,"
-                                           "     msgSeqNo 3 isf smb1 trd1 NA 118 0,"
-                                           "lost msgSeqNo 4 isf smb1 trd2 O 130 0,"
-                                           "     msgSeqNo 5 isf smb2 trd1 C 17  0,"
-                                           "     msgSeqNo 6 isf smb2 trd2 N 102 0",
+                                                   "     msgSeqNo 2 hbeat,"
+                                                   "     msgSeqNo 3 isf smb1 trd1 NA 118 0,"
+                                                   "lost msgSeqNo 4 isf smb1 trd2 O 130 0,"
+                                                   "     msgSeqNo 5 isf smb2 trd1 C 17  0,"
+                                                   "     msgSeqNo 6 isf smb2 trd2 N 102 0",
+                                           30);
+        if (this->idf->State() != FeedConnectionState::fcsListenSecurityDefinition) // start snapshot mode...
+            throw;
+        if (this->idf->SecurityDefinitionMode() != FeedConnectionSecurityDefinitionMode::sdmUpdateData)
+            throw;
+        // some idf values should be reset for correct start
+        if (this->idf->m_idfStartMsgSeqNo != 0)
+            throw;
+        if (this->idf->m_idfState != FeedConnectionSecurityDefinitionState::sdsProcessToEnd)
+            throw;
+    }
+    // assume that SecurityDefinition is started already
+    // do not start it again and!!! do not use historical replay
+    void TestStartSnapshotInstedOfHistoricalReplay_2() {
+        this->Clear();
+        this->InitSecurityDefinitionCore();
+
+        if (this->idf->State() != FeedConnectionState::fcsSuspend)
+            throw;
+
+        this->idf->Start();
+        this->idf->m_idfMode = FeedConnectionSecurityDefinitionMode::sdmUpdateData;
+        this->idf->m_idfStartMsgSeqNo = 1;
+        this->idf->m_idfState = FeedConnectionSecurityDefinitionState::sdsProcessFromStart;
+        this->idf->m_idfMaxMsgSeqNo = 2;
+
+        this->isf->SetMaxLostPacketCountForStartSnapshot(0);
+        this->isf->Start();
+        this->m_helper->SendMessagesIsf_Hr(this->isf,
+                                           this->hr,
+                                           "     msgSeqNo 1 hbeat,"
+                                                   "     msgSeqNo 2 hbeat,"
+                                                   "     msgSeqNo 3 isf smb1 trd1 NA 118 0,"
+                                                   "lost msgSeqNo 4 isf smb1 trd2 O 130 0,"
+                                                   "     msgSeqNo 5 isf smb2 trd1 C 17  0,"
+                                                   "     msgSeqNo 6 isf smb2 trd2 N 102 0",
                                            30);
         if(this->idf->State() != FeedConnectionState::fcsListenSecurityDefinition) // start snapshot mode...
             throw;
+        if(this->idf->SecurityDefinitionMode() != FeedConnectionSecurityDefinitionMode::sdmUpdateData)
+            throw;
+        if(this->idf->m_idfStartMsgSeqNo == 0)
+            throw;
+        if(this->idf->m_idfState != FeedConnectionSecurityDefinitionState::sdsProcessFromStart)
+            throw;
+        if(this->hr->m_hsRequestList->Count() > 0)
+            throw;
     }
 
-    void TestStartSnapshotInstedOfHistoricalReplay_2() {
+    // security definition and security status works in parallel
+    // after complete all symbols security status should start from current msg_index
+    // without any hr request or start snapshot
+    // security definition not collect all the data
+    // isf was started earlier
+    void TestStartSnapshotInstedOfHistoricalReplay_3() {
+        this->Clear();
+
+        this->isf->SetMaxLostPacketCountForStartSnapshot(100);
+        this->idf->m_idfMode = FeedConnectionSecurityDefinitionMode::sdmCollectData;
+        this->idf->m_idfAllowUpdateData = false;
+        this->idf->Start();
+        this->isf->Start();
+        this->m_helper->SendMessagesIsf_Idf_Hr(
+                this->isf, this->idf, this->hr,
+                        "msgSeqNo 1 totNumReports 3 idf smb1 session trd1, "
+                        "msgSeqNo 2 totNumReports 3 idf smb2 session trd1, "
+                        "msgSeqNo 3 totNumReports 3 idf smb3 session trd1, "
+                        "msgSeqNo 1 totNumReports 3 idf smb1 session trd1, "
+                        "msgSeqNo 2 totNumReports 3 idf smb2 session trd1, "
+                        "msgSeqNo 3 totNumReports 3 idf smb3 session trd1, "
+                        "msgSeqNo 1 totNumReports 3 idf smb1 session trd1, "
+                        "msgSeqNo 2 totNumReports 3 idf smb2 session trd1, "
+                        "msgSeqNo 3 totNumReports 3 idf smb3 session trd1  "
+                        ,
+                        "msgSeqNo 1 isf smb1 trd1 NA 118 0, "
+                        "msgSeqNo 2 isf smb1 trd1 NA 118 0, "
+                        "msgSeqNo 3 isf smb1 trd1 NA 118 0, "
+                        "msgSeqNo 4 isf smb1 trd1 NA 118 0, "
+                        "msgSeqNo 5 isf smb1 trd1 NA 118 0, "
+                        "msgSeqNo 6 isf smb1 trd1 NA 118 0, "
+                        "msgSeqNo 7 isf smb1 trd1 NA 118 0, "
+                        "msgSeqNo 8 isf smb1 trd1 NA 118 0, "
+                        "msgSeqNo 9 isf smb1 trd1 NA 118 0, "
+                        "msgSeqNo 10 isf smb1 trd1 NA 118 0, "
+                        "msgSeqNo 11 isf smb1 trd1 NA 118 0, "
+                        "msgSeqNo 12 hbeat  "
+                ,
+                30);
+        if(!this->idf->IsIdfDataCollected())
+            throw;
+        if(this->idf->SymbolCount() != 3)
+            throw;
+        if(this->idf->State() != FeedConnectionState::fcsSuspend)
+            throw;
+        if(this->isf->State() != FeedConnectionState::fcsListenSecurityStatus)
+            throw;
+        if(this->isf->m_endMsgSeqNum != 12)
+            throw;
+        if(this->isf->m_startMsgSeqNum != 12)
+            throw;
+        if(this->hr->m_hsRequestList->Count() != 0)
+            throw;
+        if(TradingSession(this->idf->Symbol(0), 0, 0)->SecurityTradingStatus != 118)
+            throw;
+    }
+
+    // security definition and security status works in parallel
+    // after complete all symbols security status should start from current msg_index
+    // without any hr request or start snapshot
+    // security definition not collect all the data
+    // isf not started
+    void TestStartSnapshotInstedOfHistoricalReplay_4() {
+        printf("TODO Test Please Starting SecurityStatus after SecurityDefinition");
+        /*this->Clear();
+
+        this->isf->SetMaxLostPacketCountForStartSnapshot(100);
+        this->idf->m_idfMode = FeedConnectionSecurityDefinitionMode::sdmCollectData;
+        this->idf->m_idfAllowUpdateData = false;
+        this->idf->Start();
+        this->isf->Start();
+        this->m_helper->SendMessagesIsf_Idf_Hr(
+                this->isf, this->idf, this->hr,
+                "msgSeqNo 1 totNumReports 3 idf smb1 session trd1, "
+                        "msgSeqNo 2 totNumReports 3 idf smb2 session trd1, "
+                        "msgSeqNo 3 totNumReports 3 idf smb3 session trd1, "
+                        "msgSeqNo 1 totNumReports 3 idf smb1 session trd1, "
+                        "msgSeqNo 2 totNumReports 3 idf smb2 session trd1, "
+                        "msgSeqNo 3 totNumReports 3 idf smb3 session trd1, "
+                        "msgSeqNo 1 totNumReports 3 idf smb1 session trd1, "
+                        "msgSeqNo 2 totNumReports 3 idf smb2 session trd1, "
+                        "msgSeqNo 3 totNumReports 3 idf smb3 session trd1  "
+                ,
+                "msgSeqNo 1 isf smb1 trd1 NA 118 0, "
+                        "msgSeqNo 2 isf smb1 trd1 NA 118 0, "
+                        "msgSeqNo 3 isf smb1 trd1 NA 118 0, "
+                        "msgSeqNo 4 isf smb1 trd1 NA 118 0, "
+                        "msgSeqNo 5 isf smb1 trd1 NA 118 0, "
+                        "msgSeqNo 6 isf smb1 trd1 NA 118 0, "
+                        "msgSeqNo 7 isf smb1 trd1 NA 118 0, "
+                        "msgSeqNo 8 isf smb1 trd1 NA 118 0, "
+                        "msgSeqNo 9 isf smb1 trd1 NA 118 0, "
+                        "msgSeqNo 10 isf smb1 trd1 NA 118 0, "
+                        "msgSeqNo 11 isf smb1 trd1 NA 118 0, "
+                        "msgSeqNo 12 hbeat  "
+                ,
+                30);*/
+
+    }
+
+    // when security definition should stop?
+    // lets try appreach when security definition is process one circle and then stop
+    void TestStartSnapshotInstedOfHistoricalReplay_5() {
         throw;
     }
 
@@ -308,6 +455,12 @@ public:
         TestStartSnapshotInstedOfHistoricalReplay_1();
         printf("ISF TestStartSnapshotInstedOfHistoricalReplay_2\n");
         TestStartSnapshotInstedOfHistoricalReplay_2();
+        printf("ISF TestStartSnapshotInstedOfHistoricalReplay_3\n");
+        TestStartSnapshotInstedOfHistoricalReplay_3();
+        printf("ISF TestStartSnapshotInstedOfHistoricalReplay_4\n");
+        TestStartSnapshotInstedOfHistoricalReplay_4();
+        printf("ISF TestStartSnapshotInstedOfHistoricalReplay_5\n");
+        TestStartSnapshotInstedOfHistoricalReplay_5();
     }
 
     // default
@@ -462,7 +615,8 @@ public:
             throw;
     }
 
-    // two GAPs
+    // two GAPs and called twice
+    // avoid of dublicate requests
     void TestRequestLostMessagesLogic_7() {
         this->isf->ClearPackets(1, 100);
         this->hr->m_hsRequestList->Clear();
@@ -508,7 +662,6 @@ public:
         TestRequestLostMessagesLogic();
         printf("ISF TestStartSnapshotInstedOfHistoricalReplay\n");
         TestStartSnapshotInstedOfHistoricalReplay();
-
     }
 };
 

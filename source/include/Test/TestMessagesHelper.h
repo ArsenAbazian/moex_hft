@@ -2026,6 +2026,66 @@ public:
         }
     }
 
+    int CreateTemplates(const char *msg, TestTemplateInfo ***ptr) {
+        int count = CalcMsgCount(msg);
+        TestTemplateInfo **tmp = new TestTemplateInfo*[count];
+        FillMsg(tmp, count, msg);
+        *ptr = tmp;
+        return count;
+    }
+
+    void SendMessagesIsf_Idf_Hr(FeedConnection *isf, FeedConnection *idf, FeedConnection *hr, const char *strisf, const char *stridf, int delay) {
+        TestTemplateInfo **tisf, **tidf;
+
+        int idfCount = CreateTemplates(stridf, &tidf);
+        int isfCount = CreateTemplates(strisf, &tisf);
+
+        ClearFeedInfo();
+        SetMsgSeqNumbers(tidf, idfCount);
+        SetMsgSeqNumbers(tisf, isfCount);
+        AddFeedInfo(isf, tisf, isfCount);
+
+        hr->SetTestMessagesHelper(this);
+
+        int idfIndex = 0, isfIndex = 0;
+
+        Stopwatch w;
+        w.Start(1);
+
+        while(idfIndex < idfCount || isfIndex < isfCount) {
+            if(isf->State() != FeedConnectionState::fcsSuspend) {
+                if (isfIndex < isfCount) {
+                    if (!tisf[isfIndex]->m_lost) {
+                        SendMessage(isf, tisf[isfIndex]);
+                        if (!isf->Listen_Atom_SecurityStatus_Core())
+                            throw;
+                    }
+                    isfIndex++;
+                }
+            }
+            if(idf->State() != FeedConnectionState::fcsSuspend) {
+                if(idfIndex < idfCount) {
+                    if (!tidf[idfIndex]->m_lost) {
+                        SendMessage(idf, tidf[idfIndex]);
+                        if (!idf->Listen_Atom_SecurityDefinition_Core())
+                            throw;
+                    }
+                    idfIndex++;
+                }
+            }
+
+            w.Start();
+            while (!w.IsElapsedMilliseconds(delay)) {
+                hr->DoWorkAtom();
+            }
+            w.Stop();
+            hr->DoWorkAtom();
+
+            if(!TestMessagesHelper::SkipTimeOutCheck && w.ElapsedMilliseconds(1) > 5000)
+                throw;
+        }
+    }
+
     void SendMessagesIsf_Hr(FeedConnection *fif, FeedConnection *hr, const char *idf, int delay) {
         int idfMsgCount = CalcMsgCount(idf);
 
