@@ -382,7 +382,8 @@ public:
                         "msgSeqNo 11 isf smb1 trd1 NA 118 0, "
                         "msgSeqNo 12 hbeat  "
                 ,
-                30);
+                30,
+        true);
         if(!this->idf->IsIdfDataCollected())
             throw;
         if(this->idf->SymbolCount() != 3)

@@ -103,8 +103,8 @@
       <file leaf-file-name="TestMessagesHelper.h" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/source/include/Test/TestMessagesHelper.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="419">
-              <caret line="2084" column="0" selection-start-line="2084" selection-start-column="0" selection-end-line="2084" selection-end-column="0" />
+            <state relative-caret-position="18">
+              <caret line="2051" column="20" selection-start-line="2051" selection-start-column="20" selection-end-line="2051" selection-end-column="20" />
               <folding>
                 <element signature="e#118#154#0" expanded="true" />
               </folding>
@@ -125,10 +125,10 @@
       <file leaf-file-name="SecurityStatusTester.h" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/source/include/Test/SecurityStatusTester.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="291">
-              <caret line="371" column="25" selection-start-line="371" selection-start-column="25" selection-end-line="371" selection-end-column="25" />
+            <state relative-caret-position="140">
+              <caret line="387" column="0" selection-start-line="387" selection-start-column="0" selection-end-line="387" selection-end-column="0" />
               <folding>
-                <marker date="1485879829135" expanded="false" signature="131:268" ph="..." />
+                <marker date="1485881751883" expanded="false" signature="131:268" ph="..." />
               </folding>
             </state>
           </provider>
@@ -221,8 +221,8 @@
         <option value="$PROJECT_DIR$/source/src/FeedConnection.cpp" />
         <option value="$PROJECT_DIR$/source/include/FeedTypes.h" />
         <option value="$PROJECT_DIR$/source/include/FeedConnection.h" />
-        <option value="$PROJECT_DIR$/source/include/Test/TestMessagesHelper.h" />
         <option value="$PROJECT_DIR$/source/include/Test/SecurityStatusTester.h" />
+        <option value="$PROJECT_DIR$/source/include/Test/TestMessagesHelper.h" />
       </list>
     </option>
   </component>
@@ -895,14 +895,7 @@
       <workItem from="1485289628752" duration="3256000" />
       <workItem from="1485360458343" duration="5190000" />
       <workItem from="1485422559678" duration="18304000" />
-      <workItem from="1485760122349" duration="10641000" />
-    </task>
-    <task id="LOCAL-00111" summary="Make some methods inline :)">
-      <created>1482265812567</created>
-      <option name="number" value="00111" />
-      <option name="presentableId" value="LOCAL-00111" />
-      <option name="project" value="LOCAL" />
-      <updated>1482265812569</updated>
+      <workItem from="1485760122349" duration="11344000" />
     </task>
     <task id="LOCAL-00112" summary="Working on MSR/MSS&#10;1. Fixed bug - in MSR template there is no PresenceMap in GroupMDEntries, BUT SHOULD BECAUSE OF (FUUUUUUCK!!!!) optional presence with copy operator.&#10;2. Wrote some tests">
       <created>1482349195356</created>
@@ -1240,11 +1233,18 @@
       <option name="project" value="LOCAL" />
       <updated>1485790275083</updated>
     </task>
-    <option name="localTasksCounter" value="160" />
+    <task id="LOCAL-00160" summary="1. Wrote some other tests on obtaining lost message in  SecurityStatus via HistoricalReplay... &#10;2. Continue working on SecurityStatus">
+      <created>1485879931166</created>
+      <option name="number" value="00160" />
+      <option name="presentableId" value="LOCAL-00160" />
+      <option name="project" value="LOCAL" />
+      <updated>1485879931166</updated>
+    </task>
+    <option name="localTasksCounter" value="161" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="1352671000" />
+    <option name="totallyTimeSpent" value="1353374000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -1257,7 +1257,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="65" y="24" width="1855" height="951" extended-state="6" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25382096" sideWeight="0.493007" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32908458" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -1269,7 +1269,7 @@
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.289267" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3282532" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.235262" sideWeight="0.506993" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24970692" sideWeight="0.5634817" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.43376318" sideWeight="0.5634817" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -1353,9 +1353,9 @@
     <MESSAGE value="Working on getting lost messages for SecurityStatus...." />
     <MESSAGE value="Continue working on getting lost messages for SecurityStatus...." />
     <MESSAGE value="1. Wrote some tests on obtaining lost message in  SecurityStatus via HistoricalReplay... &#10;2. Continue working on SecurityStatus" />
-    <MESSAGE value="1. Wrote some other tests on obtaining lost message in  SecurityStatus via HistoricalReplay... &#10;2. Continue working on SecurityStatus" />
     <MESSAGE value="1. Wrote some other tests on obtaining lost message in  SecurityStatus via HistoricalReplay... &#10;2. Continue working on SecurityStatus&#10;3. All Tests Passed" />
-    <option name="LAST_COMMIT_MESSAGE" value="1. Wrote some other tests on obtaining lost message in  SecurityStatus via HistoricalReplay... &#10;2. Continue working on SecurityStatus&#10;3. All Tests Passed" />
+    <MESSAGE value="1. Wrote some other tests on obtaining lost message in  SecurityStatus via HistoricalReplay... &#10;2. Continue working on SecurityStatus" />
+    <option name="LAST_COMMIT_MESSAGE" value="1. Wrote some other tests on obtaining lost message in  SecurityStatus via HistoricalReplay... &#10;2. Continue working on SecurityStatus" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1397,7 +1397,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/source/include/Test/SecurityStatusTester.h</url>
-          <line>401</line>
+          <line>402</line>
           <option name="timeStamp" value="1448" />
         </line-breakpoint>
       </breakpoints>
@@ -1802,8 +1802,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/source/include/Test/TestMessagesHelper.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="419">
-          <caret line="2084" column="0" selection-start-line="2084" selection-start-column="0" selection-end-line="2084" selection-end-column="0" />
+        <state relative-caret-position="18">
+          <caret line="2051" column="20" selection-start-line="2051" selection-start-column="20" selection-end-line="2051" selection-end-column="20" />
           <folding>
             <element signature="e#118#154#0" expanded="true" />
           </folding>
@@ -1812,10 +1812,10 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/source/include/Test/SecurityStatusTester.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="291">
-          <caret line="371" column="25" selection-start-line="371" selection-start-column="25" selection-end-line="371" selection-end-column="25" />
+        <state relative-caret-position="140">
+          <caret line="387" column="0" selection-start-line="387" selection-start-column="0" selection-end-line="387" selection-end-column="0" />
           <folding>
-            <marker date="1485879829135" expanded="false" signature="131:268" ph="..." />
+            <marker date="1485881751883" expanded="false" signature="131:268" ph="..." />
           </folding>
         </state>
       </provider>
