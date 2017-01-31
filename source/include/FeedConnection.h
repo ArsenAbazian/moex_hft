@@ -193,6 +193,10 @@ protected:
     }
 
 	inline bool CanListen() { return this->socketAManager->ShouldRecv() || this->socketBManager->ShouldRecv(); }
+    inline void ThreatFirstMessageIndexAsStart() {
+        this->m_startMsgSeqNum = -1;
+        this->m_endMsgSeqNum = 0;
+    }
 
     inline bool ProcessServerA() { return this->ProcessServer(this->socketAManager, LogMessageCode::lmcsocketA); }
     inline bool ProcessServerB() { return this->ProcessServer(this->socketBManager, LogMessageCode::lmcsocketB); }
@@ -224,6 +228,8 @@ protected:
         else if(this->m_type == FeedConnectionType::InstrumentStatus) {
             if(this->m_endMsgSeqNum < msgSeqNum)
                 this->m_endMsgSeqNum = msgSeqNum;
+            if(this->m_startMsgSeqNum == -1)
+                this->m_startMsgSeqNum = msgSeqNum;
         }
         else {
             this->m_waitTimer->Start();
@@ -267,6 +273,8 @@ protected:
         else if(this->m_type == FeedConnectionType::InstrumentStatus) {
             if(this->m_endMsgSeqNum < msgSeqNum)
                 this->m_endMsgSeqNum = msgSeqNum;
+            if(this->m_startMsgSeqNum == -1)
+                this->m_startMsgSeqNum = msgSeqNum;
         }
         else {
             this->m_waitTimer->Start();

@@ -2034,7 +2034,7 @@ public:
         return count;
     }
 
-    void SendMessagesIsf_Idf_Hr(FeedConnection *isf, FeedConnection *idf, FeedConnection *hr, const char *strisf, const char *stridf, int delay, bool startIsfAfterIdfComplete) {
+    void SendMessagesIsf_Idf_Hr(FeedConnection *isf, FeedConnection *idf, FeedConnection *hr, const char *stridf, const char *strisf, int delay, bool startIsfAfterIdfComplete) {
         TestTemplateInfo **tisf, **tidf;
 
         int idfCount = CreateTemplates(stridf, &tidf);
@@ -2069,8 +2069,10 @@ public:
                         SendMessage(idf, tidf[idfIndex]);
                         if (!idf->Listen_Atom_SecurityDefinition_Core())
                             throw;
-                        if(startIsfAfterIdfComplete && idf->IsIdfDataCollected())
+                        if(startIsfAfterIdfComplete && idf->IsIdfDataCollected()) {
+                            isf->ThreatFirstMessageIndexAsStart();
                             isf->Start();
+                        }
                     }
                     idfIndex++;
                 }

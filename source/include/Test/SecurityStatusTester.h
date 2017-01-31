@@ -356,7 +356,6 @@ public:
         this->idf->m_idfMode = FeedConnectionSecurityDefinitionMode::sdmCollectData;
         this->idf->m_idfAllowUpdateData = false;
         this->idf->Start();
-        this->isf->Start();
         this->m_helper->SendMessagesIsf_Idf_Hr(
                 this->isf, this->idf, this->hr,
                         "msgSeqNo 1 totNumReports 3 idf smb1 session trd1, "
