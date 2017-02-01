@@ -467,7 +467,70 @@ public:
     // when security definition should stop?
     // lets try appreach when security definition is process one circle and then stop
     void TestStartSnapshotInstedOfHistoricalReplay_5() {
-        throw;
+        this->Clear();
+
+        this->idf->m_idfMode = FeedConnectionSecurityDefinitionMode::sdmCollectData;
+        this->isf->SetMaxLostPacketCountForStartSnapshot(2);
+
+        this->isf->Stop();
+        this->idf->Start();
+
+        this->m_helper->SendMessagesIsf_Idf_Hr(
+                this->isf, this->idf, this->hr,
+                "msgSeqNo 1 totNumReports 3 idf smb1 session trd1, "
+                        "msgSeqNo 2 totNumReports 3 idf smb2 session trd1, "
+                        "msgSeqNo 3 totNumReports 3 idf smb3 session trd1, "
+                        "msgSeqNo 1 totNumReports 3 idf smb1 session trd1, "
+                        "msgSeqNo 2 totNumReports 3 idf smb2 session trd1, "
+                        "msgSeqNo 3 totNumReports 3 idf smb3 session trd1, "
+                        "msgSeqNo 1 totNumReports 3 idf smb1 session trd1, "
+                        "msgSeqNo 2 totNumReports 3 idf smb2 session trd1 status 118, "
+                        "msgSeqNo 3 totNumReports 3 idf smb3 session trd1, "
+                        "msgSeqNo 1 totNumReports 3 idf smb1 session trd1, "
+                        "msgSeqNo 2 totNumReports 3 idf smb2 session trd1 status 118, "
+                        "msgSeqNo 3 totNumReports 3 idf smb3 session trd1, "
+                        "msgSeqNo 1 totNumReports 3 idf smb1 session trd1, "
+                        "msgSeqNo 2 totNumReports 3 idf smb2 session trd1 status 118, "
+                        "msgSeqNo 3 totNumReports 3 idf smb3 session trd1, "
+                        "msgSeqNo 1 totNumReports 3 idf smb1 session trd1, "
+                        "msgSeqNo 2 totNumReports 3 idf smb2 session trd1 status 118, "
+                        "msgSeqNo 3 totNumReports 3 idf smb3 session trd1 "
+                ,
+                        "msgSeqNo 1 isf smb1 trd1 NA 118 0, "
+                        "msgSeqNo 2 isf smb1 trd1 NA 118 0, "
+                        "msgSeqNo 3 isf smb1 trd1 NA 118 0, "
+                        "msgSeqNo 4 isf smb1 trd1 NA 118 0, "
+                        "msgSeqNo 5 isf smb1 trd1 NA 118 0, "
+                        "lost msgSeqNo 6 isf smb2 trd1 NA 118 0, "
+                        "lost msgSeqNo 7 isf smb2 trd1 NA 118 0, "
+                        "lost msgSeqNo 8 isf smb2 trd1 NA 118 0, "
+                        "msgSeqNo 9 isf smb1 trd1 NA 118 0, "
+                        "msgSeqNo 10 isf smb1 trd1 NA 118 0, "
+                        "msgSeqNo 11 isf smb1 trd1 NA 118 0, "
+                        "msgSeqNo 12 hbeat, "
+                        "msgSeqNo 13 hbeat, "
+                        "msgSeqNo 14 hbeat, "
+                        "msgSeqNo 15 hbeat, "
+                        "msgSeqNo 16 hbeat, "
+                        "msgSeqNo 17 hbeat  "
+                ,
+                30,
+                true,
+                true);
+        if(this->idf->State() != FeedConnectionState::fcsSuspend)
+            throw;
+        if(this->isf->State() != FeedConnectionState::fcsListenSecurityStatus)
+            throw;
+        if(this->idf->IdfMode() != FeedConnectionSecurityDefinitionMode::sdmUpdateData)
+            throw;
+        if(this->isf->m_endMsgSeqNum != 17)
+            throw;
+        if(this->isf->m_startMsgSeqNum != 18)
+            throw;
+        if(TradingSession(this->idf->Symbol(0), 0, 0)->SecurityTradingStatus != 118)
+            throw;
+        if(TradingSession(this->idf->Symbol(1), 0, 0)->SecurityTradingStatus != 118)
+            throw;
     }
 
     void TestStartSnapshotInstedOfHistoricalReplay() {

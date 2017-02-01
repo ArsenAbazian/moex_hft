@@ -56,6 +56,7 @@ protected:
     FeedConnection                              *m_snapshot;
     FeedConnection                              *m_historicalReplay;
     FeedConnection                              *m_securityDefinition;
+    bool                                        m_securityStatusSnapshotActive;
 
     FeedConnection                              *m_connectionsToRecvSymbols[32];
     int                                         m_connectionsToRecvSymbolsCount;
@@ -541,14 +542,19 @@ protected:
     inline void StartSecurityStatusSnapshot() {
         this->m_securityDefinition->m_idfMode = FeedConnectionSecurityDefinitionMode::sdmUpdateData;
         this->m_securityDefinition->Start();
+        this->m_securityStatusSnapshotActive = true;
     }
 
-    inline bool IsSecurityStatusSnapshotRun() {
-        return this->m_securityDefinition->m_idfMode == FeedConnectionSecurityDefinitionMode::sdmUpdateData &&
-                this->m_securityDefinition->m_state == FeedConnectionState::fcsListenSecurityDefinition;
+    inline void FinishSecurityStatusSnapshot() {
+        this->m_securityDefinition->Stop();
+        this->m_securityStatusSnapshotActive = false;
     }
+
+    inline bool IsSecurityStatusSnapshotActive() { return this->m_securityStatusSnapshotActive; }
 
     inline bool ShouldStartSecurityStatusSnapshot(int endIndex) {
+        if(this->m_securityStatusSnapshotActive)
+            return false;
         if(this->m_securityDefinition->m_state != FeedConnectionState::fcsSuspend)
             return false;
         if(endIndex - this->m_requestMessageStartIndex < this->m_maxLostPacketCountForStartSnapshot)
@@ -557,6 +563,8 @@ protected:
     }
 
     inline void CheckRequestLostSecurityStatusMessages() {
+        if(this->m_securityStatusSnapshotActive)
+            return;
         if(this->m_requestMessageStartIndex == -1)
             return;
         while(this->m_requestMessageStartIndex <= this->m_endMsgSeqNum) {
@@ -566,7 +574,7 @@ protected:
             int endIndex = GetRequestMessageEndIndex(this->m_requestMessageStartIndex);
             if(ShouldStartSecurityStatusSnapshot(endIndex))
                 this->StartSecurityStatusSnapshot();
-            else if(!IsSecurityStatusSnapshotRun())
+            else if(!IsSecurityStatusSnapshotActive())
                 this->RequestMessages(this->m_requestMessageStartIndex, endIndex);
             this->m_requestMessageStartIndex = endIndex + 1;
         }

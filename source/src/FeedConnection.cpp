@@ -46,6 +46,7 @@ FeedConnection::FeedConnection(const char *id, const char *name, char value, Fee
 	this->m_startMsgSeqNum = 1;
 	this->m_endMsgSeqNum = 0;
     this->m_requestMessageStartIndex = -1;
+    this->m_securityStatusSnapshotActive = false;
 
 	this->SetState(FeedConnectionState::fcsSuspend);
 
@@ -79,6 +80,7 @@ FeedConnection::FeedConnection() {
     this->m_startMsgSeqNum = 1;
     this->m_endMsgSeqNum = 0;
     this->m_requestMessageStartIndex = -1;
+    this->m_securityStatusSnapshotActive = false;
 
     this->m_type = FeedConnectionType::Incremental;
     this->m_packets = 0;
