@@ -56,6 +56,8 @@ public:
             throw;
         if(this->isf->MaxLostPacketCountForStartSnapshot() != 0)
             throw;
+        if(this->isf->CalcListenStateByType() != FeedConnectionState::fcsListenSecurityStatus)
+            throw;
     }
 
     //Can be length of 1 or 2.
@@ -343,12 +345,11 @@ public:
         if(this->hr->m_hsRequestList->Count() > 0)
             throw;
     }
-
     // security definition and security status works in parallel
     // after complete all symbols security status should start from current msg_index
     // without any hr request or start snapshot
     // security definition not collect all the data
-    // isf was started earlier
+    // isf not started
     void TestStartSnapshotInstedOfHistoricalReplay_3() {
         this->Clear();
 
@@ -382,7 +383,9 @@ public:
                         "msgSeqNo 12 hbeat  "
                 ,
                 30,
+        true,
         true);
+
         if(!this->idf->IsIdfDataCollected())
             throw;
         if(this->idf->SymbolCount() != 3)
@@ -393,7 +396,7 @@ public:
             throw;
         if(this->isf->m_endMsgSeqNum != 12)
             throw;
-        if(this->isf->m_startMsgSeqNum != 12)
+        if(this->isf->m_startMsgSeqNum != 13)
             throw;
         if(this->hr->m_hsRequestList->Count() != 0)
             throw;
@@ -405,12 +408,12 @@ public:
     // after complete all symbols security status should start from current msg_index
     // without any hr request or start snapshot
     // security definition not collect all the data
-    // isf not started
+    // isf was started earlier
     void TestStartSnapshotInstedOfHistoricalReplay_4() {
-        printf("TODO Test Please Starting SecurityStatus after SecurityDefinition");
-        /*this->Clear();
+        this->Clear();
 
         this->isf->SetMaxLostPacketCountForStartSnapshot(100);
+        this->idf->ClearSecurityDefinitions();
         this->idf->m_idfMode = FeedConnectionSecurityDefinitionMode::sdmCollectData;
         this->idf->m_idfAllowUpdateData = false;
         this->idf->Start();
@@ -440,8 +443,25 @@ public:
                         "msgSeqNo 11 isf smb1 trd1 NA 118 0, "
                         "msgSeqNo 12 hbeat  "
                 ,
-                30);*/
-
+                30,
+        false,
+        true);
+        if(!this->idf->IsIdfDataCollected())
+            throw;
+        if(this->idf->SymbolCount() != 3)
+            throw;
+        if(this->idf->State() != FeedConnectionState::fcsSuspend)
+            throw;
+        if(this->isf->State() != FeedConnectionState::fcsListenSecurityStatus)
+            throw;
+        if(this->isf->m_endMsgSeqNum != 12)
+            throw;
+        if(this->isf->m_startMsgSeqNum != 13)
+            throw;
+        if(this->hr->m_hsRequestList->Count() != 0)
+            throw;
+        if(TradingSession(this->idf->Symbol(0), 0, 0)->SecurityTradingStatus != 118)
+            throw;
     }
 
     // when security definition should stop?

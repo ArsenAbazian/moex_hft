@@ -1493,6 +1493,8 @@ protected:
 	}
 
     inline bool ProcessSecurityStatus(FastSecurityStatusInfo *info) {
+        if(!this->m_securityDefinition->IsIdfDataCollected())
+            return true; // TODO just skip? Should we do something else?
         return this->m_securityDefinition->UpdateSecurityDefinition(info);
     }
 
@@ -2158,6 +2160,8 @@ public:
             return FeedConnectionState::fcsListenSnapshot;
         else if(m_type == FeedConnectionType::HistoricalReplay)
             return FeedConnectionState::fcsHistoricalReplay;
+        else if(m_type == FeedConnectionType::InstrumentStatus)
+            return FeedConnectionState::fcsListenSecurityStatus;
         return FeedConnectionState::fcsListenIncremental;
     }
 	inline void Listen() {

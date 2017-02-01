@@ -2034,7 +2034,7 @@ public:
         return count;
     }
 
-    void SendMessagesIsf_Idf_Hr(FeedConnection *isf, FeedConnection *idf, FeedConnection *hr, const char *stridf, const char *strisf, int delay, bool startIsfAfterIdfComplete) {
+    void SendMessagesIsf_Idf_Hr(FeedConnection *isf, FeedConnection *idf, FeedConnection *hr, const char *stridf, const char *strisf, int delay, bool startIsfAfterIdfComplete, bool skipIdfAfterIdfComplete) {
         TestTemplateInfo **tisf, **tidf;
 
         int idfCount = CreateTemplates(stridf, &tidf);
@@ -2053,7 +2053,7 @@ public:
         w.Start(1);
 
         while(idfIndex < idfCount || isfIndex < isfCount) {
-            if(isf->State() != FeedConnectionState::fcsSuspend) {
+            if (isf->State() != FeedConnectionState::fcsSuspend) {
                 if (isfIndex < isfCount) {
                     if (!tisf[isfIndex]->m_lost) {
                         SendMessage(isf, tisf[isfIndex]);
@@ -2063,21 +2063,24 @@ public:
                     isfIndex++;
                 }
             }
-            if(idf->State() != FeedConnectionState::fcsSuspend) {
-                if(idfIndex < idfCount) {
+            if (idf->State() != FeedConnectionState::fcsSuspend) {
+                if (idfIndex < idfCount) {
                     if (!tidf[idfIndex]->m_lost) {
                         SendMessage(idf, tidf[idfIndex]);
                         if (!idf->Listen_Atom_SecurityDefinition_Core())
                             throw;
-                        if(startIsfAfterIdfComplete && idf->IsIdfDataCollected()) {
-                            isf->ThreatFirstMessageIndexAsStart();
-                            isf->Start();
+                        if (idf->IsIdfDataCollected()) {
+                            if (startIsfAfterIdfComplete) {
+                                isf->ThreatFirstMessageIndexAsStart();
+                                isf->Start();
+                            }
+                            if (skipIdfAfterIdfComplete)
+                                idfIndex = idfCount - 1;
                         }
+                        idfIndex++;
                     }
-                    idfIndex++;
                 }
             }
-
             w.Start();
             while (!w.IsElapsedMilliseconds(delay)) {
                 hr->DoWorkAtom();
