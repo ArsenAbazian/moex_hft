@@ -383,7 +383,6 @@ public:
                         "msgSeqNo 12 hbeat  "
                 ,
                 30,
-        true,
         true);
 
         if(!this->idf->IsIdfDataCollected())
@@ -444,8 +443,7 @@ public:
                         "msgSeqNo 12 hbeat  "
                 ,
                 30,
-        false,
-        true);
+        false);
         if(!this->idf->IsIdfDataCollected())
             throw;
         if(this->idf->SymbolCount() != 3)
@@ -494,8 +492,7 @@ public:
                         "msgSeqNo 3 totNumReports 3 idf smb3 session trd1, "
                         "msgSeqNo 1 totNumReports 3 idf smb1 session trd1, "
                         "msgSeqNo 2 totNumReports 3 idf smb2 session trd1 status 118, "
-                        "msgSeqNo 3 totNumReports 3 idf smb3 session trd1 "
-                ,
+                        "msgSeqNo 3 totNumReports 3 idf smb3 session trd1 ",
                         "msgSeqNo 1 isf smb1 trd1 NA 118 0, "
                         "msgSeqNo 2 isf smb1 trd1 NA 118 0, "
                         "msgSeqNo 3 isf smb1 trd1 NA 118 0, "
@@ -512,10 +509,8 @@ public:
                         "msgSeqNo 14 hbeat, "
                         "msgSeqNo 15 hbeat, "
                         "msgSeqNo 16 hbeat, "
-                        "msgSeqNo 17 hbeat  "
-                ,
+                        "msgSeqNo 17 hbeat  ",
                 30,
-                true,
                 true);
         if(this->idf->State() != FeedConnectionState::fcsSuspend)
             throw;
@@ -527,7 +522,7 @@ public:
             throw;
         if(this->isf->m_startMsgSeqNum != 18)
             throw;
-        if(TradingSession(this->idf->Symbol(0), 0, 0)->SecurityTradingStatus != 118)
+        if(TradingSession(this->idf->Symbol(0), 0, 0)->SecurityTradingStatus != 0)
             throw;
         if(TradingSession(this->idf->Symbol(1), 0, 0)->SecurityTradingStatus != 118)
             throw;

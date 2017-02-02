@@ -80,6 +80,7 @@ protected:
 
     bool                                        m_idfDataCollected;
     bool                                        m_idfAllowUpdateData;
+    bool                                        m_idfStopAfterUpdateAllMessages;
     SymbolManager                               *m_symbolManager;
 
     FeedConnectionHistoricalReplayState             m_hsState;
@@ -541,6 +542,7 @@ protected:
 
     inline void StartSecurityStatusSnapshot() {
         this->m_securityDefinition->m_idfMode = FeedConnectionSecurityDefinitionMode::sdmUpdateData;
+        this->m_securityDefinition->IdfStopAfterUpdateMessages(true);
         this->m_securityDefinition->Start();
         this->m_securityStatusSnapshotActive = true;
     }
@@ -588,6 +590,9 @@ protected:
                 i++; continue;
             }
             if(this->m_packets[i]->m_address == 0) {
+                if(this->m_securityStatusSnapshotActive) {
+                    i++; continue;
+                }
                 if(this->m_requestMessageStartIndex < i)
                     this->m_requestMessageStartIndex = i;
                 break;
@@ -916,6 +921,9 @@ protected:
         if(this->m_idfMode == FeedConnectionSecurityDefinitionMode::sdmUpdateData) {
             this->UpdateSecurityDefinition(this->m_packets[this->m_endMsgSeqNum]);
             this->m_packets[this->m_endMsgSeqNum]->Clear();
+            if(this->m_endMsgSeqNum == this->m_idfStartMsgSeqNo) {
+                this->OnSecurityDefinitionUpdateAllMessages();
+            }
         }
         else {
             if (this->m_endMsgSeqNum == this->m_idfStartMsgSeqNo) {
@@ -951,8 +959,6 @@ protected:
     }
 
     inline bool Listen_Atom_SecurityDefinition_Core() {
-        if(this->m_endMsgSeqNum % 100 == 0)
-            printf("%d/%d/%d\n", this->m_idfStartMsgSeqNo, this->m_endMsgSeqNum, this->m_idfMaxMsgSeqNo);
         if(this->m_idfState == FeedConnectionSecurityDefinitionState::sdsProcessToEnd)
             return this->ProcessSecurityDefinitionMessagesToEnd();
         return this->ProcessSecurityDefinitionMessagesFromStart();
@@ -1800,10 +1806,17 @@ public:
         }
     }
 
+    inline void OnSecurityDefinitionUpdateAllMessages() {
+        this->m_idfDataCollected = true;
+        if(!this->m_idfStopAfterUpdateAllMessages)
+            return;
+        this->m_idfStartMsgSeqNo = 0;
+        this->Stop();
+    }
+
     inline void OnSecurityDefinitionRecvAllMessages() {
         this->m_idfDataCollected = true;
         this->m_idfStartMsgSeqNo = 0;
-        this->PrintSymbolManagerDebug();  // TODO debug messages
         this->ClearPackets(1, this->m_idfMaxMsgSeqNo);
         if(!this->m_idfAllowUpdateData) {
             this->Stop();
@@ -2065,6 +2078,8 @@ public:
 
     inline bool IsIdfDataCollected() { return this->m_idfDataCollected; }
     inline bool IdfAllowUpdateData() { return this->m_idfAllowUpdateData; }
+    inline bool IdfStopAfterUpdateMessages() { return this->m_idfStopAfterUpdateAllMessages; }
+    inline void IdfStopAfterUpdateMessages(bool value) { this->m_idfStopAfterUpdateAllMessages = value; }
     inline void IdfAllowUpdateData(bool value) { this->m_idfAllowUpdateData = value; }
     inline FeedConnectionSecurityDefinitionMode IdfMode() { return this->m_idfMode; }
     inline FeedConnectionSecurityDefinitionState IdfState() { return this->m_idfState; }
@@ -2179,18 +2194,29 @@ public:
 		else
 			this->SetNextState(st);
 	}
-    inline void BeforeListen() {
-        if(this->m_type == FeedConnectionType::InstrumentDefinition) {
-            this->ClearPackets(1, this->m_idfMaxMsgSeqNo);
+    inline void BeforeListenSecurityDefinition() {
+        this->ClearPackets(1, this->m_idfMaxMsgSeqNo);
+        if(this->m_idfMode == FeedConnectionSecurityDefinitionMode::sdmCollectData)
             this->ClearSecurityDefinitions();
 
-            this->m_idfState = FeedConnectionSecurityDefinitionState::sdsProcessToEnd;
-            this->m_idfStartMsgSeqNo = 0;
-            this->m_idfMaxMsgSeqNo = 0;
-            this->m_startMsgSeqNum = 0;
-            this->m_endMsgSeqNum = 0;
-            this->m_idfDataCollected = false;
+        this->m_idfState = FeedConnectionSecurityDefinitionState::sdsProcessToEnd;
+        this->m_idfStartMsgSeqNo = 0;
+        this->m_idfMaxMsgSeqNo = 0;
+        this->m_startMsgSeqNum = 0;
+        this->m_endMsgSeqNum = 0;
+        this->m_idfDataCollected = false;
+        if(this->m_idfMode == FeedConnectionSecurityDefinitionMode::sdmCollectData)
             this->m_symbolManager->Clear();
+    }
+    inline void BeforeListenSecurityStatus() {
+        this->m_securityStatusSnapshotActive = false;
+    }
+    inline void BeforeListen() {
+        if(this->m_type == FeedConnectionType::InstrumentDefinition) {
+            BeforeListenSecurityDefinition();
+        }
+        if(this->m_type == FeedConnectionType::InstrumentStatus) {
+            BeforeListenSecurityStatus();
         }
         if(this->m_type == FeedConnectionType::HistoricalReplay) {
             this->m_hsState = FeedConnectionHistoricalReplayState::hsSuspend;

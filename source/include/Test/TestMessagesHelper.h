@@ -245,13 +245,19 @@ void AddFeedInfo(FeedConnection *feed, TestTemplateInfo **tmp, int templatesCoun
         }
 
         if(isIdf) {
-            int entryIndex = -1;
+            int entryIndex = 0;
             int itemIndex = 0;
 
-            while((entryIndex = KeyIndex("session", entryIndex + 1)) != -1) {
+            while((entryIndex = KeyIndex("session", entryIndex)) != -1) {
                 TestTemplateItemInfo *item = new TestTemplateItemInfo();
-                item->m_tradingSession = this->m_keys[entryIndex + 1];
                 entryIndex++;
+                item->m_tradingSession = this->m_keys[entryIndex];
+                entryIndex++;
+                if(KeyIndex("status", entryIndex) == entryIndex) {
+                    entryIndex++;
+                    item->m_sessionStatus = atoi(this->m_keys[entryIndex]);
+                    entryIndex++;
+                }
 
                 info->m_items[itemIndex] = item;
                 info->m_itemsCount++;
@@ -909,7 +915,7 @@ public:
         return info;
     }
 
-    void AddTradingSession(FastSecurityDefinitionInfo *info, int marketIndex, const char *tradingSession) {
+    FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo* AddTradingSession(FastSecurityDefinitionInfo *info, int marketIndex, const char *tradingSession) {
         int newIndex = info->MarketSegmentGrp[marketIndex]->TradingSessionRulesGrpCount;
         info->MarketSegmentGrp[marketIndex]->TradingSessionRulesGrpCount++;
         AutoAllocatePointerList<FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo> *list = new AutoAllocatePointerList<FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo>(1, 1);
@@ -921,6 +927,14 @@ public:
 
         item->TradingSessionID = trd;
         item->TradingSessionIDLength = strlen(trd);
+        return item;
+    }
+
+    void AddTradingSession(FastSecurityDefinitionInfo *info, int marketIndex, TestTemplateItemInfo *ti) {
+        FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo *item = AddTradingSession(info, marketIndex, ti->m_tradingSession);
+        if(ti->m_sessionStatus != 0)
+            item->AllowSecurityTradingStatus = true;
+        item->SecurityTradingStatus = ti->m_sessionStatus;
     }
 
     void AddMarketSegemntGroup(FastSecurityDefinitionInfo *info) {
@@ -983,7 +997,7 @@ public:
         }
 
         for(int i = 0; i < tmp->m_itemsCount; i++) {
-            this->AddTradingSession(info, 0, tmp->m_items[i]->m_tradingSession);
+            this->AddTradingSession(info, 0, tmp->m_items[i]);
         }
         return info;
     }
@@ -1846,9 +1860,9 @@ public:
     }
 
     void SendMessagesIdf(FeedConnection *fif, const char *idf, int delay) {
-        int idfMsgCount = CalcMsgCount(idf);
-        TestTemplateInfo **idf_msg = new TestTemplateInfo*[idfMsgCount];
-        FillMsg(idf_msg, idfMsgCount, idf);
+
+        TestTemplateInfo **idf_msg = 0;
+        int idfMsgCount = CreateTemplates(idf, &idf_msg);
 
         int idf_index = 0;
         Stopwatch w;
@@ -2034,7 +2048,7 @@ public:
         return count;
     }
 
-    void SendMessagesIsf_Idf_Hr(FeedConnection *isf, FeedConnection *idf, FeedConnection *hr, const char *stridf, const char *strisf, int delay, bool startIsfAfterIdfComplete, bool skipIdfAfterIdfComplete) {
+    void SendMessagesIsf_Idf_Hr(FeedConnection *isf, FeedConnection *idf, FeedConnection *hr, const char *stridf, const char *strisf, int delay, bool startIsfAfterIdfComplete) {
         TestTemplateInfo **tisf, **tidf;
 
         int idfCount = CreateTemplates(stridf, &tidf);
@@ -2070,16 +2084,18 @@ public:
                         if (!idf->Listen_Atom_SecurityDefinition_Core())
                             throw;
                         if (idf->IsIdfDataCollected()) {
-                            if (startIsfAfterIdfComplete) {
+                            if (startIsfAfterIdfComplete && isf->State() == FeedConnectionState::fcsSuspend) {
                                 isf->ThreatFirstMessageIndexAsStart();
                                 isf->Start();
                             }
-                            if (skipIdfAfterIdfComplete)
-                                idfIndex = idfCount - 1;
                         }
                         idfIndex++;
                     }
                 }
+            }
+            else {
+                if(isfIndex >= isfCount)
+                    idfIndex = idfCount;
             }
             w.Start();
             while (!w.IsElapsedMilliseconds(delay)) {

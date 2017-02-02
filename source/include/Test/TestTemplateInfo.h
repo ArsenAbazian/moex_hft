@@ -17,8 +17,11 @@ public:
     Decimal         m_entryPx;
     Decimal         m_entrySize;
     int             m_rptSeq;
+    int             m_sessionStatus;
 
-    TestTemplateItemInfo() { }
+    TestTemplateItemInfo() {
+        this->m_sessionStatus = 0;
+    }
 
     TestTemplateItemInfo(MDUpdateAction action, MDEntryType entryType, const char *symbol, const char *sessionId, const char *entryId, int rptSeq, int pxm, INT64 pxe, int sizem, INT64 sizee) {
         this->m_action = action;
@@ -29,6 +32,7 @@ public:
         this->m_entryPx.Set(pxm, pxe);
         this->m_entrySize.Set(sizem, sizee);
         this->m_rptSeq = rptSeq;
+        this->m_sessionStatus = 0;
     }
     TestTemplateItemInfo(const char *symbol, const char *entryId, int rptSeq) {
         this->m_action = MDUpdateAction::mduaAdd;
@@ -39,6 +43,7 @@ public:
         this->m_entryPx.Set(1, 1);
         this->m_entrySize.Set(1, 1);
         this->m_rptSeq = rptSeq;
+        this->m_sessionStatus = 0;
     }
     TestTemplateItemInfo(const char *entryId) {
         this->m_action = MDUpdateAction::mduaAdd;
@@ -46,6 +51,7 @@ public:
         this->m_entryId = entryId;
         this->m_entryPx.Set(1, 1);
         this->m_entrySize.Set(1, 1);
+        this->m_sessionStatus = 0;
     }
 };
 
