@@ -46,14 +46,10 @@
       <file leaf-file-name="FeedConnection.h" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/source/include/FeedConnection.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="263">
-              <caret line="549" column="53" selection-start-line="549" selection-start-column="53" selection-end-line="549" selection-end-column="53" />
+            <state relative-caret-position="446">
+              <caret line="591" column="53" selection-start-line="591" selection-start-column="53" selection-end-line="591" selection-end-column="53" />
               <folding>
                 <element signature="e#13#49#0" expanded="true" />
-                <element signature="e#26692#27776#0" expanded="false" />
-                <element signature="e#27781#28601#0" expanded="false" />
-                <element signature="e#28606#29345#0" expanded="false" />
-                <element signature="e#44541#44683#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -82,8 +78,8 @@
       <file leaf-file-name="FeedConnection.cpp" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/source/src/FeedConnection.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="18">
-              <caret line="48" column="49" selection-start-line="48" selection-start-column="49" selection-end-line="48" selection-end-column="49" />
+            <state relative-caret-position="270">
+              <caret line="80" column="38" selection-start-line="80" selection-start-column="38" selection-end-line="80" selection-end-column="38" />
               <folding />
             </state>
           </provider>
@@ -93,7 +89,7 @@
         <entry file="file://$PROJECT_DIR$/source/include/Test/TestMessagesHelper.h">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="161">
-              <caret line="2060" column="34" selection-start-line="2060" selection-start-column="34" selection-end-line="2060" selection-end-column="34" />
+              <caret line="2050" column="0" selection-start-line="2050" selection-start-column="0" selection-end-line="2050" selection-end-column="0" />
               <folding>
                 <element signature="e#118#154#0" expanded="true" />
               </folding>
@@ -124,8 +120,8 @@
       <file leaf-file-name="SecurityStatusTester.h" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/source/include/Test/SecurityStatusTester.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="812">
-              <caret line="523" column="31" selection-start-line="523" selection-start-column="31" selection-end-line="523" selection-end-column="31" />
+            <state relative-caret-position="630">
+              <caret line="883" column="0" selection-start-line="883" selection-start-column="0" selection-end-line="883" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -134,7 +130,7 @@
       <file leaf-file-name="FeedConnections.h" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/source/include/FeedConnections.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="11322">
+            <state relative-caret-position="508">
               <caret line="629" column="26" selection-start-line="629" selection-start-column="26" selection-end-line="629" selection-end-column="26" />
               <folding />
             </state>
@@ -207,9 +203,9 @@
         <option value="$PROJECT_DIR$/source/include/Test/FeedConnectionTester.h" />
         <option value="$PROJECT_DIR$/source/include/FeedTypes.h" />
         <option value="$PROJECT_DIR$/source/include/Test/TestMessagesHelper.h" />
-        <option value="$PROJECT_DIR$/source/include/Test/SecurityStatusTester.h" />
         <option value="$PROJECT_DIR$/source/src/FeedConnection.cpp" />
         <option value="$PROJECT_DIR$/source/include/FeedConnection.h" />
+        <option value="$PROJECT_DIR$/source/include/Test/SecurityStatusTester.h" />
       </list>
     </option>
   </component>
@@ -223,8 +219,8 @@
   <component name="ProjectFrameBounds">
     <option name="x" value="65" />
     <option name="y" value="24" />
-    <option name="width" value="1855" />
-    <option name="height" value="951" />
+    <option name="width" value="1551" />
+    <option name="height" value="961" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="false">
     <OptionsSetting value="true" id="Add" />
@@ -772,6 +768,7 @@
       <workItem from="1485760122349" duration="11344000" />
       <workItem from="1485886126311" duration="1858000" />
       <workItem from="1485934931680" duration="4662000" />
+      <workItem from="1486213130353" duration="7837000" />
     </task>
     <task id="LOCAL-00113" summary="All templates have changed... Broke tests.... Still working on them">
       <created>1482441393995</created>
@@ -1120,7 +1117,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="1359894000" />
+    <option name="totallyTimeSpent" value="1367731000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -1132,20 +1129,20 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="65" y="24" width="1855" height="951" extended-state="6" />
-    <editor active="true" />
+    <frame x="65" y="24" width="1551" height="961" extended-state="6" />
+    <editor active="false" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.27620086" sideWeight="0.493007" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2853403" sideWeight="0.493007" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32908458" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.29191092" sideWeight="0.3907068" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="CMake" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.16998827" sideWeight="0.4384817" order="11" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2908459" sideWeight="0.3907068" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="CMake" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.1691773" sideWeight="0.4384817" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3511008" sideWeight="0.4365183" order="8" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.49237984" sideWeight="0.61189955" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.52168816" sideWeight="0.48689955" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.289267" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3282532" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.1599073" sideWeight="0.5634817" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.235262" sideWeight="0.506993" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32239157" sideWeight="0.5634817" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -1252,37 +1249,34 @@
           <option name="timeStamp" value="1285" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/source/include/FeedConnection.h</url>
-          <line>1830</line>
-          <option name="timeStamp" value="1313" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/source/include/FeedConnection.h</url>
-          <line>1797</line>
-          <option name="timeStamp" value="1315" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/source/src/Test/FixProtocolManagerTester.cpp</url>
           <line>18</line>
           <option name="timeStamp" value="1364" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/source/include/Test/SecurityStatusTester.h</url>
+          <line>883</line>
+          <option name="timeStamp" value="1490" />
         </line-breakpoint>
       </breakpoints>
       <breakpoints-dialog>
         <breakpoints-dialog />
       </breakpoints-dialog>
-      <option name="time" value="1475" />
+      <option name="time" value="1491" />
     </breakpoint-manager>
     <watches-manager>
       <configuration name="CMakeRunConfiguration">
         <watch expression="TestMessagesHelper::SkipTimeOutCheck = true" language="ObjectiveC" />
-        <watch expression="idf-&gt;m_state" language="ObjectiveC" />
-        <watch expression="isf-&gt;m_state" language="ObjectiveC" />
-        <watch expression="isf-&gt;m_startMsgSeqNum" language="ObjectiveC" />
-        <watch expression="isf-&gt;m_endMsgSeqNum" language="ObjectiveC" />
-        <watch expression="isfIndex" language="ObjectiveC" />
-        <watch expression="isfCount" language="ObjectiveC" />
-        <watch expression="idfIndex" language="ObjectiveC" />
-        <watch expression="this-&gt;SymbolCount()" language="ObjectiveC" />
+        <watch expression="idf-&gt;m_endMsgSeqNum" language="ObjectiveC" />
+        <watch expression="t1-&gt;SecurityTradingStatus" language="ObjectiveC" />
+        <watch expression="t2-&gt;SecurityTradingStatus" language="ObjectiveC" />
+        <watch expression="t3-&gt;SecurityTradingStatus" language="ObjectiveC" />
+        <watch expression="t4-&gt;SecurityTradingStatus" language="ObjectiveC" />
+        <watch expression="t5-&gt;SecurityTradingStatus" language="ObjectiveC" />
+        <watch expression="this-&gt;m_endMsgSeqNum" language="ObjectiveC" />
+        <watch expression="this-&gt;m_startMsgSeqNum" language="ObjectiveC" />
+        <watch expression="this-&gt;isf-&gt;m_isfStartSnapshotCount" />
+        <watch expression="this-&gt;isf-&gt;m_isfStartSnapshotCount" language="ObjectiveC" />
       </configuration>
     </watches-manager>
   </component>
@@ -1574,7 +1568,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="18">
           <caret line="1" column="0" selection-start-line="1" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1590,14 +1583,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="76230">
           <caret line="4235" column="26" selection-start-line="4235" selection-start-column="26" selection-end-line="4235" selection-end-column="26" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/source/include/FeedConnections.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="11322">
-          <caret line="629" column="26" selection-start-line="629" selection-start-column="26" selection-end-line="629" selection-end-column="26" />
           <folding />
         </state>
       </provider>
@@ -1637,39 +1622,43 @@
     <entry file="file://$PROJECT_DIR$/source/include/Test/TestMessagesHelper.h">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="161">
-          <caret line="2060" column="34" selection-start-line="2060" selection-start-column="34" selection-end-line="2060" selection-end-column="34" />
+          <caret line="2050" column="0" selection-start-line="2050" selection-start-column="0" selection-end-line="2050" selection-end-column="0" />
           <folding>
             <element signature="e#118#154#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/source/include/FeedConnections.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="508">
+          <caret line="629" column="26" selection-start-line="629" selection-start-column="26" selection-end-line="629" selection-end-column="26" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/source/src/FeedConnection.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="18">
-          <caret line="48" column="49" selection-start-line="48" selection-start-column="49" selection-end-line="48" selection-end-column="49" />
+        <state relative-caret-position="270">
+          <caret line="80" column="38" selection-start-line="80" selection-start-column="38" selection-end-line="80" selection-end-column="38" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/source/include/FeedConnection.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="263">
-          <caret line="549" column="53" selection-start-line="549" selection-start-column="53" selection-end-line="549" selection-end-column="53" />
+        <state relative-caret-position="446">
+          <caret line="591" column="53" selection-start-line="591" selection-start-column="53" selection-end-line="591" selection-end-column="53" />
           <folding>
             <element signature="e#13#49#0" expanded="true" />
-            <element signature="e#26692#27776#0" expanded="false" />
-            <element signature="e#27781#28601#0" expanded="false" />
-            <element signature="e#28606#29345#0" expanded="false" />
-            <element signature="e#44541#44683#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/source/include/Test/SecurityStatusTester.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="812">
-          <caret line="523" column="31" selection-start-line="523" selection-start-column="31" selection-end-line="523" selection-end-column="31" />
+        <state relative-caret-position="630">
+          <caret line="883" column="0" selection-start-line="883" selection-start-column="0" selection-end-line="883" selection-end-column="0" />
           <folding />
         </state>
       </provider>

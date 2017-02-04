@@ -57,6 +57,7 @@ protected:
     FeedConnection                              *m_historicalReplay;
     FeedConnection                              *m_securityDefinition;
     bool                                        m_securityStatusSnapshotActive;
+    int                                         m_isfStartSnapshotCount;
 
     FeedConnection                              *m_connectionsToRecvSymbols[32];
     int                                         m_connectionsToRecvSymbolsCount;
@@ -545,6 +546,7 @@ protected:
         this->m_securityDefinition->IdfStopAfterUpdateMessages(true);
         this->m_securityDefinition->Start();
         this->m_securityStatusSnapshotActive = true;
+        this->m_isfStartSnapshotCount++;
     }
 
     inline void FinishSecurityStatusSnapshot() {
@@ -584,6 +586,12 @@ protected:
 
     inline bool ProcessSecurityStatusMessages() {
         int i = this->m_startMsgSeqNum;
+
+        if(this->m_securityStatusSnapshotActive) {
+            if(this->m_securityDefinition->IsIdfDataCollected()) {
+                this->FinishSecurityStatusSnapshot();
+            }
+        }
 
         while(i <= this->m_endMsgSeqNum) {
             if(this->m_packets[i]->m_processed) {

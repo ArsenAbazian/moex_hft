@@ -48,6 +48,7 @@ FeedConnection::FeedConnection(const char *id, const char *name, char value, Fee
     this->m_requestMessageStartIndex = -1;
     this->m_securityStatusSnapshotActive = false;
     this->m_idfStopAfterUpdateAllMessages = false;
+    this->m_isfStartSnapshotCount = 0;
 
 	this->SetState(FeedConnectionState::fcsSuspend);
 
@@ -77,6 +78,7 @@ FeedConnection::FeedConnection() {
     this->m_incremental = 0;
     this->m_snapshot = 0;
     this->m_connectionsToRecvSymbolsCount = 0;
+    this->m_isfStartSnapshotCount = 0;
 
     this->m_startMsgSeqNum = 1;
     this->m_endMsgSeqNum = 0;

@@ -109,6 +109,8 @@ public:
         this->idf->m_endMsgSeqNum = 0;
         this->isf->m_startMsgSeqNum = 1;
         this->isf->m_endMsgSeqNum = 0;
+        this->isf->m_securityStatusSnapshotActive = false;
+        this->isf->m_isfStartSnapshotCount = 0;
         this->idf->Stop();
         this->idf->ClearPackets(0, 100);
         this->isf->ClearPackets(0, 100);
@@ -528,6 +530,366 @@ public:
             throw;
     }
 
+    void TestStartSnapshotInstedOfHistoricalReplay_6_1() {
+        this->Clear();
+
+        this->idf->m_idfMode = FeedConnectionSecurityDefinitionMode::sdmCollectData;
+        this->isf->SetMaxLostPacketCountForStartSnapshot(1);
+
+        this->isf->Stop();
+        this->idf->Start();
+
+        this->m_helper->SendMessagesIsf_Idf_Hr(
+                this->isf, this->idf, this->hr,
+                "msgSeqNo 1 totNumReports 5 idf smb1 session trd1 status 102, "
+                        "msgSeqNo 2 totNumReports 5 idf smb2 session trd1 status 102, "
+                        "msgSeqNo 3 totNumReports 5 idf smb3 session trd1 status 102, "
+                        "msgSeqNo 4 totNumReports 5 idf smb4 session trd1 status 102, "
+                        "msgSeqNo 5 totNumReports 5 idf smb5 session trd1 status 102, "
+                        "msgSeqNo 1 totNumReports 5 idf smb1 session trd1 status 103, "
+
+                        "msgSeqNo 2 totNumReports 5 idf smb2 session trd1 status 103, "
+                        "msgSeqNo 3 totNumReports 5 idf smb3 session trd1 status 103, "
+                        "msgSeqNo 4 totNumReports 5 idf smb4 session trd1 status 103, "
+                        "msgSeqNo 5 totNumReports 5 idf smb5 session trd1 status 103, "
+                        "msgSeqNo 1 totNumReports 5 idf smb1 session trd1 status 104, "
+                        "msgSeqNo 2 totNumReports 5 idf smb2 session trd1 status 104, "
+
+                        "msgSeqNo 3 totNumReports 5 idf smb3 session trd1 status 104, "
+                        "msgSeqNo 4 totNumReports 5 idf smb4 session trd1 status 104, "
+                        "msgSeqNo 5 totNumReports 5 idf smb5 session trd1 status 104, "
+                        "msgSeqNo 1 totNumReports 5 idf smb1 session trd1 status 105, "
+                        "msgSeqNo 2 totNumReports 5 idf smb2 session trd1 status 105, "
+                        "msgSeqNo 3 totNumReports 5 idf smb3 session trd1 status 105, "
+                        "msgSeqNo 4 totNumReports 5 idf smb4 session trd1 status 105, "
+                        "msgSeqNo 5 totNumReports 5 idf smb5 session trd1 status 105, "
+                        "msgSeqNo 1 totNumReports 5 idf smb1 session trd1 status 106, "
+                        "msgSeqNo 2 totNumReports 5 idf smb2 session trd1 status 106, "
+                        "msgSeqNo 3 totNumReports 5 idf smb3 session trd1 status 106, "
+                        "msgSeqNo 4 totNumReports 5 idf smb4 session trd1 status 106, "
+                        "msgSeqNo 5 totNumReports 5 idf smb5 session trd1 status 106, "
+                        "msgSeqNo 1 totNumReports 5 idf smb1 session trd1 status 107, "
+                        "msgSeqNo 2 totNumReports 5 idf smb2 session trd1 status 107, "
+                        "msgSeqNo 3 totNumReports 5 idf smb3 session trd1 status 107, "
+                        "msgSeqNo 4 totNumReports 5 idf smb4 session trd1 status 107, "
+                        "msgSeqNo 5 totNumReports 5 idf smb5 session trd1 status 107, "
+                        "msgSeqNo 1 totNumReports 5 idf smb1 session trd1 status 108, "
+                        "msgSeqNo 2 totNumReports 5 idf smb2 session trd1 status 108, "
+                        "msgSeqNo 3 totNumReports 5 idf smb3 session trd1 status 108, "
+                        "msgSeqNo 4 totNumReports 5 idf smb4 session trd1 status 108, "
+                        "msgSeqNo 5 totNumReports 5 idf smb5 session trd1 status 108, "
+                        "msgSeqNo 1 totNumReports 5 idf smb1 session trd1 status 109, "
+                        "msgSeqNo 2 totNumReports 5 idf smb2 session trd1 status 109, "
+                        "msgSeqNo 3 totNumReports 5 idf smb3 session trd1 status 109, "
+                        "msgSeqNo 4 totNumReports 5 idf smb4 session trd1 status 109, "
+                        "msgSeqNo 5 totNumReports 5 idf smb5 session trd1 status 109 ",
+                "isf smb1 trd1 NA 118 0, "
+                        "lost isf smb2 trd1 NA 118 0, "
+                        "lost isf smb3 trd1 NA 118 0, "
+                        "lost isf smb4 trd1 NA 118 0, "
+                        "lost isf smb5 trd1 NA 118 0, "
+                        "     isf smb1 trd1 NA 118 0, "
+                        "     hbeat, "
+                        "     hbeat, "
+                        "     hbeat, "
+                        "     hbeat, "
+                        "     hbeat, "
+                        "     hbeat, "
+                        "     hbeat, "
+                        "     hbeat, "
+                        "     hbeat, "
+                        "     hbeat, ",
+                30,
+                true);
+        if(this->idf->State() != FeedConnectionState::fcsSuspend)
+            throw;
+        if(this->isf->State() != FeedConnectionState::fcsListenSecurityStatus)
+            throw;
+        if(this->idf->IdfMode() != FeedConnectionSecurityDefinitionMode::sdmUpdateData)
+            throw;
+        FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo *t1 = TradingSession(this->idf->Symbol(0), 0, 0);
+        FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo *t2 = TradingSession(this->idf->Symbol(1), 0, 0);
+        FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo *t3 = TradingSession(this->idf->Symbol(2), 0, 0);
+        FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo *t4 = TradingSession(this->idf->Symbol(3), 0, 0);
+        FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo *t5 = TradingSession(this->idf->Symbol(4), 0, 0);
+
+        if(t1->SecurityTradingStatus != 104)
+            throw;
+        if(t2->SecurityTradingStatus != 104)
+            throw;
+        if(t3->SecurityTradingStatus != 103)
+            throw;
+        if(t4->SecurityTradingStatus != 103)
+            throw;
+        if(t5->SecurityTradingStatus != 103)
+            throw;
+
+        if(this->idf->State() != FeedConnectionState::fcsSuspend)
+            throw;
+        if(this->isf->State() != FeedConnectionState::fcsListenSecurityStatus)
+            throw;
+        if(this->idf->IdfMode() != FeedConnectionSecurityDefinitionMode::sdmUpdateData)
+            throw;
+    }
+
+    void TestStartSnapshotInstedOfHistoricalReplay_6_2_1() {
+        this->Clear();
+
+        this->idf->m_idfMode = FeedConnectionSecurityDefinitionMode::sdmCollectData;
+        this->isf->SetMaxLostPacketCountForStartSnapshot(1);
+
+        this->isf->Stop();
+        this->idf->Start();
+
+        this->isf->m_isfStartSnapshotCount = 0;
+        this->m_helper->SendMessagesIsf_Idf_Hr(
+                this->isf, this->idf, this->hr,
+                "msgSeqNo 1 totNumReports 5 idf smb1 session trd1 status 102, "
+                        "msgSeqNo 2 totNumReports 5 idf smb2 session trd1 status 102, "
+                        "msgSeqNo 3 totNumReports 5 idf smb3 session trd1 status 102, "
+                        "msgSeqNo 4 totNumReports 5 idf smb4 session trd1 status 102, "
+                        "msgSeqNo 5 totNumReports 5 idf smb5 session trd1 status 102, "
+                        "msgSeqNo 1 totNumReports 5 idf smb1 session trd1 status 103, "
+
+                        "msgSeqNo 2 totNumReports 5 idf smb2 session trd1 status 103, "
+                        "msgSeqNo 3 totNumReports 5 idf smb3 session trd1 status 103, "
+                        "msgSeqNo 4 totNumReports 5 idf smb4 session trd1 status 103, "
+                        "msgSeqNo 5 totNumReports 5 idf smb5 session trd1 status 103, "
+                        "msgSeqNo 1 totNumReports 5 idf smb1 session trd1 status 104, "
+                        "msgSeqNo 2 totNumReports 5 idf smb2 session trd1 status 104, ",
+                "isf smb1 trd1 NA 118 0, "
+                        "lost isf smb2 trd1 NA 118 0, "
+                        "lost isf smb3 trd1 NA 118 0, "
+                        "lost isf smb4 trd1 NA 118 0, "
+                        "lost isf smb5 trd1 NA 118 0, "
+                        "     isf smb1 trd1 NA 118 0, "
+                        "     hbeat, "
+                        "     hbeat, "
+                        "     hbeat, "
+                        "     hbeat, "
+                        "     hbeat, "
+                        "     hbeat, "
+                        "     hbeat, "
+                        "     hbeat, "
+                        "     isf smb2 trd1 NA 119 0, "
+                        "lost isf smb3 trd1 NA 118 0, "
+                        "lost isf smb4 trd1 NA 118 0, "
+                        "lost isf smb5 trd1 NA 118 0, "
+                        "     isf smb1 trd1 NA 118 0, ",
+                30,
+                true);
+        if(this->idf->State() == FeedConnectionState::fcsSuspend)
+            throw;
+        if(!this->isf->m_securityStatusSnapshotActive)
+            throw;
+        if(this->isf->m_isfStartSnapshotCount != 2)
+            throw;
+        if(this->isf->State() != FeedConnectionState::fcsListenSecurityStatus)
+            throw;
+        if(this->idf->IdfMode() != FeedConnectionSecurityDefinitionMode::sdmUpdateData)
+            throw;
+    }
+
+    void TestStartSnapshotInstedOfHistoricalReplay_6_2_2() {
+        this->Clear();
+
+        this->idf->m_idfMode = FeedConnectionSecurityDefinitionMode::sdmCollectData;
+        this->isf->SetMaxLostPacketCountForStartSnapshot(1);
+
+        this->isf->Stop();
+        this->idf->Start();
+
+        this->m_helper->SendMessagesIsf_Idf_Hr(
+                this->isf, this->idf, this->hr,
+                "msgSeqNo 1 totNumReports 5 idf smb1 session trd1 status 102, "
+                        "msgSeqNo 2 totNumReports 5 idf smb2 session trd1 status 102, "
+                        "msgSeqNo 3 totNumReports 5 idf smb3 session trd1 status 102, "
+                        "msgSeqNo 4 totNumReports 5 idf smb4 session trd1 status 102, "
+                        "msgSeqNo 5 totNumReports 5 idf smb5 session trd1 status 102, "
+                        "msgSeqNo 1 totNumReports 5 idf smb1 session trd1 status 103, "
+
+                        "msgSeqNo 2 totNumReports 5 idf smb2 session trd1 status 103, "
+                        "msgSeqNo 3 totNumReports 5 idf smb3 session trd1 status 103, "
+                        "msgSeqNo 4 totNumReports 5 idf smb4 session trd1 status 103, "
+                        "msgSeqNo 5 totNumReports 5 idf smb5 session trd1 status 103, "
+                        "msgSeqNo 1 totNumReports 5 idf smb1 session trd1 status 104, "
+                        "msgSeqNo 2 totNumReports 5 idf smb2 session trd1 status 104, "
+
+                        "msgSeqNo 3 totNumReports 5 idf smb3 session trd1 status 104, "
+                        "msgSeqNo 4 totNumReports 5 idf smb4 session trd1 status 104, "
+                        "msgSeqNo 5 totNumReports 5 idf smb5 session trd1 status 104, "
+                        "msgSeqNo 1 totNumReports 5 idf smb1 session trd1 status 105, "
+                        "msgSeqNo 2 totNumReports 5 idf smb2 session trd1 status 105, "
+                        "msgSeqNo 3 totNumReports 5 idf smb3 session trd1 status 105, ",
+                "isf smb1 trd1 NA 118 0, "
+                        "lost isf smb2 trd1 NA 118 0, "
+                        "lost isf smb3 trd1 NA 118 0, "
+                        "lost isf smb4 trd1 NA 118 0, "
+                        "lost isf smb5 trd1 NA 118 0, "
+                        "     isf smb1 trd1 NA 118 0, "
+                        "     hbeat, "
+                        "     hbeat, "
+                        "     hbeat, "
+                        "     hbeat, "
+                        "     hbeat, "
+                        "     hbeat, "
+                        "     hbeat, "
+                        "     hbeat, "
+                        "     isf smb2 trd1 NA 119 0, "
+                        "lost isf smb3 trd1 NA 118 0, "
+                        "lost isf smb4 trd1 NA 118 0, "
+                        "lost isf smb5 trd1 NA 118 0, "
+                        "     isf smb1 trd1 NA 118 0, "
+                        "     hbeat, "
+                        "     hbeat, "
+                        "     hbeat, "
+                        "     hbeat, "
+                        "     hbeat, "
+                        "     hbeat, "
+                        "     hbeat, "
+                        "     hbeat, "
+                        "     hbeat, "
+                        "     hbeat, ",
+                30,
+                true);
+        if(this->idf->State() != FeedConnectionState::fcsSuspend)
+            throw;
+        if(this->isf->m_securityStatusSnapshotActive)
+            throw;
+        if(this->isf->m_isfStartSnapshotCount != 2)
+            throw;
+        if(this->isf->State() != FeedConnectionState::fcsListenSecurityStatus)
+            throw;
+        if(this->idf->IdfMode() != FeedConnectionSecurityDefinitionMode::sdmUpdateData)
+            throw;
+        FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo *t1 = TradingSession(this->idf->Symbol(0), 0, 0);
+        FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo *t2 = TradingSession(this->idf->Symbol(1), 0, 0);
+        FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo *t3 = TradingSession(this->idf->Symbol(2), 0, 0);
+        FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo *t4 = TradingSession(this->idf->Symbol(3), 0, 0);
+        FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo *t5 = TradingSession(this->idf->Symbol(4), 0, 0);
+
+        if(t1->SecurityTradingStatus != 105)
+            throw;
+        if(t2->SecurityTradingStatus != 105)
+            throw;
+        if(t3->SecurityTradingStatus != 105)
+            throw;
+        if(t4->SecurityTradingStatus != 104)
+            throw;
+        if(t5->SecurityTradingStatus != 104)
+            throw;
+    }
+
+    void TestStartSnapshotInstedOfHistoricalReplay_6_3() {
+        this->Clear();
+
+        this->idf->m_idfMode = FeedConnectionSecurityDefinitionMode::sdmCollectData;
+        this->isf->SetMaxLostPacketCountForStartSnapshot(1);
+
+        this->isf->Stop();
+        this->idf->Start();
+
+        this->m_helper->SendMessagesIsf_Idf_Hr(
+                this->isf, this->idf, this->hr,
+                "msgSeqNo 1 totNumReports 5 idf smb1 session trd1 status 102, "
+                        "msgSeqNo 2 totNumReports 5 idf smb2 session trd1 status 102, "
+                        "msgSeqNo 3 totNumReports 5 idf smb3 session trd1 status 102, "
+                        "msgSeqNo 4 totNumReports 5 idf smb4 session trd1 status 102, "
+                        "msgSeqNo 5 totNumReports 5 idf smb5 session trd1 status 102, "
+                        "msgSeqNo 1 totNumReports 5 idf smb1 session trd1 status 103, "
+                        "msgSeqNo 2 totNumReports 5 idf smb2 session trd1 status 103, "
+                        "msgSeqNo 3 totNumReports 5 idf smb3 session trd1 status 103, "
+                        "msgSeqNo 4 totNumReports 5 idf smb4 session trd1 status 103, "
+                        "msgSeqNo 5 totNumReports 5 idf smb5 session trd1 status 103, "
+                        "msgSeqNo 1 totNumReports 5 idf smb1 session trd1 status 104, "
+                        "msgSeqNo 2 totNumReports 5 idf smb2 session trd1 status 104, "
+                        "msgSeqNo 3 totNumReports 5 idf smb3 session trd1 status 104, "
+                        "msgSeqNo 4 totNumReports 5 idf smb4 session trd1 status 104, "
+                        "msgSeqNo 5 totNumReports 5 idf smb5 session trd1 status 104, "
+                        "msgSeqNo 1 totNumReports 5 idf smb1 session trd1 status 105, "
+                        "msgSeqNo 2 totNumReports 5 idf smb2 session trd1 status 105, "
+                        "msgSeqNo 3 totNumReports 5 idf smb3 session trd1 status 105, "
+                        "msgSeqNo 4 totNumReports 5 idf smb4 session trd1 status 105, "
+                        "msgSeqNo 5 totNumReports 5 idf smb5 session trd1 status 105, "
+                        "msgSeqNo 1 totNumReports 5 idf smb1 session trd1 status 106, "
+                        "msgSeqNo 2 totNumReports 5 idf smb2 session trd1 status 106, "
+                        "msgSeqNo 3 totNumReports 5 idf smb3 session trd1 status 106, "
+                        "msgSeqNo 4 totNumReports 5 idf smb4 session trd1 status 106, "
+                        "msgSeqNo 5 totNumReports 5 idf smb5 session trd1 status 106, "
+                        "msgSeqNo 1 totNumReports 5 idf smb1 session trd1 status 107, "
+                        "msgSeqNo 2 totNumReports 5 idf smb2 session trd1 status 107, "
+                        "msgSeqNo 3 totNumReports 5 idf smb3 session trd1 status 107, "
+                        "msgSeqNo 4 totNumReports 5 idf smb4 session trd1 status 107, "
+                        "msgSeqNo 5 totNumReports 5 idf smb5 session trd1 status 107, "
+                        "msgSeqNo 1 totNumReports 5 idf smb1 session trd1 status 108, "
+                        "msgSeqNo 2 totNumReports 5 idf smb2 session trd1 status 108, "
+                        "msgSeqNo 3 totNumReports 5 idf smb3 session trd1 status 108, "
+                        "msgSeqNo 4 totNumReports 5 idf smb4 session trd1 status 108, "
+                        "msgSeqNo 5 totNumReports 5 idf smb5 session trd1 status 108, "
+                        "msgSeqNo 1 totNumReports 5 idf smb1 session trd1 status 109, "
+                        "msgSeqNo 2 totNumReports 5 idf smb2 session trd1 status 109, "
+                        "msgSeqNo 3 totNumReports 5 idf smb3 session trd1 status 109, "
+                        "msgSeqNo 4 totNumReports 5 idf smb4 session trd1 status 109, "
+                        "msgSeqNo 5 totNumReports 5 idf smb5 session trd1 status 109 ",
+                "isf smb1 trd1 NA 118 0, "
+                        "lost isf smb2 trd1 NA 118 0, "
+                        "lost isf smb3 trd1 NA 118 0, "
+                        "lost isf smb4 trd1 NA 118 0, "
+                        "lost isf smb5 trd1 NA 118 0, "
+                        "     isf smb1 trd1 NA 118 0, "
+                        "     isf smb2 trd1 NA 119 0, "
+                        "lost isf smb3 trd1 NA 118 0, "
+                        "lost isf smb4 trd1 NA 118 0, "
+                        "lost isf smb5 trd1 NA 118 0, "
+                        "lost isf smb1 trd1 NA 118 0, "
+                        "lost isf smb2 trd1 NA 119 0, "
+                        "     isf smb3 trd1 NA 120 0, "
+                        "lost isf smb4 trd1 NA 118 0, "
+                        "lost isf smb5 trd1 NA 118 0, "
+                        "lost isf smb1 trd1 NA 118 0, "
+                        "lost isf smb2 trd1 NA 119 0, "
+                        "     isf smb3 trd1 NA 120 0, "
+                        "     isf smb4 trd1 NA 121 0, "
+                        "lost isf smb5 trd1 NA 118 0, "
+                        "lost isf smb4 trd1 NA 118 0, "
+                        "lost isf smb5 trd1 NA 118 0, "
+                        "lost isf smb1 trd1 NA 118 0, "
+                        "lost isf smb2 trd1 NA 119 0, "
+                        "     isf smb3 trd1 NA 120 0, "
+                        "     isf smb4 trd1 NA 121 0, "
+                        "lost isf smb5 trd1 NA 118 0, "
+                        "     hbeat, "
+                        "     hbeat, "
+                        "     hbeat, "
+                        "     hbeat, "
+                        "     hbeat, "
+                        "     hbeat, "
+                        "     hbeat, "
+                        "     hbeat, "
+                        "     hbeat, "
+                        "     hbeat, ",
+                30,
+                true);
+        if(this->idf->State() != FeedConnectionState::fcsSuspend)
+            throw;
+        if(this->isf->State() != FeedConnectionState::fcsListenSecurityStatus)
+            throw;
+        if(this->idf->IdfMode() != FeedConnectionSecurityDefinitionMode::sdmUpdateData)
+            throw;
+        FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo *t1 = TradingSession(this->idf->Symbol(0), 0, 0);
+        FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo *t2 = TradingSession(this->idf->Symbol(1), 0, 0);
+        FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo *t3 = TradingSession(this->idf->Symbol(2), 0, 0);
+        FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo *t4 = TradingSession(this->idf->Symbol(3), 0, 0);
+        FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo *t5 = TradingSession(this->idf->Symbol(4), 0, 0);
+    }
+
+    void TestStartSnapshotInstedOfHistoricalReplay_6() {
+        TestStartSnapshotInstedOfHistoricalReplay_6_1();
+        TestStartSnapshotInstedOfHistoricalReplay_6_2_1();
+        TestStartSnapshotInstedOfHistoricalReplay_6_2_2();
+        TestStartSnapshotInstedOfHistoricalReplay_6_3();
+    }
+
     void TestStartSnapshotInstedOfHistoricalReplay() {
         printf("ISF TestStartSnapshotInstedOfHistoricalReplay_1\n");
         TestStartSnapshotInstedOfHistoricalReplay_1();
@@ -539,6 +901,8 @@ public:
         TestStartSnapshotInstedOfHistoricalReplay_4();
         printf("ISF TestStartSnapshotInstedOfHistoricalReplay_5\n");
         TestStartSnapshotInstedOfHistoricalReplay_5();
+        printf("ISF TestStartSnapshotInstedOfHistoricalReplay_6\n");
+        TestStartSnapshotInstedOfHistoricalReplay_6();
     }
 
     // default
