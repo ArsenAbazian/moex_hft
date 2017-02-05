@@ -218,6 +218,9 @@ public:
     }
 
     void Test() {
+        StatisticsTesterFond stFond;
+        stFond.Test();
+
         PointerListTester pt;
         pt.Test();
 
@@ -240,9 +243,6 @@ public:
 
 
         //TestSaveIdfSymbols();
-
-        //StatisticsTesterFond stFond;
-        //stFond.Test();
 
         OrderTesterFond otFond;
         otFond.Test();

@@ -10,10 +10,95 @@
 #include "../Lib/PointerList.h"
 #include "MarketDataEntryQueue.h"
 
+class StatisticItemDouble {
+    UINT32          m_time;
+    UINT32          m_origTime;
+    Decimal         m_value;
+    Decimal         *m_valuePtr;
+public:
+    StatisticItemDouble() {
+        this->m_valuePtr = &this->m_value;
+    }
+    ~StatisticItemDouble() { }
+    inline void Set(UINT32 time, UINT32 origTime, Decimal *value) {
+        this->m_time = time;
+        this->m_origTime = origTime;
+        this->m_valuePtr->Set(value);
+    }
+    inline UINT32 Time() { return this->m_time; }
+    inline UINT32 OrigTime() { return this->m_origTime; }
+    inline Decimal* Value() { return this->m_valuePtr; };
+};
+
+template <typename T> class StatisticItem {
+    UINT32          m_time;
+    UINT32          m_origTime;
+    T               m_value;
+public:
+    StatisticItem() { }
+    ~StatisticItem() { }
+};
+
+class StatisticItemAllocator {
+    PointerList<StatisticItemDouble>    *m_decimals;
+    PointerList<StatisticItem<bool>>    *m_booleans;
+public:
+    StatisticItemAllocator(int decimalsCount, int booleansCount) {
+        this->m_decimals = new PointerList<StatisticItemDouble>(decimalsCount, true);
+        this->m_booleans = new PointerList<StatisticItem<bool>>(booleansCount, true);
+    }
+    PointerList<StatisticItemDouble>* Decimals() { return this->m_decimals; }
+    PointerList<StatisticItem<bool>>* Booleans() { return this->m_booleans; }
+};
+
+class DefaultStatisticItemAllocator {
+public:
+    static StatisticItemAllocator* Default;
+};
+
 template <typename T> class MarketSymbolInfo;
 
 template <typename T> class StatisticsInfo {
     MDEntrQueue<T>      *m_entryInfo;
+
+    PointerListLite<StatisticItemDouble>    *m_buyQuotes;
+    PointerListLite<StatisticItemDouble>    *m_sellQuotes;
+    PointerListLite<StatisticItemDouble>    *m_lstDealInfo;
+    PointerListLite<StatisticItemDouble>    *m_indicesList;
+    PointerListLite<StatisticItemDouble>    *m_priceOpenFirst;
+    PointerListLite<StatisticItemDouble>    *m_priceCloseLast;
+    PointerListLite<StatisticItemDouble>    *m_priceMax;
+    PointerListLite<StatisticItemDouble>    *m_priceMin;
+    PointerListLite<StatisticItemDouble>    *m_priceAve;
+    PointerListLite<StatisticItemDouble>    *m_disbalance;
+    PointerListLite<StatisticItemDouble>    *m_transactionMagnitude;
+    PointerListLite<StatisticItemDouble>    *m_askPriceMax;
+    PointerListLite<StatisticItemDouble>    *m_bidPriceMin;
+    PointerListLite<StatisticItemDouble>    *m_auctionPriceCalculated;
+    PointerListLite<StatisticItemDouble>    *m_auctionPriceClose;
+
+    PointerListLite<StatisticItemDouble>    *m_auctionMagnitudeClose;
+    PointerListLite<StatisticItem<bool>>    *m_fullCoveredDealFlag;
+    PointerListLite<StatisticItemDouble>    *m_openCloseAuctionTradeAskMagnitude;
+    PointerListLite<StatisticItemDouble>    *m_openCloseAuctionTradeBidMagnitude;
+    PointerListLite<StatisticItemDouble>    *m_openCloseAuctionTradeAsk;
+    PointerListLite<StatisticItemDouble>    *m_openCloseAuctionTradeBid;
+    PointerListLite<StatisticItemDouble>    *m_preTradePeriodPrice;
+    PointerListLite<StatisticItemDouble>    *m_sessionAsk;
+    PointerListLite<StatisticItemDouble>    *m_sessionBid;
+    PointerListLite<StatisticItemDouble>    *m_postTradePeriodPrice;
+    PointerListLite<StatisticItemDouble>    *m_tradePrice;
+    PointerListLite<StatisticItemDouble>    *m_tradePrice2;
+    PointerListLite<StatisticItemDouble>    *m_priceOpenOfficial;
+    PointerListLite<StatisticItemDouble>    *m_priceCurrentOfficial;
+    PointerListLite<StatisticItemDouble>    *m_legitimQuote;
+    PointerListLite<StatisticItemDouble>    *m_priceCloseOfficial;
+    PointerListLite<StatisticItemDouble>    *m_auctionPriceBigPackets;
+    PointerListLite<StatisticItemDouble>    *m_duration;
+    PointerListLite<StatisticItemDouble>    *m_askTotal;
+    PointerListLite<StatisticItemDouble>    *m_bidTotal;
+    PointerListLite<StatisticItemDouble>    *m_auctionMagnitudeBigPackets;
+    PointerListLite<StatisticItemDouble>    *m_cumulativeCouponDebit;
 
     bool                 m_used;
     bool                 m_shouldProcessSnapshot;
@@ -26,9 +111,85 @@ public:
         this->m_tradingSession = new SizedArray();
         this->m_shouldProcessSnapshot = false;
         this->m_rptSeq = 0;
+        
+        this->m_buyQuotes = new PointerListLite<StatisticItemDouble>(DefaultStatisticItemAllocator::Default->Decimals());
+        this->m_sellQuotes = new PointerListLite<StatisticItemDouble>(DefaultStatisticItemAllocator::Default->Decimals());
+        this->m_lstDealInfo = new PointerListLite<StatisticItemDouble>(DefaultStatisticItemAllocator::Default->Decimals());
+        this->m_indicesList = new PointerListLite<StatisticItemDouble>(DefaultStatisticItemAllocator::Default->Decimals());
+        this->m_priceOpenFirst = new PointerListLite<StatisticItemDouble>(DefaultStatisticItemAllocator::Default->Decimals());
+        this->m_priceCloseLast = new PointerListLite<StatisticItemDouble>(DefaultStatisticItemAllocator::Default->Decimals());
+        this->m_priceMax = new PointerListLite<StatisticItemDouble>(DefaultStatisticItemAllocator::Default->Decimals());
+        this->m_priceMin = new PointerListLite<StatisticItemDouble>(DefaultStatisticItemAllocator::Default->Decimals());
+        this->m_priceAve = new PointerListLite<StatisticItemDouble>(DefaultStatisticItemAllocator::Default->Decimals());
+        this->m_disbalance = new PointerListLite<StatisticItemDouble>(DefaultStatisticItemAllocator::Default->Decimals());
+        this->m_transactionMagnitude = new PointerListLite<StatisticItemDouble>(DefaultStatisticItemAllocator::Default->Decimals());
+        this->m_askPriceMax = new PointerListLite<StatisticItemDouble>(DefaultStatisticItemAllocator::Default->Decimals());
+        this->m_bidPriceMin = new PointerListLite<StatisticItemDouble>(DefaultStatisticItemAllocator::Default->Decimals());
+        this->m_auctionPriceCalculated = new PointerListLite<StatisticItemDouble>(DefaultStatisticItemAllocator::Default->Decimals());
+        this->m_auctionPriceClose = new PointerListLite<StatisticItemDouble>(DefaultStatisticItemAllocator::Default->Decimals());
+        this->m_auctionMagnitudeClose = new PointerListLite<StatisticItemDouble>(DefaultStatisticItemAllocator::Default->Decimals());
+        this->m_fullCoveredDealFlag = new PointerListLite<StatisticItem<bool>>(DefaultStatisticItemAllocator::Default->Booleans());
+        this->m_openCloseAuctionTradeAskMagnitude = new PointerListLite<StatisticItemDouble>(DefaultStatisticItemAllocator::Default->Decimals());
+        this->m_openCloseAuctionTradeBidMagnitude = new PointerListLite<StatisticItemDouble>(DefaultStatisticItemAllocator::Default->Decimals());
+        this->m_openCloseAuctionTradeAsk = new PointerListLite<StatisticItemDouble>(DefaultStatisticItemAllocator::Default->Decimals());
+        this->m_openCloseAuctionTradeBid = new PointerListLite<StatisticItemDouble>(DefaultStatisticItemAllocator::Default->Decimals());
+        this->m_preTradePeriodPrice = new PointerListLite<StatisticItemDouble>(DefaultStatisticItemAllocator::Default->Decimals());
+        this->m_sessionAsk = new PointerListLite<StatisticItemDouble>(DefaultStatisticItemAllocator::Default->Decimals());
+        this->m_sessionBid = new PointerListLite<StatisticItemDouble>(DefaultStatisticItemAllocator::Default->Decimals());
+        this->m_postTradePeriodPrice = new PointerListLite<StatisticItemDouble>(DefaultStatisticItemAllocator::Default->Decimals());
+        this->m_tradePrice = new PointerListLite<StatisticItemDouble>(DefaultStatisticItemAllocator::Default->Decimals());
+        this->m_tradePrice2 = new PointerListLite<StatisticItemDouble>(DefaultStatisticItemAllocator::Default->Decimals());
+        this->m_priceOpenOfficial = new PointerListLite<StatisticItemDouble>(DefaultStatisticItemAllocator::Default->Decimals());
+        this->m_priceCurrentOfficial = new PointerListLite<StatisticItemDouble>(DefaultStatisticItemAllocator::Default->Decimals());
+        this->m_legitimQuote = new PointerListLite<StatisticItemDouble>(DefaultStatisticItemAllocator::Default->Decimals());
+        this->m_priceCloseOfficial = new PointerListLite<StatisticItemDouble>(DefaultStatisticItemAllocator::Default->Decimals());
+        this->m_auctionPriceBigPackets = new PointerListLite<StatisticItemDouble>(DefaultStatisticItemAllocator::Default->Decimals());
+        this->m_duration = new PointerListLite<StatisticItemDouble>(DefaultStatisticItemAllocator::Default->Decimals());
+        this->m_askTotal = new PointerListLite<StatisticItemDouble>(DefaultStatisticItemAllocator::Default->Decimals());
+        this->m_bidTotal = new PointerListLite<StatisticItemDouble>(DefaultStatisticItemAllocator::Default->Decimals());
+        this->m_auctionMagnitudeBigPackets = new PointerListLite<StatisticItemDouble>(DefaultStatisticItemAllocator::Default->Decimals());
+        this->m_cumulativeCouponDebit = new PointerListLite<StatisticItemDouble>(DefaultStatisticItemAllocator::Default->Decimals());
     }
     ~StatisticsInfo() {
         delete this->m_entryInfo;
+
+        delete this->m_buyQuotes;
+        delete this->m_sellQuotes;
+        delete this->m_lstDealInfo;
+        delete this->m_indicesList;
+        delete this->m_priceOpenFirst;
+        delete this->m_priceCloseLast;
+        delete this->m_priceMax;
+        delete this->m_priceMin;
+        delete this->m_priceAve;
+        delete this->m_disbalance;
+        delete this->m_transactionMagnitude;
+        delete this->m_askPriceMax;
+        delete this->m_bidPriceMin;
+        delete this->m_auctionPriceCalculated;
+        delete this->m_auctionPriceClose;
+        delete this->m_auctionMagnitudeClose;
+        delete this->m_fullCoveredDealFlag;
+        delete this->m_openCloseAuctionTradeAskMagnitude;
+        delete this->m_openCloseAuctionTradeBidMagnitude;
+        delete this->m_openCloseAuctionTradeAsk;
+        delete this->m_openCloseAuctionTradeBid;
+        delete this->m_preTradePeriodPrice;
+        delete this->m_sessionAsk;
+        delete this->m_sessionBid;
+        delete this->m_postTradePeriodPrice;
+        delete this->m_tradePrice;
+        delete this->m_tradePrice2;
+        delete this->m_priceOpenOfficial;
+        delete this->m_priceCurrentOfficial;
+        delete this->m_legitimQuote;
+        delete this->m_priceCloseOfficial;
+        delete this->m_auctionPriceBigPackets;
+        delete this->m_duration;
+        delete this->m_askTotal;
+        delete this->m_bidTotal;
+        delete this->m_auctionMagnitudeBigPackets;
+        delete this->m_cumulativeCouponDebit;
     }
 
     inline SizedArray* TradingSession() { return this->m_tradingSession; }
@@ -55,91 +216,173 @@ public:
         list->Clear();
     }
     inline void Clear() {
+         this->m_buyQuotes->Clear();
+         this->m_sellQuotes->Clear();
+         this->m_lstDealInfo->Clear();
+         this->m_indicesList->Clear();
+         this->m_priceOpenFirst->Clear();
+         this->m_priceCloseLast->Clear();
+         this->m_priceMax->Clear();
+         this->m_priceMin->Clear();
+         this->m_priceAve->Clear();
+         this->m_disbalance->Clear();
+         this->m_transactionMagnitude->Clear();
+         this->m_askPriceMax->Clear();
+         this->m_bidPriceMin->Clear();
+         this->m_auctionPriceCalculated->Clear();
+         this->m_auctionPriceClose->Clear();
+         this->m_auctionMagnitudeClose->Clear();
+         this->m_fullCoveredDealFlag->Clear();
+         this->m_openCloseAuctionTradeAskMagnitude->Clear();
+         this->m_openCloseAuctionTradeBidMagnitude->Clear();
+         this->m_openCloseAuctionTradeAsk->Clear();
+         this->m_openCloseAuctionTradeBid->Clear();
+         this->m_preTradePeriodPrice->Clear();
+         this->m_sessionAsk->Clear();
+         this->m_sessionBid->Clear();
+         this->m_postTradePeriodPrice->Clear();
+         this->m_tradePrice->Clear();
+         this->m_tradePrice2->Clear();
+         this->m_priceOpenOfficial->Clear();
+         this->m_priceCurrentOfficial->Clear();
+         this->m_legitimQuote->Clear();
+         this->m_priceCloseOfficial->Clear();
+         this->m_auctionPriceBigPackets->Clear();
+         this->m_duration->Clear();
+         this->m_askTotal->Clear();
+         this->m_bidTotal->Clear();
+         this->m_auctionMagnitudeBigPackets->Clear();
+         this->m_cumulativeCouponDebit->Clear();
+        
         this->m_entryInfo->Clear();
         this->m_rptSeq = 0;
     }
 
-    inline PointerList<T>* BuyQuotes() { throw; }
-    inline PointerList<T>* SellQuotes() { throw; }
+    inline PointerListLite<StatisticItemDouble>* BuyQuotes() { return this->m_buyQuotes; }
+    inline PointerListLite<StatisticItemDouble>* SellQuotes() { return this->m_sellQuotes; }
+    inline PointerListLite<StatisticItemDouble>* ListDealInfo() { return this->m_lstDealInfo; }
+    inline PointerListLite<StatisticItemDouble>* IndicesList() { return this->m_indicesList; }
+    inline PointerListLite<StatisticItemDouble>* PriceOpenFirst() { return this->m_priceOpenFirst; }
+    inline PointerListLite<StatisticItemDouble>* PriceCloseLast() { return this->m_priceCloseLast; }
+    inline PointerListLite<StatisticItemDouble>* PriceMax() { return this->m_priceMax; }
+    inline PointerListLite<StatisticItemDouble>* PriceMin() { return this->m_priceMin; }
+    inline PointerListLite<StatisticItemDouble>* PriceAve() { return this->m_priceAve; }
+    inline PointerListLite<StatisticItemDouble>* Disbalance() { return this->m_disbalance; }
+    inline PointerListLite<StatisticItemDouble>* TransactionMagnitude() { return this->m_transactionMagnitude; }
+    inline PointerListLite<StatisticItemDouble>* AskPriceMax() { return this->m_askPriceMax; }
+    inline PointerListLite<StatisticItemDouble>* BidPriceMin() { return this->m_bidPriceMin; }
+    inline PointerListLite<StatisticItemDouble>* AuctionPriceCalculated() { return this->m_auctionPriceCalculated; }
+    inline PointerListLite<StatisticItemDouble>* AuctionPriceClose() { return this->m_auctionPriceClose; }
+    inline PointerListLite<StatisticItemDouble>* AuctionMagnitudeClose() { return this->m_auctionMagnitudeClose; }
+    inline PointerListLite<StatisticItem<bool>>* FullCoveredDealFlag() { return this->m_fullCoveredDealFlag; }
+    inline PointerListLite<StatisticItemDouble>* OpenCloseAuctionTradeAskMagnitude() { return this->m_openCloseAuctionTradeAskMagnitude; }
+    inline PointerListLite<StatisticItemDouble>* OpenCloseAuctionTradeBidMagnitude() { return this->m_openCloseAuctionTradeBidMagnitude; }
+    inline PointerListLite<StatisticItemDouble>* OpenCloseAuctionTradeAsk() { return this->m_openCloseAuctionTradeAsk; }
+    inline PointerListLite<StatisticItemDouble>* OpenCloseAuctionTradBid() { return this->m_openCloseAuctionTradeBid; }
+    inline PointerListLite<StatisticItemDouble>* PreTradePeriodPrice() { return this->m_preTradePeriodPrice; }
+    inline PointerListLite<StatisticItemDouble>* SessionAsk() { return this->m_sessionAsk; }
+    inline PointerListLite<StatisticItemDouble>* SessionBid() { return this->m_sessionBid; }
+    inline PointerListLite<StatisticItemDouble>* PostTradePeriodPrice() { return this->m_postTradePeriodPrice; }
+    inline PointerListLite<StatisticItemDouble>* TradePrice() { return this->m_tradePrice; }
+    inline PointerListLite<StatisticItemDouble>* TradePrice2() { return this->m_tradePrice2; }
+    inline PointerListLite<StatisticItemDouble>* PriceOpenOfficial() { return this->m_priceOpenOfficial; }
+    inline PointerListLite<StatisticItemDouble>* PriceCurrentOfficial() { return this->m_priceCurrentOfficial; }
+    inline PointerListLite<StatisticItemDouble>* LegitimQuote() { return this->m_legitimQuote; }
+    inline PointerListLite<StatisticItemDouble>* PriceCloseOfficial() { return this->m_priceCloseOfficial; }
+    inline PointerListLite<StatisticItemDouble>* AuctionPriceBigPackets() { return this->m_auctionPriceBigPackets; }
+    inline PointerListLite<StatisticItemDouble>* Duration() { return this->m_duration; }
+    inline PointerListLite<StatisticItemDouble>* AskTotal() { return this->m_askTotal; }
+    inline PointerListLite<StatisticItemDouble>* BidTotal() { return this->m_bidTotal; }
+    inline PointerListLite<StatisticItemDouble>* AuctionMagnitudeBigPackets() { return this->m_auctionMagnitudeBigPackets; }
+    inline PointerListLite<StatisticItemDouble>* CumulativeCouponDebit() { return this->m_cumulativeCouponDebit; }
 
-    inline void AddBuyQuote(T *item) { throw; }
-    inline void AddSellQuote(T *item) { throw; }
-    inline void AddLastDealInfo(T *item) { throw; }
-    inline void AddIndicesList(T *item) { throw; }
-    inline void AddPriceOpenFirst(T *item) { throw; }
-    inline void AddPriceCloseLast(T *item) { throw; }
-    inline void AddPriceMax(T *item) { throw; }
-    inline void AddPriceMin(T *item) { throw; }
-    inline void AddPriceAve(T *item) { throw; }
-    inline void AddDisbalance(T *item) { throw; }
-    inline void AddTransactionsMagnitude(T *item) { throw; }
+    inline void AddDecimalItem(PointerListLite<StatisticItemDouble> *list, Decimal *value, UINT32 time, UINT32 origTime) {
+        LinkedPointer<StatisticItemDouble> *node = list->Add();
+        node->Data()->Set(time, origTime, value);
+    }
+    inline void ChangeDecimalItem(PointerListLite<StatisticItemDouble> *list, Decimal *value, UINT32 time, UINT32 origTime) {
+        LinkedPointer<StatisticItemDouble> *node = list->Add();
+        node->Data()->Set(time, origTime, value);
+    }
+
+    inline void AddBuyQuote(T *item) { this->AddDecimalItem(this->m_buyQuotes, item->MDEntryPx, item->MDEntryTime, item->OrigTime); }
+    inline void AddSellQuote(T *item) { this->AddDecimalItem(this->m_sellQuotes, item->MDEntryPx, item->MDEntryTime, item->OrigTime); }
+    inline void AddLastDealInfo(T *item) { this->AddDecimalItem(this->m_lstDealInfo, item->MDEntryPx, item->MDEntryTime, item->OrigTime); }
+    inline void AddIndicesList(T *item) { this->AddDecimalItem(this->m_indicesList, item->MDEntryPx, item->MDEntryTime, item->OrigTime); }
+    inline void AddPriceOpenFirst(T *item) { this->AddDecimalItem(this->m_priceOpenFirst, item->MDEntryPx, item->MDEntryTime, item->OrigTime); }
+    inline void AddPriceCloseLast(T *item) { this->AddDecimalItem(this->m_priceCloseLast, item->MDEntryPx, item->MDEntryTime, item->OrigTime); }
+    inline void AddPriceMax(T *item) { this->AddDecimalItem(this->m_priceMax, item->MDEntryPx, item->MDEntryTime, item->OrigTime); }
+    inline void AddPriceMin(T *item) { this->AddDecimalItem(this->m_priceMin, item->MDEntryPx, item->MDEntryTime, item->OrigTime); }
+    inline void AddPriceAve(T *item) { this->AddDecimalItem(this->m_priceAve, item->MDEntryPx, item->MDEntryTime, item->OrigTime); }
+    inline void AddDisbalance(T *item) { this->AddDecimalItem(this->m_disbalance, item->MDEntryPx, item->MDEntryTime, item->OrigTime); }
+    inline void AddTransactionsMagnitude(T *item) { this->AddDecimalItem(this->m_transactionMagnitude, item->MDEntryPx, item->MDEntryTime, item->OrigTime); }
     inline void AddEmptyBook(T *item) { throw; }
-    inline void AddAskPriceMax(T *item) { throw; }
-    inline void AddBidPriceMin(T *item) { throw; }
-    inline void AddAuctionPriceCalculated(T *item) { throw; }
-    inline void AddAuctionPriceClose(T *item) { throw; }
-    inline void AddAuctionMagnitudeClose(T *item) { throw; }
-    inline void AddMSSTradingDenyNotEnoughMoney(T *item) { throw; }
-    inline void AddMSSTradeAskAuctionMagnitudeOpenClose(T *item) { throw; }
-    inline void AddOLSTradeAskAuctionOpenClose(T *item) { throw; }
-    inline void AddMSSTradeBidAuctionMagnitudeOpenClose(T *item) { throw; }
-    inline void AddOLSTradeBidAuctionOpenClose(T *item) { throw; }
-    inline void AddPreTradePeriodPrice(T *item) { throw; }
-    inline void AddSessionAsk(T *item) { throw; }
-    inline void AddSessionBid(T *item) { throw; }
-    inline void AddPostTradePeriodPrice(T *item) { throw; }
-    inline void AddTradePrice2(T *item) { throw; }
-    inline void AddTradePrice(T *item) { throw; }
-    inline void AddPriceOpenOfficial(T *item) { throw; }
-    inline void AddPriceCurrentOfficial(T *item) { throw; }
-    inline void AddLegitimQuote(T *item) { throw; }
-    inline void AddPriceCloseOfficial(T *item) { throw; }
-    inline void AddAuctionPriceBigPackets(T *item) { throw; }
-    inline void AddDuration(T *item) { throw; }
-    inline void AddAskTotal(T *item) { throw; }
-    inline void AddBidTotal(T *item) { throw; }
-    inline void AddAuctionMagnitudeBigPackets(T *item) { throw; }
-    inline void AddCumulativeCouponDebit(T *item) { throw; }
+    inline void AddAskPriceMax(T *item) { this->AddDecimalItem(this->m_askPriceMax, item->MDEntryPx, item->MDEntryTime, item->OrigTime); }
+    inline void AddBidPriceMin(T *item) { this->AddDecimalItem(this->m_bidPriceMin, item->MDEntryPx, item->MDEntryTime, item->OrigTime); }
+    inline void AddAuctionPriceCalculated(T *item) { this->AddDecimalItem(this->m_auctionPriceCalculated, item->MDEntryPx, item->MDEntryTime, item->OrigTime); }
+    inline void AddAuctionPriceClose(T *item) { this->AddDecimalItem(this->m_auctionPriceClose, item->MDEntryPx, item->MDEntryTime, item->OrigTime); }
+    inline void AddAuctionMagnitudeClose(T *item) { this->AddDecimalItem(this->m_auctionMagnitudeClose, item->MDEntryPx, item->MDEntryTime, item->OrigTime); }
+    inline void AddMSSFullCoveredDealFlag(T *item) { throw; }
+    inline void AddMSSTradeAskAuctionMagnitudeOpenClose(T *item) { this->AddDecimalItem(this->m_openCloseAuctionTradeAskMagnitude, item->MDEntryPx, item->MDEntryTime, item->OrigTime); }
+    inline void AddOLSTradeAskAuctionOpenClose(T *item) { this->AddDecimalItem(this->m_openCloseAuctionTradeAsk, item->MDEntryPx, item->MDEntryTime, item->OrigTime); }
+    inline void AddMSSTradeBidAuctionMagnitudeOpenClose(T *item) { this->AddDecimalItem(this->m_openCloseAuctionTradeBidMagnitude, item->MDEntryPx, item->MDEntryTime, item->OrigTime); }
+    inline void AddOLSTradeBidAuctionOpenClose(T *item) { this->AddDecimalItem(this->m_openCloseAuctionTradeBid, item->MDEntryPx, item->MDEntryTime, item->OrigTime); }
+    inline void AddPreTradePeriodPrice(T *item) { this->AddDecimalItem(this->m_preTradePeriodPrice, item->MDEntryPx, item->MDEntryTime, item->OrigTime); }
+    inline void AddSessionAsk(T *item) { this->AddDecimalItem(this->m_sessionAsk, item->MDEntryPx, item->MDEntryTime, item->OrigTime); }
+    inline void AddSessionBid(T *item) { this->AddDecimalItem(this->m_sessionBid, item->MDEntryPx, item->MDEntryTime, item->OrigTime); }
+    inline void AddPostTradePeriodPrice(T *item) { this->AddDecimalItem(this->m_postTradePeriodPrice, item->MDEntryPx, item->MDEntryTime, item->OrigTime); }
+    inline void AddTradePrice2(T *item) { this->AddDecimalItem(this->m_tradePrice2, item->MDEntryPx, item->MDEntryTime, item->OrigTime); }
+    inline void AddTradePrice(T *item) { this->AddDecimalItem(this->m_tradePrice, item->MDEntryPx, item->MDEntryTime, item->OrigTime); }
+    inline void AddPriceOpenOfficial(T *item) { this->AddDecimalItem(this->m_priceOpenOfficial, item->MDEntryPx, item->MDEntryTime, item->OrigTime); }
+    inline void AddPriceCurrentOfficial(T *item) { this->AddDecimalItem(this->m_priceCurrentOfficial, item->MDEntryPx, item->MDEntryTime, item->OrigTime); }
+    inline void AddLegitimQuote(T *item) { this->AddDecimalItem(this->m_legitimQuote, item->MDEntryPx, item->MDEntryTime, item->OrigTime); }
+    inline void AddPriceCloseOfficial(T *item) { this->AddDecimalItem(this->m_priceCloseOfficial, item->MDEntryPx, item->MDEntryTime, item->OrigTime); }
+    inline void AddAuctionPriceBigPackets(T *item) { this->AddDecimalItem(this->m_auctionPriceBigPackets, item->MDEntryPx, item->MDEntryTime, item->OrigTime); }
+    inline void AddDuration(T *item) { this->AddDecimalItem(this->m_duration, item->MDEntryPx, item->MDEntryTime, item->OrigTime); }
+    inline void AddAskTotal(T *item) { this->AddDecimalItem(this->m_askTotal, item->MDEntryPx, item->MDEntryTime, item->OrigTime); }
+    inline void AddBidTotal(T *item) { this->AddDecimalItem(this->m_bidTotal, item->MDEntryPx, item->MDEntryTime, item->OrigTime); }
+    inline void AddAuctionMagnitudeBigPackets(T *item) { this->AddDecimalItem(this->m_auctionMagnitudeBigPackets, item->MDEntryPx, item->MDEntryTime, item->OrigTime); }
+    inline void AddCumulativeCouponDebit(T *item) { this->AddDecimalItem(this->m_cumulativeCouponDebit, item->MDEntryPx, item->MDEntryTime, item->OrigTime); }
     inline void AddAllDeals(T *item) { throw; }
 
-    inline void ChangeBuyQuote(T *item) { throw; }
-    inline void ChangeSellQuote(T *item) { throw; }
-    inline void ChangeLastDealInfo(T *item) { throw; }
-    inline void ChangeIndicesList(T *item) { throw; }
-    inline void ChangePriceOpenFirst(T *item) { throw; }
-    inline void ChangePriceCloseLast(T *item) { throw; }
-    inline void ChangePriceMax(T *item) { throw; }
-    inline void ChangePriceMin(T *item) { throw; }
-    inline void ChangePriceAve(T *item) { throw; }
-    inline void ChangeDisbalance(T *item) { throw; }
-    inline void ChangeTransactionsMagnitude(T *item) { throw; }
+    inline void ChangeBuyQuote(T *item) { this->ChangeDecimalItem(this->m_buyQuotes, item->MDEntryPx, item->MDEntryTime, item->OrigTime); }
+    inline void ChangeSellQuote(T *item) { this->ChangeDecimalItem(this->m_sellQuotes, item->MDEntryPx, item->MDEntryTime, item->OrigTime); }
+    inline void ChangeLastDealInfo(T *item) { this->ChangeDecimalItem(this->m_lstDealInfo, item->MDEntryPx, item->MDEntryTime, item->OrigTime); }
+    inline void ChangeIndicesList(T *item) { this->ChangeDecimalItem(this->m_indicesList, item->MDEntryPx, item->MDEntryTime, item->OrigTime); }
+    inline void ChangePriceOpenFirst(T *item) { this->ChangeDecimalItem(this->m_priceOpenFirst, item->MDEntryPx, item->MDEntryTime, item->OrigTime); }
+    inline void ChangePriceCloseLast(T *item) { this->ChangeDecimalItem(this->m_priceCloseLast, item->MDEntryPx, item->MDEntryTime, item->OrigTime); }
+    inline void ChangePriceMax(T *item) { this->ChangeDecimalItem(this->m_priceMax, item->MDEntryPx, item->MDEntryTime, item->OrigTime); }
+    inline void ChangePriceMin(T *item) { this->ChangeDecimalItem(this->m_priceMin, item->MDEntryPx, item->MDEntryTime, item->OrigTime); }
+    inline void ChangePriceAve(T *item) { this->ChangeDecimalItem(this->m_priceAve, item->MDEntryPx, item->MDEntryTime, item->OrigTime); }
+    inline void ChangeDisbalance(T *item) { this->ChangeDecimalItem(this->m_disbalance, item->MDEntryPx, item->MDEntryTime, item->OrigTime); }
+    inline void ChangeTransactionsMagnitude(T *item) { this->ChangeDecimalItem(this->m_transactionMagnitude, item->MDEntryPx, item->MDEntryTime, item->OrigTime); }
     inline void ChangeEmptyBook(T *item) { throw; }
-    inline void ChangeAskPriceMax(T *item) { throw; }
-    inline void ChangeBidPriceMin(T *item) { throw; }
-    inline void ChangeAuctionPriceCalculated(T *item) { throw; }
-    inline void ChangeAuctionPriceClose(T *item) { throw; }
-    inline void ChangeAuctionMagnitudeClose(T *item) { throw; }
-    inline void ChangeMSSTradingDenyNotEnoughMoney(T *item) { throw; }
-    inline void ChangeMSSTradeAskAuctionMagnitudeOpenClose(T *item) { throw; }
-    inline void ChangeOLSTradeAskAuctionOpenClose(T *item) { throw; }
-    inline void ChangeMSSTradeBidAuctionMagnitudeOpenClose(T *item) { throw; }
-    inline void ChangeOLSTradeBidAuctionOpenClose(T *item) { throw; }
-    inline void ChangePreTradePeriodPrice(T *item) { throw; }
-    inline void ChangeSessionAsk(T *item) { throw; }
-    inline void ChangeSessionBid(T *item) { throw; }
-    inline void ChangePostTradePeriodPrice(T *item) { throw; }
-    inline void ChangeTradePrice2(T *item) { throw; }
-    inline void ChangeTradePrice(T *item) { throw; }
-    inline void ChangePriceOpenOfficial(T *item) { throw; }
-    inline void ChangePriceCurrentOfficial(T *item) { throw; }
-    inline void ChangeLegitimQuote(T *item) { throw; }
-    inline void ChangePriceCloseOfficial(T *item) { throw; }
-    inline void ChangeAuctionPriceBigPackets(T *item) { throw; }
-    inline void ChangeDuration(T *item) { throw; }
-    inline void ChangeAskTotal(T *item) { throw; }
-    inline void ChangeBidTotal(T *item) { throw; }
-    inline void ChangeAuctionMagnitudeBigPackets(T *item) { throw; }
-    inline void ChangeCumulativeCouponDebit(T *item) { throw; }
+    inline void ChangeAskPriceMax(T *item) { this->ChangeDecimalItem(this->m_askPriceMax, item->MDEntryPx, item->MDEntryTime, item->OrigTime); }
+    inline void ChangeBidPriceMin(T *item) { this->ChangeDecimalItem(this->m_bidPriceMin, item->MDEntryPx, item->MDEntryTime, item->OrigTime); }
+    inline void ChangeAuctionPriceCalculated(T *item) { this->ChangeDecimalItem(this->m_auctionPriceCalculated, item->MDEntryPx, item->MDEntryTime, item->OrigTime); }
+    inline void ChangeAuctionPriceClose(T *item) { this->ChangeDecimalItem(this->m_auctionPriceClose, item->MDEntryPx, item->MDEntryTime, item->OrigTime); }
+    inline void ChangeAuctionMagnitudeClose(T *item) { this->ChangeDecimalItem(this->m_auctionMagnitudeClose, item->MDEntryPx, item->MDEntryTime, item->OrigTime); }
+    inline void ChangeMSSFullCoveredDealFlag(T *item) { throw; }
+    inline void ChangeMSSTradeAskAuctionMagnitudeOpenClose(T *item) { this->ChangeDecimalItem(this->m_openCloseAuctionTradeAskMagnitude, item->MDEntryPx, item->MDEntryTime, item->OrigTime); }
+    inline void ChangeOLSTradeAskAuctionOpenClose(T *item) { this->ChangeDecimalItem(this->m_openCloseAuctionTradeAsk, item->MDEntryPx, item->MDEntryTime, item->OrigTime); }
+    inline void ChangeMSSTradeBidAuctionMagnitudeOpenClose(T *item) { this->ChangeDecimalItem(this->m_openCloseAuctionTradeBidMagnitude, item->MDEntryPx, item->MDEntryTime, item->OrigTime); }
+    inline void ChangeOLSTradeBidAuctionOpenClose(T *item) { this->ChangeDecimalItem(this->m_openCloseAuctionTradeBid, item->MDEntryPx, item->MDEntryTime, item->OrigTime); }
+    inline void ChangePreTradePeriodPrice(T *item) { this->ChangeDecimalItem(this->m_preTradePeriodPrice, item->MDEntryPx, item->MDEntryTime, item->OrigTime); }
+    inline void ChangeSessionAsk(T *item) { this->ChangeDecimalItem(this->m_sessionAsk, item->MDEntryPx, item->MDEntryTime, item->OrigTime); }
+    inline void ChangeSessionBid(T *item) { this->ChangeDecimalItem(this->m_sessionBid, item->MDEntryPx, item->MDEntryTime, item->OrigTime); }
+    inline void ChangePostTradePeriodPrice(T *item) { this->ChangeDecimalItem(this->m_postTradePeriodPrice, item->MDEntryPx, item->MDEntryTime, item->OrigTime); }
+    inline void ChangeTradePrice2(T *item) { this->ChangeDecimalItem(this->m_tradePrice2, item->MDEntryPx, item->MDEntryTime, item->OrigTime); }
+    inline void ChangeTradePrice(T *item) { this->ChangeDecimalItem(this->m_tradePrice, item->MDEntryPx, item->MDEntryTime, item->OrigTime); }
+    inline void ChangePriceOpenOfficial(T *item) { this->ChangeDecimalItem(this->m_priceOpenOfficial, item->MDEntryPx, item->MDEntryTime, item->OrigTime); }
+    inline void ChangePriceCurrentOfficial(T *item) { this->ChangeDecimalItem(this->m_priceCurrentOfficial, item->MDEntryPx, item->MDEntryTime, item->OrigTime); }
+    inline void ChangeLegitimQuote(T *item) { this->ChangeDecimalItem(this->m_legitimQuote, item->MDEntryPx, item->MDEntryTime, item->OrigTime); }
+    inline void ChangePriceCloseOfficial(T *item) { this->ChangeDecimalItem(this->m_priceCloseOfficial, item->MDEntryPx, item->MDEntryTime, item->OrigTime); }
+    inline void ChangeAuctionPriceBigPackets(T *item) { this->ChangeDecimalItem(this->m_auctionPriceBigPackets, item->MDEntryPx, item->MDEntryTime, item->OrigTime); }
+    inline void ChangeDuration(T *item) { this->ChangeDecimalItem(this->m_duration, item->MDEntryPx, item->MDEntryTime, item->OrigTime); }
+    inline void ChangeAskTotal(T *item) { this->ChangeDecimalItem(this->m_askTotal, item->MDEntryPx, item->MDEntryTime, item->OrigTime); }
+    inline void ChangeBidTotal(T *item) { this->ChangeDecimalItem(this->m_bidTotal, item->MDEntryPx, item->MDEntryTime, item->OrigTime); }
+    inline void ChangeAuctionMagnitudeBigPackets(T *item) { this->ChangeDecimalItem(this->m_auctionMagnitudeBigPackets, item->MDEntryPx, item->MDEntryTime, item->OrigTime); }
+    inline void ChangeCumulativeCouponDebit(T *item) { this->ChangeDecimalItem(this->m_cumulativeCouponDebit, item->MDEntryPx, item->MDEntryTime, item->OrigTime); }
     inline void ChangeAllDeals(T *item) { throw; }
 
     inline void RemoveBuyQuote(T *item) { throw; }
@@ -159,7 +402,7 @@ public:
     inline void RemoveAuctionPriceCalculated(T *item) { throw; }
     inline void RemoveAuctionPriceClose(T *item) { throw; }
     inline void RemoveAuctionMagnitudeClose(T *item) { throw; }
-    inline void RemoveMSSTradingDenyNotEnoughMoney(T *item) { throw; }
+    inline void RemoveMSSFullCoveredDealFlag(T *item) { throw; }
     inline void RemoveMSSTradeAskAuctionMagnitudeOpenClose(T *item) { throw; }
     inline void RemoveOLSTradeAskAuctionOpenClose(T *item) { throw; }
     inline void RemoveMSSTradeBidAuctionMagnitudeOpenClose(T *item) { throw; }
@@ -270,7 +513,7 @@ public:
                         }
                         else {
                             // mdetMSSTradingDenyNotEnoughMoney
-                            this->AddMSSTradingDenyNotEnoughMoney(item);
+                            this->AddMSSFullCoveredDealFlag(item);
                         }
                     }
                     else {
@@ -470,7 +713,7 @@ public:
                         }
                         else {
                             // mdetMSSTradingDenyNotEnoughMoney
-                            this->ChangeMSSTradingDenyNotEnoughMoney(item);
+                            this->ChangeMSSFullCoveredDealFlag(item);
                         }
                     }
                     else {
@@ -670,7 +913,7 @@ public:
                         }
                         else {
                             // mdetMSSTradingDenyNotEnoughMoney
-                            this->RemoveMSSTradingDenyNotEnoughMoney(item);
+                            this->RemoveMSSFullCoveredDealFlag(item);
                         }
                     }
                     else {

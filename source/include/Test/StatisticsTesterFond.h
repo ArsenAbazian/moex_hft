@@ -27,6 +27,8 @@ public:
                                                      FeedConnectionProtocol::UDP_IP,
                                                      "10.50.129.200", "239.192.113.3", 9113,
                                                      "10.50.129.200", "239.192.113.131", 9313);
+        this->m_table->InitSymbols(10, 10);
+        this->incFond->StatisticFond()->InitSymbols(10, 10);
 
     }
     ~StatisticsTesterFond() {

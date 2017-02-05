@@ -7,6 +7,7 @@
 
 #include "Lib/PointerList.h"
 #include "Types.h"
+#include <string.h>
 
 class StringIdComparer {
 public:

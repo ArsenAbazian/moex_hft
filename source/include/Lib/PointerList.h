@@ -35,7 +35,10 @@ public:
     inline void Released(bool released) { this->m_released = released; }
 };
 
+template <typename T> class PointerListLite;
+
 template <typename T> class PointerList {
+    friend  class PointerListLite<T>;
     int             m_capacity;
 
     LinkedPointer<T> *m_poolHead;
@@ -44,6 +47,7 @@ template <typename T> class PointerList {
     LinkedPointer<T> *m_head;
     LinkedPointer<T> *m_tail;
     int              m_count;
+    bool             m_autoAllocate;
 
 public:
     inline LinkedPointer<T>* Pop() {
@@ -65,9 +69,10 @@ public:
         this->m_poolTail = node;
         this->m_count--;
     }
-    PointerList(int capacity) {
+    PointerList(int capacity, bool autoAllocate) {
         this->m_capacity = capacity;
         this->m_count = 0;
+        this->m_autoAllocate = autoAllocate;
 
         this->m_poolHead = new LinkedPointer<T>;
         this->m_poolTail = this->m_poolHead;
@@ -85,7 +90,11 @@ public:
         this->m_head->Prev(0);
         this->m_head->Data(0);
         this->m_count = 0;
+
+        if(this->m_autoAllocate)
+            AllocData();
     }
+    PointerList(int capacity) : PointerList(capacity, false) { }
     inline void FreeData() {
         LinkedPointer<T> *s = this->m_poolHead;
         while(true) {
@@ -109,6 +118,8 @@ public:
 
         LinkedPointer<T> *node = this->m_poolHead;
         do {
+            if(this->m_autoAllocate)
+                delete node->Data();
             delete node;
             node = node->Next();
         }
@@ -226,6 +237,13 @@ public:
             node->Next(ptr);
             node = node->Next();
         }
+        LinkedPointer<T> *curr = start;
+        if(this->m_autoAllocate) {
+            for(int i = 0; i < capacity; i++) {
+                curr->Data(new T());
+                curr = curr->Next();
+            }
+        }
         this->m_poolTail->Next(start);
         this->m_poolTail = node;
         printf("!!!unexpected append!!!\n"); //TODO remove debug info
@@ -283,6 +301,64 @@ public:
         }
         // why - 1? becasue capacity = + 1 see constructor
         return sum - 1;
+    }
+};
+
+template <typename T> class PointerListLite {
+    PointerList<T>      *m_pool;
+
+    LinkedPointer<T>    *m_head;
+    LinkedPointer<T>    *m_tail;
+    int                 m_count;
+public:
+    PointerListLite(PointerList<T> *globalPool) {
+        this->m_pool = globalPool;
+        this->m_head = this->m_tail = this->m_pool->Pop();
+        this->m_count = 0;
+    }
+    ~PointerListLite() {
+        Clear();
+    }
+    inline void Clear() {
+        this->m_pool->m_tail->Next(this->m_head->Next());
+        this->m_pool->m_tail = this->m_tail;
+        this->m_pool->m_count -= this->m_count;
+        this->m_tail = this->m_head;
+        this->m_head->Next(0);
+    }
+    inline LinkedPointer<T>* Start() { return this->m_head->Next(); }
+    inline LinkedPointer<T>* End() { return this->m_tail; }
+    inline LinkedPointer<T>* Next(LinkedPointer<T> *node) { return node->Next(); }
+    inline int Count() { return this->m_count; }
+
+    inline LinkedPointer<T>* Add() {
+        LinkedPointer<T> *node = this->m_pool->Pop();
+        this->m_tail->Next(node);
+        node->Prev(this->m_tail);
+        this->m_tail = node;
+        this->m_count++;
+        return node;
+    }
+    inline LinkedPointer<T>* Insert(LinkedPointer<T> *insertBefore) {
+        LinkedPointer<T> *node = this->m_pool->Pop();
+        LinkedPointer<T> *next = insertBefore->Next();
+        insertBefore->Next(node);
+        node->Next(next);
+        this->m_count++;
+        return node;
+    }
+    inline void Remove(LinkedPointer<T> *node) {
+        LinkedPointer<T> *prev = node->Prev();
+        LinkedPointer<T> *next = node->Next();
+        prev->Next(next);
+        if(next != 0) {
+            next->Prev(prev);
+        }
+        else {
+            this->m_tail = prev;
+        }
+        this->m_count--;
+        this->m_pool->Push(node);
     }
 };
 

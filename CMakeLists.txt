@@ -131,7 +131,7 @@ add_executable(hft_robot ${sources}
         source/include/FeedConnections.h
         source/src/Test/TestMessagesHelper.cpp
         source/include/Test/PointerListTester.h
-        source/src/Converters/DtoaConverter.cpp source/include/Test/SecurityStatusTester.h source/include/FeedTypes.h)
+        source/src/Converters/DtoaConverter.cpp source/include/Test/SecurityStatusTester.h source/include/FeedTypes.h source/src/MarketData/StatisticInfo.cpp)
 add_dependencies(hft_robot fast_generate)
 
 add_custom_command(TARGET fast_generate

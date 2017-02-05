@@ -7,31 +7,32 @@
       <sourceFolder url="file://$MODULE_DIR$/cmake/GetPkgVariable.cmake" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/cmake/FindMono.cmake" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/CMakeLists.txt" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/source/src/Robot.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/source/src/Types.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/src/HftConsole.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/source/src/MarketServerInfo.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/source/src/MarketInfo.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/source/src/Converters/ItoaConverter.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/source/src/Converters/DtoaConverter.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/source/src/Converters/UTCTimeConverter.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/source/src/FeedConnection.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/source/src/FeedChannel.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/source/src/Test/UTCTimeConverterTester.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/source/src/Test/TestMessagesHelper.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/source/src/Test/FixProtocolManagerTester.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/source/src/Test/ItoaTester.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/source/src/Test/FastProtocolTester.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/source/src/Stopwatch.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/source/src/Fix/FixTypes.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/source/src/Fix/FixProtocolManager.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/source/src/MarketData/StatisticInfo.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/source/src/Fast/FastProtocolManager.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/src/Managers/LogManager.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/src/Managers/SocketBufferManager.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/src/Managers/LogErrorMessageCodes.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/src/Managers/ConsoleManager.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/src/Managers/SocketThreadManager.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/src/Managers/WinSockManager.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/source/src/FeedChannel.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/source/src/FeedConnection.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/source/src/Fast/FastProtocolManager.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/source/src/Robot.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/source/src/Fix/FixTypes.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/source/src/Fix/FixProtocolManager.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/source/src/MarketServerInfo.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/source/src/Stopwatch.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/source/src/Types.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/source/src/Test/UTCTimeConverterTester.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/source/src/Test/TestMessagesHelper.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/source/src/Test/FixProtocolManagerTester.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/source/src/Test/ItoaTester.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/source/src/Test/FastProtocolTester.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/source/src/MarketInfo.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/source/src/Converters/ItoaConverter.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/source/src/Converters/DtoaConverter.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/source/src/Converters/UTCTimeConverter.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/include/Test/TradeTesterCurr.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/include/Test/TestTemplateInfo.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/include/Test/OrderTesterFond.h" isTestSource="false" />
