@@ -29,6 +29,7 @@ public:
                                                      "10.50.129.200", "239.192.113.131", 9313);
         this->m_table->InitSymbols(10, 10);
         this->incFond->StatisticFond()->InitSymbols(10, 10);
+        this->incFond->SetMaxLostPacketCountForStartSnapshot(1);
 
     }
     ~StatisticsTesterFond() {
@@ -39,12 +40,12 @@ public:
     }
 
     void TestItem(StatisticsInfo<FastGenericItemInfo> *tableItem) {
-        for(int i = 0; i < tableItem->BuyQuotes()->Count(); i++)
-            if(tableItem->BuyQuotes()->Item(i)->Allocator == 0)
-                throw;
-        for(int i = 0; i < tableItem->SellQuotes()->Count(); i++)
-            if(tableItem->SellQuotes()->Item(i)->Allocator == 0)
-                throw;
+//        for(int i = 0; i < tableItem->BuyQuotes()->Count(); i++)
+//            if(tableItem->BuyQuotes()->Item(i)->Allocator == 0)
+//                throw;
+//        for(int i = 0; i < tableItem->SellQuotes()->Count(); i++)
+//            if(tableItem->SellQuotes()->Item(i)->Allocator == 0)
+//                throw;
     }
 
     void TestTableItemsAllocator(MarketDataTable<StatisticsInfo, FastGenericInfo, FastGenericItemInfo> *table) {
@@ -2372,7 +2373,7 @@ public:
             throw;
         if(incFond->m_statTableFond->Symbol(1)->Session(0)->EntriesQueue()->HasEntries())
             throw;
-        if(!incFond->ShouldStartSnapshot())
+        if(!incFond->ShouldRestoreIncrementalMessages())
             throw;
         if(incFond->CanStopListeningSnapshot())
             throw;
@@ -2392,7 +2393,7 @@ public:
             throw;
         if(incFond->m_statTableFond->Symbol(1)->Session(0)->EntriesQueue()->HasEntries())
             throw;
-        if(!incFond->ShouldStartSnapshot())
+        if(!incFond->ShouldRestoreIncrementalMessages())
             throw;
     }
 
@@ -2407,7 +2408,7 @@ public:
                      30);
         if(incFond->HasPotentiallyLostPackets())
             throw;
-        if(incFond->ShouldStartSnapshot())
+        if(incFond->ShouldRestoreIncrementalMessages())
             throw;
         if(snapFond->State() != FeedConnectionState::fcsSuspend)
             throw;
@@ -2424,7 +2425,7 @@ public:
                      30);
         if(!incFond->HasPotentiallyLostPackets())
             throw;
-        if(!incFond->ShouldStartSnapshot())
+        if(!incFond->ShouldRestoreIncrementalMessages())
             throw;
         if(!incFond->m_waitTimer->Active())
             throw;
@@ -2450,7 +2451,7 @@ public:
             throw;
         if(!incFond->HasPotentiallyLostPackets())
             throw;
-        if(!incFond->ShouldStartSnapshot())
+        if(!incFond->ShouldRestoreIncrementalMessages())
             throw;
         if(incFond->m_waitTimer->Active())
             throw;
@@ -2480,7 +2481,7 @@ public:
             throw;
         if(!incFond->HasPotentiallyLostPackets())
             throw;
-        if(!incFond->ShouldStartSnapshot())
+        if(!incFond->ShouldRestoreIncrementalMessages())
             throw;
         if(incFond->m_waitTimer->Active())
             throw;
@@ -2510,7 +2511,7 @@ public:
             throw;
         if(!incFond->HasPotentiallyLostPackets())
             throw;
-        if(!incFond->ShouldStartSnapshot())
+        if(!incFond->ShouldRestoreIncrementalMessages())
             throw;
         if(incFond->m_waitTimer->Active())
             throw;
@@ -2542,7 +2543,7 @@ public:
             throw;
         if(snapFond->State() != FeedConnectionState::fcsListenSnapshot)
             throw;
-        if(!incFond->ShouldStartSnapshot())
+        if(!incFond->ShouldRestoreIncrementalMessages())
             throw;
         if(incFond->StatisticFond()->SymbolsToRecvSnapshotCount() != 2)
             throw;

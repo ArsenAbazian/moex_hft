@@ -360,6 +360,28 @@ public:
         this->m_count--;
         this->m_pool->Push(node);
     }
+    inline T* Item(int index) {
+        LinkedPointer<T> *node = this->Start();
+        while(index > 0) {
+            if(node == this->End())
+                return 0;
+            node = node->Next();
+            index--;
+        }
+        return node->Data();
+    }
+
+    inline LinkedPointer<T>* Get(T *data) {
+        LinkedPointer<T> *node = this->m_head;
+        while(true) {
+            if(node->Data() == data)
+                return node;
+            if(node == this->m_tail)
+                break;
+            node = node->Next();
+        }
+        return 0;
+    }
 };
 
 #endif //HFT_ROBOT_SIMPLELIST_H

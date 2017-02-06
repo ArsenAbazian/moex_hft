@@ -321,7 +321,7 @@ protected:
         return false;
     }
 
-    inline bool ShouldStartSnapshot() {
+    inline bool ShouldRestoreIncrementalMessages() {
         if(this->m_doNotCheckIncrementalActuality)
             return false;
         return this->HasPotentiallyLostPackets() || this->HasQueueEntries();
@@ -566,6 +566,30 @@ protected:
         return true;
     }
 
+    inline bool ShouldStartIncrementalSnapshot(int endIndex) {
+        return endIndex - this->m_requestMessageStartIndex >= this->m_maxLostPacketCountForStartSnapshot;
+    }
+
+    inline bool CheckRequestLostIncrementalMessages() {
+        if(this->m_requestMessageStartIndex == -1)
+            return false;
+        if(this->m_snapshot->State() != FeedConnectionState::fcsSuspend)
+            return true;
+        while(this->m_requestMessageStartIndex <= this->m_endMsgSeqNum) {
+            this->m_requestMessageStartIndex = GetRequestMessageStartIndex(this->m_requestMessageStartIndex);
+            if(this->m_requestMessageStartIndex == -1)
+                return true;
+            int endIndex = GetRequestMessageEndIndex(this->m_requestMessageStartIndex);
+            if(ShouldStartIncrementalSnapshot(endIndex)) {
+                this->m_requestMessageStartIndex = -1;
+                return this->StartListenSnapshot();
+            }
+            this->RequestMessages(this->m_requestMessageStartIndex, endIndex);
+            this->m_requestMessageStartIndex = endIndex + 1;
+        }
+        return true;
+    }
+
     inline void CheckRequestLostSecurityStatusMessages() {
         if(this->m_securityStatusSnapshotActive)
             return;
@@ -628,6 +652,8 @@ protected:
                 i++; continue;
             }
             if(this->m_packets[i]->m_address == 0) {
+                if(this->m_requestMessageStartIndex < i)
+                    this->m_requestMessageStartIndex = i;
                 newStartMsgSeqNum = i;
                 break;
             }
@@ -1006,13 +1032,13 @@ protected:
         if(!this->ProcessIncrementalMessages())
             return false;
         if(this->m_snapshot->State() == FeedConnectionState::fcsSuspend) {
-            if(!this->ShouldStartSnapshot()) {
+            if(!this->ShouldRestoreIncrementalMessages()) {
                 this->m_waitTimer->Stop();
                 return true;
             }
             this->m_waitTimer->Activate();
-            if (this->m_waitTimer->ElapsedMilliseconds() >= this->m_waitIncrementalMaxTimeMs) {
-                if (!this->StartListenSnapshot())
+            if(this->m_waitTimer->ElapsedMilliseconds() >= this->m_waitIncrementalMaxTimeMs) {
+                if(!this->CheckRequestLostIncrementalMessages())
                     return false;
                 this->m_waitTimer->Stop();
             }

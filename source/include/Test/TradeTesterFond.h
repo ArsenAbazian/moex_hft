@@ -29,6 +29,7 @@ public:
                                                      "10.50.129.200", "239.192.113.131", 9313);
         this->m_table->InitSymbols(10, 10);
         this->incFond->TradeFond()->InitSymbols(10, 10);
+        this->incFond->SetMaxLostPacketCountForStartSnapshot(1);
     }
     ~TradeTesterFond() {
         delete this->incFond;
@@ -1770,7 +1771,7 @@ public:
             throw;
         if(incFond->TradeFond()->Symbol(1)->Session(0)->EntriesQueue()->HasEntries())
             throw;
-        if(!incFond->ShouldStartSnapshot())
+        if(!incFond->ShouldRestoreIncrementalMessages())
             throw;
         if(incFond->CanStopListeningSnapshot())
             throw;
@@ -1790,7 +1791,7 @@ public:
             throw;
         if(incFond->TradeFond()->Symbol(1)->Session(0)->EntriesQueue()->HasEntries())
             throw;
-        if(!incFond->ShouldStartSnapshot())
+        if(!incFond->ShouldRestoreIncrementalMessages())
             throw;
     }
 
@@ -1805,7 +1806,7 @@ public:
                      30);
         if(incFond->HasPotentiallyLostPackets())
             throw;
-        if(incFond->ShouldStartSnapshot())
+        if(incFond->ShouldRestoreIncrementalMessages())
             throw;
         if(snapFond->State() != FeedConnectionState::fcsSuspend)
             throw;
@@ -1822,7 +1823,7 @@ public:
                      30);
         if(!incFond->HasPotentiallyLostPackets())
             throw;
-        if(!incFond->ShouldStartSnapshot())
+        if(!incFond->ShouldRestoreIncrementalMessages())
             throw;
         if(!incFond->m_waitTimer->Active())
             throw;
@@ -1848,7 +1849,7 @@ public:
             throw;
         if(!incFond->HasPotentiallyLostPackets())
             throw;
-        if(!incFond->ShouldStartSnapshot())
+        if(!incFond->ShouldRestoreIncrementalMessages())
             throw;
         if(incFond->m_waitTimer->Active())
             throw;
@@ -1878,7 +1879,7 @@ public:
             throw;
         if(!incFond->HasPotentiallyLostPackets())
             throw;
-        if(!incFond->ShouldStartSnapshot())
+        if(!incFond->ShouldRestoreIncrementalMessages())
             throw;
         if(incFond->m_waitTimer->Active())
             throw;
@@ -1908,7 +1909,7 @@ public:
             throw;
         if(!incFond->HasPotentiallyLostPackets())
             throw;
-        if(!incFond->ShouldStartSnapshot())
+        if(!incFond->ShouldRestoreIncrementalMessages())
             throw;
         if(incFond->m_waitTimer->Active())
             throw;
@@ -1940,7 +1941,7 @@ public:
             throw;
         if(snapFond->State() != FeedConnectionState::fcsListenSnapshot)
             throw;
-        if(!incFond->ShouldStartSnapshot())
+        if(!incFond->ShouldRestoreIncrementalMessages())
             throw;
         if(incFond->TradeFond()->SymbolsToRecvSnapshotCount() != 2)
             throw;

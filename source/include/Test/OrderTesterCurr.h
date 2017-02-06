@@ -23,12 +23,14 @@ public:
                                                     FeedConnectionProtocol::UDP_IP,
                                                     "10.50.129.200", "239.192.113.3", 9113,
                                                     "10.50.129.200", "239.192.113.131", 9313);
+
         this->snapCurr = new FeedConnection_CURR_OLS("OLS", "Full Refresh", 'I',
                                                      FeedConnectionProtocol::UDP_IP,
                                                      "10.50.129.200", "239.192.113.3", 9113,
                                                      "10.50.129.200", "239.192.113.131", 9313);
         this->m_table->InitSymbols(10, 10);
         this->incCurr->OrderCurr()->InitSymbols(10, 10);
+        this->incCurr->SetMaxLostPacketCountForStartSnapshot(1);
     }
     ~OrderTesterCurr() {
         delete this->incCurr;
@@ -2359,7 +2361,7 @@ public:
             throw;
         if(incCurr->m_orderTableCurr->Symbol(1)->Session(0)->EntriesQueue()->HasEntries())
             throw;
-        if(!incCurr->ShouldStartSnapshot())
+        if(!incCurr->ShouldRestoreIncrementalMessages())
             throw;
         if(incCurr->CanStopListeningSnapshot())
             throw;
@@ -2379,7 +2381,7 @@ public:
             throw;
         if(incCurr->m_orderTableCurr->Symbol(1)->Session(0)->EntriesQueue()->HasEntries())
             throw;
-        if(!incCurr->ShouldStartSnapshot())
+        if(!incCurr->ShouldRestoreIncrementalMessages())
             throw;
     }
 
@@ -2394,7 +2396,7 @@ public:
                      30);
         if(incCurr->HasPotentiallyLostPackets())
             throw;
-        if(incCurr->ShouldStartSnapshot())
+        if(incCurr->ShouldRestoreIncrementalMessages())
             throw;
         if(snapCurr->State() != FeedConnectionState::fcsSuspend)
             throw;
@@ -2411,7 +2413,7 @@ public:
                      30);
         if(!incCurr->HasPotentiallyLostPackets())
             throw;
-        if(!incCurr->ShouldStartSnapshot())
+        if(!incCurr->ShouldRestoreIncrementalMessages())
             throw;
         if(!incCurr->m_waitTimer->Active())
             throw;
@@ -2437,7 +2439,7 @@ public:
             throw;
         if(!incCurr->HasPotentiallyLostPackets())
             throw;
-        if(!incCurr->ShouldStartSnapshot())
+        if(!incCurr->ShouldRestoreIncrementalMessages())
             throw;
         if(incCurr->m_waitTimer->Active())
             throw;
@@ -2467,7 +2469,7 @@ public:
             throw;
         if(!incCurr->HasPotentiallyLostPackets())
             throw;
-        if(!incCurr->ShouldStartSnapshot())
+        if(!incCurr->ShouldRestoreIncrementalMessages())
             throw;
         if(incCurr->m_waitTimer->Active())
             throw;
@@ -2497,7 +2499,7 @@ public:
             throw;
         if(!incCurr->HasPotentiallyLostPackets())
             throw;
-        if(!incCurr->ShouldStartSnapshot())
+        if(!incCurr->ShouldRestoreIncrementalMessages())
             throw;
         if(incCurr->m_waitTimer->Active())
             throw;
@@ -2529,7 +2531,7 @@ public:
             throw;
         if(snapCurr->State() != FeedConnectionState::fcsListenSnapshot)
             throw;
-        if(!incCurr->ShouldStartSnapshot())
+        if(!incCurr->ShouldRestoreIncrementalMessages())
             throw;
         if(incCurr->OrderCurr()->SymbolsToRecvSnapshotCount() != 2)
             throw;
