@@ -3,4 +3,4 @@
 //
 #include "StatisticInfo.h"
 
-StatisticItemAllocator* DefaultStatisticItemAllocator::Default = new StatisticItemAllocator(10000, 1000);
+StatisticItemAllocator* DefaultStatisticItemAllocator::Default = new StatisticItemAllocator();
