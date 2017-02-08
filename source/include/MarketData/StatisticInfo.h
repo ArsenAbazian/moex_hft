@@ -11,8 +11,8 @@
 #include "MarketDataEntryQueue.h"
 
 class StatisticItemDouble {
-    UINT32          m_time;
-    UINT32          m_origTime;
+protected:
+    UINT64          m_time;
     Decimal         m_value;
     Decimal         *m_valuePtr;
 public:
@@ -20,19 +20,179 @@ public:
         this->m_valuePtr = &this->m_value;
     }
     ~StatisticItemDouble() { }
-    inline void Set(UINT32 time, UINT32 origTime, Decimal *value) {
+    inline void Set(UINT64 time, Decimal *value) {
         this->m_time = time;
-        this->m_origTime = origTime;
         this->m_valuePtr->Set(value);
     }
-    inline UINT32 Time() { return this->m_time; }
-    inline UINT32 OrigTime() { return this->m_origTime; }
+    inline UINT64 Time() { return this->m_time; }
     inline Decimal* Value() { return this->m_valuePtr; };
 };
 
+class StatisticItemDouble2 {
+protected:
+    UINT64          m_time;
+    Decimal         m_value;
+    Decimal         m_value2;
+    Decimal         *m_valuePtr;
+    Decimal         *m_value2Ptr;
+public:
+    StatisticItemDouble2() {
+        this->m_valuePtr = &this->m_value;
+        this->m_value2Ptr = &this->m_value2;
+    }
+    ~StatisticItemDouble2() { }
+    inline void Set(UINT64 time, Decimal *value, Decimal *value2) {
+        this->m_time = time;
+        this->m_valuePtr->Set(value);
+        this->m_value2Ptr->Set(value2);
+    }
+    inline UINT64 Time() { return this->m_time; }
+    inline Decimal* Value() { return this->m_valuePtr; };
+    inline Decimal* Value2() { return this->m_value2Ptr; };
+};
+
+template<typename T> class StatisticItemLastDealInfo{
+protected:
+    UINT64          m_time;
+    Decimal         m_price;
+    Decimal         m_size;
+    Decimal         m_netChangePrevDay;
+    Decimal         m_changeFromWAPrice;
+    Decimal         m_tradeValue;
+    Decimal         *m_pricePtr;
+    Decimal         *m_sizePtr;
+    Decimal         *m_netChangePrevDayPtr;
+    Decimal         *m_changeFromWAPricePtr;
+    Decimal         *m_tradeValuePtr;
+    UINT32          m_dealTime;
+public:
+    StatisticItemLastDealInfo() {
+        this->m_pricePtr = &(this->m_price);
+        this->m_sizePtr = &(this->m_size);
+        this->m_netChangePrevDayPtr = &(this->m_netChangePrevDay);
+        this->m_changeFromWAPricePtr = &(this->m_changeFromWAPrice);
+        this->m_tradeValuePtr = &(this->m_tradeValue);
+    }
+    ~StatisticItemLastDealInfo() { }
+    inline void Set(UINT64 time, T *info) {
+        this->m_time = time;
+        this->m_pricePtr->Set(info->MDEntryPx);
+        this->m_sizePtr->Set(info->MDEntrySize);
+        this->m_dealTime = info->MDEntryTime;
+        this->m_netChangePrevDayPtr = info->NetChgPrevDay;
+        this->m_changeFromWAPrice = info->ChgFromWAPrice;
+        this->m_tradeValuePtr->Set(info->TradeValue);
+    }
+    inline UINT64 Time() { return this->m_time; }
+    inline UINT32 DealTime() { return this->m_dealTime; }
+    inline Decimal* Price() { return this->m_pricePtr; };
+    inline Decimal* Size() { return this->m_sizePtr; };
+    inline Decimal* NetChangePrevDayPtr() { return this->m_netChangePrevDayPtr; }
+    inline Decimal* ChangeFromWAPrice() { return this->m_changeFromWAPricePtr; }
+    inline Decimal* TradeValue() { return this->m_tradeValuePtr; }
+};
+
+template<typename T> class StatisticItemTotalOfferInfo{
+protected:
+    UINT64          m_time;
+    Decimal         m_size;
+    int             m_offerNbOr;
+    Decimal         *m_sizePtr;
+
+public:
+    StatisticItemTotalOfferInfo() {
+        this->m_sizePtr = &(this->m_size);
+    }
+    ~StatisticItemTotalOfferInfo() { }
+    inline void Set(UINT64 time, T *info) {
+        this->m_time = time;
+        this->m_sizePtr->Set(info->MDEntrySize);
+        this->m_offerNbOr = info->OfferNbOr;
+    }
+    inline UINT64 Time() { return this->m_time; }
+    inline Decimal* Size() { return this->m_sizePtr; };
+    inline int OfferNbOr() { return this->m_offerNbOr; }
+};
+
+template<typename T> class StatisticItemTransactionsMagnitude{
+protected:
+    UINT64          m_time;
+    Decimal         m_size;
+    Decimal         m_tradeValue;
+    int             m_totalNumOfTrades;
+    Decimal         *m_sizePtr;
+    Decimal         *m_tradeValuePtr;
+public:
+    StatisticItemTransactionsMagnitude() {
+        this->m_sizePtr = &(this->m_size);
+        this->m_tradeValuePtr = &(this->m_tradeValue);
+    }
+    ~StatisticItemTransactionsMagnitude() { }
+    inline void Set(UINT64 time, T *info) {
+        this->m_time = time;
+        this->m_sizePtr->Set(info->MDEntrySize);
+        this->m_totalNumOfTrades = info->TotalNumOfTrades;
+        this->m_tradeValuePtr->Set(info->TradeValue);
+    }
+    inline UINT64 Time() { return this->m_time; }
+    inline Decimal* Size() { return this->m_sizePtr; };
+    inline int TotalNumOfTrades() { return this->m_totalNumOfTrades; }
+    inline Decimal* TradeValue() { return this->m_tradeValuePtr; }
+};
+
+template<typename T> class StatisticItemIndexList{
+protected:
+    UINT64          m_time;
+    Decimal         m_price;
+    Decimal         m_size;
+    Decimal         m_tradeValue;
+    Decimal         *m_pricePtr;
+    Decimal         *m_sizePtr;
+    Decimal         *m_tradeValuePtr;
+public:
+    StatisticItemIndexList() {
+        this->m_pricePtr = &(this->m_price);
+        this->m_sizePtr = &(this->m_size);
+        this->m_tradeValuePtr = &(this->m_tradeValue);
+    }
+    ~StatisticItemIndexList() { }
+    inline void Set(UINT64 time, T *info) {
+        this->m_time = time;
+        this->m_pricePtr->Set(info->MDEntryPx);
+        this->m_sizePtr->Set(info->MDEntrySize);
+        this->m_tradeValuePtr->Set(info->TradeValue);
+    }
+    inline UINT64 Time() { return this->m_time; }
+    inline Decimal* Price() { return this->m_pricePtr; };
+    inline Decimal* Size() { return this->m_sizePtr; };
+    inline Decimal* TradeValue() { return this->m_tradeValuePtr; }
+};
+
+template<typename T> class StatisticItemTotalBid {
+protected:
+    UINT64          m_time;
+    Decimal         m_size;
+    int             m_bidNbOr;
+    Decimal         *m_sizePtr;
+
+public:
+    StatisticItemTotalBid() {
+        this->m_sizePtr = &(this->m_size);
+    }
+    ~StatisticItemTotalBid() { }
+    inline void Set(UINT64 time, T *info) {
+        this->m_time = time;
+        this->m_sizePtr->Set(info->MDEntrySize);
+        this->m_bidNbOr = info->BidNbOr;
+    }
+    inline UINT64 Time() { return this->m_time; }
+    inline Decimal* Size() { return this->m_sizePtr; };
+    inline int BidNbOr() { return this->m_bidNbOr; }
+};
+
+
 template <typename T> class StatisticItem {
-    UINT32          m_time;
-    UINT32          m_origTime;
+    UINT64          m_time;
     T               m_value;
 public:
     StatisticItem() { }
