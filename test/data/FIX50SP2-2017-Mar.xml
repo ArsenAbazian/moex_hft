@@ -305,6 +305,7 @@
 		<string name="SenderCompID" id="49"><constant value="MOEX"/></string>
 		<uInt32 name="MsgSeqNum" id="34"></uInt32>
 		<uInt64 name="SendingTime" id="52"></uInt64>
+		<uInt64 name="LastUpdateTime" id="779" presence="optional"></uInt64>
 		<sequence name="GroupMDEntries">
 			<length name="NoMDEntries" id="268"/>
 			<uInt32 name="MDUpdateAction" id="279" presence="optional"></uInt32>
@@ -351,6 +352,7 @@
 		<string name="SenderCompID" id="49"><constant value="MOEX"/></string>
 		<uInt32 name="MsgSeqNum" id="34"></uInt32>
 		<uInt64 name="SendingTime" id="52"></uInt64>
+		<uInt64 name="LastUpdateTime" id="779" presence="optional"></uInt64>
 		<sequence name="GroupMDEntries">
 			<length name="NoMDEntries" id="268"/>
 			<uInt32 name="MDUpdateAction" id="279" presence="optional"></uInt32>

@@ -592,7 +592,7 @@ public:
 		}
 		return false;
 	}
-	inline bool CheckProcessNullUint64() {
+	inline bool CheckProcessNullUInt64() {
 		if (*(this->currentPos) == 0x80) {
 			this->currentPos++;
 			return true;
@@ -3332,6 +3332,8 @@ public:
 
 		info->MsgSeqNum = ReadUInt32_Mandatory();
 		info->SendingTime = ReadUInt64_Mandatory();
+		if((info->AllowLastUpdateTime = !CheckProcessNullUInt64()))
+			info->LastUpdateTime = ReadUInt64_Optional();
 
 		info->GroupMDEntriesCount = ReadUInt32_Mandatory();
 		FastGenericItemInfo* gmdeItemInfo = NULL;
@@ -3415,6 +3417,8 @@ public:
 
 		info->MsgSeqNum = ReadUInt32_Mandatory();
 		info->SendingTime = ReadUInt64_Mandatory();
+		if((info->AllowLastUpdateTime = !CheckProcessNullUInt64()))
+			info->LastUpdateTime = ReadUInt64_Optional();
 
 		info->GroupMDEntriesCount = ReadUInt32_Mandatory();
 		FastGenericItemInfo* gmdeItemInfo = NULL;

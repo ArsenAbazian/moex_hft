@@ -41,6 +41,8 @@ public:
         info->m_heartbeatAddCount = 10;
         info->m_tradingSessionStatusCount = 10;
         info->m_tradingSessionStatusAddCount = 10;
+        info->m_incrementalMSRCURRCount = 100;
+        info->m_incrementalMSRCURRAddCount = 100;
 
         return info;
     }
@@ -275,6 +277,8 @@ public:
         info->m_heartbeatAddCount = 10;
         info->m_tradingSessionStatusCount = 10;
         info->m_tradingSessionStatusAddCount = 10;
+        info->m_incrementalMSRFONDCount = 100;
+        info->m_incrementalMSRFONDAddCount = 100;
 
         return info;
     }

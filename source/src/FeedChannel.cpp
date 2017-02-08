@@ -110,11 +110,11 @@ bool FeedChannel::Connect() {
 		DefaultLogManager::Default->EndLog(false);
 		return false;
 	}*/
-	/*
-    if (!this->Connect(this->statisticsIncremental)) {
-		DefaultLogManager::Default->EndLog(false);
-		return false;
-	}*/
+
+//    if (!this->Connect(this->statisticsIncremental)) {
+//		DefaultLogManager::Default->EndLog(false);
+//		return false;
+//	}
 	/*
 	if (!this->Connect(this->instrumentStatus)) {
 		DefaultLogManager::Default->EndLog(false);
@@ -142,8 +142,9 @@ bool FeedChannel::Connect() {
 
 	//this->ordersIncremental->Start();
 	//this->tradesIncremental->Start();
-	//this->statisticsIncremental->DoNotCheckIncrementalActuality(true);
-	//this->statisticsIncremental->Start();
+	this->statisticsIncremental->DoNotCheckIncrementalActuality(true);
+	this->statisticsIncremental->SkipApplyMessages(true);
+	this->statisticsIncremental->Start();
     //this->instrumentDefinition->DoNotCheckIncrementalActuality(true);
     //this->instrumentDefinition->IdfAllowUpdateData(true);
 	//this->instrumentDefinition->Start();

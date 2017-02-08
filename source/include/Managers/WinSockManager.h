@@ -75,11 +75,11 @@ class TestMessagesHelper;
 class WinSockManager {
 	friend class TestMessagesHelper;
 
-#ifdef TEST
+//#ifdef TEST
 public:
 	static TestMessagesHelper		*m_testHelper;
 private:
-#endif
+//#endif
 
 	static struct pollfd			*m_pollFd;
 	static int 						*m_recvCount;
@@ -248,9 +248,9 @@ public:
         return true;
 	}
 
-#ifdef TEST
+//#ifdef TEST
     void SendTest();
-#endif
+//#endif
 
 	inline bool ShouldRecv() {
 #ifdef TEST

@@ -813,6 +813,8 @@ void FastProtocolManager::PrintIncrementalMSRFOND(FastIncrementalMSRFONDInfo *in
 	PrintInt32("TemplateId", 2523, 1);
 	PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 	PrintUInt64("SendingTime", info->SendingTime, 1);
+	if(info->AllowLastUpdateTime)
+		PrintUInt64("LastUpdateTime", info->LastUpdateTime, 1);
 	PrintInt32("GroupMDEntriesCount", info->GroupMDEntriesCount, 1);
 
 	FastGenericItemInfo* gmdeItemInfo = NULL;
@@ -897,6 +899,8 @@ void FastProtocolManager::PrintIncrementalMSRCURR(FastIncrementalMSRCURRInfo *in
 	PrintInt32("TemplateId", 3613, 1);
 	PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 	PrintUInt64("SendingTime", info->SendingTime, 1);
+	if(info->AllowLastUpdateTime)
+		PrintUInt64("LastUpdateTime", info->LastUpdateTime, 1);
 	PrintInt32("GroupMDEntriesCount", info->GroupMDEntriesCount, 1);
 
 	FastGenericItemInfo* gmdeItemInfo = NULL;
@@ -1860,6 +1864,8 @@ void FastProtocolManager::PrintXmlIncrementalMSRFOND(FastIncrementalMSRFONDInfo 
 	PrintXmlInt32("TemplateId", 2523);
 	PrintXmlUInt32("MsgSeqNum", info->MsgSeqNum);
 	PrintXmlUInt64("SendingTime", info->SendingTime);
+	if(info->AllowLastUpdateTime)
+		PrintXmlUInt64("LastUpdateTime", info->LastUpdateTime);
 	PrintXmlInt32("GroupMDEntriesCount", info->GroupMDEntriesCount);
 
 	FastGenericItemInfo* gmdeItemInfo = NULL;
@@ -1944,6 +1950,8 @@ void FastProtocolManager::PrintXmlIncrementalMSRCURR(FastIncrementalMSRCURRInfo 
 	PrintXmlInt32("TemplateId", 3613);
 	PrintXmlUInt32("MsgSeqNum", info->MsgSeqNum);
 	PrintXmlUInt64("SendingTime", info->SendingTime);
+	if(info->AllowLastUpdateTime)
+		PrintXmlUInt64("LastUpdateTime", info->LastUpdateTime);
 	PrintXmlInt32("GroupMDEntriesCount", info->GroupMDEntriesCount);
 
 	FastGenericItemInfo* gmdeItemInfo = NULL;
@@ -3339,6 +3347,10 @@ void FastProtocolManager::EncodeIncrementalMSRFONDInfo(FastIncrementalMSRFONDInf
 	WriteUInt32_Mandatory(2523);
 	WriteUInt32_Mandatory(info->MsgSeqNum);
 	WriteUInt64_Mandatory(info->SendingTime);
+	if(!info->AllowLastUpdateTime)
+		this->WriteNull();
+	else
+		WriteUInt64_Optional(info->LastUpdateTime);
 	WriteUInt32_Mandatory(info->GroupMDEntriesCount);
 	FastGenericItemInfo **gmdeItemInfo = info->GroupMDEntries;
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
@@ -3482,6 +3494,10 @@ void FastProtocolManager::EncodeIncrementalMSRCURRInfo(FastIncrementalMSRCURRInf
 	WriteUInt32_Mandatory(3613);
 	WriteUInt32_Mandatory(info->MsgSeqNum);
 	WriteUInt64_Mandatory(info->SendingTime);
+	if(!info->AllowLastUpdateTime)
+		this->WriteNull();
+	else
+		WriteUInt64_Optional(info->LastUpdateTime);
 	WriteUInt32_Mandatory(info->GroupMDEntriesCount);
 	FastGenericItemInfo **gmdeItemInfo = info->GroupMDEntries;
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {

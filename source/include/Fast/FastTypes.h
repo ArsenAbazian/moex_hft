@@ -1462,6 +1462,8 @@ public:
 	int							SenderCompIDLength;
 	UINT32							MsgSeqNum;			// id=34  
 	UINT64							SendingTime;			// id=52  
+	UINT64							LastUpdateTime;			// id=779  presence=optional  
+	bool							AllowLastUpdateTime;
 	int							GroupMDEntriesCount;
 	FastGenericItemInfo* GroupMDEntries[64];
 
@@ -1477,6 +1479,7 @@ public:
 		this->BeginStringLength = 0;
 		this->SenderCompID = 0;
 		this->SenderCompIDLength = 0;
+		this->AllowLastUpdateTime = false;
 		this->GroupMDEntriesCount = 0;
 	}
 	~FastIncrementalMSRFONDInfo(){ }
@@ -1513,6 +1516,8 @@ public:
 	int							SenderCompIDLength;
 	UINT32							MsgSeqNum;			// id=34  
 	UINT64							SendingTime;			// id=52  
+	UINT64							LastUpdateTime;			// id=779  presence=optional  
+	bool							AllowLastUpdateTime;
 	int							GroupMDEntriesCount;
 	FastGenericItemInfo* GroupMDEntries[64];
 
@@ -1528,6 +1533,7 @@ public:
 		this->BeginStringLength = 0;
 		this->SenderCompID = 0;
 		this->SenderCompIDLength = 0;
+		this->AllowLastUpdateTime = false;
 		this->GroupMDEntriesCount = 0;
 	}
 	~FastIncrementalMSRCURRInfo(){ }
