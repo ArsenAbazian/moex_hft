@@ -1,16 +1,19 @@
 // HftConsole.cpp : Defines the entry point for the console application.
 //
-
+#include "Types.h"
+#ifdef TEST
 #include "Test/ItoaTester.h"
 #include "Test/UTCTimeConverterTester.h"
 #include "Test/FastProtocolTester.h"
 #include "Test/FixProtocolManagerTester.h"
 #include "Test/FeedConnectionTester.h"
 #include "Test/DecimalTester.h"
+#endif //TEST
+
 #include "Robot.h"
 
-int main(int argc, char** argv)
-{
+int main(int argc, char** argv) {
+
     bool test_itoa = false;
 	bool test_ftoa = false;
 	bool test_decimal = false;
@@ -46,7 +49,7 @@ int main(int argc, char** argv)
         return 0;
     }
 #endif
-
+#ifdef TEST
 	if (test_itoa || test_all) {
 		ItoaTester tester;
 		tester.Test();
@@ -79,10 +82,11 @@ int main(int argc, char** argv)
 
 	if (test_itoa || test_ftoa || test_time || test_all || test_fast || test_fix || test_feed || test_decimal)
 		return 1;
-#ifdef TEST
+
     printf("you are trying to run robot in 'full work' mode, but TEST macros is defined. please remove TEST macro in file Types.h\n!!!");
 	return 0;
 #else
+
 	Robot *robot = new Robot();
 	robot->Run();
     delete robot;

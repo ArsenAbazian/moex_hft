@@ -1,4 +1,7 @@
 #pragma once
+#include "../Types.h"
+
+#ifdef TEST
 class FastProtocolTester
 {
 public:
@@ -50,4 +53,4 @@ public:
 	void TestReadUInt64();
 	void TestParsePresenceMap();
 };
-
+#endif

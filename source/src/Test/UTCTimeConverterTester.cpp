@@ -2,7 +2,7 @@
 #include "Converters/UTCTimeConverter.h"
 #include <stdlib.h>
 #include <stdio.h>
-
+#ifdef TEST
 
 UTCTimeConverterTester::UTCTimeConverterTester()
 {
@@ -232,3 +232,5 @@ void UTCTimeConverterTester::Test() {
 		}
 	}
 }
+
+#endif //TEST

@@ -75,11 +75,11 @@ class TestMessagesHelper;
 class WinSockManager {
 	friend class TestMessagesHelper;
 
-//#ifdef TEST
+#ifdef TEST
 public:
 	static TestMessagesHelper		*m_testHelper;
 private:
-//#endif
+#endif
 
 	static struct pollfd			*m_pollFd;
 	static int 						*m_recvCount;
@@ -259,7 +259,9 @@ public:
 		return WinSockManager::m_recvCount[this->m_pollIndex] > 0;
 #endif
 	}
+#ifdef TEST
 	bool ShouldRecvTest();
+#endif
 	inline void OnRecv() {
 		//if(this->ShouldRecv())
 		WinSockManager::m_recvCount[this->m_pollIndex] = 0;//--;

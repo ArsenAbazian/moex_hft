@@ -4,6 +4,9 @@
 
 #ifndef HFT_ROBOT_ORDERTABLECURR_H
 #define HFT_ROBOT_ORDERTABLECURR_H
+#include "../Types.h"
+
+#ifdef TEST
 
 #include "../FeedConnection.h"
 #include "TestMessagesHelper.h"
@@ -4243,4 +4246,5 @@ public:
     }
 };
 
+#endif
 #endif //HFT_ROBOT_ORDERTABLECURR_H

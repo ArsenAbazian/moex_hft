@@ -4,6 +4,9 @@
 
 #ifndef HFT_ROBOT_TRADETESTERCURR_H
 #define HFT_ROBOT_TRADETESTERCURR_H
+#include "../Types.h"
+
+#ifdef TEST
 
 #include "../FeedConnection.h"
 #include "TestMessagesHelper.h"
@@ -2881,4 +2884,5 @@ public:
     }
 };
 
+#endif //TEST
 #endif //HFT_ROBOT_TRADETESTERCURR_H

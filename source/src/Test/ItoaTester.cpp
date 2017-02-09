@@ -2,6 +2,7 @@
 #include "Test/ItoaTester.h"
 #include <stdio.h>
 
+#ifdef TEST
 ItoaTester::ItoaTester()
 {
 }
@@ -113,3 +114,4 @@ void ItoaTester::Test() {
 		}
 	}
 }
+#endif

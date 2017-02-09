@@ -4,6 +4,9 @@
 
 #ifndef HFT_ROBOT_FEEDCONNECTIONTESTER_H
 #define HFT_ROBOT_FEEDCONNECTIONTESTER_H
+#include "../Types.h"
+
+#ifdef TEST
 
 #include "../FeedConnections.h"
 #include "SecurityDefinitionTester.h"
@@ -264,4 +267,5 @@ public:
     }
 };
 
+#endif
 #endif //HFT_ROBOT_FEEDCONNECTIONTESTER_H

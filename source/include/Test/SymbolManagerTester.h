@@ -4,6 +4,9 @@
 
 #ifndef HFT_ROBOT_HASHSTRINGTESTER_H
 #define HFT_ROBOT_HASHSTRINGTESTER_H
+#include "../Types.h"
+
+#ifdef TEST
 
 #include <stdio.h>
 #include "../Lib/StringHash.h"
@@ -232,4 +235,5 @@ public:
     }
 };
 
+#endif //TEST
 #endif //HFT_ROBOT_HASHSTRINGTESTER_H

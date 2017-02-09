@@ -14,6 +14,7 @@
 #include "MarketData/SymbolManager.h"
 #include "ConnectionParameters.h"
 #include "FeedTypes.h"
+#include "Managers/DebugInfoManager.h"
 
 
 class OrderTesterFond;
@@ -25,6 +26,7 @@ class StatisticsTesterFond;
 class StatisticsTesterCurr;
 class SecurityDefinitionTester;
 class SecurityStatusTester;
+class DebugInfoManager;
 
 class FeedConnection {
     friend class OrderTesterFond;
@@ -37,6 +39,7 @@ class FeedConnection {
     friend class StatisticsTesterCurr;
     friend class SecurityDefinitionTester;
     friend class SecurityStatusTester;
+    friend class DebugInfoManager;
 
 public:
 	const int MaxReceiveBufferSize 				= 1500;
@@ -45,9 +48,9 @@ protected:
 	char										m_idName[16];
 	char										feedTypeName[64];
 
-//#ifdef TEST
+#ifdef TEST
     TestMessagesHelper                          *m_testHelper;
-//#endif
+#endif
 
     FeedConnectionType                          m_type;
     FeedConnectionId                            m_id;
@@ -1506,85 +1509,24 @@ protected:
 
     inline bool OnIncrementalRefresh_MSR_FOND(FastIncrementalMSRFONDInfo *info) {
         if(this->m_skipApplyMessages) { //TODO remove this
-            this->m_fastProtocolManager->Print();
+            DebugInfoManager::Default->PrintStatisticsOnce<FastIncrementalMSRFONDInfo>(this->m_fastProtocolManager, info);
             info->Clear();
             return true;
         }
         return true;
-        /*bool res = true;
+        bool res = true;
         for(int i = 0; i < info->GroupMDEntriesCount; i++) {
             res |= this->OnIncrementalRefresh_MSR_FOND(info->GroupMDEntries[i]);
         }
         info->ReleaseUnused();
-        return res;*/
+        return res;
     }
 
-    MDEntryType MDEntryTypes[39] {
-            mdetBuyQuote,
-            mdetSellQuote,
-            mdetLastDealInfo,
-            mdetIndicesList,
-            mdetPriceOpenFirst,
-            mdetPriceCloseLast,
-            mdetPriceMax,
-            mdetPriceMin,
-            mdetPriceAve,
-            mdetDisbalance, // A
-            mdetTransactionsMagnitude, //B
-            mdetEmptyBook, // J
-            mdetAskPriceMax,
-            mdetBidPriceMin,
-            mdetAuctionPriceCalculated,
-            mdetAuctionPriceClose,
-            mdetAuctionMagnitudeClose,
-            mdetMSSTradingDenyNotEnoughMoney,
-            mdetMSSTradeAskAuctionMagnitudeOpenClose,
-            mdetOLSTradeAskAuctionOpenClose,
-            mdetMSSTradeBidAuctionMagnitudeOpenClose,
-            mdetOLSTradeBidAuctionOpenClose,
-            mdetSessionAsk,
-            mdetSessionBid,
-            mdetPreTradePeriodPrice,
-            mdetPostTradePeriodPrice,
-            mdetTradePrice2,
-            mdetTradePrice,
-            mdetPriceOpenOfficial,
-            mdetPriceCurrentOfficial,
-            mdetLegitimQuote,
-            mdetPriceCloseOfficial,
-            mdetAskTotal,
-            mdetBidTotal,
-            mdetAuctionPriceBigPackets,
-            mdetAuctionMagnitudeBigPackets,
-            mdetCumulativeCouponDebit,
-            mdetDuration,
-            mdetAllDeals
-    };
-    int MDEntryTypeRecv[39] {
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0 };
+
 
     inline bool OnIncrementalRefresh_MSR_CURR(FastIncrementalMSRCURRInfo *info) {
-
         if(this->m_skipApplyMessages) { //TODO remove this
-            bool shouldPrint = false;
-            for(int i = 0; i < info->GroupMDEntriesCount; i++) {
-                for (int e = 0; e < 39; e++) {
-                    if (this->MDEntryTypes[e] != info->GroupMDEntries[i]->MDEntryType[0])
-                        continue;
-
-                    if (this->MDEntryTypeRecv[e] > 0)
-                        continue;
-
-                    this->MDEntryTypeRecv[e]++;
-                    shouldPrint = true;
-                    break;
-                }
-            }
-            if(shouldPrint)
-                this->m_fastProtocolManager->Print();
+            DebugInfoManager::Default->PrintStatisticsOnce<FastIncrementalMSRCURRInfo>(this->m_fastProtocolManager, info);
             info->Clear();
             return true;
         }
@@ -2376,9 +2318,9 @@ public:
     }
     inline void SkipApplyMessages(bool value) { this->m_skipApplyMessages = value; }
 
-//#ifdef TEST
+#ifdef TEST
     inline void SetTestMessagesHelper(TestMessagesHelper *helper) { this->m_testHelper = helper; }
-//#endif
+#endif
 };
 
 

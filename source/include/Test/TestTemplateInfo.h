@@ -4,6 +4,9 @@
 
 #ifndef HFT_ROBOT_TESTTEMPLATEINFO_H
 #define HFT_ROBOT_TESTTEMPLATEINFO_H
+#include "../Types.h"
+
+#ifdef TEST
 
 #include "../FeedConnection.h"
 
@@ -115,4 +118,5 @@ public:
     }
 };
 
+#endif //TEST
 #endif //HFT_ROBOT_TESTTEMPLATEINFO_H

@@ -4,6 +4,9 @@
 
 #ifndef HFT_ROBOT_POINTERLISTTESTER_H
 #define HFT_ROBOT_POINTERLISTTESTER_H
+#include "../Types.h"
+
+#ifdef TEST
 
 #include "../Lib/PointerList.h"
 
@@ -77,4 +80,5 @@ public:
     }
 };
 
+#endif //TEST
 #endif //HFT_ROBOT_POINTERLISTTESTER_H

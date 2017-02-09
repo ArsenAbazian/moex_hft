@@ -4,6 +4,9 @@
 
 #ifndef HFT_ROBOT_SECURITYSTATUSTESTER_H
 #define HFT_ROBOT_SECURITYSTATUSTESTER_H
+#include "../Types.h"
+
+#ifdef TEST
 
 #include "../FeedConnection.h"
 #include "../FeedConnections.h"
@@ -1107,4 +1110,5 @@ public:
     }
 };
 
+#endif //TEST
 #endif //HFT_ROBOT_SECURITYSTATUSTESTER_H

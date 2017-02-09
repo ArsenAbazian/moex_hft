@@ -1,4 +1,5 @@
 #include "Managers/WinSockManager.h"
+#include "../Lib/PointerList.h"
 #include "Test/TestMessagesHelper.h"
 
 int WinSockManager::m_pollFdCount = 256;
@@ -7,9 +8,9 @@ int* WinSockManager::m_recvCount = new int[256];
 int WinSockManager::m_registeredCount = 0;
 WinSockManager** WinSockManager::m_registeredManagers = new WinSockManager*[256];
 int WinSockManager::m_pollRes = 0;
-//#ifdef TEST
+#ifdef TEST
 TestMessagesHelper* WinSockManager::m_testHelper = 0;
-//#endif
+#endif
 
 void WinSockManager::InitializePollInfo() {
 	bzero(WinSockManager::m_pollFd, sizeof(struct pollfd) * 256);
@@ -171,6 +172,7 @@ bool WinSockManager::TryFixSocketError(int errorCode) {
 	return this->Reconnect();
 }
 
+#ifdef TEST
 bool WinSockManager::ShouldRecvTest() {
     LinkedPointer<SocketMessageInfo> *ptr = TestMessagesHelper::m_sockMessages->Start();
     if(ptr == 0)
@@ -206,3 +208,4 @@ bool WinSockManager::RecvTest(unsigned char *buffer) {
 void WinSockManager::SendTest() {
 	WinSockManager::m_testHelper->OnRecvData(this, this->m_sendBytes, this->m_sendSize);
 }
+#endif

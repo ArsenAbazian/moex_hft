@@ -8,6 +8,7 @@
 #include <sys/time.h>
 #include <Lib/StringIdComparer.h>
 
+#ifdef TEST
 FastProtocolTester::FastProtocolTester()
 {
 }
@@ -1085,3 +1086,5 @@ void FastProtocolTester::TestParsePresenceMap() {
 	
 	delete manager;*/
 }
+
+#endif //TEST

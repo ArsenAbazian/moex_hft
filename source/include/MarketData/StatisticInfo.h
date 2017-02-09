@@ -51,7 +51,7 @@ public:
     inline Decimal* Value2() { return this->m_value2Ptr; };
 };
 
-template<typename T> class StatisticItemLastDealInfo{
+class StatisticItemLastDealInfo{
 protected:
     UINT64          m_time;
     Decimal         m_price;
@@ -74,14 +74,14 @@ public:
         this->m_tradeValuePtr = &(this->m_tradeValue);
     }
     ~StatisticItemLastDealInfo() { }
-    inline void Set(UINT64 time, T *info) {
+    template <typename T> inline void Set(UINT64 time, T *info) {
         this->m_time = time;
-        this->m_pricePtr->Set(info->MDEntryPx);
-        this->m_sizePtr->Set(info->MDEntrySize);
+        this->m_pricePtr->Set(&(info->MDEntryPx));
+        this->m_sizePtr->Set(&(info->MDEntrySize));
         this->m_dealTime = info->MDEntryTime;
-        this->m_netChangePrevDayPtr = info->NetChgPrevDay;
-        this->m_changeFromWAPrice = info->ChgFromWAPrice;
-        this->m_tradeValuePtr->Set(info->TradeValue);
+        this->m_netChangePrevDayPtr->Set(&(info->NetChgPrevDay));
+        this->m_changeFromWAPricePtr->Set(&(info->ChgFromWAPrice));
+        this->m_tradeValuePtr->Set(&(info->TradeValue));
     }
     inline UINT64 Time() { return this->m_time; }
     inline UINT32 DealTime() { return this->m_dealTime; }
@@ -92,7 +92,7 @@ public:
     inline Decimal* TradeValue() { return this->m_tradeValuePtr; }
 };  // 2
 
-template<typename T> class StatisticItemTotalOffer{
+class StatisticItemTotalOffer{
 protected:
     UINT64          m_time;
     Decimal         m_size;
@@ -104,9 +104,9 @@ public:
         this->m_sizePtr = &(this->m_size);
     }
     ~StatisticItemTotalOffer() { }
-    inline void Set(UINT64 time, T *info) {
+    template<typename T> inline void Set(UINT64 time, T *info) {
         this->m_time = time;
-        this->m_sizePtr->Set(info->MDEntrySize);
+        this->m_sizePtr->Set(&(info->MDEntrySize));
         this->m_offerNbOr = info->OfferNbOr;
     }
     inline UINT64 Time() { return this->m_time; }
@@ -114,7 +114,7 @@ public:
     inline int OfferNbOr() { return this->m_offerNbOr; }
 };  // w
 
-template<typename T> class StatisticItemTransactionsMagnitude{
+class StatisticItemTransactionsMagnitude{
 protected:
     UINT64          m_time;
     Decimal         m_size;
@@ -128,11 +128,11 @@ public:
         this->m_tradeValuePtr = &(this->m_tradeValue);
     }
     ~StatisticItemTransactionsMagnitude() { }
-    inline void Set(UINT64 time, T *info) {
+    template<typename T> inline void Set(UINT64 time, T *info) {
         this->m_time = time;
-        this->m_sizePtr->Set(info->MDEntrySize);
+        this->m_sizePtr->Set(&(info->MDEntrySize));
         this->m_totalNumOfTrades = info->TotalNumOfTrades;
-        this->m_tradeValuePtr->Set(info->TradeValue);
+        this->m_tradeValuePtr->Set(&(info->TradeValue));
     }
     inline UINT64 Time() { return this->m_time; }
     inline Decimal* Size() { return this->m_sizePtr; };
@@ -140,7 +140,7 @@ public:
     inline Decimal* TradeValue() { return this->m_tradeValuePtr; }
 };  // B
 
-template<typename T> class StatisticItemIndexList{
+class StatisticItemIndexList{
 protected:
     UINT64          m_time;
     Decimal         m_price;
@@ -156,11 +156,11 @@ public:
         this->m_tradeValuePtr = &(this->m_tradeValue);
     }
     ~StatisticItemIndexList() { }
-    inline void Set(UINT64 time, T *info) {
+    template<typename T> inline void Set(UINT64 time, T *info) {
         this->m_time = time;
-        this->m_pricePtr->Set(info->MDEntryPx);
-        this->m_sizePtr->Set(info->MDEntrySize);
-        this->m_tradeValuePtr->Set(info->TradeValue);
+        this->m_pricePtr->Set(&(info->MDEntryPx));
+        this->m_sizePtr->Set(&(info->MDEntrySize));
+        this->m_tradeValuePtr->Set(&(info->TradeValue));
     }
     inline UINT64 Time() { return this->m_time; }
     inline Decimal* Price() { return this->m_pricePtr; };
@@ -168,7 +168,7 @@ public:
     inline Decimal* TradeValue() { return this->m_tradeValuePtr; }
 };  // 3
 
-template<typename T> class StatisticItemTotalBid {
+class StatisticItemTotalBid {
 protected:
     UINT64          m_time;
     Decimal         m_size;
@@ -180,9 +180,9 @@ public:
         this->m_sizePtr = &(this->m_size);
     }
     ~StatisticItemTotalBid() { }
-    inline void Set(UINT64 time, T *info) {
+    template<typename T> inline void Set(UINT64 time, T *info) {
         this->m_time = time;
-        this->m_sizePtr->Set(info->MDEntrySize);
+        this->m_sizePtr->Set(&(info->MDEntrySize));
         this->m_bidNbOr = info->BidNbOr;
     }
     inline UINT64 Time() { return this->m_time; }
@@ -198,33 +198,33 @@ public:
     ~StatisticItem() { }
 };
 
-template <typename T> class StatisticItemAllocator {
+class StatisticItemAllocator {
     PointerList<StatisticItemDecimal>                       *m_decimals;
     PointerList<StatisticItemDecimal2>                      *m_decimals2;
-    PointerList<StatisticItemLastDealInfo<T>>               *m_dealInfos;
-    PointerList<StatisticItemTotalOffer<T>>                 *m_totalOffers;
-    PointerList<StatisticItemTransactionsMagnitude<T>>      *m_trMagnitudes;
-    PointerList<StatisticItemIndexList<T>>                  *m_indexLists;
-    PointerList<StatisticItemTotalBid<T>>                   *m_totalBids;
+    PointerList<StatisticItemLastDealInfo>                  *m_dealInfos;
+    PointerList<StatisticItemTotalOffer>                    *m_totalOffers;
+    PointerList<StatisticItemTransactionsMagnitude>         *m_trMagnitudes;
+    PointerList<StatisticItemIndexList>                     *m_indexLists;
+    PointerList<StatisticItemTotalBid>                      *m_totalBids;
     PointerList<StatisticItem<bool>>                        *m_booleans;
 public:
     StatisticItemAllocator() {
         this->m_decimals = new PointerList<StatisticItemDecimal>(10000, true);
         this->m_decimals2 = new PointerList<StatisticItemDecimal2>(10000, true);
-        this->m_dealInfos = new PointerList<StatisticItemLastDealInfo<T>>(10000, true);
-        this->m_totalOffers = new PointerList<StatisticItemTotalOffer<T>>(10000, true);
-        this->m_totalBids = new PointerList<StatisticItemTotalBid<T>>(10000, true);
-        this->m_indexLists = new PointerList<StatisticItemIndexList<T>>(10000, true);
-        this->m_trMagnitudes = new PointerList<StatisticItemTransactionsMagnitude<T>>(10000, true);
+        this->m_dealInfos = new PointerList<StatisticItemLastDealInfo>(10000, true);
+        this->m_totalOffers = new PointerList<StatisticItemTotalOffer>(10000, true);
+        this->m_totalBids = new PointerList<StatisticItemTotalBid>(10000, true);
+        this->m_indexLists = new PointerList<StatisticItemIndexList>(10000, true);
+        this->m_trMagnitudes = new PointerList<StatisticItemTransactionsMagnitude>(10000, true);
         this->m_booleans = new PointerList<StatisticItem<bool>>(1000, true);
     }
     PointerList<StatisticItemDecimal>* Decimals() { return this->m_decimals; }
     PointerList<StatisticItemDecimal2>* Decimals2() { return this->m_decimals2; }
-    PointerList<StatisticItemLastDealInfo<T>>* LastDealInfos() { return this->m_dealInfos; }
-    PointerList<StatisticItemTotalOffer<T>>* TotalOffers() { return this->m_totalOffers; }
-    PointerList<StatisticItemTransactionsMagnitude<T>>* TransactionMagnitudes() { return this->m_trMagnitudes; }
-    PointerList<StatisticItemTotalBid<T>>* TotalBids() { return this->m_totalBids; }
-    PointerList<StatisticItemIndexList<T>>* IndexLists() { return this->m_indexLists; }
+    PointerList<StatisticItemLastDealInfo>* LastDealInfos() { return this->m_dealInfos; }
+    PointerList<StatisticItemTotalOffer>* TotalOffers() { return this->m_totalOffers; }
+    PointerList<StatisticItemTransactionsMagnitude>* TransactionMagnitudes() { return this->m_trMagnitudes; }
+    PointerList<StatisticItemTotalBid>* TotalBids() { return this->m_totalBids; }
+    PointerList<StatisticItemIndexList>* IndexLists() { return this->m_indexLists; }
 
     PointerList<StatisticItem<bool>>* Booleans() { return this->m_booleans; }
 };
@@ -250,19 +250,19 @@ template <typename T> class StatisticsInfo {
     PointerListLite<StatisticItemDecimal>                    *m_priceAve;
     PointerListLite<StatisticItemDecimal>                    *m_disbalance;
     PointerListLite<StatisticItemTransactionsMagnitude>     *m_transactionMagnitude;
-    PointerListLite<StatisticItemDecimal>                    *m_askPriceMax;
+    PointerListLite<StatisticItemDecimal>                    *m_offerPriceMax;
     PointerListLite<StatisticItemDecimal>                    *m_bidPriceMin;
     PointerListLite<StatisticItemDecimal>                    *m_auctionPriceCalculated;
     PointerListLite<StatisticItemDecimal>                    *m_auctionPriceClose;
 
     PointerListLite<StatisticItemDecimal>                    *m_auctionMagnitudeClose;
     PointerListLite<StatisticItem<bool>>                    *m_fullCoveredDealFlag;
-    PointerListLite<StatisticItemDecimal>                    *m_openCloseAuctionTradeAskMagnitude;
+    PointerListLite<StatisticItemDecimal>                    *m_openCloseAuctionTradeOfferMagnitude;
     PointerListLite<StatisticItemDecimal>                    *m_openCloseAuctionTradeBidMagnitude;
-    PointerListLite<StatisticItemDecimal>                    *m_openCloseAuctionTradeAsk;
+    PointerListLite<StatisticItemDecimal>                    *m_openCloseAuctionTradeOffer;
     PointerListLite<StatisticItemDecimal>                    *m_openCloseAuctionTradeBid;
     PointerListLite<StatisticItemDecimal>                    *m_preTradePeriodPrice;
-    PointerListLite<StatisticItemDecimal>                    *m_sessionAsk;
+    PointerListLite<StatisticItemDecimal>                    *m_sessionOffer;
     PointerListLite<StatisticItemDecimal>                    *m_sessionBid;
     PointerListLite<StatisticItemDecimal>                    *m_postTradePeriodPrice;
     PointerListLite<StatisticItemDecimal>                    *m_tradePrice;
@@ -273,7 +273,7 @@ template <typename T> class StatisticsInfo {
     PointerListLite<StatisticItemDecimal>                    *m_priceCloseOfficial;
     PointerListLite<StatisticItemDecimal>                    *m_auctionPriceBigPackets;
     PointerListLite<StatisticItemDecimal>                    *m_duration;
-    PointerListLite<StatisticItemTotalOffer>                 *m_askTotal;
+    PointerListLite<StatisticItemTotalOffer>                 *m_offerTotal;
     PointerListLite<StatisticItemTotalBid>                   *m_bidTotal;
     PointerListLite<StatisticItemDecimal>                    *m_auctionMagnitudeBigPackets;
     PointerListLite<StatisticItemDecimal>                    *m_cumulativeCouponDebit;
@@ -304,18 +304,18 @@ public:
         this->m_priceAve = new PointerListLite<StatisticItemDecimal>(DefaultStatisticItemAllocator::Default->Decimals());
         this->m_disbalance = new PointerListLite<StatisticItemDecimal>(DefaultStatisticItemAllocator::Default->Decimals());
         this->m_transactionMagnitude = new PointerListLite<StatisticItemTransactionsMagnitude>(DefaultStatisticItemAllocator::Default->TransactionMagnitudes());
-        this->m_askPriceMax = new PointerListLite<StatisticItemDecimal>(DefaultStatisticItemAllocator::Default->Decimals());
+        this->m_offerPriceMax = new PointerListLite<StatisticItemDecimal>(DefaultStatisticItemAllocator::Default->Decimals());
         this->m_bidPriceMin = new PointerListLite<StatisticItemDecimal>(DefaultStatisticItemAllocator::Default->Decimals());
         this->m_auctionPriceCalculated = new PointerListLite<StatisticItemDecimal>(DefaultStatisticItemAllocator::Default->Decimals());
         this->m_auctionPriceClose = new PointerListLite<StatisticItemDecimal>(DefaultStatisticItemAllocator::Default->Decimals());
         this->m_auctionMagnitudeClose = new PointerListLite<StatisticItemDecimal>(DefaultStatisticItemAllocator::Default->Decimals());
         this->m_fullCoveredDealFlag = new PointerListLite<StatisticItem<bool>>(DefaultStatisticItemAllocator::Default->Booleans());
-        this->m_openCloseAuctionTradeAskMagnitude = new PointerListLite<StatisticItemDecimal>(DefaultStatisticItemAllocator::Default->Decimals());
+        this->m_openCloseAuctionTradeOfferMagnitude = new PointerListLite<StatisticItemDecimal>(DefaultStatisticItemAllocator::Default->Decimals());
         this->m_openCloseAuctionTradeBidMagnitude = new PointerListLite<StatisticItemDecimal>(DefaultStatisticItemAllocator::Default->Decimals());
-        this->m_openCloseAuctionTradeAsk = new PointerListLite<StatisticItemDecimal>(DefaultStatisticItemAllocator::Default->Decimals());
+        this->m_openCloseAuctionTradeOffer = new PointerListLite<StatisticItemDecimal>(DefaultStatisticItemAllocator::Default->Decimals());
         this->m_openCloseAuctionTradeBid = new PointerListLite<StatisticItemDecimal>(DefaultStatisticItemAllocator::Default->Decimals());
         this->m_preTradePeriodPrice = new PointerListLite<StatisticItemDecimal>(DefaultStatisticItemAllocator::Default->Decimals());
-        this->m_sessionAsk = new PointerListLite<StatisticItemDecimal>(DefaultStatisticItemAllocator::Default->Decimals());
+        this->m_sessionOffer = new PointerListLite<StatisticItemDecimal>(DefaultStatisticItemAllocator::Default->Decimals());
         this->m_sessionBid = new PointerListLite<StatisticItemDecimal>(DefaultStatisticItemAllocator::Default->Decimals());
         this->m_postTradePeriodPrice = new PointerListLite<StatisticItemDecimal>(DefaultStatisticItemAllocator::Default->Decimals());
         this->m_tradePrice = new PointerListLite<StatisticItemDecimal>(DefaultStatisticItemAllocator::Default->Decimals());
@@ -326,7 +326,7 @@ public:
         this->m_priceCloseOfficial = new PointerListLite<StatisticItemDecimal>(DefaultStatisticItemAllocator::Default->Decimals());
         this->m_auctionPriceBigPackets = new PointerListLite<StatisticItemDecimal>(DefaultStatisticItemAllocator::Default->Decimals());
         this->m_duration = new PointerListLite<StatisticItemDecimal>(DefaultStatisticItemAllocator::Default->Decimals());
-        this->m_askTotal = new PointerListLite<StatisticItemTotalOffer>(DefaultStatisticItemAllocator::Default->TotalOffers());
+        this->m_offerTotal = new PointerListLite<StatisticItemTotalOffer>(DefaultStatisticItemAllocator::Default->TotalOffers());
         this->m_bidTotal = new PointerListLite<StatisticItemTotalBid>(DefaultStatisticItemAllocator::Default->TotalBids());
         this->m_auctionMagnitudeBigPackets = new PointerListLite<StatisticItemDecimal>(DefaultStatisticItemAllocator::Default->Decimals());
         this->m_cumulativeCouponDebit = new PointerListLite<StatisticItemDecimal>(DefaultStatisticItemAllocator::Default->Decimals());
@@ -345,18 +345,18 @@ public:
         delete this->m_priceAve;
         delete this->m_disbalance;
         delete this->m_transactionMagnitude;
-        delete this->m_askPriceMax;
+        delete this->m_offerPriceMax;
         delete this->m_bidPriceMin;
         delete this->m_auctionPriceCalculated;
         delete this->m_auctionPriceClose;
         delete this->m_auctionMagnitudeClose;
         delete this->m_fullCoveredDealFlag;
-        delete this->m_openCloseAuctionTradeAskMagnitude;
+        delete this->m_openCloseAuctionTradeOfferMagnitude;
         delete this->m_openCloseAuctionTradeBidMagnitude;
-        delete this->m_openCloseAuctionTradeAsk;
+        delete this->m_openCloseAuctionTradeOffer;
         delete this->m_openCloseAuctionTradeBid;
         delete this->m_preTradePeriodPrice;
-        delete this->m_sessionAsk;
+        delete this->m_sessionOffer;
         delete this->m_sessionBid;
         delete this->m_postTradePeriodPrice;
         delete this->m_tradePrice;
@@ -367,7 +367,7 @@ public:
         delete this->m_priceCloseOfficial;
         delete this->m_auctionPriceBigPackets;
         delete this->m_duration;
-        delete this->m_askTotal;
+        delete this->m_offerTotal;
         delete this->m_bidTotal;
         delete this->m_auctionMagnitudeBigPackets;
         delete this->m_cumulativeCouponDebit;
@@ -408,18 +408,18 @@ public:
          this->m_priceAve->Clear();
          this->m_disbalance->Clear();
          this->m_transactionMagnitude->Clear();
-         this->m_askPriceMax->Clear();
+         this->m_offerPriceMax->Clear();
          this->m_bidPriceMin->Clear();
          this->m_auctionPriceCalculated->Clear();
          this->m_auctionPriceClose->Clear();
          this->m_auctionMagnitudeClose->Clear();
          this->m_fullCoveredDealFlag->Clear();
-         this->m_openCloseAuctionTradeAskMagnitude->Clear();
+         this->m_openCloseAuctionTradeOfferMagnitude->Clear();
          this->m_openCloseAuctionTradeBidMagnitude->Clear();
-         this->m_openCloseAuctionTradeAsk->Clear();
+         this->m_openCloseAuctionTradeOffer->Clear();
          this->m_openCloseAuctionTradeBid->Clear();
          this->m_preTradePeriodPrice->Clear();
-         this->m_sessionAsk->Clear();
+         this->m_sessionOffer->Clear();
          this->m_sessionBid->Clear();
          this->m_postTradePeriodPrice->Clear();
          this->m_tradePrice->Clear();
@@ -430,7 +430,7 @@ public:
          this->m_priceCloseOfficial->Clear();
          this->m_auctionPriceBigPackets->Clear();
          this->m_duration->Clear();
-         this->m_askTotal->Clear();
+         this->m_offerTotal->Clear();
          this->m_bidTotal->Clear();
          this->m_auctionMagnitudeBigPackets->Clear();
          this->m_cumulativeCouponDebit->Clear();
@@ -450,18 +450,18 @@ public:
     inline PointerListLite<StatisticItemDecimal>* PriceAve() { return this->m_priceAve; }
     inline PointerListLite<StatisticItemDecimal>* Disbalance() { return this->m_disbalance; }
     inline PointerListLite<StatisticItemTransactionsMagnitude>* TransactionMagnitude() { return this->m_transactionMagnitude; }
-    inline PointerListLite<StatisticItemDecimal>* AskPriceMax() { return this->m_askPriceMax; }
+    inline PointerListLite<StatisticItemDecimal>* OfferPriceMax() { return this->m_offerPriceMax; }
     inline PointerListLite<StatisticItemDecimal>* BidPriceMin() { return this->m_bidPriceMin; }
     inline PointerListLite<StatisticItemDecimal>* AuctionPriceCalculated() { return this->m_auctionPriceCalculated; }
     inline PointerListLite<StatisticItemDecimal>* AuctionPriceClose() { return this->m_auctionPriceClose; }
     inline PointerListLite<StatisticItemDecimal>* AuctionMagnitudeClose() { return this->m_auctionMagnitudeClose; }
     inline PointerListLite<StatisticItem<bool>>* FullCoveredDealFlag() { return this->m_fullCoveredDealFlag; }
-    inline PointerListLite<StatisticItemDecimal>* OpenCloseAuctionTradeAskMagnitude() { return this->m_openCloseAuctionTradeAskMagnitude; }
+    inline PointerListLite<StatisticItemDecimal>* OpenCloseAuctionTradeOfferMagnitude() { return this->m_openCloseAuctionTradeOfferMagnitude; }
     inline PointerListLite<StatisticItemDecimal>* OpenCloseAuctionTradeBidMagnitude() { return this->m_openCloseAuctionTradeBidMagnitude; }
-    inline PointerListLite<StatisticItemDecimal>* OpenCloseAuctionTradeAsk() { return this->m_openCloseAuctionTradeAsk; }
+    inline PointerListLite<StatisticItemDecimal>* OpenCloseAuctionTradeOffer() { return this->m_openCloseAuctionTradeOffer; }
     inline PointerListLite<StatisticItemDecimal>* OpenCloseAuctionTradBid() { return this->m_openCloseAuctionTradeBid; }
     inline PointerListLite<StatisticItemDecimal>* PreTradePeriodPrice() { return this->m_preTradePeriodPrice; }
-    inline PointerListLite<StatisticItemDecimal>* SessionAsk() { return this->m_sessionAsk; }
+    inline PointerListLite<StatisticItemDecimal>* SessionOffer() { return this->m_sessionOffer; }
     inline PointerListLite<StatisticItemDecimal>* SessionBid() { return this->m_sessionBid; }
     inline PointerListLite<StatisticItemDecimal>* PostTradePeriodPrice() { return this->m_postTradePeriodPrice; }
     inline PointerListLite<StatisticItemDecimal>* TradePrice() { return this->m_tradePrice; }
@@ -472,14 +472,14 @@ public:
     inline PointerListLite<StatisticItemDecimal>* PriceCloseOfficial() { return this->m_priceCloseOfficial; }
     inline PointerListLite<StatisticItemDecimal>* AuctionPriceBigPackets() { return this->m_auctionPriceBigPackets; }
     inline PointerListLite<StatisticItemDecimal>* Duration() { return this->m_duration; }
-    inline PointerListLite<StatisticItemTotalOffer>* AskTotal() { return this->m_askTotal; }
+    inline PointerListLite<StatisticItemTotalOffer>* OfferTotal() { return this->m_offerTotal; }
     inline PointerListLite<StatisticItemTotalBid>* BidTotal() { return this->m_bidTotal; }
     inline PointerListLite<StatisticItemDecimal>* AuctionMagnitudeBigPackets() { return this->m_auctionMagnitudeBigPackets; }
     inline PointerListLite<StatisticItemDecimal>* CumulativeCouponDebit() { return this->m_cumulativeCouponDebit; }
 
     inline void AddPrice(PointerListLite<StatisticItemDecimal> *list, T *item) {
         LinkedPointer<StatisticItemDecimal> *node = list->Add();
-        node->Data()->Set(this->m_time, item->MDEntryPx);
+        node->Data()->Set(this->m_time, &(item->MDEntryPx));
     }
     inline void ChangePrice(PointerListLite<StatisticItemDecimal> *list, T *item) {
         AddPrice(list, item);
@@ -487,7 +487,7 @@ public:
 
     inline void AddSize(PointerListLite<StatisticItemDecimal> *list, T *item) {
         LinkedPointer<StatisticItemDecimal> *node = list->Add();
-        node->Data()->Set(this->m_time, item->MDEntrySize);
+        node->Data()->Set(this->m_time, &(item->MDEntrySize));
     }
     inline void ChangeSize(PointerListLite<StatisticItemDecimal> *list, T *item) {
         AddSize(list, item);
@@ -495,7 +495,7 @@ public:
 
     inline void AddPriceSize(PointerListLite<StatisticItemDecimal2> *list, T *item) {
         LinkedPointer<StatisticItemDecimal2> *node = list->Add();
-        node->Data()->Set(this->m_time, item->MDEntryPx, item->MDEntrySize);
+        node->Data()->Set(this->m_time, &(item->MDEntryPx), &(item->MDEntrySize));
     }
 
     inline void ChangePriceSize(PointerListLite<StatisticItemDecimal2> *list, T *item) {
@@ -559,18 +559,18 @@ public:
     inline void AddDisbalance(T *item) { this->AddPrice(this->m_disbalance, item); }
     inline void AddTransactionsMagnitude(T *item) { this->AddTransactionMagnitude(this->m_transactionMagnitude, item); }
     inline void AddEmptyBook(T *item) { throw; }
-    inline void AddAskPriceMax(T *item) { this->AddPrice(this->m_askPriceMax, item); }
+    inline void AddOfferPriceMax(T *item) { this->AddPrice(this->m_offerPriceMax, item); }
     inline void AddBidPriceMin(T *item) { this->AddPrice(this->m_bidPriceMin, item); }
     inline void AddAuctionPriceCalculated(T *item) { this->AddPrice(this->m_auctionPriceCalculated, item); }
     inline void AddAuctionPriceClose(T *item) { this->AddPrice(this->m_auctionPriceClose, item); }
     inline void AddAuctionMagnitudeClose(T *item) { this->AddPrice(this->m_auctionMagnitudeClose, item); }
     inline void AddMSSFullCoveredDealFlag(T *item) { throw; }
-    inline void AddMSSTradeAskAuctionMagnitudeOpenClose(T *item) { this->AddPrice(this->m_openCloseAuctionTradeAskMagnitude, item); }
-    inline void AddOLSTradeAskAuctionOpenClose(T *item) { this->AddPrice(this->m_openCloseAuctionTradeAsk, item); }
+    inline void AddMSSTradeOfferAuctionMagnitudeOpenClose(T *item) { this->AddPrice(this->m_openCloseAuctionTradeOfferMagnitude, item); }
+    inline void AddOLSTradeOfferAuctionOpenClose(T *item) { this->AddPrice(this->m_openCloseAuctionTradeOffer, item); }
     inline void AddMSSTradeBidAuctionMagnitudeOpenClose(T *item) { this->AddPrice(this->m_openCloseAuctionTradeBidMagnitude, item); }
     inline void AddOLSTradeBidAuctionOpenClose(T *item) { this->AddPrice(this->m_openCloseAuctionTradeBid, item); }
     inline void AddPreTradePeriodPrice(T *item) { this->AddPrice(this->m_preTradePeriodPrice, item); }
-    inline void AddSessionAsk(T *item) { this->AddPrice(this->m_sessionAsk, item); }
+    inline void AddSessionOffer(T *item) { this->AddPrice(this->m_sessionOffer, item); }
     inline void AddSessionBid(T *item) { this->AddPrice(this->m_sessionBid, item); }
     inline void AddPostTradePeriodPrice(T *item) { this->AddPrice(this->m_postTradePeriodPrice, item); }
     inline void AddTradePrice2(T *item) { this->AddPrice(this->m_tradePrice2, item); }
@@ -581,7 +581,7 @@ public:
     inline void AddPriceCloseOfficial(T *item) { this->AddPrice(this->m_priceCloseOfficial, item); }
     inline void AddAuctionPriceBigPackets(T *item) { this->AddPrice(this->m_auctionPriceBigPackets, item); }
     inline void AddDuration(T *item) { this->AddPrice(this->m_duration, item); }
-    inline void AddAskTotal(T *item) { this->AddTotalOffer(this->m_askTotal, item); }
+    inline void AddOfferTotal(T *item) { this->AddTotalOffer(this->m_offerTotal, item); }
     inline void AddBidTotal(T *item) { this->AddTotalBid(this->m_bidTotal, item); }
     inline void AddAuctionMagnitudeBigPackets(T *item) { this->AddPrice(this->m_auctionMagnitudeBigPackets, item); }
     inline void AddCumulativeCouponDebit(T *item) { this->AddPrice(this->m_cumulativeCouponDebit, item); }
@@ -599,18 +599,18 @@ public:
     inline void ChangeDisbalance(T *item) { this->ChangePrice(this->m_disbalance, item); }
     inline void ChangeTransactionsMagnitude(T *item) { this->ChangeTransactionMagnitude(this->m_transactionMagnitude, item); }
     inline void ChangeEmptyBook(T *item) { throw; }
-    inline void ChangeAskPriceMax(T *item) { this->ChangePrice(this->m_askPriceMax, item); }
+    inline void ChangeOfferPriceMax(T *item) { this->ChangePrice(this->m_offerPriceMax, item); }
     inline void ChangeBidPriceMin(T *item) { this->ChangePrice(this->m_bidPriceMin, item); }
     inline void ChangeAuctionPriceCalculated(T *item) { this->ChangePrice(this->m_auctionPriceCalculated, item); }
     inline void ChangeAuctionPriceClose(T *item) { this->ChangePrice(this->m_auctionPriceClose, item); }
     inline void ChangeAuctionMagnitudeClose(T *item) { this->ChangePrice(this->m_auctionMagnitudeClose, item); }
     inline void ChangeMSSFullCoveredDealFlag(T *item) { throw; }
-    inline void ChangeMSSTradeAskAuctionMagnitudeOpenClose(T *item) { this->ChangePrice(this->m_openCloseAuctionTradeAskMagnitude, item); }
-    inline void ChangeOLSTradeAskAuctionOpenClose(T *item) { this->ChangePrice(this->m_openCloseAuctionTradeAsk, item); }
+    inline void ChangeMSSTradeOfferAuctionMagnitudeOpenClose(T *item) { this->ChangePrice(this->m_openCloseAuctionTradeOfferMagnitude, item); }
+    inline void ChangeOLSTradeOfferAuctionOpenClose(T *item) { this->ChangePrice(this->m_openCloseAuctionTradeOffer, item); }
     inline void ChangeMSSTradeBidAuctionMagnitudeOpenClose(T *item) { this->ChangePrice(this->m_openCloseAuctionTradeBidMagnitude, item); }
     inline void ChangeOLSTradeBidAuctionOpenClose(T *item) { this->ChangePrice(this->m_openCloseAuctionTradeBid, item); }
     inline void ChangePreTradePeriodPrice(T *item) { this->ChangePrice(this->m_preTradePeriodPrice, item); }
-    inline void ChangeSessionAsk(T *item) { this->ChangePrice(this->m_sessionAsk, item); }
+    inline void ChangeSessionOffer(T *item) { this->ChangePrice(this->m_sessionOffer, item); }
     inline void ChangeSessionBid(T *item) { this->ChangePrice(this->m_sessionBid, item); }
     inline void ChangePostTradePeriodPrice(T *item) { this->ChangePrice(this->m_postTradePeriodPrice, item); }
     inline void ChangeTradePrice2(T *item) { this->ChangePrice(this->m_tradePrice2, item); }
@@ -621,7 +621,7 @@ public:
     inline void ChangePriceCloseOfficial(T *item) { this->ChangePrice(this->m_priceCloseOfficial, item); }
     inline void ChangeAuctionPriceBigPackets(T *item) { this->ChangePrice(this->m_auctionPriceBigPackets, item); }
     inline void ChangeDuration(T *item) { this->ChangePrice(this->m_duration, item); }
-    inline void ChangeAskTotal(T *item) { this->ChangeTotalOffer(this->m_askTotal, item); }
+    inline void ChangeOfferTotal(T *item) { this->ChangeTotalOffer(this->m_offerTotal, item); }
     inline void ChangeBidTotal(T *item) { this->ChangeTotalBid(this->m_bidTotal, item); }
     inline void ChangeAuctionMagnitudeBigPackets(T *item) { this->ChangePrice(this->m_auctionMagnitudeBigPackets, item); }
     inline void ChangeCumulativeCouponDebit(T *item) { this->ChangePrice(this->m_cumulativeCouponDebit, item); }
@@ -639,18 +639,18 @@ public:
     inline void RemoveDisbalance(T*item) { throw; }
     inline void RemoveTransactionsMagnitude(T*item) { throw; }
     inline void RemoveEmptyBook(T*item) { throw; }
-    inline void RemoveAskPriceMax(T*item) { throw; }
+    inline void RemoveOfferPriceMax(T*item) { throw; }
     inline void RemoveBidPriceMin(T*item) { throw; }
     inline void RemoveAuctionPriceCalculated(T*item) { throw; }
     inline void RemoveAuctionPriceClose(T*item) { throw; }
     inline void RemoveAuctionMagnitudeClose(T*item) { throw; }
     inline void RemoveMSSFullCoveredDealFlag(T*item) { throw; }
-    inline void RemoveMSSTradeAskAuctionMagnitudeOpenClose(T*item) { throw; }
-    inline void RemoveOLSTradeAskAuctionOpenClose(T*item) { throw; }
+    inline void RemoveMSSTradeOfferAuctionMagnitudeOpenClose(T*item) { throw; }
+    inline void RemoveOLSTradeOfferAuctionOpenClose(T*item) { throw; }
     inline void RemoveMSSTradeBidAuctionMagnitudeOpenClose(T*item) { throw; }
     inline void RemoveOLSTradeBidAuctionOpenClose(T*item) { throw; }
     inline void RemovePreTradePeriodPrice(T*item) { throw; }
-    inline void RemoveSessionAsk(T*item) { throw; }
+    inline void RemoveSessionOffer(T*item) { throw; }
     inline void RemoveSessionBid(T*item) { throw; }
     inline void RemovePostTradePeriodPrice(T*item) { throw; }
     inline void RemoveTradePrice2(T*item) { throw; }
@@ -661,14 +661,14 @@ public:
     inline void RemovePriceCloseOfficial(T*item) { throw; }
     inline void RemoveAuctionPriceBigPackets(T*item) { throw; }
     inline void RemoveDuration(T*item) { throw; }
-    inline void RemoveAskTotal(T*item) { throw; }
+    inline void RemoveOfferTotal(T*item) { throw; }
     inline void RemoveBidTotal(T*item) { throw; }
     inline void RemoveAuctionMagnitudeBigPackets(T*item) { throw; }
     inline void RemoveCumulativeCouponDebit(T*item) { throw; }
     inline void RemoveAllDeals(T*item) { throw; }
 
     inline void AddProperty(MDEntryType entryType, T *item) {
-        if(entryType <= MDEntryType::mdetOLSTradeAskAuctionOpenClose) {
+        if(entryType <= MDEntryType::mdetOLSTradeOfferAuctionOpenClose) {
             if(entryType <= MDEntryType::mdetDisbalance) {
                 if(entryType <= MDEntryType::mdetPriceOpenFirst) {
                     if(entryType <= MDEntryType::mdetLastDealInfo) {
@@ -720,7 +720,7 @@ public:
             }
             else {
                 if(entryType <= MDEntryType::mdetAuctionPriceCalculated) {
-                    if(entryType <= MDEntryType::mdetAskPriceMax) {
+                    if(entryType <= MDEntryType::mdetOfferPriceMax) {
                         if(entryType <= MDEntryType::mdetEmptyBook) {
                             if(entryType == MDEntryType::mdetTransactionsMagnitude) {
                                 this->AddTransactionsMagnitude(item);
@@ -730,8 +730,8 @@ public:
                             }
                         }
                         else {
-                            // mdetAskPriceMax
-                            this->AddAskPriceMax(item);
+                            // mdetOfferPriceMax
+                            this->AddOfferPriceMax(item);
                         }
                     }
                     else {
@@ -759,11 +759,11 @@ public:
                         }
                     }
                     else {
-                        if(entryType == MDEntryType::mdetMSSTradeAskAuctionMagnitudeOpenClose) {
-                            this->AddMSSTradeAskAuctionMagnitudeOpenClose(item);
+                        if(entryType == MDEntryType::mdetMSSTradeOfferAuctionMagnitudeOpenClose) {
+                            this->AddMSSTradeOfferAuctionMagnitudeOpenClose(item);
                         }
-                        else { // mdetOLSTradeAskAuctionOpenClose
-                            this->AddOLSTradeAskAuctionOpenClose(item);
+                        else { // mdetOLSTradeOfferAuctionOpenClose
+                            this->AddOLSTradeOfferAuctionOpenClose(item);
                         }
                     }
                 }
@@ -787,8 +787,8 @@ public:
                         }
                     }
                     else {
-                        if(entryType == MDEntryType::mdetSessionAsk) {
-                            this->AddSessionAsk(item);
+                        if(entryType == MDEntryType::mdetSessionOffer) {
+                            this->AddSessionOffer(item);
                         }
                         else { // mdetSessionBid
                             this->AddSessionBid(item);
@@ -821,7 +821,7 @@ public:
                 }
             }
             else {
-                if(entryType <= MDEntryType::mdetAskTotal) {
+                if(entryType <= MDEntryType::mdetOfferTotal) {
                     if(entryType <= MDEntryType::mdetAuctionPriceBigPackets) {
                         if(entryType <= MDEntryType::mdetPriceCloseOfficial) {
                             if(entryType == MDEntryType::mdetLegitimQuote) {
@@ -840,8 +840,8 @@ public:
                         if(entryType == MDEntryType::mdetDuration) {
                             this->AddDuration(item);
                         }
-                        else { // mdetAskTotal
-                            this->AddAskTotal(item);
+                        else { // mdetOfferTotal
+                            this->AddOfferTotal(item);
                         }
                     }
                 }
@@ -868,7 +868,7 @@ public:
     }
 
     inline void ChangeProperty(MDEntryType entryType, T *item) {
-        if(entryType <= MDEntryType::mdetOLSTradeAskAuctionOpenClose) {
+        if(entryType <= MDEntryType::mdetOLSTradeOfferAuctionOpenClose) {
             if(entryType <= MDEntryType::mdetDisbalance) {
                 if(entryType <= MDEntryType::mdetPriceOpenFirst) {
                     if(entryType <= MDEntryType::mdetLastDealInfo) {
@@ -920,7 +920,7 @@ public:
             }
             else {
                 if(entryType <= MDEntryType::mdetAuctionPriceCalculated) {
-                    if(entryType <= MDEntryType::mdetAskPriceMax) {
+                    if(entryType <= MDEntryType::mdetOfferPriceMax) {
                         if(entryType <= MDEntryType::mdetEmptyBook) {
                             if(entryType == MDEntryType::mdetTransactionsMagnitude) {
                                 this->ChangeTransactionsMagnitude(item);
@@ -930,8 +930,8 @@ public:
                             }
                         }
                         else {
-                            // mdetAskPriceMax
-                            this->ChangeAskPriceMax(item);
+                            // mdetOfferPriceMax
+                            this->ChangeOfferPriceMax(item);
                         }
                     }
                     else {
@@ -959,11 +959,11 @@ public:
                         }
                     }
                     else {
-                        if(entryType == MDEntryType::mdetMSSTradeAskAuctionMagnitudeOpenClose) {
-                            this->ChangeMSSTradeAskAuctionMagnitudeOpenClose(item);
+                        if(entryType == MDEntryType::mdetMSSTradeOfferAuctionMagnitudeOpenClose) {
+                            this->ChangeMSSTradeOfferAuctionMagnitudeOpenClose(item);
                         }
-                        else { // mdetOLSTradeAskAuctionOpenClose
-                            this->ChangeOLSTradeAskAuctionOpenClose(item);
+                        else { // mdetOLSTradeOfferAuctionOpenClose
+                            this->ChangeOLSTradeOfferAuctionOpenClose(item);
                         }
                     }
                 }
@@ -987,8 +987,8 @@ public:
                         }
                     }
                     else {
-                        if(entryType == MDEntryType::mdetSessionAsk) {
-                            this->ChangeSessionAsk(item);
+                        if(entryType == MDEntryType::mdetSessionOffer) {
+                            this->ChangeSessionOffer(item);
                         }
                         else { // mdetSessionBid
                             this->ChangeSessionBid(item);
@@ -1021,7 +1021,7 @@ public:
                 }
             }
             else {
-                if(entryType <= MDEntryType::mdetAskTotal) {
+                if(entryType <= MDEntryType::mdetOfferTotal) {
                     if(entryType <= MDEntryType::mdetAuctionPriceBigPackets) {
                         if(entryType <= MDEntryType::mdetPriceCloseOfficial) {
                             if(entryType == MDEntryType::mdetLegitimQuote) {
@@ -1040,8 +1040,8 @@ public:
                         if(entryType == MDEntryType::mdetDuration) {
                             this->ChangeDuration(item);
                         }
-                        else { // mdetAskTotal
-                            this->ChangeAskTotal(item);
+                        else { // mdetOfferTotal
+                            this->ChangeOfferTotal(item);
                         }
                     }
                 }
@@ -1068,7 +1068,7 @@ public:
     }
 
     inline void RemoveProperty(MDEntryType entryType, T *item) {
-        if(entryType <= MDEntryType::mdetOLSTradeAskAuctionOpenClose) {
+        if(entryType <= MDEntryType::mdetOLSTradeOfferAuctionOpenClose) {
             if(entryType <= MDEntryType::mdetDisbalance) {
                 if(entryType <= MDEntryType::mdetPriceOpenFirst) {
                     if(entryType <= MDEntryType::mdetLastDealInfo) {
@@ -1120,7 +1120,7 @@ public:
             }
             else {
                 if(entryType <= MDEntryType::mdetAuctionPriceCalculated) {
-                    if(entryType <= MDEntryType::mdetAskPriceMax) {
+                    if(entryType <= MDEntryType::mdetOfferPriceMax) {
                         if(entryType <= MDEntryType::mdetEmptyBook) {
                             if(entryType == MDEntryType::mdetTransactionsMagnitude) {
                                 this->RemoveTransactionsMagnitude(item);
@@ -1130,8 +1130,8 @@ public:
                             }
                         }
                         else {
-                            // mdetAskPriceMax
-                            this->RemoveAskPriceMax(item);
+                            // mdetOfferPriceMax
+                            this->RemoveOfferPriceMax(item);
                         }
                     }
                     else {
@@ -1159,11 +1159,11 @@ public:
                         }
                     }
                     else {
-                        if(entryType == MDEntryType::mdetMSSTradeAskAuctionMagnitudeOpenClose) {
-                            this->RemoveMSSTradeAskAuctionMagnitudeOpenClose(item);
+                        if(entryType == MDEntryType::mdetMSSTradeOfferAuctionMagnitudeOpenClose) {
+                            this->RemoveMSSTradeOfferAuctionMagnitudeOpenClose(item);
                         }
-                        else { // mdetOLSTradeAskAuctionOpenClose
-                            this->RemoveOLSTradeAskAuctionOpenClose(item);
+                        else { // mdetOLSTradeOfferAuctionOpenClose
+                            this->RemoveOLSTradeOfferAuctionOpenClose(item);
                         }
                     }
                 }
@@ -1187,8 +1187,8 @@ public:
                         }
                     }
                     else {
-                        if(entryType == MDEntryType::mdetSessionAsk) {
-                            this->RemoveSessionAsk(item);
+                        if(entryType == MDEntryType::mdetSessionOffer) {
+                            this->RemoveSessionOffer(item);
                         }
                         else { // mdetSessionBid
                             this->RemoveSessionBid(item);
@@ -1221,7 +1221,7 @@ public:
                 }
             }
             else {
-                if(entryType <= MDEntryType::mdetAskTotal) {
+                if(entryType <= MDEntryType::mdetOfferTotal) {
                     if(entryType <= MDEntryType::mdetAuctionPriceBigPackets) {
                         if(entryType <= MDEntryType::mdetPriceCloseOfficial) {
                             if(entryType == MDEntryType::mdetLegitimQuote) {
@@ -1240,8 +1240,8 @@ public:
                         if(entryType == MDEntryType::mdetDuration) {
                             this->RemoveDuration(item);
                         }
-                        else { // mdetAskTotal
-                            this->RemoveAskTotal(item);
+                        else { // mdetOfferTotal
+                            this->RemoveOfferTotal(item);
                         }
                     }
                 }
