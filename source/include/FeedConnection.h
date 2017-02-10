@@ -219,7 +219,7 @@ protected:
 
         buffer->SetCurrentItemSize(size);
 
-        printf("%s -> %d\n", this->m_idName, msgSeqNum);
+        printf("%s -> %d size = %d\n", this->m_idName, msgSeqNum, size);
 //        BinaryLogItem *item = DefaultLogManager::Default->WriteFast(this->m_idLogIndex,
 //                                                                    LogMessageCode::lmcFeedConnection_ProcessMessage,
 //                                                                    this->m_recvABuffer->BufferIndex(),
@@ -247,6 +247,10 @@ protected:
                 this->m_startMsgSeqNum = msgSeqNum;
             if(this->m_endMsgSeqNum < msgSeqNum)
                 this->m_endMsgSeqNum = msgSeqNum;
+            if(this->m_endMsgSeqNum - msgSeqNum > 100) {
+                this->m_startMsgSeqNum = msgSeqNum;
+                this->m_endMsgSeqNum = msgSeqNum;
+            }
         }
         FeedConnectionMessageInfo *info = this->m_packets[msgSeqNum];
         info->m_address = buffer->CurrentPos();
@@ -264,7 +268,7 @@ protected:
             return true;
 
         this->m_recvABuffer->SetCurrentItemSize(size);
-        printf("%s -> %d\n", this->m_idName, msgSeqNum);
+        printf("%s -> %d size = %d\n", this->m_idName, msgSeqNum, size);
 //        BinaryLogItem *item = DefaultLogManager::Default->WriteFast(this->m_idLogIndex,
 //                                                                    LogMessageCode::lmcFeedConnection_ProcessMessage,
 //                                                                    this->m_recvABuffer->BufferIndex(),
@@ -292,6 +296,10 @@ protected:
                 this->m_startMsgSeqNum = msgSeqNum;
             if(this->m_endMsgSeqNum < msgSeqNum)
                 this->m_endMsgSeqNum = msgSeqNum;
+            if(this->m_endMsgSeqNum - msgSeqNum > 100) {
+                this->m_startMsgSeqNum = msgSeqNum;
+                this->m_endMsgSeqNum = msgSeqNum;
+            }
         }
         FeedConnectionMessageInfo *info = this->m_packets[msgSeqNum];
         info->m_address = this->m_recvABuffer->CurrentPos();

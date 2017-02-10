@@ -353,7 +353,7 @@ public:
         if(this->m_rptSeq + 1 < incRptSeq)
             return false;
         int startIndex = this->m_rptSeq + 1 - incRptSeq;
-        for(int i = 0; i < startIndex; i++, entry++) {
+        for(int i = 0; i < startIndex && i < this->m_entryInfo->Capacity(); i++, entry++) {
             if((*entry) != 0) (*entry)->Clear();
         }
         for(int index = startIndex; index <= maxIndex; index++) {
