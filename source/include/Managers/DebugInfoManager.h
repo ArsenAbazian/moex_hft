@@ -7,6 +7,15 @@
 
 #include "../Fast/FastTypes.h"
 #include "../Fast/FastProtocolManager.h"
+#include "../Lib/PointerList.h"
+
+class StatisticItemDecimal;
+class StatisticItemDecimal2;
+class StatisticItemLastDealInfo;
+class StatisticItemIndexList;
+class StatisticItemTotalBid;
+class StatisticItemTotalOffer;
+class StatisticItemTransactionsMagnitude;
 
 class DebugInfoManager {
 
@@ -23,8 +32,8 @@ class DebugInfoManager {
             mdetDisbalance, // A
             mdetTransactionsMagnitude, //B
             mdetEmptyBook, // J
-            mdetOfferPriceMax,
-            mdetBidPriceMin,
+            mdetOfferPriceMin,
+            mdetBidPriceMax,
             mdetAuctionPriceCalculated,
             mdetAuctionPriceClose,
             mdetAuctionMagnitudeClose,
@@ -58,6 +67,7 @@ class DebugInfoManager {
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
+    char m_buffer[392];
 public:
     static DebugInfoManager *Default;
 
@@ -81,11 +91,14 @@ public:
         if(shouldPrint)
             manager->Print();
     }
-};
 
-/*class DefaultDebugInfoManager {
-public:
-    static DebugInfoManager *Default;
-};*/
+    void Log(const char *symbol, const char *trading, const char *string, PointerListLite<StatisticItemDecimal> *list);
+    void Log(const char *symbol, const char *trading, const char *string, PointerListLite<StatisticItemDecimal2> *list);
+    void Log(const char *symbol, const char *trading, const char *string, PointerListLite<StatisticItemLastDealInfo> *list);
+    void Log(const char *symbol, const char *trading, const char *string, PointerListLite<StatisticItemIndexList> *list);
+    void Log(const char *symbol, const char *trading, const char *string, PointerListLite<StatisticItemTotalBid> *list);
+    void Log(const char *symbol, const char *trading, const char *string, PointerListLite<StatisticItemTotalOffer> *list);
+    void Log(const char *symbol, const char *trading, const char *string, PointerListLite<StatisticItemTransactionsMagnitude> *list);
+};
 
 #endif //HFT_ROBOT_DEBUGINFOMANAGER_H

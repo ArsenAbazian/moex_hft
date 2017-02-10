@@ -38,8 +38,8 @@ typedef enum _MDEntryType {
     mdetDisbalance = 'A', // A
     mdetTransactionsMagnitude = 'B', //B
     mdetEmptyBook = 'J', // J
-    mdetOfferPriceMax = 'N',
-    mdetBidPriceMin = 'O',
+    mdetOfferPriceMin = 'N',
+    mdetBidPriceMax = 'O',
     mdetAuctionPriceCalculated = 'Q',
     mdetAuctionPriceClose = 'W',
     mdetAuctionMagnitudeClose = 'c',

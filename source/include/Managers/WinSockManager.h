@@ -117,7 +117,7 @@ private:
 	}
 
 	void InitializePollInfo();
-	inline bool ReconnectFast() {
+	inline bool ReconnectMulticast() {
 		DefaultLogManager::Default->StartLog(LogMessageCode::lmcWinSockManager_Reconnect, this->m_serverAddressLogIndex);
 
 		if(this->m_connected) {
@@ -231,7 +231,7 @@ public:
 	inline bool Reconnect() {
 		if(this->m_connectionType == WinSockConnectionType::wsTCP)
 			return this->ReconnectTcp();
-		return this->ReconnectFast();
+		return this->ReconnectMulticast();
 	}
 
 	bool TryFixSocketError(int socketError);

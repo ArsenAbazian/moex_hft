@@ -2,12 +2,12 @@
 #include "../Lib/PointerList.h"
 #include "Test/TestMessagesHelper.h"
 
-int WinSockManager::m_pollFdCount = 256;
-struct pollfd* WinSockManager::m_pollFd = new struct pollfd[256];
-int* WinSockManager::m_recvCount = new int[256];
-int WinSockManager::m_registeredCount = 0;
-WinSockManager** WinSockManager::m_registeredManagers = new WinSockManager*[256];
-int WinSockManager::m_pollRes = 0;
+int 				WinSockManager::m_pollFdCount = 256;
+struct pollfd* 		WinSockManager::m_pollFd = new struct pollfd[256];
+int* 				WinSockManager::m_recvCount = new int[256];
+int 				WinSockManager::m_registeredCount = 0;
+WinSockManager** 	WinSockManager::m_registeredManagers = new WinSockManager*[256];
+int 				WinSockManager::m_pollRes = 0;
 #ifdef TEST
 TestMessagesHelper* WinSockManager::m_testHelper = 0;
 #endif

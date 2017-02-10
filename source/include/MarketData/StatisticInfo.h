@@ -9,6 +9,7 @@
 #include "Fast/FastTypes.h"
 #include "../Lib/PointerList.h"
 #include "MarketDataEntryQueue.h"
+#include "../Managers/DebugInfoManager.h"
 
 class StatisticItemDecimal {
 protected:
@@ -87,7 +88,7 @@ public:
     inline UINT32 DealTime() { return this->m_dealTime; }
     inline Decimal* Price() { return this->m_pricePtr; };
     inline Decimal* Size() { return this->m_sizePtr; };
-    inline Decimal* NetChangePrevDayPtr() { return this->m_netChangePrevDayPtr; }
+    inline Decimal* NetChangePrevDay() { return this->m_netChangePrevDayPtr; }
     inline Decimal* ChangeFromWAPrice() { return this->m_changeFromWAPricePtr; }
     inline Decimal* TradeValue() { return this->m_tradeValuePtr; }
 };  // 2
@@ -250,8 +251,8 @@ template <typename T> class StatisticsInfo {
     PointerListLite<StatisticItemDecimal>                    *m_priceAve;
     PointerListLite<StatisticItemDecimal>                    *m_disbalance;
     PointerListLite<StatisticItemTransactionsMagnitude>     *m_transactionMagnitude;
-    PointerListLite<StatisticItemDecimal>                    *m_offerPriceMax;
-    PointerListLite<StatisticItemDecimal>                    *m_bidPriceMin;
+    PointerListLite<StatisticItemDecimal>                    *m_offerPriceMin;
+    PointerListLite<StatisticItemDecimal>                    *m_bidPriceMax;
     PointerListLite<StatisticItemDecimal>                    *m_auctionPriceCalculated;
     PointerListLite<StatisticItemDecimal>                    *m_auctionPriceClose;
 
@@ -304,8 +305,8 @@ public:
         this->m_priceAve = new PointerListLite<StatisticItemDecimal>(DefaultStatisticItemAllocator::Default->Decimals());
         this->m_disbalance = new PointerListLite<StatisticItemDecimal>(DefaultStatisticItemAllocator::Default->Decimals());
         this->m_transactionMagnitude = new PointerListLite<StatisticItemTransactionsMagnitude>(DefaultStatisticItemAllocator::Default->TransactionMagnitudes());
-        this->m_offerPriceMax = new PointerListLite<StatisticItemDecimal>(DefaultStatisticItemAllocator::Default->Decimals());
-        this->m_bidPriceMin = new PointerListLite<StatisticItemDecimal>(DefaultStatisticItemAllocator::Default->Decimals());
+        this->m_offerPriceMin = new PointerListLite<StatisticItemDecimal>(DefaultStatisticItemAllocator::Default->Decimals());
+        this->m_bidPriceMax = new PointerListLite<StatisticItemDecimal>(DefaultStatisticItemAllocator::Default->Decimals());
         this->m_auctionPriceCalculated = new PointerListLite<StatisticItemDecimal>(DefaultStatisticItemAllocator::Default->Decimals());
         this->m_auctionPriceClose = new PointerListLite<StatisticItemDecimal>(DefaultStatisticItemAllocator::Default->Decimals());
         this->m_auctionMagnitudeClose = new PointerListLite<StatisticItemDecimal>(DefaultStatisticItemAllocator::Default->Decimals());
@@ -345,8 +346,8 @@ public:
         delete this->m_priceAve;
         delete this->m_disbalance;
         delete this->m_transactionMagnitude;
-        delete this->m_offerPriceMax;
-        delete this->m_bidPriceMin;
+        delete this->m_offerPriceMin;
+        delete this->m_bidPriceMax;
         delete this->m_auctionPriceCalculated;
         delete this->m_auctionPriceClose;
         delete this->m_auctionMagnitudeClose;
@@ -408,8 +409,8 @@ public:
          this->m_priceAve->Clear();
          this->m_disbalance->Clear();
          this->m_transactionMagnitude->Clear();
-         this->m_offerPriceMax->Clear();
-         this->m_bidPriceMin->Clear();
+         this->m_offerPriceMin->Clear();
+         this->m_bidPriceMax->Clear();
          this->m_auctionPriceCalculated->Clear();
          this->m_auctionPriceClose->Clear();
          this->m_auctionMagnitudeClose->Clear();
@@ -450,8 +451,8 @@ public:
     inline PointerListLite<StatisticItemDecimal>* PriceAve() { return this->m_priceAve; }
     inline PointerListLite<StatisticItemDecimal>* Disbalance() { return this->m_disbalance; }
     inline PointerListLite<StatisticItemTransactionsMagnitude>* TransactionMagnitude() { return this->m_transactionMagnitude; }
-    inline PointerListLite<StatisticItemDecimal>* OfferPriceMax() { return this->m_offerPriceMax; }
-    inline PointerListLite<StatisticItemDecimal>* BidPriceMin() { return this->m_bidPriceMin; }
+    inline PointerListLite<StatisticItemDecimal>* OfferPriceMax() { return this->m_offerPriceMin; }
+    inline PointerListLite<StatisticItemDecimal>* BidPriceMin() { return this->m_bidPriceMax; }
     inline PointerListLite<StatisticItemDecimal>* AuctionPriceCalculated() { return this->m_auctionPriceCalculated; }
     inline PointerListLite<StatisticItemDecimal>* AuctionPriceClose() { return this->m_auctionPriceClose; }
     inline PointerListLite<StatisticItemDecimal>* AuctionMagnitudeClose() { return this->m_auctionMagnitudeClose; }
@@ -547,89 +548,375 @@ public:
         AddTotalBid(list, item);
     }
 
-    inline void AddBuyQuote(T *item) { this->AddPriceSize(this->m_buyQuotes, item); }
-    inline void AddSellQuote(T *item) { this->AddPriceSize(this->m_sellQuotes, item); }
-    inline void AddLastDealInfo(T *item) { this->AddLastDealInfo(this->m_lstDealInfo, item); }
-    inline void AddIndicesList(T *item) { this->AddIndexList(this->m_indicesList, item); }
-    inline void AddPriceOpenFirst(T *item) { this->AddPrice(this->m_priceOpenFirst, item); }
-    inline void AddPriceCloseLast(T *item) { this->AddPrice(this->m_priceCloseLast, item); }
-    inline void AddPriceMax(T *item) { this->AddPrice(this->m_priceMax, item); }
-    inline void AddPriceMin(T *item) { this->AddPrice(this->m_priceMin, item); }
-    inline void AddPriceAve(T *item) { this->AddPrice(this->m_priceAve, item); }
-    inline void AddDisbalance(T *item) { this->AddPrice(this->m_disbalance, item); }
-    inline void AddTransactionsMagnitude(T *item) { this->AddTransactionMagnitude(this->m_transactionMagnitude, item); }
-    inline void AddEmptyBook(T *item) { throw; }
-    inline void AddOfferPriceMax(T *item) { this->AddPrice(this->m_offerPriceMax, item); }
-    inline void AddBidPriceMin(T *item) { this->AddPrice(this->m_bidPriceMin, item); }
-    inline void AddAuctionPriceCalculated(T *item) { this->AddPrice(this->m_auctionPriceCalculated, item); }
-    inline void AddAuctionPriceClose(T *item) { this->AddPrice(this->m_auctionPriceClose, item); }
-    inline void AddAuctionMagnitudeClose(T *item) { this->AddPrice(this->m_auctionMagnitudeClose, item); }
-    inline void AddMSSFullCoveredDealFlag(T *item) {
-        printf("WARNING: AddMSSFullCoveredDealFlag\n");
-        //throw;
+    // 0
+    inline void AddBuyQuote(T *item) {
+        this->AddPriceSize(this->m_buyQuotes, item);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Add BuyQuote ", this->m_buyQuotes);
     }
-    inline void AddMSSTradeOfferAuctionMagnitudeOpenClose(T *item) { this->AddPrice(this->m_openCloseAuctionTradeOfferMagnitude, item); }
-    inline void AddOLSTradeOfferAuctionOpenClose(T *item) { this->AddPrice(this->m_openCloseAuctionTradeOffer, item); }
-    inline void AddMSSTradeBidAuctionMagnitudeOpenClose(T *item) { this->AddPrice(this->m_openCloseAuctionTradeBidMagnitude, item); }
-    inline void AddOLSTradeBidAuctionOpenClose(T *item) { this->AddPrice(this->m_openCloseAuctionTradeBid, item); }
-    inline void AddPreTradePeriodPrice(T *item) { this->AddPrice(this->m_preTradePeriodPrice, item); }
-    inline void AddSessionOffer(T *item) { this->AddPrice(this->m_sessionOffer, item); }
-    inline void AddSessionBid(T *item) { this->AddPrice(this->m_sessionBid, item); }
-    inline void AddPostTradePeriodPrice(T *item) { this->AddPrice(this->m_postTradePeriodPrice, item); }
-    inline void AddTradePrice2(T *item) { this->AddPrice(this->m_tradePrice2, item); }
-    inline void AddTradePrice(T *item) { this->AddPrice(this->m_tradePrice, item); }
-    inline void AddPriceOpenOfficial(T *item) { this->AddPrice(this->m_priceOpenOfficial, item); }
-    inline void AddPriceCurrentOfficial(T *item) { this->AddPrice(this->m_priceCurrentOfficial, item); }
-    inline void AddLegitimQuote(T *item) { this->AddPrice(this->m_legitimQuote, item); }
-    inline void AddPriceCloseOfficial(T *item) { this->AddPrice(this->m_priceCloseOfficial, item); }
-    inline void AddAuctionPriceBigPackets(T *item) { this->AddPrice(this->m_auctionPriceBigPackets, item); }
-    inline void AddDuration(T *item) { this->AddPrice(this->m_duration, item); }
-    inline void AddOfferTotal(T *item) { this->AddTotalOffer(this->m_offerTotal, item); }
-    inline void AddBidTotal(T *item) { this->AddTotalBid(this->m_bidTotal, item); }
-    inline void AddAuctionMagnitudeBigPackets(T *item) { this->AddPrice(this->m_auctionMagnitudeBigPackets, item); }
-    inline void AddCumulativeCouponDebit(T *item) { this->AddPrice(this->m_cumulativeCouponDebit, item); }
+    // 1
+    inline void AddSellQuote(T *item) {
+        this->AddPriceSize(this->m_sellQuotes, item);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Add SellQuote ", this->m_sellQuotes);
+    }
+    // 2
+    inline void AddLastDealInfo(T *item) {
+        this->AddLastDealInfo(this->m_lstDealInfo, item);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Add SellQuote ", this->m_lstDealInfo);
+    }
+    // 3
+    inline void AddIndicesList(T *item) {
+        this->AddIndexList(this->m_indicesList, item);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Add Indices List ", this->m_indicesList);
+    }
+    // 4
+    inline void AddPriceOpenFirst(T *item) {
+        this->AddPrice(this->m_priceOpenFirst, item);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Add Open Price ", this->m_priceOpenFirst);
+    }
+    // 5
+    inline void AddPriceCloseLast(T *item) {
+        this->AddPrice(this->m_priceCloseLast, item);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Add Close Price ", this->m_priceCloseLast);
+    }
+    // 7
+    inline void AddPriceMax(T *item) {
+        this->AddPrice(this->m_priceMax, item);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Add Price Max", this->m_priceMax);
+    }
+    // 8
+    inline void AddPriceMin(T *item) {
+        this->AddPrice(this->m_priceMin, item);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Add Price Min", this->m_priceMin);
+    }
+    // 9
+    inline void AddPriceAve(T *item) {
+        this->AddPrice(this->m_priceAve, item);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Add Price Ave", this->m_priceAve);
+    }
+    // A
+    inline void AddDisbalance(T *item) {
+        this->AddPrice(this->m_disbalance, item);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Add Disbalance", this->m_disbalance);
+    }
+    // B
+    inline void AddTransactionsMagnitude(T *item) {
+        this->AddTransactionMagnitude(this->m_transactionMagnitude, item);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Add Transactions Magnitude", this->m_transactionMagnitude);
+    }
+    // J
+    inline void AddEmptyBook(T *item) {
+        throw;
+    }
+    // N
+    inline void AddBidPriceMax(T *item) {
+        this->AddPrice(this->m_bidPriceMax, item);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Add Bid Max", this->m_bidPriceMax);
+    }
+    // O
+    inline void AddOfferPriceMin(T *item) {
+        this->AddPrice(this->m_offerPriceMin, item);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Add Offer Min", this->m_offerPriceMin);
+    }
+    // Q
+    inline void AddAuctionPriceCalculated(T *item) {
+        this->AddPrice(this->m_auctionPriceCalculated, item);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Add Auction Price Calc", this->m_auctionPriceCalculated);
+    }
+    // W
+    inline void AddAuctionPriceClose(T *item) {
+        this->AddPrice(this->m_auctionPriceClose, item);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Add Auction Price Close", this->m_auctionPriceClose);
+    }
+    // c
+    inline void AddAuctionMagnitudeClose(T *item) {
+        this->AddPrice(this->m_auctionMagnitudeClose, item);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Add Auction Magnitude Close", this->m_auctionMagnitudeClose);
+    }
+    // e
+    inline void AddMSSFullCoveredDealFlag(T *item) { printf("WARNING: AddMSSFullCoveredDealFlag\n"); }
+    // f
+    inline void AddMSSTradeBidAuctionMagnitudeOpenClose(T *item) {
+        this->AddPrice(this->m_openCloseAuctionTradeBidMagnitude, item);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Add Auction Open/Close Bid Magnitude", this->m_openCloseAuctionTradeBidMagnitude);
+    }
+    inline void AddOLSTradeBidAuctionOpenClose(T *item) {
+        this->AddPrice(this->m_openCloseAuctionTradeBid, item);
+    }
+    // g
+    inline void AddMSSTradeOfferAuctionMagnitudeOpenClose(T *item) {
+        this->AddPrice(this->m_openCloseAuctionTradeOfferMagnitude, item);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Add Auction Open/Close Offer Magnitude", this->m_openCloseAuctionTradeOfferMagnitude);
+    }
+    inline void AddOLSTradeOfferAuctionOpenClose(T *item) {
+        this->AddPrice(this->m_openCloseAuctionTradeOffer, item);
+    }
+    // i
+    inline void AddSessionBid(T *item) {
+        this->AddPrice(this->m_sessionBid, item);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Add Session Bid", this->m_sessionBid);
+    }
+    // j
+    inline void AddSessionOffer(T *item) {
+        this->AddPrice(this->m_sessionOffer, item);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Add Session Offer", this->m_sessionOffer);
+    }
+    // h
+    inline void AddPreTradePeriodPrice(T *item) {
+        this->AddPrice(this->m_preTradePeriodPrice, item);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Add PreTrade Prace", this->m_preTradePeriodPrice);
+    }
+    // k
+    inline void AddPostTradePeriodPrice(T *item) {
+        this->AddPrice(this->m_postTradePeriodPrice, item);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Add PostTrade Price", this->m_postTradePeriodPrice);
+    }
+    // l
+    inline void AddTradePrice2(T *item) {
+        this->AddPrice(this->m_tradePrice2, item);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Add Trade2 Price Calc", this->m_tradePrice2);
+    }
+    // m
+    inline void AddTradePrice(T *item) {
+        this->AddPrice(this->m_tradePrice, item);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Add Trade Price Calc", this->m_tradePrice);
+    }
+    // o
+    inline void AddPriceOpenOfficial(T *item) {
+        this->AddPrice(this->m_priceOpenOfficial, item);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Add Official Open Price", this->m_priceOpenOfficial);
+    }
+    // p
+    inline void AddPriceCurrentOfficial(T *item) {
+        this->AddPrice(this->m_priceCurrentOfficial, item);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Add Officeal Current Calc", this->m_priceCurrentOfficial);
+    }
+    // q
+    inline void AddLegitimQuote(T *item) {
+        this->AddPrice(this->m_legitimQuote, item);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Add Legitim Quote", this->m_legitimQuote);
+    }
+    // r
+    inline void AddPriceCloseOfficial(T *item) {
+        this->AddPrice(this->m_priceCloseOfficial, item);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Add Official Close Price", this->m_priceCloseOfficial);
+    }
+    // v
+    inline void AddBidTotal(T *item) {
+        this->AddTotalBid(this->m_bidTotal, item);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Add Total Bid", this->m_bidTotal);
+    }
+    // w
+    inline void AddOfferTotal(T *item) {
+        this->AddTotalOffer(this->m_offerTotal, item);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Add Total Offer", this->m_offerTotal);
+    }
+    // s
+    inline void AddAuctionPriceBigPackets(T *item) {
+        this->AddPrice(this->m_auctionPriceBigPackets, item);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Add Big Packets Auction Price", this->m_auctionMagnitudeBigPackets);
+    }
+    // x
+    inline void AddAuctionMagnitudeBigPackets(T *item) {
+        this->AddPrice(this->m_auctionMagnitudeBigPackets, item);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Add Big Packets Auction Magnitude", this->m_auctionMagnitudeBigPackets);
+    }
+    // y
+    inline void AddCumulativeCouponDebit(T *item) {
+        this->AddPrice(this->m_cumulativeCouponDebit, item);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Add Cumulative Coupon Debit", this->m_cumulativeCouponDebit);
+    }
+    // u
+    inline void AddDuration(T *item) {
+        this->AddPrice(this->m_duration, item);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Add Duration", this->m_duration);
+    }
+    // z
     inline void AddAllDeals(T *item) { throw; }
 
-    inline void ChangeBuyQuote(T *item) { this->ChangePriceSize(this->m_buyQuotes, item); }
-    inline void ChangeSellQuote(T *item) { this->ChangePriceSize(this->m_sellQuotes, item); }
-    inline void ChangeLastDealInfo(T *item) { this->ChangeLastDealInfo(this->m_lstDealInfo, item); }
-    inline void ChangeIndicesList(T *item) { this->ChangeIndexList(this->m_indicesList, item); }
-    inline void ChangePriceOpenFirst(T *item) { this->ChangePrice(this->m_priceOpenFirst, item); }
-    inline void ChangePriceCloseLast(T *item) { this->ChangePrice(this->m_priceCloseLast, item); }
-    inline void ChangePriceMax(T *item) { this->ChangePrice(this->m_priceMax, item); }
-    inline void ChangePriceMin(T *item) { this->ChangePrice(this->m_priceMin, item); }
-    inline void ChangePriceAve(T *item) { this->ChangePrice(this->m_priceAve, item); }
-    inline void ChangeDisbalance(T *item) { this->ChangePrice(this->m_disbalance, item); }
-    inline void ChangeTransactionsMagnitude(T *item) { this->ChangeTransactionMagnitude(this->m_transactionMagnitude, item); }
-    inline void ChangeEmptyBook(T *item) { throw; }
-    inline void ChangeOfferPriceMax(T *item) { this->ChangePrice(this->m_offerPriceMax, item); }
-    inline void ChangeBidPriceMin(T *item) { this->ChangePrice(this->m_bidPriceMin, item); }
-    inline void ChangeAuctionPriceCalculated(T *item) { this->ChangePrice(this->m_auctionPriceCalculated, item); }
-    inline void ChangeAuctionPriceClose(T *item) { this->ChangePrice(this->m_auctionPriceClose, item); }
-    inline void ChangeAuctionMagnitudeClose(T *item) { this->ChangePrice(this->m_auctionMagnitudeClose, item); }
-    inline void ChangeMSSFullCoveredDealFlag(T *item) {
-        printf("WARNING: ChangeMSSFullCoveredDealFlag\n");
+    // 0
+    inline void ChangeBuyQuote(T *item) {
+        this->ChangePriceSize(this->m_buyQuotes, item);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Change BuyQuote ", this->m_buyQuotes);
     }
-    inline void ChangeMSSTradeOfferAuctionMagnitudeOpenClose(T *item) { this->ChangePrice(this->m_openCloseAuctionTradeOfferMagnitude, item); }
-    inline void ChangeOLSTradeOfferAuctionOpenClose(T *item) { this->ChangePrice(this->m_openCloseAuctionTradeOffer, item); }
-    inline void ChangeMSSTradeBidAuctionMagnitudeOpenClose(T *item) { this->ChangePrice(this->m_openCloseAuctionTradeBidMagnitude, item); }
-    inline void ChangeOLSTradeBidAuctionOpenClose(T *item) { this->ChangePrice(this->m_openCloseAuctionTradeBid, item); }
-    inline void ChangePreTradePeriodPrice(T *item) { this->ChangePrice(this->m_preTradePeriodPrice, item); }
-    inline void ChangeSessionOffer(T *item) { this->ChangePrice(this->m_sessionOffer, item); }
-    inline void ChangeSessionBid(T *item) { this->ChangePrice(this->m_sessionBid, item); }
-    inline void ChangePostTradePeriodPrice(T *item) { this->ChangePrice(this->m_postTradePeriodPrice, item); }
-    inline void ChangeTradePrice2(T *item) { this->ChangePrice(this->m_tradePrice2, item); }
-    inline void ChangeTradePrice(T *item) { this->ChangePrice(this->m_tradePrice, item); }
-    inline void ChangePriceOpenOfficial(T *item) { this->ChangePrice(this->m_priceOpenOfficial, item); }
-    inline void ChangePriceCurrentOfficial(T *item) { this->ChangePrice(this->m_priceCurrentOfficial, item); }
-    inline void ChangeLegitimQuote(T *item) { this->ChangePrice(this->m_legitimQuote, item); }
-    inline void ChangePriceCloseOfficial(T *item) { this->ChangePrice(this->m_priceCloseOfficial, item); }
-    inline void ChangeAuctionPriceBigPackets(T *item) { this->ChangePrice(this->m_auctionPriceBigPackets, item); }
-    inline void ChangeDuration(T *item) { this->ChangePrice(this->m_duration, item); }
-    inline void ChangeOfferTotal(T *item) { this->ChangeTotalOffer(this->m_offerTotal, item); }
-    inline void ChangeBidTotal(T *item) { this->ChangeTotalBid(this->m_bidTotal, item); }
-    inline void ChangeAuctionMagnitudeBigPackets(T *item) { this->ChangePrice(this->m_auctionMagnitudeBigPackets, item); }
-    inline void ChangeCumulativeCouponDebit(T *item) { this->ChangePrice(this->m_cumulativeCouponDebit, item); }
+    // 1
+    inline void ChangeSellQuote(T *item) {
+        this->ChangePriceSize(this->m_sellQuotes, item);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Change SellQuote ", this->m_sellQuotes);
+    }
+    // 2
+    inline void ChangeLastDealInfo(T *item) {
+        this->ChangeLastDealInfo(this->m_lstDealInfo, item);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Change SellQuote ", this->m_lstDealInfo);
+    }
+    // 3
+    inline void ChangeIndicesList(T *item) {
+        this->ChangeIndexList(this->m_indicesList, item);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Change Indices List ", this->m_indicesList);
+    }
+    // 4
+    inline void ChangePriceOpenFirst(T *item) {
+        this->ChangePrice(this->m_priceOpenFirst, item);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Change Open Price ", this->m_priceOpenFirst);
+    }
+    // 5
+    inline void ChangePriceCloseLast(T *item) {
+        this->ChangePrice(this->m_priceCloseLast, item);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Change Close Price ", this->m_priceCloseLast);
+    }
+    // 7
+    inline void ChangePriceMax(T *item) {
+        this->ChangePrice(this->m_priceMax, item);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Change Price Max", this->m_priceMax);
+    }
+    // 8
+    inline void ChangePriceMin(T *item) {
+        this->ChangePrice(this->m_priceMin, item);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Change Price Min", this->m_priceMin);
+    }
+    // 9
+    inline void ChangePriceAve(T *item) {
+        this->ChangePrice(this->m_priceAve, item);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Change Price Ave", this->m_priceAve);
+    }
+    // A
+    inline void ChangeDisbalance(T *item) {
+        this->ChangePrice(this->m_disbalance, item);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Change Disbalance", this->m_disbalance);
+    }
+    // B
+    inline void ChangeTransactionsMagnitude(T *item) {
+        this->ChangeTransactionMagnitude(this->m_transactionMagnitude, item);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Change Transactions Magnitude", this->m_transactionMagnitude);
+    }
+    // J
+    inline void ChangeEmptyBook(T *item) {
+        throw;
+    }
+    // N
+    inline void ChangeBidPriceMax(T *item) {
+        this->ChangePrice(this->m_bidPriceMax, item);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Change Bid Max", this->m_bidPriceMax);
+    }
+    // O
+    inline void ChangeOfferPriceMin(T *item) {
+        this->ChangePrice(this->m_offerPriceMin, item);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Change Offer Min", this->m_offerPriceMin);
+    }
+    // Q
+    inline void ChangeAuctionPriceCalculated(T *item) {
+        this->ChangePrice(this->m_auctionPriceCalculated, item);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Change Auction Price Calc", this->m_auctionPriceCalculated);
+    }
+    // W
+    inline void ChangeAuctionPriceClose(T *item) {
+        this->ChangePrice(this->m_auctionPriceClose, item);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Change Auction Price Close", this->m_auctionPriceClose);
+    }
+    // c
+    inline void ChangeAuctionMagnitudeClose(T *item) {
+        this->ChangePrice(this->m_auctionMagnitudeClose, item);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Change Auction Magnitude Close", this->m_auctionMagnitudeClose);
+    }
+    // e
+    inline void ChangeMSSFullCoveredDealFlag(T *item) { printf("WARNING: ChangeMSSFullCoveredDealFlag\n"); }
+    // f
+    inline void ChangeMSSTradeBidAuctionMagnitudeOpenClose(T *item) {
+        this->ChangePrice(this->m_openCloseAuctionTradeBidMagnitude, item);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Change Auction Open/Close Bid Magnitude", this->m_openCloseAuctionTradeBidMagnitude);
+    }
+    inline void ChangeOLSTradeBidAuctionOpenClose(T *item) {
+        this->ChangePrice(this->m_openCloseAuctionTradeBid, item);
+    }
+    // g
+    inline void ChangeMSSTradeOfferAuctionMagnitudeOpenClose(T *item) {
+        this->ChangePrice(this->m_openCloseAuctionTradeOfferMagnitude, item);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Change Auction Open/Close Offer Magnitude", this->m_openCloseAuctionTradeOfferMagnitude);
+    }
+    inline void ChangeOLSTradeOfferAuctionOpenClose(T *item) {
+        this->ChangePrice(this->m_openCloseAuctionTradeOffer, item);
+    }
+    // i
+    inline void ChangeSessionBid(T *item) {
+        this->ChangePrice(this->m_sessionBid, item);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Change Session Bid", this->m_sessionBid);
+    }
+    // j
+    inline void ChangeSessionOffer(T *item) {
+        this->ChangePrice(this->m_sessionOffer, item);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Change Session Offer", this->m_sessionOffer);
+    }
+    // h
+    inline void ChangePreTradePeriodPrice(T *item) {
+        this->ChangePrice(this->m_preTradePeriodPrice, item);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Change PreTrade Prace", this->m_preTradePeriodPrice);
+    }
+    // k
+    inline void ChangePostTradePeriodPrice(T *item) {
+        this->ChangePrice(this->m_postTradePeriodPrice, item);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Change PostTrade Price", this->m_postTradePeriodPrice);
+    }
+    // l
+    inline void ChangeTradePrice2(T *item) {
+        this->ChangePrice(this->m_tradePrice2, item);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Change Trade2 Price Calc", this->m_tradePrice2);
+    }
+    // m
+    inline void ChangeTradePrice(T *item) {
+        this->ChangePrice(this->m_tradePrice, item);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Change Trade Price Calc", this->m_tradePrice);
+    }
+    // o
+    inline void ChangePriceOpenOfficial(T *item) {
+        this->ChangePrice(this->m_priceOpenOfficial, item);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Change Official Open Price", this->m_priceOpenOfficial);
+    }
+    // p
+    inline void ChangePriceCurrentOfficial(T *item) {
+        this->ChangePrice(this->m_priceCurrentOfficial, item);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Change Officeal Current Calc", this->m_priceCurrentOfficial);
+    }
+    // q
+    inline void ChangeLegitimQuote(T *item) {
+        this->ChangePrice(this->m_legitimQuote, item);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Change Legitim Quote", this->m_legitimQuote);
+    }
+    // r
+    inline void ChangePriceCloseOfficial(T *item) {
+        this->ChangePrice(this->m_priceCloseOfficial, item);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Change Official Close Price", this->m_priceCloseOfficial);
+    }
+    // v
+    inline void ChangeBidTotal(T *item) {
+        this->ChangeTotalBid(this->m_bidTotal, item);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Change Total Bid", this->m_bidTotal);
+    }
+    // w
+    inline void ChangeOfferTotal(T *item) {
+        this->ChangeTotalOffer(this->m_offerTotal, item);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Change Total Offer", this->m_offerTotal);
+    }
+    // s
+    inline void ChangeAuctionPriceBigPackets(T *item) {
+        this->ChangePrice(this->m_auctionPriceBigPackets, item);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Change Big Packets Auction Price", this->m_auctionMagnitudeBigPackets);
+    }
+    // x
+    inline void ChangeAuctionMagnitudeBigPackets(T *item) {
+        this->ChangePrice(this->m_auctionMagnitudeBigPackets, item);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Change Big Packets Auction Magnitude", this->m_auctionMagnitudeBigPackets);
+    }
+    // y
+    inline void ChangeCumulativeCouponDebit(T *item) {
+        this->ChangePrice(this->m_cumulativeCouponDebit, item);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Change Cumulative Coupon Debit", this->m_cumulativeCouponDebit);
+    }
+    // u
+    inline void ChangeDuration(T *item) {
+        this->ChangePrice(this->m_duration, item);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Change Duration", this->m_duration);
+    }
+
+    // z
     inline void ChangeAllDeals(T *item) { throw; }
 
     inline void RemoveBuyQuote(T*item) { throw; }
@@ -725,7 +1012,7 @@ public:
             }
             else {
                 if(entryType <= MDEntryType::mdetAuctionPriceCalculated) {
-                    if(entryType <= MDEntryType::mdetOfferPriceMax) {
+                    if(entryType <= MDEntryType::mdetOfferPriceMin) {
                         if(entryType <= MDEntryType::mdetEmptyBook) {
                             if(entryType == MDEntryType::mdetTransactionsMagnitude) {
                                 this->AddTransactionsMagnitude(item);
@@ -736,12 +1023,12 @@ public:
                         }
                         else {
                             // mdetOfferPriceMax
-                            this->AddOfferPriceMax(item);
+                            this->AddOfferPriceMin(item);
                         }
                     }
                     else {
-                        if(entryType == MDEntryType::mdetBidPriceMin) {
-                            this->AddBidPriceMin(item);
+                        if(entryType == MDEntryType::mdetBidPriceMax) {
+                            this->AddBidPriceMax(item);
                         }
                         else { // mdetAuctionPriceCalculated
                             this->AddAuctionPriceCalculated(item);
@@ -925,7 +1212,7 @@ public:
             }
             else {
                 if(entryType <= MDEntryType::mdetAuctionPriceCalculated) {
-                    if(entryType <= MDEntryType::mdetOfferPriceMax) {
+                    if(entryType <= MDEntryType::mdetOfferPriceMin) {
                         if(entryType <= MDEntryType::mdetEmptyBook) {
                             if(entryType == MDEntryType::mdetTransactionsMagnitude) {
                                 this->ChangeTransactionsMagnitude(item);
@@ -936,12 +1223,12 @@ public:
                         }
                         else {
                             // mdetOfferPriceMax
-                            this->ChangeOfferPriceMax(item);
+                            this->ChangeOfferPriceMin(item);
                         }
                     }
                     else {
-                        if(entryType == MDEntryType::mdetBidPriceMin) {
-                            this->ChangeBidPriceMin(item);
+                        if(entryType == MDEntryType::mdetBidPriceMax) {
+                            this->ChangeBidPriceMax(item);
                         }
                         else { // mdetAuctionPriceCalculated
                             this->ChangeAuctionPriceCalculated(item);
@@ -1125,7 +1412,7 @@ public:
             }
             else {
                 if(entryType <= MDEntryType::mdetAuctionPriceCalculated) {
-                    if(entryType <= MDEntryType::mdetOfferPriceMax) {
+                    if(entryType <= MDEntryType::mdetOfferPriceMin) {
                         if(entryType <= MDEntryType::mdetEmptyBook) {
                             if(entryType == MDEntryType::mdetTransactionsMagnitude) {
                                 this->RemoveTransactionsMagnitude(item);
@@ -1140,7 +1427,7 @@ public:
                         }
                     }
                     else {
-                        if(entryType == MDEntryType::mdetBidPriceMin) {
+                        if(entryType == MDEntryType::mdetBidPriceMax) {
                             this->RemoveBidPriceMin(item);
                         }
                         else { // mdetAuctionPriceCalculated
