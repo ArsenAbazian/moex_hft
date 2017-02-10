@@ -1,6 +1,12 @@
 #pragma once
 #include "FeedConnections.h"
 
+typedef enum _FeedChannelState {
+	fchSuspend,
+	fchCollectSymbols,
+	fchMainLoop
+}FeedChannelState;
+
 class FeedChannel {
 	char id[16];
 	int  m_idLogIndex;
@@ -8,6 +14,8 @@ class FeedChannel {
 	int  m_nameLogIndex;
 	const char *m_senderCompId;
 	const char *m_password;
+
+	FeedChannelState m_state;
 
 	FeedConnection *statisticsIncremental;
 	FeedConnection *statisticsSnapshot;
@@ -84,17 +92,35 @@ public:
 	bool Logout();
 
 	inline bool DoWorkAtom() {
-		bool res = this->statisticsIncremental->DoWorkAtom();
-		res &= this->statisticsSnapshot->DoWorkAtom();
-		res &= this->ordersIncremental->DoWorkAtom();
-		res &= this->ordersSnapshot->DoWorkAtom();
-		res &= this->tradesIncremental->DoWorkAtom();
-		res &= this->tradesSnapshot->DoWorkAtom();
-		res &= this->instrumentDefinition->DoWorkAtom();
-		res &= this->instrumentStatus->DoWorkAtom();
-		res &= this->historicalReplay->DoWorkAtom();
+		if(this->m_state == FeedChannelState::fchMainLoop) {
+			bool res = this->statisticsIncremental->DoWorkAtom();
+			res &= this->statisticsSnapshot->DoWorkAtom();
+			res &= this->ordersIncremental->DoWorkAtom();
+			res &= this->ordersSnapshot->DoWorkAtom();
+			res &= this->tradesIncremental->DoWorkAtom();
+			res &= this->tradesSnapshot->DoWorkAtom();
+			res &= this->instrumentDefinition->DoWorkAtom();
+			res &= this->instrumentStatus->DoWorkAtom();
+			res &= this->historicalReplay->DoWorkAtom();
+			return res;
+		}
+		else if(this->m_state == FeedChannelState::fchCollectSymbols) {
+			bool res = this->instrumentDefinition->DoWorkAtom();
+			if(!res)
+				return res;
+			if(this->instrumentDefinition->IsIdfDataCollected()) {
+				this->m_state = FeedChannelState::fchMainLoop;
+				for(int i = 0; i < this->instrumentDefinition->ConnectionsToRecvSymbolsCount(); i++) {
+					if(!this->instrumentDefinition->ConnectionsToRecvSymbols()[i]->Start())
+						return false;
+				}
+			}
+			return true;
+		}
+		else if(this->m_state == FeedChannelState::fchSuspend)
+			return true;
 
-		return res;
+		return true;
 	}
 };
 

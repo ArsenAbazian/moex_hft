@@ -79,11 +79,13 @@ public:
     inline T* AddSession(const char *session) {
         return AddSession(session, strlen(session));
     }
-    inline void EnterSnapshotMode() {
+    inline bool EnterSnapshotMode() {
         this->m_sessionsToRecvSnapshot = this->m_count;
         T **item = this->m_items;
-        for(int i = 0; i < this->m_count; i++, item++)
+        for(int i = 0; i < this->m_count; i++, item++) {
             (*item)->EnterSnapshotMode();
+        }
+        return true;
     }
     inline void ExitSnapshotMode() {
         T **item = this->m_items;

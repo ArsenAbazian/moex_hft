@@ -137,6 +137,8 @@ protected:
 	FeedConnectionState							m_nextState;
 
     bool										m_shouldUseNextState;
+    int                                         m_reconnectCount;
+    int                                         m_maxReconnectCount;
 
     struct timeval                              *m_tval;
     Stopwatch                                   *m_stopwatch;
@@ -217,6 +219,7 @@ protected:
 
         buffer->SetCurrentItemSize(size);
 
+        printf("%s -> %d\n", this->m_idName, msgSeqNum);
 //        BinaryLogItem *item = DefaultLogManager::Default->WriteFast(this->m_idLogIndex,
 //                                                                    LogMessageCode::lmcFeedConnection_ProcessMessage,
 //                                                                    this->m_recvABuffer->BufferIndex(),
@@ -261,6 +264,7 @@ protected:
             return true;
 
         this->m_recvABuffer->SetCurrentItemSize(size);
+        printf("%s -> %d\n", this->m_idName, msgSeqNum);
 //        BinaryLogItem *item = DefaultLogManager::Default->WriteFast(this->m_idLogIndex,
 //                                                                    LogMessageCode::lmcFeedConnection_ProcessMessage,
 //                                                                    this->m_recvABuffer->BufferIndex(),
@@ -796,6 +800,7 @@ protected:
 	virtual void ClearSocketBufferProvider() {
 
 	}
+    void SetMaxReconnectCount(int value) { this->m_maxReconnectCount = value; }
     void SetMaxLostPacketCountForStartSnapshot(int count) { this->m_maxLostPacketCountForStartSnapshot = count; }
     int MaxLostPacketCountForStartSnapshot() { return this->m_maxLostPacketCountForStartSnapshot; }
 	inline void SetState(FeedConnectionState state) { this->m_state = state; }
@@ -1058,24 +1063,6 @@ protected:
     inline bool Listen_Atom_SecurityStatus_Core() {
         if(!this->ProcessSecurityStatusMessages())
             return false;
-//        if(this->m_snapshot->State() == FeedConnectionState::fcsSuspend) {
-//            if(!this->ShouldStartSnapshot()) {
-//                this->m_waitTimer->Stop();
-//                return true;
-//            }
-//            this->m_waitTimer->Activate();
-//            if (this->m_waitTimer->ElapsedMilliseconds() >= this->m_waitIncrementalMaxTimeMs) {
-//                if (!this->StartListenSnapshot())
-//                    return false;
-//                this->m_waitTimer->Stop();
-//            }
-//        }
-//        else {
-//            if(this->CanStopListeningSnapshot()) {
-//                this->StopListenSnapshot();
-//                this->m_waitTimer->Activate();
-//            }
-//        }
         return true;
     }
 
@@ -1101,12 +1088,15 @@ protected:
         DefaultLogManager::Default->StartLog(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_Reconnect_Atom);
 
 #ifndef  TEST
-            if(!this->socketAManager->Reconnect()) {
-                DefaultLogManager::Default->EndLog(false);
-                return true;
-            }
+        if(!this->socketAManager->Reconnect()) {
+            DefaultLogManager::Default->EndLog(false);
+            this->m_reconnectCount++;
+            if(this->m_reconnectCount > this->m_maxReconnectCount)
+                return false;
+            return true;
+        }
 #endif
-
+        this->m_reconnectCount = 0;
         this->SetState(this->m_nextState);
         this->m_waitTimer->Start();
         this->m_waitTimer->Stop(1);
@@ -1941,7 +1931,7 @@ public:
             this->m_statTableFond->InitSymbols(count);
             return;
         }
-        if(this->m_tradeTableCurr != 0) {
+        if(this->m_statTableCurr != 0) {
             this->m_statTableCurr->InitSymbols(count);
             return;
         }

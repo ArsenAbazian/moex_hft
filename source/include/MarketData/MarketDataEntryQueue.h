@@ -15,7 +15,7 @@ template <typename T> class MDEntrQueue {
     int         m_incEntriesCount;
     int         m_incEntriesMaxIndex;
     int         m_incStartRptSeq;
-
+    bool        m_shouldProcess;
 public:
     MDEntrQueue() {
         this->m_incEntries = new T*[MDENTRYINFO_INCREMENTAL_ENTRIES_BUFFER_LENGTH];
@@ -23,6 +23,7 @@ public:
         bzero(this->m_incEntries, sizeof(T*) * this->m_incEntriesCount);
         this->m_incEntriesMaxIndex = -1;
         this->m_incStartRptSeq = 0;
+        this->m_shouldProcess = false;
     }
     ~MDEntrQueue() {
         delete this->m_incEntries;
@@ -36,6 +37,13 @@ public:
 
     inline void AddEntry(T *entry) {
         int index = entry->RptSeq - this->m_incStartRptSeq;
+        if(index >= this->m_incEntriesCount) {
+            if(this->HasEntries())
+                return;
+            this->m_incStartRptSeq = entry->RptSeq;
+            index = 0;
+        }
+        this->m_shouldProcess = false; // reset flag because we will process
         this->m_incEntries[index] = entry;
         if(index > this->m_incEntriesMaxIndex)
             this->m_incEntriesMaxIndex = index;
@@ -45,6 +53,7 @@ public:
         bzero(this->m_incEntries, sizeof(T*) * this->m_incEntriesCount);
         this->m_incEntriesMaxIndex = -1;
         this->m_incStartRptSeq = 0;
+        this->m_shouldProcess = false;
     }
 
     inline void Clear() {
@@ -57,8 +66,13 @@ public:
         this->Reset();
     }
 
+    inline void ShouldProcess(bool value) {
+        if(this->HasEntries())
+            return;
+        this->m_shouldProcess = value;
+    }
     inline int MaxIndex() { return this->m_incEntriesMaxIndex; }
-    inline bool HasEntries() { return this->m_incEntriesMaxIndex != -1; };
+    inline bool HasEntries() { return this->m_incEntriesMaxIndex != -1 || this->m_shouldProcess; };
     inline T** Entries() { return this->m_incEntries; }
     inline int RptSeq() { return this->m_incStartRptSeq; }
 };

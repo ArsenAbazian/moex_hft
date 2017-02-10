@@ -127,6 +127,7 @@ private:
 
 		int result = close(this->m_socket);
 		if (result < 0) {
+			DefaultLogManager::Default->Write(LogMessageCode::lmcsocket_close);
 			DefaultLogManager::Default->EndLog(false, strerror(errno));
 			return false;
 		}
@@ -135,16 +136,19 @@ private:
 
 		this->m_socket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
 		if (this->m_socket < 0) {
+			DefaultLogManager::Default->Write(LogMessageCode::lmcsocket_socket);
 			DefaultLogManager::Default->EndLogErrNo(false, strerror(errno));
 			return false;
 		}
 
 		if(bind(this->m_socket, (struct sockaddr*)&(this->m_adress), sizeof(this->m_adress)) < 0) {
+			DefaultLogManager::Default->Write(LogMessageCode::lmcsocket_bind);
 			DefaultLogManager::Default->EndLogErrNo(false, strerror(errno));
 			return false;
 		}
 
 		if(setsockopt(this->m_socket, IPPROTO_IP, IP_ADD_SOURCE_MEMBERSHIP, (char*)&(this->m_imr), sizeof(this->m_imr)) < 0) {
+			DefaultLogManager::Default->Write(LogMessageCode::lmcsocket_setsockopt);
 			DefaultLogManager::Default->EndLogErrNo(false, strerror(errno));
 			return false;
 		}

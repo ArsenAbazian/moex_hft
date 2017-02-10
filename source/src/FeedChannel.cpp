@@ -10,6 +10,7 @@ FeedChannel::FeedChannel(const char *id, const char *name) {
 
 	this->m_senderCompId = 0;
 	this->m_password = 0;
+	this->m_state = FeedChannelState::fchSuspend;
 
 	this->statisticsIncremental = NULL;
 	this->statisticsSnapshot = NULL;
@@ -84,11 +85,6 @@ bool FeedChannel::CheckConnections() {
 bool FeedChannel::Connect() { 
 	DefaultLogManager::Default->StartLog(this->m_nameLogIndex, LogMessageCode::lmcFeedChannel_Connect);
 
-	if(!this->CheckConnections()) {
-		DefaultLogManager::Default->EndLog(false);
-		return false;
-	}
-
 	this->statisticsIncremental->SetSnapshot(this->statisticsSnapshot);
 	this->tradesIncremental->SetSnapshot(this->tradesSnapshot);
 	this->ordersIncremental->SetSnapshot(this->ordersSnapshot);
@@ -101,68 +97,18 @@ bool FeedChannel::Connect() {
 	this->instrumentDefinition->SetHistoricalReplay(this->historicalReplay);
 	this->instrumentStatus->SetHistoricalReplay(this->historicalReplay);
 
-	/*
-	if (!this->Connect(this->ordersIncremental)) {
+	if(!this->CheckConnections()) {
 		DefaultLogManager::Default->EndLog(false);
 		return false;
 	}
-	if (!this->Connect(this->tradesIncremental)) {
-		DefaultLogManager::Default->EndLog(false);
-		return false;
-	}*/
 
-//    if (!this->Connect(this->statisticsIncremental)) {
-//		DefaultLogManager::Default->EndLog(false);
-//		return false;
-//	}
-	/*
-	if (!this->Connect(this->instrumentStatus)) {
-		DefaultLogManager::Default->EndLog(false);
-		return false;
-	}
-    */
-    /*
-    if(!this->Connect(this->statisticsSnapshot)) {
-        DefaultLogManager::Default->EndLog(false);
-        return false;
-    }
-    if(!this->Connect(this->ordersSnapshot)) {
-        DefaultLogManager::Default->EndLog(false);
-        return false;
-    }
-    if(!this->Connect(this->tradesSnapshot)) {
-        DefaultLogManager::Default->EndLog(false);
-        return false;
-    }
-    if(!this->Connect(this->instrumentReplay)) {
-        DefaultLogManager::Default->EndLog(false);
-        return false;
-    }
-    */
-
-	//this->ordersIncremental->Start();
-	//this->tradesIncremental->Start();
-	this->statisticsIncremental->DoNotCheckIncrementalActuality(true);
-	this->statisticsIncremental->SkipApplyMessages(true);
-	this->statisticsIncremental->Start();
     //this->instrumentDefinition->DoNotCheckIncrementalActuality(true);
     //this->instrumentDefinition->IdfAllowUpdateData(true);
-	//this->instrumentDefinition->Start();
 
-	//this->historicalReplay->HrRequestMessage(this->ordersIncremental, 1, 500); //TODO debug request
-	//this->historicalReplay->HrRequestMessage(this->tradesIncremental, 1000, 2000); //TODO debug request
-	//this->historicalReplay->HrRequestMessage(this->statisticsIncremental, 1, 2000); //TODO debug request
-	//this->historicalReplay->HrRequestMessage(this->instrumentDefinition, 1); //TODO debug request
-	//this->historicalReplay->HrRequestMessage(this->instrumentStatus, 1); //TODO debug request
-
-
-	//this->instrumentStatus->Start();
-
-	// not needed....
-	//this->statisticsSnapshot->Start();
-	//this->ordersSnapshot->Start();
-	//this->tradesSnapshot->Start();
-	//this->instrumentReplay->Start();
+	this->m_state = FeedChannelState::fchCollectSymbols;
+	//this->statisticsIncremental->DoNotCheckIncrementalActuality(true);
+	this->instrumentDefinition->AddConnectionToRecvSymbol(this->statisticsIncremental);
+	this->instrumentDefinition->Start();
 
 	DefaultLogManager::Default->EndLog(true);
 	return true;
@@ -182,6 +128,8 @@ bool FeedChannel::Disconnect() {
 	result &= this->Disconnect(this->instrumentDefinition);
 	result &= this->Disconnect(this->instrumentStatus);
 	result &= this->Disconnect(this->historicalReplay);
+
+	this->m_state = FeedChannelState::fchSuspend;
 
 	DefaultLogManager::Default->EndLog(result);
 	return result;

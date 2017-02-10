@@ -101,6 +101,10 @@ void LogMessageProvider::InitializeLogMessageText() {
 	this->m_logMessageText[LogMessageCode::lmcFeedConnection_StopListenSnapshot] = "FeedConnection::StopListenSnapshot";
 	this->m_logMessageText[LogMessageCode::lmcFeedConnection_Listen_Atom_SecurityDefinition] = "FeedConnection::Listen_Atom_SecurityDefinition";
 	this->m_logMessageText[LogMessageCode::lmcFeedConnection_Listen_Atom_SecurityStatus] = "FeedConnection::Listen_Atom_SecurityStatus";
+	this->m_logMessageText[LogMessageCode::lmcsocket_close] = "socket->close()";
+	this->m_logMessageText[LogMessageCode::lmcsocket_socket] = "socket->socket()";
+	this->m_logMessageText[LogMessageCode::lmcsocket_bind] = "socket->bind()";
+	this->m_logMessageText[LogMessageCode::lmcsocket_setsockopt] = "socket->setsockopt()";
 #pragma endregion
 }
 

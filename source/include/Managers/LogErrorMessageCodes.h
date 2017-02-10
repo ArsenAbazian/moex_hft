@@ -98,7 +98,11 @@ typedef enum _LogMessageCode {
 	lmcFeedConnection_Listen_Atom_Snapshot = 88,
 	lmcFeedConnection_StopListenSnapshot = 89,
 	lmcFeedConnection_Listen_Atom_SecurityDefinition = 90,
-	lmcFeedConnection_Listen_Atom_SecurityStatus = 91
+	lmcFeedConnection_Listen_Atom_SecurityStatus = 91,
+	lmcsocket_close = 92,
+	lmcsocket_socket = 93,
+	lmcsocket_bind = 94,
+	lmcsocket_setsockopt = 95
 #pragma  endregion
 }LogMessageCode;
 

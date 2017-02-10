@@ -344,6 +344,7 @@ public:
     }
 
     inline bool ProcessQueueMessages() {
+        this->m_entryInfo->ShouldProcess(false);
         if(!this->m_entryInfo->HasEntries())
             return true;
         T **entry = this->m_entryInfo->Entries();
@@ -380,8 +381,10 @@ public:
         return res;
     }
 
-    inline void EnterSnapshotMode() {
+    inline bool EnterSnapshotMode() {
         this->m_shouldProcessSnapshot = true;
+        this->m_entryInfo->ShouldProcess(true);
+        return true;
     }
 
     inline void ExitSnapshotMode() {

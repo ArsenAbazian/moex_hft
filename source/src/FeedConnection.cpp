@@ -27,13 +27,15 @@ FeedConnection::FeedConnection(const char *id, const char *name, char value, Fee
 	this->m_sendABuffer = this->m_socketABufferProvider->SendBuffer();
 	this->m_recvABuffer = this->m_socketABufferProvider->RecvBuffer();
 
-    this->m_waitIncrementalMaxTimeMs = 3000;
+    this->m_waitIncrementalMaxTimeMs = 1200;
     this->m_snapshotMaxTimeMs = 3000;
     this->m_maxLostPacketCountForStartSnapshot = 0; // by default immediately start snapshot
 
     this->m_incremental = 0;
     this->m_snapshot = 0;
     this->m_connectionsToRecvSymbolsCount = 0;
+    this->m_reconnectCount = 0;
+    this->m_maxReconnectCount = 20;
 
     this->socketAManager = NULL;
     this->socketBManager = NULL;
@@ -81,6 +83,8 @@ FeedConnection::FeedConnection() {
     this->m_connectionsToRecvSymbolsCount = 0;
     this->m_isfStartSnapshotCount = 0;
     this->m_skipApplyMessages = false;
+    this->m_reconnectCount = 0;
+    this->m_maxReconnectCount = 20;
 
     this->m_startMsgSeqNum = 1;
     this->m_endMsgSeqNum = 0;

@@ -564,7 +564,10 @@ public:
     inline void AddAuctionPriceCalculated(T *item) { this->AddPrice(this->m_auctionPriceCalculated, item); }
     inline void AddAuctionPriceClose(T *item) { this->AddPrice(this->m_auctionPriceClose, item); }
     inline void AddAuctionMagnitudeClose(T *item) { this->AddPrice(this->m_auctionMagnitudeClose, item); }
-    inline void AddMSSFullCoveredDealFlag(T *item) { throw; }
+    inline void AddMSSFullCoveredDealFlag(T *item) {
+        printf("WARNING: AddMSSFullCoveredDealFlag\n");
+        //throw;
+    }
     inline void AddMSSTradeOfferAuctionMagnitudeOpenClose(T *item) { this->AddPrice(this->m_openCloseAuctionTradeOfferMagnitude, item); }
     inline void AddOLSTradeOfferAuctionOpenClose(T *item) { this->AddPrice(this->m_openCloseAuctionTradeOffer, item); }
     inline void AddMSSTradeBidAuctionMagnitudeOpenClose(T *item) { this->AddPrice(this->m_openCloseAuctionTradeBidMagnitude, item); }
@@ -604,7 +607,9 @@ public:
     inline void ChangeAuctionPriceCalculated(T *item) { this->ChangePrice(this->m_auctionPriceCalculated, item); }
     inline void ChangeAuctionPriceClose(T *item) { this->ChangePrice(this->m_auctionPriceClose, item); }
     inline void ChangeAuctionMagnitudeClose(T *item) { this->ChangePrice(this->m_auctionMagnitudeClose, item); }
-    inline void ChangeMSSFullCoveredDealFlag(T *item) { throw; }
+    inline void ChangeMSSFullCoveredDealFlag(T *item) {
+        printf("WARNING: ChangeMSSFullCoveredDealFlag\n");
+    }
     inline void ChangeMSSTradeOfferAuctionMagnitudeOpenClose(T *item) { this->ChangePrice(this->m_openCloseAuctionTradeOfferMagnitude, item); }
     inline void ChangeOLSTradeOfferAuctionOpenClose(T *item) { this->ChangePrice(this->m_openCloseAuctionTradeOffer, item); }
     inline void ChangeMSSTradeBidAuctionMagnitudeOpenClose(T *item) { this->ChangePrice(this->m_openCloseAuctionTradeBidMagnitude, item); }
@@ -1316,6 +1321,7 @@ public:
     }
 
     inline bool ProcessQueueMessages() {
+        this->m_entryInfo->ShouldProcess(false);
         if(!this->m_entryInfo->HasEntries())
             return true;
         T **entry = this->m_entryInfo->Entries();
@@ -1352,8 +1358,10 @@ public:
         return res;
     }
 
-    inline void EnterSnapshotMode() {
+    inline bool EnterSnapshotMode() {
         this->m_shouldProcessSnapshot = true;
+        this->m_entryInfo->ShouldProcess(true);
+        return true;
     }
 
     inline void ExitSnapshotMode() {

@@ -134,10 +134,16 @@ public:
     inline bool EndProcessSnapshot() {
         bool allItemsRecvSnapshot = this->m_snapshotSymbol->AllSessionsRecvSnapshot();
         bool res = this->m_snapshotItem->EndProcessSnapshotMessages();
-        if(this->m_snapshotItemHasEntriesQueue && !this->m_snapshotEntries->HasEntries())
+        if(this->m_snapshotItemHasEntriesQueue && !this->m_snapshotEntries->HasEntries()) {
+            printf("complete session %s-%s\n", this->m_snapshotSymbol->Symbol()->m_text, this->m_snapshotItem->TradingSession()->m_text); //TODO remove debug
             this->m_queueItemsCount--;
-        if(!allItemsRecvSnapshot && this->m_snapshotSymbol->AllSessionsRecvSnapshot())
+            printf("%d items to go", this->m_queueItemsCount); //TODO remove debug
+        }
+        if(!allItemsRecvSnapshot && this->m_snapshotSymbol->AllSessionsRecvSnapshot()) {
+            printf("complete symbol %s\n", this->m_snapshotSymbol->Symbol()->m_text);
             this->DecSymbolsToRecvSnapshotCount();
+            printf("%d symbols to go", this->m_symbolsToRecvSnapshot); //TODO remove debug
+        }
         this->m_snapshotItem = 0;
         return res;
     }
@@ -226,8 +232,10 @@ public:
     inline void EnterSnapshotMode() {
         this->m_symbolsToRecvSnapshot = this->m_symbolsCount;
         MarketSymbolInfo<TABLEITEM<ITEMINFO>> **s = this->m_symbols;
-        for(int i = 0; i < this->m_symbolsCount; i++, s++)
+        for(int i = 0; i < this->m_symbolsCount; i++, s++) {
             (*s)->EnterSnapshotMode();
+            this->m_symbolsToRecvSnapshot++;
+        }
     }
     inline void ExitSnapshotMode() {
         MarketSymbolInfo<TABLEITEM<ITEMINFO>> **s = this->m_symbols;
