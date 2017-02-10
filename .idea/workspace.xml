@@ -19,14 +19,8 @@
     </ADDITIONAL_GENERATION_ENVIRONMENT>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="32604c03-98a8-42cf-80f6-771ec2ce84cc" name="Default" comment="1. Continue working on statistics incremental">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/hft_robot.iml" afterPath="$PROJECT_DIR$/.idea/hft_robot.iml" />
+    <list default="true" id="32604c03-98a8-42cf-80f6-771ec2ce84cc" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/FeedConnection.h" afterPath="$PROJECT_DIR$/source/include/FeedConnection.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/MarketData/MarketDataEntryQueue.h" afterPath="$PROJECT_DIR$/source/include/MarketData/MarketDataEntryQueue.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/MarketData/OrderInfo.h" afterPath="$PROJECT_DIR$/source/include/MarketData/OrderInfo.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/MarketData/StatisticInfo.h" afterPath="$PROJECT_DIR$/source/include/MarketData/StatisticInfo.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/MarketData/TradeInfo.h" afterPath="$PROJECT_DIR$/source/include/MarketData/TradeInfo.h" />
     </list>
     <ignored path="hft_robot.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -805,14 +799,7 @@
       <workItem from="1486498527615" duration="7752000" />
       <workItem from="1486619366197" duration="20580000" />
       <workItem from="1486744267748" duration="2299000" />
-      <workItem from="1486754175234" duration="1980000" />
-    </task>
-    <task id="LOCAL-00120" summary="1. Continue working on SecurityDefinitionInfo&#10;2. Broke all incremental and snap tests until tomorrow...&#10;">
-      <created>1482789105331</created>
-      <option name="number" value="00120" />
-      <option name="presentableId" value="LOCAL-00120" />
-      <option name="project" value="LOCAL" />
-      <updated>1482789105331</updated>
+      <workItem from="1486754175234" duration="2026000" />
     </task>
     <task id="LOCAL-00121" summary="1. Continue working on SecurityDefinitionInfo&#10;2. All incremental tests passed &#10;">
       <created>1482851576433</created>
@@ -1150,11 +1137,18 @@
       <option name="project" value="LOCAL" />
       <updated>1486652890922</updated>
     </task>
-    <option name="localTasksCounter" value="169" />
+    <task id="LOCAL-00169" summary="1. Continue working on snapshot">
+      <created>1486756204810</created>
+      <option name="number" value="00169" />
+      <option name="presentableId" value="LOCAL-00169" />
+      <option name="project" value="LOCAL" />
+      <updated>1486756204810</updated>
+    </task>
+    <option name="localTasksCounter" value="170" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="1427827000" />
+    <option name="totallyTimeSpent" value="1427873000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -1240,7 +1234,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
-    <MESSAGE value="1. Continue working on SecurityDefinitionInfo&#10; &#10;" />
     <MESSAGE value="1. Continue working on SecurityDefinitionInfo&#10; 2. Fix Tests&#10;" />
     <MESSAGE value="1. Continue working on SecurityDefinitionInfo&#10; 2. Broke Idf Tests&#10;" />
     <MESSAGE value="1. Continue working on SecurityDefinitionInfo&#10; 2. All tests except TestInstrumentDefinitionCollectDataCompleted_1 are passed...&#10;" />
@@ -1265,7 +1258,8 @@
     <MESSAGE value="1. Wrote some other tests on obtaining lost message in  SecurityStatus via Security Definition&#10;2. Continue working on SecurityStatus" />
     <MESSAGE value="1. Working on separate Historical Replay cases from Snapshot. &#10;2. Broke build. Sorry." />
     <MESSAGE value="1. Continue working on statistics incremental" />
-    <option name="LAST_COMMIT_MESSAGE" value="1. Continue working on statistics incremental" />
+    <MESSAGE value="1. Continue working on snapshot" />
+    <option name="LAST_COMMIT_MESSAGE" value="1. Continue working on snapshot" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
