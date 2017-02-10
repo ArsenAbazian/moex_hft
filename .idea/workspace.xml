@@ -21,6 +21,9 @@
   <component name="ChangeListManager">
     <list default="true" id="32604c03-98a8-42cf-80f6-771ec2ce84cc" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/FeedConnection.h" afterPath="$PROJECT_DIR$/source/include/FeedConnection.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/MarketData/MarketDataTable.h" afterPath="$PROJECT_DIR$/source/include/MarketData/MarketDataTable.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/src/Managers/DebugInfoManager.cpp" afterPath="$PROJECT_DIR$/source/src/Managers/DebugInfoManager.cpp" />
     </list>
     <ignored path="hft_robot.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -54,6 +57,28 @@
           </provider>
         </entry>
       </file>
+      <file leaf-file-name="DebugInfoManager.h" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/source/include/Managers/DebugInfoManager.h">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="425">
+              <caret line="100" column="4" selection-start-line="100" selection-start-column="4" selection-end-line="100" selection-end-column="133" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="DebugInfoManager.cpp" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/source/src/Managers/DebugInfoManager.cpp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="281">
+              <caret line="58" column="18" selection-start-line="58" selection-start-column="18" selection-end-line="58" selection-end-column="18" />
+              <folding>
+                <element signature="e#38#67#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file leaf-file-name="OrderInfo.h" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/source/include/MarketData/OrderInfo.h">
           <provider selected="true" editor-type-id="text-editor">
@@ -64,43 +89,21 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="TradeInfo.h" pinned="false" current-in-tab="true">
+      <file leaf-file-name="TradeInfo.h" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/source/include/MarketData/TradeInfo.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="214">
-              <caret line="125" column="15" selection-start-line="125" selection-start-column="15" selection-end-line="125" selection-end-column="15" />
+            <state relative-caret-position="150">
+              <caret line="19" column="40" selection-start-line="19" selection-start-column="33" selection-end-line="19" selection-end-column="40" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="DebugInfoManager.cpp" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/source/src/Managers/DebugInfoManager.cpp">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="198">
-              <caret line="11" column="33" selection-start-line="11" selection-start-column="33" selection-end-line="11" selection-end-column="33" />
-              <folding>
-                <element signature="e#38#67#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="FastProtocolManager.h" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/source/include/Fast/FastProtocolManager.h">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="78984">
-              <caret line="4388" column="0" selection-start-line="4388" selection-start-column="0" selection-end-line="4388" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="MarketDataTable.h" pinned="false" current-in-tab="false">
+      <file leaf-file-name="MarketDataTable.h" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/source/include/MarketData/MarketDataTable.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="243">
-              <caret line="137" column="6" selection-start-line="137" selection-start-column="6" selection-end-line="137" selection-end-column="6" />
+            <state relative-caret-position="134">
+              <caret line="133" column="15" selection-start-line="133" selection-start-column="15" selection-end-line="133" selection-end-column="15" />
               <folding />
             </state>
           </provider>
@@ -131,11 +134,12 @@
       <file leaf-file-name="FeedConnection.h" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/source/include/FeedConnection.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="194">
-              <caret line="523" column="0" selection-start-line="523" selection-start-column="0" selection-end-line="523" selection-end-column="0" />
+            <state relative-caret-position="144">
+              <caret line="837" column="10" selection-start-line="837" selection-start-column="10" selection-end-line="837" selection-end-column="10" />
               <folding>
                 <element signature="e#1425#1483#0" expanded="true" />
-                <element signature="e#98689#98783#0" expanded="true" />
+                <element signature="e#9137#11421#0" expanded="false" />
+                <element signature="e#99049#99143#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -159,7 +163,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/source/include/Test/FeedTypes.h" />
         <option value="$PROJECT_DIR$/source/include/Fix/FixMessage.h" />
         <option value="$PROJECT_DIR$/source/src/Fast/FastProtocolManager.cpp" />
         <option value="$PROJECT_DIR$/source/include/Fix/FixProtocolManager.h" />
@@ -203,13 +206,14 @@
         <option value="$PROJECT_DIR$/source/include/Fast/FastTypes.h" />
         <option value="$PROJECT_DIR$/CMakeLists.txt" />
         <option value="$PROJECT_DIR$/source/include/Managers/DebugInfoManager.h" />
-        <option value="$PROJECT_DIR$/source/src/Managers/DebugInfoManager.cpp" />
         <option value="$PROJECT_DIR$/source/include/Lib/StringIdComparer.h" />
-        <option value="$PROJECT_DIR$/source/include/FeedConnection.h" />
         <option value="$PROJECT_DIR$/source/include/MarketData/StatisticInfo.h" />
         <option value="$PROJECT_DIR$/source/include/MarketData/MarketDataEntryQueue.h" />
         <option value="$PROJECT_DIR$/source/include/MarketData/OrderInfo.h" />
         <option value="$PROJECT_DIR$/source/include/MarketData/TradeInfo.h" />
+        <option value="$PROJECT_DIR$/source/src/Managers/DebugInfoManager.cpp" />
+        <option value="$PROJECT_DIR$/source/include/FeedConnection.h" />
+        <option value="$PROJECT_DIR$/source/include/MarketData/MarketDataTable.h" />
       </list>
     </option>
   </component>
@@ -284,50 +288,6 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="hft" />
-              <option name="myItemType" value="com.jetbrains.cidr.projectView.CidrFilesViewHelper$MyProjectTreeStructure$1" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="hft" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="source" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Test" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="hft" />
-              <option name="myItemType" value="com.jetbrains.cidr.projectView.CidrFilesViewHelper$MyProjectTreeStructure$1" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="hft" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="source" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="MarketData" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -799,14 +759,7 @@
       <workItem from="1486498527615" duration="7752000" />
       <workItem from="1486619366197" duration="20580000" />
       <workItem from="1486744267748" duration="2299000" />
-      <workItem from="1486754175234" duration="2026000" />
-    </task>
-    <task id="LOCAL-00121" summary="1. Continue working on SecurityDefinitionInfo&#10;2. All incremental tests passed &#10;">
-      <created>1482851576433</created>
-      <option name="number" value="00121" />
-      <option name="presentableId" value="LOCAL-00121" />
-      <option name="project" value="LOCAL" />
-      <updated>1482851576445</updated>
+      <workItem from="1486754175234" duration="4149000" />
     </task>
     <task id="LOCAL-00122" summary="1. Continue working on SecurityDefinitionInfo&#10;2. All incremental tests passed &#10;">
       <created>1482852739847</created>
@@ -1144,11 +1097,18 @@
       <option name="project" value="LOCAL" />
       <updated>1486756204810</updated>
     </task>
-    <option name="localTasksCounter" value="170" />
+    <task id="LOCAL-00170" summary="1. Continue working on snapshot">
+      <created>1486756246190</created>
+      <option name="number" value="00170" />
+      <option name="presentableId" value="LOCAL-00170" />
+      <option name="project" value="LOCAL" />
+      <updated>1486756246190</updated>
+    </task>
+    <option name="localTasksCounter" value="171" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="1427873000" />
+    <option name="totallyTimeSpent" value="1429996000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -1163,9 +1123,9 @@
     <frame x="65" y="24" width="1551" height="961" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.27094242" sideWeight="0.493007" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.289267" sideWeight="0.493007" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32908458" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39049825" sideWeight="0.3907068" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.65816915" sideWeight="0.3907068" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="CMake" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3383546" sideWeight="0.4384817" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3511008" sideWeight="0.4365183" order="8" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4912075" sideWeight="0.61189955" order="9" side_tool="false" content_ui="tabs" />
@@ -1173,7 +1133,7 @@
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.289267" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3282532" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.235262" sideWeight="0.506993" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.34994206" sideWeight="0.5634817" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.47392815" sideWeight="0.5634817" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -1283,7 +1243,7 @@
       <breakpoints-dialog>
         <breakpoints-dialog />
       </breakpoints-dialog>
-      <option name="time" value="1537" />
+      <option name="time" value="1541" />
     </breakpoint-manager>
     <watches-manager>
       <configuration name="CMakeRunConfiguration">
@@ -1336,7 +1296,7 @@
         <state relative-caret-position="126">
           <caret line="7" column="15" selection-start-line="7" selection-start-column="14" selection-end-line="7" selection-end-column="15" />
           <folding>
-            <element signature="e#116#144#0" expanded="true" />
+            <element signature="e#116#144#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -1578,6 +1538,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1062">
           <caret line="59" column="47" selection-start-line="59" selection-start-column="47" selection-end-line="59" selection-end-column="47" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1589,29 +1550,11 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/source/include/Managers/DebugInfoManager.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1800">
-          <caret line="100" column="4" selection-start-line="100" selection-start-column="4" selection-end-line="100" selection-end-column="133" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/source/src/Test/FastProtocolTester.cpp">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="18036">
           <caret line="1002" column="0" selection-start-line="1002" selection-start-column="0" selection-end-line="1002" selection-end-column="0" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/source/src/Managers/DebugInfoManager.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="198">
-          <caret line="11" column="33" selection-start-line="11" selection-start-column="33" selection-end-line="11" selection-end-column="33" />
-          <folding>
-            <element signature="e#38#67#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1633,25 +1576,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/source/include/MarketData/MarketDataTable.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="243">
-          <caret line="137" column="6" selection-start-line="137" selection-start-column="6" selection-end-line="137" selection-end-column="6" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/source/include/FeedConnection.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="194">
-          <caret line="523" column="0" selection-start-line="523" selection-start-column="0" selection-end-line="523" selection-end-column="0" />
-          <folding>
-            <element signature="e#1425#1483#0" expanded="true" />
-            <element signature="e#98689#98783#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/source/include/Fast/FastTypes.h">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="71">
@@ -1668,6 +1592,22 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/source/include/MarketData/OrderInfo.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="340">
+          <caret line="355" column="91" selection-start-line="355" selection-start-column="91" selection-end-line="355" selection-end-column="91" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/include/MarketData/TradeInfo.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="150">
+          <caret line="19" column="40" selection-start-line="19" selection-start-column="33" selection-end-line="19" selection-end-column="40" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/source/include/MarketData/StatisticInfo.h">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="252">
@@ -1680,18 +1620,40 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/source/include/MarketData/OrderInfo.h">
+    <entry file="file://$PROJECT_DIR$/source/include/Managers/DebugInfoManager.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="340">
-          <caret line="355" column="91" selection-start-line="355" selection-start-column="91" selection-end-line="355" selection-end-column="91" />
+        <state relative-caret-position="425">
+          <caret line="100" column="4" selection-start-line="100" selection-start-column="4" selection-end-line="100" selection-end-column="133" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/source/include/MarketData/TradeInfo.h">
+    <entry file="file://$PROJECT_DIR$/source/src/Managers/DebugInfoManager.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="214">
-          <caret line="125" column="15" selection-start-line="125" selection-start-column="15" selection-end-line="125" selection-end-column="15" />
+        <state relative-caret-position="281">
+          <caret line="58" column="18" selection-start-line="58" selection-start-column="18" selection-end-line="58" selection-end-column="18" />
+          <folding>
+            <element signature="e#38#67#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/include/FeedConnection.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="144">
+          <caret line="837" column="10" selection-start-line="837" selection-start-column="10" selection-end-line="837" selection-end-column="10" />
+          <folding>
+            <element signature="e#1425#1483#0" expanded="true" />
+            <element signature="e#9137#11421#0" expanded="false" />
+            <element signature="e#99049#99143#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/include/MarketData/MarketDataTable.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="134">
+          <caret line="133" column="15" selection-start-line="133" selection-start-column="15" selection-end-line="133" selection-end-column="15" />
           <folding />
         </state>
       </provider>

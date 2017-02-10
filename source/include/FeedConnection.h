@@ -268,7 +268,7 @@ protected:
             return true;
 
         this->m_recvABuffer->SetCurrentItemSize(size);
-        printf("%s -> %d size = %d\n", this->m_idName, msgSeqNum, size);
+        //printf("%s -> %d size = %d\n", this->m_idName, msgSeqNum, size);
 //        BinaryLogItem *item = DefaultLogManager::Default->WriteFast(this->m_idLogIndex,
 //                                                                    LogMessageCode::lmcFeedConnection_ProcessMessage,
 //                                                                    this->m_recvABuffer->BufferIndex(),
@@ -279,6 +279,7 @@ protected:
                 this->m_endMsgSeqNum = msgSeqNum;
         }
         else if(this->m_type == FeedConnectionType::InstrumentDefinition) {
+            printf("%s -> %d size = %d\n", this->m_idName, msgSeqNum, size);
             if(this->m_idfStartMsgSeqNo == 0)
                 this->m_idfStartMsgSeqNo = msgSeqNum;
             if(this->m_idfMaxMsgSeqNo == 0)
@@ -291,6 +292,7 @@ protected:
                 this->m_startMsgSeqNum = msgSeqNum;
         }
         else {
+            printf("%s -> %d size = %d\n", this->m_idName, msgSeqNum, size);
             this->m_waitTimer->Start();
             if(this->m_startMsgSeqNum == -1)
                 this->m_startMsgSeqNum = msgSeqNum;
@@ -833,6 +835,7 @@ protected:
 
     FastSnapshotInfo *m_lastSnapshotInfo;
     inline bool FindRouteFirst() {
+        //printf("start seeking route first %d %d\n", this->m_startMsgSeqNum, this->m_endMsgSeqNum);
         for(int i = this->m_startMsgSeqNum; i <= this->m_endMsgSeqNum; i++) {
             if (this->m_packets[i]->m_address == 0) {
                 this->m_startMsgSeqNum = i;
@@ -851,6 +854,7 @@ protected:
     }
 
     inline bool FindLastFragment() {
+        //printf("start seeking last fragment %d %d\n", this->m_startMsgSeqNum, this->m_endMsgSeqNum);
         if(this->m_lastSnapshotInfo != 0 && this->m_lastSnapshotInfo->LastFragment) {
             this->m_snapshotLastFragment = this->m_startMsgSeqNum;
             this->m_startMsgSeqNum++;
