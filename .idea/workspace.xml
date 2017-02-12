@@ -21,26 +21,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32604c03-98a8-42cf-80f6-771ec2ce84cc" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/hft_robot.iml" afterPath="$PROJECT_DIR$/.idea/hft_robot.iml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/Fast/FastProtocolManager.h" afterPath="$PROJECT_DIR$/source/include/Fast/FastProtocolManager.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/Fast/FastTypes.h" afterPath="$PROJECT_DIR$/source/include/Fast/FastTypes.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/FeedConnection.h" afterPath="$PROJECT_DIR$/source/include/FeedConnection.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/FeedConnections.h" afterPath="$PROJECT_DIR$/source/include/FeedConnections.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/Lib/AutoAllocatePointerList.h" afterPath="$PROJECT_DIR$/source/include/Lib/AutoAllocatePointerList.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/Managers/DebugInfoManager.h" afterPath="$PROJECT_DIR$/source/include/Managers/DebugInfoManager.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/Managers/WinSockManager.h" afterPath="$PROJECT_DIR$/source/include/Managers/WinSockManager.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/MarketData/MarketDataTable.h" afterPath="$PROJECT_DIR$/source/include/MarketData/MarketDataTable.h" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/MarketData/OrderInfo.h" afterPath="$PROJECT_DIR$/source/include/MarketData/OrderInfo.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/MarketData/StatisticInfo.h" afterPath="$PROJECT_DIR$/source/include/MarketData/StatisticInfo.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/MarketData/TradeInfo.h" afterPath="$PROJECT_DIR$/source/include/MarketData/TradeInfo.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/Test/TestMessagesHelper.h" afterPath="$PROJECT_DIR$/source/include/Test/TestMessagesHelper.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/src/Fast/FastProtocolManager.cpp" afterPath="$PROJECT_DIR$/source/src/Fast/FastProtocolManager.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/src/FeedChannel.cpp" afterPath="$PROJECT_DIR$/source/src/FeedChannel.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/src/Managers/DebugInfoManager.cpp" afterPath="$PROJECT_DIR$/source/src/Managers/DebugInfoManager.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/src/Managers/WinSockManager.cpp" afterPath="$PROJECT_DIR$/source/src/Managers/WinSockManager.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/src/Test/FastProtocolTester.cpp" afterPath="$PROJECT_DIR$/source/src/Test/FastProtocolTester.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/src/Types.cpp" afterPath="$PROJECT_DIR$/source/src/Types.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tools/Program.cs" afterPath="$PROJECT_DIR$/tools/Program.cs" />
     </list>
     <ignored path="hft_robot.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -60,16 +43,6 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="DebugInfoManager.cpp" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/source/src/Managers/DebugInfoManager.cpp">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="936">
-              <caret line="52" column="14" selection-start-line="52" selection-start-column="14" selection-end-line="52" selection-end-column="14" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="FastProtocolManager.h" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/source/include/Fast/FastProtocolManager.h">
           <provider selected="true" editor-type-id="text-editor">
@@ -134,7 +107,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="WinSockManager.cpp" pinned="false" current-in-tab="true">
+      <file leaf-file-name="WinSockManager.cpp" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/source/src/Managers/WinSockManager.cpp">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="216">
@@ -144,11 +117,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="OrderInfo.h" pinned="false" current-in-tab="false">
+      <file leaf-file-name="OrderInfo.h" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/source/include/MarketData/OrderInfo.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="5148">
-              <caret line="286" column="0" selection-start-line="286" selection-start-column="0" selection-end-line="286" selection-end-column="0" />
+            <state relative-caret-position="4444">
+              <caret line="420" column="0" selection-start-line="420" selection-start-column="0" selection-end-line="420" selection-end-column="0" />
               <folding>
                 <element signature="e#100#136#0" expanded="true" />
               </folding>
@@ -174,7 +147,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/source/src/Fast/FastProtocolManager.cpp" />
         <option value="$PROJECT_DIR$/source/include/Fix/FixProtocolManager.h" />
         <option value="$PROJECT_DIR$/source/include/Test/HistoricalReplayTester.h" />
         <option value="$PROJECT_DIR$/source/include/FeedTypes.h" />
@@ -217,7 +189,6 @@
         <option value="$PROJECT_DIR$/source/include/Fast/FastTypes.h" />
         <option value="$PROJECT_DIR$/source/include/Lib/AutoAllocatePointerList.h" />
         <option value="$PROJECT_DIR$/source/include/Fast/FastProtocolManager.h" />
-        <option value="$PROJECT_DIR$/source/include/MarketData/OrderInfo.h" />
         <option value="$PROJECT_DIR$/source/include/Managers/DebugInfoManager.h" />
         <option value="$PROJECT_DIR$/source/src/Managers/DebugInfoManager.cpp" />
         <option value="$PROJECT_DIR$/source/include/FeedConnections.h" />
@@ -225,6 +196,8 @@
         <option value="$PROJECT_DIR$/source/include/FeedConnection.h" />
         <option value="$PROJECT_DIR$/source/include/Managers/WinSockManager.h" />
         <option value="$PROJECT_DIR$/source/src/Managers/WinSockManager.cpp" />
+        <option value="$PROJECT_DIR$/source/src/MarketData/OrderInfo.cpp.cpp" />
+        <option value="$PROJECT_DIR$/source/include/MarketData/OrderInfo.h" />
       </list>
     </option>
   </component>
@@ -321,6 +294,28 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="Test" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="hft" />
+              <option name="myItemType" value="com.jetbrains.cidr.projectView.CidrFilesViewHelper$MyProjectTreeStructure$1" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="hft" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="source" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="MarketData" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -859,14 +854,7 @@
       <workItem from="1486619366197" duration="20580000" />
       <workItem from="1486744267748" duration="2299000" />
       <workItem from="1486754175234" duration="42746000" />
-      <workItem from="1486902642925" duration="2828000" />
-    </task>
-    <task id="LOCAL-00123" summary="1. Continue working on SecurityDefinitionInfo&#10;2. All incremental tests passed&#10;3. Wrote some tests on IDF&#10;4. Optimized IDF &#10;">
-      <created>1482871899172</created>
-      <option name="number" value="00123" />
-      <option name="presentableId" value="LOCAL-00123" />
-      <option name="project" value="LOCAL" />
-      <updated>1482871899173</updated>
+      <workItem from="1486902642925" duration="3812000" />
     </task>
     <task id="LOCAL-00124" summary="1. Continue working on SecurityDefinitionInfo&#10;2. All incremental tests passed&#10;3. Wrote some tests on IDF&#10;4. Optimized IDF &#10;">
       <created>1482871965729</created>
@@ -1204,11 +1192,18 @@
       <option name="project" value="LOCAL" />
       <updated>1486760468080</updated>
     </task>
-    <option name="localTasksCounter" value="172" />
+    <task id="LOCAL-00172" summary="1. Continue working on snapshot closer and closer... :)&#10;2. Fix some deep crazy bugs. Dont understand why snapshot disconnects...">
+      <created>1486920432413</created>
+      <option name="number" value="00172" />
+      <option name="presentableId" value="LOCAL-00172" />
+      <option name="project" value="LOCAL" />
+      <updated>1486920432416</updated>
+    </task>
+    <option name="localTasksCounter" value="173" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="1471421000" />
+    <option name="totallyTimeSpent" value="1472405000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -1223,9 +1218,9 @@
     <frame x="65" y="24" width="1551" height="961" extended-state="6" />
     <editor active="false" />
     <layout>
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.27290577" sideWeight="0.493007" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.30235603" sideWeight="0.493007" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32908458" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.40903825" sideWeight="0.3907068" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.36732328" sideWeight="0.3907068" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="CMake" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3383546" sideWeight="0.4384817" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3511008" sideWeight="0.4365183" order="8" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4912075" sideWeight="0.61189955" order="9" side_tool="false" content_ui="tabs" />
@@ -1233,7 +1228,7 @@
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.289267" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3282532" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.235262" sideWeight="0.506993" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.40903825" sideWeight="0.5634817" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3174971" sideWeight="0.5634817" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -1294,7 +1289,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
-    <MESSAGE value="1. Continue working on SecurityDefinitionInfo&#10; 2. Broke Idf Tests&#10;" />
     <MESSAGE value="1. Continue working on SecurityDefinitionInfo&#10; 2. All tests except TestInstrumentDefinitionCollectDataCompleted_1 are passed...&#10;" />
     <MESSAGE value="1. Continue working on SecurityDefinitionInfo&#10;2. Almost done work in CollectDataMode. Now SecurityDefinition waits for first message after start, then process message cycle. After that it stops and generates all symols...&#10;3. Don't know what about tests... Pass them tomorrow" />
     <MESSAGE value="1. Starting work on historical replay" />
@@ -1319,7 +1313,8 @@
     <MESSAGE value="1. Continue working on statistics incremental" />
     <MESSAGE value="1. Continue working on snapshot" />
     <MESSAGE value="1. Continue working on snapshot closer and closer... :)" />
-    <option name="LAST_COMMIT_MESSAGE" value="1. Continue working on snapshot closer and closer... :)" />
+    <MESSAGE value="1. Continue working on snapshot closer and closer... :)&#10;2. Fix some deep crazy bugs. Dont understand why snapshot disconnects..." />
+    <option name="LAST_COMMIT_MESSAGE" value="1. Continue working on snapshot closer and closer... :)&#10;2. Fix some deep crazy bugs. Dont understand why snapshot disconnects..." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1338,7 +1333,7 @@
       <breakpoints-dialog>
         <breakpoints-dialog />
       </breakpoints-dialog>
-      <option name="time" value="1589" />
+      <option name="time" value="1590" />
     </breakpoint-manager>
     <watches-manager>
       <configuration name="CMakeRunConfiguration">
@@ -1352,13 +1347,6 @@
     </watches-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/source/src/Test/TestMessagesHelper.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="144">
-          <caret line="8" column="9" selection-start-line="8" selection-start-column="9" selection-end-line="8" selection-end-column="9" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/source/include/Converters/UTCTimeConverter.h">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="176">
@@ -1436,6 +1424,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="108">
           <caret line="6" column="21" selection-start-line="6" selection-start-column="21" selection-end-line="6" selection-end-column="21" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1443,6 +1432,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="108">
           <caret line="6" column="21" selection-start-line="6" selection-start-column="21" selection-end-line="6" selection-end-column="21" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1495,6 +1485,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2466">
           <caret line="137" column="48" selection-start-line="137" selection-start-column="48" selection-end-line="137" selection-end-column="48" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1502,6 +1493,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="234">
           <caret line="35" column="60" selection-start-line="35" selection-start-column="60" selection-end-line="35" selection-end-column="60" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1524,6 +1516,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="347">
           <caret line="167" column="39" selection-start-line="167" selection-start-column="39" selection-end-line="167" selection-end-column="39" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1538,6 +1531,18 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="224">
           <caret line="559" column="37" selection-start-line="559" selection-start-column="37" selection-end-line="559" selection-end-column="37" />
+          <folding>
+            <element signature="e#108#144#0" expanded="false" />
+            <marker date="1486806907731" expanded="true" signature="309:763" ph="{...}" />
+            <marker date="1486806907731" expanded="true" signature="794:1476" ph="{...}" />
+            <marker date="1486806907731" expanded="true" signature="1510:3202" ph="{...}" />
+            <marker date="1486806907731" expanded="true" signature="3240:3860" ph="{...}" />
+            <marker date="1486806907731" expanded="true" signature="3909:4836" ph="{...}" />
+            <marker date="1486806907731" expanded="true" signature="4873:5822" ph="{...}" />
+            <marker date="1486806907731" expanded="true" signature="5859:6465" ph="{...}" />
+            <marker date="1486806907731" expanded="true" signature="6665:8672" ph="{...}" />
+            <marker date="1486806907731" expanded="true" signature="8859:80562" ph="{...}" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -1545,6 +1550,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="140">
           <caret line="59" column="0" selection-start-line="59" selection-start-column="0" selection-end-line="59" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1560,6 +1566,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="93">
           <caret line="71" column="0" selection-start-line="71" selection-start-column="0" selection-end-line="71" selection-end-column="0" />
+          <folding>
+            <element signature="e#110#148#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -1779,6 +1788,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="162">
           <caret line="34" column="18" selection-start-line="34" selection-start-column="18" selection-end-line="34" selection-end-column="18" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1819,16 +1829,6 @@
         <state relative-caret-position="2826">
           <caret line="157" column="36" selection-start-line="157" selection-start-column="36" selection-end-line="157" selection-end-column="36" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/source/include/MarketData/OrderInfo.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="5148">
-          <caret line="286" column="0" selection-start-line="286" selection-start-column="0" selection-end-line="286" selection-end-column="0" />
-          <folding>
-            <element signature="e#100#136#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1889,6 +1889,24 @@
         <state relative-caret-position="216">
           <caret line="14" column="0" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/src/MarketData/OrderInfo.cpp.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="108">
+          <caret line="6" column="0" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/include/MarketData/OrderInfo.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="4444">
+          <caret line="420" column="0" selection-start-line="420" selection-start-column="0" selection-end-line="420" selection-end-column="0" />
+          <folding>
+            <element signature="e#100#136#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

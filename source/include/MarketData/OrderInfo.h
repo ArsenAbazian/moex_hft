@@ -15,6 +15,9 @@
 template <typename T> class MarketSymbolInfo;
 
 template <typename T> class OrderInfo {
+    //static PointerList<T>               *m_sellQuotePool = new PointerList<T>(RobotSettings::MarketDataMaxEntriesCount * 2000, true);
+    //static PointerList<T>               *m_buyQuotePool = new PointerList<T>(RobotSettings::MarketDataMaxEntriesCount * 2000, true);
+
     PointerList<T>                      *m_sellQuoteList;
     PointerList<T>                      *m_buyQuoteList;
 
