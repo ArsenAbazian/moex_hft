@@ -286,6 +286,7 @@ template <typename T> class StatisticsInfo {
     SizedArray          *m_tradingSession;
 
     UINT64               m_time;
+    int                  m_snapshotProcessedCount;
 public:
     StatisticsInfo() {
         this->m_entryInfo = new MDEntrQueue<T>();
@@ -293,6 +294,7 @@ public:
         this->m_shouldProcessSnapshot = false;
         this->m_rptSeq = 0;
         this->m_time = 0;
+        this->m_snapshotProcessedCount = 0;
         
         this->m_buyQuotes = new PointerListLite<StatisticItemDecimal2>(DefaultStatisticItemAllocator::Default->Decimals2());
         this->m_sellQuotes = new PointerListLite<StatisticItemDecimal2>(DefaultStatisticItemAllocator::Default->Decimals2());
@@ -373,6 +375,10 @@ public:
         delete this->m_auctionMagnitudeBigPackets;
         delete this->m_cumulativeCouponDebit;
     }
+
+    inline void ResetSnasphotProcessed() { this->m_snapshotProcessedCount = 0; }
+    inline void OnSnapshotProcessed() { this->m_snapshotProcessedCount++; }
+    inline int SnapshotProcessedCount() { return this->m_snapshotProcessedCount; }
 
     inline SizedArray* TradingSession() { return this->m_tradingSession; }
     inline SizedArray* Symbol() { return this->m_symbolInfo->Symbol(); }
@@ -551,57 +557,57 @@ public:
     // 0
     inline void AddBuyQuote(T *item) {
         this->AddPriceSize(this->m_buyQuotes, item);
-        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Add BuyQuote ", this->m_buyQuotes);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol(), this->m_tradingSession, "Add BuyQuote ", this->m_buyQuotes);
     }
     // 1
     inline void AddSellQuote(T *item) {
         this->AddPriceSize(this->m_sellQuotes, item);
-        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Add SellQuote ", this->m_sellQuotes);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol(), this->m_tradingSession, "Add SellQuote ", this->m_sellQuotes);
     }
     // 2
     inline void AddLastDealInfo(T *item) {
         this->AddLastDealInfo(this->m_lstDealInfo, item);
-        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Add SellQuote ", this->m_lstDealInfo);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol(), this->m_tradingSession, "Add SellQuote ", this->m_lstDealInfo);
     }
     // 3
     inline void AddIndicesList(T *item) {
         this->AddIndexList(this->m_indicesList, item);
-        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Add Indices List ", this->m_indicesList);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol(), this->m_tradingSession, "Add Indices List ", this->m_indicesList);
     }
     // 4
     inline void AddPriceOpenFirst(T *item) {
         this->AddPrice(this->m_priceOpenFirst, item);
-        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Add Open Price ", this->m_priceOpenFirst);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol(), this->m_tradingSession, "Add Open Price ", this->m_priceOpenFirst);
     }
     // 5
     inline void AddPriceCloseLast(T *item) {
         this->AddPrice(this->m_priceCloseLast, item);
-        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Add Close Price ", this->m_priceCloseLast);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol(), this->m_tradingSession, "Add Close Price ", this->m_priceCloseLast);
     }
     // 7
     inline void AddPriceMax(T *item) {
         this->AddPrice(this->m_priceMax, item);
-        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Add Price Max", this->m_priceMax);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol(), this->m_tradingSession, "Add Price Max", this->m_priceMax);
     }
     // 8
     inline void AddPriceMin(T *item) {
         this->AddPrice(this->m_priceMin, item);
-        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Add Price Min", this->m_priceMin);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol(), this->m_tradingSession, "Add Price Min", this->m_priceMin);
     }
     // 9
     inline void AddPriceAve(T *item) {
         this->AddPrice(this->m_priceAve, item);
-        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Add Price Ave", this->m_priceAve);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol(), this->m_tradingSession, "Add Price Ave", this->m_priceAve);
     }
     // A
     inline void AddDisbalance(T *item) {
         this->AddPrice(this->m_disbalance, item);
-        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Add Disbalance", this->m_disbalance);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol(), this->m_tradingSession, "Add Disbalance", this->m_disbalance);
     }
     // B
     inline void AddTransactionsMagnitude(T *item) {
         this->AddTransactionMagnitude(this->m_transactionMagnitude, item);
-        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Add Transactions Magnitude", this->m_transactionMagnitude);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol(), this->m_tradingSession, "Add Transactions Magnitude", this->m_transactionMagnitude);
     }
     // J
     inline void AddEmptyBook(T *item) {
@@ -610,34 +616,36 @@ public:
     // N
     inline void AddBidPriceMax(T *item) {
         this->AddPrice(this->m_bidPriceMax, item);
-        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Add Bid Max", this->m_bidPriceMax);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol(), this->m_tradingSession, "Add Bid Max", this->m_bidPriceMax);
     }
     // O
     inline void AddOfferPriceMin(T *item) {
         this->AddPrice(this->m_offerPriceMin, item);
-        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Add Offer Min", this->m_offerPriceMin);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol(), this->m_tradingSession, "Add Offer Min", this->m_offerPriceMin);
     }
     // Q
     inline void AddAuctionPriceCalculated(T *item) {
         this->AddPrice(this->m_auctionPriceCalculated, item);
-        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Add Auction Price Calc", this->m_auctionPriceCalculated);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol(), this->m_tradingSession, "Add Auction Price Calc", this->m_auctionPriceCalculated);
     }
     // W
     inline void AddAuctionPriceClose(T *item) {
         this->AddPrice(this->m_auctionPriceClose, item);
-        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Add Auction Price Close", this->m_auctionPriceClose);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol(), this->m_tradingSession, "Add Auction Price Close", this->m_auctionPriceClose);
     }
     // c
     inline void AddAuctionMagnitudeClose(T *item) {
         this->AddPrice(this->m_auctionMagnitudeClose, item);
-        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Add Auction Magnitude Close", this->m_auctionMagnitudeClose);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol(), this->m_tradingSession, "Add Auction Magnitude Close", this->m_auctionMagnitudeClose);
     }
     // e
-    inline void AddMSSFullCoveredDealFlag(T *item) { printf("WARNING: AddMSSFullCoveredDealFlag\n"); }
+    inline void AddMSSFullCoveredDealFlag(T *item) {
+        //printf("WARNING: AddMSSFullCoveredDealFlag\n");
+    }
     // f
     inline void AddMSSTradeBidAuctionMagnitudeOpenClose(T *item) {
         this->AddPrice(this->m_openCloseAuctionTradeBidMagnitude, item);
-        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Add Auction Open/Close Bid Magnitude", this->m_openCloseAuctionTradeBidMagnitude);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol(), this->m_tradingSession, "Add Auction Open/Close Bid Magnitude", this->m_openCloseAuctionTradeBidMagnitude);
     }
     inline void AddOLSTradeBidAuctionOpenClose(T *item) {
         this->AddPrice(this->m_openCloseAuctionTradeBid, item);
@@ -645,7 +653,7 @@ public:
     // g
     inline void AddMSSTradeOfferAuctionMagnitudeOpenClose(T *item) {
         this->AddPrice(this->m_openCloseAuctionTradeOfferMagnitude, item);
-        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Add Auction Open/Close Offer Magnitude", this->m_openCloseAuctionTradeOfferMagnitude);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol(), this->m_tradingSession, "Add Auction Open/Close Offer Magnitude", this->m_openCloseAuctionTradeOfferMagnitude);
     }
     inline void AddOLSTradeOfferAuctionOpenClose(T *item) {
         this->AddPrice(this->m_openCloseAuctionTradeOffer, item);
@@ -653,82 +661,82 @@ public:
     // i
     inline void AddSessionBid(T *item) {
         this->AddPrice(this->m_sessionBid, item);
-        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Add Session Bid", this->m_sessionBid);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol(), this->m_tradingSession, "Add Session Bid", this->m_sessionBid);
     }
     // j
     inline void AddSessionOffer(T *item) {
         this->AddPrice(this->m_sessionOffer, item);
-        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Add Session Offer", this->m_sessionOffer);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol(), this->m_tradingSession, "Add Session Offer", this->m_sessionOffer);
     }
     // h
     inline void AddPreTradePeriodPrice(T *item) {
         this->AddPrice(this->m_preTradePeriodPrice, item);
-        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Add PreTrade Prace", this->m_preTradePeriodPrice);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol(), this->m_tradingSession, "Add PreTrade Prace", this->m_preTradePeriodPrice);
     }
     // k
     inline void AddPostTradePeriodPrice(T *item) {
         this->AddPrice(this->m_postTradePeriodPrice, item);
-        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Add PostTrade Price", this->m_postTradePeriodPrice);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol(), this->m_tradingSession, "Add PostTrade Price", this->m_postTradePeriodPrice);
     }
     // l
     inline void AddTradePrice2(T *item) {
         this->AddPrice(this->m_tradePrice2, item);
-        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Add Trade2 Price Calc", this->m_tradePrice2);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol(), this->m_tradingSession, "Add Trade2 Price Calc", this->m_tradePrice2);
     }
     // m
     inline void AddTradePrice(T *item) {
         this->AddPrice(this->m_tradePrice, item);
-        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Add Trade Price Calc", this->m_tradePrice);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol(), this->m_tradingSession, "Add Trade Price Calc", this->m_tradePrice);
     }
     // o
     inline void AddPriceOpenOfficial(T *item) {
         this->AddPrice(this->m_priceOpenOfficial, item);
-        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Add Official Open Price", this->m_priceOpenOfficial);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol(), this->m_tradingSession, "Add Official Open Price", this->m_priceOpenOfficial);
     }
     // p
     inline void AddPriceCurrentOfficial(T *item) {
         this->AddPrice(this->m_priceCurrentOfficial, item);
-        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Add Officeal Current Calc", this->m_priceCurrentOfficial);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol(), this->m_tradingSession, "Add Officeal Current Calc", this->m_priceCurrentOfficial);
     }
     // q
     inline void AddLegitimQuote(T *item) {
         this->AddPrice(this->m_legitimQuote, item);
-        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Add Legitim Quote", this->m_legitimQuote);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol(), this->m_tradingSession, "Add Legitim Quote", this->m_legitimQuote);
     }
     // r
     inline void AddPriceCloseOfficial(T *item) {
         this->AddPrice(this->m_priceCloseOfficial, item);
-        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Add Official Close Price", this->m_priceCloseOfficial);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol(), this->m_tradingSession, "Add Official Close Price", this->m_priceCloseOfficial);
     }
     // v
     inline void AddBidTotal(T *item) {
         this->AddTotalBid(this->m_bidTotal, item);
-        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Add Total Bid", this->m_bidTotal);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol(), this->m_tradingSession, "Add Total Bid", this->m_bidTotal);
     }
     // w
     inline void AddOfferTotal(T *item) {
         this->AddTotalOffer(this->m_offerTotal, item);
-        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Add Total Offer", this->m_offerTotal);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol(), this->m_tradingSession, "Add Total Offer", this->m_offerTotal);
     }
     // s
     inline void AddAuctionPriceBigPackets(T *item) {
         this->AddPrice(this->m_auctionPriceBigPackets, item);
-        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Add Big Packets Auction Price", this->m_auctionMagnitudeBigPackets);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol(), this->m_tradingSession, "Add Big Packets Auction Price", this->m_auctionMagnitudeBigPackets);
     }
     // x
     inline void AddAuctionMagnitudeBigPackets(T *item) {
         this->AddPrice(this->m_auctionMagnitudeBigPackets, item);
-        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Add Big Packets Auction Magnitude", this->m_auctionMagnitudeBigPackets);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol(), this->m_tradingSession, "Add Big Packets Auction Magnitude", this->m_auctionMagnitudeBigPackets);
     }
     // y
     inline void AddCumulativeCouponDebit(T *item) {
         this->AddPrice(this->m_cumulativeCouponDebit, item);
-        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Add Cumulative Coupon Debit", this->m_cumulativeCouponDebit);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol(), this->m_tradingSession, "Add Cumulative Coupon Debit", this->m_cumulativeCouponDebit);
     }
     // u
     inline void AddDuration(T *item) {
         this->AddPrice(this->m_duration, item);
-        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Add Duration", this->m_duration);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol(), this->m_tradingSession, "Add Duration", this->m_duration);
     }
     // z
     inline void AddAllDeals(T *item) { throw; }
@@ -736,57 +744,57 @@ public:
     // 0
     inline void ChangeBuyQuote(T *item) {
         this->ChangePriceSize(this->m_buyQuotes, item);
-        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Change BuyQuote ", this->m_buyQuotes);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol(), this->m_tradingSession, "Change BuyQuote ", this->m_buyQuotes);
     }
     // 1
     inline void ChangeSellQuote(T *item) {
         this->ChangePriceSize(this->m_sellQuotes, item);
-        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Change SellQuote ", this->m_sellQuotes);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol(), this->m_tradingSession, "Change SellQuote ", this->m_sellQuotes);
     }
     // 2
     inline void ChangeLastDealInfo(T *item) {
         this->ChangeLastDealInfo(this->m_lstDealInfo, item);
-        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Change SellQuote ", this->m_lstDealInfo);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol(), this->m_tradingSession, "Change SellQuote ", this->m_lstDealInfo);
     }
     // 3
     inline void ChangeIndicesList(T *item) {
         this->ChangeIndexList(this->m_indicesList, item);
-        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Change Indices List ", this->m_indicesList);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol(), this->m_tradingSession, "Change Indices List ", this->m_indicesList);
     }
     // 4
     inline void ChangePriceOpenFirst(T *item) {
         this->ChangePrice(this->m_priceOpenFirst, item);
-        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Change Open Price ", this->m_priceOpenFirst);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol(), this->m_tradingSession, "Change Open Price ", this->m_priceOpenFirst);
     }
     // 5
     inline void ChangePriceCloseLast(T *item) {
         this->ChangePrice(this->m_priceCloseLast, item);
-        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Change Close Price ", this->m_priceCloseLast);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol(), this->m_tradingSession, "Change Close Price ", this->m_priceCloseLast);
     }
     // 7
     inline void ChangePriceMax(T *item) {
         this->ChangePrice(this->m_priceMax, item);
-        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Change Price Max", this->m_priceMax);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol(), this->m_tradingSession, "Change Price Max", this->m_priceMax);
     }
     // 8
     inline void ChangePriceMin(T *item) {
         this->ChangePrice(this->m_priceMin, item);
-        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Change Price Min", this->m_priceMin);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol(), this->m_tradingSession, "Change Price Min", this->m_priceMin);
     }
     // 9
     inline void ChangePriceAve(T *item) {
         this->ChangePrice(this->m_priceAve, item);
-        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Change Price Ave", this->m_priceAve);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol(), this->m_tradingSession, "Change Price Ave", this->m_priceAve);
     }
     // A
     inline void ChangeDisbalance(T *item) {
         this->ChangePrice(this->m_disbalance, item);
-        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Change Disbalance", this->m_disbalance);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol(), this->m_tradingSession, "Change Disbalance", this->m_disbalance);
     }
     // B
     inline void ChangeTransactionsMagnitude(T *item) {
         this->ChangeTransactionMagnitude(this->m_transactionMagnitude, item);
-        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Change Transactions Magnitude", this->m_transactionMagnitude);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol(), this->m_tradingSession, "Change Transactions Magnitude", this->m_transactionMagnitude);
     }
     // J
     inline void ChangeEmptyBook(T *item) {
@@ -795,34 +803,36 @@ public:
     // N
     inline void ChangeBidPriceMax(T *item) {
         this->ChangePrice(this->m_bidPriceMax, item);
-        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Change Bid Max", this->m_bidPriceMax);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol(), this->m_tradingSession, "Change Bid Max", this->m_bidPriceMax);
     }
     // O
     inline void ChangeOfferPriceMin(T *item) {
         this->ChangePrice(this->m_offerPriceMin, item);
-        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Change Offer Min", this->m_offerPriceMin);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol(), this->m_tradingSession, "Change Offer Min", this->m_offerPriceMin);
     }
     // Q
     inline void ChangeAuctionPriceCalculated(T *item) {
         this->ChangePrice(this->m_auctionPriceCalculated, item);
-        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Change Auction Price Calc", this->m_auctionPriceCalculated);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol(), this->m_tradingSession, "Change Auction Price Calc", this->m_auctionPriceCalculated);
     }
     // W
     inline void ChangeAuctionPriceClose(T *item) {
         this->ChangePrice(this->m_auctionPriceClose, item);
-        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Change Auction Price Close", this->m_auctionPriceClose);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol(), this->m_tradingSession, "Change Auction Price Close", this->m_auctionPriceClose);
     }
     // c
     inline void ChangeAuctionMagnitudeClose(T *item) {
         this->ChangePrice(this->m_auctionMagnitudeClose, item);
-        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Change Auction Magnitude Close", this->m_auctionMagnitudeClose);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol(), this->m_tradingSession, "Change Auction Magnitude Close", this->m_auctionMagnitudeClose);
     }
     // e
-    inline void ChangeMSSFullCoveredDealFlag(T *item) { printf("WARNING: ChangeMSSFullCoveredDealFlag\n"); }
+    inline void ChangeMSSFullCoveredDealFlag(T *item) {
+        //printf("WARNING: ChangeMSSFullCoveredDealFlag\n");
+    }
     // f
     inline void ChangeMSSTradeBidAuctionMagnitudeOpenClose(T *item) {
         this->ChangePrice(this->m_openCloseAuctionTradeBidMagnitude, item);
-        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Change Auction Open/Close Bid Magnitude", this->m_openCloseAuctionTradeBidMagnitude);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol(), this->m_tradingSession, "Change Auction Open/Close Bid Magnitude", this->m_openCloseAuctionTradeBidMagnitude);
     }
     inline void ChangeOLSTradeBidAuctionOpenClose(T *item) {
         this->ChangePrice(this->m_openCloseAuctionTradeBid, item);
@@ -830,7 +840,7 @@ public:
     // g
     inline void ChangeMSSTradeOfferAuctionMagnitudeOpenClose(T *item) {
         this->ChangePrice(this->m_openCloseAuctionTradeOfferMagnitude, item);
-        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Change Auction Open/Close Offer Magnitude", this->m_openCloseAuctionTradeOfferMagnitude);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol(), this->m_tradingSession, "Change Auction Open/Close Offer Magnitude", this->m_openCloseAuctionTradeOfferMagnitude);
     }
     inline void ChangeOLSTradeOfferAuctionOpenClose(T *item) {
         this->ChangePrice(this->m_openCloseAuctionTradeOffer, item);
@@ -838,82 +848,82 @@ public:
     // i
     inline void ChangeSessionBid(T *item) {
         this->ChangePrice(this->m_sessionBid, item);
-        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Change Session Bid", this->m_sessionBid);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol(), this->m_tradingSession, "Change Session Bid", this->m_sessionBid);
     }
     // j
     inline void ChangeSessionOffer(T *item) {
         this->ChangePrice(this->m_sessionOffer, item);
-        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Change Session Offer", this->m_sessionOffer);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol(), this->m_tradingSession, "Change Session Offer", this->m_sessionOffer);
     }
     // h
     inline void ChangePreTradePeriodPrice(T *item) {
         this->ChangePrice(this->m_preTradePeriodPrice, item);
-        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Change PreTrade Prace", this->m_preTradePeriodPrice);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol(), this->m_tradingSession, "Change PreTrade Prace", this->m_preTradePeriodPrice);
     }
     // k
     inline void ChangePostTradePeriodPrice(T *item) {
         this->ChangePrice(this->m_postTradePeriodPrice, item);
-        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Change PostTrade Price", this->m_postTradePeriodPrice);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol(), this->m_tradingSession, "Change PostTrade Price", this->m_postTradePeriodPrice);
     }
     // l
     inline void ChangeTradePrice2(T *item) {
         this->ChangePrice(this->m_tradePrice2, item);
-        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Change Trade2 Price Calc", this->m_tradePrice2);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol(), this->m_tradingSession, "Change Trade2 Price Calc", this->m_tradePrice2);
     }
     // m
     inline void ChangeTradePrice(T *item) {
         this->ChangePrice(this->m_tradePrice, item);
-        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Change Trade Price Calc", this->m_tradePrice);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol(), this->m_tradingSession, "Change Trade Price Calc", this->m_tradePrice);
     }
     // o
     inline void ChangePriceOpenOfficial(T *item) {
         this->ChangePrice(this->m_priceOpenOfficial, item);
-        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Change Official Open Price", this->m_priceOpenOfficial);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol(), this->m_tradingSession, "Change Official Open Price", this->m_priceOpenOfficial);
     }
     // p
     inline void ChangePriceCurrentOfficial(T *item) {
         this->ChangePrice(this->m_priceCurrentOfficial, item);
-        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Change Officeal Current Calc", this->m_priceCurrentOfficial);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol(), this->m_tradingSession, "Change Officeal Current Calc", this->m_priceCurrentOfficial);
     }
     // q
     inline void ChangeLegitimQuote(T *item) {
         this->ChangePrice(this->m_legitimQuote, item);
-        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Change Legitim Quote", this->m_legitimQuote);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol(), this->m_tradingSession, "Change Legitim Quote", this->m_legitimQuote);
     }
     // r
     inline void ChangePriceCloseOfficial(T *item) {
         this->ChangePrice(this->m_priceCloseOfficial, item);
-        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Change Official Close Price", this->m_priceCloseOfficial);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol(), this->m_tradingSession, "Change Official Close Price", this->m_priceCloseOfficial);
     }
     // v
     inline void ChangeBidTotal(T *item) {
         this->ChangeTotalBid(this->m_bidTotal, item);
-        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Change Total Bid", this->m_bidTotal);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol(), this->m_tradingSession, "Change Total Bid", this->m_bidTotal);
     }
     // w
     inline void ChangeOfferTotal(T *item) {
         this->ChangeTotalOffer(this->m_offerTotal, item);
-        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Change Total Offer", this->m_offerTotal);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol(), this->m_tradingSession, "Change Total Offer", this->m_offerTotal);
     }
     // s
     inline void ChangeAuctionPriceBigPackets(T *item) {
         this->ChangePrice(this->m_auctionPriceBigPackets, item);
-        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Change Big Packets Auction Price", this->m_auctionMagnitudeBigPackets);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol(), this->m_tradingSession, "Change Big Packets Auction Price", this->m_auctionMagnitudeBigPackets);
     }
     // x
     inline void ChangeAuctionMagnitudeBigPackets(T *item) {
         this->ChangePrice(this->m_auctionMagnitudeBigPackets, item);
-        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Change Big Packets Auction Magnitude", this->m_auctionMagnitudeBigPackets);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol(), this->m_tradingSession, "Change Big Packets Auction Magnitude", this->m_auctionMagnitudeBigPackets);
     }
     // y
     inline void ChangeCumulativeCouponDebit(T *item) {
         this->ChangePrice(this->m_cumulativeCouponDebit, item);
-        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Change Cumulative Coupon Debit", this->m_cumulativeCouponDebit);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol(), this->m_tradingSession, "Change Cumulative Coupon Debit", this->m_cumulativeCouponDebit);
     }
     // u
     inline void ChangeDuration(T *item) {
         this->ChangePrice(this->m_duration, item);
-        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol()->m_text, this->m_tradingSession->m_text, "Change Duration", this->m_duration);
+        DebugInfoManager::Default->Log(this->SymbolInfo()->Symbol(), this->m_tradingSession, "Change Duration", this->m_duration);
     }
 
     // z
@@ -1646,8 +1656,9 @@ public:
     }
 
     inline bool EnterSnapshotMode() {
+        this->ResetSnasphotProcessed();
         this->m_shouldProcessSnapshot = true;
-        this->m_entryInfo->ShouldProcess(true);
+        //this->m_entryInfo->ShouldProcess(true);
         return true;
     }
 

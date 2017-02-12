@@ -353,12 +353,12 @@ namespace prebuild {
 			if(presenceCheck) {
 				string bracket = nullCheck ? " {" : "";
 				string checkPresenceMethodName = HasOptionalPresence(field)? "CheckOptionalFieldPresence": "CheckMandatoryFieldPresence";
-				WriteLine(tabs + "if(" + checkPresenceMethodName + "(" + si.InCodeValueName + "->PresenceMap, " + si.InCodeValueName + "->" + PresenceIndexName(field) + "))" + bracket);
+				WriteLine(tabs + "if(" + checkPresenceMethodName + "(" + si.InCodeValueName + "->PresenceMap, PRESENCE_MAP_INDEX" + CalcFieldPresenceIndex(field) + "))" + bracket);
 
 				tabs += "\t";
 			}
 			if(nullCheck) {
-				WriteLine(tabs + "if(!" + si.InCodeValueName + "->" + AllowFlagName(field) + ")");
+				WriteLine(tabs + "if(!" + si.InCodeValueName + "->" + NullFlagName(field) + ")");
 				WriteNullValueCode(tabs + "\t", field);
 
 				if(field.Name == "sequence")
@@ -524,6 +524,12 @@ namespace prebuild {
 				} 
 			}
 
+			public string PrevValueName {
+				get {
+					return "m_prev" + NameCore + (IsSequence ? "Item" : "") + "Info"; 
+				}
+			}
+
 			public string CurrentItemValueName {
 				get {
 					return ValueName + "CurrentItem";
@@ -642,11 +648,18 @@ namespace prebuild {
 			foreach(StructureInfo str in Structures) {
 				WriteLine("\tAutoAllocatePointerList<" + str.Name + ">\t*" + str.ValueName + ";");
 			}
+			foreach(StructureInfo str in Structures) {
+				WriteLine("\t" + str.Name + "\t*" + str.PrevValueName + ";");
+			}
 
 			WriteLine("");
 			WriteLine("\tvoid InitializeMessageInfo() {");
 			foreach(StructureInfo str in structures) {
 				WriteLine("\t\tthis->" + str.ValueName + " = new AutoAllocatePointerList<" + str.Name + ">(this->m_allocationInfo->" + str.ValueName + "Count, this->m_allocationInfo->" + str.ValueName + "AddCount);");
+			}
+			foreach(StructureInfo str in structures) {
+				WriteLine("\t\tthis->" + str.PrevValueName + " = this->" + str.GetFreeMethodName + "();");
+				WriteLine("\t\tthis->" + str.PrevValueName + "->Used = true;");
 			}
 			WriteLine("\t}");
 
@@ -912,7 +925,7 @@ namespace prebuild {
 			InitializeSnapshotInfoFields(templatesNode);
 			foreach(SnapshotFieldInfo info in SnapshotInfoFields) {
 				WriteLine("\t" + info.FieldType + "\t\t\t\t" + info.FieldName + ";");
-				WriteLine("\tbool\t\t\t\tAllow" + info.FieldName + ";");
+				WriteLine("\tbool\t\t\t\tIsNull" + info.FieldName + ";");
 			}
 			WriteLine("}FastSnapshotInfo;");
 
@@ -931,8 +944,8 @@ namespace prebuild {
 			WriteLine("\tFastObjectsAllocationInfo() {");
 			WriteLine("");
 			foreach(StructureInfo info in Structures) {
-				WriteLine("\tthis->" + info.ValueName + "Count = 0;");
-				WriteLine("\tthis->" + info.ValueName + "AddCount = 0;");
+				WriteLine("\tthis->" + info.ValueName + "Count = 3;");
+				WriteLine("\tthis->" + info.ValueName + "AddCount = 3;");
 			}
 			WriteLine("\t}");
 			WriteLine("\tFastObjectsAllocationInfo(int count, int addCount) {");
@@ -1151,7 +1164,6 @@ namespace prebuild {
 
 		private  void WriteStructureFieldsDefinitionCode (StructureInfo info, string parentName) {
 			WritePresenceMapDefinition();
-			WriteCopyCountDefinition();
 			WritePointerCode(info);
 			foreach(XmlNode field in info.Fields) {
 				if(field.Name == "string")
@@ -1180,6 +1192,8 @@ namespace prebuild {
 			WriteLine("");
 			WriteLine("\t" + info.Name + "(){");
 			WriteLine("\t\tthis->Used = false;");
+			WriteLine("\t\tthis->Pointer = 0;");
+			WriteLine("\t\tthis->Allocator = 0;");
 			WriteClearFieldsCode(info);
 			WriteLine("\t}");
 			WriteLine("\t~" + info.Name + "(){ }");
@@ -1188,10 +1202,9 @@ namespace prebuild {
 
 		private void WriteClearFieldsCode(StructureInfo info) {
 			WriteLine("\t\tthis->PresenceMap = 0;");
-			WriteLine("\t\tthis->CopyCount = 0;");
 			foreach(XmlNode field in info.Fields) {
 				if(ShouldWriteNullCheckCode(field))
-					WriteLine("\t\tthis->Allow" + Name(field) + " = false;");
+					WriteLine("\t\tthis->IsNull" + Name(field) + " = true;");
 
 				if(field.Name == "string")
 					WriteClearStringCode(field);
@@ -1238,11 +1251,11 @@ namespace prebuild {
 
 		private void WriteAllowFlagAndPresenceMapIndex(XmlNode field) {
 			if(ShouldWriteNullCheckCode(field)) {
-				WriteLine("\tbool" + StuctFieldsSpacing + AllowFlagName(field) + ";");
+				WriteLine("\tbool" + StuctFieldsSpacing + NullFlagName(field) + ";");
 			}
-			if(ShouldWriteCheckPresenceMapCode(field)) {
-				WriteLine("\tconst UINT64" + StuctFieldsSpacing + PresenceIndexName(field) + " = PRESENCE_MAP_INDEX" + CalcFieldPresenceIndex(field) + ";");
-			}			
+			//if(ShouldWriteCheckPresenceMapCode(field)) {
+			//	WriteLine("\tconst UINT64" + StuctFieldsSpacing + PresenceIndexName(field) + " = PRESENCE_MAP_INDEX" + CalcFieldPresenceIndex(field) + ";");
+			//}			
 		} 
 
 		private  void WritePresenceMapDefinition () {
@@ -1338,62 +1351,40 @@ namespace prebuild {
 			WriteLine("\tint" + StuctFieldsSpacing + Name(field) + "Count;" + GetCommentLine(field));
 			StructureInfo originalStruct = GetOriginalStruct(field);
 			if(originalStruct != null) {
-				WriteLine("\t" + originalStruct.Name + "* " + Name(field) + "[64];" + GetCommentLine(field));
+				WriteLine("\t" + originalStruct.Name + "* " + Name(field) + "[256];" + GetCommentLine(field));
 			}
 			else
-				WriteLine("\tFast" + parentName + ItemName(field) + "ItemInfo* " + Name(field) + "[64];" + GetCommentLine(field));
+				WriteLine("\tFast" + parentName + ItemName(field) + "ItemInfo* " + Name(field) + "[256];" + GetCommentLine(field));
 		}
 
 		private  void WriteByteVectorField (XmlNode field) {
 			WriteLine("\tBYTE*" + StuctFieldsSpacing + Name(field) + ";" + GetCommentLine(field));
 			WriteLine("\tint" + StuctFieldsSpacing + Name(field) + "Length;");
-
-			if(HasCopyValueAttribute(field)) {
-				WriteLine("\tbool" + StuctFieldsSpacing + "Copy" + Name(field) + "; // copy flag");
-			}
 		}
 
 		private  void WriteDecimalField (XmlNode field) {
 			WriteLine("\tDecimal" + StuctFieldsSpacing + Name(field) + ";" + GetCommentLine(field));
-			if(HasCopyValueAttribute(field)) {
-				WriteLine("\tbool" + StuctFieldsSpacing + "Copy" + Name(field) + "; // copy flag");
-			}
 		}
 
 		private  void WriteInt64Field (XmlNode field) {
 			WriteLine("\tUINT64" + StuctFieldsSpacing + Name(field) + ";" + GetCommentLine(field));
-			if(HasCopyValueAttribute(field)) {
-				WriteLine("\tbool" + StuctFieldsSpacing + "Copy" + Name(field) + "; // copy flag");
-			}
 		}
 
 		private  void WriteUint64Field (XmlNode field) {
 			WriteLine("\tUINT64" + StuctFieldsSpacing + Name(field) + ";" + GetCommentLine(field));
-			if(HasCopyValueAttribute(field)) {
-				WriteLine("\tbool" + StuctFieldsSpacing + "Copy" + Name(field) + "; // copy flag");
-			}
 		}
 
 		private  void WriteInt32Field (XmlNode field) {
 			WriteLine("\tINT32" + StuctFieldsSpacing + Name(field) + ";" + GetCommentLine(field));
-			if(HasCopyValueAttribute(field)) {
-				WriteLine("\tbool" + StuctFieldsSpacing + "Copy" + Name(field) + "; // copy flag");
-			}
 		}
 
 		private  void WriteUint32Field (XmlNode field) {
 			WriteLine("\tUINT32" + StuctFieldsSpacing + Name(field) + ";" + GetCommentLine(field));
-			if(HasCopyValueAttribute(field)) {
-				WriteLine("\tbool" + StuctFieldsSpacing + "Copy" + Name(field) + "; // copy flag");
-			}
 		}
 
 		private  void WriteStringDefinition (XmlNode field) {
 			WriteLine("\tchar*" + StuctFieldsSpacing + Name(field) + ";" + GetCommentLine(field));
 			WriteLine("\tint" + StuctFieldsSpacing + Name(field) + "Length;");
-			if(HasCopyValueAttribute(field)) {
-				WriteLine("\tbool" + StuctFieldsSpacing + "Copy" + Name(field) + "; // copy flag");
-			}
 		}
 
 		string GetTemplateName (string templateName) {
@@ -1440,13 +1431,14 @@ namespace prebuild {
 
 		private  void ParseTemplateNode(XmlNode template, string templateName) {
 			WriteLine("\tvoid* Decode" + templateName + "() {");
-			StructureInfo info = new StructureInfo() { NameCore = templateName };
+			StructureInfo info = new StructureInfo() { Node = template, NameCore = templateName };
 			WriteLine("\t\tFast" + templateName + "Info* info = " + info.GetFreeMethodName + "();");
 			WriteCopyPresenceMap("\t\t", "info");
 			WriteLine("");
 			foreach(XmlNode value in template.ChildNodes) {
-				ParseValue(value, "info", templateName, "\t\t");
+				ParseValue(info, value, "info", templateName, "\t\t");
 			}
+			WriteLine("\t\tthis->" + info.PrevValueName + " = info;");
 			WriteLine("\t\treturn info;");
 			WriteLine("\t}");
 		}
@@ -1576,8 +1568,9 @@ namespace prebuild {
 			WriteCopyPresenceMap("\t\t", "info");
 			WriteLine("\t\tinfo->TemplateId = this->m_templateId;");
 			WriteLine("");
+			StructureInfo info = new StructureInfo() { Node = template, NameCore = templateName }; 
 			foreach(XmlNode value in template.ChildNodes) {
-				ParseValue(value, "info", templateName, "\t\t", true, SnapshotInfoFields, parsed);
+				ParseValue(info, value, "info", templateName, "\t\t", true, SnapshotInfoFields, parsed);
 				if(parsed.Count == SnapshotInfoFields.Count)
 					break;
 			}
@@ -1666,12 +1659,6 @@ namespace prebuild {
 		private  void WriteIncrementOpearatorCode (XmlNode value, string structName, string parentName, string tabString) {
 			WriteLine(tabString + "else {");
 			WriteLine(tabString + "\t" + structName + "->" + Name(value) + "++;");
-			WriteLine(tabString + "}");
-		}
-
-		private  void WriteCopyOperatorCode (XmlNode value, string structName, string parentName, string tabString) {
-			WriteLine(tabString + "else {");
-			//WriteLine(tabString + "\t" + structName + "->" + Name(value) + "++;");
 			WriteLine(tabString + "}");
 		}
 
@@ -1819,8 +1806,8 @@ namespace prebuild {
 		string PresenceIndexName(XmlNode node) {
 			return Name(node) + "PresenceIndex";
 		}
-		string AllowFlagName(XmlNode node) {
-			return "Allow" + Name(node);
+		string NullFlagName(XmlNode node) {
+			return "IsNull" + Name(node);
 		}
 
 		int LevelCount = 1;
@@ -1834,7 +1821,7 @@ namespace prebuild {
 			return builder.ToString().ToLower();
 		}
 
-		private  void ParseSequence (XmlNode value, string objectValueName, string parentClassCoreName, string tabString) {
+		private  void ParseSequence (StructureInfo str, XmlNode value, string objectValueName, string parentClassCoreName, string tabString) {
 			StructureInfo info = GetOriginalStruct(value);
 			if(info == null)
 				info = GetStruct(value);
@@ -1872,9 +1859,10 @@ namespace prebuild {
 				if(node.Name == "length")
 					continue;
 				LevelCount++;
-				ParseValue(node, itemInfo, parentClassCoreName + Name(value), tabString + "\t");
+				ParseValue(info, node, itemInfo, parentClassCoreName + Name(value), tabString + "\t");
 				LevelCount--;
 			}
+			WriteLine(tabString + "\tthis->" + info.PrevValueName + " = " + itemInfo + ";");
 			WriteLine(tabString + "}");
 			WriteLine("");
 		}
@@ -1886,9 +1874,9 @@ namespace prebuild {
 			return false;
 		}
 
-		private  void ParseByteVectorValue (XmlNode value, string info, string tabString) {
+		private  void ParseByteVectorValue (StructureInfo str, XmlNode value, string info, string tabString) {
 			if(ShouldWriteNullCheckCode(value)) {
-				WriteLine(tabString + "if((" + info + "->Allow" + Name(value) + " = !CheckProcessNullByteVector()))");
+				WriteLine(tabString + "if(!(" + info + "->IsNull" + Name(value) + " = CheckProcessNullByteVector()))");
 				tabString += "\t";
 			}
 			if(ShouldSkipField(value)) {
@@ -1902,18 +1890,20 @@ namespace prebuild {
 			}
 			if(ShouldWriteNullCheckCode(value)) {
 				tabString = tabString.Substring(1);
+				/*
 				if(HasOperators(value)) {
-					WriteLine(tabString + "else");
+					WriteLine(tabString + "else {");
 					tabString += "\t";
-					WriteByteVectorValueOperatorsCode(value, info, tabString);
+					WriteByteVectorValueOperatorsCode(str, value, info, tabString);
 					tabString = tabString.Substring(1);
-				}
+					WriteLine(tabString + "}");
+				}*/
 			}
 		}
 
-		private  void ParseDecimalValue (XmlNode value, string info, string tabString) {
+		private  void ParseDecimalValue (StructureInfo str, XmlNode value, string info, string tabString) {
 			if(ShouldWriteNullCheckCode(value)) {
-				WriteLine(tabString + "if((" + info + "->Allow" + Name(value) + " = !CheckProcessNullDecimal()))");
+				WriteLine(tabString + "if(!(" + info + "->IsNull" + Name(value) + " = CheckProcessNullDecimal()))");
 				tabString += "\t";
 			}
 			if(ExtendedDecimal(value))
@@ -1929,18 +1919,21 @@ namespace prebuild {
 			}
 			if(ShouldWriteNullCheckCode(value)) {
 				tabString = tabString.Substring(1);
+				/*
 				if(HasOperators(value)) {
-					WriteLine(tabString + "else");
+					WriteLine(tabString + "else {");
 					tabString += "\t";
-					WriteDecimalValueOperatorsCode(value, info, tabString);
+					WriteDecimalValueOperatorsCode(str, value, info, tabString);
 					tabString = tabString.Substring(1);
+					WriteLine(tabString + "}");
 				}
+				*/
 			}
 		}
 
-		private  void ParseInt64Value (XmlNode value, string info, string tabString) {
+		private  void ParseInt64Value (StructureInfo str, XmlNode value, string info, string tabString) {
 			if(ShouldWriteNullCheckCode(value)) {
-				WriteLine(tabString + "if((" + info + "->Allow" + Name(value) + " = !CheckProcessNullInt64()))");
+				WriteLine(tabString + "if(!(" + info + "->IsNull" + Name(value) + " = CheckProcessNullInt64()))");
 				tabString += "\t";
 			}
 			if(ShouldSkipField(value)) {
@@ -1953,18 +1946,20 @@ namespace prebuild {
 			}
 			if(ShouldWriteNullCheckCode(value)) {
 				tabString = tabString.Substring(1);
+				/*
 				if(HasOperators(value)) {
-					WriteLine(tabString + "else");
+					WriteLine(tabString + "else {");
 					tabString += "\t";
-					WriteInt64ValueOperatorsCode(value, info, tabString);
+					WriteInt64ValueOperatorsCode(str, value, info, tabString);
 					tabString = tabString.Substring(1);
-				}
+					WriteLine(tabString + "}");
+				}*/
 			}
 		}
 
-		private  void ParseUint64Value (XmlNode value, string info, string tabString) {
+		private  void ParseUint64Value (StructureInfo str, XmlNode value, string info, string tabString) {
 			if(ShouldWriteNullCheckCode(value)) {
-				WriteLine(tabString + "if((" + info + "->Allow" + Name(value) + " = !CheckProcessNullUInt64()))");
+				WriteLine(tabString + "if(!(" + info + "->IsNull" + Name(value) + " = CheckProcessNullUInt64()))");
 				tabString += "\t";
 			}
 			if(ShouldSkipField(value)) {
@@ -1977,18 +1972,20 @@ namespace prebuild {
 			}
 			if(ShouldWriteNullCheckCode(value)) {
 				tabString = tabString.Substring(1);
+				/*
 				if(HasOperators(value)) {
-					WriteLine(tabString + "else");
+					WriteLine(tabString + "else {");
 					tabString += "\t";
-					WriteUint64ValueOperatorsCode(value, info, tabString);
+					WriteUint64ValueOperatorsCode(str, value, info, tabString);
 					tabString = tabString.Substring(1);
-				}
+					WriteLine(tabString + "}");
+				}*/
 			}
 		}
 
-		private  void ParseInt32Value (XmlNode value, string info, string tabString) {
+		private  void ParseInt32Value (StructureInfo str, XmlNode value, string info, string tabString) {
 			if(ShouldWriteNullCheckCode(value)) {
-				WriteLine(tabString + "if((" + info + "->Allow" + Name(value) + " = !CheckProcessNullInt32()))");
+				WriteLine(tabString + "if(!(" + info + "->IsNull" + Name(value) + " = CheckProcessNullInt32()))");
 				tabString += "\t";
 			}
 			if(ShouldSkipField(value)) {
@@ -2001,18 +1998,20 @@ namespace prebuild {
 			}
 			if(ShouldWriteNullCheckCode(value)) {
 				tabString = tabString.Substring(1);
+				/*
 				if(HasOperators(value)) {
-					WriteLine(tabString + "else");
+					WriteLine(tabString + "else {");
 					tabString += "\t";
-					WriteInt32ValueOperatorsCode(value, info, tabString);
+					WriteInt32ValueOperatorsCode(str, value, info, tabString);
 					tabString = tabString.Substring(1);
-				}
+					WriteLine(tabString + "}");
+				}*/
 			}
 		}
 
-		private  void ParseUint32Value (XmlNode value, string info, string tabString) {
+		private  void ParseUint32Value (StructureInfo str, XmlNode value, string info, string tabString) {
 			if(ShouldWriteNullCheckCode(value)) {
-				WriteLine(tabString + "if((" + info + "->Allow" + Name(value) + " = !CheckProcessNullUInt32()))");
+				WriteLine(tabString + "if(!(" + info + "->IsNull" + Name(value) + " = CheckProcessNullUInt32()))");
 				tabString += "\t";
 			}
 			if(ShouldSkipField(value)) {
@@ -2025,18 +2024,20 @@ namespace prebuild {
 			}
 			if(ShouldWriteNullCheckCode(value)) {
 				tabString = tabString.Substring(1);
+				/*
 				if(HasOperators(value)) {
-					WriteLine(tabString + "else");
+					WriteLine(tabString + "else {");
 					tabString += "\t";
-					WriteUint32ValueOperatorsCode(value, info, tabString);
+					WriteUint32ValueOperatorsCode(str, value, info, tabString);
 					tabString = tabString.Substring(1);
-				}
+					WriteLine(tabString + "}");
+				}*/
 			}
 		}
 
-		private  void ParseStringValue (XmlNode value, string info, string tabString) {
+		private  void ParseStringValue (StructureInfo str, XmlNode value, string info, string tabString) {
 			if(ShouldWriteNullCheckCode(value)) {
-				WriteLine(tabString + "if((" + info + "->Allow" + Name(value) + " = !CheckProcessNullString()))");
+				WriteLine(tabString + "if(!(" + info + "->IsNull" + Name(value) + " = CheckProcessNullString()))");
 				tabString += "\t";
 			}
 			if(ShouldSkipField(value)) {
@@ -2049,13 +2050,15 @@ namespace prebuild {
 			}
 			if(ShouldWriteNullCheckCode(value)) {
 				tabString = tabString.Substring(1);
+				/*
 				if(HasOperators(value)) {
 					WriteLine(tabString + "else {");
 					tabString += "\t";
-					WriteStringValueOperatorsCode(value, info, tabString);
+					WriteStringValueOperatorsCode(str, value, info, tabString);
 					tabString = tabString.Substring(1);
 					WriteLine(tabString + "}");
 				}
+				*/
 			}
 		}
 
@@ -2085,45 +2088,41 @@ namespace prebuild {
 			WriteLine(tabString + structName + "->" + Name(value) + "Length = " + GetDefaultValue(value).Length + ";");
 		}
 
-		private  void WriteUint32ValueOperatorsCode (XmlNode value, string info, string tabString) {
+		private  void WriteUint32ValueOperatorsCode (StructureInfo str, XmlNode value, string info, string tabString) {
 			if(HasDefaultValueAttribute(value)) {
 				WriteUint32ValueDefault(value, info, tabString);
 			}
 			if(HasCopyValueAttribute(value)) {
-				WriteSetCopyFlagCode(value, info, tabString);
+				WriteSetCopyFlagCode(str, value, info, tabString);
 			}
 			if(HasIncrementValueAttribute(value)) {
 				WriteSimpleIncrementValueCode(value, info, tabString);
 			}
 		}
 
-		private  void WriteInt32ValueOperatorsCode (XmlNode value, string info, string tabString) {
+		private  void WriteInt32ValueOperatorsCode (StructureInfo str, XmlNode value, string info, string tabString) {
 			if(HasDefaultValueAttribute(value)) {
 				WriteInt32ValueDefault(value, info, tabString);
 			}
 			if(HasCopyValueAttribute(value)) {
-				WriteSetCopyFlagCode(value, info, tabString);
+				WriteSetCopyFlagCode(str, value, info, tabString);
 			}
 			if(HasIncrementValueAttribute(value)) {
 				WriteSimpleIncrementValueCode(value, info, tabString);
 			}
 		}
 
-		private void WriteSetCopyFlagCode(XmlNode value, string info, string tabString) {
-			WriteLine(tabString + info + "->Copy" + Name(value) + " = true;");
-			WriteLine(tabString + info + "->CopyCount++;");
+		private void WriteSetCopyFlagCode(StructureInfo str, XmlNode value, string info, string tabString) {
+			WriteLine(tabString + info + "->" + Name(value) + " = this->" + str.PrevValueName + "->" + Name(value) + ";");
+			//WriteLine(tabString + info + "->CopyCount++;");
 		}
 
-		private  void WriteSimplePrevValueAssignCode (XmlNode value, string info, string tabString) {
-			WriteLine(tabString + info + "->" + Name(value) + " = " + info + "->Prev" + Name(value) + ";");
-		}
-
-		private  void WriteDecimalValueOperatorsCode (XmlNode value, string info, string tabString) {
+		private  void WriteDecimalValueOperatorsCode (StructureInfo str, XmlNode value, string info, string tabString) {
 			if(HasDefaultValueAttribute(value)) {
 				WriteDecimalValueDefault(value, info, tabString);
 			}
 			if(HasCopyValueAttribute(value)) {
-				WriteSetCopyFlagCode(value, info, tabString);
+				WriteSetCopyFlagCode(str, value, info, tabString);
 			}
 			if(HasIncrementValueAttribute(value))
 				throw new Exception("TODO Increment decimal");
@@ -2133,18 +2132,18 @@ namespace prebuild {
 			WriteLine(tabString + "*((UNT64*)&(" + info + "->" + Name(value) + ")) = *((UINT64*)&(" + info + "->Prev" + Name(value) + "));");
 		}
 
-		private  void WriteByteVectorValueOperatorsCode (XmlNode value, string info, string tabString) {
+		private  void WriteByteVectorValueOperatorsCode (StructureInfo str, XmlNode value, string info, string tabString) {
 			if(HasCopyValueAttribute(value)) {
-				WriteSetCopyFlagCode(value, info, tabString);
+				WriteStringCopyValueCode(str, value, info, tabString);
 			}
 		}
 
-		private  void WriteInt64ValueOperatorsCode (XmlNode value, string info, string tabString) {
+		private  void WriteInt64ValueOperatorsCode (StructureInfo str, XmlNode value, string info, string tabString) {
 			if(HasDefaultValueAttribute(value)) {
 				WriteInt64ValueDefault(value, info, tabString);
 			}
 			if(HasCopyValueAttribute(value)) {
-				WriteSetCopyFlagCode(value, info, tabString);
+				WriteSetCopyFlagCode(str, value, info, tabString);
 			}
 			if(HasIncrementValueAttribute(value)) {
 				WriteSimpleIncrementValueCode(value, info, tabString);
@@ -2154,12 +2153,12 @@ namespace prebuild {
 			}
 		}
 
-		private  void WriteUint64ValueOperatorsCode (XmlNode value, string info, string tabString) {
+		private  void WriteUint64ValueOperatorsCode (StructureInfo str, XmlNode value, string info, string tabString) {
 			if(HasDefaultValueAttribute(value)) {
 				WriteUint64ValueDefault(value, info, tabString);
 			}
 			if(HasCopyValueAttribute(value)) {
-				WriteSetCopyFlagCode(value, info, tabString);
+				WriteSetCopyFlagCode(str, value, info, tabString);
 			}
 			if(HasIncrementValueAttribute(value)) {
 				WriteSimpleIncrementValueCode(value, info, tabString);
@@ -2170,17 +2169,17 @@ namespace prebuild {
 			WriteLine(tabString + info + "->" + Name(value) + "++;");
 		}
 
-		private  void WriteStringValueOperatorsCode (XmlNode value, string info, string tabString) {
+		private  void WriteStringValueOperatorsCode (StructureInfo str, XmlNode value, string info, string tabString) {
 			if(HasDefaultValueAttribute(value)) { 
 				WriteStringValueDefault(value, info, tabString);
 			} else if(HasCopyValueAttribute(value)) {
-				WriteSetCopyFlagCode(value, info, tabString);
+				WriteStringCopyValueCode(str, value, info, tabString);
 			}
 		}
 
-		private  void WriteStringCopyValueCode (XmlNode value, string info, string tabString) {
-			WriteLine(tabString + info + "->" + Name(value) + " = " + info + "->Prev" + Name(value) + ";");
-			WriteLine(tabString + info + "->" + Name(value) + "Length = " + info + "->Prev" + Name(value) + "Length;");
+		private  void WriteStringCopyValueCode (StructureInfo str, XmlNode value, string info, string tabString) {
+			WriteLine(tabString + info + "->" + Name(value) + " = this->" + str.PrevValueName + "->" + Name(value) + ";");
+			WriteLine(tabString + info + "->" + Name(value) + "Length = this->" + str.PrevValueName + "->" + Name(value) + "Length;");
 		}
 
 		private bool CanParseValue(XmlNode value) {
@@ -2191,8 +2190,8 @@ namespace prebuild {
 			return true;
 		}
 
-		private  void ParseValue (XmlNode value, string objectValueName, string classCoreName, string tabString) {
-			ParseValue(value, objectValueName, classCoreName, tabString, false, null, null);
+		private  void ParseValue (StructureInfo str, XmlNode value, string objectValueName, string classCoreName, string tabString) {
+			ParseValue(str, value, objectValueName, classCoreName, tabString, false, null, null);
 		}
 
 		private void WriteSkipCode(string tabStrings, string fieldName) {
@@ -2205,7 +2204,7 @@ namespace prebuild {
 			}
 			return false;
 		}
-		private  void ParseValue (XmlNode value, string objectValueName, string classCoreName, string tabString, bool skipNonAllowed, List<SnapshotFieldInfo> allowedFields, List<string> parsed) {
+		private  void ParseValue (StructureInfo str, XmlNode value, string objectValueName, string classCoreName, string tabString, bool skipNonAllowed, List<SnapshotFieldInfo> allowedFields, List<string> parsed) {
 			if(value.Name == "length")
 				return;
 
@@ -2222,25 +2221,25 @@ namespace prebuild {
 			}
 			if(ShouldWriteCheckPresenceMapCode(value)) {
 				string name = HasOptionalPresence(value)? "CheckOptionalFieldPresence": "CheckMandatoryFieldPresence";
-				WriteLine(tabString + "if(" + name + "(" + objectValueName + "->PresenceMap, " + objectValueName + "->" + Name(value) + "PresenceIndex)) {");
+				WriteLine(tabString + "if(" + name + "(" + objectValueName + "->PresenceMap, PRESENCE_MAP_INDEX" + CalcFieldPresenceIndex(value) + ")) {");
 				tabString += "\t";
 			}
 			if(value.Name == "string")
-				ParseStringValue(value, objectValueName, tabString);
+				ParseStringValue(str, value, objectValueName, tabString);
 			else if(value.Name == "uInt32")
-				ParseUint32Value(value, objectValueName, tabString);
+				ParseUint32Value(str, value, objectValueName, tabString);
 			else if(value.Name == "int32")
-				ParseInt32Value(value, objectValueName, tabString);
+				ParseInt32Value(str, value, objectValueName, tabString);
 			else if(value.Name == "uInt64")
-				ParseUint64Value(value, objectValueName, tabString);
+				ParseUint64Value(str, value, objectValueName, tabString);
 			else if(value.Name == "int64")
-				ParseInt64Value(value, objectValueName, tabString);
+				ParseInt64Value(str, value, objectValueName, tabString);
 			else if(value.Name == "decimal")
-				ParseDecimalValue(value, objectValueName, tabString);
+				ParseDecimalValue(str, value, objectValueName, tabString);
 			else if(value.Name == "byteVector")
-				ParseByteVectorValue(value, objectValueName, tabString);
+				ParseByteVectorValue(str, value, objectValueName, tabString);
 			else if(value.Name == "sequence")
-				ParseSequence(value, objectValueName, classCoreName, tabString);
+				ParseSequence(str, value, objectValueName, classCoreName, tabString);
 			else {
 				WriteLine(tabString + "TODO!!!!!!!!");
 				Console.WriteLine("ERROR: found undefined field " + value.Name);
@@ -2251,9 +2250,28 @@ namespace prebuild {
 			if(ShouldWriteCheckPresenceMapCode(value)) {
 				tabString = tabString.Substring(1);
 				WriteLine(tabString + "}");
-				WriteLine(tabString + "else");
-				WriteLine(tabString + "\t" + objectValueName + "-> Allow" + Name(value) + " = false;");
+				WriteLine(tabString + "else {");
+				WriteApplyOperatorsCode(str, value, objectValueName, tabString + "\t");
+				//WriteLine(tabString + "\t" + objectValueName + "-> Allow" + Name(value) + " = false;");
+				WriteLine(tabString + "}");
 			}
+		}
+
+		private void WriteApplyOperatorsCode(StructureInfo str, XmlNode value, string info, string tabString) {
+			if(value.Name == "string")
+				WriteStringValueOperatorsCode(str, value, info, tabString);
+			else if(value.Name == "uInt32")
+				WriteUint32ValueOperatorsCode(str, value, info, tabString);
+			else if(value.Name == "int32")
+				WriteInt32ValueOperatorsCode(str, value, info, tabString);
+			else if(value.Name == "uInt64")
+				WriteUint64ValueOperatorsCode(str, value, info, tabString);
+			else if(value.Name == "int64")
+				WriteInt64ValueOperatorsCode(str, value, info, tabString);
+			else if(value.Name == "decimal")
+				WriteDecimalValueOperatorsCode(str, value, info, tabString);
+			else if(value.Name == "byteVector")
+				WriteByteVectorValueOperatorsCode(str, value, info, tabString);
 		}
 
 		private  void PrintStringValue (XmlNode value, string info, string tabString, int tabsCount) {
@@ -2374,7 +2392,7 @@ namespace prebuild {
 			if(HasConstantAttribute(value))
 				return;
 			if(ShouldWriteNullCheckCode(value)) { 
-				WriteLine(tabString + "if(" + objectValueName + "->Allow" + Name(value) + ")");
+				WriteLine(tabString + "if(" + objectValueName + "->IsNull" + Name(value) + ")");
 				tabString += "\t";
 			}
 
@@ -2412,7 +2430,7 @@ namespace prebuild {
 				return;
 
 			if(ShouldWriteNullCheckCode(value)) {
-				WriteLine(tabString + "if(" + objectValueName + "->Allow" + Name(value) + ")");
+				WriteLine(tabString + "if(" + objectValueName + "->IsNull" + Name(value) + ")");
 				tabString += "\t";
 			}
 			if(value.Name == "string")
@@ -2438,27 +2456,6 @@ namespace prebuild {
 			}
 			if(ShouldWriteNullCheckCode(value))
 				tabString = tabString.Substring(1);
-		}
-
-		private  void WriteOperatorsCode (XmlNode value, string objectValueName, string classCoreName, string tabString) {
-			if(!HasOperators(value))
-				return;
-			WriteLine(tabString + "else {");
-			tabString += "\t";
-			if(value.Name == "string")
-				WriteStringValueOperatorsCode(value, objectValueName, tabString);
-			else if(value.Name == "uInt32")
-				WriteUint32ValueOperatorsCode(value, objectValueName, tabString);
-			else if(value.Name == "int32")
-				WriteInt32ValueOperatorsCode(value, objectValueName, tabString);
-			else if(value.Name == "uInt64")
-				WriteUint64ValueOperatorsCode(value, objectValueName, tabString);
-			else if(value.Name == "int64")
-				WriteInt64ValueOperatorsCode(value, objectValueName, tabString);
-			else if(value.Name == "decimal")
-				WriteDecimalValueOperatorsCode(value, objectValueName, tabString);
-			tabString = tabString.Substring(1);
-			WriteLine(tabString + "}");
 		}
 
 		private  bool HasOperators (XmlNode value) {

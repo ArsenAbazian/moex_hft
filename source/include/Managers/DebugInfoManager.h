@@ -8,6 +8,7 @@
 #include "../Fast/FastTypes.h"
 #include "../Fast/FastProtocolManager.h"
 #include "../Lib/PointerList.h"
+#include "../Lib/StringIdComparer.h"
 
 class StatisticItemDecimal;
 class StatisticItemDecimal2;
@@ -67,7 +68,8 @@ class DebugInfoManager {
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
-    char m_buffer[392];
+    char        m_buffer[392];
+    char        m_buffer2[392];
 public:
     static DebugInfoManager *Default;
 
@@ -92,13 +94,65 @@ public:
             manager->Print();
     }
 
-    void Log(const char *symbol, const char *trading, const char *string, PointerListLite<StatisticItemDecimal> *list);
-    void Log(const char *symbol, const char *trading, const char *string, PointerListLite<StatisticItemDecimal2> *list);
-    void Log(const char *symbol, const char *trading, const char *string, PointerListLite<StatisticItemLastDealInfo> *list);
-    void Log(const char *symbol, const char *trading, const char *string, PointerListLite<StatisticItemIndexList> *list);
-    void Log(const char *symbol, const char *trading, const char *string, PointerListLite<StatisticItemTotalBid> *list);
-    void Log(const char *symbol, const char *trading, const char *string, PointerListLite<StatisticItemTotalOffer> *list);
-    void Log(const char *symbol, const char *trading, const char *string, PointerListLite<StatisticItemTransactionsMagnitude> *list);
+    void Log(SizedArray *symbol, SizedArray *trading, const char *string, PointerListLite<StatisticItemDecimal> *list);
+    void Log(SizedArray *symbol, SizedArray *trading, const char *string, PointerListLite<StatisticItemDecimal2> *list);
+    void Log(SizedArray *symbol, SizedArray *trading, const char *string, PointerListLite<StatisticItemLastDealInfo> *list);
+    void Log(SizedArray *symbol, SizedArray *trading, const char *string, PointerListLite<StatisticItemIndexList> *list);
+    void Log(SizedArray *symbol, SizedArray *trading, const char *string, PointerListLite<StatisticItemTotalBid> *list);
+    void Log(SizedArray *symbol, SizedArray *trading, const char *string, PointerListLite<StatisticItemTotalOffer> *list);
+    void Log(SizedArray *symbol, SizedArray *trading, const char *string, PointerListLite<StatisticItemTransactionsMagnitude> *list);
+    void Log(SizedArray *symbol, SizedArray *trading, const char *string, char *entryId, int entryIdLength, Decimal *price, Decimal *size);
+    const char* BinaryToString(unsigned char *buffer, int size) {
+        for(int i = 0; i < size; i++) {
+            sprintf(this->m_buffer + i * 3, "%2.2x ", buffer[i]);
+        }
+        return this->m_buffer;
+    }
+    const char* GetString(SizedArray *array, int index) {
+        char *buf = this->m_buffer + index * 100;
+        memcpy(buf, array->m_text, array->m_length);
+        buf[array->m_length] = '\0';
+        return buf;
+    }
+    const char* GetString(char *text, int length, int index) {
+        char *buf = this->m_buffer + index * 100;
+        memcpy(buf, text, length);
+        buf[length] = '\0';
+        return buf;
+    }
+    int AsciToValue(char ascii) {
+        char asci_table[16] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
+
+        for(int i = 0; i < 16; i++) {
+            if(ascii == asci_table[i])
+                return i;
+        }
+        return 0;
+    }
+    int AsciiToByte(const char *ascii) {
+        return this->AsciToValue(ascii[0]) * 16 + this->AsciToValue(ascii[1]);
+    }
+
+    unsigned char* StringToBinary(const char *str, int *sizeOut) {
+        int len = strlen(str);
+        int bytesCount = 1;
+        for(int i = 1; i < len; i++) {
+            if(str[i] == 0x20 && str[i-1] != 0x20)
+                bytesCount++;
+        }
+
+        unsigned char *res = new unsigned char[bytesCount];
+        int byteIndex = 0;
+        for(int i = 0; i < len; ) {
+            if(str[i] != 0x20) {
+                res[byteIndex] = AsciiToByte(str + i);
+                byteIndex++;
+                i += 3;
+            }
+        }
+        *sizeOut = bytesCount;
+        return res;
+    }
 };
 
 #endif //HFT_ROBOT_DEBUGINFOMANAGER_H

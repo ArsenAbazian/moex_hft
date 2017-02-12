@@ -10,6 +10,7 @@
 #include "../Lib/PointerList.h"
 #include "MarketDataEntryQueue.h"
 #include "QuoteInfo.h"
+#include "../Managers/DebugInfoManager.h"
 
 template <typename T> class MarketSymbolInfo;
 
@@ -27,31 +28,33 @@ template <typename T> class OrderInfo {
     int                                 m_rptSeq;
     MarketSymbolInfo<OrderInfo<T>>      *m_symbolInfo;
     SizedArray                          *m_tradingSession;
+
+    int                                 m_snapshotProcessedCount;
 public:
     OrderInfo() {
         this->m_entryInfo = new MDEntrQueue<T>();
 
         this->m_sellQuoteList = new PointerList<T>(RobotSettings::MarketDataMaxEntriesCount);
         this->m_buyQuoteList = new PointerList<T>(RobotSettings::MarketDataMaxEntriesCount);
-        this->m_aggregatedBuyQuoteList = new PointerList<QuoteInfo>(RobotSettings::MarketDataMaxEntriesCount);
-        this->m_aggregatedSellQuoteList = new PointerList<QuoteInfo>(RobotSettings::MarketDataMaxEntriesCount);
-        this->m_aggregatedBuyQuoteList->AllocData();
-        this->m_aggregatedSellQuoteList->AllocData();
+        this->m_aggregatedBuyQuoteList = new PointerList<QuoteInfo>(RobotSettings::MarketDataMaxEntriesCount, true);
+        this->m_aggregatedSellQuoteList = new PointerList<QuoteInfo>(RobotSettings::MarketDataMaxEntriesCount, true);
 
         this->m_tradingSession = new SizedArray();
         this->m_shouldProcessSnapshot = false;
         this->m_rptSeq = 0;
+        this->m_snapshotProcessedCount = 0;
     }
     ~OrderInfo() {
         delete this->m_entryInfo;
         delete this->m_sellQuoteList;
         delete this->m_buyQuoteList;
-        this->m_aggregatedBuyQuoteList->FreeData();
-        this->m_aggregatedSellQuoteList->FreeData();
         delete this->m_aggregatedBuyQuoteList;
         delete this->m_aggregatedSellQuoteList;
     }
 
+    inline void ResetSnasphotProcessed() { this->m_snapshotProcessedCount = 0; }
+    inline void OnSnapshotProcessed() { this->m_snapshotProcessedCount++; }
+    inline int SnapshotProcessedCount() { return this->m_snapshotProcessedCount; }
     inline SizedArray* TradingSession() { return this->m_tradingSession; }
     inline SizedArray* Symbol() { return this->m_symbolInfo->Symbol(); }
     inline MarketSymbolInfo<OrderInfo<T>>* SymbolInfo() { return this->m_symbolInfo; }
@@ -99,9 +102,12 @@ public:
             if(StringIdComparer::Equal(info2->MDEntryID, info2->MDEntryIDLength, info->MDEntryID, info->MDEntryIDLength))
                 return node;
             if(node == list->End())
-                return 0;
+                break;
             node = node->Next();
         }
+        // such thing could happen because of some packet lost
+        // so please do not return null :)
+        return list->Add(info);
     }
 
 
@@ -217,6 +223,7 @@ public:
     }
 
     inline LinkedPointer<T>* RemoveBuyQuote(T *info) {
+        DebugInfoManager::Default->Log(this->m_symbolInfo->Symbol(), this->m_tradingSession, "Remove BuyQuote", info->MDEntryID, info->MDEntryIDLength, &(info->MDEntryPx), &(info->MDEntrySize));
         LinkedPointer<T> *node = this->m_buyQuoteList->Start();
         if(node == 0)
             return 0;
@@ -236,6 +243,7 @@ public:
     }
 
     inline LinkedPointer<T>* RemoveSellQuote(T *info) {
+        DebugInfoManager::Default->Log(this->m_symbolInfo->Symbol(), this->m_tradingSession, "Remove SellQuote", info->MDEntryID, info->MDEntryIDLength, &(info->MDEntryPx), &(info->MDEntrySize));
         LinkedPointer<T> *node = this->m_sellQuoteList->Start();
         if(node == 0)
             return 0;
@@ -255,6 +263,7 @@ public:
     }
 
     inline void ChangeBuyQuote(T *info) {
+        DebugInfoManager::Default->Log(this->m_symbolInfo->Symbol(), this->m_tradingSession, "Change BuyQuote", info->MDEntryID, info->MDEntryIDLength, &(info->MDEntryPx), &(info->MDEntrySize));
         LinkedPointer<T> *ptr = GetQuote(this->m_buyQuoteList, info);
         this->ChangeAggregatedBuyQuote(ptr->Data(), info);
         info->Used = true;
@@ -263,6 +272,7 @@ public:
     }
 
     inline void ChangeSellQuote(T *info) {
+        DebugInfoManager::Default->Log(this->m_symbolInfo->Symbol(), this->m_tradingSession, "Change SellQuote", info->MDEntryID, info->MDEntryIDLength, &(info->MDEntryPx), &(info->MDEntrySize));
         LinkedPointer<T> *ptr = GetQuote(this->m_sellQuoteList, info);
         this->ChangeAggregatedSellQuote(ptr->Data(), info);
         info->Used = true;
@@ -271,12 +281,14 @@ public:
     }
 
     inline LinkedPointer<T>* AddBuyQuote(T *item) {
+        DebugInfoManager::Default->Log(this->m_symbolInfo->Symbol(), this->m_tradingSession, "Add BuyQuote", item->MDEntryID, item->MDEntryIDLength, &(item->MDEntryPx), &(item->MDEntrySize));
         item->Used = true;
         this->AddAggregatedBuyQuote(item);
         return this->m_buyQuoteList->Add(item);
     }
 
     inline LinkedPointer<T>* AddSellQuote(T *item) {
+        DebugInfoManager::Default->Log(this->m_symbolInfo->Symbol(), this->m_tradingSession, "Add SellQuote", item->MDEntryID, item->MDEntryIDLength, &(item->MDEntryPx), &(item->MDEntrySize));
         item->Used = true;
         this->AddAggregatedSellQuote(item);
         return this->m_sellQuoteList->Add(item);
@@ -382,8 +394,9 @@ public:
     }
 
     inline bool EnterSnapshotMode() {
+        this->ResetSnasphotProcessed();
         this->m_shouldProcessSnapshot = true;
-        this->m_entryInfo->ShouldProcess(true);
+        //this->m_entryInfo->ShouldProcess(true);
         return true;
     }
 

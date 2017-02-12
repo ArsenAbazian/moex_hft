@@ -12,6 +12,7 @@ class TradeTesterFond;
 class TradeTesterCurr;
 class StatisticsTesterFond;
 class StatisticsTesterCurr;
+class FeedConnection;
 
 #pragma region Decode_Method_Pointer_Definition_GeneratedCode
 typedef void* (FastProtocolManager::*FastDecodeMethodPointer)();
@@ -31,6 +32,7 @@ class FastProtocolManager {
 	friend class TradeTesterCurr;
 	friend class StatisticsTesterFond;
 	friend class StatisticsTesterCurr;
+	friend class FeedConnection;
 
 	const int maxBufferLength = 16000;
 	BYTE	        			*buffer;
@@ -86,6 +88,32 @@ private:
 	AutoAllocatePointerList<FastSecurityStatusInfo>	*m_securityStatus;
 	AutoAllocatePointerList<FastTradingSessionStatusInfo>	*m_tradingSessionStatus;
 	AutoAllocatePointerList<FastHeartbeatInfo>	*m_heartbeat;
+	FastLogonInfo	*m_prevLogonInfo;
+	FastLogoutInfo	*m_prevLogoutInfo;
+	FastGenericItemInfo	*m_prevGenericItemInfo;
+	FastGenericInfo	*m_prevGenericInfo;
+	FastIncrementalGenericInfo	*m_prevIncrementalGenericInfo;
+	FastOLSFONDItemInfo	*m_prevOLSFONDItemInfo;
+	FastOLSFONDInfo	*m_prevOLSFONDInfo;
+	FastOLSCURRItemInfo	*m_prevOLSCURRItemInfo;
+	FastOLSCURRInfo	*m_prevOLSCURRInfo;
+	FastTLSFONDItemInfo	*m_prevTLSFONDItemInfo;
+	FastTLSFONDInfo	*m_prevTLSFONDInfo;
+	FastTLSCURRItemInfo	*m_prevTLSCURRItemInfo;
+	FastTLSCURRInfo	*m_prevTLSCURRInfo;
+	FastIncrementalMSRFONDInfo	*m_prevIncrementalMSRFONDInfo;
+	FastIncrementalMSRCURRInfo	*m_prevIncrementalMSRCURRInfo;
+	FastIncrementalOLRFONDInfo	*m_prevIncrementalOLRFONDInfo;
+	FastIncrementalOLRCURRInfo	*m_prevIncrementalOLRCURRInfo;
+	FastIncrementalTLRFONDInfo	*m_prevIncrementalTLRFONDInfo;
+	FastIncrementalTLRCURRInfo	*m_prevIncrementalTLRCURRInfo;
+	FastSecurityDefinitionGroupInstrAttribItemInfo	*m_prevSecurityDefinitionGroupInstrAttribItemInfo;
+	FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo	*m_prevSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo;
+	FastSecurityDefinitionMarketSegmentGrpItemInfo	*m_prevSecurityDefinitionMarketSegmentGrpItemInfo;
+	FastSecurityDefinitionInfo	*m_prevSecurityDefinitionInfo;
+	FastSecurityStatusInfo	*m_prevSecurityStatusInfo;
+	FastTradingSessionStatusInfo	*m_prevTradingSessionStatusInfo;
+	FastHeartbeatInfo	*m_prevHeartbeatInfo;
 
 	void InitializeMessageInfo() {
 		this->m_logon = new AutoAllocatePointerList<FastLogonInfo>(this->m_allocationInfo->m_logonCount, this->m_allocationInfo->m_logonAddCount);
@@ -114,6 +142,58 @@ private:
 		this->m_securityStatus = new AutoAllocatePointerList<FastSecurityStatusInfo>(this->m_allocationInfo->m_securityStatusCount, this->m_allocationInfo->m_securityStatusAddCount);
 		this->m_tradingSessionStatus = new AutoAllocatePointerList<FastTradingSessionStatusInfo>(this->m_allocationInfo->m_tradingSessionStatusCount, this->m_allocationInfo->m_tradingSessionStatusAddCount);
 		this->m_heartbeat = new AutoAllocatePointerList<FastHeartbeatInfo>(this->m_allocationInfo->m_heartbeatCount, this->m_allocationInfo->m_heartbeatAddCount);
+		this->m_prevLogonInfo = this->GetFreeLogonInfo();
+		this->m_prevLogonInfo->Used = true;
+		this->m_prevLogoutInfo = this->GetFreeLogoutInfo();
+		this->m_prevLogoutInfo->Used = true;
+		this->m_prevGenericItemInfo = this->GetFreeGenericItemInfo();
+		this->m_prevGenericItemInfo->Used = true;
+		this->m_prevGenericInfo = this->GetFreeGenericInfo();
+		this->m_prevGenericInfo->Used = true;
+		this->m_prevIncrementalGenericInfo = this->GetFreeIncrementalGenericInfo();
+		this->m_prevIncrementalGenericInfo->Used = true;
+		this->m_prevOLSFONDItemInfo = this->GetFreeOLSFONDItemInfo();
+		this->m_prevOLSFONDItemInfo->Used = true;
+		this->m_prevOLSFONDInfo = this->GetFreeOLSFONDInfo();
+		this->m_prevOLSFONDInfo->Used = true;
+		this->m_prevOLSCURRItemInfo = this->GetFreeOLSCURRItemInfo();
+		this->m_prevOLSCURRItemInfo->Used = true;
+		this->m_prevOLSCURRInfo = this->GetFreeOLSCURRInfo();
+		this->m_prevOLSCURRInfo->Used = true;
+		this->m_prevTLSFONDItemInfo = this->GetFreeTLSFONDItemInfo();
+		this->m_prevTLSFONDItemInfo->Used = true;
+		this->m_prevTLSFONDInfo = this->GetFreeTLSFONDInfo();
+		this->m_prevTLSFONDInfo->Used = true;
+		this->m_prevTLSCURRItemInfo = this->GetFreeTLSCURRItemInfo();
+		this->m_prevTLSCURRItemInfo->Used = true;
+		this->m_prevTLSCURRInfo = this->GetFreeTLSCURRInfo();
+		this->m_prevTLSCURRInfo->Used = true;
+		this->m_prevIncrementalMSRFONDInfo = this->GetFreeIncrementalMSRFONDInfo();
+		this->m_prevIncrementalMSRFONDInfo->Used = true;
+		this->m_prevIncrementalMSRCURRInfo = this->GetFreeIncrementalMSRCURRInfo();
+		this->m_prevIncrementalMSRCURRInfo->Used = true;
+		this->m_prevIncrementalOLRFONDInfo = this->GetFreeIncrementalOLRFONDInfo();
+		this->m_prevIncrementalOLRFONDInfo->Used = true;
+		this->m_prevIncrementalOLRCURRInfo = this->GetFreeIncrementalOLRCURRInfo();
+		this->m_prevIncrementalOLRCURRInfo->Used = true;
+		this->m_prevIncrementalTLRFONDInfo = this->GetFreeIncrementalTLRFONDInfo();
+		this->m_prevIncrementalTLRFONDInfo->Used = true;
+		this->m_prevIncrementalTLRCURRInfo = this->GetFreeIncrementalTLRCURRInfo();
+		this->m_prevIncrementalTLRCURRInfo->Used = true;
+		this->m_prevSecurityDefinitionGroupInstrAttribItemInfo = this->GetFreeSecurityDefinitionGroupInstrAttribItemInfo();
+		this->m_prevSecurityDefinitionGroupInstrAttribItemInfo->Used = true;
+		this->m_prevSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo = this->GetFreeSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo();
+		this->m_prevSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo->Used = true;
+		this->m_prevSecurityDefinitionMarketSegmentGrpItemInfo = this->GetFreeSecurityDefinitionMarketSegmentGrpItemInfo();
+		this->m_prevSecurityDefinitionMarketSegmentGrpItemInfo->Used = true;
+		this->m_prevSecurityDefinitionInfo = this->GetFreeSecurityDefinitionInfo();
+		this->m_prevSecurityDefinitionInfo->Used = true;
+		this->m_prevSecurityStatusInfo = this->GetFreeSecurityStatusInfo();
+		this->m_prevSecurityStatusInfo->Used = true;
+		this->m_prevTradingSessionStatusInfo = this->GetFreeTradingSessionStatusInfo();
+		this->m_prevTradingSessionStatusInfo->Used = true;
+		this->m_prevHeartbeatInfo = this->GetFreeHeartbeatInfo();
+		this->m_prevHeartbeatInfo->Used = true;
 	}
 
 #pragma endregion
@@ -2440,11 +2520,12 @@ public:
 		info->MsgSeqNum = ReadUInt32_Mandatory();
 		info->SendingTime = ReadUInt64_Mandatory();
 		info->HeartBtInt = ReadInt32_Mandatory();
-		if((info->AllowUsername = !CheckProcessNullString()))
+		if(!(info->IsNullUsername = CheckProcessNullString()))
 			ReadString_Optional(&(info->Username), &(info->UsernameLength));
-		if((info->AllowPassword = !CheckProcessNullString()))
+		if(!(info->IsNullPassword = CheckProcessNullString()))
 			ReadString_Optional(&(info->Password), &(info->PasswordLength));
 		ReadString_Mandatory(&(info->DefaultApplVerID), &(info->DefaultApplVerIDLength));
+		this->m_prevLogonInfo = info;
 		return info;
 	}
 	void* DecodeLogout() {
@@ -2454,8 +2535,9 @@ public:
 		ReadString_Mandatory(&(info->TargetCompID), &(info->TargetCompIDLength));
 		info->MsgSeqNum = ReadUInt32_Mandatory();
 		info->SendingTime = ReadUInt64_Mandatory();
-		if((info->AllowText = !CheckProcessNullString()))
+		if(!(info->IsNullText = CheckProcessNullString()))
 			ReadString_Optional(&(info->Text), &(info->TextLength));
+		this->m_prevLogoutInfo = info;
 		return info;
 	}
 	void* DecodeGeneric() {
@@ -2464,23 +2546,23 @@ public:
 
 		info->MsgSeqNum = ReadUInt32_Mandatory();
 		info->SendingTime = ReadUInt64_Mandatory();
-		if((info->AllowTradingSessionID = !CheckProcessNullString()))
+		if(!(info->IsNullTradingSessionID = CheckProcessNullString()))
 			ReadString_Optional(&(info->TradingSessionID), &(info->TradingSessionIDLength));
 		ReadString_Mandatory(&(info->Symbol), &(info->SymbolLength));
-		if((info->AllowLastMsgSeqNumProcessed = !CheckProcessNullUInt32()))
+		if(!(info->IsNullLastMsgSeqNumProcessed = CheckProcessNullUInt32()))
 			info->LastMsgSeqNumProcessed = ReadUInt32_Optional();
 		info->RptSeq = ReadInt32_Mandatory();
-		if((info->AllowLastFragment = !CheckProcessNullUInt32()))
+		if(!(info->IsNullLastFragment = CheckProcessNullUInt32()))
 			info->LastFragment = ReadUInt32_Optional();
-		if((info->AllowRouteFirst = !CheckProcessNullUInt32()))
+		if(!(info->IsNullRouteFirst = CheckProcessNullUInt32()))
 			info->RouteFirst = ReadUInt32_Optional();
-		if((info->AllowTradSesStatus = !CheckProcessNullInt32()))
+		if(!(info->IsNullTradSesStatus = CheckProcessNullInt32()))
 			info->TradSesStatus = ReadInt32_Optional();
-		if((info->AllowMDSecurityTradingStatus = !CheckProcessNullInt32()))
+		if(!(info->IsNullMDSecurityTradingStatus = CheckProcessNullInt32()))
 			info->MDSecurityTradingStatus = ReadInt32_Optional();
-		if((info->AllowAuctionIndicator = !CheckProcessNullUInt32()))
+		if(!(info->IsNullAuctionIndicator = CheckProcessNullUInt32()))
 			info->AuctionIndicator = ReadUInt32_Optional();
-		if((info->AllowNetChgPrevDay = !CheckProcessNullDecimal()))
+		if(!(info->IsNullNetChgPrevDay = CheckProcessNullDecimal()))
 			ReadDecimal_Optional(&(info->NetChgPrevDay));
 
 		info->GroupMDEntriesCount = ReadUInt32_Mandatory();
@@ -2489,90 +2571,92 @@ public:
 		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 			gmdeItemInfo = GetFreeGenericItemInfo();
 			info->GroupMDEntries[i] = gmdeItemInfo;
-			if((gmdeItemInfo->AllowMDEntryType = !CheckProcessNullString()))
+			if(!(gmdeItemInfo->IsNullMDEntryType = CheckProcessNullString()))
 				ReadString_Optional(&(gmdeItemInfo->MDEntryType), &(gmdeItemInfo->MDEntryTypeLength));
-			if((gmdeItemInfo->AllowMDEntryID = !CheckProcessNullString()))
+			if(!(gmdeItemInfo->IsNullMDEntryID = CheckProcessNullString()))
 				ReadString_Optional(&(gmdeItemInfo->MDEntryID), &(gmdeItemInfo->MDEntryIDLength));
-			if((gmdeItemInfo->AllowMDEntryDate = !CheckProcessNullUInt32()))
+			if(!(gmdeItemInfo->IsNullMDEntryDate = CheckProcessNullUInt32()))
 				gmdeItemInfo->MDEntryDate = ReadUInt32_Optional();
-			if((gmdeItemInfo->AllowMDEntryTime = !CheckProcessNullUInt32()))
+			if(!(gmdeItemInfo->IsNullMDEntryTime = CheckProcessNullUInt32()))
 				gmdeItemInfo->MDEntryTime = ReadUInt32_Optional();
-			if((gmdeItemInfo->AllowOrigTime = !CheckProcessNullUInt32()))
+			if(!(gmdeItemInfo->IsNullOrigTime = CheckProcessNullUInt32()))
 				gmdeItemInfo->OrigTime = ReadUInt32_Optional();
-			if((gmdeItemInfo->AllowMDEntryPx = !CheckProcessNullDecimal()))
+			if(!(gmdeItemInfo->IsNullMDEntryPx = CheckProcessNullDecimal()))
 				ReadDecimal_Optional(&(gmdeItemInfo->MDEntryPx));
-			if((gmdeItemInfo->AllowMDEntrySize = !CheckProcessNullDecimal()))
+			if(!(gmdeItemInfo->IsNullMDEntrySize = CheckProcessNullDecimal()))
 				ReadDecimal_Optional(&(gmdeItemInfo->MDEntrySize));
-			if((gmdeItemInfo->AllowQuoteCondition = !CheckProcessNullString()))
+			if(!(gmdeItemInfo->IsNullQuoteCondition = CheckProcessNullString()))
 				ReadString_Optional(&(gmdeItemInfo->QuoteCondition), &(gmdeItemInfo->QuoteConditionLength));
-			if((gmdeItemInfo->AllowTradeCondition = !CheckProcessNullString()))
+			if(!(gmdeItemInfo->IsNullTradeCondition = CheckProcessNullString()))
 				ReadString_Optional(&(gmdeItemInfo->TradeCondition), &(gmdeItemInfo->TradeConditionLength));
-			if((gmdeItemInfo->AllowOpenCloseSettlFlag = !CheckProcessNullString()))
+			if(!(gmdeItemInfo->IsNullOpenCloseSettlFlag = CheckProcessNullString()))
 				ReadString_Optional(&(gmdeItemInfo->OpenCloseSettlFlag), &(gmdeItemInfo->OpenCloseSettlFlagLength));
-			if((gmdeItemInfo->AllowOrdType = !CheckProcessNullString()))
+			if(!(gmdeItemInfo->IsNullOrdType = CheckProcessNullString()))
 				ReadString_Optional(&(gmdeItemInfo->OrdType), &(gmdeItemInfo->OrdTypeLength));
-			if((gmdeItemInfo->AllowEffectiveTime = !CheckProcessNullUInt32()))
+			if(!(gmdeItemInfo->IsNullEffectiveTime = CheckProcessNullUInt32()))
 				gmdeItemInfo->EffectiveTime = ReadUInt32_Optional();
-			if((gmdeItemInfo->AllowStartTime = !CheckProcessNullUInt32()))
+			if(!(gmdeItemInfo->IsNullStartTime = CheckProcessNullUInt32()))
 				gmdeItemInfo->StartTime = ReadUInt32_Optional();
-			if((gmdeItemInfo->AllowAccruedInterestAmt = !CheckProcessNullDecimal()))
+			if(!(gmdeItemInfo->IsNullAccruedInterestAmt = CheckProcessNullDecimal()))
 				ReadDecimal_Optional(&(gmdeItemInfo->AccruedInterestAmt));
-			if((gmdeItemInfo->AllowChgFromWAPrice = !CheckProcessNullDecimal()))
+			if(!(gmdeItemInfo->IsNullChgFromWAPrice = CheckProcessNullDecimal()))
 				ReadDecimal_Optional(&(gmdeItemInfo->ChgFromWAPrice));
-			if((gmdeItemInfo->AllowChgOpenInterest = !CheckProcessNullDecimal()))
+			if(!(gmdeItemInfo->IsNullChgOpenInterest = CheckProcessNullDecimal()))
 				ReadDecimal_Optional(&(gmdeItemInfo->ChgOpenInterest));
-			if((gmdeItemInfo->AllowBidMarketSize = !CheckProcessNullDecimal()))
+			if(!(gmdeItemInfo->IsNullBidMarketSize = CheckProcessNullDecimal()))
 				ReadDecimal_Optional(&(gmdeItemInfo->BidMarketSize));
-			if((gmdeItemInfo->AllowAskMarketSize = !CheckProcessNullDecimal()))
+			if(!(gmdeItemInfo->IsNullAskMarketSize = CheckProcessNullDecimal()))
 				ReadDecimal_Optional(&(gmdeItemInfo->AskMarketSize));
-			if((gmdeItemInfo->AllowTotalNumOfTrades = !CheckProcessNullInt32()))
+			if(!(gmdeItemInfo->IsNullTotalNumOfTrades = CheckProcessNullInt32()))
 				gmdeItemInfo->TotalNumOfTrades = ReadInt32_Optional();
-			if((gmdeItemInfo->AllowTradeValue = !CheckProcessNullDecimal()))
+			if(!(gmdeItemInfo->IsNullTradeValue = CheckProcessNullDecimal()))
 				ReadDecimal_Optional(&(gmdeItemInfo->TradeValue));
-			if((gmdeItemInfo->AllowYield = !CheckProcessNullDecimal()))
+			if(!(gmdeItemInfo->IsNullYield = CheckProcessNullDecimal()))
 				ReadDecimal_Optional(&(gmdeItemInfo->Yield));
-			if((gmdeItemInfo->AllowTotalVolume = !CheckProcessNullDecimal()))
+			if(!(gmdeItemInfo->IsNullTotalVolume = CheckProcessNullDecimal()))
 				ReadDecimal_Optional(&(gmdeItemInfo->TotalVolume));
-			if((gmdeItemInfo->AllowOfferNbOr = !CheckProcessNullInt32()))
+			if(!(gmdeItemInfo->IsNullOfferNbOr = CheckProcessNullInt32()))
 				gmdeItemInfo->OfferNbOr = ReadInt32_Optional();
-			if((gmdeItemInfo->AllowBidNbOr = !CheckProcessNullInt32()))
+			if(!(gmdeItemInfo->IsNullBidNbOr = CheckProcessNullInt32()))
 				gmdeItemInfo->BidNbOr = ReadInt32_Optional();
-			if((gmdeItemInfo->AllowChgFromSettlmnt = !CheckProcessNullDecimal()))
+			if(!(gmdeItemInfo->IsNullChgFromSettlmnt = CheckProcessNullDecimal()))
 				ReadDecimal_Optional(&(gmdeItemInfo->ChgFromSettlmnt));
-			if((gmdeItemInfo->AllowSettlDate = !CheckProcessNullUInt32()))
+			if(!(gmdeItemInfo->IsNullSettlDate = CheckProcessNullUInt32()))
 				gmdeItemInfo->SettlDate = ReadUInt32_Optional();
-			if((gmdeItemInfo->AllowSettleType = !CheckProcessNullString()))
+			if(!(gmdeItemInfo->IsNullSettleType = CheckProcessNullString()))
 				ReadString_Optional(&(gmdeItemInfo->SettleType), &(gmdeItemInfo->SettleTypeLength));
-			if((gmdeItemInfo->AllowSumQtyOfBest = !CheckProcessNullInt32()))
+			if(!(gmdeItemInfo->IsNullSumQtyOfBest = CheckProcessNullInt32()))
 				gmdeItemInfo->SumQtyOfBest = ReadInt32_Optional();
-			if((gmdeItemInfo->AllowOrderSide = !CheckProcessNullString()))
+			if(!(gmdeItemInfo->IsNullOrderSide = CheckProcessNullString()))
 				ReadString_Optional(&(gmdeItemInfo->OrderSide), &(gmdeItemInfo->OrderSideLength));
-			if((gmdeItemInfo->AllowOrderStatus = !CheckProcessNullString()))
+			if(!(gmdeItemInfo->IsNullOrderStatus = CheckProcessNullString()))
 				ReadString_Optional(&(gmdeItemInfo->OrderStatus), &(gmdeItemInfo->OrderStatusLength));
-			if((gmdeItemInfo->AllowMinCurrPx = !CheckProcessNullDecimal()))
+			if(!(gmdeItemInfo->IsNullMinCurrPx = CheckProcessNullDecimal()))
 				ReadDecimal_Optional(&(gmdeItemInfo->MinCurrPx));
-			if((gmdeItemInfo->AllowMinCurrPxChgTime = !CheckProcessNullUInt32()))
+			if(!(gmdeItemInfo->IsNullMinCurrPxChgTime = CheckProcessNullUInt32()))
 				gmdeItemInfo->MinCurrPxChgTime = ReadUInt32_Optional();
-			if((gmdeItemInfo->AllowVolumeIndicator = !CheckProcessNullUInt32()))
+			if(!(gmdeItemInfo->IsNullVolumeIndicator = CheckProcessNullUInt32()))
 				gmdeItemInfo->VolumeIndicator = ReadUInt32_Optional();
-			if((gmdeItemInfo->AllowPrice = !CheckProcessNullDecimal()))
+			if(!(gmdeItemInfo->IsNullPrice = CheckProcessNullDecimal()))
 				ReadDecimal_Optional(&(gmdeItemInfo->Price));
-			if((gmdeItemInfo->AllowPriceType = !CheckProcessNullInt32()))
+			if(!(gmdeItemInfo->IsNullPriceType = CheckProcessNullInt32()))
 				gmdeItemInfo->PriceType = ReadInt32_Optional();
-			if((gmdeItemInfo->AllowNominalValue = !CheckProcessNullDecimal()))
+			if(!(gmdeItemInfo->IsNullNominalValue = CheckProcessNullDecimal()))
 				ReadDecimal_Optional(&(gmdeItemInfo->NominalValue));
-			if((gmdeItemInfo->AllowRepoToPx = !CheckProcessNullDecimal()))
+			if(!(gmdeItemInfo->IsNullRepoToPx = CheckProcessNullDecimal()))
 				ReadDecimal_Optional(&(gmdeItemInfo->RepoToPx));
-			if((gmdeItemInfo->AllowBuyBackPx = !CheckProcessNullDecimal()))
+			if(!(gmdeItemInfo->IsNullBuyBackPx = CheckProcessNullDecimal()))
 				ReadDecimal_Optional(&(gmdeItemInfo->BuyBackPx));
-			if((gmdeItemInfo->AllowBuyBackDate = !CheckProcessNullUInt32()))
+			if(!(gmdeItemInfo->IsNullBuyBackDate = CheckProcessNullUInt32()))
 				gmdeItemInfo->BuyBackDate = ReadUInt32_Optional();
-			if((gmdeItemInfo->AllowCXFlag = !CheckProcessNullString()))
+			if(!(gmdeItemInfo->IsNullCXFlag = CheckProcessNullString()))
 				ReadString_Optional(&(gmdeItemInfo->CXFlag), &(gmdeItemInfo->CXFlagLength));
-			if((gmdeItemInfo->AllowTradingSessionSubID = !CheckProcessNullString()))
+			if(!(gmdeItemInfo->IsNullTradingSessionSubID = CheckProcessNullString()))
 				ReadString_Optional(&(gmdeItemInfo->TradingSessionSubID), &(gmdeItemInfo->TradingSessionSubIDLength));
+			this->m_prevGenericItemInfo = gmdeItemInfo;
 		}
 
+		this->m_prevGenericInfo = info;
 		return info;
 	}
 	void* DecodeIncrementalGeneric() {
@@ -2588,100 +2672,102 @@ public:
 		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 			gmdeItemInfo = GetFreeGenericItemInfo();
 			info->GroupMDEntries[i] = gmdeItemInfo;
-			if((gmdeItemInfo->AllowMDUpdateAction = !CheckProcessNullUInt32()))
+			if(!(gmdeItemInfo->IsNullMDUpdateAction = CheckProcessNullUInt32()))
 				gmdeItemInfo->MDUpdateAction = ReadUInt32_Optional();
-			if((gmdeItemInfo->AllowMDEntryType = !CheckProcessNullString()))
+			if(!(gmdeItemInfo->IsNullMDEntryType = CheckProcessNullString()))
 				ReadString_Optional(&(gmdeItemInfo->MDEntryType), &(gmdeItemInfo->MDEntryTypeLength));
-			if((gmdeItemInfo->AllowMDEntryID = !CheckProcessNullString()))
+			if(!(gmdeItemInfo->IsNullMDEntryID = CheckProcessNullString()))
 				ReadString_Optional(&(gmdeItemInfo->MDEntryID), &(gmdeItemInfo->MDEntryIDLength));
-			if((gmdeItemInfo->AllowRptSeq = !CheckProcessNullInt32()))
+			if(!(gmdeItemInfo->IsNullRptSeq = CheckProcessNullInt32()))
 				gmdeItemInfo->RptSeq = ReadInt32_Optional();
-			if((gmdeItemInfo->AllowMDEntryDate = !CheckProcessNullUInt32()))
+			if(!(gmdeItemInfo->IsNullMDEntryDate = CheckProcessNullUInt32()))
 				gmdeItemInfo->MDEntryDate = ReadUInt32_Optional();
-			if((gmdeItemInfo->AllowOrigTime = !CheckProcessNullUInt32()))
+			if(!(gmdeItemInfo->IsNullOrigTime = CheckProcessNullUInt32()))
 				gmdeItemInfo->OrigTime = ReadUInt32_Optional();
-			if((gmdeItemInfo->AllowSettlDate = !CheckProcessNullUInt32()))
+			if(!(gmdeItemInfo->IsNullSettlDate = CheckProcessNullUInt32()))
 				gmdeItemInfo->SettlDate = ReadUInt32_Optional();
-			if((gmdeItemInfo->AllowSettleType = !CheckProcessNullString()))
+			if(!(gmdeItemInfo->IsNullSettleType = CheckProcessNullString()))
 				ReadString_Optional(&(gmdeItemInfo->SettleType), &(gmdeItemInfo->SettleTypeLength));
-			if((gmdeItemInfo->AllowMDEntryTime = !CheckProcessNullUInt32()))
+			if(!(gmdeItemInfo->IsNullMDEntryTime = CheckProcessNullUInt32()))
 				gmdeItemInfo->MDEntryTime = ReadUInt32_Optional();
-			if((gmdeItemInfo->AllowEffectiveTime = !CheckProcessNullUInt32()))
+			if(!(gmdeItemInfo->IsNullEffectiveTime = CheckProcessNullUInt32()))
 				gmdeItemInfo->EffectiveTime = ReadUInt32_Optional();
-			if((gmdeItemInfo->AllowStartTime = !CheckProcessNullUInt32()))
+			if(!(gmdeItemInfo->IsNullStartTime = CheckProcessNullUInt32()))
 				gmdeItemInfo->StartTime = ReadUInt32_Optional();
-			if((gmdeItemInfo->AllowSymbol = !CheckProcessNullString()))
+			if(!(gmdeItemInfo->IsNullSymbol = CheckProcessNullString()))
 				ReadString_Optional(&(gmdeItemInfo->Symbol), &(gmdeItemInfo->SymbolLength));
-			if((gmdeItemInfo->AllowMDEntryPx = !CheckProcessNullDecimal()))
+			if(!(gmdeItemInfo->IsNullMDEntryPx = CheckProcessNullDecimal()))
 				ReadDecimal_Optional(&(gmdeItemInfo->MDEntryPx));
-			if((gmdeItemInfo->AllowMDEntrySize = !CheckProcessNullDecimal()))
+			if(!(gmdeItemInfo->IsNullMDEntrySize = CheckProcessNullDecimal()))
 				ReadDecimal_Optional(&(gmdeItemInfo->MDEntrySize));
-			if((gmdeItemInfo->AllowQuoteCondition = !CheckProcessNullString()))
+			if(!(gmdeItemInfo->IsNullQuoteCondition = CheckProcessNullString()))
 				ReadString_Optional(&(gmdeItemInfo->QuoteCondition), &(gmdeItemInfo->QuoteConditionLength));
-			if((gmdeItemInfo->AllowTradeCondition = !CheckProcessNullString()))
+			if(!(gmdeItemInfo->IsNullTradeCondition = CheckProcessNullString()))
 				ReadString_Optional(&(gmdeItemInfo->TradeCondition), &(gmdeItemInfo->TradeConditionLength));
-			if((gmdeItemInfo->AllowOpenCloseSettlFlag = !CheckProcessNullString()))
+			if(!(gmdeItemInfo->IsNullOpenCloseSettlFlag = CheckProcessNullString()))
 				ReadString_Optional(&(gmdeItemInfo->OpenCloseSettlFlag), &(gmdeItemInfo->OpenCloseSettlFlagLength));
-			if((gmdeItemInfo->AllowOrdType = !CheckProcessNullString()))
+			if(!(gmdeItemInfo->IsNullOrdType = CheckProcessNullString()))
 				ReadString_Optional(&(gmdeItemInfo->OrdType), &(gmdeItemInfo->OrdTypeLength));
-			if((gmdeItemInfo->AllowNetChgPrevDay = !CheckProcessNullDecimal()))
+			if(!(gmdeItemInfo->IsNullNetChgPrevDay = CheckProcessNullDecimal()))
 				ReadDecimal_Optional(&(gmdeItemInfo->NetChgPrevDay));
-			if((gmdeItemInfo->AllowAccruedInterestAmt = !CheckProcessNullDecimal()))
+			if(!(gmdeItemInfo->IsNullAccruedInterestAmt = CheckProcessNullDecimal()))
 				ReadDecimal_Optional(&(gmdeItemInfo->AccruedInterestAmt));
-			if((gmdeItemInfo->AllowChgFromWAPrice = !CheckProcessNullDecimal()))
+			if(!(gmdeItemInfo->IsNullChgFromWAPrice = CheckProcessNullDecimal()))
 				ReadDecimal_Optional(&(gmdeItemInfo->ChgFromWAPrice));
-			if((gmdeItemInfo->AllowChgOpenInterest = !CheckProcessNullDecimal()))
+			if(!(gmdeItemInfo->IsNullChgOpenInterest = CheckProcessNullDecimal()))
 				ReadDecimal_Optional(&(gmdeItemInfo->ChgOpenInterest));
-			if((gmdeItemInfo->AllowBidMarketSize = !CheckProcessNullDecimal()))
+			if(!(gmdeItemInfo->IsNullBidMarketSize = CheckProcessNullDecimal()))
 				ReadDecimal_Optional(&(gmdeItemInfo->BidMarketSize));
-			if((gmdeItemInfo->AllowAskMarketSize = !CheckProcessNullDecimal()))
+			if(!(gmdeItemInfo->IsNullAskMarketSize = CheckProcessNullDecimal()))
 				ReadDecimal_Optional(&(gmdeItemInfo->AskMarketSize));
-			if((gmdeItemInfo->AllowTotalNumOfTrades = !CheckProcessNullInt32()))
+			if(!(gmdeItemInfo->IsNullTotalNumOfTrades = CheckProcessNullInt32()))
 				gmdeItemInfo->TotalNumOfTrades = ReadInt32_Optional();
-			if((gmdeItemInfo->AllowTradeValue = !CheckProcessNullDecimal()))
+			if(!(gmdeItemInfo->IsNullTradeValue = CheckProcessNullDecimal()))
 				ReadDecimal_Optional(&(gmdeItemInfo->TradeValue));
-			if((gmdeItemInfo->AllowYield = !CheckProcessNullDecimal()))
+			if(!(gmdeItemInfo->IsNullYield = CheckProcessNullDecimal()))
 				ReadDecimal_Optional(&(gmdeItemInfo->Yield));
-			if((gmdeItemInfo->AllowTotalVolume = !CheckProcessNullDecimal()))
+			if(!(gmdeItemInfo->IsNullTotalVolume = CheckProcessNullDecimal()))
 				ReadDecimal_Optional(&(gmdeItemInfo->TotalVolume));
-			if((gmdeItemInfo->AllowOfferNbOr = !CheckProcessNullInt32()))
+			if(!(gmdeItemInfo->IsNullOfferNbOr = CheckProcessNullInt32()))
 				gmdeItemInfo->OfferNbOr = ReadInt32_Optional();
-			if((gmdeItemInfo->AllowBidNbOr = !CheckProcessNullInt32()))
+			if(!(gmdeItemInfo->IsNullBidNbOr = CheckProcessNullInt32()))
 				gmdeItemInfo->BidNbOr = ReadInt32_Optional();
-			if((gmdeItemInfo->AllowChgFromSettlmnt = !CheckProcessNullDecimal()))
+			if(!(gmdeItemInfo->IsNullChgFromSettlmnt = CheckProcessNullDecimal()))
 				ReadDecimal_Optional(&(gmdeItemInfo->ChgFromSettlmnt));
-			if((gmdeItemInfo->AllowSumQtyOfBest = !CheckProcessNullInt32()))
+			if(!(gmdeItemInfo->IsNullSumQtyOfBest = CheckProcessNullInt32()))
 				gmdeItemInfo->SumQtyOfBest = ReadInt32_Optional();
-			if((gmdeItemInfo->AllowOrderSide = !CheckProcessNullString()))
+			if(!(gmdeItemInfo->IsNullOrderSide = CheckProcessNullString()))
 				ReadString_Optional(&(gmdeItemInfo->OrderSide), &(gmdeItemInfo->OrderSideLength));
-			if((gmdeItemInfo->AllowOrderStatus = !CheckProcessNullString()))
+			if(!(gmdeItemInfo->IsNullOrderStatus = CheckProcessNullString()))
 				ReadString_Optional(&(gmdeItemInfo->OrderStatus), &(gmdeItemInfo->OrderStatusLength));
-			if((gmdeItemInfo->AllowMinCurrPx = !CheckProcessNullDecimal()))
+			if(!(gmdeItemInfo->IsNullMinCurrPx = CheckProcessNullDecimal()))
 				ReadDecimal_Optional(&(gmdeItemInfo->MinCurrPx));
-			if((gmdeItemInfo->AllowMinCurrPxChgTime = !CheckProcessNullUInt32()))
+			if(!(gmdeItemInfo->IsNullMinCurrPxChgTime = CheckProcessNullUInt32()))
 				gmdeItemInfo->MinCurrPxChgTime = ReadUInt32_Optional();
-			if((gmdeItemInfo->AllowVolumeIndicator = !CheckProcessNullUInt32()))
+			if(!(gmdeItemInfo->IsNullVolumeIndicator = CheckProcessNullUInt32()))
 				gmdeItemInfo->VolumeIndicator = ReadUInt32_Optional();
-			if((gmdeItemInfo->AllowPrice = !CheckProcessNullDecimal()))
+			if(!(gmdeItemInfo->IsNullPrice = CheckProcessNullDecimal()))
 				ReadDecimal_Optional(&(gmdeItemInfo->Price));
-			if((gmdeItemInfo->AllowPriceType = !CheckProcessNullInt32()))
+			if(!(gmdeItemInfo->IsNullPriceType = CheckProcessNullInt32()))
 				gmdeItemInfo->PriceType = ReadInt32_Optional();
-			if((gmdeItemInfo->AllowNominalValue = !CheckProcessNullDecimal()))
+			if(!(gmdeItemInfo->IsNullNominalValue = CheckProcessNullDecimal()))
 				ReadDecimal_Optional(&(gmdeItemInfo->NominalValue));
-			if((gmdeItemInfo->AllowRepoToPx = !CheckProcessNullDecimal()))
+			if(!(gmdeItemInfo->IsNullRepoToPx = CheckProcessNullDecimal()))
 				ReadDecimal_Optional(&(gmdeItemInfo->RepoToPx));
-			if((gmdeItemInfo->AllowBuyBackPx = !CheckProcessNullDecimal()))
+			if(!(gmdeItemInfo->IsNullBuyBackPx = CheckProcessNullDecimal()))
 				ReadDecimal_Optional(&(gmdeItemInfo->BuyBackPx));
-			if((gmdeItemInfo->AllowBuyBackDate = !CheckProcessNullUInt32()))
+			if(!(gmdeItemInfo->IsNullBuyBackDate = CheckProcessNullUInt32()))
 				gmdeItemInfo->BuyBackDate = ReadUInt32_Optional();
-			if((gmdeItemInfo->AllowCXFlag = !CheckProcessNullString()))
+			if(!(gmdeItemInfo->IsNullCXFlag = CheckProcessNullString()))
 				ReadString_Optional(&(gmdeItemInfo->CXFlag), &(gmdeItemInfo->CXFlagLength));
-			if((gmdeItemInfo->AllowTradingSessionID = !CheckProcessNullString()))
+			if(!(gmdeItemInfo->IsNullTradingSessionID = CheckProcessNullString()))
 				ReadString_Optional(&(gmdeItemInfo->TradingSessionID), &(gmdeItemInfo->TradingSessionIDLength));
-			if((gmdeItemInfo->AllowTradingSessionSubID = !CheckProcessNullString()))
+			if(!(gmdeItemInfo->IsNullTradingSessionSubID = CheckProcessNullString()))
 				ReadString_Optional(&(gmdeItemInfo->TradingSessionSubID), &(gmdeItemInfo->TradingSessionSubIDLength));
+			this->m_prevGenericItemInfo = gmdeItemInfo;
 		}
 
+		this->m_prevIncrementalGenericInfo = info;
 		return info;
 	}
 	void* DecodeOLSFOND() {
@@ -2690,21 +2776,21 @@ public:
 
 		info->MsgSeqNum = ReadUInt32_Mandatory();
 		info->SendingTime = ReadUInt64_Mandatory();
-		if((info->AllowLastMsgSeqNumProcessed = !CheckProcessNullUInt32()))
+		if(!(info->IsNullLastMsgSeqNumProcessed = CheckProcessNullUInt32()))
 			info->LastMsgSeqNumProcessed = ReadUInt32_Optional();
 		info->RptSeq = ReadInt32_Mandatory();
-		if((info->AllowLastFragment = !CheckProcessNullUInt32()))
+		if(!(info->IsNullLastFragment = CheckProcessNullUInt32()))
 			info->LastFragment = ReadUInt32_Optional();
-		if((info->AllowRouteFirst = !CheckProcessNullUInt32()))
+		if(!(info->IsNullRouteFirst = CheckProcessNullUInt32()))
 			info->RouteFirst = ReadUInt32_Optional();
-		if((info->AllowTradSesStatus = !CheckProcessNullInt32()))
+		if(!(info->IsNullTradSesStatus = CheckProcessNullInt32()))
 			info->TradSesStatus = ReadInt32_Optional();
-		if((info->AllowTradingSessionID = !CheckProcessNullString()))
+		if(!(info->IsNullTradingSessionID = CheckProcessNullString()))
 			ReadString_Optional(&(info->TradingSessionID), &(info->TradingSessionIDLength));
 		ReadString_Mandatory(&(info->Symbol), &(info->SymbolLength));
-		if((info->AllowMDSecurityTradingStatus = !CheckProcessNullInt32()))
+		if(!(info->IsNullMDSecurityTradingStatus = CheckProcessNullInt32()))
 			info->MDSecurityTradingStatus = ReadInt32_Optional();
-		if((info->AllowAuctionIndicator = !CheckProcessNullUInt32()))
+		if(!(info->IsNullAuctionIndicator = CheckProcessNullUInt32()))
 			info->AuctionIndicator = ReadUInt32_Optional();
 
 		info->GroupMDEntriesCount = ReadUInt32_Mandatory();
@@ -2716,113 +2802,93 @@ public:
 
 			this->ParsePresenceMap(&(gmdeItemInfo->PresenceMap));
 
-			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, gmdeItemInfo->MDEntryTypePresenceIndex)) {
-				if((gmdeItemInfo->AllowMDEntryType = !CheckProcessNullString()))
+			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX0)) {
+				if(!(gmdeItemInfo->IsNullMDEntryType = CheckProcessNullString()))
 					ReadString_Optional(&(gmdeItemInfo->MDEntryType), &(gmdeItemInfo->MDEntryTypeLength));
-				else {
-					gmdeItemInfo->CopyMDEntryType = true;
-					gmdeItemInfo->CopyCount++;
-				}
 			}
-			else
-				gmdeItemInfo-> AllowMDEntryType = false;
-			if((gmdeItemInfo->AllowMDEntryID = !CheckProcessNullString()))
+			else {
+				gmdeItemInfo->MDEntryType = this->m_prevOLSFONDItemInfo->MDEntryType;
+				gmdeItemInfo->MDEntryTypeLength = this->m_prevOLSFONDItemInfo->MDEntryTypeLength;
+			}
+			if(!(gmdeItemInfo->IsNullMDEntryID = CheckProcessNullString()))
 				ReadString_Optional(&(gmdeItemInfo->MDEntryID), &(gmdeItemInfo->MDEntryIDLength));
-			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, gmdeItemInfo->MDEntryDatePresenceIndex)) {
-				if((gmdeItemInfo->AllowMDEntryDate = !CheckProcessNullUInt32()))
+			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX1)) {
+				if(!(gmdeItemInfo->IsNullMDEntryDate = CheckProcessNullUInt32()))
 					gmdeItemInfo->MDEntryDate = ReadUInt32_Optional();
-				else
-					gmdeItemInfo->CopyMDEntryDate = true;
-					gmdeItemInfo->CopyCount++;
 			}
-			else
-				gmdeItemInfo-> AllowMDEntryDate = false;
-			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, gmdeItemInfo->MDEntryTimePresenceIndex)) {
-				if((gmdeItemInfo->AllowMDEntryTime = !CheckProcessNullUInt32()))
+			else {
+				gmdeItemInfo->MDEntryDate = this->m_prevOLSFONDItemInfo->MDEntryDate;
+			}
+			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX2)) {
+				if(!(gmdeItemInfo->IsNullMDEntryTime = CheckProcessNullUInt32()))
 					gmdeItemInfo->MDEntryTime = ReadUInt32_Optional();
-				else
-					gmdeItemInfo->CopyMDEntryTime = true;
-					gmdeItemInfo->CopyCount++;
 			}
-			else
-				gmdeItemInfo-> AllowMDEntryTime = false;
-			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, gmdeItemInfo->OrigTimePresenceIndex)) {
-				if((gmdeItemInfo->AllowOrigTime = !CheckProcessNullUInt32()))
+			else {
+				gmdeItemInfo->MDEntryTime = this->m_prevOLSFONDItemInfo->MDEntryTime;
+			}
+			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX3)) {
+				if(!(gmdeItemInfo->IsNullOrigTime = CheckProcessNullUInt32()))
 					gmdeItemInfo->OrigTime = ReadUInt32_Optional();
-				else
-					gmdeItemInfo->CopyOrigTime = true;
-					gmdeItemInfo->CopyCount++;
 			}
-			else
-				gmdeItemInfo-> AllowOrigTime = false;
-			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, gmdeItemInfo->MDEntryPxPresenceIndex)) {
-				if((gmdeItemInfo->AllowMDEntryPx = !CheckProcessNullDecimal()))
+			else {
+				gmdeItemInfo->OrigTime = this->m_prevOLSFONDItemInfo->OrigTime;
+			}
+			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX4)) {
+				if(!(gmdeItemInfo->IsNullMDEntryPx = CheckProcessNullDecimal()))
 					ReadDecimal_Optional(&(gmdeItemInfo->MDEntryPx));
-				else
-					gmdeItemInfo->CopyMDEntryPx = true;
-					gmdeItemInfo->CopyCount++;
 			}
-			else
-				gmdeItemInfo-> AllowMDEntryPx = false;
-			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, gmdeItemInfo->MDEntrySizePresenceIndex)) {
-				if((gmdeItemInfo->AllowMDEntrySize = !CheckProcessNullDecimal()))
+			else {
+				gmdeItemInfo->MDEntryPx = this->m_prevOLSFONDItemInfo->MDEntryPx;
+			}
+			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX5)) {
+				if(!(gmdeItemInfo->IsNullMDEntrySize = CheckProcessNullDecimal()))
 					ReadDecimal_Optional(&(gmdeItemInfo->MDEntrySize));
-				else
-					gmdeItemInfo->CopyMDEntrySize = true;
-					gmdeItemInfo->CopyCount++;
 			}
-			else
-				gmdeItemInfo-> AllowMDEntrySize = false;
-			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, gmdeItemInfo->YieldPresenceIndex)) {
-				if((gmdeItemInfo->AllowYield = !CheckProcessNullDecimal()))
+			else {
+				gmdeItemInfo->MDEntrySize = this->m_prevOLSFONDItemInfo->MDEntrySize;
+			}
+			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX6)) {
+				if(!(gmdeItemInfo->IsNullYield = CheckProcessNullDecimal()))
 					ReadDecimal_Optional(&(gmdeItemInfo->Yield));
-				else
-					gmdeItemInfo->CopyYield = true;
-					gmdeItemInfo->CopyCount++;
 			}
-			else
-				gmdeItemInfo-> AllowYield = false;
-			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, gmdeItemInfo->OrderStatusPresenceIndex)) {
-				if((gmdeItemInfo->AllowOrderStatus = !CheckProcessNullString()))
+			else {
+				gmdeItemInfo->Yield = this->m_prevOLSFONDItemInfo->Yield;
+			}
+			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX7)) {
+				if(!(gmdeItemInfo->IsNullOrderStatus = CheckProcessNullString()))
 					ReadString_Optional(&(gmdeItemInfo->OrderStatus), &(gmdeItemInfo->OrderStatusLength));
-				else {
-					gmdeItemInfo->CopyOrderStatus = true;
-					gmdeItemInfo->CopyCount++;
-				}
 			}
-			else
-				gmdeItemInfo-> AllowOrderStatus = false;
-			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, gmdeItemInfo->OrdTypePresenceIndex)) {
-				if((gmdeItemInfo->AllowOrdType = !CheckProcessNullString()))
+			else {
+				gmdeItemInfo->OrderStatus = this->m_prevOLSFONDItemInfo->OrderStatus;
+				gmdeItemInfo->OrderStatusLength = this->m_prevOLSFONDItemInfo->OrderStatusLength;
+			}
+			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX8)) {
+				if(!(gmdeItemInfo->IsNullOrdType = CheckProcessNullString()))
 					ReadString_Optional(&(gmdeItemInfo->OrdType), &(gmdeItemInfo->OrdTypeLength));
-				else {
-					gmdeItemInfo->CopyOrdType = true;
-					gmdeItemInfo->CopyCount++;
-				}
 			}
-			else
-				gmdeItemInfo-> AllowOrdType = false;
-			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, gmdeItemInfo->TotalVolumePresenceIndex)) {
-				if((gmdeItemInfo->AllowTotalVolume = !CheckProcessNullDecimal()))
+			else {
+				gmdeItemInfo->OrdType = this->m_prevOLSFONDItemInfo->OrdType;
+				gmdeItemInfo->OrdTypeLength = this->m_prevOLSFONDItemInfo->OrdTypeLength;
+			}
+			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX9)) {
+				if(!(gmdeItemInfo->IsNullTotalVolume = CheckProcessNullDecimal()))
 					ReadDecimal_Optional(&(gmdeItemInfo->TotalVolume));
-				else
-					gmdeItemInfo->CopyTotalVolume = true;
-					gmdeItemInfo->CopyCount++;
 			}
-			else
-				gmdeItemInfo-> AllowTotalVolume = false;
-			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, gmdeItemInfo->TradingSessionSubIDPresenceIndex)) {
-				if((gmdeItemInfo->AllowTradingSessionSubID = !CheckProcessNullString()))
+			else {
+				gmdeItemInfo->TotalVolume = this->m_prevOLSFONDItemInfo->TotalVolume;
+			}
+			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX10)) {
+				if(!(gmdeItemInfo->IsNullTradingSessionSubID = CheckProcessNullString()))
 					ReadString_Optional(&(gmdeItemInfo->TradingSessionSubID), &(gmdeItemInfo->TradingSessionSubIDLength));
-				else {
-					gmdeItemInfo->CopyTradingSessionSubID = true;
-					gmdeItemInfo->CopyCount++;
-				}
 			}
-			else
-				gmdeItemInfo-> AllowTradingSessionSubID = false;
+			else {
+				gmdeItemInfo->TradingSessionSubID = this->m_prevOLSFONDItemInfo->TradingSessionSubID;
+				gmdeItemInfo->TradingSessionSubIDLength = this->m_prevOLSFONDItemInfo->TradingSessionSubIDLength;
+			}
+			this->m_prevOLSFONDItemInfo = gmdeItemInfo;
 		}
 
+		this->m_prevOLSFONDInfo = info;
 		return info;
 	}
 	void* DecodeOLSCURR() {
@@ -2831,19 +2897,19 @@ public:
 
 		info->MsgSeqNum = ReadUInt32_Mandatory();
 		info->SendingTime = ReadUInt64_Mandatory();
-		if((info->AllowLastMsgSeqNumProcessed = !CheckProcessNullUInt32()))
+		if(!(info->IsNullLastMsgSeqNumProcessed = CheckProcessNullUInt32()))
 			info->LastMsgSeqNumProcessed = ReadUInt32_Optional();
 		info->RptSeq = ReadInt32_Mandatory();
-		if((info->AllowLastFragment = !CheckProcessNullUInt32()))
+		if(!(info->IsNullLastFragment = CheckProcessNullUInt32()))
 			info->LastFragment = ReadUInt32_Optional();
-		if((info->AllowRouteFirst = !CheckProcessNullUInt32()))
+		if(!(info->IsNullRouteFirst = CheckProcessNullUInt32()))
 			info->RouteFirst = ReadUInt32_Optional();
-		if((info->AllowTradSesStatus = !CheckProcessNullInt32()))
+		if(!(info->IsNullTradSesStatus = CheckProcessNullInt32()))
 			info->TradSesStatus = ReadInt32_Optional();
-		if((info->AllowTradingSessionID = !CheckProcessNullString()))
+		if(!(info->IsNullTradingSessionID = CheckProcessNullString()))
 			ReadString_Optional(&(info->TradingSessionID), &(info->TradingSessionIDLength));
 		ReadString_Mandatory(&(info->Symbol), &(info->SymbolLength));
-		if((info->AllowMDSecurityTradingStatus = !CheckProcessNullInt32()))
+		if(!(info->IsNullMDSecurityTradingStatus = CheckProcessNullInt32()))
 			info->MDSecurityTradingStatus = ReadInt32_Optional();
 
 		info->GroupMDEntriesCount = ReadUInt32_Mandatory();
@@ -2855,85 +2921,71 @@ public:
 
 			this->ParsePresenceMap(&(gmdeItemInfo->PresenceMap));
 
-			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, gmdeItemInfo->MDEntryTypePresenceIndex)) {
-				if((gmdeItemInfo->AllowMDEntryType = !CheckProcessNullString()))
+			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX0)) {
+				if(!(gmdeItemInfo->IsNullMDEntryType = CheckProcessNullString()))
 					ReadString_Optional(&(gmdeItemInfo->MDEntryType), &(gmdeItemInfo->MDEntryTypeLength));
-				else {
-					gmdeItemInfo->CopyMDEntryType = true;
-					gmdeItemInfo->CopyCount++;
-				}
 			}
-			else
-				gmdeItemInfo-> AllowMDEntryType = false;
-			if((gmdeItemInfo->AllowMDEntryID = !CheckProcessNullString()))
+			else {
+				gmdeItemInfo->MDEntryType = this->m_prevOLSCURRItemInfo->MDEntryType;
+				gmdeItemInfo->MDEntryTypeLength = this->m_prevOLSCURRItemInfo->MDEntryTypeLength;
+			}
+			if(!(gmdeItemInfo->IsNullMDEntryID = CheckProcessNullString()))
 				ReadString_Optional(&(gmdeItemInfo->MDEntryID), &(gmdeItemInfo->MDEntryIDLength));
-			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, gmdeItemInfo->MDEntryDatePresenceIndex)) {
-				if((gmdeItemInfo->AllowMDEntryDate = !CheckProcessNullUInt32()))
+			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX1)) {
+				if(!(gmdeItemInfo->IsNullMDEntryDate = CheckProcessNullUInt32()))
 					gmdeItemInfo->MDEntryDate = ReadUInt32_Optional();
-				else
-					gmdeItemInfo->CopyMDEntryDate = true;
-					gmdeItemInfo->CopyCount++;
 			}
-			else
-				gmdeItemInfo-> AllowMDEntryDate = false;
-			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, gmdeItemInfo->MDEntryTimePresenceIndex)) {
-				if((gmdeItemInfo->AllowMDEntryTime = !CheckProcessNullUInt32()))
+			else {
+				gmdeItemInfo->MDEntryDate = this->m_prevOLSCURRItemInfo->MDEntryDate;
+			}
+			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX2)) {
+				if(!(gmdeItemInfo->IsNullMDEntryTime = CheckProcessNullUInt32()))
 					gmdeItemInfo->MDEntryTime = ReadUInt32_Optional();
-				else
-					gmdeItemInfo->CopyMDEntryTime = true;
-					gmdeItemInfo->CopyCount++;
 			}
-			else
-				gmdeItemInfo-> AllowMDEntryTime = false;
-			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, gmdeItemInfo->OrigTimePresenceIndex)) {
-				if((gmdeItemInfo->AllowOrigTime = !CheckProcessNullUInt32()))
+			else {
+				gmdeItemInfo->MDEntryTime = this->m_prevOLSCURRItemInfo->MDEntryTime;
+			}
+			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX3)) {
+				if(!(gmdeItemInfo->IsNullOrigTime = CheckProcessNullUInt32()))
 					gmdeItemInfo->OrigTime = ReadUInt32_Optional();
-				else
-					gmdeItemInfo->CopyOrigTime = true;
-					gmdeItemInfo->CopyCount++;
 			}
-			else
-				gmdeItemInfo-> AllowOrigTime = false;
-			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, gmdeItemInfo->MDEntryPxPresenceIndex)) {
-				if((gmdeItemInfo->AllowMDEntryPx = !CheckProcessNullDecimal()))
+			else {
+				gmdeItemInfo->OrigTime = this->m_prevOLSCURRItemInfo->OrigTime;
+			}
+			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX4)) {
+				if(!(gmdeItemInfo->IsNullMDEntryPx = CheckProcessNullDecimal()))
 					ReadDecimal_Optional(&(gmdeItemInfo->MDEntryPx));
-				else
-					gmdeItemInfo->CopyMDEntryPx = true;
-					gmdeItemInfo->CopyCount++;
 			}
-			else
-				gmdeItemInfo-> AllowMDEntryPx = false;
-			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, gmdeItemInfo->MDEntrySizePresenceIndex)) {
-				if((gmdeItemInfo->AllowMDEntrySize = !CheckProcessNullDecimal()))
+			else {
+				gmdeItemInfo->MDEntryPx = this->m_prevOLSCURRItemInfo->MDEntryPx;
+			}
+			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX5)) {
+				if(!(gmdeItemInfo->IsNullMDEntrySize = CheckProcessNullDecimal()))
 					ReadDecimal_Optional(&(gmdeItemInfo->MDEntrySize));
-				else
-					gmdeItemInfo->CopyMDEntrySize = true;
-					gmdeItemInfo->CopyCount++;
 			}
-			else
-				gmdeItemInfo-> AllowMDEntrySize = false;
-			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, gmdeItemInfo->OrderStatusPresenceIndex)) {
-				if((gmdeItemInfo->AllowOrderStatus = !CheckProcessNullString()))
+			else {
+				gmdeItemInfo->MDEntrySize = this->m_prevOLSCURRItemInfo->MDEntrySize;
+			}
+			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX6)) {
+				if(!(gmdeItemInfo->IsNullOrderStatus = CheckProcessNullString()))
 					ReadString_Optional(&(gmdeItemInfo->OrderStatus), &(gmdeItemInfo->OrderStatusLength));
-				else {
-					gmdeItemInfo->CopyOrderStatus = true;
-					gmdeItemInfo->CopyCount++;
-				}
 			}
-			else
-				gmdeItemInfo-> AllowOrderStatus = false;
-			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, gmdeItemInfo->TradingSessionSubIDPresenceIndex)) {
-				if((gmdeItemInfo->AllowTradingSessionSubID = !CheckProcessNullString()))
+			else {
+				gmdeItemInfo->OrderStatus = this->m_prevOLSCURRItemInfo->OrderStatus;
+				gmdeItemInfo->OrderStatusLength = this->m_prevOLSCURRItemInfo->OrderStatusLength;
+			}
+			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX7)) {
+				if(!(gmdeItemInfo->IsNullTradingSessionSubID = CheckProcessNullString()))
 					ReadString_Optional(&(gmdeItemInfo->TradingSessionSubID), &(gmdeItemInfo->TradingSessionSubIDLength));
-				else {
-					gmdeItemInfo->CopyTradingSessionSubID = true;
-					gmdeItemInfo->CopyCount++;
-				}
 			}
-			else
-				gmdeItemInfo-> AllowTradingSessionSubID = false;
+			else {
+				gmdeItemInfo->TradingSessionSubID = this->m_prevOLSCURRItemInfo->TradingSessionSubID;
+				gmdeItemInfo->TradingSessionSubIDLength = this->m_prevOLSCURRItemInfo->TradingSessionSubIDLength;
+			}
+			this->m_prevOLSCURRItemInfo = gmdeItemInfo;
 		}
 
+		this->m_prevOLSCURRInfo = info;
 		return info;
 	}
 	void* DecodeTLSFOND() {
@@ -2942,21 +2994,21 @@ public:
 
 		info->MsgSeqNum = ReadUInt32_Mandatory();
 		info->SendingTime = ReadUInt64_Mandatory();
-		if((info->AllowLastMsgSeqNumProcessed = !CheckProcessNullUInt32()))
+		if(!(info->IsNullLastMsgSeqNumProcessed = CheckProcessNullUInt32()))
 			info->LastMsgSeqNumProcessed = ReadUInt32_Optional();
 		info->RptSeq = ReadInt32_Mandatory();
-		if((info->AllowLastFragment = !CheckProcessNullUInt32()))
+		if(!(info->IsNullLastFragment = CheckProcessNullUInt32()))
 			info->LastFragment = ReadUInt32_Optional();
-		if((info->AllowRouteFirst = !CheckProcessNullUInt32()))
+		if(!(info->IsNullRouteFirst = CheckProcessNullUInt32()))
 			info->RouteFirst = ReadUInt32_Optional();
-		if((info->AllowTradSesStatus = !CheckProcessNullInt32()))
+		if(!(info->IsNullTradSesStatus = CheckProcessNullInt32()))
 			info->TradSesStatus = ReadInt32_Optional();
-		if((info->AllowTradingSessionID = !CheckProcessNullString()))
+		if(!(info->IsNullTradingSessionID = CheckProcessNullString()))
 			ReadString_Optional(&(info->TradingSessionID), &(info->TradingSessionIDLength));
 		ReadString_Mandatory(&(info->Symbol), &(info->SymbolLength));
-		if((info->AllowMDSecurityTradingStatus = !CheckProcessNullInt32()))
+		if(!(info->IsNullMDSecurityTradingStatus = CheckProcessNullInt32()))
 			info->MDSecurityTradingStatus = ReadInt32_Optional();
-		if((info->AllowAuctionIndicator = !CheckProcessNullUInt32()))
+		if(!(info->IsNullAuctionIndicator = CheckProcessNullUInt32()))
 			info->AuctionIndicator = ReadUInt32_Optional();
 
 		info->GroupMDEntriesCount = ReadUInt32_Mandatory();
@@ -2969,176 +3021,142 @@ public:
 			this->ParsePresenceMap(&(gmdeItemInfo->PresenceMap));
 
 			ReadString_Mandatory(&(gmdeItemInfo->MDEntryType), &(gmdeItemInfo->MDEntryTypeLength));
-			if((gmdeItemInfo->AllowMDEntryID = !CheckProcessNullString()))
+			if(!(gmdeItemInfo->IsNullMDEntryID = CheckProcessNullString()))
 				ReadString_Optional(&(gmdeItemInfo->MDEntryID), &(gmdeItemInfo->MDEntryIDLength));
-			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, gmdeItemInfo->MDEntryDatePresenceIndex)) {
-				if((gmdeItemInfo->AllowMDEntryDate = !CheckProcessNullUInt32()))
+			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX0)) {
+				if(!(gmdeItemInfo->IsNullMDEntryDate = CheckProcessNullUInt32()))
 					gmdeItemInfo->MDEntryDate = ReadUInt32_Optional();
-				else
-					gmdeItemInfo->CopyMDEntryDate = true;
-					gmdeItemInfo->CopyCount++;
 			}
-			else
-				gmdeItemInfo-> AllowMDEntryDate = false;
-			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, gmdeItemInfo->MDEntryTimePresenceIndex)) {
-				if((gmdeItemInfo->AllowMDEntryTime = !CheckProcessNullUInt32()))
+			else {
+				gmdeItemInfo->MDEntryDate = this->m_prevTLSFONDItemInfo->MDEntryDate;
+			}
+			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX1)) {
+				if(!(gmdeItemInfo->IsNullMDEntryTime = CheckProcessNullUInt32()))
 					gmdeItemInfo->MDEntryTime = ReadUInt32_Optional();
-				else
-					gmdeItemInfo->CopyMDEntryTime = true;
-					gmdeItemInfo->CopyCount++;
 			}
-			else
-				gmdeItemInfo-> AllowMDEntryTime = false;
-			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, gmdeItemInfo->OrigTimePresenceIndex)) {
-				if((gmdeItemInfo->AllowOrigTime = !CheckProcessNullUInt32()))
+			else {
+				gmdeItemInfo->MDEntryTime = this->m_prevTLSFONDItemInfo->MDEntryTime;
+			}
+			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX2)) {
+				if(!(gmdeItemInfo->IsNullOrigTime = CheckProcessNullUInt32()))
 					gmdeItemInfo->OrigTime = ReadUInt32_Optional();
-				else
-					gmdeItemInfo->CopyOrigTime = true;
-					gmdeItemInfo->CopyCount++;
 			}
-			else
-				gmdeItemInfo-> AllowOrigTime = false;
-			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, gmdeItemInfo->OrderSidePresenceIndex)) {
-				if((gmdeItemInfo->AllowOrderSide = !CheckProcessNullString()))
+			else {
+				gmdeItemInfo->OrigTime = this->m_prevTLSFONDItemInfo->OrigTime;
+			}
+			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX3)) {
+				if(!(gmdeItemInfo->IsNullOrderSide = CheckProcessNullString()))
 					ReadString_Optional(&(gmdeItemInfo->OrderSide), &(gmdeItemInfo->OrderSideLength));
-				else {
-					gmdeItemInfo->CopyOrderSide = true;
-					gmdeItemInfo->CopyCount++;
-				}
 			}
-			else
-				gmdeItemInfo-> AllowOrderSide = false;
-			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, gmdeItemInfo->MDEntryPxPresenceIndex)) {
-				if((gmdeItemInfo->AllowMDEntryPx = !CheckProcessNullDecimal()))
+			else {
+				gmdeItemInfo->OrderSide = this->m_prevTLSFONDItemInfo->OrderSide;
+				gmdeItemInfo->OrderSideLength = this->m_prevTLSFONDItemInfo->OrderSideLength;
+			}
+			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX4)) {
+				if(!(gmdeItemInfo->IsNullMDEntryPx = CheckProcessNullDecimal()))
 					ReadDecimal_Optional(&(gmdeItemInfo->MDEntryPx));
-				else
-					gmdeItemInfo->CopyMDEntryPx = true;
-					gmdeItemInfo->CopyCount++;
 			}
-			else
-				gmdeItemInfo-> AllowMDEntryPx = false;
-			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, gmdeItemInfo->MDEntrySizePresenceIndex)) {
-				if((gmdeItemInfo->AllowMDEntrySize = !CheckProcessNullDecimal()))
+			else {
+				gmdeItemInfo->MDEntryPx = this->m_prevTLSFONDItemInfo->MDEntryPx;
+			}
+			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX5)) {
+				if(!(gmdeItemInfo->IsNullMDEntrySize = CheckProcessNullDecimal()))
 					ReadDecimal_Optional(&(gmdeItemInfo->MDEntrySize));
-				else
-					gmdeItemInfo->CopyMDEntrySize = true;
-					gmdeItemInfo->CopyCount++;
 			}
-			else
-				gmdeItemInfo-> AllowMDEntrySize = false;
-			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, gmdeItemInfo->AccruedInterestAmtPresenceIndex)) {
-				if((gmdeItemInfo->AllowAccruedInterestAmt = !CheckProcessNullDecimal()))
+			else {
+				gmdeItemInfo->MDEntrySize = this->m_prevTLSFONDItemInfo->MDEntrySize;
+			}
+			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX6)) {
+				if(!(gmdeItemInfo->IsNullAccruedInterestAmt = CheckProcessNullDecimal()))
 					ReadDecimal_Optional(&(gmdeItemInfo->AccruedInterestAmt));
-				else
-					gmdeItemInfo->CopyAccruedInterestAmt = true;
-					gmdeItemInfo->CopyCount++;
 			}
-			else
-				gmdeItemInfo-> AllowAccruedInterestAmt = false;
-			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, gmdeItemInfo->TradeValuePresenceIndex)) {
-				if((gmdeItemInfo->AllowTradeValue = !CheckProcessNullDecimal()))
+			else {
+				gmdeItemInfo->AccruedInterestAmt = this->m_prevTLSFONDItemInfo->AccruedInterestAmt;
+			}
+			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX7)) {
+				if(!(gmdeItemInfo->IsNullTradeValue = CheckProcessNullDecimal()))
 					ReadDecimal_Optional(&(gmdeItemInfo->TradeValue));
-				else
-					gmdeItemInfo->CopyTradeValue = true;
-					gmdeItemInfo->CopyCount++;
 			}
-			else
-				gmdeItemInfo-> AllowTradeValue = false;
-			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, gmdeItemInfo->YieldPresenceIndex)) {
-				if((gmdeItemInfo->AllowYield = !CheckProcessNullDecimal()))
+			else {
+				gmdeItemInfo->TradeValue = this->m_prevTLSFONDItemInfo->TradeValue;
+			}
+			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX8)) {
+				if(!(gmdeItemInfo->IsNullYield = CheckProcessNullDecimal()))
 					ReadDecimal_Optional(&(gmdeItemInfo->Yield));
-				else
-					gmdeItemInfo->CopyYield = true;
-					gmdeItemInfo->CopyCount++;
 			}
-			else
-				gmdeItemInfo-> AllowYield = false;
-			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, gmdeItemInfo->SettlDatePresenceIndex)) {
-				if((gmdeItemInfo->AllowSettlDate = !CheckProcessNullUInt32()))
+			else {
+				gmdeItemInfo->Yield = this->m_prevTLSFONDItemInfo->Yield;
+			}
+			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX9)) {
+				if(!(gmdeItemInfo->IsNullSettlDate = CheckProcessNullUInt32()))
 					gmdeItemInfo->SettlDate = ReadUInt32_Optional();
-				else
-					gmdeItemInfo->CopySettlDate = true;
-					gmdeItemInfo->CopyCount++;
 			}
-			else
-				gmdeItemInfo-> AllowSettlDate = false;
-			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, gmdeItemInfo->SettleTypePresenceIndex)) {
-				if((gmdeItemInfo->AllowSettleType = !CheckProcessNullString()))
+			else {
+				gmdeItemInfo->SettlDate = this->m_prevTLSFONDItemInfo->SettlDate;
+			}
+			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX10)) {
+				if(!(gmdeItemInfo->IsNullSettleType = CheckProcessNullString()))
 					ReadString_Optional(&(gmdeItemInfo->SettleType), &(gmdeItemInfo->SettleTypeLength));
-				else {
-					gmdeItemInfo->CopySettleType = true;
-					gmdeItemInfo->CopyCount++;
-				}
 			}
-			else
-				gmdeItemInfo-> AllowSettleType = false;
-			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, gmdeItemInfo->PricePresenceIndex)) {
-				if((gmdeItemInfo->AllowPrice = !CheckProcessNullDecimal()))
+			else {
+				gmdeItemInfo->SettleType = this->m_prevTLSFONDItemInfo->SettleType;
+				gmdeItemInfo->SettleTypeLength = this->m_prevTLSFONDItemInfo->SettleTypeLength;
+			}
+			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX11)) {
+				if(!(gmdeItemInfo->IsNullPrice = CheckProcessNullDecimal()))
 					ReadDecimal_Optional(&(gmdeItemInfo->Price));
-				else
-					gmdeItemInfo->CopyPrice = true;
-					gmdeItemInfo->CopyCount++;
 			}
-			else
-				gmdeItemInfo-> AllowPrice = false;
-			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, gmdeItemInfo->PriceTypePresenceIndex)) {
-				if((gmdeItemInfo->AllowPriceType = !CheckProcessNullInt32()))
+			else {
+				gmdeItemInfo->Price = this->m_prevTLSFONDItemInfo->Price;
+			}
+			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX12)) {
+				if(!(gmdeItemInfo->IsNullPriceType = CheckProcessNullInt32()))
 					gmdeItemInfo->PriceType = ReadInt32_Optional();
-				else
-					gmdeItemInfo->CopyPriceType = true;
-					gmdeItemInfo->CopyCount++;
 			}
-			else
-				gmdeItemInfo-> AllowPriceType = false;
-			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, gmdeItemInfo->RepoToPxPresenceIndex)) {
-				if((gmdeItemInfo->AllowRepoToPx = !CheckProcessNullDecimal()))
+			else {
+				gmdeItemInfo->PriceType = this->m_prevTLSFONDItemInfo->PriceType;
+			}
+			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX13)) {
+				if(!(gmdeItemInfo->IsNullRepoToPx = CheckProcessNullDecimal()))
 					ReadDecimal_Optional(&(gmdeItemInfo->RepoToPx));
-				else
-					gmdeItemInfo->CopyRepoToPx = true;
-					gmdeItemInfo->CopyCount++;
 			}
-			else
-				gmdeItemInfo-> AllowRepoToPx = false;
-			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, gmdeItemInfo->BuyBackPxPresenceIndex)) {
-				if((gmdeItemInfo->AllowBuyBackPx = !CheckProcessNullDecimal()))
+			else {
+				gmdeItemInfo->RepoToPx = this->m_prevTLSFONDItemInfo->RepoToPx;
+			}
+			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX14)) {
+				if(!(gmdeItemInfo->IsNullBuyBackPx = CheckProcessNullDecimal()))
 					ReadDecimal_Optional(&(gmdeItemInfo->BuyBackPx));
-				else
-					gmdeItemInfo->CopyBuyBackPx = true;
-					gmdeItemInfo->CopyCount++;
 			}
-			else
-				gmdeItemInfo-> AllowBuyBackPx = false;
-			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, gmdeItemInfo->BuyBackDatePresenceIndex)) {
-				if((gmdeItemInfo->AllowBuyBackDate = !CheckProcessNullUInt32()))
+			else {
+				gmdeItemInfo->BuyBackPx = this->m_prevTLSFONDItemInfo->BuyBackPx;
+			}
+			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX15)) {
+				if(!(gmdeItemInfo->IsNullBuyBackDate = CheckProcessNullUInt32()))
 					gmdeItemInfo->BuyBackDate = ReadUInt32_Optional();
-				else
-					gmdeItemInfo->CopyBuyBackDate = true;
-					gmdeItemInfo->CopyCount++;
 			}
-			else
-				gmdeItemInfo-> AllowBuyBackDate = false;
-			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, gmdeItemInfo->TradingSessionSubIDPresenceIndex)) {
-				if((gmdeItemInfo->AllowTradingSessionSubID = !CheckProcessNullString()))
+			else {
+				gmdeItemInfo->BuyBackDate = this->m_prevTLSFONDItemInfo->BuyBackDate;
+			}
+			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX16)) {
+				if(!(gmdeItemInfo->IsNullTradingSessionSubID = CheckProcessNullString()))
 					ReadString_Optional(&(gmdeItemInfo->TradingSessionSubID), &(gmdeItemInfo->TradingSessionSubIDLength));
-				else {
-					gmdeItemInfo->CopyTradingSessionSubID = true;
-					gmdeItemInfo->CopyCount++;
-				}
 			}
-			else
-				gmdeItemInfo-> AllowTradingSessionSubID = false;
-			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, gmdeItemInfo->RefOrderIDPresenceIndex)) {
-				if((gmdeItemInfo->AllowRefOrderID = !CheckProcessNullString()))
+			else {
+				gmdeItemInfo->TradingSessionSubID = this->m_prevTLSFONDItemInfo->TradingSessionSubID;
+				gmdeItemInfo->TradingSessionSubIDLength = this->m_prevTLSFONDItemInfo->TradingSessionSubIDLength;
+			}
+			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX17)) {
+				if(!(gmdeItemInfo->IsNullRefOrderID = CheckProcessNullString()))
 					ReadString_Optional(&(gmdeItemInfo->RefOrderID), &(gmdeItemInfo->RefOrderIDLength));
-				else {
-					gmdeItemInfo->CopyRefOrderID = true;
-					gmdeItemInfo->CopyCount++;
-				}
 			}
-			else
-				gmdeItemInfo-> AllowRefOrderID = false;
+			else {
+				gmdeItemInfo->RefOrderID = this->m_prevTLSFONDItemInfo->RefOrderID;
+				gmdeItemInfo->RefOrderIDLength = this->m_prevTLSFONDItemInfo->RefOrderIDLength;
+			}
+			this->m_prevTLSFONDItemInfo = gmdeItemInfo;
 		}
 
+		this->m_prevTLSFONDInfo = info;
 		return info;
 	}
 	void* DecodeTLSCURR() {
@@ -3147,19 +3165,19 @@ public:
 
 		info->MsgSeqNum = ReadUInt32_Mandatory();
 		info->SendingTime = ReadUInt64_Mandatory();
-		if((info->AllowLastMsgSeqNumProcessed = !CheckProcessNullUInt32()))
+		if(!(info->IsNullLastMsgSeqNumProcessed = CheckProcessNullUInt32()))
 			info->LastMsgSeqNumProcessed = ReadUInt32_Optional();
 		info->RptSeq = ReadInt32_Mandatory();
-		if((info->AllowLastFragment = !CheckProcessNullUInt32()))
+		if(!(info->IsNullLastFragment = CheckProcessNullUInt32()))
 			info->LastFragment = ReadUInt32_Optional();
-		if((info->AllowRouteFirst = !CheckProcessNullUInt32()))
+		if(!(info->IsNullRouteFirst = CheckProcessNullUInt32()))
 			info->RouteFirst = ReadUInt32_Optional();
-		if((info->AllowTradSesStatus = !CheckProcessNullInt32()))
+		if(!(info->IsNullTradSesStatus = CheckProcessNullInt32()))
 			info->TradSesStatus = ReadInt32_Optional();
-		if((info->AllowTradingSessionID = !CheckProcessNullString()))
+		if(!(info->IsNullTradingSessionID = CheckProcessNullString()))
 			ReadString_Optional(&(info->TradingSessionID), &(info->TradingSessionIDLength));
 		ReadString_Mandatory(&(info->Symbol), &(info->SymbolLength));
-		if((info->AllowMDSecurityTradingStatus = !CheckProcessNullInt32()))
+		if(!(info->IsNullMDSecurityTradingStatus = CheckProcessNullInt32()))
 			info->MDSecurityTradingStatus = ReadInt32_Optional();
 
 		info->GroupMDEntriesCount = ReadUInt32_Mandatory();
@@ -3172,158 +3190,128 @@ public:
 			this->ParsePresenceMap(&(gmdeItemInfo->PresenceMap));
 
 			ReadString_Mandatory(&(gmdeItemInfo->MDEntryType), &(gmdeItemInfo->MDEntryTypeLength));
-			if((gmdeItemInfo->AllowMDEntryID = !CheckProcessNullString()))
+			if(!(gmdeItemInfo->IsNullMDEntryID = CheckProcessNullString()))
 				ReadString_Optional(&(gmdeItemInfo->MDEntryID), &(gmdeItemInfo->MDEntryIDLength));
-			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, gmdeItemInfo->MDEntryDatePresenceIndex)) {
-				if((gmdeItemInfo->AllowMDEntryDate = !CheckProcessNullUInt32()))
+			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX0)) {
+				if(!(gmdeItemInfo->IsNullMDEntryDate = CheckProcessNullUInt32()))
 					gmdeItemInfo->MDEntryDate = ReadUInt32_Optional();
-				else
-					gmdeItemInfo->CopyMDEntryDate = true;
-					gmdeItemInfo->CopyCount++;
 			}
-			else
-				gmdeItemInfo-> AllowMDEntryDate = false;
-			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, gmdeItemInfo->MDEntryTimePresenceIndex)) {
-				if((gmdeItemInfo->AllowMDEntryTime = !CheckProcessNullUInt32()))
+			else {
+				gmdeItemInfo->MDEntryDate = this->m_prevTLSCURRItemInfo->MDEntryDate;
+			}
+			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX1)) {
+				if(!(gmdeItemInfo->IsNullMDEntryTime = CheckProcessNullUInt32()))
 					gmdeItemInfo->MDEntryTime = ReadUInt32_Optional();
-				else
-					gmdeItemInfo->CopyMDEntryTime = true;
-					gmdeItemInfo->CopyCount++;
 			}
-			else
-				gmdeItemInfo-> AllowMDEntryTime = false;
-			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, gmdeItemInfo->OrigTimePresenceIndex)) {
-				if((gmdeItemInfo->AllowOrigTime = !CheckProcessNullUInt32()))
+			else {
+				gmdeItemInfo->MDEntryTime = this->m_prevTLSCURRItemInfo->MDEntryTime;
+			}
+			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX2)) {
+				if(!(gmdeItemInfo->IsNullOrigTime = CheckProcessNullUInt32()))
 					gmdeItemInfo->OrigTime = ReadUInt32_Optional();
-				else
-					gmdeItemInfo->CopyOrigTime = true;
-					gmdeItemInfo->CopyCount++;
 			}
-			else
-				gmdeItemInfo-> AllowOrigTime = false;
-			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, gmdeItemInfo->OrderSidePresenceIndex)) {
-				if((gmdeItemInfo->AllowOrderSide = !CheckProcessNullString()))
+			else {
+				gmdeItemInfo->OrigTime = this->m_prevTLSCURRItemInfo->OrigTime;
+			}
+			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX3)) {
+				if(!(gmdeItemInfo->IsNullOrderSide = CheckProcessNullString()))
 					ReadString_Optional(&(gmdeItemInfo->OrderSide), &(gmdeItemInfo->OrderSideLength));
-				else {
-					gmdeItemInfo->CopyOrderSide = true;
-					gmdeItemInfo->CopyCount++;
-				}
 			}
-			else
-				gmdeItemInfo-> AllowOrderSide = false;
-			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, gmdeItemInfo->MDEntryPxPresenceIndex)) {
-				if((gmdeItemInfo->AllowMDEntryPx = !CheckProcessNullDecimal()))
+			else {
+				gmdeItemInfo->OrderSide = this->m_prevTLSCURRItemInfo->OrderSide;
+				gmdeItemInfo->OrderSideLength = this->m_prevTLSCURRItemInfo->OrderSideLength;
+			}
+			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX4)) {
+				if(!(gmdeItemInfo->IsNullMDEntryPx = CheckProcessNullDecimal()))
 					ReadDecimal_Optional(&(gmdeItemInfo->MDEntryPx));
-				else
-					gmdeItemInfo->CopyMDEntryPx = true;
-					gmdeItemInfo->CopyCount++;
 			}
-			else
-				gmdeItemInfo-> AllowMDEntryPx = false;
-			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, gmdeItemInfo->MDEntrySizePresenceIndex)) {
-				if((gmdeItemInfo->AllowMDEntrySize = !CheckProcessNullDecimal()))
+			else {
+				gmdeItemInfo->MDEntryPx = this->m_prevTLSCURRItemInfo->MDEntryPx;
+			}
+			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX5)) {
+				if(!(gmdeItemInfo->IsNullMDEntrySize = CheckProcessNullDecimal()))
 					ReadDecimal_Optional(&(gmdeItemInfo->MDEntrySize));
-				else
-					gmdeItemInfo->CopyMDEntrySize = true;
-					gmdeItemInfo->CopyCount++;
 			}
-			else
-				gmdeItemInfo-> AllowMDEntrySize = false;
-			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, gmdeItemInfo->TradeValuePresenceIndex)) {
-				if((gmdeItemInfo->AllowTradeValue = !CheckProcessNullDecimal()))
+			else {
+				gmdeItemInfo->MDEntrySize = this->m_prevTLSCURRItemInfo->MDEntrySize;
+			}
+			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX6)) {
+				if(!(gmdeItemInfo->IsNullTradeValue = CheckProcessNullDecimal()))
 					ReadDecimal_Optional(&(gmdeItemInfo->TradeValue));
-				else
-					gmdeItemInfo->CopyTradeValue = true;
-					gmdeItemInfo->CopyCount++;
 			}
-			else
-				gmdeItemInfo-> AllowTradeValue = false;
-			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, gmdeItemInfo->SettlDatePresenceIndex)) {
-				if((gmdeItemInfo->AllowSettlDate = !CheckProcessNullUInt32()))
+			else {
+				gmdeItemInfo->TradeValue = this->m_prevTLSCURRItemInfo->TradeValue;
+			}
+			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX7)) {
+				if(!(gmdeItemInfo->IsNullSettlDate = CheckProcessNullUInt32()))
 					gmdeItemInfo->SettlDate = ReadUInt32_Optional();
-				else
-					gmdeItemInfo->CopySettlDate = true;
-					gmdeItemInfo->CopyCount++;
 			}
-			else
-				gmdeItemInfo-> AllowSettlDate = false;
-			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, gmdeItemInfo->SettleTypePresenceIndex)) {
-				if((gmdeItemInfo->AllowSettleType = !CheckProcessNullString()))
+			else {
+				gmdeItemInfo->SettlDate = this->m_prevTLSCURRItemInfo->SettlDate;
+			}
+			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX8)) {
+				if(!(gmdeItemInfo->IsNullSettleType = CheckProcessNullString()))
 					ReadString_Optional(&(gmdeItemInfo->SettleType), &(gmdeItemInfo->SettleTypeLength));
-				else {
-					gmdeItemInfo->CopySettleType = true;
-					gmdeItemInfo->CopyCount++;
-				}
 			}
-			else
-				gmdeItemInfo-> AllowSettleType = false;
-			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, gmdeItemInfo->PricePresenceIndex)) {
-				if((gmdeItemInfo->AllowPrice = !CheckProcessNullDecimal()))
+			else {
+				gmdeItemInfo->SettleType = this->m_prevTLSCURRItemInfo->SettleType;
+				gmdeItemInfo->SettleTypeLength = this->m_prevTLSCURRItemInfo->SettleTypeLength;
+			}
+			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX9)) {
+				if(!(gmdeItemInfo->IsNullPrice = CheckProcessNullDecimal()))
 					ReadDecimal_Optional(&(gmdeItemInfo->Price));
-				else
-					gmdeItemInfo->CopyPrice = true;
-					gmdeItemInfo->CopyCount++;
 			}
-			else
-				gmdeItemInfo-> AllowPrice = false;
-			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, gmdeItemInfo->PriceTypePresenceIndex)) {
-				if((gmdeItemInfo->AllowPriceType = !CheckProcessNullInt32()))
+			else {
+				gmdeItemInfo->Price = this->m_prevTLSCURRItemInfo->Price;
+			}
+			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX10)) {
+				if(!(gmdeItemInfo->IsNullPriceType = CheckProcessNullInt32()))
 					gmdeItemInfo->PriceType = ReadInt32_Optional();
-				else
-					gmdeItemInfo->CopyPriceType = true;
-					gmdeItemInfo->CopyCount++;
 			}
-			else
-				gmdeItemInfo-> AllowPriceType = false;
-			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, gmdeItemInfo->RepoToPxPresenceIndex)) {
-				if((gmdeItemInfo->AllowRepoToPx = !CheckProcessNullDecimal()))
+			else {
+				gmdeItemInfo->PriceType = this->m_prevTLSCURRItemInfo->PriceType;
+			}
+			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX11)) {
+				if(!(gmdeItemInfo->IsNullRepoToPx = CheckProcessNullDecimal()))
 					ReadDecimal_Optional(&(gmdeItemInfo->RepoToPx));
-				else
-					gmdeItemInfo->CopyRepoToPx = true;
-					gmdeItemInfo->CopyCount++;
 			}
-			else
-				gmdeItemInfo-> AllowRepoToPx = false;
-			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, gmdeItemInfo->BuyBackPxPresenceIndex)) {
-				if((gmdeItemInfo->AllowBuyBackPx = !CheckProcessNullDecimal()))
+			else {
+				gmdeItemInfo->RepoToPx = this->m_prevTLSCURRItemInfo->RepoToPx;
+			}
+			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX12)) {
+				if(!(gmdeItemInfo->IsNullBuyBackPx = CheckProcessNullDecimal()))
 					ReadDecimal_Optional(&(gmdeItemInfo->BuyBackPx));
-				else
-					gmdeItemInfo->CopyBuyBackPx = true;
-					gmdeItemInfo->CopyCount++;
 			}
-			else
-				gmdeItemInfo-> AllowBuyBackPx = false;
-			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, gmdeItemInfo->BuyBackDatePresenceIndex)) {
-				if((gmdeItemInfo->AllowBuyBackDate = !CheckProcessNullUInt32()))
+			else {
+				gmdeItemInfo->BuyBackPx = this->m_prevTLSCURRItemInfo->BuyBackPx;
+			}
+			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX13)) {
+				if(!(gmdeItemInfo->IsNullBuyBackDate = CheckProcessNullUInt32()))
 					gmdeItemInfo->BuyBackDate = ReadUInt32_Optional();
-				else
-					gmdeItemInfo->CopyBuyBackDate = true;
-					gmdeItemInfo->CopyCount++;
 			}
-			else
-				gmdeItemInfo-> AllowBuyBackDate = false;
-			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, gmdeItemInfo->TradingSessionSubIDPresenceIndex)) {
-				if((gmdeItemInfo->AllowTradingSessionSubID = !CheckProcessNullString()))
+			else {
+				gmdeItemInfo->BuyBackDate = this->m_prevTLSCURRItemInfo->BuyBackDate;
+			}
+			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX14)) {
+				if(!(gmdeItemInfo->IsNullTradingSessionSubID = CheckProcessNullString()))
 					ReadString_Optional(&(gmdeItemInfo->TradingSessionSubID), &(gmdeItemInfo->TradingSessionSubIDLength));
-				else {
-					gmdeItemInfo->CopyTradingSessionSubID = true;
-					gmdeItemInfo->CopyCount++;
-				}
 			}
-			else
-				gmdeItemInfo-> AllowTradingSessionSubID = false;
-			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, gmdeItemInfo->RefOrderIDPresenceIndex)) {
-				if((gmdeItemInfo->AllowRefOrderID = !CheckProcessNullString()))
+			else {
+				gmdeItemInfo->TradingSessionSubID = this->m_prevTLSCURRItemInfo->TradingSessionSubID;
+				gmdeItemInfo->TradingSessionSubIDLength = this->m_prevTLSCURRItemInfo->TradingSessionSubIDLength;
+			}
+			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX15)) {
+				if(!(gmdeItemInfo->IsNullRefOrderID = CheckProcessNullString()))
 					ReadString_Optional(&(gmdeItemInfo->RefOrderID), &(gmdeItemInfo->RefOrderIDLength));
-				else {
-					gmdeItemInfo->CopyRefOrderID = true;
-					gmdeItemInfo->CopyCount++;
-				}
 			}
-			else
-				gmdeItemInfo-> AllowRefOrderID = false;
+			else {
+				gmdeItemInfo->RefOrderID = this->m_prevTLSCURRItemInfo->RefOrderID;
+				gmdeItemInfo->RefOrderIDLength = this->m_prevTLSCURRItemInfo->RefOrderIDLength;
+			}
+			this->m_prevTLSCURRItemInfo = gmdeItemInfo;
 		}
 
+		this->m_prevTLSCURRInfo = info;
 		return info;
 	}
 	void* DecodeIncrementalMSRFOND() {
@@ -3332,7 +3320,7 @@ public:
 
 		info->MsgSeqNum = ReadUInt32_Mandatory();
 		info->SendingTime = ReadUInt64_Mandatory();
-		if((info->AllowLastUpdateTime = !CheckProcessNullUInt64()))
+		if(!(info->IsNullLastUpdateTime = CheckProcessNullUInt64()))
 			info->LastUpdateTime = ReadUInt64_Optional();
 
 		info->GroupMDEntriesCount = ReadUInt32_Mandatory();
@@ -3341,74 +3329,76 @@ public:
 		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 			gmdeItemInfo = GetFreeGenericItemInfo();
 			info->GroupMDEntries[i] = gmdeItemInfo;
-			if((gmdeItemInfo->AllowMDUpdateAction = !CheckProcessNullUInt32()))
+			if(!(gmdeItemInfo->IsNullMDUpdateAction = CheckProcessNullUInt32()))
 				gmdeItemInfo->MDUpdateAction = ReadUInt32_Optional();
-			if((gmdeItemInfo->AllowMDEntryType = !CheckProcessNullString()))
+			if(!(gmdeItemInfo->IsNullMDEntryType = CheckProcessNullString()))
 				ReadString_Optional(&(gmdeItemInfo->MDEntryType), &(gmdeItemInfo->MDEntryTypeLength));
-			if((gmdeItemInfo->AllowMDEntryID = !CheckProcessNullString()))
+			if(!(gmdeItemInfo->IsNullMDEntryID = CheckProcessNullString()))
 				ReadString_Optional(&(gmdeItemInfo->MDEntryID), &(gmdeItemInfo->MDEntryIDLength));
-			if((gmdeItemInfo->AllowSymbol = !CheckProcessNullString()))
+			if(!(gmdeItemInfo->IsNullSymbol = CheckProcessNullString()))
 				ReadString_Optional(&(gmdeItemInfo->Symbol), &(gmdeItemInfo->SymbolLength));
-			if((gmdeItemInfo->AllowRptSeq = !CheckProcessNullInt32()))
+			if(!(gmdeItemInfo->IsNullRptSeq = CheckProcessNullInt32()))
 				gmdeItemInfo->RptSeq = ReadInt32_Optional();
-			if((gmdeItemInfo->AllowMDEntryPx = !CheckProcessNullDecimal()))
+			if(!(gmdeItemInfo->IsNullMDEntryPx = CheckProcessNullDecimal()))
 				ReadDecimal_Optional(&(gmdeItemInfo->MDEntryPx));
-			if((gmdeItemInfo->AllowMDEntrySize = !CheckProcessNullDecimal()))
+			if(!(gmdeItemInfo->IsNullMDEntrySize = CheckProcessNullDecimal()))
 				ReadDecimal_Optional(&(gmdeItemInfo->MDEntrySize));
-			if((gmdeItemInfo->AllowMDEntryDate = !CheckProcessNullUInt32()))
+			if(!(gmdeItemInfo->IsNullMDEntryDate = CheckProcessNullUInt32()))
 				gmdeItemInfo->MDEntryDate = ReadUInt32_Optional();
-			if((gmdeItemInfo->AllowMDEntryTime = !CheckProcessNullUInt32()))
+			if(!(gmdeItemInfo->IsNullMDEntryTime = CheckProcessNullUInt32()))
 				gmdeItemInfo->MDEntryTime = ReadUInt32_Optional();
-			if((gmdeItemInfo->AllowStartTime = !CheckProcessNullUInt32()))
+			if(!(gmdeItemInfo->IsNullStartTime = CheckProcessNullUInt32()))
 				gmdeItemInfo->StartTime = ReadUInt32_Optional();
-			if((gmdeItemInfo->AllowQuoteCondition = !CheckProcessNullString()))
+			if(!(gmdeItemInfo->IsNullQuoteCondition = CheckProcessNullString()))
 				ReadString_Optional(&(gmdeItemInfo->QuoteCondition), &(gmdeItemInfo->QuoteConditionLength));
-			if((gmdeItemInfo->AllowTradeCondition = !CheckProcessNullString()))
+			if(!(gmdeItemInfo->IsNullTradeCondition = CheckProcessNullString()))
 				ReadString_Optional(&(gmdeItemInfo->TradeCondition), &(gmdeItemInfo->TradeConditionLength));
-			if((gmdeItemInfo->AllowOpenCloseSettlFlag = !CheckProcessNullString()))
+			if(!(gmdeItemInfo->IsNullOpenCloseSettlFlag = CheckProcessNullString()))
 				ReadString_Optional(&(gmdeItemInfo->OpenCloseSettlFlag), &(gmdeItemInfo->OpenCloseSettlFlagLength));
-			if((gmdeItemInfo->AllowNetChgPrevDay = !CheckProcessNullDecimal()))
+			if(!(gmdeItemInfo->IsNullNetChgPrevDay = CheckProcessNullDecimal()))
 				ReadDecimal_Optional(&(gmdeItemInfo->NetChgPrevDay));
-			if((gmdeItemInfo->AllowAccruedInterestAmt = !CheckProcessNullDecimal()))
+			if(!(gmdeItemInfo->IsNullAccruedInterestAmt = CheckProcessNullDecimal()))
 				ReadDecimal_Optional(&(gmdeItemInfo->AccruedInterestAmt));
-			if((gmdeItemInfo->AllowChgFromWAPrice = !CheckProcessNullDecimal()))
+			if(!(gmdeItemInfo->IsNullChgFromWAPrice = CheckProcessNullDecimal()))
 				ReadDecimal_Optional(&(gmdeItemInfo->ChgFromWAPrice));
-			if((gmdeItemInfo->AllowChgOpenInterest = !CheckProcessNullDecimal()))
+			if(!(gmdeItemInfo->IsNullChgOpenInterest = CheckProcessNullDecimal()))
 				ReadDecimal_Optional(&(gmdeItemInfo->ChgOpenInterest));
-			if((gmdeItemInfo->AllowBidMarketSize = !CheckProcessNullDecimal()))
+			if(!(gmdeItemInfo->IsNullBidMarketSize = CheckProcessNullDecimal()))
 				ReadDecimal_Optional(&(gmdeItemInfo->BidMarketSize));
-			if((gmdeItemInfo->AllowAskMarketSize = !CheckProcessNullDecimal()))
+			if(!(gmdeItemInfo->IsNullAskMarketSize = CheckProcessNullDecimal()))
 				ReadDecimal_Optional(&(gmdeItemInfo->AskMarketSize));
-			if((gmdeItemInfo->AllowTotalNumOfTrades = !CheckProcessNullInt32()))
+			if(!(gmdeItemInfo->IsNullTotalNumOfTrades = CheckProcessNullInt32()))
 				gmdeItemInfo->TotalNumOfTrades = ReadInt32_Optional();
-			if((gmdeItemInfo->AllowTradeValue = !CheckProcessNullDecimal()))
+			if(!(gmdeItemInfo->IsNullTradeValue = CheckProcessNullDecimal()))
 				ReadDecimal_Optional(&(gmdeItemInfo->TradeValue));
-			if((gmdeItemInfo->AllowYield = !CheckProcessNullDecimal()))
+			if(!(gmdeItemInfo->IsNullYield = CheckProcessNullDecimal()))
 				ReadDecimal_Optional(&(gmdeItemInfo->Yield));
-			if((gmdeItemInfo->AllowOfferNbOr = !CheckProcessNullInt32()))
+			if(!(gmdeItemInfo->IsNullOfferNbOr = CheckProcessNullInt32()))
 				gmdeItemInfo->OfferNbOr = ReadInt32_Optional();
-			if((gmdeItemInfo->AllowBidNbOr = !CheckProcessNullInt32()))
+			if(!(gmdeItemInfo->IsNullBidNbOr = CheckProcessNullInt32()))
 				gmdeItemInfo->BidNbOr = ReadInt32_Optional();
-			if((gmdeItemInfo->AllowChgFromSettlmnt = !CheckProcessNullDecimal()))
+			if(!(gmdeItemInfo->IsNullChgFromSettlmnt = CheckProcessNullDecimal()))
 				ReadDecimal_Optional(&(gmdeItemInfo->ChgFromSettlmnt));
-			if((gmdeItemInfo->AllowMinCurrPx = !CheckProcessNullDecimal()))
+			if(!(gmdeItemInfo->IsNullMinCurrPx = CheckProcessNullDecimal()))
 				ReadDecimal_Optional(&(gmdeItemInfo->MinCurrPx));
-			if((gmdeItemInfo->AllowMinCurrPxChgTime = !CheckProcessNullUInt32()))
+			if(!(gmdeItemInfo->IsNullMinCurrPxChgTime = CheckProcessNullUInt32()))
 				gmdeItemInfo->MinCurrPxChgTime = ReadUInt32_Optional();
-			if((gmdeItemInfo->AllowVolumeIndicator = !CheckProcessNullUInt32()))
+			if(!(gmdeItemInfo->IsNullVolumeIndicator = CheckProcessNullUInt32()))
 				gmdeItemInfo->VolumeIndicator = ReadUInt32_Optional();
-			if((gmdeItemInfo->AllowSettlDate = !CheckProcessNullUInt32()))
+			if(!(gmdeItemInfo->IsNullSettlDate = CheckProcessNullUInt32()))
 				gmdeItemInfo->SettlDate = ReadUInt32_Optional();
-			if((gmdeItemInfo->AllowSettleType = !CheckProcessNullString()))
+			if(!(gmdeItemInfo->IsNullSettleType = CheckProcessNullString()))
 				ReadString_Optional(&(gmdeItemInfo->SettleType), &(gmdeItemInfo->SettleTypeLength));
-			if((gmdeItemInfo->AllowCXFlag = !CheckProcessNullString()))
+			if(!(gmdeItemInfo->IsNullCXFlag = CheckProcessNullString()))
 				ReadString_Optional(&(gmdeItemInfo->CXFlag), &(gmdeItemInfo->CXFlagLength));
-			if((gmdeItemInfo->AllowTradingSessionID = !CheckProcessNullString()))
+			if(!(gmdeItemInfo->IsNullTradingSessionID = CheckProcessNullString()))
 				ReadString_Optional(&(gmdeItemInfo->TradingSessionID), &(gmdeItemInfo->TradingSessionIDLength));
-			if((gmdeItemInfo->AllowTradingSessionSubID = !CheckProcessNullString()))
+			if(!(gmdeItemInfo->IsNullTradingSessionSubID = CheckProcessNullString()))
 				ReadString_Optional(&(gmdeItemInfo->TradingSessionSubID), &(gmdeItemInfo->TradingSessionSubIDLength));
+			this->m_prevGenericItemInfo = gmdeItemInfo;
 		}
 
+		this->m_prevIncrementalMSRFONDInfo = info;
 		return info;
 	}
 	void* DecodeIncrementalMSRCURR() {
@@ -3417,7 +3407,7 @@ public:
 
 		info->MsgSeqNum = ReadUInt32_Mandatory();
 		info->SendingTime = ReadUInt64_Mandatory();
-		if((info->AllowLastUpdateTime = !CheckProcessNullUInt64()))
+		if(!(info->IsNullLastUpdateTime = CheckProcessNullUInt64()))
 			info->LastUpdateTime = ReadUInt64_Optional();
 
 		info->GroupMDEntriesCount = ReadUInt32_Mandatory();
@@ -3426,64 +3416,66 @@ public:
 		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 			gmdeItemInfo = GetFreeGenericItemInfo();
 			info->GroupMDEntries[i] = gmdeItemInfo;
-			if((gmdeItemInfo->AllowMDUpdateAction = !CheckProcessNullUInt32()))
+			if(!(gmdeItemInfo->IsNullMDUpdateAction = CheckProcessNullUInt32()))
 				gmdeItemInfo->MDUpdateAction = ReadUInt32_Optional();
-			if((gmdeItemInfo->AllowMDEntryType = !CheckProcessNullString()))
+			if(!(gmdeItemInfo->IsNullMDEntryType = CheckProcessNullString()))
 				ReadString_Optional(&(gmdeItemInfo->MDEntryType), &(gmdeItemInfo->MDEntryTypeLength));
-			if((gmdeItemInfo->AllowMDEntryID = !CheckProcessNullString()))
+			if(!(gmdeItemInfo->IsNullMDEntryID = CheckProcessNullString()))
 				ReadString_Optional(&(gmdeItemInfo->MDEntryID), &(gmdeItemInfo->MDEntryIDLength));
-			if((gmdeItemInfo->AllowSymbol = !CheckProcessNullString()))
+			if(!(gmdeItemInfo->IsNullSymbol = CheckProcessNullString()))
 				ReadString_Optional(&(gmdeItemInfo->Symbol), &(gmdeItemInfo->SymbolLength));
-			if((gmdeItemInfo->AllowRptSeq = !CheckProcessNullInt32()))
+			if(!(gmdeItemInfo->IsNullRptSeq = CheckProcessNullInt32()))
 				gmdeItemInfo->RptSeq = ReadInt32_Optional();
-			if((gmdeItemInfo->AllowMDEntryPx = !CheckProcessNullDecimal()))
+			if(!(gmdeItemInfo->IsNullMDEntryPx = CheckProcessNullDecimal()))
 				ReadDecimal_Optional(&(gmdeItemInfo->MDEntryPx));
-			if((gmdeItemInfo->AllowMDEntrySize = !CheckProcessNullDecimal()))
+			if(!(gmdeItemInfo->IsNullMDEntrySize = CheckProcessNullDecimal()))
 				ReadDecimal_Optional(&(gmdeItemInfo->MDEntrySize));
-			if((gmdeItemInfo->AllowMDEntryDate = !CheckProcessNullUInt32()))
+			if(!(gmdeItemInfo->IsNullMDEntryDate = CheckProcessNullUInt32()))
 				gmdeItemInfo->MDEntryDate = ReadUInt32_Optional();
-			if((gmdeItemInfo->AllowMDEntryTime = !CheckProcessNullUInt32()))
+			if(!(gmdeItemInfo->IsNullMDEntryTime = CheckProcessNullUInt32()))
 				gmdeItemInfo->MDEntryTime = ReadUInt32_Optional();
-			if((gmdeItemInfo->AllowStartTime = !CheckProcessNullUInt32()))
+			if(!(gmdeItemInfo->IsNullStartTime = CheckProcessNullUInt32()))
 				gmdeItemInfo->StartTime = ReadUInt32_Optional();
-			if((gmdeItemInfo->AllowQuoteCondition = !CheckProcessNullString()))
+			if(!(gmdeItemInfo->IsNullQuoteCondition = CheckProcessNullString()))
 				ReadString_Optional(&(gmdeItemInfo->QuoteCondition), &(gmdeItemInfo->QuoteConditionLength));
-			if((gmdeItemInfo->AllowTradeCondition = !CheckProcessNullString()))
+			if(!(gmdeItemInfo->IsNullTradeCondition = CheckProcessNullString()))
 				ReadString_Optional(&(gmdeItemInfo->TradeCondition), &(gmdeItemInfo->TradeConditionLength));
-			if((gmdeItemInfo->AllowOpenCloseSettlFlag = !CheckProcessNullString()))
+			if(!(gmdeItemInfo->IsNullOpenCloseSettlFlag = CheckProcessNullString()))
 				ReadString_Optional(&(gmdeItemInfo->OpenCloseSettlFlag), &(gmdeItemInfo->OpenCloseSettlFlagLength));
-			if((gmdeItemInfo->AllowNetChgPrevDay = !CheckProcessNullDecimal()))
+			if(!(gmdeItemInfo->IsNullNetChgPrevDay = CheckProcessNullDecimal()))
 				ReadDecimal_Optional(&(gmdeItemInfo->NetChgPrevDay));
-			if((gmdeItemInfo->AllowChgFromWAPrice = !CheckProcessNullDecimal()))
+			if(!(gmdeItemInfo->IsNullChgFromWAPrice = CheckProcessNullDecimal()))
 				ReadDecimal_Optional(&(gmdeItemInfo->ChgFromWAPrice));
-			if((gmdeItemInfo->AllowChgOpenInterest = !CheckProcessNullDecimal()))
+			if(!(gmdeItemInfo->IsNullChgOpenInterest = CheckProcessNullDecimal()))
 				ReadDecimal_Optional(&(gmdeItemInfo->ChgOpenInterest));
-			if((gmdeItemInfo->AllowBidMarketSize = !CheckProcessNullDecimal()))
+			if(!(gmdeItemInfo->IsNullBidMarketSize = CheckProcessNullDecimal()))
 				ReadDecimal_Optional(&(gmdeItemInfo->BidMarketSize));
-			if((gmdeItemInfo->AllowAskMarketSize = !CheckProcessNullDecimal()))
+			if(!(gmdeItemInfo->IsNullAskMarketSize = CheckProcessNullDecimal()))
 				ReadDecimal_Optional(&(gmdeItemInfo->AskMarketSize));
-			if((gmdeItemInfo->AllowTotalNumOfTrades = !CheckProcessNullInt32()))
+			if(!(gmdeItemInfo->IsNullTotalNumOfTrades = CheckProcessNullInt32()))
 				gmdeItemInfo->TotalNumOfTrades = ReadInt32_Optional();
-			if((gmdeItemInfo->AllowTradeValue = !CheckProcessNullDecimal()))
+			if(!(gmdeItemInfo->IsNullTradeValue = CheckProcessNullDecimal()))
 				ReadDecimal_Optional(&(gmdeItemInfo->TradeValue));
-			if((gmdeItemInfo->AllowOfferNbOr = !CheckProcessNullInt32()))
+			if(!(gmdeItemInfo->IsNullOfferNbOr = CheckProcessNullInt32()))
 				gmdeItemInfo->OfferNbOr = ReadInt32_Optional();
-			if((gmdeItemInfo->AllowBidNbOr = !CheckProcessNullInt32()))
+			if(!(gmdeItemInfo->IsNullBidNbOr = CheckProcessNullInt32()))
 				gmdeItemInfo->BidNbOr = ReadInt32_Optional();
-			if((gmdeItemInfo->AllowChgFromSettlmnt = !CheckProcessNullDecimal()))
+			if(!(gmdeItemInfo->IsNullChgFromSettlmnt = CheckProcessNullDecimal()))
 				ReadDecimal_Optional(&(gmdeItemInfo->ChgFromSettlmnt));
-			if((gmdeItemInfo->AllowSettlDate = !CheckProcessNullUInt32()))
+			if(!(gmdeItemInfo->IsNullSettlDate = CheckProcessNullUInt32()))
 				gmdeItemInfo->SettlDate = ReadUInt32_Optional();
-			if((gmdeItemInfo->AllowSettleType = !CheckProcessNullString()))
+			if(!(gmdeItemInfo->IsNullSettleType = CheckProcessNullString()))
 				ReadString_Optional(&(gmdeItemInfo->SettleType), &(gmdeItemInfo->SettleTypeLength));
-			if((gmdeItemInfo->AllowCXFlag = !CheckProcessNullString()))
+			if(!(gmdeItemInfo->IsNullCXFlag = CheckProcessNullString()))
 				ReadString_Optional(&(gmdeItemInfo->CXFlag), &(gmdeItemInfo->CXFlagLength));
-			if((gmdeItemInfo->AllowTradingSessionID = !CheckProcessNullString()))
+			if(!(gmdeItemInfo->IsNullTradingSessionID = CheckProcessNullString()))
 				ReadString_Optional(&(gmdeItemInfo->TradingSessionID), &(gmdeItemInfo->TradingSessionIDLength));
-			if((gmdeItemInfo->AllowTradingSessionSubID = !CheckProcessNullString()))
+			if(!(gmdeItemInfo->IsNullTradingSessionSubID = CheckProcessNullString()))
 				ReadString_Optional(&(gmdeItemInfo->TradingSessionSubID), &(gmdeItemInfo->TradingSessionSubIDLength));
+			this->m_prevGenericItemInfo = gmdeItemInfo;
 		}
 
+		this->m_prevIncrementalMSRCURRInfo = info;
 		return info;
 	}
 	void* DecodeIncrementalOLRFOND() {
@@ -3502,137 +3494,113 @@ public:
 
 			this->ParsePresenceMap(&(gmdeItemInfo->PresenceMap));
 
-			if((gmdeItemInfo->AllowMDUpdateAction = !CheckProcessNullUInt32()))
+			if(!(gmdeItemInfo->IsNullMDUpdateAction = CheckProcessNullUInt32()))
 				gmdeItemInfo->MDUpdateAction = ReadUInt32_Optional();
-			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, gmdeItemInfo->MDEntryTypePresenceIndex)) {
-				if((gmdeItemInfo->AllowMDEntryType = !CheckProcessNullString()))
+			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX0)) {
+				if(!(gmdeItemInfo->IsNullMDEntryType = CheckProcessNullString()))
 					ReadString_Optional(&(gmdeItemInfo->MDEntryType), &(gmdeItemInfo->MDEntryTypeLength));
-				else {
-					gmdeItemInfo->CopyMDEntryType = true;
-					gmdeItemInfo->CopyCount++;
-				}
 			}
-			else
-				gmdeItemInfo-> AllowMDEntryType = false;
-			if((gmdeItemInfo->AllowMDEntryID = !CheckProcessNullString()))
+			else {
+				gmdeItemInfo->MDEntryType = this->m_prevOLSFONDItemInfo->MDEntryType;
+				gmdeItemInfo->MDEntryTypeLength = this->m_prevOLSFONDItemInfo->MDEntryTypeLength;
+			}
+			if(!(gmdeItemInfo->IsNullMDEntryID = CheckProcessNullString()))
 				ReadString_Optional(&(gmdeItemInfo->MDEntryID), &(gmdeItemInfo->MDEntryIDLength));
-			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, gmdeItemInfo->SymbolPresenceIndex)) {
-				if((gmdeItemInfo->AllowSymbol = !CheckProcessNullString()))
+			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX1)) {
+				if(!(gmdeItemInfo->IsNullSymbol = CheckProcessNullString()))
 					ReadString_Optional(&(gmdeItemInfo->Symbol), &(gmdeItemInfo->SymbolLength));
-				else {
-					gmdeItemInfo->CopySymbol = true;
-					gmdeItemInfo->CopyCount++;
-				}
 			}
-			else
-				gmdeItemInfo-> AllowSymbol = false;
-			if((gmdeItemInfo->AllowRptSeq = !CheckProcessNullInt32()))
+			else {
+				gmdeItemInfo->Symbol = this->m_prevOLSFONDItemInfo->Symbol;
+				gmdeItemInfo->SymbolLength = this->m_prevOLSFONDItemInfo->SymbolLength;
+			}
+			if(!(gmdeItemInfo->IsNullRptSeq = CheckProcessNullInt32()))
 				gmdeItemInfo->RptSeq = ReadInt32_Optional();
-			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, gmdeItemInfo->MDEntryDatePresenceIndex)) {
-				if((gmdeItemInfo->AllowMDEntryDate = !CheckProcessNullUInt32()))
+			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX2)) {
+				if(!(gmdeItemInfo->IsNullMDEntryDate = CheckProcessNullUInt32()))
 					gmdeItemInfo->MDEntryDate = ReadUInt32_Optional();
-				else
-					gmdeItemInfo->CopyMDEntryDate = true;
-					gmdeItemInfo->CopyCount++;
 			}
-			else
-				gmdeItemInfo-> AllowMDEntryDate = false;
-			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, gmdeItemInfo->MDEntryTimePresenceIndex)) {
-				if((gmdeItemInfo->AllowMDEntryTime = !CheckProcessNullUInt32()))
+			else {
+				gmdeItemInfo->MDEntryDate = this->m_prevOLSFONDItemInfo->MDEntryDate;
+			}
+			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX3)) {
+				if(!(gmdeItemInfo->IsNullMDEntryTime = CheckProcessNullUInt32()))
 					gmdeItemInfo->MDEntryTime = ReadUInt32_Optional();
-				else
-					gmdeItemInfo->CopyMDEntryTime = true;
-					gmdeItemInfo->CopyCount++;
 			}
-			else
-				gmdeItemInfo-> AllowMDEntryTime = false;
-			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, gmdeItemInfo->OrigTimePresenceIndex)) {
-				if((gmdeItemInfo->AllowOrigTime = !CheckProcessNullUInt32()))
+			else {
+				gmdeItemInfo->MDEntryTime = this->m_prevOLSFONDItemInfo->MDEntryTime;
+			}
+			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX4)) {
+				if(!(gmdeItemInfo->IsNullOrigTime = CheckProcessNullUInt32()))
 					gmdeItemInfo->OrigTime = ReadUInt32_Optional();
-				else
-					gmdeItemInfo->CopyOrigTime = true;
-					gmdeItemInfo->CopyCount++;
 			}
-			else
-				gmdeItemInfo-> AllowOrigTime = false;
-			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, gmdeItemInfo->MDEntryPxPresenceIndex)) {
-				if((gmdeItemInfo->AllowMDEntryPx = !CheckProcessNullDecimal()))
+			else {
+				gmdeItemInfo->OrigTime = this->m_prevOLSFONDItemInfo->OrigTime;
+			}
+			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX5)) {
+				if(!(gmdeItemInfo->IsNullMDEntryPx = CheckProcessNullDecimal()))
 					ReadDecimal_Optional(&(gmdeItemInfo->MDEntryPx));
-				else
-					gmdeItemInfo->CopyMDEntryPx = true;
-					gmdeItemInfo->CopyCount++;
 			}
-			else
-				gmdeItemInfo-> AllowMDEntryPx = false;
-			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, gmdeItemInfo->MDEntrySizePresenceIndex)) {
-				if((gmdeItemInfo->AllowMDEntrySize = !CheckProcessNullDecimal()))
+			else {
+				gmdeItemInfo->MDEntryPx = this->m_prevOLSFONDItemInfo->MDEntryPx;
+			}
+			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX6)) {
+				if(!(gmdeItemInfo->IsNullMDEntrySize = CheckProcessNullDecimal()))
 					ReadDecimal_Optional(&(gmdeItemInfo->MDEntrySize));
-				else
-					gmdeItemInfo->CopyMDEntrySize = true;
-					gmdeItemInfo->CopyCount++;
 			}
-			else
-				gmdeItemInfo-> AllowMDEntrySize = false;
-			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, gmdeItemInfo->YieldPresenceIndex)) {
-				if((gmdeItemInfo->AllowYield = !CheckProcessNullDecimal()))
+			else {
+				gmdeItemInfo->MDEntrySize = this->m_prevOLSFONDItemInfo->MDEntrySize;
+			}
+			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX7)) {
+				if(!(gmdeItemInfo->IsNullYield = CheckProcessNullDecimal()))
 					ReadDecimal_Optional(&(gmdeItemInfo->Yield));
-				else
-					gmdeItemInfo->CopyYield = true;
-					gmdeItemInfo->CopyCount++;
 			}
-			else
-				gmdeItemInfo-> AllowYield = false;
-			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, gmdeItemInfo->OrderStatusPresenceIndex)) {
-				if((gmdeItemInfo->AllowOrderStatus = !CheckProcessNullString()))
+			else {
+				gmdeItemInfo->Yield = this->m_prevOLSFONDItemInfo->Yield;
+			}
+			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX8)) {
+				if(!(gmdeItemInfo->IsNullOrderStatus = CheckProcessNullString()))
 					ReadString_Optional(&(gmdeItemInfo->OrderStatus), &(gmdeItemInfo->OrderStatusLength));
-				else {
-					gmdeItemInfo->CopyOrderStatus = true;
-					gmdeItemInfo->CopyCount++;
-				}
 			}
-			else
-				gmdeItemInfo-> AllowOrderStatus = false;
-			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, gmdeItemInfo->OrdTypePresenceIndex)) {
-				if((gmdeItemInfo->AllowOrdType = !CheckProcessNullString()))
+			else {
+				gmdeItemInfo->OrderStatus = this->m_prevOLSFONDItemInfo->OrderStatus;
+				gmdeItemInfo->OrderStatusLength = this->m_prevOLSFONDItemInfo->OrderStatusLength;
+			}
+			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX9)) {
+				if(!(gmdeItemInfo->IsNullOrdType = CheckProcessNullString()))
 					ReadString_Optional(&(gmdeItemInfo->OrdType), &(gmdeItemInfo->OrdTypeLength));
-				else {
-					gmdeItemInfo->CopyOrdType = true;
-					gmdeItemInfo->CopyCount++;
-				}
 			}
-			else
-				gmdeItemInfo-> AllowOrdType = false;
-			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, gmdeItemInfo->TotalVolumePresenceIndex)) {
-				if((gmdeItemInfo->AllowTotalVolume = !CheckProcessNullDecimal()))
+			else {
+				gmdeItemInfo->OrdType = this->m_prevOLSFONDItemInfo->OrdType;
+				gmdeItemInfo->OrdTypeLength = this->m_prevOLSFONDItemInfo->OrdTypeLength;
+			}
+			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX10)) {
+				if(!(gmdeItemInfo->IsNullTotalVolume = CheckProcessNullDecimal()))
 					ReadDecimal_Optional(&(gmdeItemInfo->TotalVolume));
-				else
-					gmdeItemInfo->CopyTotalVolume = true;
-					gmdeItemInfo->CopyCount++;
 			}
-			else
-				gmdeItemInfo-> AllowTotalVolume = false;
-			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, gmdeItemInfo->TradingSessionIDPresenceIndex)) {
-				if((gmdeItemInfo->AllowTradingSessionID = !CheckProcessNullString()))
+			else {
+				gmdeItemInfo->TotalVolume = this->m_prevOLSFONDItemInfo->TotalVolume;
+			}
+			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX11)) {
+				if(!(gmdeItemInfo->IsNullTradingSessionID = CheckProcessNullString()))
 					ReadString_Optional(&(gmdeItemInfo->TradingSessionID), &(gmdeItemInfo->TradingSessionIDLength));
-				else {
-					gmdeItemInfo->CopyTradingSessionID = true;
-					gmdeItemInfo->CopyCount++;
-				}
 			}
-			else
-				gmdeItemInfo-> AllowTradingSessionID = false;
-			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, gmdeItemInfo->TradingSessionSubIDPresenceIndex)) {
-				if((gmdeItemInfo->AllowTradingSessionSubID = !CheckProcessNullString()))
+			else {
+				gmdeItemInfo->TradingSessionID = this->m_prevOLSFONDItemInfo->TradingSessionID;
+				gmdeItemInfo->TradingSessionIDLength = this->m_prevOLSFONDItemInfo->TradingSessionIDLength;
+			}
+			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX12)) {
+				if(!(gmdeItemInfo->IsNullTradingSessionSubID = CheckProcessNullString()))
 					ReadString_Optional(&(gmdeItemInfo->TradingSessionSubID), &(gmdeItemInfo->TradingSessionSubIDLength));
-				else {
-					gmdeItemInfo->CopyTradingSessionSubID = true;
-					gmdeItemInfo->CopyCount++;
-				}
 			}
-			else
-				gmdeItemInfo-> AllowTradingSessionSubID = false;
+			else {
+				gmdeItemInfo->TradingSessionSubID = this->m_prevOLSFONDItemInfo->TradingSessionSubID;
+				gmdeItemInfo->TradingSessionSubIDLength = this->m_prevOLSFONDItemInfo->TradingSessionSubIDLength;
+			}
+			this->m_prevOLSFONDItemInfo = gmdeItemInfo;
 		}
 
+		this->m_prevIncrementalOLRFONDInfo = info;
 		return info;
 	}
 	void* DecodeIncrementalOLRCURR() {
@@ -3651,116 +3619,96 @@ public:
 
 			this->ParsePresenceMap(&(gmdeItemInfo->PresenceMap));
 
-			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, gmdeItemInfo->MDUpdateActionPresenceIndex)) {
-				if((gmdeItemInfo->AllowMDUpdateAction = !CheckProcessNullUInt32()))
+			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX0)) {
+				if(!(gmdeItemInfo->IsNullMDUpdateAction = CheckProcessNullUInt32()))
 					gmdeItemInfo->MDUpdateAction = ReadUInt32_Optional();
-				else
-					gmdeItemInfo->CopyMDUpdateAction = true;
-					gmdeItemInfo->CopyCount++;
 			}
-			else
-				gmdeItemInfo-> AllowMDUpdateAction = false;
-			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, gmdeItemInfo->MDEntryTypePresenceIndex)) {
-				if((gmdeItemInfo->AllowMDEntryType = !CheckProcessNullString()))
+			else {
+				gmdeItemInfo->MDUpdateAction = this->m_prevOLSCURRItemInfo->MDUpdateAction;
+			}
+			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX1)) {
+				if(!(gmdeItemInfo->IsNullMDEntryType = CheckProcessNullString()))
 					ReadString_Optional(&(gmdeItemInfo->MDEntryType), &(gmdeItemInfo->MDEntryTypeLength));
-				else {
-					gmdeItemInfo->CopyMDEntryType = true;
-					gmdeItemInfo->CopyCount++;
-				}
 			}
-			else
-				gmdeItemInfo-> AllowMDEntryType = false;
-			if((gmdeItemInfo->AllowMDEntryID = !CheckProcessNullString()))
+			else {
+				gmdeItemInfo->MDEntryType = this->m_prevOLSCURRItemInfo->MDEntryType;
+				gmdeItemInfo->MDEntryTypeLength = this->m_prevOLSCURRItemInfo->MDEntryTypeLength;
+			}
+			if(!(gmdeItemInfo->IsNullMDEntryID = CheckProcessNullString()))
 				ReadString_Optional(&(gmdeItemInfo->MDEntryID), &(gmdeItemInfo->MDEntryIDLength));
-			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, gmdeItemInfo->SymbolPresenceIndex)) {
-				if((gmdeItemInfo->AllowSymbol = !CheckProcessNullString()))
+			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX2)) {
+				if(!(gmdeItemInfo->IsNullSymbol = CheckProcessNullString()))
 					ReadString_Optional(&(gmdeItemInfo->Symbol), &(gmdeItemInfo->SymbolLength));
-				else {
-					gmdeItemInfo->CopySymbol = true;
-					gmdeItemInfo->CopyCount++;
-				}
 			}
-			else
-				gmdeItemInfo-> AllowSymbol = false;
-			if((gmdeItemInfo->AllowRptSeq = !CheckProcessNullInt32()))
+			else {
+				gmdeItemInfo->Symbol = this->m_prevOLSCURRItemInfo->Symbol;
+				gmdeItemInfo->SymbolLength = this->m_prevOLSCURRItemInfo->SymbolLength;
+			}
+			if(!(gmdeItemInfo->IsNullRptSeq = CheckProcessNullInt32()))
 				gmdeItemInfo->RptSeq = ReadInt32_Optional();
-			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, gmdeItemInfo->MDEntryDatePresenceIndex)) {
-				if((gmdeItemInfo->AllowMDEntryDate = !CheckProcessNullUInt32()))
+			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX3)) {
+				if(!(gmdeItemInfo->IsNullMDEntryDate = CheckProcessNullUInt32()))
 					gmdeItemInfo->MDEntryDate = ReadUInt32_Optional();
-				else
-					gmdeItemInfo->CopyMDEntryDate = true;
-					gmdeItemInfo->CopyCount++;
 			}
-			else
-				gmdeItemInfo-> AllowMDEntryDate = false;
-			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, gmdeItemInfo->MDEntryTimePresenceIndex)) {
-				if((gmdeItemInfo->AllowMDEntryTime = !CheckProcessNullUInt32()))
+			else {
+				gmdeItemInfo->MDEntryDate = this->m_prevOLSCURRItemInfo->MDEntryDate;
+			}
+			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX4)) {
+				if(!(gmdeItemInfo->IsNullMDEntryTime = CheckProcessNullUInt32()))
 					gmdeItemInfo->MDEntryTime = ReadUInt32_Optional();
-				else
-					gmdeItemInfo->CopyMDEntryTime = true;
-					gmdeItemInfo->CopyCount++;
 			}
-			else
-				gmdeItemInfo-> AllowMDEntryTime = false;
-			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, gmdeItemInfo->OrigTimePresenceIndex)) {
-				if((gmdeItemInfo->AllowOrigTime = !CheckProcessNullUInt32()))
+			else {
+				gmdeItemInfo->MDEntryTime = this->m_prevOLSCURRItemInfo->MDEntryTime;
+			}
+			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX5)) {
+				if(!(gmdeItemInfo->IsNullOrigTime = CheckProcessNullUInt32()))
 					gmdeItemInfo->OrigTime = ReadUInt32_Optional();
-				else
-					gmdeItemInfo->CopyOrigTime = true;
-					gmdeItemInfo->CopyCount++;
 			}
-			else
-				gmdeItemInfo-> AllowOrigTime = false;
-			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, gmdeItemInfo->MDEntryPxPresenceIndex)) {
-				if((gmdeItemInfo->AllowMDEntryPx = !CheckProcessNullDecimal()))
+			else {
+				gmdeItemInfo->OrigTime = this->m_prevOLSCURRItemInfo->OrigTime;
+			}
+			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX6)) {
+				if(!(gmdeItemInfo->IsNullMDEntryPx = CheckProcessNullDecimal()))
 					ReadDecimal_Optional(&(gmdeItemInfo->MDEntryPx));
-				else
-					gmdeItemInfo->CopyMDEntryPx = true;
-					gmdeItemInfo->CopyCount++;
 			}
-			else
-				gmdeItemInfo-> AllowMDEntryPx = false;
-			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, gmdeItemInfo->MDEntrySizePresenceIndex)) {
-				if((gmdeItemInfo->AllowMDEntrySize = !CheckProcessNullDecimal()))
+			else {
+				gmdeItemInfo->MDEntryPx = this->m_prevOLSCURRItemInfo->MDEntryPx;
+			}
+			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX7)) {
+				if(!(gmdeItemInfo->IsNullMDEntrySize = CheckProcessNullDecimal()))
 					ReadDecimal_Optional(&(gmdeItemInfo->MDEntrySize));
-				else
-					gmdeItemInfo->CopyMDEntrySize = true;
-					gmdeItemInfo->CopyCount++;
 			}
-			else
-				gmdeItemInfo-> AllowMDEntrySize = false;
-			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, gmdeItemInfo->OrderStatusPresenceIndex)) {
-				if((gmdeItemInfo->AllowOrderStatus = !CheckProcessNullString()))
+			else {
+				gmdeItemInfo->MDEntrySize = this->m_prevOLSCURRItemInfo->MDEntrySize;
+			}
+			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX8)) {
+				if(!(gmdeItemInfo->IsNullOrderStatus = CheckProcessNullString()))
 					ReadString_Optional(&(gmdeItemInfo->OrderStatus), &(gmdeItemInfo->OrderStatusLength));
-				else {
-					gmdeItemInfo->CopyOrderStatus = true;
-					gmdeItemInfo->CopyCount++;
-				}
 			}
-			else
-				gmdeItemInfo-> AllowOrderStatus = false;
-			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, gmdeItemInfo->TradingSessionIDPresenceIndex)) {
-				if((gmdeItemInfo->AllowTradingSessionID = !CheckProcessNullString()))
+			else {
+				gmdeItemInfo->OrderStatus = this->m_prevOLSCURRItemInfo->OrderStatus;
+				gmdeItemInfo->OrderStatusLength = this->m_prevOLSCURRItemInfo->OrderStatusLength;
+			}
+			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX9)) {
+				if(!(gmdeItemInfo->IsNullTradingSessionID = CheckProcessNullString()))
 					ReadString_Optional(&(gmdeItemInfo->TradingSessionID), &(gmdeItemInfo->TradingSessionIDLength));
-				else {
-					gmdeItemInfo->CopyTradingSessionID = true;
-					gmdeItemInfo->CopyCount++;
-				}
 			}
-			else
-				gmdeItemInfo-> AllowTradingSessionID = false;
-			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, gmdeItemInfo->TradingSessionSubIDPresenceIndex)) {
-				if((gmdeItemInfo->AllowTradingSessionSubID = !CheckProcessNullString()))
+			else {
+				gmdeItemInfo->TradingSessionID = this->m_prevOLSCURRItemInfo->TradingSessionID;
+				gmdeItemInfo->TradingSessionIDLength = this->m_prevOLSCURRItemInfo->TradingSessionIDLength;
+			}
+			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX10)) {
+				if(!(gmdeItemInfo->IsNullTradingSessionSubID = CheckProcessNullString()))
 					ReadString_Optional(&(gmdeItemInfo->TradingSessionSubID), &(gmdeItemInfo->TradingSessionSubIDLength));
-				else {
-					gmdeItemInfo->CopyTradingSessionSubID = true;
-					gmdeItemInfo->CopyCount++;
-				}
 			}
-			else
-				gmdeItemInfo-> AllowTradingSessionSubID = false;
+			else {
+				gmdeItemInfo->TradingSessionSubID = this->m_prevOLSCURRItemInfo->TradingSessionSubID;
+				gmdeItemInfo->TradingSessionSubIDLength = this->m_prevOLSCURRItemInfo->TradingSessionSubIDLength;
+			}
+			this->m_prevOLSCURRItemInfo = gmdeItemInfo;
 		}
 
+		this->m_prevIncrementalOLRCURRInfo = info;
 		return info;
 	}
 	void* DecodeIncrementalTLRFOND() {
@@ -3776,55 +3724,57 @@ public:
 		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 			gmdeItemInfo = GetFreeTLSFONDItemInfo();
 			info->GroupMDEntries[i] = gmdeItemInfo;
-			if((gmdeItemInfo->AllowMDUpdateAction = !CheckProcessNullUInt32()))
+			if(!(gmdeItemInfo->IsNullMDUpdateAction = CheckProcessNullUInt32()))
 				gmdeItemInfo->MDUpdateAction = ReadUInt32_Optional();
 			ReadString_Mandatory(&(gmdeItemInfo->MDEntryType), &(gmdeItemInfo->MDEntryTypeLength));
-			if((gmdeItemInfo->AllowMDEntryID = !CheckProcessNullString()))
+			if(!(gmdeItemInfo->IsNullMDEntryID = CheckProcessNullString()))
 				ReadString_Optional(&(gmdeItemInfo->MDEntryID), &(gmdeItemInfo->MDEntryIDLength));
-			if((gmdeItemInfo->AllowSymbol = !CheckProcessNullString()))
+			if(!(gmdeItemInfo->IsNullSymbol = CheckProcessNullString()))
 				ReadString_Optional(&(gmdeItemInfo->Symbol), &(gmdeItemInfo->SymbolLength));
-			if((gmdeItemInfo->AllowRptSeq = !CheckProcessNullInt32()))
+			if(!(gmdeItemInfo->IsNullRptSeq = CheckProcessNullInt32()))
 				gmdeItemInfo->RptSeq = ReadInt32_Optional();
-			if((gmdeItemInfo->AllowMDEntryDate = !CheckProcessNullUInt32()))
+			if(!(gmdeItemInfo->IsNullMDEntryDate = CheckProcessNullUInt32()))
 				gmdeItemInfo->MDEntryDate = ReadUInt32_Optional();
-			if((gmdeItemInfo->AllowMDEntryTime = !CheckProcessNullUInt32()))
+			if(!(gmdeItemInfo->IsNullMDEntryTime = CheckProcessNullUInt32()))
 				gmdeItemInfo->MDEntryTime = ReadUInt32_Optional();
-			if((gmdeItemInfo->AllowOrigTime = !CheckProcessNullUInt32()))
+			if(!(gmdeItemInfo->IsNullOrigTime = CheckProcessNullUInt32()))
 				gmdeItemInfo->OrigTime = ReadUInt32_Optional();
-			if((gmdeItemInfo->AllowOrderSide = !CheckProcessNullString()))
+			if(!(gmdeItemInfo->IsNullOrderSide = CheckProcessNullString()))
 				ReadString_Optional(&(gmdeItemInfo->OrderSide), &(gmdeItemInfo->OrderSideLength));
-			if((gmdeItemInfo->AllowMDEntryPx = !CheckProcessNullDecimal()))
+			if(!(gmdeItemInfo->IsNullMDEntryPx = CheckProcessNullDecimal()))
 				ReadDecimal_Optional(&(gmdeItemInfo->MDEntryPx));
-			if((gmdeItemInfo->AllowMDEntrySize = !CheckProcessNullDecimal()))
+			if(!(gmdeItemInfo->IsNullMDEntrySize = CheckProcessNullDecimal()))
 				ReadDecimal_Optional(&(gmdeItemInfo->MDEntrySize));
-			if((gmdeItemInfo->AllowAccruedInterestAmt = !CheckProcessNullDecimal()))
+			if(!(gmdeItemInfo->IsNullAccruedInterestAmt = CheckProcessNullDecimal()))
 				ReadDecimal_Optional(&(gmdeItemInfo->AccruedInterestAmt));
-			if((gmdeItemInfo->AllowTradeValue = !CheckProcessNullDecimal()))
+			if(!(gmdeItemInfo->IsNullTradeValue = CheckProcessNullDecimal()))
 				ReadDecimal_Optional(&(gmdeItemInfo->TradeValue));
-			if((gmdeItemInfo->AllowYield = !CheckProcessNullDecimal()))
+			if(!(gmdeItemInfo->IsNullYield = CheckProcessNullDecimal()))
 				ReadDecimal_Optional(&(gmdeItemInfo->Yield));
-			if((gmdeItemInfo->AllowSettlDate = !CheckProcessNullUInt32()))
+			if(!(gmdeItemInfo->IsNullSettlDate = CheckProcessNullUInt32()))
 				gmdeItemInfo->SettlDate = ReadUInt32_Optional();
-			if((gmdeItemInfo->AllowSettleType = !CheckProcessNullString()))
+			if(!(gmdeItemInfo->IsNullSettleType = CheckProcessNullString()))
 				ReadString_Optional(&(gmdeItemInfo->SettleType), &(gmdeItemInfo->SettleTypeLength));
-			if((gmdeItemInfo->AllowPrice = !CheckProcessNullDecimal()))
+			if(!(gmdeItemInfo->IsNullPrice = CheckProcessNullDecimal()))
 				ReadDecimal_Optional(&(gmdeItemInfo->Price));
-			if((gmdeItemInfo->AllowPriceType = !CheckProcessNullInt32()))
+			if(!(gmdeItemInfo->IsNullPriceType = CheckProcessNullInt32()))
 				gmdeItemInfo->PriceType = ReadInt32_Optional();
-			if((gmdeItemInfo->AllowRepoToPx = !CheckProcessNullDecimal()))
+			if(!(gmdeItemInfo->IsNullRepoToPx = CheckProcessNullDecimal()))
 				ReadDecimal_Optional(&(gmdeItemInfo->RepoToPx));
-			if((gmdeItemInfo->AllowBuyBackPx = !CheckProcessNullDecimal()))
+			if(!(gmdeItemInfo->IsNullBuyBackPx = CheckProcessNullDecimal()))
 				ReadDecimal_Optional(&(gmdeItemInfo->BuyBackPx));
-			if((gmdeItemInfo->AllowBuyBackDate = !CheckProcessNullUInt32()))
+			if(!(gmdeItemInfo->IsNullBuyBackDate = CheckProcessNullUInt32()))
 				gmdeItemInfo->BuyBackDate = ReadUInt32_Optional();
-			if((gmdeItemInfo->AllowTradingSessionID = !CheckProcessNullString()))
+			if(!(gmdeItemInfo->IsNullTradingSessionID = CheckProcessNullString()))
 				ReadString_Optional(&(gmdeItemInfo->TradingSessionID), &(gmdeItemInfo->TradingSessionIDLength));
-			if((gmdeItemInfo->AllowTradingSessionSubID = !CheckProcessNullString()))
+			if(!(gmdeItemInfo->IsNullTradingSessionSubID = CheckProcessNullString()))
 				ReadString_Optional(&(gmdeItemInfo->TradingSessionSubID), &(gmdeItemInfo->TradingSessionSubIDLength));
-			if((gmdeItemInfo->AllowRefOrderID = !CheckProcessNullString()))
+			if(!(gmdeItemInfo->IsNullRefOrderID = CheckProcessNullString()))
 				ReadString_Optional(&(gmdeItemInfo->RefOrderID), &(gmdeItemInfo->RefOrderIDLength));
+			this->m_prevTLSFONDItemInfo = gmdeItemInfo;
 		}
 
+		this->m_prevIncrementalTLRFONDInfo = info;
 		return info;
 	}
 	void* DecodeIncrementalTLRCURR() {
@@ -3840,51 +3790,53 @@ public:
 		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 			gmdeItemInfo = GetFreeTLSCURRItemInfo();
 			info->GroupMDEntries[i] = gmdeItemInfo;
-			if((gmdeItemInfo->AllowMDUpdateAction = !CheckProcessNullUInt32()))
+			if(!(gmdeItemInfo->IsNullMDUpdateAction = CheckProcessNullUInt32()))
 				gmdeItemInfo->MDUpdateAction = ReadUInt32_Optional();
 			ReadString_Mandatory(&(gmdeItemInfo->MDEntryType), &(gmdeItemInfo->MDEntryTypeLength));
-			if((gmdeItemInfo->AllowMDEntryID = !CheckProcessNullString()))
+			if(!(gmdeItemInfo->IsNullMDEntryID = CheckProcessNullString()))
 				ReadString_Optional(&(gmdeItemInfo->MDEntryID), &(gmdeItemInfo->MDEntryIDLength));
-			if((gmdeItemInfo->AllowSymbol = !CheckProcessNullString()))
+			if(!(gmdeItemInfo->IsNullSymbol = CheckProcessNullString()))
 				ReadString_Optional(&(gmdeItemInfo->Symbol), &(gmdeItemInfo->SymbolLength));
-			if((gmdeItemInfo->AllowRptSeq = !CheckProcessNullInt32()))
+			if(!(gmdeItemInfo->IsNullRptSeq = CheckProcessNullInt32()))
 				gmdeItemInfo->RptSeq = ReadInt32_Optional();
-			if((gmdeItemInfo->AllowMDEntryDate = !CheckProcessNullUInt32()))
+			if(!(gmdeItemInfo->IsNullMDEntryDate = CheckProcessNullUInt32()))
 				gmdeItemInfo->MDEntryDate = ReadUInt32_Optional();
-			if((gmdeItemInfo->AllowMDEntryTime = !CheckProcessNullUInt32()))
+			if(!(gmdeItemInfo->IsNullMDEntryTime = CheckProcessNullUInt32()))
 				gmdeItemInfo->MDEntryTime = ReadUInt32_Optional();
-			if((gmdeItemInfo->AllowOrigTime = !CheckProcessNullUInt32()))
+			if(!(gmdeItemInfo->IsNullOrigTime = CheckProcessNullUInt32()))
 				gmdeItemInfo->OrigTime = ReadUInt32_Optional();
-			if((gmdeItemInfo->AllowOrderSide = !CheckProcessNullString()))
+			if(!(gmdeItemInfo->IsNullOrderSide = CheckProcessNullString()))
 				ReadString_Optional(&(gmdeItemInfo->OrderSide), &(gmdeItemInfo->OrderSideLength));
-			if((gmdeItemInfo->AllowMDEntryPx = !CheckProcessNullDecimal()))
+			if(!(gmdeItemInfo->IsNullMDEntryPx = CheckProcessNullDecimal()))
 				ReadDecimal_Optional(&(gmdeItemInfo->MDEntryPx));
-			if((gmdeItemInfo->AllowMDEntrySize = !CheckProcessNullDecimal()))
+			if(!(gmdeItemInfo->IsNullMDEntrySize = CheckProcessNullDecimal()))
 				ReadDecimal_Optional(&(gmdeItemInfo->MDEntrySize));
-			if((gmdeItemInfo->AllowTradeValue = !CheckProcessNullDecimal()))
+			if(!(gmdeItemInfo->IsNullTradeValue = CheckProcessNullDecimal()))
 				ReadDecimal_Optional(&(gmdeItemInfo->TradeValue));
-			if((gmdeItemInfo->AllowSettlDate = !CheckProcessNullUInt32()))
+			if(!(gmdeItemInfo->IsNullSettlDate = CheckProcessNullUInt32()))
 				gmdeItemInfo->SettlDate = ReadUInt32_Optional();
-			if((gmdeItemInfo->AllowSettleType = !CheckProcessNullString()))
+			if(!(gmdeItemInfo->IsNullSettleType = CheckProcessNullString()))
 				ReadString_Optional(&(gmdeItemInfo->SettleType), &(gmdeItemInfo->SettleTypeLength));
-			if((gmdeItemInfo->AllowPrice = !CheckProcessNullDecimal()))
+			if(!(gmdeItemInfo->IsNullPrice = CheckProcessNullDecimal()))
 				ReadDecimal_Optional(&(gmdeItemInfo->Price));
-			if((gmdeItemInfo->AllowPriceType = !CheckProcessNullInt32()))
+			if(!(gmdeItemInfo->IsNullPriceType = CheckProcessNullInt32()))
 				gmdeItemInfo->PriceType = ReadInt32_Optional();
-			if((gmdeItemInfo->AllowRepoToPx = !CheckProcessNullDecimal()))
+			if(!(gmdeItemInfo->IsNullRepoToPx = CheckProcessNullDecimal()))
 				ReadDecimal_Optional(&(gmdeItemInfo->RepoToPx));
-			if((gmdeItemInfo->AllowBuyBackPx = !CheckProcessNullDecimal()))
+			if(!(gmdeItemInfo->IsNullBuyBackPx = CheckProcessNullDecimal()))
 				ReadDecimal_Optional(&(gmdeItemInfo->BuyBackPx));
-			if((gmdeItemInfo->AllowBuyBackDate = !CheckProcessNullUInt32()))
+			if(!(gmdeItemInfo->IsNullBuyBackDate = CheckProcessNullUInt32()))
 				gmdeItemInfo->BuyBackDate = ReadUInt32_Optional();
-			if((gmdeItemInfo->AllowTradingSessionID = !CheckProcessNullString()))
+			if(!(gmdeItemInfo->IsNullTradingSessionID = CheckProcessNullString()))
 				ReadString_Optional(&(gmdeItemInfo->TradingSessionID), &(gmdeItemInfo->TradingSessionIDLength));
-			if((gmdeItemInfo->AllowTradingSessionSubID = !CheckProcessNullString()))
+			if(!(gmdeItemInfo->IsNullTradingSessionSubID = CheckProcessNullString()))
 				ReadString_Optional(&(gmdeItemInfo->TradingSessionSubID), &(gmdeItemInfo->TradingSessionSubIDLength));
-			if((gmdeItemInfo->AllowRefOrderID = !CheckProcessNullString()))
+			if(!(gmdeItemInfo->IsNullRefOrderID = CheckProcessNullString()))
 				ReadString_Optional(&(gmdeItemInfo->RefOrderID), &(gmdeItemInfo->RefOrderIDLength));
+			this->m_prevTLSCURRItemInfo = gmdeItemInfo;
 		}
 
+		this->m_prevIncrementalTLRCURRInfo = info;
 		return info;
 	}
 	void* DecodeSecurityDefinition() {
@@ -3893,41 +3845,41 @@ public:
 
 		info->MsgSeqNum = ReadUInt32_Mandatory();
 		info->SendingTime = ReadUInt64_Mandatory();
-		if((info->AllowTotNumReports = !CheckProcessNullInt32()))
+		if(!(info->IsNullTotNumReports = CheckProcessNullInt32()))
 			info->TotNumReports = ReadInt32_Optional();
-		if((info->AllowSymbol = !CheckProcessNullString()))
+		if(!(info->IsNullSymbol = CheckProcessNullString()))
 			ReadString_Optional(&(info->Symbol), &(info->SymbolLength));
-		if((info->AllowSecurityID = !CheckProcessNullByteVector()))
+		if(!(info->IsNullSecurityID = CheckProcessNullByteVector()))
 			ReadByteVector_Optional(&(info->SecurityID), &(info->SecurityIDLength));
-		if((info->AllowSecurityIDSource = !CheckProcessNullByteVector()))
+		if(!(info->IsNullSecurityIDSource = CheckProcessNullByteVector()))
 			ReadByteVector_Optional(&(info->SecurityIDSource), &(info->SecurityIDSourceLength));
-		if((info->AllowProduct = !CheckProcessNullInt32()))
+		if(!(info->IsNullProduct = CheckProcessNullInt32()))
 			info->Product = ReadInt32_Optional();
-		if((info->AllowCFICode = !CheckProcessNullByteVector()))
+		if(!(info->IsNullCFICode = CheckProcessNullByteVector()))
 			ReadByteVector_Optional(&(info->CFICode), &(info->CFICodeLength));
-		if((info->AllowSecurityType = !CheckProcessNullByteVector()))
+		if(!(info->IsNullSecurityType = CheckProcessNullByteVector()))
 			ReadByteVector_Optional(&(info->SecurityType), &(info->SecurityTypeLength));
-		if((info->AllowMaturityDate = !CheckProcessNullUInt32()))
+		if(!(info->IsNullMaturityDate = CheckProcessNullUInt32()))
 			info->MaturityDate = ReadUInt32_Optional();
-		if((info->AllowSettlDate = !CheckProcessNullUInt32()))
+		if(!(info->IsNullSettlDate = CheckProcessNullUInt32()))
 			info->SettlDate = ReadUInt32_Optional();
-		if((info->AllowSettleType = !CheckProcessNullString()))
+		if(!(info->IsNullSettleType = CheckProcessNullString()))
 			ReadString_Optional(&(info->SettleType), &(info->SettleTypeLength));
-		if((info->AllowOrigIssueAmt = !CheckProcessNullDecimal()))
+		if(!(info->IsNullOrigIssueAmt = CheckProcessNullDecimal()))
 			ReadDecimal_Optional(&(info->OrigIssueAmt));
-		if((info->AllowCouponPaymentDate = !CheckProcessNullUInt32()))
+		if(!(info->IsNullCouponPaymentDate = CheckProcessNullUInt32()))
 			info->CouponPaymentDate = ReadUInt32_Optional();
-		if((info->AllowCouponRate = !CheckProcessNullDecimal()))
+		if(!(info->IsNullCouponRate = CheckProcessNullDecimal()))
 			ReadDecimal_Optional(&(info->CouponRate));
-		if((info->AllowSettlFixingDate = !CheckProcessNullUInt32()))
+		if(!(info->IsNullSettlFixingDate = CheckProcessNullUInt32()))
 			info->SettlFixingDate = ReadUInt32_Optional();
-		if((info->AllowDividendNetPx = !CheckProcessNullDecimal()))
+		if(!(info->IsNullDividendNetPx = CheckProcessNullDecimal()))
 			ReadDecimal_Optional(&(info->DividendNetPx));
-		if((info->AllowSecurityDesc = !CheckProcessNullByteVector()))
+		if(!(info->IsNullSecurityDesc = CheckProcessNullByteVector()))
 			ReadByteVector_Optional(&(info->SecurityDesc), &(info->SecurityDescLength));
-		if((info->AllowEncodedSecurityDesc = !CheckProcessNullByteVector()))
+		if(!(info->IsNullEncodedSecurityDesc = CheckProcessNullByteVector()))
 			ReadByteVector_Optional(&(info->EncodedSecurityDesc), &(info->EncodedSecurityDescLength));
-		if((info->AllowQuoteText = !CheckProcessNullByteVector()))
+		if(!(info->IsNullQuoteText = CheckProcessNullByteVector()))
 			ReadByteVector_Optional(&(info->QuoteText), &(info->QuoteTextLength));
 
 		if(!CheckProcessNullInt32())
@@ -3940,11 +3892,12 @@ public:
 			giaItemInfo = GetFreeSecurityDefinitionGroupInstrAttribItemInfo();
 			info->GroupInstrAttrib[i] = giaItemInfo;
 			giaItemInfo->InstrAttribType = ReadInt32_Mandatory();
-			if((giaItemInfo->AllowInstrAttribValue = !CheckProcessNullByteVector()))
+			if(!(giaItemInfo->IsNullInstrAttribValue = CheckProcessNullByteVector()))
 				ReadByteVector_Optional(&(giaItemInfo->InstrAttribValue), &(giaItemInfo->InstrAttribValueLength));
+			this->m_prevSecurityDefinitionGroupInstrAttribItemInfo = giaItemInfo;
 		}
 
-		if((info->AllowCurrency = !CheckProcessNullString()))
+		if(!(info->IsNullCurrency = CheckProcessNullString()))
 			ReadString_Optional(&(info->Currency), &(info->CurrencyLength));
 
 		if(!CheckProcessNullInt32())
@@ -3956,7 +3909,7 @@ public:
 		for(int i = 0; i < info->MarketSegmentGrpCount; i++) {
 			msgItemInfo = GetFreeSecurityDefinitionMarketSegmentGrpItemInfo();
 			info->MarketSegmentGrp[i] = msgItemInfo;
-			if((msgItemInfo->AllowRoundLot = !CheckProcessNullDecimal()))
+			if(!(msgItemInfo->IsNullRoundLot = CheckProcessNullDecimal()))
 				ReadDecimal_Optional(&(msgItemInfo->RoundLot));
 
 			if(!CheckProcessNullInt32())
@@ -3969,54 +3922,57 @@ public:
 				tsrgItemInfo = GetFreeSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo();
 				msgItemInfo->TradingSessionRulesGrp[i] = tsrgItemInfo;
 				ReadString_Mandatory(&(tsrgItemInfo->TradingSessionID), &(tsrgItemInfo->TradingSessionIDLength));
-				if((tsrgItemInfo->AllowTradingSessionSubID = !CheckProcessNullString()))
+				if(!(tsrgItemInfo->IsNullTradingSessionSubID = CheckProcessNullString()))
 					ReadString_Optional(&(tsrgItemInfo->TradingSessionSubID), &(tsrgItemInfo->TradingSessionSubIDLength));
-				if((tsrgItemInfo->AllowSecurityTradingStatus = !CheckProcessNullInt32()))
+				if(!(tsrgItemInfo->IsNullSecurityTradingStatus = CheckProcessNullInt32()))
 					tsrgItemInfo->SecurityTradingStatus = ReadInt32_Optional();
-				if((tsrgItemInfo->AllowOrderNote = !CheckProcessNullInt32()))
+				if(!(tsrgItemInfo->IsNullOrderNote = CheckProcessNullInt32()))
 					tsrgItemInfo->OrderNote = ReadInt32_Optional();
+				this->m_prevSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo = tsrgItemInfo;
 			}
 
+			this->m_prevSecurityDefinitionMarketSegmentGrpItemInfo = msgItemInfo;
 		}
 
-		if((info->AllowSettlCurrency = !CheckProcessNullString()))
+		if(!(info->IsNullSettlCurrency = CheckProcessNullString()))
 			ReadString_Optional(&(info->SettlCurrency), &(info->SettlCurrencyLength));
-		if((info->AllowPriceType = !CheckProcessNullInt32()))
+		if(!(info->IsNullPriceType = CheckProcessNullInt32()))
 			info->PriceType = ReadInt32_Optional();
-		if((info->AllowStateSecurityID = !CheckProcessNullString()))
+		if(!(info->IsNullStateSecurityID = CheckProcessNullString()))
 			ReadString_Optional(&(info->StateSecurityID), &(info->StateSecurityIDLength));
-		if((info->AllowEncodedShortSecurityDesc = !CheckProcessNullByteVector()))
+		if(!(info->IsNullEncodedShortSecurityDesc = CheckProcessNullByteVector()))
 			ReadByteVector_Optional(&(info->EncodedShortSecurityDesc), &(info->EncodedShortSecurityDescLength));
-		if((info->AllowMarketCode = !CheckProcessNullByteVector()))
+		if(!(info->IsNullMarketCode = CheckProcessNullByteVector()))
 			ReadByteVector_Optional(&(info->MarketCode), &(info->MarketCodeLength));
-		if((info->AllowMinPriceIncrement = !CheckProcessNullDecimal()))
+		if(!(info->IsNullMinPriceIncrement = CheckProcessNullDecimal()))
 			ReadDecimal_Optional(&(info->MinPriceIncrement));
-		if((info->AllowMktShareLimit = !CheckProcessNullDecimal()))
+		if(!(info->IsNullMktShareLimit = CheckProcessNullDecimal()))
 			ReadDecimal_Optional(&(info->MktShareLimit));
-		if((info->AllowMktShareThreshold = !CheckProcessNullDecimal()))
+		if(!(info->IsNullMktShareThreshold = CheckProcessNullDecimal()))
 			ReadDecimal_Optional(&(info->MktShareThreshold));
-		if((info->AllowMaxOrdersVolume = !CheckProcessNullDecimal()))
+		if(!(info->IsNullMaxOrdersVolume = CheckProcessNullDecimal()))
 			ReadDecimal_Optional(&(info->MaxOrdersVolume));
-		if((info->AllowPriceMvmLimit = !CheckProcessNullDecimal()))
+		if(!(info->IsNullPriceMvmLimit = CheckProcessNullDecimal()))
 			ReadDecimal_Optional(&(info->PriceMvmLimit));
-		if((info->AllowFaceValue = !CheckProcessNullDecimal()))
+		if(!(info->IsNullFaceValue = CheckProcessNullDecimal()))
 			ReadDecimal_Optional(&(info->FaceValue));
-		if((info->AllowBaseSwapPx = !CheckProcessNullDecimal()))
+		if(!(info->IsNullBaseSwapPx = CheckProcessNullDecimal()))
 			ReadDecimal_Optional(&(info->BaseSwapPx));
-		if((info->AllowRepoToPx = !CheckProcessNullDecimal()))
+		if(!(info->IsNullRepoToPx = CheckProcessNullDecimal()))
 			ReadDecimal_Optional(&(info->RepoToPx));
-		if((info->AllowBuyBackPx = !CheckProcessNullDecimal()))
+		if(!(info->IsNullBuyBackPx = CheckProcessNullDecimal()))
 			ReadDecimal_Optional(&(info->BuyBackPx));
-		if((info->AllowBuyBackDate = !CheckProcessNullUInt32()))
+		if(!(info->IsNullBuyBackDate = CheckProcessNullUInt32()))
 			info->BuyBackDate = ReadUInt32_Optional();
-		if((info->AllowNoSharesIssued = !CheckProcessNullDecimal()))
+		if(!(info->IsNullNoSharesIssued = CheckProcessNullDecimal()))
 			ReadDecimal_Optional(&(info->NoSharesIssued));
-		if((info->AllowHighLimit = !CheckProcessNullDecimal()))
+		if(!(info->IsNullHighLimit = CheckProcessNullDecimal()))
 			ReadDecimal_Optional(&(info->HighLimit));
-		if((info->AllowLowLimit = !CheckProcessNullDecimal()))
+		if(!(info->IsNullLowLimit = CheckProcessNullDecimal()))
 			ReadDecimal_Optional(&(info->LowLimit));
-		if((info->AllowNumOfDaysToMaturity = !CheckProcessNullInt32()))
+		if(!(info->IsNullNumOfDaysToMaturity = CheckProcessNullInt32()))
 			info->NumOfDaysToMaturity = ReadInt32_Optional();
+		this->m_prevSecurityDefinitionInfo = info;
 		return info;
 	}
 	void* DecodeSecurityStatus() {
@@ -4026,14 +3982,15 @@ public:
 		info->MsgSeqNum = ReadUInt32_Mandatory();
 		info->SendingTime = ReadUInt64_Mandatory();
 		ReadString_Mandatory(&(info->Symbol), &(info->SymbolLength));
-		if((info->AllowTradingSessionID = !CheckProcessNullString()))
+		if(!(info->IsNullTradingSessionID = CheckProcessNullString()))
 			ReadString_Optional(&(info->TradingSessionID), &(info->TradingSessionIDLength));
-		if((info->AllowTradingSessionSubID = !CheckProcessNullString()))
+		if(!(info->IsNullTradingSessionSubID = CheckProcessNullString()))
 			ReadString_Optional(&(info->TradingSessionSubID), &(info->TradingSessionSubIDLength));
-		if((info->AllowSecurityTradingStatus = !CheckProcessNullInt32()))
+		if(!(info->IsNullSecurityTradingStatus = CheckProcessNullInt32()))
 			info->SecurityTradingStatus = ReadInt32_Optional();
-		if((info->AllowAuctionIndicator = !CheckProcessNullUInt32()))
+		if(!(info->IsNullAuctionIndicator = CheckProcessNullUInt32()))
 			info->AuctionIndicator = ReadUInt32_Optional();
+		this->m_prevSecurityStatusInfo = info;
 		return info;
 	}
 	void* DecodeTradingSessionStatus() {
@@ -4043,9 +4000,10 @@ public:
 		info->MsgSeqNum = ReadUInt32_Mandatory();
 		info->SendingTime = ReadUInt64_Mandatory();
 		info->TradSesStatus = ReadInt32_Mandatory();
-		if((info->AllowText = !CheckProcessNullString()))
+		if(!(info->IsNullText = CheckProcessNullString()))
 			ReadString_Optional(&(info->Text), &(info->TextLength));
 		ReadString_Mandatory(&(info->TradingSessionID), &(info->TradingSessionIDLength));
+		this->m_prevTradingSessionStatusInfo = info;
 		return info;
 	}
 	void* DecodeHeartbeat() {
@@ -4054,6 +4012,7 @@ public:
 
 		info->MsgSeqNum = ReadUInt32_Mandatory();
 		info->SendingTime = ReadUInt64_Mandatory();
+		this->m_prevHeartbeatInfo = info;
 		return info;
 	}
 	FastSnapshotInfo* GetSnapshotInfoLogon() {
@@ -4085,12 +4044,12 @@ public:
 		info->SendingTime = ReadUInt64_Mandatory();
 		SkipToNextField(); // TradingSessionID
 		SkipToNextField(); // Symbol
-		if((info->AllowLastMsgSeqNumProcessed = !CheckProcessNullUInt32()))
+		if(!(info->IsNullLastMsgSeqNumProcessed = CheckProcessNullUInt32()))
 			info->LastMsgSeqNumProcessed = ReadUInt32_Optional();
 		info->RptSeq = ReadInt32_Mandatory();
-		if((info->AllowLastFragment = !CheckProcessNullUInt32()))
+		if(!(info->IsNullLastFragment = CheckProcessNullUInt32()))
 			info->LastFragment = ReadUInt32_Optional();
-		if((info->AllowRouteFirst = !CheckProcessNullUInt32()))
+		if(!(info->IsNullRouteFirst = CheckProcessNullUInt32()))
 			info->RouteFirst = ReadUInt32_Optional();
 		return info;
 	}
@@ -4110,12 +4069,12 @@ public:
 
 		SkipToNextField(); // MsgSeqNum
 		info->SendingTime = ReadUInt64_Mandatory();
-		if((info->AllowLastMsgSeqNumProcessed = !CheckProcessNullUInt32()))
+		if(!(info->IsNullLastMsgSeqNumProcessed = CheckProcessNullUInt32()))
 			info->LastMsgSeqNumProcessed = ReadUInt32_Optional();
 		info->RptSeq = ReadInt32_Mandatory();
-		if((info->AllowLastFragment = !CheckProcessNullUInt32()))
+		if(!(info->IsNullLastFragment = CheckProcessNullUInt32()))
 			info->LastFragment = ReadUInt32_Optional();
-		if((info->AllowRouteFirst = !CheckProcessNullUInt32()))
+		if(!(info->IsNullRouteFirst = CheckProcessNullUInt32()))
 			info->RouteFirst = ReadUInt32_Optional();
 		return info;
 	}
@@ -4126,12 +4085,12 @@ public:
 
 		SkipToNextField(); // MsgSeqNum
 		info->SendingTime = ReadUInt64_Mandatory();
-		if((info->AllowLastMsgSeqNumProcessed = !CheckProcessNullUInt32()))
+		if(!(info->IsNullLastMsgSeqNumProcessed = CheckProcessNullUInt32()))
 			info->LastMsgSeqNumProcessed = ReadUInt32_Optional();
 		info->RptSeq = ReadInt32_Mandatory();
-		if((info->AllowLastFragment = !CheckProcessNullUInt32()))
+		if(!(info->IsNullLastFragment = CheckProcessNullUInt32()))
 			info->LastFragment = ReadUInt32_Optional();
-		if((info->AllowRouteFirst = !CheckProcessNullUInt32()))
+		if(!(info->IsNullRouteFirst = CheckProcessNullUInt32()))
 			info->RouteFirst = ReadUInt32_Optional();
 		return info;
 	}
@@ -4142,12 +4101,12 @@ public:
 
 		SkipToNextField(); // MsgSeqNum
 		info->SendingTime = ReadUInt64_Mandatory();
-		if((info->AllowLastMsgSeqNumProcessed = !CheckProcessNullUInt32()))
+		if(!(info->IsNullLastMsgSeqNumProcessed = CheckProcessNullUInt32()))
 			info->LastMsgSeqNumProcessed = ReadUInt32_Optional();
 		info->RptSeq = ReadInt32_Mandatory();
-		if((info->AllowLastFragment = !CheckProcessNullUInt32()))
+		if(!(info->IsNullLastFragment = CheckProcessNullUInt32()))
 			info->LastFragment = ReadUInt32_Optional();
-		if((info->AllowRouteFirst = !CheckProcessNullUInt32()))
+		if(!(info->IsNullRouteFirst = CheckProcessNullUInt32()))
 			info->RouteFirst = ReadUInt32_Optional();
 		return info;
 	}
@@ -4158,12 +4117,12 @@ public:
 
 		SkipToNextField(); // MsgSeqNum
 		info->SendingTime = ReadUInt64_Mandatory();
-		if((info->AllowLastMsgSeqNumProcessed = !CheckProcessNullUInt32()))
+		if(!(info->IsNullLastMsgSeqNumProcessed = CheckProcessNullUInt32()))
 			info->LastMsgSeqNumProcessed = ReadUInt32_Optional();
 		info->RptSeq = ReadInt32_Mandatory();
-		if((info->AllowLastFragment = !CheckProcessNullUInt32()))
+		if(!(info->IsNullLastFragment = CheckProcessNullUInt32()))
 			info->LastFragment = ReadUInt32_Optional();
-		if((info->AllowRouteFirst = !CheckProcessNullUInt32()))
+		if(!(info->IsNullRouteFirst = CheckProcessNullUInt32()))
 			info->RouteFirst = ReadUInt32_Optional();
 		return info;
 	}

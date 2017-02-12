@@ -34,7 +34,6 @@ public:
             LinkedPointer<T> *node = this->m_list->Append(this->m_addCapacity);
             this->Allocate(node, this->m_list->PoolEnd());
         }
-        ;
         T *item = this->m_list->Add(this->m_list->Pop())->Data();
         return item;
     }

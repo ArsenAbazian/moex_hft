@@ -7,6 +7,7 @@
 #include "Test/FastProtocolTester.h"
 #include <sys/time.h>
 #include <Lib/StringIdComparer.h>
+#include "../Managers/DebugInfoManager.h"
 
 #ifdef TEST
 FastProtocolTester::FastProtocolTester()
@@ -21,7 +22,38 @@ FastProtocolTester::~FastProtocolTester()
 void FastProtocolTester::TestMessages() {
     FastProtocolManager *manager = new FastProtocolManager(new FastObjectsAllocationInfo(128,128));
 
-    unsigned char *message = new unsigned char[130] {
+    unsigned char *message = 0;
+    int msgSeqNo = 0;
+
+    int msgSize = 0;
+    message = DebugInfoManager::Default->StringToBinary("0f 50 05 00 c0 1c 9a 15 20 8f 02 2e 2d 43 6f 62 77 6c 86 84 77 98 83 b1 32 39 34 39 34 b1 45 55 52 5f 52 55 42 5f 5f 54 4f cd 08 5a fc 3e 06 50 a1 1e 1d ed fe 37 aa 43 45 54 d3 ce 82 32 39 34 39 34 b4 08 5a fd 1e 24 d4 53 e0 81 33 33 31 32 32 b7 48 4b 44 52 55 42 5f 54 4f cd 00 41 8d 1e 47 f9 fc 08 13 dc 81 01 ea cf 13 c0 33 33 31 32 32 b8 47 4c 44 52 55 42 54 4f 44 54 4f cd 27 ba 1f 64 a8 fc 01 04 a1 81 02 93", &msgSize);
+    manager->SetNewBuffer(message, msgSize);
+    msgSeqNo = manager->ReadMsgSeqNumber();
+    FastIncrementalOLRCURRInfo *olsCurr2 = (FastIncrementalOLRCURRInfo*)manager->Decode();
+    if(olsCurr2->GroupMDEntries[1]->MDEntryType != olsCurr2->GroupMDEntries[0]->MDEntryType)
+        throw;
+
+    message = new unsigned char[94] {
+            0x9f, 0xa4, 0x04, 0x00, 0xc0, 0x1c, 0x9a, 0x12, 0x49, 0x9f,
+            0x02, 0x2e, 0x2d, 0x43, 0x4c, 0x22, 0x74, 0x16, 0xbb, 0x82,
+            0x77, 0x98, 0x83, 0xb0, 0x32, 0x35, 0x32, 0x31, 0x37, 0xb4,
+            0x43, 0x4e, 0x59, 0x52, 0x55, 0x42, 0x54, 0x4f, 0x44, 0x54,
+            0x4f, 0xcd, 0x1f, 0xe6, 0x39, 0x41, 0x02, 0xf9, 0x07, 0xa6,
+            0xfa, 0x3a, 0x91, 0x43, 0x45, 0x54, 0xd3, 0xce, 0x57, 0xe0,
+            0x81, 0x32, 0x39, 0x30, 0x39, 0x37, 0xb3, 0x43, 0x48, 0x46,
+            0x52, 0x55, 0x42, 0x5f, 0x54, 0x4f, 0xc4, 0x37, 0xff, 0x39,
+            0x40, 0x7b, 0x91, 0x3c, 0x50, 0x81, 0xfe, 0x00, 0x4e, 0xac,
+            0x81, 0x01, 0xe9, 0xcf
+    };
+
+    manager->SetNewBuffer(message, 130);
+    msgSeqNo = manager->ReadMsgSeqNumber();
+    FastIncrementalOLRCURRInfo *olsCurr1 = (FastIncrementalOLRCURRInfo*)manager->Decode();
+    if(!StringIdComparer::Equal(olsCurr1->GroupMDEntries[0]->TradingSessionID,
+                                olsCurr1->GroupMDEntries[0]->TradingSessionIDLength, "CETS", 4))
+        throw;
+
+    message = new unsigned char[130] {
             0x89, 0x30, 0x00, 0x00, 0xe0, 0x10, 0xc3, 0x61, 0x89, 0x02,
             0x16, 0x48, 0x54, 0x42, 0x3c, 0x26, 0xb9, 0x00, 0x65, 0xa7,
             0x4d, 0x4f, 0x45, 0x58, 0x52, 0x45, 0x50, 0xcf, 0x80, 0x80,
@@ -38,7 +70,7 @@ void FastProtocolTester::TestMessages() {
     };
 
     manager->SetNewBuffer(message, 130);
-    int msgSeqNo = manager->ReadMsgSeqNumber();
+    msgSeqNo = manager->ReadMsgSeqNumber();
     FastSecurityDefinitionInfo *sec = (FastSecurityDefinitionInfo*)manager->Decode();
     manager->PrintSecurityDefinition(sec);
 

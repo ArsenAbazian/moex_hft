@@ -367,7 +367,7 @@ public:
         info->SenderCompID = sid;
         info->SenderCompIDLength = sidLen;
 
-        info->AllowPassword = true;
+        info->IsNullPassword = false;
         info->Password = p;
         info->PasswordLength = pLen;
 
@@ -936,7 +936,7 @@ public:
     void AddTradingSession(FastSecurityDefinitionInfo *info, int marketIndex, TestTemplateItemInfo *ti) {
         FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo *item = AddTradingSession(info, marketIndex, ti->m_tradingSession);
         if(ti->m_sessionStatus != 0)
-            item->AllowSecurityTradingStatus = true;
+            item->IsNullSecurityTradingStatus = false;
         item->SecurityTradingStatus = ti->m_sessionStatus;
     }
 
@@ -955,7 +955,7 @@ public:
 
         info->Symbol = smb;
         info->SymbolLength = strlen(symbol);
-        info->AllowSymbol = true;
+        info->IsNullSymbol = false;
 
         return info;
     }
@@ -976,11 +976,11 @@ public:
         info->Symbol = smb;
         info->SymbolLength = strlen(symbol);
 
-        info->AllowTradingSessionID = true;
+        info->IsNullTradingSessionID = false;
         info->TradingSessionID = ss;
         info->TradingSessionIDLength = strlen(session);
 
-        info->AllowTradingSessionSubID = true;
+        info->IsNullTradingSessionSubID = false;
         info->TradingSessionSubID = sub;
         info->TradingSessionSubIDLength = strlen(sessionSubId);
 
@@ -991,11 +991,11 @@ public:
         FastSecurityDefinitionInfo *info = CreateSecurityDefinitionInfo(tmp->m_symbol);
 
         info->MsgSeqNum = tmp->m_msgSeqNo;
-        info->AllowMarketSegmentGrp = true;
+        info->IsNullMarketSegmentGrp = false;
         this->AddMarketSegemntGroup(info);
-        info->MarketSegmentGrp[0]->AllowTradingSessionRulesGrp = true;
+        info->MarketSegmentGrp[0]->IsNullTradingSessionRulesGrp = false;
         if(tmp->m_totNumReports != 0) {
-            info->AllowTotNumReports = true;
+            info->IsNullTotNumReports = false;
             info->TotNumReports = tmp->m_totNumReports;
         }
 
@@ -1008,10 +1008,10 @@ public:
     FastSecurityStatusInfo* CreateSecurityStatusInfo(TestTemplateInfo *tmp) {
         FastSecurityStatusInfo *info = CreateSecurityStatusInfo(tmp->m_symbol, tmp->m_session, tmp->m_sessionSubId);
 
-        info->AllowSecurityTradingStatus = true;
+        info->IsNullSecurityTradingStatus = false;
         info->SecurityTradingStatus = tmp->m_sessionStatus;
 
-        info->AllowAuctionIndicator = true;
+        info->IsNullAuctionIndicator = false;
         info->AuctionIndicator = tmp->m_auctionIndicator;
 
         info->MsgSeqNum = tmp->m_msgSeqNo;
@@ -1022,41 +1022,41 @@ public:
     FastOLSFONDItemInfo* CreateOLRFondItemInfo(TestTemplateItemInfo *tmp) {
         FastOLSFONDItemInfo *info = new FastOLSFONDItemInfo();
 
-        info->AllowMDUpdateAction = true;
+        info->IsNullMDUpdateAction = false;
         info->MDUpdateAction = tmp->m_action;
 
-        info->AllowMDEntryType = true;
-        info->PresenceMap |= info->MDEntryTypePresenceIndex;
+        info->IsNullMDEntryType = false;
+        //info->PresenceMap |= info->MDEntryTypePresenceIndex;
         info->MDEntryType = new char[1];
         info->MDEntryType[0] = (char)tmp->m_entryType;
         info->MDEntryTypeLength = 1;
 
-        info->AllowMDEntryPx = true;
-        info->PresenceMap |= info->MDEntryPxPresenceIndex;
+        info->IsNullMDEntryPx = false;
+        //info->PresenceMap |= info->MDEntryPxPresenceIndex;
         info->MDEntryPx.Assign(&tmp->m_entryPx);
 
-        info->AllowMDEntrySize = true;
-        info->PresenceMap |= info->MDEntrySizePresenceIndex;
+        info->IsNullMDEntrySize = false;
+        //info->PresenceMap |= info->MDEntrySizePresenceIndex;
         info->MDEntrySize.Assign(&tmp->m_entrySize);
 
-        info->AllowRptSeq = true;
+        info->IsNullRptSeq = false;
         info->RptSeq = tmp->m_rptSeq;
         if(tmp->m_symbol != 0) {
-            info->AllowSymbol = true;
-            info->PresenceMap |= info->SymbolPresenceIndex;
+            info->IsNullSymbol = false;
+            //info->PresenceMap |= info->SymbolPresenceIndex;
             info->SymbolLength = strlen(tmp->m_symbol);
             info->Symbol = new char[info->SymbolLength + 1];
             strcpy(info->Symbol, tmp->m_symbol);
         }
         if(tmp->m_tradingSession != 0) {
-            info->AllowTradingSessionID = true;
-            info->PresenceMap |= info->TradingSessionIDPresenceIndex;
+            info->IsNullTradingSessionID = false;
+            //info->PresenceMap |= info->TradingSessionIDPresenceIndex;
             info->TradingSessionIDLength = strlen(tmp->m_tradingSession);
             info->TradingSessionID = new char[info->TradingSessionIDLength + 1];
             strcpy(info->TradingSessionID, tmp->m_tradingSession);
         }
         if(tmp->m_entryId != 0) {
-            info->AllowMDEntryID = true;
+            info->IsNullMDEntryID = false;
             info->MDEntryIDLength = strlen(tmp->m_entryId);
             info->MDEntryID = new char[info->MDEntryIDLength + 1];
             strcpy(info->MDEntryID, tmp->m_entryId);
@@ -1066,32 +1066,32 @@ public:
 
     FastGenericItemInfo* CreateObrFondItemInfo(TestTemplateItemInfo *tmp) {
         FastGenericItemInfo *info = new FastGenericItemInfo();
-        info->AllowMDUpdateAction = true;
+        info->IsNullMDUpdateAction = false;
         info->MDUpdateAction = tmp->m_action;
-        info->AllowMDEntryType = true;
+        info->IsNullMDEntryType = false;
         info->MDEntryType = new char[1];
         info->MDEntryType[0] = (char)tmp->m_entryType;
         info->MDEntryTypeLength = 1;
-        info->AllowMDEntryPx = true;
+        info->IsNullMDEntryPx = false;
         info->MDEntryPx.Assign(&tmp->m_entryPx);
-        info->AllowMDEntrySize = true;
+        info->IsNullMDEntrySize = false;
         info->MDEntrySize.Assign(&tmp->m_entrySize);
-        info->AllowRptSeq = true;
+        info->IsNullRptSeq = false;
         info->RptSeq = tmp->m_rptSeq;
         if(tmp->m_symbol != 0) {
-            info->AllowSymbol = true;
+            info->IsNullSymbol = false;
             info->SymbolLength = strlen(tmp->m_symbol);
             info->Symbol = new char[info->SymbolLength + 1];
             strcpy(info->Symbol, tmp->m_symbol);
         }
         if(tmp->m_tradingSession != 0) {
-            info->AllowTradingSessionID = true;
+            info->IsNullTradingSessionID = false;
             info->TradingSessionIDLength = strlen(tmp->m_tradingSession);
             info->TradingSessionID = new char[info->TradingSessionIDLength + 1];
             strcpy(info->TradingSessionID, tmp->m_tradingSession);
         }
         if(tmp->m_entryId != 0) {
-            info->AllowMDEntryID = true;
+            info->IsNullMDEntryID = false;
             info->MDEntryIDLength = strlen(tmp->m_entryId);
             info->MDEntryID = new char[info->MDEntryIDLength + 1];
             strcpy(info->MDEntryID, tmp->m_entryId);
@@ -1101,37 +1101,37 @@ public:
 
     FastTLSFONDItemInfo* CreateTLRFondItemInfo(TestTemplateItemInfo *tmp) {
         FastTLSFONDItemInfo *info = new FastTLSFONDItemInfo();
-        info->AllowMDUpdateAction = true;
+        info->IsNullMDUpdateAction = false;
         info->MDUpdateAction = tmp->m_action;
 
         info->MDEntryType = new char[1];
         info->MDEntryType[0] = (char)tmp->m_entryType;
         info->MDEntryTypeLength = 1;
 
-        info->AllowMDEntryPx = true;
-        info->PresenceMap |= info->MDEntryPxPresenceIndex;
+        info->IsNullMDEntryPx = false;
+        //info->PresenceMap |= info->MDEntryPxPresenceIndex;
         info->MDEntryPx.Assign(&tmp->m_entryPx);
 
-        info->AllowMDEntrySize = true;
-        info->PresenceMap |= info->MDEntrySizePresenceIndex;
+        info->IsNullMDEntrySize = false;
+        //info->PresenceMap |= info->MDEntrySizePresenceIndex;
         info->MDEntrySize.Assign(&tmp->m_entrySize);
 
-        info->AllowRptSeq = true;
+        info->IsNullRptSeq = false;
         info->RptSeq = tmp->m_rptSeq;
         if(tmp->m_symbol != 0) {
-            info->AllowSymbol = true;
+            info->IsNullSymbol = false;
             info->SymbolLength = strlen(tmp->m_symbol);
             info->Symbol = new char[info->SymbolLength + 1];
             strcpy(info->Symbol, tmp->m_symbol);
         }
         if(tmp->m_tradingSession != 0) {
-            info->AllowTradingSessionID = true;
+            info->IsNullTradingSessionID = false;
             info->TradingSessionIDLength = strlen(tmp->m_tradingSession);
             info->TradingSessionID = new char[info->TradingSessionIDLength + 1];
             strcpy(info->TradingSessionID, tmp->m_tradingSession);
         }
         if(tmp->m_entryId != 0) {
-            info->AllowMDEntryID = true;
+            info->IsNullMDEntryID = false;
             info->MDEntryIDLength = strlen(tmp->m_entryId);
             info->MDEntryID = new char[info->MDEntryIDLength + 1];
             strcpy(info->MDEntryID, tmp->m_entryId);
@@ -1141,41 +1141,41 @@ public:
 
     FastOLSCURRItemInfo* CreateOLRCurrItemInfo(TestTemplateItemInfo *tmp) {
         FastOLSCURRItemInfo *info = new FastOLSCURRItemInfo();
-        info->AllowMDUpdateAction = true;
+        info->IsNullMDUpdateAction = false;
         info->MDUpdateAction = tmp->m_action;
 
-        info->AllowMDEntryType = true;
-        info->PresenceMap |= info->MDEntryTypePresenceIndex;
+        info->IsNullMDEntryType = false;
+        //info->PresenceMap |= info->MDEntryTypePresenceIndex;
         info->MDEntryType = new char[1];
         info->MDEntryType[0] = (char)tmp->m_entryType;
         info->MDEntryTypeLength = 1;
 
-        info->AllowMDEntryPx = true;
-        info->PresenceMap |= info->MDEntryPxPresenceIndex;
+        info->IsNullMDEntryPx = false;
+        //info->PresenceMap |= info->MDEntryPxPresenceIndex;
         info->MDEntryPx.Assign(&tmp->m_entryPx);
 
-        info->AllowMDEntrySize = true;
-        info->PresenceMap |= info->MDEntrySizePresenceIndex;
+        info->IsNullMDEntrySize = false;
+        //info->PresenceMap |= info->MDEntrySizePresenceIndex;
         info->MDEntrySize.Assign(&tmp->m_entrySize);
 
-        info->AllowRptSeq = true;
+        info->IsNullRptSeq = false;
         info->RptSeq = tmp->m_rptSeq;
         if(tmp->m_symbol != 0) {
-            info->AllowSymbol = true;
-            info->PresenceMap |= info->SymbolPresenceIndex;
+            info->IsNullSymbol = false;
+            //info->PresenceMap |= info->SymbolPresenceIndex;
             info->SymbolLength = strlen(tmp->m_symbol);
             info->Symbol = new char[info->SymbolLength + 1];
             strcpy(info->Symbol, tmp->m_symbol);
         }
         if(tmp->m_tradingSession != 0) {
-            info->AllowTradingSessionID = true;
-            info->PresenceMap |= info->TradingSessionIDPresenceIndex;
+            info->IsNullTradingSessionID = false;
+            //info->PresenceMap |= info->TradingSessionIDPresenceIndex;
             info->TradingSessionIDLength = strlen(tmp->m_tradingSession);
             info->TradingSessionID = new char[info->TradingSessionIDLength + 1];
             strcpy(info->TradingSessionID, tmp->m_tradingSession);
         }
         if(tmp->m_entryId != 0) {
-            info->AllowMDEntryID = true;
+            info->IsNullMDEntryID = false;
             info->MDEntryIDLength = strlen(tmp->m_entryId);
             info->MDEntryID = new char[info->MDEntryIDLength + 1];
             strcpy(info->MDEntryID, tmp->m_entryId);
@@ -1185,32 +1185,32 @@ public:
 
     FastGenericItemInfo* CreateObrCurrItemInfo(TestTemplateItemInfo *tmp) {
         FastGenericItemInfo *info = new FastGenericItemInfo();
-        info->AllowMDUpdateAction = true;
+        info->IsNullMDUpdateAction = false;
         info->MDUpdateAction = tmp->m_action;
-        info->AllowMDEntryType = true;
+        info->IsNullMDEntryType = false;
         info->MDEntryType = new char[1];
         info->MDEntryType[0] = (char)tmp->m_entryType;
         info->MDEntryTypeLength = 1;
-        info->AllowMDEntryPx = true;
+        info->IsNullMDEntryPx = false;
         info->MDEntryPx.Assign(&tmp->m_entryPx);
-        info->AllowMDEntrySize = true;
+        info->IsNullMDEntrySize = false;
         info->MDEntrySize.Assign(&tmp->m_entrySize);
-        info->AllowRptSeq = true;
+        info->IsNullRptSeq = false;
         info->RptSeq = tmp->m_rptSeq;
         if(tmp->m_symbol != 0) {
-            info->AllowSymbol = true;
+            info->IsNullSymbol = false;
             info->SymbolLength = strlen(tmp->m_symbol);
             info->Symbol = new char[info->SymbolLength + 1];
             strcpy(info->Symbol, tmp->m_symbol);
         }
         if(tmp->m_tradingSession != 0) {
-            info->AllowTradingSessionID = true;
+            info->IsNullTradingSessionID = false;
             info->TradingSessionIDLength = strlen(tmp->m_tradingSession);
             info->TradingSessionID = new char[info->TradingSessionIDLength + 1];
             strcpy(info->TradingSessionID, tmp->m_tradingSession);
         }
         if(tmp->m_entryId != 0) {
-            info->AllowMDEntryID = true;
+            info->IsNullMDEntryID = false;
             info->MDEntryIDLength = strlen(tmp->m_entryId);
             info->MDEntryID = new char[info->MDEntryIDLength + 1];
             strcpy(info->MDEntryID, tmp->m_entryId);
@@ -1220,37 +1220,37 @@ public:
 
     FastTLSCURRItemInfo* CreateTLRCurrItemInfo(TestTemplateItemInfo *tmp) {
         FastTLSCURRItemInfo *info = new FastTLSCURRItemInfo();
-        info->AllowMDUpdateAction = true;
+        info->IsNullMDUpdateAction = false;
         info->MDUpdateAction = tmp->m_action;
 
         info->MDEntryType = new char[1];
         info->MDEntryType[0] = (char)tmp->m_entryType;
         info->MDEntryTypeLength = 1;
 
-        info->AllowMDEntryPx = true;
-        info->PresenceMap |= info->MDEntryPxPresenceIndex;
+        info->IsNullMDEntryPx = false;
+        //info->PresenceMap |= info->MDEntryPxPresenceIndex;
         info->MDEntryPx.Assign(&tmp->m_entryPx);
 
-        info->AllowMDEntrySize = true;
-        info->PresenceMap |= info->MDEntrySizePresenceIndex;
+        info->IsNullMDEntrySize = false;
+        //info->PresenceMap |= info->MDEntrySizePresenceIndex;
         info->MDEntrySize.Assign(&tmp->m_entrySize);
 
-        info->AllowRptSeq = true;
+        info->IsNullRptSeq = false;
         info->RptSeq = tmp->m_rptSeq;
         if(tmp->m_symbol != 0) {
-            info->AllowSymbol = true;
+            info->IsNullSymbol = false;
             info->SymbolLength = strlen(tmp->m_symbol);
             info->Symbol = new char[info->SymbolLength + 1];
             strcpy(info->Symbol, tmp->m_symbol);
         }
         if(tmp->m_tradingSession != 0) {
-            info->AllowTradingSessionID = true;
+            info->IsNullTradingSessionID = false;
             info->TradingSessionIDLength = strlen(tmp->m_tradingSession);
             info->TradingSessionID = new char[info->TradingSessionIDLength + 1];
             strcpy(info->TradingSessionID, tmp->m_tradingSession);
         }
         if(tmp->m_entryId != 0) {
-            info->AllowMDEntryID = true;
+            info->IsNullMDEntryID = false;
             info->MDEntryIDLength = strlen(tmp->m_entryId);
             info->MDEntryID = new char[info->MDEntryIDLength + 1];
             strcpy(info->MDEntryID, tmp->m_entryId);
@@ -1369,9 +1369,9 @@ public:
         FastGenericInfo *info = new FastGenericInfo();
         info->MsgSeqNum = tmp->m_msgSeqNo;
         info->GroupMDEntriesCount = tmp->m_itemsCount;
-        info->AllowRouteFirst = true;
-        info->AllowLastFragment = true;
-        info->AllowLastMsgSeqNumProcessed = true;
+        info->IsNullRouteFirst = true;
+        info->IsNullLastFragment = true;
+        info->IsNullLastMsgSeqNumProcessed = true;
         info->LastMsgSeqNumProcessed = tmp->m_lastMsgSeqNoProcessed;
 
         if(tmp->m_symbol != 0) {
@@ -1380,7 +1380,7 @@ public:
             strcpy(info->Symbol, tmp->m_symbol);
         }
         if(tmp->m_session != 0) {
-            info->AllowTradingSessionID = true;
+            info->IsNullTradingSessionID = true;
             info->TradingSessionIDLength = strlen(tmp->m_session);
             info->TradingSessionID = new char[info->TradingSessionIDLength + 1];
             strcpy(info->TradingSessionID, tmp->m_session);
@@ -1498,9 +1498,9 @@ public:
         FastOLSFONDInfo *info = new FastOLSFONDInfo();
         info->MsgSeqNum = tmp->m_msgSeqNo;
         info->GroupMDEntriesCount = tmp->m_itemsCount;
-        info->AllowRouteFirst = true;
-        info->AllowLastFragment = true;
-        info->AllowLastMsgSeqNumProcessed = true;
+        info->IsNullRouteFirst = true;
+        info->IsNullLastFragment = true;
+        info->IsNullLastMsgSeqNumProcessed = true;
         info->LastMsgSeqNumProcessed = tmp->m_lastMsgSeqNoProcessed;
 
         if(tmp->m_symbol != 0) {
@@ -1509,7 +1509,7 @@ public:
             strcpy(info->Symbol, tmp->m_symbol);
         }
         if(tmp->m_session != 0) {
-            info->AllowTradingSessionID = true;
+            info->IsNullTradingSessionID = true;
             info->TradingSessionIDLength = strlen(tmp->m_session);
             info->TradingSessionID = new char[info->TradingSessionIDLength + 1];
             strcpy(info->TradingSessionID, tmp->m_session);
@@ -1584,9 +1584,9 @@ public:
         FastTLSFONDInfo *info = new FastTLSFONDInfo();
         info->MsgSeqNum = tmp->m_msgSeqNo;
         info->GroupMDEntriesCount = tmp->m_itemsCount;
-        info->AllowRouteFirst = true;
-        info->AllowLastFragment = true;
-        info->AllowLastMsgSeqNumProcessed = true;
+        info->IsNullRouteFirst = true;
+        info->IsNullLastFragment = true;
+        info->IsNullLastMsgSeqNumProcessed = true;
         info->LastMsgSeqNumProcessed = tmp->m_lastMsgSeqNoProcessed;
 
         if(tmp->m_symbol != 0) {
@@ -1595,7 +1595,7 @@ public:
             strcpy(info->Symbol, tmp->m_symbol);
         }
         if(tmp->m_session != 0) {
-            info->AllowTradingSessionID = true;
+            info->IsNullTradingSessionID = true;
             info->TradingSessionIDLength = strlen(tmp->m_session);
             info->TradingSessionID = new char[info->TradingSessionIDLength + 1];
             strcpy(info->TradingSessionID, tmp->m_session);
@@ -1670,9 +1670,9 @@ public:
         FastOLSCURRInfo *info = new FastOLSCURRInfo();
         info->MsgSeqNum = tmp->m_msgSeqNo;
         info->GroupMDEntriesCount = tmp->m_itemsCount;
-        info->AllowRouteFirst = true;
-        info->AllowLastFragment = true;
-        info->AllowLastMsgSeqNumProcessed = true;
+        info->IsNullRouteFirst = true;
+        info->IsNullLastFragment = true;
+        info->IsNullLastMsgSeqNumProcessed = true;
         info->LastMsgSeqNumProcessed = tmp->m_lastMsgSeqNoProcessed;
 
         if(tmp->m_symbol != 0) {
@@ -1681,7 +1681,7 @@ public:
             strcpy(info->Symbol, tmp->m_symbol);
         }
         if(tmp->m_session != 0) {
-            info->AllowTradingSessionID = true;
+            info->IsNullTradingSessionID = true;
             info->TradingSessionIDLength = strlen(tmp->m_session);
             info->TradingSessionID = new char[info->TradingSessionIDLength + 1];
             strcpy(info->TradingSessionID, tmp->m_session);
@@ -1756,9 +1756,9 @@ public:
         FastTLSCURRInfo *info = new FastTLSCURRInfo();
         info->MsgSeqNum = tmp->m_msgSeqNo;
         info->GroupMDEntriesCount = tmp->m_itemsCount;
-        info->AllowRouteFirst = true;
-        info->AllowLastFragment = true;
-        info->AllowLastMsgSeqNumProcessed = true;
+        info->IsNullRouteFirst = true;
+        info->IsNullLastFragment = true;
+        info->IsNullLastMsgSeqNumProcessed = true;
         info->LastMsgSeqNumProcessed = tmp->m_lastMsgSeqNoProcessed;
 
         if(tmp->m_symbol != 0) {
@@ -1767,7 +1767,7 @@ public:
             strcpy(info->Symbol, tmp->m_symbol);
         }
         if(tmp->m_session != 0) {
-            info->AllowTradingSessionID = true;
+            info->IsNullTradingSessionID = true;
             info->TradingSessionIDLength = strlen(tmp->m_session);
             info->TradingSessionID = new char[info->TradingSessionIDLength + 1];
             strcpy(info->TradingSessionID, tmp->m_session);
@@ -1927,8 +1927,8 @@ public:
 
         FastLogonInfo info;
 
-        info.AllowPassword = false;
-        info.AllowUsername = false;
+        info.IsNullPassword = false;
+        info.IsNullUsername = false;
         strcpy(this->m_protocolVersion, FastProtocolVersion);
         info.BeginString = this->m_protocolVersion;
         info.BeginStringLength = FastProtocolVersionLength;
@@ -1977,7 +1977,7 @@ public:
         FastLogoutInfo *info = new FastLogoutInfo();
         info->Text = GetText(text);
         info->TextLength = strlen(info->Text);
-        info->AllowText = true;
+        info->IsNullText = true;
 
         this->m_fastManager->SetNewBuffer(this->m_buffer->CurrentPos() + 4, 10000);
         this->m_fastManager->EncodeLogoutInfo(info);

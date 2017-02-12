@@ -151,10 +151,10 @@ public:
     FastObjectsAllocationInfo* CreateFastAllocationInfo() {
         FastObjectsAllocationInfo *info = new FastObjectsAllocationInfo();
 
-        info->m_oLSCURRCount = 1024;
+        info->m_oLSCURRCount = 32;
         info->m_oLSCURRAddCount = 256;
-        info->m_oLSCURRItemsCount = 2024;
-        info->m_oLSCURRItemsAddCount = 256;
+        info->m_oLSCURRItemsCount = 5012;
+        info->m_oLSCURRItemsAddCount = 1024;
         info->m_heartbeatCount = 10;
         info->m_heartbeatAddCount = 10;
         info->m_tradingSessionStatusCount = 10;

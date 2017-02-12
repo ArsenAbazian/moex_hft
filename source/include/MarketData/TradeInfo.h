@@ -21,6 +21,8 @@ template <typename T> class TradeInfo {
     int                  m_rptSeq;
     MarketSymbolInfo<TradeInfo<T>>    *m_symbolInfo;
     SizedArray          *m_tradingSession;
+    int                  m_snapshotProcessedCount;
+
 public:
     TradeInfo() {
         this->m_entryInfo = new MDEntrQueue<T>();
@@ -28,12 +30,16 @@ public:
         this->m_tradingSession = new SizedArray();
         this->m_shouldProcessSnapshot = false;
         this->m_rptSeq = 0;
+        this->m_snapshotProcessedCount = 0;
     }
     ~TradeInfo() {
         delete this->m_entryInfo;
         delete this->m_trades;
     }
 
+    inline void ResetSnasphotProcessed() { this->m_snapshotProcessedCount = 0; }
+    inline void OnSnapshotProcessed() { this->m_snapshotProcessedCount++; }
+    inline int SnapshotProcessedCount() { return this->m_snapshotProcessedCount; }
     inline SizedArray* TradingSession() { return this->m_tradingSession; }
     inline SizedArray* Symbol() { return this->m_symbolInfo->Symbol(); }
     inline MarketSymbolInfo<TradeInfo<T>>* SymbolInfo() { return this->m_symbolInfo; }
@@ -159,8 +165,9 @@ public:
     }
 
     inline bool EnterSnapshotMode() {
+        this->ResetSnasphotProcessed();
         this->m_shouldProcessSnapshot = true;
-        this->m_entryInfo->ShouldProcess(true);
+        //this->m_entryInfo->ShouldProcess(true);
         return true;
     }
 

@@ -5,6 +5,7 @@
 #ifndef HFT_ROBOT_ORDERBOOKTABLE_H
 #define HFT_ROBOT_ORDERBOOKTABLE_H
 
+#include <Managers/DebugInfoManager.h>
 #include "Lib/StringIdComparer.h"
 #include "Fast/FastTypes.h"
 #include "MarketDataEntryQueue.h"
@@ -21,6 +22,7 @@ template <template<typename ITEMINFO> class TABLEITEM, typename INFO, typename I
     int                                         m_queueItemsCount;
     int                                         m_symbolsToRecvSnapshot;
     bool                                        m_snapshotItemHasEntriesQueue;
+    bool                                        m_allSessionsRecvSnapshot;
 
     inline void AddUsed(TABLEITEM<ITEMINFO> *tableItem) {
         tableItem->Used(true);
@@ -129,23 +131,44 @@ public:
     }
     inline void StartProcessSnapshot(INFO *info) {
         this->m_snapshotItemHasEntriesQueue = this->m_snapshotEntries->HasEntries();
+        this->m_allSessionsRecvSnapshot = this->m_snapshotSymbol->AllSessionsRecvSnapshot();
         this->m_snapshotItem->StartProcessSnapshotMessages();
     }
     inline bool EndProcessSnapshot() {
-        bool allItemsRecvSnapshot = this->m_snapshotSymbol->AllSessionsRecvSnapshot();
         bool res = this->m_snapshotItem->EndProcessSnapshotMessages();
         if(this->m_snapshotItemHasEntriesQueue && !this->m_snapshotEntries->HasEntries()) {
-            printf("complete session %s-%s\n", this->m_snapshotSymbol->Symbol()->m_text, this->m_snapshotItem->TradingSession()->m_text); //TODO remove debug
+//            printf("complete session %s-%s\n",
+//                   DebugInfoManager::Default->GetString(this->m_snapshotSymbol->Symbol(), 0),
+//                   DebugInfoManager::Default->GetString(this->m_snapshotItem->TradingSession(), 1)); //TODO remove debug
             this->m_queueItemsCount--;
-            printf("%d items to go\n", this->m_queueItemsCount); //TODO remove debug
+            //printf("%d items to go\n", this->m_queueItemsCount); //TODO remove debug
         }
-        if(!allItemsRecvSnapshot && this->m_snapshotSymbol->AllSessionsRecvSnapshot()) {
-            printf("complete symbol %s\n", this->m_snapshotSymbol->Symbol()->m_text);
+        if(!this->m_allSessionsRecvSnapshot && this->m_snapshotSymbol->AllSessionsRecvSnapshot()) {
+//            printf("complete symbol %s\n",
+//                   DebugInfoManager::Default->GetString(this->m_snapshotSymbol->Symbol(), 0));
             this->DecSymbolsToRecvSnapshotCount();
         }
-        printf("%d symbols to go\n", this->m_symbolsToRecvSnapshot); //TODO remove debug
+        printf("%d queue items and %d symbols to go\n", this->m_queueItemsCount, this->m_symbolsToRecvSnapshot); //TODO remove debug
+        this->m_snapshotItem->OnSnapshotProcessed();
         this->m_snapshotItem = 0;
         return res;
+    }
+    inline int CalcTotalItemsCount() {
+        int result = 0;
+        for(int i = 0; i < this->m_symbolsCount; i++) {
+            result += this->m_symbols[i]->SessionCount();
+        }
+        return result;
+    }
+    inline int CalcSnapshotProcessedItemsCount() {
+        int result = 0;
+        for(int i = 0; i < this->m_symbolsCount; i++) {
+            for(int j = 0; j < this->m_symbols[i]->SessionCount(); j++) {
+                if(this->m_symbols[i]->Session(j)->SnapshotProcessedCount() > 0)
+                    result++;
+            }
+        }
+        return result;
     }
     inline void ProcessSnapshot(ITEMINFO **item, int count, int rptSeq) {
         for(int j = 0; j < count; j++) {
@@ -234,7 +257,6 @@ public:
         MarketSymbolInfo<TABLEITEM<ITEMINFO>> **s = this->m_symbols;
         for(int i = 0; i < this->m_symbolsCount; i++, s++) {
             (*s)->EnterSnapshotMode();
-            this->m_symbolsToRecvSnapshot++;
         }
     }
     inline void ExitSnapshotMode() {

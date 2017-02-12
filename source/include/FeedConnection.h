@@ -277,9 +277,17 @@ protected:
         if(this->m_type == FeedConnectionType::Incremental) {
             if(this->m_endMsgSeqNum < msgSeqNum)
                 this->m_endMsgSeqNum = msgSeqNum;
+//                    BinaryLogItem *item = DefaultLogManager::Default->WriteFast(this->m_idLogIndex,
+//                                                                    LogMessageCode::lmcFeedConnection_ProcessMessage,
+//                                                                    this->m_recvABuffer->BufferIndex(),
+//                                                                    this->m_recvABuffer->CurrentItemIndex());
         }
         else if(this->m_type == FeedConnectionType::InstrumentDefinition) {
-            printf("%s -> %d size = %d\n", this->m_idName, msgSeqNum, size);
+          printf("%s -> %d size = %d\n", this->m_idName, msgSeqNum, size);
+//        BinaryLogItem *item = DefaultLogManager::Default->WriteFast(this->m_idLogIndex,
+//                                                                    LogMessageCode::lmcFeedConnection_ProcessMessage,
+//                                                                    this->m_recvABuffer->BufferIndex(),
+//                                                                    this->m_recvABuffer->CurrentItemIndex());
             if(this->m_idfStartMsgSeqNo == 0)
                 this->m_idfStartMsgSeqNo = msgSeqNum;
             if(this->m_idfMaxMsgSeqNo == 0)
@@ -293,6 +301,10 @@ protected:
         }
         else {
             printf("%s -> %d size = %d\n", this->m_idName, msgSeqNum, size);
+//            BinaryLogItem *item = DefaultLogManager::Default->WriteFast(this->m_idLogIndex,
+//                                                                    LogMessageCode::lmcFeedConnection_ProcessMessage,
+//                                                                    this->m_recvABuffer->BufferIndex(),
+//                                                                    this->m_recvABuffer->CurrentItemIndex());
             this->m_waitTimer->Start();
             if(this->m_startMsgSeqNum == -1)
                 this->m_startMsgSeqNum = msgSeqNum;
@@ -388,20 +400,52 @@ protected:
         this->m_incremental->OrderFond()->EndProcessSnapshot();
         return true;
     }
+    inline void CheckOLSCURR() {
+        LinkedPointer<FastOLSCURRInfo> *start = this->m_fastProtocolManager->m_oLSCURR->ListCore()->PoolStart();
+        LinkedPointer<FastOLSCURRInfo> *end = this->m_fastProtocolManager->m_oLSCURR->ListCore()->PoolEnd();
+        int index = 0;
+        int count = 0;
+        while(start != end) {
+            FastOLSCURRInfo *info= start->Data();
+            if(info->Pointer->Owner() != start->Owner() || info->Allocator != this->m_fastProtocolManager->m_oLSCURR) {
+                printf("%s", DebugInfoManager::Default->BinaryToString(this->m_fastProtocolManager->Buffer(), this->m_fastProtocolManager->BufferLength()));
+                count++;
+            }
+
+            start = start->Next();
+            index++;
+        }
+
+        if(count > 0) {
+            this->m_fastProtocolManager->ResetBuffer();
+            this->m_fastProtocolManager->DecodeOLSCURR();
+
+            this->m_fastProtocolManager->ResetBuffer();
+            this->m_fastProtocolManager->DecodeOLSCURR();
+
+            this->m_fastProtocolManager->ResetBuffer();
+            this->m_fastProtocolManager->DecodeOLSCURR();
+        }
+    }
     inline bool ApplySnapshot_OLS_CURR() {
         this->PrepareDecodeSnapshotMessage(this->m_snapshotRouteFirst);
+        //CheckOLSCURR();
         FastOLSCURRInfo *info = (FastOLSCURRInfo *) this->m_fastProtocolManager->DecodeOLSCURR();
+        //CheckOLSCURR();
         this->m_incremental->OrderCurr()->ObtainSnapshotItem(info);
         if(this->m_incremental->OrderCurr()->CheckProcessIfSessionInActualState(info)) {
             info->ReleaseUnused();
+            //CheckOLSCURR();
             return true;
         }
         if(this->m_incremental->OrderCurr()->CheckProcessNullSnapshot(info)) {
             info->ReleaseUnused();
+            //CheckOLSCURR();
             return true;
         }
         if(!this->m_incremental->OrderCurr()->ShouldProcessSnapshot(info)) {
             info->ReleaseUnused();
+            //CheckOLSCURR();
             return true;
         }
         this->m_incremental->OrderCurr()->StartProcessSnapshot(info);
@@ -410,9 +454,13 @@ protected:
         for(int i = this->m_snapshotRouteFirst + 1; i <= this->m_snapshotLastFragment; i++) {
             if(!this->PrepareDecodeSnapshotMessage(i))
                 continue;
+            //CheckOLSCURR();
             info = (FastOLSCURRInfo *) this->m_fastProtocolManager->DecodeOLSCURR();
+            //CheckOLSCURR();
             this->m_incremental->OrderCurr()->ProcessSnapshot(info);
+            //CheckOLSCURR();
             info->ReleaseUnused();
+            //CheckOLSCURR();
         }
         this->m_incremental->OrderCurr()->EndProcessSnapshot();
         return true;
@@ -506,6 +554,7 @@ protected:
         return true;
     }
     inline bool ApplySnapshot_MSS_CURR() {
+        //TODO remove printf("processed %d of %d\n", this->m_incremental->StatisticCurr()->CalcSnapshotProcessedItemsCount(), this->m_incremental->StatisticCurr()->CalcTotalItemsCount());
         this->PrepareDecodeSnapshotMessage(this->m_snapshotRouteFirst);
         FastGenericInfo *info = (FastGenericInfo *) this->m_fastProtocolManager->DecodeGeneric();
         this->m_incremental->StatisticCurr()->ObtainSnapshotItem(info);
@@ -1044,6 +1093,8 @@ protected:
         int snapshotCount = 0;
         while(TryFindAndApplySnapshot())
             snapshotCount++;
+        if(snapshotCount > 0)
+            this->m_waitTimer->Reset();
 
         return true;
     }
@@ -2016,10 +2067,10 @@ public:
     }
 
     inline void UpdateTradingSession(FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo *trading, FastSecurityStatusInfo *info) {
-        trading->AllowTradingSessionSubID = info->AllowTradingSessionSubID;
+        trading->IsNullTradingSessionSubID = info->IsNullTradingSessionSubID;
         trading->TradingSessionSubID = info->TradingSessionSubID;
         trading->TradingSessionSubIDLength = info->TradingSessionSubIDLength;
-        trading->AllowSecurityTradingStatus = info->AllowSecurityTradingStatus;
+        trading->IsNullSecurityTradingStatus = info->IsNullSecurityTradingStatus;
         trading->SecurityTradingStatus = info->SecurityTradingStatus;
         //Skip AuctionIndicator because there is no data in feed streams for them
     }
@@ -2118,6 +2169,16 @@ public:
     }
 
     inline void AfterProcessSecurityDefinitions() {
+        // TODO remove debug info
+//        for(int i = 0; i < this->m_symbolsCount; i++) {
+//            printf("%s\n", DebugInfoManager::Default->GetString(this->m_symbols[i]->Data()->Symbol, this->m_symbols[i]->Data()->SymbolLength, 0));
+//            for(int j = 0; j < this->m_symbols[i]->Data()->MarketSegmentGrpCount; j++) {
+//                for(int k = 0; k < this->m_symbols[i]->Data()->MarketSegmentGrp[j]->TradingSessionRulesGrpCount; k++) {
+//                    printf("\t%s\n", DebugInfoManager::Default->GetString(this->m_symbols[i]->Data()->MarketSegmentGrp[j]->TradingSessionRulesGrp[k]->TradingSessionID,
+//                                                                          this->m_symbols[i]->Data()->MarketSegmentGrp[j]->TradingSessionRulesGrp[k]->TradingSessionIDLength, 0));
+//                }
+//            }
+//        }
         for(int i = 0; i < this->m_connectionsToRecvSymbolsCount; i++)
             this->m_connectionsToRecvSymbols[i]->AddSymbols(this->m_symbolsCount);
 

@@ -107,7 +107,8 @@ bool FeedChannel::Connect() {
 
 	this->m_state = FeedChannelState::fchCollectSymbols;
 	//this->statisticsIncremental->DoNotCheckIncrementalActuality(true);
-	this->instrumentDefinition->AddConnectionToRecvSymbol(this->statisticsIncremental);
+	//this->instrumentDefinition->AddConnectionToRecvSymbol(this->statisticsIncremental);
+	this->instrumentDefinition->AddConnectionToRecvSymbol(this->ordersIncremental);
 	this->instrumentDefinition->Start();
 
 	DefaultLogManager::Default->EndLog(true);
