@@ -221,6 +221,11 @@ public:
     }
 
     void Test() {
+        OrderTesterFond otFond;
+        otFond.Test();
+        OrderTesterCurr otCurr;
+        otCurr.Test();
+
         StatisticsTesterFond stFond;
         stFond.Test();
 
@@ -246,11 +251,6 @@ public:
 
 
         //TestSaveIdfSymbols();
-
-        OrderTesterFond otFond;
-        otFond.Test();
-        OrderTesterCurr otCurr;
-        otCurr.Test();
 
         TradeTesterFond ttFond;
         ttFond.Test();

@@ -1365,9 +1365,9 @@ public:
         FastGenericInfo *info = new FastGenericInfo();
         info->MsgSeqNum = tmp->m_msgSeqNo;
         info->GroupMDEntriesCount = tmp->m_itemsCount;
-        info->IsNullRouteFirst = true;
-        info->IsNullLastFragment = true;
-        info->IsNullLastMsgSeqNumProcessed = true;
+        info->IsNullRouteFirst = false;
+        info->IsNullLastFragment = false;
+        info->IsNullLastMsgSeqNumProcessed = false;
         info->LastMsgSeqNumProcessed = tmp->m_lastMsgSeqNoProcessed;
 
         if(tmp->m_symbol != 0) {
@@ -1376,7 +1376,7 @@ public:
             strcpy(info->Symbol, tmp->m_symbol);
         }
         if(tmp->m_session != 0) {
-            info->IsNullTradingSessionID = true;
+            info->IsNullTradingSessionID = false;
             info->TradingSessionIDLength = strlen(tmp->m_session);
             info->TradingSessionID = new char[info->TradingSessionIDLength + 1];
             strcpy(info->TradingSessionID, tmp->m_session);
@@ -1494,9 +1494,9 @@ public:
         FastOLSFONDInfo *info = new FastOLSFONDInfo();
         info->MsgSeqNum = tmp->m_msgSeqNo;
         info->GroupMDEntriesCount = tmp->m_itemsCount;
-        info->IsNullRouteFirst = true;
-        info->IsNullLastFragment = true;
-        info->IsNullLastMsgSeqNumProcessed = true;
+        info->IsNullRouteFirst = false;
+        info->IsNullLastFragment = false;
+        info->IsNullLastMsgSeqNumProcessed = false;
         info->LastMsgSeqNumProcessed = tmp->m_lastMsgSeqNoProcessed;
 
         if(tmp->m_symbol != 0) {
@@ -1505,7 +1505,7 @@ public:
             strcpy(info->Symbol, tmp->m_symbol);
         }
         if(tmp->m_session != 0) {
-            info->IsNullTradingSessionID = true;
+            info->IsNullTradingSessionID = false;
             info->TradingSessionIDLength = strlen(tmp->m_session);
             info->TradingSessionID = new char[info->TradingSessionIDLength + 1];
             strcpy(info->TradingSessionID, tmp->m_session);
@@ -1580,9 +1580,9 @@ public:
         FastTLSFONDInfo *info = new FastTLSFONDInfo();
         info->MsgSeqNum = tmp->m_msgSeqNo;
         info->GroupMDEntriesCount = tmp->m_itemsCount;
-        info->IsNullRouteFirst = true;
-        info->IsNullLastFragment = true;
-        info->IsNullLastMsgSeqNumProcessed = true;
+        info->IsNullRouteFirst = false;
+        info->IsNullLastFragment = false;
+        info->IsNullLastMsgSeqNumProcessed = false;
         info->LastMsgSeqNumProcessed = tmp->m_lastMsgSeqNoProcessed;
 
         if(tmp->m_symbol != 0) {
@@ -1591,7 +1591,7 @@ public:
             strcpy(info->Symbol, tmp->m_symbol);
         }
         if(tmp->m_session != 0) {
-            info->IsNullTradingSessionID = true;
+            info->IsNullTradingSessionID = false;
             info->TradingSessionIDLength = strlen(tmp->m_session);
             info->TradingSessionID = new char[info->TradingSessionIDLength + 1];
             strcpy(info->TradingSessionID, tmp->m_session);
@@ -1666,9 +1666,9 @@ public:
         FastOLSCURRInfo *info = new FastOLSCURRInfo();
         info->MsgSeqNum = tmp->m_msgSeqNo;
         info->GroupMDEntriesCount = tmp->m_itemsCount;
-        info->IsNullRouteFirst = true;
-        info->IsNullLastFragment = true;
-        info->IsNullLastMsgSeqNumProcessed = true;
+        info->IsNullRouteFirst = false;
+        info->IsNullLastFragment = false;
+        info->IsNullLastMsgSeqNumProcessed = false;
         info->LastMsgSeqNumProcessed = tmp->m_lastMsgSeqNoProcessed;
 
         if(tmp->m_symbol != 0) {
@@ -1677,7 +1677,7 @@ public:
             strcpy(info->Symbol, tmp->m_symbol);
         }
         if(tmp->m_session != 0) {
-            info->IsNullTradingSessionID = true;
+            info->IsNullTradingSessionID = false;
             info->TradingSessionIDLength = strlen(tmp->m_session);
             info->TradingSessionID = new char[info->TradingSessionIDLength + 1];
             strcpy(info->TradingSessionID, tmp->m_session);
@@ -1752,9 +1752,9 @@ public:
         FastTLSCURRInfo *info = new FastTLSCURRInfo();
         info->MsgSeqNum = tmp->m_msgSeqNo;
         info->GroupMDEntriesCount = tmp->m_itemsCount;
-        info->IsNullRouteFirst = true;
-        info->IsNullLastFragment = true;
-        info->IsNullLastMsgSeqNumProcessed = true;
+        info->IsNullRouteFirst = false;
+        info->IsNullLastFragment = false;
+        info->IsNullLastMsgSeqNumProcessed = false;
         info->LastMsgSeqNumProcessed = tmp->m_lastMsgSeqNoProcessed;
 
         if(tmp->m_symbol != 0) {
@@ -1763,7 +1763,7 @@ public:
             strcpy(info->Symbol, tmp->m_symbol);
         }
         if(tmp->m_session != 0) {
-            info->IsNullTradingSessionID = true;
+            info->IsNullTradingSessionID = false;
             info->TradingSessionIDLength = strlen(tmp->m_session);
             info->TradingSessionID = new char[info->TradingSessionIDLength + 1];
             strcpy(info->TradingSessionID, tmp->m_session);
@@ -1973,7 +1973,7 @@ public:
         FastLogoutInfo *info = new FastLogoutInfo();
         info->Text = GetText(text);
         info->TextLength = strlen(info->Text);
-        info->IsNullText = true;
+        info->IsNullText = false;
 
         this->m_fastManager->SetNewBuffer(this->m_buffer->CurrentPos() + 4, 10000);
         this->m_fastManager->EncodeLogoutInfo(info);
