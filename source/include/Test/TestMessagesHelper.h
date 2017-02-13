@@ -1026,31 +1026,31 @@ public:
         info->MDUpdateAction = tmp->m_action;
 
         info->IsNullMDEntryType = false;
-        //info->PresenceMap |= info->MDEntryTypePresenceIndex;
+        info->PresenceMap |= FastIncrementalOLRFONDItemInfoPresenceIndices::MDEntryTypePresenceIndex;
         info->MDEntryType = new char[1];
         info->MDEntryType[0] = (char)tmp->m_entryType;
         info->MDEntryTypeLength = 1;
 
         info->IsNullMDEntryPx = false;
-        //info->PresenceMap |= info->MDEntryPxPresenceIndex;
+        info->PresenceMap |= FastIncrementalOLRFONDItemInfoPresenceIndices::MDEntryPxPresenceIndex;
         info->MDEntryPx.Assign(&tmp->m_entryPx);
 
         info->IsNullMDEntrySize = false;
-        //info->PresenceMap |= info->MDEntrySizePresenceIndex;
+        info->PresenceMap |= FastIncrementalOLRFONDItemInfoPresenceIndices::MDEntrySizePresenceIndex;
         info->MDEntrySize.Assign(&tmp->m_entrySize);
 
         info->IsNullRptSeq = false;
         info->RptSeq = tmp->m_rptSeq;
         if(tmp->m_symbol != 0) {
             info->IsNullSymbol = false;
-            //info->PresenceMap |= info->SymbolPresenceIndex;
+            info->PresenceMap |= FastIncrementalOLRFONDItemInfoPresenceIndices::SymbolPresenceIndex;
             info->SymbolLength = strlen(tmp->m_symbol);
             info->Symbol = new char[info->SymbolLength + 1];
             strcpy(info->Symbol, tmp->m_symbol);
         }
         if(tmp->m_tradingSession != 0) {
             info->IsNullTradingSessionID = false;
-            //info->PresenceMap |= info->TradingSessionIDPresenceIndex;
+            info->PresenceMap |= FastIncrementalOLRFONDItemInfoPresenceIndices::TradingSessionIDPresenceIndex;
             info->TradingSessionIDLength = strlen(tmp->m_tradingSession);
             info->TradingSessionID = new char[info->TradingSessionIDLength + 1];
             strcpy(info->TradingSessionID, tmp->m_tradingSession);
@@ -1109,11 +1109,9 @@ public:
         info->MDEntryTypeLength = 1;
 
         info->IsNullMDEntryPx = false;
-        //info->PresenceMap |= info->MDEntryPxPresenceIndex;
         info->MDEntryPx.Assign(&tmp->m_entryPx);
 
         info->IsNullMDEntrySize = false;
-        //info->PresenceMap |= info->MDEntrySizePresenceIndex;
         info->MDEntrySize.Assign(&tmp->m_entrySize);
 
         info->IsNullRptSeq = false;
@@ -1145,31 +1143,31 @@ public:
         info->MDUpdateAction = tmp->m_action;
 
         info->IsNullMDEntryType = false;
-        //info->PresenceMap |= info->MDEntryTypePresenceIndex;
+        info->PresenceMap |= FastIncrementalOLRCURRItemInfoPresenceIndices::MDEntryTypePresenceIndex;
         info->MDEntryType = new char[1];
         info->MDEntryType[0] = (char)tmp->m_entryType;
         info->MDEntryTypeLength = 1;
 
         info->IsNullMDEntryPx = false;
-        //info->PresenceMap |= info->MDEntryPxPresenceIndex;
+        info->PresenceMap |= FastIncrementalOLRCURRItemInfoPresenceIndices::MDEntryPxPresenceIndex;
         info->MDEntryPx.Assign(&tmp->m_entryPx);
 
         info->IsNullMDEntrySize = false;
-        //info->PresenceMap |= info->MDEntrySizePresenceIndex;
+        info->PresenceMap |= FastIncrementalOLRCURRItemInfoPresenceIndices::MDEntrySizePresenceIndex;
         info->MDEntrySize.Assign(&tmp->m_entrySize);
 
         info->IsNullRptSeq = false;
         info->RptSeq = tmp->m_rptSeq;
         if(tmp->m_symbol != 0) {
             info->IsNullSymbol = false;
-            //info->PresenceMap |= info->SymbolPresenceIndex;
+            info->PresenceMap |= FastIncrementalOLRCURRItemInfoPresenceIndices::SymbolPresenceIndex;
             info->SymbolLength = strlen(tmp->m_symbol);
             info->Symbol = new char[info->SymbolLength + 1];
             strcpy(info->Symbol, tmp->m_symbol);
         }
         if(tmp->m_tradingSession != 0) {
             info->IsNullTradingSessionID = false;
-            //info->PresenceMap |= info->TradingSessionIDPresenceIndex;
+            info->PresenceMap |= FastIncrementalOLRCURRItemInfoPresenceIndices::TradingSessionIDPresenceIndex;
             info->TradingSessionIDLength = strlen(tmp->m_tradingSession);
             info->TradingSessionID = new char[info->TradingSessionIDLength + 1];
             strcpy(info->TradingSessionID, tmp->m_tradingSession);
@@ -1228,11 +1226,9 @@ public:
         info->MDEntryTypeLength = 1;
 
         info->IsNullMDEntryPx = false;
-        //info->PresenceMap |= info->MDEntryPxPresenceIndex;
         info->MDEntryPx.Assign(&tmp->m_entryPx);
 
         info->IsNullMDEntrySize = false;
-        //info->PresenceMap |= info->MDEntrySizePresenceIndex;
         info->MDEntrySize.Assign(&tmp->m_entrySize);
 
         info->IsNullRptSeq = false;

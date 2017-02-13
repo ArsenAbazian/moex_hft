@@ -2282,6 +2282,101 @@ public:
 	this->m_heartbeatAddCount = addCount;
 	}
 };
+class FastOLSFONDItemInfoPresenceIndices{
+public:
+	static const int MDEntryTypePresenceIndex = PRESENCE_MAP_INDEX0;
+	static const int MDEntryDatePresenceIndex = PRESENCE_MAP_INDEX1;
+	static const int MDEntryTimePresenceIndex = PRESENCE_MAP_INDEX2;
+	static const int OrigTimePresenceIndex = PRESENCE_MAP_INDEX3;
+	static const int MDEntryPxPresenceIndex = PRESENCE_MAP_INDEX4;
+	static const int MDEntrySizePresenceIndex = PRESENCE_MAP_INDEX5;
+	static const int YieldPresenceIndex = PRESENCE_MAP_INDEX6;
+	static const int OrderStatusPresenceIndex = PRESENCE_MAP_INDEX7;
+	static const int OrdTypePresenceIndex = PRESENCE_MAP_INDEX8;
+	static const int TotalVolumePresenceIndex = PRESENCE_MAP_INDEX9;
+	static const int TradingSessionSubIDPresenceIndex = PRESENCE_MAP_INDEX10;
+};
+class FastOLSCURRItemInfoPresenceIndices{
+public:
+	static const int MDEntryTypePresenceIndex = PRESENCE_MAP_INDEX0;
+	static const int MDEntryDatePresenceIndex = PRESENCE_MAP_INDEX1;
+	static const int MDEntryTimePresenceIndex = PRESENCE_MAP_INDEX2;
+	static const int OrigTimePresenceIndex = PRESENCE_MAP_INDEX3;
+	static const int MDEntryPxPresenceIndex = PRESENCE_MAP_INDEX4;
+	static const int MDEntrySizePresenceIndex = PRESENCE_MAP_INDEX5;
+	static const int OrderStatusPresenceIndex = PRESENCE_MAP_INDEX6;
+	static const int TradingSessionSubIDPresenceIndex = PRESENCE_MAP_INDEX7;
+};
+class FastTLSFONDItemInfoPresenceIndices{
+public:
+	static const int MDEntryDatePresenceIndex = PRESENCE_MAP_INDEX0;
+	static const int MDEntryTimePresenceIndex = PRESENCE_MAP_INDEX1;
+	static const int OrigTimePresenceIndex = PRESENCE_MAP_INDEX2;
+	static const int OrderSidePresenceIndex = PRESENCE_MAP_INDEX3;
+	static const int MDEntryPxPresenceIndex = PRESENCE_MAP_INDEX4;
+	static const int MDEntrySizePresenceIndex = PRESENCE_MAP_INDEX5;
+	static const int AccruedInterestAmtPresenceIndex = PRESENCE_MAP_INDEX6;
+	static const int TradeValuePresenceIndex = PRESENCE_MAP_INDEX7;
+	static const int YieldPresenceIndex = PRESENCE_MAP_INDEX8;
+	static const int SettlDatePresenceIndex = PRESENCE_MAP_INDEX9;
+	static const int SettleTypePresenceIndex = PRESENCE_MAP_INDEX10;
+	static const int PricePresenceIndex = PRESENCE_MAP_INDEX11;
+	static const int PriceTypePresenceIndex = PRESENCE_MAP_INDEX12;
+	static const int RepoToPxPresenceIndex = PRESENCE_MAP_INDEX13;
+	static const int BuyBackPxPresenceIndex = PRESENCE_MAP_INDEX14;
+	static const int BuyBackDatePresenceIndex = PRESENCE_MAP_INDEX15;
+	static const int TradingSessionSubIDPresenceIndex = PRESENCE_MAP_INDEX16;
+	static const int RefOrderIDPresenceIndex = PRESENCE_MAP_INDEX17;
+};
+class FastTLSCURRItemInfoPresenceIndices{
+public:
+	static const int MDEntryDatePresenceIndex = PRESENCE_MAP_INDEX0;
+	static const int MDEntryTimePresenceIndex = PRESENCE_MAP_INDEX1;
+	static const int OrigTimePresenceIndex = PRESENCE_MAP_INDEX2;
+	static const int OrderSidePresenceIndex = PRESENCE_MAP_INDEX3;
+	static const int MDEntryPxPresenceIndex = PRESENCE_MAP_INDEX4;
+	static const int MDEntrySizePresenceIndex = PRESENCE_MAP_INDEX5;
+	static const int TradeValuePresenceIndex = PRESENCE_MAP_INDEX6;
+	static const int SettlDatePresenceIndex = PRESENCE_MAP_INDEX7;
+	static const int SettleTypePresenceIndex = PRESENCE_MAP_INDEX8;
+	static const int PricePresenceIndex = PRESENCE_MAP_INDEX9;
+	static const int PriceTypePresenceIndex = PRESENCE_MAP_INDEX10;
+	static const int RepoToPxPresenceIndex = PRESENCE_MAP_INDEX11;
+	static const int BuyBackPxPresenceIndex = PRESENCE_MAP_INDEX12;
+	static const int BuyBackDatePresenceIndex = PRESENCE_MAP_INDEX13;
+	static const int TradingSessionSubIDPresenceIndex = PRESENCE_MAP_INDEX14;
+	static const int RefOrderIDPresenceIndex = PRESENCE_MAP_INDEX15;
+};
+class FastIncrementalOLRFONDItemInfoPresenceIndices{
+public:
+	static const int MDEntryTypePresenceIndex = PRESENCE_MAP_INDEX0;
+	static const int SymbolPresenceIndex = PRESENCE_MAP_INDEX1;
+	static const int MDEntryDatePresenceIndex = PRESENCE_MAP_INDEX2;
+	static const int MDEntryTimePresenceIndex = PRESENCE_MAP_INDEX3;
+	static const int OrigTimePresenceIndex = PRESENCE_MAP_INDEX4;
+	static const int MDEntryPxPresenceIndex = PRESENCE_MAP_INDEX5;
+	static const int MDEntrySizePresenceIndex = PRESENCE_MAP_INDEX6;
+	static const int YieldPresenceIndex = PRESENCE_MAP_INDEX7;
+	static const int OrderStatusPresenceIndex = PRESENCE_MAP_INDEX8;
+	static const int OrdTypePresenceIndex = PRESENCE_MAP_INDEX9;
+	static const int TotalVolumePresenceIndex = PRESENCE_MAP_INDEX10;
+	static const int TradingSessionIDPresenceIndex = PRESENCE_MAP_INDEX11;
+	static const int TradingSessionSubIDPresenceIndex = PRESENCE_MAP_INDEX12;
+};
+class FastIncrementalOLRCURRItemInfoPresenceIndices{
+public:
+	static const int MDUpdateActionPresenceIndex = PRESENCE_MAP_INDEX0;
+	static const int MDEntryTypePresenceIndex = PRESENCE_MAP_INDEX1;
+	static const int SymbolPresenceIndex = PRESENCE_MAP_INDEX2;
+	static const int MDEntryDatePresenceIndex = PRESENCE_MAP_INDEX3;
+	static const int MDEntryTimePresenceIndex = PRESENCE_MAP_INDEX4;
+	static const int OrigTimePresenceIndex = PRESENCE_MAP_INDEX5;
+	static const int MDEntryPxPresenceIndex = PRESENCE_MAP_INDEX6;
+	static const int MDEntrySizePresenceIndex = PRESENCE_MAP_INDEX7;
+	static const int OrderStatusPresenceIndex = PRESENCE_MAP_INDEX8;
+	static const int TradingSessionIDPresenceIndex = PRESENCE_MAP_INDEX9;
+	static const int TradingSessionSubIDPresenceIndex = PRESENCE_MAP_INDEX10;
+};
 #pragma endregion
 
 #endif //HFT_ROBOT_FASTTYPES_H

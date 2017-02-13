@@ -358,7 +358,7 @@ namespace prebuild {
 				tabs += "\t";
 			}
 			if(nullCheck) {
-				WriteLine(tabs + "if(!" + si.InCodeValueName + "->" + NullFlagName(field) + ")");
+				WriteLine(tabs + "if(" + si.InCodeValueName + "->" + NullFlagName(field) + ")");
 				WriteNullValueCode(tabs + "\t", field);
 
 				if(field.Name == "sequence")
@@ -510,6 +510,10 @@ namespace prebuild {
 				get {
 					return "Fast" + NameCore + Suffix;
 				}
+			}
+
+			public string PresenceIndicesClassName { 
+				get { return Name + "PresenceIndices"; }
 			}
 
 			public XmlNode Node { get; set; }
@@ -956,6 +960,27 @@ namespace prebuild {
 			}
 			WriteLine("\t}");
 			WriteLine("};");
+
+			List<StructureInfo> structures = GetStructures(templatesNode);
+			foreach(StructureInfo info in structures) {
+				bool hasPresenceIndex = false;
+				foreach(XmlNode field in info.Fields) {
+					if(!ShouldWriteCheckPresenceMapCode(field))
+						continue;
+					hasPresenceIndex = true;
+					break;
+				}
+				if(!hasPresenceIndex)
+					continue;
+				WriteLine("class " + info.PresenceIndicesClassName + "{");
+				WriteLine("public:");
+				foreach(XmlNode field in info.Fields) {
+					if(!ShouldWriteCheckPresenceMapCode(field))
+						continue;
+					WriteLine("\tstatic const int " + Name(field) + "PresenceIndex = PRESENCE_MAP_INDEX" + CalcFieldPresenceIndex(field) + ";");
+				}
+				WriteLine("};");
+			}
 		}
 
 		List<StructureInfo> structures;
@@ -1328,7 +1353,6 @@ namespace prebuild {
 		private  bool IsKnownAttribute (XmlAttribute attribute) {
 			return attribute.Name == "name" || attribute.Name == "id" || attribute.Name == "presence";
 		}
-
 		StructureInfo GetOriginalStruct(XmlNode field) {
 			if(field.ParentNode == null || field.ParentNode.Attributes["name"] == null)
 				return null;

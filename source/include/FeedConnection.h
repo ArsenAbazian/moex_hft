@@ -633,7 +633,7 @@ protected:
     }
 
     inline bool ShouldStartIncrementalSnapshot(int endIndex) {
-        return endIndex - this->m_requestMessageStartIndex >= this->m_maxLostPacketCountForStartSnapshot;
+        return (endIndex - this->m_requestMessageStartIndex + 1) >= this->m_maxLostPacketCountForStartSnapshot;
     }
 
     inline bool CheckRequestLostIncrementalMessages() {

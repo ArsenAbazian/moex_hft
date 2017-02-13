@@ -2417,11 +2417,11 @@ void FastProtocolManager::EncodeLogonInfo(FastLogonInfo* info) {
 	WriteUInt32_Mandatory(info->MsgSeqNum);
 	WriteUInt64_Mandatory(info->SendingTime);
 	WriteInt32_Mandatory(info->HeartBtInt);
-	if(!info->IsNullUsername)
+	if(info->IsNullUsername)
 		this->WriteNullString();
 	else
 		WriteString_Optional(info->Username, info->UsernameLength);
-	if(!info->IsNullPassword)
+	if(info->IsNullPassword)
 		this->WriteNullString();
 	else
 		WriteString_Optional(info->Password, info->PasswordLength);
@@ -2433,7 +2433,7 @@ void FastProtocolManager::EncodeLogoutInfo(FastLogoutInfo* info) {
 	WriteString_Mandatory(info->TargetCompID, info->TargetCompIDLength);
 	WriteUInt32_Mandatory(info->MsgSeqNum);
 	WriteUInt64_Mandatory(info->SendingTime);
-	if(!info->IsNullText)
+	if(info->IsNullText)
 		this->WriteNullString();
 	else
 		WriteString_Optional(info->Text, info->TextLength);
@@ -2443,204 +2443,204 @@ void FastProtocolManager::EncodeGenericInfo(FastGenericInfo* info) {
 	WriteUInt32_Mandatory(2103);
 	WriteUInt32_Mandatory(info->MsgSeqNum);
 	WriteUInt64_Mandatory(info->SendingTime);
-	if(!info->IsNullTradingSessionID)
+	if(info->IsNullTradingSessionID)
 		this->WriteNullString();
 	else
 		WriteString_Optional(info->TradingSessionID, info->TradingSessionIDLength);
 	WriteString_Mandatory(info->Symbol, info->SymbolLength);
-	if(!info->IsNullLastMsgSeqNumProcessed)
+	if(info->IsNullLastMsgSeqNumProcessed)
 		this->WriteNull();
 	else
 		WriteUInt32_Optional(info->LastMsgSeqNumProcessed);
 	WriteInt32_Mandatory(info->RptSeq);
-	if(!info->IsNullLastFragment)
+	if(info->IsNullLastFragment)
 		this->WriteNull();
 	else
 		WriteUInt32_Optional(info->LastFragment);
-	if(!info->IsNullRouteFirst)
+	if(info->IsNullRouteFirst)
 		this->WriteNull();
 	else
 		WriteUInt32_Optional(info->RouteFirst);
-	if(!info->IsNullTradSesStatus)
+	if(info->IsNullTradSesStatus)
 		this->WriteNull();
 	else
 		WriteInt32_Optional(info->TradSesStatus);
-	if(!info->IsNullMDSecurityTradingStatus)
+	if(info->IsNullMDSecurityTradingStatus)
 		this->WriteNull();
 	else
 		WriteInt32_Optional(info->MDSecurityTradingStatus);
-	if(!info->IsNullAuctionIndicator)
+	if(info->IsNullAuctionIndicator)
 		this->WriteNull();
 	else
 		WriteUInt32_Optional(info->AuctionIndicator);
-	if(!info->IsNullNetChgPrevDay)
+	if(info->IsNullNetChgPrevDay)
 		this->WriteNull();
 	else
 		WriteDecimal_Optional(&(info->NetChgPrevDay));
 	WriteUInt32_Mandatory(info->GroupMDEntriesCount);
 	FastGenericItemInfo **gmdeItemInfo = info->GroupMDEntries;
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
-		if(!(*gmdeItemInfo)->IsNullMDEntryType)
+		if((*gmdeItemInfo)->IsNullMDEntryType)
 			this->WriteNullString();
 		else
 			WriteString_Optional((*gmdeItemInfo)->MDEntryType, (*gmdeItemInfo)->MDEntryTypeLength);
-		if(!(*gmdeItemInfo)->IsNullMDEntryID)
+		if((*gmdeItemInfo)->IsNullMDEntryID)
 			this->WriteNullString();
 		else
 			WriteString_Optional((*gmdeItemInfo)->MDEntryID, (*gmdeItemInfo)->MDEntryIDLength);
-		if(!(*gmdeItemInfo)->IsNullMDEntryDate)
+		if((*gmdeItemInfo)->IsNullMDEntryDate)
 			this->WriteNull();
 		else
 			WriteUInt32_Optional((*gmdeItemInfo)->MDEntryDate);
-		if(!(*gmdeItemInfo)->IsNullMDEntryTime)
+		if((*gmdeItemInfo)->IsNullMDEntryTime)
 			this->WriteNull();
 		else
 			WriteUInt32_Optional((*gmdeItemInfo)->MDEntryTime);
-		if(!(*gmdeItemInfo)->IsNullOrigTime)
+		if((*gmdeItemInfo)->IsNullOrigTime)
 			this->WriteNull();
 		else
 			WriteUInt32_Optional((*gmdeItemInfo)->OrigTime);
-		if(!(*gmdeItemInfo)->IsNullMDEntryPx)
+		if((*gmdeItemInfo)->IsNullMDEntryPx)
 			this->WriteNull();
 		else
 			WriteDecimal_Optional(&((*gmdeItemInfo)->MDEntryPx));
-		if(!(*gmdeItemInfo)->IsNullMDEntrySize)
+		if((*gmdeItemInfo)->IsNullMDEntrySize)
 			this->WriteNull();
 		else
 			WriteDecimal_Optional(&((*gmdeItemInfo)->MDEntrySize));
-		if(!(*gmdeItemInfo)->IsNullQuoteCondition)
+		if((*gmdeItemInfo)->IsNullQuoteCondition)
 			this->WriteNullString();
 		else
 			WriteString_Optional((*gmdeItemInfo)->QuoteCondition, (*gmdeItemInfo)->QuoteConditionLength);
-		if(!(*gmdeItemInfo)->IsNullTradeCondition)
+		if((*gmdeItemInfo)->IsNullTradeCondition)
 			this->WriteNullString();
 		else
 			WriteString_Optional((*gmdeItemInfo)->TradeCondition, (*gmdeItemInfo)->TradeConditionLength);
-		if(!(*gmdeItemInfo)->IsNullOpenCloseSettlFlag)
+		if((*gmdeItemInfo)->IsNullOpenCloseSettlFlag)
 			this->WriteNullString();
 		else
 			WriteString_Optional((*gmdeItemInfo)->OpenCloseSettlFlag, (*gmdeItemInfo)->OpenCloseSettlFlagLength);
-		if(!(*gmdeItemInfo)->IsNullOrdType)
+		if((*gmdeItemInfo)->IsNullOrdType)
 			this->WriteNullString();
 		else
 			WriteString_Optional((*gmdeItemInfo)->OrdType, (*gmdeItemInfo)->OrdTypeLength);
-		if(!(*gmdeItemInfo)->IsNullEffectiveTime)
+		if((*gmdeItemInfo)->IsNullEffectiveTime)
 			this->WriteNull();
 		else
 			WriteUInt32_Optional((*gmdeItemInfo)->EffectiveTime);
-		if(!(*gmdeItemInfo)->IsNullStartTime)
+		if((*gmdeItemInfo)->IsNullStartTime)
 			this->WriteNull();
 		else
 			WriteUInt32_Optional((*gmdeItemInfo)->StartTime);
-		if(!(*gmdeItemInfo)->IsNullAccruedInterestAmt)
+		if((*gmdeItemInfo)->IsNullAccruedInterestAmt)
 			this->WriteNull();
 		else
 			WriteDecimal_Optional(&((*gmdeItemInfo)->AccruedInterestAmt));
-		if(!(*gmdeItemInfo)->IsNullChgFromWAPrice)
+		if((*gmdeItemInfo)->IsNullChgFromWAPrice)
 			this->WriteNull();
 		else
 			WriteDecimal_Optional(&((*gmdeItemInfo)->ChgFromWAPrice));
-		if(!(*gmdeItemInfo)->IsNullChgOpenInterest)
+		if((*gmdeItemInfo)->IsNullChgOpenInterest)
 			this->WriteNull();
 		else
 			WriteDecimal_Optional(&((*gmdeItemInfo)->ChgOpenInterest));
-		if(!(*gmdeItemInfo)->IsNullBidMarketSize)
+		if((*gmdeItemInfo)->IsNullBidMarketSize)
 			this->WriteNull();
 		else
 			WriteDecimal_Optional(&((*gmdeItemInfo)->BidMarketSize));
-		if(!(*gmdeItemInfo)->IsNullAskMarketSize)
+		if((*gmdeItemInfo)->IsNullAskMarketSize)
 			this->WriteNull();
 		else
 			WriteDecimal_Optional(&((*gmdeItemInfo)->AskMarketSize));
-		if(!(*gmdeItemInfo)->IsNullTotalNumOfTrades)
+		if((*gmdeItemInfo)->IsNullTotalNumOfTrades)
 			this->WriteNull();
 		else
 			WriteInt32_Optional((*gmdeItemInfo)->TotalNumOfTrades);
-		if(!(*gmdeItemInfo)->IsNullTradeValue)
+		if((*gmdeItemInfo)->IsNullTradeValue)
 			this->WriteNull();
 		else
 			WriteDecimal_Optional(&((*gmdeItemInfo)->TradeValue));
-		if(!(*gmdeItemInfo)->IsNullYield)
+		if((*gmdeItemInfo)->IsNullYield)
 			this->WriteNull();
 		else
 			WriteDecimal_Optional(&((*gmdeItemInfo)->Yield));
-		if(!(*gmdeItemInfo)->IsNullTotalVolume)
+		if((*gmdeItemInfo)->IsNullTotalVolume)
 			this->WriteNull();
 		else
 			WriteDecimal_Optional(&((*gmdeItemInfo)->TotalVolume));
-		if(!(*gmdeItemInfo)->IsNullOfferNbOr)
+		if((*gmdeItemInfo)->IsNullOfferNbOr)
 			this->WriteNull();
 		else
 			WriteInt32_Optional((*gmdeItemInfo)->OfferNbOr);
-		if(!(*gmdeItemInfo)->IsNullBidNbOr)
+		if((*gmdeItemInfo)->IsNullBidNbOr)
 			this->WriteNull();
 		else
 			WriteInt32_Optional((*gmdeItemInfo)->BidNbOr);
-		if(!(*gmdeItemInfo)->IsNullChgFromSettlmnt)
+		if((*gmdeItemInfo)->IsNullChgFromSettlmnt)
 			this->WriteNull();
 		else
 			WriteDecimal_Optional(&((*gmdeItemInfo)->ChgFromSettlmnt));
-		if(!(*gmdeItemInfo)->IsNullSettlDate)
+		if((*gmdeItemInfo)->IsNullSettlDate)
 			this->WriteNull();
 		else
 			WriteUInt32_Optional((*gmdeItemInfo)->SettlDate);
-		if(!(*gmdeItemInfo)->IsNullSettleType)
+		if((*gmdeItemInfo)->IsNullSettleType)
 			this->WriteNullString();
 		else
 			WriteString_Optional((*gmdeItemInfo)->SettleType, (*gmdeItemInfo)->SettleTypeLength);
-		if(!(*gmdeItemInfo)->IsNullSumQtyOfBest)
+		if((*gmdeItemInfo)->IsNullSumQtyOfBest)
 			this->WriteNull();
 		else
 			WriteInt32_Optional((*gmdeItemInfo)->SumQtyOfBest);
-		if(!(*gmdeItemInfo)->IsNullOrderSide)
+		if((*gmdeItemInfo)->IsNullOrderSide)
 			this->WriteNullString();
 		else
 			WriteString_Optional((*gmdeItemInfo)->OrderSide, (*gmdeItemInfo)->OrderSideLength);
-		if(!(*gmdeItemInfo)->IsNullOrderStatus)
+		if((*gmdeItemInfo)->IsNullOrderStatus)
 			this->WriteNullString();
 		else
 			WriteString_Optional((*gmdeItemInfo)->OrderStatus, (*gmdeItemInfo)->OrderStatusLength);
-		if(!(*gmdeItemInfo)->IsNullMinCurrPx)
+		if((*gmdeItemInfo)->IsNullMinCurrPx)
 			this->WriteNull();
 		else
 			WriteDecimal_Optional(&((*gmdeItemInfo)->MinCurrPx));
-		if(!(*gmdeItemInfo)->IsNullMinCurrPxChgTime)
+		if((*gmdeItemInfo)->IsNullMinCurrPxChgTime)
 			this->WriteNull();
 		else
 			WriteUInt32_Optional((*gmdeItemInfo)->MinCurrPxChgTime);
-		if(!(*gmdeItemInfo)->IsNullVolumeIndicator)
+		if((*gmdeItemInfo)->IsNullVolumeIndicator)
 			this->WriteNull();
 		else
 			WriteUInt32_Optional((*gmdeItemInfo)->VolumeIndicator);
-		if(!(*gmdeItemInfo)->IsNullPrice)
+		if((*gmdeItemInfo)->IsNullPrice)
 			this->WriteNull();
 		else
 			WriteDecimal_Optional(&((*gmdeItemInfo)->Price));
-		if(!(*gmdeItemInfo)->IsNullPriceType)
+		if((*gmdeItemInfo)->IsNullPriceType)
 			this->WriteNull();
 		else
 			WriteInt32_Optional((*gmdeItemInfo)->PriceType);
-		if(!(*gmdeItemInfo)->IsNullNominalValue)
+		if((*gmdeItemInfo)->IsNullNominalValue)
 			this->WriteNull();
 		else
 			WriteDecimal_Optional(&((*gmdeItemInfo)->NominalValue));
-		if(!(*gmdeItemInfo)->IsNullRepoToPx)
+		if((*gmdeItemInfo)->IsNullRepoToPx)
 			this->WriteNull();
 		else
 			WriteDecimal_Optional(&((*gmdeItemInfo)->RepoToPx));
-		if(!(*gmdeItemInfo)->IsNullBuyBackPx)
+		if((*gmdeItemInfo)->IsNullBuyBackPx)
 			this->WriteNull();
 		else
 			WriteDecimal_Optional(&((*gmdeItemInfo)->BuyBackPx));
-		if(!(*gmdeItemInfo)->IsNullBuyBackDate)
+		if((*gmdeItemInfo)->IsNullBuyBackDate)
 			this->WriteNull();
 		else
 			WriteUInt32_Optional((*gmdeItemInfo)->BuyBackDate);
-		if(!(*gmdeItemInfo)->IsNullCXFlag)
+		if((*gmdeItemInfo)->IsNullCXFlag)
 			this->WriteNullString();
 		else
 			WriteString_Optional((*gmdeItemInfo)->CXFlag, (*gmdeItemInfo)->CXFlagLength);
-		if(!(*gmdeItemInfo)->IsNullTradingSessionSubID)
+		if((*gmdeItemInfo)->IsNullTradingSessionSubID)
 			this->WriteNullString();
 		else
 			WriteString_Optional((*gmdeItemInfo)->TradingSessionSubID, (*gmdeItemInfo)->TradingSessionSubIDLength);
@@ -2655,187 +2655,187 @@ void FastProtocolManager::EncodeIncrementalGenericInfo(FastIncrementalGenericInf
 	WriteUInt32_Mandatory(info->GroupMDEntriesCount);
 	FastGenericItemInfo **gmdeItemInfo = info->GroupMDEntries;
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
-		if(!(*gmdeItemInfo)->IsNullMDUpdateAction)
+		if((*gmdeItemInfo)->IsNullMDUpdateAction)
 			this->WriteNull();
 		else
 			WriteUInt32_Optional((*gmdeItemInfo)->MDUpdateAction);
-		if(!(*gmdeItemInfo)->IsNullMDEntryType)
+		if((*gmdeItemInfo)->IsNullMDEntryType)
 			this->WriteNullString();
 		else
 			WriteString_Optional((*gmdeItemInfo)->MDEntryType, (*gmdeItemInfo)->MDEntryTypeLength);
-		if(!(*gmdeItemInfo)->IsNullMDEntryID)
+		if((*gmdeItemInfo)->IsNullMDEntryID)
 			this->WriteNullString();
 		else
 			WriteString_Optional((*gmdeItemInfo)->MDEntryID, (*gmdeItemInfo)->MDEntryIDLength);
-		if(!(*gmdeItemInfo)->IsNullRptSeq)
+		if((*gmdeItemInfo)->IsNullRptSeq)
 			this->WriteNull();
 		else
 			WriteInt32_Optional((*gmdeItemInfo)->RptSeq);
-		if(!(*gmdeItemInfo)->IsNullMDEntryDate)
+		if((*gmdeItemInfo)->IsNullMDEntryDate)
 			this->WriteNull();
 		else
 			WriteUInt32_Optional((*gmdeItemInfo)->MDEntryDate);
-		if(!(*gmdeItemInfo)->IsNullOrigTime)
+		if((*gmdeItemInfo)->IsNullOrigTime)
 			this->WriteNull();
 		else
 			WriteUInt32_Optional((*gmdeItemInfo)->OrigTime);
-		if(!(*gmdeItemInfo)->IsNullSettlDate)
+		if((*gmdeItemInfo)->IsNullSettlDate)
 			this->WriteNull();
 		else
 			WriteUInt32_Optional((*gmdeItemInfo)->SettlDate);
-		if(!(*gmdeItemInfo)->IsNullSettleType)
+		if((*gmdeItemInfo)->IsNullSettleType)
 			this->WriteNullString();
 		else
 			WriteString_Optional((*gmdeItemInfo)->SettleType, (*gmdeItemInfo)->SettleTypeLength);
-		if(!(*gmdeItemInfo)->IsNullMDEntryTime)
+		if((*gmdeItemInfo)->IsNullMDEntryTime)
 			this->WriteNull();
 		else
 			WriteUInt32_Optional((*gmdeItemInfo)->MDEntryTime);
-		if(!(*gmdeItemInfo)->IsNullEffectiveTime)
+		if((*gmdeItemInfo)->IsNullEffectiveTime)
 			this->WriteNull();
 		else
 			WriteUInt32_Optional((*gmdeItemInfo)->EffectiveTime);
-		if(!(*gmdeItemInfo)->IsNullStartTime)
+		if((*gmdeItemInfo)->IsNullStartTime)
 			this->WriteNull();
 		else
 			WriteUInt32_Optional((*gmdeItemInfo)->StartTime);
-		if(!(*gmdeItemInfo)->IsNullSymbol)
+		if((*gmdeItemInfo)->IsNullSymbol)
 			this->WriteNullString();
 		else
 			WriteString_Optional((*gmdeItemInfo)->Symbol, (*gmdeItemInfo)->SymbolLength);
-		if(!(*gmdeItemInfo)->IsNullMDEntryPx)
+		if((*gmdeItemInfo)->IsNullMDEntryPx)
 			this->WriteNull();
 		else
 			WriteDecimal_Optional(&((*gmdeItemInfo)->MDEntryPx));
-		if(!(*gmdeItemInfo)->IsNullMDEntrySize)
+		if((*gmdeItemInfo)->IsNullMDEntrySize)
 			this->WriteNull();
 		else
 			WriteDecimal_Optional(&((*gmdeItemInfo)->MDEntrySize));
-		if(!(*gmdeItemInfo)->IsNullQuoteCondition)
+		if((*gmdeItemInfo)->IsNullQuoteCondition)
 			this->WriteNullString();
 		else
 			WriteString_Optional((*gmdeItemInfo)->QuoteCondition, (*gmdeItemInfo)->QuoteConditionLength);
-		if(!(*gmdeItemInfo)->IsNullTradeCondition)
+		if((*gmdeItemInfo)->IsNullTradeCondition)
 			this->WriteNullString();
 		else
 			WriteString_Optional((*gmdeItemInfo)->TradeCondition, (*gmdeItemInfo)->TradeConditionLength);
-		if(!(*gmdeItemInfo)->IsNullOpenCloseSettlFlag)
+		if((*gmdeItemInfo)->IsNullOpenCloseSettlFlag)
 			this->WriteNullString();
 		else
 			WriteString_Optional((*gmdeItemInfo)->OpenCloseSettlFlag, (*gmdeItemInfo)->OpenCloseSettlFlagLength);
-		if(!(*gmdeItemInfo)->IsNullOrdType)
+		if((*gmdeItemInfo)->IsNullOrdType)
 			this->WriteNullString();
 		else
 			WriteString_Optional((*gmdeItemInfo)->OrdType, (*gmdeItemInfo)->OrdTypeLength);
-		if(!(*gmdeItemInfo)->IsNullNetChgPrevDay)
+		if((*gmdeItemInfo)->IsNullNetChgPrevDay)
 			this->WriteNull();
 		else
 			WriteDecimal_Optional(&((*gmdeItemInfo)->NetChgPrevDay));
-		if(!(*gmdeItemInfo)->IsNullAccruedInterestAmt)
+		if((*gmdeItemInfo)->IsNullAccruedInterestAmt)
 			this->WriteNull();
 		else
 			WriteDecimal_Optional(&((*gmdeItemInfo)->AccruedInterestAmt));
-		if(!(*gmdeItemInfo)->IsNullChgFromWAPrice)
+		if((*gmdeItemInfo)->IsNullChgFromWAPrice)
 			this->WriteNull();
 		else
 			WriteDecimal_Optional(&((*gmdeItemInfo)->ChgFromWAPrice));
-		if(!(*gmdeItemInfo)->IsNullChgOpenInterest)
+		if((*gmdeItemInfo)->IsNullChgOpenInterest)
 			this->WriteNull();
 		else
 			WriteDecimal_Optional(&((*gmdeItemInfo)->ChgOpenInterest));
-		if(!(*gmdeItemInfo)->IsNullBidMarketSize)
+		if((*gmdeItemInfo)->IsNullBidMarketSize)
 			this->WriteNull();
 		else
 			WriteDecimal_Optional(&((*gmdeItemInfo)->BidMarketSize));
-		if(!(*gmdeItemInfo)->IsNullAskMarketSize)
+		if((*gmdeItemInfo)->IsNullAskMarketSize)
 			this->WriteNull();
 		else
 			WriteDecimal_Optional(&((*gmdeItemInfo)->AskMarketSize));
-		if(!(*gmdeItemInfo)->IsNullTotalNumOfTrades)
+		if((*gmdeItemInfo)->IsNullTotalNumOfTrades)
 			this->WriteNull();
 		else
 			WriteInt32_Optional((*gmdeItemInfo)->TotalNumOfTrades);
-		if(!(*gmdeItemInfo)->IsNullTradeValue)
+		if((*gmdeItemInfo)->IsNullTradeValue)
 			this->WriteNull();
 		else
 			WriteDecimal_Optional(&((*gmdeItemInfo)->TradeValue));
-		if(!(*gmdeItemInfo)->IsNullYield)
+		if((*gmdeItemInfo)->IsNullYield)
 			this->WriteNull();
 		else
 			WriteDecimal_Optional(&((*gmdeItemInfo)->Yield));
-		if(!(*gmdeItemInfo)->IsNullTotalVolume)
+		if((*gmdeItemInfo)->IsNullTotalVolume)
 			this->WriteNull();
 		else
 			WriteDecimal_Optional(&((*gmdeItemInfo)->TotalVolume));
-		if(!(*gmdeItemInfo)->IsNullOfferNbOr)
+		if((*gmdeItemInfo)->IsNullOfferNbOr)
 			this->WriteNull();
 		else
 			WriteInt32_Optional((*gmdeItemInfo)->OfferNbOr);
-		if(!(*gmdeItemInfo)->IsNullBidNbOr)
+		if((*gmdeItemInfo)->IsNullBidNbOr)
 			this->WriteNull();
 		else
 			WriteInt32_Optional((*gmdeItemInfo)->BidNbOr);
-		if(!(*gmdeItemInfo)->IsNullChgFromSettlmnt)
+		if((*gmdeItemInfo)->IsNullChgFromSettlmnt)
 			this->WriteNull();
 		else
 			WriteDecimal_Optional(&((*gmdeItemInfo)->ChgFromSettlmnt));
-		if(!(*gmdeItemInfo)->IsNullSumQtyOfBest)
+		if((*gmdeItemInfo)->IsNullSumQtyOfBest)
 			this->WriteNull();
 		else
 			WriteInt32_Optional((*gmdeItemInfo)->SumQtyOfBest);
-		if(!(*gmdeItemInfo)->IsNullOrderSide)
+		if((*gmdeItemInfo)->IsNullOrderSide)
 			this->WriteNullString();
 		else
 			WriteString_Optional((*gmdeItemInfo)->OrderSide, (*gmdeItemInfo)->OrderSideLength);
-		if(!(*gmdeItemInfo)->IsNullOrderStatus)
+		if((*gmdeItemInfo)->IsNullOrderStatus)
 			this->WriteNullString();
 		else
 			WriteString_Optional((*gmdeItemInfo)->OrderStatus, (*gmdeItemInfo)->OrderStatusLength);
-		if(!(*gmdeItemInfo)->IsNullMinCurrPx)
+		if((*gmdeItemInfo)->IsNullMinCurrPx)
 			this->WriteNull();
 		else
 			WriteDecimal_Optional(&((*gmdeItemInfo)->MinCurrPx));
-		if(!(*gmdeItemInfo)->IsNullMinCurrPxChgTime)
+		if((*gmdeItemInfo)->IsNullMinCurrPxChgTime)
 			this->WriteNull();
 		else
 			WriteUInt32_Optional((*gmdeItemInfo)->MinCurrPxChgTime);
-		if(!(*gmdeItemInfo)->IsNullVolumeIndicator)
+		if((*gmdeItemInfo)->IsNullVolumeIndicator)
 			this->WriteNull();
 		else
 			WriteUInt32_Optional((*gmdeItemInfo)->VolumeIndicator);
-		if(!(*gmdeItemInfo)->IsNullPrice)
+		if((*gmdeItemInfo)->IsNullPrice)
 			this->WriteNull();
 		else
 			WriteDecimal_Optional(&((*gmdeItemInfo)->Price));
-		if(!(*gmdeItemInfo)->IsNullPriceType)
+		if((*gmdeItemInfo)->IsNullPriceType)
 			this->WriteNull();
 		else
 			WriteInt32_Optional((*gmdeItemInfo)->PriceType);
-		if(!(*gmdeItemInfo)->IsNullNominalValue)
+		if((*gmdeItemInfo)->IsNullNominalValue)
 			this->WriteNull();
 		else
 			WriteDecimal_Optional(&((*gmdeItemInfo)->NominalValue));
-		if(!(*gmdeItemInfo)->IsNullRepoToPx)
+		if((*gmdeItemInfo)->IsNullRepoToPx)
 			this->WriteNull();
 		else
 			WriteDecimal_Optional(&((*gmdeItemInfo)->RepoToPx));
-		if(!(*gmdeItemInfo)->IsNullBuyBackPx)
+		if((*gmdeItemInfo)->IsNullBuyBackPx)
 			this->WriteNull();
 		else
 			WriteDecimal_Optional(&((*gmdeItemInfo)->BuyBackPx));
-		if(!(*gmdeItemInfo)->IsNullBuyBackDate)
+		if((*gmdeItemInfo)->IsNullBuyBackDate)
 			this->WriteNull();
 		else
 			WriteUInt32_Optional((*gmdeItemInfo)->BuyBackDate);
-		if(!(*gmdeItemInfo)->IsNullCXFlag)
+		if((*gmdeItemInfo)->IsNullCXFlag)
 			this->WriteNullString();
 		else
 			WriteString_Optional((*gmdeItemInfo)->CXFlag, (*gmdeItemInfo)->CXFlagLength);
-		if(!(*gmdeItemInfo)->IsNullTradingSessionID)
+		if((*gmdeItemInfo)->IsNullTradingSessionID)
 			this->WriteNullString();
 		else
 			WriteString_Optional((*gmdeItemInfo)->TradingSessionID, (*gmdeItemInfo)->TradingSessionIDLength);
-		if(!(*gmdeItemInfo)->IsNullTradingSessionSubID)
+		if((*gmdeItemInfo)->IsNullTradingSessionSubID)
 			this->WriteNullString();
 		else
 			WriteString_Optional((*gmdeItemInfo)->TradingSessionSubID, (*gmdeItemInfo)->TradingSessionSubIDLength);
@@ -2847,33 +2847,33 @@ void FastProtocolManager::EncodeOLSFONDInfo(FastOLSFONDInfo* info) {
 	WriteUInt32_Mandatory(2510);
 	WriteUInt32_Mandatory(info->MsgSeqNum);
 	WriteUInt64_Mandatory(info->SendingTime);
-	if(!info->IsNullLastMsgSeqNumProcessed)
+	if(info->IsNullLastMsgSeqNumProcessed)
 		this->WriteNull();
 	else
 		WriteUInt32_Optional(info->LastMsgSeqNumProcessed);
 	WriteInt32_Mandatory(info->RptSeq);
-	if(!info->IsNullLastFragment)
+	if(info->IsNullLastFragment)
 		this->WriteNull();
 	else
 		WriteUInt32_Optional(info->LastFragment);
-	if(!info->IsNullRouteFirst)
+	if(info->IsNullRouteFirst)
 		this->WriteNull();
 	else
 		WriteUInt32_Optional(info->RouteFirst);
-	if(!info->IsNullTradSesStatus)
+	if(info->IsNullTradSesStatus)
 		this->WriteNull();
 	else
 		WriteInt32_Optional(info->TradSesStatus);
-	if(!info->IsNullTradingSessionID)
+	if(info->IsNullTradingSessionID)
 		this->WriteNullString();
 	else
 		WriteString_Optional(info->TradingSessionID, info->TradingSessionIDLength);
 	WriteString_Mandatory(info->Symbol, info->SymbolLength);
-	if(!info->IsNullMDSecurityTradingStatus)
+	if(info->IsNullMDSecurityTradingStatus)
 		this->WriteNull();
 	else
 		WriteInt32_Optional(info->MDSecurityTradingStatus);
-	if(!info->IsNullAuctionIndicator)
+	if(info->IsNullAuctionIndicator)
 		this->WriteNull();
 	else
 		WriteUInt32_Optional(info->AuctionIndicator);
@@ -2883,71 +2883,71 @@ void FastProtocolManager::EncodeOLSFONDInfo(FastOLSFONDInfo* info) {
 		WritePresenceMap((*gmdeItemInfo)->PresenceMap); // Presence Map hack
 
 		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, PRESENCE_MAP_INDEX0)) {
-			if(!(*gmdeItemInfo)->IsNullMDEntryType)
+			if((*gmdeItemInfo)->IsNullMDEntryType)
 				this->WriteNullString();
 			else
 				WriteString_Optional((*gmdeItemInfo)->MDEntryType, (*gmdeItemInfo)->MDEntryTypeLength);
 			}
-		if(!(*gmdeItemInfo)->IsNullMDEntryID)
+		if((*gmdeItemInfo)->IsNullMDEntryID)
 			this->WriteNullString();
 		else
 			WriteString_Optional((*gmdeItemInfo)->MDEntryID, (*gmdeItemInfo)->MDEntryIDLength);
 		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, PRESENCE_MAP_INDEX1)) {
-			if(!(*gmdeItemInfo)->IsNullMDEntryDate)
+			if((*gmdeItemInfo)->IsNullMDEntryDate)
 				this->WriteNull();
 			else
 				WriteUInt32_Optional((*gmdeItemInfo)->MDEntryDate);
 			}
 		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, PRESENCE_MAP_INDEX2)) {
-			if(!(*gmdeItemInfo)->IsNullMDEntryTime)
+			if((*gmdeItemInfo)->IsNullMDEntryTime)
 				this->WriteNull();
 			else
 				WriteUInt32_Optional((*gmdeItemInfo)->MDEntryTime);
 			}
 		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, PRESENCE_MAP_INDEX3)) {
-			if(!(*gmdeItemInfo)->IsNullOrigTime)
+			if((*gmdeItemInfo)->IsNullOrigTime)
 				this->WriteNull();
 			else
 				WriteUInt32_Optional((*gmdeItemInfo)->OrigTime);
 			}
 		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, PRESENCE_MAP_INDEX4)) {
-			if(!(*gmdeItemInfo)->IsNullMDEntryPx)
+			if((*gmdeItemInfo)->IsNullMDEntryPx)
 				this->WriteNull();
 			else
 				WriteDecimal_Optional(&((*gmdeItemInfo)->MDEntryPx));
 			}
 		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, PRESENCE_MAP_INDEX5)) {
-			if(!(*gmdeItemInfo)->IsNullMDEntrySize)
+			if((*gmdeItemInfo)->IsNullMDEntrySize)
 				this->WriteNull();
 			else
 				WriteDecimal_Optional(&((*gmdeItemInfo)->MDEntrySize));
 			}
 		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, PRESENCE_MAP_INDEX6)) {
-			if(!(*gmdeItemInfo)->IsNullYield)
+			if((*gmdeItemInfo)->IsNullYield)
 				this->WriteNull();
 			else
 				WriteDecimal_Optional(&((*gmdeItemInfo)->Yield));
 			}
 		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, PRESENCE_MAP_INDEX7)) {
-			if(!(*gmdeItemInfo)->IsNullOrderStatus)
+			if((*gmdeItemInfo)->IsNullOrderStatus)
 				this->WriteNullString();
 			else
 				WriteString_Optional((*gmdeItemInfo)->OrderStatus, (*gmdeItemInfo)->OrderStatusLength);
 			}
 		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, PRESENCE_MAP_INDEX8)) {
-			if(!(*gmdeItemInfo)->IsNullOrdType)
+			if((*gmdeItemInfo)->IsNullOrdType)
 				this->WriteNullString();
 			else
 				WriteString_Optional((*gmdeItemInfo)->OrdType, (*gmdeItemInfo)->OrdTypeLength);
 			}
 		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, PRESENCE_MAP_INDEX9)) {
-			if(!(*gmdeItemInfo)->IsNullTotalVolume)
+			if((*gmdeItemInfo)->IsNullTotalVolume)
 				this->WriteNull();
 			else
 				WriteDecimal_Optional(&((*gmdeItemInfo)->TotalVolume));
 			}
 		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, PRESENCE_MAP_INDEX10)) {
-			if(!(*gmdeItemInfo)->IsNullTradingSessionSubID)
+			if((*gmdeItemInfo)->IsNullTradingSessionSubID)
 				this->WriteNullString();
 			else
 				WriteString_Optional((*gmdeItemInfo)->TradingSessionSubID, (*gmdeItemInfo)->TradingSessionSubIDLength);
@@ -2960,29 +2960,29 @@ void FastProtocolManager::EncodeOLSCURRInfo(FastOLSCURRInfo* info) {
 	WriteUInt32_Mandatory(3600);
 	WriteUInt32_Mandatory(info->MsgSeqNum);
 	WriteUInt64_Mandatory(info->SendingTime);
-	if(!info->IsNullLastMsgSeqNumProcessed)
+	if(info->IsNullLastMsgSeqNumProcessed)
 		this->WriteNull();
 	else
 		WriteUInt32_Optional(info->LastMsgSeqNumProcessed);
 	WriteInt32_Mandatory(info->RptSeq);
-	if(!info->IsNullLastFragment)
+	if(info->IsNullLastFragment)
 		this->WriteNull();
 	else
 		WriteUInt32_Optional(info->LastFragment);
-	if(!info->IsNullRouteFirst)
+	if(info->IsNullRouteFirst)
 		this->WriteNull();
 	else
 		WriteUInt32_Optional(info->RouteFirst);
-	if(!info->IsNullTradSesStatus)
+	if(info->IsNullTradSesStatus)
 		this->WriteNull();
 	else
 		WriteInt32_Optional(info->TradSesStatus);
-	if(!info->IsNullTradingSessionID)
+	if(info->IsNullTradingSessionID)
 		this->WriteNullString();
 	else
 		WriteString_Optional(info->TradingSessionID, info->TradingSessionIDLength);
 	WriteString_Mandatory(info->Symbol, info->SymbolLength);
-	if(!info->IsNullMDSecurityTradingStatus)
+	if(info->IsNullMDSecurityTradingStatus)
 		this->WriteNull();
 	else
 		WriteInt32_Optional(info->MDSecurityTradingStatus);
@@ -2992,53 +2992,53 @@ void FastProtocolManager::EncodeOLSCURRInfo(FastOLSCURRInfo* info) {
 		WritePresenceMap((*gmdeItemInfo)->PresenceMap); // Presence Map hack
 
 		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, PRESENCE_MAP_INDEX0)) {
-			if(!(*gmdeItemInfo)->IsNullMDEntryType)
+			if((*gmdeItemInfo)->IsNullMDEntryType)
 				this->WriteNullString();
 			else
 				WriteString_Optional((*gmdeItemInfo)->MDEntryType, (*gmdeItemInfo)->MDEntryTypeLength);
 			}
-		if(!(*gmdeItemInfo)->IsNullMDEntryID)
+		if((*gmdeItemInfo)->IsNullMDEntryID)
 			this->WriteNullString();
 		else
 			WriteString_Optional((*gmdeItemInfo)->MDEntryID, (*gmdeItemInfo)->MDEntryIDLength);
 		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, PRESENCE_MAP_INDEX1)) {
-			if(!(*gmdeItemInfo)->IsNullMDEntryDate)
+			if((*gmdeItemInfo)->IsNullMDEntryDate)
 				this->WriteNull();
 			else
 				WriteUInt32_Optional((*gmdeItemInfo)->MDEntryDate);
 			}
 		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, PRESENCE_MAP_INDEX2)) {
-			if(!(*gmdeItemInfo)->IsNullMDEntryTime)
+			if((*gmdeItemInfo)->IsNullMDEntryTime)
 				this->WriteNull();
 			else
 				WriteUInt32_Optional((*gmdeItemInfo)->MDEntryTime);
 			}
 		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, PRESENCE_MAP_INDEX3)) {
-			if(!(*gmdeItemInfo)->IsNullOrigTime)
+			if((*gmdeItemInfo)->IsNullOrigTime)
 				this->WriteNull();
 			else
 				WriteUInt32_Optional((*gmdeItemInfo)->OrigTime);
 			}
 		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, PRESENCE_MAP_INDEX4)) {
-			if(!(*gmdeItemInfo)->IsNullMDEntryPx)
+			if((*gmdeItemInfo)->IsNullMDEntryPx)
 				this->WriteNull();
 			else
 				WriteDecimal_Optional(&((*gmdeItemInfo)->MDEntryPx));
 			}
 		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, PRESENCE_MAP_INDEX5)) {
-			if(!(*gmdeItemInfo)->IsNullMDEntrySize)
+			if((*gmdeItemInfo)->IsNullMDEntrySize)
 				this->WriteNull();
 			else
 				WriteDecimal_Optional(&((*gmdeItemInfo)->MDEntrySize));
 			}
 		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, PRESENCE_MAP_INDEX6)) {
-			if(!(*gmdeItemInfo)->IsNullOrderStatus)
+			if((*gmdeItemInfo)->IsNullOrderStatus)
 				this->WriteNullString();
 			else
 				WriteString_Optional((*gmdeItemInfo)->OrderStatus, (*gmdeItemInfo)->OrderStatusLength);
 			}
 		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, PRESENCE_MAP_INDEX7)) {
-			if(!(*gmdeItemInfo)->IsNullTradingSessionSubID)
+			if((*gmdeItemInfo)->IsNullTradingSessionSubID)
 				this->WriteNullString();
 			else
 				WriteString_Optional((*gmdeItemInfo)->TradingSessionSubID, (*gmdeItemInfo)->TradingSessionSubIDLength);
@@ -3051,33 +3051,33 @@ void FastProtocolManager::EncodeTLSFONDInfo(FastTLSFONDInfo* info) {
 	WriteUInt32_Mandatory(2511);
 	WriteUInt32_Mandatory(info->MsgSeqNum);
 	WriteUInt64_Mandatory(info->SendingTime);
-	if(!info->IsNullLastMsgSeqNumProcessed)
+	if(info->IsNullLastMsgSeqNumProcessed)
 		this->WriteNull();
 	else
 		WriteUInt32_Optional(info->LastMsgSeqNumProcessed);
 	WriteInt32_Mandatory(info->RptSeq);
-	if(!info->IsNullLastFragment)
+	if(info->IsNullLastFragment)
 		this->WriteNull();
 	else
 		WriteUInt32_Optional(info->LastFragment);
-	if(!info->IsNullRouteFirst)
+	if(info->IsNullRouteFirst)
 		this->WriteNull();
 	else
 		WriteUInt32_Optional(info->RouteFirst);
-	if(!info->IsNullTradSesStatus)
+	if(info->IsNullTradSesStatus)
 		this->WriteNull();
 	else
 		WriteInt32_Optional(info->TradSesStatus);
-	if(!info->IsNullTradingSessionID)
+	if(info->IsNullTradingSessionID)
 		this->WriteNullString();
 	else
 		WriteString_Optional(info->TradingSessionID, info->TradingSessionIDLength);
 	WriteString_Mandatory(info->Symbol, info->SymbolLength);
-	if(!info->IsNullMDSecurityTradingStatus)
+	if(info->IsNullMDSecurityTradingStatus)
 		this->WriteNull();
 	else
 		WriteInt32_Optional(info->MDSecurityTradingStatus);
-	if(!info->IsNullAuctionIndicator)
+	if(info->IsNullAuctionIndicator)
 		this->WriteNull();
 	else
 		WriteUInt32_Optional(info->AuctionIndicator);
@@ -3087,114 +3087,114 @@ void FastProtocolManager::EncodeTLSFONDInfo(FastTLSFONDInfo* info) {
 		WritePresenceMap((*gmdeItemInfo)->PresenceMap); // Presence Map hack
 
 		WriteString_Mandatory((*gmdeItemInfo)->MDEntryType, (*gmdeItemInfo)->MDEntryTypeLength);
-		if(!(*gmdeItemInfo)->IsNullMDEntryID)
+		if((*gmdeItemInfo)->IsNullMDEntryID)
 			this->WriteNullString();
 		else
 			WriteString_Optional((*gmdeItemInfo)->MDEntryID, (*gmdeItemInfo)->MDEntryIDLength);
 		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, PRESENCE_MAP_INDEX0)) {
-			if(!(*gmdeItemInfo)->IsNullMDEntryDate)
+			if((*gmdeItemInfo)->IsNullMDEntryDate)
 				this->WriteNull();
 			else
 				WriteUInt32_Optional((*gmdeItemInfo)->MDEntryDate);
 			}
 		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, PRESENCE_MAP_INDEX1)) {
-			if(!(*gmdeItemInfo)->IsNullMDEntryTime)
+			if((*gmdeItemInfo)->IsNullMDEntryTime)
 				this->WriteNull();
 			else
 				WriteUInt32_Optional((*gmdeItemInfo)->MDEntryTime);
 			}
 		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, PRESENCE_MAP_INDEX2)) {
-			if(!(*gmdeItemInfo)->IsNullOrigTime)
+			if((*gmdeItemInfo)->IsNullOrigTime)
 				this->WriteNull();
 			else
 				WriteUInt32_Optional((*gmdeItemInfo)->OrigTime);
 			}
 		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, PRESENCE_MAP_INDEX3)) {
-			if(!(*gmdeItemInfo)->IsNullOrderSide)
+			if((*gmdeItemInfo)->IsNullOrderSide)
 				this->WriteNullString();
 			else
 				WriteString_Optional((*gmdeItemInfo)->OrderSide, (*gmdeItemInfo)->OrderSideLength);
 			}
 		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, PRESENCE_MAP_INDEX4)) {
-			if(!(*gmdeItemInfo)->IsNullMDEntryPx)
+			if((*gmdeItemInfo)->IsNullMDEntryPx)
 				this->WriteNull();
 			else
 				WriteDecimal_Optional(&((*gmdeItemInfo)->MDEntryPx));
 			}
 		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, PRESENCE_MAP_INDEX5)) {
-			if(!(*gmdeItemInfo)->IsNullMDEntrySize)
+			if((*gmdeItemInfo)->IsNullMDEntrySize)
 				this->WriteNull();
 			else
 				WriteDecimal_Optional(&((*gmdeItemInfo)->MDEntrySize));
 			}
 		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, PRESENCE_MAP_INDEX6)) {
-			if(!(*gmdeItemInfo)->IsNullAccruedInterestAmt)
+			if((*gmdeItemInfo)->IsNullAccruedInterestAmt)
 				this->WriteNull();
 			else
 				WriteDecimal_Optional(&((*gmdeItemInfo)->AccruedInterestAmt));
 			}
 		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, PRESENCE_MAP_INDEX7)) {
-			if(!(*gmdeItemInfo)->IsNullTradeValue)
+			if((*gmdeItemInfo)->IsNullTradeValue)
 				this->WriteNull();
 			else
 				WriteDecimal_Optional(&((*gmdeItemInfo)->TradeValue));
 			}
 		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, PRESENCE_MAP_INDEX8)) {
-			if(!(*gmdeItemInfo)->IsNullYield)
+			if((*gmdeItemInfo)->IsNullYield)
 				this->WriteNull();
 			else
 				WriteDecimal_Optional(&((*gmdeItemInfo)->Yield));
 			}
 		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, PRESENCE_MAP_INDEX9)) {
-			if(!(*gmdeItemInfo)->IsNullSettlDate)
+			if((*gmdeItemInfo)->IsNullSettlDate)
 				this->WriteNull();
 			else
 				WriteUInt32_Optional((*gmdeItemInfo)->SettlDate);
 			}
 		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, PRESENCE_MAP_INDEX10)) {
-			if(!(*gmdeItemInfo)->IsNullSettleType)
+			if((*gmdeItemInfo)->IsNullSettleType)
 				this->WriteNullString();
 			else
 				WriteString_Optional((*gmdeItemInfo)->SettleType, (*gmdeItemInfo)->SettleTypeLength);
 			}
 		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, PRESENCE_MAP_INDEX11)) {
-			if(!(*gmdeItemInfo)->IsNullPrice)
+			if((*gmdeItemInfo)->IsNullPrice)
 				this->WriteNull();
 			else
 				WriteDecimal_Optional(&((*gmdeItemInfo)->Price));
 			}
 		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, PRESENCE_MAP_INDEX12)) {
-			if(!(*gmdeItemInfo)->IsNullPriceType)
+			if((*gmdeItemInfo)->IsNullPriceType)
 				this->WriteNull();
 			else
 				WriteInt32_Optional((*gmdeItemInfo)->PriceType);
 			}
 		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, PRESENCE_MAP_INDEX13)) {
-			if(!(*gmdeItemInfo)->IsNullRepoToPx)
+			if((*gmdeItemInfo)->IsNullRepoToPx)
 				this->WriteNull();
 			else
 				WriteDecimal_Optional(&((*gmdeItemInfo)->RepoToPx));
 			}
 		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, PRESENCE_MAP_INDEX14)) {
-			if(!(*gmdeItemInfo)->IsNullBuyBackPx)
+			if((*gmdeItemInfo)->IsNullBuyBackPx)
 				this->WriteNull();
 			else
 				WriteDecimal_Optional(&((*gmdeItemInfo)->BuyBackPx));
 			}
 		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, PRESENCE_MAP_INDEX15)) {
-			if(!(*gmdeItemInfo)->IsNullBuyBackDate)
+			if((*gmdeItemInfo)->IsNullBuyBackDate)
 				this->WriteNull();
 			else
 				WriteUInt32_Optional((*gmdeItemInfo)->BuyBackDate);
 			}
 		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, PRESENCE_MAP_INDEX16)) {
-			if(!(*gmdeItemInfo)->IsNullTradingSessionSubID)
+			if((*gmdeItemInfo)->IsNullTradingSessionSubID)
 				this->WriteNullString();
 			else
 				WriteString_Optional((*gmdeItemInfo)->TradingSessionSubID, (*gmdeItemInfo)->TradingSessionSubIDLength);
 			}
 		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, PRESENCE_MAP_INDEX17)) {
-			if(!(*gmdeItemInfo)->IsNullRefOrderID)
+			if((*gmdeItemInfo)->IsNullRefOrderID)
 				this->WriteNullString();
 			else
 				WriteString_Optional((*gmdeItemInfo)->RefOrderID, (*gmdeItemInfo)->RefOrderIDLength);
@@ -3207,29 +3207,29 @@ void FastProtocolManager::EncodeTLSCURRInfo(FastTLSCURRInfo* info) {
 	WriteUInt32_Mandatory(3601);
 	WriteUInt32_Mandatory(info->MsgSeqNum);
 	WriteUInt64_Mandatory(info->SendingTime);
-	if(!info->IsNullLastMsgSeqNumProcessed)
+	if(info->IsNullLastMsgSeqNumProcessed)
 		this->WriteNull();
 	else
 		WriteUInt32_Optional(info->LastMsgSeqNumProcessed);
 	WriteInt32_Mandatory(info->RptSeq);
-	if(!info->IsNullLastFragment)
+	if(info->IsNullLastFragment)
 		this->WriteNull();
 	else
 		WriteUInt32_Optional(info->LastFragment);
-	if(!info->IsNullRouteFirst)
+	if(info->IsNullRouteFirst)
 		this->WriteNull();
 	else
 		WriteUInt32_Optional(info->RouteFirst);
-	if(!info->IsNullTradSesStatus)
+	if(info->IsNullTradSesStatus)
 		this->WriteNull();
 	else
 		WriteInt32_Optional(info->TradSesStatus);
-	if(!info->IsNullTradingSessionID)
+	if(info->IsNullTradingSessionID)
 		this->WriteNullString();
 	else
 		WriteString_Optional(info->TradingSessionID, info->TradingSessionIDLength);
 	WriteString_Mandatory(info->Symbol, info->SymbolLength);
-	if(!info->IsNullMDSecurityTradingStatus)
+	if(info->IsNullMDSecurityTradingStatus)
 		this->WriteNull();
 	else
 		WriteInt32_Optional(info->MDSecurityTradingStatus);
@@ -3239,102 +3239,102 @@ void FastProtocolManager::EncodeTLSCURRInfo(FastTLSCURRInfo* info) {
 		WritePresenceMap((*gmdeItemInfo)->PresenceMap); // Presence Map hack
 
 		WriteString_Mandatory((*gmdeItemInfo)->MDEntryType, (*gmdeItemInfo)->MDEntryTypeLength);
-		if(!(*gmdeItemInfo)->IsNullMDEntryID)
+		if((*gmdeItemInfo)->IsNullMDEntryID)
 			this->WriteNullString();
 		else
 			WriteString_Optional((*gmdeItemInfo)->MDEntryID, (*gmdeItemInfo)->MDEntryIDLength);
 		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, PRESENCE_MAP_INDEX0)) {
-			if(!(*gmdeItemInfo)->IsNullMDEntryDate)
+			if((*gmdeItemInfo)->IsNullMDEntryDate)
 				this->WriteNull();
 			else
 				WriteUInt32_Optional((*gmdeItemInfo)->MDEntryDate);
 			}
 		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, PRESENCE_MAP_INDEX1)) {
-			if(!(*gmdeItemInfo)->IsNullMDEntryTime)
+			if((*gmdeItemInfo)->IsNullMDEntryTime)
 				this->WriteNull();
 			else
 				WriteUInt32_Optional((*gmdeItemInfo)->MDEntryTime);
 			}
 		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, PRESENCE_MAP_INDEX2)) {
-			if(!(*gmdeItemInfo)->IsNullOrigTime)
+			if((*gmdeItemInfo)->IsNullOrigTime)
 				this->WriteNull();
 			else
 				WriteUInt32_Optional((*gmdeItemInfo)->OrigTime);
 			}
 		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, PRESENCE_MAP_INDEX3)) {
-			if(!(*gmdeItemInfo)->IsNullOrderSide)
+			if((*gmdeItemInfo)->IsNullOrderSide)
 				this->WriteNullString();
 			else
 				WriteString_Optional((*gmdeItemInfo)->OrderSide, (*gmdeItemInfo)->OrderSideLength);
 			}
 		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, PRESENCE_MAP_INDEX4)) {
-			if(!(*gmdeItemInfo)->IsNullMDEntryPx)
+			if((*gmdeItemInfo)->IsNullMDEntryPx)
 				this->WriteNull();
 			else
 				WriteDecimal_Optional(&((*gmdeItemInfo)->MDEntryPx));
 			}
 		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, PRESENCE_MAP_INDEX5)) {
-			if(!(*gmdeItemInfo)->IsNullMDEntrySize)
+			if((*gmdeItemInfo)->IsNullMDEntrySize)
 				this->WriteNull();
 			else
 				WriteDecimal_Optional(&((*gmdeItemInfo)->MDEntrySize));
 			}
 		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, PRESENCE_MAP_INDEX6)) {
-			if(!(*gmdeItemInfo)->IsNullTradeValue)
+			if((*gmdeItemInfo)->IsNullTradeValue)
 				this->WriteNull();
 			else
 				WriteDecimal_Optional(&((*gmdeItemInfo)->TradeValue));
 			}
 		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, PRESENCE_MAP_INDEX7)) {
-			if(!(*gmdeItemInfo)->IsNullSettlDate)
+			if((*gmdeItemInfo)->IsNullSettlDate)
 				this->WriteNull();
 			else
 				WriteUInt32_Optional((*gmdeItemInfo)->SettlDate);
 			}
 		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, PRESENCE_MAP_INDEX8)) {
-			if(!(*gmdeItemInfo)->IsNullSettleType)
+			if((*gmdeItemInfo)->IsNullSettleType)
 				this->WriteNullString();
 			else
 				WriteString_Optional((*gmdeItemInfo)->SettleType, (*gmdeItemInfo)->SettleTypeLength);
 			}
 		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, PRESENCE_MAP_INDEX9)) {
-			if(!(*gmdeItemInfo)->IsNullPrice)
+			if((*gmdeItemInfo)->IsNullPrice)
 				this->WriteNull();
 			else
 				WriteDecimal_Optional(&((*gmdeItemInfo)->Price));
 			}
 		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, PRESENCE_MAP_INDEX10)) {
-			if(!(*gmdeItemInfo)->IsNullPriceType)
+			if((*gmdeItemInfo)->IsNullPriceType)
 				this->WriteNull();
 			else
 				WriteInt32_Optional((*gmdeItemInfo)->PriceType);
 			}
 		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, PRESENCE_MAP_INDEX11)) {
-			if(!(*gmdeItemInfo)->IsNullRepoToPx)
+			if((*gmdeItemInfo)->IsNullRepoToPx)
 				this->WriteNull();
 			else
 				WriteDecimal_Optional(&((*gmdeItemInfo)->RepoToPx));
 			}
 		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, PRESENCE_MAP_INDEX12)) {
-			if(!(*gmdeItemInfo)->IsNullBuyBackPx)
+			if((*gmdeItemInfo)->IsNullBuyBackPx)
 				this->WriteNull();
 			else
 				WriteDecimal_Optional(&((*gmdeItemInfo)->BuyBackPx));
 			}
 		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, PRESENCE_MAP_INDEX13)) {
-			if(!(*gmdeItemInfo)->IsNullBuyBackDate)
+			if((*gmdeItemInfo)->IsNullBuyBackDate)
 				this->WriteNull();
 			else
 				WriteUInt32_Optional((*gmdeItemInfo)->BuyBackDate);
 			}
 		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, PRESENCE_MAP_INDEX14)) {
-			if(!(*gmdeItemInfo)->IsNullTradingSessionSubID)
+			if((*gmdeItemInfo)->IsNullTradingSessionSubID)
 				this->WriteNullString();
 			else
 				WriteString_Optional((*gmdeItemInfo)->TradingSessionSubID, (*gmdeItemInfo)->TradingSessionSubIDLength);
 			}
 		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, PRESENCE_MAP_INDEX15)) {
-			if(!(*gmdeItemInfo)->IsNullRefOrderID)
+			if((*gmdeItemInfo)->IsNullRefOrderID)
 				this->WriteNullString();
 			else
 				WriteString_Optional((*gmdeItemInfo)->RefOrderID, (*gmdeItemInfo)->RefOrderIDLength);
@@ -3347,142 +3347,142 @@ void FastProtocolManager::EncodeIncrementalMSRFONDInfo(FastIncrementalMSRFONDInf
 	WriteUInt32_Mandatory(2523);
 	WriteUInt32_Mandatory(info->MsgSeqNum);
 	WriteUInt64_Mandatory(info->SendingTime);
-	if(!info->IsNullLastUpdateTime)
+	if(info->IsNullLastUpdateTime)
 		this->WriteNull();
 	else
 		WriteUInt64_Optional(info->LastUpdateTime);
 	WriteUInt32_Mandatory(info->GroupMDEntriesCount);
 	FastGenericItemInfo **gmdeItemInfo = info->GroupMDEntries;
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
-		if(!(*gmdeItemInfo)->IsNullMDUpdateAction)
+		if((*gmdeItemInfo)->IsNullMDUpdateAction)
 			this->WriteNull();
 		else
 			WriteUInt32_Optional((*gmdeItemInfo)->MDUpdateAction);
-		if(!(*gmdeItemInfo)->IsNullMDEntryType)
+		if((*gmdeItemInfo)->IsNullMDEntryType)
 			this->WriteNullString();
 		else
 			WriteString_Optional((*gmdeItemInfo)->MDEntryType, (*gmdeItemInfo)->MDEntryTypeLength);
-		if(!(*gmdeItemInfo)->IsNullMDEntryID)
+		if((*gmdeItemInfo)->IsNullMDEntryID)
 			this->WriteNullString();
 		else
 			WriteString_Optional((*gmdeItemInfo)->MDEntryID, (*gmdeItemInfo)->MDEntryIDLength);
-		if(!(*gmdeItemInfo)->IsNullSymbol)
+		if((*gmdeItemInfo)->IsNullSymbol)
 			this->WriteNullString();
 		else
 			WriteString_Optional((*gmdeItemInfo)->Symbol, (*gmdeItemInfo)->SymbolLength);
-		if(!(*gmdeItemInfo)->IsNullRptSeq)
+		if((*gmdeItemInfo)->IsNullRptSeq)
 			this->WriteNull();
 		else
 			WriteInt32_Optional((*gmdeItemInfo)->RptSeq);
-		if(!(*gmdeItemInfo)->IsNullMDEntryPx)
+		if((*gmdeItemInfo)->IsNullMDEntryPx)
 			this->WriteNull();
 		else
 			WriteDecimal_Optional(&((*gmdeItemInfo)->MDEntryPx));
-		if(!(*gmdeItemInfo)->IsNullMDEntrySize)
+		if((*gmdeItemInfo)->IsNullMDEntrySize)
 			this->WriteNull();
 		else
 			WriteDecimal_Optional(&((*gmdeItemInfo)->MDEntrySize));
-		if(!(*gmdeItemInfo)->IsNullMDEntryDate)
+		if((*gmdeItemInfo)->IsNullMDEntryDate)
 			this->WriteNull();
 		else
 			WriteUInt32_Optional((*gmdeItemInfo)->MDEntryDate);
-		if(!(*gmdeItemInfo)->IsNullMDEntryTime)
+		if((*gmdeItemInfo)->IsNullMDEntryTime)
 			this->WriteNull();
 		else
 			WriteUInt32_Optional((*gmdeItemInfo)->MDEntryTime);
-		if(!(*gmdeItemInfo)->IsNullStartTime)
+		if((*gmdeItemInfo)->IsNullStartTime)
 			this->WriteNull();
 		else
 			WriteUInt32_Optional((*gmdeItemInfo)->StartTime);
-		if(!(*gmdeItemInfo)->IsNullQuoteCondition)
+		if((*gmdeItemInfo)->IsNullQuoteCondition)
 			this->WriteNullString();
 		else
 			WriteString_Optional((*gmdeItemInfo)->QuoteCondition, (*gmdeItemInfo)->QuoteConditionLength);
-		if(!(*gmdeItemInfo)->IsNullTradeCondition)
+		if((*gmdeItemInfo)->IsNullTradeCondition)
 			this->WriteNullString();
 		else
 			WriteString_Optional((*gmdeItemInfo)->TradeCondition, (*gmdeItemInfo)->TradeConditionLength);
-		if(!(*gmdeItemInfo)->IsNullOpenCloseSettlFlag)
+		if((*gmdeItemInfo)->IsNullOpenCloseSettlFlag)
 			this->WriteNullString();
 		else
 			WriteString_Optional((*gmdeItemInfo)->OpenCloseSettlFlag, (*gmdeItemInfo)->OpenCloseSettlFlagLength);
-		if(!(*gmdeItemInfo)->IsNullNetChgPrevDay)
+		if((*gmdeItemInfo)->IsNullNetChgPrevDay)
 			this->WriteNull();
 		else
 			WriteDecimal_Optional(&((*gmdeItemInfo)->NetChgPrevDay));
-		if(!(*gmdeItemInfo)->IsNullAccruedInterestAmt)
+		if((*gmdeItemInfo)->IsNullAccruedInterestAmt)
 			this->WriteNull();
 		else
 			WriteDecimal_Optional(&((*gmdeItemInfo)->AccruedInterestAmt));
-		if(!(*gmdeItemInfo)->IsNullChgFromWAPrice)
+		if((*gmdeItemInfo)->IsNullChgFromWAPrice)
 			this->WriteNull();
 		else
 			WriteDecimal_Optional(&((*gmdeItemInfo)->ChgFromWAPrice));
-		if(!(*gmdeItemInfo)->IsNullChgOpenInterest)
+		if((*gmdeItemInfo)->IsNullChgOpenInterest)
 			this->WriteNull();
 		else
 			WriteDecimal_Optional(&((*gmdeItemInfo)->ChgOpenInterest));
-		if(!(*gmdeItemInfo)->IsNullBidMarketSize)
+		if((*gmdeItemInfo)->IsNullBidMarketSize)
 			this->WriteNull();
 		else
 			WriteDecimal_Optional(&((*gmdeItemInfo)->BidMarketSize));
-		if(!(*gmdeItemInfo)->IsNullAskMarketSize)
+		if((*gmdeItemInfo)->IsNullAskMarketSize)
 			this->WriteNull();
 		else
 			WriteDecimal_Optional(&((*gmdeItemInfo)->AskMarketSize));
-		if(!(*gmdeItemInfo)->IsNullTotalNumOfTrades)
+		if((*gmdeItemInfo)->IsNullTotalNumOfTrades)
 			this->WriteNull();
 		else
 			WriteInt32_Optional((*gmdeItemInfo)->TotalNumOfTrades);
-		if(!(*gmdeItemInfo)->IsNullTradeValue)
+		if((*gmdeItemInfo)->IsNullTradeValue)
 			this->WriteNull();
 		else
 			WriteDecimal_Optional(&((*gmdeItemInfo)->TradeValue));
-		if(!(*gmdeItemInfo)->IsNullYield)
+		if((*gmdeItemInfo)->IsNullYield)
 			this->WriteNull();
 		else
 			WriteDecimal_Optional(&((*gmdeItemInfo)->Yield));
-		if(!(*gmdeItemInfo)->IsNullOfferNbOr)
+		if((*gmdeItemInfo)->IsNullOfferNbOr)
 			this->WriteNull();
 		else
 			WriteInt32_Optional((*gmdeItemInfo)->OfferNbOr);
-		if(!(*gmdeItemInfo)->IsNullBidNbOr)
+		if((*gmdeItemInfo)->IsNullBidNbOr)
 			this->WriteNull();
 		else
 			WriteInt32_Optional((*gmdeItemInfo)->BidNbOr);
-		if(!(*gmdeItemInfo)->IsNullChgFromSettlmnt)
+		if((*gmdeItemInfo)->IsNullChgFromSettlmnt)
 			this->WriteNull();
 		else
 			WriteDecimal_Optional(&((*gmdeItemInfo)->ChgFromSettlmnt));
-		if(!(*gmdeItemInfo)->IsNullMinCurrPx)
+		if((*gmdeItemInfo)->IsNullMinCurrPx)
 			this->WriteNull();
 		else
 			WriteDecimal_Optional(&((*gmdeItemInfo)->MinCurrPx));
-		if(!(*gmdeItemInfo)->IsNullMinCurrPxChgTime)
+		if((*gmdeItemInfo)->IsNullMinCurrPxChgTime)
 			this->WriteNull();
 		else
 			WriteUInt32_Optional((*gmdeItemInfo)->MinCurrPxChgTime);
-		if(!(*gmdeItemInfo)->IsNullVolumeIndicator)
+		if((*gmdeItemInfo)->IsNullVolumeIndicator)
 			this->WriteNull();
 		else
 			WriteUInt32_Optional((*gmdeItemInfo)->VolumeIndicator);
-		if(!(*gmdeItemInfo)->IsNullSettlDate)
+		if((*gmdeItemInfo)->IsNullSettlDate)
 			this->WriteNull();
 		else
 			WriteUInt32_Optional((*gmdeItemInfo)->SettlDate);
-		if(!(*gmdeItemInfo)->IsNullSettleType)
+		if((*gmdeItemInfo)->IsNullSettleType)
 			this->WriteNullString();
 		else
 			WriteString_Optional((*gmdeItemInfo)->SettleType, (*gmdeItemInfo)->SettleTypeLength);
-		if(!(*gmdeItemInfo)->IsNullCXFlag)
+		if((*gmdeItemInfo)->IsNullCXFlag)
 			this->WriteNullString();
 		else
 			WriteString_Optional((*gmdeItemInfo)->CXFlag, (*gmdeItemInfo)->CXFlagLength);
-		if(!(*gmdeItemInfo)->IsNullTradingSessionID)
+		if((*gmdeItemInfo)->IsNullTradingSessionID)
 			this->WriteNullString();
 		else
 			WriteString_Optional((*gmdeItemInfo)->TradingSessionID, (*gmdeItemInfo)->TradingSessionIDLength);
-		if(!(*gmdeItemInfo)->IsNullTradingSessionSubID)
+		if((*gmdeItemInfo)->IsNullTradingSessionSubID)
 			this->WriteNullString();
 		else
 			WriteString_Optional((*gmdeItemInfo)->TradingSessionSubID, (*gmdeItemInfo)->TradingSessionSubIDLength);
@@ -3494,122 +3494,122 @@ void FastProtocolManager::EncodeIncrementalMSRCURRInfo(FastIncrementalMSRCURRInf
 	WriteUInt32_Mandatory(3613);
 	WriteUInt32_Mandatory(info->MsgSeqNum);
 	WriteUInt64_Mandatory(info->SendingTime);
-	if(!info->IsNullLastUpdateTime)
+	if(info->IsNullLastUpdateTime)
 		this->WriteNull();
 	else
 		WriteUInt64_Optional(info->LastUpdateTime);
 	WriteUInt32_Mandatory(info->GroupMDEntriesCount);
 	FastGenericItemInfo **gmdeItemInfo = info->GroupMDEntries;
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
-		if(!(*gmdeItemInfo)->IsNullMDUpdateAction)
+		if((*gmdeItemInfo)->IsNullMDUpdateAction)
 			this->WriteNull();
 		else
 			WriteUInt32_Optional((*gmdeItemInfo)->MDUpdateAction);
-		if(!(*gmdeItemInfo)->IsNullMDEntryType)
+		if((*gmdeItemInfo)->IsNullMDEntryType)
 			this->WriteNullString();
 		else
 			WriteString_Optional((*gmdeItemInfo)->MDEntryType, (*gmdeItemInfo)->MDEntryTypeLength);
-		if(!(*gmdeItemInfo)->IsNullMDEntryID)
+		if((*gmdeItemInfo)->IsNullMDEntryID)
 			this->WriteNullString();
 		else
 			WriteString_Optional((*gmdeItemInfo)->MDEntryID, (*gmdeItemInfo)->MDEntryIDLength);
-		if(!(*gmdeItemInfo)->IsNullSymbol)
+		if((*gmdeItemInfo)->IsNullSymbol)
 			this->WriteNullString();
 		else
 			WriteString_Optional((*gmdeItemInfo)->Symbol, (*gmdeItemInfo)->SymbolLength);
-		if(!(*gmdeItemInfo)->IsNullRptSeq)
+		if((*gmdeItemInfo)->IsNullRptSeq)
 			this->WriteNull();
 		else
 			WriteInt32_Optional((*gmdeItemInfo)->RptSeq);
-		if(!(*gmdeItemInfo)->IsNullMDEntryPx)
+		if((*gmdeItemInfo)->IsNullMDEntryPx)
 			this->WriteNull();
 		else
 			WriteDecimal_Optional(&((*gmdeItemInfo)->MDEntryPx));
-		if(!(*gmdeItemInfo)->IsNullMDEntrySize)
+		if((*gmdeItemInfo)->IsNullMDEntrySize)
 			this->WriteNull();
 		else
 			WriteDecimal_Optional(&((*gmdeItemInfo)->MDEntrySize));
-		if(!(*gmdeItemInfo)->IsNullMDEntryDate)
+		if((*gmdeItemInfo)->IsNullMDEntryDate)
 			this->WriteNull();
 		else
 			WriteUInt32_Optional((*gmdeItemInfo)->MDEntryDate);
-		if(!(*gmdeItemInfo)->IsNullMDEntryTime)
+		if((*gmdeItemInfo)->IsNullMDEntryTime)
 			this->WriteNull();
 		else
 			WriteUInt32_Optional((*gmdeItemInfo)->MDEntryTime);
-		if(!(*gmdeItemInfo)->IsNullStartTime)
+		if((*gmdeItemInfo)->IsNullStartTime)
 			this->WriteNull();
 		else
 			WriteUInt32_Optional((*gmdeItemInfo)->StartTime);
-		if(!(*gmdeItemInfo)->IsNullQuoteCondition)
+		if((*gmdeItemInfo)->IsNullQuoteCondition)
 			this->WriteNullString();
 		else
 			WriteString_Optional((*gmdeItemInfo)->QuoteCondition, (*gmdeItemInfo)->QuoteConditionLength);
-		if(!(*gmdeItemInfo)->IsNullTradeCondition)
+		if((*gmdeItemInfo)->IsNullTradeCondition)
 			this->WriteNullString();
 		else
 			WriteString_Optional((*gmdeItemInfo)->TradeCondition, (*gmdeItemInfo)->TradeConditionLength);
-		if(!(*gmdeItemInfo)->IsNullOpenCloseSettlFlag)
+		if((*gmdeItemInfo)->IsNullOpenCloseSettlFlag)
 			this->WriteNullString();
 		else
 			WriteString_Optional((*gmdeItemInfo)->OpenCloseSettlFlag, (*gmdeItemInfo)->OpenCloseSettlFlagLength);
-		if(!(*gmdeItemInfo)->IsNullNetChgPrevDay)
+		if((*gmdeItemInfo)->IsNullNetChgPrevDay)
 			this->WriteNull();
 		else
 			WriteDecimal_Optional(&((*gmdeItemInfo)->NetChgPrevDay));
-		if(!(*gmdeItemInfo)->IsNullChgFromWAPrice)
+		if((*gmdeItemInfo)->IsNullChgFromWAPrice)
 			this->WriteNull();
 		else
 			WriteDecimal_Optional(&((*gmdeItemInfo)->ChgFromWAPrice));
-		if(!(*gmdeItemInfo)->IsNullChgOpenInterest)
+		if((*gmdeItemInfo)->IsNullChgOpenInterest)
 			this->WriteNull();
 		else
 			WriteDecimal_Optional(&((*gmdeItemInfo)->ChgOpenInterest));
-		if(!(*gmdeItemInfo)->IsNullBidMarketSize)
+		if((*gmdeItemInfo)->IsNullBidMarketSize)
 			this->WriteNull();
 		else
 			WriteDecimal_Optional(&((*gmdeItemInfo)->BidMarketSize));
-		if(!(*gmdeItemInfo)->IsNullAskMarketSize)
+		if((*gmdeItemInfo)->IsNullAskMarketSize)
 			this->WriteNull();
 		else
 			WriteDecimal_Optional(&((*gmdeItemInfo)->AskMarketSize));
-		if(!(*gmdeItemInfo)->IsNullTotalNumOfTrades)
+		if((*gmdeItemInfo)->IsNullTotalNumOfTrades)
 			this->WriteNull();
 		else
 			WriteInt32_Optional((*gmdeItemInfo)->TotalNumOfTrades);
-		if(!(*gmdeItemInfo)->IsNullTradeValue)
+		if((*gmdeItemInfo)->IsNullTradeValue)
 			this->WriteNull();
 		else
 			WriteDecimal_Optional(&((*gmdeItemInfo)->TradeValue));
-		if(!(*gmdeItemInfo)->IsNullOfferNbOr)
+		if((*gmdeItemInfo)->IsNullOfferNbOr)
 			this->WriteNull();
 		else
 			WriteInt32_Optional((*gmdeItemInfo)->OfferNbOr);
-		if(!(*gmdeItemInfo)->IsNullBidNbOr)
+		if((*gmdeItemInfo)->IsNullBidNbOr)
 			this->WriteNull();
 		else
 			WriteInt32_Optional((*gmdeItemInfo)->BidNbOr);
-		if(!(*gmdeItemInfo)->IsNullChgFromSettlmnt)
+		if((*gmdeItemInfo)->IsNullChgFromSettlmnt)
 			this->WriteNull();
 		else
 			WriteDecimal_Optional(&((*gmdeItemInfo)->ChgFromSettlmnt));
-		if(!(*gmdeItemInfo)->IsNullSettlDate)
+		if((*gmdeItemInfo)->IsNullSettlDate)
 			this->WriteNull();
 		else
 			WriteUInt32_Optional((*gmdeItemInfo)->SettlDate);
-		if(!(*gmdeItemInfo)->IsNullSettleType)
+		if((*gmdeItemInfo)->IsNullSettleType)
 			this->WriteNullString();
 		else
 			WriteString_Optional((*gmdeItemInfo)->SettleType, (*gmdeItemInfo)->SettleTypeLength);
-		if(!(*gmdeItemInfo)->IsNullCXFlag)
+		if((*gmdeItemInfo)->IsNullCXFlag)
 			this->WriteNullString();
 		else
 			WriteString_Optional((*gmdeItemInfo)->CXFlag, (*gmdeItemInfo)->CXFlagLength);
-		if(!(*gmdeItemInfo)->IsNullTradingSessionID)
+		if((*gmdeItemInfo)->IsNullTradingSessionID)
 			this->WriteNullString();
 		else
 			WriteString_Optional((*gmdeItemInfo)->TradingSessionID, (*gmdeItemInfo)->TradingSessionIDLength);
-		if(!(*gmdeItemInfo)->IsNullTradingSessionSubID)
+		if((*gmdeItemInfo)->IsNullTradingSessionSubID)
 			this->WriteNullString();
 		else
 			WriteString_Optional((*gmdeItemInfo)->TradingSessionSubID, (*gmdeItemInfo)->TradingSessionSubIDLength);
@@ -3626,92 +3626,92 @@ void FastProtocolManager::EncodeIncrementalOLRFONDInfo(FastIncrementalOLRFONDInf
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 		WritePresenceMap((*gmdeItemInfo)->PresenceMap); // Presence Map hack
 
-		if(!(*gmdeItemInfo)->IsNullMDUpdateAction)
+		if((*gmdeItemInfo)->IsNullMDUpdateAction)
 			this->WriteNull();
 		else
 			WriteUInt32_Optional((*gmdeItemInfo)->MDUpdateAction);
 		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, PRESENCE_MAP_INDEX0)) {
-			if(!(*gmdeItemInfo)->IsNullMDEntryType)
+			if((*gmdeItemInfo)->IsNullMDEntryType)
 				this->WriteNullString();
 			else
 				WriteString_Optional((*gmdeItemInfo)->MDEntryType, (*gmdeItemInfo)->MDEntryTypeLength);
 			}
-		if(!(*gmdeItemInfo)->IsNullMDEntryID)
+		if((*gmdeItemInfo)->IsNullMDEntryID)
 			this->WriteNullString();
 		else
 			WriteString_Optional((*gmdeItemInfo)->MDEntryID, (*gmdeItemInfo)->MDEntryIDLength);
 		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, PRESENCE_MAP_INDEX1)) {
-			if(!(*gmdeItemInfo)->IsNullSymbol)
+			if((*gmdeItemInfo)->IsNullSymbol)
 				this->WriteNullString();
 			else
 				WriteString_Optional((*gmdeItemInfo)->Symbol, (*gmdeItemInfo)->SymbolLength);
 			}
-		if(!(*gmdeItemInfo)->IsNullRptSeq)
+		if((*gmdeItemInfo)->IsNullRptSeq)
 			this->WriteNull();
 		else
 			WriteInt32_Optional((*gmdeItemInfo)->RptSeq);
 		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, PRESENCE_MAP_INDEX2)) {
-			if(!(*gmdeItemInfo)->IsNullMDEntryDate)
+			if((*gmdeItemInfo)->IsNullMDEntryDate)
 				this->WriteNull();
 			else
 				WriteUInt32_Optional((*gmdeItemInfo)->MDEntryDate);
 			}
 		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, PRESENCE_MAP_INDEX3)) {
-			if(!(*gmdeItemInfo)->IsNullMDEntryTime)
+			if((*gmdeItemInfo)->IsNullMDEntryTime)
 				this->WriteNull();
 			else
 				WriteUInt32_Optional((*gmdeItemInfo)->MDEntryTime);
 			}
 		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, PRESENCE_MAP_INDEX4)) {
-			if(!(*gmdeItemInfo)->IsNullOrigTime)
+			if((*gmdeItemInfo)->IsNullOrigTime)
 				this->WriteNull();
 			else
 				WriteUInt32_Optional((*gmdeItemInfo)->OrigTime);
 			}
 		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, PRESENCE_MAP_INDEX5)) {
-			if(!(*gmdeItemInfo)->IsNullMDEntryPx)
+			if((*gmdeItemInfo)->IsNullMDEntryPx)
 				this->WriteNull();
 			else
 				WriteDecimal_Optional(&((*gmdeItemInfo)->MDEntryPx));
 			}
 		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, PRESENCE_MAP_INDEX6)) {
-			if(!(*gmdeItemInfo)->IsNullMDEntrySize)
+			if((*gmdeItemInfo)->IsNullMDEntrySize)
 				this->WriteNull();
 			else
 				WriteDecimal_Optional(&((*gmdeItemInfo)->MDEntrySize));
 			}
 		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, PRESENCE_MAP_INDEX7)) {
-			if(!(*gmdeItemInfo)->IsNullYield)
+			if((*gmdeItemInfo)->IsNullYield)
 				this->WriteNull();
 			else
 				WriteDecimal_Optional(&((*gmdeItemInfo)->Yield));
 			}
 		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, PRESENCE_MAP_INDEX8)) {
-			if(!(*gmdeItemInfo)->IsNullOrderStatus)
+			if((*gmdeItemInfo)->IsNullOrderStatus)
 				this->WriteNullString();
 			else
 				WriteString_Optional((*gmdeItemInfo)->OrderStatus, (*gmdeItemInfo)->OrderStatusLength);
 			}
 		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, PRESENCE_MAP_INDEX9)) {
-			if(!(*gmdeItemInfo)->IsNullOrdType)
+			if((*gmdeItemInfo)->IsNullOrdType)
 				this->WriteNullString();
 			else
 				WriteString_Optional((*gmdeItemInfo)->OrdType, (*gmdeItemInfo)->OrdTypeLength);
 			}
 		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, PRESENCE_MAP_INDEX10)) {
-			if(!(*gmdeItemInfo)->IsNullTotalVolume)
+			if((*gmdeItemInfo)->IsNullTotalVolume)
 				this->WriteNull();
 			else
 				WriteDecimal_Optional(&((*gmdeItemInfo)->TotalVolume));
 			}
 		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, PRESENCE_MAP_INDEX11)) {
-			if(!(*gmdeItemInfo)->IsNullTradingSessionID)
+			if((*gmdeItemInfo)->IsNullTradingSessionID)
 				this->WriteNullString();
 			else
 				WriteString_Optional((*gmdeItemInfo)->TradingSessionID, (*gmdeItemInfo)->TradingSessionIDLength);
 			}
 		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, PRESENCE_MAP_INDEX12)) {
-			if(!(*gmdeItemInfo)->IsNullTradingSessionSubID)
+			if((*gmdeItemInfo)->IsNullTradingSessionSubID)
 				this->WriteNullString();
 			else
 				WriteString_Optional((*gmdeItemInfo)->TradingSessionSubID, (*gmdeItemInfo)->TradingSessionSubIDLength);
@@ -3730,75 +3730,75 @@ void FastProtocolManager::EncodeIncrementalOLRCURRInfo(FastIncrementalOLRCURRInf
 		WritePresenceMap((*gmdeItemInfo)->PresenceMap); // Presence Map hack
 
 		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, PRESENCE_MAP_INDEX0)) {
-			if(!(*gmdeItemInfo)->IsNullMDUpdateAction)
+			if((*gmdeItemInfo)->IsNullMDUpdateAction)
 				this->WriteNull();
 			else
 				WriteUInt32_Optional((*gmdeItemInfo)->MDUpdateAction);
 			}
 		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, PRESENCE_MAP_INDEX1)) {
-			if(!(*gmdeItemInfo)->IsNullMDEntryType)
+			if((*gmdeItemInfo)->IsNullMDEntryType)
 				this->WriteNullString();
 			else
 				WriteString_Optional((*gmdeItemInfo)->MDEntryType, (*gmdeItemInfo)->MDEntryTypeLength);
 			}
-		if(!(*gmdeItemInfo)->IsNullMDEntryID)
+		if((*gmdeItemInfo)->IsNullMDEntryID)
 			this->WriteNullString();
 		else
 			WriteString_Optional((*gmdeItemInfo)->MDEntryID, (*gmdeItemInfo)->MDEntryIDLength);
 		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, PRESENCE_MAP_INDEX2)) {
-			if(!(*gmdeItemInfo)->IsNullSymbol)
+			if((*gmdeItemInfo)->IsNullSymbol)
 				this->WriteNullString();
 			else
 				WriteString_Optional((*gmdeItemInfo)->Symbol, (*gmdeItemInfo)->SymbolLength);
 			}
-		if(!(*gmdeItemInfo)->IsNullRptSeq)
+		if((*gmdeItemInfo)->IsNullRptSeq)
 			this->WriteNull();
 		else
 			WriteInt32_Optional((*gmdeItemInfo)->RptSeq);
 		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, PRESENCE_MAP_INDEX3)) {
-			if(!(*gmdeItemInfo)->IsNullMDEntryDate)
+			if((*gmdeItemInfo)->IsNullMDEntryDate)
 				this->WriteNull();
 			else
 				WriteUInt32_Optional((*gmdeItemInfo)->MDEntryDate);
 			}
 		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, PRESENCE_MAP_INDEX4)) {
-			if(!(*gmdeItemInfo)->IsNullMDEntryTime)
+			if((*gmdeItemInfo)->IsNullMDEntryTime)
 				this->WriteNull();
 			else
 				WriteUInt32_Optional((*gmdeItemInfo)->MDEntryTime);
 			}
 		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, PRESENCE_MAP_INDEX5)) {
-			if(!(*gmdeItemInfo)->IsNullOrigTime)
+			if((*gmdeItemInfo)->IsNullOrigTime)
 				this->WriteNull();
 			else
 				WriteUInt32_Optional((*gmdeItemInfo)->OrigTime);
 			}
 		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, PRESENCE_MAP_INDEX6)) {
-			if(!(*gmdeItemInfo)->IsNullMDEntryPx)
+			if((*gmdeItemInfo)->IsNullMDEntryPx)
 				this->WriteNull();
 			else
 				WriteDecimal_Optional(&((*gmdeItemInfo)->MDEntryPx));
 			}
 		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, PRESENCE_MAP_INDEX7)) {
-			if(!(*gmdeItemInfo)->IsNullMDEntrySize)
+			if((*gmdeItemInfo)->IsNullMDEntrySize)
 				this->WriteNull();
 			else
 				WriteDecimal_Optional(&((*gmdeItemInfo)->MDEntrySize));
 			}
 		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, PRESENCE_MAP_INDEX8)) {
-			if(!(*gmdeItemInfo)->IsNullOrderStatus)
+			if((*gmdeItemInfo)->IsNullOrderStatus)
 				this->WriteNullString();
 			else
 				WriteString_Optional((*gmdeItemInfo)->OrderStatus, (*gmdeItemInfo)->OrderStatusLength);
 			}
 		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, PRESENCE_MAP_INDEX9)) {
-			if(!(*gmdeItemInfo)->IsNullTradingSessionID)
+			if((*gmdeItemInfo)->IsNullTradingSessionID)
 				this->WriteNullString();
 			else
 				WriteString_Optional((*gmdeItemInfo)->TradingSessionID, (*gmdeItemInfo)->TradingSessionIDLength);
 			}
 		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, PRESENCE_MAP_INDEX10)) {
-			if(!(*gmdeItemInfo)->IsNullTradingSessionSubID)
+			if((*gmdeItemInfo)->IsNullTradingSessionSubID)
 				this->WriteNullString();
 			else
 				WriteString_Optional((*gmdeItemInfo)->TradingSessionSubID, (*gmdeItemInfo)->TradingSessionSubIDLength);
@@ -3814,96 +3814,96 @@ void FastProtocolManager::EncodeIncrementalTLRFONDInfo(FastIncrementalTLRFONDInf
 	WriteUInt32_Mandatory(info->GroupMDEntriesCount);
 	FastTLSFONDItemInfo **gmdeItemInfo = info->GroupMDEntries;
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
-		if(!(*gmdeItemInfo)->IsNullMDUpdateAction)
+		if((*gmdeItemInfo)->IsNullMDUpdateAction)
 			this->WriteNull();
 		else
 			WriteUInt32_Optional((*gmdeItemInfo)->MDUpdateAction);
 		WriteString_Mandatory((*gmdeItemInfo)->MDEntryType, (*gmdeItemInfo)->MDEntryTypeLength);
-		if(!(*gmdeItemInfo)->IsNullMDEntryID)
+		if((*gmdeItemInfo)->IsNullMDEntryID)
 			this->WriteNullString();
 		else
 			WriteString_Optional((*gmdeItemInfo)->MDEntryID, (*gmdeItemInfo)->MDEntryIDLength);
-		if(!(*gmdeItemInfo)->IsNullSymbol)
+		if((*gmdeItemInfo)->IsNullSymbol)
 			this->WriteNullString();
 		else
 			WriteString_Optional((*gmdeItemInfo)->Symbol, (*gmdeItemInfo)->SymbolLength);
-		if(!(*gmdeItemInfo)->IsNullRptSeq)
+		if((*gmdeItemInfo)->IsNullRptSeq)
 			this->WriteNull();
 		else
 			WriteInt32_Optional((*gmdeItemInfo)->RptSeq);
-		if(!(*gmdeItemInfo)->IsNullMDEntryDate)
+		if((*gmdeItemInfo)->IsNullMDEntryDate)
 			this->WriteNull();
 		else
 			WriteUInt32_Optional((*gmdeItemInfo)->MDEntryDate);
-		if(!(*gmdeItemInfo)->IsNullMDEntryTime)
+		if((*gmdeItemInfo)->IsNullMDEntryTime)
 			this->WriteNull();
 		else
 			WriteUInt32_Optional((*gmdeItemInfo)->MDEntryTime);
-		if(!(*gmdeItemInfo)->IsNullOrigTime)
+		if((*gmdeItemInfo)->IsNullOrigTime)
 			this->WriteNull();
 		else
 			WriteUInt32_Optional((*gmdeItemInfo)->OrigTime);
-		if(!(*gmdeItemInfo)->IsNullOrderSide)
+		if((*gmdeItemInfo)->IsNullOrderSide)
 			this->WriteNullString();
 		else
 			WriteString_Optional((*gmdeItemInfo)->OrderSide, (*gmdeItemInfo)->OrderSideLength);
-		if(!(*gmdeItemInfo)->IsNullMDEntryPx)
+		if((*gmdeItemInfo)->IsNullMDEntryPx)
 			this->WriteNull();
 		else
 			WriteDecimal_Optional(&((*gmdeItemInfo)->MDEntryPx));
-		if(!(*gmdeItemInfo)->IsNullMDEntrySize)
+		if((*gmdeItemInfo)->IsNullMDEntrySize)
 			this->WriteNull();
 		else
 			WriteDecimal_Optional(&((*gmdeItemInfo)->MDEntrySize));
-		if(!(*gmdeItemInfo)->IsNullAccruedInterestAmt)
+		if((*gmdeItemInfo)->IsNullAccruedInterestAmt)
 			this->WriteNull();
 		else
 			WriteDecimal_Optional(&((*gmdeItemInfo)->AccruedInterestAmt));
-		if(!(*gmdeItemInfo)->IsNullTradeValue)
+		if((*gmdeItemInfo)->IsNullTradeValue)
 			this->WriteNull();
 		else
 			WriteDecimal_Optional(&((*gmdeItemInfo)->TradeValue));
-		if(!(*gmdeItemInfo)->IsNullYield)
+		if((*gmdeItemInfo)->IsNullYield)
 			this->WriteNull();
 		else
 			WriteDecimal_Optional(&((*gmdeItemInfo)->Yield));
-		if(!(*gmdeItemInfo)->IsNullSettlDate)
+		if((*gmdeItemInfo)->IsNullSettlDate)
 			this->WriteNull();
 		else
 			WriteUInt32_Optional((*gmdeItemInfo)->SettlDate);
-		if(!(*gmdeItemInfo)->IsNullSettleType)
+		if((*gmdeItemInfo)->IsNullSettleType)
 			this->WriteNullString();
 		else
 			WriteString_Optional((*gmdeItemInfo)->SettleType, (*gmdeItemInfo)->SettleTypeLength);
-		if(!(*gmdeItemInfo)->IsNullPrice)
+		if((*gmdeItemInfo)->IsNullPrice)
 			this->WriteNull();
 		else
 			WriteDecimal_Optional(&((*gmdeItemInfo)->Price));
-		if(!(*gmdeItemInfo)->IsNullPriceType)
+		if((*gmdeItemInfo)->IsNullPriceType)
 			this->WriteNull();
 		else
 			WriteInt32_Optional((*gmdeItemInfo)->PriceType);
-		if(!(*gmdeItemInfo)->IsNullRepoToPx)
+		if((*gmdeItemInfo)->IsNullRepoToPx)
 			this->WriteNull();
 		else
 			WriteDecimal_Optional(&((*gmdeItemInfo)->RepoToPx));
-		if(!(*gmdeItemInfo)->IsNullBuyBackPx)
+		if((*gmdeItemInfo)->IsNullBuyBackPx)
 			this->WriteNull();
 		else
 			WriteDecimal_Optional(&((*gmdeItemInfo)->BuyBackPx));
-		if(!(*gmdeItemInfo)->IsNullBuyBackDate)
+		if((*gmdeItemInfo)->IsNullBuyBackDate)
 			this->WriteNull();
 		else
 			WriteUInt32_Optional((*gmdeItemInfo)->BuyBackDate);
-		if(!(*gmdeItemInfo)->IsNullTradingSessionID)
+		if((*gmdeItemInfo)->IsNullTradingSessionID)
 			this->WriteNullString();
 		else
 			WriteString_Optional((*gmdeItemInfo)->TradingSessionID, (*gmdeItemInfo)->TradingSessionIDLength);
-		if(!(*gmdeItemInfo)->IsNullTradingSessionSubID)
+		if((*gmdeItemInfo)->IsNullTradingSessionSubID)
 			this->WriteNullString();
 		else
 			WriteString_Optional((*gmdeItemInfo)->TradingSessionSubID, (*gmdeItemInfo)->TradingSessionSubIDLength);
-		if(!(*gmdeItemInfo)->IsNullRefOrderID)
+		if((*gmdeItemInfo)->IsNullRefOrderID)
 			this->WriteNullString();
 		else
 			WriteString_Optional((*gmdeItemInfo)->RefOrderID, (*gmdeItemInfo)->RefOrderIDLength);
@@ -3918,88 +3918,88 @@ void FastProtocolManager::EncodeIncrementalTLRCURRInfo(FastIncrementalTLRCURRInf
 	WriteUInt32_Mandatory(info->GroupMDEntriesCount);
 	FastTLSCURRItemInfo **gmdeItemInfo = info->GroupMDEntries;
 	for(int i = 0; i < info->GroupMDEntriesCount; i++) {
-		if(!(*gmdeItemInfo)->IsNullMDUpdateAction)
+		if((*gmdeItemInfo)->IsNullMDUpdateAction)
 			this->WriteNull();
 		else
 			WriteUInt32_Optional((*gmdeItemInfo)->MDUpdateAction);
 		WriteString_Mandatory((*gmdeItemInfo)->MDEntryType, (*gmdeItemInfo)->MDEntryTypeLength);
-		if(!(*gmdeItemInfo)->IsNullMDEntryID)
+		if((*gmdeItemInfo)->IsNullMDEntryID)
 			this->WriteNullString();
 		else
 			WriteString_Optional((*gmdeItemInfo)->MDEntryID, (*gmdeItemInfo)->MDEntryIDLength);
-		if(!(*gmdeItemInfo)->IsNullSymbol)
+		if((*gmdeItemInfo)->IsNullSymbol)
 			this->WriteNullString();
 		else
 			WriteString_Optional((*gmdeItemInfo)->Symbol, (*gmdeItemInfo)->SymbolLength);
-		if(!(*gmdeItemInfo)->IsNullRptSeq)
+		if((*gmdeItemInfo)->IsNullRptSeq)
 			this->WriteNull();
 		else
 			WriteInt32_Optional((*gmdeItemInfo)->RptSeq);
-		if(!(*gmdeItemInfo)->IsNullMDEntryDate)
+		if((*gmdeItemInfo)->IsNullMDEntryDate)
 			this->WriteNull();
 		else
 			WriteUInt32_Optional((*gmdeItemInfo)->MDEntryDate);
-		if(!(*gmdeItemInfo)->IsNullMDEntryTime)
+		if((*gmdeItemInfo)->IsNullMDEntryTime)
 			this->WriteNull();
 		else
 			WriteUInt32_Optional((*gmdeItemInfo)->MDEntryTime);
-		if(!(*gmdeItemInfo)->IsNullOrigTime)
+		if((*gmdeItemInfo)->IsNullOrigTime)
 			this->WriteNull();
 		else
 			WriteUInt32_Optional((*gmdeItemInfo)->OrigTime);
-		if(!(*gmdeItemInfo)->IsNullOrderSide)
+		if((*gmdeItemInfo)->IsNullOrderSide)
 			this->WriteNullString();
 		else
 			WriteString_Optional((*gmdeItemInfo)->OrderSide, (*gmdeItemInfo)->OrderSideLength);
-		if(!(*gmdeItemInfo)->IsNullMDEntryPx)
+		if((*gmdeItemInfo)->IsNullMDEntryPx)
 			this->WriteNull();
 		else
 			WriteDecimal_Optional(&((*gmdeItemInfo)->MDEntryPx));
-		if(!(*gmdeItemInfo)->IsNullMDEntrySize)
+		if((*gmdeItemInfo)->IsNullMDEntrySize)
 			this->WriteNull();
 		else
 			WriteDecimal_Optional(&((*gmdeItemInfo)->MDEntrySize));
-		if(!(*gmdeItemInfo)->IsNullTradeValue)
+		if((*gmdeItemInfo)->IsNullTradeValue)
 			this->WriteNull();
 		else
 			WriteDecimal_Optional(&((*gmdeItemInfo)->TradeValue));
-		if(!(*gmdeItemInfo)->IsNullSettlDate)
+		if((*gmdeItemInfo)->IsNullSettlDate)
 			this->WriteNull();
 		else
 			WriteUInt32_Optional((*gmdeItemInfo)->SettlDate);
-		if(!(*gmdeItemInfo)->IsNullSettleType)
+		if((*gmdeItemInfo)->IsNullSettleType)
 			this->WriteNullString();
 		else
 			WriteString_Optional((*gmdeItemInfo)->SettleType, (*gmdeItemInfo)->SettleTypeLength);
-		if(!(*gmdeItemInfo)->IsNullPrice)
+		if((*gmdeItemInfo)->IsNullPrice)
 			this->WriteNull();
 		else
 			WriteDecimal_Optional(&((*gmdeItemInfo)->Price));
-		if(!(*gmdeItemInfo)->IsNullPriceType)
+		if((*gmdeItemInfo)->IsNullPriceType)
 			this->WriteNull();
 		else
 			WriteInt32_Optional((*gmdeItemInfo)->PriceType);
-		if(!(*gmdeItemInfo)->IsNullRepoToPx)
+		if((*gmdeItemInfo)->IsNullRepoToPx)
 			this->WriteNull();
 		else
 			WriteDecimal_Optional(&((*gmdeItemInfo)->RepoToPx));
-		if(!(*gmdeItemInfo)->IsNullBuyBackPx)
+		if((*gmdeItemInfo)->IsNullBuyBackPx)
 			this->WriteNull();
 		else
 			WriteDecimal_Optional(&((*gmdeItemInfo)->BuyBackPx));
-		if(!(*gmdeItemInfo)->IsNullBuyBackDate)
+		if((*gmdeItemInfo)->IsNullBuyBackDate)
 			this->WriteNull();
 		else
 			WriteUInt32_Optional((*gmdeItemInfo)->BuyBackDate);
-		if(!(*gmdeItemInfo)->IsNullTradingSessionID)
+		if((*gmdeItemInfo)->IsNullTradingSessionID)
 			this->WriteNullString();
 		else
 			WriteString_Optional((*gmdeItemInfo)->TradingSessionID, (*gmdeItemInfo)->TradingSessionIDLength);
-		if(!(*gmdeItemInfo)->IsNullTradingSessionSubID)
+		if((*gmdeItemInfo)->IsNullTradingSessionSubID)
 			this->WriteNullString();
 		else
 			WriteString_Optional((*gmdeItemInfo)->TradingSessionSubID, (*gmdeItemInfo)->TradingSessionSubIDLength);
-		if(!(*gmdeItemInfo)->IsNullRefOrderID)
+		if((*gmdeItemInfo)->IsNullRefOrderID)
 			this->WriteNullString();
 		else
 			WriteString_Optional((*gmdeItemInfo)->RefOrderID, (*gmdeItemInfo)->RefOrderIDLength);
@@ -4011,122 +4011,122 @@ void FastProtocolManager::EncodeSecurityDefinitionInfo(FastSecurityDefinitionInf
 	WriteUInt32_Mandatory(2115);
 	WriteUInt32_Mandatory(info->MsgSeqNum);
 	WriteUInt64_Mandatory(info->SendingTime);
-	if(!info->IsNullTotNumReports)
+	if(info->IsNullTotNumReports)
 		this->WriteNull();
 	else
 		WriteInt32_Optional(info->TotNumReports);
-	if(!info->IsNullSymbol)
+	if(info->IsNullSymbol)
 		this->WriteNullString();
 	else
 		WriteString_Optional(info->Symbol, info->SymbolLength);
-	if(!info->IsNullSecurityID)
+	if(info->IsNullSecurityID)
 		this->WriteNull();
 	else
 		WriteByteVector_Optional(info->SecurityID, info->SecurityIDLength);
-	if(!info->IsNullSecurityIDSource)
+	if(info->IsNullSecurityIDSource)
 		this->WriteNull();
 	else
 		WriteByteVector_Optional(info->SecurityIDSource, info->SecurityIDSourceLength);
-	if(!info->IsNullProduct)
+	if(info->IsNullProduct)
 		this->WriteNull();
 	else
 		WriteInt32_Optional(info->Product);
-	if(!info->IsNullCFICode)
+	if(info->IsNullCFICode)
 		this->WriteNull();
 	else
 		WriteByteVector_Optional(info->CFICode, info->CFICodeLength);
-	if(!info->IsNullSecurityType)
+	if(info->IsNullSecurityType)
 		this->WriteNull();
 	else
 		WriteByteVector_Optional(info->SecurityType, info->SecurityTypeLength);
-	if(!info->IsNullMaturityDate)
+	if(info->IsNullMaturityDate)
 		this->WriteNull();
 	else
 		WriteUInt32_Optional(info->MaturityDate);
-	if(!info->IsNullSettlDate)
+	if(info->IsNullSettlDate)
 		this->WriteNull();
 	else
 		WriteUInt32_Optional(info->SettlDate);
-	if(!info->IsNullSettleType)
+	if(info->IsNullSettleType)
 		this->WriteNullString();
 	else
 		WriteString_Optional(info->SettleType, info->SettleTypeLength);
-	if(!info->IsNullOrigIssueAmt)
+	if(info->IsNullOrigIssueAmt)
 		this->WriteNull();
 	else
 		WriteDecimal_Optional(&(info->OrigIssueAmt));
-	if(!info->IsNullCouponPaymentDate)
+	if(info->IsNullCouponPaymentDate)
 		this->WriteNull();
 	else
 		WriteUInt32_Optional(info->CouponPaymentDate);
-	if(!info->IsNullCouponRate)
+	if(info->IsNullCouponRate)
 		this->WriteNull();
 	else
 		WriteDecimal_Optional(&(info->CouponRate));
-	if(!info->IsNullSettlFixingDate)
+	if(info->IsNullSettlFixingDate)
 		this->WriteNull();
 	else
 		WriteUInt32_Optional(info->SettlFixingDate);
-	if(!info->IsNullDividendNetPx)
+	if(info->IsNullDividendNetPx)
 		this->WriteNull();
 	else
 		WriteDecimal_Optional(&(info->DividendNetPx));
-	if(!info->IsNullSecurityDesc)
+	if(info->IsNullSecurityDesc)
 		this->WriteNull();
 	else
 		WriteByteVector_Optional(info->SecurityDesc, info->SecurityDescLength);
-	if(!info->IsNullEncodedSecurityDesc)
+	if(info->IsNullEncodedSecurityDesc)
 		this->WriteNull();
 	else
 		WriteByteVector_Optional(info->EncodedSecurityDesc, info->EncodedSecurityDescLength);
-	if(!info->IsNullQuoteText)
+	if(info->IsNullQuoteText)
 		this->WriteNull();
 	else
 		WriteByteVector_Optional(info->QuoteText, info->QuoteTextLength);
-	if(!info->IsNullGroupInstrAttrib)
+	if(info->IsNullGroupInstrAttrib)
 		this->WriteNull();
 	else {
 		WriteUInt32_Optional(info->GroupInstrAttribCount);
 		FastSecurityDefinitionGroupInstrAttribItemInfo **giaItemInfo = info->GroupInstrAttrib;
 		for(int i = 0; i < info->GroupInstrAttribCount; i++) {
 			WriteInt32_Mandatory((*giaItemInfo)->InstrAttribType);
-			if(!(*giaItemInfo)->IsNullInstrAttribValue)
+			if((*giaItemInfo)->IsNullInstrAttribValue)
 				this->WriteNull();
 			else
 				WriteByteVector_Optional((*giaItemInfo)->InstrAttribValue, (*giaItemInfo)->InstrAttribValueLength);
 			giaItemInfo++;
 		}
 	}
-	if(!info->IsNullCurrency)
+	if(info->IsNullCurrency)
 		this->WriteNullString();
 	else
 		WriteString_Optional(info->Currency, info->CurrencyLength);
-	if(!info->IsNullMarketSegmentGrp)
+	if(info->IsNullMarketSegmentGrp)
 		this->WriteNull();
 	else {
 		WriteUInt32_Optional(info->MarketSegmentGrpCount);
 		FastSecurityDefinitionMarketSegmentGrpItemInfo **msgItemInfo = info->MarketSegmentGrp;
 		for(int i = 0; i < info->MarketSegmentGrpCount; i++) {
-			if(!(*msgItemInfo)->IsNullRoundLot)
+			if((*msgItemInfo)->IsNullRoundLot)
 				this->WriteNull();
 			else
 				WriteDecimal_Optional(&((*msgItemInfo)->RoundLot));
-			if(!(*msgItemInfo)->IsNullTradingSessionRulesGrp)
+			if((*msgItemInfo)->IsNullTradingSessionRulesGrp)
 				this->WriteNull();
 			else {
 				WriteUInt32_Optional((*msgItemInfo)->TradingSessionRulesGrpCount);
 				FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo **tsrgItemInfo = (*msgItemInfo)->TradingSessionRulesGrp;
 				for(int i = 0; i < (*msgItemInfo)->TradingSessionRulesGrpCount; i++) {
 					WriteString_Mandatory((*tsrgItemInfo)->TradingSessionID, (*tsrgItemInfo)->TradingSessionIDLength);
-					if(!(*tsrgItemInfo)->IsNullTradingSessionSubID)
+					if((*tsrgItemInfo)->IsNullTradingSessionSubID)
 						this->WriteNullString();
 					else
 						WriteString_Optional((*tsrgItemInfo)->TradingSessionSubID, (*tsrgItemInfo)->TradingSessionSubIDLength);
-					if(!(*tsrgItemInfo)->IsNullSecurityTradingStatus)
+					if((*tsrgItemInfo)->IsNullSecurityTradingStatus)
 						this->WriteNull();
 					else
 						WriteInt32_Optional((*tsrgItemInfo)->SecurityTradingStatus);
-					if(!(*tsrgItemInfo)->IsNullOrderNote)
+					if((*tsrgItemInfo)->IsNullOrderNote)
 						this->WriteNull();
 					else
 						WriteInt32_Optional((*tsrgItemInfo)->OrderNote);
@@ -4136,79 +4136,79 @@ void FastProtocolManager::EncodeSecurityDefinitionInfo(FastSecurityDefinitionInf
 			msgItemInfo++;
 		}
 	}
-	if(!info->IsNullSettlCurrency)
+	if(info->IsNullSettlCurrency)
 		this->WriteNullString();
 	else
 		WriteString_Optional(info->SettlCurrency, info->SettlCurrencyLength);
-	if(!info->IsNullPriceType)
+	if(info->IsNullPriceType)
 		this->WriteNull();
 	else
 		WriteInt32_Optional(info->PriceType);
-	if(!info->IsNullStateSecurityID)
+	if(info->IsNullStateSecurityID)
 		this->WriteNullString();
 	else
 		WriteString_Optional(info->StateSecurityID, info->StateSecurityIDLength);
-	if(!info->IsNullEncodedShortSecurityDesc)
+	if(info->IsNullEncodedShortSecurityDesc)
 		this->WriteNull();
 	else
 		WriteByteVector_Optional(info->EncodedShortSecurityDesc, info->EncodedShortSecurityDescLength);
-	if(!info->IsNullMarketCode)
+	if(info->IsNullMarketCode)
 		this->WriteNull();
 	else
 		WriteByteVector_Optional(info->MarketCode, info->MarketCodeLength);
-	if(!info->IsNullMinPriceIncrement)
+	if(info->IsNullMinPriceIncrement)
 		this->WriteNull();
 	else
 		WriteDecimal_Optional(&(info->MinPriceIncrement));
-	if(!info->IsNullMktShareLimit)
+	if(info->IsNullMktShareLimit)
 		this->WriteNull();
 	else
 		WriteDecimal_Optional(&(info->MktShareLimit));
-	if(!info->IsNullMktShareThreshold)
+	if(info->IsNullMktShareThreshold)
 		this->WriteNull();
 	else
 		WriteDecimal_Optional(&(info->MktShareThreshold));
-	if(!info->IsNullMaxOrdersVolume)
+	if(info->IsNullMaxOrdersVolume)
 		this->WriteNull();
 	else
 		WriteDecimal_Optional(&(info->MaxOrdersVolume));
-	if(!info->IsNullPriceMvmLimit)
+	if(info->IsNullPriceMvmLimit)
 		this->WriteNull();
 	else
 		WriteDecimal_Optional(&(info->PriceMvmLimit));
-	if(!info->IsNullFaceValue)
+	if(info->IsNullFaceValue)
 		this->WriteNull();
 	else
 		WriteDecimal_Optional(&(info->FaceValue));
-	if(!info->IsNullBaseSwapPx)
+	if(info->IsNullBaseSwapPx)
 		this->WriteNull();
 	else
 		WriteDecimal_Optional(&(info->BaseSwapPx));
-	if(!info->IsNullRepoToPx)
+	if(info->IsNullRepoToPx)
 		this->WriteNull();
 	else
 		WriteDecimal_Optional(&(info->RepoToPx));
-	if(!info->IsNullBuyBackPx)
+	if(info->IsNullBuyBackPx)
 		this->WriteNull();
 	else
 		WriteDecimal_Optional(&(info->BuyBackPx));
-	if(!info->IsNullBuyBackDate)
+	if(info->IsNullBuyBackDate)
 		this->WriteNull();
 	else
 		WriteUInt32_Optional(info->BuyBackDate);
-	if(!info->IsNullNoSharesIssued)
+	if(info->IsNullNoSharesIssued)
 		this->WriteNull();
 	else
 		WriteDecimal_Optional(&(info->NoSharesIssued));
-	if(!info->IsNullHighLimit)
+	if(info->IsNullHighLimit)
 		this->WriteNull();
 	else
 		WriteDecimal_Optional(&(info->HighLimit));
-	if(!info->IsNullLowLimit)
+	if(info->IsNullLowLimit)
 		this->WriteNull();
 	else
 		WriteDecimal_Optional(&(info->LowLimit));
-	if(!info->IsNullNumOfDaysToMaturity)
+	if(info->IsNullNumOfDaysToMaturity)
 		this->WriteNull();
 	else
 		WriteInt32_Optional(info->NumOfDaysToMaturity);
@@ -4219,19 +4219,19 @@ void FastProtocolManager::EncodeSecurityStatusInfo(FastSecurityStatusInfo* info)
 	WriteUInt32_Mandatory(info->MsgSeqNum);
 	WriteUInt64_Mandatory(info->SendingTime);
 	WriteString_Mandatory(info->Symbol, info->SymbolLength);
-	if(!info->IsNullTradingSessionID)
+	if(info->IsNullTradingSessionID)
 		this->WriteNullString();
 	else
 		WriteString_Optional(info->TradingSessionID, info->TradingSessionIDLength);
-	if(!info->IsNullTradingSessionSubID)
+	if(info->IsNullTradingSessionSubID)
 		this->WriteNullString();
 	else
 		WriteString_Optional(info->TradingSessionSubID, info->TradingSessionSubIDLength);
-	if(!info->IsNullSecurityTradingStatus)
+	if(info->IsNullSecurityTradingStatus)
 		this->WriteNull();
 	else
 		WriteInt32_Optional(info->SecurityTradingStatus);
-	if(!info->IsNullAuctionIndicator)
+	if(info->IsNullAuctionIndicator)
 		this->WriteNull();
 	else
 		WriteUInt32_Optional(info->AuctionIndicator);
@@ -4242,7 +4242,7 @@ void FastProtocolManager::EncodeTradingSessionStatusInfo(FastTradingSessionStatu
 	WriteUInt32_Mandatory(info->MsgSeqNum);
 	WriteUInt64_Mandatory(info->SendingTime);
 	WriteInt32_Mandatory(info->TradSesStatus);
-	if(!info->IsNullText)
+	if(info->IsNullText)
 		this->WriteNullString();
 	else
 		WriteString_Optional(info->Text, info->TextLength);
