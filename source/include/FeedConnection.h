@@ -2353,6 +2353,9 @@ public:
         if(this->m_type == FeedConnectionType::HistoricalReplay) {
             this->m_hsState = FeedConnectionHistoricalReplayState::hsSuspend;
         }
+        if(this->m_type == FeedConnectionType::Incremental) {
+            this->m_requestMessageStartIndex = -1;
+        }
     }
     inline bool Start() {
         if(this->m_state == FeedConnectionState::fcsHistoricalReplay)

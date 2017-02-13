@@ -936,8 +936,11 @@ public:
         this->TestTableItemsAllocator(incFond->OrderFond());
     }
 
+
+
     void TestTableItem_CorrectBegin() {
         OrderInfo<FastOLSFONDItemInfo> *tb = new OrderInfo<FastOLSFONDItemInfo>();
+        tb->SymbolInfo(this->m_helper->CreateSymbol<OrderInfo<FastOLSFONDItemInfo>>("s1"));
 
         FastOLSFONDItemInfo *item1 = this->m_helper->CreateOLSFondItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e1");
         item1->RptSeq = 1;
@@ -957,6 +960,7 @@ public:
 
     void TestTableItem_IncorrectBegin() {
         OrderInfo<FastOLSFONDItemInfo> *tb = new OrderInfo<FastOLSFONDItemInfo>();
+        tb->SymbolInfo(this->m_helper->CreateSymbol<OrderInfo<FastOLSFONDItemInfo>>("s1"));
 
         FastOLSFONDItemInfo *item1 = this->m_helper->CreateOLSFondItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e1");
         item1->RptSeq = 2;
@@ -978,6 +982,7 @@ public:
 
     void TestTableItem_SkipMessage() {
         OrderInfo<FastOLSFONDItemInfo> *tb = new OrderInfo<FastOLSFONDItemInfo>();
+        tb->SymbolInfo(this->m_helper->CreateSymbol<OrderInfo<FastOLSFONDItemInfo>>("s1"));
 
         FastOLSFONDItemInfo *item1 = this->m_helper->CreateOLSFondItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e1");
         item1->RptSeq = 1;
@@ -2903,21 +2908,6 @@ public:
     // so just clear queue entries and decrease session to recv snapshot value
     void TestConnection_ResetEntriesQueueIfNullSnapshotIsReceived() {
         this->Clear();
-
-        /*
-        unsigned char *msg = new unsigned char[52] {
-                0x65, 0x23, 0x00, 0x00, 0xe0, 0x12, 0xec, 0x46, 0xe5, 0x23,
-                0x68, 0x08, 0x12, 0x7f, 0x4c, 0x74, 0xc0, 0x81, 0x80, 0x00,
-                0xe5, 0x52, 0x50, 0x4d, 0xcf, 0x52, 0x55, 0x30, 0x30, 0x30,
-                0x41, 0x30, 0x4a, 0x54, 0x5a, 0x46, 0xb1, 0x82, 0x82, 0x93,
-                0x80, 0x81, 0xca, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80,
-                0x80, 0x80
-        };
-        incFond->m_fastProtocolManager->SetNewBuffer(msg, 52);
-        incFond->m_fastProtocolManager->ReadMsgSeqNumber();
-        incFond->m_fastProtocolManager->Decode();
-        incFond->m_fastProtocolManager->Print();
-        */
 
         incFond->OrderFond()->Add("s1", "session1");
         incFond->Start();

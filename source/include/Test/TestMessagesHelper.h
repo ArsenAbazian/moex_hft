@@ -405,6 +405,7 @@ public:
         char *type = new char[1];
         type[0] = (char) entryType;
 
+        info->MDUpdateAction = MDUpdateAction::mduaAdd;
         info->MDEntryID = id;
         info->MDEntryIDLength = strlen(id);
         info->MDEntryType = type;
@@ -493,6 +494,7 @@ public:
         char *type = new char[1];
         type[0] = (char) entryType;
 
+        info->MDUpdateAction = MDUpdateAction::mduaAdd;
         info->MDEntryID = id;
         info->MDEntryIDLength = strlen(id);
         info->MDEntryType = type;
@@ -561,6 +563,7 @@ public:
         char *type = new char[1];
         type[0] = (char) entryType;
 
+        info->MDUpdateAction = MDUpdateAction::mduaAdd;
         info->MDEntryID = id;
         info->MDEntryIDLength = strlen(id);
         info->MDEntryType = type;
@@ -629,6 +632,7 @@ public:
         char *type = new char[1];
         type[0] = (char) entryType;
 
+        info->MDUpdateAction = MDUpdateAction::mduaAdd;
         info->MDEntryID = id;
         info->MDEntryIDLength = strlen(id);
         info->MDEntryType = type;
@@ -697,6 +701,7 @@ public:
         char *type = new char[1];
         type[0] = (char) entryType;
 
+        info->MDUpdateAction = MDUpdateAction::mduaAdd;
         info->MDEntryID = id;
         info->MDEntryIDLength = strlen(id);
         info->MDEntryType = type;
@@ -767,6 +772,7 @@ public:
         char *type = new char[1];
         type[0] = (char) entryType;
 
+        info->MDUpdateAction = MDUpdateAction::mduaAdd;
         info->MDEntryID = id;
         info->MDEntryIDLength = strlen(id);
         info->MDEntryType = type;
@@ -837,6 +843,7 @@ public:
         char *type = new char[1];
         type[0] = (char) entryType;
 
+        info->MDUpdateAction = MDUpdateAction::mduaAdd;
         info->MDEntryID = id;
         info->MDEntryIDLength = strlen(id);
         info->MDEntryType = type;
@@ -907,6 +914,7 @@ public:
         char *type = new char[1];
         type[0] = (char) entryType;
 
+        info->MDUpdateAction = MDUpdateAction::mduaAdd;
         info->MDEntryID = id;
         info->MDEntryIDLength = strlen(id);
         info->MDEntryType = type;
@@ -1140,6 +1148,7 @@ public:
     FastOLSCURRItemInfo* CreateOLRCurrItemInfo(TestTemplateItemInfo *tmp) {
         FastOLSCURRItemInfo *info = new FastOLSCURRItemInfo();
         info->IsNullMDUpdateAction = false;
+        info->PresenceMap |= FastIncrementalOLRCURRItemInfoPresenceIndices::MDUpdateActionPresenceIndex;
         info->MDUpdateAction = tmp->m_action;
 
         info->IsNullMDEntryType = false;
@@ -2375,6 +2384,13 @@ public:
 
     void SetRecvFastFor(FeedConnection *fc) {
         this->SetRecvFor(fc->socketAManager, fc->m_fastProtocolManager->Buffer(), fc->m_fastProtocolManager->MessageLength());
+    }
+
+    template<typename T> MarketSymbolInfo<T> *CreateSymbol(const char *str) {
+        MarketSymbolInfo<T> *smb = new MarketSymbolInfo<T>();
+        smb->Symbol()->m_text = str;
+        smb->Symbol()->m_length = strlen(str);
+        return smb;
     }
 };
 

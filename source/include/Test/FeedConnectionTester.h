@@ -221,11 +221,6 @@ public:
     }
 
     void Test() {
-        OrderTesterFond otFond;
-        otFond.Test();
-        OrderTesterCurr otCurr;
-        otCurr.Test();
-
         StatisticsTesterFond stFond;
         stFond.Test();
 
@@ -238,6 +233,11 @@ public:
         RobotSettings::MarketDataMaxSymbolsCount = 10;
         RobotSettings::MarketDataMaxSessionsCount = 32;
         RobotSettings::MarketDataMaxEntriesCount = 32;
+
+        OrderTesterFond otFond;
+        otFond.Test();
+        OrderTesterCurr otCurr;
+        otCurr.Test();
 
         SecurityStatusTester ist;
         ist.Test();

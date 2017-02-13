@@ -939,6 +939,7 @@ public:
 
     void TestTableItem_CorrectBegin() {
         OrderInfo<FastOLSCURRItemInfo> *tb = new OrderInfo<FastOLSCURRItemInfo>();
+        tb->SymbolInfo(this->m_helper->CreateSymbol<OrderInfo<FastOLSCURRItemInfo>>("s1"));
 
         FastOLSCURRItemInfo *item1 = this->m_helper->CreateOLSCurrItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e1");
         item1->RptSeq = 1;
@@ -958,6 +959,7 @@ public:
 
     void TestTableItem_IncorrectBegin() {
         OrderInfo<FastOLSCURRItemInfo> *tb = new OrderInfo<FastOLSCURRItemInfo>();
+        tb->SymbolInfo(this->m_helper->CreateSymbol<OrderInfo<FastOLSCURRItemInfo>>("s1"));
 
         FastOLSCURRItemInfo *item1 = this->m_helper->CreateOLSCurrItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e1");
         item1->RptSeq = 2;
@@ -979,6 +981,7 @@ public:
 
     void TestTableItem_SkipMessage() {
         OrderInfo<FastOLSCURRItemInfo> *tb = new OrderInfo<FastOLSCURRItemInfo>();
+        tb->SymbolInfo(this->m_helper->CreateSymbol<OrderInfo<FastOLSCURRItemInfo>>("s1"));
 
         FastOLSCURRItemInfo *item1 = this->m_helper->CreateOLSCurrItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e1");
         item1->RptSeq = 1;
