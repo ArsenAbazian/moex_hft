@@ -197,6 +197,13 @@ template <typename T> class StatisticItem {
 public:
     StatisticItem() { }
     ~StatisticItem() { }
+
+    inline void Set(UINT64 time, T value) {
+        this->m_time = time;
+        this->m_value = value;
+    }
+    inline UINT64 Time() { return this->m_time; }
+    inline T Value() { return this->m_value; }
 };
 
 class StatisticItemAllocator {
@@ -448,7 +455,7 @@ public:
 
     inline PointerListLite<StatisticItemDecimal2>* BuyQuotes() { return this->m_buyQuotes; }
     inline PointerListLite<StatisticItemDecimal2>* SellQuotes() { return this->m_sellQuotes; }
-    inline PointerListLite<StatisticItemLastDealInfo>* ListDealInfo() { return this->m_lstDealInfo; }
+    inline PointerListLite<StatisticItemLastDealInfo>* LastDealInfo() { return this->m_lstDealInfo; }
     inline PointerListLite<StatisticItemIndexList>* IndicesList() { return this->m_indicesList; }
     inline PointerListLite<StatisticItemDecimal>* PriceOpenFirst() { return this->m_priceOpenFirst; }
     inline PointerListLite<StatisticItemDecimal>* PriceCloseLast() { return this->m_priceCloseLast; }
