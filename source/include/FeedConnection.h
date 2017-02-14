@@ -300,11 +300,11 @@ protected:
                 this->m_startMsgSeqNum = msgSeqNum;
         }
         else {
-            printf("%s -> %d size = %d\n", this->m_idName, msgSeqNum, size);
-//            BinaryLogItem *item = DefaultLogManager::Default->WriteFast(this->m_idLogIndex,
-//                                                                    LogMessageCode::lmcFeedConnection_ProcessMessage,
-//                                                                    this->m_recvABuffer->BufferIndex(),
-//                                                                    this->m_recvABuffer->CurrentItemIndex());
+            //printf("%s -> %d size = %d\n", this->m_idName, msgSeqNum, size);
+            BinaryLogItem *item = DefaultLogManager::Default->WriteFast(this->m_idLogIndex,
+                                                                    LogMessageCode::lmcFeedConnection_ProcessMessage,
+                                                                    this->m_recvABuffer->BufferIndex(),
+                                                                    this->m_recvABuffer->CurrentItemIndex());
             this->m_waitTimer->Start();
             if(this->m_startMsgSeqNum == -1)
                 this->m_startMsgSeqNum = msgSeqNum;
