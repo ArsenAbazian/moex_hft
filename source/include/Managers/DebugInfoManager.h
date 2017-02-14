@@ -10,6 +10,7 @@
 #include "../Fast/FastTypes.h"
 #include "../Lib/PointerList.h"
 #include "../Lib/StringIdComparer.h"
+#include <stdio.h>
 
 template <template<typename ITEMINFO> class TABLEITEM, typename INFO, typename ITEMINFO> class MarketDataTable;
 template <typename T> class MarketSymbolInfo;
@@ -27,62 +28,18 @@ class FeedConnection;
 
 class DebugInfoManager {
 
-    MDEntryType MDEntryTypes[39] {
-            mdetBuyQuote,
-            mdetSellQuote,
-            mdetLastDealInfo,
-            mdetIndicesList,
-            mdetPriceOpenFirst,
-            mdetPriceCloseLast,
-            mdetPriceMax,
-            mdetPriceMin,
-            mdetPriceAve,
-            mdetDisbalance, // A
-            mdetTransactionsMagnitude, //B
-            mdetEmptyBook, // J
-            mdetOfferPriceMin,
-            mdetBidPriceMax,
-            mdetAuctionPriceCalculated,
-            mdetAuctionPriceClose,
-            mdetAuctionMagnitudeClose,
-            mdetMSSTradingDenyNotEnoughMoney,
-            mdetMSSTradeOfferAuctionMagnitudeOpenClose,
-            mdetOLSTradeOfferAuctionOpenClose,
-            mdetMSSTradeBidAuctionMagnitudeOpenClose,
-            mdetOLSTradeBidAuctionOpenClose,
-            mdetSessionOffer,
-            mdetSessionBid,
-            mdetPreTradePeriodPrice,
-            mdetPostTradePeriodPrice,
-            mdetTradePrice2,
-            mdetTradePrice,
-            mdetPriceOpenOfficial,
-            mdetPriceCurrentOfficial,
-            mdetLegitimQuote,
-            mdetPriceCloseOfficial,
-            mdetOfferTotal,
-            mdetBidTotal,
-            mdetAuctionPriceBigPackets,
-            mdetAuctionMagnitudeBigPackets,
-            mdetCumulativeCouponDebit,
-            mdetDuration,
-            mdetAllDeals
-    };
+    MDEntryType     *MDEntryTypes;
+    int             *MDEntryTypeRecv;
 
-    int MDEntryTypeRecv[39] {
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0 };
-
-    char        m_buffer[392];
-    char        m_buffer2[392];
-    char        m_tabs[32];
-    int         m_tabsCount;
+    char            m_buffer[392];
+    char            m_buffer2[392];
+    char            m_tabs[32];
+    int             m_tabsCount;
+    FILE            *fp;
 public:
     static DebugInfoManager *Default;
 
-    DebugInfoManager() { }
+    DebugInfoManager();
     ~DebugInfoManager() { }
     template<typename T> void PrintStatisticsOnce(FastProtocolManager *manager, T *info) {
         bool shouldPrint = false;
@@ -171,6 +128,7 @@ public:
     void Log(SizedArray *symbol, SizedArray *trading, const char *string, PointerListLite<StatisticItemTotalOffer> *list);
     void Log(SizedArray *symbol, SizedArray *trading, const char *string, PointerListLite<StatisticItemTransactionsMagnitude> *list);
     void Log(SizedArray *symbol, SizedArray *trading, const char *string, char *entryId, int entryIdLength, Decimal *price, Decimal *size);
+
     void PrintStatistics(FeedConnection *conn);
     void PrintStatistics(FeedChannel *channel);
     void PrintStatisticsIncremental(FeedConnection *conn);
@@ -229,7 +187,6 @@ public:
         this->RemoveTabs();
         printf("End %s Table\n", name);
     };
-
     template<template<typename ITEMINFO> class TABLEITEM, typename INFO, typename ITEMINFO>void PrintTradeTable(const char *name, MarketDataTable<TABLEITEM, INFO, ITEMINFO> *table) {
         printf("Start %s Table\n", name);
         this->AddTabs();
@@ -254,16 +211,6 @@ public:
         this->RemoveTabs();
         printf("End %s Table\n", name);
     };
-
-    void PrintDecimal2List(const char *name, PointerListLite<StatisticItemDecimal2> *list);
-    void PrintDecimalList(const char *name, PointerListLite<StatisticItemDecimal> *list);
-    void PrintLastDealInfoList(const char *name, PointerListLite<StatisticItemLastDealInfo> *list);
-    void PrintIndicesList(const char *name, PointerListLite<StatisticItemIndexList> *list);
-    void PrintTransactionMagnitude(const char *name, PointerListLite<StatisticItemTransactionsMagnitude> *list);
-    void PrintBooleanList(const char *name, PointerListLite<StatisticItem<bool>> *list);
-    void PrintTotalOfferList(const char *name, PointerListLite<StatisticItemTotalOffer> *list);
-    void PrintTotalBidList(const char *name, PointerListLite<StatisticItemTotalBid> *list);
-
     template<template<typename ITEMINFO> class TABLEITEM, typename INFO, typename ITEMINFO>void PrintStatisticsTable(const char *name, MarketDataTable<TABLEITEM, INFO, ITEMINFO> *table) {
         printf("Start %s Table\n", name);
         this->AddTabs();
@@ -324,6 +271,161 @@ public:
         this->RemoveTabs();
         printf("End %s Table\n", name);
     }
+
+    void PrintDecimal2List(const char *name, PointerListLite<StatisticItemDecimal2> *list);
+    void PrintDecimalList(const char *name, PointerListLite<StatisticItemDecimal> *list);
+    void PrintLastDealInfoList(const char *name, PointerListLite<StatisticItemLastDealInfo> *list);
+    void PrintIndicesList(const char *name, PointerListLite<StatisticItemIndexList> *list);
+    void PrintTransactionMagnitude(const char *name, PointerListLite<StatisticItemTransactionsMagnitude> *list);
+    void PrintBooleanList(const char *name, PointerListLite<StatisticItem<bool>> *list);
+    void PrintTotalOfferList(const char *name, PointerListLite<StatisticItemTotalOffer> *list);
+    void PrintTotalBidList(const char *name, PointerListLite<StatisticItemTotalBid> *list);
+
+
+    void PrintStatisticsXml(FeedConnection *conn);
+    void PrintStatisticsXml(const char *fileName, FeedChannel *channel);
+    void PrintStatisticsIncrementalXml(FeedConnection *conn);
+    void PrintStatisticsSnapshotXml(FeedConnection *conn);
+    void PrintStatisticsInstrumentDefinitionXml(FeedConnection *conn);
+    void PrintStatisticsInstrumentStatusXml(FeedConnection *conn);
+    void PrintStatisticsHistoricalReplayXml(FeedConnection *conn);
+    void PrintStatisticsXml(FastProtocolManager *manager);
+    template<typename T> void PrintQuotesXml(const char *quotesName, PointerList<T> *quotes) {
+        fprintf(fp, "<QuotesList Name=\"%s\"/>\n", quotesName);
+        this->AddTabs();
+        for(int quoteIndex = 0; quoteIndex < quotes->Count(); quoteIndex++) {
+            T *info = quotes->Item(quoteIndex);
+            fprintf(fp, "<Item Name=\"%s\" Price=\"%g\" Size=\"%g\"/>\n", this->GetString(info->MDEntryID, info->MDEntryIDLength, 0), info->MDEntryPx.Value, info->MDEntrySize.Value);
+        }
+        this->RemoveTabs();
+        fprintf(fp, "</QuotesList>\n");
+    }
+    void PrintStatisticsXml(const char *quotesName, PointerList<QuoteInfo> *quotes) {
+        fprintf(fp, "<QuotesList Name=\"%s\"/>\n", quotesName);
+        this->AddTabs();
+        for(int quoteIndex = 0; quoteIndex < quotes->Count(); quoteIndex++) {
+            QuoteInfo *info = quotes->Item(quoteIndex);
+            fprintf(fp, "<Item Price=\"%g\" Size=\"%d\"/>\n", info->Price()->Value, info->Size());
+        }
+        this->RemoveTabs();
+        fprintf(fp, "</QuotesList>\n");
+    }
+
+    template<template<typename ITEMINFO> class TABLEITEM, typename INFO, typename ITEMINFO>void PrintOrderTableXml(const char *name, MarketDataTable<TABLEITEM, INFO, ITEMINFO> *table) {
+        fprintf(fp, "<Table Name=\"%s\" SymbolsCount=\"%d\">\n", name, table->SymbolsCount());
+        this->AddTabs();
+        for(int i = 0; i < table->SymbolsCount(); i++) {
+            MarketSymbolInfo<TABLEITEM<ITEMINFO>> *symbol = table->Symbol(i);
+            fprintf(fp, "<Symbol Name=\"%s\" SessionsCount=\"%d\">\n", this->GetString(symbol->Symbol(), 0), symbol->SessionCount());
+            this->AddTabs();
+            for(int j = 0; j < symbol->SessionCount(); j++) {
+                TABLEITEM<ITEMINFO> *session = symbol->Session(j);
+                fprintf(fp, "<Session Name=\"%s\" BuyQuotes=\"%d\" SellQuotes=\"%d\" AggBuyQuotes=\"%d\" AggSellQuotes=\"%d\" QueuedMessagesCount=\"%d\">\n",
+                       this->GetString(session->TradingSession(), 0),
+                       session->BuyQuotes()->Count(),
+                       session->SellQuotes()->Count(),
+                       session->AggregatedBuyQuotes()->Count(),
+                       session->AggregatedSellQuotes()->Count(), session->EntriesQueue()->MaxIndex() + 1);
+                this->PrintQuotesXml<ITEMINFO>("BuyQuotes", session->BuyQuotes());
+                this->PrintQuotesXml<ITEMINFO>("SellQuotes", session->SellQuotes());
+                this->PrintStatisticsXml("AggregatedBuyQuotes", session->AggregatedBuyQuotes());
+                this->PrintStatisticsXml("AggregatedSellQuotes", session->AggregatedSellQuotes());
+                fprintf(fp, "</Session>\n");
+            }
+            this->RemoveTabs();
+            fprintf(fp, "</Symbol>\n");
+        }
+        this->RemoveTabs();
+        printf("</Table>\n");
+    };
+    template<template<typename ITEMINFO> class TABLEITEM, typename INFO, typename ITEMINFO>void PrintTradeTableXml(const char *name, MarketDataTable<TABLEITEM, INFO, ITEMINFO> *table) {
+        fprintf(fp, "<Table Name=\"%s\" SymbolsCount=\"%d\">\n", name, table->SymbolsCount());
+        this->AddTabs();
+        for(int i = 0; i < table->SymbolsCount(); i++) {
+            MarketSymbolInfo<TABLEITEM<ITEMINFO>> *symbol = table->Symbol(i);
+            fprintf(fp, "<Symbol Name=\"%s\" SessionsCount=\"%d\">\n", this->GetString(symbol->Symbol(), 0), symbol->SessionCount());
+            this->AddTabs();
+            for(int j = 0; j < symbol->SessionCount(); j++) {
+                TABLEITEM<ITEMINFO> *session = symbol->Session(j);
+                fprintf(fp, "<Session Name=\"%s\" TradesCount=\"%d\" QueuedMessagesCount=\"%d\">\n",
+                       this->GetString(session->TradingSession(), 0),
+                       session->Trades()->Count(),
+                        session->EntriesQueue()->MaxIndex() + 1);
+                this->PrintQuotesXml<ITEMINFO>("Trades", session->Trades());
+                fprintf(fp, "</Session>\n");
+            }
+            this->RemoveTabs();
+            fprintf(fp, "</Symbol>\n");
+        }
+        this->RemoveTabs();
+        printf("</Table>\n");
+    };
+    template<template<typename ITEMINFO> class TABLEITEM, typename INFO, typename ITEMINFO>void PrintStatisticsTableXml(const char *name, MarketDataTable<TABLEITEM, INFO, ITEMINFO> *table) {
+        fprintf(fp, "<Table Name=\"%s\" SymbolsCount=\"%d\">\n", name, table->SymbolsCount());
+        this->AddTabs();
+        for(int i = 0; i < table->SymbolsCount(); i++) {
+            MarketSymbolInfo<TABLEITEM<ITEMINFO>> *symbol = table->Symbol(i);
+            fprintf(fp, "<Symbol Name=\"%s\" SessionsCount=\"%d\">\n", this->GetString(symbol->Symbol(), 0), symbol->SessionCount());
+            this->AddTabs();
+            for(int j = 0; j < symbol->SessionCount(); j++) {
+                TABLEITEM<ITEMINFO> *session = symbol->Session(j);
+                fprintf(fp, "<Session Name=\"%s\" QueuedMessagesCount=\"%d\">\n",
+                       this->GetString(session->TradingSession(), 0), session->EntriesQueue()->MaxIndex() + 1);
+
+                this->PrintDecimal2ListXml("BuyQuotes", session->BuyQuotes());
+                this->PrintDecimal2ListXml("SellQuotes", session->SellQuotes());
+                this->PrintLastDealInfoListXml("LastDealInfo", session->LastDealInfo());
+                this->PrintIndicesListXml("IndicesList", session->IndicesList());
+                this->PrintDecimalListXml("PriceOpenFirst", session->PriceOpenFirst());
+                this->PrintDecimalListXml("PriceCloseLast" , session->PriceCloseLast());
+                this->PrintDecimalListXml("PriceMax", session->PriceMax());
+                this->PrintDecimalListXml("PriceMin", session->PriceMin());
+                this->PrintDecimalListXml("PriceAve", session->PriceAve());
+                this->PrintDecimalListXml("Disbalance", session->Disbalance());
+                this->PrintTransactionMagnitudeXml("TransactionMagnitude", session->TransactionMagnitude());
+                this->PrintDecimalListXml("OfferPriceMax", session->OfferPriceMax());
+                this->PrintDecimalListXml("BidPriceMin", session->BidPriceMin());
+                this->PrintDecimalListXml("AuctionPriceCalculated", session->AuctionPriceCalculated());
+                this->PrintDecimalListXml("AuctionPriceClose", session->AuctionPriceClose());
+                this->PrintDecimalListXml("AuctionMagnitudeClose", session->AuctionMagnitudeClose());
+                this->PrintBooleanListXml("FullCoveredDealFlag", session->FullCoveredDealFlag());
+                this->PrintDecimalListXml("OpenCloseAuctionTradeOfferMagnitude", session->OpenCloseAuctionTradeOfferMagnitude());
+                this->PrintDecimalListXml("OpenCloseAuctionTradeBidMagnitude", session->OpenCloseAuctionTradeBidMagnitude());
+                this->PrintDecimalListXml("OpenCloseAuctionTradeOffer", session->OpenCloseAuctionTradeOffer());
+                this->PrintDecimalListXml("OpenCloseAuctionTradBid", session->OpenCloseAuctionTradBid());
+                this->PrintDecimalListXml("PreTradePeriodPrice", session->PreTradePeriodPrice());
+                this->PrintDecimalListXml("SessionOffer", session->SessionOffer());
+                this->PrintDecimalListXml("SessionBid", session->SessionBid());
+                this->PrintDecimalListXml("PostTradePeriodPrice", session->PostTradePeriodPrice());
+                this->PrintDecimalListXml("TradePrice", session->TradePrice());
+                this->PrintDecimalListXml("TradePrice2", session->TradePrice2());
+                this->PrintDecimalListXml("PriceOpenOfficial", session->PriceOpenOfficial());
+                this->PrintDecimalListXml("PriceCurrentOfficial", session->PriceCurrentOfficial());
+                this->PrintDecimalListXml("LegitimQuote", session->LegitimQuote());
+                this->PrintDecimalListXml("PriceCloseOfficial", session->PriceCloseOfficial());
+                this->PrintDecimalListXml("AuctionPriceBigPackets", session->AuctionPriceBigPackets());
+                this->PrintDecimalListXml("Duration", session->Duration());
+                this->PrintTotalOfferListXml("OfferTotal", session->OfferTotal());
+                this->PrintTotalBidListXml("BidTotal", session->BidTotal());
+                this->PrintDecimalListXml("AuctionMagnitudeBigPackets", session->AuctionMagnitudeBigPackets());
+                this->PrintDecimalListXml("CumulativeCouponDebit", session->CumulativeCouponDebit());
+                fprintf(fp, "</Session>\n");
+            }
+            this->RemoveTabs();
+            fprintf(fp, "</Symbol>\n");
+        }
+        this->RemoveTabs();
+        printf("</Table>\n");
+    }
+
+    void PrintDecimal2ListXml(const char *name, PointerListLite<StatisticItemDecimal2> *list);
+    void PrintDecimalListXml(const char *name, PointerListLite<StatisticItemDecimal> *list);
+    void PrintLastDealInfoListXml(const char *name, PointerListLite<StatisticItemLastDealInfo> *list);
+    void PrintIndicesListXml(const char *name, PointerListLite<StatisticItemIndexList> *list);
+    void PrintTransactionMagnitudeXml(const char *name, PointerListLite<StatisticItemTransactionsMagnitude> *list);
+    void PrintBooleanListXml(const char *name, PointerListLite<StatisticItem<bool>> *list);
+    void PrintTotalOfferListXml(const char *name, PointerListLite<StatisticItemTotalOffer> *list);
+    void PrintTotalBidListXml(const char *name, PointerListLite<StatisticItemTotalBid> *list);
 };
 
 #endif //HFT_ROBOT_DEBUGINFOMANAGER_H

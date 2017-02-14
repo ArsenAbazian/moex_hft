@@ -7,6 +7,56 @@
 
 DebugInfoManager* DebugInfoManager::Default = new DebugInfoManager();
 
+DebugInfoManager::DebugInfoManager() {
+    this->MDEntryTypes = new MDEntryType[39] {
+            mdetBuyQuote,
+            mdetSellQuote,
+            mdetLastDealInfo,
+            mdetIndicesList,
+            mdetPriceOpenFirst,
+            mdetPriceCloseLast,
+            mdetPriceMax,
+            mdetPriceMin,
+            mdetPriceAve,
+            mdetDisbalance, // A
+            mdetTransactionsMagnitude, //B
+            mdetEmptyBook, // J
+            mdetOfferPriceMin,
+            mdetBidPriceMax,
+            mdetAuctionPriceCalculated,
+            mdetAuctionPriceClose,
+            mdetAuctionMagnitudeClose,
+            mdetMSSTradingDenyNotEnoughMoney,
+            mdetMSSTradeOfferAuctionMagnitudeOpenClose,
+            mdetOLSTradeOfferAuctionOpenClose,
+            mdetMSSTradeBidAuctionMagnitudeOpenClose,
+            mdetOLSTradeBidAuctionOpenClose,
+            mdetSessionOffer,
+            mdetSessionBid,
+            mdetPreTradePeriodPrice,
+            mdetPostTradePeriodPrice,
+            mdetTradePrice2,
+            mdetTradePrice,
+            mdetPriceOpenOfficial,
+            mdetPriceCurrentOfficial,
+            mdetLegitimQuote,
+            mdetPriceCloseOfficial,
+            mdetOfferTotal,
+            mdetBidTotal,
+            mdetAuctionPriceBigPackets,
+            mdetAuctionMagnitudeBigPackets,
+            mdetCumulativeCouponDebit,
+            mdetDuration,
+            mdetAllDeals
+    };
+
+    this->MDEntryTypeRecv = new int[39] {
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0 };
+}
+
 void DebugInfoManager::PrintDecimal2List(const char *name, PointerListLite<StatisticItemDecimal2> *list) {
     printf("Start %s Decimal List Count = %d\n", name, list->Count());
     this->AddTabs();
@@ -326,5 +376,264 @@ void DebugInfoManager::PrintStatistics(FastProtocolManager *manager) {
 }
 
 void DebugInfoManager::PrintFastProtocolManager(FastProtocolManager *manager) {
-    manager->Print();
+
 }
+
+void DebugInfoManager::PrintDecimal2ListXml(const char *name, PointerListLite<StatisticItemDecimal2> *list) {
+    fprintf(fp, "<Decimal2List Name=\"%s\" Count=\"%d\">\n", name, list->Count());
+    this->AddTabs();
+    LinkedPointer<StatisticItemDecimal2> *ptr = list->Start();
+    while(true) {
+        StatisticItemDecimal2 *value = ptr->Data();
+        fprintf(fp, "<Item Time=\"%ld\" Value=\"%g\" Value2=\"%g\"/>\n",
+               value->Time(),
+               value->Value()->Calculate(),
+               value->Value2()->Calculate());
+        if(ptr == list->End())
+            break;
+        ptr = ptr->Next();
+    }
+    this->RemoveTabs();
+    fprintf(fp, "</Decimal2List>\n");
+}
+
+void DebugInfoManager::PrintDecimalListXml(const char *name, PointerListLite<StatisticItemDecimal> *list) {
+    fprintf(fp, "<DecimalList Name=\"%s\" Count=\"%d\">\n", name, list->Count());
+    this->AddTabs();
+    LinkedPointer<StatisticItemDecimal> *ptr = list->Start();
+    while(true) {
+        StatisticItemDecimal *value = ptr->Data();
+        fprintf(fp, "<Item Time=\"%ld\" Value=\"%g\"/>\n",
+               value->Time(),
+               value->Value()->Calculate());
+        if(ptr == list->End())
+            break;
+        ptr = ptr->Next();
+    }
+    this->RemoveTabs();
+    fprintf(fp, "</DecimalList>\n");
+}
+
+void DebugInfoManager::PrintLastDealInfoListXml(const char *name, PointerListLite<StatisticItemLastDealInfo> *list) {
+    fprintf(fp, "<LastDealInfoList Name=\"%s\" Count=\"%d\">\n", name, list->Count());
+    this->AddTabs();
+    LinkedPointer<StatisticItemLastDealInfo> *ptr = list->Start();
+    while(ptr != 0) {
+        StatisticItemLastDealInfo *value = ptr->Data();
+        fprintf(fp, "<Item Time=\"%ld\" Px=\"%g\" Size=\"%g\" DealTime=\"%u\" TradeValue=\"%g\" NetChangePrevDayPtr=\"%g\" ChangeFromWAPrice=\"%g\"/>\n",
+               value->Time(),
+               value->Price()->Calculate(),
+               value->Size()->Calculate(),
+               value->DealTime(),
+               value->TradeValue()->Calculate(),
+               value->NetChangePrevDay()->Calculate(),
+               value->ChangeFromWAPrice()->Calculate());
+        if(ptr == list->End())
+            break;
+        ptr = ptr->Next();
+    }
+    this->RemoveTabs();
+    fprintf(fp, "</LastDealInfoList>\n");
+}
+
+void DebugInfoManager::PrintIndicesListXml(const char *name, PointerListLite<StatisticItemIndexList> *list) {
+    fprintf(fp, "<IndicesLis Name=\"%s\" Count=\"%d\">\n", name, list->Count());
+    this->AddTabs();
+    LinkedPointer<StatisticItemIndexList> *ptr = list->Start();
+    while(ptr != 0) {
+        StatisticItemIndexList *value = ptr->Data();
+        fprintf(fp, "<Item Time=\"%ld\" Px=\"%g\" Size=\"%g\" TradeValue=\"%g\"/>\n",
+               value->Time(),
+               value->Price()->Calculate(),
+               value->Size()->Calculate(),
+               value->TradeValue()->Calculate());
+        if(ptr == list->End())
+            break;
+        ptr = ptr->Next();
+    }
+    this->RemoveTabs();
+    fprintf(fp, "</IndicesLis>\n");
+}
+
+void DebugInfoManager::PrintTransactionMagnitudeXml(const char *name, PointerListLite<StatisticItemTransactionsMagnitude> *list) {
+    fprintf(fp, "<TransactionMagnitudeList Name=\"%s\" Count=\"%d\">\n", name, list->Count());
+    this->AddTabs();
+    LinkedPointer<StatisticItemTransactionsMagnitude> *ptr = list->Start();
+    while(ptr != 0) {
+        StatisticItemTransactionsMagnitude *value = ptr->Data();
+        fprintf(fp, "<Item Time=\"%ld\" Size=\"%g\" TotalNumOfTrades=\"%u\" TradeValue=\"%g\"/>\n",
+               value->Time(),
+               value->Size()->Calculate(),
+               value->TotalNumOfTrades(),
+               value->TradeValue()->Calculate());
+        if(ptr == list->End())
+            break;
+        ptr = ptr->Next();
+    }
+    this->RemoveTabs();
+    fprintf(fp, "</TransactionMagnitudeList>\n");
+}
+
+void DebugInfoManager::PrintBooleanListXml(const char *name, PointerListLite<StatisticItem<bool>> *list) {
+    fprintf(fp, "<BooleanList Name=\"%s\" Count=\"%d\">\n", name, list->Count());
+    this->AddTabs();
+    LinkedPointer<StatisticItem<bool>> *ptr = list->Start();
+    while(true) {
+        StatisticItem<bool> *value = ptr->Data();
+        fprintf(fp, "<Item Time=\"%ld\" Value=\"%s\"/>\n",
+               value->Time(), value->Value()? "fasle": "true");
+        if(ptr == list->End())
+            break;
+        ptr = ptr->Next();
+    }
+    this->RemoveTabs();
+    fprintf(fp, "</BooleanList>\n");
+}
+
+void DebugInfoManager::PrintTotalOfferListXml(const char *name, PointerListLite<StatisticItemTotalOffer> *list) {
+    fprintf(fp, "<TotalOfferList Name=\"%s\" Count=\"%d\">\n", name, list->Count());
+    this->AddTabs();
+    LinkedPointer<StatisticItemTotalOffer> *ptr = list->Start();
+    while(ptr != 0) {
+        StatisticItemTotalOffer *value = ptr->Data();
+        fprintf(fp, "<Item Time=\"%ld\" Value=\"%g\" OfferNbOr=\"%d\"/>\n", value->Time(), value->Size()->Calculate(), value->OfferNbOr());
+        if(ptr == list->End())
+            break;
+        ptr = ptr->Next();
+    }
+    this->RemoveTabs();
+    fprintf(fp, "</TotalOfferList>\n");
+}
+
+void DebugInfoManager::PrintTotalBidListXml(const char *name, PointerListLite<StatisticItemTotalBid> *list) {
+    fprintf(fp, "<TotalBidList Name=\"%s\" Count=\"%d\">\n", name, list->Count());
+    this->AddTabs();
+    LinkedPointer<StatisticItemTotalBid> *ptr = list->Start();
+    while(ptr != 0) {
+        StatisticItemTotalBid *value = ptr->Data();
+        fprintf(fp, "<Item Time=\"%ld\" Value=\"%g\" BidNbOr=\"%d\"/>\n", value->Time(), value->Size()->Calculate(), value->BidNbOr());
+        if(ptr == list->End())
+            break;
+        ptr = ptr->Next();
+    }
+    this->RemoveTabs();
+    fprintf(fp, "</TotalBidList>\n");
+}
+
+void DebugInfoManager::PrintStatisticsXml(const char *fileName, FeedChannel *channel) {
+    this->fp = fopen(fileName, "wt");
+
+    fprintf(fp, "<FeedChannel Name=\"%s\">\n", channel->Name());
+    this->AddTabs();
+    this->PrintStatisticsXml(channel->OrdersIncremental());
+    this->PrintStatisticsXml(channel->OrdersSnapshot());
+    this->PrintStatisticsXml(channel->TradesIncremental());
+    this->PrintStatisticsXml(channel->TradesSnapshot());
+    this->PrintStatisticsXml(channel->StatisticsIncremental());
+    this->PrintStatisticsXml(channel->StatisticsSnapshot());
+    this->PrintStatisticsXml(channel->InstrumentDefinition());
+    this->PrintStatisticsXml(channel->InstrumentStatus());
+    this->RemoveTabs();
+    fprintf(fp, "</FeedChannel>\n");
+}
+
+void DebugInfoManager::PrintStatisticsIncrementalXml(FeedConnection *conn) {
+    printf("<Type>Incremental</Type>\n");
+    if(conn->OrderFond() != 0)
+        this->PrintOrderTableXml("Order Fond", conn->OrderFond());
+    if(conn->OrderCurr() != 0)
+        this->PrintOrderTableXml("Order Curr", conn->OrderCurr());
+    if(conn->TradeFond() != 0)
+        this->PrintTradeTableXml("Trade Fond", conn->TradeFond());
+    if(conn->TradeCurr() != 0)
+        this->PrintTradeTableXml("Trade Curr", conn->TradeCurr());
+    if(conn->StatisticFond() != 0)
+        this->PrintStatisticsTableXml("Statistics Fond", conn->StatisticFond());
+    if(conn->StatisticCurr() != 0)
+        this->PrintStatisticsTableXml("Statistics Curr",conn->StatisticCurr());
+}
+void DebugInfoManager::PrintStatisticsSnapshotXml(FeedConnection *conn) {
+    fprintf(fp, "<Type>Snapshot</Type>\n");
+}
+void DebugInfoManager::PrintStatisticsInstrumentDefinitionXml(FeedConnection *conn) {
+    fprintf(fp, "<Type>SecurityDefinition</Type>\n");
+}
+void DebugInfoManager::PrintStatisticsInstrumentStatusXml(FeedConnection *conn) {
+    fprintf(fp, "<Type>SecurityStatus</Type>\n");
+}
+void DebugInfoManager::PrintStatisticsHistoricalReplayXml(FeedConnection *conn) {
+    fprintf(fp,"<Type>HistoricalReplay</Type>\n");
+}
+
+void DebugInfoManager::PrintStatisticsXml(FeedConnection *conn) {
+    if(conn == 0)
+        return;
+    fprintf(fp, "<FeedConnection Name=\"%s\" State=\"%d\">\n", conn->IdName(), conn->State());
+    this->AddTabs();
+    switch(conn->Type()) {
+        case FeedConnectionType::Incremental:
+            PrintStatisticsIncrementalXml(conn);
+            break;
+        case FeedConnectionType::Snapshot:
+            PrintStatisticsSnapshotXml(conn);
+            break;
+        case FeedConnectionType::InstrumentDefinition:
+            PrintStatisticsInstrumentDefinitionXml(conn);
+            break;
+        case FeedConnectionType::InstrumentStatus:
+            PrintStatisticsInstrumentStatusXml(conn);
+            break;
+        case FeedConnectionType::HistoricalReplay:
+            PrintStatisticsHistoricalReplayXml(conn);
+            break;
+    }
+    this->PrintStatisticsXml(conn->m_fastProtocolManager);
+    this->RemoveTabs();
+    fprintf(fp, "</FeedConnection>\n");
+}
+
+void DebugInfoManager::PrintStatisticsXml(FastProtocolManager *manager) {
+    if(manager == 0)
+        return;
+    fprintf(fp, "<FastProtocolManager>\n");
+    this->AddTabs();
+    fprintf(fp, "<HeartbeatInfo Used=\"%d\" Capacity=\"%d\"/>", manager->GetHeartbeatInfoPool()->Count(), manager->GetHeartbeatInfoPool()->Capacity());
+    fprintf(fp, "<LogonInfo Used=\"%d\" Capacity=\"%d\"/>", manager->GetLogonInfoPool()->Count(), manager->GetLogonInfoPool()->Capacity());
+    fprintf(fp, "<LogoutInfo Used=\"%d\" Capacity=\"%d\"/>", manager->GetLogoutInfoPool()->Count(), manager->GetLogoutInfoPool()->Capacity());
+
+    fprintf(fp, "<GenericInfo Used=\"%d\" Capacity=\"%d\"/>", manager->GetGenericInfoPool()->Count(), manager->GetGenericInfoPool()->Capacity());
+    fprintf(fp, "<IncrementalGenericInfo Used=\"%d\" Capacity=\"%d\"/>", manager->GetIncrementalGenericInfoPool()->Count(), manager->GetIncrementalGenericInfoPool()->Capacity());
+    fprintf(fp, "<IncrementalMSRCURRInfo Used=\"%d\" Capacity=\"%d\"/>", manager->GetIncrementalMSRCURRInfoPool()->Count(), manager->GetIncrementalMSRCURRInfoPool()->Capacity());
+    fprintf(fp, "<IncrementalMSRFONDInfo Used=\"%d\" Capacity=\"%d\"/>", manager->GetIncrementalMSRFONDInfoPool()->Count(), manager->GetIncrementalMSRFONDInfoPool()->Capacity());
+    fprintf(fp, "<GenericItemInfo Used=\"%d\" Capacity=\"%d\"/>", manager->GetGenericItemInfoPool()->Count(), manager->GetGenericItemInfoPool()->Capacity());
+
+    fprintf(fp, "<OLSFONDInfo Used=\"%d\" Capacity=\"%d\"/>", manager->GetOLSFONDInfoPool()->Count(), manager->GetOLSFONDInfoPool()->Capacity());
+    fprintf(fp, "<IncrementalOLRFONDInfo Used=\"%d\" Capacity=\"%d\"/>", manager->GetIncrementalOLRFONDInfoPool()->Count(), manager->GetIncrementalOLRFONDInfoPool()->Capacity());
+    fprintf(fp, "<OLSFONDItemInfo Used %d of %d", manager->GetOLSFONDItemInfoPool()->Count(), manager->GetOLSFONDItemInfoPool()->Capacity());
+
+    fprintf(fp, "<OLSCURRInfo Used=\"%d\" Capacity=\"%d\"/>", manager->GetOLSCURRInfoPool()->Count(), manager->GetOLSCURRInfoPool()->Capacity());
+    fprintf(fp, "<IncrementalOLRCURRInfo Used=\"%d\" Capacity=\"%d\"/>", manager->GetIncrementalOLRCURRInfoPool()->Count(), manager->GetIncrementalOLRCURRInfoPool()->Capacity());
+    fprintf(fp, "<OLSCURRItemInfo Used=\"%d\" Capacity=\"%d\"/>", manager->GetOLSCURRItemInfoPool()->Count(), manager->GetOLSCURRItemInfoPool()->Capacity());
+
+    fprintf(fp, "<TLSFONDInfo Used=\"%d\" Capacity\"%d\"/>", manager->GetTLSFONDInfoPool()->Count(), manager->GetTLSFONDInfoPool()->Capacity());
+    fprintf(fp, "<IncrementalTLRFONDInfo Used=\"%d\" Capacity=\"%d\"/>", manager->GetIncrementalTLRFONDInfoPool()->Count(), manager->GetIncrementalTLRFONDInfoPool()->Capacity());
+    fprintf(fp, "<TLSFONDItemInfo Used=\"%d\" Capacity=\"%d\"/>", manager->GetTLSFONDItemInfoPool()->Count(), manager->GetTLSFONDItemInfoPool()->Capacity());
+
+    fprintf(fp, "<TLSCURRInfo Used=\"%d\" Capacity=\"%d\"/>", manager->GetTLSCURRInfoPool()->Count(), manager->GetTLSCURRInfoPool()->Capacity());
+    fprintf(fp, "<IncrementalTLRCURRInfo Used=\"%d\" Capacity=\"%d\"/>", manager->GetIncrementalTLRCURRInfoPool()->Count(), manager->GetIncrementalTLRCURRInfoPool()->Capacity());
+    fprintf(fp, "<TLSCURRItemInfo Used=\"%d\" Capacity=\"%d\"/>", manager->GetTLSCURRItemInfoPool()->Count(), manager->GetTLSCURRItemInfoPool()->Capacity());
+
+    fprintf(fp, "<SecurityDefinitionInfo Used=\"%d\" Capacity=\"%d\"/>", manager->GetSecurityDefinitionInfoPool()->Count(), manager->GetSecurityDefinitionInfoPool()->Capacity());
+    fprintf(fp, "<SecurityDefinitionGroupInstrAttribItemInfo Used=\"%d\" Capacity=\"%d\"/>", manager->GetSecurityDefinitionGroupInstrAttribItemInfoPool()->Count(), manager->GetSecurityDefinitionGroupInstrAttribItemInfoPool()->Capacity());
+    fprintf(fp, "<SecurityDefinitionMarketSegmentGrpItemInfo Used=\"%d\" Capacity=\"%d\"/>", manager->GetSecurityDefinitionMarketSegmentGrpItemInfoPool()->Count(), manager->GetSecurityDefinitionMarketSegmentGrpItemInfoPool()->Capacity());
+    fprintf(fp, "<SecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo Used=\"%d\" Capacity=\"%d\"/>", manager->GetSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfoPool()->Count(), manager->GetSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfoPool()->Capacity());
+
+    fprintf(fp, "<SecurityStatusInfo Used=\"%d\" Capacity=\"%d\"/>", manager->GetSecurityStatusInfoPool()->Count(), manager->GetSecurityStatusInfoPool()->Capacity());
+    fprintf(fp, "<TradingSessionStatusInfo Used=\"%d\" Capacity=\"%d\"/>", manager->GetTradingSessionStatusInfoPool()->Count(), manager->GetTradingSessionStatusInfoPool()->Capacity());
+
+    this->RemoveTabs();
+    fprintf(fp, "</FastProtocolManager>\n");
+}
+
+
+
