@@ -44,6 +44,7 @@ public:
         this->m_list->Push(node);
     }
     inline int Count() { return this->m_list->Count(); }
+    inline int Capacity() { return this->m_list->Capacity(); }
 };
 
 #endif //HFT_ROBOT_ORDERBOOKINFOLIST_H

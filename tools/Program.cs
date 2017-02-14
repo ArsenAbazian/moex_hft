@@ -472,12 +472,18 @@ namespace prebuild {
 		private  void WriteGetFreeItemCode (XmlNode templatesNode) {
 			SetPosition(Get_Free_Item_Methods_GeneratedCode);
 
+			WriteLine("public:");
 			foreach(StructureInfo str in Structures) {
 				WriteLine("\tinline " + str.Name + "* " + str.GetFreeMethodName + "() {");
 				WriteLine("\t\treturn this->" + str.ValueName + "->NewItem();");
 				WriteLine("\t}");
 				WriteLine("");
+				WriteLine("\tinline AutoAllocatePointerList<" + str.Name + ">* " + str.GetListMethodName + "() {");
+				WriteLine("\t\treturn this->" + str.ValueName + ";");
+				WriteLine("\t}");
+				WriteLine("");
 			}
+			WriteLine("private:");
 		}
 
 		public string NameWithParent(XmlNode node) {
@@ -550,6 +556,10 @@ namespace prebuild {
 
 			public string GetFreeMethodName {
 				get { return "GetFree" + NameCore + Suffix; }
+			}
+
+			public string GetListMethodName { 
+				get{ return "Get" + NameCore + Suffix + "Pool"; }
 			}
 
 			public string ReleaseMethodName { 

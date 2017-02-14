@@ -5,8 +5,8 @@
 #ifndef HFT_ROBOT_DEBUGINFOMANAGER_H
 #define HFT_ROBOT_DEBUGINFOMANAGER_H
 
+#include <Fast/FastProtocolManager.h>
 #include "../Fast/FastTypes.h"
-#include "../Fast/FastProtocolManager.h"
 #include "../Lib/PointerList.h"
 #include "../Lib/StringIdComparer.h"
 
@@ -17,6 +17,9 @@ class StatisticItemIndexList;
 class StatisticItemTotalBid;
 class StatisticItemTotalOffer;
 class StatisticItemTransactionsMagnitude;
+class FeedChannel;
+class FastProtocolManager;
+class FeedConnection;
 
 class DebugInfoManager {
 
@@ -70,6 +73,8 @@ class DebugInfoManager {
 
     char        m_buffer[392];
     char        m_buffer2[392];
+    char        m_tabs[32];
+    int         m_tabsCount;
 public:
     static DebugInfoManager *Default;
 
@@ -91,17 +96,10 @@ public:
             }
         }
         if(shouldPrint)
-            manager->Print();
+            PrintFastProtocolManager(manager);
     }
+    void PrintFastProtocolManager(FastProtocolManager *manager);
 
-    void Log(SizedArray *symbol, SizedArray *trading, const char *string, PointerListLite<StatisticItemDecimal> *list);
-    void Log(SizedArray *symbol, SizedArray *trading, const char *string, PointerListLite<StatisticItemDecimal2> *list);
-    void Log(SizedArray *symbol, SizedArray *trading, const char *string, PointerListLite<StatisticItemLastDealInfo> *list);
-    void Log(SizedArray *symbol, SizedArray *trading, const char *string, PointerListLite<StatisticItemIndexList> *list);
-    void Log(SizedArray *symbol, SizedArray *trading, const char *string, PointerListLite<StatisticItemTotalBid> *list);
-    void Log(SizedArray *symbol, SizedArray *trading, const char *string, PointerListLite<StatisticItemTotalOffer> *list);
-    void Log(SizedArray *symbol, SizedArray *trading, const char *string, PointerListLite<StatisticItemTransactionsMagnitude> *list);
-    void Log(SizedArray *symbol, SizedArray *trading, const char *string, char *entryId, int entryIdLength, Decimal *price, Decimal *size);
     const char* BinaryToString(unsigned char *buffer, int size) {
         for(int i = 0; i < size; i++) {
             sprintf(this->m_buffer + i * 3, "%2.2x ", buffer[i]);
@@ -132,7 +130,6 @@ public:
     int AsciiToByte(const char *ascii) {
         return this->AsciToValue(ascii[0]) * 16 + this->AsciToValue(ascii[1]);
     }
-
     unsigned char* StringToBinary(const char *str, int *sizeOut) {
         int len = strlen(str);
         int bytesCount = 1;
@@ -153,6 +150,31 @@ public:
         *sizeOut = bytesCount;
         return res;
     }
+
+    void ResetTabs() { this->m_tabs[0] = '\0'; }
+    void AddTabs() { this->m_tabs[this->m_tabsCount] = '\t'; this->m_tabsCount++; }
+    void RemoveTabs() {
+        if(this->m_tabsCount == 0)
+            return;
+        this->m_tabs[this->m_tabsCount - 1] = '\0'; this->m_tabsCount--;
+    }
+
+    void Log(SizedArray *symbol, SizedArray *trading, const char *string, PointerListLite<StatisticItemDecimal> *list);
+    void Log(SizedArray *symbol, SizedArray *trading, const char *string, PointerListLite<StatisticItemDecimal2> *list);
+    void Log(SizedArray *symbol, SizedArray *trading, const char *string, PointerListLite<StatisticItemLastDealInfo> *list);
+    void Log(SizedArray *symbol, SizedArray *trading, const char *string, PointerListLite<StatisticItemIndexList> *list);
+    void Log(SizedArray *symbol, SizedArray *trading, const char *string, PointerListLite<StatisticItemTotalBid> *list);
+    void Log(SizedArray *symbol, SizedArray *trading, const char *string, PointerListLite<StatisticItemTotalOffer> *list);
+    void Log(SizedArray *symbol, SizedArray *trading, const char *string, PointerListLite<StatisticItemTransactionsMagnitude> *list);
+    void Log(SizedArray *symbol, SizedArray *trading, const char *string, char *entryId, int entryIdLength, Decimal *price, Decimal *size);
+    void PrintStatistics(FeedConnection *conn);
+    void PrintStatistics(FeedChannel *channel);
+    void PrintStatisticsIncremental(FeedConnection *conn);
+    void PrintStatisticsSnapshot(FeedConnection *conn);
+    void PrintStatisticsInstrumentDefinition(FeedConnection *conn);
+    void PrintStatisticsInstrumentStatus(FeedConnection *conn);
+    void PrintStatisticsHistoricalReplay(FeedConnection *conn);
+    void PrintStatistics(FastProtocolManager *manager);
 };
 
 #endif //HFT_ROBOT_DEBUGINFOMANAGER_H

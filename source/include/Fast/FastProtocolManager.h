@@ -269,110 +269,216 @@ private:
     }
 
 #pragma region Get_Free_Item_Methods_GeneratedCode
+public:
 	inline FastLogonInfo* GetFreeLogonInfo() {
 		return this->m_logon->NewItem();
+	}
+
+	inline AutoAllocatePointerList<FastLogonInfo>* GetLogonInfoPool() {
+		return this->m_logon;
 	}
 
 	inline FastLogoutInfo* GetFreeLogoutInfo() {
 		return this->m_logout->NewItem();
 	}
 
+	inline AutoAllocatePointerList<FastLogoutInfo>* GetLogoutInfoPool() {
+		return this->m_logout;
+	}
+
 	inline FastGenericItemInfo* GetFreeGenericItemInfo() {
 		return this->m_genericItems->NewItem();
+	}
+
+	inline AutoAllocatePointerList<FastGenericItemInfo>* GetGenericItemInfoPool() {
+		return this->m_genericItems;
 	}
 
 	inline FastGenericInfo* GetFreeGenericInfo() {
 		return this->m_generic->NewItem();
 	}
 
+	inline AutoAllocatePointerList<FastGenericInfo>* GetGenericInfoPool() {
+		return this->m_generic;
+	}
+
 	inline FastIncrementalGenericInfo* GetFreeIncrementalGenericInfo() {
 		return this->m_incrementalGeneric->NewItem();
+	}
+
+	inline AutoAllocatePointerList<FastIncrementalGenericInfo>* GetIncrementalGenericInfoPool() {
+		return this->m_incrementalGeneric;
 	}
 
 	inline FastOLSFONDItemInfo* GetFreeOLSFONDItemInfo() {
 		return this->m_oLSFONDItems->NewItem();
 	}
 
+	inline AutoAllocatePointerList<FastOLSFONDItemInfo>* GetOLSFONDItemInfoPool() {
+		return this->m_oLSFONDItems;
+	}
+
 	inline FastOLSFONDInfo* GetFreeOLSFONDInfo() {
 		return this->m_oLSFOND->NewItem();
+	}
+
+	inline AutoAllocatePointerList<FastOLSFONDInfo>* GetOLSFONDInfoPool() {
+		return this->m_oLSFOND;
 	}
 
 	inline FastOLSCURRItemInfo* GetFreeOLSCURRItemInfo() {
 		return this->m_oLSCURRItems->NewItem();
 	}
 
+	inline AutoAllocatePointerList<FastOLSCURRItemInfo>* GetOLSCURRItemInfoPool() {
+		return this->m_oLSCURRItems;
+	}
+
 	inline FastOLSCURRInfo* GetFreeOLSCURRInfo() {
 		return this->m_oLSCURR->NewItem();
+	}
+
+	inline AutoAllocatePointerList<FastOLSCURRInfo>* GetOLSCURRInfoPool() {
+		return this->m_oLSCURR;
 	}
 
 	inline FastTLSFONDItemInfo* GetFreeTLSFONDItemInfo() {
 		return this->m_tLSFONDItems->NewItem();
 	}
 
+	inline AutoAllocatePointerList<FastTLSFONDItemInfo>* GetTLSFONDItemInfoPool() {
+		return this->m_tLSFONDItems;
+	}
+
 	inline FastTLSFONDInfo* GetFreeTLSFONDInfo() {
 		return this->m_tLSFOND->NewItem();
+	}
+
+	inline AutoAllocatePointerList<FastTLSFONDInfo>* GetTLSFONDInfoPool() {
+		return this->m_tLSFOND;
 	}
 
 	inline FastTLSCURRItemInfo* GetFreeTLSCURRItemInfo() {
 		return this->m_tLSCURRItems->NewItem();
 	}
 
+	inline AutoAllocatePointerList<FastTLSCURRItemInfo>* GetTLSCURRItemInfoPool() {
+		return this->m_tLSCURRItems;
+	}
+
 	inline FastTLSCURRInfo* GetFreeTLSCURRInfo() {
 		return this->m_tLSCURR->NewItem();
+	}
+
+	inline AutoAllocatePointerList<FastTLSCURRInfo>* GetTLSCURRInfoPool() {
+		return this->m_tLSCURR;
 	}
 
 	inline FastIncrementalMSRFONDInfo* GetFreeIncrementalMSRFONDInfo() {
 		return this->m_incrementalMSRFOND->NewItem();
 	}
 
+	inline AutoAllocatePointerList<FastIncrementalMSRFONDInfo>* GetIncrementalMSRFONDInfoPool() {
+		return this->m_incrementalMSRFOND;
+	}
+
 	inline FastIncrementalMSRCURRInfo* GetFreeIncrementalMSRCURRInfo() {
 		return this->m_incrementalMSRCURR->NewItem();
+	}
+
+	inline AutoAllocatePointerList<FastIncrementalMSRCURRInfo>* GetIncrementalMSRCURRInfoPool() {
+		return this->m_incrementalMSRCURR;
 	}
 
 	inline FastIncrementalOLRFONDInfo* GetFreeIncrementalOLRFONDInfo() {
 		return this->m_incrementalOLRFOND->NewItem();
 	}
 
+	inline AutoAllocatePointerList<FastIncrementalOLRFONDInfo>* GetIncrementalOLRFONDInfoPool() {
+		return this->m_incrementalOLRFOND;
+	}
+
 	inline FastIncrementalOLRCURRInfo* GetFreeIncrementalOLRCURRInfo() {
 		return this->m_incrementalOLRCURR->NewItem();
+	}
+
+	inline AutoAllocatePointerList<FastIncrementalOLRCURRInfo>* GetIncrementalOLRCURRInfoPool() {
+		return this->m_incrementalOLRCURR;
 	}
 
 	inline FastIncrementalTLRFONDInfo* GetFreeIncrementalTLRFONDInfo() {
 		return this->m_incrementalTLRFOND->NewItem();
 	}
 
+	inline AutoAllocatePointerList<FastIncrementalTLRFONDInfo>* GetIncrementalTLRFONDInfoPool() {
+		return this->m_incrementalTLRFOND;
+	}
+
 	inline FastIncrementalTLRCURRInfo* GetFreeIncrementalTLRCURRInfo() {
 		return this->m_incrementalTLRCURR->NewItem();
+	}
+
+	inline AutoAllocatePointerList<FastIncrementalTLRCURRInfo>* GetIncrementalTLRCURRInfoPool() {
+		return this->m_incrementalTLRCURR;
 	}
 
 	inline FastSecurityDefinitionGroupInstrAttribItemInfo* GetFreeSecurityDefinitionGroupInstrAttribItemInfo() {
 		return this->m_securityDefinitionGroupInstrAttribItems->NewItem();
 	}
 
+	inline AutoAllocatePointerList<FastSecurityDefinitionGroupInstrAttribItemInfo>* GetSecurityDefinitionGroupInstrAttribItemInfoPool() {
+		return this->m_securityDefinitionGroupInstrAttribItems;
+	}
+
 	inline FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo* GetFreeSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo() {
 		return this->m_securityDefinitionMarketSegmentGrpTradingSessionRulesGrpItems->NewItem();
+	}
+
+	inline AutoAllocatePointerList<FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo>* GetSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfoPool() {
+		return this->m_securityDefinitionMarketSegmentGrpTradingSessionRulesGrpItems;
 	}
 
 	inline FastSecurityDefinitionMarketSegmentGrpItemInfo* GetFreeSecurityDefinitionMarketSegmentGrpItemInfo() {
 		return this->m_securityDefinitionMarketSegmentGrpItems->NewItem();
 	}
 
+	inline AutoAllocatePointerList<FastSecurityDefinitionMarketSegmentGrpItemInfo>* GetSecurityDefinitionMarketSegmentGrpItemInfoPool() {
+		return this->m_securityDefinitionMarketSegmentGrpItems;
+	}
+
 	inline FastSecurityDefinitionInfo* GetFreeSecurityDefinitionInfo() {
 		return this->m_securityDefinition->NewItem();
+	}
+
+	inline AutoAllocatePointerList<FastSecurityDefinitionInfo>* GetSecurityDefinitionInfoPool() {
+		return this->m_securityDefinition;
 	}
 
 	inline FastSecurityStatusInfo* GetFreeSecurityStatusInfo() {
 		return this->m_securityStatus->NewItem();
 	}
 
+	inline AutoAllocatePointerList<FastSecurityStatusInfo>* GetSecurityStatusInfoPool() {
+		return this->m_securityStatus;
+	}
+
 	inline FastTradingSessionStatusInfo* GetFreeTradingSessionStatusInfo() {
 		return this->m_tradingSessionStatus->NewItem();
+	}
+
+	inline AutoAllocatePointerList<FastTradingSessionStatusInfo>* GetTradingSessionStatusInfoPool() {
+		return this->m_tradingSessionStatus;
 	}
 
 	inline FastHeartbeatInfo* GetFreeHeartbeatInfo() {
 		return this->m_heartbeat->NewItem();
 	}
 
+	inline AutoAllocatePointerList<FastHeartbeatInfo>* GetHeartbeatInfoPool() {
+		return this->m_heartbeat;
+	}
+
+private:
 	void ReleaseLogonInfo() {
 		((FastLogonInfo*)this->LastDecodeInfo())->ReleaseUnused();
 	}

@@ -33,6 +33,16 @@ public:
 	FeedChannel(const char *id, const char *name);
 	~FeedChannel();
 
+	FeedConnection* StatisticsIncremental() { return this->statisticsIncremental; }
+	FeedConnection* StatisticsSnapshot() { return this->statisticsSnapshot; }
+	FeedConnection* OrdersIncremental() { return this->ordersIncremental; }
+	FeedConnection* OrdersSnapshot() { return this->ordersSnapshot; }
+	FeedConnection* TradesIncremental() { return this->tradesIncremental; }
+	FeedConnection* TradesSnapshot() { return this->tradesSnapshot; }
+	FeedConnection* InstrumentDefinition() { return this->instrumentDefinition; }
+	FeedConnection* InstrumentStatus() { return this->instrumentStatus; }
+	FeedConnection* HistoricalReplay() { return this->historicalReplay; }
+
 	void SetPassword(const char *password) {
 		this->m_password = password;
 		if(this->statisticsIncremental != NULL)
