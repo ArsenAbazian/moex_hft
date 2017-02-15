@@ -15,14 +15,14 @@
 template <typename T> class MarketSymbolInfo;
 
 template <typename T> class OrderInfo {
-    //static PointerList<T>               *m_sellQuotePool = new PointerList<T>(RobotSettings::MarketDataMaxEntriesCount * 2000, true);
-    //static PointerList<T>               *m_buyQuotePool = new PointerList<T>(RobotSettings::MarketDataMaxEntriesCount * 2000, true);
+    static PointerList<T>               *m_itemsPool;
+    static PointerList<QuoteInfo>       *m_aggregatedItemsPool;
 
-    PointerList<T>                      *m_sellQuoteList;
-    PointerList<T>                      *m_buyQuoteList;
+    PointerListLite<T>                  *m_sellQuoteList;
+    PointerListLite<T>                  *m_buyQuoteList;
 
-    PointerList<QuoteInfo>              *m_aggregatedSellQuoteList;
-    PointerList<QuoteInfo>              *m_aggregatedBuyQuoteList;
+    PointerListLite<QuoteInfo>              *m_aggregatedSellQuoteList;
+    PointerListLite<QuoteInfo>              *m_aggregatedBuyQuoteList;
 
     MDEntrQueue<T>                      *m_entryInfo;
 
@@ -34,19 +34,7 @@ template <typename T> class OrderInfo {
 
     int                                 m_snapshotProcessedCount;
 public:
-    OrderInfo() {
-        this->m_entryInfo = new MDEntrQueue<T>();
-
-        this->m_sellQuoteList = new PointerList<T>(RobotSettings::MarketDataMaxEntriesCount);
-        this->m_buyQuoteList = new PointerList<T>(RobotSettings::MarketDataMaxEntriesCount);
-        this->m_aggregatedBuyQuoteList = new PointerList<QuoteInfo>(RobotSettings::MarketDataMaxEntriesCount, true);
-        this->m_aggregatedSellQuoteList = new PointerList<QuoteInfo>(RobotSettings::MarketDataMaxEntriesCount, true);
-
-        this->m_tradingSession = new SizedArray();
-        this->m_shouldProcessSnapshot = false;
-        this->m_rptSeq = 0;
-        this->m_snapshotProcessedCount = 0;
-    }
+    OrderInfo();
     ~OrderInfo() {
         delete this->m_entryInfo;
         delete this->m_sellQuoteList;
@@ -67,15 +55,15 @@ public:
 
     inline MDEntrQueue<T>* EntriesQueue() { return this->m_entryInfo; }
 
-    inline PointerList<T>* SellQuotes() { return this->m_sellQuoteList; }
-    inline PointerList<T>* BuyQuotes() { return this->m_buyQuoteList; }
+    inline PointerListLite<T>* SellQuotes() { return this->m_sellQuoteList; }
+    inline PointerListLite<T>* BuyQuotes() { return this->m_buyQuoteList; }
 
-    inline PointerList<QuoteInfo>* AggregatedSellQuotes() { return this->m_aggregatedSellQuoteList; }
-    inline PointerList<QuoteInfo>* AggregatedBuyQuotes() { return this->m_aggregatedBuyQuoteList; }
+    inline PointerListLite<QuoteInfo>* AggregatedSellQuotes() { return this->m_aggregatedSellQuoteList; }
+    inline PointerListLite<QuoteInfo>* AggregatedBuyQuotes() { return this->m_aggregatedBuyQuoteList; }
 
     inline bool Used() { return this->m_used; }
     inline void Used(bool used) { this->m_used = used; }
-    inline void Clear(PointerList<T> *list) {
+    inline void Clear(PointerListLite<T> *list) {
         if(list->Count() == 0)
             return;
         LinkedPointer<T> *node = list->Start();
@@ -96,7 +84,7 @@ public:
         this->m_rptSeq = 0;
     }
 
-    inline LinkedPointer<T>* GetQuote(PointerList<T> *list, T *info) {
+    inline LinkedPointer<T>* GetQuote(PointerListLite<T> *list, T *info) {
         LinkedPointer<T> *node = list->Start();
         if(node == 0)
             return 0;
@@ -113,21 +101,19 @@ public:
         return list->Add(info);
     }
 
-
     inline LinkedPointer<QuoteInfo>* GetAggregatedBuyQuote(Decimal *price) {
         LinkedPointer<QuoteInfo> *node = this->m_aggregatedBuyQuoteList->Start();
         double value = price->Calculate();
         QuoteInfo *quote = 0;
 
-        if(node != null) {
+        if(node != 0) {
             while (true) {
                 quote = node->Data();
                 if (quote->Price()->Value < value) {
-                    LinkedPointer<QuoteInfo> *curr = this->m_aggregatedBuyQuoteList->Pop();
+                    LinkedPointer<QuoteInfo> *curr = this->m_aggregatedBuyQuoteList->Insert(node);
                     quote = curr->Data();
                     quote->Price(price);
                     quote->Size(0);
-                    this->m_aggregatedBuyQuoteList->Insert(node, curr);
                     return curr;
                 }
                 else if(quote->Price()->Value == value)
@@ -137,11 +123,10 @@ public:
                 node = node->Next();
             }
         }
-        LinkedPointer<QuoteInfo> *curr = this->m_aggregatedBuyQuoteList->Pop();
+        LinkedPointer<QuoteInfo> *curr = this->m_aggregatedBuyQuoteList->Add();
         quote = curr->Data();
         quote->Price(price);
         quote->Size(0);
-        this->m_aggregatedBuyQuoteList->Add(curr);
         return curr;
     }
 
@@ -150,15 +135,14 @@ public:
         double value = price->Calculate();
         QuoteInfo *quote = 0;
 
-        if(node != null) {
+        if(node != 0) {
             while (true) {
                 quote = node->Data();
                 if (quote->Price()->Value > value) {
-                    LinkedPointer<QuoteInfo> *curr = this->m_aggregatedSellQuoteList->Pop();
+                    LinkedPointer<QuoteInfo> *curr = this->m_aggregatedSellQuoteList->Insert(node);
                     quote = curr->Data();
                     quote->Price(price);
                     quote->Size(0);
-                    this->m_aggregatedSellQuoteList->Insert(node, curr);
                     return curr;
                 }
                 else if(quote->Price()->Value == value) {
@@ -169,11 +153,10 @@ public:
                 node = node->Next();
             }
         }
-        LinkedPointer<QuoteInfo> *curr = this->m_aggregatedSellQuoteList->Pop();
+        LinkedPointer<QuoteInfo> *curr = this->m_aggregatedSellQuoteList->Add();
         quote = curr->Data();
         quote->Price(price);
         quote->Size(0);
-        this->m_aggregatedSellQuoteList->Add(curr);
         return curr;
     }
 
@@ -416,5 +399,27 @@ public:
         SymbolInfo()->DecSessionsToRecvSnapshotCount();
     }
 };
+
+template <typename T> PointerList<T>* OrderInfo<T>::m_itemsPool = 0;
+template <typename T> PointerList<QuoteInfo>* OrderInfo<T>::m_aggregatedItemsPool = 0;
+
+template <typename T> OrderInfo<T>::OrderInfo() {
+    if(OrderInfo::m_itemsPool == 0)
+        OrderInfo::m_itemsPool = new PointerList<T>(RobotSettings::MarketDataMaxEntriesCount, false);
+    if(OrderInfo::m_aggregatedItemsPool == 0)
+        OrderInfo::m_aggregatedItemsPool = new PointerList<QuoteInfo>(RobotSettings::MarketDataMaxEntriesCount, true);
+
+    this->m_entryInfo = new MDEntrQueue<T>();
+
+    this->m_sellQuoteList = new PointerListLite<T>(OrderInfo<T>::m_itemsPool);
+    this->m_buyQuoteList = new PointerListLite<T>(OrderInfo<T>::m_itemsPool);
+    this->m_aggregatedBuyQuoteList = new PointerListLite<QuoteInfo>(OrderInfo<T>::m_aggregatedItemsPool);
+    this->m_aggregatedSellQuoteList = new PointerListLite<QuoteInfo>(OrderInfo<T>::m_aggregatedItemsPool);
+
+    this->m_tradingSession = new SizedArray();
+    this->m_shouldProcessSnapshot = false;
+    this->m_rptSeq = 0;
+    this->m_snapshotProcessedCount = 0;
+}
 
 #endif //HFT_ROBOT_ORDERINFO_H

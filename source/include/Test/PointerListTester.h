@@ -73,10 +73,200 @@ public:
         }
     }
 
+    void TestPointerListLiteAddRemove() {
+        PointerList<SimpleData> *pool = new PointerList<SimpleData>(100, true);
+        PointerListLite<SimpleData> *list = new PointerListLite<SimpleData>(pool);
+
+        if(list->Count() != 0)
+            throw;
+        if(list->Start() != 0)
+            throw;
+        if(pool->Count() != 0)
+            throw;
+        if(pool->CalcPoolCount() != 100)
+            throw;
+
+        list->Add();
+        if(list->Count() != 1)
+            throw;
+        if(list->Start() == 0)
+            throw;
+        if(pool->Count() != 1)
+            throw;
+        if(pool->CalcPoolCount() != 99)
+            throw;
+
+        list->Add();
+        if(list->Count() != 2)
+            throw;
+        if(list->Start() == 0)
+            throw;
+        if(pool->Count() != 2)
+            throw;
+        if(pool->CalcPoolCount() != 98)
+            throw;
+
+        list->Add();
+        if(list->Count() != 3)
+            throw;
+
+        LinkedPointer<SimpleData> *i0 = list->Start();
+        LinkedPointer<SimpleData> *i1 = list->Start()->Next();
+        LinkedPointer<SimpleData> *i2 = list->Start()->Next()->Next();
+
+        list->Remove(list->Start()->Next());
+        if(list->Count() != 2)
+            throw;
+        if(pool->Count() != 2)
+            throw;
+        if(pool->CalcPoolCount() != 98)
+            throw;
+        if(list->Start() != i0)
+            throw;
+        if(list->Start()->Next() != i2)
+            throw;
+        if(list->End() != i2)
+            throw;
+
+        list->Remove(list->End());
+        if(list->Count() != 1)
+            throw;
+        if(pool->Count() != 1)
+            throw;
+        if(pool->CalcPoolCount() != 99)
+            throw;
+        if(list->Start() == i0)
+            throw;
+
+        list->Remove(i0);
+        if(list->Count() != 0)
+            throw;
+        if(pool->Count() != 0)
+            throw;
+        if(pool->CalcPoolCount() != 100)
+            throw;
+        if(list->Start() != 0)
+            throw;
+    }
+
+    void TestPointerListLiteInsert() {
+        PointerList<SimpleData> *pool = new PointerList<SimpleData>(100, false);
+        PointerListLite<SimpleData> *list = new PointerListLite<SimpleData>(pool);
+
+        list->Add();
+        LinkedPointer<SimpleData> *i0 = list->Start();
+        LinkedPointer<SimpleData> *newi0 = list->Insert(list->Start());
+
+        if(list->Start() != newi0)
+            throw;
+        if(list->Count() != 2)
+            throw;
+        if(pool->Count() != 2)
+            throw;
+        if(pool->CalcPoolCount() != 98)
+            throw;
+        if(newi0->Next() != i0)
+            throw;
+        if(i0->Prev() != newi0)
+            throw;
+        if(list->End() != i0)
+            throw;
+
+        LinkedPointer<SimpleData> *i1 = list->Insert(i0);
+        if(list->Count() != 3)
+            throw;
+        if(pool->Count() != 3)
+            throw;
+        if(pool->CalcPoolCount() != 97)
+            throw;
+        if(list->Start() != newi0)
+            throw;
+        if(newi0->Next() != i1)
+            throw;
+        if(i1->Prev() != newi0)
+            throw;
+        if(list->End() != i0)
+            throw;
+        if(i0->Prev() != i1)
+            throw;
+        if(i1->Next() != i0)
+            throw;
+    }
+
+    void TestPointerListLiteClear() {
+        PointerList<SimpleData> *pool = new PointerList<SimpleData>(100, false);
+        PointerListLite<SimpleData> *list = new PointerListLite<SimpleData>(pool);
+
+        list->Clear();
+        if(list->Start() != 0)
+            throw;
+        if(list->Count() != 0)
+            throw;
+        if(list->End() == 0)
+            throw;
+        if(pool->Count() != 0)
+            throw;
+        if(pool->CalcPoolCount() != 100)
+            throw;
+
+        list->Add();
+        list->Clear();
+
+        if(list->Start() != 0)
+            throw;
+        if(list->Count() != 0)
+            throw;
+        if(list->End() == 0)
+            throw;
+        if(pool->Count() != 0)
+            throw;
+        if(pool->CalcPoolCount() != 100)
+            throw;
+
+        list->Add();
+        list->Add();
+        list->Clear();
+
+        if(list->Start() != 0)
+            throw;
+        if(list->Count() != 0)
+            throw;
+        if(list->End() == 0)
+            throw;
+        if(pool->Count() != 0)
+            throw;
+        if(pool->CalcPoolCount() != 100)
+            throw;
+
+        list->Add();
+        list->Insert(list->Start());
+        list->Insert(list->Start());
+        list->Clear();
+
+        if(list->Start() != 0)
+            throw;
+        if(list->Count() != 0)
+            throw;
+        if(list->End() == 0)
+            throw;
+        if(pool->Count() != 0)
+            throw;
+        if(pool->CalcPoolCount() != 100)
+            throw;
+    }
+
+    void TestPointerListLite() {
+        TestPointerListLiteAddRemove();
+        TestPointerListLiteInsert();
+        TestPointerListLiteClear();
+    }
+
     void Test() {
         TestDefault();
         TestAdditionalAllocate();
         TestClear();
+
+        TestPointerListLite();
     }
 };
 

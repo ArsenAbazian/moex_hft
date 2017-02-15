@@ -137,6 +137,16 @@ public:
     void PrintStatisticsInstrumentStatus(FeedConnection *conn);
     void PrintStatisticsHistoricalReplay(FeedConnection *conn);
     void PrintStatistics(FastProtocolManager *manager);
+    template<typename T> void PrintQuotes(const char *quotesName, PointerListLite<T> *quotes) {
+        printf("Start %s\n", quotesName);
+        this->AddTabs();
+        for(int quoteIndex = 0; quoteIndex < quotes->Count(); quoteIndex++) {
+            T *info = quotes->Item(quoteIndex);
+            printf("Quote %s Price %g Size %g\n", this->GetString(info->MDEntryID, info->MDEntryIDLength, 0), info->MDEntryPx.Value, info->MDEntrySize.Value);
+        }
+        this->RemoveTabs();
+        printf("End %s\n", quotesName);
+    }
     template<typename T> void PrintQuotes(const char *quotesName, PointerList<T> *quotes) {
         printf("Start %s\n", quotesName);
         this->AddTabs();
@@ -147,7 +157,7 @@ public:
         this->RemoveTabs();
         printf("End %s\n", quotesName);
     }
-    void PrintStatistics(const char *quotesName, PointerList<QuoteInfo> *quotes) {
+    void PrintStatistics(const char *quotesName, PointerListLite<QuoteInfo> *quotes) {
         printf("Start %s\n", quotesName);
         this->AddTabs();
         for(int quoteIndex = 0; quoteIndex < quotes->Count(); quoteIndex++) {
@@ -290,6 +300,16 @@ public:
     void PrintStatisticsInstrumentStatusXml(FeedConnection *conn);
     void PrintStatisticsHistoricalReplayXml(FeedConnection *conn);
     void PrintStatisticsXml(FastProtocolManager *manager);
+    template<typename T> void PrintQuotesXml(const char *quotesName, PointerListLite<T> *quotes) {
+        fprintf(fp, "<QuotesList Name=\"%s\"/>\n", quotesName);
+        this->AddTabs();
+        for(int quoteIndex = 0; quoteIndex < quotes->Count(); quoteIndex++) {
+            T *info = quotes->Item(quoteIndex);
+            fprintf(fp, "<Item Name=\"%s\" Price=\"%g\" Size=\"%g\"/>\n", this->GetString(info->MDEntryID, info->MDEntryIDLength, 0), info->MDEntryPx.Value, info->MDEntrySize.Value);
+        }
+        this->RemoveTabs();
+        fprintf(fp, "</QuotesList>\n");
+    }
     template<typename T> void PrintQuotesXml(const char *quotesName, PointerList<T> *quotes) {
         fprintf(fp, "<QuotesList Name=\"%s\"/>\n", quotesName);
         this->AddTabs();
@@ -300,7 +320,7 @@ public:
         this->RemoveTabs();
         fprintf(fp, "</QuotesList>\n");
     }
-    void PrintStatisticsXml(const char *quotesName, PointerList<QuoteInfo> *quotes) {
+    void PrintStatisticsXml(const char *quotesName, PointerListLite<QuoteInfo> *quotes) {
         fprintf(fp, "<QuotesList Name=\"%s\"/>\n", quotesName);
         this->AddTabs();
         for(int quoteIndex = 0; quoteIndex < quotes->Count(); quoteIndex++) {

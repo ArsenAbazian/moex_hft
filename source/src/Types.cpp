@@ -17,6 +17,6 @@ unsigned int RobotSettings::DefaultFeedConnectionPacketCount = 2000000;
 
 int RobotSettings::MarketDataMaxSymbolsCount = 2600;
 int RobotSettings::MarketDataMaxSessionsCount = 8;
-int RobotSettings::MarketDataMaxEntriesCount = 1024;
+int RobotSettings::MarketDataMaxEntriesCount = 1024 * 2000;
 int RobotSettings::MaxSecurityDefinitionCount = 2600;
 int RobotSettings::HistoricalReplayMaxMessageRequestCount = 128;

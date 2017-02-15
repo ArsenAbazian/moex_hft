@@ -221,6 +221,10 @@ public:
     }
 
     void Test() {
+        RobotSettings::MarketDataMaxSymbolsCount = 10;
+        RobotSettings::MarketDataMaxSessionsCount = 32;
+        RobotSettings::MarketDataMaxEntriesCount = 32 * 10;
+
         StatisticsTesterFond stFond;
         stFond.Test();
 
@@ -229,10 +233,6 @@ public:
 
         /*SymbolManagerTester ht;
         ht.Test();*/
-
-        RobotSettings::MarketDataMaxSymbolsCount = 10;
-        RobotSettings::MarketDataMaxSessionsCount = 32;
-        RobotSettings::MarketDataMaxEntriesCount = 32;
 
         OrderTesterFond otFond;
         otFond.Test();
@@ -245,11 +245,6 @@ public:
         SecurityDefinitionTester ids;
         ids.Test();
 
-        RobotSettings::MarketDataMaxSymbolsCount = 10;
-        RobotSettings::MarketDataMaxSessionsCount = 5;
-        RobotSettings::MarketDataMaxEntriesCount = 32;
-
-
         //TestSaveIdfSymbols();
 
         TradeTesterFond ttFond;
@@ -260,10 +255,6 @@ public:
 
         //TestLog("/home/arsen/Documents/hft_robot/hft/test/log5");
         //TestLog("/home/arsen/Documents/hft_robot/hft/test/log6");
-
-        RobotSettings::MarketDataMaxSymbolsCount = 128;
-        RobotSettings::MarketDataMaxSessionsCount = 128;
-        RobotSettings::MarketDataMaxEntriesCount = 256;
     }
 };
 

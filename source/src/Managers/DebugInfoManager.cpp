@@ -535,6 +535,7 @@ void DebugInfoManager::PrintStatisticsXml(const char *fileName, FeedChannel *cha
     this->PrintStatisticsXml(channel->InstrumentStatus());
     this->RemoveTabs();
     fprintf(fp, "</FeedChannel>\n");
+    fclose(fp);
 }
 
 void DebugInfoManager::PrintStatisticsIncrementalXml(FeedConnection *conn) {

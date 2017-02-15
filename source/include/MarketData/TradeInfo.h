@@ -13,7 +13,9 @@
 template <typename T> class MarketSymbolInfo;
 
 template <typename T> class TradeInfo {
-    PointerList<T>      *m_trades;
+    static PointerList<T>               *m_itemsPool;
+
+    PointerListLite<T>      *m_trades;
     MDEntrQueue<T>      *m_entryInfo;
 
     bool                 m_used;
@@ -24,14 +26,7 @@ template <typename T> class TradeInfo {
     int                  m_snapshotProcessedCount;
 
 public:
-    TradeInfo() {
-        this->m_entryInfo = new MDEntrQueue<T>();
-        this->m_trades = new PointerList<T>(RobotSettings::MarketDataMaxEntriesCount);
-        this->m_tradingSession = new SizedArray();
-        this->m_shouldProcessSnapshot = false;
-        this->m_rptSeq = 0;
-        this->m_snapshotProcessedCount = 0;
-    }
+    TradeInfo();
     ~TradeInfo() {
         delete this->m_entryInfo;
         delete this->m_trades;
@@ -49,10 +44,10 @@ public:
 
     inline MDEntrQueue<T>* EntriesQueue() { return this->m_entryInfo; }
 
-    inline PointerList<T>* Trades() { return this->m_trades; }
+    inline PointerListLite<T>* Trades() { return this->m_trades; }
     inline bool Used() { return this->m_used; }
     inline void Used(bool used) { this->m_used = used; }
-    inline void Clear(PointerList<T> *list) {
+    inline void Clear(PointerListLite<T> *list) {
         if(list->Count() == 0)
             return;
         LinkedPointer<T> *node = list->Start();
@@ -184,5 +179,19 @@ public:
         SymbolInfo()->DecSessionsToRecvSnapshotCount();
     }
 };
+
+template <typename T> PointerList<T>* TradeInfo<T>::m_itemsPool = 0;
+
+template <typename T> TradeInfo<T>::TradeInfo(){
+    if(TradeInfo::m_itemsPool == 0)
+        TradeInfo::m_itemsPool = new PointerList<T>(RobotSettings::MarketDataMaxEntriesCount, false);
+
+    this->m_entryInfo = new MDEntrQueue<T>();
+    this->m_trades = new PointerListLite<T>(TradeInfo::m_itemsPool);
+    this->m_tradingSession = new SizedArray();
+    this->m_shouldProcessSnapshot = false;
+    this->m_rptSeq = 0;
+    this->m_snapshotProcessedCount = 0;
+}
 
 #endif //HFT_ROBOT_TRADEINFO_H

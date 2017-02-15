@@ -314,6 +314,8 @@ public:
     PointerListLite(PointerList<T> *globalPool) {
         this->m_pool = globalPool;
         this->m_head = this->m_tail = this->m_pool->Pop();
+        this->m_tail->Next(0);
+        this->m_head->Prev(0);
         this->m_count = 0;
     }
     ~PointerListLite() {
@@ -323,6 +325,7 @@ public:
         this->m_pool->m_tail->Next(this->m_head->Next());
         this->m_pool->m_tail = this->m_tail;
         this->m_pool->m_count -= this->m_count;
+        this->m_count = 0;
         this->m_tail = this->m_head;
         this->m_head->Next(0);
     }
@@ -339,12 +342,24 @@ public:
         this->m_count++;
         return node;
     }
+    inline LinkedPointer<T>* Add(T *data) {
+        LinkedPointer<T> *node = this->Add();
+        node->Data(data);
+        return node;
+    }
     inline LinkedPointer<T>* Insert(LinkedPointer<T> *insertBefore) {
         LinkedPointer<T> *node = this->m_pool->Pop();
-        LinkedPointer<T> *next = insertBefore->Next();
-        insertBefore->Next(node);
-        node->Next(next);
+        LinkedPointer<T> *prev = insertBefore->Prev();
+        node->Prev(prev);
+        prev->Next(node);
+        node->Next(insertBefore);
+        insertBefore->Prev(node);
         this->m_count++;
+        return node;
+    }
+    inline LinkedPointer<T>* Insert(LinkedPointer<T> *insertBefore, T *data) {
+        LinkedPointer<T> *node = this->Insert(insertBefore);
+        node->Data(data);
         return node;
     }
     inline void Remove(LinkedPointer<T> *node) {
