@@ -322,8 +322,11 @@ public:
         Clear();
     }
     inline void Clear() {
-        this->m_pool->m_tail->Next(this->m_head->Next());
-        this->m_pool->m_tail = this->m_tail;
+        if(this->m_count == 0)
+            return;
+        this->m_pool->m_poolTail->Next(this->m_head->Next());
+        this->m_head->Prev(this->m_pool->m_poolTail);
+        this->m_pool->m_poolTail = this->m_tail;
         this->m_pool->m_count -= this->m_count;
         this->m_count = 0;
         this->m_tail = this->m_head;
@@ -339,6 +342,7 @@ public:
         this->m_tail->Next(node);
         node->Prev(this->m_tail);
         this->m_tail = node;
+        node->Next(0);
         this->m_count++;
         return node;
     }

@@ -26,7 +26,6 @@
       <sourceFolder url="file://$MODULE_DIR$/source/src/Fix/FixTypes.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/src/Fix/FixProtocolManager.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/src/MarketData/StatisticInfo.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/source/src/MarketData/OrderInfo.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/src/Fast/FastProtocolManager.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/src/Managers/LogManager.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/src/Managers/SocketBufferManager.cpp" isTestSource="false" />

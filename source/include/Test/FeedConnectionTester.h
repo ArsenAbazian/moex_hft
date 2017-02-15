@@ -225,11 +225,11 @@ public:
         RobotSettings::MarketDataMaxSessionsCount = 32;
         RobotSettings::MarketDataMaxEntriesCount = 32 * 10;
 
-        StatisticsTesterFond stFond;
-        stFond.Test();
-
         PointerListTester pt;
         pt.Test();
+
+        StatisticsTesterFond stFond;
+        stFond.Test();
 
         /*SymbolManagerTester ht;
         ht.Test();*/

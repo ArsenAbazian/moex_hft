@@ -81,9 +81,11 @@ public:
             throw;
         if(list->Start() != 0)
             throw;
-        if(pool->Count() != 0)
+        if(pool->Count() != 1)
             throw;
-        if(pool->CalcPoolCount() != 100)
+        if(pool->CalcPoolCount() != 99)
+            throw;
+        if(list->End()->Next() != 0)
             throw;
 
         list->Add();
@@ -91,9 +93,11 @@ public:
             throw;
         if(list->Start() == 0)
             throw;
-        if(pool->Count() != 1)
+        if(pool->Count() != 2)
             throw;
-        if(pool->CalcPoolCount() != 99)
+        if(pool->CalcPoolCount() != 98)
+            throw;
+        if(list->End()->Next() != 0)
             throw;
 
         list->Add();
@@ -101,13 +105,17 @@ public:
             throw;
         if(list->Start() == 0)
             throw;
-        if(pool->Count() != 2)
+        if(pool->Count() != 3)
             throw;
-        if(pool->CalcPoolCount() != 98)
+        if(pool->CalcPoolCount() != 97)
+            throw;
+        if(list->End()->Next() != 0)
             throw;
 
         list->Add();
         if(list->Count() != 3)
+            throw;
+        if(list->End()->Next() != 0)
             throw;
 
         LinkedPointer<SimpleData> *i0 = list->Start();
@@ -117,9 +125,9 @@ public:
         list->Remove(list->Start()->Next());
         if(list->Count() != 2)
             throw;
-        if(pool->Count() != 2)
+        if(pool->Count() != 3)
             throw;
-        if(pool->CalcPoolCount() != 98)
+        if(pool->CalcPoolCount() != 97)
             throw;
         if(list->Start() != i0)
             throw;
@@ -127,25 +135,31 @@ public:
             throw;
         if(list->End() != i2)
             throw;
+        if(list->End()->Next() != 0)
+            throw;
 
         list->Remove(list->End());
         if(list->Count() != 1)
             throw;
-        if(pool->Count() != 1)
+        if(pool->Count() != 2)
             throw;
-        if(pool->CalcPoolCount() != 99)
+        if(pool->CalcPoolCount() != 98)
             throw;
-        if(list->Start() == i0)
+        if(list->Start() != i0)
+            throw;
+        if(list->End()->Next() != 0)
             throw;
 
         list->Remove(i0);
         if(list->Count() != 0)
             throw;
-        if(pool->Count() != 0)
+        if(pool->Count() != 1)
             throw;
-        if(pool->CalcPoolCount() != 100)
+        if(pool->CalcPoolCount() != 99)
             throw;
         if(list->Start() != 0)
+            throw;
+        if(list->End()->Next() != 0)
             throw;
     }
 
@@ -161,9 +175,9 @@ public:
             throw;
         if(list->Count() != 2)
             throw;
-        if(pool->Count() != 2)
+        if(pool->Count() != 3)
             throw;
-        if(pool->CalcPoolCount() != 98)
+        if(pool->CalcPoolCount() != 97)
             throw;
         if(newi0->Next() != i0)
             throw;
@@ -171,13 +185,15 @@ public:
             throw;
         if(list->End() != i0)
             throw;
+        if(list->End()->Next() != 0)
+            throw;
 
         LinkedPointer<SimpleData> *i1 = list->Insert(i0);
         if(list->Count() != 3)
             throw;
-        if(pool->Count() != 3)
+        if(pool->Count() != 4)
             throw;
-        if(pool->CalcPoolCount() != 97)
+        if(pool->CalcPoolCount() != 96)
             throw;
         if(list->Start() != newi0)
             throw;
@@ -190,6 +206,8 @@ public:
         if(i0->Prev() != i1)
             throw;
         if(i1->Next() != i0)
+            throw;
+        if(list->End()->Next() != 0)
             throw;
     }
 
@@ -204,9 +222,9 @@ public:
             throw;
         if(list->End() == 0)
             throw;
-        if(pool->Count() != 0)
+        if(pool->Count() != 1)
             throw;
-        if(pool->CalcPoolCount() != 100)
+        if(pool->CalcPoolCount() != 99)
             throw;
 
         list->Add();
@@ -218,9 +236,9 @@ public:
             throw;
         if(list->End() == 0)
             throw;
-        if(pool->Count() != 0)
+        if(pool->Count() != 1)
             throw;
-        if(pool->CalcPoolCount() != 100)
+        if(pool->CalcPoolCount() != 99)
             throw;
 
         list->Add();
@@ -233,9 +251,9 @@ public:
             throw;
         if(list->End() == 0)
             throw;
-        if(pool->Count() != 0)
+        if(pool->Count() != 1)
             throw;
-        if(pool->CalcPoolCount() != 100)
+        if(pool->CalcPoolCount() != 99)
             throw;
 
         list->Add();
@@ -249,9 +267,9 @@ public:
             throw;
         if(list->End() == 0)
             throw;
-        if(pool->Count() != 0)
+        if(pool->Count() != 1)
             throw;
-        if(pool->CalcPoolCount() != 100)
+        if(pool->CalcPoolCount() != 99)
             throw;
     }
 
