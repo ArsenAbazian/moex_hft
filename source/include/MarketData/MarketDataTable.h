@@ -133,6 +133,11 @@ public:
         this->m_snapshotItemHasEntriesQueue = this->m_snapshotEntries->HasEntries();
         this->m_allSessionsRecvSnapshot = this->m_snapshotSymbol->AllSessionsRecvSnapshot();
         this->m_snapshotItem->StartProcessSnapshotMessages();
+//        printf("start snapshot: entries queue = %d, sessions to go count = %d\n",
+//               this->m_snapshotEntries->MaxIndex() + 1,
+//               this->m_snapshotSymbol->SessionsToRecvSnapshotCount()
+//        );
+
     }
     inline bool EndProcessSnapshot() {
         bool res = this->m_snapshotItem->EndProcessSnapshotMessages();
@@ -148,7 +153,11 @@ public:
 //                   DebugInfoManager::Default->GetString(this->m_snapshotSymbol->Symbol(), 0));
             this->DecSymbolsToRecvSnapshotCount();
         }
-        printf("%d queue items and %d symbols to go\n", this->m_queueItemsCount, this->m_symbolsToRecvSnapshot); //TODO remove debug
+//        printf("end snapshot: entries queue = %d, sessions to go count = %d\n",
+//               this->m_snapshotEntries->MaxIndex() + 1,
+//               this->m_snapshotSymbol->SessionsToRecvSnapshotCount()
+//        );
+        //printf("%d queue items and %d symbols to go\n", this->m_queueItemsCount, this->m_symbolsToRecvSnapshot); //TODO remove debug
         this->m_snapshotItem->OnSnapshotProcessed();
         this->m_snapshotItem = 0;
         return res;
@@ -235,6 +244,7 @@ public:
         return res;
     }
     inline TABLEITEM<ITEMINFO>* SnapshotItem() { return this->m_snapshotItem; }
+    inline MarketSymbolInfo<TABLEITEM<ITEMINFO>>* SnapshotSymbol() { return this->m_snapshotSymbol; }
     inline bool HasQueueEntries() {
         return this->m_queueItemsCount > 0;
     }

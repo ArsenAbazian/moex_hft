@@ -72,6 +72,7 @@ protected:
 
     int                                         m_waitIncrementalMaxTimeMs;
     int                                         m_snapshotMaxTimeMs;
+    int                                         m_waitLostPacketTimeMs;
     int                                         m_maxLostPacketCountForStartSnapshot;
     bool                                        m_isLastIncrementalRecv;
 
@@ -301,10 +302,10 @@ protected:
         }
         else {
             //printf("%s -> %d size = %d\n", this->m_idName, msgSeqNum, size);
-            BinaryLogItem *item = DefaultLogManager::Default->WriteFast(this->m_idLogIndex,
-                                                                    LogMessageCode::lmcFeedConnection_ProcessMessage,
-                                                                    this->m_recvABuffer->BufferIndex(),
-                                                                    this->m_recvABuffer->CurrentItemIndex());
+//            BinaryLogItem *item = DefaultLogManager::Default->WriteFast(this->m_idLogIndex,
+//                                                                    LogMessageCode::lmcFeedConnection_ProcessMessage,
+//                                                                    this->m_recvABuffer->BufferIndex(),
+//                                                                    this->m_recvABuffer->CurrentItemIndex());
             this->m_waitTimer->Start();
             if(this->m_startMsgSeqNum == -1)
                 this->m_startMsgSeqNum = msgSeqNum;
@@ -429,40 +430,67 @@ protected:
     }
     inline bool ApplySnapshot_OLS_CURR() {
         this->PrepareDecodeSnapshotMessage(this->m_snapshotRouteFirst);
-        //CheckOLSCURR();
+        //printf("before decode %d\n", this->m_fastProtocolManager->GetOLSCURRItemInfoPool()->Count());
         FastOLSCURRInfo *info = (FastOLSCURRInfo *) this->m_fastProtocolManager->DecodeOLSCURR();
-        //CheckOLSCURR();
         this->m_incremental->OrderCurr()->ObtainSnapshotItem(info);
+        printf("%s %s session to go %d\n",
+               DebugInfoManager::Default->GetString(info->Symbol, info->SymbolLength, 0),
+               DebugInfoManager::Default->GetString(info->TradingSessionID, info->TradingSessionIDLength, 1),
+        this->m_incremental->OrderCurr()->SnapshotSymbol()->SessionsToRecvSnapshotCount());
         if(this->m_incremental->OrderCurr()->CheckProcessIfSessionInActualState(info)) {
             info->ReleaseUnused();
-            //CheckOLSCURR();
+            printf("%s %s in actual state. sessions to go %d\n",
+                   DebugInfoManager::Default->GetString(info->Symbol, info->SymbolLength, 0),
+                   DebugInfoManager::Default->GetString(info->TradingSessionID, info->TradingSessionIDLength, 1),
+                   this->m_incremental->OrderCurr()->SnapshotSymbol()->SessionsToRecvSnapshotCount());
+            printf("%d queue items and %d symbols to go\n",
+                   this->m_incremental->OrderCurr()->QueueEntriesCount(),
+                   this->m_incremental->OrderCurr()->SymbolsToRecvSnapshotCount());
             return true;
         }
         if(this->m_incremental->OrderCurr()->CheckProcessNullSnapshot(info)) {
             info->ReleaseUnused();
-            //CheckOLSCURR();
+            printf("%s %s null snapshot %d\n",
+                   DebugInfoManager::Default->GetString(info->Symbol, info->SymbolLength, 0),
+                   DebugInfoManager::Default->GetString(info->TradingSessionID, info->TradingSessionIDLength, 1),
+                   this->m_fastProtocolManager->GetOLSCURRItemInfoPool()->Count());
             return true;
         }
         if(!this->m_incremental->OrderCurr()->ShouldProcessSnapshot(info)) {
             info->ReleaseUnused();
-            //CheckOLSCURR();
+            printf("%s %s skip process snapshot %d\n",
+                   DebugInfoManager::Default->GetString(info->Symbol, info->SymbolLength, 0),
+                   DebugInfoManager::Default->GetString(info->TradingSessionID, info->TradingSessionIDLength, 1),
+                   this->m_fastProtocolManager->GetOLSCURRItemInfoPool()->Count());
             return true;
         }
         this->m_incremental->OrderCurr()->StartProcessSnapshot(info);
         this->m_incremental->OrderCurr()->ProcessSnapshot(info);
         info->ReleaseUnused();
+//        printf("%s %s process snapshot part0 %d\n",
+//               DebugInfoManager::Default->GetString(info->Symbol, info->SymbolLength, 0),
+//               DebugInfoManager::Default->GetString(info->TradingSessionID, info->TradingSessionIDLength, 1),
+//               this->m_fastProtocolManager->GetOLSCURRItemInfoPool()->Count());
         for(int i = this->m_snapshotRouteFirst + 1; i <= this->m_snapshotLastFragment; i++) {
             if(!this->PrepareDecodeSnapshotMessage(i))
                 continue;
-            //CheckOLSCURR();
             info = (FastOLSCURRInfo *) this->m_fastProtocolManager->DecodeOLSCURR();
-            //CheckOLSCURR();
             this->m_incremental->OrderCurr()->ProcessSnapshot(info);
-            //CheckOLSCURR();
             info->ReleaseUnused();
-            //CheckOLSCURR();
+//            printf("%s %s process snapshot part%d %d\n",
+//                   DebugInfoManager::Default->GetString(info->Symbol, info->SymbolLength, 0),
+//                   DebugInfoManager::Default->GetString(info->TradingSessionID, info->TradingSessionIDLength, 1),
+//                   i - this->m_snapshotRouteFirst,
+//                   this->m_fastProtocolManager->GetOLSCURRItemInfoPool()->Count());
         }
         this->m_incremental->OrderCurr()->EndProcessSnapshot();
+        printf("%s %s process snapshot. sessions to go %d\n",
+              DebugInfoManager::Default->GetString(info->Symbol, info->SymbolLength, 0),
+              DebugInfoManager::Default->GetString(info->TradingSessionID, info->TradingSessionIDLength, 1),
+              this->m_incremental->OrderCurr()->SnapshotSymbol()->SessionsToRecvSnapshotCount());
+        printf("%d queue items and %d symbols to go\n",
+               this->m_incremental->OrderCurr()->QueueEntriesCount(),
+               this->m_incremental->OrderCurr()->SymbolsToRecvSnapshotCount());
         return true;
     }
     inline bool ApplySnapshot_TLS_FOND() {
@@ -887,6 +915,7 @@ protected:
         //printf("start seeking route first %d %d\n", this->m_startMsgSeqNum, this->m_endMsgSeqNum);
         for(int i = this->m_startMsgSeqNum; i <= this->m_endMsgSeqNum; i++) {
             if (this->m_packets[i]->m_address == 0) {
+                //printf("try find route first but found lost %d\n", i);
                 this->m_startMsgSeqNum = i;
                 return false;
             }
@@ -894,6 +923,7 @@ protected:
             if (this->m_lastSnapshotInfo != 0 && this->m_lastSnapshotInfo->RouteFirst == 1) {
                 this->m_startMsgSeqNum = i;
                 this->m_snapshotRouteFirst = i;
+                //printf("find route first %d\n", i);
                 return true;
             }
             this->m_packets[i]->Clear();
@@ -906,18 +936,21 @@ protected:
         //printf("start seeking last fragment %d %d\n", this->m_startMsgSeqNum, this->m_endMsgSeqNum);
         if(this->m_lastSnapshotInfo != 0 && this->m_lastSnapshotInfo->LastFragment) {
             this->m_snapshotLastFragment = this->m_startMsgSeqNum;
+            //printf("found last fragment %d\n", this->m_startMsgSeqNum);
             this->m_startMsgSeqNum++;
             return true;
         }
         for(int i = this->m_startMsgSeqNum; i <= this->m_endMsgSeqNum; i++) {
             if (this->m_packets[i]->m_address == 0) {
                 this->m_startMsgSeqNum = i;
+                //printf("try find last fragment but found lost %d\n", i);
                 return false;
             }
             this->m_lastSnapshotInfo = this->GetSnapshotInfo(i);
             if(this->m_lastSnapshotInfo != 0 && this->m_lastSnapshotInfo->LastFragment == 1) {
                 this->m_startMsgSeqNum = i + 1;
                 this->m_snapshotLastFragment = i;
+                //printf("found last fragment %d\n", this->m_startMsgSeqNum);
                 return true;
             }
         }
@@ -975,6 +1008,7 @@ protected:
     inline void SkipLostPackets() {
         for(int i = this->m_startMsgSeqNum; i <= this->m_endMsgSeqNum; i++) {
             if(this->m_packets[i]->m_address != 0) {
+                printf("skip packets from %d to %d\n", this->m_startMsgSeqNum, i);
                 this->m_startMsgSeqNum = i;
                 return;
             }
@@ -1077,13 +1111,16 @@ protected:
         if(this->m_startMsgSeqNum == -1)
             return true;
 
-        if(this->HasPotentiallyLostPackets())
+        if(this->HasPotentiallyLostPackets()) {
             this->m_waitTimer->Activate(1);
+        }
         else
             this->m_waitTimer->Stop(1);
-        if(this->m_waitTimer->IsElapsedMilliseconds(1, this->WaitSnapshotMaxTimeMs())) {
-            if(this->m_snapshotRouteFirst != -1)
+        if(this->m_waitTimer->IsElapsedMilliseconds(1, this->WaitLostPacketTimeMs()) ||
+                this->m_endMsgSeqNum - this->m_startMsgSeqNum > 5) {
+            if(this->m_snapshotRouteFirst != -1) {
                 this->ClearPackets(this->m_snapshotRouteFirst, this->m_startMsgSeqNum);
+            }
             this->SkipLostPackets();
             this->m_waitTimer->Stop(1);
             this->m_snapshotRouteFirst = -1;
@@ -1705,6 +1742,8 @@ public:
     inline int WaitIncrementalMaxTimeMs() { return this->m_waitIncrementalMaxTimeMs; }
     inline void WaitSnapshotMaxTimeMs(int timeMs) { this->m_snapshotMaxTimeMs = timeMs; }
     inline int WaitSnapshotMaxTimeMs() { return this->m_snapshotMaxTimeMs; }
+    inline int WaitLostPacketTimeMs() { return this->m_waitLostPacketTimeMs; }
+    inline void WaitLostPacketTimeMs(int value) { this->m_waitLostPacketTimeMs = value; }
 
     inline void ClearMessages() {
         for(int i = 0;i < RobotSettings::DefaultFeedConnectionPacketCount; i++)

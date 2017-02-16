@@ -4,6 +4,7 @@
 #include "DebugInfoManager.h"
 #include "../MarketData/StatisticInfo.h"
 #include "../FeedChannel.h"
+//#define ENABLE_LOG
 
 DebugInfoManager* DebugInfoManager::Default = new DebugInfoManager();
 
@@ -199,18 +200,23 @@ void DebugInfoManager::PrintTotalBidList(const char *name, PointerListLite<Stati
 }
 
 void DebugInfoManager::Log(SizedArray *symbol, SizedArray *trading, const char *string, PointerListLite<StatisticItemDecimal> *list) {
+#ifdef ENABLE_LOG
     StatisticItemDecimal *value = list->End()->Data();
     printf(" %s %s %s ", GetString(symbol, 0), GetString(trading, 1), string);
     printf("Time = %ld Value = %g. %d Items \n", value->Time(), value->Value()->Calculate(), list->Count());
+#endif
 }
 
 void DebugInfoManager::Log(SizedArray *symbol, SizedArray *trading, const char *string, PointerListLite<StatisticItemDecimal2> *list) {
+#ifdef ENABLE_LOG
     StatisticItemDecimal2 *value = list->End()->Data();
     printf(" %s %s %s ", GetString(symbol, 0), GetString(trading, 1), string);
     printf("Time = %ld Px = %g Size = %g. %d Items \n", value->Time(), value->Value()->Calculate(), value->Value2()->Calculate(), list->Count());
+#endif
 }
 
 void DebugInfoManager::Log(SizedArray *symbol, SizedArray *trading, const char *string, PointerListLite<StatisticItemLastDealInfo> *list) {
+#ifdef ENABLE_LOG
     StatisticItemLastDealInfo *value = list->End()->Data();
     printf(" %s %s %s ", GetString(symbol, 0), GetString(trading, 1), string);
     printf("Time = %ld Px = %g Size = %g DealTime = %u TradeValue = %g NetChangePrevDayPtr = %g ChangeFromWAPrice = %g. %d Items \n",
@@ -222,9 +228,11 @@ void DebugInfoManager::Log(SizedArray *symbol, SizedArray *trading, const char *
            value->NetChangePrevDay()->Calculate(),
            value->ChangeFromWAPrice()->Calculate(),
            list->Count());
+#endif
 }
 
 void DebugInfoManager::Log(SizedArray *symbol, SizedArray *trading, const char *string, PointerListLite<StatisticItemIndexList> *list) {
+#ifdef ENABLE_LOG
     StatisticItemIndexList *value = list->End()->Data();
     printf(" %s %s %s ", GetString(symbol, 0), GetString(trading, 1), string);
     printf("Time = %ld Px = %g Size = %g TradeValue = %g. %d Items \n",
@@ -233,21 +241,27 @@ void DebugInfoManager::Log(SizedArray *symbol, SizedArray *trading, const char *
            value->Size()->Calculate(),
            value->TradeValue()->Calculate(),
            list->Count());
+#endif
 }
 
 void DebugInfoManager::Log(SizedArray *symbol, SizedArray *trading, const char *string, PointerListLite<StatisticItemTotalBid> *list) {
+#ifdef ENABLE_LOG
     StatisticItemTotalBid *value = list->End()->Data();
     printf(" %s %s %s ", GetString(symbol, 0), GetString(trading, 1), string);
     printf("Time = %ld Value = %g BidNbOr = %d. %d Items \n", value->Time(), value->Size()->Calculate(), value->BidNbOr(), list->Count());
+#endif
 }
 
 void DebugInfoManager::Log(SizedArray *symbol, SizedArray *trading, const char *string, PointerListLite<StatisticItemTotalOffer> *list) {
+#ifdef ENABLE_LOG
     StatisticItemTotalOffer *value = list->End()->Data();
     printf(" %s %s %s ", GetString(symbol, 0), GetString(trading, 1), string);
     printf("Time = %ld Value = %g OfferNbOr = %d. %d Items \n", value->Time(), value->Size()->Calculate(), value->OfferNbOr(), list->Count());
+#endif
 }
 
 void DebugInfoManager::Log(SizedArray *symbol, SizedArray *trading, const char *string, PointerListLite<StatisticItemTransactionsMagnitude> *list) {
+#ifdef ENABLE_LOG
     StatisticItemTransactionsMagnitude *value = list->End()->Data();
     printf(" %s %s %s ", GetString(symbol, 0), GetString(trading, 1), string);
     printf("Time = %ld Size = %g TotalNumOfTrades = %u TradeValue = %g. %d Items \n",
@@ -256,10 +270,13 @@ void DebugInfoManager::Log(SizedArray *symbol, SizedArray *trading, const char *
            value->TotalNumOfTrades(),
            value->TradeValue()->Calculate(),
            list->Count());
+#endif
 }
 
 void DebugInfoManager::Log(SizedArray *symbol, SizedArray *trading, const char *string, char *entryId, int entryIdLength, Decimal *price, Decimal *size) {
+#ifdef ENABLE_LOG
     printf("%s %s %s %s Price = %g Size = %g\n", GetString(symbol, 0), GetString(trading, 1), string, GetString(entryId, entryIdLength, 2), price->Calculate(), size->Calculate());
+#endif
 }
 
 void DebugInfoManager::PrintStatistics(FeedChannel *channel) {

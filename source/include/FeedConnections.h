@@ -116,8 +116,8 @@ public:
 
         info->m_incrementalOLRCURRCount = 1024;
         info->m_incrementalOLRCURRAddCount = 256;
-        info->m_oLSCURRItemsCount = 2024;
-        info->m_oLSCURRItemsAddCount = 256;
+        info->m_oLSCURRItemsCount = 102400;
+        info->m_oLSCURRItemsAddCount = 10240;
         info->m_heartbeatCount = 10;
         info->m_heartbeatAddCount = 10;
         info->m_tradingSessionStatusCount = 10;
@@ -153,8 +153,8 @@ public:
 
         info->m_oLSCURRCount = 32;
         info->m_oLSCURRAddCount = 256;
-        info->m_oLSCURRItemsCount = 5012;
-        info->m_oLSCURRItemsAddCount = 1024;
+        info->m_oLSCURRItemsCount = 102400;
+        info->m_oLSCURRItemsAddCount = 10240;
         info->m_heartbeatCount = 10;
         info->m_heartbeatAddCount = 10;
         info->m_tradingSessionStatusCount = 10;

@@ -29,6 +29,7 @@ FeedConnection::FeedConnection(const char *id, const char *name, char value, Fee
 
     this->m_waitIncrementalMaxTimeMs = 1200;
     this->m_snapshotMaxTimeMs = 3000;
+    this->m_waitLostPacketTimeMs = 2;
     this->m_maxLostPacketCountForStartSnapshot = 0; // by default immediately start snapshot
 
     this->m_incremental = 0;
@@ -75,6 +76,7 @@ FeedConnection::FeedConnection() {
     this->m_waitTimer = new Stopwatch();
     this->m_waitIncrementalMaxTimeMs = 3000;
     this->m_snapshotMaxTimeMs = 3000;
+    this->m_waitLostPacketTimeMs = 2;
 
     this->m_tval = new struct timeval;
 
