@@ -130,6 +130,14 @@ private:
 		bzero(WinSockManager::m_recvCount, sizeof(int) * 256);
 		bzero(WinSockManager::m_registeredManagers, sizeof(WinSockManager*) * 256);
 	}
+	inline void PrintSocketInfo() {
+		struct sockaddr_in sin;
+		socklen_t  len = sizeof(sin);
+		if(getsockname(this->m_socket, (struct sockaddr*)&sin, &len) == -1)
+			printf("error getting socket info\n");
+		else
+			printf("socket %d port %d\n", this->m_socket, sin.sin_port);
+	}
 	inline bool ReconnectMulticast() {
 		DefaultLogManager::Default->StartLog(LogMessageCode::lmcWinSockManager_Reconnect, this->m_serverAddressLogIndex);
 
@@ -154,6 +162,12 @@ private:
 			return false;
 		}
 
+		int flag = 1;
+		if(setsockopt(this->m_socket,SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &flag, sizeof(flag)) < 0) {
+			DefaultLogManager::Default->EndLogErrNo(false, strerror(errno));
+			return false;
+		}
+
 		if(bind(this->m_socket, (struct sockaddr*)&(this->m_adress), sizeof(this->m_adress)) < 0) {
 			DefaultLogManager::Default->Write(LogMessageCode::lmcsocket_bind);
 			DefaultLogManager::Default->EndLogErrNo(false, strerror(errno));
@@ -165,6 +179,8 @@ private:
 			DefaultLogManager::Default->EndLogErrNo(false, strerror(errno));
 			return false;
 		}
+
+		this->PrintSocketInfo();
 
 		this->UpdatePoll();
 
@@ -237,6 +253,8 @@ public:
 
 	inline static bool HasRecvEvents() { return WinSockManager::m_pollRes > 0; }
 
+	inline int Socket() { return this->m_socket; }
+
 	inline bool Connect(char *server_address, unsigned short server_port) {
 		this->m_connectionType = WinSockConnectionType::wsTCP;
 		sprintf(this->m_fullAddress, "%s:%d (TCP)", server_address, server_port);
@@ -295,6 +313,12 @@ public:
 			return false;
 		}
 
+		int flag = 1;
+		if(setsockopt(this->m_socket,SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &flag, sizeof(flag)) < 0) {
+			DefaultLogManager::Default->EndLogErrNo(false, strerror(errno));
+			return false;
+		}
+
 		this->m_addressSize = sizeof(sockaddr_in);
 		bzero(&this->m_adress, sizeof(sockaddr_in));
 		this->m_adress.sin_addr.s_addr = htonl(INADDR_ANY);
@@ -317,11 +341,8 @@ public:
 			DefaultLogManager::Default->EndLogErrNo(false, strerror(errno));
 			return false;
 		}
-		int flag = 1;
-		if(setsockopt(this->m_socket,SOL_SOCKET, SO_REUSEADDR, &flag, sizeof(flag)) < 0) {
-			DefaultLogManager::Default->EndLogErrNo(false, strerror(errno));
-			return false;
-		}
+
+		this->PrintSocketInfo();
 
 		if(this->m_pollIndex == -1)
 			this->RegisterPoll();

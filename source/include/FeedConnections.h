@@ -352,8 +352,8 @@ public:
 
         info->m_incrementalOLRFONDCount = 1024;
         info->m_incrementalOLRFONDAddCount = 256;
-        info->m_oLSFONDItemsCount = 2024;
-        info->m_oLSFONDItemsAddCount = 256;
+        info->m_oLSFONDItemsCount = 202400;
+        info->m_oLSFONDItemsAddCount = 25600;
         info->m_heartbeatCount = 10;
         info->m_heartbeatAddCount = 10;
         info->m_tradingSessionStatusCount = 10;
@@ -389,8 +389,8 @@ public:
 
         info->m_oLSFONDCount = 1024;
         info->m_oLSFONDAddCount = 256;
-        info->m_oLSFONDItemsCount = 2024;
-        info->m_oLSFONDItemsAddCount = 256;
+        info->m_oLSFONDItemsCount = 202400;
+        info->m_oLSFONDItemsAddCount = 25600;
         info->m_heartbeatCount = 10;
         info->m_heartbeatAddCount = 10;
         info->m_tradingSessionStatusCount = 10;

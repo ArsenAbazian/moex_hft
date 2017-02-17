@@ -215,8 +215,18 @@ protected:
             this->m_endMsgSeqNum = msgSeqNum;
         }
 
-        if(this->m_packets[msgSeqNum]->m_address != 0) // TODO
-            return true;
+        if(this->m_packets[msgSeqNum]->m_address != 0) { // TODO
+            if(this->m_type == FeedConnectionType::Snapshot) {
+                printf("%s -> %d size = %d\n", this->m_idName, msgSeqNum, size);
+                if(msgSeqNum > this->m_endMsgSeqNum) {
+                    printf("old packet at %d end = %d\n", msgSeqNum, this->m_endMsgSeqNum);
+                }
+                else
+                    return true;
+            }
+            else
+                return true;
+        }
 
         buffer->SetCurrentItemSize(size);
 
@@ -243,15 +253,19 @@ protected:
                 this->m_startMsgSeqNum = msgSeqNum;
         }
         else {
-            this->m_waitTimer->Start();
             if(this->m_startMsgSeqNum == -1)
                 this->m_startMsgSeqNum = msgSeqNum;
             if(this->m_endMsgSeqNum < msgSeqNum)
                 this->m_endMsgSeqNum = msgSeqNum;
             if(this->m_endMsgSeqNum - msgSeqNum > 100) {
+                if(this->m_snapshotRouteFirst != -1)
+                    this->ClearPackets(this->m_snapshotRouteFirst, this->m_startMsgSeqNum);
+                this->ClearPackets(this->m_startMsgSeqNum, this->m_endMsgSeqNum);
                 this->m_startMsgSeqNum = msgSeqNum;
                 this->m_endMsgSeqNum = msgSeqNum;
             }
+            if(msgSeqNum < this->m_startMsgSeqNum)
+                return true;
         }
         FeedConnectionMessageInfo *info = this->m_packets[msgSeqNum];
         info->m_address = buffer->CurrentPos();
@@ -259,14 +273,24 @@ protected:
         info->m_requested = true;
         return true;
     }
-    inline bool ProcessServerCore(int size) {
+    inline bool ProcessServerCore(WinSockManager *socketManager, int size) {
         int msgSeqNum = *((UINT*)this->m_recvABuffer->CurrentPos());
         if(this->m_type == FeedConnectionType::InstrumentDefinition) {
             this->m_endMsgSeqNum = msgSeqNum;
         }
 
-        if(this->m_packets[msgSeqNum]->m_address != 0) // TODO
-            return true;
+        if(this->m_packets[msgSeqNum]->m_address != 0) { // TODO
+            if(this->m_type == FeedConnectionType::Snapshot) {
+                printf("%d  %s -> %d size = %d\n", socketManager->Socket(), this->m_idName, msgSeqNum, size);
+                if(msgSeqNum > this->m_endMsgSeqNum) {
+                    printf("old packet at %d end = %d\n", msgSeqNum, this->m_endMsgSeqNum);
+                }
+                else
+                    return true;
+            }
+            else
+                return true;
+        }
 
         this->m_recvABuffer->SetCurrentItemSize(size);
         //printf("%s -> %d size = %d\n", this->m_idName, msgSeqNum, size);
@@ -284,7 +308,7 @@ protected:
 //                                                                    this->m_recvABuffer->CurrentItemIndex());
         }
         else if(this->m_type == FeedConnectionType::InstrumentDefinition) {
-          printf("%s -> %d size = %d\n", this->m_idName, msgSeqNum, size);
+          printf("%d  %s -> %d size = %d\n", socketManager->Socket(), this->m_idName, msgSeqNum, size);
 //        BinaryLogItem *item = DefaultLogManager::Default->WriteFast(this->m_idLogIndex,
 //                                                                    LogMessageCode::lmcFeedConnection_ProcessMessage,
 //                                                                    this->m_recvABuffer->BufferIndex(),
@@ -301,20 +325,24 @@ protected:
                 this->m_startMsgSeqNum = msgSeqNum;
         }
         else {
-            //printf("%s -> %d size = %d\n", this->m_idName, msgSeqNum, size);
+            printf("%d  %s -> %d size = %d\n", socketManager->Socket(), this->m_idName, msgSeqNum, size);
 //            BinaryLogItem *item = DefaultLogManager::Default->WriteFast(this->m_idLogIndex,
 //                                                                    LogMessageCode::lmcFeedConnection_ProcessMessage,
 //                                                                    this->m_recvABuffer->BufferIndex(),
 //                                                                    this->m_recvABuffer->CurrentItemIndex());
-            this->m_waitTimer->Start();
             if(this->m_startMsgSeqNum == -1)
                 this->m_startMsgSeqNum = msgSeqNum;
             if(this->m_endMsgSeqNum < msgSeqNum)
                 this->m_endMsgSeqNum = msgSeqNum;
             if(this->m_endMsgSeqNum - msgSeqNum > 100) {
+                if(this->m_snapshotRouteFirst != -1)
+                    this->ClearPackets(this->m_snapshotRouteFirst, this->m_startMsgSeqNum);
+                this->ClearPackets(this->m_startMsgSeqNum, this->m_endMsgSeqNum);
                 this->m_startMsgSeqNum = msgSeqNum;
                 this->m_endMsgSeqNum = msgSeqNum;
             }
+            if(msgSeqNum < this->m_startMsgSeqNum)
+                return true;
         }
         FeedConnectionMessageInfo *info = this->m_packets[msgSeqNum];
         info->m_address = this->m_recvABuffer->CurrentPos();
@@ -336,7 +364,7 @@ protected:
         int size = socketManager->RecvSize();
         if(size == 0)
             return false;
-        return this->ProcessServerCore(size);
+        return this->ProcessServerCore(socketManager, size);
     }
 
     inline bool HasQueueEntries() {
@@ -846,21 +874,22 @@ protected:
 		}
         this->MarketTableEnterSnapshotMode();
         this->m_snapshot->StartNewSnapshot();
-		//DefaultLogManager::Default->WriteSuccess(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_StartListenSnapshot, true);
+		DefaultLogManager::Default->WriteSuccess(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_StartListenSnapshot, true);
 		return true;
 	}
     inline void UpdateMessageSeqNoAfterSnapshot() {
         this->m_startMsgSeqNum = this->m_endMsgSeqNum + 1;
     }
 	inline bool StopListenSnapshot() {
-		if(!this->m_snapshot->Stop()) {
+		printf("!!!!!!!!!!!!!!!!!!!!!!!!!!!!! STOP SNAPSHOT !!!!!!!!!!!!!!!!!!!!!!!!!\n");
+        if(!this->m_snapshot->Stop()) {
 			DefaultLogManager::Default->WriteSuccess(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_StopListenSnapshot, false);
 			return false;
 		}
-        this->m_startMsgSeqNum = this->m_endMsgSeqNum + 1;
+        //this->m_startMsgSeqNum = this->m_endMsgSeqNum + 1;
         this->MarketTableExitSnapshotMode();
 		this->UpdateMessageSeqNoAfterSnapshot();
-        //DefaultLogManager::Default->WriteSuccess(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_StopListenSnapshot, true);
+        DefaultLogManager::Default->WriteSuccess(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_StopListenSnapshot, true);
 		return true;
 	}
 	inline FastSnapshotInfo* GetSnapshotInfo(int index) {
@@ -897,18 +926,6 @@ protected:
 		this->m_nextState = state;
 		this->m_shouldUseNextState = true;
 	}
-
-    inline bool SnapshotMessageWaitTimeElapsed() {
-        if(!this->m_waitTimer->Active()) {
-            this->m_waitTimer->Start();
-            return false;
-        }
-        else if(this->m_waitTimer->ElapsedMilliseconds() > this->m_snapshotMaxTimeMs) {
-            this->m_waitTimer->Stop();
-            return true;
-        }
-        return false;
-    }
 
     FastSnapshotInfo *m_lastSnapshotInfo;
     inline bool FindRouteFirst() {
@@ -991,6 +1008,7 @@ protected:
         if(!FindLastFragment())
             return false;
 
+        printf("apply snapshot %d to %d\n", this->m_snapshotRouteFirst, this->m_snapshotLastFragment);
         ApplySnapshotCore();
         this->ClearPackets(this->m_snapshotRouteFirst, this->m_snapshotLastFragment);
 
@@ -1102,12 +1120,14 @@ protected:
     }
 
     inline bool Listen_Atom_Snapshot_Core() {
+        /*
         if(this->m_waitTimer->IsElapsedMilliseconds(this->m_snapshotMaxTimeMs)) {
             this->m_waitTimer->Stop();
             this->ReconnectSetNextState(FeedConnectionState::fcsListenSnapshot);
             return true;
         }
-
+        */
+        int prevStartMsgSeqNo = this->m_startMsgSeqNum; //TODO remove
         if(this->m_startMsgSeqNum == -1)
             return true;
 
@@ -1133,10 +1153,21 @@ protected:
         if(snapshotCount > 0)
             this->m_waitTimer->Reset();
 
+        int beforeIndex = this->m_snapshotRouteFirst != -1? this->m_snapshotRouteFirst: this->m_startMsgSeqNum;
+        for(int i = 0; i < beforeIndex; i++) {
+            if(this->m_packets[i]->m_address != 0) {
+                printf("not cleared... at %d before %d\n", i, this->m_startMsgSeqNum);
+            }
+        }
+
         return true;
     }
 
     inline bool Listen_Atom_Incremental_Core() {
+        // TODO remove hack
+        if(this->m_snapshot->State() == FeedConnectionState::fcsSuspend) {
+            this->m_packets[this->m_startMsgSeqNum]->m_address = 0; // force snapshot
+        }
         if(!this->ProcessIncrementalMessages())
             return false;
         if(this->m_snapshot->State() == FeedConnectionState::fcsSuspend) {
@@ -1152,6 +1183,7 @@ protected:
             }
         }
         else {
+            //printf("%d que entries and %d symbols to go\n", this->OrderCurr()->QueueEntriesCount(), this->OrderCurr()->SymbolsToRecvSnapshotCount());
             if(this->CanStopListeningSnapshot()) {
                 this->StopListenSnapshot();
                 this->m_waitTimer->Activate();
@@ -1194,6 +1226,15 @@ protected:
             if(this->m_reconnectCount > this->m_maxReconnectCount)
                 return false;
             return true;
+        }
+        if(this->protocol == FeedConnectionProtocol::UDP_IP) {
+            if (!this->socketBManager->Reconnect()) {
+                DefaultLogManager::Default->EndLog(false);
+                this->m_reconnectCount++;
+                if (this->m_reconnectCount > this->m_maxReconnectCount)
+                    return false;
+                return true;
+            }
         }
 #endif
         this->m_reconnectCount = 0;
@@ -1486,8 +1527,11 @@ protected:
             }
             else {
                 if(this->m_waitTimer->ElapsedSeconds(1) > this->WaitAnyPacketMaxTimeSec) {
+                    printf("%d entries and %d symbols to go.\n", this->m_incremental->OrderCurr()->QueueEntriesCount(), this->m_incremental->OrderCurr()->SymbolsToRecvSnapshotCount());
                     DefaultLogManager::Default->WriteSuccess(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_Listen_Atom_Snapshot, false);
-                    return false;
+                    ReconnectSetNextState(FeedConnectionState::fcsListenSnapshot);
+                    return true;
+                    //return false;
                 }
             }
         }
