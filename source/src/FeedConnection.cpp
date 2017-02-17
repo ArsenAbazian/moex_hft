@@ -56,6 +56,7 @@ FeedConnection::FeedConnection(const char *id, const char *name, char value, Fee
 
 	this->SetState(FeedConnectionState::fcsSuspend);
 
+    strcpy(this->m_channelName, "");
     this->m_orderTableFond = 0;
     this->m_orderTableCurr = 0;
     this->m_tradeTableFond = 0;
@@ -93,6 +94,7 @@ FeedConnection::FeedConnection() {
     this->m_requestMessageStartIndex = -1;
     this->m_securityStatusSnapshotActive = false;
     this->m_idfStopAfterUpdateAllMessages = false;
+    strcpy(this->m_channelName, "");
 
     this->m_type = FeedConnectionType::Incremental;
     this->m_packets = 0;

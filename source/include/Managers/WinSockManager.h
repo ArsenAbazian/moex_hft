@@ -180,7 +180,7 @@ private:
 			return false;
 		}
 
-		this->PrintSocketInfo();
+		//this->PrintSocketInfo();
 
 		this->UpdatePoll();
 
@@ -342,7 +342,7 @@ public:
 			return false;
 		}
 
-		this->PrintSocketInfo();
+		//this->PrintSocketInfo();
 
 		if(this->m_pollIndex == -1)
 			this->RegisterPoll();

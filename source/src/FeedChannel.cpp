@@ -28,6 +28,8 @@ FeedChannel::~FeedChannel() {
 
 void FeedChannel::SetConnection(FeedConnection *conn) { 
 	conn->SetSenderCompId(this->m_senderCompId);
+	conn->ChannelName(this->id);
+
 	if (strcmp(conn->IdName(), "MSR") == 0)
 		this->statisticsIncremental = conn;
 	if (strcmp(conn->IdName(), "MSS") == 0)

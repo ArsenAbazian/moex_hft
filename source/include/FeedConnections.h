@@ -33,10 +33,17 @@ public:
     FastObjectsAllocationInfo* CreateFastAllocationInfo() {
         FastObjectsAllocationInfo *info = new FastObjectsAllocationInfo();
 
+#ifndef TEST
         info->m_genericCount = 1024;
         info->m_genericAddCount = 256;
         info->m_genericItemsCount = 1024;
         info->m_genericItemsAddCount = 1024;
+#else
+        info->m_genericCount = 100;
+        info->m_genericAddCount = 100;
+        info->m_genericItemsCount = 100;
+        info->m_genericItemsAddCount = 100;
+#endif
         info->m_heartbeatCount = 10;
         info->m_heartbeatAddCount = 10;
         info->m_tradingSessionStatusCount = 10;
@@ -72,10 +79,17 @@ public:
     FastObjectsAllocationInfo* CreateFastAllocationInfo() {
         FastObjectsAllocationInfo *info = new FastObjectsAllocationInfo();
 
+#ifndef TEST
         info->m_genericCount = 1024;
         info->m_genericAddCount = 256;
         info->m_genericItemsCount = 1024;
         info->m_genericItemsAddCount = 256;
+#else
+        info->m_genericCount = 100;
+        info->m_genericAddCount = 100;
+        info->m_genericItemsCount = 100;
+        info->m_genericItemsAddCount = 100;
+#endif
         info->m_heartbeatCount = 10;
         info->m_heartbeatAddCount = 10;
         info->m_tradingSessionStatusCount = 10;
@@ -114,10 +128,17 @@ public:
     FastObjectsAllocationInfo* CreateFastAllocationInfo() {
         FastObjectsAllocationInfo *info = new FastObjectsAllocationInfo();
 
+#ifndef TEST
         info->m_incrementalOLRCURRCount = 1024;
         info->m_incrementalOLRCURRAddCount = 256;
         info->m_oLSCURRItemsCount = 102400;
         info->m_oLSCURRItemsAddCount = 10240;
+#else
+        info->m_incrementalOLRCURRCount = 100;
+        info->m_incrementalOLRCURRAddCount = 100;
+        info->m_oLSCURRItemsCount = 100;
+        info->m_oLSCURRItemsAddCount = 100;
+#endif
         info->m_heartbeatCount = 10;
         info->m_heartbeatAddCount = 10;
         info->m_tradingSessionStatusCount = 10;
@@ -153,8 +174,14 @@ public:
 
         info->m_oLSCURRCount = 32;
         info->m_oLSCURRAddCount = 256;
+#ifndef TEST
         info->m_oLSCURRItemsCount = 102400;
         info->m_oLSCURRItemsAddCount = 10240;
+#else
+        info->m_oLSCURRItemsCount = 100;
+        info->m_oLSCURRItemsAddCount = 100;
+#endif
+
         info->m_heartbeatCount = 10;
         info->m_heartbeatAddCount = 10;
         info->m_tradingSessionStatusCount = 10;
@@ -193,10 +220,18 @@ public:
     FastObjectsAllocationInfo* CreateFastAllocationInfo() {
         FastObjectsAllocationInfo *info = new FastObjectsAllocationInfo();
 
+#ifndef TEST
         info->m_incrementalTLRCURRCount = 1024;
         info->m_incrementalTLRCURRAddCount = 256;
         info->m_tLSCURRItemsCount = 2024;
         info->m_tLSCURRItemsAddCount = 256;
+#else
+        info->m_incrementalTLRCURRCount = 100;
+        info->m_incrementalTLRCURRAddCount = 100;
+        info->m_tLSCURRItemsCount = 100;
+        info->m_tLSCURRItemsAddCount = 100;
+#endif
+
         info->m_heartbeatCount = 10;
         info->m_heartbeatAddCount = 10;
         info->m_tradingSessionStatusCount = 10;
@@ -230,10 +265,18 @@ public:
     FastObjectsAllocationInfo* CreateFastAllocationInfo() {
         FastObjectsAllocationInfo *info = new FastObjectsAllocationInfo();
 
+#ifndef TEST
         info->m_tLSCURRCount = 1024;
         info->m_tLSCURRAddCount = 256;
         info->m_tLSCURRItemsCount = 2024;
         info->m_tLSCURRItemsAddCount = 256;
+#else
+        info->m_tLSCURRCount = 100;
+        info->m_tLSCURRAddCount = 100;
+        info->m_tLSCURRItemsCount = 100;
+        info->m_tLSCURRItemsAddCount = 100;
+#endif
+
         info->m_heartbeatCount = 10;
         info->m_heartbeatAddCount = 10;
         info->m_tradingSessionStatusCount = 10;
@@ -269,10 +312,17 @@ public:
     FastObjectsAllocationInfo* CreateFastAllocationInfo() {
         FastObjectsAllocationInfo *info = new FastObjectsAllocationInfo();
 
+#ifndef TEST
         info->m_genericCount = 1024;
         info->m_genericAddCount = 256;
         info->m_genericItemsCount = 1024;
         info->m_genericItemsAddCount = 1024;
+#else
+        info->m_genericCount = 100;
+        info->m_genericAddCount = 100;
+        info->m_genericItemsCount = 100;
+        info->m_genericItemsAddCount = 100;
+#endif
         info->m_heartbeatCount = 10;
         info->m_heartbeatAddCount = 10;
         info->m_tradingSessionStatusCount = 10;
@@ -308,10 +358,18 @@ public:
     FastObjectsAllocationInfo* CreateFastAllocationInfo() {
         FastObjectsAllocationInfo *info = new FastObjectsAllocationInfo();
 
+#ifndef TEST
         info->m_genericCount = 1024;
         info->m_genericAddCount = 256;
         info->m_genericItemsCount = 1024;
         info->m_genericItemsAddCount = 1024;
+#else
+        info->m_genericCount = 100;
+        info->m_genericAddCount = 100;
+        info->m_genericItemsCount = 100;
+        info->m_genericItemsAddCount = 100;
+#endif
+
         info->m_heartbeatCount = 10;
         info->m_heartbeatAddCount = 10;
         info->m_tradingSessionStatusCount = 10;
@@ -350,10 +408,18 @@ public:
     FastObjectsAllocationInfo* CreateFastAllocationInfo() {
         FastObjectsAllocationInfo *info = new FastObjectsAllocationInfo();
 
+#ifndef TEST
         info->m_incrementalOLRFONDCount = 1024;
         info->m_incrementalOLRFONDAddCount = 256;
         info->m_oLSFONDItemsCount = 202400;
         info->m_oLSFONDItemsAddCount = 25600;
+#else
+        info->m_incrementalOLRFONDCount = 100;
+        info->m_incrementalOLRFONDAddCount = 100;
+        info->m_oLSFONDItemsCount = 100;
+        info->m_oLSFONDItemsAddCount = 100;
+#endif
+
         info->m_heartbeatCount = 10;
         info->m_heartbeatAddCount = 10;
         info->m_tradingSessionStatusCount = 10;
@@ -387,10 +453,17 @@ public:
     FastObjectsAllocationInfo* CreateFastAllocationInfo() {
         FastObjectsAllocationInfo *info = new FastObjectsAllocationInfo();
 
+#ifndef TEST
         info->m_oLSFONDCount = 1024;
         info->m_oLSFONDAddCount = 256;
         info->m_oLSFONDItemsCount = 202400;
         info->m_oLSFONDItemsAddCount = 25600;
+#else
+        info->m_oLSFONDCount = 10;
+        info->m_oLSFONDAddCount = 10;
+        info->m_oLSFONDItemsCount = 100;
+        info->m_oLSFONDItemsAddCount = 100;
+#endif
         info->m_heartbeatCount = 10;
         info->m_heartbeatAddCount = 10;
         info->m_tradingSessionStatusCount = 10;
@@ -429,10 +502,18 @@ public:
     FastObjectsAllocationInfo* CreateFastAllocationInfo() {
         FastObjectsAllocationInfo *info = new FastObjectsAllocationInfo();
 
+#ifndef TEST
         info->m_incrementalTLRFONDCount = 1024;
         info->m_incrementalTLRFONDAddCount = 256;
         info->m_tLSFONDItemsCount = 2024;
         info->m_tLSFONDItemsAddCount = 256;
+#else
+        info->m_incrementalTLRFONDCount = 100;
+        info->m_incrementalTLRFONDAddCount = 100;
+        info->m_tLSFONDItemsCount = 100;
+        info->m_tLSFONDItemsAddCount = 100;
+#endif
+
         info->m_heartbeatCount = 10;
         info->m_heartbeatAddCount = 10;
         info->m_tradingSessionStatusCount = 10;
@@ -466,10 +547,17 @@ public:
     FastObjectsAllocationInfo* CreateFastAllocationInfo() {
         FastObjectsAllocationInfo *info = new FastObjectsAllocationInfo();
 
+#ifndef TEST
         info->m_tLSFONDCount = 1024;
         info->m_tLSFONDAddCount = 256;
         info->m_tLSFONDItemsCount = 2024;
         info->m_tLSFONDItemsAddCount = 256;
+#else
+        info->m_tLSFONDCount = 100;
+        info->m_tLSFONDAddCount = 100;
+        info->m_tLSFONDItemsCount = 100;
+        info->m_tLSFONDItemsAddCount = 100;
+#endif
         info->m_heartbeatCount = 10;
         info->m_heartbeatAddCount = 10;
         info->m_tradingSessionStatusCount = 10;
@@ -502,6 +590,7 @@ public:
     FastObjectsAllocationInfo* CreateFastAllocationInfo() {
         FastObjectsAllocationInfo *info = new FastObjectsAllocationInfo();
 
+#ifndef TEST
         info->m_securityDefinitionCount = 13000;
         info->m_securityDefinitionAddCount = 256;
         info->m_securityDefinitionGroupInstrAttribItemsCount = 13000;
@@ -510,6 +599,16 @@ public:
         info->m_securityDefinitionMarketSegmentGrpItemsAddCount = 256;
         info->m_securityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemsCount = 13000;
         info->m_securityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemsAddCount = 256;
+#else
+        info->m_securityDefinitionCount = 1000;
+        info->m_securityDefinitionAddCount = 256;
+        info->m_securityDefinitionGroupInstrAttribItemsCount = 100;
+        info->m_securityDefinitionGroupInstrAttribItemsAddCount = 256;
+        info->m_securityDefinitionMarketSegmentGrpItemsCount = 100;
+        info->m_securityDefinitionMarketSegmentGrpItemsAddCount = 256;
+        info->m_securityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemsCount = 100;
+        info->m_securityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemsAddCount = 256;
+#endif
         info->m_heartbeatCount = 10;
         info->m_heartbeatAddCount = 10;
         info->m_tradingSessionStatusCount = 10;

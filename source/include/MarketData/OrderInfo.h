@@ -354,7 +354,6 @@ public:
         for(int i = 0; i < startIndex && i < this->m_entryInfo->Capacity(); i++, entry++) {
             if((*entry) != 0) (*entry)->Clear();
         }
-        entry = this->m_entryInfo->Entries();
         for(int index = startIndex; index <= maxIndex; index++) {
             if((*entry) == 0)
                 return false;

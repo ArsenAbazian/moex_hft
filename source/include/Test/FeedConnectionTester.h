@@ -234,10 +234,15 @@ public:
         /*SymbolManagerTester ht;
         ht.Test();*/
 
-        OrderTesterFond otFond;
-        otFond.Test();
+        TradeTesterFond ttFond;
+        ttFond.Test();
+        TradeTesterCurr ttCurr;
+        ttCurr.Test();
+
         OrderTesterCurr otCurr;
         otCurr.Test();
+        OrderTesterFond otFond;
+        otFond.Test();
 
         SecurityStatusTester ist;
         ist.Test();
@@ -246,12 +251,6 @@ public:
         ids.Test();
 
         //TestSaveIdfSymbols();
-
-        TradeTesterFond ttFond;
-        ttFond.Test();
-        TradeTesterCurr ttCurr;
-        ttCurr.Test();
-
 
         //TestLog("/home/arsen/Documents/hft_robot/hft/test/log5");
         //TestLog("/home/arsen/Documents/hft_robot/hft/test/log6");

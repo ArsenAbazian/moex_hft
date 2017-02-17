@@ -1,4 +1,5 @@
 #include "Robot.h"
+#include "FeedChannel.h"
 #include <cstdio>
 
 Robot::Robot() {
@@ -130,6 +131,8 @@ bool Robot::DoWork() {
     DefaultLogManager::Default->StartLog(LogMessageCode::lmcRobot_DoWork);
 
     //this->m_fondMarket->Enable(false);
+	Stopwatch *w = new Stopwatch();
+	w->Start();
     while(true) {
         if(!WinSockManager::UpdateManagersPollStatus())
             break;
@@ -150,6 +153,29 @@ bool Robot::DoWork() {
         }
         if(!this->Working())
             break;
+		if(w->ElapsedSeconds() > 3) {
+			if (this->m_fondMarket->FeedChannel()->OrdersSnapshot()->State() == FeedConnectionState::fcsListenSnapshot) {
+				int foundSnapshotSymbolsCount = this->m_fondMarket->FeedChannel()->OrdersIncremental()->OrderFond()->SymbolsToRecvSnapshotCount();
+				int foundQueEntries = this->m_fondMarket->FeedChannel()->OrdersIncremental()->OrderFond()->QueueEntriesCount();
+				int msgSeqNumber = this->m_fondMarket->FeedChannel()->OrdersSnapshot()->MsgSeqNo();
+				int actual = this->m_fondMarket->FeedChannel()->OrdersIncremental()->OrderFond()->CalcActualQueueEntriesCount();
+				printf("FOND ORDERS: %d que entries and  %d snapshot symbols to go. actual entries = %d msg = %d\n", foundQueEntries, foundSnapshotSymbolsCount, actual, msgSeqNumber);
+				if(actual != foundQueEntries) {
+					printf("ERROR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
+				}
+			}
+			if(this->m_currMarket->FeedChannel()->OrdersSnapshot()->State() == FeedConnectionState::fcsListenSnapshot) {
+				int currSnapshotSymbolsCount = this->m_currMarket->FeedChannel()->OrdersIncremental()->OrderCurr()->SymbolsToRecvSnapshotCount();
+				int currQueEntries = this->m_currMarket->FeedChannel()->OrdersIncremental()->OrderCurr()->QueueEntriesCount();
+				int msgSeqNumber = this->m_currMarket->FeedChannel()->OrdersSnapshot()->MsgSeqNo();
+				int actual = this->m_currMarket->FeedChannel()->OrdersIncremental()->OrderCurr()->CalcActualQueueEntriesCount();
+				printf("CURR ORDERS: %d que entries and %d snapshot symbols to go. actual entries = %d msg = %d\n", currQueEntries, currSnapshotSymbolsCount, actual, msgSeqNumber);
+				if(actual != currQueEntries) {
+					printf("ERROR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
+				}
+			}
+			w->Reset();
+		}
     }
 
     DefaultLogManager::Default->Print();

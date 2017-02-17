@@ -23,6 +23,7 @@ template <template<typename ITEMINFO> class TABLEITEM, typename INFO, typename I
     int                                         m_symbolsToRecvSnapshot;
     bool                                        m_snapshotItemHasEntriesQueue;
     bool                                        m_allSessionsRecvSnapshot;
+    bool                                        m_snapshotMode;
 
     inline void AddUsed(TABLEITEM<ITEMINFO> *tableItem) {
         tableItem->Used(true);
@@ -46,6 +47,7 @@ public:
         this->m_queueItemsCount = 0;
         this->m_cachedItem = 0;
         this->m_symbolsMaxCount = 0;
+        this->m_snapshotMode = false;
     }
     ~MarketDataTable() {
         this->Release();
@@ -179,6 +181,16 @@ public:
         }
         return result;
     }
+    inline int CalcActualQueueEntriesCount() {
+        int count = 0;
+        for(int i = 0; i < this->m_symbolsCount; i++) {
+            for (int j = 0; j < this->m_symbols[i]->SessionCount(); j++) {
+                if(this->m_symbols[i]->Session(j)->EntriesQueue()->HasEntries())
+                    count++;
+            }
+        }
+        return count;
+    }
     inline void ProcessSnapshot(ITEMINFO **item, int count, int rptSeq) {
         for(int j = 0; j < count; j++) {
             this->m_snapshotItem->ProcessSnapshotMessage(*item);
@@ -268,12 +280,15 @@ public:
         for(int i = 0; i < this->m_symbolsCount; i++, s++) {
             (*s)->EnterSnapshotMode();
         }
+        this->m_snapshotMode = true;
     }
     inline void ExitSnapshotMode() {
         MarketSymbolInfo<TABLEITEM<ITEMINFO>> **s = this->m_symbols;
         for(int i = 0; i < this->m_symbolsCount; i++, s++)
             (*s)->ExitSnapshotMode();
+        this->m_snapshotMode = false;
     }
+    inline bool SnapshotMode() { return this->m_snapshotMode; }
     inline int SymbolsToRecvSnapshotCount() { return this->m_symbolsToRecvSnapshot; }
     inline bool IsAllSymbolsRecvSnapshot() { return this->m_symbolsToRecvSnapshot == 0; }
 };

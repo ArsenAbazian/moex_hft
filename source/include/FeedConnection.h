@@ -43,9 +43,10 @@ class FeedConnection {
 
 public:
 	const int MaxReceiveBufferSize 				= 1500;
-    const int WaitAnyPacketMaxTimeSec           = 10;
+    const int WaitAnyPacketMaxTimeMs            = 4000;
 protected:
 	char										m_idName[16];
+    char                                        m_channelName[16];
 	char										feedTypeName[64];
 
 #ifdef TEST
@@ -281,7 +282,7 @@ protected:
 
         if(this->m_packets[msgSeqNum]->m_address != 0) { // TODO
             if(this->m_type == FeedConnectionType::Snapshot) {
-                printf("%d  %s -> %d size = %d\n", socketManager->Socket(), this->m_idName, msgSeqNum, size);
+                //printf("%d  %s -> %d size = %d\n", socketManager->Socket(), this->m_idName, msgSeqNum, size);
                 if(msgSeqNum > this->m_endMsgSeqNum) {
                     printf("old packet at %d end = %d\n", msgSeqNum, this->m_endMsgSeqNum);
                 }
@@ -308,7 +309,7 @@ protected:
 //                                                                    this->m_recvABuffer->CurrentItemIndex());
         }
         else if(this->m_type == FeedConnectionType::InstrumentDefinition) {
-          printf("%d  %s -> %d size = %d\n", socketManager->Socket(), this->m_idName, msgSeqNum, size);
+          printf("%d %s %s -> %d size = %d\n", socketManager->Socket(), this->m_channelName, this->m_idName, msgSeqNum, size);
 //        BinaryLogItem *item = DefaultLogManager::Default->WriteFast(this->m_idLogIndex,
 //                                                                    LogMessageCode::lmcFeedConnection_ProcessMessage,
 //                                                                    this->m_recvABuffer->BufferIndex(),
@@ -325,7 +326,7 @@ protected:
                 this->m_startMsgSeqNum = msgSeqNum;
         }
         else {
-            printf("%d  %s -> %d size = %d\n", socketManager->Socket(), this->m_idName, msgSeqNum, size);
+            //printf("%d  %s -> %d size = %d\n", socketManager->Socket(), this->m_idName, msgSeqNum, size);
 //            BinaryLogItem *item = DefaultLogManager::Default->WriteFast(this->m_idLogIndex,
 //                                                                    LogMessageCode::lmcFeedConnection_ProcessMessage,
 //                                                                    this->m_recvABuffer->BufferIndex(),
@@ -461,35 +462,35 @@ protected:
         //printf("before decode %d\n", this->m_fastProtocolManager->GetOLSCURRItemInfoPool()->Count());
         FastOLSCURRInfo *info = (FastOLSCURRInfo *) this->m_fastProtocolManager->DecodeOLSCURR();
         this->m_incremental->OrderCurr()->ObtainSnapshotItem(info);
-        printf("%s %s session to go %d\n",
-               DebugInfoManager::Default->GetString(info->Symbol, info->SymbolLength, 0),
-               DebugInfoManager::Default->GetString(info->TradingSessionID, info->TradingSessionIDLength, 1),
-        this->m_incremental->OrderCurr()->SnapshotSymbol()->SessionsToRecvSnapshotCount());
+//        printf("%s %s session to go %d\n",
+//               DebugInfoManager::Default->GetString(info->Symbol, info->SymbolLength, 0),
+//               DebugInfoManager::Default->GetString(info->TradingSessionID, info->TradingSessionIDLength, 1),
+//        this->m_incremental->OrderCurr()->SnapshotSymbol()->SessionsToRecvSnapshotCount());
         if(this->m_incremental->OrderCurr()->CheckProcessIfSessionInActualState(info)) {
             info->ReleaseUnused();
-            printf("%s %s in actual state. sessions to go %d\n",
-                   DebugInfoManager::Default->GetString(info->Symbol, info->SymbolLength, 0),
-                   DebugInfoManager::Default->GetString(info->TradingSessionID, info->TradingSessionIDLength, 1),
-                   this->m_incremental->OrderCurr()->SnapshotSymbol()->SessionsToRecvSnapshotCount());
-            printf("%d queue items and %d symbols to go\n",
-                   this->m_incremental->OrderCurr()->QueueEntriesCount(),
-                   this->m_incremental->OrderCurr()->SymbolsToRecvSnapshotCount());
+//            printf("%s %s in actual state. sessions to go %d\n",
+//                   DebugInfoManager::Default->GetString(info->Symbol, info->SymbolLength, 0),
+//                   DebugInfoManager::Default->GetString(info->TradingSessionID, info->TradingSessionIDLength, 1),
+//                   this->m_incremental->OrderCurr()->SnapshotSymbol()->SessionsToRecvSnapshotCount());
+//            printf("%d queue items and %d symbols to go\n",
+//                   this->m_incremental->OrderCurr()->QueueEntriesCount(),
+//                   this->m_incremental->OrderCurr()->SymbolsToRecvSnapshotCount());
             return true;
         }
         if(this->m_incremental->OrderCurr()->CheckProcessNullSnapshot(info)) {
             info->ReleaseUnused();
-            printf("%s %s null snapshot %d\n",
-                   DebugInfoManager::Default->GetString(info->Symbol, info->SymbolLength, 0),
-                   DebugInfoManager::Default->GetString(info->TradingSessionID, info->TradingSessionIDLength, 1),
-                   this->m_fastProtocolManager->GetOLSCURRItemInfoPool()->Count());
+//            printf("%s %s null snapshot %d\n",
+//                   DebugInfoManager::Default->GetString(info->Symbol, info->SymbolLength, 0),
+//                   DebugInfoManager::Default->GetString(info->TradingSessionID, info->TradingSessionIDLength, 1),
+//                   this->m_fastProtocolManager->GetOLSCURRItemInfoPool()->Count());
             return true;
         }
         if(!this->m_incremental->OrderCurr()->ShouldProcessSnapshot(info)) {
             info->ReleaseUnused();
-            printf("%s %s skip process snapshot %d\n",
-                   DebugInfoManager::Default->GetString(info->Symbol, info->SymbolLength, 0),
-                   DebugInfoManager::Default->GetString(info->TradingSessionID, info->TradingSessionIDLength, 1),
-                   this->m_fastProtocolManager->GetOLSCURRItemInfoPool()->Count());
+//            printf("%s %s skip process snapshot %d\n",
+//                   DebugInfoManager::Default->GetString(info->Symbol, info->SymbolLength, 0),
+//                   DebugInfoManager::Default->GetString(info->TradingSessionID, info->TradingSessionIDLength, 1),
+//                   this->m_fastProtocolManager->GetOLSCURRItemInfoPool()->Count());
             return true;
         }
         this->m_incremental->OrderCurr()->StartProcessSnapshot(info);
@@ -512,13 +513,13 @@ protected:
 //                   this->m_fastProtocolManager->GetOLSCURRItemInfoPool()->Count());
         }
         this->m_incremental->OrderCurr()->EndProcessSnapshot();
-        printf("%s %s process snapshot. sessions to go %d\n",
-              DebugInfoManager::Default->GetString(info->Symbol, info->SymbolLength, 0),
-              DebugInfoManager::Default->GetString(info->TradingSessionID, info->TradingSessionIDLength, 1),
-              this->m_incremental->OrderCurr()->SnapshotSymbol()->SessionsToRecvSnapshotCount());
-        printf("%d queue items and %d symbols to go\n",
-               this->m_incremental->OrderCurr()->QueueEntriesCount(),
-               this->m_incremental->OrderCurr()->SymbolsToRecvSnapshotCount());
+//        printf("%s %s process snapshot. sessions to go %d\n",
+//              DebugInfoManager::Default->GetString(info->Symbol, info->SymbolLength, 0),
+//              DebugInfoManager::Default->GetString(info->TradingSessionID, info->TradingSessionIDLength, 1),
+//              this->m_incremental->OrderCurr()->SnapshotSymbol()->SessionsToRecvSnapshotCount());
+//        printf("%d queue items and %d symbols to go\n",
+//               this->m_incremental->OrderCurr()->QueueEntriesCount(),
+//               this->m_incremental->OrderCurr()->SymbolsToRecvSnapshotCount());
         return true;
     }
     inline bool ApplySnapshot_TLS_FOND() {
@@ -841,6 +842,21 @@ protected:
             return this->m_statTableCurr->SymbolsToRecvSnapshotCount();
         return 0;
     }
+    inline bool IsMarketTableInSnapshotMode() {
+        if(this->m_orderTableFond != 0)
+            return this->m_orderTableFond->SnapshotMode();
+        if(this->m_orderTableCurr != 0)
+            return this->m_orderTableCurr->SnapshotMode();
+        if(this->m_tradeTableFond != 0)
+            return this->m_tradeTableFond->SnapshotMode();
+        if(this->m_tradeTableCurr != 0)
+            return this->m_tradeTableCurr->SnapshotMode();
+        if(this->m_statTableFond != 0)
+            return this->m_statTableFond->SnapshotMode();
+        if(this->m_statTableCurr != 0)
+            return this->m_statTableCurr->SnapshotMode();
+        return false;
+    }
     inline void MarketTableExitSnapshotMode() {
         if(this->m_orderTableFond != 0) {
             this->m_orderTableFond->ExitSnapshotMode();
@@ -868,28 +884,33 @@ protected:
         }
     }
     inline bool StartListenSnapshot() {
-		if(!this->m_snapshot->Start()) {
+		if(this->m_snapshot->State() == FeedConnectionState::fcsListenSnapshot && this->IsMarketTableInSnapshotMode())
+            return true;
+        if(!this->m_snapshot->Start()) {
 			DefaultLogManager::Default->WriteSuccess(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_StartListenSnapshot, false);
+            printf("Channel = %s\n", this->m_channelName);
 			return false;
 		}
         this->MarketTableEnterSnapshotMode();
         this->m_snapshot->StartNewSnapshot();
 		DefaultLogManager::Default->WriteSuccess(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_StartListenSnapshot, true);
-		return true;
+		printf("Channel = %s\n", this->m_channelName);
+        return true;
 	}
     inline void UpdateMessageSeqNoAfterSnapshot() {
         this->m_startMsgSeqNum = this->m_endMsgSeqNum + 1;
     }
 	inline bool StopListenSnapshot() {
-		printf("!!!!!!!!!!!!!!!!!!!!!!!!!!!!! STOP SNAPSHOT !!!!!!!!!!!!!!!!!!!!!!!!!\n");
         if(!this->m_snapshot->Stop()) {
 			DefaultLogManager::Default->WriteSuccess(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_StopListenSnapshot, false);
+            printf("Channel = %s\n", this->m_channelName);
 			return false;
 		}
         //this->m_startMsgSeqNum = this->m_endMsgSeqNum + 1;
         this->MarketTableExitSnapshotMode();
 		this->UpdateMessageSeqNoAfterSnapshot();
         DefaultLogManager::Default->WriteSuccess(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_StopListenSnapshot, true);
+        printf("Channel = %s\n", this->m_channelName);
 		return true;
 	}
 	inline FastSnapshotInfo* GetSnapshotInfo(int index) {
@@ -1008,7 +1029,7 @@ protected:
         if(!FindLastFragment())
             return false;
 
-        printf("apply snapshot %d to %d\n", this->m_snapshotRouteFirst, this->m_snapshotLastFragment);
+        //printf("apply snapshot %d to %d\n", this->m_snapshotRouteFirst, this->m_snapshotLastFragment);
         ApplySnapshotCore();
         this->ClearPackets(this->m_snapshotRouteFirst, this->m_snapshotLastFragment);
 
@@ -1026,7 +1047,7 @@ protected:
     inline void SkipLostPackets() {
         for(int i = this->m_startMsgSeqNum; i <= this->m_endMsgSeqNum; i++) {
             if(this->m_packets[i]->m_address != 0) {
-                printf("skip packets from %d to %d\n", this->m_startMsgSeqNum, i);
+                //printf("skip packets from %d to %d\n", this->m_startMsgSeqNum, i);
                 this->m_startMsgSeqNum = i;
                 return;
             }
@@ -1127,7 +1148,6 @@ protected:
             return true;
         }
         */
-        int prevStartMsgSeqNo = this->m_startMsgSeqNum; //TODO remove
         if(this->m_startMsgSeqNum == -1)
             return true;
 
@@ -1136,7 +1156,7 @@ protected:
         }
         else
             this->m_waitTimer->Stop(1);
-        if(this->m_waitTimer->IsElapsedMilliseconds(1, this->WaitLostPacketTimeMs()) ||
+        if(this->m_waitTimer->IsElapsedMilliseconds(1, this->WaitSnapshotMaxTimeMs()) ||
                 this->m_endMsgSeqNum - this->m_startMsgSeqNum > 5) {
             if(this->m_snapshotRouteFirst != -1) {
                 this->ClearPackets(this->m_snapshotRouteFirst, this->m_startMsgSeqNum);
@@ -1150,24 +1170,17 @@ protected:
         int snapshotCount = 0;
         while(TryFindAndApplySnapshot())
             snapshotCount++;
-        if(snapshotCount > 0)
-            this->m_waitTimer->Reset();
-
-        int beforeIndex = this->m_snapshotRouteFirst != -1? this->m_snapshotRouteFirst: this->m_startMsgSeqNum;
-        for(int i = 0; i < beforeIndex; i++) {
-            if(this->m_packets[i]->m_address != 0) {
-                printf("not cleared... at %d before %d\n", i, this->m_startMsgSeqNum);
-            }
-        }
 
         return true;
     }
 
     inline bool Listen_Atom_Incremental_Core() {
-        // TODO remove hack
-        if(this->m_snapshot->State() == FeedConnectionState::fcsSuspend) {
-            this->m_packets[this->m_startMsgSeqNum]->m_address = 0; // force snapshot
-        }
+
+// TODO remove hack
+//        if(this->m_snapshot->State() == FeedConnectionState::fcsSuspend) {
+//            this->m_packets[this->m_startMsgSeqNum]->m_address = 0; // force snapshot
+//        }
+
         if(!this->ProcessIncrementalMessages())
             return false;
         if(this->m_snapshot->State() == FeedConnectionState::fcsSuspend) {
@@ -1459,7 +1472,7 @@ protected:
 
         if(!this->m_isLastIncrementalRecv) {
             this->m_waitTimer->Activate(1);
-            if(this->m_waitTimer->ElapsedSeconds(1) > this->WaitAnyPacketMaxTimeSec) {
+            if(this->m_waitTimer->ElapsedMilliseconds(1) > this->WaitAnyPacketMaxTimeMs) {
                 this->StartListenSnapshot();
                 return true;
             }
@@ -1480,7 +1493,7 @@ protected:
                 this->m_waitTimer->Start(1);
             }
             else {
-                if(this->m_waitTimer->ElapsedSeconds(1) > this->WaitAnyPacketMaxTimeSec) {
+                if(this->m_waitTimer->ElapsedMilliseconds(1) > this->WaitAnyPacketMaxTimeMs) {
                     printf("Timeout 10 sec... Reconnect...\n");
                     DefaultLogManager::Default->WriteSuccess(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_Listen_Atom_SecurityStatus, false);
                     this->ReconnectSetNextState(FeedConnectionState::fcsListenSecurityStatus);
@@ -1503,7 +1516,7 @@ protected:
                 this->m_waitTimer->Start(1);
             }
             else {
-                if(this->m_waitTimer->ElapsedSeconds(1) > this->WaitAnyPacketMaxTimeSec) {
+                if(this->m_waitTimer->ElapsedMilliseconds(1) > this->WaitAnyPacketMaxTimeMs) {
                     printf("Timeout 10 sec... Reconnect...\n");
                     DefaultLogManager::Default->WriteSuccess(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_Listen_Atom_SecurityDefinition, false);
                     this->ReconnectSetNextState(FeedConnectionState::fcsListenSecurityDefinition);
@@ -1522,21 +1535,21 @@ protected:
         recv |= this->ProcessServerB();
 
         if(!recv) {
-            if(!this->m_waitTimer->Active(1)) {
-                this->m_waitTimer->Start(1);
+            if(!this->m_waitTimer->Active(2)) {
+                this->m_waitTimer->Start(2);
             }
             else {
-                if(this->m_waitTimer->ElapsedSeconds(1) > this->WaitAnyPacketMaxTimeSec) {
-                    printf("%d entries and %d symbols to go.\n", this->m_incremental->OrderCurr()->QueueEntriesCount(), this->m_incremental->OrderCurr()->SymbolsToRecvSnapshotCount());
+                if(this->m_waitTimer->ElapsedMilliseconds(2) > this->WaitAnyPacketMaxTimeMs) {
+                    this->m_waitTimer->Stop(2);
+                    //printf("%d entries and %d symbols to go.\n", this->m_incremental->OrderCurr()->QueueEntriesCount(), this->m_incremental->OrderCurr()->SymbolsToRecvSnapshotCount());
                     DefaultLogManager::Default->WriteSuccess(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_Listen_Atom_Snapshot, false);
                     ReconnectSetNextState(FeedConnectionState::fcsListenSnapshot);
                     return true;
-                    //return false;
                 }
             }
         }
         else {
-            this->m_waitTimer->Stop(1);
+            this->m_waitTimer->Stop(2);
         }
 
         return this->Listen_Atom_Snapshot_Core();
@@ -2360,6 +2373,10 @@ public:
         }
     }
 
+    inline char* ChannelName() { return this->m_channelName; }
+    inline void ChannelName(const char *channelName) {
+        strcpy(this->m_channelName, channelName);
+    }
     inline char* IdName() { return this->m_idName; }
     inline FeedConnectionId Id() { return this->m_id; }
 
@@ -2449,6 +2466,7 @@ public:
             return true;
         this->m_waitTimer->Start();
         this->m_waitTimer->Stop(1);
+        this->m_waitTimer->Stop(2); //for snapshot
         this->BeforeListen();
         this->Listen();
 		return true;

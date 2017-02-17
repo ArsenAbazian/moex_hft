@@ -1637,7 +1637,6 @@ public:
         for(int i = 0; i < startIndex && i < this->m_entryInfo->Capacity(); i++, entry++) {
             if((*entry) != 0) (*entry)->Clear();
         }
-        entry = this->m_entryInfo->Entries();
         for(int index = startIndex; index <= maxIndex; index++) {
             if((*entry) == 0)
                 return false;
@@ -1666,7 +1665,6 @@ public:
     inline bool EnterSnapshotMode() {
         this->ResetSnasphotProcessed();
         this->m_shouldProcessSnapshot = true;
-        //this->m_entryInfo->ShouldProcess(true);
         return true;
     }
 
@@ -1674,9 +1672,7 @@ public:
         this->m_shouldProcessSnapshot = false;
     }
 
-    inline bool ShouldProcessSnapshot() {
-        return this->m_shouldProcessSnapshot;
-    }
+    inline bool ShouldProcessSnapshot() { return this->m_shouldProcessSnapshot; }
 
     inline void ProcessActualSnapshotState() {
         if(!this->m_shouldProcessSnapshot)
