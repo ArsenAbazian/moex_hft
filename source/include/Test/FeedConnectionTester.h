@@ -224,6 +224,7 @@ public:
         RobotSettings::MarketDataMaxSymbolsCount = 10;
         RobotSettings::MarketDataMaxSessionsCount = 32;
         RobotSettings::MarketDataMaxEntriesCount = 32 * 10;
+        RobotSettings::DefaultFeedConnectionPacketCount = 1100;
 
         PointerListTester pt;
         pt.Test();
