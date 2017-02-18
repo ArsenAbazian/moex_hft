@@ -73,7 +73,6 @@ protected:
 
     int                                         m_waitIncrementalMaxTimeMs;
     int                                         m_snapshotMaxTimeMs;
-    int                                         m_waitLostPacketTimeMs;
     int                                         m_maxLostPacketCountForStartSnapshot;
     bool                                        m_isLastIncrementalRecv;
 
@@ -211,95 +210,7 @@ protected:
 
     inline bool ProcessServerA() { return this->ProcessServer(this->socketAManager, LogMessageCode::lmcsocketA); }
     inline bool ProcessServerB() { return this->ProcessServer(this->socketBManager, LogMessageCode::lmcsocketB); }
-    inline bool ProcessServerCore_FromHistoricalReplay(SocketBuffer *buffer, int size, int msgSeqNum) {
-        if(this->m_type == FeedConnectionType::InstrumentDefinition) {
-            this->m_endMsgSeqNum = msgSeqNum;
-        }
-
-        if(this->m_packets[msgSeqNum]->m_address != 0) { // TODO
-            if(this->m_type == FeedConnectionType::Snapshot) {
-                printf("%s -> %d size = %d\n", this->m_idName, msgSeqNum, size);
-                if(msgSeqNum > this->m_endMsgSeqNum) {
-                    printf("old packet at %d end = %d\n", msgSeqNum, this->m_endMsgSeqNum);
-                }
-                else
-                    return true;
-            }
-            else
-                return true;
-        }
-
-        buffer->SetCurrentItemSize(size);
-
-        printf("%s -> %d size = %d\n", this->m_idName, msgSeqNum, size);
-//        BinaryLogItem *item = DefaultLogManager::Default->WriteFast(this->m_idLogIndex,
-//                                                                    LogMessageCode::lmcFeedConnection_ProcessMessage,
-//                                                                    this->m_recvABuffer->BufferIndex(),
-//                                                                    this->m_recvABuffer->CurrentItemIndex());
-
-        if(this->m_type == FeedConnectionType::Incremental) {
-            if(this->m_endMsgSeqNum < msgSeqNum)
-                this->m_endMsgSeqNum = msgSeqNum;
-        }
-        else if(this->m_type == FeedConnectionType::InstrumentDefinition) {
-            if(this->m_idfStartMsgSeqNo == 0)
-                this->m_idfStartMsgSeqNo = msgSeqNum;
-            if(this->m_idfMaxMsgSeqNo == 0)
-                this->m_idfMaxMsgSeqNo = TryGetSecurityDefinitionTotNumReports(buffer->CurrentPos());
-        }
-        else if(this->m_type == FeedConnectionType::InstrumentStatus) {
-            if(this->m_endMsgSeqNum < msgSeqNum)
-                this->m_endMsgSeqNum = msgSeqNum;
-            if(this->m_startMsgSeqNum == -1)
-                this->m_startMsgSeqNum = msgSeqNum;
-        }
-        else {
-            if(this->m_startMsgSeqNum == -1)
-                this->m_startMsgSeqNum = msgSeqNum;
-            if(this->m_endMsgSeqNum < msgSeqNum)
-                this->m_endMsgSeqNum = msgSeqNum;
-            if(this->m_endMsgSeqNum - msgSeqNum > 100) {
-                if(this->m_snapshotRouteFirst != -1)
-                    this->ClearPackets(this->m_snapshotRouteFirst, this->m_startMsgSeqNum);
-                this->ClearPackets(this->m_startMsgSeqNum, this->m_endMsgSeqNum);
-                this->m_startMsgSeqNum = msgSeqNum;
-                this->m_endMsgSeqNum = msgSeqNum;
-            }
-            if(msgSeqNum < this->m_startMsgSeqNum)
-                return true;
-        }
-        FeedConnectionMessageInfo *info = this->m_packets[msgSeqNum];
-        info->m_address = buffer->CurrentPos();
-        info->m_size = size;
-        info->m_requested = true;
-        return true;
-    }
-    inline bool ProcessServerCore(WinSockManager *socketManager, int size) {
-        int msgSeqNum = *((UINT*)this->m_recvABuffer->CurrentPos());
-        if(this->m_type == FeedConnectionType::InstrumentDefinition) {
-            this->m_endMsgSeqNum = msgSeqNum;
-        }
-
-        if(this->m_packets[msgSeqNum]->m_address != 0) { // TODO
-            if(this->m_type == FeedConnectionType::Snapshot) {
-                //printf("%d  %s -> %d size = %d\n", socketManager->Socket(), this->m_idName, msgSeqNum, size);
-                if(msgSeqNum > this->m_endMsgSeqNum) {
-                    printf("old packet at %d end = %d\n", msgSeqNum, this->m_endMsgSeqNum);
-                }
-                else
-                    return true;
-            }
-            else
-                return true;
-        }
-
-        this->m_recvABuffer->SetCurrentItemSize(size);
-        //printf("%s -> %d size = %d\n", this->m_idName, msgSeqNum, size);
-//        BinaryLogItem *item = DefaultLogManager::Default->WriteFast(this->m_idLogIndex,
-//                                                                    LogMessageCode::lmcFeedConnection_ProcessMessage,
-//                                                                    this->m_recvABuffer->BufferIndex(),
-//                                                                    this->m_recvABuffer->CurrentItemIndex());
-
+    inline bool UpdateMsgSeqStartEnd(int msgSeqNum) {
         if(this->m_type == FeedConnectionType::Incremental) {
             if(this->m_endMsgSeqNum < msgSeqNum)
                 this->m_endMsgSeqNum = msgSeqNum;
@@ -309,7 +220,7 @@ protected:
 //                                                                    this->m_recvABuffer->CurrentItemIndex());
         }
         else if(this->m_type == FeedConnectionType::InstrumentDefinition) {
-          printf("%d %s %s -> %d size = %d\n", socketManager->Socket(), this->m_channelName, this->m_idName, msgSeqNum, size);
+          //printf("%d %s %s -> %d size = %d\n", socketManager->Socket(), this->m_channelName, this->m_idName, msgSeqNum, size);
 //        BinaryLogItem *item = DefaultLogManager::Default->WriteFast(this->m_idLogIndex,
 //                                                                    LogMessageCode::lmcFeedConnection_ProcessMessage,
 //                                                                    this->m_recvABuffer->BufferIndex(),
@@ -343,8 +254,71 @@ protected:
                 this->m_endMsgSeqNum = msgSeqNum;
             }
             if(msgSeqNum < this->m_startMsgSeqNum)
+                return false;
+        }
+        return true;
+    }
+    inline bool ProcessServerCore_FromHistoricalReplay(SocketBuffer *buffer, int size, int msgSeqNum) {
+        if(this->m_type == FeedConnectionType::InstrumentDefinition) {
+            this->m_endMsgSeqNum = msgSeqNum;
+        }
+
+        if(this->m_packets[msgSeqNum]->m_address != 0) { // TODO
+            if(this->m_type == FeedConnectionType::Snapshot) {
+                printf("%s -> %d size = %d\n", this->m_idName, msgSeqNum, size);
+                if(msgSeqNum > this->m_endMsgSeqNum) {
+                    printf("old packet at %d end = %d\n", msgSeqNum, this->m_endMsgSeqNum);
+                }
+                else
+                    return true;
+            }
+            else
                 return true;
         }
+
+        buffer->SetCurrentItemSize(size);
+
+        printf("%s -> %d size = %d\n", this->m_idName, msgSeqNum, size);
+//        BinaryLogItem *item = DefaultLogManager::Default->WriteFast(this->m_idLogIndex,
+//                                                                    LogMessageCode::lmcFeedConnection_ProcessMessage,
+//                                                                    this->m_recvABuffer->BufferIndex(),
+//                                                                    this->m_recvABuffer->CurrentItemIndex());
+        if(!this->UpdateMsgSeqStartEnd(msgSeqNum))
+            return true;
+        FeedConnectionMessageInfo *info = this->m_packets[msgSeqNum];
+        info->m_address = buffer->CurrentPos();
+        info->m_size = size;
+        info->m_requested = true;
+        return true;
+    }
+    inline bool ProcessServerCore(WinSockManager *socketManager, int size) {
+        int msgSeqNum = *((UINT*)this->m_recvABuffer->CurrentPos());
+        if(this->m_type == FeedConnectionType::InstrumentDefinition) {
+            this->m_endMsgSeqNum = msgSeqNum;
+        }
+
+        if(this->m_packets[msgSeqNum]->m_address != 0) { // TODO
+            if(this->m_type == FeedConnectionType::Snapshot) {
+                //printf("%d  %s -> %d size = %d\n", socketManager->Socket(), this->m_idName, msgSeqNum, size);
+                if(msgSeqNum > this->m_endMsgSeqNum) {
+                    printf("old packet at %d end = %d\n", msgSeqNum, this->m_endMsgSeqNum);
+                }
+                else
+                    return true;
+            }
+            else
+                return true;
+        }
+
+        this->m_recvABuffer->SetCurrentItemSize(size);
+        //printf("%s -> %d size = %d\n", this->m_idName, msgSeqNum, size);
+//        BinaryLogItem *item = DefaultLogManager::Default->WriteFast(this->m_idLogIndex,
+//                                                                    LogMessageCode::lmcFeedConnection_ProcessMessage,
+//                                                                    this->m_recvABuffer->BufferIndex(),
+//                                                                    this->m_recvABuffer->CurrentItemIndex());
+
+        if(!this->UpdateMsgSeqStartEnd(msgSeqNum))
+            return true;
         FeedConnectionMessageInfo *info = this->m_packets[msgSeqNum];
         info->m_address = this->m_recvABuffer->CurrentPos();
         info->m_size = size;
@@ -1799,8 +1773,6 @@ public:
     inline int WaitIncrementalMaxTimeMs() { return this->m_waitIncrementalMaxTimeMs; }
     inline void WaitSnapshotMaxTimeMs(int timeMs) { this->m_snapshotMaxTimeMs = timeMs; }
     inline int WaitSnapshotMaxTimeMs() { return this->m_snapshotMaxTimeMs; }
-    inline int WaitLostPacketTimeMs() { return this->m_waitLostPacketTimeMs; }
-    inline void WaitLostPacketTimeMs(int value) { this->m_waitLostPacketTimeMs = value; }
 
     inline void ClearMessages() {
         for(int i = 0;i < RobotSettings::DefaultFeedConnectionPacketCount; i++)

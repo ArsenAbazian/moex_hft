@@ -2115,9 +2115,9 @@ public:
         if(!snapFond->m_waitTimer->Active(1)) // we have to activate another timer to watch lost message
             throw;
 
-        snapFond->WaitLostPacketTimeMs(50);
+        snapFond->WaitSnapshotMaxTimeMs(50);
         // wait some time and then receive lost packet
-        while(!snapFond->m_waitTimer->IsElapsedMilliseconds(1, snapFond->WaitLostPacketTimeMs() / 2)) {
+        while(!snapFond->m_waitTimer->IsElapsedMilliseconds(1, snapFond->WaitSnapshotMaxTimeMs() / 2)) {
             snapFond->m_waitTimer->Start(); // reset timer 0 to avoid simulate situation when no packet received
             if(!snapFond->Listen_Atom_Snapshot_Core())
                 throw;
