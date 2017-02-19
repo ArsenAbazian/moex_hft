@@ -3,7 +3,7 @@
 #include <cstdint>
 
 #define ROBOT_WORK_ANYWAY
-#define TEST
+//#define TEST
 
 #define null 0
 #define BYTE unsigned char
@@ -27,6 +27,7 @@ public:
     static unsigned int DefaultMarketSendItemsCount;
     static unsigned int DefaultMarketRecvItemsCount;
     static unsigned int DefaultFeedConnectionPacketCount;
+    static unsigned int DefaultCurrIdfPacketCount;
     static int MarketDataMaxSymbolsCount;
     static int MarketDataMaxSessionsCount;
     static int MarketDataMaxEntriesCount;

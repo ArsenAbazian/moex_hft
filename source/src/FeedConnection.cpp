@@ -29,7 +29,7 @@ FeedConnection::FeedConnection(const char *id, const char *name, char value, Fee
 
     this->m_waitIncrementalMaxTimeMs = 100;
     this->m_snapshotMaxTimeMs = 30;
-    this->m_maxLostPacketCountForStartSnapshot = 0; // by default immediately start snapshot
+    this->m_maxLostPacketCountForStartSnapshot = 2000;
 
     this->m_incremental = 0;
     this->m_snapshot = 0;
@@ -52,6 +52,7 @@ FeedConnection::FeedConnection(const char *id, const char *name, char value, Fee
     this->m_idfStopAfterUpdateAllMessages = false;
     this->m_isfStartSnapshotCount = 0;
     this->m_skipApplyMessages = false;
+    this->m_packetsCount = 0;
 
 	this->SetState(FeedConnectionState::fcsSuspend);
 
@@ -66,43 +67,9 @@ FeedConnection::FeedConnection(const char *id, const char *name, char value, Fee
     //this->obrLogFile = fopen("~Documents/hft_robot/logs/obr_log_file.txt", "wt"); TODO remove!
 }
 
-FeedConnection::FeedConnection() {
-    for(int i = 0; i < RobotSettings::DefaultFeedConnectionPacketCount; i++)
-        this->m_packets[i] = new FeedConnectionMessageInfo();
-
-    this->m_fastLogonInfo = new FastLogonInfo();
-
-    this->m_stopwatch = new Stopwatch();
-    this->m_waitTimer = new Stopwatch();
-    this->m_waitIncrementalMaxTimeMs = 100;
-    this->m_snapshotMaxTimeMs = 30;
-
-    this->m_tval = new struct timeval;
-
-    this->m_incremental = 0;
-    this->m_snapshot = 0;
-    this->m_connectionsToRecvSymbolsCount = 0;
-    this->m_isfStartSnapshotCount = 0;
-    this->m_skipApplyMessages = false;
-    this->m_reconnectCount = 0;
-    this->m_maxReconnectCount = 20;
-
-    this->m_startMsgSeqNum = 1;
-    this->m_endMsgSeqNum = 0;
-    this->m_requestMessageStartIndex = -1;
-    this->m_securityStatusSnapshotActive = false;
-    this->m_idfStopAfterUpdateAllMessages = false;
-    strcpy(this->m_channelName, "");
-
-    this->m_type = FeedConnectionType::Incremental;
-    this->m_packets = 0;
-
-    this->SetState(FeedConnectionState::fcsSuspend);
-}
-
 FeedConnection::~FeedConnection() {
     if(this->m_packets != 0) {
-        for(int i = 0; i < RobotSettings::DefaultFeedConnectionPacketCount; i++)
+        for(int i = 0; i < this->m_packetsCount; i++)
             delete this->m_packets[i];
         delete this->m_packets;
     }

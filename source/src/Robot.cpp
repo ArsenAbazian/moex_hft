@@ -130,7 +130,7 @@ bool Robot::Run() {
 bool Robot::DoWork() {
     DefaultLogManager::Default->StartLog(LogMessageCode::lmcRobot_DoWork);
 
-    //this->m_fondMarket->Enable(false);
+    this->m_fondMarket->Enable(false);
 	Stopwatch *w = new Stopwatch();
 	w->Start();
     while(true) {

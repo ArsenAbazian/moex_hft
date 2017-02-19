@@ -128,15 +128,15 @@ add_executable(hft_robot ${sources}
         source/include/Test/SymbolManagerTester.h
         source/include/Lib/StringHash.h
         source/include/MarketData/SymbolManager.h
-        source/include/FeedConnections.h
+        source/include/Feeds/FeedConnections.h
         source/src/Test/TestMessagesHelper.cpp
         source/include/Test/PointerListTester.h
         source/src/Converters/DtoaConverter.cpp
         source/include/Test/SecurityStatusTester.h
-        source/include/FeedTypes.h
+        source/include/Feeds/FeedTypes.h
         source/src/MarketData/StatisticInfo.cpp
         source/include/Managers/DebugInfoManager.h
-        source/src/Managers/DebugInfoManager.cpp)
+        source/src/Managers/DebugInfoManager.cpp source/include/Feeds/Fond/FondOlr.h source/include/Feeds/Fond/FondMsr.h source/include/Feeds/Fond/FondIsf.h source/include/Feeds/Curr/CurrHr.h)
 add_dependencies(hft_robot fast_generate)
 
 add_custom_command(TARGET fast_generate

@@ -95,6 +95,7 @@ protected:
     int                                             m_hrSizeRemain;
 
     FeedConnectionMessageInfo                       **m_packets;
+    int                                         m_packetsCount;
 
 	int     									m_idLogIndex;
 	int 										m_feedTypeNameLogIndex;
@@ -170,9 +171,11 @@ protected:
         delete this->m_hsLogonInfo;
         delete this->m_hsRejectInfo;
     }
+    int GetPacketsCount() { return RobotSettings::DefaultFeedConnectionPacketCount; }
     void InitializePackets() {
-        this->m_packets = new FeedConnectionMessageInfo*[RobotSettings::DefaultFeedConnectionPacketCount];
-        for(int i = 0; i < RobotSettings::DefaultFeedConnectionPacketCount; i++)
+        this->m_packetsCount = GetPacketsCount();
+        this->m_packets = new FeedConnectionMessageInfo*[ this->m_packetsCount ];
+        for(int i = 0; i < this->m_packetsCount; i++)
             this->m_packets[i] = new FeedConnectionMessageInfo();
     }
     void InitializeSecurityDefinition() {
@@ -259,30 +262,27 @@ protected:
         return true;
     }
     inline bool ProcessServerCore_FromHistoricalReplay(SocketBuffer *buffer, int size, int msgSeqNum) {
-        if(this->m_type == FeedConnectionType::InstrumentDefinition) {
+        if (this->m_type == FeedConnectionType::InstrumentDefinition) {
             this->m_endMsgSeqNum = msgSeqNum;
         }
 
+        // TODO remove this code, because this is a bug!!!
+        if(buffer->CurrentPos()[1] == 0 && buffer->CurrentPos()[2] == 0 && buffer->CurrentPos()[3] == 0) {
+            buffer->NextExact(4);
+        }
+
+        printf("Historical Replay %s -> %d size = %d, endMsgSeqNum = %d\n", this->m_idName, msgSeqNum, size, this->m_endMsgSeqNum);
         if(this->m_packets[msgSeqNum]->m_address != 0) { // TODO
-            if(this->m_type == FeedConnectionType::Snapshot) {
-                printf("%s -> %d size = %d\n", this->m_idName, msgSeqNum, size);
-                if(msgSeqNum > this->m_endMsgSeqNum) {
-                    printf("old packet at %d end = %d\n", msgSeqNum, this->m_endMsgSeqNum);
-                }
-                else
-                    return true;
-            }
-            else
-                return true;
+            printf("already exists requested = %d", this->m_packets[msgSeqNum]->m_requested);
+            return true;
         }
 
         buffer->SetCurrentItemSize(size);
 
-        printf("%s -> %d size = %d\n", this->m_idName, msgSeqNum, size);
-//        BinaryLogItem *item = DefaultLogManager::Default->WriteFast(this->m_idLogIndex,
-//                                                                    LogMessageCode::lmcFeedConnection_ProcessMessage,
-//                                                                    this->m_recvABuffer->BufferIndex(),
-//                                                                    this->m_recvABuffer->CurrentItemIndex());
+        BinaryLogItem *item = DefaultLogManager::Default->WriteFast(this->m_idLogIndex,
+                                                                    LogMessageCode::lmcFeedConnection_ProcessMessage,
+                                                                    buffer->BufferIndex(),
+                                                                    buffer->CurrentItemIndex());
         if(!this->UpdateMsgSeqStartEnd(msgSeqNum))
             return true;
         FeedConnectionMessageInfo *info = this->m_packets[msgSeqNum];
@@ -628,13 +628,14 @@ protected:
             if(this->m_packets[i]->m_address == 0 && !this->m_packets[i]->m_requested)
                 return i;
         }
-        return -1;
+        return this->m_endMsgSeqNum + 1;
     }
 
     inline void RequestMessages(int start, int end) {
         FeedConnectionMessageInfo **info = this->m_packets + start;
         for(int i = start; i <= end; i++, info++)
             (*info)->m_requested = true;
+        printf("request messages from %d to %d\n", start, end);
         this->m_historicalReplay->HrRequestMessage(this, start, end);
     }
 
@@ -672,11 +673,14 @@ protected:
             return false;
         if(this->m_snapshot->State() != FeedConnectionState::fcsSuspend)
             return true;
+        printf("start request %d, end %d\n", this->m_requestMessageStartIndex, this->m_endMsgSeqNum);
         while(this->m_requestMessageStartIndex <= this->m_endMsgSeqNum) {
             this->m_requestMessageStartIndex = GetRequestMessageStartIndex(this->m_requestMessageStartIndex);
-            if(this->m_requestMessageStartIndex == -1)
+            if(this->m_requestMessageStartIndex > this->m_endMsgSeqNum)
                 return true;
+            printf("request start = %d\n", this->m_requestMessageStartIndex);
             int endIndex = GetRequestMessageEndIndex(this->m_requestMessageStartIndex);
+            printf("request end = %d\n", this->m_requestMessageStartIndex);
             if(ShouldStartIncrementalSnapshot(endIndex)) {
                 this->m_requestMessageStartIndex = -1;
                 return this->StartListenSnapshot();
@@ -1150,10 +1154,15 @@ protected:
 
     inline bool Listen_Atom_Incremental_Core() {
 
-// TODO remove hack
-//        if(this->m_snapshot->State() == FeedConnectionState::fcsSuspend) {
-//            this->m_packets[this->m_startMsgSeqNum]->m_address = 0; // force snapshot
-//        }
+        // TODO remove hack. just skip 30 messages and then try to restore
+        if(this->m_snapshot->State() == FeedConnectionState::fcsSuspend &&
+                (this->m_startMsgSeqNum % 50) < 30 &&
+                this->m_packets[this->m_startMsgSeqNum]->m_address != 0 &&
+                !this->m_packets[this->m_startMsgSeqNum]->m_requested) {
+            this->m_packets[this->m_startMsgSeqNum]->m_address = 0; // force snapshot
+            printf("packet %d is lost, resuestIndexd = %d\n", this->m_startMsgSeqNum, this->m_requestMessageStartIndex);
+            return true;
+        }
 
         if(!this->ProcessIncrementalMessages())
             return false;
@@ -1271,8 +1280,7 @@ protected:
 
     inline bool CanRecv() { return this->socketAManager->ShouldRecv(); }
 
-    inline void OnProcessHistoricalReplayUnexpectedLogoutMessage() {
-        FastLogoutInfo *info = (FastLogoutInfo*)this->m_fastProtocolManager->LastDecodeInfo();
+    inline void OnProcessHistoricalReplayUnexpectedLogoutMessage(FastLogoutInfo *info) {
         info->Text[info->TextLength] = 0;
         printf("\t\tHistorical Replay - Unexpected Logout: %s\n", info->Text);
     }
@@ -1315,8 +1323,7 @@ protected:
         if(this->m_fastProtocolManager->TemplateId() != FeedConnectionMessage::fmcLogon) {
             this->Disconnect();
             if(this->m_fastProtocolManager->TemplateId() == FeedConnectionMessage::fmcLogout) {
-                this->m_fastProtocolManager->DecodeLogout();
-                this->OnProcessHistoricalReplayUnexpectedLogoutMessage();
+                this->OnProcessHistoricalReplayUnexpectedLogoutMessage((FastLogoutInfo*)this->m_fastProtocolManager->DecodeLogout());
             }
             this->m_hsState = FeedConnectionHistoricalReplayState::hsSuspend;
             return true;
@@ -1337,6 +1344,7 @@ protected:
         this->m_fixProtocolManager->IncSendMsgSeqNo();
         this->m_hsState = FeedConnectionHistoricalReplayState::hsRecvMessage;
         this->m_hrSizeRemain = 0;
+        this->m_hrMessageSize = 0;
         return true;
     }
 
@@ -1371,7 +1379,7 @@ protected:
                     this->m_hsState = FeedConnectionHistoricalReplayState::hsSuspend;
                     return this->HistoricalReplay_SendLogout();
                 }
-                this->OnProcessHistoricalReplayUnexpectedLogoutMessage();
+                this->OnProcessHistoricalReplayUnexpectedLogoutMessage((FastLogoutInfo*)this->m_fastProtocolManager->DecodeLogout());
                 this->Disconnect();
                 this->m_hsState = FeedConnectionHistoricalReplayState::hsSuspend;
                 return true;
@@ -1755,7 +1763,6 @@ protected:
 
 public:
 	FeedConnection(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort);
-	FeedConnection();
 	~FeedConnection();
 
     inline int LastMsgSeqNumProcessed() { return this->m_lastMsgSeqNumProcessed; }

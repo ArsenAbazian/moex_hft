@@ -3,7 +3,7 @@
 //
 #include "DebugInfoManager.h"
 #include "../MarketData/StatisticInfo.h"
-#include "../FeedChannel.h"
+#include "Feeds/FeedChannel.h"
 //#define ENABLE_LOG
 
 

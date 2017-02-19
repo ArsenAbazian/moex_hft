@@ -8,7 +8,7 @@
 
 #ifdef TEST
 
-#include "../FeedConnection.h"
+#include "Feeds/FeedConnection.h"
 
 class TestTemplateItemInfo {
 public:

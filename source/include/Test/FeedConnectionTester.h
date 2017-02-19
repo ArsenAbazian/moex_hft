@@ -8,7 +8,7 @@
 
 #ifdef TEST
 
-#include "../FeedConnections.h"
+#include "Feeds/FeedConnections.h"
 #include "SecurityDefinitionTester.h"
 #include "OrderTesterFond.h"
 #include "OrderTesterCurr.h"
@@ -129,14 +129,14 @@ public:
         LinkedPointer<TestFeedMessage> *ptr = messages->ListCore()->Start();
         LinkedPointer<TestFeedMessage> *end = messages->ListCore()->End();
 
-        FeedConnection_FOND_OLR *olr_fond = new FeedConnection_FOND_OLR();
-        FeedConnection_CURR_OLR *olr_curr = new FeedConnection_CURR_OLR();
-        FeedConnection_FOND_OLS *ols_fond = new FeedConnection_FOND_OLS();
-        FeedConnection_CURR_OLS *ols_curr = new FeedConnection_CURR_OLS();
-        FeedConnection_FOND_TLR *tlr_fond = new FeedConnection_FOND_TLR();
-        FeedConnection_CURR_TLR *tlr_curr = new FeedConnection_CURR_TLR();
-        FeedConnection_FOND_TLS *tls_fond = new FeedConnection_FOND_TLS();
-        FeedConnection_CURR_TLS *tls_curr = new FeedConnection_CURR_TLS();
+        FeedConnection_FOND_OLR *olr_fond = new FeedConnection_FOND_OLR("id", "name", 'v', FeedConnectionProtocol::UDP_IP, "1.1.1.1", "1.1.1.1", 10, "1.1.1.1", "1.1.1.1", 10);
+        FeedConnection_CURR_OLR *olr_curr = new FeedConnection_CURR_OLR("id", "name", 'v', FeedConnectionProtocol::UDP_IP, "1.1.1.1", "1.1.1.1", 10, "1.1.1.1", "1.1.1.1", 10);
+        FeedConnection_FOND_OLS *ols_fond = new FeedConnection_FOND_OLS("id", "name", 'v', FeedConnectionProtocol::UDP_IP, "1.1.1.1", "1.1.1.1", 10, "1.1.1.1", "1.1.1.1", 10);
+        FeedConnection_CURR_OLS *ols_curr = new FeedConnection_CURR_OLS("id", "name", 'v', FeedConnectionProtocol::UDP_IP, "1.1.1.1", "1.1.1.1", 10, "1.1.1.1", "1.1.1.1", 10);
+        FeedConnection_FOND_TLR *tlr_fond = new FeedConnection_FOND_TLR("id", "name", 'v', FeedConnectionProtocol::UDP_IP, "1.1.1.1", "1.1.1.1", 10, "1.1.1.1", "1.1.1.1", 10);
+        FeedConnection_CURR_TLR *tlr_curr = new FeedConnection_CURR_TLR("id", "name", 'v', FeedConnectionProtocol::UDP_IP, "1.1.1.1", "1.1.1.1", 10, "1.1.1.1", "1.1.1.1", 10);
+        FeedConnection_FOND_TLS *tls_fond = new FeedConnection_FOND_TLS("id", "name", 'v', FeedConnectionProtocol::UDP_IP, "1.1.1.1", "1.1.1.1", 10, "1.1.1.1", "1.1.1.1", 10);
+        FeedConnection_CURR_TLS *tls_curr = new FeedConnection_CURR_TLS("id", "name", 'v', FeedConnectionProtocol::UDP_IP, "1.1.1.1", "1.1.1.1", 10, "1.1.1.1", "1.1.1.1", 10);
 
         int processedMsgCount = 0;
         while(true) {

@@ -8,8 +8,8 @@
 
 #ifdef TEST
 
-#include "../FeedConnection.h"
-#include "../FeedConnections.h"
+#include "Feeds/FeedConnection.h"
+#include "Feeds/FeedConnections.h"
 #include "TestMessagesHelper.h"
 #include "SymbolManagerTester.h"
 #include <stdio.h>
