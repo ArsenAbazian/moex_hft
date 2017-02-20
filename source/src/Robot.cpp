@@ -133,6 +133,7 @@ bool Robot::DoWork() {
     //this->m_fondMarket->Enable(false);
 	Stopwatch *w = new Stopwatch();
 	w->Start();
+	unsigned int cycleCount = 0;
     while(true) {
         if(!WinSockManager::UpdateManagersPollStatus())
             break;
@@ -154,6 +155,9 @@ bool Robot::DoWork() {
         if(!this->Working())
             break;
 		if(w->ElapsedSeconds() > 3) {
+			double nanosecPerCycle = 3.0 * 1000.0 * 1000.0 * 1000.0 / cycleCount;
+			printf("CycleCount for 3 sec = %d. %g nanosec per cycle\n", cycleCount, nanosecPerCycle);
+
 			if (this->m_fondMarket->FeedChannel()->OrdersSnapshot()->State() == FeedConnectionState::fcsListenSnapshot) {
 				int foundSnapshotSymbolsCount = this->m_fondMarket->FeedChannel()->OrdersIncremental()->OrderFond()->SymbolsToRecvSnapshotCount();
 				int foundQueEntries = this->m_fondMarket->FeedChannel()->OrdersIncremental()->OrderFond()->QueueEntriesCount();
@@ -185,7 +189,9 @@ bool Robot::DoWork() {
                        this->m_currMarket->FeedChannel()->OrdersIncremental()->LastRecvMsgSeqNo());
             }
 			w->Reset();
+			cycleCount = 0;
 		}
+		cycleCount++;
     }
 
     DefaultLogManager::Default->Print();

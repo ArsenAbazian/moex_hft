@@ -2311,14 +2311,12 @@ public:
         return false;
     }
 
-    inline bool CalcLostPacketCount(int msgStart, int msgEnd) {
+    inline int CalcLostPacketCount(int msgStart, int msgEnd) {
         int sum = 0;
         FeedConnectionMessageInfo **msg = (this->m_packets + msgStart);
         for(int i = msgStart; i <= msgEnd; i++, msg++) {
-            if((*msg)->m_address == 0) {
-                printf("%d is lost\n", i);
+            if((*msg)->m_address == 0)
                 sum++;
-            }
         }
         return sum;
     }
