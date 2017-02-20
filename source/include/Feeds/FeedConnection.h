@@ -44,6 +44,7 @@ class FeedConnection {
 public:
 	const int MaxReceiveBufferSize 				= 1500;
     const int WaitAnyPacketMaxTimeMs            = 4000;
+    const int MaxHrUnsuccessfulConnectCount     = 100;
 protected:
 	char										m_idName[16];
     char                                        m_channelName[16];
@@ -93,6 +94,7 @@ protected:
     PointerList<FeedConnectionRequestMessageInfo>  *m_hsRequestList;
     int                                             m_hrMessageSize;
     int                                             m_hrSizeRemain;
+    int                                             m_hrUnsuccessfulConnectCount;
 
     FeedConnectionMessageInfo                       **m_packets;
     int                                         m_packetsCount;
@@ -367,7 +369,7 @@ protected:
     inline bool PrepareDecodeSnapshotMessage(int packetIndex) {
         FeedConnectionMessageInfo *info = this->m_packets[packetIndex];
         unsigned char *buffer = info->m_address;
-        if(this->ShouldSkipMessage(buffer))
+        if(this->ShouldSkipMessage(buffer, !info->m_requested))
             return false;
         this->m_fastProtocolManager->SetNewBuffer(buffer, info->m_size);
         this->m_fastProtocolManager->ReadMsgSeqNumber();
@@ -673,7 +675,7 @@ protected:
             return false;
         if(this->m_snapshot->State() != FeedConnectionState::fcsSuspend)
             return true;
-        printf("start request %d, end %d\n", this->m_requestMessageStartIndex, this->m_endMsgSeqNum);
+        //printf("start request %d, end %d\n", this->m_requestMessageStartIndex, this->m_endMsgSeqNum);
         while(this->m_requestMessageStartIndex <= this->m_endMsgSeqNum) {
             this->m_requestMessageStartIndex = GetRequestMessageStartIndex(this->m_requestMessageStartIndex);
             if(this->m_requestMessageStartIndex > this->m_endMsgSeqNum)
@@ -894,7 +896,7 @@ protected:
 	inline FastSnapshotInfo* GetSnapshotInfo(int index) {
 		FeedConnectionMessageInfo *item = this->m_packets[index];
 		unsigned char *buffer = item->m_address;
-		if(this->ShouldSkipMessage(buffer))
+		if(this->ShouldSkipMessage(buffer, !item->m_requested))
             return 0;
         this->m_fastProtocolManager->SetNewBuffer(buffer, item->m_size);
 		this->m_fastProtocolManager->ReadMsgSeqNumber();
@@ -1061,7 +1063,7 @@ protected:
 
     inline bool ProcessSecurityDefinition(FeedConnectionMessageInfo *info) {
         unsigned char *buffer = info->m_address;
-        if(this->ShouldSkipMessage(buffer)) {
+        if(this->ShouldSkipMessage(buffer, !info->m_requested)) {
             info->m_processed = true;
             return true;  // TODO - take this message into account, becasue it determines feed alive
         }
@@ -1299,12 +1301,27 @@ protected:
         return false;
     }
 
+    inline void OnHistricalReplayExceedUnsuccessfullConnectCount() {
+        printf("ERROR: HistoricalReplay not working....\n");
+        LinkedPointer<FeedConnectionRequestMessageInfo> *ptr = this->m_hsRequestList->Start();
+        while(ptr != 0) {
+            ptr->Data()->m_conn->StartListenSnapshot();
+            ptr = ptr->Next();
+        }
+        this->m_hsRequestList->Clear();
+    }
+
     inline void CheckReconnectHistoricalReplay() {
         this->m_waitTimer->Activate(2);
         if(this->m_waitTimer->ElapsedMilliseconds(2) > 1000) {
             this->Disconnect();
             this->m_hsState = FeedConnectionHistoricalReplayState::hsSuspend;
             this->m_waitTimer->Stop();
+            printf("historical replay timeout - reconnnect.\n");
+            this->m_hrUnsuccessfulConnectCount++;
+            if(this->m_hrUnsuccessfulConnectCount > FeedConnection::MaxHrUnsuccessfulConnectCount) {
+                this->OnHistricalReplayExceedUnsuccessfullConnectCount();
+            }
         }
     }
 
@@ -1313,6 +1330,7 @@ protected:
             this->CheckReconnectHistoricalReplay();
             return true;
         }
+        this->m_hrUnsuccessfulConnectCount = 0;
         this->m_waitTimer->Stop(2);
         if(this->IsHrReceiveFailedProcessed())
             return true;
@@ -1365,6 +1383,7 @@ protected:
             this->CheckReconnectHistoricalReplay();
             return true;
         }
+        this->m_hrUnsuccessfulConnectCount = 0;
         this->m_waitTimer->Stop(2);
 
         unsigned char *buffer = this->m_recvABuffer->CurrentPos();
@@ -1427,10 +1446,11 @@ protected:
         if(this->m_hsRequestList->Count() == 0)
             return true;
         FeedConnectionRequestMessageInfo *info = this->m_hsRequestList->Start()->Data();
-        if(info->m_requestCount >= 5) {
-            this->m_hsRequestList->Remove(this->m_hsRequestList->Start());
-            return true;
-        }
+        printf("Request message [%d, %d]. Try %d. Count = %d\n", info->StartMsgSeqNo(), info->EndMsgSeqNo(), info->m_requestCount, this->m_hsRequestList->Count());
+//        if(info->m_requestCount >= 5) {
+//            this->m_hsRequestList->Remove(this->m_hsRequestList->Start());
+//            return true;
+//        }
         info->m_requestCount++;
 
         return this->HistoricalReplay_SendLogon();
@@ -1447,8 +1467,10 @@ protected:
     }
 public:
     inline void HrRequestMessage(FeedConnection *conn, int start, int end) {
-        if(this->m_hsRequestList->IsFull())
+        if(this->m_hsRequestList->IsFull()) {
+            printf("error request msg: list is full.\n");
             return;
+        }
         LinkedPointer<FeedConnectionRequestMessageInfo> *ptr = this->m_hsRequestList->Pop();
         FeedConnectionRequestMessageInfo *info = ptr->Data();
         info->m_conn = conn;
@@ -1747,14 +1769,17 @@ protected:
         return true;
     }
 
-	inline bool ShouldSkipMessage(unsigned char *buffer) {
-		unsigned short *templateId = (unsigned short*)(buffer + 5);
-		return (*templateId) == 0xbc10;
+	inline bool ShouldSkipMessage(unsigned char *buffer, bool shouldProcessMsgSeqNumber) {
+		if(shouldProcessMsgSeqNumber) {
+            unsigned short *templateId = (unsigned short*)(buffer + 5);
+            return (*templateId) == 0xbc10;
+        }
+        return *((unsigned short*)(buffer + 1)) == 0xbc10;
 	}
 
 	inline bool ProcessIncremental(FeedConnectionMessageInfo *info) {
         unsigned char *buffer = info->m_address;
-		if(this->ShouldSkipMessage(buffer)) {
+		if(this->ShouldSkipMessage(buffer, !info->m_requested)) {
             info->m_processed = true;
             return true;  // TODO - take this message into account, becasue it determines feed alive
         }
@@ -1766,7 +1791,7 @@ protected:
 
     inline bool ProcessSecurityStatus(FeedConnectionMessageInfo *info) {
         unsigned char *buffer = info->m_address;
-        if(this->ShouldSkipMessage(buffer)) {
+        if(this->ShouldSkipMessage(buffer, !info->m_requested)) {
             info->m_processed = true;
             return true;  // TODO - take this message into account, becasue it determines feed alive
         }
@@ -1995,12 +2020,12 @@ public:
     }
 
     inline void PrintSymbolManagerDebug() {
-        printf("Collected %d symbols\n", this->m_symbolsCount);
-        for(int i = 0; i < this->m_symbolManager->BucketListCount(); i++) {
-            int count = this->m_symbolManager->CalcBucketCollisitonCount(i);
-            if(count != 0)
-                printf("Collision %d = %d\n", i, count);
-        }
+//        printf("Collected %d symbols\n", this->m_symbolsCount);
+//        for(int i = 0; i < this->m_symbolManager->BucketListCount(); i++) {
+//            int count = this->m_symbolManager->CalcBucketCollisitonCount(i);
+//            if(count != 0)
+//                printf("Collision %d = %d\n", i, count);
+//        }
         printf("Collected %d symbols\n", this->m_symbolsCount);
     }
 
@@ -2047,8 +2072,8 @@ public:
         MakeUsed(info, true);
         if(wasNewlyAdded) {
             this->AddSecurityDefinitionToList(info, smb->m_index);
-            printf("add sd to list index = %d\n", smb->m_index);
-            printf("new sec_def %d. sc = %d\n", info->MsgSeqNum, info->MarketSegmentGrp[0]->TradingSessionRulesGrp[0]->Allocator->Count()); // TODO
+            //printf("add sd to list index = %d\n", smb->m_index);
+            //printf("new sec_def %d. sc = %d\n", info->MsgSeqNum, info->MarketSegmentGrp[0]->TradingSessionRulesGrp[0]->Allocator->Count()); // TODO
         }
         else {
             LinkedPointer<FastSecurityDefinitionInfo> *ptr = this->m_symbols[smb->m_index];
@@ -2056,7 +2081,7 @@ public:
                 printf("merge symbols are not equal\n");
             }
             this->MergeSecurityDefinition(ptr->Data(), info);
-            printf("merge sec_def %d. sc = %d\n", info->MsgSeqNum, info->MarketSegmentGrp[0]->TradingSessionRulesGrp[0]->Allocator->Count()); // TODO
+            //printf("merge sec_def %d. sc = %d\n", info->MsgSeqNum, info->MarketSegmentGrp[0]->TradingSessionRulesGrp[0]->Allocator->Count()); // TODO
         }
         info->ReleaseUnused();
 
@@ -2381,6 +2406,7 @@ public:
 	}
 
 	inline int MsgSeqNo() { return this->m_startMsgSeqNum; }
+    inline int LastRecvMsgSeqNo() { return this->m_endMsgSeqNum; }
 	inline int ExpectedMsgSeqNo() { return this->m_startMsgSeqNum + 1; }
 
 	inline bool DoWorkAtom() {

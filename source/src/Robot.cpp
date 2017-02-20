@@ -164,6 +164,11 @@ bool Robot::DoWork() {
 					printf("ERROR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
 				}
 			}
+            else {
+                printf("FOND ORDERS: Incremental start = %d end = %d\n",
+                       this->m_fondMarket->FeedChannel()->OrdersIncremental()->MsgSeqNo(),
+                       this->m_fondMarket->FeedChannel()->OrdersIncremental()->LastRecvMsgSeqNo());
+            }
 			if(this->m_currMarket->FeedChannel()->OrdersSnapshot()->State() == FeedConnectionState::fcsListenSnapshot) {
 				int currSnapshotSymbolsCount = this->m_currMarket->FeedChannel()->OrdersIncremental()->OrderCurr()->SymbolsToRecvSnapshotCount();
 				int currQueEntries = this->m_currMarket->FeedChannel()->OrdersIncremental()->OrderCurr()->QueueEntriesCount();
@@ -174,6 +179,11 @@ bool Robot::DoWork() {
 					printf("ERROR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
 				}
 			}
+            else {
+                printf("CURR ORDERS: Incremental start = %d end = %d\n",
+                       this->m_currMarket->FeedChannel()->OrdersIncremental()->MsgSeqNo(),
+                       this->m_currMarket->FeedChannel()->OrdersIncremental()->LastRecvMsgSeqNo());
+            }
 			w->Reset();
 		}
     }
