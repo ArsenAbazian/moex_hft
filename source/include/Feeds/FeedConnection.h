@@ -1313,6 +1313,7 @@ protected:
             this->CheckReconnectHistoricalReplay();
             return true;
         }
+        this->m_waitTimer->Stop(2);
         if(this->IsHrReceiveFailedProcessed())
             return true;
         int size = this->socketAManager->RecvSize();
@@ -1364,6 +1365,7 @@ protected:
             this->CheckReconnectHistoricalReplay();
             return true;
         }
+        this->m_waitTimer->Stop(2);
 
         unsigned char *buffer = this->m_recvABuffer->CurrentPos();
         this->socketAManager->Recv(buffer + this->m_hrSizeRemain);
