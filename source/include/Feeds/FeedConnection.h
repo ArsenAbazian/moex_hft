@@ -1299,19 +1299,30 @@ protected:
         return false;
     }
 
+    inline void CheckReconnectHistoricalReplay() {
+        this->m_waitTimer->Activate(2);
+        if(this->m_waitTimer->ElapsedMilliseconds(2) > 1000) {
+            this->Disconnect();
+            this->m_hsState = FeedConnectionHistoricalReplayState::hsSuspend;
+            this->m_waitTimer->Stop();
+        }
+    }
+
     inline bool HistoricalReplay_WaitLogon() {
-        if(!this->CanRecv())
+        if(!this->CanRecv()) {
+            this->CheckReconnectHistoricalReplay();
             return true;
+        }
         if(this->IsHrReceiveFailedProcessed())
             return true;
         int size = this->socketAManager->RecvSize();
         if(size == 4) {
             this->m_hrMessageSize = *(int*)this->socketAManager->RecvBytes();
-            printf("\t\t\trecv 4 byte. value in 4 byte = %d\n", this->m_hrMessageSize); //TODO remove debug
+            //printf("\t\t\trecv 4 byte. value in 4 byte = %d\n", this->m_hrMessageSize); //TODO remove debug
             return true;
         }
         else {
-            printf("\t\t\tpacket size = %d\n", size); //TODO remove debug
+            //printf("\t\t\tpacket size = %d\n", size); //TODO remove debug
         }
         unsigned char *buffer = this->socketAManager->RecvBytes();
         this->m_recvABuffer->Next(size);
@@ -1349,8 +1360,10 @@ protected:
     }
 
     inline bool HistoricalReplay_RecvMessage() {
-        if(!this->CanRecv())
+        if(!this->CanRecv()) {
+            this->CheckReconnectHistoricalReplay();
             return true;
+        }
 
         unsigned char *buffer = this->m_recvABuffer->CurrentPos();
         this->socketAManager->Recv(buffer + this->m_hrSizeRemain);
