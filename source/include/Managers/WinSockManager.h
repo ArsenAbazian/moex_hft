@@ -97,6 +97,7 @@ private:
 	int 			                m_serverAddressLogIndex;
 
     bool                            m_connected;
+	unsigned char					*m_tempBuffer;
 	int                             m_sendSize;
     int                             m_sendSizeActual;
     int                             m_recvSize;
@@ -367,6 +368,11 @@ public:
 		if(this->m_connected) {
 			shutdown(this->m_socket, SHUT_RDWR);
 			this->m_connected = false;
+		}
+
+		while(this->ShouldRecv()) {
+			if(!this->Recv(this->m_tempBuffer) || this->m_recvCount == 0)
+				break;
 		}
 
 		int result = close(this->m_socket);

@@ -23,11 +23,13 @@ WinSockManager::WinSockManager() {
     this->m_sendSize = 0;
     this->m_recvSize = 0;
 	this->m_pollIndex = -1;
+    this->m_tempBuffer = new unsigned char[2000];
 }
 
 
 WinSockManager::~WinSockManager() {
 	this->Disconnect();
+    delete this->m_tempBuffer;
 }
 
 #ifdef TEST
