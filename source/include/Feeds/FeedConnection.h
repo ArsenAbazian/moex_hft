@@ -1155,14 +1155,14 @@ protected:
     inline bool Listen_Atom_Incremental_Core() {
 
         // TODO remove hack. just skip 30 messages and then try to restore
-        if(this->m_snapshot->State() == FeedConnectionState::fcsSuspend &&
-                (this->m_startMsgSeqNum % 50) < 30 &&
-                this->m_packets[this->m_startMsgSeqNum]->m_address != 0 &&
-                !this->m_packets[this->m_startMsgSeqNum]->m_requested) {
-            this->m_packets[this->m_startMsgSeqNum]->m_address = 0; // force snapshot
-            printf("packet %d is lost, resuestIndexd = %d\n", this->m_startMsgSeqNum, this->m_requestMessageStartIndex);
-            return true;
-        }
+//        if(this->m_snapshot->State() == FeedConnectionState::fcsSuspend &&
+//                (this->m_startMsgSeqNum % 50) < 30 &&
+//                this->m_packets[this->m_startMsgSeqNum]->m_address != 0 &&
+//                !this->m_packets[this->m_startMsgSeqNum]->m_requested) {
+//            this->m_packets[this->m_startMsgSeqNum]->m_address = 0; // force snapshot
+//            printf("packet %d is lost, resuestIndexd = %d\n", this->m_startMsgSeqNum, this->m_requestMessageStartIndex);
+//            return true;
+//        }
 
         if(!this->ProcessIncrementalMessages())
             return false;
