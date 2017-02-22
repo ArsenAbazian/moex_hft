@@ -33,8 +33,8 @@ public:
 #ifndef TEST
         info->m_incrementalTLRFONDCount = 1024;
         info->m_incrementalTLRFONDAddCount = 256;
-        info->m_tLSFONDItemsCount = 2024;
-        info->m_tLSFONDItemsAddCount = 256;
+        info->m_tLSFONDItemsCount = 80000;
+        info->m_tLSFONDItemsAddCount = 2000;
 #else
         info->m_incrementalTLRFONDCount = 100;
         info->m_incrementalTLRFONDAddCount = 100;

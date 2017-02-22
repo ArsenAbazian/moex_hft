@@ -217,14 +217,14 @@ class StatisticItemAllocator {
     PointerList<StatisticItem<bool>>                        *m_booleans;
 public:
     StatisticItemAllocator() {
-        this->m_decimals = new PointerList<StatisticItemDecimal>(10000, true, "StatisticsInfo::Decimals");
-        this->m_decimals2 = new PointerList<StatisticItemDecimal2>(10000, true, "StatisticsInfo::Decimals2");
-        this->m_dealInfos = new PointerList<StatisticItemLastDealInfo>(10000, true, "StatisticsInfo::DealInfo");
-        this->m_totalOffers = new PointerList<StatisticItemTotalOffer>(80000, true, "StatisticsInfo::TotalOffer");
-        this->m_totalBids = new PointerList<StatisticItemTotalBid>(80000, true, "StatisticsInfo::TotalBid");
-        this->m_indexLists = new PointerList<StatisticItemIndexList>(10000, true, "StatisticsInfo::IndexList");
-        this->m_trMagnitudes = new PointerList<StatisticItemTransactionsMagnitude>(10000, true, "StatisticsInfo::TransactionMagnitudes");
-        this->m_booleans = new PointerList<StatisticItem<bool>>(1000, true, "StatisticsInfo::Booleans");
+        this->m_decimals = new PointerList<StatisticItemDecimal>(100000, true, "StatisticsInfo::Decimals");
+        this->m_decimals2 = new PointerList<StatisticItemDecimal2>(100000, true, "StatisticsInfo::Decimals2");
+        this->m_dealInfos = new PointerList<StatisticItemLastDealInfo>(100000, true, "StatisticsInfo::DealInfo");
+        this->m_totalOffers = new PointerList<StatisticItemTotalOffer>(800000, true, "StatisticsInfo::TotalOffer");
+        this->m_totalBids = new PointerList<StatisticItemTotalBid>(800000, true, "StatisticsInfo::TotalBid");
+        this->m_indexLists = new PointerList<StatisticItemIndexList>(100000, true, "StatisticsInfo::IndexList");
+        this->m_trMagnitudes = new PointerList<StatisticItemTransactionsMagnitude>(400000, true, "StatisticsInfo::TransactionMagnitudes");
+        this->m_booleans = new PointerList<StatisticItem<bool>>(100000, true, "StatisticsInfo::Booleans");
     }
     PointerList<StatisticItemDecimal>* Decimals() { return this->m_decimals; }
     PointerList<StatisticItemDecimal2>* Decimals2() { return this->m_decimals2; }

@@ -29,8 +29,8 @@ public:
 #ifndef TEST
         info->m_tLSFONDCount = 1024;
         info->m_tLSFONDAddCount = 256;
-        info->m_tLSFONDItemsCount = 2024;
-        info->m_tLSFONDItemsAddCount = 256;
+        info->m_tLSFONDItemsCount = 80000;
+        info->m_tLSFONDItemsAddCount = 2000;
 #else
         info->m_tLSFONDCount = 100;
         info->m_tLSFONDAddCount = 100;
