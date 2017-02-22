@@ -669,7 +669,7 @@ namespace prebuild {
 			WriteLine("");
 			WriteLine("\tvoid InitializeMessageInfo() {");
 			foreach(StructureInfo str in structures) {
-				WriteLine("\t\tthis->" + str.ValueName + " = new AutoAllocatePointerList<" + str.Name + ">(this->m_allocationInfo->" + str.ValueName + "Count, this->m_allocationInfo->" + str.ValueName + "AddCount);");
+				WriteLine("\t\tthis->" + str.ValueName + " = new AutoAllocatePointerList<" + str.Name + ">(this->m_allocationInfo->" + str.ValueName + "Count, this->m_allocationInfo->" + str.ValueName + "AddCount, \"" + str.Name + "\");");
 			}
 			foreach(StructureInfo str in structures) {
 				WriteLine("\t\tthis->" + str.PrevValueName + " = this->" + str.GetFreeMethodName + "();");

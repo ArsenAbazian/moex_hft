@@ -128,26 +128,22 @@ bool Robot::Run() {
 	return true;
 }
 
-bool Robot::DoWork() {
-    DefaultLogManager::Default->StartLog(LogMessageCode::lmcRobot_DoWork);
+bool Robot::CollectSecurityDefinitions() {
+    Stopwatch *w = new Stopwatch();
+    w->Start();
+    unsigned int cycleCount = 0;
 
-    //this->m_fondMarket->Enable(false);
-	Stopwatch *w = new Stopwatch();
-	w->Start();
-	unsigned int cycleCount = 0;
-
+    DefaultLogManager::Default->StartLog(LogMessageCode::lmcRobot_CollectSecurityDefinitions);
     // collect data first
     while(true) {
         if(!WinSockManager::UpdateManagersPollStatus())
             break;
         if(!this->m_currMarket->FeedChannel()->CollectSecurityDefinitions()) {
             DefaultLogManager::Default->EndLog(false);
-            DefaultLogManager::Default->Print();
             return false;
         }
         if (!this->m_fondMarket->FeedChannel()->CollectSecurityDefinitions()) {
             DefaultLogManager::Default->EndLog(false);
-            DefaultLogManager::Default->Print();
             return false;
         }
 
@@ -157,14 +153,14 @@ bool Robot::DoWork() {
             this->m_fondMarket->FeedChannel()->InstrumentDefinition()->Stop();
 
         if(this->m_currMarket->FeedChannel()->InstrumentDefinition()->IsIdfDataCollected() &&
-                this->m_fondMarket->FeedChannel()->InstrumentDefinition()->IsIdfDataCollected()) {
+           this->m_fondMarket->FeedChannel()->InstrumentDefinition()->IsIdfDataCollected()) {
             break;
         }
         if(w->ElapsedSeconds() > 3) {
-            ProgramStatistics::Current->FondIdfProcessedCount(this->m_fondMarket->FeedChannel()->InstrumentDefinition()->MsgSeqNo());
-            ProgramStatistics::Current->CurrIdfProcessedCount(this->m_currMarket->FeedChannel()->InstrumentDefinition()->MsgSeqNo());
-
             w->Reset();
+
+            double nanosecPerCycle = 3.0 * 1000.0 * 1000.0 * 1000.0 / cycleCount;
+            printf("CycleCount for 3 sec = %d. %g nanosec per cycle\n", cycleCount, nanosecPerCycle);
 
             printf("3 sec. Changes------------------------\n");
             ProgramStatistics::Current->Print();
@@ -178,54 +174,57 @@ bool Robot::DoWork() {
         }
         cycleCount++;
     }
+    DefaultLogManager::Default->EndLog(true);
 
-    // generate security definitions
+    DefaultLogManager::Default->StartLog(LogMessageCode::lmcRobot_GenerateSecurityDefinitions);
+
     this->m_fondMarket->FeedChannel()->InstrumentDefinition()->GenerateSecurityDefinitions();
     this->m_currMarket->FeedChannel()->InstrumentDefinition()->GenerateSecurityDefinitions();
 
     if(!this->m_fondMarket->FeedChannel()->OnAfterGenerateSecurityDefinitions()) {
         DefaultLogManager::Default->EndLog(false);
-        DefaultLogManager::Default->Print();
+        return false;
     }
     if(!this->m_currMarket->FeedChannel()->OnAfterGenerateSecurityDefinitions()) {
         DefaultLogManager::Default->EndLog(false);
-        DefaultLogManager::Default->Print();
+        return false;
     }
+    return true;
+}
 
-    w->Reset();
+bool Robot::MainLoop() {
+    Stopwatch *w = new Stopwatch();
+    unsigned int cycleCount = 0;
 
-    // main cycle
+    w->Start();
     while(true) {
         if(!WinSockManager::UpdateManagersPollStatus())
             break;
         if(!this->m_currMarket->DoWorkAtom()) {
             DefaultLogManager::Default->EndLog(false);
-            DefaultLogManager::Default->Print();
             return false;
         }
         if (!this->m_fondMarket->DoWorkAtom()) {
             DefaultLogManager::Default->EndLog(false);
-            DefaultLogManager::Default->Print();
             return false;
         }
         if(!this->DoWorkAtom()) {
             DefaultLogManager::Default->EndLog(false);
-            DefaultLogManager::Default->Print();
             return false;
         }
         if(!this->Working())
             break;
-		if(w->ElapsedSeconds() > 3) {
-			double nanosecPerCycle = 3.0 * 1000.0 * 1000.0 * 1000.0 / cycleCount;
-			printf("CycleCount for 3 sec = %d. %g nanosec per cycle\n", cycleCount, nanosecPerCycle);
+        if(w->ElapsedSeconds() > 3) {
+            double nanosecPerCycle = 3.0 * 1000.0 * 1000.0 * 1000.0 / cycleCount;
+            printf("CycleCount for 3 sec = %d. %g nanosec per cycle\n", cycleCount, nanosecPerCycle);
 
 
-			if (this->m_fondMarket->FeedChannel()->OrdersSnapshot()->State() == FeedConnectionState::fcsListenSnapshot) {
-				int foundSnapshotSymbolsCount = this->m_fondMarket->FeedChannel()->OrdersIncremental()->OrderFond()->SymbolsToRecvSnapshotCount();
-				int foundQueEntries = this->m_fondMarket->FeedChannel()->OrdersIncremental()->OrderFond()->QueueEntriesCount();
-				int msgSeqNumber = this->m_fondMarket->FeedChannel()->OrdersSnapshot()->MsgSeqNo();
-				printf("fond olr: %d que entries and  %d snapshot symbols to go. msg = %d\n", foundQueEntries, foundSnapshotSymbolsCount, msgSeqNumber);
-			}
+            if (this->m_fondMarket->FeedChannel()->OrdersSnapshot()->State() == FeedConnectionState::fcsListenSnapshot) {
+                int foundSnapshotSymbolsCount = this->m_fondMarket->FeedChannel()->OrdersIncremental()->OrderFond()->SymbolsToRecvSnapshotCount();
+                int foundQueEntries = this->m_fondMarket->FeedChannel()->OrdersIncremental()->OrderFond()->QueueEntriesCount();
+                int msgSeqNumber = this->m_fondMarket->FeedChannel()->OrdersSnapshot()->MsgSeqNo();
+                printf("fond olr: %d que entries and  %d snapshot symbols to go. msg = %d\n", foundQueEntries, foundSnapshotSymbolsCount, msgSeqNumber);
+            }
             else {
                 printf("fond olr: start = %d end = %d\n",
                        this->m_fondMarket->FeedChannel()->OrdersIncremental()->MsgSeqNo(),
@@ -254,15 +253,15 @@ bool Robot::DoWork() {
                        this->m_fondMarket->FeedChannel()->StatisticsIncremental()->LastRecvMsgSeqNo());
             }
             printf("fond iss: start = %d end = %d\n",
-                       this->m_fondMarket->FeedChannel()->InstrumentStatus()->MsgSeqNo(),
-                       this->m_fondMarket->FeedChannel()->InstrumentStatus()->LastRecvMsgSeqNo());
+                   this->m_fondMarket->FeedChannel()->InstrumentStatus()->MsgSeqNo(),
+                   this->m_fondMarket->FeedChannel()->InstrumentStatus()->LastRecvMsgSeqNo());
 
             if(this->m_currMarket->FeedChannel()->OrdersSnapshot()->State() == FeedConnectionState::fcsListenSnapshot) {
-				int currSnapshotSymbolsCount = this->m_currMarket->FeedChannel()->OrdersIncremental()->OrderCurr()->SymbolsToRecvSnapshotCount();
-				int currQueEntries = this->m_currMarket->FeedChannel()->OrdersIncremental()->OrderCurr()->QueueEntriesCount();
-				int msgSeqNumber = this->m_currMarket->FeedChannel()->OrdersSnapshot()->MsgSeqNo();
+                int currSnapshotSymbolsCount = this->m_currMarket->FeedChannel()->OrdersIncremental()->OrderCurr()->SymbolsToRecvSnapshotCount();
+                int currQueEntries = this->m_currMarket->FeedChannel()->OrdersIncremental()->OrderCurr()->QueueEntriesCount();
+                int msgSeqNumber = this->m_currMarket->FeedChannel()->OrdersSnapshot()->MsgSeqNo();
                 printf("curr olr: %d que entries and  %d snapshot symbols to go. msg = %d\n", currQueEntries, currSnapshotSymbolsCount, msgSeqNumber);
-			}
+            }
             else {
                 printf("curr olr: start = %d end = %d\n",
                        this->m_currMarket->FeedChannel()->OrdersIncremental()->MsgSeqNo(),
@@ -295,7 +294,7 @@ bool Robot::DoWork() {
                    this->m_currMarket->FeedChannel()->InstrumentStatus()->MsgSeqNo(),
                    this->m_currMarket->FeedChannel()->InstrumentStatus()->LastRecvMsgSeqNo());
 
-			w->Reset();
+            w->Reset();
 
             printf("3 sec. Changes------------------------\n");
             ProgramStatistics::Current->Print();
@@ -306,12 +305,31 @@ bool Robot::DoWork() {
             cycleCount = 0;
             ProgramStatistics::Current->Clear();
             ProgramStatistics::Total->ResetFlags();
-		}
-		cycleCount++;
+        }
+        cycleCount++;
     }
 
-    DefaultLogManager::Default->Print();
     DefaultLogManager::Default->EndLog(true);
     return true;
+}
+
+bool Robot::DoWork() {
+    DefaultLogManager::Default->StartLog(LogMessageCode::lmcRobot_DoWork);
+
+    while(true) {
+        if(!this->CollectSecurityDefinitions()) {
+            DefaultLogManager::Default->Print();
+            DefaultLogManager::Default->EndLog(false);
+            return false;
+        }
+        if(!this->MainLoop()) {
+            DefaultLogManager::Default->Print();
+            DefaultLogManager::Default->EndLog(false);
+            return false;
+        }
+    }
+
+    //DefaultLogManager::Default->Print();
+    //DefaultLogManager::Default->EndLog(true);
 }
 

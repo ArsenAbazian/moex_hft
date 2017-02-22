@@ -29,6 +29,11 @@ public:
         this->m_list = new PointerList<T>(capacity);
         this->Allocate(this->m_list->PoolStart(), this->m_list->PoolEnd());
     }
+    AutoAllocatePointerList(int capacity, int additionalCapacity, const char *name) {
+        this->m_addCapacity = additionalCapacity;
+        this->m_list = new PointerList<T>(capacity, name);
+        this->Allocate(this->m_list->PoolStart(), this->m_list->PoolEnd());
+    }
     inline T* NewItem() {
         if(this->m_list->IsFull()) {
             LinkedPointer<T> *node = this->m_list->Append(this->m_addCapacity);

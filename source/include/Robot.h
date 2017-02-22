@@ -42,6 +42,8 @@ class Robot
     bool ConnectMarkets();
     bool DisconnectMarkets();
     bool DoWork();
+    bool CollectSecurityDefinitions();
+    bool MainLoop();
     inline bool DoWorkAtom() {
         return true;
     }

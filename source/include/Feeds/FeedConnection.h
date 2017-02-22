@@ -2407,6 +2407,9 @@ public:
 	}
 
 	inline bool Disconnect() {
+        if((this->socketAManager == NULL || !this->socketAManager->IsConnected()) &&
+                (this->socketBManager == NULL || !this->socketBManager->IsConnected()))
+            return true;
 		DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Disconnect);
 
 		bool result = true;
