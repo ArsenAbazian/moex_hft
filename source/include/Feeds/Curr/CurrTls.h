@@ -29,8 +29,8 @@ public:
 #ifndef TEST
         info->m_tLSCURRCount = 1024;
         info->m_tLSCURRAddCount = 256;
-        info->m_tLSCURRItemsCount = 80000;
-        info->m_tLSCURRItemsAddCount = 2000;
+        info->m_tLSCURRItemsCount = 800000;
+        info->m_tLSCURRItemsAddCount = 20000;
 #else
         info->m_tLSCURRCount = 100;
         info->m_tLSCURRAddCount = 100;

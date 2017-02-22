@@ -33,8 +33,8 @@ public:
 #ifndef TEST
         info->m_incrementalTLRCURRCount = 1024;
         info->m_incrementalTLRCURRAddCount = 256;
-        info->m_tLSCURRItemsCount = 80000;
-        info->m_tLSCURRItemsAddCount = 2000;
+        info->m_tLSCURRItemsCount = 800000;
+        info->m_tLSCURRItemsAddCount = 20000;
 #else
         info->m_incrementalTLRCURRCount = 100;
         info->m_incrementalTLRCURRAddCount = 100;

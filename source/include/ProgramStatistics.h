@@ -27,6 +27,23 @@ class ProgramStatistics {
     int     m_fondIssProcessedCount;
     int     m_currIssProcessedCount;
 
+    int     m_fondOlrLostCount;
+    int     m_fondOlsLostCount;
+    int     m_currOlrLostCount;
+    int     m_currOlsLostCount;
+    int     m_fondIdfLostCount;
+    int     m_currIdfLostCount;
+    int     m_fondTlrLostCount;
+    int     m_fondTlsLostCount;
+    int     m_fondMsrLostCount;
+    int     m_fondMssLostCount;
+    int     m_currTlrLostCount;
+    int     m_currTlsLostCount;
+    int     m_currMsrLostCount;
+    int     m_currMssLostCount;
+    int     m_fondIssLostCount;
+    int     m_currIssLostCount;    
+
     bool    m_fondOlrProcessedCountChanged;
     bool    m_fondOlsProcessedCountChanged;
     bool    m_currOlrProcessedCountChanged;
@@ -43,6 +60,23 @@ class ProgramStatistics {
     bool    m_currMssProcessedCountChanged;
     bool    m_fondIssProcessedCountChanged;
     bool    m_currIssProcessedCountChanged;
+
+    bool    m_fondOlrLostCountChanged;
+    bool    m_fondOlsLostCountChanged;
+    bool    m_currOlrLostCountChanged;
+    bool    m_currOlsLostCountChanged;
+    bool    m_fondIdfLostCountChanged;
+    bool    m_currIdfLostCountChanged;
+    bool    m_fondTlrLostCountChanged;
+    bool    m_fondTlsLostCountChanged;
+    bool    m_fondMsrLostCountChanged;
+    bool    m_fondMssLostCountChanged;
+    bool    m_currTlrLostCountChanged;
+    bool    m_currTlsLostCountChanged;
+    bool    m_currMsrLostCountChanged;
+    bool    m_currMssLostCountChanged;
+    bool    m_fondIssLostCountChanged;
+    bool    m_currIssLostCountChanged;
 public:
     ProgramStatistics() {
         this->Clear();
@@ -230,6 +264,191 @@ public:
         this->m_currIssProcessedCountChanged = true;
     }
 
+
+
+
+    inline int FondOlrLostCount() { return this->m_fondOlrLostCount; }
+    inline int FondOlsLostCount() { return this->m_fondOlsLostCount; }
+    inline int CurrOlrLostCount() { return this->m_currOlrLostCount; }
+    inline int CurrOlsLostCount() { return this->m_currOlsLostCount; }
+    inline int FondIdfLostCount() { return this->m_fondIdfLostCount; }
+    inline int CurrIdfLostCount() { return this->m_currIdfLostCount; }
+    inline int FondTlrLostCount() { return this->m_fondTlrLostCount; }
+    inline int FondTlsLostCount() { return this->m_fondTlsLostCount; }
+    inline int FondMsrLostCount() { return this->m_fondMsrLostCount; }
+    inline int FondMssLostCount() { return this->m_fondMssLostCount; }
+    inline int CurrTlrLostCount() { return this->m_currTlrLostCount; }
+    inline int CurrTlsLostCount() { return this->m_currTlsLostCount; }
+    inline int CurrMsrLostCount() { return this->m_currMsrLostCount; }
+    inline int CurrMssLostCount() { return this->m_currMssLostCount; }
+    inline int FondIssLostCount() { return this->m_fondIssLostCount; }
+    inline int CurrIssLostCount() { return this->m_currIssLostCount; }
+
+    inline void FondOlrLostCount(int value) {
+        if(this->m_fondOlrLostCount == value)
+            return;
+        this->m_fondOlrLostCount = value;
+        this->m_fondOlrLostCountChanged = true;
+    }
+    inline void FondOlsLostCount(int value) {
+        if(this->m_fondOlsLostCount == value)
+            return;
+        this->m_fondOlsLostCount = value;
+        this->m_fondOlsLostCountChanged = true;
+    }
+    inline void CurrOlrLostCount(int value) {
+        if(this->m_currOlrLostCount == value)
+            return;
+        this->m_currOlrLostCount = value;
+        this->m_currOlrLostCountChanged = true;
+    }
+    inline void CurrOlsLostCount(int value) {
+        if(this->m_currOlsLostCount == value)
+            return;
+        this->m_currOlsLostCount = value;
+        this->m_currOlsLostCountChanged = true;
+    }
+    inline void FondIdfLostCount(int value) {
+        if(this->m_fondIdfLostCount == value)
+            return;
+        this->m_fondIdfLostCount = value;
+        this->m_fondIdfLostCountChanged = true;
+    }
+    inline void CurrIdfLostCount(int value) {
+        if(this->m_currIdfLostCount == value)
+            return;
+        this->m_currIdfLostCount = value;
+        this->m_currIdfLostCountChanged = true;
+    }
+    inline void FondTlrLostCount(int value) {
+        if(this->m_fondTlrLostCount == value)
+            return;
+        this->m_fondTlrLostCount = value;
+        this->m_fondTlrLostCountChanged = true;
+    }
+    inline void CurrTlrLostCount(int value) {
+        if(this->m_currTlrLostCount == value)
+            return;
+        this->m_currTlrLostCount = value;
+        this->m_currTlrLostCountChanged = true;
+    }
+    inline void FondTlsLostCount(int value) {
+        if(this->m_fondTlsLostCount == value)
+            return;
+        this->m_fondTlsLostCount = value;
+        this->m_fondTlsLostCountChanged = true;
+    }
+    inline void CurrTlsLostCount(int value) {
+        if(this->m_currTlsLostCount == value)
+            return;
+        this->m_currTlsLostCount = value;
+        this->m_currTlsLostCountChanged = true;
+    }
+    inline void FondMsrLostCount(int value) {
+        if(this->m_fondMsrLostCount == value)
+            return;
+        this->m_fondMsrLostCount = value;
+        this->m_fondMsrLostCountChanged = true;
+    }
+    inline void CurrMsrLostCount(int value) {
+        if(this->m_currMsrLostCount == value)
+            return;
+        this->m_currMsrLostCount = value;
+        this->m_currMsrLostCountChanged = true;
+    }
+    inline void FondMssLostCount(int value) {
+        if(this->m_fondMssLostCount == value)
+            return;
+        this->m_fondMssLostCount = value;
+        this->m_fondMssLostCountChanged = true;
+    }
+    inline void CurrMssLostCount(int value) {
+        if(this->m_currMssLostCount == value)
+            return;
+        this->m_currMssLostCount = value;
+        this->m_currMssLostCountChanged = true;
+    }
+    inline void FondIssLostCount(int value) {
+        if(this->m_fondIssLostCount == value)
+            return;
+        this->m_fondIssLostCount = value;
+        this->m_fondIssLostCountChanged = true;
+    }
+    inline void CurrIssLostCount(int value) {
+        if(this->m_currIssLostCount == value)
+            return;
+        this->m_currIssLostCount = value;
+        this->m_currIssLostCountChanged = true;
+    }
+
+    inline void IncFondOlrLostCount() {
+        this->m_fondOlrLostCount++;
+        this->m_fondOlrLostCountChanged = true;
+    }
+    inline void IncFondOlsLostCount() {
+        this->m_fondOlsLostCount++;
+        this->m_fondOlsLostCountChanged = true;
+    }
+    inline void IncCurrOlrLostCount() {
+        this->m_currOlrLostCount++;
+        this->m_currOlrLostCountChanged = true;
+    }
+    inline void IncCurrOlsLostCount() {
+        this->m_currOlsLostCount++;
+        this->m_currOlsLostCountChanged = true;
+    }
+    inline void IncFondIdfLostCount() {
+        this->m_fondIdfLostCount++;
+        this->m_fondIdfLostCountChanged = true;
+    }
+    inline void IncCurrIdfLostCount() {
+        this->m_currIdfLostCount++;
+        this->m_currIdfLostCountChanged = true;
+    }
+    inline void IncFondTlrLostCount() {
+        this->m_fondTlrLostCount++;
+        this->m_fondTlrLostCountChanged = true;
+    }
+    inline void IncCurrTlrLostCount() {
+        this->m_currTlrLostCount++;
+        this->m_currTlrLostCountChanged = true;
+    }
+    inline void IncFondTlsLostCount() {
+        this->m_fondTlsLostCount++;
+        this->m_fondTlsLostCountChanged = true;
+    }
+    inline void IncCurrTlsLostCount() {
+        this->m_currTlsLostCount++;
+        this->m_currTlsLostCountChanged = true;
+    }
+    inline void IncFondMsrLostCount() {
+        this->m_fondMsrLostCount++;
+        this->m_fondMsrLostCountChanged = true;
+    }
+    inline void IncCurrMsrLostCount() {
+        this->m_currMsrLostCount++;
+        this->m_currMsrLostCountChanged = true;
+    }
+    inline void IncFondMssLostCount() {
+        this->m_fondMssLostCount++;
+        this->m_fondMssLostCountChanged = true;
+    }
+    inline void IncCurrMssLostCount() {
+        this->m_currMssLostCount++;
+        this->m_currMssLostCountChanged = true;
+    }
+    inline void IncFondIssLostCount() {
+        this->m_fondIssLostCount++;
+        this->m_fondIssLostCountChanged = true;
+    }
+    inline void IncCurrIssLostCount() {
+        this->m_currIssLostCount++;
+        this->m_currIssLostCountChanged = true;
+    }
+    
+    
+    
+
     inline void Clear() {
         this->m_fondOlrProcessedCount = 0;
         this->m_fondOlsProcessedCount = 0;
@@ -247,6 +466,23 @@ public:
         this->m_currMsrProcessedCount = 0;
         this->m_currMssProcessedCount = 0;
         this->m_currIssProcessedCount = 0;
+
+        this->m_fondOlrLostCount = 0;
+        this->m_fondOlsLostCount = 0;
+        this->m_currOlrLostCount = 0;
+        this->m_currOlsLostCount = 0;
+        this->m_fondIdfLostCount = 0;
+        this->m_currIdfLostCount = 0;
+        this->m_fondTlrLostCount = 0;
+        this->m_fondTlsLostCount = 0;
+        this->m_fondMsrLostCount = 0;
+        this->m_fondMssLostCount = 0;
+        this->m_fondIssLostCount = 0;
+        this->m_currTlrLostCount = 0;
+        this->m_currTlsLostCount = 0;
+        this->m_currMsrLostCount = 0;
+        this->m_currMssLostCount = 0;
+        this->m_currIssLostCount = 0;
 
         this->ResetFlags();
     }
@@ -290,6 +526,45 @@ public:
         if(this->m_currIssProcessedCountChanged)
             printf("curr iss processed messages count = %d\n", this->m_currIssProcessedCount);
 
+
+        if(this->m_fondOlrLostCountChanged)
+            printf("fond olr lost messages count = %d\n", this->m_fondOlrLostCount);
+        if(this->m_fondTlrLostCountChanged)
+            printf("fond tlr lost messages count = %d\n", this->m_fondTlrLostCount);
+        if(this->m_fondMsrLostCountChanged)
+            printf("fond msr lost messages count = %d\n", this->m_fondMsrLostCount);
+
+        if(this->m_fondOlsLostCountChanged)
+            printf("fond ols lost messages count = %d\n", this->m_fondOlsLostCount);
+        if(this->m_fondTlsLostCountChanged)
+            printf("fond tls lost messages count = %d\n", this->m_fondTlsLostCount);
+        if(this->m_fondMssLostCountChanged)
+            printf("fond mss lost messages count = %d\n", this->m_fondMssLostCount);
+
+        if(this->m_fondIdfLostCountChanged)
+            printf("fond idf lost messages count = %d\n", this->m_fondIdfLostCount);
+        if(this->m_fondIssLostCountChanged)
+            printf("fond iss lost messages count = %d\n", this->m_fondIssLostCount);
+
+        if(this->m_currOlrLostCountChanged)
+            printf("curr olr lost messages count = %d\n", this->m_currOlrLostCount);
+        if(this->m_currTlrLostCountChanged)
+            printf("curr tlr lost messages count = %d\n", this->m_currTlrLostCount);
+        if(this->m_currMsrLostCountChanged)
+            printf("curr msr lost messages count = %d\n", this->m_currMsrLostCount);
+
+        if(this->m_currOlsLostCountChanged)
+            printf("curr ols lost messages count = %d\n", this->m_currOlsLostCount);
+        if(this->m_currTlsLostCountChanged)
+            printf("curr tls lost messages count = %d\n", this->m_currTlsLostCount);
+        if(this->m_currMssLostCountChanged)
+            printf("curr mss lost messages count = %d\n", this->m_currMssLostCount);
+
+        if(this->m_currIdfLostCountChanged)
+            printf("curr idf lost messages count = %d\n", this->m_currIdfLostCount);
+        if(this->m_currIssLostCountChanged)
+            printf("curr iss lost messages count = %d\n", this->m_currIssLostCount);
+
     }
 
     inline void ResetFlags() {
@@ -309,6 +584,23 @@ public:
         this->m_currMsrProcessedCountChanged = false;
         this->m_currMssProcessedCountChanged = false;
         this->m_currIssProcessedCountChanged = false;
+
+        this->m_fondOlrLostCountChanged = false;
+        this->m_fondOlsLostCountChanged = false;
+        this->m_currOlrLostCountChanged = false;
+        this->m_currOlsLostCountChanged = false;
+        this->m_fondIdfLostCountChanged = false;
+        this->m_currIdfLostCountChanged = false;
+        this->m_fondTlrLostCountChanged = false;
+        this->m_fondTlsLostCountChanged = false;
+        this->m_fondMsrLostCountChanged = false;
+        this->m_fondMssLostCountChanged = false;
+        this->m_fondIssLostCountChanged = false;
+        this->m_currTlrLostCountChanged = false;
+        this->m_currTlsLostCountChanged = false;
+        this->m_currMsrLostCountChanged = false;
+        this->m_currMssLostCountChanged = false;
+        this->m_currIssLostCountChanged = false;
     }
 };
 

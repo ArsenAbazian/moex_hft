@@ -35,7 +35,7 @@ public:
         info->m_securityDefinitionAddCount = 256;
         info->m_securityDefinitionGroupInstrAttribItemsCount = 40000;
         info->m_securityDefinitionGroupInstrAttribItemsAddCount = 256;
-        info->m_securityDefinitionMarketSegmentGrpItemsCount = 13000;
+        info->m_securityDefinitionMarketSegmentGrpItemsCount = 20000;
         info->m_securityDefinitionMarketSegmentGrpItemsAddCount = 256;
         info->m_securityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemsCount = 40000;
         info->m_securityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemsAddCount = 256;

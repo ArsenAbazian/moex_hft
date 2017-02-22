@@ -217,7 +217,7 @@ class StatisticItemAllocator {
     PointerList<StatisticItem<bool>>                        *m_booleans;
 public:
     StatisticItemAllocator() {
-        this->m_decimals = new PointerList<StatisticItemDecimal>(100000, true, "StatisticsInfo::Decimals");
+        this->m_decimals = new PointerList<StatisticItemDecimal>(400000, true, "StatisticsInfo::Decimals");
         this->m_decimals2 = new PointerList<StatisticItemDecimal2>(100000, true, "StatisticsInfo::Decimals2");
         this->m_dealInfos = new PointerList<StatisticItemLastDealInfo>(100000, true, "StatisticsInfo::DealInfo");
         this->m_totalOffers = new PointerList<StatisticItemTotalOffer>(800000, true, "StatisticsInfo::TotalOffer");

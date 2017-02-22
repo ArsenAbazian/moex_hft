@@ -133,6 +133,7 @@ bool Robot::CollectSecurityDefinitions() {
     w->Start();
     unsigned int cycleCount = 0;
 
+    this->m_fondMarket->Enable(false);
     DefaultLogManager::Default->StartLog(LogMessageCode::lmcRobot_CollectSecurityDefinitions);
     // collect data first
     while(true) {
@@ -142,18 +143,18 @@ bool Robot::CollectSecurityDefinitions() {
             DefaultLogManager::Default->EndLog(false);
             return false;
         }
-        if (!this->m_fondMarket->FeedChannel()->CollectSecurityDefinitions()) {
-            DefaultLogManager::Default->EndLog(false);
-            return false;
-        }
+//        if (!this->m_fondMarket->FeedChannel()->CollectSecurityDefinitions()) {
+//            DefaultLogManager::Default->EndLog(false);
+//            return false;
+//        }
 
         if(this->m_currMarket->FeedChannel()->InstrumentDefinition()->IsIdfDataCollected())
             this->m_currMarket->FeedChannel()->InstrumentDefinition()->Stop();
-        if(this->m_fondMarket->FeedChannel()->InstrumentDefinition()->IsIdfDataCollected())
-            this->m_fondMarket->FeedChannel()->InstrumentDefinition()->Stop();
+//        if(this->m_fondMarket->FeedChannel()->InstrumentDefinition()->IsIdfDataCollected())
+//            this->m_fondMarket->FeedChannel()->InstrumentDefinition()->Stop();
 
-        if(this->m_currMarket->FeedChannel()->InstrumentDefinition()->IsIdfDataCollected() &&
-           this->m_fondMarket->FeedChannel()->InstrumentDefinition()->IsIdfDataCollected()) {
+        if(this->m_currMarket->FeedChannel()->InstrumentDefinition()->IsIdfDataCollected() //&&
+           /*this->m_fondMarket->FeedChannel()->InstrumentDefinition()->IsIdfDataCollected() */) {
             break;
         }
         if(w->ElapsedSeconds() > 3) {
@@ -178,13 +179,13 @@ bool Robot::CollectSecurityDefinitions() {
 
     DefaultLogManager::Default->StartLog(LogMessageCode::lmcRobot_GenerateSecurityDefinitions);
 
-    this->m_fondMarket->FeedChannel()->InstrumentDefinition()->GenerateSecurityDefinitions();
+    //this->m_fondMarket->FeedChannel()->InstrumentDefinition()->GenerateSecurityDefinitions();
     this->m_currMarket->FeedChannel()->InstrumentDefinition()->GenerateSecurityDefinitions();
 
-    if(!this->m_fondMarket->FeedChannel()->OnAfterGenerateSecurityDefinitions()) {
-        DefaultLogManager::Default->EndLog(false);
-        return false;
-    }
+//    if(!this->m_fondMarket->FeedChannel()->OnAfterGenerateSecurityDefinitions()) {
+//        DefaultLogManager::Default->EndLog(false);
+//        return false;
+//    }
     if(!this->m_currMarket->FeedChannel()->OnAfterGenerateSecurityDefinitions()) {
         DefaultLogManager::Default->EndLog(false);
         return false;
@@ -204,10 +205,10 @@ bool Robot::MainLoop() {
             DefaultLogManager::Default->EndLog(false);
             return false;
         }
-        if (!this->m_fondMarket->DoWorkAtom()) {
-            DefaultLogManager::Default->EndLog(false);
-            return false;
-        }
+//        if (!this->m_fondMarket->DoWorkAtom()) {
+//            DefaultLogManager::Default->EndLog(false);
+//            return false;
+//        }
         if(!this->DoWorkAtom()) {
             DefaultLogManager::Default->EndLog(false);
             return false;
@@ -218,7 +219,7 @@ bool Robot::MainLoop() {
             double nanosecPerCycle = 3.0 * 1000.0 * 1000.0 * 1000.0 / cycleCount;
             printf("CycleCount for 3 sec = %d. %g nanosec per cycle\n", cycleCount, nanosecPerCycle);
 
-
+            /*
             if (this->m_fondMarket->FeedChannel()->OrdersSnapshot()->State() == FeedConnectionState::fcsListenSnapshot) {
                 int foundSnapshotSymbolsCount = this->m_fondMarket->FeedChannel()->OrdersIncremental()->OrderFond()->SymbolsToRecvSnapshotCount();
                 int foundQueEntries = this->m_fondMarket->FeedChannel()->OrdersIncremental()->OrderFond()->QueueEntriesCount();
@@ -255,7 +256,7 @@ bool Robot::MainLoop() {
             printf("fond iss: start = %d end = %d\n",
                    this->m_fondMarket->FeedChannel()->InstrumentStatus()->MsgSeqNo(),
                    this->m_fondMarket->FeedChannel()->InstrumentStatus()->LastRecvMsgSeqNo());
-
+            */
             if(this->m_currMarket->FeedChannel()->OrdersSnapshot()->State() == FeedConnectionState::fcsListenSnapshot) {
                 int currSnapshotSymbolsCount = this->m_currMarket->FeedChannel()->OrdersIncremental()->OrderCurr()->SymbolsToRecvSnapshotCount();
                 int currQueEntries = this->m_currMarket->FeedChannel()->OrdersIncremental()->OrderCurr()->QueueEntriesCount();
@@ -304,7 +305,7 @@ bool Robot::MainLoop() {
 
             cycleCount = 0;
             ProgramStatistics::Current->Clear();
-            ProgramStatistics::Total->ResetFlags();
+            //ProgramStatistics::Total->ResetFlags();
         }
         cycleCount++;
     }

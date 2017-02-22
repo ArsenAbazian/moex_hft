@@ -1008,10 +1008,102 @@ protected:
         return this->m_packets[this->m_startMsgSeqNum]->m_address == 0;
     }
 
+    inline void UpdateLostPacketsStatistic(int count) {
+        if(this->m_id == FeedConnectionId::fcidIdfCurr) {
+            ProgramStatistics::Current->CurrIdfLostCount(count);
+            ProgramStatistics::Total->CurrIdfLostCount(ProgramStatistics::Total->CurrIdfLostCount() + count);
+            return;
+        }
+        if(this->m_id == FeedConnectionId::fcidIdfFond) {
+            ProgramStatistics::Current->FondIdfLostCount(count);
+            ProgramStatistics::Total->FondIdfLostCount(ProgramStatistics::Total->FondIdfLostCount() + count);
+            return;
+        }
+        
+        if(this->m_id == FeedConnectionId::fcidOlrCurr) {
+            ProgramStatistics::Current->CurrOlrLostCount(count);
+            ProgramStatistics::Total->CurrOlrLostCount(ProgramStatistics::Total->CurrOlrLostCount() + count);
+            return;
+        }
+        if(this->m_id == FeedConnectionId::fcidOlrFond) {
+            ProgramStatistics::Current->FondOlrLostCount(count);
+            ProgramStatistics::Total->FondOlrLostCount(ProgramStatistics::Total->FondOlrLostCount() + count);
+            return;
+        }
+
+        if(this->m_id == FeedConnectionId::fcidOlsCurr) {
+            ProgramStatistics::Current->CurrOlsLostCount(count);
+            ProgramStatistics::Total->CurrOlsLostCount(ProgramStatistics::Total->CurrOlsLostCount() + count);
+            return;
+        }
+        if(this->m_id == FeedConnectionId::fcidOlsFond) {
+            ProgramStatistics::Current->FondOlsLostCount(count);
+            ProgramStatistics::Total->FondOlsLostCount(ProgramStatistics::Total->FondOlsLostCount() + count);
+            return;
+        }
+
+        if(this->m_id == FeedConnectionId::fcidTlrCurr) {
+            ProgramStatistics::Current->CurrTlrLostCount(count);
+            ProgramStatistics::Total->CurrTlrLostCount(ProgramStatistics::Total->CurrTlrLostCount() + count);
+            return;
+        }
+        if(this->m_id == FeedConnectionId::fcidTlrFond) {
+            ProgramStatistics::Current->FondTlrLostCount(count);
+            ProgramStatistics::Total->FondTlrLostCount(ProgramStatistics::Total->FondTlrLostCount() + count);
+            return;
+        }
+
+        if(this->m_id == FeedConnectionId::fcidTlsCurr) {
+            ProgramStatistics::Current->CurrTlsLostCount(count);
+            ProgramStatistics::Total->CurrTlsLostCount(ProgramStatistics::Total->CurrTlsLostCount() + count);
+            return;
+        }
+        if(this->m_id == FeedConnectionId::fcidTlsFond) {
+            ProgramStatistics::Current->FondTlsLostCount(count);
+            ProgramStatistics::Total->FondTlsLostCount(ProgramStatistics::Total->FondTlsLostCount() + count);
+            return;
+        }
+
+        if(this->m_id == FeedConnectionId::fcidMsrCurr) {
+            ProgramStatistics::Current->CurrMsrLostCount(count);
+            ProgramStatistics::Total->CurrMsrLostCount(ProgramStatistics::Total->CurrMsrLostCount() + count);
+            return;
+        }
+        if(this->m_id == FeedConnectionId::fcidMsrFond) {
+            ProgramStatistics::Current->FondMsrLostCount(count);
+            ProgramStatistics::Total->FondMsrLostCount(ProgramStatistics::Total->FondMsrLostCount() + count);
+            return;
+        }
+
+        if(this->m_id == FeedConnectionId::fcidMssCurr) {
+            ProgramStatistics::Current->CurrMssLostCount(count);
+            ProgramStatistics::Total->CurrMssLostCount(ProgramStatistics::Total->CurrMssLostCount() + count);
+            return;
+        }
+        if(this->m_id == FeedConnectionId::fcidMssFond) {
+            ProgramStatistics::Current->FondMssLostCount(count);
+            ProgramStatistics::Total->FondMssLostCount(ProgramStatistics::Total->FondMssLostCount() + count);
+            return;
+        }
+
+        if(this->m_id == FeedConnectionId::fcidIsfCurr) {
+            ProgramStatistics::Current->CurrIssLostCount(count);
+            ProgramStatistics::Total->CurrIssLostCount(ProgramStatistics::Total->CurrIssLostCount() + count);
+            return;
+        }
+        if(this->m_id == FeedConnectionId::fcidIsfFond) {
+            ProgramStatistics::Current->FondIssLostCount(count);
+            ProgramStatistics::Total->FondIssLostCount(ProgramStatistics::Total->FondIssLostCount() + count);
+            return;
+        }
+    }
+
     inline void SkipLostPackets() {
         for(int i = this->m_startMsgSeqNum; i <= this->m_endMsgSeqNum; i++) {
             if(this->m_packets[i]->m_address != 0) {
-                //printf("skip packets from %d to %d\n", this->m_startMsgSeqNum, i);
+#ifdef COLLECT_STATISTICS
+                this->UpdateLostPacketsStatistic(i - this->m_startMsgSeqNum);
+#endif
                 this->m_startMsgSeqNum = i;
                 return;
             }
@@ -1475,6 +1567,7 @@ public:
         info->SetMsgSeq(start, end);
         info->m_requestCount = 0;
 
+        this->UpdateLostPacketsStatistic(end - start + 1);
         this->m_hsRequestList->Add(ptr);
     }
     inline void HrRequestMessage(FeedConnection *conn, int msgSeqNo) {
@@ -2139,7 +2232,7 @@ public:
         return true;
     }
 
-    inline void AddSymbols(int count) {
+    inline void InitSymbols(int count) {
         if(this->m_orderTableFond != 0) {
             this->m_orderTableFond->InitSymbols(count);
             return;
@@ -2335,18 +2428,18 @@ public:
     }
 
     inline void AfterProcessSecurityDefinitions() {
-        // TODO remove debug info
-//        for(int i = 0; i < this->m_symbolsCount; i++) {
-//            printf("%s\n", DebugInfoManager::Default->GetString(this->m_symbols[i]->Data()->Symbol, this->m_symbols[i]->Data()->SymbolLength, 0));
-//            for(int j = 0; j < this->m_symbols[i]->Data()->MarketSegmentGrpCount; j++) {
-//                for(int k = 0; k < this->m_symbols[i]->Data()->MarketSegmentGrp[j]->TradingSessionRulesGrpCount; k++) {
-//                    printf("\t%s\n", DebugInfoManager::Default->GetString(this->m_symbols[i]->Data()->MarketSegmentGrp[j]->TradingSessionRulesGrp[k]->TradingSessionID,
-//                                                                          this->m_symbols[i]->Data()->MarketSegmentGrp[j]->TradingSessionRulesGrp[k]->TradingSessionIDLength, 0));
-//                }
-//            }
-//        }
+        //TODO remove debug
+        printf("%s %s SymbolsCount = %d\n", this->m_channelName, this->m_idName, this->m_symbolsCount);
+        int sessionCount = 0;
+        for(int i = 0; i < this->m_symbolsCount; i++) {
+            for (int j = 0; j < this->m_symbols[i]->Data()->MarketSegmentGrpCount; j++) {
+                sessionCount += this->m_symbols[i]->Data()->MarketSegmentGrp[j]->TradingSessionRulesGrpCount;
+            }
+        }
+        printf("%s %s Total SessionsCount = %d\n", this->m_channelName, this->m_idName, sessionCount);
+
         for(int i = 0; i < this->m_connectionsToRecvSymbolsCount; i++)
-            this->m_connectionsToRecvSymbols[i]->AddSymbols(this->m_symbolsCount);
+            this->m_connectionsToRecvSymbols[i]->InitSymbols(this->m_symbolsCount);
 
         LinkedPointer<FastSecurityDefinitionInfo> **ptr = this->m_symbols;
         for(int i = 0; i < this->m_symbolsCount; i++, ptr++)
