@@ -353,12 +353,14 @@ public:
         int startIndex = this->m_rptSeq + 1 - incRptSeq;
         for(int i = 0; i < startIndex && i < this->m_entryInfo->Capacity(); i++, entry++) {
             if((*entry) != 0) (*entry)->Clear();
+            (*entry) = 0;
         }
         for(int index = startIndex; index <= maxIndex; index++) {
             if((*entry) == 0)
                 return false;
             ForceProcessMessage(*entry);
             this->m_rptSeq = (*entry)->RptSeq;
+            (*entry) = 0;
             entry++;
         }
         this->m_entryInfo->Reset();

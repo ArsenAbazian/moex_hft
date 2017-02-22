@@ -15,7 +15,7 @@
 #include "ConnectionParameters.h"
 #include "FeedTypes.h"
 #include "Managers/DebugInfoManager.h"
-
+#include "../ProgramStatistics.h"
 
 class OrderTesterFond;
 class OrderTesterCurr;
@@ -379,6 +379,10 @@ protected:
 
     inline bool ApplySnapshot_OLS_FOND() {
         this->PrepareDecodeSnapshotMessage(this->m_snapshotRouteFirst);
+#ifdef COLLECT_STATISTICS
+        ProgramStatistics::Current->IncFondOlsProcessedCount();
+        ProgramStatistics::Total->IncFondOlsProcessedCount();
+#endif
         FastOLSFONDInfo *info = (FastOLSFONDInfo *) this->m_fastProtocolManager->DecodeOLSFOND();
          this->m_incremental->OrderFond()->ObtainSnapshotItem(info);
          if(this->m_incremental->OrderFond()->CheckProcessIfSessionInActualState(info)) {
@@ -400,43 +404,24 @@ protected:
             if(!this->PrepareDecodeSnapshotMessage(i))
                 continue;
             info = (FastOLSFONDInfo *) this->m_fastProtocolManager->DecodeOLSFOND();
+#ifdef COLLECT_STATISTICS
+            ProgramStatistics::Current->IncFondOlsProcessedCount();
+            ProgramStatistics::Total->IncFondOlsProcessedCount();
+#endif
             this->m_incremental->OrderFond()->ProcessSnapshot(info);
             info->ReleaseUnused();
         }
         this->m_incremental->OrderFond()->EndProcessSnapshot();
         return true;
     }
-    inline void CheckOLSCURR() {
-        LinkedPointer<FastOLSCURRInfo> *start = this->m_fastProtocolManager->m_oLSCURR->ListCore()->PoolStart();
-        LinkedPointer<FastOLSCURRInfo> *end = this->m_fastProtocolManager->m_oLSCURR->ListCore()->PoolEnd();
-        int index = 0;
-        int count = 0;
-        while(start != end) {
-            FastOLSCURRInfo *info= start->Data();
-            if(info->Pointer->Owner() != start->Owner() || info->Allocator != this->m_fastProtocolManager->m_oLSCURR) {
-                printf("%s", DebugInfoManager::Default->BinaryToString(this->m_fastProtocolManager->Buffer(), this->m_fastProtocolManager->BufferLength()));
-                count++;
-            }
-
-            start = start->Next();
-            index++;
-        }
-
-        if(count > 0) {
-            this->m_fastProtocolManager->ResetBuffer();
-            this->m_fastProtocolManager->DecodeOLSCURR();
-
-            this->m_fastProtocolManager->ResetBuffer();
-            this->m_fastProtocolManager->DecodeOLSCURR();
-
-            this->m_fastProtocolManager->ResetBuffer();
-            this->m_fastProtocolManager->DecodeOLSCURR();
-        }
-    }
     inline bool ApplySnapshot_OLS_CURR() {
         this->PrepareDecodeSnapshotMessage(this->m_snapshotRouteFirst);
         //printf("before decode %d\n", this->m_fastProtocolManager->GetOLSCURRItemInfoPool()->Count());
         FastOLSCURRInfo *info = (FastOLSCURRInfo *) this->m_fastProtocolManager->DecodeOLSCURR();
+#ifdef COLLECT_STATISTICS
+        ProgramStatistics::Current->IncCurrOlsProcessedCount();
+        ProgramStatistics::Total->IncCurrOlsProcessedCount();
+#endif
         this->m_incremental->OrderCurr()->ObtainSnapshotItem(info);
 //        printf("%s %s session to go %d\n",
 //               DebugInfoManager::Default->GetString(info->Symbol, info->SymbolLength, 0),
@@ -480,6 +465,10 @@ protected:
             if(!this->PrepareDecodeSnapshotMessage(i))
                 continue;
             info = (FastOLSCURRInfo *) this->m_fastProtocolManager->DecodeOLSCURR();
+#ifdef COLLECT_STATISTICS
+            ProgramStatistics::Current->IncCurrOlsProcessedCount();
+            ProgramStatistics::Total->IncCurrOlsProcessedCount();
+#endif
             this->m_incremental->OrderCurr()->ProcessSnapshot(info);
             info->ReleaseUnused();
 //            printf("%s %s process snapshot part%d %d\n",
@@ -1158,7 +1147,7 @@ protected:
 
         // TODO remove hack. just skip 30 messages and then try to restore
         if(this->m_snapshot->State() == FeedConnectionState::fcsSuspend &&
-                (this->m_startMsgSeqNum % 50) < 20  &&
+                (this->m_startMsgSeqNum % 500) < 2  &&
                 this->m_packets[this->m_startMsgSeqNum]->m_address != 0 &&
                 !this->m_packets[this->m_startMsgSeqNum]->m_requested) {
             this->m_packets[this->m_startMsgSeqNum]->m_address = 0; // force historical replay
@@ -1277,6 +1266,7 @@ protected:
         this->m_fixProtocolManager->IncSendMsgSeqNo();
         this->m_hsState = FeedConnectionHistoricalReplayState::hsWaitLogon;
         this->m_hrMessageSize = 0;
+        this->m_waitTimer->Stop(2);
         return true;
     }
 
@@ -1313,7 +1303,7 @@ protected:
 
     inline void CheckReconnectHistoricalReplay() {
         this->m_waitTimer->Activate(2);
-        if(this->m_waitTimer->ElapsedMilliseconds(2) > 1000) {
+        if(this->m_waitTimer->ElapsedSeconds(2) > 4) {
             this->Disconnect();
             this->m_hsState = FeedConnectionHistoricalReplayState::hsSuspend;
             this->m_waitTimer->Stop();
@@ -1375,6 +1365,7 @@ protected:
         this->m_hsState = FeedConnectionHistoricalReplayState::hsRecvMessage;
         this->m_hrSizeRemain = 0;
         this->m_hrMessageSize = 0;
+        this->m_waitTimer->Stop(2);
         return true;
     }
 
@@ -1617,6 +1608,10 @@ protected:
     }
 
     inline bool OnIncrementalRefresh_OLR_FOND(FastIncrementalOLRFONDInfo *info) {
+#ifdef COLLECT_STATISTICS
+        ProgramStatistics::Current->IncFondOlrProcessedCount();
+        ProgramStatistics::Total->IncFondOlrProcessedCount();
+#endif
         if(this->m_skipApplyMessages) { //TODO remove this
             this->m_fastProtocolManager->Print();
             info->Clear();
@@ -1632,6 +1627,10 @@ protected:
     }
 
     inline bool OnIncrementalRefresh_OLR_CURR(FastIncrementalOLRCURRInfo *info) {
+#ifdef COLLECT_STATISTICS
+        ProgramStatistics::Current->IncCurrOlrProcessedCount();
+        ProgramStatistics::Total->IncCurrOlrProcessedCount();
+#endif
         if(this->m_skipApplyMessages) { //TODO remove this
             this->m_fastProtocolManager->Print();
             info->Clear();
@@ -2065,6 +2064,17 @@ public:
     }
 
     inline bool ProcessSecurityDefinition(FastSecurityDefinitionInfo *info) {
+#ifdef COLLECT_STATISTICS
+        if(this->m_id == FeedConnectionId::fcidIdfFond) {
+            ProgramStatistics::Current->IncFondIdfProcessedCount();
+            ProgramStatistics::Total->IncFondIdfProcessedCount();
+        }
+        else {
+            ProgramStatistics::Current->IncCurrIdfProcessedCount();
+            ProgramStatistics::Total->IncCurrIdfProcessedCount();
+        }
+#endif
+
         bool wasNewlyAdded = false;
 
         SymbolInfo *smb = this->m_symbolManager->GetSymbol(info->Symbol, info->SymbolLength, &wasNewlyAdded);

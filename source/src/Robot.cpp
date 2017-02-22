@@ -1,6 +1,7 @@
 #include "Robot.h"
 #include "FeedChannel.h"
 #include <cstdio>
+#include "ProgramStatistics.h"
 
 Robot::Robot() {
 	this->channelsCount = 0;
@@ -130,7 +131,7 @@ bool Robot::Run() {
 bool Robot::DoWork() {
     DefaultLogManager::Default->StartLog(LogMessageCode::lmcRobot_DoWork);
 
-    //this->m_fondMarket->Enable(false);
+    this->m_fondMarket->Enable(false);
 	Stopwatch *w = new Stopwatch();
 	w->Start();
 	unsigned int cycleCount = 0;
@@ -189,7 +190,15 @@ bool Robot::DoWork() {
                        this->m_currMarket->FeedChannel()->OrdersIncremental()->LastRecvMsgSeqNo());
             }
 			w->Reset();
-			cycleCount = 0;
+
+            printf("3 sec. Changes------------------------\n");
+            ProgramStatistics::Current->Print();
+            printf("Total Changes-------------------------\n");
+            ProgramStatistics::Total->Print();
+
+            cycleCount = 0;
+            ProgramStatistics::Current->Clear();
+            ProgramStatistics::Total->ResetFlags();
 		}
 		cycleCount++;
     }

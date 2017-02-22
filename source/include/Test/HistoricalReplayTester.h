@@ -30,9 +30,15 @@ public:
         throw;
     }
 
+    void TestTimerDeactivatedAfterSendLogonMessageAndMarketDataRequest() {
+        // because if no - then will be close tcp socket immediately
+        throw;
+    }
+
     void Test() {
         TestCorrectlyReadHearthbeatTemplateId_WhenShouldProcessMsgSeqNum();
         TestCorrectlyReadHearthbeatTemplateId_WhenShouldNotProcessMsgSeqNum();
+        TestTimerDeactivatedAfterSendLogonMessageAndMarketDataRequest();
     }
 };
 
