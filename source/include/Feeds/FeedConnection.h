@@ -42,9 +42,10 @@ class FeedConnection {
     friend class DebugInfoManager;
 
 public:
-	const int MaxReceiveBufferSize 				= 1500;
-    const int WaitAnyPacketMaxTimeMs            = 4000;
-    const int MaxHrUnsuccessfulConnectCount     = 100;
+	const int MaxReceiveBufferSize 				        = 1500;
+    const int WaitAnyPacketMaxTimeMs                    = 4000;
+    const int MaxHrUnsuccessfulConnectCount             = 100;
+    const int WaitSecurityDefinitionPacketMaxTimeMs     = 20000;
 protected:
 	char										m_idName[16];
     char                                        m_channelName[16];
@@ -88,6 +89,7 @@ protected:
     bool                                        m_idfDataCollected;
     bool                                        m_idfAllowUpdateData;
     bool                                        m_idfStopAfterUpdateAllMessages;
+    bool                                        m_allowGenerateSecurityDefinitions;
     SymbolManager                               *m_symbolManager;
 
     FeedConnectionHistoricalReplayState             m_hsState;
@@ -268,11 +270,6 @@ protected:
             this->m_endMsgSeqNum = msgSeqNum;
         }
 
-        // TODO remove this code, because this is a bug!!!
-        if(buffer->CurrentPos()[1] == 0 && buffer->CurrentPos()[2] == 0 && buffer->CurrentPos()[3] == 0) {
-            buffer->NextExact(4);
-        }
-
         printf("Historical Replay %s -> %d size = %d, endMsgSeqNum = %d\n", this->m_idName, msgSeqNum, size, this->m_endMsgSeqNum);
         if(this->m_packets[msgSeqNum]->m_address != 0) { // TODO
             printf("already exists requested = %d", this->m_packets[msgSeqNum]->m_requested);
@@ -281,10 +278,10 @@ protected:
 
         buffer->SetCurrentItemSize(size);
 
-        BinaryLogItem *item = DefaultLogManager::Default->WriteFast(this->m_idLogIndex,
-                                                                    LogMessageCode::lmcFeedConnection_ProcessMessage,
-                                                                    buffer->BufferIndex(),
-                                                                    buffer->CurrentItemIndex());
+//        BinaryLogItem *item = DefaultLogManager::Default->WriteFast(this->m_idLogIndex,
+//                                                                    LogMessageCode::lmcFeedConnection_ProcessMessage,
+//                                                                    buffer->BufferIndex(),
+//                                                                    buffer->CurrentItemIndex());
         if(!this->UpdateMsgSeqStartEnd(msgSeqNum))
             return true;
         FeedConnectionMessageInfo *info = this->m_packets[msgSeqNum];
@@ -314,10 +311,10 @@ protected:
 
         this->m_recvABuffer->SetCurrentItemSize(size);
         //printf("%s -> %d size = %d\n", this->m_idName, msgSeqNum, size);
-//        BinaryLogItem *item = DefaultLogManager::Default->WriteFast(this->m_idLogIndex,
-//                                                                    LogMessageCode::lmcFeedConnection_ProcessMessage,
-//                                                                    this->m_recvABuffer->BufferIndex(),
-//                                                                    this->m_recvABuffer->CurrentItemIndex());
+        //BinaryLogItem *item = DefaultLogManager::Default->WriteFast(this->m_idLogIndex,
+        //                                                            LogMessageCode::lmcFeedConnection_ProcessMessage,
+        //                                                            this->m_recvABuffer->BufferIndex(),
+        //                                                            this->m_recvABuffer->CurrentItemIndex());
 
         if(!this->UpdateMsgSeqStartEnd(msgSeqNum))
             return true;
@@ -416,51 +413,27 @@ protected:
     }
     inline bool ApplySnapshot_OLS_CURR() {
         this->PrepareDecodeSnapshotMessage(this->m_snapshotRouteFirst);
-        //printf("before decode %d\n", this->m_fastProtocolManager->GetOLSCURRItemInfoPool()->Count());
         FastOLSCURRInfo *info = (FastOLSCURRInfo *) this->m_fastProtocolManager->DecodeOLSCURR();
 #ifdef COLLECT_STATISTICS
         ProgramStatistics::Current->IncCurrOlsProcessedCount();
         ProgramStatistics::Total->IncCurrOlsProcessedCount();
 #endif
         this->m_incremental->OrderCurr()->ObtainSnapshotItem(info);
-//        printf("%s %s session to go %d\n",
-//               DebugInfoManager::Default->GetString(info->Symbol, info->SymbolLength, 0),
-//               DebugInfoManager::Default->GetString(info->TradingSessionID, info->TradingSessionIDLength, 1),
-//        this->m_incremental->OrderCurr()->SnapshotSymbol()->SessionsToRecvSnapshotCount());
         if(this->m_incremental->OrderCurr()->CheckProcessIfSessionInActualState(info)) {
             info->ReleaseUnused();
-//            printf("%s %s in actual state. sessions to go %d\n",
-//                   DebugInfoManager::Default->GetString(info->Symbol, info->SymbolLength, 0),
-//                   DebugInfoManager::Default->GetString(info->TradingSessionID, info->TradingSessionIDLength, 1),
-//                   this->m_incremental->OrderCurr()->SnapshotSymbol()->SessionsToRecvSnapshotCount());
-//            printf("%d queue items and %d symbols to go\n",
-//                   this->m_incremental->OrderCurr()->QueueEntriesCount(),
-//                   this->m_incremental->OrderCurr()->SymbolsToRecvSnapshotCount());
             return true;
         }
         if(this->m_incremental->OrderCurr()->CheckProcessNullSnapshot(info)) {
             info->ReleaseUnused();
-//            printf("%s %s null snapshot %d\n",
-//                   DebugInfoManager::Default->GetString(info->Symbol, info->SymbolLength, 0),
-//                   DebugInfoManager::Default->GetString(info->TradingSessionID, info->TradingSessionIDLength, 1),
-//                   this->m_fastProtocolManager->GetOLSCURRItemInfoPool()->Count());
             return true;
         }
         if(!this->m_incremental->OrderCurr()->ShouldProcessSnapshot(info)) {
             info->ReleaseUnused();
-//            printf("%s %s skip process snapshot %d\n",
-//                   DebugInfoManager::Default->GetString(info->Symbol, info->SymbolLength, 0),
-//                   DebugInfoManager::Default->GetString(info->TradingSessionID, info->TradingSessionIDLength, 1),
-//                   this->m_fastProtocolManager->GetOLSCURRItemInfoPool()->Count());
             return true;
         }
         this->m_incremental->OrderCurr()->StartProcessSnapshot(info);
         this->m_incremental->OrderCurr()->ProcessSnapshot(info);
         info->ReleaseUnused();
-//        printf("%s %s process snapshot part0 %d\n",
-//               DebugInfoManager::Default->GetString(info->Symbol, info->SymbolLength, 0),
-//               DebugInfoManager::Default->GetString(info->TradingSessionID, info->TradingSessionIDLength, 1),
-//               this->m_fastProtocolManager->GetOLSCURRItemInfoPool()->Count());
         for(int i = this->m_snapshotRouteFirst + 1; i <= this->m_snapshotLastFragment; i++) {
             if(!this->PrepareDecodeSnapshotMessage(i))
                 continue;
@@ -471,25 +444,17 @@ protected:
 #endif
             this->m_incremental->OrderCurr()->ProcessSnapshot(info);
             info->ReleaseUnused();
-//            printf("%s %s process snapshot part%d %d\n",
-//                   DebugInfoManager::Default->GetString(info->Symbol, info->SymbolLength, 0),
-//                   DebugInfoManager::Default->GetString(info->TradingSessionID, info->TradingSessionIDLength, 1),
-//                   i - this->m_snapshotRouteFirst,
-//                   this->m_fastProtocolManager->GetOLSCURRItemInfoPool()->Count());
         }
         this->m_incremental->OrderCurr()->EndProcessSnapshot();
-//        printf("%s %s process snapshot. sessions to go %d\n",
-//              DebugInfoManager::Default->GetString(info->Symbol, info->SymbolLength, 0),
-//              DebugInfoManager::Default->GetString(info->TradingSessionID, info->TradingSessionIDLength, 1),
-//              this->m_incremental->OrderCurr()->SnapshotSymbol()->SessionsToRecvSnapshotCount());
-//        printf("%d queue items and %d symbols to go\n",
-//               this->m_incremental->OrderCurr()->QueueEntriesCount(),
-//               this->m_incremental->OrderCurr()->SymbolsToRecvSnapshotCount());
         return true;
     }
     inline bool ApplySnapshot_TLS_FOND() {
         this->PrepareDecodeSnapshotMessage(this->m_snapshotRouteFirst);
         FastTLSFONDInfo *info = (FastTLSFONDInfo *) this->m_fastProtocolManager->DecodeTLSFOND();
+#ifdef COLLECT_STATISTICS
+        ProgramStatistics::Current->IncFondTlsProcessedCount();
+        ProgramStatistics::Total->IncFondTlsProcessedCount();
+#endif
         this->m_incremental->TradeFond()->ObtainSnapshotItem(info);
         if(this->m_incremental->TradeFond()->CheckProcessIfSessionInActualState(info)) {
             info->ReleaseUnused();
@@ -510,6 +475,10 @@ protected:
             if(!this->PrepareDecodeSnapshotMessage(i))
                 continue;
             info = (FastTLSFONDInfo *) this->m_fastProtocolManager->DecodeTLSFOND();
+#ifdef COLLECT_STATISTICS
+            ProgramStatistics::Current->IncFondTlsProcessedCount();
+            ProgramStatistics::Total->IncFondTlsProcessedCount();
+#endif
             this->m_incremental->TradeFond()->ProcessSnapshot(info);
             info->ReleaseUnused();
         }
@@ -519,6 +488,10 @@ protected:
     inline bool ApplySnapshot_TLS_CURR() {
         this->PrepareDecodeSnapshotMessage(this->m_snapshotRouteFirst);
         FastTLSCURRInfo *info = (FastTLSCURRInfo *) this->m_fastProtocolManager->DecodeTLSCURR();
+#ifdef COLLECT_STATISTICS
+        ProgramStatistics::Current->IncCurrTlsProcessedCount();
+        ProgramStatistics::Total->IncCurrTlsProcessedCount();
+#endif
         this->m_incremental->TradeCurr()->ObtainSnapshotItem(info);
         if(this->m_incremental->TradeCurr()->CheckProcessIfSessionInActualState(info)) {
             info->ReleaseUnused();
@@ -539,6 +512,10 @@ protected:
             if(!this->PrepareDecodeSnapshotMessage(i))
                 continue;
             info = (FastTLSCURRInfo *) this->m_fastProtocolManager->DecodeTLSCURR();
+#ifdef COLLECT_STATISTICS
+            ProgramStatistics::Current->IncCurrTlsProcessedCount();
+            ProgramStatistics::Total->IncCurrTlsProcessedCount();
+#endif
             this->m_incremental->TradeCurr()->ProcessSnapshot(info);
             info->ReleaseUnused();
         }
@@ -549,6 +526,10 @@ protected:
     inline bool ApplySnapshot_MSS_FOND() {
         this->PrepareDecodeSnapshotMessage(this->m_snapshotRouteFirst);
         FastGenericInfo *info = (FastGenericInfo *) this->m_fastProtocolManager->DecodeGeneric();
+#ifdef COLLECT_STATISTICS
+        ProgramStatistics::Current->IncFondMssProcessedCount();
+        ProgramStatistics::Total->IncFondMssProcessedCount();
+#endif
         this->m_incremental->StatisticFond()->ObtainSnapshotItem(info);
         if(this->m_incremental->StatisticFond()->CheckProcessIfSessionInActualState(info)) {
             info->ReleaseUnused();
@@ -569,6 +550,10 @@ protected:
             if(!this->PrepareDecodeSnapshotMessage(i))
                 continue;
             info = (FastGenericInfo *) this->m_fastProtocolManager->DecodeGeneric();
+#ifdef COLLECT_STATISTICS
+            ProgramStatistics::Current->IncFondMssProcessedCount();
+            ProgramStatistics::Total->IncFondMssProcessedCount();
+#endif
             this->m_incremental->StatisticFond()->ProcessSnapshot(info);
             info->ReleaseUnused();
         }
@@ -579,6 +564,10 @@ protected:
         //TODO remove printf("processed %d of %d\n", this->m_incremental->StatisticCurr()->CalcSnapshotProcessedItemsCount(), this->m_incremental->StatisticCurr()->CalcTotalItemsCount());
         this->PrepareDecodeSnapshotMessage(this->m_snapshotRouteFirst);
         FastGenericInfo *info = (FastGenericInfo *) this->m_fastProtocolManager->DecodeGeneric();
+#ifdef COLLECT_STATISTICS
+        ProgramStatistics::Current->IncCurrMssProcessedCount();
+        ProgramStatistics::Total->IncCurrMssProcessedCount();
+#endif
         this->m_incremental->StatisticCurr()->ObtainSnapshotItem(info);
         if(this->m_incremental->StatisticCurr()->CheckProcessIfSessionInActualState(info)) {
             info->ReleaseUnused();
@@ -599,6 +588,10 @@ protected:
             if(!this->PrepareDecodeSnapshotMessage(i))
                 continue;
             info = (FastGenericInfo *) this->m_fastProtocolManager->DecodeGeneric();
+#ifdef COLLECT_STATISTICS
+            ProgramStatistics::Current->IncCurrMssProcessedCount();
+            ProgramStatistics::Total->IncCurrMssProcessedCount();
+#endif
             this->m_incremental->StatisticCurr()->ProcessSnapshot(info);
             info->ReleaseUnused();
         }
@@ -689,9 +682,11 @@ protected:
             return;
         while(this->m_requestMessageStartIndex <= this->m_endMsgSeqNum) {
             this->m_requestMessageStartIndex = GetRequestMessageStartIndex(this->m_requestMessageStartIndex);
-            if(this->m_requestMessageStartIndex == -1)
+            if(this->m_requestMessageStartIndex > this->m_endMsgSeqNum)
                 break;
             int endIndex = GetRequestMessageEndIndex(this->m_requestMessageStartIndex);
+            printf("security status: request %d-%d\n", this->m_requestMessageStartIndex, endIndex);
+            printf("start %d end %d \n", this->m_startMsgSeqNum, this->m_endMsgSeqNum);
             if(ShouldStartSecurityStatusSnapshot(endIndex))
                 this->StartSecurityStatusSnapshot();
             else if(!IsSecurityStatusSnapshotActive())
@@ -1062,6 +1057,13 @@ protected:
         return this->ProcessSecurityDefinition(buffer, info->m_size);
     }
 
+    inline bool IdfAllowGenerateSecurityDefinitions() { return this->m_allowGenerateSecurityDefinitions; }
+    inline void IdfAllowGenerateSecurityDefinitions(bool value) { this->m_allowGenerateSecurityDefinitions = value; }
+
+    inline void OnCollectAllSecurityDefinitions() {
+        this->m_idfDataCollected = true;
+    };
+
     inline bool ProcessSecurityDefinitionMessagesFromStart() {
         if(this->m_idfMode == FeedConnectionSecurityDefinitionMode::sdmUpdateData) {
             this->UpdateSecurityDefinition(this->m_packets[this->m_endMsgSeqNum]);
@@ -1074,20 +1076,26 @@ protected:
             if (this->m_endMsgSeqNum == this->m_idfStartMsgSeqNo) {
                 if (this->HasLostPackets(1, this->m_idfMaxMsgSeqNo)) {
                     int lostPacketCount = CalcLostPacketCount(1, this->m_idfMaxMsgSeqNo);
-                    printf("\t\tlost packet count = %d\n", lostPacketCount);
+#ifdef COLLECT_STATISTICS
+                    if(this->m_id == FeedConnectionId::fcidIdfFond)
+                        ProgramStatistics::Total->FondIdfProcessedCount(this->m_idfMaxMsgSeqNo - lostPacketCount);
+                    else
+                        ProgramStatistics::Total->CurrIdfProcessedCount(this->m_idfMaxMsgSeqNo - lostPacketCount);
+#endif
+                    printf("\t\t%s %s lost packet count = %d\n", this->m_channelName, this->m_idName, lostPacketCount); // TODOO remove debug
                     this->m_idfState = FeedConnectionSecurityDefinitionState::sdsProcessToEnd;
                     return true;
                 }
-                printf("\t\tgenerating Security Definitions\n");
-                FeedConnectionMessageInfo **info = (this->m_packets + 1); // skip zero messsage
-                this->BeforeProcessSecurityDefinitions();
-                for (int i = 1; i <= this->m_idfMaxMsgSeqNo; i++, info++) {
-                    if (!this->ProcessSecurityDefinition(*info))
-                        return false;
-                }
-                this->AfterProcessSecurityDefinitions();
-                printf("\t\tdone.\n");
-                this->OnSecurityDefinitionRecvAllMessages();
+#ifdef COLLECT_STATISTICS
+                if(this->m_id == FeedConnectionId::fcidIdfFond)
+                    ProgramStatistics::Total->FondIdfProcessedCount(this->m_idfMaxMsgSeqNo);
+                else
+                    ProgramStatistics::Total->CurrIdfProcessedCount(this->m_idfMaxMsgSeqNo);
+#endif
+                if(this->IdfAllowGenerateSecurityDefinitions())
+                    this->GenerateSecurityDefinitions();
+                else
+                    this->OnCollectAllSecurityDefinitions();
             }
         }
         return true;
@@ -1104,19 +1112,18 @@ protected:
     }
 
     inline bool Listen_Atom_SecurityDefinition_Core() {
+#ifdef COLLECT_STATISTICS
+        if(this->m_id == FeedConnectionId::fcidIdfFond)
+            ProgramStatistics::Current->FondIdfProcessedCount(this->m_endMsgSeqNum);
+        else
+            ProgramStatistics::Current->CurrIdfProcessedCount(this->m_endMsgSeqNum);
+#endif
         if(this->m_idfState == FeedConnectionSecurityDefinitionState::sdsProcessToEnd)
             return this->ProcessSecurityDefinitionMessagesToEnd();
         return this->ProcessSecurityDefinitionMessagesFromStart();
     }
 
     inline bool Listen_Atom_Snapshot_Core() {
-        /*
-        if(this->m_waitTimer->IsElapsedMilliseconds(this->m_snapshotMaxTimeMs)) {
-            this->m_waitTimer->Stop();
-            this->ReconnectSetNextState(FeedConnectionState::fcsListenSnapshot);
-            return true;
-        }
-        */
         if(this->m_startMsgSeqNum == -1)
             return true;
 
@@ -1146,14 +1153,14 @@ protected:
     inline bool Listen_Atom_Incremental_Core() {
 
         // TODO remove hack. just skip 30 messages and then try to restore
-        if(this->m_snapshot->State() == FeedConnectionState::fcsSuspend &&
-                (this->m_startMsgSeqNum % 500) < 2  &&
-                this->m_packets[this->m_startMsgSeqNum]->m_address != 0 &&
-                !this->m_packets[this->m_startMsgSeqNum]->m_requested) {
-            this->m_packets[this->m_startMsgSeqNum]->m_address = 0; // force historical replay
-            printf("packet %d is lost, resuestIndexd = %d\n", this->m_startMsgSeqNum, this->m_requestMessageStartIndex);
-            return true;
-        }
+//        if(this->m_snapshot->State() == FeedConnectionState::fcsSuspend &&
+//                (this->m_startMsgSeqNum % 500) == 0  &&
+//                this->m_packets[this->m_startMsgSeqNum]->m_address != 0 &&
+//                !this->m_packets[this->m_startMsgSeqNum]->m_requested) {
+//            this->m_packets[this->m_startMsgSeqNum]->m_address = 0; // force historical replay
+//            printf("packet %d is lost, resuestIndexd = %d\n", this->m_startMsgSeqNum, this->m_requestMessageStartIndex);
+//            return true;
+//        }
 
         if(!this->ProcessIncrementalMessages())
             return false;
@@ -1303,7 +1310,7 @@ protected:
 
     inline void CheckReconnectHistoricalReplay() {
         this->m_waitTimer->Activate(2);
-        if(this->m_waitTimer->ElapsedSeconds(2) > 4) {
+        if(this->m_waitTimer->ElapsedSeconds(2) > 9) {
             this->Disconnect();
             this->m_hsState = FeedConnectionHistoricalReplayState::hsSuspend;
             this->m_waitTimer->Stop();
@@ -1473,6 +1480,21 @@ public:
     inline void HrRequestMessage(FeedConnection *conn, int msgSeqNo) {
         HrRequestMessage(conn, msgSeqNo, msgSeqNo);
     }
+    inline bool GenerateSecurityDefinitions() {
+        printf("\t\t%s %s generating security definitions count = %d\n", this->m_channelName, this->m_idName, this->m_idfMaxMsgSeqNo); // TODOO remove debug
+        FeedConnectionMessageInfo **info = (this->m_packets + 1); // skip zero messsage
+        this->m_waitTimer->Start(3); // TODOO remove debug
+        this->BeforeProcessSecurityDefinitions();
+        for (int i = 1; i <= this->m_idfMaxMsgSeqNo; i++, info++) {
+            if (!this->ProcessSecurityDefinition(*info))
+                return false;
+        }
+        this->AfterProcessSecurityDefinitions();
+        this->OnSecurityDefinitionRecvAllMessages();
+        printf("\t\t%s %s done in %ld ms.\n", this->m_channelName, this->m_idName, this->m_waitTimer->ElapsedMilliseconds(3)); // TODOO remove debug
+        this->m_waitTimer->Stop(3);
+        return true;
+    }
 protected:
     inline bool Listen_Atom_Incremental() {
 
@@ -1483,6 +1505,9 @@ protected:
         if(!this->m_isLastIncrementalRecv) {
             this->m_waitTimer->Activate(1);
             if(this->m_waitTimer->ElapsedMilliseconds(1) > this->WaitAnyPacketMaxTimeMs) {
+                //TODO remove debug
+                if(this->m_snapshot->State() == FeedConnectionState::fcsSuspend)
+                    printf("%s listen atom incremental timeout... start snapshot\n", this->m_idName);
                 this->StartListenSnapshot();
                 return true;
             }
@@ -1504,7 +1529,7 @@ protected:
             }
             else {
                 if(this->m_waitTimer->ElapsedMilliseconds(1) > this->WaitAnyPacketMaxTimeMs) {
-                    printf("Timeout 10 sec... Reconnect...\n");
+                    printf("%s %s Timeout 10 sec... Reconnect...\n", this->m_channelName, this->m_idName);
                     DefaultLogManager::Default->WriteSuccess(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_Listen_Atom_SecurityStatus, false);
                     this->ReconnectSetNextState(FeedConnectionState::fcsListenSecurityStatus);
                 }
@@ -1527,7 +1552,7 @@ protected:
             }
             else {
                 if(this->m_waitTimer->ElapsedMilliseconds(1) > this->WaitAnyPacketMaxTimeMs) {
-                    printf("Timeout 10 sec... Reconnect...\n");
+                    printf("%s %s Timeout 10 sec... Reconnect...\n", this->m_channelName, this->m_idName);
                     DefaultLogManager::Default->WriteSuccess(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_Listen_Atom_SecurityDefinition, false);
                     this->ReconnectSetNextState(FeedConnectionState::fcsListenSecurityDefinition);
                 }
@@ -1645,6 +1670,10 @@ protected:
     }
 
     inline bool OnIncrementalRefresh_TLR_FOND(FastIncrementalTLRFONDInfo *info) {
+#ifdef COLLECT_STATISTICS
+        ProgramStatistics::Current->IncFondTlrProcessedCount();
+        ProgramStatistics::Total->IncFondTlrProcessedCount();
+#endif
         if(this->m_skipApplyMessages) { //TODO remove this
             this->m_fastProtocolManager->Print();
             info->Clear();
@@ -1659,6 +1688,10 @@ protected:
     }
 
     inline bool OnIncrementalRefresh_TLR_CURR(FastIncrementalTLRCURRInfo *info) {
+#ifdef COLLECT_STATISTICS
+        ProgramStatistics::Current->IncCurrTlrProcessedCount();
+        ProgramStatistics::Total->IncCurrTlrProcessedCount();
+#endif
         if(this->m_skipApplyMessages) { //TODO remove this
             this->m_fastProtocolManager->Print();
             info->Clear();
@@ -1673,6 +1706,10 @@ protected:
     }
 
     inline bool OnIncrementalRefresh_MSR_FOND(FastIncrementalMSRFONDInfo *info) {
+#ifdef COLLECT_STATISTICS
+        ProgramStatistics::Current->IncFondMsrProcessedCount();
+        ProgramStatistics::Total->IncFondMsrProcessedCount();
+#endif
         if(this->m_skipApplyMessages) { //TODO remove this
             DebugInfoManager::Default->PrintStatisticsOnce<FastIncrementalMSRFONDInfo>(this->m_fastProtocolManager, info);
             info->Clear();
@@ -1690,6 +1727,10 @@ protected:
 
 
     inline bool OnIncrementalRefresh_MSR_CURR(FastIncrementalMSRCURRInfo *info) {
+#ifdef COLLECT_STATISTICS
+        ProgramStatistics::Current->IncCurrMsrProcessedCount();
+        ProgramStatistics::Total->IncCurrMsrProcessedCount();
+#endif
         if(this->m_skipApplyMessages) { //TODO remove this
             DebugInfoManager::Default->PrintStatisticsOnce<FastIncrementalMSRCURRInfo>(this->m_fastProtocolManager, info);
             info->Clear();
@@ -1789,6 +1830,16 @@ protected:
 	}
 
     inline bool ProcessSecurityStatus(FeedConnectionMessageInfo *info) {
+#ifdef COLLECT_STATISTICS
+        if(this->m_id == FeedConnectionId::fcidIsfFond) {
+            ProgramStatistics::Current->IncFondIssProcessedCount();
+            ProgramStatistics::Total->IncFondIssProcessedCount();
+        }
+        else {
+            ProgramStatistics::Current->IncCurrIssProcessedCount();
+            ProgramStatistics::Total->IncCurrIssProcessedCount();
+        }
+#endif
         unsigned char *buffer = info->m_address;
         if(this->ShouldSkipMessage(buffer, !info->m_requested)) {
             info->m_processed = true;
@@ -2059,22 +2110,12 @@ public:
         }
         else {
             this->m_idfMode = FeedConnectionSecurityDefinitionMode::sdmUpdateData;
+            this->m_waitTimer->Reset(0);
+            this->m_waitTimer->Reset(1);
         }
-        CheckAllSymbols();
     }
 
     inline bool ProcessSecurityDefinition(FastSecurityDefinitionInfo *info) {
-#ifdef COLLECT_STATISTICS
-        if(this->m_id == FeedConnectionId::fcidIdfFond) {
-            ProgramStatistics::Current->IncFondIdfProcessedCount();
-            ProgramStatistics::Total->IncFondIdfProcessedCount();
-        }
-        else {
-            ProgramStatistics::Current->IncCurrIdfProcessedCount();
-            ProgramStatistics::Total->IncCurrIdfProcessedCount();
-        }
-#endif
-
         bool wasNewlyAdded = false;
 
         SymbolInfo *smb = this->m_symbolManager->GetSymbol(info->Symbol, info->SymbolLength, &wasNewlyAdded);

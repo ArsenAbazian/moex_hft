@@ -131,10 +131,70 @@ bool Robot::Run() {
 bool Robot::DoWork() {
     DefaultLogManager::Default->StartLog(LogMessageCode::lmcRobot_DoWork);
 
-    this->m_fondMarket->Enable(false);
+    //this->m_fondMarket->Enable(false);
 	Stopwatch *w = new Stopwatch();
 	w->Start();
 	unsigned int cycleCount = 0;
+
+    // collect data first
+    while(true) {
+        if(!WinSockManager::UpdateManagersPollStatus())
+            break;
+        if(!this->m_currMarket->FeedChannel()->CollectSecurityDefinitions()) {
+            DefaultLogManager::Default->EndLog(false);
+            DefaultLogManager::Default->Print();
+            return false;
+        }
+        if (!this->m_fondMarket->FeedChannel()->CollectSecurityDefinitions()) {
+            DefaultLogManager::Default->EndLog(false);
+            DefaultLogManager::Default->Print();
+            return false;
+        }
+
+        if(this->m_currMarket->FeedChannel()->InstrumentDefinition()->IsIdfDataCollected())
+            this->m_currMarket->FeedChannel()->InstrumentDefinition()->Stop();
+        if(this->m_fondMarket->FeedChannel()->InstrumentDefinition()->IsIdfDataCollected())
+            this->m_fondMarket->FeedChannel()->InstrumentDefinition()->Stop();
+
+        if(this->m_currMarket->FeedChannel()->InstrumentDefinition()->IsIdfDataCollected() &&
+                this->m_fondMarket->FeedChannel()->InstrumentDefinition()->IsIdfDataCollected()) {
+            break;
+        }
+        if(w->ElapsedSeconds() > 3) {
+            ProgramStatistics::Current->FondIdfProcessedCount(this->m_fondMarket->FeedChannel()->InstrumentDefinition()->MsgSeqNo());
+            ProgramStatistics::Current->CurrIdfProcessedCount(this->m_currMarket->FeedChannel()->InstrumentDefinition()->MsgSeqNo());
+
+            w->Reset();
+
+            printf("3 sec. Changes------------------------\n");
+            ProgramStatistics::Current->Print();
+            printf("Total---------------------------------\n");
+            ProgramStatistics::Total->Print();
+            printf("--------------------------------------\n");
+
+            cycleCount = 0;
+            ProgramStatistics::Current->Clear();
+            ProgramStatistics::Total->ResetFlags();
+        }
+        cycleCount++;
+    }
+
+    // generate security definitions
+    this->m_fondMarket->FeedChannel()->InstrumentDefinition()->GenerateSecurityDefinitions();
+    this->m_currMarket->FeedChannel()->InstrumentDefinition()->GenerateSecurityDefinitions();
+
+    if(!this->m_fondMarket->FeedChannel()->OnAfterGenerateSecurityDefinitions()) {
+        DefaultLogManager::Default->EndLog(false);
+        DefaultLogManager::Default->Print();
+    }
+    if(!this->m_currMarket->FeedChannel()->OnAfterGenerateSecurityDefinitions()) {
+        DefaultLogManager::Default->EndLog(false);
+        DefaultLogManager::Default->Print();
+    }
+
+    w->Reset();
+
+    // main cycle
     while(true) {
         if(!WinSockManager::UpdateManagersPollStatus())
             break;
@@ -159,42 +219,89 @@ bool Robot::DoWork() {
 			double nanosecPerCycle = 3.0 * 1000.0 * 1000.0 * 1000.0 / cycleCount;
 			printf("CycleCount for 3 sec = %d. %g nanosec per cycle\n", cycleCount, nanosecPerCycle);
 
+
 			if (this->m_fondMarket->FeedChannel()->OrdersSnapshot()->State() == FeedConnectionState::fcsListenSnapshot) {
 				int foundSnapshotSymbolsCount = this->m_fondMarket->FeedChannel()->OrdersIncremental()->OrderFond()->SymbolsToRecvSnapshotCount();
 				int foundQueEntries = this->m_fondMarket->FeedChannel()->OrdersIncremental()->OrderFond()->QueueEntriesCount();
 				int msgSeqNumber = this->m_fondMarket->FeedChannel()->OrdersSnapshot()->MsgSeqNo();
-				int actual = this->m_fondMarket->FeedChannel()->OrdersIncremental()->OrderFond()->CalcActualQueueEntriesCount();
-				printf("FOND ORDERS: %d que entries and  %d snapshot symbols to go. actual entries = %d msg = %d\n", foundQueEntries, foundSnapshotSymbolsCount, actual, msgSeqNumber);
-				if(actual != foundQueEntries) {
-					printf("ERROR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
-				}
+				printf("fond olr: %d que entries and  %d snapshot symbols to go. msg = %d\n", foundQueEntries, foundSnapshotSymbolsCount, msgSeqNumber);
 			}
             else {
-                printf("FOND ORDERS: Incremental start = %d end = %d\n",
+                printf("fond olr: start = %d end = %d\n",
                        this->m_fondMarket->FeedChannel()->OrdersIncremental()->MsgSeqNo(),
                        this->m_fondMarket->FeedChannel()->OrdersIncremental()->LastRecvMsgSeqNo());
             }
-			if(this->m_currMarket->FeedChannel()->OrdersSnapshot()->State() == FeedConnectionState::fcsListenSnapshot) {
+            if (this->m_fondMarket->FeedChannel()->TradesSnapshot()->State() == FeedConnectionState::fcsListenSnapshot) {
+                int foundSnapshotSymbolsCount = this->m_fondMarket->FeedChannel()->TradesIncremental()->TradeFond()->SymbolsToRecvSnapshotCount();
+                int foundQueEntries = this->m_fondMarket->FeedChannel()->TradesIncremental()->TradeFond()->QueueEntriesCount();
+                int msgSeqNumber = this->m_fondMarket->FeedChannel()->TradesSnapshot()->MsgSeqNo();
+                printf("fond tlr: %d que entries and  %d snapshot symbols to go. msg = %d\n", foundQueEntries, foundSnapshotSymbolsCount, msgSeqNumber);
+            }
+            else {
+                printf("fond tlr: start = %d end = %d\n",
+                       this->m_fondMarket->FeedChannel()->TradesIncremental()->MsgSeqNo(),
+                       this->m_fondMarket->FeedChannel()->TradesIncremental()->LastRecvMsgSeqNo());
+            }
+            if (this->m_fondMarket->FeedChannel()->StatisticsSnapshot()->State() == FeedConnectionState::fcsListenSnapshot) {
+                int foundSnapshotSymbolsCount = this->m_fondMarket->FeedChannel()->StatisticsIncremental()->StatisticFond()->SymbolsToRecvSnapshotCount();
+                int foundQueEntries = this->m_fondMarket->FeedChannel()->StatisticsIncremental()->StatisticFond()->QueueEntriesCount();
+                int msgSeqNumber = this->m_fondMarket->FeedChannel()->StatisticsSnapshot()->MsgSeqNo();
+                printf("fond msr: %d que entries and  %d snapshot symbols to go. msg = %d\n", foundQueEntries, foundSnapshotSymbolsCount, msgSeqNumber);
+            }
+            else {
+                printf("fond msr: start = %d end = %d\n",
+                       this->m_fondMarket->FeedChannel()->StatisticsIncremental()->MsgSeqNo(),
+                       this->m_fondMarket->FeedChannel()->StatisticsIncremental()->LastRecvMsgSeqNo());
+            }
+            printf("fond iss: start = %d end = %d\n",
+                       this->m_fondMarket->FeedChannel()->InstrumentStatus()->MsgSeqNo(),
+                       this->m_fondMarket->FeedChannel()->InstrumentStatus()->LastRecvMsgSeqNo());
+
+            if(this->m_currMarket->FeedChannel()->OrdersSnapshot()->State() == FeedConnectionState::fcsListenSnapshot) {
 				int currSnapshotSymbolsCount = this->m_currMarket->FeedChannel()->OrdersIncremental()->OrderCurr()->SymbolsToRecvSnapshotCount();
 				int currQueEntries = this->m_currMarket->FeedChannel()->OrdersIncremental()->OrderCurr()->QueueEntriesCount();
 				int msgSeqNumber = this->m_currMarket->FeedChannel()->OrdersSnapshot()->MsgSeqNo();
-				int actual = this->m_currMarket->FeedChannel()->OrdersIncremental()->OrderCurr()->CalcActualQueueEntriesCount();
-				printf("CURR ORDERS: %d que entries and %d snapshot symbols to go. actual entries = %d msg = %d\n", currQueEntries, currSnapshotSymbolsCount, actual, msgSeqNumber);
-				if(actual != currQueEntries) {
-					printf("ERROR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
-				}
+                printf("curr olr: %d que entries and  %d snapshot symbols to go. msg = %d\n", currQueEntries, currSnapshotSymbolsCount, msgSeqNumber);
 			}
             else {
-                printf("CURR ORDERS: Incremental start = %d end = %d\n",
+                printf("curr olr: start = %d end = %d\n",
                        this->m_currMarket->FeedChannel()->OrdersIncremental()->MsgSeqNo(),
                        this->m_currMarket->FeedChannel()->OrdersIncremental()->LastRecvMsgSeqNo());
             }
+
+            if (this->m_currMarket->FeedChannel()->TradesSnapshot()->State() == FeedConnectionState::fcsListenSnapshot) {
+                int foundSnapshotSymbolsCount = this->m_currMarket->FeedChannel()->TradesIncremental()->TradeCurr()->SymbolsToRecvSnapshotCount();
+                int foundQueEntries = this->m_currMarket->FeedChannel()->TradesIncremental()->TradeCurr()->QueueEntriesCount();
+                int msgSeqNumber = this->m_currMarket->FeedChannel()->TradesSnapshot()->MsgSeqNo();
+                printf("curr tlr: %d que entries and  %d snapshot symbols to go. msg = %d\n", foundQueEntries, foundSnapshotSymbolsCount, msgSeqNumber);
+            }
+            else {
+                printf("curr tlr: start = %d end = %d\n",
+                       this->m_currMarket->FeedChannel()->TradesIncremental()->MsgSeqNo(),
+                       this->m_currMarket->FeedChannel()->TradesIncremental()->LastRecvMsgSeqNo());
+            }
+            if (this->m_currMarket->FeedChannel()->StatisticsSnapshot()->State() == FeedConnectionState::fcsListenSnapshot) {
+                int foundSnapshotSymbolsCount = this->m_currMarket->FeedChannel()->StatisticsIncremental()->StatisticCurr()->SymbolsToRecvSnapshotCount();
+                int foundQueEntries = this->m_currMarket->FeedChannel()->StatisticsIncremental()->StatisticCurr()->QueueEntriesCount();
+                int msgSeqNumber = this->m_currMarket->FeedChannel()->StatisticsSnapshot()->MsgSeqNo();
+                printf("curr msr: %d que entries and  %d snapshot symbols to go. msg = %d\n", foundQueEntries, foundSnapshotSymbolsCount, msgSeqNumber);
+            }
+            else {
+                printf("curr msr: start = %d end = %d\n",
+                       this->m_currMarket->FeedChannel()->StatisticsIncremental()->MsgSeqNo(),
+                       this->m_currMarket->FeedChannel()->StatisticsIncremental()->LastRecvMsgSeqNo());
+            }
+            printf("curr iss: start = %d end = %d\n",
+                   this->m_currMarket->FeedChannel()->InstrumentStatus()->MsgSeqNo(),
+                   this->m_currMarket->FeedChannel()->InstrumentStatus()->LastRecvMsgSeqNo());
+
 			w->Reset();
 
             printf("3 sec. Changes------------------------\n");
             ProgramStatistics::Current->Print();
             printf("Total Changes-------------------------\n");
             ProgramStatistics::Total->Print();
+            printf("--------------------------------------\n");
 
             cycleCount = 0;
             ProgramStatistics::Current->Clear();

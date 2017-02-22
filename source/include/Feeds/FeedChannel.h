@@ -8,12 +8,12 @@ typedef enum _FeedChannelState {
 }FeedChannelState;
 
 class FeedChannel {
-	char id[16];
-	int  m_idLogIndex;
-	char name[64];
-	int  m_nameLogIndex;
-	const char *m_senderCompId;
-	const char *m_password;
+	char 						id[16];
+	int  						m_idLogIndex;
+	char 						name[64];
+	int  						m_nameLogIndex;
+	const char 					*m_senderCompId;
+	const char 					*m_password;
 
 	FeedChannelState m_state;
 
@@ -101,9 +101,25 @@ public:
 	bool Logon();
 	bool Logout();
 
+	inline bool OnAfterGenerateSecurityDefinitions() {
+		this->m_state = FeedChannelState::fchMainLoop;
+		for(int i = 0; i < this->instrumentDefinition->ConnectionsToRecvSymbolsCount(); i++) {
+			if(!this->instrumentDefinition->ConnectionsToRecvSymbols()[i]->Start())
+				return false;
+		}
+		return true;
+	}
+
+	inline bool CollectSecurityDefinitions() {
+		if(this->m_state == FeedChannelState::fchSuspend)
+			return true;
+		return this->instrumentDefinition->DoWorkAtom();
+	}
+
 	inline bool DoWorkAtom() {
-		if(this->m_state == FeedChannelState::fchMainLoop) {
-			bool res = this->statisticsIncremental->DoWorkAtom();
+		if(this->m_state == FeedChannelState::fchSuspend)
+			return true;
+		bool res = this->statisticsIncremental->DoWorkAtom();
 			res &= this->statisticsSnapshot->DoWorkAtom();
 			res &= this->ordersIncremental->DoWorkAtom();
 			res &= this->ordersSnapshot->DoWorkAtom();
@@ -113,24 +129,6 @@ public:
 			res &= this->instrumentStatus->DoWorkAtom();
 			res &= this->historicalReplay->DoWorkAtom();
 			return res;
-		}
-		else if(this->m_state == FeedChannelState::fchCollectSymbols) {
-			bool res = this->instrumentDefinition->DoWorkAtom();
-			if(!res)
-				return res;
-			if(this->instrumentDefinition->IsIdfDataCollected()) {
-				this->m_state = FeedChannelState::fchMainLoop;
-				for(int i = 0; i < this->instrumentDefinition->ConnectionsToRecvSymbolsCount(); i++) {
-					if(!this->instrumentDefinition->ConnectionsToRecvSymbols()[i]->Start())
-						return false;
-				}
-			}
-			return true;
-		}
-		else if(this->m_state == FeedChannelState::fchSuspend)
-			return true;
-
-		return true;
 	}
 };
 

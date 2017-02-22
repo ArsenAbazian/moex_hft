@@ -141,7 +141,7 @@ public:
 			value1 = value / ITOA_LIST_COUNT;
 			value2 = value % ITOA_LIST_COUNT;
 		}
-		int count1 = ItoaConverter::digitCount[value1];
+		int count1 = value1 == 0? 0: ItoaConverter::digitCount[value1];
 		int count2 = count1 > 0 ? 5 : ItoaConverter::digitCount[value2];
 		count += count1 + count2;
 

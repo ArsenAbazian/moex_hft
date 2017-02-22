@@ -90,27 +90,28 @@ bool FeedChannel::Connect() {
 	this->statisticsIncremental->SetSnapshot(this->statisticsSnapshot);
 	this->tradesIncremental->SetSnapshot(this->tradesSnapshot);
 	this->ordersIncremental->SetSnapshot(this->ordersSnapshot);
+	this->instrumentStatus->SetSecurityDefinition(this->instrumentDefinition);
+
 	this->statisticsIncremental->SetHistoricalReplay(this->historicalReplay);
 	this->tradesIncremental->SetHistoricalReplay(this->historicalReplay);
 	this->ordersIncremental->SetHistoricalReplay(this->historicalReplay);
+	this->instrumentStatus->SetHistoricalReplay(this->historicalReplay);
+
 	this->statisticsSnapshot->SetHistoricalReplay(this->historicalReplay);
 	this->tradesSnapshot->SetHistoricalReplay(this->historicalReplay);
 	this->ordersSnapshot->SetHistoricalReplay(this->historicalReplay);
 	this->instrumentDefinition->SetHistoricalReplay(this->historicalReplay);
-	this->instrumentStatus->SetHistoricalReplay(this->historicalReplay);
 
 	if(!this->CheckConnections()) {
 		DefaultLogManager::Default->EndLog(false);
 		return false;
 	}
 
-    //this->instrumentDefinition->DoNotCheckIncrementalActuality(true);
-    //this->instrumentDefinition->IdfAllowUpdateData(true);
-
 	this->m_state = FeedChannelState::fchCollectSymbols;
-	//this->statisticsIncremental->DoNotCheckIncrementalActuality(true);
-	//this->instrumentDefinition->AddConnectionToRecvSymbol(this->statisticsIncremental);
+	this->instrumentDefinition->AddConnectionToRecvSymbol(this->statisticsIncremental);
 	this->instrumentDefinition->AddConnectionToRecvSymbol(this->ordersIncremental);
+	this->instrumentDefinition->AddConnectionToRecvSymbol(this->tradesIncremental);
+	//this->instrumentDefinition->AddConnectionToRecvSymbol(this->instrumentStatus);
 	this->instrumentDefinition->Start();
 
 	DefaultLogManager::Default->EndLog(true);

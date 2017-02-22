@@ -376,13 +376,13 @@ public:
 			this->m_connected = false;
 		}
 
-		while(this->ShouldRecv()) {
-			if(!this->Recv(this->m_tempBuffer) || this->m_recvSize == 0)
-				break;
-			// TODO remoove debug
-			printf("has %d bytes after shutdown.\n", this->m_recvSize);
-			this->UpdatePollStatus();
-		}
+//		while(this->ShouldRecv()) {
+//			if(!this->Recv(this->m_tempBuffer) || this->m_recvSize == 0)
+//				break;
+//			// TODO remoove debug
+//			printf("has %d bytes after shutdown.\n", this->m_recvSize);
+//			this->UpdatePollStatus();
+//		}
 
 		int result = close(this->m_socket);
 		if (result != 0) {
