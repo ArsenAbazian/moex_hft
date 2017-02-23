@@ -40,9 +40,11 @@ public:
 };
 
 template <typename T> class PointerListLite;
+class PointerListTester;
 
 template <typename T> class PointerList {
     friend  class PointerListLite<T>;
+    friend  class PointerListTester;
     int             m_capacity;
 
     LinkedPointer<T> *m_poolHead;
@@ -277,13 +279,15 @@ public:
         printf("!!!unexpected append %s count = %d, additional capacity = %d!!!\n", this->m_name, this->m_count, capacity); //TODO remove debug info
         this->m_capacity += capacity;
         LinkedPointer<T> *start = new LinkedPointer<T>();
+        start->Owner(this);
         LinkedPointer<T> *node = start;
-        for(int i = 0; i < capacity; i++) {
-            LinkedPointer<T> *ptr = new LinkedPointer<T>;
-            ptr->Owner(this);
-            node->Next(ptr);
-            node = node->Next();
+        for(int i = 0; i < capacity - 1; i++) {
+            LinkedPointer<T> *next = new LinkedPointer<T>();
+            next->Owner(this);
+            node->Next(next);
+            node = next;
         }
+
         LinkedPointer<T> *curr = start;
         if(this->m_autoAllocate) {
             for(int i = 0; i < capacity; i++) {
@@ -293,6 +297,17 @@ public:
         }
         this->m_poolTail->Next(start);
         this->m_poolTail = node;
+        this->m_poolTail->Next(0);
+#ifdef  TEST
+        if(this->m_autoAllocate) {
+            LinkedPointer<T> *ptr = this->m_poolHead;
+            while (ptr != 0) {
+                if (ptr->Data() == 0)
+                    throw;
+                ptr = ptr->Next();
+            }
+        }
+#endif
         return start;
     }
     inline LinkedPointer<T>* Start() { return this->m_head->Next(); }

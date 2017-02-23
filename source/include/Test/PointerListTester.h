@@ -28,6 +28,48 @@ public:
         if(list->Capacity() != 20)
             throw;
 
+        if(list->m_poolTail->Next() != 0)
+            throw;
+
+        int index = 0;
+        LinkedPointer<SimpleData> *ptr = list->m_poolHead;
+        while(ptr != list->m_poolTail) {
+            index++;
+            ptr = ptr->Next();
+            if(ptr == 0)
+                throw;
+        }
+
+        list->Clear();
+        ptr = list->m_poolHead;
+        while(ptr != list->m_poolTail) {
+            index++;
+            ptr = ptr->Next();
+            if(ptr == 0)
+                throw;
+        }
+
+        delete list;
+    }
+
+    void TestDispose() {
+        PointerList<SimpleData> *list = new PointerList<SimpleData>(10);
+        delete list;
+
+        list = new PointerList<SimpleData>(10);
+        for(int i = 0; i < 5; i++)
+            list->Add(new SimpleData());
+        delete list;
+
+        list = new PointerList<SimpleData>(10);
+        list->Append(10);
+        LinkedPointer<SimpleData> *ptr = list->m_poolHead;
+        int index = 0;
+        while(ptr != list->m_poolTail) {
+            ptr->Released(false);
+            ptr = ptr->Next();
+            index++;
+        }
         delete list;
     }
 
@@ -273,17 +315,76 @@ public:
             throw;
     }
 
+    void TestPointerListLiteAppend() {
+        PointerList<SimpleData> *pool = new PointerList<SimpleData>(10000, true);
+        PointerListLite<SimpleData> *list = new PointerListLite<SimpleData>(pool);
+
+        LinkedPointer<SimpleData> *ptr = pool->m_poolHead;
+        while(ptr != 0) {
+            if(ptr->Data() == 0)
+                throw;
+            ptr = ptr->Next();
+        }
+        while(pool->m_poolHead != pool->m_poolTail) {
+            list->Add();
+        }
+        LinkedPointer<SimpleData> *ptr2 = list->Add();
+        if(pool->Capacity() != 20000)
+            throw;
+        if(ptr2->Data() == 0)
+            throw;
+
+        ptr = pool->m_poolHead;
+        int index = 0;
+        while(ptr != 0) {
+            if(ptr->Data() == 0)
+                throw;
+            ptr = ptr->Next();
+            index++;
+        }
+
+        while(pool->m_poolHead != pool->m_poolTail) {
+            list->Add();
+        }
+
+        ptr2 = list->Add();
+        if(pool->Capacity() != 40000)
+            throw;
+
+        ptr = pool->m_poolHead;
+        while(ptr != 0) {
+            if(ptr->Data() == 0)
+                throw;
+            ptr = ptr->Next();
+        }
+    }
+
+    void TestPointerListLiteAppend2() {
+        PointerList<SimpleData> *pool = new PointerList<SimpleData>(10000, true);
+        PointerListLite<SimpleData> *list = new PointerListLite<SimpleData>(pool);
+
+        for(int i = 0; i < 30000; i++) {
+            LinkedPointer<SimpleData> *ptr = list->Add();
+            if(ptr->Data() == 0)
+                throw;
+        }
+        delete list;
+        delete pool;
+    }
+
     void TestPointerListLite() {
         TestPointerListLiteAddRemove();
         TestPointerListLiteInsert();
         TestPointerListLiteClear();
+        TestPointerListLiteAppend();
+        TestPointerListLiteAppend2();
     }
 
     void Test() {
         TestDefault();
+        TestDispose();
         TestAdditionalAllocate();
         TestClear();
-
         TestPointerListLite();
     }
 };

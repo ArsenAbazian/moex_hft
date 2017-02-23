@@ -27,6 +27,7 @@ class StatisticsTesterCurr;
 class SecurityDefinitionTester;
 class SecurityStatusTester;
 class DebugInfoManager;
+class HistoricalReplayTester;
 
 class FeedConnection {
     friend class OrderTesterFond;
@@ -40,6 +41,7 @@ class FeedConnection {
     friend class SecurityDefinitionTester;
     friend class SecurityStatusTester;
     friend class DebugInfoManager;
+    friend class HistoricalReplayTester;
 
 public:
 	const int MaxReceiveBufferSize 				        = 1500;

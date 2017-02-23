@@ -230,14 +230,20 @@ public:
         PointerListTester pt;
         pt.Test();
 
+        SecurityStatusTester ist;
+        ist.Test();
+
+        SecurityDefinitionTester ids;
+        ids.Test();
+
         HistoricalReplayTester hrt;
         hrt.Test();
 
         StatisticsTesterFond stFond;
         stFond.Test();
 
-        /*SymbolManagerTester ht;
-        ht.Test();*/
+        SymbolManagerTester ht;
+        ht.Test();
 
         TradeTesterFond ttFond;
         ttFond.Test();
@@ -248,12 +254,6 @@ public:
         otCurr.Test();
         OrderTesterFond otFond;
         otFond.Test();
-
-        SecurityStatusTester ist;
-        ist.Test();
-
-        SecurityDefinitionTester ids;
-        ids.Test();
 
         //TestSaveIdfSymbols();
 

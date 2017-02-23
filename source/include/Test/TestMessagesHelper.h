@@ -8,9 +8,9 @@
 
 #ifdef TEST
 
-#include "Managers/WinSockManager.h"
+#include "../Managers/WinSockManager.h"
 #include "TestTemplateInfo.h"
-#include "Feeds/FeedConnection.h"
+#include "../Feeds/FeedConnection.h"
 #include <stdio.h>
 #include <memory.h>
 

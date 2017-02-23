@@ -48,6 +48,7 @@ public:
         this->idf->AddConnectionToRecvSymbol(this->olr);
         this->idf->AddConnectionToRecvSymbol(this->msr);
         this->idf->AddConnectionToRecvSymbol(this->tlr);
+        this->idf->IdfAllowGenerateSecurityDefinitions(true);
     }
     ~SecurityDefinitionTester() {
         delete this->olr;
@@ -65,6 +66,8 @@ public:
     }
 
     void TestDefaults() {
+        if(!this->idf->IdfAllowGenerateSecurityDefinitions())
+            throw;
         if(this->idf->ConnectionsToRecvSymbolsCount() != 3)
             throw;
         if(this->idf->ConnectionsToRecvSymbols()[0] != this->olr)
