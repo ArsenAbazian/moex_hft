@@ -380,6 +380,10 @@ protected:
         this->m_lastSnapshotInfo->ExtractString();
         this->m_incremental->OrderFond()->ObtainSnapshotItem(this->m_lastSnapshotInfo);
         if(this->m_incremental->OrderFond()->ApplyQuickSnapshot(this->m_lastSnapshotInfo)) {
+#ifdef COLLECT_STATISTICS
+            ProgramStatistics::Current->IncFondOlsProcessedCount();
+            ProgramStatistics::Total->IncFondOlsProcessedCount();
+#endif
             this->m_lastSnapshotInfo->Restore();
             return false; // skip all the snapshot
         }
@@ -415,6 +419,10 @@ protected:
         this->m_lastSnapshotInfo->ExtractString();
         this->m_incremental->OrderCurr()->ObtainSnapshotItem(this->m_lastSnapshotInfo);
         if(this->m_incremental->OrderCurr()->ApplyQuickSnapshot(this->m_lastSnapshotInfo)) {
+#ifdef COLLECT_STATISTICS
+            ProgramStatistics::Current->IncCurrOlsProcessedCount();
+            ProgramStatistics::Total->IncCurrOlsProcessedCount();
+#endif
             this->m_lastSnapshotInfo->Restore();
             return false; // skip all the snapshot
         }
@@ -450,6 +458,10 @@ protected:
         this->m_lastSnapshotInfo->ExtractString();
         this->m_incremental->TradeFond()->ObtainSnapshotItem(this->m_lastSnapshotInfo);
         if(this->m_incremental->TradeFond()->ApplyQuickSnapshot(this->m_lastSnapshotInfo)) {
+#ifdef COLLECT_STATISTICS
+            ProgramStatistics::Current->IncFondOlsProcessedCount();
+            ProgramStatistics::Total->IncFondOlsProcessedCount();
+#endif
             this->m_lastSnapshotInfo->Restore();
             return false; // skip all the snapshot
         }
@@ -485,6 +497,10 @@ protected:
         this->m_lastSnapshotInfo->ExtractString();
         this->m_incremental->TradeCurr()->ObtainSnapshotItem(this->m_lastSnapshotInfo);
         if(this->m_incremental->TradeCurr()->ApplyQuickSnapshot(this->m_lastSnapshotInfo)) {
+#ifdef COLLECT_STATISTICS
+            ProgramStatistics::Current->IncCurrOlsProcessedCount();
+            ProgramStatistics::Total->IncCurrOlsProcessedCount();
+#endif
             this->m_lastSnapshotInfo->Restore();
             return false; // skip all the snapshot
         }
@@ -520,6 +536,10 @@ protected:
         this->m_lastSnapshotInfo->ExtractString();
         this->m_incremental->StatisticFond()->ObtainSnapshotItem(this->m_lastSnapshotInfo);
         if(this->m_incremental->StatisticFond()->ApplyQuickSnapshot(this->m_lastSnapshotInfo)) {
+#ifdef COLLECT_STATISTICS
+            ProgramStatistics::Current->IncFondOlsProcessedCount();
+            ProgramStatistics::Total->IncFondOlsProcessedCount();
+#endif
             this->m_lastSnapshotInfo->Restore();
             return false; // skip all the snapshot
         }
@@ -555,6 +575,10 @@ protected:
         this->m_lastSnapshotInfo->ExtractString();
         this->m_incremental->StatisticCurr()->ObtainSnapshotItem(this->m_lastSnapshotInfo);
         if(this->m_incremental->StatisticCurr()->ApplyQuickSnapshot(this->m_lastSnapshotInfo)) {
+#ifdef COLLECT_STATISTICS
+            ProgramStatistics::Current->IncCurrOlsProcessedCount();
+            ProgramStatistics::Total->IncCurrOlsProcessedCount();
+#endif
             this->m_lastSnapshotInfo->Restore();
             return false; // skip all the snapshot
         }

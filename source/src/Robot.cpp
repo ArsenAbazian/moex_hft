@@ -302,6 +302,9 @@ bool Robot::MainLoop() {
 
             w->Reset();
 
+            //printf("olr used queue count = %d\n", MDEntryQueue<OrderInfo<FastOLSCURRItemInfo>>::Pool->Count());
+            //printf("tlr used queue count = %d\n", MDEntryQueue<TradeInfo<FastTLSCURRItemInfo>>::Pool->Count());
+            //printf("msr used queue count = %d\n", MDEntryQueue<StatisticsInfo<FastGenericItemInfo>>::Pool->Count());
             printf("3 sec. Changes------------------------\n");
             ProgramStatistics::Current->Print();
             printf("Total Changes-------------------------\n");

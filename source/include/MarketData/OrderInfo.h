@@ -52,6 +52,7 @@ public:
         }
         this->m_entryInfo = 0;
     }
+
     inline void ResetSnasphotProcessed() { this->m_snapshotProcessedCount = 0; }
     inline void OnSnapshotProcessed() { this->m_snapshotProcessedCount++; }
     inline int SnapshotProcessedCount() { return this->m_snapshotProcessedCount; }
