@@ -4148,8 +4148,9 @@ public:
 
 		SkipToNextField(); // MsgSeqNum
 		info->SendingTime = ReadUInt64_Mandatory();
-		SkipToNextField(); // TradingSessionID
-		SkipToNextField(); // Symbol
+		if(!(info->IsNullTradingSessionID = CheckProcessNullString()))
+			ReadString_Optional(&(info->TradingSessionID), &(info->TradingSessionIDLength));
+		ReadString_Mandatory(&(info->Symbol), &(info->SymbolLength));
 		if(!(info->IsNullLastMsgSeqNumProcessed = CheckProcessNullUInt32()))
 			info->LastMsgSeqNumProcessed = ReadUInt32_Optional();
 		info->RptSeq = ReadInt32_Mandatory();
@@ -4182,6 +4183,10 @@ public:
 			info->LastFragment = ReadUInt32_Optional();
 		if(!(info->IsNullRouteFirst = CheckProcessNullUInt32()))
 			info->RouteFirst = ReadUInt32_Optional();
+		SkipToNextField(); // TradSesStatus
+		if(!(info->IsNullTradingSessionID = CheckProcessNullString()))
+			ReadString_Optional(&(info->TradingSessionID), &(info->TradingSessionIDLength));
+		ReadString_Mandatory(&(info->Symbol), &(info->SymbolLength));
 		return info;
 	}
 	FastSnapshotInfo* GetSnapshotInfoOLSCURR() {
@@ -4198,6 +4203,10 @@ public:
 			info->LastFragment = ReadUInt32_Optional();
 		if(!(info->IsNullRouteFirst = CheckProcessNullUInt32()))
 			info->RouteFirst = ReadUInt32_Optional();
+		SkipToNextField(); // TradSesStatus
+		if(!(info->IsNullTradingSessionID = CheckProcessNullString()))
+			ReadString_Optional(&(info->TradingSessionID), &(info->TradingSessionIDLength));
+		ReadString_Mandatory(&(info->Symbol), &(info->SymbolLength));
 		return info;
 	}
 	FastSnapshotInfo* GetSnapshotInfoTLSFOND() {
@@ -4214,6 +4223,10 @@ public:
 			info->LastFragment = ReadUInt32_Optional();
 		if(!(info->IsNullRouteFirst = CheckProcessNullUInt32()))
 			info->RouteFirst = ReadUInt32_Optional();
+		SkipToNextField(); // TradSesStatus
+		if(!(info->IsNullTradingSessionID = CheckProcessNullString()))
+			ReadString_Optional(&(info->TradingSessionID), &(info->TradingSessionIDLength));
+		ReadString_Mandatory(&(info->Symbol), &(info->SymbolLength));
 		return info;
 	}
 	FastSnapshotInfo* GetSnapshotInfoTLSCURR() {
@@ -4230,6 +4243,10 @@ public:
 			info->LastFragment = ReadUInt32_Optional();
 		if(!(info->IsNullRouteFirst = CheckProcessNullUInt32()))
 			info->RouteFirst = ReadUInt32_Optional();
+		SkipToNextField(); // TradSesStatus
+		if(!(info->IsNullTradingSessionID = CheckProcessNullString()))
+			ReadString_Optional(&(info->TradingSessionID), &(info->TradingSessionIDLength));
+		ReadString_Mandatory(&(info->Symbol), &(info->SymbolLength));
 		return info;
 	}
 	FastSnapshotInfo* GetSnapshotInfoIncrementalMSRFOND() {
@@ -4293,6 +4310,9 @@ public:
 
 		SkipToNextField(); // MsgSeqNum
 		info->SendingTime = ReadUInt64_Mandatory();
+		SkipToNextField(); // TotNumReports
+		if(!(info->IsNullSymbol = CheckProcessNullString()))
+			ReadString_Optional(&(info->Symbol), &(info->SymbolLength));
 		return info;
 	}
 	FastSnapshotInfo* GetSnapshotInfoSecurityStatus() {
@@ -4302,6 +4322,9 @@ public:
 
 		SkipToNextField(); // MsgSeqNum
 		info->SendingTime = ReadUInt64_Mandatory();
+		ReadString_Mandatory(&(info->Symbol), &(info->SymbolLength));
+		if(!(info->IsNullTradingSessionID = CheckProcessNullString()))
+			ReadString_Optional(&(info->TradingSessionID), &(info->TradingSessionIDLength));
 		return info;
 	}
 	FastSnapshotInfo* GetSnapshotInfoTradingSessionStatus() {
@@ -4311,6 +4334,9 @@ public:
 
 		SkipToNextField(); // MsgSeqNum
 		info->SendingTime = ReadUInt64_Mandatory();
+		SkipToNextField(); // TradSesStatus
+		SkipToNextField(); // Text
+		ReadString_Mandatory(&(info->TradingSessionID), &(info->TradingSessionIDLength));
 		return info;
 	}
 	FastSnapshotInfo* GetSnapshotInfoHeartbeat() {

@@ -67,6 +67,14 @@ public:
         this->m_snapshotSymbol = this->m_snapshotItem->SymbolInfo();
         this->AddUsed(this->m_snapshotItem);
     }
+    inline void ObtainSnapshotItem(FastSnapshotInfo *info) {
+        this->m_snapshotItem = this->GetCachedItem(info->Symbol, info->SymbolLength, info->TradingSessionID, info->TradingSessionIDLength);
+        if(this->m_snapshotItem == 0)
+            this->m_snapshotItem = this->GetItem(info->Symbol, info->SymbolLength, info->TradingSessionID, info->TradingSessionIDLength);
+        this->m_snapshotEntries = this->m_snapshotItem->EntriesQueue();
+        this->m_snapshotSymbol = this->m_snapshotItem->SymbolInfo();
+        this->AddUsed(this->m_snapshotItem);
+    }
     inline void DecSymbolsToRecvSnapshotCount() {
         this->m_symbolsToRecvSnapshot--;
     }
@@ -94,6 +102,7 @@ public:
 
         return res;
     }
+
     inline bool ShouldProcessSnapshot(INFO *info) {
         if(!this->m_snapshotEntries->HasEntries())
             return this->m_snapshotItem->RptSeq() < info->RptSeq;
@@ -131,6 +140,47 @@ public:
         }
         return false;
     }
+
+    inline bool ShouldProcessSnapshot(FastSnapshotInfo *info) {
+        if(!this->m_snapshotEntries->HasEntries())
+            return this->m_snapshotItem->RptSeq() < info->RptSeq;
+        return this->m_snapshotEntries->StartRptSeq() <= info->RptSeq;
+    }
+    inline bool CheckProcessIfSessionInActualState(FastSnapshotInfo *info) {
+        if(this->m_snapshotEntries->HasEntries())
+            return false;
+        if(this->m_snapshotItem->RptSeq() != info->RptSeq)
+            return false;
+
+        MarketSymbolInfo<TABLEITEM<ITEMINFO>> *smb = this->m_snapshotItem->SymbolInfo();
+        bool allItemsRecvSnapshot = smb->AllSessionsRecvSnapshot();
+        this->m_snapshotItem->ProcessActualSnapshotState();
+        if (!allItemsRecvSnapshot && smb->AllSessionsRecvSnapshot())
+            this->DecSymbolsToRecvSnapshotCount();
+        this->m_snapshotItem = 0;
+        return true;
+    }
+    inline bool IsNullSnapshot(FastSnapshotInfo *info) {
+        return info->RptSeq == 0 && info->LastMsgSeqNumProcessed == 0;
+    }
+    inline bool CheckProcessNullSnapshot(FastSnapshotInfo *info) {
+        if(IsNullSnapshot(info)) {
+            bool allItemsRecvSnapshot = this->m_snapshotSymbol->AllSessionsRecvSnapshot();
+            this->m_snapshotItemHasEntriesQueue = this->m_snapshotEntries->HasEntries();
+            this->m_snapshotEntries->Clear();
+            this->m_snapshotItem->DecSessionsToRecvSnapshotCount();
+            if(this->m_snapshotItemHasEntriesQueue && !this->m_snapshotEntries->HasEntries())
+                this->m_queueItemsCount--;
+            if(!allItemsRecvSnapshot && this->m_snapshotSymbol->AllSessionsRecvSnapshot())
+                this->DecSymbolsToRecvSnapshotCount();
+            this->m_snapshotItem = 0;
+            return true;
+        }
+        return false;
+    }
+
+
+
     inline void StartProcessSnapshot(INFO *info) {
         this->m_snapshotItemHasEntriesQueue = this->m_snapshotEntries->HasEntries();
         this->m_allSessionsRecvSnapshot = this->m_snapshotSymbol->AllSessionsRecvSnapshot();

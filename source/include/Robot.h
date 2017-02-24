@@ -9,8 +9,8 @@
 typedef enum _RobotState {
 
 } RobotState;
-class Robot
-{
+
+class Robot {
 	FeedChannel *channels[MARKET_INFO_CAPACITY];
 	int		channelsCount;
 
@@ -19,6 +19,9 @@ class Robot
 
     MarketInfo *m_currMarket;
     MarketInfo *m_fondMarket;
+
+    bool        m_allowFondMarket;
+    bool        m_allowCurrMarket;
 
 	RobotState state;
 
@@ -55,6 +58,11 @@ public:
 	Robot();
 	~Robot();
 
+    inline bool AllowFondMarket() { return this->m_allowFondMarket; }
+    inline void AllowFondMarket(bool value) { this->m_allowFondMarket = value; }
+    inline bool AllowCurrMarket() { return this->m_allowCurrMarket; }
+    inline void AllowCurrMarket(bool value) { this->m_allowCurrMarket = value; }
+
 	void AddChannel(FeedChannel *info) {
 		this->channels[this->channelsCount] = info;
 		this->channelsCount++;
@@ -69,14 +77,26 @@ public:
 
 	bool AddDefaultTestMarkets() { 
 		DefaultLogManager::Default->StartLog(LogMessageCode::lmcRobot_AddDefaultTestMarkets);
-		AddMarket(new FondMarketInfo("FOND", FundMarketSenderComputerId, FundMarketPassword, FundMarketTradeServerAddress, FundMarketTradeASTSServerName,
-			FundMarketTradeName, FundMarketTradeServerPort, FundMarketTradeTargetComputerId,
-			FundMarketTradeCaptureName, FundMarketTradeCaptureServerPort, FundMarketTradeCaptureTargetComputerId,
-			FundMarketTradeDropCopyName, FundMarketTradeDropCopyServerPort, FundMarketTradeDropCopyTargetComputerId));
-		AddMarket(new CurrencyMarketInfo("CURR", CurrencyMarketSenderComputerId, CurrencyMarketPassword, CurrencyMarketTradeServerAddress, CurrencyMarketTradeASTSServerName,
-			CurrencyMarketTradeName, CurrencyMarketTradeServerPort, CurrencyMarketTradeTargetComputerId,
-			CurrencyMarketTradeCaptureName, CurrencyMarketTradeCaptureServerPort, CurrencyMarketTradeCaptureTargetComputerId,
-			CurrencyMarketTradeDropCopyName, CurrencyMarketTradeDropCopyeServerPort, CurrencyMarketTradeDropCopyTargetComputerId));
+		if(this->AllowFondMarket()) {
+            AddMarket(new FondMarketInfo("FOND", FundMarketSenderComputerId, FundMarketPassword,
+                                         FundMarketTradeServerAddress, FundMarketTradeASTSServerName,
+                                         FundMarketTradeName, FundMarketTradeServerPort,
+                                         FundMarketTradeTargetComputerId,
+                                         FundMarketTradeCaptureName, FundMarketTradeCaptureServerPort,
+                                         FundMarketTradeCaptureTargetComputerId,
+                                         FundMarketTradeDropCopyName, FundMarketTradeDropCopyServerPort,
+                                         FundMarketTradeDropCopyTargetComputerId));
+        }
+		if(this->AllowCurrMarket()) {
+            AddMarket(new CurrencyMarketInfo("CURR", CurrencyMarketSenderComputerId, CurrencyMarketPassword,
+                                             CurrencyMarketTradeServerAddress, CurrencyMarketTradeASTSServerName,
+                                             CurrencyMarketTradeName, CurrencyMarketTradeServerPort,
+                                             CurrencyMarketTradeTargetComputerId,
+                                             CurrencyMarketTradeCaptureName, CurrencyMarketTradeCaptureServerPort,
+                                             CurrencyMarketTradeCaptureTargetComputerId,
+                                             CurrencyMarketTradeDropCopyName, CurrencyMarketTradeDropCopyeServerPort,
+                                             CurrencyMarketTradeDropCopyTargetComputerId));
+        }
 		DefaultLogManager::Default->EndLog(true);
 		return true;
 	}
@@ -84,29 +104,33 @@ public:
     bool SetFeedChannelsForMarkets() {
         DefaultLogManager::Default->StartLog(LogMessageCode::lmcRobot_SetFeedChannelsForMarkets);
 
-        this->m_fondMarket = FindMarket("FOND");
-        FeedChannel *fondChannel = FindFeedChannel("FOND");
-        if(this->m_fondMarket == NULL) {
-            DefaultLogManager::Default->EndLog(false, LogMessageCode::lmcFOND_market_not_found);
-            return false;
-        }
-        if(fondChannel == NULL) {
-            DefaultLogManager::Default->EndLog(false, LogMessageCode::lmcFOND_feed_channel_not_found);
-            return false;
+        if(this->AllowFondMarket()) {
+            this->m_fondMarket = FindMarket("FOND");
+            FeedChannel *fondChannel = FindFeedChannel("FOND");
+            if (this->m_fondMarket == NULL) {
+                DefaultLogManager::Default->EndLog(false, LogMessageCode::lmcFOND_market_not_found);
+                return false;
+            }
+            if (fondChannel == NULL) {
+                DefaultLogManager::Default->EndLog(false, LogMessageCode::lmcFOND_feed_channel_not_found);
+                return false;
+            }
+            this->m_fondMarket->SetFeedChannel(fondChannel);
         }
 
-        this->m_currMarket = FindMarket("CURR");
-        FeedChannel *currChannel = FindFeedChannel("CURR");
-        if(this->m_currMarket == NULL) {
-            DefaultLogManager::Default->EndLog(false, LogMessageCode::lmcCURR_market_not_found);
-            return false;
+        if(this->AllowCurrMarket()) {
+            this->m_currMarket = FindMarket("CURR");
+            FeedChannel *currChannel = FindFeedChannel("CURR");
+            if (this->m_currMarket == NULL) {
+                DefaultLogManager::Default->EndLog(false, LogMessageCode::lmcCURR_market_not_found);
+                return false;
+            }
+            if (currChannel == NULL) {
+                DefaultLogManager::Default->EndLog(false, LogMessageCode::lmcCURR_feed_channel_not_found);
+                return false;
+            }
+            this->m_currMarket->SetFeedChannel(currChannel);
         }
-        if(currChannel == NULL) {
-            DefaultLogManager::Default->EndLog(false, LogMessageCode::lmcCURR_feed_channel_not_found);
-            return false;
-        }
-        this->m_fondMarket->SetFeedChannel(fondChannel);
-        this->m_currMarket->SetFeedChannel(currChannel);
 
         DefaultLogManager::Default->EndLog(true);
         return true;

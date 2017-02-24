@@ -88,6 +88,7 @@ int main(int argc, char** argv) {
 #else
 
 	Robot *robot = new Robot();
+	robot->AllowFondMarket(false); // TODO fond market disabled!!!
 	robot->Run();
     delete robot;
 

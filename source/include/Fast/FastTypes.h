@@ -140,7 +140,8 @@ typedef enum _SecurityStatus {
 #define PRESENCE_MAP_INDEX54 0x0200000000000000L
 #define PRESENCE_MAP_INDEX55 0x0100000000000000L
 
-typedef struct _FastSnapshotInfo {
+class FastSnapshotInfo {
+public:
 	UINT64				PresenceMap;
 	int				TemplateId;
 	INT32				RptSeq;
@@ -153,7 +154,21 @@ typedef struct _FastSnapshotInfo {
 	bool				IsNullLastMsgSeqNumProcessed;
 	UINT64				SendingTime;
 	bool				IsNullSendingTime;
-}FastSnapshotInfo;
+	char				*Symbol;
+	int					SymbolLength;
+	bool				IsNullSymbol;
+	char				*TradingSessionID;
+	int					TradingSessionIDLength;
+	bool				IsNullTradingSessionID;
+	inline void ExtractString() {
+		this->Symbol[this->SymbolLength - 1] &= 0x7f;
+		this->TradingSessionID[this->TradingSessionIDLength - 1] &= 0x7f;
+	}
+	inline void Restore() {
+		this->Symbol[this->SymbolLength - 1] |= 0x80;
+		this->TradingSessionID[this->TradingSessionIDLength - 1] |= 0x80;
+	}
+};
 
 class FastLogonInfo{
 public:

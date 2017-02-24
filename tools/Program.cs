@@ -68,8 +68,10 @@ namespace prebuild {
 				string channelName = node.Attributes["id"].Value;
 				//Console.WriteLine("found channel " + channelName);
 				string channelLabel = node.Attributes["label"].Value;
+				string channelNameUpper = channelName.Substring(0, 1).ToUpper() + channelName.Substring(1).ToLower();
 
-				WriteLine("\tFeedChannel *" + channelName.ToLower() + " = new FeedChannel(" + ConstStr(channelName) + ", " + ConstStr(channelLabel) + ");");
+				WriteLine("\tif(this->Allow" + channelNameUpper + "Market()) {");
+				WriteLine("\t\tFeedChannel *" + channelName.ToLower() + " = new FeedChannel(" + ConstStr(channelName) + ", " + ConstStr(channelLabel) + ");");
 				WriteLine("");
 				XmlNode connections = node.ChildNodes[0];
 				foreach(XmlNode conn in connections.ChildNodes) {
@@ -88,7 +90,7 @@ namespace prebuild {
 						string ip = NodeValue(conn.ChildNodes[2]);
 						string port = NodeValue(conn.ChildNodes[3]);
 
-						WriteLine("\tFeedConnection *" + feedValueName + " = new " + feedClassName + "(" + ConstStr(c_id) + ", " + ConstStr(feedType) + ", " + feedValue + ", " + protocolValue + ", " + ConstStr(ip) + ", " + port + ");");
+						WriteLine("\t\tFeedConnection *" + feedValueName + " = new " + feedClassName + "(" + ConstStr(c_id) + ", " + ConstStr(feedType) + ", " + feedValue + ", " + protocolValue + ", " + ConstStr(ip) + ", " + port + ");");
 					} else {
 						string srcIpA = NodeValue(conn.ChildNodes[2].ChildNodes[0]);
 						string ipA = NodeValue(conn.ChildNodes[2].ChildNodes[1]);
@@ -98,7 +100,7 @@ namespace prebuild {
 						string ipB = NodeValue(conn.ChildNodes[3].ChildNodes[1]);
 						string portB = NodeValue(conn.ChildNodes[3].ChildNodes[2]);
 					
-						WriteLine("\tFeedConnection *" + feedValueName + " = new " + feedClassName + "(" + ConstStr(c_id) + ", " + ConstStr(feedType) + ", " + feedValue + ", " + protocolValue + ", " +
+						WriteLine("\t\tFeedConnection *" + feedValueName + " = new " + feedClassName + "(" + ConstStr(c_id) + ", " + ConstStr(feedType) + ", " + feedValue + ", " + protocolValue + ", " +
 							ConstStr(srcIpA) + ", " + ConstStr(ipA) + ", " + portA + ", " + 
 							ConstStr(srcIpB) + ", " + ConstStr(ipB) + ", " + portB +  
 							");");
@@ -108,10 +110,11 @@ namespace prebuild {
 				foreach(XmlNode conn in connections.ChildNodes) {
 					string c_id = conn.Attributes["id"].Value;
 					string feedValueName = c_id.ToLower() + "_" + channelName.ToLower();
-					WriteLine("\t" + channelName.ToLower() + "->SetConnection(" + feedValueName + ");");
+					WriteLine("\t\t" + channelName.ToLower() + "->SetConnection(" + feedValueName + ");");
 				}
 				WriteLine("");
-				WriteLine("\tthis->AddChannel(" + channelName.ToLower() + ");");
+				WriteLine("\t\tthis->AddChannel(" + channelName.ToLower() + ");");
+				WriteLine("\t}");
 			}
 			return true;
 		}
@@ -933,15 +936,30 @@ namespace prebuild {
 
 			WriteLine("");
 
-			WriteLine("typedef struct _FastSnapshotInfo {");
+			WriteLine("class FastSnapshotInfo {");
+			WriteLine("public:");
 			WriteLine("\tUINT64\t\t\t\tPresenceMap;");
 			WriteLine("\tint\t\t\t\tTemplateId;");
 			InitializeSnapshotInfoFields(templatesNode);
 			foreach(SnapshotFieldInfo info in SnapshotInfoFields) {
-				WriteLine("\t" + info.FieldType + "\t\t\t\t" + info.FieldName + ";");
-				WriteLine("\tbool\t\t\t\tIsNull" + info.FieldName + ";");
+				if(info.FieldType.ToLower() == "string" ) {
+					WriteLine("\t" + "char" + "\t\t\t\t*" + info.FieldName + ";");
+					WriteLine("\t" + "int" + "\t\t\t\t\t" + info.FieldName + "Length;");
+					WriteLine("\tbool\t\t\t\tIsNull" + info.FieldName + ";");
+				} else {
+					WriteLine("\t" + info.FieldType + "\t\t\t\t" + info.FieldName + ";");
+					WriteLine("\tbool\t\t\t\tIsNull" + info.FieldName + ";");
+				}
 			}
-			WriteLine("}FastSnapshotInfo;");
+			WriteLine("\tinline void ExtractString() {");
+			WriteLine("\t\tthis->Symbol[this->SymbolLength - 1] &= 0x7f;");
+			WriteLine("\t\tthis->TradingSessionID[this->TradingSessionIDLength - 1] &= 0x7f;");
+			WriteLine("\t}");
+			WriteLine("\tinline void Restore() {");
+			WriteLine("\t\tthis->Symbol[this->SymbolLength - 1] |= 0x80;");
+			WriteLine("\t\tthis->TradingSessionID[this->TradingSessionIDLength - 1] |= 0x80;");
+			WriteLine("\t}");
+			WriteLine("};");
 
 			WriteLine("");
 
@@ -1495,6 +1513,8 @@ namespace prebuild {
 					snapshotInfoFields.Add(new SnapshotFieldInfo("", "RouteFirst"));
 					snapshotInfoFields.Add(new SnapshotFieldInfo("", "LastMsgSeqNumProcessed"));
 					snapshotInfoFields.Add(new SnapshotFieldInfo("", "SendingTime"));
+					snapshotInfoFields.Add(new SnapshotFieldInfo("", "Symbol"));
+					snapshotInfoFields.Add(new SnapshotFieldInfo("", "TradingSessionID"));
 				}
 				return snapshotInfoFields;
 			}
