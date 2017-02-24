@@ -841,13 +841,11 @@ protected:
             return true;
         if(!this->m_snapshot->Start()) {
 			DefaultLogManager::Default->WriteSuccess(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_StartListenSnapshot, false);
-            printf("Channel = %s\n", this->m_channelName);
 			return false;
 		}
         this->MarketTableEnterSnapshotMode();
         this->m_snapshot->StartNewSnapshot();
 		DefaultLogManager::Default->WriteSuccess(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_StartListenSnapshot, true);
-		printf("Channel = %s\n", this->m_channelName);
         return true;
 	}
     inline void UpdateMessageSeqNoAfterSnapshot() {

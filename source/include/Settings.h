@@ -3,7 +3,7 @@
 #include <cstdint>
 
 #define ROBOT_WORK_ANYWAY
-#define TEST
+//#define TEST
 
 #define null 0
 #define BYTE unsigned char
@@ -57,7 +57,8 @@ public:
         MarketDataMaxEntriesCount = 1024 * 2000;
         MaxSecurityDefinitionCount = 2600;
         HistoricalReplayMaxMessageRequestCount = 1024;
-        MDEntryQueueItemsCount = 500;
+        MDEntryQueueItemsCount = 150;
+        MDEntryQueueItemsAddCount = 10;
     }
 };
 
