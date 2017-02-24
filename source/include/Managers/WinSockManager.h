@@ -1,5 +1,5 @@
 #pragma once
-#include "Types.h"
+#include "Settings.h"
 #include <stdint.h>
 #include "SocketBufferManager.h"
 #include <sys/socket.h>

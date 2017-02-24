@@ -4,7 +4,7 @@
 
 #ifndef HFT_ROBOT_INSTRUMENTDEFINITIONTESTER_H
 #define HFT_ROBOT_INSTRUMENTDEFINITIONTESTER_H
-#include "../Types.h"
+#include "Settings.h"
 
 #ifdef TEST
 
@@ -631,7 +631,7 @@ public:
     }
 
     void TestPacketsAreClear() {
-        for(int i = 0; i < RobotSettings::DefaultFeedConnectionPacketCount; i++) {
+        for(int i = 0; i < RobotSettings::Default->DefaultFeedConnectionPacketCount; i++) {
             if(this->idf->m_packets[i]->m_address != 0 ||
                     this->idf->m_packets[i]->m_processed ||
                     this->idf->m_packets[i]->m_requested)
@@ -640,7 +640,7 @@ public:
     }
 
     void TestSecurityDefinitionsAreClear() {
-        for(int i = 0; i < RobotSettings::MaxSecurityDefinitionCount; i++) {
+        for(int i = 0; i < RobotSettings::Default->MaxSecurityDefinitionCount; i++) {
             if(this->idf->m_symbols[i]->Data() != 0)
                 throw;
         }

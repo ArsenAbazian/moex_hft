@@ -4,7 +4,7 @@
 
 #ifndef HFT_ROBOT_FEEDCONNECTIONTESTER_H
 #define HFT_ROBOT_FEEDCONNECTIONTESTER_H
-#include "../Types.h"
+#include "Settings.h"
 
 #ifdef TEST
 
@@ -72,10 +72,10 @@ class FeedConnectionTester {
     }
 public:
     FeedConnectionTester() {
-        RobotSettings::DefaultFeedConnectionSendBufferSize = 1 * 1024 * 1024;
-        RobotSettings::DefaultFeedConnectionSendItemsCount = 100;
-        RobotSettings::DefaultFeedConnectionRecvBufferSize = 2 * 1024 * 1024;
-        RobotSettings::DefaultFeedConnectionRecvItemsCount = 500;
+        RobotSettings::Default->DefaultFeedConnectionSendBufferSize = 1 * 1024 * 1024;
+        RobotSettings::Default->DefaultFeedConnectionSendItemsCount = 100;
+        RobotSettings::Default->DefaultFeedConnectionRecvBufferSize = 2 * 1024 * 1024;
+        RobotSettings::Default->DefaultFeedConnectionRecvItemsCount = 500;
     }
     AutoAllocatePointerList<TestFeedMessage>* GetMessagesFromLog(const char *fileName) {
         FILE *fp = fopen(fileName, "rt");
@@ -222,23 +222,27 @@ public:
     }
 
     void Test() {
-        RobotSettings::MarketDataMaxSymbolsCount = 10;
-        RobotSettings::MarketDataMaxSessionsCount = 32;
-        RobotSettings::MarketDataMaxEntriesCount = 32 * 10;
-        RobotSettings::DefaultFeedConnectionPacketCount = 1100;
+        RobotSettings::Default->MarketDataMaxSymbolsCount = 10;
+        RobotSettings::Default->MarketDataMaxSessionsCount = 32;
+        RobotSettings::Default->MarketDataMaxEntriesCount = 32 * 10;
+        RobotSettings::Default->DefaultFeedConnectionPacketCount = 1100;
+        RobotSettings::Default->MDEntryQueueItemsCount = 100;
 
-        TradeTesterFond ttFond;
-        ttFond.Test();
-        TradeTesterCurr ttCurr;
-        ttCurr.Test();
+        PointerListTester pt;
+        pt.Test();
+
+        SymbolManagerTester ht;
+        ht.Test();
 
         OrderTesterCurr otCurr;
         otCurr.Test();
         OrderTesterFond otFond;
         otFond.Test();
 
-        PointerListTester pt;
-        pt.Test();
+        TradeTesterCurr ttCurr;
+        ttCurr.Test();
+        TradeTesterFond ttFond;
+        ttFond.Test();
 
         SecurityStatusTester ist;
         ist.Test();
@@ -251,9 +255,6 @@ public:
 
         StatisticsTesterFond stFond;
         stFond.Test();
-
-        SymbolManagerTester ht;
-        ht.Test();
     }
 };
 

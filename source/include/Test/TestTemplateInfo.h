@@ -4,7 +4,7 @@
 
 #ifndef HFT_ROBOT_TESTTEMPLATEINFO_H
 #define HFT_ROBOT_TESTTEMPLATEINFO_H
-#include "../Types.h"
+#include "Settings.h"
 
 #ifdef TEST
 

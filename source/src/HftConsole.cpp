@@ -1,6 +1,6 @@
 // HftConsole.cpp : Defines the entry point for the console application.
 //
-#include "Types.h"
+#include "Settings.h"
 #ifdef TEST
 #include "Test/ItoaTester.h"
 #include "Test/UTCTimeConverterTester.h"

@@ -1,5 +1,5 @@
 #pragma once
-#include "../Types.h"
+#include "Settings.h"
 
 #ifdef TEST
 class ItoaTester

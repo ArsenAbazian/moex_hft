@@ -24,25 +24,34 @@ template <typename T> class OrderInfo {
     PointerListLite<QuoteInfo>              *m_aggregatedSellQuoteList;
     PointerListLite<QuoteInfo>              *m_aggregatedBuyQuoteList;
 
-    MDEntrQueue<T>                      *m_entryInfo;
+    MDEntryQueue<T>                      *m_entryInfo;
 
     bool                                m_used;
     bool                                m_shouldProcessSnapshot;
     int                                 m_rptSeq;
+    int                                 m_savedRptSeq;
     MarketSymbolInfo<OrderInfo<T>>      *m_symbolInfo;
     SizedArray                          *m_tradingSession;
 
     int                                 m_snapshotProcessedCount;
 public:
+
     OrderInfo();
     ~OrderInfo() {
-        delete this->m_entryInfo;
+        ReleaseEntryQue();
         delete this->m_sellQuoteList;
         delete this->m_buyQuoteList;
         delete this->m_aggregatedBuyQuoteList;
         delete this->m_aggregatedSellQuoteList;
     }
 
+    inline void ReleaseEntryQue() {
+        if(this->m_entryInfo != 0) {
+            this->m_entryInfo->Reset();
+            MDEntryQueue<T>::Pool->FreeItem(this->m_entryInfo->Pointer);
+        }
+        this->m_entryInfo = 0;
+    }
     inline void ResetSnasphotProcessed() { this->m_snapshotProcessedCount = 0; }
     inline void OnSnapshotProcessed() { this->m_snapshotProcessedCount++; }
     inline int SnapshotProcessedCount() { return this->m_snapshotProcessedCount; }
@@ -51,9 +60,12 @@ public:
     inline MarketSymbolInfo<OrderInfo<T>>* SymbolInfo() { return this->m_symbolInfo; }
     inline void SymbolInfo(MarketSymbolInfo<OrderInfo<T>>* symbolInfo) { this->m_symbolInfo = symbolInfo; }
     inline int RptSeq() { return this->m_rptSeq; }
+    inline int SavedRptSeq() { return this->m_savedRptSeq; }
     inline void RptSeq(int rptSeq) { this->m_rptSeq = rptSeq; }
 
-    inline MDEntrQueue<T>* EntriesQueue() { return this->m_entryInfo; }
+    inline bool HasEntries() { return this->m_entryInfo == 0? false: this->m_entryInfo->HasEntries(); }
+    inline void ClearEntries() { this->ReleaseEntryQue(); }
+    inline MDEntryQueue<T>* EntriesQueue() { return this->m_entryInfo; }
 
     inline PointerListLite<T>* SellQuotes() { return this->m_sellQuoteList; }
     inline PointerListLite<T>* BuyQuotes() { return this->m_buyQuoteList; }
@@ -80,8 +92,9 @@ public:
         Clear(this->m_buyQuoteList);
         this->m_aggregatedBuyQuoteList->Clear();
         this->m_aggregatedSellQuoteList->Clear();
-        this->m_entryInfo->Clear();
+        this->ClearEntries();
         this->m_rptSeq = 0;
+        this->m_savedRptSeq = 0;
     }
 
     inline LinkedPointer<T>* GetQuote(PointerListLite<T> *list, T *info) {
@@ -306,7 +319,13 @@ public:
         return info->RptSeq - this->m_rptSeq == 1;
     }
 
+    inline void ObtainEntriesQueue() {
+        if(this->m_entryInfo == 0)
+            this->m_entryInfo = MDEntryQueue<T>::Pool->NewItem();
+    }
+
     inline void PushMessageToQueue(T *info) {
+        this->ObtainEntriesQueue();
         this->m_entryInfo->StartRptSeq(this->m_rptSeq + 1);
         this->m_entryInfo->AddEntry(info);
     }
@@ -327,12 +346,13 @@ public:
         }
         this->m_rptSeq = info->RptSeq;
         this->ForceProcessMessage(info);
-        if(this->m_entryInfo->HasEntries())
+        if(this->HasEntries())
             return this->ProcessQueueMessages();
         return true;
     }
 
     inline void StartProcessSnapshotMessages() {
+        this->m_savedRptSeq = this->m_rptSeq;
         this->BuyQuotes()->Clear();
         this->SellQuotes()->Clear();
     }
@@ -342,9 +362,13 @@ public:
     }
 
     inline bool ProcessQueueMessages() {
-        this->m_entryInfo->ShouldProcess(false);
-        if(!this->m_entryInfo->HasEntries())
+        if(this->m_entryInfo == 0)
             return true;
+        this->m_entryInfo->ShouldProcess(false);
+        if(!this->m_entryInfo->HasEntries()) {
+            this->ReleaseEntryQue();
+            return true;
+        }
         T **entry = this->m_entryInfo->Entries();
         int incRptSeq = this->m_entryInfo->RptSeq();
         int maxIndex = this->m_entryInfo->MaxIndex();
@@ -363,7 +387,7 @@ public:
             (*entry) = 0;
             entry++;
         }
-        this->m_entryInfo->Reset();
+        this->ReleaseEntryQue();
         return true;
     }
 
@@ -372,6 +396,10 @@ public:
             SymbolInfo()->DecSessionsToRecvSnapshotCount();
             this->m_shouldProcessSnapshot = false;
         }
+    }
+
+    inline void CancelSnapshotMessages() {
+        this->m_rptSeq = this->m_savedRptSeq;
     }
 
     inline bool EndProcessSnapshotMessages() {
@@ -407,11 +435,13 @@ template <typename T> PointerList<QuoteInfo>* OrderInfo<T>::m_aggregatedItemsPoo
 
 template <typename T> OrderInfo<T>::OrderInfo() {
     if(OrderInfo::m_itemsPool == 0)
-        OrderInfo::m_itemsPool = new PointerList<T>(RobotSettings::MarketDataMaxEntriesCount, false);
+        OrderInfo::m_itemsPool = new PointerList<T>(RobotSettings::Default->MarketDataMaxEntriesCount, false);
     if(OrderInfo::m_aggregatedItemsPool == 0)
-        OrderInfo::m_aggregatedItemsPool = new PointerList<QuoteInfo>(RobotSettings::MarketDataMaxEntriesCount, true);
+        OrderInfo::m_aggregatedItemsPool = new PointerList<QuoteInfo>(RobotSettings::Default->MarketDataMaxEntriesCount, true);
+    if(MDEntryQueue<T>::Pool == 0)
+        MDEntryQueue<T>::Pool = MDEntryQueue<T>::CreatePool();
 
-    this->m_entryInfo = new MDEntrQueue<T>();
+    this->m_entryInfo = 0;
 
     this->m_sellQuoteList = new PointerListLite<T>(OrderInfo<T>::m_itemsPool);
     this->m_buyQuoteList = new PointerListLite<T>(OrderInfo<T>::m_itemsPool);
@@ -421,6 +451,7 @@ template <typename T> OrderInfo<T>::OrderInfo() {
     this->m_tradingSession = new SizedArray();
     this->m_shouldProcessSnapshot = false;
     this->m_rptSeq = 0;
+    this->m_savedRptSeq = 0;
     this->m_snapshotProcessedCount = 0;
 }
 

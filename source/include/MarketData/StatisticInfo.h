@@ -245,7 +245,7 @@ public:
 template <typename T> class MarketSymbolInfo;
 
 template <typename T> class StatisticsInfo {
-    MDEntrQueue<T>      *m_entryInfo;
+    MDEntryQueue<T>      *m_entryInfo;
 
     PointerListLite<StatisticItemDecimal2>                   *m_buyQuotes;
     PointerListLite<StatisticItemDecimal2>                   *m_sellQuotes;
@@ -289,6 +289,7 @@ template <typename T> class StatisticsInfo {
     bool                 m_used;
     bool                 m_shouldProcessSnapshot;
     int                  m_rptSeq;
+    int                  m_savedRptSeq;
     MarketSymbolInfo<StatisticsInfo<T>>    *m_symbolInfo;
     SizedArray          *m_tradingSession;
 
@@ -296,10 +297,14 @@ template <typename T> class StatisticsInfo {
     int                  m_snapshotProcessedCount;
 public:
     StatisticsInfo() {
-        this->m_entryInfo = new MDEntrQueue<T>();
+        if(MDEntryQueue<T>::Pool == 0)
+            MDEntryQueue<T>::Pool = MDEntryQueue<T>::CreatePool();
+
+        this->m_entryInfo = 0;
         this->m_tradingSession = new SizedArray();
         this->m_shouldProcessSnapshot = false;
         this->m_rptSeq = 0;
+        this->m_savedRptSeq = 0;
         this->m_time = 0;
         this->m_snapshotProcessedCount = 0;
         
@@ -342,7 +347,7 @@ public:
         this->m_cumulativeCouponDebit = new PointerListLite<StatisticItemDecimal>(DefaultStatisticItemAllocator::Default->Decimals());
     }
     ~StatisticsInfo() {
-        delete this->m_entryInfo;
+        ReleaseEntryQue();
 
         delete this->m_buyQuotes;
         delete this->m_sellQuotes;
@@ -383,6 +388,14 @@ public:
         delete this->m_cumulativeCouponDebit;
     }
 
+    inline void ReleaseEntryQue() {
+        if(this->m_entryInfo != 0) {
+            this->m_entryInfo->Reset();
+            MDEntryQueue<T>::Pool->FreeItem(this->m_entryInfo->Pointer);
+        }
+        this->m_entryInfo = 0;
+    }
+
     inline void ResetSnasphotProcessed() { this->m_snapshotProcessedCount = 0; }
     inline void OnSnapshotProcessed() { this->m_snapshotProcessedCount++; }
     inline int SnapshotProcessedCount() { return this->m_snapshotProcessedCount; }
@@ -394,7 +407,9 @@ public:
     inline int RptSeq() { return this->m_rptSeq; }
     inline void RptSeq(int rptSeq) { this->m_rptSeq = rptSeq; }
 
-    inline MDEntrQueue<T>* EntriesQueue() { return this->m_entryInfo; }
+    inline bool HasEntries() { return this->m_entryInfo == 0? false: this->m_entryInfo->HasEntries(); }
+    inline void ClearEntries() { this->ReleaseEntryQue(); }
+    inline MDEntryQueue<T>* EntriesQueue() { return this->m_entryInfo; }
 
     inline bool Used() { return this->m_used; }
     inline void Used(bool used) { this->m_used = used; }
@@ -448,9 +463,10 @@ public:
          this->m_bidTotal->Clear();
          this->m_auctionMagnitudeBigPackets->Clear();
          this->m_cumulativeCouponDebit->Clear();
-        
-        this->m_entryInfo->Clear();
+
+        this->ClearEntries();
         this->m_rptSeq = 0;
+        this->m_savedRptSeq = 0;
     }
 
     inline PointerListLite<StatisticItemDecimal2>* BuyQuotes() { return this->m_buyQuotes; }
@@ -1590,7 +1606,13 @@ public:
         return info->RptSeq - this->m_rptSeq == 1;
     }
 
+    inline void ObtainEntriesQueue() {
+        if(this->m_entryInfo == 0)
+            this->m_entryInfo = MDEntryQueue<T>::Pool->NewItem();
+    }
+
     inline void PushMessageToQueue(T *info) {
+        this->ObtainEntriesQueue();
         this->m_entryInfo->StartRptSeq(this->m_rptSeq + 1);
         this->m_entryInfo->AddEntry(info);
     }
@@ -1611,13 +1633,13 @@ public:
         }
         this->m_rptSeq = info->RptSeq;
         this->ForceProcessMessage(info);
-        if(this->m_entryInfo->HasEntries())
+        if(this->HasEntries())
             return this->ProcessQueueMessages();
         return true;
     }
 
     inline void StartProcessSnapshotMessages() {
-
+        this->m_savedRptSeq = this->m_rptSeq;
     }
 
     inline void ProcessSnapshotMessage(T *info) {
@@ -1625,9 +1647,13 @@ public:
     }
 
     inline bool ProcessQueueMessages() {
-        this->m_entryInfo->ShouldProcess(false);
-        if(!this->m_entryInfo->HasEntries())
+        if(this->m_entryInfo == 0)
             return true;
+        this->m_entryInfo->ShouldProcess(false);
+        if(!this->m_entryInfo->HasEntries()) {
+            this->ReleaseEntryQue();
+            return true;
+        }
         T **entry = this->m_entryInfo->Entries();
         int incRptSeq = this->m_entryInfo->RptSeq();
         int maxIndex = this->m_entryInfo->MaxIndex();
@@ -1644,7 +1670,7 @@ public:
             this->m_rptSeq = (*entry)->RptSeq;
             entry++;
         }
-        this->m_entryInfo->Reset();
+        this->ReleaseEntryQue();
         return true;
     }
 
@@ -1653,6 +1679,10 @@ public:
             SymbolInfo()->DecSessionsToRecvSnapshotCount();
             this->m_shouldProcessSnapshot = false;
         }
+    }
+
+    inline void CancelSnapshotMessages() {
+        this->m_rptSeq = this->m_savedRptSeq;
     }
 
     inline bool EndProcessSnapshotMessages() {

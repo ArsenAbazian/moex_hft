@@ -5,7 +5,7 @@
 #ifndef HFT_ROBOT_DECIMALTESTER_H
 #define HFT_ROBOT_DECIMALTESTER_H
 
-#include "../Types.h"
+#include "Settings.h"
 #include "Fix/FixTypes.h"
 #include <stdio.h>
 #include "../Stopwatch.h"

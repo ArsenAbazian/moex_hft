@@ -16,11 +16,12 @@ template <typename T> class TradeInfo {
     static PointerList<T>               *m_itemsPool;
 
     PointerListLite<T>      *m_trades;
-    MDEntrQueue<T>      *m_entryInfo;
+    MDEntryQueue<T>      *m_entryInfo;
 
     bool                 m_used;
     bool                 m_shouldProcessSnapshot;
     int                  m_rptSeq;
+    int                  m_savedRptSeq;
     MarketSymbolInfo<TradeInfo<T>>    *m_symbolInfo;
     SizedArray          *m_tradingSession;
     int                  m_snapshotProcessedCount;
@@ -28,10 +29,17 @@ template <typename T> class TradeInfo {
 public:
     TradeInfo();
     ~TradeInfo() {
-        delete this->m_entryInfo;
+        ReleaseEntryQue();
         delete this->m_trades;
     }
 
+    inline void ReleaseEntryQue() {
+        if(this->m_entryInfo != 0) {
+            this->m_entryInfo->Reset();
+            MDEntryQueue<T>::Pool->FreeItem(this->m_entryInfo->Pointer);
+        }
+        this->m_entryInfo = 0;
+    }
     inline void ResetSnasphotProcessed() { this->m_snapshotProcessedCount = 0; }
     inline void OnSnapshotProcessed() { this->m_snapshotProcessedCount++; }
     inline int SnapshotProcessedCount() { return this->m_snapshotProcessedCount; }
@@ -40,9 +48,12 @@ public:
     inline MarketSymbolInfo<TradeInfo<T>>* SymbolInfo() { return this->m_symbolInfo; }
     inline void SymbolInfo(MarketSymbolInfo<TradeInfo<T>>* symbolInfo) { this->m_symbolInfo = symbolInfo; }
     inline int RptSeq() { return this->m_rptSeq; }
+    inline int SavedRptSeq() { return this->m_savedRptSeq; }
     inline void RptSeq(int rptSeq) { this->m_rptSeq = rptSeq; }
 
-    inline MDEntrQueue<T>* EntriesQueue() { return this->m_entryInfo; }
+    inline bool HasEntries() { return this->m_entryInfo == 0? false: this->m_entryInfo->HasEntries(); }
+    inline void ClearEntries() { this->ReleaseEntryQue(); }
+    inline MDEntryQueue<T>* EntriesQueue() { return this->m_entryInfo; }
 
     inline PointerListLite<T>* Trades() { return this->m_trades; }
     inline bool Used() { return this->m_used; }
@@ -61,8 +72,9 @@ public:
     }
     inline void Clear() {
         Clear(this->m_trades);
-        this->m_entryInfo->Clear();
+        this->ClearEntries();
         this->m_rptSeq = 0;
+        this->m_savedRptSeq = 0;
     }
 
     inline LinkedPointer<T>* AddTrade(T *item) {
@@ -92,7 +104,13 @@ public:
         return info->RptSeq - this->m_rptSeq == 1;
     }
 
+    inline void ObtainEntriesQueue() {
+        if(this->m_entryInfo == 0)
+            this->m_entryInfo = MDEntryQueue<T>::Pool->NewItem();
+    }
+
     inline void PushMessageToQueue(T *info) {
+        this->ObtainEntriesQueue();
         this->m_entryInfo->StartRptSeq(this->m_rptSeq + 1);
         this->m_entryInfo->AddEntry(info);
     }
@@ -108,12 +126,13 @@ public:
         }
         this->m_rptSeq = info->RptSeq;
         this->ForceProcessMessage(info);
-        if(this->m_entryInfo->HasEntries())
+        if(this->HasEntries())
             return this->ProcessQueueMessages();
         return true;
     }
 
     inline void StartProcessSnapshotMessages() {
+        this->m_savedRptSeq = this->m_rptSeq;
         this->Trades()->Clear();
     }
 
@@ -122,9 +141,13 @@ public:
     }
 
     inline bool ProcessQueueMessages() {
-        this->m_entryInfo->ShouldProcess(false);
-        if(!this->m_entryInfo->HasEntries())
+        if(this->m_entryInfo == 0)
             return true;
+        this->m_entryInfo->ShouldProcess(false);
+        if(!this->m_entryInfo->HasEntries()) {
+            this->ReleaseEntryQue();
+            return true;
+        }
         T **entry = this->m_entryInfo->Entries();
         int incRptSeq = this->m_entryInfo->RptSeq();
         int maxIndex = this->m_entryInfo->MaxIndex();
@@ -141,7 +164,7 @@ public:
             this->m_rptSeq = (*entry)->RptSeq;
             entry++;
         }
-        this->m_entryInfo->Reset();
+        this->ReleaseEntryQue();
         return true;
     }
 
@@ -150,6 +173,10 @@ public:
             SymbolInfo()->DecSessionsToRecvSnapshotCount();
             this->m_shouldProcessSnapshot = false;
         }
+    }
+
+    inline void CancelSnapshotMessages() {
+        this->m_rptSeq = this->m_savedRptSeq;
     }
 
     inline bool EndProcessSnapshotMessages() {
@@ -184,13 +211,16 @@ template <typename T> PointerList<T>* TradeInfo<T>::m_itemsPool = 0;
 
 template <typename T> TradeInfo<T>::TradeInfo(){
     if(TradeInfo::m_itemsPool == 0)
-        TradeInfo::m_itemsPool = new PointerList<T>(RobotSettings::MarketDataMaxEntriesCount, false);
+        TradeInfo::m_itemsPool = new PointerList<T>(RobotSettings::Default->MarketDataMaxEntriesCount, false);
+    if(MDEntryQueue<T>::Pool == 0)
+        MDEntryQueue<T>::Pool = MDEntryQueue<T>::CreatePool();
 
-    this->m_entryInfo = new MDEntrQueue<T>();
+    this->m_entryInfo = 0;
     this->m_trades = new PointerListLite<T>(TradeInfo::m_itemsPool);
     this->m_tradingSession = new SizedArray();
     this->m_shouldProcessSnapshot = false;
     this->m_rptSeq = 0;
+    this->m_savedRptSeq = 0;
     this->m_snapshotProcessedCount = 0;
 }
 

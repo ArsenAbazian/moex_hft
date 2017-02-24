@@ -4,7 +4,7 @@
 
 #ifndef HFT_ROBOT_STATISTICSTESTER_H
 #define HFT_ROBOT_STATISTICSTESTER_H
-#include "../Types.h"
+#include "Settings.h"
 
 #ifdef TEST
 
@@ -1596,7 +1596,7 @@ public:
             throw;
         if(item->BuyQuotes()->Count() != 3) // at least one message is applied
             throw;
-        if(!item->EntriesQueue()->HasEntries()) // should have entries
+        if(!item->HasEntries()) // should have entries
             throw;
         if(item->EntriesQueue()->MaxIndex() != 2) // should be reset
             throw;
@@ -1619,7 +1619,7 @@ public:
             throw;
         if(item->BuyQuotes()->Count() != 5) // all messages applied
             throw;
-        if(item->EntriesQueue()->HasEntries()) // should have entries
+        if(item->HasEntries()) // should have entries
             throw;
         if(item->RptSeq() != 5) // last processed msg
             throw;
@@ -1677,7 +1677,7 @@ public:
             throw;
         if(item->BuyQuotes()->Count() != 2) // nothing encreased because first message skipped
             throw;
-        if(!item->EntriesQueue()->HasEntries()) // should have entries
+        if(!item->HasEntries()) // should have entries
             throw;
         if(item->EntriesQueue()->MaxIndex() != 2)
             throw;
@@ -1700,7 +1700,7 @@ public:
             throw;
         if(item->BuyQuotes()->Count() != 5) // applied two messages
             throw;
-        if(item->EntriesQueue()->HasEntries()) // should have entries
+        if(item->HasEntries()) // should have entries
             throw;
         if(item->RptSeq() != 5) // last processed msg
             throw;
@@ -2303,9 +2303,9 @@ public:
         // but connection should not be closed - because not all items were updated
         StatisticsInfo<FastGenericItemInfo> *item1 = incFond->StatisticFond()->GetItem("s1", "session1");
         StatisticsInfo<FastGenericItemInfo> *item2 = incFond->StatisticFond()->GetItem("s2", "session1");
-        if(item1->EntriesQueue()->HasEntries())
+        if(item1->HasEntries())
             throw;
-        if(!item2->EntriesQueue()->HasEntries())
+        if(!item2->HasEntries())
             throw;
 
         for(int i = 0; i < item1->BuyQuotes()->Count(); i++)
@@ -2350,9 +2350,9 @@ public:
                      30);
         if(incFond->m_statTableFond->UsedItemCount() != 2)
             throw;
-        if(incFond->m_statTableFond->Symbol(0)->Session(0)->EntriesQueue()->HasEntries())
+        if(incFond->m_statTableFond->Symbol(0)->Session(0)->HasEntries())
             throw;
-        if(incFond->m_statTableFond->Symbol(1)->Session(0)->EntriesQueue()->HasEntries())
+        if(incFond->m_statTableFond->Symbol(1)->Session(0)->HasEntries())
             throw;
         if(incFond->StatisticFond()->SymbolsToRecvSnapshotCount() != 0)
             throw;
@@ -2371,9 +2371,9 @@ public:
                      30);
         if(incFond->m_statTableFond->UsedItemCount() != 2)
             throw;
-        if(!incFond->m_statTableFond->Symbol(0)->Session(0)->EntriesQueue()->HasEntries())
+        if(!incFond->m_statTableFond->Symbol(0)->Session(0)->HasEntries())
             throw;
-        if(incFond->m_statTableFond->Symbol(1)->Session(0)->EntriesQueue()->HasEntries())
+        if(incFond->m_statTableFond->Symbol(1)->Session(0)->HasEntries())
             throw;
         if(!incFond->ShouldRestoreIncrementalMessages())
             throw;
@@ -2391,9 +2391,9 @@ public:
 
         if(incFond->m_statTableFond->UsedItemCount() != 2)
             throw;
-        if(incFond->m_statTableFond->Symbol(0)->Session(0)->EntriesQueue()->HasEntries())
+        if(incFond->m_statTableFond->Symbol(0)->Session(0)->HasEntries())
             throw;
-        if(incFond->m_statTableFond->Symbol(1)->Session(0)->EntriesQueue()->HasEntries())
+        if(incFond->m_statTableFond->Symbol(1)->Session(0)->HasEntries())
             throw;
         if(!incFond->ShouldRestoreIncrementalMessages())
             throw;
@@ -2768,7 +2768,7 @@ public:
             throw;
         if(snapFond->State() != FeedConnectionState::fcsListenSnapshot)
             throw;
-        if(!incFond->StatisticFond()->GetItem("s1", "session1")->EntriesQueue()->HasEntries())
+        if(!incFond->StatisticFond()->GetItem("s1", "session1")->HasEntries())
             throw;
         if(incFond->StatisticFond()->GetItem("s1", "session1")->RptSeq() != 4)
             throw;
@@ -2795,7 +2795,7 @@ public:
             throw;
         if(snapFond->State() != FeedConnectionState::fcsSuspend)
             throw;
-        if(incFond->StatisticFond()->GetItem("s1", "session1")->EntriesQueue()->HasEntries())
+        if(incFond->StatisticFond()->GetItem("s1", "session1")->HasEntries())
             throw;
         if(incFond->StatisticFond()->GetItem("s1", "session1")->RptSeq() != 6)
             throw;
@@ -2822,7 +2822,7 @@ public:
             throw;
         if(snapFond->State() != FeedConnectionState::fcsSuspend)
             throw;
-        if(incFond->StatisticFond()->GetItem("s1", "session1")->EntriesQueue()->HasEntries())
+        if(incFond->StatisticFond()->GetItem("s1", "session1")->HasEntries())
             throw;
         if(incFond->StatisticFond()->GetItem("s1", "session1")->RptSeq() != 6)
             throw;
@@ -2848,7 +2848,7 @@ public:
             throw;
         if(incFond->StatisticFond()->GetItem("s1", "session1")->RptSeq() != 2)
             throw;
-        if(!incFond->StatisticFond()->GetItem("s1", "session1")->EntriesQueue()->HasEntries())
+        if(!incFond->StatisticFond()->GetItem("s1", "session1")->HasEntries())
             throw;
         if(incFond->StatisticFond()->GetItem("s1", "session1")->EntriesQueue()->StartRptSeq() != 3)
             throw;
@@ -2878,7 +2878,7 @@ public:
             throw;
         if(incFond->StatisticFond()->GetItem("s1", "session1")->RptSeq() != 4)
             throw;
-        if(incFond->StatisticFond()->GetItem("s1", "session1")->EntriesQueue()->HasEntries())
+        if(incFond->StatisticFond()->GetItem("s1", "session1")->HasEntries())
             throw;
         if(incFond->StatisticFond()->QueueEntriesCount() != 0)
             throw;

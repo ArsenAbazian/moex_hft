@@ -95,7 +95,9 @@ foreach(inc_dir ${inc_dirs})
     set(include_path "${include_path} -I${inc_dir}")
 endforeach(inc_dir)
 
-add_executable(hft_robot ${sources}
+add_executable(hft_robot
+        source/src/Settings.cpp
+        ${sources}
         source/src/Stopwatch.cpp
         source/include/Stopwatch.h
         source/src/Test/FixProtocolManagerTester.cpp
@@ -136,7 +138,14 @@ add_executable(hft_robot ${sources}
         source/include/Feeds/FeedTypes.h
         source/src/MarketData/StatisticInfo.cpp
         source/include/Managers/DebugInfoManager.h
-        source/src/Managers/DebugInfoManager.cpp source/include/Feeds/Fond/FondOlr.h source/include/Feeds/Fond/FondMsr.h source/include/Feeds/Fond/FondIsf.h source/include/Feeds/Curr/CurrHr.h source/include/Test/HistoricalReplayTester.h source/include/ProgramStatistics.h source/src/ProgramStatistics.cpp)
+        source/src/Managers/DebugInfoManager.cpp
+        source/include/Feeds/Fond/FondOlr.h
+        source/include/Feeds/Fond/FondMsr.h
+        source/include/Feeds/Fond/FondIsf.h
+        source/include/Feeds/Curr/CurrHr.h
+        source/include/Test/HistoricalReplayTester.h
+        source/include/ProgramStatistics.h
+        source/src/ProgramStatistics.cpp)
 add_dependencies(hft_robot fast_generate)
 
 add_custom_command(TARGET fast_generate

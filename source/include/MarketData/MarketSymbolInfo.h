@@ -67,7 +67,7 @@ public:
     inline bool Equals(const char *symbol, int symbolLen) { return this->m_symbol->Equal(symbol, symbolLen); }
     inline void Clear() {
         T **item = this->m_items;
-        for(int i = 0; i < this->m_count; i++, item++) {
+        for(int i = 0; i < this->m_maxCount; i++, item++) {
             (*item)->Used(false);
             (*item)->Clear();
         }

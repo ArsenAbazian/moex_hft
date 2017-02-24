@@ -24,4 +24,4 @@ SocketBuffer::~SocketBuffer() {
     delete[] this->m_index;
 }
 
-SocketBufferManager* DefaultSocketBufferManager::Default = new SocketBufferManager(RobotSettings::SocketBuffersMaxCount);
+SocketBufferManager* DefaultSocketBufferManager::Default = new SocketBufferManager(RobotSettings::Default->SocketBuffersMaxCount);

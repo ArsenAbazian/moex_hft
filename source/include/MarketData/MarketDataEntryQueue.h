@@ -10,23 +10,26 @@
 
 #define MDENTRYINFO_INCREMENTAL_ENTRIES_BUFFER_LENGTH 2000
 
-template <typename T> class MDEntrQueue {
-    T           **m_incEntries;
-    int         m_incEntriesCount;
-    int         m_incEntriesMaxIndex;
-    int         m_incStartRptSeq;
-    bool        m_shouldProcess;
+template <typename T> class MDEntryQueue {
+    T                                                   **m_incEntries;
+    int                                                 m_incEntriesCount;
+    int                                                 m_incEntriesMaxIndex;
+    int                                                 m_incStartRptSeq;
+    bool                                                m_shouldProcess;
 public:
-    MDEntrQueue() {
-        this->m_incEntries = new T*[MDENTRYINFO_INCREMENTAL_ENTRIES_BUFFER_LENGTH];
-        this->m_incEntriesCount = MDENTRYINFO_INCREMENTAL_ENTRIES_BUFFER_LENGTH;
-        bzero(this->m_incEntries, sizeof(T*) * this->m_incEntriesCount);
-        this->m_incEntriesMaxIndex = -1;
-        this->m_incStartRptSeq = 0;
-        this->m_shouldProcess = false;
-    }
-    ~MDEntrQueue() {
+    static AutoAllocatePointerList<MDEntryQueue<T>>     *Pool;
+
+    AutoAllocatePointerList<MDEntryQueue<T>>            *Allocator;
+    LinkedPointer<MDEntryQueue<T>>                      *Pointer;
+    bool                                                Used;
+
+    MDEntryQueue();
+    ~MDEntryQueue() {
         delete this->m_incEntries;
+    }
+
+    inline static AutoAllocatePointerList<MDEntryQueue<T>>* CreatePool() {
+        return new AutoAllocatePointerList<MDEntryQueue<T>>(RobotSettings::Default->MDEntryQueueItemsCount, RobotSettings::Default->MDEntryQueueItemsAddCount, "Some of MDEntryQueuePool");
     }
 
     inline void StartRptSeq(int rptSeq) {
@@ -50,7 +53,8 @@ public:
     }
 
     inline void Reset() {
-        bzero(this->m_incEntries, sizeof(T*) * this->m_incEntriesCount);
+        if(this->m_incEntriesMaxIndex >= 0)
+            bzero(this->m_incEntries, sizeof(T*) * this->m_incEntriesMaxIndex);
         this->m_incEntriesMaxIndex = -1;
         this->m_incStartRptSeq = 0;
         this->m_shouldProcess = false;
@@ -77,5 +81,18 @@ public:
     inline int RptSeq() { return this->m_incStartRptSeq; }
     inline int Capacity() { return this->m_incEntriesCount; }
 };
+
+template <typename T> AutoAllocatePointerList<MDEntryQueue<T>>* MDEntryQueue<T>::Pool = 0;
+
+template <typename T> MDEntryQueue<T>::MDEntryQueue() {
+    this->Used = false;
+    this->Pointer = 0;
+    this->m_incEntries = new T *[MDENTRYINFO_INCREMENTAL_ENTRIES_BUFFER_LENGTH];
+    this->m_incEntriesCount = MDENTRYINFO_INCREMENTAL_ENTRIES_BUFFER_LENGTH;
+    bzero(this->m_incEntries, sizeof(T *) * this->m_incEntriesCount);
+    this->m_incEntriesMaxIndex = -1;
+    this->m_incStartRptSeq = 0;
+    this->m_shouldProcess = false;
+}
 
 #endif //HFT_ROBOT_MARKETDATAENTRYQUEUE_H

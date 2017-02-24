@@ -5,7 +5,7 @@
 #ifndef HFT_ROBOT_FIXTYPES_H
 #define HFT_ROBOT_FIXTYPES_H
 
-#include "Types.h"
+#include "Settings.h"
 #include "Converters/UTCTimeConverter.h"
 #include "FixProtocolMacros.h"
 

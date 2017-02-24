@@ -15,7 +15,7 @@
 #define FAST_STOPBIT_SIXSTH_BYTE		0x0000800000000000L
 #define FAST_STOPBIT_SEVENTH_BYTE		0x0080000000000000L
 
-#include "Types.h"
+#include "Settings.h"
 #include "Lib/AutoAllocatePointerList.h"
 #include "Fix/FixTypes.h"
 

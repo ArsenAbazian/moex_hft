@@ -7,9 +7,9 @@
       <sourceFolder url="file://$MODULE_DIR$/cmake/GetPkgVariable.cmake" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/cmake/FindMono.cmake" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/CMakeLists.txt" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/source/src/Types.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/src/FeedChannel.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/src/MarketInfo.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/source/src/Settings.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/src/Robot.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/src/MarketServerInfo.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/src/HftConsole.cpp" isTestSource="false" />
@@ -38,14 +38,13 @@
       <sourceFolder url="file://$MODULE_DIR$/source/include/Fix/FixMessage.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/include/Fix/FixProtocolMacros.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/include/Managers/DebugInfoManager.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/source/include/Stopwatch.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/include/Feeds/FeedTypes.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/include/Feeds/Curr/CurrHr.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/include/Feeds/Fond/FondMsr.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/include/Feeds/Fond/FondIsf.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/include/Feeds/Fond/FondOlr.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/include/Feeds/FeedConnections.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/source/include/Fast/FastTypes.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/source/include/Stopwatch.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/include/Test/StatisticsTesterFond.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/include/Test/TradeTesterCurr.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/include/Test/TestTemplateInfo.h" isTestSource="false" />
@@ -74,8 +73,7 @@
       <sourceFolder url="file://$MODULE_DIR$/source/include/MarketData/QuoteInfo.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/include/MarketData/MarketSymbolInfo.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/include/MarketData/MarketDataEntryQueue.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/source/include/FeedTypes.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/source/include/FeedConnections.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/source/include/Fast/FastTypes.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/include/ProgramStatistics.h" isTestSource="false" />
     </content>
     <orderEntry type="sourceFolder" forTests="false" />

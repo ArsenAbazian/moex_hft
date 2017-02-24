@@ -6,7 +6,7 @@
 #define HFT_ROBOT_MARKETDATATABLE_H
 
 #include "Lib/PointerList.h"
-#include "Types.h"
+#include "Settings.h"
 #include <string.h>
 
 class StringIdComparer {
