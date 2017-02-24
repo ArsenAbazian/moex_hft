@@ -227,6 +227,16 @@ public:
         RobotSettings::MarketDataMaxEntriesCount = 32 * 10;
         RobotSettings::DefaultFeedConnectionPacketCount = 1100;
 
+        TradeTesterFond ttFond;
+        ttFond.Test();
+        TradeTesterCurr ttCurr;
+        ttCurr.Test();
+
+        OrderTesterCurr otCurr;
+        otCurr.Test();
+        OrderTesterFond otFond;
+        otFond.Test();
+
         PointerListTester pt;
         pt.Test();
 
@@ -244,21 +254,6 @@ public:
 
         SymbolManagerTester ht;
         ht.Test();
-
-        TradeTesterFond ttFond;
-        ttFond.Test();
-        TradeTesterCurr ttCurr;
-        ttCurr.Test();
-
-        OrderTesterCurr otCurr;
-        otCurr.Test();
-        OrderTesterFond otFond;
-        otFond.Test();
-
-        //TestSaveIdfSymbols();
-
-        //TestLog("/home/arsen/Documents/hft_robot/hft/test/log5");
-        //TestLog("/home/arsen/Documents/hft_robot/hft/test/log6");
     }
 };
 

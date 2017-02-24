@@ -330,6 +330,15 @@ void AddFeedInfo(FeedConnection *feed, TestTemplateInfo **tmp, int templatesCoun
             }
         }
     }
+    void FillSnapRptSeq(TestTemplateInfo **msg, int count) {
+        int lastRptSeq = 0;
+        for(int i = 0; i < count; i++) {
+            if(msg[i]->m_rptSec != 0)
+                lastRptSeq = msg[i]->m_rptSec;
+            else
+                msg[i]->m_rptSec = lastRptSeq;
+        }
+    }
 
 public:
 
@@ -2277,6 +2286,7 @@ public:
         FillMsg(inc_msg, incMsgCount, inc);
         FillMsg(snap_msg, snapMsgCount, snap);
         FillRptSeq(inc_msg, incMsgCount);
+        FillSnapRptSeq(snap_msg, snapMsgCount);
 
         int inc_index = 0;
         int snap_index = 0;

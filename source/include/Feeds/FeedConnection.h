@@ -378,18 +378,9 @@ protected:
 
     inline bool ApplySnapshot_OLS_FOND() {
         this->PrepareDecodeSnapshotMessage(this->m_snapshotRouteFirst);
-
         this->m_lastSnapshotInfo->ExtractString();
         this->m_incremental->OrderFond()->ObtainSnapshotItem(this->m_lastSnapshotInfo);
-        if(this->m_incremental->OrderFond()->CheckProcessIfSessionInActualState(this->m_lastSnapshotInfo)) {
-            this->m_lastSnapshotInfo->Restore();
-            return true;
-        }
-        if(this->m_incremental->OrderFond()->CheckProcessNullSnapshot(this->m_lastSnapshotInfo)) {
-            this->m_lastSnapshotInfo->Restore();
-            return true;
-        }
-        if(!this->m_incremental->OrderFond()->ShouldProcessSnapshot(this->m_lastSnapshotInfo)) {
+        if(this->m_incremental->OrderFond()->ApplyQuickSnapshot(this->m_lastSnapshotInfo)) {
             this->m_lastSnapshotInfo->Restore();
             return true;
         }
@@ -421,35 +412,27 @@ protected:
 
         this->m_lastSnapshotInfo->ExtractString();
         this->m_incremental->OrderCurr()->ObtainSnapshotItem(this->m_lastSnapshotInfo);
-        if(this->m_incremental->OrderCurr()->CheckProcessIfSessionInActualState(this->m_lastSnapshotInfo)) {
-            this->m_lastSnapshotInfo->Restore();
-            return true;
-        }
-        if(this->m_incremental->OrderCurr()->CheckProcessNullSnapshot(this->m_lastSnapshotInfo)) {
-            this->m_lastSnapshotInfo->Restore();
-            return true;
-        }
-        if(!this->m_incremental->OrderCurr()->ShouldProcessSnapshot(this->m_lastSnapshotInfo)) {
+        if(this->m_incremental->OrderCurr()->ApplyQuickSnapshot(this->m_lastSnapshotInfo)) {
             this->m_lastSnapshotInfo->Restore();
             return true;
         }
         this->m_lastSnapshotInfo->Restore();
-        FastOLSCURRInfo *info = (FastOLSCURRInfo *) this->m_fastProtocolManager->DecodeOLSCURR();
 #ifdef COLLECT_STATISTICS
         ProgramStatistics::Current->IncCurrOlsProcessedCount();
         ProgramStatistics::Total->IncCurrOlsProcessedCount();
 #endif
+        FastOLSCURRInfo *info = (FastOLSCURRInfo *) this->m_fastProtocolManager->DecodeOLSCURR();
         this->m_incremental->OrderCurr()->StartProcessSnapshot(info);
         this->m_incremental->OrderCurr()->ProcessSnapshot(info);
         info->ReleaseUnused();
         for(int i = this->m_snapshotRouteFirst + 1; i <= this->m_snapshotLastFragment; i++) {
             if(!this->PrepareDecodeSnapshotMessage(i))
                 continue;
-            info = (FastOLSCURRInfo *) this->m_fastProtocolManager->DecodeOLSCURR();
 #ifdef COLLECT_STATISTICS
             ProgramStatistics::Current->IncCurrOlsProcessedCount();
             ProgramStatistics::Total->IncCurrOlsProcessedCount();
 #endif
+            info = (FastOLSCURRInfo *) this->m_fastProtocolManager->DecodeOLSCURR();
             this->m_incremental->OrderCurr()->ProcessSnapshot(info);
             info->ReleaseUnused();
         }
@@ -460,37 +443,29 @@ protected:
         this->PrepareDecodeSnapshotMessage(this->m_snapshotRouteFirst);
 
         this->m_lastSnapshotInfo->ExtractString();
-        this->m_incremental->TradeCurr()->ObtainSnapshotItem(this->m_lastSnapshotInfo);
-        if(this->m_incremental->TradeCurr()->CheckProcessIfSessionInActualState(this->m_lastSnapshotInfo)) {
-            this->m_lastSnapshotInfo->Restore();
-            return true;
-        }
-        if(this->m_incremental->TradeCurr()->CheckProcessNullSnapshot(this->m_lastSnapshotInfo)) {
-            this->m_lastSnapshotInfo->Restore();
-            return true;
-        }
-        if(!this->m_incremental->TradeCurr()->ShouldProcessSnapshot(this->m_lastSnapshotInfo)) {
+        this->m_incremental->TradeFond()->ObtainSnapshotItem(this->m_lastSnapshotInfo);
+        if(this->m_incremental->TradeFond()->ApplyQuickSnapshot(this->m_lastSnapshotInfo)) {
             this->m_lastSnapshotInfo->Restore();
             return true;
         }
         this->m_lastSnapshotInfo->Restore();
 
-        FastTLSFONDInfo *info = (FastTLSFONDInfo *) this->m_fastProtocolManager->DecodeTLSFOND();
 #ifdef COLLECT_STATISTICS
         ProgramStatistics::Current->IncFondTlsProcessedCount();
         ProgramStatistics::Total->IncFondTlsProcessedCount();
 #endif
+        FastTLSFONDInfo *info = (FastTLSFONDInfo *) this->m_fastProtocolManager->DecodeTLSFOND();
         this->m_incremental->TradeFond()->StartProcessSnapshot(info);
         this->m_incremental->TradeFond()->ProcessSnapshot(info);
         info->ReleaseUnused();
         for(int i = this->m_snapshotRouteFirst + 1; i <= this->m_snapshotLastFragment; i++) {
             if(!this->PrepareDecodeSnapshotMessage(i))
                 continue;
-            info = (FastTLSFONDInfo *) this->m_fastProtocolManager->DecodeTLSFOND();
 #ifdef COLLECT_STATISTICS
             ProgramStatistics::Current->IncFondTlsProcessedCount();
             ProgramStatistics::Total->IncFondTlsProcessedCount();
 #endif
+            info = (FastTLSFONDInfo *) this->m_fastProtocolManager->DecodeTLSFOND();
             this->m_incremental->TradeFond()->ProcessSnapshot(info);
             info->ReleaseUnused();
         }
@@ -502,35 +477,27 @@ protected:
 
         this->m_lastSnapshotInfo->ExtractString();
         this->m_incremental->TradeCurr()->ObtainSnapshotItem(this->m_lastSnapshotInfo);
-        if(this->m_incremental->TradeCurr()->CheckProcessIfSessionInActualState(this->m_lastSnapshotInfo)) {
-            this->m_lastSnapshotInfo->Restore();
-            return true;
-        }
-        if(this->m_incremental->TradeCurr()->CheckProcessNullSnapshot(this->m_lastSnapshotInfo)) {
-            this->m_lastSnapshotInfo->Restore();
-            return true;
-        }
-        if(!this->m_incremental->TradeCurr()->ShouldProcessSnapshot(this->m_lastSnapshotInfo)) {
+        if(this->m_incremental->TradeCurr()->ApplyQuickSnapshot(this->m_lastSnapshotInfo)) {
             this->m_lastSnapshotInfo->Restore();
             return true;
         }
         this->m_lastSnapshotInfo->Restore();
-        FastTLSCURRInfo *info = (FastTLSCURRInfo *) this->m_fastProtocolManager->DecodeTLSCURR();
 #ifdef COLLECT_STATISTICS
         ProgramStatistics::Current->IncCurrTlsProcessedCount();
         ProgramStatistics::Total->IncCurrTlsProcessedCount();
 #endif
+        FastTLSCURRInfo *info = (FastTLSCURRInfo *) this->m_fastProtocolManager->DecodeTLSCURR();
         this->m_incremental->TradeCurr()->StartProcessSnapshot(info);
         this->m_incremental->TradeCurr()->ProcessSnapshot(info);
         info->ReleaseUnused();
         for(int i = this->m_snapshotRouteFirst + 1; i <= this->m_snapshotLastFragment; i++) {
             if(!this->PrepareDecodeSnapshotMessage(i))
                 continue;
-            info = (FastTLSCURRInfo *) this->m_fastProtocolManager->DecodeTLSCURR();
 #ifdef COLLECT_STATISTICS
             ProgramStatistics::Current->IncCurrTlsProcessedCount();
             ProgramStatistics::Total->IncCurrTlsProcessedCount();
 #endif
+            info = (FastTLSCURRInfo *) this->m_fastProtocolManager->DecodeTLSCURR();
             this->m_incremental->TradeCurr()->ProcessSnapshot(info);
             info->ReleaseUnused();
         }
@@ -543,36 +510,28 @@ protected:
 
         this->m_lastSnapshotInfo->ExtractString();
         this->m_incremental->StatisticFond()->ObtainSnapshotItem(this->m_lastSnapshotInfo);
-        if(this->m_incremental->StatisticFond()->CheckProcessIfSessionInActualState(this->m_lastSnapshotInfo)) {
-            this->m_lastSnapshotInfo->Restore();
-            return true;
-        }
-        if(this->m_incremental->StatisticFond()->CheckProcessNullSnapshot(this->m_lastSnapshotInfo)) {
-            this->m_lastSnapshotInfo->Restore();
-            return true;
-        }
-        if(!this->m_incremental->StatisticFond()->ShouldProcessSnapshot(this->m_lastSnapshotInfo)) {
+        if(this->m_incremental->StatisticFond()->ApplyQuickSnapshot(this->m_lastSnapshotInfo)) {
             this->m_lastSnapshotInfo->Restore();
             return true;
         }
         this->m_lastSnapshotInfo->Restore();
-
-        FastGenericInfo *info = (FastGenericInfo *) this->m_fastProtocolManager->DecodeGeneric();
 #ifdef COLLECT_STATISTICS
         ProgramStatistics::Current->IncFondMssProcessedCount();
         ProgramStatistics::Total->IncFondMssProcessedCount();
 #endif
+
+        FastGenericInfo *info = (FastGenericInfo *) this->m_fastProtocolManager->DecodeGeneric();
         this->m_incremental->StatisticFond()->StartProcessSnapshot(info);
         this->m_incremental->StatisticFond()->ProcessSnapshot(info);
         info->ReleaseUnused();
         for(int i = this->m_snapshotRouteFirst + 1; i <= this->m_snapshotLastFragment; i++) {
             if(!this->PrepareDecodeSnapshotMessage(i))
                 continue;
-            info = (FastGenericInfo *) this->m_fastProtocolManager->DecodeGeneric();
 #ifdef COLLECT_STATISTICS
             ProgramStatistics::Current->IncFondMssProcessedCount();
             ProgramStatistics::Total->IncFondMssProcessedCount();
 #endif
+            info = (FastGenericInfo *) this->m_fastProtocolManager->DecodeGeneric();
             this->m_incremental->StatisticFond()->ProcessSnapshot(info);
             info->ReleaseUnused();
         }
@@ -584,35 +543,27 @@ protected:
 
         this->m_lastSnapshotInfo->ExtractString();
         this->m_incremental->StatisticCurr()->ObtainSnapshotItem(this->m_lastSnapshotInfo);
-        if(this->m_incremental->StatisticCurr()->CheckProcessIfSessionInActualState(this->m_lastSnapshotInfo)) {
-            this->m_lastSnapshotInfo->Restore();
-            return true;
-        }
-        if(this->m_incremental->StatisticCurr()->CheckProcessNullSnapshot(this->m_lastSnapshotInfo)) {
-            this->m_lastSnapshotInfo->Restore();
-            return true;
-        }
-        if(!this->m_incremental->StatisticCurr()->ShouldProcessSnapshot(this->m_lastSnapshotInfo)) {
+        if(this->m_incremental->StatisticCurr()->ApplyQuickSnapshot(this->m_lastSnapshotInfo)) {
             this->m_lastSnapshotInfo->Restore();
             return true;
         }
         this->m_lastSnapshotInfo->Restore();
-        FastGenericInfo *info = (FastGenericInfo *) this->m_fastProtocolManager->DecodeGeneric();
 #ifdef COLLECT_STATISTICS
         ProgramStatistics::Current->IncCurrMssProcessedCount();
         ProgramStatistics::Total->IncCurrMssProcessedCount();
 #endif
+        FastGenericInfo *info = (FastGenericInfo *) this->m_fastProtocolManager->DecodeGeneric();
         this->m_incremental->StatisticCurr()->StartProcessSnapshot(info);
         this->m_incremental->StatisticCurr()->ProcessSnapshot(info);
         info->ReleaseUnused();
         for(int i = this->m_snapshotRouteFirst + 1; i <= this->m_snapshotLastFragment; i++) {
             if(!this->PrepareDecodeSnapshotMessage(i))
                 continue;
-            info = (FastGenericInfo *) this->m_fastProtocolManager->DecodeGeneric();
 #ifdef COLLECT_STATISTICS
             ProgramStatistics::Current->IncCurrMssProcessedCount();
             ProgramStatistics::Total->IncCurrMssProcessedCount();
 #endif
+            info = (FastGenericInfo *) this->m_fastProtocolManager->DecodeGeneric();
             this->m_incremental->StatisticCurr()->ProcessSnapshot(info);
             info->ReleaseUnused();
         }

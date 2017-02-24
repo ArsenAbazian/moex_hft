@@ -141,6 +141,16 @@ public:
         return false;
     }
 
+    inline bool ApplyQuickSnapshot(FastSnapshotInfo *info) {
+        if(this->CheckProcessIfSessionInActualState(info))
+            return true;
+        if(this->CheckProcessNullSnapshot(info))
+            return true;
+        if(!this->ShouldProcessSnapshot(info))
+            return true;
+        return false;
+    }
+
     inline bool ShouldProcessSnapshot(FastSnapshotInfo *info) {
         if(!this->m_snapshotEntries->HasEntries())
             return this->m_snapshotItem->RptSeq() < info->RptSeq;
