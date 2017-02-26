@@ -8,7 +8,7 @@
 #include "../Lib/StringIdComparer.h"
 #include "Fast/FastTypes.h"
 #include "../Lib/PointerList.h"
-#include "MarketDataEntryQueue.h"
+#include "MDEntryQueue.h"
 
 template <typename T> class MarketSymbolInfo;
 
@@ -16,7 +16,7 @@ template <typename T> class TradeInfo {
     static PointerList<T>               *m_itemsPool;
 
     PointerListLite<T>      *m_trades;
-    MDEntryQueue<T>      *m_entryInfo;
+    MDEntryQueue      *m_entryInfo;
 
     bool                 m_used;
     bool                 m_shouldProcessSnapshot;
@@ -36,7 +36,7 @@ public:
     inline void ReleaseEntryQue() {
         if(this->m_entryInfo != 0) {
             this->m_entryInfo->Reset();
-            MDEntryQueue<T>::Pool->FreeItem(this->m_entryInfo->Pointer);
+            MDEntryQueue::Pool->FreeItem(this->m_entryInfo->Pointer);
         }
         this->m_entryInfo = 0;
     }
@@ -53,7 +53,7 @@ public:
 
     inline bool HasEntries() { return this->m_entryInfo == 0? false: this->m_entryInfo->HasEntries(); }
     inline void ClearEntries() { this->ReleaseEntryQue(); }
-    inline MDEntryQueue<T>* EntriesQueue() { return this->m_entryInfo; }
+    inline MDEntryQueue* EntriesQueue() { return this->m_entryInfo; }
 
     inline PointerListLite<T>* Trades() { return this->m_trades; }
     inline bool Used() { return this->m_used; }
@@ -105,14 +105,19 @@ public:
     }
 
     inline void ObtainEntriesQueue() {
-        if(this->m_entryInfo == 0)
-            this->m_entryInfo = MDEntryQueue<T>::Pool->NewItem();
+        if(this->m_entryInfo == 0) {
+            this->m_entryInfo = MDEntryQueue::Pool->NewItem();
+            //TODO remove debug
+            if(!this->m_entryInfo->IsCleared())
+                throw;
+            this->m_entryInfo->Owner(this);
+        }
     }
 
     inline void PushMessageToQueue(T *info) {
         this->ObtainEntriesQueue();
         this->m_entryInfo->StartRptSeq(this->m_rptSeq + 1);
-        this->m_entryInfo->AddEntry(info);
+        this->m_entryInfo->AddEntry(info, info->RptSeq);
     }
 
     inline void ForceProcessMessage(T *info) {
@@ -148,7 +153,7 @@ public:
             this->ReleaseEntryQue();
             return true;
         }
-        T **entry = this->m_entryInfo->Entries();
+        T **entry = (T**)this->m_entryInfo->Entries();
         int incRptSeq = this->m_entryInfo->RptSeq();
         int maxIndex = this->m_entryInfo->MaxIndex();
         if(this->m_rptSeq + 1 < incRptSeq)
@@ -172,6 +177,13 @@ public:
         if(this->m_shouldProcessSnapshot) {
             SymbolInfo()->DecSessionsToRecvSnapshotCount();
             this->m_shouldProcessSnapshot = false;
+        }
+    }
+
+    inline void IncSessionsToRecvSnapshotCount() {
+        if(!this->m_shouldProcessSnapshot) {
+            SymbolInfo()->IncSessionsToRecvSnapshotCount();
+            this->m_shouldProcessSnapshot = true;
         }
     }
 
@@ -212,8 +224,6 @@ template <typename T> PointerList<T>* TradeInfo<T>::m_itemsPool = 0;
 template <typename T> TradeInfo<T>::TradeInfo(){
     if(TradeInfo::m_itemsPool == 0)
         TradeInfo::m_itemsPool = new PointerList<T>(RobotSettings::Default->MarketDataMaxEntriesCount, false);
-    if(MDEntryQueue<T>::Pool == 0)
-        MDEntryQueue<T>::Pool = MDEntryQueue<T>::CreatePool();
 
     this->m_entryInfo = 0;
     this->m_trades = new PointerListLite<T>(TradeInfo::m_itemsPool);

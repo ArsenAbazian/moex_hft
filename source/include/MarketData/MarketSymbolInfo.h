@@ -95,6 +95,7 @@ public:
     inline int SessionsToRecvSnapshotCount() { return this->m_sessionsToRecvSnapshot; }
     inline bool AllSessionsRecvSnapshot() { return this->m_sessionsToRecvSnapshot == 0; }
     inline void DecSessionsToRecvSnapshotCount() { this->m_sessionsToRecvSnapshot--; }
+    inline void IncSessionsToRecvSnapshotCount() { this->m_sessionsToRecvSnapshot++; }
 };
 
 #endif //HFT_ROBOT_MARKETSYMBOLINFO_H

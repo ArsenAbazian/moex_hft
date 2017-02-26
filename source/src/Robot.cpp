@@ -50,50 +50,84 @@ bool Robot::AddDefaultTestChannels() {
 	if(this->AllowCurrMarket()) {
 		FeedChannel *curr = new FeedChannel("CURR", "Currency Exchange Market");
 
-		FeedConnection *msr_curr = new FeedConnection_CURR_MSR("MSR", "Statisctics Incremental", 'I', FeedConnectionProtocol::UDP_IP, "10.50.129.200", "239.192.112.7", 9027, "10.50.129.200", "239.192.112.135", 9227);
-		FeedConnection *mss_curr = new FeedConnection_CURR_MSS("MSS", "Statisctics Snapshot", 'S', FeedConnectionProtocol::UDP_IP, "10.50.129.200", "239.192.112.8", 9028, "10.50.129.200", "239.192.112.136", 9228);
-		FeedConnection *olr_curr = new FeedConnection_CURR_OLR("OLR", "Orders Incremental", 'I', FeedConnectionProtocol::UDP_IP, "10.50.129.200", "239.192.112.1", 9021, "10.50.129.200", "239.192.112.129", 9221);
-		FeedConnection *ols_curr = new FeedConnection_CURR_OLS("OLS", "Orders Snapshot", 'S', FeedConnectionProtocol::UDP_IP, "10.50.129.200", "239.192.112.2", 9022, "10.50.129.200", "239.192.112.130", 9222);
-		FeedConnection *tlr_curr = new FeedConnection_CURR_TLR("TLR", "Trades Incremental", 'I', FeedConnectionProtocol::UDP_IP, "10.50.129.200", "239.192.112.5", 9025, "10.50.129.200", "239.192.112.133", 9225);
-		FeedConnection *tls_curr = new FeedConnection_CURR_TLS("TLS", "Trades Snapshot", 'S', FeedConnectionProtocol::UDP_IP, "10.50.129.200", "239.192.112.6", 9026, "10.50.129.200", "239.192.112.134", 9226);
-		FeedConnection *idf_curr = new FeedConnection_CURR_IDF("IDF", "Instrument Replay", 'N', FeedConnectionProtocol::UDP_IP, "10.50.129.200", "239.192.112.9", 9029, "10.50.129.200", "239.192.112.137", 9229);
-		FeedConnection *isf_curr = new FeedConnection_CURR_ISF("ISF", "Instrument Status", 'N', FeedConnectionProtocol::UDP_IP, "10.50.129.200", "239.192.112.10", 9030, "10.50.129.200", "239.192.112.138", 9230);
-		FeedConnection *h_curr = new FeedConnection_CURR_H("H", "Historical Replay", 'H', FeedConnectionProtocol::TCP_IP, "1.1.7.200", 20000);
-
-		curr->SetConnection(msr_curr);
-		curr->SetConnection(mss_curr);
-		curr->SetConnection(olr_curr);
-		curr->SetConnection(ols_curr);
-		curr->SetConnection(tlr_curr);
-		curr->SetConnection(tls_curr);
-		curr->SetConnection(idf_curr);
-		curr->SetConnection(isf_curr);
-		curr->SetConnection(h_curr);
+		if(this->AllowFeed("MSR")) {
+			FeedConnection *msr_curr = new FeedConnection_CURR_MSR("MSR", "Statisctics Incremental", 'I', FeedConnectionProtocol::UDP_IP, "10.50.129.200", "239.192.112.7", 9027, "10.50.129.200", "239.192.112.135", 9227);
+			curr->SetConnection(msr_curr);
+		}
+		if(this->AllowFeed("MSS")) {
+			FeedConnection *mss_curr = new FeedConnection_CURR_MSS("MSS", "Statisctics Snapshot", 'S', FeedConnectionProtocol::UDP_IP, "10.50.129.200", "239.192.112.8", 9028, "10.50.129.200", "239.192.112.136", 9228);
+			curr->SetConnection(mss_curr);
+		}
+		if(this->AllowFeed("OLR")) {
+			FeedConnection *olr_curr = new FeedConnection_CURR_OLR("OLR", "Orders Incremental", 'I', FeedConnectionProtocol::UDP_IP, "10.50.129.200", "239.192.112.1", 9021, "10.50.129.200", "239.192.112.129", 9221);
+			curr->SetConnection(olr_curr);
+		}
+		if(this->AllowFeed("OLS")) {
+			FeedConnection *ols_curr = new FeedConnection_CURR_OLS("OLS", "Orders Snapshot", 'S', FeedConnectionProtocol::UDP_IP, "10.50.129.200", "239.192.112.2", 9022, "10.50.129.200", "239.192.112.130", 9222);
+			curr->SetConnection(ols_curr);
+		}
+		if(this->AllowFeed("TLR")) {
+			FeedConnection *tlr_curr = new FeedConnection_CURR_TLR("TLR", "Trades Incremental", 'I', FeedConnectionProtocol::UDP_IP, "10.50.129.200", "239.192.112.5", 9025, "10.50.129.200", "239.192.112.133", 9225);
+			curr->SetConnection(tlr_curr);
+		}
+		if(this->AllowFeed("TLS")) {
+			FeedConnection *tls_curr = new FeedConnection_CURR_TLS("TLS", "Trades Snapshot", 'S', FeedConnectionProtocol::UDP_IP, "10.50.129.200", "239.192.112.6", 9026, "10.50.129.200", "239.192.112.134", 9226);
+			curr->SetConnection(tls_curr);
+		}
+		if(this->AllowFeed("IDF")) {
+			FeedConnection *idf_curr = new FeedConnection_CURR_IDF("IDF", "Instrument Replay", 'N', FeedConnectionProtocol::UDP_IP, "10.50.129.200", "239.192.112.9", 9029, "10.50.129.200", "239.192.112.137", 9229);
+			curr->SetConnection(idf_curr);
+		}
+		if(this->AllowFeed("ISF")) {
+			FeedConnection *isf_curr = new FeedConnection_CURR_ISF("ISF", "Instrument Status", 'N', FeedConnectionProtocol::UDP_IP, "10.50.129.200", "239.192.112.10", 9030, "10.50.129.200", "239.192.112.138", 9230);
+			curr->SetConnection(isf_curr);
+		}
+		if(this->AllowFeed("H")) {
+			FeedConnection *h_curr = new FeedConnection_CURR_H("H", "Historical Replay", 'H', FeedConnectionProtocol::TCP_IP, "1.1.7.200", 20000);
+			curr->SetConnection(h_curr);
+		}
 
 		this->AddChannel(curr);
 	}
 	if(this->AllowFondMarket()) {
 		FeedChannel *fond = new FeedChannel("FOND", "Stock Exchange Market");
 
-		FeedConnection *msr_fond = new FeedConnection_FOND_MSR("MSR", "Statisctics Incremental", 'I', FeedConnectionProtocol::UDP_IP, "10.50.129.200", "239.192.113.7", 9117, "10.50.129.200", "239.192.113.135", 9317);
-		FeedConnection *mss_fond = new FeedConnection_FOND_MSS("MSS", "Statisctics Snapshot", 'S', FeedConnectionProtocol::UDP_IP, "10.50.129.200", "239.192.113.8", 9118, "10.50.129.200", "239.192.113.136", 9318);
-		FeedConnection *olr_fond = new FeedConnection_FOND_OLR("OLR", "Orders Incremental", 'I', FeedConnectionProtocol::UDP_IP, "10.50.129.200", "239.192.113.1", 9111, "10.50.129.200", "239.192.113.129", 9311);
-		FeedConnection *ols_fond = new FeedConnection_FOND_OLS("OLS", "Orders Snapshot", 'S', FeedConnectionProtocol::UDP_IP, "10.50.129.200", "239.192.113.2", 9112, "10.50.129.200", "239.192.113.130", 9312);
-		FeedConnection *tlr_fond = new FeedConnection_FOND_TLR("TLR", "Trades Incremental", 'I', FeedConnectionProtocol::UDP_IP, "10.50.129.200", "239.192.113.5", 9115, "10.50.129.200", "239.192.113.133", 9315);
-		FeedConnection *tls_fond = new FeedConnection_FOND_TLS("TLS", "Trades Snapshot", 'S', FeedConnectionProtocol::UDP_IP, "10.50.129.200", "239.192.113.6", 9116, "10.50.129.200", "239.192.113.134", 9316);
-		FeedConnection *idf_fond = new FeedConnection_FOND_IDF("IDF", "Instrument Replay", 'N', FeedConnectionProtocol::UDP_IP, "10.50.129.200", "239.192.113.9", 9119, "10.50.129.200", "239.192.113.137", 9319);
-		FeedConnection *isf_fond = new FeedConnection_FOND_ISF("ISF", "Instrument Status", 'N', FeedConnectionProtocol::UDP_IP, "10.50.129.200", "239.192.113.10", 9120, "10.50.129.200", "239.192.113.138", 9320);
-		FeedConnection *h_fond = new FeedConnection_FOND_H("H", "Historical Replay", 'H', FeedConnectionProtocol::TCP_IP, "1.1.7.200", 10000);
-
-		fond->SetConnection(msr_fond);
-		fond->SetConnection(mss_fond);
-		fond->SetConnection(olr_fond);
-		fond->SetConnection(ols_fond);
-		fond->SetConnection(tlr_fond);
-		fond->SetConnection(tls_fond);
-		fond->SetConnection(idf_fond);
-		fond->SetConnection(isf_fond);
-		fond->SetConnection(h_fond);
+		if(this->AllowFeed("MSR")) {
+			FeedConnection *msr_fond = new FeedConnection_FOND_MSR("MSR", "Statisctics Incremental", 'I', FeedConnectionProtocol::UDP_IP, "10.50.129.200", "239.192.113.7", 9117, "10.50.129.200", "239.192.113.135", 9317);
+			fond->SetConnection(msr_fond);
+		}
+		if(this->AllowFeed("MSS")) {
+			FeedConnection *mss_fond = new FeedConnection_FOND_MSS("MSS", "Statisctics Snapshot", 'S', FeedConnectionProtocol::UDP_IP, "10.50.129.200", "239.192.113.8", 9118, "10.50.129.200", "239.192.113.136", 9318);
+			fond->SetConnection(mss_fond);
+		}
+		if(this->AllowFeed("OLR")) {
+			FeedConnection *olr_fond = new FeedConnection_FOND_OLR("OLR", "Orders Incremental", 'I', FeedConnectionProtocol::UDP_IP, "10.50.129.200", "239.192.113.1", 9111, "10.50.129.200", "239.192.113.129", 9311);
+			fond->SetConnection(olr_fond);
+		}
+		if(this->AllowFeed("OLS")) {
+			FeedConnection *ols_fond = new FeedConnection_FOND_OLS("OLS", "Orders Snapshot", 'S', FeedConnectionProtocol::UDP_IP, "10.50.129.200", "239.192.113.2", 9112, "10.50.129.200", "239.192.113.130", 9312);
+			fond->SetConnection(ols_fond);
+		}
+		if(this->AllowFeed("TLR")) {
+			FeedConnection *tlr_fond = new FeedConnection_FOND_TLR("TLR", "Trades Incremental", 'I', FeedConnectionProtocol::UDP_IP, "10.50.129.200", "239.192.113.5", 9115, "10.50.129.200", "239.192.113.133", 9315);
+			fond->SetConnection(tlr_fond);
+		}
+		if(this->AllowFeed("TLS")) {
+			FeedConnection *tls_fond = new FeedConnection_FOND_TLS("TLS", "Trades Snapshot", 'S', FeedConnectionProtocol::UDP_IP, "10.50.129.200", "239.192.113.6", 9116, "10.50.129.200", "239.192.113.134", 9316);
+			fond->SetConnection(tls_fond);
+		}
+		if(this->AllowFeed("IDF")) {
+			FeedConnection *idf_fond = new FeedConnection_FOND_IDF("IDF", "Instrument Replay", 'N', FeedConnectionProtocol::UDP_IP, "10.50.129.200", "239.192.113.9", 9119, "10.50.129.200", "239.192.113.137", 9319);
+			fond->SetConnection(idf_fond);
+		}
+		if(this->AllowFeed("ISF")) {
+			FeedConnection *isf_fond = new FeedConnection_FOND_ISF("ISF", "Instrument Status", 'N', FeedConnectionProtocol::UDP_IP, "10.50.129.200", "239.192.113.10", 9120, "10.50.129.200", "239.192.113.138", 9320);
+			fond->SetConnection(isf_fond);
+		}
+		if(this->AllowFeed("H")) {
+			FeedConnection *h_fond = new FeedConnection_FOND_H("H", "Historical Replay", 'H', FeedConnectionProtocol::TCP_IP, "1.1.7.200", 10000);
+			fond->SetConnection(h_fond);
+		}
 
 		this->AddChannel(fond);
 	}
@@ -134,39 +168,36 @@ bool Robot::Run() {
 	return true;
 }
 
-bool Robot::CollectSecurityDefinitions() {
+bool Robot::CollectSecurityDefinitions_FondOnly() {
     Stopwatch *w = new Stopwatch();
     w->Start();
     unsigned int cycleCount = 0;
 
     DefaultLogManager::Default->StartLog(LogMessageCode::lmcRobot_CollectSecurityDefinitions);
+
     // collect data first
     while(true) {
         if(!WinSockManager::UpdateManagersPollStatus())
             break;
-        if(!this->m_currMarket->FeedChannel()->CollectSecurityDefinitions()) {
+
+        if (!this->m_fondMarket->FeedChannel()->CollectSecurityDefinitions()) {
             DefaultLogManager::Default->EndLog(false);
             return false;
         }
-//        if (!this->m_fondMarket->FeedChannel()->CollectSecurityDefinitions()) {
-//            DefaultLogManager::Default->EndLog(false);
-//            return false;
-//        }
-
-        if(this->m_currMarket->FeedChannel()->InstrumentDefinition()->IsIdfDataCollected())
-            this->m_currMarket->FeedChannel()->InstrumentDefinition()->Stop();
-//        if(this->m_fondMarket->FeedChannel()->InstrumentDefinition()->IsIdfDataCollected())
-//            this->m_fondMarket->FeedChannel()->InstrumentDefinition()->Stop();
-
-        if(this->m_currMarket->FeedChannel()->InstrumentDefinition()->IsIdfDataCollected() //&&
-           /*this->m_fondMarket->FeedChannel()->InstrumentDefinition()->IsIdfDataCollected() */) {
+        if(this->m_fondMarket->FeedChannel()->Idf()->IsIdfDataCollected()) {
+            this->m_fondMarket->FeedChannel()->Idf()->Stop();
             break;
         }
+
         if(w->ElapsedSeconds() > 3) {
             w->Reset();
 
             double nanosecPerCycle = 3.0 * 1000.0 * 1000.0 * 1000.0 / cycleCount;
             printf("CycleCount for 3 sec = %d. %g nanosec per cycle\n", cycleCount, nanosecPerCycle);
+
+            printf("fond idf socket buffer usage = %g item usage = %g\n",
+                   this->m_fondMarket->FeedChannel()->Idf()->RecvBuffer()->CalcMemoryUsagePercentage(),
+                   this->m_fondMarket->FeedChannel()->Idf()->RecvBuffer()->CalcItemsUsagePercentage());
 
             printf("3 sec. Changes------------------------\n");
             ProgramStatistics::Current->Print();
@@ -184,17 +215,215 @@ bool Robot::CollectSecurityDefinitions() {
 
     DefaultLogManager::Default->StartLog(LogMessageCode::lmcRobot_GenerateSecurityDefinitions);
 
-    //this->m_fondMarket->FeedChannel()->InstrumentDefinition()->GenerateSecurityDefinitions();
-    this->m_currMarket->FeedChannel()->InstrumentDefinition()->GenerateSecurityDefinitions();
+    this->m_fondMarket->FeedChannel()->Idf()->GenerateSecurityDefinitions();
 
-//    if(!this->m_fondMarket->FeedChannel()->OnAfterGenerateSecurityDefinitions()) {
-//        DefaultLogManager::Default->EndLog(false);
-//        return false;
-//    }
+    if(!this->m_fondMarket->FeedChannel()->OnAfterGenerateSecurityDefinitions()) {
+        DefaultLogManager::Default->EndLog(false);
+        return false;
+    }
+
+    return true;
+}
+
+bool Robot::CollectSecurityDefinitions_CurrOnly() {
+    Stopwatch *w = new Stopwatch();
+    w->Start();
+    unsigned int cycleCount = 0;
+
+    DefaultLogManager::Default->StartLog(LogMessageCode::lmcRobot_CollectSecurityDefinitions);
+
+
+    // collect data first
+    while(true) {
+        if (!WinSockManager::UpdateManagersPollStatus())
+            break;
+        if (!this->m_currMarket->FeedChannel()->CollectSecurityDefinitions()) {
+            DefaultLogManager::Default->EndLog(false);
+            return false;
+        }
+        if (this->m_currMarket->FeedChannel()->Idf()->IsIdfDataCollected()) {
+            this->m_currMarket->FeedChannel()->Idf()->Stop();
+            break;
+        }
+
+        if (w->ElapsedSeconds() > 3) {
+            w->Reset();
+
+            double nanosecPerCycle = 3.0 * 1000.0 * 1000.0 * 1000.0 / cycleCount;
+            printf("CycleCount for 3 sec = %d. %g nanosec per cycle\n", cycleCount, nanosecPerCycle);
+
+            printf("curr idf socket buffer usage = %g item usage = %g\n",
+                   this->m_currMarket->FeedChannel()->Idf()->RecvBuffer()->CalcMemoryUsagePercentage(),
+                   this->m_currMarket->FeedChannel()->Idf()->RecvBuffer()->CalcItemsUsagePercentage());
+
+            printf("3 sec. Changes------------------------\n");
+            ProgramStatistics::Current->Print();
+            printf("Total---------------------------------\n");
+            ProgramStatistics::Total->Print();
+            printf("--------------------------------------\n");
+
+            cycleCount = 0;
+            ProgramStatistics::Current->Clear();
+            ProgramStatistics::Total->ResetFlags();
+        }
+        cycleCount++;
+    }
+    DefaultLogManager::Default->EndLog(true);
+
+    DefaultLogManager::Default->StartLog(LogMessageCode::lmcRobot_GenerateSecurityDefinitions);
+
+    this->m_currMarket->FeedChannel()->Idf()->GenerateSecurityDefinitions();
+
     if(!this->m_currMarket->FeedChannel()->OnAfterGenerateSecurityDefinitions()) {
         DefaultLogManager::Default->EndLog(false);
         return false;
     }
+    return true;
+}
+
+bool Robot::CollectSecurityDefinitions() {
+    Stopwatch *w = new Stopwatch();
+    w->Start();
+    unsigned int cycleCount = 0;
+
+    DefaultLogManager::Default->StartLog(LogMessageCode::lmcRobot_CollectSecurityDefinitions);
+
+    bool collectedFond = false;
+    bool collectedCurr = false;
+
+    // collect data first
+    while(true) {
+        if(!WinSockManager::UpdateManagersPollStatus())
+            break;
+        if(!collectedCurr) {
+            if (!this->m_currMarket->FeedChannel()->CollectSecurityDefinitions()) {
+                DefaultLogManager::Default->EndLog(false);
+                return false;
+            }
+            if(this->m_currMarket->FeedChannel()->Idf()->IsIdfDataCollected()) {
+                this->m_currMarket->FeedChannel()->Idf()->Stop();
+                collectedCurr = true;
+            }
+        }
+        if(!collectedFond) {
+            if (!this->m_fondMarket->FeedChannel()->CollectSecurityDefinitions()) {
+                DefaultLogManager::Default->EndLog(false);
+                return false;
+            }
+            if(this->m_fondMarket->FeedChannel()->Idf()->IsIdfDataCollected()) {
+                this->m_fondMarket->FeedChannel()->Idf()->Stop();
+                collectedFond = true;
+            }
+        }
+
+        if(collectedFond && collectedCurr)
+            break;
+
+        if(w->ElapsedSeconds() > 3) {
+            w->Reset();
+
+            double nanosecPerCycle = 3.0 * 1000.0 * 1000.0 * 1000.0 / cycleCount;
+            printf("CycleCount for 3 sec = %d. %g nanosec per cycle\n", cycleCount, nanosecPerCycle);
+
+            printf("fond idf socket buffer usage = %g item usage = %g\n",
+                       this->m_fondMarket->FeedChannel()->Idf()->RecvBuffer()->CalcMemoryUsagePercentage(),
+                       this->m_fondMarket->FeedChannel()->Idf()->RecvBuffer()->CalcItemsUsagePercentage());
+
+            printf("curr idf socket buffer usage = %g item usage = %g\n",
+                       this->m_currMarket->FeedChannel()->Idf()->RecvBuffer()->CalcMemoryUsagePercentage(),
+                       this->m_currMarket->FeedChannel()->Idf()->RecvBuffer()->CalcItemsUsagePercentage());
+
+            printf("3 sec. Changes------------------------\n");
+            ProgramStatistics::Current->Print();
+            printf("Total---------------------------------\n");
+            ProgramStatistics::Total->Print();
+            printf("--------------------------------------\n");
+
+            cycleCount = 0;
+            ProgramStatistics::Current->Clear();
+            ProgramStatistics::Total->ResetFlags();
+        }
+        cycleCount++;
+    }
+    DefaultLogManager::Default->EndLog(true);
+
+    DefaultLogManager::Default->StartLog(LogMessageCode::lmcRobot_GenerateSecurityDefinitions);
+
+    this->m_fondMarket->FeedChannel()->Idf()->GenerateSecurityDefinitions();
+    this->m_currMarket->FeedChannel()->Idf()->GenerateSecurityDefinitions();
+
+    if(!this->m_fondMarket->FeedChannel()->OnAfterGenerateSecurityDefinitions()) {
+        DefaultLogManager::Default->EndLog(false);
+        return false;
+    }
+    if(!this->m_currMarket->FeedChannel()->OnAfterGenerateSecurityDefinitions()) {
+        DefaultLogManager::Default->EndLog(false);
+        return false;
+    }
+    return true;
+}
+
+bool Robot::MainLoop_FondOnly() {
+    Stopwatch *w = new Stopwatch();
+    unsigned int cycleCount = 0;
+
+    w->Start();
+    while(true) {
+        if(!WinSockManager::UpdateManagersPollStatus())
+            break;
+        if (!this->m_fondMarket->DoWorkAtom()) {
+            DefaultLogManager::Default->EndLog(false);
+            return false;
+        }
+        if(!this->DoWorkAtom()) {
+            DefaultLogManager::Default->EndLog(false);
+            return false;
+        }
+        if(!this->Working())
+            break;
+
+        if(w->ElapsedSeconds() > 3) {
+            this->PrintStatistics(cycleCount, 3);
+
+            w->Reset();
+            cycleCount = 0;
+        }
+        cycleCount++;
+    }
+
+    DefaultLogManager::Default->EndLog(true);
+    return true;
+}
+
+bool Robot::MainLoop_CurrOnly() {
+    Stopwatch *w = new Stopwatch();
+    unsigned int cycleCount = 0;
+
+    w->Start();
+    while(true) {
+        if(!WinSockManager::UpdateManagersPollStatus())
+            break;
+        if(!this->m_currMarket->DoWorkAtom()) {
+            DefaultLogManager::Default->EndLog(false);
+            return false;
+        }
+        if(!this->DoWorkAtom()) {
+            DefaultLogManager::Default->EndLog(false);
+            return false;
+        }
+        if(!this->Working())
+            break;
+
+        if(w->ElapsedSeconds() > 3) {
+            this->PrintStatistics(cycleCount, 3);
+
+            w->Reset();
+            cycleCount = 0;
+        }
+        cycleCount++;
+    }
+
+    DefaultLogManager::Default->EndLog(true);
     return true;
 }
 
@@ -210,110 +439,22 @@ bool Robot::MainLoop() {
             DefaultLogManager::Default->EndLog(false);
             return false;
         }
-//        if (!this->m_fondMarket->DoWorkAtom()) {
-//            DefaultLogManager::Default->EndLog(false);
-//            return false;
-//        }
+        if(!this->m_fondMarket->DoWorkAtom()) {
+            DefaultLogManager::Default->EndLog(false);
+            return false;
+        }
         if(!this->DoWorkAtom()) {
             DefaultLogManager::Default->EndLog(false);
             return false;
         }
         if(!this->Working())
             break;
+
         if(w->ElapsedSeconds() > 3) {
-            double nanosecPerCycle = 3.0 * 1000.0 * 1000.0 * 1000.0 / cycleCount;
-            printf("CycleCount for 3 sec = %d. %g nanosec per cycle\n", cycleCount, nanosecPerCycle);
-
-            /*
-            if (this->m_fondMarket->FeedChannel()->OrdersSnapshot()->State() == FeedConnectionState::fcsListenSnapshot) {
-                int foundSnapshotSymbolsCount = this->m_fondMarket->FeedChannel()->OrdersIncremental()->OrderFond()->SymbolsToRecvSnapshotCount();
-                int foundQueEntries = this->m_fondMarket->FeedChannel()->OrdersIncremental()->OrderFond()->QueueEntriesCount();
-                int msgSeqNumber = this->m_fondMarket->FeedChannel()->OrdersSnapshot()->MsgSeqNo();
-                printf("fond olr: %d que entries and  %d snapshot symbols to go. msg = %d\n", foundQueEntries, foundSnapshotSymbolsCount, msgSeqNumber);
-            }
-            else {
-                printf("fond olr: start = %d end = %d\n",
-                       this->m_fondMarket->FeedChannel()->OrdersIncremental()->MsgSeqNo(),
-                       this->m_fondMarket->FeedChannel()->OrdersIncremental()->LastRecvMsgSeqNo());
-            }
-            if (this->m_fondMarket->FeedChannel()->TradesSnapshot()->State() == FeedConnectionState::fcsListenSnapshot) {
-                int foundSnapshotSymbolsCount = this->m_fondMarket->FeedChannel()->TradesIncremental()->TradeFond()->SymbolsToRecvSnapshotCount();
-                int foundQueEntries = this->m_fondMarket->FeedChannel()->TradesIncremental()->TradeFond()->QueueEntriesCount();
-                int msgSeqNumber = this->m_fondMarket->FeedChannel()->TradesSnapshot()->MsgSeqNo();
-                printf("fond tlr: %d que entries and  %d snapshot symbols to go. msg = %d\n", foundQueEntries, foundSnapshotSymbolsCount, msgSeqNumber);
-            }
-            else {
-                printf("fond tlr: start = %d end = %d\n",
-                       this->m_fondMarket->FeedChannel()->TradesIncremental()->MsgSeqNo(),
-                       this->m_fondMarket->FeedChannel()->TradesIncremental()->LastRecvMsgSeqNo());
-            }
-            if (this->m_fondMarket->FeedChannel()->StatisticsSnapshot()->State() == FeedConnectionState::fcsListenSnapshot) {
-                int foundSnapshotSymbolsCount = this->m_fondMarket->FeedChannel()->StatisticsIncremental()->StatisticFond()->SymbolsToRecvSnapshotCount();
-                int foundQueEntries = this->m_fondMarket->FeedChannel()->StatisticsIncremental()->StatisticFond()->QueueEntriesCount();
-                int msgSeqNumber = this->m_fondMarket->FeedChannel()->StatisticsSnapshot()->MsgSeqNo();
-                printf("fond msr: %d que entries and  %d snapshot symbols to go. msg = %d\n", foundQueEntries, foundSnapshotSymbolsCount, msgSeqNumber);
-            }
-            else {
-                printf("fond msr: start = %d end = %d\n",
-                       this->m_fondMarket->FeedChannel()->StatisticsIncremental()->MsgSeqNo(),
-                       this->m_fondMarket->FeedChannel()->StatisticsIncremental()->LastRecvMsgSeqNo());
-            }
-            printf("fond iss: start = %d end = %d\n",
-                   this->m_fondMarket->FeedChannel()->InstrumentStatus()->MsgSeqNo(),
-                   this->m_fondMarket->FeedChannel()->InstrumentStatus()->LastRecvMsgSeqNo());
-            */
-            if(this->m_currMarket->FeedChannel()->OrdersSnapshot()->State() == FeedConnectionState::fcsListenSnapshot) {
-                int currSnapshotSymbolsCount = this->m_currMarket->FeedChannel()->OrdersIncremental()->OrderCurr()->SymbolsToRecvSnapshotCount();
-                int currQueEntries = this->m_currMarket->FeedChannel()->OrdersIncremental()->OrderCurr()->QueueEntriesCount();
-                int msgSeqNumber = this->m_currMarket->FeedChannel()->OrdersSnapshot()->MsgSeqNo();
-                printf("curr olr: %d que entries and  %d snapshot symbols to go. msg = %d\n", currQueEntries, currSnapshotSymbolsCount, msgSeqNumber);
-            }
-            else {
-                printf("curr olr: start = %d end = %d\n",
-                       this->m_currMarket->FeedChannel()->OrdersIncremental()->MsgSeqNo(),
-                       this->m_currMarket->FeedChannel()->OrdersIncremental()->LastRecvMsgSeqNo());
-            }
-
-            if (this->m_currMarket->FeedChannel()->TradesSnapshot()->State() == FeedConnectionState::fcsListenSnapshot) {
-                int foundSnapshotSymbolsCount = this->m_currMarket->FeedChannel()->TradesIncremental()->TradeCurr()->SymbolsToRecvSnapshotCount();
-                int foundQueEntries = this->m_currMarket->FeedChannel()->TradesIncremental()->TradeCurr()->QueueEntriesCount();
-                int msgSeqNumber = this->m_currMarket->FeedChannel()->TradesSnapshot()->MsgSeqNo();
-                printf("curr tlr: %d que entries and  %d snapshot symbols to go. msg = %d\n", foundQueEntries, foundSnapshotSymbolsCount, msgSeqNumber);
-            }
-            else {
-                printf("curr tlr: start = %d end = %d\n",
-                       this->m_currMarket->FeedChannel()->TradesIncremental()->MsgSeqNo(),
-                       this->m_currMarket->FeedChannel()->TradesIncremental()->LastRecvMsgSeqNo());
-            }
-            if (this->m_currMarket->FeedChannel()->StatisticsSnapshot()->State() == FeedConnectionState::fcsListenSnapshot) {
-                int foundSnapshotSymbolsCount = this->m_currMarket->FeedChannel()->StatisticsIncremental()->StatisticCurr()->SymbolsToRecvSnapshotCount();
-                int foundQueEntries = this->m_currMarket->FeedChannel()->StatisticsIncremental()->StatisticCurr()->QueueEntriesCount();
-                int msgSeqNumber = this->m_currMarket->FeedChannel()->StatisticsSnapshot()->MsgSeqNo();
-                printf("curr msr: %d que entries and  %d snapshot symbols to go. msg = %d\n", foundQueEntries, foundSnapshotSymbolsCount, msgSeqNumber);
-            }
-            else {
-                printf("curr msr: start = %d end = %d\n",
-                       this->m_currMarket->FeedChannel()->StatisticsIncremental()->MsgSeqNo(),
-                       this->m_currMarket->FeedChannel()->StatisticsIncremental()->LastRecvMsgSeqNo());
-            }
-            printf("curr iss: start = %d end = %d\n",
-                   this->m_currMarket->FeedChannel()->InstrumentStatus()->MsgSeqNo(),
-                   this->m_currMarket->FeedChannel()->InstrumentStatus()->LastRecvMsgSeqNo());
+            this->PrintStatistics(cycleCount, 3);
 
             w->Reset();
-
-            //printf("olr used queue count = %d\n", MDEntryQueue<OrderInfo<FastOLSCURRItemInfo>>::Pool->Count());
-            //printf("tlr used queue count = %d\n", MDEntryQueue<TradeInfo<FastTLSCURRItemInfo>>::Pool->Count());
-            //printf("msr used queue count = %d\n", MDEntryQueue<StatisticsInfo<FastGenericItemInfo>>::Pool->Count());
-            printf("3 sec. Changes------------------------\n");
-            ProgramStatistics::Current->Print();
-            printf("Total Changes-------------------------\n");
-            ProgramStatistics::Total->Print();
-            printf("--------------------------------------\n");
-
             cycleCount = 0;
-            ProgramStatistics::Current->Clear();
-            //ProgramStatistics::Total->ResetFlags();
         }
         cycleCount++;
     }
@@ -325,20 +466,43 @@ bool Robot::MainLoop() {
 bool Robot::DoWork() {
     DefaultLogManager::Default->StartLog(LogMessageCode::lmcRobot_DoWork);
 
-    while(true) {
-        if(!this->CollectSecurityDefinitions()) {
-            DefaultLogManager::Default->Print();
-            DefaultLogManager::Default->EndLog(false);
-            return false;
-        }
-        if(!this->MainLoop()) {
-            DefaultLogManager::Default->Print();
-            DefaultLogManager::Default->EndLog(false);
-            return false;
-        }
+    if(!this->AllowCurrMarket() && !this->AllowFondMarket()) {
+        printf("Error: no market enabled!\n");
+        DefaultLogManager::Default->EndLog(false);
+        return false;
     }
 
-    //DefaultLogManager::Default->Print();
-    //DefaultLogManager::Default->EndLog(true);
+    while(true) {
+        if(!this->AllowFondMarket()) {
+            if(!this->CollectSecurityDefinitions_CurrOnly()) {
+                DefaultLogManager::Default->EndLog(false);
+                return false;
+            }
+            if(!this->MainLoop_CurrOnly()) {
+                DefaultLogManager::Default->EndLog(false);
+                return false;
+            }
+        }
+        else if(!this->AllowCurrMarket()) {
+            if(!this->CollectSecurityDefinitions_FondOnly()) {
+                DefaultLogManager::Default->EndLog(false);
+                return false;
+            }
+            if(!this->MainLoop_FondOnly()) {
+                DefaultLogManager::Default->EndLog(false);
+                return false;
+            }
+        }
+        else {
+            if(!this->CollectSecurityDefinitions()) {
+                DefaultLogManager::Default->EndLog(false);
+                return false;
+            }
+            if(!this->MainLoop()) {
+                DefaultLogManager::Default->EndLog(false);
+                return false;
+            }
+        }
+    }
 }
 

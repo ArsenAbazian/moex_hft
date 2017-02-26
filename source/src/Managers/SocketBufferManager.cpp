@@ -1,5 +1,6 @@
 #include "Managers/SocketBufferManager.h"
 #include <memory.h>
+#include "DebugInfoManager.h"
 
 SocketBuffer::SocketBuffer(INextIndexProvider *provider, unsigned int bufferSize, unsigned int maxItemsCount, unsigned int bufferIndex) {
 
@@ -22,6 +23,17 @@ SocketBuffer::~SocketBuffer() {
     delete[] this->m_items;
     delete[] this->m_itemLength;
     delete[] this->m_index;
+}
+
+SocketBufferManager::SocketBufferManager(int maxBuffersCount) {
+    this->m_maxItemsCount = maxBuffersCount;
+    this->m_buffers = new SocketBuffer*[maxBuffersCount];
+    this->m_itemsCount = 0;
+    this->PrintMemoryInfo("After SocketBufferManager::SocketBufferManager");
+}
+
+void SocketBufferManager::PrintMemoryInfo(const char *string) {
+    DebugInfoManager::Default->PrintMemoryInfo(string);
 }
 
 SocketBufferManager* DefaultSocketBufferManager::Default = new SocketBufferManager(RobotSettings::Default->SocketBuffersMaxCount);

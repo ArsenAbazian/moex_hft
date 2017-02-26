@@ -87,13 +87,15 @@ int main(int argc, char** argv) {
 	return 0;
 #else
 
+    DebugInfoManager::Default->PrintMemoryInfo("Before Robot::Robot");
 	Robot *robot = new Robot();
-	robot->AllowFondMarket(false); // TODO fond market disabled!!!
+	robot->AllowFondMarket(false);
 	robot->Run();
     delete robot;
 
 	DefaultLogManager::Default->Print();
-    return 0;
+
+	return 0;
 #endif
 }
 

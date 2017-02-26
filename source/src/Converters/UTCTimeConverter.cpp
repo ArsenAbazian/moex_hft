@@ -1,6 +1,7 @@
 #include "Converters/ItoaConverter.h"
 #include "Converters/UTCTimeConverter.h"
 #include <memory>
+#include "../Managers/DebugInfoManager.h"
 
 CharVector4 *UTCTimeConverter::years = NULL;
 CharVector2 *UTCTimeConverter::hours = NULL;
@@ -62,5 +63,6 @@ void UTCTimeConverter::Initialize() {
 			milisec[j] = D0;
 		}
 	}
+	DebugInfoManager::Default->PrintMemoryInfo("After UTCTimeConverter::Initialize");
 }
 

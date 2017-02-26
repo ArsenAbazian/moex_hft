@@ -1,6 +1,11 @@
 #pragma once
 #include "FeedConnections.h"
 
+//#define ALLOW_TRADES
+//#define ALLOW_ORDERS
+#define ALLOW_STATISTICS
+//#define ALLOW_STATUS
+
 typedef enum _FeedChannelState {
 	fchSuspend,
 	fchCollectSymbols,
@@ -17,15 +22,15 @@ class FeedChannel {
 
 	FeedChannelState m_state;
 
-	FeedConnection *statisticsIncremental;
-	FeedConnection *statisticsSnapshot;
-	FeedConnection *ordersIncremental;
-	FeedConnection *ordersSnapshot;
-	FeedConnection *tradesIncremental;
-	FeedConnection *tradesSnapshot;
-	FeedConnection *instrumentDefinition;
-	FeedConnection *instrumentStatus;
-	FeedConnection *historicalReplay;
+	FeedConnection *msr;
+	FeedConnection *mss;
+	FeedConnection *olr;
+	FeedConnection *ols;
+	FeedConnection *tlr;
+	FeedConnection *tls;
+	FeedConnection *idf;
+	FeedConnection *isf;
+	FeedConnection *hr;
 
 	bool CheckConnections();
 
@@ -33,59 +38,59 @@ public:
 	FeedChannel(const char *id, const char *name);
 	~FeedChannel();
 
-	FeedConnection* StatisticsIncremental() { return this->statisticsIncremental; }
-	FeedConnection* StatisticsSnapshot() { return this->statisticsSnapshot; }
-	FeedConnection* OrdersIncremental() { return this->ordersIncremental; }
-	FeedConnection* OrdersSnapshot() { return this->ordersSnapshot; }
-	FeedConnection* TradesIncremental() { return this->tradesIncremental; }
-	FeedConnection* TradesSnapshot() { return this->tradesSnapshot; }
-	FeedConnection* InstrumentDefinition() { return this->instrumentDefinition; }
-	FeedConnection* InstrumentStatus() { return this->instrumentStatus; }
-	FeedConnection* HistoricalReplay() { return this->historicalReplay; }
+	FeedConnection* Msr() { return this->msr; }
+	FeedConnection* Mss() { return this->mss; }
+	FeedConnection* Olr() { return this->olr; }
+	FeedConnection* Ols() { return this->ols; }
+	FeedConnection* Tlr() { return this->tlr; }
+	FeedConnection* Tls() { return this->tls; }
+	FeedConnection* Idf() { return this->idf; }
+	FeedConnection* Isf() { return this->isf; }
+	FeedConnection* Hr() { return this->hr; }
 
 	void SetPassword(const char *password) {
 		this->m_password = password;
-		if(this->statisticsIncremental != NULL)
-			this->statisticsIncremental->SetPassword(this->m_password);
-		if(this->statisticsSnapshot != NULL)
-			this->statisticsSnapshot->SetPassword(this->m_password);
-		if(this->ordersIncremental != NULL)
-			this->ordersIncremental->SetPassword(this->m_password);
-		if(this->ordersSnapshot != NULL)
-			this->ordersSnapshot->SetPassword(this->m_password);
-		if(this->tradesIncremental != NULL)
-			this->tradesIncremental->SetPassword(this->m_password);
-		if(this->tradesSnapshot != NULL)
-			this->tradesSnapshot->SetPassword(this->m_password);
-		if(this->instrumentDefinition != NULL)
-			this->instrumentDefinition->SetPassword(this->m_password);
-		if(this->instrumentStatus != NULL)
-			this->instrumentStatus->SetPassword(this->m_password);
-		if(this->historicalReplay != NULL)
-			this->historicalReplay->SetPassword(this->m_password);
+		if(this->msr != NULL)
+			this->msr->SetPassword(this->m_password);
+		if(this->mss != NULL)
+			this->mss->SetPassword(this->m_password);
+		if(this->olr != NULL)
+			this->olr->SetPassword(this->m_password);
+		if(this->ols != NULL)
+			this->ols->SetPassword(this->m_password);
+		if(this->tlr != NULL)
+			this->tlr->SetPassword(this->m_password);
+		if(this->tls != NULL)
+			this->tls->SetPassword(this->m_password);
+		if(this->idf != NULL)
+			this->idf->SetPassword(this->m_password);
+		if(this->isf != NULL)
+			this->isf->SetPassword(this->m_password);
+		if(this->hr != NULL)
+			this->hr->SetPassword(this->m_password);
 	}
 
 	void SetSenderCompId(const char *senderCompId) {
 		this->m_senderCompId = senderCompId;
 
-		if(this->statisticsIncremental != NULL)
-			this->statisticsIncremental->SetSenderCompId(this->m_senderCompId);
-		if(this->statisticsSnapshot != NULL)
-			this->statisticsSnapshot->SetSenderCompId(this->m_senderCompId);
-		if(this->ordersIncremental != NULL)
-			this->ordersIncremental->SetSenderCompId(this->m_senderCompId);
-		if(this->ordersSnapshot != NULL)
-			this->ordersSnapshot->SetSenderCompId(this->m_senderCompId);
-		if(this->tradesIncremental != NULL)
-			this->tradesIncremental->SetSenderCompId(this->m_senderCompId);
-		if(this->tradesSnapshot != NULL)
-			this->tradesSnapshot->SetSenderCompId(this->m_senderCompId);
-		if(this->instrumentDefinition != NULL)
-			this->instrumentDefinition->SetSenderCompId(this->m_senderCompId);
-		if(this->instrumentStatus != NULL)
-			this->instrumentStatus->SetSenderCompId(this->m_senderCompId);
-		if(this->historicalReplay != NULL)
-			this->historicalReplay->SetSenderCompId(this->m_senderCompId);
+		if(this->msr != NULL)
+			this->msr->SetSenderCompId(this->m_senderCompId);
+		if(this->mss != NULL)
+			this->mss->SetSenderCompId(this->m_senderCompId);
+		if(this->olr != NULL)
+			this->olr->SetSenderCompId(this->m_senderCompId);
+		if(this->ols != NULL)
+			this->ols->SetSenderCompId(this->m_senderCompId);
+		if(this->tlr != NULL)
+			this->tlr->SetSenderCompId(this->m_senderCompId);
+		if(this->tls != NULL)
+			this->tls->SetSenderCompId(this->m_senderCompId);
+		if(this->idf != NULL)
+			this->idf->SetSenderCompId(this->m_senderCompId);
+		if(this->isf != NULL)
+			this->isf->SetSenderCompId(this->m_senderCompId);
+		if(this->hr != NULL)
+			this->hr->SetSenderCompId(this->m_senderCompId);
 	}
 
 	void SetConnection(FeedConnection *conn);
@@ -96,15 +101,11 @@ public:
 	bool Disconnect(FeedConnection *conn);
 	bool Connect();
 	bool Disconnect();
-	bool Logon(FeedConnection *conn);
-	bool Logout(FeedConnection *conn);
-	bool Logon();
-	bool Logout();
 
 	inline bool OnAfterGenerateSecurityDefinitions() {
 		this->m_state = FeedChannelState::fchMainLoop;
-		for(int i = 0; i < this->instrumentDefinition->ConnectionsToRecvSymbolsCount(); i++) {
-			if(!this->instrumentDefinition->ConnectionsToRecvSymbols()[i]->Start())
+		for(int i = 0; i < this->idf->ConnectionsToRecvSymbolsCount(); i++) {
+			if(!this->idf->ConnectionsToRecvSymbols()[i]->Start())
 				return false;
 		}
 		return true;
@@ -113,21 +114,35 @@ public:
 	inline bool CollectSecurityDefinitions() {
 		if(this->m_state == FeedChannelState::fchSuspend)
 			return true;
-		return this->instrumentDefinition->DoWorkAtom();
+		return this->idf->DoWorkAtom();
+	}
+
+	inline bool DoWorkAtom(FeedConnection *conn) {
+		if(conn == 0) return true;
+		return conn->DoWorkAtom();
 	}
 
 	inline bool DoWorkAtom() {
 		if(this->m_state == FeedChannelState::fchSuspend)
 			return true;
-		bool res = this->statisticsIncremental->DoWorkAtom();
-			res &= this->statisticsSnapshot->DoWorkAtom();
-			res &= this->ordersIncremental->DoWorkAtom();
-			res &= this->ordersSnapshot->DoWorkAtom();
-			res &= this->tradesIncremental->DoWorkAtom();
-			res &= this->tradesSnapshot->DoWorkAtom();
-			res &= this->instrumentDefinition->DoWorkAtom();
-			res &= this->instrumentStatus->DoWorkAtom();
-			res &= this->historicalReplay->DoWorkAtom();
+		bool res = true;
+#ifdef ALLOW_STATISTICS
+			res &= this->msr->DoWorkAtom();
+			res &= this->mss->DoWorkAtom();
+#endif
+#ifdef ALLOW_ORDERS
+			res &= this->olr->DoWorkAtom();
+			res &= this->ols->DoWorkAtom();
+#endif
+#ifdef ALLOW_TRADES
+			res &= this->tlr->DoWorkAtom();
+			res &= this->tls->DoWorkAtom();
+#endif
+			res &= this->idf->DoWorkAtom();
+#ifdef ALLOW_STATUS
+			res &= this->isf->DoWorkAtom();
+#endif
+			res &= this->hr->DoWorkAtom();
 			return res;
 	}
 };

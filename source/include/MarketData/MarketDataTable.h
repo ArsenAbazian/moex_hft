@@ -8,7 +8,7 @@
 #include <Managers/DebugInfoManager.h>
 #include "Lib/StringIdComparer.h"
 #include "Fast/FastTypes.h"
-#include "MarketDataEntryQueue.h"
+#include "MDEntryQueue.h"
 #include "MarketSymbolInfo.h"
 
 template <template<typename ITEMINFO> class TABLEITEM, typename INFO, typename ITEMINFO> class MarketDataTable {
@@ -75,6 +75,9 @@ public:
     inline void DecSymbolsToRecvSnapshotCount() {
         this->m_symbolsToRecvSnapshot--;
     }
+    inline void IncSymbolsToRecvSnapshotCount() {
+        this->m_symbolsToRecvSnapshot++;
+    }
     inline bool ProcessIncremental(ITEMINFO *info) {
         TABLEITEM<ITEMINFO> *tableItem = GetItem(info->Symbol, info->SymbolLength, info->TradingSessionID, info->TradingSessionIDLength);
         this->AddUsed(tableItem);
@@ -82,12 +85,24 @@ public:
         bool res = tableItem->ProcessIncrementalMessage(info);
         bool hasEntries = tableItem->HasEntries();
         if(hasEntries) {
-            if(!prevHasEntries)
+            if(!prevHasEntries) {
                 this->m_queueItemsCount++;
+                if(!tableItem->ShouldProcessSnapshot()) {
+                    MarketSymbolInfo<TABLEITEM<ITEMINFO>> *smb = tableItem->SymbolInfo();
+                    bool allItemsRecvSnapshot = smb->AllSessionsRecvSnapshot();
+                    tableItem->IncSessionsToRecvSnapshotCount();
+                    if (!allItemsRecvSnapshot && smb->AllSessionsRecvSnapshot())
+                        this->IncSymbolsToRecvSnapshotCount();
+                }
+            }
         }
         else {
-            if(prevHasEntries)
+            if(prevHasEntries) {
                 this->m_queueItemsCount--;
+                //TODO remove debug
+                if(tableItem->EntriesQueue() != 0)
+                    throw;
+            }
             if(tableItem->ShouldProcessSnapshot()) {
                 MarketSymbolInfo<TABLEITEM<ITEMINFO>> *smb = tableItem->SymbolInfo();
                 bool allItemsRecvSnapshot = smb->AllSessionsRecvSnapshot();
@@ -130,6 +145,9 @@ public:
             this->m_snapshotItem->DecSessionsToRecvSnapshotCount();
             if(this->m_snapshotItemHasEntriesQueue && !this->m_snapshotItem->HasEntries())
                 this->m_queueItemsCount--;
+            //TODO remove debug
+            if(this->m_snapshotItem->EntriesQueue() != 0)
+                throw;
             if(!allItemsRecvSnapshot && this->m_snapshotSymbol->AllSessionsRecvSnapshot())
                 this->DecSymbolsToRecvSnapshotCount();
             this->m_snapshotItem = 0;
@@ -178,6 +196,9 @@ public:
             this->m_snapshotItem->DecSessionsToRecvSnapshotCount();
             if(this->m_snapshotItemHasEntriesQueue && !this->m_snapshotItem->HasEntries())
                 this->m_queueItemsCount--;
+            //TODO remove debug
+            if(this->m_snapshotItem->EntriesQueue() != 0)
+                throw;
             if(!allItemsRecvSnapshot && this->m_snapshotSymbol->AllSessionsRecvSnapshot())
                 this->DecSymbolsToRecvSnapshotCount();
             this->m_snapshotItem = 0;
@@ -195,6 +216,9 @@ public:
         bool res = this->m_snapshotItem->EndProcessSnapshotMessages();
         if(this->m_snapshotItemHasEntriesQueue && !this->m_snapshotItem->HasEntries()) {
             this->m_queueItemsCount--;
+            //TODO remove debug
+            if(this->m_snapshotItem->EntriesQueue() != 0)
+                throw;
         }
         if(!this->m_allSessionsRecvSnapshot && this->m_snapshotSymbol->AllSessionsRecvSnapshot()) {
             this->DecSymbolsToRecvSnapshotCount();
@@ -228,7 +252,7 @@ public:
         int count = 0;
         for(int i = 0; i < this->m_symbolsCount; i++) {
             for (int j = 0; j < this->m_symbols[i]->SessionCount(); j++) {
-                if(this->m_symbols[i]->Session(j)->EntriesQueue()->HasEntries())
+                if(this->m_symbols[i]->Session(j)->HasEntries())
                     count++;
             }
         }

@@ -1,4 +1,5 @@
 #include "Converters/ItoaConverter.h"
+#include "../Managers/DebugInfoManager.h"
 
 
 DigitString* ItoaConverter::digitStringList = NULL;
@@ -187,4 +188,5 @@ void ItoaConverter::Initialize() {
 			}
 		}
 	}
+	DebugInfoManager::Default->PrintMemoryInfo("after ItoaConverter::Initialize");
 }

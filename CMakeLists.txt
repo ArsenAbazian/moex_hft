@@ -118,7 +118,7 @@ add_executable(hft_robot
         source/include/Test/TestTemplateInfo.h
         source/include/Test/TestMessagesHelper.h
         source/include/Test/StatisticsTesterFond.h
-        source/include/MarketData/MarketDataEntryQueue.h
+        source/include/MarketData/MDEntryQueue.h
         source/include/MarketData/OrderInfo.h
         source/include/MarketData/TradeInfo.h
         source/include/MarketData/StatisticInfo.h
@@ -145,7 +145,7 @@ add_executable(hft_robot
         source/include/Feeds/Curr/CurrHr.h
         source/include/Test/HistoricalReplayTester.h
         source/include/ProgramStatistics.h
-        source/src/ProgramStatistics.cpp)
+        source/src/ProgramStatistics.cpp source/src/MarketData/MDEntryQueue.cpp source/include/MarketData/StatisticItem.h)
 add_dependencies(hft_robot fast_generate)
 
 add_custom_command(TARGET fast_generate

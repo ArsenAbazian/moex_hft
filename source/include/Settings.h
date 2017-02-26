@@ -57,7 +57,7 @@ public:
         MarketDataMaxEntriesCount = 1024 * 2000;
         MaxSecurityDefinitionCount = 2600;
         HistoricalReplayMaxMessageRequestCount = 1024;
-        MDEntryQueueItemsCount = 150;
+        MDEntryQueueItemsCount = 400;
         MDEntryQueueItemsAddCount = 10;
     }
 };

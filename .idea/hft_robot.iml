@@ -7,15 +7,15 @@
       <sourceFolder url="file://$MODULE_DIR$/cmake/GetPkgVariable.cmake" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/cmake/FindMono.cmake" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/CMakeLists.txt" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/source/src/HftConsole.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/src/FeedChannel.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/src/MarketInfo.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/src/Settings.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/src/Robot.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/source/src/MarketServerInfo.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/source/src/HftConsole.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/src/Converters/ItoaConverter.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/src/Converters/DtoaConverter.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/src/Converters/UTCTimeConverter.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/source/src/MarketServerInfo.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/src/FeedConnection.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/src/ProgramStatistics.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/src/Test/UTCTimeConverterTester.cpp" isTestSource="false" />
@@ -27,6 +27,7 @@
       <sourceFolder url="file://$MODULE_DIR$/source/src/Fix/FixTypes.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/src/Fix/FixProtocolManager.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/src/MarketData/StatisticInfo.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/source/src/MarketData/MDEntryQueue.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/src/Fast/FastProtocolManager.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/src/Managers/LogManager.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/src/Managers/SocketBufferManager.cpp" isTestSource="false" />
@@ -66,7 +67,9 @@
       <sourceFolder url="file://$MODULE_DIR$/source/include/Lib/StringHash.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/include/Lib/AutoAllocatePointerList.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/include/MarketData/TradeInfo.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/source/include/MarketData/StatisticItem.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/include/MarketData/StatisticInfo.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/source/include/MarketData/MDEntryQueue.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/include/MarketData/MarketDataTable.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/include/MarketData/OrderInfo.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/include/MarketData/SymbolManager.h" isTestSource="false" />

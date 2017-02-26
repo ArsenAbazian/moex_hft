@@ -19,6 +19,7 @@ public:
         this->SetState(FeedConnectionState::fcsHistoricalReplay);
         this->SetHsState(FeedConnectionHistoricalReplayState::hsSuspend);
         this->SetId(FeedConnectionId::fcidHFond);
+        DebugInfoManager::Default->PrintMemoryInfo("FeedConnection_FOND_H");
     }
     ~FeedConnection_FOND_H() {
         DisposeHistoricalReplay();

@@ -178,11 +178,12 @@ protected:
         delete this->m_hsRejectInfo;
     }
     int GetPacketsCount() { return RobotSettings::Default->DefaultFeedConnectionPacketCount; }
-    void InitializePackets() {
-        this->m_packetsCount = GetPacketsCount();
+    void InitializePackets(int count) {
+        this->m_packetsCount = count;
         this->m_packets = new FeedConnectionMessageInfo*[ this->m_packetsCount ];
         for(int i = 0; i < this->m_packetsCount; i++)
             this->m_packets[i] = new FeedConnectionMessageInfo();
+        DebugInfoManager::Default->PrintMemoryInfo("FeedConnectionInfo::InitializePackets");
     }
     void InitializeSecurityDefinition() {
         this->m_symbols = new LinkedPointer<FastSecurityDefinitionInfo>*[RobotSettings::Default->MaxSecurityDefinitionCount];
@@ -459,8 +460,8 @@ protected:
         this->m_incremental->TradeFond()->ObtainSnapshotItem(this->m_lastSnapshotInfo);
         if(this->m_incremental->TradeFond()->ApplyQuickSnapshot(this->m_lastSnapshotInfo)) {
 #ifdef COLLECT_STATISTICS
-            ProgramStatistics::Current->IncFondOlsProcessedCount();
-            ProgramStatistics::Total->IncFondOlsProcessedCount();
+            ProgramStatistics::Current->IncFondTlsProcessedCount();
+            ProgramStatistics::Total->IncFondTlsProcessedCount();
 #endif
             this->m_lastSnapshotInfo->Restore();
             return false; // skip all the snapshot
@@ -474,8 +475,8 @@ protected:
     inline bool ApplySnapshotPart_TLS_FOND(int index) {
         this->PrepareDecodeSnapshotMessage(index);
 #ifdef COLLECT_STATISTICS
-        ProgramStatistics::Current->IncFondOlsProcessedCount();
-        ProgramStatistics::Total->IncFondOlsProcessedCount();
+        ProgramStatistics::Current->IncFondTlsProcessedCount();
+        ProgramStatistics::Total->IncFondTlsProcessedCount();
 #endif
         FastTLSFONDInfo *info = (FastTLSFONDInfo *) this->m_fastProtocolManager->DecodeTLSFOND();
         this->m_incremental->TradeFond()->ProcessSnapshot(info);
@@ -498,8 +499,8 @@ protected:
         this->m_incremental->TradeCurr()->ObtainSnapshotItem(this->m_lastSnapshotInfo);
         if(this->m_incremental->TradeCurr()->ApplyQuickSnapshot(this->m_lastSnapshotInfo)) {
 #ifdef COLLECT_STATISTICS
-            ProgramStatistics::Current->IncCurrOlsProcessedCount();
-            ProgramStatistics::Total->IncCurrOlsProcessedCount();
+            ProgramStatistics::Current->IncCurrTlsProcessedCount();
+            ProgramStatistics::Total->IncCurrTlsProcessedCount();
 #endif
             this->m_lastSnapshotInfo->Restore();
             return false; // skip all the snapshot
@@ -513,8 +514,8 @@ protected:
     inline bool ApplySnapshotPart_TLS_CURR(int index) {
         this->PrepareDecodeSnapshotMessage(index);
 #ifdef COLLECT_STATISTICS
-        ProgramStatistics::Current->IncCurrOlsProcessedCount();
-        ProgramStatistics::Total->IncCurrOlsProcessedCount();
+        ProgramStatistics::Current->IncCurrTlsProcessedCount();
+        ProgramStatistics::Total->IncCurrTlsProcessedCount();
 #endif
         FastTLSCURRInfo *info = (FastTLSCURRInfo *) this->m_fastProtocolManager->DecodeTLSCURR();
         this->m_incremental->TradeCurr()->ProcessSnapshot(info);
@@ -537,8 +538,8 @@ protected:
         this->m_incremental->StatisticFond()->ObtainSnapshotItem(this->m_lastSnapshotInfo);
         if(this->m_incremental->StatisticFond()->ApplyQuickSnapshot(this->m_lastSnapshotInfo)) {
 #ifdef COLLECT_STATISTICS
-            ProgramStatistics::Current->IncFondOlsProcessedCount();
-            ProgramStatistics::Total->IncFondOlsProcessedCount();
+            ProgramStatistics::Current->IncFondMssProcessedCount();
+            ProgramStatistics::Total->IncFondMssProcessedCount();
 #endif
             this->m_lastSnapshotInfo->Restore();
             return false; // skip all the snapshot
@@ -552,8 +553,8 @@ protected:
     inline bool ApplySnapshotPart_MSS_FOND(int index) {
         this->PrepareDecodeSnapshotMessage(index);
 #ifdef COLLECT_STATISTICS
-        ProgramStatistics::Current->IncFondOlsProcessedCount();
-        ProgramStatistics::Total->IncFondOlsProcessedCount();
+        ProgramStatistics::Current->IncFondMssProcessedCount();
+        ProgramStatistics::Total->IncFondMssProcessedCount();
 #endif
         FastGenericInfo *info = (FastGenericInfo *) this->m_fastProtocolManager->DecodeGeneric();
         this->m_incremental->StatisticFond()->ProcessSnapshot(info);
@@ -576,8 +577,8 @@ protected:
         this->m_incremental->StatisticCurr()->ObtainSnapshotItem(this->m_lastSnapshotInfo);
         if(this->m_incremental->StatisticCurr()->ApplyQuickSnapshot(this->m_lastSnapshotInfo)) {
 #ifdef COLLECT_STATISTICS
-            ProgramStatistics::Current->IncCurrOlsProcessedCount();
-            ProgramStatistics::Total->IncCurrOlsProcessedCount();
+            ProgramStatistics::Current->IncCurrMssProcessedCount();
+            ProgramStatistics::Total->IncCurrMssProcessedCount();
 #endif
             this->m_lastSnapshotInfo->Restore();
             return false; // skip all the snapshot
@@ -591,8 +592,8 @@ protected:
     inline bool ApplySnapshotPart_MSS_CURR(int index) {
         this->PrepareDecodeSnapshotMessage(index);
 #ifdef COLLECT_STATISTICS
-        ProgramStatistics::Current->IncCurrOlsProcessedCount();
-        ProgramStatistics::Total->IncCurrOlsProcessedCount();
+        ProgramStatistics::Current->IncCurrMssProcessedCount();
+        ProgramStatistics::Total->IncCurrMssProcessedCount();
 #endif
         FastGenericInfo *info = (FastGenericInfo *) this->m_fastProtocolManager->DecodeGeneric();
         this->m_incremental->StatisticCurr()->ProcessSnapshot(info);
@@ -1333,11 +1334,9 @@ protected:
 
         // TODO remove hack. just skip 30 messages and then try to restore
         if(this->m_snapshot->State() == FeedConnectionState::fcsSuspend &&
-                (this->m_startMsgSeqNum % 500) == 0  &&
-                this->m_packets[this->m_startMsgSeqNum]->m_address != 0 &&
-                !this->m_packets[this->m_startMsgSeqNum]->m_requested) {
-            this->m_packets[this->m_startMsgSeqNum]->m_address = 0; // force historical replay
-            printf("packet %d is lost, resuestIndexd = %d\n", this->m_startMsgSeqNum, this->m_requestMessageStartIndex);
+                (this->m_endMsgSeqNum % 500) < 40) {
+            this->m_packets[this->m_endMsgSeqNum]->m_address = 0; // force historical replay
+            printf("packet %d is lost, requestIndexd = %d\n", this->m_endMsgSeqNum, this->m_requestMessageStartIndex);
             return true;
         }
 
@@ -1651,6 +1650,9 @@ protected:
         return true;
     }
 public:
+    inline SocketBuffer* SendBuffer() { return this->m_sendABuffer; }
+    inline SocketBuffer* RecvBuffer() { return this->m_recvABuffer; }
+
     inline void HrRequestMessage(FeedConnection *conn, int start, int end) {
         if(this->m_hsRequestList->IsFull()) {
             printf("error request msg: list is full.\n");
@@ -2111,6 +2113,8 @@ public:
     inline FeedConnection** ConnectionsToRecvSymbols() { return this->m_connectionsToRecvSymbols; }
     inline int ConnectionsToRecvSymbolsCount() { return this->m_connectionsToRecvSymbolsCount; }
     inline void AddConnectionToRecvSymbol(FeedConnection *conn) {
+        if(conn == 0)
+            return;
         this->m_connectionsToRecvSymbols[this->m_connectionsToRecvSymbolsCount] = conn;
         this->m_connectionsToRecvSymbolsCount++;
     }
@@ -2421,10 +2425,9 @@ public:
     }
 
     inline void UpdateTradingSession(FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo *trading, FastSecurityStatusInfo *info) {
-        trading->IsNullTradingSessionSubID = info->IsNullTradingSessionSubID;
+        trading->NullMap = info->NullMap;
         trading->TradingSessionSubID = info->TradingSessionSubID;
         trading->TradingSessionSubIDLength = info->TradingSessionSubIDLength;
-        trading->IsNullSecurityTradingStatus = info->IsNullSecurityTradingStatus;
         trading->SecurityTradingStatus = info->SecurityTradingStatus;
         //Skip AuctionIndicator because there is no data in feed streams for them
     }

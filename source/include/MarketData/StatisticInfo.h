@@ -8,244 +8,14 @@
 #include "../Lib/StringIdComparer.h"
 #include "Fast/FastTypes.h"
 #include "../Lib/PointerList.h"
-#include "MarketDataEntryQueue.h"
+#include "MDEntryQueue.h"
 #include "../Managers/DebugInfoManager.h"
-
-class StatisticItemDecimal {
-protected:
-    UINT64          m_time;
-    Decimal         m_value;
-    Decimal         *m_valuePtr;
-public:
-    StatisticItemDecimal() {
-        this->m_valuePtr = &this->m_value;
-    }
-    ~StatisticItemDecimal() { }
-    inline void Set(UINT64 time, Decimal *value) {
-        this->m_time = time;
-        this->m_valuePtr->Set(value);
-    }
-    inline UINT64 Time() { return this->m_time; }
-    inline Decimal* Value() { return this->m_valuePtr; };
-};
-
-class StatisticItemDecimal2 {
-protected:
-    UINT64          m_time;
-    Decimal         m_value;
-    Decimal         m_value2;
-    Decimal         *m_valuePtr;
-    Decimal         *m_value2Ptr;
-public:
-    StatisticItemDecimal2() {
-        this->m_valuePtr = &this->m_value;
-        this->m_value2Ptr = &this->m_value2;
-    }
-    ~StatisticItemDecimal2() { }
-    inline void Set(UINT64 time, Decimal *value, Decimal *value2) {
-        this->m_time = time;
-        this->m_valuePtr->Set(value);
-        this->m_value2Ptr->Set(value2);
-    }
-    inline UINT64 Time() { return this->m_time; }
-    inline Decimal* Value() { return this->m_valuePtr; };
-    inline Decimal* Value2() { return this->m_value2Ptr; };
-};
-
-class StatisticItemLastDealInfo{
-protected:
-    UINT64          m_time;
-    Decimal         m_price;
-    Decimal         m_size;
-    Decimal         m_netChangePrevDay;
-    Decimal         m_changeFromWAPrice;
-    Decimal         m_tradeValue;
-    Decimal         *m_pricePtr;
-    Decimal         *m_sizePtr;
-    Decimal         *m_netChangePrevDayPtr;
-    Decimal         *m_changeFromWAPricePtr;
-    Decimal         *m_tradeValuePtr;
-    UINT32          m_dealTime;
-public:
-    StatisticItemLastDealInfo() {
-        this->m_pricePtr = &(this->m_price);
-        this->m_sizePtr = &(this->m_size);
-        this->m_netChangePrevDayPtr = &(this->m_netChangePrevDay);
-        this->m_changeFromWAPricePtr = &(this->m_changeFromWAPrice);
-        this->m_tradeValuePtr = &(this->m_tradeValue);
-    }
-    ~StatisticItemLastDealInfo() { }
-    template <typename T> inline void Set(UINT64 time, T *info) {
-        this->m_time = time;
-        this->m_pricePtr->Set(&(info->MDEntryPx));
-        this->m_sizePtr->Set(&(info->MDEntrySize));
-        this->m_dealTime = info->MDEntryTime;
-        this->m_netChangePrevDayPtr->Set(&(info->NetChgPrevDay));
-        this->m_changeFromWAPricePtr->Set(&(info->ChgFromWAPrice));
-        this->m_tradeValuePtr->Set(&(info->TradeValue));
-    }
-    inline UINT64 Time() { return this->m_time; }
-    inline UINT32 DealTime() { return this->m_dealTime; }
-    inline Decimal* Price() { return this->m_pricePtr; };
-    inline Decimal* Size() { return this->m_sizePtr; };
-    inline Decimal* NetChangePrevDay() { return this->m_netChangePrevDayPtr; }
-    inline Decimal* ChangeFromWAPrice() { return this->m_changeFromWAPricePtr; }
-    inline Decimal* TradeValue() { return this->m_tradeValuePtr; }
-};  // 2
-
-class StatisticItemTotalOffer{
-protected:
-    UINT64          m_time;
-    Decimal         m_size;
-    int             m_offerNbOr;
-    Decimal         *m_sizePtr;
-
-public:
-    StatisticItemTotalOffer() {
-        this->m_sizePtr = &(this->m_size);
-    }
-    ~StatisticItemTotalOffer() { }
-    template<typename T> inline void Set(UINT64 time, T *info) {
-        this->m_time = time;
-        this->m_sizePtr->Set(&(info->MDEntrySize));
-        this->m_offerNbOr = info->OfferNbOr;
-    }
-    inline UINT64 Time() { return this->m_time; }
-    inline Decimal* Size() { return this->m_sizePtr; };
-    inline int OfferNbOr() { return this->m_offerNbOr; }
-};  // w
-
-class StatisticItemTransactionsMagnitude{
-protected:
-    UINT64          m_time;
-    Decimal         m_size;
-    Decimal         m_tradeValue;
-    int             m_totalNumOfTrades;
-    Decimal         *m_sizePtr;
-    Decimal         *m_tradeValuePtr;
-public:
-    StatisticItemTransactionsMagnitude() {
-        this->m_sizePtr = &(this->m_size);
-        this->m_tradeValuePtr = &(this->m_tradeValue);
-    }
-    ~StatisticItemTransactionsMagnitude() { }
-    template<typename T> inline void Set(UINT64 time, T *info) {
-        this->m_time = time;
-        this->m_sizePtr->Set(&(info->MDEntrySize));
-        this->m_totalNumOfTrades = info->TotalNumOfTrades;
-        this->m_tradeValuePtr->Set(&(info->TradeValue));
-    }
-    inline UINT64 Time() { return this->m_time; }
-    inline Decimal* Size() { return this->m_sizePtr; };
-    inline int TotalNumOfTrades() { return this->m_totalNumOfTrades; }
-    inline Decimal* TradeValue() { return this->m_tradeValuePtr; }
-};  // B
-
-class StatisticItemIndexList{
-protected:
-    UINT64          m_time;
-    Decimal         m_price;
-    Decimal         m_size;
-    Decimal         m_tradeValue;
-    Decimal         *m_pricePtr;
-    Decimal         *m_sizePtr;
-    Decimal         *m_tradeValuePtr;
-public:
-    StatisticItemIndexList() {
-        this->m_pricePtr = &(this->m_price);
-        this->m_sizePtr = &(this->m_size);
-        this->m_tradeValuePtr = &(this->m_tradeValue);
-    }
-    ~StatisticItemIndexList() { }
-    template<typename T> inline void Set(UINT64 time, T *info) {
-        this->m_time = time;
-        this->m_pricePtr->Set(&(info->MDEntryPx));
-        this->m_sizePtr->Set(&(info->MDEntrySize));
-        this->m_tradeValuePtr->Set(&(info->TradeValue));
-    }
-    inline UINT64 Time() { return this->m_time; }
-    inline Decimal* Price() { return this->m_pricePtr; };
-    inline Decimal* Size() { return this->m_sizePtr; };
-    inline Decimal* TradeValue() { return this->m_tradeValuePtr; }
-};  // 3
-
-class StatisticItemTotalBid {
-protected:
-    UINT64          m_time;
-    Decimal         m_size;
-    int             m_bidNbOr;
-    Decimal         *m_sizePtr;
-
-public:
-    StatisticItemTotalBid() {
-        this->m_sizePtr = &(this->m_size);
-    }
-    ~StatisticItemTotalBid() { }
-    template<typename T> inline void Set(UINT64 time, T *info) {
-        this->m_time = time;
-        this->m_sizePtr->Set(&(info->MDEntrySize));
-        this->m_bidNbOr = info->BidNbOr;
-    }
-    inline UINT64 Time() { return this->m_time; }
-    inline Decimal* Size() { return this->m_sizePtr; };
-    inline int BidNbOr() { return this->m_bidNbOr; }
-};  // v
-
-template <typename T> class StatisticItem {
-    UINT64          m_time;
-    T               m_value;
-public:
-    StatisticItem() { }
-    ~StatisticItem() { }
-
-    inline void Set(UINT64 time, T value) {
-        this->m_time = time;
-        this->m_value = value;
-    }
-    inline UINT64 Time() { return this->m_time; }
-    inline T Value() { return this->m_value; }
-};
-
-class StatisticItemAllocator {
-    PointerList<StatisticItemDecimal>                       *m_decimals;
-    PointerList<StatisticItemDecimal2>                      *m_decimals2;
-    PointerList<StatisticItemLastDealInfo>                  *m_dealInfos;
-    PointerList<StatisticItemTotalOffer>                    *m_totalOffers;
-    PointerList<StatisticItemTransactionsMagnitude>         *m_trMagnitudes;
-    PointerList<StatisticItemIndexList>                     *m_indexLists;
-    PointerList<StatisticItemTotalBid>                      *m_totalBids;
-    PointerList<StatisticItem<bool>>                        *m_booleans;
-public:
-    StatisticItemAllocator() {
-        this->m_decimals = new PointerList<StatisticItemDecimal>(400000, true, "StatisticsInfo::Decimals");
-        this->m_decimals2 = new PointerList<StatisticItemDecimal2>(100000, true, "StatisticsInfo::Decimals2");
-        this->m_dealInfos = new PointerList<StatisticItemLastDealInfo>(100000, true, "StatisticsInfo::DealInfo");
-        this->m_totalOffers = new PointerList<StatisticItemTotalOffer>(800000, true, "StatisticsInfo::TotalOffer");
-        this->m_totalBids = new PointerList<StatisticItemTotalBid>(800000, true, "StatisticsInfo::TotalBid");
-        this->m_indexLists = new PointerList<StatisticItemIndexList>(100000, true, "StatisticsInfo::IndexList");
-        this->m_trMagnitudes = new PointerList<StatisticItemTransactionsMagnitude>(400000, true, "StatisticsInfo::TransactionMagnitudes");
-        this->m_booleans = new PointerList<StatisticItem<bool>>(100000, true, "StatisticsInfo::Booleans");
-    }
-    PointerList<StatisticItemDecimal>* Decimals() { return this->m_decimals; }
-    PointerList<StatisticItemDecimal2>* Decimals2() { return this->m_decimals2; }
-    PointerList<StatisticItemLastDealInfo>* LastDealInfos() { return this->m_dealInfos; }
-    PointerList<StatisticItemTotalOffer>* TotalOffers() { return this->m_totalOffers; }
-    PointerList<StatisticItemTransactionsMagnitude>* TransactionMagnitudes() { return this->m_trMagnitudes; }
-    PointerList<StatisticItemTotalBid>* TotalBids() { return this->m_totalBids; }
-    PointerList<StatisticItemIndexList>* IndexLists() { return this->m_indexLists; }
-
-    PointerList<StatisticItem<bool>>* Booleans() { return this->m_booleans; }
-};
-
-class DefaultStatisticItemAllocator {
-public:
-    static StatisticItemAllocator* Default;
-};
+#include "StatisticItem.h"
 
 template <typename T> class MarketSymbolInfo;
 
 template <typename T> class StatisticsInfo {
-    MDEntryQueue<T>      *m_entryInfo;
+    MDEntryQueue      *m_entryInfo;
 
     PointerListLite<StatisticItemDecimal2>                   *m_buyQuotes;
     PointerListLite<StatisticItemDecimal2>                   *m_sellQuotes;
@@ -297,8 +67,8 @@ template <typename T> class StatisticsInfo {
     int                  m_snapshotProcessedCount;
 public:
     StatisticsInfo() {
-        if(MDEntryQueue<T>::Pool == 0)
-            MDEntryQueue<T>::Pool = MDEntryQueue<T>::CreatePool();
+        if(DefaultStatisticItemAllocator::Default == 0)
+            DefaultStatisticItemAllocator::Default = new StatisticItemAllocator();
 
         this->m_entryInfo = 0;
         this->m_tradingSession = new SizedArray();
@@ -391,7 +161,7 @@ public:
     inline void ReleaseEntryQue() {
         if(this->m_entryInfo != 0) {
             this->m_entryInfo->Reset();
-            MDEntryQueue<T>::Pool->FreeItem(this->m_entryInfo->Pointer);
+            MDEntryQueue::Pool->FreeItem(this->m_entryInfo->Pointer);
         }
         this->m_entryInfo = 0;
     }
@@ -409,7 +179,7 @@ public:
 
     inline bool HasEntries() { return this->m_entryInfo == 0? false: this->m_entryInfo->HasEntries(); }
     inline void ClearEntries() { this->ReleaseEntryQue(); }
-    inline MDEntryQueue<T>* EntriesQueue() { return this->m_entryInfo; }
+    inline MDEntryQueue* EntriesQueue() { return this->m_entryInfo; }
 
     inline bool Used() { return this->m_used; }
     inline void Used(bool used) { this->m_used = used; }
@@ -1607,14 +1377,19 @@ public:
     }
 
     inline void ObtainEntriesQueue() {
-        if(this->m_entryInfo == 0)
-            this->m_entryInfo = MDEntryQueue<T>::Pool->NewItem();
+        if(this->m_entryInfo == 0) {
+            this->m_entryInfo = MDEntryQueue::Pool->NewItem();
+            //TODO remove debug
+            if(!this->m_entryInfo->IsCleared())
+                throw;
+            this->m_entryInfo->Owner(this);
+        }
     }
 
     inline void PushMessageToQueue(T *info) {
         this->ObtainEntriesQueue();
         this->m_entryInfo->StartRptSeq(this->m_rptSeq + 1);
-        this->m_entryInfo->AddEntry(info);
+        this->m_entryInfo->AddEntry(info, info->RptSeq);
     }
 
     inline void ForceProcessMessage(T *info) {
@@ -1654,7 +1429,7 @@ public:
             this->ReleaseEntryQue();
             return true;
         }
-        T **entry = this->m_entryInfo->Entries();
+        T **entry = (T**)this->m_entryInfo->Entries();
         int incRptSeq = this->m_entryInfo->RptSeq();
         int maxIndex = this->m_entryInfo->MaxIndex();
         if(this->m_rptSeq + 1 < incRptSeq)
@@ -1681,6 +1456,13 @@ public:
         }
     }
 
+    inline void IncSessionsToRecvSnapshotCount() {
+        if(!this->m_shouldProcessSnapshot) {
+            SymbolInfo()->IncSessionsToRecvSnapshotCount();
+            this->m_shouldProcessSnapshot = true;
+        }
+    }
+
     inline void CancelSnapshotMessages() {
         this->m_rptSeq = this->m_savedRptSeq;
     }
@@ -1700,6 +1482,8 @@ public:
 
     inline void ExitSnapshotMode() {
         this->m_shouldProcessSnapshot = false;
+        if(this->m_entryInfo != 0)
+            throw;
     }
 
     inline bool ShouldProcessSnapshot() { return this->m_shouldProcessSnapshot; }

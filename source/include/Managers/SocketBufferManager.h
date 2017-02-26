@@ -67,13 +67,24 @@ public:
             this->m_index[itemCount] = NextIndex();
         }
     }
-    void Reset() {
+    inline void Reset() {
         this->m_current = this->m_buffer;
         this->m_end = this->m_buffer + this->m_size;
         this->m_itemsCount = 0;
 
         this->m_items[0] = this->m_current;
         this->m_index[0] = NextIndex();
+    }
+    inline double CalcMemoryUsagePercentage() {
+        if(this->m_size == 0)
+            return 0.0;
+        unsigned int used = this->m_current - this->m_buffer;
+        return ((double)used) / this->m_size * 100.0;
+    }
+    inline double CalcItemsUsagePercentage() {
+        if(this->m_maxItemsCount == 0)
+            return 0.0;
+        return this->m_itemsCount / (double)this->m_maxItemsCount * 100.0;
     }
 };
 
@@ -82,12 +93,10 @@ class SocketBufferManager : public INextIndexProvider {
     int                 m_maxItemsCount;
     int                 m_itemsCount;
     unsigned int        m_globalIndex;
+
+    void PrintMemoryInfo(const char *string);
 public:
-	SocketBufferManager(int maxBuffersCount) {
-        this->m_maxItemsCount = maxBuffersCount;
-        this->m_buffers = new SocketBuffer*[maxBuffersCount];
-        this->m_itemsCount = 0;
-    }
+	SocketBufferManager(int maxBuffersCount);
 	~SocketBufferManager() {
         for(int i = 0; i < this->m_itemsCount; i++)
             delete this->m_buffers[i];
@@ -100,6 +109,7 @@ public:
             return NULL;
         this->m_buffers[this->m_itemsCount] = new SocketBuffer(this, size, maxItemsCount, this->m_itemsCount);
         this->m_itemsCount++;
+        PrintMemoryInfo("After SocketBufferManager::GetFreeBuffer");
         return this->m_buffers[this->m_itemsCount - 1];
     }
     inline unsigned int NextIndex() { unsigned int res = this->m_globalIndex; this->m_globalIndex++; return res; }
