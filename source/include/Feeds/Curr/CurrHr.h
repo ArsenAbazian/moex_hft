@@ -19,16 +19,17 @@ public:
         this->SetState(FeedConnectionState::fcsHistoricalReplay);
         this->SetHsState(FeedConnectionHistoricalReplayState::hsSuspend);
         this->SetId(FeedConnectionId::fcidHCurr);
+        DebugInfoManager::Default->PrintMemoryInfo("FeedConnection_CURR_H");
     }
     ~FeedConnection_CURR_H() {
         DisposeHistoricalReplay();
     }
     ISocketBufferProvider* CreateSocketBufferProvider() {
         return new SocketBufferProvider(DefaultSocketBufferManager::Default,
-                                        RobotSettings::DefaultFeedConnectionSendBufferSize,
-                                        RobotSettings::DefaultFeedConnectionSendItemsCount,
-                                        RobotSettings::DefaultFeedConnectionRecvBufferSize,
-                                        RobotSettings::DefaultFeedConnectionRecvItemsCount);
+                                        RobotSettings::Default->DefaultFeedConnectionSendBufferSize,
+                                        RobotSettings::Default->DefaultFeedConnectionSendItemsCount,
+                                        RobotSettings::Default->DefaultFeedConnectionRecvBufferSize,
+                                        RobotSettings::Default->DefaultFeedConnectionRecvItemsCount);
     }
     FastObjectsAllocationInfo* CreateFastAllocationInfo() {
         FastObjectsAllocationInfo *info = new FastObjectsAllocationInfo();

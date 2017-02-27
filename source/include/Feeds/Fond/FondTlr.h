@@ -15,17 +15,19 @@ public:
         this->m_tradeTableFond = new MarketDataTable<TradeInfo, FastTLSFONDInfo, FastTLSFONDItemInfo>();
         this->SetId(FeedConnectionId::fcidTlrFond);
         this->m_fastProtocolManager = new FastProtocolManager(this->CreateFastAllocationInfo());
-        InitializePackets();
+        InitializePackets(this->GetPacketsCount());
+        DebugInfoManager::Default->PrintMemoryInfo("FeedConnection_FOND_TLR");
     }
     ~FeedConnection_FOND_TLR() {
         delete this->m_tradeTableFond;
     }
+    int GetPacketsCount() { return 2000000; }
     ISocketBufferProvider* CreateSocketBufferProvider() {
         return new SocketBufferProvider(DefaultSocketBufferManager::Default,
-                                        RobotSettings::DefaultFeedConnectionSendBufferSize,
-                                        RobotSettings::DefaultFeedConnectionSendItemsCount,
-                                        RobotSettings::DefaultFeedConnectionRecvBufferSize,
-                                        RobotSettings::DefaultFeedConnectionRecvItemsCount);
+                                        RobotSettings::Default->DefaultFeedConnectionSendBufferSize,
+                                        RobotSettings::Default->DefaultFeedConnectionSendItemsCount,
+                                        RobotSettings::Default->DefaultFeedConnectionRecvBufferSize,
+                                        RobotSettings::Default->DefaultFeedConnectionRecvItemsCount);
     }
     FastObjectsAllocationInfo* CreateFastAllocationInfo() {
         FastObjectsAllocationInfo *info = new FastObjectsAllocationInfo();
@@ -33,8 +35,8 @@ public:
 #ifndef TEST
         info->m_incrementalTLRFONDCount = 1024;
         info->m_incrementalTLRFONDAddCount = 256;
-        info->m_tLSFONDItemsCount = 2024;
-        info->m_tLSFONDItemsAddCount = 256;
+        info->m_tLSFONDItemsCount = 80000;
+        info->m_tLSFONDItemsAddCount = 2000;
 #else
         info->m_incrementalTLRFONDCount = 100;
         info->m_incrementalTLRFONDAddCount = 100;

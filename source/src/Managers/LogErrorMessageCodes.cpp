@@ -105,6 +105,8 @@ void LogMessageProvider::InitializeLogMessageText() {
 	this->m_logMessageText[LogMessageCode::lmcsocket_socket] = "socket->socket()";
 	this->m_logMessageText[LogMessageCode::lmcsocket_bind] = "socket->bind()";
 	this->m_logMessageText[LogMessageCode::lmcsocket_setsockopt] = "socket->setsockopt()";
+	this->m_logMessageText[LogMessageCode::lmcRobot_CollectSecurityDefinitions] = "Robot::CollectSecurityDefinitions";
+	this->m_logMessageText[LogMessageCode::lmcRobot_GenerateSecurityDefinitions] = "Robot::GenerateSecurityDefinitions";
 #pragma endregion
 }
 

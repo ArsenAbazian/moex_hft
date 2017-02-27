@@ -12,15 +12,15 @@ FeedChannel::FeedChannel(const char *id, const char *name) {
 	this->m_password = 0;
 	this->m_state = FeedChannelState::fchSuspend;
 
-	this->statisticsIncremental = NULL;
-	this->statisticsSnapshot = NULL;
-	this->ordersIncremental = NULL;
-	this->ordersSnapshot = NULL;
-	this->tradesIncremental = NULL;
-	this->tradesSnapshot = NULL;
-	this->instrumentDefinition = NULL;
-	this->instrumentStatus = NULL;
-	this->historicalReplay = NULL;
+	this->msr = NULL;
+	this->mss = NULL;
+	this->olr = NULL;
+	this->ols = NULL;
+	this->tlr = NULL;
+	this->tls = NULL;
+	this->idf = NULL;
+	this->isf = NULL;
+	this->hr = NULL;
 }
 
 FeedChannel::~FeedChannel() {
@@ -31,23 +31,23 @@ void FeedChannel::SetConnection(FeedConnection *conn) {
 	conn->ChannelName(this->id);
 
 	if (strcmp(conn->IdName(), "MSR") == 0)
-		this->statisticsIncremental = conn;
+		this->msr = conn;
 	if (strcmp(conn->IdName(), "MSS") == 0)
-		this->statisticsSnapshot = conn;
+		this->mss = conn;
 	if (strcmp(conn->IdName(), "OLR") == 0)
-		this->ordersIncremental = conn;
+		this->olr = conn;
 	if (strcmp(conn->IdName(), "OLS") == 0)
-		this->ordersSnapshot = conn;
+		this->ols = conn;
 	if (strcmp(conn->IdName(), "TLR") == 0)
-		this->tradesIncremental = conn;
+		this->tlr = conn;
 	if (strcmp(conn->IdName(), "TLS") == 0)
-		this->tradesSnapshot = conn;
+		this->tls = conn;
 	if (strcmp(conn->IdName(), "IDF") == 0)
-		this->instrumentDefinition = conn;
+		this->idf = conn;
 	if (strcmp(conn->IdName(), "ISF") == 0)
-		this->instrumentStatus = conn;
+		this->isf = conn;
 	if (strcmp(conn->IdName(), "H") == 0)
-		this->historicalReplay = conn;
+		this->hr = conn;
 }
 
 bool FeedChannel::Connect(FeedConnection *conn) {
@@ -62,24 +62,24 @@ bool FeedChannel::Disconnect(FeedConnection *conn) {
 }
 
 bool FeedChannel::CheckConnections() {
-	if(this->ordersIncremental->Type() != FeedConnectionType::Incremental)
-		return false;
-	if(this->statisticsIncremental->Type() != FeedConnectionType::Incremental)
-		return false;
-	if(this->tradesIncremental->Type() != FeedConnectionType::Incremental)
-		return false;
-
-	if(this->ordersSnapshot->Type() != FeedConnectionType::Snapshot)
-		return false;
-	if(this->statisticsSnapshot->Type() != FeedConnectionType::Snapshot)
-		return false;
-	if(this->tradesSnapshot->Type() != FeedConnectionType::Snapshot)
-		return false;
-
-    if(this->instrumentDefinition->Type() != FeedConnectionType::InstrumentDefinition)
-        return false;
-	if(this->historicalReplay->Type() != FeedConnectionType::HistoricalReplay)
-		return false;
+//	if(this->olr->Type() != FeedConnectionType::Incremental)
+//		return false;
+//	if(this->msr->Type() != FeedConnectionType::Incremental)
+//		return false;
+//	if(this->tlr->Type() != FeedConnectionType::Incremental)
+//		return false;
+//
+//	if(this->ols->Type() != FeedConnectionType::Snapshot)
+//		return false;
+//	if(this->mss->Type() != FeedConnectionType::Snapshot)
+//		return false;
+//	if(this->tls->Type() != FeedConnectionType::Snapshot)
+//		return false;
+//
+//    if(this->idf->Type() != FeedConnectionType::InstrumentDefinition)
+//        return false;
+//	if(this->hr->Type() != FeedConnectionType::HistoricalReplay)
+//		return false;
 
 	return true;
 }
@@ -87,31 +87,41 @@ bool FeedChannel::CheckConnections() {
 bool FeedChannel::Connect() { 
 	DefaultLogManager::Default->StartLog(this->m_nameLogIndex, LogMessageCode::lmcFeedChannel_Connect);
 
-	this->statisticsIncremental->SetSnapshot(this->statisticsSnapshot);
-	this->tradesIncremental->SetSnapshot(this->tradesSnapshot);
-	this->ordersIncremental->SetSnapshot(this->ordersSnapshot);
-	this->statisticsIncremental->SetHistoricalReplay(this->historicalReplay);
-	this->tradesIncremental->SetHistoricalReplay(this->historicalReplay);
-	this->ordersIncremental->SetHistoricalReplay(this->historicalReplay);
-	this->statisticsSnapshot->SetHistoricalReplay(this->historicalReplay);
-	this->tradesSnapshot->SetHistoricalReplay(this->historicalReplay);
-	this->ordersSnapshot->SetHistoricalReplay(this->historicalReplay);
-	this->instrumentDefinition->SetHistoricalReplay(this->historicalReplay);
-	this->instrumentStatus->SetHistoricalReplay(this->historicalReplay);
+	if(this->msr != 0)
+		this->msr->SetSnapshot(this->mss);
+	if(this->tlr != 0)
+		this->tlr->SetSnapshot(this->tls);
+	if(this->olr != 0)
+		this->olr->SetSnapshot(this->ols);
+	if(this->isf != 0)
+		this->isf->SetSecurityDefinition(this->idf);
+
+	if(this->msr != 0)
+		this->msr->SetHistoricalReplay(this->hr);
+	if(this->tlr != 0)
+		this->tlr->SetHistoricalReplay(this->hr);
+	if(this->olr != 0)
+		this->olr->SetHistoricalReplay(this->hr);
+	if(this->isf != 0)
+		this->isf->SetHistoricalReplay(this->hr);
 
 	if(!this->CheckConnections()) {
 		DefaultLogManager::Default->EndLog(false);
 		return false;
 	}
 
-    //this->instrumentDefinition->DoNotCheckIncrementalActuality(true);
-    //this->instrumentDefinition->IdfAllowUpdateData(true);
+
+	if(this->msr != 0)
+		this->idf->AddConnectionToRecvSymbol(this->msr);
+	if(this->olr != 0)
+		this->idf->AddConnectionToRecvSymbol(this->olr);
+	if(this->tlr != 0)
+		this->idf->AddConnectionToRecvSymbol(this->tlr);
+	if(this->isf != 0)
+		this->idf->AddConnectionToRecvSymbol(this->isf);
 
 	this->m_state = FeedChannelState::fchCollectSymbols;
-	//this->statisticsIncremental->DoNotCheckIncrementalActuality(true);
-	//this->instrumentDefinition->AddConnectionToRecvSymbol(this->statisticsIncremental);
-	this->instrumentDefinition->AddConnectionToRecvSymbol(this->ordersIncremental);
-	this->instrumentDefinition->Start();
+	this->idf->Start();
 
 	DefaultLogManager::Default->EndLog(true);
 	return true;
@@ -122,15 +132,15 @@ bool FeedChannel::Disconnect() {
 
 	bool result = true;
 	
-	result &= this->Disconnect(this->statisticsIncremental);
-	result &= this->Disconnect(this->statisticsSnapshot);
-	result &= this->Disconnect(this->ordersIncremental);
-	result &= this->Disconnect(this->ordersSnapshot);
-	result &= this->Disconnect(this->tradesIncremental);
-	result &= this->Disconnect(this->tradesSnapshot);
-	result &= this->Disconnect(this->instrumentDefinition);
-	result &= this->Disconnect(this->instrumentStatus);
-	result &= this->Disconnect(this->historicalReplay);
+	result &= this->Disconnect(this->msr);
+	result &= this->Disconnect(this->mss);
+	result &= this->Disconnect(this->olr);
+	result &= this->Disconnect(this->ols);
+	result &= this->Disconnect(this->tlr);
+	result &= this->Disconnect(this->tls);
+	result &= this->Disconnect(this->idf);
+	result &= this->Disconnect(this->isf);
+	result &= this->Disconnect(this->hr);
 
 	this->m_state = FeedChannelState::fchSuspend;
 

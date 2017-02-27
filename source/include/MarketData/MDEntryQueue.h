@@ -1,0 +1,109 @@
+//
+// Created by root on 17.12.16.
+//
+
+#ifndef HFT_ROBOT_MARKETDATAENTRYQUEUE_H
+#define HFT_ROBOT_MARKETDATAENTRYQUEUE_H
+
+#include "../Lib/StringIdComparer.h"
+#include "Fast/FastTypes.h"
+
+#define MDENTRYINFO_INCREMENTAL_ENTRIES_BUFFER_LENGTH 500
+
+class MDEntryQueue {
+    void                                                *m_owner;
+    void                                                **m_incEntries;
+    int                                                 m_incEntriesCount;
+    int                                                 m_incEntriesMaxIndex;
+    int                                                 m_incStartRptSeq;
+    bool                                                m_shouldProcess;
+
+    static AutoAllocatePointerList<MDEntryQueue>* CreatePool();
+public:
+    static AutoAllocatePointerList<MDEntryQueue>        *Pool;
+
+    AutoAllocatePointerList<MDEntryQueue>               *Allocator;
+    LinkedPointer<MDEntryQueue>                         *Pointer;
+    bool                                                Used;
+
+    MDEntryQueue() {
+        this->Used = false;
+        this->Pointer = 0;
+        this->m_incEntries = new void *[MDENTRYINFO_INCREMENTAL_ENTRIES_BUFFER_LENGTH];
+        this->m_incEntriesCount = MDENTRYINFO_INCREMENTAL_ENTRIES_BUFFER_LENGTH;
+        bzero(this->m_incEntries, sizeof(void *) * this->m_incEntriesCount);
+        this->m_incEntriesMaxIndex = -1;
+        this->m_incStartRptSeq = 0;
+        this->m_shouldProcess = false;
+        this->m_owner = 0;
+    }
+    ~MDEntryQueue() {
+        delete this->m_incEntries;
+    }
+
+    inline bool IsCleared() {
+        if(this->m_incStartRptSeq != 0)
+            return false;
+        if(this->m_incEntriesMaxIndex != -1)
+            return false;
+        for(int i = 0; i < this->m_incEntriesCount; i++) {
+            if (this->m_incEntries[i] != 0)
+                return false;
+        }
+        return true;
+    }
+
+    inline void StartRptSeq(int rptSeq) {
+        this->m_incStartRptSeq = rptSeq;
+    }
+
+    inline int StartRptSeq() { return this->m_incStartRptSeq; }
+
+    inline void AddEntry(void *entry, int entryRptSec) {
+        int index = entryRptSec - this->m_incStartRptSeq;
+        if(index >= this->m_incEntriesCount) {
+            if(this->HasEntries())
+                return;
+            this->m_incStartRptSeq = entryRptSec;
+            index = 0;
+        }
+        this->m_shouldProcess = false; // reset flag because we will process
+        this->m_incEntries[index] = entry;
+        if(index > this->m_incEntriesMaxIndex)
+            this->m_incEntriesMaxIndex = index;
+    }
+
+    inline void Reset() {
+        if(this->m_incEntriesMaxIndex >= 0)
+            bzero(this->m_incEntries, sizeof(void*) * this->m_incEntriesMaxIndex);
+        this->m_incEntriesMaxIndex = -1;
+        this->m_incStartRptSeq = 0;
+        this->m_shouldProcess = false;
+    }
+
+    inline void Clear() {
+        void **ptr = this->m_incEntries;
+        void *item = 0;
+        for(int i = 0; i < this->m_incEntriesCount; i++) {
+            item = *ptr;
+            //if(item != 0) item->Clear();
+            throw;
+        }
+        this->Reset();
+    }
+
+    inline void ShouldProcess(bool value) {
+        if(this->HasEntries())
+            return;
+        this->m_shouldProcess = value;
+    }
+    inline int MaxIndex() { return this->m_incEntriesMaxIndex; }
+    inline bool HasEntries() { return this->m_incEntriesMaxIndex != -1 || this->m_shouldProcess; };
+    inline void** Entries() { return this->m_incEntries; }
+    inline int RptSeq() { return this->m_incStartRptSeq; }
+    inline int Capacity() { return this->m_incEntriesCount; }
+    inline void* Owner() { return this->m_owner; }
+    inline void Owner(void *owner) { this->m_owner = owner; }
+};
+
+#endif //HFT_ROBOT_MARKETDATAENTRYQUEUE_H

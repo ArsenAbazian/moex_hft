@@ -5,6 +5,8 @@
 #ifndef HFT_ROBOT_SIMPLELIST_H
 #define HFT_ROBOT_SIMPLELIST_H
 
+#define DEBUG_POINTERLIST
+
 #include <stdio.h>
 
 template <typename T> class PointerList;
@@ -15,6 +17,7 @@ template <typename T> class LinkedPointer {
     LinkedPointer   *m_prev;
     T               *m_data;
     bool             m_released;
+
 public:
     LinkedPointer() {
         this->m_next = 0;
@@ -22,6 +25,7 @@ public:
         this->m_prev = 0;
         this->m_released = true;
     }
+
     inline bool HasNext() { return this->m_next != 0; }
     inline LinkedPointer* Next() { return this->m_next; }
     inline void Next(LinkedPointer *node) { this->m_next = node; }
@@ -36,9 +40,11 @@ public:
 };
 
 template <typename T> class PointerListLite;
+class PointerListTester;
 
 template <typename T> class PointerList {
     friend  class PointerListLite<T>;
+    friend  class PointerListTester;
     int             m_capacity;
 
     LinkedPointer<T> *m_poolHead;
@@ -48,8 +54,19 @@ template <typename T> class PointerList {
     LinkedPointer<T> *m_tail;
     int              m_count;
     bool             m_autoAllocate;
+    const char      *m_name;
 
 public:
+    inline LinkedPointer<T>* Pop(const char *name) {
+        if(this->m_poolHead == this->m_poolTail) {
+            this->Append(this->m_capacity, name);
+        }
+        LinkedPointer<T> *node = this->m_poolHead;
+        this->m_poolHead = this->m_poolHead->Next();
+        this->m_count++;
+        node->Released(false);
+        return node;
+    }
     inline LinkedPointer<T>* Pop() {
         if(this->m_poolHead == this->m_poolTail) {
             this->Append(this->m_capacity);
@@ -70,6 +87,7 @@ public:
         this->m_count--;
     }
     PointerList(int capacity, bool autoAllocate) {
+        this->m_name = "";
         this->m_capacity = capacity;
         this->m_count = 0;
         this->m_autoAllocate = autoAllocate;
@@ -94,7 +112,13 @@ public:
         if(this->m_autoAllocate)
             AllocData();
     }
+    PointerList(int capacity, bool autoAllocate, const char *name) : PointerList(capacity, autoAllocate) {
+        this->m_name = name;
+    }
     PointerList(int capacity) : PointerList(capacity, false) { }
+    PointerList(int capacity, const char *name) : PointerList(capacity, false, name) {
+        this->m_name = name;
+    }
     inline void FreeData() {
         LinkedPointer<T> *s = this->m_poolHead;
         while(true) {
@@ -227,7 +251,9 @@ public:
     }
 
     inline bool IsFull() { return this->m_poolHead == this->m_poolTail; }
-    inline LinkedPointer<T>* Append(int capacity) {
+
+    inline LinkedPointer<T>* Append(int capacity, const char *name) {
+        printf("!!!unexpected append %s count = %d, additional capacity = %d!!!\n", name, this->m_count, capacity); //TODO remove debug info
         this->m_capacity += capacity;
         LinkedPointer<T> *start = new LinkedPointer<T>();
         LinkedPointer<T> *node = start;
@@ -246,7 +272,42 @@ public:
         }
         this->m_poolTail->Next(start);
         this->m_poolTail = node;
-        printf("!!!unexpected append!!!\n"); //TODO remove debug info
+        return start;
+    }
+
+    inline LinkedPointer<T>* Append(int capacity) {
+        printf("!!!unexpected append %s count = %d, additional capacity = %d!!!\n", this->m_name, this->m_count, capacity); //TODO remove debug info
+        this->m_capacity += capacity;
+        LinkedPointer<T> *start = new LinkedPointer<T>();
+        start->Owner(this);
+        LinkedPointer<T> *node = start;
+        for(int i = 0; i < capacity - 1; i++) {
+            LinkedPointer<T> *next = new LinkedPointer<T>();
+            next->Owner(this);
+            node->Next(next);
+            node = next;
+        }
+
+        LinkedPointer<T> *curr = start;
+        if(this->m_autoAllocate) {
+            for(int i = 0; i < capacity; i++) {
+                curr->Data(new T());
+                curr = curr->Next();
+            }
+        }
+        this->m_poolTail->Next(start);
+        this->m_poolTail = node;
+        this->m_poolTail->Next(0);
+#ifdef  TEST
+        if(this->m_autoAllocate) {
+            LinkedPointer<T> *ptr = this->m_poolHead;
+            while (ptr != 0) {
+                if (ptr->Data() == 0)
+                    throw;
+                ptr = ptr->Next();
+            }
+        }
+#endif
         return start;
     }
     inline LinkedPointer<T>* Start() { return this->m_head->Next(); }
@@ -337,6 +398,21 @@ public:
     inline LinkedPointer<T>* Next(LinkedPointer<T> *node) { return node->Next(); }
     inline int Count() { return this->m_count; }
 
+    inline LinkedPointer<T>* Add(const char *name) {
+        LinkedPointer<T> *node = this->m_pool->Pop(name);
+        this->m_tail->Next(node);
+        node->Prev(this->m_tail);
+        this->m_tail = node;
+        node->Next(0);
+        this->m_count++;
+        return node;
+    }
+    inline LinkedPointer<T>* Add(T *data, const char *name) {
+        LinkedPointer<T> *node = this->Add(name);
+        node->Data(data);
+        return node;
+    }
+
     inline LinkedPointer<T>* Add() {
         LinkedPointer<T> *node = this->m_pool->Pop();
         this->m_tail->Next(node);
@@ -351,6 +427,23 @@ public:
         node->Data(data);
         return node;
     }
+
+    inline LinkedPointer<T>* Insert(LinkedPointer<T> *insertBefore, const char *name) {
+        LinkedPointer<T> *node = this->m_pool->Pop(name);
+        LinkedPointer<T> *prev = insertBefore->Prev();
+        node->Prev(prev);
+        prev->Next(node);
+        node->Next(insertBefore);
+        insertBefore->Prev(node);
+        this->m_count++;
+        return node;
+    }
+    inline LinkedPointer<T>* Insert(LinkedPointer<T> *insertBefore, T *data, const char *name) {
+        LinkedPointer<T> *node = this->Insert(insertBefore, name);
+        node->Data(data);
+        return node;
+    }
+
     inline LinkedPointer<T>* Insert(LinkedPointer<T> *insertBefore) {
         LinkedPointer<T> *node = this->m_pool->Pop();
         LinkedPointer<T> *prev = insertBefore->Prev();

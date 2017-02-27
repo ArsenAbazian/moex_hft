@@ -15,14 +15,16 @@ public:
         this->m_statTableCurr = new MarketDataTable<StatisticsInfo, FastGenericInfo, FastGenericItemInfo>();
         this->SetId(FeedConnectionId::fcidMsrCurr);
         this->m_fastProtocolManager = new FastProtocolManager(this->CreateFastAllocationInfo());
-        InitializePackets();
+        InitializePackets(this->GetPacketsCount());
+        DebugInfoManager::Default->PrintMemoryInfo("FeedConnection_CURR_MSR");
     }
+    int GetPacketsCount() { return 2000000; }
     ISocketBufferProvider* CreateSocketBufferProvider() {
         return new SocketBufferProvider(DefaultSocketBufferManager::Default,
-                                        RobotSettings::DefaultFeedConnectionSendBufferSize,
-                                        RobotSettings::DefaultFeedConnectionSendItemsCount,
-                                        RobotSettings::DefaultFeedConnectionRecvBufferSize,
-                                        RobotSettings::DefaultFeedConnectionRecvItemsCount);
+                                        RobotSettings::Default->DefaultFeedConnectionSendBufferSize,
+                                        RobotSettings::Default->DefaultFeedConnectionSendItemsCount,
+                                        RobotSettings::Default->DefaultFeedConnectionRecvBufferSize,
+                                        RobotSettings::Default->DefaultFeedConnectionRecvItemsCount);
     }
     FastObjectsAllocationInfo* CreateFastAllocationInfo() {
         FastObjectsAllocationInfo *info = new FastObjectsAllocationInfo();

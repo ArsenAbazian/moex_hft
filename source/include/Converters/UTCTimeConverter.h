@@ -1,5 +1,5 @@
 #pragma once
-#include "Types.h"
+#include "Settings.h"
 #include "Converters/ItoaConverter.h"
 #include <sys/time.h>
 #include <time.h>

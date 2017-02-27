@@ -1,5 +1,21 @@
 #include <Managers/SocketBufferManager.h>
 #include "Managers/LogManager.h"
+#include "DebugInfoManager.h"
+
+BinaryLogManager::BinaryLogManager() {
+    this->m_items = new BinaryLogItem[this->m_itemsCount];
+    for(int i = 0; i < this->m_itemsCount; i++) {
+        this->m_items[i].m_result = NullableBoolean::nbNull;
+        this->m_items[i].m_index = i;
+        this->m_items[i].m_message2 = -1;
+        this->m_items[i].m_message = -1;
+        this->m_items[i].m_startIndex = -1;
+        this->m_items[i].m_endIndex = -1;
+    }
+    this->m_itemIndex = 0;
+    this->m_stackTop = -1;
+    DebugInfoManager::Default->PrintMemoryInfo("BinaryLogManager::BinaryLogManager");
+}
 
 void BinaryLogManager::Print() {
     for(int i = 0; i < this->m_itemIndex; i++) {

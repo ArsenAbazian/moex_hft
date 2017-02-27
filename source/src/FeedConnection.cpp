@@ -29,7 +29,7 @@ FeedConnection::FeedConnection(const char *id, const char *name, char value, Fee
 
     this->m_waitIncrementalMaxTimeMs = 100;
     this->m_snapshotMaxTimeMs = 30;
-    this->m_maxLostPacketCountForStartSnapshot = 2000;
+    this->m_maxLostPacketCountForStartSnapshot = 30; //2000
 
     this->m_incremental = 0;
     this->m_snapshot = 0;
@@ -50,6 +50,7 @@ FeedConnection::FeedConnection(const char *id, const char *name, char value, Fee
     this->m_requestMessageStartIndex = -1;
     this->m_securityStatusSnapshotActive = false;
     this->m_idfStopAfterUpdateAllMessages = false;
+    this->m_allowGenerateSecurityDefinitions = false;
     this->m_isfStartSnapshotCount = 0;
     this->m_skipApplyMessages = false;
     this->m_packetsCount = 0;
@@ -64,8 +65,6 @@ FeedConnection::FeedConnection(const char *id, const char *name, char value, Fee
     this->m_tradeTableCurr = 0;
     this->m_statTableFond = 0;
     this->m_statTableCurr = 0;
-
-    //this->obrLogFile = fopen("~Documents/hft_robot/logs/obr_log_file.txt", "wt"); TODO remove!
 }
 
 FeedConnection::~FeedConnection() {

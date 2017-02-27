@@ -4,7 +4,7 @@
 
 #ifndef HFT_ROBOT_ORDERTABLECURR_H
 #define HFT_ROBOT_ORDERTABLECURR_H
-#include "../Types.h"
+#include "Settings.h"
 
 #ifdef TEST
 
@@ -899,35 +899,35 @@ public:
     }
 
     void Test_OnIncrementalRefresh_OLR_CURR() {
-        printf("OLR FOND Test_OnIncrementalRefresh_OLR_CURR_Add\n");
+        printf("OLR CURR Test_OnIncrementalRefresh_OLR_CURR_Add\n");
         Test_OnIncrementalRefresh_OLR_CURR_Add();
-        printf("OLR FOND Test_OnIncrementalRefresh_OLR_CURR_Remove\n");
+        printf("OLR CURR Test_OnIncrementalRefresh_OLR_CURR_Remove\n");
         Test_OnIncrementalRefresh_OLR_CURR_Remove();
-        printf("OLR FOND Test_OnIncrementalRefresh_OLR_CURR_Change\n");
+        printf("OLR CURR Test_OnIncrementalRefresh_OLR_CURR_Change\n");
         Test_OnIncrementalRefresh_OLR_CURR_Change();
-        printf("OLR FOND Test_Clear\n");
+        printf("OLR CURR Test_Clear\n");
         Test_Clear();
     }
 
     void Test_OnIncrementalRefresh_OLR_CURR_SellQuotes() {
-        printf("OLR FOND Test_OnIncrementalRefresh_OLR_CURR_Add_SellQuotes\n");
+        printf("OLR CURR Test_OnIncrementalRefresh_OLR_CURR_Add_SellQuotes\n");
         Test_OnIncrementalRefresh_OLR_CURR_Add_SellQuotes();
-        printf("OLR FOND Test_OnIncrementalRefresh_OLR_CURR_Remove_SellQuotes\n");
+        printf("OLR CURR Test_OnIncrementalRefresh_OLR_CURR_Remove_SellQuotes\n");
         Test_OnIncrementalRefresh_OLR_CURR_Remove_SellQuotes();
-        printf("OLR FOND Test_OnIncrementalRefresh_OLR_CURR_Change_SellQuotes\n");
+        printf("OLR CURR Test_OnIncrementalRefresh_OLR_CURR_Change_SellQuotes\n");
         Test_OnIncrementalRefresh_OLR_CURR_Change_SellQuotes();
-        printf("OLR FOND Test_Clear_SellQuotes\n");
+        printf("OLR CURR Test_Clear_SellQuotes\n");
         Test_Clear_SellQuotes();
     }
 
     void Test_OLR_CURR() {
-        printf("OLR FOND Test_OnIncrementalRefresh_OLR_CURR\n");
+        printf("OLR CURR Test_OnIncrementalRefresh_OLR_CURR\n");
         Test_OnIncrementalRefresh_OLR_CURR();
-        printf("OLR FOND Test_OnFullRefresh_OLS_CURR\n");
+        printf("OLR CURR Test_OnFullRefresh_OLS_CURR\n");
         Test_OnFullRefresh_OLS_CURR();
-        printf("OLR FOND Test_OnIncrementalRefresh_OLR_CURR_SellQuotes\n");
+        printf("OLR CURR Test_OnIncrementalRefresh_OLR_CURR_SellQuotes\n");
         Test_OnIncrementalRefresh_OLR_CURR_SellQuotes();
-        printf("OLR FOND Test_OnFullRefresh_OLS_CURR_SellQuotes\n");
+        printf("OLR CURR Test_OnFullRefresh_OLS_CURR_SellQuotes\n");
         Test_OnFullRefresh_OLS_CURR_SellQuotes();
     }
 
@@ -947,9 +947,7 @@ public:
 
         if(!tb->ProcessIncrementalMessage(item1))
             throw;
-        if(tb->EntriesQueue()->MaxIndex() != -1)
-            throw;
-        if(tb->EntriesQueue()->RptSeq() != 0)
+        if(tb->EntriesQueue() != 0)
             throw;
         if(tb->RptSeq() != 1)
             throw;
@@ -1055,7 +1053,7 @@ public:
             throw;
         if(tableItem->BuyQuotes()->Count() != 0)
             throw;
-        if(tableItem->EntriesQueue()->MaxIndex() != -1)
+        if(tableItem->EntriesQueue() != 0)
             throw;
 
         
@@ -1172,7 +1170,7 @@ public:
         OrderInfo<FastOLSCURRItemInfo> *tb = this->m_table->GetItem("s1", "session1");
 
         this->m_table->ObtainSnapshotItem(info);
-        this->m_table->StartProcessSnapshot(info);
+        this->m_table->StartProcessSnapshot();
         if(tb != this->m_table->SnapshotItem())
             throw;
         if(tb->BuyQuotes()->Count() != 0)
@@ -1192,9 +1190,7 @@ public:
             throw;
         if(tb->BuyQuotes()->Count() != 3)
             throw;
-        if(tb->EntriesQueue()->RptSeq() != 0)
-            throw;
-        if(tb->EntriesQueue()->MaxIndex() != -1)
+        if(tb->EntriesQueue() != 0)
             throw;
     }
 
@@ -1237,7 +1233,7 @@ public:
         OrderInfo<FastOLSCURRItemInfo> *tb = this->m_table->GetItem("s1", "session1");
 
         this->m_table->ObtainSnapshotItem(info1);
-        this->m_table->StartProcessSnapshot(info1);
+        this->m_table->StartProcessSnapshot();
         if(tb != this->m_table->SnapshotItem())
             throw;
         if(tb->BuyQuotes()->Count() != 0)
@@ -1296,7 +1292,7 @@ public:
         OrderInfo<FastOLSCURRItemInfo> *tb = this->m_table->GetItem("s1", "session1");
 
         this->m_table->ObtainSnapshotItem(info);
-        this->m_table->StartProcessSnapshot(info);
+        this->m_table->StartProcessSnapshot();
         if(tb != this->m_table->SnapshotItem())
             throw;
         if(tb->BuyQuotes()->Count() != 0)
@@ -1350,7 +1346,7 @@ public:
         OrderInfo<FastOLSCURRItemInfo> *tb = this->m_table->GetItem("s1", "session1");
 
         this->m_table->ObtainSnapshotItem(info);
-        this->m_table->StartProcessSnapshot(info);
+        this->m_table->StartProcessSnapshot();
         if(tb != this->m_table->SnapshotItem())
             throw;
         if(tb->BuyQuotes()->Count() != 0)
@@ -1477,7 +1473,7 @@ public:
             throw;
         if(item->BuyQuotes()->Count() != 4) // all messages from que should be applied
             throw;
-        if(item->EntriesQueue()->MaxIndex() != -1) // should be reset
+        if(item->EntriesQueue() != 0) // should be reset
             throw;
     }
 
@@ -1534,7 +1530,7 @@ public:
             throw;
         if(item->BuyQuotes()->Count() != 5) // all messages from que should be applied
             throw;
-        if(item->EntriesQueue()->MaxIndex() != -1) // should be reset
+        if(item->EntriesQueue() != 0) // should be reset
             throw;
     }
 
@@ -1590,7 +1586,7 @@ public:
             throw;
         if(item->BuyQuotes()->Count() != 3) // at least one message is applied
             throw;
-        if(!item->EntriesQueue()->HasEntries()) // should have entries
+        if(!item->HasEntries()) // should have entries
             throw;
         if(item->EntriesQueue()->MaxIndex() != 2) // should be reset
             throw;
@@ -1613,7 +1609,7 @@ public:
             throw;
         if(item->BuyQuotes()->Count() != 5) // all messages applied
             throw;
-        if(item->EntriesQueue()->HasEntries()) // should have entries
+        if(item->HasEntries()) // should have entries
             throw;
         if(item->RptSeq() != 5) // last processed msg
             throw;
@@ -1671,7 +1667,7 @@ public:
             throw;
         if(item->BuyQuotes()->Count() != 2) // nothing encreased because first message skipped
             throw;
-        if(!item->EntriesQueue()->HasEntries()) // should have entries
+        if(!item->HasEntries()) // should have entries
             throw;
         if(item->EntriesQueue()->MaxIndex() != 2)
             throw;
@@ -1694,7 +1690,7 @@ public:
             throw;
         if(item->BuyQuotes()->Count() != 5) // applied two messages
             throw;
-        if(item->EntriesQueue()->HasEntries()) // should have entries
+        if(item->HasEntries()) // should have entries
             throw;
         if(item->RptSeq() != 5) // last processed msg
             throw;
@@ -1810,7 +1806,7 @@ public:
         }
 
         SendMessages(snapCurr, new TestTemplateInfo*[1] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OLS_FOND, 2, "s1", "session1", false, false,
+                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OLS_CURR, 2, "s1", "session1", false, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -2204,12 +2200,12 @@ public:
             throw;
 
         SendMessages(snapCurr, new TestTemplateInfo*[2] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OLS_FOND, 2, "s1", "session1", true, false,
+                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OLS_CURR, 2, "s1", "session1", true, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
                                      }, 2, 4),
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OLS_FOND, 4, "s1", "session1", false, true,
+                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OLS_CURR, 4, "s1", "session1", false, true,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -2307,9 +2303,9 @@ public:
         // but connection should not be closed - because not all items were updated
         OrderInfo<FastOLSCURRItemInfo> *item1 = incCurr->OrderCurr()->GetItem("s1", "session1");
         OrderInfo<FastOLSCURRItemInfo> *item2 = incCurr->OrderCurr()->GetItem("symbol2", "session1");
-        if(item1->EntriesQueue()->HasEntries())
+        if(item1->HasEntries())
             throw;
-        if(!item2->EntriesQueue()->HasEntries())
+        if(!item2->HasEntries())
             throw;
 
         for(int i = 0; i < item1->BuyQuotes()->Count(); i++)
@@ -2352,9 +2348,9 @@ public:
                      30);
         if(incCurr->m_orderTableCurr->UsedItemCount() != 2)
             throw;
-        if(incCurr->m_orderTableCurr->Symbol(0)->Session(0)->EntriesQueue()->HasEntries())
+        if(incCurr->m_orderTableCurr->Symbol(0)->Session(0)->HasEntries())
             throw;
-        if(incCurr->m_orderTableCurr->Symbol(1)->Session(0)->EntriesQueue()->HasEntries())
+        if(incCurr->m_orderTableCurr->Symbol(1)->Session(0)->HasEntries())
             throw;
         if(incCurr->OrderCurr()->SymbolsToRecvSnapshotCount() != 0)
             throw;
@@ -2373,9 +2369,9 @@ public:
                      30);
         if(incCurr->m_orderTableCurr->UsedItemCount() != 2)
             throw;
-        if(!incCurr->m_orderTableCurr->Symbol(0)->Session(0)->EntriesQueue()->HasEntries())
+        if(!incCurr->m_orderTableCurr->Symbol(0)->Session(0)->HasEntries())
             throw;
-        if(incCurr->m_orderTableCurr->Symbol(1)->Session(0)->EntriesQueue()->HasEntries())
+        if(incCurr->m_orderTableCurr->Symbol(1)->Session(0)->HasEntries())
             throw;
         if(!incCurr->ShouldRestoreIncrementalMessages())
             throw;
@@ -2393,9 +2389,9 @@ public:
 
         if(incCurr->m_orderTableCurr->UsedItemCount() != 2)
             throw;
-        if(incCurr->m_orderTableCurr->Symbol(0)->Session(0)->EntriesQueue()->HasEntries())
+        if(incCurr->m_orderTableCurr->Symbol(0)->Session(0)->HasEntries())
             throw;
-        if(incCurr->m_orderTableCurr->Symbol(1)->Session(0)->EntriesQueue()->HasEntries())
+        if(incCurr->m_orderTableCurr->Symbol(1)->Session(0)->HasEntries())
             throw;
         if(!incCurr->ShouldRestoreIncrementalMessages())
             throw;
@@ -2770,7 +2766,7 @@ public:
             throw;
         if(snapCurr->State() != FeedConnectionState::fcsListenSnapshot)
             throw;
-        if(!incCurr->OrderCurr()->GetItem("s1", "session1")->EntriesQueue()->HasEntries())
+        if(!incCurr->OrderCurr()->GetItem("s1", "session1")->HasEntries())
             throw;
         if(incCurr->OrderCurr()->GetItem("s1", "session1")->RptSeq() != 4)
             throw;
@@ -2797,7 +2793,7 @@ public:
             throw;
         if(snapCurr->State() != FeedConnectionState::fcsSuspend)
             throw;
-        if(incCurr->OrderCurr()->GetItem("s1", "session1")->EntriesQueue()->HasEntries())
+        if(incCurr->OrderCurr()->GetItem("s1", "session1")->HasEntries())
             throw;
         if(incCurr->OrderCurr()->GetItem("s1", "session1")->RptSeq() != 6)
             throw;
@@ -2824,7 +2820,7 @@ public:
             throw;
         if(snapCurr->State() != FeedConnectionState::fcsSuspend)
             throw;
-        if(incCurr->OrderCurr()->GetItem("s1", "session1")->EntriesQueue()->HasEntries())
+        if(incCurr->OrderCurr()->GetItem("s1", "session1")->HasEntries())
             throw;
         if(incCurr->OrderCurr()->GetItem("s1", "session1")->RptSeq() != 6)
             throw;
@@ -2850,7 +2846,7 @@ public:
             throw;
         if(incCurr->OrderCurr()->GetItem("s1", "session1")->RptSeq() != 2)
             throw;
-        if(!incCurr->OrderCurr()->GetItem("s1", "session1")->EntriesQueue()->HasEntries())
+        if(!incCurr->OrderCurr()->GetItem("s1", "session1")->HasEntries())
             throw;
         if(incCurr->OrderCurr()->GetItem("s1", "session1")->EntriesQueue()->StartRptSeq() != 3)
             throw;
@@ -2880,7 +2876,7 @@ public:
             throw;
         if(incCurr->OrderCurr()->GetItem("s1", "session1")->RptSeq() != 4)
             throw;
-        if(incCurr->OrderCurr()->GetItem("s1", "session1")->EntriesQueue()->HasEntries())
+        if(incCurr->OrderCurr()->GetItem("s1", "session1")->HasEntries())
             throw;
         if(incCurr->OrderCurr()->QueueEntriesCount() != 0)
             throw;
@@ -3031,55 +3027,55 @@ public:
     }
     // messages should be clear in snapshot connection because the are repeat
     void TestConnection_ClearSnapshotMessages() {
-        printf("OLR FOND TestConnection_ClearSnapshotMessages_1\n");
+        printf("OLR CURR TestConnection_ClearSnapshotMessages_1\n");
         TestConnection_ClearSnapshotMessages_1();
-        printf("OLR FOND TestConnection_ClearSnapshotMessages_2\n");
+        printf("OLR CURR TestConnection_ClearSnapshotMessages_2\n");
         TestConnection_ClearSnapshotMessages_2();
-        printf("OLR FOND TestConnection_ClearSnapshotMessages_3\n");
+        printf("OLR CURR TestConnection_ClearSnapshotMessages_3\n");
         TestConnection_ClearSnapshotMessages_3();
-        printf("OLR FOND TestConnection_ClearSnapshotMessages_4\n");
+        printf("OLR CURR TestConnection_ClearSnapshotMessages_4\n");
         TestConnection_ClearSnapshotMessages_4();
     }
     void TestConnection_ParallelWorkingIncrementalAndSnapshot() {
-        printf("OLR FOND TestConnection_EnterSnapshotMode\n");
+        printf("OLR CURR TestConnection_EnterSnapshotMode\n");
         TestConnection_EnterSnapshotMode();
-        printf("OLR FOND TestConnection_ClearSnapshotMessages\n");
+        printf("OLR CURR TestConnection_ClearSnapshotMessages\n");
         TestConnection_ClearSnapshotMessages();
-        printf("OLR FOND TestConnection_ParallelWorkingIncrementalAndSnapshot_1\n");
+        printf("OLR CURR TestConnection_ParallelWorkingIncrementalAndSnapshot_1\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_1();
-        printf("OLR FOND TestConnection_ParallelWorkingIncrementalAndSnapshot_2\n");
+        printf("OLR CURR TestConnection_ParallelWorkingIncrementalAndSnapshot_2\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_2();
-        printf("OLR FOND TestConnection_ParallelWorkingIncrementalAndSnapshot_2_1\n");
+        printf("OLR CURR TestConnection_ParallelWorkingIncrementalAndSnapshot_2_1\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_2_1();
-        printf("OLR FOND TestConnection_ParallelWorkingIncrementalAndSnapshot_3\n");
+        printf("OLR CURR TestConnection_ParallelWorkingIncrementalAndSnapshot_3\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_3();
-        printf("OLR FOND TestConnection_ParallelWorkingIncrementalAndSnapshot_3_1\n");
+        printf("OLR CURR TestConnection_ParallelWorkingIncrementalAndSnapshot_3_1\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_3_1();
-        printf("OLR FOND TestConnection_ParallelWorkingIncrementalAndSnapshot_4\n");
+        printf("OLR CURR TestConnection_ParallelWorkingIncrementalAndSnapshot_4\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_4();
-        printf("OLR FOND TestConnection_ParallelWorkingIncrementalAndSnapshot_5\n");
+        printf("OLR CURR TestConnection_ParallelWorkingIncrementalAndSnapshot_5\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_5();
-        printf("OLR FOND TestConnection_ParallelWorkingIncrementalAndSnapshot_5_1\n");
+        printf("OLR CURR TestConnection_ParallelWorkingIncrementalAndSnapshot_5_1\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_5_1();
-        printf("OLR FOND TestConnection_ParallelWorkingIncrementalAndSnapshot_5_2\n");
+        printf("OLR CURR TestConnection_ParallelWorkingIncrementalAndSnapshot_5_2\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_5_2();
-        printf("OLR FOND TestConnection_ParallelWorkingIncrementalAndSnapshot_5_2_2\n");
+        printf("OLR CURR TestConnection_ParallelWorkingIncrementalAndSnapshot_5_2_2\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_5_2_2();
-        printf("OLR FOND TestConnection_ParallelWorkingIncrementalAndSnapshot_5_3\n");
+        printf("OLR CURR TestConnection_ParallelWorkingIncrementalAndSnapshot_5_3\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_5_3();
-        printf("OLR FOND TestConnection_ParallelWorkingIncrementalAndSnapshot_5_4\n");
+        printf("OLR CURR TestConnection_ParallelWorkingIncrementalAndSnapshot_5_4\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_5_4();
-        printf("OLR FOND TestConnection_ParallelWorkingIncrementalAndSnapshot_5_4_1\n");
+        printf("OLR CURR TestConnection_ParallelWorkingIncrementalAndSnapshot_5_4_1\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_5_4_1();
-        printf("OLR FOND TestConnection_ParallelWorkingIncrementalAndSnapshot_5_4_2\n");
+        printf("OLR CURR TestConnection_ParallelWorkingIncrementalAndSnapshot_5_4_2\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_5_4_2();
-        printf("OLR FOND TestConnection_ParallelWorkingIncrementalAndSnapshot_5_5\n");
+        printf("OLR CURR TestConnection_ParallelWorkingIncrementalAndSnapshot_5_5\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_5_5();
-        printf("OLR FOND TestConnection_ParallelWorkingIncrementalAndSnapshot_5_5_1\n");
+        printf("OLR CURR TestConnection_ParallelWorkingIncrementalAndSnapshot_5_5_1\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_5_5_1();
-        printf("OLR FOND TestConnection_ParallelWorkingIncrementalAndSnapshot_5_6\n");
+        printf("OLR CURR TestConnection_ParallelWorkingIncrementalAndSnapshot_5_6\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_5_6();
-        printf("OLR FOND TestConnection_ParallelWorkingIncrementalAndSnapshot_5_7\n");
+        printf("OLR CURR TestConnection_ParallelWorkingIncrementalAndSnapshot_5_7\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_5_7();
     }
 
@@ -3112,87 +3108,87 @@ public:
     }
 
     void TestConnection() {
-        printf("OLR FOND TestConnection_AllSymbolsAreOk\n");
+        printf("OLR CURR TestConnection_AllSymbolsAreOk\n");
         TestConnection_AllSymbolsAreOk();
-        printf("OLR FOND TestConnection_ResetEntriesQueueIfNullSnapshotIsReceived\n");
+        printf("OLR CURR TestConnection_ResetEntriesQueueIfNullSnapshotIsReceived\n");
         TestConnection_ResetEntriesQueueIfNullSnapshotIsReceived();
-        printf("OLR FOND TestConnection_AllSymbolsAreOkButOneMessageLost\n");
+        printf("OLR CURR TestConnection_AllSymbolsAreOkButOneMessageLost\n");
         TestConnection_AllSymbolsAreOkButOneMessageLost();
-        printf("OLR FOND TestConnection_SkipHearthBeatMessages_Incremental\n");
+        printf("OLR CURR TestConnection_SkipHearthBeatMessages_Incremental\n");
         TestConnection_SkipHearthBeatMessages_Incremental();
-        printf("OLR FOND TestConnection_ParallelWorkingIncrementalAndSnapshot\n");
+        printf("OLR CURR TestConnection_ParallelWorkingIncrementalAndSnapshot\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot();
-        printf("OLR FOND TestConnection_NotAllSymbolsAreOk\n");
+        printf("OLR CURR TestConnection_NotAllSymbolsAreOk\n");
         TestConnection_NotAllSymbolsAreOk();
-        printf("OLR FOND TestConnection_StopListeningSnapshotBecauseAllItemsIsUpToDate\n");
+        printf("OLR CURR TestConnection_StopListeningSnapshotBecauseAllItemsIsUpToDate\n");
         TestConnection_StopListeningSnapshotBecauseAllItemsIsUpToDate();
-        printf("OLR FOND TestConnection_StopTimersAfterReconnect\n");
+        printf("OLR CURR TestConnection_StopTimersAfterReconnect\n");
         TestConnection_StopTimersAfterReconnect();
-        printf("OLR FOND TestConnection_SnapshotSomeMessagesReceivedLater\n");
+        printf("OLR CURR TestConnection_SnapshotSomeMessagesReceivedLater\n");
         TestConnection_SnapshotSomeMessagesReceivedLater();
-        printf("OLR FOND TestConnection_SnapshotSomeMessagesNotReceived\n");
+        printf("OLR CURR TestConnection_SnapshotSomeMessagesNotReceived\n");
         TestConnection_SnapshotSomeMessagesNotReceived();
-        printf("OLR FOND TestConnection_LastFragmentReceivedBeforeRouteFirst\n");
+        printf("OLR CURR TestConnection_LastFragmentReceivedBeforeRouteFirst\n");
         TestConnection_LastFragmentReceivedBeforeRouteFirst();
-        printf("OLR FOND TestConnection_RouteFirstReceived_AfterSomeDummyMessages\n");
+        printf("OLR CURR TestConnection_RouteFirstReceived_AfterSomeDummyMessages\n");
         TestConnection_RouteFirstReceived_AfterSomeDummyMessages();
-        printf("OLR FOND TestConnection_RouteFirstReceived_Empty\n");
+        printf("OLR CURR TestConnection_RouteFirstReceived_Empty\n");
         TestConnection_RouteFirstReceived_Empty();
-        printf("OLR FOND TestConnection_TestSnapshotNoMessagesAtAll\n");
+        printf("OLR CURR TestConnection_TestSnapshotNoMessagesAtAll\n");
         TestConnection_TestSnapshotNoMessagesAtAll();
-        printf("OLR FOND TestConnection_OneMessageReceived\n");
+        printf("OLR CURR TestConnection_OneMessageReceived\n");
         TestConnection_OneMessageReceived();
-        printf("OLR FOND TestConnection_Clear_AfterIncremental\n");
+        printf("OLR CURR TestConnection_Clear_AfterIncremental\n");
         TestConnection_Clear_AfterIncremental();
-        printf("OLR FOND TestConnection_TestIncMessageLost_AndWaitTimerElapsed\n");
+        printf("OLR CURR TestConnection_TestIncMessageLost_AndWaitTimerElapsed\n");
         TestConnection_TestIncMessageLost_AndWaitTimerElapsed();
-        printf("OLR FOND TestConnection_TestSnapshotCollect\n");
+        printf("OLR CURR TestConnection_TestSnapshotCollect\n");
         TestConnection_TestSnapshotCollect();
-        printf("OLR FOND TestConnection_TestSnapshotNotCollect\n");
+        printf("OLR CURR TestConnection_TestSnapshotNotCollect\n");
         TestConnection_TestSnapshotMessageLostAndTimeExpired();
-        printf("OLR FOND TestConnection_TestMessagesLost_2Items_SnapshotReceivedForOneItem\n");
+        printf("OLR CURR TestConnection_TestMessagesLost_2Items_SnapshotReceivedForOneItem\n");
         TestConnection_TestMessagesLost_2Items_SnapshotReceivedForOneItem();
 
-        printf("OLR FOND TestConnection_EmptyTest\n");
+        printf("OLR CURR TestConnection_EmptyTest\n");
         TestConnection_EmptyTest();
-        printf("OLR FOND TestConnection_TestCorrectIncMessages\n");
+        printf("OLR CURR TestConnection_TestCorrectIncMessages\n");
         TestConnection_TestCorrectIncMessages();
-        printf("OLR FOND TestConnection_TestIncMessagesLost_AndWhenAppeared\n");
+        printf("OLR CURR TestConnection_TestIncMessagesLost_AndWhenAppeared\n");
         TestConnection_TestIncMessagesLost_AndWhenAppeared();
-        printf("OLR FOND TestConnection_TestInc2MessagesLost_AppearedThen2Messages\n");
+        printf("OLR CURR TestConnection_TestInc2MessagesLost_AppearedThen2Messages\n");
         TestConnection_TestInc2MessagesLost_AppearedThen2Messages();
-        printf("OLR FOND TestConnection_TestInc2MessagesLost_AppearedSeparately_1_2\n");
+        printf("OLR CURR TestConnection_TestInc2MessagesLost_AppearedSeparately_1_2\n");
         TestConnection_TestInc2MessagesLost_AppearedSeparately_1_2();
-        printf("OLR FOND TestConnection_TestInc2MessagesLost_AppearedSeparately_2_1\n");
+        printf("OLR CURR TestConnection_TestInc2MessagesLost_AppearedSeparately_2_1\n");
         TestConnection_TestInc2MessagesLost_AppearedSeparately_2_1();
     }
 
     void TestOrderTableItem() {
-        printf("OLR FOND TestTableItem_CorrectBegin\n");
+        printf("OLR CURR TestTableItem_CorrectBegin\n");
         TestTableItem_CorrectBegin();
-        printf("OLR FOND TestTableItem_IncorrectBegin\n");
+        printf("OLR CURR TestTableItem_IncorrectBegin\n");
         TestTableItem_IncorrectBegin();
-        printf("OLR FOND TestTableItem_SkipMessage\n");
+        printf("OLR CURR TestTableItem_SkipMessage\n");
         TestTableItem_SkipMessage();
-        printf("OLR FOND TestTable_Default\n");
+        printf("OLR CURR TestTable_Default\n");
         TestTable_Default();
-        printf("OLR FOND TestTable_AfterClear\n");
+        printf("OLR CURR TestTable_AfterClear\n");
         TestTable_AfterClear();
-        printf("OLR FOND TestTable_CorrectBegin\n");
+        printf("OLR CURR TestTable_CorrectBegin\n");
         TestTable_CorrectBegin();
-        printf("OLR FOND TestTable_IncorrectBegin\n");
+        printf("OLR CURR TestTable_IncorrectBegin\n");
         TestTable_IncorrectBegin();
-        printf("OLR FOND TestTable_SkipMessages\n");
+        printf("OLR CURR TestTable_SkipMessages\n");
         TestTable_SkipMessages();
-        printf("OLR FOND Test_2UsedItemsAfter2IncrementalMessages\n");
+        printf("OLR CURR Test_2UsedItemsAfter2IncrementalMessages\n");
         Test_2UsedItemsAfter2IncrementalMessages();
-        printf("OLR FOND TestTable_CorrectApplySnapshot\n");
+        printf("OLR CURR TestTable_CorrectApplySnapshot\n");
         TestTable_CorrectApplySnapshot();
-        printf("OLR FOND TestTable_CorrectApplySnapshot_2\n");
+        printf("OLR CURR TestTable_CorrectApplySnapshot_2\n");
         TestTable_CorrectApplySnapshot_2();
-        printf("OLR FOND TestTable_IncorrectApplySnapshot\n");
+        printf("OLR CURR TestTable_IncorrectApplySnapshot\n");
         TestTable_IncorrectApplySnapshot();
-        printf("OLR FOND TestTable_IncorrectApplySnapshot_WhenMessageSkipped\n");
+        printf("OLR CURR TestTable_IncorrectApplySnapshot_WhenMessageSkipped\n");
         TestTable_IncorrectApplySnapshot_WhenMessageSkipped();
     }
 
@@ -3389,27 +3385,27 @@ public:
 
     void TestInfoAndItemInfoUsageAndAllocationCurr() {
         this->m_helper->SetCurrMode();
-        printf("OLR FOND TestInfoAndItemInfoUsageAndAllocationCurr_Inc_1\n");
+        printf("OLR CURR TestInfoAndItemInfoUsageAndAllocationCurr_Inc_1\n");
         TestInfoAndItemInfoUsageAndAllocationCurr_Inc_1();
-        printf("OLR FOND TestInfoAndItemInfoUsageAndAllocationCurr_Inc_2\n");
+        printf("OLR CURR TestInfoAndItemInfoUsageAndAllocationCurr_Inc_2\n");
         TestInfoAndItemInfoUsageAndAllocationCurr_Inc_2();
-        printf("OLR FOND TestInfoAndItemInfoUsageAndAllocationCurr_Inc_3\n");
+        printf("OLR CURR TestInfoAndItemInfoUsageAndAllocationCurr_Inc_3\n");
         TestInfoAndItemInfoUsageAndAllocationCurr_Inc_3();
-        printf("OLR FOND TestInfoAndItemInfoUsageAndAllocationCurr_Inc_4\n");
+        printf("OLR CURR TestInfoAndItemInfoUsageAndAllocationCurr_Inc_4\n");
         TestInfoAndItemInfoUsageAndAllocationCurr_Inc_4();
-        printf("OLR FOND TestInfoAndItemInfoUsageAndAllocationCurr_Inc_5\n");
+        printf("OLR CURR TestInfoAndItemInfoUsageAndAllocationCurr_Inc_5\n");
         TestInfoAndItemInfoUsageAndAllocationCurr_Inc_5();
-        printf("OLR FOND TestInfoAndItemInfoUsageAndAllocationCurr_Snap_1\n");
+        printf("OLR CURR TestInfoAndItemInfoUsageAndAllocationCurr_Snap_1\n");
         TestInfoAndItemInfoUsageAndAllocationCurr_Snap_1();
-        printf("OLR FOND TestInfoAndItemInfoUsageAndAllocationCurr_Snap_2\n");
+        printf("OLR CURR TestInfoAndItemInfoUsageAndAllocationCurr_Snap_2\n");
         TestInfoAndItemInfoUsageAndAllocationCurr_Snap_2();
-        printf("OLR FOND TestInfoAndItemInfoUsageAndAllocationCurr_Snap_3\n");
+        printf("OLR CURR TestInfoAndItemInfoUsageAndAllocationCurr_Snap_3\n");
         TestInfoAndItemInfoUsageAndAllocationCurr_Snap_3();
-        printf("OLR FOND TestInfoAndItemInfoUsageAndAllocationCurr_Snap_4\n");
+        printf("OLR CURR TestInfoAndItemInfoUsageAndAllocationCurr_Snap_4\n");
         TestInfoAndItemInfoUsageAndAllocationCurr_Snap_4();
-        printf("OLR FOND TestInfoAndItemInfoUsageAndAllocationCurr_Snap_5\n");
+        printf("OLR CURR TestInfoAndItemInfoUsageAndAllocationCurr_Snap_5\n");
         TestInfoAndItemInfoUsageAndAllocationCurr_Snap_5();
-        printf("OLR FOND TestInfoAndItemInfoUsageAndAllocationCurr_Snap_6\n");
+        printf("OLR CURR TestInfoAndItemInfoUsageAndAllocationCurr_Snap_6\n");
         TestInfoAndItemInfoUsageAndAllocationCurr_Snap_6();
     }
 

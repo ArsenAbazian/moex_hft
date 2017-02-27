@@ -4,7 +4,7 @@
 
 #ifndef HFT_ROBOT_TRADETESTERCURR_H
 #define HFT_ROBOT_TRADETESTERCURR_H
-#include "../Types.h"
+#include "Settings.h"
 
 #ifdef TEST
 
@@ -362,9 +362,7 @@ public:
 
         if(!tb->ProcessIncrementalMessage(item1))
             throw;
-        if(tb->EntriesQueue()->MaxIndex() != -1)
-            throw;
-        if(tb->EntriesQueue()->RptSeq() != 0)
+        if(tb->EntriesQueue() != 0)
             throw;
         if(tb->RptSeq() != 1)
             throw;
@@ -468,7 +466,7 @@ public:
             throw;
         if(tableItem->Trades()->Count() != 0)
             throw;
-        if(tableItem->EntriesQueue()->MaxIndex() != -1)
+        if(tableItem->EntriesQueue() != 0)
             throw;
 
 
@@ -585,7 +583,7 @@ public:
         TradeInfo<FastTLSCURRItemInfo> *tb = this->m_table->GetItem("s1", "session");
 
         this->m_table->ObtainSnapshotItem(info);
-        this->m_table->StartProcessSnapshot(info);
+        this->m_table->StartProcessSnapshot();
         if(tb != this->m_table->SnapshotItem())
             throw;
         if(tb->Trades()->Count() != 0)
@@ -603,9 +601,7 @@ public:
             throw;
         if(tb->Trades()->Count() != 3)
             throw;
-        if(tb->EntriesQueue()->RptSeq() != 0)
-            throw;
-        if(tb->EntriesQueue()->MaxIndex() != -1)
+        if(tb->EntriesQueue() != 0)
             throw;
     }
 
@@ -648,7 +644,7 @@ public:
         TradeInfo<FastTLSCURRItemInfo> *tb = this->m_table->GetItem("s1", "session");
 
         this->m_table->ObtainSnapshotItem(info1);
-        this->m_table->StartProcessSnapshot(info1);
+        this->m_table->StartProcessSnapshot();
         if(tb != this->m_table->SnapshotItem())
             throw;
         if(tb->Trades()->Count() != 0)
@@ -705,7 +701,7 @@ public:
         TradeInfo<FastTLSCURRItemInfo> *tb = this->m_table->GetItem("s1", "session");
 
         this->m_table->ObtainSnapshotItem(info);
-        this->m_table->StartProcessSnapshot(info);
+        this->m_table->StartProcessSnapshot();
         if(tb != this->m_table->SnapshotItem())
             throw;
         if(tb->Trades()->Count() != 0)
@@ -757,7 +753,7 @@ public:
         TradeInfo<FastTLSCURRItemInfo> *tb = this->m_table->GetItem("s1", "session");
 
         this->m_table->ObtainSnapshotItem(info);
-        this->m_table->StartProcessSnapshot(info);
+        this->m_table->StartProcessSnapshot();
         if(tb != this->m_table->SnapshotItem())
             throw;
         if(tb->Trades()->Count() != 0)
@@ -887,7 +883,7 @@ public:
             throw;
         if(item->Trades()->Count() != 4) // all messages from que should be applied
             throw;
-        if(item->EntriesQueue()->MaxIndex() != -1) // should be reset
+        if(item->EntriesQueue() != 0) // should be reset
             throw;
     }
 
@@ -944,7 +940,7 @@ public:
             throw;
         if(item->Trades()->Count() != 5) // all messages from que should be applied
             throw;
-        if(item->EntriesQueue()->MaxIndex() != -1) // should be reset
+        if(item->EntriesQueue() != 0) // should be reset
             throw;
     }
 
@@ -1000,7 +996,7 @@ public:
             throw;
         if(item->Trades()->Count() != 3) // at least one message is applied
             throw;
-        if(!item->EntriesQueue()->HasEntries()) // should have entries
+        if(!item->HasEntries()) // should have entries
             throw;
         if(item->EntriesQueue()->MaxIndex() != 2) // should be reset
             throw;
@@ -1023,7 +1019,7 @@ public:
             throw;
         if(item->Trades()->Count() != 5) // all messages applied
             throw;
-        if(item->EntriesQueue()->HasEntries()) // should have entries
+        if(item->HasEntries()) // should have entries
             throw;
         if(item->RptSeq() != 5) // last processed msg
             throw;
@@ -1081,7 +1077,7 @@ public:
             throw;
         if(item->Trades()->Count() != 2) // nothing encreased because first message skipped
             throw;
-        if(!item->EntriesQueue()->HasEntries()) // should have entries
+        if(!item->HasEntries()) // should have entries
             throw;
         if(item->EntriesQueue()->MaxIndex() != 2)
             throw;
@@ -1104,7 +1100,7 @@ public:
             throw;
         if(item->Trades()->Count() != 5) // applied two messages
             throw;
-        if(item->EntriesQueue()->HasEntries()) // should have entries
+        if(item->HasEntries()) // should have entries
             throw;
         if(item->RptSeq() != 5) // last processed msg
             throw;
@@ -1220,7 +1216,7 @@ public:
         }
 
         SendMessages(snapCurr, new TestTemplateInfo*[1] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_TLS_FOND, 2, "s1", "session1", false, false,
+                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_TLS_CURR, 2, "s1", "session1", false, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -1614,12 +1610,12 @@ public:
             throw;
 
         SendMessages(snapCurr, new TestTemplateInfo*[2] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_TLS_FOND, 2, "s1", "session1", true, false,
+                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_TLS_CURR, 2, "s1", "session1", true, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
                                      }, 2, 4),
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_TLS_FOND, 4, "s1", "session1", false, true,
+                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_TLS_CURR, 4, "s1", "session1", false, true,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -1717,9 +1713,9 @@ public:
         // but connection should not be closed - because not all items were updated
         TradeInfo<FastTLSCURRItemInfo> *item1 = incCurr->TradeCurr()->GetItem("s1", "session1");
         TradeInfo<FastTLSCURRItemInfo> *item2 = incCurr->TradeCurr()->GetItem("s2", "session1");
-        if(item1->EntriesQueue()->HasEntries())
+        if(item1->HasEntries())
             throw;
-        if(!item2->EntriesQueue()->HasEntries())
+        if(!item2->HasEntries())
             throw;
 
         for(int i = 0; i < item1->Trades()->Count(); i++)
@@ -1764,9 +1760,9 @@ public:
                      30);
         if(incCurr->TradeCurr()->UsedItemCount() != 2)
             throw;
-        if(incCurr->TradeCurr()->Symbol(0)->Session(0)->EntriesQueue()->HasEntries())
+        if(incCurr->TradeCurr()->Symbol(0)->Session(0)->HasEntries())
             throw;
-        if(incCurr->TradeCurr()->Symbol(1)->Session(0)->EntriesQueue()->HasEntries())
+        if(incCurr->TradeCurr()->Symbol(1)->Session(0)->HasEntries())
             throw;
         if(incCurr->TradeCurr()->SymbolsToRecvSnapshotCount() != 0)
             throw;
@@ -1785,9 +1781,9 @@ public:
                      30);
         if(incCurr->TradeCurr()->UsedItemCount() != 2)
             throw;
-        if(!incCurr->TradeCurr()->Symbol(0)->Session(0)->EntriesQueue()->HasEntries())
+        if(!incCurr->TradeCurr()->Symbol(0)->Session(0)->HasEntries())
             throw;
-        if(incCurr->TradeCurr()->Symbol(1)->Session(0)->EntriesQueue()->HasEntries())
+        if(incCurr->TradeCurr()->Symbol(1)->Session(0)->HasEntries())
             throw;
         if(!incCurr->ShouldRestoreIncrementalMessages())
             throw;
@@ -1805,9 +1801,9 @@ public:
 
         if(incCurr->TradeCurr()->UsedItemCount() != 2)
             throw;
-        if(incCurr->TradeCurr()->Symbol(0)->Session(0)->EntriesQueue()->HasEntries())
+        if(incCurr->TradeCurr()->Symbol(0)->Session(0)->HasEntries())
             throw;
-        if(incCurr->TradeCurr()->Symbol(1)->Session(0)->EntriesQueue()->HasEntries())
+        if(incCurr->TradeCurr()->Symbol(1)->Session(0)->HasEntries())
             throw;
         if(!incCurr->ShouldRestoreIncrementalMessages())
             throw;
@@ -2182,7 +2178,7 @@ public:
             throw;
         if(snapCurr->State() != FeedConnectionState::fcsListenSnapshot)
             throw;
-        if(!incCurr->TradeCurr()->GetItem("s1", "session1")->EntriesQueue()->HasEntries())
+        if(!incCurr->TradeCurr()->GetItem("s1", "session1")->HasEntries())
             throw;
         if(incCurr->TradeCurr()->GetItem("s1", "session1")->RptSeq() != 4)
             throw;
@@ -2209,7 +2205,7 @@ public:
             throw;
         if(snapCurr->State() != FeedConnectionState::fcsSuspend)
             throw;
-        if(incCurr->TradeCurr()->GetItem("s1", "session1")->EntriesQueue()->HasEntries())
+        if(incCurr->TradeCurr()->GetItem("s1", "session1")->HasEntries())
             throw;
         if(incCurr->TradeCurr()->GetItem("s1", "session1")->RptSeq() != 6)
             throw;
@@ -2236,7 +2232,7 @@ public:
             throw;
         if(snapCurr->State() != FeedConnectionState::fcsSuspend)
             throw;
-        if(incCurr->TradeCurr()->GetItem("s1", "session1")->EntriesQueue()->HasEntries())
+        if(incCurr->TradeCurr()->GetItem("s1", "session1")->HasEntries())
             throw;
         if(incCurr->TradeCurr()->GetItem("s1", "session1")->RptSeq() != 6)
             throw;
@@ -2262,7 +2258,7 @@ public:
             throw;
         if(incCurr->TradeCurr()->GetItem("s1", "session1")->RptSeq() != 2)
             throw;
-        if(!incCurr->TradeCurr()->GetItem("s1", "session1")->EntriesQueue()->HasEntries())
+        if(!incCurr->TradeCurr()->GetItem("s1", "session1")->HasEntries())
             throw;
         if(incCurr->TradeCurr()->GetItem("s1", "session1")->EntriesQueue()->StartRptSeq() != 3)
             throw;
@@ -2292,7 +2288,7 @@ public:
             throw;
         if(incCurr->TradeCurr()->GetItem("s1", "session1")->RptSeq() != 4)
             throw;
-        if(incCurr->TradeCurr()->GetItem("s1", "session1")->EntriesQueue()->HasEntries())
+        if(incCurr->TradeCurr()->GetItem("s1", "session1")->HasEntries())
             throw;
         if(incCurr->TradeCurr()->QueueEntriesCount() != 0)
             throw;

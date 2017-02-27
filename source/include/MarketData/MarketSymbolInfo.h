@@ -67,7 +67,7 @@ public:
     inline bool Equals(const char *symbol, int symbolLen) { return this->m_symbol->Equal(symbol, symbolLen); }
     inline void Clear() {
         T **item = this->m_items;
-        for(int i = 0; i < this->m_count; i++, item++) {
+        for(int i = 0; i < this->m_maxCount; i++, item++) {
             (*item)->Used(false);
             (*item)->Clear();
         }
@@ -95,6 +95,7 @@ public:
     inline int SessionsToRecvSnapshotCount() { return this->m_sessionsToRecvSnapshot; }
     inline bool AllSessionsRecvSnapshot() { return this->m_sessionsToRecvSnapshot == 0; }
     inline void DecSessionsToRecvSnapshotCount() { this->m_sessionsToRecvSnapshot--; }
+    inline void IncSessionsToRecvSnapshotCount() { this->m_sessionsToRecvSnapshot++; }
 };
 
 #endif //HFT_ROBOT_MARKETSYMBOLINFO_H

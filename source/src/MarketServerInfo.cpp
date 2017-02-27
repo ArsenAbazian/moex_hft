@@ -249,8 +249,8 @@ bool MarketServerInfo::RecvHearthBeat_Atom() {
 
 ISocketBufferProvider* MarketServerInfo::CreateSocketBufferProvider() {
     return new SocketBufferProvider(DefaultSocketBufferManager::Default,
-                             RobotSettings::DefaultMarketSendBufferSize, RobotSettings::DefaultMarketSendItemsCount,
-                             RobotSettings::DefaultMarketRecvBufferSize, RobotSettings::DefaultMarketRecvItemsCount);
+                             RobotSettings::Default->DefaultMarketSendBufferSize, RobotSettings::Default->DefaultMarketSendItemsCount,
+                             RobotSettings::Default->DefaultMarketRecvBufferSize, RobotSettings::Default->DefaultMarketRecvItemsCount);
 }
 
 bool MarketServerInfo::Connect() {

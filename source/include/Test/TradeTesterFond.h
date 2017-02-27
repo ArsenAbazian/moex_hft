@@ -4,7 +4,7 @@
 
 #ifndef HFT_ROBOT_TRADETESTER_H
 #define HFT_ROBOT_TRADETESTER_H
-#include "../Types.h"
+#include "Settings.h"
 
 #ifdef TEST
 
@@ -45,6 +45,12 @@ public:
         for(int i = 0; i < tableItem->Trades()->Count(); i++)
             if(tableItem->Trades()->Item(i)->Allocator == 0)
                 throw;
+        if(tableItem->EntriesQueue() != 0) {
+            if(tableItem->EntriesQueue()->Pointer->Data() != tableItem->EntriesQueue())
+                throw;
+            if(tableItem->EntriesQueue()->Allocator == 0)
+                throw;
+        }
     }
 
     void TestTableItemsAllocator(MarketDataTable<TradeInfo, FastTLSFONDInfo, FastTLSFONDItemInfo> *table) {
@@ -54,6 +60,17 @@ public:
                 TestItem(item);
             }
         }
+        TradeInfo<FastTLSFONDItemInfo> *tb = new TradeInfo<FastTLSFONDItemInfo>();
+        tb->ObtainEntriesQueue();
+        LinkedPointer<MDEntryQueue<FastTLSFONDItemInfo>> *ptr = tb->EntriesQueue()->Pointer->Owner()->PoolStart();
+        while(ptr != 0) {
+            if(ptr->Data() == 0)
+                throw;
+            if(ptr == tb->EntriesQueue()->Pointer->Owner()->PoolEnd())
+                break;
+            ptr = ptr->Next();
+        }
+        tb->ReleaseEntryQue();
     }
 
     void Clear() {
@@ -351,6 +368,17 @@ public:
         if(this->incFond->TradeFond()->SymbolsCount() != 0)
             throw;
         this->TestTableItemsAllocator(incFond->TradeFond());
+        TradeInfo<FastTLSFONDItemInfo> *tb = new TradeInfo<FastTLSFONDItemInfo>();
+        tb->ObtainEntriesQueue();
+        LinkedPointer<MDEntryQueue<FastTLSFONDItemInfo>> *ptr = tb->EntriesQueue()->Pointer->Owner()->PoolStart();
+        while(ptr != 0) {
+            if(ptr->Data() == 0)
+                throw;
+            if(ptr == tb->EntriesQueue()->Pointer->Owner()->PoolEnd())
+                break;
+            ptr = ptr->Next();
+        }
+        tb->ReleaseEntryQue();
     }
 
     void TestTableItem_CorrectBegin() {
@@ -362,9 +390,7 @@ public:
 
         if(!tb->ProcessIncrementalMessage(item1))
             throw;
-        if(tb->EntriesQueue()->MaxIndex() != -1)
-            throw;
-        if(tb->EntriesQueue()->RptSeq() != 0)
+        if(tb->EntriesQueue() != 0)
             throw;
         if(tb->RptSeq() != 1)
             throw;
@@ -468,7 +494,7 @@ public:
             throw;
         if(tableItem->Trades()->Count() != 0)
             throw;
-        if(tableItem->EntriesQueue()->MaxIndex() != -1)
+        if(tableItem->EntriesQueue() != 0)
             throw;
 
 
@@ -585,7 +611,7 @@ public:
         TradeInfo<FastTLSFONDItemInfo> *tb = this->m_table->GetItem("s1", "session");
 
         this->m_table->ObtainSnapshotItem(info);
-        this->m_table->StartProcessSnapshot(info);
+        this->m_table->StartProcessSnapshot();
         if(tb != this->m_table->SnapshotItem())
             throw;
         if(tb->Trades()->Count() != 0)
@@ -603,9 +629,7 @@ public:
             throw;
         if(tb->Trades()->Count() != 3)
             throw;
-        if(tb->EntriesQueue()->RptSeq() != 0)
-            throw;
-        if(tb->EntriesQueue()->MaxIndex() != -1)
+        if(tb->EntriesQueue() != 0)
             throw;
     }
 
@@ -648,7 +672,7 @@ public:
         TradeInfo<FastTLSFONDItemInfo> *tb = this->m_table->GetItem("s1", "session");
 
         this->m_table->ObtainSnapshotItem(info1);
-        this->m_table->StartProcessSnapshot(info1);
+        this->m_table->StartProcessSnapshot();
         if(tb != this->m_table->SnapshotItem())
             throw;
         if(tb->Trades()->Count() != 0)
@@ -705,7 +729,7 @@ public:
         TradeInfo<FastTLSFONDItemInfo> *tb = this->m_table->GetItem("s1", "session");
 
         this->m_table->ObtainSnapshotItem(info);
-        this->m_table->StartProcessSnapshot(info);
+        this->m_table->StartProcessSnapshot();
         if(tb != this->m_table->SnapshotItem())
             throw;
         if(tb->Trades()->Count() != 0)
@@ -757,7 +781,7 @@ public:
         TradeInfo<FastTLSFONDItemInfo> *tb = this->m_table->GetItem("s1", "session");
 
         this->m_table->ObtainSnapshotItem(info);
-        this->m_table->StartProcessSnapshot(info);
+        this->m_table->StartProcessSnapshot();
         if(tb != this->m_table->SnapshotItem())
             throw;
         if(tb->Trades()->Count() != 0)
@@ -882,7 +906,7 @@ public:
             throw;
         if(item->Trades()->Count() != 4) // all messages from que should be applied
             throw;
-        if(item->EntriesQueue()->MaxIndex() != -1) // should be reset
+        if(item->EntriesQueue() != 0) // should be reset
             throw;
     }
 
@@ -939,7 +963,7 @@ public:
             throw;
         if(item->Trades()->Count() != 5) // all messages from que should be applied
             throw;
-        if(item->EntriesQueue()->MaxIndex() != -1) // should be reset
+        if(item->EntriesQueue() != 0) // should be reset
             throw;
     }
 
@@ -995,7 +1019,7 @@ public:
             throw;
         if(item->Trades()->Count() != 3) // at least one message is applied
             throw;
-        if(!item->EntriesQueue()->HasEntries()) // should have entries
+        if(!item->HasEntries()) // should have entries
             throw;
         if(item->EntriesQueue()->MaxIndex() != 2) // should be reset
             throw;
@@ -1018,7 +1042,7 @@ public:
             throw;
         if(item->Trades()->Count() != 5) // all messages applied
             throw;
-        if(item->EntriesQueue()->HasEntries()) // should have entries
+        if(item->HasEntries()) // should have entries
             throw;
         if(item->RptSeq() != 5) // last processed msg
             throw;
@@ -1076,7 +1100,7 @@ public:
             throw;
         if(item->Trades()->Count() != 2) // nothing encreased because first message skipped
             throw;
-        if(!item->EntriesQueue()->HasEntries()) // should have entries
+        if(!item->HasEntries()) // should have entries
             throw;
         if(item->EntriesQueue()->MaxIndex() != 2)
             throw;
@@ -1099,7 +1123,7 @@ public:
             throw;
         if(item->Trades()->Count() != 5) // applied two messages
             throw;
-        if(item->EntriesQueue()->HasEntries()) // should have entries
+        if(item->HasEntries()) // should have entries
             throw;
         if(item->RptSeq() != 5) // last processed msg
             throw;
@@ -1712,9 +1736,9 @@ public:
         // but connection should not be closed - because not all items were updated
         TradeInfo<FastTLSFONDItemInfo> *item1 = incFond->TradeFond()->GetItem("s1", "session1");
         TradeInfo<FastTLSFONDItemInfo> *item2 = incFond->TradeFond()->GetItem("s2", "session1");
-        if(item1->EntriesQueue()->HasEntries())
+        if(item1->HasEntries())
             throw;
-        if(!item2->EntriesQueue()->HasEntries())
+        if(!item2->HasEntries())
             throw;
 
         for(int i = 0; i < item1->Trades()->Count(); i++)
@@ -1759,9 +1783,9 @@ public:
                      30);
         if(incFond->TradeFond()->UsedItemCount() != 2)
             throw;
-        if(incFond->TradeFond()->Symbol(0)->Session(0)->EntriesQueue()->HasEntries())
+        if(incFond->TradeFond()->Symbol(0)->Session(0)->HasEntries())
             throw;
-        if(incFond->TradeFond()->Symbol(1)->Session(0)->EntriesQueue()->HasEntries())
+        if(incFond->TradeFond()->Symbol(1)->Session(0)->HasEntries())
             throw;
         if(incFond->TradeFond()->SymbolsToRecvSnapshotCount() != 0)
             throw;
@@ -1780,9 +1804,9 @@ public:
                      30);
         if(incFond->TradeFond()->UsedItemCount() != 2)
             throw;
-        if(!incFond->TradeFond()->Symbol(0)->Session(0)->EntriesQueue()->HasEntries())
+        if(!incFond->TradeFond()->Symbol(0)->Session(0)->HasEntries())
             throw;
-        if(incFond->TradeFond()->Symbol(1)->Session(0)->EntriesQueue()->HasEntries())
+        if(incFond->TradeFond()->Symbol(1)->Session(0)->HasEntries())
             throw;
         if(!incFond->ShouldRestoreIncrementalMessages())
             throw;
@@ -1800,9 +1824,9 @@ public:
 
         if(incFond->TradeFond()->UsedItemCount() != 2)
             throw;
-        if(incFond->TradeFond()->Symbol(0)->Session(0)->EntriesQueue()->HasEntries())
+        if(incFond->TradeFond()->Symbol(0)->Session(0)->HasEntries())
             throw;
-        if(incFond->TradeFond()->Symbol(1)->Session(0)->EntriesQueue()->HasEntries())
+        if(incFond->TradeFond()->Symbol(1)->Session(0)->HasEntries())
             throw;
         if(!incFond->ShouldRestoreIncrementalMessages())
             throw;
@@ -2177,7 +2201,7 @@ public:
             throw;
         if(snapFond->State() != FeedConnectionState::fcsListenSnapshot)
             throw;
-        if(!incFond->TradeFond()->GetItem("s1", "session1")->EntriesQueue()->HasEntries())
+        if(!incFond->TradeFond()->GetItem("s1", "session1")->HasEntries())
             throw;
         if(incFond->TradeFond()->GetItem("s1", "session1")->RptSeq() != 4)
             throw;
@@ -2204,7 +2228,7 @@ public:
             throw;
         if(snapFond->State() != FeedConnectionState::fcsSuspend)
             throw;
-        if(incFond->TradeFond()->GetItem("s1", "session1")->EntriesQueue()->HasEntries())
+        if(incFond->TradeFond()->GetItem("s1", "session1")->HasEntries())
             throw;
         if(incFond->TradeFond()->GetItem("s1", "session1")->RptSeq() != 6)
             throw;
@@ -2231,7 +2255,7 @@ public:
             throw;
         if(snapFond->State() != FeedConnectionState::fcsSuspend)
             throw;
-        if(incFond->TradeFond()->GetItem("s1", "session1")->EntriesQueue()->HasEntries())
+        if(incFond->TradeFond()->GetItem("s1", "session1")->HasEntries())
             throw;
         if(incFond->TradeFond()->GetItem("s1", "session1")->RptSeq() != 6)
             throw;
@@ -2257,7 +2281,7 @@ public:
             throw;
         if(incFond->TradeFond()->GetItem("s1", "session1")->RptSeq() != 2)
             throw;
-        if(!incFond->TradeFond()->GetItem("s1", "session1")->EntriesQueue()->HasEntries())
+        if(!incFond->TradeFond()->GetItem("s1", "session1")->HasEntries())
             throw;
         if(incFond->TradeFond()->GetItem("s1", "session1")->EntriesQueue()->StartRptSeq() != 3)
             throw;
@@ -2287,7 +2311,7 @@ public:
             throw;
         if(incFond->TradeFond()->GetItem("s1", "session1")->RptSeq() != 4)
             throw;
-        if(incFond->TradeFond()->GetItem("s1", "session1")->EntriesQueue()->HasEntries())
+        if(incFond->TradeFond()->GetItem("s1", "session1")->HasEntries())
             throw;
         if(incFond->TradeFond()->QueueEntriesCount() != 0)
             throw;
@@ -2514,6 +2538,9 @@ public:
 
         if(!incFond->Listen_Atom_Incremental_Core())
             throw;
+
+        MDEntryQueue<FastTLSFONDItemInfo> *que1 = incFond->TradeFond()->Symbol(0)->Session(0)->EntriesQueue();
+        MDEntryQueue<FastTLSFONDItemInfo> *que2 = incFond->TradeFond()->Symbol(1)->Session(0)->EntriesQueue();
 
         this->TestTableItemsAllocator(incFond->TradeFond());
 
@@ -2797,8 +2824,8 @@ public:
         TestStringIdComparer();
         TestInfoAndItemInfoUsageAndAllocationFond();
         Test_TLR_FOND();
-        TestTradeTableItem();
         TestConnection();
+        TestTradeTableItem();
     }
 };
 

@@ -15,17 +15,19 @@ public:
         this->SetId(FeedConnectionId::fcidIsfFond);
         this->m_fastProtocolManager = new FastProtocolManager(this->CreateFastAllocationInfo());
         InitializeSecurityDefinition();
-        InitializePackets();
+        InitializePackets(this->GetPacketsCount());
+        DebugInfoManager::Default->PrintMemoryInfo("FeedConnection_FOND_ISF");
     }
     ~FeedConnection_FOND_ISF() {
         DisposeSecurityDefinition();
     }
+    int GetPacketsCount() { return 1000000; }
     ISocketBufferProvider* CreateSocketBufferProvider() {
         return new SocketBufferProvider(DefaultSocketBufferManager::Default,
-                                        RobotSettings::DefaultFeedConnectionSendBufferSize,
-                                        RobotSettings::DefaultFeedConnectionSendItemsCount,
-                                        RobotSettings::DefaultFeedConnectionRecvBufferSize,
-                                        RobotSettings::DefaultFeedConnectionRecvItemsCount);
+                                        RobotSettings::Default->DefaultFeedConnectionSendBufferSize,
+                                        RobotSettings::Default->DefaultFeedConnectionSendItemsCount,
+                                        RobotSettings::Default->DefaultFeedConnectionRecvBufferSize,
+                                        RobotSettings::Default->DefaultFeedConnectionRecvItemsCount);
     }
     FastObjectsAllocationInfo* CreateFastAllocationInfo() {
         FastObjectsAllocationInfo *info = new FastObjectsAllocationInfo();

@@ -4,7 +4,7 @@
 
 #ifndef HFT_ROBOT_HASHSTRINGTESTER_H
 #define HFT_ROBOT_HASHSTRINGTESTER_H
-#include "../Types.h"
+#include "Settings.h"
 
 #ifdef TEST
 
@@ -27,7 +27,7 @@ class SymbolManagerTester {
     SymbolManager   *m_manager;
 
     void            LoadItems() {
-        const char *fileName = "/home/arsen/Documents/hft_robot/hft/test/m_symbols";
+        const char *fileName = "/home/arsen/Documents/hft_robot/hft/test/symbols";
         FILE *fp = fopen(fileName, "rt");
 
         this->m_itemsCount = 0;

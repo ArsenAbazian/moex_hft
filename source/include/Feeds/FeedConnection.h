@@ -2,7 +2,7 @@
 #include "Managers/WinSockManager.h"
 #include "Fast/FastProtocolManager.h"
 #include "Fix/FixProtocolManager.h"
-#include "Types.h"
+#include "Settings.h"
 #include <sys/time.h>
 #include "Stopwatch.h"
 #include "Lib/AutoAllocatePointerList.h"
@@ -15,7 +15,7 @@
 #include "ConnectionParameters.h"
 #include "FeedTypes.h"
 #include "Managers/DebugInfoManager.h"
-
+#include "../ProgramStatistics.h"
 
 class OrderTesterFond;
 class OrderTesterCurr;
@@ -27,6 +27,7 @@ class StatisticsTesterCurr;
 class SecurityDefinitionTester;
 class SecurityStatusTester;
 class DebugInfoManager;
+class HistoricalReplayTester;
 
 class FeedConnection {
     friend class OrderTesterFond;
@@ -40,11 +41,13 @@ class FeedConnection {
     friend class SecurityDefinitionTester;
     friend class SecurityStatusTester;
     friend class DebugInfoManager;
+    friend class HistoricalReplayTester;
 
 public:
-	const int MaxReceiveBufferSize 				= 1500;
-    const int WaitAnyPacketMaxTimeMs            = 4000;
-    const int MaxHrUnsuccessfulConnectCount     = 100;
+	const int MaxReceiveBufferSize 				        = 1500;
+    const int WaitAnyPacketMaxTimeMs                    = 4000;
+    const int MaxHrUnsuccessfulConnectCount             = 100;
+    const int WaitSecurityDefinitionPacketMaxTimeMs     = 20000;
 protected:
 	char										m_idName[16];
     char                                        m_channelName[16];
@@ -88,6 +91,7 @@ protected:
     bool                                        m_idfDataCollected;
     bool                                        m_idfAllowUpdateData;
     bool                                        m_idfStopAfterUpdateAllMessages;
+    bool                                        m_allowGenerateSecurityDefinitions;
     SymbolManager                               *m_symbolManager;
 
     FeedConnectionHistoricalReplayState             m_hsState;
@@ -159,7 +163,7 @@ protected:
     int                                                                         m_symbolsCount;
 
     void InitializeHistoricalReplay() {
-        this->m_hsRequestList = new PointerList<FeedConnectionRequestMessageInfo>(RobotSettings::HistoricalReplayMaxMessageRequestCount);
+        this->m_hsRequestList = new PointerList<FeedConnectionRequestMessageInfo>(RobotSettings::Default->HistoricalReplayMaxMessageRequestCount);
         this->m_hsRequestList->AllocData();
         this->m_fixProtocolManager = new FixProtocolManager(this->m_socketABufferProvider, FastProtocolVersion);
         this->m_fixProtocolManager->SetTargetComputerId(HistoricalReplayTargetComputerId);
@@ -173,23 +177,24 @@ protected:
         delete this->m_hsLogonInfo;
         delete this->m_hsRejectInfo;
     }
-    int GetPacketsCount() { return RobotSettings::DefaultFeedConnectionPacketCount; }
-    void InitializePackets() {
-        this->m_packetsCount = GetPacketsCount();
+    int GetPacketsCount() { return RobotSettings::Default->DefaultFeedConnectionPacketCount; }
+    void InitializePackets(int count) {
+        this->m_packetsCount = count;
         this->m_packets = new FeedConnectionMessageInfo*[ this->m_packetsCount ];
         for(int i = 0; i < this->m_packetsCount; i++)
             this->m_packets[i] = new FeedConnectionMessageInfo();
+        DebugInfoManager::Default->PrintMemoryInfo("FeedConnectionInfo::InitializePackets");
     }
     void InitializeSecurityDefinition() {
-        this->m_symbols = new LinkedPointer<FastSecurityDefinitionInfo>*[RobotSettings::MaxSecurityDefinitionCount];
-        for(int i = 0; i < RobotSettings::MaxSecurityDefinitionCount; i++)
+        this->m_symbols = new LinkedPointer<FastSecurityDefinitionInfo>*[RobotSettings::Default->MaxSecurityDefinitionCount];
+        for(int i = 0; i < RobotSettings::Default->MaxSecurityDefinitionCount; i++)
             this->m_symbols[i] = new LinkedPointer<FastSecurityDefinitionInfo>();
         this->m_symbolsCount = 0;
         this->m_idfMode = FeedConnectionSecurityDefinitionMode::sdmCollectData;
-        this->m_symbolManager = new SymbolManager(RobotSettings::MarketDataMaxSymbolsCount);
+        this->m_symbolManager = new SymbolManager(RobotSettings::Default->MarketDataMaxSymbolsCount);
     }
     void DisposeSecurityDefinition() {
-        for(int i = 0; i < RobotSettings::MaxSecurityDefinitionCount; i++)
+        for(int i = 0; i < RobotSettings::Default->MaxSecurityDefinitionCount; i++)
             delete this->m_symbols[i];
         delete this->m_symbols;
     }
@@ -268,11 +273,6 @@ protected:
             this->m_endMsgSeqNum = msgSeqNum;
         }
 
-        // TODO remove this code, because this is a bug!!!
-        if(buffer->CurrentPos()[1] == 0 && buffer->CurrentPos()[2] == 0 && buffer->CurrentPos()[3] == 0) {
-            buffer->NextExact(4);
-        }
-
         printf("Historical Replay %s -> %d size = %d, endMsgSeqNum = %d\n", this->m_idName, msgSeqNum, size, this->m_endMsgSeqNum);
         if(this->m_packets[msgSeqNum]->m_address != 0) { // TODO
             printf("already exists requested = %d", this->m_packets[msgSeqNum]->m_requested);
@@ -281,10 +281,10 @@ protected:
 
         buffer->SetCurrentItemSize(size);
 
-        BinaryLogItem *item = DefaultLogManager::Default->WriteFast(this->m_idLogIndex,
-                                                                    LogMessageCode::lmcFeedConnection_ProcessMessage,
-                                                                    buffer->BufferIndex(),
-                                                                    buffer->CurrentItemIndex());
+//        BinaryLogItem *item = DefaultLogManager::Default->WriteFast(this->m_idLogIndex,
+//                                                                    LogMessageCode::lmcFeedConnection_ProcessMessage,
+//                                                                    buffer->BufferIndex(),
+//                                                                    buffer->CurrentItemIndex());
         if(!this->UpdateMsgSeqStartEnd(msgSeqNum))
             return true;
         FeedConnectionMessageInfo *info = this->m_packets[msgSeqNum];
@@ -314,10 +314,10 @@ protected:
 
         this->m_recvABuffer->SetCurrentItemSize(size);
         //printf("%s -> %d size = %d\n", this->m_idName, msgSeqNum, size);
-//        BinaryLogItem *item = DefaultLogManager::Default->WriteFast(this->m_idLogIndex,
-//                                                                    LogMessageCode::lmcFeedConnection_ProcessMessage,
-//                                                                    this->m_recvABuffer->BufferIndex(),
-//                                                                    this->m_recvABuffer->CurrentItemIndex());
+        //BinaryLogItem *item = DefaultLogManager::Default->WriteFast(this->m_idLogIndex,
+        //                                                            LogMessageCode::lmcFeedConnection_ProcessMessage,
+        //                                                            this->m_recvABuffer->BufferIndex(),
+        //                                                            this->m_recvABuffer->CurrentItemIndex());
 
         if(!this->UpdateMsgSeqStartEnd(msgSeqNum))
             return true;
@@ -365,7 +365,7 @@ protected:
     inline bool CanStopListeningSnapshot() {
         return this->SymbolsToRecvSnapshotCount() == 0 && !this->HasQueueEntries();
     }
-
+#pragma region snapshot
     inline bool PrepareDecodeSnapshotMessage(int packetIndex) {
         FeedConnectionMessageInfo *info = this->m_packets[packetIndex];
         unsigned char *buffer = info->m_address;
@@ -377,245 +377,241 @@ protected:
         return true;
     }
 
-    inline bool ApplySnapshot_OLS_FOND() {
-        this->PrepareDecodeSnapshotMessage(this->m_snapshotRouteFirst);
+    inline bool StartApplySnapshot_OLS_FOND() {
+        this->m_lastSnapshotInfo->ExtractString();
+        this->m_incremental->OrderFond()->ObtainSnapshotItem(this->m_lastSnapshotInfo);
+        if(this->m_incremental->OrderFond()->ApplyQuickSnapshot(this->m_lastSnapshotInfo)) {
+#ifdef COLLECT_STATISTICS
+            ProgramStatistics::Current->IncFondOlsProcessedCount();
+            ProgramStatistics::Total->IncFondOlsProcessedCount();
+#endif
+            this->m_lastSnapshotInfo->Restore();
+            return false; // skip all the snapshot
+        }
+        this->m_lastSnapshotInfo->Restore();
+        this->m_incremental->OrderFond()->StartProcessSnapshot();
+        this->ApplySnapshotPart_OLS_FOND(this->m_snapshotRouteFirst);
+        return true;
+    }
+
+    inline bool ApplySnapshotPart_OLS_FOND(int index) {
+        this->PrepareDecodeSnapshotMessage(index);
+#ifdef COLLECT_STATISTICS
+        ProgramStatistics::Current->IncFondOlsProcessedCount();
+        ProgramStatistics::Total->IncFondOlsProcessedCount();
+#endif
         FastOLSFONDInfo *info = (FastOLSFONDInfo *) this->m_fastProtocolManager->DecodeOLSFOND();
-         this->m_incremental->OrderFond()->ObtainSnapshotItem(info);
-         if(this->m_incremental->OrderFond()->CheckProcessIfSessionInActualState(info)) {
-             info->ReleaseUnused();
-             return true;
-         }
-        if(this->m_incremental->OrderFond()->CheckProcessNullSnapshot(info)) {
-            info->ReleaseUnused();
-            return true;
-        }
-        if(!this->m_incremental->OrderFond()->ShouldProcessSnapshot(info)) {
-            info->ReleaseUnused();
-            return true;
-        }
-        this->m_incremental->OrderFond()->StartProcessSnapshot(info);
         this->m_incremental->OrderFond()->ProcessSnapshot(info);
         info->ReleaseUnused();
-        for(int i = this->m_snapshotRouteFirst + 1; i <= this->m_snapshotLastFragment; i++) {
-            if(!this->PrepareDecodeSnapshotMessage(i))
-                continue;
-            info = (FastOLSFONDInfo *) this->m_fastProtocolManager->DecodeOLSFOND();
-            this->m_incremental->OrderFond()->ProcessSnapshot(info);
-            info->ReleaseUnused();
-        }
+        return true;
+    }
+
+    inline bool EndApplySnapshot_OLS_FOND() {
         this->m_incremental->OrderFond()->EndProcessSnapshot();
         return true;
     }
-    inline void CheckOLSCURR() {
-        LinkedPointer<FastOLSCURRInfo> *start = this->m_fastProtocolManager->m_oLSCURR->ListCore()->PoolStart();
-        LinkedPointer<FastOLSCURRInfo> *end = this->m_fastProtocolManager->m_oLSCURR->ListCore()->PoolEnd();
-        int index = 0;
-        int count = 0;
-        while(start != end) {
-            FastOLSCURRInfo *info= start->Data();
-            if(info->Pointer->Owner() != start->Owner() || info->Allocator != this->m_fastProtocolManager->m_oLSCURR) {
-                printf("%s", DebugInfoManager::Default->BinaryToString(this->m_fastProtocolManager->Buffer(), this->m_fastProtocolManager->BufferLength()));
-                count++;
-            }
 
-            start = start->Next();
-            index++;
-        }
-
-        if(count > 0) {
-            this->m_fastProtocolManager->ResetBuffer();
-            this->m_fastProtocolManager->DecodeOLSCURR();
-
-            this->m_fastProtocolManager->ResetBuffer();
-            this->m_fastProtocolManager->DecodeOLSCURR();
-
-            this->m_fastProtocolManager->ResetBuffer();
-            this->m_fastProtocolManager->DecodeOLSCURR();
-        }
-    }
-    inline bool ApplySnapshot_OLS_CURR() {
-        this->PrepareDecodeSnapshotMessage(this->m_snapshotRouteFirst);
-        //printf("before decode %d\n", this->m_fastProtocolManager->GetOLSCURRItemInfoPool()->Count());
-        FastOLSCURRInfo *info = (FastOLSCURRInfo *) this->m_fastProtocolManager->DecodeOLSCURR();
-        this->m_incremental->OrderCurr()->ObtainSnapshotItem(info);
-//        printf("%s %s session to go %d\n",
-//               DebugInfoManager::Default->GetString(info->Symbol, info->SymbolLength, 0),
-//               DebugInfoManager::Default->GetString(info->TradingSessionID, info->TradingSessionIDLength, 1),
-//        this->m_incremental->OrderCurr()->SnapshotSymbol()->SessionsToRecvSnapshotCount());
-        if(this->m_incremental->OrderCurr()->CheckProcessIfSessionInActualState(info)) {
-            info->ReleaseUnused();
-//            printf("%s %s in actual state. sessions to go %d\n",
-//                   DebugInfoManager::Default->GetString(info->Symbol, info->SymbolLength, 0),
-//                   DebugInfoManager::Default->GetString(info->TradingSessionID, info->TradingSessionIDLength, 1),
-//                   this->m_incremental->OrderCurr()->SnapshotSymbol()->SessionsToRecvSnapshotCount());
-//            printf("%d queue items and %d symbols to go\n",
-//                   this->m_incremental->OrderCurr()->QueueEntriesCount(),
-//                   this->m_incremental->OrderCurr()->SymbolsToRecvSnapshotCount());
-            return true;
-        }
-        if(this->m_incremental->OrderCurr()->CheckProcessNullSnapshot(info)) {
-            info->ReleaseUnused();
-//            printf("%s %s null snapshot %d\n",
-//                   DebugInfoManager::Default->GetString(info->Symbol, info->SymbolLength, 0),
-//                   DebugInfoManager::Default->GetString(info->TradingSessionID, info->TradingSessionIDLength, 1),
-//                   this->m_fastProtocolManager->GetOLSCURRItemInfoPool()->Count());
-            return true;
-        }
-        if(!this->m_incremental->OrderCurr()->ShouldProcessSnapshot(info)) {
-            info->ReleaseUnused();
-//            printf("%s %s skip process snapshot %d\n",
-//                   DebugInfoManager::Default->GetString(info->Symbol, info->SymbolLength, 0),
-//                   DebugInfoManager::Default->GetString(info->TradingSessionID, info->TradingSessionIDLength, 1),
-//                   this->m_fastProtocolManager->GetOLSCURRItemInfoPool()->Count());
-            return true;
-        }
-        this->m_incremental->OrderCurr()->StartProcessSnapshot(info);
-        this->m_incremental->OrderCurr()->ProcessSnapshot(info);
-        info->ReleaseUnused();
-//        printf("%s %s process snapshot part0 %d\n",
-//               DebugInfoManager::Default->GetString(info->Symbol, info->SymbolLength, 0),
-//               DebugInfoManager::Default->GetString(info->TradingSessionID, info->TradingSessionIDLength, 1),
-//               this->m_fastProtocolManager->GetOLSCURRItemInfoPool()->Count());
-        for(int i = this->m_snapshotRouteFirst + 1; i <= this->m_snapshotLastFragment; i++) {
-            if(!this->PrepareDecodeSnapshotMessage(i))
-                continue;
-            info = (FastOLSCURRInfo *) this->m_fastProtocolManager->DecodeOLSCURR();
-            this->m_incremental->OrderCurr()->ProcessSnapshot(info);
-            info->ReleaseUnused();
-//            printf("%s %s process snapshot part%d %d\n",
-//                   DebugInfoManager::Default->GetString(info->Symbol, info->SymbolLength, 0),
-//                   DebugInfoManager::Default->GetString(info->TradingSessionID, info->TradingSessionIDLength, 1),
-//                   i - this->m_snapshotRouteFirst,
-//                   this->m_fastProtocolManager->GetOLSCURRItemInfoPool()->Count());
-        }
-        this->m_incremental->OrderCurr()->EndProcessSnapshot();
-//        printf("%s %s process snapshot. sessions to go %d\n",
-//              DebugInfoManager::Default->GetString(info->Symbol, info->SymbolLength, 0),
-//              DebugInfoManager::Default->GetString(info->TradingSessionID, info->TradingSessionIDLength, 1),
-//              this->m_incremental->OrderCurr()->SnapshotSymbol()->SessionsToRecvSnapshotCount());
-//        printf("%d queue items and %d symbols to go\n",
-//               this->m_incremental->OrderCurr()->QueueEntriesCount(),
-//               this->m_incremental->OrderCurr()->SymbolsToRecvSnapshotCount());
+    inline bool CancelApplySnapshot_OLS_FOND() {
+        this->m_incremental->OrderFond()->CancelSnapshot();
         return true;
     }
-    inline bool ApplySnapshot_TLS_FOND() {
-        this->PrepareDecodeSnapshotMessage(this->m_snapshotRouteFirst);
+
+    inline bool StartApplySnapshot_OLS_CURR() {
+        this->m_lastSnapshotInfo->ExtractString();
+        this->m_incremental->OrderCurr()->ObtainSnapshotItem(this->m_lastSnapshotInfo);
+        if(this->m_incremental->OrderCurr()->ApplyQuickSnapshot(this->m_lastSnapshotInfo)) {
+#ifdef COLLECT_STATISTICS
+            ProgramStatistics::Current->IncCurrOlsProcessedCount();
+            ProgramStatistics::Total->IncCurrOlsProcessedCount();
+#endif
+            this->m_lastSnapshotInfo->Restore();
+            return false; // skip all the snapshot
+        }
+        this->m_lastSnapshotInfo->Restore();
+        this->m_incremental->OrderCurr()->StartProcessSnapshot();
+        this->ApplySnapshotPart_OLS_CURR(this->m_snapshotRouteFirst);
+        return true;
+    }
+
+    inline bool ApplySnapshotPart_OLS_CURR(int index) {
+        this->PrepareDecodeSnapshotMessage(index);
+#ifdef COLLECT_STATISTICS
+        ProgramStatistics::Current->IncCurrOlsProcessedCount();
+        ProgramStatistics::Total->IncCurrOlsProcessedCount();
+#endif
+        FastOLSCURRInfo *info = (FastOLSCURRInfo *) this->m_fastProtocolManager->DecodeOLSCURR();
+        this->m_incremental->OrderCurr()->ProcessSnapshot(info);
+        info->ReleaseUnused();
+        return true;
+    }
+
+    inline bool EndApplySnapshot_OLS_CURR() {
+        this->m_incremental->OrderCurr()->EndProcessSnapshot();
+        return true;
+    }
+
+    inline bool CancelApplySnapshot_OLS_CURR() {
+        this->m_incremental->OrderCurr()->CancelSnapshot();
+        return true;
+    }
+
+    inline bool StartApplySnapshot_TLS_FOND() {
+        this->m_lastSnapshotInfo->ExtractString();
+        this->m_incremental->TradeFond()->ObtainSnapshotItem(this->m_lastSnapshotInfo);
+        if(this->m_incremental->TradeFond()->ApplyQuickSnapshot(this->m_lastSnapshotInfo)) {
+#ifdef COLLECT_STATISTICS
+            ProgramStatistics::Current->IncFondTlsProcessedCount();
+            ProgramStatistics::Total->IncFondTlsProcessedCount();
+#endif
+            this->m_lastSnapshotInfo->Restore();
+            return false; // skip all the snapshot
+        }
+        this->m_lastSnapshotInfo->Restore();
+        this->m_incremental->TradeFond()->StartProcessSnapshot();
+        this->ApplySnapshotPart_TLS_FOND(this->m_snapshotRouteFirst);
+        return true;
+    }
+
+    inline bool ApplySnapshotPart_TLS_FOND(int index) {
+        this->PrepareDecodeSnapshotMessage(index);
+#ifdef COLLECT_STATISTICS
+        ProgramStatistics::Current->IncFondTlsProcessedCount();
+        ProgramStatistics::Total->IncFondTlsProcessedCount();
+#endif
         FastTLSFONDInfo *info = (FastTLSFONDInfo *) this->m_fastProtocolManager->DecodeTLSFOND();
-        this->m_incremental->TradeFond()->ObtainSnapshotItem(info);
-        if(this->m_incremental->TradeFond()->CheckProcessIfSessionInActualState(info)) {
-            info->ReleaseUnused();
-            return true;
-        }
-        if(this->m_incremental->TradeFond()->CheckProcessNullSnapshot(info)) {
-            info->ReleaseUnused();
-            return true;
-        }
-        if(!this->m_incremental->TradeFond()->ShouldProcessSnapshot(info)) {
-            info->ReleaseUnused();
-            return true;
-        }
-        this->m_incremental->TradeFond()->StartProcessSnapshot(info);
         this->m_incremental->TradeFond()->ProcessSnapshot(info);
         info->ReleaseUnused();
-        for(int i = this->m_snapshotRouteFirst + 1; i <= this->m_snapshotLastFragment; i++) {
-            if(!this->PrepareDecodeSnapshotMessage(i))
-                continue;
-            info = (FastTLSFONDInfo *) this->m_fastProtocolManager->DecodeTLSFOND();
-            this->m_incremental->TradeFond()->ProcessSnapshot(info);
-            info->ReleaseUnused();
-        }
+        return true;
+    }
+
+    inline bool EndApplySnapshot_TLS_FOND() {
         this->m_incremental->TradeFond()->EndProcessSnapshot();
         return true;
     }
-    inline bool ApplySnapshot_TLS_CURR() {
-        this->PrepareDecodeSnapshotMessage(this->m_snapshotRouteFirst);
+
+    inline bool CancelApplySnapshot_TLS_FOND() {
+        this->m_incremental->TradeFond()->CancelSnapshot();
+        return true;
+    }
+
+    inline bool StartApplySnapshot_TLS_CURR() {
+        this->m_lastSnapshotInfo->ExtractString();
+        this->m_incremental->TradeCurr()->ObtainSnapshotItem(this->m_lastSnapshotInfo);
+        if(this->m_incremental->TradeCurr()->ApplyQuickSnapshot(this->m_lastSnapshotInfo)) {
+#ifdef COLLECT_STATISTICS
+            ProgramStatistics::Current->IncCurrTlsProcessedCount();
+            ProgramStatistics::Total->IncCurrTlsProcessedCount();
+#endif
+            this->m_lastSnapshotInfo->Restore();
+            return false; // skip all the snapshot
+        }
+        this->m_lastSnapshotInfo->Restore();
+        this->m_incremental->TradeCurr()->StartProcessSnapshot();
+        this->ApplySnapshotPart_TLS_CURR(this->m_snapshotRouteFirst);
+        return true;
+    }
+
+    inline bool ApplySnapshotPart_TLS_CURR(int index) {
+        this->PrepareDecodeSnapshotMessage(index);
+#ifdef COLLECT_STATISTICS
+        ProgramStatistics::Current->IncCurrTlsProcessedCount();
+        ProgramStatistics::Total->IncCurrTlsProcessedCount();
+#endif
         FastTLSCURRInfo *info = (FastTLSCURRInfo *) this->m_fastProtocolManager->DecodeTLSCURR();
-        this->m_incremental->TradeCurr()->ObtainSnapshotItem(info);
-        if(this->m_incremental->TradeCurr()->CheckProcessIfSessionInActualState(info)) {
-            info->ReleaseUnused();
-            return true;
-        }
-        if(this->m_incremental->TradeCurr()->CheckProcessNullSnapshot(info)) {
-            info->ReleaseUnused();
-            return true;
-        }
-        if(!this->m_incremental->TradeCurr()->ShouldProcessSnapshot(info)) {
-            info->ReleaseUnused();
-            return true;
-        }
-        this->m_incremental->TradeCurr()->StartProcessSnapshot(info);
         this->m_incremental->TradeCurr()->ProcessSnapshot(info);
         info->ReleaseUnused();
-        for(int i = this->m_snapshotRouteFirst + 1; i <= this->m_snapshotLastFragment; i++) {
-            if(!this->PrepareDecodeSnapshotMessage(i))
-                continue;
-            info = (FastTLSCURRInfo *) this->m_fastProtocolManager->DecodeTLSCURR();
-            this->m_incremental->TradeCurr()->ProcessSnapshot(info);
-            info->ReleaseUnused();
-        }
+        return true;
+    }
+
+    inline bool EndApplySnapshot_TLS_CURR() {
         this->m_incremental->TradeCurr()->EndProcessSnapshot();
         return true;
     }
 
-    inline bool ApplySnapshot_MSS_FOND() {
-        this->PrepareDecodeSnapshotMessage(this->m_snapshotRouteFirst);
+    inline bool CancelApplySnapshot_TLS_CURR() {
+        this->m_incremental->TradeCurr()->CancelSnapshot();
+        return true;
+    }
+
+    inline bool StartApplySnapshot_MSS_FOND() {
+        this->m_lastSnapshotInfo->ExtractString();
+        this->m_incremental->StatisticFond()->ObtainSnapshotItem(this->m_lastSnapshotInfo);
+        if(this->m_incremental->StatisticFond()->ApplyQuickSnapshot(this->m_lastSnapshotInfo)) {
+#ifdef COLLECT_STATISTICS
+            ProgramStatistics::Current->IncFondMssProcessedCount();
+            ProgramStatistics::Total->IncFondMssProcessedCount();
+#endif
+            this->m_lastSnapshotInfo->Restore();
+            return false; // skip all the snapshot
+        }
+        this->m_lastSnapshotInfo->Restore();
+        this->m_incremental->StatisticFond()->StartProcessSnapshot();
+        this->ApplySnapshotPart_MSS_FOND(this->m_snapshotRouteFirst);
+        return true;
+    }
+
+    inline bool ApplySnapshotPart_MSS_FOND(int index) {
+        this->PrepareDecodeSnapshotMessage(index);
+#ifdef COLLECT_STATISTICS
+        ProgramStatistics::Current->IncFondMssProcessedCount();
+        ProgramStatistics::Total->IncFondMssProcessedCount();
+#endif
         FastGenericInfo *info = (FastGenericInfo *) this->m_fastProtocolManager->DecodeGeneric();
-        this->m_incremental->StatisticFond()->ObtainSnapshotItem(info);
-        if(this->m_incremental->StatisticFond()->CheckProcessIfSessionInActualState(info)) {
-            info->ReleaseUnused();
-            return true;
-        }
-        if(this->m_incremental->StatisticFond()->CheckProcessNullSnapshot(info)) {
-            info->ReleaseUnused();
-            return true;
-        }
-        if(!this->m_incremental->StatisticFond()->ShouldProcessSnapshot(info)) {
-            info->ReleaseUnused();
-            return true;
-        }
-        this->m_incremental->StatisticFond()->StartProcessSnapshot(info);
         this->m_incremental->StatisticFond()->ProcessSnapshot(info);
         info->ReleaseUnused();
-        for(int i = this->m_snapshotRouteFirst + 1; i <= this->m_snapshotLastFragment; i++) {
-            if(!this->PrepareDecodeSnapshotMessage(i))
-                continue;
-            info = (FastGenericInfo *) this->m_fastProtocolManager->DecodeGeneric();
-            this->m_incremental->StatisticFond()->ProcessSnapshot(info);
-            info->ReleaseUnused();
-        }
+        return true;
+    }
+
+    inline bool EndApplySnapshot_MSS_FOND() {
         this->m_incremental->StatisticFond()->EndProcessSnapshot();
         return true;
     }
-    inline bool ApplySnapshot_MSS_CURR() {
-        //TODO remove printf("processed %d of %d\n", this->m_incremental->StatisticCurr()->CalcSnapshotProcessedItemsCount(), this->m_incremental->StatisticCurr()->CalcTotalItemsCount());
-        this->PrepareDecodeSnapshotMessage(this->m_snapshotRouteFirst);
+
+    inline bool CancelApplySnapshot_MSS_FOND() {
+        this->m_incremental->StatisticFond()->CancelSnapshot();
+        return true;
+    }
+
+    inline bool StartApplySnapshot_MSS_CURR() {
+        this->m_lastSnapshotInfo->ExtractString();
+        this->m_incremental->StatisticCurr()->ObtainSnapshotItem(this->m_lastSnapshotInfo);
+        if(this->m_incremental->StatisticCurr()->ApplyQuickSnapshot(this->m_lastSnapshotInfo)) {
+#ifdef COLLECT_STATISTICS
+            ProgramStatistics::Current->IncCurrMssProcessedCount();
+            ProgramStatistics::Total->IncCurrMssProcessedCount();
+#endif
+            this->m_lastSnapshotInfo->Restore();
+            return false; // skip all the snapshot
+        }
+        this->m_lastSnapshotInfo->Restore();
+        this->m_incremental->StatisticCurr()->StartProcessSnapshot();
+        this->ApplySnapshotPart_MSS_CURR(this->m_snapshotRouteFirst);
+        return true;
+    }
+
+    inline bool ApplySnapshotPart_MSS_CURR(int index) {
+        this->PrepareDecodeSnapshotMessage(index);
+#ifdef COLLECT_STATISTICS
+        ProgramStatistics::Current->IncCurrMssProcessedCount();
+        ProgramStatistics::Total->IncCurrMssProcessedCount();
+#endif
         FastGenericInfo *info = (FastGenericInfo *) this->m_fastProtocolManager->DecodeGeneric();
-        this->m_incremental->StatisticCurr()->ObtainSnapshotItem(info);
-        if(this->m_incremental->StatisticCurr()->CheckProcessIfSessionInActualState(info)) {
-            info->ReleaseUnused();
-            return true;
-        }
-        if(this->m_incremental->StatisticCurr()->CheckProcessNullSnapshot(info)) {
-            info->ReleaseUnused();
-            return true;
-        }
-        if(!this->m_incremental->StatisticCurr()->ShouldProcessSnapshot(info)) {
-            info->ReleaseUnused();
-            return true;
-        }
-        this->m_incremental->StatisticCurr()->StartProcessSnapshot(info);
         this->m_incremental->StatisticCurr()->ProcessSnapshot(info);
         info->ReleaseUnused();
-        for(int i = this->m_snapshotRouteFirst + 1; i <= this->m_snapshotLastFragment; i++) {
-            if(!this->PrepareDecodeSnapshotMessage(i))
-                continue;
-            info = (FastGenericInfo *) this->m_fastProtocolManager->DecodeGeneric();
-            this->m_incremental->StatisticCurr()->ProcessSnapshot(info);
-            info->ReleaseUnused();
-        }
+        return true;
+    }
+
+    inline bool EndApplySnapshot_MSS_CURR() {
         this->m_incremental->StatisticCurr()->EndProcessSnapshot();
         return true;
     }
+
+    inline bool CancelApplySnapshot_MSS_CURR() {
+        this->m_incremental->StatisticCurr()->CancelSnapshot();
+        return true;
+    }
+    
+#pragma endregion
 
     inline int GetRequestMessageEndIndex(int start) {
         for(int i = start; i <= this->m_endMsgSeqNum; i++) {
@@ -700,9 +696,11 @@ protected:
             return;
         while(this->m_requestMessageStartIndex <= this->m_endMsgSeqNum) {
             this->m_requestMessageStartIndex = GetRequestMessageStartIndex(this->m_requestMessageStartIndex);
-            if(this->m_requestMessageStartIndex == -1)
+            if(this->m_requestMessageStartIndex > this->m_endMsgSeqNum)
                 break;
             int endIndex = GetRequestMessageEndIndex(this->m_requestMessageStartIndex);
+            printf("security status: request %d-%d\n", this->m_requestMessageStartIndex, endIndex);
+            printf("start %d end %d \n", this->m_startMsgSeqNum, this->m_endMsgSeqNum);
             if(ShouldStartSecurityStatusSnapshot(endIndex))
                 this->StartSecurityStatusSnapshot();
             else if(!IsSecurityStatusSnapshotActive())
@@ -868,13 +866,11 @@ protected:
             return true;
         if(!this->m_snapshot->Start()) {
 			DefaultLogManager::Default->WriteSuccess(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_StartListenSnapshot, false);
-            printf("Channel = %s\n", this->m_channelName);
 			return false;
 		}
         this->MarketTableEnterSnapshotMode();
         this->m_snapshot->StartNewSnapshot();
 		DefaultLogManager::Default->WriteSuccess(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_StartListenSnapshot, true);
-		printf("Channel = %s\n", this->m_channelName);
         return true;
 	}
     inline void UpdateMessageSeqNoAfterSnapshot() {
@@ -909,10 +905,10 @@ protected:
 	inline void IncrementMsgSeqNo() { this->m_startMsgSeqNum++; }
 	virtual ISocketBufferProvider* CreateSocketBufferProvider() {
 			return new SocketBufferProvider(DefaultSocketBufferManager::Default,
-											RobotSettings::DefaultFeedConnectionSendBufferSize,
-											RobotSettings::DefaultFeedConnectionSendItemsCount,
-											RobotSettings::DefaultFeedConnectionRecvBufferSize,
-											RobotSettings::DefaultFeedConnectionRecvItemsCount);
+											RobotSettings::Default->DefaultFeedConnectionSendBufferSize,
+											RobotSettings::Default->DefaultFeedConnectionSendItemsCount,
+											RobotSettings::Default->DefaultFeedConnectionRecvBufferSize,
+											RobotSettings::Default->DefaultFeedConnectionRecvItemsCount);
 	}
 	virtual void ClearSocketBufferProvider() {
 
@@ -941,80 +937,155 @@ protected:
             if (this->m_lastSnapshotInfo != 0 && this->m_lastSnapshotInfo->RouteFirst == 1) {
                 this->m_startMsgSeqNum = i;
                 this->m_snapshotRouteFirst = i;
+                this->m_lastSnapshotInfo->Restore();
                 //printf("find route first %d\n", i);
                 return true;
             }
+            if(this->m_lastSnapshotInfo != 0)
+                this->m_lastSnapshotInfo->Restore();
             this->m_packets[i]->Clear();
         }
         this->m_startMsgSeqNum = this->m_endMsgSeqNum + 1;
         return false;
     }
 
-    inline bool FindLastFragment() {
-        //printf("start seeking last fragment %d %d\n", this->m_startMsgSeqNum, this->m_endMsgSeqNum);
-        if(this->m_lastSnapshotInfo != 0 && this->m_lastSnapshotInfo->LastFragment) {
-            this->m_snapshotLastFragment = this->m_startMsgSeqNum;
-            //printf("found last fragment %d\n", this->m_startMsgSeqNum);
-            this->m_startMsgSeqNum++;
-            return true;
-        }
-        for(int i = this->m_startMsgSeqNum; i <= this->m_endMsgSeqNum; i++) {
-            if (this->m_packets[i]->m_address == 0) {
-                this->m_startMsgSeqNum = i;
-                //printf("try find last fragment but found lost %d\n", i);
-                return false;
-            }
-            this->m_lastSnapshotInfo = this->GetSnapshotInfo(i);
-            if(this->m_lastSnapshotInfo != 0 && this->m_lastSnapshotInfo->LastFragment == 1) {
-                this->m_startMsgSeqNum = i + 1;
-                this->m_snapshotLastFragment = i;
-                //printf("found last fragment %d\n", this->m_startMsgSeqNum);
-                return true;
-            }
-        }
-        this->m_startMsgSeqNum = this->m_endMsgSeqNum + 1;
-        return false;
-    }
-
-    inline bool ApplySnapshotCore() {
+    inline bool StartApplySnapshot() {
         switch(this->m_lastSnapshotInfo->TemplateId) {
             case FeedConnectionMessage::fmcFullRefresh_Generic:
                 switch(this->m_id) {
                     case FeedConnectionId::fcidMssFond:
-                        return this->ApplySnapshot_MSS_FOND();
+                        return this->StartApplySnapshot_MSS_FOND();
                     case FeedConnectionId::fcidMssCurr:
-                        return this->ApplySnapshot_MSS_CURR();
+                        return this->StartApplySnapshot_MSS_CURR();
                     default:
                         return false;
                 }
                 break;
             case FeedConnectionMessage::fmcFullRefresh_OLS_FOND:
-                return this->ApplySnapshot_OLS_FOND();
+                return this->StartApplySnapshot_OLS_FOND();
             case FeedConnectionMessage::fmcFullRefresh_OLS_CURR:
-                return this->ApplySnapshot_OLS_CURR();
+                return this->StartApplySnapshot_OLS_CURR();
             case FeedConnectionMessage::fmcFullRefresh_TLS_FOND:
-                return this->ApplySnapshot_TLS_FOND();
+                return this->StartApplySnapshot_TLS_FOND();
             case FeedConnectionMessage::fmcFullRefresh_TLS_CURR:
-                return this->ApplySnapshot_TLS_CURR();
+                return this->StartApplySnapshot_TLS_CURR();
             default:
                 return false;
         }
     }
 
-    inline bool TryFindAndApplySnapshot() {
+    inline bool EndApplySnapshot() {
+        switch(this->m_lastSnapshotInfo->TemplateId) {
+            case FeedConnectionMessage::fmcFullRefresh_Generic:
+                switch(this->m_id) {
+                    case FeedConnectionId::fcidMssFond:
+                        return this->EndApplySnapshot_MSS_FOND();
+                    case FeedConnectionId::fcidMssCurr:
+                        return this->EndApplySnapshot_MSS_CURR();
+                    default:
+                        return false;
+                }
+                break;
+            case FeedConnectionMessage::fmcFullRefresh_OLS_FOND:
+                return this->EndApplySnapshot_OLS_FOND();
+            case FeedConnectionMessage::fmcFullRefresh_OLS_CURR:
+                return this->EndApplySnapshot_OLS_CURR();
+            case FeedConnectionMessage::fmcFullRefresh_TLS_FOND:
+                return this->EndApplySnapshot_TLS_FOND();
+            case FeedConnectionMessage::fmcFullRefresh_TLS_CURR:
+                return this->EndApplySnapshot_TLS_CURR();
+            default:
+                return false;
+        }
+    }
+
+    inline bool CancelSnapshot() {
+        switch(this->m_lastSnapshotInfo->TemplateId) {
+            case FeedConnectionMessage::fmcFullRefresh_Generic:
+                switch(this->m_id) {
+                    case FeedConnectionId::fcidMssFond:
+                        return this->CancelApplySnapshot_MSS_FOND();
+                    case FeedConnectionId::fcidMssCurr:
+                        return this->CancelApplySnapshot_MSS_CURR();
+                    default:
+                        return false;
+                }
+                break;
+            case FeedConnectionMessage::fmcFullRefresh_OLS_FOND:
+                return this->CancelApplySnapshot_OLS_FOND();
+            case FeedConnectionMessage::fmcFullRefresh_OLS_CURR:
+                return this->CancelApplySnapshot_OLS_CURR();
+            case FeedConnectionMessage::fmcFullRefresh_TLS_FOND:
+                return this->CancelApplySnapshot_TLS_FOND();
+            case FeedConnectionMessage::fmcFullRefresh_TLS_CURR:
+                return this->CancelApplySnapshot_TLS_CURR();
+            default:
+                return false;
+        }
+    }
+
+    inline bool ApplySnapshotPart(int index) {
+        switch(this->m_lastSnapshotInfo->TemplateId) {
+            case FeedConnectionMessage::fmcFullRefresh_Generic:
+                switch(this->m_id) {
+                    case FeedConnectionId::fcidMssFond:
+                        return this->ApplySnapshotPart_MSS_FOND(index);
+                    case FeedConnectionId::fcidMssCurr:
+                        return this->ApplySnapshotPart_MSS_CURR(index);
+                    default:
+                        return false;
+                }
+                break;
+            case FeedConnectionMessage::fmcFullRefresh_OLS_FOND:
+                return this->ApplySnapshotPart_OLS_FOND(index);
+            case FeedConnectionMessage::fmcFullRefresh_OLS_CURR:
+                return this->ApplySnapshotPart_OLS_CURR(index);
+            case FeedConnectionMessage::fmcFullRefresh_TLS_FOND:
+                return this->ApplySnapshotPart_TLS_FOND(index);
+            case FeedConnectionMessage::fmcFullRefresh_TLS_CURR:
+                return this->ApplySnapshotPart_TLS_CURR(index);
+            default:
+                return false;
+        }
+    }
+
+    inline bool TryFindAndApplySnapshotContinuously() {
         if(this->m_snapshotRouteFirst == -1) {
             if(!FindRouteFirst())
                 return false;
+            if(!StartApplySnapshot()) {
+                this->m_packets[this->m_snapshotRouteFirst]->Clear();
+                this->m_snapshotRouteFirst = -1;
+                this->m_startMsgSeqNum++;
+                return true;
+            }
+            this->m_packets[this->m_snapshotRouteFirst]->Clear();
+            if(this->m_lastSnapshotInfo->LastFragment) {
+                EndApplySnapshot();
+                this->m_snapshotRouteFirst = -1;
+            }
+            this->m_startMsgSeqNum++;
+            return true;
         }
-        if(!FindLastFragment())
+        if(this->m_startMsgSeqNum > this->m_endMsgSeqNum)
             return false;
-
-        //printf("apply snapshot %d to %d\n", this->m_snapshotRouteFirst, this->m_snapshotLastFragment);
-        ApplySnapshotCore();
-        this->ClearPackets(this->m_snapshotRouteFirst, this->m_snapshotLastFragment);
-
-        this->m_snapshotRouteFirst = -1;
-        this->m_snapshotLastFragment = -1;
+        while(this->m_startMsgSeqNum <= this->m_endMsgSeqNum) {
+            if (this->m_packets[this->m_startMsgSeqNum]->m_address == 0)
+                return false;
+            this->m_lastSnapshotInfo = this->GetSnapshotInfo(this->m_startMsgSeqNum);
+            if(this->m_lastSnapshotInfo == 0)
+                return false;
+            this->m_lastSnapshotInfo->Restore();
+            this->ApplySnapshotPart(this->m_startMsgSeqNum);
+            this->m_packets[this->m_startMsgSeqNum]->Clear();
+            if(this->m_lastSnapshotInfo->LastFragment) {
+                EndApplySnapshot();
+                this->m_snapshotRouteFirst = -1;
+                this->m_startMsgSeqNum++;
+                return true;
+            }
+            this->m_startMsgSeqNum++;
+        }
         return true;
     }
 
@@ -1024,10 +1095,102 @@ protected:
         return this->m_packets[this->m_startMsgSeqNum]->m_address == 0;
     }
 
+    inline void UpdateLostPacketsStatistic(int count) {
+        if(this->m_id == FeedConnectionId::fcidIdfCurr) {
+            ProgramStatistics::Current->CurrIdfLostCount(count);
+            ProgramStatistics::Total->CurrIdfLostCount(ProgramStatistics::Total->CurrIdfLostCount() + count);
+            return;
+        }
+        if(this->m_id == FeedConnectionId::fcidIdfFond) {
+            ProgramStatistics::Current->FondIdfLostCount(count);
+            ProgramStatistics::Total->FondIdfLostCount(ProgramStatistics::Total->FondIdfLostCount() + count);
+            return;
+        }
+        
+        if(this->m_id == FeedConnectionId::fcidOlrCurr) {
+            ProgramStatistics::Current->CurrOlrLostCount(count);
+            ProgramStatistics::Total->CurrOlrLostCount(ProgramStatistics::Total->CurrOlrLostCount() + count);
+            return;
+        }
+        if(this->m_id == FeedConnectionId::fcidOlrFond) {
+            ProgramStatistics::Current->FondOlrLostCount(count);
+            ProgramStatistics::Total->FondOlrLostCount(ProgramStatistics::Total->FondOlrLostCount() + count);
+            return;
+        }
+
+        if(this->m_id == FeedConnectionId::fcidOlsCurr) {
+            ProgramStatistics::Current->CurrOlsLostCount(count);
+            ProgramStatistics::Total->CurrOlsLostCount(ProgramStatistics::Total->CurrOlsLostCount() + count);
+            return;
+        }
+        if(this->m_id == FeedConnectionId::fcidOlsFond) {
+            ProgramStatistics::Current->FondOlsLostCount(count);
+            ProgramStatistics::Total->FondOlsLostCount(ProgramStatistics::Total->FondOlsLostCount() + count);
+            return;
+        }
+
+        if(this->m_id == FeedConnectionId::fcidTlrCurr) {
+            ProgramStatistics::Current->CurrTlrLostCount(count);
+            ProgramStatistics::Total->CurrTlrLostCount(ProgramStatistics::Total->CurrTlrLostCount() + count);
+            return;
+        }
+        if(this->m_id == FeedConnectionId::fcidTlrFond) {
+            ProgramStatistics::Current->FondTlrLostCount(count);
+            ProgramStatistics::Total->FondTlrLostCount(ProgramStatistics::Total->FondTlrLostCount() + count);
+            return;
+        }
+
+        if(this->m_id == FeedConnectionId::fcidTlsCurr) {
+            ProgramStatistics::Current->CurrTlsLostCount(count);
+            ProgramStatistics::Total->CurrTlsLostCount(ProgramStatistics::Total->CurrTlsLostCount() + count);
+            return;
+        }
+        if(this->m_id == FeedConnectionId::fcidTlsFond) {
+            ProgramStatistics::Current->FondTlsLostCount(count);
+            ProgramStatistics::Total->FondTlsLostCount(ProgramStatistics::Total->FondTlsLostCount() + count);
+            return;
+        }
+
+        if(this->m_id == FeedConnectionId::fcidMsrCurr) {
+            ProgramStatistics::Current->CurrMsrLostCount(count);
+            ProgramStatistics::Total->CurrMsrLostCount(ProgramStatistics::Total->CurrMsrLostCount() + count);
+            return;
+        }
+        if(this->m_id == FeedConnectionId::fcidMsrFond) {
+            ProgramStatistics::Current->FondMsrLostCount(count);
+            ProgramStatistics::Total->FondMsrLostCount(ProgramStatistics::Total->FondMsrLostCount() + count);
+            return;
+        }
+
+        if(this->m_id == FeedConnectionId::fcidMssCurr) {
+            ProgramStatistics::Current->CurrMssLostCount(count);
+            ProgramStatistics::Total->CurrMssLostCount(ProgramStatistics::Total->CurrMssLostCount() + count);
+            return;
+        }
+        if(this->m_id == FeedConnectionId::fcidMssFond) {
+            ProgramStatistics::Current->FondMssLostCount(count);
+            ProgramStatistics::Total->FondMssLostCount(ProgramStatistics::Total->FondMssLostCount() + count);
+            return;
+        }
+
+        if(this->m_id == FeedConnectionId::fcidIsfCurr) {
+            ProgramStatistics::Current->CurrIssLostCount(count);
+            ProgramStatistics::Total->CurrIssLostCount(ProgramStatistics::Total->CurrIssLostCount() + count);
+            return;
+        }
+        if(this->m_id == FeedConnectionId::fcidIsfFond) {
+            ProgramStatistics::Current->FondIssLostCount(count);
+            ProgramStatistics::Total->FondIssLostCount(ProgramStatistics::Total->FondIssLostCount() + count);
+            return;
+        }
+    }
+
     inline void SkipLostPackets() {
         for(int i = this->m_startMsgSeqNum; i <= this->m_endMsgSeqNum; i++) {
             if(this->m_packets[i]->m_address != 0) {
-                //printf("skip packets from %d to %d\n", this->m_startMsgSeqNum, i);
+#ifdef COLLECT_STATISTICS
+                this->UpdateLostPacketsStatistic(i - this->m_startMsgSeqNum);
+#endif
                 this->m_startMsgSeqNum = i;
                 return;
             }
@@ -1073,6 +1236,13 @@ protected:
         return this->ProcessSecurityDefinition(buffer, info->m_size);
     }
 
+    inline bool IdfAllowGenerateSecurityDefinitions() { return this->m_allowGenerateSecurityDefinitions; }
+    inline void IdfAllowGenerateSecurityDefinitions(bool value) { this->m_allowGenerateSecurityDefinitions = value; }
+
+    inline void OnCollectAllSecurityDefinitions() {
+        this->m_idfDataCollected = true;
+    };
+
     inline bool ProcessSecurityDefinitionMessagesFromStart() {
         if(this->m_idfMode == FeedConnectionSecurityDefinitionMode::sdmUpdateData) {
             this->UpdateSecurityDefinition(this->m_packets[this->m_endMsgSeqNum]);
@@ -1085,20 +1255,26 @@ protected:
             if (this->m_endMsgSeqNum == this->m_idfStartMsgSeqNo) {
                 if (this->HasLostPackets(1, this->m_idfMaxMsgSeqNo)) {
                     int lostPacketCount = CalcLostPacketCount(1, this->m_idfMaxMsgSeqNo);
-                    printf("\t\tlost packet count = %d\n", lostPacketCount);
+#ifdef COLLECT_STATISTICS
+                    if(this->m_id == FeedConnectionId::fcidIdfFond)
+                        ProgramStatistics::Total->FondIdfProcessedCount(this->m_idfMaxMsgSeqNo - lostPacketCount);
+                    else
+                        ProgramStatistics::Total->CurrIdfProcessedCount(this->m_idfMaxMsgSeqNo - lostPacketCount);
+#endif
+                    printf("\t\t%s %s lost packet count = %d\n", this->m_channelName, this->m_idName, lostPacketCount); // TODOO remove debug
                     this->m_idfState = FeedConnectionSecurityDefinitionState::sdsProcessToEnd;
                     return true;
                 }
-                printf("\t\tgenerating Security Definitions\n");
-                FeedConnectionMessageInfo **info = (this->m_packets + 1); // skip zero messsage
-                this->BeforeProcessSecurityDefinitions();
-                for (int i = 1; i <= this->m_idfMaxMsgSeqNo; i++, info++) {
-                    if (!this->ProcessSecurityDefinition(*info))
-                        return false;
-                }
-                this->AfterProcessSecurityDefinitions();
-                printf("\t\tdone.\n");
-                this->OnSecurityDefinitionRecvAllMessages();
+#ifdef COLLECT_STATISTICS
+                if(this->m_id == FeedConnectionId::fcidIdfFond)
+                    ProgramStatistics::Total->FondIdfProcessedCount(this->m_idfMaxMsgSeqNo);
+                else
+                    ProgramStatistics::Total->CurrIdfProcessedCount(this->m_idfMaxMsgSeqNo);
+#endif
+                if(this->IdfAllowGenerateSecurityDefinitions())
+                    this->GenerateSecurityDefinitions();
+                else
+                    this->OnCollectAllSecurityDefinitions();
             }
         }
         return true;
@@ -1115,19 +1291,18 @@ protected:
     }
 
     inline bool Listen_Atom_SecurityDefinition_Core() {
+#ifdef COLLECT_STATISTICS
+        if(this->m_id == FeedConnectionId::fcidIdfFond)
+            ProgramStatistics::Current->FondIdfProcessedCount(this->m_endMsgSeqNum);
+        else
+            ProgramStatistics::Current->CurrIdfProcessedCount(this->m_endMsgSeqNum);
+#endif
         if(this->m_idfState == FeedConnectionSecurityDefinitionState::sdsProcessToEnd)
             return this->ProcessSecurityDefinitionMessagesToEnd();
         return this->ProcessSecurityDefinitionMessagesFromStart();
     }
 
     inline bool Listen_Atom_Snapshot_Core() {
-        /*
-        if(this->m_waitTimer->IsElapsedMilliseconds(this->m_snapshotMaxTimeMs)) {
-            this->m_waitTimer->Stop();
-            this->ReconnectSetNextState(FeedConnectionState::fcsListenSnapshot);
-            return true;
-        }
-        */
         if(this->m_startMsgSeqNum == -1)
             return true;
 
@@ -1139,7 +1314,8 @@ protected:
         if(this->m_waitTimer->IsElapsedMilliseconds(1, this->WaitSnapshotMaxTimeMs()) ||
                 this->m_endMsgSeqNum - this->m_startMsgSeqNum > 5) {
             if(this->m_snapshotRouteFirst != -1) {
-                this->ClearPackets(this->m_snapshotRouteFirst, this->m_startMsgSeqNum);
+                this->CancelSnapshot();
+                //this->ClearPackets(this->m_snapshotRouteFirst, this->m_startMsgSeqNum);
             }
             this->SkipLostPackets();
             this->m_waitTimer->Stop(1);
@@ -1148,7 +1324,7 @@ protected:
         }
 
         int snapshotCount = 0;
-        while(TryFindAndApplySnapshot())
+        while(TryFindAndApplySnapshotContinuously())
             snapshotCount++;
 
         return true;
@@ -1158,11 +1334,9 @@ protected:
 
         // TODO remove hack. just skip 30 messages and then try to restore
         if(this->m_snapshot->State() == FeedConnectionState::fcsSuspend &&
-                (this->m_startMsgSeqNum % 50) < 20  &&
-                this->m_packets[this->m_startMsgSeqNum]->m_address != 0 &&
-                !this->m_packets[this->m_startMsgSeqNum]->m_requested) {
-            this->m_packets[this->m_startMsgSeqNum]->m_address = 0; // force historical replay
-            printf("packet %d is lost, resuestIndexd = %d\n", this->m_startMsgSeqNum, this->m_requestMessageStartIndex);
+                (this->m_endMsgSeqNum % 500) < 40) {
+            this->m_packets[this->m_endMsgSeqNum]->m_address = 0; // force historical replay
+            printf("packet %d is lost, requestIndexd = %d\n", this->m_endMsgSeqNum, this->m_requestMessageStartIndex);
             return true;
         }
 
@@ -1277,14 +1451,22 @@ protected:
         this->m_fixProtocolManager->IncSendMsgSeqNo();
         this->m_hsState = FeedConnectionHistoricalReplayState::hsWaitLogon;
         this->m_hrMessageSize = 0;
+        this->m_waitTimer->Stop(2);
         return true;
     }
 
     inline bool CanRecv() { return this->socketAManager->ShouldRecv(); }
 
-    inline void OnProcessHistoricalReplayUnexpectedLogoutMessage(FastLogoutInfo *info) {
+    inline void OnProcessHistoricalReplayExpectedLogoutMessage(FastLogoutInfo *info) {
         info->Text[info->TextLength] = 0;
-        printf("\t\tHistorical Replay - Unexpected Logout: %s\n", info->Text);
+        printf("\t\tHistorical Replay - Logout: %s\n", info->Text);
+        info->Clear();
+    }
+
+    inline void OnProcessHistoricalReplayUnexpectedLogoutMessage(const char *methodName, FastLogoutInfo *info) {
+        info->Text[info->TextLength] = 0;
+        printf("\t\tHistorical Replay - %s - UNEXPECTED Logout: %s\n", methodName, info->Text);
+        info->Clear();
     }
 
     inline bool IsHrReceiveFailedProcessed() {
@@ -1313,7 +1495,7 @@ protected:
 
     inline void CheckReconnectHistoricalReplay() {
         this->m_waitTimer->Activate(2);
-        if(this->m_waitTimer->ElapsedMilliseconds(2) > 1000) {
+        if(this->m_waitTimer->ElapsedSeconds(2) > 9) {
             this->Disconnect();
             this->m_hsState = FeedConnectionHistoricalReplayState::hsSuspend;
             this->m_waitTimer->Stop();
@@ -1353,7 +1535,7 @@ protected:
         if(this->m_fastProtocolManager->TemplateId() != FeedConnectionMessage::fmcLogon) {
             this->Disconnect();
             if(this->m_fastProtocolManager->TemplateId() == FeedConnectionMessage::fmcLogout) {
-                this->OnProcessHistoricalReplayUnexpectedLogoutMessage((FastLogoutInfo*)this->m_fastProtocolManager->DecodeLogout());
+                this->OnProcessHistoricalReplayUnexpectedLogoutMessage("OnWaitLogon", (FastLogoutInfo*)this->m_fastProtocolManager->DecodeLogout());
             }
             this->m_hsState = FeedConnectionHistoricalReplayState::hsSuspend;
             return true;
@@ -1375,6 +1557,7 @@ protected:
         this->m_hsState = FeedConnectionHistoricalReplayState::hsRecvMessage;
         this->m_hrSizeRemain = 0;
         this->m_hrMessageSize = 0;
+        this->m_waitTimer->Stop(2);
         return true;
     }
 
@@ -1409,11 +1592,12 @@ protected:
 
             if(this->m_fastProtocolManager->TemplateId() == FeedConnectionMessage::fmcLogout) {
                 if(msg->IsAllMessagesReceived()) {
+                    this->OnProcessHistoricalReplayExpectedLogoutMessage((FastLogoutInfo*)this->m_fastProtocolManager->DecodeLogout());
                     this->m_hsRequestList->Remove(ptr);
                     this->m_hsState = FeedConnectionHistoricalReplayState::hsSuspend;
                     return this->HistoricalReplay_SendLogout();
                 }
-                this->OnProcessHistoricalReplayUnexpectedLogoutMessage((FastLogoutInfo*)this->m_fastProtocolManager->DecodeLogout());
+                this->OnProcessHistoricalReplayUnexpectedLogoutMessage("OnRecvMessage", (FastLogoutInfo*)this->m_fastProtocolManager->DecodeLogout());
                 this->Disconnect();
                 this->m_hsState = FeedConnectionHistoricalReplayState::hsSuspend;
                 return true;
@@ -1466,6 +1650,9 @@ protected:
         return true;
     }
 public:
+    inline SocketBuffer* SendBuffer() { return this->m_sendABuffer; }
+    inline SocketBuffer* RecvBuffer() { return this->m_recvABuffer; }
+
     inline void HrRequestMessage(FeedConnection *conn, int start, int end) {
         if(this->m_hsRequestList->IsFull()) {
             printf("error request msg: list is full.\n");
@@ -1477,10 +1664,26 @@ public:
         info->SetMsgSeq(start, end);
         info->m_requestCount = 0;
 
+        this->UpdateLostPacketsStatistic(end - start + 1);
         this->m_hsRequestList->Add(ptr);
     }
     inline void HrRequestMessage(FeedConnection *conn, int msgSeqNo) {
         HrRequestMessage(conn, msgSeqNo, msgSeqNo);
+    }
+    inline bool GenerateSecurityDefinitions() {
+        printf("\t\t%s %s generating security definitions count = %d\n", this->m_channelName, this->m_idName, this->m_idfMaxMsgSeqNo); // TODOO remove debug
+        FeedConnectionMessageInfo **info = (this->m_packets + 1); // skip zero messsage
+        this->m_waitTimer->Start(3); // TODOO remove debug
+        this->BeforeProcessSecurityDefinitions();
+        for (int i = 1; i <= this->m_idfMaxMsgSeqNo; i++, info++) {
+            if (!this->ProcessSecurityDefinition(*info))
+                return false;
+        }
+        this->AfterProcessSecurityDefinitions();
+        this->OnSecurityDefinitionRecvAllMessages();
+        printf("\t\t%s %s done in %ld ms.\n", this->m_channelName, this->m_idName, this->m_waitTimer->ElapsedMilliseconds(3)); // TODOO remove debug
+        this->m_waitTimer->Stop(3);
+        return true;
     }
 protected:
     inline bool Listen_Atom_Incremental() {
@@ -1492,6 +1695,9 @@ protected:
         if(!this->m_isLastIncrementalRecv) {
             this->m_waitTimer->Activate(1);
             if(this->m_waitTimer->ElapsedMilliseconds(1) > this->WaitAnyPacketMaxTimeMs) {
+                //TODO remove debug
+                if(this->m_snapshot->State() == FeedConnectionState::fcsSuspend)
+                    printf("%s listen atom incremental timeout... start snapshot\n", this->m_idName);
                 this->StartListenSnapshot();
                 return true;
             }
@@ -1513,7 +1719,7 @@ protected:
             }
             else {
                 if(this->m_waitTimer->ElapsedMilliseconds(1) > this->WaitAnyPacketMaxTimeMs) {
-                    printf("Timeout 10 sec... Reconnect...\n");
+                    printf("%s %s Timeout 10 sec... Reconnect...\n", this->m_channelName, this->m_idName);
                     DefaultLogManager::Default->WriteSuccess(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_Listen_Atom_SecurityStatus, false);
                     this->ReconnectSetNextState(FeedConnectionState::fcsListenSecurityStatus);
                 }
@@ -1536,7 +1742,7 @@ protected:
             }
             else {
                 if(this->m_waitTimer->ElapsedMilliseconds(1) > this->WaitAnyPacketMaxTimeMs) {
-                    printf("Timeout 10 sec... Reconnect...\n");
+                    printf("%s %s Timeout 10 sec... Reconnect...\n", this->m_channelName, this->m_idName);
                     DefaultLogManager::Default->WriteSuccess(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_Listen_Atom_SecurityDefinition, false);
                     this->ReconnectSetNextState(FeedConnectionState::fcsListenSecurityDefinition);
                 }
@@ -1617,6 +1823,10 @@ protected:
     }
 
     inline bool OnIncrementalRefresh_OLR_FOND(FastIncrementalOLRFONDInfo *info) {
+#ifdef COLLECT_STATISTICS
+        ProgramStatistics::Current->IncFondOlrProcessedCount();
+        ProgramStatistics::Total->IncFondOlrProcessedCount();
+#endif
         if(this->m_skipApplyMessages) { //TODO remove this
             this->m_fastProtocolManager->Print();
             info->Clear();
@@ -1632,6 +1842,10 @@ protected:
     }
 
     inline bool OnIncrementalRefresh_OLR_CURR(FastIncrementalOLRCURRInfo *info) {
+#ifdef COLLECT_STATISTICS
+        ProgramStatistics::Current->IncCurrOlrProcessedCount();
+        ProgramStatistics::Total->IncCurrOlrProcessedCount();
+#endif
         if(this->m_skipApplyMessages) { //TODO remove this
             this->m_fastProtocolManager->Print();
             info->Clear();
@@ -1646,6 +1860,10 @@ protected:
     }
 
     inline bool OnIncrementalRefresh_TLR_FOND(FastIncrementalTLRFONDInfo *info) {
+#ifdef COLLECT_STATISTICS
+        ProgramStatistics::Current->IncFondTlrProcessedCount();
+        ProgramStatistics::Total->IncFondTlrProcessedCount();
+#endif
         if(this->m_skipApplyMessages) { //TODO remove this
             this->m_fastProtocolManager->Print();
             info->Clear();
@@ -1660,6 +1878,10 @@ protected:
     }
 
     inline bool OnIncrementalRefresh_TLR_CURR(FastIncrementalTLRCURRInfo *info) {
+#ifdef COLLECT_STATISTICS
+        ProgramStatistics::Current->IncCurrTlrProcessedCount();
+        ProgramStatistics::Total->IncCurrTlrProcessedCount();
+#endif
         if(this->m_skipApplyMessages) { //TODO remove this
             this->m_fastProtocolManager->Print();
             info->Clear();
@@ -1674,6 +1896,10 @@ protected:
     }
 
     inline bool OnIncrementalRefresh_MSR_FOND(FastIncrementalMSRFONDInfo *info) {
+#ifdef COLLECT_STATISTICS
+        ProgramStatistics::Current->IncFondMsrProcessedCount();
+        ProgramStatistics::Total->IncFondMsrProcessedCount();
+#endif
         if(this->m_skipApplyMessages) { //TODO remove this
             DebugInfoManager::Default->PrintStatisticsOnce<FastIncrementalMSRFONDInfo>(this->m_fastProtocolManager, info);
             info->Clear();
@@ -1691,6 +1917,10 @@ protected:
 
 
     inline bool OnIncrementalRefresh_MSR_CURR(FastIncrementalMSRCURRInfo *info) {
+#ifdef COLLECT_STATISTICS
+        ProgramStatistics::Current->IncCurrMsrProcessedCount();
+        ProgramStatistics::Total->IncCurrMsrProcessedCount();
+#endif
         if(this->m_skipApplyMessages) { //TODO remove this
             DebugInfoManager::Default->PrintStatisticsOnce<FastIncrementalMSRCURRInfo>(this->m_fastProtocolManager, info);
             info->Clear();
@@ -1790,6 +2020,16 @@ protected:
 	}
 
     inline bool ProcessSecurityStatus(FeedConnectionMessageInfo *info) {
+#ifdef COLLECT_STATISTICS
+        if(this->m_id == FeedConnectionId::fcidIsfFond) {
+            ProgramStatistics::Current->IncFondIssProcessedCount();
+            ProgramStatistics::Total->IncFondIssProcessedCount();
+        }
+        else {
+            ProgramStatistics::Current->IncCurrIssProcessedCount();
+            ProgramStatistics::Total->IncCurrIssProcessedCount();
+        }
+#endif
         unsigned char *buffer = info->m_address;
         if(this->ShouldSkipMessage(buffer, !info->m_requested)) {
             info->m_processed = true;
@@ -1822,7 +2062,7 @@ public:
     inline int WaitSnapshotMaxTimeMs() { return this->m_snapshotMaxTimeMs; }
 
     inline void ClearMessages() {
-        for(int i = 0;i < RobotSettings::DefaultFeedConnectionPacketCount; i++)
+        for(int i = 0;i < RobotSettings::Default->DefaultFeedConnectionPacketCount; i++)
             this->m_packets[i]->Clear();
         this->m_startMsgSeqNum = 1;
         this->m_endMsgSeqNum = 0;
@@ -1873,6 +2113,8 @@ public:
     inline FeedConnection** ConnectionsToRecvSymbols() { return this->m_connectionsToRecvSymbols; }
     inline int ConnectionsToRecvSymbolsCount() { return this->m_connectionsToRecvSymbolsCount; }
     inline void AddConnectionToRecvSymbol(FeedConnection *conn) {
+        if(conn == 0)
+            return;
         this->m_connectionsToRecvSymbols[this->m_connectionsToRecvSymbolsCount] = conn;
         this->m_connectionsToRecvSymbolsCount++;
     }
@@ -2060,8 +2302,9 @@ public:
         }
         else {
             this->m_idfMode = FeedConnectionSecurityDefinitionMode::sdmUpdateData;
+            this->m_waitTimer->Reset(0);
+            this->m_waitTimer->Reset(1);
         }
-        CheckAllSymbols();
     }
 
     inline bool ProcessSecurityDefinition(FastSecurityDefinitionInfo *info) {
@@ -2088,7 +2331,7 @@ public:
         return true;
     }
 
-    inline void AddSymbols(int count) {
+    inline void InitSymbols(int count) {
         if(this->m_orderTableFond != 0) {
             this->m_orderTableFond->InitSymbols(count);
             return;
@@ -2182,10 +2425,9 @@ public:
     }
 
     inline void UpdateTradingSession(FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo *trading, FastSecurityStatusInfo *info) {
-        trading->IsNullTradingSessionSubID = info->IsNullTradingSessionSubID;
+        trading->NullMap = info->NullMap;
         trading->TradingSessionSubID = info->TradingSessionSubID;
         trading->TradingSessionSubIDLength = info->TradingSessionSubIDLength;
-        trading->IsNullSecurityTradingStatus = info->IsNullSecurityTradingStatus;
         trading->SecurityTradingStatus = info->SecurityTradingStatus;
         //Skip AuctionIndicator because there is no data in feed streams for them
     }
@@ -2284,18 +2526,18 @@ public:
     }
 
     inline void AfterProcessSecurityDefinitions() {
-        // TODO remove debug info
-//        for(int i = 0; i < this->m_symbolsCount; i++) {
-//            printf("%s\n", DebugInfoManager::Default->GetString(this->m_symbols[i]->Data()->Symbol, this->m_symbols[i]->Data()->SymbolLength, 0));
-//            for(int j = 0; j < this->m_symbols[i]->Data()->MarketSegmentGrpCount; j++) {
-//                for(int k = 0; k < this->m_symbols[i]->Data()->MarketSegmentGrp[j]->TradingSessionRulesGrpCount; k++) {
-//                    printf("\t%s\n", DebugInfoManager::Default->GetString(this->m_symbols[i]->Data()->MarketSegmentGrp[j]->TradingSessionRulesGrp[k]->TradingSessionID,
-//                                                                          this->m_symbols[i]->Data()->MarketSegmentGrp[j]->TradingSessionRulesGrp[k]->TradingSessionIDLength, 0));
-//                }
-//            }
-//        }
+        //TODO remove debug
+        printf("%s %s SymbolsCount = %d\n", this->m_channelName, this->m_idName, this->m_symbolsCount);
+        int sessionCount = 0;
+        for(int i = 0; i < this->m_symbolsCount; i++) {
+            for (int j = 0; j < this->m_symbols[i]->Data()->MarketSegmentGrpCount; j++) {
+                sessionCount += this->m_symbols[i]->Data()->MarketSegmentGrp[j]->TradingSessionRulesGrpCount;
+            }
+        }
+        printf("%s %s Total SessionsCount = %d\n", this->m_channelName, this->m_idName, sessionCount);
+
         for(int i = 0; i < this->m_connectionsToRecvSymbolsCount; i++)
-            this->m_connectionsToRecvSymbols[i]->AddSymbols(this->m_symbolsCount);
+            this->m_connectionsToRecvSymbols[i]->InitSymbols(this->m_symbolsCount);
 
         LinkedPointer<FastSecurityDefinitionInfo> **ptr = this->m_symbols;
         for(int i = 0; i < this->m_symbolsCount; i++, ptr++)
@@ -2356,6 +2598,9 @@ public:
 	}
 
 	inline bool Disconnect() {
+        if((this->socketAManager == NULL || !this->socketAManager->IsConnected()) &&
+                (this->socketBManager == NULL || !this->socketBManager->IsConnected()))
+            return true;
 		DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Disconnect);
 
 		bool result = true;

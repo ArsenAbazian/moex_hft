@@ -283,14 +283,14 @@ void DebugInfoManager::Log(SizedArray *symbol, SizedArray *trading, const char *
 void DebugInfoManager::PrintStatistics(FeedChannel *channel) {
     printf("Start FeedChannel %s\n", channel->Name());
     this->AddTabs();
-    this->PrintStatistics(channel->OrdersIncremental());
-    this->PrintStatistics(channel->OrdersSnapshot());
-    this->PrintStatistics(channel->TradesIncremental());
-    this->PrintStatistics(channel->TradesSnapshot());
-    this->PrintStatistics(channel->StatisticsIncremental());
-    this->PrintStatistics(channel->StatisticsSnapshot());
-    this->PrintStatistics(channel->InstrumentDefinition());
-    this->PrintStatistics(channel->InstrumentStatus());
+    this->PrintStatistics(channel->Olr());
+    this->PrintStatistics(channel->Ols());
+    this->PrintStatistics(channel->Tlr());
+    this->PrintStatistics(channel->Tls());
+    this->PrintStatistics(channel->Msr());
+    this->PrintStatistics(channel->Mss());
+    this->PrintStatistics(channel->Idf());
+    this->PrintStatistics(channel->Isf());
     this->RemoveTabs();
     printf("End FeedChannel %s\n", channel->Name());
 }
@@ -320,7 +320,7 @@ void DebugInfoManager::PrintStatisticsInstrumentStatus(FeedConnection *conn) {
     printf("Type SecurityStatus\n");
 }
 void DebugInfoManager::PrintStatisticsHistoricalReplay(FeedConnection *conn) {
-    printf("Type HistoricalReplay\n");
+    printf("Type Hr\n");
 }
 
 void DebugInfoManager::PrintStatistics(FeedConnection *conn) {
@@ -543,14 +543,14 @@ void DebugInfoManager::PrintStatisticsXml(const char *fileName, FeedChannel *cha
 
     fprintf(fp, "<FeedChannel Name=\"%s\">\n", channel->Name());
     this->AddTabs();
-    this->PrintStatisticsXml(channel->OrdersIncremental());
-    this->PrintStatisticsXml(channel->OrdersSnapshot());
-    this->PrintStatisticsXml(channel->TradesIncremental());
-    this->PrintStatisticsXml(channel->TradesSnapshot());
-    this->PrintStatisticsXml(channel->StatisticsIncremental());
-    this->PrintStatisticsXml(channel->StatisticsSnapshot());
-    this->PrintStatisticsXml(channel->InstrumentDefinition());
-    this->PrintStatisticsXml(channel->InstrumentStatus());
+    this->PrintStatisticsXml(channel->Olr());
+    this->PrintStatisticsXml(channel->Ols());
+    this->PrintStatisticsXml(channel->Tlr());
+    this->PrintStatisticsXml(channel->Tls());
+    this->PrintStatisticsXml(channel->Msr());
+    this->PrintStatisticsXml(channel->Mss());
+    this->PrintStatisticsXml(channel->Idf());
+    this->PrintStatisticsXml(channel->Isf());
     this->RemoveTabs();
     fprintf(fp, "</FeedChannel>\n");
     fclose(fp);
@@ -581,7 +581,7 @@ void DebugInfoManager::PrintStatisticsInstrumentStatusXml(FeedConnection *conn) 
     fprintf(fp, "<Type>SecurityStatus</Type>\n");
 }
 void DebugInfoManager::PrintStatisticsHistoricalReplayXml(FeedConnection *conn) {
-    fprintf(fp,"<Type>HistoricalReplay</Type>\n");
+    fprintf(fp,"<Type>Hr</Type>\n");
 }
 
 void DebugInfoManager::PrintStatisticsXml(FeedConnection *conn) {

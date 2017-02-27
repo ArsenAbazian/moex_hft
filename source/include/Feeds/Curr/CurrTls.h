@@ -14,14 +14,16 @@ public:
         this->SetType(FeedConnectionType::Snapshot);
         this->SetId(FeedConnectionId::fcidTlsCurr);
         this->m_fastProtocolManager = new FastProtocolManager(this->CreateFastAllocationInfo());
-        InitializePackets();
+        InitializePackets(this->GetPacketsCount());
+        DebugInfoManager::Default->PrintMemoryInfo("FeedConnection_CURR_TLS");
     }
+    int GetPacketsCount() { return 50000; }
     ISocketBufferProvider* CreateSocketBufferProvider() {
         return new SocketBufferProvider(DefaultSocketBufferManager::Default,
-                                        RobotSettings::DefaultFeedConnectionSendBufferSize,
-                                        RobotSettings::DefaultFeedConnectionSendItemsCount,
-                                        RobotSettings::DefaultFeedConnectionRecvBufferSize,
-                                        RobotSettings::DefaultFeedConnectionRecvItemsCount);
+                                        RobotSettings::Default->DefaultFeedConnectionSendBufferSize,
+                                        RobotSettings::Default->DefaultFeedConnectionSendItemsCount,
+                                        RobotSettings::Default->DefaultFeedConnectionRecvBufferSize,
+                                        RobotSettings::Default->DefaultFeedConnectionRecvItemsCount);
     }
     FastObjectsAllocationInfo* CreateFastAllocationInfo() {
         FastObjectsAllocationInfo *info = new FastObjectsAllocationInfo();
@@ -29,8 +31,8 @@ public:
 #ifndef TEST
         info->m_tLSCURRCount = 1024;
         info->m_tLSCURRAddCount = 256;
-        info->m_tLSCURRItemsCount = 2024;
-        info->m_tLSCURRItemsAddCount = 256;
+        info->m_tLSCURRItemsCount = 800000;
+        info->m_tLSCURRItemsAddCount = 20000;
 #else
         info->m_tLSCURRCount = 100;
         info->m_tLSCURRAddCount = 100;

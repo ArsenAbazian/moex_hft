@@ -4,7 +4,7 @@
 
 #ifndef HFT_ROBOT_SECURITYSTATUSTESTER_H
 #define HFT_ROBOT_SECURITYSTATUSTESTER_H
-#include "../Types.h"
+#include "Settings.h"
 
 #ifdef TEST
 
@@ -40,7 +40,8 @@ public:
 
         this->isf->SetHistoricalReplay(this->hr);
         this->isf->SetSecurityDefinition(this->idf);
-
+        this->isf->SetMaxLostPacketCountForStartSnapshot(0);
+        this->idf->IdfAllowGenerateSecurityDefinitions(true);
     }
     ~SecurityStatusTester() {
         delete this->m_helper;
@@ -60,6 +61,8 @@ public:
         if(this->isf->MaxLostPacketCountForStartSnapshot() != 0)
             throw;
         if(this->isf->CalcListenStateByType() != FeedConnectionState::fcsListenSecurityStatus)
+            throw;
+        if(!this->idf->IdfAllowGenerateSecurityDefinitions())
             throw;
     }
 
@@ -119,6 +122,7 @@ public:
         this->isf->ClearPackets(0, 100);
         this->isf->Stop();
         this->hr->m_hsRequestList->Clear();
+        this->isf->m_requestMessageStartIndex = -1;
     }
 
     void TestReceiveExistingSymbol() {
@@ -910,6 +914,7 @@ public:
 
     // default
     void TestRequestLostMessagesLogic_1() {
+        this->isf->m_requestMessageStartIndex = -1;
         this->isf->m_startMsgSeqNum = 1;
         this->isf->m_endMsgSeqNum = 0;
         this->isf->ClearPackets(1, 1);
@@ -920,6 +925,7 @@ public:
 
     // do not request
     void TestRequestLostMessagesLogic_2() {
+        this->isf->m_requestMessageStartIndex = -1;
         this->isf->m_startMsgSeqNum = 3;
         this->isf->m_endMsgSeqNum = 2;
         this->isf->ClearPackets(1, 5);
@@ -1000,6 +1006,7 @@ public:
 
     // request one message
     void TestRequestLostMessagesLogic_4() {
+        this->isf->m_requestMessageStartIndex = -1;
         this->isf->ClearPackets(1, 100);
         this->isf->m_startMsgSeqNum = 3;
         this->isf->m_endMsgSeqNum = 4;
@@ -1015,6 +1022,7 @@ public:
 
     // request some messages
     void TestRequestLostMessagesLogic_5() {
+        this->isf->m_requestMessageStartIndex = -1;
         this->isf->ClearPackets(1, 100);
         this->hr->m_hsRequestList->Clear();
         this->isf->m_startMsgSeqNum = 4;
@@ -1036,6 +1044,7 @@ public:
 
     // two GAPs
     void TestRequestLostMessagesLogic_6() {
+        this->isf->m_requestMessageStartIndex = -1;
         this->isf->ClearPackets(1, 100);
         this->hr->m_hsRequestList->Clear();
         this->isf->m_startMsgSeqNum = 4;
@@ -1063,6 +1072,7 @@ public:
     // two GAPs and called twice
     // avoid of dublicate requests
     void TestRequestLostMessagesLogic_7() {
+        this->isf->m_requestMessageStartIndex = -1;
         this->isf->ClearPackets(1, 100);
         this->hr->m_hsRequestList->Clear();
         this->isf->m_startMsgSeqNum = 4;

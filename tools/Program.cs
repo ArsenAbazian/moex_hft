@@ -68,8 +68,10 @@ namespace prebuild {
 				string channelName = node.Attributes["id"].Value;
 				//Console.WriteLine("found channel " + channelName);
 				string channelLabel = node.Attributes["label"].Value;
+				string channelNameUpper = channelName.Substring(0, 1).ToUpper() + channelName.Substring(1).ToLower();
 
-				WriteLine("\tFeedChannel *" + channelName.ToLower() + " = new FeedChannel(" + ConstStr(channelName) + ", " + ConstStr(channelLabel) + ");");
+				WriteLine("\tif(this->Allow" + channelNameUpper + "Market()) {");
+				WriteLine("\t\tFeedChannel *" + channelName.ToLower() + " = new FeedChannel(" + ConstStr(channelName) + ", " + ConstStr(channelLabel) + ");");
 				WriteLine("");
 				XmlNode connections = node.ChildNodes[0];
 				foreach(XmlNode conn in connections.ChildNodes) {
@@ -83,12 +85,12 @@ namespace prebuild {
 					string feedValue = "'" + NodeValue(conn.ChildNodes[0]) + "'";
 
 					//Console.WriteLine("found connection " + c_id);
-
+					WriteLine("\t\tif(this->AllowFeed(\"" + c_id + "\")) {");
 					if(c_id == "H") {
 						string ip = NodeValue(conn.ChildNodes[2]);
 						string port = NodeValue(conn.ChildNodes[3]);
 
-						WriteLine("\tFeedConnection *" + feedValueName + " = new " + feedClassName + "(" + ConstStr(c_id) + ", " + ConstStr(feedType) + ", " + feedValue + ", " + protocolValue + ", " + ConstStr(ip) + ", " + port + ");");
+						WriteLine("\t\t\tFeedConnection *" + feedValueName + " = new " + feedClassName + "(" + ConstStr(c_id) + ", " + ConstStr(feedType) + ", " + feedValue + ", " + protocolValue + ", " + ConstStr(ip) + ", " + port + ");");
 					} else {
 						string srcIpA = NodeValue(conn.ChildNodes[2].ChildNodes[0]);
 						string ipA = NodeValue(conn.ChildNodes[2].ChildNodes[1]);
@@ -98,20 +100,23 @@ namespace prebuild {
 						string ipB = NodeValue(conn.ChildNodes[3].ChildNodes[1]);
 						string portB = NodeValue(conn.ChildNodes[3].ChildNodes[2]);
 					
-						WriteLine("\tFeedConnection *" + feedValueName + " = new " + feedClassName + "(" + ConstStr(c_id) + ", " + ConstStr(feedType) + ", " + feedValue + ", " + protocolValue + ", " +
+						WriteLine("\t\t\tFeedConnection *" + feedValueName + " = new " + feedClassName + "(" + ConstStr(c_id) + ", " + ConstStr(feedType) + ", " + feedValue + ", " + protocolValue + ", " +
 							ConstStr(srcIpA) + ", " + ConstStr(ipA) + ", " + portA + ", " + 
 							ConstStr(srcIpB) + ", " + ConstStr(ipB) + ", " + portB +  
 							");");
 					}
+					WriteLine("\t\t\t" + channelName.ToLower() + "->SetConnection(" + feedValueName + ");");
+					WriteLine("\t\t}");
 				}
+				//WriteLine("");
+				//foreach(XmlNode conn in connections.ChildNodes) {
+				//	string c_id = conn.Attributes["id"].Value;
+				//	string feedValueName = c_id.ToLower() + "_" + channelName.ToLower();
+
+				//}
 				WriteLine("");
-				foreach(XmlNode conn in connections.ChildNodes) {
-					string c_id = conn.Attributes["id"].Value;
-					string feedValueName = c_id.ToLower() + "_" + channelName.ToLower();
-					WriteLine("\t" + channelName.ToLower() + "->SetConnection(" + feedValueName + ");");
-				}
-				WriteLine("");
-				WriteLine("\tthis->AddChannel(" + channelName.ToLower() + ");");
+				WriteLine("\t\tthis->AddChannel(" + channelName.ToLower() + ");");
+				WriteLine("\t}");
 			}
 			return true;
 		}
@@ -358,7 +363,8 @@ namespace prebuild {
 				tabs += "\t";
 			}
 			if(nullCheck) {
-				WriteLine(tabs + "if(" + si.InCodeValueName + "->" + NullFlagName(field) + ")");
+				int nullIndex = CalcNullIndex(field);
+				WriteLine(tabs + "if((" + si.InCodeValueName + "->NullMap & NULL_MAP_INDEX" + nullIndex + ") != 0)");
 				WriteNullValueCode(tabs + "\t", field);
 
 				if(field.Name == "sequence")
@@ -522,6 +528,10 @@ namespace prebuild {
 				get { return Name + "PresenceIndices"; }
 			}
 
+			public string NullIndicesClassName { 
+				get{ return Name + "NullIndices"; }
+			}
+
 			public XmlNode Node { get; set; }
 
 			public string NameCore { get; set; }
@@ -669,7 +679,7 @@ namespace prebuild {
 			WriteLine("");
 			WriteLine("\tvoid InitializeMessageInfo() {");
 			foreach(StructureInfo str in structures) {
-				WriteLine("\t\tthis->" + str.ValueName + " = new AutoAllocatePointerList<" + str.Name + ">(this->m_allocationInfo->" + str.ValueName + "Count, this->m_allocationInfo->" + str.ValueName + "AddCount);");
+				WriteLine("\t\tthis->" + str.ValueName + " = new AutoAllocatePointerList<" + str.Name + ">(this->m_allocationInfo->" + str.ValueName + "Count, this->m_allocationInfo->" + str.ValueName + "AddCount, \"" + str.Name + "\");");
 			}
 			foreach(StructureInfo str in structures) {
 				WriteLine("\t\tthis->" + str.PrevValueName + " = this->" + str.GetFreeMethodName + "();");
@@ -931,17 +941,104 @@ namespace prebuild {
 			WriteLine("#define PRESENCE_MAP_INDEX54 0x0200000000000000L");
 			WriteLine("#define PRESENCE_MAP_INDEX55 0x0100000000000000L");
 
+			WriteLine("#define NULL_MAP_INDEX0      0x0000000000000001L");
+			WriteLine("#define NULL_MAP_INDEX1      0x0000000000000002L");
+			WriteLine("#define NULL_MAP_INDEX2      0x0000000000000004L");
+			WriteLine("#define NULL_MAP_INDEX3      0x0000000000000008L");
+			WriteLine("#define NULL_MAP_INDEX4      0x0000000000000010L");
+			WriteLine("#define NULL_MAP_INDEX5      0x0000000000000020L");
+			WriteLine("#define NULL_MAP_INDEX6      0x0000000000000040L");
+			WriteLine("#define NULL_MAP_INDEX7      0x0000000000000080L");
+			WriteLine("#define NULL_MAP_INDEX8      0x0000000000000100L");
+			WriteLine("#define NULL_MAP_INDEX9      0x0000000000000200L");
+			WriteLine("#define NULL_MAP_INDEX10     0x0000000000000400L");
+			WriteLine("#define NULL_MAP_INDEX11     0x0000000000000800L");
+			WriteLine("#define NULL_MAP_INDEX12     0x0000000000001000L");
+			WriteLine("#define NULL_MAP_INDEX13     0x0000000000002000L");
+			WriteLine("#define NULL_MAP_INDEX14     0x0000000000004000L");
+			WriteLine("#define NULL_MAP_INDEX15     0x0000000000008000L");
+
+			WriteLine("#define NULL_MAP_INDEX16     0x0000000000010000L");
+			WriteLine("#define NULL_MAP_INDEX17     0x0000000000020000L");
+			WriteLine("#define NULL_MAP_INDEX18     0x0000000000040000L");
+			WriteLine("#define NULL_MAP_INDEX19     0x0000000000080000L");
+			WriteLine("#define NULL_MAP_INDEX20     0x0000000000100000L");
+			WriteLine("#define NULL_MAP_INDEX21     0x0000000000200000L");
+			WriteLine("#define NULL_MAP_INDEX22     0x0000000000400000L");
+			WriteLine("#define NULL_MAP_INDEX23     0x0000000000800000L");
+			WriteLine("#define NULL_MAP_INDEX24     0x0000000001000000L");
+			WriteLine("#define NULL_MAP_INDEX25     0x0000000002000000L");
+			WriteLine("#define NULL_MAP_INDEX26     0x0000000004000000L");
+			WriteLine("#define NULL_MAP_INDEX27     0x0000000008000000L");
+			WriteLine("#define NULL_MAP_INDEX28     0x0000000010000000L");
+			WriteLine("#define NULL_MAP_INDEX29     0x0000000020000000L");
+			WriteLine("#define NULL_MAP_INDEX30     0x0000000040000000L");
+			WriteLine("#define NULL_MAP_INDEX31     0x0000000080000000L");
+
+			WriteLine("#define NULL_MAP_INDEX32     0x0000000100000000L");
+			WriteLine("#define NULL_MAP_INDEX33     0x0000000200000000L");
+			WriteLine("#define NULL_MAP_INDEX34     0x0000000400000000L");
+			WriteLine("#define NULL_MAP_INDEX35     0x0000000800000000L");
+			WriteLine("#define NULL_MAP_INDEX36     0x0000001000000000L");
+			WriteLine("#define NULL_MAP_INDEX37     0x0000002000000000L");
+			WriteLine("#define NULL_MAP_INDEX38     0x0000004000000000L");
+			WriteLine("#define NULL_MAP_INDEX39     0x0000008000000000L");
+			WriteLine("#define NULL_MAP_INDEX40     0x0000010000000000L");
+			WriteLine("#define NULL_MAP_INDEX41     0x0000020000000000L");
+			WriteLine("#define NULL_MAP_INDEX42     0x0000040000000000L");
+			WriteLine("#define NULL_MAP_INDEX43     0x0000080000000000L");
+			WriteLine("#define NULL_MAP_INDEX44     0x0000100000000000L");
+			WriteLine("#define NULL_MAP_INDEX45     0x0000200000000000L");
+			WriteLine("#define NULL_MAP_INDEX46     0x0000400000000000L");
+			WriteLine("#define NULL_MAP_INDEX47     0x0000800000000000L");
+
+			WriteLine("#define NULL_MAP_INDEX48     0x0001000000000000L");
+			WriteLine("#define NULL_MAP_INDEX49     0x0002000000000000L");
+			WriteLine("#define NULL_MAP_INDEX50     0x0004000000000000L");
+			WriteLine("#define NULL_MAP_INDEX51     0x0008000000000000L");
+			WriteLine("#define NULL_MAP_INDEX52     0x0010000000000000L");
+			WriteLine("#define NULL_MAP_INDEX53     0x0020000000000000L");
+			WriteLine("#define NULL_MAP_INDEX54     0x0040000000000000L");
+			WriteLine("#define NULL_MAP_INDEX55     0x0080000000000000L");
+			WriteLine("#define NULL_MAP_INDEX56     0x0100000000000000L");
+			WriteLine("#define NULL_MAP_INDEX57     0x0200000000000000L");
+			WriteLine("#define NULL_MAP_INDEX58     0x0400000000000000L");
+			WriteLine("#define NULL_MAP_INDEX59     0x0800000000000000L");
+			WriteLine("#define NULL_MAP_INDEX60     0x1000000000000000L");
+			WriteLine("#define NULL_MAP_INDEX61     0x2000000000000000L");
+			WriteLine("#define NULL_MAP_INDEX62     0x4000000000000000L");
+			WriteLine("#define NULL_MAP_INDEX63     0x8000000000000000L");
+
+
 			WriteLine("");
 
-			WriteLine("typedef struct _FastSnapshotInfo {");
+			WriteLine("class FastSnapshotInfo {");
+			WriteLine("public:");
 			WriteLine("\tUINT64\t\t\t\tPresenceMap;");
+			WriteLine("\tUINT64\t\t\t\tNullMap;");
 			WriteLine("\tint\t\t\t\tTemplateId;");
 			InitializeSnapshotInfoFields(templatesNode);
 			foreach(SnapshotFieldInfo info in SnapshotInfoFields) {
-				WriteLine("\t" + info.FieldType + "\t\t\t\t" + info.FieldName + ";");
-				WriteLine("\tbool\t\t\t\tIsNull" + info.FieldName + ";");
+				if(info.FieldType.ToLower() == "string" ) {
+					WriteLine("\t" + "char" + "\t\t\t\t*" + info.FieldName + ";");
+					WriteLine("\t" + "int" + "\t\t\t\t\t" + info.FieldName + "Length;");
+				} else {
+					WriteLine("\t" + info.FieldType + "\t\t\t\t" + info.FieldName + ";");
+				}
 			}
-			WriteLine("}FastSnapshotInfo;");
+			WriteLine("\tFastSnapshotInfo() {");
+			WriteLine("\t\tthis->PresenceMap = 0;");
+			WriteLine("\t\tthis->NullMap = 0;");
+			WriteLine("\t}");
+			WriteLine("\tinline void ExtractString() {");
+			WriteLine("\t\tthis->Symbol[this->SymbolLength - 1] &= 0x7f;");
+			WriteLine("\t\tthis->TradingSessionID[this->TradingSessionIDLength - 1] &= 0x7f;");
+			WriteLine("\t}");
+			WriteLine("\tinline void Restore() {");
+			WriteLine("\t\tthis->Symbol[this->SymbolLength - 1] |= 0x80;");
+			WriteLine("\t\tthis->TradingSessionID[this->TradingSessionIDLength - 1] |= 0x80;");
+			WriteLine("\t}");
+			WriteLine("};");
 
 			WriteLine("");
 
@@ -987,7 +1084,27 @@ namespace prebuild {
 				foreach(XmlNode field in info.Fields) {
 					if(!ShouldWriteCheckPresenceMapCode(field))
 						continue;
-					WriteLine("\tstatic const int " + Name(field) + "PresenceIndex = PRESENCE_MAP_INDEX" + CalcFieldPresenceIndex(field) + ";");
+					WriteLine("\tstatic const UINT64 " + Name(field) + "PresenceIndex = PRESENCE_MAP_INDEX" + CalcFieldPresenceIndex(field) + ";");
+				}
+				WriteLine("};");
+			}
+
+			foreach(StructureInfo info in structures) {
+				bool hasNullableIndex = false;
+				foreach(XmlNode field in info.Fields) {
+					if(!ShouldWriteNullCheckCode(field))
+						continue;
+					hasNullableIndex = true;
+					break;
+				}
+				if(!hasNullableIndex)
+					continue;
+				WriteLine("class " + info.NullIndicesClassName + "{");
+				WriteLine("public:");
+				foreach(XmlNode field in info.Fields) {
+					if(!ShouldWriteNullCheckCode(field))
+						continue;
+					WriteLine("\tstatic const UINT64 " + Name(field) + "NullIndex = NULL_MAP_INDEX" + CalcNullIndex(field) + ";");
 				}
 				WriteLine("};");
 			}
@@ -1199,6 +1316,7 @@ namespace prebuild {
 
 		private  void WriteStructureFieldsDefinitionCode (StructureInfo info, string parentName) {
 			WritePresenceMapDefinition();
+			WriteNullMapDefinition();
 			WritePointerCode(info);
 			foreach(XmlNode field in info.Fields) {
 				if(field.Name == "string")
@@ -1221,7 +1339,6 @@ namespace prebuild {
 					// Do nothing
 				} else
 					Console.WriteLine("found undefined field " + field.Name);
-				WriteAllowFlagAndPresenceMapIndex(field);
 			}
 
 			WriteLine("");
@@ -1237,10 +1354,8 @@ namespace prebuild {
 
 		private void WriteClearFieldsCode(StructureInfo info) {
 			WriteLine("\t\tthis->PresenceMap = 0;");
+			WriteLine("\t\tthis->NullMap = 0;");
 			foreach(XmlNode field in info.Fields) {
-				if(ShouldWriteNullCheckCode(field))
-					WriteLine("\t\tthis->IsNull" + Name(field) + " = true;");
-
 				if(field.Name == "string")
 					WriteClearStringCode(field);
 				if(field.Name == "sequence")
@@ -1284,21 +1399,12 @@ namespace prebuild {
 
 		string StuctFieldsSpacing { get{ return "\t\t\t\t\t\t\t"; } }
 
-		private void WriteAllowFlagAndPresenceMapIndex(XmlNode field) {
-			if(ShouldWriteNullCheckCode(field)) {
-				WriteLine("\tbool" + StuctFieldsSpacing + NullFlagName(field) + ";");
-			}
-			//if(ShouldWriteCheckPresenceMapCode(field)) {
-			//	WriteLine("\tconst UINT64" + StuctFieldsSpacing + PresenceIndexName(field) + " = PRESENCE_MAP_INDEX" + CalcFieldPresenceIndex(field) + ";");
-			//}			
-		} 
-
 		private  void WritePresenceMapDefinition () {
 			WriteLine("\tUINT64" + StuctFieldsSpacing + "PresenceMap;");
 		}
 
-		private void WriteCopyCountDefinition() {
-			WriteLine("\tint" + StuctFieldsSpacing + "CopyCount;");
+		private  void WriteNullMapDefinition () {
+			WriteLine("\tUINT64" + StuctFieldsSpacing + "NullMap;");
 		}
 
 		int CalcPresenceMapByteCount(XmlNode node) {
@@ -1495,6 +1601,8 @@ namespace prebuild {
 					snapshotInfoFields.Add(new SnapshotFieldInfo("", "RouteFirst"));
 					snapshotInfoFields.Add(new SnapshotFieldInfo("", "LastMsgSeqNumProcessed"));
 					snapshotInfoFields.Add(new SnapshotFieldInfo("", "SendingTime"));
+					snapshotInfoFields.Add(new SnapshotFieldInfo("", "Symbol"));
+					snapshotInfoFields.Add(new SnapshotFieldInfo("", "TradingSessionID"));
 				}
 				return snapshotInfoFields;
 			}
@@ -1752,6 +1860,18 @@ namespace prebuild {
 			return index;
 		}
 
+		private  int CalcNullIndex (XmlNode value) {
+			int index = 0;
+			XmlNode parentNode = value.ParentNode;
+			foreach(XmlNode node in parentNode.ChildNodes) { 
+				if(node == value)
+					return index;
+				if(ShouldWriteNullCheckCode(node))
+					index++;
+			}
+			return index;
+		}
+
 		private  bool HasFieldOperator (XmlNode value) {
 			return HasConstantAttribute(value) ||
 			HasCopyValueAttribute(value) ||
@@ -1910,12 +2030,14 @@ namespace prebuild {
 
 		private  void ParseByteVectorValue (StructureInfo str, XmlNode value, string info, string tabString) {
 			if(ShouldWriteNullCheckCode(value)) {
-				WriteLine(tabString + "if(!(" + info + "->IsNull" + Name(value) + " = CheckProcessNullByteVector()))");
+				WriteLine(tabString + "if(!CheckProcessNullByteVector())");
 				tabString += "\t";
 			}
 			if(ShouldSkipField(value)) {
-				WriteLine(tabString + "SkipToNextField(); // " + Name(value) + " Length");
-				WriteLine(tabString + "SkipToNextField(); // " + Name(value) + " Data");
+				WriteLine(tabString + "{");
+				WriteLine(tabString + "\tSkipToNextField(); // " + Name(value) + " Length");
+				WriteLine(tabString + "\tSkipToNextField(); // " + Name(value) + " Data");
+				WriteLine(tabString + "}");
 			} else {
 				if(HasOptionalPresence(value))
 					WriteLine(tabString + "ReadByteVector_Optional(&(" + info + "->" + Name(value) + "), &(" + info + "->" + Name(value) + "Length)" + ");");
@@ -1924,6 +2046,8 @@ namespace prebuild {
 			}
 			if(ShouldWriteNullCheckCode(value)) {
 				tabString = tabString.Substring(1);
+				WriteLine(tabString + "else");
+				WriteLine(tabString + "\t" + info + "->NullMap |= NULL_MAP_INDEX" + CalcNullIndex(value) + ";\n");
 				/*
 				if(HasOperators(value)) {
 					WriteLine(tabString + "else {");
@@ -1937,14 +2061,16 @@ namespace prebuild {
 
 		private  void ParseDecimalValue (StructureInfo str, XmlNode value, string info, string tabString) {
 			if(ShouldWriteNullCheckCode(value)) {
-				WriteLine(tabString + "if(!(" + info + "->IsNull" + Name(value) + " = CheckProcessNullDecimal()))");
+				WriteLine(tabString + "if(!CheckProcessNullDecimal())");
 				tabString += "\t";
 			}
 			if(ExtendedDecimal(value))
 				throw new Exception("Extended deciamal detected in template!");
 			if(ShouldSkipField(value)) {
-				WriteLine(tabString + "SkipToNextField(); // " + Name(value) + " Mantissa");
-				WriteLine(tabString + "SkipToNextField(); // " + Name(value) + " Exponent");
+				WriteLine(tabString + "{");
+				WriteLine(tabString + "\tSkipToNextField(); // " + Name(value) + " Mantissa");
+				WriteLine(tabString + "\tSkipToNextField(); // " + Name(value) + " Exponent");
+				WriteLine(tabString + "}");
 			} else {
 				if(HasOptionalPresence(value))
 					WriteLine(tabString + "ReadDecimal_Optional(&(" + info + "->" + Name(value) + "));");
@@ -1953,6 +2079,8 @@ namespace prebuild {
 			}
 			if(ShouldWriteNullCheckCode(value)) {
 				tabString = tabString.Substring(1);
+				WriteLine(tabString + "else");
+				WriteLine(tabString + "\t" + info + "->NullMap |= NULL_MAP_INDEX" + CalcNullIndex(value) + ";\n");
 				/*
 				if(HasOperators(value)) {
 					WriteLine(tabString + "else {");
@@ -1967,7 +2095,7 @@ namespace prebuild {
 
 		private  void ParseInt64Value (StructureInfo str, XmlNode value, string info, string tabString) {
 			if(ShouldWriteNullCheckCode(value)) {
-				WriteLine(tabString + "if(!(" + info + "->IsNull" + Name(value) + " = CheckProcessNullInt64()))");
+				WriteLine(tabString + "if(!CheckProcessNullInt64())");
 				tabString += "\t";
 			}
 			if(ShouldSkipField(value)) {
@@ -1980,6 +2108,8 @@ namespace prebuild {
 			}
 			if(ShouldWriteNullCheckCode(value)) {
 				tabString = tabString.Substring(1);
+				WriteLine(tabString + "else");
+				WriteLine(tabString + "\t" + info + "->NullMap |= NULL_MAP_INDEX" + CalcNullIndex(value) + ";\n");
 				/*
 				if(HasOperators(value)) {
 					WriteLine(tabString + "else {");
@@ -1993,7 +2123,7 @@ namespace prebuild {
 
 		private  void ParseUint64Value (StructureInfo str, XmlNode value, string info, string tabString) {
 			if(ShouldWriteNullCheckCode(value)) {
-				WriteLine(tabString + "if(!(" + info + "->IsNull" + Name(value) + " = CheckProcessNullUInt64()))");
+				WriteLine(tabString + "if(!CheckProcessNullUInt64())");
 				tabString += "\t";
 			}
 			if(ShouldSkipField(value)) {
@@ -2006,6 +2136,8 @@ namespace prebuild {
 			}
 			if(ShouldWriteNullCheckCode(value)) {
 				tabString = tabString.Substring(1);
+				WriteLine(tabString + "else");
+				WriteLine(tabString + "\t" + info + "->NullMap |= NULL_MAP_INDEX" + CalcNullIndex(value) + ";\n");
 				/*
 				if(HasOperators(value)) {
 					WriteLine(tabString + "else {");
@@ -2019,7 +2151,7 @@ namespace prebuild {
 
 		private  void ParseInt32Value (StructureInfo str, XmlNode value, string info, string tabString) {
 			if(ShouldWriteNullCheckCode(value)) {
-				WriteLine(tabString + "if(!(" + info + "->IsNull" + Name(value) + " = CheckProcessNullInt32()))");
+				WriteLine(tabString + "if(!CheckProcessNullInt32())");
 				tabString += "\t";
 			}
 			if(ShouldSkipField(value)) {
@@ -2032,6 +2164,8 @@ namespace prebuild {
 			}
 			if(ShouldWriteNullCheckCode(value)) {
 				tabString = tabString.Substring(1);
+				WriteLine(tabString + "else");
+				WriteLine(tabString + "\t" + info + "->NullMap |= NULL_MAP_INDEX" + CalcNullIndex(value) + ";\n");
 				/*
 				if(HasOperators(value)) {
 					WriteLine(tabString + "else {");
@@ -2045,7 +2179,7 @@ namespace prebuild {
 
 		private  void ParseUint32Value (StructureInfo str, XmlNode value, string info, string tabString) {
 			if(ShouldWriteNullCheckCode(value)) {
-				WriteLine(tabString + "if(!(" + info + "->IsNull" + Name(value) + " = CheckProcessNullUInt32()))");
+				WriteLine(tabString + "if(!CheckProcessNullUInt32())");
 				tabString += "\t";
 			}
 			if(ShouldSkipField(value)) {
@@ -2058,6 +2192,8 @@ namespace prebuild {
 			}
 			if(ShouldWriteNullCheckCode(value)) {
 				tabString = tabString.Substring(1);
+				WriteLine(tabString + "else");
+				WriteLine(tabString + "\t" + info + "->NullMap |= NULL_MAP_INDEX" + CalcNullIndex(value) + ";\n");
 				/*
 				if(HasOperators(value)) {
 					WriteLine(tabString + "else {");
@@ -2071,7 +2207,7 @@ namespace prebuild {
 
 		private  void ParseStringValue (StructureInfo str, XmlNode value, string info, string tabString) {
 			if(ShouldWriteNullCheckCode(value)) {
-				WriteLine(tabString + "if(!(" + info + "->IsNull" + Name(value) + " = CheckProcessNullString()))");
+				WriteLine(tabString + "if(!CheckProcessNullString())");
 				tabString += "\t";
 			}
 			if(ShouldSkipField(value)) {
@@ -2084,6 +2220,8 @@ namespace prebuild {
 			}
 			if(ShouldWriteNullCheckCode(value)) {
 				tabString = tabString.Substring(1);
+				WriteLine(tabString + "else");
+				WriteLine(tabString + "\t" + info + "->NullMap |= NULL_MAP_INDEX" + CalcNullIndex(value) + ";\n");
 				/*
 				if(HasOperators(value)) {
 					WriteLine(tabString + "else {");
@@ -2426,7 +2564,8 @@ namespace prebuild {
 			if(HasConstantAttribute(value))
 				return;
 			if(ShouldWriteNullCheckCode(value)) { 
-				WriteLine(tabString + "if(" + objectValueName + "->IsNull" + Name(value) + ")");
+				int nullIndex = CalcNullIndex(value);
+				WriteLine(tabString + "if((" + objectValueName + "->NullMap & NULL_MAP_INDEX" + nullIndex + ") != 0)");
 				tabString += "\t";
 			}
 
@@ -2464,7 +2603,8 @@ namespace prebuild {
 				return;
 
 			if(ShouldWriteNullCheckCode(value)) {
-				WriteLine(tabString + "if(" + objectValueName + "->IsNull" + Name(value) + ")");
+				int nullIndex = CalcNullIndex(value);
+				WriteLine(tabString + "if((" + objectValueName + "->NullMap & NULL_MAP_INDEX" + nullIndex + ") != 0)");
 				tabString += "\t";
 			}
 			if(value.Name == "string")

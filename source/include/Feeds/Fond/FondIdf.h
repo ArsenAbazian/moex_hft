@@ -15,17 +15,19 @@ public:
         this->SetId(FeedConnectionId::fcidIdfFond);
         this->m_fastProtocolManager = new FastProtocolManager(this->CreateFastAllocationInfo());
         InitializeSecurityDefinition();
-        InitializePackets();
+        InitializePackets(this->GetPacketsCount());
+        DebugInfoManager::Default->PrintMemoryInfo("FeedConnection_FOND_IDF");
     }
     ~FeedConnection_FOND_IDF() {
         DisposeSecurityDefinition();
     }
+    int GetPacketsCount() { return 20000; }
     ISocketBufferProvider* CreateSocketBufferProvider() {
         return new SocketBufferProvider(DefaultSocketBufferManager::Default,
-                                        RobotSettings::DefaultFeedConnectionSendBufferSize,
-                                        RobotSettings::DefaultFeedConnectionSendItemsCount,
-                                        RobotSettings::DefaultFeedConnectionRecvBufferSize,
-                                        RobotSettings::DefaultFeedConnectionRecvItemsCount);
+                                        RobotSettings::Default->DefaultFeedConnectionSendBufferSize,
+                                        RobotSettings::Default->DefaultFeedConnectionSendItemsCount,
+                                        RobotSettings::Default->DefaultFeedConnectionRecvBufferSize,
+                                        RobotSettings::Default->DefaultFeedConnectionRecvItemsCount);
     }
     FastObjectsAllocationInfo* CreateFastAllocationInfo() {
         FastObjectsAllocationInfo *info = new FastObjectsAllocationInfo();
@@ -35,7 +37,7 @@ public:
         info->m_securityDefinitionAddCount = 256;
         info->m_securityDefinitionGroupInstrAttribItemsCount = 40000;
         info->m_securityDefinitionGroupInstrAttribItemsAddCount = 256;
-        info->m_securityDefinitionMarketSegmentGrpItemsCount = 13000;
+        info->m_securityDefinitionMarketSegmentGrpItemsCount = 20000;
         info->m_securityDefinitionMarketSegmentGrpItemsAddCount = 256;
         info->m_securityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemsCount = 40000;
         info->m_securityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemsAddCount = 256;

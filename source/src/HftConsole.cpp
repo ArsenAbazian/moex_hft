@@ -1,6 +1,6 @@
 // HftConsole.cpp : Defines the entry point for the console application.
 //
-#include "Types.h"
+#include "Settings.h"
 #ifdef TEST
 #include "Test/ItoaTester.h"
 #include "Test/UTCTimeConverterTester.h"
@@ -87,12 +87,15 @@ int main(int argc, char** argv) {
 	return 0;
 #else
 
+    DebugInfoManager::Default->PrintMemoryInfo("Before Robot::Robot");
 	Robot *robot = new Robot();
+	robot->AllowFondMarket(false);
 	robot->Run();
     delete robot;
 
 	DefaultLogManager::Default->Print();
-    return 0;
+
+	return 0;
 #endif
 }
 

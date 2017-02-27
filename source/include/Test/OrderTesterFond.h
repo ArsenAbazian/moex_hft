@@ -4,7 +4,7 @@
 
 #ifndef HFT_ROBOT_ORDERTESTER_H
 #define HFT_ROBOT_ORDERTESTER_H
-#include "../Types.h"
+#include "Settings.h"
 
 #ifdef TEST
 
@@ -948,9 +948,7 @@ public:
 
         if(!tb->ProcessIncrementalMessage(item1))
             throw;
-        if(tb->EntriesQueue()->MaxIndex() != -1)
-            throw;
-        if(tb->EntriesQueue()->RptSeq() != 0)
+        if(tb->EntriesQueue() != 0)
             throw;
         if(tb->RptSeq() != 1)
             throw;
@@ -1056,7 +1054,7 @@ public:
             throw;
         if(tableItem->BuyQuotes()->Count() != 0)
             throw;
-        if(tableItem->EntriesQueue()->MaxIndex() != -1)
+        if(tableItem->EntriesQueue() != 0)
             throw;
 
         
@@ -1173,7 +1171,7 @@ public:
         OrderInfo<FastOLSFONDItemInfo> *tb = this->m_table->GetItem("s1", "session1");
 
         this->m_table->ObtainSnapshotItem(info);
-        this->m_table->StartProcessSnapshot(info);
+        this->m_table->StartProcessSnapshot();
         if(tb != this->m_table->SnapshotItem())
             throw;
         if(tb->BuyQuotes()->Count() != 0)
@@ -1193,9 +1191,7 @@ public:
             throw;
         if(tb->BuyQuotes()->Count() != 3)
             throw;
-        if(tb->EntriesQueue()->RptSeq() != 0)
-            throw;
-        if(tb->EntriesQueue()->MaxIndex() != -1)
+        if(tb->EntriesQueue() != 0)
             throw;
     }
 
@@ -1238,7 +1234,7 @@ public:
         OrderInfo<FastOLSFONDItemInfo> *tb = this->m_table->GetItem("s1", "session1");
 
         this->m_table->ObtainSnapshotItem(info1);
-        this->m_table->StartProcessSnapshot(info1);
+        this->m_table->StartProcessSnapshot();
         if(tb != this->m_table->SnapshotItem())
             throw;
         if(tb->BuyQuotes()->Count() != 0)
@@ -1297,7 +1293,7 @@ public:
         OrderInfo<FastOLSFONDItemInfo> *tb = this->m_table->GetItem("s1", "session1");
 
         this->m_table->ObtainSnapshotItem(info);
-        this->m_table->StartProcessSnapshot(info);
+        this->m_table->StartProcessSnapshot();
         if(tb != this->m_table->SnapshotItem())
             throw;
         if(tb->BuyQuotes()->Count() != 0)
@@ -1351,7 +1347,7 @@ public:
         OrderInfo<FastOLSFONDItemInfo> *tb = this->m_table->GetItem("s1", "session1");
 
         this->m_table->ObtainSnapshotItem(info);
-        this->m_table->StartProcessSnapshot(info);
+        this->m_table->StartProcessSnapshot();
         if(tb != this->m_table->SnapshotItem())
             throw;
         if(tb->BuyQuotes()->Count() != 0)
@@ -1478,7 +1474,7 @@ public:
             throw;
         if(item->BuyQuotes()->Count() != 4) // all messages from que should be applied
             throw;
-        if(item->EntriesQueue()->MaxIndex() != -1) // should be reset
+        if(item->EntriesQueue() != 0) // should be reset
             throw;
     }
 
@@ -1535,7 +1531,7 @@ public:
             throw;
         if(item->BuyQuotes()->Count() != 5) // all messages from que should be applied
             throw;
-        if(item->EntriesQueue()->MaxIndex() != -1) // should be reset
+        if(item->EntriesQueue() != 0) // should be reset
             throw;
     }
 
@@ -1591,7 +1587,7 @@ public:
             throw;
         if(item->BuyQuotes()->Count() != 3) // at least one message is applied
             throw;
-        if(!item->EntriesQueue()->HasEntries()) // should have entries
+        if(!item->HasEntries()) // should have entries
             throw;
         if(item->EntriesQueue()->MaxIndex() != 2) // should be reset
             throw;
@@ -1614,7 +1610,7 @@ public:
             throw;
         if(item->BuyQuotes()->Count() != 5) // all messages applied
             throw;
-        if(item->EntriesQueue()->HasEntries()) // should have entries
+        if(item->HasEntries()) // should have entries
             throw;
         if(item->RptSeq() != 5) // last processed msg
             throw;
@@ -1672,7 +1668,7 @@ public:
             throw;
         if(item->BuyQuotes()->Count() != 2) // nothing encreased because first message skipped
             throw;
-        if(!item->EntriesQueue()->HasEntries()) // should have entries
+        if(!item->HasEntries()) // should have entries
             throw;
         if(item->EntriesQueue()->MaxIndex() != 2)
             throw;
@@ -1695,7 +1691,7 @@ public:
             throw;
         if(item->BuyQuotes()->Count() != 5) // applied two messages
             throw;
-        if(item->EntriesQueue()->HasEntries()) // should have entries
+        if(item->HasEntries()) // should have entries
             throw;
         if(item->RptSeq() != 5) // last processed msg
             throw;
@@ -2309,9 +2305,9 @@ public:
         // but connection should not be closed - because not all items were updated
         OrderInfo<FastOLSFONDItemInfo> *item1 = incFond->OrderFond()->GetItem("s1", "session1");
         OrderInfo<FastOLSFONDItemInfo> *item2 = incFond->OrderFond()->GetItem("symbol2", "session1");
-        if(item1->EntriesQueue()->HasEntries())
+        if(item1->HasEntries())
             throw;
-        if(!item2->EntriesQueue()->HasEntries())
+        if(!item2->HasEntries())
             throw;
 
         for(int i = 0; i < item1->BuyQuotes()->Count(); i++)
@@ -2354,9 +2350,9 @@ public:
                      30);
         if(incFond->m_orderTableFond->UsedItemCount() != 2)
             throw;
-        if(incFond->m_orderTableFond->Symbol(0)->Session(0)->EntriesQueue()->HasEntries())
+        if(incFond->m_orderTableFond->Symbol(0)->Session(0)->HasEntries())
             throw;
-        if(incFond->m_orderTableFond->Symbol(1)->Session(0)->EntriesQueue()->HasEntries())
+        if(incFond->m_orderTableFond->Symbol(1)->Session(0)->HasEntries())
             throw;
         if(incFond->OrderFond()->SymbolsToRecvSnapshotCount() != 0)
             throw;
@@ -2375,9 +2371,9 @@ public:
                      30);
         if(incFond->m_orderTableFond->UsedItemCount() != 2)
             throw;
-        if(!incFond->m_orderTableFond->Symbol(0)->Session(0)->EntriesQueue()->HasEntries())
+        if(!incFond->m_orderTableFond->Symbol(0)->Session(0)->HasEntries())
             throw;
-        if(incFond->m_orderTableFond->Symbol(1)->Session(0)->EntriesQueue()->HasEntries())
+        if(incFond->m_orderTableFond->Symbol(1)->Session(0)->HasEntries())
             throw;
         if(!incFond->ShouldRestoreIncrementalMessages())
             throw;
@@ -2395,9 +2391,9 @@ public:
 
         if(incFond->m_orderTableFond->UsedItemCount() != 2)
             throw;
-        if(incFond->m_orderTableFond->Symbol(0)->Session(0)->EntriesQueue()->HasEntries())
+        if(incFond->m_orderTableFond->Symbol(0)->Session(0)->HasEntries())
             throw;
-        if(incFond->m_orderTableFond->Symbol(1)->Session(0)->EntriesQueue()->HasEntries())
+        if(incFond->m_orderTableFond->Symbol(1)->Session(0)->HasEntries())
             throw;
         if(!incFond->ShouldRestoreIncrementalMessages())
             throw;
@@ -2773,7 +2769,7 @@ public:
             throw;
         if(snapFond->State() != FeedConnectionState::fcsListenSnapshot)
             throw;
-        if(!incFond->OrderFond()->GetItem("s1", "session1")->EntriesQueue()->HasEntries())
+        if(!incFond->OrderFond()->GetItem("s1", "session1")->HasEntries())
             throw;
         if(incFond->OrderFond()->GetItem("s1", "session1")->RptSeq() != 4)
             throw;
@@ -2800,7 +2796,7 @@ public:
             throw;
         if(snapFond->State() != FeedConnectionState::fcsSuspend)
             throw;
-        if(incFond->OrderFond()->GetItem("s1", "session1")->EntriesQueue()->HasEntries())
+        if(incFond->OrderFond()->GetItem("s1", "session1")->HasEntries())
             throw;
         if(incFond->OrderFond()->GetItem("s1", "session1")->RptSeq() != 6)
             throw;
@@ -2827,7 +2823,7 @@ public:
             throw;
         if(snapFond->State() != FeedConnectionState::fcsSuspend)
             throw;
-        if(incFond->OrderFond()->GetItem("s1", "session1")->EntriesQueue()->HasEntries())
+        if(incFond->OrderFond()->GetItem("s1", "session1")->HasEntries())
             throw;
         if(incFond->OrderFond()->GetItem("s1", "session1")->RptSeq() != 6)
             throw;
@@ -2853,7 +2849,7 @@ public:
             throw;
         if(incFond->OrderFond()->GetItem("s1", "session1")->RptSeq() != 2)
             throw;
-        if(!incFond->OrderFond()->GetItem("s1", "session1")->EntriesQueue()->HasEntries())
+        if(!incFond->OrderFond()->GetItem("s1", "session1")->HasEntries())
             throw;
         if(incFond->OrderFond()->GetItem("s1", "session1")->EntriesQueue()->StartRptSeq() != 3)
             throw;
@@ -2883,7 +2879,7 @@ public:
             throw;
         if(incFond->OrderFond()->GetItem("s1", "session1")->RptSeq() != 4)
             throw;
-        if(incFond->OrderFond()->GetItem("s1", "session1")->EntriesQueue()->HasEntries())
+        if(incFond->OrderFond()->GetItem("s1", "session1")->HasEntries())
             throw;
         if(incFond->OrderFond()->QueueEntriesCount() != 0)
             throw;

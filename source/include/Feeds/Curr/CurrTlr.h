@@ -15,17 +15,19 @@ public:
         this->m_tradeTableCurr = new MarketDataTable<TradeInfo, FastTLSCURRInfo, FastTLSCURRItemInfo>();
         this->SetId(FeedConnectionId::fcidTlrCurr);
         this->m_fastProtocolManager = new FastProtocolManager(this->CreateFastAllocationInfo());
-        InitializePackets();
+        InitializePackets(this->GetPacketsCount());
+        DebugInfoManager::Default->PrintMemoryInfo("FeedConnection_CURR_TLR");
     }
     ~FeedConnection_CURR_TLR() {
         delete this->m_tradeTableCurr;
     }
+    int GetPacketsCount() { return 2000000; }
     ISocketBufferProvider* CreateSocketBufferProvider() {
         return new SocketBufferProvider(DefaultSocketBufferManager::Default,
-                                        RobotSettings::DefaultFeedConnectionSendBufferSize,
-                                        RobotSettings::DefaultFeedConnectionSendItemsCount,
-                                        RobotSettings::DefaultFeedConnectionRecvBufferSize,
-                                        RobotSettings::DefaultFeedConnectionRecvItemsCount);
+                                        RobotSettings::Default->DefaultFeedConnectionSendBufferSize,
+                                        RobotSettings::Default->DefaultFeedConnectionSendItemsCount,
+                                        RobotSettings::Default->DefaultFeedConnectionRecvBufferSize,
+                                        RobotSettings::Default->DefaultFeedConnectionRecvItemsCount);
     }
     FastObjectsAllocationInfo* CreateFastAllocationInfo() {
         FastObjectsAllocationInfo *info = new FastObjectsAllocationInfo();
@@ -33,8 +35,8 @@ public:
 #ifndef TEST
         info->m_incrementalTLRCURRCount = 1024;
         info->m_incrementalTLRCURRAddCount = 256;
-        info->m_tLSCURRItemsCount = 2024;
-        info->m_tLSCURRItemsAddCount = 256;
+        info->m_tLSCURRItemsCount = 800000;
+        info->m_tLSCURRItemsAddCount = 20000;
 #else
         info->m_incrementalTLRCURRCount = 100;
         info->m_incrementalTLRCURRAddCount = 100;

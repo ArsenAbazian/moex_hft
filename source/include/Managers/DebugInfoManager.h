@@ -11,6 +11,7 @@
 #include "../Lib/PointerList.h"
 #include "../Lib/StringIdComparer.h"
 #include <stdio.h>
+#include <malloc.h>
 
 template <template<typename ITEMINFO> class TABLEITEM, typename INFO, typename ITEMINFO> class MarketDataTable;
 template <typename T> class MarketSymbolInfo;
@@ -446,6 +447,30 @@ public:
     void PrintBooleanListXml(const char *name, PointerListLite<StatisticItem<bool>> *list);
     void PrintTotalOfferListXml(const char *name, PointerListLite<StatisticItemTotalOffer> *list);
     void PrintTotalBidListXml(const char *name, PointerListLite<StatisticItemTotalBid> *list);
+
+    void PrintMemoryInfo(const char *string) {
+        struct mallinfo mi;
+
+        mi = mallinfo();
+        printf("----------------%s -----------------\n", string);
+//        printf("Total non mapped byres (arena)                           %d\n", mi.arena);
+//        printf("# of free chunks (ordblks)                               %d\n", mi.ordblks);
+//        printf("# of free fastbin blocks (smblks)                        %d\n", mi.smblks);
+//        printf("# of mapped regions (hblks)                              %d\n", mi.hblks);
+//        printf("Bytes mapped regions (hblkhd)                            %d\n", mi.hblkhd);
+//        printf("Max. total allocated space mapped regions (usmblks)      %d\n", mi.usmblks);
+//        printf("Free bytes held in fastbins (fsmblks)                    %d\n", mi.fsmblks);
+        printf("Total allocated space in bytes (uordblks)                %d\n", mi.uordblks);
+        printf("Total allocated space in mBbytes (uordblks)              %d\n", mi.uordblks / 1024 / 1024);
+//        printf("Total free space in bytes (fordblks)                     %d\n", mi.fordblks);
+//        printf("Total free space in mBytes (fordblks)                    %d\n", mi.fordblks / 1024 / 1024);
+//        printf("Topmost releasable block (keepcost)                      %d\n", mi.keepcost);
+        printf("-----------------------------------------------------------\n");
+    }
+
+    void PrintMemoryInfo() {
+        PrintMemoryInfo("");
+    }
 };
 
 #endif //HFT_ROBOT_DEBUGINFOMANAGER_H

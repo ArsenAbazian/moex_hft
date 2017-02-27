@@ -1,5 +1,5 @@
 #pragma once
-#include "Types.h"
+#include "Settings.h"
 #include <stdint.h>
 #include "SocketBufferManager.h"
 #include <sys/socket.h>
@@ -365,23 +365,14 @@ public:
 #ifdef TEST
 		return true;
 #else
-		DefaultLogManager::Default->StartLog(LogMessageCode::lmcWinSockManager_Close, this->m_serverAddressLogIndex);
-		if(this->m_socket == -1) {
-			DefaultLogManager::Default->EndLog(true);
-			return true;
-		}
 
-		if(this->m_connected) {
+		if (this->m_socket == -1)
+			return true;
+
+		DefaultLogManager::Default->StartLog(LogMessageCode::lmcWinSockManager_Close, this->m_serverAddressLogIndex);
+		if (this->m_connected) {
 			shutdown(this->m_socket, SHUT_RDWR);
 			this->m_connected = false;
-		}
-
-		while(this->ShouldRecv()) {
-			if(!this->Recv(this->m_tempBuffer) || this->m_recvSize == 0)
-				break;
-			// TODO remoove debug
-			printf("has %d bytes after shutdown.\n", this->m_recvSize);
-			this->UpdatePollStatus();
 		}
 
 		int result = close(this->m_socket);
@@ -389,6 +380,8 @@ public:
 			DefaultLogManager::Default->EndLog(false, strerror(errno));
 			return false;
 		}
+		this->m_socket = -1;
+
 		DefaultLogManager::Default->EndLog(true);
 		return true;
 #endif
