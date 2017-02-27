@@ -19,6 +19,7 @@
 #include "SymbolManagerTester.h"
 #include "PointerListTester.h"
 #include "SecurityStatusTester.h"
+#include "HistoricalReplayTester.h"
 
 class TestFeedMessage{
 public:
@@ -228,6 +229,9 @@ public:
 
         PointerListTester pt;
         pt.Test();
+
+        HistoricalReplayTester hrt;
+        hrt.Test();
 
         StatisticsTesterFond stFond;
         stFond.Test();

@@ -230,6 +230,12 @@ public:
 	WinSockManager();
 	~WinSockManager();
 
+	inline void UpdatePollStatus() {
+		if(poll(&(WinSockManager::m_pollFd[this->m_pollIndex]), 1, 0) == 0)
+			return;
+		WinSockManager::m_recvCount[this->m_pollIndex] = (WinSockManager::m_pollFd + this->m_pollIndex)->revents;
+	}
+
 	inline static bool UpdateManagersPollStatus() {
 #ifdef TEST
         return true;
@@ -371,8 +377,11 @@ public:
 		}
 
 		while(this->ShouldRecv()) {
-			if(!this->Recv(this->m_tempBuffer) || this->m_recvCount == 0)
+			if(!this->Recv(this->m_tempBuffer) || this->m_recvSize == 0)
 				break;
+			// TODO remoove debug
+			printf("has %d bytes after shutdown.\n", this->m_recvSize);
+			this->UpdatePollStatus();
 		}
 
 		int result = close(this->m_socket);

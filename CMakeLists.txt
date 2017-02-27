@@ -136,7 +136,7 @@ add_executable(hft_robot ${sources}
         source/include/Feeds/FeedTypes.h
         source/src/MarketData/StatisticInfo.cpp
         source/include/Managers/DebugInfoManager.h
-        source/src/Managers/DebugInfoManager.cpp source/include/Feeds/Fond/FondOlr.h source/include/Feeds/Fond/FondMsr.h source/include/Feeds/Fond/FondIsf.h source/include/Feeds/Curr/CurrHr.h)
+        source/src/Managers/DebugInfoManager.cpp source/include/Feeds/Fond/FondOlr.h source/include/Feeds/Fond/FondMsr.h source/include/Feeds/Fond/FondIsf.h source/include/Feeds/Curr/CurrHr.h source/include/Test/HistoricalReplayTester.h)
 add_dependencies(hft_robot fast_generate)
 
 add_custom_command(TARGET fast_generate

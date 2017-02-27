@@ -31,13 +31,13 @@ public:
         FastObjectsAllocationInfo *info = new FastObjectsAllocationInfo();
 
 #ifndef TEST
-        info->m_securityDefinitionCount = 13000;
+        info->m_securityDefinitionCount = 20000;
         info->m_securityDefinitionAddCount = 256;
-        info->m_securityDefinitionGroupInstrAttribItemsCount = 13000;
+        info->m_securityDefinitionGroupInstrAttribItemsCount = 40000;
         info->m_securityDefinitionGroupInstrAttribItemsAddCount = 256;
         info->m_securityDefinitionMarketSegmentGrpItemsCount = 13000;
         info->m_securityDefinitionMarketSegmentGrpItemsAddCount = 256;
-        info->m_securityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemsCount = 13000;
+        info->m_securityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemsCount = 40000;
         info->m_securityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemsAddCount = 256;
 #else
         info->m_securityDefinitionCount = 1000;

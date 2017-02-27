@@ -53,6 +53,7 @@ FeedConnection::FeedConnection(const char *id, const char *name, char value, Fee
     this->m_isfStartSnapshotCount = 0;
     this->m_skipApplyMessages = false;
     this->m_packetsCount = 0;
+    this->m_hrUnsuccessfulConnectCount = 0;
 
 	this->SetState(FeedConnectionState::fcsSuspend);
 

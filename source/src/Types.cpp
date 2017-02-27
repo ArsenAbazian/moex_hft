@@ -20,4 +20,4 @@ int RobotSettings::MarketDataMaxSymbolsCount = 2600;
 int RobotSettings::MarketDataMaxSessionsCount = 8;
 int RobotSettings::MarketDataMaxEntriesCount = 1024 * 2000;
 int RobotSettings::MaxSecurityDefinitionCount = 2600;
-int RobotSettings::HistoricalReplayMaxMessageRequestCount = 128;
+int RobotSettings::HistoricalReplayMaxMessageRequestCount = 1024;
