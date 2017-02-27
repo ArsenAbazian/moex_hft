@@ -2817,6 +2817,13 @@ public:
         incCurr->TradeCurr()->Add("s2", "session1");
         incCurr->TradeCurr()->Add("symbol3", "session1");
 
+        if(incCurr->TradeCurr()->Symbol(0)->SessionCount() != 1)
+            throw;
+        if(incCurr->TradeCurr()->Symbol(1)->SessionCount() != 1)
+            throw;
+        if(incCurr->TradeCurr()->Symbol(2)->SessionCount() != 1)
+            throw;
+
         int prevCount = this->snapCurr->m_fastProtocolManager->m_tLSCURRItems->Count();
         SendMessages(incCurr, snapCurr,
                      "tlr entry s1 e1, lost tlr entry symbol3 e1, wait_snap, tlr entry s1 e3,                              hbeat,                              hbeat",

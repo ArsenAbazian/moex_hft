@@ -1,4 +1,5 @@
 #pragma once
+#pragma once
 #include "Fix/FixTypes.h"
 #include "FastTypes.h"
 #include <stdio.h>
@@ -974,7 +975,7 @@ public:
 		}
 	}
 	inline void WriteInt32_Optional(INT32 value) {
-		if (value > 0)
+		if (value >= 0)
 			value++;
 		WriteInt32_Mandatory(value);
 	}
