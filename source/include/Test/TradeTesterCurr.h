@@ -863,7 +863,7 @@ public:
             throw;
         if(item->EntriesQueue()->Entries()[0] != 0) // cell for rptseq 3 is empty
             throw;
-        if(item->EntriesQueue()->Entries()[1]->RptSeq != 4)
+        if(((FastTLSCURRItemInfo*)(item->EntriesQueue()->Entries()[1]))->RptSeq != 4)
             throw;
 
         // lost message finally appeared before wait timer elapsed
@@ -919,7 +919,7 @@ public:
             throw;
         if(item->EntriesQueue()->Entries()[1] != 0) // cell for rptseq 4 is empty
             throw;
-        if(item->EntriesQueue()->Entries()[2]->RptSeq != 5)
+        if(((FastTLSCURRItemInfo*)(item->EntriesQueue()->Entries()[2]))->RptSeq != 5)
             throw;
 
         // lost message finally appeared before wait timer elapsed
@@ -976,7 +976,7 @@ public:
             throw;
         if(item->EntriesQueue()->Entries()[1] != 0) // cell for rptseq 4 is empty
             throw;
-        if(item->EntriesQueue()->Entries()[2]->RptSeq != 5)
+        if(((FastTLSCURRItemInfo*)(item->EntriesQueue()->Entries()[2]))->RptSeq != 5)
             throw;
 
         // lost message finally appeared before wait timer elapsed
@@ -1057,7 +1057,7 @@ public:
             throw;
         if(item->EntriesQueue()->Entries()[1] != 0) // cell for rptseq 4 is empty
             throw;
-        if(item->EntriesQueue()->Entries()[2]->RptSeq != 5)
+        if(((FastTLSCURRItemInfo*)(item->EntriesQueue()->Entries()[2]))->RptSeq != 5)
             throw;
 
         // lost message finally appeared before wait timer elapsed
@@ -2276,6 +2276,10 @@ public:
 
         incCurr->TradeCurr()->Add("s1", "session1");
         incCurr->TradeCurr()->Add("s2", "session1");
+        if(incCurr->TradeCurr()->Symbol(0)->Session(0)->ShouldProcessSnapshot())
+            throw;
+        if(incCurr->TradeCurr()->Symbol(1)->Session(0)->ShouldProcessSnapshot())
+            throw;
         incCurr->Start();
 
         SendMessages(incCurr, snapCurr,

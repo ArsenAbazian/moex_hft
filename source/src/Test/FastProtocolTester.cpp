@@ -333,8 +333,6 @@ void FastProtocolTester::TestMessages() {
     FastIncrementalOLRFONDInfo *olrfondInfo = (FastIncrementalOLRFONDInfo*)manager->LastDecodeInfo();
     if(olrfondInfo->GroupMDEntriesCount != 1)
         throw;
-    if(olrfondInfo->GroupMDEntries[0]->TradingSessionID == 0)
-        throw;
     if(manager->MessageLength() != 55)
         throw;
 
@@ -354,8 +352,6 @@ void FastProtocolTester::TestMessages() {
 
     olrfondInfo = (FastIncrementalOLRFONDInfo*)manager->LastDecodeInfo();
     if(olrfondInfo->GroupMDEntriesCount != 1)
-        throw;
-    if(olrfondInfo->GroupMDEntries[0]->TradingSessionID == 0)
         throw;
     if(manager->MessageLength() != 57)
         throw;
@@ -496,10 +492,38 @@ void FastProtocolTester::TestReadUInt32_Mandatory() {
 	}
 }
 
+void FastProtocolTester::TestStringCopy() {
+    printf("Test FastProtocolTester::TestStringCopy\n");
+    FastProtocolManager *manager = new FastProtocolManager(new FastObjectsAllocationInfo(128,128));
+
+    char *buffer = new char[60];
+    char *buffer2 = new char[60];
+    for (int i = 0; i < 60; i++) {
+        buffer[i] = (char)('A' + i);
+    }
+
+    for (int i = 1; i < 60; i++) {
+        bzero(buffer2, 60);
+        manager->CopyString(buffer2, buffer, i);
+        for(int j = 0; j < i; j++) {
+            if(buffer[j] != buffer2[j])
+                throw;
+        }
+        bzero(buffer2, 60);
+
+        StringIdComparer::CopyString(buffer2, buffer, i);
+        for(int j = 0; j < i; j++) {
+            if(buffer[j] != buffer2[j])
+                throw;
+        }
+    }
+}
+
 void FastProtocolTester::TestReadString_Optional() { 
 	printf("Test FastProtocolTester::TestReadString_Optional\n");
 	FastProtocolManager *manager = new FastProtocolManager(new FastObjectsAllocationInfo(128,128));
 
+    manager->SetNewBuffer(new unsigned char[128], 128);
 	manager->WriteString_Optional((const char*)NULL, 0);
 	if (manager->MessageLength() != 1)
 		throw;
@@ -529,7 +553,7 @@ void FastProtocolTester::TestReadString_Optional() {
 			throw;
 
 		manager->ResetBuffer();
-		manager->ReadString_Optional(&buffer2, &length);
+		manager->ReadString_Optional(buffer2, &length);
 		if (length != i)
 			throw;
 		for (int j = 0; j < i; j++) { 
@@ -545,6 +569,7 @@ void FastProtocolTester::TestReadString_Mandatory() {
 	printf("Test FastProtocolTester::TestReadString_Mandatory\n");
 	FastProtocolManager *manager = new FastProtocolManager(new FastObjectsAllocationInfo(128,128));
 
+    manager->SetNewBuffer(new unsigned char[128], 128);
 	manager->WriteString_Mandatory((char*)"", 0);
 	if (manager->MessageLength() != 1)
 		throw;
@@ -565,7 +590,7 @@ void FastProtocolTester::TestReadString_Mandatory() {
 			throw;
 
 		manager->ResetBuffer();
-		manager->ReadString_Mandatory(&buffer2, &length);
+		manager->ReadString_Mandatory(buffer2, &length);
 		if (length != i)
 			throw;
 		for (int j = 0; j < i; j++) {

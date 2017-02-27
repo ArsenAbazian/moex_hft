@@ -237,6 +237,8 @@ public:
         this->ClearEntries();
         this->m_rptSeq = 0;
         this->m_savedRptSeq = 0;
+        this->m_shouldProcessSnapshot = false;
+        this->m_snapshotProcessedCount = 0;
     }
 
     inline PointerListLite<StatisticItemDecimal2>* BuyQuotes() { return this->m_buyQuotes; }

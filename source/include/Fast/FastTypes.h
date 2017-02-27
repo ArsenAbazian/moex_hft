@@ -214,9 +214,9 @@ public:
 	UINT32				RouteFirst;
 	UINT32				LastMsgSeqNumProcessed;
 	UINT64				SendingTime;
-	char				*Symbol;
+	char				Symbol[32];
 	int					SymbolLength;
-	char				*TradingSessionID;
+	char				TradingSessionID[32];
 	int					TradingSessionIDLength;
 	FastSnapshotInfo() {
 		this->PresenceMap = 0;
@@ -239,23 +239,23 @@ public:
 	LinkedPointer<FastLogonInfo>							*Pointer;
 	AutoAllocatePointerList<FastLogonInfo>							*Allocator;
 	bool							Used;
-	char*							MessageType;			// id=35    constant has constant value = A
-	int							MessageTypeLength;
-	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
-	int							BeginStringLength;
-	char*							SenderCompID;			// id=49    constant has constant value = MOEX
-	int							SenderCompIDLength;
-	char*							TargetCompID;			// id=56  
-	int							TargetCompIDLength;
+	char							MessageType[16];			// id=35    constant has constant value = A
+	int							MessageTypeLength = 0;
+	char							BeginString[16];			// id=8    constant has constant value = FIXT.1.1
+	int							BeginStringLength = 0;
+	char							SenderCompID[32];			// id=49    constant has constant value = MOEX
+	int							SenderCompIDLength = 0;
+	char							TargetCompID[32];			// id=56  
+	int							TargetCompIDLength = 0;
 	UINT32							MsgSeqNum;			// id=34  
 	UINT64							SendingTime;			// id=52  
 	INT32							HeartBtInt;			// id=108  
-	char*							Username;			// id=553  presence=optional  
-	int							UsernameLength;
-	char*							Password;			// id=554  presence=optional  
-	int							PasswordLength;
-	char*							DefaultApplVerID;			// id=1137  
-	int							DefaultApplVerIDLength;
+	char							Username[16];			// id=553  presence=optional  
+	int							UsernameLength = 0;
+	char							Password[16];			// id=554  presence=optional  
+	int							PasswordLength = 0;
+	char							DefaultApplVerID[16];			// id=1137  
+	int							DefaultApplVerIDLength = 0;
 
 	FastLogonInfo(){
 		this->Used = false;
@@ -263,19 +263,19 @@ public:
 		this->Allocator = 0;
 		this->PresenceMap = 0;
 		this->NullMap = 0;
-		this->MessageType = 0;
+		this->MessageType[0] = '\0';
 		this->MessageTypeLength = 0;
-		this->BeginString = 0;
+		this->BeginString[0] = '\0';
 		this->BeginStringLength = 0;
-		this->SenderCompID = 0;
+		this->SenderCompID[0] = '\0';
 		this->SenderCompIDLength = 0;
-		this->TargetCompID = 0;
+		this->TargetCompID[0] = '\0';
 		this->TargetCompIDLength = 0;
-		this->Username = 0;
+		this->Username[0] = '\0';
 		this->UsernameLength = 0;
-		this->Password = 0;
+		this->Password[0] = '\0';
 		this->PasswordLength = 0;
-		this->DefaultApplVerID = 0;
+		this->DefaultApplVerID[0] = '\0';
 		this->DefaultApplVerIDLength = 0;
 	}
 	~FastLogonInfo(){ }
@@ -298,18 +298,18 @@ public:
 	LinkedPointer<FastLogoutInfo>							*Pointer;
 	AutoAllocatePointerList<FastLogoutInfo>							*Allocator;
 	bool							Used;
-	char*							MessageType;			// id=35    constant has constant value = 5
-	int							MessageTypeLength;
-	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
-	int							BeginStringLength;
-	char*							SenderCompID;			// id=49    constant has constant value = MOEX
-	int							SenderCompIDLength;
-	char*							TargetCompID;			// id=56  
-	int							TargetCompIDLength;
+	char							MessageType[16];			// id=35    constant has constant value = 5
+	int							MessageTypeLength = 0;
+	char							BeginString[16];			// id=8    constant has constant value = FIXT.1.1
+	int							BeginStringLength = 0;
+	char							SenderCompID[32];			// id=49    constant has constant value = MOEX
+	int							SenderCompIDLength = 0;
+	char							TargetCompID[32];			// id=56  
+	int							TargetCompIDLength = 0;
 	UINT32							MsgSeqNum;			// id=34  
 	UINT64							SendingTime;			// id=52  
-	char*							Text;			// id=58  presence=optional  
-	int							TextLength;
+	char							Text[512];			// id=58  presence=optional  
+	int							TextLength = 0;
 
 	FastLogoutInfo(){
 		this->Used = false;
@@ -317,15 +317,15 @@ public:
 		this->Allocator = 0;
 		this->PresenceMap = 0;
 		this->NullMap = 0;
-		this->MessageType = 0;
+		this->MessageType[0] = '\0';
 		this->MessageTypeLength = 0;
-		this->BeginString = 0;
+		this->BeginString[0] = '\0';
 		this->BeginStringLength = 0;
-		this->SenderCompID = 0;
+		this->SenderCompID[0] = '\0';
 		this->SenderCompIDLength = 0;
-		this->TargetCompID = 0;
+		this->TargetCompID[0] = '\0';
 		this->TargetCompIDLength = 0;
-		this->Text = 0;
+		this->Text[0] = '\0';
 		this->TextLength = 0;
 	}
 	~FastLogoutInfo(){ }
@@ -348,23 +348,23 @@ public:
 	LinkedPointer<FastGenericItemInfo>							*Pointer;
 	AutoAllocatePointerList<FastGenericItemInfo>							*Allocator;
 	bool							Used;
-	char*							MDEntryType;			// id=269  presence=optional  
-	int							MDEntryTypeLength;
-	char*							MDEntryID;			// id=278  presence=optional  
-	int							MDEntryIDLength;
+	char							MDEntryType[2];			// id=269  presence=optional  
+	int							MDEntryTypeLength = 0;
+	char							MDEntryID[16];			// id=278  presence=optional  
+	int							MDEntryIDLength = 0;
 	UINT32							MDEntryDate;			// id=272  presence=optional  
 	UINT32							MDEntryTime;			// id=273  presence=optional  
 	UINT32							OrigTime;			// id=9412  presence=optional  
 	Decimal							MDEntryPx;			// id=270  presence=optional  
 	Decimal							MDEntrySize;			// id=271  presence=optional  
-	char*							QuoteCondition;			// id=276  presence=optional  
-	int							QuoteConditionLength;
-	char*							TradeCondition;			// id=277  presence=optional  
-	int							TradeConditionLength;
-	char*							OpenCloseSettlFlag;			// id=286  presence=optional  
-	int							OpenCloseSettlFlagLength;
-	char*							OrdType;			// id=40  presence=optional  
-	int							OrdTypeLength;
+	char							QuoteCondition[16];			// id=276  presence=optional  
+	int							QuoteConditionLength = 0;
+	char							TradeCondition[16];			// id=277  presence=optional  
+	int							TradeConditionLength = 0;
+	char							OpenCloseSettlFlag[2];			// id=286  presence=optional  
+	int							OpenCloseSettlFlagLength = 0;
+	char							OrdType[2];			// id=40  presence=optional  
+	int							OrdTypeLength = 0;
 	UINT32							EffectiveTime;			// id=5902  presence=optional  
 	UINT32							StartTime;			// id=9820  presence=optional  
 	Decimal							AccruedInterestAmt;			// id=5384  presence=optional  
@@ -380,13 +380,13 @@ public:
 	INT32							BidNbOr;			// id=9169  presence=optional  
 	Decimal							ChgFromSettlmnt;			// id=9750  presence=optional  
 	UINT32							SettlDate;			// id=64  presence=optional  
-	char*							SettleType;			// id=5459  presence=optional  
-	int							SettleTypeLength;
+	char							SettleType[16];			// id=5459  presence=optional  
+	int							SettleTypeLength = 0;
 	INT32							SumQtyOfBest;			// id=10503  presence=optional  
-	char*							OrderSide;			// id=10504  presence=optional  
-	int							OrderSideLength;
-	char*							OrderStatus;			// id=10505  presence=optional  
-	int							OrderStatusLength;
+	char							OrderSide[2];			// id=10504  presence=optional  
+	int							OrderSideLength = 0;
+	char							OrderStatus[2];			// id=10505  presence=optional  
+	int							OrderStatusLength = 0;
 	Decimal							MinCurrPx;			// id=10509  presence=optional  
 	UINT32							MinCurrPxChgTime;			// id=10510  presence=optional  
 	UINT32							VolumeIndicator;			// id=7017  presence=optional  
@@ -396,17 +396,17 @@ public:
 	Decimal							RepoToPx;			// id=5677  presence=optional  
 	Decimal							BuyBackPx;			// id=5558  presence=optional  
 	UINT32							BuyBackDate;			// id=5559  presence=optional  
-	char*							CXFlag;			// id=5154  presence=optional  
-	int							CXFlagLength;
-	char*							TradingSessionSubID;			// id=625  presence=optional  
-	int							TradingSessionSubIDLength;
+	char							CXFlag[2];			// id=5154  presence=optional  
+	int							CXFlagLength = 0;
+	char							TradingSessionSubID[2];			// id=625  presence=optional  
+	int							TradingSessionSubIDLength = 0;
 	UINT32							MDUpdateAction;			// id=279  presence=optional  
 	INT32							RptSeq;			// id=83  presence=optional  
-	char*							Symbol;			// id=55  presence=optional  
-	int							SymbolLength;
+	char							Symbol[16];			// id=55  presence=optional  
+	int							SymbolLength = 0;
 	Decimal							NetChgPrevDay;			// id=451  presence=optional  
-	char*							TradingSessionID;			// id=336  presence=optional  
-	int							TradingSessionIDLength;
+	char							TradingSessionID[16];			// id=336  presence=optional  
+	int							TradingSessionIDLength = 0;
 
 	FastGenericItemInfo(){
 		this->Used = false;
@@ -414,31 +414,31 @@ public:
 		this->Allocator = 0;
 		this->PresenceMap = 0;
 		this->NullMap = 0;
-		this->MDEntryType = 0;
+		this->MDEntryType[0] = '\0';
 		this->MDEntryTypeLength = 0;
-		this->MDEntryID = 0;
+		this->MDEntryID[0] = '\0';
 		this->MDEntryIDLength = 0;
-		this->QuoteCondition = 0;
+		this->QuoteCondition[0] = '\0';
 		this->QuoteConditionLength = 0;
-		this->TradeCondition = 0;
+		this->TradeCondition[0] = '\0';
 		this->TradeConditionLength = 0;
-		this->OpenCloseSettlFlag = 0;
+		this->OpenCloseSettlFlag[0] = '\0';
 		this->OpenCloseSettlFlagLength = 0;
-		this->OrdType = 0;
+		this->OrdType[0] = '\0';
 		this->OrdTypeLength = 0;
-		this->SettleType = 0;
+		this->SettleType[0] = '\0';
 		this->SettleTypeLength = 0;
-		this->OrderSide = 0;
+		this->OrderSide[0] = '\0';
 		this->OrderSideLength = 0;
-		this->OrderStatus = 0;
+		this->OrderStatus[0] = '\0';
 		this->OrderStatusLength = 0;
-		this->CXFlag = 0;
+		this->CXFlag[0] = '\0';
 		this->CXFlagLength = 0;
-		this->TradingSessionSubID = 0;
+		this->TradingSessionSubID[0] = '\0';
 		this->TradingSessionSubIDLength = 0;
-		this->Symbol = 0;
+		this->Symbol[0] = '\0';
 		this->SymbolLength = 0;
-		this->TradingSessionID = 0;
+		this->TradingSessionID[0] = '\0';
 		this->TradingSessionIDLength = 0;
 	}
 	~FastGenericItemInfo(){ }
@@ -461,20 +461,20 @@ public:
 	LinkedPointer<FastGenericInfo>							*Pointer;
 	AutoAllocatePointerList<FastGenericInfo>							*Allocator;
 	bool							Used;
-	char*							MessageType;			// id=35    constant has constant value = W
-	int							MessageTypeLength;
-	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
-	int							BeginStringLength;
-	char*							ApplVerID;			// id=1128    constant has constant value = 9
-	int							ApplVerIDLength;
-	char*							SenderCompID;			// id=49    constant has constant value = MOEX
-	int							SenderCompIDLength;
+	char							MessageType[16];			// id=35    constant has constant value = W
+	int							MessageTypeLength = 0;
+	char							BeginString[16];			// id=8    constant has constant value = FIXT.1.1
+	int							BeginStringLength = 0;
+	char							ApplVerID[16];			// id=1128    constant has constant value = 9
+	int							ApplVerIDLength = 0;
+	char							SenderCompID[32];			// id=49    constant has constant value = MOEX
+	int							SenderCompIDLength = 0;
 	UINT32							MsgSeqNum;			// id=34  
 	UINT64							SendingTime;			// id=52  
-	char*							TradingSessionID;			// id=336  presence=optional  
-	int							TradingSessionIDLength;
-	char*							Symbol;			// id=55  
-	int							SymbolLength;
+	char							TradingSessionID[16];			// id=336  presence=optional  
+	int							TradingSessionIDLength = 0;
+	char							Symbol[16];			// id=55  
+	int							SymbolLength = 0;
 	UINT32							LastMsgSeqNumProcessed;			// id=369  presence=optional  
 	INT32							RptSeq;			// id=83  
 	UINT32							LastFragment;			// id=893  presence=optional  
@@ -492,17 +492,17 @@ public:
 		this->Allocator = 0;
 		this->PresenceMap = 0;
 		this->NullMap = 0;
-		this->MessageType = 0;
+		this->MessageType[0] = '\0';
 		this->MessageTypeLength = 0;
-		this->BeginString = 0;
+		this->BeginString[0] = '\0';
 		this->BeginStringLength = 0;
-		this->ApplVerID = 0;
+		this->ApplVerID[0] = '\0';
 		this->ApplVerIDLength = 0;
-		this->SenderCompID = 0;
+		this->SenderCompID[0] = '\0';
 		this->SenderCompIDLength = 0;
-		this->TradingSessionID = 0;
+		this->TradingSessionID[0] = '\0';
 		this->TradingSessionIDLength = 0;
-		this->Symbol = 0;
+		this->Symbol[0] = '\0';
 		this->SymbolLength = 0;
 		this->GroupMDEntriesCount = 0;
 	}
@@ -530,14 +530,14 @@ public:
 	LinkedPointer<FastIncrementalGenericInfo>							*Pointer;
 	AutoAllocatePointerList<FastIncrementalGenericInfo>							*Allocator;
 	bool							Used;
-	char*							MessageType;			// id=35    constant has constant value = X
-	int							MessageTypeLength;
-	char*							ApplVerID;			// id=1128    constant has constant value = 9
-	int							ApplVerIDLength;
-	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
-	int							BeginStringLength;
-	char*							SenderCompID;			// id=49    constant has constant value = MOEX
-	int							SenderCompIDLength;
+	char							MessageType[16];			// id=35    constant has constant value = X
+	int							MessageTypeLength = 0;
+	char							ApplVerID[16];			// id=1128    constant has constant value = 9
+	int							ApplVerIDLength = 0;
+	char							BeginString[16];			// id=8    constant has constant value = FIXT.1.1
+	int							BeginStringLength = 0;
+	char							SenderCompID[32];			// id=49    constant has constant value = MOEX
+	int							SenderCompIDLength = 0;
 	UINT32							MsgSeqNum;			// id=34  
 	UINT64							SendingTime;			// id=52  
 	int							GroupMDEntriesCount;
@@ -549,13 +549,13 @@ public:
 		this->Allocator = 0;
 		this->PresenceMap = 0;
 		this->NullMap = 0;
-		this->MessageType = 0;
+		this->MessageType[0] = '\0';
 		this->MessageTypeLength = 0;
-		this->ApplVerID = 0;
+		this->ApplVerID[0] = '\0';
 		this->ApplVerIDLength = 0;
-		this->BeginString = 0;
+		this->BeginString[0] = '\0';
 		this->BeginStringLength = 0;
-		this->SenderCompID = 0;
+		this->SenderCompID[0] = '\0';
 		this->SenderCompIDLength = 0;
 		this->GroupMDEntriesCount = 0;
 	}
@@ -583,29 +583,29 @@ public:
 	LinkedPointer<FastOLSFONDItemInfo>							*Pointer;
 	AutoAllocatePointerList<FastOLSFONDItemInfo>							*Allocator;
 	bool							Used;
-	char*							MDEntryType;			// id=269  presence=optional    copy
-	int							MDEntryTypeLength;
-	char*							MDEntryID;			// id=278  presence=optional  
-	int							MDEntryIDLength;
+	char							MDEntryType[2];			// id=269  presence=optional    copy
+	int							MDEntryTypeLength = 0;
+	char							MDEntryID[16];			// id=278  presence=optional  
+	int							MDEntryIDLength = 0;
 	UINT32							MDEntryDate;			// id=272  presence=optional    copy
 	UINT32							MDEntryTime;			// id=273  presence=optional    copy
 	UINT32							OrigTime;			// id=9412  presence=optional    copy
 	Decimal							MDEntryPx;			// id=270  presence=optional    copy
 	Decimal							MDEntrySize;			// id=271  presence=optional    copy
 	Decimal							Yield;			// id=236  presence=optional    copy
-	char*							OrderStatus;			// id=10505  presence=optional    copy
-	int							OrderStatusLength;
-	char*							OrdType;			// id=40  presence=optional    copy
-	int							OrdTypeLength;
+	char							OrderStatus[2];			// id=10505  presence=optional    copy
+	int							OrderStatusLength = 0;
+	char							OrdType[2];			// id=40  presence=optional    copy
+	int							OrdTypeLength = 0;
 	Decimal							TotalVolume;			// id=5791  presence=optional    copy
-	char*							TradingSessionSubID;			// id=625  presence=optional    copy
-	int							TradingSessionSubIDLength;
+	char							TradingSessionSubID[2];			// id=625  presence=optional    copy
+	int							TradingSessionSubIDLength = 0;
 	UINT32							MDUpdateAction;			// id=279  presence=optional  
-	char*							Symbol;			// id=55  presence=optional    copy
-	int							SymbolLength;
+	char							Symbol[16];			// id=55  presence=optional    copy
+	int							SymbolLength = 0;
 	INT32							RptSeq;			// id=83  presence=optional  
-	char*							TradingSessionID;			// id=336  presence=optional    copy
-	int							TradingSessionIDLength;
+	char							TradingSessionID[16];			// id=336  presence=optional    copy
+	int							TradingSessionIDLength = 0;
 
 	FastOLSFONDItemInfo(){
 		this->Used = false;
@@ -613,19 +613,19 @@ public:
 		this->Allocator = 0;
 		this->PresenceMap = 0;
 		this->NullMap = 0;
-		this->MDEntryType = 0;
+		this->MDEntryType[0] = '\0';
 		this->MDEntryTypeLength = 0;
-		this->MDEntryID = 0;
+		this->MDEntryID[0] = '\0';
 		this->MDEntryIDLength = 0;
-		this->OrderStatus = 0;
+		this->OrderStatus[0] = '\0';
 		this->OrderStatusLength = 0;
-		this->OrdType = 0;
+		this->OrdType[0] = '\0';
 		this->OrdTypeLength = 0;
-		this->TradingSessionSubID = 0;
+		this->TradingSessionSubID[0] = '\0';
 		this->TradingSessionSubIDLength = 0;
-		this->Symbol = 0;
+		this->Symbol[0] = '\0';
 		this->SymbolLength = 0;
-		this->TradingSessionID = 0;
+		this->TradingSessionID[0] = '\0';
 		this->TradingSessionIDLength = 0;
 	}
 	~FastOLSFONDItemInfo(){ }
@@ -648,14 +648,14 @@ public:
 	LinkedPointer<FastOLSFONDInfo>							*Pointer;
 	AutoAllocatePointerList<FastOLSFONDInfo>							*Allocator;
 	bool							Used;
-	char*							MessageType;			// id=35    constant has constant value = W
-	int							MessageTypeLength;
-	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
-	int							BeginStringLength;
-	char*							ApplVerID;			// id=1128    constant has constant value = 9
-	int							ApplVerIDLength;
-	char*							SenderCompID;			// id=49    constant has constant value = MOEX
-	int							SenderCompIDLength;
+	char							MessageType[16];			// id=35    constant has constant value = W
+	int							MessageTypeLength = 0;
+	char							BeginString[16];			// id=8    constant has constant value = FIXT.1.1
+	int							BeginStringLength = 0;
+	char							ApplVerID[16];			// id=1128    constant has constant value = 9
+	int							ApplVerIDLength = 0;
+	char							SenderCompID[32];			// id=49    constant has constant value = MOEX
+	int							SenderCompIDLength = 0;
 	UINT32							MsgSeqNum;			// id=34  
 	UINT64							SendingTime;			// id=52  
 	UINT32							LastMsgSeqNumProcessed;			// id=369  presence=optional  
@@ -663,10 +663,10 @@ public:
 	UINT32							LastFragment;			// id=893  presence=optional  
 	UINT32							RouteFirst;			// id=7944  presence=optional  
 	INT32							TradSesStatus;			// id=340  presence=optional  
-	char*							TradingSessionID;			// id=336  presence=optional  
-	int							TradingSessionIDLength;
-	char*							Symbol;			// id=55  
-	int							SymbolLength;
+	char							TradingSessionID[16];			// id=336  presence=optional  
+	int							TradingSessionIDLength = 0;
+	char							Symbol[16];			// id=55  
+	int							SymbolLength = 0;
 	INT32							MDSecurityTradingStatus;			// id=1682  presence=optional  
 	UINT32							AuctionIndicator;			// id=5509  presence=optional  
 	int							GroupMDEntriesCount;
@@ -678,17 +678,17 @@ public:
 		this->Allocator = 0;
 		this->PresenceMap = 0;
 		this->NullMap = 0;
-		this->MessageType = 0;
+		this->MessageType[0] = '\0';
 		this->MessageTypeLength = 0;
-		this->BeginString = 0;
+		this->BeginString[0] = '\0';
 		this->BeginStringLength = 0;
-		this->ApplVerID = 0;
+		this->ApplVerID[0] = '\0';
 		this->ApplVerIDLength = 0;
-		this->SenderCompID = 0;
+		this->SenderCompID[0] = '\0';
 		this->SenderCompIDLength = 0;
-		this->TradingSessionID = 0;
+		this->TradingSessionID[0] = '\0';
 		this->TradingSessionIDLength = 0;
-		this->Symbol = 0;
+		this->Symbol[0] = '\0';
 		this->SymbolLength = 0;
 		this->GroupMDEntriesCount = 0;
 	}
@@ -716,25 +716,25 @@ public:
 	LinkedPointer<FastOLSCURRItemInfo>							*Pointer;
 	AutoAllocatePointerList<FastOLSCURRItemInfo>							*Allocator;
 	bool							Used;
-	char*							MDEntryType;			// id=269  presence=optional    copy
-	int							MDEntryTypeLength;
-	char*							MDEntryID;			// id=278  presence=optional  
-	int							MDEntryIDLength;
+	char							MDEntryType[2];			// id=269  presence=optional    copy
+	int							MDEntryTypeLength = 0;
+	char							MDEntryID[16];			// id=278  presence=optional  
+	int							MDEntryIDLength = 0;
 	UINT32							MDEntryDate;			// id=272  presence=optional    copy
 	UINT32							MDEntryTime;			// id=273  presence=optional    copy
 	UINT32							OrigTime;			// id=9412  presence=optional    copy
 	Decimal							MDEntryPx;			// id=270  presence=optional    copy
 	Decimal							MDEntrySize;			// id=271  presence=optional    copy
-	char*							OrderStatus;			// id=10505  presence=optional    copy
-	int							OrderStatusLength;
-	char*							TradingSessionSubID;			// id=625  presence=optional    copy
-	int							TradingSessionSubIDLength;
+	char							OrderStatus[2];			// id=10505  presence=optional    copy
+	int							OrderStatusLength = 0;
+	char							TradingSessionSubID[2];			// id=625  presence=optional    copy
+	int							TradingSessionSubIDLength = 0;
 	UINT32							MDUpdateAction;			// id=279  presence=optional    copy
-	char*							Symbol;			// id=55  presence=optional    copy
-	int							SymbolLength;
+	char							Symbol[16];			// id=55  presence=optional    copy
+	int							SymbolLength = 0;
 	INT32							RptSeq;			// id=83  presence=optional  
-	char*							TradingSessionID;			// id=336  presence=optional    copy
-	int							TradingSessionIDLength;
+	char							TradingSessionID[16];			// id=336  presence=optional    copy
+	int							TradingSessionIDLength = 0;
 
 	FastOLSCURRItemInfo(){
 		this->Used = false;
@@ -742,17 +742,17 @@ public:
 		this->Allocator = 0;
 		this->PresenceMap = 0;
 		this->NullMap = 0;
-		this->MDEntryType = 0;
+		this->MDEntryType[0] = '\0';
 		this->MDEntryTypeLength = 0;
-		this->MDEntryID = 0;
+		this->MDEntryID[0] = '\0';
 		this->MDEntryIDLength = 0;
-		this->OrderStatus = 0;
+		this->OrderStatus[0] = '\0';
 		this->OrderStatusLength = 0;
-		this->TradingSessionSubID = 0;
+		this->TradingSessionSubID[0] = '\0';
 		this->TradingSessionSubIDLength = 0;
-		this->Symbol = 0;
+		this->Symbol[0] = '\0';
 		this->SymbolLength = 0;
-		this->TradingSessionID = 0;
+		this->TradingSessionID[0] = '\0';
 		this->TradingSessionIDLength = 0;
 	}
 	~FastOLSCURRItemInfo(){ }
@@ -775,14 +775,14 @@ public:
 	LinkedPointer<FastOLSCURRInfo>							*Pointer;
 	AutoAllocatePointerList<FastOLSCURRInfo>							*Allocator;
 	bool							Used;
-	char*							MessageType;			// id=35    constant has constant value = W
-	int							MessageTypeLength;
-	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
-	int							BeginStringLength;
-	char*							ApplVerID;			// id=1128    constant has constant value = 9
-	int							ApplVerIDLength;
-	char*							SenderCompID;			// id=49    constant has constant value = MOEX
-	int							SenderCompIDLength;
+	char							MessageType[16];			// id=35    constant has constant value = W
+	int							MessageTypeLength = 0;
+	char							BeginString[16];			// id=8    constant has constant value = FIXT.1.1
+	int							BeginStringLength = 0;
+	char							ApplVerID[16];			// id=1128    constant has constant value = 9
+	int							ApplVerIDLength = 0;
+	char							SenderCompID[32];			// id=49    constant has constant value = MOEX
+	int							SenderCompIDLength = 0;
 	UINT32							MsgSeqNum;			// id=34  
 	UINT64							SendingTime;			// id=52  
 	UINT32							LastMsgSeqNumProcessed;			// id=369  presence=optional  
@@ -790,10 +790,10 @@ public:
 	UINT32							LastFragment;			// id=893  presence=optional  
 	UINT32							RouteFirst;			// id=7944  presence=optional  
 	INT32							TradSesStatus;			// id=340  presence=optional  
-	char*							TradingSessionID;			// id=336  presence=optional  
-	int							TradingSessionIDLength;
-	char*							Symbol;			// id=55  
-	int							SymbolLength;
+	char							TradingSessionID[16];			// id=336  presence=optional  
+	int							TradingSessionIDLength = 0;
+	char							Symbol[16];			// id=55  
+	int							SymbolLength = 0;
 	INT32							MDSecurityTradingStatus;			// id=1682  presence=optional  
 	int							GroupMDEntriesCount;
 	FastOLSCURRItemInfo* GroupMDEntries[256];
@@ -804,17 +804,17 @@ public:
 		this->Allocator = 0;
 		this->PresenceMap = 0;
 		this->NullMap = 0;
-		this->MessageType = 0;
+		this->MessageType[0] = '\0';
 		this->MessageTypeLength = 0;
-		this->BeginString = 0;
+		this->BeginString[0] = '\0';
 		this->BeginStringLength = 0;
-		this->ApplVerID = 0;
+		this->ApplVerID[0] = '\0';
 		this->ApplVerIDLength = 0;
-		this->SenderCompID = 0;
+		this->SenderCompID[0] = '\0';
 		this->SenderCompIDLength = 0;
-		this->TradingSessionID = 0;
+		this->TradingSessionID[0] = '\0';
 		this->TradingSessionIDLength = 0;
-		this->Symbol = 0;
+		this->Symbol[0] = '\0';
 		this->SymbolLength = 0;
 		this->GroupMDEntriesCount = 0;
 	}
@@ -842,38 +842,38 @@ public:
 	LinkedPointer<FastTLSFONDItemInfo>							*Pointer;
 	AutoAllocatePointerList<FastTLSFONDItemInfo>							*Allocator;
 	bool							Used;
-	char*							MDEntryType;			// id=269  
-	int							MDEntryTypeLength;
-	char*							MDEntryID;			// id=278  presence=optional  
-	int							MDEntryIDLength;
+	char							MDEntryType[2];			// id=269  
+	int							MDEntryTypeLength = 0;
+	char							MDEntryID[16];			// id=278  presence=optional  
+	int							MDEntryIDLength = 0;
 	UINT32							MDEntryDate;			// id=272  presence=optional    copy
 	UINT32							MDEntryTime;			// id=273  presence=optional    copy
 	UINT32							OrigTime;			// id=9412  presence=optional    copy
-	char*							OrderSide;			// id=10504  presence=optional    copy
-	int							OrderSideLength;
+	char							OrderSide[2];			// id=10504  presence=optional    copy
+	int							OrderSideLength = 0;
 	Decimal							MDEntryPx;			// id=270  presence=optional    copy
 	Decimal							MDEntrySize;			// id=271  presence=optional    copy
 	Decimal							AccruedInterestAmt;			// id=5384  presence=optional    copy
 	Decimal							TradeValue;			// id=6143  presence=optional    copy
 	Decimal							Yield;			// id=236  presence=optional    copy
 	UINT32							SettlDate;			// id=64  presence=optional    copy
-	char*							SettleType;			// id=5459  presence=optional    copy
-	int							SettleTypeLength;
+	char							SettleType[16];			// id=5459  presence=optional    copy
+	int							SettleTypeLength = 0;
 	Decimal							Price;			// id=44  presence=optional    copy
 	INT32							PriceType;			// id=423  presence=optional    copy
 	Decimal							RepoToPx;			// id=5677  presence=optional    copy
 	Decimal							BuyBackPx;			// id=5558  presence=optional    copy
 	UINT32							BuyBackDate;			// id=5559  presence=optional    copy
-	char*							TradingSessionSubID;			// id=625  presence=optional    copy
-	int							TradingSessionSubIDLength;
-	char*							RefOrderID;			// id=1080  presence=optional    copy
-	int							RefOrderIDLength;
+	char							TradingSessionSubID[2];			// id=625  presence=optional    copy
+	int							TradingSessionSubIDLength = 0;
+	char							RefOrderID[16];			// id=1080  presence=optional    copy
+	int							RefOrderIDLength = 0;
 	UINT32							MDUpdateAction;			// id=279  presence=optional  
-	char*							Symbol;			// id=55  presence=optional  
-	int							SymbolLength;
+	char							Symbol[16];			// id=55  presence=optional  
+	int							SymbolLength = 0;
 	INT32							RptSeq;			// id=83  presence=optional  
-	char*							TradingSessionID;			// id=336  presence=optional  
-	int							TradingSessionIDLength;
+	char							TradingSessionID[16];			// id=336  presence=optional  
+	int							TradingSessionIDLength = 0;
 
 	FastTLSFONDItemInfo(){
 		this->Used = false;
@@ -881,21 +881,21 @@ public:
 		this->Allocator = 0;
 		this->PresenceMap = 0;
 		this->NullMap = 0;
-		this->MDEntryType = 0;
+		this->MDEntryType[0] = '\0';
 		this->MDEntryTypeLength = 0;
-		this->MDEntryID = 0;
+		this->MDEntryID[0] = '\0';
 		this->MDEntryIDLength = 0;
-		this->OrderSide = 0;
+		this->OrderSide[0] = '\0';
 		this->OrderSideLength = 0;
-		this->SettleType = 0;
+		this->SettleType[0] = '\0';
 		this->SettleTypeLength = 0;
-		this->TradingSessionSubID = 0;
+		this->TradingSessionSubID[0] = '\0';
 		this->TradingSessionSubIDLength = 0;
-		this->RefOrderID = 0;
+		this->RefOrderID[0] = '\0';
 		this->RefOrderIDLength = 0;
-		this->Symbol = 0;
+		this->Symbol[0] = '\0';
 		this->SymbolLength = 0;
-		this->TradingSessionID = 0;
+		this->TradingSessionID[0] = '\0';
 		this->TradingSessionIDLength = 0;
 	}
 	~FastTLSFONDItemInfo(){ }
@@ -918,14 +918,14 @@ public:
 	LinkedPointer<FastTLSFONDInfo>							*Pointer;
 	AutoAllocatePointerList<FastTLSFONDInfo>							*Allocator;
 	bool							Used;
-	char*							MessageType;			// id=35    constant has constant value = W
-	int							MessageTypeLength;
-	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
-	int							BeginStringLength;
-	char*							ApplVerID;			// id=1128    constant has constant value = 9
-	int							ApplVerIDLength;
-	char*							SenderCompID;			// id=49    constant has constant value = MOEX
-	int							SenderCompIDLength;
+	char							MessageType[16];			// id=35    constant has constant value = W
+	int							MessageTypeLength = 0;
+	char							BeginString[16];			// id=8    constant has constant value = FIXT.1.1
+	int							BeginStringLength = 0;
+	char							ApplVerID[16];			// id=1128    constant has constant value = 9
+	int							ApplVerIDLength = 0;
+	char							SenderCompID[32];			// id=49    constant has constant value = MOEX
+	int							SenderCompIDLength = 0;
 	UINT32							MsgSeqNum;			// id=34  
 	UINT64							SendingTime;			// id=52  
 	UINT32							LastMsgSeqNumProcessed;			// id=369  presence=optional  
@@ -933,10 +933,10 @@ public:
 	UINT32							LastFragment;			// id=893  presence=optional  
 	UINT32							RouteFirst;			// id=7944  presence=optional  
 	INT32							TradSesStatus;			// id=340  presence=optional  
-	char*							TradingSessionID;			// id=336  presence=optional  
-	int							TradingSessionIDLength;
-	char*							Symbol;			// id=55  
-	int							SymbolLength;
+	char							TradingSessionID[16];			// id=336  presence=optional  
+	int							TradingSessionIDLength = 0;
+	char							Symbol[16];			// id=55  
+	int							SymbolLength = 0;
 	INT32							MDSecurityTradingStatus;			// id=1682  presence=optional  
 	UINT32							AuctionIndicator;			// id=5509  presence=optional  
 	int							GroupMDEntriesCount;
@@ -948,17 +948,17 @@ public:
 		this->Allocator = 0;
 		this->PresenceMap = 0;
 		this->NullMap = 0;
-		this->MessageType = 0;
+		this->MessageType[0] = '\0';
 		this->MessageTypeLength = 0;
-		this->BeginString = 0;
+		this->BeginString[0] = '\0';
 		this->BeginStringLength = 0;
-		this->ApplVerID = 0;
+		this->ApplVerID[0] = '\0';
 		this->ApplVerIDLength = 0;
-		this->SenderCompID = 0;
+		this->SenderCompID[0] = '\0';
 		this->SenderCompIDLength = 0;
-		this->TradingSessionID = 0;
+		this->TradingSessionID[0] = '\0';
 		this->TradingSessionIDLength = 0;
-		this->Symbol = 0;
+		this->Symbol[0] = '\0';
 		this->SymbolLength = 0;
 		this->GroupMDEntriesCount = 0;
 	}
@@ -986,36 +986,36 @@ public:
 	LinkedPointer<FastTLSCURRItemInfo>							*Pointer;
 	AutoAllocatePointerList<FastTLSCURRItemInfo>							*Allocator;
 	bool							Used;
-	char*							MDEntryType;			// id=269  
-	int							MDEntryTypeLength;
-	char*							MDEntryID;			// id=278  presence=optional  
-	int							MDEntryIDLength;
+	char							MDEntryType[2];			// id=269  
+	int							MDEntryTypeLength = 0;
+	char							MDEntryID[16];			// id=278  presence=optional  
+	int							MDEntryIDLength = 0;
 	UINT32							MDEntryDate;			// id=272  presence=optional    copy
 	UINT32							MDEntryTime;			// id=273  presence=optional    copy
 	UINT32							OrigTime;			// id=9412  presence=optional    copy
-	char*							OrderSide;			// id=10504  presence=optional    copy
-	int							OrderSideLength;
+	char							OrderSide[2];			// id=10504  presence=optional    copy
+	int							OrderSideLength = 0;
 	Decimal							MDEntryPx;			// id=270  presence=optional    copy
 	Decimal							MDEntrySize;			// id=271  presence=optional    copy
 	Decimal							TradeValue;			// id=6143  presence=optional    copy
 	UINT32							SettlDate;			// id=64  presence=optional    copy
-	char*							SettleType;			// id=5459  presence=optional    copy
-	int							SettleTypeLength;
+	char							SettleType[16];			// id=5459  presence=optional    copy
+	int							SettleTypeLength = 0;
 	Decimal							Price;			// id=44  presence=optional    copy
 	INT32							PriceType;			// id=423  presence=optional    copy
 	Decimal							RepoToPx;			// id=5677  presence=optional    copy
 	Decimal							BuyBackPx;			// id=5558  presence=optional    copy
 	UINT32							BuyBackDate;			// id=5559  presence=optional    copy
-	char*							TradingSessionSubID;			// id=625  presence=optional    copy
-	int							TradingSessionSubIDLength;
-	char*							RefOrderID;			// id=1080  presence=optional    copy
-	int							RefOrderIDLength;
+	char							TradingSessionSubID[2];			// id=625  presence=optional    copy
+	int							TradingSessionSubIDLength = 0;
+	char							RefOrderID[16];			// id=1080  presence=optional    copy
+	int							RefOrderIDLength = 0;
 	UINT32							MDUpdateAction;			// id=279  presence=optional  
-	char*							Symbol;			// id=55  presence=optional  
-	int							SymbolLength;
+	char							Symbol[16];			// id=55  presence=optional  
+	int							SymbolLength = 0;
 	INT32							RptSeq;			// id=83  presence=optional  
-	char*							TradingSessionID;			// id=336  presence=optional  
-	int							TradingSessionIDLength;
+	char							TradingSessionID[16];			// id=336  presence=optional  
+	int							TradingSessionIDLength = 0;
 
 	FastTLSCURRItemInfo(){
 		this->Used = false;
@@ -1023,21 +1023,21 @@ public:
 		this->Allocator = 0;
 		this->PresenceMap = 0;
 		this->NullMap = 0;
-		this->MDEntryType = 0;
+		this->MDEntryType[0] = '\0';
 		this->MDEntryTypeLength = 0;
-		this->MDEntryID = 0;
+		this->MDEntryID[0] = '\0';
 		this->MDEntryIDLength = 0;
-		this->OrderSide = 0;
+		this->OrderSide[0] = '\0';
 		this->OrderSideLength = 0;
-		this->SettleType = 0;
+		this->SettleType[0] = '\0';
 		this->SettleTypeLength = 0;
-		this->TradingSessionSubID = 0;
+		this->TradingSessionSubID[0] = '\0';
 		this->TradingSessionSubIDLength = 0;
-		this->RefOrderID = 0;
+		this->RefOrderID[0] = '\0';
 		this->RefOrderIDLength = 0;
-		this->Symbol = 0;
+		this->Symbol[0] = '\0';
 		this->SymbolLength = 0;
-		this->TradingSessionID = 0;
+		this->TradingSessionID[0] = '\0';
 		this->TradingSessionIDLength = 0;
 	}
 	~FastTLSCURRItemInfo(){ }
@@ -1060,14 +1060,14 @@ public:
 	LinkedPointer<FastTLSCURRInfo>							*Pointer;
 	AutoAllocatePointerList<FastTLSCURRInfo>							*Allocator;
 	bool							Used;
-	char*							MessageType;			// id=35    constant has constant value = W
-	int							MessageTypeLength;
-	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
-	int							BeginStringLength;
-	char*							ApplVerID;			// id=1128    constant has constant value = 9
-	int							ApplVerIDLength;
-	char*							SenderCompID;			// id=49    constant has constant value = MOEX
-	int							SenderCompIDLength;
+	char							MessageType[16];			// id=35    constant has constant value = W
+	int							MessageTypeLength = 0;
+	char							BeginString[16];			// id=8    constant has constant value = FIXT.1.1
+	int							BeginStringLength = 0;
+	char							ApplVerID[16];			// id=1128    constant has constant value = 9
+	int							ApplVerIDLength = 0;
+	char							SenderCompID[32];			// id=49    constant has constant value = MOEX
+	int							SenderCompIDLength = 0;
 	UINT32							MsgSeqNum;			// id=34  
 	UINT64							SendingTime;			// id=52  
 	UINT32							LastMsgSeqNumProcessed;			// id=369  presence=optional  
@@ -1075,10 +1075,10 @@ public:
 	UINT32							LastFragment;			// id=893  presence=optional  
 	UINT32							RouteFirst;			// id=7944  presence=optional  
 	INT32							TradSesStatus;			// id=340  presence=optional  
-	char*							TradingSessionID;			// id=336  presence=optional  
-	int							TradingSessionIDLength;
-	char*							Symbol;			// id=55  
-	int							SymbolLength;
+	char							TradingSessionID[16];			// id=336  presence=optional  
+	int							TradingSessionIDLength = 0;
+	char							Symbol[16];			// id=55  
+	int							SymbolLength = 0;
 	INT32							MDSecurityTradingStatus;			// id=1682  presence=optional  
 	int							GroupMDEntriesCount;
 	FastTLSCURRItemInfo* GroupMDEntries[256];
@@ -1089,17 +1089,17 @@ public:
 		this->Allocator = 0;
 		this->PresenceMap = 0;
 		this->NullMap = 0;
-		this->MessageType = 0;
+		this->MessageType[0] = '\0';
 		this->MessageTypeLength = 0;
-		this->BeginString = 0;
+		this->BeginString[0] = '\0';
 		this->BeginStringLength = 0;
-		this->ApplVerID = 0;
+		this->ApplVerID[0] = '\0';
 		this->ApplVerIDLength = 0;
-		this->SenderCompID = 0;
+		this->SenderCompID[0] = '\0';
 		this->SenderCompIDLength = 0;
-		this->TradingSessionID = 0;
+		this->TradingSessionID[0] = '\0';
 		this->TradingSessionIDLength = 0;
-		this->Symbol = 0;
+		this->Symbol[0] = '\0';
 		this->SymbolLength = 0;
 		this->GroupMDEntriesCount = 0;
 	}
@@ -1127,14 +1127,14 @@ public:
 	LinkedPointer<FastIncrementalMSRFONDInfo>							*Pointer;
 	AutoAllocatePointerList<FastIncrementalMSRFONDInfo>							*Allocator;
 	bool							Used;
-	char*							MessageType;			// id=35    constant has constant value = X
-	int							MessageTypeLength;
-	char*							ApplVerID;			// id=1128    constant has constant value = 9
-	int							ApplVerIDLength;
-	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
-	int							BeginStringLength;
-	char*							SenderCompID;			// id=49    constant has constant value = MOEX
-	int							SenderCompIDLength;
+	char							MessageType[16];			// id=35    constant has constant value = X
+	int							MessageTypeLength = 0;
+	char							ApplVerID[16];			// id=1128    constant has constant value = 9
+	int							ApplVerIDLength = 0;
+	char							BeginString[16];			// id=8    constant has constant value = FIXT.1.1
+	int							BeginStringLength = 0;
+	char							SenderCompID[32];			// id=49    constant has constant value = MOEX
+	int							SenderCompIDLength = 0;
 	UINT32							MsgSeqNum;			// id=34  
 	UINT64							SendingTime;			// id=52  
 	UINT64							LastUpdateTime;			// id=779  presence=optional  
@@ -1147,13 +1147,13 @@ public:
 		this->Allocator = 0;
 		this->PresenceMap = 0;
 		this->NullMap = 0;
-		this->MessageType = 0;
+		this->MessageType[0] = '\0';
 		this->MessageTypeLength = 0;
-		this->ApplVerID = 0;
+		this->ApplVerID[0] = '\0';
 		this->ApplVerIDLength = 0;
-		this->BeginString = 0;
+		this->BeginString[0] = '\0';
 		this->BeginStringLength = 0;
-		this->SenderCompID = 0;
+		this->SenderCompID[0] = '\0';
 		this->SenderCompIDLength = 0;
 		this->GroupMDEntriesCount = 0;
 	}
@@ -1181,14 +1181,14 @@ public:
 	LinkedPointer<FastIncrementalMSRCURRInfo>							*Pointer;
 	AutoAllocatePointerList<FastIncrementalMSRCURRInfo>							*Allocator;
 	bool							Used;
-	char*							MessageType;			// id=35    constant has constant value = X
-	int							MessageTypeLength;
-	char*							ApplVerID;			// id=1128    constant has constant value = 9
-	int							ApplVerIDLength;
-	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
-	int							BeginStringLength;
-	char*							SenderCompID;			// id=49    constant has constant value = MOEX
-	int							SenderCompIDLength;
+	char							MessageType[16];			// id=35    constant has constant value = X
+	int							MessageTypeLength = 0;
+	char							ApplVerID[16];			// id=1128    constant has constant value = 9
+	int							ApplVerIDLength = 0;
+	char							BeginString[16];			// id=8    constant has constant value = FIXT.1.1
+	int							BeginStringLength = 0;
+	char							SenderCompID[32];			// id=49    constant has constant value = MOEX
+	int							SenderCompIDLength = 0;
 	UINT32							MsgSeqNum;			// id=34  
 	UINT64							SendingTime;			// id=52  
 	UINT64							LastUpdateTime;			// id=779  presence=optional  
@@ -1201,13 +1201,13 @@ public:
 		this->Allocator = 0;
 		this->PresenceMap = 0;
 		this->NullMap = 0;
-		this->MessageType = 0;
+		this->MessageType[0] = '\0';
 		this->MessageTypeLength = 0;
-		this->ApplVerID = 0;
+		this->ApplVerID[0] = '\0';
 		this->ApplVerIDLength = 0;
-		this->BeginString = 0;
+		this->BeginString[0] = '\0';
 		this->BeginStringLength = 0;
-		this->SenderCompID = 0;
+		this->SenderCompID[0] = '\0';
 		this->SenderCompIDLength = 0;
 		this->GroupMDEntriesCount = 0;
 	}
@@ -1235,14 +1235,14 @@ public:
 	LinkedPointer<FastIncrementalOLRFONDInfo>							*Pointer;
 	AutoAllocatePointerList<FastIncrementalOLRFONDInfo>							*Allocator;
 	bool							Used;
-	char*							MessageType;			// id=35    constant has constant value = X
-	int							MessageTypeLength;
-	char*							ApplVerID;			// id=1128    constant has constant value = 9
-	int							ApplVerIDLength;
-	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
-	int							BeginStringLength;
-	char*							SenderCompID;			// id=49    constant has constant value = MOEX
-	int							SenderCompIDLength;
+	char							MessageType[16];			// id=35    constant has constant value = X
+	int							MessageTypeLength = 0;
+	char							ApplVerID[16];			// id=1128    constant has constant value = 9
+	int							ApplVerIDLength = 0;
+	char							BeginString[16];			// id=8    constant has constant value = FIXT.1.1
+	int							BeginStringLength = 0;
+	char							SenderCompID[32];			// id=49    constant has constant value = MOEX
+	int							SenderCompIDLength = 0;
 	UINT32							MsgSeqNum;			// id=34  
 	UINT64							SendingTime;			// id=52  
 	int							GroupMDEntriesCount;
@@ -1254,13 +1254,13 @@ public:
 		this->Allocator = 0;
 		this->PresenceMap = 0;
 		this->NullMap = 0;
-		this->MessageType = 0;
+		this->MessageType[0] = '\0';
 		this->MessageTypeLength = 0;
-		this->ApplVerID = 0;
+		this->ApplVerID[0] = '\0';
 		this->ApplVerIDLength = 0;
-		this->BeginString = 0;
+		this->BeginString[0] = '\0';
 		this->BeginStringLength = 0;
-		this->SenderCompID = 0;
+		this->SenderCompID[0] = '\0';
 		this->SenderCompIDLength = 0;
 		this->GroupMDEntriesCount = 0;
 	}
@@ -1288,14 +1288,14 @@ public:
 	LinkedPointer<FastIncrementalOLRCURRInfo>							*Pointer;
 	AutoAllocatePointerList<FastIncrementalOLRCURRInfo>							*Allocator;
 	bool							Used;
-	char*							MessageType;			// id=35    constant has constant value = X
-	int							MessageTypeLength;
-	char*							ApplVerID;			// id=1128    constant has constant value = 9
-	int							ApplVerIDLength;
-	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
-	int							BeginStringLength;
-	char*							SenderCompID;			// id=49    constant has constant value = MOEX
-	int							SenderCompIDLength;
+	char							MessageType[16];			// id=35    constant has constant value = X
+	int							MessageTypeLength = 0;
+	char							ApplVerID[16];			// id=1128    constant has constant value = 9
+	int							ApplVerIDLength = 0;
+	char							BeginString[16];			// id=8    constant has constant value = FIXT.1.1
+	int							BeginStringLength = 0;
+	char							SenderCompID[32];			// id=49    constant has constant value = MOEX
+	int							SenderCompIDLength = 0;
 	UINT32							MsgSeqNum;			// id=34  
 	UINT64							SendingTime;			// id=52  
 	int							GroupMDEntriesCount;
@@ -1307,13 +1307,13 @@ public:
 		this->Allocator = 0;
 		this->PresenceMap = 0;
 		this->NullMap = 0;
-		this->MessageType = 0;
+		this->MessageType[0] = '\0';
 		this->MessageTypeLength = 0;
-		this->ApplVerID = 0;
+		this->ApplVerID[0] = '\0';
 		this->ApplVerIDLength = 0;
-		this->BeginString = 0;
+		this->BeginString[0] = '\0';
 		this->BeginStringLength = 0;
-		this->SenderCompID = 0;
+		this->SenderCompID[0] = '\0';
 		this->SenderCompIDLength = 0;
 		this->GroupMDEntriesCount = 0;
 	}
@@ -1341,14 +1341,14 @@ public:
 	LinkedPointer<FastIncrementalTLRFONDInfo>							*Pointer;
 	AutoAllocatePointerList<FastIncrementalTLRFONDInfo>							*Allocator;
 	bool							Used;
-	char*							MessageType;			// id=35    constant has constant value = X
-	int							MessageTypeLength;
-	char*							ApplVerID;			// id=1128    constant has constant value = 9
-	int							ApplVerIDLength;
-	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
-	int							BeginStringLength;
-	char*							SenderCompID;			// id=49    constant has constant value = MOEX
-	int							SenderCompIDLength;
+	char							MessageType[16];			// id=35    constant has constant value = X
+	int							MessageTypeLength = 0;
+	char							ApplVerID[16];			// id=1128    constant has constant value = 9
+	int							ApplVerIDLength = 0;
+	char							BeginString[16];			// id=8    constant has constant value = FIXT.1.1
+	int							BeginStringLength = 0;
+	char							SenderCompID[32];			// id=49    constant has constant value = MOEX
+	int							SenderCompIDLength = 0;
 	UINT32							MsgSeqNum;			// id=34  
 	UINT64							SendingTime;			// id=52  
 	int							GroupMDEntriesCount;
@@ -1360,13 +1360,13 @@ public:
 		this->Allocator = 0;
 		this->PresenceMap = 0;
 		this->NullMap = 0;
-		this->MessageType = 0;
+		this->MessageType[0] = '\0';
 		this->MessageTypeLength = 0;
-		this->ApplVerID = 0;
+		this->ApplVerID[0] = '\0';
 		this->ApplVerIDLength = 0;
-		this->BeginString = 0;
+		this->BeginString[0] = '\0';
 		this->BeginStringLength = 0;
-		this->SenderCompID = 0;
+		this->SenderCompID[0] = '\0';
 		this->SenderCompIDLength = 0;
 		this->GroupMDEntriesCount = 0;
 	}
@@ -1394,14 +1394,14 @@ public:
 	LinkedPointer<FastIncrementalTLRCURRInfo>							*Pointer;
 	AutoAllocatePointerList<FastIncrementalTLRCURRInfo>							*Allocator;
 	bool							Used;
-	char*							MessageType;			// id=35    constant has constant value = X
-	int							MessageTypeLength;
-	char*							ApplVerID;			// id=1128    constant has constant value = 9
-	int							ApplVerIDLength;
-	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
-	int							BeginStringLength;
-	char*							SenderCompID;			// id=49    constant has constant value = MOEX
-	int							SenderCompIDLength;
+	char							MessageType[16];			// id=35    constant has constant value = X
+	int							MessageTypeLength = 0;
+	char							ApplVerID[16];			// id=1128    constant has constant value = 9
+	int							ApplVerIDLength = 0;
+	char							BeginString[16];			// id=8    constant has constant value = FIXT.1.1
+	int							BeginStringLength = 0;
+	char							SenderCompID[32];			// id=49    constant has constant value = MOEX
+	int							SenderCompIDLength = 0;
 	UINT32							MsgSeqNum;			// id=34  
 	UINT64							SendingTime;			// id=52  
 	int							GroupMDEntriesCount;
@@ -1413,13 +1413,13 @@ public:
 		this->Allocator = 0;
 		this->PresenceMap = 0;
 		this->NullMap = 0;
-		this->MessageType = 0;
+		this->MessageType[0] = '\0';
 		this->MessageTypeLength = 0;
-		this->ApplVerID = 0;
+		this->ApplVerID[0] = '\0';
 		this->ApplVerIDLength = 0;
-		this->BeginString = 0;
+		this->BeginString[0] = '\0';
 		this->BeginStringLength = 0;
-		this->SenderCompID = 0;
+		this->SenderCompID[0] = '\0';
 		this->SenderCompIDLength = 0;
 		this->GroupMDEntriesCount = 0;
 	}
@@ -1478,10 +1478,10 @@ public:
 	LinkedPointer<FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo>							*Pointer;
 	AutoAllocatePointerList<FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo>							*Allocator;
 	bool							Used;
-	char*							TradingSessionID;			// id=336  
-	int							TradingSessionIDLength;
-	char*							TradingSessionSubID;			// id=625  presence=optional  
-	int							TradingSessionSubIDLength;
+	char							TradingSessionID[16];			// id=336  
+	int							TradingSessionIDLength = 0;
+	char							TradingSessionSubID[2];			// id=625  presence=optional  
+	int							TradingSessionSubIDLength = 0;
 	INT32							SecurityTradingStatus;			// id=326  presence=optional  
 	INT32							OrderNote;			// id=9680  presence=optional  
 
@@ -1491,9 +1491,9 @@ public:
 		this->Allocator = 0;
 		this->PresenceMap = 0;
 		this->NullMap = 0;
-		this->TradingSessionID = 0;
+		this->TradingSessionID[0] = '\0';
 		this->TradingSessionIDLength = 0;
-		this->TradingSessionSubID = 0;
+		this->TradingSessionSubID[0] = '\0';
 		this->TradingSessionSubIDLength = 0;
 	}
 	~FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo(){ }
@@ -1552,21 +1552,21 @@ public:
 	LinkedPointer<FastSecurityDefinitionInfo>							*Pointer;
 	AutoAllocatePointerList<FastSecurityDefinitionInfo>							*Allocator;
 	bool							Used;
-	char*							MessageType;			// id=35    constant has constant value = d
-	int							MessageTypeLength;
-	char*							ApplVerID;			// id=1128    constant has constant value = 9
-	int							ApplVerIDLength;
-	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
-	int							BeginStringLength;
-	char*							SenderCompID;			// id=49    constant has constant value = MOEX
-	int							SenderCompIDLength;
+	char							MessageType[16];			// id=35    constant has constant value = d
+	int							MessageTypeLength = 0;
+	char							ApplVerID[16];			// id=1128    constant has constant value = 9
+	int							ApplVerIDLength = 0;
+	char							BeginString[16];			// id=8    constant has constant value = FIXT.1.1
+	int							BeginStringLength = 0;
+	char							SenderCompID[32];			// id=49    constant has constant value = MOEX
+	int							SenderCompIDLength = 0;
 	UINT32							MsgSeqNum;			// id=34    increment
 	UINT64							SendingTime;			// id=52  
-	char*							MessageEncoding;			// id=347    default
-	int							MessageEncodingLength;
+	char							MessageEncoding[16];			// id=347    default
+	int							MessageEncodingLength = 0;
 	INT32							TotNumReports;			// id=911  presence=optional  
-	char*							Symbol;			// id=55  presence=optional  
-	int							SymbolLength;
+	char							Symbol[16];			// id=55  presence=optional  
+	int							SymbolLength = 0;
 	BYTE*							SecurityID;			// id=48  presence=optional  
 	int							SecurityIDLength;
 	BYTE*							SecurityIDSource;			// id=22  presence=optional  
@@ -1578,8 +1578,8 @@ public:
 	int							SecurityTypeLength;
 	UINT32							MaturityDate;			// id=541  presence=optional  
 	UINT32							SettlDate;			// id=64  presence=optional  
-	char*							SettleType;			// id=5459  presence=optional  
-	int							SettleTypeLength;
+	char							SettleType[16];			// id=5459  presence=optional  
+	int							SettleTypeLength = 0;
 	Decimal							OrigIssueAmt;			// id=5850  presence=optional  
 	UINT32							CouponPaymentDate;			// id=224  presence=optional  
 	Decimal							CouponRate;			// id=223  presence=optional  
@@ -1593,15 +1593,15 @@ public:
 	int							QuoteTextLength;
 	int							GroupInstrAttribCount;			// presence=optional  
 	FastSecurityDefinitionGroupInstrAttribItemInfo* GroupInstrAttrib[256];			// presence=optional  
-	char*							Currency;			// id=15  presence=optional  
-	int							CurrencyLength;
+	char							Currency[16];			// id=15  presence=optional  
+	int							CurrencyLength = 0;
 	int							MarketSegmentGrpCount;			// presence=optional  
 	FastSecurityDefinitionMarketSegmentGrpItemInfo* MarketSegmentGrp[256];			// presence=optional  
-	char*							SettlCurrency;			// id=120  presence=optional  
-	int							SettlCurrencyLength;
+	char							SettlCurrency[16];			// id=120  presence=optional  
+	int							SettlCurrencyLength = 0;
 	INT32							PriceType;			// id=423  presence=optional  
-	char*							StateSecurityID;			// id=5217  presence=optional  
-	int							StateSecurityIDLength;
+	char							StateSecurityID[16];			// id=5217  presence=optional  
+	int							StateSecurityIDLength = 0;
 	BYTE*							EncodedShortSecurityDesc;			// id=5383  presence=optional  
 	int							EncodedShortSecurityDescLength;
 	BYTE*							MarketCode;			// id=5385  presence=optional  
@@ -1627,27 +1627,27 @@ public:
 		this->Allocator = 0;
 		this->PresenceMap = 0;
 		this->NullMap = 0;
-		this->MessageType = 0;
+		this->MessageType[0] = '\0';
 		this->MessageTypeLength = 0;
-		this->ApplVerID = 0;
+		this->ApplVerID[0] = '\0';
 		this->ApplVerIDLength = 0;
-		this->BeginString = 0;
+		this->BeginString[0] = '\0';
 		this->BeginStringLength = 0;
-		this->SenderCompID = 0;
+		this->SenderCompID[0] = '\0';
 		this->SenderCompIDLength = 0;
-		this->MessageEncoding = 0;
+		this->MessageEncoding[0] = '\0';
 		this->MessageEncodingLength = 0;
-		this->Symbol = 0;
+		this->Symbol[0] = '\0';
 		this->SymbolLength = 0;
-		this->SettleType = 0;
+		this->SettleType[0] = '\0';
 		this->SettleTypeLength = 0;
 		this->GroupInstrAttribCount = 0;
-		this->Currency = 0;
+		this->Currency[0] = '\0';
 		this->CurrencyLength = 0;
 		this->MarketSegmentGrpCount = 0;
-		this->SettlCurrency = 0;
+		this->SettlCurrency[0] = '\0';
 		this->SettlCurrencyLength = 0;
-		this->StateSecurityID = 0;
+		this->StateSecurityID[0] = '\0';
 		this->StateSecurityIDLength = 0;
 	}
 	~FastSecurityDefinitionInfo(){ }
@@ -1678,22 +1678,22 @@ public:
 	LinkedPointer<FastSecurityStatusInfo>							*Pointer;
 	AutoAllocatePointerList<FastSecurityStatusInfo>							*Allocator;
 	bool							Used;
-	char*							MessageType;			// id=35    constant has constant value = f
-	int							MessageTypeLength;
-	char*							ApplVerID;			// id=1128    constant has constant value = 9
-	int							ApplVerIDLength;
-	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
-	int							BeginStringLength;
-	char*							SenderCompID;			// id=49    constant has constant value = MOEX
-	int							SenderCompIDLength;
+	char							MessageType[16];			// id=35    constant has constant value = f
+	int							MessageTypeLength = 0;
+	char							ApplVerID[16];			// id=1128    constant has constant value = 9
+	int							ApplVerIDLength = 0;
+	char							BeginString[16];			// id=8    constant has constant value = FIXT.1.1
+	int							BeginStringLength = 0;
+	char							SenderCompID[32];			// id=49    constant has constant value = MOEX
+	int							SenderCompIDLength = 0;
 	UINT32							MsgSeqNum;			// id=34  
 	UINT64							SendingTime;			// id=52  
-	char*							Symbol;			// id=55  
-	int							SymbolLength;
-	char*							TradingSessionID;			// id=336  presence=optional  
-	int							TradingSessionIDLength;
-	char*							TradingSessionSubID;			// id=625  presence=optional  
-	int							TradingSessionSubIDLength;
+	char							Symbol[16];			// id=55  
+	int							SymbolLength = 0;
+	char							TradingSessionID[16];			// id=336  presence=optional  
+	int							TradingSessionIDLength = 0;
+	char							TradingSessionSubID[2];			// id=625  presence=optional  
+	int							TradingSessionSubIDLength = 0;
 	INT32							SecurityTradingStatus;			// id=326  presence=optional  
 	UINT32							AuctionIndicator;			// id=5509  presence=optional  
 
@@ -1703,19 +1703,19 @@ public:
 		this->Allocator = 0;
 		this->PresenceMap = 0;
 		this->NullMap = 0;
-		this->MessageType = 0;
+		this->MessageType[0] = '\0';
 		this->MessageTypeLength = 0;
-		this->ApplVerID = 0;
+		this->ApplVerID[0] = '\0';
 		this->ApplVerIDLength = 0;
-		this->BeginString = 0;
+		this->BeginString[0] = '\0';
 		this->BeginStringLength = 0;
-		this->SenderCompID = 0;
+		this->SenderCompID[0] = '\0';
 		this->SenderCompIDLength = 0;
-		this->Symbol = 0;
+		this->Symbol[0] = '\0';
 		this->SymbolLength = 0;
-		this->TradingSessionID = 0;
+		this->TradingSessionID[0] = '\0';
 		this->TradingSessionIDLength = 0;
-		this->TradingSessionSubID = 0;
+		this->TradingSessionSubID[0] = '\0';
 		this->TradingSessionSubIDLength = 0;
 	}
 	~FastSecurityStatusInfo(){ }
@@ -1738,21 +1738,21 @@ public:
 	LinkedPointer<FastTradingSessionStatusInfo>							*Pointer;
 	AutoAllocatePointerList<FastTradingSessionStatusInfo>							*Allocator;
 	bool							Used;
-	char*							MessageType;			// id=35    constant has constant value = h
-	int							MessageTypeLength;
-	char*							ApplVerID;			// id=1128    constant has constant value = 9
-	int							ApplVerIDLength;
-	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
-	int							BeginStringLength;
-	char*							SenderCompID;			// id=49    constant has constant value = MOEX
-	int							SenderCompIDLength;
+	char							MessageType[16];			// id=35    constant has constant value = h
+	int							MessageTypeLength = 0;
+	char							ApplVerID[16];			// id=1128    constant has constant value = 9
+	int							ApplVerIDLength = 0;
+	char							BeginString[16];			// id=8    constant has constant value = FIXT.1.1
+	int							BeginStringLength = 0;
+	char							SenderCompID[32];			// id=49    constant has constant value = MOEX
+	int							SenderCompIDLength = 0;
 	UINT32							MsgSeqNum;			// id=34  
 	UINT64							SendingTime;			// id=52  
 	INT32							TradSesStatus;			// id=340  
-	char*							Text;			// id=58  presence=optional  
-	int							TextLength;
-	char*							TradingSessionID;			// id=336  
-	int							TradingSessionIDLength;
+	char							Text[512];			// id=58  presence=optional  
+	int							TextLength = 0;
+	char							TradingSessionID[16];			// id=336  
+	int							TradingSessionIDLength = 0;
 
 	FastTradingSessionStatusInfo(){
 		this->Used = false;
@@ -1760,17 +1760,17 @@ public:
 		this->Allocator = 0;
 		this->PresenceMap = 0;
 		this->NullMap = 0;
-		this->MessageType = 0;
+		this->MessageType[0] = '\0';
 		this->MessageTypeLength = 0;
-		this->ApplVerID = 0;
+		this->ApplVerID[0] = '\0';
 		this->ApplVerIDLength = 0;
-		this->BeginString = 0;
+		this->BeginString[0] = '\0';
 		this->BeginStringLength = 0;
-		this->SenderCompID = 0;
+		this->SenderCompID[0] = '\0';
 		this->SenderCompIDLength = 0;
-		this->Text = 0;
+		this->Text[0] = '\0';
 		this->TextLength = 0;
-		this->TradingSessionID = 0;
+		this->TradingSessionID[0] = '\0';
 		this->TradingSessionIDLength = 0;
 	}
 	~FastTradingSessionStatusInfo(){ }
@@ -1793,12 +1793,12 @@ public:
 	LinkedPointer<FastHeartbeatInfo>							*Pointer;
 	AutoAllocatePointerList<FastHeartbeatInfo>							*Allocator;
 	bool							Used;
-	char*							MessageType;			// id=35    constant has constant value = 0
-	int							MessageTypeLength;
-	char*							BeginString;			// id=8    constant has constant value = FIXT.1.1
-	int							BeginStringLength;
-	char*							SenderCompID;			// id=49    constant has constant value = MOEX
-	int							SenderCompIDLength;
+	char							MessageType[16];			// id=35    constant has constant value = 0
+	int							MessageTypeLength = 0;
+	char							BeginString[16];			// id=8    constant has constant value = FIXT.1.1
+	int							BeginStringLength = 0;
+	char							SenderCompID[32];			// id=49    constant has constant value = MOEX
+	int							SenderCompIDLength = 0;
 	UINT32							MsgSeqNum;			// id=34  
 	UINT64							SendingTime;			// id=52  
 
@@ -1808,11 +1808,11 @@ public:
 		this->Allocator = 0;
 		this->PresenceMap = 0;
 		this->NullMap = 0;
-		this->MessageType = 0;
+		this->MessageType[0] = '\0';
 		this->MessageTypeLength = 0;
-		this->BeginString = 0;
+		this->BeginString[0] = '\0';
 		this->BeginStringLength = 0;
-		this->SenderCompID = 0;
+		this->SenderCompID[0] = '\0';
 		this->SenderCompIDLength = 0;
 	}
 	~FastHeartbeatInfo(){ }

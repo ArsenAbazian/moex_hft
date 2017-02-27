@@ -87,13 +87,6 @@ public:
         if(hasEntries) {
             if(!prevHasEntries) {
                 this->m_queueItemsCount++;
-                if(!tableItem->ShouldProcessSnapshot()) {
-                    MarketSymbolInfo<TABLEITEM<ITEMINFO>> *smb = tableItem->SymbolInfo();
-                    bool allItemsRecvSnapshot = smb->AllSessionsRecvSnapshot();
-                    tableItem->IncSessionsToRecvSnapshotCount();
-                    if (!allItemsRecvSnapshot && smb->AllSessionsRecvSnapshot())
-                        this->IncSymbolsToRecvSnapshotCount();
-                }
             }
         }
         else {

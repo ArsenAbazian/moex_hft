@@ -234,15 +234,15 @@ public:
         SymbolManagerTester ht;
         ht.Test();
 
-        OrderTesterCurr otCurr;
-        otCurr.Test();
-        OrderTesterFond otFond;
-        otFond.Test();
-
         TradeTesterCurr ttCurr;
         ttCurr.Test();
         TradeTesterFond ttFond;
         ttFond.Test();
+
+        OrderTesterCurr otCurr;
+        otCurr.Test();
+        OrderTesterFond otFond;
+        otFond.Test();
 
         SecurityStatusTester ist;
         ist.Test();

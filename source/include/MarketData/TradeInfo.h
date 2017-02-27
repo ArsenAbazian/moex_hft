@@ -75,6 +75,8 @@ public:
         this->ClearEntries();
         this->m_rptSeq = 0;
         this->m_savedRptSeq = 0;
+        this->m_shouldProcessSnapshot = false;
+        this->m_snapshotProcessedCount = 0;
     }
 
     inline LinkedPointer<T>* AddTrade(T *item) {

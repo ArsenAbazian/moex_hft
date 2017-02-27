@@ -1020,7 +1020,7 @@ namespace prebuild {
 			InitializeSnapshotInfoFields(templatesNode);
 			foreach(SnapshotFieldInfo info in SnapshotInfoFields) {
 				if(info.FieldType.ToLower() == "string" ) {
-					WriteLine("\t" + "char" + "\t\t\t\t*" + info.FieldName + ";");
+					WriteLine("\t" + "char" + "\t\t\t\t" + info.FieldName + "[32];");
 					WriteLine("\t" + "int" + "\t\t\t\t\t" + info.FieldName + "Length;");
 				} else {
 					WriteLine("\t" + info.FieldType + "\t\t\t\t" + info.FieldName + ";");
@@ -1108,6 +1108,36 @@ namespace prebuild {
 				}
 				WriteLine("};");
 			}
+		}
+
+		void WriteStringDefinitionCore(XmlNode field, string tabs) {
+			int maxStringLength = HasAttribute(field, "size") ? int.Parse(field.Attributes["size"].Value) : 0;
+			if(maxStringLength == 0) {
+				maxStringLength = 16;
+				string name = Name(field);
+				if(name == "Text")
+					maxStringLength = 512;
+				if(name == "TargetCompID" || name == "SenderCompID")
+					maxStringLength = 32;
+				if(name == "MDEntryType")
+					maxStringLength = 2;
+				if(name == "OpenCloseSettlFlag")
+					maxStringLength = 2;
+				if(name == "OrdType")
+					maxStringLength = 2;
+				if(name == "SettlType")
+					maxStringLength = 2;
+				if(name == "OrderSide")
+					maxStringLength = 2;
+				if(name == "OrderStatus")
+					maxStringLength = 2;
+				if(name == "CXFlag")
+					maxStringLength = 2;
+				if(name == "TradingSessionSubID")
+					maxStringLength = 2;
+			}
+			WriteLine("\tchar" + tabs + Name(field) + "[" + maxStringLength + "];" + GetCommentLine(field));
+			WriteLine("\tint"+ tabs + Name(field) + "Length = 0;");
 		}
 
 		List<StructureInfo> structures;
@@ -1364,7 +1394,7 @@ namespace prebuild {
 		}
 
 		private void WriteClearStringCode(XmlNode field) {
-			WriteLine("\t\tthis->" + Name(field) + " = 0;");
+			WriteLine("\t\tthis->" + Name(field) + "[0] = '\\0';");
 			WriteLine("\t\tthis->" + Name(field) + "Length = 0;");
 		}
 
@@ -1523,8 +1553,9 @@ namespace prebuild {
 		}
 
 		private  void WriteStringDefinition (XmlNode field) {
-			WriteLine("\tchar*" + StuctFieldsSpacing + Name(field) + ";" + GetCommentLine(field));
-			WriteLine("\tint" + StuctFieldsSpacing + Name(field) + "Length;");
+			WriteStringDefinitionCore(field, StuctFieldsSpacing);
+			//WriteLine("\tchar*" + StuctFieldsSpacing + Name(field) + ";" + GetCommentLine(field));
+			//WriteLine("\tint" + StuctFieldsSpacing + Name(field) + "Length;");
 		}
 
 		string GetTemplateName (string templateName) {
@@ -2214,9 +2245,9 @@ namespace prebuild {
 				WriteLine(tabString + "SkipToNextField(); //" + Name(value));
 			} else {
 				if(HasOptionalPresence(value))
-					WriteLine(tabString + "ReadString_Optional(&(" + info + "->" + Name(value) + "), &(" + info + "->" + Name(value) + "Length)" + ");");
+					WriteLine(tabString + "ReadString_Optional(" + info + "->" + Name(value) + ", &(" + info + "->" + Name(value) + "Length)" + ");");
 				else
-					WriteLine(tabString + "ReadString_Mandatory(&(" + info + "->" + Name(value) + "), &(" + info + "->" + Name(value) + "Length)" + ");");
+					WriteLine(tabString + "ReadString_Mandatory(" + info + "->" + Name(value) + ", &(" + info + "->" + Name(value) + "Length)" + ");");
 			}
 			if(ShouldWriteNullCheckCode(value)) {
 				tabString = tabString.Substring(1);
@@ -2350,7 +2381,8 @@ namespace prebuild {
 		}
 
 		private  void WriteStringCopyValueCode (StructureInfo str, XmlNode value, string info, string tabString) {
-			WriteLine(tabString + info + "->" + Name(value) + " = this->" + str.PrevValueName + "->" + Name(value) + ";");
+			WriteLine(tabString + "this->CopyString(" + info + "->" + Name(value) + ", " + str.PrevValueName + "->" + Name(value) + ", " + str.PrevValueName + "->" + Name(value) + "Length" + ");");
+			//WriteLine(tabString + info + "->" + Name(value) + " = this->" + str.PrevValueName + "->" + Name(value) + ";");
 			WriteLine(tabString + info + "->" + Name(value) + "Length = this->" + str.PrevValueName + "->" + Name(value) + "Length;");
 		}
 

@@ -110,6 +110,26 @@ public:
             return true;
         return s1[l1 - 1] == s2[l1 - 1];
     }
+
+    static inline void CopyString(char *dst, const char *src, int count) {
+        while(count >= 8) {
+            *((UINT64*)dst) = *((UINT64*)src);
+            count -= 8;
+            dst += 8; src += 8;
+        }
+        if(count >= 4) {
+            *((UINT32*)dst) = *((UINT32*)src);
+            count -= 4;
+            dst += 4; src += 4;
+        }
+        if(count >= 2) {
+            *((unsigned short*)dst) = *((unsigned short*)src);
+            count -= 2;
+            dst += 2; src += 2;
+        }
+        if(count > 0)
+            *dst = *src;
+    }
 };
 
 class SizedArray {

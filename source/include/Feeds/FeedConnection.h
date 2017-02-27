@@ -1332,13 +1332,16 @@ protected:
 
     inline bool Listen_Atom_Incremental_Core() {
 
+#ifndef TEST
         // TODO remove hack. just skip 30 messages and then try to restore
+        // Skip this hack when testing :)
         if(this->m_snapshot->State() == FeedConnectionState::fcsSuspend &&
                 (this->m_endMsgSeqNum % 500) < 40) {
             this->m_packets[this->m_endMsgSeqNum]->m_address = 0; // force historical replay
             printf("packet %d is lost, requestIndexd = %d\n", this->m_endMsgSeqNum, this->m_requestMessageStartIndex);
             return true;
         }
+#endif
 
         if(!this->ProcessIncrementalMessages())
             return false;
@@ -2426,7 +2429,7 @@ public:
 
     inline void UpdateTradingSession(FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo *trading, FastSecurityStatusInfo *info) {
         trading->NullMap = info->NullMap;
-        trading->TradingSessionSubID = info->TradingSessionSubID;
+        StringIdComparer::CopyString(trading->TradingSessionSubID, info->TradingSessionSubID, info->TradingSessionSubIDLength);
         trading->TradingSessionSubIDLength = info->TradingSessionSubIDLength;
         trading->SecurityTradingStatus = info->SecurityTradingStatus;
         //Skip AuctionIndicator because there is no data in feed streams for them

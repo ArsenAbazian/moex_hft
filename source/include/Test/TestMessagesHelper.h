@@ -373,11 +373,10 @@ public:
         char *p = new char[pLen + 1];
         strcpy(p, tmp->m_pass);
 
-        info->SenderCompID = sid;
+        StringIdComparer::CopyString(info->SenderCompID, sid, sidLen);
         info->SenderCompIDLength = sidLen;
 
-        info->IsNullPassword = false;
-        info->Password = p;
+        StringIdComparer::CopyString(info->Password, p,  pLen);
         info->PasswordLength = pLen;
 
         info->MsgSeqNum = tmp->m_msgSeqNo;
@@ -388,17 +387,11 @@ public:
     FastOLSFONDInfo* CreateOLSFondInfo(const char *symbol, const char *trading) {
         FastOLSFONDInfo *info = new FastOLSFONDInfo();
 
-        char *smb = new char[strlen(symbol) + 1];
-        strcpy(smb, symbol);
+        StringIdComparer::CopyString(info->Symbol, symbol, strlen(symbol));
+        info->SymbolLength = strlen(symbol);
 
-        char *trd = new char[strlen(trading) + 1];
-        strcpy(trd, trading);
-
-        info->Symbol = smb;
-        info->SymbolLength = strlen(smb);
-
-        info->TradingSessionID = trd;
-        info->TradingSessionIDLength = strlen(trd);
+        StringIdComparer::CopyString(info->TradingSessionID, trading, strlen(trading));
+        info->TradingSessionIDLength = strlen(trading);
 
         return info;
     }
@@ -408,16 +401,13 @@ public:
         AutoAllocatePointerList<FastOLSFONDItemInfo> *list = new AutoAllocatePointerList<FastOLSFONDItemInfo>(1, 1);
         FastOLSFONDItemInfo *info = list->NewItem();
 
-        char *id = new char[strlen(entryId) + 1];
-        strcpy(id, entryId);
-
         char *type = new char[1];
         type[0] = (char) entryType;
 
         info->MDUpdateAction = MDUpdateAction::mduaAdd;
-        info->MDEntryID = id;
-        info->MDEntryIDLength = strlen(id);
-        info->MDEntryType = type;
+        StringIdComparer::CopyString(info->MDEntryID, entryId, strlen(entryId));
+        info->MDEntryIDLength = strlen(entryId);
+        StringIdComparer::CopyString(info->MDEntryType, type, 1);
         info->MDEntryTypeLength = 1;
         info->MDEntryPx.Set(priceMantissa, priceExponenta);
         info->MDEntrySize.Set(sizeMantissa, sizeExponenta);
@@ -451,17 +441,11 @@ public:
                                                int rptSeq) {
         FastOLSFONDItemInfo *info = CreateOLSFondItemInfo(priceMantissa, priceExponenta, sizeMantissa, sizeExponenta, entryType, entryId);
 
-        char *smb = new char[strlen(symbol) + 1];
-        strcpy(smb, symbol);
+        StringIdComparer::CopyString(info->Symbol, symbol, strlen(symbol));
+        info->SymbolLength = strlen(symbol);
 
-        char *trd = new char[strlen(trading) + 1];
-        strcpy(trd, trading);
-
-        info->Symbol = smb;
-        info->SymbolLength = strlen(smb);
-
-        info->TradingSessionID = trd;
-        info->TradingSessionIDLength = strlen(trd);
+        StringIdComparer::CopyString(info->TradingSessionID, trading, strlen(trading));
+        info->TradingSessionIDLength = strlen(trading);
 
         info->MDUpdateAction = updateAction;
         info->RptSeq = rptSeq;
@@ -477,17 +461,11 @@ public:
     FastOLSCURRInfo* CreateOLSCurrInfo(const char *symbol, const char *trading) {
         FastOLSCURRInfo *info = new FastOLSCURRInfo();
 
-        char *smb = new char[strlen(symbol) + 1];
-        strcpy(smb, symbol);
+        StringIdComparer::CopyString(info->Symbol, symbol, strlen(symbol));
+        info->SymbolLength = strlen(symbol);
 
-        char *trd = new char[strlen(trading) + 1];
-        strcpy(trd, trading);
-
-        info->Symbol = smb;
-        info->SymbolLength = strlen(smb);
-
-        info->TradingSessionID = trd;
-        info->TradingSessionIDLength = strlen(trd);
+        StringIdComparer::CopyString(info->TradingSessionID, trading, strlen(trading));
+        info->TradingSessionIDLength = strlen(trading);
 
         return info;
     }
@@ -497,16 +475,13 @@ public:
         AutoAllocatePointerList<FastOLSCURRItemInfo> *list = new AutoAllocatePointerList<FastOLSCURRItemInfo>(1, 1);
         FastOLSCURRItemInfo *info = list->NewItem();
 
-        char *id = new char[strlen(entryId) + 1];
-        strcpy(id, entryId);
-
         char *type = new char[1];
         type[0] = (char) entryType;
 
         info->MDUpdateAction = MDUpdateAction::mduaAdd;
-        info->MDEntryID = id;
-        info->MDEntryIDLength = strlen(id);
-        info->MDEntryType = type;
+        StringIdComparer::CopyString(info->MDEntryID, entryId, strlen(entryId));
+        info->MDEntryIDLength = strlen(entryId);
+        StringIdComparer::CopyString(info->MDEntryType, type, 1);
         info->MDEntryTypeLength = 1;
         info->MDEntryPx.Set(priceMantissa, priceExponenta);
         info->MDEntrySize.Set(sizeMantissa, sizeExponenta);
@@ -520,17 +495,11 @@ public:
                                                int rptSeq) {
         FastOLSCURRItemInfo *info = CreateOLSCurrItemInfo(priceMantissa, priceExponenta, sizeMantissa, sizeExponenta, entryType, entryId);
 
-        char *smb = new char[strlen(symbol) + 1];
-        strcpy(smb, symbol);
+        StringIdComparer::CopyString(info->Symbol, symbol, strlen(symbol));
+        info->SymbolLength = strlen(symbol);
 
-        char *trd = new char[strlen(trading) + 1];
-        strcpy(trd, trading);
-
-        info->Symbol = smb;
-        info->SymbolLength = strlen(smb);
-
-        info->TradingSessionID = trd;
-        info->TradingSessionIDLength = strlen(trd);
+        StringIdComparer::CopyString(info->TradingSessionID, trading, strlen(trading));
+        info->TradingSessionIDLength = strlen(trading);
 
         info->MDUpdateAction = updateAction;
         info->RptSeq = rptSeq;
@@ -546,17 +515,12 @@ public:
     FastGenericInfo* CreateOBSFondInfo(const char *symbol, const char *trading) {
         FastGenericInfo *info = new FastGenericInfo();
 
-        char *smb = new char[strlen(symbol) + 1];
-        strcpy(smb, symbol);
 
-        char *trd = new char[strlen(trading) + 1];
-        strcpy(trd, trading);
+        StringIdComparer::CopyString(info->Symbol, symbol, strlen(symbol));
+        info->SymbolLength = strlen(symbol);
 
-        info->Symbol = smb;
-        info->SymbolLength = strlen(smb);
-
-        info->TradingSessionID = trd;
-        info->TradingSessionIDLength = strlen(trd);
+        StringIdComparer::CopyString(info->TradingSessionID, trading, strlen(trading));
+        info->TradingSessionIDLength = strlen(trading);
 
         return info;
     }
@@ -566,16 +530,13 @@ public:
         AutoAllocatePointerList<FastGenericItemInfo> *list = new AutoAllocatePointerList<FastGenericItemInfo>(1, 1);
         FastGenericItemInfo *info = list->NewItem();
 
-        char *id = new char[strlen(entryId) + 1];
-        strcpy(id, entryId);
-
         char *type = new char[1];
         type[0] = (char) entryType;
 
         info->MDUpdateAction = MDUpdateAction::mduaAdd;
-        info->MDEntryID = id;
-        info->MDEntryIDLength = strlen(id);
-        info->MDEntryType = type;
+        StringIdComparer::CopyString(info->MDEntryID, entryId, strlen(entryId));
+        info->MDEntryIDLength = strlen(entryId);
+        StringIdComparer::CopyString(info->MDEntryType, type, 1);
         info->MDEntryTypeLength = 1;
         info->MDEntryPx.Set(priceMantissa, priceExponenta);
         info->MDEntrySize.Set(sizeMantissa, sizeExponenta);
@@ -589,17 +550,11 @@ public:
                                                int rptSeq) {
         FastGenericItemInfo *info = CreateOBSFondItemInfo(priceMantissa, priceExponenta, sizeMantissa, sizeExponenta, entryType, entryId);
 
-        char *smb = new char[strlen(symbol) + 1];
-        strcpy(smb, symbol);
+        StringIdComparer::CopyString(info->Symbol, symbol, strlen(symbol));
+        info->SymbolLength = strlen(symbol);
 
-        char *trd = new char[strlen(trading) + 1];
-        strcpy(trd, trading);
-
-        info->Symbol = smb;
-        info->SymbolLength = strlen(smb);
-
-        info->TradingSessionID = trd;
-        info->TradingSessionIDLength = strlen(trd);
+        StringIdComparer::CopyString(info->TradingSessionID, trading, strlen(trading));
+        info->TradingSessionIDLength = strlen(trading);
 
         info->MDUpdateAction = updateAction;
         info->RptSeq = rptSeq;
@@ -615,17 +570,11 @@ public:
     FastGenericInfo* CreateOBSCurrInfo(const char *symbol, const char *trading) {
         FastGenericInfo *info = new FastGenericInfo();
 
-        char *smb = new char[strlen(symbol) + 1];
-        strcpy(smb, symbol);
+        StringIdComparer::CopyString(info->Symbol, symbol, strlen(symbol));
+        info->SymbolLength = strlen(symbol);
 
-        char *trd = new char[strlen(trading) + 1];
-        strcpy(trd, trading);
-
-        info->Symbol = smb;
-        info->SymbolLength = strlen(smb);
-
-        info->TradingSessionID = trd;
-        info->TradingSessionIDLength = strlen(trd);
+        StringIdComparer::CopyString(info->TradingSessionID, trading, strlen(trading));
+        info->TradingSessionIDLength = strlen(trading);
 
         return info;
     }
@@ -635,16 +584,13 @@ public:
         AutoAllocatePointerList<FastGenericItemInfo> *list = new AutoAllocatePointerList<FastGenericItemInfo>(1, 1);
         FastGenericItemInfo *info = list->NewItem();
 
-        char *id = new char[strlen(entryId) + 1];
-        strcpy(id, entryId);
-
         char *type = new char[1];
         type[0] = (char) entryType;
 
         info->MDUpdateAction = MDUpdateAction::mduaAdd;
-        info->MDEntryID = id;
-        info->MDEntryIDLength = strlen(id);
-        info->MDEntryType = type;
+        StringIdComparer::CopyString(info->MDEntryID, entryId, strlen(entryId));
+        info->MDEntryIDLength = strlen(entryId);
+        StringIdComparer::CopyString(info->MDEntryType, type, 1);
         info->MDEntryTypeLength = 1;
         info->MDEntryPx.Set(priceMantissa, priceExponenta);
         info->MDEntrySize.Set(sizeMantissa, sizeExponenta);
@@ -658,17 +604,11 @@ public:
                                                int rptSeq) {
         FastGenericItemInfo *info = CreateOBSCurrItemInfo(priceMantissa, priceExponenta, sizeMantissa, sizeExponenta, entryType, entryId);
 
-        char *smb = new char[strlen(symbol) + 1];
-        strcpy(smb, symbol);
+        StringIdComparer::CopyString(info->Symbol, symbol, strlen(symbol));
+        info->SymbolLength = strlen(symbol);
 
-        char *trd = new char[strlen(trading) + 1];
-        strcpy(trd, trading);
-
-        info->Symbol = smb;
-        info->SymbolLength = strlen(smb);
-
-        info->TradingSessionID = trd;
-        info->TradingSessionIDLength = strlen(trd);
+        StringIdComparer::CopyString(info->TradingSessionID, trading, strlen(trading));
+        info->TradingSessionIDLength = strlen(trading);
 
         info->MDUpdateAction = updateAction;
         info->RptSeq = rptSeq;
@@ -684,17 +624,11 @@ public:
     FastTLSFONDInfo* CreateTLSFondInfo(const char *symbol, const char *trading) {
         FastTLSFONDInfo *info = new FastTLSFONDInfo();
 
-        char *smb = new char[strlen(symbol) + 1];
-        strcpy(smb, symbol);
+        StringIdComparer::CopyString(info->Symbol, symbol, strlen(symbol));
+        info->SymbolLength = strlen(symbol);
 
-        char *trd = new char[strlen(trading) + 1];
-        strcpy(trd, trading);
-
-        info->Symbol = smb;
-        info->SymbolLength = strlen(smb);
-
-        info->TradingSessionID = trd;
-        info->TradingSessionIDLength = strlen(trd);
+        StringIdComparer::CopyString(info->TradingSessionID, trading, strlen(trading));
+        info->TradingSessionIDLength = strlen(trading);
 
         return info;
     }
@@ -704,16 +638,13 @@ public:
         AutoAllocatePointerList<FastTLSFONDItemInfo> *list = new AutoAllocatePointerList<FastTLSFONDItemInfo>(1, 1);
         FastTLSFONDItemInfo *info = list->NewItem();
 
-        char *id = new char[strlen(entryId) + 1];
-        strcpy(id, entryId);
-
         char *type = new char[1];
         type[0] = (char) entryType;
 
         info->MDUpdateAction = MDUpdateAction::mduaAdd;
-        info->MDEntryID = id;
-        info->MDEntryIDLength = strlen(id);
-        info->MDEntryType = type;
+        StringIdComparer::CopyString(info->MDEntryID, entryId, strlen(entryId));
+        info->MDEntryIDLength = strlen(entryId);
+        StringIdComparer::CopyString(info->MDEntryType, type, 1);
         info->MDEntryTypeLength = 1;
         info->MDEntryPx.Set(priceMantissa, priceExponenta);
         info->MDEntrySize.Set(sizeMantissa, sizeExponenta);
@@ -724,17 +655,11 @@ public:
     FastTLSFONDItemInfo* CreateTLRFondItemInfo(const char *symbol, const char *trading, INT64 priceMantissa, INT32 priceExponenta, INT64 sizeMantissa, INT64 sizeExponenta, MDUpdateAction updateAction, MDEntryType entryType, const char *entryId, int rptSeq) {
         FastTLSFONDItemInfo *info = CreateTLSFondItemInfo(priceMantissa, priceExponenta, sizeMantissa, sizeExponenta, entryType, entryId);
 
-        char *smb = new char[strlen(symbol) + 1];
-        strcpy(smb, symbol);
+        StringIdComparer::CopyString(info->Symbol, symbol, strlen(symbol));
+        info->SymbolLength = strlen(symbol);
 
-        char *trd = new char[strlen(trading) + 1];
-        strcpy(trd, trading);
-
-        info->Symbol = smb;
-        info->SymbolLength = strlen(smb);
-
-        info->TradingSessionID = trd;
-        info->TradingSessionIDLength = strlen(trd);
+        StringIdComparer::CopyString(info->TradingSessionID, trading, strlen(trading));
+        info->TradingSessionIDLength = strlen(trading);
 
         info->MDUpdateAction = updateAction;
         info->RptSeq = rptSeq;
@@ -755,17 +680,11 @@ public:
     FastTLSCURRInfo* CreateTLSCurrInfo(const char *symbol, const char *trading) {
         FastTLSCURRInfo *info = new FastTLSCURRInfo();
 
-        char *smb = new char[strlen(symbol) + 1];
-        strcpy(smb, symbol);
+        StringIdComparer::CopyString(info->Symbol, symbol, strlen(symbol));
+        info->SymbolLength = strlen(symbol);
 
-        char *trd = new char[strlen(trading) + 1];
-        strcpy(trd, trading);
-
-        info->Symbol = smb;
-        info->SymbolLength = strlen(smb);
-
-        info->TradingSessionID = trd;
-        info->TradingSessionIDLength = strlen(trd);
+        StringIdComparer::CopyString(info->TradingSessionID, trading, strlen(trading));
+        info->TradingSessionIDLength = strlen(trading);
 
         return info;
     }
@@ -775,16 +694,13 @@ public:
         AutoAllocatePointerList<FastTLSCURRItemInfo> *list = new AutoAllocatePointerList<FastTLSCURRItemInfo>(1, 1);
         FastTLSCURRItemInfo *info = list->NewItem();
 
-        char *id = new char[strlen(entryId) + 1];
-        strcpy(id, entryId);
-
         char *type = new char[1];
         type[0] = (char) entryType;
 
         info->MDUpdateAction = MDUpdateAction::mduaAdd;
-        info->MDEntryID = id;
-        info->MDEntryIDLength = strlen(id);
-        info->MDEntryType = type;
+        StringIdComparer::CopyString(info->MDEntryID, entryId, strlen(entryId));
+        info->MDEntryIDLength = strlen(entryId);
+        StringIdComparer::CopyString(info->MDEntryType, type, 1);
         info->MDEntryTypeLength = 1;
         info->MDEntryPx.Set(priceMantissa, priceExponenta);
         info->MDEntrySize.Set(sizeMantissa, sizeExponenta);
@@ -795,17 +711,11 @@ public:
     FastTLSCURRItemInfo* CreateTLSCurrItemInfo(const char *symbol, const char *trading, INT64 priceMantissa, INT32 priceExponenta, INT64 sizeMantissa, INT64 sizeExponenta, MDUpdateAction updateAction, MDEntryType entryType, const char *entryId, int rptSeq) {
         FastTLSCURRItemInfo *info = CreateTLSCurrItemInfo(priceMantissa, priceExponenta, sizeMantissa, sizeExponenta, entryType, entryId);
 
-        char *smb = new char[strlen(symbol) + 1];
-        strcpy(smb, symbol);
+        StringIdComparer::CopyString(info->Symbol, symbol, strlen(symbol));
+        info->SymbolLength = strlen(symbol);
 
-        char *trd = new char[strlen(trading) + 1];
-        strcpy(trd, trading);
-
-        info->Symbol = smb;
-        info->SymbolLength = strlen(smb);
-
-        info->TradingSessionID = trd;
-        info->TradingSessionIDLength = strlen(trd);
+        StringIdComparer::CopyString(info->TradingSessionID, trading, strlen(trading));
+        info->TradingSessionIDLength = strlen(trading);
 
         info->MDUpdateAction = updateAction;
         info->RptSeq = rptSeq;
@@ -826,17 +736,11 @@ public:
     FastGenericInfo* CreateMSSFondInfo(const char *symbol, const char *trading) {
         FastGenericInfo *info = new FastGenericInfo();
 
-        char *smb = new char[strlen(symbol) + 1];
-        strcpy(smb, symbol);
+        StringIdComparer::CopyString(info->Symbol, symbol, strlen(symbol));
+        info->SymbolLength = strlen(symbol);
 
-        char *trd = new char[strlen(trading) + 1];
-        strcpy(trd, trading);
-
-        info->Symbol = smb;
-        info->SymbolLength = strlen(smb);
-
-        info->TradingSessionID = trd;
-        info->TradingSessionIDLength = strlen(trd);
+        StringIdComparer::CopyString(info->TradingSessionID, trading, strlen(trading));
+        info->TradingSessionIDLength = strlen(trading);
 
         return info;
     }
@@ -846,16 +750,13 @@ public:
         AutoAllocatePointerList<FastGenericItemInfo> *list = new AutoAllocatePointerList<FastGenericItemInfo>(1, 1);
         FastGenericItemInfo *info = list->NewItem();
 
-        char *id = new char[strlen(entryId) + 1];
-        strcpy(id, entryId);
-
         char *type = new char[1];
         type[0] = (char) entryType;
 
         info->MDUpdateAction = MDUpdateAction::mduaAdd;
-        info->MDEntryID = id;
-        info->MDEntryIDLength = strlen(id);
-        info->MDEntryType = type;
+        StringIdComparer::CopyString(info->MDEntryID, entryId, strlen(entryId));
+        info->MDEntryIDLength = strlen(entryId);
+        StringIdComparer::CopyString(info->MDEntryType, type, 1);
         info->MDEntryTypeLength = 1;
         info->MDEntryPx.Set(priceMantissa, priceExponenta);
         info->MDEntrySize.Set(sizeMantissa, sizeExponenta);
@@ -866,17 +767,11 @@ public:
     FastGenericItemInfo* CreateGenericItemInfo(const char *symbol, const char *trading, INT64 priceMantissa, INT32 priceExponenta, INT64 sizeMantissa, INT64 sizeExponenta, MDUpdateAction updateAction, MDEntryType entryType, const char *entryId, int rptSeq) {
         FastGenericItemInfo *info = CreateGenericItemInfo(priceMantissa, priceExponenta, sizeMantissa, sizeExponenta, entryType, entryId);
 
-        char *smb = new char[strlen(symbol) + 1];
-        strcpy(smb, symbol);
+        StringIdComparer::CopyString(info->Symbol, symbol, strlen(symbol));
+        info->SymbolLength = strlen(symbol);
 
-        char *trd = new char[strlen(trading) + 1];
-        strcpy(trd, trading);
-
-        info->Symbol = smb;
-        info->SymbolLength = strlen(smb);
-
-        info->TradingSessionID = trd;
-        info->TradingSessionIDLength = strlen(trd);
+        StringIdComparer::CopyString(info->TradingSessionID, trading, strlen(trading));
+        info->TradingSessionIDLength = strlen(trading);
 
         info->MDUpdateAction = updateAction;
         info->RptSeq = rptSeq;
@@ -897,17 +792,11 @@ public:
     FastGenericInfo* CreateMSSCurrInfo(const char *symbol, const char *trading) {
         FastGenericInfo *info = new FastGenericInfo();
 
-        char *smb = new char[strlen(symbol) + 1];
-        strcpy(smb, symbol);
+        StringIdComparer::CopyString(info->Symbol, symbol, strlen(symbol));
+        info->SymbolLength = strlen(symbol);
 
-        char *trd = new char[strlen(trading) + 1];
-        strcpy(trd, trading);
-
-        info->Symbol = smb;
-        info->SymbolLength = strlen(smb);
-
-        info->TradingSessionID = trd;
-        info->TradingSessionIDLength = strlen(trd);
+        StringIdComparer::CopyString(info->TradingSessionID, trading, strlen(trading));
+        info->TradingSessionIDLength = strlen(trading);
 
         return info;
     }
@@ -917,16 +806,13 @@ public:
         AutoAllocatePointerList<FastGenericItemInfo> *list = new AutoAllocatePointerList<FastGenericItemInfo>(1, 1);
         FastGenericItemInfo *info = list->NewItem();
 
-        char *id = new char[strlen(entryId) + 1];
-        strcpy(id, entryId);
-
         char *type = new char[1];
         type[0] = (char) entryType;
 
         info->MDUpdateAction = MDUpdateAction::mduaAdd;
-        info->MDEntryID = id;
-        info->MDEntryIDLength = strlen(id);
-        info->MDEntryType = type;
+        StringIdComparer::CopyString(info->MDEntryID, entryId, strlen(entryId));
+        info->MDEntryIDLength = strlen(entryId);
+        StringIdComparer::CopyString(info->MDEntryType, type, 1);
         info->MDEntryTypeLength = 1;
         info->MDEntryPx.Set(priceMantissa, priceExponenta);
         info->MDEntrySize.Set(sizeMantissa, sizeExponenta);
@@ -942,18 +828,13 @@ public:
         FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo *item = list->NewItem();
         info->MarketSegmentGrp[marketIndex]->TradingSessionRulesGrp[newIndex] = item;
 
-        char *trd = new char[strlen(tradingSession) + 1];
-        strcpy(trd, tradingSession);
-
-        item->TradingSessionID = trd;
-        item->TradingSessionIDLength = strlen(trd);
+        StringIdComparer::CopyString(item->TradingSessionID, tradingSession, strlen(tradingSession));
+        item->TradingSessionIDLength = strlen(tradingSession);
         return item;
     }
 
     void AddTradingSession(FastSecurityDefinitionInfo *info, int marketIndex, TestTemplateItemInfo *ti) {
         FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo *item = AddTradingSession(info, marketIndex, ti->m_tradingSession);
-        if(ti->m_sessionStatus != 0)
-            item->IsNullSecurityTradingStatus = false;
         item->SecurityTradingStatus = ti->m_sessionStatus;
     }
 
@@ -967,12 +848,8 @@ public:
         AutoAllocatePointerList<FastSecurityDefinitionInfo> *list = new AutoAllocatePointerList<FastSecurityDefinitionInfo>(1, 1);
         FastSecurityDefinitionInfo *info = list->NewItem();
 
-        char *smb = new char[strlen(symbol) + 1];
-        strcpy(smb, symbol);
-
-        info->Symbol = smb;
+        StringIdComparer::CopyString(info->Symbol, symbol, strlen(symbol));
         info->SymbolLength = strlen(symbol);
-        info->IsNullSymbol = false;
 
         return info;
     }
@@ -981,24 +858,13 @@ public:
         AutoAllocatePointerList<FastSecurityStatusInfo> *list = new AutoAllocatePointerList<FastSecurityStatusInfo>(1, 1);
         FastSecurityStatusInfo *info = list->NewItem();
 
-        char *smb = new char[strlen(symbol) + 1];
-        strcpy(smb, symbol);
-
-        char *ss = new char[strlen(session) + 1];
-        strcpy(ss, session);
-
-        char *sub = new char[strlen(sessionSubId) + 1];
-        strcpy(sub, sessionSubId);
-
-        info->Symbol = smb;
+        StringIdComparer::CopyString(info->Symbol, symbol, strlen(symbol));
         info->SymbolLength = strlen(symbol);
 
-        info->IsNullTradingSessionID = false;
-        info->TradingSessionID = ss;
+        StringIdComparer::CopyString(info->TradingSessionID, session, strlen(session));
         info->TradingSessionIDLength = strlen(session);
 
-        info->IsNullTradingSessionSubID = false;
-        info->TradingSessionSubID = sub;
+        StringIdComparer::CopyString(info->TradingSessionSubID, sessionSubId, strlen(sessionSubId));
         info->TradingSessionSubIDLength = strlen(sessionSubId);
 
         return info;
@@ -1008,12 +874,12 @@ public:
         FastSecurityDefinitionInfo *info = CreateSecurityDefinitionInfo(tmp->m_symbol);
 
         info->MsgSeqNum = tmp->m_msgSeqNo;
-        info->IsNullMarketSegmentGrp = false;
         this->AddMarketSegemntGroup(info);
-        info->MarketSegmentGrp[0]->IsNullTradingSessionRulesGrp = false;
         if(tmp->m_totNumReports != 0) {
-            info->IsNullTotNumReports = false;
             info->TotNumReports = tmp->m_totNumReports;
+        }
+        else {
+            info->NullMap |= FastSecurityDefinitionInfoNullIndices::TotNumReportsNullIndex;
         }
 
         for(int i = 0; i < tmp->m_itemsCount; i++) {
@@ -1025,10 +891,8 @@ public:
     FastSecurityStatusInfo* CreateSecurityStatusInfo(TestTemplateInfo *tmp) {
         FastSecurityStatusInfo *info = CreateSecurityStatusInfo(tmp->m_symbol, tmp->m_session, tmp->m_sessionSubId);
 
-        info->IsNullSecurityTradingStatus = false;
         info->SecurityTradingStatus = tmp->m_sessionStatus;
 
-        info->IsNullAuctionIndicator = false;
         info->AuctionIndicator = tmp->m_auctionIndicator;
 
         info->MsgSeqNum = tmp->m_msgSeqNo;
@@ -1039,43 +903,31 @@ public:
     FastOLSFONDItemInfo* CreateOLRFondItemInfo(TestTemplateItemInfo *tmp) {
         FastOLSFONDItemInfo *info = new FastOLSFONDItemInfo();
 
-        info->IsNullMDUpdateAction = false;
         info->MDUpdateAction = tmp->m_action;
 
-        info->IsNullMDEntryType = false;
         info->PresenceMap |= FastIncrementalOLRFONDItemInfoPresenceIndices::MDEntryTypePresenceIndex;
-        info->MDEntryType = new char[1];
         info->MDEntryType[0] = (char)tmp->m_entryType;
         info->MDEntryTypeLength = 1;
 
-        info->IsNullMDEntryPx = false;
         info->PresenceMap |= FastIncrementalOLRFONDItemInfoPresenceIndices::MDEntryPxPresenceIndex;
         info->MDEntryPx.Assign(&tmp->m_entryPx);
 
-        info->IsNullMDEntrySize = false;
         info->PresenceMap |= FastIncrementalOLRFONDItemInfoPresenceIndices::MDEntrySizePresenceIndex;
         info->MDEntrySize.Assign(&tmp->m_entrySize);
 
-        info->IsNullRptSeq = false;
         info->RptSeq = tmp->m_rptSeq;
         if(tmp->m_symbol != 0) {
-            info->IsNullSymbol = false;
             info->PresenceMap |= FastIncrementalOLRFONDItemInfoPresenceIndices::SymbolPresenceIndex;
             info->SymbolLength = strlen(tmp->m_symbol);
-            info->Symbol = new char[info->SymbolLength + 1];
             strcpy(info->Symbol, tmp->m_symbol);
         }
         if(tmp->m_tradingSession != 0) {
-            info->IsNullTradingSessionID = false;
             info->PresenceMap |= FastIncrementalOLRFONDItemInfoPresenceIndices::TradingSessionIDPresenceIndex;
             info->TradingSessionIDLength = strlen(tmp->m_tradingSession);
-            info->TradingSessionID = new char[info->TradingSessionIDLength + 1];
             strcpy(info->TradingSessionID, tmp->m_tradingSession);
         }
         if(tmp->m_entryId != 0) {
-            info->IsNullMDEntryID = false;
             info->MDEntryIDLength = strlen(tmp->m_entryId);
-            info->MDEntryID = new char[info->MDEntryIDLength + 1];
             strcpy(info->MDEntryID, tmp->m_entryId);
         }
         return info;
@@ -1083,34 +935,22 @@ public:
 
     FastGenericItemInfo* CreateObrFondItemInfo(TestTemplateItemInfo *tmp) {
         FastGenericItemInfo *info = new FastGenericItemInfo();
-        info->IsNullMDUpdateAction = false;
         info->MDUpdateAction = tmp->m_action;
-        info->IsNullMDEntryType = false;
-        info->MDEntryType = new char[1];
         info->MDEntryType[0] = (char)tmp->m_entryType;
         info->MDEntryTypeLength = 1;
-        info->IsNullMDEntryPx = false;
         info->MDEntryPx.Assign(&tmp->m_entryPx);
-        info->IsNullMDEntrySize = false;
         info->MDEntrySize.Assign(&tmp->m_entrySize);
-        info->IsNullRptSeq = false;
         info->RptSeq = tmp->m_rptSeq;
         if(tmp->m_symbol != 0) {
-            info->IsNullSymbol = false;
             info->SymbolLength = strlen(tmp->m_symbol);
-            info->Symbol = new char[info->SymbolLength + 1];
             strcpy(info->Symbol, tmp->m_symbol);
         }
         if(tmp->m_tradingSession != 0) {
-            info->IsNullTradingSessionID = false;
             info->TradingSessionIDLength = strlen(tmp->m_tradingSession);
-            info->TradingSessionID = new char[info->TradingSessionIDLength + 1];
             strcpy(info->TradingSessionID, tmp->m_tradingSession);
         }
         if(tmp->m_entryId != 0) {
-            info->IsNullMDEntryID = false;
             info->MDEntryIDLength = strlen(tmp->m_entryId);
-            info->MDEntryID = new char[info->MDEntryIDLength + 1];
             strcpy(info->MDEntryID, tmp->m_entryId);
         }
         return info;
@@ -1118,37 +958,26 @@ public:
 
     FastTLSFONDItemInfo* CreateTLRFondItemInfo(TestTemplateItemInfo *tmp) {
         FastTLSFONDItemInfo *info = new FastTLSFONDItemInfo();
-        info->IsNullMDUpdateAction = false;
         info->MDUpdateAction = tmp->m_action;
 
-        info->MDEntryType = new char[1];
         info->MDEntryType[0] = (char)tmp->m_entryType;
         info->MDEntryTypeLength = 1;
 
-        info->IsNullMDEntryPx = false;
         info->MDEntryPx.Assign(&tmp->m_entryPx);
 
-        info->IsNullMDEntrySize = false;
         info->MDEntrySize.Assign(&tmp->m_entrySize);
 
-        info->IsNullRptSeq = false;
         info->RptSeq = tmp->m_rptSeq;
         if(tmp->m_symbol != 0) {
-            info->IsNullSymbol = false;
             info->SymbolLength = strlen(tmp->m_symbol);
-            info->Symbol = new char[info->SymbolLength + 1];
             strcpy(info->Symbol, tmp->m_symbol);
         }
         if(tmp->m_tradingSession != 0) {
-            info->IsNullTradingSessionID = false;
             info->TradingSessionIDLength = strlen(tmp->m_tradingSession);
-            info->TradingSessionID = new char[info->TradingSessionIDLength + 1];
             strcpy(info->TradingSessionID, tmp->m_tradingSession);
         }
         if(tmp->m_entryId != 0) {
-            info->IsNullMDEntryID = false;
             info->MDEntryIDLength = strlen(tmp->m_entryId);
-            info->MDEntryID = new char[info->MDEntryIDLength + 1];
             strcpy(info->MDEntryID, tmp->m_entryId);
         }
         return info;
@@ -1156,44 +985,32 @@ public:
 
     FastOLSCURRItemInfo* CreateOLRCurrItemInfo(TestTemplateItemInfo *tmp) {
         FastOLSCURRItemInfo *info = new FastOLSCURRItemInfo();
-        info->IsNullMDUpdateAction = false;
         info->PresenceMap |= FastIncrementalOLRCURRItemInfoPresenceIndices::MDUpdateActionPresenceIndex;
         info->MDUpdateAction = tmp->m_action;
 
-        info->IsNullMDEntryType = false;
         info->PresenceMap |= FastIncrementalOLRCURRItemInfoPresenceIndices::MDEntryTypePresenceIndex;
-        info->MDEntryType = new char[1];
         info->MDEntryType[0] = (char)tmp->m_entryType;
         info->MDEntryTypeLength = 1;
 
-        info->IsNullMDEntryPx = false;
         info->PresenceMap |= FastIncrementalOLRCURRItemInfoPresenceIndices::MDEntryPxPresenceIndex;
         info->MDEntryPx.Assign(&tmp->m_entryPx);
 
-        info->IsNullMDEntrySize = false;
         info->PresenceMap |= FastIncrementalOLRCURRItemInfoPresenceIndices::MDEntrySizePresenceIndex;
         info->MDEntrySize.Assign(&tmp->m_entrySize);
 
-        info->IsNullRptSeq = false;
         info->RptSeq = tmp->m_rptSeq;
         if(tmp->m_symbol != 0) {
-            info->IsNullSymbol = false;
             info->PresenceMap |= FastIncrementalOLRCURRItemInfoPresenceIndices::SymbolPresenceIndex;
             info->SymbolLength = strlen(tmp->m_symbol);
-            info->Symbol = new char[info->SymbolLength + 1];
             strcpy(info->Symbol, tmp->m_symbol);
         }
         if(tmp->m_tradingSession != 0) {
-            info->IsNullTradingSessionID = false;
             info->PresenceMap |= FastIncrementalOLRCURRItemInfoPresenceIndices::TradingSessionIDPresenceIndex;
             info->TradingSessionIDLength = strlen(tmp->m_tradingSession);
-            info->TradingSessionID = new char[info->TradingSessionIDLength + 1];
             strcpy(info->TradingSessionID, tmp->m_tradingSession);
         }
         if(tmp->m_entryId != 0) {
-            info->IsNullMDEntryID = false;
             info->MDEntryIDLength = strlen(tmp->m_entryId);
-            info->MDEntryID = new char[info->MDEntryIDLength + 1];
             strcpy(info->MDEntryID, tmp->m_entryId);
         }
         return info;
@@ -1201,34 +1018,22 @@ public:
 
     FastGenericItemInfo* CreateObrCurrItemInfo(TestTemplateItemInfo *tmp) {
         FastGenericItemInfo *info = new FastGenericItemInfo();
-        info->IsNullMDUpdateAction = false;
         info->MDUpdateAction = tmp->m_action;
-        info->IsNullMDEntryType = false;
-        info->MDEntryType = new char[1];
         info->MDEntryType[0] = (char)tmp->m_entryType;
         info->MDEntryTypeLength = 1;
-        info->IsNullMDEntryPx = false;
         info->MDEntryPx.Assign(&tmp->m_entryPx);
-        info->IsNullMDEntrySize = false;
         info->MDEntrySize.Assign(&tmp->m_entrySize);
-        info->IsNullRptSeq = false;
         info->RptSeq = tmp->m_rptSeq;
         if(tmp->m_symbol != 0) {
-            info->IsNullSymbol = false;
             info->SymbolLength = strlen(tmp->m_symbol);
-            info->Symbol = new char[info->SymbolLength + 1];
             strcpy(info->Symbol, tmp->m_symbol);
         }
         if(tmp->m_tradingSession != 0) {
-            info->IsNullTradingSessionID = false;
             info->TradingSessionIDLength = strlen(tmp->m_tradingSession);
-            info->TradingSessionID = new char[info->TradingSessionIDLength + 1];
             strcpy(info->TradingSessionID, tmp->m_tradingSession);
         }
         if(tmp->m_entryId != 0) {
-            info->IsNullMDEntryID = false;
             info->MDEntryIDLength = strlen(tmp->m_entryId);
-            info->MDEntryID = new char[info->MDEntryIDLength + 1];
             strcpy(info->MDEntryID, tmp->m_entryId);
         }
         return info;
@@ -1236,37 +1041,26 @@ public:
 
     FastTLSCURRItemInfo* CreateTLRCurrItemInfo(TestTemplateItemInfo *tmp) {
         FastTLSCURRItemInfo *info = new FastTLSCURRItemInfo();
-        info->IsNullMDUpdateAction = false;
         info->MDUpdateAction = tmp->m_action;
 
-        info->MDEntryType = new char[1];
         info->MDEntryType[0] = (char)tmp->m_entryType;
         info->MDEntryTypeLength = 1;
 
-        info->IsNullMDEntryPx = false;
         info->MDEntryPx.Assign(&tmp->m_entryPx);
 
-        info->IsNullMDEntrySize = false;
         info->MDEntrySize.Assign(&tmp->m_entrySize);
 
-        info->IsNullRptSeq = false;
         info->RptSeq = tmp->m_rptSeq;
         if(tmp->m_symbol != 0) {
-            info->IsNullSymbol = false;
             info->SymbolLength = strlen(tmp->m_symbol);
-            info->Symbol = new char[info->SymbolLength + 1];
             strcpy(info->Symbol, tmp->m_symbol);
         }
         if(tmp->m_tradingSession != 0) {
-            info->IsNullTradingSessionID = false;
             info->TradingSessionIDLength = strlen(tmp->m_tradingSession);
-            info->TradingSessionID = new char[info->TradingSessionIDLength + 1];
             strcpy(info->TradingSessionID, tmp->m_tradingSession);
         }
         if(tmp->m_entryId != 0) {
-            info->IsNullMDEntryID = false;
             info->MDEntryIDLength = strlen(tmp->m_entryId);
-            info->MDEntryID = new char[info->MDEntryIDLength + 1];
             strcpy(info->MDEntryID, tmp->m_entryId);
         }
         return info;
@@ -1383,20 +1177,14 @@ public:
         FastGenericInfo *info = new FastGenericInfo();
         info->MsgSeqNum = tmp->m_msgSeqNo;
         info->GroupMDEntriesCount = tmp->m_itemsCount;
-        info->IsNullRouteFirst = false;
-        info->IsNullLastFragment = false;
-        info->IsNullLastMsgSeqNumProcessed = false;
         info->LastMsgSeqNumProcessed = tmp->m_lastMsgSeqNoProcessed;
 
         if(tmp->m_symbol != 0) {
             info->SymbolLength = strlen(tmp->m_symbol);
-            info->Symbol = new char[info->SymbolLength + 1];
             strcpy(info->Symbol, tmp->m_symbol);
         }
         if(tmp->m_session != 0) {
-            info->IsNullTradingSessionID = false;
             info->TradingSessionIDLength = strlen(tmp->m_session);
-            info->TradingSessionID = new char[info->TradingSessionIDLength + 1];
             strcpy(info->TradingSessionID, tmp->m_session);
         }
 
@@ -1512,20 +1300,14 @@ public:
         FastOLSFONDInfo *info = new FastOLSFONDInfo();
         info->MsgSeqNum = tmp->m_msgSeqNo;
         info->GroupMDEntriesCount = tmp->m_itemsCount;
-        info->IsNullRouteFirst = false;
-        info->IsNullLastFragment = false;
-        info->IsNullLastMsgSeqNumProcessed = false;
         info->LastMsgSeqNumProcessed = tmp->m_lastMsgSeqNoProcessed;
 
         if(tmp->m_symbol != 0) {
             info->SymbolLength = strlen(tmp->m_symbol);
-            info->Symbol = new char[info->SymbolLength + 1];
             strcpy(info->Symbol, tmp->m_symbol);
         }
         if(tmp->m_session != 0) {
-            info->IsNullTradingSessionID = false;
             info->TradingSessionIDLength = strlen(tmp->m_session);
-            info->TradingSessionID = new char[info->TradingSessionIDLength + 1];
             strcpy(info->TradingSessionID, tmp->m_session);
         }
 
@@ -1598,20 +1380,14 @@ public:
         FastTLSFONDInfo *info = new FastTLSFONDInfo();
         info->MsgSeqNum = tmp->m_msgSeqNo;
         info->GroupMDEntriesCount = tmp->m_itemsCount;
-        info->IsNullRouteFirst = false;
-        info->IsNullLastFragment = false;
-        info->IsNullLastMsgSeqNumProcessed = false;
         info->LastMsgSeqNumProcessed = tmp->m_lastMsgSeqNoProcessed;
 
         if(tmp->m_symbol != 0) {
             info->SymbolLength = strlen(tmp->m_symbol);
-            info->Symbol = new char[info->SymbolLength + 1];
             strcpy(info->Symbol, tmp->m_symbol);
         }
         if(tmp->m_session != 0) {
-            info->IsNullTradingSessionID = false;
             info->TradingSessionIDLength = strlen(tmp->m_session);
-            info->TradingSessionID = new char[info->TradingSessionIDLength + 1];
             strcpy(info->TradingSessionID, tmp->m_session);
         }
 
@@ -1684,20 +1460,14 @@ public:
         FastOLSCURRInfo *info = new FastOLSCURRInfo();
         info->MsgSeqNum = tmp->m_msgSeqNo;
         info->GroupMDEntriesCount = tmp->m_itemsCount;
-        info->IsNullRouteFirst = false;
-        info->IsNullLastFragment = false;
-        info->IsNullLastMsgSeqNumProcessed = false;
         info->LastMsgSeqNumProcessed = tmp->m_lastMsgSeqNoProcessed;
 
         if(tmp->m_symbol != 0) {
             info->SymbolLength = strlen(tmp->m_symbol);
-            info->Symbol = new char[info->SymbolLength + 1];
             strcpy(info->Symbol, tmp->m_symbol);
         }
         if(tmp->m_session != 0) {
-            info->IsNullTradingSessionID = false;
             info->TradingSessionIDLength = strlen(tmp->m_session);
-            info->TradingSessionID = new char[info->TradingSessionIDLength + 1];
             strcpy(info->TradingSessionID, tmp->m_session);
         }
 
@@ -1770,20 +1540,14 @@ public:
         FastTLSCURRInfo *info = new FastTLSCURRInfo();
         info->MsgSeqNum = tmp->m_msgSeqNo;
         info->GroupMDEntriesCount = tmp->m_itemsCount;
-        info->IsNullRouteFirst = false;
-        info->IsNullLastFragment = false;
-        info->IsNullLastMsgSeqNumProcessed = false;
         info->LastMsgSeqNumProcessed = tmp->m_lastMsgSeqNoProcessed;
 
         if(tmp->m_symbol != 0) {
             info->SymbolLength = strlen(tmp->m_symbol);
-            info->Symbol = new char[info->SymbolLength + 1];
             strcpy(info->Symbol, tmp->m_symbol);
         }
         if(tmp->m_session != 0) {
-            info->IsNullTradingSessionID = false;
             info->TradingSessionIDLength = strlen(tmp->m_session);
-            info->TradingSessionID = new char[info->TradingSessionIDLength + 1];
             strcpy(info->TradingSessionID, tmp->m_session);
         }
 
@@ -1941,25 +1705,23 @@ public:
 
         FastLogonInfo info;
 
-        info.IsNullPassword = false;
-        info.IsNullUsername = false;
         strcpy(this->m_protocolVersion, FastProtocolVersion);
-        info.BeginString = this->m_protocolVersion;
+        strcpy(info.BeginString, this->m_protocolVersion);
         info.BeginStringLength = FastProtocolVersionLength;
         strcpy(this->m_applVerId, "9");
-        info.DefaultApplVerID = this->m_applVerId;
+        strcpy(info.DefaultApplVerID, this->m_applVerId);
         info.DefaultApplVerIDLength = 1;
         strcpy(this->m_msgType, "A");
-        info.MessageType = this->m_msgType;
+        strcpy(info.MessageType, this->m_msgType);
         info.MessageTypeLength = 1;
         info.MsgSeqNum = 1;
         info.PasswordLength = 0;
         info.UsernameLength = 0;
         sprintf(this->m_senderCompId, "MOEX");
         sprintf(this->m_targetCompId, "You!");
-        info.SenderCompID = this->m_senderCompId;
+        strcpy(info.SenderCompID, this->m_senderCompId);
         info.SenderCompIDLength = 4;
-        info.TargetCompID = this->m_targetCompId;
+        strcpy(info.TargetCompID, this->m_targetCompId);
         info.TargetCompIDLength = 4;
 
         this->m_fastManager->EncodeLogonInfo(&info);
@@ -1989,9 +1751,8 @@ public:
 
     void SendLogout(WinSockManager *wsManager, const char *text) {
         FastLogoutInfo *info = new FastLogoutInfo();
-        info->Text = GetText(text);
+        strcpy(info->Text, text);
         info->TextLength = strlen(info->Text);
-        info->IsNullText = false;
 
         this->m_fastManager->SetNewBuffer(this->m_buffer->CurrentPos() + 4, 10000);
         this->m_fastManager->EncodeLogoutInfo(info);

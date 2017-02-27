@@ -9,7 +9,9 @@ public:
 	~FastProtocolTester();
 
 	void Test() {
-	    TestMessages();
+		TestReadString_Optional();
+		TestReadString_Mandatory();
+		TestStringCopy();
 		TestReadUInt32_Optional();
 		TestReadUInt32_Mandatory();
 		TestReadUInt64_Optional();
@@ -20,16 +22,17 @@ public:
 		TestReadDecimal_Mandatory();
 		TestReadByteVector_Optional();
 		TestReadByteVector_Mandatory();
-		TestReadString_Optional();
-		TestReadString_Mandatory();
 		TestMessageSequenceNumber();
 		TestReadInt32_Optional();
 		TestReadInt32_Mandatory();
 		TestParsePresenceMap();
+		TestMessages();
 	}
 
 	bool CompareStrings(char* str1, const char *str2);
 	void TestMessages();
+
+	void TestStringCopy();
 
 	void TestReadUInt64_Optional();
 	void TestReadUInt64_Mandatory();
