@@ -714,6 +714,8 @@ protected:
         this->CheckRequestLostSecurityStatusMessages();
 
         this->m_startMsgSeqNum = i + this->m_windowMsgSeqNum;
+        this->ClearLocalPackets(0, end);
+        this->m_windowMsgSeqNum = this->m_startMsgSeqNum;
         return true;
     }
 
