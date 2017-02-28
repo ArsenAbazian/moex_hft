@@ -119,7 +119,8 @@ public:
         this->isf->m_isfStartSnapshotCount = 0;
         this->idf->Stop();
         this->idf->ClearPackets(0, 100);
-        this->isf->ClearPackets(0, 100);
+        this->isf->ClearLocalPackets(0, 100);
+        this->isf->ClearMessages();
         this->isf->Stop();
         this->hr->m_hsRequestList->Clear();
         this->isf->m_requestMessageStartIndex = -1;
@@ -914,10 +915,10 @@ public:
 
     // default
     void TestRequestLostMessagesLogic_1() {
+        this->isf->ClearMessages();
         this->isf->m_requestMessageStartIndex = -1;
         this->isf->m_startMsgSeqNum = 1;
         this->isf->m_endMsgSeqNum = 0;
-        this->isf->ClearPackets(1, 1);
         this->isf->ProcessSecurityStatusMessages();
         if(this->isf->Packet(1)->m_requested)
             throw;
@@ -925,10 +926,10 @@ public:
 
     // do not request
     void TestRequestLostMessagesLogic_2() {
+        this->isf->ClearMessages();
         this->isf->m_requestMessageStartIndex = -1;
         this->isf->m_startMsgSeqNum = 3;
         this->isf->m_endMsgSeqNum = 2;
-        this->isf->ClearPackets(1, 5);
         this->isf->ProcessSecurityStatusMessages();
         if(this->isf->Packet(3)->m_requested)
             throw;
@@ -974,14 +975,22 @@ public:
         return true;
     }
 
+    bool TestNotRequestedLocal(int startIndex, int endIndex) {
+        for(int i = startIndex; i <= endIndex; i++) {
+            if(this->isf->m_packets[i]->m_requested)
+                return false;
+        }
+        return true;
+    }
+
     // do not request
     void TestRequestLostMessagesLogic_3() {
-        this->isf->ClearPackets(1, 100);
+        this->isf->ClearMessages();
         this->isf->m_startMsgSeqNum = 3;
         this->isf->m_endMsgSeqNum = 3;
         this->isf->Packet(3)->m_address = this->CreateHearthBeatMessage(3);
         this->isf->ProcessSecurityStatusMessages();
-        if(!TestNotRequested(1, 10))
+        if(!TestNotRequestedLocal(1, 10))
             throw;
     }
 
@@ -1006,8 +1015,8 @@ public:
 
     // request one message
     void TestRequestLostMessagesLogic_4() {
+        this->isf->ClearMessages();
         this->isf->m_requestMessageStartIndex = -1;
-        this->isf->ClearPackets(1, 100);
         this->isf->m_startMsgSeqNum = 3;
         this->isf->m_endMsgSeqNum = 4;
         this->FillMessages(4, 4);
@@ -1022,8 +1031,8 @@ public:
 
     // request some messages
     void TestRequestLostMessagesLogic_5() {
+        this->isf->ClearMessages();
         this->isf->m_requestMessageStartIndex = -1;
-        this->isf->ClearPackets(1, 100);
         this->hr->m_hsRequestList->Clear();
         this->isf->m_startMsgSeqNum = 4;
         this->isf->m_endMsgSeqNum = 21;
@@ -1044,8 +1053,8 @@ public:
 
     // two GAPs
     void TestRequestLostMessagesLogic_6() {
+        this->isf->ClearMessages();
         this->isf->m_requestMessageStartIndex = -1;
-        this->isf->ClearPackets(1, 100);
         this->hr->m_hsRequestList->Clear();
         this->isf->m_startMsgSeqNum = 4;
         this->isf->m_endMsgSeqNum = 24;
@@ -1072,8 +1081,8 @@ public:
     // two GAPs and called twice
     // avoid of dublicate requests
     void TestRequestLostMessagesLogic_7() {
+        this->isf->ClearMessages();
         this->isf->m_requestMessageStartIndex = -1;
-        this->isf->ClearPackets(1, 100);
         this->hr->m_hsRequestList->Clear();
         this->isf->m_startMsgSeqNum = 4;
         this->isf->m_endMsgSeqNum = 24;

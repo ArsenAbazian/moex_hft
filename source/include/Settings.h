@@ -28,8 +28,6 @@ public:
     unsigned int DefaultMarketRecvBufferSize;
     unsigned int DefaultMarketSendItemsCount;
     unsigned int DefaultMarketRecvItemsCount;
-    unsigned int DefaultFeedConnectionPacketCount;
-    unsigned int DefaultCurrIdfPacketCount;
     int MarketDataMaxSymbolsCount;
     int MarketDataMaxSessionsCount;
     int MarketDataMaxEntriesCount;
@@ -49,8 +47,6 @@ public:
         DefaultMarketRecvBufferSize = 8 * 1024 * 1024;
         DefaultMarketSendItemsCount = 4 * 1024 * 1024;
         DefaultMarketRecvItemsCount = 4 * 1024 * 1024;
-        DefaultFeedConnectionPacketCount = 2000000;
-        DefaultCurrIdfPacketCount = 3000;
 
         MarketDataMaxSymbolsCount = 2600;
         MarketDataMaxSessionsCount = 8;

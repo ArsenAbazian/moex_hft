@@ -631,7 +631,7 @@ public:
     }
 
     void TestPacketsAreClear() {
-        for(int i = 0; i < RobotSettings::Default->DefaultFeedConnectionPacketCount; i++) {
+        for(int i = 0; i < this->idf->m_packetsCount; i++) {
             if(this->idf->m_packets[i]->m_address != 0 ||
                     this->idf->m_packets[i]->m_processed ||
                     this->idf->m_packets[i]->m_requested)

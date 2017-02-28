@@ -289,7 +289,6 @@ public:
         RobotSettings::Default->MarketDataMaxSymbolsCount = 10;
         RobotSettings::Default->MarketDataMaxSessionsCount = 32;
         RobotSettings::Default->MarketDataMaxEntriesCount = 32 * 10;
-        RobotSettings::Default->DefaultFeedConnectionPacketCount = 1100;
         RobotSettings::Default->MDEntryQueueItemsCount = 100;
 
         TestFeedConnectionBase();
@@ -300,6 +299,12 @@ public:
         SymbolManagerTester ht;
         ht.Test();
 
+        SecurityStatusTester ist;
+        ist.Test();
+
+        SecurityDefinitionTester ids;
+        ids.Test();
+
         TradeTesterCurr ttCurr;
         ttCurr.Test();
         TradeTesterFond ttFond;
@@ -309,12 +314,6 @@ public:
         otCurr.Test();
         OrderTesterFond otFond;
         otFond.Test();
-
-        SecurityStatusTester ist;
-        ist.Test();
-
-        SecurityDefinitionTester ids;
-        ids.Test();
 
         HistoricalReplayTester hrt;
         hrt.Test();

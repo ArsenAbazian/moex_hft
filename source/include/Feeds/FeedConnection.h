@@ -178,7 +178,7 @@ protected:
         delete this->m_hsLogonInfo;
         delete this->m_hsRejectInfo;
     }
-    int GetPacketsCount() { return RobotSettings::Default->DefaultFeedConnectionPacketCount; }
+    int GetPacketsCount() { throw; }
     void InitializePackets(int count) {
         this->m_packetsCount = count;
         this->m_packets = new FeedConnectionMessageInfo*[ this->m_packetsCount ];
@@ -593,8 +593,10 @@ protected:
     }
 
     inline int GetRequestMessageStartIndex(int start) {
-        int end = this->m_endMsgSeqNum - this->m_windowMsgSeqNum;
-        for(int i = start - this->m_windowMsgSeqNum; i <= end; i++) {
+        int localEnd = this->m_endMsgSeqNum - this->m_windowMsgSeqNum;
+        int localStart = start - this->m_windowMsgSeqNum;
+        if(localStart < 0) localStart = 0;
+        for(int i = localStart; i <= localEnd; i++) {
             if(this->m_packets[i]->m_address == 0 && !this->m_packets[i]->m_requested)
                 return i + this->m_windowMsgSeqNum;
         }
@@ -620,6 +622,9 @@ protected:
     inline void FinishSecurityStatusSnapshot() {
         this->m_securityDefinition->Stop();
         this->m_securityStatusSnapshotActive = false;
+        this->ClearLocalPackets(0, this->m_endMsgSeqNum - this->m_windowMsgSeqNum);
+        this->m_startMsgSeqNum = this->m_endMsgSeqNum + 1;
+        this->m_windowMsgSeqNum = this->m_startMsgSeqNum;
     }
 
     inline bool IsSecurityStatusSnapshotActive() { return this->m_securityStatusSnapshotActive; }
@@ -643,14 +648,11 @@ protected:
             return false;
         if(this->m_snapshot->State() != FeedConnectionState::fcsSuspend)
             return true;
-        //printf("start request %d, end %d\n", this->m_requestMessageStartIndex, this->m_endMsgSeqNum);
         while(this->m_requestMessageStartIndex <= this->m_endMsgSeqNum) {
             this->m_requestMessageStartIndex = GetRequestMessageStartIndex(this->m_requestMessageStartIndex);
             if(this->m_requestMessageStartIndex > this->m_endMsgSeqNum)
                 return true;
-            printf("request start = %d\n", this->m_requestMessageStartIndex);
             int endIndex = GetRequestMessageEndIndex(this->m_requestMessageStartIndex);
-            printf("request end = %d\n", this->m_requestMessageStartIndex);
             if(ShouldStartIncrementalSnapshot(endIndex)) {
                 this->m_requestMessageStartIndex = -1;
                 return this->StartListenSnapshot();
@@ -671,6 +673,7 @@ protected:
             if(this->m_requestMessageStartIndex > this->m_endMsgSeqNum)
                 break;
             int endIndex = GetRequestMessageEndIndex(this->m_requestMessageStartIndex);
+            //TODO remove debug info
             printf("security status: request %d-%d\n", this->m_requestMessageStartIndex, endIndex);
             printf("start %d end %d \n", this->m_startMsgSeqNum, this->m_endMsgSeqNum);
             if(ShouldStartSecurityStatusSnapshot(endIndex))
@@ -682,8 +685,6 @@ protected:
     }
 
     inline bool ProcessSecurityStatusMessages() {
-
-
         if(this->m_securityStatusSnapshotActive) {
             if(this->m_securityDefinition->IsIdfDataCollected()) {
                 this->FinishSecurityStatusSnapshot();
@@ -713,9 +714,11 @@ protected:
         // there is messages that needs to be requested
         this->CheckRequestLostSecurityStatusMessages();
 
-        this->m_startMsgSeqNum = i + this->m_windowMsgSeqNum;
-        this->ClearLocalPackets(0, end);
-        this->m_windowMsgSeqNum = this->m_startMsgSeqNum;
+        if(i > end) {
+            this->m_startMsgSeqNum = this->m_endMsgSeqNum + 1;
+            this->ClearLocalPackets(0, end);
+            this->m_windowMsgSeqNum = this->m_startMsgSeqNum;
+        }
         return true;
     }
 
@@ -2048,7 +2051,7 @@ public:
     inline int WaitSnapshotMaxTimeMs() { return this->m_snapshotMaxTimeMs; }
 
     inline void ClearMessages() {
-        for(int i = 0;i < RobotSettings::Default->DefaultFeedConnectionPacketCount; i++)
+        for(int i = 0;i < this->m_packetsCount; i++)
             this->m_packets[i]->Clear();
         this->m_windowMsgSeqNum = 0;
         this->m_startMsgSeqNum = 1;
