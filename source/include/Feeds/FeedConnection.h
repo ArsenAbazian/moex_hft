@@ -1163,7 +1163,7 @@ protected:
         for(int i = this->m_startMsgSeqNum; i <= this->m_endMsgSeqNum; i++) {
             if(this->m_packets[i]->m_address != 0) {
 #ifdef COLLECT_STATISTICS
-                this->UpdateLostPacketsStatistic(i - localStart);
+                this->UpdateLostPacketsStatistic(i - this->m_startMsgSeqNum);
 #endif
                 this->m_startMsgSeqNum = i;
                 return;
@@ -1300,7 +1300,7 @@ protected:
                 this->CancelSnapshot();
                 //this->ClearPackets(this->m_snapshotRouteFirst, this->m_startMsgSeqNum);
             }
-            this->SkipLostPackets();
+            this->SkipLostSnapshotPackets();
             this->m_waitTimer->Stop(1);
             this->m_snapshotRouteFirst = -1;
             this->m_snapshotLastFragment = -1;
