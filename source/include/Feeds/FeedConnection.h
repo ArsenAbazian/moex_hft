@@ -1159,15 +1159,13 @@ protected:
         }
     }
 
-    inline void SkipLostPackets() {
-        int localStart = GetLocalIndex(this->m_startMsgSeqNum);
-        int localEnd = GetLocalIndex(this->m_endMsgSeqNum);
-        for(int i = localStart; i <= localEnd; i++) {
+    inline void SkipLostSnapshotPackets() {
+        for(int i = this->m_startMsgSeqNum; i <= this->m_endMsgSeqNum; i++) {
             if(this->m_packets[i]->m_address != 0) {
 #ifdef COLLECT_STATISTICS
                 this->UpdateLostPacketsStatistic(i - localStart);
 #endif
-                this->m_startMsgSeqNum = LocalIndexToMsgSeqNo(i);
+                this->m_startMsgSeqNum = i;
                 return;
             }
         }
