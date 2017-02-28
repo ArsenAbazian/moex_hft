@@ -859,14 +859,11 @@ protected:
 	inline bool StopListenSnapshot() {
         if(!this->m_snapshot->Stop()) {
 			DefaultLogManager::Default->WriteSuccess(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_StopListenSnapshot, false);
-            printf("Channel = %s\n", this->m_channelName);
 			return false;
 		}
-        //this->m_startMsgSeqNum = this->m_endMsgSeqNum + 1;
         this->MarketTableExitSnapshotMode();
 		this->UpdateMessageSeqNoAfterSnapshot();
         DefaultLogManager::Default->WriteSuccess(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_StopListenSnapshot, true);
-        printf("Channel = %s\n", this->m_channelName);
 		return true;
 	}
 	inline FastSnapshotInfo* GetSnapshotInfo(int msgSeqNo) {
