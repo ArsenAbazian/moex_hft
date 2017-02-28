@@ -36,6 +36,10 @@ public:
 
 class FeedConnectionTester {
 
+    TestMessagesHelper      *m_helper;
+    FeedConnection_CURR_OLR *inc;
+    FeedConnection_CURR_OLS *snap;
+
     bool ReadNextQuote(FILE *fp) {
         while(!feof(fp)) {
             int chr = fgetc(fp);
@@ -76,149 +80,130 @@ public:
         RobotSettings::Default->DefaultFeedConnectionSendItemsCount = 100;
         RobotSettings::Default->DefaultFeedConnectionRecvBufferSize = 2 * 1024 * 1024;
         RobotSettings::Default->DefaultFeedConnectionRecvItemsCount = 500;
+
+        this->m_helper = new TestMessagesHelper();
+        this->m_helper->SetCurrMode();
+        this->inc = new FeedConnection_CURR_OLR("OLR", "Refresh Incremental", 'I',
+                                                    FeedConnectionProtocol::UDP_IP,
+                                                    "10.50.129.200", "239.192.113.3", 9113,
+                                                    "10.50.129.200", "239.192.113.131", 9313);
+        this->snap = new FeedConnection_CURR_OLS("OLS", "Full Refresh", 'I',
+                                                     FeedConnectionProtocol::UDP_IP,
+                                                     "10.50.129.200", "239.192.113.3", 9113,
+                                                     "10.50.129.200", "239.192.113.131", 9313);
+
+        this->inc->OrderCurr()->InitSymbols(10, 10);
+        this->inc->SetSnapshot(this->snap);
     }
-    AutoAllocatePointerList<TestFeedMessage>* GetMessagesFromLog(const char *fileName) {
-        FILE *fp = fopen(fileName, "rt");
-        if(fp == 0)
+
+    void TestDefaults() {
+        if(this->inc->m_windowMsgSeqNum != 0)
             throw;
-
-        AutoAllocatePointerList<TestFeedMessage> *res = new AutoAllocatePointerList<TestFeedMessage>(128, 128);
-        FastProtocolManager manager(new FastObjectsAllocationInfo(128,128));
-
-        char feed_abr[4];
-        char data[3];
-        fseek(fp, 0, SEEK_SET);
-
-        while(!feof(fp)) {
-            if(!ReadNextQuote(fp))
-                break;
-            fread(feed_abr, 1, 4, fp);
-            if(!IsFeedName(feed_abr))
-                continue;
-            if(!ReadNextQuote(fp))
-                break;
-            TestFeedMessage *msg = res->NewItem();
-            if(msg == 0)
-                throw;
-            int index = 0;
-            int textIndex = 0;
-            UINT64 pmap[4];
-            while(true) {
-                fread((msg->Text + textIndex), 1, 3, fp);
-                bool isEnd = msg->Text[textIndex + 2] == '\'';
-                int value = this->AsciToValue(msg->Text[textIndex]) * 16 + this->AsciToValue(msg->Text[textIndex + 1]);
-                msg->Bytes[index] = (unsigned char)value;
-                msg->Count = index + 1;
-                textIndex += 3;
-                if(isEnd) {
-                    msg->Text[textIndex] = '\0';
-                    manager.SetNewBuffer(msg->Bytes, msg->Count);
-                    manager.ReadMsgSeqNumber();
-                    manager.ParsePresenceMap(pmap);
-                    msg->TemplateId = manager.ReadUInt32_Mandatory();
-                    break;
-                }
-                index++;
-            }
-        }
-        fclose(fp);
-        return res;
     }
 
-    void TestLog(const char *fileName) {
-        AutoAllocatePointerList<TestFeedMessage> *messages = GetMessagesFromLog(fileName);
-        LinkedPointer<TestFeedMessage> *ptr = messages->ListCore()->Start();
-        LinkedPointer<TestFeedMessage> *end = messages->ListCore()->End();
-
-        FeedConnection_FOND_OLR *olr_fond = new FeedConnection_FOND_OLR("id", "name", 'v', FeedConnectionProtocol::UDP_IP, "1.1.1.1", "1.1.1.1", 10, "1.1.1.1", "1.1.1.1", 10);
-        FeedConnection_CURR_OLR *olr_curr = new FeedConnection_CURR_OLR("id", "name", 'v', FeedConnectionProtocol::UDP_IP, "1.1.1.1", "1.1.1.1", 10, "1.1.1.1", "1.1.1.1", 10);
-        FeedConnection_FOND_OLS *ols_fond = new FeedConnection_FOND_OLS("id", "name", 'v', FeedConnectionProtocol::UDP_IP, "1.1.1.1", "1.1.1.1", 10, "1.1.1.1", "1.1.1.1", 10);
-        FeedConnection_CURR_OLS *ols_curr = new FeedConnection_CURR_OLS("id", "name", 'v', FeedConnectionProtocol::UDP_IP, "1.1.1.1", "1.1.1.1", 10, "1.1.1.1", "1.1.1.1", 10);
-        FeedConnection_FOND_TLR *tlr_fond = new FeedConnection_FOND_TLR("id", "name", 'v', FeedConnectionProtocol::UDP_IP, "1.1.1.1", "1.1.1.1", 10, "1.1.1.1", "1.1.1.1", 10);
-        FeedConnection_CURR_TLR *tlr_curr = new FeedConnection_CURR_TLR("id", "name", 'v', FeedConnectionProtocol::UDP_IP, "1.1.1.1", "1.1.1.1", 10, "1.1.1.1", "1.1.1.1", 10);
-        FeedConnection_FOND_TLS *tls_fond = new FeedConnection_FOND_TLS("id", "name", 'v', FeedConnectionProtocol::UDP_IP, "1.1.1.1", "1.1.1.1", 10, "1.1.1.1", "1.1.1.1", 10);
-        FeedConnection_CURR_TLS *tls_curr = new FeedConnection_CURR_TLS("id", "name", 'v', FeedConnectionProtocol::UDP_IP, "1.1.1.1", "1.1.1.1", 10, "1.1.1.1", "1.1.1.1", 10);
-
-        int processedMsgCount = 0;
-        while(true) {
-
-            FeedConnection *fc = 0;
-            TestFeedMessage *msg = ptr->Data();
-            switch(msg->TemplateId) {
-                case 2101:
-                case 2102:
-                case 2422:
-                case 2410:
-                    fc = ols_fond;
-                    break;
-                case 3500:
-                    fc = ols_curr;
-                    break;
-                case 2420:
-                    fc = olr_fond;
-                    break;
-                case 3510:
-                    fc = olr_curr;
-                    break;
-                case 2411:
-                    fc = tls_fond;
-                    break;
-                case 3501:
-                    fc = tls_curr;
-                    break;
-                case 2421:
-                    fc = tlr_fond;
-                    break;
-                case 3511:
-                    fc = tlr_curr;
-                    break;
-            }
-            if(!fc->ProcessIncrementalCore(msg->Bytes, msg->Count, true))
+    void TestPacketsCleared(int start, int end) {
+        for(int i = start; i <= end; i++) {
+            if(!this->inc->m_packets[i]->IsCleared())
                 throw;
-            if(fc->m_fastProtocolManager->MessageLength() != msg->Count)
-                throw;
-            fc->m_fastProtocolManager->Print();
-            if(ptr == end)
-                break;
-            ptr = ptr->Next();
-            processedMsgCount++;
         }
-
-
-        delete olr_fond;
-        delete olr_curr;
-        delete ols_fond;
-        delete ols_curr;
-        delete tlr_fond;
-        delete tlr_curr;
-        delete tls_fond;
-        delete tls_curr;
     }
 
-    void TestSaveIdfSymbols() {
-        AutoAllocatePointerList<TestFeedMessage> *messages = GetMessagesFromLog("/home/arsen/Documents/hft_robot/hft/test/idf_log");
-        LinkedPointer<TestFeedMessage> *ptr = messages->ListCore()->Start();
-        LinkedPointer<TestFeedMessage> *end = messages->ListCore()->End();
+    void TestWindowStartMsgSeqNo_CorrectIncremental() {
+        TestTemplateInfo *info = new TestTemplateInfo();
+        TestTemplateItemInfo *item = new TestTemplateItemInfo();
 
-        //FeedConnection_FOND_IDF *idf = new FeedConnection_FOND_IDF();
-        FastProtocolManager *manager = new FastProtocolManager(new FastObjectsAllocationInfo(128,128));
-        while(true) {
+        info->m_templateId = FeedConnectionMessage::fmcIncrementalRefresh_OLR_CURR;
+        info->m_itemsCount = 1;
+        info->m_items[0] = item;
 
-            FeedConnection *fc = 0;
-            TestFeedMessage *msg = ptr->Data();
-            if(msg->TemplateId == FeedConnectionMessage::fmcSecurityDefinition) {
-                manager->SetNewBuffer(msg->Bytes, msg->Count);
-                manager->ReadMsgSeqNumber();
-                manager->DecodeHeader();
-                FastSecurityDefinitionInfo *info = (FastSecurityDefinitionInfo *)manager->DecodeSecurityDefinition();
-                //manager->PrintSecurityDefinition(info);
-                info->Symbol[info->SymbolLength] = '\0';
-                printf("%s\n", info->Symbol);
-            }
-            if(ptr == end)
-                break;
-            ptr = ptr->Next();
+        item->m_symbol = "symbol1";
+        item->m_tradingSession = "session1";
+        item->m_entryId = "entry1";
+        item->m_action = MDUpdateAction::mduaAdd;
+        item->m_entryType = MDEntryType::mdetBuyQuote;
+
+        for(int i = 0; i < 2000; i++) {
+            item->m_rptSeq = i + 1;
+            info->m_msgSeqNo = i + 1;
+
+            this->m_helper->SendMessage(this->inc, info);
+            this->inc->Listen_Atom_Incremental_Core();
         }
+        if(this->inc->OrderCurr()->Symbol(0)->Session(0)->BuyQuotes()->Count() != 2000)
+            throw;
+        if(this->inc->m_startMsgSeqNum != 2000 + 1)
+            throw;
+        if(this->inc->m_endMsgSeqNum != 2000)
+            throw;
+        if(this->inc->m_windowMsgSeqNum != this->inc->m_startMsgSeqNum)
+            throw;
+        TestPacketsCleared(0, 2000);
+    }
+
+    void TestWindowStartMsgSeqNo_MessageLost() {
+        this->inc->ClearMessages();
+        this->inc->OrderCurr()->Clear();
+
+        TestTemplateInfo *info = new TestTemplateInfo();
+        TestTemplateItemInfo *item = new TestTemplateItemInfo();
+
+        info->m_templateId = FeedConnectionMessage::fmcIncrementalRefresh_OLR_CURR;
+        info->m_itemsCount = 1;
+        info->m_items[0] = item;
+
+        item->m_symbol = "symbol1";
+        item->m_tradingSession = "session1";
+        item->m_entryId = "entry1";
+        item->m_action = MDUpdateAction::mduaAdd;
+        item->m_entryType = MDEntryType::mdetBuyQuote;
+
+        for(int i = 0; i < 10; i++) {
+            item->m_rptSeq = i + 1;
+            info->m_msgSeqNo = i + 1;
+
+            this->m_helper->SendMessage(this->inc, info);
+            this->inc->Listen_Atom_Incremental_Core();
+        }
+        TestPacketsCleared(0, 10);
+        for(int i = 11; i < 20; i++) {
+            item->m_rptSeq = i + 1;
+            info->m_msgSeqNo = i + 1;
+
+            this->m_helper->SendMessage(this->inc, info);
+            this->inc->Listen_Atom_Incremental_Core();
+        }
+
+        if(this->inc->OrderCurr()->Symbol(0)->Session(0)->BuyQuotes()->Count() != 10)
+            throw;
+        if(this->inc->m_startMsgSeqNum != 10 + 1)
+            throw;
+        if(this->inc->m_endMsgSeqNum != 20)
+            throw;
+        if(this->inc->m_windowMsgSeqNum != this->inc->m_startMsgSeqNum)
+            throw;
+        for(int i = 12; i < 20; i++)
+            if(inc->m_packets[i - 11]->IsCleared())
+                throw;
+
+        item->m_rptSeq = 11; // lost message
+        info->m_msgSeqNo = 11;
+
+        this->m_helper->SendMessage(this->inc, info);
+        this->inc->Listen_Atom_Incremental_Core();
+
+        TestPacketsCleared(0, 10);
+        if(this->inc->m_startMsgSeqNum != 20 + 1)
+            throw;
+        if(this->inc->m_endMsgSeqNum != 20)
+            throw;
+        if(this->inc->m_windowMsgSeqNum != this->inc->m_startMsgSeqNum)
+            throw;
+    }
+
+    void TestFeedConnectionBase() {
+        TestDefaults();
+        TestWindowStartMsgSeqNo_CorrectIncremental();
+        TestWindowStartMsgSeqNo_MessageLost();
     }
 
     void Test() {
@@ -227,6 +212,8 @@ public:
         RobotSettings::Default->MarketDataMaxEntriesCount = 32 * 10;
         RobotSettings::Default->DefaultFeedConnectionPacketCount = 1100;
         RobotSettings::Default->MDEntryQueueItemsCount = 100;
+
+        TestFeedConnectionBase();
 
         PointerListTester pt;
         pt.Test();

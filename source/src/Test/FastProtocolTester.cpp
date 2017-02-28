@@ -398,6 +398,7 @@ void FastProtocolTester::TestMessageSequenceNumber() {
 void FastProtocolTester::TestReadInt32_Mandatory() { 
 	printf("Test FastProtocolTester::TestReadInt32_Mandatory\n");
 	FastProtocolManager *manager = new FastProtocolManager(new FastObjectsAllocationInfo(128,128));
+    manager->SetNewBuffer(new unsigned char[100], 100);
 
 	for (int i = 0; i > -2147483630; i -= 5) {
 		manager->ResetBuffer();
@@ -427,6 +428,7 @@ void FastProtocolTester::TestReadInt32_Mandatory() {
 void FastProtocolTester::TestReadInt32_Optional() {
 	printf("Test FastProtocolTester::TestReadInt32_Optional\n");
 	FastProtocolManager *manager = new FastProtocolManager(new FastObjectsAllocationInfo(128,128));
+    manager->SetNewBuffer(new unsigned char[100], 100);
 
 	manager->ResetBuffer();
 	manager->WriteInt32_Optional(942755);
@@ -479,6 +481,7 @@ void FastProtocolTester::TestReadUInt32_Optional() {
 void FastProtocolTester::TestReadUInt32_Mandatory() {
 	printf("Test FastProtocolTester::TestReadUInt32_Mandatory\n");
 	FastProtocolManager *manager = new FastProtocolManager(new FastObjectsAllocationInfo(128,128));
+    manager->SetNewBuffer(new unsigned char[100], 100);
 
 	for (UINT32 i = 0; i < 0xfffffff0; i += 5) {
 		manager->ResetBuffer();
@@ -495,6 +498,7 @@ void FastProtocolTester::TestReadUInt32_Mandatory() {
 void FastProtocolTester::TestStringCopy() {
     printf("Test FastProtocolTester::TestStringCopy\n");
     FastProtocolManager *manager = new FastProtocolManager(new FastObjectsAllocationInfo(128,128));
+    manager->SetNewBuffer(new unsigned char[100], 100);
 
     char *buffer = new char[60];
     char *buffer2 = new char[60];
@@ -606,7 +610,9 @@ void FastProtocolTester::TestReadByteVector_Optional() {
 	printf("Test FastProtocolTester::TestReadByteVector_Optional\n");
 	FastProtocolManager *manager = new FastProtocolManager(new FastObjectsAllocationInfo(128,128));
 
-	manager->WriteByteVector_Optional(NULL, 0);
+	manager->SetNewBuffer(new unsigned char[1000], 1000);
+    manager->ResetBuffer();
+    manager->WriteByteVector_Optional(NULL, 0);
 	if (manager->MessageLength() != 1)
 		throw;
 	if (manager->Buffer()[0] != 0x80)
@@ -624,7 +630,7 @@ void FastProtocolTester::TestReadByteVector_Optional() {
 		manager->WriteByteVector_Optional(buffer, i);
 		
 		manager->ResetBuffer();
-		manager->ReadByteVector_Optional(&buffer2, &length);
+		manager->ReadByteVector_Optional(buffer2, &length, 1000);
 		if (length != i)
 			throw;
 		for (int j = 0; j < i; j++) {
@@ -639,20 +645,21 @@ void FastProtocolTester::TestReadByteVector_Optional() {
 void FastProtocolTester::TestReadByteVector_Mandatory() {
 	printf("Test FastProtocolTester::TestReadByteVector_Mandatory\n");
 	FastProtocolManager *manager = new FastProtocolManager(new FastObjectsAllocationInfo(128,128));
+    manager->SetNewBuffer(new unsigned char[1000], 1000);
 
 	BYTE *buffer = new BYTE[1000];
-	BYTE *buffer2;
+	BYTE *buffer2 = new BYTE[1000];
 	for (int i = 0; i < 1000; i++) {
 		buffer[i] = (char)('A' + i % 60);
 	}
 
 	int length = 0;
-	for (int i = 0; i < 1000; i++) {
-		manager->ResetBuffer();
+	for (int i = 0; i < 900; i++) {
+        manager->ResetBuffer();
 		manager->WriteByteVector_Mandatory(buffer, i);
 
 		manager->ResetBuffer();
-		manager->ReadByteVector_Mandatory(&buffer2, &length);
+		manager->ReadByteVector_Mandatory(buffer2, &length, 900);
 		if (length != i)
 			throw;
 		for (int j = 0; j < i; j++) {
@@ -1061,6 +1068,7 @@ void FastProtocolTester::TestReadUInt64_Mandatory() {
 void FastProtocolTester::TestReadUInt64_Optional() {
 	printf("Test FastProtocolTester::TestReadUInt64_Optional\n");
 	FastProtocolManager *manager = new FastProtocolManager(new FastObjectsAllocationInfo(128,128));
+    manager->SetNewBuffer(new unsigned char[12], 12);
 
 	BYTE buffer[12];
 

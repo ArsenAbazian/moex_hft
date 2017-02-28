@@ -118,7 +118,8 @@ protected:
 	char										feedBIp[64];
 	int											feedBPort;
 
-	int											m_startMsgSeqNum;
+	int                                         m_windowMsgSeqNum;
+    int											m_startMsgSeqNum;
     int                                         m_endMsgSeqNum;
     int                                         m_requestMessageStartIndex;
 
@@ -268,14 +269,16 @@ protected:
         }
         return true;
     }
+    inline FeedConnectionMessageInfo* Packet(int index) { return this->m_packets[index - this->m_windowMsgSeqNum]; }
     inline bool ProcessServerCore_FromHistoricalReplay(SocketBuffer *buffer, int size, int msgSeqNum) {
         if (this->m_type == FeedConnectionType::InstrumentDefinition) {
             this->m_endMsgSeqNum = msgSeqNum;
         }
 
-        printf("Historical Replay %s -> %d size = %d, endMsgSeqNum = %d\n", this->m_idName, msgSeqNum, size, this->m_endMsgSeqNum);
-        if(this->m_packets[msgSeqNum]->m_address != 0) { // TODO
-            printf("already exists requested = %d", this->m_packets[msgSeqNum]->m_requested);
+        if(this->m_type == FeedConnectionType::Incremental && msgSeqNum < this->m_windowMsgSeqNum)
+            return false;
+        FeedConnectionMessageInfo *info = this->Packet(msgSeqNum);
+        if(info->m_address != 0) { // TODO
             return true;
         }
 
@@ -287,7 +290,6 @@ protected:
 //                                                                    buffer->CurrentItemIndex());
         if(!this->UpdateMsgSeqStartEnd(msgSeqNum))
             return true;
-        FeedConnectionMessageInfo *info = this->m_packets[msgSeqNum];
         info->m_address = buffer->CurrentPos();
         info->m_size = size;
         info->m_requested = true;
@@ -299,7 +301,10 @@ protected:
             this->m_endMsgSeqNum = msgSeqNum;
         }
 
-        if(this->m_packets[msgSeqNum]->m_address != 0) { // TODO
+        if(this->m_type == FeedConnectionType::Incremental && msgSeqNum < this->m_windowMsgSeqNum)
+            return false;
+        FeedConnectionMessageInfo *info = this->Packet(msgSeqNum);
+        if(info->m_address != 0) { // TODO
             if(this->m_type == FeedConnectionType::Snapshot) {
                 //printf("%d  %s -> %d size = %d\n", socketManager->Socket(), this->m_idName, msgSeqNum, size);
                 if(msgSeqNum > this->m_endMsgSeqNum) {
@@ -321,7 +326,6 @@ protected:
 
         if(!this->UpdateMsgSeqStartEnd(msgSeqNum))
             return true;
-        FeedConnectionMessageInfo *info = this->m_packets[msgSeqNum];
         info->m_address = this->m_recvABuffer->CurrentPos();
         info->m_size = size;
         info->m_requested = false;
@@ -367,7 +371,7 @@ protected:
     }
 #pragma region snapshot
     inline bool PrepareDecodeSnapshotMessage(int packetIndex) {
-        FeedConnectionMessageInfo *info = this->m_packets[packetIndex];
+        FeedConnectionMessageInfo *info = this->Packet(packetIndex);
         unsigned char *buffer = info->m_address;
         if(this->ShouldSkipMessage(buffer, !info->m_requested))
             return false;
@@ -614,23 +618,25 @@ protected:
 #pragma endregion
 
     inline int GetRequestMessageEndIndex(int start) {
-        for(int i = start; i <= this->m_endMsgSeqNum; i++) {
+        int end = this->m_endMsgSeqNum - this->m_windowMsgSeqNum;
+        for(int i = start - this->m_windowMsgSeqNum; i <= end; i++) {
             if(this->m_packets[i]->m_address != 0)
-                return i - 1;
+                return i + this->m_windowMsgSeqNum - 1;
         }
         return start;
     }
 
     inline int GetRequestMessageStartIndex(int start) {
-        for(int i = start; i <= this->m_endMsgSeqNum; i++) {
+        int end = this->m_endMsgSeqNum - this->m_windowMsgSeqNum;
+        for(int i = start - this->m_windowMsgSeqNum; i <= end; i++) {
             if(this->m_packets[i]->m_address == 0 && !this->m_packets[i]->m_requested)
-                return i;
+                return i + this->m_windowMsgSeqNum;
         }
         return this->m_endMsgSeqNum + 1;
     }
 
     inline void RequestMessages(int start, int end) {
-        FeedConnectionMessageInfo **info = this->m_packets + start;
+        FeedConnectionMessageInfo **info = this->m_packets + start - this->m_windowMsgSeqNum;
         for(int i = start; i <= end; i++, info++)
             (*info)->m_requested = true;
         printf("request messages from %d to %d\n", start, end);
@@ -710,7 +716,7 @@ protected:
     }
 
     inline bool ProcessSecurityStatusMessages() {
-        int i = this->m_startMsgSeqNum;
+
 
         if(this->m_securityStatusSnapshotActive) {
             if(this->m_securityDefinition->IsIdfDataCollected()) {
@@ -718,7 +724,10 @@ protected:
             }
         }
 
-        while(i <= this->m_endMsgSeqNum) {
+        int end = this->m_endMsgSeqNum - this->m_windowMsgSeqNum;
+        int i = this->m_startMsgSeqNum - this->m_windowMsgSeqNum;
+
+        while(i <= end) {
             if(this->m_packets[i]->m_processed) {
                 i++; continue;
             }
@@ -726,8 +735,8 @@ protected:
                 if(this->m_securityStatusSnapshotActive) {
                     i++; continue;
                 }
-                if(this->m_requestMessageStartIndex < i)
-                    this->m_requestMessageStartIndex = i;
+                if(this->m_requestMessageStartIndex < i + this->m_windowMsgSeqNum)
+                    this->m_requestMessageStartIndex = i + this->m_windowMsgSeqNum;
                 break;
             }
             if(!this->ProcessSecurityStatus(this->m_packets[i]))
@@ -738,24 +747,25 @@ protected:
         // there is messages that needs to be requested
         this->CheckRequestLostSecurityStatusMessages();
 
-        this->m_startMsgSeqNum = i;
-        if(this->m_doNotCheckIncrementalActuality) // TODO remove this field
-            this->m_startMsgSeqNum = i;
+        this->m_startMsgSeqNum = i + this->m_windowMsgSeqNum;
         return true;
     }
 
     inline bool ProcessIncrementalMessages() {
-        int i = this->m_startMsgSeqNum;
-		int newStartMsgSeqNum = -1;
+		int localStart = this->m_startMsgSeqNum - this->m_windowMsgSeqNum;
+        int localEnd = this->m_endMsgSeqNum - this->m_windowMsgSeqNum;
+        int i = localStart;
 
-        while(i <= this->m_endMsgSeqNum) {
+        int newStartMsgSeqNum = -1;
+
+        while(i <= localEnd) {
             if(this->m_packets[i]->m_processed) {
                 i++; continue;
             }
             if(this->m_packets[i]->m_address == 0) {
-                if(this->m_requestMessageStartIndex < i)
-                    this->m_requestMessageStartIndex = i;
-                newStartMsgSeqNum = i;
+                if(this->m_requestMessageStartIndex < i + this->m_windowMsgSeqNum)
+                    this->m_requestMessageStartIndex = i + this->m_windowMsgSeqNum;
+                newStartMsgSeqNum = i + this->m_windowMsgSeqNum;
                 break;
             }
             if(!this->ProcessIncremental(this->m_packets[i]))
@@ -763,7 +773,7 @@ protected:
             i++;
         }
 
-        while(i <= this->m_endMsgSeqNum) {
+        while(i <= localEnd) {
             if(this->m_packets[i]->m_processed || this->m_packets[i]->m_address == 0) {
                 i++; continue;
             }
@@ -771,12 +781,14 @@ protected:
                 return false;
             i++;
         }
-        if(newStartMsgSeqNum != -1)
+        if(newStartMsgSeqNum != -1) {
             this->m_startMsgSeqNum = newStartMsgSeqNum;
-        else
-            this->m_startMsgSeqNum = i;
-        if(this->m_doNotCheckIncrementalActuality) // TODO remove this field
-            this->m_startMsgSeqNum = i;
+        }
+        else {
+            this->ClearLocalPackets(0, localEnd);
+            this->m_startMsgSeqNum = this->m_endMsgSeqNum + 1;
+            this->m_windowMsgSeqNum = this->m_startMsgSeqNum;
+        }
         return true;
     }
     inline void MarketTableEnterSnapshotMode() {
@@ -889,8 +901,8 @@ protected:
         printf("Channel = %s\n", this->m_channelName);
 		return true;
 	}
-	inline FastSnapshotInfo* GetSnapshotInfo(int index) {
-		FeedConnectionMessageInfo *item = this->m_packets[index];
+	inline FastSnapshotInfo* GetSnapshotInfo(int msgSeqNo) {
+		FeedConnectionMessageInfo *item = this->m_packets[GetLocalIndex(msgSeqNo)];
 		unsigned char *buffer = item->m_address;
 		if(this->ShouldSkipMessage(buffer, !item->m_requested))
             return 0;
@@ -925,20 +937,21 @@ protected:
 	}
 
     FastSnapshotInfo *m_lastSnapshotInfo;
+    inline int GetLocalIndex(int msgSeqNo) { return msgSeqNo - this->m_windowMsgSeqNum; }
+    inline int LocalIndexToMsgSeqNo(int index) { return index + this->m_windowMsgSeqNum; }
     inline bool FindRouteFirst() {
-        //printf("start seeking route first %d %d\n", this->m_startMsgSeqNum, this->m_endMsgSeqNum);
-        for(int i = this->m_startMsgSeqNum; i <= this->m_endMsgSeqNum; i++) {
+        int localStart = GetLocalIndex(this->m_startMsgSeqNum);
+        int localEnd = GetLocalIndex(this->m_endMsgSeqNum);
+        for(int i = localStart; i <= localEnd; i++) {
             if (this->m_packets[i]->m_address == 0) {
-                //printf("try find route first but found lost %d\n", i);
-                this->m_startMsgSeqNum = i;
+                this->m_startMsgSeqNum = LocalIndexToMsgSeqNo(i);
                 return false;
             }
-            this->m_lastSnapshotInfo = this->GetSnapshotInfo(i);
+            this->m_lastSnapshotInfo = this->GetSnapshotInfo(LocalIndexToMsgSeqNo(i));
             if (this->m_lastSnapshotInfo != 0 && this->m_lastSnapshotInfo->RouteFirst == 1) {
                 this->m_startMsgSeqNum = i;
-                this->m_snapshotRouteFirst = i;
+                this->m_snapshotRouteFirst = LocalIndexToMsgSeqNo(i);
                 this->m_lastSnapshotInfo->Restore();
-                //printf("find route first %d\n", i);
                 return true;
             }
             if(this->m_lastSnapshotInfo != 0)
@@ -1054,12 +1067,12 @@ protected:
             if(!FindRouteFirst())
                 return false;
             if(!StartApplySnapshot()) {
-                this->m_packets[this->m_snapshotRouteFirst]->Clear();
+                this->m_packets[GetLocalIndex(this->m_snapshotRouteFirst)]->Clear();
                 this->m_snapshotRouteFirst = -1;
                 this->m_startMsgSeqNum++;
                 return true;
             }
-            this->m_packets[this->m_snapshotRouteFirst]->Clear();
+            this->m_packets[GetLocalIndex(this->m_snapshotRouteFirst)]->Clear();
             if(this->m_lastSnapshotInfo->LastFragment) {
                 EndApplySnapshot();
                 this->m_snapshotRouteFirst = -1;
@@ -1070,14 +1083,15 @@ protected:
         if(this->m_startMsgSeqNum > this->m_endMsgSeqNum)
             return false;
         while(this->m_startMsgSeqNum <= this->m_endMsgSeqNum) {
-            if (this->m_packets[this->m_startMsgSeqNum]->m_address == 0)
+            int localIndex = GetLocalIndex(this->m_startMsgSeqNum);
+            if (this->m_packets[localIndex]->m_address == 0)
                 return false;
             this->m_lastSnapshotInfo = this->GetSnapshotInfo(this->m_startMsgSeqNum);
             if(this->m_lastSnapshotInfo == 0)
                 return false;
             this->m_lastSnapshotInfo->Restore();
             this->ApplySnapshotPart(this->m_startMsgSeqNum);
-            this->m_packets[this->m_startMsgSeqNum]->Clear();
+            this->m_packets[localIndex]->Clear();
             if(this->m_lastSnapshotInfo->LastFragment) {
                 EndApplySnapshot();
                 this->m_snapshotRouteFirst = -1;
@@ -1092,7 +1106,7 @@ protected:
     inline bool HasPotentiallyLostPackets() {
         if(this->m_startMsgSeqNum > this->m_endMsgSeqNum)
             return false;
-        return this->m_packets[this->m_startMsgSeqNum]->m_address == 0;
+        return this->m_packets[GetLocalIndex(this->m_startMsgSeqNum)]->m_address == 0;
     }
 
     inline void UpdateLostPacketsStatistic(int count) {
@@ -1186,12 +1200,14 @@ protected:
     }
 
     inline void SkipLostPackets() {
-        for(int i = this->m_startMsgSeqNum; i <= this->m_endMsgSeqNum; i++) {
+        int localStart = GetLocalIndex(this->m_startMsgSeqNum);
+        int localEnd = GetLocalIndex(this->m_endMsgSeqNum);
+        for(int i = localStart; i <= localEnd; i++) {
             if(this->m_packets[i]->m_address != 0) {
 #ifdef COLLECT_STATISTICS
-                this->UpdateLostPacketsStatistic(i - this->m_startMsgSeqNum);
+                this->UpdateLostPacketsStatistic(i - localStart);
 #endif
-                this->m_startMsgSeqNum = i;
+                this->m_startMsgSeqNum = LocalIndexToMsgSeqNo(i);
                 return;
             }
         }
@@ -1199,6 +1215,13 @@ protected:
     }
 
     inline void ClearPackets(int start, int end) {
+        FeedConnectionMessageInfo **info = (this->m_packets + start - this->m_windowMsgSeqNum);
+        for(int i = start; i <= end; i++, info++) {
+            (*info)->Clear();
+        }
+    }
+
+    inline void ClearLocalPackets(int start, int end) {
         FeedConnectionMessageInfo **info = (this->m_packets + start);
         for(int i = start; i <= end; i++, info++) {
             (*info)->Clear();
@@ -1245,8 +1268,9 @@ protected:
 
     inline bool ProcessSecurityDefinitionMessagesFromStart() {
         if(this->m_idfMode == FeedConnectionSecurityDefinitionMode::sdmUpdateData) {
-            this->UpdateSecurityDefinition(this->m_packets[this->m_endMsgSeqNum]);
-            this->m_packets[this->m_endMsgSeqNum]->Clear();
+            FeedConnectionMessageInfo *info = this->Packet(this->m_endMsgSeqNum);
+            this->UpdateSecurityDefinition(info);
+            info->Clear();
             if(this->m_endMsgSeqNum == this->m_idfStartMsgSeqNo) {
                 this->OnSecurityDefinitionUpdateAllMessages();
             }
@@ -1284,8 +1308,9 @@ protected:
         if(this->m_endMsgSeqNum == this->m_idfMaxMsgSeqNo)
             this->m_idfState = FeedConnectionSecurityDefinitionState::sdsProcessFromStart;
         if(this->m_idfMode == FeedConnectionSecurityDefinitionMode::sdmUpdateData) {
-            this->UpdateSecurityDefinition(this->m_packets[this->m_endMsgSeqNum]);
-            this->m_packets[this->m_endMsgSeqNum]->Clear();
+            FeedConnectionMessageInfo *info = this->Packet(this->m_endMsgSeqNum);
+            this->UpdateSecurityDefinition(info);
+            info->Clear();
         }
         return true;
     }
@@ -1337,7 +1362,7 @@ protected:
         // Skip this hack when testing :)
         if(this->m_snapshot->State() == FeedConnectionState::fcsSuspend &&
                 (this->m_endMsgSeqNum % 500) < 40) {
-            this->m_packets[this->m_endMsgSeqNum]->m_address = 0; // force historical replay
+            this->Packet(this->m_endMsgSeqNum)->m_address = 0; // force historical replay
             printf("packet %d is lost, requestIndexd = %d\n", this->m_endMsgSeqNum, this->m_requestMessageStartIndex);
             return true;
         }
@@ -2067,6 +2092,7 @@ public:
     inline void ClearMessages() {
         for(int i = 0;i < RobotSettings::Default->DefaultFeedConnectionPacketCount; i++)
             this->m_packets[i]->Clear();
+        this->m_windowMsgSeqNum = 0;
         this->m_startMsgSeqNum = 1;
         this->m_endMsgSeqNum = 0;
     }
@@ -2075,6 +2101,7 @@ public:
         DefaultLogManager::Default->WriteSuccess(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_StartNewSnapshot, true);
         this->m_endMsgSeqNum = -1;
         this->m_startMsgSeqNum = -1;
+        this->m_windowMsgSeqNum = 0;
         this->m_snapshotRouteFirst = -1;
         this->m_snapshotLastFragment = -1;
     }
@@ -2548,7 +2575,7 @@ public:
     }
 
     inline bool HasLostPackets(int msgStart, int msgEnd) {
-        FeedConnectionMessageInfo **msg = (this->m_packets + msgStart);
+        FeedConnectionMessageInfo **msg = (this->m_packets + msgStart - this->m_windowMsgSeqNum);
         for(int i = msgStart; i <= msgEnd; i++, msg++) {
             if((*msg)->m_address == 0)
                 return true;
@@ -2558,7 +2585,7 @@ public:
 
     inline int CalcLostPacketCount(int msgStart, int msgEnd) {
         int sum = 0;
-        FeedConnectionMessageInfo **msg = (this->m_packets + msgStart);
+        FeedConnectionMessageInfo **msg = (this->m_packets + msgStart - this->m_windowMsgSeqNum);
         for(int i = msgStart; i <= msgEnd; i++, msg++) {
             if((*msg)->m_address == 0)
                 sum++;

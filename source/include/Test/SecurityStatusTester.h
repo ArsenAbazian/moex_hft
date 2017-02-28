@@ -919,7 +919,7 @@ public:
         this->isf->m_endMsgSeqNum = 0;
         this->isf->ClearPackets(1, 1);
         this->isf->ProcessSecurityStatusMessages();
-        if(this->isf->m_packets[1]->m_requested)
+        if(this->isf->Packet(1)->m_requested)
             throw;
     }
 
@@ -930,7 +930,7 @@ public:
         this->isf->m_endMsgSeqNum = 2;
         this->isf->ClearPackets(1, 5);
         this->isf->ProcessSecurityStatusMessages();
-        if(this->isf->m_packets[3]->m_requested)
+        if(this->isf->Packet(3)->m_requested)
             throw;
     }
 
@@ -944,7 +944,7 @@ public:
 
     bool TestRequestedOnly(int startIndex, int endIndex) {
         for(int i = startIndex; i <= endIndex; i++) {
-            if(!this->isf->m_packets[i]->m_requested)
+            if(!this->isf->Packet(i)->m_requested)
                 return false;
         }
         return true;
@@ -952,15 +952,15 @@ public:
 
     bool TestRequested(int startIndex, int endIndex) {
         for(int i = startIndex; i <= endIndex; i++) {
-            if(!this->isf->m_packets[i]->m_requested)
+            if(!this->isf->Packet(i)->m_requested)
                 return false;
         }
         for(int i = 0; i < startIndex; i++) {
-            if(this->isf->m_packets[i]->m_requested)
+            if(this->isf->Packet(i)->m_requested)
                 return false;
         }
         for(int i = endIndex + 1; i < 1000; i++) {
-            if(this->isf->m_packets[i]->m_requested)
+            if(this->isf->Packet(i)->m_requested)
                 return false;
         }
         return true;
@@ -968,7 +968,7 @@ public:
 
     bool TestNotRequested(int startIndex, int endIndex) {
         for(int i = startIndex; i <= endIndex; i++) {
-            if(this->isf->m_packets[i]->m_requested)
+            if(this->isf->Packet(i)->m_requested)
                 return false;
         }
         return true;
@@ -979,7 +979,7 @@ public:
         this->isf->ClearPackets(1, 100);
         this->isf->m_startMsgSeqNum = 3;
         this->isf->m_endMsgSeqNum = 3;
-        this->isf->m_packets[3]->m_address = this->CreateHearthBeatMessage(3);
+        this->isf->Packet(3)->m_address = this->CreateHearthBeatMessage(3);
         this->isf->ProcessSecurityStatusMessages();
         if(!TestNotRequested(1, 10))
             throw;
@@ -988,7 +988,7 @@ public:
     void FillMessages(int startIndex, int endIndex) {
         this->m_helper->m_buffer->Reset();
         for(int i = startIndex; i <= endIndex; i++)
-            this->isf->m_packets[i]->m_address = this->CreateHearthBeatMessage(i);
+            this->isf->Packet(i)->m_address = this->CreateHearthBeatMessage(i);
     }
 
     bool CheckRequestInfo(int index, FeedConnection *conn, int start, int end) {

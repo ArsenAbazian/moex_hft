@@ -1110,8 +1110,12 @@ namespace prebuild {
 			}
 		}
 
-		void WriteStringDefinitionCore(XmlNode field, string tabs) {
-			int maxStringLength = HasAttribute(field, "size") ? int.Parse(field.Attributes["size"].Value) : 0;
+		int GetMaxSize(XmlNode field) {
+			return HasAttribute(field, "size") ? int.Parse(field.Attributes["size"].Value) : 0;
+		}
+
+		int GetMaxStringSize(XmlNode field) {
+			int maxStringLength = GetMaxSize(field);
 			if(maxStringLength == 0) {
 				maxStringLength = 16;
 				string name = Name(field);
@@ -1120,23 +1124,65 @@ namespace prebuild {
 				if(name == "TargetCompID" || name == "SenderCompID")
 					maxStringLength = 32;
 				if(name == "MDEntryType")
-					maxStringLength = 2;
+					maxStringLength = 4;
 				if(name == "OpenCloseSettlFlag")
-					maxStringLength = 2;
+					maxStringLength = 4;
 				if(name == "OrdType")
-					maxStringLength = 2;
+					maxStringLength = 4;
 				if(name == "SettlType")
-					maxStringLength = 2;
+					maxStringLength = 4;
 				if(name == "OrderSide")
-					maxStringLength = 2;
+					maxStringLength = 4;
 				if(name == "OrderStatus")
-					maxStringLength = 2;
+					maxStringLength = 4;
 				if(name == "CXFlag")
-					maxStringLength = 2;
+					maxStringLength = 4;
 				if(name == "TradingSessionSubID")
-					maxStringLength = 2;
+					maxStringLength = 4;
 			}
+			return maxStringLength;
+		}
+
+		void WriteStringDefinitionCore(XmlNode field, string tabs) {
+			int maxStringLength = GetMaxStringSize(field);
 			WriteLine("\tchar" + tabs + Name(field) + "[" + maxStringLength + "];" + GetCommentLine(field));
+			WriteLine("\tint"+ tabs + Name(field) + "Length = 0;");
+		}
+
+		int GetMaxByteVectorSize(XmlNode field) {
+			int maxStringLength = GetMaxSize(field);
+			if(maxStringLength == 0) {
+				maxStringLength = 128;
+				//string name = Name(field);
+				/*
+				if(name == "Text")
+					maxStringLength = 512;
+				if(name == "TargetCompID" || name == "SenderCompID")
+					maxStringLength = 32;
+				if(name == "MDEntryType")
+					maxStringLength = 4;
+				if(name == "OpenCloseSettlFlag")
+					maxStringLength = 4;
+				if(name == "OrdType")
+					maxStringLength = 4;
+				if(name == "SettlType")
+					maxStringLength = 4;
+				if(name == "OrderSide")
+					maxStringLength = 4;
+				if(name == "OrderStatus")
+					maxStringLength = 4;
+				if(name == "CXFlag")
+					maxStringLength = 4;
+				if(name == "TradingSessionSubID")
+					maxStringLength = 4;
+				*/
+			}
+			return maxStringLength;
+		}
+
+		void WriteByteVectorDefinitionCore(XmlNode field, string tabs) {
+			int maxStringLength = GetMaxByteVectorSize(field);
+			WriteLine("\tunsigned char" + tabs + Name(field) + "[" + maxStringLength + "];" + GetCommentLine(field));
 			WriteLine("\tint"+ tabs + Name(field) + "Length = 0;");
 		}
 
@@ -1528,8 +1574,9 @@ namespace prebuild {
 		}
 
 		private  void WriteByteVectorField (XmlNode field) {
-			WriteLine("\tBYTE*" + StuctFieldsSpacing + Name(field) + ";" + GetCommentLine(field));
-			WriteLine("\tint" + StuctFieldsSpacing + Name(field) + "Length;");
+			WriteByteVectorDefinitionCore(field, StuctFieldsSpacing);
+			//WriteLine("\tBYTE*" + StuctFieldsSpacing + Name(field) + ";" + GetCommentLine(field));
+			//WriteLine("\tint" + StuctFieldsSpacing + Name(field) + "Length;");
 		}
 
 		private  void WriteDecimalField (XmlNode field) {
@@ -2075,9 +2122,9 @@ namespace prebuild {
 				WriteLine(tabString + "}");
 			} else {
 				if(HasOptionalPresence(value))
-					WriteLine(tabString + "ReadByteVector_Optional(&(" + info + "->" + Name(value) + "), &(" + info + "->" + Name(value) + "Length)" + ");");
+					WriteLine(tabString + "ReadByteVector_Optional(" + info + "->" + Name(value) + ", &(" + info + "->" + Name(value) + "Length)" + ", " + GetMaxByteVectorSize(value) + ");");
 				else
-					WriteLine(tabString + "ReadByteVector_Mandatory(&(" + info + "->" + Name(value) + "), &(" + info + "->" + Name(value) + "Length)" + ");");
+					WriteLine(tabString + "ReadByteVector_Mandatory(" + info + "->" + Name(value) + ", &(" + info + "->" + Name(value) + "Length)" + ", " + GetMaxByteVectorSize(value) + ");");
 			}
 			if(ShouldWriteNullCheckCode(value)) {
 				tabString = tabString.Substring(1);

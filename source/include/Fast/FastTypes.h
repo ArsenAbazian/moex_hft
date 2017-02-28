@@ -348,7 +348,7 @@ public:
 	LinkedPointer<FastGenericItemInfo>							*Pointer;
 	AutoAllocatePointerList<FastGenericItemInfo>							*Allocator;
 	bool							Used;
-	char							MDEntryType[2];			// id=269  presence=optional  
+	char							MDEntryType[4];			// id=269  presence=optional  
 	int							MDEntryTypeLength = 0;
 	char							MDEntryID[16];			// id=278  presence=optional  
 	int							MDEntryIDLength = 0;
@@ -361,9 +361,9 @@ public:
 	int							QuoteConditionLength = 0;
 	char							TradeCondition[16];			// id=277  presence=optional  
 	int							TradeConditionLength = 0;
-	char							OpenCloseSettlFlag[2];			// id=286  presence=optional  
+	char							OpenCloseSettlFlag[4];			// id=286  presence=optional  
 	int							OpenCloseSettlFlagLength = 0;
-	char							OrdType[2];			// id=40  presence=optional  
+	char							OrdType[4];			// id=40  presence=optional  
 	int							OrdTypeLength = 0;
 	UINT32							EffectiveTime;			// id=5902  presence=optional  
 	UINT32							StartTime;			// id=9820  presence=optional  
@@ -383,9 +383,9 @@ public:
 	char							SettleType[16];			// id=5459  presence=optional  
 	int							SettleTypeLength = 0;
 	INT32							SumQtyOfBest;			// id=10503  presence=optional  
-	char							OrderSide[2];			// id=10504  presence=optional  
+	char							OrderSide[4];			// id=10504  presence=optional  
 	int							OrderSideLength = 0;
-	char							OrderStatus[2];			// id=10505  presence=optional  
+	char							OrderStatus[4];			// id=10505  presence=optional  
 	int							OrderStatusLength = 0;
 	Decimal							MinCurrPx;			// id=10509  presence=optional  
 	UINT32							MinCurrPxChgTime;			// id=10510  presence=optional  
@@ -396,9 +396,9 @@ public:
 	Decimal							RepoToPx;			// id=5677  presence=optional  
 	Decimal							BuyBackPx;			// id=5558  presence=optional  
 	UINT32							BuyBackDate;			// id=5559  presence=optional  
-	char							CXFlag[2];			// id=5154  presence=optional  
+	char							CXFlag[4];			// id=5154  presence=optional  
 	int							CXFlagLength = 0;
-	char							TradingSessionSubID[2];			// id=625  presence=optional  
+	char							TradingSessionSubID[4];			// id=625  presence=optional  
 	int							TradingSessionSubIDLength = 0;
 	UINT32							MDUpdateAction;			// id=279  presence=optional  
 	INT32							RptSeq;			// id=83  presence=optional  
@@ -583,7 +583,7 @@ public:
 	LinkedPointer<FastOLSFONDItemInfo>							*Pointer;
 	AutoAllocatePointerList<FastOLSFONDItemInfo>							*Allocator;
 	bool							Used;
-	char							MDEntryType[2];			// id=269  presence=optional    copy
+	char							MDEntryType[4];			// id=269  presence=optional    copy
 	int							MDEntryTypeLength = 0;
 	char							MDEntryID[16];			// id=278  presence=optional  
 	int							MDEntryIDLength = 0;
@@ -593,12 +593,12 @@ public:
 	Decimal							MDEntryPx;			// id=270  presence=optional    copy
 	Decimal							MDEntrySize;			// id=271  presence=optional    copy
 	Decimal							Yield;			// id=236  presence=optional    copy
-	char							OrderStatus[2];			// id=10505  presence=optional    copy
+	char							OrderStatus[4];			// id=10505  presence=optional    copy
 	int							OrderStatusLength = 0;
-	char							OrdType[2];			// id=40  presence=optional    copy
+	char							OrdType[4];			// id=40  presence=optional    copy
 	int							OrdTypeLength = 0;
 	Decimal							TotalVolume;			// id=5791  presence=optional    copy
-	char							TradingSessionSubID[2];			// id=625  presence=optional    copy
+	char							TradingSessionSubID[4];			// id=625  presence=optional    copy
 	int							TradingSessionSubIDLength = 0;
 	UINT32							MDUpdateAction;			// id=279  presence=optional  
 	char							Symbol[16];			// id=55  presence=optional    copy
@@ -716,7 +716,7 @@ public:
 	LinkedPointer<FastOLSCURRItemInfo>							*Pointer;
 	AutoAllocatePointerList<FastOLSCURRItemInfo>							*Allocator;
 	bool							Used;
-	char							MDEntryType[2];			// id=269  presence=optional    copy
+	char							MDEntryType[4];			// id=269  presence=optional    copy
 	int							MDEntryTypeLength = 0;
 	char							MDEntryID[16];			// id=278  presence=optional  
 	int							MDEntryIDLength = 0;
@@ -725,9 +725,9 @@ public:
 	UINT32							OrigTime;			// id=9412  presence=optional    copy
 	Decimal							MDEntryPx;			// id=270  presence=optional    copy
 	Decimal							MDEntrySize;			// id=271  presence=optional    copy
-	char							OrderStatus[2];			// id=10505  presence=optional    copy
+	char							OrderStatus[4];			// id=10505  presence=optional    copy
 	int							OrderStatusLength = 0;
-	char							TradingSessionSubID[2];			// id=625  presence=optional    copy
+	char							TradingSessionSubID[4];			// id=625  presence=optional    copy
 	int							TradingSessionSubIDLength = 0;
 	UINT32							MDUpdateAction;			// id=279  presence=optional    copy
 	char							Symbol[16];			// id=55  presence=optional    copy
@@ -842,14 +842,14 @@ public:
 	LinkedPointer<FastTLSFONDItemInfo>							*Pointer;
 	AutoAllocatePointerList<FastTLSFONDItemInfo>							*Allocator;
 	bool							Used;
-	char							MDEntryType[2];			// id=269  
+	char							MDEntryType[4];			// id=269  
 	int							MDEntryTypeLength = 0;
 	char							MDEntryID[16];			// id=278  presence=optional  
 	int							MDEntryIDLength = 0;
 	UINT32							MDEntryDate;			// id=272  presence=optional    copy
 	UINT32							MDEntryTime;			// id=273  presence=optional    copy
 	UINT32							OrigTime;			// id=9412  presence=optional    copy
-	char							OrderSide[2];			// id=10504  presence=optional    copy
+	char							OrderSide[4];			// id=10504  presence=optional    copy
 	int							OrderSideLength = 0;
 	Decimal							MDEntryPx;			// id=270  presence=optional    copy
 	Decimal							MDEntrySize;			// id=271  presence=optional    copy
@@ -864,7 +864,7 @@ public:
 	Decimal							RepoToPx;			// id=5677  presence=optional    copy
 	Decimal							BuyBackPx;			// id=5558  presence=optional    copy
 	UINT32							BuyBackDate;			// id=5559  presence=optional    copy
-	char							TradingSessionSubID[2];			// id=625  presence=optional    copy
+	char							TradingSessionSubID[4];			// id=625  presence=optional    copy
 	int							TradingSessionSubIDLength = 0;
 	char							RefOrderID[16];			// id=1080  presence=optional    copy
 	int							RefOrderIDLength = 0;
@@ -986,14 +986,14 @@ public:
 	LinkedPointer<FastTLSCURRItemInfo>							*Pointer;
 	AutoAllocatePointerList<FastTLSCURRItemInfo>							*Allocator;
 	bool							Used;
-	char							MDEntryType[2];			// id=269  
+	char							MDEntryType[4];			// id=269  
 	int							MDEntryTypeLength = 0;
 	char							MDEntryID[16];			// id=278  presence=optional  
 	int							MDEntryIDLength = 0;
 	UINT32							MDEntryDate;			// id=272  presence=optional    copy
 	UINT32							MDEntryTime;			// id=273  presence=optional    copy
 	UINT32							OrigTime;			// id=9412  presence=optional    copy
-	char							OrderSide[2];			// id=10504  presence=optional    copy
+	char							OrderSide[4];			// id=10504  presence=optional    copy
 	int							OrderSideLength = 0;
 	Decimal							MDEntryPx;			// id=270  presence=optional    copy
 	Decimal							MDEntrySize;			// id=271  presence=optional    copy
@@ -1006,7 +1006,7 @@ public:
 	Decimal							RepoToPx;			// id=5677  presence=optional    copy
 	Decimal							BuyBackPx;			// id=5558  presence=optional    copy
 	UINT32							BuyBackDate;			// id=5559  presence=optional    copy
-	char							TradingSessionSubID[2];			// id=625  presence=optional    copy
+	char							TradingSessionSubID[4];			// id=625  presence=optional    copy
 	int							TradingSessionSubIDLength = 0;
 	char							RefOrderID[16];			// id=1080  presence=optional    copy
 	int							RefOrderIDLength = 0;
@@ -1448,8 +1448,8 @@ public:
 	AutoAllocatePointerList<FastSecurityDefinitionGroupInstrAttribItemInfo>							*Allocator;
 	bool							Used;
 	INT32							InstrAttribType;			// id=871  
-	BYTE*							InstrAttribValue;			// id=872  presence=optional  
-	int							InstrAttribValueLength;
+	unsigned char							InstrAttribValue[128];			// id=872  presence=optional  
+	int							InstrAttribValueLength = 0;
 
 	FastSecurityDefinitionGroupInstrAttribItemInfo(){
 		this->Used = false;
@@ -1480,7 +1480,7 @@ public:
 	bool							Used;
 	char							TradingSessionID[16];			// id=336  
 	int							TradingSessionIDLength = 0;
-	char							TradingSessionSubID[2];			// id=625  presence=optional  
+	char							TradingSessionSubID[4];			// id=625  presence=optional  
 	int							TradingSessionSubIDLength = 0;
 	INT32							SecurityTradingStatus;			// id=326  presence=optional  
 	INT32							OrderNote;			// id=9680  presence=optional  
@@ -1567,15 +1567,15 @@ public:
 	INT32							TotNumReports;			// id=911  presence=optional  
 	char							Symbol[16];			// id=55  presence=optional  
 	int							SymbolLength = 0;
-	BYTE*							SecurityID;			// id=48  presence=optional  
-	int							SecurityIDLength;
-	BYTE*							SecurityIDSource;			// id=22  presence=optional  
-	int							SecurityIDSourceLength;
+	unsigned char							SecurityID[128];			// id=48  presence=optional  
+	int							SecurityIDLength = 0;
+	unsigned char							SecurityIDSource[128];			// id=22  presence=optional  
+	int							SecurityIDSourceLength = 0;
 	INT32							Product;			// id=460  presence=optional  
-	BYTE*							CFICode;			// id=461  presence=optional  
-	int							CFICodeLength;
-	BYTE*							SecurityType;			// id=167  presence=optional  
-	int							SecurityTypeLength;
+	unsigned char							CFICode[128];			// id=461  presence=optional  
+	int							CFICodeLength = 0;
+	unsigned char							SecurityType[128];			// id=167  presence=optional  
+	int							SecurityTypeLength = 0;
 	UINT32							MaturityDate;			// id=541  presence=optional  
 	UINT32							SettlDate;			// id=64  presence=optional  
 	char							SettleType[16];			// id=5459  presence=optional  
@@ -1585,12 +1585,12 @@ public:
 	Decimal							CouponRate;			// id=223  presence=optional  
 	UINT32							SettlFixingDate;			// id=9119  presence=optional  
 	Decimal							DividendNetPx;			// id=9982  presence=optional  
-	BYTE*							SecurityDesc;			// id=107  presence=optional  
-	int							SecurityDescLength;
-	BYTE*							EncodedSecurityDesc;			// id=351  presence=optional  
-	int							EncodedSecurityDescLength;
-	BYTE*							QuoteText;			// id=9696  presence=optional  
-	int							QuoteTextLength;
+	unsigned char							SecurityDesc[128];			// id=107  presence=optional  
+	int							SecurityDescLength = 0;
+	unsigned char							EncodedSecurityDesc[128];			// id=351  presence=optional  
+	int							EncodedSecurityDescLength = 0;
+	unsigned char							QuoteText[128];			// id=9696  presence=optional  
+	int							QuoteTextLength = 0;
 	int							GroupInstrAttribCount;			// presence=optional  
 	FastSecurityDefinitionGroupInstrAttribItemInfo* GroupInstrAttrib[256];			// presence=optional  
 	char							Currency[16];			// id=15  presence=optional  
@@ -1602,10 +1602,10 @@ public:
 	INT32							PriceType;			// id=423  presence=optional  
 	char							StateSecurityID[16];			// id=5217  presence=optional  
 	int							StateSecurityIDLength = 0;
-	BYTE*							EncodedShortSecurityDesc;			// id=5383  presence=optional  
-	int							EncodedShortSecurityDescLength;
-	BYTE*							MarketCode;			// id=5385  presence=optional  
-	int							MarketCodeLength;
+	unsigned char							EncodedShortSecurityDesc[128];			// id=5383  presence=optional  
+	int							EncodedShortSecurityDescLength = 0;
+	unsigned char							MarketCode[128];			// id=5385  presence=optional  
+	int							MarketCodeLength = 0;
 	Decimal							MinPriceIncrement;			// id=969  presence=optional  
 	Decimal							MktShareLimit;			// id=5387  presence=optional  
 	Decimal							MktShareThreshold;			// id=5388  presence=optional  
@@ -1692,7 +1692,7 @@ public:
 	int							SymbolLength = 0;
 	char							TradingSessionID[16];			// id=336  presence=optional  
 	int							TradingSessionIDLength = 0;
-	char							TradingSessionSubID[2];			// id=625  presence=optional  
+	char							TradingSessionSubID[4];			// id=625  presence=optional  
 	int							TradingSessionSubIDLength = 0;
 	INT32							SecurityTradingStatus;			// id=326  presence=optional  
 	UINT32							AuctionIndicator;			// id=5509  presence=optional  

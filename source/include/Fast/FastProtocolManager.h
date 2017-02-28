@@ -2511,17 +2511,19 @@ public:
 		*lengthAddress = length;
 	}
 
-	inline void ReadByteVector_Optional(BYTE **vecPtrAddress, int *lengthAddress) { 
+	inline void ReadByteVector_Optional(BYTE *vecPtrAddress, int *lengthAddress, int maxLength) {
 		int length = ReadInt32_Optional();
-		*vecPtrAddress = this->currentPos;
+		int copyLength = length > maxLength? maxLength: length;
+		this->CopyString((char*)vecPtrAddress, (char*)(this->currentPos), copyLength);
 		this->currentPos += length;
-		*lengthAddress = length;
+		*lengthAddress = copyLength;
 	}
-	inline void ReadByteVector_Mandatory(BYTE **vecPtrAddress, int *lengthAddress) { 
+	inline void ReadByteVector_Mandatory(BYTE *vecPtrAddress, int *lengthAddress, int maxLength) {
 		int length = ReadInt32_Mandatory();
-		*vecPtrAddress = this->currentPos;
+		int copyLength = length > maxLength? maxLength: length;
+		this->CopyString((char*)vecPtrAddress, (char*)(this->currentPos), copyLength);
 		this->currentPos += length;
-		*lengthAddress = length;
+		*lengthAddress = copyLength;
 	}
 
 	inline void WriteByteVector_Optional(BYTE *vecPtr, int length) { 
@@ -4658,11 +4660,11 @@ public:
 		if(CheckProcessNullByteVector())
 			info->NullMap |= NULL_MAP_INDEX2;
 		else
-			ReadByteVector_Optional(&(info->SecurityID), &(info->SecurityIDLength));
+			ReadByteVector_Optional(info->SecurityID, &(info->SecurityIDLength), 128);
 		if(CheckProcessNullByteVector())
 			info->NullMap |= NULL_MAP_INDEX3;
 		else
-			ReadByteVector_Optional(&(info->SecurityIDSource), &(info->SecurityIDSourceLength));
+			ReadByteVector_Optional(info->SecurityIDSource, &(info->SecurityIDSourceLength), 128);
 		if(CheckProcessNullInt32())
 			info->NullMap |= NULL_MAP_INDEX4;
 		else
@@ -4670,11 +4672,11 @@ public:
 		if(CheckProcessNullByteVector())
 			info->NullMap |= NULL_MAP_INDEX5;
 		else
-			ReadByteVector_Optional(&(info->CFICode), &(info->CFICodeLength));
+			ReadByteVector_Optional(info->CFICode, &(info->CFICodeLength), 128);
 		if(CheckProcessNullByteVector())
 			info->NullMap |= NULL_MAP_INDEX6;
 		else
-			ReadByteVector_Optional(&(info->SecurityType), &(info->SecurityTypeLength));
+			ReadByteVector_Optional(info->SecurityType, &(info->SecurityTypeLength), 128);
 		if(CheckProcessNullUInt32())
 			info->NullMap |= NULL_MAP_INDEX7;
 		else
@@ -4710,15 +4712,15 @@ public:
 		if(CheckProcessNullByteVector())
 			info->NullMap |= NULL_MAP_INDEX15;
 		else
-			ReadByteVector_Optional(&(info->SecurityDesc), &(info->SecurityDescLength));
+			ReadByteVector_Optional(info->SecurityDesc, &(info->SecurityDescLength), 128);
 		if(CheckProcessNullByteVector())
 			info->NullMap |= NULL_MAP_INDEX16;
 		else
-			ReadByteVector_Optional(&(info->EncodedSecurityDesc), &(info->EncodedSecurityDescLength));
+			ReadByteVector_Optional(info->EncodedSecurityDesc, &(info->EncodedSecurityDescLength), 128);
 		if(CheckProcessNullByteVector())
 			info->NullMap |= NULL_MAP_INDEX17;
 		else
-			ReadByteVector_Optional(&(info->QuoteText), &(info->QuoteTextLength));
+			ReadByteVector_Optional(info->QuoteText, &(info->QuoteTextLength), 128);
 
 		if(CheckProcessNullInt32()) {
 			info->GroupInstrAttribCount = 0;
@@ -4735,7 +4737,7 @@ public:
 			if(CheckProcessNullByteVector())
 				giaItemInfo->NullMap |= NULL_MAP_INDEX0;
 			else
-				ReadByteVector_Optional(&(giaItemInfo->InstrAttribValue), &(giaItemInfo->InstrAttribValueLength));
+				ReadByteVector_Optional(giaItemInfo->InstrAttribValue, &(giaItemInfo->InstrAttribValueLength), 128);
 			this->m_prevSecurityDefinitionGroupInstrAttribItemInfo = giaItemInfo;
 		}
 
@@ -4805,11 +4807,11 @@ public:
 		if(CheckProcessNullByteVector())
 			info->NullMap |= NULL_MAP_INDEX24;
 		else
-			ReadByteVector_Optional(&(info->EncodedShortSecurityDesc), &(info->EncodedShortSecurityDescLength));
+			ReadByteVector_Optional(info->EncodedShortSecurityDesc, &(info->EncodedShortSecurityDescLength), 128);
 		if(CheckProcessNullByteVector())
 			info->NullMap |= NULL_MAP_INDEX25;
 		else
-			ReadByteVector_Optional(&(info->MarketCode), &(info->MarketCodeLength));
+			ReadByteVector_Optional(info->MarketCode, &(info->MarketCodeLength), 128);
 		if(CheckProcessNullDecimal())
 			info->NullMap |= NULL_MAP_INDEX26;
 		else

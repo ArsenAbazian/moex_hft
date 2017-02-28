@@ -9,10 +9,14 @@ public:
 	~FastProtocolTester();
 
 	void Test() {
-		TestReadString_Optional();
+        TestStringCopy();
+        TestReadString_Optional();
 		TestReadString_Mandatory();
-		TestStringCopy();
-		TestReadUInt32_Optional();
+        TestReadByteVector_Optional();
+        TestReadByteVector_Mandatory();
+        TestReadInt32_Optional();
+        TestReadInt32_Mandatory();
+        TestReadUInt32_Optional();
 		TestReadUInt32_Mandatory();
 		TestReadUInt64_Optional();
 		TestReadUInt64_Mandatory();
@@ -20,11 +24,7 @@ public:
 		TestReadInt64_Mandatory();
 		TestReadDecimal_Optional();
 		TestReadDecimal_Mandatory();
-		TestReadByteVector_Optional();
-		TestReadByteVector_Mandatory();
 		TestMessageSequenceNumber();
-		TestReadInt32_Optional();
-		TestReadInt32_Mandatory();
 		TestParsePresenceMap();
 		TestMessages();
 	}

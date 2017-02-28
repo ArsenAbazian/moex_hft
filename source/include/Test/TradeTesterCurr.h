@@ -1622,7 +1622,7 @@ public:
                                      }, 2, 6),
         }, 2);
 
-        if(snapCurr->m_packets[3]->m_address != 0)
+        if(snapCurr->Packet(3)->m_address != 0)
             throw;
         if(snapCurr->m_startMsgSeqNum != 2)
             throw;
@@ -1739,15 +1739,15 @@ public:
                      "tlr entry s1 e1, lost tlr entry s1 e2, wait_snap, hbeat, hbeat, hbeat",
                      "                                                  hbeat, hbeat, hbeat",
                      30);
-        if(incCurr->m_packets[4]->m_address == 0 || incCurr->m_packets[5]->m_address == 0 || incCurr->m_packets[6]->m_address == 0)
+        if(incCurr->Packet(4)->m_address == 0 || incCurr->Packet(5)->m_address == 0 || incCurr->Packet(6)->m_address == 0)
             throw;
-        if(!incCurr->m_packets[4]->m_processed || !incCurr->m_packets[5]->m_processed || !incCurr->m_packets[6]->m_processed)
+        if(!incCurr->Packet(4)->m_processed || !incCurr->Packet(5)->m_processed || !incCurr->Packet(6)->m_processed)
             throw;
         // do not check Snapshot Feed Connection because it immediately cleares packets after processing,
         // because it can receive packet with the same message number again and again (cycle)
-        //if(snapCurr->m_packets[1]->m_address == 0 || snapCurr->m_packets[2]->m_address == 0 || snapCurr->m_packets[3]->m_address == 0)
+        //if(snapCurr->Packet(1)->m_address == 0 || snapCurr->Packet(2)->m_address == 0 || snapCurr->Packet(3)->m_address == 0)
         //    throw;
-        //if(!snapCurr->m_packets[1]->m_processed || !snapCurr->m_packets[2]->m_processed || !snapCurr->m_packets[3]->m_processed)
+        //if(!snapCurr->Packet(1)->m_processed || !snapCurr->Packet(2)->m_processed || !snapCurr->Packet(3)->m_processed)
         //    throw;
     }
 
@@ -2379,9 +2379,9 @@ public:
                      "tlr entry s1 e1, lost tlr entry s1 e2, wait_snap, hbeat",
                      "                                                  tls s1 begin rpt 2 entry s1 e2 end",
                      30);
-        if(snapCurr->m_packets[1]->m_address != 0)
+        if(snapCurr->Packet(1)->m_address != 0)
             throw;
-        if(snapCurr->m_packets[1]->m_processed != false)
+        if(snapCurr->Packet(1)->m_processed != false)
             throw;
     }
     // clear unitl not found route first
@@ -2393,13 +2393,13 @@ public:
                      "tlr entry s1 e1, lost tlr entry s1 e2, wait_snap, hbeat",
                      "                                                  hbeat, hbeat, tls s1 begin rpt 2 entry s1 e2 end",
                      30);
-        if(snapCurr->m_packets[1]->m_address != 0 ||
-           snapCurr->m_packets[2]->m_address != 0 ||
-           snapCurr->m_packets[3]->m_address != 0)
+        if(snapCurr->Packet(1)->m_address != 0 ||
+           snapCurr->Packet(2)->m_address != 0 ||
+           snapCurr->Packet(3)->m_address != 0)
             throw;
-        if(snapCurr->m_packets[1]->m_processed != false ||
-           snapCurr->m_packets[2]->m_processed != false ||
-           snapCurr->m_packets[3]->m_processed != false)
+        if(snapCurr->Packet(1)->m_processed != false ||
+           snapCurr->Packet(2)->m_processed != false ||
+           snapCurr->Packet(3)->m_processed != false)
             throw;
     }
     // clear if skip lost packets in snapshot

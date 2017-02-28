@@ -116,6 +116,9 @@ public:
         this->m_processed = false;
         this->m_requested = false;
     }
+    inline bool IsCleared() {
+        return this->m_address == 0 && !this->m_processed && !this->m_requested;
+    }
 };
 
 class FeedConnectionRequestMessageInfo {
