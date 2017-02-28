@@ -222,14 +222,6 @@ public:
 		this->PresenceMap = 0;
 		this->NullMap = 0;
 	}
-	inline void ExtractString() {
-		this->Symbol[this->SymbolLength - 1] &= 0x7f;
-		this->TradingSessionID[this->TradingSessionIDLength - 1] &= 0x7f;
-	}
-	inline void Restore() {
-		this->Symbol[this->SymbolLength - 1] |= 0x80;
-		this->TradingSessionID[this->TradingSessionIDLength - 1] |= 0x80;
-	}
 };
 
 class FastLogonInfo{

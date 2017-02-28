@@ -1030,14 +1030,6 @@ namespace prebuild {
 			WriteLine("\t\tthis->PresenceMap = 0;");
 			WriteLine("\t\tthis->NullMap = 0;");
 			WriteLine("\t}");
-			WriteLine("\tinline void ExtractString() {");
-			WriteLine("\t\tthis->Symbol[this->SymbolLength - 1] &= 0x7f;");
-			WriteLine("\t\tthis->TradingSessionID[this->TradingSessionIDLength - 1] &= 0x7f;");
-			WriteLine("\t}");
-			WriteLine("\tinline void Restore() {");
-			WriteLine("\t\tthis->Symbol[this->SymbolLength - 1] |= 0x80;");
-			WriteLine("\t\tthis->TradingSessionID[this->TradingSessionIDLength - 1] |= 0x80;");
-			WriteLine("\t}");
 			WriteLine("};");
 
 			WriteLine("");

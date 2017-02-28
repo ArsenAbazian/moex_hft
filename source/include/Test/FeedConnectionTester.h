@@ -200,10 +200,89 @@ public:
             throw;
     }
 
+    void TestWindowStartMsgSeqNo_AfterApplySnapshot() {
+        this->inc->ClearMessages();
+        this->inc->OrderCurr()->Clear();
+
+        TestTemplateInfo *info = new TestTemplateInfo();
+        TestTemplateItemInfo *item = new TestTemplateItemInfo();
+
+        info->m_templateId = FeedConnectionMessage::fmcIncrementalRefresh_OLR_CURR;
+        info->m_itemsCount = 1;
+        info->m_items[0] = item;
+
+        item->m_symbol = "symbol1";
+        item->m_tradingSession = "session1";
+        item->m_entryId = "entry1";
+        item->m_action = MDUpdateAction::mduaAdd;
+        item->m_entryType = MDEntryType::mdetBuyQuote;
+
+        for(int i = 0; i < 10; i++) {
+            item->m_rptSeq = i + 1;
+            info->m_msgSeqNo = i + 1;
+
+            this->m_helper->SendMessage(this->inc, info);
+            this->inc->Listen_Atom_Incremental_Core();
+        }
+        TestPacketsCleared(0, 10);
+        for(int i = 11; i < 20; i++) {
+            item->m_rptSeq = i + 1;
+            info->m_msgSeqNo = i + 1;
+
+            this->m_helper->SendMessage(this->inc, info);
+            this->inc->Listen_Atom_Incremental_Core();
+        }
+
+        if(this->inc->OrderCurr()->Symbol(0)->Session(0)->BuyQuotes()->Count() != 10)
+            throw;
+        if(this->inc->m_startMsgSeqNum != 10 + 1)
+            throw;
+        if(this->inc->m_endMsgSeqNum != 20)
+            throw;
+        if(this->inc->m_windowMsgSeqNum != this->inc->m_startMsgSeqNum)
+            throw;
+        for(int i = 12; i < 20; i++)
+            if(inc->m_packets[i - 11]->IsCleared())
+                throw;
+
+        // lost msg 11
+        TestTemplateInfo *info2 = new TestTemplateInfo();
+        TestTemplateItemInfo *item2 = new TestTemplateItemInfo();
+
+        info2->m_templateId = FeedConnectionMessage::fmcFullRefresh_OLS_CURR;
+        info2->m_itemsCount = 1;
+        info2->m_items[0] = item2;
+        info2->m_symbol = "symbol1";
+        info2->m_session = "session1";
+        info2->m_lastMsgSeqNoProcessed = 11;
+        info2->m_routeFirst = true;
+        info2->m_lastFragment = true;
+        info2->m_msgSeqNo = 1;
+        info2->m_rptSec = 11;
+
+        item2->m_entryId = "entry1";
+        item2->m_action = MDUpdateAction::mduaAdd;
+        item2->m_entryType = MDEntryType::mdetBuyQuote;
+
+        this->inc->StartListenSnapshot();
+        this->m_helper->SendMessage(this->snap, info2);
+        this->snap->Listen_Atom_Snapshot_Core();
+        this->inc->Listen_Atom_Incremental_Core();
+
+        TestPacketsCleared(0, 10);
+        if(this->inc->m_startMsgSeqNum != 20 + 1)
+            throw;
+        if(this->inc->m_endMsgSeqNum != 20)
+            throw;
+        if(this->inc->m_windowMsgSeqNum != this->inc->m_startMsgSeqNum)
+            throw;
+    }
+
     void TestFeedConnectionBase() {
         TestDefaults();
         TestWindowStartMsgSeqNo_CorrectIncremental();
         TestWindowStartMsgSeqNo_MessageLost();
+        TestWindowStartMsgSeqNo_AfterApplySnapshot();
     }
 
     void Test() {
