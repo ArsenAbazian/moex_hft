@@ -21,7 +21,7 @@ public:
     ~FeedConnection_CURR_TLR() {
         delete this->m_tradeTableCurr;
     }
-    int GetPacketsCount() { return 2000000; }
+    int GetPacketsCount() { return 10000; }
     ISocketBufferProvider* CreateSocketBufferProvider() {
         return new SocketBufferProvider(DefaultSocketBufferManager::Default,
                                         RobotSettings::Default->DefaultFeedConnectionSendBufferSize,

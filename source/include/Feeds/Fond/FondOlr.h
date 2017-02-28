@@ -21,7 +21,7 @@ public:
     ~FeedConnection_FOND_OLR() {
         delete this->m_orderTableFond;
     }
-    int GetPacketsCount() { return 1000000; }
+    int GetPacketsCount() { return 10000; }
     ISocketBufferProvider* CreateSocketBufferProvider() {
         return new SocketBufferProvider(DefaultSocketBufferManager::Default,
                                         RobotSettings::Default->DefaultFeedConnectionSendBufferSize,
