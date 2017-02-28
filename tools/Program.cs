@@ -2016,7 +2016,11 @@ namespace prebuild {
 			string itemInfo = GetIemInfoPrefix(value) + "ItemInfo";
 			WriteLine("");
 			if(ShouldWriteNullCheckCode(value)) {
-				WriteLine(tabString + "if(!CheckProcessNullInt32())");
+				WriteLine(tabString + "if(CheckProcessNullInt32()) {");
+				WriteLine(tabString + "\t" + objectValueName + "->" + Name(value) + "Count = 0;");
+				WriteLine(tabString + "\t" + objectValueName + "->NullMap |= NULL_MAP_INDEX" + CalcNullIndex(value) + ";");
+				WriteLine(tabString + "}");
+				WriteLine(tabString + "else");
 				tabString += "\t";
 			}
 			if(HasOptionalPresence(value))
@@ -2025,8 +2029,6 @@ namespace prebuild {
 				WriteLine(tabString + objectValueName + "->" + Name(value) + "Count = ReadUInt32_Mandatory();");
 			if(ShouldWriteNullCheckCode(value)) {
 				tabString = tabString.Substring(1);
-				WriteLine(tabString + "else");
-				WriteLine(tabString + "\t" + objectValueName + "->" + Name(value) + "Count = 0;");
 			}
 			WriteLine(tabString + info.Name + "* " + itemInfo + " = NULL;");
 			WriteLine("");
@@ -2061,7 +2063,9 @@ namespace prebuild {
 
 		private  void ParseByteVectorValue (StructureInfo str, XmlNode value, string info, string tabString) {
 			if(ShouldWriteNullCheckCode(value)) {
-				WriteLine(tabString + "if(!CheckProcessNullByteVector())");
+				WriteLine(tabString + "if(CheckProcessNullByteVector())");
+				WriteLine(tabString + "\t" + info + "->NullMap |= NULL_MAP_INDEX" + CalcNullIndex(value) + ";");
+				WriteLine(tabString + "else");
 				tabString += "\t";
 			}
 			if(ShouldSkipField(value)) {
@@ -2077,8 +2081,6 @@ namespace prebuild {
 			}
 			if(ShouldWriteNullCheckCode(value)) {
 				tabString = tabString.Substring(1);
-				WriteLine(tabString + "else");
-				WriteLine(tabString + "\t" + info + "->NullMap |= NULL_MAP_INDEX" + CalcNullIndex(value) + ";\n");
 				/*
 				if(HasOperators(value)) {
 					WriteLine(tabString + "else {");
@@ -2092,7 +2094,9 @@ namespace prebuild {
 
 		private  void ParseDecimalValue (StructureInfo str, XmlNode value, string info, string tabString) {
 			if(ShouldWriteNullCheckCode(value)) {
-				WriteLine(tabString + "if(!CheckProcessNullDecimal())");
+				WriteLine(tabString + "if(CheckProcessNullDecimal())");
+				WriteLine(tabString + "\t" + info + "->NullMap |= NULL_MAP_INDEX" + CalcNullIndex(value) + ";");
+				WriteLine(tabString + "else");
 				tabString += "\t";
 			}
 			if(ExtendedDecimal(value))
@@ -2110,8 +2114,6 @@ namespace prebuild {
 			}
 			if(ShouldWriteNullCheckCode(value)) {
 				tabString = tabString.Substring(1);
-				WriteLine(tabString + "else");
-				WriteLine(tabString + "\t" + info + "->NullMap |= NULL_MAP_INDEX" + CalcNullIndex(value) + ";\n");
 				/*
 				if(HasOperators(value)) {
 					WriteLine(tabString + "else {");
@@ -2126,7 +2128,9 @@ namespace prebuild {
 
 		private  void ParseInt64Value (StructureInfo str, XmlNode value, string info, string tabString) {
 			if(ShouldWriteNullCheckCode(value)) {
-				WriteLine(tabString + "if(!CheckProcessNullInt64())");
+				WriteLine(tabString + "if(CheckProcessNullInt64())");
+				WriteLine(tabString + "\t" + info + "->NullMap |= NULL_MAP_INDEX" + CalcNullIndex(value) + ";");
+				WriteLine(tabString + "else");
 				tabString += "\t";
 			}
 			if(ShouldSkipField(value)) {
@@ -2139,8 +2143,6 @@ namespace prebuild {
 			}
 			if(ShouldWriteNullCheckCode(value)) {
 				tabString = tabString.Substring(1);
-				WriteLine(tabString + "else");
-				WriteLine(tabString + "\t" + info + "->NullMap |= NULL_MAP_INDEX" + CalcNullIndex(value) + ";\n");
 				/*
 				if(HasOperators(value)) {
 					WriteLine(tabString + "else {");
@@ -2154,7 +2156,9 @@ namespace prebuild {
 
 		private  void ParseUint64Value (StructureInfo str, XmlNode value, string info, string tabString) {
 			if(ShouldWriteNullCheckCode(value)) {
-				WriteLine(tabString + "if(!CheckProcessNullUInt64())");
+				WriteLine(tabString + "if(CheckProcessNullUInt64())");
+				WriteLine(tabString + "\t" + info + "->NullMap |= NULL_MAP_INDEX" + CalcNullIndex(value) + ";");
+				WriteLine(tabString + "else");
 				tabString += "\t";
 			}
 			if(ShouldSkipField(value)) {
@@ -2167,8 +2171,6 @@ namespace prebuild {
 			}
 			if(ShouldWriteNullCheckCode(value)) {
 				tabString = tabString.Substring(1);
-				WriteLine(tabString + "else");
-				WriteLine(tabString + "\t" + info + "->NullMap |= NULL_MAP_INDEX" + CalcNullIndex(value) + ";\n");
 				/*
 				if(HasOperators(value)) {
 					WriteLine(tabString + "else {");
@@ -2182,7 +2184,9 @@ namespace prebuild {
 
 		private  void ParseInt32Value (StructureInfo str, XmlNode value, string info, string tabString) {
 			if(ShouldWriteNullCheckCode(value)) {
-				WriteLine(tabString + "if(!CheckProcessNullInt32())");
+				WriteLine(tabString + "if(CheckProcessNullInt32())");
+				WriteLine(tabString + "\t" + info + "->NullMap |= NULL_MAP_INDEX" + CalcNullIndex(value) + ";");
+				WriteLine(tabString + "else");
 				tabString += "\t";
 			}
 			if(ShouldSkipField(value)) {
@@ -2195,8 +2199,6 @@ namespace prebuild {
 			}
 			if(ShouldWriteNullCheckCode(value)) {
 				tabString = tabString.Substring(1);
-				WriteLine(tabString + "else");
-				WriteLine(tabString + "\t" + info + "->NullMap |= NULL_MAP_INDEX" + CalcNullIndex(value) + ";\n");
 				/*
 				if(HasOperators(value)) {
 					WriteLine(tabString + "else {");
@@ -2210,7 +2212,9 @@ namespace prebuild {
 
 		private  void ParseUint32Value (StructureInfo str, XmlNode value, string info, string tabString) {
 			if(ShouldWriteNullCheckCode(value)) {
-				WriteLine(tabString + "if(!CheckProcessNullUInt32())");
+				WriteLine(tabString + "if(CheckProcessNullUInt32())");
+				WriteLine(tabString + "\t" + info + "->NullMap |= NULL_MAP_INDEX" + CalcNullIndex(value) + ";");
+				WriteLine(tabString + "else");
 				tabString += "\t";
 			}
 			if(ShouldSkipField(value)) {
@@ -2223,8 +2227,6 @@ namespace prebuild {
 			}
 			if(ShouldWriteNullCheckCode(value)) {
 				tabString = tabString.Substring(1);
-				WriteLine(tabString + "else");
-				WriteLine(tabString + "\t" + info + "->NullMap |= NULL_MAP_INDEX" + CalcNullIndex(value) + ";\n");
 				/*
 				if(HasOperators(value)) {
 					WriteLine(tabString + "else {");
@@ -2238,7 +2240,9 @@ namespace prebuild {
 
 		private  void ParseStringValue (StructureInfo str, XmlNode value, string info, string tabString) {
 			if(ShouldWriteNullCheckCode(value)) {
-				WriteLine(tabString + "if(!CheckProcessNullString())");
+				WriteLine(tabString + "if(CheckProcessNullString())");
+				WriteLine(tabString + "\t" + info + "->NullMap |= NULL_MAP_INDEX" + CalcNullIndex(value) + ";");
+				WriteLine(tabString + "else");
 				tabString += "\t";
 			}
 			if(ShouldSkipField(value)) {
@@ -2251,8 +2255,6 @@ namespace prebuild {
 			}
 			if(ShouldWriteNullCheckCode(value)) {
 				tabString = tabString.Substring(1);
-				WriteLine(tabString + "else");
-				WriteLine(tabString + "\t" + info + "->NullMap |= NULL_MAP_INDEX" + CalcNullIndex(value) + ";\n");
 				/*
 				if(HasOperators(value)) {
 					WriteLine(tabString + "else {");
