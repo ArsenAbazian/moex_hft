@@ -64,6 +64,8 @@ public:
             throw;
         if(!this->idf->IdfAllowGenerateSecurityDefinitions())
             throw;
+        if(this->isf->m_windowMsgSeqNum != 0)
+            throw;
     }
 
     //Can be length of 1 or 2.
@@ -126,6 +128,13 @@ public:
         this->isf->m_requestMessageStartIndex = -1;
     }
 
+    void TestIsfPackestClearedLocal(int start, int end) {
+        for(int i = start; i <= end; i++) {
+            if(!this->isf->m_packets[i]->IsCleared())
+                throw;
+        }
+    }
+
     void TestReceiveExistingSymbol() {
         this->Clear();
         this->InitSecurityDefinitionCore();
@@ -159,6 +168,10 @@ public:
             throw;
         if(TradingSession(info2, 0, 1)->SecurityTradingStatus != 102)
             throw;
+
+        if(this->isf->m_windowMsgSeqNum != 7)
+            throw;
+        this->TestIsfPackestClearedLocal(0, 7);
     }
 
     void TestCallHistoricalReplayWhenLostMessage_1() {
@@ -195,6 +208,10 @@ public:
             throw;
         if(TradingSession(info2, 0, 1)->SecurityTradingStatus != 102)
             throw;
+
+        if(this->isf->m_windowMsgSeqNum != 7)
+            throw;
+        this->TestIsfPackestClearedLocal(0, 7);
     }
 
     void TestCallHistoricalReplayWhenLostMessage_2() {
@@ -231,6 +248,10 @@ public:
             throw;
         if(TradingSession(info2, 0, 1)->SecurityTradingStatus != 102)
             throw;
+
+        if(this->isf->m_windowMsgSeqNum != 7)
+            throw;
+        this->TestIsfPackestClearedLocal(0, 7);
     }
 
     void TestCallHistoricalReplayWhenLostMessage_3() {
@@ -282,6 +303,9 @@ public:
             throw;
         if(TradingSession(this->idf->Symbol(6), 0, 0)->SecurityTradingStatus != 17)
             throw;
+        if(this->isf->m_windowMsgSeqNum != 11)
+            throw;
+        this->TestIsfPackestClearedLocal(0, 11);
     }
 
     void TestCallHistoricalReplayWhenLostMessage() {
@@ -316,6 +340,8 @@ public:
         if (this->idf->m_idfStartMsgSeqNo != 0)
             throw;
         if (this->idf->m_idfState != FeedConnectionSecurityDefinitionState::sdsProcessToEnd)
+            throw;
+        if(this->isf->m_windowMsgSeqNum != 7)
             throw;
     }
     // assume that SecurityDefinition is started already
@@ -353,6 +379,8 @@ public:
         if(this->idf->m_idfState != FeedConnectionSecurityDefinitionState::sdsProcessFromStart)
             throw;
         if(this->hr->m_hsRequestList->Count() > 0)
+            throw;
+        if(this->isf->m_windowMsgSeqNum != 7)
             throw;
     }
     // security definition and security status works in parallel
@@ -407,10 +435,13 @@ public:
             throw;
         if(this->isf->m_startMsgSeqNum != 13)
             throw;
+        if(this->isf->m_windowMsgSeqNum != 13)
+            throw;
         if(this->hr->m_hsRequestList->Count() != 0)
             throw;
         if(TradingSession(this->idf->Symbol(0), 0, 0)->SecurityTradingStatus != 118)
             throw;
+        TestIsfPackestClearedLocal(0, 30);
     }
 
     // security definition and security status works in parallel
@@ -466,10 +497,13 @@ public:
             throw;
         if(this->isf->m_startMsgSeqNum != 13)
             throw;
+        if(this->isf->m_windowMsgSeqNum != 13)
+            throw;
         if(this->hr->m_hsRequestList->Count() != 0)
             throw;
         if(TradingSession(this->idf->Symbol(0), 0, 0)->SecurityTradingStatus != 118)
             throw;
+        TestIsfPackestClearedLocal(0, 30);
     }
 
     // when security definition should stop?
@@ -532,10 +566,13 @@ public:
             throw;
         if(this->isf->m_startMsgSeqNum != 18)
             throw;
+        if(this->isf->m_windowMsgSeqNum != 18)
+            throw;
         if(TradingSession(this->idf->Symbol(0), 0, 0)->SecurityTradingStatus != 0)
             throw;
         if(TradingSession(this->idf->Symbol(1), 0, 0)->SecurityTradingStatus != 118)
             throw;
+        TestIsfPackestClearedLocal(0, 30);
     }
 
     void TestStartSnapshotInstedOfHistoricalReplay_6_1() {
@@ -615,6 +652,9 @@ public:
             throw;
         if(this->idf->IdfMode() != FeedConnectionSecurityDefinitionMode::sdmUpdateData)
             throw;
+        if(this->isf->m_windowMsgSeqNum != 18)
+            throw;
+        TestIsfPackestClearedLocal(0, 18);
         FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo *t1 = TradingSession(this->idf->Symbol(0), 0, 0);
         FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo *t2 = TradingSession(this->idf->Symbol(1), 0, 0);
         FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo *t3 = TradingSession(this->idf->Symbol(2), 0, 0);
@@ -691,6 +731,8 @@ public:
         if(!this->isf->m_securityStatusSnapshotActive)
             throw;
         if(this->isf->m_isfStartSnapshotCount != 2)
+            throw;
+        if(this->isf->m_windowMsgSeqNum != this->isf->m_startMsgSeqNum)
             throw;
         if(this->isf->State() != FeedConnectionState::fcsListenSecurityStatus)
             throw;
@@ -770,6 +812,9 @@ public:
             throw;
         if(this->idf->IdfMode() != FeedConnectionSecurityDefinitionMode::sdmUpdateData)
             throw;
+        if(this->isf->m_windowMsgSeqNum != this->isf->m_startMsgSeqNum)
+            throw;
+        TestIsfPackestClearedLocal(0, 50);
         FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo *t1 = TradingSession(this->idf->Symbol(0), 0, 0);
         FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo *t2 = TradingSession(this->idf->Symbol(1), 0, 0);
         FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo *t3 = TradingSession(this->idf->Symbol(2), 0, 0);
@@ -884,6 +929,9 @@ public:
             throw;
         if(this->idf->IdfMode() != FeedConnectionSecurityDefinitionMode::sdmUpdateData)
             throw;
+        if(this->isf->m_windowMsgSeqNum != this->isf->m_startMsgSeqNum)
+            throw;
+        TestIsfPackestClearedLocal(0, 50);
         FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo *t1 = TradingSession(this->idf->Symbol(0), 0, 0);
         FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo *t2 = TradingSession(this->idf->Symbol(1), 0, 0);
         FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo *t3 = TradingSession(this->idf->Symbol(2), 0, 0);
@@ -956,7 +1004,7 @@ public:
             if(!this->isf->Packet(i)->m_requested)
                 return false;
         }
-        for(int i = 0; i < startIndex; i++) {
+        for(int i = this->isf->m_windowMsgSeqNum; i < startIndex; i++) {
             if(this->isf->Packet(i)->m_requested)
                 return false;
         }
@@ -988,9 +1036,14 @@ public:
         this->isf->ClearMessages();
         this->isf->m_startMsgSeqNum = 3;
         this->isf->m_endMsgSeqNum = 3;
+        this->isf->m_windowMsgSeqNum = 3;
         this->isf->Packet(3)->m_address = this->CreateHearthBeatMessage(3);
         this->isf->ProcessSecurityStatusMessages();
         if(!TestNotRequestedLocal(1, 10))
+            throw;
+        if(this->isf->m_windowMsgSeqNum != 4)
+            throw;
+        if(this->isf->m_startMsgSeqNum != 4)
             throw;
     }
 
@@ -1017,6 +1070,7 @@ public:
     void TestRequestLostMessagesLogic_4() {
         this->isf->ClearMessages();
         this->isf->m_requestMessageStartIndex = -1;
+        this->isf->m_windowMsgSeqNum = 3;
         this->isf->m_startMsgSeqNum = 3;
         this->isf->m_endMsgSeqNum = 4;
         this->FillMessages(4, 4);
@@ -1027,6 +1081,8 @@ public:
             throw;
         if(!CheckRequestInfo(0, this->isf, 3, 3))
             throw;
+        if(this->isf->m_windowMsgSeqNum != 3)
+            throw;
     }
 
     // request some messages
@@ -1034,6 +1090,7 @@ public:
         this->isf->ClearMessages();
         this->isf->m_requestMessageStartIndex = -1;
         this->hr->m_hsRequestList->Clear();
+        this->isf->m_windowMsgSeqNum = 4;
         this->isf->m_startMsgSeqNum = 4;
         this->isf->m_endMsgSeqNum = 21;
         this->FillMessages(4, 10);
@@ -1049,6 +1106,10 @@ public:
             throw;
         if(!CheckRequestInfo(0, this->isf, 11, 19))
             throw;
+        if(this->isf->m_windowMsgSeqNum != 4)
+            throw;
+        if(this->isf->m_startMsgSeqNum != 11)
+            throw;
     }
 
     // two GAPs
@@ -1056,6 +1117,7 @@ public:
         this->isf->ClearMessages();
         this->isf->m_requestMessageStartIndex = -1;
         this->hr->m_hsRequestList->Clear();
+        this->isf->m_windowMsgSeqNum = 4;
         this->isf->m_startMsgSeqNum = 4;
         this->isf->m_endMsgSeqNum = 24;
         this->FillMessages(4, 10);
@@ -1075,6 +1137,10 @@ public:
         if(!CheckRequestInfo(0, this->isf, 11, 19))
             throw;
         if(!CheckRequestInfo(1, this->isf, 22, 22))
+            throw;
+        if(this->isf->m_windowMsgSeqNum != 4)
+            throw;
+        if(this->isf->m_startMsgSeqNum != 11)
             throw;
     }
 

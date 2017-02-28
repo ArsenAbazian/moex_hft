@@ -719,6 +719,8 @@ protected:
             this->ClearLocalPackets(0, end);
             this->m_windowMsgSeqNum = this->m_startMsgSeqNum;
         }
+        else
+            this->m_startMsgSeqNum = i + this->m_windowMsgSeqNum;
         return true;
     }
 
