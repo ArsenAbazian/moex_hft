@@ -351,6 +351,7 @@ public:
     inline void PrintStatistics(int cycleCount, int elapsedSeconds) {
         double nanosecPerCycle = elapsedSeconds * 1000.0 * 1000.0 * 1000.0 / cycleCount;
         printf("CycleCount for 3 sec = %d. %g nanosec per cycle\n", cycleCount, nanosecPerCycle);
+        printf("curr olr WindowSize = %d\n", this->m_currMarket->FeedChannel()->Olr()->WindowSize());
 
         if(this->AllowFondMarket())
             this->PrintStatisticsFond();

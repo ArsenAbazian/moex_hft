@@ -1325,8 +1325,11 @@ protected:
         // Skip this hack when testing :)
         if(this->m_snapshot->State() == FeedConnectionState::fcsSuspend &&
                 (this->m_endMsgSeqNum % 500) < 40) {
-            this->Packet(this->m_endMsgSeqNum)->m_address = 0; // force historical replay
-            printf("packet %d is lost, requestIndexd = %d\n", this->m_endMsgSeqNum, this->m_requestMessageStartIndex);
+            if(this->Packet(this->m_endMsgSeqNum)->m_address != 0) {
+                this->Packet(this->m_endMsgSeqNum)->m_address = 0; // force historical replay
+                printf("packet %d is lost, requestIndexd = %d\n", this->m_endMsgSeqNum,
+                       this->m_requestMessageStartIndex);
+            }
             return true;
         }
 #endif
@@ -2642,6 +2645,7 @@ public:
 	}
 
 	inline int MsgSeqNo() { return this->m_startMsgSeqNum; }
+    inline int WindowSize() { return this->m_endMsgSeqNum - this->m_windowMsgSeqNum; }
     inline int LastRecvMsgSeqNo() { return this->m_endMsgSeqNum; }
 	inline int ExpectedMsgSeqNo() { return this->m_startMsgSeqNum + 1; }
 
