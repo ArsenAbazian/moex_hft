@@ -270,51 +270,179 @@ protected:
         return true;
     }
     inline FeedConnectionMessageInfo* Packet(int index) { return this->m_packets[index - this->m_windowMsgSeqNum]; }
-    inline bool ProcessServerCore_FromHistoricalReplay(SocketBuffer *buffer, int size, int msgSeqNum) {
-        if(this->m_type == FeedConnectionType::InstrumentDefinition)
+    inline bool SupportWindow() { return this->m_type == FeedConnectionType::Incremental || this->m_type == FeedConnectionType::InstrumentStatus; }
+
+    inline bool ProcessServerCoreIncremental_HistoricalReplay(SocketBuffer *buffer, int size, int msgSeqNum) {
+        if(msgSeqNum < this->m_windowMsgSeqNum) // out of window
+            return true;
+        if(msgSeqNum - this->m_windowMsgSeqNum >= this->m_packetsCount) {
+            // we should start snapshot
+            this->ClearLocalPackets(0, this->GetLocalIndex(this->m_endMsgSeqNum));
+            this->m_startMsgSeqNum = msgSeqNum;
+            this->m_windowMsgSeqNum = msgSeqNum;
+            this->m_endMsgSeqNum = msgSeqNum;
+            this->StartListenSnapshot();
+            return false;
+        }
+        FeedConnectionMessageInfo *info = this->Packet(msgSeqNum);
+        if(info->m_address != 0) // already recv
+            return true;
+
+        if(this->m_endMsgSeqNum < msgSeqNum)
             this->m_endMsgSeqNum = msgSeqNum;
 
-        if(msgSeqNum < this->m_windowMsgSeqNum)
-            return false;
-
-        FeedConnectionMessageInfo *info = this->Packet(msgSeqNum);
-        if(info->m_address != 0)
-            return true;
-
-        buffer->SetCurrentItemSize(size);
-
-//        BinaryLogItem *item = DefaultLogManager::Default->WriteFast(this->m_idLogIndex,
-//                                                                    LogMessageCode::lmcFeedConnection_ProcessMessage,
-//                                                                    buffer->BufferIndex(),
-//                                                                    buffer->CurrentItemIndex());
-        if(!this->UpdateMsgSeqStartEnd(msgSeqNum))
-            return true;
         info->m_address = buffer->CurrentPos();
         info->m_size = size;
         info->m_requested = true;
         return true;
     }
-    inline bool ProcessServerCore(WinSockManager *socketManager, int size) {
-        int msgSeqNum = *((UINT*)this->m_recvABuffer->CurrentPos());
-        if(this->m_type == FeedConnectionType::InstrumentDefinition)
-            this->m_endMsgSeqNum = msgSeqNum;
 
-        if(msgSeqNum < this->m_windowMsgSeqNum)
+    inline bool ProcessServerCoreSecurityStatus_HistoricalReplay(SocketBuffer *buffer, int size, int msgSeqNum) {
+        if(msgSeqNum < this->m_windowMsgSeqNum) // out of window
+            return true;
+        if(msgSeqNum - this->m_windowMsgSeqNum >= this->m_packetsCount) {
+            // we should start snapshot
+            this->StartSecurityStatusSnapshot();
             return false;
-
+        }
         FeedConnectionMessageInfo *info = this->Packet(msgSeqNum);
-        if(info->m_address != 0)
+        if(info->m_address != 0) // already recv
             return true;
 
-        this->m_recvABuffer->SetCurrentItemSize(size);
+        if(this->m_endMsgSeqNum < msgSeqNum)
+            this->m_endMsgSeqNum = msgSeqNum;
+        if(this->m_startMsgSeqNum == -1) // should we do this? well security status starts immediately after security definition so...
+            this->m_startMsgSeqNum = msgSeqNum;
 
-        if(!this->UpdateMsgSeqStartEnd(msgSeqNum))
+        info->m_address = buffer->CurrentPos();
+        info->m_size = size;
+        info->m_requested = true;
+        return true;
+    }
+
+    inline bool ProcessServerCore_FromHistoricalReplay(SocketBuffer *buffer, int size, int msgSeqNum) {
+        // we should only process incremental messages
+        if(this->m_type == FeedConnectionType::Incremental)
+            return ProcessServerCoreIncremental_HistoricalReplay(buffer, size, msgSeqNum);
+        if(this->m_type == FeedConnectionType::InstrumentStatus)
+            return ProcessServerCoreSecurityStatus_HistoricalReplay(buffer, size, msgSeqNum);
+        return true;
+    }
+
+    inline bool ProcessServerCoreSecurityDefinition(int size, int msgSeqNum) {
+        this->m_endMsgSeqNum = msgSeqNum;
+
+        FeedConnectionMessageInfo *info = this->m_packets[msgSeqNum];
+        if(info->m_address != null)
             return true;
+
+        if(this->m_idfStartMsgSeqNo == 0)
+            this->m_idfStartMsgSeqNo = msgSeqNum;
+        if(this->m_idfMaxMsgSeqNo == 0)
+            this->m_idfMaxMsgSeqNo = TryGetSecurityDefinitionTotNumReports(this->m_recvABuffer->CurrentPos());
+
         info->m_address = this->m_recvABuffer->CurrentPos();
         info->m_size = size;
         info->m_requested = false;
         this->m_recvABuffer->Next(size);
         return true;
+    }
+
+    inline bool ProcessServerCoreSnapshot(int size, int msgSeqNum) {
+        FeedConnectionMessageInfo *info = this->m_packets[msgSeqNum];
+
+        if(info->m_address != 0)
+            return true;
+
+        if(this->m_startMsgSeqNum == -1) { // initialization
+            this->m_startMsgSeqNum = msgSeqNum;
+            this->m_endMsgSeqNum = msgSeqNum;
+        }
+        else { // normal cycle
+            if (msgSeqNum < this->m_startMsgSeqNum) // recv already processed message
+                return false;
+            if(this->m_endMsgSeqNum < msgSeqNum) // recv next message
+                this->m_endMsgSeqNum = msgSeqNum;
+            else { // some kind of previous message
+                if(this->m_endMsgSeqNum - msgSeqNum > 100) { // new cycle detected
+                    if (this->m_snapshotRouteFirst != -1)
+                        this->ClearPackets(this->m_snapshotRouteFirst, this->m_startMsgSeqNum);
+                    this->ClearPackets(this->m_startMsgSeqNum, this->m_endMsgSeqNum);
+                    this->m_startMsgSeqNum = msgSeqNum;
+                    this->m_endMsgSeqNum = msgSeqNum;
+                }
+            }
+        }
+
+        info->m_address = this->m_recvABuffer->CurrentPos();
+        info->m_size = size;
+        info->m_requested = false;
+        this->m_recvABuffer->Next(size);
+        return true;
+    }
+
+    inline bool ProcessServerCoreIncremental(int size, int msgSeqNum) {
+        if(msgSeqNum < this->m_windowMsgSeqNum) // out of window
+            return true;
+        if(msgSeqNum - this->m_windowMsgSeqNum >= this->m_packetsCount) {
+            // we should start snapshot
+            this->ClearLocalPackets(0, this->GetLocalIndex(this->m_endMsgSeqNum));
+            this->m_startMsgSeqNum = msgSeqNum;
+            this->m_windowMsgSeqNum = msgSeqNum;
+            this->m_endMsgSeqNum = msgSeqNum;
+            this->StartListenSnapshot();
+            return false;
+        }
+        FeedConnectionMessageInfo *info = this->Packet(msgSeqNum);
+        if(info->m_address != 0) // already recv
+            return true;
+
+        if(this->m_endMsgSeqNum < msgSeqNum)
+            this->m_endMsgSeqNum = msgSeqNum;
+
+        info->m_address = this->m_recvABuffer->CurrentPos();
+        info->m_size = size;
+        info->m_requested = false;
+        this->m_recvABuffer->Next(size);
+        return true;
+    }
+
+    inline bool ProcessServerCoreSecurityStatus(int size, int msgSeqNum) {
+        if(msgSeqNum < this->m_windowMsgSeqNum) // out of window
+            return true;
+        if(msgSeqNum - this->m_windowMsgSeqNum >= this->m_packetsCount) {
+            // we should start snapshot
+            this->StartSecurityStatusSnapshot();
+            return false;
+        }
+        FeedConnectionMessageInfo *info = this->Packet(msgSeqNum);
+        if(info->m_address != 0) // already recv
+            return true;
+
+        if(this->m_endMsgSeqNum < msgSeqNum)
+            this->m_endMsgSeqNum = msgSeqNum;
+        if(this->m_startMsgSeqNum == -1) // should we do this? well security status starts immediately after security definition so...
+            this->m_startMsgSeqNum = msgSeqNum;
+
+        info->m_address = this->m_recvABuffer->CurrentPos();
+        info->m_size = size;
+        info->m_requested = false;
+        this->m_recvABuffer->Next(size);
+        return true;
+    }
+
+    inline bool ProcessServerCore(int size) {
+        int msgSeqNum = *((UINT*)this->m_recvABuffer->CurrentPos());
+
+        if(this->m_type == FeedConnectionType::Incremental)
+            return ProcessServerCoreIncremental(size, msgSeqNum);
+        if(this->m_type == FeedConnectionType::InstrumentStatus)
+            return ProcessServerCoreSecurityStatus(size, msgSeqNum);
+        if(this->m_type == FeedConnectionType::Snapshot)
+            return ProcessServerCoreSnapshot(size, msgSeqNum);
+        if(this->m_type == FeedConnectionType::InstrumentDefinition)
+            return ProcessServerCoreSecurityDefinition(size, msgSeqNum);
+        return false;
     }
     inline bool ProcessServer(WinSockManager *socketManager, LogMessageCode socketName) {
         if(!socketManager->ShouldRecv())
@@ -329,7 +457,7 @@ protected:
         int size = socketManager->RecvSize();
         if(size == 0)
             return false;
-        return this->ProcessServerCore(socketManager, size);
+        return this->ProcessServerCore(size);
     }
 
     inline bool HasQueueEntries() {

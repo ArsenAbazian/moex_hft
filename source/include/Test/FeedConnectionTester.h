@@ -278,11 +278,65 @@ public:
             throw;
     }
 
+    void TestReceivedPacketWithBigMsgSeqNo_FromStart() {
+        this->inc->ClearMessages();
+
+        TestTemplateInfo *info = new TestTemplateInfo();
+        info->m_templateId = FeedConnectionMessage::fcmHeartBeat;
+        info->m_msgSeqNo = 1000000;
+
+        this->m_helper->SendHearthBeatMessage(this->inc, info);
+        if(this->inc->m_startMsgSeqNum != 1000000)
+            throw;
+        if(this->inc->m_windowMsgSeqNum != 1000000)
+            throw;
+        if(this->inc->m_endMsgSeqNum != 1000000)
+            throw;
+        if(this->snap->State() != FeedConnectionState::fcsListenSnapshot)
+            throw;
+        this->inc->StopListenSnapshot();
+        this->inc->OrderCurr()->Clear();
+    }
+
+    void TestReceivedPacketWithBigMsgSeqNo_InProcess() {
+        this->inc->ClearMessages();
+
+        this->inc->m_windowMsgSeqNum = 500000;
+        this->inc->m_startMsgSeqNum = 500005;
+        this->inc->m_endMsgSeqNum = 500010;
+        this->inc->m_packets[5]->m_address = new unsigned char[2];
+        this->inc->m_packets[6]->m_address = new unsigned char[2];
+        this->inc->m_packets[7]->m_address = new unsigned char[2];
+        this->inc->m_packets[8]->m_address = new unsigned char[2];
+        this->inc->m_packets[9]->m_address = new unsigned char[2];
+        this->inc->m_packets[10]->m_address = new unsigned char[2];
+
+        TestTemplateInfo *info = new TestTemplateInfo();
+        info->m_templateId = FeedConnectionMessage::fcmHeartBeat;
+        info->m_msgSeqNo = 1000000;
+
+        this->m_helper->SendHearthBeatMessage(this->inc, info);
+        if(this->inc->m_startMsgSeqNum != 1000000)
+            throw;
+        if(this->inc->m_windowMsgSeqNum != 1000000)
+            throw;
+        if(this->inc->m_endMsgSeqNum != 1000000)
+            throw;
+        for(int i = 5; i <= 10; i++) {
+            if(!this->inc->m_packets[i]->IsCleared())
+                throw;
+        }
+        this->inc->StopListenSnapshot();
+        this->inc->OrderCurr()->Clear();
+    }
+
     void TestFeedConnectionBase() {
         TestDefaults();
         TestWindowStartMsgSeqNo_CorrectIncremental();
         TestWindowStartMsgSeqNo_MessageLost();
         TestWindowStartMsgSeqNo_AfterApplySnapshot();
+        TestReceivedPacketWithBigMsgSeqNo_FromStart();
+        TestReceivedPacketWithBigMsgSeqNo_InProcess();
     }
 
     void Test() {
