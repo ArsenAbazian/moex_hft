@@ -12,6 +12,8 @@
 #include "../Lib/StringIdComparer.h"
 #include <stdio.h>
 #include <malloc.h>
+#include <MarketData/MDEntryQueue.h>
+#include <cstdlib>
 
 template <template<typename ITEMINFO> class TABLEITEM, typename INFO, typename ITEMINFO> class MarketDataTable;
 template <typename T> class MarketSymbolInfo;
@@ -26,6 +28,7 @@ class StatisticItemTransactionsMagnitude;
 class FeedChannel;
 class FastProtocolManager;
 class FeedConnection;
+class MDEntryQueue;
 
 class DebugInfoManager {
 
@@ -471,6 +474,14 @@ public:
     void PrintMemoryInfo() {
         PrintMemoryInfo("");
     }
+
+    int CalcOrderFondTotalEntriesCount(FeedConnection *conn);
+    int CalcOrderCurrTotalEntriesCount(FeedConnection *conn);
+    int CalcTradeFondTotalEntriesCount(FeedConnection *conn);
+    int CalcTradeCurrTotalEntriesCount(FeedConnection *conn);
+    int CheckIsFriedMDEntryQueryCleared();
+    MDEntryQueue* GetFirstMDEntryQueue();
+    int GetFirstNonEmptyEntry();
 };
 
 #endif //HFT_ROBOT_DEBUGINFOMANAGER_H

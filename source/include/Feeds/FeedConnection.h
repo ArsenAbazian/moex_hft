@@ -221,54 +221,6 @@ protected:
 
     inline bool ProcessServerA() { return this->ProcessServer(this->socketAManager, LogMessageCode::lmcsocketA); }
     inline bool ProcessServerB() { return this->ProcessServer(this->socketBManager, LogMessageCode::lmcsocketB); }
-    inline bool UpdateMsgSeqStartEnd(int msgSeqNum) {
-        if(this->m_type == FeedConnectionType::Incremental) {
-            if(this->m_endMsgSeqNum < msgSeqNum)
-                this->m_endMsgSeqNum = msgSeqNum;
-//                    BinaryLogItem *item = DefaultLogManager::Default->WriteFast(this->m_idLogIndex,
-//                                                                    LogMessageCode::lmcFeedConnection_ProcessMessage,
-//                                                                    this->m_recvABuffer->BufferIndex(),
-//                                                                    this->m_recvABuffer->CurrentItemIndex());
-        }
-        else if(this->m_type == FeedConnectionType::InstrumentDefinition) {
-          //printf("%d %s %s -> %d size = %d\n", socketManager->Socket(), this->m_channelName, this->m_idName, msgSeqNum, size);
-//        BinaryLogItem *item = DefaultLogManager::Default->WriteFast(this->m_idLogIndex,
-//                                                                    LogMessageCode::lmcFeedConnection_ProcessMessage,
-//                                                                    this->m_recvABuffer->BufferIndex(),
-//                                                                    this->m_recvABuffer->CurrentItemIndex());
-            if(this->m_idfStartMsgSeqNo == 0)
-                this->m_idfStartMsgSeqNo = msgSeqNum;
-            if(this->m_idfMaxMsgSeqNo == 0)
-                this->m_idfMaxMsgSeqNo = TryGetSecurityDefinitionTotNumReports(this->m_recvABuffer->CurrentPos());
-        }
-        else if(this->m_type == FeedConnectionType::InstrumentStatus) {
-            if(this->m_endMsgSeqNum < msgSeqNum)
-                this->m_endMsgSeqNum = msgSeqNum;
-            if(this->m_startMsgSeqNum == -1)
-                this->m_startMsgSeqNum = msgSeqNum;
-        }
-        else {
-            //printf("%d  %s -> %d size = %d\n", socketManager->Socket(), this->m_idName, msgSeqNum, size);
-//            BinaryLogItem *item = DefaultLogManager::Default->WriteFast(this->m_idLogIndex,
-//                                                                    LogMessageCode::lmcFeedConnection_ProcessMessage,
-//                                                                    this->m_recvABuffer->BufferIndex(),
-//                                                                    this->m_recvABuffer->CurrentItemIndex());
-            if(this->m_startMsgSeqNum == -1)
-                this->m_startMsgSeqNum = msgSeqNum;
-            if(this->m_endMsgSeqNum < msgSeqNum)
-                this->m_endMsgSeqNum = msgSeqNum;
-            if(this->m_endMsgSeqNum - msgSeqNum > 100) {
-                if(this->m_snapshotRouteFirst != -1)
-                    this->ClearPackets(this->m_snapshotRouteFirst, this->m_startMsgSeqNum);
-                this->ClearPackets(this->m_startMsgSeqNum, this->m_endMsgSeqNum);
-                this->m_startMsgSeqNum = msgSeqNum;
-                this->m_endMsgSeqNum = msgSeqNum;
-            }
-            if(msgSeqNum < this->m_startMsgSeqNum)
-                return false;
-        }
-        return true;
-    }
     inline FeedConnectionMessageInfo* Packet(int index) { return this->m_packets[index - this->m_windowMsgSeqNum]; }
     inline bool SupportWindow() { return this->m_type == FeedConnectionType::Incremental || this->m_type == FeedConnectionType::InstrumentStatus; }
 
@@ -296,7 +248,6 @@ protected:
         info->m_requested = true;
         return true;
     }
-
     inline bool ProcessServerCoreSecurityStatus_HistoricalReplay(SocketBuffer *buffer, int size, int msgSeqNum) {
         if(msgSeqNum < this->m_windowMsgSeqNum) // out of window
             return true;
@@ -319,7 +270,6 @@ protected:
         info->m_requested = true;
         return true;
     }
-
     inline bool ProcessServerCore_FromHistoricalReplay(SocketBuffer *buffer, int size, int msgSeqNum) {
         // we should only process incremental messages
         if(this->m_type == FeedConnectionType::Incremental)
@@ -347,7 +297,6 @@ protected:
         this->m_recvABuffer->Next(size);
         return true;
     }
-
     inline bool ProcessServerCoreSnapshot(int size, int msgSeqNum) {
         FeedConnectionMessageInfo *info = this->m_packets[msgSeqNum];
 
@@ -359,8 +308,6 @@ protected:
             this->m_endMsgSeqNum = msgSeqNum;
         }
         else { // normal cycle
-            if (msgSeqNum < this->m_startMsgSeqNum) // recv already processed message
-                return false;
             if(this->m_endMsgSeqNum < msgSeqNum) // recv next message
                 this->m_endMsgSeqNum = msgSeqNum;
             else { // some kind of previous message
@@ -372,6 +319,8 @@ protected:
                     this->m_endMsgSeqNum = msgSeqNum;
                 }
             }
+            if(msgSeqNum < this->m_startMsgSeqNum) // recv already processed message
+                return false;
         }
 
         info->m_address = this->m_recvABuffer->CurrentPos();
@@ -465,6 +414,10 @@ protected:
             return this->m_orderTableFond->HasQueueEntries();
         else if(this->m_orderTableCurr != 0)
             return this->m_orderTableCurr->HasQueueEntries();
+        else if(this->m_statTableCurr != 0)
+            return this->m_statTableCurr->HasQueueEntries();
+        else if(this->m_statTableFond != 0)
+            return this->m_statTableFond->HasQueueEntries();
         else if(this->m_tradeTableFond != 0)
             return this->m_tradeTableFond->HasQueueEntries();
         else if(this->m_tradeTableCurr != 0)
@@ -1445,23 +1398,19 @@ protected:
 
         return true;
     }
-
     inline bool Listen_Atom_Incremental_Core() {
 
 #ifndef TEST
         // TODO remove hack. just skip 30 messages and then try to restore
         // Skip this hack when testing :)
-        if(this->m_snapshot->State() == FeedConnectionState::fcsSuspend &&
-                (this->m_endMsgSeqNum % 500) < 40) {
-            if(this->Packet(this->m_endMsgSeqNum)->m_address != 0) {
-                this->Packet(this->m_endMsgSeqNum)->m_address = 0; // force historical replay
-                printf("packet %d is lost, requestIndexd = %d\n", this->m_endMsgSeqNum,
-                       this->m_requestMessageStartIndex);
+        if(this->m_snapshot->State() == FeedConnectionState::fcsSuspend && (this->m_endMsgSeqNum % 100) < 10) {
+            if(this->m_endMsgSeqNum >= this->m_startMsgSeqNum && this->Packet(this->m_endMsgSeqNum)->m_address != 0) {
+                this->Packet(this->m_endMsgSeqNum)->m_address = 0;
+                //printf("packet %d is lost, requestIndexd = %d\n", this->m_endMsgSeqNum, this->m_requestMessageStartIndex);
             }
             return true;
         }
 #endif
-
         if(!this->ProcessIncrementalMessages())
             return false;
         if(this->m_snapshot->State() == FeedConnectionState::fcsSuspend) {
@@ -1587,7 +1536,13 @@ protected:
 
     inline void OnProcessHistoricalReplayUnexpectedLogoutMessage(const char *methodName, FastLogoutInfo *info) {
         info->Text[info->TextLength] = 0;
+        // Limit of connections for this IP exceeded
+        // TODO remove debug
         printf("\t\tHistorical Replay - %s - UNEXPECTED Logout: %s\n", methodName, info->Text);
+        static const char *limit = "Limit of connections for this IP exceeded";
+        if(StringIdComparer::Equal(info->Text, info->TextLength, limit, strlen(limit))) {
+            this->OnHistricalReplayExceedUnsuccessfullConnectCount();
+        }
         info->Clear();
     }
 
@@ -1888,7 +1843,6 @@ protected:
             else {
                 if(this->m_waitTimer->ElapsedMilliseconds(2) > this->WaitAnyPacketMaxTimeMs) {
                     this->m_waitTimer->Stop(2);
-                    //printf("%d entries and %d symbols to go.\n", this->m_incremental->OrderCurr()->QueueEntriesCount(), this->m_incremental->OrderCurr()->SymbolsToRecvSnapshotCount());
                     DefaultLogManager::Default->WriteSuccess(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_Listen_Atom_Snapshot, false);
                     ReconnectSetNextState(FeedConnectionState::fcsListenSnapshot);
                     return true;
@@ -2773,9 +2727,11 @@ public:
 	}
 
 	inline int MsgSeqNo() { return this->m_startMsgSeqNum; }
+    inline int WindowMsgSeqNo () { return this->m_windowMsgSeqNum; }
     inline int WindowSize() { return this->m_endMsgSeqNum - this->m_windowMsgSeqNum; }
     inline int LastRecvMsgSeqNo() { return this->m_endMsgSeqNum; }
 	inline int ExpectedMsgSeqNo() { return this->m_startMsgSeqNum + 1; }
+    inline FastProtocolManager* FastManager() { return this->m_fastProtocolManager; }
 
 	inline bool DoWorkAtom() {
 		FeedConnectionState st = this->m_state;

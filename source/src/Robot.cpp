@@ -246,21 +246,21 @@ bool Robot::CollectSecurityDefinitions_CurrOnly() {
             break;
         }
 
-        if (w->ElapsedSeconds() > 3) {
+        if(w->ElapsedMilliseconds() > 1000) {
             w->Reset();
 
-            double nanosecPerCycle = 3.0 * 1000.0 * 1000.0 * 1000.0 / cycleCount;
-            printf("CycleCount for 3 sec = %d. %g nanosec per cycle\n", cycleCount, nanosecPerCycle);
+            double nanosecPerCycle = w->ElapsedMilliseconds() * 1000.0 * 1000.0 / cycleCount;
+            printf("cycle count for 3 sec = %d. %g nanosec per cycle\n", cycleCount, nanosecPerCycle);
 
             printf("curr idf socket buffer usage = %g item usage = %g\n",
                    this->m_currMarket->FeedChannel()->Idf()->RecvBuffer()->CalcMemoryUsagePercentage(),
                    this->m_currMarket->FeedChannel()->Idf()->RecvBuffer()->CalcItemsUsagePercentage());
 
-            printf("3 sec. Changes------------------------\n");
-            ProgramStatistics::Current->Print();
-            printf("Total---------------------------------\n");
-            ProgramStatistics::Total->Print();
-            printf("--------------------------------------\n");
+//            printf("3 sec. Changes------------------------\n");
+//            ProgramStatistics::Current->Print();
+//            printf("Total---------------------------------\n");
+//            ProgramStatistics::Total->Print();
+//            printf("--------------------------------------\n");
 
             cycleCount = 0;
             ProgramStatistics::Current->Clear();
@@ -319,11 +319,11 @@ bool Robot::CollectSecurityDefinitions() {
         if(collectedFond && collectedCurr)
             break;
 
-        if(w->ElapsedSeconds() > 3) {
+        if(w->ElapsedMilliseconds() > 1000) {
             w->Reset();
 
-            double nanosecPerCycle = 3.0 * 1000.0 * 1000.0 * 1000.0 / cycleCount;
-            printf("CycleCount for 3 sec = %d. %g nanosec per cycle\n", cycleCount, nanosecPerCycle);
+            double nanosecPerCycle = w->ElapsedMilliseconds() * 1000.0 * 1000.0 / cycleCount;
+            printf("cycleCount for 1 sec = %d. %g nanosec per cycle\n", cycleCount, nanosecPerCycle);
 
             printf("fond idf socket buffer usage = %g item usage = %g\n",
                        this->m_fondMarket->FeedChannel()->Idf()->RecvBuffer()->CalcMemoryUsagePercentage(),
@@ -382,8 +382,8 @@ bool Robot::MainLoop_FondOnly() {
         if(!this->Working())
             break;
 
-        if(w->ElapsedSeconds() > 3) {
-            this->PrintStatistics(cycleCount, 3);
+        if(w->ElapsedMilliseconds() > 1000) {
+            this->PrintStatistics(cycleCount, 1);
 
             w->Reset();
             cycleCount = 0;
@@ -414,8 +414,8 @@ bool Robot::MainLoop_CurrOnly() {
         if(!this->Working())
             break;
 
-        if(w->ElapsedSeconds() > 3) {
-            this->PrintStatistics(cycleCount, 3);
+        if(w->ElapsedMilliseconds() > 1000) {
+            this->PrintStatistics(cycleCount, 1);
 
             w->Reset();
             cycleCount = 0;
@@ -450,8 +450,8 @@ bool Robot::MainLoop() {
         if(!this->Working())
             break;
 
-        if(w->ElapsedSeconds() > 3) {
-            this->PrintStatistics(cycleCount, 3);
+        if(w->ElapsedMilliseconds() > 1000) {
+            this->PrintStatistics(cycleCount, 1);
 
             w->Reset();
             cycleCount = 0;

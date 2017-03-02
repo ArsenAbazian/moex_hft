@@ -287,8 +287,8 @@ void AddFeedInfo(FeedConnection *feed, TestTemplateInfo **tmp, int templatesCoun
             item->m_symbol = this->m_keys[entryIndex + 1];
             item->m_entryId = this->m_keys[entryIndex + 2];
             item->m_entryType = MDEntryType::mdetBuyQuote;
-            item->m_entryPx.Set(1, 1);
-            item->m_entrySize.Set(1, 1);
+            item->m_entryPx.Set(2, 1);
+            item->m_entrySize.Set(2, 1);
             info->m_items[itemIndex] = item;
             info->m_itemsCount++;
 
@@ -398,7 +398,7 @@ public:
 
     FastOLSFONDItemInfo* CreateOLSFondItemInfo(INT64 priceMantissa, INT32 priceExponenta, INT64 sizeMantissa, INT64 sizeExponenta, MDEntryType entryType, const char *entryId) {
 
-        AutoAllocatePointerList<FastOLSFONDItemInfo> *list = new AutoAllocatePointerList<FastOLSFONDItemInfo>(1, 1);
+        AutoAllocatePointerList<FastOLSFONDItemInfo> *list = new AutoAllocatePointerList<FastOLSFONDItemInfo>(2, 1);
         FastOLSFONDItemInfo *info = list->NewItem();
 
         char *type = new char[1];
@@ -416,22 +416,22 @@ public:
     }
 
     FastIncrementalOLRFONDInfo* CreateFastIncrementalOLRFONDInfo() {
-        AutoAllocatePointerList<FastIncrementalOLRFONDInfo> *list = new AutoAllocatePointerList<FastIncrementalOLRFONDInfo>(1, 1);
+        AutoAllocatePointerList<FastIncrementalOLRFONDInfo> *list = new AutoAllocatePointerList<FastIncrementalOLRFONDInfo>(2, 1);
         return list->NewItem();
     }
 
     FastIncrementalOLRCURRInfo* CreateFastIncrementalOLRCURRInfo() {
-        AutoAllocatePointerList<FastIncrementalOLRCURRInfo> *list = new AutoAllocatePointerList<FastIncrementalOLRCURRInfo>(1, 1);
+        AutoAllocatePointerList<FastIncrementalOLRCURRInfo> *list = new AutoAllocatePointerList<FastIncrementalOLRCURRInfo>(2, 1);
         return list->NewItem();
     }
 
     FastIncrementalTLRFONDInfo* CreateFastIncrementalTLRFONDInfo() {
-        AutoAllocatePointerList<FastIncrementalTLRFONDInfo> *list = new AutoAllocatePointerList<FastIncrementalTLRFONDInfo>(1, 1);
+        AutoAllocatePointerList<FastIncrementalTLRFONDInfo> *list = new AutoAllocatePointerList<FastIncrementalTLRFONDInfo>(2, 1);
         return list->NewItem();
     }
 
     FastIncrementalTLRCURRInfo* CreateFastIncrementalTLRCURRInfo() {
-        AutoAllocatePointerList<FastIncrementalTLRCURRInfo> *list = new AutoAllocatePointerList<FastIncrementalTLRCURRInfo>(1, 1);
+        AutoAllocatePointerList<FastIncrementalTLRCURRInfo> *list = new AutoAllocatePointerList<FastIncrementalTLRCURRInfo>(2, 1);
         return list->NewItem();
     }
 
@@ -472,7 +472,7 @@ public:
 
     FastOLSCURRItemInfo* CreateOLSCurrItemInfo(INT64 priceMantissa, INT32 priceExponenta, INT64 sizeMantissa, INT64 sizeExponenta, MDEntryType entryType, const char *entryId) {
 
-        AutoAllocatePointerList<FastOLSCURRItemInfo> *list = new AutoAllocatePointerList<FastOLSCURRItemInfo>(1, 1);
+        AutoAllocatePointerList<FastOLSCURRItemInfo> *list = new AutoAllocatePointerList<FastOLSCURRItemInfo>(2, 1);
         FastOLSCURRItemInfo *info = list->NewItem();
 
         char *type = new char[1];
@@ -527,7 +527,7 @@ public:
 
     FastGenericItemInfo* CreateOBSFondItemInfo(INT64 priceMantissa, INT32 priceExponenta, INT64 sizeMantissa, INT64 sizeExponenta, MDEntryType entryType, const char *entryId) {
 
-        AutoAllocatePointerList<FastGenericItemInfo> *list = new AutoAllocatePointerList<FastGenericItemInfo>(1, 1);
+        AutoAllocatePointerList<FastGenericItemInfo> *list = new AutoAllocatePointerList<FastGenericItemInfo>(2, 1);
         FastGenericItemInfo *info = list->NewItem();
 
         char *type = new char[1];
@@ -581,7 +581,7 @@ public:
 
     FastGenericItemInfo* CreateOBSCurrItemInfo(INT64 priceMantissa, INT32 priceExponenta, INT64 sizeMantissa, INT64 sizeExponenta, MDEntryType entryType, const char *entryId) {
 
-        AutoAllocatePointerList<FastGenericItemInfo> *list = new AutoAllocatePointerList<FastGenericItemInfo>(1, 1);
+        AutoAllocatePointerList<FastGenericItemInfo> *list = new AutoAllocatePointerList<FastGenericItemInfo>(2, 1);
         FastGenericItemInfo *info = list->NewItem();
 
         char *type = new char[1];
@@ -635,7 +635,7 @@ public:
 
     FastTLSFONDItemInfo* CreateTLSFondItemInfo(INT64 priceMantissa, INT32 priceExponenta, INT64 sizeMantissa, INT64 sizeExponenta, MDEntryType entryType, const char *entryId) {
 
-        AutoAllocatePointerList<FastTLSFONDItemInfo> *list = new AutoAllocatePointerList<FastTLSFONDItemInfo>(1, 1);
+        AutoAllocatePointerList<FastTLSFONDItemInfo> *list = new AutoAllocatePointerList<FastTLSFONDItemInfo>(2, 1);
         FastTLSFONDItemInfo *info = list->NewItem();
 
         char *type = new char[1];
@@ -691,7 +691,7 @@ public:
 
     FastTLSCURRItemInfo* CreateTLSCurrItemInfo(INT64 priceMantissa, INT32 priceExponenta, INT64 sizeMantissa, INT64 sizeExponenta, MDEntryType entryType, const char *entryId) {
 
-        AutoAllocatePointerList<FastTLSCURRItemInfo> *list = new AutoAllocatePointerList<FastTLSCURRItemInfo>(1, 1);
+        AutoAllocatePointerList<FastTLSCURRItemInfo> *list = new AutoAllocatePointerList<FastTLSCURRItemInfo>(2, 1);
         FastTLSCURRItemInfo *info = list->NewItem();
 
         char *type = new char[1];
@@ -747,7 +747,7 @@ public:
 
     FastGenericItemInfo* CreateGenericItemInfo(INT64 priceMantissa, INT32 priceExponenta, INT64 sizeMantissa, INT64 sizeExponenta, MDEntryType entryType, const char *entryId) {
 
-        AutoAllocatePointerList<FastGenericItemInfo> *list = new AutoAllocatePointerList<FastGenericItemInfo>(1, 1);
+        AutoAllocatePointerList<FastGenericItemInfo> *list = new AutoAllocatePointerList<FastGenericItemInfo>(2, 1);
         FastGenericItemInfo *info = list->NewItem();
 
         char *type = new char[1];
@@ -803,7 +803,7 @@ public:
 
     FastGenericItemInfo* CreateGenericItemInfo(INT64 priceMantissa, INT32 priceExponenta, INT64 sizeMantissa, INT64 sizeExponenta, MDEntryType entryType, const char *entryId, int rptSeq) {
 
-        AutoAllocatePointerList<FastGenericItemInfo> *list = new AutoAllocatePointerList<FastGenericItemInfo>(1, 1);
+        AutoAllocatePointerList<FastGenericItemInfo> *list = new AutoAllocatePointerList<FastGenericItemInfo>(2, 1);
         FastGenericItemInfo *info = list->NewItem();
 
         char *type = new char[1];
@@ -824,7 +824,7 @@ public:
     FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo* AddTradingSession(FastSecurityDefinitionInfo *info, int marketIndex, const char *tradingSession) {
         int newIndex = info->MarketSegmentGrp[marketIndex]->TradingSessionRulesGrpCount;
         info->MarketSegmentGrp[marketIndex]->TradingSessionRulesGrpCount++;
-        AutoAllocatePointerList<FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo> *list = new AutoAllocatePointerList<FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo>(1, 1);
+        AutoAllocatePointerList<FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo> *list = new AutoAllocatePointerList<FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo>(2, 1);
         FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo *item = list->NewItem();
         info->MarketSegmentGrp[marketIndex]->TradingSessionRulesGrp[newIndex] = item;
 
@@ -839,13 +839,13 @@ public:
     }
 
     void AddMarketSegemntGroup(FastSecurityDefinitionInfo *info) {
-        AutoAllocatePointerList<FastSecurityDefinitionMarketSegmentGrpItemInfo> *list = new AutoAllocatePointerList<FastSecurityDefinitionMarketSegmentGrpItemInfo>(1, 1);
+        AutoAllocatePointerList<FastSecurityDefinitionMarketSegmentGrpItemInfo> *list = new AutoAllocatePointerList<FastSecurityDefinitionMarketSegmentGrpItemInfo>(2, 1);
         info->MarketSegmentGrp[info->MarketSegmentGrpCount] = list->NewItem();
         info->MarketSegmentGrpCount++;
     }
 
     FastSecurityDefinitionInfo* CreateSecurityDefinitionInfo(const char *symbol) {
-        AutoAllocatePointerList<FastSecurityDefinitionInfo> *list = new AutoAllocatePointerList<FastSecurityDefinitionInfo>(1, 1);
+        AutoAllocatePointerList<FastSecurityDefinitionInfo> *list = new AutoAllocatePointerList<FastSecurityDefinitionInfo>(2, 1);
         FastSecurityDefinitionInfo *info = list->NewItem();
 
         StringIdComparer::CopyString(info->Symbol, symbol, strlen(symbol));
@@ -855,7 +855,7 @@ public:
     }
 
     FastSecurityStatusInfo* CreateSecurityStatusInfo(const char *symbol, const char *session, const char *sessionSubId) {
-        AutoAllocatePointerList<FastSecurityStatusInfo> *list = new AutoAllocatePointerList<FastSecurityStatusInfo>(1, 1);
+        AutoAllocatePointerList<FastSecurityStatusInfo> *list = new AutoAllocatePointerList<FastSecurityStatusInfo>(2, 1);
         FastSecurityStatusInfo *info = list->NewItem();
 
         StringIdComparer::CopyString(info->Symbol, symbol, strlen(symbol));

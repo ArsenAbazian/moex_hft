@@ -259,51 +259,51 @@ public:
     inline void PrintStatisticsCurr() {
 
 #ifdef ALLOW_ORDERS
-        if(this->m_currMarket->FeedChannel()->Ols()->State() == FeedConnectionState::fcsListenSnapshot) {
-            int currSnapshotSymbolsCount = this->m_currMarket->FeedChannel()->Olr()->OrderCurr()->SymbolsToRecvSnapshotCount();
-            int currQueEntries = this->m_currMarket->FeedChannel()->Olr()->OrderCurr()->QueueEntriesCount();
-            int msgSeqNumber = this->m_currMarket->FeedChannel()->Ols()->MsgSeqNo();
-            printf("curr olr: %d que entries and  %d snapshot symbols to go. msg = %d\n", currQueEntries, currSnapshotSymbolsCount, msgSeqNumber);
-        }
-        else {
-            printf("curr olr: start = %d end = %d\n",
-                   this->m_currMarket->FeedChannel()->Olr()->MsgSeqNo(),
-                   this->m_currMarket->FeedChannel()->Olr()->LastRecvMsgSeqNo());
-        }
+//        if(this->m_currMarket->FeedChannel()->Ols()->State() == FeedConnectionState::fcsListenSnapshot) {
+//            int currSnapshotSymbolsCount = this->m_currMarket->FeedChannel()->Olr()->OrderCurr()->SymbolsToRecvSnapshotCount();
+//            int currQueEntries = this->m_currMarket->FeedChannel()->Olr()->OrderCurr()->QueueEntriesCount();
+//            int msgSeqNumber = this->m_currMarket->FeedChannel()->Ols()->MsgSeqNo();
+//            printf("curr olr: %d que entries and  %d snapshot symbols to go. msg = %d\n", currQueEntries, currSnapshotSymbolsCount, msgSeqNumber);
+//        }
+//        else {
+//            printf("curr olr: start = %d end = %d\n",
+//                   this->m_currMarket->FeedChannel()->Olr()->MsgSeqNo(),
+//                   this->m_currMarket->FeedChannel()->Olr()->LastRecvMsgSeqNo());
+//        }
 #endif
 #ifdef ALLOW_TRADES
-        if (this->m_currMarket->FeedChannel()->Tls()->State() == FeedConnectionState::fcsListenSnapshot) {
-            int foundSnapshotSymbolsCount = this->m_currMarket->FeedChannel()->Tlr()->TradeCurr()->SymbolsToRecvSnapshotCount();
-            int foundQueEntries = this->m_currMarket->FeedChannel()->Tlr()->TradeCurr()->QueueEntriesCount();
-            int msgSeqNumber = this->m_currMarket->FeedChannel()->Tls()->MsgSeqNo();
-            printf("curr tlr: %d que entries and  %d snapshot symbols to go. msg = %d\n", foundQueEntries, foundSnapshotSymbolsCount, msgSeqNumber);
-        }
-        else {
-            printf("curr tlr: start = %d end = %d\n",
-                   this->m_currMarket->FeedChannel()->Tlr()->MsgSeqNo(),
-                   this->m_currMarket->FeedChannel()->Tlr()->LastRecvMsgSeqNo());
-        }
+//        if (this->m_currMarket->FeedChannel()->Tls()->State() == FeedConnectionState::fcsListenSnapshot) {
+//            int foundSnapshotSymbolsCount = this->m_currMarket->FeedChannel()->Tlr()->TradeCurr()->SymbolsToRecvSnapshotCount();
+//            int foundQueEntries = this->m_currMarket->FeedChannel()->Tlr()->TradeCurr()->QueueEntriesCount();
+//            int msgSeqNumber = this->m_currMarket->FeedChannel()->Tls()->MsgSeqNo();
+//            printf("curr tlr: %d que entries and  %d snapshot symbols to go. msg = %d\n", foundQueEntries, foundSnapshotSymbolsCount, msgSeqNumber);
+//        }
+//        else {
+//            printf("curr tlr: start = %d end = %d\n",
+//                   this->m_currMarket->FeedChannel()->Tlr()->MsgSeqNo(),
+//                   this->m_currMarket->FeedChannel()->Tlr()->LastRecvMsgSeqNo());
+//        }
 #endif
 #ifdef ALLOW_STATISTICS
-        if (this->m_currMarket->FeedChannel()->Mss()->State() == FeedConnectionState::fcsListenSnapshot) {
-            int foundSnapshotSymbolsCount = this->m_currMarket->FeedChannel()->Msr()->StatisticCurr()->SymbolsToRecvSnapshotCount();
-            int foundQueEntries = this->m_currMarket->FeedChannel()->Msr()->StatisticCurr()->QueueEntriesCount();
-            int msgSeqNumber = this->m_currMarket->FeedChannel()->Mss()->MsgSeqNo();
-            int actual = this->m_currMarket->FeedChannel()->Msr()->StatisticCurr()->CalcActualQueueEntriesCount();
-            printf("curr msr: %d que entries and  %d snapshot symbols to go. actual que count = %d msg = %d\n",
-                   foundQueEntries,
-                   foundSnapshotSymbolsCount,
-                   actual,
-                   msgSeqNumber);
-            if(actual != foundQueEntries) {
-                printf("error!\n");
-            }
-        }
-        else {
-            printf("curr msr: start = %d end = %d\n",
-                   this->m_currMarket->FeedChannel()->Msr()->MsgSeqNo(),
-                   this->m_currMarket->FeedChannel()->Msr()->LastRecvMsgSeqNo());
-        }
+//        if (this->m_currMarket->FeedChannel()->Mss()->State() == FeedConnectionState::fcsListenSnapshot) {
+//            int foundSnapshotSymbolsCount = this->m_currMarket->FeedChannel()->Msr()->StatisticCurr()->SymbolsToRecvSnapshotCount();
+//            int foundQueEntries = this->m_currMarket->FeedChannel()->Msr()->StatisticCurr()->QueueEntriesCount();
+//            int msgSeqNumber = this->m_currMarket->FeedChannel()->Mss()->MsgSeqNo();
+//            int actual = this->m_currMarket->FeedChannel()->Msr()->StatisticCurr()->CalcActualQueueEntriesCount();
+//            printf("curr msr: %d que entries and  %d snapshot symbols to go. actual que count = %d msg = %d\n",
+//                   foundQueEntries,
+//                   foundSnapshotSymbolsCount,
+//                   actual,
+//                   msgSeqNumber);
+//            if(actual != foundQueEntries) {
+//                printf("error!\n");
+//            }
+//        }
+//        else {
+//            printf("curr msr: start = %d end = %d\n",
+//                   this->m_currMarket->FeedChannel()->Msr()->MsgSeqNo(),
+//                   this->m_currMarket->FeedChannel()->Msr()->LastRecvMsgSeqNo());
+//        }
 #endif
         printf("------\n");
 #ifdef ALLOW_STATUS
@@ -313,31 +313,60 @@ public:
 #endif
 
 #ifdef ALLOW_STATISTICS
-        printf("curr msr socket buffer usage = %g item usage = %g\n",
-                   this->m_currMarket->FeedChannel()->Msr()->RecvBuffer()->CalcMemoryUsagePercentage(),
-                   this->m_currMarket->FeedChannel()->Msr()->RecvBuffer()->CalcItemsUsagePercentage());
-        printf("curr mss socket buffer usage = %g item usage = %g\n",
-                   this->m_currMarket->FeedChannel()->Mss()->RecvBuffer()->CalcMemoryUsagePercentage(),
-                   this->m_currMarket->FeedChannel()->Mss()->RecvBuffer()->CalcItemsUsagePercentage());
+        printf("mode = %s curr msr fast items usage = %g que items = %d snap symbols = %d mdentry_que count = %d socket buffer usage = %g item usage = %g start = %d end = %d window = %d\n",
+               (this->m_currMarket->FeedChannel()->Msr()->Snapshot()->State() == FeedConnectionState::fcsListenSnapshot? "snapshot": "normal"),
+               ((double)this->m_currMarket->FeedChannel()->Msr()->FastManager()->GetGenericItemInfoPool()->Count()) / (double)this->m_currMarket->FeedChannel()->Msr()->FastManager()->GetOLSCURRItemInfoPool()->Capacity() * 100.0,
+               this->m_currMarket->FeedChannel()->Msr()->StatisticCurr()->QueueEntriesCount(),
+               this->m_currMarket->FeedChannel()->Msr()->StatisticCurr()->SymbolsToRecvSnapshotCount(),
+               MDEntryQueue::Pool->Count(),
+               this->m_currMarket->FeedChannel()->Msr()->RecvBuffer()->CalcMemoryUsagePercentage(),
+               this->m_currMarket->FeedChannel()->Msr()->RecvBuffer()->CalcItemsUsagePercentage(),
+               this->m_currMarket->FeedChannel()->Msr()->MsgSeqNo(),
+               this->m_currMarket->FeedChannel()->Msr()->LastRecvMsgSeqNo(),
+               this->m_currMarket->FeedChannel()->Msr()->WindowMsgSeqNo()
+        );
+//        printf("curr mss socket buffer usage = %g item usage = %g\n",
+//                   this->m_currMarket->FeedChannel()->Mss()->RecvBuffer()->CalcMemoryUsagePercentage(),
+//                   this->m_currMarket->FeedChannel()->Mss()->RecvBuffer()->CalcItemsUsagePercentage());
 #endif
 
 
 #ifdef ALLOW_TRADES
-        printf("curr tlr socket buffer usage = %g item usage = %g\n",
-                   this->m_currMarket->FeedChannel()->Tlr()->RecvBuffer()->CalcMemoryUsagePercentage(),
-                   this->m_currMarket->FeedChannel()->Tlr()->RecvBuffer()->CalcItemsUsagePercentage());
-        printf("curr tls socket buffer usage = %g item usage = %g\n",
-                   this->m_currMarket->FeedChannel()->Tls()->RecvBuffer()->CalcMemoryUsagePercentage(),
-                   this->m_currMarket->FeedChannel()->Tls()->RecvBuffer()->CalcItemsUsagePercentage());
+        printf("curr tlr mode = %s tls items count = %d fast items usage = %g que items = %d snap symbols = %d mdentry_que count = %d socket buffer usage = %g item usage = %g start = %d end = %d window = %d \n",
+               (this->m_currMarket->FeedChannel()->Tlr()->Snapshot()->State() == FeedConnectionState::fcsListenSnapshot? "snapshot": "normal"),
+               DebugInfoManager::Default->CalcTradeCurrTotalEntriesCount(this->m_currMarket->FeedChannel()->Tlr()),
+               ((double)this->m_currMarket->FeedChannel()->Tlr()->FastManager()->GetTLSCURRItemInfoPool()->Count()) / (double)this->m_currMarket->FeedChannel()->Tlr()->FastManager()->GetTLSCURRItemInfoPool()->Capacity() * 100.0,
+               this->m_currMarket->FeedChannel()->Tlr()->TradeCurr()->QueueEntriesCount(),
+               this->m_currMarket->FeedChannel()->Tlr()->TradeCurr()->SymbolsToRecvSnapshotCount(),
+               MDEntryQueue::Pool->Count(),
+               this->m_currMarket->FeedChannel()->Tlr()->RecvBuffer()->CalcMemoryUsagePercentage(),
+               this->m_currMarket->FeedChannel()->Tlr()->RecvBuffer()->CalcItemsUsagePercentage(),
+               this->m_currMarket->FeedChannel()->Tlr()->MsgSeqNo(),
+               this->m_currMarket->FeedChannel()->Tlr()->LastRecvMsgSeqNo(),
+               this->m_currMarket->FeedChannel()->Tlr()->WindowMsgSeqNo()
+        );
+//        printf("curr tls socket buffer usage = %g item usage = %g\n",
+//                   this->m_currMarket->FeedChannel()->Tls()->RecvBuffer()->CalcMemoryUsagePercentage(),
+//                   this->m_currMarket->FeedChannel()->Tls()->RecvBuffer()->CalcItemsUsagePercentage());
 #endif
 
 #ifdef ALLOW_ORDERS
-        printf("curr olr socket buffer usage = %g item usage = %g\n",
-                   this->m_currMarket->FeedChannel()->Olr()->RecvBuffer()->CalcMemoryUsagePercentage(),
-                   this->m_currMarket->FeedChannel()->Olr()->RecvBuffer()->CalcItemsUsagePercentage());
-        printf("curr ols socket buffer usage = %g item usage = %g\n",
-                   this->m_currMarket->FeedChannel()->Ols()->RecvBuffer()->CalcMemoryUsagePercentage(),
-                   this->m_currMarket->FeedChannel()->Ols()->RecvBuffer()->CalcItemsUsagePercentage());
+        printf("curr olr mode = %s ols items count = %d fast items usage = %g que items = %d snap symbols = %d mdentry_que count = %d socket buffer usage = %g item usage = %g start = %d end = %d window = %d \n",
+               (this->m_currMarket->FeedChannel()->Olr()->Snapshot()->State() == FeedConnectionState::fcsListenSnapshot? "snapshot": "normal"),
+               DebugInfoManager::Default->CalcOrderCurrTotalEntriesCount(this->m_currMarket->FeedChannel()->Olr()),
+               ((double)this->m_currMarket->FeedChannel()->Olr()->FastManager()->GetOLSCURRItemInfoPool()->Count()) / (double)this->m_currMarket->FeedChannel()->Olr()->FastManager()->GetOLSCURRItemInfoPool()->Capacity() * 100.0,
+               this->m_currMarket->FeedChannel()->Olr()->OrderCurr()->QueueEntriesCount(),
+               this->m_currMarket->FeedChannel()->Olr()->OrderCurr()->SymbolsToRecvSnapshotCount(),
+               MDEntryQueue::Pool->Count(),
+               this->m_currMarket->FeedChannel()->Olr()->RecvBuffer()->CalcMemoryUsagePercentage(),
+               this->m_currMarket->FeedChannel()->Olr()->RecvBuffer()->CalcItemsUsagePercentage(),
+               this->m_currMarket->FeedChannel()->Olr()->MsgSeqNo(),
+               this->m_currMarket->FeedChannel()->Olr()->LastRecvMsgSeqNo(),
+               this->m_currMarket->FeedChannel()->Olr()->WindowMsgSeqNo()
+        );
+//        printf("curr ols socket buffer usage = %g item usage = %g\n",
+//                   this->m_currMarket->FeedChannel()->Ols()->RecvBuffer()->CalcMemoryUsagePercentage(),
+//                   this->m_currMarket->FeedChannel()->Ols()->RecvBuffer()->CalcItemsUsagePercentage());
 #endif
 
 
@@ -350,21 +379,20 @@ public:
 
     inline void PrintStatistics(int cycleCount, int elapsedSeconds) {
         double nanosecPerCycle = elapsedSeconds * 1000.0 * 1000.0 * 1000.0 / cycleCount;
-        printf("CycleCount for 3 sec = %d. %g nanosec per cycle\n", cycleCount, nanosecPerCycle);
-        printf("curr olr WindowSize = %d\n", this->m_currMarket->FeedChannel()->Olr()->WindowSize());
+        //printf("cycleCount for %d sec = %d. %g nanosec per cycle\n", elapsedSeconds, cycleCount, nanosecPerCycle);
 
         if(this->AllowFondMarket())
             this->PrintStatisticsFond();
         if(this->AllowCurrMarket())
             this->PrintStatisticsCurr();
 
-        printf("used queue count = %d\n", MDEntryQueue::Pool->Count());
+        //printf("used queue count = %d\n", MDEntryQueue::Pool->Count());
 
-        printf("3 sec Changes------------------------\n");
-        ProgramStatistics::Current->Print();
-        printf("Total Changes-------------------------\n");
-        ProgramStatistics::Total->Print();
-        printf("--------------------------------------\n");
+//        printf("3 sec Changes------------------------\n");
+//        ProgramStatistics::Current->Print();
+//        printf("Total Changes-------------------------\n");
+//        ProgramStatistics::Total->Print();
+//        printf("--------------------------------------\n");
 
 
         ProgramStatistics::Current->Clear();

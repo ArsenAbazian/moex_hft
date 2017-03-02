@@ -9,10 +9,14 @@
 #ifdef TEST
 
 #include "../Lib/PointerList.h"
+#include "../Lib/AutoAllocatePointerList.h"
 
 class SimpleData {
 public:
     int a;
+    LinkedPointer<SimpleData>           *Pointer;
+    AutoAllocatePointerList<SimpleData> *Allocator;
+    bool                                Used;
 };
 
 class PointerListTester {
@@ -380,12 +384,208 @@ public:
         TestPointerListLiteAppend2();
     }
 
-    void Test() {
+    void TestPointerList() {
         TestDefault();
         TestDispose();
         TestAdditionalAllocate();
         TestClear();
+    }
+
+    void TestDefaultAutoAllocate() {
+        AutoAllocatePointerList<SimpleData> *list = new AutoAllocatePointerList<SimpleData>(10, 2);
+        if(list->Count() != 0)
+            throw;
+        if(list->Capacity() != 10)
+            throw;
+        if(list->End()->Next() != 0)
+            throw;
+        if(list->CalcFreeItemsCount() != 10)
+            throw;
+        if(list->CalcUsedItemsCount() != 0)
+            throw;
+    }
+
+    void TestNewItem() {
+        AutoAllocatePointerList<SimpleData> *list = new AutoAllocatePointerList<SimpleData>(10, 2);
+        SimpleData *data = list->NewItem();
+        if(data->Allocator != list)
+            throw;
+        if(data->Pointer == 0)
+            throw;
+        if(data->Pointer->Released())
+            throw;
+        if(list->Count() != 1)
+            throw;
+        if(list->CalcFreeItemsCount() != 9)
+            throw;
+        if(list->CalcUsedItemsCount() != list->Capacity() - list->CalcFreeItemsCount())
+            throw;
+        for(int i = 0; i < 8; i++) {
+            SimpleData *d = list->NewItem();
+            if(list->Count() != 2 + i)
+                throw;
+            if(list->CalcFreeItemsCount() != 10 - list->Count())
+                throw;
+            if(list->CalcUsedItemsCount() != list->Capacity() - list->CalcFreeItemsCount())
+                throw;
+        }
+        list->NewItem();
+        if(list->Count() != 10)
+            throw;
+        if(list->Capacity() != 12)
+            throw;
+        if(list->CalcFreeItemsCount() != 2)
+            throw;
+        if(list->CalcUsedItemsCount() != list->Capacity() - list->CalcFreeItemsCount())
+            throw;
+    }
+
+    void TestAutoAllocate() {
+        AutoAllocatePointerList<SimpleData> *list = new AutoAllocatePointerList<SimpleData>(10, 2);
+        for(int i = 0; i < 10; i++)
+            list->NewItem();
+        if(list->Count() != 10)
+            throw;
+        if(list->CalcFreeItemsCount() != 2)
+            throw;
+        if(list->Capacity() != 12)
+            throw;
+        if(list->CalcUsedItemsCount() != list->Capacity() - list->CalcFreeItemsCount())
+            throw;
+        list->NewItem();
+        if(list->Count() != 11)
+            throw;
+        if(list->CalcFreeItemsCount() != 1)
+            throw;
+        if(list->Capacity() != 12)
+            throw;
+        if(list->CalcUsedItemsCount() != list->Capacity() - list->CalcFreeItemsCount())
+            throw;
+        list->NewItem();
+        if(list->Count() != 12)
+            throw;
+        if(list->CalcFreeItemsCount() != 2)
+            throw;
+        if(list->Capacity() != 14)
+            throw;
+        if(list->CalcUsedItemsCount() != list->Capacity() - list->CalcFreeItemsCount())
+            throw;
+        list->NewItem();
+        if(list->Count() != 13)
+            throw;
+        if(list->Capacity() != 14)
+            throw;
+        if(list->CalcFreeItemsCount() != 1)
+            throw;
+        if(list->CalcUsedItemsCount() != list->Capacity() - list->CalcFreeItemsCount())
+            throw;
+    }
+
+    void TestFree() {
+        AutoAllocatePointerList<SimpleData> *list = new AutoAllocatePointerList<SimpleData>(10, 2);
+        SimpleData *data[10];
+        for(int i = 0; i < 10; i++)
+            data[i] = list->NewItem();
+        list->FreeItem(data[0]);
+        if(!data[0]->Pointer->Released())
+            throw;
+        if(list->Count() != 9)
+            throw;
+        if(list->CalcFreeItemsCount() != 3)
+            throw;
+        if(list->Capacity() != 12)
+            throw;
+        if(list->CalcUsedItemsCount() != list->Capacity() - list->CalcFreeItemsCount())
+            throw;
+        list->FreeItem(data[0]);
+        if(list->Count() != 9)
+            throw;
+        if(list->CalcFreeItemsCount() != 3)
+            throw;
+        if(list->CalcUsedItemsCount() != list->Capacity() - list->CalcFreeItemsCount())
+            throw;
+        for(int i = 1; i < 10; i++) {
+            list->FreeItem(data[i]);
+            if(list->Capacity() != 12)
+                throw;
+            if(list->Count() != 9 - i)
+                throw;
+            if(list->CalcFreeItemsCount() != 12 - list->Count())
+                throw;
+            if(list->CalcUsedItemsCount() != list->Capacity() - list->CalcFreeItemsCount())
+                throw;
+        }
+    }
+
+    void TestFree2() {
+        AutoAllocatePointerList<SimpleData> *list = new AutoAllocatePointerList<SimpleData>(10, 2);
+        SimpleData *data[10];
+
+        int *index = new int[10] { 5, 3, 4, 9, 6, 2, 7, 1, 0, 8 };
+        for(int i = 0; i < 10; i++)
+            data[i] = list->NewItem();
+        for(int i = 0; i < 10; i++) {
+            list->FreeItem(data[index[i]]);
+            if (list->CalcUsedItemsCount() != 9 - i)
+                throw;
+            if (list->CalcFreeItemsCount() != list->Capacity() - list->CalcUsedItemsCount())
+                throw;
+        }
+
+        index = new int[10] { 8, 0, 5, 6, 9, 1, 2, 4, 7, 3 };
+        for(int i = 0; i < 10; i++)
+            data[i] = list->NewItem();
+        for(int i = 0; i < 10; i++) {
+            list->FreeItem(data[index[i]]);
+            if (list->CalcUsedItemsCount() != 9 - i)
+                throw;
+            if (list->CalcFreeItemsCount() != list->Capacity() - list->CalcUsedItemsCount())
+                throw;
+        }
+
+        index = new int[10] { 5, 1, 2, 8, 4, 9, 7, 6, 0, 3 };
+        for(int i = 0; i < 10; i++)
+            data[i] = list->NewItem();
+        for(int i = 0; i < 10; i++) {
+            list->FreeItem(data[index[i]]);
+            if (list->CalcUsedItemsCount() != 9 - i)
+                throw;
+            if (list->CalcFreeItemsCount() != list->Capacity() - list->CalcUsedItemsCount())
+                throw;
+        }
+    }
+
+    void TestClearAutoAllocate() {
+        AutoAllocatePointerList<SimpleData> *list = new AutoAllocatePointerList<SimpleData>(10, 2);
+
+        for(int j = 1; j < 100; j++) {
+            for (int i = 0; i < j; i++)
+                list->NewItem();
+
+            list->Clear();
+
+            if (list->Count() != 0)
+                throw;
+            if (list->CalcFreeItemsCount() != list->Capacity())
+                throw;
+            if (list->CalcUsedItemsCount() != 0)
+                throw;
+        }
+    }
+
+    void TestAutoAllocatePointerList() {
+        TestDefaultAutoAllocate();
+        TestNewItem();
+        TestFree();
+        TestFree2();
+        TestAutoAllocate();
+        TestClearAutoAllocate();
+    }
+
+    void Test() {
+        TestPointerList();
         TestPointerListLite();
+        TestAutoAllocatePointerList();
     }
 };
 

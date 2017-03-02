@@ -160,8 +160,17 @@ public:
 
     inline void ReleaseEntryQue() {
         if(this->m_entryInfo != 0) {
+            int maxIndex = this->m_entryInfo->MaxIndex();
             this->m_entryInfo->Reset();
+            if(!this->m_entryInfo->IsCleared())
+                throw; //TODO remove degbug
             MDEntryQueue::Pool->FreeItem(this->m_entryInfo->Pointer);
+            int index = DebugInfoManager::Default->CheckIsFriedMDEntryQueryCleared();
+            if(index != -1) {
+                MDEntryQueue *queue = DebugInfoManager::Default->GetFirstMDEntryQueue();
+                int entryIndex = DebugInfoManager::Default->GetFirstNonEmptyEntry();
+                throw;
+            }
         }
         this->m_entryInfo = 0;
     }
@@ -1455,6 +1464,8 @@ public:
         if(this->m_shouldProcessSnapshot) {
             SymbolInfo()->DecSessionsToRecvSnapshotCount();
             this->m_shouldProcessSnapshot = false;
+            if(this->m_entryInfo != 0)
+                throw; //TODO remove debug
         }
     }
 
@@ -1483,9 +1494,9 @@ public:
     }
 
     inline void ExitSnapshotMode() {
-        this->m_shouldProcessSnapshot = false;
-        if(this->m_entryInfo != 0)
+        if(this->m_entryInfo != 0) //TODO remove debug
             throw;
+        this->m_shouldProcessSnapshot = false;
     }
 
     inline bool ShouldProcessSnapshot() { return this->m_shouldProcessSnapshot; }
@@ -1494,6 +1505,8 @@ public:
         if(!this->m_shouldProcessSnapshot)
             return;
         this->m_shouldProcessSnapshot = false;
+        if(this->m_entryInfo != 0)
+            throw; //TODO remove debug
         SymbolInfo()->DecSessionsToRecvSnapshotCount();
     }
 };

@@ -654,5 +654,92 @@ void DebugInfoManager::PrintStatisticsXml(FastProtocolManager *manager) {
     fprintf(fp, "</FastProtocolManager>\n");
 }
 
+int DebugInfoManager::CalcOrderFondTotalEntriesCount(FeedConnection *conn) {
+    int count = 0;
 
+    for(int i = 0; i < conn->OrderFond()->SymbolsCount(); i++) {
+        for(int j = 0; j < conn->OrderFond()->Symbol(i)->SessionCount(); j++) {
+            count += conn->OrderFond()->Symbol(i)->Session(j)->BuyQuotes()->Count();
+            count += conn->OrderFond()->Symbol(i)->Session(j)->SellQuotes()->Count();
+        }
+    }
+
+    return count;
+}
+int DebugInfoManager::CalcOrderCurrTotalEntriesCount(FeedConnection *conn) {
+    int count = 0;
+
+    for(int i = 0; i < conn->OrderCurr()->SymbolsCount(); i++) {
+        for(int j = 0; j < conn->OrderCurr()->Symbol(i)->SessionCount(); j++) {
+            count += conn->OrderCurr()->Symbol(i)->Session(j)->BuyQuotes()->Count();
+            count += conn->OrderCurr()->Symbol(i)->Session(j)->SellQuotes()->Count();
+        }
+    }
+
+    return count;
+}
+int DebugInfoManager::CalcTradeFondTotalEntriesCount(FeedConnection *conn) {
+    int count = 0;
+
+    for(int i = 0; i < conn->TradeFond()->SymbolsCount(); i++) {
+        for(int j = 0; j < conn->TradeFond()->Symbol(i)->SessionCount(); j++) {
+            count += conn->TradeFond()->Symbol(i)->Session(j)->Trades()->Count();
+        }
+    }
+
+    return count;
+}
+int DebugInfoManager::CalcTradeCurrTotalEntriesCount(FeedConnection *conn) {
+    int count = 0;
+
+    for(int i = 0; i < conn->TradeCurr()->SymbolsCount(); i++) {
+        for(int j = 0; j < conn->TradeCurr()->Symbol(i)->SessionCount(); j++) {
+            count += conn->TradeCurr()->Symbol(i)->Session(j)->Trades()->Count();
+        }
+    }
+
+    return count;
+}
+
+int DebugInfoManager::CheckIsFriedMDEntryQueryCleared() {
+    int index = 0;
+    LinkedPointer<MDEntryQueue> *start = MDEntryQueue::Pool->Start();
+    while(start != 0) {
+        MDEntryQueue *data = start->Data();
+        if(!data->IsCleared())
+            return index;
+        if(start == MDEntryQueue::Pool->End())
+            break;
+        start = start->Next();
+        index++;
+    }
+    return -1;
+}
+
+MDEntryQueue* DebugInfoManager::GetFirstMDEntryQueue() {
+    int index = 0;
+    LinkedPointer<MDEntryQueue> *start = MDEntryQueue::Pool->Start();
+    while(start != 0) {
+        MDEntryQueue *data = start->Data();
+        if(!data->IsCleared())
+            return data;
+        if(start == MDEntryQueue::Pool->End())
+            break;
+        start = start->Next();
+    }
+    return 0;
+}
+int DebugInfoManager::GetFirstNonEmptyEntry() {
+    int index = 0;
+    LinkedPointer<MDEntryQueue> *start = MDEntryQueue::Pool->Start();
+    while(start != 0) {
+        MDEntryQueue *data = start->Data();
+        if(!data->IsCleared())
+            return data->GetFirstNonEmptyEntry();
+        if(start == MDEntryQueue::Pool->End())
+            break;
+        start = start->Next();
+    }
+    return -1;
+}
 

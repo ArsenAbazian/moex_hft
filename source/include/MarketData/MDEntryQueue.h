@@ -5,15 +5,17 @@
 #ifndef HFT_ROBOT_MARKETDATAENTRYQUEUE_H
 #define HFT_ROBOT_MARKETDATAENTRYQUEUE_H
 
+#include <Managers/DebugInfoManager.h>
 #include "../Lib/StringIdComparer.h"
 #include "Fast/FastTypes.h"
 
 #define MDENTRYINFO_INCREMENTAL_ENTRIES_BUFFER_LENGTH 500
 
 class MDEntryQueue {
+    const int                                           m_incEntriesCount = MDENTRYINFO_INCREMENTAL_ENTRIES_BUFFER_LENGTH;
+
     void                                                *m_owner;
     void                                                **m_incEntries;
-    int                                                 m_incEntriesCount;
     int                                                 m_incEntriesMaxIndex;
     int                                                 m_incStartRptSeq;
     bool                                                m_shouldProcess;
@@ -30,7 +32,6 @@ public:
         this->Used = false;
         this->Pointer = 0;
         this->m_incEntries = new void *[MDENTRYINFO_INCREMENTAL_ENTRIES_BUFFER_LENGTH];
-        this->m_incEntriesCount = MDENTRYINFO_INCREMENTAL_ENTRIES_BUFFER_LENGTH;
         bzero(this->m_incEntries, sizeof(void *) * this->m_incEntriesCount);
         this->m_incEntriesMaxIndex = -1;
         this->m_incStartRptSeq = 0;
@@ -39,6 +40,14 @@ public:
     }
     ~MDEntryQueue() {
         delete this->m_incEntries;
+    }
+
+    int GetFirstNonEmptyEntry() {
+        for(int i = 0; i < this->m_incEntriesCount; i++) {
+            if (this->m_incEntries[i] != 0)
+                return i;
+        }
+        return -1;
     }
 
     inline bool IsCleared() {
@@ -59,6 +68,19 @@ public:
 
     inline int StartRptSeq() { return this->m_incStartRptSeq; }
 
+    inline MDEntryQueue* GetNonEmptyInfoInPool() {
+        LinkedPointer<MDEntryQueue> *start = MDEntryQueue::Pool->Start();
+        while(start != 0) {
+            MDEntryQueue *data = start->Data();
+            if(!data->IsCleared())
+                return data;
+            if(start == MDEntryQueue::Pool->End())
+                break;
+            start = start->Next();
+        }
+        return 0;
+    }
+
     inline void AddEntry(void *entry, int entryRptSec) {
         int index = entryRptSec - this->m_incStartRptSeq;
         if(index >= this->m_incEntriesCount) {
@@ -71,11 +93,14 @@ public:
         this->m_incEntries[index] = entry;
         if(index > this->m_incEntriesMaxIndex)
             this->m_incEntriesMaxIndex = index;
+        MDEntryQueue *e = GetNonEmptyInfoInPool(); //TODO remove debug info
+        if(e != 0)
+            throw;
     }
 
     inline void Reset() {
         if(this->m_incEntriesMaxIndex >= 0)
-            bzero(this->m_incEntries, sizeof(void*) * this->m_incEntriesMaxIndex);
+            bzero(this->m_incEntries, sizeof(void*) * (this->m_incEntriesMaxIndex + 1));
         this->m_incEntriesMaxIndex = -1;
         this->m_incStartRptSeq = 0;
         this->m_shouldProcess = false;

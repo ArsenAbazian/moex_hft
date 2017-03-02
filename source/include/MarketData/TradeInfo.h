@@ -36,7 +36,15 @@ public:
     inline void ReleaseEntryQue() {
         if(this->m_entryInfo != 0) {
             this->m_entryInfo->Reset();
+            if(!this->m_entryInfo->IsCleared())
+                throw; //TODO remove degbug
             MDEntryQueue::Pool->FreeItem(this->m_entryInfo->Pointer);
+            int index = DebugInfoManager::Default->CheckIsFriedMDEntryQueryCleared();
+            if(index != -1) {
+                MDEntryQueue *queue = DebugInfoManager::Default->GetFirstMDEntryQueue();
+                int entryIndex = DebugInfoManager::Default->GetFirstNonEmptyEntry();
+                throw;
+            }
         }
         this->m_entryInfo = 0;
     }

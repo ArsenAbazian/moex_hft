@@ -330,6 +330,19 @@ public:
         this->inc->OrderCurr()->Clear();
     }
 
+    void TestReceivedSnapshotMsgSeqNum_1_After_200() {
+        // assumes that previous startMsgSeqNum = 200 and next msg seq num = 1
+        //throw;
+    }
+
+    void TestThatAfterApplySnapshotPart_RptSeqNotChanged() {
+        //throw
+    }
+
+    void TestSnapshotItemRptSeqChangedAfterEndSnapshot() {
+        //throw
+    }
+
     void TestFeedConnectionBase() {
         TestDefaults();
         TestWindowStartMsgSeqNo_CorrectIncremental();
@@ -337,6 +350,9 @@ public:
         TestWindowStartMsgSeqNo_AfterApplySnapshot();
         TestReceivedPacketWithBigMsgSeqNo_FromStart();
         TestReceivedPacketWithBigMsgSeqNo_InProcess();
+        TestReceivedSnapshotMsgSeqNum_1_After_200();
+        TestThatAfterApplySnapshotPart_RptSeqNotChanged();
+        TestSnapshotItemRptSeqChangedAfterEndSnapshot();
     }
 
     void Test() {
@@ -345,10 +361,10 @@ public:
         RobotSettings::Default->MarketDataMaxEntriesCount = 32 * 10;
         RobotSettings::Default->MDEntryQueueItemsCount = 100;
 
-        TestFeedConnectionBase();
-
         PointerListTester pt;
         pt.Test();
+
+        TestFeedConnectionBase();
 
         SymbolManagerTester ht;
         ht.Test();

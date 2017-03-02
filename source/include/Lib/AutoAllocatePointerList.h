@@ -9,8 +9,14 @@
 #include "Fast/FastTypes.h"
 
 template<typename T> class AutoAllocatePointerList {
-    PointerList<T> *m_list;
-    int             m_addCapacity;
+    int                 m_addCapacity;
+    int                 m_count;
+    int                 m_capacity;
+    LinkedPointer<T>    *m_head;
+    LinkedPointer<T>    *m_tail;
+    LinkedPointer<T>    *m_usedHead;
+    LinkedPointer<T>    *m_usedTail;
+    const char          *m_name;
 
     inline void Allocate(LinkedPointer<T> *start, LinkedPointer<T> *end) {
         while(true) {
@@ -23,33 +29,111 @@ template<typename T> class AutoAllocatePointerList {
             start = start->Next();
         }
     }
+
+    inline LinkedPointer<T>* CreatePointer() {
+        LinkedPointer<T> *node = new LinkedPointer<T>();
+        T *t = new T();
+        t->Pointer = node;
+        t->Allocator = this;
+        node->Data(t);
+        return node;
+    }
+    inline LinkedPointer<T>* CreatePointers(LinkedPointer<T> *start, int count) {
+        count--;
+        for(int i = 0; i < count; i++) {
+            LinkedPointer<T> *node = CreatePointer();
+            start->Next(node);
+            start = node;
+        }
+        return start;
+    }
+    inline void Connect(LinkedPointer<T> *prev, LinkedPointer<T> *next) {
+        prev->Next(next);
+        next->Prev(prev);
+    }
+    inline void AddUsed(LinkedPointer<T> *node) {
+        this->Connect(this->m_usedTail->Prev(), node);
+        this->Connect(node, this->m_usedTail);
+    }
+    inline void RemoveUsed(LinkedPointer<T> *node) {
+        this->Connect(node->Prev(), node->Next());
+    }
 public:
     AutoAllocatePointerList(int capacity, int additionalCapacity) {
+        this->m_count = 0;
         this->m_addCapacity = additionalCapacity;
-        this->m_list = new PointerList<T>(capacity);
-        this->Allocate(this->m_list->PoolStart(), this->m_list->PoolEnd());
+        this->m_capacity = capacity;
+        this->m_head = CreatePointer();
+        this->m_tail = CreatePointers(this->m_head, capacity);
+        this->m_name = "";
+
+        this->m_usedHead = new LinkedPointer<T>();
+        this->m_usedTail = new LinkedPointer<T>();
+        this->Connect(this->m_usedHead, this->m_usedTail);
     }
-    AutoAllocatePointerList(int capacity, int additionalCapacity, const char *name) {
-        this->m_addCapacity = additionalCapacity;
-        this->m_list = new PointerList<T>(capacity, name);
-        this->Allocate(this->m_list->PoolStart(), this->m_list->PoolEnd());
+    AutoAllocatePointerList(int capacity, int additionalCapacity, const char *name) :
+            AutoAllocatePointerList(capacity, additionalCapacity) {
+        this->m_name = name;
     }
     inline T* NewItem() {
-        if(this->m_list->IsFull()) {
-            LinkedPointer<T> *node = this->m_list->Append(this->m_addCapacity);
-            this->Allocate(node, this->m_list->PoolEnd());
+        this->m_count++;
+        LinkedPointer<T> *node = this->m_head;
+        this->m_head = this->m_head->Next();
+        node->Released(false);
+        this->AddUsed(node);
+
+        if(this->m_head == 0) {
+            printf("!!!unexpected append %s count = %d, additional capacity = %d!!!\n", this->m_name, this->m_count, this->m_addCapacity); //TODO remove debug info
+            this->m_head = CreatePointer();
+            this->m_tail = this->CreatePointers(this->m_head, this->m_addCapacity);
+            this->m_capacity += this->m_addCapacity;
         }
-        T *item = this->m_list->Add(this->m_list->Pop())->Data();
-        return item;
+        return node->Data();
     }
-    inline PointerList<T>* ListCore() { return this->m_list; }
     inline void FreeItem(LinkedPointer<T> *node) {
-        if(node->Data()->Used)
+        if(node->Data()->Used || node->Released())
             return;
-        this->m_list->Push(node);
+        node->Released(true);
+        this->m_count--;
+        this->m_tail->Next(node);
+        this->m_tail = node;
+        this->RemoveUsed(node);
+        this->m_tail->Next(0);
     }
-    inline int Count() { return this->m_list->Count(); }
-    inline int Capacity() { return this->m_list->Capacity(); }
+    inline void FreeItem(T *data) {
+        FreeItem(data->Pointer);
+    }
+    inline int Count() { return this->m_count; }
+    inline int Capacity() { return this->m_capacity; }
+    inline LinkedPointer<T> *Start() { return this->m_head; }
+    inline LinkedPointer<T> *End() { return this->m_tail; }
+    inline void Clear() {
+        if(this->m_count == 0)
+            return;
+        this->m_count = 0;
+        this->m_tail->Next(this->m_usedHead->Next());
+        this->m_tail = this->m_usedTail->Prev();
+        this->m_tail->Next(0);
+        this->Connect(this->m_usedHead, this->m_usedTail);
+    }
+    int CalcFreeItemsCount() {
+        LinkedPointer<T> *node = this->m_head;
+        int count = 0;
+        while(node != 0) {
+            count++;
+            node = node->Next();
+        }
+        return count;
+    }
+    int CalcUsedItemsCount() {
+        LinkedPointer<T> *node = this->m_usedHead->Next();
+        int count = 0;
+        while(node != this->m_usedTail) {
+            count++;
+            node = node->Next();
+        }
+        return count;
+    }
 };
 
 #endif //HFT_ROBOT_ORDERBOOKINFOLIST_H
