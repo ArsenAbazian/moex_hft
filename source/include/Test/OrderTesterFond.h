@@ -1182,7 +1182,7 @@ public:
         this->m_table->ProcessSnapshot(info->GroupMDEntries, 1, 3);
         if(tb->BuyQuotes()->Count() != 1)
             throw;
-        if(tb->RptSeq() != 3)
+        if(tb->RptSeq() == 3)
             throw;
         if(!this->m_table->EndProcessSnapshot())
             throw;
@@ -1304,7 +1304,7 @@ public:
         this->m_table->ProcessSnapshot(info->GroupMDEntries, 1, 2);
         if(tb->BuyQuotes()->Count() != 1)
             throw;
-        if(tb->RptSeq() != 2)
+        if(tb->RptSeq() == 2)
             throw;
         if(this->m_table->EndProcessSnapshot())
             throw;
@@ -1358,7 +1358,7 @@ public:
         this->m_table->ProcessSnapshot(info->GroupMDEntries, 1, 3);
         if(tb->BuyQuotes()->Count() != 1)
             throw;
-        if(tb->RptSeq() != 3)
+        if(tb->RptSeq() == 3)
             throw;
         if(this->m_table->EndProcessSnapshot())
             throw;
