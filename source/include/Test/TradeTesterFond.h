@@ -62,11 +62,11 @@ public:
         }
         TradeInfo<FastTLSFONDItemInfo> *tb = new TradeInfo<FastTLSFONDItemInfo>();
         tb->ObtainEntriesQueue();
-        LinkedPointer<MDEntryQueue> *ptr = tb->EntriesQueue()->Pointer->Owner()->PoolStart();
+        LinkedPointer<MDEntryQueue> *ptr = tb->EntriesQueue()->Allocator->Start();
         while(ptr != 0) {
             if(ptr->Data() == 0)
                 throw;
-            if(ptr == tb->EntriesQueue()->Pointer->Owner()->PoolEnd())
+            if(ptr == tb->EntriesQueue()->Allocator->End())
                 break;
             ptr = ptr->Next();
         }
@@ -370,11 +370,11 @@ public:
         this->TestTableItemsAllocator(incFond->TradeFond());
         TradeInfo<FastTLSFONDItemInfo> *tb = new TradeInfo<FastTLSFONDItemInfo>();
         tb->ObtainEntriesQueue();
-        LinkedPointer<MDEntryQueue> *ptr = tb->EntriesQueue()->Pointer->Owner()->PoolStart();
+        LinkedPointer<MDEntryQueue> *ptr = tb->EntriesQueue()->Allocator->Start();
         while(ptr != 0) {
             if(ptr->Data() == 0)
                 throw;
-            if(ptr == tb->EntriesQueue()->Pointer->Owner()->PoolEnd())
+            if(ptr == tb->EntriesQueue()->Allocator->End())
                 break;
             ptr = ptr->Next();
         }
@@ -607,6 +607,7 @@ public:
         FastTLSFONDInfo *info = this->m_helper->CreateTLSFondInfo("s1", "session");
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item5;
+        info->RptSeq = 3;
 
         TradeInfo<FastTLSFONDItemInfo> *tb = this->m_table->GetItem("s1", "session");
 
@@ -725,6 +726,7 @@ public:
         FastTLSFONDInfo *info = this->m_helper->CreateTLSFondInfo("s1", "session");
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item5;
+        info->RptSeq = 2;
 
         TradeInfo<FastTLSFONDItemInfo> *tb = this->m_table->GetItem("s1", "session");
 
@@ -777,6 +779,7 @@ public:
         FastTLSFONDInfo *info = this->m_helper->CreateTLSFondInfo("s1", "session");
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item5;
+        info->RptSeq = 3;
 
         TradeInfo<FastTLSFONDItemInfo> *tb = this->m_table->GetItem("s1", "session");
 

@@ -1167,6 +1167,7 @@ public:
         FastOLSFONDInfo *info = this->m_helper->CreateOLSFondInfo("s1", "session1");
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item5;
+        info->RptSeq = 3;
 
         OrderInfo<FastOLSFONDItemInfo> *tb = this->m_table->GetItem("s1", "session1");
 
@@ -1289,6 +1290,7 @@ public:
         FastOLSFONDInfo *info = this->m_helper->CreateOLSFondInfo("s1", "session1");
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item5;
+        info->RptSeq = 2;
 
         OrderInfo<FastOLSFONDItemInfo> *tb = this->m_table->GetItem("s1", "session1");
 
@@ -1343,6 +1345,7 @@ public:
         FastOLSFONDInfo *info = this->m_helper->CreateOLSFondInfo("s1", "session1");
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item5;
+        info->RptSeq = 3;
 
         OrderInfo<FastOLSFONDItemInfo> *tb = this->m_table->GetItem("s1", "session1");
 

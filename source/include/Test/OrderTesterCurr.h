@@ -1166,6 +1166,7 @@ public:
         FastOLSCURRInfo *info = this->m_helper->CreateOLSCurrInfo("s1", "session1");
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item5;
+        info->RptSeq = 3;
 
         OrderInfo<FastOLSCURRItemInfo> *tb = this->m_table->GetItem("s1", "session1");
 
@@ -1288,6 +1289,7 @@ public:
         FastOLSCURRInfo *info = this->m_helper->CreateOLSCurrInfo("s1", "session1");
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item5;
+        info->RptSeq = 2;
 
         OrderInfo<FastOLSCURRItemInfo> *tb = this->m_table->GetItem("s1", "session1");
 
@@ -1342,6 +1344,7 @@ public:
         FastOLSCURRInfo *info = this->m_helper->CreateOLSCurrInfo("s1", "session1");
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item5;
+        info->RptSeq = 3;
 
         OrderInfo<FastOLSCURRItemInfo> *tb = this->m_table->GetItem("s1", "session1");
 

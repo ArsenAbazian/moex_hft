@@ -579,6 +579,7 @@ public:
         FastTLSCURRInfo *info = this->m_helper->CreateTLSCurrInfo("s1", "session");
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item5;
+        info->RptSeq = 3;
 
         TradeInfo<FastTLSCURRItemInfo> *tb = this->m_table->GetItem("s1", "session");
 
@@ -697,6 +698,7 @@ public:
         FastTLSCURRInfo *info = this->m_helper->CreateTLSCurrInfo("s1", "session");
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item5;
+        info->RptSeq = 2;
 
         TradeInfo<FastTLSCURRItemInfo> *tb = this->m_table->GetItem("s1", "session");
 
@@ -749,6 +751,7 @@ public:
         FastTLSCURRInfo *info = this->m_helper->CreateTLSCurrInfo("s1", "session");
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item5;
+        info->RptSeq = 3;
 
         TradeInfo<FastTLSCURRItemInfo> *tb = this->m_table->GetItem("s1", "session");
 
