@@ -19,10 +19,8 @@ class SocketBuffer {
 	unsigned int        m_size;
 	unsigned char*      *m_items;
 	unsigned int        *m_itemLength;
-    unsigned int        *m_index;
-    INextIndexProvider  *m_indexProvider;
 public:
-    SocketBuffer(INextIndexProvider *provider, unsigned int bufferSize, unsigned int maxItemsCount, unsigned int bufferIndex);
+    SocketBuffer(unsigned int bufferSize, unsigned int maxItemsCount, unsigned int bufferIndex);
     ~SocketBuffer();
 
     inline unsigned int BufferIndex() { return this->m_bufferIndex; }
@@ -36,7 +34,6 @@ public:
     inline unsigned int ItemLength(int index) { return this->m_itemLength[index]; }
     inline unsigned char* Item(int index) { return this->m_items[index]; }
 
-    inline unsigned int NextIndex() { return this->m_indexProvider->NextIndex(); }
     inline void Next(int length) {
         int itemCount = this->m_itemsCount;
 
@@ -49,7 +46,6 @@ public:
         else {
             this->m_itemsCount = itemCount;
             this->m_items[itemCount] = this->m_current;
-            this->m_index[itemCount] = NextIndex();
         }
     }
     inline void NextExact(int length) {
@@ -64,16 +60,18 @@ public:
         else {
             this->m_itemsCount = itemCount;
             this->m_items[itemCount] = this->m_current;
-            this->m_index[itemCount] = NextIndex();
         }
     }
-    inline void Reset() {
+    inline void Init() {
         this->m_current = this->m_buffer;
         this->m_end = this->m_buffer + this->m_size;
         this->m_itemsCount = 0;
 
         this->m_items[0] = this->m_current;
-        this->m_index[0] = NextIndex();
+    }
+    inline void Reset() {
+        this->m_current = this->m_buffer;
+        this->m_itemsCount = 0;
     }
     inline double CalcMemoryUsagePercentage() {
         if(this->m_size == 0)
@@ -107,7 +105,7 @@ public:
     inline SocketBuffer* GetFreeBuffer(unsigned int size, unsigned int maxItemsCount) {
         if(this->m_itemsCount >= this->m_maxItemsCount)
             return NULL;
-        this->m_buffers[this->m_itemsCount] = new SocketBuffer(this, size, maxItemsCount, this->m_itemsCount);
+        this->m_buffers[this->m_itemsCount] = new SocketBuffer(size, maxItemsCount, this->m_itemsCount);
         this->m_itemsCount++;
         PrintMemoryInfo("After SocketBufferManager::GetFreeBuffer");
         return this->m_buffers[this->m_itemsCount - 1];

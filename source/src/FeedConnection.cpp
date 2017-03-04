@@ -34,6 +34,8 @@ FeedConnection::FeedConnection(const char *id, const char *name, char value, Fee
     this->m_incremental = 0;
     this->m_snapshot = 0;
     this->m_connectionsToRecvSymbolsCount = 0;
+    this->m_connToRecvHistoricalReplayCount = 0;
+    m_enableHistoricalReplay = true;
     this->m_reconnectCount = 0;
     this->m_maxReconnectCount = 20;
 

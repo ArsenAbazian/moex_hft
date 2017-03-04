@@ -135,6 +135,9 @@ public:
     }
 
     inline bool ProcessIncrementalMessage(T *info) {
+        //TODO remove debug
+        if(this->m_entryInfo != 0 && !this->m_entryInfo->HasEntries())
+            throw;
         if(!this->IsNextMessage(info)) {
             this->PushMessageToQueue(info);
             return false;
@@ -158,7 +161,6 @@ public:
     inline bool ProcessQueueMessages() {
         if(this->m_entryInfo == 0)
             return true;
-        this->m_entryInfo->ShouldProcess(false);
         if(!this->m_entryInfo->HasEntries()) {
             this->ReleaseEntryQue();
             return true;

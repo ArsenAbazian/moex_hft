@@ -407,6 +407,7 @@ bool Robot::MainLoop_CurrOnly() {
             DefaultLogManager::Default->EndLog(false);
             return false;
         }
+        DebugInfoManager::Default->DebugCheckForDublicateItems(this->m_currMarket->FeedChannel());
         if(!this->DoWorkAtom()) {
             DefaultLogManager::Default->EndLog(false);
             return false;

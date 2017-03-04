@@ -18,7 +18,6 @@ class MDEntryQueue {
     void                                                **m_incEntries;
     int                                                 m_incEntriesMaxIndex;
     int                                                 m_incStartRptSeq;
-    bool                                                m_shouldProcess;
 
     static AutoAllocatePointerList<MDEntryQueue>* CreatePool();
 public:
@@ -35,7 +34,6 @@ public:
         bzero(this->m_incEntries, sizeof(void *) * this->m_incEntriesCount);
         this->m_incEntriesMaxIndex = -1;
         this->m_incStartRptSeq = 0;
-        this->m_shouldProcess = false;
         this->m_owner = 0;
     }
     ~MDEntryQueue() {
@@ -83,16 +81,19 @@ public:
 
     inline void AddEntry(void *entry, int entryRptSec) {
         int index = entryRptSec - this->m_incStartRptSeq;
+        //TODO remove debug
+        if(index == -1)
+            throw;
         if(index >= this->m_incEntriesCount) {
             if(this->HasEntries())
                 return;
             this->m_incStartRptSeq = entryRptSec;
             index = 0;
         }
-        this->m_shouldProcess = false; // reset flag because we will process
         this->m_incEntries[index] = entry;
-        if(index > this->m_incEntriesMaxIndex)
+        if(index > this->m_incEntriesMaxIndex) {
             this->m_incEntriesMaxIndex = index;
+        }
         MDEntryQueue *e = GetNonEmptyInfoInPool(); //TODO remove debug info
         if(e != 0)
             throw;
@@ -103,7 +104,6 @@ public:
             bzero(this->m_incEntries, sizeof(void*) * (this->m_incEntriesMaxIndex + 1));
         this->m_incEntriesMaxIndex = -1;
         this->m_incStartRptSeq = 0;
-        this->m_shouldProcess = false;
     }
 
     inline void Clear() {
@@ -117,13 +117,8 @@ public:
         this->Reset();
     }
 
-    inline void ShouldProcess(bool value) {
-        if(this->HasEntries())
-            return;
-        this->m_shouldProcess = value;
-    }
     inline int MaxIndex() { return this->m_incEntriesMaxIndex; }
-    inline bool HasEntries() { return this->m_incEntriesMaxIndex != -1 || this->m_shouldProcess; };
+    inline bool HasEntries() { return this->m_incEntriesMaxIndex != -1; };
     inline void** Entries() { return this->m_incEntries; }
     inline int RptSeq() { return this->m_incStartRptSeq; }
     inline int Capacity() { return this->m_incEntriesCount; }

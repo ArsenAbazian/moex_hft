@@ -107,6 +107,8 @@ public:
     inline int Capacity() { return this->m_capacity; }
     inline LinkedPointer<T> *Start() { return this->m_head; }
     inline LinkedPointer<T> *End() { return this->m_tail; }
+    inline LinkedPointer<T> *UsedStart() { return this->m_usedHead->Next(); }
+    inline LinkedPointer<T> *UsedEnd() { return this->m_usedTail; }
     inline void Clear() {
         if(this->m_count == 0)
             return;

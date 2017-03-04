@@ -743,3 +743,57 @@ int DebugInfoManager::GetFirstNonEmptyEntry() {
     return -1;
 }
 
+int DebugInfoManager::CalcMDEntryQueCount(FeedChannel *channel, MDEntryQueue *que) {
+    int count = 0;
+    if(channel->Olr() != 0) {
+        if(channel->Olr()->OrderCurr() != 0)
+            count += channel->Olr()->OrderCurr()->DebugCalcEntryQueCount(que);
+        if(channel->Olr()->OrderFond() != 0)
+            count += channel->Olr()->OrderFond()->DebugCalcEntryQueCount(que);
+    }
+    if(channel->Tlr() != 0) {
+        if(channel->Tlr()->TradeCurr() != 0)
+            count += channel->Tlr()->TradeCurr()->DebugCalcEntryQueCount(que);
+        if(channel->Tlr()->TradeFond() != 0)
+            count += channel->Tlr()->TradeFond()->DebugCalcEntryQueCount(que);
+    }
+    if(channel->Msr() != 0) {
+        if(channel->Msr()->StatisticCurr() != 0)
+            count += channel->Msr()->StatisticCurr()->DebugCalcEntryQueCount(que);
+        if(channel->Msr()->StatisticFond() != 0)
+            count += channel->Msr()->StatisticFond()->DebugCalcEntryQueCount(que);
+    }
+    return count;
+}
+
+void DebugInfoManager::DebugCheckForDublicateItems(FeedChannel *channel) {
+    LinkedPointer<MDEntryQueue> *node = MDEntryQueue::Pool->Start();
+    while(node != 0) {
+        if(node == MDEntryQueue::Pool->End())
+            break;
+        if(node->Data() == 0)
+            throw;
+        int count = this->CalcMDEntryQueCount(channel, node->Data());
+        if(count != 0) {
+            this->CalcMDEntryQueCount(channel, node->Data());
+            this->CalcMDEntryQueCount(channel, node->Data());
+            throw;
+        }
+        node = node->Next();
+    }
+
+    node = MDEntryQueue::Pool->UsedStart();
+    while(node != 0) {
+        if(node == MDEntryQueue::Pool->UsedEnd())
+            break;
+        if(node->Data() == 0)
+            throw;
+        int count = this->CalcMDEntryQueCount(channel, node->Data());
+        if(count != 1) {
+            this->CalcMDEntryQueCount(channel, node->Data());
+            this->CalcMDEntryQueCount(channel, node->Data());
+            throw;
+        }
+        node = node->Next();
+    }
+}

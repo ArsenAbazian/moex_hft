@@ -70,6 +70,10 @@ protected:
     FeedConnection                              *m_connectionsToRecvSymbols[32];
     int                                         m_connectionsToRecvSymbolsCount;
 
+    FeedConnection                              *m_connToRecvHistoricalReplay[32];
+    int                                         m_connToRecvHistoricalReplayCount;
+    bool                                        m_enableHistoricalReplay;
+
     int                                         m_snapshotRouteFirst;
     int                                         m_snapshotLastFragment;
     int                                         m_lastMsgSeqNumProcessed;
@@ -434,6 +438,7 @@ protected:
     inline bool CanStopListeningSnapshot() {
         return this->SymbolsToRecvSnapshotCount() == 0 && !this->HasQueueEntries();
     }
+
 #pragma region snapshot
     inline bool PrepareDecodeSnapshotMessage(int packetIndex) {
         FeedConnectionMessageInfo *info = this->m_packets[packetIndex];
@@ -485,6 +490,9 @@ protected:
     inline bool StartApplySnapshot_OLS_CURR() {
         this->m_incremental->OrderCurr()->ObtainSnapshotItem(this->m_lastSnapshotInfo);
         if(this->m_incremental->OrderCurr()->ApplyQuickSnapshot(this->m_lastSnapshotInfo)) {
+            if(this->m_incremental->OrderCurr()->DebugCalcActualQueueEntriesCount() !=
+                    this->m_incremental->OrderCurr()->QueueEntriesCount())
+                throw; //TODO remove debug
 #ifdef COLLECT_STATISTICS
             ProgramStatistics::Current->IncCurrOlsProcessedCount();
             ProgramStatistics::Total->IncCurrOlsProcessedCount();
@@ -492,7 +500,13 @@ protected:
             return false; // skip all the snapshot
         }
         this->m_incremental->OrderCurr()->StartProcessSnapshot();
+        if(this->m_incremental->OrderCurr()->DebugCalcActualQueueEntriesCount() !=
+           this->m_incremental->OrderCurr()->QueueEntriesCount())
+            throw; //TODO remove debug
         this->ApplySnapshotPart_OLS_CURR(this->m_snapshotRouteFirst);
+        if(this->m_incremental->OrderCurr()->DebugCalcActualQueueEntriesCount() !=
+           this->m_incremental->OrderCurr()->QueueEntriesCount())
+            throw; //TODO remove debug
         return true;
     }
 
@@ -700,6 +714,10 @@ protected:
         this->m_isfStartSnapshotCount++;
     }
 
+    inline void AfterMoveWindow() {
+        this->m_socketABufferProvider->RecvBuffer()->Reset();
+    }
+
     inline void FinishSecurityStatusSnapshot() {
         this->m_securityDefinition->Stop();
         this->m_securityStatusSnapshotActive = false;
@@ -721,6 +739,8 @@ protected:
     }
 
     inline bool ShouldStartIncrementalSnapshot(int endIndex) {
+        if(!this->m_enableHistoricalReplay)
+            return true;
         return (endIndex - this->m_requestMessageStartIndex + 1) >= this->m_maxLostPacketCountForStartSnapshot;
     }
 
@@ -799,6 +819,7 @@ protected:
             this->m_startMsgSeqNum = this->m_endMsgSeqNum + 1;
             this->ClearLocalPackets(0, end);
             this->m_windowMsgSeqNum = this->m_startMsgSeqNum;
+            this->AfterMoveWindow();
         }
         else
             this->m_startMsgSeqNum = i + this->m_windowMsgSeqNum;
@@ -842,6 +863,7 @@ protected:
             this->ClearLocalPackets(0, localEnd);
             this->m_startMsgSeqNum = this->m_endMsgSeqNum + 1;
             this->m_windowMsgSeqNum = this->m_startMsgSeqNum;
+            this->AfterMoveWindow();
         }
         return true;
     }
@@ -1561,7 +1583,10 @@ protected:
     }
 
     inline void OnHistricalReplayExceedUnsuccessfullConnectCount() {
-        printf("ERROR: HistoricalReplay not working....\n");
+        printf("ERROR: HistoricalReplay not working.... Switching to snapshots\n");
+        for(int i = 0; i < this->m_connToRecvHistoricalReplayCount; i++)
+            this->m_connToRecvHistoricalReplay[i]->EnableHistoricalReplay(false);
+
         LinkedPointer<FeedConnectionRequestMessageInfo> *ptr = this->m_hsRequestList->Start();
         while(ptr != 0) {
             ptr->Data()->m_conn->StartListenSnapshot();
@@ -2182,7 +2207,19 @@ public:
 			this->m_snapshot->SetIncremental(this);
 	}
     inline FeedConnection* Snapshot() { return this->m_snapshot; }
-    inline void SetHistoricalReplay(FeedConnection *historicalReplay) { this->m_historicalReplay = historicalReplay; }
+    void AddConnectionForHistoricalReplay(FeedConnection *conn) {
+        for(int i = 0; i < this->m_connToRecvHistoricalReplayCount; i++) {
+            if(this->m_connToRecvHistoricalReplay[i] == conn)
+                return;
+        }
+        this->m_connToRecvHistoricalReplay[this->m_connToRecvHistoricalReplayCount] = conn;
+        this->m_connToRecvHistoricalReplayCount++;
+    }
+    inline void EnableHistoricalReplay(bool enable) { this->m_enableHistoricalReplay = enable; }
+    inline void SetHistoricalReplay(FeedConnection *historicalReplay) {
+        this->m_historicalReplay = historicalReplay;
+        this->m_historicalReplay->AddConnectionForHistoricalReplay(this);
+    }
     inline FeedConnection* HistoricalReplay() { return this->m_historicalReplay; }
 
     inline void SetSecurityDefinition(FeedConnection *securityDefinition) { this->m_securityDefinition = securityDefinition; }

@@ -482,6 +482,8 @@ public:
     int CheckIsFriedMDEntryQueryCleared();
     MDEntryQueue* GetFirstMDEntryQueue();
     int GetFirstNonEmptyEntry();
+    void DebugCheckForDublicateItems(FeedChannel *channel);
+    int CalcMDEntryQueCount(FeedChannel *channel, MDEntryQueue *que);
 };
 
 #endif //HFT_ROBOT_DEBUGINFOMANAGER_H
