@@ -107,6 +107,8 @@ void LogMessageProvider::InitializeLogMessageText() {
 	this->m_logMessageText[LogMessageCode::lmcsocket_setsockopt] = "socket->setsockopt()";
 	this->m_logMessageText[LogMessageCode::lmcRobot_CollectSecurityDefinitions] = "Robot::CollectSecurityDefinitions";
 	this->m_logMessageText[LogMessageCode::lmcRobot_GenerateSecurityDefinitions] = "Robot::GenerateSecurityDefinitions";
+	this->m_logMessageText[LogMessageCode::lmcFeedConnection_SaveSecurityDefinition] = "FeedConnection::SaveSecurityDefinition";
+	this->m_logMessageText[LogMessageCode::lmcFeedConnection_LoadSecurityDefinition] = "FeedConnection::LoadSecurityDefinition";
 #pragma endregion
 }
 

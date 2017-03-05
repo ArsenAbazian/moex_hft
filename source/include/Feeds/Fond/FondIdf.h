@@ -7,13 +7,38 @@
 
 #include "../FeedConnection.h"
 
+class SecurityDefinitionFondAllocationInfo : public FastObjectsAllocationInfo {
+public:
+    SecurityDefinitionFondAllocationInfo() : FastObjectsAllocationInfo(32, 32) {
+#ifndef TEST
+        this->m_securityDefinitionCount = 20000;
+        this->m_securityDefinitionAddCount = 256;
+        this->m_securityDefinitionGroupInstrAttribItemsCount = 40000;
+        this->m_securityDefinitionGroupInstrAttribItemsAddCount = 256;
+        this->m_securityDefinitionMarketSegmentGrpItemsCount = 20000;
+        this->m_securityDefinitionMarketSegmentGrpItemsAddCount = 256;
+        this->m_securityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemsCount = 40000;
+        this->m_securityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemsAddCount = 256;
+#else
+        this->m_securityDefinitionCount = 60;
+        this->m_securityDefinitionAddCount = 256;
+        this->m_securityDefinitionGroupInstrAttribItemsCount = 130;
+        this->m_securityDefinitionGroupInstrAttribItemsAddCount = 256;
+        this->m_securityDefinitionMarketSegmentGrpItemsCount = 130;
+        this->m_securityDefinitionMarketSegmentGrpItemsAddCount = 256;
+        this->m_securityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemsCount = 130;
+        this->m_securityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemsAddCount = 256;
+#endif
+    }
+};
+
 class FeedConnection_FOND_IDF : public FeedConnection{
 public:
     FeedConnection_FOND_IDF(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
             FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
         this->SetType(FeedConnectionType::InstrumentDefinition);
         this->SetId(FeedConnectionId::fcidIdfFond);
-        this->m_fastProtocolManager = new FastProtocolManager(this->CreateFastAllocationInfo());
+        this->m_fastProtocolManager = new FastProtocolManager(new SecurityDefinitionFondAllocationInfo());
         InitializeSecurityDefinition();
         InitializePackets(this->GetPacketsCount());
         DebugInfoManager::Default->PrintMemoryInfo("FeedConnection_FOND_IDF");
@@ -28,35 +53,6 @@ public:
                                         RobotSettings::Default->DefaultFeedConnectionSendItemsCount,
                                         RobotSettings::Default->DefaultFeedConnectionRecvBufferSize,
                                         RobotSettings::Default->DefaultFeedConnectionRecvItemsCount);
-    }
-    FastObjectsAllocationInfo* CreateFastAllocationInfo() {
-        FastObjectsAllocationInfo *info = new FastObjectsAllocationInfo();
-
-#ifndef TEST
-        info->m_securityDefinitionCount = 20000;
-        info->m_securityDefinitionAddCount = 256;
-        info->m_securityDefinitionGroupInstrAttribItemsCount = 40000;
-        info->m_securityDefinitionGroupInstrAttribItemsAddCount = 256;
-        info->m_securityDefinitionMarketSegmentGrpItemsCount = 20000;
-        info->m_securityDefinitionMarketSegmentGrpItemsAddCount = 256;
-        info->m_securityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemsCount = 40000;
-        info->m_securityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemsAddCount = 256;
-#else
-        info->m_securityDefinitionCount = 1000;
-        info->m_securityDefinitionAddCount = 256;
-        info->m_securityDefinitionGroupInstrAttribItemsCount = 100;
-        info->m_securityDefinitionGroupInstrAttribItemsAddCount = 256;
-        info->m_securityDefinitionMarketSegmentGrpItemsCount = 100;
-        info->m_securityDefinitionMarketSegmentGrpItemsAddCount = 256;
-        info->m_securityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemsCount = 100;
-        info->m_securityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemsAddCount = 256;
-#endif
-        info->m_heartbeatCount = 10;
-        info->m_heartbeatAddCount = 10;
-        info->m_tradingSessionStatusCount = 10;
-        info->m_tradingSessionStatusAddCount = 10;
-
-        return info;
     }
 };
 

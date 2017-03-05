@@ -13,7 +13,7 @@ public:
             FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
         this->SetType(FeedConnectionType::Snapshot);
         this->SetId(FeedConnectionId::fcidMssCurr);
-        this->m_fastProtocolManager = new FastProtocolManager(this->CreateFastAllocationInfo());
+        
         InitializePackets(this->GetPacketsCount());
         DebugInfoManager::Default->PrintMemoryInfo("FeedConnection_CURR_MSS");
     }

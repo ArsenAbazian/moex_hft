@@ -213,12 +213,27 @@ public:
     }
 
     inline bool ApplyQuickSnapshot(FastSnapshotInfo *info) {
-        if(this->CheckProcessIfSessionInActualState(info))
+        //TODO remove debug
+        if(this->DebugCalcActualQueueEntriesCount() != this->m_queueItemsCount)
+            throw;
+        if(this->CheckProcessIfSessionInActualState(info)) {
+            //TODO remove debug
+            if(this->DebugCalcActualQueueEntriesCount() != this->m_queueItemsCount)
+                throw;
             return true;
-        if(this->CheckProcessNullSnapshot(info))
+        }
+        if(this->CheckProcessNullSnapshot(info)) {
+            //TODO remove debug
+            if(this->DebugCalcActualQueueEntriesCount() != this->m_queueItemsCount)
+                throw;
             return true;
-        if(!this->ShouldProcessSnapshot(info))
+        }
+        if(!this->ShouldProcessSnapshot(info)) {
+            //TODO remove debug
+            if(this->DebugCalcActualQueueEntriesCount() != this->m_queueItemsCount)
+                throw;
             return true;
+        }
         return false;
     }
 
@@ -313,6 +328,9 @@ public:
             }
         }
         return result;
+    }
+    inline bool DebugCheckActuality() {
+        return DebugCalcActualQueueEntriesCount() == this->m_queueItemsCount;
     }
     inline int DebugCalcActualQueueEntriesCount() {
         int count = 0;

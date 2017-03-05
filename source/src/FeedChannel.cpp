@@ -120,7 +120,6 @@ bool FeedChannel::Connect() {
 		return false;
 	}
 
-
 	if(this->msr != 0)
 		this->idf->AddConnectionToRecvSymbol(this->msr);
 	if(this->olr != 0)
@@ -131,7 +130,6 @@ bool FeedChannel::Connect() {
 		this->idf->AddConnectionToRecvSymbol(this->isf);
 
 	this->m_state = FeedChannelState::fchCollectSymbols;
-	this->idf->Start();
 
 	DefaultLogManager::Default->EndLog(true);
 	return true;

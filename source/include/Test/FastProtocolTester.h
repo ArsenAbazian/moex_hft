@@ -9,7 +9,8 @@ public:
 	~FastProtocolTester();
 
 	void Test() {
-        TestStringCopy();
+		TestMessages();
+		TestStringCopy();
         TestReadString_Optional();
 		TestReadString_Mandatory();
         TestReadByteVector_Optional();
@@ -26,7 +27,6 @@ public:
 		TestReadDecimal_Mandatory();
 		TestMessageSequenceNumber();
 		TestParsePresenceMap();
-		TestMessages();
 	}
 
 	bool CompareStrings(char* str1, const char *str2);

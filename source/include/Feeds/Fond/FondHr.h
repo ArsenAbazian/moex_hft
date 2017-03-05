@@ -13,7 +13,7 @@ public:
             FeedConnection(id, name, value, protocol, 0, ip, port, 0, 0, 0) {
         InitializeHistoricalReplay();
         this->m_fixProtocolManager->SetSenderComputerId(FundMarketSenderComputerId);
-        this->m_fastProtocolManager = new FastProtocolManager(this->CreateFastAllocationInfo());
+        this->m_fastProtocolManager = new FastProtocolManager(new FastObjectsAllocationInfo(10, 10));
         PrepareLogonInfo();
         this->SetType(FeedConnectionType::HistoricalReplay);
         this->SetState(FeedConnectionState::fcsHistoricalReplay);
@@ -30,16 +30,6 @@ public:
                                         RobotSettings::Default->DefaultFeedConnectionSendItemsCount,
                                         RobotSettings::Default->DefaultFeedConnectionRecvBufferSize,
                                         RobotSettings::Default->DefaultFeedConnectionRecvItemsCount);
-    }
-    FastObjectsAllocationInfo* CreateFastAllocationInfo() {
-        FastObjectsAllocationInfo *info = new FastObjectsAllocationInfo();
-
-        info->m_logonCount = 10;
-        info->m_logonAddCount = 10;
-        info->m_logoutCount = 10;
-        info->m_logoutAddCount = 10;
-
-        return info;
     }
 };
 

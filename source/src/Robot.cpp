@@ -175,53 +175,56 @@ bool Robot::CollectSecurityDefinitions_FondOnly() {
 
     DefaultLogManager::Default->StartLog(LogMessageCode::lmcRobot_CollectSecurityDefinitions);
 
-    // collect data first
-    while(true) {
-        if(!WinSockManager::UpdateManagersPollStatus())
-            break;
-
-        if (!this->m_fondMarket->FeedChannel()->CollectSecurityDefinitions()) {
+    if(!this->m_fondMarket->FeedChannel()->Idf()->LoadSecurityDefinitions()) {
+        if(!this->m_fondMarket->FeedChannel()->Idf()->Start()) {
             DefaultLogManager::Default->EndLog(false);
             return false;
         }
-        if(this->m_fondMarket->FeedChannel()->Idf()->IsIdfDataCollected()) {
-            this->m_fondMarket->FeedChannel()->Idf()->Stop();
-            break;
+        // collect data first
+        while (true) {
+            if (!WinSockManager::UpdateManagersPollStatus())
+                break;
+
+            if (!this->m_fondMarket->FeedChannel()->CollectSecurityDefinitions()) {
+                DefaultLogManager::Default->EndLog(false);
+                return false;
+            }
+            if (this->m_fondMarket->FeedChannel()->Idf()->IsIdfDataCollected()) {
+                this->m_fondMarket->FeedChannel()->Idf()->Stop();
+                break;
+            }
+
+            if (w->ElapsedMilliseconds() > 1000) {
+                w->Reset();
+
+                double nanosecPerCycle = w->ElapsedMilliseconds() * 1000.0 * 1000.0 / cycleCount;
+                printf("CycleCount for 1 sec = %d. %g nanosec per cycle\n", cycleCount, nanosecPerCycle);
+
+                printf("fond idf socket buffer usage = %g item usage = %g\n",
+                       this->m_fondMarket->FeedChannel()->Idf()->RecvBuffer()->CalcMemoryUsagePercentage(),
+                       this->m_fondMarket->FeedChannel()->Idf()->RecvBuffer()->CalcItemsUsagePercentage());
+
+                printf("Changes------------------------\n");
+                ProgramStatistics::Current->Print();
+                printf("Total---------------------------------\n");
+                ProgramStatistics::Total->Print();
+                printf("--------------------------------------\n");
+
+                cycleCount = 0;
+                ProgramStatistics::Current->Clear();
+                //ProgramStatistics::Total->ResetFlags();
+            }
+            cycleCount++;
         }
-
-        if(w->ElapsedSeconds() > 3) {
-            w->Reset();
-
-            double nanosecPerCycle = 3.0 * 1000.0 * 1000.0 * 1000.0 / cycleCount;
-            printf("CycleCount for 3 sec = %d. %g nanosec per cycle\n", cycleCount, nanosecPerCycle);
-
-            printf("fond idf socket buffer usage = %g item usage = %g\n",
-                   this->m_fondMarket->FeedChannel()->Idf()->RecvBuffer()->CalcMemoryUsagePercentage(),
-                   this->m_fondMarket->FeedChannel()->Idf()->RecvBuffer()->CalcItemsUsagePercentage());
-
-            printf("3 sec. Changes------------------------\n");
-            ProgramStatistics::Current->Print();
-            printf("Total---------------------------------\n");
-            ProgramStatistics::Total->Print();
-            printf("--------------------------------------\n");
-
-            cycleCount = 0;
-            ProgramStatistics::Current->Clear();
-            ProgramStatistics::Total->ResetFlags();
-        }
-        cycleCount++;
     }
     DefaultLogManager::Default->EndLog(true);
-
     DefaultLogManager::Default->StartLog(LogMessageCode::lmcRobot_GenerateSecurityDefinitions);
-
     this->m_fondMarket->FeedChannel()->Idf()->GenerateSecurityDefinitions();
-
     if(!this->m_fondMarket->FeedChannel()->OnAfterGenerateSecurityDefinitions()) {
         DefaultLogManager::Default->EndLog(false);
         return false;
     }
-
+    DefaultLogManager::Default->EndLog(true);
     return true;
 }
 
@@ -231,53 +234,55 @@ bool Robot::CollectSecurityDefinitions_CurrOnly() {
     unsigned int cycleCount = 0;
 
     DefaultLogManager::Default->StartLog(LogMessageCode::lmcRobot_CollectSecurityDefinitions);
-
-
-    // collect data first
-    while(true) {
-        if (!WinSockManager::UpdateManagersPollStatus())
-            break;
-        if (!this->m_currMarket->FeedChannel()->CollectSecurityDefinitions()) {
+    if(!this->m_currMarket->FeedChannel()->Idf()->LoadSecurityDefinitions()) {
+        if(!this->m_currMarket->FeedChannel()->Idf()->Start()) {
             DefaultLogManager::Default->EndLog(false);
             return false;
         }
-        if (this->m_currMarket->FeedChannel()->Idf()->IsIdfDataCollected()) {
-            this->m_currMarket->FeedChannel()->Idf()->Stop();
-            break;
+        // collect data first
+        while (true) {
+            if (!WinSockManager::UpdateManagersPollStatus())
+                break;
+            if (!this->m_currMarket->FeedChannel()->CollectSecurityDefinitions()) {
+                DefaultLogManager::Default->EndLog(false);
+                return false;
+            }
+            if (this->m_currMarket->FeedChannel()->Idf()->IsIdfDataCollected()) {
+                this->m_currMarket->FeedChannel()->Idf()->Stop();
+                break;
+            }
+
+            if (w->ElapsedMilliseconds() > 1000) {
+                w->Reset();
+
+                double nanosecPerCycle = w->ElapsedMilliseconds() * 1000.0 * 1000.0 / cycleCount;
+                printf("cycle count for 1 sec = %d. %g nanosec per cycle\n", cycleCount, nanosecPerCycle);
+                printf("curr idf socket buffer usage = %g item usage = %g\n",
+                       this->m_currMarket->FeedChannel()->Idf()->RecvBuffer()->CalcMemoryUsagePercentage(),
+                       this->m_currMarket->FeedChannel()->Idf()->RecvBuffer()->CalcItemsUsagePercentage());
+
+                printf("Changes------------------------\n");
+                ProgramStatistics::Current->Print();
+                printf("Total---------------------------------\n");
+                ProgramStatistics::Total->Print();
+                printf("--------------------------------------\n");
+
+                cycleCount = 0;
+                ProgramStatistics::Current->Clear();
+                //ProgramStatistics::Total->ResetFlags();
+            }
+            cycleCount++;
         }
-
-        if(w->ElapsedMilliseconds() > 1000) {
-            w->Reset();
-
-            double nanosecPerCycle = w->ElapsedMilliseconds() * 1000.0 * 1000.0 / cycleCount;
-            printf("cycle count for 3 sec = %d. %g nanosec per cycle\n", cycleCount, nanosecPerCycle);
-
-            printf("curr idf socket buffer usage = %g item usage = %g\n",
-                   this->m_currMarket->FeedChannel()->Idf()->RecvBuffer()->CalcMemoryUsagePercentage(),
-                   this->m_currMarket->FeedChannel()->Idf()->RecvBuffer()->CalcItemsUsagePercentage());
-
-//            printf("3 sec. Changes------------------------\n");
-//            ProgramStatistics::Current->Print();
-//            printf("Total---------------------------------\n");
-//            ProgramStatistics::Total->Print();
-//            printf("--------------------------------------\n");
-
-            cycleCount = 0;
-            ProgramStatistics::Current->Clear();
-            ProgramStatistics::Total->ResetFlags();
-        }
-        cycleCount++;
     }
     DefaultLogManager::Default->EndLog(true);
 
     DefaultLogManager::Default->StartLog(LogMessageCode::lmcRobot_GenerateSecurityDefinitions);
-
     this->m_currMarket->FeedChannel()->Idf()->GenerateSecurityDefinitions();
-
     if(!this->m_currMarket->FeedChannel()->OnAfterGenerateSecurityDefinitions()) {
         DefaultLogManager::Default->EndLog(false);
         return false;
     }
+    DefaultLogManager::Default->EndLog(true);
     return true;
 }
 
@@ -291,6 +296,18 @@ bool Robot::CollectSecurityDefinitions() {
     bool collectedFond = false;
     bool collectedCurr = false;
 
+    if(this->m_fondMarket->FeedChannel()->Idf()->LoadSecurityDefinitions())
+        collectedFond = true;
+    else if(!this->m_fondMarket->FeedChannel()->Idf()->Start()) {
+        DefaultLogManager::Default->EndLog(false);
+        return false;
+    }
+    if(this->m_currMarket->FeedChannel()->Idf()->LoadSecurityDefinitions())
+        collectedCurr = true;
+    else if(!this->m_currMarket->FeedChannel()->Idf()->Start()) {
+        DefaultLogManager::Default->EndLog(false);
+        return false;
+    }
     // collect data first
     while(true) {
         if(!WinSockManager::UpdateManagersPollStatus())
@@ -333,7 +350,7 @@ bool Robot::CollectSecurityDefinitions() {
                        this->m_currMarket->FeedChannel()->Idf()->RecvBuffer()->CalcMemoryUsagePercentage(),
                        this->m_currMarket->FeedChannel()->Idf()->RecvBuffer()->CalcItemsUsagePercentage());
 
-            printf("3 sec. Changes------------------------\n");
+            printf("Changes------------------------\n");
             ProgramStatistics::Current->Print();
             printf("Total---------------------------------\n");
             ProgramStatistics::Total->Print();
@@ -341,7 +358,7 @@ bool Robot::CollectSecurityDefinitions() {
 
             cycleCount = 0;
             ProgramStatistics::Current->Clear();
-            ProgramStatistics::Total->ResetFlags();
+            //ProgramStatistics::Total->ResetFlags();
         }
         cycleCount++;
     }
@@ -351,7 +368,6 @@ bool Robot::CollectSecurityDefinitions() {
 
     this->m_fondMarket->FeedChannel()->Idf()->GenerateSecurityDefinitions();
     this->m_currMarket->FeedChannel()->Idf()->GenerateSecurityDefinitions();
-
     if(!this->m_fondMarket->FeedChannel()->OnAfterGenerateSecurityDefinitions()) {
         DefaultLogManager::Default->EndLog(false);
         return false;
@@ -360,6 +376,7 @@ bool Robot::CollectSecurityDefinitions() {
         DefaultLogManager::Default->EndLog(false);
         return false;
     }
+    DefaultLogManager::Default->EndLog(false);
     return true;
 }
 
@@ -472,6 +489,11 @@ bool Robot::DoWork() {
         DefaultLogManager::Default->EndLog(false);
         return false;
     }
+
+    if(this->AllowCurrMarket())
+        this->m_currMarket->FeedChannel()->Idf()->AllowSaveSecurityDefinitions(true);
+    if(this->AllowFondMarket())
+        this->m_fondMarket->FeedChannel()->Idf()->AllowSaveSecurityDefinitions(true);
 
     while(true) {
         if(!this->AllowFondMarket()) {

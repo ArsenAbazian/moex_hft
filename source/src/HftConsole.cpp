@@ -89,7 +89,7 @@ int main(int argc, char** argv) {
 
     DebugInfoManager::Default->PrintMemoryInfo("Before Robot::Robot");
 	Robot *robot = new Robot();
-	robot->AllowFondMarket(false);
+	//robot->AllowFondMarket(false);
 	robot->Run();
     delete robot;
 

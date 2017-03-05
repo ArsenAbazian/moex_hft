@@ -104,7 +104,9 @@ typedef enum _LogMessageCode {
 	lmcsocket_bind = 94,
 	lmcsocket_setsockopt = 95,
 	lmcRobot_CollectSecurityDefinitions = 96,
-	lmcRobot_GenerateSecurityDefinitions = 97
+	lmcRobot_GenerateSecurityDefinitions = 97,
+	lmcFeedConnection_SaveSecurityDefinition = 98,
+	lmcFeedConnection_LoadSecurityDefinition = 99
 #pragma  endregion
 }LogMessageCode;
 

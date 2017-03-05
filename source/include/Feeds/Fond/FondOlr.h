@@ -7,6 +7,19 @@
 
 #include "../FeedConnection.h"
 
+class OrdersFondAllocationInfo : public FastObjectsAllocationInfo {
+public:
+    OrdersFondAllocationInfo() : FastObjectsAllocationInfo(32, 32) {
+#ifndef TEST
+        this->m_oLSFONDItemsCount = 202400;
+        this->m_oLSFONDItemsAddCount = 10240;
+#else
+        this->m_oLSFONDItemsCount = 100;
+        this->m_oLSFONDItemsAddCount = 100;
+#endif
+    }
+};
+
 class FeedConnection_FOND_OLR : public FeedConnection {
 public:
     FeedConnection_FOND_OLR(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
@@ -14,7 +27,7 @@ public:
         this->SetType(FeedConnectionType::Incremental);
         this->m_orderTableFond = new MarketDataTable<OrderInfo, FastOLSFONDInfo, FastOLSFONDItemInfo>();
         this->SetId(FeedConnectionId::fcidOlrFond);
-        this->m_fastProtocolManager = new FastProtocolManager(this->CreateFastAllocationInfo());
+        this->m_fastProtocolManager = new FastProtocolManager(new OrdersFondAllocationInfo());
         InitializePackets(this->GetPacketsCount());
         DebugInfoManager::Default->PrintMemoryInfo("FeedConnection_FOND_OLR");
     }
@@ -28,28 +41,6 @@ public:
                                         RobotSettings::Default->DefaultFeedConnectionSendItemsCount,
                                         RobotSettings::Default->DefaultFeedConnectionRecvBufferSize,
                                         RobotSettings::Default->DefaultFeedConnectionRecvItemsCount);
-    }
-    FastObjectsAllocationInfo* CreateFastAllocationInfo() {
-        FastObjectsAllocationInfo *info = new FastObjectsAllocationInfo();
-
-#ifndef TEST
-        info->m_incrementalOLRFONDCount = 1024;
-        info->m_incrementalOLRFONDAddCount = 256;
-        info->m_oLSFONDItemsCount = 202400;
-        info->m_oLSFONDItemsAddCount = 25600;
-#else
-        info->m_incrementalOLRFONDCount = 100;
-        info->m_incrementalOLRFONDAddCount = 100;
-        info->m_oLSFONDItemsCount = 100;
-        info->m_oLSFONDItemsAddCount = 100;
-#endif
-
-        info->m_heartbeatCount = 10;
-        info->m_heartbeatAddCount = 10;
-        info->m_tradingSessionStatusCount = 10;
-        info->m_tradingSessionStatusAddCount = 10;
-
-        return info;
     }
 };
 

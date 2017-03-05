@@ -13,7 +13,7 @@ public:
             FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
         this->SetType(FeedConnectionType::Snapshot);
         this->SetId(FeedConnectionId::fcidOlsCurr);
-        this->m_fastProtocolManager = new FastProtocolManager(this->CreateFastAllocationInfo());
+
         InitializePackets(this->GetPacketsCount());
         DebugInfoManager::Default->PrintMemoryInfo("FeedConnection_CURR_OLS");
     }
@@ -24,26 +24,6 @@ public:
                                         RobotSettings::Default->DefaultFeedConnectionSendItemsCount,
                                         RobotSettings::Default->DefaultFeedConnectionRecvBufferSize,
                                         RobotSettings::Default->DefaultFeedConnectionRecvItemsCount);
-    }
-    FastObjectsAllocationInfo* CreateFastAllocationInfo() {
-        FastObjectsAllocationInfo *info = new FastObjectsAllocationInfo();
-
-        info->m_oLSCURRCount = 32;
-        info->m_oLSCURRAddCount = 256;
-#ifndef TEST
-        info->m_oLSCURRItemsCount = 102400;
-        info->m_oLSCURRItemsAddCount = 10240;
-#else
-        info->m_oLSCURRItemsCount = 100;
-        info->m_oLSCURRItemsAddCount = 100;
-#endif
-
-        info->m_heartbeatCount = 10;
-        info->m_heartbeatAddCount = 10;
-        info->m_tradingSessionStatusCount = 10;
-        info->m_tradingSessionStatusAddCount = 10;
-
-        return info;
     }
 };
 

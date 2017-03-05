@@ -7,6 +7,19 @@
 
 #include "../FeedConnection.h"
 
+class TradesFondAllocationInfo : public FastObjectsAllocationInfo {
+public:
+    TradesFondAllocationInfo() : FastObjectsAllocationInfo(32, 32) {
+#ifndef TEST
+        this->m_tLSFONDItemsCount = 800000;
+        this->m_tLSFONDItemsAddCount = 20000;
+#else
+        this->m_tLSFONDItemsCount = 100;
+        this->m_tLSFONDItemsAddCount = 100;
+#endif
+    }
+};
+
 class FeedConnection_FOND_TLR : public FeedConnection {
 public:
     FeedConnection_FOND_TLR(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
@@ -14,7 +27,7 @@ public:
         this->SetType(FeedConnectionType::Incremental);
         this->m_tradeTableFond = new MarketDataTable<TradeInfo, FastTLSFONDInfo, FastTLSFONDItemInfo>();
         this->SetId(FeedConnectionId::fcidTlrFond);
-        this->m_fastProtocolManager = new FastProtocolManager(this->CreateFastAllocationInfo());
+        this->m_fastProtocolManager = new FastProtocolManager(new TradesFondAllocationInfo());
         InitializePackets(this->GetPacketsCount());
         DebugInfoManager::Default->PrintMemoryInfo("FeedConnection_FOND_TLR");
     }
@@ -28,28 +41,6 @@ public:
                                         RobotSettings::Default->DefaultFeedConnectionSendItemsCount,
                                         RobotSettings::Default->DefaultFeedConnectionRecvBufferSize,
                                         RobotSettings::Default->DefaultFeedConnectionRecvItemsCount);
-    }
-    FastObjectsAllocationInfo* CreateFastAllocationInfo() {
-        FastObjectsAllocationInfo *info = new FastObjectsAllocationInfo();
-
-#ifndef TEST
-        info->m_incrementalTLRFONDCount = 1024;
-        info->m_incrementalTLRFONDAddCount = 256;
-        info->m_tLSFONDItemsCount = 80000;
-        info->m_tLSFONDItemsAddCount = 2000;
-#else
-        info->m_incrementalTLRFONDCount = 100;
-        info->m_incrementalTLRFONDAddCount = 100;
-        info->m_tLSFONDItemsCount = 100;
-        info->m_tLSFONDItemsAddCount = 100;
-#endif
-
-        info->m_heartbeatCount = 10;
-        info->m_heartbeatAddCount = 10;
-        info->m_tradingSessionStatusCount = 10;
-        info->m_tradingSessionStatusAddCount = 10;
-
-        return info;
     }
 };
 

@@ -250,6 +250,9 @@ public:
                 break;
             node = node->Next();
         }
+        //TODO remove debug
+        printf("ERROR: entry not found");
+
         return 0;
     }
 
@@ -270,12 +273,19 @@ public:
                 break;
             node = node->Next();
         }
+        //TODO remove debug
+        printf("ERROR: entry not found");
         return 0;
     }
 
     inline void ChangeBuyQuote(T *info) {
         DebugInfoManager::Default->Log(this->m_symbolInfo->Symbol(), this->m_tradingSession, "Change BuyQuote", info->MDEntryID, info->MDEntryIDLength, &(info->MDEntryPx), &(info->MDEntrySize));
         LinkedPointer<T> *ptr = GetQuote(this->m_buyQuoteList, info);
+        //TODO remove debug
+        if(ptr == 0) {
+            printf("ERROR: entry not found");
+            return;
+        }
         this->ChangeAggregatedBuyQuote(ptr->Data(), info);
         info->Used = true;
         ptr->Data()->Clear();
@@ -285,6 +295,11 @@ public:
     inline void ChangeSellQuote(T *info) {
         DebugInfoManager::Default->Log(this->m_symbolInfo->Symbol(), this->m_tradingSession, "Change SellQuote", info->MDEntryID, info->MDEntryIDLength, &(info->MDEntryPx), &(info->MDEntrySize));
         LinkedPointer<T> *ptr = GetQuote(this->m_sellQuoteList, info);
+        //TODO remove debug
+        if(ptr == 0) {
+            printf("ERROR: entry not found");
+            return;
+        }
         this->ChangeAggregatedSellQuote(ptr->Data(), info);
         info->Used = true;
         ptr->Data()->Clear();

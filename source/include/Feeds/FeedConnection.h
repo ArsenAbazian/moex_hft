@@ -91,6 +91,7 @@ protected:
     FeedConnectionSecurityDefinitionState       m_idfState;
     int                                         m_idfMaxMsgSeqNo;
     int                                         m_idfStartMsgSeqNo;
+    bool                                        m_allowSaveSecurityDefinitions;
 
     bool                                        m_idfDataCollected;
     bool                                        m_idfAllowUpdateData;
@@ -825,8 +826,30 @@ protected:
             this->m_startMsgSeqNum = i + this->m_windowMsgSeqNum;
         return true;
     }
+    //TODO remove this
+    inline bool DebugCheckActuality() {
+        if(this->m_orderTableCurr != 0)
+            return this->m_orderTableCurr->DebugCheckActuality();
+        if(this->m_tradeTableCurr != 0)
+            return this->m_tradeTableCurr->DebugCheckActuality();
+        if(this->m_statTableCurr != 0)
+            return this->m_statTableCurr->DebugCheckActuality();
+
+        if(this->m_orderTableFond != 0)
+            return this->m_orderTableFond->DebugCheckActuality();
+        if(this->m_tradeTableFond != 0)
+            return this->m_tradeTableFond->DebugCheckActuality();
+        if(this->m_statTableFond != 0)
+            return this->m_statTableFond->DebugCheckActuality();
+
+        return true;
+    }
 
     inline bool ProcessIncrementalMessages() {
+        //TODO remove debug
+        if(!this->DebugCheckActuality())
+            throw;
+
 		int localStart = this->m_startMsgSeqNum - this->m_windowMsgSeqNum;
         int localEnd = this->m_endMsgSeqNum - this->m_windowMsgSeqNum;
         int i = localStart;
@@ -865,6 +888,11 @@ protected:
             this->m_windowMsgSeqNum = this->m_startMsgSeqNum;
             this->AfterMoveWindow();
         }
+
+        //TODO remove debug
+        if(!this->DebugCheckActuality())
+            throw;
+
         return true;
     }
     inline void MarketTableEnterSnapshotMode() {
@@ -1346,12 +1374,15 @@ protected:
                 if (this->HasLostPackets(1, this->m_idfMaxMsgSeqNo)) {
                     int lostPacketCount = CalcLostPacketCount(1, this->m_idfMaxMsgSeqNo);
 #ifdef COLLECT_STATISTICS
-                    if(this->m_id == FeedConnectionId::fcidIdfFond)
+                    if(this->m_id == FeedConnectionId::fcidIdfFond) {
                         ProgramStatistics::Total->FondIdfProcessedCount(this->m_idfMaxMsgSeqNo - lostPacketCount);
-                    else
+                        ProgramStatistics::Total->FondIdfLostCount(lostPacketCount);
+                    }
+                    else {
                         ProgramStatistics::Total->CurrIdfProcessedCount(this->m_idfMaxMsgSeqNo - lostPacketCount);
+                        ProgramStatistics::Total->CurrIdfLostCount(lostPacketCount);
+                    }
 #endif
-                    printf("\t\t%s %s lost packet count = %d\n", this->m_channelName, this->m_idName, lostPacketCount); // TODOO remove debug
                     this->m_idfState = FeedConnectionSecurityDefinitionState::sdsProcessToEnd;
                     return true;
                 }
@@ -1394,9 +1425,6 @@ protected:
     }
 
     inline bool Listen_Atom_Snapshot_Core() {
-        if(this->m_startMsgSeqNum == -1)
-            return true;
-
         if(this->HasPotentiallyLostPackets()) {
             this->m_waitTimer->Activate(1);
         }
@@ -1418,6 +1446,8 @@ protected:
         while(TryFindAndApplySnapshotContinuously())
             snapshotCount++;
 
+        if(!this->DebugCheckActuality())
+            throw;
         return true;
     }
     inline bool Listen_Atom_Incremental_Core() {
@@ -1772,10 +1802,47 @@ public:
     inline void HrRequestMessage(FeedConnection *conn, int msgSeqNo) {
         HrRequestMessage(conn, msgSeqNo, msgSeqNo);
     }
+    inline bool AllowSaveSecurityDefinitions() { return this->m_allowSaveSecurityDefinitions; }
+    inline void AllowSaveSecurityDefinitions(bool value) { this->m_allowSaveSecurityDefinitions = value; }
+    void SaveSecurityDefinitions() {
+        DefaultLogManager::Default->StartLog(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_SaveSecurityDefinition);
+        FILE *fp = fopen(this->m_channelName, "wb");
+        fwrite(&(this->m_idfMaxMsgSeqNo), sizeof(int), 1, fp);
+        for(int i = 1; i <= this->m_idfMaxMsgSeqNo; i++) {
+            fwrite(&(this->m_packets[i]->m_size), sizeof(int), 1, fp);
+            fwrite(this->m_packets[i]->m_address, 1, this->m_packets[i]->m_size, fp);
+        }
+        fclose(fp);
+        DefaultLogManager::Default->EndLog(true);
+    }
+    bool LoadSecurityDefinitions() {
+        if(!this->AllowSaveSecurityDefinitions())
+            return false;
+        DefaultLogManager::Default->StartLog(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_LoadSecurityDefinition);
+        FILE *fp = fopen(this->m_channelName, "rb");
+        if(fp == 0) {
+            DefaultLogManager::Default->EndLog(false);
+            return false;
+        }
+        fread(&(this->m_idfMaxMsgSeqNo), sizeof(int), 1, fp);
+        for(int i = 1; i <= this->m_idfMaxMsgSeqNo; i++) {
+            fread(&(this->m_packets[i]->m_size), sizeof(int), 1, fp);
+            fread(this->m_recvABuffer->CurrentPos(), 1, this->m_packets[i]->m_size, fp);
+            this->m_packets[i]->m_address = this->m_recvABuffer->CurrentPos();
+            this->m_recvABuffer->Next(this->m_packets[i]->m_size);
+        }
+        this->AllowSaveSecurityDefinitions(false); // suppress to save again the same data
+
+        fclose(fp);
+        DefaultLogManager::Default->EndLog(true);
+        return true;
+    }
     inline bool GenerateSecurityDefinitions() {
         printf("\t\t%s %s generating security definitions count = %d\n", this->m_channelName, this->m_idName, this->m_idfMaxMsgSeqNo); // TODOO remove debug
         FeedConnectionMessageInfo **info = (this->m_packets + 1); // skip zero messsage
         this->m_waitTimer->Start(3); // TODOO remove debug
+        if(this->AllowSaveSecurityDefinitions())
+            this->SaveSecurityDefinitions();
         this->BeforeProcessSecurityDefinitions();
         for (int i = 1; i <= this->m_idfMaxMsgSeqNo; i++, info++) {
             if (!this->ProcessSecurityDefinition(*info))
@@ -1876,9 +1943,9 @@ protected:
         }
         else {
             this->m_waitTimer->Stop(2);
+            return this->Listen_Atom_Snapshot_Core();
         }
-
-        return this->Listen_Atom_Snapshot_Core();
+        return true;
     }
 
     inline void ReconnectSetNextState(FeedConnectionState state) {
@@ -2006,7 +2073,6 @@ protected:
             info->Clear();
             return true;
         }
-        return true;
         bool res = true;
         for(int i = 0; i < info->GroupMDEntriesCount; i++) {
             res |= this->OnIncrementalRefresh_MSR_FOND(info->GroupMDEntries[i]);
@@ -2194,8 +2260,10 @@ public:
 		if(this->m_incremental == conn)
 			return;
 		this->m_incremental = conn;
-		if(this->m_incremental != 0)
-			this->m_incremental->SetSnapshot(this);
+		if(this->m_incremental != 0) {
+            this->m_incremental->SetSnapshot(this);
+            this->m_fastProtocolManager = this->m_incremental->m_fastProtocolManager;
+        }
 	}
     inline FeedConnection *Incremental() { return this->m_incremental; }
 
