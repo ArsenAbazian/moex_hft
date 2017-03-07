@@ -376,7 +376,7 @@ bool Robot::CollectSecurityDefinitions() {
         DefaultLogManager::Default->EndLog(false);
         return false;
     }
-    DefaultLogManager::Default->EndLog(false);
+    DefaultLogManager::Default->EndLog(true);
     return true;
 }
 
@@ -389,11 +389,9 @@ bool Robot::MainLoop_FondOnly() {
         if(!WinSockManager::UpdateManagersPollStatus())
             break;
         if (!this->m_fondMarket->DoWorkAtom()) {
-            DefaultLogManager::Default->EndLog(false);
             return false;
         }
         if(!this->DoWorkAtom()) {
-            DefaultLogManager::Default->EndLog(false);
             return false;
         }
         if(!this->Working())
@@ -408,7 +406,6 @@ bool Robot::MainLoop_FondOnly() {
         cycleCount++;
     }
 
-    DefaultLogManager::Default->EndLog(true);
     return true;
 }
 
@@ -421,12 +418,10 @@ bool Robot::MainLoop_CurrOnly() {
         if(!WinSockManager::UpdateManagersPollStatus())
             break;
         if(!this->m_currMarket->DoWorkAtom()) {
-            DefaultLogManager::Default->EndLog(false);
             return false;
         }
         DebugInfoManager::Default->DebugCheckForDublicateItems(this->m_currMarket->FeedChannel());
         if(!this->DoWorkAtom()) {
-            DefaultLogManager::Default->EndLog(false);
             return false;
         }
         if(!this->Working())
@@ -441,7 +436,6 @@ bool Robot::MainLoop_CurrOnly() {
         cycleCount++;
     }
 
-    DefaultLogManager::Default->EndLog(true);
     return true;
 }
 
@@ -454,15 +448,12 @@ bool Robot::MainLoop() {
         if(!WinSockManager::UpdateManagersPollStatus())
             break;
         if(!this->m_currMarket->DoWorkAtom()) {
-            DefaultLogManager::Default->EndLog(false);
             return false;
         }
         if(!this->m_fondMarket->DoWorkAtom()) {
-            DefaultLogManager::Default->EndLog(false);
             return false;
         }
         if(!this->DoWorkAtom()) {
-            DefaultLogManager::Default->EndLog(false);
             return false;
         }
         if(!this->Working())
@@ -477,7 +468,6 @@ bool Robot::MainLoop() {
         cycleCount++;
     }
 
-    DefaultLogManager::Default->EndLog(true);
     return true;
 }
 

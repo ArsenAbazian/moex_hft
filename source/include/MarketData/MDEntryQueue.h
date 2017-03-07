@@ -11,10 +11,19 @@
 
 #define MDENTRYINFO_INCREMENTAL_ENTRIES_BUFFER_LENGTH 500
 
+//typedef enum _TableItemState {
+//    tisNone,
+//    tisInCheckActualState,
+//    tisInIncrementalProcess,
+//    tisStartApplySnapshot,
+//    tisEndApplySnapshot,
+//    tisApplySnapshotPart,
+//    tisInApplySnapshot
+//}TableItemState;
+
+
 class MDEntryQueue {
     const int                                           m_incEntriesCount = MDENTRYINFO_INCREMENTAL_ENTRIES_BUFFER_LENGTH;
-
-    void                                                *m_owner;
     void                                                **m_incEntries;
     int                                                 m_incEntriesMaxIndex;
     int                                                 m_incStartRptSeq;
@@ -34,7 +43,6 @@ public:
         bzero(this->m_incEntries, sizeof(void *) * this->m_incEntriesCount);
         this->m_incEntriesMaxIndex = -1;
         this->m_incStartRptSeq = 0;
-        this->m_owner = 0;
     }
     ~MDEntryQueue() {
         delete this->m_incEntries;
@@ -81,9 +89,6 @@ public:
 
     inline void AddEntry(void *entry, int entryRptSec) {
         int index = entryRptSec - this->m_incStartRptSeq;
-        //TODO remove debug
-        if(index == -1)
-            throw;
         if(index >= this->m_incEntriesCount) {
             if(this->HasEntries())
                 return;
@@ -94,9 +99,6 @@ public:
         if(index > this->m_incEntriesMaxIndex) {
             this->m_incEntriesMaxIndex = index;
         }
-        MDEntryQueue *e = GetNonEmptyInfoInPool(); //TODO remove debug info
-        if(e != 0)
-            throw;
     }
 
     inline void Reset() {
@@ -122,8 +124,6 @@ public:
     inline void** Entries() { return this->m_incEntries; }
     inline int RptSeq() { return this->m_incStartRptSeq; }
     inline int Capacity() { return this->m_incEntriesCount; }
-    inline void* Owner() { return this->m_owner; }
-    inline void Owner(void *owner) { this->m_owner = owner; }
 };
 
 #endif //HFT_ROBOT_MARKETDATAENTRYQUEUE_H

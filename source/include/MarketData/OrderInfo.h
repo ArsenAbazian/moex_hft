@@ -35,7 +35,6 @@ template <typename T> class OrderInfo {
 
     int                                 m_snapshotProcessedCount;
 public:
-
     OrderInfo();
     ~OrderInfo() {
         ReleaseEntryQue();
@@ -47,17 +46,8 @@ public:
 
     inline void ReleaseEntryQue() {
         if(this->m_entryInfo != 0) {
-            int maxIndex = this->m_entryInfo->MaxIndex();
             this->m_entryInfo->Reset();
-            if(!this->m_entryInfo->IsCleared())
-                throw; //TODO remove degbug
             MDEntryQueue::Pool->FreeItem(this->m_entryInfo->Pointer);
-            int index = DebugInfoManager::Default->CheckIsFriedMDEntryQueryCleared();
-            if(index != -1) {
-                MDEntryQueue *queue = DebugInfoManager::Default->GetFirstMDEntryQueue();
-                int entryIndex = DebugInfoManager::Default->GetFirstNonEmptyEntry();
-                throw;
-            }
         }
         this->m_entryInfo = 0;
     }
@@ -251,7 +241,8 @@ public:
             node = node->Next();
         }
         //TODO remove debug
-        printf("ERROR: entry not found");
+        info->MDEntryID[info->MDEntryIDLength] = '\0';
+        printf("ERROR: %s entry not found\n", info->MDEntryID);
 
         return 0;
     }
@@ -274,7 +265,8 @@ public:
             node = node->Next();
         }
         //TODO remove debug
-        printf("ERROR: entry not found");
+        info->MDEntryID[info->MDEntryIDLength] = '\0';
+        printf("ERROR: %s entry not found\n", info->MDEntryID);
         return 0;
     }
 
@@ -283,7 +275,8 @@ public:
         LinkedPointer<T> *ptr = GetQuote(this->m_buyQuoteList, info);
         //TODO remove debug
         if(ptr == 0) {
-            printf("ERROR: entry not found");
+            info->MDEntryID[info->MDEntryIDLength] = '\0';
+            printf("ERROR: %s entry not found\n", info->MDEntryID);
             return;
         }
         this->ChangeAggregatedBuyQuote(ptr->Data(), info);
@@ -297,7 +290,8 @@ public:
         LinkedPointer<T> *ptr = GetQuote(this->m_sellQuoteList, info);
         //TODO remove debug
         if(ptr == 0) {
-            printf("ERROR: entry not found");
+            info->MDEntryID[info->MDEntryIDLength] = '\0';
+            printf("ERROR: %s entry not found\n", info->MDEntryID);
             return;
         }
         this->ChangeAggregatedSellQuote(ptr->Data(), info);
@@ -347,13 +341,8 @@ public:
     }
 
     inline void ObtainEntriesQueue() {
-        if(this->m_entryInfo == 0) {
+        if(this->m_entryInfo == 0)
             this->m_entryInfo = MDEntryQueue::Pool->NewItem();
-            //TODO remove debug
-            if(!this->m_entryInfo->IsCleared())
-                throw;
-            this->m_entryInfo->Owner(this);
-        }
     }
 
     inline void PushMessageToQueue(T *info) {
@@ -371,11 +360,14 @@ public:
             this->Remove(info);
     }
 
+    inline bool IsOutdatedMessage(T *info) {
+        return info->RptSeq <= this->m_rptSeq;
+    }
+
     inline bool ProcessIncrementalMessage(T *info) {
-        //TODO remove debug
-        if(this->m_entryInfo != 0 && !this->m_entryInfo->HasEntries())
-            throw;
         if(!this->IsNextMessage(info)) {
+            if(this->IsOutdatedMessage(info))
+                return false;
             this->PushMessageToQueue(info);
             return false;
         }
@@ -429,8 +421,6 @@ public:
         if(this->m_shouldProcessSnapshot) {
             SymbolInfo()->DecSessionsToRecvSnapshotCount();
             this->m_shouldProcessSnapshot = false;
-            if(this->m_entryInfo != 0)
-                throw; //TODO remove debug
         }
     }
 
@@ -460,8 +450,6 @@ public:
     }
 
     inline void ExitSnapshotMode() {
-        if(this->m_entryInfo != 0)
-            throw; //TODO remove debug
         this->m_shouldProcessSnapshot = false;
     }
 
@@ -471,8 +459,6 @@ public:
         if(!this->m_shouldProcessSnapshot)
             return;
         this->m_shouldProcessSnapshot = false;
-        if(this->m_entryInfo != 0)
-            throw; //TODO remove debug
         SymbolInfo()->DecSessionsToRecvSnapshotCount();
     }
 };

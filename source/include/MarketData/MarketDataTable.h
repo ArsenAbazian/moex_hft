@@ -116,40 +116,17 @@ public:
     }
     inline bool ProcessIncremental(ITEMINFO *info) {
         TABLEITEM<ITEMINFO> *tableItem = GetItem(info->Symbol, info->SymbolLength, info->TradingSessionID, info->TradingSessionIDLength);
-        //TODO remove debug
-        int prevActual = this->DebugCalcActualQueueEntriesCount();
-        if(prevActual != this->m_queueItemsCount) {
-            int nonNull = this->DebugCalcActualNonNullQueueEntriesCount();
-            DebugCheckDublicateItems();
-            throw;
-        }
-
         this->AddUsed(tableItem);
         bool prevHasEntries = tableItem->HasEntries();
         bool res = tableItem->ProcessIncrementalMessage(info);
         bool hasEntries = tableItem->HasEntries();
         if(hasEntries) {
-            if(!prevHasEntries) {
+            if(!prevHasEntries)
                 this->m_queueItemsCount++;
-                //TODO remove debug
-                this->AddQueItem(tableItem);
-                TABLEITEM<ITEMINFO> *tableItem2 = this->GetItemWithEntryInfo(tableItem->EntriesQueue());
-                if(tableItem2 != 0 && tableItem2 != tableItem)
-                    throw;
-            }
         }
         else {
-            if(prevHasEntries) {
+            if(prevHasEntries)
                 this->m_queueItemsCount--;
-                if(this->m_snapshotMode) {
-                    if(this->m_snapshotItem == tableItem)
-                        this->m_snapshotItemHasEntriesQueue = false;
-                }
-                //TODO remove debug
-                this->RemoveQueItem(tableItem);
-                if(tableItem->EntriesQueue() != 0)
-                    throw;
-            }
             if(tableItem->ShouldProcessSnapshot()) {
                 MarketSymbolInfo<TABLEITEM<ITEMINFO>> *smb = tableItem->SymbolInfo();
                 bool allItemsRecvSnapshot = smb->AllSessionsRecvSnapshot();
@@ -158,10 +135,6 @@ public:
                     this->DecSymbolsToRecvSnapshotCount();
             }
         }
-        int actual = this->DebugCalcActualQueueEntriesCount();
-        //TODO remove debug
-        if(actual != this->m_queueItemsCount)
-            throw;
         return res;
     }
 
@@ -175,16 +148,12 @@ public:
             return false;
         if(this->m_snapshotItem->RptSeq() != info->RptSeq)
             return false;
-
         MarketSymbolInfo<TABLEITEM<ITEMINFO>> *smb = this->m_snapshotItem->SymbolInfo();
         bool allItemsRecvSnapshot = smb->AllSessionsRecvSnapshot();
         this->m_snapshotItem->ProcessActualSnapshotState();
         if (!allItemsRecvSnapshot && smb->AllSessionsRecvSnapshot())
             this->DecSymbolsToRecvSnapshotCount();
         this->m_snapshotItem = 0;
-        //TODO remove debug
-        if(this->DebugCalcActualQueueEntriesCount() != this->m_queueItemsCount)
-            throw;
         return true;
     }
     inline bool IsNullSnapshot(INFO *info) {
@@ -198,12 +167,6 @@ public:
             this->m_snapshotItem->DecSessionsToRecvSnapshotCount();
             if(this->m_snapshotItemHasEntriesQueue && !this->m_snapshotItem->HasEntries())
                 this->m_queueItemsCount--;
-            //TODO remove debug
-            this->RemoveQueItem(this->m_snapshotItem);
-            if(this->m_snapshotItem->EntriesQueue() != 0)
-                throw;
-            if(this->DebugCalcActualQueueEntriesCount() != this->m_queueItemsCount)
-                throw;
             if(!allItemsRecvSnapshot && this->m_snapshotSymbol->AllSessionsRecvSnapshot())
                 this->DecSymbolsToRecvSnapshotCount();
             this->m_snapshotItem = 0;
@@ -213,27 +176,12 @@ public:
     }
 
     inline bool ApplyQuickSnapshot(FastSnapshotInfo *info) {
-        //TODO remove debug
-        if(this->DebugCalcActualQueueEntriesCount() != this->m_queueItemsCount)
-            throw;
-        if(this->CheckProcessIfSessionInActualState(info)) {
-            //TODO remove debug
-            if(this->DebugCalcActualQueueEntriesCount() != this->m_queueItemsCount)
-                throw;
+        if(this->CheckProcessIfSessionInActualState(info))
             return true;
-        }
-        if(this->CheckProcessNullSnapshot(info)) {
-            //TODO remove debug
-            if(this->DebugCalcActualQueueEntriesCount() != this->m_queueItemsCount)
-                throw;
+        if(this->CheckProcessNullSnapshot(info))
             return true;
-        }
-        if(!this->ShouldProcessSnapshot(info)) {
-            //TODO remove debug
-            if(this->DebugCalcActualQueueEntriesCount() != this->m_queueItemsCount)
-                throw;
+        if(!this->ShouldProcessSnapshot(info))
             return true;
-        }
         return false;
     }
 
@@ -262,15 +210,11 @@ public:
     inline bool CheckProcessNullSnapshot(FastSnapshotInfo *info) {
         if(IsNullSnapshot(info)) {
             bool allItemsRecvSnapshot = this->m_snapshotSymbol->AllSessionsRecvSnapshot();
-            this->m_snapshotItemHasEntriesQueue = this->m_snapshotItem->HasEntries();
+            bool prevHasEntries = this->m_snapshotItem->HasEntries();
             this->m_snapshotItem->ClearEntries();
             this->m_snapshotItem->DecSessionsToRecvSnapshotCount();
-            if(this->m_snapshotItemHasEntriesQueue && !this->m_snapshotItem->HasEntries())
+            if(prevHasEntries && !this->m_snapshotItem->HasEntries())
                 this->m_queueItemsCount--;
-            //TODO remove debug
-            this->RemoveQueItem(this->m_snapshotItem);
-            if(this->m_snapshotItem->EntriesQueue() != 0)
-                throw;
             if(!allItemsRecvSnapshot && this->m_snapshotSymbol->AllSessionsRecvSnapshot())
                 this->DecSymbolsToRecvSnapshotCount();
             this->m_snapshotItem = 0;
@@ -285,22 +229,11 @@ public:
         this->m_snapshotItem->StartProcessSnapshotMessages();
     }
     inline bool EndProcessSnapshot() {
-        //TODO remove debug
-        int actualPrev = this->DebugCalcActualQueueEntriesCount();
-        if(actualPrev != this->m_queueItemsCount)
-            throw;
         this->m_snapshotItem->RptSeq(this->m_snapshotItemRptSeq);
+        bool prevHasEntries = this->m_snapshotItem->HasEntries();
         bool res = this->m_snapshotItem->EndProcessSnapshotMessages();
-        if(this->m_snapshotItemHasEntriesQueue && !this->m_snapshotItem->HasEntries()) {
+        if(prevHasEntries && !this->m_snapshotItem->HasEntries())
             this->m_queueItemsCount--;
-            //TODO remove debug
-            this->RemoveQueItem(this->m_snapshotItem);
-            if(this->m_snapshotItem->EntriesQueue() != 0)
-                throw;
-            int actual = this->DebugCalcActualQueueEntriesCount();
-            if(actual != this->m_queueItemsCount)
-                throw;
-        }
         if(!this->m_allSessionsRecvSnapshot && this->m_snapshotSymbol->AllSessionsRecvSnapshot()) {
             this->DecSymbolsToRecvSnapshotCount();
         }
@@ -330,7 +263,20 @@ public:
         return result;
     }
     inline bool DebugCheckActuality() {
-        return DebugCalcActualQueueEntriesCount() == this->m_queueItemsCount;
+        if(this->m_queueItemsCount != this->m_queueItems->Count())
+            throw;
+        LinkedPointer<TABLEITEM<ITEMINFO>> *node = this->m_queueItems->Start();
+        while(node != 0) {
+            if(!node->Data()->HasEntries())
+                throw;
+            if(node == this->m_queueItems->End())
+                break;
+            node = node->Next();
+        }
+        int res = DebugCalcActualQueueEntriesCount();
+        if(res != this->m_queueItemsCount)
+            throw;
+        return true;
     }
     inline int DebugCalcActualQueueEntriesCount() {
         int count = 0;
@@ -461,8 +407,6 @@ public:
         this->m_snapshotMode = true;
     }
     inline void ExitSnapshotMode() {
-        //TODO remove debug
-        int actual = this->DebugCalcActualQueueEntriesCount();
         MarketSymbolInfo<TABLEITEM<ITEMINFO>> **s = this->m_symbols;
         for(int i = 0; i < this->m_symbolsCount; i++, s++)
             (*s)->ExitSnapshotMode();

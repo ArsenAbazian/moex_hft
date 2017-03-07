@@ -85,7 +85,6 @@ protected:
     bool                                        m_isLastIncrementalRecv;
 
     bool                                        m_doNotCheckIncrementalActuality;
-    bool                                        m_skipApplyMessages;
 
     FeedConnectionSecurityDefinitionMode        m_idfMode;
     FeedConnectionSecurityDefinitionState       m_idfState;
@@ -491,9 +490,6 @@ protected:
     inline bool StartApplySnapshot_OLS_CURR() {
         this->m_incremental->OrderCurr()->ObtainSnapshotItem(this->m_lastSnapshotInfo);
         if(this->m_incremental->OrderCurr()->ApplyQuickSnapshot(this->m_lastSnapshotInfo)) {
-            if(this->m_incremental->OrderCurr()->DebugCalcActualQueueEntriesCount() !=
-                    this->m_incremental->OrderCurr()->QueueEntriesCount())
-                throw; //TODO remove debug
 #ifdef COLLECT_STATISTICS
             ProgramStatistics::Current->IncCurrOlsProcessedCount();
             ProgramStatistics::Total->IncCurrOlsProcessedCount();
@@ -501,13 +497,7 @@ protected:
             return false; // skip all the snapshot
         }
         this->m_incremental->OrderCurr()->StartProcessSnapshot();
-        if(this->m_incremental->OrderCurr()->DebugCalcActualQueueEntriesCount() !=
-           this->m_incremental->OrderCurr()->QueueEntriesCount())
-            throw; //TODO remove debug
         this->ApplySnapshotPart_OLS_CURR(this->m_snapshotRouteFirst);
-        if(this->m_incremental->OrderCurr()->DebugCalcActualQueueEntriesCount() !=
-           this->m_incremental->OrderCurr()->QueueEntriesCount())
-            throw; //TODO remove debug
         return true;
     }
 
@@ -826,8 +816,8 @@ protected:
             this->m_startMsgSeqNum = i + this->m_windowMsgSeqNum;
         return true;
     }
-    //TODO remove this
-    inline bool DebugCheckActuality() {
+    //This code is for debug only and should not be used in release
+    bool DebugCheckActuality() {
         if(this->m_orderTableCurr != 0)
             return this->m_orderTableCurr->DebugCheckActuality();
         if(this->m_tradeTableCurr != 0)
@@ -846,11 +836,7 @@ protected:
     }
 
     inline bool ProcessIncrementalMessages() {
-        //TODO remove debug
-        if(!this->DebugCheckActuality())
-            throw;
-
-		int localStart = this->m_startMsgSeqNum - this->m_windowMsgSeqNum;
+        int localStart = this->m_startMsgSeqNum - this->m_windowMsgSeqNum;
         int localEnd = this->m_endMsgSeqNum - this->m_windowMsgSeqNum;
         int i = localStart;
 
@@ -888,10 +874,6 @@ protected:
             this->m_windowMsgSeqNum = this->m_startMsgSeqNum;
             this->AfterMoveWindow();
         }
-
-        //TODO remove debug
-        if(!this->DebugCheckActuality())
-            throw;
 
         return true;
     }
@@ -1651,11 +1633,7 @@ protected:
         int size = this->socketAManager->RecvSize();
         if(size == 4) {
             this->m_hrMessageSize = *(int*)this->socketAManager->RecvBytes();
-            //printf("\t\t\trecv 4 byte. value in 4 byte = %d\n", this->m_hrMessageSize); //TODO remove debug
             return true;
-        }
-        else {
-            //printf("\t\t\tpacket size = %d\n", size); //TODO remove debug
         }
         unsigned char *buffer = this->socketAManager->RecvBytes();
         this->m_recvABuffer->Next(size);
@@ -1961,14 +1939,14 @@ protected:
 	FILE *obrLogFile;
 
 	inline bool OnIncrementalRefresh_OLR_FOND(FastOLSFONDItemInfo *info) {
-		if(info->MDEntryType[0] == mdetEmptyBook) { // fatal!!!!!
+		if(info->MDEntryType[0] == MDEntryType::mdetEmptyBook) { // fatal!!!!!
 			return true; // TODO!!!!!
 		}
 		return this->m_orderTableFond->ProcessIncremental(info);
 	}
 
 	inline bool OnIncrementalRefresh_OLR_CURR(FastOLSCURRItemInfo *info) {
-		if(info->MDEntryType[0] == mdetEmptyBook) { // fatal!!!!!
+		if(info->MDEntryType[0] == MDEntryType::mdetEmptyBook) { // fatal!!!!!
 			return true; // TODO!!!!!
 		}
 		return this->m_orderTableCurr->ProcessIncremental(info);
@@ -1995,12 +1973,6 @@ protected:
         ProgramStatistics::Current->IncFondOlrProcessedCount();
         ProgramStatistics::Total->IncFondOlrProcessedCount();
 #endif
-        if(this->m_skipApplyMessages) { //TODO remove this
-            this->m_fastProtocolManager->Print();
-            info->Clear();
-            return true;
-        }
-
         bool res = true;
         for(int i = 0; i < info->GroupMDEntriesCount; i++) {
             res |= this->OnIncrementalRefresh_OLR_FOND(info->GroupMDEntries[i]);
@@ -2014,11 +1986,6 @@ protected:
         ProgramStatistics::Current->IncCurrOlrProcessedCount();
         ProgramStatistics::Total->IncCurrOlrProcessedCount();
 #endif
-        if(this->m_skipApplyMessages) { //TODO remove this
-            this->m_fastProtocolManager->Print();
-            info->Clear();
-            return true;
-        }
         bool res = true;
         for(int i = 0; i < info->GroupMDEntriesCount; i++) {
             res |= this->OnIncrementalRefresh_OLR_CURR(info->GroupMDEntries[i]);
@@ -2032,11 +1999,6 @@ protected:
         ProgramStatistics::Current->IncFondTlrProcessedCount();
         ProgramStatistics::Total->IncFondTlrProcessedCount();
 #endif
-        if(this->m_skipApplyMessages) { //TODO remove this
-            this->m_fastProtocolManager->Print();
-            info->Clear();
-            return true;
-        }
         bool res = true;
         for(int i = 0; i < info->GroupMDEntriesCount; i++) {
             res |= this->OnIncrementalRefresh_TLR_FOND(info->GroupMDEntries[i]);
@@ -2050,11 +2012,6 @@ protected:
         ProgramStatistics::Current->IncCurrTlrProcessedCount();
         ProgramStatistics::Total->IncCurrTlrProcessedCount();
 #endif
-        if(this->m_skipApplyMessages) { //TODO remove this
-            this->m_fastProtocolManager->Print();
-            info->Clear();
-            return true;
-        }
         bool res = true;
         for(int i = 0; i < info->GroupMDEntriesCount; i++) {
             res |= this->OnIncrementalRefresh_TLR_CURR(info->GroupMDEntries[i]);
@@ -2068,11 +2025,6 @@ protected:
         ProgramStatistics::Current->IncFondMsrProcessedCount();
         ProgramStatistics::Total->IncFondMsrProcessedCount();
 #endif
-        if(this->m_skipApplyMessages) { //TODO remove this
-            DebugInfoManager::Default->PrintStatisticsOnce<FastIncrementalMSRFONDInfo>(this->m_fastProtocolManager, info);
-            info->Clear();
-            return true;
-        }
         bool res = true;
         for(int i = 0; i < info->GroupMDEntriesCount; i++) {
             res |= this->OnIncrementalRefresh_MSR_FOND(info->GroupMDEntries[i]);
@@ -2088,11 +2040,6 @@ protected:
         ProgramStatistics::Current->IncCurrMsrProcessedCount();
         ProgramStatistics::Total->IncCurrMsrProcessedCount();
 #endif
-        if(this->m_skipApplyMessages) { //TODO remove this
-            DebugInfoManager::Default->PrintStatisticsOnce<FastIncrementalMSRCURRInfo>(this->m_fastProtocolManager, info);
-            info->Clear();
-            return true;
-        }
         bool res = true;
         for(int i = 0; i < info->GroupMDEntriesCount; i++) {
             res |= this->OnIncrementalRefresh_MSR_CURR(info->GroupMDEntries[i]);
@@ -2932,7 +2879,6 @@ public:
     inline void DoNotCheckIncrementalActuality(bool value) {
         this->m_doNotCheckIncrementalActuality = value;
     }
-    inline void SkipApplyMessages(bool value) { this->m_skipApplyMessages = value; }
 
 #ifdef TEST
     inline void SetTestMessagesHelper(TestMessagesHelper *helper) { this->m_testHelper = helper; }
