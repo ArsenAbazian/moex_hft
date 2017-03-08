@@ -75,6 +75,15 @@ public:
             AutoAllocatePointerList(capacity, additionalCapacity) {
         this->m_name = name;
     }
+    void Append(int count) {
+        LinkedPointer<T> *head = CreatePointer();
+        LinkedPointer<T> *tail = CreatePointers(head, count - 1);
+        this->Connect(this->m_tail, head);
+        this->m_tail = tail;
+    }
+    void AddCount(int addCount) {
+        this->m_addCapacity = addCount;
+    }
     inline T* NewItem() {
         this->m_count++;
         LinkedPointer<T> *node = this->m_head;

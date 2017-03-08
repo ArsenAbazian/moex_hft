@@ -84,8 +84,6 @@ protected:
     int                                         m_maxLostPacketCountForStartSnapshot;
     bool                                        m_isLastIncrementalRecv;
 
-    bool                                        m_doNotCheckIncrementalActuality;
-
     FeedConnectionSecurityDefinitionMode        m_idfMode;
     FeedConnectionSecurityDefinitionState       m_idfState;
     int                                         m_idfMaxMsgSeqNo;
@@ -430,8 +428,6 @@ protected:
     }
 
     inline bool ShouldRestoreIncrementalMessages() {
-        if(this->m_doNotCheckIncrementalActuality)
-            return false;
         return this->HasPotentiallyLostPackets() || this->HasQueueEntries();
     }
 
@@ -903,6 +899,7 @@ protected:
             return;
         }
     }
+public:
     inline int SymbolsToRecvSnapshotCount() {
         if(this->m_orderTableFond != 0)
             return this->m_orderTableFond->SymbolsToRecvSnapshotCount();
@@ -933,6 +930,22 @@ protected:
             return this->m_statTableCurr->SnapshotMode();
         return false;
     }
+    inline int QueueEntriesCount() {
+        if(this->m_orderTableFond != 0)
+            return this->m_orderTableFond->QueueEntriesCount();
+        else if(this->m_orderTableCurr != 0)
+            return this->m_orderTableCurr->QueueEntriesCount();
+        else if(this->m_statTableCurr != 0)
+            return this->m_statTableCurr->QueueEntriesCount();
+        else if(this->m_statTableFond != 0)
+            return this->m_statTableFond->QueueEntriesCount();
+        else if(this->m_tradeTableFond != 0)
+            return this->m_tradeTableFond->QueueEntriesCount();
+        else if(this->m_tradeTableCurr != 0)
+            return this->m_tradeTableCurr->QueueEntriesCount();
+        return 0;
+    }
+protected:
     inline void MarketTableExitSnapshotMode() {
         if(this->m_orderTableFond != 0) {
             this->m_orderTableFond->ExitSnapshotMode();
@@ -1437,13 +1450,13 @@ protected:
 #ifndef TEST
         // TODO remove hack. just skip 30 messages and then try to restore
         // Skip this hack when testing :)
-        if(this->m_snapshot->State() == FeedConnectionState::fcsSuspend && (this->m_endMsgSeqNum % 100) < 10) {
-            if(this->m_endMsgSeqNum >= this->m_startMsgSeqNum && this->Packet(this->m_endMsgSeqNum)->m_address != 0) {
-                this->Packet(this->m_endMsgSeqNum)->m_address = 0;
-                //printf("packet %d is lost, requestIndexd = %d\n", this->m_endMsgSeqNum, this->m_requestMessageStartIndex);
-            }
-            return true;
-        }
+//        if(this->m_snapshot->State() == FeedConnectionState::fcsSuspend && (this->m_endMsgSeqNum % 100) < 10) {
+//            if(this->m_endMsgSeqNum >= this->m_startMsgSeqNum && this->Packet(this->m_endMsgSeqNum)->m_address != 0) {
+//                this->Packet(this->m_endMsgSeqNum)->m_address = 0;
+//                //printf("packet %d is lost, requestIndexd = %d\n", this->m_endMsgSeqNum, this->m_requestMessageStartIndex);
+//            }
+//            return true;
+//        }
 #endif
         if(!this->ProcessIncrementalMessages())
             return false;
@@ -2876,9 +2889,7 @@ public:
 		return true;
 	}
     inline FeedConnectionState State() { return this->m_state; }
-    inline void DoNotCheckIncrementalActuality(bool value) {
-        this->m_doNotCheckIncrementalActuality = value;
-    }
+
 
 #ifdef TEST
     inline void SetTestMessagesHelper(TestMessagesHelper *helper) { this->m_testHelper = helper; }

@@ -13,9 +13,13 @@ public:
             FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
         this->SetType(FeedConnectionType::Snapshot);
         this->SetId(FeedConnectionId::fcidOlsCurr);
-
+        this->m_fastProtocolManager = new FastProtocolManager();
+        this->AllocateFastObjects();
         InitializePackets(this->GetPacketsCount());
         DebugInfoManager::Default->PrintMemoryInfo("FeedConnection_CURR_OLS");
+    }
+    void AllocateFastObjects() {
+        FastObjectsAllocationInfo::Default->AllocateOLSCURRInfoPool(10, 10);
     }
     int GetPacketsCount() { return 50000; }
     ISocketBufferProvider* CreateSocketBufferProvider() {

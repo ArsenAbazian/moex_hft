@@ -13,13 +13,18 @@ public:
             FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
         this->SetType(FeedConnectionType::InstrumentStatus);
         this->SetId(FeedConnectionId::fcidIsfCurr);
-        this->m_fastProtocolManager = new FastProtocolManager(new FastObjectsAllocationInfo(10, 10));
+        this->m_fastProtocolManager = new FastProtocolManager();
+        this->AllocateFastObjects();
         InitializeSecurityDefinition();
         InitializePackets(this->GetPacketsCount());
         DebugInfoManager::Default->PrintMemoryInfo("FeedConnection_CURR_ISF");
     }
     ~FeedConnection_CURR_ISF() {
         DisposeSecurityDefinition();
+    }
+    void AllocateFastObjects() {
+        FastObjectsAllocationInfo::Default->AllocateSecurityStatusInfoPoolTo(10);
+        FastObjectsAllocationInfo::Default->AllocateHeartbeatInfoPoolTo(10);
     }
     int GetPacketsCount() { return 1000000; }
     ISocketBufferProvider* CreateSocketBufferProvider() {

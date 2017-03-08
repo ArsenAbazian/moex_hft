@@ -7,18 +7,18 @@
 
 #include "../FeedConnection.h"
 
-class TradesFondAllocationInfo : public FastObjectsAllocationInfo {
-public:
-    TradesFondAllocationInfo() : FastObjectsAllocationInfo(32, 32) {
-#ifndef TEST
-        this->m_tLSFONDItemsCount = 800000;
-        this->m_tLSFONDItemsAddCount = 20000;
-#else
-        this->m_tLSFONDItemsCount = 100;
-        this->m_tLSFONDItemsAddCount = 100;
-#endif
-    }
-};
+//class TradesFondAllocationInfo : public FastObjectsAllocationInfo {
+//public:
+//    TradesFondAllocationInfo() : FastObjectsAllocationInfo(32, 32) {
+//#ifndef TEST
+//        this->m_tLSFONDItemsCount = 800000;
+//        this->m_tLSFONDItemsAddCount = 20000;
+//#else
+//        this->m_tLSFONDItemsCount = 100;
+//        this->m_tLSFONDItemsAddCount = 100;
+//#endif
+//    }
+//};
 
 class FeedConnection_FOND_TLR : public FeedConnection {
 public:
@@ -27,12 +27,23 @@ public:
         this->SetType(FeedConnectionType::Incremental);
         this->m_tradeTableFond = new MarketDataTable<TradeInfo, FastTLSFONDInfo, FastTLSFONDItemInfo>();
         this->SetId(FeedConnectionId::fcidTlrFond);
-        this->m_fastProtocolManager = new FastProtocolManager(new TradesFondAllocationInfo());
+        this->m_fastProtocolManager = new FastProtocolManager();
+        this->AllocateFastObjects();
         InitializePackets(this->GetPacketsCount());
         DebugInfoManager::Default->PrintMemoryInfo("FeedConnection_FOND_TLR");
     }
     ~FeedConnection_FOND_TLR() {
         delete this->m_tradeTableFond;
+    }
+    void AllocateFastObjects() {
+        FastObjectsAllocationInfo::Default->AllocateHeartbeatInfoPoolTo(10);
+        FastObjectsAllocationInfo::Default->AllocateTradingSessionStatusInfoPoolTo(10);
+        FastObjectsAllocationInfo::Default->AllocateIncrementalTLRFONDInfoPoolTo(10);
+#ifdef TEST
+        FastObjectsAllocationInfo::Default->AllocateTLSFONDItemInfoPool(100, 100);
+#else
+        FastObjectsAllocationInfo::Default->AllocateTLSFONDItemInfoPool(800000, 20000);
+#endif
     }
     int GetPacketsCount() { return 10000; }
     ISocketBufferProvider* CreateSocketBufferProvider() {

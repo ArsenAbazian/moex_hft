@@ -13,9 +13,12 @@ public:
             FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
         this->SetType(FeedConnectionType::Snapshot);
         this->SetId(FeedConnectionId::fcidTlsFond);
-
+        this->m_fastProtocolManager = new FastProtocolManager();
         InitializePackets(this->GetPacketsCount());
         DebugInfoManager::Default->PrintMemoryInfo("FeedConnection_FOND_TLS");
+    }
+    void AllocateFastObjects() {
+        FastObjectsAllocationInfo::Default->AllocateTLSFONDInfoPool(10, 10);
     }
     int GetPacketsCount() { return 50000; }
     ISocketBufferProvider* CreateSocketBufferProvider() {
@@ -24,27 +27,6 @@ public:
                                         RobotSettings::Default->DefaultFeedConnectionSendItemsCount,
                                         RobotSettings::Default->DefaultFeedConnectionRecvBufferSize,
                                         RobotSettings::Default->DefaultFeedConnectionRecvItemsCount);
-    }
-    FastObjectsAllocationInfo* CreateFastAllocationInfo() {
-        FastObjectsAllocationInfo *info = new FastObjectsAllocationInfo();
-
-#ifndef TEST
-        info->m_tLSFONDCount = 1024;
-        info->m_tLSFONDAddCount = 256;
-        info->m_tLSFONDItemsCount = 80000;
-        info->m_tLSFONDItemsAddCount = 2000;
-#else
-        info->m_tLSFONDCount = 100;
-        info->m_tLSFONDAddCount = 100;
-        info->m_tLSFONDItemsCount = 100;
-        info->m_tLSFONDItemsAddCount = 100;
-#endif
-        info->m_heartbeatCount = 10;
-        info->m_heartbeatAddCount = 10;
-        info->m_tradingSessionStatusCount = 10;
-        info->m_tradingSessionStatusAddCount = 10;
-
-        return info;
     }
 };
 

@@ -572,6 +572,10 @@ namespace prebuild {
 				get{ return "Get" + NameCore + Suffix + "Pool"; }
 			}
 
+			public string AllocatePoolMethodName { 
+				get{ return "Allocate" + NameCore + Suffix + "Pool"; }
+			}
+
 			public string ReleaseMethodName { 
 				get { return "Release" + NameCore + Suffix; }
 			}
@@ -679,7 +683,7 @@ namespace prebuild {
 			WriteLine("");
 			WriteLine("\tvoid InitializeMessageInfo() {");
 			foreach(StructureInfo str in structures) {
-				WriteLine("\t\tthis->" + str.ValueName + " = new AutoAllocatePointerList<" + str.Name + ">(this->m_allocationInfo->" + str.ValueName + "Count, this->m_allocationInfo->" + str.ValueName + "AddCount, \"" + str.Name + "\");");
+				WriteLine("\t\tthis->" + str.ValueName + " = this->m_allocationInfo->" + str.GetListMethodName + "();");
 			}
 			foreach(StructureInfo str in structures) {
 				WriteLine("\t\tthis->" + str.PrevValueName + " = this->" + str.GetFreeMethodName + "();");
@@ -1039,25 +1043,34 @@ namespace prebuild {
 			}
 
 			WriteLine("class FastObjectsAllocationInfo {");
+			foreach(StructureInfo info in Structures) {
+				WriteLine("\tAutoAllocatePointerList<" + info.Name + ">" + "\t\t\t\t*" + info.ValueName + ";");
+			}
 			WriteLine("public:");
+			WriteLine("\t static FastObjectsAllocationInfo *Default;");
+			WriteLine("\tFastObjectsAllocationInfo(int count) {");
 			foreach(StructureInfo info in Structures) {
-				WriteLine("\tint\t\t\t\t" + info.ValueName + "Count;");
-				WriteLine("\tint\t\t\t\t" + info.ValueName + "AddCount;");
-			}
-			WriteLine("\tFastObjectsAllocationInfo() {");
-			WriteLine("");
-			foreach(StructureInfo info in Structures) {
-				WriteLine("\tthis->" + info.ValueName + "Count = 3;");
-				WriteLine("\tthis->" + info.ValueName + "AddCount = 3;");
+				WriteLine("\t\tthis->" + info.ValueName + " = new AutoAllocatePointerList<" + info.Name + ">(count, count, \"" + info.Name + "\");");
 			}
 			WriteLine("\t}");
-			WriteLine("\tFastObjectsAllocationInfo(int count, int addCount) {");
-			WriteLine("");
 			foreach(StructureInfo info in Structures) {
-				WriteLine("\tthis->" + info.ValueName + "Count = count;");
-				WriteLine("\tthis->" + info.ValueName + "AddCount = addCount;");
+				WriteLine("\tinline void " + info.AllocatePoolMethodName + "(int count, int addCount) {");
+				WriteLine("\t\tthis->" + info.ValueName + "->Append(count);");
+				WriteLine("\t\tthis->" + info.ValueName + "->AddCount(addCount);");
+				WriteLine("\t}");
 			}
-			WriteLine("\t}");
+			foreach(StructureInfo info in Structures) {
+				WriteLine("\tinline void " + info.AllocatePoolMethodName + "To(int count) {");
+				WriteLine("count -= this->" + info.ValueName + "->Capacity();");
+				WriteLine("if(count > 0)");
+				WriteLine("\t\t\tthis->" + info.ValueName + "->Append(count);");
+				WriteLine("\t}");
+			}
+			foreach(StructureInfo info in Structures) {
+				WriteLine("\tinline AutoAllocatePointerList<" + info.Name + ">* " + info.GetListMethodName + "() {");
+				WriteLine("\t\treturn this->" + info.ValueName + ";");
+				WriteLine("\t}");
+			}
 			WriteLine("};");
 
 			List<StructureInfo> structures = GetStructures(templatesNode);

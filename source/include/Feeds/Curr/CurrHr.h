@@ -13,13 +13,18 @@ public:
             FeedConnection(id, name, value, protocol, 0, ip, port, 0, 0, 0) {
         InitializeHistoricalReplay();
         this->m_fixProtocolManager->SetSenderComputerId(CurrencyMarketSenderComputerId);
-        this->m_fastProtocolManager = new FastProtocolManager(new FastObjectsAllocationInfo(10, 10));
+        this->m_fastProtocolManager = new FastProtocolManager();
+        this->AllocateFastObjects();
         PrepareLogonInfo();
         this->SetType(FeedConnectionType::HistoricalReplay);
         this->SetState(FeedConnectionState::fcsHistoricalReplay);
         this->SetHsState(FeedConnectionHistoricalReplayState::hsSuspend);
         this->SetId(FeedConnectionId::fcidHCurr);
         DebugInfoManager::Default->PrintMemoryInfo("FeedConnection_CURR_H");
+    }
+    void AllocateFastObjects() {
+        FastObjectsAllocationInfo::Default->AllocateLogonInfoPoolTo(10);
+        FastObjectsAllocationInfo::Default->AllocateLogoutInfoPoolTo(10);
     }
     ~FeedConnection_CURR_H() {
         DisposeHistoricalReplay();

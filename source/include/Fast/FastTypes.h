@@ -1821,168 +1821,373 @@ public:
 };
 
 class FastObjectsAllocationInfo {
+	AutoAllocatePointerList<FastLogonInfo>				*m_logon;
+	AutoAllocatePointerList<FastLogoutInfo>				*m_logout;
+	AutoAllocatePointerList<FastGenericItemInfo>				*m_genericItems;
+	AutoAllocatePointerList<FastGenericInfo>				*m_generic;
+	AutoAllocatePointerList<FastIncrementalGenericInfo>				*m_incrementalGeneric;
+	AutoAllocatePointerList<FastOLSFONDItemInfo>				*m_oLSFONDItems;
+	AutoAllocatePointerList<FastOLSFONDInfo>				*m_oLSFOND;
+	AutoAllocatePointerList<FastOLSCURRItemInfo>				*m_oLSCURRItems;
+	AutoAllocatePointerList<FastOLSCURRInfo>				*m_oLSCURR;
+	AutoAllocatePointerList<FastTLSFONDItemInfo>				*m_tLSFONDItems;
+	AutoAllocatePointerList<FastTLSFONDInfo>				*m_tLSFOND;
+	AutoAllocatePointerList<FastTLSCURRItemInfo>				*m_tLSCURRItems;
+	AutoAllocatePointerList<FastTLSCURRInfo>				*m_tLSCURR;
+	AutoAllocatePointerList<FastIncrementalMSRFONDInfo>				*m_incrementalMSRFOND;
+	AutoAllocatePointerList<FastIncrementalMSRCURRInfo>				*m_incrementalMSRCURR;
+	AutoAllocatePointerList<FastIncrementalOLRFONDInfo>				*m_incrementalOLRFOND;
+	AutoAllocatePointerList<FastIncrementalOLRCURRInfo>				*m_incrementalOLRCURR;
+	AutoAllocatePointerList<FastIncrementalTLRFONDInfo>				*m_incrementalTLRFOND;
+	AutoAllocatePointerList<FastIncrementalTLRCURRInfo>				*m_incrementalTLRCURR;
+	AutoAllocatePointerList<FastSecurityDefinitionGroupInstrAttribItemInfo>				*m_securityDefinitionGroupInstrAttribItems;
+	AutoAllocatePointerList<FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo>				*m_securityDefinitionMarketSegmentGrpTradingSessionRulesGrpItems;
+	AutoAllocatePointerList<FastSecurityDefinitionMarketSegmentGrpItemInfo>				*m_securityDefinitionMarketSegmentGrpItems;
+	AutoAllocatePointerList<FastSecurityDefinitionInfo>				*m_securityDefinition;
+	AutoAllocatePointerList<FastSecurityStatusInfo>				*m_securityStatus;
+	AutoAllocatePointerList<FastTradingSessionStatusInfo>				*m_tradingSessionStatus;
+	AutoAllocatePointerList<FastHeartbeatInfo>				*m_heartbeat;
 public:
-	int				m_logonCount;
-	int				m_logonAddCount;
-	int				m_logoutCount;
-	int				m_logoutAddCount;
-	int				m_genericItemsCount;
-	int				m_genericItemsAddCount;
-	int				m_genericCount;
-	int				m_genericAddCount;
-	int				m_incrementalGenericCount;
-	int				m_incrementalGenericAddCount;
-	int				m_oLSFONDItemsCount;
-	int				m_oLSFONDItemsAddCount;
-	int				m_oLSFONDCount;
-	int				m_oLSFONDAddCount;
-	int				m_oLSCURRItemsCount;
-	int				m_oLSCURRItemsAddCount;
-	int				m_oLSCURRCount;
-	int				m_oLSCURRAddCount;
-	int				m_tLSFONDItemsCount;
-	int				m_tLSFONDItemsAddCount;
-	int				m_tLSFONDCount;
-	int				m_tLSFONDAddCount;
-	int				m_tLSCURRItemsCount;
-	int				m_tLSCURRItemsAddCount;
-	int				m_tLSCURRCount;
-	int				m_tLSCURRAddCount;
-	int				m_incrementalMSRFONDCount;
-	int				m_incrementalMSRFONDAddCount;
-	int				m_incrementalMSRCURRCount;
-	int				m_incrementalMSRCURRAddCount;
-	int				m_incrementalOLRFONDCount;
-	int				m_incrementalOLRFONDAddCount;
-	int				m_incrementalOLRCURRCount;
-	int				m_incrementalOLRCURRAddCount;
-	int				m_incrementalTLRFONDCount;
-	int				m_incrementalTLRFONDAddCount;
-	int				m_incrementalTLRCURRCount;
-	int				m_incrementalTLRCURRAddCount;
-	int				m_securityDefinitionGroupInstrAttribItemsCount;
-	int				m_securityDefinitionGroupInstrAttribItemsAddCount;
-	int				m_securityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemsCount;
-	int				m_securityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemsAddCount;
-	int				m_securityDefinitionMarketSegmentGrpItemsCount;
-	int				m_securityDefinitionMarketSegmentGrpItemsAddCount;
-	int				m_securityDefinitionCount;
-	int				m_securityDefinitionAddCount;
-	int				m_securityStatusCount;
-	int				m_securityStatusAddCount;
-	int				m_tradingSessionStatusCount;
-	int				m_tradingSessionStatusAddCount;
-	int				m_heartbeatCount;
-	int				m_heartbeatAddCount;
-	FastObjectsAllocationInfo() {
-
-	this->m_logonCount = 3;
-	this->m_logonAddCount = 3;
-	this->m_logoutCount = 3;
-	this->m_logoutAddCount = 3;
-	this->m_genericItemsCount = 3;
-	this->m_genericItemsAddCount = 3;
-	this->m_genericCount = 3;
-	this->m_genericAddCount = 3;
-	this->m_incrementalGenericCount = 3;
-	this->m_incrementalGenericAddCount = 3;
-	this->m_oLSFONDItemsCount = 3;
-	this->m_oLSFONDItemsAddCount = 3;
-	this->m_oLSFONDCount = 3;
-	this->m_oLSFONDAddCount = 3;
-	this->m_oLSCURRItemsCount = 3;
-	this->m_oLSCURRItemsAddCount = 3;
-	this->m_oLSCURRCount = 3;
-	this->m_oLSCURRAddCount = 3;
-	this->m_tLSFONDItemsCount = 3;
-	this->m_tLSFONDItemsAddCount = 3;
-	this->m_tLSFONDCount = 3;
-	this->m_tLSFONDAddCount = 3;
-	this->m_tLSCURRItemsCount = 3;
-	this->m_tLSCURRItemsAddCount = 3;
-	this->m_tLSCURRCount = 3;
-	this->m_tLSCURRAddCount = 3;
-	this->m_incrementalMSRFONDCount = 3;
-	this->m_incrementalMSRFONDAddCount = 3;
-	this->m_incrementalMSRCURRCount = 3;
-	this->m_incrementalMSRCURRAddCount = 3;
-	this->m_incrementalOLRFONDCount = 3;
-	this->m_incrementalOLRFONDAddCount = 3;
-	this->m_incrementalOLRCURRCount = 3;
-	this->m_incrementalOLRCURRAddCount = 3;
-	this->m_incrementalTLRFONDCount = 3;
-	this->m_incrementalTLRFONDAddCount = 3;
-	this->m_incrementalTLRCURRCount = 3;
-	this->m_incrementalTLRCURRAddCount = 3;
-	this->m_securityDefinitionGroupInstrAttribItemsCount = 3;
-	this->m_securityDefinitionGroupInstrAttribItemsAddCount = 3;
-	this->m_securityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemsCount = 3;
-	this->m_securityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemsAddCount = 3;
-	this->m_securityDefinitionMarketSegmentGrpItemsCount = 3;
-	this->m_securityDefinitionMarketSegmentGrpItemsAddCount = 3;
-	this->m_securityDefinitionCount = 3;
-	this->m_securityDefinitionAddCount = 3;
-	this->m_securityStatusCount = 3;
-	this->m_securityStatusAddCount = 3;
-	this->m_tradingSessionStatusCount = 3;
-	this->m_tradingSessionStatusAddCount = 3;
-	this->m_heartbeatCount = 3;
-	this->m_heartbeatAddCount = 3;
+	 static FastObjectsAllocationInfo *Default;
+	FastObjectsAllocationInfo(int count) {
+		this->m_logon = new AutoAllocatePointerList<FastLogonInfo>(count, count, "FastLogonInfo");
+		this->m_logout = new AutoAllocatePointerList<FastLogoutInfo>(count, count, "FastLogoutInfo");
+		this->m_genericItems = new AutoAllocatePointerList<FastGenericItemInfo>(count, count, "FastGenericItemInfo");
+		this->m_generic = new AutoAllocatePointerList<FastGenericInfo>(count, count, "FastGenericInfo");
+		this->m_incrementalGeneric = new AutoAllocatePointerList<FastIncrementalGenericInfo>(count, count, "FastIncrementalGenericInfo");
+		this->m_oLSFONDItems = new AutoAllocatePointerList<FastOLSFONDItemInfo>(count, count, "FastOLSFONDItemInfo");
+		this->m_oLSFOND = new AutoAllocatePointerList<FastOLSFONDInfo>(count, count, "FastOLSFONDInfo");
+		this->m_oLSCURRItems = new AutoAllocatePointerList<FastOLSCURRItemInfo>(count, count, "FastOLSCURRItemInfo");
+		this->m_oLSCURR = new AutoAllocatePointerList<FastOLSCURRInfo>(count, count, "FastOLSCURRInfo");
+		this->m_tLSFONDItems = new AutoAllocatePointerList<FastTLSFONDItemInfo>(count, count, "FastTLSFONDItemInfo");
+		this->m_tLSFOND = new AutoAllocatePointerList<FastTLSFONDInfo>(count, count, "FastTLSFONDInfo");
+		this->m_tLSCURRItems = new AutoAllocatePointerList<FastTLSCURRItemInfo>(count, count, "FastTLSCURRItemInfo");
+		this->m_tLSCURR = new AutoAllocatePointerList<FastTLSCURRInfo>(count, count, "FastTLSCURRInfo");
+		this->m_incrementalMSRFOND = new AutoAllocatePointerList<FastIncrementalMSRFONDInfo>(count, count, "FastIncrementalMSRFONDInfo");
+		this->m_incrementalMSRCURR = new AutoAllocatePointerList<FastIncrementalMSRCURRInfo>(count, count, "FastIncrementalMSRCURRInfo");
+		this->m_incrementalOLRFOND = new AutoAllocatePointerList<FastIncrementalOLRFONDInfo>(count, count, "FastIncrementalOLRFONDInfo");
+		this->m_incrementalOLRCURR = new AutoAllocatePointerList<FastIncrementalOLRCURRInfo>(count, count, "FastIncrementalOLRCURRInfo");
+		this->m_incrementalTLRFOND = new AutoAllocatePointerList<FastIncrementalTLRFONDInfo>(count, count, "FastIncrementalTLRFONDInfo");
+		this->m_incrementalTLRCURR = new AutoAllocatePointerList<FastIncrementalTLRCURRInfo>(count, count, "FastIncrementalTLRCURRInfo");
+		this->m_securityDefinitionGroupInstrAttribItems = new AutoAllocatePointerList<FastSecurityDefinitionGroupInstrAttribItemInfo>(count, count, "FastSecurityDefinitionGroupInstrAttribItemInfo");
+		this->m_securityDefinitionMarketSegmentGrpTradingSessionRulesGrpItems = new AutoAllocatePointerList<FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo>(count, count, "FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo");
+		this->m_securityDefinitionMarketSegmentGrpItems = new AutoAllocatePointerList<FastSecurityDefinitionMarketSegmentGrpItemInfo>(count, count, "FastSecurityDefinitionMarketSegmentGrpItemInfo");
+		this->m_securityDefinition = new AutoAllocatePointerList<FastSecurityDefinitionInfo>(count, count, "FastSecurityDefinitionInfo");
+		this->m_securityStatus = new AutoAllocatePointerList<FastSecurityStatusInfo>(count, count, "FastSecurityStatusInfo");
+		this->m_tradingSessionStatus = new AutoAllocatePointerList<FastTradingSessionStatusInfo>(count, count, "FastTradingSessionStatusInfo");
+		this->m_heartbeat = new AutoAllocatePointerList<FastHeartbeatInfo>(count, count, "FastHeartbeatInfo");
 	}
-	FastObjectsAllocationInfo(int count, int addCount) {
-
-	this->m_logonCount = count;
-	this->m_logonAddCount = addCount;
-	this->m_logoutCount = count;
-	this->m_logoutAddCount = addCount;
-	this->m_genericItemsCount = count;
-	this->m_genericItemsAddCount = addCount;
-	this->m_genericCount = count;
-	this->m_genericAddCount = addCount;
-	this->m_incrementalGenericCount = count;
-	this->m_incrementalGenericAddCount = addCount;
-	this->m_oLSFONDItemsCount = count;
-	this->m_oLSFONDItemsAddCount = addCount;
-	this->m_oLSFONDCount = count;
-	this->m_oLSFONDAddCount = addCount;
-	this->m_oLSCURRItemsCount = count;
-	this->m_oLSCURRItemsAddCount = addCount;
-	this->m_oLSCURRCount = count;
-	this->m_oLSCURRAddCount = addCount;
-	this->m_tLSFONDItemsCount = count;
-	this->m_tLSFONDItemsAddCount = addCount;
-	this->m_tLSFONDCount = count;
-	this->m_tLSFONDAddCount = addCount;
-	this->m_tLSCURRItemsCount = count;
-	this->m_tLSCURRItemsAddCount = addCount;
-	this->m_tLSCURRCount = count;
-	this->m_tLSCURRAddCount = addCount;
-	this->m_incrementalMSRFONDCount = count;
-	this->m_incrementalMSRFONDAddCount = addCount;
-	this->m_incrementalMSRCURRCount = count;
-	this->m_incrementalMSRCURRAddCount = addCount;
-	this->m_incrementalOLRFONDCount = count;
-	this->m_incrementalOLRFONDAddCount = addCount;
-	this->m_incrementalOLRCURRCount = count;
-	this->m_incrementalOLRCURRAddCount = addCount;
-	this->m_incrementalTLRFONDCount = count;
-	this->m_incrementalTLRFONDAddCount = addCount;
-	this->m_incrementalTLRCURRCount = count;
-	this->m_incrementalTLRCURRAddCount = addCount;
-	this->m_securityDefinitionGroupInstrAttribItemsCount = count;
-	this->m_securityDefinitionGroupInstrAttribItemsAddCount = addCount;
-	this->m_securityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemsCount = count;
-	this->m_securityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemsAddCount = addCount;
-	this->m_securityDefinitionMarketSegmentGrpItemsCount = count;
-	this->m_securityDefinitionMarketSegmentGrpItemsAddCount = addCount;
-	this->m_securityDefinitionCount = count;
-	this->m_securityDefinitionAddCount = addCount;
-	this->m_securityStatusCount = count;
-	this->m_securityStatusAddCount = addCount;
-	this->m_tradingSessionStatusCount = count;
-	this->m_tradingSessionStatusAddCount = addCount;
-	this->m_heartbeatCount = count;
-	this->m_heartbeatAddCount = addCount;
+	inline void AllocateLogonInfoPool(int count, int addCount) {
+		this->m_logon->Append(count);
+		this->m_logon->AddCount(addCount);
+	}
+	inline void AllocateLogoutInfoPool(int count, int addCount) {
+		this->m_logout->Append(count);
+		this->m_logout->AddCount(addCount);
+	}
+	inline void AllocateGenericItemInfoPool(int count, int addCount) {
+		this->m_genericItems->Append(count);
+		this->m_genericItems->AddCount(addCount);
+	}
+	inline void AllocateGenericInfoPool(int count, int addCount) {
+		this->m_generic->Append(count);
+		this->m_generic->AddCount(addCount);
+	}
+	inline void AllocateIncrementalGenericInfoPool(int count, int addCount) {
+		this->m_incrementalGeneric->Append(count);
+		this->m_incrementalGeneric->AddCount(addCount);
+	}
+	inline void AllocateOLSFONDItemInfoPool(int count, int addCount) {
+		this->m_oLSFONDItems->Append(count);
+		this->m_oLSFONDItems->AddCount(addCount);
+	}
+	inline void AllocateOLSFONDInfoPool(int count, int addCount) {
+		this->m_oLSFOND->Append(count);
+		this->m_oLSFOND->AddCount(addCount);
+	}
+	inline void AllocateOLSCURRItemInfoPool(int count, int addCount) {
+		this->m_oLSCURRItems->Append(count);
+		this->m_oLSCURRItems->AddCount(addCount);
+	}
+	inline void AllocateOLSCURRInfoPool(int count, int addCount) {
+		this->m_oLSCURR->Append(count);
+		this->m_oLSCURR->AddCount(addCount);
+	}
+	inline void AllocateTLSFONDItemInfoPool(int count, int addCount) {
+		this->m_tLSFONDItems->Append(count);
+		this->m_tLSFONDItems->AddCount(addCount);
+	}
+	inline void AllocateTLSFONDInfoPool(int count, int addCount) {
+		this->m_tLSFOND->Append(count);
+		this->m_tLSFOND->AddCount(addCount);
+	}
+	inline void AllocateTLSCURRItemInfoPool(int count, int addCount) {
+		this->m_tLSCURRItems->Append(count);
+		this->m_tLSCURRItems->AddCount(addCount);
+	}
+	inline void AllocateTLSCURRInfoPool(int count, int addCount) {
+		this->m_tLSCURR->Append(count);
+		this->m_tLSCURR->AddCount(addCount);
+	}
+	inline void AllocateIncrementalMSRFONDInfoPool(int count, int addCount) {
+		this->m_incrementalMSRFOND->Append(count);
+		this->m_incrementalMSRFOND->AddCount(addCount);
+	}
+	inline void AllocateIncrementalMSRCURRInfoPool(int count, int addCount) {
+		this->m_incrementalMSRCURR->Append(count);
+		this->m_incrementalMSRCURR->AddCount(addCount);
+	}
+	inline void AllocateIncrementalOLRFONDInfoPool(int count, int addCount) {
+		this->m_incrementalOLRFOND->Append(count);
+		this->m_incrementalOLRFOND->AddCount(addCount);
+	}
+	inline void AllocateIncrementalOLRCURRInfoPool(int count, int addCount) {
+		this->m_incrementalOLRCURR->Append(count);
+		this->m_incrementalOLRCURR->AddCount(addCount);
+	}
+	inline void AllocateIncrementalTLRFONDInfoPool(int count, int addCount) {
+		this->m_incrementalTLRFOND->Append(count);
+		this->m_incrementalTLRFOND->AddCount(addCount);
+	}
+	inline void AllocateIncrementalTLRCURRInfoPool(int count, int addCount) {
+		this->m_incrementalTLRCURR->Append(count);
+		this->m_incrementalTLRCURR->AddCount(addCount);
+	}
+	inline void AllocateSecurityDefinitionGroupInstrAttribItemInfoPool(int count, int addCount) {
+		this->m_securityDefinitionGroupInstrAttribItems->Append(count);
+		this->m_securityDefinitionGroupInstrAttribItems->AddCount(addCount);
+	}
+	inline void AllocateSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfoPool(int count, int addCount) {
+		this->m_securityDefinitionMarketSegmentGrpTradingSessionRulesGrpItems->Append(count);
+		this->m_securityDefinitionMarketSegmentGrpTradingSessionRulesGrpItems->AddCount(addCount);
+	}
+	inline void AllocateSecurityDefinitionMarketSegmentGrpItemInfoPool(int count, int addCount) {
+		this->m_securityDefinitionMarketSegmentGrpItems->Append(count);
+		this->m_securityDefinitionMarketSegmentGrpItems->AddCount(addCount);
+	}
+	inline void AllocateSecurityDefinitionInfoPool(int count, int addCount) {
+		this->m_securityDefinition->Append(count);
+		this->m_securityDefinition->AddCount(addCount);
+	}
+	inline void AllocateSecurityStatusInfoPool(int count, int addCount) {
+		this->m_securityStatus->Append(count);
+		this->m_securityStatus->AddCount(addCount);
+	}
+	inline void AllocateTradingSessionStatusInfoPool(int count, int addCount) {
+		this->m_tradingSessionStatus->Append(count);
+		this->m_tradingSessionStatus->AddCount(addCount);
+	}
+	inline void AllocateHeartbeatInfoPool(int count, int addCount) {
+		this->m_heartbeat->Append(count);
+		this->m_heartbeat->AddCount(addCount);
+	}
+	inline void AllocateLogonInfoPoolTo(int count) {
+count -= this->m_logon->Capacity();
+if(count > 0)
+			this->m_logon->Append(count);
+	}
+	inline void AllocateLogoutInfoPoolTo(int count) {
+count -= this->m_logout->Capacity();
+if(count > 0)
+			this->m_logout->Append(count);
+	}
+	inline void AllocateGenericItemInfoPoolTo(int count) {
+count -= this->m_genericItems->Capacity();
+if(count > 0)
+			this->m_genericItems->Append(count);
+	}
+	inline void AllocateGenericInfoPoolTo(int count) {
+count -= this->m_generic->Capacity();
+if(count > 0)
+			this->m_generic->Append(count);
+	}
+	inline void AllocateIncrementalGenericInfoPoolTo(int count) {
+count -= this->m_incrementalGeneric->Capacity();
+if(count > 0)
+			this->m_incrementalGeneric->Append(count);
+	}
+	inline void AllocateOLSFONDItemInfoPoolTo(int count) {
+count -= this->m_oLSFONDItems->Capacity();
+if(count > 0)
+			this->m_oLSFONDItems->Append(count);
+	}
+	inline void AllocateOLSFONDInfoPoolTo(int count) {
+count -= this->m_oLSFOND->Capacity();
+if(count > 0)
+			this->m_oLSFOND->Append(count);
+	}
+	inline void AllocateOLSCURRItemInfoPoolTo(int count) {
+count -= this->m_oLSCURRItems->Capacity();
+if(count > 0)
+			this->m_oLSCURRItems->Append(count);
+	}
+	inline void AllocateOLSCURRInfoPoolTo(int count) {
+count -= this->m_oLSCURR->Capacity();
+if(count > 0)
+			this->m_oLSCURR->Append(count);
+	}
+	inline void AllocateTLSFONDItemInfoPoolTo(int count) {
+count -= this->m_tLSFONDItems->Capacity();
+if(count > 0)
+			this->m_tLSFONDItems->Append(count);
+	}
+	inline void AllocateTLSFONDInfoPoolTo(int count) {
+count -= this->m_tLSFOND->Capacity();
+if(count > 0)
+			this->m_tLSFOND->Append(count);
+	}
+	inline void AllocateTLSCURRItemInfoPoolTo(int count) {
+count -= this->m_tLSCURRItems->Capacity();
+if(count > 0)
+			this->m_tLSCURRItems->Append(count);
+	}
+	inline void AllocateTLSCURRInfoPoolTo(int count) {
+count -= this->m_tLSCURR->Capacity();
+if(count > 0)
+			this->m_tLSCURR->Append(count);
+	}
+	inline void AllocateIncrementalMSRFONDInfoPoolTo(int count) {
+count -= this->m_incrementalMSRFOND->Capacity();
+if(count > 0)
+			this->m_incrementalMSRFOND->Append(count);
+	}
+	inline void AllocateIncrementalMSRCURRInfoPoolTo(int count) {
+count -= this->m_incrementalMSRCURR->Capacity();
+if(count > 0)
+			this->m_incrementalMSRCURR->Append(count);
+	}
+	inline void AllocateIncrementalOLRFONDInfoPoolTo(int count) {
+count -= this->m_incrementalOLRFOND->Capacity();
+if(count > 0)
+			this->m_incrementalOLRFOND->Append(count);
+	}
+	inline void AllocateIncrementalOLRCURRInfoPoolTo(int count) {
+count -= this->m_incrementalOLRCURR->Capacity();
+if(count > 0)
+			this->m_incrementalOLRCURR->Append(count);
+	}
+	inline void AllocateIncrementalTLRFONDInfoPoolTo(int count) {
+count -= this->m_incrementalTLRFOND->Capacity();
+if(count > 0)
+			this->m_incrementalTLRFOND->Append(count);
+	}
+	inline void AllocateIncrementalTLRCURRInfoPoolTo(int count) {
+count -= this->m_incrementalTLRCURR->Capacity();
+if(count > 0)
+			this->m_incrementalTLRCURR->Append(count);
+	}
+	inline void AllocateSecurityDefinitionGroupInstrAttribItemInfoPoolTo(int count) {
+count -= this->m_securityDefinitionGroupInstrAttribItems->Capacity();
+if(count > 0)
+			this->m_securityDefinitionGroupInstrAttribItems->Append(count);
+	}
+	inline void AllocateSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfoPoolTo(int count) {
+count -= this->m_securityDefinitionMarketSegmentGrpTradingSessionRulesGrpItems->Capacity();
+if(count > 0)
+			this->m_securityDefinitionMarketSegmentGrpTradingSessionRulesGrpItems->Append(count);
+	}
+	inline void AllocateSecurityDefinitionMarketSegmentGrpItemInfoPoolTo(int count) {
+count -= this->m_securityDefinitionMarketSegmentGrpItems->Capacity();
+if(count > 0)
+			this->m_securityDefinitionMarketSegmentGrpItems->Append(count);
+	}
+	inline void AllocateSecurityDefinitionInfoPoolTo(int count) {
+count -= this->m_securityDefinition->Capacity();
+if(count > 0)
+			this->m_securityDefinition->Append(count);
+	}
+	inline void AllocateSecurityStatusInfoPoolTo(int count) {
+count -= this->m_securityStatus->Capacity();
+if(count > 0)
+			this->m_securityStatus->Append(count);
+	}
+	inline void AllocateTradingSessionStatusInfoPoolTo(int count) {
+count -= this->m_tradingSessionStatus->Capacity();
+if(count > 0)
+			this->m_tradingSessionStatus->Append(count);
+	}
+	inline void AllocateHeartbeatInfoPoolTo(int count) {
+count -= this->m_heartbeat->Capacity();
+if(count > 0)
+			this->m_heartbeat->Append(count);
+	}
+	inline AutoAllocatePointerList<FastLogonInfo>* GetLogonInfoPool() {
+		return this->m_logon;
+	}
+	inline AutoAllocatePointerList<FastLogoutInfo>* GetLogoutInfoPool() {
+		return this->m_logout;
+	}
+	inline AutoAllocatePointerList<FastGenericItemInfo>* GetGenericItemInfoPool() {
+		return this->m_genericItems;
+	}
+	inline AutoAllocatePointerList<FastGenericInfo>* GetGenericInfoPool() {
+		return this->m_generic;
+	}
+	inline AutoAllocatePointerList<FastIncrementalGenericInfo>* GetIncrementalGenericInfoPool() {
+		return this->m_incrementalGeneric;
+	}
+	inline AutoAllocatePointerList<FastOLSFONDItemInfo>* GetOLSFONDItemInfoPool() {
+		return this->m_oLSFONDItems;
+	}
+	inline AutoAllocatePointerList<FastOLSFONDInfo>* GetOLSFONDInfoPool() {
+		return this->m_oLSFOND;
+	}
+	inline AutoAllocatePointerList<FastOLSCURRItemInfo>* GetOLSCURRItemInfoPool() {
+		return this->m_oLSCURRItems;
+	}
+	inline AutoAllocatePointerList<FastOLSCURRInfo>* GetOLSCURRInfoPool() {
+		return this->m_oLSCURR;
+	}
+	inline AutoAllocatePointerList<FastTLSFONDItemInfo>* GetTLSFONDItemInfoPool() {
+		return this->m_tLSFONDItems;
+	}
+	inline AutoAllocatePointerList<FastTLSFONDInfo>* GetTLSFONDInfoPool() {
+		return this->m_tLSFOND;
+	}
+	inline AutoAllocatePointerList<FastTLSCURRItemInfo>* GetTLSCURRItemInfoPool() {
+		return this->m_tLSCURRItems;
+	}
+	inline AutoAllocatePointerList<FastTLSCURRInfo>* GetTLSCURRInfoPool() {
+		return this->m_tLSCURR;
+	}
+	inline AutoAllocatePointerList<FastIncrementalMSRFONDInfo>* GetIncrementalMSRFONDInfoPool() {
+		return this->m_incrementalMSRFOND;
+	}
+	inline AutoAllocatePointerList<FastIncrementalMSRCURRInfo>* GetIncrementalMSRCURRInfoPool() {
+		return this->m_incrementalMSRCURR;
+	}
+	inline AutoAllocatePointerList<FastIncrementalOLRFONDInfo>* GetIncrementalOLRFONDInfoPool() {
+		return this->m_incrementalOLRFOND;
+	}
+	inline AutoAllocatePointerList<FastIncrementalOLRCURRInfo>* GetIncrementalOLRCURRInfoPool() {
+		return this->m_incrementalOLRCURR;
+	}
+	inline AutoAllocatePointerList<FastIncrementalTLRFONDInfo>* GetIncrementalTLRFONDInfoPool() {
+		return this->m_incrementalTLRFOND;
+	}
+	inline AutoAllocatePointerList<FastIncrementalTLRCURRInfo>* GetIncrementalTLRCURRInfoPool() {
+		return this->m_incrementalTLRCURR;
+	}
+	inline AutoAllocatePointerList<FastSecurityDefinitionGroupInstrAttribItemInfo>* GetSecurityDefinitionGroupInstrAttribItemInfoPool() {
+		return this->m_securityDefinitionGroupInstrAttribItems;
+	}
+	inline AutoAllocatePointerList<FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo>* GetSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfoPool() {
+		return this->m_securityDefinitionMarketSegmentGrpTradingSessionRulesGrpItems;
+	}
+	inline AutoAllocatePointerList<FastSecurityDefinitionMarketSegmentGrpItemInfo>* GetSecurityDefinitionMarketSegmentGrpItemInfoPool() {
+		return this->m_securityDefinitionMarketSegmentGrpItems;
+	}
+	inline AutoAllocatePointerList<FastSecurityDefinitionInfo>* GetSecurityDefinitionInfoPool() {
+		return this->m_securityDefinition;
+	}
+	inline AutoAllocatePointerList<FastSecurityStatusInfo>* GetSecurityStatusInfoPool() {
+		return this->m_securityStatus;
+	}
+	inline AutoAllocatePointerList<FastTradingSessionStatusInfo>* GetTradingSessionStatusInfoPool() {
+		return this->m_tradingSessionStatus;
+	}
+	inline AutoAllocatePointerList<FastHeartbeatInfo>* GetHeartbeatInfoPool() {
+		return this->m_heartbeat;
 	}
 };
 class FastOLSFONDItemInfoPresenceIndices{

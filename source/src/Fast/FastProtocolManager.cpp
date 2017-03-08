@@ -1,6 +1,8 @@
 #include "Fast/FastProtocolManager.h"
 #include "../Managers/DebugInfoManager.h"
 
+FastProtocolManager::FastProtocolManager() : FastProtocolManager(FastObjectsAllocationInfo::Default) { }
+
 FastProtocolManager::FastProtocolManager(FastObjectsAllocationInfo *allocInfo) {
 	this->m_allocationInfo = allocInfo;
 	this->InitializeConstantStrings();

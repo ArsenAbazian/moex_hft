@@ -145,7 +145,7 @@ add_executable(hft_robot
         source/include/Feeds/Curr/CurrHr.h
         source/include/Test/HistoricalReplayTester.h
         source/include/ProgramStatistics.h
-        source/src/ProgramStatistics.cpp source/src/MarketData/MDEntryQueue.cpp source/include/MarketData/StatisticItem.h)
+        source/src/ProgramStatistics.cpp source/src/MarketData/MDEntryQueue.cpp source/include/MarketData/StatisticItem.h source/src/Fast/FastTypes.cpp)
 add_dependencies(hft_robot fast_generate)
 
 add_custom_command(TARGET fast_generate

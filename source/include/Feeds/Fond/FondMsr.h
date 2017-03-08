@@ -7,19 +7,6 @@
 
 #include "../FeedConnection.h"
 
-class StatisticsFondAllocationInfo : public FastObjectsAllocationInfo {
-public:
-    StatisticsFondAllocationInfo() : FastObjectsAllocationInfo(32, 32) {
-#ifndef TEST
-        this->m_genericItemsCount = 10240;
-        this->m_genericItemsAddCount = 1024;
-#else
-        this->m_genericItemsCount = 100;
-        this->m_genericItemsAddCount = 100;
-#endif
-    }
-};
-
 class FeedConnection_FOND_MSR : public FeedConnection {
 public:
     FeedConnection_FOND_MSR(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
@@ -27,9 +14,20 @@ public:
         this->SetType(FeedConnectionType::Incremental);
         this->m_statTableFond = new MarketDataTable<StatisticsInfo, FastGenericInfo, FastGenericItemInfo>();
         this->SetId(FeedConnectionId::fcidMsrFond);
-        this->m_fastProtocolManager = new FastProtocolManager(new StatisticsFondAllocationInfo());
+        this->m_fastProtocolManager = new FastProtocolManager();
+        this->AllocateFastObjects();
         InitializePackets(this->GetPacketsCount());
         DebugInfoManager::Default->PrintMemoryInfo("FeedConnection_FOND_MSR");
+    }
+    void AllocateFastObjects() {
+        FastObjectsAllocationInfo::Default->AllocateHeartbeatInfoPoolTo(10);
+        FastObjectsAllocationInfo::Default->AllocateTradingSessionStatusInfoPoolTo(10);
+        FastObjectsAllocationInfo::Default->AllocateIncrementalMSRFONDInfoPoolTo(10);
+#ifdef TEST
+        FastObjectsAllocationInfo::Default->AllocateGenericItemInfoPool(102, 10);
+#else
+        FastObjectsAllocationInfo::Default->AllocateGenericItemInfoPool(10240, 1024);
+#endif        
     }
     int GetPacketsCount() { return 10000; }
     ISocketBufferProvider* CreateSocketBufferProvider() {

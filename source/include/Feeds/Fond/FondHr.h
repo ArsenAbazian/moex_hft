@@ -13,7 +13,8 @@ public:
             FeedConnection(id, name, value, protocol, 0, ip, port, 0, 0, 0) {
         InitializeHistoricalReplay();
         this->m_fixProtocolManager->SetSenderComputerId(FundMarketSenderComputerId);
-        this->m_fastProtocolManager = new FastProtocolManager(new FastObjectsAllocationInfo(10, 10));
+        this->m_fastProtocolManager = new FastProtocolManager();
+        this->AllocateFastObjects();
         PrepareLogonInfo();
         this->SetType(FeedConnectionType::HistoricalReplay);
         this->SetState(FeedConnectionState::fcsHistoricalReplay);
@@ -23,6 +24,10 @@ public:
     }
     ~FeedConnection_FOND_H() {
         DisposeHistoricalReplay();
+    }
+    void AllocateFastObjects() {
+        FastObjectsAllocationInfo::Default->AllocateLogonInfoPoolTo(10);
+        FastObjectsAllocationInfo::Default->AllocateLogoutInfoPoolTo(10);
     }
     ISocketBufferProvider* CreateSocketBufferProvider() {
         return new SocketBufferProvider(DefaultSocketBufferManager::Default,

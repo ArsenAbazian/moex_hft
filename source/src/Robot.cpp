@@ -198,11 +198,7 @@ bool Robot::CollectSecurityDefinitions_FondOnly() {
                 w->Reset();
 
                 double nanosecPerCycle = w->ElapsedMilliseconds() * 1000.0 * 1000.0 / cycleCount;
-                printf("CycleCount for 1 sec = %d. %g nanosec per cycle\n", cycleCount, nanosecPerCycle);
-
-                printf("fond idf socket buffer usage = %g item usage = %g\n",
-                       this->m_fondMarket->FeedChannel()->Idf()->RecvBuffer()->CalcMemoryUsagePercentage(),
-                       this->m_fondMarket->FeedChannel()->Idf()->RecvBuffer()->CalcItemsUsagePercentage());
+                printf("cycle count for 1 sec = %d. %g nanosec per cycle\n", cycleCount, nanosecPerCycle);
 
                 printf("Changes------------------------\n");
                 ProgramStatistics::Current->Print();
@@ -257,9 +253,6 @@ bool Robot::CollectSecurityDefinitions_CurrOnly() {
 
                 double nanosecPerCycle = w->ElapsedMilliseconds() * 1000.0 * 1000.0 / cycleCount;
                 printf("cycle count for 1 sec = %d. %g nanosec per cycle\n", cycleCount, nanosecPerCycle);
-                printf("curr idf socket buffer usage = %g item usage = %g\n",
-                       this->m_currMarket->FeedChannel()->Idf()->RecvBuffer()->CalcMemoryUsagePercentage(),
-                       this->m_currMarket->FeedChannel()->Idf()->RecvBuffer()->CalcItemsUsagePercentage());
 
                 printf("Changes------------------------\n");
                 ProgramStatistics::Current->Print();
@@ -340,15 +333,7 @@ bool Robot::CollectSecurityDefinitions() {
             w->Reset();
 
             double nanosecPerCycle = w->ElapsedMilliseconds() * 1000.0 * 1000.0 / cycleCount;
-            printf("cycleCount for 1 sec = %d. %g nanosec per cycle\n", cycleCount, nanosecPerCycle);
-
-            printf("fond idf socket buffer usage = %g item usage = %g\n",
-                       this->m_fondMarket->FeedChannel()->Idf()->RecvBuffer()->CalcMemoryUsagePercentage(),
-                       this->m_fondMarket->FeedChannel()->Idf()->RecvBuffer()->CalcItemsUsagePercentage());
-
-            printf("curr idf socket buffer usage = %g item usage = %g\n",
-                       this->m_currMarket->FeedChannel()->Idf()->RecvBuffer()->CalcMemoryUsagePercentage(),
-                       this->m_currMarket->FeedChannel()->Idf()->RecvBuffer()->CalcItemsUsagePercentage());
+            printf("cycle count for 1 sec = %d. %g nanosec per cycle\n", cycleCount, nanosecPerCycle);
 
             printf("Changes------------------------\n");
             ProgramStatistics::Current->Print();
@@ -398,7 +383,10 @@ bool Robot::MainLoop_FondOnly() {
             break;
 
         if(w->ElapsedMilliseconds() > 1000) {
-            this->PrintStatistics(cycleCount, 1);
+            double nanosecPerCycle = w->ElapsedMilliseconds() * 1000.0 * 1000.0 / cycleCount;
+            printf("--------\n");
+            printf("cycle count for 1 sec = %d. %g nanosec per cycle\n", cycleCount, nanosecPerCycle);
+            this->PrintStatistics();
 
             w->Reset();
             cycleCount = 0;
@@ -420,7 +408,6 @@ bool Robot::MainLoop_CurrOnly() {
         if(!this->m_currMarket->DoWorkAtom()) {
             return false;
         }
-        DebugInfoManager::Default->DebugCheckForDublicateItems(this->m_currMarket->FeedChannel());
         if(!this->DoWorkAtom()) {
             return false;
         }
@@ -428,7 +415,10 @@ bool Robot::MainLoop_CurrOnly() {
             break;
 
         if(w->ElapsedMilliseconds() > 1000) {
-            this->PrintStatistics(cycleCount, 1);
+            double nanosecPerCycle = w->ElapsedMilliseconds() * 1000.0 * 1000.0 / cycleCount;
+            printf("--------\n");
+            printf("cycle count for 1 sec = %d. %g nanosec per cycle\n", cycleCount, nanosecPerCycle);
+            this->PrintStatistics();
 
             w->Reset();
             cycleCount = 0;
@@ -460,7 +450,10 @@ bool Robot::MainLoop() {
             break;
 
         if(w->ElapsedMilliseconds() > 1000) {
-            this->PrintStatistics(cycleCount, 1);
+            double nanosecPerCycle = w->ElapsedMilliseconds() * 1000.0 * 1000.0 / cycleCount;
+            printf("--------\n");
+            printf("cycle count for 1 sec = %d. %g nanosec per cycle\n", cycleCount, nanosecPerCycle);
+            this->PrintStatistics();
 
             w->Reset();
             cycleCount = 0;

@@ -29,6 +29,7 @@
       <sourceFolder url="file://$MODULE_DIR$/source/src/MarketData/StatisticInfo.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/src/MarketData/MDEntryQueue.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/src/Fast/FastProtocolManager.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/source/src/Fast/FastTypes.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/src/Managers/LogManager.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/src/Managers/SocketBufferManager.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/src/Managers/LogErrorMessageCodes.cpp" isTestSource="false" />

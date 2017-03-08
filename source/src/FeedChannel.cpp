@@ -105,16 +105,6 @@ bool FeedChannel::Connect() {
 	if(this->isf != 0)
 		this->isf->SetHistoricalReplay(this->hr);
 
-	//TODO remove debug
-	if(this->msr != 0)
-		this->msr->EnableHistoricalReplay(false);
-	if(this->tlr != 0)
-		this->tlr->EnableHistoricalReplay(false);
-	if(this->olr != 0)
-		this->olr->EnableHistoricalReplay(false);
-	if(this->isf != 0)
-		this->isf->EnableHistoricalReplay(false);
-
 	if(!this->CheckConnections()) {
 		DefaultLogManager::Default->EndLog(false);
 		return false;
