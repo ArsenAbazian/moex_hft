@@ -80,6 +80,7 @@ public:
         LinkedPointer<T> *tail = CreatePointers(head, count - 1);
         this->Connect(this->m_tail, head);
         this->m_tail = tail;
+        this->m_capacity += count;
     }
     void AddCount(int addCount) {
         this->m_addCapacity = addCount;

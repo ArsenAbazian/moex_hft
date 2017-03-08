@@ -2222,7 +2222,6 @@ public:
 		this->m_incremental = conn;
 		if(this->m_incremental != 0) {
             this->m_incremental->SetSnapshot(this);
-            this->m_fastProtocolManager = this->m_incremental->m_fastProtocolManager;
         }
 	}
     inline FeedConnection *Incremental() { return this->m_incremental; }
@@ -2886,6 +2885,8 @@ public:
         this->SetState(FeedConnectionState::fcsSuspend);
 		if(!this->Disconnect())
 			return false;
+        if(this->m_type == FeedConnectionType::Snapshot)
+            this->m_recvABuffer->Reset();
 		return true;
 	}
     inline FeedConnectionState State() { return this->m_state; }
