@@ -449,10 +449,10 @@ bool Robot::MainLoop() {
         if(!this->Working())
             break;
 
-        if(w->ElapsedMilliseconds() > 1000) {
+        if(w->ElapsedMilliseconds() > 5000) {
             double nanosecPerCycle = w->ElapsedMilliseconds() * 1000.0 * 1000.0 / cycleCount;
             printf("--------\n");
-            printf("cycle count for 1 sec = %d. %g nanosec per cycle\n", cycleCount, nanosecPerCycle);
+            printf("cycle count for 5 sec = %d. %g nanosec per cycle\n", cycleCount, nanosecPerCycle);
             this->PrintStatistics();
 
             w->Reset();

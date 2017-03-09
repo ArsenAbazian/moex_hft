@@ -46,7 +46,7 @@ class FeedConnection {
 public:
 	const int MaxReceiveBufferSize 				        = 1500;
     const int WaitAnyPacketMaxTimeMs                    = 4000;
-    const int MaxHrUnsuccessfulConnectCount             = 100;
+    const int MaxHrUnsuccessfulConnectCount             = 20;
     const int WaitSecurityDefinitionPacketMaxTimeMs     = 20000;
 protected:
 	char										m_idName[16];
@@ -1169,6 +1169,7 @@ protected:
             if(this->m_lastSnapshotInfo->LastFragment) {
                 EndApplySnapshot();
                 this->m_snapshotRouteFirst = -1;
+                this->m_recvABuffer->Reset();
             }
             this->m_startMsgSeqNum++;
             return true;
@@ -1186,6 +1187,7 @@ protected:
             if(this->m_lastSnapshotInfo->LastFragment) {
                 EndApplySnapshot();
                 this->m_snapshotRouteFirst = -1;
+                this->m_recvABuffer->Reset();
                 this->m_startMsgSeqNum++;
                 return true;
             }
