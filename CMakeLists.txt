@@ -157,10 +157,11 @@ add_custom_command(TARGET fast_generate
         -fh ${CMAKE_CURRENT_LIST_DIR}/source/include/Fast/FastProtocolManager.h
         -fc ${CMAKE_CURRENT_LIST_DIR}/source/src/Fast/FastProtocolManager.cpp
         -ft ${CMAKE_CURRENT_LIST_DIR}/source/include/Fast/FastTypes.h
-        -fx ${CMAKE_CURRENT_LIST_DIR}/test/data/FIX50SP2-2017-Mar.xml
+        -ax ${CMAKE_CURRENT_LIST_DIR}/test/data/FIX50SP2-2017-Mar.xml
+        -sx ${CMAKE_CURRENT_LIST_DIR}/test/data/SpectraTemplates.xml
         -rb ${CMAKE_CURRENT_LIST_DIR}/source/src/Robot.cpp
-        -fcfg ${CMAKE_CURRENT_LIST_DIR}/test/data/config_test.xml
-        -fwe "Logon,Logout,Security Definition,Security Status,Trading Session Status,Hearthbeat"
+        -acfg ${CMAKE_CURRENT_LIST_DIR}/test/data/asts_config_test.xml
+        -scfg ${CMAKE_CURRENT_LIST_DIR}/test/data/spectra_config_test.xml
         COMMENT "generating code...")
 
 #target_link_libraries(hft_robot -Wl,--whole-archive -Wl,--no-whole-archive dl)

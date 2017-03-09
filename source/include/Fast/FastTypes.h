@@ -82,7 +82,7 @@ typedef enum _SecurityStatus {
 	ssTradingByClosingAuctionPrice = 120
 }SecurityStatus;
 
-#pragma region Message_Info_Structures_Definition_GeneratedCode
+#pragma region Defines_GeneratedCode
 #define PRESENCE_MAP_INDEX0  0x0000000000000040L
 #define PRESENCE_MAP_INDEX1  0x0000000000000020L
 #define PRESENCE_MAP_INDEX2  0x0000000000000010L
@@ -203,7 +203,9 @@ typedef enum _SecurityStatus {
 #define NULL_MAP_INDEX61     0x2000000000000000L
 #define NULL_MAP_INDEX62     0x4000000000000000L
 #define NULL_MAP_INDEX63     0x8000000000000000L
+#pragma endregion
 
+#pragma region Asts_Message_Info_Structures_Definition_GeneratedCode
 class FastSnapshotInfo {
 public:
 	UINT64				PresenceMap;
@@ -2734,6 +2736,10 @@ class FastTradingSessionStatusInfoNullIndices{
 public:
 	static const UINT64 TextNullIndex = NULL_MAP_INDEX0;
 };
+#pragma endregion
+
+#pragma region Spectra_Message_Info_Structures_Definition_GeneratedCode
+
 #pragma endregion
 
 #endif //HFT_ROBOT_FASTTYPES_H

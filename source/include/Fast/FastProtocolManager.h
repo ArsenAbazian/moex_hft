@@ -18,7 +18,13 @@ class FeedConnection;
 #pragma region Decode_Method_Pointer_Definition_GeneratedCode
 typedef void* (FastProtocolManager::*FastDecodeMethodPointer)();
 typedef void* (FastProtocolManager::*FastReleaseMethodPointer)();
+#pragma endregion
+
+#pragma region Asts_Decode_Method_Pointer_Definition_GeneratedCode
 typedef FastSnapshotInfo* (FastProtocolManager::*FastGetSnapshotInfoMethodPointer)();
+#pragma endregion
+
+#pragma region Spectra_Decode_Method_Pointer_Definition_GeneratedCode
 #pragma endregion
 
 #pragma region Checking_Presence_GeneratedCode

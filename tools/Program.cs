@@ -8,25 +8,28 @@ using Mono.Options;
 using System.Collections;
 
 namespace prebuild {
+	public enum GeneratorMode { 
+		Asts,
+		Spectra
+	}
 	class FastTemplatesCodeGenerator {
 		List<string> Strings { get { return CurrentFile.Lines; } }
 
-		//int WriteIndex { get; set; }
-
 		public bool WriteConstantCheckingCode { get; set; }
 
-		public List<string> EncodeMessages { get; set; }
 		public string RobotCpp { get; set; }
-		public string AstsServerConfigFileName { get; set; }
 		public string ManagerSourceFileH { get; set; }
 		public string ManagerSourceFileCpp { get; set; }
-		public string AstsSourceTypes { get; set; }
+		public string SourceTypes { get; set; }
+		public string AstsServerConfigFileName { get; set; }
+		public string SpectraServerConfigFileName { get; set; }
 		public string AstsTemplateFile { get; set; }
+		public string SpectraTemplateFile { get; set; }
 
 		protected TextFile RobotCppFile { get; set; }
 		protected TextFile ManagerHFile { get; set; }
 		protected TextFile ManagerCppFile { get; set; }
-		protected TextFile AstsTypesFile { get; set; }
+		protected TextFile TypesFile { get; set; }
 		protected TextFile CurrentFile { get; set; }
 
 		void WriteLine (string line) { 
@@ -37,12 +40,12 @@ namespace prebuild {
 
 		protected XmlNode TemplatesNode { get; private set; }
 		protected string Prefix { get; private set; }
+		protected GeneratorMode Mode { get; private set; }
 
 		string ConstStr(string str) {
 			return "\"" + str + "\"";
 		}
 		string NodeValue(XmlNode node) {
-			//Console.WriteLine(node.Name + " = " + node.ChildNodes[0].Value.ToString());
 			if(node.ChildNodes.Count == 0 || node.ChildNodes[0].Value == null)
 				return "";
 			return node.ChildNodes[0].Value.ToString();
@@ -129,8 +132,8 @@ namespace prebuild {
 				Console.WriteLine("source file '" + ManagerSourceFileCpp + "' does not exist.");
 				return false;
 			}
-			if(!File.Exists(AstsSourceTypes)) {
-				Console.WriteLine("asts source file '" + AstsTypesFile + "' does not exist.");
+			if(!File.Exists(SourceTypes)) {
+				Console.WriteLine("asts source file '" + TypesFile + "' does not exist.");
 				return false;
 			}
 			if(!File.Exists(AstsTemplateFile)) {
@@ -144,30 +147,233 @@ namespace prebuild {
 			if(!File.Exists(AstsServerConfigFileName)) {
 				Console.WriteLine("asts server config file '" + AstsServerConfigFileName + "' does not exist.");
 			}
-			
-			XmlDocument doc = new XmlDocument();
-			doc.Load(AstsTemplateFile);
-			Prefix = "Asts";
 
 			ManagerHFile = new TextFile();
 			ManagerCppFile = new TextFile();
-			AstsTypesFile = new TextFile();
+			TypesFile = new TextFile();
 			RobotCppFile = new TextFile();
 
 			ManagerHFile.LoadFromFile(ManagerSourceFileH);
 			ManagerCppFile.LoadFromFile(ManagerSourceFileCpp);
-			AstsTypesFile.LoadFromFile(AstsSourceTypes);
+			TypesFile.LoadFromFile(SourceTypes);
 			RobotCppFile.LoadFromFile(RobotCpp);
 
 			ClearPreviouseGeneratedCode();
 
+			GenerateMethodsPointerDeclarationCode();
+			GenerateDefinesCode();
+
+			Generate_ASTS();
+			Generate_Spectra();
+
+			CheckSaveGeneratedFiles();
+
+			return true;
+		}
+
+		void GenerateDefinesCode() {
+			ClearRegion("Defines_GeneratedCode");
+			SetPosition("Defines_GeneratedCode");
+
+			WriteLine("#define PRESENCE_MAP_INDEX0  0x0000000000000040L");
+			WriteLine("#define PRESENCE_MAP_INDEX1  0x0000000000000020L");
+			WriteLine("#define PRESENCE_MAP_INDEX2  0x0000000000000010L");
+			WriteLine("#define PRESENCE_MAP_INDEX3  0x0000000000000008L");
+			WriteLine("#define PRESENCE_MAP_INDEX4  0x0000000000000004L");
+			WriteLine("#define PRESENCE_MAP_INDEX5  0x0000000000000002L");
+			WriteLine("#define PRESENCE_MAP_INDEX6  0x0000000000000001L");
+
+			WriteLine("#define PRESENCE_MAP_INDEX7  0x0000000000004000L");
+			WriteLine("#define PRESENCE_MAP_INDEX8  0x0000000000002000L");
+			WriteLine("#define PRESENCE_MAP_INDEX9  0x0000000000001000L");
+			WriteLine("#define PRESENCE_MAP_INDEX10 0x0000000000000800L");
+			WriteLine("#define PRESENCE_MAP_INDEX11 0x0000000000000400L");
+			WriteLine("#define PRESENCE_MAP_INDEX12 0x0000000000000200L");
+			WriteLine("#define PRESENCE_MAP_INDEX13 0x0000000000000100L");
+
+			WriteLine("#define PRESENCE_MAP_INDEX14 0x0000000000400000L");
+			WriteLine("#define PRESENCE_MAP_INDEX15 0x0000000000200000L");
+			WriteLine("#define PRESENCE_MAP_INDEX16 0x0000000000100000L");
+			WriteLine("#define PRESENCE_MAP_INDEX17 0x0000000000080000L");
+			WriteLine("#define PRESENCE_MAP_INDEX18 0x0000000000040000L");
+			WriteLine("#define PRESENCE_MAP_INDEX19 0x0000000000020000L");
+			WriteLine("#define PRESENCE_MAP_INDEX20 0x0000000000010000L");
+
+			WriteLine("#define PRESENCE_MAP_INDEX21 0x0000000040000000L");
+			WriteLine("#define PRESENCE_MAP_INDEX22 0x0000000020000000L");
+			WriteLine("#define PRESENCE_MAP_INDEX23 0x0000000010000000L");
+			WriteLine("#define PRESENCE_MAP_INDEX24 0x0000000008000000L");
+			WriteLine("#define PRESENCE_MAP_INDEX25 0x0000000004000000L");
+			WriteLine("#define PRESENCE_MAP_INDEX26 0x0000000002000000L");
+			WriteLine("#define PRESENCE_MAP_INDEX27 0x0000000001000000L");
+
+			WriteLine("#define PRESENCE_MAP_INDEX28 0x0000004000000000L");
+			WriteLine("#define PRESENCE_MAP_INDEX29 0x0000002000000000L");
+			WriteLine("#define PRESENCE_MAP_INDEX30 0x0000001000000000L");
+			WriteLine("#define PRESENCE_MAP_INDEX31 0x0000000800000000L");
+			WriteLine("#define PRESENCE_MAP_INDEX32 0x0000000400000000L");
+			WriteLine("#define PRESENCE_MAP_INDEX33 0x0000000200000000L");
+			WriteLine("#define PRESENCE_MAP_INDEX34 0x0000000100000000L");
+
+			WriteLine("#define PRESENCE_MAP_INDEX35 0x0000400000000000L");
+			WriteLine("#define PRESENCE_MAP_INDEX36 0x0000200000000000L");
+			WriteLine("#define PRESENCE_MAP_INDEX37 0x0000100000000000L");
+			WriteLine("#define PRESENCE_MAP_INDEX38 0x0000080000000000L");
+			WriteLine("#define PRESENCE_MAP_INDEX39 0x0000040000000000L");
+			WriteLine("#define PRESENCE_MAP_INDEX40 0x0000020000000000L");
+			WriteLine("#define PRESENCE_MAP_INDEX41 0x0000010000000000L");
+
+			WriteLine("#define PRESENCE_MAP_INDEX42 0x0040000000000000L");
+			WriteLine("#define PRESENCE_MAP_INDEX43 0x0020000000000000L");
+			WriteLine("#define PRESENCE_MAP_INDEX44 0x0010000000000000L");
+			WriteLine("#define PRESENCE_MAP_INDEX45 0x0008000000000000L");
+			WriteLine("#define PRESENCE_MAP_INDEX46 0x0004000000000000L");
+			WriteLine("#define PRESENCE_MAP_INDEX47 0x0002000000000000L");
+			WriteLine("#define PRESENCE_MAP_INDEX48 0x0001000000000000L");
+
+			WriteLine("#define PRESENCE_MAP_INDEX49 0x4000000000000000L");
+			WriteLine("#define PRESENCE_MAP_INDEX50 0x2000000000000000L");
+			WriteLine("#define PRESENCE_MAP_INDEX51 0x1000000000000000L");
+			WriteLine("#define PRESENCE_MAP_INDEX52 0x0800000000000000L");
+			WriteLine("#define PRESENCE_MAP_INDEX53 0x0400000000000000L");
+			WriteLine("#define PRESENCE_MAP_INDEX54 0x0200000000000000L");
+			WriteLine("#define PRESENCE_MAP_INDEX55 0x0100000000000000L");
+
+			WriteLine("#define NULL_MAP_INDEX0      0x0000000000000001L");
+			WriteLine("#define NULL_MAP_INDEX1      0x0000000000000002L");
+			WriteLine("#define NULL_MAP_INDEX2      0x0000000000000004L");
+			WriteLine("#define NULL_MAP_INDEX3      0x0000000000000008L");
+			WriteLine("#define NULL_MAP_INDEX4      0x0000000000000010L");
+			WriteLine("#define NULL_MAP_INDEX5      0x0000000000000020L");
+			WriteLine("#define NULL_MAP_INDEX6      0x0000000000000040L");
+			WriteLine("#define NULL_MAP_INDEX7      0x0000000000000080L");
+			WriteLine("#define NULL_MAP_INDEX8      0x0000000000000100L");
+			WriteLine("#define NULL_MAP_INDEX9      0x0000000000000200L");
+			WriteLine("#define NULL_MAP_INDEX10     0x0000000000000400L");
+			WriteLine("#define NULL_MAP_INDEX11     0x0000000000000800L");
+			WriteLine("#define NULL_MAP_INDEX12     0x0000000000001000L");
+			WriteLine("#define NULL_MAP_INDEX13     0x0000000000002000L");
+			WriteLine("#define NULL_MAP_INDEX14     0x0000000000004000L");
+			WriteLine("#define NULL_MAP_INDEX15     0x0000000000008000L");
+
+			WriteLine("#define NULL_MAP_INDEX16     0x0000000000010000L");
+			WriteLine("#define NULL_MAP_INDEX17     0x0000000000020000L");
+			WriteLine("#define NULL_MAP_INDEX18     0x0000000000040000L");
+			WriteLine("#define NULL_MAP_INDEX19     0x0000000000080000L");
+			WriteLine("#define NULL_MAP_INDEX20     0x0000000000100000L");
+			WriteLine("#define NULL_MAP_INDEX21     0x0000000000200000L");
+			WriteLine("#define NULL_MAP_INDEX22     0x0000000000400000L");
+			WriteLine("#define NULL_MAP_INDEX23     0x0000000000800000L");
+			WriteLine("#define NULL_MAP_INDEX24     0x0000000001000000L");
+			WriteLine("#define NULL_MAP_INDEX25     0x0000000002000000L");
+			WriteLine("#define NULL_MAP_INDEX26     0x0000000004000000L");
+			WriteLine("#define NULL_MAP_INDEX27     0x0000000008000000L");
+			WriteLine("#define NULL_MAP_INDEX28     0x0000000010000000L");
+			WriteLine("#define NULL_MAP_INDEX29     0x0000000020000000L");
+			WriteLine("#define NULL_MAP_INDEX30     0x0000000040000000L");
+			WriteLine("#define NULL_MAP_INDEX31     0x0000000080000000L");
+
+			WriteLine("#define NULL_MAP_INDEX32     0x0000000100000000L");
+			WriteLine("#define NULL_MAP_INDEX33     0x0000000200000000L");
+			WriteLine("#define NULL_MAP_INDEX34     0x0000000400000000L");
+			WriteLine("#define NULL_MAP_INDEX35     0x0000000800000000L");
+			WriteLine("#define NULL_MAP_INDEX36     0x0000001000000000L");
+			WriteLine("#define NULL_MAP_INDEX37     0x0000002000000000L");
+			WriteLine("#define NULL_MAP_INDEX38     0x0000004000000000L");
+			WriteLine("#define NULL_MAP_INDEX39     0x0000008000000000L");
+			WriteLine("#define NULL_MAP_INDEX40     0x0000010000000000L");
+			WriteLine("#define NULL_MAP_INDEX41     0x0000020000000000L");
+			WriteLine("#define NULL_MAP_INDEX42     0x0000040000000000L");
+			WriteLine("#define NULL_MAP_INDEX43     0x0000080000000000L");
+			WriteLine("#define NULL_MAP_INDEX44     0x0000100000000000L");
+			WriteLine("#define NULL_MAP_INDEX45     0x0000200000000000L");
+			WriteLine("#define NULL_MAP_INDEX46     0x0000400000000000L");
+			WriteLine("#define NULL_MAP_INDEX47     0x0000800000000000L");
+
+			WriteLine("#define NULL_MAP_INDEX48     0x0001000000000000L");
+			WriteLine("#define NULL_MAP_INDEX49     0x0002000000000000L");
+			WriteLine("#define NULL_MAP_INDEX50     0x0004000000000000L");
+			WriteLine("#define NULL_MAP_INDEX51     0x0008000000000000L");
+			WriteLine("#define NULL_MAP_INDEX52     0x0010000000000000L");
+			WriteLine("#define NULL_MAP_INDEX53     0x0020000000000000L");
+			WriteLine("#define NULL_MAP_INDEX54     0x0040000000000000L");
+			WriteLine("#define NULL_MAP_INDEX55     0x0080000000000000L");
+			WriteLine("#define NULL_MAP_INDEX56     0x0100000000000000L");
+			WriteLine("#define NULL_MAP_INDEX57     0x0200000000000000L");
+			WriteLine("#define NULL_MAP_INDEX58     0x0400000000000000L");
+			WriteLine("#define NULL_MAP_INDEX59     0x0800000000000000L");
+			WriteLine("#define NULL_MAP_INDEX60     0x1000000000000000L");
+			WriteLine("#define NULL_MAP_INDEX61     0x2000000000000000L");
+			WriteLine("#define NULL_MAP_INDEX62     0x4000000000000000L");
+			WriteLine("#define NULL_MAP_INDEX63     0x8000000000000000L");
+		}
+
+		void GenerateMethodsPointerDeclarationCode() {
+			ClearRegion(Commom_Decode_Method_Pointer_Definition_GeneratedCode);
+			SetPosition(Commom_Decode_Method_Pointer_Definition_GeneratedCode);
+			WriteLine("typedef void* (FastProtocolManager::*FastDecodeMethodPointer)();");
+			WriteLine("typedef void* (FastProtocolManager::*FastReleaseMethodPointer)();");
+		}
+
+		void Generate_ASTS() {
+			XmlDocument doc = new XmlDocument();
+			doc.Load(AstsTemplateFile);
+
 			TemplatesNode = GetTemplatesNode(doc);
 			if(TemplatesNode == null)
-				throw new ArgumentException("Cannot find 'templates' node");
+				throw new ArgumentException("Cannot find 'templates' node in asts templates file");
 
-			GenerateTemplatesCode();
+			PrepareForAsts();
+			GenerateTemplatesCodeAsts();
 			GenerateAddChannelsCode_ASTS();
+		}
 
+		void PrepareForAsts() { 
+			Prefix = "Fast";
+			Mode = GeneratorMode.Asts;
+			Decode_Method_Pointer_Definition_GeneratedCode = "Asts_Decode_Method_Pointer_Definition_GeneratedCode";
+			Message_Info_Structures_Definition_GeneratedCode = "Asts_Message_Info_Structures_Definition_GeneratedCode";
+
+			SnapshotInfoFields = new List<SnapshotFieldInfo>();
+			SnapshotInfoFields.Add(new SnapshotFieldInfo("", "RptSeq"));
+			SnapshotInfoFields.Add(new SnapshotFieldInfo("", "LastFragment"));
+			SnapshotInfoFields.Add(new SnapshotFieldInfo("", "RouteFirst"));
+			SnapshotInfoFields.Add(new SnapshotFieldInfo("", "LastMsgSeqNumProcessed"));
+			SnapshotInfoFields.Add(new SnapshotFieldInfo("", "SendingTime"));
+			SnapshotInfoFields.Add(new SnapshotFieldInfo("", "Symbol"));
+			SnapshotInfoFields.Add(new SnapshotFieldInfo("", "TradingSessionID"));
+		}
+
+		void PrepareForSpectra() {
+			Prefix = "Spectra";
+			Mode = GeneratorMode.Spectra;
+			Decode_Method_Pointer_Definition_GeneratedCode = "Spectra_Decode_Method_Pointer_Definition_GeneratedCode";
+			Message_Info_Structures_Definition_GeneratedCode = "Spectra_Message_Info_Structures_Definition_GeneratedCode";
+
+			SnapshotInfoFields = new List<SnapshotFieldInfo>();
+			SnapshotInfoFields.Add(new SnapshotFieldInfo("", "RptSeq"));
+			SnapshotInfoFields.Add(new SnapshotFieldInfo("", "LastFragment"));
+			SnapshotInfoFields.Add(new SnapshotFieldInfo("", "RouteFirst"));
+			SnapshotInfoFields.Add(new SnapshotFieldInfo("", "LastMsgSeqNumProcessed"));
+			SnapshotInfoFields.Add(new SnapshotFieldInfo("", "SendingTime"));
+			SnapshotInfoFields.Add(new SnapshotFieldInfo("", "Symbol"));
+			SnapshotInfoFields.Add(new SnapshotFieldInfo("", "TradingSessionID"));
+		}
+
+		void Generate_Spectra() {
+			XmlDocument doc = new XmlDocument();
+			doc.Load(SpectraTemplateFile);
+
+			TemplatesNode = GetTemplatesNode(doc);
+			if(TemplatesNode == null)
+				throw new ArgumentException("Cannot find 'templates' node in spectra templates file");
+
+			PrepareForSpectra();
+			GenerateTemplatesCodeSpectra();
+			//GenerateAddChannelsCode_ASTS();
+		}
+
+		void CheckSaveGeneratedFiles() {
 			if(!ManagerHFile.Modified)
 				Console.WriteLine(ManagerSourceFileH + " - no changes were made. skip update source file.");
 			else
@@ -176,21 +382,20 @@ namespace prebuild {
 				Console.WriteLine(ManagerSourceFileCpp + " - no changes were made. skip update source file.");
 			else
 				ManagerCppFile.Save();
-			if(!AstsTypesFile.Modified)
-				Console.WriteLine(AstsSourceTypes + " - no changes were made. skip update source file.");
+			if(!TypesFile.Modified)
+				Console.WriteLine(SourceTypes + " - no changes were made. skip update source file.");
 			else
-				AstsTypesFile.Save();
+				TypesFile.Save();
 			if(!RobotCppFile.Modified)
 				Console.WriteLine(RobotCppFile + " - no changes were made. skip update source file.");
 			else
 				RobotCppFile.Save();
-
-			return true;
 		}
 
 		string Message_Info_Structures_Definition_GeneratedCode = "Message_Info_Structures_Definition_GeneratedCode";
 		string Structure_Objects_Declaration_GeneratedCode = "Structure_Objects_Declaration_GeneratedCode";
-		string Decode_Method_Pointer_Definition_GeneratedCode = "Decode_Method_Pointer_Definition_GeneratedCode";
+		string Commom_Decode_Method_Pointer_Definition_GeneratedCode = "Decode_Method_Pointer_Definition_GeneratedCode";
+		string Decode_Method_Pointer_Definition_GeneratedCode = "Asts_Decode_Method_Pointer_Definition_GeneratedCode";
 		string Decode_Method_Pointer_Arrays_GeneratedCode = "Decode_Method_Pointer_Arrays_GeneratedCode";
 		string Decode_Methods_Definition_GeneratedCode = "Decode_Methods_Definition_GeneratedCode";
 		string Get_Free_Item_Methods_GeneratedCode = "Get_Free_Item_Methods_GeneratedCode";
@@ -203,7 +408,6 @@ namespace prebuild {
 
 		private  void ClearPreviouseGeneratedCode () {
 			string[] keywords = new string[] { 
-				Decode_Method_Pointer_Definition_GeneratedCode,
 				Message_Info_Structures_Definition_GeneratedCode,
 				Structure_Objects_Declaration_GeneratedCode,
 				Decode_Method_Pointer_Arrays_GeneratedCode,
@@ -217,13 +421,17 @@ namespace prebuild {
 				AddDefaultChannels_GeneratedCode
 			};
 			foreach(string keyword in keywords) {
-				SetPosition(keyword);
-				int startingIndex = CurrentFile.Line;
-				int endIndex = GetEndRegionLineIndex(startingIndex);
-				int count = endIndex - startingIndex;
-				for(int i = 0; i < count; i++) {
-					CurrentFile.Remove(startingIndex);
-				}
+				ClearRegion(keyword);
+			}
+		}
+
+		private void ClearRegion(string keyword) {
+			SetPosition(keyword);
+			int startingIndex = CurrentFile.Line;
+			int endIndex = GetEndRegionLineIndex(startingIndex);
+			int count = endIndex - startingIndex;
+			for(int i = 0; i < count; i++) {
+				CurrentFile.Remove(startingIndex);
 			}
 		}
 
@@ -245,10 +453,17 @@ namespace prebuild {
 
 		List<ConstantStringInfo> ConstantStrings { get; set; }
 
-		private  void GenerateTemplatesCode () {
+		private void WriteDecodeMethodPointersDefinitionCode() {
+			ClearRegion(Decode_Method_Pointer_Definition_GeneratedCode);
+			SetPosition(Decode_Method_Pointer_Definition_GeneratedCode);
+			WriteLine("typedef " + Prefix + "SnapshotInfo* (FastProtocolManager::*" + Prefix + "GetSnapshotInfoMethodPointer)();");	
+		}
 
+		private  void GenerateTemplatesCodeAsts () {
+			Console.WriteLine("generate asts...");
+			WriteDecodeMethodPointersDefinitionCode();
 			WriteEntireMethodAddressArrays(TemplatesNode);
-			WriteStructuresDefinitionCode(TemplatesNode);
+			WriteStructuresDefinitionCode(TemplatesNode, true);
 			WriteStructuresDeclarationCode(TemplatesNode);
 			ConstantStrings = GetConstantStrings(TemplatesNode);
 			WriteStringConstantDeclarationCode(TemplatesNode);
@@ -260,6 +475,28 @@ namespace prebuild {
 			WriteGetTotNumReportsMethod(TemplatesNode);
 			WriteDecodeMethodsCode(TemplatesNode);
 			WritePrintMethodsCode(TemplatesNode);
+			Console.WriteLine("done.");
+		}
+
+		private  void GenerateTemplatesCodeSpectra () {
+			Console.WriteLine("generate spectra...");
+			//WriteDecodeMethodPointersDefinitionCode();
+
+			//WriteEntireMethodAddressArrays(TemplatesNode);
+			//WriteStructuresDefinitionCode(TemplatesNode, false);
+			//WriteStructuresDeclarationCode(TemplatesNode);
+			//ConstantStrings = GetConstantStrings(TemplatesNode);
+			//WriteStringConstantDeclarationCode(TemplatesNode);
+			//WriteGetFreeItemCode(TemplatesNode);
+			//WriteReleaseItemCode(TemplatesNode);
+
+			//WriteEncodeMethodsCode(TemplatesNode);
+			//WriteHeaderParsingCode(TemplatesNode);
+			//WriteGetTotNumReportsMethod(TemplatesNode);
+			//WriteDecodeMethodsCode(TemplatesNode);
+			//WritePrintMethodsCode(TemplatesNode);
+
+			Console.WriteLine("done.");
 		}
 
 		class ConstantStringInfo {
@@ -304,36 +541,33 @@ namespace prebuild {
 		}
 
 		private  void WriteEncodeMethodsCode (XmlNode templatesNode) {
-			if(EncodeMessages == null || EncodeMessages.Count == 0) {
-				return;
-			}
+			List<StructureInfo> st = GetStructures(TemplatesNode);
 			SetPosition(Encode_Methods_Declaration_GeneratedCode);
-			List<XmlNode> messages = GetAllMessages(templatesNode);
-			foreach(XmlNode message in messages) {
-				WriteEncodeMethodDeclarationMethodCode(message);
+			foreach(StructureInfo info in st) {
+				if(info.IsSequence)
+					continue;
+				WriteEncodeMethodDeclarationMethodCode(info);
 			}
 			SetPosition(Encode_Methods_Definition_GeneratedCode);
-			foreach(XmlNode message in messages) {
-				WriteEncodeMethodCode(message);
+			foreach(StructureInfo info in st) {
+				if(info.IsSequence)
+					continue;
+				WriteEncodeMethodCode(info);
 			}
 		}
 
-		private  void WriteEncodeMethodDeclarationMethodCode (XmlNode message) {
-			StructureInfo info = new StructureInfo() { NameCore = GetTemplateName(message.PreviousSibling.Value) };
+		private void WriteEncodeMethodDeclarationMethodCode (StructureInfo info) {
 			WriteLine("\tvoid " + info.EncodeMethodName + "(" + info.Name + "* info);");
 		}
 
-		private  void WriteEncodeMethodCode (XmlNode message) {
-			StructureInfo info = new StructureInfo() { NameCore = GetTemplateName(message.PreviousSibling.Value) };
+		private void WriteEncodeMethodCode (StructureInfo info) {
 			WriteLine("void FastProtocolManager::" + info.EncodeMethodName + "(" + info.Name + "* info) {");
-			//WriteLine("\tResetBuffer();");
-			//WriteLine("\tWriteMsgSeqNumber(info->MsgSeqNum);");
 			WriteLine("\tWritePresenceMap(info->PresenceMap); // Presence Map hack");
-			WriteLine("\tWriteUInt32_Mandatory(" + message.Attributes["id"].Value + ");");
-			int presenceByteCount = CalcPresenceMapByteCount(message);
-			if(GetMaxPresenceBitCount(message) > 0)
+			WriteLine("\tWriteUInt32_Mandatory(" + info.Node.Attributes["id"].Value + ");");
+			int presenceByteCount = CalcPresenceMapByteCount(info.Node);
+			if(GetMaxPresenceBitCount(info.Node) > 0)
 				WriteLine("\tWritePresenceMap" + presenceByteCount + "(info->PresenceMap);");
-			foreach(XmlNode node in message.ChildNodes) {
+			foreach(XmlNode node in info.Node.ChildNodes) {
 				info.Parent = null;
 				WriteEncodeValueCode(node, info, "\t");
 			}
@@ -865,159 +1099,11 @@ namespace prebuild {
 			foreach(StructureInfo info in strToRemove) {
 				res.Remove(info);
 			}
-			//Console.WriteLine("Count after merge = " + res.Count);
-			//foreach(StructureInfo info in res) {
-				//Console.WriteLine("Incremental str count for " + info.Name + " = " + info.IncrementalStructures.Count);
-				//if(info.IncrementalStructures.Count == 0)
-				//	continue;
-				//Console.WriteLine("Found inc for " + info.Name);
-				//foreach(StructureInfo inc in info.IncrementalStructures) {
-				//	Console.WriteLine(inc.Name);
-				//}
-				//Console.WriteLine("---");
-			//}
 			return res;
 		}
 
-		private  void WriteStructuresDefinitionCode (XmlNode templatesNode) {
-			SetPosition(Message_Info_Structures_Definition_GeneratedCode);
-
-			WriteLine("#define PRESENCE_MAP_INDEX0  0x0000000000000040L");
-			WriteLine("#define PRESENCE_MAP_INDEX1  0x0000000000000020L");
-			WriteLine("#define PRESENCE_MAP_INDEX2  0x0000000000000010L");
-			WriteLine("#define PRESENCE_MAP_INDEX3  0x0000000000000008L");
-			WriteLine("#define PRESENCE_MAP_INDEX4  0x0000000000000004L");
-			WriteLine("#define PRESENCE_MAP_INDEX5  0x0000000000000002L");
-			WriteLine("#define PRESENCE_MAP_INDEX6  0x0000000000000001L");
-
-			WriteLine("#define PRESENCE_MAP_INDEX7  0x0000000000004000L");
-			WriteLine("#define PRESENCE_MAP_INDEX8  0x0000000000002000L");
-			WriteLine("#define PRESENCE_MAP_INDEX9  0x0000000000001000L");
-			WriteLine("#define PRESENCE_MAP_INDEX10 0x0000000000000800L");
-			WriteLine("#define PRESENCE_MAP_INDEX11 0x0000000000000400L");
-			WriteLine("#define PRESENCE_MAP_INDEX12 0x0000000000000200L");
-			WriteLine("#define PRESENCE_MAP_INDEX13 0x0000000000000100L");
-
-			WriteLine("#define PRESENCE_MAP_INDEX14 0x0000000000400000L");
-			WriteLine("#define PRESENCE_MAP_INDEX15 0x0000000000200000L");
-			WriteLine("#define PRESENCE_MAP_INDEX16 0x0000000000100000L");
-			WriteLine("#define PRESENCE_MAP_INDEX17 0x0000000000080000L");
-			WriteLine("#define PRESENCE_MAP_INDEX18 0x0000000000040000L");
-			WriteLine("#define PRESENCE_MAP_INDEX19 0x0000000000020000L");
-			WriteLine("#define PRESENCE_MAP_INDEX20 0x0000000000010000L");
-
-			WriteLine("#define PRESENCE_MAP_INDEX21 0x0000000040000000L");
-			WriteLine("#define PRESENCE_MAP_INDEX22 0x0000000020000000L");
-			WriteLine("#define PRESENCE_MAP_INDEX23 0x0000000010000000L");
-			WriteLine("#define PRESENCE_MAP_INDEX24 0x0000000008000000L");
-			WriteLine("#define PRESENCE_MAP_INDEX25 0x0000000004000000L");
-			WriteLine("#define PRESENCE_MAP_INDEX26 0x0000000002000000L");
-			WriteLine("#define PRESENCE_MAP_INDEX27 0x0000000001000000L");
-
-			WriteLine("#define PRESENCE_MAP_INDEX28 0x0000004000000000L");
-			WriteLine("#define PRESENCE_MAP_INDEX29 0x0000002000000000L");
-			WriteLine("#define PRESENCE_MAP_INDEX30 0x0000001000000000L");
-			WriteLine("#define PRESENCE_MAP_INDEX31 0x0000000800000000L");
-			WriteLine("#define PRESENCE_MAP_INDEX32 0x0000000400000000L");
-			WriteLine("#define PRESENCE_MAP_INDEX33 0x0000000200000000L");
-			WriteLine("#define PRESENCE_MAP_INDEX34 0x0000000100000000L");
-
-			WriteLine("#define PRESENCE_MAP_INDEX35 0x0000400000000000L");
-			WriteLine("#define PRESENCE_MAP_INDEX36 0x0000200000000000L");
-			WriteLine("#define PRESENCE_MAP_INDEX37 0x0000100000000000L");
-			WriteLine("#define PRESENCE_MAP_INDEX38 0x0000080000000000L");
-			WriteLine("#define PRESENCE_MAP_INDEX39 0x0000040000000000L");
-			WriteLine("#define PRESENCE_MAP_INDEX40 0x0000020000000000L");
-			WriteLine("#define PRESENCE_MAP_INDEX41 0x0000010000000000L");
-
-			WriteLine("#define PRESENCE_MAP_INDEX42 0x0040000000000000L");
-			WriteLine("#define PRESENCE_MAP_INDEX43 0x0020000000000000L");
-			WriteLine("#define PRESENCE_MAP_INDEX44 0x0010000000000000L");
-			WriteLine("#define PRESENCE_MAP_INDEX45 0x0008000000000000L");
-			WriteLine("#define PRESENCE_MAP_INDEX46 0x0004000000000000L");
-			WriteLine("#define PRESENCE_MAP_INDEX47 0x0002000000000000L");
-			WriteLine("#define PRESENCE_MAP_INDEX48 0x0001000000000000L");
-
-			WriteLine("#define PRESENCE_MAP_INDEX49 0x4000000000000000L");
-			WriteLine("#define PRESENCE_MAP_INDEX50 0x2000000000000000L");
-			WriteLine("#define PRESENCE_MAP_INDEX51 0x1000000000000000L");
-			WriteLine("#define PRESENCE_MAP_INDEX52 0x0800000000000000L");
-			WriteLine("#define PRESENCE_MAP_INDEX53 0x0400000000000000L");
-			WriteLine("#define PRESENCE_MAP_INDEX54 0x0200000000000000L");
-			WriteLine("#define PRESENCE_MAP_INDEX55 0x0100000000000000L");
-
-			WriteLine("#define NULL_MAP_INDEX0      0x0000000000000001L");
-			WriteLine("#define NULL_MAP_INDEX1      0x0000000000000002L");
-			WriteLine("#define NULL_MAP_INDEX2      0x0000000000000004L");
-			WriteLine("#define NULL_MAP_INDEX3      0x0000000000000008L");
-			WriteLine("#define NULL_MAP_INDEX4      0x0000000000000010L");
-			WriteLine("#define NULL_MAP_INDEX5      0x0000000000000020L");
-			WriteLine("#define NULL_MAP_INDEX6      0x0000000000000040L");
-			WriteLine("#define NULL_MAP_INDEX7      0x0000000000000080L");
-			WriteLine("#define NULL_MAP_INDEX8      0x0000000000000100L");
-			WriteLine("#define NULL_MAP_INDEX9      0x0000000000000200L");
-			WriteLine("#define NULL_MAP_INDEX10     0x0000000000000400L");
-			WriteLine("#define NULL_MAP_INDEX11     0x0000000000000800L");
-			WriteLine("#define NULL_MAP_INDEX12     0x0000000000001000L");
-			WriteLine("#define NULL_MAP_INDEX13     0x0000000000002000L");
-			WriteLine("#define NULL_MAP_INDEX14     0x0000000000004000L");
-			WriteLine("#define NULL_MAP_INDEX15     0x0000000000008000L");
-
-			WriteLine("#define NULL_MAP_INDEX16     0x0000000000010000L");
-			WriteLine("#define NULL_MAP_INDEX17     0x0000000000020000L");
-			WriteLine("#define NULL_MAP_INDEX18     0x0000000000040000L");
-			WriteLine("#define NULL_MAP_INDEX19     0x0000000000080000L");
-			WriteLine("#define NULL_MAP_INDEX20     0x0000000000100000L");
-			WriteLine("#define NULL_MAP_INDEX21     0x0000000000200000L");
-			WriteLine("#define NULL_MAP_INDEX22     0x0000000000400000L");
-			WriteLine("#define NULL_MAP_INDEX23     0x0000000000800000L");
-			WriteLine("#define NULL_MAP_INDEX24     0x0000000001000000L");
-			WriteLine("#define NULL_MAP_INDEX25     0x0000000002000000L");
-			WriteLine("#define NULL_MAP_INDEX26     0x0000000004000000L");
-			WriteLine("#define NULL_MAP_INDEX27     0x0000000008000000L");
-			WriteLine("#define NULL_MAP_INDEX28     0x0000000010000000L");
-			WriteLine("#define NULL_MAP_INDEX29     0x0000000020000000L");
-			WriteLine("#define NULL_MAP_INDEX30     0x0000000040000000L");
-			WriteLine("#define NULL_MAP_INDEX31     0x0000000080000000L");
-
-			WriteLine("#define NULL_MAP_INDEX32     0x0000000100000000L");
-			WriteLine("#define NULL_MAP_INDEX33     0x0000000200000000L");
-			WriteLine("#define NULL_MAP_INDEX34     0x0000000400000000L");
-			WriteLine("#define NULL_MAP_INDEX35     0x0000000800000000L");
-			WriteLine("#define NULL_MAP_INDEX36     0x0000001000000000L");
-			WriteLine("#define NULL_MAP_INDEX37     0x0000002000000000L");
-			WriteLine("#define NULL_MAP_INDEX38     0x0000004000000000L");
-			WriteLine("#define NULL_MAP_INDEX39     0x0000008000000000L");
-			WriteLine("#define NULL_MAP_INDEX40     0x0000010000000000L");
-			WriteLine("#define NULL_MAP_INDEX41     0x0000020000000000L");
-			WriteLine("#define NULL_MAP_INDEX42     0x0000040000000000L");
-			WriteLine("#define NULL_MAP_INDEX43     0x0000080000000000L");
-			WriteLine("#define NULL_MAP_INDEX44     0x0000100000000000L");
-			WriteLine("#define NULL_MAP_INDEX45     0x0000200000000000L");
-			WriteLine("#define NULL_MAP_INDEX46     0x0000400000000000L");
-			WriteLine("#define NULL_MAP_INDEX47     0x0000800000000000L");
-
-			WriteLine("#define NULL_MAP_INDEX48     0x0001000000000000L");
-			WriteLine("#define NULL_MAP_INDEX49     0x0002000000000000L");
-			WriteLine("#define NULL_MAP_INDEX50     0x0004000000000000L");
-			WriteLine("#define NULL_MAP_INDEX51     0x0008000000000000L");
-			WriteLine("#define NULL_MAP_INDEX52     0x0010000000000000L");
-			WriteLine("#define NULL_MAP_INDEX53     0x0020000000000000L");
-			WriteLine("#define NULL_MAP_INDEX54     0x0040000000000000L");
-			WriteLine("#define NULL_MAP_INDEX55     0x0080000000000000L");
-			WriteLine("#define NULL_MAP_INDEX56     0x0100000000000000L");
-			WriteLine("#define NULL_MAP_INDEX57     0x0200000000000000L");
-			WriteLine("#define NULL_MAP_INDEX58     0x0400000000000000L");
-			WriteLine("#define NULL_MAP_INDEX59     0x0800000000000000L");
-			WriteLine("#define NULL_MAP_INDEX60     0x1000000000000000L");
-			WriteLine("#define NULL_MAP_INDEX61     0x2000000000000000L");
-			WriteLine("#define NULL_MAP_INDEX62     0x4000000000000000L");
-			WriteLine("#define NULL_MAP_INDEX63     0x8000000000000000L");
-
-
-			WriteLine("");
-
-			WriteLine("class FastSnapshotInfo {");
+		private void WriteSnapshotInfoDefinitionCode(XmlNode templatesNode) {
+			WriteLine("class " + Prefix + "SnapshotInfo {");
 			WriteLine("public:");
 			WriteLine("\tUINT64\t\t\t\tPresenceMap;");
 			WriteLine("\tUINT64\t\t\t\tNullMap;");
@@ -1031,25 +1117,23 @@ namespace prebuild {
 					WriteLine("\t" + info.FieldType + "\t\t\t\t" + info.FieldName + ";");
 				}
 			}
-			WriteLine("\tFastSnapshotInfo() {");
+			WriteLine("\t" + Prefix + "SnapshotInfo() {");
 			WriteLine("\t\tthis->PresenceMap = 0;");
 			WriteLine("\t\tthis->NullMap = 0;");
 			WriteLine("\t}");
 			WriteLine("};");
 
 			WriteLine("");
+		}
 
-			foreach(StructureInfo info in Structures) { 
-				WriteStructureDefinition(info);
-			}
-
-			WriteLine("class FastObjectsAllocationInfo {");
+		private void WriteObjectsAllocationInfo() {
+			WriteLine("class " + Prefix + "ObjectsAllocationInfo {");
 			foreach(StructureInfo info in Structures) {
 				WriteLine("\tAutoAllocatePointerList<" + info.Name + ">" + "\t\t\t\t*" + info.ValueName + ";");
 			}
 			WriteLine("public:");
-			WriteLine("\t static FastObjectsAllocationInfo *Default;");
-			WriteLine("\tFastObjectsAllocationInfo(int count) {");
+			WriteLine("\t static " + Prefix + "ObjectsAllocationInfo *Default;");
+			WriteLine("\t" + Prefix + "ObjectsAllocationInfo(int count) {");
 			foreach(StructureInfo info in Structures) {
 				WriteLine("\t\tthis->" + info.ValueName + " = new AutoAllocatePointerList<" + info.Name + ">(count, count, \"" + info.Name + "\");");
 			}
@@ -1073,8 +1157,9 @@ namespace prebuild {
 				WriteLine("\t}");
 			}
 			WriteLine("};");
+		}
 
-			List<StructureInfo> structures = GetStructures(templatesNode);
+		private void WritePresenceIndexClasses(List<StructureInfo> structures) {
 			foreach(StructureInfo info in structures) {
 				bool hasPresenceIndex = false;
 				foreach(XmlNode field in info.Fields) {
@@ -1094,7 +1179,9 @@ namespace prebuild {
 				}
 				WriteLine("};");
 			}
+		}
 
+		private void WriteNullIndexClasses(List<StructureInfo> structures) {
 			foreach(StructureInfo info in structures) {
 				bool hasNullableIndex = false;
 				foreach(XmlNode field in info.Fields) {
@@ -1114,6 +1201,21 @@ namespace prebuild {
 				}
 				WriteLine("};");
 			}
+		}
+
+		private  void WriteStructuresDefinitionCode (XmlNode templatesNode, bool writeSnapshotInfoCode) {
+			SetPosition(Message_Info_Structures_Definition_GeneratedCode);
+			if(writeSnapshotInfoCode)
+				WriteSnapshotInfoDefinitionCode(templatesNode);
+
+			foreach(StructureInfo info in Structures) { 
+				WriteStructureDefinition(info);
+			}
+
+			List<StructureInfo> structures = GetStructures(templatesNode);
+			WriteObjectsAllocationInfo();
+			WritePresenceIndexClasses(structures);
+			WriteNullIndexClasses(structures);
 		}
 
 		int GetMaxSize(XmlNode field) {
@@ -1222,11 +1324,6 @@ namespace prebuild {
 		}
 
 		private  void WriteEntireMethodAddressArrays (XmlNode templatesNode) {
-			SetPosition(Decode_Method_Pointer_Definition_GeneratedCode);
-			WriteLine("typedef void* (FastProtocolManager::*FastDecodeMethodPointer)();");
-			WriteLine("typedef void* (FastProtocolManager::*FastReleaseMethodPointer)();");
-			WriteLine("typedef FastSnapshotInfo* (FastProtocolManager::*FastGetSnapshotInfoMethodPointer)();");
-
 			SetPosition(Decode_Method_Pointer_Arrays_GeneratedCode);
 			WriteLine("\tFastDecodeMethodPointer* DecodeMethods;");
 			WriteLine("\tFastReleaseMethodPointer* ReleaseMethods;");
@@ -1268,7 +1365,7 @@ namespace prebuild {
 		private  bool SetPosition (string keyword) {
 			ManagerHFile.GoTo(0);
 			ManagerCppFile.GoTo(0);
-			AstsTypesFile.GoTo(0);
+			TypesFile.GoTo(0);
 			RobotCppFile.GoTo(0);
 			int index = ManagerHFile.FindString(keyword);
 			if(index >= 0) {
@@ -1282,10 +1379,10 @@ namespace prebuild {
 				CurrentFile = ManagerCppFile;
 				return true;
 			}
-			index = AstsTypesFile.FindString(keyword);
+			index = TypesFile.FindString(keyword);
 			if(index >= 0) {
-				AstsTypesFile.GoTo(index + 1);
-				CurrentFile = AstsTypesFile;
+				TypesFile.GoTo(index + 1);
+				CurrentFile = TypesFile;
 				return true;
 			}
 			index = RobotCppFile.FindString(keyword);
@@ -1297,7 +1394,7 @@ namespace prebuild {
 
 			Console.WriteLine("hfile " + ManagerSourceFileH + " " + ManagerHFile.Lines.Count);
 			Console.WriteLine("cppfile " + ManagerSourceFileCpp + " " + ManagerCppFile.Lines.Count);
-			Console.WriteLine("types_file " + AstsTypesFile.Lines.Count);
+			Console.WriteLine("types_file " + TypesFile.Lines.Count);
 			throw new Exception("error cant find keyword " + keyword);
 		}
 
@@ -1681,19 +1778,8 @@ namespace prebuild {
 			public string FieldName { get; set; }
 		}
 		protected List<SnapshotFieldInfo> SnapshotInfoFields { 
-			get { 
-				if(snapshotInfoFields == null) {
-					snapshotInfoFields = new List<SnapshotFieldInfo>();
-					snapshotInfoFields.Add(new SnapshotFieldInfo("", "RptSeq"));
-					snapshotInfoFields.Add(new SnapshotFieldInfo("", "LastFragment"));
-					snapshotInfoFields.Add(new SnapshotFieldInfo("", "RouteFirst"));
-					snapshotInfoFields.Add(new SnapshotFieldInfo("", "LastMsgSeqNumProcessed"));
-					snapshotInfoFields.Add(new SnapshotFieldInfo("", "SendingTime"));
-					snapshotInfoFields.Add(new SnapshotFieldInfo("", "Symbol"));
-					snapshotInfoFields.Add(new SnapshotFieldInfo("", "TradingSessionID"));
-				}
-				return snapshotInfoFields;
-			}
+			get;
+			set;
 		}
 
 		private XmlNode GetChildNode(XmlNode root, string childName) {
@@ -2945,10 +3031,14 @@ namespace prebuild {
 					v => m_params.Add("s", v)
 				}, {"f|fast", "Generate Fast protocol code",
 					v => m_params.Add("f", v)
-				}, {"fx|fast_xml=", "Path to Fast templates file xml",
-					v => m_params.Add("fx", v)
-				}, {"fcfg|feed_cfg=", "Path to feed config file xml",
-					v => m_params.Add("fcfg", v)
+				}, {"ax|asts_xml=", "Path to Asts templates file xml",
+					v => m_params.Add("ax", v)
+				}, {"sx|spectra_xml=", "Path to Spectra templates file xml",
+					v => m_params.Add("sx", v)
+				}, {"acfg|asts_cfg=", "Path to asts config file xml",
+					v => m_params.Add("acfg", v)
+				}, {"scfg|spectra_cfg=", "Path to spectra config file xml",
+					v => m_params.Add("scfg", v)
 				}, {"fh|fast__source_h=", "Path to FastProtocolManager.h file",
 					v => m_params.Add("fh", v)
 				}, {"fc|fast__source_cpp=", "Path to FastProtocolManager.cpp file",
@@ -2959,8 +3049,6 @@ namespace prebuild {
 					v => m_params.Add("rb", v)
 				}, {"incCurr|fast_check_const", "Write constant checking code in fast protocol files",
 					v => m_params.Add("incCurr", v)
-				}, {"fwe|fast_write_encode=", "Write encdode methods for messages",
-					v => m_params.Add("fwe", v)
 				}
 			};
 			try {
@@ -2968,13 +3056,10 @@ namespace prebuild {
 			} catch(OptionException e) {
 				Console.WriteLine(e.Message);
 			}
-			foreach(string k in m_params.Keys) {
-				//Console.WriteLine(k + " " + m_params[k]);
-			}
-			if(!CopyFastServerConfigurationFile()) {
-				Console.WriteLine("exit.");
-				return;
-			}
+			//if(!CopyFastServerConfigurationFile()) {
+			//	Console.WriteLine("exit.");
+			//	return;
+			//}
 
 			GenerateLogMessages();
 			GenerateFast();
@@ -3003,27 +3088,32 @@ namespace prebuild {
 				Console.WriteLine("FastTypes file not specified. skip generation.");
 				return;
 			}
-			generator.AstsSourceTypes = value;
-			if(!m_params.TryGetValue("fx", out value)) {
-				Console.WriteLine("Fast template file not specified. skip generation.");
+			generator.SourceTypes = value;
+			if(!m_params.TryGetValue("ax", out value)) {
+				Console.WriteLine("Asts template file not specified. skip generation.");
 				return;
 			}
 			generator.AstsTemplateFile = value;
+			if(!m_params.TryGetValue("sx", out value)) {
+				Console.WriteLine("Spectra template file not specified. skip generation.");
+				return;
+			}
+			generator.SpectraTemplateFile = value;
 			if(!m_params.TryGetValue("rb", out value)) {
 				Console.WriteLine("Robot.cpp file not specified. skip generation.");
 				return;
 			}
 			generator.RobotCpp = value;
-			if(!m_params.TryGetValue("fcfg", out value)) {
-				Console.WriteLine("Feed config file not specified. skip generation.");
+			if(!m_params.TryGetValue("acfg", out value)) {
+				Console.WriteLine("Asts config file not specified. skip generation.");
 				return;
 			}
 			generator.AstsServerConfigFileName = value;
-			if(m_params.TryGetValue("fwe", out value)) {
-				generator.EncodeMessages = new List<string>();
-				string[] messages = value.Split(',');
-				generator.EncodeMessages.AddRange(messages);
+			if(!m_params.TryGetValue("scfg", out value)) {
+				Console.WriteLine("Spectra config file not specified. skip generation.");
+				return;
 			}
+			generator.SpectraServerConfigFileName = value;
 
 			if(!generator.Generate()) {
 				Console.WriteLine("generate fast protocol - failed.");
@@ -3254,8 +3344,8 @@ namespace prebuild {
 		static string FastServerConfigurationFile { get; set; }
 		public static bool CopyFastServerConfigurationFile () { 
 			string fileName = "";
-			if(!m_params.TryGetValue("x", out fileName)) {
-				fileName = "config_test.xml";
+			if(!m_params.TryGetValue("ax", out fileName)) {
+				fileName = "asts_config_test.xml";
 				Console.WriteLine("Using default XML config: " + fileName);
 			}
 			string inputPath = "";
@@ -3278,7 +3368,7 @@ namespace prebuild {
 				FastServerConfigurationFile = outputPath + fileName;
 				return true;
 			} else {
-				Console.WriteLine("error: cannot copy FAST server test configuration file");
+				Console.WriteLine("error: file " + inputPath + fileName + " does not exist");
 				return false;
 			}
 		}
