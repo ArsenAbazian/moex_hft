@@ -17,27 +17,26 @@ namespace prebuild {
 
 		public List<string> EncodeMessages { get; set; }
 		public string RobotCpp { get; set; }
-		public string ServerConfigFileName { get; set; }
-		public string SourceFileH { get; set; }
-		public string SourceFileCpp { get; set; }
-		public string SourceTypes { get; set; }
-		public string TemplateFile { get; set; }
+		public string AstsServerConfigFileName { get; set; }
+		public string ManagerSourceFileH { get; set; }
+		public string ManagerSourceFileCpp { get; set; }
+		public string AstsSourceTypes { get; set; }
+		public string AstsTemplateFile { get; set; }
 
 		protected TextFile RobotCppFile { get; set; }
-		protected TextFile HFile { get; set; }
-		protected TextFile CppFile { get; set; }
-		protected TextFile TypesFile { get; set; }
+		protected TextFile ManagerHFile { get; set; }
+		protected TextFile ManagerCppFile { get; set; }
+		protected TextFile AstsTypesFile { get; set; }
 		protected TextFile CurrentFile { get; set; }
 
 		void WriteLine (string line) { 
 			if(CurrentFile == null)
-				CurrentFile = HFile;
+				CurrentFile = ManagerHFile;
 			CurrentFile.Add(line);
-			//Strings.Insert(WriteIndex, line);
-			//WriteIndex++;
 		}
 
 		protected XmlNode TemplatesNode { get; private set; }
+		protected string Prefix { get; private set; }
 
 		string ConstStr(string str) {
 			return "\"" + str + "\"";
@@ -48,12 +47,12 @@ namespace prebuild {
 				return "";
 			return node.ChildNodes[0].Value.ToString();
 		}
-		public bool GenerateAddChannelsCode() {
+		public bool GenerateAddChannelsCode_ASTS() {
 			Console.WriteLine("generate add channels code...");
 
 			XmlDocument doc = new XmlDocument();
 			//Console.WriteLine("load condif test xml '" + ServerConfigFileName + "'");
-			doc.Load(ServerConfigFileName);
+			doc.Load(AstsServerConfigFileName);
 
 			SetPosition(AddDefaultChannels_GeneratedCode);
 			XmlNode parent = null;
@@ -66,7 +65,6 @@ namespace prebuild {
 
 			foreach(XmlNode node in parent.ChildNodes) {
 				string channelName = node.Attributes["id"].Value;
-				//Console.WriteLine("found channel " + channelName);
 				string channelLabel = node.Attributes["label"].Value;
 				string channelNameUpper = channelName.Substring(0, 1).ToUpper() + channelName.Substring(1).ToLower();
 
@@ -84,7 +82,6 @@ namespace prebuild {
 					string feedClassName = "FeedConnection_" + channelName + "_" + c_id;
 					string feedValue = "'" + NodeValue(conn.ChildNodes[0]) + "'";
 
-					//Console.WriteLine("found connection " + c_id);
 					WriteLine("\t\tif(this->AllowFeed(\"" + c_id + "\")) {");
 					if(c_id == "H") {
 						string ip = NodeValue(conn.ChildNodes[2]);
@@ -108,12 +105,6 @@ namespace prebuild {
 					WriteLine("\t\t\t" + channelName.ToLower() + "->SetConnection(" + feedValueName + ");");
 					WriteLine("\t\t}");
 				}
-				//WriteLine("");
-				//foreach(XmlNode conn in connections.ChildNodes) {
-				//	string c_id = conn.Attributes["id"].Value;
-				//	string feedValueName = c_id.ToLower() + "_" + channelName.ToLower();
-
-				//}
 				WriteLine("");
 				WriteLine("\t\tthis->AddChannel(" + channelName.ToLower() + ");");
 				WriteLine("\t}");
@@ -121,68 +112,74 @@ namespace prebuild {
 			return true;
 		}
 
+		protected XmlNode GetTemplatesNode(XmlDocument doc) {
+			foreach(XmlNode node in doc.ChildNodes) {
+				if(node.Name == "templates")
+					return node;
+			}
+			return null;
+		}
+
 		public bool Generate () {
-			if(!File.Exists(SourceFileH)) {
-				Console.WriteLine("source file '" + SourceFileH + "' does not exist.");
+			if(!File.Exists(ManagerSourceFileH)) {
+				Console.WriteLine("source file '" + ManagerSourceFileH + "' does not exist.");
 				return false;
 			}
-			if(!File.Exists(SourceFileCpp)) {
-				Console.WriteLine("source file '" + SourceFileCpp + "' does not exist.");
+			if(!File.Exists(ManagerSourceFileCpp)) {
+				Console.WriteLine("source file '" + ManagerSourceFileCpp + "' does not exist.");
 				return false;
 			}
-			if(!File.Exists(SourceTypes)) {
-				Console.WriteLine("source file '" + TypesFile + "' does not exist.");
+			if(!File.Exists(AstsSourceTypes)) {
+				Console.WriteLine("asts source file '" + AstsTypesFile + "' does not exist.");
 				return false;
 			}
-			if(!File.Exists(TemplateFile)) {
-				Console.WriteLine("template xml file'" + TemplateFile + "' does not exist.");
+			if(!File.Exists(AstsTemplateFile)) {
+				Console.WriteLine("asts template xml file'" + AstsTemplateFile + "' does not exist.");
 				return false;
 			}
 			if(!File.Exists(RobotCpp)) {
 				Console.WriteLine("robot source file '" + RobotCpp + "' does not exist.");
 				return false;
 			}
-			if(!File.Exists(ServerConfigFileName)) {
-				Console.WriteLine("fast server config file '" + ServerConfigFileName + "' does not exist.");
+			if(!File.Exists(AstsServerConfigFileName)) {
+				Console.WriteLine("asts server config file '" + AstsServerConfigFileName + "' does not exist.");
 			}
 			
 			XmlDocument doc = new XmlDocument();
-			doc.Load(TemplateFile);
+			doc.Load(AstsTemplateFile);
+			Prefix = "Asts";
 
-			HFile = new TextFile();
-			CppFile = new TextFile();
-			TypesFile = new TextFile();
+			ManagerHFile = new TextFile();
+			ManagerCppFile = new TextFile();
+			AstsTypesFile = new TextFile();
 			RobotCppFile = new TextFile();
 
-			HFile.LoadFromFile(SourceFileH);
-			CppFile.LoadFromFile(SourceFileCpp);
-			TypesFile.LoadFromFile(SourceTypes);
+			ManagerHFile.LoadFromFile(ManagerSourceFileH);
+			ManagerCppFile.LoadFromFile(ManagerSourceFileCpp);
+			AstsTypesFile.LoadFromFile(AstsSourceTypes);
 			RobotCppFile.LoadFromFile(RobotCpp);
 
 			ClearPreviouseGeneratedCode();
 
-			foreach(XmlNode node in doc.ChildNodes) {
-				if(node.Name != "templates")
-					continue;
-				TemplatesNode = node;
-				GenerateTemplatesCode();
-				break;
-			}
+			TemplatesNode = GetTemplatesNode(doc);
+			if(TemplatesNode == null)
+				throw new ArgumentException("Cannot find 'templates' node");
 
-			GenerateAddChannelsCode();
+			GenerateTemplatesCode();
+			GenerateAddChannelsCode_ASTS();
 
-			if(!HFile.Modified)
-				Console.WriteLine(SourceFileH + " - no changes were made. skip update source file.");
+			if(!ManagerHFile.Modified)
+				Console.WriteLine(ManagerSourceFileH + " - no changes were made. skip update source file.");
 			else
-				HFile.Save();
-			if(!CppFile.Modified)
-				Console.WriteLine(SourceFileCpp + " - no changes were made. skip update source file.");
+				ManagerHFile.Save();
+			if(!ManagerCppFile.Modified)
+				Console.WriteLine(ManagerSourceFileCpp + " - no changes were made. skip update source file.");
 			else
-				CppFile.Save();
-			if(!TypesFile.Modified)
-				Console.WriteLine(SourceTypes + " - no changes were made. skip update source file.");
+				ManagerCppFile.Save();
+			if(!AstsTypesFile.Modified)
+				Console.WriteLine(AstsSourceTypes + " - no changes were made. skip update source file.");
 			else
-				TypesFile.Save();
+				AstsTypesFile.Save();
 			if(!RobotCppFile.Modified)
 				Console.WriteLine(RobotCppFile + " - no changes were made. skip update source file.");
 			else
@@ -518,9 +515,13 @@ namespace prebuild {
 		}
 
 		public class StructureInfo {
+			public StructureInfo() { 
+				Prefix = "Fast";
+			}
+			public string Prefix { get; set; }
 			public string Name {
 				get {
-					return "Fast" + NameCore + Suffix;
+					return Prefix + NameCore + Suffix;
 				}
 			}
 
@@ -1265,26 +1266,26 @@ namespace prebuild {
 		}
 
 		private  bool SetPosition (string keyword) {
-			HFile.GoTo(0);
-			CppFile.GoTo(0);
-			TypesFile.GoTo(0);
+			ManagerHFile.GoTo(0);
+			ManagerCppFile.GoTo(0);
+			AstsTypesFile.GoTo(0);
 			RobotCppFile.GoTo(0);
-			int index = HFile.FindString(keyword);
+			int index = ManagerHFile.FindString(keyword);
 			if(index >= 0) {
-				HFile.GoTo(index + 1);
-				CurrentFile = HFile;
+				ManagerHFile.GoTo(index + 1);
+				CurrentFile = ManagerHFile;
 				return true;
 			}
-			index = CppFile.FindString(keyword);
+			index = ManagerCppFile.FindString(keyword);
 			if(index >= 0) {
-				CppFile.GoTo(index + 1);
-				CurrentFile = CppFile;
+				ManagerCppFile.GoTo(index + 1);
+				CurrentFile = ManagerCppFile;
 				return true;
 			}
-			index = TypesFile.FindString(keyword);
+			index = AstsTypesFile.FindString(keyword);
 			if(index >= 0) {
-				TypesFile.GoTo(index + 1);
-				CurrentFile = TypesFile;
+				AstsTypesFile.GoTo(index + 1);
+				CurrentFile = AstsTypesFile;
 				return true;
 			}
 			index = RobotCppFile.FindString(keyword);
@@ -1294,13 +1295,17 @@ namespace prebuild {
 				return true;
 			}
 
-			Console.WriteLine("hfile " + SourceFileH + " " + HFile.Lines.Count);
-			Console.WriteLine("cppfile " + SourceFileCpp + " " + CppFile.Lines.Count);
-			Console.WriteLine("types_file " + TypesFile.Lines.Count);
+			Console.WriteLine("hfile " + ManagerSourceFileH + " " + ManagerHFile.Lines.Count);
+			Console.WriteLine("cppfile " + ManagerSourceFileCpp + " " + ManagerCppFile.Lines.Count);
+			Console.WriteLine("types_file " + AstsTypesFile.Lines.Count);
 			throw new Exception("error cant find keyword " + keyword);
 		}
 
 		class DecodeMessageInfo {
+			public DecodeMessageInfo() { 
+				Prefix = "Fast";
+			}
+			public string Prefix { get; set; }
 			public string NameCore { get; set; }
 			public string MsgType { get; set; }
 			public int TemplateId { get; set; }
@@ -1310,7 +1315,7 @@ namespace prebuild {
 			public string FullGetSnapshotInfoMethod { get { return "GetSnapshotInfo" + NameCore; } }
 			public string PrintMethodName { get { return "Print" + NameCore; } }
 			public string PrintXmlMethodName { get { return "PrintXml" + NameCore; } }
-			public string StructName { get { return "Fast" + NameCore + "Info"; } }
+			public string StructName { get { return Prefix + NameCore + "Info"; } }
 		}
 
 		private  void WriteEntireMethodsCode (XmlNode templatesNode) {
@@ -2988,22 +2993,22 @@ namespace prebuild {
 				Console.WriteLine("FastProtocolManager.cpp file not specified. skip generation.");
 				return;
 			}
-			generator.SourceFileCpp = value;
+			generator.ManagerSourceFileCpp = value;
 			if(!m_params.TryGetValue("fh", out value)) {
 				Console.WriteLine("FastProtocolManager.h file not specified. skip generation.");
 				return;
 			}
-			generator.SourceFileH = value;
+			generator.ManagerSourceFileH = value;
 			if(!m_params.TryGetValue("ft", out value)) {
 				Console.WriteLine("FastTypes file not specified. skip generation.");
 				return;
 			}
-			generator.SourceTypes = value;
+			generator.AstsSourceTypes = value;
 			if(!m_params.TryGetValue("fx", out value)) {
 				Console.WriteLine("Fast template file not specified. skip generation.");
 				return;
 			}
-			generator.TemplateFile = value;
+			generator.AstsTemplateFile = value;
 			if(!m_params.TryGetValue("rb", out value)) {
 				Console.WriteLine("Robot.cpp file not specified. skip generation.");
 				return;
@@ -3013,7 +3018,7 @@ namespace prebuild {
 				Console.WriteLine("Feed config file not specified. skip generation.");
 				return;
 			}
-			generator.ServerConfigFileName = value;
+			generator.AstsServerConfigFileName = value;
 			if(m_params.TryGetValue("fwe", out value)) {
 				generator.EncodeMessages = new List<string>();
 				string[] messages = value.Split(',');

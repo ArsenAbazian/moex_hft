@@ -722,47 +722,127 @@ public:
     }
 
     // z
-    inline void ChangeAllDeals(T *item) { printf("ChangeAllDeals not implemented\n"); }
+    inline void ChangeAllDeals(T *item) {
+        printf("ChangeAllDeals not implemented\n");
+    }
 
-    inline void RemoveBuyQuote(T*item) { printf("RemoveBuyQuote not implemented\n"); }
-    inline void RemoveSellQuote(T*item) { printf("RemoveSellQuote not implemented\n"); }
-    inline void RemoveLastDealInfo(T*item) { printf("RemoveLastDealInfo not implemented\n"); }
-    inline void RemoveIndicesList(T*item) { printf("RemoveIndicesList not implemented\n"); }
-    inline void RemovePriceOpenFirst(T*item) { printf("RemovePriceOpenFirst not implemented\n"); }
-    inline void RemovePriceCloseLast(T*item) { printf("RemovePriceCloseLast not implemented\n"); }
-    inline void RemovePriceMax(T*item) { printf("RemovePriceMax not implemented\n"); }
-    inline void RemovePriceMin(T*item) { printf("RemovePriceMin not implemented\n"); }
-    inline void RemovePriceAve(T*item) { printf("RemovePriceAve not implemented\n"); }
-    inline void RemoveDisbalance(T*item) { printf("RemoveDisbalance not implemented\n"); }
-    inline void RemoveTransactionsMagnitude(T*item) { printf("RemoveTransactionsMagnitude not implemented\n"); }
-    inline void RemoveEmptyBook(T*item) { printf("RemoveEmptyBook not implemented\n"); }
-    inline void RemoveOfferPriceMax(T*item) { printf("RemoveOfferPriceMax not implemented\n"); }
-    inline void RemoveBidPriceMin(T*item) { printf("RemoveBidPriceMin not implemented\n"); }
-    inline void RemoveAuctionPriceCalculated(T*item) { printf("RemoveAuctionPriceCalculated not implemented\n"); }
-    inline void RemoveAuctionPriceClose(T*item) { printf("RemoveAuctionPriceClose not implemented\n"); }
-    inline void RemoveAuctionMagnitudeClose(T*item) { printf("RemoveAuctionMagnitudeClose not implemented\n"); }
-    inline void RemoveMSSFullCoveredDealFlag(T*item) { printf("RemoveMSSFullCoveredDealFlag not implemented\n"); }
-    inline void RemoveMSSTradeOfferAuctionMagnitudeOpenClose(T*item) { printf("RemoveMSSTradeOfferAuctionMagnitudeOpenClose not implemented\n"); }
-    inline void RemoveOLSTradeOfferAuctionOpenClose(T*item) { printf("RemoveOLSTradeOfferAuctionOpenClose not implemented\n"); }
-    inline void RemoveMSSTradeBidAuctionMagnitudeOpenClose(T*item) { printf("RemoveMSSTradeBidAuctionMagnitudeOpenClose not implemented\n"); }
-    inline void RemoveOLSTradeBidAuctionOpenClose(T*item) { printf("RemoveOLSTradeBidAuctionOpenClose not implemented\n"); }
-    inline void RemovePreTradePeriodPrice(T*item) { printf("RemovePreTradePeriodPrice not implemented\n"); }
-    inline void RemoveSessionOffer(T*item) { printf("RemoveSessionOffer not implemented\n"); }
-    inline void RemoveSessionBid(T*item) { printf("RemoveSessionBid not implemented\n"); }
-    inline void RemovePostTradePeriodPrice(T*item) { printf("RemovePostTradePeriodPrice not implemented\n"); }
-    inline void RemoveTradePrice2(T*item) { printf("RemoveTradePrice2 not implemented\n"); }
-    inline void RemoveTradePrice(T*item) { printf("RemoveTradePrice not implemented\n"); }
-    inline void RemovePriceOpenOfficial(T*item) { printf("RemovePriceOpenOfficial not implemented\n"); }
-    inline void RemovePriceCurrentOfficial(T*item) { printf("RemovePriceCurrentOfficial not implemented\n"); }
-    inline void RemoveLegitimQuote(T*item) { printf("RemoveLegitimQuote not implemented\n"); }
-    inline void RemovePriceCloseOfficial(T*item) { printf("RemovePriceCloseOfficial not implemented\n"); }
-    inline void RemoveAuctionPriceBigPackets(T*item) { printf("RemoveAuctionPriceBigPackets not implemented\n"); }
-    inline void RemoveDuration(T*item) { printf("RemoveDuration not implemented\n"); }
-    inline void RemoveOfferTotal(T*item) { printf("RemoveOfferTotal not implemented\n"); }
-    inline void RemoveBidTotal(T*item) { printf("RemoveBidTotal not implemented\n"); }
-    inline void RemoveAuctionMagnitudeBigPackets(T*item) { printf("RemoveAuctionMagnitudeBigPackets not implemented\n"); }
-    inline void RemoveCumulativeCouponDebit(T*item) { printf("RemoveCumulativeCouponDebit not implemented\n"); }
-    inline void RemoveAllDeals(T*item) { printf("RemoveAllDeals not implemented\n"); }
+    inline void RemoveBuyQuote(T*item) {
+        printf("RemoveBuyQuote not implemented\n");
+    }
+    inline void RemoveSellQuote(T*item) {
+        printf("RemoveSellQuote not implemented\n");
+    }
+    inline void RemoveLastDealInfo(T*item) {
+        printf("RemoveLastDealInfo not implemented\n");
+    }
+    inline void RemoveIndicesList(T*item) {
+        printf("RemoveIndicesList not implemented\n");
+    }
+    inline void RemovePriceOpenFirst(T*item) {
+        printf("RemovePriceOpenFirst not implemented\n");
+    }
+    inline void RemovePriceCloseLast(T*item) {
+        printf("RemovePriceCloseLast not implemented\n");
+    }
+    inline void RemovePriceMax(T*item) {
+        printf("RemovePriceMax not implemented\n");
+    }
+    inline void RemovePriceMin(T*item) {
+        printf("RemovePriceMin not implemented\n");
+    }
+    inline void RemovePriceAve(T*item) {
+        printf("RemovePriceAve not implemented\n");
+    }
+    inline void RemoveDisbalance(T*item) {
+        printf("RemoveDisbalance not implemented\n");
+    }
+    inline void RemoveTransactionsMagnitude(T*item) {
+        printf("RemoveTransactionsMagnitude not implemented\n");
+    }
+    inline void RemoveEmptyBook(T*item) {
+        printf("RemoveEmptyBook not implemented\n");
+    }
+    inline void RemoveOfferPriceMax(T*item) {
+        printf("RemoveOfferPriceMax not implemented\n");
+    }
+    inline void RemoveBidPriceMin(T*item) {
+        printf("RemoveBidPriceMin not implemented\n");
+    }
+    inline void RemoveAuctionPriceCalculated(T*item) {
+        printf("RemoveAuctionPriceCalculated not implemented\n");
+    }
+    inline void RemoveAuctionPriceClose(T*item) {
+        printf("RemoveAuctionPriceClose not implemented\n");
+    }
+    inline void RemoveAuctionMagnitudeClose(T*item) {
+        printf("RemoveAuctionMagnitudeClose not implemented\n");
+    }
+    inline void RemoveMSSFullCoveredDealFlag(T*item) {
+        printf("RemoveMSSFullCoveredDealFlag not implemented\n");
+    }
+    inline void RemoveMSSTradeOfferAuctionMagnitudeOpenClose(T*item) {
+        printf("RemoveMSSTradeOfferAuctionMagnitudeOpenClose not implemented\n");
+    }
+    inline void RemoveOLSTradeOfferAuctionOpenClose(T*item) {
+        printf("RemoveOLSTradeOfferAuctionOpenClose not implemented\n");
+    }
+    inline void RemoveMSSTradeBidAuctionMagnitudeOpenClose(T*item) {
+        printf("RemoveMSSTradeBidAuctionMagnitudeOpenClose not implemented\n");
+    }
+    inline void RemoveOLSTradeBidAuctionOpenClose(T*item) {
+        printf("RemoveOLSTradeBidAuctionOpenClose not implemented\n");
+    }
+    inline void RemovePreTradePeriodPrice(T*item) {
+        printf("RemovePreTradePeriodPrice not implemented\n");
+    }
+    inline void RemoveSessionOffer(T*item) {
+        printf("RemoveSessionOffer not implemented\n");
+    }
+    inline void RemoveSessionBid(T*item) {
+        printf("RemoveSessionBid not implemented\n");
+    }
+    inline void RemovePostTradePeriodPrice(T*item) {
+        printf("RemovePostTradePeriodPrice not implemented\n");
+    }
+    inline void RemoveTradePrice2(T*item) {
+        printf("RemoveTradePrice2 not implemented\n");
+    }
+    inline void RemoveTradePrice(T*item) {
+        printf("RemoveTradePrice not implemented\n");
+    }
+    inline void RemovePriceOpenOfficial(T*item) {
+        printf("RemovePriceOpenOfficial not implemented\n");
+    }
+    inline void RemovePriceCurrentOfficial(T*item) {
+        printf("RemovePriceCurrentOfficial not implemented\n");
+    }
+    inline void RemoveLegitimQuote(T*item) {
+        printf("RemoveLegitimQuote not implemented\n");
+    }
+    inline void RemovePriceCloseOfficial(T*item) {
+        printf("RemovePriceCloseOfficial not implemented\n");
+    }
+    inline void RemoveAuctionPriceBigPackets(T*item) {
+        printf("RemoveAuctionPriceBigPackets not implemented\n");
+    }
+    inline void RemoveDuration(T*item) {
+        printf("RemoveDuration not implemented\n");
+    }
+    inline void RemoveOfferTotal(T*item) {
+        printf("RemoveOfferTotal not implemented\n");
+    }
+    inline void RemoveBidTotal(T*item) {
+        printf("RemoveBidTotal not implemented\n");
+    }
+    inline void RemoveAuctionMagnitudeBigPackets(T*item) {
+        printf("RemoveAuctionMagnitudeBigPackets not implemented\n");
+    }
+    inline void RemoveCumulativeCouponDebit(T*item) {
+        printf("RemoveCumulativeCouponDebit not implemented\n");
+    }
+    inline void RemoveAllDeals(T*item) {
+        printf("RemoveAllDeals not implemented\n");
+    }
 
     inline void AddProperty(MDEntryType entryType, T *item) {
         if(entryType <= MDEntryType::mdetOLSTradeOfferAuctionOpenClose) {

@@ -52,7 +52,7 @@ public:
     inline Decimal* Value2() { return this->m_value2Ptr; };
 };
 
-class StatisticItemLastDealInfo{
+class StatisticItemLastDealInfo {
 protected:
     UINT64          m_time;
     Decimal         m_price;
@@ -93,7 +93,7 @@ public:
     inline Decimal* TradeValue() { return this->m_tradeValuePtr; }
 };  // 2
 
-class StatisticItemTotalOffer{
+class StatisticItemTotalOffer {
 protected:
     UINT64          m_time;
     Decimal         m_size;
@@ -115,7 +115,7 @@ public:
     inline int OfferNbOr() { return this->m_offerNbOr; }
 };  // w
 
-class StatisticItemTransactionsMagnitude{
+class StatisticItemTransactionsMagnitude {
 protected:
     UINT64          m_time;
     Decimal         m_size;
@@ -141,7 +141,7 @@ public:
     inline Decimal* TradeValue() { return this->m_tradeValuePtr; }
 };  // B
 
-class StatisticItemIndexList{
+class StatisticItemIndexList {
 protected:
     UINT64          m_time;
     Decimal         m_price;
