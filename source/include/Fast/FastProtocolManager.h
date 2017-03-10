@@ -25,6 +25,7 @@ typedef FastSnapshotInfo* (FastProtocolManager::*FastGetSnapshotInfoMethodPointe
 #pragma endregion
 
 #pragma region Spectra_Decode_Method_Pointer_Definition_GeneratedCode
+typedef SpectraSnapshotInfo* (FastProtocolManager::*SpectraGetSnapshotInfoMethodPointer)();
 #pragma endregion
 
 #pragma region Checking_Presence_GeneratedCode
@@ -50,12 +51,14 @@ class FastProtocolManager {
 
     FILE            			*m_xmlFilePtr;
 
-    FastSnapshotInfo 			*m_snapshotInfo;
+    FastSnapshotInfo 			*m_astsSnapshotInfo;
+	SpectraSnapshotInfo 		*m_spectraSnapshotInfo;
 	void						*m_lastDecodedInfo;
 
 	UINT32						m_skipTemplateId[8];
 	int							m_skipTemplateIdCount;
-	FastObjectsAllocationInfo	*m_allocationInfo;
+	FastObjectsAllocationInfo	*m_allocationInfoFast;
+    SpectraObjectsAllocationInfo *m_allocationInfoSpectra;
 
 #pragma region String_Constant_Declaration_GeneratedCode
 public:
@@ -68,504 +71,938 @@ private:
 	}
 #pragma endregion
 
-#pragma region Structure_Objects_Declaration_GeneratedCode
-	AutoAllocatePointerList<FastLogonInfo>	*m_logon;
-	AutoAllocatePointerList<FastLogoutInfo>	*m_logout;
-	AutoAllocatePointerList<FastGenericItemInfo>	*m_genericItems;
-	AutoAllocatePointerList<FastGenericInfo>	*m_generic;
-	AutoAllocatePointerList<FastIncrementalGenericInfo>	*m_incrementalGeneric;
-	AutoAllocatePointerList<FastOLSFONDItemInfo>	*m_oLSFONDItems;
-	AutoAllocatePointerList<FastOLSFONDInfo>	*m_oLSFOND;
-	AutoAllocatePointerList<FastOLSCURRItemInfo>	*m_oLSCURRItems;
-	AutoAllocatePointerList<FastOLSCURRInfo>	*m_oLSCURR;
-	AutoAllocatePointerList<FastTLSFONDItemInfo>	*m_tLSFONDItems;
-	AutoAllocatePointerList<FastTLSFONDInfo>	*m_tLSFOND;
-	AutoAllocatePointerList<FastTLSCURRItemInfo>	*m_tLSCURRItems;
-	AutoAllocatePointerList<FastTLSCURRInfo>	*m_tLSCURR;
-	AutoAllocatePointerList<FastIncrementalMSRFONDInfo>	*m_incrementalMSRFOND;
-	AutoAllocatePointerList<FastIncrementalMSRCURRInfo>	*m_incrementalMSRCURR;
-	AutoAllocatePointerList<FastIncrementalOLRFONDInfo>	*m_incrementalOLRFOND;
-	AutoAllocatePointerList<FastIncrementalOLRCURRInfo>	*m_incrementalOLRCURR;
-	AutoAllocatePointerList<FastIncrementalTLRFONDInfo>	*m_incrementalTLRFOND;
-	AutoAllocatePointerList<FastIncrementalTLRCURRInfo>	*m_incrementalTLRCURR;
-	AutoAllocatePointerList<FastSecurityDefinitionGroupInstrAttribItemInfo>	*m_securityDefinitionGroupInstrAttribItems;
-	AutoAllocatePointerList<FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo>	*m_securityDefinitionMarketSegmentGrpTradingSessionRulesGrpItems;
-	AutoAllocatePointerList<FastSecurityDefinitionMarketSegmentGrpItemInfo>	*m_securityDefinitionMarketSegmentGrpItems;
-	AutoAllocatePointerList<FastSecurityDefinitionInfo>	*m_securityDefinition;
-	AutoAllocatePointerList<FastSecurityStatusInfo>	*m_securityStatus;
-	AutoAllocatePointerList<FastTradingSessionStatusInfo>	*m_tradingSessionStatus;
-	AutoAllocatePointerList<FastHeartbeatInfo>	*m_heartbeat;
-	FastLogonInfo	*m_prevLogonInfo;
-	FastLogoutInfo	*m_prevLogoutInfo;
-	FastGenericItemInfo	*m_prevGenericItemInfo;
-	FastGenericInfo	*m_prevGenericInfo;
-	FastIncrementalGenericInfo	*m_prevIncrementalGenericInfo;
-	FastOLSFONDItemInfo	*m_prevOLSFONDItemInfo;
-	FastOLSFONDInfo	*m_prevOLSFONDInfo;
-	FastOLSCURRItemInfo	*m_prevOLSCURRItemInfo;
-	FastOLSCURRInfo	*m_prevOLSCURRInfo;
-	FastTLSFONDItemInfo	*m_prevTLSFONDItemInfo;
-	FastTLSFONDInfo	*m_prevTLSFONDInfo;
-	FastTLSCURRItemInfo	*m_prevTLSCURRItemInfo;
-	FastTLSCURRInfo	*m_prevTLSCURRInfo;
-	FastIncrementalMSRFONDInfo	*m_prevIncrementalMSRFONDInfo;
-	FastIncrementalMSRCURRInfo	*m_prevIncrementalMSRCURRInfo;
-	FastIncrementalOLRFONDInfo	*m_prevIncrementalOLRFONDInfo;
-	FastIncrementalOLRCURRInfo	*m_prevIncrementalOLRCURRInfo;
-	FastIncrementalTLRFONDInfo	*m_prevIncrementalTLRFONDInfo;
-	FastIncrementalTLRCURRInfo	*m_prevIncrementalTLRCURRInfo;
-	FastSecurityDefinitionGroupInstrAttribItemInfo	*m_prevSecurityDefinitionGroupInstrAttribItemInfo;
-	FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo	*m_prevSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo;
-	FastSecurityDefinitionMarketSegmentGrpItemInfo	*m_prevSecurityDefinitionMarketSegmentGrpItemInfo;
-	FastSecurityDefinitionInfo	*m_prevSecurityDefinitionInfo;
-	FastSecurityStatusInfo	*m_prevSecurityStatusInfo;
-	FastTradingSessionStatusInfo	*m_prevTradingSessionStatusInfo;
-	FastHeartbeatInfo	*m_prevHeartbeatInfo;
+#pragma region Asts_Structure_Objects_Declaration_GeneratedCode
+	AutoAllocatePointerList<FastLogonInfo>	*m_fastLogon;
+	AutoAllocatePointerList<FastLogoutInfo>	*m_fastLogout;
+	AutoAllocatePointerList<FastGenericItemInfo>	*m_fastGenericItems;
+	AutoAllocatePointerList<FastGenericInfo>	*m_fastGeneric;
+	AutoAllocatePointerList<FastIncrementalGenericInfo>	*m_fastIncrementalGeneric;
+	AutoAllocatePointerList<FastOLSFONDItemInfo>	*m_fastOLSFONDItems;
+	AutoAllocatePointerList<FastOLSFONDInfo>	*m_fastOLSFOND;
+	AutoAllocatePointerList<FastOLSCURRItemInfo>	*m_fastOLSCURRItems;
+	AutoAllocatePointerList<FastOLSCURRInfo>	*m_fastOLSCURR;
+	AutoAllocatePointerList<FastTLSFONDItemInfo>	*m_fastTLSFONDItems;
+	AutoAllocatePointerList<FastTLSFONDInfo>	*m_fastTLSFOND;
+	AutoAllocatePointerList<FastTLSCURRItemInfo>	*m_fastTLSCURRItems;
+	AutoAllocatePointerList<FastTLSCURRInfo>	*m_fastTLSCURR;
+	AutoAllocatePointerList<FastIncrementalMSRFONDInfo>	*m_fastIncrementalMSRFOND;
+	AutoAllocatePointerList<FastIncrementalMSRCURRInfo>	*m_fastIncrementalMSRCURR;
+	AutoAllocatePointerList<FastIncrementalOLRFONDInfo>	*m_fastIncrementalOLRFOND;
+	AutoAllocatePointerList<FastIncrementalOLRCURRInfo>	*m_fastIncrementalOLRCURR;
+	AutoAllocatePointerList<FastIncrementalTLRFONDInfo>	*m_fastIncrementalTLRFOND;
+	AutoAllocatePointerList<FastIncrementalTLRCURRInfo>	*m_fastIncrementalTLRCURR;
+	AutoAllocatePointerList<FastSecurityDefinitionGroupInstrAttribItemInfo>	*m_fastSecurityDefinitionGroupInstrAttribItems;
+	AutoAllocatePointerList<FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo>	*m_fastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItems;
+	AutoAllocatePointerList<FastSecurityDefinitionMarketSegmentGrpItemInfo>	*m_fastSecurityDefinitionMarketSegmentGrpItems;
+	AutoAllocatePointerList<FastSecurityDefinitionInfo>	*m_fastSecurityDefinition;
+	AutoAllocatePointerList<FastSecurityStatusInfo>	*m_fastSecurityStatus;
+	AutoAllocatePointerList<FastTradingSessionStatusInfo>	*m_fastTradingSessionStatus;
+	AutoAllocatePointerList<FastHeartbeatInfo>	*m_fastHeartbeat;
+	FastLogonInfo	*m_prevfastLogonInfo;
+	FastLogoutInfo	*m_prevfastLogoutInfo;
+	FastGenericItemInfo	*m_prevfastGenericItemInfo;
+	FastGenericInfo	*m_prevfastGenericInfo;
+	FastIncrementalGenericInfo	*m_prevfastIncrementalGenericInfo;
+	FastOLSFONDItemInfo	*m_prevfastOLSFONDItemInfo;
+	FastOLSFONDInfo	*m_prevfastOLSFONDInfo;
+	FastOLSCURRItemInfo	*m_prevfastOLSCURRItemInfo;
+	FastOLSCURRInfo	*m_prevfastOLSCURRInfo;
+	FastTLSFONDItemInfo	*m_prevfastTLSFONDItemInfo;
+	FastTLSFONDInfo	*m_prevfastTLSFONDInfo;
+	FastTLSCURRItemInfo	*m_prevfastTLSCURRItemInfo;
+	FastTLSCURRInfo	*m_prevfastTLSCURRInfo;
+	FastIncrementalMSRFONDInfo	*m_prevfastIncrementalMSRFONDInfo;
+	FastIncrementalMSRCURRInfo	*m_prevfastIncrementalMSRCURRInfo;
+	FastIncrementalOLRFONDInfo	*m_prevfastIncrementalOLRFONDInfo;
+	FastIncrementalOLRCURRInfo	*m_prevfastIncrementalOLRCURRInfo;
+	FastIncrementalTLRFONDInfo	*m_prevfastIncrementalTLRFONDInfo;
+	FastIncrementalTLRCURRInfo	*m_prevfastIncrementalTLRCURRInfo;
+	FastSecurityDefinitionGroupInstrAttribItemInfo	*m_prevfastSecurityDefinitionGroupInstrAttribItemInfo;
+	FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo	*m_prevfastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo;
+	FastSecurityDefinitionMarketSegmentGrpItemInfo	*m_prevfastSecurityDefinitionMarketSegmentGrpItemInfo;
+	FastSecurityDefinitionInfo	*m_prevfastSecurityDefinitionInfo;
+	FastSecurityStatusInfo	*m_prevfastSecurityStatusInfo;
+	FastTradingSessionStatusInfo	*m_prevfastTradingSessionStatusInfo;
+	FastHeartbeatInfo	*m_prevfastHeartbeatInfo;
 
-	void InitializeMessageInfo() {
-		this->m_logon = this->m_allocationInfo->GetLogonInfoPool();
-		this->m_logout = this->m_allocationInfo->GetLogoutInfoPool();
-		this->m_genericItems = this->m_allocationInfo->GetGenericItemInfoPool();
-		this->m_generic = this->m_allocationInfo->GetGenericInfoPool();
-		this->m_incrementalGeneric = this->m_allocationInfo->GetIncrementalGenericInfoPool();
-		this->m_oLSFONDItems = this->m_allocationInfo->GetOLSFONDItemInfoPool();
-		this->m_oLSFOND = this->m_allocationInfo->GetOLSFONDInfoPool();
-		this->m_oLSCURRItems = this->m_allocationInfo->GetOLSCURRItemInfoPool();
-		this->m_oLSCURR = this->m_allocationInfo->GetOLSCURRInfoPool();
-		this->m_tLSFONDItems = this->m_allocationInfo->GetTLSFONDItemInfoPool();
-		this->m_tLSFOND = this->m_allocationInfo->GetTLSFONDInfoPool();
-		this->m_tLSCURRItems = this->m_allocationInfo->GetTLSCURRItemInfoPool();
-		this->m_tLSCURR = this->m_allocationInfo->GetTLSCURRInfoPool();
-		this->m_incrementalMSRFOND = this->m_allocationInfo->GetIncrementalMSRFONDInfoPool();
-		this->m_incrementalMSRCURR = this->m_allocationInfo->GetIncrementalMSRCURRInfoPool();
-		this->m_incrementalOLRFOND = this->m_allocationInfo->GetIncrementalOLRFONDInfoPool();
-		this->m_incrementalOLRCURR = this->m_allocationInfo->GetIncrementalOLRCURRInfoPool();
-		this->m_incrementalTLRFOND = this->m_allocationInfo->GetIncrementalTLRFONDInfoPool();
-		this->m_incrementalTLRCURR = this->m_allocationInfo->GetIncrementalTLRCURRInfoPool();
-		this->m_securityDefinitionGroupInstrAttribItems = this->m_allocationInfo->GetSecurityDefinitionGroupInstrAttribItemInfoPool();
-		this->m_securityDefinitionMarketSegmentGrpTradingSessionRulesGrpItems = this->m_allocationInfo->GetSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfoPool();
-		this->m_securityDefinitionMarketSegmentGrpItems = this->m_allocationInfo->GetSecurityDefinitionMarketSegmentGrpItemInfoPool();
-		this->m_securityDefinition = this->m_allocationInfo->GetSecurityDefinitionInfoPool();
-		this->m_securityStatus = this->m_allocationInfo->GetSecurityStatusInfoPool();
-		this->m_tradingSessionStatus = this->m_allocationInfo->GetTradingSessionStatusInfoPool();
-		this->m_heartbeat = this->m_allocationInfo->GetHeartbeatInfoPool();
-		this->m_prevLogonInfo = this->GetFreeLogonInfo();
-		this->m_prevLogonInfo->Used = true;
-		this->m_prevLogoutInfo = this->GetFreeLogoutInfo();
-		this->m_prevLogoutInfo->Used = true;
-		this->m_prevGenericItemInfo = this->GetFreeGenericItemInfo();
-		this->m_prevGenericItemInfo->Used = true;
-		this->m_prevGenericInfo = this->GetFreeGenericInfo();
-		this->m_prevGenericInfo->Used = true;
-		this->m_prevIncrementalGenericInfo = this->GetFreeIncrementalGenericInfo();
-		this->m_prevIncrementalGenericInfo->Used = true;
-		this->m_prevOLSFONDItemInfo = this->GetFreeOLSFONDItemInfo();
-		this->m_prevOLSFONDItemInfo->Used = true;
-		this->m_prevOLSFONDInfo = this->GetFreeOLSFONDInfo();
-		this->m_prevOLSFONDInfo->Used = true;
-		this->m_prevOLSCURRItemInfo = this->GetFreeOLSCURRItemInfo();
-		this->m_prevOLSCURRItemInfo->Used = true;
-		this->m_prevOLSCURRInfo = this->GetFreeOLSCURRInfo();
-		this->m_prevOLSCURRInfo->Used = true;
-		this->m_prevTLSFONDItemInfo = this->GetFreeTLSFONDItemInfo();
-		this->m_prevTLSFONDItemInfo->Used = true;
-		this->m_prevTLSFONDInfo = this->GetFreeTLSFONDInfo();
-		this->m_prevTLSFONDInfo->Used = true;
-		this->m_prevTLSCURRItemInfo = this->GetFreeTLSCURRItemInfo();
-		this->m_prevTLSCURRItemInfo->Used = true;
-		this->m_prevTLSCURRInfo = this->GetFreeTLSCURRInfo();
-		this->m_prevTLSCURRInfo->Used = true;
-		this->m_prevIncrementalMSRFONDInfo = this->GetFreeIncrementalMSRFONDInfo();
-		this->m_prevIncrementalMSRFONDInfo->Used = true;
-		this->m_prevIncrementalMSRCURRInfo = this->GetFreeIncrementalMSRCURRInfo();
-		this->m_prevIncrementalMSRCURRInfo->Used = true;
-		this->m_prevIncrementalOLRFONDInfo = this->GetFreeIncrementalOLRFONDInfo();
-		this->m_prevIncrementalOLRFONDInfo->Used = true;
-		this->m_prevIncrementalOLRCURRInfo = this->GetFreeIncrementalOLRCURRInfo();
-		this->m_prevIncrementalOLRCURRInfo->Used = true;
-		this->m_prevIncrementalTLRFONDInfo = this->GetFreeIncrementalTLRFONDInfo();
-		this->m_prevIncrementalTLRFONDInfo->Used = true;
-		this->m_prevIncrementalTLRCURRInfo = this->GetFreeIncrementalTLRCURRInfo();
-		this->m_prevIncrementalTLRCURRInfo->Used = true;
-		this->m_prevSecurityDefinitionGroupInstrAttribItemInfo = this->GetFreeSecurityDefinitionGroupInstrAttribItemInfo();
-		this->m_prevSecurityDefinitionGroupInstrAttribItemInfo->Used = true;
-		this->m_prevSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo = this->GetFreeSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo();
-		this->m_prevSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo->Used = true;
-		this->m_prevSecurityDefinitionMarketSegmentGrpItemInfo = this->GetFreeSecurityDefinitionMarketSegmentGrpItemInfo();
-		this->m_prevSecurityDefinitionMarketSegmentGrpItemInfo->Used = true;
-		this->m_prevSecurityDefinitionInfo = this->GetFreeSecurityDefinitionInfo();
-		this->m_prevSecurityDefinitionInfo->Used = true;
-		this->m_prevSecurityStatusInfo = this->GetFreeSecurityStatusInfo();
-		this->m_prevSecurityStatusInfo->Used = true;
-		this->m_prevTradingSessionStatusInfo = this->GetFreeTradingSessionStatusInfo();
-		this->m_prevTradingSessionStatusInfo->Used = true;
-		this->m_prevHeartbeatInfo = this->GetFreeHeartbeatInfo();
-		this->m_prevHeartbeatInfo->Used = true;
+	void InitializeFastMessageInfo() {
+		this->m_fastLogon = this->m_allocationInfoFast->GetFastLogonInfoPool();
+		this->m_fastLogout = this->m_allocationInfoFast->GetFastLogoutInfoPool();
+		this->m_fastGenericItems = this->m_allocationInfoFast->GetFastGenericItemInfoPool();
+		this->m_fastGeneric = this->m_allocationInfoFast->GetFastGenericInfoPool();
+		this->m_fastIncrementalGeneric = this->m_allocationInfoFast->GetFastIncrementalGenericInfoPool();
+		this->m_fastOLSFONDItems = this->m_allocationInfoFast->GetFastOLSFONDItemInfoPool();
+		this->m_fastOLSFOND = this->m_allocationInfoFast->GetFastOLSFONDInfoPool();
+		this->m_fastOLSCURRItems = this->m_allocationInfoFast->GetFastOLSCURRItemInfoPool();
+		this->m_fastOLSCURR = this->m_allocationInfoFast->GetFastOLSCURRInfoPool();
+		this->m_fastTLSFONDItems = this->m_allocationInfoFast->GetFastTLSFONDItemInfoPool();
+		this->m_fastTLSFOND = this->m_allocationInfoFast->GetFastTLSFONDInfoPool();
+		this->m_fastTLSCURRItems = this->m_allocationInfoFast->GetFastTLSCURRItemInfoPool();
+		this->m_fastTLSCURR = this->m_allocationInfoFast->GetFastTLSCURRInfoPool();
+		this->m_fastIncrementalMSRFOND = this->m_allocationInfoFast->GetFastIncrementalMSRFONDInfoPool();
+		this->m_fastIncrementalMSRCURR = this->m_allocationInfoFast->GetFastIncrementalMSRCURRInfoPool();
+		this->m_fastIncrementalOLRFOND = this->m_allocationInfoFast->GetFastIncrementalOLRFONDInfoPool();
+		this->m_fastIncrementalOLRCURR = this->m_allocationInfoFast->GetFastIncrementalOLRCURRInfoPool();
+		this->m_fastIncrementalTLRFOND = this->m_allocationInfoFast->GetFastIncrementalTLRFONDInfoPool();
+		this->m_fastIncrementalTLRCURR = this->m_allocationInfoFast->GetFastIncrementalTLRCURRInfoPool();
+		this->m_fastSecurityDefinitionGroupInstrAttribItems = this->m_allocationInfoFast->GetFastSecurityDefinitionGroupInstrAttribItemInfoPool();
+		this->m_fastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItems = this->m_allocationInfoFast->GetFastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfoPool();
+		this->m_fastSecurityDefinitionMarketSegmentGrpItems = this->m_allocationInfoFast->GetFastSecurityDefinitionMarketSegmentGrpItemInfoPool();
+		this->m_fastSecurityDefinition = this->m_allocationInfoFast->GetFastSecurityDefinitionInfoPool();
+		this->m_fastSecurityStatus = this->m_allocationInfoFast->GetFastSecurityStatusInfoPool();
+		this->m_fastTradingSessionStatus = this->m_allocationInfoFast->GetFastTradingSessionStatusInfoPool();
+		this->m_fastHeartbeat = this->m_allocationInfoFast->GetFastHeartbeatInfoPool();
+		this->m_prevfastLogonInfo = this->GetFreeFastLogonInfo();
+		this->m_prevfastLogonInfo->Used = true;
+		this->m_prevfastLogoutInfo = this->GetFreeFastLogoutInfo();
+		this->m_prevfastLogoutInfo->Used = true;
+		this->m_prevfastGenericItemInfo = this->GetFreeFastGenericItemInfo();
+		this->m_prevfastGenericItemInfo->Used = true;
+		this->m_prevfastGenericInfo = this->GetFreeFastGenericInfo();
+		this->m_prevfastGenericInfo->Used = true;
+		this->m_prevfastIncrementalGenericInfo = this->GetFreeFastIncrementalGenericInfo();
+		this->m_prevfastIncrementalGenericInfo->Used = true;
+		this->m_prevfastOLSFONDItemInfo = this->GetFreeFastOLSFONDItemInfo();
+		this->m_prevfastOLSFONDItemInfo->Used = true;
+		this->m_prevfastOLSFONDInfo = this->GetFreeFastOLSFONDInfo();
+		this->m_prevfastOLSFONDInfo->Used = true;
+		this->m_prevfastOLSCURRItemInfo = this->GetFreeFastOLSCURRItemInfo();
+		this->m_prevfastOLSCURRItemInfo->Used = true;
+		this->m_prevfastOLSCURRInfo = this->GetFreeFastOLSCURRInfo();
+		this->m_prevfastOLSCURRInfo->Used = true;
+		this->m_prevfastTLSFONDItemInfo = this->GetFreeFastTLSFONDItemInfo();
+		this->m_prevfastTLSFONDItemInfo->Used = true;
+		this->m_prevfastTLSFONDInfo = this->GetFreeFastTLSFONDInfo();
+		this->m_prevfastTLSFONDInfo->Used = true;
+		this->m_prevfastTLSCURRItemInfo = this->GetFreeFastTLSCURRItemInfo();
+		this->m_prevfastTLSCURRItemInfo->Used = true;
+		this->m_prevfastTLSCURRInfo = this->GetFreeFastTLSCURRInfo();
+		this->m_prevfastTLSCURRInfo->Used = true;
+		this->m_prevfastIncrementalMSRFONDInfo = this->GetFreeFastIncrementalMSRFONDInfo();
+		this->m_prevfastIncrementalMSRFONDInfo->Used = true;
+		this->m_prevfastIncrementalMSRCURRInfo = this->GetFreeFastIncrementalMSRCURRInfo();
+		this->m_prevfastIncrementalMSRCURRInfo->Used = true;
+		this->m_prevfastIncrementalOLRFONDInfo = this->GetFreeFastIncrementalOLRFONDInfo();
+		this->m_prevfastIncrementalOLRFONDInfo->Used = true;
+		this->m_prevfastIncrementalOLRCURRInfo = this->GetFreeFastIncrementalOLRCURRInfo();
+		this->m_prevfastIncrementalOLRCURRInfo->Used = true;
+		this->m_prevfastIncrementalTLRFONDInfo = this->GetFreeFastIncrementalTLRFONDInfo();
+		this->m_prevfastIncrementalTLRFONDInfo->Used = true;
+		this->m_prevfastIncrementalTLRCURRInfo = this->GetFreeFastIncrementalTLRCURRInfo();
+		this->m_prevfastIncrementalTLRCURRInfo->Used = true;
+		this->m_prevfastSecurityDefinitionGroupInstrAttribItemInfo = this->GetFreeFastSecurityDefinitionGroupInstrAttribItemInfo();
+		this->m_prevfastSecurityDefinitionGroupInstrAttribItemInfo->Used = true;
+		this->m_prevfastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo = this->GetFreeFastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo();
+		this->m_prevfastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo->Used = true;
+		this->m_prevfastSecurityDefinitionMarketSegmentGrpItemInfo = this->GetFreeFastSecurityDefinitionMarketSegmentGrpItemInfo();
+		this->m_prevfastSecurityDefinitionMarketSegmentGrpItemInfo->Used = true;
+		this->m_prevfastSecurityDefinitionInfo = this->GetFreeFastSecurityDefinitionInfo();
+		this->m_prevfastSecurityDefinitionInfo->Used = true;
+		this->m_prevfastSecurityStatusInfo = this->GetFreeFastSecurityStatusInfo();
+		this->m_prevfastSecurityStatusInfo->Used = true;
+		this->m_prevfastTradingSessionStatusInfo = this->GetFreeFastTradingSessionStatusInfo();
+		this->m_prevfastTradingSessionStatusInfo->Used = true;
+		this->m_prevfastHeartbeatInfo = this->GetFreeFastHeartbeatInfo();
+		this->m_prevfastHeartbeatInfo->Used = true;
+	}
+
+#pragma endregion
+
+#pragma region Spectra_Structure_Objects_Declaration_GeneratedCode
+	AutoAllocatePointerList<SpectraDefaultIncrementalRefreshMessageMDEntriesItemInfo>	*m_spectraDefaultIncrementalRefreshMessageMDEntriesItems;
+	AutoAllocatePointerList<SpectraDefaultIncrementalRefreshMessageInfo>	*m_spectraDefaultIncrementalRefreshMessage;
+	AutoAllocatePointerList<SpectraDefaultSnapshotMessageMDEntriesItemInfo>	*m_spectraDefaultSnapshotMessageMDEntriesItems;
+	AutoAllocatePointerList<SpectraDefaultSnapshotMessageInfo>	*m_spectraDefaultSnapshotMessage;
+	AutoAllocatePointerList<SpectraSecurityDefinitionMDFeedTypesItemInfo>	*m_spectraSecurityDefinitionMDFeedTypesItems;
+	AutoAllocatePointerList<SpectraSecurityDefinitionUnderlyingsItemInfo>	*m_spectraSecurityDefinitionUnderlyingsItems;
+	AutoAllocatePointerList<SpectraSecurityDefinitionInstrumentLegsItemInfo>	*m_spectraSecurityDefinitionInstrumentLegsItems;
+	AutoAllocatePointerList<SpectraSecurityDefinitionInstrumentAttributesItemInfo>	*m_spectraSecurityDefinitionInstrumentAttributesItems;
+	AutoAllocatePointerList<SpectraSecurityDefinitionEvntGrpItemInfo>	*m_spectraSecurityDefinitionEvntGrpItems;
+	AutoAllocatePointerList<SpectraSecurityDefinitionInfo>	*m_spectraSecurityDefinition;
+	AutoAllocatePointerList<SpectraSecurityDefinitionUpdateReportInfo>	*m_spectraSecurityDefinitionUpdateReport;
+	AutoAllocatePointerList<SpectraSecurityStatusInfo>	*m_spectraSecurityStatus;
+	AutoAllocatePointerList<SpectraHeartbeatInfo>	*m_spectraHeartbeat;
+	AutoAllocatePointerList<SpectraSequenceResetInfo>	*m_spectraSequenceReset;
+	AutoAllocatePointerList<SpectraTradingSessionStatusInfo>	*m_spectraTradingSessionStatus;
+	AutoAllocatePointerList<SpectraNewsNewsTextItemInfo>	*m_spectraNewsNewsTextItems;
+	AutoAllocatePointerList<SpectraNewsInfo>	*m_spectraNews;
+	AutoAllocatePointerList<SpectraOrdersLogMDEntriesItemInfo>	*m_spectraOrdersLogMDEntriesItems;
+	AutoAllocatePointerList<SpectraOrdersLogInfo>	*m_spectraOrdersLog;
+	AutoAllocatePointerList<SpectraOrdersBookMDEntriesItemInfo>	*m_spectraOrdersBookMDEntriesItems;
+	AutoAllocatePointerList<SpectraOrdersBookInfo>	*m_spectraOrdersBook;
+	AutoAllocatePointerList<SpectraLogonInfo>	*m_spectraLogon;
+	AutoAllocatePointerList<SpectraLogoutInfo>	*m_spectraLogout;
+	SpectraDefaultIncrementalRefreshMessageMDEntriesItemInfo	*m_prevspectraDefaultIncrementalRefreshMessageMDEntriesItemInfo;
+	SpectraDefaultIncrementalRefreshMessageInfo	*m_prevspectraDefaultIncrementalRefreshMessageInfo;
+	SpectraDefaultSnapshotMessageMDEntriesItemInfo	*m_prevspectraDefaultSnapshotMessageMDEntriesItemInfo;
+	SpectraDefaultSnapshotMessageInfo	*m_prevspectraDefaultSnapshotMessageInfo;
+	SpectraSecurityDefinitionMDFeedTypesItemInfo	*m_prevspectraSecurityDefinitionMDFeedTypesItemInfo;
+	SpectraSecurityDefinitionUnderlyingsItemInfo	*m_prevspectraSecurityDefinitionUnderlyingsItemInfo;
+	SpectraSecurityDefinitionInstrumentLegsItemInfo	*m_prevspectraSecurityDefinitionInstrumentLegsItemInfo;
+	SpectraSecurityDefinitionInstrumentAttributesItemInfo	*m_prevspectraSecurityDefinitionInstrumentAttributesItemInfo;
+	SpectraSecurityDefinitionEvntGrpItemInfo	*m_prevspectraSecurityDefinitionEvntGrpItemInfo;
+	SpectraSecurityDefinitionInfo	*m_prevspectraSecurityDefinitionInfo;
+	SpectraSecurityDefinitionUpdateReportInfo	*m_prevspectraSecurityDefinitionUpdateReportInfo;
+	SpectraSecurityStatusInfo	*m_prevspectraSecurityStatusInfo;
+	SpectraHeartbeatInfo	*m_prevspectraHeartbeatInfo;
+	SpectraSequenceResetInfo	*m_prevspectraSequenceResetInfo;
+	SpectraTradingSessionStatusInfo	*m_prevspectraTradingSessionStatusInfo;
+	SpectraNewsNewsTextItemInfo	*m_prevspectraNewsNewsTextItemInfo;
+	SpectraNewsInfo	*m_prevspectraNewsInfo;
+	SpectraOrdersLogMDEntriesItemInfo	*m_prevspectraOrdersLogMDEntriesItemInfo;
+	SpectraOrdersLogInfo	*m_prevspectraOrdersLogInfo;
+	SpectraOrdersBookMDEntriesItemInfo	*m_prevspectraOrdersBookMDEntriesItemInfo;
+	SpectraOrdersBookInfo	*m_prevspectraOrdersBookInfo;
+	SpectraLogonInfo	*m_prevspectraLogonInfo;
+	SpectraLogoutInfo	*m_prevspectraLogoutInfo;
+
+	void InitializeSpectraMessageInfo() {
+		this->m_spectraDefaultIncrementalRefreshMessageMDEntriesItems = this->m_allocationInfoSpectra->GetSpectraDefaultIncrementalRefreshMessageMDEntriesItemInfoPool();
+		this->m_spectraDefaultIncrementalRefreshMessage = this->m_allocationInfoSpectra->GetSpectraDefaultIncrementalRefreshMessageInfoPool();
+		this->m_spectraDefaultSnapshotMessageMDEntriesItems = this->m_allocationInfoSpectra->GetSpectraDefaultSnapshotMessageMDEntriesItemInfoPool();
+		this->m_spectraDefaultSnapshotMessage = this->m_allocationInfoSpectra->GetSpectraDefaultSnapshotMessageInfoPool();
+		this->m_spectraSecurityDefinitionMDFeedTypesItems = this->m_allocationInfoSpectra->GetSpectraSecurityDefinitionMDFeedTypesItemInfoPool();
+		this->m_spectraSecurityDefinitionUnderlyingsItems = this->m_allocationInfoSpectra->GetSpectraSecurityDefinitionUnderlyingsItemInfoPool();
+		this->m_spectraSecurityDefinitionInstrumentLegsItems = this->m_allocationInfoSpectra->GetSpectraSecurityDefinitionInstrumentLegsItemInfoPool();
+		this->m_spectraSecurityDefinitionInstrumentAttributesItems = this->m_allocationInfoSpectra->GetSpectraSecurityDefinitionInstrumentAttributesItemInfoPool();
+		this->m_spectraSecurityDefinitionEvntGrpItems = this->m_allocationInfoSpectra->GetSpectraSecurityDefinitionEvntGrpItemInfoPool();
+		this->m_spectraSecurityDefinition = this->m_allocationInfoSpectra->GetSpectraSecurityDefinitionInfoPool();
+		this->m_spectraSecurityDefinitionUpdateReport = this->m_allocationInfoSpectra->GetSpectraSecurityDefinitionUpdateReportInfoPool();
+		this->m_spectraSecurityStatus = this->m_allocationInfoSpectra->GetSpectraSecurityStatusInfoPool();
+		this->m_spectraHeartbeat = this->m_allocationInfoSpectra->GetSpectraHeartbeatInfoPool();
+		this->m_spectraSequenceReset = this->m_allocationInfoSpectra->GetSpectraSequenceResetInfoPool();
+		this->m_spectraTradingSessionStatus = this->m_allocationInfoSpectra->GetSpectraTradingSessionStatusInfoPool();
+		this->m_spectraNewsNewsTextItems = this->m_allocationInfoSpectra->GetSpectraNewsNewsTextItemInfoPool();
+		this->m_spectraNews = this->m_allocationInfoSpectra->GetSpectraNewsInfoPool();
+		this->m_spectraOrdersLogMDEntriesItems = this->m_allocationInfoSpectra->GetSpectraOrdersLogMDEntriesItemInfoPool();
+		this->m_spectraOrdersLog = this->m_allocationInfoSpectra->GetSpectraOrdersLogInfoPool();
+		this->m_spectraOrdersBookMDEntriesItems = this->m_allocationInfoSpectra->GetSpectraOrdersBookMDEntriesItemInfoPool();
+		this->m_spectraOrdersBook = this->m_allocationInfoSpectra->GetSpectraOrdersBookInfoPool();
+		this->m_spectraLogon = this->m_allocationInfoSpectra->GetSpectraLogonInfoPool();
+		this->m_spectraLogout = this->m_allocationInfoSpectra->GetSpectraLogoutInfoPool();
+		this->m_prevspectraDefaultIncrementalRefreshMessageMDEntriesItemInfo = this->GetFreeSpectraDefaultIncrementalRefreshMessageMDEntriesItemInfo();
+		this->m_prevspectraDefaultIncrementalRefreshMessageMDEntriesItemInfo->Used = true;
+		this->m_prevspectraDefaultIncrementalRefreshMessageInfo = this->GetFreeSpectraDefaultIncrementalRefreshMessageInfo();
+		this->m_prevspectraDefaultIncrementalRefreshMessageInfo->Used = true;
+		this->m_prevspectraDefaultSnapshotMessageMDEntriesItemInfo = this->GetFreeSpectraDefaultSnapshotMessageMDEntriesItemInfo();
+		this->m_prevspectraDefaultSnapshotMessageMDEntriesItemInfo->Used = true;
+		this->m_prevspectraDefaultSnapshotMessageInfo = this->GetFreeSpectraDefaultSnapshotMessageInfo();
+		this->m_prevspectraDefaultSnapshotMessageInfo->Used = true;
+		this->m_prevspectraSecurityDefinitionMDFeedTypesItemInfo = this->GetFreeSpectraSecurityDefinitionMDFeedTypesItemInfo();
+		this->m_prevspectraSecurityDefinitionMDFeedTypesItemInfo->Used = true;
+		this->m_prevspectraSecurityDefinitionUnderlyingsItemInfo = this->GetFreeSpectraSecurityDefinitionUnderlyingsItemInfo();
+		this->m_prevspectraSecurityDefinitionUnderlyingsItemInfo->Used = true;
+		this->m_prevspectraSecurityDefinitionInstrumentLegsItemInfo = this->GetFreeSpectraSecurityDefinitionInstrumentLegsItemInfo();
+		this->m_prevspectraSecurityDefinitionInstrumentLegsItemInfo->Used = true;
+		this->m_prevspectraSecurityDefinitionInstrumentAttributesItemInfo = this->GetFreeSpectraSecurityDefinitionInstrumentAttributesItemInfo();
+		this->m_prevspectraSecurityDefinitionInstrumentAttributesItemInfo->Used = true;
+		this->m_prevspectraSecurityDefinitionEvntGrpItemInfo = this->GetFreeSpectraSecurityDefinitionEvntGrpItemInfo();
+		this->m_prevspectraSecurityDefinitionEvntGrpItemInfo->Used = true;
+		this->m_prevspectraSecurityDefinitionInfo = this->GetFreeSpectraSecurityDefinitionInfo();
+		this->m_prevspectraSecurityDefinitionInfo->Used = true;
+		this->m_prevspectraSecurityDefinitionUpdateReportInfo = this->GetFreeSpectraSecurityDefinitionUpdateReportInfo();
+		this->m_prevspectraSecurityDefinitionUpdateReportInfo->Used = true;
+		this->m_prevspectraSecurityStatusInfo = this->GetFreeSpectraSecurityStatusInfo();
+		this->m_prevspectraSecurityStatusInfo->Used = true;
+		this->m_prevspectraHeartbeatInfo = this->GetFreeSpectraHeartbeatInfo();
+		this->m_prevspectraHeartbeatInfo->Used = true;
+		this->m_prevspectraSequenceResetInfo = this->GetFreeSpectraSequenceResetInfo();
+		this->m_prevspectraSequenceResetInfo->Used = true;
+		this->m_prevspectraTradingSessionStatusInfo = this->GetFreeSpectraTradingSessionStatusInfo();
+		this->m_prevspectraTradingSessionStatusInfo->Used = true;
+		this->m_prevspectraNewsNewsTextItemInfo = this->GetFreeSpectraNewsNewsTextItemInfo();
+		this->m_prevspectraNewsNewsTextItemInfo->Used = true;
+		this->m_prevspectraNewsInfo = this->GetFreeSpectraNewsInfo();
+		this->m_prevspectraNewsInfo->Used = true;
+		this->m_prevspectraOrdersLogMDEntriesItemInfo = this->GetFreeSpectraOrdersLogMDEntriesItemInfo();
+		this->m_prevspectraOrdersLogMDEntriesItemInfo->Used = true;
+		this->m_prevspectraOrdersLogInfo = this->GetFreeSpectraOrdersLogInfo();
+		this->m_prevspectraOrdersLogInfo->Used = true;
+		this->m_prevspectraOrdersBookMDEntriesItemInfo = this->GetFreeSpectraOrdersBookMDEntriesItemInfo();
+		this->m_prevspectraOrdersBookMDEntriesItemInfo->Used = true;
+		this->m_prevspectraOrdersBookInfo = this->GetFreeSpectraOrdersBookInfo();
+		this->m_prevspectraOrdersBookInfo->Used = true;
+		this->m_prevspectraLogonInfo = this->GetFreeSpectraLogonInfo();
+		this->m_prevspectraLogonInfo->Used = true;
+		this->m_prevspectraLogoutInfo = this->GetFreeSpectraLogoutInfo();
+		this->m_prevspectraLogoutInfo->Used = true;
 	}
 
 #pragma endregion
 
 #pragma region Decode_Method_Pointer_Arrays_GeneratedCode
-	FastDecodeMethodPointer* DecodeMethods;
-	FastReleaseMethodPointer* ReleaseMethods;
-	FastGetSnapshotInfoMethodPointer* GetSnapshotInfoMethods;
+	FastDecodeMethodPointer* m_spectraDecodeMethods;
+	FastReleaseMethodPointer* m_spectraReleaseMethods;
+	SpectraGetSnapshotInfoMethodPointer* m_spectraGetSnapshotInfoMethods;
 
-	void InitializeDecodeMethodPointers() {
-		int ptCount = 1513;
-		this->DecodeMethods = new FastDecodeMethodPointer[ptCount];
-		this->ReleaseMethods = new FastReleaseMethodPointer[ptCount];
-		this->GetSnapshotInfoMethods = new FastGetSnapshotInfoMethodPointer[ptCount];
+	void InitializeSpectraDecodeMethodPointers() {
+		int ptCount = 999;
+		this->m_spectraDecodeMethods = new FastDecodeMethodPointer[ptCount];
+		this->m_spectraReleaseMethods = new FastReleaseMethodPointer[ptCount];
+		this->m_spectraGetSnapshotInfoMethods = new SpectraGetSnapshotInfoMethodPointer[ptCount];
 
-		for(int i = 0; i < 1513; i++) {
-			this->DecodeMethods[i] = &FastProtocolManager::DecodeUnsupportedMessage;
-			this->GetSnapshotInfoMethods[i] = &FastProtocolManager::GetSnapshotInfoUnsupported;
+		for(int i = 0; i < 999; i++) {
+			this->m_spectraDecodeMethods[i] = &FastProtocolManager::DecodeSpectraUnsupportedMessage;
+			this->m_spectraGetSnapshotInfoMethods[i] = &FastProtocolManager::GetSpectraSnapshotInfoUnsupported;
 		}
 
-		this->DecodeMethods[2101 - 2101] = &FastProtocolManager::DecodeLogon;
-		this->DecodeMethods[2102 - 2101] = &FastProtocolManager::DecodeLogout;
-		this->DecodeMethods[2103 - 2101] = &FastProtocolManager::DecodeGeneric;
-		this->DecodeMethods[2104 - 2101] = &FastProtocolManager::DecodeIncrementalGeneric;
-		this->DecodeMethods[2510 - 2101] = &FastProtocolManager::DecodeOLSFOND;
-		this->DecodeMethods[3600 - 2101] = &FastProtocolManager::DecodeOLSCURR;
-		this->DecodeMethods[2511 - 2101] = &FastProtocolManager::DecodeTLSFOND;
-		this->DecodeMethods[3601 - 2101] = &FastProtocolManager::DecodeTLSCURR;
-		this->DecodeMethods[2523 - 2101] = &FastProtocolManager::DecodeIncrementalMSRFOND;
-		this->DecodeMethods[3613 - 2101] = &FastProtocolManager::DecodeIncrementalMSRCURR;
-		this->DecodeMethods[2520 - 2101] = &FastProtocolManager::DecodeIncrementalOLRFOND;
-		this->DecodeMethods[3610 - 2101] = &FastProtocolManager::DecodeIncrementalOLRCURR;
-		this->DecodeMethods[2521 - 2101] = &FastProtocolManager::DecodeIncrementalTLRFOND;
-		this->DecodeMethods[3611 - 2101] = &FastProtocolManager::DecodeIncrementalTLRCURR;
-		this->DecodeMethods[2115 - 2101] = &FastProtocolManager::DecodeSecurityDefinition;
-		this->DecodeMethods[2106 - 2101] = &FastProtocolManager::DecodeSecurityStatus;
-		this->DecodeMethods[2107 - 2101] = &FastProtocolManager::DecodeTradingSessionStatus;
-		this->DecodeMethods[2108 - 2101] = &FastProtocolManager::DecodeHeartbeat;
-		this->ReleaseMethods[2101 - 2101] = &FastProtocolManager::DecodeLogon;
-		this->ReleaseMethods[2102 - 2101] = &FastProtocolManager::DecodeLogout;
-		this->ReleaseMethods[2103 - 2101] = &FastProtocolManager::DecodeGeneric;
-		this->ReleaseMethods[2104 - 2101] = &FastProtocolManager::DecodeIncrementalGeneric;
-		this->ReleaseMethods[2510 - 2101] = &FastProtocolManager::DecodeOLSFOND;
-		this->ReleaseMethods[3600 - 2101] = &FastProtocolManager::DecodeOLSCURR;
-		this->ReleaseMethods[2511 - 2101] = &FastProtocolManager::DecodeTLSFOND;
-		this->ReleaseMethods[3601 - 2101] = &FastProtocolManager::DecodeTLSCURR;
-		this->ReleaseMethods[2523 - 2101] = &FastProtocolManager::DecodeIncrementalMSRFOND;
-		this->ReleaseMethods[3613 - 2101] = &FastProtocolManager::DecodeIncrementalMSRCURR;
-		this->ReleaseMethods[2520 - 2101] = &FastProtocolManager::DecodeIncrementalOLRFOND;
-		this->ReleaseMethods[3610 - 2101] = &FastProtocolManager::DecodeIncrementalOLRCURR;
-		this->ReleaseMethods[2521 - 2101] = &FastProtocolManager::DecodeIncrementalTLRFOND;
-		this->ReleaseMethods[3611 - 2101] = &FastProtocolManager::DecodeIncrementalTLRCURR;
-		this->ReleaseMethods[2115 - 2101] = &FastProtocolManager::DecodeSecurityDefinition;
-		this->ReleaseMethods[2106 - 2101] = &FastProtocolManager::DecodeSecurityStatus;
-		this->ReleaseMethods[2107 - 2101] = &FastProtocolManager::DecodeTradingSessionStatus;
-		this->ReleaseMethods[2108 - 2101] = &FastProtocolManager::DecodeHeartbeat;
-		this->GetSnapshotInfoMethods[2103 - 2101] = &FastProtocolManager::GetSnapshotInfoGeneric;
-		this->GetSnapshotInfoMethods[2510 - 2101] = &FastProtocolManager::GetSnapshotInfoOLSFOND;
-		this->GetSnapshotInfoMethods[3600 - 2101] = &FastProtocolManager::GetSnapshotInfoOLSCURR;
-		this->GetSnapshotInfoMethods[2511 - 2101] = &FastProtocolManager::GetSnapshotInfoTLSFOND;
-		this->GetSnapshotInfoMethods[3601 - 2101] = &FastProtocolManager::GetSnapshotInfoTLSCURR;
+		this->m_spectraDecodeMethods[12 - 3] = &FastProtocolManager::DecodeSpectraDefaultIncrementalRefreshMessage;
+		this->m_spectraDecodeMethods[13 - 3] = &FastProtocolManager::DecodeSpectraDefaultSnapshotMessage;
+		this->m_spectraDecodeMethods[3 - 3] = &FastProtocolManager::DecodeSpectraSecurityDefinition;
+		this->m_spectraDecodeMethods[4 - 3] = &FastProtocolManager::DecodeSpectraSecurityDefinitionUpdateReport;
+		this->m_spectraDecodeMethods[5 - 3] = &FastProtocolManager::DecodeSpectraSecurityStatus;
+		this->m_spectraDecodeMethods[6 - 3] = &FastProtocolManager::DecodeSpectraHeartbeat;
+		this->m_spectraDecodeMethods[7 - 3] = &FastProtocolManager::DecodeSpectraSequenceReset;
+		this->m_spectraDecodeMethods[8 - 3] = &FastProtocolManager::DecodeSpectraTradingSessionStatus;
+		this->m_spectraDecodeMethods[9 - 3] = &FastProtocolManager::DecodeSpectraNews;
+		this->m_spectraDecodeMethods[14 - 3] = &FastProtocolManager::DecodeSpectraOrdersLog;
+		this->m_spectraDecodeMethods[15 - 3] = &FastProtocolManager::DecodeSpectraOrdersBook;
+		this->m_spectraDecodeMethods[1000 - 3] = &FastProtocolManager::DecodeSpectraLogon;
+		this->m_spectraDecodeMethods[1001 - 3] = &FastProtocolManager::DecodeSpectraLogout;
+		this->m_spectraReleaseMethods[12 - 3] = &FastProtocolManager::DecodeSpectraDefaultIncrementalRefreshMessage;
+		this->m_spectraReleaseMethods[13 - 3] = &FastProtocolManager::DecodeSpectraDefaultSnapshotMessage;
+		this->m_spectraReleaseMethods[3 - 3] = &FastProtocolManager::DecodeSpectraSecurityDefinition;
+		this->m_spectraReleaseMethods[4 - 3] = &FastProtocolManager::DecodeSpectraSecurityDefinitionUpdateReport;
+		this->m_spectraReleaseMethods[5 - 3] = &FastProtocolManager::DecodeSpectraSecurityStatus;
+		this->m_spectraReleaseMethods[6 - 3] = &FastProtocolManager::DecodeSpectraHeartbeat;
+		this->m_spectraReleaseMethods[7 - 3] = &FastProtocolManager::DecodeSpectraSequenceReset;
+		this->m_spectraReleaseMethods[8 - 3] = &FastProtocolManager::DecodeSpectraTradingSessionStatus;
+		this->m_spectraReleaseMethods[9 - 3] = &FastProtocolManager::DecodeSpectraNews;
+		this->m_spectraReleaseMethods[14 - 3] = &FastProtocolManager::DecodeSpectraOrdersLog;
+		this->m_spectraReleaseMethods[15 - 3] = &FastProtocolManager::DecodeSpectraOrdersBook;
+		this->m_spectraReleaseMethods[1000 - 3] = &FastProtocolManager::DecodeSpectraLogon;
+		this->m_spectraReleaseMethods[1001 - 3] = &FastProtocolManager::DecodeSpectraLogout;
+		this->m_spectraGetSnapshotInfoMethods[13 - 3] = &FastProtocolManager::GetSpectraSnapshotInfoDefaultSnapshotMessage;
+
+	}
+
+	FastDecodeMethodPointer* m_fastDecodeMethods;
+	FastReleaseMethodPointer* m_fastReleaseMethods;
+	FastGetSnapshotInfoMethodPointer* m_fastGetSnapshotInfoMethods;
+
+	void InitializeFastDecodeMethodPointers() {
+		int ptCount = 1513;
+		this->m_fastDecodeMethods = new FastDecodeMethodPointer[ptCount];
+		this->m_fastReleaseMethods = new FastReleaseMethodPointer[ptCount];
+		this->m_fastGetSnapshotInfoMethods = new FastGetSnapshotInfoMethodPointer[ptCount];
+
+		for(int i = 0; i < 1513; i++) {
+			this->m_fastDecodeMethods[i] = &FastProtocolManager::DecodeFastUnsupportedMessage;
+			this->m_fastGetSnapshotInfoMethods[i] = &FastProtocolManager::GetFastSnapshotInfoUnsupported;
+		}
+
+		this->m_fastDecodeMethods[2101 - 2101] = &FastProtocolManager::DecodeFastLogon;
+		this->m_fastDecodeMethods[2102 - 2101] = &FastProtocolManager::DecodeFastLogout;
+		this->m_fastDecodeMethods[2103 - 2101] = &FastProtocolManager::DecodeFastGeneric;
+		this->m_fastDecodeMethods[2104 - 2101] = &FastProtocolManager::DecodeFastIncrementalGeneric;
+		this->m_fastDecodeMethods[2510 - 2101] = &FastProtocolManager::DecodeFastOLSFOND;
+		this->m_fastDecodeMethods[3600 - 2101] = &FastProtocolManager::DecodeFastOLSCURR;
+		this->m_fastDecodeMethods[2511 - 2101] = &FastProtocolManager::DecodeFastTLSFOND;
+		this->m_fastDecodeMethods[3601 - 2101] = &FastProtocolManager::DecodeFastTLSCURR;
+		this->m_fastDecodeMethods[2523 - 2101] = &FastProtocolManager::DecodeFastIncrementalMSRFOND;
+		this->m_fastDecodeMethods[3613 - 2101] = &FastProtocolManager::DecodeFastIncrementalMSRCURR;
+		this->m_fastDecodeMethods[2520 - 2101] = &FastProtocolManager::DecodeFastIncrementalOLRFOND;
+		this->m_fastDecodeMethods[3610 - 2101] = &FastProtocolManager::DecodeFastIncrementalOLRCURR;
+		this->m_fastDecodeMethods[2521 - 2101] = &FastProtocolManager::DecodeFastIncrementalTLRFOND;
+		this->m_fastDecodeMethods[3611 - 2101] = &FastProtocolManager::DecodeFastIncrementalTLRCURR;
+		this->m_fastDecodeMethods[2115 - 2101] = &FastProtocolManager::DecodeFastSecurityDefinition;
+		this->m_fastDecodeMethods[2106 - 2101] = &FastProtocolManager::DecodeFastSecurityStatus;
+		this->m_fastDecodeMethods[2107 - 2101] = &FastProtocolManager::DecodeFastTradingSessionStatus;
+		this->m_fastDecodeMethods[2108 - 2101] = &FastProtocolManager::DecodeFastHeartbeat;
+		this->m_fastReleaseMethods[2101 - 2101] = &FastProtocolManager::DecodeFastLogon;
+		this->m_fastReleaseMethods[2102 - 2101] = &FastProtocolManager::DecodeFastLogout;
+		this->m_fastReleaseMethods[2103 - 2101] = &FastProtocolManager::DecodeFastGeneric;
+		this->m_fastReleaseMethods[2104 - 2101] = &FastProtocolManager::DecodeFastIncrementalGeneric;
+		this->m_fastReleaseMethods[2510 - 2101] = &FastProtocolManager::DecodeFastOLSFOND;
+		this->m_fastReleaseMethods[3600 - 2101] = &FastProtocolManager::DecodeFastOLSCURR;
+		this->m_fastReleaseMethods[2511 - 2101] = &FastProtocolManager::DecodeFastTLSFOND;
+		this->m_fastReleaseMethods[3601 - 2101] = &FastProtocolManager::DecodeFastTLSCURR;
+		this->m_fastReleaseMethods[2523 - 2101] = &FastProtocolManager::DecodeFastIncrementalMSRFOND;
+		this->m_fastReleaseMethods[3613 - 2101] = &FastProtocolManager::DecodeFastIncrementalMSRCURR;
+		this->m_fastReleaseMethods[2520 - 2101] = &FastProtocolManager::DecodeFastIncrementalOLRFOND;
+		this->m_fastReleaseMethods[3610 - 2101] = &FastProtocolManager::DecodeFastIncrementalOLRCURR;
+		this->m_fastReleaseMethods[2521 - 2101] = &FastProtocolManager::DecodeFastIncrementalTLRFOND;
+		this->m_fastReleaseMethods[3611 - 2101] = &FastProtocolManager::DecodeFastIncrementalTLRCURR;
+		this->m_fastReleaseMethods[2115 - 2101] = &FastProtocolManager::DecodeFastSecurityDefinition;
+		this->m_fastReleaseMethods[2106 - 2101] = &FastProtocolManager::DecodeFastSecurityStatus;
+		this->m_fastReleaseMethods[2107 - 2101] = &FastProtocolManager::DecodeFastTradingSessionStatus;
+		this->m_fastReleaseMethods[2108 - 2101] = &FastProtocolManager::DecodeFastHeartbeat;
+		this->m_fastGetSnapshotInfoMethods[2103 - 2101] = &FastProtocolManager::GetFastSnapshotInfoGeneric;
+		this->m_fastGetSnapshotInfoMethods[2510 - 2101] = &FastProtocolManager::GetFastSnapshotInfoOLSFOND;
+		this->m_fastGetSnapshotInfoMethods[3600 - 2101] = &FastProtocolManager::GetFastSnapshotInfoOLSCURR;
+		this->m_fastGetSnapshotInfoMethods[2511 - 2101] = &FastProtocolManager::GetFastSnapshotInfoTLSFOND;
+		this->m_fastGetSnapshotInfoMethods[3601 - 2101] = &FastProtocolManager::GetFastSnapshotInfoTLSCURR;
 
 	}
 
 #pragma endregion
 
-    inline FastSnapshotInfo* GetFreeSnapshotInfo() {
-        this->m_snapshotInfo->LastFragment = 0;
-        this->m_snapshotInfo->LastMsgSeqNumProcessed = -1;
-        this->m_snapshotInfo->RouteFirst = 0;
-        this->m_snapshotInfo->RptSeq = -1;
-        return this->m_snapshotInfo;
+    inline FastSnapshotInfo* GetFreeFastSnapshotInfo() {
+        this->m_astsSnapshotInfo->LastFragment = 0;
+        this->m_astsSnapshotInfo->LastMsgSeqNumProcessed = -1;
+        this->m_astsSnapshotInfo->RouteFirst = 0;
+        this->m_astsSnapshotInfo->RptSeq = -1;
+        return this->m_astsSnapshotInfo;
     }
+
+	inline SpectraSnapshotInfo* GetFreeSpectraSnapshotInfo() {
+		this->m_spectraSnapshotInfo->LastFragment = 0;
+		this->m_spectraSnapshotInfo->LastMsgSeqNumProcessed = -1;
+		this->m_spectraSnapshotInfo->RouteFirst = 0;
+		this->m_spectraSnapshotInfo->RptSeq = -1;
+		return this->m_spectraSnapshotInfo;
+	}
 
 #pragma region Get_Free_Item_Methods_GeneratedCode
 public:
-	inline FastLogonInfo* GetFreeLogonInfo() {
-		return this->m_logon->NewItem();
+	inline SpectraDefaultIncrementalRefreshMessageMDEntriesItemInfo* GetFreeSpectraDefaultIncrementalRefreshMessageMDEntriesItemInfo() {
+		return this->m_spectraDefaultIncrementalRefreshMessageMDEntriesItems->NewItem();
 	}
 
-	inline AutoAllocatePointerList<FastLogonInfo>* GetLogonInfoPool() {
-		return this->m_logon;
+	inline AutoAllocatePointerList<SpectraDefaultIncrementalRefreshMessageMDEntriesItemInfo>* GetSpectraDefaultIncrementalRefreshMessageMDEntriesItemInfoPool() {
+		return this->m_spectraDefaultIncrementalRefreshMessageMDEntriesItems;
 	}
 
-	inline FastLogoutInfo* GetFreeLogoutInfo() {
-		return this->m_logout->NewItem();
+	inline SpectraDefaultIncrementalRefreshMessageInfo* GetFreeSpectraDefaultIncrementalRefreshMessageInfo() {
+		return this->m_spectraDefaultIncrementalRefreshMessage->NewItem();
 	}
 
-	inline AutoAllocatePointerList<FastLogoutInfo>* GetLogoutInfoPool() {
-		return this->m_logout;
+	inline AutoAllocatePointerList<SpectraDefaultIncrementalRefreshMessageInfo>* GetSpectraDefaultIncrementalRefreshMessageInfoPool() {
+		return this->m_spectraDefaultIncrementalRefreshMessage;
 	}
 
-	inline FastGenericItemInfo* GetFreeGenericItemInfo() {
-		return this->m_genericItems->NewItem();
+	inline SpectraDefaultSnapshotMessageMDEntriesItemInfo* GetFreeSpectraDefaultSnapshotMessageMDEntriesItemInfo() {
+		return this->m_spectraDefaultSnapshotMessageMDEntriesItems->NewItem();
 	}
 
-	inline AutoAllocatePointerList<FastGenericItemInfo>* GetGenericItemInfoPool() {
-		return this->m_genericItems;
+	inline AutoAllocatePointerList<SpectraDefaultSnapshotMessageMDEntriesItemInfo>* GetSpectraDefaultSnapshotMessageMDEntriesItemInfoPool() {
+		return this->m_spectraDefaultSnapshotMessageMDEntriesItems;
 	}
 
-	inline FastGenericInfo* GetFreeGenericInfo() {
-		return this->m_generic->NewItem();
+	inline SpectraDefaultSnapshotMessageInfo* GetFreeSpectraDefaultSnapshotMessageInfo() {
+		return this->m_spectraDefaultSnapshotMessage->NewItem();
 	}
 
-	inline AutoAllocatePointerList<FastGenericInfo>* GetGenericInfoPool() {
-		return this->m_generic;
+	inline AutoAllocatePointerList<SpectraDefaultSnapshotMessageInfo>* GetSpectraDefaultSnapshotMessageInfoPool() {
+		return this->m_spectraDefaultSnapshotMessage;
 	}
 
-	inline FastIncrementalGenericInfo* GetFreeIncrementalGenericInfo() {
-		return this->m_incrementalGeneric->NewItem();
+	inline SpectraSecurityDefinitionMDFeedTypesItemInfo* GetFreeSpectraSecurityDefinitionMDFeedTypesItemInfo() {
+		return this->m_spectraSecurityDefinitionMDFeedTypesItems->NewItem();
 	}
 
-	inline AutoAllocatePointerList<FastIncrementalGenericInfo>* GetIncrementalGenericInfoPool() {
-		return this->m_incrementalGeneric;
+	inline AutoAllocatePointerList<SpectraSecurityDefinitionMDFeedTypesItemInfo>* GetSpectraSecurityDefinitionMDFeedTypesItemInfoPool() {
+		return this->m_spectraSecurityDefinitionMDFeedTypesItems;
 	}
 
-	inline FastOLSFONDItemInfo* GetFreeOLSFONDItemInfo() {
-		return this->m_oLSFONDItems->NewItem();
+	inline SpectraSecurityDefinitionUnderlyingsItemInfo* GetFreeSpectraSecurityDefinitionUnderlyingsItemInfo() {
+		return this->m_spectraSecurityDefinitionUnderlyingsItems->NewItem();
 	}
 
-	inline AutoAllocatePointerList<FastOLSFONDItemInfo>* GetOLSFONDItemInfoPool() {
-		return this->m_oLSFONDItems;
+	inline AutoAllocatePointerList<SpectraSecurityDefinitionUnderlyingsItemInfo>* GetSpectraSecurityDefinitionUnderlyingsItemInfoPool() {
+		return this->m_spectraSecurityDefinitionUnderlyingsItems;
 	}
 
-	inline FastOLSFONDInfo* GetFreeOLSFONDInfo() {
-		return this->m_oLSFOND->NewItem();
+	inline SpectraSecurityDefinitionInstrumentLegsItemInfo* GetFreeSpectraSecurityDefinitionInstrumentLegsItemInfo() {
+		return this->m_spectraSecurityDefinitionInstrumentLegsItems->NewItem();
 	}
 
-	inline AutoAllocatePointerList<FastOLSFONDInfo>* GetOLSFONDInfoPool() {
-		return this->m_oLSFOND;
+	inline AutoAllocatePointerList<SpectraSecurityDefinitionInstrumentLegsItemInfo>* GetSpectraSecurityDefinitionInstrumentLegsItemInfoPool() {
+		return this->m_spectraSecurityDefinitionInstrumentLegsItems;
 	}
 
-	inline FastOLSCURRItemInfo* GetFreeOLSCURRItemInfo() {
-		return this->m_oLSCURRItems->NewItem();
+	inline SpectraSecurityDefinitionInstrumentAttributesItemInfo* GetFreeSpectraSecurityDefinitionInstrumentAttributesItemInfo() {
+		return this->m_spectraSecurityDefinitionInstrumentAttributesItems->NewItem();
 	}
 
-	inline AutoAllocatePointerList<FastOLSCURRItemInfo>* GetOLSCURRItemInfoPool() {
-		return this->m_oLSCURRItems;
+	inline AutoAllocatePointerList<SpectraSecurityDefinitionInstrumentAttributesItemInfo>* GetSpectraSecurityDefinitionInstrumentAttributesItemInfoPool() {
+		return this->m_spectraSecurityDefinitionInstrumentAttributesItems;
 	}
 
-	inline FastOLSCURRInfo* GetFreeOLSCURRInfo() {
-		return this->m_oLSCURR->NewItem();
+	inline SpectraSecurityDefinitionEvntGrpItemInfo* GetFreeSpectraSecurityDefinitionEvntGrpItemInfo() {
+		return this->m_spectraSecurityDefinitionEvntGrpItems->NewItem();
 	}
 
-	inline AutoAllocatePointerList<FastOLSCURRInfo>* GetOLSCURRInfoPool() {
-		return this->m_oLSCURR;
+	inline AutoAllocatePointerList<SpectraSecurityDefinitionEvntGrpItemInfo>* GetSpectraSecurityDefinitionEvntGrpItemInfoPool() {
+		return this->m_spectraSecurityDefinitionEvntGrpItems;
 	}
 
-	inline FastTLSFONDItemInfo* GetFreeTLSFONDItemInfo() {
-		return this->m_tLSFONDItems->NewItem();
+	inline SpectraSecurityDefinitionInfo* GetFreeSpectraSecurityDefinitionInfo() {
+		return this->m_spectraSecurityDefinition->NewItem();
 	}
 
-	inline AutoAllocatePointerList<FastTLSFONDItemInfo>* GetTLSFONDItemInfoPool() {
-		return this->m_tLSFONDItems;
+	inline AutoAllocatePointerList<SpectraSecurityDefinitionInfo>* GetSpectraSecurityDefinitionInfoPool() {
+		return this->m_spectraSecurityDefinition;
 	}
 
-	inline FastTLSFONDInfo* GetFreeTLSFONDInfo() {
-		return this->m_tLSFOND->NewItem();
+	inline SpectraSecurityDefinitionUpdateReportInfo* GetFreeSpectraSecurityDefinitionUpdateReportInfo() {
+		return this->m_spectraSecurityDefinitionUpdateReport->NewItem();
 	}
 
-	inline AutoAllocatePointerList<FastTLSFONDInfo>* GetTLSFONDInfoPool() {
-		return this->m_tLSFOND;
+	inline AutoAllocatePointerList<SpectraSecurityDefinitionUpdateReportInfo>* GetSpectraSecurityDefinitionUpdateReportInfoPool() {
+		return this->m_spectraSecurityDefinitionUpdateReport;
 	}
 
-	inline FastTLSCURRItemInfo* GetFreeTLSCURRItemInfo() {
-		return this->m_tLSCURRItems->NewItem();
+	inline SpectraSecurityStatusInfo* GetFreeSpectraSecurityStatusInfo() {
+		return this->m_spectraSecurityStatus->NewItem();
 	}
 
-	inline AutoAllocatePointerList<FastTLSCURRItemInfo>* GetTLSCURRItemInfoPool() {
-		return this->m_tLSCURRItems;
+	inline AutoAllocatePointerList<SpectraSecurityStatusInfo>* GetSpectraSecurityStatusInfoPool() {
+		return this->m_spectraSecurityStatus;
 	}
 
-	inline FastTLSCURRInfo* GetFreeTLSCURRInfo() {
-		return this->m_tLSCURR->NewItem();
+	inline SpectraHeartbeatInfo* GetFreeSpectraHeartbeatInfo() {
+		return this->m_spectraHeartbeat->NewItem();
 	}
 
-	inline AutoAllocatePointerList<FastTLSCURRInfo>* GetTLSCURRInfoPool() {
-		return this->m_tLSCURR;
+	inline AutoAllocatePointerList<SpectraHeartbeatInfo>* GetSpectraHeartbeatInfoPool() {
+		return this->m_spectraHeartbeat;
 	}
 
-	inline FastIncrementalMSRFONDInfo* GetFreeIncrementalMSRFONDInfo() {
-		return this->m_incrementalMSRFOND->NewItem();
+	inline SpectraSequenceResetInfo* GetFreeSpectraSequenceResetInfo() {
+		return this->m_spectraSequenceReset->NewItem();
 	}
 
-	inline AutoAllocatePointerList<FastIncrementalMSRFONDInfo>* GetIncrementalMSRFONDInfoPool() {
-		return this->m_incrementalMSRFOND;
+	inline AutoAllocatePointerList<SpectraSequenceResetInfo>* GetSpectraSequenceResetInfoPool() {
+		return this->m_spectraSequenceReset;
 	}
 
-	inline FastIncrementalMSRCURRInfo* GetFreeIncrementalMSRCURRInfo() {
-		return this->m_incrementalMSRCURR->NewItem();
+	inline SpectraTradingSessionStatusInfo* GetFreeSpectraTradingSessionStatusInfo() {
+		return this->m_spectraTradingSessionStatus->NewItem();
 	}
 
-	inline AutoAllocatePointerList<FastIncrementalMSRCURRInfo>* GetIncrementalMSRCURRInfoPool() {
-		return this->m_incrementalMSRCURR;
+	inline AutoAllocatePointerList<SpectraTradingSessionStatusInfo>* GetSpectraTradingSessionStatusInfoPool() {
+		return this->m_spectraTradingSessionStatus;
 	}
 
-	inline FastIncrementalOLRFONDInfo* GetFreeIncrementalOLRFONDInfo() {
-		return this->m_incrementalOLRFOND->NewItem();
+	inline SpectraNewsNewsTextItemInfo* GetFreeSpectraNewsNewsTextItemInfo() {
+		return this->m_spectraNewsNewsTextItems->NewItem();
 	}
 
-	inline AutoAllocatePointerList<FastIncrementalOLRFONDInfo>* GetIncrementalOLRFONDInfoPool() {
-		return this->m_incrementalOLRFOND;
+	inline AutoAllocatePointerList<SpectraNewsNewsTextItemInfo>* GetSpectraNewsNewsTextItemInfoPool() {
+		return this->m_spectraNewsNewsTextItems;
 	}
 
-	inline FastIncrementalOLRCURRInfo* GetFreeIncrementalOLRCURRInfo() {
-		return this->m_incrementalOLRCURR->NewItem();
+	inline SpectraNewsInfo* GetFreeSpectraNewsInfo() {
+		return this->m_spectraNews->NewItem();
 	}
 
-	inline AutoAllocatePointerList<FastIncrementalOLRCURRInfo>* GetIncrementalOLRCURRInfoPool() {
-		return this->m_incrementalOLRCURR;
+	inline AutoAllocatePointerList<SpectraNewsInfo>* GetSpectraNewsInfoPool() {
+		return this->m_spectraNews;
 	}
 
-	inline FastIncrementalTLRFONDInfo* GetFreeIncrementalTLRFONDInfo() {
-		return this->m_incrementalTLRFOND->NewItem();
+	inline SpectraOrdersLogMDEntriesItemInfo* GetFreeSpectraOrdersLogMDEntriesItemInfo() {
+		return this->m_spectraOrdersLogMDEntriesItems->NewItem();
 	}
 
-	inline AutoAllocatePointerList<FastIncrementalTLRFONDInfo>* GetIncrementalTLRFONDInfoPool() {
-		return this->m_incrementalTLRFOND;
+	inline AutoAllocatePointerList<SpectraOrdersLogMDEntriesItemInfo>* GetSpectraOrdersLogMDEntriesItemInfoPool() {
+		return this->m_spectraOrdersLogMDEntriesItems;
 	}
 
-	inline FastIncrementalTLRCURRInfo* GetFreeIncrementalTLRCURRInfo() {
-		return this->m_incrementalTLRCURR->NewItem();
+	inline SpectraOrdersLogInfo* GetFreeSpectraOrdersLogInfo() {
+		return this->m_spectraOrdersLog->NewItem();
 	}
 
-	inline AutoAllocatePointerList<FastIncrementalTLRCURRInfo>* GetIncrementalTLRCURRInfoPool() {
-		return this->m_incrementalTLRCURR;
+	inline AutoAllocatePointerList<SpectraOrdersLogInfo>* GetSpectraOrdersLogInfoPool() {
+		return this->m_spectraOrdersLog;
 	}
 
-	inline FastSecurityDefinitionGroupInstrAttribItemInfo* GetFreeSecurityDefinitionGroupInstrAttribItemInfo() {
-		return this->m_securityDefinitionGroupInstrAttribItems->NewItem();
+	inline SpectraOrdersBookMDEntriesItemInfo* GetFreeSpectraOrdersBookMDEntriesItemInfo() {
+		return this->m_spectraOrdersBookMDEntriesItems->NewItem();
 	}
 
-	inline AutoAllocatePointerList<FastSecurityDefinitionGroupInstrAttribItemInfo>* GetSecurityDefinitionGroupInstrAttribItemInfoPool() {
-		return this->m_securityDefinitionGroupInstrAttribItems;
+	inline AutoAllocatePointerList<SpectraOrdersBookMDEntriesItemInfo>* GetSpectraOrdersBookMDEntriesItemInfoPool() {
+		return this->m_spectraOrdersBookMDEntriesItems;
 	}
 
-	inline FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo* GetFreeSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo() {
-		return this->m_securityDefinitionMarketSegmentGrpTradingSessionRulesGrpItems->NewItem();
+	inline SpectraOrdersBookInfo* GetFreeSpectraOrdersBookInfo() {
+		return this->m_spectraOrdersBook->NewItem();
 	}
 
-	inline AutoAllocatePointerList<FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo>* GetSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfoPool() {
-		return this->m_securityDefinitionMarketSegmentGrpTradingSessionRulesGrpItems;
+	inline AutoAllocatePointerList<SpectraOrdersBookInfo>* GetSpectraOrdersBookInfoPool() {
+		return this->m_spectraOrdersBook;
 	}
 
-	inline FastSecurityDefinitionMarketSegmentGrpItemInfo* GetFreeSecurityDefinitionMarketSegmentGrpItemInfo() {
-		return this->m_securityDefinitionMarketSegmentGrpItems->NewItem();
+	inline SpectraLogonInfo* GetFreeSpectraLogonInfo() {
+		return this->m_spectraLogon->NewItem();
 	}
 
-	inline AutoAllocatePointerList<FastSecurityDefinitionMarketSegmentGrpItemInfo>* GetSecurityDefinitionMarketSegmentGrpItemInfoPool() {
-		return this->m_securityDefinitionMarketSegmentGrpItems;
+	inline AutoAllocatePointerList<SpectraLogonInfo>* GetSpectraLogonInfoPool() {
+		return this->m_spectraLogon;
 	}
 
-	inline FastSecurityDefinitionInfo* GetFreeSecurityDefinitionInfo() {
-		return this->m_securityDefinition->NewItem();
+	inline SpectraLogoutInfo* GetFreeSpectraLogoutInfo() {
+		return this->m_spectraLogout->NewItem();
 	}
 
-	inline AutoAllocatePointerList<FastSecurityDefinitionInfo>* GetSecurityDefinitionInfoPool() {
-		return this->m_securityDefinition;
-	}
-
-	inline FastSecurityStatusInfo* GetFreeSecurityStatusInfo() {
-		return this->m_securityStatus->NewItem();
-	}
-
-	inline AutoAllocatePointerList<FastSecurityStatusInfo>* GetSecurityStatusInfoPool() {
-		return this->m_securityStatus;
-	}
-
-	inline FastTradingSessionStatusInfo* GetFreeTradingSessionStatusInfo() {
-		return this->m_tradingSessionStatus->NewItem();
-	}
-
-	inline AutoAllocatePointerList<FastTradingSessionStatusInfo>* GetTradingSessionStatusInfoPool() {
-		return this->m_tradingSessionStatus;
-	}
-
-	inline FastHeartbeatInfo* GetFreeHeartbeatInfo() {
-		return this->m_heartbeat->NewItem();
-	}
-
-	inline AutoAllocatePointerList<FastHeartbeatInfo>* GetHeartbeatInfoPool() {
-		return this->m_heartbeat;
+	inline AutoAllocatePointerList<SpectraLogoutInfo>* GetSpectraLogoutInfoPool() {
+		return this->m_spectraLogout;
 	}
 
 private:
-	void ReleaseLogonInfo() {
+	void ReleaseSpectraDefaultIncrementalRefreshMessageMDEntriesItemInfo() {
+		((SpectraDefaultIncrementalRefreshMessageMDEntriesItemInfo*)this->LastDecodeInfo())->ReleaseUnused();
+	}
+	void ReleaseSpectraDefaultIncrementalRefreshMessageInfo() {
+		((SpectraDefaultIncrementalRefreshMessageInfo*)this->LastDecodeInfo())->ReleaseUnused();
+	}
+	void ReleaseSpectraDefaultSnapshotMessageMDEntriesItemInfo() {
+		((SpectraDefaultSnapshotMessageMDEntriesItemInfo*)this->LastDecodeInfo())->ReleaseUnused();
+	}
+	void ReleaseSpectraDefaultSnapshotMessageInfo() {
+		((SpectraDefaultSnapshotMessageInfo*)this->LastDecodeInfo())->ReleaseUnused();
+	}
+	void ReleaseSpectraSecurityDefinitionMDFeedTypesItemInfo() {
+		((SpectraSecurityDefinitionMDFeedTypesItemInfo*)this->LastDecodeInfo())->ReleaseUnused();
+	}
+	void ReleaseSpectraSecurityDefinitionUnderlyingsItemInfo() {
+		((SpectraSecurityDefinitionUnderlyingsItemInfo*)this->LastDecodeInfo())->ReleaseUnused();
+	}
+	void ReleaseSpectraSecurityDefinitionInstrumentLegsItemInfo() {
+		((SpectraSecurityDefinitionInstrumentLegsItemInfo*)this->LastDecodeInfo())->ReleaseUnused();
+	}
+	void ReleaseSpectraSecurityDefinitionInstrumentAttributesItemInfo() {
+		((SpectraSecurityDefinitionInstrumentAttributesItemInfo*)this->LastDecodeInfo())->ReleaseUnused();
+	}
+	void ReleaseSpectraSecurityDefinitionEvntGrpItemInfo() {
+		((SpectraSecurityDefinitionEvntGrpItemInfo*)this->LastDecodeInfo())->ReleaseUnused();
+	}
+	void ReleaseSpectraSecurityDefinitionInfo() {
+		((SpectraSecurityDefinitionInfo*)this->LastDecodeInfo())->ReleaseUnused();
+	}
+	void ReleaseSpectraSecurityDefinitionUpdateReportInfo() {
+		((SpectraSecurityDefinitionUpdateReportInfo*)this->LastDecodeInfo())->ReleaseUnused();
+	}
+	void ReleaseSpectraSecurityStatusInfo() {
+		((SpectraSecurityStatusInfo*)this->LastDecodeInfo())->ReleaseUnused();
+	}
+	void ReleaseSpectraHeartbeatInfo() {
+		((SpectraHeartbeatInfo*)this->LastDecodeInfo())->ReleaseUnused();
+	}
+	void ReleaseSpectraSequenceResetInfo() {
+		((SpectraSequenceResetInfo*)this->LastDecodeInfo())->ReleaseUnused();
+	}
+	void ReleaseSpectraTradingSessionStatusInfo() {
+		((SpectraTradingSessionStatusInfo*)this->LastDecodeInfo())->ReleaseUnused();
+	}
+	void ReleaseSpectraNewsNewsTextItemInfo() {
+		((SpectraNewsNewsTextItemInfo*)this->LastDecodeInfo())->ReleaseUnused();
+	}
+	void ReleaseSpectraNewsInfo() {
+		((SpectraNewsInfo*)this->LastDecodeInfo())->ReleaseUnused();
+	}
+	void ReleaseSpectraOrdersLogMDEntriesItemInfo() {
+		((SpectraOrdersLogMDEntriesItemInfo*)this->LastDecodeInfo())->ReleaseUnused();
+	}
+	void ReleaseSpectraOrdersLogInfo() {
+		((SpectraOrdersLogInfo*)this->LastDecodeInfo())->ReleaseUnused();
+	}
+	void ReleaseSpectraOrdersBookMDEntriesItemInfo() {
+		((SpectraOrdersBookMDEntriesItemInfo*)this->LastDecodeInfo())->ReleaseUnused();
+	}
+	void ReleaseSpectraOrdersBookInfo() {
+		((SpectraOrdersBookInfo*)this->LastDecodeInfo())->ReleaseUnused();
+	}
+	void ReleaseSpectraLogonInfo() {
+		((SpectraLogonInfo*)this->LastDecodeInfo())->ReleaseUnused();
+	}
+	void ReleaseSpectraLogoutInfo() {
+		((SpectraLogoutInfo*)this->LastDecodeInfo())->ReleaseUnused();
+	}
+	inline void ResetSpectra() {
+		FastReleaseMethodPointer funcPtr = this->m_spectraReleaseMethods[this->m_templateId - 3];
+		(this->*funcPtr)();
+	}
+public:
+	inline FastLogonInfo* GetFreeFastLogonInfo() {
+		return this->m_fastLogon->NewItem();
+	}
+
+	inline AutoAllocatePointerList<FastLogonInfo>* GetFastLogonInfoPool() {
+		return this->m_fastLogon;
+	}
+
+	inline FastLogoutInfo* GetFreeFastLogoutInfo() {
+		return this->m_fastLogout->NewItem();
+	}
+
+	inline AutoAllocatePointerList<FastLogoutInfo>* GetFastLogoutInfoPool() {
+		return this->m_fastLogout;
+	}
+
+	inline FastGenericItemInfo* GetFreeFastGenericItemInfo() {
+		return this->m_fastGenericItems->NewItem();
+	}
+
+	inline AutoAllocatePointerList<FastGenericItemInfo>* GetFastGenericItemInfoPool() {
+		return this->m_fastGenericItems;
+	}
+
+	inline FastGenericInfo* GetFreeFastGenericInfo() {
+		return this->m_fastGeneric->NewItem();
+	}
+
+	inline AutoAllocatePointerList<FastGenericInfo>* GetFastGenericInfoPool() {
+		return this->m_fastGeneric;
+	}
+
+	inline FastIncrementalGenericInfo* GetFreeFastIncrementalGenericInfo() {
+		return this->m_fastIncrementalGeneric->NewItem();
+	}
+
+	inline AutoAllocatePointerList<FastIncrementalGenericInfo>* GetFastIncrementalGenericInfoPool() {
+		return this->m_fastIncrementalGeneric;
+	}
+
+	inline FastOLSFONDItemInfo* GetFreeFastOLSFONDItemInfo() {
+		return this->m_fastOLSFONDItems->NewItem();
+	}
+
+	inline AutoAllocatePointerList<FastOLSFONDItemInfo>* GetFastOLSFONDItemInfoPool() {
+		return this->m_fastOLSFONDItems;
+	}
+
+	inline FastOLSFONDInfo* GetFreeFastOLSFONDInfo() {
+		return this->m_fastOLSFOND->NewItem();
+	}
+
+	inline AutoAllocatePointerList<FastOLSFONDInfo>* GetFastOLSFONDInfoPool() {
+		return this->m_fastOLSFOND;
+	}
+
+	inline FastOLSCURRItemInfo* GetFreeFastOLSCURRItemInfo() {
+		return this->m_fastOLSCURRItems->NewItem();
+	}
+
+	inline AutoAllocatePointerList<FastOLSCURRItemInfo>* GetFastOLSCURRItemInfoPool() {
+		return this->m_fastOLSCURRItems;
+	}
+
+	inline FastOLSCURRInfo* GetFreeFastOLSCURRInfo() {
+		return this->m_fastOLSCURR->NewItem();
+	}
+
+	inline AutoAllocatePointerList<FastOLSCURRInfo>* GetFastOLSCURRInfoPool() {
+		return this->m_fastOLSCURR;
+	}
+
+	inline FastTLSFONDItemInfo* GetFreeFastTLSFONDItemInfo() {
+		return this->m_fastTLSFONDItems->NewItem();
+	}
+
+	inline AutoAllocatePointerList<FastTLSFONDItemInfo>* GetFastTLSFONDItemInfoPool() {
+		return this->m_fastTLSFONDItems;
+	}
+
+	inline FastTLSFONDInfo* GetFreeFastTLSFONDInfo() {
+		return this->m_fastTLSFOND->NewItem();
+	}
+
+	inline AutoAllocatePointerList<FastTLSFONDInfo>* GetFastTLSFONDInfoPool() {
+		return this->m_fastTLSFOND;
+	}
+
+	inline FastTLSCURRItemInfo* GetFreeFastTLSCURRItemInfo() {
+		return this->m_fastTLSCURRItems->NewItem();
+	}
+
+	inline AutoAllocatePointerList<FastTLSCURRItemInfo>* GetFastTLSCURRItemInfoPool() {
+		return this->m_fastTLSCURRItems;
+	}
+
+	inline FastTLSCURRInfo* GetFreeFastTLSCURRInfo() {
+		return this->m_fastTLSCURR->NewItem();
+	}
+
+	inline AutoAllocatePointerList<FastTLSCURRInfo>* GetFastTLSCURRInfoPool() {
+		return this->m_fastTLSCURR;
+	}
+
+	inline FastIncrementalMSRFONDInfo* GetFreeFastIncrementalMSRFONDInfo() {
+		return this->m_fastIncrementalMSRFOND->NewItem();
+	}
+
+	inline AutoAllocatePointerList<FastIncrementalMSRFONDInfo>* GetFastIncrementalMSRFONDInfoPool() {
+		return this->m_fastIncrementalMSRFOND;
+	}
+
+	inline FastIncrementalMSRCURRInfo* GetFreeFastIncrementalMSRCURRInfo() {
+		return this->m_fastIncrementalMSRCURR->NewItem();
+	}
+
+	inline AutoAllocatePointerList<FastIncrementalMSRCURRInfo>* GetFastIncrementalMSRCURRInfoPool() {
+		return this->m_fastIncrementalMSRCURR;
+	}
+
+	inline FastIncrementalOLRFONDInfo* GetFreeFastIncrementalOLRFONDInfo() {
+		return this->m_fastIncrementalOLRFOND->NewItem();
+	}
+
+	inline AutoAllocatePointerList<FastIncrementalOLRFONDInfo>* GetFastIncrementalOLRFONDInfoPool() {
+		return this->m_fastIncrementalOLRFOND;
+	}
+
+	inline FastIncrementalOLRCURRInfo* GetFreeFastIncrementalOLRCURRInfo() {
+		return this->m_fastIncrementalOLRCURR->NewItem();
+	}
+
+	inline AutoAllocatePointerList<FastIncrementalOLRCURRInfo>* GetFastIncrementalOLRCURRInfoPool() {
+		return this->m_fastIncrementalOLRCURR;
+	}
+
+	inline FastIncrementalTLRFONDInfo* GetFreeFastIncrementalTLRFONDInfo() {
+		return this->m_fastIncrementalTLRFOND->NewItem();
+	}
+
+	inline AutoAllocatePointerList<FastIncrementalTLRFONDInfo>* GetFastIncrementalTLRFONDInfoPool() {
+		return this->m_fastIncrementalTLRFOND;
+	}
+
+	inline FastIncrementalTLRCURRInfo* GetFreeFastIncrementalTLRCURRInfo() {
+		return this->m_fastIncrementalTLRCURR->NewItem();
+	}
+
+	inline AutoAllocatePointerList<FastIncrementalTLRCURRInfo>* GetFastIncrementalTLRCURRInfoPool() {
+		return this->m_fastIncrementalTLRCURR;
+	}
+
+	inline FastSecurityDefinitionGroupInstrAttribItemInfo* GetFreeFastSecurityDefinitionGroupInstrAttribItemInfo() {
+		return this->m_fastSecurityDefinitionGroupInstrAttribItems->NewItem();
+	}
+
+	inline AutoAllocatePointerList<FastSecurityDefinitionGroupInstrAttribItemInfo>* GetFastSecurityDefinitionGroupInstrAttribItemInfoPool() {
+		return this->m_fastSecurityDefinitionGroupInstrAttribItems;
+	}
+
+	inline FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo* GetFreeFastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo() {
+		return this->m_fastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItems->NewItem();
+	}
+
+	inline AutoAllocatePointerList<FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo>* GetFastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfoPool() {
+		return this->m_fastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItems;
+	}
+
+	inline FastSecurityDefinitionMarketSegmentGrpItemInfo* GetFreeFastSecurityDefinitionMarketSegmentGrpItemInfo() {
+		return this->m_fastSecurityDefinitionMarketSegmentGrpItems->NewItem();
+	}
+
+	inline AutoAllocatePointerList<FastSecurityDefinitionMarketSegmentGrpItemInfo>* GetFastSecurityDefinitionMarketSegmentGrpItemInfoPool() {
+		return this->m_fastSecurityDefinitionMarketSegmentGrpItems;
+	}
+
+	inline FastSecurityDefinitionInfo* GetFreeFastSecurityDefinitionInfo() {
+		return this->m_fastSecurityDefinition->NewItem();
+	}
+
+	inline AutoAllocatePointerList<FastSecurityDefinitionInfo>* GetFastSecurityDefinitionInfoPool() {
+		return this->m_fastSecurityDefinition;
+	}
+
+	inline FastSecurityStatusInfo* GetFreeFastSecurityStatusInfo() {
+		return this->m_fastSecurityStatus->NewItem();
+	}
+
+	inline AutoAllocatePointerList<FastSecurityStatusInfo>* GetFastSecurityStatusInfoPool() {
+		return this->m_fastSecurityStatus;
+	}
+
+	inline FastTradingSessionStatusInfo* GetFreeFastTradingSessionStatusInfo() {
+		return this->m_fastTradingSessionStatus->NewItem();
+	}
+
+	inline AutoAllocatePointerList<FastTradingSessionStatusInfo>* GetFastTradingSessionStatusInfoPool() {
+		return this->m_fastTradingSessionStatus;
+	}
+
+	inline FastHeartbeatInfo* GetFreeFastHeartbeatInfo() {
+		return this->m_fastHeartbeat->NewItem();
+	}
+
+	inline AutoAllocatePointerList<FastHeartbeatInfo>* GetFastHeartbeatInfoPool() {
+		return this->m_fastHeartbeat;
+	}
+
+private:
+	void ReleaseFastLogonInfo() {
 		((FastLogonInfo*)this->LastDecodeInfo())->ReleaseUnused();
 	}
-	void ReleaseLogoutInfo() {
+	void ReleaseFastLogoutInfo() {
 		((FastLogoutInfo*)this->LastDecodeInfo())->ReleaseUnused();
 	}
-	void ReleaseGenericItemInfo() {
+	void ReleaseFastGenericItemInfo() {
 		((FastGenericItemInfo*)this->LastDecodeInfo())->ReleaseUnused();
 	}
-	void ReleaseGenericInfo() {
+	void ReleaseFastGenericInfo() {
 		((FastGenericInfo*)this->LastDecodeInfo())->ReleaseUnused();
 	}
-	void ReleaseIncrementalGenericInfo() {
+	void ReleaseFastIncrementalGenericInfo() {
 		((FastIncrementalGenericInfo*)this->LastDecodeInfo())->ReleaseUnused();
 	}
-	void ReleaseOLSFONDItemInfo() {
+	void ReleaseFastOLSFONDItemInfo() {
 		((FastOLSFONDItemInfo*)this->LastDecodeInfo())->ReleaseUnused();
 	}
-	void ReleaseOLSFONDInfo() {
+	void ReleaseFastOLSFONDInfo() {
 		((FastOLSFONDInfo*)this->LastDecodeInfo())->ReleaseUnused();
 	}
-	void ReleaseOLSCURRItemInfo() {
+	void ReleaseFastOLSCURRItemInfo() {
 		((FastOLSCURRItemInfo*)this->LastDecodeInfo())->ReleaseUnused();
 	}
-	void ReleaseOLSCURRInfo() {
+	void ReleaseFastOLSCURRInfo() {
 		((FastOLSCURRInfo*)this->LastDecodeInfo())->ReleaseUnused();
 	}
-	void ReleaseTLSFONDItemInfo() {
+	void ReleaseFastTLSFONDItemInfo() {
 		((FastTLSFONDItemInfo*)this->LastDecodeInfo())->ReleaseUnused();
 	}
-	void ReleaseTLSFONDInfo() {
+	void ReleaseFastTLSFONDInfo() {
 		((FastTLSFONDInfo*)this->LastDecodeInfo())->ReleaseUnused();
 	}
-	void ReleaseTLSCURRItemInfo() {
+	void ReleaseFastTLSCURRItemInfo() {
 		((FastTLSCURRItemInfo*)this->LastDecodeInfo())->ReleaseUnused();
 	}
-	void ReleaseTLSCURRInfo() {
+	void ReleaseFastTLSCURRInfo() {
 		((FastTLSCURRInfo*)this->LastDecodeInfo())->ReleaseUnused();
 	}
-	void ReleaseIncrementalMSRFONDInfo() {
+	void ReleaseFastIncrementalMSRFONDInfo() {
 		((FastIncrementalMSRFONDInfo*)this->LastDecodeInfo())->ReleaseUnused();
 	}
-	void ReleaseIncrementalMSRCURRInfo() {
+	void ReleaseFastIncrementalMSRCURRInfo() {
 		((FastIncrementalMSRCURRInfo*)this->LastDecodeInfo())->ReleaseUnused();
 	}
-	void ReleaseIncrementalOLRFONDInfo() {
+	void ReleaseFastIncrementalOLRFONDInfo() {
 		((FastIncrementalOLRFONDInfo*)this->LastDecodeInfo())->ReleaseUnused();
 	}
-	void ReleaseIncrementalOLRCURRInfo() {
+	void ReleaseFastIncrementalOLRCURRInfo() {
 		((FastIncrementalOLRCURRInfo*)this->LastDecodeInfo())->ReleaseUnused();
 	}
-	void ReleaseIncrementalTLRFONDInfo() {
+	void ReleaseFastIncrementalTLRFONDInfo() {
 		((FastIncrementalTLRFONDInfo*)this->LastDecodeInfo())->ReleaseUnused();
 	}
-	void ReleaseIncrementalTLRCURRInfo() {
+	void ReleaseFastIncrementalTLRCURRInfo() {
 		((FastIncrementalTLRCURRInfo*)this->LastDecodeInfo())->ReleaseUnused();
 	}
-	void ReleaseSecurityDefinitionGroupInstrAttribItemInfo() {
+	void ReleaseFastSecurityDefinitionGroupInstrAttribItemInfo() {
 		((FastSecurityDefinitionGroupInstrAttribItemInfo*)this->LastDecodeInfo())->ReleaseUnused();
 	}
-	void ReleaseSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo() {
+	void ReleaseFastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo() {
 		((FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo*)this->LastDecodeInfo())->ReleaseUnused();
 	}
-	void ReleaseSecurityDefinitionMarketSegmentGrpItemInfo() {
+	void ReleaseFastSecurityDefinitionMarketSegmentGrpItemInfo() {
 		((FastSecurityDefinitionMarketSegmentGrpItemInfo*)this->LastDecodeInfo())->ReleaseUnused();
 	}
-	void ReleaseSecurityDefinitionInfo() {
+	void ReleaseFastSecurityDefinitionInfo() {
 		((FastSecurityDefinitionInfo*)this->LastDecodeInfo())->ReleaseUnused();
 	}
-	void ReleaseSecurityStatusInfo() {
+	void ReleaseFastSecurityStatusInfo() {
 		((FastSecurityStatusInfo*)this->LastDecodeInfo())->ReleaseUnused();
 	}
-	void ReleaseTradingSessionStatusInfo() {
+	void ReleaseFastTradingSessionStatusInfo() {
 		((FastTradingSessionStatusInfo*)this->LastDecodeInfo())->ReleaseUnused();
 	}
-	void ReleaseHeartbeatInfo() {
+	void ReleaseFastHeartbeatInfo() {
 		((FastHeartbeatInfo*)this->LastDecodeInfo())->ReleaseUnused();
 	}
-	inline void Reset() {
-		FastReleaseMethodPointer funcPtr = this->ReleaseMethods[this->m_templateId - 2101];
+	inline void ResetFast() {
+		FastReleaseMethodPointer funcPtr = this->m_fastReleaseMethods[this->m_templateId - 2101];
 		(this->*funcPtr)();
 	}
 #pragma endregion
@@ -2608,13 +3045,57 @@ public:
 	inline int MessageLength() { return this->currentPos - this->buffer; }
 	inline void SetBufferLength(int value) { this->bufferLength = value; }
 
-    void* DecodeUnsupportedMessage() {
-        return NULL;
+    void* DecodeFastUnsupportedMessage() {
+        return 0;
     }
 
-	FastSnapshotInfo* GetSnapshotInfoUnsupported() {
+	void* DecodeSpectraUnsupportedMessage() {
 		return 0;
 	}
+
+	FastSnapshotInfo* GetFastSnapshotInfoUnsupported() {
+		return 0;
+	}
+
+	SpectraSnapshotInfo* GetSpectraSnapshotInfoUnsupported() {
+		return 0;
+	}
+#pragma region Asts_Encode_Methods_Declaration_GeneratedCode
+	void EncodeFastLogonInfo(FastLogonInfo* info);
+	void EncodeFastLogoutInfo(FastLogoutInfo* info);
+	void EncodeFastGenericInfo(FastGenericInfo* info);
+	void EncodeFastIncrementalGenericInfo(FastIncrementalGenericInfo* info);
+	void EncodeFastOLSFONDInfo(FastOLSFONDInfo* info);
+	void EncodeFastOLSCURRInfo(FastOLSCURRInfo* info);
+	void EncodeFastTLSFONDInfo(FastTLSFONDInfo* info);
+	void EncodeFastTLSCURRInfo(FastTLSCURRInfo* info);
+	void EncodeFastIncrementalMSRFONDInfo(FastIncrementalMSRFONDInfo* info);
+	void EncodeFastIncrementalMSRCURRInfo(FastIncrementalMSRCURRInfo* info);
+	void EncodeFastIncrementalOLRFONDInfo(FastIncrementalOLRFONDInfo* info);
+	void EncodeFastIncrementalOLRCURRInfo(FastIncrementalOLRCURRInfo* info);
+	void EncodeFastIncrementalTLRFONDInfo(FastIncrementalTLRFONDInfo* info);
+	void EncodeFastIncrementalTLRCURRInfo(FastIncrementalTLRCURRInfo* info);
+	void EncodeFastSecurityDefinitionInfo(FastSecurityDefinitionInfo* info);
+	void EncodeFastSecurityStatusInfo(FastSecurityStatusInfo* info);
+	void EncodeFastTradingSessionStatusInfo(FastTradingSessionStatusInfo* info);
+	void EncodeFastHeartbeatInfo(FastHeartbeatInfo* info);
+#pragma endregion
+
+#pragma region Spectra_Encode_Methods_Declaration_GeneratedCode
+	void EncodeSpectraDefaultIncrementalRefreshMessageInfo(SpectraDefaultIncrementalRefreshMessageInfo* info);
+	void EncodeSpectraDefaultSnapshotMessageInfo(SpectraDefaultSnapshotMessageInfo* info);
+	void EncodeSpectraSecurityDefinitionInfo(SpectraSecurityDefinitionInfo* info);
+	void EncodeSpectraSecurityDefinitionUpdateReportInfo(SpectraSecurityDefinitionUpdateReportInfo* info);
+	void EncodeSpectraSecurityStatusInfo(SpectraSecurityStatusInfo* info);
+	void EncodeSpectraHeartbeatInfo(SpectraHeartbeatInfo* info);
+	void EncodeSpectraSequenceResetInfo(SpectraSequenceResetInfo* info);
+	void EncodeSpectraTradingSessionStatusInfo(SpectraTradingSessionStatusInfo* info);
+	void EncodeSpectraNewsInfo(SpectraNewsInfo* info);
+	void EncodeSpectraOrdersLogInfo(SpectraOrdersLogInfo* info);
+	void EncodeSpectraOrdersBookInfo(SpectraOrdersBookInfo* info);
+	void EncodeSpectraLogonInfo(SpectraLogonInfo* info);
+	void EncodeSpectraLogoutInfo(SpectraLogoutInfo* info);
+#pragma endregion
 
 #pragma region Encode_Methods_Declaration_GeneratedCode
 	void EncodeLogonInfo(FastLogonInfo* info);
@@ -2635,6 +3116,14 @@ public:
 	void EncodeSecurityStatusInfo(FastSecurityStatusInfo* info);
 	void EncodeTradingSessionStatusInfo(FastTradingSessionStatusInfo* info);
 	void EncodeHeartbeatInfo(FastHeartbeatInfo* info);
+#pragma endregion
+
+#pragma region Asts_Print_Methods_Declaration_GeneratedCode
+
+#pragma endregion
+
+#pragma region Spectra_Print_Methods_Declaration_GeneratedCode
+
 #pragma endregion
 
 #pragma region Print_Methods_Declaration_GeneratedCode
@@ -2676,21 +3165,21 @@ public:
 	void PrintXmlHeartbeat(FastHeartbeatInfo *info);
 #pragma endregion
 
-#pragma region Decode_Methods_Definition_GeneratedCode
-	inline void DecodeHeader() {
+#pragma region Asts_Decode_Methods_Definition_GeneratedCode
+	inline void DecodeFastHeader() {
 
 		this->ParsePresenceMap(&(this->m_presenceMap));
 		this->m_templateId = ReadUInt32_Mandatory();
 	}
 
-	int GetTotalNumReports() {
+	int GetFastTotalNumReports() {
 		// ReadMsgNumber and DecodeHeader should be called first
 		SkipToNextField(); // MsgSeqNum
 		SkipToNextField(); // SendingTime
 		return ReadInt32_Optional();
 	}
-	void* DecodeLogon() {
-		FastLogonInfo* info = GetFreeLogonInfo();
+	void* DecodeFastLogon() {
+		FastLogonInfo* info = GetFreeFastLogonInfo();
 		info->PresenceMap = this->m_presenceMap;
 
 		ReadString_Mandatory(info->TargetCompID, &(info->TargetCompIDLength));
@@ -2706,11 +3195,11 @@ public:
 		else
 			ReadString_Optional(info->Password, &(info->PasswordLength));
 		ReadString_Mandatory(info->DefaultApplVerID, &(info->DefaultApplVerIDLength));
-		this->m_prevLogonInfo = info;
+		this->m_prevfastLogonInfo = info;
 		return info;
 	}
-	void* DecodeLogout() {
-		FastLogoutInfo* info = GetFreeLogoutInfo();
+	void* DecodeFastLogout() {
+		FastLogoutInfo* info = GetFreeFastLogoutInfo();
 		info->PresenceMap = this->m_presenceMap;
 
 		ReadString_Mandatory(info->TargetCompID, &(info->TargetCompIDLength));
@@ -2720,11 +3209,11 @@ public:
 			info->NullMap |= NULL_MAP_INDEX0;
 		else
 			ReadString_Optional(info->Text, &(info->TextLength));
-		this->m_prevLogoutInfo = info;
+		this->m_prevfastLogoutInfo = info;
 		return info;
 	}
-	void* DecodeGeneric() {
-		FastGenericInfo* info = GetFreeGenericInfo();
+	void* DecodeFastGeneric() {
+		FastGenericInfo* info = GetFreeFastGenericInfo();
 		info->PresenceMap = this->m_presenceMap;
 
 		info->MsgSeqNum = ReadUInt32_Mandatory();
@@ -2768,7 +3257,7 @@ public:
 		FastGenericItemInfo* gmdeItemInfo = NULL;
 
 		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
-			gmdeItemInfo = GetFreeGenericItemInfo();
+			gmdeItemInfo = GetFreeFastGenericItemInfo();
 			info->GroupMDEntries[i] = gmdeItemInfo;
 			if(CheckProcessNullString())
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX0;
@@ -2934,14 +3423,14 @@ public:
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX40;
 			else
 				ReadString_Optional(gmdeItemInfo->TradingSessionSubID, &(gmdeItemInfo->TradingSessionSubIDLength));
-			this->m_prevGenericItemInfo = gmdeItemInfo;
+			this->m_prevfastGenericItemInfo = gmdeItemInfo;
 		}
 
-		this->m_prevGenericInfo = info;
+		this->m_prevfastGenericInfo = info;
 		return info;
 	}
-	void* DecodeIncrementalGeneric() {
-		FastIncrementalGenericInfo* info = GetFreeIncrementalGenericInfo();
+	void* DecodeFastIncrementalGeneric() {
+		FastIncrementalGenericInfo* info = GetFreeFastIncrementalGenericInfo();
 		info->PresenceMap = this->m_presenceMap;
 
 		info->MsgSeqNum = ReadUInt32_Mandatory();
@@ -2951,7 +3440,7 @@ public:
 		FastGenericItemInfo* gmdeItemInfo = NULL;
 
 		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
-			gmdeItemInfo = GetFreeGenericItemInfo();
+			gmdeItemInfo = GetFreeFastGenericItemInfo();
 			info->GroupMDEntries[i] = gmdeItemInfo;
 			if(CheckProcessNullUInt32())
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX0;
@@ -3137,14 +3626,14 @@ public:
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX45;
 			else
 				ReadString_Optional(gmdeItemInfo->TradingSessionSubID, &(gmdeItemInfo->TradingSessionSubIDLength));
-			this->m_prevGenericItemInfo = gmdeItemInfo;
+			this->m_prevfastGenericItemInfo = gmdeItemInfo;
 		}
 
-		this->m_prevIncrementalGenericInfo = info;
+		this->m_prevfastIncrementalGenericInfo = info;
 		return info;
 	}
-	void* DecodeOLSFOND() {
-		FastOLSFONDInfo* info = GetFreeOLSFONDInfo();
+	void* DecodeFastOLSFOND() {
+		FastOLSFONDInfo* info = GetFreeFastOLSFONDInfo();
 		info->PresenceMap = this->m_presenceMap;
 
 		info->MsgSeqNum = ReadUInt32_Mandatory();
@@ -3184,7 +3673,7 @@ public:
 		FastOLSFONDItemInfo* gmdeItemInfo = NULL;
 
 		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
-			gmdeItemInfo = GetFreeOLSFONDItemInfo();
+			gmdeItemInfo = GetFreeFastOLSFONDItemInfo();
 			info->GroupMDEntries[i] = gmdeItemInfo;
 
 			this->ParsePresenceMap(&(gmdeItemInfo->PresenceMap));
@@ -3196,8 +3685,8 @@ public:
 					ReadString_Optional(gmdeItemInfo->MDEntryType, &(gmdeItemInfo->MDEntryTypeLength));
 			}
 			else {
-				this->CopyString(gmdeItemInfo->MDEntryType, m_prevOLSFONDItemInfo->MDEntryType, m_prevOLSFONDItemInfo->MDEntryTypeLength);
-				gmdeItemInfo->MDEntryTypeLength = this->m_prevOLSFONDItemInfo->MDEntryTypeLength;
+				this->CopyString(gmdeItemInfo->MDEntryType, m_prevfastOLSFONDItemInfo->MDEntryType, m_prevfastOLSFONDItemInfo->MDEntryTypeLength);
+				gmdeItemInfo->MDEntryTypeLength = this->m_prevfastOLSFONDItemInfo->MDEntryTypeLength;
 			}
 			if(CheckProcessNullString())
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX1;
@@ -3210,7 +3699,7 @@ public:
 					gmdeItemInfo->MDEntryDate = ReadUInt32_Optional();
 			}
 			else {
-				gmdeItemInfo->MDEntryDate = this->m_prevOLSFONDItemInfo->MDEntryDate;
+				gmdeItemInfo->MDEntryDate = this->m_prevfastOLSFONDItemInfo->MDEntryDate;
 			}
 			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX2)) {
 				if(CheckProcessNullUInt32())
@@ -3219,7 +3708,7 @@ public:
 					gmdeItemInfo->MDEntryTime = ReadUInt32_Optional();
 			}
 			else {
-				gmdeItemInfo->MDEntryTime = this->m_prevOLSFONDItemInfo->MDEntryTime;
+				gmdeItemInfo->MDEntryTime = this->m_prevfastOLSFONDItemInfo->MDEntryTime;
 			}
 			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX3)) {
 				if(CheckProcessNullUInt32())
@@ -3228,7 +3717,7 @@ public:
 					gmdeItemInfo->OrigTime = ReadUInt32_Optional();
 			}
 			else {
-				gmdeItemInfo->OrigTime = this->m_prevOLSFONDItemInfo->OrigTime;
+				gmdeItemInfo->OrigTime = this->m_prevfastOLSFONDItemInfo->OrigTime;
 			}
 			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX4)) {
 				if(CheckProcessNullDecimal())
@@ -3237,7 +3726,7 @@ public:
 					ReadDecimal_Optional(&(gmdeItemInfo->MDEntryPx));
 			}
 			else {
-				gmdeItemInfo->MDEntryPx = this->m_prevOLSFONDItemInfo->MDEntryPx;
+				gmdeItemInfo->MDEntryPx = this->m_prevfastOLSFONDItemInfo->MDEntryPx;
 			}
 			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX5)) {
 				if(CheckProcessNullDecimal())
@@ -3246,7 +3735,7 @@ public:
 					ReadDecimal_Optional(&(gmdeItemInfo->MDEntrySize));
 			}
 			else {
-				gmdeItemInfo->MDEntrySize = this->m_prevOLSFONDItemInfo->MDEntrySize;
+				gmdeItemInfo->MDEntrySize = this->m_prevfastOLSFONDItemInfo->MDEntrySize;
 			}
 			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX6)) {
 				if(CheckProcessNullDecimal())
@@ -3255,7 +3744,7 @@ public:
 					ReadDecimal_Optional(&(gmdeItemInfo->Yield));
 			}
 			else {
-				gmdeItemInfo->Yield = this->m_prevOLSFONDItemInfo->Yield;
+				gmdeItemInfo->Yield = this->m_prevfastOLSFONDItemInfo->Yield;
 			}
 			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX7)) {
 				if(CheckProcessNullString())
@@ -3264,8 +3753,8 @@ public:
 					ReadString_Optional(gmdeItemInfo->OrderStatus, &(gmdeItemInfo->OrderStatusLength));
 			}
 			else {
-				this->CopyString(gmdeItemInfo->OrderStatus, m_prevOLSFONDItemInfo->OrderStatus, m_prevOLSFONDItemInfo->OrderStatusLength);
-				gmdeItemInfo->OrderStatusLength = this->m_prevOLSFONDItemInfo->OrderStatusLength;
+				this->CopyString(gmdeItemInfo->OrderStatus, m_prevfastOLSFONDItemInfo->OrderStatus, m_prevfastOLSFONDItemInfo->OrderStatusLength);
+				gmdeItemInfo->OrderStatusLength = this->m_prevfastOLSFONDItemInfo->OrderStatusLength;
 			}
 			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX8)) {
 				if(CheckProcessNullString())
@@ -3274,8 +3763,8 @@ public:
 					ReadString_Optional(gmdeItemInfo->OrdType, &(gmdeItemInfo->OrdTypeLength));
 			}
 			else {
-				this->CopyString(gmdeItemInfo->OrdType, m_prevOLSFONDItemInfo->OrdType, m_prevOLSFONDItemInfo->OrdTypeLength);
-				gmdeItemInfo->OrdTypeLength = this->m_prevOLSFONDItemInfo->OrdTypeLength;
+				this->CopyString(gmdeItemInfo->OrdType, m_prevfastOLSFONDItemInfo->OrdType, m_prevfastOLSFONDItemInfo->OrdTypeLength);
+				gmdeItemInfo->OrdTypeLength = this->m_prevfastOLSFONDItemInfo->OrdTypeLength;
 			}
 			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX9)) {
 				if(CheckProcessNullDecimal())
@@ -3284,7 +3773,7 @@ public:
 					ReadDecimal_Optional(&(gmdeItemInfo->TotalVolume));
 			}
 			else {
-				gmdeItemInfo->TotalVolume = this->m_prevOLSFONDItemInfo->TotalVolume;
+				gmdeItemInfo->TotalVolume = this->m_prevfastOLSFONDItemInfo->TotalVolume;
 			}
 			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX10)) {
 				if(CheckProcessNullString())
@@ -3293,17 +3782,17 @@ public:
 					ReadString_Optional(gmdeItemInfo->TradingSessionSubID, &(gmdeItemInfo->TradingSessionSubIDLength));
 			}
 			else {
-				this->CopyString(gmdeItemInfo->TradingSessionSubID, m_prevOLSFONDItemInfo->TradingSessionSubID, m_prevOLSFONDItemInfo->TradingSessionSubIDLength);
-				gmdeItemInfo->TradingSessionSubIDLength = this->m_prevOLSFONDItemInfo->TradingSessionSubIDLength;
+				this->CopyString(gmdeItemInfo->TradingSessionSubID, m_prevfastOLSFONDItemInfo->TradingSessionSubID, m_prevfastOLSFONDItemInfo->TradingSessionSubIDLength);
+				gmdeItemInfo->TradingSessionSubIDLength = this->m_prevfastOLSFONDItemInfo->TradingSessionSubIDLength;
 			}
-			this->m_prevOLSFONDItemInfo = gmdeItemInfo;
+			this->m_prevfastOLSFONDItemInfo = gmdeItemInfo;
 		}
 
-		this->m_prevOLSFONDInfo = info;
+		this->m_prevfastOLSFONDInfo = info;
 		return info;
 	}
-	void* DecodeOLSCURR() {
-		FastOLSCURRInfo* info = GetFreeOLSCURRInfo();
+	void* DecodeFastOLSCURR() {
+		FastOLSCURRInfo* info = GetFreeFastOLSCURRInfo();
 		info->PresenceMap = this->m_presenceMap;
 
 		info->MsgSeqNum = ReadUInt32_Mandatory();
@@ -3339,7 +3828,7 @@ public:
 		FastOLSCURRItemInfo* gmdeItemInfo = NULL;
 
 		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
-			gmdeItemInfo = GetFreeOLSCURRItemInfo();
+			gmdeItemInfo = GetFreeFastOLSCURRItemInfo();
 			info->GroupMDEntries[i] = gmdeItemInfo;
 
 			this->ParsePresenceMap(&(gmdeItemInfo->PresenceMap));
@@ -3351,8 +3840,8 @@ public:
 					ReadString_Optional(gmdeItemInfo->MDEntryType, &(gmdeItemInfo->MDEntryTypeLength));
 			}
 			else {
-				this->CopyString(gmdeItemInfo->MDEntryType, m_prevOLSCURRItemInfo->MDEntryType, m_prevOLSCURRItemInfo->MDEntryTypeLength);
-				gmdeItemInfo->MDEntryTypeLength = this->m_prevOLSCURRItemInfo->MDEntryTypeLength;
+				this->CopyString(gmdeItemInfo->MDEntryType, m_prevfastOLSCURRItemInfo->MDEntryType, m_prevfastOLSCURRItemInfo->MDEntryTypeLength);
+				gmdeItemInfo->MDEntryTypeLength = this->m_prevfastOLSCURRItemInfo->MDEntryTypeLength;
 			}
 			if(CheckProcessNullString())
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX1;
@@ -3365,7 +3854,7 @@ public:
 					gmdeItemInfo->MDEntryDate = ReadUInt32_Optional();
 			}
 			else {
-				gmdeItemInfo->MDEntryDate = this->m_prevOLSCURRItemInfo->MDEntryDate;
+				gmdeItemInfo->MDEntryDate = this->m_prevfastOLSCURRItemInfo->MDEntryDate;
 			}
 			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX2)) {
 				if(CheckProcessNullUInt32())
@@ -3374,7 +3863,7 @@ public:
 					gmdeItemInfo->MDEntryTime = ReadUInt32_Optional();
 			}
 			else {
-				gmdeItemInfo->MDEntryTime = this->m_prevOLSCURRItemInfo->MDEntryTime;
+				gmdeItemInfo->MDEntryTime = this->m_prevfastOLSCURRItemInfo->MDEntryTime;
 			}
 			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX3)) {
 				if(CheckProcessNullUInt32())
@@ -3383,7 +3872,7 @@ public:
 					gmdeItemInfo->OrigTime = ReadUInt32_Optional();
 			}
 			else {
-				gmdeItemInfo->OrigTime = this->m_prevOLSCURRItemInfo->OrigTime;
+				gmdeItemInfo->OrigTime = this->m_prevfastOLSCURRItemInfo->OrigTime;
 			}
 			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX4)) {
 				if(CheckProcessNullDecimal())
@@ -3392,7 +3881,7 @@ public:
 					ReadDecimal_Optional(&(gmdeItemInfo->MDEntryPx));
 			}
 			else {
-				gmdeItemInfo->MDEntryPx = this->m_prevOLSCURRItemInfo->MDEntryPx;
+				gmdeItemInfo->MDEntryPx = this->m_prevfastOLSCURRItemInfo->MDEntryPx;
 			}
 			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX5)) {
 				if(CheckProcessNullDecimal())
@@ -3401,7 +3890,7 @@ public:
 					ReadDecimal_Optional(&(gmdeItemInfo->MDEntrySize));
 			}
 			else {
-				gmdeItemInfo->MDEntrySize = this->m_prevOLSCURRItemInfo->MDEntrySize;
+				gmdeItemInfo->MDEntrySize = this->m_prevfastOLSCURRItemInfo->MDEntrySize;
 			}
 			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX6)) {
 				if(CheckProcessNullString())
@@ -3410,8 +3899,8 @@ public:
 					ReadString_Optional(gmdeItemInfo->OrderStatus, &(gmdeItemInfo->OrderStatusLength));
 			}
 			else {
-				this->CopyString(gmdeItemInfo->OrderStatus, m_prevOLSCURRItemInfo->OrderStatus, m_prevOLSCURRItemInfo->OrderStatusLength);
-				gmdeItemInfo->OrderStatusLength = this->m_prevOLSCURRItemInfo->OrderStatusLength;
+				this->CopyString(gmdeItemInfo->OrderStatus, m_prevfastOLSCURRItemInfo->OrderStatus, m_prevfastOLSCURRItemInfo->OrderStatusLength);
+				gmdeItemInfo->OrderStatusLength = this->m_prevfastOLSCURRItemInfo->OrderStatusLength;
 			}
 			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX7)) {
 				if(CheckProcessNullString())
@@ -3420,17 +3909,17 @@ public:
 					ReadString_Optional(gmdeItemInfo->TradingSessionSubID, &(gmdeItemInfo->TradingSessionSubIDLength));
 			}
 			else {
-				this->CopyString(gmdeItemInfo->TradingSessionSubID, m_prevOLSCURRItemInfo->TradingSessionSubID, m_prevOLSCURRItemInfo->TradingSessionSubIDLength);
-				gmdeItemInfo->TradingSessionSubIDLength = this->m_prevOLSCURRItemInfo->TradingSessionSubIDLength;
+				this->CopyString(gmdeItemInfo->TradingSessionSubID, m_prevfastOLSCURRItemInfo->TradingSessionSubID, m_prevfastOLSCURRItemInfo->TradingSessionSubIDLength);
+				gmdeItemInfo->TradingSessionSubIDLength = this->m_prevfastOLSCURRItemInfo->TradingSessionSubIDLength;
 			}
-			this->m_prevOLSCURRItemInfo = gmdeItemInfo;
+			this->m_prevfastOLSCURRItemInfo = gmdeItemInfo;
 		}
 
-		this->m_prevOLSCURRInfo = info;
+		this->m_prevfastOLSCURRInfo = info;
 		return info;
 	}
-	void* DecodeTLSFOND() {
-		FastTLSFONDInfo* info = GetFreeTLSFONDInfo();
+	void* DecodeFastTLSFOND() {
+		FastTLSFONDInfo* info = GetFreeFastTLSFONDInfo();
 		info->PresenceMap = this->m_presenceMap;
 
 		info->MsgSeqNum = ReadUInt32_Mandatory();
@@ -3470,7 +3959,7 @@ public:
 		FastTLSFONDItemInfo* gmdeItemInfo = NULL;
 
 		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
-			gmdeItemInfo = GetFreeTLSFONDItemInfo();
+			gmdeItemInfo = GetFreeFastTLSFONDItemInfo();
 			info->GroupMDEntries[i] = gmdeItemInfo;
 
 			this->ParsePresenceMap(&(gmdeItemInfo->PresenceMap));
@@ -3487,7 +3976,7 @@ public:
 					gmdeItemInfo->MDEntryDate = ReadUInt32_Optional();
 			}
 			else {
-				gmdeItemInfo->MDEntryDate = this->m_prevTLSFONDItemInfo->MDEntryDate;
+				gmdeItemInfo->MDEntryDate = this->m_prevfastTLSFONDItemInfo->MDEntryDate;
 			}
 			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX1)) {
 				if(CheckProcessNullUInt32())
@@ -3496,7 +3985,7 @@ public:
 					gmdeItemInfo->MDEntryTime = ReadUInt32_Optional();
 			}
 			else {
-				gmdeItemInfo->MDEntryTime = this->m_prevTLSFONDItemInfo->MDEntryTime;
+				gmdeItemInfo->MDEntryTime = this->m_prevfastTLSFONDItemInfo->MDEntryTime;
 			}
 			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX2)) {
 				if(CheckProcessNullUInt32())
@@ -3505,7 +3994,7 @@ public:
 					gmdeItemInfo->OrigTime = ReadUInt32_Optional();
 			}
 			else {
-				gmdeItemInfo->OrigTime = this->m_prevTLSFONDItemInfo->OrigTime;
+				gmdeItemInfo->OrigTime = this->m_prevfastTLSFONDItemInfo->OrigTime;
 			}
 			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX3)) {
 				if(CheckProcessNullString())
@@ -3514,8 +4003,8 @@ public:
 					ReadString_Optional(gmdeItemInfo->OrderSide, &(gmdeItemInfo->OrderSideLength));
 			}
 			else {
-				this->CopyString(gmdeItemInfo->OrderSide, m_prevTLSFONDItemInfo->OrderSide, m_prevTLSFONDItemInfo->OrderSideLength);
-				gmdeItemInfo->OrderSideLength = this->m_prevTLSFONDItemInfo->OrderSideLength;
+				this->CopyString(gmdeItemInfo->OrderSide, m_prevfastTLSFONDItemInfo->OrderSide, m_prevfastTLSFONDItemInfo->OrderSideLength);
+				gmdeItemInfo->OrderSideLength = this->m_prevfastTLSFONDItemInfo->OrderSideLength;
 			}
 			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX4)) {
 				if(CheckProcessNullDecimal())
@@ -3524,7 +4013,7 @@ public:
 					ReadDecimal_Optional(&(gmdeItemInfo->MDEntryPx));
 			}
 			else {
-				gmdeItemInfo->MDEntryPx = this->m_prevTLSFONDItemInfo->MDEntryPx;
+				gmdeItemInfo->MDEntryPx = this->m_prevfastTLSFONDItemInfo->MDEntryPx;
 			}
 			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX5)) {
 				if(CheckProcessNullDecimal())
@@ -3533,7 +4022,7 @@ public:
 					ReadDecimal_Optional(&(gmdeItemInfo->MDEntrySize));
 			}
 			else {
-				gmdeItemInfo->MDEntrySize = this->m_prevTLSFONDItemInfo->MDEntrySize;
+				gmdeItemInfo->MDEntrySize = this->m_prevfastTLSFONDItemInfo->MDEntrySize;
 			}
 			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX6)) {
 				if(CheckProcessNullDecimal())
@@ -3542,7 +4031,7 @@ public:
 					ReadDecimal_Optional(&(gmdeItemInfo->AccruedInterestAmt));
 			}
 			else {
-				gmdeItemInfo->AccruedInterestAmt = this->m_prevTLSFONDItemInfo->AccruedInterestAmt;
+				gmdeItemInfo->AccruedInterestAmt = this->m_prevfastTLSFONDItemInfo->AccruedInterestAmt;
 			}
 			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX7)) {
 				if(CheckProcessNullDecimal())
@@ -3551,7 +4040,7 @@ public:
 					ReadDecimal_Optional(&(gmdeItemInfo->TradeValue));
 			}
 			else {
-				gmdeItemInfo->TradeValue = this->m_prevTLSFONDItemInfo->TradeValue;
+				gmdeItemInfo->TradeValue = this->m_prevfastTLSFONDItemInfo->TradeValue;
 			}
 			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX8)) {
 				if(CheckProcessNullDecimal())
@@ -3560,7 +4049,7 @@ public:
 					ReadDecimal_Optional(&(gmdeItemInfo->Yield));
 			}
 			else {
-				gmdeItemInfo->Yield = this->m_prevTLSFONDItemInfo->Yield;
+				gmdeItemInfo->Yield = this->m_prevfastTLSFONDItemInfo->Yield;
 			}
 			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX9)) {
 				if(CheckProcessNullUInt32())
@@ -3569,7 +4058,7 @@ public:
 					gmdeItemInfo->SettlDate = ReadUInt32_Optional();
 			}
 			else {
-				gmdeItemInfo->SettlDate = this->m_prevTLSFONDItemInfo->SettlDate;
+				gmdeItemInfo->SettlDate = this->m_prevfastTLSFONDItemInfo->SettlDate;
 			}
 			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX10)) {
 				if(CheckProcessNullString())
@@ -3578,8 +4067,8 @@ public:
 					ReadString_Optional(gmdeItemInfo->SettleType, &(gmdeItemInfo->SettleTypeLength));
 			}
 			else {
-				this->CopyString(gmdeItemInfo->SettleType, m_prevTLSFONDItemInfo->SettleType, m_prevTLSFONDItemInfo->SettleTypeLength);
-				gmdeItemInfo->SettleTypeLength = this->m_prevTLSFONDItemInfo->SettleTypeLength;
+				this->CopyString(gmdeItemInfo->SettleType, m_prevfastTLSFONDItemInfo->SettleType, m_prevfastTLSFONDItemInfo->SettleTypeLength);
+				gmdeItemInfo->SettleTypeLength = this->m_prevfastTLSFONDItemInfo->SettleTypeLength;
 			}
 			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX11)) {
 				if(CheckProcessNullDecimal())
@@ -3588,7 +4077,7 @@ public:
 					ReadDecimal_Optional(&(gmdeItemInfo->Price));
 			}
 			else {
-				gmdeItemInfo->Price = this->m_prevTLSFONDItemInfo->Price;
+				gmdeItemInfo->Price = this->m_prevfastTLSFONDItemInfo->Price;
 			}
 			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX12)) {
 				if(CheckProcessNullInt32())
@@ -3597,7 +4086,7 @@ public:
 					gmdeItemInfo->PriceType = ReadInt32_Optional();
 			}
 			else {
-				gmdeItemInfo->PriceType = this->m_prevTLSFONDItemInfo->PriceType;
+				gmdeItemInfo->PriceType = this->m_prevfastTLSFONDItemInfo->PriceType;
 			}
 			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX13)) {
 				if(CheckProcessNullDecimal())
@@ -3606,7 +4095,7 @@ public:
 					ReadDecimal_Optional(&(gmdeItemInfo->RepoToPx));
 			}
 			else {
-				gmdeItemInfo->RepoToPx = this->m_prevTLSFONDItemInfo->RepoToPx;
+				gmdeItemInfo->RepoToPx = this->m_prevfastTLSFONDItemInfo->RepoToPx;
 			}
 			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX14)) {
 				if(CheckProcessNullDecimal())
@@ -3615,7 +4104,7 @@ public:
 					ReadDecimal_Optional(&(gmdeItemInfo->BuyBackPx));
 			}
 			else {
-				gmdeItemInfo->BuyBackPx = this->m_prevTLSFONDItemInfo->BuyBackPx;
+				gmdeItemInfo->BuyBackPx = this->m_prevfastTLSFONDItemInfo->BuyBackPx;
 			}
 			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX15)) {
 				if(CheckProcessNullUInt32())
@@ -3624,7 +4113,7 @@ public:
 					gmdeItemInfo->BuyBackDate = ReadUInt32_Optional();
 			}
 			else {
-				gmdeItemInfo->BuyBackDate = this->m_prevTLSFONDItemInfo->BuyBackDate;
+				gmdeItemInfo->BuyBackDate = this->m_prevfastTLSFONDItemInfo->BuyBackDate;
 			}
 			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX16)) {
 				if(CheckProcessNullString())
@@ -3633,8 +4122,8 @@ public:
 					ReadString_Optional(gmdeItemInfo->TradingSessionSubID, &(gmdeItemInfo->TradingSessionSubIDLength));
 			}
 			else {
-				this->CopyString(gmdeItemInfo->TradingSessionSubID, m_prevTLSFONDItemInfo->TradingSessionSubID, m_prevTLSFONDItemInfo->TradingSessionSubIDLength);
-				gmdeItemInfo->TradingSessionSubIDLength = this->m_prevTLSFONDItemInfo->TradingSessionSubIDLength;
+				this->CopyString(gmdeItemInfo->TradingSessionSubID, m_prevfastTLSFONDItemInfo->TradingSessionSubID, m_prevfastTLSFONDItemInfo->TradingSessionSubIDLength);
+				gmdeItemInfo->TradingSessionSubIDLength = this->m_prevfastTLSFONDItemInfo->TradingSessionSubIDLength;
 			}
 			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX17)) {
 				if(CheckProcessNullString())
@@ -3643,17 +4132,17 @@ public:
 					ReadString_Optional(gmdeItemInfo->RefOrderID, &(gmdeItemInfo->RefOrderIDLength));
 			}
 			else {
-				this->CopyString(gmdeItemInfo->RefOrderID, m_prevTLSFONDItemInfo->RefOrderID, m_prevTLSFONDItemInfo->RefOrderIDLength);
-				gmdeItemInfo->RefOrderIDLength = this->m_prevTLSFONDItemInfo->RefOrderIDLength;
+				this->CopyString(gmdeItemInfo->RefOrderID, m_prevfastTLSFONDItemInfo->RefOrderID, m_prevfastTLSFONDItemInfo->RefOrderIDLength);
+				gmdeItemInfo->RefOrderIDLength = this->m_prevfastTLSFONDItemInfo->RefOrderIDLength;
 			}
-			this->m_prevTLSFONDItemInfo = gmdeItemInfo;
+			this->m_prevfastTLSFONDItemInfo = gmdeItemInfo;
 		}
 
-		this->m_prevTLSFONDInfo = info;
+		this->m_prevfastTLSFONDInfo = info;
 		return info;
 	}
-	void* DecodeTLSCURR() {
-		FastTLSCURRInfo* info = GetFreeTLSCURRInfo();
+	void* DecodeFastTLSCURR() {
+		FastTLSCURRInfo* info = GetFreeFastTLSCURRInfo();
 		info->PresenceMap = this->m_presenceMap;
 
 		info->MsgSeqNum = ReadUInt32_Mandatory();
@@ -3689,7 +4178,7 @@ public:
 		FastTLSCURRItemInfo* gmdeItemInfo = NULL;
 
 		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
-			gmdeItemInfo = GetFreeTLSCURRItemInfo();
+			gmdeItemInfo = GetFreeFastTLSCURRItemInfo();
 			info->GroupMDEntries[i] = gmdeItemInfo;
 
 			this->ParsePresenceMap(&(gmdeItemInfo->PresenceMap));
@@ -3706,7 +4195,7 @@ public:
 					gmdeItemInfo->MDEntryDate = ReadUInt32_Optional();
 			}
 			else {
-				gmdeItemInfo->MDEntryDate = this->m_prevTLSCURRItemInfo->MDEntryDate;
+				gmdeItemInfo->MDEntryDate = this->m_prevfastTLSCURRItemInfo->MDEntryDate;
 			}
 			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX1)) {
 				if(CheckProcessNullUInt32())
@@ -3715,7 +4204,7 @@ public:
 					gmdeItemInfo->MDEntryTime = ReadUInt32_Optional();
 			}
 			else {
-				gmdeItemInfo->MDEntryTime = this->m_prevTLSCURRItemInfo->MDEntryTime;
+				gmdeItemInfo->MDEntryTime = this->m_prevfastTLSCURRItemInfo->MDEntryTime;
 			}
 			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX2)) {
 				if(CheckProcessNullUInt32())
@@ -3724,7 +4213,7 @@ public:
 					gmdeItemInfo->OrigTime = ReadUInt32_Optional();
 			}
 			else {
-				gmdeItemInfo->OrigTime = this->m_prevTLSCURRItemInfo->OrigTime;
+				gmdeItemInfo->OrigTime = this->m_prevfastTLSCURRItemInfo->OrigTime;
 			}
 			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX3)) {
 				if(CheckProcessNullString())
@@ -3733,8 +4222,8 @@ public:
 					ReadString_Optional(gmdeItemInfo->OrderSide, &(gmdeItemInfo->OrderSideLength));
 			}
 			else {
-				this->CopyString(gmdeItemInfo->OrderSide, m_prevTLSCURRItemInfo->OrderSide, m_prevTLSCURRItemInfo->OrderSideLength);
-				gmdeItemInfo->OrderSideLength = this->m_prevTLSCURRItemInfo->OrderSideLength;
+				this->CopyString(gmdeItemInfo->OrderSide, m_prevfastTLSCURRItemInfo->OrderSide, m_prevfastTLSCURRItemInfo->OrderSideLength);
+				gmdeItemInfo->OrderSideLength = this->m_prevfastTLSCURRItemInfo->OrderSideLength;
 			}
 			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX4)) {
 				if(CheckProcessNullDecimal())
@@ -3743,7 +4232,7 @@ public:
 					ReadDecimal_Optional(&(gmdeItemInfo->MDEntryPx));
 			}
 			else {
-				gmdeItemInfo->MDEntryPx = this->m_prevTLSCURRItemInfo->MDEntryPx;
+				gmdeItemInfo->MDEntryPx = this->m_prevfastTLSCURRItemInfo->MDEntryPx;
 			}
 			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX5)) {
 				if(CheckProcessNullDecimal())
@@ -3752,7 +4241,7 @@ public:
 					ReadDecimal_Optional(&(gmdeItemInfo->MDEntrySize));
 			}
 			else {
-				gmdeItemInfo->MDEntrySize = this->m_prevTLSCURRItemInfo->MDEntrySize;
+				gmdeItemInfo->MDEntrySize = this->m_prevfastTLSCURRItemInfo->MDEntrySize;
 			}
 			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX6)) {
 				if(CheckProcessNullDecimal())
@@ -3761,7 +4250,7 @@ public:
 					ReadDecimal_Optional(&(gmdeItemInfo->TradeValue));
 			}
 			else {
-				gmdeItemInfo->TradeValue = this->m_prevTLSCURRItemInfo->TradeValue;
+				gmdeItemInfo->TradeValue = this->m_prevfastTLSCURRItemInfo->TradeValue;
 			}
 			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX7)) {
 				if(CheckProcessNullUInt32())
@@ -3770,7 +4259,7 @@ public:
 					gmdeItemInfo->SettlDate = ReadUInt32_Optional();
 			}
 			else {
-				gmdeItemInfo->SettlDate = this->m_prevTLSCURRItemInfo->SettlDate;
+				gmdeItemInfo->SettlDate = this->m_prevfastTLSCURRItemInfo->SettlDate;
 			}
 			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX8)) {
 				if(CheckProcessNullString())
@@ -3779,8 +4268,8 @@ public:
 					ReadString_Optional(gmdeItemInfo->SettleType, &(gmdeItemInfo->SettleTypeLength));
 			}
 			else {
-				this->CopyString(gmdeItemInfo->SettleType, m_prevTLSCURRItemInfo->SettleType, m_prevTLSCURRItemInfo->SettleTypeLength);
-				gmdeItemInfo->SettleTypeLength = this->m_prevTLSCURRItemInfo->SettleTypeLength;
+				this->CopyString(gmdeItemInfo->SettleType, m_prevfastTLSCURRItemInfo->SettleType, m_prevfastTLSCURRItemInfo->SettleTypeLength);
+				gmdeItemInfo->SettleTypeLength = this->m_prevfastTLSCURRItemInfo->SettleTypeLength;
 			}
 			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX9)) {
 				if(CheckProcessNullDecimal())
@@ -3789,7 +4278,7 @@ public:
 					ReadDecimal_Optional(&(gmdeItemInfo->Price));
 			}
 			else {
-				gmdeItemInfo->Price = this->m_prevTLSCURRItemInfo->Price;
+				gmdeItemInfo->Price = this->m_prevfastTLSCURRItemInfo->Price;
 			}
 			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX10)) {
 				if(CheckProcessNullInt32())
@@ -3798,7 +4287,7 @@ public:
 					gmdeItemInfo->PriceType = ReadInt32_Optional();
 			}
 			else {
-				gmdeItemInfo->PriceType = this->m_prevTLSCURRItemInfo->PriceType;
+				gmdeItemInfo->PriceType = this->m_prevfastTLSCURRItemInfo->PriceType;
 			}
 			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX11)) {
 				if(CheckProcessNullDecimal())
@@ -3807,7 +4296,7 @@ public:
 					ReadDecimal_Optional(&(gmdeItemInfo->RepoToPx));
 			}
 			else {
-				gmdeItemInfo->RepoToPx = this->m_prevTLSCURRItemInfo->RepoToPx;
+				gmdeItemInfo->RepoToPx = this->m_prevfastTLSCURRItemInfo->RepoToPx;
 			}
 			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX12)) {
 				if(CheckProcessNullDecimal())
@@ -3816,7 +4305,7 @@ public:
 					ReadDecimal_Optional(&(gmdeItemInfo->BuyBackPx));
 			}
 			else {
-				gmdeItemInfo->BuyBackPx = this->m_prevTLSCURRItemInfo->BuyBackPx;
+				gmdeItemInfo->BuyBackPx = this->m_prevfastTLSCURRItemInfo->BuyBackPx;
 			}
 			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX13)) {
 				if(CheckProcessNullUInt32())
@@ -3825,7 +4314,7 @@ public:
 					gmdeItemInfo->BuyBackDate = ReadUInt32_Optional();
 			}
 			else {
-				gmdeItemInfo->BuyBackDate = this->m_prevTLSCURRItemInfo->BuyBackDate;
+				gmdeItemInfo->BuyBackDate = this->m_prevfastTLSCURRItemInfo->BuyBackDate;
 			}
 			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX14)) {
 				if(CheckProcessNullString())
@@ -3834,8 +4323,8 @@ public:
 					ReadString_Optional(gmdeItemInfo->TradingSessionSubID, &(gmdeItemInfo->TradingSessionSubIDLength));
 			}
 			else {
-				this->CopyString(gmdeItemInfo->TradingSessionSubID, m_prevTLSCURRItemInfo->TradingSessionSubID, m_prevTLSCURRItemInfo->TradingSessionSubIDLength);
-				gmdeItemInfo->TradingSessionSubIDLength = this->m_prevTLSCURRItemInfo->TradingSessionSubIDLength;
+				this->CopyString(gmdeItemInfo->TradingSessionSubID, m_prevfastTLSCURRItemInfo->TradingSessionSubID, m_prevfastTLSCURRItemInfo->TradingSessionSubIDLength);
+				gmdeItemInfo->TradingSessionSubIDLength = this->m_prevfastTLSCURRItemInfo->TradingSessionSubIDLength;
 			}
 			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX15)) {
 				if(CheckProcessNullString())
@@ -3844,17 +4333,17 @@ public:
 					ReadString_Optional(gmdeItemInfo->RefOrderID, &(gmdeItemInfo->RefOrderIDLength));
 			}
 			else {
-				this->CopyString(gmdeItemInfo->RefOrderID, m_prevTLSCURRItemInfo->RefOrderID, m_prevTLSCURRItemInfo->RefOrderIDLength);
-				gmdeItemInfo->RefOrderIDLength = this->m_prevTLSCURRItemInfo->RefOrderIDLength;
+				this->CopyString(gmdeItemInfo->RefOrderID, m_prevfastTLSCURRItemInfo->RefOrderID, m_prevfastTLSCURRItemInfo->RefOrderIDLength);
+				gmdeItemInfo->RefOrderIDLength = this->m_prevfastTLSCURRItemInfo->RefOrderIDLength;
 			}
-			this->m_prevTLSCURRItemInfo = gmdeItemInfo;
+			this->m_prevfastTLSCURRItemInfo = gmdeItemInfo;
 		}
 
-		this->m_prevTLSCURRInfo = info;
+		this->m_prevfastTLSCURRInfo = info;
 		return info;
 	}
-	void* DecodeIncrementalMSRFOND() {
-		FastIncrementalMSRFONDInfo* info = GetFreeIncrementalMSRFONDInfo();
+	void* DecodeFastIncrementalMSRFOND() {
+		FastIncrementalMSRFONDInfo* info = GetFreeFastIncrementalMSRFONDInfo();
 		info->PresenceMap = this->m_presenceMap;
 
 		info->MsgSeqNum = ReadUInt32_Mandatory();
@@ -3868,7 +4357,7 @@ public:
 		FastGenericItemInfo* gmdeItemInfo = NULL;
 
 		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
-			gmdeItemInfo = GetFreeGenericItemInfo();
+			gmdeItemInfo = GetFreeFastGenericItemInfo();
 			info->GroupMDEntries[i] = gmdeItemInfo;
 			if(CheckProcessNullUInt32())
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX0;
@@ -4002,14 +4491,14 @@ public:
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX32;
 			else
 				ReadString_Optional(gmdeItemInfo->TradingSessionSubID, &(gmdeItemInfo->TradingSessionSubIDLength));
-			this->m_prevGenericItemInfo = gmdeItemInfo;
+			this->m_prevfastGenericItemInfo = gmdeItemInfo;
 		}
 
-		this->m_prevIncrementalMSRFONDInfo = info;
+		this->m_prevfastIncrementalMSRFONDInfo = info;
 		return info;
 	}
-	void* DecodeIncrementalMSRCURR() {
-		FastIncrementalMSRCURRInfo* info = GetFreeIncrementalMSRCURRInfo();
+	void* DecodeFastIncrementalMSRCURR() {
+		FastIncrementalMSRCURRInfo* info = GetFreeFastIncrementalMSRCURRInfo();
 		info->PresenceMap = this->m_presenceMap;
 
 		info->MsgSeqNum = ReadUInt32_Mandatory();
@@ -4023,7 +4512,7 @@ public:
 		FastGenericItemInfo* gmdeItemInfo = NULL;
 
 		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
-			gmdeItemInfo = GetFreeGenericItemInfo();
+			gmdeItemInfo = GetFreeFastGenericItemInfo();
 			info->GroupMDEntries[i] = gmdeItemInfo;
 			if(CheckProcessNullUInt32())
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX0;
@@ -4137,14 +4626,14 @@ public:
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX27;
 			else
 				ReadString_Optional(gmdeItemInfo->TradingSessionSubID, &(gmdeItemInfo->TradingSessionSubIDLength));
-			this->m_prevGenericItemInfo = gmdeItemInfo;
+			this->m_prevfastGenericItemInfo = gmdeItemInfo;
 		}
 
-		this->m_prevIncrementalMSRCURRInfo = info;
+		this->m_prevfastIncrementalMSRCURRInfo = info;
 		return info;
 	}
-	void* DecodeIncrementalOLRFOND() {
-		FastIncrementalOLRFONDInfo* info = GetFreeIncrementalOLRFONDInfo();
+	void* DecodeFastIncrementalOLRFOND() {
+		FastIncrementalOLRFONDInfo* info = GetFreeFastIncrementalOLRFONDInfo();
 		info->PresenceMap = this->m_presenceMap;
 
 		info->MsgSeqNum = ReadUInt32_Mandatory();
@@ -4154,7 +4643,7 @@ public:
 		FastOLSFONDItemInfo* gmdeItemInfo = NULL;
 
 		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
-			gmdeItemInfo = GetFreeOLSFONDItemInfo();
+			gmdeItemInfo = GetFreeFastOLSFONDItemInfo();
 			info->GroupMDEntries[i] = gmdeItemInfo;
 
 			this->ParsePresenceMap(&(gmdeItemInfo->PresenceMap));
@@ -4170,8 +4659,8 @@ public:
 					ReadString_Optional(gmdeItemInfo->MDEntryType, &(gmdeItemInfo->MDEntryTypeLength));
 			}
 			else {
-				this->CopyString(gmdeItemInfo->MDEntryType, m_prevOLSFONDItemInfo->MDEntryType, m_prevOLSFONDItemInfo->MDEntryTypeLength);
-				gmdeItemInfo->MDEntryTypeLength = this->m_prevOLSFONDItemInfo->MDEntryTypeLength;
+				this->CopyString(gmdeItemInfo->MDEntryType, m_prevfastOLSFONDItemInfo->MDEntryType, m_prevfastOLSFONDItemInfo->MDEntryTypeLength);
+				gmdeItemInfo->MDEntryTypeLength = this->m_prevfastOLSFONDItemInfo->MDEntryTypeLength;
 			}
 			if(CheckProcessNullString())
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX2;
@@ -4184,8 +4673,8 @@ public:
 					ReadString_Optional(gmdeItemInfo->Symbol, &(gmdeItemInfo->SymbolLength));
 			}
 			else {
-				this->CopyString(gmdeItemInfo->Symbol, m_prevOLSFONDItemInfo->Symbol, m_prevOLSFONDItemInfo->SymbolLength);
-				gmdeItemInfo->SymbolLength = this->m_prevOLSFONDItemInfo->SymbolLength;
+				this->CopyString(gmdeItemInfo->Symbol, m_prevfastOLSFONDItemInfo->Symbol, m_prevfastOLSFONDItemInfo->SymbolLength);
+				gmdeItemInfo->SymbolLength = this->m_prevfastOLSFONDItemInfo->SymbolLength;
 			}
 			if(CheckProcessNullInt32())
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX4;
@@ -4198,7 +4687,7 @@ public:
 					gmdeItemInfo->MDEntryDate = ReadUInt32_Optional();
 			}
 			else {
-				gmdeItemInfo->MDEntryDate = this->m_prevOLSFONDItemInfo->MDEntryDate;
+				gmdeItemInfo->MDEntryDate = this->m_prevfastOLSFONDItemInfo->MDEntryDate;
 			}
 			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX3)) {
 				if(CheckProcessNullUInt32())
@@ -4207,7 +4696,7 @@ public:
 					gmdeItemInfo->MDEntryTime = ReadUInt32_Optional();
 			}
 			else {
-				gmdeItemInfo->MDEntryTime = this->m_prevOLSFONDItemInfo->MDEntryTime;
+				gmdeItemInfo->MDEntryTime = this->m_prevfastOLSFONDItemInfo->MDEntryTime;
 			}
 			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX4)) {
 				if(CheckProcessNullUInt32())
@@ -4216,7 +4705,7 @@ public:
 					gmdeItemInfo->OrigTime = ReadUInt32_Optional();
 			}
 			else {
-				gmdeItemInfo->OrigTime = this->m_prevOLSFONDItemInfo->OrigTime;
+				gmdeItemInfo->OrigTime = this->m_prevfastOLSFONDItemInfo->OrigTime;
 			}
 			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX5)) {
 				if(CheckProcessNullDecimal())
@@ -4225,7 +4714,7 @@ public:
 					ReadDecimal_Optional(&(gmdeItemInfo->MDEntryPx));
 			}
 			else {
-				gmdeItemInfo->MDEntryPx = this->m_prevOLSFONDItemInfo->MDEntryPx;
+				gmdeItemInfo->MDEntryPx = this->m_prevfastOLSFONDItemInfo->MDEntryPx;
 			}
 			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX6)) {
 				if(CheckProcessNullDecimal())
@@ -4234,7 +4723,7 @@ public:
 					ReadDecimal_Optional(&(gmdeItemInfo->MDEntrySize));
 			}
 			else {
-				gmdeItemInfo->MDEntrySize = this->m_prevOLSFONDItemInfo->MDEntrySize;
+				gmdeItemInfo->MDEntrySize = this->m_prevfastOLSFONDItemInfo->MDEntrySize;
 			}
 			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX7)) {
 				if(CheckProcessNullDecimal())
@@ -4243,7 +4732,7 @@ public:
 					ReadDecimal_Optional(&(gmdeItemInfo->Yield));
 			}
 			else {
-				gmdeItemInfo->Yield = this->m_prevOLSFONDItemInfo->Yield;
+				gmdeItemInfo->Yield = this->m_prevfastOLSFONDItemInfo->Yield;
 			}
 			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX8)) {
 				if(CheckProcessNullString())
@@ -4252,8 +4741,8 @@ public:
 					ReadString_Optional(gmdeItemInfo->OrderStatus, &(gmdeItemInfo->OrderStatusLength));
 			}
 			else {
-				this->CopyString(gmdeItemInfo->OrderStatus, m_prevOLSFONDItemInfo->OrderStatus, m_prevOLSFONDItemInfo->OrderStatusLength);
-				gmdeItemInfo->OrderStatusLength = this->m_prevOLSFONDItemInfo->OrderStatusLength;
+				this->CopyString(gmdeItemInfo->OrderStatus, m_prevfastOLSFONDItemInfo->OrderStatus, m_prevfastOLSFONDItemInfo->OrderStatusLength);
+				gmdeItemInfo->OrderStatusLength = this->m_prevfastOLSFONDItemInfo->OrderStatusLength;
 			}
 			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX9)) {
 				if(CheckProcessNullString())
@@ -4262,8 +4751,8 @@ public:
 					ReadString_Optional(gmdeItemInfo->OrdType, &(gmdeItemInfo->OrdTypeLength));
 			}
 			else {
-				this->CopyString(gmdeItemInfo->OrdType, m_prevOLSFONDItemInfo->OrdType, m_prevOLSFONDItemInfo->OrdTypeLength);
-				gmdeItemInfo->OrdTypeLength = this->m_prevOLSFONDItemInfo->OrdTypeLength;
+				this->CopyString(gmdeItemInfo->OrdType, m_prevfastOLSFONDItemInfo->OrdType, m_prevfastOLSFONDItemInfo->OrdTypeLength);
+				gmdeItemInfo->OrdTypeLength = this->m_prevfastOLSFONDItemInfo->OrdTypeLength;
 			}
 			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX10)) {
 				if(CheckProcessNullDecimal())
@@ -4272,7 +4761,7 @@ public:
 					ReadDecimal_Optional(&(gmdeItemInfo->TotalVolume));
 			}
 			else {
-				gmdeItemInfo->TotalVolume = this->m_prevOLSFONDItemInfo->TotalVolume;
+				gmdeItemInfo->TotalVolume = this->m_prevfastOLSFONDItemInfo->TotalVolume;
 			}
 			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX11)) {
 				if(CheckProcessNullString())
@@ -4281,8 +4770,8 @@ public:
 					ReadString_Optional(gmdeItemInfo->TradingSessionID, &(gmdeItemInfo->TradingSessionIDLength));
 			}
 			else {
-				this->CopyString(gmdeItemInfo->TradingSessionID, m_prevOLSFONDItemInfo->TradingSessionID, m_prevOLSFONDItemInfo->TradingSessionIDLength);
-				gmdeItemInfo->TradingSessionIDLength = this->m_prevOLSFONDItemInfo->TradingSessionIDLength;
+				this->CopyString(gmdeItemInfo->TradingSessionID, m_prevfastOLSFONDItemInfo->TradingSessionID, m_prevfastOLSFONDItemInfo->TradingSessionIDLength);
+				gmdeItemInfo->TradingSessionIDLength = this->m_prevfastOLSFONDItemInfo->TradingSessionIDLength;
 			}
 			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX12)) {
 				if(CheckProcessNullString())
@@ -4291,17 +4780,17 @@ public:
 					ReadString_Optional(gmdeItemInfo->TradingSessionSubID, &(gmdeItemInfo->TradingSessionSubIDLength));
 			}
 			else {
-				this->CopyString(gmdeItemInfo->TradingSessionSubID, m_prevOLSFONDItemInfo->TradingSessionSubID, m_prevOLSFONDItemInfo->TradingSessionSubIDLength);
-				gmdeItemInfo->TradingSessionSubIDLength = this->m_prevOLSFONDItemInfo->TradingSessionSubIDLength;
+				this->CopyString(gmdeItemInfo->TradingSessionSubID, m_prevfastOLSFONDItemInfo->TradingSessionSubID, m_prevfastOLSFONDItemInfo->TradingSessionSubIDLength);
+				gmdeItemInfo->TradingSessionSubIDLength = this->m_prevfastOLSFONDItemInfo->TradingSessionSubIDLength;
 			}
-			this->m_prevOLSFONDItemInfo = gmdeItemInfo;
+			this->m_prevfastOLSFONDItemInfo = gmdeItemInfo;
 		}
 
-		this->m_prevIncrementalOLRFONDInfo = info;
+		this->m_prevfastIncrementalOLRFONDInfo = info;
 		return info;
 	}
-	void* DecodeIncrementalOLRCURR() {
-		FastIncrementalOLRCURRInfo* info = GetFreeIncrementalOLRCURRInfo();
+	void* DecodeFastIncrementalOLRCURR() {
+		FastIncrementalOLRCURRInfo* info = GetFreeFastIncrementalOLRCURRInfo();
 		info->PresenceMap = this->m_presenceMap;
 
 		info->MsgSeqNum = ReadUInt32_Mandatory();
@@ -4311,7 +4800,7 @@ public:
 		FastOLSCURRItemInfo* gmdeItemInfo = NULL;
 
 		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
-			gmdeItemInfo = GetFreeOLSCURRItemInfo();
+			gmdeItemInfo = GetFreeFastOLSCURRItemInfo();
 			info->GroupMDEntries[i] = gmdeItemInfo;
 
 			this->ParsePresenceMap(&(gmdeItemInfo->PresenceMap));
@@ -4323,7 +4812,7 @@ public:
 					gmdeItemInfo->MDUpdateAction = ReadUInt32_Optional();
 			}
 			else {
-				gmdeItemInfo->MDUpdateAction = this->m_prevOLSCURRItemInfo->MDUpdateAction;
+				gmdeItemInfo->MDUpdateAction = this->m_prevfastOLSCURRItemInfo->MDUpdateAction;
 			}
 			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX1)) {
 				if(CheckProcessNullString())
@@ -4332,8 +4821,8 @@ public:
 					ReadString_Optional(gmdeItemInfo->MDEntryType, &(gmdeItemInfo->MDEntryTypeLength));
 			}
 			else {
-				this->CopyString(gmdeItemInfo->MDEntryType, m_prevOLSCURRItemInfo->MDEntryType, m_prevOLSCURRItemInfo->MDEntryTypeLength);
-				gmdeItemInfo->MDEntryTypeLength = this->m_prevOLSCURRItemInfo->MDEntryTypeLength;
+				this->CopyString(gmdeItemInfo->MDEntryType, m_prevfastOLSCURRItemInfo->MDEntryType, m_prevfastOLSCURRItemInfo->MDEntryTypeLength);
+				gmdeItemInfo->MDEntryTypeLength = this->m_prevfastOLSCURRItemInfo->MDEntryTypeLength;
 			}
 			if(CheckProcessNullString())
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX2;
@@ -4346,8 +4835,8 @@ public:
 					ReadString_Optional(gmdeItemInfo->Symbol, &(gmdeItemInfo->SymbolLength));
 			}
 			else {
-				this->CopyString(gmdeItemInfo->Symbol, m_prevOLSCURRItemInfo->Symbol, m_prevOLSCURRItemInfo->SymbolLength);
-				gmdeItemInfo->SymbolLength = this->m_prevOLSCURRItemInfo->SymbolLength;
+				this->CopyString(gmdeItemInfo->Symbol, m_prevfastOLSCURRItemInfo->Symbol, m_prevfastOLSCURRItemInfo->SymbolLength);
+				gmdeItemInfo->SymbolLength = this->m_prevfastOLSCURRItemInfo->SymbolLength;
 			}
 			if(CheckProcessNullInt32())
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX4;
@@ -4360,7 +4849,7 @@ public:
 					gmdeItemInfo->MDEntryDate = ReadUInt32_Optional();
 			}
 			else {
-				gmdeItemInfo->MDEntryDate = this->m_prevOLSCURRItemInfo->MDEntryDate;
+				gmdeItemInfo->MDEntryDate = this->m_prevfastOLSCURRItemInfo->MDEntryDate;
 			}
 			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX4)) {
 				if(CheckProcessNullUInt32())
@@ -4369,7 +4858,7 @@ public:
 					gmdeItemInfo->MDEntryTime = ReadUInt32_Optional();
 			}
 			else {
-				gmdeItemInfo->MDEntryTime = this->m_prevOLSCURRItemInfo->MDEntryTime;
+				gmdeItemInfo->MDEntryTime = this->m_prevfastOLSCURRItemInfo->MDEntryTime;
 			}
 			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX5)) {
 				if(CheckProcessNullUInt32())
@@ -4378,7 +4867,7 @@ public:
 					gmdeItemInfo->OrigTime = ReadUInt32_Optional();
 			}
 			else {
-				gmdeItemInfo->OrigTime = this->m_prevOLSCURRItemInfo->OrigTime;
+				gmdeItemInfo->OrigTime = this->m_prevfastOLSCURRItemInfo->OrigTime;
 			}
 			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX6)) {
 				if(CheckProcessNullDecimal())
@@ -4387,7 +4876,7 @@ public:
 					ReadDecimal_Optional(&(gmdeItemInfo->MDEntryPx));
 			}
 			else {
-				gmdeItemInfo->MDEntryPx = this->m_prevOLSCURRItemInfo->MDEntryPx;
+				gmdeItemInfo->MDEntryPx = this->m_prevfastOLSCURRItemInfo->MDEntryPx;
 			}
 			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX7)) {
 				if(CheckProcessNullDecimal())
@@ -4396,7 +4885,7 @@ public:
 					ReadDecimal_Optional(&(gmdeItemInfo->MDEntrySize));
 			}
 			else {
-				gmdeItemInfo->MDEntrySize = this->m_prevOLSCURRItemInfo->MDEntrySize;
+				gmdeItemInfo->MDEntrySize = this->m_prevfastOLSCURRItemInfo->MDEntrySize;
 			}
 			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX8)) {
 				if(CheckProcessNullString())
@@ -4405,8 +4894,8 @@ public:
 					ReadString_Optional(gmdeItemInfo->OrderStatus, &(gmdeItemInfo->OrderStatusLength));
 			}
 			else {
-				this->CopyString(gmdeItemInfo->OrderStatus, m_prevOLSCURRItemInfo->OrderStatus, m_prevOLSCURRItemInfo->OrderStatusLength);
-				gmdeItemInfo->OrderStatusLength = this->m_prevOLSCURRItemInfo->OrderStatusLength;
+				this->CopyString(gmdeItemInfo->OrderStatus, m_prevfastOLSCURRItemInfo->OrderStatus, m_prevfastOLSCURRItemInfo->OrderStatusLength);
+				gmdeItemInfo->OrderStatusLength = this->m_prevfastOLSCURRItemInfo->OrderStatusLength;
 			}
 			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX9)) {
 				if(CheckProcessNullString())
@@ -4415,8 +4904,8 @@ public:
 					ReadString_Optional(gmdeItemInfo->TradingSessionID, &(gmdeItemInfo->TradingSessionIDLength));
 			}
 			else {
-				this->CopyString(gmdeItemInfo->TradingSessionID, m_prevOLSCURRItemInfo->TradingSessionID, m_prevOLSCURRItemInfo->TradingSessionIDLength);
-				gmdeItemInfo->TradingSessionIDLength = this->m_prevOLSCURRItemInfo->TradingSessionIDLength;
+				this->CopyString(gmdeItemInfo->TradingSessionID, m_prevfastOLSCURRItemInfo->TradingSessionID, m_prevfastOLSCURRItemInfo->TradingSessionIDLength);
+				gmdeItemInfo->TradingSessionIDLength = this->m_prevfastOLSCURRItemInfo->TradingSessionIDLength;
 			}
 			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX10)) {
 				if(CheckProcessNullString())
@@ -4425,17 +4914,17 @@ public:
 					ReadString_Optional(gmdeItemInfo->TradingSessionSubID, &(gmdeItemInfo->TradingSessionSubIDLength));
 			}
 			else {
-				this->CopyString(gmdeItemInfo->TradingSessionSubID, m_prevOLSCURRItemInfo->TradingSessionSubID, m_prevOLSCURRItemInfo->TradingSessionSubIDLength);
-				gmdeItemInfo->TradingSessionSubIDLength = this->m_prevOLSCURRItemInfo->TradingSessionSubIDLength;
+				this->CopyString(gmdeItemInfo->TradingSessionSubID, m_prevfastOLSCURRItemInfo->TradingSessionSubID, m_prevfastOLSCURRItemInfo->TradingSessionSubIDLength);
+				gmdeItemInfo->TradingSessionSubIDLength = this->m_prevfastOLSCURRItemInfo->TradingSessionSubIDLength;
 			}
-			this->m_prevOLSCURRItemInfo = gmdeItemInfo;
+			this->m_prevfastOLSCURRItemInfo = gmdeItemInfo;
 		}
 
-		this->m_prevIncrementalOLRCURRInfo = info;
+		this->m_prevfastIncrementalOLRCURRInfo = info;
 		return info;
 	}
-	void* DecodeIncrementalTLRFOND() {
-		FastIncrementalTLRFONDInfo* info = GetFreeIncrementalTLRFONDInfo();
+	void* DecodeFastIncrementalTLRFOND() {
+		FastIncrementalTLRFONDInfo* info = GetFreeFastIncrementalTLRFONDInfo();
 		info->PresenceMap = this->m_presenceMap;
 
 		info->MsgSeqNum = ReadUInt32_Mandatory();
@@ -4445,7 +4934,7 @@ public:
 		FastTLSFONDItemInfo* gmdeItemInfo = NULL;
 
 		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
-			gmdeItemInfo = GetFreeTLSFONDItemInfo();
+			gmdeItemInfo = GetFreeFastTLSFONDItemInfo();
 			info->GroupMDEntries[i] = gmdeItemInfo;
 			if(CheckProcessNullUInt32())
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX0;
@@ -4540,14 +5029,14 @@ public:
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX22;
 			else
 				ReadString_Optional(gmdeItemInfo->RefOrderID, &(gmdeItemInfo->RefOrderIDLength));
-			this->m_prevTLSFONDItemInfo = gmdeItemInfo;
+			this->m_prevfastTLSFONDItemInfo = gmdeItemInfo;
 		}
 
-		this->m_prevIncrementalTLRFONDInfo = info;
+		this->m_prevfastIncrementalTLRFONDInfo = info;
 		return info;
 	}
-	void* DecodeIncrementalTLRCURR() {
-		FastIncrementalTLRCURRInfo* info = GetFreeIncrementalTLRCURRInfo();
+	void* DecodeFastIncrementalTLRCURR() {
+		FastIncrementalTLRCURRInfo* info = GetFreeFastIncrementalTLRCURRInfo();
 		info->PresenceMap = this->m_presenceMap;
 
 		info->MsgSeqNum = ReadUInt32_Mandatory();
@@ -4557,7 +5046,7 @@ public:
 		FastTLSCURRItemInfo* gmdeItemInfo = NULL;
 
 		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
-			gmdeItemInfo = GetFreeTLSCURRItemInfo();
+			gmdeItemInfo = GetFreeFastTLSCURRItemInfo();
 			info->GroupMDEntries[i] = gmdeItemInfo;
 			if(CheckProcessNullUInt32())
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX0;
@@ -4644,14 +5133,14 @@ public:
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX20;
 			else
 				ReadString_Optional(gmdeItemInfo->RefOrderID, &(gmdeItemInfo->RefOrderIDLength));
-			this->m_prevTLSCURRItemInfo = gmdeItemInfo;
+			this->m_prevfastTLSCURRItemInfo = gmdeItemInfo;
 		}
 
-		this->m_prevIncrementalTLRCURRInfo = info;
+		this->m_prevfastIncrementalTLRCURRInfo = info;
 		return info;
 	}
-	void* DecodeSecurityDefinition() {
-		FastSecurityDefinitionInfo* info = GetFreeSecurityDefinitionInfo();
+	void* DecodeFastSecurityDefinition() {
+		FastSecurityDefinitionInfo* info = GetFreeFastSecurityDefinitionInfo();
 		info->PresenceMap = this->m_presenceMap;
 
 		info->MsgSeqNum = ReadUInt32_Mandatory();
@@ -4738,14 +5227,14 @@ public:
 		FastSecurityDefinitionGroupInstrAttribItemInfo* giaItemInfo = NULL;
 
 		for(int i = 0; i < info->GroupInstrAttribCount; i++) {
-			giaItemInfo = GetFreeSecurityDefinitionGroupInstrAttribItemInfo();
+			giaItemInfo = GetFreeFastSecurityDefinitionGroupInstrAttribItemInfo();
 			info->GroupInstrAttrib[i] = giaItemInfo;
 			giaItemInfo->InstrAttribType = ReadInt32_Mandatory();
 			if(CheckProcessNullByteVector())
 				giaItemInfo->NullMap |= NULL_MAP_INDEX0;
 			else
 				ReadByteVector_Optional(giaItemInfo->InstrAttribValue, &(giaItemInfo->InstrAttribValueLength), 128);
-			this->m_prevSecurityDefinitionGroupInstrAttribItemInfo = giaItemInfo;
+			this->m_prevfastSecurityDefinitionGroupInstrAttribItemInfo = giaItemInfo;
 		}
 
 		if(CheckProcessNullString())
@@ -4762,7 +5251,7 @@ public:
 		FastSecurityDefinitionMarketSegmentGrpItemInfo* msgItemInfo = NULL;
 
 		for(int i = 0; i < info->MarketSegmentGrpCount; i++) {
-			msgItemInfo = GetFreeSecurityDefinitionMarketSegmentGrpItemInfo();
+			msgItemInfo = GetFreeFastSecurityDefinitionMarketSegmentGrpItemInfo();
 			info->MarketSegmentGrp[i] = msgItemInfo;
 			if(CheckProcessNullDecimal())
 				msgItemInfo->NullMap |= NULL_MAP_INDEX0;
@@ -4778,7 +5267,7 @@ public:
 			FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo* tsrgItemInfo = NULL;
 
 			for(int i = 0; i < msgItemInfo->TradingSessionRulesGrpCount; i++) {
-				tsrgItemInfo = GetFreeSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo();
+				tsrgItemInfo = GetFreeFastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo();
 				msgItemInfo->TradingSessionRulesGrp[i] = tsrgItemInfo;
 				ReadString_Mandatory(tsrgItemInfo->TradingSessionID, &(tsrgItemInfo->TradingSessionIDLength));
 				if(CheckProcessNullString())
@@ -4793,10 +5282,10 @@ public:
 					tsrgItemInfo->NullMap |= NULL_MAP_INDEX2;
 				else
 					tsrgItemInfo->OrderNote = ReadInt32_Optional();
-				this->m_prevSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo = tsrgItemInfo;
+				this->m_prevfastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo = tsrgItemInfo;
 			}
 
-			this->m_prevSecurityDefinitionMarketSegmentGrpItemInfo = msgItemInfo;
+			this->m_prevfastSecurityDefinitionMarketSegmentGrpItemInfo = msgItemInfo;
 		}
 
 		if(CheckProcessNullString())
@@ -4875,11 +5364,11 @@ public:
 			info->NullMap |= NULL_MAP_INDEX39;
 		else
 			info->NumOfDaysToMaturity = ReadInt32_Optional();
-		this->m_prevSecurityDefinitionInfo = info;
+		this->m_prevfastSecurityDefinitionInfo = info;
 		return info;
 	}
-	void* DecodeSecurityStatus() {
-		FastSecurityStatusInfo* info = GetFreeSecurityStatusInfo();
+	void* DecodeFastSecurityStatus() {
+		FastSecurityStatusInfo* info = GetFreeFastSecurityStatusInfo();
 		info->PresenceMap = this->m_presenceMap;
 
 		info->MsgSeqNum = ReadUInt32_Mandatory();
@@ -4901,11 +5390,11 @@ public:
 			info->NullMap |= NULL_MAP_INDEX3;
 		else
 			info->AuctionIndicator = ReadUInt32_Optional();
-		this->m_prevSecurityStatusInfo = info;
+		this->m_prevfastSecurityStatusInfo = info;
 		return info;
 	}
-	void* DecodeTradingSessionStatus() {
-		FastTradingSessionStatusInfo* info = GetFreeTradingSessionStatusInfo();
+	void* DecodeFastTradingSessionStatus() {
+		FastTradingSessionStatusInfo* info = GetFreeFastTradingSessionStatusInfo();
 		info->PresenceMap = this->m_presenceMap;
 
 		info->MsgSeqNum = ReadUInt32_Mandatory();
@@ -4916,20 +5405,20 @@ public:
 		else
 			ReadString_Optional(info->Text, &(info->TextLength));
 		ReadString_Mandatory(info->TradingSessionID, &(info->TradingSessionIDLength));
-		this->m_prevTradingSessionStatusInfo = info;
+		this->m_prevfastTradingSessionStatusInfo = info;
 		return info;
 	}
-	void* DecodeHeartbeat() {
-		FastHeartbeatInfo* info = GetFreeHeartbeatInfo();
+	void* DecodeFastHeartbeat() {
+		FastHeartbeatInfo* info = GetFreeFastHeartbeatInfo();
 		info->PresenceMap = this->m_presenceMap;
 
 		info->MsgSeqNum = ReadUInt32_Mandatory();
 		info->SendingTime = ReadUInt64_Mandatory();
-		this->m_prevHeartbeatInfo = info;
+		this->m_prevfastHeartbeatInfo = info;
 		return info;
 	}
-	FastSnapshotInfo* GetSnapshotInfoLogon() {
-		FastSnapshotInfo *info = GetFreeSnapshotInfo();
+	FastSnapshotInfo* GetFastSnapshotInfoLogon() {
+		FastSnapshotInfo *info = GetFreeFastSnapshotInfo();
 		info->PresenceMap = this->m_presenceMap;
 		info->TemplateId = this->m_templateId;
 
@@ -4938,8 +5427,8 @@ public:
 		info->SendingTime = ReadUInt64_Mandatory();
 		return info;
 	}
-	FastSnapshotInfo* GetSnapshotInfoLogout() {
-		FastSnapshotInfo *info = GetFreeSnapshotInfo();
+	FastSnapshotInfo* GetFastSnapshotInfoLogout() {
+		FastSnapshotInfo *info = GetFreeFastSnapshotInfo();
 		info->PresenceMap = this->m_presenceMap;
 		info->TemplateId = this->m_templateId;
 
@@ -4948,8 +5437,8 @@ public:
 		info->SendingTime = ReadUInt64_Mandatory();
 		return info;
 	}
-	FastSnapshotInfo* GetSnapshotInfoGeneric() {
-		FastSnapshotInfo *info = GetFreeSnapshotInfo();
+	FastSnapshotInfo* GetFastSnapshotInfoGeneric() {
+		FastSnapshotInfo *info = GetFreeFastSnapshotInfo();
 		info->PresenceMap = this->m_presenceMap;
 		info->TemplateId = this->m_templateId;
 
@@ -4975,8 +5464,8 @@ public:
 			info->RouteFirst = ReadUInt32_Optional();
 		return info;
 	}
-	FastSnapshotInfo* GetSnapshotInfoIncrementalGeneric() {
-		FastSnapshotInfo *info = GetFreeSnapshotInfo();
+	FastSnapshotInfo* GetFastSnapshotInfoIncrementalGeneric() {
+		FastSnapshotInfo *info = GetFreeFastSnapshotInfo();
 		info->PresenceMap = this->m_presenceMap;
 		info->TemplateId = this->m_templateId;
 
@@ -4984,36 +5473,8 @@ public:
 		info->SendingTime = ReadUInt64_Mandatory();
 		return info;
 	}
-	FastSnapshotInfo* GetSnapshotInfoOLSFOND() {
-		FastSnapshotInfo *info = GetFreeSnapshotInfo();
-		info->PresenceMap = this->m_presenceMap;
-		info->TemplateId = this->m_templateId;
-
-		SkipToNextField(); // MsgSeqNum
-		info->SendingTime = ReadUInt64_Mandatory();
-		if(CheckProcessNullUInt32())
-			info->NullMap |= NULL_MAP_INDEX0;
-		else
-			info->LastMsgSeqNumProcessed = ReadUInt32_Optional();
-		info->RptSeq = ReadInt32_Mandatory();
-		if(CheckProcessNullUInt32())
-			info->NullMap |= NULL_MAP_INDEX1;
-		else
-			info->LastFragment = ReadUInt32_Optional();
-		if(CheckProcessNullUInt32())
-			info->NullMap |= NULL_MAP_INDEX2;
-		else
-			info->RouteFirst = ReadUInt32_Optional();
-		SkipToNextField(); // TradSesStatus
-		if(CheckProcessNullString())
-			info->NullMap |= NULL_MAP_INDEX4;
-		else
-			ReadString_Optional(info->TradingSessionID, &(info->TradingSessionIDLength));
-		ReadString_Mandatory(info->Symbol, &(info->SymbolLength));
-		return info;
-	}
-	FastSnapshotInfo* GetSnapshotInfoOLSCURR() {
-		FastSnapshotInfo *info = GetFreeSnapshotInfo();
+	FastSnapshotInfo* GetFastSnapshotInfoOLSFOND() {
+		FastSnapshotInfo *info = GetFreeFastSnapshotInfo();
 		info->PresenceMap = this->m_presenceMap;
 		info->TemplateId = this->m_templateId;
 
@@ -5040,8 +5501,8 @@ public:
 		ReadString_Mandatory(info->Symbol, &(info->SymbolLength));
 		return info;
 	}
-	FastSnapshotInfo* GetSnapshotInfoTLSFOND() {
-		FastSnapshotInfo *info = GetFreeSnapshotInfo();
+	FastSnapshotInfo* GetFastSnapshotInfoOLSCURR() {
+		FastSnapshotInfo *info = GetFreeFastSnapshotInfo();
 		info->PresenceMap = this->m_presenceMap;
 		info->TemplateId = this->m_templateId;
 
@@ -5068,8 +5529,8 @@ public:
 		ReadString_Mandatory(info->Symbol, &(info->SymbolLength));
 		return info;
 	}
-	FastSnapshotInfo* GetSnapshotInfoTLSCURR() {
-		FastSnapshotInfo *info = GetFreeSnapshotInfo();
+	FastSnapshotInfo* GetFastSnapshotInfoTLSFOND() {
+		FastSnapshotInfo *info = GetFreeFastSnapshotInfo();
 		info->PresenceMap = this->m_presenceMap;
 		info->TemplateId = this->m_templateId;
 
@@ -5096,8 +5557,36 @@ public:
 		ReadString_Mandatory(info->Symbol, &(info->SymbolLength));
 		return info;
 	}
-	FastSnapshotInfo* GetSnapshotInfoIncrementalMSRFOND() {
-		FastSnapshotInfo *info = GetFreeSnapshotInfo();
+	FastSnapshotInfo* GetFastSnapshotInfoTLSCURR() {
+		FastSnapshotInfo *info = GetFreeFastSnapshotInfo();
+		info->PresenceMap = this->m_presenceMap;
+		info->TemplateId = this->m_templateId;
+
+		SkipToNextField(); // MsgSeqNum
+		info->SendingTime = ReadUInt64_Mandatory();
+		if(CheckProcessNullUInt32())
+			info->NullMap |= NULL_MAP_INDEX0;
+		else
+			info->LastMsgSeqNumProcessed = ReadUInt32_Optional();
+		info->RptSeq = ReadInt32_Mandatory();
+		if(CheckProcessNullUInt32())
+			info->NullMap |= NULL_MAP_INDEX1;
+		else
+			info->LastFragment = ReadUInt32_Optional();
+		if(CheckProcessNullUInt32())
+			info->NullMap |= NULL_MAP_INDEX2;
+		else
+			info->RouteFirst = ReadUInt32_Optional();
+		SkipToNextField(); // TradSesStatus
+		if(CheckProcessNullString())
+			info->NullMap |= NULL_MAP_INDEX4;
+		else
+			ReadString_Optional(info->TradingSessionID, &(info->TradingSessionIDLength));
+		ReadString_Mandatory(info->Symbol, &(info->SymbolLength));
+		return info;
+	}
+	FastSnapshotInfo* GetFastSnapshotInfoIncrementalMSRFOND() {
+		FastSnapshotInfo *info = GetFreeFastSnapshotInfo();
 		info->PresenceMap = this->m_presenceMap;
 		info->TemplateId = this->m_templateId;
 
@@ -5105,8 +5594,8 @@ public:
 		info->SendingTime = ReadUInt64_Mandatory();
 		return info;
 	}
-	FastSnapshotInfo* GetSnapshotInfoIncrementalMSRCURR() {
-		FastSnapshotInfo *info = GetFreeSnapshotInfo();
+	FastSnapshotInfo* GetFastSnapshotInfoIncrementalMSRCURR() {
+		FastSnapshotInfo *info = GetFreeFastSnapshotInfo();
 		info->PresenceMap = this->m_presenceMap;
 		info->TemplateId = this->m_templateId;
 
@@ -5114,8 +5603,8 @@ public:
 		info->SendingTime = ReadUInt64_Mandatory();
 		return info;
 	}
-	FastSnapshotInfo* GetSnapshotInfoIncrementalOLRFOND() {
-		FastSnapshotInfo *info = GetFreeSnapshotInfo();
+	FastSnapshotInfo* GetFastSnapshotInfoIncrementalOLRFOND() {
+		FastSnapshotInfo *info = GetFreeFastSnapshotInfo();
 		info->PresenceMap = this->m_presenceMap;
 		info->TemplateId = this->m_templateId;
 
@@ -5123,8 +5612,8 @@ public:
 		info->SendingTime = ReadUInt64_Mandatory();
 		return info;
 	}
-	FastSnapshotInfo* GetSnapshotInfoIncrementalOLRCURR() {
-		FastSnapshotInfo *info = GetFreeSnapshotInfo();
+	FastSnapshotInfo* GetFastSnapshotInfoIncrementalOLRCURR() {
+		FastSnapshotInfo *info = GetFreeFastSnapshotInfo();
 		info->PresenceMap = this->m_presenceMap;
 		info->TemplateId = this->m_templateId;
 
@@ -5132,8 +5621,8 @@ public:
 		info->SendingTime = ReadUInt64_Mandatory();
 		return info;
 	}
-	FastSnapshotInfo* GetSnapshotInfoIncrementalTLRFOND() {
-		FastSnapshotInfo *info = GetFreeSnapshotInfo();
+	FastSnapshotInfo* GetFastSnapshotInfoIncrementalTLRFOND() {
+		FastSnapshotInfo *info = GetFreeFastSnapshotInfo();
 		info->PresenceMap = this->m_presenceMap;
 		info->TemplateId = this->m_templateId;
 
@@ -5141,8 +5630,8 @@ public:
 		info->SendingTime = ReadUInt64_Mandatory();
 		return info;
 	}
-	FastSnapshotInfo* GetSnapshotInfoIncrementalTLRCURR() {
-		FastSnapshotInfo *info = GetFreeSnapshotInfo();
+	FastSnapshotInfo* GetFastSnapshotInfoIncrementalTLRCURR() {
+		FastSnapshotInfo *info = GetFreeFastSnapshotInfo();
 		info->PresenceMap = this->m_presenceMap;
 		info->TemplateId = this->m_templateId;
 
@@ -5150,8 +5639,8 @@ public:
 		info->SendingTime = ReadUInt64_Mandatory();
 		return info;
 	}
-	FastSnapshotInfo* GetSnapshotInfoSecurityDefinition() {
-		FastSnapshotInfo *info = GetFreeSnapshotInfo();
+	FastSnapshotInfo* GetFastSnapshotInfoSecurityDefinition() {
+		FastSnapshotInfo *info = GetFreeFastSnapshotInfo();
 		info->PresenceMap = this->m_presenceMap;
 		info->TemplateId = this->m_templateId;
 
@@ -5164,8 +5653,8 @@ public:
 			ReadString_Optional(info->Symbol, &(info->SymbolLength));
 		return info;
 	}
-	FastSnapshotInfo* GetSnapshotInfoSecurityStatus() {
-		FastSnapshotInfo *info = GetFreeSnapshotInfo();
+	FastSnapshotInfo* GetFastSnapshotInfoSecurityStatus() {
+		FastSnapshotInfo *info = GetFreeFastSnapshotInfo();
 		info->PresenceMap = this->m_presenceMap;
 		info->TemplateId = this->m_templateId;
 
@@ -5178,8 +5667,8 @@ public:
 			ReadString_Optional(info->TradingSessionID, &(info->TradingSessionIDLength));
 		return info;
 	}
-	FastSnapshotInfo* GetSnapshotInfoTradingSessionStatus() {
-		FastSnapshotInfo *info = GetFreeSnapshotInfo();
+	FastSnapshotInfo* GetFastSnapshotInfoTradingSessionStatus() {
+		FastSnapshotInfo *info = GetFreeFastSnapshotInfo();
 		info->PresenceMap = this->m_presenceMap;
 		info->TemplateId = this->m_templateId;
 
@@ -5190,8 +5679,8 @@ public:
 		ReadString_Mandatory(info->TradingSessionID, &(info->TradingSessionIDLength));
 		return info;
 	}
-	FastSnapshotInfo* GetSnapshotInfoHeartbeat() {
-		FastSnapshotInfo *info = GetFreeSnapshotInfo();
+	FastSnapshotInfo* GetFastSnapshotInfoHeartbeat() {
+		FastSnapshotInfo *info = GetFreeFastSnapshotInfo();
 		info->PresenceMap = this->m_presenceMap;
 		info->TemplateId = this->m_templateId;
 
@@ -5199,135 +5688,1131 @@ public:
 		info->SendingTime = ReadUInt64_Mandatory();
 		return info;
 	}
-	inline void* Decode() {
-		this->DecodeHeader();
-		if(this->ShouldSkipTemplate())
-			return 0;
-		FastDecodeMethodPointer funcPtr = this->DecodeMethods[this->m_templateId - 2101];
+	inline void* DecodeFast() {
+		this->DecodeFastHeader();
+		FastDecodeMethodPointer funcPtr = this->m_fastDecodeMethods[this->m_templateId - 2101];
 		this->m_lastDecodedInfo = (this->*funcPtr)();
 		return this->m_lastDecodedInfo;
 	}
-	void Print() {
+	void PrintFast() {
 
 		switch(this->m_templateId) {
 			case 2101:
-				PrintLogon((FastLogonInfo*)this->m_lastDecodedInfo);
+				PrintFastLogon((FastLogonInfo*)this->m_lastDecodedInfo);
 				break;
 			case 2102:
-				PrintLogout((FastLogoutInfo*)this->m_lastDecodedInfo);
+				PrintFastLogout((FastLogoutInfo*)this->m_lastDecodedInfo);
 				break;
 			case 2103:
-				PrintGeneric((FastGenericInfo*)this->m_lastDecodedInfo);
+				PrintFastGeneric((FastGenericInfo*)this->m_lastDecodedInfo);
 				break;
 			case 2104:
-				PrintIncrementalGeneric((FastIncrementalGenericInfo*)this->m_lastDecodedInfo);
+				PrintFastIncrementalGeneric((FastIncrementalGenericInfo*)this->m_lastDecodedInfo);
 				break;
 			case 2510:
-				PrintOLSFOND((FastOLSFONDInfo*)this->m_lastDecodedInfo);
+				PrintFastOLSFOND((FastOLSFONDInfo*)this->m_lastDecodedInfo);
 				break;
 			case 3600:
-				PrintOLSCURR((FastOLSCURRInfo*)this->m_lastDecodedInfo);
+				PrintFastOLSCURR((FastOLSCURRInfo*)this->m_lastDecodedInfo);
 				break;
 			case 2511:
-				PrintTLSFOND((FastTLSFONDInfo*)this->m_lastDecodedInfo);
+				PrintFastTLSFOND((FastTLSFONDInfo*)this->m_lastDecodedInfo);
 				break;
 			case 3601:
-				PrintTLSCURR((FastTLSCURRInfo*)this->m_lastDecodedInfo);
+				PrintFastTLSCURR((FastTLSCURRInfo*)this->m_lastDecodedInfo);
 				break;
 			case 2523:
-				PrintIncrementalMSRFOND((FastIncrementalMSRFONDInfo*)this->m_lastDecodedInfo);
+				PrintFastIncrementalMSRFOND((FastIncrementalMSRFONDInfo*)this->m_lastDecodedInfo);
 				break;
 			case 3613:
-				PrintIncrementalMSRCURR((FastIncrementalMSRCURRInfo*)this->m_lastDecodedInfo);
+				PrintFastIncrementalMSRCURR((FastIncrementalMSRCURRInfo*)this->m_lastDecodedInfo);
 				break;
 			case 2520:
-				PrintIncrementalOLRFOND((FastIncrementalOLRFONDInfo*)this->m_lastDecodedInfo);
+				PrintFastIncrementalOLRFOND((FastIncrementalOLRFONDInfo*)this->m_lastDecodedInfo);
 				break;
 			case 3610:
-				PrintIncrementalOLRCURR((FastIncrementalOLRCURRInfo*)this->m_lastDecodedInfo);
+				PrintFastIncrementalOLRCURR((FastIncrementalOLRCURRInfo*)this->m_lastDecodedInfo);
 				break;
 			case 2521:
-				PrintIncrementalTLRFOND((FastIncrementalTLRFONDInfo*)this->m_lastDecodedInfo);
+				PrintFastIncrementalTLRFOND((FastIncrementalTLRFONDInfo*)this->m_lastDecodedInfo);
 				break;
 			case 3611:
-				PrintIncrementalTLRCURR((FastIncrementalTLRCURRInfo*)this->m_lastDecodedInfo);
+				PrintFastIncrementalTLRCURR((FastIncrementalTLRCURRInfo*)this->m_lastDecodedInfo);
 				break;
 			case 2115:
-				PrintSecurityDefinition((FastSecurityDefinitionInfo*)this->m_lastDecodedInfo);
+				PrintFastSecurityDefinition((FastSecurityDefinitionInfo*)this->m_lastDecodedInfo);
 				break;
 			case 2106:
-				PrintSecurityStatus((FastSecurityStatusInfo*)this->m_lastDecodedInfo);
+				PrintFastSecurityStatus((FastSecurityStatusInfo*)this->m_lastDecodedInfo);
 				break;
 			case 2107:
-				PrintTradingSessionStatus((FastTradingSessionStatusInfo*)this->m_lastDecodedInfo);
+				PrintFastTradingSessionStatus((FastTradingSessionStatusInfo*)this->m_lastDecodedInfo);
 				break;
 			case 2108:
-				PrintHeartbeat((FastHeartbeatInfo*)this->m_lastDecodedInfo);
+				PrintFastHeartbeat((FastHeartbeatInfo*)this->m_lastDecodedInfo);
 				break;
 		}
 	}
-	void PrintXml() {
+	void PrintXmlFast() {
 
 		switch(this->m_templateId) {
 			case 2101:
-				PrintXmlLogon((FastLogonInfo*)this->m_lastDecodedInfo);
+				PrintXmlFastLogon((FastLogonInfo*)this->m_lastDecodedInfo);
 				break;
 			case 2102:
-				PrintXmlLogout((FastLogoutInfo*)this->m_lastDecodedInfo);
+				PrintXmlFastLogout((FastLogoutInfo*)this->m_lastDecodedInfo);
 				break;
 			case 2103:
-				PrintXmlGeneric((FastGenericInfo*)this->m_lastDecodedInfo);
+				PrintXmlFastGeneric((FastGenericInfo*)this->m_lastDecodedInfo);
 				break;
 			case 2104:
-				PrintXmlIncrementalGeneric((FastIncrementalGenericInfo*)this->m_lastDecodedInfo);
+				PrintXmlFastIncrementalGeneric((FastIncrementalGenericInfo*)this->m_lastDecodedInfo);
 				break;
 			case 2510:
-				PrintXmlOLSFOND((FastOLSFONDInfo*)this->m_lastDecodedInfo);
+				PrintXmlFastOLSFOND((FastOLSFONDInfo*)this->m_lastDecodedInfo);
 				break;
 			case 3600:
-				PrintXmlOLSCURR((FastOLSCURRInfo*)this->m_lastDecodedInfo);
+				PrintXmlFastOLSCURR((FastOLSCURRInfo*)this->m_lastDecodedInfo);
 				break;
 			case 2511:
-				PrintXmlTLSFOND((FastTLSFONDInfo*)this->m_lastDecodedInfo);
+				PrintXmlFastTLSFOND((FastTLSFONDInfo*)this->m_lastDecodedInfo);
 				break;
 			case 3601:
-				PrintXmlTLSCURR((FastTLSCURRInfo*)this->m_lastDecodedInfo);
+				PrintXmlFastTLSCURR((FastTLSCURRInfo*)this->m_lastDecodedInfo);
 				break;
 			case 2523:
-				PrintXmlIncrementalMSRFOND((FastIncrementalMSRFONDInfo*)this->m_lastDecodedInfo);
+				PrintXmlFastIncrementalMSRFOND((FastIncrementalMSRFONDInfo*)this->m_lastDecodedInfo);
 				break;
 			case 3613:
-				PrintXmlIncrementalMSRCURR((FastIncrementalMSRCURRInfo*)this->m_lastDecodedInfo);
+				PrintXmlFastIncrementalMSRCURR((FastIncrementalMSRCURRInfo*)this->m_lastDecodedInfo);
 				break;
 			case 2520:
-				PrintXmlIncrementalOLRFOND((FastIncrementalOLRFONDInfo*)this->m_lastDecodedInfo);
+				PrintXmlFastIncrementalOLRFOND((FastIncrementalOLRFONDInfo*)this->m_lastDecodedInfo);
 				break;
 			case 3610:
-				PrintXmlIncrementalOLRCURR((FastIncrementalOLRCURRInfo*)this->m_lastDecodedInfo);
+				PrintXmlFastIncrementalOLRCURR((FastIncrementalOLRCURRInfo*)this->m_lastDecodedInfo);
 				break;
 			case 2521:
-				PrintXmlIncrementalTLRFOND((FastIncrementalTLRFONDInfo*)this->m_lastDecodedInfo);
+				PrintXmlFastIncrementalTLRFOND((FastIncrementalTLRFONDInfo*)this->m_lastDecodedInfo);
 				break;
 			case 3611:
-				PrintXmlIncrementalTLRCURR((FastIncrementalTLRCURRInfo*)this->m_lastDecodedInfo);
+				PrintXmlFastIncrementalTLRCURR((FastIncrementalTLRCURRInfo*)this->m_lastDecodedInfo);
 				break;
 			case 2115:
-				PrintXmlSecurityDefinition((FastSecurityDefinitionInfo*)this->m_lastDecodedInfo);
+				PrintXmlFastSecurityDefinition((FastSecurityDefinitionInfo*)this->m_lastDecodedInfo);
 				break;
 			case 2106:
-				PrintXmlSecurityStatus((FastSecurityStatusInfo*)this->m_lastDecodedInfo);
+				PrintXmlFastSecurityStatus((FastSecurityStatusInfo*)this->m_lastDecodedInfo);
 				break;
 			case 2107:
-				PrintXmlTradingSessionStatus((FastTradingSessionStatusInfo*)this->m_lastDecodedInfo);
+				PrintXmlFastTradingSessionStatus((FastTradingSessionStatusInfo*)this->m_lastDecodedInfo);
 				break;
 			case 2108:
-				PrintXmlHeartbeat((FastHeartbeatInfo*)this->m_lastDecodedInfo);
+				PrintXmlFastHeartbeat((FastHeartbeatInfo*)this->m_lastDecodedInfo);
 				break;
 		}
 	}
-	inline FastSnapshotInfo* GetSnapshotInfo() {
+	inline FastSnapshotInfo* GetFastSnapshotInfo() {
 		this->DecodeHeader();
-		FastGetSnapshotInfoMethodPointer funcPtr = this->GetSnapshotInfoMethods[this->m_templateId - 2101];
+		FastGetSnapshotInfoMethodPointer funcPtr = this->m_fastGetSnapshotInfoMethods[this->m_templateId - 2101];
+		return (this->*funcPtr)();
+	}
+#pragma endregion
+
+#pragma region Spectra_Decode_Methods_Definition_GeneratedCode
+	inline void DecodeSpectraHeader() {
+
+		this->ParsePresenceMap(&(this->m_presenceMap));
+		this->m_templateId = ReadUInt32_Mandatory();
+	}
+
+	int GetSpectraTotalNumReports() {
+		// ReadMsgNumber and DecodeHeader should be called first
+		SkipToNextField(); // MsgSeqNum
+		SkipToNextField(); // SendingTime
+		return ReadInt32_Mandatory();
+	}
+	void* DecodeSpectraDefaultIncrementalRefreshMessage() {
+		SpectraDefaultIncrementalRefreshMessageInfo* info = GetFreeFastDefaultIncrementalRefreshMessageInfo();
+		info->PresenceMap = this->m_presenceMap;
+
+		info->MsgSeqNum = ReadUInt32_Mandatory();
+		info->SendingTime = ReadUInt64_Mandatory();
+		if(CheckProcessNullUInt32())
+			info->NullMap |= NULL_MAP_INDEX0;
+		else
+			info->LastFragment = ReadUInt32_Optional();
+
+		info->MDEntriesCount = ReadUInt32_Mandatory();
+		SpectraDefaultIncrementalRefreshMessageMDEntriesItemInfo* mdeItemInfo = NULL;
+
+		for(int i = 0; i < info->MDEntriesCount; i++) {
+			mdeItemInfo = GetFreeSpectraDefaultIncrementalRefreshMessageMDEntriesItemInfo();
+			info->MDEntries[i] = mdeItemInfo;
+			mdeItemInfo->MDUpdateAction = ReadUInt32_Mandatory();
+			ReadString_Mandatory(mdeItemInfo->MDEntryType, &(mdeItemInfo->MDEntryTypeLength));
+			if(CheckProcessNullUInt64())
+				mdeItemInfo->NullMap |= NULL_MAP_INDEX0;
+			else
+				mdeItemInfo->SecurityID = ReadUInt64_Optional();
+			mdeItemInfo->SecurityIDSource = ReadUInt32_Mandatory();
+			if(CheckProcessNullString())
+				mdeItemInfo->NullMap |= NULL_MAP_INDEX1;
+			else
+				ReadString_Optional(mdeItemInfo->Symbol, &(mdeItemInfo->SymbolLength));
+			if(CheckProcessNullString())
+				mdeItemInfo->NullMap |= NULL_MAP_INDEX2;
+			else
+				ReadString_Optional(mdeItemInfo->SecurityGroup, &(mdeItemInfo->SecurityGroupLength));
+			if(CheckProcessNullUInt32())
+				mdeItemInfo->NullMap |= NULL_MAP_INDEX3;
+			else
+				mdeItemInfo->ExchangeTradingSessionID = ReadUInt32_Optional();
+			mdeItemInfo->RptSeq = ReadUInt32_Mandatory();
+			if(CheckProcessNullUInt32())
+				mdeItemInfo->NullMap |= NULL_MAP_INDEX4;
+			else
+				mdeItemInfo->MarketDepth = ReadUInt32_Optional();
+			if(CheckProcessNullUInt32())
+				mdeItemInfo->NullMap |= NULL_MAP_INDEX5;
+			else
+				mdeItemInfo->MDPriceLevel = ReadUInt32_Optional();
+			if(CheckProcessNullInt64())
+				mdeItemInfo->NullMap |= NULL_MAP_INDEX6;
+			else
+				mdeItemInfo->MDEntryID = ReadInt64_Optional();
+			if(CheckProcessNullDecimal())
+				mdeItemInfo->NullMap |= NULL_MAP_INDEX7;
+			else
+				ReadDecimal_Optional(&(mdeItemInfo->MDEntryPx));
+			if(CheckProcessNullInt64())
+				mdeItemInfo->NullMap |= NULL_MAP_INDEX8;
+			else
+				mdeItemInfo->MDEntrySize = ReadInt64_Optional();
+			if(CheckProcessNullUInt32())
+				mdeItemInfo->NullMap |= NULL_MAP_INDEX9;
+			else
+				mdeItemInfo->MDEntryDate = ReadUInt32_Optional();
+			mdeItemInfo->MDEntryTime = ReadUInt64_Mandatory();
+			if(CheckProcessNullInt32())
+				mdeItemInfo->NullMap |= NULL_MAP_INDEX10;
+			else
+				mdeItemInfo->NumberOfOrders = ReadInt32_Optional();
+			if(CheckProcessNullString())
+				mdeItemInfo->NullMap |= NULL_MAP_INDEX11;
+			else
+				ReadString_Optional(mdeItemInfo->MDEntryTradeType, &(mdeItemInfo->MDEntryTradeTypeLength));
+			if(CheckProcessNullInt32())
+				mdeItemInfo->NullMap |= NULL_MAP_INDEX12;
+			else
+				mdeItemInfo->TrdType = ReadInt32_Optional();
+			if(CheckProcessNullDecimal())
+				mdeItemInfo->NullMap |= NULL_MAP_INDEX13;
+			else
+				ReadDecimal_Optional(&(mdeItemInfo->LastPx));
+			if(CheckProcessNullInt32())
+				mdeItemInfo->NullMap |= NULL_MAP_INDEX14;
+			else
+				mdeItemInfo->MDFlags = ReadInt32_Optional();
+			if(CheckProcessNullString())
+				mdeItemInfo->NullMap |= NULL_MAP_INDEX15;
+			else
+				ReadString_Optional(mdeItemInfo->Currency, &(mdeItemInfo->CurrencyLength));
+			if(CheckProcessNullUInt64())
+				mdeItemInfo->NullMap |= NULL_MAP_INDEX16;
+			else
+				mdeItemInfo->Revision = ReadUInt64_Optional();
+			if(CheckProcessNullString())
+				mdeItemInfo->NullMap |= NULL_MAP_INDEX17;
+			else
+				ReadString_Optional(mdeItemInfo->OrderSide, &(mdeItemInfo->OrderSideLength));
+			this->m_prevspectraDefaultIncrementalRefreshMessageMDEntriesItemInfo = mdeItemInfo;
+		}
+
+		this->m_prevfastDefaultIncrementalRefreshMessageInfo = info;
+		return info;
+	}
+	void* DecodeSpectraDefaultSnapshotMessage() {
+		SpectraDefaultSnapshotMessageInfo* info = GetFreeFastDefaultSnapshotMessageInfo();
+		info->PresenceMap = this->m_presenceMap;
+
+		info->MsgSeqNum = ReadUInt32_Mandatory();
+		info->SendingTime = ReadUInt64_Mandatory();
+		if(CheckProcessNullUInt32())
+			info->NullMap |= NULL_MAP_INDEX0;
+		else
+			info->LastFragment = ReadUInt32_Optional();
+		info->RptSeq = ReadUInt32_Mandatory();
+		info->TotNumReports = ReadUInt32_Mandatory();
+		info->LastMsgSeqNumProcessed = ReadUInt32_Mandatory();
+		if(CheckProcessNullUInt64())
+			info->NullMap |= NULL_MAP_INDEX1;
+		else
+			info->SecurityID = ReadUInt64_Optional();
+		info->SecurityIDSource = ReadUInt32_Mandatory();
+		if(CheckProcessNullString())
+			info->NullMap |= NULL_MAP_INDEX2;
+		else
+			ReadString_Optional(info->Symbol, &(info->SymbolLength));
+		if(CheckProcessNullString())
+			info->NullMap |= NULL_MAP_INDEX3;
+		else
+			ReadString_Optional(info->SecurityGroup, &(info->SecurityGroupLength));
+
+		info->MDEntriesCount = ReadUInt32_Mandatory();
+		SpectraDefaultSnapshotMessageMDEntriesItemInfo* mdeItemInfo = NULL;
+
+		for(int i = 0; i < info->MDEntriesCount; i++) {
+			mdeItemInfo = GetFreeSpectraDefaultSnapshotMessageMDEntriesItemInfo();
+			info->MDEntries[i] = mdeItemInfo;
+			ReadString_Mandatory(mdeItemInfo->MDEntryType, &(mdeItemInfo->MDEntryTypeLength));
+			if(CheckProcessNullUInt32())
+				mdeItemInfo->NullMap |= NULL_MAP_INDEX0;
+			else
+				mdeItemInfo->ExchangeTradingSessionID = ReadUInt32_Optional();
+			if(CheckProcessNullInt64())
+				mdeItemInfo->NullMap |= NULL_MAP_INDEX1;
+			else
+				mdeItemInfo->MDEntryID = ReadInt64_Optional();
+			if(CheckProcessNullUInt32())
+				mdeItemInfo->NullMap |= NULL_MAP_INDEX2;
+			else
+				mdeItemInfo->MarketDepth = ReadUInt32_Optional();
+			if(CheckProcessNullDecimal())
+				mdeItemInfo->NullMap |= NULL_MAP_INDEX3;
+			else
+				ReadDecimal_Optional(&(mdeItemInfo->MDEntryPx));
+			if(CheckProcessNullUInt32())
+				mdeItemInfo->NullMap |= NULL_MAP_INDEX4;
+			else
+				mdeItemInfo->MDEntryDate = ReadUInt32_Optional();
+			mdeItemInfo->MDEntryTime = ReadUInt64_Mandatory();
+			if(CheckProcessNullInt64())
+				mdeItemInfo->NullMap |= NULL_MAP_INDEX5;
+			else
+				mdeItemInfo->MDEntrySize = ReadInt64_Optional();
+			if(CheckProcessNullUInt32())
+				mdeItemInfo->NullMap |= NULL_MAP_INDEX6;
+			else
+				mdeItemInfo->MDPriceLevel = ReadUInt32_Optional();
+			if(CheckProcessNullInt32())
+				mdeItemInfo->NullMap |= NULL_MAP_INDEX7;
+			else
+				mdeItemInfo->NumberOfOrders = ReadInt32_Optional();
+			if(CheckProcessNullString())
+				mdeItemInfo->NullMap |= NULL_MAP_INDEX8;
+			else
+				ReadString_Optional(mdeItemInfo->MDEntryTradeType, &(mdeItemInfo->MDEntryTradeTypeLength));
+			if(CheckProcessNullInt32())
+				mdeItemInfo->NullMap |= NULL_MAP_INDEX9;
+			else
+				mdeItemInfo->TrdType = ReadInt32_Optional();
+			if(CheckProcessNullInt32())
+				mdeItemInfo->NullMap |= NULL_MAP_INDEX10;
+			else
+				mdeItemInfo->MDFlags = ReadInt32_Optional();
+			if(CheckProcessNullString())
+				mdeItemInfo->NullMap |= NULL_MAP_INDEX11;
+			else
+				ReadString_Optional(mdeItemInfo->Currency, &(mdeItemInfo->CurrencyLength));
+			if(CheckProcessNullString())
+				mdeItemInfo->NullMap |= NULL_MAP_INDEX12;
+			else
+				ReadString_Optional(mdeItemInfo->OrderSide, &(mdeItemInfo->OrderSideLength));
+			this->m_prevspectraDefaultSnapshotMessageMDEntriesItemInfo = mdeItemInfo;
+		}
+
+		this->m_prevfastDefaultSnapshotMessageInfo = info;
+		return info;
+	}
+	void* DecodeSpectraSecurityDefinition() {
+		SpectraSecurityDefinitionInfo* info = GetFreeFastSecurityDefinitionInfo();
+		info->PresenceMap = this->m_presenceMap;
+
+		info->MsgSeqNum = ReadUInt32_Mandatory();
+		info->SendingTime = ReadUInt64_Mandatory();
+		info->TotNumReports = ReadUInt32_Mandatory();
+		ReadString_Mandatory(info->Symbol, &(info->SymbolLength));
+		if(CheckProcessNullString())
+			info->NullMap |= NULL_MAP_INDEX0;
+		else
+			ReadString_Optional(info->SecurityDesc, &(info->SecurityDescLength));
+		info->SecurityID = ReadUInt64_Mandatory();
+		info->SecurityIDSource = ReadUInt32_Mandatory();
+		if(CheckProcessNullString())
+			info->NullMap |= NULL_MAP_INDEX1;
+		else
+			ReadString_Optional(info->SecurityAltID, &(info->SecurityAltIDLength));
+		if(CheckProcessNullString())
+			info->NullMap |= NULL_MAP_INDEX2;
+		else
+			ReadString_Optional(info->SecurityAltIDSource, &(info->SecurityAltIDSourceLength));
+		if(CheckProcessNullString())
+			info->NullMap |= NULL_MAP_INDEX3;
+		else
+			ReadString_Optional(info->SecurityType, &(info->SecurityTypeLength));
+		if(CheckProcessNullString())
+			info->NullMap |= NULL_MAP_INDEX4;
+		else
+			ReadString_Optional(info->CFICode, &(info->CFICodeLength));
+		if(CheckProcessNullDecimal())
+			info->NullMap |= NULL_MAP_INDEX5;
+		else
+			ReadDecimal_Optional(&(info->StrikePrice));
+		if(CheckProcessNullDecimal())
+			info->NullMap |= NULL_MAP_INDEX6;
+		else
+			ReadDecimal_Optional(&(info->ContractMultiplier));
+		if(CheckProcessNullUInt32())
+			info->NullMap |= NULL_MAP_INDEX7;
+		else
+			info->SecurityTradingStatus = ReadUInt32_Optional();
+		if(CheckProcessNullString())
+			info->NullMap |= NULL_MAP_INDEX8;
+		else
+			ReadString_Optional(info->Currency, &(info->CurrencyLength));
+		ReadString_Mandatory(info->MarketID, &(info->MarketIDLength));
+		ReadString_Mandatory(info->MarketSegmentID, &(info->MarketSegmentIDLength));
+		if(CheckProcessNullUInt32())
+			info->NullMap |= NULL_MAP_INDEX9;
+		else
+			info->TradingSessionID = ReadUInt32_Optional();
+		if(CheckProcessNullUInt32())
+			info->NullMap |= NULL_MAP_INDEX10;
+		else
+			info->ExchangeTradingSessionID = ReadUInt32_Optional();
+		if(CheckProcessNullDecimal())
+			info->NullMap |= NULL_MAP_INDEX11;
+		else
+			ReadDecimal_Optional(&(info->Volatility));
+
+		info->MDFeedTypesCount = ReadUInt32_Mandatory();
+		SpectraSecurityDefinitionMDFeedTypesItemInfo* mdftItemInfo = NULL;
+
+		for(int i = 0; i < info->MDFeedTypesCount; i++) {
+			mdftItemInfo = GetFreeSpectraSecurityDefinitionMDFeedTypesItemInfo();
+			info->MDFeedTypes[i] = mdftItemInfo;
+			ReadString_Mandatory(mdftItemInfo->MDFeedType, &(mdftItemInfo->MDFeedTypeLength));
+			if(CheckProcessNullUInt32())
+				mdftItemInfo->NullMap |= NULL_MAP_INDEX0;
+			else
+				mdftItemInfo->MarketDepth = ReadUInt32_Optional();
+			if(CheckProcessNullUInt32())
+				mdftItemInfo->NullMap |= NULL_MAP_INDEX1;
+			else
+				mdftItemInfo->MDBookType = ReadUInt32_Optional();
+			this->m_prevspectraSecurityDefinitionMDFeedTypesItemInfo = mdftItemInfo;
+		}
+
+
+		if(CheckProcessNullInt32()) {
+			info->UnderlyingsCount = 0;
+			info->NullMap |= NULL_MAP_INDEX12;
+		}
+		else
+			info->UnderlyingsCount = ReadUInt32_Optional();
+		SpectraSecurityDefinitionUnderlyingsItemInfo* uItemInfo = NULL;
+
+		for(int i = 0; i < info->UnderlyingsCount; i++) {
+			uItemInfo = GetFreeSpectraSecurityDefinitionUnderlyingsItemInfo();
+			info->Underlyings[i] = uItemInfo;
+			ReadString_Mandatory(uItemInfo->UnderlyingSymbol, &(uItemInfo->UnderlyingSymbolLength));
+			if(CheckProcessNullUInt64())
+				uItemInfo->NullMap |= NULL_MAP_INDEX0;
+			else
+				uItemInfo->UnderlyingSecurityID = ReadUInt64_Optional();
+			this->m_prevspectraSecurityDefinitionUnderlyingsItemInfo = uItemInfo;
+		}
+
+		if(CheckProcessNullDecimal())
+			info->NullMap |= NULL_MAP_INDEX13;
+		else
+			ReadDecimal_Optional(&(info->HighLimitPx));
+		if(CheckProcessNullDecimal())
+			info->NullMap |= NULL_MAP_INDEX14;
+		else
+			ReadDecimal_Optional(&(info->LowLimitPx));
+		if(CheckProcessNullDecimal())
+			info->NullMap |= NULL_MAP_INDEX15;
+		else
+			ReadDecimal_Optional(&(info->MinPriceIncrement));
+		if(CheckProcessNullDecimal())
+			info->NullMap |= NULL_MAP_INDEX16;
+		else
+			ReadDecimal_Optional(&(info->MinPriceIncrementAmount));
+		if(CheckProcessNullDecimal())
+			info->NullMap |= NULL_MAP_INDEX17;
+		else
+			ReadDecimal_Optional(&(info->InitialMarginOnBuy));
+		if(CheckProcessNullDecimal())
+			info->NullMap |= NULL_MAP_INDEX18;
+		else
+			ReadDecimal_Optional(&(info->InitialMarginOnSell));
+		if(CheckProcessNullDecimal())
+			info->NullMap |= NULL_MAP_INDEX19;
+		else
+			ReadDecimal_Optional(&(info->InitialMarginSyntetic));
+		if(CheckProcessNullString())
+			info->NullMap |= NULL_MAP_INDEX20;
+		else
+			ReadString_Optional(info->QuotationList, &(info->QuotationListLength));
+		if(CheckProcessNullDecimal())
+			info->NullMap |= NULL_MAP_INDEX21;
+		else
+			ReadDecimal_Optional(&(info->TheorPrice));
+		if(CheckProcessNullDecimal())
+			info->NullMap |= NULL_MAP_INDEX22;
+		else
+			ReadDecimal_Optional(&(info->TheorPriceLimit));
+
+		if(CheckProcessNullInt32()) {
+			info->InstrumentLegsCount = 0;
+			info->NullMap |= NULL_MAP_INDEX23;
+		}
+		else
+			info->InstrumentLegsCount = ReadUInt32_Optional();
+		SpectraSecurityDefinitionInstrumentLegsItemInfo* ilItemInfo = NULL;
+
+		for(int i = 0; i < info->InstrumentLegsCount; i++) {
+			ilItemInfo = GetFreeSpectraSecurityDefinitionInstrumentLegsItemInfo();
+			info->InstrumentLegs[i] = ilItemInfo;
+			ReadString_Mandatory(ilItemInfo->LegSymbol, &(ilItemInfo->LegSymbolLength));
+			ilItemInfo->LegSecurityID = ReadUInt64_Mandatory();
+			ReadDecimal_Mandatory(&(ilItemInfo->LegRatioQty));
+			this->m_prevspectraSecurityDefinitionInstrumentLegsItemInfo = ilItemInfo;
+		}
+
+
+		if(CheckProcessNullInt32()) {
+			info->InstrumentAttributesCount = 0;
+			info->NullMap |= NULL_MAP_INDEX24;
+		}
+		else
+			info->InstrumentAttributesCount = ReadUInt32_Optional();
+		SpectraSecurityDefinitionInstrumentAttributesItemInfo* iaItemInfo = NULL;
+
+		for(int i = 0; i < info->InstrumentAttributesCount; i++) {
+			iaItemInfo = GetFreeSpectraSecurityDefinitionInstrumentAttributesItemInfo();
+			info->InstrumentAttributes[i] = iaItemInfo;
+			iaItemInfo->InstrAttribType = ReadInt32_Mandatory();
+			ReadString_Mandatory(iaItemInfo->InstrAttribValue, &(iaItemInfo->InstrAttribValueLength));
+			this->m_prevspectraSecurityDefinitionInstrumentAttributesItemInfo = iaItemInfo;
+		}
+
+		if(CheckProcessNullDecimal())
+			info->NullMap |= NULL_MAP_INDEX25;
+		else
+			ReadDecimal_Optional(&(info->UnderlyingQty));
+		if(CheckProcessNullString())
+			info->NullMap |= NULL_MAP_INDEX26;
+		else
+			ReadString_Optional(info->UnderlyingCurrency, &(info->UnderlyingCurrencyLength));
+
+		if(CheckProcessNullInt32()) {
+			info->EvntGrpCount = 0;
+			info->NullMap |= NULL_MAP_INDEX27;
+		}
+		else
+			info->EvntGrpCount = ReadUInt32_Optional();
+		SpectraSecurityDefinitionEvntGrpItemInfo* egItemInfo = NULL;
+
+		for(int i = 0; i < info->EvntGrpCount; i++) {
+			egItemInfo = GetFreeSpectraSecurityDefinitionEvntGrpItemInfo();
+			info->EvntGrp[i] = egItemInfo;
+			egItemInfo->EventType = ReadInt32_Mandatory();
+			egItemInfo->EventDate = ReadUInt32_Mandatory();
+			egItemInfo->EventTime = ReadUInt64_Mandatory();
+			this->m_prevspectraSecurityDefinitionEvntGrpItemInfo = egItemInfo;
+		}
+
+		if(CheckProcessNullUInt32())
+			info->NullMap |= NULL_MAP_INDEX28;
+		else
+			info->MaturityDate = ReadUInt32_Optional();
+		if(CheckProcessNullUInt32())
+			info->NullMap |= NULL_MAP_INDEX29;
+		else
+			info->MaturityTime = ReadUInt32_Optional();
+		this->m_prevfastSecurityDefinitionInfo = info;
+		return info;
+	}
+	void* DecodeSpectraSecurityDefinitionUpdateReport() {
+		SpectraSecurityDefinitionUpdateReportInfo* info = GetFreeFastSecurityDefinitionUpdateReportInfo();
+		info->PresenceMap = this->m_presenceMap;
+
+		info->MsgSeqNum = ReadUInt32_Mandatory();
+		info->SendingTime = ReadUInt64_Mandatory();
+		info->SecurityID = ReadUInt64_Mandatory();
+		info->SecurityIDSource = ReadUInt32_Mandatory();
+		if(CheckProcessNullDecimal())
+			info->NullMap |= NULL_MAP_INDEX0;
+		else
+			ReadDecimal_Optional(&(info->Volatility));
+		if(CheckProcessNullDecimal())
+			info->NullMap |= NULL_MAP_INDEX1;
+		else
+			ReadDecimal_Optional(&(info->TheorPrice));
+		if(CheckProcessNullDecimal())
+			info->NullMap |= NULL_MAP_INDEX2;
+		else
+			ReadDecimal_Optional(&(info->TheorPriceLimit));
+		this->m_prevfastSecurityDefinitionUpdateReportInfo = info;
+		return info;
+	}
+	void* DecodeSpectraSecurityStatus() {
+		SpectraSecurityStatusInfo* info = GetFreeFastSecurityStatusInfo();
+		info->PresenceMap = this->m_presenceMap;
+
+		info->MsgSeqNum = ReadUInt32_Mandatory();
+		info->SendingTime = ReadUInt64_Mandatory();
+		info->SecurityID = ReadUInt64_Mandatory();
+		info->SecurityIDSource = ReadUInt32_Mandatory();
+		ReadString_Mandatory(info->Symbol, &(info->SymbolLength));
+		if(CheckProcessNullUInt32())
+			info->NullMap |= NULL_MAP_INDEX0;
+		else
+			info->SecurityTradingStatus = ReadUInt32_Optional();
+		if(CheckProcessNullDecimal())
+			info->NullMap |= NULL_MAP_INDEX1;
+		else
+			ReadDecimal_Optional(&(info->HighLimitPx));
+		if(CheckProcessNullDecimal())
+			info->NullMap |= NULL_MAP_INDEX2;
+		else
+			ReadDecimal_Optional(&(info->LowLimitPx));
+		if(CheckProcessNullDecimal())
+			info->NullMap |= NULL_MAP_INDEX3;
+		else
+			ReadDecimal_Optional(&(info->InitialMarginOnBuy));
+		if(CheckProcessNullDecimal())
+			info->NullMap |= NULL_MAP_INDEX4;
+		else
+			ReadDecimal_Optional(&(info->InitialMarginOnSell));
+		if(CheckProcessNullDecimal())
+			info->NullMap |= NULL_MAP_INDEX5;
+		else
+			ReadDecimal_Optional(&(info->InitialMarginSyntetic));
+		this->m_prevfastSecurityStatusInfo = info;
+		return info;
+	}
+	void* DecodeSpectraHeartbeat() {
+		SpectraHeartbeatInfo* info = GetFreeFastHeartbeatInfo();
+		info->PresenceMap = this->m_presenceMap;
+
+		info->MsgSeqNum = ReadUInt32_Mandatory();
+		info->SendingTime = ReadUInt64_Mandatory();
+		this->m_prevfastHeartbeatInfo = info;
+		return info;
+	}
+	void* DecodeSpectraSequenceReset() {
+		SpectraSequenceResetInfo* info = GetFreeFastSequenceResetInfo();
+		info->PresenceMap = this->m_presenceMap;
+
+		info->MsgSeqNum = ReadUInt32_Mandatory();
+		info->SendingTime = ReadUInt64_Mandatory();
+		info->NewSeqNo = ReadUInt32_Mandatory();
+		this->m_prevfastSequenceResetInfo = info;
+		return info;
+	}
+	void* DecodeSpectraTradingSessionStatus() {
+		SpectraTradingSessionStatusInfo* info = GetFreeFastTradingSessionStatusInfo();
+		info->PresenceMap = this->m_presenceMap;
+
+		info->MsgSeqNum = ReadUInt32_Mandatory();
+		info->SendingTime = ReadUInt64_Mandatory();
+		info->TradSesOpenTime = ReadUInt64_Mandatory();
+		info->TradSesCloseTime = ReadUInt64_Mandatory();
+		if(CheckProcessNullUInt64())
+			info->NullMap |= NULL_MAP_INDEX0;
+		else
+			info->TradSesIntermClearingStartTime = ReadUInt64_Optional();
+		if(CheckProcessNullUInt64())
+			info->NullMap |= NULL_MAP_INDEX1;
+		else
+			info->TradSesIntermClearingEndTime = ReadUInt64_Optional();
+		info->TradingSessionID = ReadUInt32_Mandatory();
+		if(CheckProcessNullUInt32())
+			info->NullMap |= NULL_MAP_INDEX2;
+		else
+			info->ExchangeTradingSessionID = ReadUInt32_Optional();
+		info->TradSesStatus = ReadUInt32_Mandatory();
+		ReadString_Mandatory(info->MarketID, &(info->MarketIDLength));
+		ReadString_Mandatory(info->MarketSegmentID, &(info->MarketSegmentIDLength));
+		if(CheckProcessNullInt32())
+			info->NullMap |= NULL_MAP_INDEX3;
+		else
+			info->TradSesEvent = ReadInt32_Optional();
+		this->m_prevfastTradingSessionStatusInfo = info;
+		return info;
+	}
+	void* DecodeSpectraNews() {
+		SpectraNewsInfo* info = GetFreeFastNewsInfo();
+		info->PresenceMap = this->m_presenceMap;
+
+		info->MsgSeqNum = ReadUInt32_Mandatory();
+		info->SendingTime = ReadUInt64_Mandatory();
+		if(CheckProcessNullUInt32())
+			info->NullMap |= NULL_MAP_INDEX0;
+		else
+			info->LastFragment = ReadUInt32_Optional();
+		if(CheckProcessNullString())
+			info->NullMap |= NULL_MAP_INDEX1;
+		else
+			ReadString_Optional(info->NewsId, &(info->NewsIdLength));
+		if(CheckProcessNullUInt64())
+			info->NullMap |= NULL_MAP_INDEX2;
+		else
+			info->OrigTime = ReadUInt64_Optional();
+		if(CheckProcessNullString())
+			info->NullMap |= NULL_MAP_INDEX3;
+		else
+			ReadString_Optional(info->LanguageCode, &(info->LanguageCodeLength));
+		if(CheckProcessNullUInt32())
+			info->NullMap |= NULL_MAP_INDEX4;
+		else
+			info->Urgency = ReadUInt32_Optional();
+		ReadString_Mandatory(info->Headline, &(info->HeadlineLength));
+		ReadString_Mandatory(info->MarketID, &(info->MarketIDLength));
+		if(CheckProcessNullString())
+			info->NullMap |= NULL_MAP_INDEX5;
+		else
+			ReadString_Optional(info->MarketSegmentID, &(info->MarketSegmentIDLength));
+
+		info->NewsTextCount = ReadUInt32_Mandatory();
+		SpectraNewsNewsTextItemInfo* ntItemInfo = NULL;
+
+		for(int i = 0; i < info->NewsTextCount; i++) {
+			ntItemInfo = GetFreeSpectraNewsNewsTextItemInfo();
+			info->NewsText[i] = ntItemInfo;
+			ReadString_Mandatory(ntItemInfo->Text, &(ntItemInfo->TextLength));
+			this->m_prevspectraNewsNewsTextItemInfo = ntItemInfo;
+		}
+
+		this->m_prevfastNewsInfo = info;
+		return info;
+	}
+	void* DecodeSpectraOrdersLog() {
+		SpectraOrdersLogInfo* info = GetFreeFastOrdersLogInfo();
+		info->PresenceMap = this->m_presenceMap;
+
+		info->MsgSeqNum = ReadUInt32_Mandatory();
+		info->SendingTime = ReadUInt64_Mandatory();
+		info->LastFragment = ReadUInt32_Mandatory();
+
+		info->MDEntriesCount = ReadUInt32_Mandatory();
+		SpectraOrdersLogMDEntriesItemInfo* mdeItemInfo = NULL;
+
+		for(int i = 0; i < info->MDEntriesCount; i++) {
+			mdeItemInfo = GetFreeSpectraOrdersLogMDEntriesItemInfo();
+			info->MDEntries[i] = mdeItemInfo;
+			mdeItemInfo->MDUpdateAction = ReadUInt32_Mandatory();
+			ReadString_Mandatory(mdeItemInfo->MDEntryType, &(mdeItemInfo->MDEntryTypeLength));
+			if(CheckProcessNullInt64())
+				mdeItemInfo->NullMap |= NULL_MAP_INDEX0;
+			else
+				mdeItemInfo->MDEntryID = ReadInt64_Optional();
+			if(CheckProcessNullUInt64())
+				mdeItemInfo->NullMap |= NULL_MAP_INDEX1;
+			else
+				mdeItemInfo->SecurityID = ReadUInt64_Optional();
+			mdeItemInfo->SecurityIDSource = ReadUInt32_Mandatory();
+			if(CheckProcessNullUInt32())
+				mdeItemInfo->NullMap |= NULL_MAP_INDEX2;
+			else
+				mdeItemInfo->RptSeq = ReadUInt32_Optional();
+			if(CheckProcessNullUInt32())
+				mdeItemInfo->NullMap |= NULL_MAP_INDEX3;
+			else
+				mdeItemInfo->MDEntryDate = ReadUInt32_Optional();
+			mdeItemInfo->MDEntryTime = ReadUInt64_Mandatory();
+			if(CheckProcessNullDecimal())
+				mdeItemInfo->NullMap |= NULL_MAP_INDEX4;
+			else
+				ReadDecimal_Optional(&(mdeItemInfo->MDEntryPx));
+			if(CheckProcessNullInt64())
+				mdeItemInfo->NullMap |= NULL_MAP_INDEX5;
+			else
+				mdeItemInfo->MDEntrySize = ReadInt64_Optional();
+			if(CheckProcessNullDecimal())
+				mdeItemInfo->NullMap |= NULL_MAP_INDEX6;
+			else
+				ReadDecimal_Optional(&(mdeItemInfo->LastPx));
+			if(CheckProcessNullInt64())
+				mdeItemInfo->NullMap |= NULL_MAP_INDEX7;
+			else
+				mdeItemInfo->LastQty = ReadInt64_Optional();
+			if(CheckProcessNullInt64())
+				mdeItemInfo->NullMap |= NULL_MAP_INDEX8;
+			else
+				mdeItemInfo->TradeID = ReadInt64_Optional();
+			if(CheckProcessNullUInt32())
+				mdeItemInfo->NullMap |= NULL_MAP_INDEX9;
+			else
+				mdeItemInfo->ExchangeTradingSessionID = ReadUInt32_Optional();
+			if(CheckProcessNullInt64())
+				mdeItemInfo->NullMap |= NULL_MAP_INDEX10;
+			else
+				mdeItemInfo->MDFlags = ReadInt64_Optional();
+			if(CheckProcessNullUInt64())
+				mdeItemInfo->NullMap |= NULL_MAP_INDEX11;
+			else
+				mdeItemInfo->Revision = ReadUInt64_Optional();
+			this->m_prevspectraOrdersLogMDEntriesItemInfo = mdeItemInfo;
+		}
+
+		this->m_prevfastOrdersLogInfo = info;
+		return info;
+	}
+	void* DecodeSpectraOrdersBook() {
+		SpectraOrdersBookInfo* info = GetFreeFastOrdersBookInfo();
+		info->PresenceMap = this->m_presenceMap;
+
+		info->MsgSeqNum = ReadUInt32_Mandatory();
+		info->SendingTime = ReadUInt64_Mandatory();
+		info->LastMsgSeqNumProcessed = ReadUInt32_Mandatory();
+		if(CheckProcessNullUInt32())
+			info->NullMap |= NULL_MAP_INDEX0;
+		else
+			info->RptSeq = ReadUInt32_Optional();
+		info->LastFragment = ReadUInt32_Mandatory();
+		info->RouteFirst = ReadUInt32_Mandatory();
+		info->ExchangeTradingSessionID = ReadUInt32_Mandatory();
+		if(CheckProcessNullUInt64())
+			info->NullMap |= NULL_MAP_INDEX1;
+		else
+			info->SecurityID = ReadUInt64_Optional();
+		info->SecurityIDSource = ReadUInt32_Mandatory();
+
+		info->MDEntriesCount = ReadUInt32_Mandatory();
+		SpectraOrdersBookMDEntriesItemInfo* mdeItemInfo = NULL;
+
+		for(int i = 0; i < info->MDEntriesCount; i++) {
+			mdeItemInfo = GetFreeSpectraOrdersBookMDEntriesItemInfo();
+			info->MDEntries[i] = mdeItemInfo;
+			ReadString_Mandatory(mdeItemInfo->MDEntryType, &(mdeItemInfo->MDEntryTypeLength));
+			if(CheckProcessNullInt64())
+				mdeItemInfo->NullMap |= NULL_MAP_INDEX0;
+			else
+				mdeItemInfo->MDEntryID = ReadInt64_Optional();
+			if(CheckProcessNullUInt32())
+				mdeItemInfo->NullMap |= NULL_MAP_INDEX1;
+			else
+				mdeItemInfo->MDEntryDate = ReadUInt32_Optional();
+			mdeItemInfo->MDEntryTime = ReadUInt64_Mandatory();
+			if(CheckProcessNullDecimal())
+				mdeItemInfo->NullMap |= NULL_MAP_INDEX2;
+			else
+				ReadDecimal_Optional(&(mdeItemInfo->MDEntryPx));
+			if(CheckProcessNullInt64())
+				mdeItemInfo->NullMap |= NULL_MAP_INDEX3;
+			else
+				mdeItemInfo->MDEntrySize = ReadInt64_Optional();
+			if(CheckProcessNullInt64())
+				mdeItemInfo->NullMap |= NULL_MAP_INDEX4;
+			else
+				mdeItemInfo->TradeID = ReadInt64_Optional();
+			if(CheckProcessNullInt64())
+				mdeItemInfo->NullMap |= NULL_MAP_INDEX5;
+			else
+				mdeItemInfo->MDFlags = ReadInt64_Optional();
+			this->m_prevspectraOrdersBookMDEntriesItemInfo = mdeItemInfo;
+		}
+
+		this->m_prevfastOrdersBookInfo = info;
+		return info;
+	}
+	void* DecodeSpectraLogon() {
+		SpectraLogonInfo* info = GetFreeFastLogonInfo();
+		info->PresenceMap = this->m_presenceMap;
+
+		info->MsgSeqNum = ReadUInt32_Mandatory();
+		info->SendingTime = ReadUInt64_Mandatory();
+		this->m_prevfastLogonInfo = info;
+		return info;
+	}
+	void* DecodeSpectraLogout() {
+		SpectraLogoutInfo* info = GetFreeFastLogoutInfo();
+		info->PresenceMap = this->m_presenceMap;
+
+		info->MsgSeqNum = ReadUInt32_Mandatory();
+		info->SendingTime = ReadUInt64_Mandatory();
+		if(CheckProcessNullString())
+			info->NullMap |= NULL_MAP_INDEX0;
+		else
+			ReadString_Optional(info->Text, &(info->TextLength));
+		this->m_prevfastLogoutInfo = info;
+		return info;
+	}
+	SpectraSnapshotInfo* GetSpectraSnapshotInfoDefaultIncrementalRefreshMessage() {
+		SpectraSnapshotInfo *info = GetFreeSpectraSnapshotInfo();
+		info->PresenceMap = this->m_presenceMap;
+		info->TemplateId = this->m_templateId;
+
+		SkipToNextField(); // MsgSeqNum
+		info->SendingTime = ReadUInt64_Mandatory();
+		if(CheckProcessNullUInt32())
+			info->NullMap |= NULL_MAP_INDEX0;
+		else
+			info->LastFragment = ReadUInt32_Optional();
+		return info;
+	}
+	SpectraSnapshotInfo* GetSpectraSnapshotInfoDefaultSnapshotMessage() {
+		SpectraSnapshotInfo *info = GetFreeSpectraSnapshotInfo();
+		info->PresenceMap = this->m_presenceMap;
+		info->TemplateId = this->m_templateId;
+
+		SkipToNextField(); // MsgSeqNum
+		info->SendingTime = ReadUInt64_Mandatory();
+		if(CheckProcessNullUInt32())
+			info->NullMap |= NULL_MAP_INDEX0;
+		else
+			info->LastFragment = ReadUInt32_Optional();
+		info->RptSeq = ReadUInt32_Mandatory();
+		SkipToNextField(); // TotNumReports
+		info->LastMsgSeqNumProcessed = ReadUInt32_Mandatory();
+		SkipToNextField(); // SecurityID
+		SkipToNextField(); // SecurityIDSource
+		if(CheckProcessNullString())
+			info->NullMap |= NULL_MAP_INDEX2;
+		else
+			ReadString_Optional(info->Symbol, &(info->SymbolLength));
+		return info;
+	}
+	SpectraSnapshotInfo* GetSpectraSnapshotInfoSecurityDefinition() {
+		SpectraSnapshotInfo *info = GetFreeSpectraSnapshotInfo();
+		info->PresenceMap = this->m_presenceMap;
+		info->TemplateId = this->m_templateId;
+
+		SkipToNextField(); // MsgSeqNum
+		info->SendingTime = ReadUInt64_Mandatory();
+		SkipToNextField(); // TotNumReports
+		ReadString_Mandatory(info->Symbol, &(info->SymbolLength));
+		SkipToNextField(); // SecurityDesc
+		SkipToNextField(); // SecurityID
+		SkipToNextField(); // SecurityIDSource
+		SkipToNextField(); // SecurityAltID
+		SkipToNextField(); // SecurityAltIDSource
+		SkipToNextField(); // SecurityType
+		SkipToNextField(); // CFICode
+		SkipToNextField(); // StrikePrice
+		SkipToNextField(); // ContractMultiplier
+		SkipToNextField(); // SecurityTradingStatus
+		SkipToNextField(); // Currency
+		SkipToNextField(); // MarketID
+		SkipToNextField(); // MarketSegmentID
+		if(CheckProcessNullUInt32())
+			info->NullMap |= NULL_MAP_INDEX9;
+		else
+			info->TradingSessionID = ReadUInt32_Optional();
+		return info;
+	}
+	SpectraSnapshotInfo* GetSpectraSnapshotInfoSecurityDefinitionUpdateReport() {
+		SpectraSnapshotInfo *info = GetFreeSpectraSnapshotInfo();
+		info->PresenceMap = this->m_presenceMap;
+		info->TemplateId = this->m_templateId;
+
+		SkipToNextField(); // MsgSeqNum
+		info->SendingTime = ReadUInt64_Mandatory();
+		return info;
+	}
+	SpectraSnapshotInfo* GetSpectraSnapshotInfoSecurityStatus() {
+		SpectraSnapshotInfo *info = GetFreeSpectraSnapshotInfo();
+		info->PresenceMap = this->m_presenceMap;
+		info->TemplateId = this->m_templateId;
+
+		SkipToNextField(); // MsgSeqNum
+		info->SendingTime = ReadUInt64_Mandatory();
+		SkipToNextField(); // SecurityID
+		SkipToNextField(); // SecurityIDSource
+		ReadString_Mandatory(info->Symbol, &(info->SymbolLength));
+		return info;
+	}
+	SpectraSnapshotInfo* GetSpectraSnapshotInfoHeartbeat() {
+		SpectraSnapshotInfo *info = GetFreeSpectraSnapshotInfo();
+		info->PresenceMap = this->m_presenceMap;
+		info->TemplateId = this->m_templateId;
+
+		SkipToNextField(); // MsgSeqNum
+		info->SendingTime = ReadUInt64_Mandatory();
+		return info;
+	}
+	SpectraSnapshotInfo* GetSpectraSnapshotInfoSequenceReset() {
+		SpectraSnapshotInfo *info = GetFreeSpectraSnapshotInfo();
+		info->PresenceMap = this->m_presenceMap;
+		info->TemplateId = this->m_templateId;
+
+		SkipToNextField(); // MsgSeqNum
+		info->SendingTime = ReadUInt64_Mandatory();
+		return info;
+	}
+	SpectraSnapshotInfo* GetSpectraSnapshotInfoTradingSessionStatus() {
+		SpectraSnapshotInfo *info = GetFreeSpectraSnapshotInfo();
+		info->PresenceMap = this->m_presenceMap;
+		info->TemplateId = this->m_templateId;
+
+		SkipToNextField(); // MsgSeqNum
+		info->SendingTime = ReadUInt64_Mandatory();
+		SkipToNextField(); // TradSesOpenTime
+		SkipToNextField(); // TradSesCloseTime
+		SkipToNextField(); // TradSesIntermClearingStartTime
+		SkipToNextField(); // TradSesIntermClearingEndTime
+		info->TradingSessionID = ReadUInt32_Mandatory();
+		return info;
+	}
+	SpectraSnapshotInfo* GetSpectraSnapshotInfoNews() {
+		SpectraSnapshotInfo *info = GetFreeSpectraSnapshotInfo();
+		info->PresenceMap = this->m_presenceMap;
+		info->TemplateId = this->m_templateId;
+
+		SkipToNextField(); // MsgSeqNum
+		info->SendingTime = ReadUInt64_Mandatory();
+		if(CheckProcessNullUInt32())
+			info->NullMap |= NULL_MAP_INDEX0;
+		else
+			info->LastFragment = ReadUInt32_Optional();
+		return info;
+	}
+	SpectraSnapshotInfo* GetSpectraSnapshotInfoOrdersLog() {
+		SpectraSnapshotInfo *info = GetFreeSpectraSnapshotInfo();
+		info->PresenceMap = this->m_presenceMap;
+		info->TemplateId = this->m_templateId;
+
+		SkipToNextField(); // MsgSeqNum
+		info->SendingTime = ReadUInt64_Mandatory();
+		info->LastFragment = ReadUInt32_Mandatory();
+		return info;
+	}
+	SpectraSnapshotInfo* GetSpectraSnapshotInfoOrdersBook() {
+		SpectraSnapshotInfo *info = GetFreeSpectraSnapshotInfo();
+		info->PresenceMap = this->m_presenceMap;
+		info->TemplateId = this->m_templateId;
+
+		SkipToNextField(); // MsgSeqNum
+		info->SendingTime = ReadUInt64_Mandatory();
+		info->LastMsgSeqNumProcessed = ReadUInt32_Mandatory();
+		if(CheckProcessNullUInt32())
+			info->NullMap |= NULL_MAP_INDEX0;
+		else
+			info->RptSeq = ReadUInt32_Optional();
+		info->LastFragment = ReadUInt32_Mandatory();
+		info->RouteFirst = ReadUInt32_Mandatory();
+		return info;
+	}
+	SpectraSnapshotInfo* GetSpectraSnapshotInfoLogon() {
+		SpectraSnapshotInfo *info = GetFreeSpectraSnapshotInfo();
+		info->PresenceMap = this->m_presenceMap;
+		info->TemplateId = this->m_templateId;
+
+		SkipToNextField(); // MsgSeqNum
+		info->SendingTime = ReadUInt64_Mandatory();
+		return info;
+	}
+	SpectraSnapshotInfo* GetSpectraSnapshotInfoLogout() {
+		SpectraSnapshotInfo *info = GetFreeSpectraSnapshotInfo();
+		info->PresenceMap = this->m_presenceMap;
+		info->TemplateId = this->m_templateId;
+
+		SkipToNextField(); // MsgSeqNum
+		info->SendingTime = ReadUInt64_Mandatory();
+		return info;
+	}
+	inline void* DecodeSpectra() {
+		this->DecodeSpectraHeader();
+		FastDecodeMethodPointer funcPtr = this->m_spectraDecodeMethods[this->m_templateId - 3];
+		this->m_lastDecodedInfo = (this->*funcPtr)();
+		return this->m_lastDecodedInfo;
+	}
+	void PrintSpectra() {
+
+		switch(this->m_templateId) {
+			case 12:
+				PrintSpectraDefaultIncrementalRefreshMessage((SpectraDefaultIncrementalRefreshMessageInfo*)this->m_lastDecodedInfo);
+				break;
+			case 13:
+				PrintSpectraDefaultSnapshotMessage((SpectraDefaultSnapshotMessageInfo*)this->m_lastDecodedInfo);
+				break;
+			case 3:
+				PrintSpectraSecurityDefinition((SpectraSecurityDefinitionInfo*)this->m_lastDecodedInfo);
+				break;
+			case 4:
+				PrintSpectraSecurityDefinitionUpdateReport((SpectraSecurityDefinitionUpdateReportInfo*)this->m_lastDecodedInfo);
+				break;
+			case 5:
+				PrintSpectraSecurityStatus((SpectraSecurityStatusInfo*)this->m_lastDecodedInfo);
+				break;
+			case 6:
+				PrintSpectraHeartbeat((SpectraHeartbeatInfo*)this->m_lastDecodedInfo);
+				break;
+			case 7:
+				PrintSpectraSequenceReset((SpectraSequenceResetInfo*)this->m_lastDecodedInfo);
+				break;
+			case 8:
+				PrintSpectraTradingSessionStatus((SpectraTradingSessionStatusInfo*)this->m_lastDecodedInfo);
+				break;
+			case 9:
+				PrintSpectraNews((SpectraNewsInfo*)this->m_lastDecodedInfo);
+				break;
+			case 14:
+				PrintSpectraOrdersLog((SpectraOrdersLogInfo*)this->m_lastDecodedInfo);
+				break;
+			case 15:
+				PrintSpectraOrdersBook((SpectraOrdersBookInfo*)this->m_lastDecodedInfo);
+				break;
+			case 1000:
+				PrintSpectraLogon((SpectraLogonInfo*)this->m_lastDecodedInfo);
+				break;
+			case 1001:
+				PrintSpectraLogout((SpectraLogoutInfo*)this->m_lastDecodedInfo);
+				break;
+		}
+	}
+	void PrintXmlSpectra() {
+
+		switch(this->m_templateId) {
+			case 12:
+				PrintXmlSpectraDefaultIncrementalRefreshMessage((SpectraDefaultIncrementalRefreshMessageInfo*)this->m_lastDecodedInfo);
+				break;
+			case 13:
+				PrintXmlSpectraDefaultSnapshotMessage((SpectraDefaultSnapshotMessageInfo*)this->m_lastDecodedInfo);
+				break;
+			case 3:
+				PrintXmlSpectraSecurityDefinition((SpectraSecurityDefinitionInfo*)this->m_lastDecodedInfo);
+				break;
+			case 4:
+				PrintXmlSpectraSecurityDefinitionUpdateReport((SpectraSecurityDefinitionUpdateReportInfo*)this->m_lastDecodedInfo);
+				break;
+			case 5:
+				PrintXmlSpectraSecurityStatus((SpectraSecurityStatusInfo*)this->m_lastDecodedInfo);
+				break;
+			case 6:
+				PrintXmlSpectraHeartbeat((SpectraHeartbeatInfo*)this->m_lastDecodedInfo);
+				break;
+			case 7:
+				PrintXmlSpectraSequenceReset((SpectraSequenceResetInfo*)this->m_lastDecodedInfo);
+				break;
+			case 8:
+				PrintXmlSpectraTradingSessionStatus((SpectraTradingSessionStatusInfo*)this->m_lastDecodedInfo);
+				break;
+			case 9:
+				PrintXmlSpectraNews((SpectraNewsInfo*)this->m_lastDecodedInfo);
+				break;
+			case 14:
+				PrintXmlSpectraOrdersLog((SpectraOrdersLogInfo*)this->m_lastDecodedInfo);
+				break;
+			case 15:
+				PrintXmlSpectraOrdersBook((SpectraOrdersBookInfo*)this->m_lastDecodedInfo);
+				break;
+			case 1000:
+				PrintXmlSpectraLogon((SpectraLogonInfo*)this->m_lastDecodedInfo);
+				break;
+			case 1001:
+				PrintXmlSpectraLogout((SpectraLogoutInfo*)this->m_lastDecodedInfo);
+				break;
+		}
+	}
+	inline SpectraSnapshotInfo* GetSpectraSnapshotInfo() {
+		this->DecodeHeader();
+		SpectraGetSnapshotInfoMethodPointer funcPtr = this->m_spectraGetSnapshotInfoMethods[this->m_templateId - 3];
 		return (this->*funcPtr)();
 	}
 #pragma endregion

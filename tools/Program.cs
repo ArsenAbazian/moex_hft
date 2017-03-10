@@ -333,6 +333,12 @@ namespace prebuild {
 			Mode = GeneratorMode.Asts;
 			Decode_Method_Pointer_Definition_GeneratedCode = "Asts_Decode_Method_Pointer_Definition_GeneratedCode";
 			Message_Info_Structures_Definition_GeneratedCode = "Asts_Message_Info_Structures_Definition_GeneratedCode";
+			Structure_Objects_Declaration_GeneratedCode = "Asts_Structure_Objects_Declaration_GeneratedCode";
+			Decode_Methods_Definition_GeneratedCode = "Asts_Decode_Methods_Definition_GeneratedCode";
+			Encode_Methods_Declaration_GeneratedCode = "Asts_Encode_Methods_Declaration_GeneratedCode";
+			Encode_Methods_Definition_GeneratedCode = "Asts_Encode_Methods_Definition_GeneratedCode";
+			Print_Methods_Definition_GeneratedCode = "Asts_Print_Methods_Definition_GeneratedCode";
+			Print_Methods_Declaration_GeneratedCode = "Asts_Print_Methods_Declaration_GeneratedCode";
 
 			SnapshotInfoFields = new List<SnapshotFieldInfo>();
 			SnapshotInfoFields.Add(new SnapshotFieldInfo("", "RptSeq"));
@@ -342,6 +348,8 @@ namespace prebuild {
 			SnapshotInfoFields.Add(new SnapshotFieldInfo("", "SendingTime"));
 			SnapshotInfoFields.Add(new SnapshotFieldInfo("", "Symbol"));
 			SnapshotInfoFields.Add(new SnapshotFieldInfo("", "TradingSessionID"));
+
+			ClearStructures();
 		}
 
 		void PrepareForSpectra() {
@@ -349,6 +357,12 @@ namespace prebuild {
 			Mode = GeneratorMode.Spectra;
 			Decode_Method_Pointer_Definition_GeneratedCode = "Spectra_Decode_Method_Pointer_Definition_GeneratedCode";
 			Message_Info_Structures_Definition_GeneratedCode = "Spectra_Message_Info_Structures_Definition_GeneratedCode";
+			Structure_Objects_Declaration_GeneratedCode = "Spectra_Structure_Objects_Declaration_GeneratedCode";
+			Decode_Methods_Definition_GeneratedCode = "Spectra_Decode_Methods_Definition_GeneratedCode";
+			Encode_Methods_Declaration_GeneratedCode = "Spectra_Encode_Methods_Declaration_GeneratedCode";
+			Encode_Methods_Definition_GeneratedCode = "Spectra_Encode_Methods_Definition_GeneratedCode";
+			Print_Methods_Definition_GeneratedCode = "Spectra_Print_Methods_Definition_GeneratedCode";
+			Print_Methods_Declaration_GeneratedCode = "Spectra_Print_Methods_Declaration_GeneratedCode";
 
 			SnapshotInfoFields = new List<SnapshotFieldInfo>();
 			SnapshotInfoFields.Add(new SnapshotFieldInfo("", "RptSeq"));
@@ -358,6 +372,8 @@ namespace prebuild {
 			SnapshotInfoFields.Add(new SnapshotFieldInfo("", "SendingTime"));
 			SnapshotInfoFields.Add(new SnapshotFieldInfo("", "Symbol"));
 			SnapshotInfoFields.Add(new SnapshotFieldInfo("", "TradingSessionID"));
+
+			ClearStructures();
 		}
 
 		void Generate_Spectra() {
@@ -412,7 +428,6 @@ namespace prebuild {
 				Structure_Objects_Declaration_GeneratedCode,
 				Decode_Method_Pointer_Arrays_GeneratedCode,
 				Get_Free_Item_Methods_GeneratedCode,
-				Decode_Methods_Definition_GeneratedCode,
 				Encode_Methods_Definition_GeneratedCode,
 				Encode_Methods_Declaration_GeneratedCode,
 				String_Constant_Declaration_GeneratedCode,
@@ -464,7 +479,7 @@ namespace prebuild {
 			WriteDecodeMethodPointersDefinitionCode();
 			WriteEntireMethodAddressArrays(TemplatesNode);
 			WriteStructuresDefinitionCode(TemplatesNode, true);
-			WriteStructuresDeclarationCode(TemplatesNode);
+			WriteStructuresDeclarationCode();
 			ConstantStrings = GetConstantStrings(TemplatesNode);
 			WriteStringConstantDeclarationCode(TemplatesNode);
 			WriteGetFreeItemCode(TemplatesNode);
@@ -480,20 +495,20 @@ namespace prebuild {
 
 		private  void GenerateTemplatesCodeSpectra () {
 			Console.WriteLine("generate spectra...");
-			//WriteDecodeMethodPointersDefinitionCode();
+			WriteDecodeMethodPointersDefinitionCode();
 
-			//WriteEntireMethodAddressArrays(TemplatesNode);
-			//WriteStructuresDefinitionCode(TemplatesNode, false);
-			//WriteStructuresDeclarationCode(TemplatesNode);
+			WriteEntireMethodAddressArrays(TemplatesNode);
+			WriteStructuresDefinitionCode(TemplatesNode, true);
+			WriteStructuresDeclarationCode();
 			//ConstantStrings = GetConstantStrings(TemplatesNode);
 			//WriteStringConstantDeclarationCode(TemplatesNode);
-			//WriteGetFreeItemCode(TemplatesNode);
-			//WriteReleaseItemCode(TemplatesNode);
+			WriteGetFreeItemCode(TemplatesNode);
+			WriteReleaseItemCode(TemplatesNode);
 
-			//WriteEncodeMethodsCode(TemplatesNode);
-			//WriteHeaderParsingCode(TemplatesNode);
-			//WriteGetTotNumReportsMethod(TemplatesNode);
-			//WriteDecodeMethodsCode(TemplatesNode);
+			WriteEncodeMethodsCode(TemplatesNode);
+			WriteHeaderParsingCode(TemplatesNode);
+			WriteGetTotNumReportsMethod(TemplatesNode);
+			WriteDecodeMethodsCode(TemplatesNode);
 			//WritePrintMethodsCode(TemplatesNode);
 
 			Console.WriteLine("done.");
@@ -542,12 +557,14 @@ namespace prebuild {
 
 		private  void WriteEncodeMethodsCode (XmlNode templatesNode) {
 			List<StructureInfo> st = GetStructures(TemplatesNode);
+			ClearRegion(Encode_Methods_Declaration_GeneratedCode);
 			SetPosition(Encode_Methods_Declaration_GeneratedCode);
 			foreach(StructureInfo info in st) {
 				if(info.IsSequence)
 					continue;
 				WriteEncodeMethodDeclarationMethodCode(info);
 			}
+			ClearRegion(Encode_Methods_Definition_GeneratedCode);
 			SetPosition(Encode_Methods_Definition_GeneratedCode);
 			foreach(StructureInfo info in st) {
 				if(info.IsSequence)
@@ -727,7 +744,7 @@ namespace prebuild {
 			string name = string.Empty;
 			while(node.Name != "templates") {
 				if(node.Name == "template")
-					name = GetTemplateName(node.PreviousSibling.Value) + name;
+					name = GetTemplateName(node) + name;
 				else 
 					name = ItemName(node) + name;
 				node = node.ParentNode;
@@ -742,8 +759,8 @@ namespace prebuild {
 				WriteLine("\t}");
 			}
 			int minId = CalcMinTemplateId(templatesNode);
-			WriteLine("\tinline void Reset() {");
-			WriteLine("\t\tFastReleaseMethodPointer funcPtr = this->ReleaseMethods[this->m_templateId - " + minId + "];");
+			WriteLine("\tinline void Reset" + Prefix + "() {");
+			WriteLine("\t\tFastReleaseMethodPointer funcPtr = this->" + ReleaseMethodsName + "[this->m_templateId - " + minId + "];");
 			WriteLine("\t\t(this->*funcPtr)();");
 			WriteLine("\t}");
 		}
@@ -775,13 +792,13 @@ namespace prebuild {
 
 			public string ValueName { 
 				get { 
-					return "m_" + NameCore.Substring(0, 1).ToLower() + NameCore.Substring(1) + (IsSequence ? "Items" : ""); 
+					return "m_" + Prefix.ToLower() + NameCore + (IsSequence ? "Items" : ""); 
 				} 
 			}
 
 			public string PrevValueName {
 				get {
-					return "m_prev" + NameCore + (IsSequence ? "Item" : "") + "Info"; 
+					return "m_prev" + Prefix.ToLower() + NameCore + (IsSequence ? "Item" : "") + "Info"; 
 				}
 			}
 
@@ -800,11 +817,11 @@ namespace prebuild {
 			}
 
 			public string GetFreeMethodName {
-				get { return "GetFree" + NameCore + Suffix; }
+				get { return "GetFree" + Prefix + NameCore + Suffix; }
 			}
 
 			public string GetListMethodName { 
-				get{ return "Get" + NameCore + Suffix + "Pool"; }
+				get{ return "Get" + Prefix + NameCore + Suffix + "Pool"; }
 			}
 
 			public string AllocatePoolMethodName { 
@@ -812,11 +829,11 @@ namespace prebuild {
 			}
 
 			public string ReleaseMethodName { 
-				get { return "Release" + NameCore + Suffix; }
+				get { return "Release" + Prefix + NameCore + Suffix; }
 			}
 
 			public string EncodeMethodName {
-				get { return "Encode" + NameCore + Suffix; }
+				get { return "Encode" + Prefix + NameCore + Suffix; }
 			}
 
 			public StructureInfo Parent { get; set; }
@@ -867,10 +884,12 @@ namespace prebuild {
 			List<StructureInfo> res = new List<StructureInfo>();
 			foreach(XmlNode node in templatesNode.ChildNodes) {
 				if(node.Name == "template") {
-					string nameCore = GetTemplateName(node.PreviousSibling.Value);
+					string nameCore = GetTemplateName(node);
 					List<StructureInfo> child = new List<StructureInfo>();
 					GetSequenceStructureNames(nameCore, node, child);
 					StructureInfo info = new StructureInfo() { NameCore = nameCore, Node = node };
+					info.Prefix = Prefix;
+					Console.WriteLine("found structure " + info.Name);
 					foreach(StructureInfo c in child) {
 						res.Add(c);
 						c.Parent = info;
@@ -893,6 +912,7 @@ namespace prebuild {
 				List<StructureInfo> child = new List<StructureInfo>();
 				GetSequenceStructureNames(nameCore, node, child);
 				StructureInfo info = new StructureInfo() { IsSequence = true, NameCore = nameCore, Node = node }; 
+				info.Prefix = Prefix;
 				foreach(StructureInfo c in child) {
 					res.Add(c);
 					c.Parent = info;
@@ -905,7 +925,8 @@ namespace prebuild {
 			}
 		}
 
-		private  void WriteStructuresDeclarationCode (XmlNode templatesNode) {
+		private  void WriteStructuresDeclarationCode () {
+			ClearRegion(Structure_Objects_Declaration_GeneratedCode);
 			SetPosition(Structure_Objects_Declaration_GeneratedCode);
 
 			foreach(StructureInfo str in Structures) {
@@ -916,9 +937,9 @@ namespace prebuild {
 			}
 
 			WriteLine("");
-			WriteLine("\tvoid InitializeMessageInfo() {");
+			WriteLine("\tvoid Initialize" + Prefix + "MessageInfo() {");
 			foreach(StructureInfo str in structures) {
-				WriteLine("\t\tthis->" + str.ValueName + " = this->m_allocationInfo->" + str.GetListMethodName + "();");
+				WriteLine("\t\tthis->" + str.ValueName + " = this->m_allocationInfo" + Prefix + "->" + str.GetListMethodName + "();");
 			}
 			foreach(StructureInfo str in structures) {
 				WriteLine("\t\tthis->" + str.PrevValueName + " = this->" + str.GetFreeMethodName + "();");
@@ -963,9 +984,10 @@ namespace prebuild {
 
 		protected List<string> HeaderTags { get; set; }
 		private void WriteHeaderParsingCode(XmlNode templatesNode) {
+			ClearRegion(Decode_Methods_Definition_GeneratedCode);
 			SetPosition(Decode_Methods_Definition_GeneratedCode);
 
-			WriteLine("\tinline void DecodeHeader() {"); 
+			WriteLine("\tinline void Decode" + Prefix + "Header() {"); 
 			WriteLine("");
 			WriteLine("\t\tthis->ParsePresenceMap(&(this->m_presenceMap));");
 			WriteLine("\t\tthis->m_templateId = ReadUInt32_Mandatory();");
@@ -977,38 +999,40 @@ namespace prebuild {
 			foreach(XmlNode node in templatesNode.ChildNodes) {
 				if(node.Name != "template")
 					continue;
-				ParseTemplateNode(node, GetTemplateName(node.PreviousSibling.Value));
+				ParseTemplateNode(node, GetTemplateName(node));
 			}
 			foreach(XmlNode node in templatesNode.ChildNodes) {
 				if(node.Name != "template")
 					continue;
-				WriteGetSnapshotInfoMethod(node, GetTemplateName(node.PreviousSibling.Value));
+				WriteGetSnapshotInfoMethod(node, GetTemplateName(node));
 			}
 			WriteEntireMethodsCode(templatesNode);
 		}
 
 		private void WritePrintMethodsCode(XmlNode templatesNode) {
+			ClearRegion(Print_Methods_Declaration_GeneratedCode);
 			SetPosition(Print_Methods_Declaration_GeneratedCode);
 			foreach(XmlNode node in templatesNode.ChildNodes) {
 				if(node.Name == "template") {
-					PrintDeclareTemplateNode(node, GetTemplateName(node.PreviousSibling.Value));
+					PrintDeclareTemplateNode(node, GetTemplateName(node));
 				}
 			}
 			foreach(XmlNode node in templatesNode.ChildNodes) {
 				if(node.Name == "template") {
-					PrintXmlDeclareTemplateNode(node, GetTemplateName(node.PreviousSibling.Value));
+					PrintXmlDeclareTemplateNode(node, GetTemplateName(node));
 				}
 			}
 
+			ClearRegion(Print_Methods_Definition_GeneratedCode);
 			SetPosition(Print_Methods_Definition_GeneratedCode);
 			foreach(XmlNode node in templatesNode.ChildNodes) {
 				if(node.Name == "template") {
-					PrintTemplateNode(node, GetTemplateName(node.PreviousSibling.Value));
+					PrintTemplateNode(node, GetTemplateName(node));
 				}
 			}
 			foreach(XmlNode node in templatesNode.ChildNodes) {
 				if(node.Name == "template") {
-					PrintXmlTemplateNode(node, GetTemplateName(node.PreviousSibling.Value));
+					PrintXmlTemplateNode(node, GetTemplateName(node));
 				}
 			}
 		}
@@ -1146,8 +1170,8 @@ namespace prebuild {
 			}
 			foreach(StructureInfo info in Structures) {
 				WriteLine("\tinline void " + info.AllocatePoolMethodName + "To(int count) {");
-				WriteLine("count -= this->" + info.ValueName + "->Capacity();");
-				WriteLine("if(count > 0)");
+				WriteLine("\t\tcount -= this->" + info.ValueName + "->Capacity();");
+				WriteLine("\t\tif(count > 0)");
 				WriteLine("\t\t\tthis->" + info.ValueName + "->Append(count);");
 				WriteLine("\t}");
 			}
@@ -1204,6 +1228,7 @@ namespace prebuild {
 		}
 
 		private  void WriteStructuresDefinitionCode (XmlNode templatesNode, bool writeSnapshotInfoCode) {
+			ClearRegion(Message_Info_Structures_Definition_GeneratedCode);
 			SetPosition(Message_Info_Structures_Definition_GeneratedCode);
 			if(writeSnapshotInfoCode)
 				WriteSnapshotInfoDefinitionCode(templatesNode);
@@ -1232,6 +1257,10 @@ namespace prebuild {
 				if(name == "TargetCompID" || name == "SenderCompID")
 					maxStringLength = 32;
 				if(name == "MDEntryType")
+					maxStringLength = 4;
+				if(name == "MDEntryTradeType")
+					maxStringLength = 4;
+				if(name == "Currency")
 					maxStringLength = 4;
 				if(name == "OpenCloseSettlFlag")
 					maxStringLength = 4;
@@ -1302,6 +1331,7 @@ namespace prebuild {
 				return structures;
 			}
 		}
+		void ClearStructures() { this.structures = null; }
 
 		int CalcMaxTemplateId(XmlNode templatesNode) {
 			List<XmlNode> list = GetTemplates(templatesNode);
@@ -1323,39 +1353,43 @@ namespace prebuild {
 			return id;
 		}
 
+		protected string DecodeMethodsName { get { return "m_" + Prefix.ToLower() + "DecodeMethods"; } }
+		protected string ReleaseMethodsName { get { return "m_" + Prefix.ToLower() + "ReleaseMethods"; } }
+		protected string GetSnapshotInfoMethodsMethodsName { get { return "m_" + Prefix.ToLower() + "GetSnapshotInfoMethods"; } }
+
 		private  void WriteEntireMethodAddressArrays (XmlNode templatesNode) {
 			SetPosition(Decode_Method_Pointer_Arrays_GeneratedCode);
-			WriteLine("\tFastDecodeMethodPointer* DecodeMethods;");
-			WriteLine("\tFastReleaseMethodPointer* ReleaseMethods;");
-			WriteLine("\tFastGetSnapshotInfoMethodPointer* GetSnapshotInfoMethods;");
+			WriteLine("\tFastDecodeMethodPointer* " + DecodeMethodsName + ";");
+			WriteLine("\tFastReleaseMethodPointer* " + ReleaseMethodsName + ";");
+			WriteLine("\t" + Prefix + "GetSnapshotInfoMethodPointer* " + GetSnapshotInfoMethodsMethodsName + ";");
 			WriteLine("");
-			WriteLine("\tvoid InitializeDecodeMethodPointers() {");
+			WriteLine("\tvoid Initialize" + Prefix + "DecodeMethodPointers() {");
 			int maxId = CalcMaxTemplateId(templatesNode);
 			int minId = CalcMinTemplateId(templatesNode);
 			int count = maxId - minId + 1;
 
 			WriteLine("\t\tint ptCount = " + count + ";");
-			WriteLine("\t\tthis->DecodeMethods = new FastDecodeMethodPointer[ptCount];");
-			WriteLine("\t\tthis->ReleaseMethods = new FastReleaseMethodPointer[ptCount];");
-			WriteLine("\t\tthis->GetSnapshotInfoMethods = new FastGetSnapshotInfoMethodPointer[ptCount];");
+			WriteLine("\t\tthis->" + DecodeMethodsName + " = new FastDecodeMethodPointer[ptCount];");
+			WriteLine("\t\tthis->" + ReleaseMethodsName + " = new FastReleaseMethodPointer[ptCount];");
+			WriteLine("\t\tthis->" + GetSnapshotInfoMethodsMethodsName + " = new " + Prefix + "GetSnapshotInfoMethodPointer[ptCount];");
 
 			WriteLine("");
 			WriteLine("\t\tfor(int i = 0; i < " + count + "; i++) {");
-			WriteLine("\t\t\tthis->DecodeMethods[i] = &FastProtocolManager::DecodeUnsupportedMessage;");
-			WriteLine("\t\t\tthis->GetSnapshotInfoMethods[i] = &FastProtocolManager::GetSnapshotInfoUnsupported;");
+			WriteLine("\t\t\tthis->" + DecodeMethodsName + "[i] = &FastProtocolManager::Decode" + Prefix + "UnsupportedMessage;");
+			WriteLine("\t\t\tthis->" + GetSnapshotInfoMethodsMethodsName + "[i] = &FastProtocolManager::Get" + Prefix + "SnapshotInfoUnsupported;");
 			WriteLine("\t\t}");
-			WriteLine("");
+ 			WriteLine("");
 			List<DecodeMessageInfo> methods = GetDecodeMessageMethods(templatesNode);
 			foreach(DecodeMessageInfo info in methods) {
-				WriteLine("\t\tthis->DecodeMethods[" + info.TemplateId + " - " + minId + "] = &FastProtocolManager::" + info.FullDecodeMethodName + ";");
+				WriteLine("\t\tthis->" + DecodeMethodsName + "[" + info.TemplateId + " - " + minId + "] = &FastProtocolManager::" + info.FullDecodeMethodName + ";");
 			}
 			foreach(DecodeMessageInfo info in methods) {
-				WriteLine("\t\tthis->ReleaseMethods[" + info.TemplateId + " - " + minId + "] = &FastProtocolManager::" + info.FullDecodeMethodName + ";");
+				WriteLine("\t\tthis->" + ReleaseMethodsName + "[" + info.TemplateId + " - " + minId + "] = &FastProtocolManager::" + info.FullDecodeMethodName + ";");
 			}
 			foreach(DecodeMessageInfo info in methods) {
 				if(!info.HasGetSnapshotInfoMethod)
 					continue;
-				WriteLine("\t\tthis->GetSnapshotInfoMethods[" + info.TemplateId + " - " + minId + "] = &FastProtocolManager::" + info.FullGetSnapshotInfoMethod + ";");
+				WriteLine("\t\tthis->" + GetSnapshotInfoMethodsMethodsName + "[" + info.TemplateId + " - " + minId + "] = &FastProtocolManager::" + info.FullGetSnapshotInfoMethod + ";");
 			}
 			WriteLine("");
 			WriteLine("\t}");
@@ -1406,27 +1440,25 @@ namespace prebuild {
 			public string NameCore { get; set; }
 			public string MsgType { get; set; }
 			public int TemplateId { get; set; }
-			public string FullDecodeMethodName { get { return "Decode" + NameCore; } }
-			public string FullReleaseMethodName { get { return "Release" + NameCore; } }
+			public string FullDecodeMethodName { get { return "Decode" + Prefix + NameCore; } }
+			public string FullReleaseMethodName { get { return "Release" + Prefix + NameCore; } }
 			public bool HasGetSnapshotInfoMethod { get; set; } 
-			public string FullGetSnapshotInfoMethod { get { return "GetSnapshotInfo" + NameCore; } }
-			public string PrintMethodName { get { return "Print" + NameCore; } }
-			public string PrintXmlMethodName { get { return "PrintXml" + NameCore; } }
+			public string FullGetSnapshotInfoMethod { get { return "Get" + Prefix + "SnapshotInfo" + NameCore; } }
+			public string PrintMethodName { get { return "Print" + Prefix + NameCore; } }
+			public string PrintXmlMethodName { get { return "PrintXml" + Prefix + NameCore; } }
 			public string StructName { get { return Prefix + NameCore + "Info"; } }
 		}
 
 		private  void WriteEntireMethodsCode (XmlNode templatesNode) {
 			int minId = CalcMinTemplateId(templatesNode);
-			WriteLine("\tinline void* Decode() {");
-			WriteLine("\t\tthis->DecodeHeader();");
-			WriteLine("\t\tif(this->ShouldSkipTemplate())");
-			WriteLine("\t\t\treturn 0;");
-			WriteLine("\t\tFastDecodeMethodPointer funcPtr = this->DecodeMethods[this->m_templateId - " + minId + "];");
+			WriteLine("\tinline void* Decode" + Prefix + "() {");
+			WriteLine("\t\tthis->Decode" + Prefix + "Header();");
+			WriteLine("\t\tFastDecodeMethodPointer funcPtr = this->" + DecodeMethodsName + "[this->m_templateId - " + minId + "];");
 			WriteLine("\t\tthis->m_lastDecodedInfo = (this->*funcPtr)();");
 			WriteLine("\t\treturn this->m_lastDecodedInfo;");
 			WriteLine("\t}");
 
-			WriteLine("\tvoid Print() {");
+			WriteLine("\tvoid Print" + Prefix + "() {");
 			WriteLine("");
 			WriteLine("\t\tswitch(this->m_templateId) {");
 			List<DecodeMessageInfo> messages = GetDecodeMessageMethods(templatesNode);
@@ -1438,7 +1470,7 @@ namespace prebuild {
 			WriteLine("\t\t}");
 			WriteLine("\t}");
 
-			WriteLine("\tvoid PrintXml() {");
+			WriteLine("\tvoid PrintXml" + Prefix + "() {");
 			WriteLine("");
 			WriteLine("\t\tswitch(this->m_templateId) {");
 			foreach(DecodeMessageInfo info in messages) {
@@ -1449,11 +1481,17 @@ namespace prebuild {
 			WriteLine("\t\t}");
 			WriteLine("\t}");
 
-			WriteLine("\tinline FastSnapshotInfo* GetSnapshotInfo() {");
+			WriteLine("\tinline " + Prefix + "SnapshotInfo* Get" + Prefix + "SnapshotInfo() {");
 			WriteLine("\t\tthis->DecodeHeader();");
-			WriteLine("\t\tFastGetSnapshotInfoMethodPointer funcPtr = this->GetSnapshotInfoMethods[this->m_templateId - " + minId + "];");
+			WriteLine("\t\t" + Prefix + "GetSnapshotInfoMethodPointer funcPtr = this->" + GetSnapshotInfoMethodsMethodsName + "[this->m_templateId - " + minId + "];");
 			WriteLine("\t\treturn (this->*funcPtr)();");
 			WriteLine("\t}");
+		}
+
+		bool IsSnapshotMessage(XmlNode node) {
+			if(Mode == GeneratorMode.Asts) 
+				return node.PreviousSibling.Value.Contains("Snapshot");
+			return node.Attributes["name"].Value.Contains("Snapshot");
 		}
 
 		private  List<DecodeMessageInfo> GetDecodeMessageMethods (XmlNode templatesNode) {
@@ -1462,10 +1500,13 @@ namespace prebuild {
 				if(node.Name != "template")
 					continue;
 				DecodeMessageInfo info = new DecodeMessageInfo();
+				info.Prefix = Prefix;
+				if(node.Attributes == null)
+					throw new ArgumentException("Attributes == null for node" + node.Value.ToString());
 				info.MsgType = node.Attributes["name"].Value.Substring(0, 1);
 				info.TemplateId = Int32.Parse(node.Attributes["id"].Value);
-				info.NameCore = GetTemplateName(node.PreviousSibling.Value);
-				info.HasGetSnapshotInfoMethod = node.PreviousSibling.Value.Contains("Snapshot");
+				info.NameCore = GetTemplateName(node);
+				info.HasGetSnapshotInfoMethod = IsSnapshotMessage(node);
 				res.Add(info);
 			}
 			return res;
@@ -1502,6 +1543,8 @@ namespace prebuild {
 			WriteNullMapDefinition();
 			WritePointerCode(info);
 			foreach(XmlNode field in info.Fields) {
+				if(field.NodeType == XmlNodeType.Comment)
+					continue;
 				if(field.Name == "string")
 					WriteStringDefinition(field);
 				else if(field.Name == "uInt32")
@@ -1674,10 +1717,11 @@ namespace prebuild {
 			WriteLine("\tint" + StuctFieldsSpacing + Name(field) + "Count;" + GetCommentLine(field));
 			StructureInfo originalStruct = GetOriginalStruct(field);
 			if(originalStruct != null) {
+				originalStruct.Prefix = Prefix;
 				WriteLine("\t" + originalStruct.Name + "* " + Name(field) + "[256];" + GetCommentLine(field));
 			}
 			else
-				WriteLine("\tFast" + parentName + ItemName(field) + "ItemInfo* " + Name(field) + "[256];" + GetCommentLine(field));
+				WriteLine("\t" + Prefix + parentName + ItemName(field) + "ItemInfo* " + Name(field) + "[256];" + GetCommentLine(field));
 		}
 
 		private  void WriteByteVectorField (XmlNode field) {
@@ -1712,7 +1756,13 @@ namespace prebuild {
 			//WriteLine("\tint" + StuctFieldsSpacing + Name(field) + "Length;");
 		}
 
-		string GetTemplateName (string templateName) {
+		string GetTemplateName(XmlNode node) {
+			if(Mode == GeneratorMode.Asts)
+				return GetTemplateNameAsts(node.PreviousSibling.Value);
+			return node.Attributes["name"].Value.ToString();
+		}
+
+		string GetTemplateNameAsts (string templateName) {
 			templateName = templateName.Replace("-", "");
 			templateName = templateName.Replace("/", "");
 			templateName = templateName.Replace(" ", "");
@@ -1755,9 +1805,9 @@ namespace prebuild {
 		}
 
 		private  void ParseTemplateNode(XmlNode template, string templateName) {
-			WriteLine("\tvoid* Decode" + templateName + "() {");
+			WriteLine("\tvoid* Decode" + Prefix + templateName + "() {");
 			StructureInfo info = new StructureInfo() { Node = template, NameCore = templateName };
-			WriteLine("\t\tFast" + templateName + "Info* info = " + info.GetFreeMethodName + "();");
+			WriteLine("\t\t" + Prefix + templateName + "Info* info = " + info.GetFreeMethodName + "();");
 			WriteCopyPresenceMap("\t\t", "info");
 			WriteLine("");
 			foreach(XmlNode value in template.ChildNodes) {
@@ -1768,7 +1818,6 @@ namespace prebuild {
 			WriteLine("\t}");
 		}
 
-		List<SnapshotFieldInfo> snapshotInfoFields;
 		public class SnapshotFieldInfo { 
 			public SnapshotFieldInfo(string fieldType, string fieldName) {
 				FieldType = fieldType;
@@ -1784,6 +1833,8 @@ namespace prebuild {
 
 		private XmlNode GetChildNode(XmlNode root, string childName) {
 			foreach(XmlNode node in root.ChildNodes) {
+				if(node.NodeType == XmlNodeType.Comment)
+					continue;
 				if(node.Attributes["name"].Value == childName)
 					return node;
 			}
@@ -1821,6 +1872,8 @@ namespace prebuild {
 
 		private bool HasField(XmlNode template, string name) {
 			foreach(XmlNode node in template.ChildNodes) {
+				if(node.NodeType == XmlNodeType.Comment)
+					continue;
 				if(node.Attributes["name"].Value == name)
 					return true;
 			}
@@ -1831,9 +1884,11 @@ namespace prebuild {
 			bool found = false;
 			string templateName = "";
 			foreach(XmlNode node in template.ChildNodes) {
+				if(node.NodeType == XmlNodeType.Comment)
+					continue;
 				if(node.Name != "template")
 					continue;
-				templateName = GetTemplateName(node.PreviousSibling.Value);
+				templateName = GetTemplateName(node);
 				if(templateName.Contains("SecurityDefinition")) {
 					found = true;
 					template = node;
@@ -1845,11 +1900,13 @@ namespace prebuild {
 				throw new Exception("Symbol Template not found");
 			}
 
-			WriteLine("\tint GetTotalNumReports() {");
+			WriteLine("\tint Get" + Prefix + "TotalNumReports() {");
 			if(!HasField(template, "TotNumReports"))
 				throw new Exception("There is no TotNumReports field in " + templateName + " template");
 			WriteLine("\t\t// ReadMsgNumber and DecodeHeader should be called first");
 			foreach(XmlNode value in template.ChildNodes) {
+				if(value.NodeType == XmlNodeType.Comment)
+					continue;
 				string name = Name(value);
 				if(value.Name == "sequence") {
 					throw new Exception("Sequence exceeded. TotNumReports not found");
@@ -1866,13 +1923,13 @@ namespace prebuild {
 						WriteLine("\t\treturn ReadInt32_Mandatory();");
 				break;
 			}
-			WriteLine("\t}");	
+			WriteLine("\t}");
 		}
 
 		private  void WriteGetSnapshotInfoMethod(XmlNode template, string templateName) {
 			List<string> parsed = new List<string>();
 
-			WriteLine("\tFastSnapshotInfo* GetSnapshotInfo" + templateName + "() {");
+			WriteLine("\t" + Prefix + "SnapshotInfo* Get" + Prefix + "SnapshotInfo" + templateName + "() {");
 
 			if(!HasSnapshotFields(template)) {
 				WriteLine("\t\treturn NULL;");
@@ -1880,11 +1937,12 @@ namespace prebuild {
 				return;
 			}
 
-			WriteLine("\t\tFastSnapshotInfo *info = GetFreeSnapshotInfo();" );
+			WriteLine("\t\t" + Prefix + "SnapshotInfo *info = GetFree" + Prefix + "SnapshotInfo();" );
 			WriteCopyPresenceMap("\t\t", "info");
 			WriteLine("\t\tinfo->TemplateId = this->m_templateId;");
 			WriteLine("");
 			StructureInfo info = new StructureInfo() { Node = template, NameCore = templateName }; 
+			info.Prefix = Prefix;
 			foreach(XmlNode value in template.ChildNodes) {
 				ParseValue(info, value, "info", templateName, "\t\t", true, SnapshotInfoFields, parsed);
 				if(parsed.Count == SnapshotInfoFields.Count)
@@ -1915,16 +1973,19 @@ namespace prebuild {
 
 		private void PrintDeclareTemplateNode(XmlNode template, string templateName) {
 			StructureInfo info = new StructureInfo() { NameCore = templateName };
-			WriteLine("\tvoid Print" + templateName + "(" + info.Name + " *info);");
+			info.Prefix = Prefix;
+			WriteLine("\tvoid Print" + Prefix + templateName + "(" + info.Name + " *info);");
 		}
 		private void PrintXmlDeclareTemplateNode(XmlNode template, string templateName) {
 			StructureInfo info = new StructureInfo() { NameCore = templateName };
-			WriteLine("\tvoid PrintXml" + templateName + "(" + info.Name + " *info);");
+			info.Prefix = Prefix;
+			WriteLine("\tvoid PrintXml" + Prefix + templateName + "(" + info.Name + " *info);");
 		}
 
 		private  void PrintTemplateNode (XmlNode template, string templateName) {
 			StructureInfo info = new StructureInfo() { NameCore = templateName };
-			WriteLine("void FastProtocolManager::Print" + templateName + "(" + info.Name + " *info) {");
+			info.Prefix = Prefix;
+			WriteLine("void FastProtocolManager::Print" + Prefix + templateName + "(" + info.Name + " *info) {");
 			WriteLine("");
 			WriteLine("\tprintf(\"" + info.Name + " {\\n\");");
 			WritePrintPresenceMap(template, info, "\t\t", 1);
@@ -1938,7 +1999,8 @@ namespace prebuild {
 
 		private  void PrintXmlTemplateNode (XmlNode template, string templateName) {
 			StructureInfo info = new StructureInfo() { NameCore = templateName };
-			WriteLine("void FastProtocolManager::PrintXml" + templateName + "(" + info.Name + " *info) {");
+			info.Prefix = Prefix;
+			WriteLine("void FastProtocolManager::PrintXml" + Prefix + templateName + "(" + info.Name + " *info) {");
 			WriteLine("");
 			WriteLine("\tPrintXmlItemBegin(\"" + info.Name +"\");");
 			WritePrintXmlPresenceMap(template, info, "\t\t");
@@ -2054,6 +2116,8 @@ namespace prebuild {
 		}
 
 		private  bool ShouldWriteNullCheckCode (XmlNode value) {
+			if(value.NodeType == XmlNodeType.Comment)
+				return false;
 			if(HasOptionalPresence(value) && !HasFieldOperator(value))
 				return true;
 			if(HasDefaultValueAttribute(value) || HasCopyValueAttribute(value) || HasIncrementValueAttribute(value)) {
@@ -2064,6 +2128,8 @@ namespace prebuild {
 		}
 
 		private  bool ShouldWriteCheckPresenceMapCode (XmlNode value) {
+			if(value.NodeType == XmlNodeType.Comment)
+				return false;
 			string[] forbidden = new string[] { "MsgSeqNum", "MessageEncoding" };
 			for(int i = 0; i < forbidden.Length; i++) {
 				if(forbidden[i] == Name(value))
@@ -2126,6 +2192,10 @@ namespace prebuild {
 			return node.Attributes["skip"] != null && node.Attributes["skip"].Value.ToLower() == "true";
 		}
 		string Name (XmlNode node) {
+			if(node == null)
+				throw new ArgumentException("node == null");
+			if(node.Attributes == null)
+				throw new ArgumentException("node.Attributes == null for " + node.Name.ToString());
 			return node.Attributes["name"] != null ? node.Attributes["name"].Value : "";
 		}
 		string ItemName(XmlNode node) {
@@ -2176,7 +2246,7 @@ namespace prebuild {
 			WriteLine(tabString + info.Name + "* " + itemInfo + " = NULL;");
 			WriteLine("");
 			WriteLine(tabString + "for(int i = 0; i < " + objectValueName + "->" + Name(value) + "Count; i++) {");
-			WriteLine(tabString + "\t" + itemInfo + " = GetFree" + info.NameCore + "ItemInfo();");
+			WriteLine(tabString + "\t" + itemInfo + " = " + info.GetFreeMethodName + "();");
 			WriteLine(tabString + "\t" + objectValueName + "->" + Name(value) + "[i] = " + itemInfo + ";");
 
 			if(GetMaxPresenceBitCount(value) > 0) {
@@ -2532,9 +2602,12 @@ namespace prebuild {
 		}
 
 		private bool CanParseValue(XmlNode value) {
+			if(value.NodeType == XmlNodeType.Comment)
+				return false;
 			string[] forbidden = { "MessageType", "ApplVerID", "BeginString", "SenderCompID", "MessageEncoding" };
+			string name = Name(value);
 			for(int i = 0; i < forbidden.Length; i++)
-				if(forbidden[i] == Name(value))
+				if(forbidden[i] == name)
 					return false;
 			return true;
 		}
