@@ -16,12 +16,12 @@ class TradeTesterFond {
     FeedConnection_FOND_TLR *incFond;
     FeedConnection_FOND_TLS *snapFond;
     TestMessagesHelper      *m_helper;
-    MarketDataTable<TradeInfo, FastTLSFONDInfo, FastTLSFONDItemInfo> *m_table;
+    MarketDataTable<TradeInfo, AstsTLSFONDInfo, AstsTLSFONDItemInfo> *m_table;
 
 public:
     TradeTesterFond() {
         this->m_helper = new TestMessagesHelper();
-        this->m_table = new MarketDataTable<TradeInfo, FastTLSFONDInfo, FastTLSFONDItemInfo>();
+        this->m_table = new MarketDataTable<TradeInfo, AstsTLSFONDInfo, AstsTLSFONDItemInfo>();
         this->incFond = new FeedConnection_FOND_TLR("TLR", "Refresh Incremental", 'I',
                                                     FeedConnectionProtocol::UDP_IP,
                                                     "10.50.129.200", "239.192.113.3", 9113,
@@ -41,7 +41,7 @@ public:
         delete this->m_table;
     }
 
-    void TestItem(TradeInfo<FastTLSFONDItemInfo> *tableItem) {
+    void TestItem(TradeInfo<AstsTLSFONDItemInfo> *tableItem) {
         for(int i = 0; i < tableItem->Trades()->Count(); i++)
             if(tableItem->Trades()->Item(i)->Allocator == 0)
                 throw;
@@ -53,14 +53,14 @@ public:
         }
     }
 
-    void TestTableItemsAllocator(MarketDataTable<TradeInfo, FastTLSFONDInfo, FastTLSFONDItemInfo> *table) {
+    void TestTableItemsAllocator(MarketDataTable<TradeInfo, AstsTLSFONDInfo, AstsTLSFONDItemInfo> *table) {
         for(int i = 0; i < table->SymbolsCount(); i++) {
             for(int j = 0; j < table->Symbol(i)->Count(); j++) {
-                TradeInfo<FastTLSFONDItemInfo> *item = table->Item(i, j);
+                TradeInfo<AstsTLSFONDItemInfo> *item = table->Item(i, j);
                 TestItem(item);
             }
         }
-        TradeInfo<FastTLSFONDItemInfo> *tb = new TradeInfo<FastTLSFONDItemInfo>();
+        TradeInfo<AstsTLSFONDItemInfo> *tb = new TradeInfo<AstsTLSFONDItemInfo>();
         tb->ObtainEntriesQueue();
         LinkedPointer<MDEntryQueue> *ptr = tb->EntriesQueue()->Allocator->Start();
         while(ptr != 0) {
@@ -95,12 +95,12 @@ public:
         this->Clear();
         this->TestDefaults();
 
-        FastIncrementalTLRFONDInfo *info = this->m_helper->CreateFastIncrementalTLRFONDInfo();
+        AstsIncrementalTLRFONDInfo *info = this->m_helper->CreateAstsIncrementalTLRFONDInfo();
 
-        FastTLSFONDItemInfo *item1 = this->m_helper->CreateTLRFondItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
-        FastTLSFONDItemInfo *item2 = this->m_helper->CreateTLRFondItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
-        FastTLSFONDItemInfo *item3 = this->m_helper->CreateTLRFondItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
-        FastTLSFONDItemInfo *item4 = this->m_helper->CreateTLRFondItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "e4", 4);
+        AstsTLSFONDItemInfo *item1 = this->m_helper->CreateTLRFondItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
+        AstsTLSFONDItemInfo *item2 = this->m_helper->CreateTLRFondItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
+        AstsTLSFONDItemInfo *item3 = this->m_helper->CreateTLRFondItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
+        AstsTLSFONDItemInfo *item4 = this->m_helper->CreateTLRFondItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "e4", 4);
 
         if(item4->Used)
             throw;
@@ -118,12 +118,12 @@ public:
             throw;
         if(this->incFond->TradeFond()->Symbol(0)->Count() != 1)
             throw;
-        TradeInfo<FastTLSFONDItemInfo> *obi = this->incFond->TradeFond()->GetItem("s1", "t1");
+        TradeInfo<AstsTLSFONDItemInfo> *obi = this->incFond->TradeFond()->GetItem("s1", "t1");
         if(obi == 0)
             throw;
         if(obi->Trades()->Count() != 1)
             throw;
-        FastTLSFONDItemInfo *quote = obi->Trades()->Item(0);
+        AstsTLSFONDItemInfo *quote = obi->Trades()->Item(0);
         Decimal price(3, -2);
         Decimal size(1, 2);
         if(!quote->MDEntryPx.Equal(&price))
@@ -260,11 +260,11 @@ public:
         this->Clear();
         this->TestDefaults();
 
-        FastIncrementalTLRFONDInfo *info = this->m_helper->CreateFastIncrementalTLRFONDInfo();
-        FastTLSFONDItemInfo *item1 = this->m_helper->CreateTLRFondItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
-        FastTLSFONDItemInfo *item2 = this->m_helper->CreateTLRFondItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
-        FastTLSFONDItemInfo *item3 = this->m_helper->CreateTLRFondItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
-        FastTLSFONDItemInfo *item4 = this->m_helper->CreateTLRFondItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "e4", 4);
+        AstsIncrementalTLRFONDInfo *info = this->m_helper->CreateAstsIncrementalTLRFONDInfo();
+        AstsTLSFONDItemInfo *item1 = this->m_helper->CreateTLRFondItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
+        AstsTLSFONDItemInfo *item2 = this->m_helper->CreateTLRFondItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
+        AstsTLSFONDItemInfo *item3 = this->m_helper->CreateTLRFondItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
+        AstsTLSFONDItemInfo *item4 = this->m_helper->CreateTLRFondItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "e4", 4);
 
         info->GroupMDEntriesCount = 4;
         info->GroupMDEntries[0] = item1;
@@ -285,7 +285,7 @@ public:
         if(this->incFond->TradeFond()->UsedItemCount() != 0)
             throw;
 
-        TradeInfo<FastTLSFONDItemInfo> *obi = this->incFond->TradeFond()->GetItem("s1", "t1");
+        TradeInfo<AstsTLSFONDItemInfo> *obi = this->incFond->TradeFond()->GetItem("s1", "t1");
         if(obi->Trades()->Count() != 0)
             throw;
     }
@@ -294,11 +294,11 @@ public:
         this->Clear();
         this->TestDefaults();
 
-        FastIncrementalTLRFONDInfo *info = this->m_helper->CreateFastIncrementalTLRFONDInfo();
-        FastTLSFONDItemInfo *item1 = this->m_helper->CreateTLRFondItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
-        FastTLSFONDItemInfo *item2 = this->m_helper->CreateTLRFondItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
-        FastTLSFONDItemInfo *item3 = this->m_helper->CreateTLRFondItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
-        FastTLSFONDItemInfo *item4 = this->m_helper->CreateTLRFondItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "e4", 4);
+        AstsIncrementalTLRFONDInfo *info = this->m_helper->CreateAstsIncrementalTLRFONDInfo();
+        AstsTLSFONDItemInfo *item1 = this->m_helper->CreateTLRFondItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
+        AstsTLSFONDItemInfo *item2 = this->m_helper->CreateTLRFondItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
+        AstsTLSFONDItemInfo *item3 = this->m_helper->CreateTLRFondItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
+        AstsTLSFONDItemInfo *item4 = this->m_helper->CreateTLRFondItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "e4", 4);
 
         info->GroupMDEntriesCount = 4;
         info->GroupMDEntries[0] = item1;
@@ -308,13 +308,13 @@ public:
 
         this->incFond->OnIncrementalRefresh_TLR_FOND(info);
 
-        TradeInfo<FastTLSFONDItemInfo> *obi2 = this->incFond->TradeFond()->GetItem("s1", "t1");
+        TradeInfo<AstsTLSFONDItemInfo> *obi2 = this->incFond->TradeFond()->GetItem("s1", "t1");
         if(obi2->Trades()->Count() != 4)
             throw;
 
-        FastTLSFONDInfo *info2 = this->m_helper->CreateTLSFondInfo("t1s2", "t1");
-        FastTLSFONDItemInfo *newItem1 = this->m_helper->CreateTLSFondItemInfo(7,-2, 1, 2, mdetBuyQuote, "e7");
-        FastTLSFONDItemInfo *newItem2 = this->m_helper->CreateTLSFondItemInfo(8,-2, 1, 2, mdetBuyQuote, "e8");
+        AstsTLSFONDInfo *info2 = this->m_helper->CreateTLSFondInfo("t1s2", "t1");
+        AstsTLSFONDItemInfo *newItem1 = this->m_helper->CreateTLSFondItemInfo(7,-2, 1, 2, mdetBuyQuote, "e7");
+        AstsTLSFONDItemInfo *newItem2 = this->m_helper->CreateTLSFondItemInfo(8,-2, 1, 2, mdetBuyQuote, "e8");
         info2->RptSeq = 5;
 
         info2->GroupMDEntriesCount = 2;
@@ -327,16 +327,16 @@ public:
         if(this->incFond->TradeFond()->UsedItemCount() != 2)
             throw;
 
-        TradeInfo<FastTLSFONDItemInfo> *obi3 = this->incFond->TradeFond()->GetItem("s1", "t1");
+        TradeInfo<AstsTLSFONDItemInfo> *obi3 = this->incFond->TradeFond()->GetItem("s1", "t1");
         if(obi3->Trades()->Count() != 4)
             throw;
 
-        TradeInfo<FastTLSFONDItemInfo> *obi = this->incFond->TradeFond()->GetItem("t1s2", 4, "t1", 2);
+        TradeInfo<AstsTLSFONDItemInfo> *obi = this->incFond->TradeFond()->GetItem("t1s2", 4, "t1", 2);
         if(obi->Trades()->Count() != 2)
             throw;
 
-        FastTLSFONDItemInfo *qt1 = obi->Trades()->Item(0);
-        FastTLSFONDItemInfo *qt2 = obi->Trades()->Item(1);
+        AstsTLSFONDItemInfo *qt1 = obi->Trades()->Item(0);
+        AstsTLSFONDItemInfo *qt2 = obi->Trades()->Item(1);
 
         if(!StringIdComparer::Equal(qt1->MDEntryID, 2, "e7", 2))
             throw;
@@ -368,7 +368,7 @@ public:
         if(this->incFond->TradeFond()->SymbolsCount() != 0)
             throw;
         this->TestTableItemsAllocator(incFond->TradeFond());
-        TradeInfo<FastTLSFONDItemInfo> *tb = new TradeInfo<FastTLSFONDItemInfo>();
+        TradeInfo<AstsTLSFONDItemInfo> *tb = new TradeInfo<AstsTLSFONDItemInfo>();
         tb->ObtainEntriesQueue();
         LinkedPointer<MDEntryQueue> *ptr = tb->EntriesQueue()->Allocator->Start();
         while(ptr != 0) {
@@ -382,9 +382,9 @@ public:
     }
 
     void TestTableItem_CorrectBegin() {
-        TradeInfo<FastTLSFONDItemInfo> *tb = new TradeInfo<FastTLSFONDItemInfo>();
+        TradeInfo<AstsTLSFONDItemInfo> *tb = new TradeInfo<AstsTLSFONDItemInfo>();
 
-        FastTLSFONDItemInfo *item1 = this->m_helper->CreateTLSFondItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e1");
+        AstsTLSFONDItemInfo *item1 = this->m_helper->CreateTLSFondItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e1");
         item1->RptSeq = 1;
         item1->MDUpdateAction = mduaAdd;
 
@@ -399,9 +399,9 @@ public:
     }
 
     void TestTableItem_IncorrectBegin() {
-        TradeInfo<FastTLSFONDItemInfo> *tb = new TradeInfo<FastTLSFONDItemInfo>();
+        TradeInfo<AstsTLSFONDItemInfo> *tb = new TradeInfo<AstsTLSFONDItemInfo>();
 
-        FastTLSFONDItemInfo *item1 = this->m_helper->CreateTLSFondItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e1");
+        AstsTLSFONDItemInfo *item1 = this->m_helper->CreateTLSFondItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e1");
         item1->RptSeq = 2;
         item1->MDUpdateAction = mduaAdd;
 
@@ -420,15 +420,15 @@ public:
     }
 
     void TestTableItem_SkipMessage() {
-        TradeInfo<FastTLSFONDItemInfo> *tb = new TradeInfo<FastTLSFONDItemInfo>();
+        TradeInfo<AstsTLSFONDItemInfo> *tb = new TradeInfo<AstsTLSFONDItemInfo>();
 
-        FastTLSFONDItemInfo *item1 = this->m_helper->CreateTLSFondItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e1");
+        AstsTLSFONDItemInfo *item1 = this->m_helper->CreateTLSFondItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e1");
         item1->RptSeq = 1;
         item1->MDUpdateAction = mduaAdd;
 
         tb->ProcessIncrementalMessage(item1);
 
-        FastTLSFONDItemInfo *item2 = this->m_helper->CreateTLSFondItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e2");
+        AstsTLSFONDItemInfo *item2 = this->m_helper->CreateTLSFondItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e2");
         item2->RptSeq = 3;
         item2->MDUpdateAction = mduaAdd;
 
@@ -441,7 +441,7 @@ public:
         if(tb->RptSeq() != 1)
             throw;
 
-        FastTLSFONDItemInfo *item3 = this->m_helper->CreateTLSFondItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e3");
+        AstsTLSFONDItemInfo *item3 = this->m_helper->CreateTLSFondItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e3");
         item3->RptSeq = 4;
         item3->MDUpdateAction = mduaAdd;
 
@@ -469,13 +469,13 @@ public:
     void TestTable_AfterClear() {
         this->m_table->Clear();
 
-        FastTLSFONDItemInfo *item = this->m_helper->CreateTLRFondItemInfo("s1", "session1", "e1", 1);
+        AstsTLSFONDItemInfo *item = this->m_helper->CreateTLRFondItemInfo("s1", "session1", "e1", 1);
         item->RptSeq = 1;
 
-        FastTLSFONDItemInfo *item2 = this->m_helper->CreateTLRFondItemInfo("s1", "session1", "e1", 2);
+        AstsTLSFONDItemInfo *item2 = this->m_helper->CreateTLRFondItemInfo("s1", "session1", "e1", 2);
         item2->RptSeq = 2;
 
-        FastTLSFONDItemInfo *item3 = this->m_helper->CreateTLRFondItemInfo("s1", "session1", "e1", 4);
+        AstsTLSFONDItemInfo *item3 = this->m_helper->CreateTLRFondItemInfo("s1", "session1", "e1", 4);
         item3->RptSeq = 4;
 
         this->m_table->ProcessIncremental(item);
@@ -484,7 +484,7 @@ public:
 
         if(this->m_table->UsedItemCount() != 1)
             throw;
-        TradeInfo<FastTLSFONDItemInfo> *tableItem = this->m_table->GetItem("s1", "session1");
+        TradeInfo<AstsTLSFONDItemInfo> *tableItem = this->m_table->GetItem("s1", "session1");
         if(tableItem->EntriesQueue()->MaxIndex() != 1) // 3 is empty and 4 has value
             throw;
         this->m_table->Clear();
@@ -504,7 +504,7 @@ public:
 
         this->m_table->Clear();
 
-        FastTLSFONDItemInfo *item1 = this->m_helper->CreateTLRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSFONDItemInfo *item1 = this->m_helper->CreateTLRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 1;
 
@@ -517,7 +517,7 @@ public:
     void TestTable_IncorrectBegin() {
         this->m_table->Clear();
 
-        FastTLSFONDItemInfo *item1 = this->m_helper->CreateTLRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSFONDItemInfo *item1 = this->m_helper->CreateTLRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 2;
 
@@ -530,14 +530,14 @@ public:
     void TestTable_SkipMessages() {
         this->m_table->Clear();
 
-        FastTLSFONDItemInfo *item1 = this->m_helper->CreateTLRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSFONDItemInfo *item1 = this->m_helper->CreateTLRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 1;
 
         if(!this->m_table->ProcessIncremental(item1))
             throw;
 
-        FastTLSFONDItemInfo *item2 = this->m_helper->CreateTLRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSFONDItemInfo *item2 = this->m_helper->CreateTLRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 3);
         item2->RptSeq = 3;
 
@@ -550,14 +550,14 @@ public:
     void Test_2UsedItemsAfter2IncrementalMessages() {
         this->m_table->Clear();
 
-        FastTLSFONDItemInfo *item1 = this->m_helper->CreateTLRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSFONDItemInfo *item1 = this->m_helper->CreateTLRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 1;
 
         if(!this->m_table->ProcessIncremental(item1))
             throw;
 
-        FastTLSFONDItemInfo *item2 = this->m_helper->CreateTLRFondItemInfo("s2", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSFONDItemInfo *item2 = this->m_helper->CreateTLRFondItemInfo("s2", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item2->RptSeq = 1;
 
@@ -573,43 +573,43 @@ public:
     void TestTable_CorrectApplySnapshot() {
         this->m_table->Clear();
 
-        FastTLSFONDItemInfo *item1 = this->m_helper->CreateTLRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSFONDItemInfo *item1 = this->m_helper->CreateTLRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 1;
 
         this->m_table->ProcessIncremental(item1);
 
-        FastTLSFONDItemInfo *item2 = this->m_helper->CreateTLRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSFONDItemInfo *item2 = this->m_helper->CreateTLRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e2", 3);
         item2->RptSeq = 3;
 
         if(this->m_table->ProcessIncremental(item2))
             throw;
 
-        FastTLSFONDItemInfo *item3 = this->m_helper->CreateTLRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSFONDItemInfo *item3 = this->m_helper->CreateTLRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e3", 4);
         item3->RptSeq = 4;
 
         if(this->m_table->ProcessIncremental(item3))
             throw;
 
-        FastTLSFONDItemInfo *item4 = this->m_helper->CreateTLRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSFONDItemInfo *item4 = this->m_helper->CreateTLRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e4", 5);
         item4->RptSeq = 5;
 
         if(this->m_table->ProcessIncremental(item4))
             throw;
 
-        FastTLSFONDItemInfo *item5 = this->m_helper->CreateTLRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSFONDItemInfo *item5 = this->m_helper->CreateTLRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e5", 3);
         item5->RptSeq = 3;
 
-        FastTLSFONDInfo *info = this->m_helper->CreateTLSFondInfo("s1", "session");
+        AstsTLSFONDInfo *info = this->m_helper->CreateTLSFondInfo("s1", "session");
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item5;
         info->RptSeq = 3;
 
-        TradeInfo<FastTLSFONDItemInfo> *tb = this->m_table->GetItem("s1", "session");
+        TradeInfo<AstsTLSFONDItemInfo> *tb = this->m_table->GetItem("s1", "session");
 
         this->m_table->ObtainSnapshotItem(info);
         this->m_table->StartProcessSnapshot();
@@ -638,39 +638,39 @@ public:
 
         this->m_table->Clear();
 
-        FastTLSFONDItemInfo *item1 = this->m_helper->CreateTLRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSFONDItemInfo *item1 = this->m_helper->CreateTLRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 1;
 
         this->m_table->ProcessIncremental(item1);
 
-        FastTLSFONDItemInfo *item3 = this->m_helper->CreateTLRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSFONDItemInfo *item3 = this->m_helper->CreateTLRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e3", 4);
         item3->RptSeq = 4;
 
         if(this->m_table->ProcessIncremental(item3))
             throw;
 
-        FastTLSFONDItemInfo *item4 = this->m_helper->CreateTLRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSFONDItemInfo *item4 = this->m_helper->CreateTLRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e4", 5);
         item4->RptSeq = 5;
 
         if(this->m_table->ProcessIncremental(item4))
             throw;
 
-        FastTLSFONDInfo *info1 = this->m_helper->CreateTLSFondInfo("s1", "session");
+        AstsTLSFONDInfo *info1 = this->m_helper->CreateTLSFondInfo("s1", "session");
         info1->GroupMDEntriesCount = 1;
         info1->RptSeq = 3;
         info1->RouteFirst = true;
         info1->GroupMDEntries[0] = this->m_helper->CreateTLSFondItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e2");
 
-        FastTLSFONDInfo *info2 = this->m_helper->CreateTLSFondInfo("s1", "session");
+        AstsTLSFONDInfo *info2 = this->m_helper->CreateTLSFondInfo("s1", "session");
         info2->GroupMDEntriesCount = 1;
         info2->RptSeq = 3;
         info2->RouteFirst = true;
         info2->GroupMDEntries[0] = this->m_helper->CreateTLSFondItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e2");
 
-        TradeInfo<FastTLSFONDItemInfo> *tb = this->m_table->GetItem("s1", "session");
+        TradeInfo<AstsTLSFONDItemInfo> *tb = this->m_table->GetItem("s1", "session");
 
         this->m_table->ObtainSnapshotItem(info1);
         this->m_table->StartProcessSnapshot();
@@ -692,43 +692,43 @@ public:
     void TestTable_IncorrectApplySnapshot() {
         this->m_table->Clear();
 
-        FastTLSFONDItemInfo *item1 = this->m_helper->CreateTLRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSFONDItemInfo *item1 = this->m_helper->CreateTLRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 1;
 
         this->m_table->ProcessIncremental(item1);
 
-        FastTLSFONDItemInfo *item2 = this->m_helper->CreateTLRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSFONDItemInfo *item2 = this->m_helper->CreateTLRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e2", 4);
         item2->RptSeq = 4;
 
         if(this->m_table->ProcessIncremental(item2))
             throw;
 
-        FastTLSFONDItemInfo *item3 = this->m_helper->CreateTLRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSFONDItemInfo *item3 = this->m_helper->CreateTLRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e3", 5);
         item3->RptSeq = 5;
 
         if(this->m_table->ProcessIncremental(item3))
             throw;
 
-        FastTLSFONDItemInfo *item4 = this->m_helper->CreateTLRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSFONDItemInfo *item4 = this->m_helper->CreateTLRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e4", 6);
         item4->RptSeq = 6;
 
         if(this->m_table->ProcessIncremental(item4))
             throw;
 
-        FastTLSFONDItemInfo *item5 = this->m_helper->CreateTLRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSFONDItemInfo *item5 = this->m_helper->CreateTLRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e5", 2);
         item5->RptSeq = 2;
 
-        FastTLSFONDInfo *info = this->m_helper->CreateTLSFondInfo("s1", "session");
+        AstsTLSFONDInfo *info = this->m_helper->CreateTLSFondInfo("s1", "session");
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item5;
         info->RptSeq = 2;
 
-        TradeInfo<FastTLSFONDItemInfo> *tb = this->m_table->GetItem("s1", "session");
+        TradeInfo<AstsTLSFONDItemInfo> *tb = this->m_table->GetItem("s1", "session");
 
         this->m_table->ObtainSnapshotItem(info);
         this->m_table->StartProcessSnapshot();
@@ -752,36 +752,36 @@ public:
     void TestTable_IncorrectApplySnapshot_WhenMessageSkipped() {
         this->m_table->Clear();
 
-        FastTLSFONDItemInfo *item1 = this->m_helper->CreateTLRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSFONDItemInfo *item1 = this->m_helper->CreateTLRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 1;
 
         this->m_table->ProcessIncremental(item1);
 
-        FastTLSFONDItemInfo *item2 = this->m_helper->CreateTLRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSFONDItemInfo *item2 = this->m_helper->CreateTLRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e2", 4);
         item2->RptSeq = 4;
 
         if(this->m_table->ProcessIncremental(item2))
             throw;
 
-        FastTLSFONDItemInfo *item4 = this->m_helper->CreateTLRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSFONDItemInfo *item4 = this->m_helper->CreateTLRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e4", 6);
         item4->RptSeq = 6;
 
         if(this->m_table->ProcessIncremental(item4))
             throw;
 
-        FastTLSFONDItemInfo *item5 = this->m_helper->CreateTLRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSFONDItemInfo *item5 = this->m_helper->CreateTLRFondItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e5", 3);
         item5->RptSeq = 3;
 
-        FastTLSFONDInfo *info = this->m_helper->CreateTLSFondInfo("s1", "session");
+        AstsTLSFONDInfo *info = this->m_helper->CreateTLSFondInfo("s1", "session");
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item5;
         info->RptSeq = 3;
 
-        TradeInfo<FastTLSFONDItemInfo> *tb = this->m_table->GetItem("s1", "session");
+        TradeInfo<AstsTLSFONDItemInfo> *tb = this->m_table->GetItem("s1", "session");
 
         this->m_table->ObtainSnapshotItem(info);
         this->m_table->StartProcessSnapshot();
@@ -878,7 +878,7 @@ public:
 
         this->TestTableItemsAllocator(incFond->TradeFond());
 
-        TradeInfo<FastTLSFONDItemInfo> *item = incFond->TradeFond()->GetItem("s1", "session1");
+        TradeInfo<AstsTLSFONDItemInfo> *item = incFond->TradeFond()->GetItem("s1", "session1");
         if(item->Trades()->Count() != 2)
             throw;
         if(!incFond->m_waitTimer->Active()) // not all messages was processed - some messages was skipped
@@ -889,7 +889,7 @@ public:
             throw;
         if(item->EntriesQueue()->Entries()[0] != 0) // cell for rptseq 3 is empty
             throw;
-        if(((FastTLSFONDItemInfo*)(item->EntriesQueue()->Entries()[1]))->RptSeq != 4)
+        if(((AstsTLSFONDItemInfo*)(item->EntriesQueue()->Entries()[1]))->RptSeq != 4)
             throw;
 
         // lost message finally appeared before wait timer elapsed
@@ -932,7 +932,7 @@ public:
 
         this->TestTableItemsAllocator(incFond->TradeFond());
 
-        TradeInfo<FastTLSFONDItemInfo> *item = incFond->TradeFond()->GetItem("s1", "session1");
+        TradeInfo<AstsTLSFONDItemInfo> *item = incFond->TradeFond()->GetItem("s1", "session1");
         if(item->Trades()->Count() != 2)
             throw;
         if(!incFond->m_waitTimer->Active()) // not all messages was processed - some messages was skipped
@@ -945,7 +945,7 @@ public:
             throw;
         if(item->EntriesQueue()->Entries()[1] != 0) // cell for rptseq 4 is empty
             throw;
-        if(((FastTLSFONDItemInfo*)(item->EntriesQueue()->Entries()[2]))->RptSeq != 5)
+        if(((AstsTLSFONDItemInfo*)(item->EntriesQueue()->Entries()[2]))->RptSeq != 5)
             throw;
 
         // lost message finally appeared before wait timer elapsed
@@ -989,7 +989,7 @@ public:
 
         this->TestTableItemsAllocator(incFond->TradeFond());
 
-        TradeInfo<FastTLSFONDItemInfo> *item = incFond->TradeFond()->GetItem("s1", "session1");
+        TradeInfo<AstsTLSFONDItemInfo> *item = incFond->TradeFond()->GetItem("s1", "session1");
         if(item->Trades()->Count() != 2)
             throw;
         if(!incFond->m_waitTimer->Active()) // not all messages was processed - some messages was skipped
@@ -1002,7 +1002,7 @@ public:
             throw;
         if(item->EntriesQueue()->Entries()[1] != 0) // cell for rptseq 4 is empty
             throw;
-        if(((FastTLSFONDItemInfo*)(item->EntriesQueue()->Entries()[2]))->RptSeq != 5)
+        if(((AstsTLSFONDItemInfo*)(item->EntriesQueue()->Entries()[2]))->RptSeq != 5)
             throw;
 
         // lost message finally appeared before wait timer elapsed
@@ -1070,7 +1070,7 @@ public:
 
         this->TestTableItemsAllocator(incFond->TradeFond());
 
-        TradeInfo<FastTLSFONDItemInfo> *item = incFond->TradeFond()->GetItem("s1", "session1");
+        TradeInfo<AstsTLSFONDItemInfo> *item = incFond->TradeFond()->GetItem("s1", "session1");
         if(item->Trades()->Count() != 2)
             throw;
         if(!incFond->m_waitTimer->Active()) // not all messages was processed - some messages was skipped
@@ -1083,7 +1083,7 @@ public:
             throw;
         if(item->EntriesQueue()->Entries()[1] != 0) // cell for rptseq 4 is empty
             throw;
-        if(((FastTLSFONDItemInfo*)(item->EntriesQueue()->Entries()[2]))->RptSeq != 5)
+        if(((AstsTLSFONDItemInfo*)(item->EntriesQueue()->Entries()[2]))->RptSeq != 5)
             throw;
 
         // lost message finally appeared before wait timer elapsed
@@ -1154,7 +1154,7 @@ public:
 
         this->TestTableItemsAllocator(incFond->TradeFond());
 
-        TradeInfo<FastTLSFONDItemInfo> *item = incFond->TradeFond()->GetItem("s1", "session1");
+        TradeInfo<AstsTLSFONDItemInfo> *item = incFond->TradeFond()->GetItem("s1", "session1");
         if(!incFond->m_waitTimer->Active()) // not all messages was processed - some messages was skipped
             throw;
         // wait
@@ -1608,7 +1608,7 @@ public:
 
         snapFond->Listen_Atom_Snapshot_Core();
         //snapshot received and should be applied
-        TradeInfo<FastTLSFONDItemInfo> *tableItem = incFond->TradeFond()->GetItem("s1", "session1");
+        TradeInfo<AstsTLSFONDItemInfo> *tableItem = incFond->TradeFond()->GetItem("s1", "session1");
 
         this->TestTableItemsAllocator(incFond->TradeFond());
 
@@ -1737,8 +1737,8 @@ public:
 
         // snapshot for first item should be received and immediately applied then, should be applied incremental messages in que,
         // but connection should not be closed - because not all items were updated
-        TradeInfo<FastTLSFONDItemInfo> *item1 = incFond->TradeFond()->GetItem("s1", "session1");
-        TradeInfo<FastTLSFONDItemInfo> *item2 = incFond->TradeFond()->GetItem("s2", "session1");
+        TradeInfo<AstsTLSFONDItemInfo> *item1 = incFond->TradeFond()->GetItem("s1", "session1");
+        TradeInfo<AstsTLSFONDItemInfo> *item2 = incFond->TradeFond()->GetItem("s2", "session1");
         if(item1->HasEntries())
             throw;
         if(!item2->HasEntries())
@@ -2654,13 +2654,13 @@ public:
         this->Clear();
 
         this->incFond->TradeFond()->Add("s1", "session1");
-        int prevCount = this->incFond->m_fastProtocolManager->m_tLSFONDItems->Count();
+        int prevCount = this->incFond->m_fastProtocolManager->m_astsTLSFONDItems->Count();
         this->SendMessages(this->incFond, this->snapFond,
                            "tlr entry s1 e1",
                            "",
                            30);
 
-        int newCount = this->incFond->m_fastProtocolManager->m_tLSFONDItems->Count();
+        int newCount = this->incFond->m_fastProtocolManager->m_astsTLSFONDItems->Count();
         if(newCount != prevCount + 1)
             throw;
     }
@@ -2669,17 +2669,17 @@ public:
         this->Clear();
 
         this->incFond->TradeFond()->Add("s1", "session1");
-        int prevCount = this->incFond->m_fastProtocolManager->m_tLSFONDItems->Count();
+        int prevCount = this->incFond->m_fastProtocolManager->m_astsTLSFONDItems->Count();
         this->SendMessages(this->incFond, this->snapFond,
                            "tlr entry s1 e1, tlr entry s1 e2",
                            "",
                            30);
 
-        int newCount = this->incFond->m_fastProtocolManager->m_tLSFONDItems->Count();
+        int newCount = this->incFond->m_fastProtocolManager->m_astsTLSFONDItems->Count();
         if(newCount != prevCount + 2)
             throw;
         this->incFond->TradeFond()->Clear();
-        newCount = this->incFond->m_fastProtocolManager->m_tLSFONDItems->Count();
+        newCount = this->incFond->m_fastProtocolManager->m_astsTLSFONDItems->Count();
         if(newCount != prevCount)
             throw;
     }
@@ -2689,7 +2689,7 @@ public:
     }
 
     void TestInfoAndItemInfoUsageAndAllocationFond_Inc_4() {
-        FastTLSFONDItemInfo *info = this->m_helper->CreateTLSFondItemInfo(1, 1, 1, 1, MDEntryType::mdetBuyQuote, "e1");
+        AstsTLSFONDItemInfo *info = this->m_helper->CreateTLSFondItemInfo(1, 1, 1, 1, MDEntryType::mdetBuyQuote, "e1");
         if(info->Allocator->Count() != 1)
             throw;
         info->Used = false;
@@ -2709,13 +2709,13 @@ public:
         this->Clear();
 
         this->incFond->TradeFond()->Add("s1", "session1");
-        int prevCount = this->snapFond->m_fastProtocolManager->m_tLSFONDItems->Count();
+        int prevCount = this->snapFond->m_fastProtocolManager->m_astsTLSFONDItems->Count();
         this->SendMessages(this->incFond, this->snapFond,
                            "tlr entry s1 e1, lost tlr entry s1 e2, wait_snap, hbeat",
                            "                                                  tls begin s1 entry s1 e2 rpt 2 end",
                            30);
 
-        int newCount = this->snapFond->m_fastProtocolManager->m_tLSFONDItems->Count();
+        int newCount = this->snapFond->m_fastProtocolManager->m_astsTLSFONDItems->Count();
         if(newCount != prevCount + 1)
             throw;
     }
@@ -2724,13 +2724,13 @@ public:
         this->Clear();
 
         this->incFond->TradeFond()->Add("s1", "session1");
-        int prevCount = this->snapFond->m_fastProtocolManager->m_tLSFONDItems->Count();
+        int prevCount = this->snapFond->m_fastProtocolManager->m_astsTLSFONDItems->Count();
         this->SendMessages(this->incFond, this->snapFond,
                            "tlr entry s1 e1, lost tlr entry s1 e2 entry s1 e3, wait_snap, hbeat",
                            "                                                   tls begin s1 entry s1 e2 rpt 2, tls s1 entry s1 e3 end",
                            30);
 
-        int newCount = this->snapFond->m_fastProtocolManager->m_tLSFONDItems->Count();
+        int newCount = this->snapFond->m_fastProtocolManager->m_astsTLSFONDItems->Count();
         if(newCount != prevCount + 2)
             throw;
     }
@@ -2740,13 +2740,13 @@ public:
         /*this->Clear();
 
         this->incFond->TradeFond()->Add("s1", "session1");
-        int prevCount = this->snapFond->m_fastProtocolManager->m_tLSFONDItems->Count();
+        int prevCount = this->snapFond->m_fastProtocolManager->m_astsTLSFONDItems->Count();
         this->SendMessagesIdf(this->incFond, this->snapFond,
                            "tlr entry s1 e1, tlr entry s1 e2, lost tlr entry s1 e4 entry s1 e4, wait_snap, hbeat",
                            "                                                   tls begin s1 entry s1 e1 rpt 2, tls s1 entry s1 e2, tls s1 entry s1 e3, tls s1 entry del s1 e2 end",
                            30);
 
-        int newCount = this->snapFond->m_fastProtocolManager->m_tLSFONDItems->Count();
+        int newCount = this->snapFond->m_fastProtocolManager->m_astsTLSFONDItems->Count();
         if(newCount != prevCount + 3)
             throw;*/
     }
@@ -2759,12 +2759,12 @@ public:
         incFond->TradeFond()->Add("s2", "session1");
         incFond->TradeFond()->Add("symbol3", "session1");
 
-        int prevCount = this->snapFond->m_fastProtocolManager->m_tLSFONDItems->Count();
+        int prevCount = this->snapFond->m_fastProtocolManager->m_astsTLSFONDItems->Count();
         SendMessages(incFond, snapFond,
                      "tlr entry s1 e1, lost tlr entry symbol3 e1, wait_snap, tlr entry s1 e3,                              hbeat,                              hbeat",
                      "                                                       tls symbol3 begin rpt 1 end entry symbol3 e1, tls s1 begin rpt 2 end entry s1 e1, hbeat, tls s2 begin rpt 2 end entry s2 e1",
                      30);
-        int newCount = this->snapFond->m_fastProtocolManager->m_tLSFONDItems->Count();
+        int newCount = this->snapFond->m_fastProtocolManager->m_astsTLSFONDItems->Count();
         if(newCount != prevCount + 2)
             throw;
     }
@@ -2774,12 +2774,12 @@ public:
         incFond->TradeFond()->Add("s1", "session1");
         incFond->Start();
 
-        int prevCount = this->snapFond->m_fastProtocolManager->m_tLSFONDItems->Count();
+        int prevCount = this->snapFond->m_fastProtocolManager->m_astsTLSFONDItems->Count();
         SendMessages(incFond, snapFond,
                      "tlr entry s1 e1, lost tlr entry s1 e2, tlr entry s1 e2, wait_snap, hbeat",
                      "                                       hbeat,           hbeat,     tls s1 begin rpt 0 lastmsg 0 entry s1 e1 end",
                      30);
-        int newCount = this->snapFond->m_fastProtocolManager->m_tLSFONDItems->Count();
+        int newCount = this->snapFond->m_fastProtocolManager->m_astsTLSFONDItems->Count();
         if(newCount != prevCount)
             throw;
     }
@@ -2790,12 +2790,12 @@ public:
 
         incFond->TradeFond()->Add("s1", "session1");
 
-        int prevCount = this->snapFond->m_fastProtocolManager->m_tLSFONDItems->Count();
+        int prevCount = this->snapFond->m_fastProtocolManager->m_astsTLSFONDItems->Count();
         SendMessages(incFond, snapFond,
                      "tlr entry s1 e1, tlr entry s1 e2, tlr entry s1 e3, lost hbeat, wait_snap, hbeat",
                      "                                                                          tls s1 begin rpt 1 entry s1 e1 end",
                      50);
-        int newCount = this->snapFond->m_fastProtocolManager->m_tLSFONDItems->Count();
+        int newCount = this->snapFond->m_fastProtocolManager->m_astsTLSFONDItems->Count();
         if(newCount != prevCount)
             throw;
     }

@@ -355,39 +355,39 @@ void DebugInfoManager::PrintStatistics(FastProtocolManager *manager) {
         return;
     printf("Start FastProtocolManager\n");
     this->AddTabs();
-    printf("HeartbeatInfo Used %d of %d", manager->GetHeartbeatInfoPool()->Count(), manager->GetHeartbeatInfoPool()->Capacity());
-    printf("LogonInfo Used %d of %d", manager->GetLogonInfoPool()->Count(), manager->GetLogonInfoPool()->Capacity());
-    printf("LogoutInfo Used %d of %d", manager->GetLogoutInfoPool()->Count(), manager->GetLogoutInfoPool()->Capacity());
+    printf("HeartbeatInfo Used %d of %d", manager->GetAstsHeartbeatInfoPool()->Count(), manager->GetAstsHeartbeatInfoPool()->Capacity());
+    printf("LogonInfo Used %d of %d", manager->GetAstsLogonInfoPool()->Count(), manager->GetAstsLogonInfoPool()->Capacity());
+    printf("LogoutInfo Used %d of %d", manager->GetAstsLogoutInfoPool()->Count(), manager->GetAstsLogoutInfoPool()->Capacity());
 
-    printf("GenericInfo Used %d of %d", manager->GetGenericInfoPool()->Count(), manager->GetGenericInfoPool()->Capacity());
-    printf("IncrementalGenericInfo Used %d of %d", manager->GetIncrementalGenericInfoPool()->Count(), manager->GetIncrementalGenericInfoPool()->Capacity());
-    printf("IncrementalMSRCURRInfo Used %d of %d", manager->GetIncrementalMSRCURRInfoPool()->Count(), manager->GetIncrementalMSRCURRInfoPool()->Capacity());
-    printf("IncrementalMSRFONDInfo Used %d of %d", manager->GetIncrementalMSRFONDInfoPool()->Count(), manager->GetIncrementalMSRFONDInfoPool()->Capacity());
-    printf("GenericItemInfo Used %d of %d", manager->GetGenericItemInfoPool()->Count(), manager->GetGenericItemInfoPool()->Capacity());
+    printf("GenericInfo Used %d of %d", manager->GetAstsGenericInfoPool()->Count(), manager->GetAstsGenericInfoPool()->Capacity());
+    printf("IncrementalGenericInfo Used %d of %d", manager->GetAstsIncrementalGenericInfoPool()->Count(), manager->GetAstsIncrementalGenericInfoPool()->Capacity());
+    printf("IncrementalMSRCURRInfo Used %d of %d", manager->GetAstsIncrementalMSRCURRInfoPool()->Count(), manager->GetAstsIncrementalMSRCURRInfoPool()->Capacity());
+    printf("IncrementalMSRFONDInfo Used %d of %d", manager->GetAstsIncrementalMSRFONDInfoPool()->Count(), manager->GetAstsIncrementalMSRFONDInfoPool()->Capacity());
+    printf("GenericItemInfo Used %d of %d", manager->GetAstsGenericItemInfoPool()->Count(), manager->GetAstsGenericItemInfoPool()->Capacity());
 
-    printf("OLSFONDInfo Used %d of %d", manager->GetOLSFONDInfoPool()->Count(), manager->GetOLSFONDInfoPool()->Capacity());
-    printf("IncrementalOLRFONDInfo Used %d of %d", manager->GetIncrementalOLRFONDInfoPool()->Count(), manager->GetIncrementalOLRFONDInfoPool()->Capacity());
-    printf("OLSFONDItemInfo Used %d of %d", manager->GetOLSFONDItemInfoPool()->Count(), manager->GetOLSFONDItemInfoPool()->Capacity());
+    printf("OLSFONDInfo Used %d of %d", manager->GetAstsOLSFONDInfoPool()->Count(), manager->GetAstsOLSFONDInfoPool()->Capacity());
+    printf("IncrementalOLRFONDInfo Used %d of %d", manager->GetAstsIncrementalOLRFONDInfoPool()->Count(), manager->GetAstsIncrementalOLRFONDInfoPool()->Capacity());
+    printf("OLSFONDItemInfo Used %d of %d", manager->GetAstsOLSFONDItemInfoPool()->Count(), manager->GetAstsOLSFONDItemInfoPool()->Capacity());
 
-    printf("OLSCURRInfo Used %d of %d", manager->GetOLSCURRInfoPool()->Count(), manager->GetOLSCURRInfoPool()->Capacity());
-    printf("IncrementalOLRCURRInfo Used %d of %d", manager->GetIncrementalOLRCURRInfoPool()->Count(), manager->GetIncrementalOLRCURRInfoPool()->Capacity());
-    printf("OLSCURRItemInfo Used %d of %d", manager->GetOLSCURRItemInfoPool()->Count(), manager->GetOLSCURRItemInfoPool()->Capacity());
+    printf("OLSCURRInfo Used %d of %d", manager->GetAstsOLSCURRInfoPool()->Count(), manager->GetAstsOLSCURRInfoPool()->Capacity());
+    printf("IncrementalOLRCURRInfo Used %d of %d", manager->GetAstsIncrementalOLRCURRInfoPool()->Count(), manager->GetAstsIncrementalOLRCURRInfoPool()->Capacity());
+    printf("OLSCURRItemInfo Used %d of %d", manager->GetAstsOLSCURRItemInfoPool()->Count(), manager->GetAstsOLSCURRItemInfoPool()->Capacity());
 
-    printf("TLSFONDInfo Used %d of %d", manager->GetTLSFONDInfoPool()->Count(), manager->GetTLSFONDInfoPool()->Capacity());
-    printf("IncrementalTLRFONDInfo Used %d of %d", manager->GetIncrementalTLRFONDInfoPool()->Count(), manager->GetIncrementalTLRFONDInfoPool()->Capacity());
-    printf("TLSFONDItemInfo Used %d of %d", manager->GetTLSFONDItemInfoPool()->Count(), manager->GetTLSFONDItemInfoPool()->Capacity());
+    printf("TLSFONDInfo Used %d of %d", manager->GetAstsTLSFONDInfoPool()->Count(), manager->GetAstsTLSFONDInfoPool()->Capacity());
+    printf("IncrementalTLRFONDInfo Used %d of %d", manager->GetAstsIncrementalTLRFONDInfoPool()->Count(), manager->GetAstsIncrementalTLRFONDInfoPool()->Capacity());
+    printf("TLSFONDItemInfo Used %d of %d", manager->GetAstsTLSFONDItemInfoPool()->Count(), manager->GetAstsTLSFONDItemInfoPool()->Capacity());
 
-    printf("TLSCURRInfo Used %d of %d", manager->GetTLSCURRInfoPool()->Count(), manager->GetTLSCURRInfoPool()->Capacity());
-    printf("IncrementalTLRCURRInfo Used %d of %d", manager->GetIncrementalTLRCURRInfoPool()->Count(), manager->GetIncrementalTLRCURRInfoPool()->Capacity());
-    printf("TLSCURRItemInfo Used %d of %d", manager->GetTLSCURRItemInfoPool()->Count(), manager->GetTLSCURRItemInfoPool()->Capacity());
+    printf("TLSCURRInfo Used %d of %d", manager->GetAstsTLSCURRInfoPool()->Count(), manager->GetAstsTLSCURRInfoPool()->Capacity());
+    printf("IncrementalTLRCURRInfo Used %d of %d", manager->GetAstsIncrementalTLRCURRInfoPool()->Count(), manager->GetAstsIncrementalTLRCURRInfoPool()->Capacity());
+    printf("TLSCURRItemInfo Used %d of %d", manager->GetAstsTLSCURRItemInfoPool()->Count(), manager->GetAstsTLSCURRItemInfoPool()->Capacity());
 
-    printf("SecurityDefinitionInfo Used %d of %d", manager->GetSecurityDefinitionInfoPool()->Count(), manager->GetSecurityDefinitionInfoPool()->Capacity());
-    printf("SecurityDefinitionGroupInstrAttribItemInfo Used %d of %d", manager->GetSecurityDefinitionGroupInstrAttribItemInfoPool()->Count(), manager->GetSecurityDefinitionGroupInstrAttribItemInfoPool()->Capacity());
-    printf("SecurityDefinitionMarketSegmentGrpItemInfo Used %d of %d", manager->GetSecurityDefinitionMarketSegmentGrpItemInfoPool()->Count(), manager->GetSecurityDefinitionMarketSegmentGrpItemInfoPool()->Capacity());
-    printf("SecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo Used %d of %d", manager->GetSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfoPool()->Count(), manager->GetSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfoPool()->Capacity());
+    printf("SecurityDefinitionInfo Used %d of %d", manager->GetAstsSecurityDefinitionInfoPool()->Count(), manager->GetAstsSecurityDefinitionInfoPool()->Capacity());
+    printf("SecurityDefinitionGroupInstrAttribItemInfo Used %d of %d", manager->GetAstsSecurityDefinitionGroupInstrAttribItemInfoPool()->Count(), manager->GetAstsSecurityDefinitionGroupInstrAttribItemInfoPool()->Capacity());
+    printf("SecurityDefinitionMarketSegmentGrpItemInfo Used %d of %d", manager->GetAstsSecurityDefinitionMarketSegmentGrpItemInfoPool()->Count(), manager->GetAstsSecurityDefinitionMarketSegmentGrpItemInfoPool()->Capacity());
+    printf("SecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo Used %d of %d", manager->GetAstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfoPool()->Count(), manager->GetAstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfoPool()->Capacity());
 
-    printf("SecurityStatusInfo Used %d of %d", manager->GetSecurityStatusInfoPool()->Count(), manager->GetSecurityStatusInfoPool()->Capacity());
-    printf("TradingSessionStatusInfo Used %d of %d", manager->GetTradingSessionStatusInfoPool()->Count(), manager->GetTradingSessionStatusInfoPool()->Capacity());
+    printf("SecurityStatusInfo Used %d of %d", manager->GetAstsSecurityStatusInfoPool()->Count(), manager->GetAstsSecurityStatusInfoPool()->Capacity());
+    printf("TradingSessionStatusInfo Used %d of %d", manager->GetAstsTradingSessionStatusInfoPool()->Count(), manager->GetAstsTradingSessionStatusInfoPool()->Capacity());
 
     this->RemoveTabs();
     printf("End FastProtocolManager\n");
@@ -616,39 +616,39 @@ void DebugInfoManager::PrintStatisticsXml(FastProtocolManager *manager) {
         return;
     fprintf(fp, "<FastProtocolManager>\n");
     this->AddTabs();
-    fprintf(fp, "<HeartbeatInfo Used=\"%d\" Capacity=\"%d\"/>", manager->GetHeartbeatInfoPool()->Count(), manager->GetHeartbeatInfoPool()->Capacity());
-    fprintf(fp, "<LogonInfo Used=\"%d\" Capacity=\"%d\"/>", manager->GetLogonInfoPool()->Count(), manager->GetLogonInfoPool()->Capacity());
-    fprintf(fp, "<LogoutInfo Used=\"%d\" Capacity=\"%d\"/>", manager->GetLogoutInfoPool()->Count(), manager->GetLogoutInfoPool()->Capacity());
+    fprintf(fp, "<HeartbeatInfo Used=\"%d\" Capacity=\"%d\"/>", manager->GetAstsHeartbeatInfoPool()->Count(), manager->GetAstsHeartbeatInfoPool()->Capacity());
+    fprintf(fp, "<LogonInfo Used=\"%d\" Capacity=\"%d\"/>", manager->GetAstsLogonInfoPool()->Count(), manager->GetAstsLogonInfoPool()->Capacity());
+    fprintf(fp, "<LogoutInfo Used=\"%d\" Capacity=\"%d\"/>", manager->GetAstsLogoutInfoPool()->Count(), manager->GetAstsLogoutInfoPool()->Capacity());
 
-    fprintf(fp, "<GenericInfo Used=\"%d\" Capacity=\"%d\"/>", manager->GetGenericInfoPool()->Count(), manager->GetGenericInfoPool()->Capacity());
-    fprintf(fp, "<IncrementalGenericInfo Used=\"%d\" Capacity=\"%d\"/>", manager->GetIncrementalGenericInfoPool()->Count(), manager->GetIncrementalGenericInfoPool()->Capacity());
-    fprintf(fp, "<IncrementalMSRCURRInfo Used=\"%d\" Capacity=\"%d\"/>", manager->GetIncrementalMSRCURRInfoPool()->Count(), manager->GetIncrementalMSRCURRInfoPool()->Capacity());
-    fprintf(fp, "<IncrementalMSRFONDInfo Used=\"%d\" Capacity=\"%d\"/>", manager->GetIncrementalMSRFONDInfoPool()->Count(), manager->GetIncrementalMSRFONDInfoPool()->Capacity());
-    fprintf(fp, "<GenericItemInfo Used=\"%d\" Capacity=\"%d\"/>", manager->GetGenericItemInfoPool()->Count(), manager->GetGenericItemInfoPool()->Capacity());
+    fprintf(fp, "<GenericInfo Used=\"%d\" Capacity=\"%d\"/>", manager->GetAstsGenericInfoPool()->Count(), manager->GetAstsGenericInfoPool()->Capacity());
+    fprintf(fp, "<IncrementalGenericInfo Used=\"%d\" Capacity=\"%d\"/>", manager->GetAstsIncrementalGenericInfoPool()->Count(), manager->GetAstsIncrementalGenericInfoPool()->Capacity());
+    fprintf(fp, "<IncrementalMSRCURRInfo Used=\"%d\" Capacity=\"%d\"/>", manager->GetAstsIncrementalMSRCURRInfoPool()->Count(), manager->GetAstsIncrementalMSRCURRInfoPool()->Capacity());
+    fprintf(fp, "<IncrementalMSRFONDInfo Used=\"%d\" Capacity=\"%d\"/>", manager->GetAstsIncrementalMSRFONDInfoPool()->Count(), manager->GetAstsIncrementalMSRFONDInfoPool()->Capacity());
+    fprintf(fp, "<GenericItemInfo Used=\"%d\" Capacity=\"%d\"/>", manager->GetAstsGenericItemInfoPool()->Count(), manager->GetAstsGenericItemInfoPool()->Capacity());
 
-    fprintf(fp, "<OLSFONDInfo Used=\"%d\" Capacity=\"%d\"/>", manager->GetOLSFONDInfoPool()->Count(), manager->GetOLSFONDInfoPool()->Capacity());
-    fprintf(fp, "<IncrementalOLRFONDInfo Used=\"%d\" Capacity=\"%d\"/>", manager->GetIncrementalOLRFONDInfoPool()->Count(), manager->GetIncrementalOLRFONDInfoPool()->Capacity());
-    fprintf(fp, "<OLSFONDItemInfo Used %d of %d", manager->GetOLSFONDItemInfoPool()->Count(), manager->GetOLSFONDItemInfoPool()->Capacity());
+    fprintf(fp, "<OLSFONDInfo Used=\"%d\" Capacity=\"%d\"/>", manager->GetAstsOLSFONDInfoPool()->Count(), manager->GetAstsOLSFONDInfoPool()->Capacity());
+    fprintf(fp, "<IncrementalOLRFONDInfo Used=\"%d\" Capacity=\"%d\"/>", manager->GetAstsIncrementalOLRFONDInfoPool()->Count(), manager->GetAstsIncrementalOLRFONDInfoPool()->Capacity());
+    fprintf(fp, "<OLSFONDItemInfo Used %d of %d", manager->GetAstsOLSFONDItemInfoPool()->Count(), manager->GetAstsOLSFONDItemInfoPool()->Capacity());
 
-    fprintf(fp, "<OLSCURRInfo Used=\"%d\" Capacity=\"%d\"/>", manager->GetOLSCURRInfoPool()->Count(), manager->GetOLSCURRInfoPool()->Capacity());
-    fprintf(fp, "<IncrementalOLRCURRInfo Used=\"%d\" Capacity=\"%d\"/>", manager->GetIncrementalOLRCURRInfoPool()->Count(), manager->GetIncrementalOLRCURRInfoPool()->Capacity());
-    fprintf(fp, "<OLSCURRItemInfo Used=\"%d\" Capacity=\"%d\"/>", manager->GetOLSCURRItemInfoPool()->Count(), manager->GetOLSCURRItemInfoPool()->Capacity());
+    fprintf(fp, "<OLSCURRInfo Used=\"%d\" Capacity=\"%d\"/>", manager->GetAstsOLSCURRInfoPool()->Count(), manager->GetAstsOLSCURRInfoPool()->Capacity());
+    fprintf(fp, "<IncrementalOLRCURRInfo Used=\"%d\" Capacity=\"%d\"/>", manager->GetAstsIncrementalOLRCURRInfoPool()->Count(), manager->GetAstsIncrementalOLRCURRInfoPool()->Capacity());
+    fprintf(fp, "<OLSCURRItemInfo Used=\"%d\" Capacity=\"%d\"/>", manager->GetAstsOLSCURRItemInfoPool()->Count(), manager->GetAstsOLSCURRItemInfoPool()->Capacity());
 
-    fprintf(fp, "<TLSFONDInfo Used=\"%d\" Capacity\"%d\"/>", manager->GetTLSFONDInfoPool()->Count(), manager->GetTLSFONDInfoPool()->Capacity());
-    fprintf(fp, "<IncrementalTLRFONDInfo Used=\"%d\" Capacity=\"%d\"/>", manager->GetIncrementalTLRFONDInfoPool()->Count(), manager->GetIncrementalTLRFONDInfoPool()->Capacity());
-    fprintf(fp, "<TLSFONDItemInfo Used=\"%d\" Capacity=\"%d\"/>", manager->GetTLSFONDItemInfoPool()->Count(), manager->GetTLSFONDItemInfoPool()->Capacity());
+    fprintf(fp, "<TLSFONDInfo Used=\"%d\" Capacity\"%d\"/>", manager->GetAstsTLSFONDInfoPool()->Count(), manager->GetAstsTLSFONDInfoPool()->Capacity());
+    fprintf(fp, "<IncrementalTLRFONDInfo Used=\"%d\" Capacity=\"%d\"/>", manager->GetAstsIncrementalTLRFONDInfoPool()->Count(), manager->GetAstsIncrementalTLRFONDInfoPool()->Capacity());
+    fprintf(fp, "<TLSFONDItemInfo Used=\"%d\" Capacity=\"%d\"/>", manager->GetAstsTLSFONDItemInfoPool()->Count(), manager->GetAstsTLSFONDItemInfoPool()->Capacity());
 
-    fprintf(fp, "<TLSCURRInfo Used=\"%d\" Capacity=\"%d\"/>", manager->GetTLSCURRInfoPool()->Count(), manager->GetTLSCURRInfoPool()->Capacity());
-    fprintf(fp, "<IncrementalTLRCURRInfo Used=\"%d\" Capacity=\"%d\"/>", manager->GetIncrementalTLRCURRInfoPool()->Count(), manager->GetIncrementalTLRCURRInfoPool()->Capacity());
-    fprintf(fp, "<TLSCURRItemInfo Used=\"%d\" Capacity=\"%d\"/>", manager->GetTLSCURRItemInfoPool()->Count(), manager->GetTLSCURRItemInfoPool()->Capacity());
+    fprintf(fp, "<TLSCURRInfo Used=\"%d\" Capacity=\"%d\"/>", manager->GetAstsTLSCURRInfoPool()->Count(), manager->GetAstsTLSCURRInfoPool()->Capacity());
+    fprintf(fp, "<IncrementalTLRCURRInfo Used=\"%d\" Capacity=\"%d\"/>", manager->GetAstsIncrementalTLRCURRInfoPool()->Count(), manager->GetAstsIncrementalTLRCURRInfoPool()->Capacity());
+    fprintf(fp, "<TLSCURRItemInfo Used=\"%d\" Capacity=\"%d\"/>", manager->GetAstsTLSCURRItemInfoPool()->Count(), manager->GetAstsTLSCURRItemInfoPool()->Capacity());
 
-    fprintf(fp, "<SecurityDefinitionInfo Used=\"%d\" Capacity=\"%d\"/>", manager->GetSecurityDefinitionInfoPool()->Count(), manager->GetSecurityDefinitionInfoPool()->Capacity());
-    fprintf(fp, "<SecurityDefinitionGroupInstrAttribItemInfo Used=\"%d\" Capacity=\"%d\"/>", manager->GetSecurityDefinitionGroupInstrAttribItemInfoPool()->Count(), manager->GetSecurityDefinitionGroupInstrAttribItemInfoPool()->Capacity());
-    fprintf(fp, "<SecurityDefinitionMarketSegmentGrpItemInfo Used=\"%d\" Capacity=\"%d\"/>", manager->GetSecurityDefinitionMarketSegmentGrpItemInfoPool()->Count(), manager->GetSecurityDefinitionMarketSegmentGrpItemInfoPool()->Capacity());
-    fprintf(fp, "<SecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo Used=\"%d\" Capacity=\"%d\"/>", manager->GetSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfoPool()->Count(), manager->GetSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfoPool()->Capacity());
+    fprintf(fp, "<SecurityDefinitionInfo Used=\"%d\" Capacity=\"%d\"/>", manager->GetAstsSecurityDefinitionInfoPool()->Count(), manager->GetAstsSecurityDefinitionInfoPool()->Capacity());
+    fprintf(fp, "<SecurityDefinitionGroupInstrAttribItemInfo Used=\"%d\" Capacity=\"%d\"/>", manager->GetAstsSecurityDefinitionGroupInstrAttribItemInfoPool()->Count(), manager->GetAstsSecurityDefinitionGroupInstrAttribItemInfoPool()->Capacity());
+    fprintf(fp, "<SecurityDefinitionMarketSegmentGrpItemInfo Used=\"%d\" Capacity=\"%d\"/>", manager->GetAstsSecurityDefinitionMarketSegmentGrpItemInfoPool()->Count(), manager->GetAstsSecurityDefinitionMarketSegmentGrpItemInfoPool()->Capacity());
+    fprintf(fp, "<SecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo Used=\"%d\" Capacity=\"%d\"/>", manager->GetAstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfoPool()->Count(), manager->GetAstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfoPool()->Capacity());
 
-    fprintf(fp, "<SecurityStatusInfo Used=\"%d\" Capacity=\"%d\"/>", manager->GetSecurityStatusInfoPool()->Count(), manager->GetSecurityStatusInfoPool()->Capacity());
-    fprintf(fp, "<TradingSessionStatusInfo Used=\"%d\" Capacity=\"%d\"/>", manager->GetTradingSessionStatusInfoPool()->Count(), manager->GetTradingSessionStatusInfoPool()->Capacity());
+    fprintf(fp, "<SecurityStatusInfo Used=\"%d\" Capacity=\"%d\"/>", manager->GetAstsSecurityStatusInfoPool()->Count(), manager->GetAstsSecurityStatusInfoPool()->Capacity());
+    fprintf(fp, "<TradingSessionStatusInfo Used=\"%d\" Capacity=\"%d\"/>", manager->GetAstsTradingSessionStatusInfoPool()->Count(), manager->GetAstsTradingSessionStatusInfoPool()->Capacity());
 
     this->RemoveTabs();
     fprintf(fp, "</FastProtocolManager>\n");

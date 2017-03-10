@@ -16,12 +16,12 @@ class StatisticsTesterFond {
     FeedConnection_FOND_MSR *incFond;
     FeedConnection_FOND_MSS *snapFond;
     TestMessagesHelper      *m_helper;
-    MarketDataTable<StatisticsInfo, FastGenericInfo, FastGenericItemInfo> *m_table;
+    MarketDataTable<StatisticsInfo, AstsGenericInfo, AstsGenericItemInfo> *m_table;
 
 public:
     StatisticsTesterFond() {
         this->m_helper = new TestMessagesHelper();
-        this->m_table = new MarketDataTable<StatisticsInfo, FastGenericInfo, FastGenericItemInfo>();
+        this->m_table = new MarketDataTable<StatisticsInfo, AstsGenericInfo, AstsGenericItemInfo>();
         this->incFond = new FeedConnection_FOND_MSR("MSR", "Refresh Incremental", 'I',
                                                     FeedConnectionProtocol::UDP_IP,
                                                     "10.50.129.200", "239.192.113.3", 9113,
@@ -42,7 +42,7 @@ public:
         delete this->m_table;
     }
 
-    void TestItem(StatisticsInfo<FastGenericItemInfo> *tableItem) {
+    void TestItem(StatisticsInfo<AstsGenericItemInfo> *tableItem) {
 //        for(int i = 0; i < tableItem->BuyQuotes()->Count(); i++)
 //            if(tableItem->BuyQuotes()->Item(i)->Allocator == 0)
 //                throw;
@@ -51,10 +51,10 @@ public:
 //                throw;
     }
 
-    void TestTableItemsAllocator(MarketDataTable<StatisticsInfo, FastGenericInfo, FastGenericItemInfo> *table) {
+    void TestTableItemsAllocator(MarketDataTable<StatisticsInfo, AstsGenericInfo, AstsGenericItemInfo> *table) {
         for(int i = 0; i < table->SymbolsCount(); i++) {
             for(int j = 0; j < table->Symbol(i)->Count(); j++) {
-                StatisticsInfo<FastGenericItemInfo> *item = table->Item(i, j);
+                StatisticsInfo<AstsGenericItemInfo> *item = table->Item(i, j);
                 TestItem(item);
             }
         }
@@ -82,12 +82,12 @@ public:
         this->Clear();
         this->TestDefaults();
 
-        FastIncrementalMSRFONDInfo *info = new FastIncrementalMSRFONDInfo;
+        AstsIncrementalMSRFONDInfo *info = new AstsIncrementalMSRFONDInfo;
 
-        FastGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
-        FastGenericItemInfo *item2 = this->m_helper->CreateGenericItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
-        FastGenericItemInfo *item3 = this->m_helper->CreateGenericItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
-        FastGenericItemInfo *item4 = this->m_helper->CreateGenericItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "e4", 4);
+        AstsGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
+        AstsGenericItemInfo *item2 = this->m_helper->CreateGenericItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
+        AstsGenericItemInfo *item3 = this->m_helper->CreateGenericItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
+        AstsGenericItemInfo *item4 = this->m_helper->CreateGenericItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "e4", 4);
 
         if(item4->Used)
             throw;
@@ -105,7 +105,7 @@ public:
             throw;
         if(this->incFond->StatisticFond()->Symbol(0)->Count() != 1)
             throw;
-        StatisticsInfo<FastGenericItemInfo> *obi = this->incFond->StatisticFond()->GetItem("s1", "t1");
+        StatisticsInfo<AstsGenericItemInfo> *obi = this->incFond->StatisticFond()->GetItem("s1", "t1");
         if(obi == 0)
             throw;
         if(obi->BuyQuotes()->Count() != 1)
@@ -246,11 +246,11 @@ public:
         this->Clear();
         this->TestDefaults();
 
-        FastIncrementalMSRFONDInfo *info = new FastIncrementalMSRFONDInfo;
-        FastGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
-        FastGenericItemInfo *item2 = this->m_helper->CreateGenericItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
-        FastGenericItemInfo *item3 = this->m_helper->CreateGenericItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
-        FastGenericItemInfo *item4 = this->m_helper->CreateGenericItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "e4", 4);
+        AstsIncrementalMSRFONDInfo *info = new AstsIncrementalMSRFONDInfo;
+        AstsGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
+        AstsGenericItemInfo *item2 = this->m_helper->CreateGenericItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
+        AstsGenericItemInfo *item3 = this->m_helper->CreateGenericItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
+        AstsGenericItemInfo *item4 = this->m_helper->CreateGenericItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "e4", 4);
 
         info->GroupMDEntriesCount = 4;
         info->GroupMDEntries[0] = item1;
@@ -287,7 +287,7 @@ public:
         if(this->incFond->StatisticFond()->UsedItemCount() != 1)
             throw;
 
-        StatisticsInfo<FastGenericItemInfo> *obi = this->incFond->StatisticFond()->GetItem("s1", "t1");
+        StatisticsInfo<AstsGenericItemInfo> *obi = this->incFond->StatisticFond()->GetItem("s1", "t1");
         if(obi->BuyQuotes()->Count() != 3)
             throw;
         if(!StringIdComparer::Equal(obi->BuyQuotes()->Item(0)->MDEntryID, 2, "e2", 2))
@@ -347,11 +347,11 @@ public:
         this->Clear();
         this->TestDefaults();
 
-        FastIncrementalMSRFONDInfo *info = new FastIncrementalMSRFONDInfo;
-        FastGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
-        FastGenericItemInfo *item2 = this->m_helper->CreateGenericItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
-        FastGenericItemInfo *item3 = this->m_helper->CreateGenericItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
-        FastGenericItemInfo *item4 = this->m_helper->CreateGenericItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "e4", 4);
+        AstsIncrementalMSRFONDInfo *info = new AstsIncrementalMSRFONDInfo;
+        AstsGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
+        AstsGenericItemInfo *item2 = this->m_helper->CreateGenericItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
+        AstsGenericItemInfo *item3 = this->m_helper->CreateGenericItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
+        AstsGenericItemInfo *item4 = this->m_helper->CreateGenericItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "e4", 4);
 
         info->GroupMDEntriesCount = 4;
         info->GroupMDEntries[0] = item1;
@@ -361,7 +361,7 @@ public:
 
         this->incFond->OnIncrementalRefresh_MSR_FOND(info);
 
-        StatisticsInfo<FastGenericItemInfo> *obi2 = this->incFond->StatisticFond()->GetItem("s1", "t1");
+        StatisticsInfo<AstsGenericItemInfo> *obi2 = this->incFond->StatisticFond()->GetItem("s1", "t1");
         if(!StringIdComparer::Equal(obi2->BuyQuotes()->Item(0)->MDEntryID, 2, "e2", 2))
             throw;
         if(!StringIdComparer::Equal(obi2->BuyQuotes()->Item(1)->MDEntryID, 2, "e1", 2))
@@ -371,7 +371,7 @@ public:
         if(!StringIdComparer::Equal(obi2->BuyQuotes()->Item(3)->MDEntryID, 2, "e3", 2))
             throw;
 
-        FastGenericItemInfo *item5 = this->m_helper->CreateGenericItemInfo("s1", "t1", 24, -3, 1, 3, mduaChange, mdetBuyQuote, "e2", 5);
+        AstsGenericItemInfo *item5 = this->m_helper->CreateGenericItemInfo("s1", "t1", 24, -3, 1, 3, mduaChange, mdetBuyQuote, "e2", 5);
 
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item5;
@@ -386,12 +386,12 @@ public:
         if(item5->Allocator->Count() != 1)
             throw;
 
-        StatisticsInfo<FastGenericItemInfo> *obi = this->incFond->StatisticFond()->GetItem("s1", "t1");
+        StatisticsInfo<AstsGenericItemInfo> *obi = this->incFond->StatisticFond()->GetItem("s1", "t1");
 
-        FastGenericItemInfo *qt1 = obi->BuyQuotes()->Item(0);
-        FastGenericItemInfo *qt2 = obi->BuyQuotes()->Item(1);
-        FastGenericItemInfo *qt3 = obi->BuyQuotes()->Item(2);
-        FastGenericItemInfo *qt4 = obi->BuyQuotes()->Item(3);
+        AstsGenericItemInfo *qt1 = obi->BuyQuotes()->Item(0);
+        AstsGenericItemInfo *qt2 = obi->BuyQuotes()->Item(1);
+        AstsGenericItemInfo *qt3 = obi->BuyQuotes()->Item(2);
+        AstsGenericItemInfo *qt4 = obi->BuyQuotes()->Item(3);
 
         if(this->incFond->StatisticFond()->UsedItemCount() != 1)
             throw;
@@ -421,11 +421,11 @@ public:
         this->Clear();
         this->TestDefaults();
 
-        FastIncrementalMSRFONDInfo *info = new FastIncrementalMSRFONDInfo;
-        FastGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
-        FastGenericItemInfo *item2 = this->m_helper->CreateGenericItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
-        FastGenericItemInfo *item3 = this->m_helper->CreateGenericItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
-        FastGenericItemInfo *item4 = this->m_helper->CreateGenericItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "e4", 4);
+        AstsIncrementalMSRFONDInfo *info = new AstsIncrementalMSRFONDInfo;
+        AstsGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
+        AstsGenericItemInfo *item2 = this->m_helper->CreateGenericItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
+        AstsGenericItemInfo *item3 = this->m_helper->CreateGenericItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
+        AstsGenericItemInfo *item4 = this->m_helper->CreateGenericItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "e4", 4);
 
         info->GroupMDEntriesCount = 4;
         info->GroupMDEntries[0] = item1;
@@ -446,7 +446,7 @@ public:
         if(this->incFond->StatisticFond()->UsedItemCount() != 0)
             throw;
 
-        StatisticsInfo<FastGenericItemInfo> *obi = this->incFond->StatisticFond()->GetItem("s1", "t1");
+        StatisticsInfo<AstsGenericItemInfo> *obi = this->incFond->StatisticFond()->GetItem("s1", "t1");
         if(obi->BuyQuotes()->Count() != 0)
             throw;
     }
@@ -455,11 +455,11 @@ public:
         this->Clear();
         this->TestDefaults();
 
-        FastIncrementalMSRFONDInfo *info = new FastIncrementalMSRFONDInfo;
-        FastGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
-        FastGenericItemInfo *item2 = this->m_helper->CreateGenericItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
-        FastGenericItemInfo *item3 = this->m_helper->CreateGenericItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
-        FastGenericItemInfo *item4 = this->m_helper->CreateGenericItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "e4", 4);
+        AstsIncrementalMSRFONDInfo *info = new AstsIncrementalMSRFONDInfo;
+        AstsGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
+        AstsGenericItemInfo *item2 = this->m_helper->CreateGenericItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
+        AstsGenericItemInfo *item3 = this->m_helper->CreateGenericItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
+        AstsGenericItemInfo *item4 = this->m_helper->CreateGenericItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "e4", 4);
 
         info->GroupMDEntriesCount = 4;
         info->GroupMDEntries[0] = item1;
@@ -469,13 +469,13 @@ public:
 
         this->incFond->OnIncrementalRefresh_MSR_FOND(info);
 
-        StatisticsInfo<FastGenericItemInfo> *obi2 = this->incFond->StatisticFond()->GetItem("s1", "t1");
+        StatisticsInfo<AstsGenericItemInfo> *obi2 = this->incFond->StatisticFond()->GetItem("s1", "t1");
         if(obi2->BuyQuotes()->Count() != 4)
             throw;
 
-        FastGenericInfo *info2 = this->m_helper->CreateMSSFondInfo("t1s2", "t1");
-        FastGenericItemInfo *newItem1 = this->m_helper->CreateGenericItemInfo(7,-2, 1, 2, mdetBuyQuote, "e7");
-        FastGenericItemInfo *newItem2 = this->m_helper->CreateGenericItemInfo(8,-2, 1, 2, mdetBuyQuote, "e8");
+        AstsGenericInfo *info2 = this->m_helper->CreateMSSFondInfo("t1s2", "t1");
+        AstsGenericItemInfo *newItem1 = this->m_helper->CreateGenericItemInfo(7,-2, 1, 2, mdetBuyQuote, "e7");
+        AstsGenericItemInfo *newItem2 = this->m_helper->CreateGenericItemInfo(8,-2, 1, 2, mdetBuyQuote, "e8");
         info2->RptSeq = 5;
 
         info2->GroupMDEntriesCount = 2;
@@ -488,16 +488,16 @@ public:
         if(this->incFond->StatisticFond()->UsedItemCount() != 2)
             throw;
 
-        StatisticsInfo<FastGenericItemInfo> *obi3 = this->incFond->StatisticFond()->GetItem("s1", "t1");
+        StatisticsInfo<AstsGenericItemInfo> *obi3 = this->incFond->StatisticFond()->GetItem("s1", "t1");
         if(obi3->BuyQuotes()->Count() != 4)
             throw;
 
-        StatisticsInfo<FastGenericItemInfo> *obi = this->incFond->StatisticFond()->GetItem("t1s2", 4, "t1", 2);
+        StatisticsInfo<AstsGenericItemInfo> *obi = this->incFond->StatisticFond()->GetItem("t1s2", 4, "t1", 2);
         if(obi->BuyQuotes()->Count() != 2)
             throw;
 
-        FastGenericItemInfo *qt1 = obi->BuyQuotes()->Start()->Data();
-        FastGenericItemInfo *qt2 = obi->BuyQuotes()->Start()->Next()->Data();
+        AstsGenericItemInfo *qt1 = obi->BuyQuotes()->Start()->Data();
+        AstsGenericItemInfo *qt2 = obi->BuyQuotes()->Start()->Next()->Data();
 
         if(!StringIdComparer::Equal(qt1->MDEntryID, 2, "e8", 2))
             throw;
@@ -515,12 +515,12 @@ public:
         this->Clear();
         this->TestDefaults();
 
-        FastIncrementalMSRFONDInfo *info = new FastIncrementalMSRFONDInfo;
+        AstsIncrementalMSRFONDInfo *info = new AstsIncrementalMSRFONDInfo;
 
-        FastGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "e1", 1);
-        FastGenericItemInfo *item2 = this->m_helper->CreateGenericItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "e2", 2);
-        FastGenericItemInfo *item3 = this->m_helper->CreateGenericItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "e3", 3);
-        FastGenericItemInfo *item4 = this->m_helper->CreateGenericItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "e4", 4);
+        AstsGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "e1", 1);
+        AstsGenericItemInfo *item2 = this->m_helper->CreateGenericItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "e2", 2);
+        AstsGenericItemInfo *item3 = this->m_helper->CreateGenericItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "e3", 3);
+        AstsGenericItemInfo *item4 = this->m_helper->CreateGenericItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "e4", 4);
 
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item1;
@@ -533,7 +533,7 @@ public:
             throw;
         if(this->incFond->StatisticFond()->Symbol(0)->Count() != 1)
             throw;
-        StatisticsInfo<FastGenericItemInfo> *obi = this->incFond->StatisticFond()->GetItem("s1", "t1");
+        StatisticsInfo<AstsGenericItemInfo> *obi = this->incFond->StatisticFond()->GetItem("s1", "t1");
         if(obi == 0)
             throw;
         if(obi->SellQuotes()->Count() != 1)
@@ -673,11 +673,11 @@ public:
         this->Clear();
         this->TestDefaults();
 
-        FastIncrementalMSRFONDInfo *info = new FastIncrementalMSRFONDInfo;
-        FastGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "e1", 1);
-        FastGenericItemInfo *item2 = this->m_helper->CreateGenericItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "e2", 2);
-        FastGenericItemInfo *item3 = this->m_helper->CreateGenericItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "e3", 3);
-        FastGenericItemInfo *item4 = this->m_helper->CreateGenericItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "e4", 4);
+        AstsIncrementalMSRFONDInfo *info = new AstsIncrementalMSRFONDInfo;
+        AstsGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "e1", 1);
+        AstsGenericItemInfo *item2 = this->m_helper->CreateGenericItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "e2", 2);
+        AstsGenericItemInfo *item3 = this->m_helper->CreateGenericItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "e3", 3);
+        AstsGenericItemInfo *item4 = this->m_helper->CreateGenericItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "e4", 4);
 
         info->GroupMDEntriesCount = 4;
         info->GroupMDEntries[0] = item1;
@@ -701,7 +701,7 @@ public:
         if(this->incFond->StatisticFond()->UsedItemCount() != 1)
             throw;
 
-        StatisticsInfo<FastGenericItemInfo> *obi = this->incFond->StatisticFond()->GetItem("s1", "t1");
+        StatisticsInfo<AstsGenericItemInfo> *obi = this->incFond->StatisticFond()->GetItem("s1", "t1");
         if(obi->SellQuotes()->Count() != 3)
             throw;
 
@@ -762,11 +762,11 @@ public:
         this->Clear();
         this->TestDefaults();
 
-        FastIncrementalMSRFONDInfo *info = new FastIncrementalMSRFONDInfo;
-        FastGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "e1", 1);
-        FastGenericItemInfo *item2 = this->m_helper->CreateGenericItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "e2", 2);
-        FastGenericItemInfo *item3 = this->m_helper->CreateGenericItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "e3", 3);
-        FastGenericItemInfo *item4 = this->m_helper->CreateGenericItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "e4", 4);
+        AstsIncrementalMSRFONDInfo *info = new AstsIncrementalMSRFONDInfo;
+        AstsGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "e1", 1);
+        AstsGenericItemInfo *item2 = this->m_helper->CreateGenericItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "e2", 2);
+        AstsGenericItemInfo *item3 = this->m_helper->CreateGenericItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "e3", 3);
+        AstsGenericItemInfo *item4 = this->m_helper->CreateGenericItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "e4", 4);
 
         info->GroupMDEntriesCount = 4;
         info->GroupMDEntries[0] = item1;
@@ -776,7 +776,7 @@ public:
 
         this->incFond->OnIncrementalRefresh_MSR_FOND(info);
 
-        StatisticsInfo<FastGenericItemInfo> *obi2 = this->incFond->StatisticFond()->GetItem("s1", "t1");
+        StatisticsInfo<AstsGenericItemInfo> *obi2 = this->incFond->StatisticFond()->GetItem("s1", "t1");
         if(!StringIdComparer::Equal(obi2->SellQuotes()->Item(0)->MDEntryID, 2, "e3", 2))
             throw;
         if(!StringIdComparer::Equal(obi2->SellQuotes()->Item(1)->MDEntryID, 2, "e4", 2))
@@ -786,19 +786,19 @@ public:
         if(!StringIdComparer::Equal(obi2->SellQuotes()->Item(3)->MDEntryID, 2, "e2", 2))
             throw;
 
-        FastGenericItemInfo *item5 = this->m_helper->CreateGenericItemInfo("s1", "t1", 24, -3, 1, 3, mduaChange, mdetSellQuote, "e2", 5);
+        AstsGenericItemInfo *item5 = this->m_helper->CreateGenericItemInfo("s1", "t1", 24, -3, 1, 3, mduaChange, mdetSellQuote, "e2", 5);
 
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item5;
 
         this->incFond->OnIncrementalRefresh_MSR_FOND(info);
 
-        StatisticsInfo<FastGenericItemInfo> *obi = this->incFond->StatisticFond()->GetItem("s1", "t1");
+        StatisticsInfo<AstsGenericItemInfo> *obi = this->incFond->StatisticFond()->GetItem("s1", "t1");
 
-        FastGenericItemInfo *qt1 = obi->SellQuotes()->Item(0);
-        FastGenericItemInfo *qt2 = obi->SellQuotes()->Item(1);
-        FastGenericItemInfo *qt3 = obi->SellQuotes()->Item(2);
-        FastGenericItemInfo *qt4 = obi->SellQuotes()->Item(3);
+        AstsGenericItemInfo *qt1 = obi->SellQuotes()->Item(0);
+        AstsGenericItemInfo *qt2 = obi->SellQuotes()->Item(1);
+        AstsGenericItemInfo *qt3 = obi->SellQuotes()->Item(2);
+        AstsGenericItemInfo *qt4 = obi->SellQuotes()->Item(3);
 
         if(this->incFond->StatisticFond()->UsedItemCount() != 1)
             throw;
@@ -828,11 +828,11 @@ public:
         this->Clear();
         this->TestDefaults();
 
-        FastIncrementalMSRFONDInfo *info = new FastIncrementalMSRFONDInfo;
-        FastGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "e1", 1);
-        FastGenericItemInfo *item2 = this->m_helper->CreateGenericItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "e2", 2);
-        FastGenericItemInfo *item3 = this->m_helper->CreateGenericItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "e3", 3);
-        FastGenericItemInfo *item4 = this->m_helper->CreateGenericItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "e4", 4);
+        AstsIncrementalMSRFONDInfo *info = new AstsIncrementalMSRFONDInfo;
+        AstsGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "e1", 1);
+        AstsGenericItemInfo *item2 = this->m_helper->CreateGenericItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "e2", 2);
+        AstsGenericItemInfo *item3 = this->m_helper->CreateGenericItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "e3", 3);
+        AstsGenericItemInfo *item4 = this->m_helper->CreateGenericItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "e4", 4);
 
         info->GroupMDEntriesCount = 4;
         info->GroupMDEntries[0] = item1;
@@ -846,7 +846,7 @@ public:
         if(this->incFond->StatisticFond()->UsedItemCount() != 0)
             throw;
 
-        StatisticsInfo<FastGenericItemInfo> *obi = this->incFond->StatisticFond()->GetItem("s1", "t1");
+        StatisticsInfo<AstsGenericItemInfo> *obi = this->incFond->StatisticFond()->GetItem("s1", "t1");
         if(obi->SellQuotes()->Count() != 0)
             throw;
     }
@@ -855,11 +855,11 @@ public:
         this->Clear();
         this->TestDefaults();
 
-        FastIncrementalMSRFONDInfo *info = new FastIncrementalMSRFONDInfo;
-        FastGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "e1", 1);
-        FastGenericItemInfo *item2 = this->m_helper->CreateGenericItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "e2", 2);
-        FastGenericItemInfo *item3 = this->m_helper->CreateGenericItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "e3", 3);
-        FastGenericItemInfo *item4 = this->m_helper->CreateGenericItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "e4", 4);
+        AstsIncrementalMSRFONDInfo *info = new AstsIncrementalMSRFONDInfo;
+        AstsGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "e1", 1);
+        AstsGenericItemInfo *item2 = this->m_helper->CreateGenericItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "e2", 2);
+        AstsGenericItemInfo *item3 = this->m_helper->CreateGenericItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "e3", 3);
+        AstsGenericItemInfo *item4 = this->m_helper->CreateGenericItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "e4", 4);
 
         info->GroupMDEntriesCount = 4;
         info->GroupMDEntries[0] = item1;
@@ -869,9 +869,9 @@ public:
 
         this->incFond->OnIncrementalRefresh_MSR_FOND(info);
 
-        FastGenericInfo *info2 = this->m_helper->CreateMSSFondInfo("t1s2", "t1");
-        FastGenericItemInfo *newItem1 = this->m_helper->CreateGenericItemInfo(7,-2, 1, 2, mdetSellQuote, "e7");
-        FastGenericItemInfo *newItem2 = this->m_helper->CreateGenericItemInfo(8,-2, 1, 2, mdetSellQuote, "e8");
+        AstsGenericInfo *info2 = this->m_helper->CreateMSSFondInfo("t1s2", "t1");
+        AstsGenericItemInfo *newItem1 = this->m_helper->CreateGenericItemInfo(7,-2, 1, 2, mdetSellQuote, "e7");
+        AstsGenericItemInfo *newItem2 = this->m_helper->CreateGenericItemInfo(8,-2, 1, 2, mdetSellQuote, "e8");
 
         info2->GroupMDEntriesCount = 2;
         info2->GroupMDEntries[0] = newItem1;
@@ -883,16 +883,16 @@ public:
         if(this->incFond->StatisticFond()->UsedItemCount() != 2)
             throw;
 
-        StatisticsInfo<FastGenericItemInfo> *obi3 = this->incFond->StatisticFond()->GetItem("s1", "t1");
+        StatisticsInfo<AstsGenericItemInfo> *obi3 = this->incFond->StatisticFond()->GetItem("s1", "t1");
         if(obi3->SellQuotes()->Count() != 4)
             throw;
 
-        StatisticsInfo<FastGenericItemInfo> *obi = this->incFond->StatisticFond()->GetItem("t1s2", 4, "t1", 2);
+        StatisticsInfo<AstsGenericItemInfo> *obi = this->incFond->StatisticFond()->GetItem("t1s2", 4, "t1", 2);
         if(obi->SellQuotes()->Count() != 2)
             throw;
 
-        FastGenericItemInfo *qt1 = obi->SellQuotes()->Start()->Data();
-        FastGenericItemInfo *qt2 = obi->SellQuotes()->Start()->Next()->Data();
+        AstsGenericItemInfo *qt1 = obi->SellQuotes()->Start()->Data();
+        AstsGenericItemInfo *qt2 = obi->SellQuotes()->Start()->Next()->Data();
 
         if(!StringIdComparer::Equal(qt1->MDEntryID, 2, "e7", 2))
             throw;
@@ -947,9 +947,9 @@ public:
     }
 
     void TestTableItem_CorrectBegin() {
-        StatisticsInfo<FastGenericItemInfo> *tb = new StatisticsInfo<FastGenericItemInfo>();
+        StatisticsInfo<AstsGenericItemInfo> *tb = new StatisticsInfo<AstsGenericItemInfo>();
 
-        FastGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e1");
+        AstsGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e1");
         item1->RptSeq = 1;
         item1->MDUpdateAction = mduaAdd;
 
@@ -966,9 +966,9 @@ public:
     }
 
     void TestTableItem_IncorrectBegin() {
-        StatisticsInfo<FastGenericItemInfo> *tb = new StatisticsInfo<FastGenericItemInfo>();
+        StatisticsInfo<AstsGenericItemInfo> *tb = new StatisticsInfo<AstsGenericItemInfo>();
 
-        FastGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e1");
+        AstsGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e1");
         item1->RptSeq = 2;
         item1->MDUpdateAction = mduaAdd;
 
@@ -987,15 +987,15 @@ public:
     }
 
     void TestTableItem_SkipMessage() {
-        StatisticsInfo<FastGenericItemInfo> *tb = new StatisticsInfo<FastGenericItemInfo>();
+        StatisticsInfo<AstsGenericItemInfo> *tb = new StatisticsInfo<AstsGenericItemInfo>();
 
-        FastGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e1");
+        AstsGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e1");
         item1->RptSeq = 1;
         item1->MDUpdateAction = mduaAdd;
 
         tb->ProcessIncrementalMessage(item1);
 
-        FastGenericItemInfo *item2 = this->m_helper->CreateGenericItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e2");
+        AstsGenericItemInfo *item2 = this->m_helper->CreateGenericItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e2");
         item2->RptSeq = 3;
         item2->MDUpdateAction = mduaAdd;
 
@@ -1008,7 +1008,7 @@ public:
         if(tb->RptSeq() != 1)
             throw;
 
-        FastGenericItemInfo *item3 = this->m_helper->CreateGenericItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e3");
+        AstsGenericItemInfo *item3 = this->m_helper->CreateGenericItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e3");
         item3->RptSeq = 4;
         item3->MDUpdateAction = mduaAdd;
 
@@ -1036,13 +1036,13 @@ public:
     void TestTable_AfterClear() {
         this->m_table->Clear();
 
-        FastGenericItemInfo *item = this->m_helper->CreateGenericItemInfo("s1", "session1", "e1");
+        AstsGenericItemInfo *item = this->m_helper->CreateGenericItemInfo("s1", "session1", "e1");
         item->RptSeq = 1;
 
-        FastGenericItemInfo *item2 = this->m_helper->CreateGenericItemInfo("s1", "session1", "e1");
+        AstsGenericItemInfo *item2 = this->m_helper->CreateGenericItemInfo("s1", "session1", "e1");
         item2->RptSeq = 2;
 
-        FastGenericItemInfo *item3 = this->m_helper->CreateGenericItemInfo("s1", "session1", "e1");
+        AstsGenericItemInfo *item3 = this->m_helper->CreateGenericItemInfo("s1", "session1", "e1");
         item3->RptSeq = 4;
 
         this->m_table->ProcessIncremental(item);
@@ -1051,7 +1051,7 @@ public:
 
         if(this->m_table->UsedItemCount() != 1)
             throw;
-        StatisticsInfo<FastGenericItemInfo> *tableItem = this->m_table->GetItem("s1", "session1");
+        StatisticsInfo<AstsGenericItemInfo> *tableItem = this->m_table->GetItem("s1", "session1");
         if(tableItem->EntriesQueue()->MaxIndex() != 1) // 3 is empty and 4 has value
             throw;
         this->m_table->Clear();
@@ -1071,7 +1071,7 @@ public:
 
         this->m_table->Clear();
 
-        FastGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 1;
 
@@ -1084,7 +1084,7 @@ public:
     void TestTable_IncorrectBegin() {
         this->m_table->Clear();
 
-        FastGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 2;
 
@@ -1097,14 +1097,14 @@ public:
     void TestTable_SkipMessages() {
         this->m_table->Clear();
 
-        FastGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 1;
 
         if(!this->m_table->ProcessIncremental(item1))
             throw;
 
-        FastGenericItemInfo *item2 = this->m_helper->CreateGenericItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsGenericItemInfo *item2 = this->m_helper->CreateGenericItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 3);
         item2->RptSeq = 3;
 
@@ -1117,14 +1117,14 @@ public:
     void Test_2UsedItemsAfter2IncrementalMessages() {
         this->m_table->Clear();
 
-        FastGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 1;
 
         if(!this->m_table->ProcessIncremental(item1))
             throw;
 
-        FastGenericItemInfo *item2 = this->m_helper->CreateGenericItemInfo("s2", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsGenericItemInfo *item2 = this->m_helper->CreateGenericItemInfo("s2", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item2->RptSeq = 1;
 
@@ -1140,42 +1140,42 @@ public:
     void TestTable_CorrectApplySnapshot() {
         this->m_table->Clear();
 
-        FastGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 1;
 
         this->m_table->ProcessIncremental(item1);
 
-        FastGenericItemInfo *item2 = this->m_helper->CreateGenericItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsGenericItemInfo *item2 = this->m_helper->CreateGenericItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e2", 3);
         item2->RptSeq = 3;
 
         if(this->m_table->ProcessIncremental(item2))
             throw;
 
-        FastGenericItemInfo *item3 = this->m_helper->CreateGenericItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsGenericItemInfo *item3 = this->m_helper->CreateGenericItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e3", 4);
         item3->RptSeq = 4;
 
         if(this->m_table->ProcessIncremental(item3))
             throw;
 
-        FastGenericItemInfo *item4 = this->m_helper->CreateGenericItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsGenericItemInfo *item4 = this->m_helper->CreateGenericItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e4", 5);
         item4->RptSeq = 5;
 
         if(this->m_table->ProcessIncremental(item4))
             throw;
 
-        FastGenericItemInfo *item5 = this->m_helper->CreateGenericItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsGenericItemInfo *item5 = this->m_helper->CreateGenericItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e5", 3);
         item5->RptSeq = 3;
 
-        FastGenericInfo *info = this->m_helper->CreateMSSFondInfo("s1", "session");
+        AstsGenericInfo *info = this->m_helper->CreateMSSFondInfo("s1", "session");
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item5;
 
-        StatisticsInfo<FastGenericItemInfo> *tb = this->m_table->GetItem("s1", "session");
+        StatisticsInfo<AstsGenericItemInfo> *tb = this->m_table->GetItem("s1", "session");
 
         this->m_table->ObtainSnapshotItem(info);
         this->m_table->StartProcessSnapshot(info);
@@ -1208,39 +1208,39 @@ public:
 
         this->m_table->Clear();
 
-        FastGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 1;
 
         this->m_table->ProcessIncremental(item1);
 
-        FastGenericItemInfo *item3 = this->m_helper->CreateGenericItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsGenericItemInfo *item3 = this->m_helper->CreateGenericItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e3", 4);
         item3->RptSeq = 4;
 
         if(this->m_table->ProcessIncremental(item3))
             throw;
 
-        FastGenericItemInfo *item4 = this->m_helper->CreateGenericItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsGenericItemInfo *item4 = this->m_helper->CreateGenericItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e4", 5);
         item4->RptSeq = 5;
 
         if(this->m_table->ProcessIncremental(item4))
             throw;
 
-        FastGenericInfo *info1 = this->m_helper->CreateMSSFondInfo("s1", "session");
+        AstsGenericInfo *info1 = this->m_helper->CreateMSSFondInfo("s1", "session");
         info1->GroupMDEntriesCount = 1;
         info1->RptSeq = 3;
         info1->RouteFirst = true;
         info1->GroupMDEntries[0] = this->m_helper->CreateGenericItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e2");
 
-        FastGenericInfo *info2 = this->m_helper->CreateMSSFondInfo("s1", "session");
+        AstsGenericInfo *info2 = this->m_helper->CreateMSSFondInfo("s1", "session");
         info2->GroupMDEntriesCount = 1;
         info2->RptSeq = 3;
         info2->RouteFirst = true;
         info2->GroupMDEntries[0] = this->m_helper->CreateGenericItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e2");
 
-        StatisticsInfo<FastGenericItemInfo> *tb = this->m_table->GetItem("s1", "session");
+        StatisticsInfo<AstsGenericItemInfo> *tb = this->m_table->GetItem("s1", "session");
 
         this->m_table->ObtainSnapshotItem(info1);
         this->m_table->StartProcessSnapshot(info1);
@@ -1264,42 +1264,42 @@ public:
     void TestTable_IncorrectApplySnapshot() {
         this->m_table->Clear();
 
-        FastGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 1;
 
         this->m_table->ProcessIncremental(item1);
 
-        FastGenericItemInfo *item2 = this->m_helper->CreateGenericItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsGenericItemInfo *item2 = this->m_helper->CreateGenericItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e2", 4);
         item2->RptSeq = 4;
 
         if(this->m_table->ProcessIncremental(item2))
             throw;
 
-        FastGenericItemInfo *item3 = this->m_helper->CreateGenericItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsGenericItemInfo *item3 = this->m_helper->CreateGenericItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e3", 5);
         item3->RptSeq = 5;
 
         if(this->m_table->ProcessIncremental(item3))
             throw;
 
-        FastGenericItemInfo *item4 = this->m_helper->CreateGenericItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsGenericItemInfo *item4 = this->m_helper->CreateGenericItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e4", 6);
         item4->RptSeq = 6;
 
         if(this->m_table->ProcessIncremental(item4))
             throw;
 
-        FastGenericItemInfo *item5 = this->m_helper->CreateGenericItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsGenericItemInfo *item5 = this->m_helper->CreateGenericItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e5", 2);
         item5->RptSeq = 2;
 
-        FastGenericInfo *info = this->m_helper->CreateMSSFondInfo("s1", "session");
+        AstsGenericInfo *info = this->m_helper->CreateMSSFondInfo("s1", "session");
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item5;
 
-        StatisticsInfo<FastGenericItemInfo> *tb = this->m_table->GetItem("s1", "session");
+        StatisticsInfo<AstsGenericItemInfo> *tb = this->m_table->GetItem("s1", "session");
 
         this->m_table->ObtainSnapshotItem(info);
         this->m_table->StartProcessSnapshot(info);
@@ -1325,35 +1325,35 @@ public:
     void TestTable_IncorrectApplySnapshot_WhenMessageSkipped() {
         this->m_table->Clear();
 
-        FastGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 1;
 
         this->m_table->ProcessIncremental(item1);
 
-        FastGenericItemInfo *item2 = this->m_helper->CreateGenericItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsGenericItemInfo *item2 = this->m_helper->CreateGenericItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e2", 4);
         item2->RptSeq = 4;
 
         if(this->m_table->ProcessIncremental(item2))
             throw;
 
-        FastGenericItemInfo *item4 = this->m_helper->CreateGenericItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsGenericItemInfo *item4 = this->m_helper->CreateGenericItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e4", 6);
         item4->RptSeq = 6;
 
         if(this->m_table->ProcessIncremental(item4))
             throw;
 
-        FastGenericItemInfo *item5 = this->m_helper->CreateGenericItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsGenericItemInfo *item5 = this->m_helper->CreateGenericItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e5", 3);
         item5->RptSeq = 3;
 
-        FastGenericInfo *info = this->m_helper->CreateMSSFondInfo("s1", "session");
+        AstsGenericInfo *info = this->m_helper->CreateMSSFondInfo("s1", "session");
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item5;
 
-        StatisticsInfo<FastGenericItemInfo> *tb = this->m_table->GetItem("s1", "session");
+        StatisticsInfo<AstsGenericItemInfo> *tb = this->m_table->GetItem("s1", "session");
 
         this->m_table->ObtainSnapshotItem(info);
         this->m_table->StartProcessSnapshot(info);
@@ -1452,7 +1452,7 @@ public:
 
         this->TestTableItemsAllocator(incFond->StatisticFond());
 
-        StatisticsInfo<FastGenericItemInfo> *item = incFond->StatisticFond()->GetItem("s1", "session1");
+        StatisticsInfo<AstsGenericItemInfo> *item = incFond->StatisticFond()->GetItem("s1", "session1");
         if(item->BuyQuotes()->Count() != 2)
             throw;
         if(!incFond->m_waitTimer->Active()) // not all messages was processed - some messages was skipped
@@ -1506,7 +1506,7 @@ public:
 
         this->TestTableItemsAllocator(incFond->StatisticFond());
 
-        StatisticsInfo<FastGenericItemInfo> *item = incFond->StatisticFond()->GetItem("s1", "session1");
+        StatisticsInfo<AstsGenericItemInfo> *item = incFond->StatisticFond()->GetItem("s1", "session1");
         if(item->BuyQuotes()->Count() != 2)
             throw;
         if(!incFond->m_waitTimer->Active()) // not all messages was processed - some messages was skipped
@@ -1563,7 +1563,7 @@ public:
 
         this->TestTableItemsAllocator(incFond->StatisticFond());
 
-        StatisticsInfo<FastGenericItemInfo> *item = incFond->StatisticFond()->GetItem("s1", "session1");
+        StatisticsInfo<AstsGenericItemInfo> *item = incFond->StatisticFond()->GetItem("s1", "session1");
         if(item->BuyQuotes()->Count() != 2)
             throw;
         if(!incFond->m_waitTimer->Active()) // not all messages was processed - some messages was skipped
@@ -1644,7 +1644,7 @@ public:
 
         this->TestTableItemsAllocator(incFond->StatisticFond());
 
-        StatisticsInfo<FastGenericItemInfo> *item = incFond->StatisticFond()->GetItem("s1", "session1");
+        StatisticsInfo<AstsGenericItemInfo> *item = incFond->StatisticFond()->GetItem("s1", "session1");
         if(item->BuyQuotes()->Count() != 2)
             throw;
         if(!incFond->m_waitTimer->Active()) // not all messages was processed - some messages was skipped
@@ -1728,7 +1728,7 @@ public:
 
         this->TestTableItemsAllocator(incFond->StatisticFond());
 
-        StatisticsInfo<FastGenericItemInfo> *item = incFond->StatisticFond()->GetItem("s1", "session1");
+        StatisticsInfo<AstsGenericItemInfo> *item = incFond->StatisticFond()->GetItem("s1", "session1");
         if(!incFond->m_waitTimer->Active()) // not all messages was processed - some messages was skipped
             throw;
         // wait
@@ -2171,7 +2171,7 @@ public:
 
         snapFond->Listen_Atom_Snapshot_Core();
         //snapshot received and should be applied
-        StatisticsInfo<FastGenericItemInfo> *tableItem = incFond->StatisticFond()->GetItem("s1", "session1");
+        StatisticsInfo<AstsGenericItemInfo> *tableItem = incFond->StatisticFond()->GetItem("s1", "session1");
 
         this->TestTableItemsAllocator(incFond->StatisticFond());
 
@@ -2301,8 +2301,8 @@ public:
 
         // snapshot for first item should be received and immediately applied then, should be applied incremental messages in que,
         // but connection should not be closed - because not all items were updated
-        StatisticsInfo<FastGenericItemInfo> *item1 = incFond->StatisticFond()->GetItem("s1", "session1");
-        StatisticsInfo<FastGenericItemInfo> *item2 = incFond->StatisticFond()->GetItem("s2", "session1");
+        StatisticsInfo<AstsGenericItemInfo> *item1 = incFond->StatisticFond()->GetItem("s1", "session1");
+        StatisticsInfo<AstsGenericItemInfo> *item2 = incFond->StatisticFond()->GetItem("s2", "session1");
         if(item1->HasEntries())
             throw;
         if(!item2->HasEntries())
@@ -3254,7 +3254,7 @@ public:
     }
 
     void TestInfoAndItemInfoUsageAndAllocationFond_Inc_4() {
-        FastGenericItemInfo *info = this->m_helper->CreateGenericItemInfo(1, 1, 1, 1, MDEntryType::mdetBuyQuote, "e1");
+        AstsGenericItemInfo *info = this->m_helper->CreateGenericItemInfo(1, 1, 1, 1, MDEntryType::mdetBuyQuote, "e1");
         if(info->Allocator->Count() != 1)
             throw;
         info->Used = false;

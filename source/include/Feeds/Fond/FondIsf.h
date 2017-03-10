@@ -23,8 +23,8 @@ public:
         DisposeSecurityDefinition();
     }
     void AllocateFastObjects() {
-        FastObjectsAllocationInfo::Default->AllocateSecurityStatusInfoPoolTo(10);
-        FastObjectsAllocationInfo::Default->AllocateHeartbeatInfoPoolTo(10);
+        AstsObjectsAllocationInfo::Default->AllocateSecurityStatusInfoPoolTo(10);
+        AstsObjectsAllocationInfo::Default->AllocateHeartbeatInfoPoolTo(10);
     }
     int GetPacketsCount() { return 1000000; }
     ISocketBufferProvider* CreateSocketBufferProvider() {

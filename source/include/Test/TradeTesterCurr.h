@@ -16,12 +16,12 @@ class TradeTesterCurr {
     FeedConnection_CURR_TLR *incCurr;
     FeedConnection_CURR_TLS *snapCurr;
     TestMessagesHelper      *m_helper;
-    MarketDataTable<TradeInfo, FastTLSCURRInfo, FastTLSCURRItemInfo> *m_table;
+    MarketDataTable<TradeInfo, AstsTLSCURRInfo, AstsTLSCURRItemInfo> *m_table;
 
 public:
     TradeTesterCurr() {
         this->m_helper = new TestMessagesHelper();
-        this->m_table = new MarketDataTable<TradeInfo, FastTLSCURRInfo, FastTLSCURRItemInfo>();
+        this->m_table = new MarketDataTable<TradeInfo, AstsTLSCURRInfo, AstsTLSCURRItemInfo>();
         this->incCurr = new FeedConnection_CURR_TLR("TLR", "Refresh Incremental", 'I',
                                                     FeedConnectionProtocol::UDP_IP,
                                                     "10.50.129.200", "239.192.113.3", 9113,
@@ -41,16 +41,16 @@ public:
         delete this->m_table;
     }
 
-    void TestItem(TradeInfo<FastTLSCURRItemInfo> *tableItem) {
+    void TestItem(TradeInfo<AstsTLSCURRItemInfo> *tableItem) {
         for(int i = 0; i < tableItem->Trades()->Count(); i++)
             if(tableItem->Trades()->Item(i)->Allocator == 0)
                 throw;
     }
 
-    void TestTableItemsAllocator(MarketDataTable<TradeInfo, FastTLSCURRInfo, FastTLSCURRItemInfo> *table) {
+    void TestTableItemsAllocator(MarketDataTable<TradeInfo, AstsTLSCURRInfo, AstsTLSCURRItemInfo> *table) {
         for(int i = 0; i < table->SymbolsCount(); i++) {
             for(int j = 0; j < table->Symbol(i)->Count(); j++) {
-                TradeInfo<FastTLSCURRItemInfo> *item = table->Item(i, j);
+                TradeInfo<AstsTLSCURRItemInfo> *item = table->Item(i, j);
                 TestItem(item);
             }
         }
@@ -78,12 +78,12 @@ public:
         this->Clear();
         this->TestDefaults();
 
-        FastIncrementalTLRCURRInfo *info = this->m_helper->CreateFastIncrementalTLRCURRInfo();
+        AstsIncrementalTLRCURRInfo *info = this->m_helper->CreateAstsIncrementalTLRCURRInfo();
 
-        FastTLSCURRItemInfo *item1 = this->m_helper->CreateTLSCurrItemInfo("s1", "t1", 3, -2, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "e1", 1);
-        FastTLSCURRItemInfo *item2 = this->m_helper->CreateTLSCurrItemInfo("s1", "t1", 4, -2, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "e2", 2);
-        FastTLSCURRItemInfo *item3 = this->m_helper->CreateTLSCurrItemInfo("s1", "t1", 2, -2, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "e3", 3);
-        FastTLSCURRItemInfo *item4 = this->m_helper->CreateTLSCurrItemInfo("s1", "t1", 25, -3, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "e4", 4);
+        AstsTLSCURRItemInfo *item1 = this->m_helper->CreateTLSCurrItemInfo("s1", "t1", 3, -2, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "e1", 1);
+        AstsTLSCURRItemInfo *item2 = this->m_helper->CreateTLSCurrItemInfo("s1", "t1", 4, -2, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "e2", 2);
+        AstsTLSCURRItemInfo *item3 = this->m_helper->CreateTLSCurrItemInfo("s1", "t1", 2, -2, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "e3", 3);
+        AstsTLSCURRItemInfo *item4 = this->m_helper->CreateTLSCurrItemInfo("s1", "t1", 25, -3, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "e4", 4);
 
         if(item4->Used)
             throw;
@@ -101,12 +101,12 @@ public:
             throw;
         if(this->incCurr->TradeCurr()->Symbol(0)->Count() != 1)
             throw;
-        TradeInfo<FastTLSCURRItemInfo> *obi = this->incCurr->TradeCurr()->GetItem("s1", "t1");
+        TradeInfo<AstsTLSCURRItemInfo> *obi = this->incCurr->TradeCurr()->GetItem("s1", "t1");
         if(obi == 0)
             throw;
         if(obi->Trades()->Count() != 1)
             throw;
-        FastTLSCURRItemInfo *quote = obi->Trades()->Item(0);
+        AstsTLSCURRItemInfo *quote = obi->Trades()->Item(0);
         Decimal price(3, -2);
         Decimal size(1, 2);
         if(!quote->MDEntryPx.Equal(&price))
@@ -243,11 +243,11 @@ public:
         this->Clear();
         this->TestDefaults();
 
-        FastIncrementalTLRCURRInfo *info = this->m_helper->CreateFastIncrementalTLRCURRInfo();
-        FastTLSCURRItemInfo *item1 = this->m_helper->CreateTLSCurrItemInfo("s1", "t1", 3, -2, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "e1", 1);
-        FastTLSCURRItemInfo *item2 = this->m_helper->CreateTLSCurrItemInfo("s1", "t1", 4, -2, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "e2", 2);
-        FastTLSCURRItemInfo *item3 = this->m_helper->CreateTLSCurrItemInfo("s1", "t1", 2, -2, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "e3", 3);
-        FastTLSCURRItemInfo *item4 = this->m_helper->CreateTLSCurrItemInfo("s1", "t1", 25, -3, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "e4", 4);
+        AstsIncrementalTLRCURRInfo *info = this->m_helper->CreateAstsIncrementalTLRCURRInfo();
+        AstsTLSCURRItemInfo *item1 = this->m_helper->CreateTLSCurrItemInfo("s1", "t1", 3, -2, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "e1", 1);
+        AstsTLSCURRItemInfo *item2 = this->m_helper->CreateTLSCurrItemInfo("s1", "t1", 4, -2, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "e2", 2);
+        AstsTLSCURRItemInfo *item3 = this->m_helper->CreateTLSCurrItemInfo("s1", "t1", 2, -2, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "e3", 3);
+        AstsTLSCURRItemInfo *item4 = this->m_helper->CreateTLSCurrItemInfo("s1", "t1", 25, -3, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "e4", 4);
 
         info->GroupMDEntriesCount = 4;
         info->GroupMDEntries[0] = item1;
@@ -268,7 +268,7 @@ public:
         if(this->incCurr->TradeCurr()->UsedItemCount() != 0)
             throw;
 
-        TradeInfo<FastTLSCURRItemInfo> *obi = this->incCurr->TradeCurr()->GetItem("s1", "t1");
+        TradeInfo<AstsTLSCURRItemInfo> *obi = this->incCurr->TradeCurr()->GetItem("s1", "t1");
         if(obi->Trades()->Count() != 0)
             throw;
     }
@@ -277,11 +277,11 @@ public:
         this->Clear();
         this->TestDefaults();
 
-        FastIncrementalTLRCURRInfo *info = this->m_helper->CreateFastIncrementalTLRCURRInfo();
-        FastTLSCURRItemInfo *item1 = this->m_helper->CreateTLSCurrItemInfo("s1", "t1", 3, -2, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "e1", 1);
-        FastTLSCURRItemInfo *item2 = this->m_helper->CreateTLSCurrItemInfo("s1", "t1", 4, -2, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "e2", 2);
-        FastTLSCURRItemInfo *item3 = this->m_helper->CreateTLSCurrItemInfo("s1", "t1", 2, -2, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "e3", 3);
-        FastTLSCURRItemInfo *item4 = this->m_helper->CreateTLSCurrItemInfo("s1", "t1", 25, -3, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "e4", 4);
+        AstsIncrementalTLRCURRInfo *info = this->m_helper->CreateAstsIncrementalTLRCURRInfo();
+        AstsTLSCURRItemInfo *item1 = this->m_helper->CreateTLSCurrItemInfo("s1", "t1", 3, -2, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "e1", 1);
+        AstsTLSCURRItemInfo *item2 = this->m_helper->CreateTLSCurrItemInfo("s1", "t1", 4, -2, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "e2", 2);
+        AstsTLSCURRItemInfo *item3 = this->m_helper->CreateTLSCurrItemInfo("s1", "t1", 2, -2, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "e3", 3);
+        AstsTLSCURRItemInfo *item4 = this->m_helper->CreateTLSCurrItemInfo("s1", "t1", 25, -3, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "e4", 4);
 
         info->GroupMDEntriesCount = 4;
         info->GroupMDEntries[0] = item1;
@@ -291,13 +291,13 @@ public:
 
         this->incCurr->OnIncrementalRefresh_TLR_CURR(info);
 
-        TradeInfo<FastTLSCURRItemInfo> *obi2 = this->incCurr->TradeCurr()->GetItem("s1", "t1");
+        TradeInfo<AstsTLSCURRItemInfo> *obi2 = this->incCurr->TradeCurr()->GetItem("s1", "t1");
         if(obi2->Trades()->Count() != 4)
             throw;
 
-        FastTLSCURRInfo *info2 = this->m_helper->CreateTLSCurrInfo("t1s2", "t1");
-        FastTLSCURRItemInfo *newItem1 = this->m_helper->CreateTLSCurrItemInfo(7,-2, 1, 2, MDEntryType::mdetBuyQuote, "e7");
-        FastTLSCURRItemInfo *newItem2 = this->m_helper->CreateTLSCurrItemInfo(8,-2, 1, 2, MDEntryType::mdetBuyQuote, "e8");
+        AstsTLSCURRInfo *info2 = this->m_helper->CreateTLSCurrInfo("t1s2", "t1");
+        AstsTLSCURRItemInfo *newItem1 = this->m_helper->CreateTLSCurrItemInfo(7,-2, 1, 2, MDEntryType::mdetBuyQuote, "e7");
+        AstsTLSCURRItemInfo *newItem2 = this->m_helper->CreateTLSCurrItemInfo(8,-2, 1, 2, MDEntryType::mdetBuyQuote, "e8");
         info2->RptSeq = 5;
 
         info2->GroupMDEntriesCount = 2;
@@ -310,16 +310,16 @@ public:
         if(this->incCurr->TradeCurr()->UsedItemCount() != 2)
             throw;
 
-        TradeInfo<FastTLSCURRItemInfo> *obi3 = this->incCurr->TradeCurr()->GetItem("s1", "t1");
+        TradeInfo<AstsTLSCURRItemInfo> *obi3 = this->incCurr->TradeCurr()->GetItem("s1", "t1");
         if(obi3->Trades()->Count() != 4)
             throw;
 
-        TradeInfo<FastTLSCURRItemInfo> *obi = this->incCurr->TradeCurr()->GetItem("t1s2", 4, "t1", 2);
+        TradeInfo<AstsTLSCURRItemInfo> *obi = this->incCurr->TradeCurr()->GetItem("t1s2", 4, "t1", 2);
         if(obi->Trades()->Count() != 2)
             throw;
 
-        FastTLSCURRItemInfo *qt1 = obi->Trades()->Item(0);
-        FastTLSCURRItemInfo *qt2 = obi->Trades()->Item(1);
+        AstsTLSCURRItemInfo *qt1 = obi->Trades()->Item(0);
+        AstsTLSCURRItemInfo *qt2 = obi->Trades()->Item(1);
 
         if(!StringIdComparer::Equal(qt1->MDEntryID, 2, "e7", 2))
             throw;
@@ -354,9 +354,9 @@ public:
     }
 
     void TestTableItem_CorrectBegin() {
-        TradeInfo<FastTLSCURRItemInfo> *tb = new TradeInfo<FastTLSCURRItemInfo>();
+        TradeInfo<AstsTLSCURRItemInfo> *tb = new TradeInfo<AstsTLSCURRItemInfo>();
 
-        FastTLSCURRItemInfo *item1 = this->m_helper->CreateTLSCurrItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e1");
+        AstsTLSCURRItemInfo *item1 = this->m_helper->CreateTLSCurrItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e1");
         item1->RptSeq = 1;
         item1->MDUpdateAction = MDUpdateAction::mduaAdd;
 
@@ -371,9 +371,9 @@ public:
     }
 
     void TestTableItem_IncorrectBegin() {
-        TradeInfo<FastTLSCURRItemInfo> *tb = new TradeInfo<FastTLSCURRItemInfo>();
+        TradeInfo<AstsTLSCURRItemInfo> *tb = new TradeInfo<AstsTLSCURRItemInfo>();
 
-        FastTLSCURRItemInfo *item1 = this->m_helper->CreateTLSCurrItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e1");
+        AstsTLSCURRItemInfo *item1 = this->m_helper->CreateTLSCurrItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e1");
         item1->RptSeq = 2;
         item1->MDUpdateAction = MDUpdateAction::mduaAdd;
 
@@ -392,15 +392,15 @@ public:
     }
 
     void TestTableItem_SkipMessage() {
-        TradeInfo<FastTLSCURRItemInfo> *tb = new TradeInfo<FastTLSCURRItemInfo>();
+        TradeInfo<AstsTLSCURRItemInfo> *tb = new TradeInfo<AstsTLSCURRItemInfo>();
 
-        FastTLSCURRItemInfo *item1 = this->m_helper->CreateTLSCurrItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e1");
+        AstsTLSCURRItemInfo *item1 = this->m_helper->CreateTLSCurrItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e1");
         item1->RptSeq = 1;
         item1->MDUpdateAction = MDUpdateAction::mduaAdd;
 
         tb->ProcessIncrementalMessage(item1);
 
-        FastTLSCURRItemInfo *item2 = this->m_helper->CreateTLSCurrItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e2");
+        AstsTLSCURRItemInfo *item2 = this->m_helper->CreateTLSCurrItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e2");
         item2->RptSeq = 3;
         item2->MDUpdateAction = MDUpdateAction::mduaAdd;
 
@@ -413,7 +413,7 @@ public:
         if(tb->RptSeq() != 1)
             throw;
 
-        FastTLSCURRItemInfo *item3 = this->m_helper->CreateTLSCurrItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e3");
+        AstsTLSCURRItemInfo *item3 = this->m_helper->CreateTLSCurrItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e3");
         item3->RptSeq = 4;
         item3->MDUpdateAction = MDUpdateAction::mduaAdd;
 
@@ -441,13 +441,13 @@ public:
     void TestTable_AfterClear() {
         this->m_table->Clear();
 
-        FastTLSCURRItemInfo *item = this->m_helper->CreateTLSCurrItemInfo("s1", "session1", "e1", 1);
+        AstsTLSCURRItemInfo *item = this->m_helper->CreateTLSCurrItemInfo("s1", "session1", "e1", 1);
         item->RptSeq = 1;
 
-        FastTLSCURRItemInfo *item2 = this->m_helper->CreateTLSCurrItemInfo("s1", "session1", "e1", 2);
+        AstsTLSCURRItemInfo *item2 = this->m_helper->CreateTLSCurrItemInfo("s1", "session1", "e1", 2);
         item2->RptSeq = 2;
 
-        FastTLSCURRItemInfo *item3 = this->m_helper->CreateTLSCurrItemInfo("s1", "session1", "e1", 4);
+        AstsTLSCURRItemInfo *item3 = this->m_helper->CreateTLSCurrItemInfo("s1", "session1", "e1", 4);
         item3->RptSeq = 4;
 
         this->m_table->ProcessIncremental(item);
@@ -456,7 +456,7 @@ public:
 
         if(this->m_table->UsedItemCount() != 1)
             throw;
-        TradeInfo<FastTLSCURRItemInfo> *tableItem = this->m_table->GetItem("s1", "session1");
+        TradeInfo<AstsTLSCURRItemInfo> *tableItem = this->m_table->GetItem("s1", "session1");
         if(tableItem->EntriesQueue()->MaxIndex() != 1) // 3 is empty and 4 has value
             throw;
         this->m_table->Clear();
@@ -476,7 +476,7 @@ public:
 
         this->m_table->Clear();
 
-        FastTLSCURRItemInfo *item1 = this->m_helper->CreateTLSCurrItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSCURRItemInfo *item1 = this->m_helper->CreateTLSCurrItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 1;
 
@@ -489,7 +489,7 @@ public:
     void TestTable_IncorrectBegin() {
         this->m_table->Clear();
 
-        FastTLSCURRItemInfo *item1 = this->m_helper->CreateTLSCurrItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSCURRItemInfo *item1 = this->m_helper->CreateTLSCurrItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 2;
 
@@ -502,14 +502,14 @@ public:
     void TestTable_SkipMessages() {
         this->m_table->Clear();
 
-        FastTLSCURRItemInfo *item1 = this->m_helper->CreateTLSCurrItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSCURRItemInfo *item1 = this->m_helper->CreateTLSCurrItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 1;
 
         if(!this->m_table->ProcessIncremental(item1))
             throw;
 
-        FastTLSCURRItemInfo *item2 = this->m_helper->CreateTLSCurrItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSCURRItemInfo *item2 = this->m_helper->CreateTLSCurrItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 3);
         item2->RptSeq = 3;
 
@@ -522,14 +522,14 @@ public:
     void Test_2UsedItemsAfter2IncrementalMessages() {
         this->m_table->Clear();
 
-        FastTLSCURRItemInfo *item1 = this->m_helper->CreateTLSCurrItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSCURRItemInfo *item1 = this->m_helper->CreateTLSCurrItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 1;
 
         if(!this->m_table->ProcessIncremental(item1))
             throw;
 
-        FastTLSCURRItemInfo *item2 = this->m_helper->CreateTLSCurrItemInfo("s2", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSCURRItemInfo *item2 = this->m_helper->CreateTLSCurrItemInfo("s2", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item2->RptSeq = 1;
 
@@ -545,43 +545,43 @@ public:
     void TestTable_CorrectApplySnapshot() {
         this->m_table->Clear();
 
-        FastTLSCURRItemInfo *item1 = this->m_helper->CreateTLSCurrItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSCURRItemInfo *item1 = this->m_helper->CreateTLSCurrItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 1;
 
         this->m_table->ProcessIncremental(item1);
 
-        FastTLSCURRItemInfo *item2 = this->m_helper->CreateTLSCurrItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSCURRItemInfo *item2 = this->m_helper->CreateTLSCurrItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e2", 3);
         item2->RptSeq = 3;
 
         if(this->m_table->ProcessIncremental(item2))
             throw;
 
-        FastTLSCURRItemInfo *item3 = this->m_helper->CreateTLSCurrItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSCURRItemInfo *item3 = this->m_helper->CreateTLSCurrItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e3", 4);
         item3->RptSeq = 4;
 
         if(this->m_table->ProcessIncremental(item3))
             throw;
 
-        FastTLSCURRItemInfo *item4 = this->m_helper->CreateTLSCurrItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSCURRItemInfo *item4 = this->m_helper->CreateTLSCurrItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e4", 5);
         item4->RptSeq = 5;
 
         if(this->m_table->ProcessIncremental(item4))
             throw;
 
-        FastTLSCURRItemInfo *item5 = this->m_helper->CreateTLSCurrItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSCURRItemInfo *item5 = this->m_helper->CreateTLSCurrItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e5", 3);
         item5->RptSeq = 3;
 
-        FastTLSCURRInfo *info = this->m_helper->CreateTLSCurrInfo("s1", "session");
+        AstsTLSCURRInfo *info = this->m_helper->CreateTLSCurrInfo("s1", "session");
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item5;
         info->RptSeq = 3;
 
-        TradeInfo<FastTLSCURRItemInfo> *tb = this->m_table->GetItem("s1", "session");
+        TradeInfo<AstsTLSCURRItemInfo> *tb = this->m_table->GetItem("s1", "session");
 
         this->m_table->ObtainSnapshotItem(info);
         this->m_table->StartProcessSnapshot();
@@ -610,39 +610,39 @@ public:
 
         this->m_table->Clear();
 
-        FastTLSCURRItemInfo *item1 = this->m_helper->CreateTLSCurrItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSCURRItemInfo *item1 = this->m_helper->CreateTLSCurrItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 1;
 
         this->m_table->ProcessIncremental(item1);
 
-        FastTLSCURRItemInfo *item3 = this->m_helper->CreateTLSCurrItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSCURRItemInfo *item3 = this->m_helper->CreateTLSCurrItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e3", 4);
         item3->RptSeq = 4;
 
         if(this->m_table->ProcessIncremental(item3))
             throw;
 
-        FastTLSCURRItemInfo *item4 = this->m_helper->CreateTLSCurrItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSCURRItemInfo *item4 = this->m_helper->CreateTLSCurrItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e4", 5);
         item4->RptSeq = 5;
 
         if(this->m_table->ProcessIncremental(item4))
             throw;
 
-        FastTLSCURRInfo *info1 = this->m_helper->CreateTLSCurrInfo("s1", "session");
+        AstsTLSCURRInfo *info1 = this->m_helper->CreateTLSCurrInfo("s1", "session");
         info1->GroupMDEntriesCount = 1;
         info1->RptSeq = 3;
         info1->RouteFirst = true;
         info1->GroupMDEntries[0] = this->m_helper->CreateTLSCurrItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e2");
 
-        FastTLSCURRInfo *info2 = this->m_helper->CreateTLSCurrInfo("s1", "session");
+        AstsTLSCURRInfo *info2 = this->m_helper->CreateTLSCurrInfo("s1", "session");
         info2->GroupMDEntriesCount = 1;
         info2->RptSeq = 3;
         info2->RouteFirst = true;
         info2->GroupMDEntries[0] = this->m_helper->CreateTLSCurrItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e2");
 
-        TradeInfo<FastTLSCURRItemInfo> *tb = this->m_table->GetItem("s1", "session");
+        TradeInfo<AstsTLSCURRItemInfo> *tb = this->m_table->GetItem("s1", "session");
 
         this->m_table->ObtainSnapshotItem(info1);
         this->m_table->StartProcessSnapshot();
@@ -664,43 +664,43 @@ public:
     void TestTable_IncorrectApplySnapshot() {
         this->m_table->Clear();
 
-        FastTLSCURRItemInfo *item1 = this->m_helper->CreateTLSCurrItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSCURRItemInfo *item1 = this->m_helper->CreateTLSCurrItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 1;
 
         this->m_table->ProcessIncremental(item1);
 
-        FastTLSCURRItemInfo *item2 = this->m_helper->CreateTLSCurrItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSCURRItemInfo *item2 = this->m_helper->CreateTLSCurrItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e2", 4);
         item2->RptSeq = 4;
 
         if(this->m_table->ProcessIncremental(item2))
             throw;
 
-        FastTLSCURRItemInfo *item3 = this->m_helper->CreateTLSCurrItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSCURRItemInfo *item3 = this->m_helper->CreateTLSCurrItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e3", 5);
         item3->RptSeq = 5;
 
         if(this->m_table->ProcessIncremental(item3))
             throw;
 
-        FastTLSCURRItemInfo *item4 = this->m_helper->CreateTLSCurrItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSCURRItemInfo *item4 = this->m_helper->CreateTLSCurrItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e4", 6);
         item4->RptSeq = 6;
 
         if(this->m_table->ProcessIncremental(item4))
             throw;
 
-        FastTLSCURRItemInfo *item5 = this->m_helper->CreateTLSCurrItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSCURRItemInfo *item5 = this->m_helper->CreateTLSCurrItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e5", 2);
         item5->RptSeq = 2;
 
-        FastTLSCURRInfo *info = this->m_helper->CreateTLSCurrInfo("s1", "session");
+        AstsTLSCURRInfo *info = this->m_helper->CreateTLSCurrInfo("s1", "session");
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item5;
         info->RptSeq = 2;
 
-        TradeInfo<FastTLSCURRItemInfo> *tb = this->m_table->GetItem("s1", "session");
+        TradeInfo<AstsTLSCURRItemInfo> *tb = this->m_table->GetItem("s1", "session");
 
         this->m_table->ObtainSnapshotItem(info);
         this->m_table->StartProcessSnapshot();
@@ -724,36 +724,36 @@ public:
     void TestTable_IncorrectApplySnapshot_WhenMessageSkipped() {
         this->m_table->Clear();
 
-        FastTLSCURRItemInfo *item1 = this->m_helper->CreateTLSCurrItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSCURRItemInfo *item1 = this->m_helper->CreateTLSCurrItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 1;
 
         this->m_table->ProcessIncremental(item1);
 
-        FastTLSCURRItemInfo *item2 = this->m_helper->CreateTLSCurrItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSCURRItemInfo *item2 = this->m_helper->CreateTLSCurrItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e2", 4);
         item2->RptSeq = 4;
 
         if(this->m_table->ProcessIncremental(item2))
             throw;
 
-        FastTLSCURRItemInfo *item4 = this->m_helper->CreateTLSCurrItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSCURRItemInfo *item4 = this->m_helper->CreateTLSCurrItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e4", 6);
         item4->RptSeq = 6;
 
         if(this->m_table->ProcessIncremental(item4))
             throw;
 
-        FastTLSCURRItemInfo *item5 = this->m_helper->CreateTLSCurrItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSCURRItemInfo *item5 = this->m_helper->CreateTLSCurrItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e5", 3);
         item5->RptSeq = 3;
 
-        FastTLSCURRInfo *info = this->m_helper->CreateTLSCurrInfo("s1", "session");
+        AstsTLSCURRInfo *info = this->m_helper->CreateTLSCurrInfo("s1", "session");
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item5;
         info->RptSeq = 3;
 
-        TradeInfo<FastTLSCURRItemInfo> *tb = this->m_table->GetItem("s1", "session");
+        TradeInfo<AstsTLSCURRItemInfo> *tb = this->m_table->GetItem("s1", "session");
 
         this->m_table->ObtainSnapshotItem(info);
         this->m_table->StartProcessSnapshot();
@@ -855,7 +855,7 @@ public:
 
         this->TestTableItemsAllocator(incCurr->TradeCurr());
 
-        TradeInfo<FastTLSCURRItemInfo> *item = incCurr->TradeCurr()->GetItem("s1", "session1");
+        TradeInfo<AstsTLSCURRItemInfo> *item = incCurr->TradeCurr()->GetItem("s1", "session1");
         if(item->Trades()->Count() != 2)
             throw;
         if(!incCurr->m_waitTimer->Active()) // not all messages was processed - some messages was skipped
@@ -866,7 +866,7 @@ public:
             throw;
         if(item->EntriesQueue()->Entries()[0] != 0) // cell for rptseq 3 is empty
             throw;
-        if(((FastTLSCURRItemInfo*)(item->EntriesQueue()->Entries()[1]))->RptSeq != 4)
+        if(((AstsTLSCURRItemInfo*)(item->EntriesQueue()->Entries()[1]))->RptSeq != 4)
             throw;
 
         // lost message finally appeared before wait timer elapsed
@@ -909,7 +909,7 @@ public:
 
         this->TestTableItemsAllocator(incCurr->TradeCurr());
 
-        TradeInfo<FastTLSCURRItemInfo> *item = incCurr->TradeCurr()->GetItem("s1", "session1");
+        TradeInfo<AstsTLSCURRItemInfo> *item = incCurr->TradeCurr()->GetItem("s1", "session1");
         if(item->Trades()->Count() != 2)
             throw;
         if(!incCurr->m_waitTimer->Active()) // not all messages was processed - some messages was skipped
@@ -922,7 +922,7 @@ public:
             throw;
         if(item->EntriesQueue()->Entries()[1] != 0) // cell for rptseq 4 is empty
             throw;
-        if(((FastTLSCURRItemInfo*)(item->EntriesQueue()->Entries()[2]))->RptSeq != 5)
+        if(((AstsTLSCURRItemInfo*)(item->EntriesQueue()->Entries()[2]))->RptSeq != 5)
             throw;
 
         // lost message finally appeared before wait timer elapsed
@@ -966,7 +966,7 @@ public:
 
         this->TestTableItemsAllocator(incCurr->TradeCurr());
 
-        TradeInfo<FastTLSCURRItemInfo> *item = incCurr->TradeCurr()->GetItem("s1", "session1");
+        TradeInfo<AstsTLSCURRItemInfo> *item = incCurr->TradeCurr()->GetItem("s1", "session1");
         if(item->Trades()->Count() != 2)
             throw;
         if(!incCurr->m_waitTimer->Active()) // not all messages was processed - some messages was skipped
@@ -979,7 +979,7 @@ public:
             throw;
         if(item->EntriesQueue()->Entries()[1] != 0) // cell for rptseq 4 is empty
             throw;
-        if(((FastTLSCURRItemInfo*)(item->EntriesQueue()->Entries()[2]))->RptSeq != 5)
+        if(((AstsTLSCURRItemInfo*)(item->EntriesQueue()->Entries()[2]))->RptSeq != 5)
             throw;
 
         // lost message finally appeared before wait timer elapsed
@@ -1047,7 +1047,7 @@ public:
 
         this->TestTableItemsAllocator(incCurr->TradeCurr());
 
-        TradeInfo<FastTLSCURRItemInfo> *item = incCurr->TradeCurr()->GetItem("s1", "session1");
+        TradeInfo<AstsTLSCURRItemInfo> *item = incCurr->TradeCurr()->GetItem("s1", "session1");
         if(item->Trades()->Count() != 2)
             throw;
         if(!incCurr->m_waitTimer->Active()) // not all messages was processed - some messages was skipped
@@ -1060,7 +1060,7 @@ public:
             throw;
         if(item->EntriesQueue()->Entries()[1] != 0) // cell for rptseq 4 is empty
             throw;
-        if(((FastTLSCURRItemInfo*)(item->EntriesQueue()->Entries()[2]))->RptSeq != 5)
+        if(((AstsTLSCURRItemInfo*)(item->EntriesQueue()->Entries()[2]))->RptSeq != 5)
             throw;
 
         // lost message finally appeared before wait timer elapsed
@@ -1131,7 +1131,7 @@ public:
 
         this->TestTableItemsAllocator(incCurr->TradeCurr());
 
-        TradeInfo<FastTLSCURRItemInfo> *item = incCurr->TradeCurr()->GetItem("s1", "session1");
+        TradeInfo<AstsTLSCURRItemInfo> *item = incCurr->TradeCurr()->GetItem("s1", "session1");
         if(!incCurr->m_waitTimer->Active()) // not all messages was processed - some messages was skipped
             throw;
         // wait
@@ -1585,7 +1585,7 @@ public:
 
         snapCurr->Listen_Atom_Snapshot_Core();
         //snapshot received and should be applied
-        TradeInfo<FastTLSCURRItemInfo> *tableItem = incCurr->TradeCurr()->GetItem("s1", "session1");
+        TradeInfo<AstsTLSCURRItemInfo> *tableItem = incCurr->TradeCurr()->GetItem("s1", "session1");
 
         this->TestTableItemsAllocator(incCurr->TradeCurr());
 
@@ -1714,8 +1714,8 @@ public:
 
         // snapshot for first item should be received and immediately applied then, should be applied incremental messages in que,
         // but connection should not be closed - because not all items were updated
-        TradeInfo<FastTLSCURRItemInfo> *item1 = incCurr->TradeCurr()->GetItem("s1", "session1");
-        TradeInfo<FastTLSCURRItemInfo> *item2 = incCurr->TradeCurr()->GetItem("s2", "session1");
+        TradeInfo<AstsTLSCURRItemInfo> *item1 = incCurr->TradeCurr()->GetItem("s1", "session1");
+        TradeInfo<AstsTLSCURRItemInfo> *item2 = incCurr->TradeCurr()->GetItem("s2", "session1");
         if(item1->HasEntries())
             throw;
         if(!item2->HasEntries())
@@ -2626,13 +2626,13 @@ public:
         this->Clear();
 
         this->incCurr->TradeCurr()->Add("s1", "session1");
-        int prevCount = this->incCurr->m_fastProtocolManager->m_tLSCURRItems->Count();
+        int prevCount = this->incCurr->m_fastProtocolManager->m_astsTLSCURRItems->Count();
         this->SendMessages(this->incCurr, this->snapCurr,
                            "tlr entry s1 e1",
                            "",
                            30);
 
-        int newCount = this->incCurr->m_fastProtocolManager->m_tLSCURRItems->Count();
+        int newCount = this->incCurr->m_fastProtocolManager->m_astsTLSCURRItems->Count();
         if(newCount != prevCount + 1)
             throw;
     }
@@ -2641,17 +2641,17 @@ public:
         this->Clear();
 
         this->incCurr->TradeCurr()->Add("s1", "session1");
-        int prevCount = this->incCurr->m_fastProtocolManager->m_tLSCURRItems->Count();
+        int prevCount = this->incCurr->m_fastProtocolManager->m_astsTLSCURRItems->Count();
         this->SendMessages(this->incCurr, this->snapCurr,
                            "tlr entry s1 e1, tlr entry s1 e2",
                            "",
                            30);
 
-        int newCount = this->incCurr->m_fastProtocolManager->m_tLSCURRItems->Count();
+        int newCount = this->incCurr->m_fastProtocolManager->m_astsTLSCURRItems->Count();
         if(newCount != prevCount + 2)
             throw;
         this->incCurr->TradeCurr()->Clear();
-        newCount = this->incCurr->m_fastProtocolManager->m_tLSCURRItems->Count();
+        newCount = this->incCurr->m_fastProtocolManager->m_astsTLSCURRItems->Count();
         if(newCount != prevCount)
             throw;
     }
@@ -2661,7 +2661,7 @@ public:
     }
 
     void TestInfoAndItemInfoUsageAndAllocationCurr_Inc_4() {
-        FastTLSCURRItemInfo *info = this->m_helper->CreateTLSCurrItemInfo(1, 1, 1, 1, MDEntryType::mdetBuyQuote, "e1");
+        AstsTLSCURRItemInfo *info = this->m_helper->CreateTLSCurrItemInfo(1, 1, 1, 1, MDEntryType::mdetBuyQuote, "e1");
         if(info->Allocator->Count() != 1)
             throw;
         info->Used = false;
@@ -2681,13 +2681,13 @@ public:
         this->Clear();
 
         this->incCurr->TradeCurr()->Add("s1", "session1");
-        int prevCount = this->snapCurr->m_fastProtocolManager->m_tLSCURRItems->Count();
+        int prevCount = this->snapCurr->m_fastProtocolManager->m_astsTLSCURRItems->Count();
         this->SendMessages(this->incCurr, this->snapCurr,
                            "tlr entry s1 e1, lost tlr entry s1 e2, wait_snap, hbeat",
                            "                                                  tls begin s1 entry s1 e2 rpt 2 end",
                            30);
 
-        int newCount = this->snapCurr->m_fastProtocolManager->m_tLSCURRItems->Count();
+        int newCount = this->snapCurr->m_fastProtocolManager->m_astsTLSCURRItems->Count();
         if(newCount != prevCount + 1)
             throw;
     }
@@ -2696,7 +2696,7 @@ public:
         this->Clear();
 
         this->incCurr->TradeCurr()->Add("s1", "session1");
-        int prevCount = this->snapCurr->m_fastProtocolManager->m_tLSCURRItems->Count();
+        int prevCount = this->snapCurr->m_fastProtocolManager->m_astsTLSCURRItems->Count();
         this->SendMessages(this->incCurr, this->snapCurr,
                            "tlr entry s1 e1, lost tlr entry s1 e2 entry s1 e3, wait_snap",
                            "                                                            ",
@@ -2715,7 +2715,7 @@ public:
         this->Clear();
 
         this->incCurr->TradeCurr()->Add("s1", "session1");
-        int prevCount = this->snapCurr->m_fastProtocolManager->m_tLSCURRItems->Count();
+        int prevCount = this->snapCurr->m_fastProtocolManager->m_astsTLSCURRItems->Count();
         this->SendMessages(this->incCurr, this->snapCurr,
                            "tlr entry s1 e1, lost tlr entry s1 e2 entry s1 e3, wait_snap, hbeat",
                            "                                                                   ",
@@ -2734,7 +2734,7 @@ public:
         this->Clear();
 
         this->incCurr->TradeCurr()->Add("s1", "session1");
-        int prevCount = this->snapCurr->m_fastProtocolManager->m_tLSCURRItems->Count();
+        int prevCount = this->snapCurr->m_fastProtocolManager->m_astsTLSCURRItems->Count();
         this->SendMessages(this->incCurr, this->snapCurr,
                            "tlr entry s1 e1, lost tlr entry s1 e2 entry s1 e3, wait_snap, hbeat",
                            "                                                              tls begin s1 entry s1 e2 rpt 2",
@@ -2753,7 +2753,7 @@ public:
         this->Clear();
 
         this->incCurr->TradeCurr()->Add("s1", "session1");
-        int prevCount = this->snapCurr->m_fastProtocolManager->m_tLSCURRItems->Count();
+        int prevCount = this->snapCurr->m_fastProtocolManager->m_astsTLSCURRItems->Count();
         this->SendMessages(this->incCurr, this->snapCurr,
                            "tlr entry s1 e1, lost tlr entry s1 e2 entry s1 e3, wait_snap, hbeat,                        hbeat",
                            "                                                              tls begin s1 entry s1 e2 rpt 2",
@@ -2772,13 +2772,13 @@ public:
         this->Clear();
 
         this->incCurr->TradeCurr()->Add("s1", "session1");
-        int prevCount = this->snapCurr->m_fastProtocolManager->m_tLSCURRItems->Count();
+        int prevCount = this->snapCurr->m_fastProtocolManager->m_astsTLSCURRItems->Count();
         this->SendMessages(this->incCurr, this->snapCurr,
                            "tlr entry s1 e1, lost tlr entry s1 e2 entry s1 e3, wait_snap, hbeat,                          hbeat",
                            "                                                              tls begin s1 entry s1 e2 rpt 2, tls s1 entry s1 e3 end",
                            30);
 
-        int newCount = this->snapCurr->m_fastProtocolManager->m_tLSCURRItems->Count();
+        int newCount = this->snapCurr->m_fastProtocolManager->m_astsTLSCURRItems->Count();
         if(newCount != prevCount + 2)
             throw;
     }
@@ -2801,13 +2801,13 @@ public:
         /*this->Clear();
 
         this->incCurr->TradeCurr()->Add("s1", "session1");
-        int prevCount = this->snapCurr->m_fastProtocolManager->m_tLSCURRItems->Count();
+        int prevCount = this->snapCurr->m_fastProtocolManager->m_astsTLSCURRItems->Count();
         this->SendMessagesIdf(this->incCurr, this->snapCurr,
                            "tlr entry s1 e1, tlr entry s1 e2, lost tlr entry s1 e4 entry s1 e4, wait_snap, hbeat",
                            "                                                   tls begin s1 entry s1 e1 rpt 2, tls s1 entry s1 e2, tls s1 entry s1 e3, tls s1 entry del s1 e2 end",
                            30);
 
-        int newCount = this->snapCurr->m_fastProtocolManager->m_tLSCURRItems->Count();
+        int newCount = this->snapCurr->m_fastProtocolManager->m_astsTLSCURRItems->Count();
         if(newCount != prevCount + 3)
             throw;*/
     }
@@ -2827,12 +2827,12 @@ public:
         if(incCurr->TradeCurr()->Symbol(2)->SessionCount() != 1)
             throw;
 
-        int prevCount = this->snapCurr->m_fastProtocolManager->m_tLSCURRItems->Count();
+        int prevCount = this->snapCurr->m_fastProtocolManager->m_astsTLSCURRItems->Count();
         SendMessages(incCurr, snapCurr,
                      "tlr entry s1 e1, lost tlr entry symbol3 e1, wait_snap, tlr entry s1 e3,                              hbeat,                              hbeat",
                      "                                                       tls symbol3 begin rpt 1 end entry symbol3 e1, tls s1 begin rpt 2 end entry s1 e1, hbeat, tls s2 begin rpt 2 end entry s2 e1",
                      30);
-        int newCount = this->snapCurr->m_fastProtocolManager->m_tLSCURRItems->Count();
+        int newCount = this->snapCurr->m_fastProtocolManager->m_astsTLSCURRItems->Count();
         if(newCount != prevCount + 2)
             throw;
     }
@@ -2842,12 +2842,12 @@ public:
         incCurr->TradeCurr()->Add("s1", "session1");
         incCurr->Start();
 
-        int prevCount = this->snapCurr->m_fastProtocolManager->m_tLSCURRItems->Count();
+        int prevCount = this->snapCurr->m_fastProtocolManager->m_astsTLSCURRItems->Count();
         SendMessages(incCurr, snapCurr,
                      "tlr entry s1 e1, lost tlr entry s1 e2, tlr entry s1 e2, wait_snap, hbeat",
                      "                                       hbeat,           hbeat,     tls s1 begin rpt 0 lastmsg 0 entry s1 e1 end",
                      30);
-        int newCount = this->snapCurr->m_fastProtocolManager->m_tLSCURRItems->Count();
+        int newCount = this->snapCurr->m_fastProtocolManager->m_astsTLSCURRItems->Count();
         if(newCount != prevCount)
             throw;
     }
@@ -2858,12 +2858,12 @@ public:
 
         incCurr->TradeCurr()->Add("s1", "session1");
 
-        int prevCount = this->snapCurr->m_fastProtocolManager->m_tLSCURRItems->Count();
+        int prevCount = this->snapCurr->m_fastProtocolManager->m_astsTLSCURRItems->Count();
         SendMessages(incCurr, snapCurr,
                      "tlr entry s1 e1, tlr entry s1 e2, tlr entry s1 e3, lost hbeat, wait_snap, hbeat",
                      "                                                                          tls s1 begin rpt 1 entry s1 e1 end",
                      50);
-        int newCount = this->snapCurr->m_fastProtocolManager->m_tLSCURRItems->Count();
+        int newCount = this->snapCurr->m_fastProtocolManager->m_astsTLSCURRItems->Count();
         if(newCount != prevCount)
             throw;
     }

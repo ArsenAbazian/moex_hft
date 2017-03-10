@@ -40,7 +40,7 @@ public:
     void TestCorrectlyReadHearthbeatTemplateId_WhenShouldProcessMsgSeqNum() {
         int reservedForMsgSeqNum = 4;
         this->m_helper->m_fastManager->SetNewBuffer(this->m_buffer + reservedForMsgSeqNum, 1024);
-        this->m_helper->m_fastManager->EncodeHeartbeatInfo(new FastHeartbeatInfo());
+        this->m_helper->m_fastManager->EncodeAstsHeartbeatInfo(new AstsHeartbeatInfo());
         FeedConnectionMessageInfo *info = new FeedConnectionMessageInfo();
         info->m_requested = false;
         info->m_address = this->m_buffer;
@@ -53,7 +53,7 @@ public:
     void TestCorrectlyReadHearthbeatTemplateId_WhenShouldNotProcessMsgSeqNum() {
         int reservedForMsgSeqNum = 0;
         this->m_helper->m_fastManager->SetNewBuffer(this->m_buffer + reservedForMsgSeqNum, 1024);
-        this->m_helper->m_fastManager->EncodeHeartbeatInfo(new FastHeartbeatInfo());
+        this->m_helper->m_fastManager->EncodeAstsHeartbeatInfo(new AstsHeartbeatInfo());
         FeedConnectionMessageInfo *info = new FeedConnectionMessageInfo();
         info->m_requested = true;
         info->m_address = this->m_buffer;

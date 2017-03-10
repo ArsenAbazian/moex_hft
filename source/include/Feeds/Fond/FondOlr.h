@@ -7,15 +7,15 @@
 
 #include "../FeedConnection.h"
 
-//class OrdersFondAllocationInfo : public FastObjectsAllocationInfo {
+//class OrdersFondAllocationInfo : public AstsObjectsAllocationInfo {
 //public:
-//    OrdersFondAllocationInfo() : FastObjectsAllocationInfo(32, 32) {
+//    OrdersFondAllocationInfo() : AstsObjectsAllocationInfo(32, 32) {
 //#ifndef TEST
-//        this->m_oLSFONDItemsCount = 202400;
-//        this->m_oLSFONDItemsAddCount = 10240;
+//        this->m_astsOLSFONDItemsCount = 202400;
+//        this->m_astsOLSFONDItemsAddCount = 10240;
 //#else
-//        this->m_oLSFONDItemsCount = 100;
-//        this->m_oLSFONDItemsAddCount = 100;
+//        this->m_astsOLSFONDItemsCount = 100;
+//        this->m_astsOLSFONDItemsAddCount = 100;
 //#endif
 //    }
 //};
@@ -25,7 +25,7 @@ public:
     FeedConnection_FOND_OLR(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
             FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
         this->SetType(FeedConnectionType::Incremental);
-        this->m_orderTableFond = new MarketDataTable<OrderInfo, FastOLSFONDInfo, FastOLSFONDItemInfo>();
+        this->m_orderTableFond = new MarketDataTable<OrderInfo, AstsOLSFONDInfo, AstsOLSFONDItemInfo>();
         this->SetId(FeedConnectionId::fcidOlrFond);
         this->m_fastProtocolManager = new FastProtocolManager();
         this->AllocateFastObjects();
@@ -36,13 +36,13 @@ public:
         delete this->m_orderTableFond;
     }
     void AllocateFastObjects() {
-        FastObjectsAllocationInfo::Default->AllocateHeartbeatInfoPoolTo(10);
-        FastObjectsAllocationInfo::Default->AllocateTradingSessionStatusInfoPoolTo(10);
-        FastObjectsAllocationInfo::Default->AllocateIncrementalOLRFONDInfoPoolTo(10);
+        AstsObjectsAllocationInfo::Default->AllocateHeartbeatInfoPoolTo(10);
+        AstsObjectsAllocationInfo::Default->AllocateTradingSessionStatusInfoPoolTo(10);
+        AstsObjectsAllocationInfo::Default->AllocateIncrementalOLRFONDInfoPoolTo(10);
 #ifdef TEST
-        FastObjectsAllocationInfo::Default->AllocateOLSFONDItemInfoPool(100, 100);
+        AstsObjectsAllocationInfo::Default->AllocateOLSFONDItemInfoPool(100, 100);
 #else
-        FastObjectsAllocationInfo::Default->AllocateOLSFONDItemInfoPool(202400, 10240);
+        AstsObjectsAllocationInfo::Default->AllocateOLSFONDItemInfoPool(202400, 10240);
 #endif
     }
     int GetPacketsCount() { return 10000; }

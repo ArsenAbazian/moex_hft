@@ -329,7 +329,7 @@ namespace prebuild {
 		}
 
 		void PrepareForAsts() { 
-			Prefix = "Fast";
+			Prefix = "Asts";
 			Mode = GeneratorMode.Asts;
 			Decode_Method_Pointer_Definition_GeneratedCode = "Asts_Decode_Method_Pointer_Definition_GeneratedCode";
 			Message_Info_Structures_Definition_GeneratedCode = "Asts_Message_Info_Structures_Definition_GeneratedCode";
@@ -339,6 +339,7 @@ namespace prebuild {
 			Encode_Methods_Definition_GeneratedCode = "Asts_Encode_Methods_Definition_GeneratedCode";
 			Print_Methods_Definition_GeneratedCode = "Asts_Print_Methods_Definition_GeneratedCode";
 			Print_Methods_Declaration_GeneratedCode = "Asts_Print_Methods_Declaration_GeneratedCode";
+			Declare_AllocationInfo_GeneratedCode = "Asts_Declare_AllocationInfo_GeneratedCode";
 
 			SnapshotInfoFields = new List<SnapshotFieldInfo>();
 			SnapshotInfoFields.Add(new SnapshotFieldInfo("", "RptSeq"));
@@ -363,6 +364,7 @@ namespace prebuild {
 			Encode_Methods_Definition_GeneratedCode = "Spectra_Encode_Methods_Definition_GeneratedCode";
 			Print_Methods_Definition_GeneratedCode = "Spectra_Print_Methods_Definition_GeneratedCode";
 			Print_Methods_Declaration_GeneratedCode = "Spectra_Print_Methods_Declaration_GeneratedCode";
+			Declare_AllocationInfo_GeneratedCode = "Spectra_Declare_AllocationInfo_GeneratedCode";
 
 			SnapshotInfoFields = new List<SnapshotFieldInfo>();
 			SnapshotInfoFields.Add(new SnapshotFieldInfo("", "RptSeq"));
@@ -421,6 +423,7 @@ namespace prebuild {
 		string Print_Methods_Definition_GeneratedCode = "Print_Methods_Definition_GeneratedCode";
 		string Print_Methods_Declaration_GeneratedCode = "Print_Methods_Declaration_GeneratedCode";
 		string AddDefaultChannels_GeneratedCode = "AddDefaultChannels_GeneratedCode";
+		string Declare_AllocationInfo_GeneratedCode = "Declare_AllocationInfo_GeneratedCode";
 
 		private  void ClearPreviouseGeneratedCode () {
 			string[] keywords = new string[] { 
@@ -474,9 +477,17 @@ namespace prebuild {
 			WriteLine("typedef " + Prefix + "SnapshotInfo* (FastProtocolManager::*" + Prefix + "GetSnapshotInfoMethodPointer)();");	
 		}
 
+		void WriteDeclareAllocationInfoCode() { 
+			ClearRegion(Declare_AllocationInfo_GeneratedCode);
+			SetPosition(Declare_AllocationInfo_GeneratedCode);
+			WriteLine("\t" + Prefix + "ObjectsAllocationInfo *m_" + Prefix.ToLower() + "AllocationInfo;");
+			WriteLine("\t" + Prefix + "SnapshotInfo *m_" + Prefix.ToLower() + "SnapshotInfo;");
+		}
+
 		private  void GenerateTemplatesCodeAsts () {
 			Console.WriteLine("generate asts...");
 			WriteDecodeMethodPointersDefinitionCode();
+			WriteDeclareAllocationInfoCode();
 			WriteEntireMethodAddressArrays(TemplatesNode);
 			WriteStructuresDefinitionCode(TemplatesNode, true);
 			WriteStructuresDeclarationCode();
@@ -496,7 +507,7 @@ namespace prebuild {
 		private  void GenerateTemplatesCodeSpectra () {
 			Console.WriteLine("generate spectra...");
 			WriteDecodeMethodPointersDefinitionCode();
-
+			WriteDeclareAllocationInfoCode();
 			WriteEntireMethodAddressArrays(TemplatesNode);
 			WriteStructuresDefinitionCode(TemplatesNode, true);
 			WriteStructuresDeclarationCode();
@@ -509,7 +520,7 @@ namespace prebuild {
 			WriteHeaderParsingCode(TemplatesNode);
 			WriteGetTotNumReportsMethod(TemplatesNode);
 			WriteDecodeMethodsCode(TemplatesNode);
-			//WritePrintMethodsCode(TemplatesNode);
+			WritePrintMethodsCode(TemplatesNode);
 
 			Console.WriteLine("done.");
 		}
@@ -658,9 +669,12 @@ namespace prebuild {
 		private  void WriteSequenceEncodeMethodCode (XmlNode field, StructureInfo si, string tabs) {
 			string itemInfo = GetIemInfoPrefix(field) + "ItemInfo";
 			StructureInfo info = new StructureInfo() { InCodeValueName = "(*" + itemInfo + ")", NameCore = si.NameCore + ItemName(field), IsSequence = true };
+			info.Prefix = Prefix;
 			StructureInfo item = GetOriginalStruct(field);
 			if(item == null)
 				item = info;
+			else
+				item.Prefix = Prefix;
 			string methodName = HasOptionalPresence(field)? "WriteUInt32_Optional": "WriteUInt32_Mandatory";
 			WriteLine(tabs + methodName + "(" + si.InCodeValueName + "->" + Name(field) + "Count);");
 			WriteLine(tabs + item.Name + " **" + itemInfo + " = " + si.InCodeValueName + "->" + Name(field) + ";");
@@ -727,6 +741,15 @@ namespace prebuild {
 			SetPosition(Get_Free_Item_Methods_GeneratedCode);
 
 			WriteLine("public:");
+
+			WriteLine("\tinline " + Prefix + "SnapshotInfo* GetFree" + Prefix + "SnapshotInfo() {");
+			WriteLine("\t\tthis->m_" + Prefix.ToLower() + "SnapshotInfo->LastFragment = 0;");
+			WriteLine("\t\tthis->m_" + Prefix.ToLower() + "SnapshotInfo->LastMsgSeqNumProcessed = -1;");
+			WriteLine("\t\tthis->m_" + Prefix.ToLower() + "SnapshotInfo->RouteFirst = 0;");
+			WriteLine("\t\tthis->m_" + Prefix.ToLower() + "SnapshotInfo->RptSeq = -1;");
+			WriteLine("\t\treturn this->m_" + Prefix.ToLower() + "SnapshotInfo;");
+			WriteLine("\t}");
+
 			foreach(StructureInfo str in Structures) {
 				WriteLine("\tinline " + str.Name + "* " + str.GetFreeMethodName + "() {");
 				WriteLine("\t\treturn this->" + str.ValueName + "->NewItem();");
@@ -889,7 +912,6 @@ namespace prebuild {
 					GetSequenceStructureNames(nameCore, node, child);
 					StructureInfo info = new StructureInfo() { NameCore = nameCore, Node = node };
 					info.Prefix = Prefix;
-					Console.WriteLine("found structure " + info.Name);
 					foreach(StructureInfo c in child) {
 						res.Add(c);
 						c.Parent = info;
@@ -939,7 +961,7 @@ namespace prebuild {
 			WriteLine("");
 			WriteLine("\tvoid Initialize" + Prefix + "MessageInfo() {");
 			foreach(StructureInfo str in structures) {
-				WriteLine("\t\tthis->" + str.ValueName + " = this->m_allocationInfo" + Prefix + "->" + str.GetListMethodName + "();");
+				WriteLine("\t\tthis->" + str.ValueName + " = this->m_" + Prefix.ToLower() + "AllocationInfo->" + str.GetListMethodName + "();");
 			}
 			foreach(StructureInfo str in structures) {
 				WriteLine("\t\tthis->" + str.PrevValueName + " = this->" + str.GetFreeMethodName + "();");
@@ -996,6 +1018,8 @@ namespace prebuild {
 		}
 
 		private  void WriteDecodeMethodsCode (XmlNode templatesNode) {
+			WriteLine("\tvoid* Decode" + Prefix + "UnsupportedMessage() { return 0; }");
+			WriteLine("\t" + Prefix + "SnapshotInfo* Get" + Prefix + "SnapshotInfoUnsupported() { return 0; }");
 			foreach(XmlNode node in templatesNode.ChildNodes) {
 				if(node.Name != "template")
 					continue;
@@ -1482,7 +1506,7 @@ namespace prebuild {
 			WriteLine("\t}");
 
 			WriteLine("\tinline " + Prefix + "SnapshotInfo* Get" + Prefix + "SnapshotInfo() {");
-			WriteLine("\t\tthis->DecodeHeader();");
+			WriteLine("\t\tthis->Decode" + Prefix + "Header();");
 			WriteLine("\t\t" + Prefix + "GetSnapshotInfoMethodPointer funcPtr = this->" + GetSnapshotInfoMethodsMethodsName + "[this->m_templateId - " + minId + "];");
 			WriteLine("\t\treturn (this->*funcPtr)();");
 			WriteLine("\t}");
@@ -1807,6 +1831,7 @@ namespace prebuild {
 		private  void ParseTemplateNode(XmlNode template, string templateName) {
 			WriteLine("\tvoid* Decode" + Prefix + templateName + "() {");
 			StructureInfo info = new StructureInfo() { Node = template, NameCore = templateName };
+			info.Prefix = Prefix;
 			WriteLine("\t\t" + Prefix + templateName + "Info* info = " + info.GetFreeMethodName + "();");
 			WriteCopyPresenceMap("\t\t", "info");
 			WriteLine("");
@@ -1991,6 +2016,8 @@ namespace prebuild {
 			WritePrintPresenceMap(template, info, "\t\t", 1);
 			WriteLine("\tPrintInt32(\"TemplateId\", " + template.Attributes["id"].Value + ", 1);");
 			foreach(XmlNode value in template.ChildNodes) {
+				if(value.NodeType == XmlNodeType.Comment)
+					continue;
 				PrintValue(value, "info", templateName, "\t", 1);
 			}
 			WriteLine("\tprintf(\"}\\n\");");
@@ -2006,6 +2033,8 @@ namespace prebuild {
 			WritePrintXmlPresenceMap(template, info, "\t\t");
 			WriteLine("\tPrintXmlInt32(\"TemplateId\", " + template.Attributes["id"].Value + ");");
 			foreach(XmlNode value in template.ChildNodes) {
+				if(value.NodeType == XmlNodeType.Comment)
+					continue;
 				PrintXmlValue(value, "info", templateName, "\t");
 			}
 			WriteLine("\tPrintXmlItemEnd(\"" + info.Name +"\");");
@@ -2815,7 +2844,7 @@ namespace prebuild {
 				return;
 			if(ShouldWriteNullCheckCode(value)) { 
 				int nullIndex = CalcNullIndex(value);
-				WriteLine(tabString + "if((" + objectValueName + "->NullMap & NULL_MAP_INDEX" + nullIndex + ") != 0)");
+				WriteLine(tabString + "if((" + objectValueName + "->NullMap & NULL_MAP_INDEX" + nullIndex + ") == 0)");
 				tabString += "\t";
 			}
 
@@ -2854,7 +2883,7 @@ namespace prebuild {
 
 			if(ShouldWriteNullCheckCode(value)) {
 				int nullIndex = CalcNullIndex(value);
-				WriteLine(tabString + "if((" + objectValueName + "->NullMap & NULL_MAP_INDEX" + nullIndex + ") != 0)");
+				WriteLine(tabString + "if((" + objectValueName + "->NullMap & NULL_MAP_INDEX" + nullIndex + ") == 0)");
 				tabString += "\t";
 			}
 			if(value.Name == "string")

@@ -18,7 +18,7 @@ public:
         DebugInfoManager::Default->PrintMemoryInfo("FeedConnection_FOND_TLS");
     }
     void AllocateFastObjects() {
-        FastObjectsAllocationInfo::Default->AllocateTLSFONDInfoPool(10, 10);
+        AstsObjectsAllocationInfo::Default->AllocateTLSFONDInfoPool(10, 10);
     }
     int GetPacketsCount() { return 50000; }
     ISocketBufferProvider* CreateSocketBufferProvider() {

@@ -19,7 +19,7 @@ public:
         DebugInfoManager::Default->PrintMemoryInfo("FeedConnection_CURR_MSS");
     }
     void AllocateFastObjects() {
-        FastObjectsAllocationInfo::Default->AllocateGenericInfoPoolTo(10);
+        AstsObjectsAllocationInfo::Default->AllocateGenericInfoPoolTo(10);
     }
     int GetPacketsCount() { return 50000; }
     ISocketBufferProvider* CreateSocketBufferProvider() {
@@ -29,8 +29,8 @@ public:
                                         RobotSettings::Default->DefaultFeedConnectionRecvBufferSize,
                                         RobotSettings::Default->DefaultFeedConnectionRecvItemsCount);
     }
-//    FastObjectsAllocationInfo* CreateFastAllocationInfo() {
-//        FastObjectsAllocationInfo *info = new FastObjectsAllocationInfo();
+//    AstsObjectsAllocationInfo* CreateFastAllocationInfo() {
+//        AstsObjectsAllocationInfo *info = new AstsObjectsAllocationInfo();
 //
 //#ifndef TEST
 //        info->m_genericCount = 1024;

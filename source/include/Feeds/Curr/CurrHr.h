@@ -23,8 +23,8 @@ public:
         DebugInfoManager::Default->PrintMemoryInfo("FeedConnection_CURR_H");
     }
     void AllocateFastObjects() {
-        FastObjectsAllocationInfo::Default->AllocateLogonInfoPoolTo(10);
-        FastObjectsAllocationInfo::Default->AllocateLogoutInfoPoolTo(10);
+        AstsObjectsAllocationInfo::Default->AllocateLogonInfoPoolTo(10);
+        AstsObjectsAllocationInfo::Default->AllocateLogoutInfoPoolTo(10);
     }
     ~FeedConnection_CURR_H() {
         DisposeHistoricalReplay();

@@ -66,7 +66,7 @@ public:
         this->m_snapshotItemRptSeq = info->RptSeq;
         this->AddUsed(this->m_snapshotItem);
     }
-    inline void ObtainSnapshotItem(FastSnapshotInfo *info) {
+    inline void ObtainSnapshotItem(AstsSnapshotInfo *info) {
         this->m_snapshotItem = this->GetCachedItem(info->Symbol, info->SymbolLength, info->TradingSessionID, info->TradingSessionIDLength);
         if(this->m_snapshotItem == 0)
             this->m_snapshotItem = this->GetItem(info->Symbol, info->SymbolLength, info->TradingSessionID, info->TradingSessionIDLength);
@@ -165,7 +165,7 @@ public:
         return false;
     }
 
-    inline bool ApplyQuickSnapshot(FastSnapshotInfo *info) {
+    inline bool ApplyQuickSnapshot(AstsSnapshotInfo *info) {
         if(this->CheckProcessIfSessionInActualState(info))
             return true;
         if(this->CheckProcessNullSnapshot(info))
@@ -175,12 +175,12 @@ public:
         return false;
     }
 
-    inline bool ShouldProcessSnapshot(FastSnapshotInfo *info) {
+    inline bool ShouldProcessSnapshot(AstsSnapshotInfo *info) {
         if(!this->m_snapshotItem->HasEntries())
             return this->m_snapshotItem->RptSeq() < info->RptSeq;
         return this->m_snapshotItem->EntriesQueue()->StartRptSeq() <= info->RptSeq;
     }
-    inline bool CheckProcessIfSessionInActualState(FastSnapshotInfo *info) {
+    inline bool CheckProcessIfSessionInActualState(AstsSnapshotInfo *info) {
         if(this->m_snapshotItem->HasEntries())
             return false;
         if(this->m_snapshotItem->RptSeq() != info->RptSeq)
@@ -194,10 +194,10 @@ public:
         this->m_snapshotItem = 0;
         return true;
     }
-    inline bool IsNullSnapshot(FastSnapshotInfo *info) {
+    inline bool IsNullSnapshot(AstsSnapshotInfo *info) {
         return info->RptSeq == 0 && info->LastMsgSeqNumProcessed == 0;
     }
-    inline bool CheckProcessNullSnapshot(FastSnapshotInfo *info) {
+    inline bool CheckProcessNullSnapshot(AstsSnapshotInfo *info) {
         if(IsNullSnapshot(info)) {
             bool allItemsRecvSnapshot = this->m_snapshotSymbol->AllSessionsRecvSnapshot();
             bool prevHasEntries = this->m_snapshotItem->HasEntries();

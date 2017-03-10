@@ -7,9 +7,9 @@
 
 #include "../FeedConnection.h"
 
-//class StatisticsCurrAllocationInfo : public FastObjectsAllocationInfo {
+//class StatisticsCurrAllocationInfo : public AstsObjectsAllocationInfo {
 //public:
-//    StatisticsCurrAllocationInfo() : FastObjectsAllocationInfo(32, 32) {
+//    StatisticsCurrAllocationInfo() : AstsObjectsAllocationInfo(32, 32) {
 //#ifndef TEST
 //        this->m_genericItemsCount = 10240;
 //        this->m_genericItemsAddCount = 1024;
@@ -29,7 +29,7 @@ public:
     FeedConnection_CURR_MSR(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
             FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
         this->SetType(FeedConnectionType::Incremental);
-        this->m_statTableCurr = new MarketDataTable<StatisticsInfo, FastGenericInfo, FastGenericItemInfo>();
+        this->m_statTableCurr = new MarketDataTable<StatisticsInfo, AstsGenericInfo, AstsGenericItemInfo>();
         this->SetId(FeedConnectionId::fcidMsrCurr);
         this->m_fastProtocolManager = new FastProtocolManager();
         this->AllocateFastObjects();
@@ -37,13 +37,13 @@ public:
         DebugInfoManager::Default->PrintMemoryInfo("FeedConnection_CURR_MSR");
     }
     void AllocateFastObjects() {
-        FastObjectsAllocationInfo::Default->AllocateHeartbeatInfoPoolTo(10);
-        FastObjectsAllocationInfo::Default->AllocateTradingSessionStatusInfoPoolTo(10);
-        FastObjectsAllocationInfo::Default->AllocateIncrementalMSRCURRInfoPoolTo(10);
+        AstsObjectsAllocationInfo::Default->AllocateHeartbeatInfoPoolTo(10);
+        AstsObjectsAllocationInfo::Default->AllocateTradingSessionStatusInfoPoolTo(10);
+        AstsObjectsAllocationInfo::Default->AllocateIncrementalMSRCURRInfoPoolTo(10);
 #ifdef TEST
-        FastObjectsAllocationInfo::Default->AllocateGenericItemInfoPool(102, 10);
+        AstsObjectsAllocationInfo::Default->AllocateGenericItemInfoPool(102, 10);
 #else
-        FastObjectsAllocationInfo::Default->AllocateGenericItemInfoPool(10240, 1024);
+        AstsObjectsAllocationInfo::Default->AllocateGenericItemInfoPool(10240, 1024);
 #endif
     }
     int GetPacketsCount() { return 10000; }

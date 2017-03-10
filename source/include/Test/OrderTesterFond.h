@@ -16,12 +16,12 @@ class OrderTesterFond {
     TestMessagesHelper      *m_helper;
     FeedConnection_FOND_OLR *incFond;
     FeedConnection_FOND_OLS *snapFond;
-    MarketDataTable<OrderInfo, FastOLSFONDInfo, FastOLSFONDItemInfo> *m_table;
+    MarketDataTable<OrderInfo, AstsOLSFONDInfo, AstsOLSFONDItemInfo> *m_table;
 public:
     OrderTesterFond() {
         this->m_helper = new TestMessagesHelper();
         this->m_helper->SetFondMode();
-        this->m_table = new MarketDataTable<OrderInfo, FastOLSFONDInfo, FastOLSFONDItemInfo>();
+        this->m_table = new MarketDataTable<OrderInfo, AstsOLSFONDInfo, AstsOLSFONDItemInfo>();
         this->m_table->InitSymbols(10, 10);
         this->incFond = new FeedConnection_FOND_OLR("OLR", "Refresh Incremental", 'I',
                                                     FeedConnectionProtocol::UDP_IP,
@@ -41,7 +41,7 @@ public:
         delete this->m_table;
     }
 
-    void TestItem(OrderInfo<FastOLSFONDItemInfo> *tableItem) {
+    void TestItem(OrderInfo<AstsOLSFONDItemInfo> *tableItem) {
         for(int i = 0; i < tableItem->BuyQuotes()->Count(); i++)
             if(tableItem->BuyQuotes()->Item(i)->Allocator == 0)
                 throw;
@@ -50,10 +50,10 @@ public:
                 throw;
     }
 
-    void TestTableItemsAllocator(MarketDataTable<OrderInfo, FastOLSFONDInfo, FastOLSFONDItemInfo> *table) {
+    void TestTableItemsAllocator(MarketDataTable<OrderInfo, AstsOLSFONDInfo, AstsOLSFONDItemInfo> *table) {
         for(int i = 0; i < this->m_table->SymbolsCount(); i++) {
             for(int j = 0; j < this->m_table->Symbol(i)->Count(); j++) {
-                OrderInfo<FastOLSFONDItemInfo> *item = this->m_table->Item(i, j);
+                OrderInfo<AstsOLSFONDItemInfo> *item = this->m_table->Item(i, j);
                 TestItem(item);
             }
         }
@@ -81,12 +81,12 @@ public:
         this->Clear();
         this->TestDefaults();
 
-        FastIncrementalOLRFONDInfo *info = this->m_helper->CreateFastIncrementalOLRFONDInfo();
+        AstsIncrementalOLRFONDInfo *info = this->m_helper->CreateAstsIncrementalOLRFONDInfo();
 
-        FastOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
-        FastOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
-        FastOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
-        FastOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "e4", 4);
+        AstsOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
+        AstsOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
+        AstsOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
+        AstsOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "e4", 4);
 
         if(item4->Used)
             throw;
@@ -104,12 +104,12 @@ public:
             throw;
         if(this->incFond->OrderFond()->Symbol(0)->Count() != 1)
             throw;
-        OrderInfo<FastOLSFONDItemInfo> *obi = this->incFond->OrderFond()->GetItem("s1", "t1");
+        OrderInfo<AstsOLSFONDItemInfo> *obi = this->incFond->OrderFond()->GetItem("s1", "t1");
         if(obi == 0)
             throw;
         if(obi->BuyQuotes()->Count() != 1)
             throw;
-        FastOLSFONDItemInfo *quote = obi->BuyQuotes()->Item(0);
+        AstsOLSFONDItemInfo *quote = obi->BuyQuotes()->Item(0);
         Decimal price(3, -2);
         Decimal size(1, 2);
         if(!quote->MDEntryPx.Equal(&price))
@@ -246,11 +246,11 @@ public:
         this->Clear();
         this->TestDefaults();
 
-        FastIncrementalOLRFONDInfo *info = this->m_helper->CreateFastIncrementalOLRFONDInfo();
-        FastOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
-        FastOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
-        FastOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
-        FastOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "e4", 4);
+        AstsIncrementalOLRFONDInfo *info = this->m_helper->CreateAstsIncrementalOLRFONDInfo();
+        AstsOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
+        AstsOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
+        AstsOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
+        AstsOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "e4", 4);
 
         info->GroupMDEntriesCount = 4;
         info->GroupMDEntries[0] = item1;
@@ -278,7 +278,7 @@ public:
         if(this->incFond->OrderFond()->UsedItemCount() != 1)
             throw;
 
-        OrderInfo<FastOLSFONDItemInfo> *obi = this->incFond->OrderFond()->GetItem("s1", "t1");
+        OrderInfo<AstsOLSFONDItemInfo> *obi = this->incFond->OrderFond()->GetItem("s1", "t1");
         if(obi->BuyQuotes()->Count() != 3)
             throw;
         if(!StringIdComparer::Equal(obi->BuyQuotes()->Item(0)->MDEntryID, 2, "e1", 2))
@@ -338,11 +338,11 @@ public:
         this->Clear();
         this->TestDefaults();
 
-        FastIncrementalOLRFONDInfo *info = this->m_helper->CreateFastIncrementalOLRFONDInfo();
-        FastOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
-        FastOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
-        FastOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
-        FastOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "e4", 4);
+        AstsIncrementalOLRFONDInfo *info = this->m_helper->CreateAstsIncrementalOLRFONDInfo();
+        AstsOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
+        AstsOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
+        AstsOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
+        AstsOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "e4", 4);
 
         info->GroupMDEntriesCount = 4;
         info->GroupMDEntries[0] = item1;
@@ -352,7 +352,7 @@ public:
 
         this->incFond->OnIncrementalRefresh_OLR_FOND(info);
 
-        OrderInfo<FastOLSFONDItemInfo> *obi2 = this->incFond->OrderFond()->GetItem("s1", "t1");
+        OrderInfo<AstsOLSFONDItemInfo> *obi2 = this->incFond->OrderFond()->GetItem("s1", "t1");
         if(!StringIdComparer::Equal(obi2->BuyQuotes()->Item(0)->MDEntryID, 2, "e1", 2))
             throw;
         if(!StringIdComparer::Equal(obi2->BuyQuotes()->Item(1)->MDEntryID, 2, "e2", 2))
@@ -362,7 +362,7 @@ public:
         if(!StringIdComparer::Equal(obi2->BuyQuotes()->Item(3)->MDEntryID, 2, "e4", 2))
             throw;
 
-        FastOLSFONDItemInfo *item5 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 24, -3, 1, 3, mduaChange, mdetBuyQuote, "e2", 5);
+        AstsOLSFONDItemInfo *item5 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 24, -3, 1, 3, mduaChange, mdetBuyQuote, "e2", 5);
 
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item5;
@@ -377,12 +377,12 @@ public:
         if(item5->Allocator->Count() != 1)
             throw;
 
-        OrderInfo<FastOLSFONDItemInfo> *obi = this->incFond->OrderFond()->GetItem("s1", "t1");
+        OrderInfo<AstsOLSFONDItemInfo> *obi = this->incFond->OrderFond()->GetItem("s1", "t1");
 
-        FastOLSFONDItemInfo *qt1 = obi->BuyQuotes()->Item(0);
-        FastOLSFONDItemInfo *qt2 = obi->BuyQuotes()->Item(1);
-        FastOLSFONDItemInfo *qt3 = obi->BuyQuotes()->Item(2);
-        FastOLSFONDItemInfo *qt4 = obi->BuyQuotes()->Item(3);
+        AstsOLSFONDItemInfo *qt1 = obi->BuyQuotes()->Item(0);
+        AstsOLSFONDItemInfo *qt2 = obi->BuyQuotes()->Item(1);
+        AstsOLSFONDItemInfo *qt3 = obi->BuyQuotes()->Item(2);
+        AstsOLSFONDItemInfo *qt4 = obi->BuyQuotes()->Item(3);
 
         if(this->incFond->OrderFond()->UsedItemCount() != 1)
             throw;
@@ -412,11 +412,11 @@ public:
         this->Clear();
         this->TestDefaults();
 
-        FastIncrementalOLRFONDInfo *info = this->m_helper->CreateFastIncrementalOLRFONDInfo();
-        FastOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
-        FastOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
-        FastOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
-        FastOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "e4", 4);
+        AstsIncrementalOLRFONDInfo *info = this->m_helper->CreateAstsIncrementalOLRFONDInfo();
+        AstsOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
+        AstsOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
+        AstsOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
+        AstsOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "e4", 4);
 
         info->GroupMDEntriesCount = 4;
         info->GroupMDEntries[0] = item1;
@@ -437,7 +437,7 @@ public:
         if(this->incFond->OrderFond()->UsedItemCount() != 0)
             throw;
 
-        OrderInfo<FastOLSFONDItemInfo> *obi = this->incFond->OrderFond()->GetItem("s1", "t1");
+        OrderInfo<AstsOLSFONDItemInfo> *obi = this->incFond->OrderFond()->GetItem("s1", "t1");
         if(obi->BuyQuotes()->Count() != 0)
             throw;
     }
@@ -446,11 +446,11 @@ public:
         this->Clear();
         this->TestDefaults();
 
-        FastIncrementalOLRFONDInfo *info = this->m_helper->CreateFastIncrementalOLRFONDInfo();
-        FastOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
-        FastOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
-        FastOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
-        FastOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "e4", 4);
+        AstsIncrementalOLRFONDInfo *info = this->m_helper->CreateAstsIncrementalOLRFONDInfo();
+        AstsOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
+        AstsOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
+        AstsOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
+        AstsOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "e4", 4);
 
         info->GroupMDEntriesCount = 4;
         info->GroupMDEntries[0] = item1;
@@ -460,13 +460,13 @@ public:
 
         this->incFond->OnIncrementalRefresh_OLR_FOND(info);
 
-        OrderInfo<FastOLSFONDItemInfo> *obi2 = this->incFond->OrderFond()->GetItem("s1", "t1");
+        OrderInfo<AstsOLSFONDItemInfo> *obi2 = this->incFond->OrderFond()->GetItem("s1", "t1");
         if(obi2->BuyQuotes()->Count() != 4)
             throw;
 
-        FastOLSFONDInfo *info2 = this->m_helper->CreateOLSFondInfo("t1s2", "t1");
-        FastOLSFONDItemInfo *newItem1 = this->m_helper->CreateOLSFondItemInfo(7,-2, 1, 2, mdetBuyQuote, "e7");
-        FastOLSFONDItemInfo *newItem2 = this->m_helper->CreateOLSFondItemInfo(8,-2, 1, 2, mdetBuyQuote, "e8");
+        AstsOLSFONDInfo *info2 = this->m_helper->CreateOLSFondInfo("t1s2", "t1");
+        AstsOLSFONDItemInfo *newItem1 = this->m_helper->CreateOLSFondItemInfo(7,-2, 1, 2, mdetBuyQuote, "e7");
+        AstsOLSFONDItemInfo *newItem2 = this->m_helper->CreateOLSFondItemInfo(8,-2, 1, 2, mdetBuyQuote, "e8");
         info2->RptSeq = 5;
 
         info2->GroupMDEntriesCount = 2;
@@ -479,16 +479,16 @@ public:
         if(this->incFond->OrderFond()->UsedItemCount() != 2)
             throw;
 
-        OrderInfo<FastOLSFONDItemInfo> *obi3 = this->incFond->OrderFond()->GetItem("s1", "t1");
+        OrderInfo<AstsOLSFONDItemInfo> *obi3 = this->incFond->OrderFond()->GetItem("s1", "t1");
         if(obi3->BuyQuotes()->Count() != 4)
             throw;
 
-        OrderInfo<FastOLSFONDItemInfo> *obi = this->incFond->OrderFond()->GetItem("t1s2", 4, "t1", 2);
+        OrderInfo<AstsOLSFONDItemInfo> *obi = this->incFond->OrderFond()->GetItem("t1s2", 4, "t1", 2);
         if(obi->BuyQuotes()->Count() != 2)
             throw;
 
-        FastOLSFONDItemInfo *qt1 = obi->BuyQuotes()->Item(0);
-        FastOLSFONDItemInfo *qt2 = obi->BuyQuotes()->Item(1);
+        AstsOLSFONDItemInfo *qt1 = obi->BuyQuotes()->Item(0);
+        AstsOLSFONDItemInfo *qt2 = obi->BuyQuotes()->Item(1);
 
         if(!StringIdComparer::Equal(qt1->MDEntryID, 2, "e7", 2))
             throw;
@@ -506,12 +506,12 @@ public:
         this->Clear();
         this->TestDefaults();
 
-        FastIncrementalOLRFONDInfo *info = this->m_helper->CreateFastIncrementalOLRFONDInfo();
+        AstsIncrementalOLRFONDInfo *info = this->m_helper->CreateAstsIncrementalOLRFONDInfo();
 
-        FastOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "e1", 1);
-        FastOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "e2", 2);
-        FastOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "e3", 3);
-        FastOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "e4", 4);
+        AstsOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "e1", 1);
+        AstsOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "e2", 2);
+        AstsOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "e3", 3);
+        AstsOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "e4", 4);
 
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item1;
@@ -524,12 +524,12 @@ public:
             throw;
         if(this->incFond->OrderFond()->Symbol(0)->Count() != 1)
             throw;
-        OrderInfo<FastOLSFONDItemInfo> *obi = this->incFond->OrderFond()->GetItem("s1", "t1");
+        OrderInfo<AstsOLSFONDItemInfo> *obi = this->incFond->OrderFond()->GetItem("s1", "t1");
         if(obi == 0)
             throw;
         if(obi->SellQuotes()->Count() != 1)
             throw;
-        FastOLSFONDItemInfo *quote = obi->SellQuotes()->Start()->Data();
+        AstsOLSFONDItemInfo *quote = obi->SellQuotes()->Start()->Data();
         if(!quote->MDEntryPx.Equal(3, -2))
             throw;
         if(!quote->MDEntrySize.Equal(1, 2))
@@ -664,11 +664,11 @@ public:
         this->Clear();
         this->TestDefaults();
 
-        FastIncrementalOLRFONDInfo *info = this->m_helper->CreateFastIncrementalOLRFONDInfo();
-        FastOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "e1", 1);
-        FastOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "e2", 2);
-        FastOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "e3", 3);
-        FastOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "e4", 4);
+        AstsIncrementalOLRFONDInfo *info = this->m_helper->CreateAstsIncrementalOLRFONDInfo();
+        AstsOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "e1", 1);
+        AstsOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "e2", 2);
+        AstsOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "e3", 3);
+        AstsOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "e4", 4);
 
         info->GroupMDEntriesCount = 4;
         info->GroupMDEntries[0] = item1;
@@ -692,7 +692,7 @@ public:
         if(this->incFond->OrderFond()->UsedItemCount() != 1)
             throw;
 
-        OrderInfo<FastOLSFONDItemInfo> *obi = this->incFond->OrderFond()->GetItem("s1", "t1");
+        OrderInfo<AstsOLSFONDItemInfo> *obi = this->incFond->OrderFond()->GetItem("s1", "t1");
         if(obi->SellQuotes()->Count() != 3)
             throw;
 
@@ -753,11 +753,11 @@ public:
         this->Clear();
         this->TestDefaults();
 
-        FastIncrementalOLRFONDInfo *info = this->m_helper->CreateFastIncrementalOLRFONDInfo();
-        FastOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "e1", 1);
-        FastOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "e2", 2);
-        FastOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "e3", 3);
-        FastOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "e4", 4);
+        AstsIncrementalOLRFONDInfo *info = this->m_helper->CreateAstsIncrementalOLRFONDInfo();
+        AstsOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "e1", 1);
+        AstsOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "e2", 2);
+        AstsOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "e3", 3);
+        AstsOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "e4", 4);
 
         info->GroupMDEntriesCount = 4;
         info->GroupMDEntries[0] = item1;
@@ -767,7 +767,7 @@ public:
 
         this->incFond->OnIncrementalRefresh_OLR_FOND(info);
 
-        OrderInfo<FastOLSFONDItemInfo> *obi2 = this->incFond->OrderFond()->GetItem("s1", "t1");
+        OrderInfo<AstsOLSFONDItemInfo> *obi2 = this->incFond->OrderFond()->GetItem("s1", "t1");
         if(!StringIdComparer::Equal(obi2->SellQuotes()->Item(0)->MDEntryID, 2, "e1", 2))
             throw;
         if(!StringIdComparer::Equal(obi2->SellQuotes()->Item(1)->MDEntryID, 2, "e2", 2))
@@ -777,19 +777,19 @@ public:
         if(!StringIdComparer::Equal(obi2->SellQuotes()->Item(3)->MDEntryID, 2, "e4", 2))
             throw;
 
-        FastOLSFONDItemInfo *item5 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 24, -3, 1, 3, mduaChange, mdetSellQuote, "e2", 5);
+        AstsOLSFONDItemInfo *item5 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 24, -3, 1, 3, mduaChange, mdetSellQuote, "e2", 5);
 
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item5;
 
         this->incFond->OnIncrementalRefresh_OLR_FOND(info);
 
-        OrderInfo<FastOLSFONDItemInfo> *obi = this->incFond->OrderFond()->GetItem("s1", "t1");
+        OrderInfo<AstsOLSFONDItemInfo> *obi = this->incFond->OrderFond()->GetItem("s1", "t1");
 
-        FastOLSFONDItemInfo *qt1 = obi->SellQuotes()->Item(0);
-        FastOLSFONDItemInfo *qt2 = obi->SellQuotes()->Item(1);
-        FastOLSFONDItemInfo *qt3 = obi->SellQuotes()->Item(2);
-        FastOLSFONDItemInfo *qt4 = obi->SellQuotes()->Item(3);
+        AstsOLSFONDItemInfo *qt1 = obi->SellQuotes()->Item(0);
+        AstsOLSFONDItemInfo *qt2 = obi->SellQuotes()->Item(1);
+        AstsOLSFONDItemInfo *qt3 = obi->SellQuotes()->Item(2);
+        AstsOLSFONDItemInfo *qt4 = obi->SellQuotes()->Item(3);
 
         if(this->incFond->OrderFond()->UsedItemCount() != 1)
             throw;
@@ -819,11 +819,11 @@ public:
         this->Clear();
         this->TestDefaults();
 
-        FastIncrementalOLRFONDInfo *info = this->m_helper->CreateFastIncrementalOLRFONDInfo();
-        FastOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "e1", 1);
-        FastOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "e2", 2);
-        FastOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "e3", 3);
-        FastOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "e4", 4);
+        AstsIncrementalOLRFONDInfo *info = this->m_helper->CreateAstsIncrementalOLRFONDInfo();
+        AstsOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "e1", 1);
+        AstsOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "e2", 2);
+        AstsOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "e3", 3);
+        AstsOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "e4", 4);
 
         info->GroupMDEntriesCount = 4;
         info->GroupMDEntries[0] = item1;
@@ -837,7 +837,7 @@ public:
         if(this->incFond->OrderFond()->UsedItemCount() != 0)
             throw;
 
-        OrderInfo<FastOLSFONDItemInfo> *obi = this->incFond->OrderFond()->GetItem("s1", "t1");
+        OrderInfo<AstsOLSFONDItemInfo> *obi = this->incFond->OrderFond()->GetItem("s1", "t1");
         if(obi->SellQuotes()->Count() != 0)
             throw;
     }
@@ -846,11 +846,11 @@ public:
         this->Clear();
         this->TestDefaults();
 
-        FastIncrementalOLRFONDInfo *info = this->m_helper->CreateFastIncrementalOLRFONDInfo();
-        FastOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "e1", 1);
-        FastOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "e2", 2);
-        FastOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "e3", 3);
-        FastOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "e4", 4);
+        AstsIncrementalOLRFONDInfo *info = this->m_helper->CreateAstsIncrementalOLRFONDInfo();
+        AstsOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "e1", 1);
+        AstsOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "e2", 2);
+        AstsOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "e3", 3);
+        AstsOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "e4", 4);
 
         info->GroupMDEntriesCount = 4;
         info->GroupMDEntries[0] = item1;
@@ -860,9 +860,9 @@ public:
 
         this->incFond->OnIncrementalRefresh_OLR_FOND(info);
 
-        FastOLSFONDInfo *info2 = this->m_helper->CreateOLSFondInfo("t1s2", "t1");
-        FastOLSFONDItemInfo *newItem1 = this->m_helper->CreateOLSFondItemInfo(7,-2, 1, 2, mdetSellQuote, "e7");
-        FastOLSFONDItemInfo *newItem2 = this->m_helper->CreateOLSFondItemInfo(8,-2, 1, 2, mdetSellQuote, "e8");
+        AstsOLSFONDInfo *info2 = this->m_helper->CreateOLSFondInfo("t1s2", "t1");
+        AstsOLSFONDItemInfo *newItem1 = this->m_helper->CreateOLSFondItemInfo(7,-2, 1, 2, mdetSellQuote, "e7");
+        AstsOLSFONDItemInfo *newItem2 = this->m_helper->CreateOLSFondItemInfo(8,-2, 1, 2, mdetSellQuote, "e8");
 
         info2->GroupMDEntriesCount = 2;
         info2->GroupMDEntries[0] = newItem1;
@@ -874,16 +874,16 @@ public:
         if(this->incFond->OrderFond()->UsedItemCount() != 2)
             throw;
 
-        OrderInfo<FastOLSFONDItemInfo> *obi3 = this->incFond->OrderFond()->GetItem("s1", "t1");
+        OrderInfo<AstsOLSFONDItemInfo> *obi3 = this->incFond->OrderFond()->GetItem("s1", "t1");
         if(obi3->SellQuotes()->Count() != 4)
             throw;
 
-        OrderInfo<FastOLSFONDItemInfo> *obi = this->incFond->OrderFond()->GetItem("t1s2", 4, "t1", 2);
+        OrderInfo<AstsOLSFONDItemInfo> *obi = this->incFond->OrderFond()->GetItem("t1s2", 4, "t1", 2);
         if(obi->SellQuotes()->Count() != 2)
             throw;
 
-        FastOLSFONDItemInfo *qt1 = obi->SellQuotes()->Start()->Data();
-        FastOLSFONDItemInfo *qt2 = obi->SellQuotes()->Start()->Next()->Data();
+        AstsOLSFONDItemInfo *qt1 = obi->SellQuotes()->Start()->Data();
+        AstsOLSFONDItemInfo *qt2 = obi->SellQuotes()->Start()->Next()->Data();
 
         if(!StringIdComparer::Equal(qt1->MDEntryID, 2, "e7", 2))
             throw;
@@ -939,10 +939,10 @@ public:
 
 
     void TestTableItem_CorrectBegin() {
-        OrderInfo<FastOLSFONDItemInfo> *tb = new OrderInfo<FastOLSFONDItemInfo>();
-        tb->SymbolInfo(this->m_helper->CreateSymbol<OrderInfo<FastOLSFONDItemInfo>>("s1"));
+        OrderInfo<AstsOLSFONDItemInfo> *tb = new OrderInfo<AstsOLSFONDItemInfo>();
+        tb->SymbolInfo(this->m_helper->CreateSymbol<OrderInfo<AstsOLSFONDItemInfo>>("s1"));
 
-        FastOLSFONDItemInfo *item1 = this->m_helper->CreateOLSFondItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e1");
+        AstsOLSFONDItemInfo *item1 = this->m_helper->CreateOLSFondItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e1");
         item1->RptSeq = 1;
         item1->MDUpdateAction = mduaAdd;
 
@@ -957,10 +957,10 @@ public:
     }
 
     void TestTableItem_IncorrectBegin() {
-        OrderInfo<FastOLSFONDItemInfo> *tb = new OrderInfo<FastOLSFONDItemInfo>();
-        tb->SymbolInfo(this->m_helper->CreateSymbol<OrderInfo<FastOLSFONDItemInfo>>("s1"));
+        OrderInfo<AstsOLSFONDItemInfo> *tb = new OrderInfo<AstsOLSFONDItemInfo>();
+        tb->SymbolInfo(this->m_helper->CreateSymbol<OrderInfo<AstsOLSFONDItemInfo>>("s1"));
 
-        FastOLSFONDItemInfo *item1 = this->m_helper->CreateOLSFondItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e1");
+        AstsOLSFONDItemInfo *item1 = this->m_helper->CreateOLSFondItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e1");
         item1->RptSeq = 2;
         item1->MDUpdateAction = mduaAdd;
 
@@ -979,16 +979,16 @@ public:
     }
 
     void TestTableItem_SkipMessage() {
-        OrderInfo<FastOLSFONDItemInfo> *tb = new OrderInfo<FastOLSFONDItemInfo>();
-        tb->SymbolInfo(this->m_helper->CreateSymbol<OrderInfo<FastOLSFONDItemInfo>>("s1"));
+        OrderInfo<AstsOLSFONDItemInfo> *tb = new OrderInfo<AstsOLSFONDItemInfo>();
+        tb->SymbolInfo(this->m_helper->CreateSymbol<OrderInfo<AstsOLSFONDItemInfo>>("s1"));
 
-        FastOLSFONDItemInfo *item1 = this->m_helper->CreateOLSFondItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e1");
+        AstsOLSFONDItemInfo *item1 = this->m_helper->CreateOLSFondItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e1");
         item1->RptSeq = 1;
         item1->MDUpdateAction = mduaAdd;
 
         tb->ProcessIncrementalMessage(item1);
 
-        FastOLSFONDItemInfo *item2 = this->m_helper->CreateOLSFondItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e2");
+        AstsOLSFONDItemInfo *item2 = this->m_helper->CreateOLSFondItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e2");
         item2->RptSeq = 3;
         item2->MDUpdateAction = mduaAdd;
 
@@ -1001,7 +1001,7 @@ public:
         if(tb->RptSeq() != 1)
             throw;
 
-        FastOLSFONDItemInfo *item3 = this->m_helper->CreateOLSFondItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e3");
+        AstsOLSFONDItemInfo *item3 = this->m_helper->CreateOLSFondItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e3");
         item3->RptSeq = 4;
         item3->MDUpdateAction = mduaAdd;
 
@@ -1029,13 +1029,13 @@ public:
     void TestTable_AfterClear() {
         this->m_table->Clear();
 
-        FastOLSFONDItemInfo *item = this->m_helper->CreateOLRFondItemInfo("s1", "session1", "e1");
+        AstsOLSFONDItemInfo *item = this->m_helper->CreateOLRFondItemInfo("s1", "session1", "e1");
         item->RptSeq = 1;
 
-        FastOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("s1", "session1", "e1");
+        AstsOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("s1", "session1", "e1");
         item2->RptSeq = 2;
 
-        FastOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("s1", "session1", "e1");
+        AstsOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("s1", "session1", "e1");
         item3->RptSeq = 4;
 
         this->m_table->ProcessIncremental(item);
@@ -1044,7 +1044,7 @@ public:
 
         if(this->m_table->UsedItemCount() != 1)
             throw;
-        OrderInfo<FastOLSFONDItemInfo> *tableItem = this->m_table->GetItem("s1", "session1");
+        OrderInfo<AstsOLSFONDItemInfo> *tableItem = this->m_table->GetItem("s1", "session1");
         if(tableItem->EntriesQueue()->MaxIndex() != 1) // 3 is empty and 4 has value
             throw;
         this->m_table->Clear();
@@ -1064,7 +1064,7 @@ public:
 
         this->m_table->Clear();
 
-        FastOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 1;
 
@@ -1077,7 +1077,7 @@ public:
     void TestTable_IncorrectBegin() {
         this->m_table->Clear();
 
-        FastOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 2;
 
@@ -1090,14 +1090,14 @@ public:
     void TestTable_SkipMessages() {
         this->m_table->Clear();
 
-        FastOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 1;
 
         if(!this->m_table->ProcessIncremental(item1))
             throw;
 
-        FastOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                            MDEntryType::mdetBuyQuote, "e1", 3);
         item2->RptSeq = 3;
 
@@ -1110,14 +1110,14 @@ public:
     void Test_2UsedItemsAfter2IncrementalMessages() {
         this->m_table->Clear();
 
-        FastOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 1;
 
         if(!this->m_table->ProcessIncremental(item1))
             throw;
 
-        FastOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("SYMBOL2", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("SYMBOL2", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item2->RptSeq = 1;
 
@@ -1133,43 +1133,43 @@ public:
     void TestTable_CorrectApplySnapshot() {
         this->m_table->Clear();
 
-        FastOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 1;
 
         this->m_table->ProcessIncremental(item1);
 
-        FastOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                            MDEntryType::mdetBuyQuote, "e2", 3);
         item2->RptSeq = 3;
 
         if(this->m_table->ProcessIncremental(item2))
             throw;
 
-        FastOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                            MDEntryType::mdetBuyQuote, "e3", 4);
         item3->RptSeq = 4;
 
         if(this->m_table->ProcessIncremental(item3))
             throw;
 
-        FastOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                            MDEntryType::mdetBuyQuote, "e4", 5);
         item4->RptSeq = 5;
 
         if(this->m_table->ProcessIncremental(item4))
             throw;
 
-        FastOLSFONDItemInfo *item5 = this->m_helper->CreateOLRFondItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsOLSFONDItemInfo *item5 = this->m_helper->CreateOLRFondItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                            MDEntryType::mdetBuyQuote, "e5", 3);
         item5->RptSeq = 3;
 
-        FastOLSFONDInfo *info = this->m_helper->CreateOLSFondInfo("s1", "session1");
+        AstsOLSFONDInfo *info = this->m_helper->CreateOLSFondInfo("s1", "session1");
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item5;
         info->RptSeq = 3;
 
-        OrderInfo<FastOLSFONDItemInfo> *tb = this->m_table->GetItem("s1", "session1");
+        OrderInfo<AstsOLSFONDItemInfo> *tb = this->m_table->GetItem("s1", "session1");
 
         this->m_table->ObtainSnapshotItem(info);
         this->m_table->StartProcessSnapshot();
@@ -1200,39 +1200,39 @@ public:
 
         this->m_table->Clear();
 
-        FastOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 1;
 
         this->m_table->ProcessIncremental(item1);
 
-        FastOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                            MDEntryType::mdetBuyQuote, "e3", 4);
         item3->RptSeq = 4;
 
         if(this->m_table->ProcessIncremental(item3))
             throw;
 
-        FastOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                            MDEntryType::mdetBuyQuote, "e4", 5);
         item4->RptSeq = 5;
 
         if(this->m_table->ProcessIncremental(item4))
             throw;
 
-        FastOLSFONDInfo *info1 = this->m_helper->CreateOLSFondInfo("s1", "session1");
+        AstsOLSFONDInfo *info1 = this->m_helper->CreateOLSFondInfo("s1", "session1");
         info1->GroupMDEntriesCount = 1;
         info1->RptSeq = 3;
         info1->RouteFirst = true;
         info1->GroupMDEntries[0] = this->m_helper->CreateOLSFondItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e2");
 
-        FastOLSFONDInfo *info2 = this->m_helper->CreateOLSFondInfo("s1", "session1");
+        AstsOLSFONDInfo *info2 = this->m_helper->CreateOLSFondInfo("s1", "session1");
         info2->GroupMDEntriesCount = 1;
         info2->RptSeq = 3;
         info2->RouteFirst = true;
         info2->GroupMDEntries[0] = this->m_helper->CreateOLSFondItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e2");
 
-        OrderInfo<FastOLSFONDItemInfo> *tb = this->m_table->GetItem("s1", "session1");
+        OrderInfo<AstsOLSFONDItemInfo> *tb = this->m_table->GetItem("s1", "session1");
 
         this->m_table->ObtainSnapshotItem(info1);
         this->m_table->StartProcessSnapshot();
@@ -1256,43 +1256,43 @@ public:
     void TestTable_IncorrectApplySnapshot() {
         this->m_table->Clear();
 
-        FastOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 1;
 
         this->m_table->ProcessIncremental(item1);
 
-        FastOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                            MDEntryType::mdetBuyQuote, "e2", 4);
         item2->RptSeq = 4;
 
         if(this->m_table->ProcessIncremental(item2))
             throw;
 
-        FastOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                            MDEntryType::mdetBuyQuote, "e3", 5);
         item3->RptSeq = 5;
 
         if(this->m_table->ProcessIncremental(item3))
             throw;
 
-        FastOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                            MDEntryType::mdetBuyQuote, "e4", 6);
         item4->RptSeq = 6;
 
         if(this->m_table->ProcessIncremental(item4))
             throw;
 
-        FastOLSFONDItemInfo *item5 = this->m_helper->CreateOLRFondItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsOLSFONDItemInfo *item5 = this->m_helper->CreateOLRFondItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                            MDEntryType::mdetBuyQuote, "e5", 2);
         item5->RptSeq = 2;
 
-        FastOLSFONDInfo *info = this->m_helper->CreateOLSFondInfo("s1", "session1");
+        AstsOLSFONDInfo *info = this->m_helper->CreateOLSFondInfo("s1", "session1");
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item5;
         info->RptSeq = 2;
 
-        OrderInfo<FastOLSFONDItemInfo> *tb = this->m_table->GetItem("s1", "session1");
+        OrderInfo<AstsOLSFONDItemInfo> *tb = this->m_table->GetItem("s1", "session1");
 
         this->m_table->ObtainSnapshotItem(info);
         this->m_table->StartProcessSnapshot();
@@ -1318,36 +1318,36 @@ public:
     void TestTable_IncorrectApplySnapshot_WhenMessageSkipped() {
         this->m_table->Clear();
 
-        FastOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 1;
 
         this->m_table->ProcessIncremental(item1);
 
-        FastOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                            MDEntryType::mdetBuyQuote, "e2", 4);
         item2->RptSeq = 4;
 
         if(this->m_table->ProcessIncremental(item2))
             throw;
 
-        FastOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                            MDEntryType::mdetBuyQuote, "e4", 6);
         item4->RptSeq = 6;
 
         if(this->m_table->ProcessIncremental(item4))
             throw;
 
-        FastOLSFONDItemInfo *item5 = this->m_helper->CreateOLRFondItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsOLSFONDItemInfo *item5 = this->m_helper->CreateOLRFondItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                            MDEntryType::mdetBuyQuote, "e5", 3);
         item5->RptSeq = 3;
 
-        FastOLSFONDInfo *info = this->m_helper->CreateOLSFondInfo("s1", "session1");
+        AstsOLSFONDInfo *info = this->m_helper->CreateOLSFondInfo("s1", "session1");
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item5;
         info->RptSeq = 3;
 
-        OrderInfo<FastOLSFONDItemInfo> *tb = this->m_table->GetItem("s1", "session1");
+        OrderInfo<AstsOLSFONDItemInfo> *tb = this->m_table->GetItem("s1", "session1");
 
         this->m_table->ObtainSnapshotItem(info);
         this->m_table->StartProcessSnapshot();
@@ -1446,7 +1446,7 @@ public:
 
         this->TestTableItemsAllocator(incFond->OrderFond());
 
-        OrderInfo<FastOLSFONDItemInfo> *item = incFond->OrderFond()->GetItem("s1", "session1");
+        OrderInfo<AstsOLSFONDItemInfo> *item = incFond->OrderFond()->GetItem("s1", "session1");
         if(item->BuyQuotes()->Count() != 2)
             throw;
         if(!incFond->m_waitTimer->Active()) // not all messages was processed - some messages was skipped
@@ -1457,7 +1457,7 @@ public:
             throw;
         if(item->EntriesQueue()->Entries()[0] != 0) // cell for rptseq 3 is empty
             throw;
-        if(((FastOLSFONDItemInfo*)item->EntriesQueue()->Entries()[1])->RptSeq != 4)
+        if(((AstsOLSFONDItemInfo*)item->EntriesQueue()->Entries()[1])->RptSeq != 4)
             throw;
 
         // lost message finally appeared before wait timer elapsed
@@ -1500,7 +1500,7 @@ public:
 
         this->TestTableItemsAllocator(incFond->OrderFond());
 
-        OrderInfo<FastOLSFONDItemInfo> *item = incFond->OrderFond()->GetItem("s1", "session1");
+        OrderInfo<AstsOLSFONDItemInfo> *item = incFond->OrderFond()->GetItem("s1", "session1");
         if(item->BuyQuotes()->Count() != 2)
             throw;
         if(!incFond->m_waitTimer->Active()) // not all messages was processed - some messages was skipped
@@ -1513,7 +1513,7 @@ public:
             throw;
         if(item->EntriesQueue()->Entries()[1] != 0) // cell for rptseq 4 is empty
             throw;
-        if(((FastOLSFONDItemInfo*)item->EntriesQueue()->Entries()[2])->RptSeq != 5)
+        if(((AstsOLSFONDItemInfo*)item->EntriesQueue()->Entries()[2])->RptSeq != 5)
             throw;
 
         // lost message finally appeared before wait timer elapsed
@@ -1557,7 +1557,7 @@ public:
 
         this->TestTableItemsAllocator(incFond->OrderFond());
 
-        OrderInfo<FastOLSFONDItemInfo> *item = incFond->OrderFond()->GetItem("s1", "session1");
+        OrderInfo<AstsOLSFONDItemInfo> *item = incFond->OrderFond()->GetItem("s1", "session1");
         if(item->BuyQuotes()->Count() != 2)
             throw;
         if(!incFond->m_waitTimer->Active()) // not all messages was processed - some messages was skipped
@@ -1570,7 +1570,7 @@ public:
             throw;
         if(item->EntriesQueue()->Entries()[1] != 0) // cell for rptseq 4 is empty
             throw;
-        if(((FastOLSFONDItemInfo*)item->EntriesQueue()->Entries()[2])->RptSeq != 5)
+        if(((AstsOLSFONDItemInfo*)item->EntriesQueue()->Entries()[2])->RptSeq != 5)
             throw;
 
         // lost message finally appeared before wait timer elapsed
@@ -1638,7 +1638,7 @@ public:
 
         this->TestTableItemsAllocator(incFond->OrderFond());
 
-        OrderInfo<FastOLSFONDItemInfo> *item = incFond->OrderFond()->GetItem("s1", "session1");
+        OrderInfo<AstsOLSFONDItemInfo> *item = incFond->OrderFond()->GetItem("s1", "session1");
         if(item->BuyQuotes()->Count() != 2)
             throw;
         if(!incFond->m_waitTimer->Active()) // not all messages was processed - some messages was skipped
@@ -1651,7 +1651,7 @@ public:
             throw;
         if(item->EntriesQueue()->Entries()[1] != 0) // cell for rptseq 4 is empty
             throw;
-        if(((FastOLSFONDItemInfo*)item->EntriesQueue()->Entries()[2])->RptSeq != 5)
+        if(((AstsOLSFONDItemInfo*)item->EntriesQueue()->Entries()[2])->RptSeq != 5)
             throw;
 
         // lost message finally appeared before wait timer elapsed
@@ -1722,7 +1722,7 @@ public:
 
         this->TestTableItemsAllocator(incFond->OrderFond());
 
-        OrderInfo<FastOLSFONDItemInfo> *item = incFond->OrderFond()->GetItem("s1", "session1");
+        OrderInfo<AstsOLSFONDItemInfo> *item = incFond->OrderFond()->GetItem("s1", "session1");
         if(!incFond->m_waitTimer->Active()) // not all messages was processed - some messages was skipped
             throw;
         // wait
@@ -2177,7 +2177,7 @@ public:
 
         snapFond->Listen_Atom_Snapshot_Core();
         //snapshot received and should be applied
-        OrderInfo<FastOLSFONDItemInfo> *tableItem = incFond->OrderFond()->GetItem("s1", "session1");
+        OrderInfo<AstsOLSFONDItemInfo> *tableItem = incFond->OrderFond()->GetItem("s1", "session1");
 
         this->TestTableItemsAllocator(incFond->OrderFond());
 
@@ -2306,8 +2306,8 @@ public:
 
         // snapshot for first item should be received and immediately applied then, should be applied incremental messages in que,
         // but connection should not be closed - because not all items were updated
-        OrderInfo<FastOLSFONDItemInfo> *item1 = incFond->OrderFond()->GetItem("s1", "session1");
-        OrderInfo<FastOLSFONDItemInfo> *item2 = incFond->OrderFond()->GetItem("symbol2", "session1");
+        OrderInfo<AstsOLSFONDItemInfo> *item1 = incFond->OrderFond()->GetItem("s1", "session1");
+        OrderInfo<AstsOLSFONDItemInfo> *item2 = incFond->OrderFond()->GetItem("symbol2", "session1");
         if(item1->HasEntries())
             throw;
         if(!item2->HasEntries())
@@ -3202,13 +3202,13 @@ public:
         this->Clear();
 
         this->incFond->OrderFond()->Add("s1", "session1");
-        int prevCount = this->incFond->m_fastProtocolManager->m_oLSFONDItems->Count();
+        int prevCount = this->incFond->m_fastProtocolManager->m_astsOLSFONDItems->Count();
         this->SendMessages(this->incFond, this->snapFond,
                            "olr entry s1 e1",
                            "",
                            30);
 
-        int newCount = this->incFond->m_fastProtocolManager->m_oLSFONDItems->Count();
+        int newCount = this->incFond->m_fastProtocolManager->m_astsOLSFONDItems->Count();
         if(newCount != prevCount + 1)
             throw;
     }
@@ -3217,17 +3217,17 @@ public:
         this->Clear();
 
         this->incFond->OrderFond()->Add("s1", "session1");
-        int prevCount = this->incFond->m_fastProtocolManager->m_oLSFONDItems->Count();
+        int prevCount = this->incFond->m_fastProtocolManager->m_astsOLSFONDItems->Count();
         this->SendMessages(this->incFond, this->snapFond,
                            "olr entry s1 e1, olr entry s1 e2",
                            "",
                            30);
 
-        int newCount = this->incFond->m_fastProtocolManager->m_oLSFONDItems->Count();
+        int newCount = this->incFond->m_fastProtocolManager->m_astsOLSFONDItems->Count();
         if(newCount != prevCount + 2)
             throw;
         this->incFond->OrderFond()->Clear();
-        newCount = this->incFond->m_fastProtocolManager->m_oLSFONDItems->Count();
+        newCount = this->incFond->m_fastProtocolManager->m_astsOLSFONDItems->Count();
         if(newCount != prevCount)
             throw;
     }
@@ -3236,23 +3236,23 @@ public:
         this->Clear();
 
         this->incFond->OrderFond()->Add("s1", "session1");
-        int prevCount = this->incFond->m_fastProtocolManager->m_oLSFONDItems->Count();
+        int prevCount = this->incFond->m_fastProtocolManager->m_astsOLSFONDItems->Count();
         this->SendMessages(this->incFond, this->snapFond,
                            "olr entry s1 e1, olr entry s1 e2, olr entry del s1 e1",
                            "",
                            30);
 
-        int newCount = this->incFond->m_fastProtocolManager->m_oLSFONDItems->Count();
+        int newCount = this->incFond->m_fastProtocolManager->m_astsOLSFONDItems->Count();
         if(newCount != prevCount + 1)
             throw;
         this->incFond->OrderFond()->Clear();
-        newCount = this->incFond->m_fastProtocolManager->m_oLSFONDItems->Count();
+        newCount = this->incFond->m_fastProtocolManager->m_astsOLSFONDItems->Count();
         if(newCount != prevCount)
             throw;
     }
 
     void TestInfoAndItemInfoUsageAndAllocationFond_Inc_4() {
-        FastOLSFONDItemInfo *info = this->m_helper->CreateOLSFondItemInfo(1, 1, 1, 1, MDEntryType::mdetBuyQuote, "e1");
+        AstsOLSFONDItemInfo *info = this->m_helper->CreateOLSFondItemInfo(1, 1, 1, 1, MDEntryType::mdetBuyQuote, "e1");
         if(info->Allocator->Count() != 1)
             throw;
         info->Used = false;
@@ -3268,17 +3268,17 @@ public:
         this->Clear();
 
         this->incFond->OrderFond()->Add("s1", "session1");
-        int prevCount = this->incFond->m_fastProtocolManager->m_oLSFONDItems->Count();
+        int prevCount = this->incFond->m_fastProtocolManager->m_astsOLSFONDItems->Count();
         this->SendMessages(this->incFond, this->snapFond,
                            "olr entry s1 e1, olr entry s1 e2, olr entry change s1 e1",
                            "",
                            30);
 
-        int newCount = this->incFond->m_fastProtocolManager->m_oLSFONDItems->Count();
+        int newCount = this->incFond->m_fastProtocolManager->m_astsOLSFONDItems->Count();
         if(newCount != prevCount + 2)
             throw;
         this->incFond->OrderFond()->Clear();
-        newCount = this->incFond->m_fastProtocolManager->m_oLSFONDItems->Count();
+        newCount = this->incFond->m_fastProtocolManager->m_astsOLSFONDItems->Count();
         if(newCount != prevCount)
             throw;
     }
@@ -3287,13 +3287,13 @@ public:
         this->Clear();
 
         this->incFond->OrderFond()->Add("s1", "session1");
-        int prevCount = this->snapFond->m_fastProtocolManager->m_oLSFONDItems->Count();
+        int prevCount = this->snapFond->m_fastProtocolManager->m_astsOLSFONDItems->Count();
         this->SendMessages(this->incFond, this->snapFond,
                            "olr entry s1 e1, lost olr entry s1 e2, wait_snap, hbeat",
                            "                                                  ols begin s1 entry s1 e2 rpt 2 end",
                            30);
 
-        int newCount = this->snapFond->m_fastProtocolManager->m_oLSFONDItems->Count();
+        int newCount = this->snapFond->m_fastProtocolManager->m_astsOLSFONDItems->Count();
         if(newCount != prevCount + 1)
             throw;
     }
@@ -3302,13 +3302,13 @@ public:
         this->Clear();
 
         this->incFond->OrderFond()->Add("s1", "session1");
-        int prevCount = this->snapFond->m_fastProtocolManager->m_oLSFONDItems->Count();
+        int prevCount = this->snapFond->m_fastProtocolManager->m_astsOLSFONDItems->Count();
         this->SendMessages(this->incFond, this->snapFond,
                            "olr entry s1 e1, lost olr entry s1 e2 entry s1 e3, wait_snap, hbeat",
                            "                                                   ols begin s1 entry s1 e2 rpt 2, ols s1 entry s1 e3 end",
                            30);
 
-        int newCount = this->snapFond->m_fastProtocolManager->m_oLSFONDItems->Count();
+        int newCount = this->snapFond->m_fastProtocolManager->m_astsOLSFONDItems->Count();
         if(newCount != prevCount + 2)
             throw;
     }
@@ -3318,13 +3318,13 @@ public:
         /*this->Clear();
 
         this->incFond->OrderFond()->Add("s1", "session1");
-        int prevCount = this->snapFond->m_fastProtocolManager->m_oLSFONDItems->Count();
+        int prevCount = this->snapFond->m_fastProtocolManager->m_astsOLSFONDItems->Count();
         this->SendMessagesIdf(this->incFond, this->snapFond,
                            "olr entry s1 e1, olr entry s1 e2, lost olr entry s1 e4 entry s1 e4, wait_snap, hbeat",
                            "                                                   ols begin s1 entry s1 e1 rpt 2, ols s1 entry s1 e2, ols s1 entry s1 e3, ols s1 entry del s1 e2 end",
                            30);
 
-        int newCount = this->snapFond->m_fastProtocolManager->m_oLSFONDItems->Count();
+        int newCount = this->snapFond->m_fastProtocolManager->m_astsOLSFONDItems->Count();
         if(newCount != prevCount + 3)
             throw;*/
     }
@@ -3337,12 +3337,12 @@ public:
         incFond->OrderFond()->Add("s2", "session1");
         incFond->OrderFond()->Add("symbol3", "session1");
 
-        int prevCount = this->snapFond->m_fastProtocolManager->m_oLSFONDItems->Count();
+        int prevCount = this->snapFond->m_fastProtocolManager->m_astsOLSFONDItems->Count();
         SendMessages(incFond, snapFond,
                      "olr entry s1 e1, lost olr entry symbol3 e1, wait_snap, olr entry s1 e3,                              hbeat,                              hbeat",
                      "                                                       ols symbol3 begin rpt 1 end entry symbol3 e1, ols s1 begin rpt 2 end entry s1 e1, hbeat, ols s2 begin rpt 2 end entry s2 e1",
                      30);
-        int newCount = this->snapFond->m_fastProtocolManager->m_oLSFONDItems->Count();
+        int newCount = this->snapFond->m_fastProtocolManager->m_astsOLSFONDItems->Count();
         if(newCount != prevCount + 2)
             throw;
     }
@@ -3352,12 +3352,12 @@ public:
         incFond->OrderFond()->Add("s1", "session1");
         incFond->Start();
 
-        int prevCount = this->snapFond->m_fastProtocolManager->m_oLSFONDItems->Count();
+        int prevCount = this->snapFond->m_fastProtocolManager->m_astsOLSFONDItems->Count();
         SendMessages(incFond, snapFond,
                      "olr entry s1 e1, lost olr entry s1 e2, olr entry s1 e2, wait_snap, hbeat",
                      "                                       hbeat,           hbeat,     ols s1 begin rpt 0 lastmsg 0 entry s1 e1 end",
                      30);
-        int newCount = this->snapFond->m_fastProtocolManager->m_oLSFONDItems->Count();
+        int newCount = this->snapFond->m_fastProtocolManager->m_astsOLSFONDItems->Count();
         if(newCount != prevCount)
             throw;
     }
@@ -3368,12 +3368,12 @@ public:
 
         incFond->OrderFond()->Add("s1", "session1");
 
-        int prevCount = this->snapFond->m_fastProtocolManager->m_oLSFONDItems->Count();
+        int prevCount = this->snapFond->m_fastProtocolManager->m_astsOLSFONDItems->Count();
         SendMessages(incFond, snapFond,
                      "olr entry s1 e1, olr entry s1 e2, olr entry s1 e3, lost hbeat, wait_snap, hbeat",
                      "                                                                          ols s1 begin rpt 1 entry s1 e1 end",
                      50);
-        int newCount = this->snapFond->m_fastProtocolManager->m_oLSFONDItems->Count();
+        int newCount = this->snapFond->m_fastProtocolManager->m_astsOLSFONDItems->Count();
         if(newCount != prevCount)
             throw;
     }
@@ -3410,12 +3410,12 @@ public:
         this->Clear();
         this->TestDefaults();
 
-        FastIncrementalOLRFONDInfo *info = this->m_helper->CreateFastIncrementalOLRFONDInfo();
+        AstsIncrementalOLRFONDInfo *info = this->m_helper->CreateAstsIncrementalOLRFONDInfo();
 
-        FastOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
-        FastOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
-        FastOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
-        FastOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "e4", 4);
+        AstsOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
+        AstsOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
+        AstsOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
+        AstsOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "e4", 4);
 
         if(item4->Used)
             throw;
@@ -3433,7 +3433,7 @@ public:
             throw;
         if(this->incFond->OrderFond()->Symbol(0)->Count() != 1)
             throw;
-        OrderInfo<FastOLSFONDItemInfo> *obi = this->incFond->OrderFond()->GetItem("s1", "t1");
+        OrderInfo<AstsOLSFONDItemInfo> *obi = this->incFond->OrderFond()->GetItem("s1", "t1");
         if(obi == 0)
             throw;
         if(obi->AggregatedBuyQuotes()->Count() != 1)
@@ -3556,11 +3556,11 @@ public:
         this->Clear();
         this->TestDefaults();
 
-        FastIncrementalOLRFONDInfo *info = this->m_helper->CreateFastIncrementalOLRFONDInfo();
-        FastOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
-        FastOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
-        FastOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
-        FastOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "e4", 4);
+        AstsIncrementalOLRFONDInfo *info = this->m_helper->CreateAstsIncrementalOLRFONDInfo();
+        AstsOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
+        AstsOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
+        AstsOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
+        AstsOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "e4", 4);
 
         info->GroupMDEntriesCount = 4;
         info->GroupMDEntries[0] = item1;
@@ -3579,7 +3579,7 @@ public:
         if(item4->Allocator->Count() != 1)
             throw;
 
-        OrderInfo<FastOLSFONDItemInfo> *ob = this->incFond->OrderFond()->GetItem("s1", "t1");
+        OrderInfo<AstsOLSFONDItemInfo> *ob = this->incFond->OrderFond()->GetItem("s1", "t1");
         if(!ob->AggregatedBuyQuotes()->Item(0)->Price()->Equal(4, -2))
             throw;
         if(!ob->AggregatedBuyQuotes()->Item(1)->Price()->Equal(3, -2))
@@ -3607,7 +3607,7 @@ public:
         if(this->incFond->OrderFond()->UsedItemCount() != 1)
             throw;
 
-        OrderInfo<FastOLSFONDItemInfo> *obi = this->incFond->OrderFond()->GetItem("s1", "t1");
+        OrderInfo<AstsOLSFONDItemInfo> *obi = this->incFond->OrderFond()->GetItem("s1", "t1");
         if(obi->AggregatedBuyQuotes()->Count() != 3)
             throw;
         if(!obi->AggregatedBuyQuotes()->Item(0)->Price()->Equal(4, -2))
@@ -3667,11 +3667,11 @@ public:
         this->Clear();
         this->TestDefaults();
 
-        FastIncrementalOLRFONDInfo *info = this->m_helper->CreateFastIncrementalOLRFONDInfo();
-        FastOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
-        FastOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
-        FastOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
-        FastOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "e4", 4);
+        AstsIncrementalOLRFONDInfo *info = this->m_helper->CreateAstsIncrementalOLRFONDInfo();
+        AstsOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
+        AstsOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
+        AstsOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
+        AstsOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "e4", 4);
 
         info->GroupMDEntriesCount = 4;
         info->GroupMDEntries[0] = item1;
@@ -3681,7 +3681,7 @@ public:
 
         this->incFond->OnIncrementalRefresh_OLR_FOND(info);
 
-        OrderInfo<FastOLSFONDItemInfo> *obi2 = this->incFond->OrderFond()->GetItem("s1", "t1");
+        OrderInfo<AstsOLSFONDItemInfo> *obi2 = this->incFond->OrderFond()->GetItem("s1", "t1");
         if(!obi2->AggregatedBuyQuotes()->Item(0)->Price()->Equal(4, -2))
             throw;
         if(!obi2->AggregatedBuyQuotes()->Item(1)->Price()->Equal(3, -2))
@@ -3691,7 +3691,7 @@ public:
         if(!obi2->AggregatedBuyQuotes()->Item(3)->Price()->Equal(2, -2))
             throw;
 
-        FastOLSFONDItemInfo *item5 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 24, -3, 1, 3, mduaChange, mdetBuyQuote, "e2", 5);
+        AstsOLSFONDItemInfo *item5 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 24, -3, 1, 3, mduaChange, mdetBuyQuote, "e2", 5);
 
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item5;
@@ -3706,7 +3706,7 @@ public:
         if(item5->Allocator->Count() != 1)
             throw;
 
-        OrderInfo<FastOLSFONDItemInfo> *obi = this->incFond->OrderFond()->GetItem("s1", "t1");
+        OrderInfo<AstsOLSFONDItemInfo> *obi = this->incFond->OrderFond()->GetItem("s1", "t1");
 
         QuoteInfo *qt1 = obi->AggregatedBuyQuotes()->Item(0);
         QuoteInfo *qt2 = obi->AggregatedBuyQuotes()->Item(1);
@@ -3731,11 +3731,11 @@ public:
         this->Clear();
         this->TestDefaults();
 
-        FastIncrementalOLRFONDInfo *info = this->m_helper->CreateFastIncrementalOLRFONDInfo();
-        FastOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
-        FastOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
-        FastOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
-        FastOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "e4", 4);
+        AstsIncrementalOLRFONDInfo *info = this->m_helper->CreateAstsIncrementalOLRFONDInfo();
+        AstsOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
+        AstsOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
+        AstsOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
+        AstsOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "e4", 4);
 
         info->GroupMDEntriesCount = 4;
         info->GroupMDEntries[0] = item1;
@@ -3756,7 +3756,7 @@ public:
         if(this->incFond->OrderFond()->UsedItemCount() != 0)
             throw;
 
-        OrderInfo<FastOLSFONDItemInfo> *obi = this->incFond->OrderFond()->GetItem("s1", "t1");
+        OrderInfo<AstsOLSFONDItemInfo> *obi = this->incFond->OrderFond()->GetItem("s1", "t1");
         if(obi->AggregatedBuyQuotes()->Count() != 0)
             throw;
     }
@@ -3765,11 +3765,11 @@ public:
         this->Clear();
         this->TestDefaults();
 
-        FastIncrementalOLRFONDInfo *info = this->m_helper->CreateFastIncrementalOLRFONDInfo();
-        FastOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
-        FastOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
-        FastOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
-        FastOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "e4", 4);
+        AstsIncrementalOLRFONDInfo *info = this->m_helper->CreateAstsIncrementalOLRFONDInfo();
+        AstsOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
+        AstsOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
+        AstsOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
+        AstsOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "e4", 4);
 
         info->GroupMDEntriesCount = 4;
         info->GroupMDEntries[0] = item1;
@@ -3779,13 +3779,13 @@ public:
 
         this->incFond->OnIncrementalRefresh_OLR_FOND(info);
 
-        OrderInfo<FastOLSFONDItemInfo> *obi2 = this->incFond->OrderFond()->GetItem("s1", "t1");
+        OrderInfo<AstsOLSFONDItemInfo> *obi2 = this->incFond->OrderFond()->GetItem("s1", "t1");
         if(obi2->AggregatedBuyQuotes()->Count() != 4)
             throw;
 
-        FastOLSFONDInfo *info2 = this->m_helper->CreateOLSFondInfo("t1s2", "t1");
-        FastOLSFONDItemInfo *newItem1 = this->m_helper->CreateOLSFondItemInfo(7,-2, 1, 2, mdetBuyQuote, "e7");
-        FastOLSFONDItemInfo *newItem2 = this->m_helper->CreateOLSFondItemInfo(8,-2, 1, 2, mdetBuyQuote, "e8");
+        AstsOLSFONDInfo *info2 = this->m_helper->CreateOLSFondInfo("t1s2", "t1");
+        AstsOLSFONDItemInfo *newItem1 = this->m_helper->CreateOLSFondItemInfo(7,-2, 1, 2, mdetBuyQuote, "e7");
+        AstsOLSFONDItemInfo *newItem2 = this->m_helper->CreateOLSFondItemInfo(8,-2, 1, 2, mdetBuyQuote, "e8");
         info2->RptSeq = 5;
 
         info2->GroupMDEntriesCount = 2;
@@ -3798,11 +3798,11 @@ public:
         if(this->incFond->OrderFond()->UsedItemCount() != 2)
             throw;
 
-        OrderInfo<FastOLSFONDItemInfo> *obi3 = this->incFond->OrderFond()->GetItem("s1", "t1");
+        OrderInfo<AstsOLSFONDItemInfo> *obi3 = this->incFond->OrderFond()->GetItem("s1", "t1");
         if(obi3->AggregatedBuyQuotes()->Count() != 4)
             throw;
 
-        OrderInfo<FastOLSFONDItemInfo> *obi = this->incFond->OrderFond()->GetItem("t1s2", 4, "t1", 2);
+        OrderInfo<AstsOLSFONDItemInfo> *obi = this->incFond->OrderFond()->GetItem("t1s2", 4, "t1", 2);
         if(obi->AggregatedBuyQuotes()->Count() != 2)
             throw;
 
@@ -3819,12 +3819,12 @@ public:
         this->Clear();
         this->TestDefaults();
 
-        FastIncrementalOLRFONDInfo *info = this->m_helper->CreateFastIncrementalOLRFONDInfo();
+        AstsIncrementalOLRFONDInfo *info = this->m_helper->CreateAstsIncrementalOLRFONDInfo();
 
-        FastOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "e1", 1);
-        FastOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "e2", 2);
-        FastOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "e3", 3);
-        FastOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "e4", 4);
+        AstsOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "e1", 1);
+        AstsOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "e2", 2);
+        AstsOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "e3", 3);
+        AstsOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "e4", 4);
 
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item1;
@@ -3837,7 +3837,7 @@ public:
             throw;
         if(this->incFond->OrderFond()->Symbol(0)->Count() != 1)
             throw;
-        OrderInfo<FastOLSFONDItemInfo> *obi = this->incFond->OrderFond()->GetItem("s1", "t1");
+        OrderInfo<AstsOLSFONDItemInfo> *obi = this->incFond->OrderFond()->GetItem("s1", "t1");
         if(obi == 0)
             throw;
         if(obi->AggregatedSellQuotes()->Count() != 1)
@@ -3937,11 +3937,11 @@ public:
         this->Clear();
         this->TestDefaults();
 
-        FastIncrementalOLRFONDInfo *info = this->m_helper->CreateFastIncrementalOLRFONDInfo();
-        FastOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "e1", 1);
-        FastOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "e2", 2);
-        FastOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "e3", 3);
-        FastOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "e4", 4);
+        AstsIncrementalOLRFONDInfo *info = this->m_helper->CreateAstsIncrementalOLRFONDInfo();
+        AstsOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "e1", 1);
+        AstsOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "e2", 2);
+        AstsOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "e3", 3);
+        AstsOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "e4", 4);
 
         info->GroupMDEntriesCount = 4;
         info->GroupMDEntries[0] = item1;
@@ -3965,7 +3965,7 @@ public:
         if(this->incFond->OrderFond()->UsedItemCount() != 1)
             throw;
 
-        OrderInfo<FastOLSFONDItemInfo> *obi = this->incFond->OrderFond()->GetItem("s1", "t1");
+        OrderInfo<AstsOLSFONDItemInfo> *obi = this->incFond->OrderFond()->GetItem("s1", "t1");
         if(obi->AggregatedSellQuotes()->Count() != 3)
             throw;
 
@@ -4026,11 +4026,11 @@ public:
         this->Clear();
         this->TestDefaults();
 
-        FastIncrementalOLRFONDInfo *info = this->m_helper->CreateFastIncrementalOLRFONDInfo();
-        FastOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "e1", 1);
-        FastOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "e2", 2);
-        FastOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "e3", 3);
-        FastOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "e4", 4);
+        AstsIncrementalOLRFONDInfo *info = this->m_helper->CreateAstsIncrementalOLRFONDInfo();
+        AstsOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "e1", 1);
+        AstsOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "e2", 2);
+        AstsOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "e3", 3);
+        AstsOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "e4", 4);
 
         info->GroupMDEntriesCount = 4;
         info->GroupMDEntries[0] = item1;
@@ -4040,7 +4040,7 @@ public:
 
         this->incFond->OnIncrementalRefresh_OLR_FOND(info);
 
-        OrderInfo<FastOLSFONDItemInfo> *obi2 = this->incFond->OrderFond()->GetItem("s1", "t1");
+        OrderInfo<AstsOLSFONDItemInfo> *obi2 = this->incFond->OrderFond()->GetItem("s1", "t1");
         if(!obi2->AggregatedSellQuotes()->Item(0)->Price()->Equal(2, -2))
             throw;
         if(!obi2->AggregatedSellQuotes()->Item(1)->Price()->Equal(25, -3))
@@ -4050,14 +4050,14 @@ public:
         if(!obi2->AggregatedSellQuotes()->Item(3)->Price()->Equal(4, -2))
             throw;
 
-        FastOLSFONDItemInfo *item5 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 24, -3, 1, 3, mduaChange, mdetSellQuote, "e2", 5);
+        AstsOLSFONDItemInfo *item5 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 24, -3, 1, 3, mduaChange, mdetSellQuote, "e2", 5);
 
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item5;
 
         this->incFond->OnIncrementalRefresh_OLR_FOND(info);
 
-        OrderInfo<FastOLSFONDItemInfo> *obi = this->incFond->OrderFond()->GetItem("s1", "t1");
+        OrderInfo<AstsOLSFONDItemInfo> *obi = this->incFond->OrderFond()->GetItem("s1", "t1");
 
         QuoteInfo *qt1 = obi->AggregatedSellQuotes()->Item(0);
         QuoteInfo *qt2 = obi->AggregatedSellQuotes()->Item(1);
@@ -4082,11 +4082,11 @@ public:
         this->Clear();
         this->TestDefaults();
 
-        FastIncrementalOLRFONDInfo *info = this->m_helper->CreateFastIncrementalOLRFONDInfo();
-        FastOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "e1", 1);
-        FastOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "e2", 2);
-        FastOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "e3", 3);
-        FastOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "e4", 4);
+        AstsIncrementalOLRFONDInfo *info = this->m_helper->CreateAstsIncrementalOLRFONDInfo();
+        AstsOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "e1", 1);
+        AstsOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "e2", 2);
+        AstsOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "e3", 3);
+        AstsOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "e4", 4);
 
         info->GroupMDEntriesCount = 4;
         info->GroupMDEntries[0] = item1;
@@ -4100,7 +4100,7 @@ public:
         if(this->incFond->OrderFond()->UsedItemCount() != 0)
             throw;
 
-        OrderInfo<FastOLSFONDItemInfo> *obi = this->incFond->OrderFond()->GetItem("s1", "t1");
+        OrderInfo<AstsOLSFONDItemInfo> *obi = this->incFond->OrderFond()->GetItem("s1", "t1");
         if(obi->AggregatedSellQuotes()->Count() != 0)
             throw;
     }
@@ -4109,11 +4109,11 @@ public:
         this->Clear();
         this->TestDefaults();
 
-        FastIncrementalOLRFONDInfo *info = this->m_helper->CreateFastIncrementalOLRFONDInfo();
-        FastOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "e1", 1);
-        FastOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "e2", 2);
-        FastOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "e3", 3);
-        FastOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "e4", 4);
+        AstsIncrementalOLRFONDInfo *info = this->m_helper->CreateAstsIncrementalOLRFONDInfo();
+        AstsOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "e1", 1);
+        AstsOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "e2", 2);
+        AstsOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "e3", 3);
+        AstsOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "e4", 4);
 
         info->GroupMDEntriesCount = 4;
         info->GroupMDEntries[0] = item1;
@@ -4123,9 +4123,9 @@ public:
 
         this->incFond->OnIncrementalRefresh_OLR_FOND(info);
 
-        FastOLSFONDInfo *info2 = this->m_helper->CreateOLSFondInfo("t1s2", "t1");
-        FastOLSFONDItemInfo *newItem1 = this->m_helper->CreateOLSFondItemInfo(7,-2, 1, 2, mdetSellQuote, "e7");
-        FastOLSFONDItemInfo *newItem2 = this->m_helper->CreateOLSFondItemInfo(8,-2, 1, 2, mdetSellQuote, "e8");
+        AstsOLSFONDInfo *info2 = this->m_helper->CreateOLSFondInfo("t1s2", "t1");
+        AstsOLSFONDItemInfo *newItem1 = this->m_helper->CreateOLSFondItemInfo(7,-2, 1, 2, mdetSellQuote, "e7");
+        AstsOLSFONDItemInfo *newItem2 = this->m_helper->CreateOLSFondItemInfo(8,-2, 1, 2, mdetSellQuote, "e8");
 
         info2->GroupMDEntriesCount = 2;
         info2->GroupMDEntries[0] = newItem1;
@@ -4137,11 +4137,11 @@ public:
         if(this->incFond->OrderFond()->UsedItemCount() != 2)
             throw;
 
-        OrderInfo<FastOLSFONDItemInfo> *obi3 = this->incFond->OrderFond()->GetItem("s1", "t1");
+        OrderInfo<AstsOLSFONDItemInfo> *obi3 = this->incFond->OrderFond()->GetItem("s1", "t1");
         if(obi3->AggregatedSellQuotes()->Count() != 4)
             throw;
 
-        OrderInfo<FastOLSFONDItemInfo> *obi = this->incFond->OrderFond()->GetItem("t1s2", 4, "t1", 2);
+        OrderInfo<AstsOLSFONDItemInfo> *obi = this->incFond->OrderFond()->GetItem("t1s2", 4, "t1", 2);
         if(obi->AggregatedSellQuotes()->Count() != 2)
             throw;
 
@@ -4180,9 +4180,9 @@ public:
     void Test_Aggregation_Logic() {
         this->Clear();
 
-        OrderInfo<FastOLSFONDItemInfo> *item = this->m_table->Add("s1", "t1");
+        OrderInfo<AstsOLSFONDItemInfo> *item = this->m_table->Add("s1", "t1");
 
-        FastOLSFONDItemInfo *info = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 100, 0, 200, 0, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "e1", 1);
+        AstsOLSFONDItemInfo *info = this->m_helper->CreateOLRFondItemInfo("s1", "t1", 100, 0, 200, 0, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "e1", 1);
         item->ProcessIncrementalMessage(info);
 
         if(item->AggregatedBuyQuotes()->Count() != 1)

@@ -7,15 +7,15 @@
 
 #include "../FeedConnection.h"
 
-//class TradesFondAllocationInfo : public FastObjectsAllocationInfo {
+//class TradesFondAllocationInfo : public AstsObjectsAllocationInfo {
 //public:
-//    TradesFondAllocationInfo() : FastObjectsAllocationInfo(32, 32) {
+//    TradesFondAllocationInfo() : AstsObjectsAllocationInfo(32, 32) {
 //#ifndef TEST
-//        this->m_tLSFONDItemsCount = 800000;
-//        this->m_tLSFONDItemsAddCount = 20000;
+//        this->m_astsTLSFONDItemsCount = 800000;
+//        this->m_astsTLSFONDItemsAddCount = 20000;
 //#else
-//        this->m_tLSFONDItemsCount = 100;
-//        this->m_tLSFONDItemsAddCount = 100;
+//        this->m_astsTLSFONDItemsCount = 100;
+//        this->m_astsTLSFONDItemsAddCount = 100;
 //#endif
 //    }
 //};
@@ -25,7 +25,7 @@ public:
     FeedConnection_FOND_TLR(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
             FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
         this->SetType(FeedConnectionType::Incremental);
-        this->m_tradeTableFond = new MarketDataTable<TradeInfo, FastTLSFONDInfo, FastTLSFONDItemInfo>();
+        this->m_tradeTableFond = new MarketDataTable<TradeInfo, AstsTLSFONDInfo, AstsTLSFONDItemInfo>();
         this->SetId(FeedConnectionId::fcidTlrFond);
         this->m_fastProtocolManager = new FastProtocolManager();
         this->AllocateFastObjects();
@@ -36,13 +36,13 @@ public:
         delete this->m_tradeTableFond;
     }
     void AllocateFastObjects() {
-        FastObjectsAllocationInfo::Default->AllocateHeartbeatInfoPoolTo(10);
-        FastObjectsAllocationInfo::Default->AllocateTradingSessionStatusInfoPoolTo(10);
-        FastObjectsAllocationInfo::Default->AllocateIncrementalTLRFONDInfoPoolTo(10);
+        AstsObjectsAllocationInfo::Default->AllocateHeartbeatInfoPoolTo(10);
+        AstsObjectsAllocationInfo::Default->AllocateTradingSessionStatusInfoPoolTo(10);
+        AstsObjectsAllocationInfo::Default->AllocateIncrementalTLRFONDInfoPoolTo(10);
 #ifdef TEST
-        FastObjectsAllocationInfo::Default->AllocateTLSFONDItemInfoPool(100, 100);
+        AstsObjectsAllocationInfo::Default->AllocateTLSFONDItemInfoPool(100, 100);
 #else
-        FastObjectsAllocationInfo::Default->AllocateTLSFONDItemInfoPool(800000, 20000);
+        AstsObjectsAllocationInfo::Default->AllocateTLSFONDItemInfoPool(800000, 20000);
 #endif
     }
     int GetPacketsCount() { return 10000; }

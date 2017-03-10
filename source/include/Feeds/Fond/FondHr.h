@@ -26,8 +26,8 @@ public:
         DisposeHistoricalReplay();
     }
     void AllocateFastObjects() {
-        FastObjectsAllocationInfo::Default->AllocateLogonInfoPoolTo(10);
-        FastObjectsAllocationInfo::Default->AllocateLogoutInfoPoolTo(10);
+        AstsObjectsAllocationInfo::Default->AllocateLogonInfoPoolTo(10);
+        AstsObjectsAllocationInfo::Default->AllocateLogoutInfoPoolTo(10);
     }
     ISocketBufferProvider* CreateSocketBufferProvider() {
         return new SocketBufferProvider(DefaultSocketBufferManager::Default,

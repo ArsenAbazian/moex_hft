@@ -14,7 +14,7 @@ template <typename T> class MarketSymbolInfo {
     int                                 m_count;
     int                                 m_maxCount;
     int                                 m_sessionsToRecvSnapshot;
-    LinkedPointer<FastSecurityDefinitionInfo> *m_securityDefinitionPtr;
+    LinkedPointer<AstsSecurityDefinitionInfo> *m_securityDefinitionPtr;
 public:
     MarketSymbolInfo() {
         this->m_count = 0;
@@ -61,8 +61,8 @@ public:
         this->m_count++;
         return res;
     }
-    inline void SecurityDefinitionPtr(LinkedPointer<FastSecurityDefinitionInfo> *ptr) { this->m_securityDefinitionPtr = ptr; }
-    inline FastSecurityDefinitionInfo* SecurityDefinition() { return this->m_securityDefinitionPtr->Data(); }
+    inline void SecurityDefinitionPtr(LinkedPointer<AstsSecurityDefinitionInfo> *ptr) { this->m_securityDefinitionPtr = ptr; }
+    inline AstsSecurityDefinitionInfo* SecurityDefinition() { return this->m_securityDefinitionPtr->Data(); }
     inline SizedArray *Symbol() { return this->m_symbol; }
     inline bool Equals(const char *symbol, int symbolLen) { return this->m_symbol->Equal(symbol, symbolLen); }
     inline void Clear() {

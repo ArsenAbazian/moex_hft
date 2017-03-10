@@ -347,7 +347,7 @@ public:
         this->m_symbolsCount = 0;
         this->m_curr = false;
         this->m_fixManager = new FixProtocolManager(new SocketBufferProvider(DefaultSocketBufferManager::Default, 16000, 100, 16000, 100), FastProtocolVersion);
-        this->m_fastManager = new FastProtocolManager(new FastObjectsAllocationInfo(128, 128));
+        this->m_fastManager = new FastProtocolManager(new AstsObjectsAllocationInfo(128), new SpectraObjectsAllocationInfo(128));
         if(TestMessagesHelper::m_sockMessages->PoolStart()->Data() == 0)
             TestMessagesHelper::m_sockMessages->AllocData();
         this->m_buffer = DefaultSocketBufferManager::Default->GetFreeBuffer(10000, 100);
@@ -361,8 +361,8 @@ public:
         this->m_feedInfoCount = 0;
     }
 
-    FastLogonInfo* CreateLogonMessage(TestTemplateInfo *tmp) {
-        FastLogonInfo *info = new FastLogonInfo();
+    AstsLogonInfo* CreateLogonMessage(TestTemplateInfo *tmp) {
+        AstsLogonInfo *info = new AstsLogonInfo();
 
         int sidLen = strlen(tmp->m_senderId);
         char *sid = new char[sidLen + 1];
@@ -384,8 +384,8 @@ public:
         return info;
     }
 
-    FastOLSFONDInfo* CreateOLSFondInfo(const char *symbol, const char *trading) {
-        FastOLSFONDInfo *info = new FastOLSFONDInfo();
+    AstsOLSFONDInfo* CreateOLSFondInfo(const char *symbol, const char *trading) {
+        AstsOLSFONDInfo *info = new AstsOLSFONDInfo();
 
         StringIdComparer::CopyString(info->Symbol, symbol, strlen(symbol));
         info->SymbolLength = strlen(symbol);
@@ -396,10 +396,10 @@ public:
         return info;
     }
 
-    FastOLSFONDItemInfo* CreateOLSFondItemInfo(INT64 priceMantissa, INT32 priceExponenta, INT64 sizeMantissa, INT64 sizeExponenta, MDEntryType entryType, const char *entryId) {
+    AstsOLSFONDItemInfo* CreateOLSFondItemInfo(INT64 priceMantissa, INT32 priceExponenta, INT64 sizeMantissa, INT64 sizeExponenta, MDEntryType entryType, const char *entryId) {
 
-        AutoAllocatePointerList<FastOLSFONDItemInfo> *list = new AutoAllocatePointerList<FastOLSFONDItemInfo>(2, 1);
-        FastOLSFONDItemInfo *info = list->NewItem();
+        AutoAllocatePointerList<AstsOLSFONDItemInfo> *list = new AutoAllocatePointerList<AstsOLSFONDItemInfo>(2, 1);
+        AstsOLSFONDItemInfo *info = list->NewItem();
 
         char *type = new char[1];
         type[0] = (char) entryType;
@@ -415,31 +415,31 @@ public:
         return info;
     }
 
-    FastIncrementalOLRFONDInfo* CreateFastIncrementalOLRFONDInfo() {
-        AutoAllocatePointerList<FastIncrementalOLRFONDInfo> *list = new AutoAllocatePointerList<FastIncrementalOLRFONDInfo>(2, 1);
+    AstsIncrementalOLRFONDInfo* CreateAstsIncrementalOLRFONDInfo() {
+        AutoAllocatePointerList<AstsIncrementalOLRFONDInfo> *list = new AutoAllocatePointerList<AstsIncrementalOLRFONDInfo>(2, 1);
         return list->NewItem();
     }
 
-    FastIncrementalOLRCURRInfo* CreateFastIncrementalOLRCURRInfo() {
-        AutoAllocatePointerList<FastIncrementalOLRCURRInfo> *list = new AutoAllocatePointerList<FastIncrementalOLRCURRInfo>(2, 1);
+    AstsIncrementalOLRCURRInfo* CreateAstsIncrementalOLRCURRInfo() {
+        AutoAllocatePointerList<AstsIncrementalOLRCURRInfo> *list = new AutoAllocatePointerList<AstsIncrementalOLRCURRInfo>(2, 1);
         return list->NewItem();
     }
 
-    FastIncrementalTLRFONDInfo* CreateFastIncrementalTLRFONDInfo() {
-        AutoAllocatePointerList<FastIncrementalTLRFONDInfo> *list = new AutoAllocatePointerList<FastIncrementalTLRFONDInfo>(2, 1);
+    AstsIncrementalTLRFONDInfo* CreateAstsIncrementalTLRFONDInfo() {
+        AutoAllocatePointerList<AstsIncrementalTLRFONDInfo> *list = new AutoAllocatePointerList<AstsIncrementalTLRFONDInfo>(2, 1);
         return list->NewItem();
     }
 
-    FastIncrementalTLRCURRInfo* CreateFastIncrementalTLRCURRInfo() {
-        AutoAllocatePointerList<FastIncrementalTLRCURRInfo> *list = new AutoAllocatePointerList<FastIncrementalTLRCURRInfo>(2, 1);
+    AstsIncrementalTLRCURRInfo* CreateAstsIncrementalTLRCURRInfo() {
+        AutoAllocatePointerList<AstsIncrementalTLRCURRInfo> *list = new AutoAllocatePointerList<AstsIncrementalTLRCURRInfo>(2, 1);
         return list->NewItem();
     }
 
-    FastOLSFONDItemInfo* CreateOLRFondItemInfo(const char *symbol, const char *trading, INT64 priceMantissa,
+    AstsOLSFONDItemInfo* CreateOLRFondItemInfo(const char *symbol, const char *trading, INT64 priceMantissa,
                                                INT32 priceExponenta, INT64 sizeMantissa, INT64 sizeExponenta,
                                                MDUpdateAction updateAction, MDEntryType entryType, const char *entryId,
                                                int rptSeq) {
-        FastOLSFONDItemInfo *info = CreateOLSFondItemInfo(priceMantissa, priceExponenta, sizeMantissa, sizeExponenta, entryType, entryId);
+        AstsOLSFONDItemInfo *info = CreateOLSFondItemInfo(priceMantissa, priceExponenta, sizeMantissa, sizeExponenta, entryType, entryId);
 
         StringIdComparer::CopyString(info->Symbol, symbol, strlen(symbol));
         info->SymbolLength = strlen(symbol);
@@ -453,13 +453,13 @@ public:
         return info;
     }
 
-    FastOLSFONDItemInfo* CreateOLRFondItemInfo(const char *symbol, const char *trading, const char *entryId) {
+    AstsOLSFONDItemInfo* CreateOLRFondItemInfo(const char *symbol, const char *trading, const char *entryId) {
         return CreateOLRFondItemInfo(symbol, trading, 1, 1, 1, 1, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote,
                                      entryId, 1);
     }
     
-    FastOLSCURRInfo* CreateOLSCurrInfo(const char *symbol, const char *trading) {
-        FastOLSCURRInfo *info = new FastOLSCURRInfo();
+    AstsOLSCURRInfo* CreateOLSCurrInfo(const char *symbol, const char *trading) {
+        AstsOLSCURRInfo *info = new AstsOLSCURRInfo();
 
         StringIdComparer::CopyString(info->Symbol, symbol, strlen(symbol));
         info->SymbolLength = strlen(symbol);
@@ -470,10 +470,10 @@ public:
         return info;
     }
 
-    FastOLSCURRItemInfo* CreateOLSCurrItemInfo(INT64 priceMantissa, INT32 priceExponenta, INT64 sizeMantissa, INT64 sizeExponenta, MDEntryType entryType, const char *entryId) {
+    AstsOLSCURRItemInfo* CreateOLSCurrItemInfo(INT64 priceMantissa, INT32 priceExponenta, INT64 sizeMantissa, INT64 sizeExponenta, MDEntryType entryType, const char *entryId) {
 
-        AutoAllocatePointerList<FastOLSCURRItemInfo> *list = new AutoAllocatePointerList<FastOLSCURRItemInfo>(2, 1);
-        FastOLSCURRItemInfo *info = list->NewItem();
+        AutoAllocatePointerList<AstsOLSCURRItemInfo> *list = new AutoAllocatePointerList<AstsOLSCURRItemInfo>(2, 1);
+        AstsOLSCURRItemInfo *info = list->NewItem();
 
         char *type = new char[1];
         type[0] = (char) entryType;
@@ -489,11 +489,11 @@ public:
         return info;
     }
 
-    FastOLSCURRItemInfo* CreateOLRCurrItemInfo(const char *symbol, const char *trading, INT64 priceMantissa,
+    AstsOLSCURRItemInfo* CreateOLRCurrItemInfo(const char *symbol, const char *trading, INT64 priceMantissa,
                                                INT32 priceExponenta, INT64 sizeMantissa, INT64 sizeExponenta,
                                                MDUpdateAction updateAction, MDEntryType entryType, const char *entryId,
                                                int rptSeq) {
-        FastOLSCURRItemInfo *info = CreateOLSCurrItemInfo(priceMantissa, priceExponenta, sizeMantissa, sizeExponenta, entryType, entryId);
+        AstsOLSCURRItemInfo *info = CreateOLSCurrItemInfo(priceMantissa, priceExponenta, sizeMantissa, sizeExponenta, entryType, entryId);
 
         StringIdComparer::CopyString(info->Symbol, symbol, strlen(symbol));
         info->SymbolLength = strlen(symbol);
@@ -507,13 +507,13 @@ public:
         return info;
     }
 
-    FastOLSCURRItemInfo* CreateOLRCurrItemInfo(const char *symbol, const char *trading, const char *entryId) {
+    AstsOLSCURRItemInfo* CreateOLRCurrItemInfo(const char *symbol, const char *trading, const char *entryId) {
         return CreateOLRCurrItemInfo(symbol, trading, 1, 1, 1, 1, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote,
                                      entryId, 1);
     }
     
-    FastGenericInfo* CreateOBSFondInfo(const char *symbol, const char *trading) {
-        FastGenericInfo *info = new FastGenericInfo();
+    AstsGenericInfo* CreateOBSFondInfo(const char *symbol, const char *trading) {
+        AstsGenericInfo *info = new AstsGenericInfo();
 
 
         StringIdComparer::CopyString(info->Symbol, symbol, strlen(symbol));
@@ -525,10 +525,10 @@ public:
         return info;
     }
 
-    FastGenericItemInfo* CreateOBSFondItemInfo(INT64 priceMantissa, INT32 priceExponenta, INT64 sizeMantissa, INT64 sizeExponenta, MDEntryType entryType, const char *entryId) {
+    AstsGenericItemInfo* CreateOBSFondItemInfo(INT64 priceMantissa, INT32 priceExponenta, INT64 sizeMantissa, INT64 sizeExponenta, MDEntryType entryType, const char *entryId) {
 
-        AutoAllocatePointerList<FastGenericItemInfo> *list = new AutoAllocatePointerList<FastGenericItemInfo>(2, 1);
-        FastGenericItemInfo *info = list->NewItem();
+        AutoAllocatePointerList<AstsGenericItemInfo> *list = new AutoAllocatePointerList<AstsGenericItemInfo>(2, 1);
+        AstsGenericItemInfo *info = list->NewItem();
 
         char *type = new char[1];
         type[0] = (char) entryType;
@@ -544,11 +544,11 @@ public:
         return info;
     }
 
-    FastGenericItemInfo* CreateOBRFondItemInfo(const char *symbol, const char *trading, INT64 priceMantissa,
+    AstsGenericItemInfo* CreateOBRFondItemInfo(const char *symbol, const char *trading, INT64 priceMantissa,
                                                INT32 priceExponenta, INT64 sizeMantissa, INT64 sizeExponenta,
                                                MDUpdateAction updateAction, MDEntryType entryType, const char *entryId,
                                                int rptSeq) {
-        FastGenericItemInfo *info = CreateOBSFondItemInfo(priceMantissa, priceExponenta, sizeMantissa, sizeExponenta, entryType, entryId);
+        AstsGenericItemInfo *info = CreateOBSFondItemInfo(priceMantissa, priceExponenta, sizeMantissa, sizeExponenta, entryType, entryId);
 
         StringIdComparer::CopyString(info->Symbol, symbol, strlen(symbol));
         info->SymbolLength = strlen(symbol);
@@ -562,13 +562,13 @@ public:
         return info;
     }
 
-    FastGenericItemInfo* CreateOBRFondItemInfo(const char *symbol, const char *trading, const char *entryId) {
+    AstsGenericItemInfo* CreateOBRFondItemInfo(const char *symbol, const char *trading, const char *entryId) {
         return CreateOBRFondItemInfo(symbol, trading, 1, 1, 1, 1, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote,
                                      entryId, 1);
     }
 
-    FastGenericInfo* CreateOBSCurrInfo(const char *symbol, const char *trading) {
-        FastGenericInfo *info = new FastGenericInfo();
+    AstsGenericInfo* CreateOBSCurrInfo(const char *symbol, const char *trading) {
+        AstsGenericInfo *info = new AstsGenericInfo();
 
         StringIdComparer::CopyString(info->Symbol, symbol, strlen(symbol));
         info->SymbolLength = strlen(symbol);
@@ -579,10 +579,10 @@ public:
         return info;
     }
 
-    FastGenericItemInfo* CreateOBSCurrItemInfo(INT64 priceMantissa, INT32 priceExponenta, INT64 sizeMantissa, INT64 sizeExponenta, MDEntryType entryType, const char *entryId) {
+    AstsGenericItemInfo* CreateOBSCurrItemInfo(INT64 priceMantissa, INT32 priceExponenta, INT64 sizeMantissa, INT64 sizeExponenta, MDEntryType entryType, const char *entryId) {
 
-        AutoAllocatePointerList<FastGenericItemInfo> *list = new AutoAllocatePointerList<FastGenericItemInfo>(2, 1);
-        FastGenericItemInfo *info = list->NewItem();
+        AutoAllocatePointerList<AstsGenericItemInfo> *list = new AutoAllocatePointerList<AstsGenericItemInfo>(2, 1);
+        AstsGenericItemInfo *info = list->NewItem();
 
         char *type = new char[1];
         type[0] = (char) entryType;
@@ -598,11 +598,11 @@ public:
         return info;
     }
 
-    FastGenericItemInfo* CreateOBRCurrItemInfo(const char *symbol, const char *trading, INT64 priceMantissa,
+    AstsGenericItemInfo* CreateOBRCurrItemInfo(const char *symbol, const char *trading, INT64 priceMantissa,
                                                INT32 priceExponenta, INT64 sizeMantissa, INT64 sizeExponenta,
                                                MDUpdateAction updateAction, MDEntryType entryType, const char *entryId,
                                                int rptSeq) {
-        FastGenericItemInfo *info = CreateOBSCurrItemInfo(priceMantissa, priceExponenta, sizeMantissa, sizeExponenta, entryType, entryId);
+        AstsGenericItemInfo *info = CreateOBSCurrItemInfo(priceMantissa, priceExponenta, sizeMantissa, sizeExponenta, entryType, entryId);
 
         StringIdComparer::CopyString(info->Symbol, symbol, strlen(symbol));
         info->SymbolLength = strlen(symbol);
@@ -616,13 +616,13 @@ public:
         return info;
     }
 
-    FastGenericItemInfo* CreateOBRCurrItemInfo(const char *symbol, const char *trading, const char *entryId) {
+    AstsGenericItemInfo* CreateOBRCurrItemInfo(const char *symbol, const char *trading, const char *entryId) {
         return CreateOBRCurrItemInfo(symbol, trading, 1, 1, 1, 1, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote,
                                      entryId, 1);
     }
 
-    FastTLSFONDInfo* CreateTLSFondInfo(const char *symbol, const char *trading) {
-        FastTLSFONDInfo *info = new FastTLSFONDInfo();
+    AstsTLSFONDInfo* CreateTLSFondInfo(const char *symbol, const char *trading) {
+        AstsTLSFONDInfo *info = new AstsTLSFONDInfo();
 
         StringIdComparer::CopyString(info->Symbol, symbol, strlen(symbol));
         info->SymbolLength = strlen(symbol);
@@ -633,10 +633,10 @@ public:
         return info;
     }
 
-    FastTLSFONDItemInfo* CreateTLSFondItemInfo(INT64 priceMantissa, INT32 priceExponenta, INT64 sizeMantissa, INT64 sizeExponenta, MDEntryType entryType, const char *entryId) {
+    AstsTLSFONDItemInfo* CreateTLSFondItemInfo(INT64 priceMantissa, INT32 priceExponenta, INT64 sizeMantissa, INT64 sizeExponenta, MDEntryType entryType, const char *entryId) {
 
-        AutoAllocatePointerList<FastTLSFONDItemInfo> *list = new AutoAllocatePointerList<FastTLSFONDItemInfo>(2, 1);
-        FastTLSFONDItemInfo *info = list->NewItem();
+        AutoAllocatePointerList<AstsTLSFONDItemInfo> *list = new AutoAllocatePointerList<AstsTLSFONDItemInfo>(2, 1);
+        AstsTLSFONDItemInfo *info = list->NewItem();
 
         char *type = new char[1];
         type[0] = (char) entryType;
@@ -652,8 +652,8 @@ public:
         return info;
     }
 
-    FastTLSFONDItemInfo* CreateTLRFondItemInfo(const char *symbol, const char *trading, INT64 priceMantissa, INT32 priceExponenta, INT64 sizeMantissa, INT64 sizeExponenta, MDUpdateAction updateAction, MDEntryType entryType, const char *entryId, int rptSeq) {
-        FastTLSFONDItemInfo *info = CreateTLSFondItemInfo(priceMantissa, priceExponenta, sizeMantissa, sizeExponenta, entryType, entryId);
+    AstsTLSFONDItemInfo* CreateTLRFondItemInfo(const char *symbol, const char *trading, INT64 priceMantissa, INT32 priceExponenta, INT64 sizeMantissa, INT64 sizeExponenta, MDUpdateAction updateAction, MDEntryType entryType, const char *entryId, int rptSeq) {
+        AstsTLSFONDItemInfo *info = CreateTLSFondItemInfo(priceMantissa, priceExponenta, sizeMantissa, sizeExponenta, entryType, entryId);
 
         StringIdComparer::CopyString(info->Symbol, symbol, strlen(symbol));
         info->SymbolLength = strlen(symbol);
@@ -667,18 +667,18 @@ public:
         return info;
     }
 
-    FastTLSFONDItemInfo* CreateTLRFondItemInfo(const char *symbol, const char *trading, const char *entryId) {
+    AstsTLSFONDItemInfo* CreateTLRFondItemInfo(const char *symbol, const char *trading, const char *entryId) {
         return CreateTLRFondItemInfo(symbol, trading, 1, 1, 1, 1, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote,
                                      entryId, 1);
     }
 
-    FastTLSFONDItemInfo* CreateTLRFondItemInfo(const char *symbol, const char *trading, const char *entryId, int rptSec) {
+    AstsTLSFONDItemInfo* CreateTLRFondItemInfo(const char *symbol, const char *trading, const char *entryId, int rptSec) {
         return CreateTLRFondItemInfo(symbol, trading, 1, 1, 1, 1, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote,
                                      entryId, rptSec);
     }
 
-    FastTLSCURRInfo* CreateTLSCurrInfo(const char *symbol, const char *trading) {
-        FastTLSCURRInfo *info = new FastTLSCURRInfo();
+    AstsTLSCURRInfo* CreateTLSCurrInfo(const char *symbol, const char *trading) {
+        AstsTLSCURRInfo *info = new AstsTLSCURRInfo();
 
         StringIdComparer::CopyString(info->Symbol, symbol, strlen(symbol));
         info->SymbolLength = strlen(symbol);
@@ -689,10 +689,10 @@ public:
         return info;
     }
 
-    FastTLSCURRItemInfo* CreateTLSCurrItemInfo(INT64 priceMantissa, INT32 priceExponenta, INT64 sizeMantissa, INT64 sizeExponenta, MDEntryType entryType, const char *entryId) {
+    AstsTLSCURRItemInfo* CreateTLSCurrItemInfo(INT64 priceMantissa, INT32 priceExponenta, INT64 sizeMantissa, INT64 sizeExponenta, MDEntryType entryType, const char *entryId) {
 
-        AutoAllocatePointerList<FastTLSCURRItemInfo> *list = new AutoAllocatePointerList<FastTLSCURRItemInfo>(2, 1);
-        FastTLSCURRItemInfo *info = list->NewItem();
+        AutoAllocatePointerList<AstsTLSCURRItemInfo> *list = new AutoAllocatePointerList<AstsTLSCURRItemInfo>(2, 1);
+        AstsTLSCURRItemInfo *info = list->NewItem();
 
         char *type = new char[1];
         type[0] = (char) entryType;
@@ -708,8 +708,8 @@ public:
         return info;
     }
 
-    FastTLSCURRItemInfo* CreateTLSCurrItemInfo(const char *symbol, const char *trading, INT64 priceMantissa, INT32 priceExponenta, INT64 sizeMantissa, INT64 sizeExponenta, MDUpdateAction updateAction, MDEntryType entryType, const char *entryId, int rptSeq) {
-        FastTLSCURRItemInfo *info = CreateTLSCurrItemInfo(priceMantissa, priceExponenta, sizeMantissa, sizeExponenta, entryType, entryId);
+    AstsTLSCURRItemInfo* CreateTLSCurrItemInfo(const char *symbol, const char *trading, INT64 priceMantissa, INT32 priceExponenta, INT64 sizeMantissa, INT64 sizeExponenta, MDUpdateAction updateAction, MDEntryType entryType, const char *entryId, int rptSeq) {
+        AstsTLSCURRItemInfo *info = CreateTLSCurrItemInfo(priceMantissa, priceExponenta, sizeMantissa, sizeExponenta, entryType, entryId);
 
         StringIdComparer::CopyString(info->Symbol, symbol, strlen(symbol));
         info->SymbolLength = strlen(symbol);
@@ -723,18 +723,18 @@ public:
         return info;
     }
 
-    FastTLSCURRItemInfo* CreateTLSCurrItemInfo(const char *symbol, const char *trading, const char *entryId) {
+    AstsTLSCURRItemInfo* CreateTLSCurrItemInfo(const char *symbol, const char *trading, const char *entryId) {
         return CreateTLSCurrItemInfo(symbol, trading, 1, 1, 1, 1, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote,
                                      entryId, 1);
     }
 
-    FastTLSCURRItemInfo* CreateTLSCurrItemInfo(const char *symbol, const char *trading, const char *entryId, int rptSec) {
+    AstsTLSCURRItemInfo* CreateTLSCurrItemInfo(const char *symbol, const char *trading, const char *entryId, int rptSec) {
         return CreateTLSCurrItemInfo(symbol, trading, 1, 1, 1, 1, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote,
                                      entryId, rptSec);
     }
 
-    FastGenericInfo* CreateMSSFondInfo(const char *symbol, const char *trading) {
-        FastGenericInfo *info = new FastGenericInfo();
+    AstsGenericInfo* CreateMSSFondInfo(const char *symbol, const char *trading) {
+        AstsGenericInfo *info = new AstsGenericInfo();
 
         StringIdComparer::CopyString(info->Symbol, symbol, strlen(symbol));
         info->SymbolLength = strlen(symbol);
@@ -745,10 +745,10 @@ public:
         return info;
     }
 
-    FastGenericItemInfo* CreateGenericItemInfo(INT64 priceMantissa, INT32 priceExponenta, INT64 sizeMantissa, INT64 sizeExponenta, MDEntryType entryType, const char *entryId) {
+    AstsGenericItemInfo* CreateGenericItemInfo(INT64 priceMantissa, INT32 priceExponenta, INT64 sizeMantissa, INT64 sizeExponenta, MDEntryType entryType, const char *entryId) {
 
-        AutoAllocatePointerList<FastGenericItemInfo> *list = new AutoAllocatePointerList<FastGenericItemInfo>(2, 1);
-        FastGenericItemInfo *info = list->NewItem();
+        AutoAllocatePointerList<AstsGenericItemInfo> *list = new AutoAllocatePointerList<AstsGenericItemInfo>(2, 1);
+        AstsGenericItemInfo *info = list->NewItem();
 
         char *type = new char[1];
         type[0] = (char) entryType;
@@ -764,8 +764,8 @@ public:
         return info;
     }
 
-    FastGenericItemInfo* CreateGenericItemInfo(const char *symbol, const char *trading, INT64 priceMantissa, INT32 priceExponenta, INT64 sizeMantissa, INT64 sizeExponenta, MDUpdateAction updateAction, MDEntryType entryType, const char *entryId, int rptSeq) {
-        FastGenericItemInfo *info = CreateGenericItemInfo(priceMantissa, priceExponenta, sizeMantissa, sizeExponenta, entryType, entryId);
+    AstsGenericItemInfo* CreateGenericItemInfo(const char *symbol, const char *trading, INT64 priceMantissa, INT32 priceExponenta, INT64 sizeMantissa, INT64 sizeExponenta, MDUpdateAction updateAction, MDEntryType entryType, const char *entryId, int rptSeq) {
+        AstsGenericItemInfo *info = CreateGenericItemInfo(priceMantissa, priceExponenta, sizeMantissa, sizeExponenta, entryType, entryId);
 
         StringIdComparer::CopyString(info->Symbol, symbol, strlen(symbol));
         info->SymbolLength = strlen(symbol);
@@ -779,18 +779,18 @@ public:
         return info;
     }
 
-    FastGenericItemInfo* CreateGenericItemInfo(const char *symbol, const char *trading, const char *entryId) {
+    AstsGenericItemInfo* CreateGenericItemInfo(const char *symbol, const char *trading, const char *entryId) {
         return CreateGenericItemInfo(symbol, trading, 1, 1, 1, 1, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote,
                                      entryId, 1);
     }
 
-    FastGenericItemInfo* CreateGenericItemInfo(const char *symbol, const char *trading, const char *entryId, int rptSec) {
+    AstsGenericItemInfo* CreateGenericItemInfo(const char *symbol, const char *trading, const char *entryId, int rptSec) {
         return CreateGenericItemInfo(symbol, trading, 1, 1, 1, 1, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote,
                                      entryId, rptSec);
     }
 
-    FastGenericInfo* CreateMSSCurrInfo(const char *symbol, const char *trading) {
-        FastGenericInfo *info = new FastGenericInfo();
+    AstsGenericInfo* CreateMSSCurrInfo(const char *symbol, const char *trading) {
+        AstsGenericInfo *info = new AstsGenericInfo();
 
         StringIdComparer::CopyString(info->Symbol, symbol, strlen(symbol));
         info->SymbolLength = strlen(symbol);
@@ -801,10 +801,10 @@ public:
         return info;
     }
 
-    FastGenericItemInfo* CreateGenericItemInfo(INT64 priceMantissa, INT32 priceExponenta, INT64 sizeMantissa, INT64 sizeExponenta, MDEntryType entryType, const char *entryId, int rptSeq) {
+    AstsGenericItemInfo* CreateGenericItemInfo(INT64 priceMantissa, INT32 priceExponenta, INT64 sizeMantissa, INT64 sizeExponenta, MDEntryType entryType, const char *entryId, int rptSeq) {
 
-        AutoAllocatePointerList<FastGenericItemInfo> *list = new AutoAllocatePointerList<FastGenericItemInfo>(2, 1);
-        FastGenericItemInfo *info = list->NewItem();
+        AutoAllocatePointerList<AstsGenericItemInfo> *list = new AutoAllocatePointerList<AstsGenericItemInfo>(2, 1);
+        AstsGenericItemInfo *info = list->NewItem();
 
         char *type = new char[1];
         type[0] = (char) entryType;
@@ -821,11 +821,11 @@ public:
         return info;
     }
 
-    FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo* AddTradingSession(FastSecurityDefinitionInfo *info, int marketIndex, const char *tradingSession) {
+    AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo* AddTradingSession(AstsSecurityDefinitionInfo *info, int marketIndex, const char *tradingSession) {
         int newIndex = info->MarketSegmentGrp[marketIndex]->TradingSessionRulesGrpCount;
         info->MarketSegmentGrp[marketIndex]->TradingSessionRulesGrpCount++;
-        AutoAllocatePointerList<FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo> *list = new AutoAllocatePointerList<FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo>(2, 1);
-        FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo *item = list->NewItem();
+        AutoAllocatePointerList<AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo> *list = new AutoAllocatePointerList<AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo>(2, 1);
+        AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo *item = list->NewItem();
         info->MarketSegmentGrp[marketIndex]->TradingSessionRulesGrp[newIndex] = item;
 
         StringIdComparer::CopyString(item->TradingSessionID, tradingSession, strlen(tradingSession));
@@ -833,20 +833,20 @@ public:
         return item;
     }
 
-    void AddTradingSession(FastSecurityDefinitionInfo *info, int marketIndex, TestTemplateItemInfo *ti) {
-        FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo *item = AddTradingSession(info, marketIndex, ti->m_tradingSession);
+    void AddTradingSession(AstsSecurityDefinitionInfo *info, int marketIndex, TestTemplateItemInfo *ti) {
+        AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo *item = AddTradingSession(info, marketIndex, ti->m_tradingSession);
         item->SecurityTradingStatus = ti->m_sessionStatus;
     }
 
-    void AddMarketSegemntGroup(FastSecurityDefinitionInfo *info) {
-        AutoAllocatePointerList<FastSecurityDefinitionMarketSegmentGrpItemInfo> *list = new AutoAllocatePointerList<FastSecurityDefinitionMarketSegmentGrpItemInfo>(2, 1);
+    void AddMarketSegemntGroup(AstsSecurityDefinitionInfo *info) {
+        AutoAllocatePointerList<AstsSecurityDefinitionMarketSegmentGrpItemInfo> *list = new AutoAllocatePointerList<AstsSecurityDefinitionMarketSegmentGrpItemInfo>(2, 1);
         info->MarketSegmentGrp[info->MarketSegmentGrpCount] = list->NewItem();
         info->MarketSegmentGrpCount++;
     }
 
-    FastSecurityDefinitionInfo* CreateSecurityDefinitionInfo(const char *symbol) {
-        AutoAllocatePointerList<FastSecurityDefinitionInfo> *list = new AutoAllocatePointerList<FastSecurityDefinitionInfo>(2, 1);
-        FastSecurityDefinitionInfo *info = list->NewItem();
+    AstsSecurityDefinitionInfo* CreateSecurityDefinitionInfo(const char *symbol) {
+        AutoAllocatePointerList<AstsSecurityDefinitionInfo> *list = new AutoAllocatePointerList<AstsSecurityDefinitionInfo>(2, 1);
+        AstsSecurityDefinitionInfo *info = list->NewItem();
 
         StringIdComparer::CopyString(info->Symbol, symbol, strlen(symbol));
         info->SymbolLength = strlen(symbol);
@@ -854,9 +854,9 @@ public:
         return info;
     }
 
-    FastSecurityStatusInfo* CreateSecurityStatusInfo(const char *symbol, const char *session, const char *sessionSubId) {
-        AutoAllocatePointerList<FastSecurityStatusInfo> *list = new AutoAllocatePointerList<FastSecurityStatusInfo>(2, 1);
-        FastSecurityStatusInfo *info = list->NewItem();
+    AstsSecurityStatusInfo* CreateSecurityStatusInfo(const char *symbol, const char *session, const char *sessionSubId) {
+        AutoAllocatePointerList<AstsSecurityStatusInfo> *list = new AutoAllocatePointerList<AstsSecurityStatusInfo>(2, 1);
+        AstsSecurityStatusInfo *info = list->NewItem();
 
         StringIdComparer::CopyString(info->Symbol, symbol, strlen(symbol));
         info->SymbolLength = strlen(symbol);
@@ -870,8 +870,8 @@ public:
         return info;
     }
 
-    FastSecurityDefinitionInfo* CreateSecurityDefinitionInfo(TestTemplateInfo *tmp) {
-        FastSecurityDefinitionInfo *info = CreateSecurityDefinitionInfo(tmp->m_symbol);
+    AstsSecurityDefinitionInfo* CreateSecurityDefinitionInfo(TestTemplateInfo *tmp) {
+        AstsSecurityDefinitionInfo *info = CreateSecurityDefinitionInfo(tmp->m_symbol);
 
         info->MsgSeqNum = tmp->m_msgSeqNo;
         this->AddMarketSegemntGroup(info);
@@ -879,7 +879,7 @@ public:
             info->TotNumReports = tmp->m_totNumReports;
         }
         else {
-            info->NullMap |= FastSecurityDefinitionInfoNullIndices::TotNumReportsNullIndex;
+            info->NullMap |= AstsSecurityDefinitionInfoNullIndices::TotNumReportsNullIndex;
         }
 
         for(int i = 0; i < tmp->m_itemsCount; i++) {
@@ -888,8 +888,8 @@ public:
         return info;
     }
 
-    FastSecurityStatusInfo* CreateSecurityStatusInfo(TestTemplateInfo *tmp) {
-        FastSecurityStatusInfo *info = CreateSecurityStatusInfo(tmp->m_symbol, tmp->m_session, tmp->m_sessionSubId);
+    AstsSecurityStatusInfo* CreateSecurityStatusInfo(TestTemplateInfo *tmp) {
+        AstsSecurityStatusInfo *info = CreateSecurityStatusInfo(tmp->m_symbol, tmp->m_session, tmp->m_sessionSubId);
 
         info->SecurityTradingStatus = tmp->m_sessionStatus;
 
@@ -900,29 +900,29 @@ public:
         return info;
     }
 
-    FastOLSFONDItemInfo* CreateOLRFondItemInfo(TestTemplateItemInfo *tmp) {
-        FastOLSFONDItemInfo *info = new FastOLSFONDItemInfo();
+    AstsOLSFONDItemInfo* CreateOLRFondItemInfo(TestTemplateItemInfo *tmp) {
+        AstsOLSFONDItemInfo *info = new AstsOLSFONDItemInfo();
 
         info->MDUpdateAction = tmp->m_action;
 
-        info->PresenceMap |= FastIncrementalOLRFONDItemInfoPresenceIndices::MDEntryTypePresenceIndex;
+        info->PresenceMap |= AstsIncrementalOLRFONDItemInfoPresenceIndices::MDEntryTypePresenceIndex;
         info->MDEntryType[0] = (char)tmp->m_entryType;
         info->MDEntryTypeLength = 1;
 
-        info->PresenceMap |= FastIncrementalOLRFONDItemInfoPresenceIndices::MDEntryPxPresenceIndex;
+        info->PresenceMap |= AstsIncrementalOLRFONDItemInfoPresenceIndices::MDEntryPxPresenceIndex;
         info->MDEntryPx.Assign(&tmp->m_entryPx);
 
-        info->PresenceMap |= FastIncrementalOLRFONDItemInfoPresenceIndices::MDEntrySizePresenceIndex;
+        info->PresenceMap |= AstsIncrementalOLRFONDItemInfoPresenceIndices::MDEntrySizePresenceIndex;
         info->MDEntrySize.Assign(&tmp->m_entrySize);
 
         info->RptSeq = tmp->m_rptSeq;
         if(tmp->m_symbol != 0) {
-            info->PresenceMap |= FastIncrementalOLRFONDItemInfoPresenceIndices::SymbolPresenceIndex;
+            info->PresenceMap |= AstsIncrementalOLRFONDItemInfoPresenceIndices::SymbolPresenceIndex;
             info->SymbolLength = strlen(tmp->m_symbol);
             strcpy(info->Symbol, tmp->m_symbol);
         }
         if(tmp->m_tradingSession != 0) {
-            info->PresenceMap |= FastIncrementalOLRFONDItemInfoPresenceIndices::TradingSessionIDPresenceIndex;
+            info->PresenceMap |= AstsIncrementalOLRFONDItemInfoPresenceIndices::TradingSessionIDPresenceIndex;
             info->TradingSessionIDLength = strlen(tmp->m_tradingSession);
             strcpy(info->TradingSessionID, tmp->m_tradingSession);
         }
@@ -933,91 +933,8 @@ public:
         return info;
     }
 
-    FastGenericItemInfo* CreateObrFondItemInfo(TestTemplateItemInfo *tmp) {
-        FastGenericItemInfo *info = new FastGenericItemInfo();
-        info->MDUpdateAction = tmp->m_action;
-        info->MDEntryType[0] = (char)tmp->m_entryType;
-        info->MDEntryTypeLength = 1;
-        info->MDEntryPx.Assign(&tmp->m_entryPx);
-        info->MDEntrySize.Assign(&tmp->m_entrySize);
-        info->RptSeq = tmp->m_rptSeq;
-        if(tmp->m_symbol != 0) {
-            info->SymbolLength = strlen(tmp->m_symbol);
-            strcpy(info->Symbol, tmp->m_symbol);
-        }
-        if(tmp->m_tradingSession != 0) {
-            info->TradingSessionIDLength = strlen(tmp->m_tradingSession);
-            strcpy(info->TradingSessionID, tmp->m_tradingSession);
-        }
-        if(tmp->m_entryId != 0) {
-            info->MDEntryIDLength = strlen(tmp->m_entryId);
-            strcpy(info->MDEntryID, tmp->m_entryId);
-        }
-        return info;
-    }
-
-    FastTLSFONDItemInfo* CreateTLRFondItemInfo(TestTemplateItemInfo *tmp) {
-        FastTLSFONDItemInfo *info = new FastTLSFONDItemInfo();
-        info->MDUpdateAction = tmp->m_action;
-
-        info->MDEntryType[0] = (char)tmp->m_entryType;
-        info->MDEntryTypeLength = 1;
-
-        info->MDEntryPx.Assign(&tmp->m_entryPx);
-
-        info->MDEntrySize.Assign(&tmp->m_entrySize);
-
-        info->RptSeq = tmp->m_rptSeq;
-        if(tmp->m_symbol != 0) {
-            info->SymbolLength = strlen(tmp->m_symbol);
-            strcpy(info->Symbol, tmp->m_symbol);
-        }
-        if(tmp->m_tradingSession != 0) {
-            info->TradingSessionIDLength = strlen(tmp->m_tradingSession);
-            strcpy(info->TradingSessionID, tmp->m_tradingSession);
-        }
-        if(tmp->m_entryId != 0) {
-            info->MDEntryIDLength = strlen(tmp->m_entryId);
-            strcpy(info->MDEntryID, tmp->m_entryId);
-        }
-        return info;
-    }
-
-    FastOLSCURRItemInfo* CreateOLRCurrItemInfo(TestTemplateItemInfo *tmp) {
-        FastOLSCURRItemInfo *info = new FastOLSCURRItemInfo();
-        info->PresenceMap |= FastIncrementalOLRCURRItemInfoPresenceIndices::MDUpdateActionPresenceIndex;
-        info->MDUpdateAction = tmp->m_action;
-
-        info->PresenceMap |= FastIncrementalOLRCURRItemInfoPresenceIndices::MDEntryTypePresenceIndex;
-        info->MDEntryType[0] = (char)tmp->m_entryType;
-        info->MDEntryTypeLength = 1;
-
-        info->PresenceMap |= FastIncrementalOLRCURRItemInfoPresenceIndices::MDEntryPxPresenceIndex;
-        info->MDEntryPx.Assign(&tmp->m_entryPx);
-
-        info->PresenceMap |= FastIncrementalOLRCURRItemInfoPresenceIndices::MDEntrySizePresenceIndex;
-        info->MDEntrySize.Assign(&tmp->m_entrySize);
-
-        info->RptSeq = tmp->m_rptSeq;
-        if(tmp->m_symbol != 0) {
-            info->PresenceMap |= FastIncrementalOLRCURRItemInfoPresenceIndices::SymbolPresenceIndex;
-            info->SymbolLength = strlen(tmp->m_symbol);
-            strcpy(info->Symbol, tmp->m_symbol);
-        }
-        if(tmp->m_tradingSession != 0) {
-            info->PresenceMap |= FastIncrementalOLRCURRItemInfoPresenceIndices::TradingSessionIDPresenceIndex;
-            info->TradingSessionIDLength = strlen(tmp->m_tradingSession);
-            strcpy(info->TradingSessionID, tmp->m_tradingSession);
-        }
-        if(tmp->m_entryId != 0) {
-            info->MDEntryIDLength = strlen(tmp->m_entryId);
-            strcpy(info->MDEntryID, tmp->m_entryId);
-        }
-        return info;
-    }
-
-    FastGenericItemInfo* CreateObrCurrItemInfo(TestTemplateItemInfo *tmp) {
-        FastGenericItemInfo *info = new FastGenericItemInfo();
+    AstsGenericItemInfo* CreateObrFondItemInfo(TestTemplateItemInfo *tmp) {
+        AstsGenericItemInfo *info = new AstsGenericItemInfo();
         info->MDUpdateAction = tmp->m_action;
         info->MDEntryType[0] = (char)tmp->m_entryType;
         info->MDEntryTypeLength = 1;
@@ -1039,8 +956,91 @@ public:
         return info;
     }
 
-    FastTLSCURRItemInfo* CreateTLRCurrItemInfo(TestTemplateItemInfo *tmp) {
-        FastTLSCURRItemInfo *info = new FastTLSCURRItemInfo();
+    AstsTLSFONDItemInfo* CreateTLRFondItemInfo(TestTemplateItemInfo *tmp) {
+        AstsTLSFONDItemInfo *info = new AstsTLSFONDItemInfo();
+        info->MDUpdateAction = tmp->m_action;
+
+        info->MDEntryType[0] = (char)tmp->m_entryType;
+        info->MDEntryTypeLength = 1;
+
+        info->MDEntryPx.Assign(&tmp->m_entryPx);
+
+        info->MDEntrySize.Assign(&tmp->m_entrySize);
+
+        info->RptSeq = tmp->m_rptSeq;
+        if(tmp->m_symbol != 0) {
+            info->SymbolLength = strlen(tmp->m_symbol);
+            strcpy(info->Symbol, tmp->m_symbol);
+        }
+        if(tmp->m_tradingSession != 0) {
+            info->TradingSessionIDLength = strlen(tmp->m_tradingSession);
+            strcpy(info->TradingSessionID, tmp->m_tradingSession);
+        }
+        if(tmp->m_entryId != 0) {
+            info->MDEntryIDLength = strlen(tmp->m_entryId);
+            strcpy(info->MDEntryID, tmp->m_entryId);
+        }
+        return info;
+    }
+
+    AstsOLSCURRItemInfo* CreateOLRCurrItemInfo(TestTemplateItemInfo *tmp) {
+        AstsOLSCURRItemInfo *info = new AstsOLSCURRItemInfo();
+        info->PresenceMap |= AstsIncrementalOLRCURRItemInfoPresenceIndices::MDUpdateActionPresenceIndex;
+        info->MDUpdateAction = tmp->m_action;
+
+        info->PresenceMap |= AstsIncrementalOLRCURRItemInfoPresenceIndices::MDEntryTypePresenceIndex;
+        info->MDEntryType[0] = (char)tmp->m_entryType;
+        info->MDEntryTypeLength = 1;
+
+        info->PresenceMap |= AstsIncrementalOLRCURRItemInfoPresenceIndices::MDEntryPxPresenceIndex;
+        info->MDEntryPx.Assign(&tmp->m_entryPx);
+
+        info->PresenceMap |= AstsIncrementalOLRCURRItemInfoPresenceIndices::MDEntrySizePresenceIndex;
+        info->MDEntrySize.Assign(&tmp->m_entrySize);
+
+        info->RptSeq = tmp->m_rptSeq;
+        if(tmp->m_symbol != 0) {
+            info->PresenceMap |= AstsIncrementalOLRCURRItemInfoPresenceIndices::SymbolPresenceIndex;
+            info->SymbolLength = strlen(tmp->m_symbol);
+            strcpy(info->Symbol, tmp->m_symbol);
+        }
+        if(tmp->m_tradingSession != 0) {
+            info->PresenceMap |= AstsIncrementalOLRCURRItemInfoPresenceIndices::TradingSessionIDPresenceIndex;
+            info->TradingSessionIDLength = strlen(tmp->m_tradingSession);
+            strcpy(info->TradingSessionID, tmp->m_tradingSession);
+        }
+        if(tmp->m_entryId != 0) {
+            info->MDEntryIDLength = strlen(tmp->m_entryId);
+            strcpy(info->MDEntryID, tmp->m_entryId);
+        }
+        return info;
+    }
+
+    AstsGenericItemInfo* CreateObrCurrItemInfo(TestTemplateItemInfo *tmp) {
+        AstsGenericItemInfo *info = new AstsGenericItemInfo();
+        info->MDUpdateAction = tmp->m_action;
+        info->MDEntryType[0] = (char)tmp->m_entryType;
+        info->MDEntryTypeLength = 1;
+        info->MDEntryPx.Assign(&tmp->m_entryPx);
+        info->MDEntrySize.Assign(&tmp->m_entrySize);
+        info->RptSeq = tmp->m_rptSeq;
+        if(tmp->m_symbol != 0) {
+            info->SymbolLength = strlen(tmp->m_symbol);
+            strcpy(info->Symbol, tmp->m_symbol);
+        }
+        if(tmp->m_tradingSession != 0) {
+            info->TradingSessionIDLength = strlen(tmp->m_tradingSession);
+            strcpy(info->TradingSessionID, tmp->m_tradingSession);
+        }
+        if(tmp->m_entryId != 0) {
+            info->MDEntryIDLength = strlen(tmp->m_entryId);
+            strcpy(info->MDEntryID, tmp->m_entryId);
+        }
+        return info;
+    }
+
+    AstsTLSCURRItemInfo* CreateTLRCurrItemInfo(TestTemplateItemInfo *tmp) {
+        AstsTLSCURRItemInfo *info = new AstsTLSCURRItemInfo();
         info->MDUpdateAction = tmp->m_action;
 
         info->MDEntryType[0] = (char)tmp->m_entryType;
@@ -1067,80 +1067,80 @@ public:
     }
 
     void EncodeHearthBeatMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
-        FastHeartbeatInfo *info = new FastHeartbeatInfo();
+        AstsHeartbeatInfo *info = new AstsHeartbeatInfo();
         info->MsgSeqNum = tmp->m_msgSeqNo;
         conn->m_fastProtocolManager->SetNewBuffer(conn->m_sendABuffer->CurrentPos(), 2000);
         conn->m_fastProtocolManager->WriteMsgSeqNumber(info->MsgSeqNum);
-        conn->m_fastProtocolManager->EncodeHeartbeatInfo(info);
+        conn->m_fastProtocolManager->EncodeAstsHeartbeatInfo(info);
         conn->m_sendABuffer->Next(conn->m_fastProtocolManager->MessageLength());
     }
 
     void EncodeHearthBeatMessage(TestTemplateInfo *tmp) {
-        FastHeartbeatInfo *info = new FastHeartbeatInfo();
+        AstsHeartbeatInfo *info = new AstsHeartbeatInfo();
         info->MsgSeqNum = tmp->m_msgSeqNo;
         this->m_fastManager->WriteMsgSeqNumber(info->MsgSeqNum);
-        this->m_fastManager->EncodeHeartbeatInfo(info);
+        this->m_fastManager->EncodeAstsHeartbeatInfo(info);
     }
 
     void SendHearthBeatMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
-        FastHeartbeatInfo *info = new FastHeartbeatInfo();
+        AstsHeartbeatInfo *info = new AstsHeartbeatInfo();
         info->MsgSeqNum = tmp->m_msgSeqNo;
         conn->m_fastProtocolManager->SetNewBuffer(conn->m_recvABuffer->CurrentPos(), 2000);
         conn->m_fastProtocolManager->WriteMsgSeqNumber(info->MsgSeqNum);
-        conn->m_fastProtocolManager->EncodeHeartbeatInfo(info);
+        conn->m_fastProtocolManager->EncodeAstsHeartbeatInfo(info);
         conn->ProcessServerCore(conn->m_fastProtocolManager->MessageLength());
     }
 
     void EncodeLogoutMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
-        FastLogoutInfo *info = new FastLogoutInfo();
+        AstsLogoutInfo *info = new AstsLogoutInfo();
         info->MsgSeqNum = tmp->m_msgSeqNo;
         conn->m_fastProtocolManager->SetNewBuffer(conn->m_sendABuffer->CurrentPos(), 2000);
         conn->m_fastProtocolManager->WriteMsgSeqNumber(info->MsgSeqNum);
-        conn->m_fastProtocolManager->EncodeLogoutInfo(info);
+        conn->m_fastProtocolManager->EncodeAstsLogoutInfo(info);
         conn->m_sendABuffer->Next(conn->m_fastProtocolManager->MessageLength());
     }
 
     void EncodeLogoutMessage(TestTemplateInfo *tmp) {
-        FastLogoutInfo *info = new FastLogoutInfo();
+        AstsLogoutInfo *info = new AstsLogoutInfo();
         info->MsgSeqNum = tmp->m_msgSeqNo;
-        this->m_fastManager->EncodeLogoutInfo(info);
+        this->m_fastManager->EncodeAstsLogoutInfo(info);
     }
 
     void SendLogoutMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
-        FastLogoutInfo *info = new FastLogoutInfo();
+        AstsLogoutInfo *info = new AstsLogoutInfo();
         info->MsgSeqNum = tmp->m_msgSeqNo;
         conn->m_fastProtocolManager->SetNewBuffer(conn->m_recvABuffer->CurrentPos(), 2000);
         conn->m_fastProtocolManager->WriteMsgSeqNumber(info->MsgSeqNum);
-        conn->m_fastProtocolManager->EncodeLogoutInfo(info);
+        conn->m_fastProtocolManager->EncodeAstsLogoutInfo(info);
         conn->ProcessServerCore(conn->m_fastProtocolManager->MessageLength());
     }
 
     void EncodeLogonMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
-        FastLogonInfo *info = CreateLogonMessage(tmp);
+        AstsLogonInfo *info = CreateLogonMessage(tmp);
         info->MsgSeqNum = tmp->m_msgSeqNo;
         conn->m_fastProtocolManager->SetNewBuffer(conn->m_sendABuffer->CurrentPos(), 2000);
         conn->m_fastProtocolManager->WriteMsgSeqNumber(info->MsgSeqNum);
-        conn->m_fastProtocolManager->EncodeLogonInfo(info);
+        conn->m_fastProtocolManager->EncodeAstsLogonInfo(info);
         conn->m_sendABuffer->Next(conn->m_fastProtocolManager->MessageLength());
     }
 
     void EncodeLogonMessage(TestTemplateInfo *tmp) {
-        FastLogonInfo *info = CreateLogonMessage(tmp);
+        AstsLogonInfo *info = CreateLogonMessage(tmp);
         info->MsgSeqNum = tmp->m_msgSeqNo;
-        this->m_fastManager->EncodeLogonInfo(info);
+        this->m_fastManager->EncodeAstsLogonInfo(info);
     }
 
     void SendLogonMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
-        FastLogonInfo *info = CreateLogonMessage(tmp);
+        AstsLogonInfo *info = CreateLogonMessage(tmp);
         info->MsgSeqNum = tmp->m_msgSeqNo;
         conn->m_fastProtocolManager->SetNewBuffer(conn->m_recvABuffer->CurrentPos(), 2000);
         conn->m_fastProtocolManager->WriteMsgSeqNumber(info->MsgSeqNum);
-        conn->m_fastProtocolManager->EncodeLogonInfo(info);
+        conn->m_fastProtocolManager->EncodeAstsLogonInfo(info);
         conn->ProcessServerCore(conn->m_fastProtocolManager->MessageLength());
     }
 
-    FastIncrementalGenericInfo* CreateIncrementalGenericMessageCore(TestTemplateInfo *tmp) {
-        FastIncrementalGenericInfo *info = new FastIncrementalGenericInfo();
+    AstsIncrementalGenericInfo* CreateIncrementalGenericMessageCore(TestTemplateInfo *tmp) {
+        AstsIncrementalGenericInfo *info = new AstsIncrementalGenericInfo();
         info->MsgSeqNum = tmp->m_msgSeqNo;
         info->GroupMDEntriesCount = tmp->m_itemsCount;
         for(int i = 0; i < tmp->m_itemsCount; i++) {
@@ -1149,32 +1149,32 @@ public:
         return info;
     }
 
-    void EncodeIncrementalGenericMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
-        FastIncrementalGenericInfo *info = CreateIncrementalGenericMessageCore(tmp);
+    void EncodeAstsIncrementalGenericMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
+        AstsIncrementalGenericInfo *info = CreateIncrementalGenericMessageCore(tmp);
 
         conn->m_fastProtocolManager->SetNewBuffer(conn->m_sendABuffer->CurrentPos(), 2000);
         conn->m_fastProtocolManager->WriteMsgSeqNumber(info->MsgSeqNum);
-        conn->m_fastProtocolManager->EncodeIncrementalGenericInfo(info);
+        conn->m_fastProtocolManager->EncodeAstsIncrementalGenericInfo(info);
         conn->m_sendABuffer->Next(conn->m_fastProtocolManager->MessageLength());
     }
 
-    void EncodeIncrementalGenericMessage(TestTemplateInfo *tmp) {
-        FastIncrementalGenericInfo *info = CreateIncrementalGenericMessageCore(tmp);
+    void EncodeAstsIncrementalGenericMessage(TestTemplateInfo *tmp) {
+        AstsIncrementalGenericInfo *info = CreateIncrementalGenericMessageCore(tmp);
 
-        this->m_fastManager->EncodeIncrementalGenericInfo(info);
+        this->m_fastManager->EncodeAstsIncrementalGenericInfo(info);
     }
 
     void SendIncrementalGenericMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
-        FastIncrementalGenericInfo *info = CreateIncrementalGenericMessageCore(tmp);
+        AstsIncrementalGenericInfo *info = CreateIncrementalGenericMessageCore(tmp);
 
         conn->m_fastProtocolManager->SetNewBuffer(conn->m_recvABuffer->CurrentPos(), 2000);
         conn->m_fastProtocolManager->WriteMsgSeqNumber(info->MsgSeqNum);
-        conn->m_fastProtocolManager->EncodeIncrementalGenericInfo(info);
+        conn->m_fastProtocolManager->EncodeAstsIncrementalGenericInfo(info);
         conn->ProcessServerCore(conn->m_fastProtocolManager->MessageLength());
     }
 
-    FastGenericInfo* CreateSnapshotGenericMessageCore(TestTemplateInfo *tmp) {
-        FastGenericInfo *info = new FastGenericInfo();
+    AstsGenericInfo* CreateSnapshotGenericMessageCore(TestTemplateInfo *tmp) {
+        AstsGenericInfo *info = new AstsGenericInfo();
         info->MsgSeqNum = tmp->m_msgSeqNo;
         info->GroupMDEntriesCount = tmp->m_itemsCount;
         info->LastMsgSeqNumProcessed = tmp->m_lastMsgSeqNoProcessed;
@@ -1198,31 +1198,31 @@ public:
     }
 
     void EncodeSnapshotGenericMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
-        FastGenericInfo *info = CreateSnapshotGenericMessageCore(tmp);
+        AstsGenericInfo *info = CreateSnapshotGenericMessageCore(tmp);
 
         conn->m_fastProtocolManager->SetNewBuffer(conn->m_sendABuffer->CurrentPos(), 2000);
         conn->m_fastProtocolManager->WriteMsgSeqNumber(info->MsgSeqNum);
-        conn->m_fastProtocolManager->EncodeGenericInfo(info);
+        conn->m_fastProtocolManager->EncodeAstsGenericInfo(info);
         conn->m_sendABuffer->Next(conn->m_fastProtocolManager->MessageLength());
     }
 
     void EncodeSnapshotGenericMessage(TestTemplateInfo *tmp) {
-        FastGenericInfo *info = CreateSnapshotGenericMessageCore(tmp);
+        AstsGenericInfo *info = CreateSnapshotGenericMessageCore(tmp);
 
-        this->m_fastManager->EncodeGenericInfo(info);
+        this->m_fastManager->EncodeAstsGenericInfo(info);
     }
 
     void SendSnapshotGenericMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
-        FastGenericInfo *info = CreateSnapshotGenericMessageCore(tmp);
+        AstsGenericInfo *info = CreateSnapshotGenericMessageCore(tmp);
 
         conn->m_fastProtocolManager->SetNewBuffer(conn->m_recvABuffer->CurrentPos(), 2000);
         conn->m_fastProtocolManager->WriteMsgSeqNumber(info->MsgSeqNum);
-        conn->m_fastProtocolManager->EncodeGenericInfo(info);
+        conn->m_fastProtocolManager->EncodeAstsGenericInfo(info);
         conn->ProcessServerCore(conn->m_fastProtocolManager->MessageLength());
     }
 
-    FastIncrementalOLRFONDInfo* CreateOLRFondMessageCore(TestTemplateInfo *tmp) {
-        FastIncrementalOLRFONDInfo *info = new FastIncrementalOLRFONDInfo();
+    AstsIncrementalOLRFONDInfo* CreateOLRFondMessageCore(TestTemplateInfo *tmp) {
+        AstsIncrementalOLRFONDInfo *info = new AstsIncrementalOLRFONDInfo();
         info->MsgSeqNum = tmp->m_msgSeqNo;
         info->GroupMDEntriesCount = tmp->m_itemsCount;
         for(int i = 0; i < tmp->m_itemsCount; i++) {
@@ -1232,72 +1232,72 @@ public:
     }
 
     void EncodeOLRFondMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
-        FastIncrementalOLRFONDInfo *info = CreateOLRFondMessageCore(tmp);
+        AstsIncrementalOLRFONDInfo *info = CreateOLRFondMessageCore(tmp);
 
         conn->m_fastProtocolManager->SetNewBuffer(conn->m_sendABuffer->CurrentPos(), 2000);
         conn->m_fastProtocolManager->WriteMsgSeqNumber(info->MsgSeqNum);
-        conn->m_fastProtocolManager->EncodeIncrementalOLRFONDInfo(info);
+        conn->m_fastProtocolManager->EncodeAstsIncrementalOLRFONDInfo(info);
         conn->m_sendABuffer->Next(conn->m_fastProtocolManager->MessageLength());
     }
 
     void EncodeOLRFondMessage(TestTemplateInfo *tmp) {
-        FastIncrementalOLRFONDInfo *info = CreateOLRFondMessageCore(tmp);
-        this->m_fastManager->EncodeIncrementalOLRFONDInfo(info);
+        AstsIncrementalOLRFONDInfo *info = CreateOLRFondMessageCore(tmp);
+        this->m_fastManager->EncodeAstsIncrementalOLRFONDInfo(info);
     }
 
     void SendOLRFondMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
-        FastIncrementalOLRFONDInfo *info = CreateOLRFondMessageCore(tmp);
+        AstsIncrementalOLRFONDInfo *info = CreateOLRFondMessageCore(tmp);
 
         conn->m_fastProtocolManager->SetNewBuffer(conn->m_recvABuffer->CurrentPos(), 2000);
         conn->m_fastProtocolManager->WriteMsgSeqNumber(info->MsgSeqNum);
-        conn->m_fastProtocolManager->EncodeIncrementalOLRFONDInfo(info);
+        conn->m_fastProtocolManager->EncodeAstsIncrementalOLRFONDInfo(info);
         conn->ProcessServerCore(conn->m_fastProtocolManager->MessageLength());
     }
 
-    void EncodeSecurityDefinitionMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
-        FastSecurityDefinitionInfo *info = CreateSecurityDefinitionInfo(tmp);
+    void EncodeAstsSecurityDefinitionMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
+        AstsSecurityDefinitionInfo *info = CreateSecurityDefinitionInfo(tmp);
         conn->m_fastProtocolManager->SetNewBuffer(conn->m_sendABuffer->CurrentPos(), 2000);
         conn->m_fastProtocolManager->WriteMsgSeqNumber(info->MsgSeqNum);
-        conn->m_fastProtocolManager->EncodeSecurityDefinitionInfo(info);
+        conn->m_fastProtocolManager->EncodeAstsSecurityDefinitionInfo(info);
         conn->m_sendABuffer->Next(conn->m_fastProtocolManager->MessageLength());
     }
 
-    void EncodeSecurityDefinitionMessage(TestTemplateInfo *tmp) {
-        FastSecurityDefinitionInfo *info = CreateSecurityDefinitionInfo(tmp);
-        this->m_fastManager->EncodeSecurityDefinitionInfo(info);
+    void EncodeAstsSecurityDefinitionMessage(TestTemplateInfo *tmp) {
+        AstsSecurityDefinitionInfo *info = CreateSecurityDefinitionInfo(tmp);
+        this->m_fastManager->EncodeAstsSecurityDefinitionInfo(info);
     }
 
     void SendSecurityDefinitionMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
-        FastSecurityDefinitionInfo *info = CreateSecurityDefinitionInfo(tmp);
+        AstsSecurityDefinitionInfo *info = CreateSecurityDefinitionInfo(tmp);
         conn->m_fastProtocolManager->SetNewBuffer(conn->m_recvABuffer->CurrentPos(), 2000);
         conn->m_fastProtocolManager->WriteMsgSeqNumber(info->MsgSeqNum);
-        conn->m_fastProtocolManager->EncodeSecurityDefinitionInfo(info);
+        conn->m_fastProtocolManager->EncodeAstsSecurityDefinitionInfo(info);
         conn->ProcessServerCore(conn->m_fastProtocolManager->MessageLength());
     }
 
-    void EncodeSecurityStatusMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
-        FastSecurityStatusInfo *info = CreateSecurityStatusInfo(tmp);
+    void EncodeAstsSecurityStatusMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
+        AstsSecurityStatusInfo *info = CreateSecurityStatusInfo(tmp);
         conn->m_fastProtocolManager->SetNewBuffer(conn->m_sendABuffer->CurrentPos(), 2000);
         conn->m_fastProtocolManager->WriteMsgSeqNumber(info->MsgSeqNum);
-        conn->m_fastProtocolManager->EncodeSecurityStatusInfo(info);
+        conn->m_fastProtocolManager->EncodeAstsSecurityStatusInfo(info);
         conn->m_sendABuffer->Next(conn->m_fastProtocolManager->MessageLength());
     }
 
-    void EncodeSecurityStatusMessage(TestTemplateInfo *tmp) {
-        FastSecurityStatusInfo *info = CreateSecurityStatusInfo(tmp);
-        this->m_fastManager->EncodeSecurityStatusInfo(info);
+    void EncodeAstsSecurityStatusMessage(TestTemplateInfo *tmp) {
+        AstsSecurityStatusInfo *info = CreateSecurityStatusInfo(tmp);
+        this->m_fastManager->EncodeAstsSecurityStatusInfo(info);
     }
 
     void SendSecurityStatusMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
-        FastSecurityStatusInfo *info = CreateSecurityStatusInfo(tmp);
+        AstsSecurityStatusInfo *info = CreateSecurityStatusInfo(tmp);
         conn->m_fastProtocolManager->SetNewBuffer(conn->m_recvABuffer->CurrentPos(), 2000);
         conn->m_fastProtocolManager->WriteMsgSeqNumber(info->MsgSeqNum);
-        conn->m_fastProtocolManager->EncodeSecurityStatusInfo(info);
+        conn->m_fastProtocolManager->EncodeAstsSecurityStatusInfo(info);
         conn->ProcessServerCore(conn->m_fastProtocolManager->MessageLength());
     }
 
-    FastOLSFONDInfo* CreateOLSFondMessage(TestTemplateInfo *tmp) {
-        FastOLSFONDInfo *info = new FastOLSFONDInfo();
+    AstsOLSFONDInfo* CreateOLSFondMessage(TestTemplateInfo *tmp) {
+        AstsOLSFONDInfo *info = new AstsOLSFONDInfo();
         info->MsgSeqNum = tmp->m_msgSeqNo;
         info->GroupMDEntriesCount = tmp->m_itemsCount;
         info->LastMsgSeqNumProcessed = tmp->m_lastMsgSeqNoProcessed;
@@ -1320,31 +1320,31 @@ public:
         return info;
     }
 
-    void EncodeOLSFondMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
-        FastOLSFONDInfo *info = CreateOLSFondMessage(tmp);
+    void EncodeAstsOLSFondMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
+        AstsOLSFONDInfo *info = CreateOLSFondMessage(tmp);
 
         conn->m_fastProtocolManager->SetNewBuffer(conn->m_sendABuffer->CurrentPos(), 2000);
         conn->m_fastProtocolManager->WriteMsgSeqNumber(info->MsgSeqNum);
-        conn->m_fastProtocolManager->EncodeOLSFONDInfo(info);
+        conn->m_fastProtocolManager->EncodeAstsOLSFONDInfo(info);
         conn->m_sendABuffer->Next(conn->m_fastProtocolManager->MessageLength());
     }
 
-    void EncodeOLSFondMessage(TestTemplateInfo *tmp) {
-        FastOLSFONDInfo *info = CreateOLSFondMessage(tmp);
-        this->m_fastManager->EncodeOLSFONDInfo(info);
+    void EncodeAstsOLSFondMessage(TestTemplateInfo *tmp) {
+        AstsOLSFONDInfo *info = CreateOLSFondMessage(tmp);
+        this->m_fastManager->EncodeAstsOLSFONDInfo(info);
     }
 
     void SendOLSFondMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
-        FastOLSFONDInfo *info = CreateOLSFondMessage(tmp);
+        AstsOLSFONDInfo *info = CreateOLSFondMessage(tmp);
 
         conn->m_fastProtocolManager->SetNewBuffer(conn->m_recvABuffer->CurrentPos(), 2000);
         conn->m_fastProtocolManager->WriteMsgSeqNumber(info->MsgSeqNum);
-        conn->m_fastProtocolManager->EncodeOLSFONDInfo(info);
+        conn->m_fastProtocolManager->EncodeAstsOLSFONDInfo(info);
         conn->ProcessServerCore(conn->m_fastProtocolManager->MessageLength());
     }
 
-    FastIncrementalTLRFONDInfo* CreateTLRFondMessageCore(TestTemplateInfo *tmp) {
-        FastIncrementalTLRFONDInfo *info = new FastIncrementalTLRFONDInfo();
+    AstsIncrementalTLRFONDInfo* CreateTLRFondMessageCore(TestTemplateInfo *tmp) {
+        AstsIncrementalTLRFONDInfo *info = new AstsIncrementalTLRFONDInfo();
         info->MsgSeqNum = tmp->m_msgSeqNo;
         info->GroupMDEntriesCount = tmp->m_itemsCount;
         for(int i = 0; i < tmp->m_itemsCount; i++) {
@@ -1354,30 +1354,30 @@ public:
     }
 
     void EncodeTLRFondMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
-        FastIncrementalTLRFONDInfo *info = CreateTLRFondMessageCore(tmp);
+        AstsIncrementalTLRFONDInfo *info = CreateTLRFondMessageCore(tmp);
 
         conn->m_fastProtocolManager->SetNewBuffer(conn->m_sendABuffer->CurrentPos(), 2000);
         conn->m_fastProtocolManager->WriteMsgSeqNumber(info->MsgSeqNum);
-        conn->m_fastProtocolManager->EncodeIncrementalTLRFONDInfo(info);
+        conn->m_fastProtocolManager->EncodeAstsIncrementalTLRFONDInfo(info);
         conn->m_sendABuffer->Next (conn->m_fastProtocolManager->MessageLength());
     }
 
     void EncodeTLRFondMessage(TestTemplateInfo *tmp) {
-        FastIncrementalTLRFONDInfo *info = CreateTLRFondMessageCore(tmp);
-        this->m_fastManager->EncodeIncrementalTLRFONDInfo(info);
+        AstsIncrementalTLRFONDInfo *info = CreateTLRFondMessageCore(tmp);
+        this->m_fastManager->EncodeAstsIncrementalTLRFONDInfo(info);
     }
 
     void SendTLRFondMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
-        FastIncrementalTLRFONDInfo *info = CreateTLRFondMessageCore(tmp);
+        AstsIncrementalTLRFONDInfo *info = CreateTLRFondMessageCore(tmp);
 
         conn->m_fastProtocolManager->SetNewBuffer(conn->m_recvABuffer->CurrentPos(), 2000);
         conn->m_fastProtocolManager->WriteMsgSeqNumber(info->MsgSeqNum);
-        conn->m_fastProtocolManager->EncodeIncrementalTLRFONDInfo(info);
+        conn->m_fastProtocolManager->EncodeAstsIncrementalTLRFONDInfo(info);
         conn->ProcessServerCore(conn->m_fastProtocolManager->MessageLength());
     }
 
-    FastTLSFONDInfo* CreateTLSFondMessageCore(TestTemplateInfo *tmp) {
-        FastTLSFONDInfo *info = new FastTLSFONDInfo();
+    AstsTLSFONDInfo* CreateTLSFondMessageCore(TestTemplateInfo *tmp) {
+        AstsTLSFONDInfo *info = new AstsTLSFONDInfo();
         info->MsgSeqNum = tmp->m_msgSeqNo;
         info->GroupMDEntriesCount = tmp->m_itemsCount;
         info->LastMsgSeqNumProcessed = tmp->m_lastMsgSeqNoProcessed;
@@ -1400,31 +1400,31 @@ public:
         return info;
     }
 
-    void EncodeTLSFondMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
-        FastTLSFONDInfo *info = CreateTLSFondMessageCore(tmp);
+    void EncodeAstsTLSFondMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
+        AstsTLSFONDInfo *info = CreateTLSFondMessageCore(tmp);
 
         conn->m_fastProtocolManager->SetNewBuffer(conn->m_sendABuffer->CurrentPos(), 2000);
         conn->m_fastProtocolManager->WriteMsgSeqNumber(info->MsgSeqNum);
-        conn->m_fastProtocolManager->EncodeTLSFONDInfo(info);
+        conn->m_fastProtocolManager->EncodeAstsTLSFONDInfo(info);
         conn->m_sendABuffer->Next(conn->m_fastProtocolManager->MessageLength());
     }
 
-    void EncodeTLSFondMessage(TestTemplateInfo *tmp) {
-        FastTLSFONDInfo *info = CreateTLSFondMessageCore(tmp);
-        this->m_fastManager->EncodeTLSFONDInfo(info);
+    void EncodeAstsTLSFondMessage(TestTemplateInfo *tmp) {
+        AstsTLSFONDInfo *info = CreateTLSFondMessageCore(tmp);
+        this->m_fastManager->EncodeAstsTLSFONDInfo(info);
     }
 
     void SendTLSFondMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
-        FastTLSFONDInfo *info = CreateTLSFondMessageCore(tmp);
+        AstsTLSFONDInfo *info = CreateTLSFondMessageCore(tmp);
 
         conn->m_fastProtocolManager->SetNewBuffer(conn->m_recvABuffer->CurrentPos(), 2000);
         conn->m_fastProtocolManager->WriteMsgSeqNumber(info->MsgSeqNum);
-        conn->m_fastProtocolManager->EncodeTLSFONDInfo(info);
+        conn->m_fastProtocolManager->EncodeAstsTLSFONDInfo(info);
         conn->ProcessServerCore(conn->m_fastProtocolManager->MessageLength());
     }
 
-    FastIncrementalOLRCURRInfo* CreateOLRCurrMessageCore(TestTemplateInfo *tmp) {
-        FastIncrementalOLRCURRInfo *info = new FastIncrementalOLRCURRInfo();
+    AstsIncrementalOLRCURRInfo* CreateOLRCurrMessageCore(TestTemplateInfo *tmp) {
+        AstsIncrementalOLRCURRInfo *info = new AstsIncrementalOLRCURRInfo();
         info->MsgSeqNum = tmp->m_msgSeqNo;
         info->GroupMDEntriesCount = tmp->m_itemsCount;
         for(int i = 0; i < tmp->m_itemsCount; i++) {
@@ -1434,30 +1434,30 @@ public:
     }
 
     void EncodeOLRCurrMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
-        FastIncrementalOLRCURRInfo* info = CreateOLRCurrMessageCore(tmp);
+        AstsIncrementalOLRCURRInfo* info = CreateOLRCurrMessageCore(tmp);
 
         conn->m_fastProtocolManager->SetNewBuffer(conn->m_sendABuffer->CurrentPos(), 2000);
         conn->m_fastProtocolManager->WriteMsgSeqNumber(info->MsgSeqNum);
-        conn->m_fastProtocolManager->EncodeIncrementalOLRCURRInfo(info);
+        conn->m_fastProtocolManager->EncodeAstsIncrementalOLRCURRInfo(info);
         conn->m_sendABuffer->Next(conn->m_fastProtocolManager->MessageLength());
     }
 
     void EncodeOLRCurrMessage(TestTemplateInfo *tmp) {
-        FastIncrementalOLRCURRInfo* info = CreateOLRCurrMessageCore(tmp);
-        this->m_fastManager->EncodeIncrementalOLRCURRInfo(info);
+        AstsIncrementalOLRCURRInfo* info = CreateOLRCurrMessageCore(tmp);
+        this->m_fastManager->EncodeAstsIncrementalOLRCURRInfo(info);
     }
 
     void SendOLRCurrMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
-        FastIncrementalOLRCURRInfo* info = CreateOLRCurrMessageCore(tmp);
+        AstsIncrementalOLRCURRInfo* info = CreateOLRCurrMessageCore(tmp);
 
         conn->m_fastProtocolManager->SetNewBuffer(conn->m_recvABuffer->CurrentPos(), 2000);
         conn->m_fastProtocolManager->WriteMsgSeqNumber(info->MsgSeqNum);
-        conn->m_fastProtocolManager->EncodeIncrementalOLRCURRInfo(info);
+        conn->m_fastProtocolManager->EncodeAstsIncrementalOLRCURRInfo(info);
         conn->ProcessServerCore(conn->m_fastProtocolManager->MessageLength());
     }
 
-    FastOLSCURRInfo* CreateOLSCurrMessageCore(TestTemplateInfo *tmp) {
-        FastOLSCURRInfo *info = new FastOLSCURRInfo();
+    AstsOLSCURRInfo* CreateOLSCurrMessageCore(TestTemplateInfo *tmp) {
+        AstsOLSCURRInfo *info = new AstsOLSCURRInfo();
         info->MsgSeqNum = tmp->m_msgSeqNo;
         info->GroupMDEntriesCount = tmp->m_itemsCount;
         info->LastMsgSeqNumProcessed = tmp->m_lastMsgSeqNoProcessed;
@@ -1480,31 +1480,31 @@ public:
         return info;
     }
 
-    void EncodeOLSCurrMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
-        FastOLSCURRInfo *info = CreateOLSCurrMessageCore(tmp);
+    void EncodeAstsOLSCurrMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
+        AstsOLSCURRInfo *info = CreateOLSCurrMessageCore(tmp);
 
         conn->m_fastProtocolManager->SetNewBuffer(conn->m_sendABuffer->CurrentPos(), 2000);
         conn->m_fastProtocolManager->WriteMsgSeqNumber(info->MsgSeqNum);
-        conn->m_fastProtocolManager->EncodeOLSCURRInfo(info);
+        conn->m_fastProtocolManager->EncodeAstsOLSCURRInfo(info);
         conn->m_sendABuffer->Next(conn->m_fastProtocolManager->MessageLength());
     }
 
-    void EncodeOLSCurrMessage(TestTemplateInfo *tmp) {
-        FastOLSCURRInfo *info = CreateOLSCurrMessageCore(tmp);
-        this->m_fastManager->EncodeOLSCURRInfo(info);
+    void EncodeAstsOLSCurrMessage(TestTemplateInfo *tmp) {
+        AstsOLSCURRInfo *info = CreateOLSCurrMessageCore(tmp);
+        this->m_fastManager->EncodeAstsOLSCURRInfo(info);
     }
 
     void SendOLSCurrMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
-        FastOLSCURRInfo *info = CreateOLSCurrMessageCore(tmp);
+        AstsOLSCURRInfo *info = CreateOLSCurrMessageCore(tmp);
 
         conn->m_fastProtocolManager->SetNewBuffer(conn->m_recvABuffer->CurrentPos(), 2000);
         conn->m_fastProtocolManager->WriteMsgSeqNumber(info->MsgSeqNum);
-        conn->m_fastProtocolManager->EncodeOLSCURRInfo(info);
+        conn->m_fastProtocolManager->EncodeAstsOLSCURRInfo(info);
         conn->ProcessServerCore(conn->m_fastProtocolManager->MessageLength());
     }
 
-    FastIncrementalTLRCURRInfo* CreateTLRCurrMessageCore(TestTemplateInfo *tmp) {
-        FastIncrementalTLRCURRInfo *info = new FastIncrementalTLRCURRInfo();
+    AstsIncrementalTLRCURRInfo* CreateTLRCurrMessageCore(TestTemplateInfo *tmp) {
+        AstsIncrementalTLRCURRInfo *info = new AstsIncrementalTLRCURRInfo();
         info->MsgSeqNum = tmp->m_msgSeqNo;
         info->GroupMDEntriesCount = tmp->m_itemsCount;
         for(int i = 0; i < tmp->m_itemsCount; i++) {
@@ -1514,30 +1514,30 @@ public:
     }
 
     void EncodeTLRCurrMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
-        FastIncrementalTLRCURRInfo *info = CreateTLRCurrMessageCore(tmp);
+        AstsIncrementalTLRCURRInfo *info = CreateTLRCurrMessageCore(tmp);
 
         conn->m_fastProtocolManager->SetNewBuffer(conn->m_sendABuffer->CurrentPos(), 2000);
         conn->m_fastProtocolManager->WriteMsgSeqNumber(info->MsgSeqNum);
-        conn->m_fastProtocolManager->EncodeIncrementalTLRCURRInfo(info);
+        conn->m_fastProtocolManager->EncodeAstsIncrementalTLRCURRInfo(info);
         conn->m_sendABuffer->Next(conn->m_fastProtocolManager->MessageLength());
     }
 
     void EncodeTLRCurrMessage(TestTemplateInfo *tmp) {
-        FastIncrementalTLRCURRInfo *info = CreateTLRCurrMessageCore(tmp);
-        this->m_fastManager->EncodeIncrementalTLRCURRInfo(info);
+        AstsIncrementalTLRCURRInfo *info = CreateTLRCurrMessageCore(tmp);
+        this->m_fastManager->EncodeAstsIncrementalTLRCURRInfo(info);
     }
 
     void SendTLRCurrMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
-        FastIncrementalTLRCURRInfo *info = CreateTLRCurrMessageCore(tmp);
+        AstsIncrementalTLRCURRInfo *info = CreateTLRCurrMessageCore(tmp);
 
         conn->m_fastProtocolManager->SetNewBuffer(conn->m_recvABuffer->CurrentPos(), 2000);
         conn->m_fastProtocolManager->WriteMsgSeqNumber(info->MsgSeqNum);
-        conn->m_fastProtocolManager->EncodeIncrementalTLRCURRInfo(info);
+        conn->m_fastProtocolManager->EncodeAstsIncrementalTLRCURRInfo(info);
         conn->ProcessServerCore(conn->m_fastProtocolManager->MessageLength());
     }
 
-    FastTLSCURRInfo* CreateTLSCurrMessageCore(TestTemplateInfo *tmp) {
-        FastTLSCURRInfo *info = new FastTLSCURRInfo();
+    AstsTLSCURRInfo* CreateTLSCurrMessageCore(TestTemplateInfo *tmp) {
+        AstsTLSCURRInfo *info = new AstsTLSCURRInfo();
         info->MsgSeqNum = tmp->m_msgSeqNo;
         info->GroupMDEntriesCount = tmp->m_itemsCount;
         info->LastMsgSeqNumProcessed = tmp->m_lastMsgSeqNoProcessed;
@@ -1560,26 +1560,26 @@ public:
         return info;
     }
 
-    void EncodeTLSCurrMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
-        FastTLSCURRInfo *info = CreateTLSCurrMessageCore(tmp);
+    void EncodeAstsTLSCurrMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
+        AstsTLSCURRInfo *info = CreateTLSCurrMessageCore(tmp);
 
         conn->m_fastProtocolManager->SetNewBuffer(conn->m_sendABuffer->CurrentPos(), 2000);
         conn->m_fastProtocolManager->WriteMsgSeqNumber(info->MsgSeqNum);
-        conn->m_fastProtocolManager->EncodeTLSCURRInfo(info);
+        conn->m_fastProtocolManager->EncodeAstsTLSCURRInfo(info);
         conn->m_sendABuffer->Next(conn->m_fastProtocolManager->MessageLength());
     }
 
-    void EncodeTLSCurrMessage(TestTemplateInfo *tmp) {
-        FastTLSCURRInfo *info = CreateTLSCurrMessageCore(tmp);
-        this->m_fastManager->EncodeTLSCURRInfo(info);
+    void EncodeAstsTLSCurrMessage(TestTemplateInfo *tmp) {
+        AstsTLSCURRInfo *info = CreateTLSCurrMessageCore(tmp);
+        this->m_fastManager->EncodeAstsTLSCURRInfo(info);
     }
 
     void SendTLSCurrMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
-        FastTLSCURRInfo *info = CreateTLSCurrMessageCore(tmp);
+        AstsTLSCURRInfo *info = CreateTLSCurrMessageCore(tmp);
 
         conn->m_fastProtocolManager->SetNewBuffer(conn->m_recvABuffer->CurrentPos(), 2000);
         conn->m_fastProtocolManager->WriteMsgSeqNumber(info->MsgSeqNum);
-        conn->m_fastProtocolManager->EncodeTLSCURRInfo(info);
+        conn->m_fastProtocolManager->EncodeAstsTLSCURRInfo(info);
         conn->ProcessServerCore(conn->m_fastProtocolManager->MessageLength());
     }
 
@@ -1703,7 +1703,7 @@ public:
 
         this->m_fastManager->SetNewBuffer(this->m_buffer->CurrentPos() + 4, 1000); // overwrite msgseqno
 
-        FastLogonInfo info;
+        AstsLogonInfo info;
 
         strcpy(this->m_protocolVersion, FastProtocolVersion);
         strcpy(info.BeginString, this->m_protocolVersion);
@@ -1724,7 +1724,7 @@ public:
         strcpy(info.TargetCompID, this->m_targetCompId);
         info.TargetCompIDLength = 4;
 
-        this->m_fastManager->EncodeLogonInfo(&info);
+        this->m_fastManager->EncodeAstsLogonInfo(&info);
         *((int*)this->m_buffer->CurrentPos()) = this->m_fastManager->MessageLength();
 
         this->SetRecvFor(wsManager, (unsigned char*)this->m_buffer->CurrentPos(), this->m_fastManager->MessageLength() + 4);
@@ -1750,12 +1750,12 @@ public:
     }
 
     void SendLogout(WinSockManager *wsManager, const char *text) {
-        FastLogoutInfo *info = new FastLogoutInfo();
+        AstsLogoutInfo *info = new AstsLogoutInfo();
         strcpy(info->Text, text);
         info->TextLength = strlen(info->Text);
 
         this->m_fastManager->SetNewBuffer(this->m_buffer->CurrentPos() + 4, 10000);
-        this->m_fastManager->EncodeLogoutInfo(info);
+        this->m_fastManager->EncodeAstsLogoutInfo(info);
         *((int*)this->m_buffer->CurrentPos()) = this->m_fastManager->MessageLength();
         SetRecvFor(wsManager, this->m_buffer->CurrentPos(), this->m_fastManager->MessageLength() + 4);
         this->m_buffer->Next(this->m_fastManager->MessageLength() + 4);
@@ -1934,7 +1934,7 @@ public:
                 EncodeHearthBeatMessage(tmp);
                 break;
             case FeedConnectionMessage::fmcIncrementalRefresh_Generic:
-                EncodeIncrementalGenericMessage(tmp);
+                EncodeAstsIncrementalGenericMessage(tmp);
                 break;
             case FeedConnectionMessage::fmcFullRefresh_Generic:
                 EncodeSnapshotGenericMessage(tmp);
@@ -1943,31 +1943,31 @@ public:
                 EncodeOLRFondMessage(tmp);
                 break;
             case FeedConnectionMessage::fmcFullRefresh_OLS_FOND:
-                EncodeOLSFondMessage(tmp);
+                EncodeAstsOLSFondMessage(tmp);
                 break;
             case FeedConnectionMessage::fmcIncrementalRefresh_TLR_FOND:
                 EncodeTLRFondMessage(tmp);
                 break;
             case FeedConnectionMessage::fmcFullRefresh_TLS_FOND:
-                EncodeTLSFondMessage(tmp);
+                EncodeAstsTLSFondMessage(tmp);
                 break;
             case FeedConnectionMessage::fmcIncrementalRefresh_OLR_CURR:
                 EncodeOLRCurrMessage(tmp);
                 break;
             case FeedConnectionMessage::fmcFullRefresh_OLS_CURR:
-                EncodeOLSCurrMessage(tmp);
+                EncodeAstsOLSCurrMessage(tmp);
                 break;
             case FeedConnectionMessage::fmcIncrementalRefresh_TLR_CURR:
                 EncodeTLRCurrMessage(tmp);
                 break;
             case FeedConnectionMessage::fmcFullRefresh_TLS_CURR:
-                EncodeTLSCurrMessage(tmp);
+                EncodeAstsTLSCurrMessage(tmp);
                 break;
             case FeedConnectionMessage::fmcSecurityDefinition:
-                EncodeSecurityDefinitionMessage(tmp);
+                EncodeAstsSecurityDefinitionMessage(tmp);
                 break;
             case FeedConnectionMessage::fmcSecurityStatus:
-                EncodeSecurityStatusMessage(tmp);
+                EncodeAstsSecurityStatusMessage(tmp);
                 break;
             case FeedConnectionMessage::fmcLogon:
                 EncodeLogonMessage(tmp);
@@ -1986,7 +1986,7 @@ public:
                 EncodeHearthBeatMessage(conn, tmp);
                 break;
             case FeedConnectionMessage::fmcIncrementalRefresh_Generic:
-                EncodeIncrementalGenericMessage(conn, tmp);
+                EncodeAstsIncrementalGenericMessage(conn, tmp);
                 break;
             case FeedConnectionMessage::fmcFullRefresh_Generic:
                 EncodeSnapshotGenericMessage(conn, tmp);
@@ -1995,28 +1995,28 @@ public:
                 EncodeOLRFondMessage(conn, tmp);
                 break;
             case FeedConnectionMessage::fmcFullRefresh_OLS_FOND:
-                EncodeOLSFondMessage(conn, tmp);
+                EncodeAstsOLSFondMessage(conn, tmp);
                 break;
             case FeedConnectionMessage::fmcIncrementalRefresh_TLR_FOND:
                 EncodeTLRFondMessage(conn, tmp);
                 break;
             case FeedConnectionMessage::fmcFullRefresh_TLS_FOND:
-                EncodeTLSFondMessage(conn, tmp);
+                EncodeAstsTLSFondMessage(conn, tmp);
                 break;
             case FeedConnectionMessage::fmcIncrementalRefresh_OLR_CURR:
                 EncodeOLRCurrMessage(conn, tmp);
                 break;
             case FeedConnectionMessage::fmcFullRefresh_OLS_CURR:
-                EncodeOLSCurrMessage(conn, tmp);
+                EncodeAstsOLSCurrMessage(conn, tmp);
                 break;
             case FeedConnectionMessage::fmcIncrementalRefresh_TLR_CURR:
                 EncodeTLRCurrMessage(conn, tmp);
                 break;
             case FeedConnectionMessage::fmcFullRefresh_TLS_CURR:
-                EncodeTLSCurrMessage(conn, tmp);
+                EncodeAstsTLSCurrMessage(conn, tmp);
                 break;
             case FeedConnectionMessage::fmcSecurityDefinition:
-                EncodeSecurityDefinitionMessage(conn, tmp);
+                EncodeAstsSecurityDefinitionMessage(conn, tmp);
             case FeedConnectionMessage::fmcLogon:
                 EncodeLogonMessage(conn, tmp);
                 break;

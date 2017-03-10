@@ -12,7 +12,7 @@ public:
     FeedConnection_CURR_OLR(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
             FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
         this->SetType(FeedConnectionType::Incremental);
-        this->m_orderTableCurr = new MarketDataTable<OrderInfo, FastOLSCURRInfo, FastOLSCURRItemInfo>();
+        this->m_orderTableCurr = new MarketDataTable<OrderInfo, AstsOLSCURRInfo, AstsOLSCURRItemInfo>();
         this->SetId(FeedConnectionId::fcidOlrCurr);
         this->m_fastProtocolManager = new FastProtocolManager();
         this->AllocateFastObjects();
@@ -23,13 +23,13 @@ public:
         delete this->m_orderTableCurr;
     }
     void AllocateFastObjects() {
-        FastObjectsAllocationInfo::Default->AllocateHeartbeatInfoPoolTo(10);
-        FastObjectsAllocationInfo::Default->AllocateTradingSessionStatusInfoPoolTo(10);
-        FastObjectsAllocationInfo::Default->AllocateIncrementalOLRCURRInfoPoolTo(10);
+        AstsObjectsAllocationInfo::Default->AllocateHeartbeatInfoPoolTo(10);
+        AstsObjectsAllocationInfo::Default->AllocateTradingSessionStatusInfoPoolTo(10);
+        AstsObjectsAllocationInfo::Default->AllocateIncrementalOLRCURRInfoPoolTo(10);
 #ifdef TEST
-        FastObjectsAllocationInfo::Default->AllocateOLSCURRItemInfoPool(100, 100);
+        AstsObjectsAllocationInfo::Default->AllocateOLSCURRItemInfoPool(100, 100);
 #else
-        FastObjectsAllocationInfo::Default->AllocateOLSCURRItemInfoPool(102400, 10240);
+        AstsObjectsAllocationInfo::Default->AllocateOLSCURRItemInfoPool(102400, 10240);
 #endif
     }
     int GetPacketsCount() { return 10000; }

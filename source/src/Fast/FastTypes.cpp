@@ -4,4 +4,5 @@
 
 #include "FastTypes.h"
 
-FastObjectsAllocationInfo* FastObjectsAllocationInfo::Default = new FastObjectsAllocationInfo(10);
+AstsObjectsAllocationInfo* AstsObjectsAllocationInfo::Default = new AstsObjectsAllocationInfo(10);
+SpectraObjectsAllocationInfo* SpectraObjectsAllocationInfo::Default = new SpectraObjectsAllocationInfo(10);

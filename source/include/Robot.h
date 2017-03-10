@@ -201,21 +201,21 @@ public:
         printf("------\n");
 #ifdef ALLOW_ORDERS
         this->PrintIncFeedStatistics("fond olr", this->m_fondMarket->FeedChannel()->Olr(),
-                                     this->m_fondMarket->FeedChannel()->Olr()->FastManager()->GetOLSFONDItemInfoPool()->Count(),
-                                     this->m_fondMarket->FeedChannel()->Olr()->FastManager()->GetOLSFONDItemInfoPool()->Capacity());
+                                     this->m_fondMarket->FeedChannel()->Olr()->FastManager()->GetAstsOLSFONDItemInfoPool()->Count(),
+                                     this->m_fondMarket->FeedChannel()->Olr()->FastManager()->GetAstsOLSFONDItemInfoPool()->Capacity());
 #endif
 
 #ifdef ALLOW_STATISTICS
         this->PrintIncFeedStatistics("fond msr", this->m_fondMarket->FeedChannel()->Msr(),
-                                     this->m_fondMarket->FeedChannel()->Msr()->FastManager()->GetGenericItemInfoPool()->Count(),
-                                     this->m_fondMarket->FeedChannel()->Msr()->FastManager()->GetGenericItemInfoPool()->Capacity());
+                                     this->m_fondMarket->FeedChannel()->Msr()->FastManager()->GetAstsGenericItemInfoPool()->Count(),
+                                     this->m_fondMarket->FeedChannel()->Msr()->FastManager()->GetAstsGenericItemInfoPool()->Capacity());
 #endif
 
 
 #ifdef ALLOW_TRADES
         this->PrintIncFeedStatistics("fond tlr", this->m_fondMarket->FeedChannel()->Tlr(),
-                                     this->m_fondMarket->FeedChannel()->Tlr()->FastManager()->GetTLSFONDItemInfoPool()->Count(),
-                                     this->m_fondMarket->FeedChannel()->Tlr()->FastManager()->GetTLSFONDItemInfoPool()->Capacity());
+                                     this->m_fondMarket->FeedChannel()->Tlr()->FastManager()->GetAstsTLSFONDItemInfoPool()->Count(),
+                                     this->m_fondMarket->FeedChannel()->Tlr()->FastManager()->GetAstsTLSFONDItemInfoPool()->Capacity());
 #endif
 
 #ifdef ALLOW_ORDERS
@@ -242,21 +242,21 @@ public:
         printf("------\n");
 #ifdef ALLOW_ORDERS
         this->PrintIncFeedStatistics("curr olr", this->m_currMarket->FeedChannel()->Olr(),
-            this->m_currMarket->FeedChannel()->Olr()->FastManager()->GetOLSCURRItemInfoPool()->Count(),
-            this->m_currMarket->FeedChannel()->Olr()->FastManager()->GetOLSCURRItemInfoPool()->Capacity());
+            this->m_currMarket->FeedChannel()->Olr()->FastManager()->GetAstsOLSCURRItemInfoPool()->Count(),
+            this->m_currMarket->FeedChannel()->Olr()->FastManager()->GetAstsOLSCURRItemInfoPool()->Capacity());
 #endif
 
 #ifdef ALLOW_STATISTICS
         this->PrintIncFeedStatistics("curr msr", this->m_currMarket->FeedChannel()->Msr(),
-            this->m_currMarket->FeedChannel()->Msr()->FastManager()->GetGenericItemInfoPool()->Count(),
-            this->m_currMarket->FeedChannel()->Msr()->FastManager()->GetGenericItemInfoPool()->Capacity());
+            this->m_currMarket->FeedChannel()->Msr()->FastManager()->GetAstsGenericItemInfoPool()->Count(),
+            this->m_currMarket->FeedChannel()->Msr()->FastManager()->GetAstsGenericItemInfoPool()->Capacity());
 #endif
 
 
 #ifdef ALLOW_TRADES
         this->PrintIncFeedStatistics("curr tlr", this->m_currMarket->FeedChannel()->Tlr(),
-            this->m_currMarket->FeedChannel()->Tlr()->FastManager()->GetTLSCURRItemInfoPool()->Count(),
-            this->m_currMarket->FeedChannel()->Tlr()->FastManager()->GetTLSCURRItemInfoPool()->Capacity());
+            this->m_currMarket->FeedChannel()->Tlr()->FastManager()->GetAstsTLSCURRItemInfoPool()->Count(),
+            this->m_currMarket->FeedChannel()->Tlr()->FastManager()->GetAstsTLSCURRItemInfoPool()->Capacity());
 #endif
 
 #ifdef ALLOW_ORDERS

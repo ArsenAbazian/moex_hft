@@ -206,7 +206,7 @@ typedef enum _SecurityStatus {
 #pragma endregion
 
 #pragma region Asts_Message_Info_Structures_Definition_GeneratedCode
-class FastSnapshotInfo {
+class AstsSnapshotInfo {
 public:
 	UINT64				PresenceMap;
 	UINT64				NullMap;
@@ -220,18 +220,18 @@ public:
 	int					SymbolLength;
 	char				TradingSessionID[32];
 	int					TradingSessionIDLength;
-	FastSnapshotInfo() {
+	AstsSnapshotInfo() {
 		this->PresenceMap = 0;
 		this->NullMap = 0;
 	}
 };
 
-class FastLogonInfo{
+class AstsLogonInfo{
 public:
 	UINT64							PresenceMap;
 	UINT64							NullMap;
-	LinkedPointer<FastLogonInfo>							*Pointer;
-	AutoAllocatePointerList<FastLogonInfo>							*Allocator;
+	LinkedPointer<AstsLogonInfo>							*Pointer;
+	AutoAllocatePointerList<AstsLogonInfo>							*Allocator;
 	bool							Used;
 	char							MessageType[16];			// id=35    constant has constant value = A
 	int							MessageTypeLength = 0;
@@ -251,7 +251,7 @@ public:
 	char							DefaultApplVerID[16];			// id=1137  
 	int							DefaultApplVerIDLength = 0;
 
-	FastLogonInfo(){
+	AstsLogonInfo(){
 		this->Used = false;
 		this->Pointer = 0;
 		this->Allocator = 0;
@@ -272,7 +272,7 @@ public:
 		this->DefaultApplVerID[0] = '\0';
 		this->DefaultApplVerIDLength = 0;
 	}
-	~FastLogonInfo(){ }
+	~AstsLogonInfo(){ }
 	inline void Clear() {
 		this->Used = false;
 		this->Allocator->FreeItem(this->Pointer);
@@ -285,12 +285,12 @@ public:
 	}
 };
 
-class FastLogoutInfo{
+class AstsLogoutInfo{
 public:
 	UINT64							PresenceMap;
 	UINT64							NullMap;
-	LinkedPointer<FastLogoutInfo>							*Pointer;
-	AutoAllocatePointerList<FastLogoutInfo>							*Allocator;
+	LinkedPointer<AstsLogoutInfo>							*Pointer;
+	AutoAllocatePointerList<AstsLogoutInfo>							*Allocator;
 	bool							Used;
 	char							MessageType[16];			// id=35    constant has constant value = 5
 	int							MessageTypeLength = 0;
@@ -305,7 +305,7 @@ public:
 	char							Text[512];			// id=58  presence=optional  
 	int							TextLength = 0;
 
-	FastLogoutInfo(){
+	AstsLogoutInfo(){
 		this->Used = false;
 		this->Pointer = 0;
 		this->Allocator = 0;
@@ -322,7 +322,7 @@ public:
 		this->Text[0] = '\0';
 		this->TextLength = 0;
 	}
-	~FastLogoutInfo(){ }
+	~AstsLogoutInfo(){ }
 	inline void Clear() {
 		this->Used = false;
 		this->Allocator->FreeItem(this->Pointer);
@@ -335,12 +335,12 @@ public:
 	}
 };
 
-class FastGenericItemInfo{
+class AstsGenericItemInfo{
 public:
 	UINT64							PresenceMap;
 	UINT64							NullMap;
-	LinkedPointer<FastGenericItemInfo>							*Pointer;
-	AutoAllocatePointerList<FastGenericItemInfo>							*Allocator;
+	LinkedPointer<AstsGenericItemInfo>							*Pointer;
+	AutoAllocatePointerList<AstsGenericItemInfo>							*Allocator;
 	bool							Used;
 	char							MDEntryType[4];			// id=269  presence=optional  
 	int							MDEntryTypeLength = 0;
@@ -402,7 +402,7 @@ public:
 	char							TradingSessionID[16];			// id=336  presence=optional  
 	int							TradingSessionIDLength = 0;
 
-	FastGenericItemInfo(){
+	AstsGenericItemInfo(){
 		this->Used = false;
 		this->Pointer = 0;
 		this->Allocator = 0;
@@ -435,7 +435,7 @@ public:
 		this->TradingSessionID[0] = '\0';
 		this->TradingSessionIDLength = 0;
 	}
-	~FastGenericItemInfo(){ }
+	~AstsGenericItemInfo(){ }
 	inline void Clear() {
 		this->Used = false;
 		this->Allocator->FreeItem(this->Pointer);
@@ -448,12 +448,12 @@ public:
 	}
 };
 
-class FastGenericInfo{
+class AstsGenericInfo{
 public:
 	UINT64							PresenceMap;
 	UINT64							NullMap;
-	LinkedPointer<FastGenericInfo>							*Pointer;
-	AutoAllocatePointerList<FastGenericInfo>							*Allocator;
+	LinkedPointer<AstsGenericInfo>							*Pointer;
+	AutoAllocatePointerList<AstsGenericInfo>							*Allocator;
 	bool							Used;
 	char							MessageType[16];			// id=35    constant has constant value = W
 	int							MessageTypeLength = 0;
@@ -478,9 +478,9 @@ public:
 	UINT32							AuctionIndicator;			// id=5509  presence=optional  
 	Decimal							NetChgPrevDay;			// id=451  presence=optional  
 	int							GroupMDEntriesCount;
-	FastGenericItemInfo* GroupMDEntries[256];
+	AstsGenericItemInfo* GroupMDEntries[256];
 
-	FastGenericInfo(){
+	AstsGenericInfo(){
 		this->Used = false;
 		this->Pointer = 0;
 		this->Allocator = 0;
@@ -500,7 +500,7 @@ public:
 		this->SymbolLength = 0;
 		this->GroupMDEntriesCount = 0;
 	}
-	~FastGenericInfo(){ }
+	~AstsGenericInfo(){ }
 	inline void Clear() {
 		this->Used = false;
 		this->Allocator->FreeItem(this->Pointer);
@@ -517,12 +517,12 @@ public:
 	}
 };
 
-class FastIncrementalGenericInfo{
+class AstsIncrementalGenericInfo{
 public:
 	UINT64							PresenceMap;
 	UINT64							NullMap;
-	LinkedPointer<FastIncrementalGenericInfo>							*Pointer;
-	AutoAllocatePointerList<FastIncrementalGenericInfo>							*Allocator;
+	LinkedPointer<AstsIncrementalGenericInfo>							*Pointer;
+	AutoAllocatePointerList<AstsIncrementalGenericInfo>							*Allocator;
 	bool							Used;
 	char							MessageType[16];			// id=35    constant has constant value = X
 	int							MessageTypeLength = 0;
@@ -535,9 +535,9 @@ public:
 	UINT32							MsgSeqNum;			// id=34  
 	UINT64							SendingTime;			// id=52  
 	int							GroupMDEntriesCount;
-	FastGenericItemInfo* GroupMDEntries[256];
+	AstsGenericItemInfo* GroupMDEntries[256];
 
-	FastIncrementalGenericInfo(){
+	AstsIncrementalGenericInfo(){
 		this->Used = false;
 		this->Pointer = 0;
 		this->Allocator = 0;
@@ -553,7 +553,7 @@ public:
 		this->SenderCompIDLength = 0;
 		this->GroupMDEntriesCount = 0;
 	}
-	~FastIncrementalGenericInfo(){ }
+	~AstsIncrementalGenericInfo(){ }
 	inline void Clear() {
 		this->Used = false;
 		this->Allocator->FreeItem(this->Pointer);
@@ -570,12 +570,12 @@ public:
 	}
 };
 
-class FastOLSFONDItemInfo{
+class AstsOLSFONDItemInfo{
 public:
 	UINT64							PresenceMap;
 	UINT64							NullMap;
-	LinkedPointer<FastOLSFONDItemInfo>							*Pointer;
-	AutoAllocatePointerList<FastOLSFONDItemInfo>							*Allocator;
+	LinkedPointer<AstsOLSFONDItemInfo>							*Pointer;
+	AutoAllocatePointerList<AstsOLSFONDItemInfo>							*Allocator;
 	bool							Used;
 	char							MDEntryType[4];			// id=269  presence=optional    copy
 	int							MDEntryTypeLength = 0;
@@ -601,7 +601,7 @@ public:
 	char							TradingSessionID[16];			// id=336  presence=optional    copy
 	int							TradingSessionIDLength = 0;
 
-	FastOLSFONDItemInfo(){
+	AstsOLSFONDItemInfo(){
 		this->Used = false;
 		this->Pointer = 0;
 		this->Allocator = 0;
@@ -622,7 +622,7 @@ public:
 		this->TradingSessionID[0] = '\0';
 		this->TradingSessionIDLength = 0;
 	}
-	~FastOLSFONDItemInfo(){ }
+	~AstsOLSFONDItemInfo(){ }
 	inline void Clear() {
 		this->Used = false;
 		this->Allocator->FreeItem(this->Pointer);
@@ -635,12 +635,12 @@ public:
 	}
 };
 
-class FastOLSFONDInfo{
+class AstsOLSFONDInfo{
 public:
 	UINT64							PresenceMap;
 	UINT64							NullMap;
-	LinkedPointer<FastOLSFONDInfo>							*Pointer;
-	AutoAllocatePointerList<FastOLSFONDInfo>							*Allocator;
+	LinkedPointer<AstsOLSFONDInfo>							*Pointer;
+	AutoAllocatePointerList<AstsOLSFONDInfo>							*Allocator;
 	bool							Used;
 	char							MessageType[16];			// id=35    constant has constant value = W
 	int							MessageTypeLength = 0;
@@ -664,9 +664,9 @@ public:
 	INT32							MDSecurityTradingStatus;			// id=1682  presence=optional  
 	UINT32							AuctionIndicator;			// id=5509  presence=optional  
 	int							GroupMDEntriesCount;
-	FastOLSFONDItemInfo* GroupMDEntries[256];
+	AstsOLSFONDItemInfo* GroupMDEntries[256];
 
-	FastOLSFONDInfo(){
+	AstsOLSFONDInfo(){
 		this->Used = false;
 		this->Pointer = 0;
 		this->Allocator = 0;
@@ -686,7 +686,7 @@ public:
 		this->SymbolLength = 0;
 		this->GroupMDEntriesCount = 0;
 	}
-	~FastOLSFONDInfo(){ }
+	~AstsOLSFONDInfo(){ }
 	inline void Clear() {
 		this->Used = false;
 		this->Allocator->FreeItem(this->Pointer);
@@ -703,12 +703,12 @@ public:
 	}
 };
 
-class FastOLSCURRItemInfo{
+class AstsOLSCURRItemInfo{
 public:
 	UINT64							PresenceMap;
 	UINT64							NullMap;
-	LinkedPointer<FastOLSCURRItemInfo>							*Pointer;
-	AutoAllocatePointerList<FastOLSCURRItemInfo>							*Allocator;
+	LinkedPointer<AstsOLSCURRItemInfo>							*Pointer;
+	AutoAllocatePointerList<AstsOLSCURRItemInfo>							*Allocator;
 	bool							Used;
 	char							MDEntryType[4];			// id=269  presence=optional    copy
 	int							MDEntryTypeLength = 0;
@@ -730,7 +730,7 @@ public:
 	char							TradingSessionID[16];			// id=336  presence=optional    copy
 	int							TradingSessionIDLength = 0;
 
-	FastOLSCURRItemInfo(){
+	AstsOLSCURRItemInfo(){
 		this->Used = false;
 		this->Pointer = 0;
 		this->Allocator = 0;
@@ -749,7 +749,7 @@ public:
 		this->TradingSessionID[0] = '\0';
 		this->TradingSessionIDLength = 0;
 	}
-	~FastOLSCURRItemInfo(){ }
+	~AstsOLSCURRItemInfo(){ }
 	inline void Clear() {
 		this->Used = false;
 		this->Allocator->FreeItem(this->Pointer);
@@ -762,12 +762,12 @@ public:
 	}
 };
 
-class FastOLSCURRInfo{
+class AstsOLSCURRInfo{
 public:
 	UINT64							PresenceMap;
 	UINT64							NullMap;
-	LinkedPointer<FastOLSCURRInfo>							*Pointer;
-	AutoAllocatePointerList<FastOLSCURRInfo>							*Allocator;
+	LinkedPointer<AstsOLSCURRInfo>							*Pointer;
+	AutoAllocatePointerList<AstsOLSCURRInfo>							*Allocator;
 	bool							Used;
 	char							MessageType[16];			// id=35    constant has constant value = W
 	int							MessageTypeLength = 0;
@@ -790,9 +790,9 @@ public:
 	int							SymbolLength = 0;
 	INT32							MDSecurityTradingStatus;			// id=1682  presence=optional  
 	int							GroupMDEntriesCount;
-	FastOLSCURRItemInfo* GroupMDEntries[256];
+	AstsOLSCURRItemInfo* GroupMDEntries[256];
 
-	FastOLSCURRInfo(){
+	AstsOLSCURRInfo(){
 		this->Used = false;
 		this->Pointer = 0;
 		this->Allocator = 0;
@@ -812,7 +812,7 @@ public:
 		this->SymbolLength = 0;
 		this->GroupMDEntriesCount = 0;
 	}
-	~FastOLSCURRInfo(){ }
+	~AstsOLSCURRInfo(){ }
 	inline void Clear() {
 		this->Used = false;
 		this->Allocator->FreeItem(this->Pointer);
@@ -829,12 +829,12 @@ public:
 	}
 };
 
-class FastTLSFONDItemInfo{
+class AstsTLSFONDItemInfo{
 public:
 	UINT64							PresenceMap;
 	UINT64							NullMap;
-	LinkedPointer<FastTLSFONDItemInfo>							*Pointer;
-	AutoAllocatePointerList<FastTLSFONDItemInfo>							*Allocator;
+	LinkedPointer<AstsTLSFONDItemInfo>							*Pointer;
+	AutoAllocatePointerList<AstsTLSFONDItemInfo>							*Allocator;
 	bool							Used;
 	char							MDEntryType[4];			// id=269  
 	int							MDEntryTypeLength = 0;
@@ -869,7 +869,7 @@ public:
 	char							TradingSessionID[16];			// id=336  presence=optional  
 	int							TradingSessionIDLength = 0;
 
-	FastTLSFONDItemInfo(){
+	AstsTLSFONDItemInfo(){
 		this->Used = false;
 		this->Pointer = 0;
 		this->Allocator = 0;
@@ -892,7 +892,7 @@ public:
 		this->TradingSessionID[0] = '\0';
 		this->TradingSessionIDLength = 0;
 	}
-	~FastTLSFONDItemInfo(){ }
+	~AstsTLSFONDItemInfo(){ }
 	inline void Clear() {
 		this->Used = false;
 		this->Allocator->FreeItem(this->Pointer);
@@ -905,12 +905,12 @@ public:
 	}
 };
 
-class FastTLSFONDInfo{
+class AstsTLSFONDInfo{
 public:
 	UINT64							PresenceMap;
 	UINT64							NullMap;
-	LinkedPointer<FastTLSFONDInfo>							*Pointer;
-	AutoAllocatePointerList<FastTLSFONDInfo>							*Allocator;
+	LinkedPointer<AstsTLSFONDInfo>							*Pointer;
+	AutoAllocatePointerList<AstsTLSFONDInfo>							*Allocator;
 	bool							Used;
 	char							MessageType[16];			// id=35    constant has constant value = W
 	int							MessageTypeLength = 0;
@@ -934,9 +934,9 @@ public:
 	INT32							MDSecurityTradingStatus;			// id=1682  presence=optional  
 	UINT32							AuctionIndicator;			// id=5509  presence=optional  
 	int							GroupMDEntriesCount;
-	FastTLSFONDItemInfo* GroupMDEntries[256];
+	AstsTLSFONDItemInfo* GroupMDEntries[256];
 
-	FastTLSFONDInfo(){
+	AstsTLSFONDInfo(){
 		this->Used = false;
 		this->Pointer = 0;
 		this->Allocator = 0;
@@ -956,7 +956,7 @@ public:
 		this->SymbolLength = 0;
 		this->GroupMDEntriesCount = 0;
 	}
-	~FastTLSFONDInfo(){ }
+	~AstsTLSFONDInfo(){ }
 	inline void Clear() {
 		this->Used = false;
 		this->Allocator->FreeItem(this->Pointer);
@@ -973,12 +973,12 @@ public:
 	}
 };
 
-class FastTLSCURRItemInfo{
+class AstsTLSCURRItemInfo{
 public:
 	UINT64							PresenceMap;
 	UINT64							NullMap;
-	LinkedPointer<FastTLSCURRItemInfo>							*Pointer;
-	AutoAllocatePointerList<FastTLSCURRItemInfo>							*Allocator;
+	LinkedPointer<AstsTLSCURRItemInfo>							*Pointer;
+	AutoAllocatePointerList<AstsTLSCURRItemInfo>							*Allocator;
 	bool							Used;
 	char							MDEntryType[4];			// id=269  
 	int							MDEntryTypeLength = 0;
@@ -1011,7 +1011,7 @@ public:
 	char							TradingSessionID[16];			// id=336  presence=optional  
 	int							TradingSessionIDLength = 0;
 
-	FastTLSCURRItemInfo(){
+	AstsTLSCURRItemInfo(){
 		this->Used = false;
 		this->Pointer = 0;
 		this->Allocator = 0;
@@ -1034,7 +1034,7 @@ public:
 		this->TradingSessionID[0] = '\0';
 		this->TradingSessionIDLength = 0;
 	}
-	~FastTLSCURRItemInfo(){ }
+	~AstsTLSCURRItemInfo(){ }
 	inline void Clear() {
 		this->Used = false;
 		this->Allocator->FreeItem(this->Pointer);
@@ -1047,12 +1047,12 @@ public:
 	}
 };
 
-class FastTLSCURRInfo{
+class AstsTLSCURRInfo{
 public:
 	UINT64							PresenceMap;
 	UINT64							NullMap;
-	LinkedPointer<FastTLSCURRInfo>							*Pointer;
-	AutoAllocatePointerList<FastTLSCURRInfo>							*Allocator;
+	LinkedPointer<AstsTLSCURRInfo>							*Pointer;
+	AutoAllocatePointerList<AstsTLSCURRInfo>							*Allocator;
 	bool							Used;
 	char							MessageType[16];			// id=35    constant has constant value = W
 	int							MessageTypeLength = 0;
@@ -1075,9 +1075,9 @@ public:
 	int							SymbolLength = 0;
 	INT32							MDSecurityTradingStatus;			// id=1682  presence=optional  
 	int							GroupMDEntriesCount;
-	FastTLSCURRItemInfo* GroupMDEntries[256];
+	AstsTLSCURRItemInfo* GroupMDEntries[256];
 
-	FastTLSCURRInfo(){
+	AstsTLSCURRInfo(){
 		this->Used = false;
 		this->Pointer = 0;
 		this->Allocator = 0;
@@ -1097,7 +1097,7 @@ public:
 		this->SymbolLength = 0;
 		this->GroupMDEntriesCount = 0;
 	}
-	~FastTLSCURRInfo(){ }
+	~AstsTLSCURRInfo(){ }
 	inline void Clear() {
 		this->Used = false;
 		this->Allocator->FreeItem(this->Pointer);
@@ -1114,12 +1114,12 @@ public:
 	}
 };
 
-class FastIncrementalMSRFONDInfo{
+class AstsIncrementalMSRFONDInfo{
 public:
 	UINT64							PresenceMap;
 	UINT64							NullMap;
-	LinkedPointer<FastIncrementalMSRFONDInfo>							*Pointer;
-	AutoAllocatePointerList<FastIncrementalMSRFONDInfo>							*Allocator;
+	LinkedPointer<AstsIncrementalMSRFONDInfo>							*Pointer;
+	AutoAllocatePointerList<AstsIncrementalMSRFONDInfo>							*Allocator;
 	bool							Used;
 	char							MessageType[16];			// id=35    constant has constant value = X
 	int							MessageTypeLength = 0;
@@ -1133,9 +1133,9 @@ public:
 	UINT64							SendingTime;			// id=52  
 	UINT64							LastUpdateTime;			// id=779  presence=optional  
 	int							GroupMDEntriesCount;
-	FastGenericItemInfo* GroupMDEntries[256];
+	AstsGenericItemInfo* GroupMDEntries[256];
 
-	FastIncrementalMSRFONDInfo(){
+	AstsIncrementalMSRFONDInfo(){
 		this->Used = false;
 		this->Pointer = 0;
 		this->Allocator = 0;
@@ -1151,7 +1151,7 @@ public:
 		this->SenderCompIDLength = 0;
 		this->GroupMDEntriesCount = 0;
 	}
-	~FastIncrementalMSRFONDInfo(){ }
+	~AstsIncrementalMSRFONDInfo(){ }
 	inline void Clear() {
 		this->Used = false;
 		this->Allocator->FreeItem(this->Pointer);
@@ -1168,12 +1168,12 @@ public:
 	}
 };
 
-class FastIncrementalMSRCURRInfo{
+class AstsIncrementalMSRCURRInfo{
 public:
 	UINT64							PresenceMap;
 	UINT64							NullMap;
-	LinkedPointer<FastIncrementalMSRCURRInfo>							*Pointer;
-	AutoAllocatePointerList<FastIncrementalMSRCURRInfo>							*Allocator;
+	LinkedPointer<AstsIncrementalMSRCURRInfo>							*Pointer;
+	AutoAllocatePointerList<AstsIncrementalMSRCURRInfo>							*Allocator;
 	bool							Used;
 	char							MessageType[16];			// id=35    constant has constant value = X
 	int							MessageTypeLength = 0;
@@ -1187,9 +1187,9 @@ public:
 	UINT64							SendingTime;			// id=52  
 	UINT64							LastUpdateTime;			// id=779  presence=optional  
 	int							GroupMDEntriesCount;
-	FastGenericItemInfo* GroupMDEntries[256];
+	AstsGenericItemInfo* GroupMDEntries[256];
 
-	FastIncrementalMSRCURRInfo(){
+	AstsIncrementalMSRCURRInfo(){
 		this->Used = false;
 		this->Pointer = 0;
 		this->Allocator = 0;
@@ -1205,7 +1205,7 @@ public:
 		this->SenderCompIDLength = 0;
 		this->GroupMDEntriesCount = 0;
 	}
-	~FastIncrementalMSRCURRInfo(){ }
+	~AstsIncrementalMSRCURRInfo(){ }
 	inline void Clear() {
 		this->Used = false;
 		this->Allocator->FreeItem(this->Pointer);
@@ -1222,12 +1222,12 @@ public:
 	}
 };
 
-class FastIncrementalOLRFONDInfo{
+class AstsIncrementalOLRFONDInfo{
 public:
 	UINT64							PresenceMap;
 	UINT64							NullMap;
-	LinkedPointer<FastIncrementalOLRFONDInfo>							*Pointer;
-	AutoAllocatePointerList<FastIncrementalOLRFONDInfo>							*Allocator;
+	LinkedPointer<AstsIncrementalOLRFONDInfo>							*Pointer;
+	AutoAllocatePointerList<AstsIncrementalOLRFONDInfo>							*Allocator;
 	bool							Used;
 	char							MessageType[16];			// id=35    constant has constant value = X
 	int							MessageTypeLength = 0;
@@ -1240,9 +1240,9 @@ public:
 	UINT32							MsgSeqNum;			// id=34  
 	UINT64							SendingTime;			// id=52  
 	int							GroupMDEntriesCount;
-	FastOLSFONDItemInfo* GroupMDEntries[256];
+	AstsOLSFONDItemInfo* GroupMDEntries[256];
 
-	FastIncrementalOLRFONDInfo(){
+	AstsIncrementalOLRFONDInfo(){
 		this->Used = false;
 		this->Pointer = 0;
 		this->Allocator = 0;
@@ -1258,7 +1258,7 @@ public:
 		this->SenderCompIDLength = 0;
 		this->GroupMDEntriesCount = 0;
 	}
-	~FastIncrementalOLRFONDInfo(){ }
+	~AstsIncrementalOLRFONDInfo(){ }
 	inline void Clear() {
 		this->Used = false;
 		this->Allocator->FreeItem(this->Pointer);
@@ -1275,12 +1275,12 @@ public:
 	}
 };
 
-class FastIncrementalOLRCURRInfo{
+class AstsIncrementalOLRCURRInfo{
 public:
 	UINT64							PresenceMap;
 	UINT64							NullMap;
-	LinkedPointer<FastIncrementalOLRCURRInfo>							*Pointer;
-	AutoAllocatePointerList<FastIncrementalOLRCURRInfo>							*Allocator;
+	LinkedPointer<AstsIncrementalOLRCURRInfo>							*Pointer;
+	AutoAllocatePointerList<AstsIncrementalOLRCURRInfo>							*Allocator;
 	bool							Used;
 	char							MessageType[16];			// id=35    constant has constant value = X
 	int							MessageTypeLength = 0;
@@ -1293,9 +1293,9 @@ public:
 	UINT32							MsgSeqNum;			// id=34  
 	UINT64							SendingTime;			// id=52  
 	int							GroupMDEntriesCount;
-	FastOLSCURRItemInfo* GroupMDEntries[256];
+	AstsOLSCURRItemInfo* GroupMDEntries[256];
 
-	FastIncrementalOLRCURRInfo(){
+	AstsIncrementalOLRCURRInfo(){
 		this->Used = false;
 		this->Pointer = 0;
 		this->Allocator = 0;
@@ -1311,7 +1311,7 @@ public:
 		this->SenderCompIDLength = 0;
 		this->GroupMDEntriesCount = 0;
 	}
-	~FastIncrementalOLRCURRInfo(){ }
+	~AstsIncrementalOLRCURRInfo(){ }
 	inline void Clear() {
 		this->Used = false;
 		this->Allocator->FreeItem(this->Pointer);
@@ -1328,12 +1328,12 @@ public:
 	}
 };
 
-class FastIncrementalTLRFONDInfo{
+class AstsIncrementalTLRFONDInfo{
 public:
 	UINT64							PresenceMap;
 	UINT64							NullMap;
-	LinkedPointer<FastIncrementalTLRFONDInfo>							*Pointer;
-	AutoAllocatePointerList<FastIncrementalTLRFONDInfo>							*Allocator;
+	LinkedPointer<AstsIncrementalTLRFONDInfo>							*Pointer;
+	AutoAllocatePointerList<AstsIncrementalTLRFONDInfo>							*Allocator;
 	bool							Used;
 	char							MessageType[16];			// id=35    constant has constant value = X
 	int							MessageTypeLength = 0;
@@ -1346,9 +1346,9 @@ public:
 	UINT32							MsgSeqNum;			// id=34  
 	UINT64							SendingTime;			// id=52  
 	int							GroupMDEntriesCount;
-	FastTLSFONDItemInfo* GroupMDEntries[256];
+	AstsTLSFONDItemInfo* GroupMDEntries[256];
 
-	FastIncrementalTLRFONDInfo(){
+	AstsIncrementalTLRFONDInfo(){
 		this->Used = false;
 		this->Pointer = 0;
 		this->Allocator = 0;
@@ -1364,7 +1364,7 @@ public:
 		this->SenderCompIDLength = 0;
 		this->GroupMDEntriesCount = 0;
 	}
-	~FastIncrementalTLRFONDInfo(){ }
+	~AstsIncrementalTLRFONDInfo(){ }
 	inline void Clear() {
 		this->Used = false;
 		this->Allocator->FreeItem(this->Pointer);
@@ -1381,12 +1381,12 @@ public:
 	}
 };
 
-class FastIncrementalTLRCURRInfo{
+class AstsIncrementalTLRCURRInfo{
 public:
 	UINT64							PresenceMap;
 	UINT64							NullMap;
-	LinkedPointer<FastIncrementalTLRCURRInfo>							*Pointer;
-	AutoAllocatePointerList<FastIncrementalTLRCURRInfo>							*Allocator;
+	LinkedPointer<AstsIncrementalTLRCURRInfo>							*Pointer;
+	AutoAllocatePointerList<AstsIncrementalTLRCURRInfo>							*Allocator;
 	bool							Used;
 	char							MessageType[16];			// id=35    constant has constant value = X
 	int							MessageTypeLength = 0;
@@ -1399,9 +1399,9 @@ public:
 	UINT32							MsgSeqNum;			// id=34  
 	UINT64							SendingTime;			// id=52  
 	int							GroupMDEntriesCount;
-	FastTLSCURRItemInfo* GroupMDEntries[256];
+	AstsTLSCURRItemInfo* GroupMDEntries[256];
 
-	FastIncrementalTLRCURRInfo(){
+	AstsIncrementalTLRCURRInfo(){
 		this->Used = false;
 		this->Pointer = 0;
 		this->Allocator = 0;
@@ -1417,7 +1417,7 @@ public:
 		this->SenderCompIDLength = 0;
 		this->GroupMDEntriesCount = 0;
 	}
-	~FastIncrementalTLRCURRInfo(){ }
+	~AstsIncrementalTLRCURRInfo(){ }
 	inline void Clear() {
 		this->Used = false;
 		this->Allocator->FreeItem(this->Pointer);
@@ -1434,25 +1434,25 @@ public:
 	}
 };
 
-class FastSecurityDefinitionGroupInstrAttribItemInfo{
+class AstsSecurityDefinitionGroupInstrAttribItemInfo{
 public:
 	UINT64							PresenceMap;
 	UINT64							NullMap;
-	LinkedPointer<FastSecurityDefinitionGroupInstrAttribItemInfo>							*Pointer;
-	AutoAllocatePointerList<FastSecurityDefinitionGroupInstrAttribItemInfo>							*Allocator;
+	LinkedPointer<AstsSecurityDefinitionGroupInstrAttribItemInfo>							*Pointer;
+	AutoAllocatePointerList<AstsSecurityDefinitionGroupInstrAttribItemInfo>							*Allocator;
 	bool							Used;
 	INT32							InstrAttribType;			// id=871  
 	unsigned char							InstrAttribValue[128];			// id=872  presence=optional  
 	int							InstrAttribValueLength = 0;
 
-	FastSecurityDefinitionGroupInstrAttribItemInfo(){
+	AstsSecurityDefinitionGroupInstrAttribItemInfo(){
 		this->Used = false;
 		this->Pointer = 0;
 		this->Allocator = 0;
 		this->PresenceMap = 0;
 		this->NullMap = 0;
 	}
-	~FastSecurityDefinitionGroupInstrAttribItemInfo(){ }
+	~AstsSecurityDefinitionGroupInstrAttribItemInfo(){ }
 	inline void Clear() {
 		this->Used = false;
 		this->Allocator->FreeItem(this->Pointer);
@@ -1465,12 +1465,12 @@ public:
 	}
 };
 
-class FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo{
+class AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo{
 public:
 	UINT64							PresenceMap;
 	UINT64							NullMap;
-	LinkedPointer<FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo>							*Pointer;
-	AutoAllocatePointerList<FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo>							*Allocator;
+	LinkedPointer<AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo>							*Pointer;
+	AutoAllocatePointerList<AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo>							*Allocator;
 	bool							Used;
 	char							TradingSessionID[16];			// id=336  
 	int							TradingSessionIDLength = 0;
@@ -1479,7 +1479,7 @@ public:
 	INT32							SecurityTradingStatus;			// id=326  presence=optional  
 	INT32							OrderNote;			// id=9680  presence=optional  
 
-	FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo(){
+	AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo(){
 		this->Used = false;
 		this->Pointer = 0;
 		this->Allocator = 0;
@@ -1490,7 +1490,7 @@ public:
 		this->TradingSessionSubID[0] = '\0';
 		this->TradingSessionSubIDLength = 0;
 	}
-	~FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo(){ }
+	~AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo(){ }
 	inline void Clear() {
 		this->Used = false;
 		this->Allocator->FreeItem(this->Pointer);
@@ -1503,18 +1503,18 @@ public:
 	}
 };
 
-class FastSecurityDefinitionMarketSegmentGrpItemInfo{
+class AstsSecurityDefinitionMarketSegmentGrpItemInfo{
 public:
 	UINT64							PresenceMap;
 	UINT64							NullMap;
-	LinkedPointer<FastSecurityDefinitionMarketSegmentGrpItemInfo>							*Pointer;
-	AutoAllocatePointerList<FastSecurityDefinitionMarketSegmentGrpItemInfo>							*Allocator;
+	LinkedPointer<AstsSecurityDefinitionMarketSegmentGrpItemInfo>							*Pointer;
+	AutoAllocatePointerList<AstsSecurityDefinitionMarketSegmentGrpItemInfo>							*Allocator;
 	bool							Used;
 	Decimal							RoundLot;			// id=561  presence=optional  
 	int							TradingSessionRulesGrpCount;			// presence=optional  
-	FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo* TradingSessionRulesGrp[256];			// presence=optional  
+	AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo* TradingSessionRulesGrp[256];			// presence=optional  
 
-	FastSecurityDefinitionMarketSegmentGrpItemInfo(){
+	AstsSecurityDefinitionMarketSegmentGrpItemInfo(){
 		this->Used = false;
 		this->Pointer = 0;
 		this->Allocator = 0;
@@ -1522,7 +1522,7 @@ public:
 		this->NullMap = 0;
 		this->TradingSessionRulesGrpCount = 0;
 	}
-	~FastSecurityDefinitionMarketSegmentGrpItemInfo(){ }
+	~AstsSecurityDefinitionMarketSegmentGrpItemInfo(){ }
 	inline void Clear() {
 		this->Used = false;
 		this->Allocator->FreeItem(this->Pointer);
@@ -1539,12 +1539,12 @@ public:
 	}
 };
 
-class FastSecurityDefinitionInfo{
+class AstsSecurityDefinitionInfo{
 public:
 	UINT64							PresenceMap;
 	UINT64							NullMap;
-	LinkedPointer<FastSecurityDefinitionInfo>							*Pointer;
-	AutoAllocatePointerList<FastSecurityDefinitionInfo>							*Allocator;
+	LinkedPointer<AstsSecurityDefinitionInfo>							*Pointer;
+	AutoAllocatePointerList<AstsSecurityDefinitionInfo>							*Allocator;
 	bool							Used;
 	char							MessageType[16];			// id=35    constant has constant value = d
 	int							MessageTypeLength = 0;
@@ -1586,11 +1586,11 @@ public:
 	unsigned char							QuoteText[128];			// id=9696  presence=optional  
 	int							QuoteTextLength = 0;
 	int							GroupInstrAttribCount;			// presence=optional  
-	FastSecurityDefinitionGroupInstrAttribItemInfo* GroupInstrAttrib[256];			// presence=optional  
+	AstsSecurityDefinitionGroupInstrAttribItemInfo* GroupInstrAttrib[256];			// presence=optional  
 	char							Currency[4];			// id=15  presence=optional  
 	int							CurrencyLength = 0;
 	int							MarketSegmentGrpCount;			// presence=optional  
-	FastSecurityDefinitionMarketSegmentGrpItemInfo* MarketSegmentGrp[256];			// presence=optional  
+	AstsSecurityDefinitionMarketSegmentGrpItemInfo* MarketSegmentGrp[256];			// presence=optional  
 	char							SettlCurrency[16];			// id=120  presence=optional  
 	int							SettlCurrencyLength = 0;
 	INT32							PriceType;			// id=423  presence=optional  
@@ -1615,7 +1615,7 @@ public:
 	Decimal							LowLimit;			// id=9200  presence=optional  
 	INT32							NumOfDaysToMaturity;			// id=10508  presence=optional  
 
-	FastSecurityDefinitionInfo(){
+	AstsSecurityDefinitionInfo(){
 		this->Used = false;
 		this->Pointer = 0;
 		this->Allocator = 0;
@@ -1644,7 +1644,7 @@ public:
 		this->StateSecurityID[0] = '\0';
 		this->StateSecurityIDLength = 0;
 	}
-	~FastSecurityDefinitionInfo(){ }
+	~AstsSecurityDefinitionInfo(){ }
 	inline void Clear() {
 		this->Used = false;
 		this->Allocator->FreeItem(this->Pointer);
@@ -1665,12 +1665,12 @@ public:
 	}
 };
 
-class FastSecurityStatusInfo{
+class AstsSecurityStatusInfo{
 public:
 	UINT64							PresenceMap;
 	UINT64							NullMap;
-	LinkedPointer<FastSecurityStatusInfo>							*Pointer;
-	AutoAllocatePointerList<FastSecurityStatusInfo>							*Allocator;
+	LinkedPointer<AstsSecurityStatusInfo>							*Pointer;
+	AutoAllocatePointerList<AstsSecurityStatusInfo>							*Allocator;
 	bool							Used;
 	char							MessageType[16];			// id=35    constant has constant value = f
 	int							MessageTypeLength = 0;
@@ -1691,7 +1691,7 @@ public:
 	INT32							SecurityTradingStatus;			// id=326  presence=optional  
 	UINT32							AuctionIndicator;			// id=5509  presence=optional  
 
-	FastSecurityStatusInfo(){
+	AstsSecurityStatusInfo(){
 		this->Used = false;
 		this->Pointer = 0;
 		this->Allocator = 0;
@@ -1712,7 +1712,7 @@ public:
 		this->TradingSessionSubID[0] = '\0';
 		this->TradingSessionSubIDLength = 0;
 	}
-	~FastSecurityStatusInfo(){ }
+	~AstsSecurityStatusInfo(){ }
 	inline void Clear() {
 		this->Used = false;
 		this->Allocator->FreeItem(this->Pointer);
@@ -1725,12 +1725,12 @@ public:
 	}
 };
 
-class FastTradingSessionStatusInfo{
+class AstsTradingSessionStatusInfo{
 public:
 	UINT64							PresenceMap;
 	UINT64							NullMap;
-	LinkedPointer<FastTradingSessionStatusInfo>							*Pointer;
-	AutoAllocatePointerList<FastTradingSessionStatusInfo>							*Allocator;
+	LinkedPointer<AstsTradingSessionStatusInfo>							*Pointer;
+	AutoAllocatePointerList<AstsTradingSessionStatusInfo>							*Allocator;
 	bool							Used;
 	char							MessageType[16];			// id=35    constant has constant value = h
 	int							MessageTypeLength = 0;
@@ -1748,7 +1748,7 @@ public:
 	char							TradingSessionID[16];			// id=336  
 	int							TradingSessionIDLength = 0;
 
-	FastTradingSessionStatusInfo(){
+	AstsTradingSessionStatusInfo(){
 		this->Used = false;
 		this->Pointer = 0;
 		this->Allocator = 0;
@@ -1767,7 +1767,7 @@ public:
 		this->TradingSessionID[0] = '\0';
 		this->TradingSessionIDLength = 0;
 	}
-	~FastTradingSessionStatusInfo(){ }
+	~AstsTradingSessionStatusInfo(){ }
 	inline void Clear() {
 		this->Used = false;
 		this->Allocator->FreeItem(this->Pointer);
@@ -1780,12 +1780,12 @@ public:
 	}
 };
 
-class FastHeartbeatInfo{
+class AstsHeartbeatInfo{
 public:
 	UINT64							PresenceMap;
 	UINT64							NullMap;
-	LinkedPointer<FastHeartbeatInfo>							*Pointer;
-	AutoAllocatePointerList<FastHeartbeatInfo>							*Allocator;
+	LinkedPointer<AstsHeartbeatInfo>							*Pointer;
+	AutoAllocatePointerList<AstsHeartbeatInfo>							*Allocator;
 	bool							Used;
 	char							MessageType[16];			// id=35    constant has constant value = 0
 	int							MessageTypeLength = 0;
@@ -1796,7 +1796,7 @@ public:
 	UINT32							MsgSeqNum;			// id=34  
 	UINT64							SendingTime;			// id=52  
 
-	FastHeartbeatInfo(){
+	AstsHeartbeatInfo(){
 		this->Used = false;
 		this->Pointer = 0;
 		this->Allocator = 0;
@@ -1809,7 +1809,7 @@ public:
 		this->SenderCompID[0] = '\0';
 		this->SenderCompIDLength = 0;
 	}
-	~FastHeartbeatInfo(){ }
+	~AstsHeartbeatInfo(){ }
 	inline void Clear() {
 		this->Used = false;
 		this->Allocator->FreeItem(this->Pointer);
@@ -1822,377 +1822,377 @@ public:
 	}
 };
 
-class FastObjectsAllocationInfo {
-	AutoAllocatePointerList<FastLogonInfo>				*m_fastLogon;
-	AutoAllocatePointerList<FastLogoutInfo>				*m_fastLogout;
-	AutoAllocatePointerList<FastGenericItemInfo>				*m_fastGenericItems;
-	AutoAllocatePointerList<FastGenericInfo>				*m_fastGeneric;
-	AutoAllocatePointerList<FastIncrementalGenericInfo>				*m_fastIncrementalGeneric;
-	AutoAllocatePointerList<FastOLSFONDItemInfo>				*m_fastOLSFONDItems;
-	AutoAllocatePointerList<FastOLSFONDInfo>				*m_fastOLSFOND;
-	AutoAllocatePointerList<FastOLSCURRItemInfo>				*m_fastOLSCURRItems;
-	AutoAllocatePointerList<FastOLSCURRInfo>				*m_fastOLSCURR;
-	AutoAllocatePointerList<FastTLSFONDItemInfo>				*m_fastTLSFONDItems;
-	AutoAllocatePointerList<FastTLSFONDInfo>				*m_fastTLSFOND;
-	AutoAllocatePointerList<FastTLSCURRItemInfo>				*m_fastTLSCURRItems;
-	AutoAllocatePointerList<FastTLSCURRInfo>				*m_fastTLSCURR;
-	AutoAllocatePointerList<FastIncrementalMSRFONDInfo>				*m_fastIncrementalMSRFOND;
-	AutoAllocatePointerList<FastIncrementalMSRCURRInfo>				*m_fastIncrementalMSRCURR;
-	AutoAllocatePointerList<FastIncrementalOLRFONDInfo>				*m_fastIncrementalOLRFOND;
-	AutoAllocatePointerList<FastIncrementalOLRCURRInfo>				*m_fastIncrementalOLRCURR;
-	AutoAllocatePointerList<FastIncrementalTLRFONDInfo>				*m_fastIncrementalTLRFOND;
-	AutoAllocatePointerList<FastIncrementalTLRCURRInfo>				*m_fastIncrementalTLRCURR;
-	AutoAllocatePointerList<FastSecurityDefinitionGroupInstrAttribItemInfo>				*m_fastSecurityDefinitionGroupInstrAttribItems;
-	AutoAllocatePointerList<FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo>				*m_fastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItems;
-	AutoAllocatePointerList<FastSecurityDefinitionMarketSegmentGrpItemInfo>				*m_fastSecurityDefinitionMarketSegmentGrpItems;
-	AutoAllocatePointerList<FastSecurityDefinitionInfo>				*m_fastSecurityDefinition;
-	AutoAllocatePointerList<FastSecurityStatusInfo>				*m_fastSecurityStatus;
-	AutoAllocatePointerList<FastTradingSessionStatusInfo>				*m_fastTradingSessionStatus;
-	AutoAllocatePointerList<FastHeartbeatInfo>				*m_fastHeartbeat;
+class AstsObjectsAllocationInfo {
+	AutoAllocatePointerList<AstsLogonInfo>				*m_astsLogon;
+	AutoAllocatePointerList<AstsLogoutInfo>				*m_astsLogout;
+	AutoAllocatePointerList<AstsGenericItemInfo>				*m_astsGenericItems;
+	AutoAllocatePointerList<AstsGenericInfo>				*m_astsGeneric;
+	AutoAllocatePointerList<AstsIncrementalGenericInfo>				*m_astsIncrementalGeneric;
+	AutoAllocatePointerList<AstsOLSFONDItemInfo>				*m_astsOLSFONDItems;
+	AutoAllocatePointerList<AstsOLSFONDInfo>				*m_astsOLSFOND;
+	AutoAllocatePointerList<AstsOLSCURRItemInfo>				*m_astsOLSCURRItems;
+	AutoAllocatePointerList<AstsOLSCURRInfo>				*m_astsOLSCURR;
+	AutoAllocatePointerList<AstsTLSFONDItemInfo>				*m_astsTLSFONDItems;
+	AutoAllocatePointerList<AstsTLSFONDInfo>				*m_astsTLSFOND;
+	AutoAllocatePointerList<AstsTLSCURRItemInfo>				*m_astsTLSCURRItems;
+	AutoAllocatePointerList<AstsTLSCURRInfo>				*m_astsTLSCURR;
+	AutoAllocatePointerList<AstsIncrementalMSRFONDInfo>				*m_astsIncrementalMSRFOND;
+	AutoAllocatePointerList<AstsIncrementalMSRCURRInfo>				*m_astsIncrementalMSRCURR;
+	AutoAllocatePointerList<AstsIncrementalOLRFONDInfo>				*m_astsIncrementalOLRFOND;
+	AutoAllocatePointerList<AstsIncrementalOLRCURRInfo>				*m_astsIncrementalOLRCURR;
+	AutoAllocatePointerList<AstsIncrementalTLRFONDInfo>				*m_astsIncrementalTLRFOND;
+	AutoAllocatePointerList<AstsIncrementalTLRCURRInfo>				*m_astsIncrementalTLRCURR;
+	AutoAllocatePointerList<AstsSecurityDefinitionGroupInstrAttribItemInfo>				*m_astsSecurityDefinitionGroupInstrAttribItems;
+	AutoAllocatePointerList<AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo>				*m_astsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItems;
+	AutoAllocatePointerList<AstsSecurityDefinitionMarketSegmentGrpItemInfo>				*m_astsSecurityDefinitionMarketSegmentGrpItems;
+	AutoAllocatePointerList<AstsSecurityDefinitionInfo>				*m_astsSecurityDefinition;
+	AutoAllocatePointerList<AstsSecurityStatusInfo>				*m_astsSecurityStatus;
+	AutoAllocatePointerList<AstsTradingSessionStatusInfo>				*m_astsTradingSessionStatus;
+	AutoAllocatePointerList<AstsHeartbeatInfo>				*m_astsHeartbeat;
 public:
-	 static FastObjectsAllocationInfo *Default;
-	FastObjectsAllocationInfo(int count) {
-		this->m_fastLogon = new AutoAllocatePointerList<FastLogonInfo>(count, count, "FastLogonInfo");
-		this->m_fastLogout = new AutoAllocatePointerList<FastLogoutInfo>(count, count, "FastLogoutInfo");
-		this->m_fastGenericItems = new AutoAllocatePointerList<FastGenericItemInfo>(count, count, "FastGenericItemInfo");
-		this->m_fastGeneric = new AutoAllocatePointerList<FastGenericInfo>(count, count, "FastGenericInfo");
-		this->m_fastIncrementalGeneric = new AutoAllocatePointerList<FastIncrementalGenericInfo>(count, count, "FastIncrementalGenericInfo");
-		this->m_fastOLSFONDItems = new AutoAllocatePointerList<FastOLSFONDItemInfo>(count, count, "FastOLSFONDItemInfo");
-		this->m_fastOLSFOND = new AutoAllocatePointerList<FastOLSFONDInfo>(count, count, "FastOLSFONDInfo");
-		this->m_fastOLSCURRItems = new AutoAllocatePointerList<FastOLSCURRItemInfo>(count, count, "FastOLSCURRItemInfo");
-		this->m_fastOLSCURR = new AutoAllocatePointerList<FastOLSCURRInfo>(count, count, "FastOLSCURRInfo");
-		this->m_fastTLSFONDItems = new AutoAllocatePointerList<FastTLSFONDItemInfo>(count, count, "FastTLSFONDItemInfo");
-		this->m_fastTLSFOND = new AutoAllocatePointerList<FastTLSFONDInfo>(count, count, "FastTLSFONDInfo");
-		this->m_fastTLSCURRItems = new AutoAllocatePointerList<FastTLSCURRItemInfo>(count, count, "FastTLSCURRItemInfo");
-		this->m_fastTLSCURR = new AutoAllocatePointerList<FastTLSCURRInfo>(count, count, "FastTLSCURRInfo");
-		this->m_fastIncrementalMSRFOND = new AutoAllocatePointerList<FastIncrementalMSRFONDInfo>(count, count, "FastIncrementalMSRFONDInfo");
-		this->m_fastIncrementalMSRCURR = new AutoAllocatePointerList<FastIncrementalMSRCURRInfo>(count, count, "FastIncrementalMSRCURRInfo");
-		this->m_fastIncrementalOLRFOND = new AutoAllocatePointerList<FastIncrementalOLRFONDInfo>(count, count, "FastIncrementalOLRFONDInfo");
-		this->m_fastIncrementalOLRCURR = new AutoAllocatePointerList<FastIncrementalOLRCURRInfo>(count, count, "FastIncrementalOLRCURRInfo");
-		this->m_fastIncrementalTLRFOND = new AutoAllocatePointerList<FastIncrementalTLRFONDInfo>(count, count, "FastIncrementalTLRFONDInfo");
-		this->m_fastIncrementalTLRCURR = new AutoAllocatePointerList<FastIncrementalTLRCURRInfo>(count, count, "FastIncrementalTLRCURRInfo");
-		this->m_fastSecurityDefinitionGroupInstrAttribItems = new AutoAllocatePointerList<FastSecurityDefinitionGroupInstrAttribItemInfo>(count, count, "FastSecurityDefinitionGroupInstrAttribItemInfo");
-		this->m_fastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItems = new AutoAllocatePointerList<FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo>(count, count, "FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo");
-		this->m_fastSecurityDefinitionMarketSegmentGrpItems = new AutoAllocatePointerList<FastSecurityDefinitionMarketSegmentGrpItemInfo>(count, count, "FastSecurityDefinitionMarketSegmentGrpItemInfo");
-		this->m_fastSecurityDefinition = new AutoAllocatePointerList<FastSecurityDefinitionInfo>(count, count, "FastSecurityDefinitionInfo");
-		this->m_fastSecurityStatus = new AutoAllocatePointerList<FastSecurityStatusInfo>(count, count, "FastSecurityStatusInfo");
-		this->m_fastTradingSessionStatus = new AutoAllocatePointerList<FastTradingSessionStatusInfo>(count, count, "FastTradingSessionStatusInfo");
-		this->m_fastHeartbeat = new AutoAllocatePointerList<FastHeartbeatInfo>(count, count, "FastHeartbeatInfo");
+	 static AstsObjectsAllocationInfo *Default;
+	AstsObjectsAllocationInfo(int count) {
+		this->m_astsLogon = new AutoAllocatePointerList<AstsLogonInfo>(count, count, "AstsLogonInfo");
+		this->m_astsLogout = new AutoAllocatePointerList<AstsLogoutInfo>(count, count, "AstsLogoutInfo");
+		this->m_astsGenericItems = new AutoAllocatePointerList<AstsGenericItemInfo>(count, count, "AstsGenericItemInfo");
+		this->m_astsGeneric = new AutoAllocatePointerList<AstsGenericInfo>(count, count, "AstsGenericInfo");
+		this->m_astsIncrementalGeneric = new AutoAllocatePointerList<AstsIncrementalGenericInfo>(count, count, "AstsIncrementalGenericInfo");
+		this->m_astsOLSFONDItems = new AutoAllocatePointerList<AstsOLSFONDItemInfo>(count, count, "AstsOLSFONDItemInfo");
+		this->m_astsOLSFOND = new AutoAllocatePointerList<AstsOLSFONDInfo>(count, count, "AstsOLSFONDInfo");
+		this->m_astsOLSCURRItems = new AutoAllocatePointerList<AstsOLSCURRItemInfo>(count, count, "AstsOLSCURRItemInfo");
+		this->m_astsOLSCURR = new AutoAllocatePointerList<AstsOLSCURRInfo>(count, count, "AstsOLSCURRInfo");
+		this->m_astsTLSFONDItems = new AutoAllocatePointerList<AstsTLSFONDItemInfo>(count, count, "AstsTLSFONDItemInfo");
+		this->m_astsTLSFOND = new AutoAllocatePointerList<AstsTLSFONDInfo>(count, count, "AstsTLSFONDInfo");
+		this->m_astsTLSCURRItems = new AutoAllocatePointerList<AstsTLSCURRItemInfo>(count, count, "AstsTLSCURRItemInfo");
+		this->m_astsTLSCURR = new AutoAllocatePointerList<AstsTLSCURRInfo>(count, count, "AstsTLSCURRInfo");
+		this->m_astsIncrementalMSRFOND = new AutoAllocatePointerList<AstsIncrementalMSRFONDInfo>(count, count, "AstsIncrementalMSRFONDInfo");
+		this->m_astsIncrementalMSRCURR = new AutoAllocatePointerList<AstsIncrementalMSRCURRInfo>(count, count, "AstsIncrementalMSRCURRInfo");
+		this->m_astsIncrementalOLRFOND = new AutoAllocatePointerList<AstsIncrementalOLRFONDInfo>(count, count, "AstsIncrementalOLRFONDInfo");
+		this->m_astsIncrementalOLRCURR = new AutoAllocatePointerList<AstsIncrementalOLRCURRInfo>(count, count, "AstsIncrementalOLRCURRInfo");
+		this->m_astsIncrementalTLRFOND = new AutoAllocatePointerList<AstsIncrementalTLRFONDInfo>(count, count, "AstsIncrementalTLRFONDInfo");
+		this->m_astsIncrementalTLRCURR = new AutoAllocatePointerList<AstsIncrementalTLRCURRInfo>(count, count, "AstsIncrementalTLRCURRInfo");
+		this->m_astsSecurityDefinitionGroupInstrAttribItems = new AutoAllocatePointerList<AstsSecurityDefinitionGroupInstrAttribItemInfo>(count, count, "AstsSecurityDefinitionGroupInstrAttribItemInfo");
+		this->m_astsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItems = new AutoAllocatePointerList<AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo>(count, count, "AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo");
+		this->m_astsSecurityDefinitionMarketSegmentGrpItems = new AutoAllocatePointerList<AstsSecurityDefinitionMarketSegmentGrpItemInfo>(count, count, "AstsSecurityDefinitionMarketSegmentGrpItemInfo");
+		this->m_astsSecurityDefinition = new AutoAllocatePointerList<AstsSecurityDefinitionInfo>(count, count, "AstsSecurityDefinitionInfo");
+		this->m_astsSecurityStatus = new AutoAllocatePointerList<AstsSecurityStatusInfo>(count, count, "AstsSecurityStatusInfo");
+		this->m_astsTradingSessionStatus = new AutoAllocatePointerList<AstsTradingSessionStatusInfo>(count, count, "AstsTradingSessionStatusInfo");
+		this->m_astsHeartbeat = new AutoAllocatePointerList<AstsHeartbeatInfo>(count, count, "AstsHeartbeatInfo");
 	}
 	inline void AllocateLogonInfoPool(int count, int addCount) {
-		this->m_fastLogon->Append(count);
-		this->m_fastLogon->AddCount(addCount);
+		this->m_astsLogon->Append(count);
+		this->m_astsLogon->AddCount(addCount);
 	}
 	inline void AllocateLogoutInfoPool(int count, int addCount) {
-		this->m_fastLogout->Append(count);
-		this->m_fastLogout->AddCount(addCount);
+		this->m_astsLogout->Append(count);
+		this->m_astsLogout->AddCount(addCount);
 	}
 	inline void AllocateGenericItemInfoPool(int count, int addCount) {
-		this->m_fastGenericItems->Append(count);
-		this->m_fastGenericItems->AddCount(addCount);
+		this->m_astsGenericItems->Append(count);
+		this->m_astsGenericItems->AddCount(addCount);
 	}
 	inline void AllocateGenericInfoPool(int count, int addCount) {
-		this->m_fastGeneric->Append(count);
-		this->m_fastGeneric->AddCount(addCount);
+		this->m_astsGeneric->Append(count);
+		this->m_astsGeneric->AddCount(addCount);
 	}
 	inline void AllocateIncrementalGenericInfoPool(int count, int addCount) {
-		this->m_fastIncrementalGeneric->Append(count);
-		this->m_fastIncrementalGeneric->AddCount(addCount);
+		this->m_astsIncrementalGeneric->Append(count);
+		this->m_astsIncrementalGeneric->AddCount(addCount);
 	}
 	inline void AllocateOLSFONDItemInfoPool(int count, int addCount) {
-		this->m_fastOLSFONDItems->Append(count);
-		this->m_fastOLSFONDItems->AddCount(addCount);
+		this->m_astsOLSFONDItems->Append(count);
+		this->m_astsOLSFONDItems->AddCount(addCount);
 	}
 	inline void AllocateOLSFONDInfoPool(int count, int addCount) {
-		this->m_fastOLSFOND->Append(count);
-		this->m_fastOLSFOND->AddCount(addCount);
+		this->m_astsOLSFOND->Append(count);
+		this->m_astsOLSFOND->AddCount(addCount);
 	}
 	inline void AllocateOLSCURRItemInfoPool(int count, int addCount) {
-		this->m_fastOLSCURRItems->Append(count);
-		this->m_fastOLSCURRItems->AddCount(addCount);
+		this->m_astsOLSCURRItems->Append(count);
+		this->m_astsOLSCURRItems->AddCount(addCount);
 	}
 	inline void AllocateOLSCURRInfoPool(int count, int addCount) {
-		this->m_fastOLSCURR->Append(count);
-		this->m_fastOLSCURR->AddCount(addCount);
+		this->m_astsOLSCURR->Append(count);
+		this->m_astsOLSCURR->AddCount(addCount);
 	}
 	inline void AllocateTLSFONDItemInfoPool(int count, int addCount) {
-		this->m_fastTLSFONDItems->Append(count);
-		this->m_fastTLSFONDItems->AddCount(addCount);
+		this->m_astsTLSFONDItems->Append(count);
+		this->m_astsTLSFONDItems->AddCount(addCount);
 	}
 	inline void AllocateTLSFONDInfoPool(int count, int addCount) {
-		this->m_fastTLSFOND->Append(count);
-		this->m_fastTLSFOND->AddCount(addCount);
+		this->m_astsTLSFOND->Append(count);
+		this->m_astsTLSFOND->AddCount(addCount);
 	}
 	inline void AllocateTLSCURRItemInfoPool(int count, int addCount) {
-		this->m_fastTLSCURRItems->Append(count);
-		this->m_fastTLSCURRItems->AddCount(addCount);
+		this->m_astsTLSCURRItems->Append(count);
+		this->m_astsTLSCURRItems->AddCount(addCount);
 	}
 	inline void AllocateTLSCURRInfoPool(int count, int addCount) {
-		this->m_fastTLSCURR->Append(count);
-		this->m_fastTLSCURR->AddCount(addCount);
+		this->m_astsTLSCURR->Append(count);
+		this->m_astsTLSCURR->AddCount(addCount);
 	}
 	inline void AllocateIncrementalMSRFONDInfoPool(int count, int addCount) {
-		this->m_fastIncrementalMSRFOND->Append(count);
-		this->m_fastIncrementalMSRFOND->AddCount(addCount);
+		this->m_astsIncrementalMSRFOND->Append(count);
+		this->m_astsIncrementalMSRFOND->AddCount(addCount);
 	}
 	inline void AllocateIncrementalMSRCURRInfoPool(int count, int addCount) {
-		this->m_fastIncrementalMSRCURR->Append(count);
-		this->m_fastIncrementalMSRCURR->AddCount(addCount);
+		this->m_astsIncrementalMSRCURR->Append(count);
+		this->m_astsIncrementalMSRCURR->AddCount(addCount);
 	}
 	inline void AllocateIncrementalOLRFONDInfoPool(int count, int addCount) {
-		this->m_fastIncrementalOLRFOND->Append(count);
-		this->m_fastIncrementalOLRFOND->AddCount(addCount);
+		this->m_astsIncrementalOLRFOND->Append(count);
+		this->m_astsIncrementalOLRFOND->AddCount(addCount);
 	}
 	inline void AllocateIncrementalOLRCURRInfoPool(int count, int addCount) {
-		this->m_fastIncrementalOLRCURR->Append(count);
-		this->m_fastIncrementalOLRCURR->AddCount(addCount);
+		this->m_astsIncrementalOLRCURR->Append(count);
+		this->m_astsIncrementalOLRCURR->AddCount(addCount);
 	}
 	inline void AllocateIncrementalTLRFONDInfoPool(int count, int addCount) {
-		this->m_fastIncrementalTLRFOND->Append(count);
-		this->m_fastIncrementalTLRFOND->AddCount(addCount);
+		this->m_astsIncrementalTLRFOND->Append(count);
+		this->m_astsIncrementalTLRFOND->AddCount(addCount);
 	}
 	inline void AllocateIncrementalTLRCURRInfoPool(int count, int addCount) {
-		this->m_fastIncrementalTLRCURR->Append(count);
-		this->m_fastIncrementalTLRCURR->AddCount(addCount);
+		this->m_astsIncrementalTLRCURR->Append(count);
+		this->m_astsIncrementalTLRCURR->AddCount(addCount);
 	}
 	inline void AllocateSecurityDefinitionGroupInstrAttribItemInfoPool(int count, int addCount) {
-		this->m_fastSecurityDefinitionGroupInstrAttribItems->Append(count);
-		this->m_fastSecurityDefinitionGroupInstrAttribItems->AddCount(addCount);
+		this->m_astsSecurityDefinitionGroupInstrAttribItems->Append(count);
+		this->m_astsSecurityDefinitionGroupInstrAttribItems->AddCount(addCount);
 	}
 	inline void AllocateSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfoPool(int count, int addCount) {
-		this->m_fastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItems->Append(count);
-		this->m_fastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItems->AddCount(addCount);
+		this->m_astsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItems->Append(count);
+		this->m_astsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItems->AddCount(addCount);
 	}
 	inline void AllocateSecurityDefinitionMarketSegmentGrpItemInfoPool(int count, int addCount) {
-		this->m_fastSecurityDefinitionMarketSegmentGrpItems->Append(count);
-		this->m_fastSecurityDefinitionMarketSegmentGrpItems->AddCount(addCount);
+		this->m_astsSecurityDefinitionMarketSegmentGrpItems->Append(count);
+		this->m_astsSecurityDefinitionMarketSegmentGrpItems->AddCount(addCount);
 	}
 	inline void AllocateSecurityDefinitionInfoPool(int count, int addCount) {
-		this->m_fastSecurityDefinition->Append(count);
-		this->m_fastSecurityDefinition->AddCount(addCount);
+		this->m_astsSecurityDefinition->Append(count);
+		this->m_astsSecurityDefinition->AddCount(addCount);
 	}
 	inline void AllocateSecurityStatusInfoPool(int count, int addCount) {
-		this->m_fastSecurityStatus->Append(count);
-		this->m_fastSecurityStatus->AddCount(addCount);
+		this->m_astsSecurityStatus->Append(count);
+		this->m_astsSecurityStatus->AddCount(addCount);
 	}
 	inline void AllocateTradingSessionStatusInfoPool(int count, int addCount) {
-		this->m_fastTradingSessionStatus->Append(count);
-		this->m_fastTradingSessionStatus->AddCount(addCount);
+		this->m_astsTradingSessionStatus->Append(count);
+		this->m_astsTradingSessionStatus->AddCount(addCount);
 	}
 	inline void AllocateHeartbeatInfoPool(int count, int addCount) {
-		this->m_fastHeartbeat->Append(count);
-		this->m_fastHeartbeat->AddCount(addCount);
+		this->m_astsHeartbeat->Append(count);
+		this->m_astsHeartbeat->AddCount(addCount);
 	}
 	inline void AllocateLogonInfoPoolTo(int count) {
-		count -= this->m_fastLogon->Capacity();
+		count -= this->m_astsLogon->Capacity();
 		if(count > 0)
-			this->m_fastLogon->Append(count);
+			this->m_astsLogon->Append(count);
 	}
 	inline void AllocateLogoutInfoPoolTo(int count) {
-		count -= this->m_fastLogout->Capacity();
+		count -= this->m_astsLogout->Capacity();
 		if(count > 0)
-			this->m_fastLogout->Append(count);
+			this->m_astsLogout->Append(count);
 	}
 	inline void AllocateGenericItemInfoPoolTo(int count) {
-		count -= this->m_fastGenericItems->Capacity();
+		count -= this->m_astsGenericItems->Capacity();
 		if(count > 0)
-			this->m_fastGenericItems->Append(count);
+			this->m_astsGenericItems->Append(count);
 	}
 	inline void AllocateGenericInfoPoolTo(int count) {
-		count -= this->m_fastGeneric->Capacity();
+		count -= this->m_astsGeneric->Capacity();
 		if(count > 0)
-			this->m_fastGeneric->Append(count);
+			this->m_astsGeneric->Append(count);
 	}
 	inline void AllocateIncrementalGenericInfoPoolTo(int count) {
-		count -= this->m_fastIncrementalGeneric->Capacity();
+		count -= this->m_astsIncrementalGeneric->Capacity();
 		if(count > 0)
-			this->m_fastIncrementalGeneric->Append(count);
+			this->m_astsIncrementalGeneric->Append(count);
 	}
 	inline void AllocateOLSFONDItemInfoPoolTo(int count) {
-		count -= this->m_fastOLSFONDItems->Capacity();
+		count -= this->m_astsOLSFONDItems->Capacity();
 		if(count > 0)
-			this->m_fastOLSFONDItems->Append(count);
+			this->m_astsOLSFONDItems->Append(count);
 	}
 	inline void AllocateOLSFONDInfoPoolTo(int count) {
-		count -= this->m_fastOLSFOND->Capacity();
+		count -= this->m_astsOLSFOND->Capacity();
 		if(count > 0)
-			this->m_fastOLSFOND->Append(count);
+			this->m_astsOLSFOND->Append(count);
 	}
 	inline void AllocateOLSCURRItemInfoPoolTo(int count) {
-		count -= this->m_fastOLSCURRItems->Capacity();
+		count -= this->m_astsOLSCURRItems->Capacity();
 		if(count > 0)
-			this->m_fastOLSCURRItems->Append(count);
+			this->m_astsOLSCURRItems->Append(count);
 	}
 	inline void AllocateOLSCURRInfoPoolTo(int count) {
-		count -= this->m_fastOLSCURR->Capacity();
+		count -= this->m_astsOLSCURR->Capacity();
 		if(count > 0)
-			this->m_fastOLSCURR->Append(count);
+			this->m_astsOLSCURR->Append(count);
 	}
 	inline void AllocateTLSFONDItemInfoPoolTo(int count) {
-		count -= this->m_fastTLSFONDItems->Capacity();
+		count -= this->m_astsTLSFONDItems->Capacity();
 		if(count > 0)
-			this->m_fastTLSFONDItems->Append(count);
+			this->m_astsTLSFONDItems->Append(count);
 	}
 	inline void AllocateTLSFONDInfoPoolTo(int count) {
-		count -= this->m_fastTLSFOND->Capacity();
+		count -= this->m_astsTLSFOND->Capacity();
 		if(count > 0)
-			this->m_fastTLSFOND->Append(count);
+			this->m_astsTLSFOND->Append(count);
 	}
 	inline void AllocateTLSCURRItemInfoPoolTo(int count) {
-		count -= this->m_fastTLSCURRItems->Capacity();
+		count -= this->m_astsTLSCURRItems->Capacity();
 		if(count > 0)
-			this->m_fastTLSCURRItems->Append(count);
+			this->m_astsTLSCURRItems->Append(count);
 	}
 	inline void AllocateTLSCURRInfoPoolTo(int count) {
-		count -= this->m_fastTLSCURR->Capacity();
+		count -= this->m_astsTLSCURR->Capacity();
 		if(count > 0)
-			this->m_fastTLSCURR->Append(count);
+			this->m_astsTLSCURR->Append(count);
 	}
 	inline void AllocateIncrementalMSRFONDInfoPoolTo(int count) {
-		count -= this->m_fastIncrementalMSRFOND->Capacity();
+		count -= this->m_astsIncrementalMSRFOND->Capacity();
 		if(count > 0)
-			this->m_fastIncrementalMSRFOND->Append(count);
+			this->m_astsIncrementalMSRFOND->Append(count);
 	}
 	inline void AllocateIncrementalMSRCURRInfoPoolTo(int count) {
-		count -= this->m_fastIncrementalMSRCURR->Capacity();
+		count -= this->m_astsIncrementalMSRCURR->Capacity();
 		if(count > 0)
-			this->m_fastIncrementalMSRCURR->Append(count);
+			this->m_astsIncrementalMSRCURR->Append(count);
 	}
 	inline void AllocateIncrementalOLRFONDInfoPoolTo(int count) {
-		count -= this->m_fastIncrementalOLRFOND->Capacity();
+		count -= this->m_astsIncrementalOLRFOND->Capacity();
 		if(count > 0)
-			this->m_fastIncrementalOLRFOND->Append(count);
+			this->m_astsIncrementalOLRFOND->Append(count);
 	}
 	inline void AllocateIncrementalOLRCURRInfoPoolTo(int count) {
-		count -= this->m_fastIncrementalOLRCURR->Capacity();
+		count -= this->m_astsIncrementalOLRCURR->Capacity();
 		if(count > 0)
-			this->m_fastIncrementalOLRCURR->Append(count);
+			this->m_astsIncrementalOLRCURR->Append(count);
 	}
 	inline void AllocateIncrementalTLRFONDInfoPoolTo(int count) {
-		count -= this->m_fastIncrementalTLRFOND->Capacity();
+		count -= this->m_astsIncrementalTLRFOND->Capacity();
 		if(count > 0)
-			this->m_fastIncrementalTLRFOND->Append(count);
+			this->m_astsIncrementalTLRFOND->Append(count);
 	}
 	inline void AllocateIncrementalTLRCURRInfoPoolTo(int count) {
-		count -= this->m_fastIncrementalTLRCURR->Capacity();
+		count -= this->m_astsIncrementalTLRCURR->Capacity();
 		if(count > 0)
-			this->m_fastIncrementalTLRCURR->Append(count);
+			this->m_astsIncrementalTLRCURR->Append(count);
 	}
 	inline void AllocateSecurityDefinitionGroupInstrAttribItemInfoPoolTo(int count) {
-		count -= this->m_fastSecurityDefinitionGroupInstrAttribItems->Capacity();
+		count -= this->m_astsSecurityDefinitionGroupInstrAttribItems->Capacity();
 		if(count > 0)
-			this->m_fastSecurityDefinitionGroupInstrAttribItems->Append(count);
+			this->m_astsSecurityDefinitionGroupInstrAttribItems->Append(count);
 	}
 	inline void AllocateSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfoPoolTo(int count) {
-		count -= this->m_fastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItems->Capacity();
+		count -= this->m_astsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItems->Capacity();
 		if(count > 0)
-			this->m_fastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItems->Append(count);
+			this->m_astsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItems->Append(count);
 	}
 	inline void AllocateSecurityDefinitionMarketSegmentGrpItemInfoPoolTo(int count) {
-		count -= this->m_fastSecurityDefinitionMarketSegmentGrpItems->Capacity();
+		count -= this->m_astsSecurityDefinitionMarketSegmentGrpItems->Capacity();
 		if(count > 0)
-			this->m_fastSecurityDefinitionMarketSegmentGrpItems->Append(count);
+			this->m_astsSecurityDefinitionMarketSegmentGrpItems->Append(count);
 	}
 	inline void AllocateSecurityDefinitionInfoPoolTo(int count) {
-		count -= this->m_fastSecurityDefinition->Capacity();
+		count -= this->m_astsSecurityDefinition->Capacity();
 		if(count > 0)
-			this->m_fastSecurityDefinition->Append(count);
+			this->m_astsSecurityDefinition->Append(count);
 	}
 	inline void AllocateSecurityStatusInfoPoolTo(int count) {
-		count -= this->m_fastSecurityStatus->Capacity();
+		count -= this->m_astsSecurityStatus->Capacity();
 		if(count > 0)
-			this->m_fastSecurityStatus->Append(count);
+			this->m_astsSecurityStatus->Append(count);
 	}
 	inline void AllocateTradingSessionStatusInfoPoolTo(int count) {
-		count -= this->m_fastTradingSessionStatus->Capacity();
+		count -= this->m_astsTradingSessionStatus->Capacity();
 		if(count > 0)
-			this->m_fastTradingSessionStatus->Append(count);
+			this->m_astsTradingSessionStatus->Append(count);
 	}
 	inline void AllocateHeartbeatInfoPoolTo(int count) {
-		count -= this->m_fastHeartbeat->Capacity();
+		count -= this->m_astsHeartbeat->Capacity();
 		if(count > 0)
-			this->m_fastHeartbeat->Append(count);
+			this->m_astsHeartbeat->Append(count);
 	}
-	inline AutoAllocatePointerList<FastLogonInfo>* GetFastLogonInfoPool() {
-		return this->m_fastLogon;
+	inline AutoAllocatePointerList<AstsLogonInfo>* GetAstsLogonInfoPool() {
+		return this->m_astsLogon;
 	}
-	inline AutoAllocatePointerList<FastLogoutInfo>* GetFastLogoutInfoPool() {
-		return this->m_fastLogout;
+	inline AutoAllocatePointerList<AstsLogoutInfo>* GetAstsLogoutInfoPool() {
+		return this->m_astsLogout;
 	}
-	inline AutoAllocatePointerList<FastGenericItemInfo>* GetFastGenericItemInfoPool() {
-		return this->m_fastGenericItems;
+	inline AutoAllocatePointerList<AstsGenericItemInfo>* GetAstsGenericItemInfoPool() {
+		return this->m_astsGenericItems;
 	}
-	inline AutoAllocatePointerList<FastGenericInfo>* GetFastGenericInfoPool() {
-		return this->m_fastGeneric;
+	inline AutoAllocatePointerList<AstsGenericInfo>* GetAstsGenericInfoPool() {
+		return this->m_astsGeneric;
 	}
-	inline AutoAllocatePointerList<FastIncrementalGenericInfo>* GetFastIncrementalGenericInfoPool() {
-		return this->m_fastIncrementalGeneric;
+	inline AutoAllocatePointerList<AstsIncrementalGenericInfo>* GetAstsIncrementalGenericInfoPool() {
+		return this->m_astsIncrementalGeneric;
 	}
-	inline AutoAllocatePointerList<FastOLSFONDItemInfo>* GetFastOLSFONDItemInfoPool() {
-		return this->m_fastOLSFONDItems;
+	inline AutoAllocatePointerList<AstsOLSFONDItemInfo>* GetAstsOLSFONDItemInfoPool() {
+		return this->m_astsOLSFONDItems;
 	}
-	inline AutoAllocatePointerList<FastOLSFONDInfo>* GetFastOLSFONDInfoPool() {
-		return this->m_fastOLSFOND;
+	inline AutoAllocatePointerList<AstsOLSFONDInfo>* GetAstsOLSFONDInfoPool() {
+		return this->m_astsOLSFOND;
 	}
-	inline AutoAllocatePointerList<FastOLSCURRItemInfo>* GetFastOLSCURRItemInfoPool() {
-		return this->m_fastOLSCURRItems;
+	inline AutoAllocatePointerList<AstsOLSCURRItemInfo>* GetAstsOLSCURRItemInfoPool() {
+		return this->m_astsOLSCURRItems;
 	}
-	inline AutoAllocatePointerList<FastOLSCURRInfo>* GetFastOLSCURRInfoPool() {
-		return this->m_fastOLSCURR;
+	inline AutoAllocatePointerList<AstsOLSCURRInfo>* GetAstsOLSCURRInfoPool() {
+		return this->m_astsOLSCURR;
 	}
-	inline AutoAllocatePointerList<FastTLSFONDItemInfo>* GetFastTLSFONDItemInfoPool() {
-		return this->m_fastTLSFONDItems;
+	inline AutoAllocatePointerList<AstsTLSFONDItemInfo>* GetAstsTLSFONDItemInfoPool() {
+		return this->m_astsTLSFONDItems;
 	}
-	inline AutoAllocatePointerList<FastTLSFONDInfo>* GetFastTLSFONDInfoPool() {
-		return this->m_fastTLSFOND;
+	inline AutoAllocatePointerList<AstsTLSFONDInfo>* GetAstsTLSFONDInfoPool() {
+		return this->m_astsTLSFOND;
 	}
-	inline AutoAllocatePointerList<FastTLSCURRItemInfo>* GetFastTLSCURRItemInfoPool() {
-		return this->m_fastTLSCURRItems;
+	inline AutoAllocatePointerList<AstsTLSCURRItemInfo>* GetAstsTLSCURRItemInfoPool() {
+		return this->m_astsTLSCURRItems;
 	}
-	inline AutoAllocatePointerList<FastTLSCURRInfo>* GetFastTLSCURRInfoPool() {
-		return this->m_fastTLSCURR;
+	inline AutoAllocatePointerList<AstsTLSCURRInfo>* GetAstsTLSCURRInfoPool() {
+		return this->m_astsTLSCURR;
 	}
-	inline AutoAllocatePointerList<FastIncrementalMSRFONDInfo>* GetFastIncrementalMSRFONDInfoPool() {
-		return this->m_fastIncrementalMSRFOND;
+	inline AutoAllocatePointerList<AstsIncrementalMSRFONDInfo>* GetAstsIncrementalMSRFONDInfoPool() {
+		return this->m_astsIncrementalMSRFOND;
 	}
-	inline AutoAllocatePointerList<FastIncrementalMSRCURRInfo>* GetFastIncrementalMSRCURRInfoPool() {
-		return this->m_fastIncrementalMSRCURR;
+	inline AutoAllocatePointerList<AstsIncrementalMSRCURRInfo>* GetAstsIncrementalMSRCURRInfoPool() {
+		return this->m_astsIncrementalMSRCURR;
 	}
-	inline AutoAllocatePointerList<FastIncrementalOLRFONDInfo>* GetFastIncrementalOLRFONDInfoPool() {
-		return this->m_fastIncrementalOLRFOND;
+	inline AutoAllocatePointerList<AstsIncrementalOLRFONDInfo>* GetAstsIncrementalOLRFONDInfoPool() {
+		return this->m_astsIncrementalOLRFOND;
 	}
-	inline AutoAllocatePointerList<FastIncrementalOLRCURRInfo>* GetFastIncrementalOLRCURRInfoPool() {
-		return this->m_fastIncrementalOLRCURR;
+	inline AutoAllocatePointerList<AstsIncrementalOLRCURRInfo>* GetAstsIncrementalOLRCURRInfoPool() {
+		return this->m_astsIncrementalOLRCURR;
 	}
-	inline AutoAllocatePointerList<FastIncrementalTLRFONDInfo>* GetFastIncrementalTLRFONDInfoPool() {
-		return this->m_fastIncrementalTLRFOND;
+	inline AutoAllocatePointerList<AstsIncrementalTLRFONDInfo>* GetAstsIncrementalTLRFONDInfoPool() {
+		return this->m_astsIncrementalTLRFOND;
 	}
-	inline AutoAllocatePointerList<FastIncrementalTLRCURRInfo>* GetFastIncrementalTLRCURRInfoPool() {
-		return this->m_fastIncrementalTLRCURR;
+	inline AutoAllocatePointerList<AstsIncrementalTLRCURRInfo>* GetAstsIncrementalTLRCURRInfoPool() {
+		return this->m_astsIncrementalTLRCURR;
 	}
-	inline AutoAllocatePointerList<FastSecurityDefinitionGroupInstrAttribItemInfo>* GetFastSecurityDefinitionGroupInstrAttribItemInfoPool() {
-		return this->m_fastSecurityDefinitionGroupInstrAttribItems;
+	inline AutoAllocatePointerList<AstsSecurityDefinitionGroupInstrAttribItemInfo>* GetAstsSecurityDefinitionGroupInstrAttribItemInfoPool() {
+		return this->m_astsSecurityDefinitionGroupInstrAttribItems;
 	}
-	inline AutoAllocatePointerList<FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo>* GetFastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfoPool() {
-		return this->m_fastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItems;
+	inline AutoAllocatePointerList<AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo>* GetAstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfoPool() {
+		return this->m_astsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItems;
 	}
-	inline AutoAllocatePointerList<FastSecurityDefinitionMarketSegmentGrpItemInfo>* GetFastSecurityDefinitionMarketSegmentGrpItemInfoPool() {
-		return this->m_fastSecurityDefinitionMarketSegmentGrpItems;
+	inline AutoAllocatePointerList<AstsSecurityDefinitionMarketSegmentGrpItemInfo>* GetAstsSecurityDefinitionMarketSegmentGrpItemInfoPool() {
+		return this->m_astsSecurityDefinitionMarketSegmentGrpItems;
 	}
-	inline AutoAllocatePointerList<FastSecurityDefinitionInfo>* GetFastSecurityDefinitionInfoPool() {
-		return this->m_fastSecurityDefinition;
+	inline AutoAllocatePointerList<AstsSecurityDefinitionInfo>* GetAstsSecurityDefinitionInfoPool() {
+		return this->m_astsSecurityDefinition;
 	}
-	inline AutoAllocatePointerList<FastSecurityStatusInfo>* GetFastSecurityStatusInfoPool() {
-		return this->m_fastSecurityStatus;
+	inline AutoAllocatePointerList<AstsSecurityStatusInfo>* GetAstsSecurityStatusInfoPool() {
+		return this->m_astsSecurityStatus;
 	}
-	inline AutoAllocatePointerList<FastTradingSessionStatusInfo>* GetFastTradingSessionStatusInfoPool() {
-		return this->m_fastTradingSessionStatus;
+	inline AutoAllocatePointerList<AstsTradingSessionStatusInfo>* GetAstsTradingSessionStatusInfoPool() {
+		return this->m_astsTradingSessionStatus;
 	}
-	inline AutoAllocatePointerList<FastHeartbeatInfo>* GetFastHeartbeatInfoPool() {
-		return this->m_fastHeartbeat;
+	inline AutoAllocatePointerList<AstsHeartbeatInfo>* GetAstsHeartbeatInfoPool() {
+		return this->m_astsHeartbeat;
 	}
 };
-class FastOLSFONDItemInfoPresenceIndices{
+class AstsOLSFONDItemInfoPresenceIndices{
 public:
 	static const UINT64 MDEntryTypePresenceIndex = PRESENCE_MAP_INDEX0;
 	static const UINT64 MDEntryDatePresenceIndex = PRESENCE_MAP_INDEX1;
@@ -2206,7 +2206,7 @@ public:
 	static const UINT64 TotalVolumePresenceIndex = PRESENCE_MAP_INDEX9;
 	static const UINT64 TradingSessionSubIDPresenceIndex = PRESENCE_MAP_INDEX10;
 };
-class FastOLSCURRItemInfoPresenceIndices{
+class AstsOLSCURRItemInfoPresenceIndices{
 public:
 	static const UINT64 MDEntryTypePresenceIndex = PRESENCE_MAP_INDEX0;
 	static const UINT64 MDEntryDatePresenceIndex = PRESENCE_MAP_INDEX1;
@@ -2217,7 +2217,7 @@ public:
 	static const UINT64 OrderStatusPresenceIndex = PRESENCE_MAP_INDEX6;
 	static const UINT64 TradingSessionSubIDPresenceIndex = PRESENCE_MAP_INDEX7;
 };
-class FastTLSFONDItemInfoPresenceIndices{
+class AstsTLSFONDItemInfoPresenceIndices{
 public:
 	static const UINT64 MDEntryDatePresenceIndex = PRESENCE_MAP_INDEX0;
 	static const UINT64 MDEntryTimePresenceIndex = PRESENCE_MAP_INDEX1;
@@ -2238,7 +2238,7 @@ public:
 	static const UINT64 TradingSessionSubIDPresenceIndex = PRESENCE_MAP_INDEX16;
 	static const UINT64 RefOrderIDPresenceIndex = PRESENCE_MAP_INDEX17;
 };
-class FastTLSCURRItemInfoPresenceIndices{
+class AstsTLSCURRItemInfoPresenceIndices{
 public:
 	static const UINT64 MDEntryDatePresenceIndex = PRESENCE_MAP_INDEX0;
 	static const UINT64 MDEntryTimePresenceIndex = PRESENCE_MAP_INDEX1;
@@ -2257,7 +2257,7 @@ public:
 	static const UINT64 TradingSessionSubIDPresenceIndex = PRESENCE_MAP_INDEX14;
 	static const UINT64 RefOrderIDPresenceIndex = PRESENCE_MAP_INDEX15;
 };
-class FastIncrementalOLRFONDItemInfoPresenceIndices{
+class AstsIncrementalOLRFONDItemInfoPresenceIndices{
 public:
 	static const UINT64 MDEntryTypePresenceIndex = PRESENCE_MAP_INDEX0;
 	static const UINT64 SymbolPresenceIndex = PRESENCE_MAP_INDEX1;
@@ -2273,7 +2273,7 @@ public:
 	static const UINT64 TradingSessionIDPresenceIndex = PRESENCE_MAP_INDEX11;
 	static const UINT64 TradingSessionSubIDPresenceIndex = PRESENCE_MAP_INDEX12;
 };
-class FastIncrementalOLRCURRItemInfoPresenceIndices{
+class AstsIncrementalOLRCURRItemInfoPresenceIndices{
 public:
 	static const UINT64 MDUpdateActionPresenceIndex = PRESENCE_MAP_INDEX0;
 	static const UINT64 MDEntryTypePresenceIndex = PRESENCE_MAP_INDEX1;
@@ -2287,16 +2287,16 @@ public:
 	static const UINT64 TradingSessionIDPresenceIndex = PRESENCE_MAP_INDEX9;
 	static const UINT64 TradingSessionSubIDPresenceIndex = PRESENCE_MAP_INDEX10;
 };
-class FastLogonInfoNullIndices{
+class AstsLogonInfoNullIndices{
 public:
 	static const UINT64 UsernameNullIndex = NULL_MAP_INDEX0;
 	static const UINT64 PasswordNullIndex = NULL_MAP_INDEX1;
 };
-class FastLogoutInfoNullIndices{
+class AstsLogoutInfoNullIndices{
 public:
 	static const UINT64 TextNullIndex = NULL_MAP_INDEX0;
 };
-class FastGenericItemInfoNullIndices{
+class AstsGenericItemInfoNullIndices{
 public:
 	static const UINT64 MDEntryTypeNullIndex = NULL_MAP_INDEX0;
 	static const UINT64 MDEntryIDNullIndex = NULL_MAP_INDEX1;
@@ -2340,7 +2340,7 @@ public:
 	static const UINT64 CXFlagNullIndex = NULL_MAP_INDEX39;
 	static const UINT64 TradingSessionSubIDNullIndex = NULL_MAP_INDEX40;
 };
-class FastGenericInfoNullIndices{
+class AstsGenericInfoNullIndices{
 public:
 	static const UINT64 TradingSessionIDNullIndex = NULL_MAP_INDEX0;
 	static const UINT64 LastMsgSeqNumProcessedNullIndex = NULL_MAP_INDEX1;
@@ -2351,7 +2351,7 @@ public:
 	static const UINT64 AuctionIndicatorNullIndex = NULL_MAP_INDEX6;
 	static const UINT64 NetChgPrevDayNullIndex = NULL_MAP_INDEX7;
 };
-class FastIncrementalGenericItemInfoNullIndices{
+class AstsIncrementalGenericItemInfoNullIndices{
 public:
 	static const UINT64 MDUpdateActionNullIndex = NULL_MAP_INDEX0;
 	static const UINT64 MDEntryTypeNullIndex = NULL_MAP_INDEX1;
@@ -2400,7 +2400,7 @@ public:
 	static const UINT64 TradingSessionIDNullIndex = NULL_MAP_INDEX44;
 	static const UINT64 TradingSessionSubIDNullIndex = NULL_MAP_INDEX45;
 };
-class FastOLSFONDItemInfoNullIndices{
+class AstsOLSFONDItemInfoNullIndices{
 public:
 	static const UINT64 MDEntryTypeNullIndex = NULL_MAP_INDEX0;
 	static const UINT64 MDEntryIDNullIndex = NULL_MAP_INDEX1;
@@ -2415,7 +2415,7 @@ public:
 	static const UINT64 TotalVolumeNullIndex = NULL_MAP_INDEX10;
 	static const UINT64 TradingSessionSubIDNullIndex = NULL_MAP_INDEX11;
 };
-class FastOLSFONDInfoNullIndices{
+class AstsOLSFONDInfoNullIndices{
 public:
 	static const UINT64 LastMsgSeqNumProcessedNullIndex = NULL_MAP_INDEX0;
 	static const UINT64 LastFragmentNullIndex = NULL_MAP_INDEX1;
@@ -2425,7 +2425,7 @@ public:
 	static const UINT64 MDSecurityTradingStatusNullIndex = NULL_MAP_INDEX5;
 	static const UINT64 AuctionIndicatorNullIndex = NULL_MAP_INDEX6;
 };
-class FastOLSCURRItemInfoNullIndices{
+class AstsOLSCURRItemInfoNullIndices{
 public:
 	static const UINT64 MDEntryTypeNullIndex = NULL_MAP_INDEX0;
 	static const UINT64 MDEntryIDNullIndex = NULL_MAP_INDEX1;
@@ -2437,7 +2437,7 @@ public:
 	static const UINT64 OrderStatusNullIndex = NULL_MAP_INDEX7;
 	static const UINT64 TradingSessionSubIDNullIndex = NULL_MAP_INDEX8;
 };
-class FastOLSCURRInfoNullIndices{
+class AstsOLSCURRInfoNullIndices{
 public:
 	static const UINT64 LastMsgSeqNumProcessedNullIndex = NULL_MAP_INDEX0;
 	static const UINT64 LastFragmentNullIndex = NULL_MAP_INDEX1;
@@ -2446,7 +2446,7 @@ public:
 	static const UINT64 TradingSessionIDNullIndex = NULL_MAP_INDEX4;
 	static const UINT64 MDSecurityTradingStatusNullIndex = NULL_MAP_INDEX5;
 };
-class FastTLSFONDItemInfoNullIndices{
+class AstsTLSFONDItemInfoNullIndices{
 public:
 	static const UINT64 MDEntryIDNullIndex = NULL_MAP_INDEX0;
 	static const UINT64 MDEntryDateNullIndex = NULL_MAP_INDEX1;
@@ -2468,7 +2468,7 @@ public:
 	static const UINT64 TradingSessionSubIDNullIndex = NULL_MAP_INDEX17;
 	static const UINT64 RefOrderIDNullIndex = NULL_MAP_INDEX18;
 };
-class FastTLSFONDInfoNullIndices{
+class AstsTLSFONDInfoNullIndices{
 public:
 	static const UINT64 LastMsgSeqNumProcessedNullIndex = NULL_MAP_INDEX0;
 	static const UINT64 LastFragmentNullIndex = NULL_MAP_INDEX1;
@@ -2478,7 +2478,7 @@ public:
 	static const UINT64 MDSecurityTradingStatusNullIndex = NULL_MAP_INDEX5;
 	static const UINT64 AuctionIndicatorNullIndex = NULL_MAP_INDEX6;
 };
-class FastTLSCURRItemInfoNullIndices{
+class AstsTLSCURRItemInfoNullIndices{
 public:
 	static const UINT64 MDEntryIDNullIndex = NULL_MAP_INDEX0;
 	static const UINT64 MDEntryDateNullIndex = NULL_MAP_INDEX1;
@@ -2498,7 +2498,7 @@ public:
 	static const UINT64 TradingSessionSubIDNullIndex = NULL_MAP_INDEX15;
 	static const UINT64 RefOrderIDNullIndex = NULL_MAP_INDEX16;
 };
-class FastTLSCURRInfoNullIndices{
+class AstsTLSCURRInfoNullIndices{
 public:
 	static const UINT64 LastMsgSeqNumProcessedNullIndex = NULL_MAP_INDEX0;
 	static const UINT64 LastFragmentNullIndex = NULL_MAP_INDEX1;
@@ -2507,7 +2507,7 @@ public:
 	static const UINT64 TradingSessionIDNullIndex = NULL_MAP_INDEX4;
 	static const UINT64 MDSecurityTradingStatusNullIndex = NULL_MAP_INDEX5;
 };
-class FastIncrementalMSRFONDItemInfoNullIndices{
+class AstsIncrementalMSRFONDItemInfoNullIndices{
 public:
 	static const UINT64 MDUpdateActionNullIndex = NULL_MAP_INDEX0;
 	static const UINT64 MDEntryTypeNullIndex = NULL_MAP_INDEX1;
@@ -2543,11 +2543,11 @@ public:
 	static const UINT64 TradingSessionIDNullIndex = NULL_MAP_INDEX31;
 	static const UINT64 TradingSessionSubIDNullIndex = NULL_MAP_INDEX32;
 };
-class FastIncrementalMSRFONDInfoNullIndices{
+class AstsIncrementalMSRFONDInfoNullIndices{
 public:
 	static const UINT64 LastUpdateTimeNullIndex = NULL_MAP_INDEX0;
 };
-class FastIncrementalMSRCURRItemInfoNullIndices{
+class AstsIncrementalMSRCURRItemInfoNullIndices{
 public:
 	static const UINT64 MDUpdateActionNullIndex = NULL_MAP_INDEX0;
 	static const UINT64 MDEntryTypeNullIndex = NULL_MAP_INDEX1;
@@ -2578,11 +2578,11 @@ public:
 	static const UINT64 TradingSessionIDNullIndex = NULL_MAP_INDEX26;
 	static const UINT64 TradingSessionSubIDNullIndex = NULL_MAP_INDEX27;
 };
-class FastIncrementalMSRCURRInfoNullIndices{
+class AstsIncrementalMSRCURRInfoNullIndices{
 public:
 	static const UINT64 LastUpdateTimeNullIndex = NULL_MAP_INDEX0;
 };
-class FastIncrementalOLRFONDItemInfoNullIndices{
+class AstsIncrementalOLRFONDItemInfoNullIndices{
 public:
 	static const UINT64 MDUpdateActionNullIndex = NULL_MAP_INDEX0;
 	static const UINT64 MDEntryTypeNullIndex = NULL_MAP_INDEX1;
@@ -2601,7 +2601,7 @@ public:
 	static const UINT64 TradingSessionIDNullIndex = NULL_MAP_INDEX14;
 	static const UINT64 TradingSessionSubIDNullIndex = NULL_MAP_INDEX15;
 };
-class FastIncrementalOLRCURRItemInfoNullIndices{
+class AstsIncrementalOLRCURRItemInfoNullIndices{
 public:
 	static const UINT64 MDUpdateActionNullIndex = NULL_MAP_INDEX0;
 	static const UINT64 MDEntryTypeNullIndex = NULL_MAP_INDEX1;
@@ -2617,7 +2617,7 @@ public:
 	static const UINT64 TradingSessionIDNullIndex = NULL_MAP_INDEX11;
 	static const UINT64 TradingSessionSubIDNullIndex = NULL_MAP_INDEX12;
 };
-class FastIncrementalTLRFONDItemInfoNullIndices{
+class AstsIncrementalTLRFONDItemInfoNullIndices{
 public:
 	static const UINT64 MDUpdateActionNullIndex = NULL_MAP_INDEX0;
 	static const UINT64 MDEntryIDNullIndex = NULL_MAP_INDEX1;
@@ -2643,7 +2643,7 @@ public:
 	static const UINT64 TradingSessionSubIDNullIndex = NULL_MAP_INDEX21;
 	static const UINT64 RefOrderIDNullIndex = NULL_MAP_INDEX22;
 };
-class FastIncrementalTLRCURRItemInfoNullIndices{
+class AstsIncrementalTLRCURRItemInfoNullIndices{
 public:
 	static const UINT64 MDUpdateActionNullIndex = NULL_MAP_INDEX0;
 	static const UINT64 MDEntryIDNullIndex = NULL_MAP_INDEX1;
@@ -2667,22 +2667,22 @@ public:
 	static const UINT64 TradingSessionSubIDNullIndex = NULL_MAP_INDEX19;
 	static const UINT64 RefOrderIDNullIndex = NULL_MAP_INDEX20;
 };
-class FastSecurityDefinitionGroupInstrAttribItemInfoNullIndices{
+class AstsSecurityDefinitionGroupInstrAttribItemInfoNullIndices{
 public:
 	static const UINT64 InstrAttribValueNullIndex = NULL_MAP_INDEX0;
 };
-class FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfoNullIndices{
+class AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfoNullIndices{
 public:
 	static const UINT64 TradingSessionSubIDNullIndex = NULL_MAP_INDEX0;
 	static const UINT64 SecurityTradingStatusNullIndex = NULL_MAP_INDEX1;
 	static const UINT64 OrderNoteNullIndex = NULL_MAP_INDEX2;
 };
-class FastSecurityDefinitionMarketSegmentGrpItemInfoNullIndices{
+class AstsSecurityDefinitionMarketSegmentGrpItemInfoNullIndices{
 public:
 	static const UINT64 RoundLotNullIndex = NULL_MAP_INDEX0;
 	static const UINT64 TradingSessionRulesGrpNullIndex = NULL_MAP_INDEX1;
 };
-class FastSecurityDefinitionInfoNullIndices{
+class AstsSecurityDefinitionInfoNullIndices{
 public:
 	static const UINT64 TotNumReportsNullIndex = NULL_MAP_INDEX0;
 	static const UINT64 SymbolNullIndex = NULL_MAP_INDEX1;
@@ -2725,14 +2725,14 @@ public:
 	static const UINT64 LowLimitNullIndex = NULL_MAP_INDEX38;
 	static const UINT64 NumOfDaysToMaturityNullIndex = NULL_MAP_INDEX39;
 };
-class FastSecurityStatusInfoNullIndices{
+class AstsSecurityStatusInfoNullIndices{
 public:
 	static const UINT64 TradingSessionIDNullIndex = NULL_MAP_INDEX0;
 	static const UINT64 TradingSessionSubIDNullIndex = NULL_MAP_INDEX1;
 	static const UINT64 SecurityTradingStatusNullIndex = NULL_MAP_INDEX2;
 	static const UINT64 AuctionIndicatorNullIndex = NULL_MAP_INDEX3;
 };
-class FastTradingSessionStatusInfoNullIndices{
+class AstsTradingSessionStatusInfoNullIndices{
 public:
 	static const UINT64 TextNullIndex = NULL_MAP_INDEX0;
 };

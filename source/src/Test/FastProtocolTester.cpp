@@ -20,7 +20,7 @@ FastProtocolTester::~FastProtocolTester()
 }
 
 void FastProtocolTester::TestMessages() {
-    FastProtocolManager *manager = new FastProtocolManager(new FastObjectsAllocationInfo(128,128));
+    FastProtocolManager *manager = new FastProtocolManager(new AstsObjectsAllocationInfo(128), new SpectraObjectsAllocationInfo(128));
 
     unsigned char *message = 0;
     int msgSeqNo = 0;
@@ -83,8 +83,8 @@ void FastProtocolTester::TestMessages() {
     };
     manager->SetNewBuffer(message, 963);
     msgSeqNo = manager->ReadMsgSeqNumber();
-    manager->Decode();
-    FastOLSCURRInfo *oc = (FastOLSCURRInfo*)manager->LastDecodeInfo();
+    manager->DecodeAsts();
+    AstsOLSCURRInfo *oc = (AstsOLSCURRInfo*)manager->LastDecodeInfo();
     for(int i = 0; i < oc->GroupMDEntriesCount; i++) {
         if(oc->GroupMDEntries[i]->MDEntryType[0] != '0')
             throw;
@@ -94,7 +94,7 @@ void FastProtocolTester::TestMessages() {
     message = DebugInfoManager::Default->StringToBinary("0f 50 05 00 c0 1c 9a 15 20 8f 02 2e 2d 43 6f 62 77 6c 86 84 77 98 83 b1 32 39 34 39 34 b1 45 55 52 5f 52 55 42 5f 5f 54 4f cd 08 5a fc 3e 06 50 a1 1e 1d ed fe 37 aa 43 45 54 d3 ce 82 32 39 34 39 34 b4 08 5a fd 1e 24 d4 53 e0 81 33 33 31 32 32 b7 48 4b 44 52 55 42 5f 54 4f cd 00 41 8d 1e 47 f9 fc 08 13 dc 81 01 ea cf 13 c0 33 33 31 32 32 b8 47 4c 44 52 55 42 54 4f 44 54 4f cd 27 ba 1f 64 a8 fc 01 04 a1 81 02 93", &msgSize);
     manager->SetNewBuffer(message, msgSize);
     msgSeqNo = manager->ReadMsgSeqNumber();
-    FastIncrementalOLRCURRInfo *olsCurr2 = (FastIncrementalOLRCURRInfo*)manager->Decode();
+    AstsIncrementalOLRCURRInfo *olsCurr2 = (AstsIncrementalOLRCURRInfo*)manager->DecodeAsts();
     if(olsCurr2->GroupMDEntries[1]->MDEntryType != olsCurr2->GroupMDEntries[0]->MDEntryType)
         throw;
 
@@ -113,7 +113,7 @@ void FastProtocolTester::TestMessages() {
 
     manager->SetNewBuffer(message, 130);
     msgSeqNo = manager->ReadMsgSeqNumber();
-    FastIncrementalOLRCURRInfo *olsCurr1 = (FastIncrementalOLRCURRInfo*)manager->Decode();
+    AstsIncrementalOLRCURRInfo *olsCurr1 = (AstsIncrementalOLRCURRInfo*)manager->DecodeAsts();
     if(!StringIdComparer::Equal(olsCurr1->GroupMDEntries[0]->TradingSessionID,
                                 olsCurr1->GroupMDEntries[0]->TradingSessionIDLength, "CETS", 4))
         throw;
@@ -136,8 +136,8 @@ void FastProtocolTester::TestMessages() {
 
     manager->SetNewBuffer(message, 130);
     msgSeqNo = manager->ReadMsgSeqNumber();
-    FastSecurityDefinitionInfo *sec = (FastSecurityDefinitionInfo*)manager->Decode();
-    manager->PrintSecurityDefinition(sec);
+    AstsSecurityDefinitionInfo *sec = (AstsSecurityDefinitionInfo*)manager->DecodeAsts();
+    manager->PrintAstsSecurityDefinition(sec);
 
     if(sec->MarketSegmentGrpCount != 1)
         throw;
@@ -168,8 +168,8 @@ void FastProtocolTester::TestMessages() {
 
     manager->SetNewBuffer(message, 138);
     msgSeqNo = manager->ReadMsgSeqNumber();
-    sec = (FastSecurityDefinitionInfo*)manager->Decode();
-    manager->PrintSecurityDefinition(sec);
+    sec = (AstsSecurityDefinitionInfo*)manager->DecodeAsts();
+    manager->PrintAstsSecurityDefinition(sec);
 
     message = new unsigned char[194] {
             0x93, 0x30, 0x00, 0x00, 0xe0, 0x10, 0xc3, 0x61, 0x93, 0x02,
@@ -196,8 +196,8 @@ void FastProtocolTester::TestMessages() {
 
     manager->SetNewBuffer(message, 194);
     msgSeqNo = manager->ReadMsgSeqNumber();
-    sec = (FastSecurityDefinitionInfo*)manager->Decode();
-    manager->PrintSecurityDefinition(sec);
+    sec = (AstsSecurityDefinitionInfo*)manager->DecodeAsts();
+    manager->PrintAstsSecurityDefinition(sec);
     
     message = new unsigned char[182] {
             0x4f, 0x9f, 0x03, 0x00, 0xc0, 0x13, 0xdb, 0x0e, 0x3e, 0xcf,
@@ -222,8 +222,8 @@ void FastProtocolTester::TestMessages() {
 
     manager->SetNewBuffer(message, 225);
     msgSeqNo = manager->ReadMsgSeqNumber();
-    FastIncrementalMSRFONDInfo *msr = (FastIncrementalMSRFONDInfo*)manager->Decode();
-    manager->PrintIncrementalMSRFOND(msr);
+    AstsIncrementalMSRFONDInfo *msr = (AstsIncrementalMSRFONDInfo*)manager->DecodeAsts();
+    manager->PrintAstsIncrementalMSRFOND(msr);
 
     if(msr->GroupMDEntries[0]->MDUpdateAction != MDUpdateAction::mduaDelete)
         throw;
@@ -248,8 +248,8 @@ void FastProtocolTester::TestMessages() {
     };
     manager->SetNewBuffer(message, 18);
     msgSeqNo = manager->ReadMsgSeqNumber();
-    FastHeartbeatInfo *hb = (FastHeartbeatInfo*)manager->Decode();
-    manager->PrintHeartbeat(hb);
+    AstsHeartbeatInfo *hb = (AstsHeartbeatInfo*)manager->DecodeAsts();
+    manager->PrintAstsHeartbeat(hb);
 
     message = new unsigned char[225] {
             0x8d, 0x23, 0x00, 0x00, 0xe0, 0x10, 0xc3, 0x47, 0x8d, 0x23,
@@ -279,8 +279,8 @@ void FastProtocolTester::TestMessages() {
 
     manager->SetNewBuffer(message, 225);
     msgSeqNo = manager->ReadMsgSeqNumber();
-    FastSecurityDefinitionInfo *sd = (FastSecurityDefinitionInfo*)manager->Decode();
-    manager->PrintSecurityDefinition(sd);
+    AstsSecurityDefinitionInfo *sd = (AstsSecurityDefinitionInfo*)manager->DecodeAsts();
+    manager->PrintAstsSecurityDefinition(sd);
     if(manager->MessageLength() != 225)
         throw;
     if(!CompareStrings(sd->StateSecurityID, "RU34007KOS0"))
@@ -292,7 +292,7 @@ void FastProtocolTester::TestMessages() {
         throw;
     if(sd->NoSharesIssued.Mantissa != 4 || sd->NoSharesIssued.Exponent != 6)
         throw;
-    manager->PrintSecurityDefinition(sd);
+    manager->PrintAstsSecurityDefinition(sd);
 
     message = new unsigned char[171] {
             0x46, 0x20, 0x00, 0x00, 0xe0, 0x10, 0xc3, 0x40, 0xc6, 0x23,
@@ -317,8 +317,8 @@ void FastProtocolTester::TestMessages() {
 
     manager->SetNewBuffer(message, 171);
     msgSeqNo = manager->ReadMsgSeqNumber();
-    sd = (FastSecurityDefinitionInfo*)manager->Decode();
-    manager->PrintSecurityDefinition(sd);
+    sd = (AstsSecurityDefinitionInfo*)manager->DecodeAsts();
+    manager->PrintAstsSecurityDefinition(sd);
     if(manager->MessageLength() != 171)
         throw;
 
@@ -351,7 +351,7 @@ void FastProtocolTester::TestMessages() {
 
     manager->SetNewBuffer(message, 241);
     msgSeqNo = manager->ReadMsgSeqNumber();
-    FastSnapshotInfo *snap = (FastSnapshotInfo*)manager->GetSnapshotInfo();
+    AstsSnapshotInfo *snap = (AstsSnapshotInfo*)manager->GetAstsSnapshotInfo();
     if(snap->LastMsgSeqNumProcessed != 284933)
         throw;
 
@@ -361,8 +361,8 @@ void FastProtocolTester::TestMessages() {
     };
     manager->SetNewBuffer(message, 18);
     msgSeqNo = manager->ReadMsgSeqNumber();
-    manager->Decode();
-    manager->Print();
+    manager->DecodeAsts();
+    manager->PrintAsts();
 
     message = new unsigned char[65] {
             0x05, 0x8d, 0x03, 0x00, 0xe0, 0x12, 0xf6, 0x0e, 0x1a, 0x85,
@@ -375,8 +375,8 @@ void FastProtocolTester::TestMessages() {
     };
     manager->SetNewBuffer(message, 65);
     msgSeqNo = manager->ReadMsgSeqNumber();
-    manager->Decode();
-    manager->Print();
+    manager->DecodeAsts();
+    manager->PrintAsts();
     
     message = new unsigned char[55] {
             0x25, 0x29, 0x04, 0x00, 0xe0, 0x12, 0xf4, 0x10, 0x52, 0xa5,
@@ -389,13 +389,13 @@ void FastProtocolTester::TestMessages() {
 
     manager->SetNewBuffer(message, 55);
     msgSeqNo = manager->ReadMsgSeqNumber();
-    manager->Decode();
-    manager->Print();
+    manager->DecodeAsts();
+    manager->PrintAsts();
 
     if(manager->TemplateId() != 2420)
         throw;
 
-    FastIncrementalOLRFONDInfo *olrfondInfo = (FastIncrementalOLRFONDInfo*)manager->LastDecodeInfo();
+    AstsIncrementalOLRFONDInfo *olrfondInfo = (AstsIncrementalOLRFONDInfo*)manager->LastDecodeInfo();
     if(olrfondInfo->GroupMDEntriesCount != 1)
         throw;
     if(manager->MessageLength() != 55)
@@ -412,10 +412,10 @@ void FastProtocolTester::TestMessages() {
 
     manager->SetNewBuffer(message, 57);
     msgSeqNo = manager->ReadMsgSeqNumber();
-    manager->Decode();
-    manager->Print();
+    manager->DecodeAsts();
+    manager->PrintAsts();
 
-    olrfondInfo = (FastIncrementalOLRFONDInfo*)manager->LastDecodeInfo();
+    olrfondInfo = (AstsIncrementalOLRFONDInfo*)manager->LastDecodeInfo();
     if(olrfondInfo->GroupMDEntriesCount != 1)
         throw;
     if(manager->MessageLength() != 57)
@@ -429,8 +429,8 @@ void FastProtocolTester::TestMessages() {
     manager->SetNewBuffer(message, 18);
     manager->SetNewBuffer(message, 18);
     msgSeqNo = manager->ReadMsgSeqNumber();
-    manager->Decode();
-    manager->Print();
+    manager->DecodeAsts();
+    manager->PrintAsts();
 }
 
 bool FastProtocolTester::CompareStrings(char* str1, const char *str2) {
@@ -443,7 +443,7 @@ bool FastProtocolTester::CompareStrings(char* str1, const char *str2) {
 }
 
 void FastProtocolTester::TestMessageSequenceNumber() { 
-	FastProtocolManager *manager = new FastProtocolManager(new FastObjectsAllocationInfo(128,128));
+	FastProtocolManager *manager = new FastProtocolManager(new AstsObjectsAllocationInfo(128), new SpectraObjectsAllocationInfo(128));
 	
 	*((int*)(manager->Buffer())) = 0x12345678;
 	int seq = manager->ReadMsgSeqNumber();
@@ -462,7 +462,7 @@ void FastProtocolTester::TestMessageSequenceNumber() {
 
 void FastProtocolTester::TestReadInt32_Mandatory() { 
 	printf("Test FastProtocolTester::TestReadInt32_Mandatory\n");
-	FastProtocolManager *manager = new FastProtocolManager(new FastObjectsAllocationInfo(128,128));
+    FastProtocolManager *manager = new FastProtocolManager(new AstsObjectsAllocationInfo(128), new SpectraObjectsAllocationInfo(128));
     manager->SetNewBuffer(new unsigned char[100], 100);
 
 	for (int i = 0; i > -2147483630; i -= 5) {
@@ -492,7 +492,7 @@ void FastProtocolTester::TestReadInt32_Mandatory() {
 
 void FastProtocolTester::TestReadInt32_Optional() {
 	printf("Test FastProtocolTester::TestReadInt32_Optional\n");
-	FastProtocolManager *manager = new FastProtocolManager(new FastObjectsAllocationInfo(128,128));
+    FastProtocolManager *manager = new FastProtocolManager(new AstsObjectsAllocationInfo(128), new SpectraObjectsAllocationInfo(128));
     manager->SetNewBuffer(new unsigned char[100], 100);
 
 	manager->ResetBuffer();
@@ -538,14 +538,14 @@ void FastProtocolTester::TestReadInt32_Optional() {
 
 void FastProtocolTester::TestReadUInt32_Optional() {
 	printf("Test FastProtocolTester::TestReadUInt32_Optional\n");
-	FastProtocolManager *manager = new FastProtocolManager(new FastObjectsAllocationInfo(128,128));
+    FastProtocolManager *manager = new FastProtocolManager(new AstsObjectsAllocationInfo(128), new SpectraObjectsAllocationInfo(128));
 
 	delete manager;
 }
 
 void FastProtocolTester::TestReadUInt32_Mandatory() {
 	printf("Test FastProtocolTester::TestReadUInt32_Mandatory\n");
-	FastProtocolManager *manager = new FastProtocolManager(new FastObjectsAllocationInfo(128,128));
+    FastProtocolManager *manager = new FastProtocolManager(new AstsObjectsAllocationInfo(128), new SpectraObjectsAllocationInfo(128));
     manager->SetNewBuffer(new unsigned char[100], 100);
 
 	for (UINT32 i = 0; i < 0xfffffff0; i += 5) {
@@ -562,7 +562,7 @@ void FastProtocolTester::TestReadUInt32_Mandatory() {
 
 void FastProtocolTester::TestStringCopy() {
     printf("Test FastProtocolTester::TestStringCopy\n");
-    FastProtocolManager *manager = new FastProtocolManager(new FastObjectsAllocationInfo(128,128));
+    FastProtocolManager *manager = new FastProtocolManager(new AstsObjectsAllocationInfo(128), new SpectraObjectsAllocationInfo(128));
     manager->SetNewBuffer(new unsigned char[100], 100);
 
     char *buffer = new char[60];
@@ -590,7 +590,7 @@ void FastProtocolTester::TestStringCopy() {
 
 void FastProtocolTester::TestReadString_Optional() { 
 	printf("Test FastProtocolTester::TestReadString_Optional\n");
-	FastProtocolManager *manager = new FastProtocolManager(new FastObjectsAllocationInfo(128,128));
+    FastProtocolManager *manager = new FastProtocolManager(new AstsObjectsAllocationInfo(128), new SpectraObjectsAllocationInfo(128));
 
     manager->SetNewBuffer(new unsigned char[128], 128);
 	manager->WriteString_Optional((const char*)NULL, 0);
@@ -636,7 +636,7 @@ void FastProtocolTester::TestReadString_Optional() {
 
 void FastProtocolTester::TestReadString_Mandatory() {
 	printf("Test FastProtocolTester::TestReadString_Mandatory\n");
-	FastProtocolManager *manager = new FastProtocolManager(new FastObjectsAllocationInfo(128,128));
+    FastProtocolManager *manager = new FastProtocolManager(new AstsObjectsAllocationInfo(128), new SpectraObjectsAllocationInfo(128));
 
     manager->SetNewBuffer(new unsigned char[128], 128);
 	manager->WriteString_Mandatory((char*)"", 0);
@@ -673,7 +673,7 @@ void FastProtocolTester::TestReadString_Mandatory() {
 
 void FastProtocolTester::TestReadByteVector_Optional() { 
 	printf("Test FastProtocolTester::TestReadByteVector_Optional\n");
-	FastProtocolManager *manager = new FastProtocolManager(new FastObjectsAllocationInfo(128,128));
+    FastProtocolManager *manager = new FastProtocolManager(new AstsObjectsAllocationInfo(128), new SpectraObjectsAllocationInfo(128));
 
 	manager->SetNewBuffer(new unsigned char[1000], 1000);
     manager->ResetBuffer();
@@ -709,7 +709,7 @@ void FastProtocolTester::TestReadByteVector_Optional() {
 
 void FastProtocolTester::TestReadByteVector_Mandatory() {
 	printf("Test FastProtocolTester::TestReadByteVector_Mandatory\n");
-	FastProtocolManager *manager = new FastProtocolManager(new FastObjectsAllocationInfo(128,128));
+    FastProtocolManager *manager = new FastProtocolManager(new AstsObjectsAllocationInfo(128), new SpectraObjectsAllocationInfo(128));
     manager->SetNewBuffer(new unsigned char[1000], 1000);
 
 	BYTE *buffer = new BYTE[1000];
@@ -738,7 +738,7 @@ void FastProtocolTester::TestReadByteVector_Mandatory() {
 
 void FastProtocolTester::TestReadDecimal_Optional() { 
 	printf("Test FastProtocolTester::TestReadDecimal_Optional\n");
-	FastProtocolManager *manager = new FastProtocolManager(new FastObjectsAllocationInfo(128,128));
+    FastProtocolManager *manager = new FastProtocolManager(new AstsObjectsAllocationInfo(128), new SpectraObjectsAllocationInfo(128));
 
 	Decimal value(942755, 2);
 	manager->WriteDecimal_Optional(&value);
@@ -771,7 +771,7 @@ void FastProtocolTester::TestReadDecimal_Optional() {
 
 void FastProtocolTester::TestReadDecimal_Mandatory() {
 	printf("Test FastProtocolTester::TestReadDecimal_Mandatory\n");
-	FastProtocolManager *manager = new FastProtocolManager(new FastObjectsAllocationInfo(128,128));
+    FastProtocolManager *manager = new FastProtocolManager(new AstsObjectsAllocationInfo(128), new SpectraObjectsAllocationInfo(128));
 
 	Decimal value = { 942755, 2 };
 	manager->WriteDecimal_Mandatory(&value);
@@ -804,7 +804,7 @@ void FastProtocolTester::TestReadDecimal_Mandatory() {
 
 void FastProtocolTester::TestReadInt64_Optional() {
 	printf("Test FastProtocolTester::TestReadInt64_Optional\n");
-	FastProtocolManager *manager = new FastProtocolManager(new FastObjectsAllocationInfo(128,128));
+    FastProtocolManager *manager = new FastProtocolManager(new AstsObjectsAllocationInfo(128), new SpectraObjectsAllocationInfo(128));
 	
 	BYTE buffer[12];
 	for (int i = 1; i < 10; i++) { // extended positive
@@ -919,7 +919,7 @@ void FastProtocolTester::TestReadInt64_Optional() {
 
 void FastProtocolTester::TestReadInt64_Mandatory() {
 	printf("Test FastProtocolTester::TestReadInt64_Mandatory\n");
-	FastProtocolManager *manager = new FastProtocolManager(new FastObjectsAllocationInfo(128,128));
+    FastProtocolManager *manager = new FastProtocolManager(new AstsObjectsAllocationInfo(128), new SpectraObjectsAllocationInfo(128));
 
 	INT64 min = INT64_MIN + 10;
 
@@ -1065,7 +1065,7 @@ void FastProtocolTester::TestReadInt64_Mandatory() {
 
 void FastProtocolTester::TestReadUInt64_Mandatory() {
 	printf("Test FastProtocolTester::TestReadUInt64_Mandatory\n");
-	FastProtocolManager *manager = new FastProtocolManager(new FastObjectsAllocationInfo(128,128));
+    FastProtocolManager *manager = new FastProtocolManager(new AstsObjectsAllocationInfo(128), new SpectraObjectsAllocationInfo(128));
 
 	BYTE buffer[12];
 
@@ -1132,7 +1132,7 @@ void FastProtocolTester::TestReadUInt64_Mandatory() {
 
 void FastProtocolTester::TestReadUInt64_Optional() {
 	printf("Test FastProtocolTester::TestReadUInt64_Optional\n");
-	FastProtocolManager *manager = new FastProtocolManager(new FastObjectsAllocationInfo(128,128));
+    FastProtocolManager *manager = new FastProtocolManager(new AstsObjectsAllocationInfo(128), new SpectraObjectsAllocationInfo(128));
     manager->SetNewBuffer(new unsigned char[12], 12);
 
 	BYTE buffer[12];
@@ -1177,7 +1177,7 @@ void FastProtocolTester::TestReadUInt64_Optional() {
 }
 
 void FastProtocolTester::TestParsePresenceMap() {
-	/*FastProtocolManager *manager = new FastProtocolManager(new FastObjectsAllocationInfo(128,128));
+	/*FastProtocolManager *manager = new FastProtocolManager(new AstsObjectsAllocationInfo(128,128));
 	
 	*(manager->Buffer()) = 0x80;
 	manager->ParsePresenceMap();

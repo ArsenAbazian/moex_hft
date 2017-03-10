@@ -19,7 +19,7 @@ public:
         DebugInfoManager::Default->PrintMemoryInfo("FeedConnection_CURR_TLS");
     }
     void AllocateFastObjects() {
-        FastObjectsAllocationInfo::Default->AllocateTLSCURRInfoPool(10, 10);
+        AstsObjectsAllocationInfo::Default->AllocateTLSCURRInfoPool(10, 10);
     }
     int GetPacketsCount() { return 50000; }
     ISocketBufferProvider* CreateSocketBufferProvider() {

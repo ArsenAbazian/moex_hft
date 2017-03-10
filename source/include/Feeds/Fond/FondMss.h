@@ -19,7 +19,7 @@ public:
         DebugInfoManager::Default->PrintMemoryInfo("FeedConnection_FOND_MSS");
     }
     void AllocateFastObjects() {
-        FastObjectsAllocationInfo::Default->AllocateGenericInfoPoolTo(10);
+        AstsObjectsAllocationInfo::Default->AllocateGenericInfoPoolTo(10);
     }
     int GetPacketsCount() { return 50000; }
     ISocketBufferProvider* CreateSocketBufferProvider() {

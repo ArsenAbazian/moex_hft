@@ -49,7 +49,7 @@ public:
         delete this->isf;
     }
 
-    FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo *TradingSession(FastSecurityDefinitionInfo *info, int marketIndex, int sessionIndex) {
+    AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo *TradingSession(AstsSecurityDefinitionInfo *info, int marketIndex, int sessionIndex) {
         return info->MarketSegmentGrp[marketIndex]->TradingSessionRulesGrp[sessionIndex];
     }
 
@@ -69,7 +69,7 @@ public:
     }
 
     //Can be length of 1 or 2.
-    bool EqualsTradingSessionSubId(FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo *t, const char *tradingSessionSubId) {
+    bool EqualsTradingSessionSubId(AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo *t, const char *tradingSessionSubId) {
         if(strlen(tradingSessionSubId) == 2)
             return t->TradingSessionSubID[0] == tradingSessionSubId[0] && t->TradingSessionSubID[1] == tradingSessionSubId[1];
         return t->TradingSessionSubID[0] == tradingSessionSubId[0];
@@ -100,8 +100,8 @@ public:
         if(this->idf->m_symbolManager->SymbolCount() != 2)
             throw;
 
-        FastSecurityDefinitionInfo *info1 = this->idf->Symbol(0);
-        FastSecurityDefinitionInfo *info2 = this->idf->Symbol(1);
+        AstsSecurityDefinitionInfo *info1 = this->idf->Symbol(0);
+        AstsSecurityDefinitionInfo *info2 = this->idf->Symbol(1);
         if(TradingSession(info1, 0, 0)->SecurityTradingStatus != SecurityStatus::ssUndefined)
             throw;
         if(TradingSession(info1, 0, 1)->SecurityTradingStatus != SecurityStatus::ssUndefined)
@@ -139,8 +139,8 @@ public:
         this->Clear();
         this->InitSecurityDefinitionCore();
 
-        FastSecurityDefinitionInfo *info1 = this->idf->Symbol(0);
-        FastSecurityDefinitionInfo *info2 = this->idf->Symbol(1);
+        AstsSecurityDefinitionInfo *info1 = this->idf->Symbol(0);
+        AstsSecurityDefinitionInfo *info2 = this->idf->Symbol(1);
         this->isf->Start();
         this->m_helper->SendMessagesIsf(this->isf,
                                                 "msgSeqNo 1 hbeat,"
@@ -178,8 +178,8 @@ public:
         this->Clear();
         this->InitSecurityDefinitionCore();
 
-        FastSecurityDefinitionInfo *info1 = this->idf->Symbol(0);
-        FastSecurityDefinitionInfo *info2 = this->idf->Symbol(1);
+        AstsSecurityDefinitionInfo *info1 = this->idf->Symbol(0);
+        AstsSecurityDefinitionInfo *info2 = this->idf->Symbol(1);
         this->isf->Start();
         this->m_helper->SendMessagesIsf_Hr(this->isf,
                                            this->hr,
@@ -218,8 +218,8 @@ public:
         this->Clear();
         this->InitSecurityDefinitionCore();
 
-        FastSecurityDefinitionInfo *info1 = this->idf->Symbol(0);
-        FastSecurityDefinitionInfo *info2 = this->idf->Symbol(1);
+        AstsSecurityDefinitionInfo *info1 = this->idf->Symbol(0);
+        AstsSecurityDefinitionInfo *info2 = this->idf->Symbol(1);
         this->isf->Start();
         this->m_helper->SendMessagesIsf_Hr(this->isf,
                                            this->hr,
@@ -655,11 +655,11 @@ public:
         if(this->isf->m_windowMsgSeqNum != 18)
             throw;
         TestIsfPackestClearedLocal(0, 18);
-        FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo *t1 = TradingSession(this->idf->Symbol(0), 0, 0);
-        FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo *t2 = TradingSession(this->idf->Symbol(1), 0, 0);
-        FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo *t3 = TradingSession(this->idf->Symbol(2), 0, 0);
-        FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo *t4 = TradingSession(this->idf->Symbol(3), 0, 0);
-        FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo *t5 = TradingSession(this->idf->Symbol(4), 0, 0);
+        AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo *t1 = TradingSession(this->idf->Symbol(0), 0, 0);
+        AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo *t2 = TradingSession(this->idf->Symbol(1), 0, 0);
+        AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo *t3 = TradingSession(this->idf->Symbol(2), 0, 0);
+        AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo *t4 = TradingSession(this->idf->Symbol(3), 0, 0);
+        AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo *t5 = TradingSession(this->idf->Symbol(4), 0, 0);
 
         if(t1->SecurityTradingStatus != 104)
             throw;
@@ -815,11 +815,11 @@ public:
         if(this->isf->m_windowMsgSeqNum != this->isf->m_startMsgSeqNum)
             throw;
         TestIsfPackestClearedLocal(0, 50);
-        FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo *t1 = TradingSession(this->idf->Symbol(0), 0, 0);
-        FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo *t2 = TradingSession(this->idf->Symbol(1), 0, 0);
-        FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo *t3 = TradingSession(this->idf->Symbol(2), 0, 0);
-        FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo *t4 = TradingSession(this->idf->Symbol(3), 0, 0);
-        FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo *t5 = TradingSession(this->idf->Symbol(4), 0, 0);
+        AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo *t1 = TradingSession(this->idf->Symbol(0), 0, 0);
+        AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo *t2 = TradingSession(this->idf->Symbol(1), 0, 0);
+        AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo *t3 = TradingSession(this->idf->Symbol(2), 0, 0);
+        AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo *t4 = TradingSession(this->idf->Symbol(3), 0, 0);
+        AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo *t5 = TradingSession(this->idf->Symbol(4), 0, 0);
 
         if(t1->SecurityTradingStatus != 105)
             throw;
@@ -932,11 +932,11 @@ public:
         if(this->isf->m_windowMsgSeqNum != this->isf->m_startMsgSeqNum)
             throw;
         TestIsfPackestClearedLocal(0, 50);
-        FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo *t1 = TradingSession(this->idf->Symbol(0), 0, 0);
-        FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo *t2 = TradingSession(this->idf->Symbol(1), 0, 0);
-        FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo *t3 = TradingSession(this->idf->Symbol(2), 0, 0);
-        FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo *t4 = TradingSession(this->idf->Symbol(3), 0, 0);
-        FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo *t5 = TradingSession(this->idf->Symbol(4), 0, 0);
+        AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo *t1 = TradingSession(this->idf->Symbol(0), 0, 0);
+        AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo *t2 = TradingSession(this->idf->Symbol(1), 0, 0);
+        AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo *t3 = TradingSession(this->idf->Symbol(2), 0, 0);
+        AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo *t4 = TradingSession(this->idf->Symbol(3), 0, 0);
+        AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo *t5 = TradingSession(this->idf->Symbol(4), 0, 0);
     }
 
     void TestStartSnapshotInstedOfHistoricalReplay_6() {

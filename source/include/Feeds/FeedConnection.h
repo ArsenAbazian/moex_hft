@@ -133,7 +133,7 @@ protected:
 	WinSockManager								*socketAManager;
 	WinSockManager								*socketBManager;
 	FastProtocolManager 						*m_fastProtocolManager;
-    FastLogonInfo                               *m_fastLogonInfo;
+    AstsLogonInfo                               *m_fastLogonInfo;
 
     FixProtocolManager                          *m_fixProtocolManager;
     FixLogonInfo                                *m_hsLogonInfo;
@@ -156,13 +156,13 @@ protected:
     Stopwatch                                   *m_waitTimer;
     bool                                        m_shouldReceiveAnswer;
 
-	MarketDataTable<OrderInfo, FastOLSFONDInfo, FastOLSFONDItemInfo>			*m_orderTableFond;
-	MarketDataTable<OrderInfo, FastOLSCURRInfo, FastOLSCURRItemInfo>			*m_orderTableCurr;
-	MarketDataTable<TradeInfo, FastTLSFONDInfo, FastTLSFONDItemInfo>			*m_tradeTableFond;
-	MarketDataTable<TradeInfo, FastTLSCURRInfo, FastTLSCURRItemInfo>			*m_tradeTableCurr;
-    MarketDataTable<StatisticsInfo, FastGenericInfo, FastGenericItemInfo>       *m_statTableFond;
-    MarketDataTable<StatisticsInfo, FastGenericInfo, FastGenericItemInfo>       *m_statTableCurr;
-    LinkedPointer<FastSecurityDefinitionInfo>                                   **m_symbols;
+	MarketDataTable<OrderInfo, AstsOLSFONDInfo, AstsOLSFONDItemInfo>			*m_orderTableFond;
+	MarketDataTable<OrderInfo, AstsOLSCURRInfo, AstsOLSCURRItemInfo>			*m_orderTableCurr;
+	MarketDataTable<TradeInfo, AstsTLSFONDInfo, AstsTLSFONDItemInfo>			*m_tradeTableFond;
+	MarketDataTable<TradeInfo, AstsTLSCURRInfo, AstsTLSCURRItemInfo>			*m_tradeTableCurr;
+    MarketDataTable<StatisticsInfo, AstsGenericInfo, AstsGenericItemInfo>       *m_statTableFond;
+    MarketDataTable<StatisticsInfo, AstsGenericInfo, AstsGenericItemInfo>       *m_statTableCurr;
+    LinkedPointer<AstsSecurityDefinitionInfo>                                   **m_symbols;
     int                                                                         m_symbolsCount;
 
     void InitializeHistoricalReplay() {
@@ -189,9 +189,9 @@ protected:
         DebugInfoManager::Default->PrintMemoryInfo("FeedConnectionInfo::InitializePackets");
     }
     void InitializeSecurityDefinition() {
-        this->m_symbols = new LinkedPointer<FastSecurityDefinitionInfo>*[RobotSettings::Default->MaxSecurityDefinitionCount];
+        this->m_symbols = new LinkedPointer<AstsSecurityDefinitionInfo>*[RobotSettings::Default->MaxSecurityDefinitionCount];
         for(int i = 0; i < RobotSettings::Default->MaxSecurityDefinitionCount; i++)
-            this->m_symbols[i] = new LinkedPointer<FastSecurityDefinitionInfo>();
+            this->m_symbols[i] = new LinkedPointer<AstsSecurityDefinitionInfo>();
         this->m_symbolsCount = 0;
         this->m_idfMode = FeedConnectionSecurityDefinitionMode::sdmCollectData;
         this->m_symbolManager = new SymbolManager(RobotSettings::Default->MarketDataMaxSymbolsCount);
@@ -209,10 +209,10 @@ protected:
 
     inline int TryGetSecurityDefinitionTotNumReports(unsigned char *buffer) {
         this->m_fastProtocolManager->SetNewBuffer(buffer + 4, 1500);
-        this->m_fastProtocolManager->DecodeHeader();
+        this->m_fastProtocolManager->DecodeAstsHeader();
         if(this->m_fastProtocolManager->TemplateId() != FeedConnectionMessage::fmcSecurityDefinition)
             return 0;
-        return this->m_fastProtocolManager->GetTotalNumReports();
+        return this->m_fastProtocolManager->GetAstsTotalNumReports();
     }
 
 	inline bool CanListen() { return this->socketAManager->ShouldRecv() || this->socketBManager->ShouldRecv(); }
@@ -443,7 +443,7 @@ protected:
             return false;
         this->m_fastProtocolManager->SetNewBuffer(buffer, info->m_size);
         this->m_fastProtocolManager->ReadMsgSeqNumber();
-        this->m_fastProtocolManager->DecodeHeader();
+        this->m_fastProtocolManager->DecodeAstsHeader();
         return true;
     }
 
@@ -467,7 +467,7 @@ protected:
         ProgramStatistics::Current->IncFondOlsProcessedCount();
         ProgramStatistics::Total->IncFondOlsProcessedCount();
 #endif
-        FastOLSFONDInfo *info = (FastOLSFONDInfo *) this->m_fastProtocolManager->DecodeOLSFOND();
+        AstsOLSFONDInfo *info = (AstsOLSFONDInfo *) this->m_fastProtocolManager->DecodeAstsOLSFOND();
         this->m_incremental->OrderFond()->ProcessSnapshot(info);
         info->ReleaseUnused();
         return true;
@@ -503,7 +503,7 @@ protected:
         ProgramStatistics::Current->IncCurrOlsProcessedCount();
         ProgramStatistics::Total->IncCurrOlsProcessedCount();
 #endif
-        FastOLSCURRInfo *info = (FastOLSCURRInfo *) this->m_fastProtocolManager->DecodeOLSCURR();
+        AstsOLSCURRInfo *info = (AstsOLSCURRInfo *) this->m_fastProtocolManager->DecodeAstsOLSCURR();
         this->m_incremental->OrderCurr()->ProcessSnapshot(info);
         info->ReleaseUnused();
         return true;
@@ -539,7 +539,7 @@ protected:
         ProgramStatistics::Current->IncFondTlsProcessedCount();
         ProgramStatistics::Total->IncFondTlsProcessedCount();
 #endif
-        FastTLSFONDInfo *info = (FastTLSFONDInfo *) this->m_fastProtocolManager->DecodeTLSFOND();
+        AstsTLSFONDInfo *info = (AstsTLSFONDInfo *) this->m_fastProtocolManager->DecodeAstsTLSFOND();
         this->m_incremental->TradeFond()->ProcessSnapshot(info);
         info->ReleaseUnused();
         return true;
@@ -575,7 +575,7 @@ protected:
         ProgramStatistics::Current->IncCurrTlsProcessedCount();
         ProgramStatistics::Total->IncCurrTlsProcessedCount();
 #endif
-        FastTLSCURRInfo *info = (FastTLSCURRInfo *) this->m_fastProtocolManager->DecodeTLSCURR();
+        AstsTLSCURRInfo *info = (AstsTLSCURRInfo *) this->m_fastProtocolManager->DecodeAstsTLSCURR();
         this->m_incremental->TradeCurr()->ProcessSnapshot(info);
         info->ReleaseUnused();
         return true;
@@ -611,7 +611,7 @@ protected:
         ProgramStatistics::Current->IncFondMssProcessedCount();
         ProgramStatistics::Total->IncFondMssProcessedCount();
 #endif
-        FastGenericInfo *info = (FastGenericInfo *) this->m_fastProtocolManager->DecodeGeneric();
+        AstsGenericInfo *info = (AstsGenericInfo *) this->m_fastProtocolManager->DecodeAstsGeneric();
         this->m_incremental->StatisticFond()->ProcessSnapshot(info);
         info->ReleaseUnused();
         return true;
@@ -647,7 +647,7 @@ protected:
         ProgramStatistics::Current->IncCurrMssProcessedCount();
         ProgramStatistics::Total->IncCurrMssProcessedCount();
 #endif
-        FastGenericInfo *info = (FastGenericInfo *) this->m_fastProtocolManager->DecodeGeneric();
+        AstsGenericInfo *info = (AstsGenericInfo *) this->m_fastProtocolManager->DecodeAstsGeneric();
         this->m_incremental->StatisticCurr()->ProcessSnapshot(info);
         info->ReleaseUnused();
         return true;
@@ -999,14 +999,14 @@ protected:
         DefaultLogManager::Default->WriteSuccess(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_StopListenSnapshot, true);
 		return true;
 	}
-	inline FastSnapshotInfo* GetSnapshotInfo(int msgSeqNo) {
+	inline AstsSnapshotInfo* GetAstsSnapshotInfo(int msgSeqNo) {
 		FeedConnectionMessageInfo *item = this->m_packets[msgSeqNo];
 		unsigned char *buffer = item->m_address;
 		if(this->ShouldSkipMessage(buffer, !item->m_requested))
             return 0;
         this->m_fastProtocolManager->SetNewBuffer(buffer, item->m_size);
 		this->m_fastProtocolManager->ReadMsgSeqNumber();
-		return this->m_fastProtocolManager->GetSnapshotInfo();
+		return this->m_fastProtocolManager->GetAstsSnapshotInfo();
 	}
 
     inline void ResetWaitTime() { this->m_waitTimer->Start(); }
@@ -1034,7 +1034,7 @@ protected:
 		this->m_shouldUseNextState = true;
 	}
 
-    FastSnapshotInfo *m_lastSnapshotInfo;
+    AstsSnapshotInfo *m_lastSnapshotInfo;
     inline int GetLocalIndex(int msgSeqNo) { return msgSeqNo - this->m_windowMsgSeqNum; }
     inline int LocalIndexToMsgSeqNo(int index) { return index + this->m_windowMsgSeqNum; }
     inline bool FindRouteFirst() {
@@ -1043,7 +1043,7 @@ protected:
                 this->m_startMsgSeqNum = i;
                 return false;
             }
-            this->m_lastSnapshotInfo = this->GetSnapshotInfo(i);
+            this->m_lastSnapshotInfo = this->GetAstsSnapshotInfo(i);
             if (this->m_lastSnapshotInfo != 0 && this->m_lastSnapshotInfo->RouteFirst == 1) {
                 this->m_startMsgSeqNum = i;
                 this->m_snapshotRouteFirst = i;
@@ -1179,7 +1179,7 @@ protected:
         while(this->m_startMsgSeqNum <= this->m_endMsgSeqNum) {
             if (this->m_packets[this->m_startMsgSeqNum]->m_address == 0)
                 return false;
-            this->m_lastSnapshotInfo = this->GetSnapshotInfo(this->m_startMsgSeqNum);
+            this->m_lastSnapshotInfo = this->GetAstsSnapshotInfo(this->m_startMsgSeqNum);
             if(this->m_lastSnapshotInfo == 0)
                 return false;
             this->ApplySnapshotPart(this->m_startMsgSeqNum);
@@ -1323,12 +1323,12 @@ protected:
         this->m_fastProtocolManager->SetNewBuffer(buffer, length);
         this->m_fastProtocolManager->ReadMsgSeqNumber();
 
-        this->m_fastProtocolManager->DecodeHeader();
+        this->m_fastProtocolManager->DecodeAstsHeader();
         if(this->m_fastProtocolManager->TemplateId() != FeedConnectionMessage::fmcSecurityDefinition) {
             printf("not an security definition template: %d\n", this->m_fastProtocolManager->TemplateId());
             return true;
         }
-        return this->ProcessSecurityDefinition((FastSecurityDefinitionInfo*)this->m_fastProtocolManager->DecodeSecurityDefinition());
+        return this->ProcessSecurityDefinition((AstsSecurityDefinitionInfo*)this->m_fastProtocolManager->DecodeAstsSecurityDefinition());
     }
 
     inline bool ProcessSecurityDefinition(unsigned char *buffer, int length) {
@@ -1577,13 +1577,13 @@ protected:
 
     inline bool CanRecv() { return this->socketAManager->ShouldRecv(); }
 
-    inline void OnProcessHistoricalReplayExpectedLogoutMessage(FastLogoutInfo *info) {
+    inline void OnProcessHistoricalReplayExpectedLogoutMessage(AstsLogoutInfo *info) {
         info->Text[info->TextLength] = 0;
         printf("\t\tHistorical Replay - Logout: %s\n", info->Text);
         info->Clear();
     }
 
-    inline void OnProcessHistoricalReplayUnexpectedLogoutMessage(const char *methodName, FastLogoutInfo *info) {
+    inline void OnProcessHistoricalReplayUnexpectedLogoutMessage(const char *methodName, AstsLogoutInfo *info) {
         info->Text[info->TextLength] = 0;
         // Limit of connections for this IP exceeded
         // TODO remove debug
@@ -1656,11 +1656,11 @@ protected:
             buffer += 4; size -= 4;
         }
         this->m_fastProtocolManager->SetNewBuffer(buffer, size);
-        this->m_fastProtocolManager->DecodeHeader();
+        this->m_fastProtocolManager->DecodeAstsHeader();
         if(this->m_fastProtocolManager->TemplateId() != FeedConnectionMessage::fmcLogon) {
             this->Disconnect();
             if(this->m_fastProtocolManager->TemplateId() == FeedConnectionMessage::fmcLogout) {
-                this->OnProcessHistoricalReplayUnexpectedLogoutMessage("OnWaitLogon", (FastLogoutInfo*)this->m_fastProtocolManager->DecodeLogout());
+                this->OnProcessHistoricalReplayUnexpectedLogoutMessage("OnWaitLogon", (AstsLogoutInfo*)this->m_fastProtocolManager->DecodeAstsLogout());
             }
             this->m_hsState = FeedConnectionHistoricalReplayState::hsSuspend;
             return true;
@@ -1713,16 +1713,16 @@ protected:
                 break;
             }
             this->m_fastProtocolManager->SetNewBuffer(buffer, this->m_hrMessageSize);
-            this->m_fastProtocolManager->DecodeHeader();
+            this->m_fastProtocolManager->DecodeAstsHeader();
 
             if(this->m_fastProtocolManager->TemplateId() == FeedConnectionMessage::fmcLogout) {
                 if(msg->IsAllMessagesReceived()) {
-                    this->OnProcessHistoricalReplayExpectedLogoutMessage((FastLogoutInfo*)this->m_fastProtocolManager->DecodeLogout());
+                    this->OnProcessHistoricalReplayExpectedLogoutMessage((AstsLogoutInfo*)this->m_fastProtocolManager->DecodeAstsLogout());
                     this->m_hsRequestList->Remove(ptr);
                     this->m_hsState = FeedConnectionHistoricalReplayState::hsSuspend;
                     return this->HistoricalReplay_SendLogout();
                 }
-                this->OnProcessHistoricalReplayUnexpectedLogoutMessage("OnRecvMessage", (FastLogoutInfo*)this->m_fastProtocolManager->DecodeLogout());
+                this->OnProcessHistoricalReplayUnexpectedLogoutMessage("OnRecvMessage", (AstsLogoutInfo*)this->m_fastProtocolManager->DecodeAstsLogout());
                 this->Disconnect();
                 this->m_hsState = FeedConnectionHistoricalReplayState::hsSuspend;
                 return true;
@@ -1953,37 +1953,37 @@ protected:
 
 	FILE *obrLogFile;
 
-	inline bool OnIncrementalRefresh_OLR_FOND(FastOLSFONDItemInfo *info) {
+	inline bool OnIncrementalRefresh_OLR_FOND(AstsOLSFONDItemInfo *info) {
 		if(info->MDEntryType[0] == MDEntryType::mdetEmptyBook) { // fatal!!!!!
 			return true; // TODO!!!!!
 		}
 		return this->m_orderTableFond->ProcessIncremental(info);
 	}
 
-	inline bool OnIncrementalRefresh_OLR_CURR(FastOLSCURRItemInfo *info) {
+	inline bool OnIncrementalRefresh_OLR_CURR(AstsOLSCURRItemInfo *info) {
 		if(info->MDEntryType[0] == MDEntryType::mdetEmptyBook) { // fatal!!!!!
 			return true; // TODO!!!!!
 		}
 		return this->m_orderTableCurr->ProcessIncremental(info);
 	}
 
-	inline bool OnIncrementalRefresh_TLR_FOND(FastTLSFONDItemInfo *info) {
+	inline bool OnIncrementalRefresh_TLR_FOND(AstsTLSFONDItemInfo *info) {
 		return this->m_tradeTableFond->ProcessIncremental(info);
 	}
 
-	inline bool OnIncrementalRefresh_TLR_CURR(FastTLSCURRItemInfo *info) {
+	inline bool OnIncrementalRefresh_TLR_CURR(AstsTLSCURRItemInfo *info) {
         return this->m_tradeTableCurr->ProcessIncremental(info);
 	}
 
-    inline bool OnIncrementalRefresh_MSR_FOND(FastGenericItemInfo *info) {
+    inline bool OnIncrementalRefresh_MSR_FOND(AstsGenericItemInfo *info) {
         return this->m_statTableFond->ProcessIncremental(info);
     }
 
-    inline bool OnIncrementalRefresh_MSR_CURR(FastGenericItemInfo *info) {
+    inline bool OnIncrementalRefresh_MSR_CURR(AstsGenericItemInfo *info) {
         return this->m_statTableCurr->ProcessIncremental(info);
     }
 
-    inline bool OnIncrementalRefresh_OLR_FOND(FastIncrementalOLRFONDInfo *info) {
+    inline bool OnIncrementalRefresh_OLR_FOND(AstsIncrementalOLRFONDInfo *info) {
 #ifdef COLLECT_STATISTICS
         ProgramStatistics::Current->IncFondOlrProcessedCount();
         ProgramStatistics::Total->IncFondOlrProcessedCount();
@@ -1996,7 +1996,7 @@ protected:
         return res;
     }
 
-    inline bool OnIncrementalRefresh_OLR_CURR(FastIncrementalOLRCURRInfo *info) {
+    inline bool OnIncrementalRefresh_OLR_CURR(AstsIncrementalOLRCURRInfo *info) {
 #ifdef COLLECT_STATISTICS
         ProgramStatistics::Current->IncCurrOlrProcessedCount();
         ProgramStatistics::Total->IncCurrOlrProcessedCount();
@@ -2009,7 +2009,7 @@ protected:
         return res;
     }
 
-    inline bool OnIncrementalRefresh_TLR_FOND(FastIncrementalTLRFONDInfo *info) {
+    inline bool OnIncrementalRefresh_TLR_FOND(AstsIncrementalTLRFONDInfo *info) {
 #ifdef COLLECT_STATISTICS
         ProgramStatistics::Current->IncFondTlrProcessedCount();
         ProgramStatistics::Total->IncFondTlrProcessedCount();
@@ -2022,7 +2022,7 @@ protected:
         return res;
     }
 
-    inline bool OnIncrementalRefresh_TLR_CURR(FastIncrementalTLRCURRInfo *info) {
+    inline bool OnIncrementalRefresh_TLR_CURR(AstsIncrementalTLRCURRInfo *info) {
 #ifdef COLLECT_STATISTICS
         ProgramStatistics::Current->IncCurrTlrProcessedCount();
         ProgramStatistics::Total->IncCurrTlrProcessedCount();
@@ -2035,7 +2035,7 @@ protected:
         return res;
     }
 
-    inline bool OnIncrementalRefresh_MSR_FOND(FastIncrementalMSRFONDInfo *info) {
+    inline bool OnIncrementalRefresh_MSR_FOND(AstsIncrementalMSRFONDInfo *info) {
 #ifdef COLLECT_STATISTICS
         ProgramStatistics::Current->IncFondMsrProcessedCount();
         ProgramStatistics::Total->IncFondMsrProcessedCount();
@@ -2050,7 +2050,7 @@ protected:
 
 
 
-    inline bool OnIncrementalRefresh_MSR_CURR(FastIncrementalMSRCURRInfo *info) {
+    inline bool OnIncrementalRefresh_MSR_CURR(AstsIncrementalMSRCURRInfo *info) {
 #ifdef COLLECT_STATISTICS
         ProgramStatistics::Current->IncCurrMsrProcessedCount();
         ProgramStatistics::Total->IncCurrMsrProcessedCount();
@@ -2063,26 +2063,26 @@ protected:
         return res;
     }
 
-    inline bool OnHearthBeatMessage(FastHeartbeatInfo *info) {
+    inline bool OnHearthBeatMessage(AstsHeartbeatInfo *info) {
         throw; // there is no need to apply message just check
     }
 
     inline bool ApplyIncrementalCore() {
 		switch(this->m_fastProtocolManager->TemplateId()) {
 			case FeedConnectionMessage::fcmHeartBeat:
-                return this->OnHearthBeatMessage((FastHeartbeatInfo*)this->m_fastProtocolManager->LastDecodeInfo());
+                return this->OnHearthBeatMessage((AstsHeartbeatInfo*)this->m_fastProtocolManager->LastDecodeInfo());
 			case FeedConnectionMessage::fmcIncrementalRefresh_OLR_FOND:
-				return this->OnIncrementalRefresh_OLR_FOND((FastIncrementalOLRFONDInfo*)this->m_fastProtocolManager->LastDecodeInfo());
+				return this->OnIncrementalRefresh_OLR_FOND((AstsIncrementalOLRFONDInfo*)this->m_fastProtocolManager->LastDecodeInfo());
 			case FeedConnectionMessage::fmcIncrementalRefresh_OLR_CURR:
-				return this->OnIncrementalRefresh_OLR_CURR((FastIncrementalOLRCURRInfo*)this->m_fastProtocolManager->LastDecodeInfo());
+				return this->OnIncrementalRefresh_OLR_CURR((AstsIncrementalOLRCURRInfo*)this->m_fastProtocolManager->LastDecodeInfo());
 			case FeedConnectionMessage::fmcIncrementalRefresh_TLR_FOND:
-				return this->OnIncrementalRefresh_TLR_FOND((FastIncrementalTLRFONDInfo*)this->m_fastProtocolManager->LastDecodeInfo());
+				return this->OnIncrementalRefresh_TLR_FOND((AstsIncrementalTLRFONDInfo*)this->m_fastProtocolManager->LastDecodeInfo());
 			case FeedConnectionMessage::fmcIncrementalRefresh_TLR_CURR:
-				return this->OnIncrementalRefresh_TLR_CURR((FastIncrementalTLRCURRInfo*)this->m_fastProtocolManager->LastDecodeInfo());
+				return this->OnIncrementalRefresh_TLR_CURR((AstsIncrementalTLRCURRInfo*)this->m_fastProtocolManager->LastDecodeInfo());
             case FeedConnectionMessage::fmcIncrementalRefresh_MSR_FOND:
-                return this->OnIncrementalRefresh_MSR_FOND((FastIncrementalMSRFONDInfo*)this->m_fastProtocolManager->LastDecodeInfo());
+                return this->OnIncrementalRefresh_MSR_FOND((AstsIncrementalMSRFONDInfo*)this->m_fastProtocolManager->LastDecodeInfo());
             case FeedConnectionMessage::fmcIncrementalRefresh_MSR_CURR:
-                return this->OnIncrementalRefresh_MSR_CURR((FastIncrementalMSRCURRInfo*)this->m_fastProtocolManager->LastDecodeInfo());
+                return this->OnIncrementalRefresh_MSR_CURR((AstsIncrementalMSRCURRInfo*)this->m_fastProtocolManager->LastDecodeInfo());
 		}
 		return true;
 	}
@@ -2092,7 +2092,7 @@ protected:
 		if(shouldProcessMsgSeqNumber)
             this->m_fastProtocolManager->ReadMsgSeqNumber();
 
-		if(this->m_fastProtocolManager->Decode() == 0) {
+		if(this->m_fastProtocolManager->DecodeAsts() == 0) {
             printf("unknown template: %d\n", this->m_fastProtocolManager->TemplateId());
             return true;
         }
@@ -2100,7 +2100,7 @@ protected:
 		return true;
 	}
 
-    inline bool ProcessSecurityStatus(FastSecurityStatusInfo *info) {
+    inline bool ProcessSecurityStatus(AstsSecurityStatusInfo *info) {
         if(!this->m_securityDefinition->IsIdfDataCollected())
             return true; // TODO just skip? Should we do something else?
         return this->m_securityDefinition->UpdateSecurityDefinition(info);
@@ -2111,7 +2111,7 @@ protected:
         if(processMsgSeqNumber)
             this->m_fastProtocolManager->ReadMsgSeqNumber();
 
-        if(this->m_fastProtocolManager->Decode() == 0) {
+        if(this->m_fastProtocolManager->DecodeAsts() == 0) {
             printf("unknown template: %d\n", this->m_fastProtocolManager->TemplateId());
             return true;
         }
@@ -2122,7 +2122,7 @@ protected:
 #endif
 
         if(this->m_fastProtocolManager->TemplateId() == FeedConnectionMessage::fmcSecurityStatus) {
-            return this->ProcessSecurityStatus((FastSecurityStatusInfo *)this->m_fastProtocolManager->LastDecodeInfo());
+            return this->ProcessSecurityStatus((AstsSecurityStatusInfo *)this->m_fastProtocolManager->LastDecodeInfo());
         }
 
         return true;
@@ -2175,14 +2175,14 @@ public:
 	~FeedConnection();
 
     inline int LastMsgSeqNumProcessed() { return this->m_lastMsgSeqNumProcessed; }
-    inline MarketDataTable<OrderInfo, FastOLSFONDInfo, FastOLSFONDItemInfo> *OrderFond() { return this->m_orderTableFond; }
-	inline MarketDataTable<OrderInfo, FastOLSCURRInfo, FastOLSCURRItemInfo> *OrderCurr() { return this->m_orderTableCurr; }
-	inline MarketDataTable<TradeInfo, FastTLSFONDInfo, FastTLSFONDItemInfo> *TradeFond() { return this->m_tradeTableFond; }
-	inline MarketDataTable<TradeInfo, FastTLSCURRInfo, FastTLSCURRItemInfo> *TradeCurr() { return this->m_tradeTableCurr; }
-    inline MarketDataTable<StatisticsInfo, FastGenericInfo, FastGenericItemInfo> *StatisticFond() { return this->m_statTableFond; }
-    inline MarketDataTable<StatisticsInfo, FastGenericInfo, FastGenericItemInfo> *StatisticCurr() { return this->m_statTableCurr; }
-    inline LinkedPointer<FastSecurityDefinitionInfo>** Symbols() { return this->m_symbols; }
-    inline FastSecurityDefinitionInfo* Symbol(int index) { return this->m_symbols[index]->Data(); }
+    inline MarketDataTable<OrderInfo, AstsOLSFONDInfo, AstsOLSFONDItemInfo> *OrderFond() { return this->m_orderTableFond; }
+	inline MarketDataTable<OrderInfo, AstsOLSCURRInfo, AstsOLSCURRItemInfo> *OrderCurr() { return this->m_orderTableCurr; }
+	inline MarketDataTable<TradeInfo, AstsTLSFONDInfo, AstsTLSFONDItemInfo> *TradeFond() { return this->m_tradeTableFond; }
+	inline MarketDataTable<TradeInfo, AstsTLSCURRInfo, AstsTLSCURRItemInfo> *TradeCurr() { return this->m_tradeTableCurr; }
+    inline MarketDataTable<StatisticsInfo, AstsGenericInfo, AstsGenericItemInfo> *StatisticFond() { return this->m_statTableFond; }
+    inline MarketDataTable<StatisticsInfo, AstsGenericInfo, AstsGenericItemInfo> *StatisticCurr() { return this->m_statTableCurr; }
+    inline LinkedPointer<AstsSecurityDefinitionInfo>** Symbols() { return this->m_symbols; }
+    inline AstsSecurityDefinitionInfo* Symbol(int index) { return this->m_symbols[index]->Data(); }
     inline int SymbolCount() { return this->m_symbolsCount; }
     inline FeedConnectionSecurityDefinitionMode SecurityDefinitionMode() { return this->m_idfMode; }
     inline void WaitIncrementalMaxTimeMs(int timeMs) { this->m_waitIncrementalMaxTimeMs = timeMs; }
@@ -2263,27 +2263,27 @@ public:
         this->m_connectionsToRecvSymbolsCount++;
     }
 
-    inline int CalcSessionsCount(FastSecurityDefinitionInfo *info) {
+    inline int CalcSessionsCount(AstsSecurityDefinitionInfo *info) {
         int res = 0;
-        FastSecurityDefinitionMarketSegmentGrpItemInfo **market = info->MarketSegmentGrp;
+        AstsSecurityDefinitionMarketSegmentGrpItemInfo **market = info->MarketSegmentGrp;
         for(int i = 0; i < info->MarketSegmentGrpCount; i++, market++) {
             res += info->MarketSegmentGrp[i]->TradingSessionRulesGrpCount;
         }
         return res;
     }
 
-    inline void AddSymbol(LinkedPointer<FastSecurityDefinitionInfo> *ptr) {
-        FastSecurityDefinitionInfo *info = ptr->Data();
+    inline void AddSymbol(LinkedPointer<AstsSecurityDefinitionInfo> *ptr) {
+        AstsSecurityDefinitionInfo *info = ptr->Data();
         if(this->m_orderTableFond != 0) {
-            MarketSymbolInfo<OrderInfo<FastOLSFONDItemInfo>> *symbol = this->m_orderTableFond->AddSymbol(info->Symbol, info->SymbolLength);
+            MarketSymbolInfo<OrderInfo<AstsOLSFONDItemInfo>> *symbol = this->m_orderTableFond->AddSymbol(info->Symbol, info->SymbolLength);
 
             symbol->SecurityDefinitionPtr(ptr);
             symbol->InitSessions(CalcSessionsCount(info));
 
-            FastSecurityDefinitionMarketSegmentGrpItemInfo **market = info->MarketSegmentGrp;
+            AstsSecurityDefinitionMarketSegmentGrpItemInfo **market = info->MarketSegmentGrp;
             for(int i = 0; i < info->MarketSegmentGrpCount; i++, market++) {
-                FastSecurityDefinitionMarketSegmentGrpItemInfo *m = *market;
-                FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo **trading = m->TradingSessionRulesGrp;
+                AstsSecurityDefinitionMarketSegmentGrpItemInfo *m = *market;
+                AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo **trading = m->TradingSessionRulesGrp;
                 for(int j = 0; j < m->TradingSessionRulesGrpCount; j++, trading++) {
                     symbol->AddSession((*trading)->TradingSessionID, (*trading)->TradingSessionIDLength);
                 }
@@ -2291,15 +2291,15 @@ public:
             return;
         }
         if(this->m_orderTableCurr != 0) {
-            MarketSymbolInfo<OrderInfo<FastOLSCURRItemInfo>> *symbol = this->m_orderTableCurr->AddSymbol(info->Symbol, info->SymbolLength);
+            MarketSymbolInfo<OrderInfo<AstsOLSCURRItemInfo>> *symbol = this->m_orderTableCurr->AddSymbol(info->Symbol, info->SymbolLength);
 
             symbol->SecurityDefinitionPtr(ptr);
             symbol->InitSessions(CalcSessionsCount(info));
 
-            FastSecurityDefinitionMarketSegmentGrpItemInfo **market = info->MarketSegmentGrp;
+            AstsSecurityDefinitionMarketSegmentGrpItemInfo **market = info->MarketSegmentGrp;
             for(int i = 0; i < info->MarketSegmentGrpCount; i++, market++) {
-                FastSecurityDefinitionMarketSegmentGrpItemInfo *m = *market;
-                FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo **trading = m->TradingSessionRulesGrp;
+                AstsSecurityDefinitionMarketSegmentGrpItemInfo *m = *market;
+                AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo **trading = m->TradingSessionRulesGrp;
                 for(int j = 0; j < m->TradingSessionRulesGrpCount; j++, trading++) {
                     symbol->AddSession((*trading)->TradingSessionID, (*trading)->TradingSessionIDLength);
                 }
@@ -2307,15 +2307,15 @@ public:
             return;
         }
         if(this->m_tradeTableFond != 0) {
-            MarketSymbolInfo<TradeInfo<FastTLSFONDItemInfo>> *symbol = this->m_tradeTableFond->AddSymbol(info->Symbol, info->SymbolLength);
+            MarketSymbolInfo<TradeInfo<AstsTLSFONDItemInfo>> *symbol = this->m_tradeTableFond->AddSymbol(info->Symbol, info->SymbolLength);
 
             symbol->SecurityDefinitionPtr(ptr);
             symbol->InitSessions(CalcSessionsCount(info));
 
-            FastSecurityDefinitionMarketSegmentGrpItemInfo **market = info->MarketSegmentGrp;
+            AstsSecurityDefinitionMarketSegmentGrpItemInfo **market = info->MarketSegmentGrp;
             for(int i = 0; i < info->MarketSegmentGrpCount; i++, market++) {
-                FastSecurityDefinitionMarketSegmentGrpItemInfo *m = *market;
-                FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo **trading = m->TradingSessionRulesGrp;
+                AstsSecurityDefinitionMarketSegmentGrpItemInfo *m = *market;
+                AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo **trading = m->TradingSessionRulesGrp;
                 for(int j = 0; j < m->TradingSessionRulesGrpCount; j++, trading++) {
                     symbol->AddSession((*trading)->TradingSessionID, (*trading)->TradingSessionIDLength);
                 }
@@ -2323,15 +2323,15 @@ public:
             return;
         }
         if(this->m_tradeTableCurr != 0) {
-            MarketSymbolInfo<TradeInfo<FastTLSCURRItemInfo>> *symbol = this->m_tradeTableCurr->AddSymbol(info->Symbol, info->SymbolLength);
+            MarketSymbolInfo<TradeInfo<AstsTLSCURRItemInfo>> *symbol = this->m_tradeTableCurr->AddSymbol(info->Symbol, info->SymbolLength);
 
             symbol->SecurityDefinitionPtr(ptr);
             symbol->InitSessions(CalcSessionsCount(info));
 
-            FastSecurityDefinitionMarketSegmentGrpItemInfo **market = info->MarketSegmentGrp;
+            AstsSecurityDefinitionMarketSegmentGrpItemInfo **market = info->MarketSegmentGrp;
             for(int i = 0; i < info->MarketSegmentGrpCount; i++, market++) {
-                FastSecurityDefinitionMarketSegmentGrpItemInfo *m = *market;
-                FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo **trading = m->TradingSessionRulesGrp;
+                AstsSecurityDefinitionMarketSegmentGrpItemInfo *m = *market;
+                AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo **trading = m->TradingSessionRulesGrp;
                 for(int j = 0; j < m->TradingSessionRulesGrpCount; j++, trading++) {
                     symbol->AddSession((*trading)->TradingSessionID, (*trading)->TradingSessionIDLength);
                 }
@@ -2339,15 +2339,15 @@ public:
             return;
         }
         if(this->m_statTableFond != 0) {
-            MarketSymbolInfo<StatisticsInfo<FastGenericItemInfo>> *symbol = this->m_statTableFond->AddSymbol(info->Symbol, info->SymbolLength);
+            MarketSymbolInfo<StatisticsInfo<AstsGenericItemInfo>> *symbol = this->m_statTableFond->AddSymbol(info->Symbol, info->SymbolLength);
 
             symbol->SecurityDefinitionPtr(ptr);
             symbol->InitSessions(CalcSessionsCount(info));
 
-            FastSecurityDefinitionMarketSegmentGrpItemInfo **market = info->MarketSegmentGrp;
+            AstsSecurityDefinitionMarketSegmentGrpItemInfo **market = info->MarketSegmentGrp;
             for(int i = 0; i < info->MarketSegmentGrpCount; i++, market++) {
-                FastSecurityDefinitionMarketSegmentGrpItemInfo *m = *market;
-                FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo **trading = m->TradingSessionRulesGrp;
+                AstsSecurityDefinitionMarketSegmentGrpItemInfo *m = *market;
+                AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo **trading = m->TradingSessionRulesGrp;
                 for(int j = 0; j < m->TradingSessionRulesGrpCount; j++, trading++) {
                     symbol->AddSession((*trading)->TradingSessionID, (*trading)->TradingSessionIDLength);
                 }
@@ -2355,15 +2355,15 @@ public:
             return;
         }
         if(this->m_statTableCurr != 0) {
-            MarketSymbolInfo<StatisticsInfo<FastGenericItemInfo>> *symbol = this->m_statTableCurr->AddSymbol(info->Symbol, info->SymbolLength);
+            MarketSymbolInfo<StatisticsInfo<AstsGenericItemInfo>> *symbol = this->m_statTableCurr->AddSymbol(info->Symbol, info->SymbolLength);
 
             symbol->SecurityDefinitionPtr(ptr);
             symbol->InitSessions(CalcSessionsCount(info));
 
-            FastSecurityDefinitionMarketSegmentGrpItemInfo **market = info->MarketSegmentGrp;
+            AstsSecurityDefinitionMarketSegmentGrpItemInfo **market = info->MarketSegmentGrp;
             for(int i = 0; i < info->MarketSegmentGrpCount; i++, market++) {
-                FastSecurityDefinitionMarketSegmentGrpItemInfo *m = *market;
-                FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo **trading = m->TradingSessionRulesGrp;
+                AstsSecurityDefinitionMarketSegmentGrpItemInfo *m = *market;
+                AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo **trading = m->TradingSessionRulesGrp;
                 for(int j = 0; j < m->TradingSessionRulesGrpCount; j++, trading++) {
                     symbol->AddSession((*trading)->TradingSessionID, (*trading)->TradingSessionIDLength);
                 }
@@ -2372,31 +2372,31 @@ public:
         }
     }
 
-    inline void AddSecurityDefinitionToList(FastSecurityDefinitionInfo *info, int index) {
+    inline void AddSecurityDefinitionToList(AstsSecurityDefinitionInfo *info, int index) {
         info->Used = true;
         this->m_symbols[index]->Data(info);
         this->m_symbolsCount = index + 1;
     }
 
-    inline void MakeUsed(FastSecurityDefinitionMarketSegmentGrpItemInfo *m, bool used) {
+    inline void MakeUsed(AstsSecurityDefinitionMarketSegmentGrpItemInfo *m, bool used) {
         m->Used = used;
-        FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo **trading = m->TradingSessionRulesGrp;
+        AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo **trading = m->TradingSessionRulesGrp;
         for(int j = 0; j < m->TradingSessionRulesGrpCount; j++, trading++) {
             (*trading)->Used = used;
         }
     }
 
-    inline void MakeUsed(FastSecurityDefinitionInfo *info, bool used) {
+    inline void MakeUsed(AstsSecurityDefinitionInfo *info, bool used) {
         info->Used = used;
 
-        FastSecurityDefinitionMarketSegmentGrpItemInfo **market = info->MarketSegmentGrp;
+        AstsSecurityDefinitionMarketSegmentGrpItemInfo **market = info->MarketSegmentGrp;
         for(int i = 0; i < info->MarketSegmentGrpCount; i++, market++)
             MakeUsed(*market, used);
     }
 
-    inline void MergeSecurityDefinition(FastSecurityDefinitionInfo *parent, FastSecurityDefinitionInfo *child) {
+    inline void MergeSecurityDefinition(AstsSecurityDefinitionInfo *parent, AstsSecurityDefinitionInfo *child) {
         int freeIndex = parent->MarketSegmentGrpCount;
-        FastSecurityDefinitionMarketSegmentGrpItemInfo **market = child->MarketSegmentGrp;
+        AstsSecurityDefinitionMarketSegmentGrpItemInfo **market = child->MarketSegmentGrp;
         for(int i = 0; i < child->MarketSegmentGrpCount; i++, market++, freeIndex++) {
             MakeUsed(*market, true);
             parent->MarketSegmentGrp[freeIndex] = *market;
@@ -2451,7 +2451,7 @@ public:
         }
     }
 
-    inline bool ProcessSecurityDefinition(FastSecurityDefinitionInfo *info) {
+    inline bool ProcessSecurityDefinition(AstsSecurityDefinitionInfo *info) {
         bool wasNewlyAdded = false;
 
         SymbolInfo *smb = this->m_symbolManager->GetSymbol(info->Symbol, info->SymbolLength, &wasNewlyAdded);
@@ -2463,7 +2463,7 @@ public:
             //printf("new sec_def %d. sc = %d\n", info->MsgSeqNum, info->MarketSegmentGrp[0]->TradingSessionRulesGrp[0]->Allocator->Count()); // TODO
         }
         else {
-            LinkedPointer<FastSecurityDefinitionInfo> *ptr = this->m_symbols[smb->m_index];
+            LinkedPointer<AstsSecurityDefinitionInfo> *ptr = this->m_symbols[smb->m_index];
             if(!StringIdComparer::Equal(ptr->Data()->Symbol, ptr->Data()->SymbolLength, info->Symbol, info->SymbolLength)) {
                 printf("merge symbols are not equal\n");
             }
@@ -2544,16 +2544,16 @@ public:
         }
     }
 
-    inline void AddSecurityDefinition(LinkedPointer<FastSecurityDefinitionInfo> *ptr) {
+    inline void AddSecurityDefinition(LinkedPointer<AstsSecurityDefinitionInfo> *ptr) {
         for(int c = 0; c < this->m_connectionsToRecvSymbolsCount; c++)
             this->m_connectionsToRecvSymbols[c]->AddSymbol(ptr);
     }
 
-    inline FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo* FindTradingSession(FastSecurityDefinitionInfo *info, const char *tradingSession, int tradingSessionLength) {
+    inline AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo* FindTradingSession(AstsSecurityDefinitionInfo *info, const char *tradingSession, int tradingSessionLength) {
         for(int i = 0; i < info->MarketSegmentGrpCount; i++) {
-            FastSecurityDefinitionMarketSegmentGrpItemInfo *m = info->MarketSegmentGrp[i];
+            AstsSecurityDefinitionMarketSegmentGrpItemInfo *m = info->MarketSegmentGrp[i];
             for(int j = 0; j < m->TradingSessionRulesGrpCount; j++) {
-                FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo *t = m->TradingSessionRulesGrp[j];
+                AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo *t = m->TradingSessionRulesGrp[j];
                 if(StringIdComparer::Equal(t->TradingSessionID, t->TradingSessionIDLength, tradingSession, tradingSessionLength))
                     return t;
                 /*char smb = *(t->TradingSessionSubID);
@@ -2568,7 +2568,7 @@ public:
         return 0;
     }
 
-    inline void UpdateTradingSession(FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo *trading, FastSecurityStatusInfo *info) {
+    inline void UpdateTradingSession(AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo *trading, AstsSecurityStatusInfo *info) {
         trading->NullMap = info->NullMap;
         StringIdComparer::CopyString(trading->TradingSessionSubID, info->TradingSessionSubID, info->TradingSessionSubIDLength);
         trading->TradingSessionSubIDLength = info->TradingSessionSubIDLength;
@@ -2576,13 +2576,13 @@ public:
         //Skip AuctionIndicator because there is no data in feed streams for them
     }
 
-    inline bool UpdateSecurityDefinition(FastSecurityStatusInfo *info) {
+    inline bool UpdateSecurityDefinition(AstsSecurityStatusInfo *info) {
         info->Clear(); // just free object before. Data will not be corrupt
         int index = this->IdfFindBySymbol(info->Symbol, info->SymbolLength);
         if(index == -1) // TODO should we do something for unknown symbol? or just skip?
             return true;
-        FastSecurityDefinitionInfo *sd = this->Symbol(index);
-        FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo *trading = FindTradingSession(sd, info->TradingSessionID, info->TradingSessionIDLength);
+        AstsSecurityDefinitionInfo *sd = this->Symbol(index);
+        AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo *trading = FindTradingSession(sd, info->TradingSessionID, info->TradingSessionIDLength);
         if(trading == 0) // TODO should we do something for unknow session? or just skip?
             return true;
         UpdateTradingSession(trading, info);
@@ -2591,23 +2591,23 @@ public:
 
     inline void UpdateSecurityDefinition(FeedConnectionMessageInfo *info) {
         this->m_fastProtocolManager->SetNewBuffer(info->m_address + 4, info->m_size - 4); // skip msg seq num
-        this->m_fastProtocolManager->DecodeHeader();
+        this->m_fastProtocolManager->DecodeAstsHeader();
         if(this->m_fastProtocolManager->TemplateId() != FeedConnectionMessage::fmcSecurityDefinition)
             return;
-        FastSecurityDefinitionInfo *fi = (FastSecurityDefinitionInfo *)this->m_fastProtocolManager->DecodeSecurityDefinition();
+        AstsSecurityDefinitionInfo *fi = (AstsSecurityDefinitionInfo *)this->m_fastProtocolManager->DecodeAstsSecurityDefinition();
         this->UpdateSecurityDefinition(fi);
         fi->ReleaseUnused();
     }
 
-    inline void ReplaceMarketSegmentGroupById(FastSecurityDefinitionInfo *info, FastSecurityDefinitionMarketSegmentGrpItemInfo *m) {
-        FastSecurityDefinitionMarketSegmentGrpItemInfo **im = info->MarketSegmentGrp;
+    inline void ReplaceMarketSegmentGroupById(AstsSecurityDefinitionInfo *info, AstsSecurityDefinitionMarketSegmentGrpItemInfo *m) {
+        AstsSecurityDefinitionMarketSegmentGrpItemInfo **im = info->MarketSegmentGrp;
         int sCount = m->TradingSessionRulesGrpCount;
         bool found;
         for(int i = 0; i < info->MarketSegmentGrpCount; i++, im++) {
             if((*im)->TradingSessionRulesGrpCount != m->TradingSessionRulesGrpCount)
                 continue;
-            FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo **is = (*im)->TradingSessionRulesGrp;
-            FastSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo **s = m->TradingSessionRulesGrp;
+            AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo **is = (*im)->TradingSessionRulesGrp;
+            AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo **s = m->TradingSessionRulesGrp;
             found = true;
             for(int i = 0; i < sCount; i++, is++, s++) {
                 if(!StringIdComparer::Equal((*is)->TradingSessionID, (*is)->TradingSessionIDLength, (*s)->TradingSessionID, (*s)->TradingSessionIDLength)) {
@@ -2623,9 +2623,9 @@ public:
         }
     }
 
-    inline void UpdateSecurityDefinition(LinkedPointer<FastSecurityDefinitionInfo> *ptr, FastSecurityDefinitionInfo *curr) {
+    inline void UpdateSecurityDefinition(LinkedPointer<AstsSecurityDefinitionInfo> *ptr, AstsSecurityDefinitionInfo *curr) {
         int sc1 = ptr->Data()->MarketSegmentGrp[0]->TradingSessionRulesGrp[0]->Allocator->Count();
-        FastSecurityDefinitionInfo *prev = ptr->Data();
+        AstsSecurityDefinitionInfo *prev = ptr->Data();
         int mcPrev = prev->MarketSegmentGrpCount;
         int mcCurr = curr->MarketSegmentGrpCount;
         for(int i = 0; i < mcCurr; i++) {
@@ -2657,11 +2657,11 @@ public:
         return s->m_index;
     }
 
-    inline void UpdateSecurityDefinition(FastSecurityDefinitionInfo *info) {
+    inline void UpdateSecurityDefinition(AstsSecurityDefinitionInfo *info) {
         bool wasNewlyAdded;
 
         SymbolInfo *sm = this->m_symbolManager->GetSymbol(info->Symbol, info->SymbolLength, &wasNewlyAdded);
-        LinkedPointer<FastSecurityDefinitionInfo> *orig = this->m_symbols[sm->m_index];
+        LinkedPointer<AstsSecurityDefinitionInfo> *orig = this->m_symbols[sm->m_index];
         if(!StringIdComparer::Equal(orig->Data()->Symbol, orig->Data()->SymbolLength, info->Symbol, info->SymbolLength)) {
             int symbolIndex = IdfFindBySymbol(info->Symbol, info->SymbolLength);
             printf("symbols are not equal\n");
@@ -2683,7 +2683,7 @@ public:
         for(int i = 0; i < this->m_connectionsToRecvSymbolsCount; i++)
             this->m_connectionsToRecvSymbols[i]->InitSymbols(this->m_symbolsCount);
 
-        LinkedPointer<FastSecurityDefinitionInfo> **ptr = this->m_symbols;
+        LinkedPointer<AstsSecurityDefinitionInfo> **ptr = this->m_symbols;
         for(int i = 0; i < this->m_symbolsCount; i++, ptr++)
             this->AddSecurityDefinition(*ptr);
     }

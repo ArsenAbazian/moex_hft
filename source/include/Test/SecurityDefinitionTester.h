@@ -99,7 +99,7 @@ public:
     void TestAddSymbol() {
         this->Clear();
 
-        FastSecurityDefinitionInfo *info = this->m_helper->CreateSecurityDefinitionInfo("s1");
+        AstsSecurityDefinitionInfo *info = this->m_helper->CreateSecurityDefinitionInfo("s1");
         this->m_helper->AddMarketSegemntGroup(info);
         this->m_helper->AddMarketSegemntGroup(info);
 
@@ -183,7 +183,7 @@ public:
         }
     }
 
-    void TestAddSymbol_2_Core(int symbolIndex, FastSecurityDefinitionInfo *info) {
+    void TestAddSymbol_2_Core(int symbolIndex, AstsSecurityDefinitionInfo *info) {
         if(this->olr->OrderFond()->Symbol(symbolIndex)->SessionCount() != 4)
             throw;
         if(this->tlr->TradeFond()->Symbol(symbolIndex)->SessionCount() != 4)
@@ -227,7 +227,7 @@ public:
         if(this->idf->m_symbolsCount != 0)
             throw;
 
-        FastSecurityDefinitionInfo *info = this->m_helper->CreateSecurityDefinitionInfo("s1");
+        AstsSecurityDefinitionInfo *info = this->m_helper->CreateSecurityDefinitionInfo("s1");
         this->m_helper->AddMarketSegemntGroup(info);
         this->m_helper->AddMarketSegemntGroup(info);
 
@@ -236,7 +236,7 @@ public:
         this->m_helper->AddTradingSession(info, 1, "t3");
         this->m_helper->AddTradingSession(info, 1, "t4");
 
-        FastSecurityDefinitionInfo *info2 = this->m_helper->CreateSecurityDefinitionInfo("s2");
+        AstsSecurityDefinitionInfo *info2 = this->m_helper->CreateSecurityDefinitionInfo("s2");
         this->m_helper->AddMarketSegemntGroup(info2);
         this->m_helper->AddMarketSegemntGroup(info2);
 
@@ -277,7 +277,7 @@ public:
         if(this->idf->m_symbolsCount == 0)
             throw;
 
-        FastSecurityDefinitionInfo *info = this->idf->Symbol(0);
+        AstsSecurityDefinitionInfo *info = this->idf->Symbol(0);
         this->idf->BeforeProcessSecurityDefinitions();
         if(this->idf->m_symbolsCount != 0)
             throw;
@@ -317,13 +317,13 @@ public:
     void TestUpdateSecurityDefinition() {
         TestAddSymbol();
 
-        FastSecurityDefinitionInfo *info = this->m_helper->CreateSecurityDefinitionInfo("s1");
+        AstsSecurityDefinitionInfo *info = this->m_helper->CreateSecurityDefinitionInfo("s1");
         this->m_helper->AddMarketSegemntGroup(info);
 
         this->m_helper->AddTradingSession(info, 0, "t1");
         this->m_helper->AddTradingSession(info, 0, "t2");
 
-        FastSecurityDefinitionInfo *prev = this->olr->OrderFond()->Symbol(0)->SecurityDefinition();
+        AstsSecurityDefinitionInfo *prev = this->olr->OrderFond()->Symbol(0)->SecurityDefinition();
         this->idf->UpdateSecurityDefinition(info);
 
         if(this->olr->OrderFond()->Symbol(0)->SecurityDefinition() != info)
@@ -734,7 +734,7 @@ public:
         if(this->idf->Symbol(1)->MarketSegmentGrp[1]->TradingSessionRulesGrpCount != 1)
             throw;
 
-        FastSecurityDefinitionMarketSegmentGrpItemInfo *m = this->idf->Symbol(0)->MarketSegmentGrp[0];
+        AstsSecurityDefinitionMarketSegmentGrpItemInfo *m = this->idf->Symbol(0)->MarketSegmentGrp[0];
         if(!StringIdComparer::Equal(m->TradingSessionRulesGrp[0]->TradingSessionID, m->TradingSessionRulesGrp[0]->TradingSessionIDLength, "t1", 2))
             throw;
         m = this->idf->Symbol(0)->MarketSegmentGrp[1];
@@ -759,13 +759,13 @@ public:
     }
 
     void TestMergeSecurityDefinitions_1() {
-        FastSecurityDefinitionInfo *info = this->m_helper->CreateSecurityDefinitionInfo("s1");
+        AstsSecurityDefinitionInfo *info = this->m_helper->CreateSecurityDefinitionInfo("s1");
         this->m_helper->AddMarketSegemntGroup(info);
 
         this->m_helper->AddTradingSession(info, 0, "t1");
         this->m_helper->AddTradingSession(info, 0, "t2");
 
-        FastSecurityDefinitionInfo *info2 = this->m_helper->CreateSecurityDefinitionInfo("s1");
+        AstsSecurityDefinitionInfo *info2 = this->m_helper->CreateSecurityDefinitionInfo("s1");
         this->m_helper->AddMarketSegemntGroup(info2);
         this->m_helper->AddMarketSegemntGroup(info2);
 
@@ -806,7 +806,7 @@ public:
             throw;
         if(this->idf->SymbolCount() != 2)
             throw;
-        FastSecurityDefinitionInfo *info1 = this->idf->Symbol(0);
+        AstsSecurityDefinitionInfo *info1 = this->idf->Symbol(0);
         if(info1->MarketSegmentGrpCount != 2)
             throw;
         if(info1->MarketSegmentGrp[0]->TradingSessionRulesGrpCount != 1)
@@ -818,7 +818,7 @@ public:
         if(!StringIdComparer::Equal(info1->MarketSegmentGrp[1]->TradingSessionRulesGrp[0]->TradingSessionID, 2, "t2", 2))
             throw;
 
-        FastSecurityDefinitionInfo *info2 = this->idf->Symbol(1);
+        AstsSecurityDefinitionInfo *info2 = this->idf->Symbol(1);
         if(info2->MarketSegmentGrpCount != 2)
             throw;
         if(info2->MarketSegmentGrp[0]->TradingSessionRulesGrpCount != 1)
@@ -837,12 +837,12 @@ public:
     }
 
     void TestReplaceMarketSegmentGroupBy_1() {
-        FastSecurityDefinitionInfo *info = this->m_helper->CreateSecurityDefinitionInfo("s1");
+        AstsSecurityDefinitionInfo *info = this->m_helper->CreateSecurityDefinitionInfo("s1");
 
         this->m_helper->AddMarketSegemntGroup(info);
         this->m_helper->AddTradingSession(info, 0, "t1");
 
-        FastSecurityDefinitionInfo *info2 = this->m_helper->CreateSecurityDefinitionInfo("s1");
+        AstsSecurityDefinitionInfo *info2 = this->m_helper->CreateSecurityDefinitionInfo("s1");
 
         this->m_helper->AddMarketSegemntGroup(info2);
         this->m_helper->AddTradingSession(info2, 0, "t1");
@@ -853,13 +853,13 @@ public:
     }
 
     void TestReplaceMarketSegmentGroupBy_2() {
-        FastSecurityDefinitionInfo *info = this->m_helper->CreateSecurityDefinitionInfo("s1");
+        AstsSecurityDefinitionInfo *info = this->m_helper->CreateSecurityDefinitionInfo("s1");
 
         this->m_helper->AddMarketSegemntGroup(info);
         this->m_helper->AddTradingSession(info, 0, "t1");
         this->m_helper->AddTradingSession(info, 0, "t2");
 
-        FastSecurityDefinitionInfo *info2 = this->m_helper->CreateSecurityDefinitionInfo("s1");
+        AstsSecurityDefinitionInfo *info2 = this->m_helper->CreateSecurityDefinitionInfo("s1");
 
         this->m_helper->AddMarketSegemntGroup(info2);
         this->m_helper->AddTradingSession(info2, 0, "t1");
@@ -871,13 +871,13 @@ public:
     }
 
     void TestReplaceMarketSegmentGroupBy_3() {
-        FastSecurityDefinitionInfo *info = this->m_helper->CreateSecurityDefinitionInfo("s1");
+        AstsSecurityDefinitionInfo *info = this->m_helper->CreateSecurityDefinitionInfo("s1");
 
         this->m_helper->AddMarketSegemntGroup(info);
         this->m_helper->AddTradingSession(info, 0, "t1");
         this->m_helper->AddTradingSession(info, 0, "t2");
 
-        FastSecurityDefinitionInfo *info2 = this->m_helper->CreateSecurityDefinitionInfo("s1");
+        AstsSecurityDefinitionInfo *info2 = this->m_helper->CreateSecurityDefinitionInfo("s1");
 
         this->m_helper->AddMarketSegemntGroup(info2);
         this->m_helper->AddTradingSession(info2, 0, "t1");
@@ -888,12 +888,12 @@ public:
     }
 
     void TestReplaceMarketSegmentGroupBy_4() {
-        FastSecurityDefinitionInfo *info = this->m_helper->CreateSecurityDefinitionInfo("s1");
+        AstsSecurityDefinitionInfo *info = this->m_helper->CreateSecurityDefinitionInfo("s1");
 
         this->m_helper->AddMarketSegemntGroup(info);
         this->m_helper->AddTradingSession(info, 0, "t1");
 
-        FastSecurityDefinitionInfo *info2 = this->m_helper->CreateSecurityDefinitionInfo("s1");
+        AstsSecurityDefinitionInfo *info2 = this->m_helper->CreateSecurityDefinitionInfo("s1");
 
         this->m_helper->AddMarketSegemntGroup(info2);
         this->m_helper->AddTradingSession(info2, 0, "t1");
@@ -905,13 +905,13 @@ public:
     }
 
     void TestReplaceMarketSegmentGroupBy_5() {
-        FastSecurityDefinitionInfo *info = this->m_helper->CreateSecurityDefinitionInfo("s1");
+        AstsSecurityDefinitionInfo *info = this->m_helper->CreateSecurityDefinitionInfo("s1");
 
         this->m_helper->AddMarketSegemntGroup(info);
         this->m_helper->AddTradingSession(info, 0, "t1");
         this->m_helper->AddTradingSession(info, 0, "t2");
 
-        FastSecurityDefinitionInfo *info2 = this->m_helper->CreateSecurityDefinitionInfo("s1");
+        AstsSecurityDefinitionInfo *info2 = this->m_helper->CreateSecurityDefinitionInfo("s1");
 
         this->m_helper->AddMarketSegemntGroup(info2);
         this->m_helper->AddTradingSession(info2, 0, "t2");
@@ -923,7 +923,7 @@ public:
     }
 
     void TestReplaceMarketSegmentGroupBy_6() {
-        FastSecurityDefinitionInfo *info = this->m_helper->CreateSecurityDefinitionInfo("s1");
+        AstsSecurityDefinitionInfo *info = this->m_helper->CreateSecurityDefinitionInfo("s1");
 
         this->m_helper->AddMarketSegemntGroup(info);
         this->m_helper->AddTradingSession(info, 0, "t1");
@@ -933,7 +933,7 @@ public:
         this->m_helper->AddTradingSession(info, 1, "t2");
         this->m_helper->AddTradingSession(info, 1, "t1");
 
-        FastSecurityDefinitionInfo *info2 = this->m_helper->CreateSecurityDefinitionInfo("s1");
+        AstsSecurityDefinitionInfo *info2 = this->m_helper->CreateSecurityDefinitionInfo("s1");
 
         this->m_helper->AddMarketSegemntGroup(info2);
         this->m_helper->AddTradingSession(info2, 0, "t2");
@@ -956,7 +956,7 @@ public:
     }
 
     void TestUpdateSecurityDefinition2() {
-        FastSecurityDefinitionInfo *info = this->m_helper->CreateSecurityDefinitionInfo("s1");
+        AstsSecurityDefinitionInfo *info = this->m_helper->CreateSecurityDefinitionInfo("s1");
 
         this->m_helper->AddMarketSegemntGroup(info);
         this->m_helper->AddTradingSession(info, 0, "t1");
@@ -970,7 +970,7 @@ public:
         this->m_helper->AddTradingSession(info, 2, "t5");
         this->m_helper->AddTradingSession(info, 2, "t6");
 
-        FastSecurityDefinitionInfo *info2 = this->m_helper->CreateSecurityDefinitionInfo("s1");
+        AstsSecurityDefinitionInfo *info2 = this->m_helper->CreateSecurityDefinitionInfo("s1");
 
         this->m_helper->AddMarketSegemntGroup(info2);
         this->m_helper->AddTradingSession(info2, 0, "t1");
@@ -980,7 +980,7 @@ public:
         this->m_helper->AddTradingSession(info2, 1, "t3");
         this->m_helper->AddTradingSession(info2, 1, "t4");
 
-        LinkedPointer<FastSecurityDefinitionInfo> *ptr = new LinkedPointer<FastSecurityDefinitionInfo>();
+        LinkedPointer<AstsSecurityDefinitionInfo> *ptr = new LinkedPointer<AstsSecurityDefinitionInfo>();
         ptr->Data(info);
         this->idf->UpdateSecurityDefinition(ptr, info2);
         if(ptr->Data() != info2)

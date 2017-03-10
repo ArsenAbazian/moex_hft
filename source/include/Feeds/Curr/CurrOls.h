@@ -19,7 +19,7 @@ public:
         DebugInfoManager::Default->PrintMemoryInfo("FeedConnection_CURR_OLS");
     }
     void AllocateFastObjects() {
-        FastObjectsAllocationInfo::Default->AllocateOLSCURRInfoPool(10, 10);
+        AstsObjectsAllocationInfo::Default->AllocateOLSCURRInfoPool(10, 10);
     }
     int GetPacketsCount() { return 50000; }
     ISocketBufferProvider* CreateSocketBufferProvider() {

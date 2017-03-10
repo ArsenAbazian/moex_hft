@@ -22,7 +22,7 @@ FeedConnection::FeedConnection(const char *id, const char *name, char value, Fee
 	    strcpy(this->feedBIp, bIp);
 	this->feedBPort = bPort;
 
-    this->m_fastLogonInfo = new FastLogonInfo();
+    this->m_fastLogonInfo = new AstsLogonInfo();
 	this->m_socketABufferProvider = CreateSocketBufferProvider();
 	this->m_sendABuffer = this->m_socketABufferProvider->SendBuffer();
 	this->m_recvABuffer = this->m_socketABufferProvider->RecvBuffer();
