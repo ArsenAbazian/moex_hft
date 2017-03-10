@@ -1422,6 +1422,8 @@ protected:
     }
 
     inline bool Listen_Atom_Snapshot_Core() {
+        if(this->m_startMsgSeqNum < 1)
+            return true;
         if(this->HasPotentiallyLostPackets()) {
             this->m_waitTimer->Activate(1);
         }

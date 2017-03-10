@@ -141,7 +141,11 @@ public:
 
     inline void StartProcessSnapshotMessages() {
         this->m_savedRptSeq = this->m_rptSeq;
-        this->Trades()->Clear();
+        this->Clear(this->Trades());
+    }
+
+    inline void ProcessNullSnapshot() {
+        this->Clear(this->Trades());
     }
 
     inline void ProcessSnapshotMessage(T *info) {

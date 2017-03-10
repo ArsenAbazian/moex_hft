@@ -159,6 +159,7 @@ public:
                 this->m_queueItemsCount--;
             if(!allItemsRecvSnapshot && this->m_snapshotSymbol->AllSessionsRecvSnapshot())
                 this->DecSymbolsToRecvSnapshotCount();
+            this->m_snapshotItem->ProcessNullSnapshot();
             this->m_snapshotItem = 0;
             return true;
         }
@@ -207,6 +208,7 @@ public:
                 this->m_queueItemsCount--;
             if(!allItemsRecvSnapshot && this->m_snapshotSymbol->AllSessionsRecvSnapshot())
                 this->DecSymbolsToRecvSnapshotCount();
+            this->m_snapshotItem->ProcessNullSnapshot();
             this->m_snapshotItem = 0;
             return true;
         }

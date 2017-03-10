@@ -361,6 +361,16 @@ public:
         RobotSettings::Default->MarketDataMaxEntriesCount = 32 * 10;
         RobotSettings::Default->MDEntryQueueItemsCount = 100;
 
+        OrderTesterCurr otCurr;
+        otCurr.Test();
+        OrderTesterFond otFond;
+        otFond.Test();
+
+        TradeTesterCurr ttCurr;
+        ttCurr.Test();
+        TradeTesterFond ttFond;
+        ttFond.Test();
+
         PointerListTester pt;
         pt.Test();
 
@@ -374,16 +384,6 @@ public:
 
         SecurityDefinitionTester ids;
         ids.Test();
-
-        TradeTesterCurr ttCurr;
-        ttCurr.Test();
-        TradeTesterFond ttFond;
-        ttFond.Test();
-
-        OrderTesterCurr otCurr;
-        otCurr.Test();
-        OrderTesterFond otFond;
-        otFond.Test();
 
         HistoricalReplayTester hrt;
         hrt.Test();

@@ -3356,7 +3356,7 @@ public:
                      "                                                       ols symbol3 begin rpt 1 end entry symbol3 e1, ols s1 begin rpt 2 end entry s1 e1, hbeat, ols s2 begin rpt 2 end entry s2 e1",
                      30);
         int newCount = this->snapCurr->m_fastProtocolManager->m_astsOLSCURRItems->Count();
-        if(newCount != prevCount + 2)
+        if(newCount != prevCount + 4) // was 2
             throw;
     }
     // check in case CheckProcessNullSnapshot
@@ -3387,7 +3387,7 @@ public:
                      "                                                                          ols s1 begin rpt 1 entry s1 e1 end",
                      50);
         int newCount = this->snapCurr->m_fastProtocolManager->m_astsOLSCURRItems->Count();
-        if(newCount != prevCount)
+        if(newCount != prevCount + 3)
             throw;
     }
 

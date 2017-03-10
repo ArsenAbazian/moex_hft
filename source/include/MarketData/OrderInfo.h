@@ -380,12 +380,21 @@ public:
 
     inline void StartProcessSnapshotMessages() {
         this->m_savedRptSeq = this->m_rptSeq;
-        this->BuyQuotes()->Clear();
-        this->SellQuotes()->Clear();
+        this->Clear(this->BuyQuotes());
+        this->Clear(this->SellQuotes());
+        this->AggregatedBuyQuotes()->Clear();
+        this->AggregatedSellQuotes()->Clear();
+    }
+
+    inline void ProcessNullSnapshot() {
+        this->Clear(this->BuyQuotes());
+        this->Clear(this->SellQuotes());
+        this->AggregatedBuyQuotes()->Clear();
+        this->AggregatedSellQuotes()->Clear();
     }
 
     inline void ProcessSnapshotMessage(T *info) {
-        this->ForceProcessMessage(info);
+        this->Add(info);
     }
 
     inline bool ProcessQueueMessages() {

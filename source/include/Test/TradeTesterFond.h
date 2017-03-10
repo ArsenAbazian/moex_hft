@@ -2765,7 +2765,7 @@ public:
                      "                                                       tls symbol3 begin rpt 1 end entry symbol3 e1, tls s1 begin rpt 2 end entry s1 e1, hbeat, tls s2 begin rpt 2 end entry s2 e1",
                      30);
         int newCount = this->snapFond->m_fastProtocolManager->m_astsTLSFONDItems->Count();
-        if(newCount != prevCount + 2)
+        if(newCount != prevCount + 4) // was 2 and it seems that it is wrong
             throw;
     }
     // check in case CheckProcessNullSnapshot
@@ -2796,7 +2796,7 @@ public:
                      "                                                                          tls s1 begin rpt 1 entry s1 e1 end",
                      50);
         int newCount = this->snapFond->m_fastProtocolManager->m_astsTLSFONDItems->Count();
-        if(newCount != prevCount)
+        if(newCount != prevCount + 3) // should not process snapshot
             throw;
     }
 

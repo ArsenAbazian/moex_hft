@@ -1500,6 +1500,10 @@ public:
         this->m_savedRptSeq = this->m_rptSeq;
     }
 
+    inline void ProcessNullSnapshot() {
+
+    }
+
     inline void ProcessSnapshotMessage(T *info) {
         this->ForceProcessMessage(info);
     }
