@@ -24,8 +24,8 @@ typedef void* (FastProtocolManager::*FastReleaseMethodPointer)();
 typedef AstsSnapshotInfo* (FastProtocolManager::*AstsGetSnapshotInfoMethodPointer)();
 #pragma endregion
 
-#pragma region Spectra_Decode_Method_Pointer_Definition_GeneratedCode
-typedef SpectraSnapshotInfo* (FastProtocolManager::*SpectraGetSnapshotInfoMethodPointer)();
+#pragma region Forts_Decode_Method_Pointer_Definition_GeneratedCode
+typedef FortsSnapshotInfo* (FastProtocolManager::*FortsGetSnapshotInfoMethodPointer)();
 #pragma endregion
 
 #pragma region Checking_Presence_GeneratedCode
@@ -60,9 +60,9 @@ class FastProtocolManager {
 	AstsObjectsAllocationInfo *m_astsAllocationInfo;
 	AstsSnapshotInfo *m_astsSnapshotInfo;
 #pragma endregion
-#pragma region Spectra_Declare_AllocationInfo_GeneratedCode
-	SpectraObjectsAllocationInfo *m_spectraAllocationInfo;
-	SpectraSnapshotInfo *m_spectraSnapshotInfo;
+#pragma region Forts_Declare_AllocationInfo_GeneratedCode
+	FortsObjectsAllocationInfo *m_fortsAllocationInfo;
+	FortsSnapshotInfo *m_fortsSnapshotInfo;
 #pragma endregion
 
 #pragma region String_Constant_Declaration_GeneratedCode
@@ -213,171 +213,171 @@ private:
 
 #pragma endregion
 
-#pragma region Spectra_Structure_Objects_Declaration_GeneratedCode
-	AutoAllocatePointerList<SpectraDefaultIncrementalRefreshMessageMDEntriesItemInfo>	*m_spectraDefaultIncrementalRefreshMessageMDEntriesItems;
-	AutoAllocatePointerList<SpectraDefaultIncrementalRefreshMessageInfo>	*m_spectraDefaultIncrementalRefreshMessage;
-	AutoAllocatePointerList<SpectraDefaultSnapshotMessageMDEntriesItemInfo>	*m_spectraDefaultSnapshotMessageMDEntriesItems;
-	AutoAllocatePointerList<SpectraDefaultSnapshotMessageInfo>	*m_spectraDefaultSnapshotMessage;
-	AutoAllocatePointerList<SpectraSecurityDefinitionMDFeedTypesItemInfo>	*m_spectraSecurityDefinitionMDFeedTypesItems;
-	AutoAllocatePointerList<SpectraSecurityDefinitionUnderlyingsItemInfo>	*m_spectraSecurityDefinitionUnderlyingsItems;
-	AutoAllocatePointerList<SpectraSecurityDefinitionInstrumentLegsItemInfo>	*m_spectraSecurityDefinitionInstrumentLegsItems;
-	AutoAllocatePointerList<SpectraSecurityDefinitionInstrumentAttributesItemInfo>	*m_spectraSecurityDefinitionInstrumentAttributesItems;
-	AutoAllocatePointerList<SpectraSecurityDefinitionEvntGrpItemInfo>	*m_spectraSecurityDefinitionEvntGrpItems;
-	AutoAllocatePointerList<SpectraSecurityDefinitionInfo>	*m_spectraSecurityDefinition;
-	AutoAllocatePointerList<SpectraSecurityDefinitionUpdateReportInfo>	*m_spectraSecurityDefinitionUpdateReport;
-	AutoAllocatePointerList<SpectraSecurityStatusInfo>	*m_spectraSecurityStatus;
-	AutoAllocatePointerList<SpectraHeartbeatInfo>	*m_spectraHeartbeat;
-	AutoAllocatePointerList<SpectraSequenceResetInfo>	*m_spectraSequenceReset;
-	AutoAllocatePointerList<SpectraTradingSessionStatusInfo>	*m_spectraTradingSessionStatus;
-	AutoAllocatePointerList<SpectraNewsNewsTextItemInfo>	*m_spectraNewsNewsTextItems;
-	AutoAllocatePointerList<SpectraNewsInfo>	*m_spectraNews;
-	AutoAllocatePointerList<SpectraOrdersLogMDEntriesItemInfo>	*m_spectraOrdersLogMDEntriesItems;
-	AutoAllocatePointerList<SpectraOrdersLogInfo>	*m_spectraOrdersLog;
-	AutoAllocatePointerList<SpectraOrdersBookMDEntriesItemInfo>	*m_spectraOrdersBookMDEntriesItems;
-	AutoAllocatePointerList<SpectraOrdersBookInfo>	*m_spectraOrdersBook;
-	AutoAllocatePointerList<SpectraLogonInfo>	*m_spectraLogon;
-	AutoAllocatePointerList<SpectraLogoutInfo>	*m_spectraLogout;
-	SpectraDefaultIncrementalRefreshMessageMDEntriesItemInfo	*m_prevspectraDefaultIncrementalRefreshMessageMDEntriesItemInfo;
-	SpectraDefaultIncrementalRefreshMessageInfo	*m_prevspectraDefaultIncrementalRefreshMessageInfo;
-	SpectraDefaultSnapshotMessageMDEntriesItemInfo	*m_prevspectraDefaultSnapshotMessageMDEntriesItemInfo;
-	SpectraDefaultSnapshotMessageInfo	*m_prevspectraDefaultSnapshotMessageInfo;
-	SpectraSecurityDefinitionMDFeedTypesItemInfo	*m_prevspectraSecurityDefinitionMDFeedTypesItemInfo;
-	SpectraSecurityDefinitionUnderlyingsItemInfo	*m_prevspectraSecurityDefinitionUnderlyingsItemInfo;
-	SpectraSecurityDefinitionInstrumentLegsItemInfo	*m_prevspectraSecurityDefinitionInstrumentLegsItemInfo;
-	SpectraSecurityDefinitionInstrumentAttributesItemInfo	*m_prevspectraSecurityDefinitionInstrumentAttributesItemInfo;
-	SpectraSecurityDefinitionEvntGrpItemInfo	*m_prevspectraSecurityDefinitionEvntGrpItemInfo;
-	SpectraSecurityDefinitionInfo	*m_prevspectraSecurityDefinitionInfo;
-	SpectraSecurityDefinitionUpdateReportInfo	*m_prevspectraSecurityDefinitionUpdateReportInfo;
-	SpectraSecurityStatusInfo	*m_prevspectraSecurityStatusInfo;
-	SpectraHeartbeatInfo	*m_prevspectraHeartbeatInfo;
-	SpectraSequenceResetInfo	*m_prevspectraSequenceResetInfo;
-	SpectraTradingSessionStatusInfo	*m_prevspectraTradingSessionStatusInfo;
-	SpectraNewsNewsTextItemInfo	*m_prevspectraNewsNewsTextItemInfo;
-	SpectraNewsInfo	*m_prevspectraNewsInfo;
-	SpectraOrdersLogMDEntriesItemInfo	*m_prevspectraOrdersLogMDEntriesItemInfo;
-	SpectraOrdersLogInfo	*m_prevspectraOrdersLogInfo;
-	SpectraOrdersBookMDEntriesItemInfo	*m_prevspectraOrdersBookMDEntriesItemInfo;
-	SpectraOrdersBookInfo	*m_prevspectraOrdersBookInfo;
-	SpectraLogonInfo	*m_prevspectraLogonInfo;
-	SpectraLogoutInfo	*m_prevspectraLogoutInfo;
+#pragma region Forts_Structure_Objects_Declaration_GeneratedCode
+	AutoAllocatePointerList<FortsDefaultIncrementalRefreshMessageMDEntriesItemInfo>	*m_fortsDefaultIncrementalRefreshMessageMDEntriesItems;
+	AutoAllocatePointerList<FortsDefaultIncrementalRefreshMessageInfo>	*m_fortsDefaultIncrementalRefreshMessage;
+	AutoAllocatePointerList<FortsDefaultSnapshotMessageMDEntriesItemInfo>	*m_fortsDefaultSnapshotMessageMDEntriesItems;
+	AutoAllocatePointerList<FortsDefaultSnapshotMessageInfo>	*m_fortsDefaultSnapshotMessage;
+	AutoAllocatePointerList<FortsSecurityDefinitionMDFeedTypesItemInfo>	*m_fortsSecurityDefinitionMDFeedTypesItems;
+	AutoAllocatePointerList<FortsSecurityDefinitionUnderlyingsItemInfo>	*m_fortsSecurityDefinitionUnderlyingsItems;
+	AutoAllocatePointerList<FortsSecurityDefinitionInstrumentLegsItemInfo>	*m_fortsSecurityDefinitionInstrumentLegsItems;
+	AutoAllocatePointerList<FortsSecurityDefinitionInstrumentAttributesItemInfo>	*m_fortsSecurityDefinitionInstrumentAttributesItems;
+	AutoAllocatePointerList<FortsSecurityDefinitionEvntGrpItemInfo>	*m_fortsSecurityDefinitionEvntGrpItems;
+	AutoAllocatePointerList<FortsSecurityDefinitionInfo>	*m_fortsSecurityDefinition;
+	AutoAllocatePointerList<FortsSecurityDefinitionUpdateReportInfo>	*m_fortsSecurityDefinitionUpdateReport;
+	AutoAllocatePointerList<FortsSecurityStatusInfo>	*m_fortsSecurityStatus;
+	AutoAllocatePointerList<FortsHeartbeatInfo>	*m_fortsHeartbeat;
+	AutoAllocatePointerList<FortsSequenceResetInfo>	*m_fortsSequenceReset;
+	AutoAllocatePointerList<FortsTradingSessionStatusInfo>	*m_fortsTradingSessionStatus;
+	AutoAllocatePointerList<FortsNewsNewsTextItemInfo>	*m_fortsNewsNewsTextItems;
+	AutoAllocatePointerList<FortsNewsInfo>	*m_fortsNews;
+	AutoAllocatePointerList<FortsOrdersLogMDEntriesItemInfo>	*m_fortsOrdersLogMDEntriesItems;
+	AutoAllocatePointerList<FortsOrdersLogInfo>	*m_fortsOrdersLog;
+	AutoAllocatePointerList<FortsOrdersBookMDEntriesItemInfo>	*m_fortsOrdersBookMDEntriesItems;
+	AutoAllocatePointerList<FortsOrdersBookInfo>	*m_fortsOrdersBook;
+	AutoAllocatePointerList<FortsLogonInfo>	*m_fortsLogon;
+	AutoAllocatePointerList<FortsLogoutInfo>	*m_fortsLogout;
+	FortsDefaultIncrementalRefreshMessageMDEntriesItemInfo	*m_prevfortsDefaultIncrementalRefreshMessageMDEntriesItemInfo;
+	FortsDefaultIncrementalRefreshMessageInfo	*m_prevfortsDefaultIncrementalRefreshMessageInfo;
+	FortsDefaultSnapshotMessageMDEntriesItemInfo	*m_prevfortsDefaultSnapshotMessageMDEntriesItemInfo;
+	FortsDefaultSnapshotMessageInfo	*m_prevfortsDefaultSnapshotMessageInfo;
+	FortsSecurityDefinitionMDFeedTypesItemInfo	*m_prevfortsSecurityDefinitionMDFeedTypesItemInfo;
+	FortsSecurityDefinitionUnderlyingsItemInfo	*m_prevfortsSecurityDefinitionUnderlyingsItemInfo;
+	FortsSecurityDefinitionInstrumentLegsItemInfo	*m_prevfortsSecurityDefinitionInstrumentLegsItemInfo;
+	FortsSecurityDefinitionInstrumentAttributesItemInfo	*m_prevfortsSecurityDefinitionInstrumentAttributesItemInfo;
+	FortsSecurityDefinitionEvntGrpItemInfo	*m_prevfortsSecurityDefinitionEvntGrpItemInfo;
+	FortsSecurityDefinitionInfo	*m_prevfortsSecurityDefinitionInfo;
+	FortsSecurityDefinitionUpdateReportInfo	*m_prevfortsSecurityDefinitionUpdateReportInfo;
+	FortsSecurityStatusInfo	*m_prevfortsSecurityStatusInfo;
+	FortsHeartbeatInfo	*m_prevfortsHeartbeatInfo;
+	FortsSequenceResetInfo	*m_prevfortsSequenceResetInfo;
+	FortsTradingSessionStatusInfo	*m_prevfortsTradingSessionStatusInfo;
+	FortsNewsNewsTextItemInfo	*m_prevfortsNewsNewsTextItemInfo;
+	FortsNewsInfo	*m_prevfortsNewsInfo;
+	FortsOrdersLogMDEntriesItemInfo	*m_prevfortsOrdersLogMDEntriesItemInfo;
+	FortsOrdersLogInfo	*m_prevfortsOrdersLogInfo;
+	FortsOrdersBookMDEntriesItemInfo	*m_prevfortsOrdersBookMDEntriesItemInfo;
+	FortsOrdersBookInfo	*m_prevfortsOrdersBookInfo;
+	FortsLogonInfo	*m_prevfortsLogonInfo;
+	FortsLogoutInfo	*m_prevfortsLogoutInfo;
 
-	void InitializeSpectraMessageInfo() {
-		this->m_spectraDefaultIncrementalRefreshMessageMDEntriesItems = this->m_spectraAllocationInfo->GetSpectraDefaultIncrementalRefreshMessageMDEntriesItemInfoPool();
-		this->m_spectraDefaultIncrementalRefreshMessage = this->m_spectraAllocationInfo->GetSpectraDefaultIncrementalRefreshMessageInfoPool();
-		this->m_spectraDefaultSnapshotMessageMDEntriesItems = this->m_spectraAllocationInfo->GetSpectraDefaultSnapshotMessageMDEntriesItemInfoPool();
-		this->m_spectraDefaultSnapshotMessage = this->m_spectraAllocationInfo->GetSpectraDefaultSnapshotMessageInfoPool();
-		this->m_spectraSecurityDefinitionMDFeedTypesItems = this->m_spectraAllocationInfo->GetSpectraSecurityDefinitionMDFeedTypesItemInfoPool();
-		this->m_spectraSecurityDefinitionUnderlyingsItems = this->m_spectraAllocationInfo->GetSpectraSecurityDefinitionUnderlyingsItemInfoPool();
-		this->m_spectraSecurityDefinitionInstrumentLegsItems = this->m_spectraAllocationInfo->GetSpectraSecurityDefinitionInstrumentLegsItemInfoPool();
-		this->m_spectraSecurityDefinitionInstrumentAttributesItems = this->m_spectraAllocationInfo->GetSpectraSecurityDefinitionInstrumentAttributesItemInfoPool();
-		this->m_spectraSecurityDefinitionEvntGrpItems = this->m_spectraAllocationInfo->GetSpectraSecurityDefinitionEvntGrpItemInfoPool();
-		this->m_spectraSecurityDefinition = this->m_spectraAllocationInfo->GetSpectraSecurityDefinitionInfoPool();
-		this->m_spectraSecurityDefinitionUpdateReport = this->m_spectraAllocationInfo->GetSpectraSecurityDefinitionUpdateReportInfoPool();
-		this->m_spectraSecurityStatus = this->m_spectraAllocationInfo->GetSpectraSecurityStatusInfoPool();
-		this->m_spectraHeartbeat = this->m_spectraAllocationInfo->GetSpectraHeartbeatInfoPool();
-		this->m_spectraSequenceReset = this->m_spectraAllocationInfo->GetSpectraSequenceResetInfoPool();
-		this->m_spectraTradingSessionStatus = this->m_spectraAllocationInfo->GetSpectraTradingSessionStatusInfoPool();
-		this->m_spectraNewsNewsTextItems = this->m_spectraAllocationInfo->GetSpectraNewsNewsTextItemInfoPool();
-		this->m_spectraNews = this->m_spectraAllocationInfo->GetSpectraNewsInfoPool();
-		this->m_spectraOrdersLogMDEntriesItems = this->m_spectraAllocationInfo->GetSpectraOrdersLogMDEntriesItemInfoPool();
-		this->m_spectraOrdersLog = this->m_spectraAllocationInfo->GetSpectraOrdersLogInfoPool();
-		this->m_spectraOrdersBookMDEntriesItems = this->m_spectraAllocationInfo->GetSpectraOrdersBookMDEntriesItemInfoPool();
-		this->m_spectraOrdersBook = this->m_spectraAllocationInfo->GetSpectraOrdersBookInfoPool();
-		this->m_spectraLogon = this->m_spectraAllocationInfo->GetSpectraLogonInfoPool();
-		this->m_spectraLogout = this->m_spectraAllocationInfo->GetSpectraLogoutInfoPool();
-		this->m_prevspectraDefaultIncrementalRefreshMessageMDEntriesItemInfo = this->GetFreeSpectraDefaultIncrementalRefreshMessageMDEntriesItemInfo();
-		this->m_prevspectraDefaultIncrementalRefreshMessageMDEntriesItemInfo->Used = true;
-		this->m_prevspectraDefaultIncrementalRefreshMessageInfo = this->GetFreeSpectraDefaultIncrementalRefreshMessageInfo();
-		this->m_prevspectraDefaultIncrementalRefreshMessageInfo->Used = true;
-		this->m_prevspectraDefaultSnapshotMessageMDEntriesItemInfo = this->GetFreeSpectraDefaultSnapshotMessageMDEntriesItemInfo();
-		this->m_prevspectraDefaultSnapshotMessageMDEntriesItemInfo->Used = true;
-		this->m_prevspectraDefaultSnapshotMessageInfo = this->GetFreeSpectraDefaultSnapshotMessageInfo();
-		this->m_prevspectraDefaultSnapshotMessageInfo->Used = true;
-		this->m_prevspectraSecurityDefinitionMDFeedTypesItemInfo = this->GetFreeSpectraSecurityDefinitionMDFeedTypesItemInfo();
-		this->m_prevspectraSecurityDefinitionMDFeedTypesItemInfo->Used = true;
-		this->m_prevspectraSecurityDefinitionUnderlyingsItemInfo = this->GetFreeSpectraSecurityDefinitionUnderlyingsItemInfo();
-		this->m_prevspectraSecurityDefinitionUnderlyingsItemInfo->Used = true;
-		this->m_prevspectraSecurityDefinitionInstrumentLegsItemInfo = this->GetFreeSpectraSecurityDefinitionInstrumentLegsItemInfo();
-		this->m_prevspectraSecurityDefinitionInstrumentLegsItemInfo->Used = true;
-		this->m_prevspectraSecurityDefinitionInstrumentAttributesItemInfo = this->GetFreeSpectraSecurityDefinitionInstrumentAttributesItemInfo();
-		this->m_prevspectraSecurityDefinitionInstrumentAttributesItemInfo->Used = true;
-		this->m_prevspectraSecurityDefinitionEvntGrpItemInfo = this->GetFreeSpectraSecurityDefinitionEvntGrpItemInfo();
-		this->m_prevspectraSecurityDefinitionEvntGrpItemInfo->Used = true;
-		this->m_prevspectraSecurityDefinitionInfo = this->GetFreeSpectraSecurityDefinitionInfo();
-		this->m_prevspectraSecurityDefinitionInfo->Used = true;
-		this->m_prevspectraSecurityDefinitionUpdateReportInfo = this->GetFreeSpectraSecurityDefinitionUpdateReportInfo();
-		this->m_prevspectraSecurityDefinitionUpdateReportInfo->Used = true;
-		this->m_prevspectraSecurityStatusInfo = this->GetFreeSpectraSecurityStatusInfo();
-		this->m_prevspectraSecurityStatusInfo->Used = true;
-		this->m_prevspectraHeartbeatInfo = this->GetFreeSpectraHeartbeatInfo();
-		this->m_prevspectraHeartbeatInfo->Used = true;
-		this->m_prevspectraSequenceResetInfo = this->GetFreeSpectraSequenceResetInfo();
-		this->m_prevspectraSequenceResetInfo->Used = true;
-		this->m_prevspectraTradingSessionStatusInfo = this->GetFreeSpectraTradingSessionStatusInfo();
-		this->m_prevspectraTradingSessionStatusInfo->Used = true;
-		this->m_prevspectraNewsNewsTextItemInfo = this->GetFreeSpectraNewsNewsTextItemInfo();
-		this->m_prevspectraNewsNewsTextItemInfo->Used = true;
-		this->m_prevspectraNewsInfo = this->GetFreeSpectraNewsInfo();
-		this->m_prevspectraNewsInfo->Used = true;
-		this->m_prevspectraOrdersLogMDEntriesItemInfo = this->GetFreeSpectraOrdersLogMDEntriesItemInfo();
-		this->m_prevspectraOrdersLogMDEntriesItemInfo->Used = true;
-		this->m_prevspectraOrdersLogInfo = this->GetFreeSpectraOrdersLogInfo();
-		this->m_prevspectraOrdersLogInfo->Used = true;
-		this->m_prevspectraOrdersBookMDEntriesItemInfo = this->GetFreeSpectraOrdersBookMDEntriesItemInfo();
-		this->m_prevspectraOrdersBookMDEntriesItemInfo->Used = true;
-		this->m_prevspectraOrdersBookInfo = this->GetFreeSpectraOrdersBookInfo();
-		this->m_prevspectraOrdersBookInfo->Used = true;
-		this->m_prevspectraLogonInfo = this->GetFreeSpectraLogonInfo();
-		this->m_prevspectraLogonInfo->Used = true;
-		this->m_prevspectraLogoutInfo = this->GetFreeSpectraLogoutInfo();
-		this->m_prevspectraLogoutInfo->Used = true;
+	void InitializeFortsMessageInfo() {
+		this->m_fortsDefaultIncrementalRefreshMessageMDEntriesItems = this->m_fortsAllocationInfo->GetFortsDefaultIncrementalRefreshMessageMDEntriesItemInfoPool();
+		this->m_fortsDefaultIncrementalRefreshMessage = this->m_fortsAllocationInfo->GetFortsDefaultIncrementalRefreshMessageInfoPool();
+		this->m_fortsDefaultSnapshotMessageMDEntriesItems = this->m_fortsAllocationInfo->GetFortsDefaultSnapshotMessageMDEntriesItemInfoPool();
+		this->m_fortsDefaultSnapshotMessage = this->m_fortsAllocationInfo->GetFortsDefaultSnapshotMessageInfoPool();
+		this->m_fortsSecurityDefinitionMDFeedTypesItems = this->m_fortsAllocationInfo->GetFortsSecurityDefinitionMDFeedTypesItemInfoPool();
+		this->m_fortsSecurityDefinitionUnderlyingsItems = this->m_fortsAllocationInfo->GetFortsSecurityDefinitionUnderlyingsItemInfoPool();
+		this->m_fortsSecurityDefinitionInstrumentLegsItems = this->m_fortsAllocationInfo->GetFortsSecurityDefinitionInstrumentLegsItemInfoPool();
+		this->m_fortsSecurityDefinitionInstrumentAttributesItems = this->m_fortsAllocationInfo->GetFortsSecurityDefinitionInstrumentAttributesItemInfoPool();
+		this->m_fortsSecurityDefinitionEvntGrpItems = this->m_fortsAllocationInfo->GetFortsSecurityDefinitionEvntGrpItemInfoPool();
+		this->m_fortsSecurityDefinition = this->m_fortsAllocationInfo->GetFortsSecurityDefinitionInfoPool();
+		this->m_fortsSecurityDefinitionUpdateReport = this->m_fortsAllocationInfo->GetFortsSecurityDefinitionUpdateReportInfoPool();
+		this->m_fortsSecurityStatus = this->m_fortsAllocationInfo->GetFortsSecurityStatusInfoPool();
+		this->m_fortsHeartbeat = this->m_fortsAllocationInfo->GetFortsHeartbeatInfoPool();
+		this->m_fortsSequenceReset = this->m_fortsAllocationInfo->GetFortsSequenceResetInfoPool();
+		this->m_fortsTradingSessionStatus = this->m_fortsAllocationInfo->GetFortsTradingSessionStatusInfoPool();
+		this->m_fortsNewsNewsTextItems = this->m_fortsAllocationInfo->GetFortsNewsNewsTextItemInfoPool();
+		this->m_fortsNews = this->m_fortsAllocationInfo->GetFortsNewsInfoPool();
+		this->m_fortsOrdersLogMDEntriesItems = this->m_fortsAllocationInfo->GetFortsOrdersLogMDEntriesItemInfoPool();
+		this->m_fortsOrdersLog = this->m_fortsAllocationInfo->GetFortsOrdersLogInfoPool();
+		this->m_fortsOrdersBookMDEntriesItems = this->m_fortsAllocationInfo->GetFortsOrdersBookMDEntriesItemInfoPool();
+		this->m_fortsOrdersBook = this->m_fortsAllocationInfo->GetFortsOrdersBookInfoPool();
+		this->m_fortsLogon = this->m_fortsAllocationInfo->GetFortsLogonInfoPool();
+		this->m_fortsLogout = this->m_fortsAllocationInfo->GetFortsLogoutInfoPool();
+		this->m_prevfortsDefaultIncrementalRefreshMessageMDEntriesItemInfo = this->GetFreeFortsDefaultIncrementalRefreshMessageMDEntriesItemInfo();
+		this->m_prevfortsDefaultIncrementalRefreshMessageMDEntriesItemInfo->Used = true;
+		this->m_prevfortsDefaultIncrementalRefreshMessageInfo = this->GetFreeFortsDefaultIncrementalRefreshMessageInfo();
+		this->m_prevfortsDefaultIncrementalRefreshMessageInfo->Used = true;
+		this->m_prevfortsDefaultSnapshotMessageMDEntriesItemInfo = this->GetFreeFortsDefaultSnapshotMessageMDEntriesItemInfo();
+		this->m_prevfortsDefaultSnapshotMessageMDEntriesItemInfo->Used = true;
+		this->m_prevfortsDefaultSnapshotMessageInfo = this->GetFreeFortsDefaultSnapshotMessageInfo();
+		this->m_prevfortsDefaultSnapshotMessageInfo->Used = true;
+		this->m_prevfortsSecurityDefinitionMDFeedTypesItemInfo = this->GetFreeFortsSecurityDefinitionMDFeedTypesItemInfo();
+		this->m_prevfortsSecurityDefinitionMDFeedTypesItemInfo->Used = true;
+		this->m_prevfortsSecurityDefinitionUnderlyingsItemInfo = this->GetFreeFortsSecurityDefinitionUnderlyingsItemInfo();
+		this->m_prevfortsSecurityDefinitionUnderlyingsItemInfo->Used = true;
+		this->m_prevfortsSecurityDefinitionInstrumentLegsItemInfo = this->GetFreeFortsSecurityDefinitionInstrumentLegsItemInfo();
+		this->m_prevfortsSecurityDefinitionInstrumentLegsItemInfo->Used = true;
+		this->m_prevfortsSecurityDefinitionInstrumentAttributesItemInfo = this->GetFreeFortsSecurityDefinitionInstrumentAttributesItemInfo();
+		this->m_prevfortsSecurityDefinitionInstrumentAttributesItemInfo->Used = true;
+		this->m_prevfortsSecurityDefinitionEvntGrpItemInfo = this->GetFreeFortsSecurityDefinitionEvntGrpItemInfo();
+		this->m_prevfortsSecurityDefinitionEvntGrpItemInfo->Used = true;
+		this->m_prevfortsSecurityDefinitionInfo = this->GetFreeFortsSecurityDefinitionInfo();
+		this->m_prevfortsSecurityDefinitionInfo->Used = true;
+		this->m_prevfortsSecurityDefinitionUpdateReportInfo = this->GetFreeFortsSecurityDefinitionUpdateReportInfo();
+		this->m_prevfortsSecurityDefinitionUpdateReportInfo->Used = true;
+		this->m_prevfortsSecurityStatusInfo = this->GetFreeFortsSecurityStatusInfo();
+		this->m_prevfortsSecurityStatusInfo->Used = true;
+		this->m_prevfortsHeartbeatInfo = this->GetFreeFortsHeartbeatInfo();
+		this->m_prevfortsHeartbeatInfo->Used = true;
+		this->m_prevfortsSequenceResetInfo = this->GetFreeFortsSequenceResetInfo();
+		this->m_prevfortsSequenceResetInfo->Used = true;
+		this->m_prevfortsTradingSessionStatusInfo = this->GetFreeFortsTradingSessionStatusInfo();
+		this->m_prevfortsTradingSessionStatusInfo->Used = true;
+		this->m_prevfortsNewsNewsTextItemInfo = this->GetFreeFortsNewsNewsTextItemInfo();
+		this->m_prevfortsNewsNewsTextItemInfo->Used = true;
+		this->m_prevfortsNewsInfo = this->GetFreeFortsNewsInfo();
+		this->m_prevfortsNewsInfo->Used = true;
+		this->m_prevfortsOrdersLogMDEntriesItemInfo = this->GetFreeFortsOrdersLogMDEntriesItemInfo();
+		this->m_prevfortsOrdersLogMDEntriesItemInfo->Used = true;
+		this->m_prevfortsOrdersLogInfo = this->GetFreeFortsOrdersLogInfo();
+		this->m_prevfortsOrdersLogInfo->Used = true;
+		this->m_prevfortsOrdersBookMDEntriesItemInfo = this->GetFreeFortsOrdersBookMDEntriesItemInfo();
+		this->m_prevfortsOrdersBookMDEntriesItemInfo->Used = true;
+		this->m_prevfortsOrdersBookInfo = this->GetFreeFortsOrdersBookInfo();
+		this->m_prevfortsOrdersBookInfo->Used = true;
+		this->m_prevfortsLogonInfo = this->GetFreeFortsLogonInfo();
+		this->m_prevfortsLogonInfo->Used = true;
+		this->m_prevfortsLogoutInfo = this->GetFreeFortsLogoutInfo();
+		this->m_prevfortsLogoutInfo->Used = true;
 	}
 
 #pragma endregion
 
 #pragma region Decode_Method_Pointer_Arrays_GeneratedCode
-	FastDecodeMethodPointer* m_spectraDecodeMethods;
-	FastReleaseMethodPointer* m_spectraReleaseMethods;
-	SpectraGetSnapshotInfoMethodPointer* m_spectraGetSnapshotInfoMethods;
+	FastDecodeMethodPointer* m_fortsDecodeMethods;
+	FastReleaseMethodPointer* m_fortsReleaseMethods;
+	FortsGetSnapshotInfoMethodPointer* m_fortsGetSnapshotInfoMethods;
 
-	void InitializeSpectraDecodeMethodPointers() {
+	void InitializeFortsDecodeMethodPointers() {
 		int ptCount = 999;
-		this->m_spectraDecodeMethods = new FastDecodeMethodPointer[ptCount];
-		this->m_spectraReleaseMethods = new FastReleaseMethodPointer[ptCount];
-		this->m_spectraGetSnapshotInfoMethods = new SpectraGetSnapshotInfoMethodPointer[ptCount];
+		this->m_fortsDecodeMethods = new FastDecodeMethodPointer[ptCount];
+		this->m_fortsReleaseMethods = new FastReleaseMethodPointer[ptCount];
+		this->m_fortsGetSnapshotInfoMethods = new FortsGetSnapshotInfoMethodPointer[ptCount];
 
 		for(int i = 0; i < 999; i++) {
-			this->m_spectraDecodeMethods[i] = &FastProtocolManager::DecodeSpectraUnsupportedMessage;
-			this->m_spectraGetSnapshotInfoMethods[i] = &FastProtocolManager::GetSpectraSnapshotInfoUnsupported;
+			this->m_fortsDecodeMethods[i] = &FastProtocolManager::DecodeFortsUnsupportedMessage;
+			this->m_fortsGetSnapshotInfoMethods[i] = &FastProtocolManager::GetFortsSnapshotInfoUnsupported;
 		}
 
-		this->m_spectraDecodeMethods[12 - 3] = &FastProtocolManager::DecodeSpectraDefaultIncrementalRefreshMessage;
-		this->m_spectraDecodeMethods[13 - 3] = &FastProtocolManager::DecodeSpectraDefaultSnapshotMessage;
-		this->m_spectraDecodeMethods[3 - 3] = &FastProtocolManager::DecodeSpectraSecurityDefinition;
-		this->m_spectraDecodeMethods[4 - 3] = &FastProtocolManager::DecodeSpectraSecurityDefinitionUpdateReport;
-		this->m_spectraDecodeMethods[5 - 3] = &FastProtocolManager::DecodeSpectraSecurityStatus;
-		this->m_spectraDecodeMethods[6 - 3] = &FastProtocolManager::DecodeSpectraHeartbeat;
-		this->m_spectraDecodeMethods[7 - 3] = &FastProtocolManager::DecodeSpectraSequenceReset;
-		this->m_spectraDecodeMethods[8 - 3] = &FastProtocolManager::DecodeSpectraTradingSessionStatus;
-		this->m_spectraDecodeMethods[9 - 3] = &FastProtocolManager::DecodeSpectraNews;
-		this->m_spectraDecodeMethods[14 - 3] = &FastProtocolManager::DecodeSpectraOrdersLog;
-		this->m_spectraDecodeMethods[15 - 3] = &FastProtocolManager::DecodeSpectraOrdersBook;
-		this->m_spectraDecodeMethods[1000 - 3] = &FastProtocolManager::DecodeSpectraLogon;
-		this->m_spectraDecodeMethods[1001 - 3] = &FastProtocolManager::DecodeSpectraLogout;
-		this->m_spectraReleaseMethods[12 - 3] = &FastProtocolManager::DecodeSpectraDefaultIncrementalRefreshMessage;
-		this->m_spectraReleaseMethods[13 - 3] = &FastProtocolManager::DecodeSpectraDefaultSnapshotMessage;
-		this->m_spectraReleaseMethods[3 - 3] = &FastProtocolManager::DecodeSpectraSecurityDefinition;
-		this->m_spectraReleaseMethods[4 - 3] = &FastProtocolManager::DecodeSpectraSecurityDefinitionUpdateReport;
-		this->m_spectraReleaseMethods[5 - 3] = &FastProtocolManager::DecodeSpectraSecurityStatus;
-		this->m_spectraReleaseMethods[6 - 3] = &FastProtocolManager::DecodeSpectraHeartbeat;
-		this->m_spectraReleaseMethods[7 - 3] = &FastProtocolManager::DecodeSpectraSequenceReset;
-		this->m_spectraReleaseMethods[8 - 3] = &FastProtocolManager::DecodeSpectraTradingSessionStatus;
-		this->m_spectraReleaseMethods[9 - 3] = &FastProtocolManager::DecodeSpectraNews;
-		this->m_spectraReleaseMethods[14 - 3] = &FastProtocolManager::DecodeSpectraOrdersLog;
-		this->m_spectraReleaseMethods[15 - 3] = &FastProtocolManager::DecodeSpectraOrdersBook;
-		this->m_spectraReleaseMethods[1000 - 3] = &FastProtocolManager::DecodeSpectraLogon;
-		this->m_spectraReleaseMethods[1001 - 3] = &FastProtocolManager::DecodeSpectraLogout;
-		this->m_spectraGetSnapshotInfoMethods[13 - 3] = &FastProtocolManager::GetSpectraSnapshotInfoDefaultSnapshotMessage;
+		this->m_fortsDecodeMethods[12 - 3] = &FastProtocolManager::DecodeFortsDefaultIncrementalRefreshMessage;
+		this->m_fortsDecodeMethods[13 - 3] = &FastProtocolManager::DecodeFortsDefaultSnapshotMessage;
+		this->m_fortsDecodeMethods[3 - 3] = &FastProtocolManager::DecodeFortsSecurityDefinition;
+		this->m_fortsDecodeMethods[4 - 3] = &FastProtocolManager::DecodeFortsSecurityDefinitionUpdateReport;
+		this->m_fortsDecodeMethods[5 - 3] = &FastProtocolManager::DecodeFortsSecurityStatus;
+		this->m_fortsDecodeMethods[6 - 3] = &FastProtocolManager::DecodeFortsHeartbeat;
+		this->m_fortsDecodeMethods[7 - 3] = &FastProtocolManager::DecodeFortsSequenceReset;
+		this->m_fortsDecodeMethods[8 - 3] = &FastProtocolManager::DecodeFortsTradingSessionStatus;
+		this->m_fortsDecodeMethods[9 - 3] = &FastProtocolManager::DecodeFortsNews;
+		this->m_fortsDecodeMethods[14 - 3] = &FastProtocolManager::DecodeFortsOrdersLog;
+		this->m_fortsDecodeMethods[15 - 3] = &FastProtocolManager::DecodeFortsOrdersBook;
+		this->m_fortsDecodeMethods[1000 - 3] = &FastProtocolManager::DecodeFortsLogon;
+		this->m_fortsDecodeMethods[1001 - 3] = &FastProtocolManager::DecodeFortsLogout;
+		this->m_fortsReleaseMethods[12 - 3] = &FastProtocolManager::DecodeFortsDefaultIncrementalRefreshMessage;
+		this->m_fortsReleaseMethods[13 - 3] = &FastProtocolManager::DecodeFortsDefaultSnapshotMessage;
+		this->m_fortsReleaseMethods[3 - 3] = &FastProtocolManager::DecodeFortsSecurityDefinition;
+		this->m_fortsReleaseMethods[4 - 3] = &FastProtocolManager::DecodeFortsSecurityDefinitionUpdateReport;
+		this->m_fortsReleaseMethods[5 - 3] = &FastProtocolManager::DecodeFortsSecurityStatus;
+		this->m_fortsReleaseMethods[6 - 3] = &FastProtocolManager::DecodeFortsHeartbeat;
+		this->m_fortsReleaseMethods[7 - 3] = &FastProtocolManager::DecodeFortsSequenceReset;
+		this->m_fortsReleaseMethods[8 - 3] = &FastProtocolManager::DecodeFortsTradingSessionStatus;
+		this->m_fortsReleaseMethods[9 - 3] = &FastProtocolManager::DecodeFortsNews;
+		this->m_fortsReleaseMethods[14 - 3] = &FastProtocolManager::DecodeFortsOrdersLog;
+		this->m_fortsReleaseMethods[15 - 3] = &FastProtocolManager::DecodeFortsOrdersBook;
+		this->m_fortsReleaseMethods[1000 - 3] = &FastProtocolManager::DecodeFortsLogon;
+		this->m_fortsReleaseMethods[1001 - 3] = &FastProtocolManager::DecodeFortsLogout;
+		this->m_fortsGetSnapshotInfoMethods[13 - 3] = &FastProtocolManager::GetFortsSnapshotInfoDefaultSnapshotMessage;
 
 	}
 
@@ -444,269 +444,269 @@ private:
 
 #pragma region Get_Free_Item_Methods_GeneratedCode
 public:
-	inline SpectraSnapshotInfo* GetFreeSpectraSnapshotInfo() {
-		this->m_spectraSnapshotInfo->LastFragment = 0;
-		this->m_spectraSnapshotInfo->LastMsgSeqNumProcessed = -1;
-		this->m_spectraSnapshotInfo->RouteFirst = 0;
-		this->m_spectraSnapshotInfo->RptSeq = -1;
-		return this->m_spectraSnapshotInfo;
+	inline FortsSnapshotInfo* GetFreeFortsSnapshotInfo() {
+		this->m_fortsSnapshotInfo->LastFragment = 0;
+		this->m_fortsSnapshotInfo->LastMsgSeqNumProcessed = -1;
+		this->m_fortsSnapshotInfo->RouteFirst = 0;
+		this->m_fortsSnapshotInfo->RptSeq = -1;
+		return this->m_fortsSnapshotInfo;
 	}
-	inline SpectraDefaultIncrementalRefreshMessageMDEntriesItemInfo* GetFreeSpectraDefaultIncrementalRefreshMessageMDEntriesItemInfo() {
-		return this->m_spectraDefaultIncrementalRefreshMessageMDEntriesItems->NewItem();
-	}
-
-	inline AutoAllocatePointerList<SpectraDefaultIncrementalRefreshMessageMDEntriesItemInfo>* GetSpectraDefaultIncrementalRefreshMessageMDEntriesItemInfoPool() {
-		return this->m_spectraDefaultIncrementalRefreshMessageMDEntriesItems;
+	inline FortsDefaultIncrementalRefreshMessageMDEntriesItemInfo* GetFreeFortsDefaultIncrementalRefreshMessageMDEntriesItemInfo() {
+		return this->m_fortsDefaultIncrementalRefreshMessageMDEntriesItems->NewItem();
 	}
 
-	inline SpectraDefaultIncrementalRefreshMessageInfo* GetFreeSpectraDefaultIncrementalRefreshMessageInfo() {
-		return this->m_spectraDefaultIncrementalRefreshMessage->NewItem();
+	inline AutoAllocatePointerList<FortsDefaultIncrementalRefreshMessageMDEntriesItemInfo>* GetFortsDefaultIncrementalRefreshMessageMDEntriesItemInfoPool() {
+		return this->m_fortsDefaultIncrementalRefreshMessageMDEntriesItems;
 	}
 
-	inline AutoAllocatePointerList<SpectraDefaultIncrementalRefreshMessageInfo>* GetSpectraDefaultIncrementalRefreshMessageInfoPool() {
-		return this->m_spectraDefaultIncrementalRefreshMessage;
+	inline FortsDefaultIncrementalRefreshMessageInfo* GetFreeFortsDefaultIncrementalRefreshMessageInfo() {
+		return this->m_fortsDefaultIncrementalRefreshMessage->NewItem();
 	}
 
-	inline SpectraDefaultSnapshotMessageMDEntriesItemInfo* GetFreeSpectraDefaultSnapshotMessageMDEntriesItemInfo() {
-		return this->m_spectraDefaultSnapshotMessageMDEntriesItems->NewItem();
+	inline AutoAllocatePointerList<FortsDefaultIncrementalRefreshMessageInfo>* GetFortsDefaultIncrementalRefreshMessageInfoPool() {
+		return this->m_fortsDefaultIncrementalRefreshMessage;
 	}
 
-	inline AutoAllocatePointerList<SpectraDefaultSnapshotMessageMDEntriesItemInfo>* GetSpectraDefaultSnapshotMessageMDEntriesItemInfoPool() {
-		return this->m_spectraDefaultSnapshotMessageMDEntriesItems;
+	inline FortsDefaultSnapshotMessageMDEntriesItemInfo* GetFreeFortsDefaultSnapshotMessageMDEntriesItemInfo() {
+		return this->m_fortsDefaultSnapshotMessageMDEntriesItems->NewItem();
 	}
 
-	inline SpectraDefaultSnapshotMessageInfo* GetFreeSpectraDefaultSnapshotMessageInfo() {
-		return this->m_spectraDefaultSnapshotMessage->NewItem();
+	inline AutoAllocatePointerList<FortsDefaultSnapshotMessageMDEntriesItemInfo>* GetFortsDefaultSnapshotMessageMDEntriesItemInfoPool() {
+		return this->m_fortsDefaultSnapshotMessageMDEntriesItems;
 	}
 
-	inline AutoAllocatePointerList<SpectraDefaultSnapshotMessageInfo>* GetSpectraDefaultSnapshotMessageInfoPool() {
-		return this->m_spectraDefaultSnapshotMessage;
+	inline FortsDefaultSnapshotMessageInfo* GetFreeFortsDefaultSnapshotMessageInfo() {
+		return this->m_fortsDefaultSnapshotMessage->NewItem();
 	}
 
-	inline SpectraSecurityDefinitionMDFeedTypesItemInfo* GetFreeSpectraSecurityDefinitionMDFeedTypesItemInfo() {
-		return this->m_spectraSecurityDefinitionMDFeedTypesItems->NewItem();
+	inline AutoAllocatePointerList<FortsDefaultSnapshotMessageInfo>* GetFortsDefaultSnapshotMessageInfoPool() {
+		return this->m_fortsDefaultSnapshotMessage;
 	}
 
-	inline AutoAllocatePointerList<SpectraSecurityDefinitionMDFeedTypesItemInfo>* GetSpectraSecurityDefinitionMDFeedTypesItemInfoPool() {
-		return this->m_spectraSecurityDefinitionMDFeedTypesItems;
+	inline FortsSecurityDefinitionMDFeedTypesItemInfo* GetFreeFortsSecurityDefinitionMDFeedTypesItemInfo() {
+		return this->m_fortsSecurityDefinitionMDFeedTypesItems->NewItem();
 	}
 
-	inline SpectraSecurityDefinitionUnderlyingsItemInfo* GetFreeSpectraSecurityDefinitionUnderlyingsItemInfo() {
-		return this->m_spectraSecurityDefinitionUnderlyingsItems->NewItem();
+	inline AutoAllocatePointerList<FortsSecurityDefinitionMDFeedTypesItemInfo>* GetFortsSecurityDefinitionMDFeedTypesItemInfoPool() {
+		return this->m_fortsSecurityDefinitionMDFeedTypesItems;
 	}
 
-	inline AutoAllocatePointerList<SpectraSecurityDefinitionUnderlyingsItemInfo>* GetSpectraSecurityDefinitionUnderlyingsItemInfoPool() {
-		return this->m_spectraSecurityDefinitionUnderlyingsItems;
+	inline FortsSecurityDefinitionUnderlyingsItemInfo* GetFreeFortsSecurityDefinitionUnderlyingsItemInfo() {
+		return this->m_fortsSecurityDefinitionUnderlyingsItems->NewItem();
 	}
 
-	inline SpectraSecurityDefinitionInstrumentLegsItemInfo* GetFreeSpectraSecurityDefinitionInstrumentLegsItemInfo() {
-		return this->m_spectraSecurityDefinitionInstrumentLegsItems->NewItem();
+	inline AutoAllocatePointerList<FortsSecurityDefinitionUnderlyingsItemInfo>* GetFortsSecurityDefinitionUnderlyingsItemInfoPool() {
+		return this->m_fortsSecurityDefinitionUnderlyingsItems;
 	}
 
-	inline AutoAllocatePointerList<SpectraSecurityDefinitionInstrumentLegsItemInfo>* GetSpectraSecurityDefinitionInstrumentLegsItemInfoPool() {
-		return this->m_spectraSecurityDefinitionInstrumentLegsItems;
+	inline FortsSecurityDefinitionInstrumentLegsItemInfo* GetFreeFortsSecurityDefinitionInstrumentLegsItemInfo() {
+		return this->m_fortsSecurityDefinitionInstrumentLegsItems->NewItem();
 	}
 
-	inline SpectraSecurityDefinitionInstrumentAttributesItemInfo* GetFreeSpectraSecurityDefinitionInstrumentAttributesItemInfo() {
-		return this->m_spectraSecurityDefinitionInstrumentAttributesItems->NewItem();
+	inline AutoAllocatePointerList<FortsSecurityDefinitionInstrumentLegsItemInfo>* GetFortsSecurityDefinitionInstrumentLegsItemInfoPool() {
+		return this->m_fortsSecurityDefinitionInstrumentLegsItems;
 	}
 
-	inline AutoAllocatePointerList<SpectraSecurityDefinitionInstrumentAttributesItemInfo>* GetSpectraSecurityDefinitionInstrumentAttributesItemInfoPool() {
-		return this->m_spectraSecurityDefinitionInstrumentAttributesItems;
+	inline FortsSecurityDefinitionInstrumentAttributesItemInfo* GetFreeFortsSecurityDefinitionInstrumentAttributesItemInfo() {
+		return this->m_fortsSecurityDefinitionInstrumentAttributesItems->NewItem();
 	}
 
-	inline SpectraSecurityDefinitionEvntGrpItemInfo* GetFreeSpectraSecurityDefinitionEvntGrpItemInfo() {
-		return this->m_spectraSecurityDefinitionEvntGrpItems->NewItem();
+	inline AutoAllocatePointerList<FortsSecurityDefinitionInstrumentAttributesItemInfo>* GetFortsSecurityDefinitionInstrumentAttributesItemInfoPool() {
+		return this->m_fortsSecurityDefinitionInstrumentAttributesItems;
 	}
 
-	inline AutoAllocatePointerList<SpectraSecurityDefinitionEvntGrpItemInfo>* GetSpectraSecurityDefinitionEvntGrpItemInfoPool() {
-		return this->m_spectraSecurityDefinitionEvntGrpItems;
+	inline FortsSecurityDefinitionEvntGrpItemInfo* GetFreeFortsSecurityDefinitionEvntGrpItemInfo() {
+		return this->m_fortsSecurityDefinitionEvntGrpItems->NewItem();
 	}
 
-	inline SpectraSecurityDefinitionInfo* GetFreeSpectraSecurityDefinitionInfo() {
-		return this->m_spectraSecurityDefinition->NewItem();
+	inline AutoAllocatePointerList<FortsSecurityDefinitionEvntGrpItemInfo>* GetFortsSecurityDefinitionEvntGrpItemInfoPool() {
+		return this->m_fortsSecurityDefinitionEvntGrpItems;
 	}
 
-	inline AutoAllocatePointerList<SpectraSecurityDefinitionInfo>* GetSpectraSecurityDefinitionInfoPool() {
-		return this->m_spectraSecurityDefinition;
+	inline FortsSecurityDefinitionInfo* GetFreeFortsSecurityDefinitionInfo() {
+		return this->m_fortsSecurityDefinition->NewItem();
 	}
 
-	inline SpectraSecurityDefinitionUpdateReportInfo* GetFreeSpectraSecurityDefinitionUpdateReportInfo() {
-		return this->m_spectraSecurityDefinitionUpdateReport->NewItem();
+	inline AutoAllocatePointerList<FortsSecurityDefinitionInfo>* GetFortsSecurityDefinitionInfoPool() {
+		return this->m_fortsSecurityDefinition;
 	}
 
-	inline AutoAllocatePointerList<SpectraSecurityDefinitionUpdateReportInfo>* GetSpectraSecurityDefinitionUpdateReportInfoPool() {
-		return this->m_spectraSecurityDefinitionUpdateReport;
+	inline FortsSecurityDefinitionUpdateReportInfo* GetFreeFortsSecurityDefinitionUpdateReportInfo() {
+		return this->m_fortsSecurityDefinitionUpdateReport->NewItem();
 	}
 
-	inline SpectraSecurityStatusInfo* GetFreeSpectraSecurityStatusInfo() {
-		return this->m_spectraSecurityStatus->NewItem();
+	inline AutoAllocatePointerList<FortsSecurityDefinitionUpdateReportInfo>* GetFortsSecurityDefinitionUpdateReportInfoPool() {
+		return this->m_fortsSecurityDefinitionUpdateReport;
 	}
 
-	inline AutoAllocatePointerList<SpectraSecurityStatusInfo>* GetSpectraSecurityStatusInfoPool() {
-		return this->m_spectraSecurityStatus;
+	inline FortsSecurityStatusInfo* GetFreeFortsSecurityStatusInfo() {
+		return this->m_fortsSecurityStatus->NewItem();
 	}
 
-	inline SpectraHeartbeatInfo* GetFreeSpectraHeartbeatInfo() {
-		return this->m_spectraHeartbeat->NewItem();
+	inline AutoAllocatePointerList<FortsSecurityStatusInfo>* GetFortsSecurityStatusInfoPool() {
+		return this->m_fortsSecurityStatus;
 	}
 
-	inline AutoAllocatePointerList<SpectraHeartbeatInfo>* GetSpectraHeartbeatInfoPool() {
-		return this->m_spectraHeartbeat;
+	inline FortsHeartbeatInfo* GetFreeFortsHeartbeatInfo() {
+		return this->m_fortsHeartbeat->NewItem();
 	}
 
-	inline SpectraSequenceResetInfo* GetFreeSpectraSequenceResetInfo() {
-		return this->m_spectraSequenceReset->NewItem();
+	inline AutoAllocatePointerList<FortsHeartbeatInfo>* GetFortsHeartbeatInfoPool() {
+		return this->m_fortsHeartbeat;
 	}
 
-	inline AutoAllocatePointerList<SpectraSequenceResetInfo>* GetSpectraSequenceResetInfoPool() {
-		return this->m_spectraSequenceReset;
+	inline FortsSequenceResetInfo* GetFreeFortsSequenceResetInfo() {
+		return this->m_fortsSequenceReset->NewItem();
 	}
 
-	inline SpectraTradingSessionStatusInfo* GetFreeSpectraTradingSessionStatusInfo() {
-		return this->m_spectraTradingSessionStatus->NewItem();
+	inline AutoAllocatePointerList<FortsSequenceResetInfo>* GetFortsSequenceResetInfoPool() {
+		return this->m_fortsSequenceReset;
 	}
 
-	inline AutoAllocatePointerList<SpectraTradingSessionStatusInfo>* GetSpectraTradingSessionStatusInfoPool() {
-		return this->m_spectraTradingSessionStatus;
+	inline FortsTradingSessionStatusInfo* GetFreeFortsTradingSessionStatusInfo() {
+		return this->m_fortsTradingSessionStatus->NewItem();
 	}
 
-	inline SpectraNewsNewsTextItemInfo* GetFreeSpectraNewsNewsTextItemInfo() {
-		return this->m_spectraNewsNewsTextItems->NewItem();
+	inline AutoAllocatePointerList<FortsTradingSessionStatusInfo>* GetFortsTradingSessionStatusInfoPool() {
+		return this->m_fortsTradingSessionStatus;
 	}
 
-	inline AutoAllocatePointerList<SpectraNewsNewsTextItemInfo>* GetSpectraNewsNewsTextItemInfoPool() {
-		return this->m_spectraNewsNewsTextItems;
+	inline FortsNewsNewsTextItemInfo* GetFreeFortsNewsNewsTextItemInfo() {
+		return this->m_fortsNewsNewsTextItems->NewItem();
 	}
 
-	inline SpectraNewsInfo* GetFreeSpectraNewsInfo() {
-		return this->m_spectraNews->NewItem();
+	inline AutoAllocatePointerList<FortsNewsNewsTextItemInfo>* GetFortsNewsNewsTextItemInfoPool() {
+		return this->m_fortsNewsNewsTextItems;
 	}
 
-	inline AutoAllocatePointerList<SpectraNewsInfo>* GetSpectraNewsInfoPool() {
-		return this->m_spectraNews;
+	inline FortsNewsInfo* GetFreeFortsNewsInfo() {
+		return this->m_fortsNews->NewItem();
 	}
 
-	inline SpectraOrdersLogMDEntriesItemInfo* GetFreeSpectraOrdersLogMDEntriesItemInfo() {
-		return this->m_spectraOrdersLogMDEntriesItems->NewItem();
+	inline AutoAllocatePointerList<FortsNewsInfo>* GetFortsNewsInfoPool() {
+		return this->m_fortsNews;
 	}
 
-	inline AutoAllocatePointerList<SpectraOrdersLogMDEntriesItemInfo>* GetSpectraOrdersLogMDEntriesItemInfoPool() {
-		return this->m_spectraOrdersLogMDEntriesItems;
+	inline FortsOrdersLogMDEntriesItemInfo* GetFreeFortsOrdersLogMDEntriesItemInfo() {
+		return this->m_fortsOrdersLogMDEntriesItems->NewItem();
 	}
 
-	inline SpectraOrdersLogInfo* GetFreeSpectraOrdersLogInfo() {
-		return this->m_spectraOrdersLog->NewItem();
+	inline AutoAllocatePointerList<FortsOrdersLogMDEntriesItemInfo>* GetFortsOrdersLogMDEntriesItemInfoPool() {
+		return this->m_fortsOrdersLogMDEntriesItems;
 	}
 
-	inline AutoAllocatePointerList<SpectraOrdersLogInfo>* GetSpectraOrdersLogInfoPool() {
-		return this->m_spectraOrdersLog;
+	inline FortsOrdersLogInfo* GetFreeFortsOrdersLogInfo() {
+		return this->m_fortsOrdersLog->NewItem();
 	}
 
-	inline SpectraOrdersBookMDEntriesItemInfo* GetFreeSpectraOrdersBookMDEntriesItemInfo() {
-		return this->m_spectraOrdersBookMDEntriesItems->NewItem();
+	inline AutoAllocatePointerList<FortsOrdersLogInfo>* GetFortsOrdersLogInfoPool() {
+		return this->m_fortsOrdersLog;
 	}
 
-	inline AutoAllocatePointerList<SpectraOrdersBookMDEntriesItemInfo>* GetSpectraOrdersBookMDEntriesItemInfoPool() {
-		return this->m_spectraOrdersBookMDEntriesItems;
+	inline FortsOrdersBookMDEntriesItemInfo* GetFreeFortsOrdersBookMDEntriesItemInfo() {
+		return this->m_fortsOrdersBookMDEntriesItems->NewItem();
 	}
 
-	inline SpectraOrdersBookInfo* GetFreeSpectraOrdersBookInfo() {
-		return this->m_spectraOrdersBook->NewItem();
+	inline AutoAllocatePointerList<FortsOrdersBookMDEntriesItemInfo>* GetFortsOrdersBookMDEntriesItemInfoPool() {
+		return this->m_fortsOrdersBookMDEntriesItems;
 	}
 
-	inline AutoAllocatePointerList<SpectraOrdersBookInfo>* GetSpectraOrdersBookInfoPool() {
-		return this->m_spectraOrdersBook;
+	inline FortsOrdersBookInfo* GetFreeFortsOrdersBookInfo() {
+		return this->m_fortsOrdersBook->NewItem();
 	}
 
-	inline SpectraLogonInfo* GetFreeSpectraLogonInfo() {
-		return this->m_spectraLogon->NewItem();
+	inline AutoAllocatePointerList<FortsOrdersBookInfo>* GetFortsOrdersBookInfoPool() {
+		return this->m_fortsOrdersBook;
 	}
 
-	inline AutoAllocatePointerList<SpectraLogonInfo>* GetSpectraLogonInfoPool() {
-		return this->m_spectraLogon;
+	inline FortsLogonInfo* GetFreeFortsLogonInfo() {
+		return this->m_fortsLogon->NewItem();
 	}
 
-	inline SpectraLogoutInfo* GetFreeSpectraLogoutInfo() {
-		return this->m_spectraLogout->NewItem();
+	inline AutoAllocatePointerList<FortsLogonInfo>* GetFortsLogonInfoPool() {
+		return this->m_fortsLogon;
 	}
 
-	inline AutoAllocatePointerList<SpectraLogoutInfo>* GetSpectraLogoutInfoPool() {
-		return this->m_spectraLogout;
+	inline FortsLogoutInfo* GetFreeFortsLogoutInfo() {
+		return this->m_fortsLogout->NewItem();
+	}
+
+	inline AutoAllocatePointerList<FortsLogoutInfo>* GetFortsLogoutInfoPool() {
+		return this->m_fortsLogout;
 	}
 
 private:
-	void ReleaseSpectraDefaultIncrementalRefreshMessageMDEntriesItemInfo() {
-		((SpectraDefaultIncrementalRefreshMessageMDEntriesItemInfo*)this->LastDecodeInfo())->ReleaseUnused();
+	void ReleaseFortsDefaultIncrementalRefreshMessageMDEntriesItemInfo() {
+		((FortsDefaultIncrementalRefreshMessageMDEntriesItemInfo*)this->LastDecodeInfo())->ReleaseUnused();
 	}
-	void ReleaseSpectraDefaultIncrementalRefreshMessageInfo() {
-		((SpectraDefaultIncrementalRefreshMessageInfo*)this->LastDecodeInfo())->ReleaseUnused();
+	void ReleaseFortsDefaultIncrementalRefreshMessageInfo() {
+		((FortsDefaultIncrementalRefreshMessageInfo*)this->LastDecodeInfo())->ReleaseUnused();
 	}
-	void ReleaseSpectraDefaultSnapshotMessageMDEntriesItemInfo() {
-		((SpectraDefaultSnapshotMessageMDEntriesItemInfo*)this->LastDecodeInfo())->ReleaseUnused();
+	void ReleaseFortsDefaultSnapshotMessageMDEntriesItemInfo() {
+		((FortsDefaultSnapshotMessageMDEntriesItemInfo*)this->LastDecodeInfo())->ReleaseUnused();
 	}
-	void ReleaseSpectraDefaultSnapshotMessageInfo() {
-		((SpectraDefaultSnapshotMessageInfo*)this->LastDecodeInfo())->ReleaseUnused();
+	void ReleaseFortsDefaultSnapshotMessageInfo() {
+		((FortsDefaultSnapshotMessageInfo*)this->LastDecodeInfo())->ReleaseUnused();
 	}
-	void ReleaseSpectraSecurityDefinitionMDFeedTypesItemInfo() {
-		((SpectraSecurityDefinitionMDFeedTypesItemInfo*)this->LastDecodeInfo())->ReleaseUnused();
+	void ReleaseFortsSecurityDefinitionMDFeedTypesItemInfo() {
+		((FortsSecurityDefinitionMDFeedTypesItemInfo*)this->LastDecodeInfo())->ReleaseUnused();
 	}
-	void ReleaseSpectraSecurityDefinitionUnderlyingsItemInfo() {
-		((SpectraSecurityDefinitionUnderlyingsItemInfo*)this->LastDecodeInfo())->ReleaseUnused();
+	void ReleaseFortsSecurityDefinitionUnderlyingsItemInfo() {
+		((FortsSecurityDefinitionUnderlyingsItemInfo*)this->LastDecodeInfo())->ReleaseUnused();
 	}
-	void ReleaseSpectraSecurityDefinitionInstrumentLegsItemInfo() {
-		((SpectraSecurityDefinitionInstrumentLegsItemInfo*)this->LastDecodeInfo())->ReleaseUnused();
+	void ReleaseFortsSecurityDefinitionInstrumentLegsItemInfo() {
+		((FortsSecurityDefinitionInstrumentLegsItemInfo*)this->LastDecodeInfo())->ReleaseUnused();
 	}
-	void ReleaseSpectraSecurityDefinitionInstrumentAttributesItemInfo() {
-		((SpectraSecurityDefinitionInstrumentAttributesItemInfo*)this->LastDecodeInfo())->ReleaseUnused();
+	void ReleaseFortsSecurityDefinitionInstrumentAttributesItemInfo() {
+		((FortsSecurityDefinitionInstrumentAttributesItemInfo*)this->LastDecodeInfo())->ReleaseUnused();
 	}
-	void ReleaseSpectraSecurityDefinitionEvntGrpItemInfo() {
-		((SpectraSecurityDefinitionEvntGrpItemInfo*)this->LastDecodeInfo())->ReleaseUnused();
+	void ReleaseFortsSecurityDefinitionEvntGrpItemInfo() {
+		((FortsSecurityDefinitionEvntGrpItemInfo*)this->LastDecodeInfo())->ReleaseUnused();
 	}
-	void ReleaseSpectraSecurityDefinitionInfo() {
-		((SpectraSecurityDefinitionInfo*)this->LastDecodeInfo())->ReleaseUnused();
+	void ReleaseFortsSecurityDefinitionInfo() {
+		((FortsSecurityDefinitionInfo*)this->LastDecodeInfo())->ReleaseUnused();
 	}
-	void ReleaseSpectraSecurityDefinitionUpdateReportInfo() {
-		((SpectraSecurityDefinitionUpdateReportInfo*)this->LastDecodeInfo())->ReleaseUnused();
+	void ReleaseFortsSecurityDefinitionUpdateReportInfo() {
+		((FortsSecurityDefinitionUpdateReportInfo*)this->LastDecodeInfo())->ReleaseUnused();
 	}
-	void ReleaseSpectraSecurityStatusInfo() {
-		((SpectraSecurityStatusInfo*)this->LastDecodeInfo())->ReleaseUnused();
+	void ReleaseFortsSecurityStatusInfo() {
+		((FortsSecurityStatusInfo*)this->LastDecodeInfo())->ReleaseUnused();
 	}
-	void ReleaseSpectraHeartbeatInfo() {
-		((SpectraHeartbeatInfo*)this->LastDecodeInfo())->ReleaseUnused();
+	void ReleaseFortsHeartbeatInfo() {
+		((FortsHeartbeatInfo*)this->LastDecodeInfo())->ReleaseUnused();
 	}
-	void ReleaseSpectraSequenceResetInfo() {
-		((SpectraSequenceResetInfo*)this->LastDecodeInfo())->ReleaseUnused();
+	void ReleaseFortsSequenceResetInfo() {
+		((FortsSequenceResetInfo*)this->LastDecodeInfo())->ReleaseUnused();
 	}
-	void ReleaseSpectraTradingSessionStatusInfo() {
-		((SpectraTradingSessionStatusInfo*)this->LastDecodeInfo())->ReleaseUnused();
+	void ReleaseFortsTradingSessionStatusInfo() {
+		((FortsTradingSessionStatusInfo*)this->LastDecodeInfo())->ReleaseUnused();
 	}
-	void ReleaseSpectraNewsNewsTextItemInfo() {
-		((SpectraNewsNewsTextItemInfo*)this->LastDecodeInfo())->ReleaseUnused();
+	void ReleaseFortsNewsNewsTextItemInfo() {
+		((FortsNewsNewsTextItemInfo*)this->LastDecodeInfo())->ReleaseUnused();
 	}
-	void ReleaseSpectraNewsInfo() {
-		((SpectraNewsInfo*)this->LastDecodeInfo())->ReleaseUnused();
+	void ReleaseFortsNewsInfo() {
+		((FortsNewsInfo*)this->LastDecodeInfo())->ReleaseUnused();
 	}
-	void ReleaseSpectraOrdersLogMDEntriesItemInfo() {
-		((SpectraOrdersLogMDEntriesItemInfo*)this->LastDecodeInfo())->ReleaseUnused();
+	void ReleaseFortsOrdersLogMDEntriesItemInfo() {
+		((FortsOrdersLogMDEntriesItemInfo*)this->LastDecodeInfo())->ReleaseUnused();
 	}
-	void ReleaseSpectraOrdersLogInfo() {
-		((SpectraOrdersLogInfo*)this->LastDecodeInfo())->ReleaseUnused();
+	void ReleaseFortsOrdersLogInfo() {
+		((FortsOrdersLogInfo*)this->LastDecodeInfo())->ReleaseUnused();
 	}
-	void ReleaseSpectraOrdersBookMDEntriesItemInfo() {
-		((SpectraOrdersBookMDEntriesItemInfo*)this->LastDecodeInfo())->ReleaseUnused();
+	void ReleaseFortsOrdersBookMDEntriesItemInfo() {
+		((FortsOrdersBookMDEntriesItemInfo*)this->LastDecodeInfo())->ReleaseUnused();
 	}
-	void ReleaseSpectraOrdersBookInfo() {
-		((SpectraOrdersBookInfo*)this->LastDecodeInfo())->ReleaseUnused();
+	void ReleaseFortsOrdersBookInfo() {
+		((FortsOrdersBookInfo*)this->LastDecodeInfo())->ReleaseUnused();
 	}
-	void ReleaseSpectraLogonInfo() {
-		((SpectraLogonInfo*)this->LastDecodeInfo())->ReleaseUnused();
+	void ReleaseFortsLogonInfo() {
+		((FortsLogonInfo*)this->LastDecodeInfo())->ReleaseUnused();
 	}
-	void ReleaseSpectraLogoutInfo() {
-		((SpectraLogoutInfo*)this->LastDecodeInfo())->ReleaseUnused();
+	void ReleaseFortsLogoutInfo() {
+		((FortsLogoutInfo*)this->LastDecodeInfo())->ReleaseUnused();
 	}
-	inline void ResetSpectra() {
-		FastReleaseMethodPointer funcPtr = this->m_spectraReleaseMethods[this->m_templateId - 3];
+	inline void ResetForts() {
+		FastReleaseMethodPointer funcPtr = this->m_fortsReleaseMethods[this->m_templateId - 3];
 		(this->*funcPtr)();
 	}
 public:
@@ -3038,7 +3038,7 @@ public:
 		return;
 	}
 
-	FastProtocolManager(AstsObjectsAllocationInfo *astsInfo, SpectraObjectsAllocationInfo *spectraInfo);
+	FastProtocolManager(AstsObjectsAllocationInfo *astsInfo, FortsObjectsAllocationInfo *spectraInfo);
 	FastProtocolManager();
 	~FastProtocolManager();
 
@@ -3069,20 +3069,20 @@ public:
 	void EncodeAstsHeartbeatInfo(AstsHeartbeatInfo* info);
 #pragma endregion
 
-#pragma region Spectra_Encode_Methods_Declaration_GeneratedCode
-	void EncodeSpectraDefaultIncrementalRefreshMessageInfo(SpectraDefaultIncrementalRefreshMessageInfo* info);
-	void EncodeSpectraDefaultSnapshotMessageInfo(SpectraDefaultSnapshotMessageInfo* info);
-	void EncodeSpectraSecurityDefinitionInfo(SpectraSecurityDefinitionInfo* info);
-	void EncodeSpectraSecurityDefinitionUpdateReportInfo(SpectraSecurityDefinitionUpdateReportInfo* info);
-	void EncodeSpectraSecurityStatusInfo(SpectraSecurityStatusInfo* info);
-	void EncodeSpectraHeartbeatInfo(SpectraHeartbeatInfo* info);
-	void EncodeSpectraSequenceResetInfo(SpectraSequenceResetInfo* info);
-	void EncodeSpectraTradingSessionStatusInfo(SpectraTradingSessionStatusInfo* info);
-	void EncodeSpectraNewsInfo(SpectraNewsInfo* info);
-	void EncodeSpectraOrdersLogInfo(SpectraOrdersLogInfo* info);
-	void EncodeSpectraOrdersBookInfo(SpectraOrdersBookInfo* info);
-	void EncodeSpectraLogonInfo(SpectraLogonInfo* info);
-	void EncodeSpectraLogoutInfo(SpectraLogoutInfo* info);
+#pragma region Forts_Encode_Methods_Declaration_GeneratedCode
+	void EncodeFortsDefaultIncrementalRefreshMessageInfo(FortsDefaultIncrementalRefreshMessageInfo* info);
+	void EncodeFortsDefaultSnapshotMessageInfo(FortsDefaultSnapshotMessageInfo* info);
+	void EncodeFortsSecurityDefinitionInfo(FortsSecurityDefinitionInfo* info);
+	void EncodeFortsSecurityDefinitionUpdateReportInfo(FortsSecurityDefinitionUpdateReportInfo* info);
+	void EncodeFortsSecurityStatusInfo(FortsSecurityStatusInfo* info);
+	void EncodeFortsHeartbeatInfo(FortsHeartbeatInfo* info);
+	void EncodeFortsSequenceResetInfo(FortsSequenceResetInfo* info);
+	void EncodeFortsTradingSessionStatusInfo(FortsTradingSessionStatusInfo* info);
+	void EncodeFortsNewsInfo(FortsNewsInfo* info);
+	void EncodeFortsOrdersLogInfo(FortsOrdersLogInfo* info);
+	void EncodeFortsOrdersBookInfo(FortsOrdersBookInfo* info);
+	void EncodeFortsLogonInfo(FortsLogonInfo* info);
+	void EncodeFortsLogoutInfo(FortsLogoutInfo* info);
 #pragma endregion
 
 #pragma region Asts_Print_Methods_Declaration_GeneratedCode
@@ -3124,33 +3124,33 @@ public:
 	void PrintXmlAstsHeartbeat(AstsHeartbeatInfo *info);
 #pragma endregion
 
-#pragma region Spectra_Print_Methods_Declaration_GeneratedCode
-	void PrintSpectraDefaultIncrementalRefreshMessage(SpectraDefaultIncrementalRefreshMessageInfo *info);
-	void PrintSpectraDefaultSnapshotMessage(SpectraDefaultSnapshotMessageInfo *info);
-	void PrintSpectraSecurityDefinition(SpectraSecurityDefinitionInfo *info);
-	void PrintSpectraSecurityDefinitionUpdateReport(SpectraSecurityDefinitionUpdateReportInfo *info);
-	void PrintSpectraSecurityStatus(SpectraSecurityStatusInfo *info);
-	void PrintSpectraHeartbeat(SpectraHeartbeatInfo *info);
-	void PrintSpectraSequenceReset(SpectraSequenceResetInfo *info);
-	void PrintSpectraTradingSessionStatus(SpectraTradingSessionStatusInfo *info);
-	void PrintSpectraNews(SpectraNewsInfo *info);
-	void PrintSpectraOrdersLog(SpectraOrdersLogInfo *info);
-	void PrintSpectraOrdersBook(SpectraOrdersBookInfo *info);
-	void PrintSpectraLogon(SpectraLogonInfo *info);
-	void PrintSpectraLogout(SpectraLogoutInfo *info);
-	void PrintXmlSpectraDefaultIncrementalRefreshMessage(SpectraDefaultIncrementalRefreshMessageInfo *info);
-	void PrintXmlSpectraDefaultSnapshotMessage(SpectraDefaultSnapshotMessageInfo *info);
-	void PrintXmlSpectraSecurityDefinition(SpectraSecurityDefinitionInfo *info);
-	void PrintXmlSpectraSecurityDefinitionUpdateReport(SpectraSecurityDefinitionUpdateReportInfo *info);
-	void PrintXmlSpectraSecurityStatus(SpectraSecurityStatusInfo *info);
-	void PrintXmlSpectraHeartbeat(SpectraHeartbeatInfo *info);
-	void PrintXmlSpectraSequenceReset(SpectraSequenceResetInfo *info);
-	void PrintXmlSpectraTradingSessionStatus(SpectraTradingSessionStatusInfo *info);
-	void PrintXmlSpectraNews(SpectraNewsInfo *info);
-	void PrintXmlSpectraOrdersLog(SpectraOrdersLogInfo *info);
-	void PrintXmlSpectraOrdersBook(SpectraOrdersBookInfo *info);
-	void PrintXmlSpectraLogon(SpectraLogonInfo *info);
-	void PrintXmlSpectraLogout(SpectraLogoutInfo *info);
+#pragma region Forts_Print_Methods_Declaration_GeneratedCode
+	void PrintFortsDefaultIncrementalRefreshMessage(FortsDefaultIncrementalRefreshMessageInfo *info);
+	void PrintFortsDefaultSnapshotMessage(FortsDefaultSnapshotMessageInfo *info);
+	void PrintFortsSecurityDefinition(FortsSecurityDefinitionInfo *info);
+	void PrintFortsSecurityDefinitionUpdateReport(FortsSecurityDefinitionUpdateReportInfo *info);
+	void PrintFortsSecurityStatus(FortsSecurityStatusInfo *info);
+	void PrintFortsHeartbeat(FortsHeartbeatInfo *info);
+	void PrintFortsSequenceReset(FortsSequenceResetInfo *info);
+	void PrintFortsTradingSessionStatus(FortsTradingSessionStatusInfo *info);
+	void PrintFortsNews(FortsNewsInfo *info);
+	void PrintFortsOrdersLog(FortsOrdersLogInfo *info);
+	void PrintFortsOrdersBook(FortsOrdersBookInfo *info);
+	void PrintFortsLogon(FortsLogonInfo *info);
+	void PrintFortsLogout(FortsLogoutInfo *info);
+	void PrintXmlFortsDefaultIncrementalRefreshMessage(FortsDefaultIncrementalRefreshMessageInfo *info);
+	void PrintXmlFortsDefaultSnapshotMessage(FortsDefaultSnapshotMessageInfo *info);
+	void PrintXmlFortsSecurityDefinition(FortsSecurityDefinitionInfo *info);
+	void PrintXmlFortsSecurityDefinitionUpdateReport(FortsSecurityDefinitionUpdateReportInfo *info);
+	void PrintXmlFortsSecurityStatus(FortsSecurityStatusInfo *info);
+	void PrintXmlFortsHeartbeat(FortsHeartbeatInfo *info);
+	void PrintXmlFortsSequenceReset(FortsSequenceResetInfo *info);
+	void PrintXmlFortsTradingSessionStatus(FortsTradingSessionStatusInfo *info);
+	void PrintXmlFortsNews(FortsNewsInfo *info);
+	void PrintXmlFortsOrdersLog(FortsOrdersLogInfo *info);
+	void PrintXmlFortsOrdersBook(FortsOrdersBookInfo *info);
+	void PrintXmlFortsLogon(FortsLogonInfo *info);
+	void PrintXmlFortsLogout(FortsLogoutInfo *info);
 #pragma endregion
 
 #pragma region Asts_Decode_Methods_Definition_GeneratedCode
@@ -5809,23 +5809,23 @@ public:
 	}
 #pragma endregion
 
-#pragma region Spectra_Decode_Methods_Definition_GeneratedCode
-	inline void DecodeSpectraHeader() {
+#pragma region Forts_Decode_Methods_Definition_GeneratedCode
+	inline void DecodeFortsHeader() {
 
 		this->ParsePresenceMap(&(this->m_presenceMap));
 		this->m_templateId = ReadUInt32_Mandatory();
 	}
 
-	int GetSpectraTotalNumReports() {
+	int GetFortsTotalNumReports() {
 		// ReadMsgNumber and DecodeHeader should be called first
 		SkipToNextField(); // MsgSeqNum
 		SkipToNextField(); // SendingTime
 		return ReadInt32_Mandatory();
 	}
-	void* DecodeSpectraUnsupportedMessage() { return 0; }
-	SpectraSnapshotInfo* GetSpectraSnapshotInfoUnsupported() { return 0; }
-	void* DecodeSpectraDefaultIncrementalRefreshMessage() {
-		SpectraDefaultIncrementalRefreshMessageInfo* info = GetFreeSpectraDefaultIncrementalRefreshMessageInfo();
+	void* DecodeFortsUnsupportedMessage() { return 0; }
+	FortsSnapshotInfo* GetFortsSnapshotInfoUnsupported() { return 0; }
+	void* DecodeFortsDefaultIncrementalRefreshMessage() {
+		FortsDefaultIncrementalRefreshMessageInfo* info = GetFreeFortsDefaultIncrementalRefreshMessageInfo();
 		info->PresenceMap = this->m_presenceMap;
 
 		info->MsgSeqNum = ReadUInt32_Mandatory();
@@ -5836,10 +5836,10 @@ public:
 			info->LastFragment = ReadUInt32_Optional();
 
 		info->MDEntriesCount = ReadUInt32_Mandatory();
-		SpectraDefaultIncrementalRefreshMessageMDEntriesItemInfo* mdeItemInfo = NULL;
+		FortsDefaultIncrementalRefreshMessageMDEntriesItemInfo* mdeItemInfo = NULL;
 
 		for(int i = 0; i < info->MDEntriesCount; i++) {
-			mdeItemInfo = GetFreeSpectraDefaultIncrementalRefreshMessageMDEntriesItemInfo();
+			mdeItemInfo = GetFreeFortsDefaultIncrementalRefreshMessageMDEntriesItemInfo();
 			info->MDEntries[i] = mdeItemInfo;
 			mdeItemInfo->MDUpdateAction = ReadUInt32_Mandatory();
 			ReadString_Mandatory(mdeItemInfo->MDEntryType, &(mdeItemInfo->MDEntryTypeLength));
@@ -5918,14 +5918,14 @@ public:
 				mdeItemInfo->NullMap |= NULL_MAP_INDEX17;
 			else
 				ReadString_Optional(mdeItemInfo->OrderSide, &(mdeItemInfo->OrderSideLength));
-			this->m_prevspectraDefaultIncrementalRefreshMessageMDEntriesItemInfo = mdeItemInfo;
+			this->m_prevfortsDefaultIncrementalRefreshMessageMDEntriesItemInfo = mdeItemInfo;
 		}
 
-		this->m_prevspectraDefaultIncrementalRefreshMessageInfo = info;
+		this->m_prevfortsDefaultIncrementalRefreshMessageInfo = info;
 		return info;
 	}
-	void* DecodeSpectraDefaultSnapshotMessage() {
-		SpectraDefaultSnapshotMessageInfo* info = GetFreeSpectraDefaultSnapshotMessageInfo();
+	void* DecodeFortsDefaultSnapshotMessage() {
+		FortsDefaultSnapshotMessageInfo* info = GetFreeFortsDefaultSnapshotMessageInfo();
 		info->PresenceMap = this->m_presenceMap;
 
 		info->MsgSeqNum = ReadUInt32_Mandatory();
@@ -5952,10 +5952,10 @@ public:
 			ReadString_Optional(info->SecurityGroup, &(info->SecurityGroupLength));
 
 		info->MDEntriesCount = ReadUInt32_Mandatory();
-		SpectraDefaultSnapshotMessageMDEntriesItemInfo* mdeItemInfo = NULL;
+		FortsDefaultSnapshotMessageMDEntriesItemInfo* mdeItemInfo = NULL;
 
 		for(int i = 0; i < info->MDEntriesCount; i++) {
-			mdeItemInfo = GetFreeSpectraDefaultSnapshotMessageMDEntriesItemInfo();
+			mdeItemInfo = GetFreeFortsDefaultSnapshotMessageMDEntriesItemInfo();
 			info->MDEntries[i] = mdeItemInfo;
 			ReadString_Mandatory(mdeItemInfo->MDEntryType, &(mdeItemInfo->MDEntryTypeLength));
 			if(CheckProcessNullUInt32())
@@ -6011,14 +6011,14 @@ public:
 				mdeItemInfo->NullMap |= NULL_MAP_INDEX12;
 			else
 				ReadString_Optional(mdeItemInfo->OrderSide, &(mdeItemInfo->OrderSideLength));
-			this->m_prevspectraDefaultSnapshotMessageMDEntriesItemInfo = mdeItemInfo;
+			this->m_prevfortsDefaultSnapshotMessageMDEntriesItemInfo = mdeItemInfo;
 		}
 
-		this->m_prevspectraDefaultSnapshotMessageInfo = info;
+		this->m_prevfortsDefaultSnapshotMessageInfo = info;
 		return info;
 	}
-	void* DecodeSpectraSecurityDefinition() {
-		SpectraSecurityDefinitionInfo* info = GetFreeSpectraSecurityDefinitionInfo();
+	void* DecodeFortsSecurityDefinition() {
+		FortsSecurityDefinitionInfo* info = GetFreeFortsSecurityDefinitionInfo();
 		info->PresenceMap = this->m_presenceMap;
 
 		info->MsgSeqNum = ReadUInt32_Mandatory();
@@ -6079,10 +6079,10 @@ public:
 			ReadDecimal_Optional(&(info->Volatility));
 
 		info->MDFeedTypesCount = ReadUInt32_Mandatory();
-		SpectraSecurityDefinitionMDFeedTypesItemInfo* mdftItemInfo = NULL;
+		FortsSecurityDefinitionMDFeedTypesItemInfo* mdftItemInfo = NULL;
 
 		for(int i = 0; i < info->MDFeedTypesCount; i++) {
-			mdftItemInfo = GetFreeSpectraSecurityDefinitionMDFeedTypesItemInfo();
+			mdftItemInfo = GetFreeFortsSecurityDefinitionMDFeedTypesItemInfo();
 			info->MDFeedTypes[i] = mdftItemInfo;
 			ReadString_Mandatory(mdftItemInfo->MDFeedType, &(mdftItemInfo->MDFeedTypeLength));
 			if(CheckProcessNullUInt32())
@@ -6093,7 +6093,7 @@ public:
 				mdftItemInfo->NullMap |= NULL_MAP_INDEX1;
 			else
 				mdftItemInfo->MDBookType = ReadUInt32_Optional();
-			this->m_prevspectraSecurityDefinitionMDFeedTypesItemInfo = mdftItemInfo;
+			this->m_prevfortsSecurityDefinitionMDFeedTypesItemInfo = mdftItemInfo;
 		}
 
 
@@ -6103,17 +6103,17 @@ public:
 		}
 		else
 			info->UnderlyingsCount = ReadUInt32_Optional();
-		SpectraSecurityDefinitionUnderlyingsItemInfo* uItemInfo = NULL;
+		FortsSecurityDefinitionUnderlyingsItemInfo* uItemInfo = NULL;
 
 		for(int i = 0; i < info->UnderlyingsCount; i++) {
-			uItemInfo = GetFreeSpectraSecurityDefinitionUnderlyingsItemInfo();
+			uItemInfo = GetFreeFortsSecurityDefinitionUnderlyingsItemInfo();
 			info->Underlyings[i] = uItemInfo;
 			ReadString_Mandatory(uItemInfo->UnderlyingSymbol, &(uItemInfo->UnderlyingSymbolLength));
 			if(CheckProcessNullUInt64())
 				uItemInfo->NullMap |= NULL_MAP_INDEX0;
 			else
 				uItemInfo->UnderlyingSecurityID = ReadUInt64_Optional();
-			this->m_prevspectraSecurityDefinitionUnderlyingsItemInfo = uItemInfo;
+			this->m_prevfortsSecurityDefinitionUnderlyingsItemInfo = uItemInfo;
 		}
 
 		if(CheckProcessNullDecimal())
@@ -6163,15 +6163,15 @@ public:
 		}
 		else
 			info->InstrumentLegsCount = ReadUInt32_Optional();
-		SpectraSecurityDefinitionInstrumentLegsItemInfo* ilItemInfo = NULL;
+		FortsSecurityDefinitionInstrumentLegsItemInfo* ilItemInfo = NULL;
 
 		for(int i = 0; i < info->InstrumentLegsCount; i++) {
-			ilItemInfo = GetFreeSpectraSecurityDefinitionInstrumentLegsItemInfo();
+			ilItemInfo = GetFreeFortsSecurityDefinitionInstrumentLegsItemInfo();
 			info->InstrumentLegs[i] = ilItemInfo;
 			ReadString_Mandatory(ilItemInfo->LegSymbol, &(ilItemInfo->LegSymbolLength));
 			ilItemInfo->LegSecurityID = ReadUInt64_Mandatory();
 			ReadDecimal_Mandatory(&(ilItemInfo->LegRatioQty));
-			this->m_prevspectraSecurityDefinitionInstrumentLegsItemInfo = ilItemInfo;
+			this->m_prevfortsSecurityDefinitionInstrumentLegsItemInfo = ilItemInfo;
 		}
 
 
@@ -6181,14 +6181,14 @@ public:
 		}
 		else
 			info->InstrumentAttributesCount = ReadUInt32_Optional();
-		SpectraSecurityDefinitionInstrumentAttributesItemInfo* iaItemInfo = NULL;
+		FortsSecurityDefinitionInstrumentAttributesItemInfo* iaItemInfo = NULL;
 
 		for(int i = 0; i < info->InstrumentAttributesCount; i++) {
-			iaItemInfo = GetFreeSpectraSecurityDefinitionInstrumentAttributesItemInfo();
+			iaItemInfo = GetFreeFortsSecurityDefinitionInstrumentAttributesItemInfo();
 			info->InstrumentAttributes[i] = iaItemInfo;
 			iaItemInfo->InstrAttribType = ReadInt32_Mandatory();
 			ReadString_Mandatory(iaItemInfo->InstrAttribValue, &(iaItemInfo->InstrAttribValueLength));
-			this->m_prevspectraSecurityDefinitionInstrumentAttributesItemInfo = iaItemInfo;
+			this->m_prevfortsSecurityDefinitionInstrumentAttributesItemInfo = iaItemInfo;
 		}
 
 		if(CheckProcessNullDecimal())
@@ -6206,15 +6206,15 @@ public:
 		}
 		else
 			info->EvntGrpCount = ReadUInt32_Optional();
-		SpectraSecurityDefinitionEvntGrpItemInfo* egItemInfo = NULL;
+		FortsSecurityDefinitionEvntGrpItemInfo* egItemInfo = NULL;
 
 		for(int i = 0; i < info->EvntGrpCount; i++) {
-			egItemInfo = GetFreeSpectraSecurityDefinitionEvntGrpItemInfo();
+			egItemInfo = GetFreeFortsSecurityDefinitionEvntGrpItemInfo();
 			info->EvntGrp[i] = egItemInfo;
 			egItemInfo->EventType = ReadInt32_Mandatory();
 			egItemInfo->EventDate = ReadUInt32_Mandatory();
 			egItemInfo->EventTime = ReadUInt64_Mandatory();
-			this->m_prevspectraSecurityDefinitionEvntGrpItemInfo = egItemInfo;
+			this->m_prevfortsSecurityDefinitionEvntGrpItemInfo = egItemInfo;
 		}
 
 		if(CheckProcessNullUInt32())
@@ -6225,11 +6225,11 @@ public:
 			info->NullMap |= NULL_MAP_INDEX29;
 		else
 			info->MaturityTime = ReadUInt32_Optional();
-		this->m_prevspectraSecurityDefinitionInfo = info;
+		this->m_prevfortsSecurityDefinitionInfo = info;
 		return info;
 	}
-	void* DecodeSpectraSecurityDefinitionUpdateReport() {
-		SpectraSecurityDefinitionUpdateReportInfo* info = GetFreeSpectraSecurityDefinitionUpdateReportInfo();
+	void* DecodeFortsSecurityDefinitionUpdateReport() {
+		FortsSecurityDefinitionUpdateReportInfo* info = GetFreeFortsSecurityDefinitionUpdateReportInfo();
 		info->PresenceMap = this->m_presenceMap;
 
 		info->MsgSeqNum = ReadUInt32_Mandatory();
@@ -6248,11 +6248,11 @@ public:
 			info->NullMap |= NULL_MAP_INDEX2;
 		else
 			ReadDecimal_Optional(&(info->TheorPriceLimit));
-		this->m_prevspectraSecurityDefinitionUpdateReportInfo = info;
+		this->m_prevfortsSecurityDefinitionUpdateReportInfo = info;
 		return info;
 	}
-	void* DecodeSpectraSecurityStatus() {
-		SpectraSecurityStatusInfo* info = GetFreeSpectraSecurityStatusInfo();
+	void* DecodeFortsSecurityStatus() {
+		FortsSecurityStatusInfo* info = GetFreeFortsSecurityStatusInfo();
 		info->PresenceMap = this->m_presenceMap;
 
 		info->MsgSeqNum = ReadUInt32_Mandatory();
@@ -6284,30 +6284,30 @@ public:
 			info->NullMap |= NULL_MAP_INDEX5;
 		else
 			ReadDecimal_Optional(&(info->InitialMarginSyntetic));
-		this->m_prevspectraSecurityStatusInfo = info;
+		this->m_prevfortsSecurityStatusInfo = info;
 		return info;
 	}
-	void* DecodeSpectraHeartbeat() {
-		SpectraHeartbeatInfo* info = GetFreeSpectraHeartbeatInfo();
+	void* DecodeFortsHeartbeat() {
+		FortsHeartbeatInfo* info = GetFreeFortsHeartbeatInfo();
 		info->PresenceMap = this->m_presenceMap;
 
 		info->MsgSeqNum = ReadUInt32_Mandatory();
 		info->SendingTime = ReadUInt64_Mandatory();
-		this->m_prevspectraHeartbeatInfo = info;
+		this->m_prevfortsHeartbeatInfo = info;
 		return info;
 	}
-	void* DecodeSpectraSequenceReset() {
-		SpectraSequenceResetInfo* info = GetFreeSpectraSequenceResetInfo();
+	void* DecodeFortsSequenceReset() {
+		FortsSequenceResetInfo* info = GetFreeFortsSequenceResetInfo();
 		info->PresenceMap = this->m_presenceMap;
 
 		info->MsgSeqNum = ReadUInt32_Mandatory();
 		info->SendingTime = ReadUInt64_Mandatory();
 		info->NewSeqNo = ReadUInt32_Mandatory();
-		this->m_prevspectraSequenceResetInfo = info;
+		this->m_prevfortsSequenceResetInfo = info;
 		return info;
 	}
-	void* DecodeSpectraTradingSessionStatus() {
-		SpectraTradingSessionStatusInfo* info = GetFreeSpectraTradingSessionStatusInfo();
+	void* DecodeFortsTradingSessionStatus() {
+		FortsTradingSessionStatusInfo* info = GetFreeFortsTradingSessionStatusInfo();
 		info->PresenceMap = this->m_presenceMap;
 
 		info->MsgSeqNum = ReadUInt32_Mandatory();
@@ -6334,11 +6334,11 @@ public:
 			info->NullMap |= NULL_MAP_INDEX3;
 		else
 			info->TradSesEvent = ReadInt32_Optional();
-		this->m_prevspectraTradingSessionStatusInfo = info;
+		this->m_prevfortsTradingSessionStatusInfo = info;
 		return info;
 	}
-	void* DecodeSpectraNews() {
-		SpectraNewsInfo* info = GetFreeSpectraNewsInfo();
+	void* DecodeFortsNews() {
+		FortsNewsInfo* info = GetFreeFortsNewsInfo();
 		info->PresenceMap = this->m_presenceMap;
 
 		info->MsgSeqNum = ReadUInt32_Mandatory();
@@ -6371,20 +6371,20 @@ public:
 			ReadString_Optional(info->MarketSegmentID, &(info->MarketSegmentIDLength));
 
 		info->NewsTextCount = ReadUInt32_Mandatory();
-		SpectraNewsNewsTextItemInfo* ntItemInfo = NULL;
+		FortsNewsNewsTextItemInfo* ntItemInfo = NULL;
 
 		for(int i = 0; i < info->NewsTextCount; i++) {
-			ntItemInfo = GetFreeSpectraNewsNewsTextItemInfo();
+			ntItemInfo = GetFreeFortsNewsNewsTextItemInfo();
 			info->NewsText[i] = ntItemInfo;
 			ReadString_Mandatory(ntItemInfo->Text, &(ntItemInfo->TextLength));
-			this->m_prevspectraNewsNewsTextItemInfo = ntItemInfo;
+			this->m_prevfortsNewsNewsTextItemInfo = ntItemInfo;
 		}
 
-		this->m_prevspectraNewsInfo = info;
+		this->m_prevfortsNewsInfo = info;
 		return info;
 	}
-	void* DecodeSpectraOrdersLog() {
-		SpectraOrdersLogInfo* info = GetFreeSpectraOrdersLogInfo();
+	void* DecodeFortsOrdersLog() {
+		FortsOrdersLogInfo* info = GetFreeFortsOrdersLogInfo();
 		info->PresenceMap = this->m_presenceMap;
 
 		info->MsgSeqNum = ReadUInt32_Mandatory();
@@ -6392,10 +6392,10 @@ public:
 		info->LastFragment = ReadUInt32_Mandatory();
 
 		info->MDEntriesCount = ReadUInt32_Mandatory();
-		SpectraOrdersLogMDEntriesItemInfo* mdeItemInfo = NULL;
+		FortsOrdersLogMDEntriesItemInfo* mdeItemInfo = NULL;
 
 		for(int i = 0; i < info->MDEntriesCount; i++) {
-			mdeItemInfo = GetFreeSpectraOrdersLogMDEntriesItemInfo();
+			mdeItemInfo = GetFreeFortsOrdersLogMDEntriesItemInfo();
 			info->MDEntries[i] = mdeItemInfo;
 			mdeItemInfo->MDUpdateAction = ReadUInt32_Mandatory();
 			ReadString_Mandatory(mdeItemInfo->MDEntryType, &(mdeItemInfo->MDEntryTypeLength));
@@ -6449,14 +6449,14 @@ public:
 				mdeItemInfo->NullMap |= NULL_MAP_INDEX11;
 			else
 				mdeItemInfo->Revision = ReadUInt64_Optional();
-			this->m_prevspectraOrdersLogMDEntriesItemInfo = mdeItemInfo;
+			this->m_prevfortsOrdersLogMDEntriesItemInfo = mdeItemInfo;
 		}
 
-		this->m_prevspectraOrdersLogInfo = info;
+		this->m_prevfortsOrdersLogInfo = info;
 		return info;
 	}
-	void* DecodeSpectraOrdersBook() {
-		SpectraOrdersBookInfo* info = GetFreeSpectraOrdersBookInfo();
+	void* DecodeFortsOrdersBook() {
+		FortsOrdersBookInfo* info = GetFreeFortsOrdersBookInfo();
 		info->PresenceMap = this->m_presenceMap;
 
 		info->MsgSeqNum = ReadUInt32_Mandatory();
@@ -6476,10 +6476,10 @@ public:
 		info->SecurityIDSource = ReadUInt32_Mandatory();
 
 		info->MDEntriesCount = ReadUInt32_Mandatory();
-		SpectraOrdersBookMDEntriesItemInfo* mdeItemInfo = NULL;
+		FortsOrdersBookMDEntriesItemInfo* mdeItemInfo = NULL;
 
 		for(int i = 0; i < info->MDEntriesCount; i++) {
-			mdeItemInfo = GetFreeSpectraOrdersBookMDEntriesItemInfo();
+			mdeItemInfo = GetFreeFortsOrdersBookMDEntriesItemInfo();
 			info->MDEntries[i] = mdeItemInfo;
 			ReadString_Mandatory(mdeItemInfo->MDEntryType, &(mdeItemInfo->MDEntryTypeLength));
 			if(CheckProcessNullInt64())
@@ -6507,23 +6507,23 @@ public:
 				mdeItemInfo->NullMap |= NULL_MAP_INDEX5;
 			else
 				mdeItemInfo->MDFlags = ReadInt64_Optional();
-			this->m_prevspectraOrdersBookMDEntriesItemInfo = mdeItemInfo;
+			this->m_prevfortsOrdersBookMDEntriesItemInfo = mdeItemInfo;
 		}
 
-		this->m_prevspectraOrdersBookInfo = info;
+		this->m_prevfortsOrdersBookInfo = info;
 		return info;
 	}
-	void* DecodeSpectraLogon() {
-		SpectraLogonInfo* info = GetFreeSpectraLogonInfo();
+	void* DecodeFortsLogon() {
+		FortsLogonInfo* info = GetFreeFortsLogonInfo();
 		info->PresenceMap = this->m_presenceMap;
 
 		info->MsgSeqNum = ReadUInt32_Mandatory();
 		info->SendingTime = ReadUInt64_Mandatory();
-		this->m_prevspectraLogonInfo = info;
+		this->m_prevfortsLogonInfo = info;
 		return info;
 	}
-	void* DecodeSpectraLogout() {
-		SpectraLogoutInfo* info = GetFreeSpectraLogoutInfo();
+	void* DecodeFortsLogout() {
+		FortsLogoutInfo* info = GetFreeFortsLogoutInfo();
 		info->PresenceMap = this->m_presenceMap;
 
 		info->MsgSeqNum = ReadUInt32_Mandatory();
@@ -6532,11 +6532,11 @@ public:
 			info->NullMap |= NULL_MAP_INDEX0;
 		else
 			ReadString_Optional(info->Text, &(info->TextLength));
-		this->m_prevspectraLogoutInfo = info;
+		this->m_prevfortsLogoutInfo = info;
 		return info;
 	}
-	SpectraSnapshotInfo* GetSpectraSnapshotInfoDefaultIncrementalRefreshMessage() {
-		SpectraSnapshotInfo *info = GetFreeSpectraSnapshotInfo();
+	FortsSnapshotInfo* GetFortsSnapshotInfoDefaultIncrementalRefreshMessage() {
+		FortsSnapshotInfo *info = GetFreeFortsSnapshotInfo();
 		info->PresenceMap = this->m_presenceMap;
 		info->TemplateId = this->m_templateId;
 
@@ -6548,8 +6548,8 @@ public:
 			info->LastFragment = ReadUInt32_Optional();
 		return info;
 	}
-	SpectraSnapshotInfo* GetSpectraSnapshotInfoDefaultSnapshotMessage() {
-		SpectraSnapshotInfo *info = GetFreeSpectraSnapshotInfo();
+	FortsSnapshotInfo* GetFortsSnapshotInfoDefaultSnapshotMessage() {
+		FortsSnapshotInfo *info = GetFreeFortsSnapshotInfo();
 		info->PresenceMap = this->m_presenceMap;
 		info->TemplateId = this->m_templateId;
 
@@ -6570,8 +6570,8 @@ public:
 			ReadString_Optional(info->Symbol, &(info->SymbolLength));
 		return info;
 	}
-	SpectraSnapshotInfo* GetSpectraSnapshotInfoSecurityDefinition() {
-		SpectraSnapshotInfo *info = GetFreeSpectraSnapshotInfo();
+	FortsSnapshotInfo* GetFortsSnapshotInfoSecurityDefinition() {
+		FortsSnapshotInfo *info = GetFreeFortsSnapshotInfo();
 		info->PresenceMap = this->m_presenceMap;
 		info->TemplateId = this->m_templateId;
 
@@ -6598,8 +6598,8 @@ public:
 			info->TradingSessionID = ReadUInt32_Optional();
 		return info;
 	}
-	SpectraSnapshotInfo* GetSpectraSnapshotInfoSecurityDefinitionUpdateReport() {
-		SpectraSnapshotInfo *info = GetFreeSpectraSnapshotInfo();
+	FortsSnapshotInfo* GetFortsSnapshotInfoSecurityDefinitionUpdateReport() {
+		FortsSnapshotInfo *info = GetFreeFortsSnapshotInfo();
 		info->PresenceMap = this->m_presenceMap;
 		info->TemplateId = this->m_templateId;
 
@@ -6607,8 +6607,8 @@ public:
 		info->SendingTime = ReadUInt64_Mandatory();
 		return info;
 	}
-	SpectraSnapshotInfo* GetSpectraSnapshotInfoSecurityStatus() {
-		SpectraSnapshotInfo *info = GetFreeSpectraSnapshotInfo();
+	FortsSnapshotInfo* GetFortsSnapshotInfoSecurityStatus() {
+		FortsSnapshotInfo *info = GetFreeFortsSnapshotInfo();
 		info->PresenceMap = this->m_presenceMap;
 		info->TemplateId = this->m_templateId;
 
@@ -6619,8 +6619,8 @@ public:
 		ReadString_Mandatory(info->Symbol, &(info->SymbolLength));
 		return info;
 	}
-	SpectraSnapshotInfo* GetSpectraSnapshotInfoHeartbeat() {
-		SpectraSnapshotInfo *info = GetFreeSpectraSnapshotInfo();
+	FortsSnapshotInfo* GetFortsSnapshotInfoHeartbeat() {
+		FortsSnapshotInfo *info = GetFreeFortsSnapshotInfo();
 		info->PresenceMap = this->m_presenceMap;
 		info->TemplateId = this->m_templateId;
 
@@ -6628,8 +6628,8 @@ public:
 		info->SendingTime = ReadUInt64_Mandatory();
 		return info;
 	}
-	SpectraSnapshotInfo* GetSpectraSnapshotInfoSequenceReset() {
-		SpectraSnapshotInfo *info = GetFreeSpectraSnapshotInfo();
+	FortsSnapshotInfo* GetFortsSnapshotInfoSequenceReset() {
+		FortsSnapshotInfo *info = GetFreeFortsSnapshotInfo();
 		info->PresenceMap = this->m_presenceMap;
 		info->TemplateId = this->m_templateId;
 
@@ -6637,8 +6637,8 @@ public:
 		info->SendingTime = ReadUInt64_Mandatory();
 		return info;
 	}
-	SpectraSnapshotInfo* GetSpectraSnapshotInfoTradingSessionStatus() {
-		SpectraSnapshotInfo *info = GetFreeSpectraSnapshotInfo();
+	FortsSnapshotInfo* GetFortsSnapshotInfoTradingSessionStatus() {
+		FortsSnapshotInfo *info = GetFreeFortsSnapshotInfo();
 		info->PresenceMap = this->m_presenceMap;
 		info->TemplateId = this->m_templateId;
 
@@ -6651,8 +6651,8 @@ public:
 		info->TradingSessionID = ReadUInt32_Mandatory();
 		return info;
 	}
-	SpectraSnapshotInfo* GetSpectraSnapshotInfoNews() {
-		SpectraSnapshotInfo *info = GetFreeSpectraSnapshotInfo();
+	FortsSnapshotInfo* GetFortsSnapshotInfoNews() {
+		FortsSnapshotInfo *info = GetFreeFortsSnapshotInfo();
 		info->PresenceMap = this->m_presenceMap;
 		info->TemplateId = this->m_templateId;
 
@@ -6664,8 +6664,8 @@ public:
 			info->LastFragment = ReadUInt32_Optional();
 		return info;
 	}
-	SpectraSnapshotInfo* GetSpectraSnapshotInfoOrdersLog() {
-		SpectraSnapshotInfo *info = GetFreeSpectraSnapshotInfo();
+	FortsSnapshotInfo* GetFortsSnapshotInfoOrdersLog() {
+		FortsSnapshotInfo *info = GetFreeFortsSnapshotInfo();
 		info->PresenceMap = this->m_presenceMap;
 		info->TemplateId = this->m_templateId;
 
@@ -6674,8 +6674,8 @@ public:
 		info->LastFragment = ReadUInt32_Mandatory();
 		return info;
 	}
-	SpectraSnapshotInfo* GetSpectraSnapshotInfoOrdersBook() {
-		SpectraSnapshotInfo *info = GetFreeSpectraSnapshotInfo();
+	FortsSnapshotInfo* GetFortsSnapshotInfoOrdersBook() {
+		FortsSnapshotInfo *info = GetFreeFortsSnapshotInfo();
 		info->PresenceMap = this->m_presenceMap;
 		info->TemplateId = this->m_templateId;
 
@@ -6690,8 +6690,8 @@ public:
 		info->RouteFirst = ReadUInt32_Mandatory();
 		return info;
 	}
-	SpectraSnapshotInfo* GetSpectraSnapshotInfoLogon() {
-		SpectraSnapshotInfo *info = GetFreeSpectraSnapshotInfo();
+	FortsSnapshotInfo* GetFortsSnapshotInfoLogon() {
+		FortsSnapshotInfo *info = GetFreeFortsSnapshotInfo();
 		info->PresenceMap = this->m_presenceMap;
 		info->TemplateId = this->m_templateId;
 
@@ -6699,8 +6699,8 @@ public:
 		info->SendingTime = ReadUInt64_Mandatory();
 		return info;
 	}
-	SpectraSnapshotInfo* GetSpectraSnapshotInfoLogout() {
-		SpectraSnapshotInfo *info = GetFreeSpectraSnapshotInfo();
+	FortsSnapshotInfo* GetFortsSnapshotInfoLogout() {
+		FortsSnapshotInfo *info = GetFreeFortsSnapshotInfo();
 		info->PresenceMap = this->m_presenceMap;
 		info->TemplateId = this->m_templateId;
 
@@ -6708,103 +6708,103 @@ public:
 		info->SendingTime = ReadUInt64_Mandatory();
 		return info;
 	}
-	inline void* DecodeSpectra() {
-		this->DecodeSpectraHeader();
-		FastDecodeMethodPointer funcPtr = this->m_spectraDecodeMethods[this->m_templateId - 3];
+	inline void* DecodeForts() {
+		this->DecodeFortsHeader();
+		FastDecodeMethodPointer funcPtr = this->m_fortsDecodeMethods[this->m_templateId - 3];
 		this->m_lastDecodedInfo = (this->*funcPtr)();
 		return this->m_lastDecodedInfo;
 	}
-	void PrintSpectra() {
+	void PrintForts() {
 
 		switch(this->m_templateId) {
 			case 12:
-				PrintSpectraDefaultIncrementalRefreshMessage((SpectraDefaultIncrementalRefreshMessageInfo*)this->m_lastDecodedInfo);
+				PrintFortsDefaultIncrementalRefreshMessage((FortsDefaultIncrementalRefreshMessageInfo*)this->m_lastDecodedInfo);
 				break;
 			case 13:
-				PrintSpectraDefaultSnapshotMessage((SpectraDefaultSnapshotMessageInfo*)this->m_lastDecodedInfo);
+				PrintFortsDefaultSnapshotMessage((FortsDefaultSnapshotMessageInfo*)this->m_lastDecodedInfo);
 				break;
 			case 3:
-				PrintSpectraSecurityDefinition((SpectraSecurityDefinitionInfo*)this->m_lastDecodedInfo);
+				PrintFortsSecurityDefinition((FortsSecurityDefinitionInfo*)this->m_lastDecodedInfo);
 				break;
 			case 4:
-				PrintSpectraSecurityDefinitionUpdateReport((SpectraSecurityDefinitionUpdateReportInfo*)this->m_lastDecodedInfo);
+				PrintFortsSecurityDefinitionUpdateReport((FortsSecurityDefinitionUpdateReportInfo*)this->m_lastDecodedInfo);
 				break;
 			case 5:
-				PrintSpectraSecurityStatus((SpectraSecurityStatusInfo*)this->m_lastDecodedInfo);
+				PrintFortsSecurityStatus((FortsSecurityStatusInfo*)this->m_lastDecodedInfo);
 				break;
 			case 6:
-				PrintSpectraHeartbeat((SpectraHeartbeatInfo*)this->m_lastDecodedInfo);
+				PrintFortsHeartbeat((FortsHeartbeatInfo*)this->m_lastDecodedInfo);
 				break;
 			case 7:
-				PrintSpectraSequenceReset((SpectraSequenceResetInfo*)this->m_lastDecodedInfo);
+				PrintFortsSequenceReset((FortsSequenceResetInfo*)this->m_lastDecodedInfo);
 				break;
 			case 8:
-				PrintSpectraTradingSessionStatus((SpectraTradingSessionStatusInfo*)this->m_lastDecodedInfo);
+				PrintFortsTradingSessionStatus((FortsTradingSessionStatusInfo*)this->m_lastDecodedInfo);
 				break;
 			case 9:
-				PrintSpectraNews((SpectraNewsInfo*)this->m_lastDecodedInfo);
+				PrintFortsNews((FortsNewsInfo*)this->m_lastDecodedInfo);
 				break;
 			case 14:
-				PrintSpectraOrdersLog((SpectraOrdersLogInfo*)this->m_lastDecodedInfo);
+				PrintFortsOrdersLog((FortsOrdersLogInfo*)this->m_lastDecodedInfo);
 				break;
 			case 15:
-				PrintSpectraOrdersBook((SpectraOrdersBookInfo*)this->m_lastDecodedInfo);
+				PrintFortsOrdersBook((FortsOrdersBookInfo*)this->m_lastDecodedInfo);
 				break;
 			case 1000:
-				PrintSpectraLogon((SpectraLogonInfo*)this->m_lastDecodedInfo);
+				PrintFortsLogon((FortsLogonInfo*)this->m_lastDecodedInfo);
 				break;
 			case 1001:
-				PrintSpectraLogout((SpectraLogoutInfo*)this->m_lastDecodedInfo);
+				PrintFortsLogout((FortsLogoutInfo*)this->m_lastDecodedInfo);
 				break;
 		}
 	}
-	void PrintXmlSpectra() {
+	void PrintXmlForts() {
 
 		switch(this->m_templateId) {
 			case 12:
-				PrintXmlSpectraDefaultIncrementalRefreshMessage((SpectraDefaultIncrementalRefreshMessageInfo*)this->m_lastDecodedInfo);
+				PrintXmlFortsDefaultIncrementalRefreshMessage((FortsDefaultIncrementalRefreshMessageInfo*)this->m_lastDecodedInfo);
 				break;
 			case 13:
-				PrintXmlSpectraDefaultSnapshotMessage((SpectraDefaultSnapshotMessageInfo*)this->m_lastDecodedInfo);
+				PrintXmlFortsDefaultSnapshotMessage((FortsDefaultSnapshotMessageInfo*)this->m_lastDecodedInfo);
 				break;
 			case 3:
-				PrintXmlSpectraSecurityDefinition((SpectraSecurityDefinitionInfo*)this->m_lastDecodedInfo);
+				PrintXmlFortsSecurityDefinition((FortsSecurityDefinitionInfo*)this->m_lastDecodedInfo);
 				break;
 			case 4:
-				PrintXmlSpectraSecurityDefinitionUpdateReport((SpectraSecurityDefinitionUpdateReportInfo*)this->m_lastDecodedInfo);
+				PrintXmlFortsSecurityDefinitionUpdateReport((FortsSecurityDefinitionUpdateReportInfo*)this->m_lastDecodedInfo);
 				break;
 			case 5:
-				PrintXmlSpectraSecurityStatus((SpectraSecurityStatusInfo*)this->m_lastDecodedInfo);
+				PrintXmlFortsSecurityStatus((FortsSecurityStatusInfo*)this->m_lastDecodedInfo);
 				break;
 			case 6:
-				PrintXmlSpectraHeartbeat((SpectraHeartbeatInfo*)this->m_lastDecodedInfo);
+				PrintXmlFortsHeartbeat((FortsHeartbeatInfo*)this->m_lastDecodedInfo);
 				break;
 			case 7:
-				PrintXmlSpectraSequenceReset((SpectraSequenceResetInfo*)this->m_lastDecodedInfo);
+				PrintXmlFortsSequenceReset((FortsSequenceResetInfo*)this->m_lastDecodedInfo);
 				break;
 			case 8:
-				PrintXmlSpectraTradingSessionStatus((SpectraTradingSessionStatusInfo*)this->m_lastDecodedInfo);
+				PrintXmlFortsTradingSessionStatus((FortsTradingSessionStatusInfo*)this->m_lastDecodedInfo);
 				break;
 			case 9:
-				PrintXmlSpectraNews((SpectraNewsInfo*)this->m_lastDecodedInfo);
+				PrintXmlFortsNews((FortsNewsInfo*)this->m_lastDecodedInfo);
 				break;
 			case 14:
-				PrintXmlSpectraOrdersLog((SpectraOrdersLogInfo*)this->m_lastDecodedInfo);
+				PrintXmlFortsOrdersLog((FortsOrdersLogInfo*)this->m_lastDecodedInfo);
 				break;
 			case 15:
-				PrintXmlSpectraOrdersBook((SpectraOrdersBookInfo*)this->m_lastDecodedInfo);
+				PrintXmlFortsOrdersBook((FortsOrdersBookInfo*)this->m_lastDecodedInfo);
 				break;
 			case 1000:
-				PrintXmlSpectraLogon((SpectraLogonInfo*)this->m_lastDecodedInfo);
+				PrintXmlFortsLogon((FortsLogonInfo*)this->m_lastDecodedInfo);
 				break;
 			case 1001:
-				PrintXmlSpectraLogout((SpectraLogoutInfo*)this->m_lastDecodedInfo);
+				PrintXmlFortsLogout((FortsLogoutInfo*)this->m_lastDecodedInfo);
 				break;
 		}
 	}
-	inline SpectraSnapshotInfo* GetSpectraSnapshotInfo() {
-		this->DecodeSpectraHeader();
-		SpectraGetSnapshotInfoMethodPointer funcPtr = this->m_spectraGetSnapshotInfoMethods[this->m_templateId - 3];
+	inline FortsSnapshotInfo* GetFortsSnapshotInfo() {
+		this->DecodeFortsHeader();
+		FortsGetSnapshotInfoMethodPointer funcPtr = this->m_fortsGetSnapshotInfoMethods[this->m_templateId - 3];
 		return (this->*funcPtr)();
 	}
 #pragma endregion

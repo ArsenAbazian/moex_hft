@@ -145,7 +145,13 @@ add_executable(hft_robot
         source/include/Feeds/Curr/CurrHr.h
         source/include/Test/HistoricalReplayTester.h
         source/include/ProgramStatistics.h
-        source/src/ProgramStatistics.cpp source/src/MarketData/MDEntryQueue.cpp source/include/MarketData/StatisticItem.h source/src/Fast/FastTypes.cpp)
+        source/src/ProgramStatistics.cpp
+        source/src/MarketData/MDEntryQueue.cpp
+        source/include/MarketData/StatisticItem.h
+        source/src/Fast/FastTypes.cpp
+        source/src/FortsMarketDataGroup.cpp
+        source/include/Feeds/Forts/FortsMarketDataGroup.h
+        source/include/Feeds/Forts/FortsFeedChannel.h source/src/FortsFeedChannel.cpp source/include/Feeds/Forts/FortsFeeds.h)
 add_dependencies(hft_robot fast_generate)
 
 add_custom_command(TARGET fast_generate
@@ -158,10 +164,10 @@ add_custom_command(TARGET fast_generate
         -fc ${CMAKE_CURRENT_LIST_DIR}/source/src/Fast/FastProtocolManager.cpp
         -ft ${CMAKE_CURRENT_LIST_DIR}/source/include/Fast/FastTypes.h
         -ax ${CMAKE_CURRENT_LIST_DIR}/test/data/FIX50SP2-2017-Mar.xml
-        -sx ${CMAKE_CURRENT_LIST_DIR}/test/data/SpectraTemplates.xml
+        -sx ${CMAKE_CURRENT_LIST_DIR}/test/data/forts_templates.xml
         -rb ${CMAKE_CURRENT_LIST_DIR}/source/src/Robot.cpp
         -acfg ${CMAKE_CURRENT_LIST_DIR}/test/data/asts_config_test.xml
-        -scfg ${CMAKE_CURRENT_LIST_DIR}/test/data/spectra_config_test.xml
+        -scfg ${CMAKE_CURRENT_LIST_DIR}/test/data/forts_config_test.xml
         COMMENT "generating code...")
 
 #target_link_libraries(hft_robot -Wl,--whole-archive -Wl,--no-whole-archive dl)

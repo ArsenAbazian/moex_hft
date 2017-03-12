@@ -1,18 +1,13 @@
 #pragma once
 #include "FeedConnections.h"
 
-//#define ALLOW_TRADES
-#define ALLOW_ORDERS
-#define ALLOW_STATISTICS
-//#define ALLOW_STATUS
-
 typedef enum _FeedChannelState {
 	fchSuspend,
 	fchCollectSymbols,
 	fchMainLoop
 }FeedChannelState;
 
-class FeedChannel {
+class AstsFeedChannel {
 	char 						id[16];
 	int  						m_idLogIndex;
 	char 						name[64];
@@ -35,8 +30,8 @@ class FeedChannel {
 	bool CheckConnections();
 
 public:
-	FeedChannel(const char *id, const char *name);
-	~FeedChannel();
+	AstsFeedChannel(const char *id, const char *name);
+	~AstsFeedChannel();
 
 	FeedConnection* Msr() { return this->msr; }
 	FeedConnection* Mss() { return this->mss; }

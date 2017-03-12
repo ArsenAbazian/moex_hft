@@ -5,4 +5,4 @@
 #include "FastTypes.h"
 
 AstsObjectsAllocationInfo* AstsObjectsAllocationInfo::Default = new AstsObjectsAllocationInfo(10);
-SpectraObjectsAllocationInfo* SpectraObjectsAllocationInfo::Default = new SpectraObjectsAllocationInfo(10);
+FortsObjectsAllocationInfo* FortsObjectsAllocationInfo::Default = new FortsObjectsAllocationInfo(10);

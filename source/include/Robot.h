@@ -1,29 +1,29 @@
 #pragma once
-#include "FeedChannel.h"
+#include "Feeds/AstsFeedChannel.h"
+#include "Feeds/Forts/FortsFeedChannel.h"
 #include "MarketInfo.h"
 #include "Fix/FixProtocolManager.h"
 #include "Managers/LogManager.h"
 #include "ConnectionParameters.h"
 
 #define MARKET_INFO_CAPACITY 10
-typedef enum _RobotState {
-
-} RobotState;
 
 class Robot {
-	FeedChannel *channels[MARKET_INFO_CAPACITY];
+	AstsFeedChannel *channels[MARKET_INFO_CAPACITY];
 	int		channelsCount;
 
 	MarketInfo *markets[MARKET_INFO_CAPACITY];
 	int		marketCount;
 
-    MarketInfo *m_currMarket;
-    MarketInfo *m_fondMarket;
+    FortsFeedChannel        *m_fortsChannel;
+    bool                    m_allowFortsFeeds[MarketDataGroupId::mdgidCount];
 
-    bool        m_allowFondMarket;
-    bool        m_allowCurrMarket;
+    MarketInfo              *m_currMarket;
+    MarketInfo              *m_fondMarket;
 
-	RobotState state;
+    bool                    m_allowFondMarket;
+    bool                    m_allowCurrMarket;
+    bool                    m_allowFortsMarket;
 
 	FixProtocolManager *protocolManager;
 
@@ -34,7 +34,7 @@ class Robot {
         }
         return NULL;
     }
-    FeedChannel *FindFeedChannel(const char* id) {
+    AstsFeedChannel *FindAstsFeedChannel(const char *id) {
         for(int i = 0; i < this->channelsCount; i++) {
             if(strcmp(this->channels[i]->Id(), id) == 0)
                 return this->channels[i];
@@ -68,6 +68,36 @@ public:
     inline void AllowFondMarket(bool value) { this->m_allowFondMarket = value; }
     inline bool AllowCurrMarket() { return this->m_allowCurrMarket; }
     inline void AllowCurrMarket(bool value) { this->m_allowCurrMarket = value; }
+    inline bool AllowFortsMarket() { return this->m_allowFondMarket; }
+    inline void AllowFortsMarket(bool value) { this->m_allowFortsMarket = value; }
+
+    inline bool AllowMarketDataGroup(MarketDataGroupId id) { return this->m_allowFortsFeeds[id]; }
+    inline void AllowMarketDataGroup(MarketDataGroupId id, bool value) { this->m_allowFortsFeeds[id] = value; }
+    inline void AllowFutures(bool value) { 
+        this->m_allowFortsFeeds[MarketDataGroupId::mdgidFutBook1] = value;
+        this->m_allowFortsFeeds[MarketDataGroupId::mdgidFutBook5] = value;
+        this->m_allowFortsFeeds[MarketDataGroupId::mdgidFutBook20] = value;
+        this->m_allowFortsFeeds[MarketDataGroupId::mdgidFutBook50] = value;
+        this->m_allowFortsFeeds[MarketDataGroupId::mdgidFutTrades] = value;
+        this->m_allowFortsFeeds[MarketDataGroupId::mdgidFutInfo] = value;
+    }
+    inline void AllowOptions(bool value) {
+        this->m_allowFortsFeeds[MarketDataGroupId::mdgidOptBook1] = value;
+        this->m_allowFortsFeeds[MarketDataGroupId::mdgidOptBook5] = value;
+        this->m_allowFortsFeeds[MarketDataGroupId::mdgidOptBook20] = value;
+        this->m_allowFortsFeeds[MarketDataGroupId::mdgidOptBook50] = value;
+        this->m_allowFortsFeeds[MarketDataGroupId::mdgidOptTrades] = value;
+        this->m_allowFortsFeeds[MarketDataGroupId::mdgidOptInfo] = value;
+    }
+    inline void AllowNews(bool value) {
+        this->m_allowFortsFeeds[MarketDataGroupId::mdgidIndex] = value;
+        this->m_allowFortsFeeds[MarketDataGroupId::mdgidNews] = value;
+        this->m_allowFortsFeeds[MarketDataGroupId::mdgidNewsSkrin] = value;
+    }
+    inline void AllowOtc(bool value) {
+        this->m_allowFortsFeeds[MarketDataGroupId::mdgidOtcIssues] = value;
+        this->m_allowFortsFeeds[MarketDataGroupId::mdgidOtcTrades] = value;
+    }
 
     inline bool AllowFeed(const char *feedId) {
 #ifdef ALLOW_STATISTICS
@@ -93,7 +123,7 @@ public:
         return false;
     }
 
-	void AddChannel(FeedChannel *info) {
+	void AddChannel(AstsFeedChannel *info) {
 		this->channels[this->channelsCount] = info;
 		this->channelsCount++;
 	}
@@ -136,7 +166,7 @@ public:
 
         if(this->AllowFondMarket()) {
             this->m_fondMarket = FindMarket("FOND");
-            FeedChannel *fondChannel = FindFeedChannel("FOND");
+            AstsFeedChannel *fondChannel = FindAstsFeedChannel("FOND");
             if (this->m_fondMarket == NULL) {
                 DefaultLogManager::Default->EndLog(false, LogMessageCode::lmcFOND_market_not_found);
                 return false;
@@ -150,7 +180,7 @@ public:
 
         if(this->AllowCurrMarket()) {
             this->m_currMarket = FindMarket("CURR");
-            FeedChannel *currChannel = FindFeedChannel("CURR");
+            AstsFeedChannel *currChannel = FindAstsFeedChannel("CURR");
             if (this->m_currMarket == NULL) {
                 DefaultLogManager::Default->EndLog(false, LogMessageCode::lmcCURR_market_not_found);
                 return false;
@@ -166,8 +196,10 @@ public:
         return true;
     }
 
-	inline FeedChannel **Channels() { return (FeedChannel**)this->channels; }
+	inline AstsFeedChannel **Channels() { return (AstsFeedChannel**)this->channels; }
 	inline int ChannelCount() { return this->channelsCount; }
+
+    inline FortsFeedChannel *FortsChannel() { return this->m_fortsChannel; }
 
 	inline MarketInfo **Markets() { return (MarketInfo**)this->markets; }
 	inline int MarketCount() { return this->marketCount; }

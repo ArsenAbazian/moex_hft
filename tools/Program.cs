@@ -22,7 +22,7 @@ namespace prebuild {
 		public string ManagerSourceFileCpp { get; set; }
 		public string SourceTypes { get; set; }
 		public string AstsServerConfigFileName { get; set; }
-		public string SpectraServerConfigFileName { get; set; }
+		public string FortsServerConfigFileName { get; set; }
 		public string AstsTemplateFile { get; set; }
 		public string SpectraTemplateFile { get; set; }
 
@@ -50,13 +50,221 @@ namespace prebuild {
 				return "";
 			return node.ChildNodes[0].Value.ToString();
 		}
-		public bool GenerateAddChannelsCode_ASTS() {
-			Console.WriteLine("generate add channels code...");
+		XmlNode FindNode(XmlNodeList list, string name) {
+			foreach(XmlNode node in list) {
+				if(node.Name == name)
+					return node;
+			}
+			return null;
+		} 
+		List<XmlNode> GetMarketDataGroups(XmlNode config) {
+			List<XmlNode> list = new List<XmlNode>();
+			foreach(XmlNode node in config) {
+				if(node.NodeType == XmlNodeType.Comment)
+					continue;
+				if(node.Name != "MarketDataGroup")
+					continue;
+				list.Add(node);
+			}
+			return list;
+		}
+		bool GenerateAddChannelsCode_FORTS() { 
+			Console.WriteLine("generate add forts channels code...");
 
 			XmlDocument doc = new XmlDocument();
-			//Console.WriteLine("load condif test xml '" + ServerConfigFileName + "'");
+			doc.Load(FortsServerConfigFileName);
+
+			ClearRegion(AddDefaultChannels_GeneratedCode);
+			SetPosition(AddDefaultChannels_GeneratedCode);
+
+			XmlNode config = FindNode(doc.ChildNodes, "configuration");
+			if(config == null)
+				throw new ArgumentException("configuration node not found in " + FortsServerConfigFileName);
+
+			WriteLine("\tif(this->AllowFortsMarket()) {");
+			WriteLine("\t\tFortsFeedChannel *channel = new FortsFeedChannel();");
+			List<XmlNode> mdgList = GetMarketDataGroups(config);
+			foreach(XmlNode node in mdgList) {
+				GenerateMarketDataGroupCode(node);
+			}
+			WriteLine("\t\tthis->m_fortsChannel = channel;");
+			WriteLine("\t}");
+			return true;
+		}
+		string GetMarketDataGroupId(string value) {
+			string[] list = value.Split('-');
+			string res = "mdgid";
+			for(int i = 0; i < list.Length; i++) {
+				if(list[i].Length == 1)
+					list[i] = list[i].ToUpper();
+				else 
+					list[i] = list[i].Substring(0, 1).ToUpper() + list[i].Substring(1).ToLower();
+				res += list[i];
+			}
+			return res;
+		}
+		string GetMarketDataGroupName(string value) {
+			string[] list = value.Split('-');
+			string res = "";
+			for(int i = 0; i < list.Length; i++) {
+				if(list[i].Length == 1)
+					list[i] = list[i].ToUpper();
+				else 
+					list[i] = list[i].Substring(0, 1).ToUpper() + list[i].Substring(1).ToLower();
+				res += list[i];
+			}
+			return res;
+		}
+		class FortsConnection { 
+			public FortsConnection(XmlNode node) {
+				Node = node;
+				Type = FindField("type");
+				Protocol = FindField("protocol");
+				SrcIp = FindField("src-ip");
+				Ip = FindField("ip");
+				Port = FindField("port");
+				Feed = FindField("feed");
+			}
+			public XmlNode Node { get; set; }
+			public string Type { get; set; } 
+			public string TypeString { get { return "\"" + Type + "\""; } }
+			public string Protocol { get; set; }
+			public string ProtocolString { get { return "FeedConnectionProtocol::" + Protocol.Replace('/', '_'); }  }
+			public string SrcIp { get; set; }
+			public string SrcIpString { get { return "\"" + SrcIp + "\""; } }
+			public string Ip { get; set; }
+			public string IpString { get { return "\"" + Ip + "\""; } }
+			public string Port { get; set; }
+			public string Feed { get; set; }
+
+			public bool IsIncremental { get { return Type == "Incremental"; } }
+			public bool IsInstrumentIncremental { get { return Type == "Instrument Incremental"; } }
+			public bool IsInstrumentSnapshot { get { return Type == "Instrument Replay"; } }
+			public bool IsSnapshot { get { return Type == "Snapshot"; } }
+			public bool IsHistoricalReplay { get { return Type == "HistoricalReplay"; } }
+			public bool IsUdp { get { return Protocol == "UDP/IP"; } }
+
+			string FindField(string name) {
+				foreach(XmlNode node in Node.ChildNodes) {
+					if(node.Name == name)
+						return node.ChildNodes[0].Value.ToString();
+				}
+				return string.Empty;
+			}
+		}
+		List<FortsConnection> GetFortsConnections(XmlNode node) {
+			List<FortsConnection> list = new List<FortsConnection>();
+			foreach(XmlNode child in node.ChildNodes[0].ChildNodes) {
+				if(child.NodeType == XmlNodeType.Comment)
+					continue;
+				if(child.Name != "connection")
+					throw new Exception("forts connection!");
+				list.Add(new FortsConnection(child));
+			}
+			return list;
+		}
+		void GenerateMarketDataGroupCode(XmlNode node) {
+			string fid = node.Attributes["feedType"].Value;
+			string feedType = GetMarketDataGroupId(fid);
+			string feedName = GetMarketDataGroupName(fid);
+			string md = HasAttribute(node, "marketDepth")? node.Attributes["marketDepth"].Value: "0";
+			string mid = node.Attributes["marketID"].Value;
+			string label = node.Attributes["label"].Value;
+
+			WriteLine("\t\tif(this->AllowMarketDataGroup(MarketDataGroupId::" + feedType + ")) {");
+			WriteLine("\t\t\tFortsMarketDataGroup *group = new FortsMarketDataGroup(MarketDataGroupId::" + feedType + ", \"" + mid + "\", " + md + ", \"" + label + "\");");
+			List<FortsConnection> conn = GetFortsConnections(node);
+
+			List<FortsConnection> inc = conn.FindAll((c) => c.IsIncremental );
+			List<FortsConnection> snap = conn.FindAll((c) => c.IsSnapshot);
+			List<FortsConnection> instrInc = conn.FindAll((c) => c.IsInstrumentIncremental);
+			List<FortsConnection> instrSnap = conn.FindAll((c) => c.IsInstrumentSnapshot);
+			FortsConnection hr = conn.FirstOrDefault((c) => c.IsHistoricalReplay);
+
+			if(inc != null && inc.Count == 2) {
+				WriteLine("\t\t\tgroup->Inc( new FeedConnection_FORTS_INC(" + 
+					"\"" + fid + " Inc\", " +
+					"\"" + label + "\", " + 
+					"'" + mid + "', " + 
+					inc[0].ProtocolString + ", " +
+					inc[0].SrcIpString + ", " + 
+					inc[0].IpString + ", " + 
+					inc[0].Port + ", " + 
+					inc[1].SrcIpString + ", " + 
+					inc[1].IpString + ", " + 
+					inc[1].Port +
+					") );");
+			}
+
+			if(snap != null && snap.Count == 2) {
+				WriteLine("\t\t\tgroup->Snap( new FeedConnection_FORTS_SNAP(" + 
+					"\"" + fid + " Snap\", " +
+					"\"" + label + "\", " + 
+					"'" + mid + "', " + 
+					snap[0].ProtocolString + ", " +
+					snap[0].SrcIpString + ", " + 
+					snap[0].IpString + ", " + 
+					snap[0].Port + ", " + 
+					snap[1].SrcIpString + ", " + 
+					snap[1].IpString + ", " + 
+					snap[1].Port +
+					") );");
+			}
+
+			if(hr != null) {
+				WriteLine("\t\t\tgroup->Hr( new FeedConnection_FORTS_HR(" + 
+					"\"" + fid + " Hr\", " +
+					"\"" + label + "\", " + 
+					"'" + mid + "', " + 
+					hr.ProtocolString + ", " +
+					"0" + ", " + 
+					hr.IpString + ", " + 
+					hr.Port + ", " + 
+					"0" + ", " + 
+					"0" + ", " + 
+					"0" +
+					") );");
+			}
+
+			if(instrInc != null && instrInc.Count == 2) {
+				WriteLine("\t\t\tgroup->InstrInc( new FeedConnection_FORTS_INSTR_INC(" + 
+					"\"" + fid + " InstrInc\", " +
+					"\"" + label + "\", " + 
+					"'" + mid + "', " + 
+					instrInc[0].ProtocolString + ", " +
+					instrInc[0].SrcIpString + ", " + 
+					instrInc[0].IpString + ", " + 
+					instrInc[0].Port + ", " + 
+					instrInc[1].SrcIpString + ", " + 
+					instrInc[1].IpString + ", " + 
+					instrInc[1].Port +
+					") );");
+			}
+
+			if(instrSnap != null && instrSnap.Count == 2) {
+				WriteLine("\t\t\tgroup->InstrReplay( new FeedConnection_FORTS_INSTR_SNAP(" + 
+					"\"" + fid + " InstrReplay\", " +
+					"\"" + label + "\", " + 
+					"'" + mid + "', " + 
+					instrSnap[0].ProtocolString + ", " +
+					instrSnap[0].SrcIpString + ", " + 
+					instrSnap[0].IpString + ", " + 
+					instrSnap[0].Port + ", " + 
+					instrSnap[1].SrcIpString + ", " + 
+					instrSnap[1].IpString + ", " + 
+					instrSnap[1].Port +
+					") );");
+			}
+			WriteLine("\t\t\tchannel->" + feedName + "(group);");
+			WriteLine("\t\t}");
+		}
+		bool GenerateAddChannelsCode_ASTS() {
+			Console.WriteLine("generate add asts channels code...");
+
+			XmlDocument doc = new XmlDocument();
 			doc.Load(AstsServerConfigFileName);
 
+			ClearRegion(AddDefaultChannels_GeneratedCode);
 			SetPosition(AddDefaultChannels_GeneratedCode);
 			XmlNode parent = null;
 			foreach(XmlNode nd in doc.ChildNodes) {
@@ -72,7 +280,7 @@ namespace prebuild {
 				string channelNameUpper = channelName.Substring(0, 1).ToUpper() + channelName.Substring(1).ToLower();
 
 				WriteLine("\tif(this->Allow" + channelNameUpper + "Market()) {");
-				WriteLine("\t\tFeedChannel *" + channelName.ToLower() + " = new FeedChannel(" + ConstStr(channelName) + ", " + ConstStr(channelLabel) + ");");
+				WriteLine("\t\tAstsFeedChannel *" + channelName.ToLower() + " = new AstsFeedChannel(" + ConstStr(channelName) + ", " + ConstStr(channelLabel) + ");");
 				WriteLine("");
 				XmlNode connections = node.ChildNodes[0];
 				foreach(XmlNode conn in connections.ChildNodes) {
@@ -164,7 +372,7 @@ namespace prebuild {
 			GenerateDefinesCode();
 
 			Generate_ASTS();
-			Generate_Spectra();
+			Generate_Forts();
 
 			CheckSaveGeneratedFiles();
 
@@ -340,6 +548,7 @@ namespace prebuild {
 			Print_Methods_Definition_GeneratedCode = "Asts_Print_Methods_Definition_GeneratedCode";
 			Print_Methods_Declaration_GeneratedCode = "Asts_Print_Methods_Declaration_GeneratedCode";
 			Declare_AllocationInfo_GeneratedCode = "Asts_Declare_AllocationInfo_GeneratedCode";
+			AddDefaultChannels_GeneratedCode = "Asts_AddDefaultChannels_GeneratedCode";
 
 			SnapshotInfoFields = new List<SnapshotFieldInfo>();
 			SnapshotInfoFields.Add(new SnapshotFieldInfo("", "RptSeq"));
@@ -353,18 +562,19 @@ namespace prebuild {
 			ClearStructures();
 		}
 
-		void PrepareForSpectra() {
-			Prefix = "Spectra";
+		void PrepareForForts() {
+			Prefix = "Forts";
 			Mode = GeneratorMode.Spectra;
-			Decode_Method_Pointer_Definition_GeneratedCode = "Spectra_Decode_Method_Pointer_Definition_GeneratedCode";
-			Message_Info_Structures_Definition_GeneratedCode = "Spectra_Message_Info_Structures_Definition_GeneratedCode";
-			Structure_Objects_Declaration_GeneratedCode = "Spectra_Structure_Objects_Declaration_GeneratedCode";
-			Decode_Methods_Definition_GeneratedCode = "Spectra_Decode_Methods_Definition_GeneratedCode";
-			Encode_Methods_Declaration_GeneratedCode = "Spectra_Encode_Methods_Declaration_GeneratedCode";
-			Encode_Methods_Definition_GeneratedCode = "Spectra_Encode_Methods_Definition_GeneratedCode";
-			Print_Methods_Definition_GeneratedCode = "Spectra_Print_Methods_Definition_GeneratedCode";
-			Print_Methods_Declaration_GeneratedCode = "Spectra_Print_Methods_Declaration_GeneratedCode";
-			Declare_AllocationInfo_GeneratedCode = "Spectra_Declare_AllocationInfo_GeneratedCode";
+			Decode_Method_Pointer_Definition_GeneratedCode = "Forts_Decode_Method_Pointer_Definition_GeneratedCode";
+			Message_Info_Structures_Definition_GeneratedCode = "Forts_Message_Info_Structures_Definition_GeneratedCode";
+			Structure_Objects_Declaration_GeneratedCode = "Forts_Structure_Objects_Declaration_GeneratedCode";
+			Decode_Methods_Definition_GeneratedCode = "Forts_Decode_Methods_Definition_GeneratedCode";
+			Encode_Methods_Declaration_GeneratedCode = "Forts_Encode_Methods_Declaration_GeneratedCode";
+			Encode_Methods_Definition_GeneratedCode = "Forts_Encode_Methods_Definition_GeneratedCode";
+			Print_Methods_Definition_GeneratedCode = "Forts_Print_Methods_Definition_GeneratedCode";
+			Print_Methods_Declaration_GeneratedCode = "Forts_Print_Methods_Declaration_GeneratedCode";
+			Declare_AllocationInfo_GeneratedCode = "Forts_Declare_AllocationInfo_GeneratedCode";
+			AddDefaultChannels_GeneratedCode = "Forts_AddDefaultChannels_GeneratedCode";
 
 			SnapshotInfoFields = new List<SnapshotFieldInfo>();
 			SnapshotInfoFields.Add(new SnapshotFieldInfo("", "RptSeq"));
@@ -378,7 +588,7 @@ namespace prebuild {
 			ClearStructures();
 		}
 
-		void Generate_Spectra() {
+		void Generate_Forts() {
 			XmlDocument doc = new XmlDocument();
 			doc.Load(SpectraTemplateFile);
 
@@ -386,9 +596,9 @@ namespace prebuild {
 			if(TemplatesNode == null)
 				throw new ArgumentException("Cannot find 'templates' node in spectra templates file");
 
-			PrepareForSpectra();
+			PrepareForForts();
 			GenerateTemplatesCodeSpectra();
-			//GenerateAddChannelsCode_ASTS();
+			GenerateAddChannelsCode_FORTS();
 		}
 
 		void CheckSaveGeneratedFiles() {
@@ -3215,7 +3425,7 @@ namespace prebuild {
 				Console.WriteLine("Spectra config file not specified. skip generation.");
 				return;
 			}
-			generator.SpectraServerConfigFileName = value;
+			generator.FortsServerConfigFileName = value;
 
 			if(!generator.Generate()) {
 				Console.WriteLine("generate fast protocol - failed.");

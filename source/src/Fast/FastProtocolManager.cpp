@@ -1,18 +1,18 @@
 #include "Fast/FastProtocolManager.h"
 #include "../Managers/DebugInfoManager.h"
 
-FastProtocolManager::FastProtocolManager() : FastProtocolManager(AstsObjectsAllocationInfo::Default, SpectraObjectsAllocationInfo::Default) { }
+FastProtocolManager::FastProtocolManager() : FastProtocolManager(AstsObjectsAllocationInfo::Default, FortsObjectsAllocationInfo::Default) { }
 
-FastProtocolManager::FastProtocolManager(AstsObjectsAllocationInfo *astsInfo, SpectraObjectsAllocationInfo *spectraInfo) {
+FastProtocolManager::FastProtocolManager(AstsObjectsAllocationInfo *astsInfo, FortsObjectsAllocationInfo *spectraInfo) {
 	this->m_astsAllocationInfo = astsInfo;
-	this->m_spectraAllocationInfo = spectraInfo;
+	this->m_fortsAllocationInfo = spectraInfo;
 	this->InitializeConstantStrings();
 	this->InitializeAstsDecodeMethodPointers();
 	this->InitializeAstsMessageInfo();
-    this->InitializeSpectraDecodeMethodPointers();
-    this->InitializeSpectraMessageInfo();
+    this->InitializeFortsDecodeMethodPointers();
+    this->InitializeFortsMessageInfo();
 	this->m_astsSnapshotInfo = new AstsSnapshotInfo();
-	this->m_spectraSnapshotInfo = new SpectraSnapshotInfo();
+	this->m_fortsSnapshotInfo = new FortsSnapshotInfo();
 	this->m_skipTemplateIdCount = 0;
 	DebugInfoManager::Default->PrintMemoryInfo("FastProtocolManager::FastProtocolManager");
 }
@@ -2416,10 +2416,10 @@ void FastProtocolManager::PrintXmlAstsHeartbeat(AstsHeartbeatInfo *info) {
 }
 #pragma endregion
 
-#pragma region Spectra_Print_Methods_Definition_GeneratedCode
-void FastProtocolManager::PrintSpectraDefaultIncrementalRefreshMessage(SpectraDefaultIncrementalRefreshMessageInfo *info) {
+#pragma region Forts_Print_Methods_Definition_GeneratedCode
+void FastProtocolManager::PrintFortsDefaultIncrementalRefreshMessage(FortsDefaultIncrementalRefreshMessageInfo *info) {
 
-	printf("SpectraDefaultIncrementalRefreshMessageInfo {\n");
+	printf("FortsDefaultIncrementalRefreshMessageInfo {\n");
 	PrintInt32("TemplateId", 12, 1);
 	PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 	PrintUInt64("SendingTime", info->SendingTime, 1);
@@ -2427,7 +2427,7 @@ void FastProtocolManager::PrintSpectraDefaultIncrementalRefreshMessage(SpectraDe
 		PrintUInt32("LastFragment", info->LastFragment, 1);
 	PrintInt32("MDEntriesCount", info->MDEntriesCount, 1);
 
-	SpectraDefaultIncrementalRefreshMessageMDEntriesItemInfo* mdeItemInfo = NULL;
+	FortsDefaultIncrementalRefreshMessageMDEntriesItemInfo* mdeItemInfo = NULL;
 
 	for(int i = 0; i < info->MDEntriesCount; i++) {
 		mdeItemInfo = info->MDEntries[i];
@@ -2477,9 +2477,9 @@ void FastProtocolManager::PrintSpectraDefaultIncrementalRefreshMessage(SpectraDe
 
 	printf("}\n");
 }
-void FastProtocolManager::PrintSpectraDefaultSnapshotMessage(SpectraDefaultSnapshotMessageInfo *info) {
+void FastProtocolManager::PrintFortsDefaultSnapshotMessage(FortsDefaultSnapshotMessageInfo *info) {
 
-	printf("SpectraDefaultSnapshotMessageInfo {\n");
+	printf("FortsDefaultSnapshotMessageInfo {\n");
 	PrintInt32("TemplateId", 13, 1);
 	PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 	PrintUInt64("SendingTime", info->SendingTime, 1);
@@ -2496,7 +2496,7 @@ void FastProtocolManager::PrintSpectraDefaultSnapshotMessage(SpectraDefaultSnaps
 		PrintString("SecurityGroup", info->SecurityGroup, info->SecurityGroupLength, 1);
 	PrintInt32("MDEntriesCount", info->MDEntriesCount, 1);
 
-	SpectraDefaultSnapshotMessageMDEntriesItemInfo* mdeItemInfo = NULL;
+	FortsDefaultSnapshotMessageMDEntriesItemInfo* mdeItemInfo = NULL;
 
 	for(int i = 0; i < info->MDEntriesCount; i++) {
 		mdeItemInfo = info->MDEntries[i];
@@ -2534,9 +2534,9 @@ void FastProtocolManager::PrintSpectraDefaultSnapshotMessage(SpectraDefaultSnaps
 
 	printf("}\n");
 }
-void FastProtocolManager::PrintSpectraSecurityDefinition(SpectraSecurityDefinitionInfo *info) {
+void FastProtocolManager::PrintFortsSecurityDefinition(FortsSecurityDefinitionInfo *info) {
 
-	printf("SpectraSecurityDefinitionInfo {\n");
+	printf("FortsSecurityDefinitionInfo {\n");
 	PrintInt32("TemplateId", 3, 1);
 	PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 	PrintUInt64("SendingTime", info->SendingTime, 1);
@@ -2570,7 +2570,7 @@ void FastProtocolManager::PrintSpectraSecurityDefinition(SpectraSecurityDefiniti
 		PrintDecimal("Volatility", &(info->Volatility), 1);
 	PrintInt32("MDFeedTypesCount", info->MDFeedTypesCount, 1);
 
-	SpectraSecurityDefinitionMDFeedTypesItemInfo* mdftItemInfo = NULL;
+	FortsSecurityDefinitionMDFeedTypesItemInfo* mdftItemInfo = NULL;
 
 	for(int i = 0; i < info->MDFeedTypesCount; i++) {
 		mdftItemInfo = info->MDFeedTypes[i];
@@ -2586,7 +2586,7 @@ void FastProtocolManager::PrintSpectraSecurityDefinition(SpectraSecurityDefiniti
 	if((info->NullMap & NULL_MAP_INDEX12) == 0)
 		PrintInt32("UnderlyingsCount", info->UnderlyingsCount, 1);
 
-		SpectraSecurityDefinitionUnderlyingsItemInfo* uItemInfo = NULL;
+		FortsSecurityDefinitionUnderlyingsItemInfo* uItemInfo = NULL;
 
 		for(int i = 0; i < info->UnderlyingsCount; i++) {
 			uItemInfo = info->Underlyings[i];
@@ -2620,7 +2620,7 @@ void FastProtocolManager::PrintSpectraSecurityDefinition(SpectraSecurityDefiniti
 	if((info->NullMap & NULL_MAP_INDEX23) == 0)
 		PrintInt32("InstrumentLegsCount", info->InstrumentLegsCount, 1);
 
-		SpectraSecurityDefinitionInstrumentLegsItemInfo* ilItemInfo = NULL;
+		FortsSecurityDefinitionInstrumentLegsItemInfo* ilItemInfo = NULL;
 
 		for(int i = 0; i < info->InstrumentLegsCount; i++) {
 			ilItemInfo = info->InstrumentLegs[i];
@@ -2634,7 +2634,7 @@ void FastProtocolManager::PrintSpectraSecurityDefinition(SpectraSecurityDefiniti
 	if((info->NullMap & NULL_MAP_INDEX24) == 0)
 		PrintInt32("InstrumentAttributesCount", info->InstrumentAttributesCount, 1);
 
-		SpectraSecurityDefinitionInstrumentAttributesItemInfo* iaItemInfo = NULL;
+		FortsSecurityDefinitionInstrumentAttributesItemInfo* iaItemInfo = NULL;
 
 		for(int i = 0; i < info->InstrumentAttributesCount; i++) {
 			iaItemInfo = info->InstrumentAttributes[i];
@@ -2651,7 +2651,7 @@ void FastProtocolManager::PrintSpectraSecurityDefinition(SpectraSecurityDefiniti
 	if((info->NullMap & NULL_MAP_INDEX27) == 0)
 		PrintInt32("EvntGrpCount", info->EvntGrpCount, 1);
 
-		SpectraSecurityDefinitionEvntGrpItemInfo* egItemInfo = NULL;
+		FortsSecurityDefinitionEvntGrpItemInfo* egItemInfo = NULL;
 
 		for(int i = 0; i < info->EvntGrpCount; i++) {
 			egItemInfo = info->EvntGrp[i];
@@ -2668,9 +2668,9 @@ void FastProtocolManager::PrintSpectraSecurityDefinition(SpectraSecurityDefiniti
 		PrintUInt32("MaturityTime", info->MaturityTime, 1);
 	printf("}\n");
 }
-void FastProtocolManager::PrintSpectraSecurityDefinitionUpdateReport(SpectraSecurityDefinitionUpdateReportInfo *info) {
+void FastProtocolManager::PrintFortsSecurityDefinitionUpdateReport(FortsSecurityDefinitionUpdateReportInfo *info) {
 
-	printf("SpectraSecurityDefinitionUpdateReportInfo {\n");
+	printf("FortsSecurityDefinitionUpdateReportInfo {\n");
 	PrintInt32("TemplateId", 4, 1);
 	PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 	PrintUInt64("SendingTime", info->SendingTime, 1);
@@ -2683,9 +2683,9 @@ void FastProtocolManager::PrintSpectraSecurityDefinitionUpdateReport(SpectraSecu
 		PrintDecimal("TheorPriceLimit", &(info->TheorPriceLimit), 1);
 	printf("}\n");
 }
-void FastProtocolManager::PrintSpectraSecurityStatus(SpectraSecurityStatusInfo *info) {
+void FastProtocolManager::PrintFortsSecurityStatus(FortsSecurityStatusInfo *info) {
 
-	printf("SpectraSecurityStatusInfo {\n");
+	printf("FortsSecurityStatusInfo {\n");
 	PrintInt32("TemplateId", 5, 1);
 	PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 	PrintUInt64("SendingTime", info->SendingTime, 1);
@@ -2705,26 +2705,26 @@ void FastProtocolManager::PrintSpectraSecurityStatus(SpectraSecurityStatusInfo *
 		PrintDecimal("InitialMarginSyntetic", &(info->InitialMarginSyntetic), 1);
 	printf("}\n");
 }
-void FastProtocolManager::PrintSpectraHeartbeat(SpectraHeartbeatInfo *info) {
+void FastProtocolManager::PrintFortsHeartbeat(FortsHeartbeatInfo *info) {
 
-	printf("SpectraHeartbeatInfo {\n");
+	printf("FortsHeartbeatInfo {\n");
 	PrintInt32("TemplateId", 6, 1);
 	PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 	PrintUInt64("SendingTime", info->SendingTime, 1);
 	printf("}\n");
 }
-void FastProtocolManager::PrintSpectraSequenceReset(SpectraSequenceResetInfo *info) {
+void FastProtocolManager::PrintFortsSequenceReset(FortsSequenceResetInfo *info) {
 
-	printf("SpectraSequenceResetInfo {\n");
+	printf("FortsSequenceResetInfo {\n");
 	PrintInt32("TemplateId", 7, 1);
 	PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 	PrintUInt64("SendingTime", info->SendingTime, 1);
 	PrintUInt32("NewSeqNo", info->NewSeqNo, 1);
 	printf("}\n");
 }
-void FastProtocolManager::PrintSpectraTradingSessionStatus(SpectraTradingSessionStatusInfo *info) {
+void FastProtocolManager::PrintFortsTradingSessionStatus(FortsTradingSessionStatusInfo *info) {
 
-	printf("SpectraTradingSessionStatusInfo {\n");
+	printf("FortsTradingSessionStatusInfo {\n");
 	PrintInt32("TemplateId", 8, 1);
 	PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 	PrintUInt64("SendingTime", info->SendingTime, 1);
@@ -2743,9 +2743,9 @@ void FastProtocolManager::PrintSpectraTradingSessionStatus(SpectraTradingSession
 		PrintInt32("TradSesEvent", info->TradSesEvent, 1);
 	printf("}\n");
 }
-void FastProtocolManager::PrintSpectraNews(SpectraNewsInfo *info) {
+void FastProtocolManager::PrintFortsNews(FortsNewsInfo *info) {
 
-	printf("SpectraNewsInfo {\n");
+	printf("FortsNewsInfo {\n");
 	PrintInt32("TemplateId", 9, 1);
 	PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 	PrintUInt64("SendingTime", info->SendingTime, 1);
@@ -2764,7 +2764,7 @@ void FastProtocolManager::PrintSpectraNews(SpectraNewsInfo *info) {
 		PrintString("MarketSegmentID", info->MarketSegmentID, info->MarketSegmentIDLength, 1);
 	PrintInt32("NewsTextCount", info->NewsTextCount, 1);
 
-	SpectraNewsNewsTextItemInfo* ntItemInfo = NULL;
+	FortsNewsNewsTextItemInfo* ntItemInfo = NULL;
 
 	for(int i = 0; i < info->NewsTextCount; i++) {
 		ntItemInfo = info->NewsText[i];
@@ -2775,16 +2775,16 @@ void FastProtocolManager::PrintSpectraNews(SpectraNewsInfo *info) {
 
 	printf("}\n");
 }
-void FastProtocolManager::PrintSpectraOrdersLog(SpectraOrdersLogInfo *info) {
+void FastProtocolManager::PrintFortsOrdersLog(FortsOrdersLogInfo *info) {
 
-	printf("SpectraOrdersLogInfo {\n");
+	printf("FortsOrdersLogInfo {\n");
 	PrintInt32("TemplateId", 14, 1);
 	PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 	PrintUInt64("SendingTime", info->SendingTime, 1);
 	PrintUInt32("LastFragment", info->LastFragment, 1);
 	PrintInt32("MDEntriesCount", info->MDEntriesCount, 1);
 
-	SpectraOrdersLogMDEntriesItemInfo* mdeItemInfo = NULL;
+	FortsOrdersLogMDEntriesItemInfo* mdeItemInfo = NULL;
 
 	for(int i = 0; i < info->MDEntriesCount; i++) {
 		mdeItemInfo = info->MDEntries[i];
@@ -2821,9 +2821,9 @@ void FastProtocolManager::PrintSpectraOrdersLog(SpectraOrdersLogInfo *info) {
 
 	printf("}\n");
 }
-void FastProtocolManager::PrintSpectraOrdersBook(SpectraOrdersBookInfo *info) {
+void FastProtocolManager::PrintFortsOrdersBook(FortsOrdersBookInfo *info) {
 
-	printf("SpectraOrdersBookInfo {\n");
+	printf("FortsOrdersBookInfo {\n");
 	PrintInt32("TemplateId", 15, 1);
 	PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 	PrintUInt64("SendingTime", info->SendingTime, 1);
@@ -2837,7 +2837,7 @@ void FastProtocolManager::PrintSpectraOrdersBook(SpectraOrdersBookInfo *info) {
 		PrintUInt64("SecurityID", info->SecurityID, 1);
 	PrintInt32("MDEntriesCount", info->MDEntriesCount, 1);
 
-	SpectraOrdersBookMDEntriesItemInfo* mdeItemInfo = NULL;
+	FortsOrdersBookMDEntriesItemInfo* mdeItemInfo = NULL;
 
 	for(int i = 0; i < info->MDEntriesCount; i++) {
 		mdeItemInfo = info->MDEntries[i];
@@ -2861,17 +2861,17 @@ void FastProtocolManager::PrintSpectraOrdersBook(SpectraOrdersBookInfo *info) {
 
 	printf("}\n");
 }
-void FastProtocolManager::PrintSpectraLogon(SpectraLogonInfo *info) {
+void FastProtocolManager::PrintFortsLogon(FortsLogonInfo *info) {
 
-	printf("SpectraLogonInfo {\n");
+	printf("FortsLogonInfo {\n");
 	PrintInt32("TemplateId", 1000, 1);
 	PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 	PrintUInt64("SendingTime", info->SendingTime, 1);
 	printf("}\n");
 }
-void FastProtocolManager::PrintSpectraLogout(SpectraLogoutInfo *info) {
+void FastProtocolManager::PrintFortsLogout(FortsLogoutInfo *info) {
 
-	printf("SpectraLogoutInfo {\n");
+	printf("FortsLogoutInfo {\n");
 	PrintInt32("TemplateId", 1001, 1);
 	PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 	PrintUInt64("SendingTime", info->SendingTime, 1);
@@ -2879,9 +2879,9 @@ void FastProtocolManager::PrintSpectraLogout(SpectraLogoutInfo *info) {
 		PrintString("Text", info->Text, info->TextLength, 1);
 	printf("}\n");
 }
-void FastProtocolManager::PrintXmlSpectraDefaultIncrementalRefreshMessage(SpectraDefaultIncrementalRefreshMessageInfo *info) {
+void FastProtocolManager::PrintXmlFortsDefaultIncrementalRefreshMessage(FortsDefaultIncrementalRefreshMessageInfo *info) {
 
-	PrintXmlItemBegin("SpectraDefaultIncrementalRefreshMessageInfo");
+	PrintXmlItemBegin("FortsDefaultIncrementalRefreshMessageInfo");
 	PrintXmlInt32("TemplateId", 12);
 	PrintXmlUInt32("MsgSeqNum", info->MsgSeqNum);
 	PrintXmlUInt64("SendingTime", info->SendingTime);
@@ -2889,7 +2889,7 @@ void FastProtocolManager::PrintXmlSpectraDefaultIncrementalRefreshMessage(Spectr
 		PrintXmlUInt32("LastFragment", info->LastFragment);
 	PrintXmlInt32("MDEntriesCount", info->MDEntriesCount);
 
-	SpectraDefaultIncrementalRefreshMessageMDEntriesItemInfo* mdeItemInfo = NULL;
+	FortsDefaultIncrementalRefreshMessageMDEntriesItemInfo* mdeItemInfo = NULL;
 
 	for(int i = 0; i < info->MDEntriesCount; i++) {
 		mdeItemInfo = info->MDEntries[i];
@@ -2937,11 +2937,11 @@ void FastProtocolManager::PrintXmlSpectraDefaultIncrementalRefreshMessage(Spectr
 		PrintXmlItemEnd("item", i);
 	}
 
-	PrintXmlItemEnd("SpectraDefaultIncrementalRefreshMessageInfo");
+	PrintXmlItemEnd("FortsDefaultIncrementalRefreshMessageInfo");
 }
-void FastProtocolManager::PrintXmlSpectraDefaultSnapshotMessage(SpectraDefaultSnapshotMessageInfo *info) {
+void FastProtocolManager::PrintXmlFortsDefaultSnapshotMessage(FortsDefaultSnapshotMessageInfo *info) {
 
-	PrintXmlItemBegin("SpectraDefaultSnapshotMessageInfo");
+	PrintXmlItemBegin("FortsDefaultSnapshotMessageInfo");
 	PrintXmlInt32("TemplateId", 13);
 	PrintXmlUInt32("MsgSeqNum", info->MsgSeqNum);
 	PrintXmlUInt64("SendingTime", info->SendingTime);
@@ -2958,7 +2958,7 @@ void FastProtocolManager::PrintXmlSpectraDefaultSnapshotMessage(SpectraDefaultSn
 		PrintXmlString("SecurityGroup", info->SecurityGroup, info->SecurityGroupLength);
 	PrintXmlInt32("MDEntriesCount", info->MDEntriesCount);
 
-	SpectraDefaultSnapshotMessageMDEntriesItemInfo* mdeItemInfo = NULL;
+	FortsDefaultSnapshotMessageMDEntriesItemInfo* mdeItemInfo = NULL;
 
 	for(int i = 0; i < info->MDEntriesCount; i++) {
 		mdeItemInfo = info->MDEntries[i];
@@ -2994,11 +2994,11 @@ void FastProtocolManager::PrintXmlSpectraDefaultSnapshotMessage(SpectraDefaultSn
 		PrintXmlItemEnd("item", i);
 	}
 
-	PrintXmlItemEnd("SpectraDefaultSnapshotMessageInfo");
+	PrintXmlItemEnd("FortsDefaultSnapshotMessageInfo");
 }
-void FastProtocolManager::PrintXmlSpectraSecurityDefinition(SpectraSecurityDefinitionInfo *info) {
+void FastProtocolManager::PrintXmlFortsSecurityDefinition(FortsSecurityDefinitionInfo *info) {
 
-	PrintXmlItemBegin("SpectraSecurityDefinitionInfo");
+	PrintXmlItemBegin("FortsSecurityDefinitionInfo");
 	PrintXmlInt32("TemplateId", 3);
 	PrintXmlUInt32("MsgSeqNum", info->MsgSeqNum);
 	PrintXmlUInt64("SendingTime", info->SendingTime);
@@ -3032,7 +3032,7 @@ void FastProtocolManager::PrintXmlSpectraSecurityDefinition(SpectraSecurityDefin
 		PrintXmlDecimal("Volatility", &(info->Volatility));
 	PrintXmlInt32("MDFeedTypesCount", info->MDFeedTypesCount);
 
-	SpectraSecurityDefinitionMDFeedTypesItemInfo* mdftItemInfo = NULL;
+	FortsSecurityDefinitionMDFeedTypesItemInfo* mdftItemInfo = NULL;
 
 	for(int i = 0; i < info->MDFeedTypesCount; i++) {
 		mdftItemInfo = info->MDFeedTypes[i];
@@ -3048,7 +3048,7 @@ void FastProtocolManager::PrintXmlSpectraSecurityDefinition(SpectraSecurityDefin
 	if((info->NullMap & NULL_MAP_INDEX12) == 0)
 		PrintXmlInt32("UnderlyingsCount", info->UnderlyingsCount);
 
-		SpectraSecurityDefinitionUnderlyingsItemInfo* uItemInfo = NULL;
+		FortsSecurityDefinitionUnderlyingsItemInfo* uItemInfo = NULL;
 
 		for(int i = 0; i < info->UnderlyingsCount; i++) {
 			uItemInfo = info->Underlyings[i];
@@ -3082,7 +3082,7 @@ void FastProtocolManager::PrintXmlSpectraSecurityDefinition(SpectraSecurityDefin
 	if((info->NullMap & NULL_MAP_INDEX23) == 0)
 		PrintXmlInt32("InstrumentLegsCount", info->InstrumentLegsCount);
 
-		SpectraSecurityDefinitionInstrumentLegsItemInfo* ilItemInfo = NULL;
+		FortsSecurityDefinitionInstrumentLegsItemInfo* ilItemInfo = NULL;
 
 		for(int i = 0; i < info->InstrumentLegsCount; i++) {
 			ilItemInfo = info->InstrumentLegs[i];
@@ -3096,7 +3096,7 @@ void FastProtocolManager::PrintXmlSpectraSecurityDefinition(SpectraSecurityDefin
 	if((info->NullMap & NULL_MAP_INDEX24) == 0)
 		PrintXmlInt32("InstrumentAttributesCount", info->InstrumentAttributesCount);
 
-		SpectraSecurityDefinitionInstrumentAttributesItemInfo* iaItemInfo = NULL;
+		FortsSecurityDefinitionInstrumentAttributesItemInfo* iaItemInfo = NULL;
 
 		for(int i = 0; i < info->InstrumentAttributesCount; i++) {
 			iaItemInfo = info->InstrumentAttributes[i];
@@ -3113,7 +3113,7 @@ void FastProtocolManager::PrintXmlSpectraSecurityDefinition(SpectraSecurityDefin
 	if((info->NullMap & NULL_MAP_INDEX27) == 0)
 		PrintXmlInt32("EvntGrpCount", info->EvntGrpCount);
 
-		SpectraSecurityDefinitionEvntGrpItemInfo* egItemInfo = NULL;
+		FortsSecurityDefinitionEvntGrpItemInfo* egItemInfo = NULL;
 
 		for(int i = 0; i < info->EvntGrpCount; i++) {
 			egItemInfo = info->EvntGrp[i];
@@ -3128,11 +3128,11 @@ void FastProtocolManager::PrintXmlSpectraSecurityDefinition(SpectraSecurityDefin
 		PrintXmlUInt32("MaturityDate", info->MaturityDate);
 	if((info->NullMap & NULL_MAP_INDEX29) == 0)
 		PrintXmlUInt32("MaturityTime", info->MaturityTime);
-	PrintXmlItemEnd("SpectraSecurityDefinitionInfo");
+	PrintXmlItemEnd("FortsSecurityDefinitionInfo");
 }
-void FastProtocolManager::PrintXmlSpectraSecurityDefinitionUpdateReport(SpectraSecurityDefinitionUpdateReportInfo *info) {
+void FastProtocolManager::PrintXmlFortsSecurityDefinitionUpdateReport(FortsSecurityDefinitionUpdateReportInfo *info) {
 
-	PrintXmlItemBegin("SpectraSecurityDefinitionUpdateReportInfo");
+	PrintXmlItemBegin("FortsSecurityDefinitionUpdateReportInfo");
 	PrintXmlInt32("TemplateId", 4);
 	PrintXmlUInt32("MsgSeqNum", info->MsgSeqNum);
 	PrintXmlUInt64("SendingTime", info->SendingTime);
@@ -3143,11 +3143,11 @@ void FastProtocolManager::PrintXmlSpectraSecurityDefinitionUpdateReport(SpectraS
 		PrintXmlDecimal("TheorPrice", &(info->TheorPrice));
 	if((info->NullMap & NULL_MAP_INDEX2) == 0)
 		PrintXmlDecimal("TheorPriceLimit", &(info->TheorPriceLimit));
-	PrintXmlItemEnd("SpectraSecurityDefinitionUpdateReportInfo");
+	PrintXmlItemEnd("FortsSecurityDefinitionUpdateReportInfo");
 }
-void FastProtocolManager::PrintXmlSpectraSecurityStatus(SpectraSecurityStatusInfo *info) {
+void FastProtocolManager::PrintXmlFortsSecurityStatus(FortsSecurityStatusInfo *info) {
 
-	PrintXmlItemBegin("SpectraSecurityStatusInfo");
+	PrintXmlItemBegin("FortsSecurityStatusInfo");
 	PrintXmlInt32("TemplateId", 5);
 	PrintXmlUInt32("MsgSeqNum", info->MsgSeqNum);
 	PrintXmlUInt64("SendingTime", info->SendingTime);
@@ -3165,28 +3165,28 @@ void FastProtocolManager::PrintXmlSpectraSecurityStatus(SpectraSecurityStatusInf
 		PrintXmlDecimal("InitialMarginOnSell", &(info->InitialMarginOnSell));
 	if((info->NullMap & NULL_MAP_INDEX5) == 0)
 		PrintXmlDecimal("InitialMarginSyntetic", &(info->InitialMarginSyntetic));
-	PrintXmlItemEnd("SpectraSecurityStatusInfo");
+	PrintXmlItemEnd("FortsSecurityStatusInfo");
 }
-void FastProtocolManager::PrintXmlSpectraHeartbeat(SpectraHeartbeatInfo *info) {
+void FastProtocolManager::PrintXmlFortsHeartbeat(FortsHeartbeatInfo *info) {
 
-	PrintXmlItemBegin("SpectraHeartbeatInfo");
+	PrintXmlItemBegin("FortsHeartbeatInfo");
 	PrintXmlInt32("TemplateId", 6);
 	PrintXmlUInt32("MsgSeqNum", info->MsgSeqNum);
 	PrintXmlUInt64("SendingTime", info->SendingTime);
-	PrintXmlItemEnd("SpectraHeartbeatInfo");
+	PrintXmlItemEnd("FortsHeartbeatInfo");
 }
-void FastProtocolManager::PrintXmlSpectraSequenceReset(SpectraSequenceResetInfo *info) {
+void FastProtocolManager::PrintXmlFortsSequenceReset(FortsSequenceResetInfo *info) {
 
-	PrintXmlItemBegin("SpectraSequenceResetInfo");
+	PrintXmlItemBegin("FortsSequenceResetInfo");
 	PrintXmlInt32("TemplateId", 7);
 	PrintXmlUInt32("MsgSeqNum", info->MsgSeqNum);
 	PrintXmlUInt64("SendingTime", info->SendingTime);
 	PrintXmlUInt32("NewSeqNo", info->NewSeqNo);
-	PrintXmlItemEnd("SpectraSequenceResetInfo");
+	PrintXmlItemEnd("FortsSequenceResetInfo");
 }
-void FastProtocolManager::PrintXmlSpectraTradingSessionStatus(SpectraTradingSessionStatusInfo *info) {
+void FastProtocolManager::PrintXmlFortsTradingSessionStatus(FortsTradingSessionStatusInfo *info) {
 
-	PrintXmlItemBegin("SpectraTradingSessionStatusInfo");
+	PrintXmlItemBegin("FortsTradingSessionStatusInfo");
 	PrintXmlInt32("TemplateId", 8);
 	PrintXmlUInt32("MsgSeqNum", info->MsgSeqNum);
 	PrintXmlUInt64("SendingTime", info->SendingTime);
@@ -3203,11 +3203,11 @@ void FastProtocolManager::PrintXmlSpectraTradingSessionStatus(SpectraTradingSess
 	PrintXmlString("MarketSegmentID", info->MarketSegmentID, info->MarketSegmentIDLength);
 	if((info->NullMap & NULL_MAP_INDEX3) == 0)
 		PrintXmlInt32("TradSesEvent", info->TradSesEvent);
-	PrintXmlItemEnd("SpectraTradingSessionStatusInfo");
+	PrintXmlItemEnd("FortsTradingSessionStatusInfo");
 }
-void FastProtocolManager::PrintXmlSpectraNews(SpectraNewsInfo *info) {
+void FastProtocolManager::PrintXmlFortsNews(FortsNewsInfo *info) {
 
-	PrintXmlItemBegin("SpectraNewsInfo");
+	PrintXmlItemBegin("FortsNewsInfo");
 	PrintXmlInt32("TemplateId", 9);
 	PrintXmlUInt32("MsgSeqNum", info->MsgSeqNum);
 	PrintXmlUInt64("SendingTime", info->SendingTime);
@@ -3226,7 +3226,7 @@ void FastProtocolManager::PrintXmlSpectraNews(SpectraNewsInfo *info) {
 		PrintXmlString("MarketSegmentID", info->MarketSegmentID, info->MarketSegmentIDLength);
 	PrintXmlInt32("NewsTextCount", info->NewsTextCount);
 
-	SpectraNewsNewsTextItemInfo* ntItemInfo = NULL;
+	FortsNewsNewsTextItemInfo* ntItemInfo = NULL;
 
 	for(int i = 0; i < info->NewsTextCount; i++) {
 		ntItemInfo = info->NewsText[i];
@@ -3235,18 +3235,18 @@ void FastProtocolManager::PrintXmlSpectraNews(SpectraNewsInfo *info) {
 		PrintXmlItemEnd("item", i);
 	}
 
-	PrintXmlItemEnd("SpectraNewsInfo");
+	PrintXmlItemEnd("FortsNewsInfo");
 }
-void FastProtocolManager::PrintXmlSpectraOrdersLog(SpectraOrdersLogInfo *info) {
+void FastProtocolManager::PrintXmlFortsOrdersLog(FortsOrdersLogInfo *info) {
 
-	PrintXmlItemBegin("SpectraOrdersLogInfo");
+	PrintXmlItemBegin("FortsOrdersLogInfo");
 	PrintXmlInt32("TemplateId", 14);
 	PrintXmlUInt32("MsgSeqNum", info->MsgSeqNum);
 	PrintXmlUInt64("SendingTime", info->SendingTime);
 	PrintXmlUInt32("LastFragment", info->LastFragment);
 	PrintXmlInt32("MDEntriesCount", info->MDEntriesCount);
 
-	SpectraOrdersLogMDEntriesItemInfo* mdeItemInfo = NULL;
+	FortsOrdersLogMDEntriesItemInfo* mdeItemInfo = NULL;
 
 	for(int i = 0; i < info->MDEntriesCount; i++) {
 		mdeItemInfo = info->MDEntries[i];
@@ -3281,11 +3281,11 @@ void FastProtocolManager::PrintXmlSpectraOrdersLog(SpectraOrdersLogInfo *info) {
 		PrintXmlItemEnd("item", i);
 	}
 
-	PrintXmlItemEnd("SpectraOrdersLogInfo");
+	PrintXmlItemEnd("FortsOrdersLogInfo");
 }
-void FastProtocolManager::PrintXmlSpectraOrdersBook(SpectraOrdersBookInfo *info) {
+void FastProtocolManager::PrintXmlFortsOrdersBook(FortsOrdersBookInfo *info) {
 
-	PrintXmlItemBegin("SpectraOrdersBookInfo");
+	PrintXmlItemBegin("FortsOrdersBookInfo");
 	PrintXmlInt32("TemplateId", 15);
 	PrintXmlUInt32("MsgSeqNum", info->MsgSeqNum);
 	PrintXmlUInt64("SendingTime", info->SendingTime);
@@ -3299,7 +3299,7 @@ void FastProtocolManager::PrintXmlSpectraOrdersBook(SpectraOrdersBookInfo *info)
 		PrintXmlUInt64("SecurityID", info->SecurityID);
 	PrintXmlInt32("MDEntriesCount", info->MDEntriesCount);
 
-	SpectraOrdersBookMDEntriesItemInfo* mdeItemInfo = NULL;
+	FortsOrdersBookMDEntriesItemInfo* mdeItemInfo = NULL;
 
 	for(int i = 0; i < info->MDEntriesCount; i++) {
 		mdeItemInfo = info->MDEntries[i];
@@ -3321,25 +3321,25 @@ void FastProtocolManager::PrintXmlSpectraOrdersBook(SpectraOrdersBookInfo *info)
 		PrintXmlItemEnd("item", i);
 	}
 
-	PrintXmlItemEnd("SpectraOrdersBookInfo");
+	PrintXmlItemEnd("FortsOrdersBookInfo");
 }
-void FastProtocolManager::PrintXmlSpectraLogon(SpectraLogonInfo *info) {
+void FastProtocolManager::PrintXmlFortsLogon(FortsLogonInfo *info) {
 
-	PrintXmlItemBegin("SpectraLogonInfo");
+	PrintXmlItemBegin("FortsLogonInfo");
 	PrintXmlInt32("TemplateId", 1000);
 	PrintXmlUInt32("MsgSeqNum", info->MsgSeqNum);
 	PrintXmlUInt64("SendingTime", info->SendingTime);
-	PrintXmlItemEnd("SpectraLogonInfo");
+	PrintXmlItemEnd("FortsLogonInfo");
 }
-void FastProtocolManager::PrintXmlSpectraLogout(SpectraLogoutInfo *info) {
+void FastProtocolManager::PrintXmlFortsLogout(FortsLogoutInfo *info) {
 
-	PrintXmlItemBegin("SpectraLogoutInfo");
+	PrintXmlItemBegin("FortsLogoutInfo");
 	PrintXmlInt32("TemplateId", 1001);
 	PrintXmlUInt32("MsgSeqNum", info->MsgSeqNum);
 	PrintXmlUInt64("SendingTime", info->SendingTime);
 	if((info->NullMap & NULL_MAP_INDEX0) == 0)
 		PrintXmlString("Text", info->Text, info->TextLength);
-	PrintXmlItemEnd("SpectraLogoutInfo");
+	PrintXmlItemEnd("FortsLogoutInfo");
 }
 #pragma endregion
 
@@ -5190,8 +5190,8 @@ void FastProtocolManager::EncodeAstsHeartbeatInfo(AstsHeartbeatInfo* info) {
 }
 #pragma endregion
 
-#pragma region Spectra_Encode_Methods_Definition_GeneratedCode
-void FastProtocolManager::EncodeSpectraDefaultIncrementalRefreshMessageInfo(SpectraDefaultIncrementalRefreshMessageInfo* info) {
+#pragma region Forts_Encode_Methods_Definition_GeneratedCode
+void FastProtocolManager::EncodeFortsDefaultIncrementalRefreshMessageInfo(FortsDefaultIncrementalRefreshMessageInfo* info) {
 	WritePresenceMap(info->PresenceMap); // Presence Map hack
 	WriteUInt32_Mandatory(12);
 	WriteUInt32_Mandatory(info->MsgSeqNum);
@@ -5201,7 +5201,7 @@ void FastProtocolManager::EncodeSpectraDefaultIncrementalRefreshMessageInfo(Spec
 	else
 		WriteUInt32_Optional(info->LastFragment);
 	WriteUInt32_Mandatory(info->MDEntriesCount);
-	SpectraDefaultIncrementalRefreshMessageMDEntriesItemInfo **mdeItemInfo = info->MDEntries;
+	FortsDefaultIncrementalRefreshMessageMDEntriesItemInfo **mdeItemInfo = info->MDEntries;
 	for(int i = 0; i < info->MDEntriesCount; i++) {
 		WriteUInt32_Mandatory((*mdeItemInfo)->MDUpdateAction);
 		WriteString_Mandatory((*mdeItemInfo)->MDEntryType, (*mdeItemInfo)->MDEntryTypeLength);
@@ -5283,7 +5283,7 @@ void FastProtocolManager::EncodeSpectraDefaultIncrementalRefreshMessageInfo(Spec
 		mdeItemInfo++;
 	}
 }
-void FastProtocolManager::EncodeSpectraDefaultSnapshotMessageInfo(SpectraDefaultSnapshotMessageInfo* info) {
+void FastProtocolManager::EncodeFortsDefaultSnapshotMessageInfo(FortsDefaultSnapshotMessageInfo* info) {
 	WritePresenceMap(info->PresenceMap); // Presence Map hack
 	WriteUInt32_Mandatory(13);
 	WriteUInt32_Mandatory(info->MsgSeqNum);
@@ -5309,7 +5309,7 @@ void FastProtocolManager::EncodeSpectraDefaultSnapshotMessageInfo(SpectraDefault
 	else
 		WriteString_Optional(info->SecurityGroup, info->SecurityGroupLength);
 	WriteUInt32_Mandatory(info->MDEntriesCount);
-	SpectraDefaultSnapshotMessageMDEntriesItemInfo **mdeItemInfo = info->MDEntries;
+	FortsDefaultSnapshotMessageMDEntriesItemInfo **mdeItemInfo = info->MDEntries;
 	for(int i = 0; i < info->MDEntriesCount; i++) {
 		WriteString_Mandatory((*mdeItemInfo)->MDEntryType, (*mdeItemInfo)->MDEntryTypeLength);
 		if(((*mdeItemInfo)->NullMap & NULL_MAP_INDEX0) != 0)
@@ -5368,7 +5368,7 @@ void FastProtocolManager::EncodeSpectraDefaultSnapshotMessageInfo(SpectraDefault
 		mdeItemInfo++;
 	}
 }
-void FastProtocolManager::EncodeSpectraSecurityDefinitionInfo(SpectraSecurityDefinitionInfo* info) {
+void FastProtocolManager::EncodeFortsSecurityDefinitionInfo(FortsSecurityDefinitionInfo* info) {
 	WritePresenceMap(info->PresenceMap); // Presence Map hack
 	WriteUInt32_Mandatory(3);
 	WriteUInt32_Mandatory(info->MsgSeqNum);
@@ -5428,7 +5428,7 @@ void FastProtocolManager::EncodeSpectraSecurityDefinitionInfo(SpectraSecurityDef
 	else
 		WriteDecimal_Optional(&(info->Volatility));
 	WriteUInt32_Mandatory(info->MDFeedTypesCount);
-	SpectraSecurityDefinitionMDFeedTypesItemInfo **mdftItemInfo = info->MDFeedTypes;
+	FortsSecurityDefinitionMDFeedTypesItemInfo **mdftItemInfo = info->MDFeedTypes;
 	for(int i = 0; i < info->MDFeedTypesCount; i++) {
 		WriteString_Mandatory((*mdftItemInfo)->MDFeedType, (*mdftItemInfo)->MDFeedTypeLength);
 		if(((*mdftItemInfo)->NullMap & NULL_MAP_INDEX0) != 0)
@@ -5445,7 +5445,7 @@ void FastProtocolManager::EncodeSpectraSecurityDefinitionInfo(SpectraSecurityDef
 		this->WriteNull();
 	else {
 		WriteUInt32_Optional(info->UnderlyingsCount);
-		SpectraSecurityDefinitionUnderlyingsItemInfo **uItemInfo = info->Underlyings;
+		FortsSecurityDefinitionUnderlyingsItemInfo **uItemInfo = info->Underlyings;
 		for(int i = 0; i < info->UnderlyingsCount; i++) {
 			WriteString_Mandatory((*uItemInfo)->UnderlyingSymbol, (*uItemInfo)->UnderlyingSymbolLength);
 			if(((*uItemInfo)->NullMap & NULL_MAP_INDEX0) != 0)
@@ -5499,7 +5499,7 @@ void FastProtocolManager::EncodeSpectraSecurityDefinitionInfo(SpectraSecurityDef
 		this->WriteNull();
 	else {
 		WriteUInt32_Optional(info->InstrumentLegsCount);
-		SpectraSecurityDefinitionInstrumentLegsItemInfo **ilItemInfo = info->InstrumentLegs;
+		FortsSecurityDefinitionInstrumentLegsItemInfo **ilItemInfo = info->InstrumentLegs;
 		for(int i = 0; i < info->InstrumentLegsCount; i++) {
 			WriteString_Mandatory((*ilItemInfo)->LegSymbol, (*ilItemInfo)->LegSymbolLength);
 			WriteUInt64_Mandatory((*ilItemInfo)->LegSecurityID);
@@ -5511,7 +5511,7 @@ void FastProtocolManager::EncodeSpectraSecurityDefinitionInfo(SpectraSecurityDef
 		this->WriteNull();
 	else {
 		WriteUInt32_Optional(info->InstrumentAttributesCount);
-		SpectraSecurityDefinitionInstrumentAttributesItemInfo **iaItemInfo = info->InstrumentAttributes;
+		FortsSecurityDefinitionInstrumentAttributesItemInfo **iaItemInfo = info->InstrumentAttributes;
 		for(int i = 0; i < info->InstrumentAttributesCount; i++) {
 			WriteInt32_Mandatory((*iaItemInfo)->InstrAttribType);
 			WriteString_Mandatory((*iaItemInfo)->InstrAttribValue, (*iaItemInfo)->InstrAttribValueLength);
@@ -5530,7 +5530,7 @@ void FastProtocolManager::EncodeSpectraSecurityDefinitionInfo(SpectraSecurityDef
 		this->WriteNull();
 	else {
 		WriteUInt32_Optional(info->EvntGrpCount);
-		SpectraSecurityDefinitionEvntGrpItemInfo **egItemInfo = info->EvntGrp;
+		FortsSecurityDefinitionEvntGrpItemInfo **egItemInfo = info->EvntGrp;
 		for(int i = 0; i < info->EvntGrpCount; i++) {
 			WriteInt32_Mandatory((*egItemInfo)->EventType);
 			WriteUInt32_Mandatory((*egItemInfo)->EventDate);
@@ -5547,7 +5547,7 @@ void FastProtocolManager::EncodeSpectraSecurityDefinitionInfo(SpectraSecurityDef
 	else
 		WriteUInt32_Optional(info->MaturityTime);
 }
-void FastProtocolManager::EncodeSpectraSecurityDefinitionUpdateReportInfo(SpectraSecurityDefinitionUpdateReportInfo* info) {
+void FastProtocolManager::EncodeFortsSecurityDefinitionUpdateReportInfo(FortsSecurityDefinitionUpdateReportInfo* info) {
 	WritePresenceMap(info->PresenceMap); // Presence Map hack
 	WriteUInt32_Mandatory(4);
 	WriteUInt32_Mandatory(info->MsgSeqNum);
@@ -5567,7 +5567,7 @@ void FastProtocolManager::EncodeSpectraSecurityDefinitionUpdateReportInfo(Spectr
 	else
 		WriteDecimal_Optional(&(info->TheorPriceLimit));
 }
-void FastProtocolManager::EncodeSpectraSecurityStatusInfo(SpectraSecurityStatusInfo* info) {
+void FastProtocolManager::EncodeFortsSecurityStatusInfo(FortsSecurityStatusInfo* info) {
 	WritePresenceMap(info->PresenceMap); // Presence Map hack
 	WriteUInt32_Mandatory(5);
 	WriteUInt32_Mandatory(info->MsgSeqNum);
@@ -5600,20 +5600,20 @@ void FastProtocolManager::EncodeSpectraSecurityStatusInfo(SpectraSecurityStatusI
 	else
 		WriteDecimal_Optional(&(info->InitialMarginSyntetic));
 }
-void FastProtocolManager::EncodeSpectraHeartbeatInfo(SpectraHeartbeatInfo* info) {
+void FastProtocolManager::EncodeFortsHeartbeatInfo(FortsHeartbeatInfo* info) {
 	WritePresenceMap(info->PresenceMap); // Presence Map hack
 	WriteUInt32_Mandatory(6);
 	WriteUInt32_Mandatory(info->MsgSeqNum);
 	WriteUInt64_Mandatory(info->SendingTime);
 }
-void FastProtocolManager::EncodeSpectraSequenceResetInfo(SpectraSequenceResetInfo* info) {
+void FastProtocolManager::EncodeFortsSequenceResetInfo(FortsSequenceResetInfo* info) {
 	WritePresenceMap(info->PresenceMap); // Presence Map hack
 	WriteUInt32_Mandatory(7);
 	WriteUInt32_Mandatory(info->MsgSeqNum);
 	WriteUInt64_Mandatory(info->SendingTime);
 	WriteUInt32_Mandatory(info->NewSeqNo);
 }
-void FastProtocolManager::EncodeSpectraTradingSessionStatusInfo(SpectraTradingSessionStatusInfo* info) {
+void FastProtocolManager::EncodeFortsTradingSessionStatusInfo(FortsTradingSessionStatusInfo* info) {
 	WritePresenceMap(info->PresenceMap); // Presence Map hack
 	WriteUInt32_Mandatory(8);
 	WriteUInt32_Mandatory(info->MsgSeqNum);
@@ -5641,7 +5641,7 @@ void FastProtocolManager::EncodeSpectraTradingSessionStatusInfo(SpectraTradingSe
 	else
 		WriteInt32_Optional(info->TradSesEvent);
 }
-void FastProtocolManager::EncodeSpectraNewsInfo(SpectraNewsInfo* info) {
+void FastProtocolManager::EncodeFortsNewsInfo(FortsNewsInfo* info) {
 	WritePresenceMap(info->PresenceMap); // Presence Map hack
 	WriteUInt32_Mandatory(9);
 	WriteUInt32_Mandatory(info->MsgSeqNum);
@@ -5673,20 +5673,20 @@ void FastProtocolManager::EncodeSpectraNewsInfo(SpectraNewsInfo* info) {
 	else
 		WriteString_Optional(info->MarketSegmentID, info->MarketSegmentIDLength);
 	WriteUInt32_Mandatory(info->NewsTextCount);
-	SpectraNewsNewsTextItemInfo **ntItemInfo = info->NewsText;
+	FortsNewsNewsTextItemInfo **ntItemInfo = info->NewsText;
 	for(int i = 0; i < info->NewsTextCount; i++) {
 		WriteString_Mandatory((*ntItemInfo)->Text, (*ntItemInfo)->TextLength);
 		ntItemInfo++;
 	}
 }
-void FastProtocolManager::EncodeSpectraOrdersLogInfo(SpectraOrdersLogInfo* info) {
+void FastProtocolManager::EncodeFortsOrdersLogInfo(FortsOrdersLogInfo* info) {
 	WritePresenceMap(info->PresenceMap); // Presence Map hack
 	WriteUInt32_Mandatory(14);
 	WriteUInt32_Mandatory(info->MsgSeqNum);
 	WriteUInt64_Mandatory(info->SendingTime);
 	WriteUInt32_Mandatory(info->LastFragment);
 	WriteUInt32_Mandatory(info->MDEntriesCount);
-	SpectraOrdersLogMDEntriesItemInfo **mdeItemInfo = info->MDEntries;
+	FortsOrdersLogMDEntriesItemInfo **mdeItemInfo = info->MDEntries;
 	for(int i = 0; i < info->MDEntriesCount; i++) {
 		WriteUInt32_Mandatory((*mdeItemInfo)->MDUpdateAction);
 		WriteString_Mandatory((*mdeItemInfo)->MDEntryType, (*mdeItemInfo)->MDEntryTypeLength);
@@ -5743,7 +5743,7 @@ void FastProtocolManager::EncodeSpectraOrdersLogInfo(SpectraOrdersLogInfo* info)
 		mdeItemInfo++;
 	}
 }
-void FastProtocolManager::EncodeSpectraOrdersBookInfo(SpectraOrdersBookInfo* info) {
+void FastProtocolManager::EncodeFortsOrdersBookInfo(FortsOrdersBookInfo* info) {
 	WritePresenceMap(info->PresenceMap); // Presence Map hack
 	WriteUInt32_Mandatory(15);
 	WriteUInt32_Mandatory(info->MsgSeqNum);
@@ -5762,7 +5762,7 @@ void FastProtocolManager::EncodeSpectraOrdersBookInfo(SpectraOrdersBookInfo* inf
 		WriteUInt64_Optional(info->SecurityID);
 	WriteUInt32_Mandatory(info->SecurityIDSource);
 	WriteUInt32_Mandatory(info->MDEntriesCount);
-	SpectraOrdersBookMDEntriesItemInfo **mdeItemInfo = info->MDEntries;
+	FortsOrdersBookMDEntriesItemInfo **mdeItemInfo = info->MDEntries;
 	for(int i = 0; i < info->MDEntriesCount; i++) {
 		WriteString_Mandatory((*mdeItemInfo)->MDEntryType, (*mdeItemInfo)->MDEntryTypeLength);
 		if(((*mdeItemInfo)->NullMap & NULL_MAP_INDEX0) != 0)
@@ -5793,13 +5793,13 @@ void FastProtocolManager::EncodeSpectraOrdersBookInfo(SpectraOrdersBookInfo* inf
 		mdeItemInfo++;
 	}
 }
-void FastProtocolManager::EncodeSpectraLogonInfo(SpectraLogonInfo* info) {
+void FastProtocolManager::EncodeFortsLogonInfo(FortsLogonInfo* info) {
 	WritePresenceMap(info->PresenceMap); // Presence Map hack
 	WriteUInt32_Mandatory(1000);
 	WriteUInt32_Mandatory(info->MsgSeqNum);
 	WriteUInt64_Mandatory(info->SendingTime);
 }
-void FastProtocolManager::EncodeSpectraLogoutInfo(SpectraLogoutInfo* info) {
+void FastProtocolManager::EncodeFortsLogoutInfo(FortsLogoutInfo* info) {
 	WritePresenceMap(info->PresenceMap); // Presence Map hack
 	WriteUInt32_Mandatory(1001);
 	WriteUInt32_Mandatory(info->MsgSeqNum);

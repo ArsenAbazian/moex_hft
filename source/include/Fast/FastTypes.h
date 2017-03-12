@@ -2738,8 +2738,8 @@ public:
 };
 #pragma endregion
 
-#pragma region Spectra_Message_Info_Structures_Definition_GeneratedCode
-class SpectraSnapshotInfo {
+#pragma region Forts_Message_Info_Structures_Definition_GeneratedCode
+class FortsSnapshotInfo {
 public:
 	UINT64				PresenceMap;
 	UINT64				NullMap;
@@ -2752,18 +2752,18 @@ public:
 	char				Symbol[32];
 	int					SymbolLength;
 	UINT32				TradingSessionID;
-	SpectraSnapshotInfo() {
+	FortsSnapshotInfo() {
 		this->PresenceMap = 0;
 		this->NullMap = 0;
 	}
 };
 
-class SpectraDefaultIncrementalRefreshMessageMDEntriesItemInfo{
+class FortsDefaultIncrementalRefreshMessageMDEntriesItemInfo{
 public:
 	UINT64							PresenceMap;
 	UINT64							NullMap;
-	LinkedPointer<SpectraDefaultIncrementalRefreshMessageMDEntriesItemInfo>							*Pointer;
-	AutoAllocatePointerList<SpectraDefaultIncrementalRefreshMessageMDEntriesItemInfo>							*Allocator;
+	LinkedPointer<FortsDefaultIncrementalRefreshMessageMDEntriesItemInfo>							*Pointer;
+	AutoAllocatePointerList<FortsDefaultIncrementalRefreshMessageMDEntriesItemInfo>							*Allocator;
 	bool							Used;
 	UINT32							MDUpdateAction;			// id=279  
 	char							MDEntryType[4];			// id=269  
@@ -2795,7 +2795,7 @@ public:
 	char							OrderSide[4];			// id=10504  presence=optional  
 	int							OrderSideLength = 0;
 
-	SpectraDefaultIncrementalRefreshMessageMDEntriesItemInfo(){
+	FortsDefaultIncrementalRefreshMessageMDEntriesItemInfo(){
 		this->Used = false;
 		this->Pointer = 0;
 		this->Allocator = 0;
@@ -2814,7 +2814,7 @@ public:
 		this->OrderSide[0] = '\0';
 		this->OrderSideLength = 0;
 	}
-	~SpectraDefaultIncrementalRefreshMessageMDEntriesItemInfo(){ }
+	~FortsDefaultIncrementalRefreshMessageMDEntriesItemInfo(){ }
 	inline void Clear() {
 		this->Used = false;
 		this->Allocator->FreeItem(this->Pointer);
@@ -2827,12 +2827,12 @@ public:
 	}
 };
 
-class SpectraDefaultIncrementalRefreshMessageInfo{
+class FortsDefaultIncrementalRefreshMessageInfo{
 public:
 	UINT64							PresenceMap;
 	UINT64							NullMap;
-	LinkedPointer<SpectraDefaultIncrementalRefreshMessageInfo>							*Pointer;
-	AutoAllocatePointerList<SpectraDefaultIncrementalRefreshMessageInfo>							*Allocator;
+	LinkedPointer<FortsDefaultIncrementalRefreshMessageInfo>							*Pointer;
+	AutoAllocatePointerList<FortsDefaultIncrementalRefreshMessageInfo>							*Allocator;
 	bool							Used;
 	char							ApplVerID[16];			// id=1128    constant has constant value = 9
 	int							ApplVerIDLength = 0;
@@ -2844,9 +2844,9 @@ public:
 	UINT64							SendingTime;			// id=52  
 	UINT32							LastFragment;			// id=893  presence=optional  
 	int							MDEntriesCount;
-	SpectraDefaultIncrementalRefreshMessageMDEntriesItemInfo* MDEntries[256];
+	FortsDefaultIncrementalRefreshMessageMDEntriesItemInfo* MDEntries[256];
 
-	SpectraDefaultIncrementalRefreshMessageInfo(){
+	FortsDefaultIncrementalRefreshMessageInfo(){
 		this->Used = false;
 		this->Pointer = 0;
 		this->Allocator = 0;
@@ -2860,7 +2860,7 @@ public:
 		this->SenderCompIDLength = 0;
 		this->MDEntriesCount = 0;
 	}
-	~SpectraDefaultIncrementalRefreshMessageInfo(){ }
+	~FortsDefaultIncrementalRefreshMessageInfo(){ }
 	inline void Clear() {
 		this->Used = false;
 		this->Allocator->FreeItem(this->Pointer);
@@ -2877,12 +2877,12 @@ public:
 	}
 };
 
-class SpectraDefaultSnapshotMessageMDEntriesItemInfo{
+class FortsDefaultSnapshotMessageMDEntriesItemInfo{
 public:
 	UINT64							PresenceMap;
 	UINT64							NullMap;
-	LinkedPointer<SpectraDefaultSnapshotMessageMDEntriesItemInfo>							*Pointer;
-	AutoAllocatePointerList<SpectraDefaultSnapshotMessageMDEntriesItemInfo>							*Allocator;
+	LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo>							*Pointer;
+	AutoAllocatePointerList<FortsDefaultSnapshotMessageMDEntriesItemInfo>							*Allocator;
 	bool							Used;
 	char							MDEntryType[4];			// id=269  
 	int							MDEntryTypeLength = 0;
@@ -2904,7 +2904,7 @@ public:
 	char							OrderSide[4];			// id=10504  presence=optional  
 	int							OrderSideLength = 0;
 
-	SpectraDefaultSnapshotMessageMDEntriesItemInfo(){
+	FortsDefaultSnapshotMessageMDEntriesItemInfo(){
 		this->Used = false;
 		this->Pointer = 0;
 		this->Allocator = 0;
@@ -2919,7 +2919,7 @@ public:
 		this->OrderSide[0] = '\0';
 		this->OrderSideLength = 0;
 	}
-	~SpectraDefaultSnapshotMessageMDEntriesItemInfo(){ }
+	~FortsDefaultSnapshotMessageMDEntriesItemInfo(){ }
 	inline void Clear() {
 		this->Used = false;
 		this->Allocator->FreeItem(this->Pointer);
@@ -2932,12 +2932,12 @@ public:
 	}
 };
 
-class SpectraDefaultSnapshotMessageInfo{
+class FortsDefaultSnapshotMessageInfo{
 public:
 	UINT64							PresenceMap;
 	UINT64							NullMap;
-	LinkedPointer<SpectraDefaultSnapshotMessageInfo>							*Pointer;
-	AutoAllocatePointerList<SpectraDefaultSnapshotMessageInfo>							*Allocator;
+	LinkedPointer<FortsDefaultSnapshotMessageInfo>							*Pointer;
+	AutoAllocatePointerList<FortsDefaultSnapshotMessageInfo>							*Allocator;
 	bool							Used;
 	char							ApplVerID[16];			// id=1128    constant has constant value = 9
 	int							ApplVerIDLength = 0;
@@ -2958,9 +2958,9 @@ public:
 	char							SecurityGroup[16];			// id=1151  presence=optional  
 	int							SecurityGroupLength = 0;
 	int							MDEntriesCount;
-	SpectraDefaultSnapshotMessageMDEntriesItemInfo* MDEntries[256];
+	FortsDefaultSnapshotMessageMDEntriesItemInfo* MDEntries[256];
 
-	SpectraDefaultSnapshotMessageInfo(){
+	FortsDefaultSnapshotMessageInfo(){
 		this->Used = false;
 		this->Pointer = 0;
 		this->Allocator = 0;
@@ -2978,7 +2978,7 @@ public:
 		this->SecurityGroupLength = 0;
 		this->MDEntriesCount = 0;
 	}
-	~SpectraDefaultSnapshotMessageInfo(){ }
+	~FortsDefaultSnapshotMessageInfo(){ }
 	inline void Clear() {
 		this->Used = false;
 		this->Allocator->FreeItem(this->Pointer);
@@ -2995,19 +2995,19 @@ public:
 	}
 };
 
-class SpectraSecurityDefinitionMDFeedTypesItemInfo{
+class FortsSecurityDefinitionMDFeedTypesItemInfo{
 public:
 	UINT64							PresenceMap;
 	UINT64							NullMap;
-	LinkedPointer<SpectraSecurityDefinitionMDFeedTypesItemInfo>							*Pointer;
-	AutoAllocatePointerList<SpectraSecurityDefinitionMDFeedTypesItemInfo>							*Allocator;
+	LinkedPointer<FortsSecurityDefinitionMDFeedTypesItemInfo>							*Pointer;
+	AutoAllocatePointerList<FortsSecurityDefinitionMDFeedTypesItemInfo>							*Allocator;
 	bool							Used;
 	char							MDFeedType[16];			// id=1022  
 	int							MDFeedTypeLength = 0;
 	UINT32							MarketDepth;			// id=264  presence=optional  
 	UINT32							MDBookType;			// id=1021  presence=optional  
 
-	SpectraSecurityDefinitionMDFeedTypesItemInfo(){
+	FortsSecurityDefinitionMDFeedTypesItemInfo(){
 		this->Used = false;
 		this->Pointer = 0;
 		this->Allocator = 0;
@@ -3016,7 +3016,7 @@ public:
 		this->MDFeedType[0] = '\0';
 		this->MDFeedTypeLength = 0;
 	}
-	~SpectraSecurityDefinitionMDFeedTypesItemInfo(){ }
+	~FortsSecurityDefinitionMDFeedTypesItemInfo(){ }
 	inline void Clear() {
 		this->Used = false;
 		this->Allocator->FreeItem(this->Pointer);
@@ -3029,18 +3029,18 @@ public:
 	}
 };
 
-class SpectraSecurityDefinitionUnderlyingsItemInfo{
+class FortsSecurityDefinitionUnderlyingsItemInfo{
 public:
 	UINT64							PresenceMap;
 	UINT64							NullMap;
-	LinkedPointer<SpectraSecurityDefinitionUnderlyingsItemInfo>							*Pointer;
-	AutoAllocatePointerList<SpectraSecurityDefinitionUnderlyingsItemInfo>							*Allocator;
+	LinkedPointer<FortsSecurityDefinitionUnderlyingsItemInfo>							*Pointer;
+	AutoAllocatePointerList<FortsSecurityDefinitionUnderlyingsItemInfo>							*Allocator;
 	bool							Used;
 	char							UnderlyingSymbol[16];			// id=311  
 	int							UnderlyingSymbolLength = 0;
 	UINT64							UnderlyingSecurityID;			// id=309  presence=optional  
 
-	SpectraSecurityDefinitionUnderlyingsItemInfo(){
+	FortsSecurityDefinitionUnderlyingsItemInfo(){
 		this->Used = false;
 		this->Pointer = 0;
 		this->Allocator = 0;
@@ -3049,7 +3049,7 @@ public:
 		this->UnderlyingSymbol[0] = '\0';
 		this->UnderlyingSymbolLength = 0;
 	}
-	~SpectraSecurityDefinitionUnderlyingsItemInfo(){ }
+	~FortsSecurityDefinitionUnderlyingsItemInfo(){ }
 	inline void Clear() {
 		this->Used = false;
 		this->Allocator->FreeItem(this->Pointer);
@@ -3062,19 +3062,19 @@ public:
 	}
 };
 
-class SpectraSecurityDefinitionInstrumentLegsItemInfo{
+class FortsSecurityDefinitionInstrumentLegsItemInfo{
 public:
 	UINT64							PresenceMap;
 	UINT64							NullMap;
-	LinkedPointer<SpectraSecurityDefinitionInstrumentLegsItemInfo>							*Pointer;
-	AutoAllocatePointerList<SpectraSecurityDefinitionInstrumentLegsItemInfo>							*Allocator;
+	LinkedPointer<FortsSecurityDefinitionInstrumentLegsItemInfo>							*Pointer;
+	AutoAllocatePointerList<FortsSecurityDefinitionInstrumentLegsItemInfo>							*Allocator;
 	bool							Used;
 	char							LegSymbol[16];			// id=600  
 	int							LegSymbolLength = 0;
 	UINT64							LegSecurityID;			// id=602  
 	Decimal							LegRatioQty;			// id=623  
 
-	SpectraSecurityDefinitionInstrumentLegsItemInfo(){
+	FortsSecurityDefinitionInstrumentLegsItemInfo(){
 		this->Used = false;
 		this->Pointer = 0;
 		this->Allocator = 0;
@@ -3083,7 +3083,7 @@ public:
 		this->LegSymbol[0] = '\0';
 		this->LegSymbolLength = 0;
 	}
-	~SpectraSecurityDefinitionInstrumentLegsItemInfo(){ }
+	~FortsSecurityDefinitionInstrumentLegsItemInfo(){ }
 	inline void Clear() {
 		this->Used = false;
 		this->Allocator->FreeItem(this->Pointer);
@@ -3096,18 +3096,18 @@ public:
 	}
 };
 
-class SpectraSecurityDefinitionInstrumentAttributesItemInfo{
+class FortsSecurityDefinitionInstrumentAttributesItemInfo{
 public:
 	UINT64							PresenceMap;
 	UINT64							NullMap;
-	LinkedPointer<SpectraSecurityDefinitionInstrumentAttributesItemInfo>							*Pointer;
-	AutoAllocatePointerList<SpectraSecurityDefinitionInstrumentAttributesItemInfo>							*Allocator;
+	LinkedPointer<FortsSecurityDefinitionInstrumentAttributesItemInfo>							*Pointer;
+	AutoAllocatePointerList<FortsSecurityDefinitionInstrumentAttributesItemInfo>							*Allocator;
 	bool							Used;
 	INT32							InstrAttribType;			// id=871  
 	char							InstrAttribValue[16];			// id=872  
 	int							InstrAttribValueLength = 0;
 
-	SpectraSecurityDefinitionInstrumentAttributesItemInfo(){
+	FortsSecurityDefinitionInstrumentAttributesItemInfo(){
 		this->Used = false;
 		this->Pointer = 0;
 		this->Allocator = 0;
@@ -3116,7 +3116,7 @@ public:
 		this->InstrAttribValue[0] = '\0';
 		this->InstrAttribValueLength = 0;
 	}
-	~SpectraSecurityDefinitionInstrumentAttributesItemInfo(){ }
+	~FortsSecurityDefinitionInstrumentAttributesItemInfo(){ }
 	inline void Clear() {
 		this->Used = false;
 		this->Allocator->FreeItem(this->Pointer);
@@ -3129,25 +3129,25 @@ public:
 	}
 };
 
-class SpectraSecurityDefinitionEvntGrpItemInfo{
+class FortsSecurityDefinitionEvntGrpItemInfo{
 public:
 	UINT64							PresenceMap;
 	UINT64							NullMap;
-	LinkedPointer<SpectraSecurityDefinitionEvntGrpItemInfo>							*Pointer;
-	AutoAllocatePointerList<SpectraSecurityDefinitionEvntGrpItemInfo>							*Allocator;
+	LinkedPointer<FortsSecurityDefinitionEvntGrpItemInfo>							*Pointer;
+	AutoAllocatePointerList<FortsSecurityDefinitionEvntGrpItemInfo>							*Allocator;
 	bool							Used;
 	INT32							EventType;			// id=865  
 	UINT32							EventDate;			// id=866  
 	UINT64							EventTime;			// id=1145  
 
-	SpectraSecurityDefinitionEvntGrpItemInfo(){
+	FortsSecurityDefinitionEvntGrpItemInfo(){
 		this->Used = false;
 		this->Pointer = 0;
 		this->Allocator = 0;
 		this->PresenceMap = 0;
 		this->NullMap = 0;
 	}
-	~SpectraSecurityDefinitionEvntGrpItemInfo(){ }
+	~FortsSecurityDefinitionEvntGrpItemInfo(){ }
 	inline void Clear() {
 		this->Used = false;
 		this->Allocator->FreeItem(this->Pointer);
@@ -3160,12 +3160,12 @@ public:
 	}
 };
 
-class SpectraSecurityDefinitionInfo{
+class FortsSecurityDefinitionInfo{
 public:
 	UINT64							PresenceMap;
 	UINT64							NullMap;
-	LinkedPointer<SpectraSecurityDefinitionInfo>							*Pointer;
-	AutoAllocatePointerList<SpectraSecurityDefinitionInfo>							*Allocator;
+	LinkedPointer<FortsSecurityDefinitionInfo>							*Pointer;
+	AutoAllocatePointerList<FortsSecurityDefinitionInfo>							*Allocator;
 	bool							Used;
 	char							ApplVerID[16];			// id=1128    constant has constant value = 9
 	int							ApplVerIDLength = 0;
@@ -3203,9 +3203,9 @@ public:
 	UINT32							ExchangeTradingSessionID;			// id=5842  presence=optional  
 	Decimal							Volatility;			// id=5678  presence=optional  
 	int							MDFeedTypesCount;
-	SpectraSecurityDefinitionMDFeedTypesItemInfo* MDFeedTypes[256];
+	FortsSecurityDefinitionMDFeedTypesItemInfo* MDFeedTypes[256];
 	int							UnderlyingsCount;			// presence=optional  
-	SpectraSecurityDefinitionUnderlyingsItemInfo* Underlyings[256];			// presence=optional  
+	FortsSecurityDefinitionUnderlyingsItemInfo* Underlyings[256];			// presence=optional  
 	Decimal							HighLimitPx;			// id=1149  presence=optional  
 	Decimal							LowLimitPx;			// id=1148  presence=optional  
 	Decimal							MinPriceIncrement;			// id=969  presence=optional  
@@ -3218,18 +3218,18 @@ public:
 	Decimal							TheorPrice;			// id=20006  presence=optional  
 	Decimal							TheorPriceLimit;			// id=20007  presence=optional  
 	int							InstrumentLegsCount;			// presence=optional  
-	SpectraSecurityDefinitionInstrumentLegsItemInfo* InstrumentLegs[256];			// presence=optional  
+	FortsSecurityDefinitionInstrumentLegsItemInfo* InstrumentLegs[256];			// presence=optional  
 	int							InstrumentAttributesCount;			// presence=optional  
-	SpectraSecurityDefinitionInstrumentAttributesItemInfo* InstrumentAttributes[256];			// presence=optional  
+	FortsSecurityDefinitionInstrumentAttributesItemInfo* InstrumentAttributes[256];			// presence=optional  
 	Decimal							UnderlyingQty;			// id=879  presence=optional  
 	char							UnderlyingCurrency[16];			// id=318  presence=optional  
 	int							UnderlyingCurrencyLength = 0;
 	int							EvntGrpCount;			// presence=optional  
-	SpectraSecurityDefinitionEvntGrpItemInfo* EvntGrp[256];			// presence=optional  
+	FortsSecurityDefinitionEvntGrpItemInfo* EvntGrp[256];			// presence=optional  
 	UINT32							MaturityDate;			// id=541  presence=optional  
 	UINT32							MaturityTime;			// id=1079  presence=optional  
 
-	SpectraSecurityDefinitionInfo(){
+	FortsSecurityDefinitionInfo(){
 		this->Used = false;
 		this->Pointer = 0;
 		this->Allocator = 0;
@@ -3269,7 +3269,7 @@ public:
 		this->UnderlyingCurrencyLength = 0;
 		this->EvntGrpCount = 0;
 	}
-	~SpectraSecurityDefinitionInfo(){ }
+	~FortsSecurityDefinitionInfo(){ }
 	inline void Clear() {
 		this->Used = false;
 		this->Allocator->FreeItem(this->Pointer);
@@ -3302,12 +3302,12 @@ public:
 	}
 };
 
-class SpectraSecurityDefinitionUpdateReportInfo{
+class FortsSecurityDefinitionUpdateReportInfo{
 public:
 	UINT64							PresenceMap;
 	UINT64							NullMap;
-	LinkedPointer<SpectraSecurityDefinitionUpdateReportInfo>							*Pointer;
-	AutoAllocatePointerList<SpectraSecurityDefinitionUpdateReportInfo>							*Allocator;
+	LinkedPointer<FortsSecurityDefinitionUpdateReportInfo>							*Pointer;
+	AutoAllocatePointerList<FortsSecurityDefinitionUpdateReportInfo>							*Allocator;
 	bool							Used;
 	char							ApplVerID[16];			// id=1128    constant has constant value = 9
 	int							ApplVerIDLength = 0;
@@ -3323,7 +3323,7 @@ public:
 	Decimal							TheorPrice;			// id=20006  presence=optional  
 	Decimal							TheorPriceLimit;			// id=20007  presence=optional  
 
-	SpectraSecurityDefinitionUpdateReportInfo(){
+	FortsSecurityDefinitionUpdateReportInfo(){
 		this->Used = false;
 		this->Pointer = 0;
 		this->Allocator = 0;
@@ -3336,7 +3336,7 @@ public:
 		this->SenderCompID[0] = '\0';
 		this->SenderCompIDLength = 0;
 	}
-	~SpectraSecurityDefinitionUpdateReportInfo(){ }
+	~FortsSecurityDefinitionUpdateReportInfo(){ }
 	inline void Clear() {
 		this->Used = false;
 		this->Allocator->FreeItem(this->Pointer);
@@ -3349,12 +3349,12 @@ public:
 	}
 };
 
-class SpectraSecurityStatusInfo{
+class FortsSecurityStatusInfo{
 public:
 	UINT64							PresenceMap;
 	UINT64							NullMap;
-	LinkedPointer<SpectraSecurityStatusInfo>							*Pointer;
-	AutoAllocatePointerList<SpectraSecurityStatusInfo>							*Allocator;
+	LinkedPointer<FortsSecurityStatusInfo>							*Pointer;
+	AutoAllocatePointerList<FortsSecurityStatusInfo>							*Allocator;
 	bool							Used;
 	char							ApplVerID[16];			// id=1128    constant has constant value = 9
 	int							ApplVerIDLength = 0;
@@ -3375,7 +3375,7 @@ public:
 	Decimal							InitialMarginOnSell;			// id=20000  presence=optional  
 	Decimal							InitialMarginSyntetic;			// id=20001  presence=optional  
 
-	SpectraSecurityStatusInfo(){
+	FortsSecurityStatusInfo(){
 		this->Used = false;
 		this->Pointer = 0;
 		this->Allocator = 0;
@@ -3390,7 +3390,7 @@ public:
 		this->Symbol[0] = '\0';
 		this->SymbolLength = 0;
 	}
-	~SpectraSecurityStatusInfo(){ }
+	~FortsSecurityStatusInfo(){ }
 	inline void Clear() {
 		this->Used = false;
 		this->Allocator->FreeItem(this->Pointer);
@@ -3403,12 +3403,12 @@ public:
 	}
 };
 
-class SpectraHeartbeatInfo{
+class FortsHeartbeatInfo{
 public:
 	UINT64							PresenceMap;
 	UINT64							NullMap;
-	LinkedPointer<SpectraHeartbeatInfo>							*Pointer;
-	AutoAllocatePointerList<SpectraHeartbeatInfo>							*Allocator;
+	LinkedPointer<FortsHeartbeatInfo>							*Pointer;
+	AutoAllocatePointerList<FortsHeartbeatInfo>							*Allocator;
 	bool							Used;
 	char							ApplVerID[16];			// id=1128    constant has constant value = 9
 	int							ApplVerIDLength = 0;
@@ -3419,7 +3419,7 @@ public:
 	UINT32							MsgSeqNum;			// id=34  
 	UINT64							SendingTime;			// id=52  
 
-	SpectraHeartbeatInfo(){
+	FortsHeartbeatInfo(){
 		this->Used = false;
 		this->Pointer = 0;
 		this->Allocator = 0;
@@ -3432,7 +3432,7 @@ public:
 		this->SenderCompID[0] = '\0';
 		this->SenderCompIDLength = 0;
 	}
-	~SpectraHeartbeatInfo(){ }
+	~FortsHeartbeatInfo(){ }
 	inline void Clear() {
 		this->Used = false;
 		this->Allocator->FreeItem(this->Pointer);
@@ -3445,12 +3445,12 @@ public:
 	}
 };
 
-class SpectraSequenceResetInfo{
+class FortsSequenceResetInfo{
 public:
 	UINT64							PresenceMap;
 	UINT64							NullMap;
-	LinkedPointer<SpectraSequenceResetInfo>							*Pointer;
-	AutoAllocatePointerList<SpectraSequenceResetInfo>							*Allocator;
+	LinkedPointer<FortsSequenceResetInfo>							*Pointer;
+	AutoAllocatePointerList<FortsSequenceResetInfo>							*Allocator;
 	bool							Used;
 	char							ApplVerID[16];			// id=1128    constant has constant value = 9
 	int							ApplVerIDLength = 0;
@@ -3462,7 +3462,7 @@ public:
 	UINT64							SendingTime;			// id=52  
 	UINT32							NewSeqNo;			// id=36  
 
-	SpectraSequenceResetInfo(){
+	FortsSequenceResetInfo(){
 		this->Used = false;
 		this->Pointer = 0;
 		this->Allocator = 0;
@@ -3475,7 +3475,7 @@ public:
 		this->SenderCompID[0] = '\0';
 		this->SenderCompIDLength = 0;
 	}
-	~SpectraSequenceResetInfo(){ }
+	~FortsSequenceResetInfo(){ }
 	inline void Clear() {
 		this->Used = false;
 		this->Allocator->FreeItem(this->Pointer);
@@ -3488,12 +3488,12 @@ public:
 	}
 };
 
-class SpectraTradingSessionStatusInfo{
+class FortsTradingSessionStatusInfo{
 public:
 	UINT64							PresenceMap;
 	UINT64							NullMap;
-	LinkedPointer<SpectraTradingSessionStatusInfo>							*Pointer;
-	AutoAllocatePointerList<SpectraTradingSessionStatusInfo>							*Allocator;
+	LinkedPointer<FortsTradingSessionStatusInfo>							*Pointer;
+	AutoAllocatePointerList<FortsTradingSessionStatusInfo>							*Allocator;
 	bool							Used;
 	char							ApplVerID[16];			// id=1128    constant has constant value = 9
 	int							ApplVerIDLength = 0;
@@ -3516,7 +3516,7 @@ public:
 	int							MarketSegmentIDLength = 0;
 	INT32							TradSesEvent;			// id=1368  presence=optional  
 
-	SpectraTradingSessionStatusInfo(){
+	FortsTradingSessionStatusInfo(){
 		this->Used = false;
 		this->Pointer = 0;
 		this->Allocator = 0;
@@ -3533,7 +3533,7 @@ public:
 		this->MarketSegmentID[0] = '\0';
 		this->MarketSegmentIDLength = 0;
 	}
-	~SpectraTradingSessionStatusInfo(){ }
+	~FortsTradingSessionStatusInfo(){ }
 	inline void Clear() {
 		this->Used = false;
 		this->Allocator->FreeItem(this->Pointer);
@@ -3546,17 +3546,17 @@ public:
 	}
 };
 
-class SpectraNewsNewsTextItemInfo{
+class FortsNewsNewsTextItemInfo{
 public:
 	UINT64							PresenceMap;
 	UINT64							NullMap;
-	LinkedPointer<SpectraNewsNewsTextItemInfo>							*Pointer;
-	AutoAllocatePointerList<SpectraNewsNewsTextItemInfo>							*Allocator;
+	LinkedPointer<FortsNewsNewsTextItemInfo>							*Pointer;
+	AutoAllocatePointerList<FortsNewsNewsTextItemInfo>							*Allocator;
 	bool							Used;
 	char							Text[512];			// id=58  charset=unicode  
 	int							TextLength = 0;
 
-	SpectraNewsNewsTextItemInfo(){
+	FortsNewsNewsTextItemInfo(){
 		this->Used = false;
 		this->Pointer = 0;
 		this->Allocator = 0;
@@ -3565,7 +3565,7 @@ public:
 		this->Text[0] = '\0';
 		this->TextLength = 0;
 	}
-	~SpectraNewsNewsTextItemInfo(){ }
+	~FortsNewsNewsTextItemInfo(){ }
 	inline void Clear() {
 		this->Used = false;
 		this->Allocator->FreeItem(this->Pointer);
@@ -3578,12 +3578,12 @@ public:
 	}
 };
 
-class SpectraNewsInfo{
+class FortsNewsInfo{
 public:
 	UINT64							PresenceMap;
 	UINT64							NullMap;
-	LinkedPointer<SpectraNewsInfo>							*Pointer;
-	AutoAllocatePointerList<SpectraNewsInfo>							*Allocator;
+	LinkedPointer<FortsNewsInfo>							*Pointer;
+	AutoAllocatePointerList<FortsNewsInfo>							*Allocator;
 	bool							Used;
 	char							ApplVerID[16];			// id=1128    constant has constant value = 9
 	int							ApplVerIDLength = 0;
@@ -3607,9 +3607,9 @@ public:
 	char							MarketSegmentID[16];			// id=1300  presence=optional  
 	int							MarketSegmentIDLength = 0;
 	int							NewsTextCount;
-	SpectraNewsNewsTextItemInfo* NewsText[256];
+	FortsNewsNewsTextItemInfo* NewsText[256];
 
-	SpectraNewsInfo(){
+	FortsNewsInfo(){
 		this->Used = false;
 		this->Pointer = 0;
 		this->Allocator = 0;
@@ -3633,7 +3633,7 @@ public:
 		this->MarketSegmentIDLength = 0;
 		this->NewsTextCount = 0;
 	}
-	~SpectraNewsInfo(){ }
+	~FortsNewsInfo(){ }
 	inline void Clear() {
 		this->Used = false;
 		this->Allocator->FreeItem(this->Pointer);
@@ -3650,12 +3650,12 @@ public:
 	}
 };
 
-class SpectraOrdersLogMDEntriesItemInfo{
+class FortsOrdersLogMDEntriesItemInfo{
 public:
 	UINT64							PresenceMap;
 	UINT64							NullMap;
-	LinkedPointer<SpectraOrdersLogMDEntriesItemInfo>							*Pointer;
-	AutoAllocatePointerList<SpectraOrdersLogMDEntriesItemInfo>							*Allocator;
+	LinkedPointer<FortsOrdersLogMDEntriesItemInfo>							*Pointer;
+	AutoAllocatePointerList<FortsOrdersLogMDEntriesItemInfo>							*Allocator;
 	bool							Used;
 	UINT32							MDUpdateAction;			// id=279  
 	char							MDEntryType[4];			// id=269  
@@ -3675,7 +3675,7 @@ public:
 	UINT64							MDFlags;			// id=20017  presence=optional  
 	UINT64							Revision;			// id=20018  presence=optional  
 
-	SpectraOrdersLogMDEntriesItemInfo(){
+	FortsOrdersLogMDEntriesItemInfo(){
 		this->Used = false;
 		this->Pointer = 0;
 		this->Allocator = 0;
@@ -3684,7 +3684,7 @@ public:
 		this->MDEntryType[0] = '\0';
 		this->MDEntryTypeLength = 0;
 	}
-	~SpectraOrdersLogMDEntriesItemInfo(){ }
+	~FortsOrdersLogMDEntriesItemInfo(){ }
 	inline void Clear() {
 		this->Used = false;
 		this->Allocator->FreeItem(this->Pointer);
@@ -3697,12 +3697,12 @@ public:
 	}
 };
 
-class SpectraOrdersLogInfo{
+class FortsOrdersLogInfo{
 public:
 	UINT64							PresenceMap;
 	UINT64							NullMap;
-	LinkedPointer<SpectraOrdersLogInfo>							*Pointer;
-	AutoAllocatePointerList<SpectraOrdersLogInfo>							*Allocator;
+	LinkedPointer<FortsOrdersLogInfo>							*Pointer;
+	AutoAllocatePointerList<FortsOrdersLogInfo>							*Allocator;
 	bool							Used;
 	char							ApplVerID[16];			// id=1128    constant has constant value = 9
 	int							ApplVerIDLength = 0;
@@ -3714,9 +3714,9 @@ public:
 	UINT64							SendingTime;			// id=52  
 	UINT32							LastFragment;			// id=893  
 	int							MDEntriesCount;
-	SpectraOrdersLogMDEntriesItemInfo* MDEntries[256];
+	FortsOrdersLogMDEntriesItemInfo* MDEntries[256];
 
-	SpectraOrdersLogInfo(){
+	FortsOrdersLogInfo(){
 		this->Used = false;
 		this->Pointer = 0;
 		this->Allocator = 0;
@@ -3730,7 +3730,7 @@ public:
 		this->SenderCompIDLength = 0;
 		this->MDEntriesCount = 0;
 	}
-	~SpectraOrdersLogInfo(){ }
+	~FortsOrdersLogInfo(){ }
 	inline void Clear() {
 		this->Used = false;
 		this->Allocator->FreeItem(this->Pointer);
@@ -3747,12 +3747,12 @@ public:
 	}
 };
 
-class SpectraOrdersBookMDEntriesItemInfo{
+class FortsOrdersBookMDEntriesItemInfo{
 public:
 	UINT64							PresenceMap;
 	UINT64							NullMap;
-	LinkedPointer<SpectraOrdersBookMDEntriesItemInfo>							*Pointer;
-	AutoAllocatePointerList<SpectraOrdersBookMDEntriesItemInfo>							*Allocator;
+	LinkedPointer<FortsOrdersBookMDEntriesItemInfo>							*Pointer;
+	AutoAllocatePointerList<FortsOrdersBookMDEntriesItemInfo>							*Allocator;
 	bool							Used;
 	char							MDEntryType[4];			// id=269  
 	int							MDEntryTypeLength = 0;
@@ -3764,7 +3764,7 @@ public:
 	UINT64							TradeID;			// id=1003  presence=optional  
 	UINT64							MDFlags;			// id=20017  presence=optional  
 
-	SpectraOrdersBookMDEntriesItemInfo(){
+	FortsOrdersBookMDEntriesItemInfo(){
 		this->Used = false;
 		this->Pointer = 0;
 		this->Allocator = 0;
@@ -3773,7 +3773,7 @@ public:
 		this->MDEntryType[0] = '\0';
 		this->MDEntryTypeLength = 0;
 	}
-	~SpectraOrdersBookMDEntriesItemInfo(){ }
+	~FortsOrdersBookMDEntriesItemInfo(){ }
 	inline void Clear() {
 		this->Used = false;
 		this->Allocator->FreeItem(this->Pointer);
@@ -3786,12 +3786,12 @@ public:
 	}
 };
 
-class SpectraOrdersBookInfo{
+class FortsOrdersBookInfo{
 public:
 	UINT64							PresenceMap;
 	UINT64							NullMap;
-	LinkedPointer<SpectraOrdersBookInfo>							*Pointer;
-	AutoAllocatePointerList<SpectraOrdersBookInfo>							*Allocator;
+	LinkedPointer<FortsOrdersBookInfo>							*Pointer;
+	AutoAllocatePointerList<FortsOrdersBookInfo>							*Allocator;
 	bool							Used;
 	char							ApplVerID[16];			// id=1128    constant has constant value = 9
 	int							ApplVerIDLength = 0;
@@ -3809,9 +3809,9 @@ public:
 	UINT64							SecurityID;			// id=48  presence=optional  
 	UINT32							SecurityIDSource;			// id=22    constant has constant value = 8
 	int							MDEntriesCount;
-	SpectraOrdersBookMDEntriesItemInfo* MDEntries[256];
+	FortsOrdersBookMDEntriesItemInfo* MDEntries[256];
 
-	SpectraOrdersBookInfo(){
+	FortsOrdersBookInfo(){
 		this->Used = false;
 		this->Pointer = 0;
 		this->Allocator = 0;
@@ -3825,7 +3825,7 @@ public:
 		this->SenderCompIDLength = 0;
 		this->MDEntriesCount = 0;
 	}
-	~SpectraOrdersBookInfo(){ }
+	~FortsOrdersBookInfo(){ }
 	inline void Clear() {
 		this->Used = false;
 		this->Allocator->FreeItem(this->Pointer);
@@ -3842,12 +3842,12 @@ public:
 	}
 };
 
-class SpectraLogonInfo{
+class FortsLogonInfo{
 public:
 	UINT64							PresenceMap;
 	UINT64							NullMap;
-	LinkedPointer<SpectraLogonInfo>							*Pointer;
-	AutoAllocatePointerList<SpectraLogonInfo>							*Allocator;
+	LinkedPointer<FortsLogonInfo>							*Pointer;
+	AutoAllocatePointerList<FortsLogonInfo>							*Allocator;
 	bool							Used;
 	char							ApplVerID[16];			// id=1128    constant has constant value = 9
 	int							ApplVerIDLength = 0;
@@ -3858,7 +3858,7 @@ public:
 	UINT32							MsgSeqNum;			// id=34  
 	UINT64							SendingTime;			// id=52  
 
-	SpectraLogonInfo(){
+	FortsLogonInfo(){
 		this->Used = false;
 		this->Pointer = 0;
 		this->Allocator = 0;
@@ -3871,7 +3871,7 @@ public:
 		this->SenderCompID[0] = '\0';
 		this->SenderCompIDLength = 0;
 	}
-	~SpectraLogonInfo(){ }
+	~FortsLogonInfo(){ }
 	inline void Clear() {
 		this->Used = false;
 		this->Allocator->FreeItem(this->Pointer);
@@ -3884,12 +3884,12 @@ public:
 	}
 };
 
-class SpectraLogoutInfo{
+class FortsLogoutInfo{
 public:
 	UINT64							PresenceMap;
 	UINT64							NullMap;
-	LinkedPointer<SpectraLogoutInfo>							*Pointer;
-	AutoAllocatePointerList<SpectraLogoutInfo>							*Allocator;
+	LinkedPointer<FortsLogoutInfo>							*Pointer;
+	AutoAllocatePointerList<FortsLogoutInfo>							*Allocator;
 	bool							Used;
 	char							ApplVerID[16];			// id=1128    constant has constant value = 9
 	int							ApplVerIDLength = 0;
@@ -3902,7 +3902,7 @@ public:
 	char							Text[512];			// id=58  presence=optional  
 	int							TextLength = 0;
 
-	SpectraLogoutInfo(){
+	FortsLogoutInfo(){
 		this->Used = false;
 		this->Pointer = 0;
 		this->Allocator = 0;
@@ -3917,7 +3917,7 @@ public:
 		this->Text[0] = '\0';
 		this->TextLength = 0;
 	}
-	~SpectraLogoutInfo(){ }
+	~FortsLogoutInfo(){ }
 	inline void Clear() {
 		this->Used = false;
 		this->Allocator->FreeItem(this->Pointer);
@@ -3930,335 +3930,335 @@ public:
 	}
 };
 
-class SpectraObjectsAllocationInfo {
-	AutoAllocatePointerList<SpectraDefaultIncrementalRefreshMessageMDEntriesItemInfo>				*m_spectraDefaultIncrementalRefreshMessageMDEntriesItems;
-	AutoAllocatePointerList<SpectraDefaultIncrementalRefreshMessageInfo>				*m_spectraDefaultIncrementalRefreshMessage;
-	AutoAllocatePointerList<SpectraDefaultSnapshotMessageMDEntriesItemInfo>				*m_spectraDefaultSnapshotMessageMDEntriesItems;
-	AutoAllocatePointerList<SpectraDefaultSnapshotMessageInfo>				*m_spectraDefaultSnapshotMessage;
-	AutoAllocatePointerList<SpectraSecurityDefinitionMDFeedTypesItemInfo>				*m_spectraSecurityDefinitionMDFeedTypesItems;
-	AutoAllocatePointerList<SpectraSecurityDefinitionUnderlyingsItemInfo>				*m_spectraSecurityDefinitionUnderlyingsItems;
-	AutoAllocatePointerList<SpectraSecurityDefinitionInstrumentLegsItemInfo>				*m_spectraSecurityDefinitionInstrumentLegsItems;
-	AutoAllocatePointerList<SpectraSecurityDefinitionInstrumentAttributesItemInfo>				*m_spectraSecurityDefinitionInstrumentAttributesItems;
-	AutoAllocatePointerList<SpectraSecurityDefinitionEvntGrpItemInfo>				*m_spectraSecurityDefinitionEvntGrpItems;
-	AutoAllocatePointerList<SpectraSecurityDefinitionInfo>				*m_spectraSecurityDefinition;
-	AutoAllocatePointerList<SpectraSecurityDefinitionUpdateReportInfo>				*m_spectraSecurityDefinitionUpdateReport;
-	AutoAllocatePointerList<SpectraSecurityStatusInfo>				*m_spectraSecurityStatus;
-	AutoAllocatePointerList<SpectraHeartbeatInfo>				*m_spectraHeartbeat;
-	AutoAllocatePointerList<SpectraSequenceResetInfo>				*m_spectraSequenceReset;
-	AutoAllocatePointerList<SpectraTradingSessionStatusInfo>				*m_spectraTradingSessionStatus;
-	AutoAllocatePointerList<SpectraNewsNewsTextItemInfo>				*m_spectraNewsNewsTextItems;
-	AutoAllocatePointerList<SpectraNewsInfo>				*m_spectraNews;
-	AutoAllocatePointerList<SpectraOrdersLogMDEntriesItemInfo>				*m_spectraOrdersLogMDEntriesItems;
-	AutoAllocatePointerList<SpectraOrdersLogInfo>				*m_spectraOrdersLog;
-	AutoAllocatePointerList<SpectraOrdersBookMDEntriesItemInfo>				*m_spectraOrdersBookMDEntriesItems;
-	AutoAllocatePointerList<SpectraOrdersBookInfo>				*m_spectraOrdersBook;
-	AutoAllocatePointerList<SpectraLogonInfo>				*m_spectraLogon;
-	AutoAllocatePointerList<SpectraLogoutInfo>				*m_spectraLogout;
+class FortsObjectsAllocationInfo {
+	AutoAllocatePointerList<FortsDefaultIncrementalRefreshMessageMDEntriesItemInfo>				*m_fortsDefaultIncrementalRefreshMessageMDEntriesItems;
+	AutoAllocatePointerList<FortsDefaultIncrementalRefreshMessageInfo>				*m_fortsDefaultIncrementalRefreshMessage;
+	AutoAllocatePointerList<FortsDefaultSnapshotMessageMDEntriesItemInfo>				*m_fortsDefaultSnapshotMessageMDEntriesItems;
+	AutoAllocatePointerList<FortsDefaultSnapshotMessageInfo>				*m_fortsDefaultSnapshotMessage;
+	AutoAllocatePointerList<FortsSecurityDefinitionMDFeedTypesItemInfo>				*m_fortsSecurityDefinitionMDFeedTypesItems;
+	AutoAllocatePointerList<FortsSecurityDefinitionUnderlyingsItemInfo>				*m_fortsSecurityDefinitionUnderlyingsItems;
+	AutoAllocatePointerList<FortsSecurityDefinitionInstrumentLegsItemInfo>				*m_fortsSecurityDefinitionInstrumentLegsItems;
+	AutoAllocatePointerList<FortsSecurityDefinitionInstrumentAttributesItemInfo>				*m_fortsSecurityDefinitionInstrumentAttributesItems;
+	AutoAllocatePointerList<FortsSecurityDefinitionEvntGrpItemInfo>				*m_fortsSecurityDefinitionEvntGrpItems;
+	AutoAllocatePointerList<FortsSecurityDefinitionInfo>				*m_fortsSecurityDefinition;
+	AutoAllocatePointerList<FortsSecurityDefinitionUpdateReportInfo>				*m_fortsSecurityDefinitionUpdateReport;
+	AutoAllocatePointerList<FortsSecurityStatusInfo>				*m_fortsSecurityStatus;
+	AutoAllocatePointerList<FortsHeartbeatInfo>				*m_fortsHeartbeat;
+	AutoAllocatePointerList<FortsSequenceResetInfo>				*m_fortsSequenceReset;
+	AutoAllocatePointerList<FortsTradingSessionStatusInfo>				*m_fortsTradingSessionStatus;
+	AutoAllocatePointerList<FortsNewsNewsTextItemInfo>				*m_fortsNewsNewsTextItems;
+	AutoAllocatePointerList<FortsNewsInfo>				*m_fortsNews;
+	AutoAllocatePointerList<FortsOrdersLogMDEntriesItemInfo>				*m_fortsOrdersLogMDEntriesItems;
+	AutoAllocatePointerList<FortsOrdersLogInfo>				*m_fortsOrdersLog;
+	AutoAllocatePointerList<FortsOrdersBookMDEntriesItemInfo>				*m_fortsOrdersBookMDEntriesItems;
+	AutoAllocatePointerList<FortsOrdersBookInfo>				*m_fortsOrdersBook;
+	AutoAllocatePointerList<FortsLogonInfo>				*m_fortsLogon;
+	AutoAllocatePointerList<FortsLogoutInfo>				*m_fortsLogout;
 public:
-	 static SpectraObjectsAllocationInfo *Default;
-	SpectraObjectsAllocationInfo(int count) {
-		this->m_spectraDefaultIncrementalRefreshMessageMDEntriesItems = new AutoAllocatePointerList<SpectraDefaultIncrementalRefreshMessageMDEntriesItemInfo>(count, count, "SpectraDefaultIncrementalRefreshMessageMDEntriesItemInfo");
-		this->m_spectraDefaultIncrementalRefreshMessage = new AutoAllocatePointerList<SpectraDefaultIncrementalRefreshMessageInfo>(count, count, "SpectraDefaultIncrementalRefreshMessageInfo");
-		this->m_spectraDefaultSnapshotMessageMDEntriesItems = new AutoAllocatePointerList<SpectraDefaultSnapshotMessageMDEntriesItemInfo>(count, count, "SpectraDefaultSnapshotMessageMDEntriesItemInfo");
-		this->m_spectraDefaultSnapshotMessage = new AutoAllocatePointerList<SpectraDefaultSnapshotMessageInfo>(count, count, "SpectraDefaultSnapshotMessageInfo");
-		this->m_spectraSecurityDefinitionMDFeedTypesItems = new AutoAllocatePointerList<SpectraSecurityDefinitionMDFeedTypesItemInfo>(count, count, "SpectraSecurityDefinitionMDFeedTypesItemInfo");
-		this->m_spectraSecurityDefinitionUnderlyingsItems = new AutoAllocatePointerList<SpectraSecurityDefinitionUnderlyingsItemInfo>(count, count, "SpectraSecurityDefinitionUnderlyingsItemInfo");
-		this->m_spectraSecurityDefinitionInstrumentLegsItems = new AutoAllocatePointerList<SpectraSecurityDefinitionInstrumentLegsItemInfo>(count, count, "SpectraSecurityDefinitionInstrumentLegsItemInfo");
-		this->m_spectraSecurityDefinitionInstrumentAttributesItems = new AutoAllocatePointerList<SpectraSecurityDefinitionInstrumentAttributesItemInfo>(count, count, "SpectraSecurityDefinitionInstrumentAttributesItemInfo");
-		this->m_spectraSecurityDefinitionEvntGrpItems = new AutoAllocatePointerList<SpectraSecurityDefinitionEvntGrpItemInfo>(count, count, "SpectraSecurityDefinitionEvntGrpItemInfo");
-		this->m_spectraSecurityDefinition = new AutoAllocatePointerList<SpectraSecurityDefinitionInfo>(count, count, "SpectraSecurityDefinitionInfo");
-		this->m_spectraSecurityDefinitionUpdateReport = new AutoAllocatePointerList<SpectraSecurityDefinitionUpdateReportInfo>(count, count, "SpectraSecurityDefinitionUpdateReportInfo");
-		this->m_spectraSecurityStatus = new AutoAllocatePointerList<SpectraSecurityStatusInfo>(count, count, "SpectraSecurityStatusInfo");
-		this->m_spectraHeartbeat = new AutoAllocatePointerList<SpectraHeartbeatInfo>(count, count, "SpectraHeartbeatInfo");
-		this->m_spectraSequenceReset = new AutoAllocatePointerList<SpectraSequenceResetInfo>(count, count, "SpectraSequenceResetInfo");
-		this->m_spectraTradingSessionStatus = new AutoAllocatePointerList<SpectraTradingSessionStatusInfo>(count, count, "SpectraTradingSessionStatusInfo");
-		this->m_spectraNewsNewsTextItems = new AutoAllocatePointerList<SpectraNewsNewsTextItemInfo>(count, count, "SpectraNewsNewsTextItemInfo");
-		this->m_spectraNews = new AutoAllocatePointerList<SpectraNewsInfo>(count, count, "SpectraNewsInfo");
-		this->m_spectraOrdersLogMDEntriesItems = new AutoAllocatePointerList<SpectraOrdersLogMDEntriesItemInfo>(count, count, "SpectraOrdersLogMDEntriesItemInfo");
-		this->m_spectraOrdersLog = new AutoAllocatePointerList<SpectraOrdersLogInfo>(count, count, "SpectraOrdersLogInfo");
-		this->m_spectraOrdersBookMDEntriesItems = new AutoAllocatePointerList<SpectraOrdersBookMDEntriesItemInfo>(count, count, "SpectraOrdersBookMDEntriesItemInfo");
-		this->m_spectraOrdersBook = new AutoAllocatePointerList<SpectraOrdersBookInfo>(count, count, "SpectraOrdersBookInfo");
-		this->m_spectraLogon = new AutoAllocatePointerList<SpectraLogonInfo>(count, count, "SpectraLogonInfo");
-		this->m_spectraLogout = new AutoAllocatePointerList<SpectraLogoutInfo>(count, count, "SpectraLogoutInfo");
+	 static FortsObjectsAllocationInfo *Default;
+	FortsObjectsAllocationInfo(int count) {
+		this->m_fortsDefaultIncrementalRefreshMessageMDEntriesItems = new AutoAllocatePointerList<FortsDefaultIncrementalRefreshMessageMDEntriesItemInfo>(count, count, "FortsDefaultIncrementalRefreshMessageMDEntriesItemInfo");
+		this->m_fortsDefaultIncrementalRefreshMessage = new AutoAllocatePointerList<FortsDefaultIncrementalRefreshMessageInfo>(count, count, "FortsDefaultIncrementalRefreshMessageInfo");
+		this->m_fortsDefaultSnapshotMessageMDEntriesItems = new AutoAllocatePointerList<FortsDefaultSnapshotMessageMDEntriesItemInfo>(count, count, "FortsDefaultSnapshotMessageMDEntriesItemInfo");
+		this->m_fortsDefaultSnapshotMessage = new AutoAllocatePointerList<FortsDefaultSnapshotMessageInfo>(count, count, "FortsDefaultSnapshotMessageInfo");
+		this->m_fortsSecurityDefinitionMDFeedTypesItems = new AutoAllocatePointerList<FortsSecurityDefinitionMDFeedTypesItemInfo>(count, count, "FortsSecurityDefinitionMDFeedTypesItemInfo");
+		this->m_fortsSecurityDefinitionUnderlyingsItems = new AutoAllocatePointerList<FortsSecurityDefinitionUnderlyingsItemInfo>(count, count, "FortsSecurityDefinitionUnderlyingsItemInfo");
+		this->m_fortsSecurityDefinitionInstrumentLegsItems = new AutoAllocatePointerList<FortsSecurityDefinitionInstrumentLegsItemInfo>(count, count, "FortsSecurityDefinitionInstrumentLegsItemInfo");
+		this->m_fortsSecurityDefinitionInstrumentAttributesItems = new AutoAllocatePointerList<FortsSecurityDefinitionInstrumentAttributesItemInfo>(count, count, "FortsSecurityDefinitionInstrumentAttributesItemInfo");
+		this->m_fortsSecurityDefinitionEvntGrpItems = new AutoAllocatePointerList<FortsSecurityDefinitionEvntGrpItemInfo>(count, count, "FortsSecurityDefinitionEvntGrpItemInfo");
+		this->m_fortsSecurityDefinition = new AutoAllocatePointerList<FortsSecurityDefinitionInfo>(count, count, "FortsSecurityDefinitionInfo");
+		this->m_fortsSecurityDefinitionUpdateReport = new AutoAllocatePointerList<FortsSecurityDefinitionUpdateReportInfo>(count, count, "FortsSecurityDefinitionUpdateReportInfo");
+		this->m_fortsSecurityStatus = new AutoAllocatePointerList<FortsSecurityStatusInfo>(count, count, "FortsSecurityStatusInfo");
+		this->m_fortsHeartbeat = new AutoAllocatePointerList<FortsHeartbeatInfo>(count, count, "FortsHeartbeatInfo");
+		this->m_fortsSequenceReset = new AutoAllocatePointerList<FortsSequenceResetInfo>(count, count, "FortsSequenceResetInfo");
+		this->m_fortsTradingSessionStatus = new AutoAllocatePointerList<FortsTradingSessionStatusInfo>(count, count, "FortsTradingSessionStatusInfo");
+		this->m_fortsNewsNewsTextItems = new AutoAllocatePointerList<FortsNewsNewsTextItemInfo>(count, count, "FortsNewsNewsTextItemInfo");
+		this->m_fortsNews = new AutoAllocatePointerList<FortsNewsInfo>(count, count, "FortsNewsInfo");
+		this->m_fortsOrdersLogMDEntriesItems = new AutoAllocatePointerList<FortsOrdersLogMDEntriesItemInfo>(count, count, "FortsOrdersLogMDEntriesItemInfo");
+		this->m_fortsOrdersLog = new AutoAllocatePointerList<FortsOrdersLogInfo>(count, count, "FortsOrdersLogInfo");
+		this->m_fortsOrdersBookMDEntriesItems = new AutoAllocatePointerList<FortsOrdersBookMDEntriesItemInfo>(count, count, "FortsOrdersBookMDEntriesItemInfo");
+		this->m_fortsOrdersBook = new AutoAllocatePointerList<FortsOrdersBookInfo>(count, count, "FortsOrdersBookInfo");
+		this->m_fortsLogon = new AutoAllocatePointerList<FortsLogonInfo>(count, count, "FortsLogonInfo");
+		this->m_fortsLogout = new AutoAllocatePointerList<FortsLogoutInfo>(count, count, "FortsLogoutInfo");
 	}
 	inline void AllocateDefaultIncrementalRefreshMessageMDEntriesItemInfoPool(int count, int addCount) {
-		this->m_spectraDefaultIncrementalRefreshMessageMDEntriesItems->Append(count);
-		this->m_spectraDefaultIncrementalRefreshMessageMDEntriesItems->AddCount(addCount);
+		this->m_fortsDefaultIncrementalRefreshMessageMDEntriesItems->Append(count);
+		this->m_fortsDefaultIncrementalRefreshMessageMDEntriesItems->AddCount(addCount);
 	}
 	inline void AllocateDefaultIncrementalRefreshMessageInfoPool(int count, int addCount) {
-		this->m_spectraDefaultIncrementalRefreshMessage->Append(count);
-		this->m_spectraDefaultIncrementalRefreshMessage->AddCount(addCount);
+		this->m_fortsDefaultIncrementalRefreshMessage->Append(count);
+		this->m_fortsDefaultIncrementalRefreshMessage->AddCount(addCount);
 	}
 	inline void AllocateDefaultSnapshotMessageMDEntriesItemInfoPool(int count, int addCount) {
-		this->m_spectraDefaultSnapshotMessageMDEntriesItems->Append(count);
-		this->m_spectraDefaultSnapshotMessageMDEntriesItems->AddCount(addCount);
+		this->m_fortsDefaultSnapshotMessageMDEntriesItems->Append(count);
+		this->m_fortsDefaultSnapshotMessageMDEntriesItems->AddCount(addCount);
 	}
 	inline void AllocateDefaultSnapshotMessageInfoPool(int count, int addCount) {
-		this->m_spectraDefaultSnapshotMessage->Append(count);
-		this->m_spectraDefaultSnapshotMessage->AddCount(addCount);
+		this->m_fortsDefaultSnapshotMessage->Append(count);
+		this->m_fortsDefaultSnapshotMessage->AddCount(addCount);
 	}
 	inline void AllocateSecurityDefinitionMDFeedTypesItemInfoPool(int count, int addCount) {
-		this->m_spectraSecurityDefinitionMDFeedTypesItems->Append(count);
-		this->m_spectraSecurityDefinitionMDFeedTypesItems->AddCount(addCount);
+		this->m_fortsSecurityDefinitionMDFeedTypesItems->Append(count);
+		this->m_fortsSecurityDefinitionMDFeedTypesItems->AddCount(addCount);
 	}
 	inline void AllocateSecurityDefinitionUnderlyingsItemInfoPool(int count, int addCount) {
-		this->m_spectraSecurityDefinitionUnderlyingsItems->Append(count);
-		this->m_spectraSecurityDefinitionUnderlyingsItems->AddCount(addCount);
+		this->m_fortsSecurityDefinitionUnderlyingsItems->Append(count);
+		this->m_fortsSecurityDefinitionUnderlyingsItems->AddCount(addCount);
 	}
 	inline void AllocateSecurityDefinitionInstrumentLegsItemInfoPool(int count, int addCount) {
-		this->m_spectraSecurityDefinitionInstrumentLegsItems->Append(count);
-		this->m_spectraSecurityDefinitionInstrumentLegsItems->AddCount(addCount);
+		this->m_fortsSecurityDefinitionInstrumentLegsItems->Append(count);
+		this->m_fortsSecurityDefinitionInstrumentLegsItems->AddCount(addCount);
 	}
 	inline void AllocateSecurityDefinitionInstrumentAttributesItemInfoPool(int count, int addCount) {
-		this->m_spectraSecurityDefinitionInstrumentAttributesItems->Append(count);
-		this->m_spectraSecurityDefinitionInstrumentAttributesItems->AddCount(addCount);
+		this->m_fortsSecurityDefinitionInstrumentAttributesItems->Append(count);
+		this->m_fortsSecurityDefinitionInstrumentAttributesItems->AddCount(addCount);
 	}
 	inline void AllocateSecurityDefinitionEvntGrpItemInfoPool(int count, int addCount) {
-		this->m_spectraSecurityDefinitionEvntGrpItems->Append(count);
-		this->m_spectraSecurityDefinitionEvntGrpItems->AddCount(addCount);
+		this->m_fortsSecurityDefinitionEvntGrpItems->Append(count);
+		this->m_fortsSecurityDefinitionEvntGrpItems->AddCount(addCount);
 	}
 	inline void AllocateSecurityDefinitionInfoPool(int count, int addCount) {
-		this->m_spectraSecurityDefinition->Append(count);
-		this->m_spectraSecurityDefinition->AddCount(addCount);
+		this->m_fortsSecurityDefinition->Append(count);
+		this->m_fortsSecurityDefinition->AddCount(addCount);
 	}
 	inline void AllocateSecurityDefinitionUpdateReportInfoPool(int count, int addCount) {
-		this->m_spectraSecurityDefinitionUpdateReport->Append(count);
-		this->m_spectraSecurityDefinitionUpdateReport->AddCount(addCount);
+		this->m_fortsSecurityDefinitionUpdateReport->Append(count);
+		this->m_fortsSecurityDefinitionUpdateReport->AddCount(addCount);
 	}
 	inline void AllocateSecurityStatusInfoPool(int count, int addCount) {
-		this->m_spectraSecurityStatus->Append(count);
-		this->m_spectraSecurityStatus->AddCount(addCount);
+		this->m_fortsSecurityStatus->Append(count);
+		this->m_fortsSecurityStatus->AddCount(addCount);
 	}
 	inline void AllocateHeartbeatInfoPool(int count, int addCount) {
-		this->m_spectraHeartbeat->Append(count);
-		this->m_spectraHeartbeat->AddCount(addCount);
+		this->m_fortsHeartbeat->Append(count);
+		this->m_fortsHeartbeat->AddCount(addCount);
 	}
 	inline void AllocateSequenceResetInfoPool(int count, int addCount) {
-		this->m_spectraSequenceReset->Append(count);
-		this->m_spectraSequenceReset->AddCount(addCount);
+		this->m_fortsSequenceReset->Append(count);
+		this->m_fortsSequenceReset->AddCount(addCount);
 	}
 	inline void AllocateTradingSessionStatusInfoPool(int count, int addCount) {
-		this->m_spectraTradingSessionStatus->Append(count);
-		this->m_spectraTradingSessionStatus->AddCount(addCount);
+		this->m_fortsTradingSessionStatus->Append(count);
+		this->m_fortsTradingSessionStatus->AddCount(addCount);
 	}
 	inline void AllocateNewsNewsTextItemInfoPool(int count, int addCount) {
-		this->m_spectraNewsNewsTextItems->Append(count);
-		this->m_spectraNewsNewsTextItems->AddCount(addCount);
+		this->m_fortsNewsNewsTextItems->Append(count);
+		this->m_fortsNewsNewsTextItems->AddCount(addCount);
 	}
 	inline void AllocateNewsInfoPool(int count, int addCount) {
-		this->m_spectraNews->Append(count);
-		this->m_spectraNews->AddCount(addCount);
+		this->m_fortsNews->Append(count);
+		this->m_fortsNews->AddCount(addCount);
 	}
 	inline void AllocateOrdersLogMDEntriesItemInfoPool(int count, int addCount) {
-		this->m_spectraOrdersLogMDEntriesItems->Append(count);
-		this->m_spectraOrdersLogMDEntriesItems->AddCount(addCount);
+		this->m_fortsOrdersLogMDEntriesItems->Append(count);
+		this->m_fortsOrdersLogMDEntriesItems->AddCount(addCount);
 	}
 	inline void AllocateOrdersLogInfoPool(int count, int addCount) {
-		this->m_spectraOrdersLog->Append(count);
-		this->m_spectraOrdersLog->AddCount(addCount);
+		this->m_fortsOrdersLog->Append(count);
+		this->m_fortsOrdersLog->AddCount(addCount);
 	}
 	inline void AllocateOrdersBookMDEntriesItemInfoPool(int count, int addCount) {
-		this->m_spectraOrdersBookMDEntriesItems->Append(count);
-		this->m_spectraOrdersBookMDEntriesItems->AddCount(addCount);
+		this->m_fortsOrdersBookMDEntriesItems->Append(count);
+		this->m_fortsOrdersBookMDEntriesItems->AddCount(addCount);
 	}
 	inline void AllocateOrdersBookInfoPool(int count, int addCount) {
-		this->m_spectraOrdersBook->Append(count);
-		this->m_spectraOrdersBook->AddCount(addCount);
+		this->m_fortsOrdersBook->Append(count);
+		this->m_fortsOrdersBook->AddCount(addCount);
 	}
 	inline void AllocateLogonInfoPool(int count, int addCount) {
-		this->m_spectraLogon->Append(count);
-		this->m_spectraLogon->AddCount(addCount);
+		this->m_fortsLogon->Append(count);
+		this->m_fortsLogon->AddCount(addCount);
 	}
 	inline void AllocateLogoutInfoPool(int count, int addCount) {
-		this->m_spectraLogout->Append(count);
-		this->m_spectraLogout->AddCount(addCount);
+		this->m_fortsLogout->Append(count);
+		this->m_fortsLogout->AddCount(addCount);
 	}
 	inline void AllocateDefaultIncrementalRefreshMessageMDEntriesItemInfoPoolTo(int count) {
-		count -= this->m_spectraDefaultIncrementalRefreshMessageMDEntriesItems->Capacity();
+		count -= this->m_fortsDefaultIncrementalRefreshMessageMDEntriesItems->Capacity();
 		if(count > 0)
-			this->m_spectraDefaultIncrementalRefreshMessageMDEntriesItems->Append(count);
+			this->m_fortsDefaultIncrementalRefreshMessageMDEntriesItems->Append(count);
 	}
 	inline void AllocateDefaultIncrementalRefreshMessageInfoPoolTo(int count) {
-		count -= this->m_spectraDefaultIncrementalRefreshMessage->Capacity();
+		count -= this->m_fortsDefaultIncrementalRefreshMessage->Capacity();
 		if(count > 0)
-			this->m_spectraDefaultIncrementalRefreshMessage->Append(count);
+			this->m_fortsDefaultIncrementalRefreshMessage->Append(count);
 	}
 	inline void AllocateDefaultSnapshotMessageMDEntriesItemInfoPoolTo(int count) {
-		count -= this->m_spectraDefaultSnapshotMessageMDEntriesItems->Capacity();
+		count -= this->m_fortsDefaultSnapshotMessageMDEntriesItems->Capacity();
 		if(count > 0)
-			this->m_spectraDefaultSnapshotMessageMDEntriesItems->Append(count);
+			this->m_fortsDefaultSnapshotMessageMDEntriesItems->Append(count);
 	}
 	inline void AllocateDefaultSnapshotMessageInfoPoolTo(int count) {
-		count -= this->m_spectraDefaultSnapshotMessage->Capacity();
+		count -= this->m_fortsDefaultSnapshotMessage->Capacity();
 		if(count > 0)
-			this->m_spectraDefaultSnapshotMessage->Append(count);
+			this->m_fortsDefaultSnapshotMessage->Append(count);
 	}
 	inline void AllocateSecurityDefinitionMDFeedTypesItemInfoPoolTo(int count) {
-		count -= this->m_spectraSecurityDefinitionMDFeedTypesItems->Capacity();
+		count -= this->m_fortsSecurityDefinitionMDFeedTypesItems->Capacity();
 		if(count > 0)
-			this->m_spectraSecurityDefinitionMDFeedTypesItems->Append(count);
+			this->m_fortsSecurityDefinitionMDFeedTypesItems->Append(count);
 	}
 	inline void AllocateSecurityDefinitionUnderlyingsItemInfoPoolTo(int count) {
-		count -= this->m_spectraSecurityDefinitionUnderlyingsItems->Capacity();
+		count -= this->m_fortsSecurityDefinitionUnderlyingsItems->Capacity();
 		if(count > 0)
-			this->m_spectraSecurityDefinitionUnderlyingsItems->Append(count);
+			this->m_fortsSecurityDefinitionUnderlyingsItems->Append(count);
 	}
 	inline void AllocateSecurityDefinitionInstrumentLegsItemInfoPoolTo(int count) {
-		count -= this->m_spectraSecurityDefinitionInstrumentLegsItems->Capacity();
+		count -= this->m_fortsSecurityDefinitionInstrumentLegsItems->Capacity();
 		if(count > 0)
-			this->m_spectraSecurityDefinitionInstrumentLegsItems->Append(count);
+			this->m_fortsSecurityDefinitionInstrumentLegsItems->Append(count);
 	}
 	inline void AllocateSecurityDefinitionInstrumentAttributesItemInfoPoolTo(int count) {
-		count -= this->m_spectraSecurityDefinitionInstrumentAttributesItems->Capacity();
+		count -= this->m_fortsSecurityDefinitionInstrumentAttributesItems->Capacity();
 		if(count > 0)
-			this->m_spectraSecurityDefinitionInstrumentAttributesItems->Append(count);
+			this->m_fortsSecurityDefinitionInstrumentAttributesItems->Append(count);
 	}
 	inline void AllocateSecurityDefinitionEvntGrpItemInfoPoolTo(int count) {
-		count -= this->m_spectraSecurityDefinitionEvntGrpItems->Capacity();
+		count -= this->m_fortsSecurityDefinitionEvntGrpItems->Capacity();
 		if(count > 0)
-			this->m_spectraSecurityDefinitionEvntGrpItems->Append(count);
+			this->m_fortsSecurityDefinitionEvntGrpItems->Append(count);
 	}
 	inline void AllocateSecurityDefinitionInfoPoolTo(int count) {
-		count -= this->m_spectraSecurityDefinition->Capacity();
+		count -= this->m_fortsSecurityDefinition->Capacity();
 		if(count > 0)
-			this->m_spectraSecurityDefinition->Append(count);
+			this->m_fortsSecurityDefinition->Append(count);
 	}
 	inline void AllocateSecurityDefinitionUpdateReportInfoPoolTo(int count) {
-		count -= this->m_spectraSecurityDefinitionUpdateReport->Capacity();
+		count -= this->m_fortsSecurityDefinitionUpdateReport->Capacity();
 		if(count > 0)
-			this->m_spectraSecurityDefinitionUpdateReport->Append(count);
+			this->m_fortsSecurityDefinitionUpdateReport->Append(count);
 	}
 	inline void AllocateSecurityStatusInfoPoolTo(int count) {
-		count -= this->m_spectraSecurityStatus->Capacity();
+		count -= this->m_fortsSecurityStatus->Capacity();
 		if(count > 0)
-			this->m_spectraSecurityStatus->Append(count);
+			this->m_fortsSecurityStatus->Append(count);
 	}
 	inline void AllocateHeartbeatInfoPoolTo(int count) {
-		count -= this->m_spectraHeartbeat->Capacity();
+		count -= this->m_fortsHeartbeat->Capacity();
 		if(count > 0)
-			this->m_spectraHeartbeat->Append(count);
+			this->m_fortsHeartbeat->Append(count);
 	}
 	inline void AllocateSequenceResetInfoPoolTo(int count) {
-		count -= this->m_spectraSequenceReset->Capacity();
+		count -= this->m_fortsSequenceReset->Capacity();
 		if(count > 0)
-			this->m_spectraSequenceReset->Append(count);
+			this->m_fortsSequenceReset->Append(count);
 	}
 	inline void AllocateTradingSessionStatusInfoPoolTo(int count) {
-		count -= this->m_spectraTradingSessionStatus->Capacity();
+		count -= this->m_fortsTradingSessionStatus->Capacity();
 		if(count > 0)
-			this->m_spectraTradingSessionStatus->Append(count);
+			this->m_fortsTradingSessionStatus->Append(count);
 	}
 	inline void AllocateNewsNewsTextItemInfoPoolTo(int count) {
-		count -= this->m_spectraNewsNewsTextItems->Capacity();
+		count -= this->m_fortsNewsNewsTextItems->Capacity();
 		if(count > 0)
-			this->m_spectraNewsNewsTextItems->Append(count);
+			this->m_fortsNewsNewsTextItems->Append(count);
 	}
 	inline void AllocateNewsInfoPoolTo(int count) {
-		count -= this->m_spectraNews->Capacity();
+		count -= this->m_fortsNews->Capacity();
 		if(count > 0)
-			this->m_spectraNews->Append(count);
+			this->m_fortsNews->Append(count);
 	}
 	inline void AllocateOrdersLogMDEntriesItemInfoPoolTo(int count) {
-		count -= this->m_spectraOrdersLogMDEntriesItems->Capacity();
+		count -= this->m_fortsOrdersLogMDEntriesItems->Capacity();
 		if(count > 0)
-			this->m_spectraOrdersLogMDEntriesItems->Append(count);
+			this->m_fortsOrdersLogMDEntriesItems->Append(count);
 	}
 	inline void AllocateOrdersLogInfoPoolTo(int count) {
-		count -= this->m_spectraOrdersLog->Capacity();
+		count -= this->m_fortsOrdersLog->Capacity();
 		if(count > 0)
-			this->m_spectraOrdersLog->Append(count);
+			this->m_fortsOrdersLog->Append(count);
 	}
 	inline void AllocateOrdersBookMDEntriesItemInfoPoolTo(int count) {
-		count -= this->m_spectraOrdersBookMDEntriesItems->Capacity();
+		count -= this->m_fortsOrdersBookMDEntriesItems->Capacity();
 		if(count > 0)
-			this->m_spectraOrdersBookMDEntriesItems->Append(count);
+			this->m_fortsOrdersBookMDEntriesItems->Append(count);
 	}
 	inline void AllocateOrdersBookInfoPoolTo(int count) {
-		count -= this->m_spectraOrdersBook->Capacity();
+		count -= this->m_fortsOrdersBook->Capacity();
 		if(count > 0)
-			this->m_spectraOrdersBook->Append(count);
+			this->m_fortsOrdersBook->Append(count);
 	}
 	inline void AllocateLogonInfoPoolTo(int count) {
-		count -= this->m_spectraLogon->Capacity();
+		count -= this->m_fortsLogon->Capacity();
 		if(count > 0)
-			this->m_spectraLogon->Append(count);
+			this->m_fortsLogon->Append(count);
 	}
 	inline void AllocateLogoutInfoPoolTo(int count) {
-		count -= this->m_spectraLogout->Capacity();
+		count -= this->m_fortsLogout->Capacity();
 		if(count > 0)
-			this->m_spectraLogout->Append(count);
+			this->m_fortsLogout->Append(count);
 	}
-	inline AutoAllocatePointerList<SpectraDefaultIncrementalRefreshMessageMDEntriesItemInfo>* GetSpectraDefaultIncrementalRefreshMessageMDEntriesItemInfoPool() {
-		return this->m_spectraDefaultIncrementalRefreshMessageMDEntriesItems;
+	inline AutoAllocatePointerList<FortsDefaultIncrementalRefreshMessageMDEntriesItemInfo>* GetFortsDefaultIncrementalRefreshMessageMDEntriesItemInfoPool() {
+		return this->m_fortsDefaultIncrementalRefreshMessageMDEntriesItems;
 	}
-	inline AutoAllocatePointerList<SpectraDefaultIncrementalRefreshMessageInfo>* GetSpectraDefaultIncrementalRefreshMessageInfoPool() {
-		return this->m_spectraDefaultIncrementalRefreshMessage;
+	inline AutoAllocatePointerList<FortsDefaultIncrementalRefreshMessageInfo>* GetFortsDefaultIncrementalRefreshMessageInfoPool() {
+		return this->m_fortsDefaultIncrementalRefreshMessage;
 	}
-	inline AutoAllocatePointerList<SpectraDefaultSnapshotMessageMDEntriesItemInfo>* GetSpectraDefaultSnapshotMessageMDEntriesItemInfoPool() {
-		return this->m_spectraDefaultSnapshotMessageMDEntriesItems;
+	inline AutoAllocatePointerList<FortsDefaultSnapshotMessageMDEntriesItemInfo>* GetFortsDefaultSnapshotMessageMDEntriesItemInfoPool() {
+		return this->m_fortsDefaultSnapshotMessageMDEntriesItems;
 	}
-	inline AutoAllocatePointerList<SpectraDefaultSnapshotMessageInfo>* GetSpectraDefaultSnapshotMessageInfoPool() {
-		return this->m_spectraDefaultSnapshotMessage;
+	inline AutoAllocatePointerList<FortsDefaultSnapshotMessageInfo>* GetFortsDefaultSnapshotMessageInfoPool() {
+		return this->m_fortsDefaultSnapshotMessage;
 	}
-	inline AutoAllocatePointerList<SpectraSecurityDefinitionMDFeedTypesItemInfo>* GetSpectraSecurityDefinitionMDFeedTypesItemInfoPool() {
-		return this->m_spectraSecurityDefinitionMDFeedTypesItems;
+	inline AutoAllocatePointerList<FortsSecurityDefinitionMDFeedTypesItemInfo>* GetFortsSecurityDefinitionMDFeedTypesItemInfoPool() {
+		return this->m_fortsSecurityDefinitionMDFeedTypesItems;
 	}
-	inline AutoAllocatePointerList<SpectraSecurityDefinitionUnderlyingsItemInfo>* GetSpectraSecurityDefinitionUnderlyingsItemInfoPool() {
-		return this->m_spectraSecurityDefinitionUnderlyingsItems;
+	inline AutoAllocatePointerList<FortsSecurityDefinitionUnderlyingsItemInfo>* GetFortsSecurityDefinitionUnderlyingsItemInfoPool() {
+		return this->m_fortsSecurityDefinitionUnderlyingsItems;
 	}
-	inline AutoAllocatePointerList<SpectraSecurityDefinitionInstrumentLegsItemInfo>* GetSpectraSecurityDefinitionInstrumentLegsItemInfoPool() {
-		return this->m_spectraSecurityDefinitionInstrumentLegsItems;
+	inline AutoAllocatePointerList<FortsSecurityDefinitionInstrumentLegsItemInfo>* GetFortsSecurityDefinitionInstrumentLegsItemInfoPool() {
+		return this->m_fortsSecurityDefinitionInstrumentLegsItems;
 	}
-	inline AutoAllocatePointerList<SpectraSecurityDefinitionInstrumentAttributesItemInfo>* GetSpectraSecurityDefinitionInstrumentAttributesItemInfoPool() {
-		return this->m_spectraSecurityDefinitionInstrumentAttributesItems;
+	inline AutoAllocatePointerList<FortsSecurityDefinitionInstrumentAttributesItemInfo>* GetFortsSecurityDefinitionInstrumentAttributesItemInfoPool() {
+		return this->m_fortsSecurityDefinitionInstrumentAttributesItems;
 	}
-	inline AutoAllocatePointerList<SpectraSecurityDefinitionEvntGrpItemInfo>* GetSpectraSecurityDefinitionEvntGrpItemInfoPool() {
-		return this->m_spectraSecurityDefinitionEvntGrpItems;
+	inline AutoAllocatePointerList<FortsSecurityDefinitionEvntGrpItemInfo>* GetFortsSecurityDefinitionEvntGrpItemInfoPool() {
+		return this->m_fortsSecurityDefinitionEvntGrpItems;
 	}
-	inline AutoAllocatePointerList<SpectraSecurityDefinitionInfo>* GetSpectraSecurityDefinitionInfoPool() {
-		return this->m_spectraSecurityDefinition;
+	inline AutoAllocatePointerList<FortsSecurityDefinitionInfo>* GetFortsSecurityDefinitionInfoPool() {
+		return this->m_fortsSecurityDefinition;
 	}
-	inline AutoAllocatePointerList<SpectraSecurityDefinitionUpdateReportInfo>* GetSpectraSecurityDefinitionUpdateReportInfoPool() {
-		return this->m_spectraSecurityDefinitionUpdateReport;
+	inline AutoAllocatePointerList<FortsSecurityDefinitionUpdateReportInfo>* GetFortsSecurityDefinitionUpdateReportInfoPool() {
+		return this->m_fortsSecurityDefinitionUpdateReport;
 	}
-	inline AutoAllocatePointerList<SpectraSecurityStatusInfo>* GetSpectraSecurityStatusInfoPool() {
-		return this->m_spectraSecurityStatus;
+	inline AutoAllocatePointerList<FortsSecurityStatusInfo>* GetFortsSecurityStatusInfoPool() {
+		return this->m_fortsSecurityStatus;
 	}
-	inline AutoAllocatePointerList<SpectraHeartbeatInfo>* GetSpectraHeartbeatInfoPool() {
-		return this->m_spectraHeartbeat;
+	inline AutoAllocatePointerList<FortsHeartbeatInfo>* GetFortsHeartbeatInfoPool() {
+		return this->m_fortsHeartbeat;
 	}
-	inline AutoAllocatePointerList<SpectraSequenceResetInfo>* GetSpectraSequenceResetInfoPool() {
-		return this->m_spectraSequenceReset;
+	inline AutoAllocatePointerList<FortsSequenceResetInfo>* GetFortsSequenceResetInfoPool() {
+		return this->m_fortsSequenceReset;
 	}
-	inline AutoAllocatePointerList<SpectraTradingSessionStatusInfo>* GetSpectraTradingSessionStatusInfoPool() {
-		return this->m_spectraTradingSessionStatus;
+	inline AutoAllocatePointerList<FortsTradingSessionStatusInfo>* GetFortsTradingSessionStatusInfoPool() {
+		return this->m_fortsTradingSessionStatus;
 	}
-	inline AutoAllocatePointerList<SpectraNewsNewsTextItemInfo>* GetSpectraNewsNewsTextItemInfoPool() {
-		return this->m_spectraNewsNewsTextItems;
+	inline AutoAllocatePointerList<FortsNewsNewsTextItemInfo>* GetFortsNewsNewsTextItemInfoPool() {
+		return this->m_fortsNewsNewsTextItems;
 	}
-	inline AutoAllocatePointerList<SpectraNewsInfo>* GetSpectraNewsInfoPool() {
-		return this->m_spectraNews;
+	inline AutoAllocatePointerList<FortsNewsInfo>* GetFortsNewsInfoPool() {
+		return this->m_fortsNews;
 	}
-	inline AutoAllocatePointerList<SpectraOrdersLogMDEntriesItemInfo>* GetSpectraOrdersLogMDEntriesItemInfoPool() {
-		return this->m_spectraOrdersLogMDEntriesItems;
+	inline AutoAllocatePointerList<FortsOrdersLogMDEntriesItemInfo>* GetFortsOrdersLogMDEntriesItemInfoPool() {
+		return this->m_fortsOrdersLogMDEntriesItems;
 	}
-	inline AutoAllocatePointerList<SpectraOrdersLogInfo>* GetSpectraOrdersLogInfoPool() {
-		return this->m_spectraOrdersLog;
+	inline AutoAllocatePointerList<FortsOrdersLogInfo>* GetFortsOrdersLogInfoPool() {
+		return this->m_fortsOrdersLog;
 	}
-	inline AutoAllocatePointerList<SpectraOrdersBookMDEntriesItemInfo>* GetSpectraOrdersBookMDEntriesItemInfoPool() {
-		return this->m_spectraOrdersBookMDEntriesItems;
+	inline AutoAllocatePointerList<FortsOrdersBookMDEntriesItemInfo>* GetFortsOrdersBookMDEntriesItemInfoPool() {
+		return this->m_fortsOrdersBookMDEntriesItems;
 	}
-	inline AutoAllocatePointerList<SpectraOrdersBookInfo>* GetSpectraOrdersBookInfoPool() {
-		return this->m_spectraOrdersBook;
+	inline AutoAllocatePointerList<FortsOrdersBookInfo>* GetFortsOrdersBookInfoPool() {
+		return this->m_fortsOrdersBook;
 	}
-	inline AutoAllocatePointerList<SpectraLogonInfo>* GetSpectraLogonInfoPool() {
-		return this->m_spectraLogon;
+	inline AutoAllocatePointerList<FortsLogonInfo>* GetFortsLogonInfoPool() {
+		return this->m_fortsLogon;
 	}
-	inline AutoAllocatePointerList<SpectraLogoutInfo>* GetSpectraLogoutInfoPool() {
-		return this->m_spectraLogout;
+	inline AutoAllocatePointerList<FortsLogoutInfo>* GetFortsLogoutInfoPool() {
+		return this->m_fortsLogout;
 	}
 };
-class SpectraDefaultIncrementalRefreshMessageMDEntriesItemInfoNullIndices{
+class FortsDefaultIncrementalRefreshMessageMDEntriesItemInfoNullIndices{
 public:
 	static const UINT64 SecurityIDNullIndex = NULL_MAP_INDEX0;
 	static const UINT64 SymbolNullIndex = NULL_MAP_INDEX1;
@@ -4279,11 +4279,11 @@ public:
 	static const UINT64 RevisionNullIndex = NULL_MAP_INDEX16;
 	static const UINT64 OrderSideNullIndex = NULL_MAP_INDEX17;
 };
-class SpectraDefaultIncrementalRefreshMessageInfoNullIndices{
+class FortsDefaultIncrementalRefreshMessageInfoNullIndices{
 public:
 	static const UINT64 LastFragmentNullIndex = NULL_MAP_INDEX0;
 };
-class SpectraDefaultSnapshotMessageMDEntriesItemInfoNullIndices{
+class FortsDefaultSnapshotMessageMDEntriesItemInfoNullIndices{
 public:
 	static const UINT64 ExchangeTradingSessionIDNullIndex = NULL_MAP_INDEX0;
 	static const UINT64 MDEntryIDNullIndex = NULL_MAP_INDEX1;
@@ -4299,23 +4299,23 @@ public:
 	static const UINT64 CurrencyNullIndex = NULL_MAP_INDEX11;
 	static const UINT64 OrderSideNullIndex = NULL_MAP_INDEX12;
 };
-class SpectraDefaultSnapshotMessageInfoNullIndices{
+class FortsDefaultSnapshotMessageInfoNullIndices{
 public:
 	static const UINT64 LastFragmentNullIndex = NULL_MAP_INDEX0;
 	static const UINT64 SecurityIDNullIndex = NULL_MAP_INDEX1;
 	static const UINT64 SymbolNullIndex = NULL_MAP_INDEX2;
 	static const UINT64 SecurityGroupNullIndex = NULL_MAP_INDEX3;
 };
-class SpectraSecurityDefinitionMDFeedTypesItemInfoNullIndices{
+class FortsSecurityDefinitionMDFeedTypesItemInfoNullIndices{
 public:
 	static const UINT64 MarketDepthNullIndex = NULL_MAP_INDEX0;
 	static const UINT64 MDBookTypeNullIndex = NULL_MAP_INDEX1;
 };
-class SpectraSecurityDefinitionUnderlyingsItemInfoNullIndices{
+class FortsSecurityDefinitionUnderlyingsItemInfoNullIndices{
 public:
 	static const UINT64 UnderlyingSecurityIDNullIndex = NULL_MAP_INDEX0;
 };
-class SpectraSecurityDefinitionInfoNullIndices{
+class FortsSecurityDefinitionInfoNullIndices{
 public:
 	static const UINT64 SecurityDescNullIndex = NULL_MAP_INDEX0;
 	static const UINT64 SecurityAltIDNullIndex = NULL_MAP_INDEX1;
@@ -4348,13 +4348,13 @@ public:
 	static const UINT64 MaturityDateNullIndex = NULL_MAP_INDEX28;
 	static const UINT64 MaturityTimeNullIndex = NULL_MAP_INDEX29;
 };
-class SpectraSecurityDefinitionUpdateReportInfoNullIndices{
+class FortsSecurityDefinitionUpdateReportInfoNullIndices{
 public:
 	static const UINT64 VolatilityNullIndex = NULL_MAP_INDEX0;
 	static const UINT64 TheorPriceNullIndex = NULL_MAP_INDEX1;
 	static const UINT64 TheorPriceLimitNullIndex = NULL_MAP_INDEX2;
 };
-class SpectraSecurityStatusInfoNullIndices{
+class FortsSecurityStatusInfoNullIndices{
 public:
 	static const UINT64 SecurityTradingStatusNullIndex = NULL_MAP_INDEX0;
 	static const UINT64 HighLimitPxNullIndex = NULL_MAP_INDEX1;
@@ -4363,14 +4363,14 @@ public:
 	static const UINT64 InitialMarginOnSellNullIndex = NULL_MAP_INDEX4;
 	static const UINT64 InitialMarginSynteticNullIndex = NULL_MAP_INDEX5;
 };
-class SpectraTradingSessionStatusInfoNullIndices{
+class FortsTradingSessionStatusInfoNullIndices{
 public:
 	static const UINT64 TradSesIntermClearingStartTimeNullIndex = NULL_MAP_INDEX0;
 	static const UINT64 TradSesIntermClearingEndTimeNullIndex = NULL_MAP_INDEX1;
 	static const UINT64 ExchangeTradingSessionIDNullIndex = NULL_MAP_INDEX2;
 	static const UINT64 TradSesEventNullIndex = NULL_MAP_INDEX3;
 };
-class SpectraNewsInfoNullIndices{
+class FortsNewsInfoNullIndices{
 public:
 	static const UINT64 LastFragmentNullIndex = NULL_MAP_INDEX0;
 	static const UINT64 NewsIdNullIndex = NULL_MAP_INDEX1;
@@ -4379,7 +4379,7 @@ public:
 	static const UINT64 UrgencyNullIndex = NULL_MAP_INDEX4;
 	static const UINT64 MarketSegmentIDNullIndex = NULL_MAP_INDEX5;
 };
-class SpectraOrdersLogMDEntriesItemInfoNullIndices{
+class FortsOrdersLogMDEntriesItemInfoNullIndices{
 public:
 	static const UINT64 MDEntryIDNullIndex = NULL_MAP_INDEX0;
 	static const UINT64 SecurityIDNullIndex = NULL_MAP_INDEX1;
@@ -4394,7 +4394,7 @@ public:
 	static const UINT64 MDFlagsNullIndex = NULL_MAP_INDEX10;
 	static const UINT64 RevisionNullIndex = NULL_MAP_INDEX11;
 };
-class SpectraOrdersBookMDEntriesItemInfoNullIndices{
+class FortsOrdersBookMDEntriesItemInfoNullIndices{
 public:
 	static const UINT64 MDEntryIDNullIndex = NULL_MAP_INDEX0;
 	static const UINT64 MDEntryDateNullIndex = NULL_MAP_INDEX1;
@@ -4403,12 +4403,12 @@ public:
 	static const UINT64 TradeIDNullIndex = NULL_MAP_INDEX4;
 	static const UINT64 MDFlagsNullIndex = NULL_MAP_INDEX5;
 };
-class SpectraOrdersBookInfoNullIndices{
+class FortsOrdersBookInfoNullIndices{
 public:
 	static const UINT64 RptSeqNullIndex = NULL_MAP_INDEX0;
 	static const UINT64 SecurityIDNullIndex = NULL_MAP_INDEX1;
 };
-class SpectraLogoutInfoNullIndices{
+class FortsLogoutInfoNullIndices{
 public:
 	static const UINT64 TextNullIndex = NULL_MAP_INDEX0;
 };

@@ -1,7 +1,7 @@
-#include "FeedChannel.h"
+#include "AstsFeedChannel.h"
 #include "Managers/LogManager.h"
 
-FeedChannel::FeedChannel(const char *id, const char *name) {
+AstsFeedChannel::AstsFeedChannel(const char *id, const char *name) {
 	strcpy(this->id, id);
 	strcpy(this->name, name);
 
@@ -23,10 +23,10 @@ FeedChannel::FeedChannel(const char *id, const char *name) {
 	this->hr = NULL;
 }
 
-FeedChannel::~FeedChannel() {
+AstsFeedChannel::~AstsFeedChannel() {
 }
 
-void FeedChannel::SetConnection(FeedConnection *conn) { 
+void AstsFeedChannel::SetConnection(FeedConnection *conn) {
 	conn->SetSenderCompId(this->m_senderCompId);
 	conn->ChannelName(this->id);
 
@@ -50,18 +50,18 @@ void FeedChannel::SetConnection(FeedConnection *conn) {
 		this->hr = conn;
 }
 
-bool FeedChannel::Connect(FeedConnection *conn) {
+bool AstsFeedChannel::Connect(FeedConnection *conn) {
 	if (conn == NULL)
 		return false;
 	return conn->Connect();
 }
-bool FeedChannel::Disconnect(FeedConnection *conn) { 
+bool AstsFeedChannel::Disconnect(FeedConnection *conn) {
 	if (conn == NULL)
 		return false;
 	return conn->Disconnect();
 }
 
-bool FeedChannel::CheckConnections() {
+bool AstsFeedChannel::CheckConnections() {
 //	if(this->olr->Type() != FeedConnectionType::Incremental)
 //		return false;
 //	if(this->msr->Type() != FeedConnectionType::Incremental)
@@ -84,7 +84,7 @@ bool FeedChannel::CheckConnections() {
 	return true;
 }
 
-bool FeedChannel::Connect() { 
+bool AstsFeedChannel::Connect() {
 	DefaultLogManager::Default->StartLog(this->m_nameLogIndex, LogMessageCode::lmcFeedChannel_Connect);
 
 	if(this->msr != 0)
@@ -125,7 +125,7 @@ bool FeedChannel::Connect() {
 	return true;
 }
 
-bool FeedChannel::Disconnect() { 
+bool AstsFeedChannel::Disconnect() {
 	DefaultLogManager::Default->StartLog(LogMessageCode::lmcFeedChannel_Disconnect);
 
 	bool result = true;

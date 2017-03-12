@@ -13,8 +13,8 @@ void LogMessageProvider::InitializeLogMessageText() {
 	this->m_logMessageText[LogMessageCode::lmcSuccess] = "ok";
 	this->m_logMessageText[LogMessageCode::lmcFailed] = "failed";
 	this->m_logMessageText[LogMessageCode::lmcRobot_AddDefaultTestMarkets] = "Robot::AddDefaultTestMarkets";
-	this->m_logMessageText[LogMessageCode::lmcFeedChannel_Connect] = "FeedChannel::Connect";
-	this->m_logMessageText[LogMessageCode::lmcFeedChannel_Disconnect] = "FeedChannel::Disconnect";
+	this->m_logMessageText[LogMessageCode::lmcFeedChannel_Connect] = "AstsFeedChannel::Connect";
+	this->m_logMessageText[LogMessageCode::lmcFeedChannel_Disconnect] = "AstsFeedChannel::Disconnect";
 	this->m_logMessageText[LogMessageCode::lmcFeedConnection_Connect] = "FeedConnection::Connect";
 	this->m_logMessageText[LogMessageCode::lmcFeedConnection_Disconnect] = "FeedConnection::Disconnect";
 	this->m_logMessageText[LogMessageCode::lmcMarketInfo_Connect] = "MarketInfo::Connect";

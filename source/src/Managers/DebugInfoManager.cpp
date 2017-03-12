@@ -3,7 +3,7 @@
 //
 #include "DebugInfoManager.h"
 #include "../MarketData/StatisticInfo.h"
-#include "Feeds/FeedChannel.h"
+#include "Feeds/AstsFeedChannel.h"
 //#define ENABLE_LOG
 
 
@@ -280,8 +280,8 @@ void DebugInfoManager::Log(SizedArray *symbol, SizedArray *trading, const char *
 #endif
 }
 
-void DebugInfoManager::PrintStatistics(FeedChannel *channel) {
-    printf("Start FeedChannel %s\n", channel->Name());
+void DebugInfoManager::PrintStatistics(AstsFeedChannel *channel) {
+    printf("Start AstsFeedChannel %s\n", channel->Name());
     this->AddTabs();
     this->PrintStatistics(channel->Olr());
     this->PrintStatistics(channel->Ols());
@@ -292,7 +292,7 @@ void DebugInfoManager::PrintStatistics(FeedChannel *channel) {
     this->PrintStatistics(channel->Idf());
     this->PrintStatistics(channel->Isf());
     this->RemoveTabs();
-    printf("End FeedChannel %s\n", channel->Name());
+    printf("End AstsFeedChannel %s\n", channel->Name());
 }
 
 void DebugInfoManager::PrintStatisticsIncremental(FeedConnection *conn) {
@@ -538,10 +538,10 @@ void DebugInfoManager::PrintTotalBidListXml(const char *name, PointerListLite<St
     fprintf(fp, "</TotalBidList>\n");
 }
 
-void DebugInfoManager::PrintStatisticsXml(const char *fileName, FeedChannel *channel) {
+void DebugInfoManager::PrintStatisticsXml(const char *fileName, AstsFeedChannel *channel) {
     this->fp = fopen(fileName, "wt");
 
-    fprintf(fp, "<FeedChannel Name=\"%s\">\n", channel->Name());
+    fprintf(fp, "<AstsFeedChannel Name=\"%s\">\n", channel->Name());
     this->AddTabs();
     this->PrintStatisticsXml(channel->Olr());
     this->PrintStatisticsXml(channel->Ols());
@@ -552,7 +552,7 @@ void DebugInfoManager::PrintStatisticsXml(const char *fileName, FeedChannel *cha
     this->PrintStatisticsXml(channel->Idf());
     this->PrintStatisticsXml(channel->Isf());
     this->RemoveTabs();
-    fprintf(fp, "</FeedChannel>\n");
+    fprintf(fp, "</AstsFeedChannel>\n");
     fclose(fp);
 }
 
@@ -743,7 +743,7 @@ int DebugInfoManager::GetFirstNonEmptyEntry() {
     return -1;
 }
 
-int DebugInfoManager::CalcMDEntryQueCount(FeedChannel *channel, MDEntryQueue *que) {
+int DebugInfoManager::CalcMDEntryQueCount(AstsFeedChannel *channel, MDEntryQueue *que) {
     int count = 0;
     if(channel->Olr() != 0) {
         if(channel->Olr()->OrderCurr() != 0)
@@ -766,7 +766,7 @@ int DebugInfoManager::CalcMDEntryQueCount(FeedChannel *channel, MDEntryQueue *qu
     return count;
 }
 
-void DebugInfoManager::DebugCheckForDublicateItems(FeedChannel *channel) {
+void DebugInfoManager::DebugCheckForDublicateItems(AstsFeedChannel *channel) {
     LinkedPointer<MDEntryQueue> *node = MDEntryQueue::Pool->Start();
     while(node != 0) {
         if(node == MDEntryQueue::Pool->End())

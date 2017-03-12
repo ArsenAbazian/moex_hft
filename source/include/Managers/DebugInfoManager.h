@@ -25,7 +25,7 @@ class StatisticItemIndexList;
 class StatisticItemTotalBid;
 class StatisticItemTotalOffer;
 class StatisticItemTransactionsMagnitude;
-class FeedChannel;
+class AstsFeedChannel;
 class FastProtocolManager;
 class FeedConnection;
 class MDEntryQueue;
@@ -134,7 +134,7 @@ public:
     void Log(SizedArray *symbol, SizedArray *trading, const char *string, char *entryId, int entryIdLength, Decimal *price, Decimal *size);
 
     void PrintStatistics(FeedConnection *conn);
-    void PrintStatistics(FeedChannel *channel);
+    void PrintStatistics(AstsFeedChannel *channel);
     void PrintStatisticsIncremental(FeedConnection *conn);
     void PrintStatisticsSnapshot(FeedConnection *conn);
     void PrintStatisticsInstrumentDefinition(FeedConnection *conn);
@@ -297,7 +297,7 @@ public:
 
 
     void PrintStatisticsXml(FeedConnection *conn);
-    void PrintStatisticsXml(const char *fileName, FeedChannel *channel);
+    void PrintStatisticsXml(const char *fileName, AstsFeedChannel *channel);
     void PrintStatisticsIncrementalXml(FeedConnection *conn);
     void PrintStatisticsSnapshotXml(FeedConnection *conn);
     void PrintStatisticsInstrumentDefinitionXml(FeedConnection *conn);
@@ -482,8 +482,8 @@ public:
     int CheckIsFriedMDEntryQueryCleared();
     MDEntryQueue* GetFirstMDEntryQueue();
     int GetFirstNonEmptyEntry();
-    void DebugCheckForDublicateItems(FeedChannel *channel);
-    int CalcMDEntryQueCount(FeedChannel *channel, MDEntryQueue *que);
+    void DebugCheckForDublicateItems(AstsFeedChannel *channel);
+    int CalcMDEntryQueCount(AstsFeedChannel *channel, MDEntryQueue *que);
 };
 
 #endif //HFT_ROBOT_DEBUGINFOMANAGER_H

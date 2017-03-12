@@ -1,6 +1,6 @@
 #pragma once
 #include "MarketServerInfo.h"
-#include "FeedChannel.h"
+#include "AstsFeedChannel.h"
 
 class MarketInfo {
 
@@ -12,7 +12,7 @@ class MarketInfo {
 	MarketServerInfo    *m_tradeCapture;
 	MarketServerInfo    *m_dropCopy;
 
-    FeedChannel         *m_feedChannel;
+    AstsFeedChannel     *m_feedChannel;
 
 	virtual MarketServerInfo* CreateTradeServerInfo(const char *name, const char *internetAddress, int internetPort, const char *senderComputerId, const char *password, const char *targetComputerId, const char *astsServerName);
 	virtual MarketServerInfo* CreateTradeCaptureServerInfo(const char *name, const char *internetAddress, int internetPort, const char *senderComputerId, const char *password, const char *targetComputerId, const char *astsServerName);
@@ -36,13 +36,13 @@ public:
 	
 	~MarketInfo();
 
-    void SetFeedChannel(FeedChannel *feedChannel) {
+    void SetFeedChannel(AstsFeedChannel *feedChannel) {
         this->m_feedChannel = feedChannel;
     	this->m_feedChannel->SetSenderCompId(this->m_trade->SenderComputerId());
 		this->m_feedChannel->SetPassword(this->m_trade->Password());
 	}
 
-    inline FeedChannel* FeedChannel() { return this->m_feedChannel; }
+    inline AstsFeedChannel* FeedChannel() { return this->m_feedChannel; }
     inline const char* Name() { return this->m_name; }
 
 	bool Connect();
