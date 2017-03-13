@@ -1169,7 +1169,7 @@ protected:
             if(this->m_lastSnapshotInfo->LastFragment) {
                 EndApplySnapshot();
                 this->m_snapshotRouteFirst = -1;
-                this->m_recvABuffer->Reset();
+                //do not. please do not reset buffer. because there can be another items after this snapshot
             }
             this->m_startMsgSeqNum++;
             return true;
@@ -1445,8 +1445,6 @@ protected:
         while(TryFindAndApplySnapshotContinuously())
             snapshotCount++;
 
-        if(!this->DebugCheckActuality())
-            throw;
         return true;
     }
     inline bool Listen_Atom_Incremental_Core() {
