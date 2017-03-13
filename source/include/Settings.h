@@ -4,10 +4,6 @@
 
 #define ROBOT_WORK_ANYWAY
 //#define TEST
-//#define ALLOW_TRADES
-#define ALLOW_ORDERS
-#define ALLOW_STATISTICS
-//#define ALLOW_STATUS
 
 #define null 0
 #define BYTE unsigned char

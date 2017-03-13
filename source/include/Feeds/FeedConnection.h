@@ -1172,6 +1172,8 @@ protected:
                 //do not. please do not reset buffer. because there can be another items after this snapshot
             }
             this->m_startMsgSeqNum++;
+            if(this->m_startMsgSeqNum > this->m_endMsgSeqNum)
+                this->m_recvABuffer->Reset();
             return true;
         }
         if(this->m_startMsgSeqNum > this->m_endMsgSeqNum)
@@ -1189,9 +1191,13 @@ protected:
                 this->m_snapshotRouteFirst = -1;
                 //do not. please do not reset buffer. because there can be another items after this snapshot
                 this->m_startMsgSeqNum++;
+                if(this->m_startMsgSeqNum > this->m_endMsgSeqNum)
+                    this->m_recvABuffer->Reset();
                 return true;
             }
             this->m_startMsgSeqNum++;
+            if(this->m_startMsgSeqNum > this->m_endMsgSeqNum)
+                this->m_recvABuffer->Reset();
         }
         return true;
     }

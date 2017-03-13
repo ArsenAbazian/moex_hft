@@ -75,6 +75,43 @@ public:
 
     void OtcIssues(FortsMarketDataGroup *group) { this->m_otcIssues = group; }
     void OtcTrades(FortsMarketDataGroup *group) { this->m_otcTrades = group; }
+
+    void AllowSaveSecurityDefinitions(FortsMarketDataGroup *group, bool value) {
+        if(group != 0) group->AllowSaveSecurityDefinitions(value);
+    }
+    void AllowSaveSecurityDefinitions(bool value) {
+        this->AllowSaveSecurityDefinitions(this->m_futInfo, value);
+        this->AllowSaveSecurityDefinitions(this->m_optInfo, value);
+    }
+    inline bool AllowFutures() { return this->m_futInfo != 0; }
+    inline bool AllowOptions() { return this->m_optInfo != 0; }
+    inline bool LoadSecurityDefinitionFutures() {
+        return this->m_futInfo->InstrReplay()->LoadSecurityDefinitions();
+    }
+    inline bool LoadSecurityDefinitionOptions() {
+        return this->m_optInfo->InstrReplay()->LoadSecurityDefinitions();
+    }
+    inline bool OnAfterGenerateSecurityDefinitions(FortsMarketDataGroup *group) {
+        for(int i = 0; i < group->InstrReplay()->ConnectionsToRecvSymbolsCount(); i++) {
+            if(!group->InstrReplay()->ConnectionsToRecvSymbols()[i]->Start())
+                return false;
+        }
+        return true;
+    }
+    inline bool OnAfterGenerateSecurityDefinitionsFut() {
+        return this->OnAfterGenerateSecurityDefinitions(this->FutInfo());
+    }
+    inline bool OnAfterGenerateSecurityDefinitionsOpt() {
+        return this->OnAfterGenerateSecurityDefinitions(this->OptInfo());
+    }
+
+    inline bool DoWorkFutures() {
+        return true;
+    }
+
+    inline bool DoWorkOptions() {
+        return true;
+    }
 };
 
 #endif //HFT_ROBOT_FORTSMARKET_H

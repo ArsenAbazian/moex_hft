@@ -10,18 +10,16 @@
 #include "../Managers/DebugInfoManager.h"
 
 #ifdef TEST
-FastProtocolTester::FastProtocolTester()
-{
+FastProtocolTester::FastProtocolTester() {
+    this->manager = new FastProtocolManager(new AstsObjectsAllocationInfo(128), new FortsObjectsAllocationInfo(128));
 }
 
 
-FastProtocolTester::~FastProtocolTester()
-{
+FastProtocolTester::~FastProtocolTester() {
+    delete this->manager;
 }
 
 void FastProtocolTester::TestMessages() {
-    FastProtocolManager *manager = new FastProtocolManager(new AstsObjectsAllocationInfo(128), new SpectraObjectsAllocationInfo(128));
-
     unsigned char *message = 0;
     int msgSeqNo = 0;
 
@@ -443,8 +441,7 @@ bool FastProtocolTester::CompareStrings(char* str1, const char *str2) {
 }
 
 void FastProtocolTester::TestMessageSequenceNumber() { 
-	FastProtocolManager *manager = new FastProtocolManager(new AstsObjectsAllocationInfo(128), new SpectraObjectsAllocationInfo(128));
-	
+
 	*((int*)(manager->Buffer())) = 0x12345678;
 	int seq = manager->ReadMsgSeqNumber();
 
@@ -462,7 +459,6 @@ void FastProtocolTester::TestMessageSequenceNumber() {
 
 void FastProtocolTester::TestReadInt32_Mandatory() { 
 	printf("Test FastProtocolTester::TestReadInt32_Mandatory\n");
-    FastProtocolManager *manager = new FastProtocolManager(new AstsObjectsAllocationInfo(128), new SpectraObjectsAllocationInfo(128));
     manager->SetNewBuffer(new unsigned char[100], 100);
 
 	for (int i = 0; i > -2147483630; i -= 5) {
@@ -492,7 +488,6 @@ void FastProtocolTester::TestReadInt32_Mandatory() {
 
 void FastProtocolTester::TestReadInt32_Optional() {
 	printf("Test FastProtocolTester::TestReadInt32_Optional\n");
-    FastProtocolManager *manager = new FastProtocolManager(new AstsObjectsAllocationInfo(128), new SpectraObjectsAllocationInfo(128));
     manager->SetNewBuffer(new unsigned char[100], 100);
 
 	manager->ResetBuffer();
@@ -538,14 +533,12 @@ void FastProtocolTester::TestReadInt32_Optional() {
 
 void FastProtocolTester::TestReadUInt32_Optional() {
 	printf("Test FastProtocolTester::TestReadUInt32_Optional\n");
-    FastProtocolManager *manager = new FastProtocolManager(new AstsObjectsAllocationInfo(128), new SpectraObjectsAllocationInfo(128));
 
 	delete manager;
 }
 
 void FastProtocolTester::TestReadUInt32_Mandatory() {
 	printf("Test FastProtocolTester::TestReadUInt32_Mandatory\n");
-    FastProtocolManager *manager = new FastProtocolManager(new AstsObjectsAllocationInfo(128), new SpectraObjectsAllocationInfo(128));
     manager->SetNewBuffer(new unsigned char[100], 100);
 
 	for (UINT32 i = 0; i < 0xfffffff0; i += 5) {
@@ -562,7 +555,6 @@ void FastProtocolTester::TestReadUInt32_Mandatory() {
 
 void FastProtocolTester::TestStringCopy() {
     printf("Test FastProtocolTester::TestStringCopy\n");
-    FastProtocolManager *manager = new FastProtocolManager(new AstsObjectsAllocationInfo(128), new SpectraObjectsAllocationInfo(128));
     manager->SetNewBuffer(new unsigned char[100], 100);
 
     char *buffer = new char[60];
@@ -590,7 +582,6 @@ void FastProtocolTester::TestStringCopy() {
 
 void FastProtocolTester::TestReadString_Optional() { 
 	printf("Test FastProtocolTester::TestReadString_Optional\n");
-    FastProtocolManager *manager = new FastProtocolManager(new AstsObjectsAllocationInfo(128), new SpectraObjectsAllocationInfo(128));
 
     manager->SetNewBuffer(new unsigned char[128], 128);
 	manager->WriteString_Optional((const char*)NULL, 0);
@@ -636,7 +627,6 @@ void FastProtocolTester::TestReadString_Optional() {
 
 void FastProtocolTester::TestReadString_Mandatory() {
 	printf("Test FastProtocolTester::TestReadString_Mandatory\n");
-    FastProtocolManager *manager = new FastProtocolManager(new AstsObjectsAllocationInfo(128), new SpectraObjectsAllocationInfo(128));
 
     manager->SetNewBuffer(new unsigned char[128], 128);
 	manager->WriteString_Mandatory((char*)"", 0);
@@ -673,7 +663,6 @@ void FastProtocolTester::TestReadString_Mandatory() {
 
 void FastProtocolTester::TestReadByteVector_Optional() { 
 	printf("Test FastProtocolTester::TestReadByteVector_Optional\n");
-    FastProtocolManager *manager = new FastProtocolManager(new AstsObjectsAllocationInfo(128), new SpectraObjectsAllocationInfo(128));
 
 	manager->SetNewBuffer(new unsigned char[1000], 1000);
     manager->ResetBuffer();
@@ -709,7 +698,7 @@ void FastProtocolTester::TestReadByteVector_Optional() {
 
 void FastProtocolTester::TestReadByteVector_Mandatory() {
 	printf("Test FastProtocolTester::TestReadByteVector_Mandatory\n");
-    FastProtocolManager *manager = new FastProtocolManager(new AstsObjectsAllocationInfo(128), new SpectraObjectsAllocationInfo(128));
+
     manager->SetNewBuffer(new unsigned char[1000], 1000);
 
 	BYTE *buffer = new BYTE[1000];
@@ -738,7 +727,6 @@ void FastProtocolTester::TestReadByteVector_Mandatory() {
 
 void FastProtocolTester::TestReadDecimal_Optional() { 
 	printf("Test FastProtocolTester::TestReadDecimal_Optional\n");
-    FastProtocolManager *manager = new FastProtocolManager(new AstsObjectsAllocationInfo(128), new SpectraObjectsAllocationInfo(128));
 
 	Decimal value(942755, 2);
 	manager->WriteDecimal_Optional(&value);
@@ -771,7 +759,6 @@ void FastProtocolTester::TestReadDecimal_Optional() {
 
 void FastProtocolTester::TestReadDecimal_Mandatory() {
 	printf("Test FastProtocolTester::TestReadDecimal_Mandatory\n");
-    FastProtocolManager *manager = new FastProtocolManager(new AstsObjectsAllocationInfo(128), new SpectraObjectsAllocationInfo(128));
 
 	Decimal value = { 942755, 2 };
 	manager->WriteDecimal_Mandatory(&value);
@@ -804,8 +791,7 @@ void FastProtocolTester::TestReadDecimal_Mandatory() {
 
 void FastProtocolTester::TestReadInt64_Optional() {
 	printf("Test FastProtocolTester::TestReadInt64_Optional\n");
-    FastProtocolManager *manager = new FastProtocolManager(new AstsObjectsAllocationInfo(128), new SpectraObjectsAllocationInfo(128));
-	
+
 	BYTE buffer[12];
 	for (int i = 1; i < 10; i++) { // extended positive
 		memset(buffer, 0, 12);
@@ -919,7 +905,6 @@ void FastProtocolTester::TestReadInt64_Optional() {
 
 void FastProtocolTester::TestReadInt64_Mandatory() {
 	printf("Test FastProtocolTester::TestReadInt64_Mandatory\n");
-    FastProtocolManager *manager = new FastProtocolManager(new AstsObjectsAllocationInfo(128), new SpectraObjectsAllocationInfo(128));
 
 	INT64 min = INT64_MIN + 10;
 
@@ -1065,7 +1050,6 @@ void FastProtocolTester::TestReadInt64_Mandatory() {
 
 void FastProtocolTester::TestReadUInt64_Mandatory() {
 	printf("Test FastProtocolTester::TestReadUInt64_Mandatory\n");
-    FastProtocolManager *manager = new FastProtocolManager(new AstsObjectsAllocationInfo(128), new SpectraObjectsAllocationInfo(128));
 
 	BYTE buffer[12];
 
@@ -1132,7 +1116,6 @@ void FastProtocolTester::TestReadUInt64_Mandatory() {
 
 void FastProtocolTester::TestReadUInt64_Optional() {
 	printf("Test FastProtocolTester::TestReadUInt64_Optional\n");
-    FastProtocolManager *manager = new FastProtocolManager(new AstsObjectsAllocationInfo(128), new SpectraObjectsAllocationInfo(128));
     manager->SetNewBuffer(new unsigned char[12], 12);
 
 	BYTE buffer[12];

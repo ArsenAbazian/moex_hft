@@ -46,12 +46,14 @@ class Robot {
     bool DisconnectMarkets();
     bool DoWork();
 
-    bool CollectSecurityDefinitions();
+    bool CollectSecurityDefinitionsAsts();
     bool CollectSecurityDefinitions_FondOnly();
     bool CollectSecurityDefinitions_CurrOnly();
-    bool MainLoop();
+    bool CollectSecurityDefinitionsForts();
+    bool MainLoopAsts();
     bool MainLoop_FondOnly();
     bool MainLoop_CurrOnly();
+    bool MainLoopForts();
 
     inline bool DoWorkAtom() {
         return true;

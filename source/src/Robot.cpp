@@ -389,7 +389,95 @@ bool Robot::CollectSecurityDefinitions_CurrOnly() {
     return true;
 }
 
-bool Robot::CollectSecurityDefinitions() {
+bool Robot::CollectSecurityDefinitionsForts() {
+    Stopwatch *w = new Stopwatch();
+    w->Start();
+    unsigned int cycleCount = 0;
+
+    DefaultLogManager::Default->StartLog(LogMessageCode::lmcRobot_CollectSecurityDefinitions);
+    bool collectedFutures = false;
+    bool collectedOptions = false;
+
+    if(!this->m_fortsChannel->AllowFutures())
+        collectedFutures = true;
+    else {
+        if (this->m_fortsChannel->LoadSecurityDefinitionFutures())
+            collectedFutures = true;
+        else if(!this->m_fortsChannel->FutInfo()->InstrReplay()->Start()) {
+            DefaultLogManager::Default->EndLog(false);
+            return false;
+        }
+    }
+    if(!this->m_fortsChannel->AllowOptions())
+        collectedOptions = true;
+    else {
+        if (this->m_fortsChannel->LoadSecurityDefinitionOptions())
+            collectedOptions = true;
+        else if(!this->m_fortsChannel->OptInfo()->InstrReplay()->Start()) {
+            DefaultLogManager::Default->EndLog(false);
+            return false;
+        }
+    }
+    while(true) {
+        if(!WinSockManager::UpdateManagersPollStatus())
+            break;
+        if(!collectedFutures) {
+            if(!this->m_fortsChannel->FutInfo()->InstrReplay()->DoWorkAtom()) {
+                DefaultLogManager::Default->EndLog(false);
+                return false;
+            }
+            if(this->m_fortsChannel->FutInfo()->InstrReplay()->IsIdfDataCollected()) {
+                this->m_fortsChannel->FutInfo()->InstrReplay()->Stop();
+                collectedFutures = true;
+            }
+        }
+        if(!collectedOptions) {
+            if(!this->m_fortsChannel->OptInfo()->InstrReplay()->DoWorkAtom()) {
+                DefaultLogManager::Default->EndLog(false);
+                return false;
+            }
+            if(this->m_fortsChannel->OptInfo()->InstrReplay()->IsIdfDataCollected()) {
+                this->m_fortsChannel->OptInfo()->InstrReplay()->Stop();
+                collectedOptions = true;
+            }
+        }
+        if(collectedFutures && collectedOptions)
+            break;
+
+        if(w->ElapsedMilliseconds() > 1000) {
+            w->Reset();
+
+            double nanosecPerCycle = w->ElapsedMilliseconds() * 1000.0 * 1000.0 / cycleCount;
+            printf("cycle count for 1 sec = %d. %g nanosec per cycle\n", cycleCount, nanosecPerCycle);
+
+            cycleCount = 0;
+        }
+        cycleCount++;
+    }
+    DefaultLogManager::Default->EndLog(true);
+
+    DefaultLogManager::Default->StartLog(LogMessageCode::lmcRobot_GenerateSecurityDefinitions);
+
+    if(this->m_fortsChannel->AllowFutures()) {
+        this->m_fortsChannel->FutInfo()->InstrReplay()->GenerateSecurityDefinitions();
+        if(!this->m_fortsChannel->OnAfterGenerateSecurityDefinitionsFut()) {
+            DefaultLogManager::Default->EndLog(false);
+            return false;
+        }
+    }
+    if(this->m_fortsChannel->AllowOptions()) {
+        this->m_fortsChannel->OptInfo()->InstrReplay()->GenerateSecurityDefinitions();
+        if(!this->m_fortsChannel->OnAfterGenerateSecurityDefinitionsOpt()) {
+            DefaultLogManager::Default->EndLog(false);
+            return false;
+        }
+    }
+
+    DefaultLogManager::Default->EndLog(true);
+    return true;
+}
+
+bool Robot::CollectSecurityDefinitionsAsts() {
     Stopwatch *w = new Stopwatch();
     w->Start();
     unsigned int cycleCount = 0;
@@ -539,7 +627,46 @@ bool Robot::MainLoop_CurrOnly() {
     return true;
 }
 
-bool Robot::MainLoop() {
+bool Robot::MainLoopForts() {
+    Stopwatch *w = new Stopwatch();
+    unsigned int cycleCount = 0;
+
+    w->Start();
+    while(true) {
+        if (!WinSockManager::UpdateManagersPollStatus())
+            break;
+
+        if(this->m_fortsChannel->AllowFutures()) {
+            if(!this->m_fortsChannel->DoWorkFutures())
+                return false;
+        }
+
+        if(this->m_fortsChannel->AllowOptions()) {
+            if(!this->m_fortsChannel->DoWorkOptions())
+                return false;
+        }
+
+        if(!this->DoWorkAtom())
+            return false;
+
+        if(!this->Working())
+            break;
+
+        if(w->ElapsedMilliseconds() > 5000) {
+            double nanosecPerCycle = w->ElapsedMilliseconds() * 1000.0 * 1000.0 / cycleCount;
+            printf("--------\n");
+            printf("cycle count for 5 sec = %d. %g nanosec per cycle\n", cycleCount, nanosecPerCycle);
+            this->PrintStatistics();
+
+            w->Reset();
+            cycleCount = 0;
+        }
+        cycleCount++;
+    }
+    return true;
+}
+
+bool Robot::MainLoopAsts() {
     Stopwatch *w = new Stopwatch();
     unsigned int cycleCount = 0;
 
@@ -577,7 +704,7 @@ bool Robot::MainLoop() {
 bool Robot::DoWork() {
     DefaultLogManager::Default->StartLog(LogMessageCode::lmcRobot_DoWork);
 
-    if(!this->AllowCurrMarket() && !this->AllowFondMarket()) {
+    if(!this->AllowCurrMarket() && !this->AllowFondMarket() && !this->AllowFortsMarket()) {
         printf("Error: no market enabled!\n");
         DefaultLogManager::Default->EndLog(false);
         return false;
@@ -587,36 +714,52 @@ bool Robot::DoWork() {
         this->m_currMarket->FeedChannel()->Idf()->AllowSaveSecurityDefinitions(true);
     if(this->AllowFondMarket())
         this->m_fondMarket->FeedChannel()->Idf()->AllowSaveSecurityDefinitions(true);
+    if(this->AllowFortsMarket())
+        this->m_fortsChannel->AllowSaveSecurityDefinitions(true);
 
     while(true) {
-        if(!this->AllowFondMarket()) {
-            if(!this->CollectSecurityDefinitions_CurrOnly()) {
-                DefaultLogManager::Default->EndLog(false);
-                return false;
+        if(!this->AllowFortsMarket()) { // no forts market
+            if (!this->AllowFondMarket()) {
+                if (!this->CollectSecurityDefinitions_CurrOnly()) {
+                    DefaultLogManager::Default->EndLog(false);
+                    return false;
+                }
+                if (!this->MainLoop_CurrOnly()) {
+                    DefaultLogManager::Default->EndLog(false);
+                    return false;
+                }
             }
-            if(!this->MainLoop_CurrOnly()) {
-                DefaultLogManager::Default->EndLog(false);
-                return false;
+            else if (!this->AllowCurrMarket()) {
+                if (!this->CollectSecurityDefinitions_FondOnly()) {
+                    DefaultLogManager::Default->EndLog(false);
+                    return false;
+                }
+                if (!this->MainLoop_FondOnly()) {
+                    DefaultLogManager::Default->EndLog(false);
+                    return false;
+                }
             }
-        }
-        else if(!this->AllowCurrMarket()) {
-            if(!this->CollectSecurityDefinitions_FondOnly()) {
-                DefaultLogManager::Default->EndLog(false);
-                return false;
-            }
-            if(!this->MainLoop_FondOnly()) {
-                DefaultLogManager::Default->EndLog(false);
-                return false;
+            else {
+                if (!this->CollectSecurityDefinitionsAsts()) {
+                    DefaultLogManager::Default->EndLog(false);
+                    return false;
+                }
+                if (!this->MainLoopAsts()) {
+                    DefaultLogManager::Default->EndLog(false);
+                    return false;
+                }
             }
         }
         else {
-            if(!this->CollectSecurityDefinitions()) {
-                DefaultLogManager::Default->EndLog(false);
-                return false;
-            }
-            if(!this->MainLoop()) {
-                DefaultLogManager::Default->EndLog(false);
-                return false;
+            if(!this->AllowFondMarket() && !this->AllowCurrMarket()) {
+                if (!this->CollectSecurityDefinitionsForts()) {
+                    DefaultLogManager::Default->EndLog(false);
+                    return false;
+                }
+                if (!this->MainLoopForts()) {
+                    DefaultLogManager::Default->EndLog(false);
+                    return false;
+                }
             }
         }
     }

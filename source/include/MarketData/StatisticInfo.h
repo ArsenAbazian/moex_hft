@@ -1505,7 +1505,7 @@ public:
     }
 
     inline void ProcessSnapshotMessage(T *info) {
-        this->ForceProcessMessage(info);
+        this->Add(info); // there is no MDUpdateAction in Snapshot
     }
 
     inline bool ProcessQueueMessages() {

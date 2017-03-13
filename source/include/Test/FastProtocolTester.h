@@ -1,9 +1,10 @@
 #pragma once
 #include "Settings.h"
+#include "../Fast/FastProtocolManager.h"
 
 #ifdef TEST
-class FastProtocolTester
-{
+class FastProtocolTester {
+    FastProtocolManager *manager;
 public:
 	FastProtocolTester();
 	~FastProtocolTester();

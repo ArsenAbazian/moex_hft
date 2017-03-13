@@ -347,7 +347,7 @@ public:
         this->m_symbolsCount = 0;
         this->m_curr = false;
         this->m_fixManager = new FixProtocolManager(new SocketBufferProvider(DefaultSocketBufferManager::Default, 16000, 100, 16000, 100), FastProtocolVersion);
-        this->m_fastManager = new FastProtocolManager(new AstsObjectsAllocationInfo(128), new SpectraObjectsAllocationInfo(128));
+        this->m_fastManager = new FastProtocolManager(new AstsObjectsAllocationInfo(128), new FortsObjectsAllocationInfo(128));
         if(TestMessagesHelper::m_sockMessages->PoolStart()->Data() == 0)
             TestMessagesHelper::m_sockMessages->AllocData();
         this->m_buffer = DefaultSocketBufferManager::Default->GetFreeBuffer(10000, 100);

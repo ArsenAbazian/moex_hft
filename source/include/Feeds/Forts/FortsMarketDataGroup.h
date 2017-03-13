@@ -96,6 +96,11 @@ public:
 
     inline const char *Label() { return this->m_label; }
     inline void Label(const char *label) { this->m_label = label; }
+
+    void AllowSaveSecurityDefinitions(bool value) {
+        if(this->m_instrumentReplay != 0)
+            this->m_instrumentReplay->AllowSaveSecurityDefinitions(value);
+    }
 };
 
 
