@@ -343,6 +343,16 @@ public:
         //throw
     }
 
+    void TestBufferShouldNotBeResetAfterApplyingSnapshot_OnePacket() {
+        throw;
+    }
+    void TestBufferShouldNotBeResetAfterApplyingSnapshot_MultiplePacket() {
+        throw;
+    }
+    void TestBufferShouldBeResetAfterProcessingAllMessages() {
+        throw;
+    }
+
     void TestFeedConnectionBase() {
         TestDefaults();
         TestWindowStartMsgSeqNo_CorrectIncremental();
@@ -353,6 +363,9 @@ public:
         TestReceivedSnapshotMsgSeqNum_1_After_200();
         TestThatAfterApplySnapshotPart_RptSeqNotChanged();
         TestSnapshotItemRptSeqChangedAfterEndSnapshot();
+        TestBufferShouldNotBeResetAfterApplyingSnapshot_OnePacket();
+        TestBufferShouldNotBeResetAfterApplyingSnapshot_MultiplePacket();
+        TestBufferShouldBeResetAfterProcessingAllMessages();
     }
 
     void Test() {
