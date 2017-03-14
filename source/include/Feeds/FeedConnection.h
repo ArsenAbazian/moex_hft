@@ -165,6 +165,11 @@ protected:
     LinkedPointer<AstsSecurityDefinitionInfo>                                   **m_symbols;
     int                                                                         m_symbolsCount;
 
+#pragma region FORTS
+    LinkedPointer<FortsSecurityDefinitionInfo>                                  **m_symbolsForts;
+#pragma endregion
+
+
     void InitializeHistoricalReplay() {
         this->m_hsRequestList = new PointerList<FeedConnectionRequestMessageInfo>(RobotSettings::Default->HistoricalReplayMaxMessageRequestCount);
         this->m_hsRequestList->AllocData();
@@ -188,6 +193,14 @@ protected:
             this->m_packets[i] = new FeedConnectionMessageInfo();
         DebugInfoManager::Default->PrintMemoryInfo("FeedConnectionInfo::InitializePackets");
     }
+    void InitializeSecurityDefinitionForts() {
+        this->m_symbolsForts = new LinkedPointer<FortsSecurityDefinitionInfo>*[RobotSettings::Default->MaxSecurityDefinitionCount];
+        for(int i = 0; i < RobotSettings::Default->MaxSecurityDefinitionCount; i++)
+            this->m_symbolsForts[i] = new LinkedPointer<FortsSecurityDefinitionInfo>();
+        this->m_symbolsCount = 0;
+        this->m_idfMode = FeedConnectionSecurityDefinitionMode::sdmCollectData;
+        this->m_symbolManager = new SymbolManager(RobotSettings::Default->MarketDataMaxSymbolsCount);
+    }
     void InitializeSecurityDefinition() {
         this->m_symbols = new LinkedPointer<AstsSecurityDefinitionInfo>*[RobotSettings::Default->MaxSecurityDefinitionCount];
         for(int i = 0; i < RobotSettings::Default->MaxSecurityDefinitionCount; i++)
@@ -195,6 +208,11 @@ protected:
         this->m_symbolsCount = 0;
         this->m_idfMode = FeedConnectionSecurityDefinitionMode::sdmCollectData;
         this->m_symbolManager = new SymbolManager(RobotSettings::Default->MarketDataMaxSymbolsCount);
+    }
+    void DisposeSecurityDefinitionForts() {
+        for(int i = 0; i < RobotSettings::Default->MaxSecurityDefinitionCount; i++)
+            delete this->m_symbolsForts[i];
+        delete this->m_symbolsForts;
     }
     void DisposeSecurityDefinition() {
         for(int i = 0; i < RobotSettings::Default->MaxSecurityDefinitionCount; i++)

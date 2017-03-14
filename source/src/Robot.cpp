@@ -140,101 +140,101 @@ bool Robot::AddDefaultTestChannels() {
 	if(this->AllowFortsMarket()) {
 		FortsFeedChannel *channel = new FortsFeedChannel();
 		if(this->AllowMarketDataGroup(MarketDataGroupId::mdgidFutBook1)) {
-			FortsMarketDataGroup *group = new FortsMarketDataGroup(mdgidFutBook1, "F", 1, "Top of book for Futures");
+			FortsMarketDataGroup *group = new FortsMarketDataGroup(MarketDataGroupId::mdgidFutBook1, "F", 1, "Top of book for Futures");
 			group->Inc( new FeedConnection_FORTS_INC("FUT-BOOK-1 Inc", "Top of book for Futures", 'F', FeedConnectionProtocol::UDP_IP, "10.50.129.90", "239.192.70.1", 40001, "10.50.129.90", "239.192.175.1", 41001) );
 			group->Snap( new FeedConnection_FORTS_SNAP("FUT-BOOK-1 Snap", "Top of book for Futures", 'F', FeedConnectionProtocol::UDP_IP, "10.50.129.90", "239.192.70.2", 40002, "10.50.129.90", "239.192.175.2", 41002) );
 			channel->FutBook1(group);
 		}
 		if(this->AllowMarketDataGroup(MarketDataGroupId::mdgidFutBook5)) {
-			FortsMarketDataGroup *group = new FortsMarketDataGroup(mdgidFutBook5, "F", 5, "Top 5 Price Levels for Futures");
+			FortsMarketDataGroup *group = new FortsMarketDataGroup(MarketDataGroupId::mdgidFutBook5, "F", 5, "Top 5 Price Levels for Futures");
 			group->Inc( new FeedConnection_FORTS_INC("FUT-BOOK-5 Inc", "Top 5 Price Levels for Futures", 'F', FeedConnectionProtocol::UDP_IP, "10.50.129.90", "239.192.70.3", 40003, "10.50.129.90", "239.192.175.3", 41003) );
 			group->Snap( new FeedConnection_FORTS_SNAP("FUT-BOOK-5 Snap", "Top 5 Price Levels for Futures", 'F', FeedConnectionProtocol::UDP_IP, "10.50.129.90", "239.192.70.4", 40004, "10.50.129.90", "239.192.175.4", 41004) );
 			channel->FutBook5(group);
 		}
 		if(this->AllowMarketDataGroup(MarketDataGroupId::mdgidFutBook20)) {
-			FortsMarketDataGroup *group = new FortsMarketDataGroup(mdgidFutBook20, "F", 20, "Top 20 Price Levels for Futures");
+			FortsMarketDataGroup *group = new FortsMarketDataGroup(MarketDataGroupId::mdgidFutBook20, "F", 20, "Top 20 Price Levels for Futures");
 			group->Inc( new FeedConnection_FORTS_INC("FUT-BOOK-20 Inc", "Top 20 Price Levels for Futures", 'F', FeedConnectionProtocol::UDP_IP, "10.50.129.90", "239.192.70.5", 40005, "10.50.129.90", "239.192.175.5", 41005) );
 			group->Snap( new FeedConnection_FORTS_SNAP("FUT-BOOK-20 Snap", "Top 20 Price Levels for Futures", 'F', FeedConnectionProtocol::UDP_IP, "10.50.129.90", "239.192.70.6", 40006, "10.50.129.90", "239.192.175.6", 41006) );
 			channel->FutBook20(group);
 		}
 		if(this->AllowMarketDataGroup(MarketDataGroupId::mdgidFutBook50)) {
-			FortsMarketDataGroup *group = new FortsMarketDataGroup(mdgidFutBook50, "F", 50, "Top 50 Price Levels for Futures");
+			FortsMarketDataGroup *group = new FortsMarketDataGroup(MarketDataGroupId::mdgidFutBook50, "F", 50, "Top 50 Price Levels for Futures");
 			group->Inc( new FeedConnection_FORTS_INC("FUT-BOOK-50 Inc", "Top 50 Price Levels for Futures", 'F', FeedConnectionProtocol::UDP_IP, "10.50.129.90", "239.192.70.7", 40007, "10.50.129.90", "239.192.175.7", 41007) );
 			group->Snap( new FeedConnection_FORTS_SNAP("FUT-BOOK-50 Snap", "Top 50 Price Levels for Futures", 'F', FeedConnectionProtocol::UDP_IP, "10.50.129.90", "239.192.70.8", 40008, "10.50.129.90", "239.192.175.8", 41008) );
 			channel->FutBook50(group);
 		}
 		if(this->AllowMarketDataGroup(MarketDataGroupId::mdgidFutTrades)) {
-			FortsMarketDataGroup *group = new FortsMarketDataGroup(mdgidFutTrades, "F", 0, "Trades for Futures");
+			FortsMarketDataGroup *group = new FortsMarketDataGroup(MarketDataGroupId::mdgidFutTrades, "F", 0, "Trades for Futures");
 			group->Inc( new FeedConnection_FORTS_INC("FUT-TRADES Inc", "Trades for Futures", 'F', FeedConnectionProtocol::UDP_IP, "10.50.129.90", "239.192.70.9", 40009, "10.50.129.90", "239.192.175.9", 41009) );
 			group->Snap( new FeedConnection_FORTS_SNAP("FUT-TRADES Snap", "Trades for Futures", 'F', FeedConnectionProtocol::UDP_IP, "10.50.129.90", "239.192.70.10", 40010, "10.50.129.90", "239.192.175.10", 41010) );
 			channel->FutTrades(group);
 		}
 		if(this->AllowMarketDataGroup(MarketDataGroupId::mdgidFutInfo)) {
-			FortsMarketDataGroup *group = new FortsMarketDataGroup(mdgidFutInfo, "F", 0, "Futures defintion");
+			FortsMarketDataGroup *group = new FortsMarketDataGroup(MarketDataGroupId::mdgidFutInfo, "F", 0, "Futures defintion");
 			group->InstrInc( new FeedConnection_FORTS_INSTR_INC("FUT-INFO InstrInc", "Futures defintion", 'F', FeedConnectionProtocol::UDP_IP, "10.50.129.90", "239.192.70.12", 40012, "10.50.129.90", "239.192.175.12", 41012) );
 			group->InstrReplay( new FeedConnection_FORTS_INSTR_SNAP("FUT-INFO InstrReplay", "Futures defintion", 'F', FeedConnectionProtocol::UDP_IP, "10.50.129.90", "239.192.70.11", 40011, "10.50.129.90", "239.192.175.11", 41011) );
 			channel->FutInfo(group);
 		}
 		if(this->AllowMarketDataGroup(MarketDataGroupId::mdgidIndex)) {
-			FortsMarketDataGroup *group = new FortsMarketDataGroup(mdgidIndex, "I", 0, "Indexes");
+			FortsMarketDataGroup *group = new FortsMarketDataGroup(MarketDataGroupId::mdgidIndex, "I", 0, "Indexes");
 			group->Inc( new FeedConnection_FORTS_INC("INDEX Inc", "Indexes", 'I', FeedConnectionProtocol::UDP_IP, "10.50.129.90", "239.192.70.13", 40013, "10.50.129.90", "239.192.175.13", 41013) );
 			group->Snap( new FeedConnection_FORTS_SNAP("INDEX Snap", "Indexes", 'I', FeedConnectionProtocol::UDP_IP, "10.50.129.90", "239.192.70.14", 40014, "10.50.129.90", "239.192.175.14", 41014) );
 			channel->Index(group);
 		}
 		if(this->AllowMarketDataGroup(MarketDataGroupId::mdgidNews)) {
-			FortsMarketDataGroup *group = new FortsMarketDataGroup(mdgidNews, "N", 0, "News feed");
+			FortsMarketDataGroup *group = new FortsMarketDataGroup(MarketDataGroupId::mdgidNews, "N", 0, "News feed");
 			group->Inc( new FeedConnection_FORTS_INC("NEWS Inc", "News feed", 'N', FeedConnectionProtocol::UDP_IP, "10.50.129.90", "239.192.70.15", 40015, "10.50.129.90", "239.192.175.15", 41015) );
 			channel->News(group);
 		}
 		if(this->AllowMarketDataGroup(MarketDataGroupId::mdgidNewsSkrin)) {
-			FortsMarketDataGroup *group = new FortsMarketDataGroup(mdgidNewsSkrin, "N", 0, "SKRIN News feed");
+			FortsMarketDataGroup *group = new FortsMarketDataGroup(MarketDataGroupId::mdgidNewsSkrin, "N", 0, "SKRIN News feed");
 			group->Inc( new FeedConnection_FORTS_INC("NEWS-SKRIN Inc", "SKRIN News feed", 'N', FeedConnectionProtocol::UDP_IP, "10.50.129.90", "239.192.70.16", 40016, "10.50.129.90", "239.192.175.16", 41016) );
 			channel->NewsSkrin(group);
 		}
 		if(this->AllowMarketDataGroup(MarketDataGroupId::mdgidOptBook1)) {
-			FortsMarketDataGroup *group = new FortsMarketDataGroup(mdgidOptBook1, "O", 1, "Top of book for Options");
+			FortsMarketDataGroup *group = new FortsMarketDataGroup(MarketDataGroupId::mdgidOptBook1, "O", 1, "Top of book for Options");
 			group->Inc( new FeedConnection_FORTS_INC("OPT-BOOK-1 Inc", "Top of book for Options", 'O', FeedConnectionProtocol::UDP_IP, "10.50.129.90", "239.192.70.17", 40017, "10.50.129.90", "239.192.175.17", 41017) );
 			group->Snap( new FeedConnection_FORTS_SNAP("OPT-BOOK-1 Snap", "Top of book for Options", 'O', FeedConnectionProtocol::UDP_IP, "10.50.129.90", "239.192.70.18", 40018, "10.50.129.90", "239.192.175.18", 41018) );
 			channel->OptBook1(group);
 		}
 		if(this->AllowMarketDataGroup(MarketDataGroupId::mdgidOptBook5)) {
-			FortsMarketDataGroup *group = new FortsMarketDataGroup(mdgidOptBook5, "O", 5, "Top 5 Price Levels for Options");
+			FortsMarketDataGroup *group = new FortsMarketDataGroup(MarketDataGroupId::mdgidOptBook5, "O", 5, "Top 5 Price Levels for Options");
 			group->Inc( new FeedConnection_FORTS_INC("OPT-BOOK-5 Inc", "Top 5 Price Levels for Options", 'O', FeedConnectionProtocol::UDP_IP, "10.50.129.90", "239.192.70.19", 40019, "10.50.129.90", "239.192.175.19", 41019) );
 			group->Snap( new FeedConnection_FORTS_SNAP("OPT-BOOK-5 Snap", "Top 5 Price Levels for Options", 'O', FeedConnectionProtocol::UDP_IP, "10.50.129.90", "239.192.70.20", 40020, "10.50.129.90", "239.192.175.20", 41020) );
 			channel->OptBook5(group);
 		}
 		if(this->AllowMarketDataGroup(MarketDataGroupId::mdgidOptBook20)) {
-			FortsMarketDataGroup *group = new FortsMarketDataGroup(mdgidOptBook20, "O", 20, "Top 20 Price Levels for Options");
+			FortsMarketDataGroup *group = new FortsMarketDataGroup(MarketDataGroupId::mdgidOptBook20, "O", 20, "Top 20 Price Levels for Options");
 			group->Inc( new FeedConnection_FORTS_INC("OPT-BOOK-20 Inc", "Top 20 Price Levels for Options", 'O', FeedConnectionProtocol::UDP_IP, "10.50.129.90", "239.192.70.21", 40021, "10.50.129.90", "239.192.175.21", 41021) );
 			group->Snap( new FeedConnection_FORTS_SNAP("OPT-BOOK-20 Snap", "Top 20 Price Levels for Options", 'O', FeedConnectionProtocol::UDP_IP, "10.50.129.90", "239.192.70.22", 40022, "10.50.129.90", "239.192.175.22", 41022) );
 			channel->OptBook20(group);
 		}
 		if(this->AllowMarketDataGroup(MarketDataGroupId::mdgidOptBook50)) {
-			FortsMarketDataGroup *group = new FortsMarketDataGroup(mdgidOptBook50, "O", 50, "Top 50 Price Levels for Options");
+			FortsMarketDataGroup *group = new FortsMarketDataGroup(MarketDataGroupId::mdgidOptBook50, "O", 50, "Top 50 Price Levels for Options");
 			group->Inc( new FeedConnection_FORTS_INC("OPT-BOOK-50 Inc", "Top 50 Price Levels for Options", 'O', FeedConnectionProtocol::UDP_IP, "10.50.129.90", "239.192.70.23", 40023, "10.50.129.90", "239.192.175.23", 41023) );
 			group->Snap( new FeedConnection_FORTS_SNAP("OPT-BOOK-50 Snap", "Top 50 Price Levels for Options", 'O', FeedConnectionProtocol::UDP_IP, "10.50.129.90", "239.192.70.24", 40024, "10.50.129.90", "239.192.175.24", 41024) );
 			channel->OptBook50(group);
 		}
 		if(this->AllowMarketDataGroup(MarketDataGroupId::mdgidOptTrades)) {
-			FortsMarketDataGroup *group = new FortsMarketDataGroup(mdgidOptTrades, "O", 0, "Trades for Options");
+			FortsMarketDataGroup *group = new FortsMarketDataGroup(MarketDataGroupId::mdgidOptTrades, "O", 0, "Trades for Options");
 			group->Inc( new FeedConnection_FORTS_INC("OPT-TRADES Inc", "Trades for Options", 'O', FeedConnectionProtocol::UDP_IP, "10.50.129.90", "239.192.70.25", 40025, "10.50.129.90", "239.192.175.25", 41025) );
 			group->Snap( new FeedConnection_FORTS_SNAP("OPT-TRADES Snap", "Trades for Options", 'O', FeedConnectionProtocol::UDP_IP, "10.50.129.90", "239.192.70.26", 40026, "10.50.129.90", "239.192.175.26", 41026) );
 			channel->OptTrades(group);
 		}
 		if(this->AllowMarketDataGroup(MarketDataGroupId::mdgidOptInfo)) {
-			FortsMarketDataGroup *group = new FortsMarketDataGroup(mdgidOptInfo, "O", 0, "Options defintion");
+			FortsMarketDataGroup *group = new FortsMarketDataGroup(MarketDataGroupId::mdgidOptInfo, "O", 0, "Options defintion");
 			group->InstrInc( new FeedConnection_FORTS_INSTR_INC("OPT-INFO InstrInc", "Options defintion", 'O', FeedConnectionProtocol::UDP_IP, "10.50.129.90", "239.192.70.28", 40028, "10.50.129.90", "239.192.175.28", 41028) );
 			group->InstrReplay( new FeedConnection_FORTS_INSTR_SNAP("OPT-INFO InstrReplay", "Options defintion", 'O', FeedConnectionProtocol::UDP_IP, "10.50.129.90", "239.192.70.27", 40027, "10.50.129.90", "239.192.175.27", 41027) );
 			channel->OptInfo(group);
 		}
 		if(this->AllowMarketDataGroup(MarketDataGroupId::mdgidOtcTrades)) {
-			FortsMarketDataGroup *group = new FortsMarketDataGroup(mdgidOtcTrades, "Q", 0, "Trades for OTC");
+			FortsMarketDataGroup *group = new FortsMarketDataGroup(MarketDataGroupId::mdgidOtcTrades, "Q", 0, "Trades for OTC");
 			group->Inc( new FeedConnection_FORTS_INC("OTC-TRADES Inc", "Trades for OTC", 'Q', FeedConnectionProtocol::UDP_IP, "10.50.129.90", "239.192.70.29", 40029, "10.50.129.90", "239.192.175.29", 41029) );
 			group->Snap( new FeedConnection_FORTS_SNAP("OTC-TRADES Snap", "Trades for OTC", 'Q', FeedConnectionProtocol::UDP_IP, "10.50.129.90", "239.192.70.30", 40030, "10.50.129.90", "239.192.175.30", 41030) );
 			channel->OtcTrades(group);
 		}
 		if(this->AllowMarketDataGroup(MarketDataGroupId::mdgidOtcIssues)) {
-			FortsMarketDataGroup *group = new FortsMarketDataGroup(mdgidOtcIssues, "Q", 0, "OTC Issues feed");
+			FortsMarketDataGroup *group = new FortsMarketDataGroup(MarketDataGroupId::mdgidOtcIssues, "Q", 0, "OTC Issues feed");
 			group->InstrReplay( new FeedConnection_FORTS_INSTR_SNAP("OTC-ISSUES InstrReplay", "OTC Issues feed", 'Q', FeedConnectionProtocol::UDP_IP, "10.50.129.90", "239.192.70.31", 40031, "10.50.129.90", "239.192.175.31", 41031) );
 			channel->OtcIssues(group);
 		}

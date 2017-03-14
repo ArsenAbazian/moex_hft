@@ -38,28 +38,31 @@ public:
         this->SetType(FeedConnectionType::InstrumentDefinition);
         this->SetId(FeedConnectionId::fcidIdfForts);
         this->m_fastProtocolManager = new FastProtocolManager();
-        //this->AllocateFastObjects();
-        //InitializeSecurityDefinition();
-        //InitializePackets(this->GetPacketsCount());
-        //DebugInfoManager::Default->PrintMemoryInfo("FeedConnection_CURR_IDF");
+        this->AllocateFastObjects();
+        InitializeSecurityDefinitionForts();
+        InitializePackets(this->GetPacketsCount());
+        DebugInfoManager::Default->PrintMemoryInfo("FeedConnection_FORTS_INSTR_SNAP");
     }
-    /*
+
     void AllocateFastObjects() {
+        int sdSeqCount = 13000;
+        int sdSeqCountAdd = 500;
 #ifdef TEST
+        sdSeqCount = 60;
+        sdSeqCountAdd = 10;
         FortsObjectsAllocationInfo::Default->AllocateHeartbeatInfoPoolTo(10);
         FortsObjectsAllocationInfo::Default->AllocateTradingSessionStatusInfoPoolTo(10);
         FortsObjectsAllocationInfo::Default->AllocateSecurityDefinitionInfoPool(60, 10);
-        FortsObjectsAllocationInfo::Default->AllocateSecurityDefinitionGroupInstrAttribItemInfoPool(130, 10);
-        FortsObjectsAllocationInfo::Default->AllocateSecurityDefinitionMarketSegmentGrpItemInfoPool(130, 10);
-        FortsObjectsAllocationInfo::Default->AllocateSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfoPool(130, 10);
 #else
         FortsObjectsAllocationInfo::Default->AllocateHeartbeatInfoPoolTo(10);
         FortsObjectsAllocationInfo::Default->AllocateTradingSessionStatusInfoPoolTo(10);
         FortsObjectsAllocationInfo::Default->AllocateSecurityDefinitionInfoPool(6000, 500);
-        FortsObjectsAllocationInfo::Default->AllocateSecurityDefinitionGroupInstrAttribItemInfoPool(13000, 500);
-        FortsObjectsAllocationInfo::Default->AllocateSecurityDefinitionMarketSegmentGrpItemInfoPool(13000, 500);
-        FortsObjectsAllocationInfo::Default->AllocateSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfoPool(13000, 500);
 #endif
+        FortsObjectsAllocationInfo::Default->AllocateSecurityDefinitionMDFeedTypesItemInfoPool(sdSeqCount, sdSeqCountAdd);
+        FortsObjectsAllocationInfo::Default->AllocateSecurityDefinitionUnderlyingsItemInfoPool(sdSeqCount, sdSeqCountAdd);
+        FortsObjectsAllocationInfo::Default->AllocateSecurityDefinitionInstrumentLegsItemInfoPool(sdSeqCount, sdSeqCountAdd);
+        FortsObjectsAllocationInfo::Default->AllocateSecurityDefinitionInstrumentAttributesItemInfoPool(sdSeqCount, sdSeqCountAdd);
+        FortsObjectsAllocationInfo::Default->AllocateSecurityDefinitionEvntGrpItemInfoPool(sdSeqCount, sdSeqCountAdd);
     }
     int GetPacketsCount() { return 1000; }
     ISocketBufferProvider* CreateSocketBufferProvider() {
@@ -69,7 +72,6 @@ public:
                                         RobotSettings::Default->DefaultFeedConnectionRecvBufferSize,
                                         RobotSettings::Default->DefaultFeedConnectionRecvItemsCount);
     }
-    */
 };
 
 #endif //HFT_ROBOT_FORTSFEEDS_H
