@@ -1627,7 +1627,7 @@ namespace prebuild {
 		int CompareDecodeMessage(DecodeMessageInfo x, DecodeMessageInfo y) {
 			if(x.TemplateId == y.TemplateId)
 				return 0;
-			return x.TemplateId < y.TemplateId? 1: -1;
+			return x.TemplateId < y.TemplateId? -1: 1;
 		}
 
 		void WriteSelector(string tabs, List<DecodeMessageInfo> list, WriteConditionDelegate del) {
@@ -1647,7 +1647,7 @@ namespace prebuild {
 				WriteLine(tabs + "if(this->m_templateId == " + list[a].TemplateId + ") {");
 				del(tabs + "\t", list[a]);
 				WriteLine(tabs + "}");
-				WriteLine(tabs + "else {");
+				WriteLine(tabs + "else { // " + list[b].TemplateId);
 				del(tabs + "\t", list[b]);
 				WriteLine(tabs + "}");
 			} else {

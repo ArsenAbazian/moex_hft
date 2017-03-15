@@ -36,6 +36,27 @@ public:
     FeedConnection_FORTS_INSTR_INC(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
             FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
         this->m_marketType = FeedMarketType::fmtForts;
+        this->m_type = FeedConnectionType::InstrumentStatusForts;
+        this->SetId(FeedConnectionId::fcidIdfIncForts);
+        this->m_fastProtocolManager = new FastProtocolManager();
+        this->AllocateFastObjects();
+        InitializePackets(this->GetPacketsCount());
+        InitializePackets(this->GetPacketsCount());
+        DebugInfoManager::Default->PrintMemoryInfo("FeedConnection_FORTS_INSTR_INC");
+    }
+    int GetPacketsCount() { return 1000; }
+    void AllocateFastObjects() {
+        FortsObjectsAllocationInfo::Default->AllocateHeartbeatInfoPoolTo(10);
+        FortsObjectsAllocationInfo::Default->AllocateTradingSessionStatusInfoPoolTo(10);
+        FortsObjectsAllocationInfo::Default->AllocateSecurityStatusInfoPool(50, 10);
+        FortsObjectsAllocationInfo::Default->AllocateSecurityDefinitionUpdateReportInfoPool(50, 10);
+    }
+    ISocketBufferProvider* CreateSocketBufferProvider() {
+        return new SocketBufferProvider(DefaultSocketBufferManager::Default,
+                                        RobotSettings::Default->DefaultFeedConnectionSendBufferSize,
+                                        RobotSettings::Default->DefaultFeedConnectionSendItemsCount,
+                                        RobotSettings::Default->DefaultFeedConnectionRecvBufferSize,
+                                        RobotSettings::Default->DefaultFeedConnectionRecvItemsCount);
     }
 };
 
@@ -48,7 +69,6 @@ public:
         this->SetId(FeedConnectionId::fcidIdfForts);
         this->m_fastProtocolManager = new FastProtocolManager();
         this->AllocateFastObjects();
-        this->IdfAllowUpdateData(true); // TODO remove debug
         InitializeSecurityDefinitionForts();
         InitializePackets(this->GetPacketsCount());
         DebugInfoManager::Default->PrintMemoryInfo("FeedConnection_FORTS_INSTR_SNAP");

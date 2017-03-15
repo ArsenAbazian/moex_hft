@@ -590,57 +590,57 @@ private:
 	}
 	inline void ResetForts() {
 		if(this->m_templateId <= 9) {
-			if(this->m_templateId <= 14) {
-				if(this->m_templateId <= 1000) {
-					if(this->m_templateId == 1001) {
-						this->ReleaseFortsLogoutInfo();
+			if(this->m_templateId <= 6) {
+				if(this->m_templateId <= 4) {
+					if(this->m_templateId == 3) {
+						this->ReleaseFortsSecurityDefinitionInfo();
 					}
-					else {
-						this->ReleaseFortsLogonInfo();
+					else { // 4
+						this->ReleaseFortsSecurityDefinitionUpdateReportInfo();
 					}
 				}
 				else {
-					if(this->m_templateId <= 15) {
-						if(this->m_templateId == 1000) {
-							this->ReleaseFortsLogonInfo();
+					if(this->m_templateId <= 5) {
+						if(this->m_templateId == 4) {
+							this->ReleaseFortsSecurityDefinitionUpdateReportInfo();
 						}
-						else {
-							this->ReleaseFortsOrdersBookInfo();
+						else { // 5
+							this->ReleaseFortsSecurityStatusInfo();
 						}
 					}
 					else {
-						if(this->m_templateId == 15) {
-							this->ReleaseFortsOrdersBookInfo();
+						if(this->m_templateId == 5) {
+							this->ReleaseFortsSecurityStatusInfo();
 						}
-						else {
-							this->ReleaseFortsOrdersLogInfo();
+						else { // 6
+							this->ReleaseFortsHeartbeatInfo();
 						}
 					}
 				}
 			}
 			else {
-				if(this->m_templateId <= 13) {
-					if(this->m_templateId == 14) {
-						this->ReleaseFortsOrdersLogInfo();
+				if(this->m_templateId <= 7) {
+					if(this->m_templateId == 6) {
+						this->ReleaseFortsHeartbeatInfo();
 					}
-					else {
-						this->ReleaseFortsDefaultSnapshotMessageInfo();
+					else { // 7
+						this->ReleaseFortsSequenceResetInfo();
 					}
 				}
 				else {
-					if(this->m_templateId <= 12) {
-						if(this->m_templateId == 13) {
-							this->ReleaseFortsDefaultSnapshotMessageInfo();
+					if(this->m_templateId <= 8) {
+						if(this->m_templateId == 7) {
+							this->ReleaseFortsSequenceResetInfo();
 						}
-						else {
-							this->ReleaseFortsDefaultIncrementalRefreshMessageInfo();
+						else { // 8
+							this->ReleaseFortsTradingSessionStatusInfo();
 						}
 					}
 					else {
-						if(this->m_templateId == 12) {
-							this->ReleaseFortsDefaultIncrementalRefreshMessageInfo();
+						if(this->m_templateId == 8) {
+							this->ReleaseFortsTradingSessionStatusInfo();
 						}
-						else {
+						else { // 9
 							this->ReleaseFortsNewsInfo();
 						}
 					}
@@ -648,58 +648,58 @@ private:
 			}
 		}
 		else {
-			if(this->m_templateId <= 6) {
-				if(this->m_templateId <= 8) {
+			if(this->m_templateId <= 14) {
+				if(this->m_templateId <= 12) {
 					if(this->m_templateId == 9) {
 						this->ReleaseFortsNewsInfo();
 					}
-					else {
-						this->ReleaseFortsTradingSessionStatusInfo();
+					else { // 12
+						this->ReleaseFortsDefaultIncrementalRefreshMessageInfo();
 					}
 				}
 				else {
-					if(this->m_templateId <= 7) {
-						if(this->m_templateId == 8) {
-							this->ReleaseFortsTradingSessionStatusInfo();
+					if(this->m_templateId <= 13) {
+						if(this->m_templateId == 12) {
+							this->ReleaseFortsDefaultIncrementalRefreshMessageInfo();
 						}
-						else {
-							this->ReleaseFortsSequenceResetInfo();
+						else { // 13
+							this->ReleaseFortsDefaultSnapshotMessageInfo();
 						}
 					}
 					else {
-						if(this->m_templateId == 7) {
-							this->ReleaseFortsSequenceResetInfo();
+						if(this->m_templateId == 13) {
+							this->ReleaseFortsDefaultSnapshotMessageInfo();
 						}
-						else {
-							this->ReleaseFortsHeartbeatInfo();
+						else { // 14
+							this->ReleaseFortsOrdersLogInfo();
 						}
 					}
 				}
 			}
 			else {
-				if(this->m_templateId <= 5) {
-					if(this->m_templateId == 6) {
-						this->ReleaseFortsHeartbeatInfo();
+				if(this->m_templateId <= 15) {
+					if(this->m_templateId == 14) {
+						this->ReleaseFortsOrdersLogInfo();
 					}
-					else {
-						this->ReleaseFortsSecurityStatusInfo();
+					else { // 15
+						this->ReleaseFortsOrdersBookInfo();
 					}
 				}
 				else {
-					if(this->m_templateId <= 4) {
-						if(this->m_templateId == 5) {
-							this->ReleaseFortsSecurityStatusInfo();
+					if(this->m_templateId <= 1000) {
+						if(this->m_templateId == 15) {
+							this->ReleaseFortsOrdersBookInfo();
 						}
-						else {
-							this->ReleaseFortsSecurityDefinitionUpdateReportInfo();
+						else { // 1000
+							this->ReleaseFortsLogonInfo();
 						}
 					}
 					else {
-						if(this->m_templateId == 4) {
-							this->ReleaseFortsSecurityDefinitionUpdateReportInfo();
+						if(this->m_templateId == 1000) {
+							this->ReleaseFortsLogonInfo();
 						}
-						else {
-							this->ReleaseFortsSecurityDefinitionInfo();
+						else { // 1001
+							this->ReleaseFortsLogoutInfo();
 						}
 					}
 				}
@@ -1002,166 +1002,166 @@ private:
 		((AstsHeartbeatInfo*)this->LastDecodeInfo())->ReleaseUnused();
 	}
 	inline void ResetAsts() {
-		if(this->m_templateId <= 2511) {
-			if(this->m_templateId <= 3600) {
-				if(this->m_templateId <= 3610) {
-					if(this->m_templateId <= 3611) {
-						if(this->m_templateId == 3613) {
-							this->ReleaseAstsIncrementalMSRCURRInfo();
+		if(this->m_templateId <= 2510) {
+			if(this->m_templateId <= 2106) {
+				if(this->m_templateId <= 2103) {
+					if(this->m_templateId <= 2102) {
+						if(this->m_templateId == 2101) {
+							this->ReleaseAstsLogonInfo();
 						}
-						else {
-							this->ReleaseAstsIncrementalTLRCURRInfo();
+						else { // 2102
+							this->ReleaseAstsLogoutInfo();
 						}
 					}
 					else {
-						if(this->m_templateId == 3611) {
-							this->ReleaseAstsIncrementalTLRCURRInfo();
+						if(this->m_templateId == 2102) {
+							this->ReleaseAstsLogoutInfo();
 						}
-						else {
-							this->ReleaseAstsIncrementalOLRCURRInfo();
+						else { // 2103
+							this->ReleaseAstsGenericInfo();
 						}
 					}
 				}
 				else {
-					if(this->m_templateId <= 3601) {
-						if(this->m_templateId == 3610) {
-							this->ReleaseAstsIncrementalOLRCURRInfo();
+					if(this->m_templateId <= 2104) {
+						if(this->m_templateId == 2103) {
+							this->ReleaseAstsGenericInfo();
 						}
-						else {
-							this->ReleaseAstsTLSCURRInfo();
+						else { // 2104
+							this->ReleaseAstsIncrementalGenericInfo();
 						}
 					}
 					else {
-						if(this->m_templateId == 3601) {
-							this->ReleaseAstsTLSCURRInfo();
+						if(this->m_templateId == 2104) {
+							this->ReleaseAstsIncrementalGenericInfo();
 						}
-						else {
-							this->ReleaseAstsOLSCURRInfo();
+						else { // 2106
+							this->ReleaseAstsSecurityStatusInfo();
 						}
 					}
 				}
 			}
 			else {
-				if(this->m_templateId <= 2521) {
-					if(this->m_templateId <= 2523) {
-						if(this->m_templateId == 3600) {
-							this->ReleaseAstsOLSCURRInfo();
+				if(this->m_templateId <= 2108) {
+					if(this->m_templateId <= 2107) {
+						if(this->m_templateId == 2106) {
+							this->ReleaseAstsSecurityStatusInfo();
 						}
-						else {
-							this->ReleaseAstsIncrementalMSRFONDInfo();
+						else { // 2107
+							this->ReleaseAstsTradingSessionStatusInfo();
 						}
 					}
 					else {
-						if(this->m_templateId == 2523) {
-							this->ReleaseAstsIncrementalMSRFONDInfo();
+						if(this->m_templateId == 2107) {
+							this->ReleaseAstsTradingSessionStatusInfo();
 						}
-						else {
-							this->ReleaseAstsIncrementalTLRFONDInfo();
+						else { // 2108
+							this->ReleaseAstsHeartbeatInfo();
 						}
 					}
 				}
 				else {
-					if(this->m_templateId <= 2520) {
-						if(this->m_templateId == 2521) {
-							this->ReleaseAstsIncrementalTLRFONDInfo();
+					if(this->m_templateId <= 2115) {
+						if(this->m_templateId == 2108) {
+							this->ReleaseAstsHeartbeatInfo();
 						}
-						else {
-							this->ReleaseAstsIncrementalOLRFONDInfo();
+						else { // 2115
+							this->ReleaseAstsSecurityDefinitionInfo();
 						}
 					}
 					else {
-						if(this->m_templateId == 2520) {
-							this->ReleaseAstsIncrementalOLRFONDInfo();
+						if(this->m_templateId == 2115) {
+							this->ReleaseAstsSecurityDefinitionInfo();
 						}
-						else {
-							this->ReleaseAstsTLSFONDInfo();
+						else { // 2510
+							this->ReleaseAstsOLSFONDInfo();
 						}
 					}
 				}
 			}
 		}
 		else {
-			if(this->m_templateId <= 2107) {
-				if(this->m_templateId <= 2115) {
-					if(this->m_templateId <= 2510) {
-						if(this->m_templateId == 2511) {
-							this->ReleaseAstsTLSFONDInfo();
-						}
-						else {
-							this->ReleaseAstsOLSFONDInfo();
-						}
-					}
-					else {
+			if(this->m_templateId <= 2523) {
+				if(this->m_templateId <= 2520) {
+					if(this->m_templateId <= 2511) {
 						if(this->m_templateId == 2510) {
 							this->ReleaseAstsOLSFONDInfo();
 						}
-						else {
-							this->ReleaseAstsSecurityDefinitionInfo();
+						else { // 2511
+							this->ReleaseAstsTLSFONDInfo();
+						}
+					}
+					else {
+						if(this->m_templateId == 2511) {
+							this->ReleaseAstsTLSFONDInfo();
+						}
+						else { // 2520
+							this->ReleaseAstsIncrementalOLRFONDInfo();
 						}
 					}
 				}
 				else {
-					if(this->m_templateId <= 2108) {
-						if(this->m_templateId == 2115) {
-							this->ReleaseAstsSecurityDefinitionInfo();
+					if(this->m_templateId <= 2521) {
+						if(this->m_templateId == 2520) {
+							this->ReleaseAstsIncrementalOLRFONDInfo();
 						}
-						else {
-							this->ReleaseAstsHeartbeatInfo();
+						else { // 2521
+							this->ReleaseAstsIncrementalTLRFONDInfo();
 						}
 					}
 					else {
-						if(this->m_templateId == 2108) {
-							this->ReleaseAstsHeartbeatInfo();
+						if(this->m_templateId == 2521) {
+							this->ReleaseAstsIncrementalTLRFONDInfo();
 						}
-						else {
-							this->ReleaseAstsTradingSessionStatusInfo();
+						else { // 2523
+							this->ReleaseAstsIncrementalMSRFONDInfo();
 						}
 					}
 				}
 			}
 			else {
-				if(this->m_templateId <= 2104) {
-					if(this->m_templateId <= 2106) {
-						if(this->m_templateId == 2107) {
-							this->ReleaseAstsTradingSessionStatusInfo();
+				if(this->m_templateId <= 3601) {
+					if(this->m_templateId <= 3600) {
+						if(this->m_templateId == 2523) {
+							this->ReleaseAstsIncrementalMSRFONDInfo();
 						}
-						else {
-							this->ReleaseAstsSecurityStatusInfo();
+						else { // 3600
+							this->ReleaseAstsOLSCURRInfo();
 						}
 					}
 					else {
-						if(this->m_templateId == 2106) {
-							this->ReleaseAstsSecurityStatusInfo();
+						if(this->m_templateId == 3600) {
+							this->ReleaseAstsOLSCURRInfo();
 						}
-						else {
-							this->ReleaseAstsIncrementalGenericInfo();
+						else { // 3601
+							this->ReleaseAstsTLSCURRInfo();
 						}
 					}
 				}
 				else {
-					if(this->m_templateId <= 2103) {
-						if(this->m_templateId == 2104) {
-							this->ReleaseAstsIncrementalGenericInfo();
+					if(this->m_templateId <= 3610) {
+						if(this->m_templateId == 3601) {
+							this->ReleaseAstsTLSCURRInfo();
 						}
-						else {
-							this->ReleaseAstsGenericInfo();
+						else { // 3610
+							this->ReleaseAstsIncrementalOLRCURRInfo();
 						}
 					}
 					else {
-						if(this->m_templateId <= 2102) {
-							if(this->m_templateId == 2103) {
-								this->ReleaseAstsGenericInfo();
+						if(this->m_templateId <= 3611) {
+							if(this->m_templateId == 3610) {
+								this->ReleaseAstsIncrementalOLRCURRInfo();
 							}
-							else {
-								this->ReleaseAstsLogoutInfo();
+							else { // 3611
+								this->ReleaseAstsIncrementalTLRCURRInfo();
 							}
 						}
 						else {
-							if(this->m_templateId == 2102) {
-								this->ReleaseAstsLogoutInfo();
+							if(this->m_templateId == 3611) {
+								this->ReleaseAstsIncrementalTLRCURRInfo();
 							}
-							else {
-								this->ReleaseAstsLogonInfo();
+							else { // 3613
+								this->ReleaseAstsIncrementalMSRCURRInfo();
 							}
 						}
 					}
@@ -5709,94 +5709,94 @@ public:
 	}
 	inline void* DecodeAsts() {
 		this->DecodeAstsHeader();
-		if(this->m_templateId <= 2511) {
-			if(this->m_templateId <= 3600) {
-				if(this->m_templateId <= 3610) {
-					if(this->m_templateId <= 3611) {
-						if(this->m_templateId == 3613) {
-							this->m_lastDecodedInfo = this->DecodeAstsIncrementalMSRCURR();
+		if(this->m_templateId <= 2510) {
+			if(this->m_templateId <= 2106) {
+				if(this->m_templateId <= 2103) {
+					if(this->m_templateId <= 2102) {
+						if(this->m_templateId == 2101) {
+							this->m_lastDecodedInfo = this->DecodeAstsLogon();
 							return this->m_lastDecodedInfo;
 						}
-						else {
-							this->m_lastDecodedInfo = this->DecodeAstsIncrementalTLRCURR();
+						else { // 2102
+							this->m_lastDecodedInfo = this->DecodeAstsLogout();
 							return this->m_lastDecodedInfo;
 						}
 					}
 					else {
-						if(this->m_templateId == 3611) {
-							this->m_lastDecodedInfo = this->DecodeAstsIncrementalTLRCURR();
+						if(this->m_templateId == 2102) {
+							this->m_lastDecodedInfo = this->DecodeAstsLogout();
 							return this->m_lastDecodedInfo;
 						}
-						else {
-							this->m_lastDecodedInfo = this->DecodeAstsIncrementalOLRCURR();
+						else { // 2103
+							this->m_lastDecodedInfo = this->DecodeAstsGeneric();
 							return this->m_lastDecodedInfo;
 						}
 					}
 				}
 				else {
-					if(this->m_templateId <= 3601) {
-						if(this->m_templateId == 3610) {
-							this->m_lastDecodedInfo = this->DecodeAstsIncrementalOLRCURR();
+					if(this->m_templateId <= 2104) {
+						if(this->m_templateId == 2103) {
+							this->m_lastDecodedInfo = this->DecodeAstsGeneric();
 							return this->m_lastDecodedInfo;
 						}
-						else {
-							this->m_lastDecodedInfo = this->DecodeAstsTLSCURR();
+						else { // 2104
+							this->m_lastDecodedInfo = this->DecodeAstsIncrementalGeneric();
 							return this->m_lastDecodedInfo;
 						}
 					}
 					else {
-						if(this->m_templateId == 3601) {
-							this->m_lastDecodedInfo = this->DecodeAstsTLSCURR();
+						if(this->m_templateId == 2104) {
+							this->m_lastDecodedInfo = this->DecodeAstsIncrementalGeneric();
 							return this->m_lastDecodedInfo;
 						}
-						else {
-							this->m_lastDecodedInfo = this->DecodeAstsOLSCURR();
+						else { // 2106
+							this->m_lastDecodedInfo = this->DecodeAstsSecurityStatus();
 							return this->m_lastDecodedInfo;
 						}
 					}
 				}
 			}
 			else {
-				if(this->m_templateId <= 2521) {
-					if(this->m_templateId <= 2523) {
-						if(this->m_templateId == 3600) {
-							this->m_lastDecodedInfo = this->DecodeAstsOLSCURR();
+				if(this->m_templateId <= 2108) {
+					if(this->m_templateId <= 2107) {
+						if(this->m_templateId == 2106) {
+							this->m_lastDecodedInfo = this->DecodeAstsSecurityStatus();
 							return this->m_lastDecodedInfo;
 						}
-						else {
-							this->m_lastDecodedInfo = this->DecodeAstsIncrementalMSRFOND();
+						else { // 2107
+							this->m_lastDecodedInfo = this->DecodeAstsTradingSessionStatus();
 							return this->m_lastDecodedInfo;
 						}
 					}
 					else {
-						if(this->m_templateId == 2523) {
-							this->m_lastDecodedInfo = this->DecodeAstsIncrementalMSRFOND();
+						if(this->m_templateId == 2107) {
+							this->m_lastDecodedInfo = this->DecodeAstsTradingSessionStatus();
 							return this->m_lastDecodedInfo;
 						}
-						else {
-							this->m_lastDecodedInfo = this->DecodeAstsIncrementalTLRFOND();
+						else { // 2108
+							this->m_lastDecodedInfo = this->DecodeAstsHeartbeat();
 							return this->m_lastDecodedInfo;
 						}
 					}
 				}
 				else {
-					if(this->m_templateId <= 2520) {
-						if(this->m_templateId == 2521) {
-							this->m_lastDecodedInfo = this->DecodeAstsIncrementalTLRFOND();
+					if(this->m_templateId <= 2115) {
+						if(this->m_templateId == 2108) {
+							this->m_lastDecodedInfo = this->DecodeAstsHeartbeat();
 							return this->m_lastDecodedInfo;
 						}
-						else {
-							this->m_lastDecodedInfo = this->DecodeAstsIncrementalOLRFOND();
+						else { // 2115
+							this->m_lastDecodedInfo = this->DecodeAstsSecurityDefinition();
 							return this->m_lastDecodedInfo;
 						}
 					}
 					else {
-						if(this->m_templateId == 2520) {
-							this->m_lastDecodedInfo = this->DecodeAstsIncrementalOLRFOND();
+						if(this->m_templateId == 2115) {
+							this->m_lastDecodedInfo = this->DecodeAstsSecurityDefinition();
 							return this->m_lastDecodedInfo;
 						}
-						else {
-							this->m_lastDecodedInfo = this->DecodeAstsTLSFOND();
+						else { // 2510
+							this->m_lastDecodedInfo = this->DecodeAstsOLSFOND();
 							return this->m_lastDecodedInfo;
 						}
 					}
@@ -5804,104 +5804,104 @@ public:
 			}
 		}
 		else {
-			if(this->m_templateId <= 2107) {
-				if(this->m_templateId <= 2115) {
-					if(this->m_templateId <= 2510) {
-						if(this->m_templateId == 2511) {
-							this->m_lastDecodedInfo = this->DecodeAstsTLSFOND();
-							return this->m_lastDecodedInfo;
-						}
-						else {
-							this->m_lastDecodedInfo = this->DecodeAstsOLSFOND();
-							return this->m_lastDecodedInfo;
-						}
-					}
-					else {
+			if(this->m_templateId <= 2523) {
+				if(this->m_templateId <= 2520) {
+					if(this->m_templateId <= 2511) {
 						if(this->m_templateId == 2510) {
 							this->m_lastDecodedInfo = this->DecodeAstsOLSFOND();
 							return this->m_lastDecodedInfo;
 						}
-						else {
-							this->m_lastDecodedInfo = this->DecodeAstsSecurityDefinition();
+						else { // 2511
+							this->m_lastDecodedInfo = this->DecodeAstsTLSFOND();
+							return this->m_lastDecodedInfo;
+						}
+					}
+					else {
+						if(this->m_templateId == 2511) {
+							this->m_lastDecodedInfo = this->DecodeAstsTLSFOND();
+							return this->m_lastDecodedInfo;
+						}
+						else { // 2520
+							this->m_lastDecodedInfo = this->DecodeAstsIncrementalOLRFOND();
 							return this->m_lastDecodedInfo;
 						}
 					}
 				}
 				else {
-					if(this->m_templateId <= 2108) {
-						if(this->m_templateId == 2115) {
-							this->m_lastDecodedInfo = this->DecodeAstsSecurityDefinition();
+					if(this->m_templateId <= 2521) {
+						if(this->m_templateId == 2520) {
+							this->m_lastDecodedInfo = this->DecodeAstsIncrementalOLRFOND();
 							return this->m_lastDecodedInfo;
 						}
-						else {
-							this->m_lastDecodedInfo = this->DecodeAstsHeartbeat();
+						else { // 2521
+							this->m_lastDecodedInfo = this->DecodeAstsIncrementalTLRFOND();
 							return this->m_lastDecodedInfo;
 						}
 					}
 					else {
-						if(this->m_templateId == 2108) {
-							this->m_lastDecodedInfo = this->DecodeAstsHeartbeat();
+						if(this->m_templateId == 2521) {
+							this->m_lastDecodedInfo = this->DecodeAstsIncrementalTLRFOND();
 							return this->m_lastDecodedInfo;
 						}
-						else {
-							this->m_lastDecodedInfo = this->DecodeAstsTradingSessionStatus();
+						else { // 2523
+							this->m_lastDecodedInfo = this->DecodeAstsIncrementalMSRFOND();
 							return this->m_lastDecodedInfo;
 						}
 					}
 				}
 			}
 			else {
-				if(this->m_templateId <= 2104) {
-					if(this->m_templateId <= 2106) {
-						if(this->m_templateId == 2107) {
-							this->m_lastDecodedInfo = this->DecodeAstsTradingSessionStatus();
+				if(this->m_templateId <= 3601) {
+					if(this->m_templateId <= 3600) {
+						if(this->m_templateId == 2523) {
+							this->m_lastDecodedInfo = this->DecodeAstsIncrementalMSRFOND();
 							return this->m_lastDecodedInfo;
 						}
-						else {
-							this->m_lastDecodedInfo = this->DecodeAstsSecurityStatus();
+						else { // 3600
+							this->m_lastDecodedInfo = this->DecodeAstsOLSCURR();
 							return this->m_lastDecodedInfo;
 						}
 					}
 					else {
-						if(this->m_templateId == 2106) {
-							this->m_lastDecodedInfo = this->DecodeAstsSecurityStatus();
+						if(this->m_templateId == 3600) {
+							this->m_lastDecodedInfo = this->DecodeAstsOLSCURR();
 							return this->m_lastDecodedInfo;
 						}
-						else {
-							this->m_lastDecodedInfo = this->DecodeAstsIncrementalGeneric();
+						else { // 3601
+							this->m_lastDecodedInfo = this->DecodeAstsTLSCURR();
 							return this->m_lastDecodedInfo;
 						}
 					}
 				}
 				else {
-					if(this->m_templateId <= 2103) {
-						if(this->m_templateId == 2104) {
-							this->m_lastDecodedInfo = this->DecodeAstsIncrementalGeneric();
+					if(this->m_templateId <= 3610) {
+						if(this->m_templateId == 3601) {
+							this->m_lastDecodedInfo = this->DecodeAstsTLSCURR();
 							return this->m_lastDecodedInfo;
 						}
-						else {
-							this->m_lastDecodedInfo = this->DecodeAstsGeneric();
+						else { // 3610
+							this->m_lastDecodedInfo = this->DecodeAstsIncrementalOLRCURR();
 							return this->m_lastDecodedInfo;
 						}
 					}
 					else {
-						if(this->m_templateId <= 2102) {
-							if(this->m_templateId == 2103) {
-								this->m_lastDecodedInfo = this->DecodeAstsGeneric();
+						if(this->m_templateId <= 3611) {
+							if(this->m_templateId == 3610) {
+								this->m_lastDecodedInfo = this->DecodeAstsIncrementalOLRCURR();
 								return this->m_lastDecodedInfo;
 							}
-							else {
-								this->m_lastDecodedInfo = this->DecodeAstsLogout();
+							else { // 3611
+								this->m_lastDecodedInfo = this->DecodeAstsIncrementalTLRCURR();
 								return this->m_lastDecodedInfo;
 							}
 						}
 						else {
-							if(this->m_templateId == 2102) {
-								this->m_lastDecodedInfo = this->DecodeAstsLogout();
+							if(this->m_templateId == 3611) {
+								this->m_lastDecodedInfo = this->DecodeAstsIncrementalTLRCURR();
 								return this->m_lastDecodedInfo;
 							}
-							else {
-								this->m_lastDecodedInfo = this->DecodeAstsLogon();
+							else { // 3613
+								this->m_lastDecodedInfo = this->DecodeAstsIncrementalMSRCURR();
 								return this->m_lastDecodedInfo;
 							}
 						}
@@ -6033,29 +6033,11 @@ public:
 	inline AstsSnapshotInfo* GetAstsSnapshotInfo() {
 		this->DecodeAstsHeader();
 		if(this->m_templateId <= 2511) {
-			if(this->m_templateId <= 3600) {
-				if(this->m_templateId == 3601) {
-					return this->GetAstsSnapshotInfoTLSCURR();
-				}
-				else {
-					return this->GetAstsSnapshotInfoOLSCURR();
-				}
-			}
-			else {
-				if(this->m_templateId == 3600) {
-					return this->GetAstsSnapshotInfoOLSCURR();
-				}
-				else {
-					return this->GetAstsSnapshotInfoTLSFOND();
-				}
-			}
-		}
-		else {
 			if(this->m_templateId <= 2510) {
-				if(this->m_templateId == 2511) {
-					return this->GetAstsSnapshotInfoTLSFOND();
+				if(this->m_templateId == 2103) {
+					return this->GetAstsSnapshotInfoGeneric();
 				}
-				else {
+				else { // 2510
 					return this->GetAstsSnapshotInfoOLSFOND();
 				}
 			}
@@ -6063,8 +6045,26 @@ public:
 				if(this->m_templateId == 2510) {
 					return this->GetAstsSnapshotInfoOLSFOND();
 				}
-				else {
-					return this->GetAstsSnapshotInfoGeneric();
+				else { // 2511
+					return this->GetAstsSnapshotInfoTLSFOND();
+				}
+			}
+		}
+		else {
+			if(this->m_templateId <= 3600) {
+				if(this->m_templateId == 2511) {
+					return this->GetAstsSnapshotInfoTLSFOND();
+				}
+				else { // 3600
+					return this->GetAstsSnapshotInfoOLSCURR();
+				}
+			}
+			else {
+				if(this->m_templateId == 3600) {
+					return this->GetAstsSnapshotInfoOLSCURR();
+				}
+				else { // 3601
+					return this->GetAstsSnapshotInfoTLSCURR();
 				}
 			}
 		}
@@ -6869,68 +6869,68 @@ public:
 	inline void* DecodeForts() {
 		this->DecodeFortsHeader();
 		if(this->m_templateId <= 9) {
-			if(this->m_templateId <= 14) {
-				if(this->m_templateId <= 1000) {
-					if(this->m_templateId == 1001) {
-						this->m_lastDecodedInfo = this->DecodeFortsLogout();
+			if(this->m_templateId <= 6) {
+				if(this->m_templateId <= 4) {
+					if(this->m_templateId == 3) {
+						this->m_lastDecodedInfo = this->DecodeFortsSecurityDefinition();
 						return this->m_lastDecodedInfo;
 					}
-					else {
-						this->m_lastDecodedInfo = this->DecodeFortsLogon();
+					else { // 4
+						this->m_lastDecodedInfo = this->DecodeFortsSecurityDefinitionUpdateReport();
 						return this->m_lastDecodedInfo;
 					}
 				}
 				else {
-					if(this->m_templateId <= 15) {
-						if(this->m_templateId == 1000) {
-							this->m_lastDecodedInfo = this->DecodeFortsLogon();
+					if(this->m_templateId <= 5) {
+						if(this->m_templateId == 4) {
+							this->m_lastDecodedInfo = this->DecodeFortsSecurityDefinitionUpdateReport();
 							return this->m_lastDecodedInfo;
 						}
-						else {
-							this->m_lastDecodedInfo = this->DecodeFortsOrdersBook();
+						else { // 5
+							this->m_lastDecodedInfo = this->DecodeFortsSecurityStatus();
 							return this->m_lastDecodedInfo;
 						}
 					}
 					else {
-						if(this->m_templateId == 15) {
-							this->m_lastDecodedInfo = this->DecodeFortsOrdersBook();
+						if(this->m_templateId == 5) {
+							this->m_lastDecodedInfo = this->DecodeFortsSecurityStatus();
 							return this->m_lastDecodedInfo;
 						}
-						else {
-							this->m_lastDecodedInfo = this->DecodeFortsOrdersLog();
+						else { // 6
+							this->m_lastDecodedInfo = this->DecodeFortsHeartbeat();
 							return this->m_lastDecodedInfo;
 						}
 					}
 				}
 			}
 			else {
-				if(this->m_templateId <= 13) {
-					if(this->m_templateId == 14) {
-						this->m_lastDecodedInfo = this->DecodeFortsOrdersLog();
+				if(this->m_templateId <= 7) {
+					if(this->m_templateId == 6) {
+						this->m_lastDecodedInfo = this->DecodeFortsHeartbeat();
 						return this->m_lastDecodedInfo;
 					}
-					else {
-						this->m_lastDecodedInfo = this->DecodeFortsDefaultSnapshotMessage();
+					else { // 7
+						this->m_lastDecodedInfo = this->DecodeFortsSequenceReset();
 						return this->m_lastDecodedInfo;
 					}
 				}
 				else {
-					if(this->m_templateId <= 12) {
-						if(this->m_templateId == 13) {
-							this->m_lastDecodedInfo = this->DecodeFortsDefaultSnapshotMessage();
+					if(this->m_templateId <= 8) {
+						if(this->m_templateId == 7) {
+							this->m_lastDecodedInfo = this->DecodeFortsSequenceReset();
 							return this->m_lastDecodedInfo;
 						}
-						else {
-							this->m_lastDecodedInfo = this->DecodeFortsDefaultIncrementalRefreshMessage();
+						else { // 8
+							this->m_lastDecodedInfo = this->DecodeFortsTradingSessionStatus();
 							return this->m_lastDecodedInfo;
 						}
 					}
 					else {
-						if(this->m_templateId == 12) {
-							this->m_lastDecodedInfo = this->DecodeFortsDefaultIncrementalRefreshMessage();
+						if(this->m_templateId == 8) {
+							this->m_lastDecodedInfo = this->DecodeFortsTradingSessionStatus();
 							return this->m_lastDecodedInfo;
 						}
-						else {
+						else { // 9
 							this->m_lastDecodedInfo = this->DecodeFortsNews();
 							return this->m_lastDecodedInfo;
 						}
@@ -6939,69 +6939,69 @@ public:
 			}
 		}
 		else {
-			if(this->m_templateId <= 6) {
-				if(this->m_templateId <= 8) {
+			if(this->m_templateId <= 14) {
+				if(this->m_templateId <= 12) {
 					if(this->m_templateId == 9) {
 						this->m_lastDecodedInfo = this->DecodeFortsNews();
 						return this->m_lastDecodedInfo;
 					}
-					else {
-						this->m_lastDecodedInfo = this->DecodeFortsTradingSessionStatus();
+					else { // 12
+						this->m_lastDecodedInfo = this->DecodeFortsDefaultIncrementalRefreshMessage();
 						return this->m_lastDecodedInfo;
 					}
 				}
 				else {
-					if(this->m_templateId <= 7) {
-						if(this->m_templateId == 8) {
-							this->m_lastDecodedInfo = this->DecodeFortsTradingSessionStatus();
+					if(this->m_templateId <= 13) {
+						if(this->m_templateId == 12) {
+							this->m_lastDecodedInfo = this->DecodeFortsDefaultIncrementalRefreshMessage();
 							return this->m_lastDecodedInfo;
 						}
-						else {
-							this->m_lastDecodedInfo = this->DecodeFortsSequenceReset();
+						else { // 13
+							this->m_lastDecodedInfo = this->DecodeFortsDefaultSnapshotMessage();
 							return this->m_lastDecodedInfo;
 						}
 					}
 					else {
-						if(this->m_templateId == 7) {
-							this->m_lastDecodedInfo = this->DecodeFortsSequenceReset();
+						if(this->m_templateId == 13) {
+							this->m_lastDecodedInfo = this->DecodeFortsDefaultSnapshotMessage();
 							return this->m_lastDecodedInfo;
 						}
-						else {
-							this->m_lastDecodedInfo = this->DecodeFortsHeartbeat();
+						else { // 14
+							this->m_lastDecodedInfo = this->DecodeFortsOrdersLog();
 							return this->m_lastDecodedInfo;
 						}
 					}
 				}
 			}
 			else {
-				if(this->m_templateId <= 5) {
-					if(this->m_templateId == 6) {
-						this->m_lastDecodedInfo = this->DecodeFortsHeartbeat();
+				if(this->m_templateId <= 15) {
+					if(this->m_templateId == 14) {
+						this->m_lastDecodedInfo = this->DecodeFortsOrdersLog();
 						return this->m_lastDecodedInfo;
 					}
-					else {
-						this->m_lastDecodedInfo = this->DecodeFortsSecurityStatus();
+					else { // 15
+						this->m_lastDecodedInfo = this->DecodeFortsOrdersBook();
 						return this->m_lastDecodedInfo;
 					}
 				}
 				else {
-					if(this->m_templateId <= 4) {
-						if(this->m_templateId == 5) {
-							this->m_lastDecodedInfo = this->DecodeFortsSecurityStatus();
+					if(this->m_templateId <= 1000) {
+						if(this->m_templateId == 15) {
+							this->m_lastDecodedInfo = this->DecodeFortsOrdersBook();
 							return this->m_lastDecodedInfo;
 						}
-						else {
-							this->m_lastDecodedInfo = this->DecodeFortsSecurityDefinitionUpdateReport();
+						else { // 1000
+							this->m_lastDecodedInfo = this->DecodeFortsLogon();
 							return this->m_lastDecodedInfo;
 						}
 					}
 					else {
-						if(this->m_templateId == 4) {
-							this->m_lastDecodedInfo = this->DecodeFortsSecurityDefinitionUpdateReport();
+						if(this->m_templateId == 1000) {
+							this->m_lastDecodedInfo = this->DecodeFortsLogon();
 							return this->m_lastDecodedInfo;
 						}
-						else {
-							this->m_lastDecodedInfo = this->DecodeFortsSecurityDefinition();
+						else { // 1001
+							this->m_lastDecodedInfo = this->DecodeFortsLogout();
 							return this->m_lastDecodedInfo;
 						}
 					}

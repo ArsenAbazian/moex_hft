@@ -32,7 +32,9 @@ typedef enum _FeedConnectionMessage {
 } FeedConnectionMessage;
 
 typedef enum _FortsMessage {
-    fortsSecurityDefinition = 3
+    fortsSecurityDefinition = 3,
+    fortsSecurityDefinitionUpdateReport = 4,
+    fortsSecurityStatus = 5
 }FortsMessage;
 
 typedef enum _FeedConnectionId {
@@ -59,7 +61,8 @@ typedef enum _FeedConnectionId {
     fcidIsfCurr,
     fcidHFond,
     fcidHCurr,
-    fcidIdfForts
+    fcidIdfForts,
+    fcidIdfIncForts,
 }FeedConnectionId;
 
 typedef enum _FeedConnectionProtocol {
@@ -73,6 +76,7 @@ typedef enum _FeedConnectionState {
     fcsListenSnapshot,
     fcsListenSecurityDefinition,
     fcsListenSecurityStatus,
+    fcsListenSecurityStatusForts,
     fcsHistoricalReplay,
     fcsConnect
 } FeedConnectionState;
@@ -108,6 +112,7 @@ typedef enum _FeedConnectionType {
     Snapshot,
     InstrumentDefinition,
     InstrumentStatus,
+    InstrumentStatusForts,
     HistoricalReplay
 }FeedConnectionType;
 

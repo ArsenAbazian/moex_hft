@@ -35,6 +35,10 @@ bool Robot::ConnectMarkets() {
 #endif
 		}
 	}
+
+    if(this->AllowFortsMarket())
+        this->FortsChannel()->Prepare();
+
 	DefaultLogManager::Default->EndLog(true);
 	return true;
 }

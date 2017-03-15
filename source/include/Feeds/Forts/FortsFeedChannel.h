@@ -111,12 +111,79 @@ public:
         return this->OnAfterGenerateSecurityDefinitions(this->OptInfo());
     }
 
+    inline bool DoWorkInstr(FortsMarketDataGroup *g) {
+        if(g == 0)
+            return true;
+        return g->InstrReplay()->DoWorkAtom() &&
+                g->InstrInc()->DoWorkAtom();
+    }
+
+    inline bool DoWorkInc(FortsMarketDataGroup *g) {
+        if(g == 0)
+            return true;
+        return g->Inc()->DoWorkAtom() &&
+                g->Snap()->DoWorkAtom();
+    }
+
     inline bool DoWorkFutures() {
-        return true;
+        bool res = true;
+
+        res &= this->DoWorkInstr(this->FutInfo());
+        res &= this->DoWorkInc(this->FutBook1());
+        res &= this->DoWorkInc(this->FutBook5());
+        res &= this->DoWorkInc(this->FutBook20());
+        res &= this->DoWorkInc(this->FutBook50());
+        res &= this->DoWorkInc(this->FutTrades());
+
+        return res;
     }
 
     inline bool DoWorkOptions() {
-        return true;
+        bool res = true;
+
+        res &= this->DoWorkInstr(this->OptInfo());
+        res &= this->DoWorkInc(this->OptBook1());
+        res &= this->DoWorkInc(this->OptBook5());
+        res &= this->DoWorkInc(this->OptBook20());
+        res &= this->DoWorkInc(this->OptBook50());
+        res &= this->DoWorkInc(this->OptTrades());
+
+        return res;
+    }
+
+    void Prepare() {
+        if(this->m_futInfo != 0 && this->m_futInfo->InstrInc() != 0)
+            this->m_futInfo->InstrInc()->SetSecurityDefinition(this->m_futInfo->InstrReplay());
+        if(this->m_optInfo != 0 && this->m_optInfo->InstrInc() != 0)
+            this->m_optInfo->InstrInc()->SetSecurityDefinition(this->m_optInfo->InstrReplay());
+
+        if(this->m_futInfo->InstrReplay() != 0) {
+            this->m_futInfo->InstrReplay()->AddConnectionToRecvSymbol(this->m_futInfo->InstrInc());
+            if(this->FutBook1() != 0)
+                this->m_futInfo->InstrReplay()->AddConnectionToRecvSymbol(this->FutBook1()->Inc());
+            if(this->FutBook5() != 0)
+                this->m_futInfo->InstrReplay()->AddConnectionToRecvSymbol(this->FutBook5()->Inc());
+            if(this->FutBook20() != 0)
+                this->m_futInfo->InstrReplay()->AddConnectionToRecvSymbol(this->FutBook20()->Inc());
+            if(this->FutBook50() != 0)
+                this->m_futInfo->InstrReplay()->AddConnectionToRecvSymbol(this->FutBook50()->Inc());
+            if(this->FutTrades() != 0)
+                this->m_futInfo->InstrReplay()->AddConnectionToRecvSymbol(this->FutTrades()->Inc());
+        }
+        
+        if(this->m_optInfo->InstrReplay() != 0) {
+            this->m_optInfo->InstrReplay()->AddConnectionToRecvSymbol(this->m_optInfo->InstrInc());
+            if(this->OptBook1() != 0)
+                this->m_optInfo->InstrReplay()->AddConnectionToRecvSymbol(this->OptBook1()->Inc());
+            if(this->OptBook5() != 0)
+                this->m_optInfo->InstrReplay()->AddConnectionToRecvSymbol(this->OptBook5()->Inc());
+            if(this->OptBook20() != 0)
+                this->m_optInfo->InstrReplay()->AddConnectionToRecvSymbol(this->OptBook20()->Inc());
+            if(this->OptBook50() != 0)
+                this->m_optInfo->InstrReplay()->AddConnectionToRecvSymbol(this->OptBook50()->Inc());
+            if(this->OptTrades() != 0)
+                this->m_optInfo->InstrReplay()->AddConnectionToRecvSymbol(this->OptTrades()->Inc());
+        }
     }
 };
 
