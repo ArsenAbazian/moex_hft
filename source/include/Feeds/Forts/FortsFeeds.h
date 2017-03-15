@@ -48,6 +48,7 @@ public:
         this->SetId(FeedConnectionId::fcidIdfForts);
         this->m_fastProtocolManager = new FastProtocolManager();
         this->AllocateFastObjects();
+        this->IdfAllowUpdateData(true); // TODO remove debug
         InitializeSecurityDefinitionForts();
         InitializePackets(this->GetPacketsCount());
         DebugInfoManager::Default->PrintMemoryInfo("FeedConnection_FORTS_INSTR_SNAP");

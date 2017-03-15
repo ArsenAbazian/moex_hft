@@ -2570,10 +2570,10 @@ public:
         info->Used = true;
         if(wasNewlyAdded) {
             this->AddSecurityDefinitionToList(info, smb->m_index);
-            printf("add forts security definition %s index = %d", DebugInfoManager::Default->GetString(info->Symbol, info->SymbolLength, 0), smb->m_index);
+            printf("add forts security definition %s index = %d\n", DebugInfoManager::Default->GetString(info->Symbol, info->SymbolLength, 0), smb->m_index);
         }
         else {
-            printf("update forts security definition %s", DebugInfoManager::Default->GetString(info->Symbol, info->SymbolLength, 0));
+            printf("update forts security definition %s\n", DebugInfoManager::Default->GetString(info->Symbol, info->SymbolLength, 0));
             this->UpdateSecurityDefinition(info);
         }
         info->ReleaseUnused();

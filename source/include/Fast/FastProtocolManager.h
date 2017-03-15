@@ -2958,14 +2958,14 @@ public:
 	}
 
 	inline void ReadByteVector_Optional(BYTE *vecPtrAddress, int *lengthAddress, int maxLength) {
-		int length = ReadInt32_Optional();
+		int length = ReadUInt32_Optional();
 		int copyLength = length > maxLength? maxLength: length;
 		this->CopyString((char*)vecPtrAddress, (char*)(this->currentPos), copyLength);
 		this->currentPos += length;
 		*lengthAddress = copyLength;
 	}
 	inline void ReadByteVector_Mandatory(BYTE *vecPtrAddress, int *lengthAddress, int maxLength) {
-		int length = ReadInt32_Mandatory();
+		int length = ReadUInt32_Mandatory();
 		int copyLength = length > maxLength? maxLength: length;
 		this->CopyString((char*)vecPtrAddress, (char*)(this->currentPos), copyLength);
 		this->currentPos += length;
