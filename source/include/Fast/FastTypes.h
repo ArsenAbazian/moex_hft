@@ -2192,6 +2192,32 @@ public:
 		return this->m_astsHeartbeat;
 	}
 };
+class AstsLogonInfoPresenceIndices{
+public:
+	static const UINT64 MessageTypePresenceIndex = PRESENCE_MAP_INDEX0;
+	static const UINT64 BeginStringPresenceIndex = PRESENCE_MAP_INDEX1;
+	static const UINT64 SenderCompIDPresenceIndex = PRESENCE_MAP_INDEX2;
+};
+class AstsLogoutInfoPresenceIndices{
+public:
+	static const UINT64 MessageTypePresenceIndex = PRESENCE_MAP_INDEX0;
+	static const UINT64 BeginStringPresenceIndex = PRESENCE_MAP_INDEX1;
+	static const UINT64 SenderCompIDPresenceIndex = PRESENCE_MAP_INDEX2;
+};
+class AstsGenericInfoPresenceIndices{
+public:
+	static const UINT64 MessageTypePresenceIndex = PRESENCE_MAP_INDEX0;
+	static const UINT64 BeginStringPresenceIndex = PRESENCE_MAP_INDEX1;
+	static const UINT64 ApplVerIDPresenceIndex = PRESENCE_MAP_INDEX2;
+	static const UINT64 SenderCompIDPresenceIndex = PRESENCE_MAP_INDEX3;
+};
+class AstsIncrementalGenericInfoPresenceIndices{
+public:
+	static const UINT64 MessageTypePresenceIndex = PRESENCE_MAP_INDEX0;
+	static const UINT64 ApplVerIDPresenceIndex = PRESENCE_MAP_INDEX1;
+	static const UINT64 BeginStringPresenceIndex = PRESENCE_MAP_INDEX2;
+	static const UINT64 SenderCompIDPresenceIndex = PRESENCE_MAP_INDEX3;
+};
 class AstsOLSFONDItemInfoPresenceIndices{
 public:
 	static const UINT64 MDEntryTypePresenceIndex = PRESENCE_MAP_INDEX0;
@@ -2206,6 +2232,13 @@ public:
 	static const UINT64 TotalVolumePresenceIndex = PRESENCE_MAP_INDEX9;
 	static const UINT64 TradingSessionSubIDPresenceIndex = PRESENCE_MAP_INDEX10;
 };
+class AstsOLSFONDInfoPresenceIndices{
+public:
+	static const UINT64 MessageTypePresenceIndex = PRESENCE_MAP_INDEX0;
+	static const UINT64 BeginStringPresenceIndex = PRESENCE_MAP_INDEX1;
+	static const UINT64 ApplVerIDPresenceIndex = PRESENCE_MAP_INDEX2;
+	static const UINT64 SenderCompIDPresenceIndex = PRESENCE_MAP_INDEX3;
+};
 class AstsOLSCURRItemInfoPresenceIndices{
 public:
 	static const UINT64 MDEntryTypePresenceIndex = PRESENCE_MAP_INDEX0;
@@ -2216,6 +2249,13 @@ public:
 	static const UINT64 MDEntrySizePresenceIndex = PRESENCE_MAP_INDEX5;
 	static const UINT64 OrderStatusPresenceIndex = PRESENCE_MAP_INDEX6;
 	static const UINT64 TradingSessionSubIDPresenceIndex = PRESENCE_MAP_INDEX7;
+};
+class AstsOLSCURRInfoPresenceIndices{
+public:
+	static const UINT64 MessageTypePresenceIndex = PRESENCE_MAP_INDEX0;
+	static const UINT64 BeginStringPresenceIndex = PRESENCE_MAP_INDEX1;
+	static const UINT64 ApplVerIDPresenceIndex = PRESENCE_MAP_INDEX2;
+	static const UINT64 SenderCompIDPresenceIndex = PRESENCE_MAP_INDEX3;
 };
 class AstsTLSFONDItemInfoPresenceIndices{
 public:
@@ -2238,6 +2278,13 @@ public:
 	static const UINT64 TradingSessionSubIDPresenceIndex = PRESENCE_MAP_INDEX16;
 	static const UINT64 RefOrderIDPresenceIndex = PRESENCE_MAP_INDEX17;
 };
+class AstsTLSFONDInfoPresenceIndices{
+public:
+	static const UINT64 MessageTypePresenceIndex = PRESENCE_MAP_INDEX0;
+	static const UINT64 BeginStringPresenceIndex = PRESENCE_MAP_INDEX1;
+	static const UINT64 ApplVerIDPresenceIndex = PRESENCE_MAP_INDEX2;
+	static const UINT64 SenderCompIDPresenceIndex = PRESENCE_MAP_INDEX3;
+};
 class AstsTLSCURRItemInfoPresenceIndices{
 public:
 	static const UINT64 MDEntryDatePresenceIndex = PRESENCE_MAP_INDEX0;
@@ -2257,6 +2304,27 @@ public:
 	static const UINT64 TradingSessionSubIDPresenceIndex = PRESENCE_MAP_INDEX14;
 	static const UINT64 RefOrderIDPresenceIndex = PRESENCE_MAP_INDEX15;
 };
+class AstsTLSCURRInfoPresenceIndices{
+public:
+	static const UINT64 MessageTypePresenceIndex = PRESENCE_MAP_INDEX0;
+	static const UINT64 BeginStringPresenceIndex = PRESENCE_MAP_INDEX1;
+	static const UINT64 ApplVerIDPresenceIndex = PRESENCE_MAP_INDEX2;
+	static const UINT64 SenderCompIDPresenceIndex = PRESENCE_MAP_INDEX3;
+};
+class AstsIncrementalMSRFONDInfoPresenceIndices{
+public:
+	static const UINT64 MessageTypePresenceIndex = PRESENCE_MAP_INDEX0;
+	static const UINT64 ApplVerIDPresenceIndex = PRESENCE_MAP_INDEX1;
+	static const UINT64 BeginStringPresenceIndex = PRESENCE_MAP_INDEX2;
+	static const UINT64 SenderCompIDPresenceIndex = PRESENCE_MAP_INDEX3;
+};
+class AstsIncrementalMSRCURRInfoPresenceIndices{
+public:
+	static const UINT64 MessageTypePresenceIndex = PRESENCE_MAP_INDEX0;
+	static const UINT64 ApplVerIDPresenceIndex = PRESENCE_MAP_INDEX1;
+	static const UINT64 BeginStringPresenceIndex = PRESENCE_MAP_INDEX2;
+	static const UINT64 SenderCompIDPresenceIndex = PRESENCE_MAP_INDEX3;
+};
 class AstsIncrementalOLRFONDItemInfoPresenceIndices{
 public:
 	static const UINT64 MDEntryTypePresenceIndex = PRESENCE_MAP_INDEX0;
@@ -2273,6 +2341,13 @@ public:
 	static const UINT64 TradingSessionIDPresenceIndex = PRESENCE_MAP_INDEX11;
 	static const UINT64 TradingSessionSubIDPresenceIndex = PRESENCE_MAP_INDEX12;
 };
+class AstsIncrementalOLRFONDInfoPresenceIndices{
+public:
+	static const UINT64 MessageTypePresenceIndex = PRESENCE_MAP_INDEX0;
+	static const UINT64 ApplVerIDPresenceIndex = PRESENCE_MAP_INDEX1;
+	static const UINT64 BeginStringPresenceIndex = PRESENCE_MAP_INDEX2;
+	static const UINT64 SenderCompIDPresenceIndex = PRESENCE_MAP_INDEX3;
+};
 class AstsIncrementalOLRCURRItemInfoPresenceIndices{
 public:
 	static const UINT64 MDUpdateActionPresenceIndex = PRESENCE_MAP_INDEX0;
@@ -2286,6 +2361,54 @@ public:
 	static const UINT64 OrderStatusPresenceIndex = PRESENCE_MAP_INDEX8;
 	static const UINT64 TradingSessionIDPresenceIndex = PRESENCE_MAP_INDEX9;
 	static const UINT64 TradingSessionSubIDPresenceIndex = PRESENCE_MAP_INDEX10;
+};
+class AstsIncrementalOLRCURRInfoPresenceIndices{
+public:
+	static const UINT64 MessageTypePresenceIndex = PRESENCE_MAP_INDEX0;
+	static const UINT64 ApplVerIDPresenceIndex = PRESENCE_MAP_INDEX1;
+	static const UINT64 BeginStringPresenceIndex = PRESENCE_MAP_INDEX2;
+	static const UINT64 SenderCompIDPresenceIndex = PRESENCE_MAP_INDEX3;
+};
+class AstsIncrementalTLRFONDInfoPresenceIndices{
+public:
+	static const UINT64 MessageTypePresenceIndex = PRESENCE_MAP_INDEX0;
+	static const UINT64 ApplVerIDPresenceIndex = PRESENCE_MAP_INDEX1;
+	static const UINT64 BeginStringPresenceIndex = PRESENCE_MAP_INDEX2;
+	static const UINT64 SenderCompIDPresenceIndex = PRESENCE_MAP_INDEX3;
+};
+class AstsIncrementalTLRCURRInfoPresenceIndices{
+public:
+	static const UINT64 MessageTypePresenceIndex = PRESENCE_MAP_INDEX0;
+	static const UINT64 ApplVerIDPresenceIndex = PRESENCE_MAP_INDEX1;
+	static const UINT64 BeginStringPresenceIndex = PRESENCE_MAP_INDEX2;
+	static const UINT64 SenderCompIDPresenceIndex = PRESENCE_MAP_INDEX3;
+};
+class AstsSecurityDefinitionInfoPresenceIndices{
+public:
+	static const UINT64 MessageTypePresenceIndex = PRESENCE_MAP_INDEX0;
+	static const UINT64 ApplVerIDPresenceIndex = PRESENCE_MAP_INDEX1;
+	static const UINT64 BeginStringPresenceIndex = PRESENCE_MAP_INDEX2;
+	static const UINT64 SenderCompIDPresenceIndex = PRESENCE_MAP_INDEX3;
+};
+class AstsSecurityStatusInfoPresenceIndices{
+public:
+	static const UINT64 MessageTypePresenceIndex = PRESENCE_MAP_INDEX0;
+	static const UINT64 ApplVerIDPresenceIndex = PRESENCE_MAP_INDEX1;
+	static const UINT64 BeginStringPresenceIndex = PRESENCE_MAP_INDEX2;
+	static const UINT64 SenderCompIDPresenceIndex = PRESENCE_MAP_INDEX3;
+};
+class AstsTradingSessionStatusInfoPresenceIndices{
+public:
+	static const UINT64 MessageTypePresenceIndex = PRESENCE_MAP_INDEX0;
+	static const UINT64 ApplVerIDPresenceIndex = PRESENCE_MAP_INDEX1;
+	static const UINT64 BeginStringPresenceIndex = PRESENCE_MAP_INDEX2;
+	static const UINT64 SenderCompIDPresenceIndex = PRESENCE_MAP_INDEX3;
+};
+class AstsHeartbeatInfoPresenceIndices{
+public:
+	static const UINT64 MessageTypePresenceIndex = PRESENCE_MAP_INDEX0;
+	static const UINT64 BeginStringPresenceIndex = PRESENCE_MAP_INDEX1;
+	static const UINT64 SenderCompIDPresenceIndex = PRESENCE_MAP_INDEX2;
 };
 class AstsLogonInfoNullIndices{
 public:
@@ -3178,7 +3301,7 @@ public:
 	UINT32							TotNumReports;			// id=911  
 	char							Symbol[16];			// id=55  
 	int							SymbolLength = 0;
-	char							SecurityDesc[16];			// id=107  presence=optional  charset=unicode  
+	unsigned char							SecurityDesc[128];			// id=107  presence=optional  charset=unicode  
 	int							SecurityDescLength = 0;
 	UINT64							SecurityID;			// id=48  
 	UINT32							SecurityIDSource;			// id=22    constant has constant value = 8
@@ -3243,8 +3366,6 @@ public:
 		this->SenderCompIDLength = 0;
 		this->Symbol[0] = '\0';
 		this->SymbolLength = 0;
-		this->SecurityDesc[0] = '\0';
-		this->SecurityDescLength = 0;
 		this->SecurityAltID[0] = '\0';
 		this->SecurityAltIDLength = 0;
 		this->SecurityAltIDSource[0] = '\0';
@@ -3553,7 +3674,7 @@ public:
 	LinkedPointer<FortsNewsNewsTextItemInfo>							*Pointer;
 	AutoAllocatePointerList<FortsNewsNewsTextItemInfo>							*Allocator;
 	bool							Used;
-	char							Text[512];			// id=58  charset=unicode  
+	unsigned char							Text[128];			// id=58  charset=unicode  
 	int							TextLength = 0;
 
 	FortsNewsNewsTextItemInfo(){
@@ -3562,8 +3683,6 @@ public:
 		this->Allocator = 0;
 		this->PresenceMap = 0;
 		this->NullMap = 0;
-		this->Text[0] = '\0';
-		this->TextLength = 0;
 	}
 	~FortsNewsNewsTextItemInfo(){ }
 	inline void Clear() {
@@ -3600,7 +3719,7 @@ public:
 	char							LanguageCode[16];			// id=1474  presence=optional  
 	int							LanguageCodeLength = 0;
 	UINT32							Urgency;			// id=61  presence=optional  
-	char							Headline[16];			// id=148  charset=unicode  
+	unsigned char							Headline[128];			// id=148  charset=unicode  
 	int							HeadlineLength = 0;
 	char							MarketID[16];			// id=1301    constant has constant value = MOEX
 	int							MarketIDLength = 0;
@@ -3625,8 +3744,6 @@ public:
 		this->NewsIdLength = 0;
 		this->LanguageCode[0] = '\0';
 		this->LanguageCodeLength = 0;
-		this->Headline[0] = '\0';
-		this->HeadlineLength = 0;
 		this->MarketID[0] = '\0';
 		this->MarketIDLength = 0;
 		this->MarketSegmentID[0] = '\0';
@@ -4257,6 +4374,100 @@ public:
 	inline AutoAllocatePointerList<FortsLogoutInfo>* GetFortsLogoutInfoPool() {
 		return this->m_fortsLogout;
 	}
+};
+class FortsDefaultIncrementalRefreshMessageMDEntriesItemInfoPresenceIndices{
+public:
+	static const UINT64 SecurityIDSourcePresenceIndex = PRESENCE_MAP_INDEX0;
+};
+class FortsDefaultIncrementalRefreshMessageInfoPresenceIndices{
+public:
+	static const UINT64 ApplVerIDPresenceIndex = PRESENCE_MAP_INDEX0;
+	static const UINT64 MessageTypePresenceIndex = PRESENCE_MAP_INDEX1;
+	static const UINT64 SenderCompIDPresenceIndex = PRESENCE_MAP_INDEX2;
+};
+class FortsDefaultSnapshotMessageInfoPresenceIndices{
+public:
+	static const UINT64 ApplVerIDPresenceIndex = PRESENCE_MAP_INDEX0;
+	static const UINT64 MessageTypePresenceIndex = PRESENCE_MAP_INDEX1;
+	static const UINT64 SenderCompIDPresenceIndex = PRESENCE_MAP_INDEX2;
+	static const UINT64 SecurityIDSourcePresenceIndex = PRESENCE_MAP_INDEX3;
+};
+class FortsSecurityDefinitionInfoPresenceIndices{
+public:
+	static const UINT64 ApplVerIDPresenceIndex = PRESENCE_MAP_INDEX0;
+	static const UINT64 MessageTypePresenceIndex = PRESENCE_MAP_INDEX1;
+	static const UINT64 SenderCompIDPresenceIndex = PRESENCE_MAP_INDEX2;
+	static const UINT64 SecurityIDSourcePresenceIndex = PRESENCE_MAP_INDEX3;
+	static const UINT64 MarketIDPresenceIndex = PRESENCE_MAP_INDEX4;
+};
+class FortsSecurityDefinitionUpdateReportInfoPresenceIndices{
+public:
+	static const UINT64 ApplVerIDPresenceIndex = PRESENCE_MAP_INDEX0;
+	static const UINT64 MessageTypePresenceIndex = PRESENCE_MAP_INDEX1;
+	static const UINT64 SenderCompIDPresenceIndex = PRESENCE_MAP_INDEX2;
+	static const UINT64 SecurityIDSourcePresenceIndex = PRESENCE_MAP_INDEX3;
+};
+class FortsSecurityStatusInfoPresenceIndices{
+public:
+	static const UINT64 ApplVerIDPresenceIndex = PRESENCE_MAP_INDEX0;
+	static const UINT64 MessageTypePresenceIndex = PRESENCE_MAP_INDEX1;
+	static const UINT64 SenderCompIDPresenceIndex = PRESENCE_MAP_INDEX2;
+	static const UINT64 SecurityIDSourcePresenceIndex = PRESENCE_MAP_INDEX3;
+};
+class FortsHeartbeatInfoPresenceIndices{
+public:
+	static const UINT64 ApplVerIDPresenceIndex = PRESENCE_MAP_INDEX0;
+	static const UINT64 MessageTypePresenceIndex = PRESENCE_MAP_INDEX1;
+	static const UINT64 SenderCompIDPresenceIndex = PRESENCE_MAP_INDEX2;
+};
+class FortsSequenceResetInfoPresenceIndices{
+public:
+	static const UINT64 ApplVerIDPresenceIndex = PRESENCE_MAP_INDEX0;
+	static const UINT64 MessageTypePresenceIndex = PRESENCE_MAP_INDEX1;
+	static const UINT64 SenderCompIDPresenceIndex = PRESENCE_MAP_INDEX2;
+};
+class FortsTradingSessionStatusInfoPresenceIndices{
+public:
+	static const UINT64 ApplVerIDPresenceIndex = PRESENCE_MAP_INDEX0;
+	static const UINT64 MessageTypePresenceIndex = PRESENCE_MAP_INDEX1;
+	static const UINT64 SenderCompIDPresenceIndex = PRESENCE_MAP_INDEX2;
+	static const UINT64 MarketIDPresenceIndex = PRESENCE_MAP_INDEX3;
+};
+class FortsNewsInfoPresenceIndices{
+public:
+	static const UINT64 ApplVerIDPresenceIndex = PRESENCE_MAP_INDEX0;
+	static const UINT64 MessageTypePresenceIndex = PRESENCE_MAP_INDEX1;
+	static const UINT64 SenderCompIDPresenceIndex = PRESENCE_MAP_INDEX2;
+	static const UINT64 MarketIDPresenceIndex = PRESENCE_MAP_INDEX3;
+};
+class FortsOrdersLogMDEntriesItemInfoPresenceIndices{
+public:
+	static const UINT64 SecurityIDSourcePresenceIndex = PRESENCE_MAP_INDEX0;
+};
+class FortsOrdersLogInfoPresenceIndices{
+public:
+	static const UINT64 ApplVerIDPresenceIndex = PRESENCE_MAP_INDEX0;
+	static const UINT64 MessageTypePresenceIndex = PRESENCE_MAP_INDEX1;
+	static const UINT64 SenderCompIDPresenceIndex = PRESENCE_MAP_INDEX2;
+};
+class FortsOrdersBookInfoPresenceIndices{
+public:
+	static const UINT64 ApplVerIDPresenceIndex = PRESENCE_MAP_INDEX0;
+	static const UINT64 MessageTypePresenceIndex = PRESENCE_MAP_INDEX1;
+	static const UINT64 SenderCompIDPresenceIndex = PRESENCE_MAP_INDEX2;
+	static const UINT64 SecurityIDSourcePresenceIndex = PRESENCE_MAP_INDEX3;
+};
+class FortsLogonInfoPresenceIndices{
+public:
+	static const UINT64 ApplVerIDPresenceIndex = PRESENCE_MAP_INDEX0;
+	static const UINT64 MessageTypePresenceIndex = PRESENCE_MAP_INDEX1;
+	static const UINT64 SenderCompIDPresenceIndex = PRESENCE_MAP_INDEX2;
+};
+class FortsLogoutInfoPresenceIndices{
+public:
+	static const UINT64 ApplVerIDPresenceIndex = PRESENCE_MAP_INDEX0;
+	static const UINT64 MessageTypePresenceIndex = PRESENCE_MAP_INDEX1;
+	static const UINT64 SenderCompIDPresenceIndex = PRESENCE_MAP_INDEX2;
 };
 class FortsDefaultIncrementalRefreshMessageMDEntriesItemInfoNullIndices{
 public:

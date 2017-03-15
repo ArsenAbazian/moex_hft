@@ -109,6 +109,8 @@ void LogMessageProvider::InitializeLogMessageText() {
 	this->m_logMessageText[LogMessageCode::lmcRobot_GenerateSecurityDefinitions] = "Robot::GenerateSecurityDefinitions";
 	this->m_logMessageText[LogMessageCode::lmcFeedConnection_SaveSecurityDefinition] = "FeedConnection::SaveSecurityDefinition";
 	this->m_logMessageText[LogMessageCode::lmcFeedConnection_LoadSecurityDefinition] = "FeedConnection::LoadSecurityDefinition";
+	this->m_logMessageText[LogMessageCode::lmcRobot_CollectSecurityDefinitionsForts] = "Robot::CollectSecurityDefinitionsForts";
+	this->m_logMessageText[LogMessageCode::lmcRobot_GenerateSecurityDefinitionsForts] = "Robot::GenerateSecurityDefinitionsForts";
 #pragma endregion
 }
 

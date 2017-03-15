@@ -137,6 +137,13 @@ public:
     inline SymbolInfo* GetSymbol(const char *symbol, bool *wasNewlyAdded) {
         return this->GetSymbol(symbol, strlen(symbol), wasNewlyAdded);
     }
+    inline SymbolInfo* GetSymbol(const char *symbol, int length) {
+        bool wasNewlyAdded = false;
+        SymbolInfo *res = this->GetSymbol(symbol, length, &wasNewlyAdded);
+        if(wasNewlyAdded)
+            throw;
+        return res;
+    }
     inline SymbolInfo* GetSymbol(const char *symbol, int length, bool *wasNewlyAdded) {
         int hash = StringHash::GetHash(symbol, length);
         LinkedPointer<SymbolInfo> *bucket = GetBucket(hash);

@@ -59,14 +59,20 @@ public:
     void FutBook5(FortsMarketDataGroup *group) { this->m_futBook5 = group; }
     void FutBook20(FortsMarketDataGroup *group) { this->m_futBook20 = group; }
     void FutBook50(FortsMarketDataGroup *group) { this->m_futBook50 = group; }
-    void FutInfo(FortsMarketDataGroup *group) { this->m_futInfo = group; }
+    void FutInfo(FortsMarketDataGroup *group) {
+        this->m_futInfo = group;
+        this->m_futInfo->InstrReplay()->ChannelName("FUT");
+    }
     void FutTrades(FortsMarketDataGroup *group) { this->m_futTrades = group; }
 
     void OptBook1(FortsMarketDataGroup *group) { this->m_optBook1 = group; }
     void OptBook5(FortsMarketDataGroup *group) { this->m_optBook5 = group; }
     void OptBook20(FortsMarketDataGroup *group) { this->m_optBook20 = group; }
     void OptBook50(FortsMarketDataGroup *group) { this->m_optBook50 = group; }
-    void OptInfo(FortsMarketDataGroup *group) { this->m_optInfo = group; }
+    void OptInfo(FortsMarketDataGroup *group) {
+        this->m_optInfo = group;
+        this->m_optInfo->InstrReplay()->ChannelName("OPT");
+    }
     void OptTrades(FortsMarketDataGroup *group) { this->m_optTrades = group; }
 
     void Index(FortsMarketDataGroup *group) { this->m_indexes = group; }

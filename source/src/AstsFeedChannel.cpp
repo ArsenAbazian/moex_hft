@@ -110,14 +110,27 @@ bool AstsFeedChannel::Connect() {
 		return false;
 	}
 
-	if(this->msr != 0)
+	if(this->msr != 0) {
 		this->idf->AddConnectionToRecvSymbol(this->msr);
-	if(this->olr != 0)
+		this->msr->SetSecurityDefinition(this->idf);
+	}
+	if(this->olr != 0) {
 		this->idf->AddConnectionToRecvSymbol(this->olr);
-	if(this->tlr != 0)
+		this->olr->SetSecurityDefinition(this->idf);
+	}
+	if(this->tlr != 0) {
 		this->idf->AddConnectionToRecvSymbol(this->tlr);
+		this->tlr->SetSecurityDefinition(this->idf);
+	}
 	if(this->isf != 0)
 		this->idf->AddConnectionToRecvSymbol(this->isf);
+
+	if(this->mss != 0)
+		this->mss->SetSecurityDefinition(this->idf);
+	if(this->ols != 0)
+		this->ols->SetSecurityDefinition(this->idf);
+	if(this->tls != 0)
+		this->tls->SetSecurityDefinition(this->idf);
 
 	this->m_state = FeedChannelState::fchCollectSymbols;
 

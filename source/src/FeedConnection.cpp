@@ -47,6 +47,7 @@ FeedConnection::FeedConnection(const char *id, const char *name, char value, Fee
 
     this->m_tval = new struct timeval;
 
+    this->m_marketType = FeedMarketType::fmtAsts;
     this->m_windowMsgSeqNum = 0;
 	this->m_startMsgSeqNum = 1;
 	this->m_endMsgSeqNum = 0;

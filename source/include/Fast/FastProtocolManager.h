@@ -5841,13 +5841,20 @@ public:
 		for(int i = 0; i < info->MDEntriesCount; i++) {
 			mdeItemInfo = GetFreeFortsDefaultIncrementalRefreshMessageMDEntriesItemInfo();
 			info->MDEntries[i] = mdeItemInfo;
+
+			this->ParsePresenceMap(&(mdeItemInfo->PresenceMap));
+
 			mdeItemInfo->MDUpdateAction = ReadUInt32_Mandatory();
 			ReadString_Mandatory(mdeItemInfo->MDEntryType, &(mdeItemInfo->MDEntryTypeLength));
 			if(CheckProcessNullUInt64())
 				mdeItemInfo->NullMap |= NULL_MAP_INDEX0;
 			else
 				mdeItemInfo->SecurityID = ReadUInt64_Optional();
-			mdeItemInfo->SecurityIDSource = ReadUInt32_Mandatory();
+			if(CheckMandatoryFieldPresence(mdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX0)) {
+				mdeItemInfo->SecurityIDSource = ReadUInt32_Mandatory();
+			}
+			else {
+			}
 			if(CheckProcessNullString())
 				mdeItemInfo->NullMap |= NULL_MAP_INDEX1;
 			else
@@ -5941,7 +5948,11 @@ public:
 			info->NullMap |= NULL_MAP_INDEX1;
 		else
 			info->SecurityID = ReadUInt64_Optional();
-		info->SecurityIDSource = ReadUInt32_Mandatory();
+		if(CheckMandatoryFieldPresence(info->PresenceMap, PRESENCE_MAP_INDEX3)) {
+			info->SecurityIDSource = ReadUInt32_Mandatory();
+		}
+		else {
+		}
 		if(CheckProcessNullString())
 			info->NullMap |= NULL_MAP_INDEX2;
 		else
@@ -6025,12 +6036,16 @@ public:
 		info->SendingTime = ReadUInt64_Mandatory();
 		info->TotNumReports = ReadUInt32_Mandatory();
 		ReadString_Mandatory(info->Symbol, &(info->SymbolLength));
-		if(CheckProcessNullString())
+		if(CheckProcessNullByteVector())
 			info->NullMap |= NULL_MAP_INDEX0;
 		else
-			ReadString_Optional(info->SecurityDesc, &(info->SecurityDescLength));
+			ReadByteVector_Optional(info->SecurityDesc, &(info->SecurityDescLength), 128);
 		info->SecurityID = ReadUInt64_Mandatory();
-		info->SecurityIDSource = ReadUInt32_Mandatory();
+		if(CheckMandatoryFieldPresence(info->PresenceMap, PRESENCE_MAP_INDEX3)) {
+			info->SecurityIDSource = ReadUInt32_Mandatory();
+		}
+		else {
+		}
 		if(CheckProcessNullString())
 			info->NullMap |= NULL_MAP_INDEX1;
 		else
@@ -6063,7 +6078,11 @@ public:
 			info->NullMap |= NULL_MAP_INDEX8;
 		else
 			ReadString_Optional(info->Currency, &(info->CurrencyLength));
-		ReadString_Mandatory(info->MarketID, &(info->MarketIDLength));
+		if(CheckMandatoryFieldPresence(info->PresenceMap, PRESENCE_MAP_INDEX4)) {
+			ReadString_Mandatory(info->MarketID, &(info->MarketIDLength));
+		}
+		else {
+		}
 		ReadString_Mandatory(info->MarketSegmentID, &(info->MarketSegmentIDLength));
 		if(CheckProcessNullUInt32())
 			info->NullMap |= NULL_MAP_INDEX9;
@@ -6235,7 +6254,11 @@ public:
 		info->MsgSeqNum = ReadUInt32_Mandatory();
 		info->SendingTime = ReadUInt64_Mandatory();
 		info->SecurityID = ReadUInt64_Mandatory();
-		info->SecurityIDSource = ReadUInt32_Mandatory();
+		if(CheckMandatoryFieldPresence(info->PresenceMap, PRESENCE_MAP_INDEX3)) {
+			info->SecurityIDSource = ReadUInt32_Mandatory();
+		}
+		else {
+		}
 		if(CheckProcessNullDecimal())
 			info->NullMap |= NULL_MAP_INDEX0;
 		else
@@ -6258,7 +6281,11 @@ public:
 		info->MsgSeqNum = ReadUInt32_Mandatory();
 		info->SendingTime = ReadUInt64_Mandatory();
 		info->SecurityID = ReadUInt64_Mandatory();
-		info->SecurityIDSource = ReadUInt32_Mandatory();
+		if(CheckMandatoryFieldPresence(info->PresenceMap, PRESENCE_MAP_INDEX3)) {
+			info->SecurityIDSource = ReadUInt32_Mandatory();
+		}
+		else {
+		}
 		ReadString_Mandatory(info->Symbol, &(info->SymbolLength));
 		if(CheckProcessNullUInt32())
 			info->NullMap |= NULL_MAP_INDEX0;
@@ -6328,7 +6355,11 @@ public:
 		else
 			info->ExchangeTradingSessionID = ReadUInt32_Optional();
 		info->TradSesStatus = ReadUInt32_Mandatory();
-		ReadString_Mandatory(info->MarketID, &(info->MarketIDLength));
+		if(CheckMandatoryFieldPresence(info->PresenceMap, PRESENCE_MAP_INDEX3)) {
+			ReadString_Mandatory(info->MarketID, &(info->MarketIDLength));
+		}
+		else {
+		}
 		ReadString_Mandatory(info->MarketSegmentID, &(info->MarketSegmentIDLength));
 		if(CheckProcessNullInt32())
 			info->NullMap |= NULL_MAP_INDEX3;
@@ -6363,8 +6394,12 @@ public:
 			info->NullMap |= NULL_MAP_INDEX4;
 		else
 			info->Urgency = ReadUInt32_Optional();
-		ReadString_Mandatory(info->Headline, &(info->HeadlineLength));
-		ReadString_Mandatory(info->MarketID, &(info->MarketIDLength));
+		ReadByteVector_Mandatory(info->Headline, &(info->HeadlineLength), 128);
+		if(CheckMandatoryFieldPresence(info->PresenceMap, PRESENCE_MAP_INDEX3)) {
+			ReadString_Mandatory(info->MarketID, &(info->MarketIDLength));
+		}
+		else {
+		}
 		if(CheckProcessNullString())
 			info->NullMap |= NULL_MAP_INDEX5;
 		else
@@ -6376,7 +6411,7 @@ public:
 		for(int i = 0; i < info->NewsTextCount; i++) {
 			ntItemInfo = GetFreeFortsNewsNewsTextItemInfo();
 			info->NewsText[i] = ntItemInfo;
-			ReadString_Mandatory(ntItemInfo->Text, &(ntItemInfo->TextLength));
+			ReadByteVector_Mandatory(ntItemInfo->Text, &(ntItemInfo->TextLength), 128);
 			this->m_prevfortsNewsNewsTextItemInfo = ntItemInfo;
 		}
 
@@ -6397,6 +6432,9 @@ public:
 		for(int i = 0; i < info->MDEntriesCount; i++) {
 			mdeItemInfo = GetFreeFortsOrdersLogMDEntriesItemInfo();
 			info->MDEntries[i] = mdeItemInfo;
+
+			this->ParsePresenceMap(&(mdeItemInfo->PresenceMap));
+
 			mdeItemInfo->MDUpdateAction = ReadUInt32_Mandatory();
 			ReadString_Mandatory(mdeItemInfo->MDEntryType, &(mdeItemInfo->MDEntryTypeLength));
 			if(CheckProcessNullInt64())
@@ -6407,7 +6445,11 @@ public:
 				mdeItemInfo->NullMap |= NULL_MAP_INDEX1;
 			else
 				mdeItemInfo->SecurityID = ReadUInt64_Optional();
-			mdeItemInfo->SecurityIDSource = ReadUInt32_Mandatory();
+			if(CheckMandatoryFieldPresence(mdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX0)) {
+				mdeItemInfo->SecurityIDSource = ReadUInt32_Mandatory();
+			}
+			else {
+			}
 			if(CheckProcessNullUInt32())
 				mdeItemInfo->NullMap |= NULL_MAP_INDEX2;
 			else
@@ -6473,7 +6515,11 @@ public:
 			info->NullMap |= NULL_MAP_INDEX1;
 		else
 			info->SecurityID = ReadUInt64_Optional();
-		info->SecurityIDSource = ReadUInt32_Mandatory();
+		if(CheckMandatoryFieldPresence(info->PresenceMap, PRESENCE_MAP_INDEX3)) {
+			info->SecurityIDSource = ReadUInt32_Mandatory();
+		}
+		else {
+		}
 
 		info->MDEntriesCount = ReadUInt32_Mandatory();
 		FortsOrdersBookMDEntriesItemInfo* mdeItemInfo = NULL;

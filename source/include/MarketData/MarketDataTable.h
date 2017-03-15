@@ -66,6 +66,14 @@ public:
         this->m_snapshotItemRptSeq = info->RptSeq;
         this->AddUsed(this->m_snapshotItem);
     }
+    inline void ObtainSnapshotItem(int symbolIndex, AstsSnapshotInfo *info) {
+        this->m_snapshotItem = this->GetCachedItem(info->Symbol, info->SymbolLength, info->TradingSessionID, info->TradingSessionIDLength);
+        if(this->m_snapshotItem == 0)
+            this->m_snapshotItem = this->GetItem(symbolIndex, info->TradingSessionID, info->TradingSessionIDLength);
+        this->m_snapshotSymbol = this->m_snapshotItem->SymbolInfo();
+        this->m_snapshotItemRptSeq = info->RptSeq;
+        this->AddUsed(this->m_snapshotItem);
+    }
     inline void ObtainSnapshotItem(AstsSnapshotInfo *info) {
         this->m_snapshotItem = this->GetCachedItem(info->Symbol, info->SymbolLength, info->TradingSessionID, info->TradingSessionIDLength);
         if(this->m_snapshotItem == 0)
@@ -106,6 +114,30 @@ public:
     }
     inline bool ProcessIncremental(ITEMINFO *info) {
         TABLEITEM<ITEMINFO> *tableItem = GetItem(info->Symbol, info->SymbolLength, info->TradingSessionID, info->TradingSessionIDLength);
+        this->AddUsed(tableItem);
+        bool prevHasEntries = tableItem->HasEntries();
+        bool res = tableItem->ProcessIncrementalMessage(info);
+        bool hasEntries = tableItem->HasEntries();
+        if(hasEntries) {
+            if(!prevHasEntries)
+                this->m_queueItemsCount++;
+        }
+        else {
+            if(prevHasEntries)
+                this->m_queueItemsCount--;
+            if(tableItem->ShouldProcessSnapshot()) {
+                MarketSymbolInfo<TABLEITEM<ITEMINFO>> *smb = tableItem->SymbolInfo();
+                bool allItemsRecvSnapshot = smb->AllSessionsRecvSnapshot();
+                tableItem->DecSessionsToRecvSnapshotCount();
+                if (!allItemsRecvSnapshot && smb->AllSessionsRecvSnapshot())
+                    this->DecSymbolsToRecvSnapshotCount();
+            }
+        }
+        return res;
+    }
+
+    inline bool ProcessIncremental(ITEMINFO *info, int index) {
+        TABLEITEM<ITEMINFO> *tableItem = GetItem(index, info->TradingSessionID, info->TradingSessionIDLength);
         this->AddUsed(tableItem);
         bool prevHasEntries = tableItem->HasEntries();
         bool res = tableItem->ProcessIncrementalMessage(info);
@@ -348,6 +380,13 @@ public:
         this->m_cachedItem = res;
         return res;
     }
+    inline TABLEITEM<ITEMINFO>* GetItem(int symbolIndex, const char *tradingSession, int tradingSessionLen) {
+        TABLEITEM<ITEMINFO> *item = 0;
+        MarketSymbolInfo<TABLEITEM<ITEMINFO>> *s = this->m_symbols[symbolIndex];
+        TABLEITEM<ITEMINFO>* res = s->GetSession(tradingSession, tradingSessionLen);
+        this->m_cachedItem = res;
+        return res;
+    }
     inline TABLEITEM<ITEMINFO>* GetItem(const char *symbol, const char *tradingSession) {
         return this->GetItem(symbol, strlen(symbol), tradingSession, strlen(tradingSession));
     }
@@ -369,6 +408,12 @@ public:
     inline TABLEITEM<ITEMINFO>* Add(const char *symbol, const char *session) {
         MarketSymbolInfo<TABLEITEM<ITEMINFO>> *symbolInfo = GetSymbol(symbol, strlen(symbol));
         return symbolInfo->GetSession(session, strlen(session));
+    }
+    inline MarketSymbolInfo<TABLEITEM<ITEMINFO>>* AddSymbol(const char *symbol, int symbolLength, int index) {
+        MarketSymbolInfo<TABLEITEM<ITEMINFO>> *newItem = this->m_symbols[index];
+        newItem->Symbol()->Set(symbol, symbolLength);
+        this->m_symbolsCount = this->m_symbolsCount < index + 1? index + 1: this->m_symbolsCount;
+        return newItem;
     }
     inline MarketSymbolInfo<TABLEITEM<ITEMINFO>>* AddSymbol(const char *symbol, int symbolLength) {
         MarketSymbolInfo<TABLEITEM<ITEMINFO>> *newItem = this->m_symbols[this->m_symbolsCount];

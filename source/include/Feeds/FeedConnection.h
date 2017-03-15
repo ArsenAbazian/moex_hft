@@ -59,6 +59,7 @@ protected:
 
     FeedConnectionType                          m_type;
     FeedConnectionId                            m_id;
+    FeedMarketType                              m_marketType;
 
     FeedConnection                              *m_incremental;
     FeedConnection                              *m_snapshot;
@@ -225,12 +226,26 @@ protected:
         *time = this->m_tval->tv_usec / 1000;
     }
 
-    inline int TryGetSecurityDefinitionTotNumReports(unsigned char *buffer) {
+    inline int TryGetSecurityDefinitionTotNumReportsAsts(unsigned char *buffer) {
         this->m_fastProtocolManager->SetNewBuffer(buffer + 4, 1500);
         this->m_fastProtocolManager->DecodeAstsHeader();
         if(this->m_fastProtocolManager->TemplateId() != FeedConnectionMessage::fmcSecurityDefinition)
             return 0;
         return this->m_fastProtocolManager->GetAstsTotalNumReports();
+    }
+
+    inline int TryGetSecurityDefinitionTotNumReportsForts(unsigned char *buffer) {
+        this->m_fastProtocolManager->SetNewBuffer(buffer + 4, 1500);
+        this->m_fastProtocolManager->DecodeFortsHeader();
+        if(this->m_fastProtocolManager->TemplateId() != FortsMessage::fortsSecurityDefinition)
+            return 0;
+        return this->m_fastProtocolManager->GetFortsTotalNumReports();
+    }
+
+    inline int TryGetSecurityDefinitionTotNumReports(unsigned char *buffer) {
+        if(this->m_marketType == FeedMarketType::fmtAsts)
+            return this->TryGetSecurityDefinitionTotNumReportsAsts(buffer);
+        return this->TryGetSecurityDefinitionTotNumReportsForts(buffer);
     }
 
 	inline bool CanListen() { return this->socketAManager->ShouldRecv() || this->socketBManager->ShouldRecv(); }
@@ -457,7 +472,7 @@ protected:
     inline bool PrepareDecodeSnapshotMessage(int packetIndex) {
         FeedConnectionMessageInfo *info = this->m_packets[packetIndex];
         unsigned char *buffer = info->m_address;
-        if(this->ShouldSkipMessage(buffer, !info->m_requested))
+        if(this->ShouldSkipMessageAsts(buffer, !info->m_requested))
             return false;
         this->m_fastProtocolManager->SetNewBuffer(buffer, info->m_size);
         this->m_fastProtocolManager->ReadMsgSeqNumber();
@@ -465,8 +480,12 @@ protected:
         return true;
     }
 
+    inline int GetAstsSnapshotSymbolIndex() {
+        return this->m_symbolManager->GetSymbol(this->m_lastSnapshotInfo->Symbol, this->m_lastSnapshotInfo->SymbolLength)->m_index;
+    }
+
     inline bool StartApplySnapshot_OLS_FOND() {
-        this->m_incremental->OrderFond()->ObtainSnapshotItem(this->m_lastSnapshotInfo);
+        this->m_incremental->OrderFond()->ObtainSnapshotItem(this->GetAstsSnapshotSymbolIndex(), this->m_lastSnapshotInfo);
         if(this->m_incremental->OrderFond()->ApplyQuickSnapshot(this->m_lastSnapshotInfo)) {
 #ifdef COLLECT_STATISTICS
             ProgramStatistics::Current->IncFondOlsProcessedCount();
@@ -502,7 +521,7 @@ protected:
     }
 
     inline bool StartApplySnapshot_OLS_CURR() {
-        this->m_incremental->OrderCurr()->ObtainSnapshotItem(this->m_lastSnapshotInfo);
+        this->m_incremental->OrderCurr()->ObtainSnapshotItem(this->GetAstsSnapshotSymbolIndex(), this->m_lastSnapshotInfo);
         if(this->m_incremental->OrderCurr()->ApplyQuickSnapshot(this->m_lastSnapshotInfo)) {
 #ifdef COLLECT_STATISTICS
             ProgramStatistics::Current->IncCurrOlsProcessedCount();
@@ -538,7 +557,7 @@ protected:
     }
 
     inline bool StartApplySnapshot_TLS_FOND() {
-        this->m_incremental->TradeFond()->ObtainSnapshotItem(this->m_lastSnapshotInfo);
+        this->m_incremental->TradeFond()->ObtainSnapshotItem(this->GetAstsSnapshotSymbolIndex(), this->m_lastSnapshotInfo);
         if(this->m_incremental->TradeFond()->ApplyQuickSnapshot(this->m_lastSnapshotInfo)) {
 #ifdef COLLECT_STATISTICS
             ProgramStatistics::Current->IncFondTlsProcessedCount();
@@ -574,7 +593,7 @@ protected:
     }
 
     inline bool StartApplySnapshot_TLS_CURR() {
-        this->m_incremental->TradeCurr()->ObtainSnapshotItem(this->m_lastSnapshotInfo);
+        this->m_incremental->TradeCurr()->ObtainSnapshotItem(this->GetAstsSnapshotSymbolIndex(), this->m_lastSnapshotInfo);
         if(this->m_incremental->TradeCurr()->ApplyQuickSnapshot(this->m_lastSnapshotInfo)) {
 #ifdef COLLECT_STATISTICS
             ProgramStatistics::Current->IncCurrTlsProcessedCount();
@@ -610,7 +629,7 @@ protected:
     }
 
     inline bool StartApplySnapshot_MSS_FOND() {
-        this->m_incremental->StatisticFond()->ObtainSnapshotItem(this->m_lastSnapshotInfo);
+        this->m_incremental->StatisticFond()->ObtainSnapshotItem(this->GetAstsSnapshotSymbolIndex(), this->m_lastSnapshotInfo);
         if(this->m_incremental->StatisticFond()->ApplyQuickSnapshot(this->m_lastSnapshotInfo)) {
 #ifdef COLLECT_STATISTICS
             ProgramStatistics::Current->IncFondMssProcessedCount();
@@ -646,7 +665,7 @@ protected:
     }
 
     inline bool StartApplySnapshot_MSS_CURR() {
-        this->m_incremental->StatisticCurr()->ObtainSnapshotItem(this->m_lastSnapshotInfo);
+        this->m_incremental->StatisticCurr()->ObtainSnapshotItem(this->GetAstsSnapshotSymbolIndex(), this->m_lastSnapshotInfo);
         if(this->m_incremental->StatisticCurr()->ApplyQuickSnapshot(this->m_lastSnapshotInfo)) {
 #ifdef COLLECT_STATISTICS
             ProgramStatistics::Current->IncCurrMssProcessedCount();
@@ -711,12 +730,14 @@ protected:
         this->m_historicalReplay->HrRequestMessage(this, start, end);
     }
 
-    inline void StartSecurityStatusSnapshot() {
+    inline bool StartSecurityStatusSnapshot() {
         this->m_securityDefinition->m_idfMode = FeedConnectionSecurityDefinitionMode::sdmUpdateData;
         this->m_securityDefinition->IdfStopAfterUpdateMessages(true);
-        this->m_securityDefinition->Start();
+        if(!this->m_securityDefinition->Start())
+            return false;
         this->m_securityStatusSnapshotActive = true;
         this->m_isfStartSnapshotCount++;
+        return true;
     }
 
     inline void AfterMoveWindow() {
@@ -990,17 +1011,22 @@ protected:
             return;
         }
     }
-    inline bool StartListenSnapshot() {
-		if(this->m_snapshot->State() == FeedConnectionState::fcsListenSnapshot && this->IsMarketTableInSnapshotMode())
+    inline bool StartIncrementalSnapshot() {
+        if(this->m_snapshot->State() == FeedConnectionState::fcsListenSnapshot && this->IsMarketTableInSnapshotMode())
             return true;
         if(!this->m_snapshot->Start()) {
-			DefaultLogManager::Default->WriteSuccess(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_StartListenSnapshot, false);
-			return false;
-		}
+            DefaultLogManager::Default->WriteSuccess(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_StartListenSnapshot, false);
+            return false;
+        }
         this->MarketTableEnterSnapshotMode();
         this->m_snapshot->StartNewSnapshot();
-		DefaultLogManager::Default->WriteSuccess(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_StartListenSnapshot, true);
+        DefaultLogManager::Default->WriteSuccess(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_StartListenSnapshot, true);
         return true;
+    }
+    inline bool StartListenSnapshot() {
+		if(this->m_type == FeedConnectionType::InstrumentStatus)
+            return this->StartSecurityStatusSnapshot();
+        return this->StartIncrementalSnapshot();
 	}
     inline void UpdateMessageSeqNoAfterSnapshot() {
         this->ClearLocalPackets(0, GetLocalIndex(this->m_endMsgSeqNum));
@@ -1020,7 +1046,7 @@ protected:
 	inline AstsSnapshotInfo* GetAstsSnapshotInfo(int msgSeqNo) {
 		FeedConnectionMessageInfo *item = this->m_packets[msgSeqNo];
 		unsigned char *buffer = item->m_address;
-		if(this->ShouldSkipMessage(buffer, !item->m_requested))
+		if(this->ShouldSkipMessageAsts(buffer, !item->m_requested))
             return 0;
         this->m_fastProtocolManager->SetNewBuffer(buffer, item->m_size);
 		this->m_fastProtocolManager->ReadMsgSeqNumber();
@@ -1343,7 +1369,19 @@ protected:
         }
     }
 
-    inline bool ProcessSecurityDefinitionCore(unsigned char *buffer, int length) {
+    inline bool ProcessSecurityDefinitionForts(unsigned char *buffer, int length) {
+        this->m_fastProtocolManager->SetNewBuffer(buffer, length);
+        this->m_fastProtocolManager->ReadMsgSeqNumber();
+
+        this->m_fastProtocolManager->DecodeFortsHeader();
+        if(this->m_fastProtocolManager->TemplateId() != FortsMessage::fortsSecurityDefinition) {
+            printf("not an security definition template: %d\n", this->m_fastProtocolManager->TemplateId());
+            return true;
+        }
+        return this->ProcessSecurityDefinition((FortsSecurityDefinitionInfo*)this->m_fastProtocolManager->DecodeFortsSecurityDefinition());
+    }
+
+    inline bool ProcessSecurityDefinitionAsts(unsigned char *buffer, int length) {
         this->m_fastProtocolManager->SetNewBuffer(buffer, length);
         this->m_fastProtocolManager->ReadMsgSeqNumber();
 
@@ -1355,23 +1393,28 @@ protected:
         return this->ProcessSecurityDefinition((AstsSecurityDefinitionInfo*)this->m_fastProtocolManager->DecodeAstsSecurityDefinition());
     }
 
-    inline bool ProcessSecurityDefinition(unsigned char *buffer, int length) {
-        //DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Decode);
-        bool res = this->ProcessSecurityDefinitionCore(buffer, length);
-        //DefaultLogManager::Default->EndLog(res);
-        return res;
-    }
-
-    inline bool ProcessSecurityDefinition(FeedConnectionMessageInfo *info) {
+    inline bool ProcessSecurityDefinitionForts(FeedConnectionMessageInfo *info) {
         unsigned char *buffer = info->m_address;
-        if(this->ShouldSkipMessage(buffer, !info->m_requested)) {
+        if(this->ShouldSkipMessageForts(buffer, !info->m_requested)) {
             info->m_processed = true;
             return true;  // TODO - take this message into account, becasue it determines feed alive
         }
 
         //DefaultLogManager::Default->WriteFast(this->m_idLogIndex, this->m_recvABuffer->BufferIndex(), info->m_item->m_itemIndex);
         info->m_processed = true;
-        return this->ProcessSecurityDefinition(buffer, info->m_size);
+        return this->ProcessSecurityDefinitionForts(buffer, info->m_size);
+    }
+
+    inline bool ProcessSecurityDefinitionAsts(FeedConnectionMessageInfo *info) {
+        unsigned char *buffer = info->m_address;
+        if(this->ShouldSkipMessageAsts(buffer, !info->m_requested)) {
+            info->m_processed = true;
+            return true;  // TODO - take this message into account, becasue it determines feed alive
+        }
+
+        //DefaultLogManager::Default->WriteFast(this->m_idLogIndex, this->m_recvABuffer->BufferIndex(), info->m_item->m_itemIndex);
+        info->m_processed = true;
+        return this->ProcessSecurityDefinitionAsts(buffer, info->m_size);
     }
 
     inline bool IdfAllowGenerateSecurityDefinitions() { return this->m_allowGenerateSecurityDefinitions; }
@@ -1399,7 +1442,7 @@ protected:
                         ProgramStatistics::Total->FondIdfProcessedCount(this->m_idfMaxMsgSeqNo - lostPacketCount);
                         ProgramStatistics::Total->FondIdfLostCount(lostPacketCount);
                     }
-                    else {
+                    else if(this->m_id == FeedConnectionId::fcidIdfCurr){
                         ProgramStatistics::Total->CurrIdfProcessedCount(this->m_idfMaxMsgSeqNo - lostPacketCount);
                         ProgramStatistics::Total->CurrIdfLostCount(lostPacketCount);
                     }
@@ -1410,7 +1453,7 @@ protected:
 #ifdef COLLECT_STATISTICS
                 if(this->m_id == FeedConnectionId::fcidIdfFond)
                     ProgramStatistics::Total->FondIdfProcessedCount(this->m_idfMaxMsgSeqNo);
-                else
+                else if(this->m_id == FeedConnectionId::fcidIdfCurr)
                     ProgramStatistics::Total->CurrIdfProcessedCount(this->m_idfMaxMsgSeqNo);
 #endif
                 if(this->IdfAllowGenerateSecurityDefinitions())
@@ -1854,17 +1897,34 @@ public:
         DefaultLogManager::Default->EndLog(true);
         return true;
     }
+    inline bool GenerateSecurityDefinitionsCoreAsts() {
+        FeedConnectionMessageInfo **info = (this->m_packets + 1); // skip zero messsage
+        for (int i = 1; i <= this->m_idfMaxMsgSeqNo; i++, info++) {
+            if (!this->ProcessSecurityDefinitionAsts(*info))
+                return false;
+        }
+        return true;
+    }
+    inline bool GenerateSecurityDefinitionsCoreForts() {
+        FeedConnectionMessageInfo **info = (this->m_packets + 1); // skip zero messsage
+        for (int i = 1; i <= this->m_idfMaxMsgSeqNo; i++, info++) {
+            if (!this->ProcessSecurityDefinitionForts(*info))
+                return false;
+        }
+        return true;
+    }
+    inline bool GenerateSecurityDefinitionsCore() {
+        if(this->m_marketType == FeedMarketType::fmtAsts)
+            return GenerateSecurityDefinitionsCoreAsts();
+        return GenerateSecurityDefinitionsCoreForts();
+    }
     inline bool GenerateSecurityDefinitions() {
         printf("\t\t%s %s generating security definitions count = %d\n", this->m_channelName, this->m_idName, this->m_idfMaxMsgSeqNo); // TODOO remove debug
-        FeedConnectionMessageInfo **info = (this->m_packets + 1); // skip zero messsage
         this->m_waitTimer->Start(3); // TODOO remove debug
         if(this->AllowSaveSecurityDefinitions())
             this->SaveSecurityDefinitions();
         this->BeforeProcessSecurityDefinitions();
-        for (int i = 1; i <= this->m_idfMaxMsgSeqNo; i++, info++) {
-            if (!this->ProcessSecurityDefinition(*info))
-                return false;
-        }
+        this->GenerateSecurityDefinitionsCore();
         this->AfterProcessSecurityDefinitions();
         this->OnSecurityDefinitionRecvAllMessages();
         printf("\t\t%s %s done in %ld ms.\n", this->m_channelName, this->m_idName, this->m_waitTimer->ElapsedMilliseconds(3)); // TODOO remove debug
@@ -1981,30 +2041,36 @@ protected:
 		if(info->MDEntryType[0] == MDEntryType::mdetEmptyBook) { // fatal!!!!!
 			return true; // TODO!!!!!
 		}
-		return this->m_orderTableFond->ProcessIncremental(info);
+        int index = this->m_symbolManager->GetSymbol(info->Symbol, info->SymbolLength)->m_index;
+		return this->m_orderTableFond->ProcessIncremental(info, index);
 	}
 
 	inline bool OnIncrementalRefresh_OLR_CURR(AstsOLSCURRItemInfo *info) {
 		if(info->MDEntryType[0] == MDEntryType::mdetEmptyBook) { // fatal!!!!!
 			return true; // TODO!!!!!
 		}
-		return this->m_orderTableCurr->ProcessIncremental(info);
+        int index = this->m_symbolManager->GetSymbol(info->Symbol, info->SymbolLength)->m_index;
+		return this->m_orderTableCurr->ProcessIncremental(info, index);
 	}
 
 	inline bool OnIncrementalRefresh_TLR_FOND(AstsTLSFONDItemInfo *info) {
-		return this->m_tradeTableFond->ProcessIncremental(info);
+        int index = this->m_symbolManager->GetSymbol(info->Symbol, info->SymbolLength)->m_index;
+		return this->m_tradeTableFond->ProcessIncremental(info, index);
 	}
 
 	inline bool OnIncrementalRefresh_TLR_CURR(AstsTLSCURRItemInfo *info) {
-        return this->m_tradeTableCurr->ProcessIncremental(info);
+        int index = this->m_symbolManager->GetSymbol(info->Symbol, info->SymbolLength)->m_index;
+        return this->m_tradeTableCurr->ProcessIncremental(info, index);
 	}
 
     inline bool OnIncrementalRefresh_MSR_FOND(AstsGenericItemInfo *info) {
-        return this->m_statTableFond->ProcessIncremental(info);
+        int index = this->m_symbolManager->GetSymbol(info->Symbol, info->SymbolLength)->m_index;
+        return this->m_statTableFond->ProcessIncremental(info, index);
     }
 
     inline bool OnIncrementalRefresh_MSR_CURR(AstsGenericItemInfo *info) {
-        return this->m_statTableCurr->ProcessIncremental(info);
+        int index = this->SecurityDefinition()->m_symbolManager->GetSymbol(info->Symbol, info->SymbolLength)->m_index;
+        return this->m_statTableCurr->ProcessIncremental(info, index);
     }
 
     inline bool OnIncrementalRefresh_OLR_FOND(AstsIncrementalOLRFONDInfo *info) {
@@ -2152,7 +2218,15 @@ protected:
         return true;
     }
 
-	inline bool ShouldSkipMessage(unsigned char *buffer, bool shouldProcessMsgSeqNumber) {
+    inline bool ShouldSkipMessageForts(unsigned char *buffer, bool shouldProcessMsgSeqNumber) {
+        if(shouldProcessMsgSeqNumber) {
+            unsigned char *templateId = (unsigned char*)(buffer + 5);
+            return (*templateId) == 0x86;
+        }
+        return *((unsigned char*)(buffer + 1)) == 0x86;
+    }
+
+	inline bool ShouldSkipMessageAsts(unsigned char *buffer, bool shouldProcessMsgSeqNumber) {
 		if(shouldProcessMsgSeqNumber) {
             unsigned short *templateId = (unsigned short*)(buffer + 5);
             return (*templateId) == 0xbc10;
@@ -2162,7 +2236,7 @@ protected:
 
 	inline bool ProcessIncremental(FeedConnectionMessageInfo *info) {
         unsigned char *buffer = info->m_address;
-		if(this->ShouldSkipMessage(buffer, !info->m_requested)) {
+		if(this->ShouldSkipMessageAsts(buffer, !info->m_requested)) {
             info->m_processed = true;
             return true;  // TODO - take this message into account, becasue it determines feed alive
         }
@@ -2184,7 +2258,7 @@ protected:
         }
 #endif
         unsigned char *buffer = info->m_address;
-        if(this->ShouldSkipMessage(buffer, !info->m_requested)) {
+        if(this->ShouldSkipMessageAsts(buffer, !info->m_requested)) {
             info->m_processed = true;
             return true;  // TODO - take this message into account, becasue it determines feed alive
         }
@@ -2275,7 +2349,10 @@ public:
     }
     inline FeedConnection* HistoricalReplay() { return this->m_historicalReplay; }
 
-    inline void SetSecurityDefinition(FeedConnection *securityDefinition) { this->m_securityDefinition = securityDefinition; }
+    inline void SetSecurityDefinition(FeedConnection *securityDefinition) {
+        this->m_securityDefinition = securityDefinition;
+        this->m_symbolManager = this->m_securityDefinition->m_symbolManager;
+    }
     inline FeedConnection* SecurityDefinition() { return this->m_securityDefinition; }
 
     inline FeedConnection** ConnectionsToRecvSymbols() { return this->m_connectionsToRecvSymbols; }
@@ -2296,10 +2373,14 @@ public:
         return res;
     }
 
-    inline void AddSymbol(LinkedPointer<AstsSecurityDefinitionInfo> *ptr) {
+    inline void AddSymbol(LinkedPointer<FortsSecurityDefinitionInfo> *ptr, int index) {
+        printf("%d add symbol %s\n", index, DebugInfoManager::Default->GetString(ptr->Data()->Symbol, ptr->Data()->SymbolLength, 0));
+    }
+
+    inline void AddSymbol(LinkedPointer<AstsSecurityDefinitionInfo> *ptr, int index) {
         AstsSecurityDefinitionInfo *info = ptr->Data();
         if(this->m_orderTableFond != 0) {
-            MarketSymbolInfo<OrderInfo<AstsOLSFONDItemInfo>> *symbol = this->m_orderTableFond->AddSymbol(info->Symbol, info->SymbolLength);
+            MarketSymbolInfo<OrderInfo<AstsOLSFONDItemInfo>> *symbol = this->m_orderTableFond->AddSymbol(info->Symbol, info->SymbolLength, index);
 
             symbol->SecurityDefinitionPtr(ptr);
             symbol->InitSessions(CalcSessionsCount(info));
@@ -2315,7 +2396,7 @@ public:
             return;
         }
         if(this->m_orderTableCurr != 0) {
-            MarketSymbolInfo<OrderInfo<AstsOLSCURRItemInfo>> *symbol = this->m_orderTableCurr->AddSymbol(info->Symbol, info->SymbolLength);
+            MarketSymbolInfo<OrderInfo<AstsOLSCURRItemInfo>> *symbol = this->m_orderTableCurr->AddSymbol(info->Symbol, info->SymbolLength, index);
 
             symbol->SecurityDefinitionPtr(ptr);
             symbol->InitSessions(CalcSessionsCount(info));
@@ -2331,7 +2412,7 @@ public:
             return;
         }
         if(this->m_tradeTableFond != 0) {
-            MarketSymbolInfo<TradeInfo<AstsTLSFONDItemInfo>> *symbol = this->m_tradeTableFond->AddSymbol(info->Symbol, info->SymbolLength);
+            MarketSymbolInfo<TradeInfo<AstsTLSFONDItemInfo>> *symbol = this->m_tradeTableFond->AddSymbol(info->Symbol, info->SymbolLength, index);
 
             symbol->SecurityDefinitionPtr(ptr);
             symbol->InitSessions(CalcSessionsCount(info));
@@ -2347,7 +2428,7 @@ public:
             return;
         }
         if(this->m_tradeTableCurr != 0) {
-            MarketSymbolInfo<TradeInfo<AstsTLSCURRItemInfo>> *symbol = this->m_tradeTableCurr->AddSymbol(info->Symbol, info->SymbolLength);
+            MarketSymbolInfo<TradeInfo<AstsTLSCURRItemInfo>> *symbol = this->m_tradeTableCurr->AddSymbol(info->Symbol, info->SymbolLength, index);
 
             symbol->SecurityDefinitionPtr(ptr);
             symbol->InitSessions(CalcSessionsCount(info));
@@ -2363,7 +2444,7 @@ public:
             return;
         }
         if(this->m_statTableFond != 0) {
-            MarketSymbolInfo<StatisticsInfo<AstsGenericItemInfo>> *symbol = this->m_statTableFond->AddSymbol(info->Symbol, info->SymbolLength);
+            MarketSymbolInfo<StatisticsInfo<AstsGenericItemInfo>> *symbol = this->m_statTableFond->AddSymbol(info->Symbol, info->SymbolLength, index);
 
             symbol->SecurityDefinitionPtr(ptr);
             symbol->InitSessions(CalcSessionsCount(info));
@@ -2379,7 +2460,7 @@ public:
             return;
         }
         if(this->m_statTableCurr != 0) {
-            MarketSymbolInfo<StatisticsInfo<AstsGenericItemInfo>> *symbol = this->m_statTableCurr->AddSymbol(info->Symbol, info->SymbolLength);
+            MarketSymbolInfo<StatisticsInfo<AstsGenericItemInfo>> *symbol = this->m_statTableCurr->AddSymbol(info->Symbol, info->SymbolLength, index);
 
             symbol->SecurityDefinitionPtr(ptr);
             symbol->InitSessions(CalcSessionsCount(info));
@@ -2394,6 +2475,12 @@ public:
             }
             return;
         }
+    }
+
+    inline void AddSecurityDefinitionToList(FortsSecurityDefinitionInfo *info, int index) {
+        info->Used = true;
+        this->m_symbolsForts[index]->Data(info);
+        this->m_symbolsCount = index + 1;
     }
 
     inline void AddSecurityDefinitionToList(AstsSecurityDefinitionInfo *info, int index) {
@@ -2475,6 +2562,25 @@ public:
         }
     }
 
+    inline bool ProcessSecurityDefinition(FortsSecurityDefinitionInfo *info) {
+        bool wasNewlyAdded = false;
+
+        SymbolInfo *smb = this->m_symbolManager->GetSymbol(info->Symbol, info->SymbolLength, &wasNewlyAdded);
+
+        info->Used = true;
+        if(wasNewlyAdded) {
+            this->AddSecurityDefinitionToList(info, smb->m_index);
+            printf("add forts security definition %s index = %d", DebugInfoManager::Default->GetString(info->Symbol, info->SymbolLength, 0), smb->m_index);
+        }
+        else {
+            printf("update forts security definition %s", DebugInfoManager::Default->GetString(info->Symbol, info->SymbolLength, 0));
+            this->UpdateSecurityDefinition(info);
+        }
+        info->ReleaseUnused();
+
+        return true;
+    }
+
     inline bool ProcessSecurityDefinition(AstsSecurityDefinitionInfo *info) {
         bool wasNewlyAdded = false;
 
@@ -2553,12 +2659,27 @@ public:
         }
     }
 
-    inline void ClearSecurityDefinitions() {
+    inline void ClearSecurityDefinitionsAsts() {
         for(int i = 0; i < this->m_symbolsCount; i++) {
             this->m_symbols[i]->Data()->Clear();
             this->m_symbols[i]->Data(0);
         }
         this->m_symbolsCount = 0;
+    }
+
+    inline void ClearSecurityDefinitionsForts() {
+        for(int i = 0; i < this->m_symbolsCount; i++) {
+            this->m_symbolsForts[i]->Data()->Clear();
+            this->m_symbolsForts[i]->Data(0);
+        }
+        this->m_symbolsCount = 0;
+    }
+
+    inline void ClearSecurityDefinitions() {
+        if(this->m_marketType == FeedMarketType::fmtAsts)
+            ClearSecurityDefinitionsAsts();
+        else
+            ClearSecurityDefinitionsForts();
     }
 
     inline void BeforeProcessSecurityDefinitions() {
@@ -2568,9 +2689,22 @@ public:
         }
     }
 
-    inline void AddSecurityDefinition(LinkedPointer<AstsSecurityDefinitionInfo> *ptr) {
+    inline void AddSecurityDefinition(LinkedPointer<AstsSecurityDefinitionInfo> *ptr, int index) {
+        SymbolInfo *smb = this->m_symbolManager->GetSymbol(ptr->Data()->Symbol, ptr->Data()->SymbolLength);
+        if(smb->m_index != index)
+            throw;
+
         for(int c = 0; c < this->m_connectionsToRecvSymbolsCount; c++)
-            this->m_connectionsToRecvSymbols[c]->AddSymbol(ptr);
+            this->m_connectionsToRecvSymbols[c]->AddSymbol(ptr, smb->m_index);
+    }
+
+    inline void AddSecurityDefinition(LinkedPointer<FortsSecurityDefinitionInfo> *ptr, int index) {
+        SymbolInfo *smb = this->m_symbolManager->GetSymbol(ptr->Data()->Symbol, ptr->Data()->SymbolLength);
+        if(smb->m_index != index)
+            throw;
+
+        for(int c = 0; c < this->m_connectionsToRecvSymbolsCount; c++)
+            this->m_connectionsToRecvSymbols[c]->AddSymbol(ptr, smb->m_index);
     }
 
     inline AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo* FindTradingSession(AstsSecurityDefinitionInfo *info, const char *tradingSession, int tradingSessionLength) {
@@ -2613,7 +2747,7 @@ public:
         return true;
     }
 
-    inline void UpdateSecurityDefinition(FeedConnectionMessageInfo *info) {
+    inline void UpdateSecurityDefinitionAsts(FeedConnectionMessageInfo *info) {
         this->m_fastProtocolManager->SetNewBuffer(info->m_address + 4, info->m_size - 4); // skip msg seq num
         this->m_fastProtocolManager->DecodeAstsHeader();
         if(this->m_fastProtocolManager->TemplateId() != FeedConnectionMessage::fmcSecurityDefinition)
@@ -2621,6 +2755,23 @@ public:
         AstsSecurityDefinitionInfo *fi = (AstsSecurityDefinitionInfo *)this->m_fastProtocolManager->DecodeAstsSecurityDefinition();
         this->UpdateSecurityDefinition(fi);
         fi->ReleaseUnused();
+    }
+
+    inline void UpdateSecurityDefinitionForts(FeedConnectionMessageInfo *info) {
+        this->m_fastProtocolManager->SetNewBuffer(info->m_address + 4, info->m_size - 4); // skip msg seq num
+        this->m_fastProtocolManager->DecodeFortsHeader();
+        if(this->m_fastProtocolManager->TemplateId() != FortsMessage::fortsSecurityDefinition)
+            return;
+        FortsSecurityDefinitionInfo *fi = (FortsSecurityDefinitionInfo *)this->m_fastProtocolManager->DecodeFortsSecurityDefinition();
+        this->UpdateSecurityDefinition(fi);
+        fi->ReleaseUnused();
+    }
+
+    inline void UpdateSecurityDefinition(FeedConnectionMessageInfo *info) {
+        if(this->m_marketType == FeedMarketType::fmtAsts)
+            UpdateSecurityDefinitionAsts(info);
+        else
+            UpdateSecurityDefinitionForts(info);
     }
 
     inline void ReplaceMarketSegmentGroupById(AstsSecurityDefinitionInfo *info, AstsSecurityDefinitionMarketSegmentGrpItemInfo *m) {
@@ -2669,8 +2820,14 @@ public:
         prev->Used = false;
         prev->ReleaseUnused();
         ptr->Data(curr);
-        int sc2 = curr->MarketSegmentGrp[0]->TradingSessionRulesGrp[0]->Allocator->Count();
-        printf("update sc before %d after %d\n", sc1, sc2);
+    }
+
+    inline void UpdateSecurityDefinition(LinkedPointer<FortsSecurityDefinitionInfo> *ptr, FortsSecurityDefinitionInfo *curr) {
+        FortsSecurityDefinitionInfo *prev = ptr->Data();
+        prev->Used = false;
+        curr->Used = true;
+        prev->ReleaseUnused();
+        ptr->Data(curr);
     }
 
     inline int IdfFindBySymbol(const char *symbol, int symbolLength) {
@@ -2682,34 +2839,53 @@ public:
     }
 
     inline void UpdateSecurityDefinition(AstsSecurityDefinitionInfo *info) {
-        bool wasNewlyAdded;
-
-        SymbolInfo *sm = this->m_symbolManager->GetSymbol(info->Symbol, info->SymbolLength, &wasNewlyAdded);
+        SymbolInfo *sm = this->m_symbolManager->GetSymbol(info->Symbol, info->SymbolLength);
         LinkedPointer<AstsSecurityDefinitionInfo> *orig = this->m_symbols[sm->m_index];
-        if(!StringIdComparer::Equal(orig->Data()->Symbol, orig->Data()->SymbolLength, info->Symbol, info->SymbolLength)) {
-            int symbolIndex = IdfFindBySymbol(info->Symbol, info->SymbolLength);
-            printf("symbols are not equal\n");
-        }
         this->UpdateSecurityDefinition(orig, info);
     }
 
-    inline void AfterProcessSecurityDefinitions() {
+    inline void UpdateSecurityDefinition(FortsSecurityDefinitionInfo *info) {
+        SymbolInfo *sm = this->m_symbolManager->GetSymbol(info->Symbol, info->SymbolLength);
+        LinkedPointer<FortsSecurityDefinitionInfo> *orig = this->m_symbolsForts[sm->m_index];
+        this->UpdateSecurityDefinition(orig, info);
+    }
+
+    inline void AfterProcessSecurityDefinitionsForts() {
         //TODO remove debug
-        printf("%s %s SymbolsCount = %d\n", this->m_channelName, this->m_idName, this->m_symbolsCount);
+        printf("%s %s symbols count = %d\n", this->m_channelName, this->m_idName, this->m_symbolsCount);
+
+        for(int i = 0; i < this->m_connectionsToRecvSymbolsCount; i++)
+            this->m_connectionsToRecvSymbols[i]->InitSymbols(this->m_symbolsCount);
+
+        LinkedPointer<FortsSecurityDefinitionInfo> **ptr = this->m_symbolsForts;
+        for(int i = 0; i < this->m_symbolsCount; i++, ptr++)
+            this->AddSecurityDefinition(*ptr, i);
+    }
+
+    inline void AfterProcessSecurityDefinitionsAsts() {
+        //TODO remove debug
+        printf("%s %s symbols count = %d\n", this->m_channelName, this->m_idName, this->m_symbolsCount);
         int sessionCount = 0;
         for(int i = 0; i < this->m_symbolsCount; i++) {
             for (int j = 0; j < this->m_symbols[i]->Data()->MarketSegmentGrpCount; j++) {
                 sessionCount += this->m_symbols[i]->Data()->MarketSegmentGrp[j]->TradingSessionRulesGrpCount;
             }
         }
-        printf("%s %s Total SessionsCount = %d\n", this->m_channelName, this->m_idName, sessionCount);
+        printf("%s %s total sessions count = %d\n", this->m_channelName, this->m_idName, sessionCount);
 
         for(int i = 0; i < this->m_connectionsToRecvSymbolsCount; i++)
             this->m_connectionsToRecvSymbols[i]->InitSymbols(this->m_symbolsCount);
 
         LinkedPointer<AstsSecurityDefinitionInfo> **ptr = this->m_symbols;
         for(int i = 0; i < this->m_symbolsCount; i++, ptr++)
-            this->AddSecurityDefinition(*ptr);
+            this->AddSecurityDefinition(*ptr, i);
+    }
+
+    inline void AfterProcessSecurityDefinitions() {
+        if(this->m_marketType == FeedMarketType::fmtAsts)
+            AfterProcessSecurityDefinitionsAsts();
+        else
+            AfterProcessSecurityDefinitionsForts();
     }
 
     inline bool HasLostPackets(int msgStart, int msgEnd) {
@@ -2816,6 +2992,7 @@ public:
 		DefaultLogManager::Default->EndLog(true);
 	}
 
+    inline int TotalNumReports() { return this->m_idfMaxMsgSeqNo; }
 	inline int MsgSeqNo() { return this->m_startMsgSeqNum; }
     inline int WindowMsgSeqNo () { return this->m_windowMsgSeqNum; }
     inline int WindowSize() { return this->m_endMsgSeqNum - this->m_windowMsgSeqNum; }

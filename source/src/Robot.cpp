@@ -394,30 +394,29 @@ bool Robot::CollectSecurityDefinitionsForts() {
     w->Start();
     unsigned int cycleCount = 0;
 
-    DefaultLogManager::Default->StartLog(LogMessageCode::lmcRobot_CollectSecurityDefinitions);
+    DefaultLogManager::Default->StartLog(LogMessageCode::lmcRobot_CollectSecurityDefinitionsForts);
     bool collectedFutures = false;
     bool collectedOptions = false;
 
     if(!this->m_fortsChannel->AllowFutures())
         collectedFutures = true;
-    else {
-        if (this->m_fortsChannel->LoadSecurityDefinitionFutures())
-            collectedFutures = true;
-        else if(!this->m_fortsChannel->FutInfo()->InstrReplay()->Start()) {
-            DefaultLogManager::Default->EndLog(false);
-            return false;
-        }
-    }
+    else if (this->m_fortsChannel->LoadSecurityDefinitionFutures())
+        collectedFutures = true;
+
     if(!this->m_fortsChannel->AllowOptions())
         collectedOptions = true;
-    else {
-        if (this->m_fortsChannel->LoadSecurityDefinitionOptions())
-            collectedOptions = true;
-        else if(!this->m_fortsChannel->OptInfo()->InstrReplay()->Start()) {
-            DefaultLogManager::Default->EndLog(false);
-            return false;
-        }
+    else if (this->m_fortsChannel->LoadSecurityDefinitionOptions())
+        collectedOptions = true;
+
+    if(!collectedFutures && !this->m_fortsChannel->FutInfo()->InstrReplay()->Start()) {
+        DefaultLogManager::Default->EndLog(false);
+        return false;
     }
+    if(!collectedOptions && !this->m_fortsChannel->OptInfo()->InstrReplay()->Start()) {
+        DefaultLogManager::Default->EndLog(false);
+        return false;
+    }
+
     while(true) {
         if(!WinSockManager::UpdateManagersPollStatus())
             break;
@@ -449,6 +448,14 @@ bool Robot::CollectSecurityDefinitionsForts() {
 
             double nanosecPerCycle = w->ElapsedMilliseconds() * 1000.0 * 1000.0 / cycleCount;
             printf("cycle count for 1 sec = %d. %g nanosec per cycle\n", cycleCount, nanosecPerCycle);
+            printf("process future idf %d of %d\n",
+                   this->m_fortsChannel->FutInfo()->InstrReplay()->LastRecvMsgSeqNo(),
+                   this->m_fortsChannel->FutInfo()->InstrReplay()->TotalNumReports()
+            );
+            printf("process options idf %d of %d\n",
+                   this->m_fortsChannel->OptInfo()->InstrReplay()->LastRecvMsgSeqNo(),
+                   this->m_fortsChannel->OptInfo()->InstrReplay()->TotalNumReports()
+            );
 
             cycleCount = 0;
         }
@@ -456,17 +463,21 @@ bool Robot::CollectSecurityDefinitionsForts() {
     }
     DefaultLogManager::Default->EndLog(true);
 
-    DefaultLogManager::Default->StartLog(LogMessageCode::lmcRobot_GenerateSecurityDefinitions);
+    DefaultLogManager::Default->StartLog(LogMessageCode::lmcRobot_GenerateSecurityDefinitionsForts);
+
+    if(this->m_fortsChannel->AllowFutures())
+        this->m_fortsChannel->FutInfo()->InstrReplay()->GenerateSecurityDefinitions();
+    if(this->m_fortsChannel->AllowOptions())
+        this->m_fortsChannel->OptInfo()->InstrReplay()->GenerateSecurityDefinitions();
 
     if(this->m_fortsChannel->AllowFutures()) {
-        this->m_fortsChannel->FutInfo()->InstrReplay()->GenerateSecurityDefinitions();
         if(!this->m_fortsChannel->OnAfterGenerateSecurityDefinitionsFut()) {
             DefaultLogManager::Default->EndLog(false);
             return false;
         }
     }
+
     if(this->m_fortsChannel->AllowOptions()) {
-        this->m_fortsChannel->OptInfo()->InstrReplay()->GenerateSecurityDefinitions();
         if(!this->m_fortsChannel->OnAfterGenerateSecurityDefinitionsOpt()) {
             DefaultLogManager::Default->EndLog(false);
             return false;
@@ -655,8 +666,8 @@ bool Robot::MainLoopForts() {
         if(w->ElapsedMilliseconds() > 5000) {
             double nanosecPerCycle = w->ElapsedMilliseconds() * 1000.0 * 1000.0 / cycleCount;
             printf("--------\n");
-            printf("cycle count for 5 sec = %d. %g nanosec per cycle\n", cycleCount, nanosecPerCycle);
-            this->PrintStatistics();
+            printf("FORTS cycle count for 5 sec = %d. %g nanosec per cycle\n", cycleCount, nanosecPerCycle);
+            //this->PrintStatistics();
 
             w->Reset();
             cycleCount = 0;

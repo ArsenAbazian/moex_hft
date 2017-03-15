@@ -813,12 +813,17 @@ namespace prebuild {
 		}
 
 		private void WriteNullValueCode(string tabs, XmlNode value) {
-			if(value.Name == "string")
+			if(IsString(value))
 				WriteLine(tabs + "this->WriteNullString();");
 			else 
 				WriteLine(tabs + "this->WriteNull();");
 		}
-
+		bool IsByteVector(XmlNode field) {
+			return field.Name == "byteVector" || (HasAttribute(field, "charset") && field.Attributes["charset"].Value == "unicode");
+		}
+		bool IsString(XmlNode field) {
+			return field.Name == "string" && (!HasAttribute(field, "charset") || field.Attributes["charset"].Value != "unicode");
+		}
 		private  void WriteEncodeValueCode (XmlNode field, StructureInfo si, string tabs) {
 			bool nullCheck = ShouldWriteNullCheckCode(field);
 			bool presenceCheck = ShouldWriteCheckPresenceMapCode(field);
@@ -843,7 +848,7 @@ namespace prebuild {
 
 				tabs += "\t";
 			}
-			if(field.Name == "string")
+			if(IsString(field))
 				WriteStringEncodeMethodCode(field, si, tabs);
 			else if(field.Name == "uInt32")
 				WriteUint32EncodeMethodCode(field, si, tabs);
@@ -855,7 +860,7 @@ namespace prebuild {
 				WriteInt64EncodeMethodCode(field, si, tabs);
 			else if(field.Name == "decimal")
 				WriteDecimalEncodeMethodCode(field, si, tabs);
-			else if(field.Name == "byteVector")
+			else if(IsByteVector(field))
 				WriteByteVectorEncodeMethodCode(field, si, tabs);
 			else if(field.Name == "sequence") {
 				WriteSequenceEncodeMethodCode(field, si, tabs);
@@ -1779,7 +1784,7 @@ namespace prebuild {
 			foreach(XmlNode field in info.Fields) {
 				if(field.NodeType == XmlNodeType.Comment)
 					continue;
-				if(field.Name == "string")
+				if(IsString(field))
 					WriteStringDefinition(field);
 				else if(field.Name == "uInt32")
 					WriteUint32Field(field);
@@ -1791,7 +1796,7 @@ namespace prebuild {
 					WriteInt64Field(field);
 				else if(field.Name == "decimal")
 					WriteDecimalField(field);
-				else if(field.Name == "byteVector")
+				else if(IsByteVector(field))
 					WriteByteVectorField(field);
 				else if(field.Name == "sequence")
 					WriteSequence(field, parentName);
@@ -1816,7 +1821,7 @@ namespace prebuild {
 			WriteLine("\t\tthis->PresenceMap = 0;");
 			WriteLine("\t\tthis->NullMap = 0;");
 			foreach(XmlNode field in info.Fields) {
-				if(field.Name == "string")
+				if(IsString(field))
 					WriteClearStringCode(field);
 				if(field.Name == "sequence")
 					WriteLine("\t\tthis->" + Name(field) + "Count = 0;");
@@ -1913,7 +1918,7 @@ namespace prebuild {
 				if(attribute.Name == "name")
 					continue;
 				if(!IsKnownAttribute(attribute))
-					Console.WriteLine("\nERROR: unknown attribute");
+					Console.WriteLine("\nERROR: unknown attribute " + attribute.Name);
 				result += attribute.Name + "=" + attribute.Value + "  ";
 			}
 			if(field.Name != "sequence") {
@@ -1927,7 +1932,7 @@ namespace prebuild {
 		}
 
 		private  bool IsKnownAttribute (XmlAttribute attribute) {
-			return attribute.Name == "name" || attribute.Name == "id" || attribute.Name == "presence";
+			return attribute.Name == "name" || attribute.Name == "id" || attribute.Name == "presence" || attribute.Name == "charset";
 		}
 		StructureInfo GetOriginalStruct(XmlNode field) {
 			if(field.ParentNode == null || field.ParentNode.Attributes["name"] == null)
@@ -2194,15 +2199,15 @@ namespace prebuild {
 			CurrentFile.Line += 3;
 		}
 
-		private void WritePrintPresenceMap(XmlNode template, StructureInfo info, string tabs, int tabsCount) {
+		private void WritePrintPresenceMap(XmlNode template, string info, string tabs, int tabsCount) {
 			if(GetMaxPresenceBitCount(template) > 0) {
-				WriteLine(tabs + "PrintPresenceMap(" + info.ValueName + "->PresenceMap, " + GetMaxPresenceBitCount(template) + ", " + tabsCount + ");");
+				WriteLine(tabs + "PrintPresenceMap(" + info + "->PresenceMap, " + GetMaxPresenceBitCount(template) + ", " + tabsCount + ");");
 			}
 		}
 
-		private void WritePrintXmlPresenceMap(XmlNode template, StructureInfo info, string tabs) {
+		private void WritePrintXmlPresenceMap(XmlNode template, string info, string tabs) {
 			if(GetMaxPresenceBitCount(template) > 0) {
-				WriteLine(tabs + "PrintXmlPresenceMap(" + info.ValueName + "->PresenceMap, " + GetMaxPresenceBitCount(template) + ");");
+				WriteLine(tabs + "PrintXmlPresenceMap(" + info + "->PresenceMap, " + GetMaxPresenceBitCount(template) + ");");
 			}
 		}
 
@@ -2223,7 +2228,7 @@ namespace prebuild {
 			WriteLine("void FastProtocolManager::Print" + Prefix + templateName + "(" + info.Name + " *info) {");
 			WriteLine("");
 			WriteLine("\tprintf(\"" + info.Name + " {\\n\");");
-			WritePrintPresenceMap(template, info, "\t\t", 1);
+			WritePrintPresenceMap(template, "info", "\t", 1);
 			WriteLine("\tPrintInt32(\"TemplateId\", " + template.Attributes["id"].Value + ", 1);");
 			foreach(XmlNode value in template.ChildNodes) {
 				if(value.NodeType == XmlNodeType.Comment)
@@ -2240,7 +2245,7 @@ namespace prebuild {
 			WriteLine("void FastProtocolManager::PrintXml" + Prefix + templateName + "(" + info.Name + " *info) {");
 			WriteLine("");
 			WriteLine("\tPrintXmlItemBegin(\"" + info.Name +"\");");
-			WritePrintXmlPresenceMap(template, info, "\t\t");
+			WritePrintXmlPresenceMap(template, "info", "\t");
 			WriteLine("\tPrintXmlInt32(\"TemplateId\", " + template.Attributes["id"].Value + ");");
 			foreach(XmlNode value in template.ChildNodes) {
 				if(value.NodeType == XmlNodeType.Comment)
@@ -2376,7 +2381,7 @@ namespace prebuild {
 			}
 
 			if(HasMandatoryPresence(value) && HasConstantAttribute(value))
-				return false;
+				return true; // WAS false - PLEASE CHECK
 			if(HasOptionalPresence(value) && HasConstantAttribute(value))
 				return true;
 			if(HasMandatoryPresence(value) &&
@@ -2410,7 +2415,7 @@ namespace prebuild {
 			if(!WriteConstantCheckingCode)
 				return;
 			//WriteLine("#ifdef FAST_CHECK_CONSTANT_VALUES");
-			if(value.Name == "string")
+			if(IsString(value))
 				WriteStringConstantValueCheckngCode(value, structName, parentName, tabString);
 			else
 				WriteNumericValueConstantCheckingCode(value, structName, parentName, tabString);
@@ -2885,7 +2890,7 @@ namespace prebuild {
 				WriteLine(tabString + "if(" + name + "(" + objectValueName + "->PresenceMap, PRESENCE_MAP_INDEX" + CalcFieldPresenceIndex(value) + ")) {");
 				tabString += "\t";
 			}
-			if(value.Name == "string")
+			if(IsString(value))
 				ParseStringValue(str, value, objectValueName, tabString);
 			else if(value.Name == "uInt32")
 				ParseUint32Value(str, value, objectValueName, tabString);
@@ -2897,7 +2902,7 @@ namespace prebuild {
 				ParseInt64Value(str, value, objectValueName, tabString);
 			else if(value.Name == "decimal")
 				ParseDecimalValue(str, value, objectValueName, tabString);
-			else if(value.Name == "byteVector")
+			else if(IsByteVector(value))
 				ParseByteVectorValue(str, value, objectValueName, tabString);
 			else if(value.Name == "sequence")
 				ParseSequence(str, value, objectValueName, classCoreName, tabString);
@@ -2919,7 +2924,7 @@ namespace prebuild {
 		}
 
 		private void WriteApplyOperatorsCode(StructureInfo str, XmlNode value, string info, string tabString) {
-			if(value.Name == "string")
+			if(IsString(value))
 				WriteStringValueOperatorsCode(str, value, info, tabString);
 			else if(value.Name == "uInt32")
 				WriteUint32ValueOperatorsCode(str, value, info, tabString);
@@ -2931,7 +2936,7 @@ namespace prebuild {
 				WriteInt64ValueOperatorsCode(str, value, info, tabString);
 			else if(value.Name == "decimal")
 				WriteDecimalValueOperatorsCode(str, value, info, tabString);
-			else if(value.Name == "byteVector")
+			else if(IsByteVector(value))
 				WriteByteVectorValueOperatorsCode(str, value, info, tabString);
 		}
 
@@ -3058,7 +3063,7 @@ namespace prebuild {
 				tabString += "\t";
 			}
 
-			if(value.Name == "string")
+			if(IsString(value))
 				PrintStringValue(value, objectValueName, tabString, tabsCount);
 			else if(value.Name == "uInt32")
 				PrintUInt32Value(value, objectValueName, tabString, tabsCount);
@@ -3070,7 +3075,7 @@ namespace prebuild {
 				PrintInt64Value(value, objectValueName, tabString, tabsCount);
 			else if(value.Name == "decimal")
 				PrintDecimalValue(value, objectValueName, tabString, tabsCount);
-			else if(value.Name == "byteVector")
+			else if(IsByteVector(value))
 				PrintByteVectorValue(value, objectValueName, tabString, tabsCount);
 			else if(value.Name == "sequence")
 				PrintSequence(value, objectValueName, classCoreName, tabString, tabsCount);
@@ -3096,7 +3101,7 @@ namespace prebuild {
 				WriteLine(tabString + "if((" + objectValueName + "->NullMap & NULL_MAP_INDEX" + nullIndex + ") == 0)");
 				tabString += "\t";
 			}
-			if(value.Name == "string")
+			if(IsString(value))
 				PrintXmlStringValue(value, objectValueName, tabString);
 			else if(value.Name == "uInt32")
 				PrintXmlUInt32Value(value, objectValueName, tabString);
@@ -3108,7 +3113,7 @@ namespace prebuild {
 				PrintXmlInt64Value(value, objectValueName, tabString);
 			else if(value.Name == "decimal")
 				PrintXmlDecimalValue(value, objectValueName, tabString);
-			else if(value.Name == "byteVector")
+			else if(IsByteVector(value))
 				PrintXmlByteVectorValue(value, objectValueName, tabString);
 			else if(value.Name == "sequence")
 				PrintXmlSequence(value, objectValueName, classCoreName, tabString);

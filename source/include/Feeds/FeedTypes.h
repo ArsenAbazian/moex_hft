@@ -5,6 +5,11 @@
 #ifndef HFT_ROBOT_FEEDTYPES_H
 #define HFT_ROBOT_FEEDTYPES_H
 
+typedef enum _FeedMarketType {
+    fmtAsts,
+    fmtForts
+}FeedMarketType;
+
 typedef enum _FeedConnectionMessage {
     fmcLogon = 2101,
     fmcLogout = 2102,
@@ -25,6 +30,10 @@ typedef enum _FeedConnectionMessage {
     fmcIncrementalRefresh_MSR_FOND = 2523,
     fmcIncrementalRefresh_MSR_CURR = 3613
 } FeedConnectionMessage;
+
+typedef enum _FortsMessage {
+    fortsSecurityDefinition = 3
+}FortsMessage;
 
 typedef enum _FeedConnectionId {
     fcidObrFond,

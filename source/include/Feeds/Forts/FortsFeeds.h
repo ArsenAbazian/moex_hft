@@ -10,31 +10,40 @@
 class FeedConnection_FORTS_INC : public FeedConnection {
 public:
     FeedConnection_FORTS_INC(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
-            FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) { }
+            FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
+        this->m_marketType = FeedMarketType::fmtForts;
+    }
 };
 
 class FeedConnection_FORTS_SNAP : public FeedConnection {
 public:
     FeedConnection_FORTS_SNAP(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
-            FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) { }
+            FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
+        this->m_marketType = FeedMarketType::fmtForts;
+    }
 };
 
 class FeedConnection_FORTS_HR : public FeedConnection {
 public:
     FeedConnection_FORTS_HR(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
-            FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) { }
+            FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
+        this->m_marketType = FeedMarketType::fmtForts;
+    }
 };
 
 class FeedConnection_FORTS_INSTR_INC : public FeedConnection {
 public:
     FeedConnection_FORTS_INSTR_INC(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
-            FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) { }
+            FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
+        this->m_marketType = FeedMarketType::fmtForts;
+    }
 };
 
 class FeedConnection_FORTS_INSTR_SNAP : public FeedConnection {
 public:
     FeedConnection_FORTS_INSTR_SNAP(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
             FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
+        this->m_marketType = FeedMarketType::fmtForts;
         this->SetType(FeedConnectionType::InstrumentDefinition);
         this->SetId(FeedConnectionId::fcidIdfForts);
         this->m_fastProtocolManager = new FastProtocolManager();

@@ -59,7 +59,9 @@ class Robot {
         return true;
     }
     inline bool Working() {
-        return this->m_currMarket->Working() || this->m_fondMarket->Working();
+        return (this->m_allowCurrMarket && this->m_currMarket->Working()) ||
+                (this->m_allowFondMarket && this->m_fondMarket->Working()) ||
+                this->m_allowFortsMarket;
     }
 
 public:
@@ -70,7 +72,7 @@ public:
     inline void AllowFondMarket(bool value) { this->m_allowFondMarket = value; }
     inline bool AllowCurrMarket() { return this->m_allowCurrMarket; }
     inline void AllowCurrMarket(bool value) { this->m_allowCurrMarket = value; }
-    inline bool AllowFortsMarket() { return this->m_allowFondMarket; }
+    inline bool AllowFortsMarket() { return this->m_allowFortsMarket; }
     inline void AllowFortsMarket(bool value) { this->m_allowFortsMarket = value; }
 
     inline bool AllowMarketDataGroup(MarketDataGroupId id) { return this->m_allowFortsFeeds[id]; }
@@ -231,6 +233,20 @@ public:
         );
     }
 
+    inline void PrintStatusFeedStatistics(const char *name, FeedConnection *fc, int usedItemsCount, int totalItemsCount) {
+        bool inSnapshot = fc->SecurityDefinition()->State() == FeedConnectionState::fcsListenSecurityDefinition;
+        printf("%s   state = %s  items used = %d of %d %g%%  que_entries_count = %d  snapshot symbols %d  buffer usage %g  buffer items usage %g  msgSeqNo = %d\n",
+               name,
+               inSnapshot? "snap" : "inc",
+               usedItemsCount, totalItemsCount, 100.0 * usedItemsCount / totalItemsCount,
+               fc->QueueEntriesCount(),
+               fc->SymbolsToRecvSnapshotCount(),
+               fc->RecvBuffer()->CalcMemoryUsagePercentage(),
+               fc->RecvBuffer()->CalcItemsUsagePercentage(),
+               fc->MsgSeqNo()
+        );
+    }
+
     inline void PrintStatisticsFond() {
         printf("------\n");
 #ifdef ALLOW_ORDERS
@@ -266,9 +282,9 @@ public:
 #endif
 
 #ifdef ALLOW_STATUS
-        printf("fond isf socket buffer usage = %g item usage = %g\n",
-                   this->m_fondMarket->FeedChannel()->Isf()->RecvBuffer()->CalcMemoryUsagePercentage(),
-                   this->m_fondMarket->FeedChannel()->Isf()->RecvBuffer()->CalcItemsUsagePercentage());
+        this->PrintStatusFeedStatistics("curr isf", this->m_fondMarket->FeedChannel()->Isf(),
+                                        this->m_fondMarket->FeedChannel()->Isf()->FastManager()->GetAstsSecurityStatusInfoPool()->Count(),
+                                        this->m_fondMarket->FeedChannel()->Isf()->FastManager()->GetAstsSecurityStatusInfoPool()->Capacity());
 #endif
     }
 
@@ -307,9 +323,9 @@ public:
 #endif
 
 #ifdef ALLOW_STATUS
-        printf("curr isf socket buffer usage = %g item usage = %g\n",
-                   this->m_currMarket->FeedChannel()->Isf()->RecvBuffer()->CalcMemoryUsagePercentage(),
-                   this->m_currMarket->FeedChannel()->Isf()->RecvBuffer()->CalcItemsUsagePercentage());
+        this->PrintStatusFeedStatistics("curr isf", this->m_currMarket->FeedChannel()->Isf(),
+                                        this->m_currMarket->FeedChannel()->Isf()->FastManager()->GetAstsSecurityStatusInfoPool()->Count(),
+                                        this->m_currMarket->FeedChannel()->Isf()->FastManager()->GetAstsSecurityStatusInfoPool()->Capacity());
 #endif
     }
 
