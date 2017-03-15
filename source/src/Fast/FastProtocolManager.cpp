@@ -7,9 +7,7 @@ FastProtocolManager::FastProtocolManager(AstsObjectsAllocationInfo *astsInfo, Fo
 	this->m_astsAllocationInfo = astsInfo;
 	this->m_fortsAllocationInfo = spectraInfo;
 	this->InitializeConstantStrings();
-	this->InitializeAstsDecodeMethodPointers();
 	this->InitializeAstsMessageInfo();
-    this->InitializeFortsDecodeMethodPointers();
     this->InitializeFortsMessageInfo();
 	this->m_astsSnapshotInfo = new AstsSnapshotInfo();
 	this->m_fortsSnapshotInfo = new FortsSnapshotInfo();
@@ -315,7 +313,7 @@ void FastProtocolManager::PrintDecimal(const char *name, Decimal *value, int tab
 void FastProtocolManager::PrintAstsLogon(AstsLogonInfo *info) {
 
 	printf("AstsLogonInfo {\n");
-		PrintPresenceMap(info->PresenceMap, 3, 1);
+	PrintPresenceMap(info->PresenceMap, 3, 1);
 	PrintInt32("TemplateId", 2101, 1);
 	PrintString("TargetCompID", info->TargetCompID, info->TargetCompIDLength, 1);
 	PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
@@ -331,7 +329,7 @@ void FastProtocolManager::PrintAstsLogon(AstsLogonInfo *info) {
 void FastProtocolManager::PrintAstsLogout(AstsLogoutInfo *info) {
 
 	printf("AstsLogoutInfo {\n");
-		PrintPresenceMap(info->PresenceMap, 3, 1);
+	PrintPresenceMap(info->PresenceMap, 3, 1);
 	PrintInt32("TemplateId", 2102, 1);
 	PrintString("TargetCompID", info->TargetCompID, info->TargetCompIDLength, 1);
 	PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
@@ -343,7 +341,7 @@ void FastProtocolManager::PrintAstsLogout(AstsLogoutInfo *info) {
 void FastProtocolManager::PrintAstsGeneric(AstsGenericInfo *info) {
 
 	printf("AstsGenericInfo {\n");
-		PrintPresenceMap(info->PresenceMap, 4, 1);
+	PrintPresenceMap(info->PresenceMap, 4, 1);
 	PrintInt32("TemplateId", 2103, 1);
 	PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 	PrintUInt64("SendingTime", info->SendingTime, 1);
@@ -462,7 +460,7 @@ void FastProtocolManager::PrintAstsGeneric(AstsGenericInfo *info) {
 void FastProtocolManager::PrintAstsIncrementalGeneric(AstsIncrementalGenericInfo *info) {
 
 	printf("AstsIncrementalGenericInfo {\n");
-		PrintPresenceMap(info->PresenceMap, 4, 1);
+	PrintPresenceMap(info->PresenceMap, 4, 1);
 	PrintInt32("TemplateId", 2104, 1);
 	PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 	PrintUInt64("SendingTime", info->SendingTime, 1);
@@ -573,7 +571,7 @@ void FastProtocolManager::PrintAstsIncrementalGeneric(AstsIncrementalGenericInfo
 void FastProtocolManager::PrintAstsOLSFOND(AstsOLSFONDInfo *info) {
 
 	printf("AstsOLSFONDInfo {\n");
-		PrintPresenceMap(info->PresenceMap, 4, 1);
+	PrintPresenceMap(info->PresenceMap, 4, 1);
 	PrintInt32("TemplateId", 2510, 1);
 	PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 	PrintUInt64("SendingTime", info->SendingTime, 1);
@@ -632,7 +630,7 @@ void FastProtocolManager::PrintAstsOLSFOND(AstsOLSFONDInfo *info) {
 void FastProtocolManager::PrintAstsOLSCURR(AstsOLSCURRInfo *info) {
 
 	printf("AstsOLSCURRInfo {\n");
-		PrintPresenceMap(info->PresenceMap, 4, 1);
+	PrintPresenceMap(info->PresenceMap, 4, 1);
 	PrintInt32("TemplateId", 3600, 1);
 	PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 	PrintUInt64("SendingTime", info->SendingTime, 1);
@@ -683,7 +681,7 @@ void FastProtocolManager::PrintAstsOLSCURR(AstsOLSCURRInfo *info) {
 void FastProtocolManager::PrintAstsTLSFOND(AstsTLSFONDInfo *info) {
 
 	printf("AstsTLSFONDInfo {\n");
-		PrintPresenceMap(info->PresenceMap, 4, 1);
+	PrintPresenceMap(info->PresenceMap, 4, 1);
 	PrintInt32("TemplateId", 2511, 1);
 	PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 	PrintUInt64("SendingTime", info->SendingTime, 1);
@@ -757,7 +755,7 @@ void FastProtocolManager::PrintAstsTLSFOND(AstsTLSFONDInfo *info) {
 void FastProtocolManager::PrintAstsTLSCURR(AstsTLSCURRInfo *info) {
 
 	printf("AstsTLSCURRInfo {\n");
-		PrintPresenceMap(info->PresenceMap, 4, 1);
+	PrintPresenceMap(info->PresenceMap, 4, 1);
 	PrintInt32("TemplateId", 3601, 1);
 	PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 	PrintUInt64("SendingTime", info->SendingTime, 1);
@@ -825,7 +823,7 @@ void FastProtocolManager::PrintAstsTLSCURR(AstsTLSCURRInfo *info) {
 void FastProtocolManager::PrintAstsIncrementalMSRFOND(AstsIncrementalMSRFONDInfo *info) {
 
 	printf("AstsIncrementalMSRFONDInfo {\n");
-		PrintPresenceMap(info->PresenceMap, 4, 1);
+	PrintPresenceMap(info->PresenceMap, 4, 1);
 	PrintInt32("TemplateId", 2523, 1);
 	PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 	PrintUInt64("SendingTime", info->SendingTime, 1);
@@ -912,7 +910,7 @@ void FastProtocolManager::PrintAstsIncrementalMSRFOND(AstsIncrementalMSRFONDInfo
 void FastProtocolManager::PrintAstsIncrementalMSRCURR(AstsIncrementalMSRCURRInfo *info) {
 
 	printf("AstsIncrementalMSRCURRInfo {\n");
-		PrintPresenceMap(info->PresenceMap, 4, 1);
+	PrintPresenceMap(info->PresenceMap, 4, 1);
 	PrintInt32("TemplateId", 3613, 1);
 	PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 	PrintUInt64("SendingTime", info->SendingTime, 1);
@@ -989,7 +987,7 @@ void FastProtocolManager::PrintAstsIncrementalMSRCURR(AstsIncrementalMSRCURRInfo
 void FastProtocolManager::PrintAstsIncrementalOLRFOND(AstsIncrementalOLRFONDInfo *info) {
 
 	printf("AstsIncrementalOLRFONDInfo {\n");
-		PrintPresenceMap(info->PresenceMap, 4, 1);
+	PrintPresenceMap(info->PresenceMap, 4, 1);
 	PrintInt32("TemplateId", 2520, 1);
 	PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 	PrintUInt64("SendingTime", info->SendingTime, 1);
@@ -1040,7 +1038,7 @@ void FastProtocolManager::PrintAstsIncrementalOLRFOND(AstsIncrementalOLRFONDInfo
 void FastProtocolManager::PrintAstsIncrementalOLRCURR(AstsIncrementalOLRCURRInfo *info) {
 
 	printf("AstsIncrementalOLRCURRInfo {\n");
-		PrintPresenceMap(info->PresenceMap, 4, 1);
+	PrintPresenceMap(info->PresenceMap, 4, 1);
 	PrintInt32("TemplateId", 3610, 1);
 	PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 	PrintUInt64("SendingTime", info->SendingTime, 1);
@@ -1085,7 +1083,7 @@ void FastProtocolManager::PrintAstsIncrementalOLRCURR(AstsIncrementalOLRCURRInfo
 void FastProtocolManager::PrintAstsIncrementalTLRFOND(AstsIncrementalTLRFONDInfo *info) {
 
 	printf("AstsIncrementalTLRFONDInfo {\n");
-		PrintPresenceMap(info->PresenceMap, 4, 1);
+	PrintPresenceMap(info->PresenceMap, 4, 1);
 	PrintInt32("TemplateId", 2521, 1);
 	PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 	PrintUInt64("SendingTime", info->SendingTime, 1);
@@ -1151,7 +1149,7 @@ void FastProtocolManager::PrintAstsIncrementalTLRFOND(AstsIncrementalTLRFONDInfo
 void FastProtocolManager::PrintAstsIncrementalTLRCURR(AstsIncrementalTLRCURRInfo *info) {
 
 	printf("AstsIncrementalTLRCURRInfo {\n");
-		PrintPresenceMap(info->PresenceMap, 4, 1);
+	PrintPresenceMap(info->PresenceMap, 4, 1);
 	PrintInt32("TemplateId", 3611, 1);
 	PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 	PrintUInt64("SendingTime", info->SendingTime, 1);
@@ -1213,7 +1211,7 @@ void FastProtocolManager::PrintAstsIncrementalTLRCURR(AstsIncrementalTLRCURRInfo
 void FastProtocolManager::PrintAstsSecurityDefinition(AstsSecurityDefinitionInfo *info) {
 
 	printf("AstsSecurityDefinitionInfo {\n");
-		PrintPresenceMap(info->PresenceMap, 4, 1);
+	PrintPresenceMap(info->PresenceMap, 4, 1);
 	PrintInt32("TemplateId", 2115, 1);
 	PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 	PrintUInt64("SendingTime", info->SendingTime, 1);
@@ -1344,7 +1342,7 @@ void FastProtocolManager::PrintAstsSecurityDefinition(AstsSecurityDefinitionInfo
 void FastProtocolManager::PrintAstsSecurityStatus(AstsSecurityStatusInfo *info) {
 
 	printf("AstsSecurityStatusInfo {\n");
-		PrintPresenceMap(info->PresenceMap, 4, 1);
+	PrintPresenceMap(info->PresenceMap, 4, 1);
 	PrintInt32("TemplateId", 2106, 1);
 	PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 	PrintUInt64("SendingTime", info->SendingTime, 1);
@@ -1362,7 +1360,7 @@ void FastProtocolManager::PrintAstsSecurityStatus(AstsSecurityStatusInfo *info) 
 void FastProtocolManager::PrintAstsTradingSessionStatus(AstsTradingSessionStatusInfo *info) {
 
 	printf("AstsTradingSessionStatusInfo {\n");
-		PrintPresenceMap(info->PresenceMap, 4, 1);
+	PrintPresenceMap(info->PresenceMap, 4, 1);
 	PrintInt32("TemplateId", 2107, 1);
 	PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 	PrintUInt64("SendingTime", info->SendingTime, 1);
@@ -1375,7 +1373,7 @@ void FastProtocolManager::PrintAstsTradingSessionStatus(AstsTradingSessionStatus
 void FastProtocolManager::PrintAstsHeartbeat(AstsHeartbeatInfo *info) {
 
 	printf("AstsHeartbeatInfo {\n");
-		PrintPresenceMap(info->PresenceMap, 3, 1);
+	PrintPresenceMap(info->PresenceMap, 3, 1);
 	PrintInt32("TemplateId", 2108, 1);
 	PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 	PrintUInt64("SendingTime", info->SendingTime, 1);
@@ -1384,7 +1382,7 @@ void FastProtocolManager::PrintAstsHeartbeat(AstsHeartbeatInfo *info) {
 void FastProtocolManager::PrintXmlAstsLogon(AstsLogonInfo *info) {
 
 	PrintXmlItemBegin("AstsLogonInfo");
-		PrintXmlPresenceMap(info->PresenceMap, 3);
+	PrintXmlPresenceMap(info->PresenceMap, 3);
 	PrintXmlInt32("TemplateId", 2101);
 	PrintXmlString("TargetCompID", info->TargetCompID, info->TargetCompIDLength);
 	PrintXmlUInt32("MsgSeqNum", info->MsgSeqNum);
@@ -1400,7 +1398,7 @@ void FastProtocolManager::PrintXmlAstsLogon(AstsLogonInfo *info) {
 void FastProtocolManager::PrintXmlAstsLogout(AstsLogoutInfo *info) {
 
 	PrintXmlItemBegin("AstsLogoutInfo");
-		PrintXmlPresenceMap(info->PresenceMap, 3);
+	PrintXmlPresenceMap(info->PresenceMap, 3);
 	PrintXmlInt32("TemplateId", 2102);
 	PrintXmlString("TargetCompID", info->TargetCompID, info->TargetCompIDLength);
 	PrintXmlUInt32("MsgSeqNum", info->MsgSeqNum);
@@ -1412,7 +1410,7 @@ void FastProtocolManager::PrintXmlAstsLogout(AstsLogoutInfo *info) {
 void FastProtocolManager::PrintXmlAstsGeneric(AstsGenericInfo *info) {
 
 	PrintXmlItemBegin("AstsGenericInfo");
-		PrintXmlPresenceMap(info->PresenceMap, 4);
+	PrintXmlPresenceMap(info->PresenceMap, 4);
 	PrintXmlInt32("TemplateId", 2103);
 	PrintXmlUInt32("MsgSeqNum", info->MsgSeqNum);
 	PrintXmlUInt64("SendingTime", info->SendingTime);
@@ -1531,7 +1529,7 @@ void FastProtocolManager::PrintXmlAstsGeneric(AstsGenericInfo *info) {
 void FastProtocolManager::PrintXmlAstsIncrementalGeneric(AstsIncrementalGenericInfo *info) {
 
 	PrintXmlItemBegin("AstsIncrementalGenericInfo");
-		PrintXmlPresenceMap(info->PresenceMap, 4);
+	PrintXmlPresenceMap(info->PresenceMap, 4);
 	PrintXmlInt32("TemplateId", 2104);
 	PrintXmlUInt32("MsgSeqNum", info->MsgSeqNum);
 	PrintXmlUInt64("SendingTime", info->SendingTime);
@@ -1642,7 +1640,7 @@ void FastProtocolManager::PrintXmlAstsIncrementalGeneric(AstsIncrementalGenericI
 void FastProtocolManager::PrintXmlAstsOLSFOND(AstsOLSFONDInfo *info) {
 
 	PrintXmlItemBegin("AstsOLSFONDInfo");
-		PrintXmlPresenceMap(info->PresenceMap, 4);
+	PrintXmlPresenceMap(info->PresenceMap, 4);
 	PrintXmlInt32("TemplateId", 2510);
 	PrintXmlUInt32("MsgSeqNum", info->MsgSeqNum);
 	PrintXmlUInt64("SendingTime", info->SendingTime);
@@ -1701,7 +1699,7 @@ void FastProtocolManager::PrintXmlAstsOLSFOND(AstsOLSFONDInfo *info) {
 void FastProtocolManager::PrintXmlAstsOLSCURR(AstsOLSCURRInfo *info) {
 
 	PrintXmlItemBegin("AstsOLSCURRInfo");
-		PrintXmlPresenceMap(info->PresenceMap, 4);
+	PrintXmlPresenceMap(info->PresenceMap, 4);
 	PrintXmlInt32("TemplateId", 3600);
 	PrintXmlUInt32("MsgSeqNum", info->MsgSeqNum);
 	PrintXmlUInt64("SendingTime", info->SendingTime);
@@ -1752,7 +1750,7 @@ void FastProtocolManager::PrintXmlAstsOLSCURR(AstsOLSCURRInfo *info) {
 void FastProtocolManager::PrintXmlAstsTLSFOND(AstsTLSFONDInfo *info) {
 
 	PrintXmlItemBegin("AstsTLSFONDInfo");
-		PrintXmlPresenceMap(info->PresenceMap, 4);
+	PrintXmlPresenceMap(info->PresenceMap, 4);
 	PrintXmlInt32("TemplateId", 2511);
 	PrintXmlUInt32("MsgSeqNum", info->MsgSeqNum);
 	PrintXmlUInt64("SendingTime", info->SendingTime);
@@ -1826,7 +1824,7 @@ void FastProtocolManager::PrintXmlAstsTLSFOND(AstsTLSFONDInfo *info) {
 void FastProtocolManager::PrintXmlAstsTLSCURR(AstsTLSCURRInfo *info) {
 
 	PrintXmlItemBegin("AstsTLSCURRInfo");
-		PrintXmlPresenceMap(info->PresenceMap, 4);
+	PrintXmlPresenceMap(info->PresenceMap, 4);
 	PrintXmlInt32("TemplateId", 3601);
 	PrintXmlUInt32("MsgSeqNum", info->MsgSeqNum);
 	PrintXmlUInt64("SendingTime", info->SendingTime);
@@ -1894,7 +1892,7 @@ void FastProtocolManager::PrintXmlAstsTLSCURR(AstsTLSCURRInfo *info) {
 void FastProtocolManager::PrintXmlAstsIncrementalMSRFOND(AstsIncrementalMSRFONDInfo *info) {
 
 	PrintXmlItemBegin("AstsIncrementalMSRFONDInfo");
-		PrintXmlPresenceMap(info->PresenceMap, 4);
+	PrintXmlPresenceMap(info->PresenceMap, 4);
 	PrintXmlInt32("TemplateId", 2523);
 	PrintXmlUInt32("MsgSeqNum", info->MsgSeqNum);
 	PrintXmlUInt64("SendingTime", info->SendingTime);
@@ -1981,7 +1979,7 @@ void FastProtocolManager::PrintXmlAstsIncrementalMSRFOND(AstsIncrementalMSRFONDI
 void FastProtocolManager::PrintXmlAstsIncrementalMSRCURR(AstsIncrementalMSRCURRInfo *info) {
 
 	PrintXmlItemBegin("AstsIncrementalMSRCURRInfo");
-		PrintXmlPresenceMap(info->PresenceMap, 4);
+	PrintXmlPresenceMap(info->PresenceMap, 4);
 	PrintXmlInt32("TemplateId", 3613);
 	PrintXmlUInt32("MsgSeqNum", info->MsgSeqNum);
 	PrintXmlUInt64("SendingTime", info->SendingTime);
@@ -2058,7 +2056,7 @@ void FastProtocolManager::PrintXmlAstsIncrementalMSRCURR(AstsIncrementalMSRCURRI
 void FastProtocolManager::PrintXmlAstsIncrementalOLRFOND(AstsIncrementalOLRFONDInfo *info) {
 
 	PrintXmlItemBegin("AstsIncrementalOLRFONDInfo");
-		PrintXmlPresenceMap(info->PresenceMap, 4);
+	PrintXmlPresenceMap(info->PresenceMap, 4);
 	PrintXmlInt32("TemplateId", 2520);
 	PrintXmlUInt32("MsgSeqNum", info->MsgSeqNum);
 	PrintXmlUInt64("SendingTime", info->SendingTime);
@@ -2109,7 +2107,7 @@ void FastProtocolManager::PrintXmlAstsIncrementalOLRFOND(AstsIncrementalOLRFONDI
 void FastProtocolManager::PrintXmlAstsIncrementalOLRCURR(AstsIncrementalOLRCURRInfo *info) {
 
 	PrintXmlItemBegin("AstsIncrementalOLRCURRInfo");
-		PrintXmlPresenceMap(info->PresenceMap, 4);
+	PrintXmlPresenceMap(info->PresenceMap, 4);
 	PrintXmlInt32("TemplateId", 3610);
 	PrintXmlUInt32("MsgSeqNum", info->MsgSeqNum);
 	PrintXmlUInt64("SendingTime", info->SendingTime);
@@ -2154,7 +2152,7 @@ void FastProtocolManager::PrintXmlAstsIncrementalOLRCURR(AstsIncrementalOLRCURRI
 void FastProtocolManager::PrintXmlAstsIncrementalTLRFOND(AstsIncrementalTLRFONDInfo *info) {
 
 	PrintXmlItemBegin("AstsIncrementalTLRFONDInfo");
-		PrintXmlPresenceMap(info->PresenceMap, 4);
+	PrintXmlPresenceMap(info->PresenceMap, 4);
 	PrintXmlInt32("TemplateId", 2521);
 	PrintXmlUInt32("MsgSeqNum", info->MsgSeqNum);
 	PrintXmlUInt64("SendingTime", info->SendingTime);
@@ -2220,7 +2218,7 @@ void FastProtocolManager::PrintXmlAstsIncrementalTLRFOND(AstsIncrementalTLRFONDI
 void FastProtocolManager::PrintXmlAstsIncrementalTLRCURR(AstsIncrementalTLRCURRInfo *info) {
 
 	PrintXmlItemBegin("AstsIncrementalTLRCURRInfo");
-		PrintXmlPresenceMap(info->PresenceMap, 4);
+	PrintXmlPresenceMap(info->PresenceMap, 4);
 	PrintXmlInt32("TemplateId", 3611);
 	PrintXmlUInt32("MsgSeqNum", info->MsgSeqNum);
 	PrintXmlUInt64("SendingTime", info->SendingTime);
@@ -2282,7 +2280,7 @@ void FastProtocolManager::PrintXmlAstsIncrementalTLRCURR(AstsIncrementalTLRCURRI
 void FastProtocolManager::PrintXmlAstsSecurityDefinition(AstsSecurityDefinitionInfo *info) {
 
 	PrintXmlItemBegin("AstsSecurityDefinitionInfo");
-		PrintXmlPresenceMap(info->PresenceMap, 4);
+	PrintXmlPresenceMap(info->PresenceMap, 4);
 	PrintXmlInt32("TemplateId", 2115);
 	PrintXmlUInt32("MsgSeqNum", info->MsgSeqNum);
 	PrintXmlUInt64("SendingTime", info->SendingTime);
@@ -2413,7 +2411,7 @@ void FastProtocolManager::PrintXmlAstsSecurityDefinition(AstsSecurityDefinitionI
 void FastProtocolManager::PrintXmlAstsSecurityStatus(AstsSecurityStatusInfo *info) {
 
 	PrintXmlItemBegin("AstsSecurityStatusInfo");
-		PrintXmlPresenceMap(info->PresenceMap, 4);
+	PrintXmlPresenceMap(info->PresenceMap, 4);
 	PrintXmlInt32("TemplateId", 2106);
 	PrintXmlUInt32("MsgSeqNum", info->MsgSeqNum);
 	PrintXmlUInt64("SendingTime", info->SendingTime);
@@ -2431,7 +2429,7 @@ void FastProtocolManager::PrintXmlAstsSecurityStatus(AstsSecurityStatusInfo *inf
 void FastProtocolManager::PrintXmlAstsTradingSessionStatus(AstsTradingSessionStatusInfo *info) {
 
 	PrintXmlItemBegin("AstsTradingSessionStatusInfo");
-		PrintXmlPresenceMap(info->PresenceMap, 4);
+	PrintXmlPresenceMap(info->PresenceMap, 4);
 	PrintXmlInt32("TemplateId", 2107);
 	PrintXmlUInt32("MsgSeqNum", info->MsgSeqNum);
 	PrintXmlUInt64("SendingTime", info->SendingTime);
@@ -2444,7 +2442,7 @@ void FastProtocolManager::PrintXmlAstsTradingSessionStatus(AstsTradingSessionSta
 void FastProtocolManager::PrintXmlAstsHeartbeat(AstsHeartbeatInfo *info) {
 
 	PrintXmlItemBegin("AstsHeartbeatInfo");
-		PrintXmlPresenceMap(info->PresenceMap, 3);
+	PrintXmlPresenceMap(info->PresenceMap, 3);
 	PrintXmlInt32("TemplateId", 2108);
 	PrintXmlUInt32("MsgSeqNum", info->MsgSeqNum);
 	PrintXmlUInt64("SendingTime", info->SendingTime);
@@ -2456,7 +2454,7 @@ void FastProtocolManager::PrintXmlAstsHeartbeat(AstsHeartbeatInfo *info) {
 void FastProtocolManager::PrintFortsDefaultIncrementalRefreshMessage(FortsDefaultIncrementalRefreshMessageInfo *info) {
 
 	printf("FortsDefaultIncrementalRefreshMessageInfo {\n");
-		PrintPresenceMap(info->PresenceMap, 3, 1);
+	PrintPresenceMap(info->PresenceMap, 3, 1);
 	PrintInt32("TemplateId", 12, 1);
 	PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 	PrintUInt64("SendingTime", info->SendingTime, 1);
@@ -2517,7 +2515,7 @@ void FastProtocolManager::PrintFortsDefaultIncrementalRefreshMessage(FortsDefaul
 void FastProtocolManager::PrintFortsDefaultSnapshotMessage(FortsDefaultSnapshotMessageInfo *info) {
 
 	printf("FortsDefaultSnapshotMessageInfo {\n");
-		PrintPresenceMap(info->PresenceMap, 4, 1);
+	PrintPresenceMap(info->PresenceMap, 4, 1);
 	PrintInt32("TemplateId", 13, 1);
 	PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 	PrintUInt64("SendingTime", info->SendingTime, 1);
@@ -2575,7 +2573,7 @@ void FastProtocolManager::PrintFortsDefaultSnapshotMessage(FortsDefaultSnapshotM
 void FastProtocolManager::PrintFortsSecurityDefinition(FortsSecurityDefinitionInfo *info) {
 
 	printf("FortsSecurityDefinitionInfo {\n");
-		PrintPresenceMap(info->PresenceMap, 5, 1);
+	PrintPresenceMap(info->PresenceMap, 5, 1);
 	PrintInt32("TemplateId", 3, 1);
 	PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 	PrintUInt64("SendingTime", info->SendingTime, 1);
@@ -2710,7 +2708,7 @@ void FastProtocolManager::PrintFortsSecurityDefinition(FortsSecurityDefinitionIn
 void FastProtocolManager::PrintFortsSecurityDefinitionUpdateReport(FortsSecurityDefinitionUpdateReportInfo *info) {
 
 	printf("FortsSecurityDefinitionUpdateReportInfo {\n");
-		PrintPresenceMap(info->PresenceMap, 4, 1);
+	PrintPresenceMap(info->PresenceMap, 4, 1);
 	PrintInt32("TemplateId", 4, 1);
 	PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 	PrintUInt64("SendingTime", info->SendingTime, 1);
@@ -2726,7 +2724,7 @@ void FastProtocolManager::PrintFortsSecurityDefinitionUpdateReport(FortsSecurity
 void FastProtocolManager::PrintFortsSecurityStatus(FortsSecurityStatusInfo *info) {
 
 	printf("FortsSecurityStatusInfo {\n");
-		PrintPresenceMap(info->PresenceMap, 4, 1);
+	PrintPresenceMap(info->PresenceMap, 4, 1);
 	PrintInt32("TemplateId", 5, 1);
 	PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 	PrintUInt64("SendingTime", info->SendingTime, 1);
@@ -2749,7 +2747,7 @@ void FastProtocolManager::PrintFortsSecurityStatus(FortsSecurityStatusInfo *info
 void FastProtocolManager::PrintFortsHeartbeat(FortsHeartbeatInfo *info) {
 
 	printf("FortsHeartbeatInfo {\n");
-		PrintPresenceMap(info->PresenceMap, 3, 1);
+	PrintPresenceMap(info->PresenceMap, 3, 1);
 	PrintInt32("TemplateId", 6, 1);
 	PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 	PrintUInt64("SendingTime", info->SendingTime, 1);
@@ -2758,7 +2756,7 @@ void FastProtocolManager::PrintFortsHeartbeat(FortsHeartbeatInfo *info) {
 void FastProtocolManager::PrintFortsSequenceReset(FortsSequenceResetInfo *info) {
 
 	printf("FortsSequenceResetInfo {\n");
-		PrintPresenceMap(info->PresenceMap, 3, 1);
+	PrintPresenceMap(info->PresenceMap, 3, 1);
 	PrintInt32("TemplateId", 7, 1);
 	PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 	PrintUInt64("SendingTime", info->SendingTime, 1);
@@ -2768,7 +2766,7 @@ void FastProtocolManager::PrintFortsSequenceReset(FortsSequenceResetInfo *info) 
 void FastProtocolManager::PrintFortsTradingSessionStatus(FortsTradingSessionStatusInfo *info) {
 
 	printf("FortsTradingSessionStatusInfo {\n");
-		PrintPresenceMap(info->PresenceMap, 4, 1);
+	PrintPresenceMap(info->PresenceMap, 4, 1);
 	PrintInt32("TemplateId", 8, 1);
 	PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 	PrintUInt64("SendingTime", info->SendingTime, 1);
@@ -2790,7 +2788,7 @@ void FastProtocolManager::PrintFortsTradingSessionStatus(FortsTradingSessionStat
 void FastProtocolManager::PrintFortsNews(FortsNewsInfo *info) {
 
 	printf("FortsNewsInfo {\n");
-		PrintPresenceMap(info->PresenceMap, 4, 1);
+	PrintPresenceMap(info->PresenceMap, 4, 1);
 	PrintInt32("TemplateId", 9, 1);
 	PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 	PrintUInt64("SendingTime", info->SendingTime, 1);
@@ -2823,7 +2821,7 @@ void FastProtocolManager::PrintFortsNews(FortsNewsInfo *info) {
 void FastProtocolManager::PrintFortsOrdersLog(FortsOrdersLogInfo *info) {
 
 	printf("FortsOrdersLogInfo {\n");
-		PrintPresenceMap(info->PresenceMap, 3, 1);
+	PrintPresenceMap(info->PresenceMap, 3, 1);
 	PrintInt32("TemplateId", 14, 1);
 	PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 	PrintUInt64("SendingTime", info->SendingTime, 1);
@@ -2870,7 +2868,7 @@ void FastProtocolManager::PrintFortsOrdersLog(FortsOrdersLogInfo *info) {
 void FastProtocolManager::PrintFortsOrdersBook(FortsOrdersBookInfo *info) {
 
 	printf("FortsOrdersBookInfo {\n");
-		PrintPresenceMap(info->PresenceMap, 4, 1);
+	PrintPresenceMap(info->PresenceMap, 4, 1);
 	PrintInt32("TemplateId", 15, 1);
 	PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 	PrintUInt64("SendingTime", info->SendingTime, 1);
@@ -2911,7 +2909,7 @@ void FastProtocolManager::PrintFortsOrdersBook(FortsOrdersBookInfo *info) {
 void FastProtocolManager::PrintFortsLogon(FortsLogonInfo *info) {
 
 	printf("FortsLogonInfo {\n");
-		PrintPresenceMap(info->PresenceMap, 3, 1);
+	PrintPresenceMap(info->PresenceMap, 3, 1);
 	PrintInt32("TemplateId", 1000, 1);
 	PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 	PrintUInt64("SendingTime", info->SendingTime, 1);
@@ -2920,7 +2918,7 @@ void FastProtocolManager::PrintFortsLogon(FortsLogonInfo *info) {
 void FastProtocolManager::PrintFortsLogout(FortsLogoutInfo *info) {
 
 	printf("FortsLogoutInfo {\n");
-		PrintPresenceMap(info->PresenceMap, 3, 1);
+	PrintPresenceMap(info->PresenceMap, 3, 1);
 	PrintInt32("TemplateId", 1001, 1);
 	PrintUInt32("MsgSeqNum", info->MsgSeqNum, 1);
 	PrintUInt64("SendingTime", info->SendingTime, 1);
@@ -2931,7 +2929,7 @@ void FastProtocolManager::PrintFortsLogout(FortsLogoutInfo *info) {
 void FastProtocolManager::PrintXmlFortsDefaultIncrementalRefreshMessage(FortsDefaultIncrementalRefreshMessageInfo *info) {
 
 	PrintXmlItemBegin("FortsDefaultIncrementalRefreshMessageInfo");
-		PrintXmlPresenceMap(info->PresenceMap, 3);
+	PrintXmlPresenceMap(info->PresenceMap, 3);
 	PrintXmlInt32("TemplateId", 12);
 	PrintXmlUInt32("MsgSeqNum", info->MsgSeqNum);
 	PrintXmlUInt64("SendingTime", info->SendingTime);
@@ -2992,7 +2990,7 @@ void FastProtocolManager::PrintXmlFortsDefaultIncrementalRefreshMessage(FortsDef
 void FastProtocolManager::PrintXmlFortsDefaultSnapshotMessage(FortsDefaultSnapshotMessageInfo *info) {
 
 	PrintXmlItemBegin("FortsDefaultSnapshotMessageInfo");
-		PrintXmlPresenceMap(info->PresenceMap, 4);
+	PrintXmlPresenceMap(info->PresenceMap, 4);
 	PrintXmlInt32("TemplateId", 13);
 	PrintXmlUInt32("MsgSeqNum", info->MsgSeqNum);
 	PrintXmlUInt64("SendingTime", info->SendingTime);
@@ -3050,7 +3048,7 @@ void FastProtocolManager::PrintXmlFortsDefaultSnapshotMessage(FortsDefaultSnapsh
 void FastProtocolManager::PrintXmlFortsSecurityDefinition(FortsSecurityDefinitionInfo *info) {
 
 	PrintXmlItemBegin("FortsSecurityDefinitionInfo");
-		PrintXmlPresenceMap(info->PresenceMap, 5);
+	PrintXmlPresenceMap(info->PresenceMap, 5);
 	PrintXmlInt32("TemplateId", 3);
 	PrintXmlUInt32("MsgSeqNum", info->MsgSeqNum);
 	PrintXmlUInt64("SendingTime", info->SendingTime);
@@ -3185,7 +3183,7 @@ void FastProtocolManager::PrintXmlFortsSecurityDefinition(FortsSecurityDefinitio
 void FastProtocolManager::PrintXmlFortsSecurityDefinitionUpdateReport(FortsSecurityDefinitionUpdateReportInfo *info) {
 
 	PrintXmlItemBegin("FortsSecurityDefinitionUpdateReportInfo");
-		PrintXmlPresenceMap(info->PresenceMap, 4);
+	PrintXmlPresenceMap(info->PresenceMap, 4);
 	PrintXmlInt32("TemplateId", 4);
 	PrintXmlUInt32("MsgSeqNum", info->MsgSeqNum);
 	PrintXmlUInt64("SendingTime", info->SendingTime);
@@ -3201,7 +3199,7 @@ void FastProtocolManager::PrintXmlFortsSecurityDefinitionUpdateReport(FortsSecur
 void FastProtocolManager::PrintXmlFortsSecurityStatus(FortsSecurityStatusInfo *info) {
 
 	PrintXmlItemBegin("FortsSecurityStatusInfo");
-		PrintXmlPresenceMap(info->PresenceMap, 4);
+	PrintXmlPresenceMap(info->PresenceMap, 4);
 	PrintXmlInt32("TemplateId", 5);
 	PrintXmlUInt32("MsgSeqNum", info->MsgSeqNum);
 	PrintXmlUInt64("SendingTime", info->SendingTime);
@@ -3224,7 +3222,7 @@ void FastProtocolManager::PrintXmlFortsSecurityStatus(FortsSecurityStatusInfo *i
 void FastProtocolManager::PrintXmlFortsHeartbeat(FortsHeartbeatInfo *info) {
 
 	PrintXmlItemBegin("FortsHeartbeatInfo");
-		PrintXmlPresenceMap(info->PresenceMap, 3);
+	PrintXmlPresenceMap(info->PresenceMap, 3);
 	PrintXmlInt32("TemplateId", 6);
 	PrintXmlUInt32("MsgSeqNum", info->MsgSeqNum);
 	PrintXmlUInt64("SendingTime", info->SendingTime);
@@ -3233,7 +3231,7 @@ void FastProtocolManager::PrintXmlFortsHeartbeat(FortsHeartbeatInfo *info) {
 void FastProtocolManager::PrintXmlFortsSequenceReset(FortsSequenceResetInfo *info) {
 
 	PrintXmlItemBegin("FortsSequenceResetInfo");
-		PrintXmlPresenceMap(info->PresenceMap, 3);
+	PrintXmlPresenceMap(info->PresenceMap, 3);
 	PrintXmlInt32("TemplateId", 7);
 	PrintXmlUInt32("MsgSeqNum", info->MsgSeqNum);
 	PrintXmlUInt64("SendingTime", info->SendingTime);
@@ -3243,7 +3241,7 @@ void FastProtocolManager::PrintXmlFortsSequenceReset(FortsSequenceResetInfo *inf
 void FastProtocolManager::PrintXmlFortsTradingSessionStatus(FortsTradingSessionStatusInfo *info) {
 
 	PrintXmlItemBegin("FortsTradingSessionStatusInfo");
-		PrintXmlPresenceMap(info->PresenceMap, 4);
+	PrintXmlPresenceMap(info->PresenceMap, 4);
 	PrintXmlInt32("TemplateId", 8);
 	PrintXmlUInt32("MsgSeqNum", info->MsgSeqNum);
 	PrintXmlUInt64("SendingTime", info->SendingTime);
@@ -3265,7 +3263,7 @@ void FastProtocolManager::PrintXmlFortsTradingSessionStatus(FortsTradingSessionS
 void FastProtocolManager::PrintXmlFortsNews(FortsNewsInfo *info) {
 
 	PrintXmlItemBegin("FortsNewsInfo");
-		PrintXmlPresenceMap(info->PresenceMap, 4);
+	PrintXmlPresenceMap(info->PresenceMap, 4);
 	PrintXmlInt32("TemplateId", 9);
 	PrintXmlUInt32("MsgSeqNum", info->MsgSeqNum);
 	PrintXmlUInt64("SendingTime", info->SendingTime);
@@ -3298,7 +3296,7 @@ void FastProtocolManager::PrintXmlFortsNews(FortsNewsInfo *info) {
 void FastProtocolManager::PrintXmlFortsOrdersLog(FortsOrdersLogInfo *info) {
 
 	PrintXmlItemBegin("FortsOrdersLogInfo");
-		PrintXmlPresenceMap(info->PresenceMap, 3);
+	PrintXmlPresenceMap(info->PresenceMap, 3);
 	PrintXmlInt32("TemplateId", 14);
 	PrintXmlUInt32("MsgSeqNum", info->MsgSeqNum);
 	PrintXmlUInt64("SendingTime", info->SendingTime);
@@ -3345,7 +3343,7 @@ void FastProtocolManager::PrintXmlFortsOrdersLog(FortsOrdersLogInfo *info) {
 void FastProtocolManager::PrintXmlFortsOrdersBook(FortsOrdersBookInfo *info) {
 
 	PrintXmlItemBegin("FortsOrdersBookInfo");
-		PrintXmlPresenceMap(info->PresenceMap, 4);
+	PrintXmlPresenceMap(info->PresenceMap, 4);
 	PrintXmlInt32("TemplateId", 15);
 	PrintXmlUInt32("MsgSeqNum", info->MsgSeqNum);
 	PrintXmlUInt64("SendingTime", info->SendingTime);
@@ -3386,7 +3384,7 @@ void FastProtocolManager::PrintXmlFortsOrdersBook(FortsOrdersBookInfo *info) {
 void FastProtocolManager::PrintXmlFortsLogon(FortsLogonInfo *info) {
 
 	PrintXmlItemBegin("FortsLogonInfo");
-		PrintXmlPresenceMap(info->PresenceMap, 3);
+	PrintXmlPresenceMap(info->PresenceMap, 3);
 	PrintXmlInt32("TemplateId", 1000);
 	PrintXmlUInt32("MsgSeqNum", info->MsgSeqNum);
 	PrintXmlUInt64("SendingTime", info->SendingTime);
@@ -3395,7 +3393,7 @@ void FastProtocolManager::PrintXmlFortsLogon(FortsLogonInfo *info) {
 void FastProtocolManager::PrintXmlFortsLogout(FortsLogoutInfo *info) {
 
 	PrintXmlItemBegin("FortsLogoutInfo");
-		PrintXmlPresenceMap(info->PresenceMap, 3);
+	PrintXmlPresenceMap(info->PresenceMap, 3);
 	PrintXmlInt32("TemplateId", 1001);
 	PrintXmlUInt32("MsgSeqNum", info->MsgSeqNum);
 	PrintXmlUInt64("SendingTime", info->SendingTime);

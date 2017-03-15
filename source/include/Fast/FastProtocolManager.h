@@ -15,19 +15,6 @@ class StatisticsTesterFond;
 class StatisticsTesterCurr;
 class FeedConnection;
 
-#pragma region Decode_Method_Pointer_Definition_GeneratedCode
-typedef void* (FastProtocolManager::*FastDecodeMethodPointer)();
-typedef void* (FastProtocolManager::*FastReleaseMethodPointer)();
-#pragma endregion
-
-#pragma region Asts_Decode_Method_Pointer_Definition_GeneratedCode
-typedef AstsSnapshotInfo* (FastProtocolManager::*AstsGetSnapshotInfoMethodPointer)();
-#pragma endregion
-
-#pragma region Forts_Decode_Method_Pointer_Definition_GeneratedCode
-typedef FortsSnapshotInfo* (FastProtocolManager::*FortsGetSnapshotInfoMethodPointer)();
-#pragma endregion
-
 #pragma region Checking_Presence_GeneratedCode
 #define CheckMandatoryFieldPresence(map, field) ((map & field) != 0)
 #define CheckOptionalFieldPresence(map, field) ((map & field) != 0)
@@ -336,110 +323,6 @@ private:
 #pragma endregion
 
 #pragma region Decode_Method_Pointer_Arrays_GeneratedCode
-	FastDecodeMethodPointer* m_fortsDecodeMethods;
-	FastReleaseMethodPointer* m_fortsReleaseMethods;
-	FortsGetSnapshotInfoMethodPointer* m_fortsGetSnapshotInfoMethods;
-
-	void InitializeFortsDecodeMethodPointers() {
-		int ptCount = 999;
-		this->m_fortsDecodeMethods = new FastDecodeMethodPointer[ptCount];
-		this->m_fortsReleaseMethods = new FastReleaseMethodPointer[ptCount];
-		this->m_fortsGetSnapshotInfoMethods = new FortsGetSnapshotInfoMethodPointer[ptCount];
-
-		for(int i = 0; i < 999; i++) {
-			this->m_fortsDecodeMethods[i] = &FastProtocolManager::DecodeFortsUnsupportedMessage;
-			this->m_fortsGetSnapshotInfoMethods[i] = &FastProtocolManager::GetFortsSnapshotInfoUnsupported;
-		}
-
-		this->m_fortsDecodeMethods[12 - 3] = &FastProtocolManager::DecodeFortsDefaultIncrementalRefreshMessage;
-		this->m_fortsDecodeMethods[13 - 3] = &FastProtocolManager::DecodeFortsDefaultSnapshotMessage;
-		this->m_fortsDecodeMethods[3 - 3] = &FastProtocolManager::DecodeFortsSecurityDefinition;
-		this->m_fortsDecodeMethods[4 - 3] = &FastProtocolManager::DecodeFortsSecurityDefinitionUpdateReport;
-		this->m_fortsDecodeMethods[5 - 3] = &FastProtocolManager::DecodeFortsSecurityStatus;
-		this->m_fortsDecodeMethods[6 - 3] = &FastProtocolManager::DecodeFortsHeartbeat;
-		this->m_fortsDecodeMethods[7 - 3] = &FastProtocolManager::DecodeFortsSequenceReset;
-		this->m_fortsDecodeMethods[8 - 3] = &FastProtocolManager::DecodeFortsTradingSessionStatus;
-		this->m_fortsDecodeMethods[9 - 3] = &FastProtocolManager::DecodeFortsNews;
-		this->m_fortsDecodeMethods[14 - 3] = &FastProtocolManager::DecodeFortsOrdersLog;
-		this->m_fortsDecodeMethods[15 - 3] = &FastProtocolManager::DecodeFortsOrdersBook;
-		this->m_fortsDecodeMethods[1000 - 3] = &FastProtocolManager::DecodeFortsLogon;
-		this->m_fortsDecodeMethods[1001 - 3] = &FastProtocolManager::DecodeFortsLogout;
-		this->m_fortsReleaseMethods[12 - 3] = &FastProtocolManager::DecodeFortsDefaultIncrementalRefreshMessage;
-		this->m_fortsReleaseMethods[13 - 3] = &FastProtocolManager::DecodeFortsDefaultSnapshotMessage;
-		this->m_fortsReleaseMethods[3 - 3] = &FastProtocolManager::DecodeFortsSecurityDefinition;
-		this->m_fortsReleaseMethods[4 - 3] = &FastProtocolManager::DecodeFortsSecurityDefinitionUpdateReport;
-		this->m_fortsReleaseMethods[5 - 3] = &FastProtocolManager::DecodeFortsSecurityStatus;
-		this->m_fortsReleaseMethods[6 - 3] = &FastProtocolManager::DecodeFortsHeartbeat;
-		this->m_fortsReleaseMethods[7 - 3] = &FastProtocolManager::DecodeFortsSequenceReset;
-		this->m_fortsReleaseMethods[8 - 3] = &FastProtocolManager::DecodeFortsTradingSessionStatus;
-		this->m_fortsReleaseMethods[9 - 3] = &FastProtocolManager::DecodeFortsNews;
-		this->m_fortsReleaseMethods[14 - 3] = &FastProtocolManager::DecodeFortsOrdersLog;
-		this->m_fortsReleaseMethods[15 - 3] = &FastProtocolManager::DecodeFortsOrdersBook;
-		this->m_fortsReleaseMethods[1000 - 3] = &FastProtocolManager::DecodeFortsLogon;
-		this->m_fortsReleaseMethods[1001 - 3] = &FastProtocolManager::DecodeFortsLogout;
-		this->m_fortsGetSnapshotInfoMethods[13 - 3] = &FastProtocolManager::GetFortsSnapshotInfoDefaultSnapshotMessage;
-
-	}
-
-	FastDecodeMethodPointer* m_astsDecodeMethods;
-	FastReleaseMethodPointer* m_astsReleaseMethods;
-	AstsGetSnapshotInfoMethodPointer* m_astsGetSnapshotInfoMethods;
-
-	void InitializeAstsDecodeMethodPointers() {
-		int ptCount = 1513;
-		this->m_astsDecodeMethods = new FastDecodeMethodPointer[ptCount];
-		this->m_astsReleaseMethods = new FastReleaseMethodPointer[ptCount];
-		this->m_astsGetSnapshotInfoMethods = new AstsGetSnapshotInfoMethodPointer[ptCount];
-
-		for(int i = 0; i < 1513; i++) {
-			this->m_astsDecodeMethods[i] = &FastProtocolManager::DecodeAstsUnsupportedMessage;
-			this->m_astsGetSnapshotInfoMethods[i] = &FastProtocolManager::GetAstsSnapshotInfoUnsupported;
-		}
-
-		this->m_astsDecodeMethods[2101 - 2101] = &FastProtocolManager::DecodeAstsLogon;
-		this->m_astsDecodeMethods[2102 - 2101] = &FastProtocolManager::DecodeAstsLogout;
-		this->m_astsDecodeMethods[2103 - 2101] = &FastProtocolManager::DecodeAstsGeneric;
-		this->m_astsDecodeMethods[2104 - 2101] = &FastProtocolManager::DecodeAstsIncrementalGeneric;
-		this->m_astsDecodeMethods[2510 - 2101] = &FastProtocolManager::DecodeAstsOLSFOND;
-		this->m_astsDecodeMethods[3600 - 2101] = &FastProtocolManager::DecodeAstsOLSCURR;
-		this->m_astsDecodeMethods[2511 - 2101] = &FastProtocolManager::DecodeAstsTLSFOND;
-		this->m_astsDecodeMethods[3601 - 2101] = &FastProtocolManager::DecodeAstsTLSCURR;
-		this->m_astsDecodeMethods[2523 - 2101] = &FastProtocolManager::DecodeAstsIncrementalMSRFOND;
-		this->m_astsDecodeMethods[3613 - 2101] = &FastProtocolManager::DecodeAstsIncrementalMSRCURR;
-		this->m_astsDecodeMethods[2520 - 2101] = &FastProtocolManager::DecodeAstsIncrementalOLRFOND;
-		this->m_astsDecodeMethods[3610 - 2101] = &FastProtocolManager::DecodeAstsIncrementalOLRCURR;
-		this->m_astsDecodeMethods[2521 - 2101] = &FastProtocolManager::DecodeAstsIncrementalTLRFOND;
-		this->m_astsDecodeMethods[3611 - 2101] = &FastProtocolManager::DecodeAstsIncrementalTLRCURR;
-		this->m_astsDecodeMethods[2115 - 2101] = &FastProtocolManager::DecodeAstsSecurityDefinition;
-		this->m_astsDecodeMethods[2106 - 2101] = &FastProtocolManager::DecodeAstsSecurityStatus;
-		this->m_astsDecodeMethods[2107 - 2101] = &FastProtocolManager::DecodeAstsTradingSessionStatus;
-		this->m_astsDecodeMethods[2108 - 2101] = &FastProtocolManager::DecodeAstsHeartbeat;
-		this->m_astsReleaseMethods[2101 - 2101] = &FastProtocolManager::DecodeAstsLogon;
-		this->m_astsReleaseMethods[2102 - 2101] = &FastProtocolManager::DecodeAstsLogout;
-		this->m_astsReleaseMethods[2103 - 2101] = &FastProtocolManager::DecodeAstsGeneric;
-		this->m_astsReleaseMethods[2104 - 2101] = &FastProtocolManager::DecodeAstsIncrementalGeneric;
-		this->m_astsReleaseMethods[2510 - 2101] = &FastProtocolManager::DecodeAstsOLSFOND;
-		this->m_astsReleaseMethods[3600 - 2101] = &FastProtocolManager::DecodeAstsOLSCURR;
-		this->m_astsReleaseMethods[2511 - 2101] = &FastProtocolManager::DecodeAstsTLSFOND;
-		this->m_astsReleaseMethods[3601 - 2101] = &FastProtocolManager::DecodeAstsTLSCURR;
-		this->m_astsReleaseMethods[2523 - 2101] = &FastProtocolManager::DecodeAstsIncrementalMSRFOND;
-		this->m_astsReleaseMethods[3613 - 2101] = &FastProtocolManager::DecodeAstsIncrementalMSRCURR;
-		this->m_astsReleaseMethods[2520 - 2101] = &FastProtocolManager::DecodeAstsIncrementalOLRFOND;
-		this->m_astsReleaseMethods[3610 - 2101] = &FastProtocolManager::DecodeAstsIncrementalOLRCURR;
-		this->m_astsReleaseMethods[2521 - 2101] = &FastProtocolManager::DecodeAstsIncrementalTLRFOND;
-		this->m_astsReleaseMethods[3611 - 2101] = &FastProtocolManager::DecodeAstsIncrementalTLRCURR;
-		this->m_astsReleaseMethods[2115 - 2101] = &FastProtocolManager::DecodeAstsSecurityDefinition;
-		this->m_astsReleaseMethods[2106 - 2101] = &FastProtocolManager::DecodeAstsSecurityStatus;
-		this->m_astsReleaseMethods[2107 - 2101] = &FastProtocolManager::DecodeAstsTradingSessionStatus;
-		this->m_astsReleaseMethods[2108 - 2101] = &FastProtocolManager::DecodeAstsHeartbeat;
-		this->m_astsGetSnapshotInfoMethods[2103 - 2101] = &FastProtocolManager::GetAstsSnapshotInfoGeneric;
-		this->m_astsGetSnapshotInfoMethods[2510 - 2101] = &FastProtocolManager::GetAstsSnapshotInfoOLSFOND;
-		this->m_astsGetSnapshotInfoMethods[3600 - 2101] = &FastProtocolManager::GetAstsSnapshotInfoOLSCURR;
-		this->m_astsGetSnapshotInfoMethods[2511 - 2101] = &FastProtocolManager::GetAstsSnapshotInfoTLSFOND;
-		this->m_astsGetSnapshotInfoMethods[3601 - 2101] = &FastProtocolManager::GetAstsSnapshotInfoTLSCURR;
-
-	}
-
 #pragma endregion
 
 #pragma region Get_Free_Item_Methods_GeneratedCode
@@ -706,8 +589,122 @@ private:
 		((FortsLogoutInfo*)this->LastDecodeInfo())->ReleaseUnused();
 	}
 	inline void ResetForts() {
-		FastReleaseMethodPointer funcPtr = this->m_fortsReleaseMethods[this->m_templateId - 3];
-		(this->*funcPtr)();
+		if(this->m_templateId <= 9) {
+			if(this->m_templateId <= 14) {
+				if(this->m_templateId <= 1000) {
+					if(this->m_templateId == 1001) {
+						this->ReleaseFortsLogoutInfo();
+					}
+					else {
+						this->ReleaseFortsLogonInfo();
+					}
+				}
+				else {
+					if(this->m_templateId <= 15) {
+						if(this->m_templateId == 1000) {
+							this->ReleaseFortsLogonInfo();
+						}
+						else {
+							this->ReleaseFortsOrdersBookInfo();
+						}
+					}
+					else {
+						if(this->m_templateId == 15) {
+							this->ReleaseFortsOrdersBookInfo();
+						}
+						else {
+							this->ReleaseFortsOrdersLogInfo();
+						}
+					}
+				}
+			}
+			else {
+				if(this->m_templateId <= 13) {
+					if(this->m_templateId == 14) {
+						this->ReleaseFortsOrdersLogInfo();
+					}
+					else {
+						this->ReleaseFortsDefaultSnapshotMessageInfo();
+					}
+				}
+				else {
+					if(this->m_templateId <= 12) {
+						if(this->m_templateId == 13) {
+							this->ReleaseFortsDefaultSnapshotMessageInfo();
+						}
+						else {
+							this->ReleaseFortsDefaultIncrementalRefreshMessageInfo();
+						}
+					}
+					else {
+						if(this->m_templateId == 12) {
+							this->ReleaseFortsDefaultIncrementalRefreshMessageInfo();
+						}
+						else {
+							this->ReleaseFortsNewsInfo();
+						}
+					}
+				}
+			}
+		}
+		else {
+			if(this->m_templateId <= 6) {
+				if(this->m_templateId <= 8) {
+					if(this->m_templateId == 9) {
+						this->ReleaseFortsNewsInfo();
+					}
+					else {
+						this->ReleaseFortsTradingSessionStatusInfo();
+					}
+				}
+				else {
+					if(this->m_templateId <= 7) {
+						if(this->m_templateId == 8) {
+							this->ReleaseFortsTradingSessionStatusInfo();
+						}
+						else {
+							this->ReleaseFortsSequenceResetInfo();
+						}
+					}
+					else {
+						if(this->m_templateId == 7) {
+							this->ReleaseFortsSequenceResetInfo();
+						}
+						else {
+							this->ReleaseFortsHeartbeatInfo();
+						}
+					}
+				}
+			}
+			else {
+				if(this->m_templateId <= 5) {
+					if(this->m_templateId == 6) {
+						this->ReleaseFortsHeartbeatInfo();
+					}
+					else {
+						this->ReleaseFortsSecurityStatusInfo();
+					}
+				}
+				else {
+					if(this->m_templateId <= 4) {
+						if(this->m_templateId == 5) {
+							this->ReleaseFortsSecurityStatusInfo();
+						}
+						else {
+							this->ReleaseFortsSecurityDefinitionUpdateReportInfo();
+						}
+					}
+					else {
+						if(this->m_templateId == 4) {
+							this->ReleaseFortsSecurityDefinitionUpdateReportInfo();
+						}
+						else {
+							this->ReleaseFortsSecurityDefinitionInfo();
+						}
+					}
+				}
+			}
+		}
 	}
 public:
 	inline AstsSnapshotInfo* GetFreeAstsSnapshotInfo() {
@@ -1005,8 +1002,172 @@ private:
 		((AstsHeartbeatInfo*)this->LastDecodeInfo())->ReleaseUnused();
 	}
 	inline void ResetAsts() {
-		FastReleaseMethodPointer funcPtr = this->m_astsReleaseMethods[this->m_templateId - 2101];
-		(this->*funcPtr)();
+		if(this->m_templateId <= 2511) {
+			if(this->m_templateId <= 3600) {
+				if(this->m_templateId <= 3610) {
+					if(this->m_templateId <= 3611) {
+						if(this->m_templateId == 3613) {
+							this->ReleaseAstsIncrementalMSRCURRInfo();
+						}
+						else {
+							this->ReleaseAstsIncrementalTLRCURRInfo();
+						}
+					}
+					else {
+						if(this->m_templateId == 3611) {
+							this->ReleaseAstsIncrementalTLRCURRInfo();
+						}
+						else {
+							this->ReleaseAstsIncrementalOLRCURRInfo();
+						}
+					}
+				}
+				else {
+					if(this->m_templateId <= 3601) {
+						if(this->m_templateId == 3610) {
+							this->ReleaseAstsIncrementalOLRCURRInfo();
+						}
+						else {
+							this->ReleaseAstsTLSCURRInfo();
+						}
+					}
+					else {
+						if(this->m_templateId == 3601) {
+							this->ReleaseAstsTLSCURRInfo();
+						}
+						else {
+							this->ReleaseAstsOLSCURRInfo();
+						}
+					}
+				}
+			}
+			else {
+				if(this->m_templateId <= 2521) {
+					if(this->m_templateId <= 2523) {
+						if(this->m_templateId == 3600) {
+							this->ReleaseAstsOLSCURRInfo();
+						}
+						else {
+							this->ReleaseAstsIncrementalMSRFONDInfo();
+						}
+					}
+					else {
+						if(this->m_templateId == 2523) {
+							this->ReleaseAstsIncrementalMSRFONDInfo();
+						}
+						else {
+							this->ReleaseAstsIncrementalTLRFONDInfo();
+						}
+					}
+				}
+				else {
+					if(this->m_templateId <= 2520) {
+						if(this->m_templateId == 2521) {
+							this->ReleaseAstsIncrementalTLRFONDInfo();
+						}
+						else {
+							this->ReleaseAstsIncrementalOLRFONDInfo();
+						}
+					}
+					else {
+						if(this->m_templateId == 2520) {
+							this->ReleaseAstsIncrementalOLRFONDInfo();
+						}
+						else {
+							this->ReleaseAstsTLSFONDInfo();
+						}
+					}
+				}
+			}
+		}
+		else {
+			if(this->m_templateId <= 2107) {
+				if(this->m_templateId <= 2115) {
+					if(this->m_templateId <= 2510) {
+						if(this->m_templateId == 2511) {
+							this->ReleaseAstsTLSFONDInfo();
+						}
+						else {
+							this->ReleaseAstsOLSFONDInfo();
+						}
+					}
+					else {
+						if(this->m_templateId == 2510) {
+							this->ReleaseAstsOLSFONDInfo();
+						}
+						else {
+							this->ReleaseAstsSecurityDefinitionInfo();
+						}
+					}
+				}
+				else {
+					if(this->m_templateId <= 2108) {
+						if(this->m_templateId == 2115) {
+							this->ReleaseAstsSecurityDefinitionInfo();
+						}
+						else {
+							this->ReleaseAstsHeartbeatInfo();
+						}
+					}
+					else {
+						if(this->m_templateId == 2108) {
+							this->ReleaseAstsHeartbeatInfo();
+						}
+						else {
+							this->ReleaseAstsTradingSessionStatusInfo();
+						}
+					}
+				}
+			}
+			else {
+				if(this->m_templateId <= 2104) {
+					if(this->m_templateId <= 2106) {
+						if(this->m_templateId == 2107) {
+							this->ReleaseAstsTradingSessionStatusInfo();
+						}
+						else {
+							this->ReleaseAstsSecurityStatusInfo();
+						}
+					}
+					else {
+						if(this->m_templateId == 2106) {
+							this->ReleaseAstsSecurityStatusInfo();
+						}
+						else {
+							this->ReleaseAstsIncrementalGenericInfo();
+						}
+					}
+				}
+				else {
+					if(this->m_templateId <= 2103) {
+						if(this->m_templateId == 2104) {
+							this->ReleaseAstsIncrementalGenericInfo();
+						}
+						else {
+							this->ReleaseAstsGenericInfo();
+						}
+					}
+					else {
+						if(this->m_templateId <= 2102) {
+							if(this->m_templateId == 2103) {
+								this->ReleaseAstsGenericInfo();
+							}
+							else {
+								this->ReleaseAstsLogoutInfo();
+							}
+						}
+						else {
+							if(this->m_templateId == 2102) {
+								this->ReleaseAstsLogoutInfo();
+							}
+							else {
+								this->ReleaseAstsLogonInfo();
+							}
+						}
+					}
+				}
+			}
+		}
 	}
 #pragma endregion
 
@@ -3166,9 +3327,9 @@ public:
 		SkipToNextField(); // SendingTime
 		return ReadInt32_Optional();
 	}
-	void* DecodeAstsUnsupportedMessage() { return 0; }
-	AstsSnapshotInfo* GetAstsSnapshotInfoUnsupported() { return 0; }
-	void* DecodeAstsLogon() {
+	inline void* DecodeAstsUnsupportedMessage() { return 0; }
+	inline AstsSnapshotInfo* GetAstsSnapshotInfoUnsupported() { return 0; }
+	inline void* DecodeAstsLogon() {
 		AstsLogonInfo* info = GetFreeAstsLogonInfo();
 		info->PresenceMap = this->m_presenceMap;
 
@@ -3188,7 +3349,7 @@ public:
 		this->m_prevastsLogonInfo = info;
 		return info;
 	}
-	void* DecodeAstsLogout() {
+	inline void* DecodeAstsLogout() {
 		AstsLogoutInfo* info = GetFreeAstsLogoutInfo();
 		info->PresenceMap = this->m_presenceMap;
 
@@ -3202,7 +3363,7 @@ public:
 		this->m_prevastsLogoutInfo = info;
 		return info;
 	}
-	void* DecodeAstsGeneric() {
+	inline void* DecodeAstsGeneric() {
 		AstsGenericInfo* info = GetFreeAstsGenericInfo();
 		info->PresenceMap = this->m_presenceMap;
 
@@ -3419,7 +3580,7 @@ public:
 		this->m_prevastsGenericInfo = info;
 		return info;
 	}
-	void* DecodeAstsIncrementalGeneric() {
+	inline void* DecodeAstsIncrementalGeneric() {
 		AstsIncrementalGenericInfo* info = GetFreeAstsIncrementalGenericInfo();
 		info->PresenceMap = this->m_presenceMap;
 
@@ -3622,7 +3783,7 @@ public:
 		this->m_prevastsIncrementalGenericInfo = info;
 		return info;
 	}
-	void* DecodeAstsOLSFOND() {
+	inline void* DecodeAstsOLSFOND() {
 		AstsOLSFONDInfo* info = GetFreeAstsOLSFONDInfo();
 		info->PresenceMap = this->m_presenceMap;
 
@@ -3781,7 +3942,7 @@ public:
 		this->m_prevastsOLSFONDInfo = info;
 		return info;
 	}
-	void* DecodeAstsOLSCURR() {
+	inline void* DecodeAstsOLSCURR() {
 		AstsOLSCURRInfo* info = GetFreeAstsOLSCURRInfo();
 		info->PresenceMap = this->m_presenceMap;
 
@@ -3908,7 +4069,7 @@ public:
 		this->m_prevastsOLSCURRInfo = info;
 		return info;
 	}
-	void* DecodeAstsTLSFOND() {
+	inline void* DecodeAstsTLSFOND() {
 		AstsTLSFONDInfo* info = GetFreeAstsTLSFONDInfo();
 		info->PresenceMap = this->m_presenceMap;
 
@@ -4131,7 +4292,7 @@ public:
 		this->m_prevastsTLSFONDInfo = info;
 		return info;
 	}
-	void* DecodeAstsTLSCURR() {
+	inline void* DecodeAstsTLSCURR() {
 		AstsTLSCURRInfo* info = GetFreeAstsTLSCURRInfo();
 		info->PresenceMap = this->m_presenceMap;
 
@@ -4332,7 +4493,7 @@ public:
 		this->m_prevastsTLSCURRInfo = info;
 		return info;
 	}
-	void* DecodeAstsIncrementalMSRFOND() {
+	inline void* DecodeAstsIncrementalMSRFOND() {
 		AstsIncrementalMSRFONDInfo* info = GetFreeAstsIncrementalMSRFONDInfo();
 		info->PresenceMap = this->m_presenceMap;
 
@@ -4487,7 +4648,7 @@ public:
 		this->m_prevastsIncrementalMSRFONDInfo = info;
 		return info;
 	}
-	void* DecodeAstsIncrementalMSRCURR() {
+	inline void* DecodeAstsIncrementalMSRCURR() {
 		AstsIncrementalMSRCURRInfo* info = GetFreeAstsIncrementalMSRCURRInfo();
 		info->PresenceMap = this->m_presenceMap;
 
@@ -4622,7 +4783,7 @@ public:
 		this->m_prevastsIncrementalMSRCURRInfo = info;
 		return info;
 	}
-	void* DecodeAstsIncrementalOLRFOND() {
+	inline void* DecodeAstsIncrementalOLRFOND() {
 		AstsIncrementalOLRFONDInfo* info = GetFreeAstsIncrementalOLRFONDInfo();
 		info->PresenceMap = this->m_presenceMap;
 
@@ -4779,7 +4940,7 @@ public:
 		this->m_prevastsIncrementalOLRFONDInfo = info;
 		return info;
 	}
-	void* DecodeAstsIncrementalOLRCURR() {
+	inline void* DecodeAstsIncrementalOLRCURR() {
 		AstsIncrementalOLRCURRInfo* info = GetFreeAstsIncrementalOLRCURRInfo();
 		info->PresenceMap = this->m_presenceMap;
 
@@ -4913,7 +5074,7 @@ public:
 		this->m_prevastsIncrementalOLRCURRInfo = info;
 		return info;
 	}
-	void* DecodeAstsIncrementalTLRFOND() {
+	inline void* DecodeAstsIncrementalTLRFOND() {
 		AstsIncrementalTLRFONDInfo* info = GetFreeAstsIncrementalTLRFONDInfo();
 		info->PresenceMap = this->m_presenceMap;
 
@@ -5025,7 +5186,7 @@ public:
 		this->m_prevastsIncrementalTLRFONDInfo = info;
 		return info;
 	}
-	void* DecodeAstsIncrementalTLRCURR() {
+	inline void* DecodeAstsIncrementalTLRCURR() {
 		AstsIncrementalTLRCURRInfo* info = GetFreeAstsIncrementalTLRCURRInfo();
 		info->PresenceMap = this->m_presenceMap;
 
@@ -5129,7 +5290,7 @@ public:
 		this->m_prevastsIncrementalTLRCURRInfo = info;
 		return info;
 	}
-	void* DecodeAstsSecurityDefinition() {
+	inline void* DecodeAstsSecurityDefinition() {
 		AstsSecurityDefinitionInfo* info = GetFreeAstsSecurityDefinitionInfo();
 		info->PresenceMap = this->m_presenceMap;
 
@@ -5357,7 +5518,7 @@ public:
 		this->m_prevastsSecurityDefinitionInfo = info;
 		return info;
 	}
-	void* DecodeAstsSecurityStatus() {
+	inline void* DecodeAstsSecurityStatus() {
 		AstsSecurityStatusInfo* info = GetFreeAstsSecurityStatusInfo();
 		info->PresenceMap = this->m_presenceMap;
 
@@ -5383,7 +5544,7 @@ public:
 		this->m_prevastsSecurityStatusInfo = info;
 		return info;
 	}
-	void* DecodeAstsTradingSessionStatus() {
+	inline void* DecodeAstsTradingSessionStatus() {
 		AstsTradingSessionStatusInfo* info = GetFreeAstsTradingSessionStatusInfo();
 		info->PresenceMap = this->m_presenceMap;
 
@@ -5398,7 +5559,7 @@ public:
 		this->m_prevastsTradingSessionStatusInfo = info;
 		return info;
 	}
-	void* DecodeAstsHeartbeat() {
+	inline void* DecodeAstsHeartbeat() {
 		AstsHeartbeatInfo* info = GetFreeAstsHeartbeatInfo();
 		info->PresenceMap = this->m_presenceMap;
 
@@ -5407,27 +5568,7 @@ public:
 		this->m_prevastsHeartbeatInfo = info;
 		return info;
 	}
-	AstsSnapshotInfo* GetAstsSnapshotInfoLogon() {
-		AstsSnapshotInfo *info = GetFreeAstsSnapshotInfo();
-		info->PresenceMap = this->m_presenceMap;
-		info->TemplateId = this->m_templateId;
-
-		SkipToNextField(); // TargetCompID
-		SkipToNextField(); // MsgSeqNum
-		info->SendingTime = ReadUInt64_Mandatory();
-		return info;
-	}
-	AstsSnapshotInfo* GetAstsSnapshotInfoLogout() {
-		AstsSnapshotInfo *info = GetFreeAstsSnapshotInfo();
-		info->PresenceMap = this->m_presenceMap;
-		info->TemplateId = this->m_templateId;
-
-		SkipToNextField(); // TargetCompID
-		SkipToNextField(); // MsgSeqNum
-		info->SendingTime = ReadUInt64_Mandatory();
-		return info;
-	}
-	AstsSnapshotInfo* GetAstsSnapshotInfoGeneric() {
+	inline AstsSnapshotInfo* GetAstsSnapshotInfoGeneric() {
 		AstsSnapshotInfo *info = GetFreeAstsSnapshotInfo();
 		info->PresenceMap = this->m_presenceMap;
 		info->TemplateId = this->m_templateId;
@@ -5454,16 +5595,7 @@ public:
 			info->RouteFirst = ReadUInt32_Optional();
 		return info;
 	}
-	AstsSnapshotInfo* GetAstsSnapshotInfoIncrementalGeneric() {
-		AstsSnapshotInfo *info = GetFreeAstsSnapshotInfo();
-		info->PresenceMap = this->m_presenceMap;
-		info->TemplateId = this->m_templateId;
-
-		SkipToNextField(); // MsgSeqNum
-		info->SendingTime = ReadUInt64_Mandatory();
-		return info;
-	}
-	AstsSnapshotInfo* GetAstsSnapshotInfoOLSFOND() {
+	inline AstsSnapshotInfo* GetAstsSnapshotInfoOLSFOND() {
 		AstsSnapshotInfo *info = GetFreeAstsSnapshotInfo();
 		info->PresenceMap = this->m_presenceMap;
 		info->TemplateId = this->m_templateId;
@@ -5491,7 +5623,7 @@ public:
 		ReadString_Mandatory(info->Symbol, &(info->SymbolLength));
 		return info;
 	}
-	AstsSnapshotInfo* GetAstsSnapshotInfoOLSCURR() {
+	inline AstsSnapshotInfo* GetAstsSnapshotInfoOLSCURR() {
 		AstsSnapshotInfo *info = GetFreeAstsSnapshotInfo();
 		info->PresenceMap = this->m_presenceMap;
 		info->TemplateId = this->m_templateId;
@@ -5519,7 +5651,7 @@ public:
 		ReadString_Mandatory(info->Symbol, &(info->SymbolLength));
 		return info;
 	}
-	AstsSnapshotInfo* GetAstsSnapshotInfoTLSFOND() {
+	inline AstsSnapshotInfo* GetAstsSnapshotInfoTLSFOND() {
 		AstsSnapshotInfo *info = GetFreeAstsSnapshotInfo();
 		info->PresenceMap = this->m_presenceMap;
 		info->TemplateId = this->m_templateId;
@@ -5547,7 +5679,7 @@ public:
 		ReadString_Mandatory(info->Symbol, &(info->SymbolLength));
 		return info;
 	}
-	AstsSnapshotInfo* GetAstsSnapshotInfoTLSCURR() {
+	inline AstsSnapshotInfo* GetAstsSnapshotInfoTLSCURR() {
 		AstsSnapshotInfo *info = GetFreeAstsSnapshotInfo();
 		info->PresenceMap = this->m_presenceMap;
 		info->TemplateId = this->m_templateId;
@@ -5573,115 +5705,211 @@ public:
 		else
 			ReadString_Optional(info->TradingSessionID, &(info->TradingSessionIDLength));
 		ReadString_Mandatory(info->Symbol, &(info->SymbolLength));
-		return info;
-	}
-	AstsSnapshotInfo* GetAstsSnapshotInfoIncrementalMSRFOND() {
-		AstsSnapshotInfo *info = GetFreeAstsSnapshotInfo();
-		info->PresenceMap = this->m_presenceMap;
-		info->TemplateId = this->m_templateId;
-
-		SkipToNextField(); // MsgSeqNum
-		info->SendingTime = ReadUInt64_Mandatory();
-		return info;
-	}
-	AstsSnapshotInfo* GetAstsSnapshotInfoIncrementalMSRCURR() {
-		AstsSnapshotInfo *info = GetFreeAstsSnapshotInfo();
-		info->PresenceMap = this->m_presenceMap;
-		info->TemplateId = this->m_templateId;
-
-		SkipToNextField(); // MsgSeqNum
-		info->SendingTime = ReadUInt64_Mandatory();
-		return info;
-	}
-	AstsSnapshotInfo* GetAstsSnapshotInfoIncrementalOLRFOND() {
-		AstsSnapshotInfo *info = GetFreeAstsSnapshotInfo();
-		info->PresenceMap = this->m_presenceMap;
-		info->TemplateId = this->m_templateId;
-
-		SkipToNextField(); // MsgSeqNum
-		info->SendingTime = ReadUInt64_Mandatory();
-		return info;
-	}
-	AstsSnapshotInfo* GetAstsSnapshotInfoIncrementalOLRCURR() {
-		AstsSnapshotInfo *info = GetFreeAstsSnapshotInfo();
-		info->PresenceMap = this->m_presenceMap;
-		info->TemplateId = this->m_templateId;
-
-		SkipToNextField(); // MsgSeqNum
-		info->SendingTime = ReadUInt64_Mandatory();
-		return info;
-	}
-	AstsSnapshotInfo* GetAstsSnapshotInfoIncrementalTLRFOND() {
-		AstsSnapshotInfo *info = GetFreeAstsSnapshotInfo();
-		info->PresenceMap = this->m_presenceMap;
-		info->TemplateId = this->m_templateId;
-
-		SkipToNextField(); // MsgSeqNum
-		info->SendingTime = ReadUInt64_Mandatory();
-		return info;
-	}
-	AstsSnapshotInfo* GetAstsSnapshotInfoIncrementalTLRCURR() {
-		AstsSnapshotInfo *info = GetFreeAstsSnapshotInfo();
-		info->PresenceMap = this->m_presenceMap;
-		info->TemplateId = this->m_templateId;
-
-		SkipToNextField(); // MsgSeqNum
-		info->SendingTime = ReadUInt64_Mandatory();
-		return info;
-	}
-	AstsSnapshotInfo* GetAstsSnapshotInfoSecurityDefinition() {
-		AstsSnapshotInfo *info = GetFreeAstsSnapshotInfo();
-		info->PresenceMap = this->m_presenceMap;
-		info->TemplateId = this->m_templateId;
-
-		SkipToNextField(); // MsgSeqNum
-		info->SendingTime = ReadUInt64_Mandatory();
-		SkipToNextField(); // TotNumReports
-		if(CheckProcessNullString())
-			info->NullMap |= NULL_MAP_INDEX1;
-		else
-			ReadString_Optional(info->Symbol, &(info->SymbolLength));
-		return info;
-	}
-	AstsSnapshotInfo* GetAstsSnapshotInfoSecurityStatus() {
-		AstsSnapshotInfo *info = GetFreeAstsSnapshotInfo();
-		info->PresenceMap = this->m_presenceMap;
-		info->TemplateId = this->m_templateId;
-
-		SkipToNextField(); // MsgSeqNum
-		info->SendingTime = ReadUInt64_Mandatory();
-		ReadString_Mandatory(info->Symbol, &(info->SymbolLength));
-		if(CheckProcessNullString())
-			info->NullMap |= NULL_MAP_INDEX0;
-		else
-			ReadString_Optional(info->TradingSessionID, &(info->TradingSessionIDLength));
-		return info;
-	}
-	AstsSnapshotInfo* GetAstsSnapshotInfoTradingSessionStatus() {
-		AstsSnapshotInfo *info = GetFreeAstsSnapshotInfo();
-		info->PresenceMap = this->m_presenceMap;
-		info->TemplateId = this->m_templateId;
-
-		SkipToNextField(); // MsgSeqNum
-		info->SendingTime = ReadUInt64_Mandatory();
-		SkipToNextField(); // TradSesStatus
-		SkipToNextField(); // Text
-		ReadString_Mandatory(info->TradingSessionID, &(info->TradingSessionIDLength));
-		return info;
-	}
-	AstsSnapshotInfo* GetAstsSnapshotInfoHeartbeat() {
-		AstsSnapshotInfo *info = GetFreeAstsSnapshotInfo();
-		info->PresenceMap = this->m_presenceMap;
-		info->TemplateId = this->m_templateId;
-
-		SkipToNextField(); // MsgSeqNum
-		info->SendingTime = ReadUInt64_Mandatory();
 		return info;
 	}
 	inline void* DecodeAsts() {
 		this->DecodeAstsHeader();
-		FastDecodeMethodPointer funcPtr = this->m_astsDecodeMethods[this->m_templateId - 2101];
-		this->m_lastDecodedInfo = (this->*funcPtr)();
+		if(this->m_templateId <= 2511) {
+			if(this->m_templateId <= 3600) {
+				if(this->m_templateId <= 3610) {
+					if(this->m_templateId <= 3611) {
+						if(this->m_templateId == 3613) {
+							this->m_lastDecodedInfo = this->DecodeAstsIncrementalMSRCURR();
+							return this->m_lastDecodedInfo;
+						}
+						else {
+							this->m_lastDecodedInfo = this->DecodeAstsIncrementalTLRCURR();
+							return this->m_lastDecodedInfo;
+						}
+					}
+					else {
+						if(this->m_templateId == 3611) {
+							this->m_lastDecodedInfo = this->DecodeAstsIncrementalTLRCURR();
+							return this->m_lastDecodedInfo;
+						}
+						else {
+							this->m_lastDecodedInfo = this->DecodeAstsIncrementalOLRCURR();
+							return this->m_lastDecodedInfo;
+						}
+					}
+				}
+				else {
+					if(this->m_templateId <= 3601) {
+						if(this->m_templateId == 3610) {
+							this->m_lastDecodedInfo = this->DecodeAstsIncrementalOLRCURR();
+							return this->m_lastDecodedInfo;
+						}
+						else {
+							this->m_lastDecodedInfo = this->DecodeAstsTLSCURR();
+							return this->m_lastDecodedInfo;
+						}
+					}
+					else {
+						if(this->m_templateId == 3601) {
+							this->m_lastDecodedInfo = this->DecodeAstsTLSCURR();
+							return this->m_lastDecodedInfo;
+						}
+						else {
+							this->m_lastDecodedInfo = this->DecodeAstsOLSCURR();
+							return this->m_lastDecodedInfo;
+						}
+					}
+				}
+			}
+			else {
+				if(this->m_templateId <= 2521) {
+					if(this->m_templateId <= 2523) {
+						if(this->m_templateId == 3600) {
+							this->m_lastDecodedInfo = this->DecodeAstsOLSCURR();
+							return this->m_lastDecodedInfo;
+						}
+						else {
+							this->m_lastDecodedInfo = this->DecodeAstsIncrementalMSRFOND();
+							return this->m_lastDecodedInfo;
+						}
+					}
+					else {
+						if(this->m_templateId == 2523) {
+							this->m_lastDecodedInfo = this->DecodeAstsIncrementalMSRFOND();
+							return this->m_lastDecodedInfo;
+						}
+						else {
+							this->m_lastDecodedInfo = this->DecodeAstsIncrementalTLRFOND();
+							return this->m_lastDecodedInfo;
+						}
+					}
+				}
+				else {
+					if(this->m_templateId <= 2520) {
+						if(this->m_templateId == 2521) {
+							this->m_lastDecodedInfo = this->DecodeAstsIncrementalTLRFOND();
+							return this->m_lastDecodedInfo;
+						}
+						else {
+							this->m_lastDecodedInfo = this->DecodeAstsIncrementalOLRFOND();
+							return this->m_lastDecodedInfo;
+						}
+					}
+					else {
+						if(this->m_templateId == 2520) {
+							this->m_lastDecodedInfo = this->DecodeAstsIncrementalOLRFOND();
+							return this->m_lastDecodedInfo;
+						}
+						else {
+							this->m_lastDecodedInfo = this->DecodeAstsTLSFOND();
+							return this->m_lastDecodedInfo;
+						}
+					}
+				}
+			}
+		}
+		else {
+			if(this->m_templateId <= 2107) {
+				if(this->m_templateId <= 2115) {
+					if(this->m_templateId <= 2510) {
+						if(this->m_templateId == 2511) {
+							this->m_lastDecodedInfo = this->DecodeAstsTLSFOND();
+							return this->m_lastDecodedInfo;
+						}
+						else {
+							this->m_lastDecodedInfo = this->DecodeAstsOLSFOND();
+							return this->m_lastDecodedInfo;
+						}
+					}
+					else {
+						if(this->m_templateId == 2510) {
+							this->m_lastDecodedInfo = this->DecodeAstsOLSFOND();
+							return this->m_lastDecodedInfo;
+						}
+						else {
+							this->m_lastDecodedInfo = this->DecodeAstsSecurityDefinition();
+							return this->m_lastDecodedInfo;
+						}
+					}
+				}
+				else {
+					if(this->m_templateId <= 2108) {
+						if(this->m_templateId == 2115) {
+							this->m_lastDecodedInfo = this->DecodeAstsSecurityDefinition();
+							return this->m_lastDecodedInfo;
+						}
+						else {
+							this->m_lastDecodedInfo = this->DecodeAstsHeartbeat();
+							return this->m_lastDecodedInfo;
+						}
+					}
+					else {
+						if(this->m_templateId == 2108) {
+							this->m_lastDecodedInfo = this->DecodeAstsHeartbeat();
+							return this->m_lastDecodedInfo;
+						}
+						else {
+							this->m_lastDecodedInfo = this->DecodeAstsTradingSessionStatus();
+							return this->m_lastDecodedInfo;
+						}
+					}
+				}
+			}
+			else {
+				if(this->m_templateId <= 2104) {
+					if(this->m_templateId <= 2106) {
+						if(this->m_templateId == 2107) {
+							this->m_lastDecodedInfo = this->DecodeAstsTradingSessionStatus();
+							return this->m_lastDecodedInfo;
+						}
+						else {
+							this->m_lastDecodedInfo = this->DecodeAstsSecurityStatus();
+							return this->m_lastDecodedInfo;
+						}
+					}
+					else {
+						if(this->m_templateId == 2106) {
+							this->m_lastDecodedInfo = this->DecodeAstsSecurityStatus();
+							return this->m_lastDecodedInfo;
+						}
+						else {
+							this->m_lastDecodedInfo = this->DecodeAstsIncrementalGeneric();
+							return this->m_lastDecodedInfo;
+						}
+					}
+				}
+				else {
+					if(this->m_templateId <= 2103) {
+						if(this->m_templateId == 2104) {
+							this->m_lastDecodedInfo = this->DecodeAstsIncrementalGeneric();
+							return this->m_lastDecodedInfo;
+						}
+						else {
+							this->m_lastDecodedInfo = this->DecodeAstsGeneric();
+							return this->m_lastDecodedInfo;
+						}
+					}
+					else {
+						if(this->m_templateId <= 2102) {
+							if(this->m_templateId == 2103) {
+								this->m_lastDecodedInfo = this->DecodeAstsGeneric();
+								return this->m_lastDecodedInfo;
+							}
+							else {
+								this->m_lastDecodedInfo = this->DecodeAstsLogout();
+								return this->m_lastDecodedInfo;
+							}
+						}
+						else {
+							if(this->m_templateId == 2102) {
+								this->m_lastDecodedInfo = this->DecodeAstsLogout();
+								return this->m_lastDecodedInfo;
+							}
+							else {
+								this->m_lastDecodedInfo = this->DecodeAstsLogon();
+								return this->m_lastDecodedInfo;
+							}
+						}
+					}
+				}
+			}
+		}
+		this->m_lastDecodedInfo = this->DecodeAstsUnsupportedMessage();
 		return this->m_lastDecodedInfo;
 	}
 	void PrintAsts() {
@@ -5804,8 +6032,43 @@ public:
 	}
 	inline AstsSnapshotInfo* GetAstsSnapshotInfo() {
 		this->DecodeAstsHeader();
-		AstsGetSnapshotInfoMethodPointer funcPtr = this->m_astsGetSnapshotInfoMethods[this->m_templateId - 2101];
-		return (this->*funcPtr)();
+		if(this->m_templateId <= 2511) {
+			if(this->m_templateId <= 3600) {
+				if(this->m_templateId == 3601) {
+					return this->GetAstsSnapshotInfoTLSCURR();
+				}
+				else {
+					return this->GetAstsSnapshotInfoOLSCURR();
+				}
+			}
+			else {
+				if(this->m_templateId == 3600) {
+					return this->GetAstsSnapshotInfoOLSCURR();
+				}
+				else {
+					return this->GetAstsSnapshotInfoTLSFOND();
+				}
+			}
+		}
+		else {
+			if(this->m_templateId <= 2510) {
+				if(this->m_templateId == 2511) {
+					return this->GetAstsSnapshotInfoTLSFOND();
+				}
+				else {
+					return this->GetAstsSnapshotInfoOLSFOND();
+				}
+			}
+			else {
+				if(this->m_templateId == 2510) {
+					return this->GetAstsSnapshotInfoOLSFOND();
+				}
+				else {
+					return this->GetAstsSnapshotInfoGeneric();
+				}
+			}
+		}
+		return this->GetAstsSnapshotInfoUnsupported();
 	}
 #pragma endregion
 
@@ -5822,9 +6085,9 @@ public:
 		SkipToNextField(); // SendingTime
 		return ReadInt32_Mandatory();
 	}
-	void* DecodeFortsUnsupportedMessage() { return 0; }
-	FortsSnapshotInfo* GetFortsSnapshotInfoUnsupported() { return 0; }
-	void* DecodeFortsDefaultIncrementalRefreshMessage() {
+	inline void* DecodeFortsUnsupportedMessage() { return 0; }
+	inline FortsSnapshotInfo* GetFortsSnapshotInfoUnsupported() { return 0; }
+	inline void* DecodeFortsDefaultIncrementalRefreshMessage() {
 		FortsDefaultIncrementalRefreshMessageInfo* info = GetFreeFortsDefaultIncrementalRefreshMessageInfo();
 		info->PresenceMap = this->m_presenceMap;
 
@@ -5931,7 +6194,7 @@ public:
 		this->m_prevfortsDefaultIncrementalRefreshMessageInfo = info;
 		return info;
 	}
-	void* DecodeFortsDefaultSnapshotMessage() {
+	inline void* DecodeFortsDefaultSnapshotMessage() {
 		FortsDefaultSnapshotMessageInfo* info = GetFreeFortsDefaultSnapshotMessageInfo();
 		info->PresenceMap = this->m_presenceMap;
 
@@ -6028,7 +6291,7 @@ public:
 		this->m_prevfortsDefaultSnapshotMessageInfo = info;
 		return info;
 	}
-	void* DecodeFortsSecurityDefinition() {
+	inline void* DecodeFortsSecurityDefinition() {
 		FortsSecurityDefinitionInfo* info = GetFreeFortsSecurityDefinitionInfo();
 		info->PresenceMap = this->m_presenceMap;
 
@@ -6247,7 +6510,7 @@ public:
 		this->m_prevfortsSecurityDefinitionInfo = info;
 		return info;
 	}
-	void* DecodeFortsSecurityDefinitionUpdateReport() {
+	inline void* DecodeFortsSecurityDefinitionUpdateReport() {
 		FortsSecurityDefinitionUpdateReportInfo* info = GetFreeFortsSecurityDefinitionUpdateReportInfo();
 		info->PresenceMap = this->m_presenceMap;
 
@@ -6274,7 +6537,7 @@ public:
 		this->m_prevfortsSecurityDefinitionUpdateReportInfo = info;
 		return info;
 	}
-	void* DecodeFortsSecurityStatus() {
+	inline void* DecodeFortsSecurityStatus() {
 		FortsSecurityStatusInfo* info = GetFreeFortsSecurityStatusInfo();
 		info->PresenceMap = this->m_presenceMap;
 
@@ -6314,7 +6577,7 @@ public:
 		this->m_prevfortsSecurityStatusInfo = info;
 		return info;
 	}
-	void* DecodeFortsHeartbeat() {
+	inline void* DecodeFortsHeartbeat() {
 		FortsHeartbeatInfo* info = GetFreeFortsHeartbeatInfo();
 		info->PresenceMap = this->m_presenceMap;
 
@@ -6323,7 +6586,7 @@ public:
 		this->m_prevfortsHeartbeatInfo = info;
 		return info;
 	}
-	void* DecodeFortsSequenceReset() {
+	inline void* DecodeFortsSequenceReset() {
 		FortsSequenceResetInfo* info = GetFreeFortsSequenceResetInfo();
 		info->PresenceMap = this->m_presenceMap;
 
@@ -6333,7 +6596,7 @@ public:
 		this->m_prevfortsSequenceResetInfo = info;
 		return info;
 	}
-	void* DecodeFortsTradingSessionStatus() {
+	inline void* DecodeFortsTradingSessionStatus() {
 		FortsTradingSessionStatusInfo* info = GetFreeFortsTradingSessionStatusInfo();
 		info->PresenceMap = this->m_presenceMap;
 
@@ -6368,7 +6631,7 @@ public:
 		this->m_prevfortsTradingSessionStatusInfo = info;
 		return info;
 	}
-	void* DecodeFortsNews() {
+	inline void* DecodeFortsNews() {
 		FortsNewsInfo* info = GetFreeFortsNewsInfo();
 		info->PresenceMap = this->m_presenceMap;
 
@@ -6418,7 +6681,7 @@ public:
 		this->m_prevfortsNewsInfo = info;
 		return info;
 	}
-	void* DecodeFortsOrdersLog() {
+	inline void* DecodeFortsOrdersLog() {
 		FortsOrdersLogInfo* info = GetFreeFortsOrdersLogInfo();
 		info->PresenceMap = this->m_presenceMap;
 
@@ -6497,7 +6760,7 @@ public:
 		this->m_prevfortsOrdersLogInfo = info;
 		return info;
 	}
-	void* DecodeFortsOrdersBook() {
+	inline void* DecodeFortsOrdersBook() {
 		FortsOrdersBookInfo* info = GetFreeFortsOrdersBookInfo();
 		info->PresenceMap = this->m_presenceMap;
 
@@ -6559,7 +6822,7 @@ public:
 		this->m_prevfortsOrdersBookInfo = info;
 		return info;
 	}
-	void* DecodeFortsLogon() {
+	inline void* DecodeFortsLogon() {
 		FortsLogonInfo* info = GetFreeFortsLogonInfo();
 		info->PresenceMap = this->m_presenceMap;
 
@@ -6568,7 +6831,7 @@ public:
 		this->m_prevfortsLogonInfo = info;
 		return info;
 	}
-	void* DecodeFortsLogout() {
+	inline void* DecodeFortsLogout() {
 		FortsLogoutInfo* info = GetFreeFortsLogoutInfo();
 		info->PresenceMap = this->m_presenceMap;
 
@@ -6581,20 +6844,7 @@ public:
 		this->m_prevfortsLogoutInfo = info;
 		return info;
 	}
-	FortsSnapshotInfo* GetFortsSnapshotInfoDefaultIncrementalRefreshMessage() {
-		FortsSnapshotInfo *info = GetFreeFortsSnapshotInfo();
-		info->PresenceMap = this->m_presenceMap;
-		info->TemplateId = this->m_templateId;
-
-		SkipToNextField(); // MsgSeqNum
-		info->SendingTime = ReadUInt64_Mandatory();
-		if(CheckProcessNullUInt32())
-			info->NullMap |= NULL_MAP_INDEX0;
-		else
-			info->LastFragment = ReadUInt32_Optional();
-		return info;
-	}
-	FortsSnapshotInfo* GetFortsSnapshotInfoDefaultSnapshotMessage() {
+	inline FortsSnapshotInfo* GetFortsSnapshotInfoDefaultSnapshotMessage() {
 		FortsSnapshotInfo *info = GetFreeFortsSnapshotInfo();
 		info->PresenceMap = this->m_presenceMap;
 		info->TemplateId = this->m_templateId;
@@ -6616,148 +6866,149 @@ public:
 			ReadString_Optional(info->Symbol, &(info->SymbolLength));
 		return info;
 	}
-	FortsSnapshotInfo* GetFortsSnapshotInfoSecurityDefinition() {
-		FortsSnapshotInfo *info = GetFreeFortsSnapshotInfo();
-		info->PresenceMap = this->m_presenceMap;
-		info->TemplateId = this->m_templateId;
-
-		SkipToNextField(); // MsgSeqNum
-		info->SendingTime = ReadUInt64_Mandatory();
-		SkipToNextField(); // TotNumReports
-		ReadString_Mandatory(info->Symbol, &(info->SymbolLength));
-		SkipToNextField(); // SecurityDesc
-		SkipToNextField(); // SecurityID
-		SkipToNextField(); // SecurityIDSource
-		SkipToNextField(); // SecurityAltID
-		SkipToNextField(); // SecurityAltIDSource
-		SkipToNextField(); // SecurityType
-		SkipToNextField(); // CFICode
-		SkipToNextField(); // StrikePrice
-		SkipToNextField(); // ContractMultiplier
-		SkipToNextField(); // SecurityTradingStatus
-		SkipToNextField(); // Currency
-		SkipToNextField(); // MarketID
-		SkipToNextField(); // MarketSegmentID
-		if(CheckProcessNullUInt32())
-			info->NullMap |= NULL_MAP_INDEX9;
-		else
-			info->TradingSessionID = ReadUInt32_Optional();
-		return info;
-	}
-	FortsSnapshotInfo* GetFortsSnapshotInfoSecurityDefinitionUpdateReport() {
-		FortsSnapshotInfo *info = GetFreeFortsSnapshotInfo();
-		info->PresenceMap = this->m_presenceMap;
-		info->TemplateId = this->m_templateId;
-
-		SkipToNextField(); // MsgSeqNum
-		info->SendingTime = ReadUInt64_Mandatory();
-		return info;
-	}
-	FortsSnapshotInfo* GetFortsSnapshotInfoSecurityStatus() {
-		FortsSnapshotInfo *info = GetFreeFortsSnapshotInfo();
-		info->PresenceMap = this->m_presenceMap;
-		info->TemplateId = this->m_templateId;
-
-		SkipToNextField(); // MsgSeqNum
-		info->SendingTime = ReadUInt64_Mandatory();
-		SkipToNextField(); // SecurityID
-		SkipToNextField(); // SecurityIDSource
-		ReadString_Mandatory(info->Symbol, &(info->SymbolLength));
-		return info;
-	}
-	FortsSnapshotInfo* GetFortsSnapshotInfoHeartbeat() {
-		FortsSnapshotInfo *info = GetFreeFortsSnapshotInfo();
-		info->PresenceMap = this->m_presenceMap;
-		info->TemplateId = this->m_templateId;
-
-		SkipToNextField(); // MsgSeqNum
-		info->SendingTime = ReadUInt64_Mandatory();
-		return info;
-	}
-	FortsSnapshotInfo* GetFortsSnapshotInfoSequenceReset() {
-		FortsSnapshotInfo *info = GetFreeFortsSnapshotInfo();
-		info->PresenceMap = this->m_presenceMap;
-		info->TemplateId = this->m_templateId;
-
-		SkipToNextField(); // MsgSeqNum
-		info->SendingTime = ReadUInt64_Mandatory();
-		return info;
-	}
-	FortsSnapshotInfo* GetFortsSnapshotInfoTradingSessionStatus() {
-		FortsSnapshotInfo *info = GetFreeFortsSnapshotInfo();
-		info->PresenceMap = this->m_presenceMap;
-		info->TemplateId = this->m_templateId;
-
-		SkipToNextField(); // MsgSeqNum
-		info->SendingTime = ReadUInt64_Mandatory();
-		SkipToNextField(); // TradSesOpenTime
-		SkipToNextField(); // TradSesCloseTime
-		SkipToNextField(); // TradSesIntermClearingStartTime
-		SkipToNextField(); // TradSesIntermClearingEndTime
-		info->TradingSessionID = ReadUInt32_Mandatory();
-		return info;
-	}
-	FortsSnapshotInfo* GetFortsSnapshotInfoNews() {
-		FortsSnapshotInfo *info = GetFreeFortsSnapshotInfo();
-		info->PresenceMap = this->m_presenceMap;
-		info->TemplateId = this->m_templateId;
-
-		SkipToNextField(); // MsgSeqNum
-		info->SendingTime = ReadUInt64_Mandatory();
-		if(CheckProcessNullUInt32())
-			info->NullMap |= NULL_MAP_INDEX0;
-		else
-			info->LastFragment = ReadUInt32_Optional();
-		return info;
-	}
-	FortsSnapshotInfo* GetFortsSnapshotInfoOrdersLog() {
-		FortsSnapshotInfo *info = GetFreeFortsSnapshotInfo();
-		info->PresenceMap = this->m_presenceMap;
-		info->TemplateId = this->m_templateId;
-
-		SkipToNextField(); // MsgSeqNum
-		info->SendingTime = ReadUInt64_Mandatory();
-		info->LastFragment = ReadUInt32_Mandatory();
-		return info;
-	}
-	FortsSnapshotInfo* GetFortsSnapshotInfoOrdersBook() {
-		FortsSnapshotInfo *info = GetFreeFortsSnapshotInfo();
-		info->PresenceMap = this->m_presenceMap;
-		info->TemplateId = this->m_templateId;
-
-		SkipToNextField(); // MsgSeqNum
-		info->SendingTime = ReadUInt64_Mandatory();
-		info->LastMsgSeqNumProcessed = ReadUInt32_Mandatory();
-		if(CheckProcessNullUInt32())
-			info->NullMap |= NULL_MAP_INDEX0;
-		else
-			info->RptSeq = ReadUInt32_Optional();
-		info->LastFragment = ReadUInt32_Mandatory();
-		info->RouteFirst = ReadUInt32_Mandatory();
-		return info;
-	}
-	FortsSnapshotInfo* GetFortsSnapshotInfoLogon() {
-		FortsSnapshotInfo *info = GetFreeFortsSnapshotInfo();
-		info->PresenceMap = this->m_presenceMap;
-		info->TemplateId = this->m_templateId;
-
-		SkipToNextField(); // MsgSeqNum
-		info->SendingTime = ReadUInt64_Mandatory();
-		return info;
-	}
-	FortsSnapshotInfo* GetFortsSnapshotInfoLogout() {
-		FortsSnapshotInfo *info = GetFreeFortsSnapshotInfo();
-		info->PresenceMap = this->m_presenceMap;
-		info->TemplateId = this->m_templateId;
-
-		SkipToNextField(); // MsgSeqNum
-		info->SendingTime = ReadUInt64_Mandatory();
-		return info;
-	}
 	inline void* DecodeForts() {
 		this->DecodeFortsHeader();
-		FastDecodeMethodPointer funcPtr = this->m_fortsDecodeMethods[this->m_templateId - 3];
-		this->m_lastDecodedInfo = (this->*funcPtr)();
+		if(this->m_templateId <= 9) {
+			if(this->m_templateId <= 14) {
+				if(this->m_templateId <= 1000) {
+					if(this->m_templateId == 1001) {
+						this->m_lastDecodedInfo = this->DecodeFortsLogout();
+						return this->m_lastDecodedInfo;
+					}
+					else {
+						this->m_lastDecodedInfo = this->DecodeFortsLogon();
+						return this->m_lastDecodedInfo;
+					}
+				}
+				else {
+					if(this->m_templateId <= 15) {
+						if(this->m_templateId == 1000) {
+							this->m_lastDecodedInfo = this->DecodeFortsLogon();
+							return this->m_lastDecodedInfo;
+						}
+						else {
+							this->m_lastDecodedInfo = this->DecodeFortsOrdersBook();
+							return this->m_lastDecodedInfo;
+						}
+					}
+					else {
+						if(this->m_templateId == 15) {
+							this->m_lastDecodedInfo = this->DecodeFortsOrdersBook();
+							return this->m_lastDecodedInfo;
+						}
+						else {
+							this->m_lastDecodedInfo = this->DecodeFortsOrdersLog();
+							return this->m_lastDecodedInfo;
+						}
+					}
+				}
+			}
+			else {
+				if(this->m_templateId <= 13) {
+					if(this->m_templateId == 14) {
+						this->m_lastDecodedInfo = this->DecodeFortsOrdersLog();
+						return this->m_lastDecodedInfo;
+					}
+					else {
+						this->m_lastDecodedInfo = this->DecodeFortsDefaultSnapshotMessage();
+						return this->m_lastDecodedInfo;
+					}
+				}
+				else {
+					if(this->m_templateId <= 12) {
+						if(this->m_templateId == 13) {
+							this->m_lastDecodedInfo = this->DecodeFortsDefaultSnapshotMessage();
+							return this->m_lastDecodedInfo;
+						}
+						else {
+							this->m_lastDecodedInfo = this->DecodeFortsDefaultIncrementalRefreshMessage();
+							return this->m_lastDecodedInfo;
+						}
+					}
+					else {
+						if(this->m_templateId == 12) {
+							this->m_lastDecodedInfo = this->DecodeFortsDefaultIncrementalRefreshMessage();
+							return this->m_lastDecodedInfo;
+						}
+						else {
+							this->m_lastDecodedInfo = this->DecodeFortsNews();
+							return this->m_lastDecodedInfo;
+						}
+					}
+				}
+			}
+		}
+		else {
+			if(this->m_templateId <= 6) {
+				if(this->m_templateId <= 8) {
+					if(this->m_templateId == 9) {
+						this->m_lastDecodedInfo = this->DecodeFortsNews();
+						return this->m_lastDecodedInfo;
+					}
+					else {
+						this->m_lastDecodedInfo = this->DecodeFortsTradingSessionStatus();
+						return this->m_lastDecodedInfo;
+					}
+				}
+				else {
+					if(this->m_templateId <= 7) {
+						if(this->m_templateId == 8) {
+							this->m_lastDecodedInfo = this->DecodeFortsTradingSessionStatus();
+							return this->m_lastDecodedInfo;
+						}
+						else {
+							this->m_lastDecodedInfo = this->DecodeFortsSequenceReset();
+							return this->m_lastDecodedInfo;
+						}
+					}
+					else {
+						if(this->m_templateId == 7) {
+							this->m_lastDecodedInfo = this->DecodeFortsSequenceReset();
+							return this->m_lastDecodedInfo;
+						}
+						else {
+							this->m_lastDecodedInfo = this->DecodeFortsHeartbeat();
+							return this->m_lastDecodedInfo;
+						}
+					}
+				}
+			}
+			else {
+				if(this->m_templateId <= 5) {
+					if(this->m_templateId == 6) {
+						this->m_lastDecodedInfo = this->DecodeFortsHeartbeat();
+						return this->m_lastDecodedInfo;
+					}
+					else {
+						this->m_lastDecodedInfo = this->DecodeFortsSecurityStatus();
+						return this->m_lastDecodedInfo;
+					}
+				}
+				else {
+					if(this->m_templateId <= 4) {
+						if(this->m_templateId == 5) {
+							this->m_lastDecodedInfo = this->DecodeFortsSecurityStatus();
+							return this->m_lastDecodedInfo;
+						}
+						else {
+							this->m_lastDecodedInfo = this->DecodeFortsSecurityDefinitionUpdateReport();
+							return this->m_lastDecodedInfo;
+						}
+					}
+					else {
+						if(this->m_templateId == 4) {
+							this->m_lastDecodedInfo = this->DecodeFortsSecurityDefinitionUpdateReport();
+							return this->m_lastDecodedInfo;
+						}
+						else {
+							this->m_lastDecodedInfo = this->DecodeFortsSecurityDefinition();
+							return this->m_lastDecodedInfo;
+						}
+					}
+				}
+			}
+		}
+		this->m_lastDecodedInfo = this->DecodeFortsUnsupportedMessage();
 		return this->m_lastDecodedInfo;
 	}
 	void PrintForts() {
@@ -6850,8 +7101,8 @@ public:
 	}
 	inline FortsSnapshotInfo* GetFortsSnapshotInfo() {
 		this->DecodeFortsHeader();
-		FortsGetSnapshotInfoMethodPointer funcPtr = this->m_fortsGetSnapshotInfoMethods[this->m_templateId - 3];
-		return (this->*funcPtr)();
+		return this->GetFortsSnapshotInfoDefaultSnapshotMessage();
+		return this->GetFortsSnapshotInfoUnsupported();
 	}
 #pragma endregion
 };

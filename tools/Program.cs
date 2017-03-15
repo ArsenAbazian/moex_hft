@@ -368,7 +368,6 @@ namespace prebuild {
 
 			ClearPreviouseGeneratedCode();
 
-			GenerateMethodsPointerDeclarationCode();
 			GenerateDefinesCode();
 
 			Generate_ASTS();
@@ -516,13 +515,6 @@ namespace prebuild {
 			WriteLine("#define NULL_MAP_INDEX63     0x8000000000000000L");
 		}
 
-		void GenerateMethodsPointerDeclarationCode() {
-			ClearRegion(Commom_Decode_Method_Pointer_Definition_GeneratedCode);
-			SetPosition(Commom_Decode_Method_Pointer_Definition_GeneratedCode);
-			WriteLine("typedef void* (FastProtocolManager::*FastDecodeMethodPointer)();");
-			WriteLine("typedef void* (FastProtocolManager::*FastReleaseMethodPointer)();");
-		}
-
 		void Generate_ASTS() {
 			XmlDocument doc = new XmlDocument();
 			doc.Load(AstsTemplateFile);
@@ -539,7 +531,6 @@ namespace prebuild {
 		void PrepareForAsts() { 
 			Prefix = "Asts";
 			Mode = GeneratorMode.Asts;
-			Decode_Method_Pointer_Definition_GeneratedCode = "Asts_Decode_Method_Pointer_Definition_GeneratedCode";
 			Message_Info_Structures_Definition_GeneratedCode = "Asts_Message_Info_Structures_Definition_GeneratedCode";
 			Structure_Objects_Declaration_GeneratedCode = "Asts_Structure_Objects_Declaration_GeneratedCode";
 			Decode_Methods_Definition_GeneratedCode = "Asts_Decode_Methods_Definition_GeneratedCode";
@@ -565,7 +556,6 @@ namespace prebuild {
 		void PrepareForForts() {
 			Prefix = "Forts";
 			Mode = GeneratorMode.Spectra;
-			Decode_Method_Pointer_Definition_GeneratedCode = "Forts_Decode_Method_Pointer_Definition_GeneratedCode";
 			Message_Info_Structures_Definition_GeneratedCode = "Forts_Message_Info_Structures_Definition_GeneratedCode";
 			Structure_Objects_Declaration_GeneratedCode = "Forts_Structure_Objects_Declaration_GeneratedCode";
 			Decode_Methods_Definition_GeneratedCode = "Forts_Decode_Methods_Definition_GeneratedCode";
@@ -622,9 +612,6 @@ namespace prebuild {
 
 		string Message_Info_Structures_Definition_GeneratedCode = "Message_Info_Structures_Definition_GeneratedCode";
 		string Structure_Objects_Declaration_GeneratedCode = "Structure_Objects_Declaration_GeneratedCode";
-		string Commom_Decode_Method_Pointer_Definition_GeneratedCode = "Decode_Method_Pointer_Definition_GeneratedCode";
-		string Decode_Method_Pointer_Definition_GeneratedCode = "Asts_Decode_Method_Pointer_Definition_GeneratedCode";
-		string Decode_Method_Pointer_Arrays_GeneratedCode = "Decode_Method_Pointer_Arrays_GeneratedCode";
 		string Decode_Methods_Definition_GeneratedCode = "Decode_Methods_Definition_GeneratedCode";
 		string Get_Free_Item_Methods_GeneratedCode = "Get_Free_Item_Methods_GeneratedCode";
 		string Encode_Methods_Definition_GeneratedCode = "Encode_Methods_Definition_GeneratedCode";
@@ -639,7 +626,6 @@ namespace prebuild {
 			string[] keywords = new string[] { 
 				Message_Info_Structures_Definition_GeneratedCode,
 				Structure_Objects_Declaration_GeneratedCode,
-				Decode_Method_Pointer_Arrays_GeneratedCode,
 				Get_Free_Item_Methods_GeneratedCode,
 				Encode_Methods_Definition_GeneratedCode,
 				Encode_Methods_Declaration_GeneratedCode,
@@ -681,12 +667,6 @@ namespace prebuild {
 
 		List<ConstantStringInfo> ConstantStrings { get; set; }
 
-		private void WriteDecodeMethodPointersDefinitionCode() {
-			ClearRegion(Decode_Method_Pointer_Definition_GeneratedCode);
-			SetPosition(Decode_Method_Pointer_Definition_GeneratedCode);
-			WriteLine("typedef " + Prefix + "SnapshotInfo* (FastProtocolManager::*" + Prefix + "GetSnapshotInfoMethodPointer)();");	
-		}
-
 		void WriteDeclareAllocationInfoCode() { 
 			ClearRegion(Declare_AllocationInfo_GeneratedCode);
 			SetPosition(Declare_AllocationInfo_GeneratedCode);
@@ -696,9 +676,7 @@ namespace prebuild {
 
 		private  void GenerateTemplatesCodeAsts () {
 			Console.WriteLine("generate asts...");
-			WriteDecodeMethodPointersDefinitionCode();
 			WriteDeclareAllocationInfoCode();
-			WriteEntireMethodAddressArrays(TemplatesNode);
 			WriteStructuresDefinitionCode(TemplatesNode, true);
 			WriteStructuresDeclarationCode();
 			ConstantStrings = GetConstantStrings(TemplatesNode);
@@ -716,9 +694,7 @@ namespace prebuild {
 
 		private  void GenerateTemplatesCodeSpectra () {
 			Console.WriteLine("generate spectra...");
-			WriteDecodeMethodPointersDefinitionCode();
 			WriteDeclareAllocationInfoCode();
-			WriteEntireMethodAddressArrays(TemplatesNode);
 			WriteStructuresDefinitionCode(TemplatesNode, true);
 			WriteStructuresDeclarationCode();
 			//ConstantStrings = GetConstantStrings(TemplatesNode);
@@ -996,10 +972,9 @@ namespace prebuild {
 				WriteLine("\t\t((" + str.Name + "*)this->LastDecodeInfo())->ReleaseUnused();");
 				WriteLine("\t}");
 			}
-			int minId = CalcMinTemplateId(templatesNode);
 			WriteLine("\tinline void Reset" + Prefix + "() {");
-			WriteLine("\t\tFastReleaseMethodPointer funcPtr = this->" + ReleaseMethodsName + "[this->m_templateId - " + minId + "];");
-			WriteLine("\t\t(this->*funcPtr)();");
+			List<DecodeMessageInfo> list = GetDecodeMessageMethods(templatesNode);
+			WriteSelector("\t\t", list, new WriteConditionDelegate(WriteReleaseMethod));
 			WriteLine("\t}");
 		}
 
@@ -1233,8 +1208,8 @@ namespace prebuild {
 		}
 
 		private  void WriteDecodeMethodsCode (XmlNode templatesNode) {
-			WriteLine("\tvoid* Decode" + Prefix + "UnsupportedMessage() { return 0; }");
-			WriteLine("\t" + Prefix + "SnapshotInfo* Get" + Prefix + "SnapshotInfoUnsupported() { return 0; }");
+			WriteLine("\tinline void* Decode" + Prefix + "UnsupportedMessage() { return 0; }");
+			WriteLine("\tinline " + Prefix + "SnapshotInfo* Get" + Prefix + "SnapshotInfoUnsupported() { return 0; }");
 			foreach(XmlNode node in templatesNode.ChildNodes) {
 				if(node.Name != "template")
 					continue;
@@ -1596,45 +1571,6 @@ namespace prebuild {
 		protected string ReleaseMethodsName { get { return "m_" + Prefix.ToLower() + "ReleaseMethods"; } }
 		protected string GetSnapshotInfoMethodsMethodsName { get { return "m_" + Prefix.ToLower() + "GetSnapshotInfoMethods"; } }
 
-		private  void WriteEntireMethodAddressArrays (XmlNode templatesNode) {
-			SetPosition(Decode_Method_Pointer_Arrays_GeneratedCode);
-			WriteLine("\tFastDecodeMethodPointer* " + DecodeMethodsName + ";");
-			WriteLine("\tFastReleaseMethodPointer* " + ReleaseMethodsName + ";");
-			WriteLine("\t" + Prefix + "GetSnapshotInfoMethodPointer* " + GetSnapshotInfoMethodsMethodsName + ";");
-			WriteLine("");
-			WriteLine("\tvoid Initialize" + Prefix + "DecodeMethodPointers() {");
-			int maxId = CalcMaxTemplateId(templatesNode);
-			int minId = CalcMinTemplateId(templatesNode);
-			int count = maxId - minId + 1;
-
-			WriteLine("\t\tint ptCount = " + count + ";");
-			WriteLine("\t\tthis->" + DecodeMethodsName + " = new FastDecodeMethodPointer[ptCount];");
-			WriteLine("\t\tthis->" + ReleaseMethodsName + " = new FastReleaseMethodPointer[ptCount];");
-			WriteLine("\t\tthis->" + GetSnapshotInfoMethodsMethodsName + " = new " + Prefix + "GetSnapshotInfoMethodPointer[ptCount];");
-
-			WriteLine("");
-			WriteLine("\t\tfor(int i = 0; i < " + count + "; i++) {");
-			WriteLine("\t\t\tthis->" + DecodeMethodsName + "[i] = &FastProtocolManager::Decode" + Prefix + "UnsupportedMessage;");
-			WriteLine("\t\t\tthis->" + GetSnapshotInfoMethodsMethodsName + "[i] = &FastProtocolManager::Get" + Prefix + "SnapshotInfoUnsupported;");
-			WriteLine("\t\t}");
- 			WriteLine("");
-			List<DecodeMessageInfo> methods = GetDecodeMessageMethods(templatesNode);
-			foreach(DecodeMessageInfo info in methods) {
-				WriteLine("\t\tthis->" + DecodeMethodsName + "[" + info.TemplateId + " - " + minId + "] = &FastProtocolManager::" + info.FullDecodeMethodName + ";");
-			}
-			foreach(DecodeMessageInfo info in methods) {
-				WriteLine("\t\tthis->" + ReleaseMethodsName + "[" + info.TemplateId + " - " + minId + "] = &FastProtocolManager::" + info.FullDecodeMethodName + ";");
-			}
-			foreach(DecodeMessageInfo info in methods) {
-				if(!info.HasGetSnapshotInfoMethod)
-					continue;
-				WriteLine("\t\tthis->" + GetSnapshotInfoMethodsMethodsName + "[" + info.TemplateId + " - " + minId + "] = &FastProtocolManager::" + info.FullGetSnapshotInfoMethod + ";");
-			}
-			WriteLine("");
-			WriteLine("\t}");
-			WriteLine("");
-		}
-
 		private  bool SetPosition (string keyword) {
 			ManagerHFile.GoTo(0);
 			ManagerCppFile.GoTo(0);
@@ -1680,7 +1616,7 @@ namespace prebuild {
 			public string MsgType { get; set; }
 			public int TemplateId { get; set; }
 			public string FullDecodeMethodName { get { return "Decode" + Prefix + NameCore; } }
-			public string FullReleaseMethodName { get { return "Release" + Prefix + NameCore; } }
+			public string FullReleaseMethodName { get { return "Release" + Prefix + NameCore + "Info"; } }
 			public bool HasGetSnapshotInfoMethod { get; set; } 
 			public string FullGetSnapshotInfoMethod { get { return "Get" + Prefix + "SnapshotInfo" + NameCore; } }
 			public string PrintMethodName { get { return "Print" + Prefix + NameCore; } }
@@ -1688,19 +1624,66 @@ namespace prebuild {
 			public string StructName { get { return Prefix + NameCore + "Info"; } }
 		}
 
+		int CompareDecodeMessage(DecodeMessageInfo x, DecodeMessageInfo y) {
+			if(x.TemplateId == y.TemplateId)
+				return 0;
+			return x.TemplateId < y.TemplateId? 1: -1;
+		}
+
+		void WriteSelector(string tabs, List<DecodeMessageInfo> list, WriteConditionDelegate del) {
+			list.Sort(new Comparison<DecodeMessageInfo>(CompareDecodeMessage));
+			if(list.Count == 0)
+				return;
+			if(list.Count == 1) {
+				del(tabs, list[0]);
+				return;
+			}
+			int a = 0, b = list.Count - 1, c = (a + b) / 2;
+			WriteCondition(tabs, list, a, b, c, del);
+		} 
+		delegate void WriteConditionDelegate(string tabs, DecodeMessageInfo info);
+		void WriteCondition(string tabs, List<DecodeMessageInfo> list, int a, int b, int c, WriteConditionDelegate del) {
+			if(b - a == 1) {
+				WriteLine(tabs + "if(this->m_templateId == " + list[a].TemplateId + ") {");
+				del(tabs + "\t", list[a]);
+				WriteLine(tabs + "}");
+				WriteLine(tabs + "else {");
+				del(tabs + "\t", list[b]);
+				WriteLine(tabs + "}");
+			} else {
+				WriteLine(tabs + "if(this->m_templateId <= " + list[c].TemplateId + ") {");
+				WriteCondition(tabs + "\t", list, a, c, (a + c) / 2, del);
+				WriteLine(tabs + "}");
+				WriteLine(tabs + "else {");
+				WriteCondition(tabs + "\t", list, c, b, (c + b) / 2, del);
+				WriteLine(tabs + "}");
+			}
+		}
+
+		private void WriteDecodeMethod(string tabs, DecodeMessageInfo info) {
+			WriteLine(tabs + "this->m_lastDecodedInfo = this->" + info.FullDecodeMethodName + "();");
+			WriteLine(tabs + "return this->m_lastDecodedInfo;");
+		}
+		private void WriteGetSnapshotInfoMethod(string tabs, DecodeMessageInfo info) {
+			WriteLine(tabs + "return this->" + info.FullGetSnapshotInfoMethod + "();");
+		}
+
+		private void WriteReleaseMethod(string tabs, DecodeMessageInfo info) {
+			WriteLine(tabs + "this->" + info.FullReleaseMethodName + "();");
+		}
 		private  void WriteEntireMethodsCode (XmlNode templatesNode) {
-			int minId = CalcMinTemplateId(templatesNode);
 			WriteLine("\tinline void* Decode" + Prefix + "() {");
 			WriteLine("\t\tthis->Decode" + Prefix + "Header();");
-			WriteLine("\t\tFastDecodeMethodPointer funcPtr = this->" + DecodeMethodsName + "[this->m_templateId - " + minId + "];");
-			WriteLine("\t\tthis->m_lastDecodedInfo = (this->*funcPtr)();");
+			List<DecodeMessageInfo> messages = GetDecodeMessageMethods(templatesNode);
+			WriteSelector("\t\t", GetDecodeMessageMethods(templatesNode), new WriteConditionDelegate(WriteDecodeMethod));
+			WriteLine("\t\tthis->m_lastDecodedInfo = this->Decode" + Prefix + "UnsupportedMessage();");
 			WriteLine("\t\treturn this->m_lastDecodedInfo;");
 			WriteLine("\t}");
 
 			WriteLine("\tvoid Print" + Prefix + "() {");
 			WriteLine("");
 			WriteLine("\t\tswitch(this->m_templateId) {");
-			List<DecodeMessageInfo> messages = GetDecodeMessageMethods(templatesNode);
+
 			foreach(DecodeMessageInfo info in messages) {
 				WriteLine("\t\t\tcase " + info.TemplateId + ":");
 				WriteLine("\t\t\t\t" + info.PrintMethodName + "((" + info.StructName + "*)this->m_lastDecodedInfo);");
@@ -1722,8 +1705,8 @@ namespace prebuild {
 
 			WriteLine("\tinline " + Prefix + "SnapshotInfo* Get" + Prefix + "SnapshotInfo() {");
 			WriteLine("\t\tthis->Decode" + Prefix + "Header();");
-			WriteLine("\t\t" + Prefix + "GetSnapshotInfoMethodPointer funcPtr = this->" + GetSnapshotInfoMethodsMethodsName + "[this->m_templateId - " + minId + "];");
-			WriteLine("\t\treturn (this->*funcPtr)();");
+			WriteSelector("\t\t", GetSnapshotMessageMethods(templatesNode), new WriteConditionDelegate(WriteGetSnapshotInfoMethod));
+			WriteLine("\t\treturn this->Get" + Prefix + "SnapshotInfoUnsupported();");
 			WriteLine("\t}");
 		}
 
@@ -1733,19 +1716,34 @@ namespace prebuild {
 			return node.Attributes["name"].Value.Contains("Snapshot");
 		}
 
+		private  List<DecodeMessageInfo> GetSnapshotMessageMethods (XmlNode templatesNode) {
+			List<DecodeMessageInfo> src = GetDecodeMessageMethods(templatesNode);
+			List<DecodeMessageInfo> res = new List<DecodeMessageInfo>();
+			foreach(DecodeMessageInfo info in src) {
+				if(info.HasGetSnapshotInfoMethod)
+					res.Add(info);
+			}
+			return res;
+		}
+
+		DecodeMessageInfo GetDecodeMessageInfo(XmlNode node) {
+			DecodeMessageInfo info = new DecodeMessageInfo();
+			info.Prefix = Prefix;
+			if(node.Attributes == null)
+				throw new ArgumentException("Attributes == null for node" + node.Value.ToString());
+			info.MsgType = node.Attributes["name"].Value.Substring(0, 1);
+			info.TemplateId = Int32.Parse(node.Attributes["id"].Value);
+			info.NameCore = GetTemplateName(node);
+			info.HasGetSnapshotInfoMethod = IsSnapshotMessage(node);
+			return info;
+		}
+
 		private  List<DecodeMessageInfo> GetDecodeMessageMethods (XmlNode templatesNode) {
 			List<DecodeMessageInfo> res = new List<DecodeMessageInfo>();
 			foreach(XmlNode node in templatesNode.ChildNodes) {
 				if(node.Name != "template")
 					continue;
-				DecodeMessageInfo info = new DecodeMessageInfo();
-				info.Prefix = Prefix;
-				if(node.Attributes == null)
-					throw new ArgumentException("Attributes == null for node" + node.Value.ToString());
-				info.MsgType = node.Attributes["name"].Value.Substring(0, 1);
-				info.TemplateId = Int32.Parse(node.Attributes["id"].Value);
-				info.NameCore = GetTemplateName(node);
-				info.HasGetSnapshotInfoMethod = IsSnapshotMessage(node);
+				DecodeMessageInfo info = GetDecodeMessageInfo(node);
 				res.Add(info);
 			}
 			return res;
@@ -2044,7 +2042,7 @@ namespace prebuild {
 		}
 
 		private  void ParseTemplateNode(XmlNode template, string templateName) {
-			WriteLine("\tvoid* Decode" + Prefix + templateName + "() {");
+			WriteLine("\tinline void* Decode" + Prefix + templateName + "() {");
 			StructureInfo info = new StructureInfo() { Node = template, NameCore = templateName };
 			info.Prefix = Prefix;
 			WriteLine("\t\t" + Prefix + templateName + "Info* info = " + info.GetFreeMethodName + "();");
@@ -2167,9 +2165,12 @@ namespace prebuild {
 		}
 
 		private  void WriteGetSnapshotInfoMethod(XmlNode template, string templateName) {
+			DecodeMessageInfo mi = GetDecodeMessageInfo(template);
+			if(!mi.HasGetSnapshotInfoMethod)
+				return;
 			List<string> parsed = new List<string>();
 
-			WriteLine("\t" + Prefix + "SnapshotInfo* Get" + Prefix + "SnapshotInfo" + templateName + "() {");
+			WriteLine("\tinline " + Prefix + "SnapshotInfo* Get" + Prefix + "SnapshotInfo" + templateName + "() {");
 
 			if(!HasSnapshotFields(template)) {
 				WriteLine("\t\treturn NULL;");
