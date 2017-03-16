@@ -108,7 +108,10 @@ typedef enum _LogMessageCode {
 	lmcFeedConnection_SaveSecurityDefinition = 98,
 	lmcFeedConnection_LoadSecurityDefinition = 99,
 	lmcRobot_CollectSecurityDefinitionsForts = 100,
-	lmcRobot_GenerateSecurityDefinitionsForts = 101
+	lmcRobot_GenerateSecurityDefinitionsForts = 101,
+	lmcFeedConnection_StartSecurityStatusSnapshot = 102,
+	lmcFeedConnection_FinishSecurityStatusSnapshot = 103,
+	lmcFeedConnection_Listen_Atom_SecurityStatusForts = 104
 #pragma  endregion
 }LogMessageCode;
 

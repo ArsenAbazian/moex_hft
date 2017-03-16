@@ -77,7 +77,7 @@ public:
         buf[array->m_length] = '\0';
         return buf;
     }
-    const char* GetString(char *text, int length, int index) {
+    const char* GetString(const char *text, int length, int index) {
         char *buf = this->m_buffer + index * 100;
         memcpy(buf, text, length);
         buf[length] = '\0';

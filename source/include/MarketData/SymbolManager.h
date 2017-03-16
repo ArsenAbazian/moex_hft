@@ -140,8 +140,11 @@ public:
     inline SymbolInfo* GetSymbol(const char *symbol, int length) {
         bool wasNewlyAdded = false;
         SymbolInfo *res = this->GetSymbol(symbol, length, &wasNewlyAdded);
-        if(wasNewlyAdded)
-            throw;
+        if(wasNewlyAdded) {
+            printf("!!!unexpected add %s\n", DebugInfoManager::Default->GetString(symbol, length, 0));
+            return 0;
+            //throw;
+        }
         return res;
     }
     inline SymbolInfo* GetSymbol(const char *symbol, int length, bool *wasNewlyAdded) {

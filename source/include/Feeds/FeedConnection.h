@@ -46,6 +46,7 @@ class FeedConnection {
 public:
 	const int MaxReceiveBufferSize 				        = 1500;
     const int WaitAnyPacketMaxTimeMs                    = 4000;
+    const int WaitSecurityStatusFortsMaxTimeSec         = 120;
     const int MaxHrUnsuccessfulConnectCount             = 20;
     const int WaitSecurityDefinitionPacketMaxTimeMs     = 20000;
 protected:
@@ -254,8 +255,6 @@ protected:
         this->m_endMsgSeqNum = 0;
     }
 
-    inline bool ProcessServerA() { return this->ProcessServer(this->socketAManager, LogMessageCode::lmcsocketA); }
-    inline bool ProcessServerB() { return this->ProcessServer(this->socketBManager, LogMessageCode::lmcsocketB); }
     inline FeedConnectionMessageInfo* Packet(int index) { return this->m_packets[index - this->m_windowMsgSeqNum]; }
     inline bool SupportWindow() { return this->m_type == FeedConnectionType::Incremental || this->m_type == FeedConnectionType::InstrumentStatus; }
 
@@ -395,6 +394,10 @@ protected:
         if(msgSeqNum < this->m_windowMsgSeqNum) // out of window
             return true;
         if(msgSeqNum - this->m_windowMsgSeqNum >= this->m_packetsCount) {
+            this->ClearLocalPackets(0, this->GetLocalIndex(this->m_endMsgSeqNum));
+            this->m_startMsgSeqNum = msgSeqNum;
+            this->m_windowMsgSeqNum = msgSeqNum;
+            this->m_endMsgSeqNum = msgSeqNum;
             // we should start snapshot
             this->StartSecurityStatusSnapshot();
             return false;
@@ -414,13 +417,15 @@ protected:
         this->m_recvABuffer->Next(size);
         return true;
     }
-
+#pragma region ProcessSever
     inline bool ProcessServerCore(int size) {
         int msgSeqNum = *((UINT*)this->m_recvABuffer->CurrentPos());
+        //TODO remove debug
+        printf("%d\n", msgSeqNum);
 
         if(this->m_type == FeedConnectionType::Incremental)
             return ProcessServerCoreIncremental(size, msgSeqNum);
-        if(this->m_type == FeedConnectionType::InstrumentStatus)
+        if(this->m_type == FeedConnectionType::InstrumentStatus || this->m_type == FeedConnectionType::InstrumentStatusForts)
             return ProcessServerCoreSecurityStatus(size, msgSeqNum);
         if(this->m_type == FeedConnectionType::Snapshot)
             return ProcessServerCoreSnapshot(size, msgSeqNum);
@@ -444,6 +449,56 @@ protected:
         return this->ProcessServerCore(size);
     }
 
+    inline int ProcessSocketManager(WinSockManager *socketManager, LogMessageCode socketName) {
+        if(!socketManager->ShouldRecv())
+            return 0;
+        if(!socketManager->Recv(this->m_recvABuffer->CurrentPos())) {
+            DefaultLogManager::Default->WriteSuccess(socketName,
+                                                     LogMessageCode::lmcFeedConnection_Listen_Atom,
+                                                     false)->m_errno = errno;
+            socketManager->Reconnect();
+            return 0;
+        }
+        return socketManager->RecvSize();
+    }
+
+    inline bool ProcessServerIncremental(WinSockManager *socketManager, LogMessageCode socketName) {
+        int size = this->ProcessSocketManager(socketManager, socketName);
+        if(size == 0)
+            return false;
+        return ProcessServerCoreIncremental(socketManager->RecvSize(), *((UINT*)this->m_recvABuffer->CurrentPos()));
+    }
+    inline bool ProcessServerAIncremental() { return this->ProcessServerIncremental(this->socketAManager, LogMessageCode::lmcsocketA); }
+    inline bool ProcessServerBIncremental() { return this->ProcessServerIncremental(this->socketBManager, LogMessageCode::lmcsocketB); }
+
+    inline bool ProcessServerSecurityStatus(WinSockManager *socketManager, LogMessageCode socketName) {
+        int size = this->ProcessSocketManager(socketManager, socketName);
+        if(size == 0)
+            return false;
+        return ProcessServerCoreSecurityStatus(socketManager->RecvSize(), *((UINT*)this->m_recvABuffer->CurrentPos()));
+    }
+    inline bool ProcessServerASecurityStatus() { return this->ProcessServerSecurityStatus(this->socketAManager, LogMessageCode::lmcsocketA); }
+    inline bool ProcessServerBSecurityStatus() { return this->ProcessServerSecurityStatus(this->socketBManager, LogMessageCode::lmcsocketB); }
+
+    inline bool ProcessServerSnapshot(WinSockManager *socketManager, LogMessageCode socketName) {
+        int size = this->ProcessSocketManager(socketManager, socketName);
+        if(size == 0)
+            return false;
+        return ProcessServerCoreSnapshot(socketManager->RecvSize(), *((UINT*)this->m_recvABuffer->CurrentPos()));
+    }
+    inline bool ProcessServerASnapshot() { return this->ProcessServerSnapshot(this->socketAManager, LogMessageCode::lmcsocketA); }
+    inline bool ProcessServerBSnapshot() { return this->ProcessServerSnapshot(this->socketBManager, LogMessageCode::lmcsocketB); }
+
+    inline bool ProcessServerSecurityDefinition(WinSockManager *socketManager, LogMessageCode socketName) {
+        int size = this->ProcessSocketManager(socketManager, socketName);
+        if(size == 0)
+            return false;
+        return ProcessServerCoreSecurityDefinition(socketManager->RecvSize(), *((UINT*)this->m_recvABuffer->CurrentPos()));
+    }
+    inline bool ProcessServerASecurityDefinition() { return this->ProcessServerSecurityDefinition(this->socketAManager, LogMessageCode::lmcsocketA); }
+    inline bool ProcessServerBSecurityDefinition() { return this->ProcessServerSecurityDefinition(this->socketBManager, LogMessageCode::lmcsocketB); }
+
+#pragma endregion
     inline bool HasQueueEntries() {
         if(this->m_orderTableFond != 0)
             return this->m_orderTableFond->HasQueueEntries();
@@ -731,12 +786,18 @@ protected:
     }
 
     inline bool StartSecurityStatusSnapshot() {
+        if(this->m_securityDefinition->State() != FeedConnectionState::fcsSuspend)
+            return true; // already connected
+        DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_StartSecurityStatusSnapshot);
         this->m_securityDefinition->m_idfMode = FeedConnectionSecurityDefinitionMode::sdmUpdateData;
         this->m_securityDefinition->IdfStopAfterUpdateMessages(true);
-        if(!this->m_securityDefinition->Start())
+        if(!this->m_securityDefinition->Start()) {
+            DefaultLogManager::Default->EndLog(false);
             return false;
+        }
         this->m_securityStatusSnapshotActive = true;
         this->m_isfStartSnapshotCount++;
+        DefaultLogManager::Default->EndLog(true);
         return true;
     }
 
@@ -745,11 +806,13 @@ protected:
     }
 
     inline void FinishSecurityStatusSnapshot() {
+        DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_FinishSecurityStatusSnapshot);
         this->m_securityDefinition->Stop();
         this->m_securityStatusSnapshotActive = false;
         this->ClearLocalPackets(0, this->m_endMsgSeqNum - this->m_windowMsgSeqNum);
         this->m_startMsgSeqNum = this->m_endMsgSeqNum + 1;
         this->m_windowMsgSeqNum = this->m_startMsgSeqNum;
+        DefaultLogManager::Default->EndLog(true);
     }
 
     inline bool IsSecurityStatusSnapshotActive() { return this->m_securityStatusSnapshotActive; }
@@ -759,6 +822,8 @@ protected:
             return false;
         if(this->m_securityDefinition->m_state != FeedConnectionState::fcsSuspend)
             return false;
+        if(this->m_historicalReplay == 0)
+            return true;
         if(endIndex - this->m_requestMessageStartIndex < this->m_maxLostPacketCountForStartSnapshot)
             return false;
         return true;
@@ -838,7 +903,6 @@ protected:
             i++;
         }
 
-        // there is messages that needs to be requested
         this->CheckRequestLostSecurityStatusMessages();
 
         if(i > end) {
@@ -879,7 +943,6 @@ protected:
             i++;
         }
 
-        // there is messages that needs to be requested
         this->CheckRequestLostSecurityStatusMessages();
 
         if(i > end) {
@@ -1066,7 +1129,7 @@ protected:
         return true;
     }
     inline bool StartListenSnapshot() {
-		if(this->m_type == FeedConnectionType::InstrumentStatus)
+		if(this->m_type == FeedConnectionType::InstrumentStatus || this->m_type == FeedConnectionType::InstrumentStatusForts)
             return this->StartSecurityStatusSnapshot();
         return this->StartIncrementalSnapshot();
 	}
@@ -1983,8 +2046,8 @@ public:
 protected:
     inline bool Listen_Atom_Incremental() {
 
-        bool recv = this->ProcessServerA();
-        recv |= this->ProcessServerB();
+        bool recv = this->ProcessServerAIncremental();
+        recv |= this->ProcessServerBIncremental();
         this->m_isLastIncrementalRecv = recv;
 
         if(!this->m_isLastIncrementalRecv) {
@@ -2005,8 +2068,8 @@ protected:
     }
 
     inline bool Listen_Atom_SecurityStatus() {
-        bool recv = this->ProcessServerA();
-        recv |= this->ProcessServerB();
+        bool recv = this->ProcessServerASecurityStatus();
+        recv |= this->ProcessServerBSecurityStatus();
 
         if(!recv) {
             if(!this->m_waitTimer->Active(1)) {
@@ -2028,17 +2091,17 @@ protected:
     }
 
     inline bool Listen_Atom_SecurityStatusForts() {
-        bool recv = this->ProcessServerA();
-        recv |= this->ProcessServerB();
+        bool recv = this->ProcessServerASecurityStatus();
+        recv |= this->ProcessServerBSecurityStatus();
 
         if(!recv) {
             if(!this->m_waitTimer->Active(1)) {
                 this->m_waitTimer->Start(1);
             }
             else {
-                if(this->m_waitTimer->ElapsedMilliseconds(1) > this->WaitAnyPacketMaxTimeMs) {
-                    printf("%s %s Timeout 10 sec... Reconnect...\n", this->m_channelName, this->m_idName);
-                    DefaultLogManager::Default->WriteSuccess(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_Listen_Atom_SecurityStatus, false);
+                if(this->m_waitTimer->ElapsedSeconds(1) > this->WaitSecurityStatusFortsMaxTimeSec) {
+                    printf("%s %s Timeout %d sec... Reconnect...\n", this->m_channelName, this->m_idName, this->WaitSecurityStatusFortsMaxTimeSec);
+                    DefaultLogManager::Default->WriteSuccess(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_Listen_Atom_SecurityStatusForts, false);
                     this->ReconnectSetNextState(FeedConnectionState::fcsListenSecurityStatus);
                 }
             }
@@ -2051,8 +2114,8 @@ protected:
     }
 
     inline bool Listen_Atom_SecurityDefinition() {
-        bool recv = this->ProcessServerA();
-        recv |= this->ProcessServerB();
+        bool recv = this->ProcessServerASecurityDefinition();
+        recv |= this->ProcessServerBSecurityDefinition();
 
         if(!recv) {
             if(!this->m_waitTimer->Active(1)) {
@@ -2074,8 +2137,8 @@ protected:
     }
 
     inline bool Listen_Atom_Snapshot() {
-        bool recv = this->ProcessServerA();
-        recv |= this->ProcessServerB();
+        bool recv = this->ProcessServerASnapshot();
+        recv |= this->ProcessServerBSnapshot();
 
         if(!recv) {
             if(!this->m_waitTimer->Active(2)) {
@@ -2487,13 +2550,13 @@ public:
 
     inline void AddSymbol(LinkedPointer<FortsSecurityDefinitionInfo> *ptr, int index) {
         FortsSecurityDefinitionInfo *sd = ptr->Data();
-        printf("%s %d add symbol %s %lu %s %s\n", this->m_idName,
-               index,
-               DebugInfoManager::Default->GetString(sd->Symbol, sd->SymbolLength, 0),
-               sd->SecurityID,
-               DebugInfoManager::Default->GetString(sd->MarketID, sd->MarketIDLength, 1),
-               DebugInfoManager::Default->GetString(sd->MarketSegmentID, sd->MarketSegmentIDLength, 2)
-        );
+//        printf("%s %d add symbol %s %lu %s %s\n", this->m_idName,
+//               index,
+//               DebugInfoManager::Default->GetString(sd->Symbol, sd->SymbolLength, 0),
+//               sd->SecurityID,
+//               DebugInfoManager::Default->GetString(sd->MarketID, sd->MarketIDLength, 1),
+//               DebugInfoManager::Default->GetString(sd->MarketSegmentID, sd->MarketSegmentIDLength, 2)
+//        );
     }
 
     inline void AddSymbol(LinkedPointer<AstsSecurityDefinitionInfo> *ptr, int index) {
@@ -2689,7 +2752,7 @@ public:
         info->Used = true;
         if(wasNewlyAdded) {
             this->AddSecurityDefinitionToList(info, smb->m_index);
-            printf("add forts security definition %s index = %d\n", DebugInfoManager::Default->GetString(info->Symbol, info->SymbolLength, 0), smb->m_index);
+            //printf("add forts security definition %s index = %d\n", DebugInfoManager::Default->GetString(info->Symbol, info->SymbolLength, 0), smb->m_index);
         }
         else {
             printf("update forts security definition %s\n", DebugInfoManager::Default->GetString(info->Symbol, info->SymbolLength, 0));
@@ -2995,6 +3058,9 @@ public:
 
     inline void UpdateSecurityDefinition(FortsSecurityDefinitionInfo *info) {
         SymbolInfo *sm = this->m_symbolManager->GetSymbol(info->Symbol, info->SymbolLength);
+        //TODO remove debug
+        if(sm == 0)
+            return;
         LinkedPointer<FortsSecurityDefinitionInfo> *orig = this->m_symbolsForts[sm->m_index];
         this->UpdateSecurityDefinition(orig, info);
     }
