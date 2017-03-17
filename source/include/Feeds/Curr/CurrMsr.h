@@ -36,6 +36,9 @@ public:
         InitializePackets(this->GetPacketsCount());
         DebugInfoManager::Default->PrintMemoryInfo("FeedConnection_CURR_MSR");
     }
+    ~FeedConnection_CURR_MSR() {
+        delete this->m_statTableCurr;
+    }
     void AllocateFastObjects() {
         AstsObjectsAllocationInfo::Default->AllocateHeartbeatInfoPoolTo(10);
         AstsObjectsAllocationInfo::Default->AllocateTradingSessionStatusInfoPoolTo(10);

@@ -176,6 +176,23 @@ public:
     FeedConnection_FORTS_SNAP(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
             FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
         this->m_marketType = FeedMarketType::fmtForts;
+        this->SetType(FeedConnectionType::Snapshot);
+        this->m_id = FeedConnectionId::fcidSnapForts;
+        this->m_fastProtocolManager = new FastProtocolManager();
+        this->AllocateFastObjects();
+        InitializePackets(this->GetPacketsCount());
+        DebugInfoManager::Default->PrintMemoryInfo("FeedConnection_FORTS_SNAP");
+    }
+    void AllocateFastObjects() {
+        FortsObjectsAllocationInfo::Default->AllocateDefaultSnapshotMessageInfoPool(10, 10);
+    }
+    int GetPacketsCount() { return 50000; }
+    ISocketBufferProvider* CreateSocketBufferProvider() {
+        return new SocketBufferProvider(DefaultSocketBufferManager::Default,
+                                        RobotSettings::Default->DefaultFeedConnectionSendBufferSize,
+                                        RobotSettings::Default->DefaultFeedConnectionSendItemsCount,
+                                        RobotSettings::Default->DefaultFeedConnectionRecvBufferSize,
+                                        RobotSettings::Default->DefaultFeedConnectionRecvItemsCount);
     }
 };
 
@@ -184,6 +201,30 @@ public:
     FeedConnection_FORTS_HR(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
             FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
         this->m_marketType = FeedMarketType::fmtForts;
+        InitializeHistoricalReplay();
+        this->m_fixProtocolManager->SetSenderComputerId(CurrencyMarketSenderComputerId);
+        this->m_fastProtocolManager = new FastProtocolManager();
+        this->AllocateFastObjects();
+        PrepareLogonInfo();
+        this->SetType(FeedConnectionType::HistoricalReplay);
+        this->SetState(FeedConnectionState::fcsHistoricalReplay);
+        this->SetHsState(FeedConnectionHistoricalReplayState::hsSuspend);
+        this->SetId(FeedConnectionId::fcidHrForts);
+        DebugInfoManager::Default->PrintMemoryInfo("FeedConnection_FORTS_HR");
+    }
+    void AllocateFastObjects() {
+        FortsObjectsAllocationInfo::Default->AllocateLogonInfoPoolTo(10);
+        FortsObjectsAllocationInfo::Default->AllocateLogoutInfoPoolTo(10);
+    }
+    ~FeedConnection_FORTS_HR() {
+        DisposeHistoricalReplay();
+    }
+    ISocketBufferProvider* CreateSocketBufferProvider() {
+        return new SocketBufferProvider(DefaultSocketBufferManager::Default,
+                                        RobotSettings::Default->DefaultFeedConnectionSendBufferSize,
+                                        RobotSettings::Default->DefaultFeedConnectionSendItemsCount,
+                                        RobotSettings::Default->DefaultFeedConnectionRecvBufferSize,
+                                        RobotSettings::Default->DefaultFeedConnectionRecvItemsCount);
     }
 };
 
@@ -229,7 +270,9 @@ public:
         InitializePackets(this->GetPacketsCount());
         DebugInfoManager::Default->PrintMemoryInfo("FeedConnection_FORTS_INSTR_SNAP");
     }
-
+    ~FeedConnection_FORTS_INSTR_SNAP() {
+        DisposeSecurityDefinition();
+    }
     void AllocateFastObjects() {
         int sdSeqCount = 13000;
         int sdSeqCountAdd = 500;

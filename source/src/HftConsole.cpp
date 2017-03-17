@@ -99,7 +99,7 @@ int main(int argc, char** argv) {
 	robot->AllowMarketDataGroup(MarketDataGroupId::mdgidFutBook5, false);
 	robot->AllowMarketDataGroup(MarketDataGroupId::mdgidFutBook20, false);
 	robot->AllowMarketDataGroup(MarketDataGroupId::mdgidFutBook50, false);
-	robot->AllowMarketDataGroup(MarketDataGroupId::mdgidFutTrades, true);
+	robot->AllowMarketDataGroup(MarketDataGroupId::mdgidFutTrades, false);
 	robot->AllowMarketDataGroup(MarketDataGroupId::mdgidOptBook1, false);
 	robot->AllowMarketDataGroup(MarketDataGroupId::mdgidOptBook5, false);
 	robot->AllowMarketDataGroup(MarketDataGroupId::mdgidOptBook20, false);

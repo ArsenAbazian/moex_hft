@@ -71,7 +71,9 @@ typedef enum _FeedConnectionId {
     fcidNewsForts,
     fcidNewsSkrinForts,
     fcidObrForts,
-    fcidTlrForts
+    fcidTlrForts,
+    fcidSnapForts,
+    fcidHrForts
 }FeedConnectionId;
 
 typedef enum _FeedConnectionProtocol {

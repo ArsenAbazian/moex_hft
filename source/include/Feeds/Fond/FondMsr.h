@@ -19,6 +19,9 @@ public:
         InitializePackets(this->GetPacketsCount());
         DebugInfoManager::Default->PrintMemoryInfo("FeedConnection_FOND_MSR");
     }
+    ~FeedConnection_FOND_MSR() {
+        delete this->m_statTableFond;
+    }
     void AllocateFastObjects() {
         AstsObjectsAllocationInfo::Default->AllocateHeartbeatInfoPoolTo(10);
         AstsObjectsAllocationInfo::Default->AllocateTradingSessionStatusInfoPoolTo(10);

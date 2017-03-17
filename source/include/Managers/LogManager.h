@@ -107,6 +107,8 @@ public:
         delete[] this->m_items;
     }
 
+    inline BinaryLogItem* Items() { return this->m_items; }
+
     inline BinaryLogItem* Write(int messageCode, int messageCode2) {
         BinaryLogItem *item = this->Next();
 

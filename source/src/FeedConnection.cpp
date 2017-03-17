@@ -68,6 +68,8 @@ FeedConnection::FeedConnection(const char *id, const char *name, char value, Fee
     this->m_tradeTableCurr = 0;
     this->m_statTableFond = 0;
     this->m_statTableCurr = 0;
+    this->m_fortsOrderBookTable = 0;
+    this->m_fortsTradeBookTable = 0;
 }
 
 FeedConnection::~FeedConnection() {
