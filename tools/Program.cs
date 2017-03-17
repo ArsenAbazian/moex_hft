@@ -1095,9 +1095,19 @@ namespace prebuild {
 
 		private  List<StructureInfo> GetStructures (XmlNode templatesNode) {
 			List<StructureInfo> res = new List<StructureInfo>();
+			GetStructures(res, templatesNode, true);
+			GetStructures(res, templatesNode, false);
+			return res;
+		}
+
+		private void GetStructures(List<StructureInfo> res, XmlNode templatesNode, bool excludeIncremental) {
 			foreach(XmlNode node in templatesNode.ChildNodes) {
 				if(node.Name == "template") {
 					string nameCore = GetTemplateName(node);
+					if(excludeIncremental && nameCore.Contains("Increment"))
+						continue;
+					else if(!excludeIncremental && !nameCore.Contains("Increment"))
+						continue;
 					List<StructureInfo> child = new List<StructureInfo>();
 					GetSequenceStructureNames(nameCore, node, child);
 					StructureInfo info = new StructureInfo() { NameCore = nameCore, Node = node };
@@ -1113,7 +1123,6 @@ namespace prebuild {
 					res.Add(info);
 				}
 			}
-			return res;
 		}
 
 		private  void GetSequenceStructureNames (string parentStructNameCore, XmlNode parent, List<StructureInfo> res) {
