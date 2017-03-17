@@ -549,12 +549,12 @@ protected:
     }
 
     inline int GetAstsSnapshotSymbolIndex() {
-        return this->m_symbolManager->GetSymbol(this->m_lastSnapshotInfo->Symbol, this->m_lastSnapshotInfo->SymbolLength)->m_index;
+        return this->m_symbolManager->GetSymbol(this->m_astsSnapshotInfo->Symbol, this->m_astsSnapshotInfo->SymbolLength)->m_index;
     }
 
     inline bool StartApplySnapshot_OLS_FOND() {
-        this->m_incremental->OrderFond()->ObtainSnapshotItem(this->GetAstsSnapshotSymbolIndex(), this->m_lastSnapshotInfo);
-        if(this->m_incremental->OrderFond()->ApplyQuickSnapshot(this->m_lastSnapshotInfo)) {
+        this->m_incremental->OrderFond()->ObtainSnapshotItem(this->GetAstsSnapshotSymbolIndex(), this->m_astsSnapshotInfo);
+        if(this->m_incremental->OrderFond()->ApplyQuickSnapshot(this->m_astsSnapshotInfo)) {
 #ifdef COLLECT_STATISTICS
             ProgramStatistics::Current->IncFondOlsProcessedCount();
             ProgramStatistics::Total->IncFondOlsProcessedCount();
@@ -589,8 +589,8 @@ protected:
     }
 
     inline bool StartApplySnapshot_OLS_CURR() {
-        this->m_incremental->OrderCurr()->ObtainSnapshotItem(this->GetAstsSnapshotSymbolIndex(), this->m_lastSnapshotInfo);
-        if(this->m_incremental->OrderCurr()->ApplyQuickSnapshot(this->m_lastSnapshotInfo)) {
+        this->m_incremental->OrderCurr()->ObtainSnapshotItem(this->GetAstsSnapshotSymbolIndex(), this->m_astsSnapshotInfo);
+        if(this->m_incremental->OrderCurr()->ApplyQuickSnapshot(this->m_astsSnapshotInfo)) {
 #ifdef COLLECT_STATISTICS
             ProgramStatistics::Current->IncCurrOlsProcessedCount();
             ProgramStatistics::Total->IncCurrOlsProcessedCount();
@@ -625,8 +625,8 @@ protected:
     }
 
     inline bool StartApplySnapshot_TLS_FOND() {
-        this->m_incremental->TradeFond()->ObtainSnapshotItem(this->GetAstsSnapshotSymbolIndex(), this->m_lastSnapshotInfo);
-        if(this->m_incremental->TradeFond()->ApplyQuickSnapshot(this->m_lastSnapshotInfo)) {
+        this->m_incremental->TradeFond()->ObtainSnapshotItem(this->GetAstsSnapshotSymbolIndex(), this->m_astsSnapshotInfo);
+        if(this->m_incremental->TradeFond()->ApplyQuickSnapshot(this->m_astsSnapshotInfo)) {
 #ifdef COLLECT_STATISTICS
             ProgramStatistics::Current->IncFondTlsProcessedCount();
             ProgramStatistics::Total->IncFondTlsProcessedCount();
@@ -661,8 +661,8 @@ protected:
     }
 
     inline bool StartApplySnapshot_TLS_CURR() {
-        this->m_incremental->TradeCurr()->ObtainSnapshotItem(this->GetAstsSnapshotSymbolIndex(), this->m_lastSnapshotInfo);
-        if(this->m_incremental->TradeCurr()->ApplyQuickSnapshot(this->m_lastSnapshotInfo)) {
+        this->m_incremental->TradeCurr()->ObtainSnapshotItem(this->GetAstsSnapshotSymbolIndex(), this->m_astsSnapshotInfo);
+        if(this->m_incremental->TradeCurr()->ApplyQuickSnapshot(this->m_astsSnapshotInfo)) {
 #ifdef COLLECT_STATISTICS
             ProgramStatistics::Current->IncCurrTlsProcessedCount();
             ProgramStatistics::Total->IncCurrTlsProcessedCount();
@@ -697,8 +697,8 @@ protected:
     }
 
     inline bool StartApplySnapshot_MSS_FOND() {
-        this->m_incremental->StatisticFond()->ObtainSnapshotItem(this->GetAstsSnapshotSymbolIndex(), this->m_lastSnapshotInfo);
-        if(this->m_incremental->StatisticFond()->ApplyQuickSnapshot(this->m_lastSnapshotInfo)) {
+        this->m_incremental->StatisticFond()->ObtainSnapshotItem(this->GetAstsSnapshotSymbolIndex(), this->m_astsSnapshotInfo);
+        if(this->m_incremental->StatisticFond()->ApplyQuickSnapshot(this->m_astsSnapshotInfo)) {
 #ifdef COLLECT_STATISTICS
             ProgramStatistics::Current->IncFondMssProcessedCount();
             ProgramStatistics::Total->IncFondMssProcessedCount();
@@ -733,8 +733,8 @@ protected:
     }
 
     inline bool StartApplySnapshot_MSS_CURR() {
-        this->m_incremental->StatisticCurr()->ObtainSnapshotItem(this->GetAstsSnapshotSymbolIndex(), this->m_lastSnapshotInfo);
-        if(this->m_incremental->StatisticCurr()->ApplyQuickSnapshot(this->m_lastSnapshotInfo)) {
+        this->m_incremental->StatisticCurr()->ObtainSnapshotItem(this->GetAstsSnapshotSymbolIndex(), this->m_astsSnapshotInfo);
+        if(this->m_incremental->StatisticCurr()->ApplyQuickSnapshot(this->m_astsSnapshotInfo)) {
 #ifdef COLLECT_STATISTICS
             ProgramStatistics::Current->IncCurrMssProcessedCount();
             ProgramStatistics::Total->IncCurrMssProcessedCount();
@@ -1246,7 +1246,8 @@ protected:
         DefaultLogManager::Default->WriteSuccess(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_StopListenSnapshot, true);
 		return true;
 	}
-	inline AstsSnapshotInfo* GetAstsSnapshotInfo(int msgSeqNo) {
+
+    inline AstsSnapshotInfo* GetAstsSnapshotInfo(int msgSeqNo) {
 		FeedConnectionMessageInfo *item = this->m_packets[msgSeqNo];
 		unsigned char *buffer = item->m_address;
 		if(this->ShouldSkipMessageAsts(buffer, !item->m_requested))
@@ -1255,6 +1256,16 @@ protected:
 		this->m_fastProtocolManager->ReadMsgSeqNumber();
 		return this->m_fastProtocolManager->GetAstsSnapshotInfo();
 	}
+
+    inline FortsSnapshotInfo* GetFortsSnapshotInfo(int msgSeqNo) {
+        FeedConnectionMessageInfo *item = this->m_packets[msgSeqNo];
+        unsigned char *buffer = item->m_address;
+        if(this->ShouldSkipMessageAsts(buffer, !item->m_requested))
+            return 0;
+        this->m_fastProtocolManager->SetNewBuffer(buffer, item->m_size);
+        this->m_fastProtocolManager->ReadMsgSeqNumber();
+        return this->m_fastProtocolManager->GetFortsSnapshotInfo();
+    }
 
     inline void ResetWaitTime() { this->m_waitTimer->Start(); }
     inline bool ActualMsgSeqNum() { return this->m_startMsgSeqNum == this->m_endMsgSeqNum; }
@@ -1281,18 +1292,35 @@ protected:
 		this->m_shouldUseNextState = true;
 	}
 
-    AstsSnapshotInfo *m_lastSnapshotInfo;
+    AstsSnapshotInfo *m_astsSnapshotInfo;
     FortsSnapshotInfo *m_fortsSnapshotInfo;
     inline int GetLocalIndex(int msgSeqNo) { return msgSeqNo - this->m_windowMsgSeqNum; }
     inline int LocalIndexToMsgSeqNo(int index) { return index + this->m_windowMsgSeqNum; }
-    inline bool FindRouteFirst() {
+    inline bool FindRouteFirstAsts() {
         for(int i = this->m_startMsgSeqNum; i <= this->m_endMsgSeqNum; i++) {
             if (this->m_packets[i]->m_address == 0) {
                 this->m_startMsgSeqNum = i;
                 return false;
             }
-            this->m_lastSnapshotInfo = this->GetAstsSnapshotInfo(i);
-            if (this->m_lastSnapshotInfo != 0 && this->m_lastSnapshotInfo->RouteFirst == 1) {
+            this->m_astsSnapshotInfo = this->GetAstsSnapshotInfo(i);
+            if (this->m_astsSnapshotInfo != 0 && this->m_astsSnapshotInfo->RouteFirst == 1) {
+                this->m_startMsgSeqNum = i;
+                this->m_snapshotRouteFirst = i;
+                return true;
+            }
+            this->m_packets[i]->Clear();
+        }
+        this->m_startMsgSeqNum = this->m_endMsgSeqNum + 1;
+        return false;
+    }
+    inline bool FindRouteFirstForts() {
+        for(int i = this->m_startMsgSeqNum; i <= this->m_endMsgSeqNum; i++) {
+            if (this->m_packets[i]->m_address == 0) {
+                this->m_startMsgSeqNum = i;
+                return false;
+            }
+            this->m_fortsSnapshotInfo = this->GetFortsSnapshotInfo(i);
+            if (this->m_fortsSnapshotInfo != 0 && this->m_fortsSnapshotInfo->RouteFirst == 1) {
                 this->m_startMsgSeqNum = i;
                 this->m_snapshotRouteFirst = i;
                 return true;
@@ -1303,8 +1331,8 @@ protected:
         return false;
     }
 
-    inline bool StartApplySnapshot() {
-        switch(this->m_lastSnapshotInfo->TemplateId) {
+    inline bool StartApplySnapshotAsts() {
+        switch(this->m_astsSnapshotInfo->TemplateId) {
             case FeedConnectionMessage::fmcFullRefresh_Generic:
                 switch(this->m_id) {
                     case FeedConnectionId::fcidMssFond:
@@ -1328,8 +1356,8 @@ protected:
         }
     }
 
-    inline bool EndApplySnapshot() {
-        switch(this->m_lastSnapshotInfo->TemplateId) {
+    inline bool EndApplySnapshotAsts() {
+        switch(this->m_astsSnapshotInfo->TemplateId) {
             case FeedConnectionMessage::fmcFullRefresh_Generic:
                 switch(this->m_id) {
                     case FeedConnectionId::fcidMssFond:
@@ -1353,8 +1381,8 @@ protected:
         }
     }
 
-    inline bool CancelSnapshot() {
-        switch(this->m_lastSnapshotInfo->TemplateId) {
+    inline bool CancelSnapshotAsts() {
+        switch(this->m_astsSnapshotInfo->TemplateId) {
             case FeedConnectionMessage::fmcFullRefresh_Generic:
                 switch(this->m_id) {
                     case FeedConnectionId::fcidMssFond:
@@ -1378,8 +1406,8 @@ protected:
         }
     }
 
-    inline bool ApplySnapshotPart(int index) {
-        switch(this->m_lastSnapshotInfo->TemplateId) {
+    inline bool ApplySnapshotPartAsts(int index) {
+        switch(this->m_astsSnapshotInfo->TemplateId) {
             case FeedConnectionMessage::fmcFullRefresh_Generic:
                 switch(this->m_id) {
                     case FeedConnectionId::fcidMssFond:
@@ -1403,9 +1431,59 @@ protected:
         }
     }
 
-    inline bool TryFindAndApplySnapshotContinuously() {
+    inline bool StartApplySnapshotForts() {
+        if(this->m_id == FeedConnectionId::fcidObrForts)
+                return this->StartApplySnapshot_FORTS_OBS();
+        else if(this->m_id == FeedConnectionId::fcidTlrForts)
+            return this->StartApplySnapshot_FORTS_TLS();
+        return true;
+    }
+    inline bool EndApplySnapshotForts() {
+        if (this->m_id == FeedConnectionId::fcidObrForts)
+            return this->EndApplySnapshot_FORTS_OBS();
+        else if (this->m_id == FeedConnectionId::fcidTlrForts)
+            return this->EndApplySnapshot_FORTS_TLS();
+        return true;
+    }
+    inline bool CancelSnapshotForts() {
+        if (this->m_id == FeedConnectionId::fcidObrForts)
+            return this->CancelApplySnapshot_FORTS_OBS();
+        else if (this->m_id == FeedConnectionId::fcidTlrForts)
+            return this->CancelApplySnapshot_FORTS_TLS();
+        return true;
+    }
+    inline bool ApplySnapshotPartForts(int index) {
+        if(this->m_id == FeedConnectionId::fcidObrForts)
+                return this->ApplySnapshotPart_FORTS_OBS(index);
+        else if(this->m_id == FeedConnectionId::fcidTlrForts)
+                return this->ApplySnapshotPart_FORTS_TLS(index);
+        return true;
+    }
+
+    inline bool StartApplySnapshot() {
+        if(this->m_marketType == FeedMarketType::fmtAsts)
+            return this->StartApplySnapshotAsts();
+        return this->StartApplySnapshotForts();
+    }
+    inline bool EndApplySnapshot() {
+        if(this->m_marketType == FeedMarketType::fmtAsts)
+            return this->EndApplySnapshotAsts();
+        return this->EndApplySnapshotForts();
+    }
+    inline bool CancelSnapshot() {
+        if(this->m_marketType == FeedMarketType::fmtAsts)
+            return this->CancelSnapshotAsts();
+        return this->CancelSnapshotForts();
+    }
+    inline bool ApplySnapshotPart(int index) {
+        if(this->m_marketType == FeedMarketType::fmtAsts)
+            return this->ApplySnapshotPartAsts(index);
+        return this->ApplySnapshotPartForts(index);
+    }
+
+    inline bool TryFindAndApplySnapshotContinuouslyForts() {
         if(this->m_snapshotRouteFirst == -1) {
-            if(!FindRouteFirst())
+            if(!FindRouteFirstForts())
                 return false;
             if(!StartApplySnapshot()) {
                 this->m_packets[this->m_snapshotRouteFirst]->Clear();
@@ -1414,7 +1492,7 @@ protected:
                 return true;
             }
             this->m_packets[this->m_snapshotRouteFirst]->Clear();
-            if(this->m_lastSnapshotInfo->LastFragment) {
+            if(this->m_fortsSnapshotInfo->LastFragment) {
                 EndApplySnapshot();
                 this->m_snapshotRouteFirst = -1;
                 //do not. please do not reset buffer. because there can be another items after this snapshot
@@ -1429,12 +1507,12 @@ protected:
         while(this->m_startMsgSeqNum <= this->m_endMsgSeqNum) {
             if (this->m_packets[this->m_startMsgSeqNum]->m_address == 0)
                 return false;
-            this->m_lastSnapshotInfo = this->GetAstsSnapshotInfo(this->m_startMsgSeqNum);
-            if(this->m_lastSnapshotInfo == 0)
+            this->m_fortsSnapshotInfo = this->GetFortsSnapshotInfo(this->m_startMsgSeqNum);
+            if(this->m_fortsSnapshotInfo == 0)
                 return false;
             this->ApplySnapshotPart(this->m_startMsgSeqNum);
             this->m_packets[this->m_startMsgSeqNum]->Clear();
-            if(this->m_lastSnapshotInfo->LastFragment) {
+            if(this->m_fortsSnapshotInfo->LastFragment) {
                 EndApplySnapshot();
                 this->m_snapshotRouteFirst = -1;
                 //do not. please do not reset buffer. because there can be another items after this snapshot
@@ -1448,6 +1526,59 @@ protected:
                 this->m_recvABuffer->Reset();
         }
         return true;
+    }
+
+    inline bool TryFindAndApplySnapshotContinuouslyAsts() {
+        if(this->m_snapshotRouteFirst == -1) {
+            if(!FindRouteFirstAsts())
+                return false;
+            if(!StartApplySnapshot()) {
+                this->m_packets[this->m_snapshotRouteFirst]->Clear();
+                this->m_snapshotRouteFirst = -1;
+                this->m_startMsgSeqNum++;
+                return true;
+            }
+            this->m_packets[this->m_snapshotRouteFirst]->Clear();
+            if(this->m_astsSnapshotInfo->LastFragment) {
+                EndApplySnapshot();
+                this->m_snapshotRouteFirst = -1;
+                //do not. please do not reset buffer. because there can be another items after this snapshot
+            }
+            this->m_startMsgSeqNum++;
+            if(this->m_startMsgSeqNum > this->m_endMsgSeqNum)
+                this->m_recvABuffer->Reset();
+            return true;
+        }
+        if(this->m_startMsgSeqNum > this->m_endMsgSeqNum)
+            return false;
+        while(this->m_startMsgSeqNum <= this->m_endMsgSeqNum) {
+            if (this->m_packets[this->m_startMsgSeqNum]->m_address == 0)
+                return false;
+            this->m_astsSnapshotInfo = this->GetAstsSnapshotInfo(this->m_startMsgSeqNum);
+            if(this->m_astsSnapshotInfo == 0)
+                return false;
+            this->ApplySnapshotPart(this->m_startMsgSeqNum);
+            this->m_packets[this->m_startMsgSeqNum]->Clear();
+            if(this->m_astsSnapshotInfo->LastFragment) {
+                EndApplySnapshot();
+                this->m_snapshotRouteFirst = -1;
+                //do not. please do not reset buffer. because there can be another items after this snapshot
+                this->m_startMsgSeqNum++;
+                if(this->m_startMsgSeqNum > this->m_endMsgSeqNum)
+                    this->m_recvABuffer->Reset();
+                return true;
+            }
+            this->m_startMsgSeqNum++;
+            if(this->m_startMsgSeqNum > this->m_endMsgSeqNum)
+                this->m_recvABuffer->Reset();
+        }
+        return true;
+    }
+
+    inline bool TryFindAndApplySnapshotContinuously() {
+        if(this->m_marketType == FeedMarketType::fmtAsts)
+            return TryFindAndApplySnapshotContinuouslyAsts();
+        return TryFindAndApplySnapshotContinuouslyForts();
     }
 
     inline bool HasPotentiallyLostPackets() {
@@ -1713,8 +1844,14 @@ protected:
         }
 
         int snapshotCount = 0;
-        while(TryFindAndApplySnapshotContinuously())
-            snapshotCount++;
+        if(this->m_marketType == FeedMarketType::fmtAsts) {
+            while (TryFindAndApplySnapshotContinuouslyAsts())
+                snapshotCount++;
+        }
+        else {
+            while (TryFindAndApplySnapshotContinuouslyForts())
+                snapshotCount++;
+        }
 
         return true;
     }
@@ -2276,7 +2413,7 @@ protected:
 			return true; // TODO!!!!!
 		}
         int index = this->m_symbolManager->GetSymbol(info->Symbol, info->SymbolLength)->m_index;
-		return this->m_orderTableFond->ProcessIncremental(info, index);
+		return this->m_orderTableFond->ProcessIncremental(info, index, info->TradingSessionID, info->TradingSessionIDLength);
 	}
 
 	inline bool OnIncrementalRefresh_OLR_CURR(AstsOLSCURRItemInfo *info) {
@@ -2284,27 +2421,27 @@ protected:
 			return true; // TODO!!!!!
 		}
         int index = this->m_symbolManager->GetSymbol(info->Symbol, info->SymbolLength)->m_index;
-		return this->m_orderTableCurr->ProcessIncremental(info, index);
+		return this->m_orderTableCurr->ProcessIncremental(info, index, info->TradingSessionID, info->TradingSessionIDLength);
 	}
 
 	inline bool OnIncrementalRefresh_TLR_FOND(AstsTLSFONDItemInfo *info) {
         int index = this->m_symbolManager->GetSymbol(info->Symbol, info->SymbolLength)->m_index;
-		return this->m_tradeTableFond->ProcessIncremental(info, index);
+		return this->m_tradeTableFond->ProcessIncremental(info, index, info->TradingSessionID, info->TradingSessionIDLength);
 	}
 
 	inline bool OnIncrementalRefresh_TLR_CURR(AstsTLSCURRItemInfo *info) {
         int index = this->m_symbolManager->GetSymbol(info->Symbol, info->SymbolLength)->m_index;
-        return this->m_tradeTableCurr->ProcessIncremental(info, index);
+        return this->m_tradeTableCurr->ProcessIncremental(info, index, info->TradingSessionID, info->TradingSessionIDLength);
 	}
 
     inline bool OnIncrementalRefresh_MSR_FOND(AstsGenericItemInfo *info) {
         int index = this->m_symbolManager->GetSymbol(info->Symbol, info->SymbolLength)->m_index;
-        return this->m_statTableFond->ProcessIncremental(info, index);
+        return this->m_statTableFond->ProcessIncremental(info, index, info->TradingSessionID, info->TradingSessionIDLength);
     }
 
     inline bool OnIncrementalRefresh_MSR_CURR(AstsGenericItemInfo *info) {
         int index = this->SecurityDefinition()->m_symbolManager->GetSymbol(info->Symbol, info->SymbolLength)->m_index;
-        return this->m_statTableCurr->ProcessIncremental(info, index);
+        return this->m_statTableCurr->ProcessIncremental(info, index, info->TradingSessionID, info->TradingSessionIDLength);
     }
 
     inline bool OnIncrementalRefresh_FORTS_OBR(FortsDefaultSnapshotMessageMDEntriesItemInfo *info) {

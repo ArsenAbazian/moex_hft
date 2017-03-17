@@ -137,8 +137,7 @@ public:
             return false;
         return true;
     }
-    inline bool ProcessIncremental(ITEMINFO *info) {
-        TABLEITEM<ITEMINFO> *tableItem = GetItem(info->Symbol, info->SymbolLength, info->TradingSessionID, info->TradingSessionIDLength);
+    inline bool ProcessIncremental(ITEMINFO *info, TABLEITEM<ITEMINFO> *tableItem) {
         this->AddUsed(tableItem);
         bool prevHasEntries = tableItem->HasEntries();
         bool res = tableItem->ProcessIncrementalMessage(info);
@@ -162,27 +161,13 @@ public:
     }
 
     inline bool ProcessIncremental(ITEMINFO *info, int index) {
-        TABLEITEM<ITEMINFO> *tableItem = GetItem(index, info->TradingSessionID, info->TradingSessionIDLength);
-        this->AddUsed(tableItem);
-        bool prevHasEntries = tableItem->HasEntries();
-        bool res = tableItem->ProcessIncrementalMessage(info);
-        bool hasEntries = tableItem->HasEntries();
-        if(hasEntries) {
-            if(!prevHasEntries)
-                this->m_queueItemsCount++;
-        }
-        else {
-            if(prevHasEntries)
-                this->m_queueItemsCount--;
-            if(tableItem->ShouldProcessSnapshot()) {
-                MarketSymbolInfo<TABLEITEM<ITEMINFO>> *smb = tableItem->SymbolInfo();
-                bool allItemsRecvSnapshot = smb->AllSessionsRecvSnapshot();
-                tableItem->DecSessionsToRecvSnapshotCount();
-                if (!allItemsRecvSnapshot && smb->AllSessionsRecvSnapshot())
-                    this->DecSymbolsToRecvSnapshotCount();
-            }
-        }
-        return res;
+        TABLEITEM<ITEMINFO> *tableItem = GetItem(index);
+        return ProcessIncremental(info, tableItem);
+    }
+
+    inline bool ProcessIncremental(ITEMINFO *info, int index, const char *tradingId, int tradingLength) {
+        TABLEITEM<ITEMINFO> *tableItem = GetItem(index, tradingId, tradingLength);
+        return ProcessIncremental(info, tableItem);
     }
 
     inline bool ShouldProcessSnapshot(INFO *info) {
@@ -429,6 +414,13 @@ public:
         TABLEITEM<ITEMINFO> *item = 0;
         MarketSymbolInfo<TABLEITEM<ITEMINFO>> *s = this->m_symbols[symbolIndex];
         TABLEITEM<ITEMINFO>* res = s->GetSession(tradingSession);
+        this->m_cachedItem = res;
+        return res;
+    }
+    inline TABLEITEM<ITEMINFO>* GetItem(int symbolIndex) {
+        TABLEITEM<ITEMINFO> *item = 0;
+        MarketSymbolInfo<TABLEITEM<ITEMINFO>> *s = this->m_symbols[symbolIndex];
+        TABLEITEM<ITEMINFO>* res = s->Session(0);
         this->m_cachedItem = res;
         return res;
     }

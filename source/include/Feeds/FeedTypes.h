@@ -66,6 +66,10 @@ typedef enum _FeedConnectionId {
     fcidHCurr,
     fcidIdfForts,
     fcidIdfIncForts,
+    fcidIncForts,
+    fcidIndexForts,
+    fcidNewsForts,
+    fcidNewsSkrinForts,
     fcidObrForts,
     fcidTlrForts
 }FeedConnectionId;

@@ -181,8 +181,22 @@ namespace prebuild {
 			List<FortsConnection> instrSnap = conn.FindAll((c) => c.IsInstrumentSnapshot);
 			FortsConnection hr = conn.FirstOrDefault((c) => c.IsHistoricalReplay);
 
+			string feedConnectionName = "FeedConnection_FORTS_INC";
+			if(fid.Contains("BOOK")) 
+				feedConnectionName = "FeedConnection_FORTS_OBR";
+			else if(fid.Contains("TRADES"))
+				feedConnectionName = "FeedConnection_FORTS_TLR";
+			else if(fid.Contains("INDEX"))
+				feedConnectionName = "FeedConnection_FORTS_INDEX";
+			else if(fid.Contains("NEWS-SKRIN"))
+				feedConnectionName = "FeedConnection_FORTS_NEWS_SKRIN";
+			else if(fid.Contains("NEWS"))
+				feedConnectionName = "FeedConnection_FORTS_NEWS";
+			else 
+				feedConnectionName = "FeedConnection_FORTS_INC";
+			
 			if(inc != null && inc.Count == 2) {
-				WriteLine("\t\t\tgroup->Inc( new FeedConnection_FORTS_INC(" + 
+				WriteLine("\t\t\tgroup->Inc( new " + feedConnectionName + "(" + 
 					"\"" + fid + " Inc\", " +
 					"\"" + label + "\", " + 
 					"'" + mid + "', " + 

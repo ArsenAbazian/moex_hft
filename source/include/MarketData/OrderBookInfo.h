@@ -150,13 +150,13 @@ public:
     }
 
     inline LinkedPointer<T>* RemoveBuyQuote(T *info) {
-        DebugInfoManager::Default->Log(this->m_symbolInfo->Symbol(), this->m_tradingSession, "Remove BuyQuote", info->MDEntryID, info->MDEntryIDLength, &(info->MDEntryPx), &(info->MDEntrySize));
+        DebugInfoManager::Default->Log(this->m_symbolInfo->Symbol(), this->m_sessionInt, "Remove BuyQuote", info->MDEntryID, &(info->MDEntryPx), info->MDEntrySize);
         LinkedPointer<T> *node = this->m_buyQuoteList->Start();
         if(node == 0)
             return 0;
         while(true) {
             T *data = node->Data();
-            if(StringIdComparer::Equal(data->MDEntryID, data->MDEntryIDLength, info->MDEntryID, info->MDEntryIDLength)) {
+            if(data->MDEntryID == info->MDEntryID) {
                 this->m_buyQuoteList->Remove(node);
                 data->Clear();
                 return node;
@@ -166,20 +166,19 @@ public:
             node = node->Next();
         }
         //TODO remove debug
-        info->MDEntryID[info->MDEntryIDLength] = '\0';
-        printf("ERROR: %s entry not found\n", info->MDEntryID);
+        printf("ERROR: %" PRIu64 " entry not found\n", info->MDEntryID);
 
         return 0;
     }
 
     inline LinkedPointer<T>* RemoveSellQuote(T *info) {
-        DebugInfoManager::Default->Log(this->m_symbolInfo->Symbol(), this->m_tradingSession, "Remove SellQuote", info->MDEntryID, info->MDEntryIDLength, &(info->MDEntryPx), &(info->MDEntrySize));
+        DebugInfoManager::Default->Log(this->m_symbolInfo->Symbol(), this->m_sessionInt, "Remove SellQuote", info->MDEntryID, &(info->MDEntryPx), info->MDEntrySize);
         LinkedPointer<T> *node = this->m_sellQuoteList->Start();
         if(node == 0)
             return 0;
         while(true) {
             T *data = node->Data();
-            if(StringIdComparer::Equal(data->MDEntryID, data->MDEntryIDLength, info->MDEntryID, info->MDEntryIDLength)) {
+            if(data->MDEntryID == info->MDEntryID) {
                 this->m_sellQuoteList->Remove(node);
                 data->Clear();
                 return node;
@@ -189,8 +188,7 @@ public:
             node = node->Next();
         }
         //TODO remove debug
-        info->MDEntryID[info->MDEntryIDLength] = '\0';
-        printf("ERROR: %s entry not found\n", info->MDEntryID);
+        printf("ERROR: %" PRIu64 " entry not found\n", info->MDEntryID);
         return 0;
     }
 
@@ -200,7 +198,7 @@ public:
         LinkedPointer<T> *ptr = GetQuote(this->m_buyQuoteList, info);
         //TODO remove debug
         if(ptr == 0) {
-            printf("ERROR: %ul entry not found\n", info->MDEntryID);
+            printf("ERROR: %" PRIu64 " entry not found\n", info->MDEntryID);
             return;
         }
         //TODO remove debug
@@ -216,7 +214,7 @@ public:
         LinkedPointer<T> *ptr = GetQuote(this->m_sellQuoteList, info);
         //TODO remove debug
         if(ptr == 0) {
-            printf("ERROR: %ul entry not found\n", info->MDEntryID);
+            printf("ERROR: %" PRIu64 " entry not found\n", info->MDEntryID);
             return;
         }
         //TODO remove debug
