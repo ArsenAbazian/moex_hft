@@ -34,7 +34,10 @@ typedef enum _FeedConnectionMessage {
 typedef enum _FortsMessage {
     fortsSecurityDefinition = 3,
     fortsSecurityDefinitionUpdateReport = 4,
-    fortsSecurityStatus = 5
+    fortsSecurityStatus = 5,
+    fortsIncremental = 12,
+    fortsSnapshot = 13,
+    fortsHearthBeat = 6
 }FortsMessage;
 
 typedef enum _FeedConnectionId {
@@ -63,6 +66,8 @@ typedef enum _FeedConnectionId {
     fcidHCurr,
     fcidIdfForts,
     fcidIdfIncForts,
+    fcidObrForts,
+    fcidTlrForts
 }FeedConnectionId;
 
 typedef enum _FeedConnectionProtocol {

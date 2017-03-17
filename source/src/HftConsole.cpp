@@ -95,7 +95,7 @@ int main(int argc, char** argv) {
 	robot->AllowFortsMarket(true);
 	robot->AllowFutures(true);
 	robot->AllowOptions(true);
-	robot->AllowMarketDataGroup(MarketDataGroupId::mdgidFutBook1, false);
+	robot->AllowMarketDataGroup(MarketDataGroupId::mdgidFutBook1, true);
 	robot->AllowMarketDataGroup(MarketDataGroupId::mdgidFutBook5, false);
 	robot->AllowMarketDataGroup(MarketDataGroupId::mdgidFutBook20, false);
 	robot->AllowMarketDataGroup(MarketDataGroupId::mdgidFutBook50, false);

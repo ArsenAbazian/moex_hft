@@ -184,6 +184,28 @@ public:
             if(this->OptTrades() != 0)
                 this->m_optInfo->InstrReplay()->AddConnectionToRecvSymbol(this->OptTrades()->Inc());
         }
+
+        if(this->FutBook1() != 0)
+            this->FutBook1()->Prepare();
+        if(this->FutBook5() != 0)
+            this->FutBook5()->Prepare();
+        if(this->FutBook20() != 0)
+            this->FutBook20()->Prepare();
+        if(this->FutBook50() != 0)
+            this->FutBook50()->Prepare();
+        if(this->FutTrades() != 0)
+            this->FutTrades()->Prepare();
+        
+        if(this->OptBook1() != 0)
+            this->OptBook1()->Prepare();
+        if(this->OptBook5() != 0)
+            this->OptBook5()->Prepare();
+        if(this->OptBook20() != 0)
+            this->OptBook20()->Prepare();
+        if(this->OptBook50() != 0)
+            this->OptBook50()->Prepare();
+        if(this->OptTrades() != 0)
+            this->OptTrades()->Prepare();
     }
 };
 

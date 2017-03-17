@@ -132,6 +132,7 @@ public:
     void Log(SizedArray *symbol, SizedArray *trading, const char *string, PointerListLite<StatisticItemTotalOffer> *list);
     void Log(SizedArray *symbol, SizedArray *trading, const char *string, PointerListLite<StatisticItemTransactionsMagnitude> *list);
     void Log(SizedArray *symbol, SizedArray *trading, const char *string, char *entryId, int entryIdLength, Decimal *price, Decimal *size);
+    void Log(SizedArray *symbol, UINT32 trading, const char *string, UINT64 entryId, Decimal *price, INT64 size);
 
     void PrintStatistics(FeedConnection *conn);
     void PrintStatistics(AstsFeedChannel *channel);

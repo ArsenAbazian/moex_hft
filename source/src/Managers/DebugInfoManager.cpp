@@ -280,6 +280,12 @@ void DebugInfoManager::Log(SizedArray *symbol, SizedArray *trading, const char *
 #endif
 }
 
+void DebugInfoManager::Log(SizedArray *symbol, UINT32 trading, const char *string, UINT64 entryId, Decimal *price, INT64 size) {
+#ifdef ENABLE_LOG
+    printf("%s %d %d %s Price = %g Size = %uld\n", GetString(symbol, 0), trading, string, entryId, price->Calculate(), size);
+#endif
+}
+
 void DebugInfoManager::PrintStatistics(AstsFeedChannel *channel) {
     printf("Start AstsFeedChannel %s\n", channel->Name());
     this->AddTabs();

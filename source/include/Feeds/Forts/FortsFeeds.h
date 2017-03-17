@@ -7,17 +7,46 @@
 
 #include "../FeedConnection.h"
 
-class FeedConnection_FORTS_INC : public FeedConnection {
+class FeedConnection_FORTS_OBR : public FeedConnection {
 public:
-    FeedConnection_FORTS_INC(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
+    FeedConnection_FORTS_OBR(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
             FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
         this->m_type = FeedConnectionType::IncrementalForts;
+        this->m_id = FeedConnectionId::fcidObrForts;
         this->m_marketType = FeedMarketType::fmtForts;
-        this->m_fortsTable = new MarketDataTable<OrderBookInfo, FortsDefaultSnapshotMessageInfo, FortsDefaultSnapshotMessageMDEntriesItemInfo>();
+        this->m_fortsOrderBookTable = new MarketDataTable<OrderBookInfo, FortsDefaultSnapshotMessageInfo, FortsDefaultSnapshotMessageMDEntriesItemInfo>();
         this->m_fastProtocolManager = new FastProtocolManager();
         this->AllocateFastObjects();
         InitializePackets(this->GetPacketsCount());
-        DebugInfoManager::Default->PrintMemoryInfo("FeedConnection_FOND_OLR");
+        DebugInfoManager::Default->PrintMemoryInfo("FeedConnection_FORTS_OBR");
+    }
+    void AllocateFastObjects() {
+        FortsObjectsAllocationInfo::Default->AllocateHeartbeatInfoPoolTo(10);
+        FortsObjectsAllocationInfo::Default->AllocateDefaultIncrementalRefreshMessageInfoPool(10, 10);
+        FortsObjectsAllocationInfo::Default->AllocateDefaultSnapshotMessageMDEntriesItemInfoPool(300000, 500);
+    }
+    int GetPacketsCount() { return 10000; }
+    ISocketBufferProvider* CreateSocketBufferProvider() {
+        return new SocketBufferProvider(DefaultSocketBufferManager::Default,
+                                        RobotSettings::Default->DefaultFeedConnectionSendBufferSize,
+                                        RobotSettings::Default->DefaultFeedConnectionSendItemsCount,
+                                        RobotSettings::Default->DefaultFeedConnectionRecvBufferSize,
+                                        RobotSettings::Default->DefaultFeedConnectionRecvItemsCount);
+    }
+};
+
+class FeedConnection_FORTS_TLR : public FeedConnection {
+public:
+    FeedConnection_FORTS_TLR(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
+            FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
+        this->m_type = FeedConnectionType::IncrementalForts;
+        this->m_id = FeedConnectionId::fcidTlrForts;
+        this->m_marketType = FeedMarketType::fmtForts;
+        this->m_fortsTradeBookTable = new MarketDataTable<TradeInfo, FortsDefaultSnapshotMessageInfo, FortsDefaultSnapshotMessageMDEntriesItemInfo>();
+        this->m_fastProtocolManager = new FastProtocolManager();
+        this->AllocateFastObjects();
+        InitializePackets(this->GetPacketsCount());
+        DebugInfoManager::Default->PrintMemoryInfo("FeedConnection_FORTS_TLR");
     }
     void AllocateFastObjects() {
         FortsObjectsAllocationInfo::Default->AllocateHeartbeatInfoPoolTo(10);

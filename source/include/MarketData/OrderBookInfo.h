@@ -96,7 +96,7 @@ public:
             return 0;
         while(true) {
             T *info2 = node->Data();
-            if(StringIdComparer::Equal(info2->MDEntryID, info2->MDEntryIDLength, info->MDEntryID, info->MDEntryIDLength))
+            if(info2->MDEntryID == info->MDEntryID)
                 return node;
             if(node == list->End())
                 break;
@@ -108,7 +108,7 @@ public:
     }
 
     inline LinkedPointer<T>* GetBuyQuote(Decimal *price) {
-        LinkedPointer<QuoteInfo> *node = this->m_buyQuoteList->Start();
+        LinkedPointer<T> *node = this->m_buyQuoteList->Start();
         double value = price->Calculate();
         T *quote = 0;
 
@@ -195,13 +195,12 @@ public:
     }
 
     inline void ChangeBuyQuote(T *info) {
-        DebugInfoManager::Default->Log(this->m_symbolInfo->Symbol(), this->m_tradingSession, "Change BuyQuote", info->MDEntryID, info->MDEntryIDLength, &(info->MDEntryPx), &(info->MDEntrySize));
+        DebugInfoManager::Default->Log(this->m_symbolInfo->Symbol(), this->m_sessionInt, "Change BuyQuote", info->MDEntryID, &(info->MDEntryPx), info->MDEntrySize);
 
         LinkedPointer<T> *ptr = GetQuote(this->m_buyQuoteList, info);
         //TODO remove debug
         if(ptr == 0) {
-            info->MDEntryID[info->MDEntryIDLength] = '\0';
-            printf("ERROR: %s entry not found\n", info->MDEntryID);
+            printf("ERROR: %ul entry not found\n", info->MDEntryID);
             return;
         }
         //TODO remove debug
@@ -213,12 +212,11 @@ public:
     }
 
     inline void ChangeSellQuote(T *info) {
-        DebugInfoManager::Default->Log(this->m_symbolInfo->Symbol(), this->m_tradingSession, "Change SellQuote", info->MDEntryID, info->MDEntryIDLength, &(info->MDEntryPx), &(info->MDEntrySize));
+        DebugInfoManager::Default->Log(this->m_symbolInfo->Symbol(), this->m_sessionInt, "Change SellQuote", info->MDEntryID, &(info->MDEntryPx), info->MDEntrySize);
         LinkedPointer<T> *ptr = GetQuote(this->m_sellQuoteList, info);
         //TODO remove debug
         if(ptr == 0) {
-            info->MDEntryID[info->MDEntryIDLength] = '\0';
-            printf("ERROR: %s entry not found\n", info->MDEntryID);
+            printf("ERROR: %ul entry not found\n", info->MDEntryID);
             return;
         }
         //TODO remove debug
@@ -230,7 +228,7 @@ public:
     }
 
     inline LinkedPointer<T>* AddBuyQuote(T *item) {
-        DebugInfoManager::Default->Log(this->m_symbolInfo->Symbol(), this->m_tradingSession, "Add BuyQuote", item->MDEntryID, item->MDEntryIDLength, &(item->MDEntryPx), &(item->MDEntrySize));
+        DebugInfoManager::Default->Log(this->m_symbolInfo->Symbol(), this->m_sessionInt, "Add BuyQuote", item->MDEntryID, &(item->MDEntryPx), item->MDEntrySize);
         item->Used = true;
         LinkedPointer<T> *ptr = GetBuyQuote(&(item->MDEntryPx));
         ptr->Data(item);
@@ -238,7 +236,7 @@ public:
     }
 
     inline LinkedPointer<T>* AddSellQuote(T *item) {
-        DebugInfoManager::Default->Log(this->m_symbolInfo->Symbol(), this->m_tradingSession, "Add SellQuote", item->MDEntryID, item->MDEntryIDLength, &(item->MDEntryPx), &(item->MDEntrySize));
+        DebugInfoManager::Default->Log(this->m_symbolInfo->Symbol(), this->m_sessionInt, "Add SellQuote", item->MDEntryID, &(item->MDEntryPx), item->MDEntrySize);
         item->Used = true;
         LinkedPointer<T> *ptr = GetSellQuote(&(item->MDEntryPx));
         ptr->Data(item);
@@ -313,15 +311,11 @@ public:
         this->m_savedRptSeq = this->m_rptSeq;
         this->Clear(this->BuyQuotes());
         this->Clear(this->SellQuotes());
-        this->AggregatedBuyQuotes()->Clear();
-        this->AggregatedSellQuotes()->Clear();
     }
 
     inline void ProcessNullSnapshot() {
         this->Clear(this->BuyQuotes());
         this->Clear(this->SellQuotes());
-        this->AggregatedBuyQuotes()->Clear();
-        this->AggregatedSellQuotes()->Clear();
     }
 
     inline void ProcessSnapshotMessage(T *info) {

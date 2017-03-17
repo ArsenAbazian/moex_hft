@@ -101,6 +101,11 @@ public:
         if(this->m_instrumentReplay != 0)
             this->m_instrumentReplay->AllowSaveSecurityDefinitions(value);
     }
+
+    void Prepare() {
+        if(this->m_incremental != 0 && this->m_snapshot != 0)
+            this->m_incremental->SetSnapshot(this->m_snapshot);
+    }
 };
 
 

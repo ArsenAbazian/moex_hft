@@ -169,7 +169,8 @@ protected:
     int                                                                         m_symbolsCount;
 
 #pragma region FORTS
-    MarketDataTable<OrderBookInfo, FortsDefaultSnapshotMessageInfo, FortsDefaultSnapshotMessageMDEntriesItemInfo>			*m_fortsTable;
+    MarketDataTable<OrderBookInfo, FortsDefaultSnapshotMessageInfo, FortsDefaultSnapshotMessageMDEntriesItemInfo>			*m_fortsOrderBookTable;
+    MarketDataTable<TradeInfo, FortsDefaultSnapshotMessageInfo, FortsDefaultSnapshotMessageMDEntriesItemInfo>			    *m_fortsTradeBookTable;
     LinkedPointer<FortsSecurityDefinitionInfo>                                  **m_symbolsForts;
 #pragma endregion
 
@@ -531,13 +532,18 @@ protected:
     }
 
 #pragma region snapshot
-    inline bool PrepareDecodeSnapshotMessage(int packetIndex) {
+    inline bool PrepareDecodeSnapshotMessageCore(int packetIndex) {
         FeedConnectionMessageInfo *info = this->m_packets[packetIndex];
         unsigned char *buffer = info->m_address;
         if(this->ShouldSkipMessageAsts(buffer, !info->m_requested))
             return false;
         this->m_fastProtocolManager->SetNewBuffer(buffer, info->m_size);
         this->m_fastProtocolManager->ReadMsgSeqNumber();
+        return true;
+    }
+    inline bool PrepareDecodeSnapshotMessage(int packetIndex) {
+        if(!this->PrepareDecodeSnapshotMessageCore(packetIndex))
+            return false;
         this->m_fastProtocolManager->DecodeAstsHeader();
         return true;
     }
@@ -762,6 +768,91 @@ protected:
         return true;
     }
     
+#pragma endregion
+
+#pragma FORT snapshot
+    inline bool PrepareDecodeSnapshotMessageForts(int packetIndex) {
+        if(!this->PrepareDecodeSnapshotMessageCore(packetIndex))
+            return false;
+        this->m_fastProtocolManager->DecodeFortsHeader();
+        return true;
+    }
+
+    inline int GetFortsSnapshotSymbolIndex() {
+        return this->m_symbolManager->GetSymbol(this->m_fortsSnapshotInfo->Symbol, this->m_fortsSnapshotInfo->SymbolLength)->m_index;
+    }
+
+    inline bool StartApplySnapshot_FORTS_OBS() {
+        this->m_incremental->OrderBookForts()->ObtainSnapshotItem(this->GetFortsSnapshotSymbolIndex(), this->m_fortsSnapshotInfo);
+        if(this->m_incremental->OrderBookForts()->ApplyQuickSnapshot(this->m_fortsSnapshotInfo)) {
+//#ifdef COLLECT_STATISTICS
+//            ProgramStatistics::Current->IncFondOlsProcessedCount();
+//            ProgramStatistics::Total->IncFondOlsProcessedCount();
+//#endif
+            return false; // skip all the snapshot
+        }
+        this->m_incremental->OrderBookForts()->StartProcessSnapshot();
+        this->ApplySnapshotPart_FORTS_OBS(this->m_snapshotRouteFirst);
+        return true;
+    }
+
+    inline bool ApplySnapshotPart_FORTS_OBS(int index) {
+        this->PrepareDecodeSnapshotMessageForts(index);
+//#ifdef COLLECT_STATISTICS
+//        ProgramStatistics::Current->IncFondOlsProcessedCount();
+//        ProgramStatistics::Total->IncFondOlsProcessedCount();
+//#endif
+        FortsDefaultSnapshotMessageInfo *info = (FortsDefaultSnapshotMessageInfo *) this->m_fastProtocolManager->DecodeFortsDefaultSnapshotMessage();
+        this->m_incremental->OrderBookForts()->ProcessSnapshotForts(info);
+        info->ReleaseUnused();
+        return true;
+    }
+
+    inline bool EndApplySnapshot_FORTS_OBS() {
+        this->m_incremental->OrderBookForts()->EndProcessSnapshot();
+        return true;
+    }
+
+    inline bool CancelApplySnapshot_FORTS_OBS() {
+        this->m_incremental->OrderBookForts()->CancelSnapshot();
+        return true;
+    }
+
+    inline bool StartApplySnapshot_FORTS_TLS() {
+        this->m_incremental->TradeForts()->ObtainSnapshotItem(this->GetFortsSnapshotSymbolIndex(), this->m_fortsSnapshotInfo);
+        if(this->m_incremental->TradeForts()->ApplyQuickSnapshot(this->m_fortsSnapshotInfo)) {
+//#ifdef COLLECT_STATISTICS
+//            ProgramStatistics::Current->IncFondOlsProcessedCount();
+//            ProgramStatistics::Total->IncFondOlsProcessedCount();
+//#endif
+            return false; // skip all the snapshot
+        }
+        this->m_incremental->TradeForts()->StartProcessSnapshot();
+        this->ApplySnapshotPart_FORTS_TLS(this->m_snapshotRouteFirst);
+        return true;
+    }
+
+    inline bool ApplySnapshotPart_FORTS_TLS(int index) {
+        this->PrepareDecodeSnapshotMessageForts(index);
+//#ifdef COLLECT_STATISTICS
+//        ProgramStatistics::Current->IncFondOlsProcessedCount();
+//        ProgramStatistics::Total->IncFondOlsProcessedCount();
+//#endif
+        FortsDefaultSnapshotMessageInfo *info = (FortsDefaultSnapshotMessageInfo *) this->m_fastProtocolManager->DecodeFortsDefaultSnapshotMessage();
+        this->m_incremental->TradeForts()->ProcessSnapshotForts(info);
+        info->ReleaseUnused();
+        return true;
+    }
+
+    inline bool EndApplySnapshot_FORTS_TLS() {
+        this->m_incremental->TradeForts()->EndProcessSnapshot();
+        return true;
+    }
+
+    inline bool CancelApplySnapshot_FORTS_TLS() {
+        this->m_incremental->TradeForts()->CancelSnapshot();
+        return true;
+    }
 #pragma endregion
 
     inline int GetRequestMessageEndIndex(int start) {
@@ -1191,6 +1282,7 @@ protected:
 	}
 
     AstsSnapshotInfo *m_lastSnapshotInfo;
+    FortsSnapshotInfo *m_fortsSnapshotInfo;
     inline int GetLocalIndex(int msgSeqNo) { return msgSeqNo - this->m_windowMsgSeqNum; }
     inline int LocalIndexToMsgSeqNo(int index) { return index + this->m_windowMsgSeqNum; }
     inline bool FindRouteFirst() {
@@ -2215,6 +2307,16 @@ protected:
         return this->m_statTableCurr->ProcessIncremental(info, index);
     }
 
+    inline bool OnIncrementalRefresh_FORTS_OBR(FortsDefaultSnapshotMessageMDEntriesItemInfo *info) {
+        int index = this->SecurityDefinition()->m_symbolManager->GetSymbol(info->Symbol, info->SymbolLength)->m_index;
+        return this->m_fortsOrderBookTable->ProcessIncremental(info, index);
+    }
+
+    inline bool OnIncrementalRefresh_FORTS_TLR(FortsDefaultSnapshotMessageMDEntriesItemInfo *info) {
+        int index = this->SecurityDefinition()->m_symbolManager->GetSymbol(info->Symbol, info->SymbolLength)->m_index;
+        return this->m_fortsTradeBookTable->ProcessIncremental(info, index);
+    }
+
     inline bool OnIncrementalRefresh_OLR_FOND(AstsIncrementalOLRFONDInfo *info) {
 #ifdef COLLECT_STATISTICS
         ProgramStatistics::Current->IncFondOlrProcessedCount();
@@ -2295,28 +2397,78 @@ protected:
         return res;
     }
 
+    inline bool OnIncrementalRefresh_FORTS_OBR(FortsDefaultIncrementalRefreshMessageInfo *info) {
+//#ifdef COLLECT_STATISTICS
+//        ProgramStatistics::Current->IncCurrMsrProcessedCount();
+//        ProgramStatistics::Total->IncCurrMsrProcessedCount();
+//#endif
+        bool res = true;
+        for(int i = 0; i < info->MDEntriesCount; i++) {
+            res |= this->OnIncrementalRefresh_FORTS_OBR(info->MDEntries[i]);
+        }
+        info->ReleaseUnused();
+        return res;
+    }
+
+    inline bool OnIncrementalRefresh_FORTS_TLR(FortsDefaultIncrementalRefreshMessageInfo *info) {
+//#ifdef COLLECT_STATISTICS
+//        ProgramStatistics::Current->IncCurrMsrProcessedCount();
+//        ProgramStatistics::Total->IncCurrMsrProcessedCount();
+//#endif
+        bool res = true;
+        for(int i = 0; i < info->MDEntriesCount; i++) {
+            res |= this->OnIncrementalRefresh_FORTS_TLR(info->MDEntries[i]);
+        }
+        info->ReleaseUnused();
+        return res;
+    }
+
     inline bool OnHearthBeatMessage(AstsHeartbeatInfo *info) {
         throw; // there is no need to apply message just check
     }
 
     inline bool ApplyIncrementalCore() {
-		switch(this->m_fastProtocolManager->TemplateId()) {
-			case FeedConnectionMessage::fcmHeartBeat:
-                return this->OnHearthBeatMessage((AstsHeartbeatInfo*)this->m_fastProtocolManager->LastDecodeInfo());
-			case FeedConnectionMessage::fmcIncrementalRefresh_OLR_FOND:
-				return this->OnIncrementalRefresh_OLR_FOND((AstsIncrementalOLRFONDInfo*)this->m_fastProtocolManager->LastDecodeInfo());
-			case FeedConnectionMessage::fmcIncrementalRefresh_OLR_CURR:
-				return this->OnIncrementalRefresh_OLR_CURR((AstsIncrementalOLRCURRInfo*)this->m_fastProtocolManager->LastDecodeInfo());
-			case FeedConnectionMessage::fmcIncrementalRefresh_TLR_FOND:
-				return this->OnIncrementalRefresh_TLR_FOND((AstsIncrementalTLRFONDInfo*)this->m_fastProtocolManager->LastDecodeInfo());
-			case FeedConnectionMessage::fmcIncrementalRefresh_TLR_CURR:
-				return this->OnIncrementalRefresh_TLR_CURR((AstsIncrementalTLRCURRInfo*)this->m_fastProtocolManager->LastDecodeInfo());
-            case FeedConnectionMessage::fmcIncrementalRefresh_MSR_FOND:
-                return this->OnIncrementalRefresh_MSR_FOND((AstsIncrementalMSRFONDInfo*)this->m_fastProtocolManager->LastDecodeInfo());
-            case FeedConnectionMessage::fmcIncrementalRefresh_MSR_CURR:
-                return this->OnIncrementalRefresh_MSR_CURR((AstsIncrementalMSRCURRInfo*)this->m_fastProtocolManager->LastDecodeInfo());
-		}
-		return true;
+		if(this->m_marketType == FeedMarketType::fmtAsts) {
+            switch (this->m_fastProtocolManager->TemplateId()) {
+                case FeedConnectionMessage::fmcIncrementalRefresh_OLR_FOND:
+                    return this->OnIncrementalRefresh_OLR_FOND(
+                            (AstsIncrementalOLRFONDInfo *) this->m_fastProtocolManager->LastDecodeInfo());
+                case FeedConnectionMessage::fmcIncrementalRefresh_OLR_CURR:
+                    return this->OnIncrementalRefresh_OLR_CURR(
+                            (AstsIncrementalOLRCURRInfo *) this->m_fastProtocolManager->LastDecodeInfo());
+                case FeedConnectionMessage::fmcIncrementalRefresh_TLR_FOND:
+                    return this->OnIncrementalRefresh_TLR_FOND(
+                            (AstsIncrementalTLRFONDInfo *) this->m_fastProtocolManager->LastDecodeInfo());
+                case FeedConnectionMessage::fmcIncrementalRefresh_TLR_CURR:
+                    return this->OnIncrementalRefresh_TLR_CURR(
+                            (AstsIncrementalTLRCURRInfo *) this->m_fastProtocolManager->LastDecodeInfo());
+                case FeedConnectionMessage::fmcIncrementalRefresh_MSR_FOND:
+                    return this->OnIncrementalRefresh_MSR_FOND(
+                            (AstsIncrementalMSRFONDInfo *) this->m_fastProtocolManager->LastDecodeInfo());
+                case FeedConnectionMessage::fmcIncrementalRefresh_MSR_CURR:
+                    return this->OnIncrementalRefresh_MSR_CURR(
+                            (AstsIncrementalMSRCURRInfo *) this->m_fastProtocolManager->LastDecodeInfo());
+                case FeedConnectionMessage::fcmHeartBeat:
+                    return this->OnHearthBeatMessage(
+                            (AstsHeartbeatInfo *) this->m_fastProtocolManager->LastDecodeInfo());
+                default:
+                    throw;
+            }
+        }
+        else {
+            int templateId = this->m_fastProtocolManager->TemplateId();
+            if(templateId == FortsMessage::fortsIncremental) {
+                if(this->m_id == FeedConnectionId::fcidObrForts)
+                    return this->OnIncrementalRefresh_FORTS_OBR(
+                        (FortsDefaultIncrementalRefreshMessageInfo *) this->m_fastProtocolManager->LastDecodeInfo());
+                else
+                    return this->OnIncrementalRefresh_FORTS_TLR((FortsDefaultIncrementalRefreshMessageInfo *) this->m_fastProtocolManager->LastDecodeInfo());
+            }
+            else if(templateId == FortsMessage::fortsHearthBeat)
+                return true;
+            else
+                throw;
+        }
 	}
 
 	inline bool ProcessIncrementalCore(unsigned char *buffer, int length, bool shouldProcessMsgSeqNumber) {
@@ -2460,6 +2612,10 @@ public:
 	inline MarketDataTable<TradeInfo, AstsTLSCURRInfo, AstsTLSCURRItemInfo> *TradeCurr() { return this->m_tradeTableCurr; }
     inline MarketDataTable<StatisticsInfo, AstsGenericInfo, AstsGenericItemInfo> *StatisticFond() { return this->m_statTableFond; }
     inline MarketDataTable<StatisticsInfo, AstsGenericInfo, AstsGenericItemInfo> *StatisticCurr() { return this->m_statTableCurr; }
+
+    inline MarketDataTable<OrderBookInfo, FortsDefaultSnapshotMessageInfo, FortsDefaultSnapshotMessageMDEntriesItemInfo> *OrderBookForts() { return this->m_fortsOrderBookTable; }
+    inline MarketDataTable<TradeInfo, FortsDefaultSnapshotMessageInfo, FortsDefaultSnapshotMessageMDEntriesItemInfo> *TradeForts() { return this->m_fortsTradeBookTable; }
+
     inline LinkedPointer<AstsSecurityDefinitionInfo>** Symbols() { return this->m_symbols; }
     inline AstsSecurityDefinitionInfo* Symbol(int index) { return this->m_symbols[index]->Data(); }
     inline FortsSecurityDefinitionInfo* SymbolForts(int index) { return this->m_symbolsForts[index]->Data(); }
@@ -2556,8 +2712,10 @@ public:
     }
 
     inline void AddSymbol(LinkedPointer<FortsSecurityDefinitionInfo> *ptr, int index) {
+        if(this->m_type != FeedConnectionType::IncrementalForts)
+            return;
         FortsSecurityDefinitionInfo *info = ptr->Data();
-        MarketSymbolInfo<OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo>> *symbol = this->m_fortsTable->AddSymbol(info->Symbol, info->SymbolLength, index);
+        MarketSymbolInfo<OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo>> *symbol = this->m_fortsOrderBookTable->AddSymbol(info->Symbol, info->SymbolLength, index);
         symbol->SecurityDefinitionPtr(ptr);
         symbol->InitSessions(1);
         symbol->AddSession(info->TradingSessionID);
@@ -2822,6 +2980,10 @@ public:
         }
         if(this->m_statTableCurr != 0) {
             this->m_statTableCurr->InitSymbols(count);
+            return;
+        }
+        if(this->m_fortsOrderBookTable != 0) {
+            this->m_fortsOrderBookTable->InitSymbols(count);
             return;
         }
     }
