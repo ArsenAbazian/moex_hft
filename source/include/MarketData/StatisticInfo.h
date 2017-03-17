@@ -62,6 +62,7 @@ template <typename T> class StatisticsInfo {
     int                  m_savedRptSeq;
     MarketSymbolInfo<StatisticsInfo<T>>    *m_symbolInfo;
     SizedArray          *m_tradingSession;
+    UINT32              m_sessionInt;
 
     UINT64               m_time;
     int                  m_snapshotProcessedCount;
@@ -165,7 +166,8 @@ public:
         }
         this->m_entryInfo = 0;
     }
-
+    inline UINT32 TradingSessionInt() { return this->m_sessionInt; }
+    inline void TradingSessionInt(UINT32 session) { this->m_sessionInt = session; }
     inline void ResetSnasphotProcessed() { this->m_snapshotProcessedCount = 0; }
     inline void OnSnapshotProcessed() { this->m_snapshotProcessedCount++; }
     inline int SnapshotProcessedCount() { return this->m_snapshotProcessedCount; }

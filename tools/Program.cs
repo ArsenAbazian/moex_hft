@@ -1267,6 +1267,8 @@ namespace prebuild {
 					similarTemplates.Add("X-TLR-CURR", "W-TLS-CURR");
 					similarTemplates.Add("X-OBR-CURR", "W-OBS-CURR");
 					similarTemplates.Add("X-MSR-CURR", "W-Generic");
+
+					similarTemplates.Add("DefaultIncrementalRefreshMessage", "DefaultSnapshotMessage");
 				}
 				return similarTemplates;
 			}
@@ -1447,6 +1449,10 @@ namespace prebuild {
 			if(writeSnapshotInfoCode)
 				WriteSnapshotInfoDefinitionCode(templatesNode);
 
+			foreach(StructureInfo info in Structures) { 
+				WriteLine("class " + info.Name + ";");
+			}
+			WriteLine("");
 			foreach(StructureInfo info in Structures) { 
 				WriteStructureDefinition(info);
 			}

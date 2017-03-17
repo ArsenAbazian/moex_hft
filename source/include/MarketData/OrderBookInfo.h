@@ -2,8 +2,8 @@
 // Created by root on 17.12.16.
 //
 
-#ifndef HFT_ROBOT_ORDERINFO_H
-#define HFT_ROBOT_ORDERINFO_H
+#ifndef HFT_ROBOT_ORDERBOOKINFO_H
+#define HFT_ROBOT_ORDERBOOKINFO_H
 
 #include "../Lib/StringIdComparer.h"
 #include "Fast/FastTypes.h"
@@ -14,15 +14,11 @@
 
 template <typename T> class MarketSymbolInfo;
 
-template <typename T> class OrderInfo {
+template <typename T> class OrderBookInfo {
     static PointerList<T>               *m_itemsPool;
-    static PointerList<QuoteInfo>       *m_aggregatedItemsPool;
 
     PointerListLite<T>                  *m_sellQuoteList;
     PointerListLite<T>                  *m_buyQuoteList;
-
-    PointerListLite<QuoteInfo>              *m_aggregatedSellQuoteList;
-    PointerListLite<QuoteInfo>              *m_aggregatedBuyQuoteList;
 
     MDEntryQueue                       *m_entryInfo;
 
@@ -30,19 +26,17 @@ template <typename T> class OrderInfo {
     bool                                m_shouldProcessSnapshot;
     int                                 m_rptSeq;
     int                                 m_savedRptSeq;
-    MarketSymbolInfo<OrderInfo<T>>      *m_symbolInfo;
+    MarketSymbolInfo<OrderBookInfo<T>>  *m_symbolInfo;
     SizedArray                          *m_tradingSession;
     UINT32                              m_sessionInt;
 
     int                                 m_snapshotProcessedCount;
 public:
-    OrderInfo();
-    ~OrderInfo() {
+    OrderBookInfo();
+    ~OrderBookInfo() {
         ReleaseEntryQue();
         delete this->m_sellQuoteList;
         delete this->m_buyQuoteList;
-        delete this->m_aggregatedBuyQuoteList;
-        delete this->m_aggregatedSellQuoteList;
     }
 
     inline void ReleaseEntryQue() {
@@ -59,8 +53,8 @@ public:
     inline int SnapshotProcessedCount() { return this->m_snapshotProcessedCount; }
     inline SizedArray* TradingSession() { return this->m_tradingSession; }
     inline SizedArray* Symbol() { return this->m_symbolInfo->Symbol(); }
-    inline MarketSymbolInfo<OrderInfo<T>>* SymbolInfo() { return this->m_symbolInfo; }
-    inline void SymbolInfo(MarketSymbolInfo<OrderInfo<T>>* symbolInfo) { this->m_symbolInfo = symbolInfo; }
+    inline MarketSymbolInfo<OrderBookInfo<T>>* SymbolInfo() { return this->m_symbolInfo; }
+    inline void SymbolInfo(MarketSymbolInfo<OrderBookInfo<T>>* symbolInfo) { this->m_symbolInfo = symbolInfo; }
     inline int RptSeq() { return this->m_rptSeq; }
     inline int SavedRptSeq() { return this->m_savedRptSeq; }
     inline void RptSeq(int rptSeq) { this->m_rptSeq = rptSeq; }
@@ -71,9 +65,6 @@ public:
 
     inline PointerListLite<T>* SellQuotes() { return this->m_sellQuoteList; }
     inline PointerListLite<T>* BuyQuotes() { return this->m_buyQuoteList; }
-
-    inline PointerListLite<QuoteInfo>* AggregatedSellQuotes() { return this->m_aggregatedSellQuoteList; }
-    inline PointerListLite<QuoteInfo>* AggregatedBuyQuotes() { return this->m_aggregatedBuyQuoteList; }
 
     inline bool Used() { return this->m_used; }
     inline void Used(bool used) { this->m_used = used; }
@@ -92,8 +83,6 @@ public:
     inline void Clear() {
         Clear(this->m_sellQuoteList);
         Clear(this->m_buyQuoteList);
-        this->m_aggregatedBuyQuoteList->Clear();
-        this->m_aggregatedSellQuoteList->Clear();
         this->ClearEntries();
         this->m_rptSeq = 0;
         this->m_savedRptSeq = 0;
@@ -118,111 +107,46 @@ public:
         return list->Add(info);
     }
 
-    inline LinkedPointer<QuoteInfo>* GetAggregatedBuyQuote(Decimal *price) {
-        LinkedPointer<QuoteInfo> *node = this->m_aggregatedBuyQuoteList->Start();
+    inline LinkedPointer<T>* GetBuyQuote(Decimal *price) {
+        LinkedPointer<QuoteInfo> *node = this->m_buyQuoteList->Start();
         double value = price->Calculate();
-        QuoteInfo *quote = 0;
+        T *quote = 0;
 
         if(node != 0) {
             while (true) {
                 quote = node->Data();
-                if (quote->Price()->Value < value) {
-                    LinkedPointer<QuoteInfo> *curr = this->m_aggregatedBuyQuoteList->Insert(node);
-                    quote = curr->Data();
-                    quote->Price(price);
-                    quote->Size(0);
-                    return curr;
-                }
-                else if(quote->Price()->Value == value)
+                Decimal *val = &(quote->MDEntryPx);
+                if (val->Value < value)
+                    return this->m_buyQuoteList->Insert(node);
+                else if(val->Value == value)
                     return node;
-                if (node == this->m_aggregatedBuyQuoteList->End())
+                if (node == this->m_buyQuoteList->End())
                     break;
                 node = node->Next();
             }
         }
-        LinkedPointer<QuoteInfo> *curr = this->m_aggregatedBuyQuoteList->Add();
-        quote = curr->Data();
-        quote->Price(price);
-        quote->Size(0);
-        return curr;
+        return this->m_buyQuoteList->Add();
     }
 
-    inline LinkedPointer<QuoteInfo>* GetAggregatedSellQuote(Decimal *price) {
-        LinkedPointer<QuoteInfo> *node = this->m_aggregatedSellQuoteList->Start();
+    inline LinkedPointer<T>* GetSellQuote(Decimal *price) {
+        LinkedPointer<T> *node = this->m_sellQuoteList->Start();
         double value = price->Calculate();
-        QuoteInfo *quote = 0;
+        T *quote = 0;
 
         if(node != 0) {
             while (true) {
                 quote = node->Data();
-                if (quote->Price()->Value > value) {
-                    LinkedPointer<QuoteInfo> *curr = this->m_aggregatedSellQuoteList->Insert(node);
-                    quote = curr->Data();
-                    quote->Price(price);
-                    quote->Size(0);
-                    return curr;
-                }
-                else if(quote->Price()->Value == value) {
+                Decimal *val = &(quote->MDEntryPx);
+                if (val->Value > value)
+                    return this->m_sellQuoteList->Insert(node);
+                else if(val->Value == value)
                     return node;
-                }
-                if (node == this->m_aggregatedSellQuoteList->End())
+                if (node == this->m_sellQuoteList->End())
                     break;
                 node = node->Next();
             }
         }
-        LinkedPointer<QuoteInfo> *curr = this->m_aggregatedSellQuoteList->Add();
-        quote = curr->Data();
-        quote->Price(price);
-        quote->Size(0);
-        return curr;
-    }
-
-    inline void UpdateAggregatedBuyQuoteCore(LinkedPointer<QuoteInfo> *ptr, int size) {
-        QuoteInfo *q = ptr->Data();
-        q->AddSize(size);
-        if(q->Size() == 0)
-            this->m_aggregatedBuyQuoteList->Remove(ptr);
-    }
-
-    inline void UpdateAggregatedSellQuoteCore(LinkedPointer<QuoteInfo> *ptr, int size) {
-        QuoteInfo *q = ptr->Data();
-        q->AddSize(size);
-        if(q->Size() == 0)
-            this->m_aggregatedSellQuoteList->Remove(ptr);
-    }
-
-    inline void RemoveAggregatedBuyQuote(T *info) {
-        LinkedPointer<QuoteInfo> *ptr = GetAggregatedBuyQuote(&(info->MDEntryPx));
-        UpdateAggregatedBuyQuoteCore(ptr, - info->MDEntrySize.CalculatePositiveInteger());
-    }
-
-    inline void RemoveAggregatedSellQuote(T *info) {
-        LinkedPointer<QuoteInfo> *ptr = GetAggregatedSellQuote(&(info->MDEntryPx));
-        UpdateAggregatedSellQuoteCore(ptr, - info->MDEntrySize.CalculatePositiveInteger());
-    }
-
-    inline void ChangeAggregatedBuyQuote(T *prev, T *curr) {
-        LinkedPointer<QuoteInfo> *ptr = GetAggregatedBuyQuote(&(prev->MDEntryPx));
-        UpdateAggregatedBuyQuoteCore(ptr, - prev->MDEntrySize.CalculatePositiveInteger());
-        ptr = GetAggregatedBuyQuote(&(curr->MDEntryPx));
-        UpdateAggregatedBuyQuoteCore(ptr, curr->MDEntrySize.CalculatePositiveInteger());
-    }
-
-    inline void ChangeAggregatedSellQuote(T *prev, T *curr) {
-        LinkedPointer<QuoteInfo> *ptr = GetAggregatedSellQuote(&(prev->MDEntryPx));
-        UpdateAggregatedSellQuoteCore(ptr, - prev->MDEntrySize.CalculatePositiveInteger());
-        ptr = GetAggregatedSellQuote(&(curr->MDEntryPx));
-        UpdateAggregatedSellQuoteCore(ptr, curr->MDEntrySize.CalculatePositiveInteger());
-    }
-
-    inline void AddAggregatedBuyQuote(T *item) {
-        LinkedPointer<QuoteInfo> *ptr = GetAggregatedBuyQuote(&(item->MDEntryPx));
-        ptr->Data()->AddSize(item->MDEntrySize.CalculatePositiveInteger());
-    }
-
-    inline void AddAggregatedSellQuote(T *item) {
-        LinkedPointer<QuoteInfo> *ptr = GetAggregatedSellQuote(&(item->MDEntryPx));
-        ptr->Data()->AddSize(item->MDEntrySize.CalculatePositiveInteger());
+        return this->m_sellQuoteList->Add();
     }
 
     inline LinkedPointer<T>* RemoveBuyQuote(T *info) {
@@ -234,7 +158,6 @@ public:
             T *data = node->Data();
             if(StringIdComparer::Equal(data->MDEntryID, data->MDEntryIDLength, info->MDEntryID, info->MDEntryIDLength)) {
                 this->m_buyQuoteList->Remove(node);
-                this->RemoveAggregatedBuyQuote(data);
                 data->Clear();
                 return node;
             }
@@ -258,7 +181,6 @@ public:
             T *data = node->Data();
             if(StringIdComparer::Equal(data->MDEntryID, data->MDEntryIDLength, info->MDEntryID, info->MDEntryIDLength)) {
                 this->m_sellQuoteList->Remove(node);
-                this->RemoveAggregatedSellQuote(data);
                 data->Clear();
                 return node;
             }
@@ -274,6 +196,7 @@ public:
 
     inline void ChangeBuyQuote(T *info) {
         DebugInfoManager::Default->Log(this->m_symbolInfo->Symbol(), this->m_tradingSession, "Change BuyQuote", info->MDEntryID, info->MDEntryIDLength, &(info->MDEntryPx), &(info->MDEntrySize));
+
         LinkedPointer<T> *ptr = GetQuote(this->m_buyQuoteList, info);
         //TODO remove debug
         if(ptr == 0) {
@@ -281,7 +204,9 @@ public:
             printf("ERROR: %s entry not found\n", info->MDEntryID);
             return;
         }
-        this->ChangeAggregatedBuyQuote(ptr->Data(), info);
+        //TODO remove debug
+        if(ptr->Data()->MDEntryPx.Mantissa != info->MDEntryPx.Mantissa || ptr->Data()->MDEntryPx.Exponent != info->MDEntryPx.Exponent)
+            throw;
         info->Used = true;
         ptr->Data()->Clear();
         ptr->Data(info);
@@ -296,7 +221,9 @@ public:
             printf("ERROR: %s entry not found\n", info->MDEntryID);
             return;
         }
-        this->ChangeAggregatedSellQuote(ptr->Data(), info);
+        //TODO remove debug
+        if(ptr->Data()->MDEntryPx.Mantissa != info->MDEntryPx.Mantissa || ptr->Data()->MDEntryPx.Exponent != info->MDEntryPx.Exponent)
+            throw;
         info->Used = true;
         ptr->Data()->Clear();
         ptr->Data(info);
@@ -305,15 +232,17 @@ public:
     inline LinkedPointer<T>* AddBuyQuote(T *item) {
         DebugInfoManager::Default->Log(this->m_symbolInfo->Symbol(), this->m_tradingSession, "Add BuyQuote", item->MDEntryID, item->MDEntryIDLength, &(item->MDEntryPx), &(item->MDEntrySize));
         item->Used = true;
-        this->AddAggregatedBuyQuote(item);
-        return this->m_buyQuoteList->Add(item);
+        LinkedPointer<T> *ptr = GetBuyQuote(&(item->MDEntryPx));
+        ptr->Data(item);
+        return ptr;
     }
 
     inline LinkedPointer<T>* AddSellQuote(T *item) {
         DebugInfoManager::Default->Log(this->m_symbolInfo->Symbol(), this->m_tradingSession, "Add SellQuote", item->MDEntryID, item->MDEntryIDLength, &(item->MDEntryPx), &(item->MDEntrySize));
         item->Used = true;
-        this->AddAggregatedSellQuote(item);
-        return this->m_sellQuoteList->Add(item);
+        LinkedPointer<T> *ptr = GetSellQuote(&(item->MDEntryPx));
+        ptr->Data(item);
+        return ptr;
     }
 
     inline void Remove(T *info) {
@@ -474,21 +403,16 @@ public:
     }
 };
 
-template <typename T> PointerList<T>* OrderInfo<T>::m_itemsPool = 0;
-template <typename T> PointerList<QuoteInfo>* OrderInfo<T>::m_aggregatedItemsPool = 0;
+template <typename T> PointerList<T>* OrderBookInfo<T>::m_itemsPool = 0;
 
-template <typename T> OrderInfo<T>::OrderInfo() {
-    if(OrderInfo::m_itemsPool == 0)
-        OrderInfo::m_itemsPool = new PointerList<T>(RobotSettings::Default->MarketDataMaxEntriesCount, false);
-    if(OrderInfo::m_aggregatedItemsPool == 0)
-        OrderInfo::m_aggregatedItemsPool = new PointerList<QuoteInfo>(RobotSettings::Default->MarketDataMaxEntriesCount, true);
+template <typename T> OrderBookInfo<T>::OrderBookInfo() {
+    if(OrderBookInfo::m_itemsPool == 0)
+        OrderBookInfo::m_itemsPool = new PointerList<T>(RobotSettings::Default->MarketDataMaxEntriesCount, false);
 
     this->m_entryInfo = 0;
 
-    this->m_sellQuoteList = new PointerListLite<T>(OrderInfo<T>::m_itemsPool);
-    this->m_buyQuoteList = new PointerListLite<T>(OrderInfo<T>::m_itemsPool);
-    this->m_aggregatedBuyQuoteList = new PointerListLite<QuoteInfo>(OrderInfo<T>::m_aggregatedItemsPool);
-    this->m_aggregatedSellQuoteList = new PointerListLite<QuoteInfo>(OrderInfo<T>::m_aggregatedItemsPool);
+    this->m_sellQuoteList = new PointerListLite<T>(OrderBookInfo<T>::m_itemsPool);
+    this->m_buyQuoteList = new PointerListLite<T>(OrderBookInfo<T>::m_itemsPool);
 
     this->m_tradingSession = new SizedArray();
     this->m_shouldProcessSnapshot = false;

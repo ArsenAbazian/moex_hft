@@ -15,6 +15,7 @@ template <typename T> class MarketSymbolInfo {
     int                                 m_maxCount;
     int                                 m_sessionsToRecvSnapshot;
     LinkedPointer<AstsSecurityDefinitionInfo> *m_securityDefinitionPtr;
+    LinkedPointer<FortsSecurityDefinitionInfo> *m_securityDefinitionFortsPtr;
 public:
     MarketSymbolInfo() {
         this->m_count = 0;
@@ -22,6 +23,7 @@ public:
         this->m_items = 0;
         this->m_symbol = new SizedArray();
         this->m_securityDefinitionPtr = 0;
+        this->m_securityDefinitionFortsPtr = 0;
     }
     inline void InitSessions(int count) {
         Release();
@@ -61,8 +63,21 @@ public:
         this->m_count++;
         return res;
     }
+    inline T* GetSession(UINT32 session) {
+        T **item = this->m_items;
+        for(int i = 0; i < this->m_count; i++, item++) {
+            if((*item)->TradingSessionInt() == session)
+                return *item;
+        }
+        T* res = this->m_items[this->m_count];
+        res->TradingSessionInt(session);
+        this->m_count++;
+        return res;
+    }
     inline void SecurityDefinitionPtr(LinkedPointer<AstsSecurityDefinitionInfo> *ptr) { this->m_securityDefinitionPtr = ptr; }
-    inline AstsSecurityDefinitionInfo* SecurityDefinition() { return this->m_securityDefinitionPtr->Data(); }
+    inline void SecurityDefinitionPtr(LinkedPointer<FortsSecurityDefinitionInfo> *ptr) { this->m_securityDefinitionFortsPtr = ptr; }
+    inline AstsSecurityDefinitionInfo* SecurityDefinitionAsts() { return this->m_securityDefinitionPtr->Data(); }
+    inline FortsSecurityDefinitionInfo* SecurityDefinitionForts() { return this->m_securityDefinitionFortsPtr->Data(); }
     inline SizedArray *Symbol() { return this->m_symbol; }
     inline bool Equals(const char *symbol, int symbolLen) { return this->m_symbol->Equal(symbol, symbolLen); }
     inline void Clear() {
@@ -78,6 +93,9 @@ public:
     }
     inline T* AddSession(const char *session) {
         return AddSession(session, strlen(session));
+    }
+    inline T* AddSession(UINT32 session) {
+        return GetSession(session);
     }
     inline bool EnterSnapshotMode() {
         this->m_sessionsToRecvSnapshot = this->m_count;

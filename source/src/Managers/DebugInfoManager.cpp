@@ -331,6 +331,7 @@ void DebugInfoManager::PrintStatistics(FeedConnection *conn) {
     printf("State %d\n", conn->State());
     switch(conn->Type()) {
         case FeedConnectionType::Incremental:
+        case FeedConnectionType::IncrementalForts:
             PrintStatisticsIncremental(conn);
             break;
         case FeedConnectionType::Snapshot:
@@ -591,6 +592,7 @@ void DebugInfoManager::PrintStatisticsXml(FeedConnection *conn) {
     this->AddTabs();
     switch(conn->Type()) {
         case FeedConnectionType::Incremental:
+        case FeedConnectionType::IncrementalForts:
             PrintStatisticsIncrementalXml(conn);
             break;
         case FeedConnectionType::Snapshot:

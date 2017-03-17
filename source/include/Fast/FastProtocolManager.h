@@ -64,19 +64,23 @@ private:
 #pragma endregion
 
 #pragma region Asts_Structure_Objects_Declaration_GeneratedCode
-	AutoAllocatePointerList<AstsLogonInfo>	*m_astsLogon;
-	AutoAllocatePointerList<AstsLogoutInfo>	*m_astsLogout;
-	AutoAllocatePointerList<AstsGenericItemInfo>	*m_astsGenericItems;
+	AutoAllocatePointerList<AstsHeartbeatInfo>	*m_astsHeartbeat;
+	AutoAllocatePointerList<AstsTradingSessionStatusInfo>	*m_astsTradingSessionStatus;
+	AutoAllocatePointerList<AstsSecurityStatusInfo>	*m_astsSecurityStatus;
+	AutoAllocatePointerList<AstsSecurityDefinitionInfo>	*m_astsSecurityDefinition;
+	AutoAllocatePointerList<AstsTLSCURRInfo>	*m_astsTLSCURR;
+	AutoAllocatePointerList<AstsTLSFONDInfo>	*m_astsTLSFOND;
+	AutoAllocatePointerList<AstsOLSCURRInfo>	*m_astsOLSCURR;
+	AutoAllocatePointerList<AstsOLSFONDInfo>	*m_astsOLSFOND;
 	AutoAllocatePointerList<AstsGenericInfo>	*m_astsGeneric;
+	AutoAllocatePointerList<AstsLogoutInfo>	*m_astsLogout;
+	AutoAllocatePointerList<AstsLogonInfo>	*m_astsLogon;
+	AutoAllocatePointerList<AstsGenericItemInfo>	*m_astsGenericItems;
 	AutoAllocatePointerList<AstsIncrementalGenericInfo>	*m_astsIncrementalGeneric;
 	AutoAllocatePointerList<AstsOLSFONDItemInfo>	*m_astsOLSFONDItems;
-	AutoAllocatePointerList<AstsOLSFONDInfo>	*m_astsOLSFOND;
 	AutoAllocatePointerList<AstsOLSCURRItemInfo>	*m_astsOLSCURRItems;
-	AutoAllocatePointerList<AstsOLSCURRInfo>	*m_astsOLSCURR;
 	AutoAllocatePointerList<AstsTLSFONDItemInfo>	*m_astsTLSFONDItems;
-	AutoAllocatePointerList<AstsTLSFONDInfo>	*m_astsTLSFOND;
 	AutoAllocatePointerList<AstsTLSCURRItemInfo>	*m_astsTLSCURRItems;
-	AutoAllocatePointerList<AstsTLSCURRInfo>	*m_astsTLSCURR;
 	AutoAllocatePointerList<AstsIncrementalMSRFONDInfo>	*m_astsIncrementalMSRFOND;
 	AutoAllocatePointerList<AstsIncrementalMSRCURRInfo>	*m_astsIncrementalMSRCURR;
 	AutoAllocatePointerList<AstsIncrementalOLRFONDInfo>	*m_astsIncrementalOLRFOND;
@@ -86,23 +90,23 @@ private:
 	AutoAllocatePointerList<AstsSecurityDefinitionGroupInstrAttribItemInfo>	*m_astsSecurityDefinitionGroupInstrAttribItems;
 	AutoAllocatePointerList<AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo>	*m_astsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItems;
 	AutoAllocatePointerList<AstsSecurityDefinitionMarketSegmentGrpItemInfo>	*m_astsSecurityDefinitionMarketSegmentGrpItems;
-	AutoAllocatePointerList<AstsSecurityDefinitionInfo>	*m_astsSecurityDefinition;
-	AutoAllocatePointerList<AstsSecurityStatusInfo>	*m_astsSecurityStatus;
-	AutoAllocatePointerList<AstsTradingSessionStatusInfo>	*m_astsTradingSessionStatus;
-	AutoAllocatePointerList<AstsHeartbeatInfo>	*m_astsHeartbeat;
-	AstsLogonInfo	*m_prevastsLogonInfo;
-	AstsLogoutInfo	*m_prevastsLogoutInfo;
-	AstsGenericItemInfo	*m_prevastsGenericItemInfo;
+	AstsHeartbeatInfo	*m_prevastsHeartbeatInfo;
+	AstsTradingSessionStatusInfo	*m_prevastsTradingSessionStatusInfo;
+	AstsSecurityStatusInfo	*m_prevastsSecurityStatusInfo;
+	AstsSecurityDefinitionInfo	*m_prevastsSecurityDefinitionInfo;
+	AstsTLSCURRInfo	*m_prevastsTLSCURRInfo;
+	AstsTLSFONDInfo	*m_prevastsTLSFONDInfo;
+	AstsOLSCURRInfo	*m_prevastsOLSCURRInfo;
+	AstsOLSFONDInfo	*m_prevastsOLSFONDInfo;
 	AstsGenericInfo	*m_prevastsGenericInfo;
+	AstsLogoutInfo	*m_prevastsLogoutInfo;
+	AstsLogonInfo	*m_prevastsLogonInfo;
+	AstsGenericItemInfo	*m_prevastsGenericItemInfo;
 	AstsIncrementalGenericInfo	*m_prevastsIncrementalGenericInfo;
 	AstsOLSFONDItemInfo	*m_prevastsOLSFONDItemInfo;
-	AstsOLSFONDInfo	*m_prevastsOLSFONDInfo;
 	AstsOLSCURRItemInfo	*m_prevastsOLSCURRItemInfo;
-	AstsOLSCURRInfo	*m_prevastsOLSCURRInfo;
 	AstsTLSFONDItemInfo	*m_prevastsTLSFONDItemInfo;
-	AstsTLSFONDInfo	*m_prevastsTLSFONDInfo;
 	AstsTLSCURRItemInfo	*m_prevastsTLSCURRItemInfo;
-	AstsTLSCURRInfo	*m_prevastsTLSCURRInfo;
 	AstsIncrementalMSRFONDInfo	*m_prevastsIncrementalMSRFONDInfo;
 	AstsIncrementalMSRCURRInfo	*m_prevastsIncrementalMSRCURRInfo;
 	AstsIncrementalOLRFONDInfo	*m_prevastsIncrementalOLRFONDInfo;
@@ -112,25 +116,25 @@ private:
 	AstsSecurityDefinitionGroupInstrAttribItemInfo	*m_prevastsSecurityDefinitionGroupInstrAttribItemInfo;
 	AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo	*m_prevastsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo;
 	AstsSecurityDefinitionMarketSegmentGrpItemInfo	*m_prevastsSecurityDefinitionMarketSegmentGrpItemInfo;
-	AstsSecurityDefinitionInfo	*m_prevastsSecurityDefinitionInfo;
-	AstsSecurityStatusInfo	*m_prevastsSecurityStatusInfo;
-	AstsTradingSessionStatusInfo	*m_prevastsTradingSessionStatusInfo;
-	AstsHeartbeatInfo	*m_prevastsHeartbeatInfo;
 
 	void InitializeAstsMessageInfo() {
-		this->m_astsLogon = this->m_astsAllocationInfo->GetAstsLogonInfoPool();
-		this->m_astsLogout = this->m_astsAllocationInfo->GetAstsLogoutInfoPool();
-		this->m_astsGenericItems = this->m_astsAllocationInfo->GetAstsGenericItemInfoPool();
+		this->m_astsHeartbeat = this->m_astsAllocationInfo->GetAstsHeartbeatInfoPool();
+		this->m_astsTradingSessionStatus = this->m_astsAllocationInfo->GetAstsTradingSessionStatusInfoPool();
+		this->m_astsSecurityStatus = this->m_astsAllocationInfo->GetAstsSecurityStatusInfoPool();
+		this->m_astsSecurityDefinition = this->m_astsAllocationInfo->GetAstsSecurityDefinitionInfoPool();
+		this->m_astsTLSCURR = this->m_astsAllocationInfo->GetAstsTLSCURRInfoPool();
+		this->m_astsTLSFOND = this->m_astsAllocationInfo->GetAstsTLSFONDInfoPool();
+		this->m_astsOLSCURR = this->m_astsAllocationInfo->GetAstsOLSCURRInfoPool();
+		this->m_astsOLSFOND = this->m_astsAllocationInfo->GetAstsOLSFONDInfoPool();
 		this->m_astsGeneric = this->m_astsAllocationInfo->GetAstsGenericInfoPool();
+		this->m_astsLogout = this->m_astsAllocationInfo->GetAstsLogoutInfoPool();
+		this->m_astsLogon = this->m_astsAllocationInfo->GetAstsLogonInfoPool();
+		this->m_astsGenericItems = this->m_astsAllocationInfo->GetAstsGenericItemInfoPool();
 		this->m_astsIncrementalGeneric = this->m_astsAllocationInfo->GetAstsIncrementalGenericInfoPool();
 		this->m_astsOLSFONDItems = this->m_astsAllocationInfo->GetAstsOLSFONDItemInfoPool();
-		this->m_astsOLSFOND = this->m_astsAllocationInfo->GetAstsOLSFONDInfoPool();
 		this->m_astsOLSCURRItems = this->m_astsAllocationInfo->GetAstsOLSCURRItemInfoPool();
-		this->m_astsOLSCURR = this->m_astsAllocationInfo->GetAstsOLSCURRInfoPool();
 		this->m_astsTLSFONDItems = this->m_astsAllocationInfo->GetAstsTLSFONDItemInfoPool();
-		this->m_astsTLSFOND = this->m_astsAllocationInfo->GetAstsTLSFONDInfoPool();
 		this->m_astsTLSCURRItems = this->m_astsAllocationInfo->GetAstsTLSCURRItemInfoPool();
-		this->m_astsTLSCURR = this->m_astsAllocationInfo->GetAstsTLSCURRInfoPool();
 		this->m_astsIncrementalMSRFOND = this->m_astsAllocationInfo->GetAstsIncrementalMSRFONDInfoPool();
 		this->m_astsIncrementalMSRCURR = this->m_astsAllocationInfo->GetAstsIncrementalMSRCURRInfoPool();
 		this->m_astsIncrementalOLRFOND = this->m_astsAllocationInfo->GetAstsIncrementalOLRFONDInfoPool();
@@ -140,36 +144,40 @@ private:
 		this->m_astsSecurityDefinitionGroupInstrAttribItems = this->m_astsAllocationInfo->GetAstsSecurityDefinitionGroupInstrAttribItemInfoPool();
 		this->m_astsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItems = this->m_astsAllocationInfo->GetAstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfoPool();
 		this->m_astsSecurityDefinitionMarketSegmentGrpItems = this->m_astsAllocationInfo->GetAstsSecurityDefinitionMarketSegmentGrpItemInfoPool();
-		this->m_astsSecurityDefinition = this->m_astsAllocationInfo->GetAstsSecurityDefinitionInfoPool();
-		this->m_astsSecurityStatus = this->m_astsAllocationInfo->GetAstsSecurityStatusInfoPool();
-		this->m_astsTradingSessionStatus = this->m_astsAllocationInfo->GetAstsTradingSessionStatusInfoPool();
-		this->m_astsHeartbeat = this->m_astsAllocationInfo->GetAstsHeartbeatInfoPool();
-		this->m_prevastsLogonInfo = this->GetFreeAstsLogonInfo();
-		this->m_prevastsLogonInfo->Used = true;
-		this->m_prevastsLogoutInfo = this->GetFreeAstsLogoutInfo();
-		this->m_prevastsLogoutInfo->Used = true;
-		this->m_prevastsGenericItemInfo = this->GetFreeAstsGenericItemInfo();
-		this->m_prevastsGenericItemInfo->Used = true;
+		this->m_prevastsHeartbeatInfo = this->GetFreeAstsHeartbeatInfo();
+		this->m_prevastsHeartbeatInfo->Used = true;
+		this->m_prevastsTradingSessionStatusInfo = this->GetFreeAstsTradingSessionStatusInfo();
+		this->m_prevastsTradingSessionStatusInfo->Used = true;
+		this->m_prevastsSecurityStatusInfo = this->GetFreeAstsSecurityStatusInfo();
+		this->m_prevastsSecurityStatusInfo->Used = true;
+		this->m_prevastsSecurityDefinitionInfo = this->GetFreeAstsSecurityDefinitionInfo();
+		this->m_prevastsSecurityDefinitionInfo->Used = true;
+		this->m_prevastsTLSCURRInfo = this->GetFreeAstsTLSCURRInfo();
+		this->m_prevastsTLSCURRInfo->Used = true;
+		this->m_prevastsTLSFONDInfo = this->GetFreeAstsTLSFONDInfo();
+		this->m_prevastsTLSFONDInfo->Used = true;
+		this->m_prevastsOLSCURRInfo = this->GetFreeAstsOLSCURRInfo();
+		this->m_prevastsOLSCURRInfo->Used = true;
+		this->m_prevastsOLSFONDInfo = this->GetFreeAstsOLSFONDInfo();
+		this->m_prevastsOLSFONDInfo->Used = true;
 		this->m_prevastsGenericInfo = this->GetFreeAstsGenericInfo();
 		this->m_prevastsGenericInfo->Used = true;
+		this->m_prevastsLogoutInfo = this->GetFreeAstsLogoutInfo();
+		this->m_prevastsLogoutInfo->Used = true;
+		this->m_prevastsLogonInfo = this->GetFreeAstsLogonInfo();
+		this->m_prevastsLogonInfo->Used = true;
+		this->m_prevastsGenericItemInfo = this->GetFreeAstsGenericItemInfo();
+		this->m_prevastsGenericItemInfo->Used = true;
 		this->m_prevastsIncrementalGenericInfo = this->GetFreeAstsIncrementalGenericInfo();
 		this->m_prevastsIncrementalGenericInfo->Used = true;
 		this->m_prevastsOLSFONDItemInfo = this->GetFreeAstsOLSFONDItemInfo();
 		this->m_prevastsOLSFONDItemInfo->Used = true;
-		this->m_prevastsOLSFONDInfo = this->GetFreeAstsOLSFONDInfo();
-		this->m_prevastsOLSFONDInfo->Used = true;
 		this->m_prevastsOLSCURRItemInfo = this->GetFreeAstsOLSCURRItemInfo();
 		this->m_prevastsOLSCURRItemInfo->Used = true;
-		this->m_prevastsOLSCURRInfo = this->GetFreeAstsOLSCURRInfo();
-		this->m_prevastsOLSCURRInfo->Used = true;
 		this->m_prevastsTLSFONDItemInfo = this->GetFreeAstsTLSFONDItemInfo();
 		this->m_prevastsTLSFONDItemInfo->Used = true;
-		this->m_prevastsTLSFONDInfo = this->GetFreeAstsTLSFONDInfo();
-		this->m_prevastsTLSFONDInfo->Used = true;
 		this->m_prevastsTLSCURRItemInfo = this->GetFreeAstsTLSCURRItemInfo();
 		this->m_prevastsTLSCURRItemInfo->Used = true;
-		this->m_prevastsTLSCURRInfo = this->GetFreeAstsTLSCURRInfo();
-		this->m_prevastsTLSCURRInfo->Used = true;
 		this->m_prevastsIncrementalMSRFONDInfo = this->GetFreeAstsIncrementalMSRFONDInfo();
 		this->m_prevastsIncrementalMSRFONDInfo->Used = true;
 		this->m_prevastsIncrementalMSRCURRInfo = this->GetFreeAstsIncrementalMSRCURRInfo();
@@ -188,98 +196,107 @@ private:
 		this->m_prevastsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo->Used = true;
 		this->m_prevastsSecurityDefinitionMarketSegmentGrpItemInfo = this->GetFreeAstsSecurityDefinitionMarketSegmentGrpItemInfo();
 		this->m_prevastsSecurityDefinitionMarketSegmentGrpItemInfo->Used = true;
-		this->m_prevastsSecurityDefinitionInfo = this->GetFreeAstsSecurityDefinitionInfo();
-		this->m_prevastsSecurityDefinitionInfo->Used = true;
-		this->m_prevastsSecurityStatusInfo = this->GetFreeAstsSecurityStatusInfo();
-		this->m_prevastsSecurityStatusInfo->Used = true;
-		this->m_prevastsTradingSessionStatusInfo = this->GetFreeAstsTradingSessionStatusInfo();
-		this->m_prevastsTradingSessionStatusInfo->Used = true;
-		this->m_prevastsHeartbeatInfo = this->GetFreeAstsHeartbeatInfo();
-		this->m_prevastsHeartbeatInfo->Used = true;
 	}
 
 #pragma endregion
 
 #pragma region Forts_Structure_Objects_Declaration_GeneratedCode
-	AutoAllocatePointerList<FortsDefaultIncrementalRefreshMessageMDEntriesItemInfo>	*m_fortsDefaultIncrementalRefreshMessageMDEntriesItems;
+	AutoAllocatePointerList<FortsLogoutInfo>	*m_fortsLogout;
+	AutoAllocatePointerList<FortsLogonInfo>	*m_fortsLogon;
+	AutoAllocatePointerList<FortsOrdersBookInfo>	*m_fortsOrdersBook;
+	AutoAllocatePointerList<FortsOrdersLogInfo>	*m_fortsOrdersLog;
+	AutoAllocatePointerList<FortsNewsInfo>	*m_fortsNews;
+	AutoAllocatePointerList<FortsTradingSessionStatusInfo>	*m_fortsTradingSessionStatus;
+	AutoAllocatePointerList<FortsSequenceResetInfo>	*m_fortsSequenceReset;
+	AutoAllocatePointerList<FortsHeartbeatInfo>	*m_fortsHeartbeat;
+	AutoAllocatePointerList<FortsSecurityStatusInfo>	*m_fortsSecurityStatus;
+	AutoAllocatePointerList<FortsSecurityDefinitionUpdateReportInfo>	*m_fortsSecurityDefinitionUpdateReport;
+	AutoAllocatePointerList<FortsSecurityDefinitionInfo>	*m_fortsSecurityDefinition;
+	AutoAllocatePointerList<FortsDefaultSnapshotMessageInfo>	*m_fortsDefaultSnapshotMessage;
 	AutoAllocatePointerList<FortsDefaultIncrementalRefreshMessageInfo>	*m_fortsDefaultIncrementalRefreshMessage;
 	AutoAllocatePointerList<FortsDefaultSnapshotMessageMDEntriesItemInfo>	*m_fortsDefaultSnapshotMessageMDEntriesItems;
-	AutoAllocatePointerList<FortsDefaultSnapshotMessageInfo>	*m_fortsDefaultSnapshotMessage;
 	AutoAllocatePointerList<FortsSecurityDefinitionMDFeedTypesItemInfo>	*m_fortsSecurityDefinitionMDFeedTypesItems;
 	AutoAllocatePointerList<FortsSecurityDefinitionUnderlyingsItemInfo>	*m_fortsSecurityDefinitionUnderlyingsItems;
 	AutoAllocatePointerList<FortsSecurityDefinitionInstrumentLegsItemInfo>	*m_fortsSecurityDefinitionInstrumentLegsItems;
 	AutoAllocatePointerList<FortsSecurityDefinitionInstrumentAttributesItemInfo>	*m_fortsSecurityDefinitionInstrumentAttributesItems;
 	AutoAllocatePointerList<FortsSecurityDefinitionEvntGrpItemInfo>	*m_fortsSecurityDefinitionEvntGrpItems;
-	AutoAllocatePointerList<FortsSecurityDefinitionInfo>	*m_fortsSecurityDefinition;
-	AutoAllocatePointerList<FortsSecurityDefinitionUpdateReportInfo>	*m_fortsSecurityDefinitionUpdateReport;
-	AutoAllocatePointerList<FortsSecurityStatusInfo>	*m_fortsSecurityStatus;
-	AutoAllocatePointerList<FortsHeartbeatInfo>	*m_fortsHeartbeat;
-	AutoAllocatePointerList<FortsSequenceResetInfo>	*m_fortsSequenceReset;
-	AutoAllocatePointerList<FortsTradingSessionStatusInfo>	*m_fortsTradingSessionStatus;
 	AutoAllocatePointerList<FortsNewsNewsTextItemInfo>	*m_fortsNewsNewsTextItems;
-	AutoAllocatePointerList<FortsNewsInfo>	*m_fortsNews;
 	AutoAllocatePointerList<FortsOrdersLogMDEntriesItemInfo>	*m_fortsOrdersLogMDEntriesItems;
-	AutoAllocatePointerList<FortsOrdersLogInfo>	*m_fortsOrdersLog;
 	AutoAllocatePointerList<FortsOrdersBookMDEntriesItemInfo>	*m_fortsOrdersBookMDEntriesItems;
-	AutoAllocatePointerList<FortsOrdersBookInfo>	*m_fortsOrdersBook;
-	AutoAllocatePointerList<FortsLogonInfo>	*m_fortsLogon;
-	AutoAllocatePointerList<FortsLogoutInfo>	*m_fortsLogout;
-	FortsDefaultIncrementalRefreshMessageMDEntriesItemInfo	*m_prevfortsDefaultIncrementalRefreshMessageMDEntriesItemInfo;
+	FortsLogoutInfo	*m_prevfortsLogoutInfo;
+	FortsLogonInfo	*m_prevfortsLogonInfo;
+	FortsOrdersBookInfo	*m_prevfortsOrdersBookInfo;
+	FortsOrdersLogInfo	*m_prevfortsOrdersLogInfo;
+	FortsNewsInfo	*m_prevfortsNewsInfo;
+	FortsTradingSessionStatusInfo	*m_prevfortsTradingSessionStatusInfo;
+	FortsSequenceResetInfo	*m_prevfortsSequenceResetInfo;
+	FortsHeartbeatInfo	*m_prevfortsHeartbeatInfo;
+	FortsSecurityStatusInfo	*m_prevfortsSecurityStatusInfo;
+	FortsSecurityDefinitionUpdateReportInfo	*m_prevfortsSecurityDefinitionUpdateReportInfo;
+	FortsSecurityDefinitionInfo	*m_prevfortsSecurityDefinitionInfo;
+	FortsDefaultSnapshotMessageInfo	*m_prevfortsDefaultSnapshotMessageInfo;
 	FortsDefaultIncrementalRefreshMessageInfo	*m_prevfortsDefaultIncrementalRefreshMessageInfo;
 	FortsDefaultSnapshotMessageMDEntriesItemInfo	*m_prevfortsDefaultSnapshotMessageMDEntriesItemInfo;
-	FortsDefaultSnapshotMessageInfo	*m_prevfortsDefaultSnapshotMessageInfo;
 	FortsSecurityDefinitionMDFeedTypesItemInfo	*m_prevfortsSecurityDefinitionMDFeedTypesItemInfo;
 	FortsSecurityDefinitionUnderlyingsItemInfo	*m_prevfortsSecurityDefinitionUnderlyingsItemInfo;
 	FortsSecurityDefinitionInstrumentLegsItemInfo	*m_prevfortsSecurityDefinitionInstrumentLegsItemInfo;
 	FortsSecurityDefinitionInstrumentAttributesItemInfo	*m_prevfortsSecurityDefinitionInstrumentAttributesItemInfo;
 	FortsSecurityDefinitionEvntGrpItemInfo	*m_prevfortsSecurityDefinitionEvntGrpItemInfo;
-	FortsSecurityDefinitionInfo	*m_prevfortsSecurityDefinitionInfo;
-	FortsSecurityDefinitionUpdateReportInfo	*m_prevfortsSecurityDefinitionUpdateReportInfo;
-	FortsSecurityStatusInfo	*m_prevfortsSecurityStatusInfo;
-	FortsHeartbeatInfo	*m_prevfortsHeartbeatInfo;
-	FortsSequenceResetInfo	*m_prevfortsSequenceResetInfo;
-	FortsTradingSessionStatusInfo	*m_prevfortsTradingSessionStatusInfo;
 	FortsNewsNewsTextItemInfo	*m_prevfortsNewsNewsTextItemInfo;
-	FortsNewsInfo	*m_prevfortsNewsInfo;
 	FortsOrdersLogMDEntriesItemInfo	*m_prevfortsOrdersLogMDEntriesItemInfo;
-	FortsOrdersLogInfo	*m_prevfortsOrdersLogInfo;
 	FortsOrdersBookMDEntriesItemInfo	*m_prevfortsOrdersBookMDEntriesItemInfo;
-	FortsOrdersBookInfo	*m_prevfortsOrdersBookInfo;
-	FortsLogonInfo	*m_prevfortsLogonInfo;
-	FortsLogoutInfo	*m_prevfortsLogoutInfo;
 
 	void InitializeFortsMessageInfo() {
-		this->m_fortsDefaultIncrementalRefreshMessageMDEntriesItems = this->m_fortsAllocationInfo->GetFortsDefaultIncrementalRefreshMessageMDEntriesItemInfoPool();
+		this->m_fortsLogout = this->m_fortsAllocationInfo->GetFortsLogoutInfoPool();
+		this->m_fortsLogon = this->m_fortsAllocationInfo->GetFortsLogonInfoPool();
+		this->m_fortsOrdersBook = this->m_fortsAllocationInfo->GetFortsOrdersBookInfoPool();
+		this->m_fortsOrdersLog = this->m_fortsAllocationInfo->GetFortsOrdersLogInfoPool();
+		this->m_fortsNews = this->m_fortsAllocationInfo->GetFortsNewsInfoPool();
+		this->m_fortsTradingSessionStatus = this->m_fortsAllocationInfo->GetFortsTradingSessionStatusInfoPool();
+		this->m_fortsSequenceReset = this->m_fortsAllocationInfo->GetFortsSequenceResetInfoPool();
+		this->m_fortsHeartbeat = this->m_fortsAllocationInfo->GetFortsHeartbeatInfoPool();
+		this->m_fortsSecurityStatus = this->m_fortsAllocationInfo->GetFortsSecurityStatusInfoPool();
+		this->m_fortsSecurityDefinitionUpdateReport = this->m_fortsAllocationInfo->GetFortsSecurityDefinitionUpdateReportInfoPool();
+		this->m_fortsSecurityDefinition = this->m_fortsAllocationInfo->GetFortsSecurityDefinitionInfoPool();
+		this->m_fortsDefaultSnapshotMessage = this->m_fortsAllocationInfo->GetFortsDefaultSnapshotMessageInfoPool();
 		this->m_fortsDefaultIncrementalRefreshMessage = this->m_fortsAllocationInfo->GetFortsDefaultIncrementalRefreshMessageInfoPool();
 		this->m_fortsDefaultSnapshotMessageMDEntriesItems = this->m_fortsAllocationInfo->GetFortsDefaultSnapshotMessageMDEntriesItemInfoPool();
-		this->m_fortsDefaultSnapshotMessage = this->m_fortsAllocationInfo->GetFortsDefaultSnapshotMessageInfoPool();
 		this->m_fortsSecurityDefinitionMDFeedTypesItems = this->m_fortsAllocationInfo->GetFortsSecurityDefinitionMDFeedTypesItemInfoPool();
 		this->m_fortsSecurityDefinitionUnderlyingsItems = this->m_fortsAllocationInfo->GetFortsSecurityDefinitionUnderlyingsItemInfoPool();
 		this->m_fortsSecurityDefinitionInstrumentLegsItems = this->m_fortsAllocationInfo->GetFortsSecurityDefinitionInstrumentLegsItemInfoPool();
 		this->m_fortsSecurityDefinitionInstrumentAttributesItems = this->m_fortsAllocationInfo->GetFortsSecurityDefinitionInstrumentAttributesItemInfoPool();
 		this->m_fortsSecurityDefinitionEvntGrpItems = this->m_fortsAllocationInfo->GetFortsSecurityDefinitionEvntGrpItemInfoPool();
-		this->m_fortsSecurityDefinition = this->m_fortsAllocationInfo->GetFortsSecurityDefinitionInfoPool();
-		this->m_fortsSecurityDefinitionUpdateReport = this->m_fortsAllocationInfo->GetFortsSecurityDefinitionUpdateReportInfoPool();
-		this->m_fortsSecurityStatus = this->m_fortsAllocationInfo->GetFortsSecurityStatusInfoPool();
-		this->m_fortsHeartbeat = this->m_fortsAllocationInfo->GetFortsHeartbeatInfoPool();
-		this->m_fortsSequenceReset = this->m_fortsAllocationInfo->GetFortsSequenceResetInfoPool();
-		this->m_fortsTradingSessionStatus = this->m_fortsAllocationInfo->GetFortsTradingSessionStatusInfoPool();
 		this->m_fortsNewsNewsTextItems = this->m_fortsAllocationInfo->GetFortsNewsNewsTextItemInfoPool();
-		this->m_fortsNews = this->m_fortsAllocationInfo->GetFortsNewsInfoPool();
 		this->m_fortsOrdersLogMDEntriesItems = this->m_fortsAllocationInfo->GetFortsOrdersLogMDEntriesItemInfoPool();
-		this->m_fortsOrdersLog = this->m_fortsAllocationInfo->GetFortsOrdersLogInfoPool();
 		this->m_fortsOrdersBookMDEntriesItems = this->m_fortsAllocationInfo->GetFortsOrdersBookMDEntriesItemInfoPool();
-		this->m_fortsOrdersBook = this->m_fortsAllocationInfo->GetFortsOrdersBookInfoPool();
-		this->m_fortsLogon = this->m_fortsAllocationInfo->GetFortsLogonInfoPool();
-		this->m_fortsLogout = this->m_fortsAllocationInfo->GetFortsLogoutInfoPool();
-		this->m_prevfortsDefaultIncrementalRefreshMessageMDEntriesItemInfo = this->GetFreeFortsDefaultIncrementalRefreshMessageMDEntriesItemInfo();
-		this->m_prevfortsDefaultIncrementalRefreshMessageMDEntriesItemInfo->Used = true;
+		this->m_prevfortsLogoutInfo = this->GetFreeFortsLogoutInfo();
+		this->m_prevfortsLogoutInfo->Used = true;
+		this->m_prevfortsLogonInfo = this->GetFreeFortsLogonInfo();
+		this->m_prevfortsLogonInfo->Used = true;
+		this->m_prevfortsOrdersBookInfo = this->GetFreeFortsOrdersBookInfo();
+		this->m_prevfortsOrdersBookInfo->Used = true;
+		this->m_prevfortsOrdersLogInfo = this->GetFreeFortsOrdersLogInfo();
+		this->m_prevfortsOrdersLogInfo->Used = true;
+		this->m_prevfortsNewsInfo = this->GetFreeFortsNewsInfo();
+		this->m_prevfortsNewsInfo->Used = true;
+		this->m_prevfortsTradingSessionStatusInfo = this->GetFreeFortsTradingSessionStatusInfo();
+		this->m_prevfortsTradingSessionStatusInfo->Used = true;
+		this->m_prevfortsSequenceResetInfo = this->GetFreeFortsSequenceResetInfo();
+		this->m_prevfortsSequenceResetInfo->Used = true;
+		this->m_prevfortsHeartbeatInfo = this->GetFreeFortsHeartbeatInfo();
+		this->m_prevfortsHeartbeatInfo->Used = true;
+		this->m_prevfortsSecurityStatusInfo = this->GetFreeFortsSecurityStatusInfo();
+		this->m_prevfortsSecurityStatusInfo->Used = true;
+		this->m_prevfortsSecurityDefinitionUpdateReportInfo = this->GetFreeFortsSecurityDefinitionUpdateReportInfo();
+		this->m_prevfortsSecurityDefinitionUpdateReportInfo->Used = true;
+		this->m_prevfortsSecurityDefinitionInfo = this->GetFreeFortsSecurityDefinitionInfo();
+		this->m_prevfortsSecurityDefinitionInfo->Used = true;
+		this->m_prevfortsDefaultSnapshotMessageInfo = this->GetFreeFortsDefaultSnapshotMessageInfo();
+		this->m_prevfortsDefaultSnapshotMessageInfo->Used = true;
 		this->m_prevfortsDefaultIncrementalRefreshMessageInfo = this->GetFreeFortsDefaultIncrementalRefreshMessageInfo();
 		this->m_prevfortsDefaultIncrementalRefreshMessageInfo->Used = true;
 		this->m_prevfortsDefaultSnapshotMessageMDEntriesItemInfo = this->GetFreeFortsDefaultSnapshotMessageMDEntriesItemInfo();
 		this->m_prevfortsDefaultSnapshotMessageMDEntriesItemInfo->Used = true;
-		this->m_prevfortsDefaultSnapshotMessageInfo = this->GetFreeFortsDefaultSnapshotMessageInfo();
-		this->m_prevfortsDefaultSnapshotMessageInfo->Used = true;
 		this->m_prevfortsSecurityDefinitionMDFeedTypesItemInfo = this->GetFreeFortsSecurityDefinitionMDFeedTypesItemInfo();
 		this->m_prevfortsSecurityDefinitionMDFeedTypesItemInfo->Used = true;
 		this->m_prevfortsSecurityDefinitionUnderlyingsItemInfo = this->GetFreeFortsSecurityDefinitionUnderlyingsItemInfo();
@@ -290,34 +307,12 @@ private:
 		this->m_prevfortsSecurityDefinitionInstrumentAttributesItemInfo->Used = true;
 		this->m_prevfortsSecurityDefinitionEvntGrpItemInfo = this->GetFreeFortsSecurityDefinitionEvntGrpItemInfo();
 		this->m_prevfortsSecurityDefinitionEvntGrpItemInfo->Used = true;
-		this->m_prevfortsSecurityDefinitionInfo = this->GetFreeFortsSecurityDefinitionInfo();
-		this->m_prevfortsSecurityDefinitionInfo->Used = true;
-		this->m_prevfortsSecurityDefinitionUpdateReportInfo = this->GetFreeFortsSecurityDefinitionUpdateReportInfo();
-		this->m_prevfortsSecurityDefinitionUpdateReportInfo->Used = true;
-		this->m_prevfortsSecurityStatusInfo = this->GetFreeFortsSecurityStatusInfo();
-		this->m_prevfortsSecurityStatusInfo->Used = true;
-		this->m_prevfortsHeartbeatInfo = this->GetFreeFortsHeartbeatInfo();
-		this->m_prevfortsHeartbeatInfo->Used = true;
-		this->m_prevfortsSequenceResetInfo = this->GetFreeFortsSequenceResetInfo();
-		this->m_prevfortsSequenceResetInfo->Used = true;
-		this->m_prevfortsTradingSessionStatusInfo = this->GetFreeFortsTradingSessionStatusInfo();
-		this->m_prevfortsTradingSessionStatusInfo->Used = true;
 		this->m_prevfortsNewsNewsTextItemInfo = this->GetFreeFortsNewsNewsTextItemInfo();
 		this->m_prevfortsNewsNewsTextItemInfo->Used = true;
-		this->m_prevfortsNewsInfo = this->GetFreeFortsNewsInfo();
-		this->m_prevfortsNewsInfo->Used = true;
 		this->m_prevfortsOrdersLogMDEntriesItemInfo = this->GetFreeFortsOrdersLogMDEntriesItemInfo();
 		this->m_prevfortsOrdersLogMDEntriesItemInfo->Used = true;
-		this->m_prevfortsOrdersLogInfo = this->GetFreeFortsOrdersLogInfo();
-		this->m_prevfortsOrdersLogInfo->Used = true;
 		this->m_prevfortsOrdersBookMDEntriesItemInfo = this->GetFreeFortsOrdersBookMDEntriesItemInfo();
 		this->m_prevfortsOrdersBookMDEntriesItemInfo->Used = true;
-		this->m_prevfortsOrdersBookInfo = this->GetFreeFortsOrdersBookInfo();
-		this->m_prevfortsOrdersBookInfo->Used = true;
-		this->m_prevfortsLogonInfo = this->GetFreeFortsLogonInfo();
-		this->m_prevfortsLogonInfo->Used = true;
-		this->m_prevfortsLogoutInfo = this->GetFreeFortsLogoutInfo();
-		this->m_prevfortsLogoutInfo->Used = true;
 	}
 
 #pragma endregion
@@ -334,12 +329,100 @@ public:
 		this->m_fortsSnapshotInfo->RptSeq = -1;
 		return this->m_fortsSnapshotInfo;
 	}
-	inline FortsDefaultIncrementalRefreshMessageMDEntriesItemInfo* GetFreeFortsDefaultIncrementalRefreshMessageMDEntriesItemInfo() {
-		return this->m_fortsDefaultIncrementalRefreshMessageMDEntriesItems->NewItem();
+	inline FortsLogoutInfo* GetFreeFortsLogoutInfo() {
+		return this->m_fortsLogout->NewItem();
 	}
 
-	inline AutoAllocatePointerList<FortsDefaultIncrementalRefreshMessageMDEntriesItemInfo>* GetFortsDefaultIncrementalRefreshMessageMDEntriesItemInfoPool() {
-		return this->m_fortsDefaultIncrementalRefreshMessageMDEntriesItems;
+	inline AutoAllocatePointerList<FortsLogoutInfo>* GetFortsLogoutInfoPool() {
+		return this->m_fortsLogout;
+	}
+
+	inline FortsLogonInfo* GetFreeFortsLogonInfo() {
+		return this->m_fortsLogon->NewItem();
+	}
+
+	inline AutoAllocatePointerList<FortsLogonInfo>* GetFortsLogonInfoPool() {
+		return this->m_fortsLogon;
+	}
+
+	inline FortsOrdersBookInfo* GetFreeFortsOrdersBookInfo() {
+		return this->m_fortsOrdersBook->NewItem();
+	}
+
+	inline AutoAllocatePointerList<FortsOrdersBookInfo>* GetFortsOrdersBookInfoPool() {
+		return this->m_fortsOrdersBook;
+	}
+
+	inline FortsOrdersLogInfo* GetFreeFortsOrdersLogInfo() {
+		return this->m_fortsOrdersLog->NewItem();
+	}
+
+	inline AutoAllocatePointerList<FortsOrdersLogInfo>* GetFortsOrdersLogInfoPool() {
+		return this->m_fortsOrdersLog;
+	}
+
+	inline FortsNewsInfo* GetFreeFortsNewsInfo() {
+		return this->m_fortsNews->NewItem();
+	}
+
+	inline AutoAllocatePointerList<FortsNewsInfo>* GetFortsNewsInfoPool() {
+		return this->m_fortsNews;
+	}
+
+	inline FortsTradingSessionStatusInfo* GetFreeFortsTradingSessionStatusInfo() {
+		return this->m_fortsTradingSessionStatus->NewItem();
+	}
+
+	inline AutoAllocatePointerList<FortsTradingSessionStatusInfo>* GetFortsTradingSessionStatusInfoPool() {
+		return this->m_fortsTradingSessionStatus;
+	}
+
+	inline FortsSequenceResetInfo* GetFreeFortsSequenceResetInfo() {
+		return this->m_fortsSequenceReset->NewItem();
+	}
+
+	inline AutoAllocatePointerList<FortsSequenceResetInfo>* GetFortsSequenceResetInfoPool() {
+		return this->m_fortsSequenceReset;
+	}
+
+	inline FortsHeartbeatInfo* GetFreeFortsHeartbeatInfo() {
+		return this->m_fortsHeartbeat->NewItem();
+	}
+
+	inline AutoAllocatePointerList<FortsHeartbeatInfo>* GetFortsHeartbeatInfoPool() {
+		return this->m_fortsHeartbeat;
+	}
+
+	inline FortsSecurityStatusInfo* GetFreeFortsSecurityStatusInfo() {
+		return this->m_fortsSecurityStatus->NewItem();
+	}
+
+	inline AutoAllocatePointerList<FortsSecurityStatusInfo>* GetFortsSecurityStatusInfoPool() {
+		return this->m_fortsSecurityStatus;
+	}
+
+	inline FortsSecurityDefinitionUpdateReportInfo* GetFreeFortsSecurityDefinitionUpdateReportInfo() {
+		return this->m_fortsSecurityDefinitionUpdateReport->NewItem();
+	}
+
+	inline AutoAllocatePointerList<FortsSecurityDefinitionUpdateReportInfo>* GetFortsSecurityDefinitionUpdateReportInfoPool() {
+		return this->m_fortsSecurityDefinitionUpdateReport;
+	}
+
+	inline FortsSecurityDefinitionInfo* GetFreeFortsSecurityDefinitionInfo() {
+		return this->m_fortsSecurityDefinition->NewItem();
+	}
+
+	inline AutoAllocatePointerList<FortsSecurityDefinitionInfo>* GetFortsSecurityDefinitionInfoPool() {
+		return this->m_fortsSecurityDefinition;
+	}
+
+	inline FortsDefaultSnapshotMessageInfo* GetFreeFortsDefaultSnapshotMessageInfo() {
+		return this->m_fortsDefaultSnapshotMessage->NewItem();
+	}
+
+	inline AutoAllocatePointerList<FortsDefaultSnapshotMessageInfo>* GetFortsDefaultSnapshotMessageInfoPool() {
+		return this->m_fortsDefaultSnapshotMessage;
 	}
 
 	inline FortsDefaultIncrementalRefreshMessageInfo* GetFreeFortsDefaultIncrementalRefreshMessageInfo() {
@@ -356,14 +439,6 @@ public:
 
 	inline AutoAllocatePointerList<FortsDefaultSnapshotMessageMDEntriesItemInfo>* GetFortsDefaultSnapshotMessageMDEntriesItemInfoPool() {
 		return this->m_fortsDefaultSnapshotMessageMDEntriesItems;
-	}
-
-	inline FortsDefaultSnapshotMessageInfo* GetFreeFortsDefaultSnapshotMessageInfo() {
-		return this->m_fortsDefaultSnapshotMessage->NewItem();
-	}
-
-	inline AutoAllocatePointerList<FortsDefaultSnapshotMessageInfo>* GetFortsDefaultSnapshotMessageInfoPool() {
-		return this->m_fortsDefaultSnapshotMessage;
 	}
 
 	inline FortsSecurityDefinitionMDFeedTypesItemInfo* GetFreeFortsSecurityDefinitionMDFeedTypesItemInfo() {
@@ -406,68 +481,12 @@ public:
 		return this->m_fortsSecurityDefinitionEvntGrpItems;
 	}
 
-	inline FortsSecurityDefinitionInfo* GetFreeFortsSecurityDefinitionInfo() {
-		return this->m_fortsSecurityDefinition->NewItem();
-	}
-
-	inline AutoAllocatePointerList<FortsSecurityDefinitionInfo>* GetFortsSecurityDefinitionInfoPool() {
-		return this->m_fortsSecurityDefinition;
-	}
-
-	inline FortsSecurityDefinitionUpdateReportInfo* GetFreeFortsSecurityDefinitionUpdateReportInfo() {
-		return this->m_fortsSecurityDefinitionUpdateReport->NewItem();
-	}
-
-	inline AutoAllocatePointerList<FortsSecurityDefinitionUpdateReportInfo>* GetFortsSecurityDefinitionUpdateReportInfoPool() {
-		return this->m_fortsSecurityDefinitionUpdateReport;
-	}
-
-	inline FortsSecurityStatusInfo* GetFreeFortsSecurityStatusInfo() {
-		return this->m_fortsSecurityStatus->NewItem();
-	}
-
-	inline AutoAllocatePointerList<FortsSecurityStatusInfo>* GetFortsSecurityStatusInfoPool() {
-		return this->m_fortsSecurityStatus;
-	}
-
-	inline FortsHeartbeatInfo* GetFreeFortsHeartbeatInfo() {
-		return this->m_fortsHeartbeat->NewItem();
-	}
-
-	inline AutoAllocatePointerList<FortsHeartbeatInfo>* GetFortsHeartbeatInfoPool() {
-		return this->m_fortsHeartbeat;
-	}
-
-	inline FortsSequenceResetInfo* GetFreeFortsSequenceResetInfo() {
-		return this->m_fortsSequenceReset->NewItem();
-	}
-
-	inline AutoAllocatePointerList<FortsSequenceResetInfo>* GetFortsSequenceResetInfoPool() {
-		return this->m_fortsSequenceReset;
-	}
-
-	inline FortsTradingSessionStatusInfo* GetFreeFortsTradingSessionStatusInfo() {
-		return this->m_fortsTradingSessionStatus->NewItem();
-	}
-
-	inline AutoAllocatePointerList<FortsTradingSessionStatusInfo>* GetFortsTradingSessionStatusInfoPool() {
-		return this->m_fortsTradingSessionStatus;
-	}
-
 	inline FortsNewsNewsTextItemInfo* GetFreeFortsNewsNewsTextItemInfo() {
 		return this->m_fortsNewsNewsTextItems->NewItem();
 	}
 
 	inline AutoAllocatePointerList<FortsNewsNewsTextItemInfo>* GetFortsNewsNewsTextItemInfoPool() {
 		return this->m_fortsNewsNewsTextItems;
-	}
-
-	inline FortsNewsInfo* GetFreeFortsNewsInfo() {
-		return this->m_fortsNews->NewItem();
-	}
-
-	inline AutoAllocatePointerList<FortsNewsInfo>* GetFortsNewsInfoPool() {
-		return this->m_fortsNews;
 	}
 
 	inline FortsOrdersLogMDEntriesItemInfo* GetFreeFortsOrdersLogMDEntriesItemInfo() {
@@ -478,14 +497,6 @@ public:
 		return this->m_fortsOrdersLogMDEntriesItems;
 	}
 
-	inline FortsOrdersLogInfo* GetFreeFortsOrdersLogInfo() {
-		return this->m_fortsOrdersLog->NewItem();
-	}
-
-	inline AutoAllocatePointerList<FortsOrdersLogInfo>* GetFortsOrdersLogInfoPool() {
-		return this->m_fortsOrdersLog;
-	}
-
 	inline FortsOrdersBookMDEntriesItemInfo* GetFreeFortsOrdersBookMDEntriesItemInfo() {
 		return this->m_fortsOrdersBookMDEntriesItems->NewItem();
 	}
@@ -494,42 +505,48 @@ public:
 		return this->m_fortsOrdersBookMDEntriesItems;
 	}
 
-	inline FortsOrdersBookInfo* GetFreeFortsOrdersBookInfo() {
-		return this->m_fortsOrdersBook->NewItem();
-	}
-
-	inline AutoAllocatePointerList<FortsOrdersBookInfo>* GetFortsOrdersBookInfoPool() {
-		return this->m_fortsOrdersBook;
-	}
-
-	inline FortsLogonInfo* GetFreeFortsLogonInfo() {
-		return this->m_fortsLogon->NewItem();
-	}
-
-	inline AutoAllocatePointerList<FortsLogonInfo>* GetFortsLogonInfoPool() {
-		return this->m_fortsLogon;
-	}
-
-	inline FortsLogoutInfo* GetFreeFortsLogoutInfo() {
-		return this->m_fortsLogout->NewItem();
-	}
-
-	inline AutoAllocatePointerList<FortsLogoutInfo>* GetFortsLogoutInfoPool() {
-		return this->m_fortsLogout;
-	}
-
 private:
-	void ReleaseFortsDefaultIncrementalRefreshMessageMDEntriesItemInfo() {
-		((FortsDefaultIncrementalRefreshMessageMDEntriesItemInfo*)this->LastDecodeInfo())->ReleaseUnused();
+	void ReleaseFortsLogoutInfo() {
+		((FortsLogoutInfo*)this->LastDecodeInfo())->ReleaseUnused();
+	}
+	void ReleaseFortsLogonInfo() {
+		((FortsLogonInfo*)this->LastDecodeInfo())->ReleaseUnused();
+	}
+	void ReleaseFortsOrdersBookInfo() {
+		((FortsOrdersBookInfo*)this->LastDecodeInfo())->ReleaseUnused();
+	}
+	void ReleaseFortsOrdersLogInfo() {
+		((FortsOrdersLogInfo*)this->LastDecodeInfo())->ReleaseUnused();
+	}
+	void ReleaseFortsNewsInfo() {
+		((FortsNewsInfo*)this->LastDecodeInfo())->ReleaseUnused();
+	}
+	void ReleaseFortsTradingSessionStatusInfo() {
+		((FortsTradingSessionStatusInfo*)this->LastDecodeInfo())->ReleaseUnused();
+	}
+	void ReleaseFortsSequenceResetInfo() {
+		((FortsSequenceResetInfo*)this->LastDecodeInfo())->ReleaseUnused();
+	}
+	void ReleaseFortsHeartbeatInfo() {
+		((FortsHeartbeatInfo*)this->LastDecodeInfo())->ReleaseUnused();
+	}
+	void ReleaseFortsSecurityStatusInfo() {
+		((FortsSecurityStatusInfo*)this->LastDecodeInfo())->ReleaseUnused();
+	}
+	void ReleaseFortsSecurityDefinitionUpdateReportInfo() {
+		((FortsSecurityDefinitionUpdateReportInfo*)this->LastDecodeInfo())->ReleaseUnused();
+	}
+	void ReleaseFortsSecurityDefinitionInfo() {
+		((FortsSecurityDefinitionInfo*)this->LastDecodeInfo())->ReleaseUnused();
+	}
+	void ReleaseFortsDefaultSnapshotMessageInfo() {
+		((FortsDefaultSnapshotMessageInfo*)this->LastDecodeInfo())->ReleaseUnused();
 	}
 	void ReleaseFortsDefaultIncrementalRefreshMessageInfo() {
 		((FortsDefaultIncrementalRefreshMessageInfo*)this->LastDecodeInfo())->ReleaseUnused();
 	}
 	void ReleaseFortsDefaultSnapshotMessageMDEntriesItemInfo() {
 		((FortsDefaultSnapshotMessageMDEntriesItemInfo*)this->LastDecodeInfo())->ReleaseUnused();
-	}
-	void ReleaseFortsDefaultSnapshotMessageInfo() {
-		((FortsDefaultSnapshotMessageInfo*)this->LastDecodeInfo())->ReleaseUnused();
 	}
 	void ReleaseFortsSecurityDefinitionMDFeedTypesItemInfo() {
 		((FortsSecurityDefinitionMDFeedTypesItemInfo*)this->LastDecodeInfo())->ReleaseUnused();
@@ -546,47 +563,14 @@ private:
 	void ReleaseFortsSecurityDefinitionEvntGrpItemInfo() {
 		((FortsSecurityDefinitionEvntGrpItemInfo*)this->LastDecodeInfo())->ReleaseUnused();
 	}
-	void ReleaseFortsSecurityDefinitionInfo() {
-		((FortsSecurityDefinitionInfo*)this->LastDecodeInfo())->ReleaseUnused();
-	}
-	void ReleaseFortsSecurityDefinitionUpdateReportInfo() {
-		((FortsSecurityDefinitionUpdateReportInfo*)this->LastDecodeInfo())->ReleaseUnused();
-	}
-	void ReleaseFortsSecurityStatusInfo() {
-		((FortsSecurityStatusInfo*)this->LastDecodeInfo())->ReleaseUnused();
-	}
-	void ReleaseFortsHeartbeatInfo() {
-		((FortsHeartbeatInfo*)this->LastDecodeInfo())->ReleaseUnused();
-	}
-	void ReleaseFortsSequenceResetInfo() {
-		((FortsSequenceResetInfo*)this->LastDecodeInfo())->ReleaseUnused();
-	}
-	void ReleaseFortsTradingSessionStatusInfo() {
-		((FortsTradingSessionStatusInfo*)this->LastDecodeInfo())->ReleaseUnused();
-	}
 	void ReleaseFortsNewsNewsTextItemInfo() {
 		((FortsNewsNewsTextItemInfo*)this->LastDecodeInfo())->ReleaseUnused();
-	}
-	void ReleaseFortsNewsInfo() {
-		((FortsNewsInfo*)this->LastDecodeInfo())->ReleaseUnused();
 	}
 	void ReleaseFortsOrdersLogMDEntriesItemInfo() {
 		((FortsOrdersLogMDEntriesItemInfo*)this->LastDecodeInfo())->ReleaseUnused();
 	}
-	void ReleaseFortsOrdersLogInfo() {
-		((FortsOrdersLogInfo*)this->LastDecodeInfo())->ReleaseUnused();
-	}
 	void ReleaseFortsOrdersBookMDEntriesItemInfo() {
 		((FortsOrdersBookMDEntriesItemInfo*)this->LastDecodeInfo())->ReleaseUnused();
-	}
-	void ReleaseFortsOrdersBookInfo() {
-		((FortsOrdersBookInfo*)this->LastDecodeInfo())->ReleaseUnused();
-	}
-	void ReleaseFortsLogonInfo() {
-		((FortsLogonInfo*)this->LastDecodeInfo())->ReleaseUnused();
-	}
-	void ReleaseFortsLogoutInfo() {
-		((FortsLogoutInfo*)this->LastDecodeInfo())->ReleaseUnused();
 	}
 	inline void ResetForts() {
 		if(this->m_templateId <= 9) {
@@ -714,12 +698,76 @@ public:
 		this->m_astsSnapshotInfo->RptSeq = -1;
 		return this->m_astsSnapshotInfo;
 	}
-	inline AstsLogonInfo* GetFreeAstsLogonInfo() {
-		return this->m_astsLogon->NewItem();
+	inline AstsHeartbeatInfo* GetFreeAstsHeartbeatInfo() {
+		return this->m_astsHeartbeat->NewItem();
 	}
 
-	inline AutoAllocatePointerList<AstsLogonInfo>* GetAstsLogonInfoPool() {
-		return this->m_astsLogon;
+	inline AutoAllocatePointerList<AstsHeartbeatInfo>* GetAstsHeartbeatInfoPool() {
+		return this->m_astsHeartbeat;
+	}
+
+	inline AstsTradingSessionStatusInfo* GetFreeAstsTradingSessionStatusInfo() {
+		return this->m_astsTradingSessionStatus->NewItem();
+	}
+
+	inline AutoAllocatePointerList<AstsTradingSessionStatusInfo>* GetAstsTradingSessionStatusInfoPool() {
+		return this->m_astsTradingSessionStatus;
+	}
+
+	inline AstsSecurityStatusInfo* GetFreeAstsSecurityStatusInfo() {
+		return this->m_astsSecurityStatus->NewItem();
+	}
+
+	inline AutoAllocatePointerList<AstsSecurityStatusInfo>* GetAstsSecurityStatusInfoPool() {
+		return this->m_astsSecurityStatus;
+	}
+
+	inline AstsSecurityDefinitionInfo* GetFreeAstsSecurityDefinitionInfo() {
+		return this->m_astsSecurityDefinition->NewItem();
+	}
+
+	inline AutoAllocatePointerList<AstsSecurityDefinitionInfo>* GetAstsSecurityDefinitionInfoPool() {
+		return this->m_astsSecurityDefinition;
+	}
+
+	inline AstsTLSCURRInfo* GetFreeAstsTLSCURRInfo() {
+		return this->m_astsTLSCURR->NewItem();
+	}
+
+	inline AutoAllocatePointerList<AstsTLSCURRInfo>* GetAstsTLSCURRInfoPool() {
+		return this->m_astsTLSCURR;
+	}
+
+	inline AstsTLSFONDInfo* GetFreeAstsTLSFONDInfo() {
+		return this->m_astsTLSFOND->NewItem();
+	}
+
+	inline AutoAllocatePointerList<AstsTLSFONDInfo>* GetAstsTLSFONDInfoPool() {
+		return this->m_astsTLSFOND;
+	}
+
+	inline AstsOLSCURRInfo* GetFreeAstsOLSCURRInfo() {
+		return this->m_astsOLSCURR->NewItem();
+	}
+
+	inline AutoAllocatePointerList<AstsOLSCURRInfo>* GetAstsOLSCURRInfoPool() {
+		return this->m_astsOLSCURR;
+	}
+
+	inline AstsOLSFONDInfo* GetFreeAstsOLSFONDInfo() {
+		return this->m_astsOLSFOND->NewItem();
+	}
+
+	inline AutoAllocatePointerList<AstsOLSFONDInfo>* GetAstsOLSFONDInfoPool() {
+		return this->m_astsOLSFOND;
+	}
+
+	inline AstsGenericInfo* GetFreeAstsGenericInfo() {
+		return this->m_astsGeneric->NewItem();
+	}
+
+	inline AutoAllocatePointerList<AstsGenericInfo>* GetAstsGenericInfoPool() {
+		return this->m_astsGeneric;
 	}
 
 	inline AstsLogoutInfo* GetFreeAstsLogoutInfo() {
@@ -730,20 +778,20 @@ public:
 		return this->m_astsLogout;
 	}
 
+	inline AstsLogonInfo* GetFreeAstsLogonInfo() {
+		return this->m_astsLogon->NewItem();
+	}
+
+	inline AutoAllocatePointerList<AstsLogonInfo>* GetAstsLogonInfoPool() {
+		return this->m_astsLogon;
+	}
+
 	inline AstsGenericItemInfo* GetFreeAstsGenericItemInfo() {
 		return this->m_astsGenericItems->NewItem();
 	}
 
 	inline AutoAllocatePointerList<AstsGenericItemInfo>* GetAstsGenericItemInfoPool() {
 		return this->m_astsGenericItems;
-	}
-
-	inline AstsGenericInfo* GetFreeAstsGenericInfo() {
-		return this->m_astsGeneric->NewItem();
-	}
-
-	inline AutoAllocatePointerList<AstsGenericInfo>* GetAstsGenericInfoPool() {
-		return this->m_astsGeneric;
 	}
 
 	inline AstsIncrementalGenericInfo* GetFreeAstsIncrementalGenericInfo() {
@@ -762,28 +810,12 @@ public:
 		return this->m_astsOLSFONDItems;
 	}
 
-	inline AstsOLSFONDInfo* GetFreeAstsOLSFONDInfo() {
-		return this->m_astsOLSFOND->NewItem();
-	}
-
-	inline AutoAllocatePointerList<AstsOLSFONDInfo>* GetAstsOLSFONDInfoPool() {
-		return this->m_astsOLSFOND;
-	}
-
 	inline AstsOLSCURRItemInfo* GetFreeAstsOLSCURRItemInfo() {
 		return this->m_astsOLSCURRItems->NewItem();
 	}
 
 	inline AutoAllocatePointerList<AstsOLSCURRItemInfo>* GetAstsOLSCURRItemInfoPool() {
 		return this->m_astsOLSCURRItems;
-	}
-
-	inline AstsOLSCURRInfo* GetFreeAstsOLSCURRInfo() {
-		return this->m_astsOLSCURR->NewItem();
-	}
-
-	inline AutoAllocatePointerList<AstsOLSCURRInfo>* GetAstsOLSCURRInfoPool() {
-		return this->m_astsOLSCURR;
 	}
 
 	inline AstsTLSFONDItemInfo* GetFreeAstsTLSFONDItemInfo() {
@@ -794,28 +826,12 @@ public:
 		return this->m_astsTLSFONDItems;
 	}
 
-	inline AstsTLSFONDInfo* GetFreeAstsTLSFONDInfo() {
-		return this->m_astsTLSFOND->NewItem();
-	}
-
-	inline AutoAllocatePointerList<AstsTLSFONDInfo>* GetAstsTLSFONDInfoPool() {
-		return this->m_astsTLSFOND;
-	}
-
 	inline AstsTLSCURRItemInfo* GetFreeAstsTLSCURRItemInfo() {
 		return this->m_astsTLSCURRItems->NewItem();
 	}
 
 	inline AutoAllocatePointerList<AstsTLSCURRItemInfo>* GetAstsTLSCURRItemInfoPool() {
 		return this->m_astsTLSCURRItems;
-	}
-
-	inline AstsTLSCURRInfo* GetFreeAstsTLSCURRInfo() {
-		return this->m_astsTLSCURR->NewItem();
-	}
-
-	inline AutoAllocatePointerList<AstsTLSCURRInfo>* GetAstsTLSCURRInfoPool() {
-		return this->m_astsTLSCURR;
 	}
 
 	inline AstsIncrementalMSRFONDInfo* GetFreeAstsIncrementalMSRFONDInfo() {
@@ -890,50 +906,42 @@ public:
 		return this->m_astsSecurityDefinitionMarketSegmentGrpItems;
 	}
 
-	inline AstsSecurityDefinitionInfo* GetFreeAstsSecurityDefinitionInfo() {
-		return this->m_astsSecurityDefinition->NewItem();
-	}
-
-	inline AutoAllocatePointerList<AstsSecurityDefinitionInfo>* GetAstsSecurityDefinitionInfoPool() {
-		return this->m_astsSecurityDefinition;
-	}
-
-	inline AstsSecurityStatusInfo* GetFreeAstsSecurityStatusInfo() {
-		return this->m_astsSecurityStatus->NewItem();
-	}
-
-	inline AutoAllocatePointerList<AstsSecurityStatusInfo>* GetAstsSecurityStatusInfoPool() {
-		return this->m_astsSecurityStatus;
-	}
-
-	inline AstsTradingSessionStatusInfo* GetFreeAstsTradingSessionStatusInfo() {
-		return this->m_astsTradingSessionStatus->NewItem();
-	}
-
-	inline AutoAllocatePointerList<AstsTradingSessionStatusInfo>* GetAstsTradingSessionStatusInfoPool() {
-		return this->m_astsTradingSessionStatus;
-	}
-
-	inline AstsHeartbeatInfo* GetFreeAstsHeartbeatInfo() {
-		return this->m_astsHeartbeat->NewItem();
-	}
-
-	inline AutoAllocatePointerList<AstsHeartbeatInfo>* GetAstsHeartbeatInfoPool() {
-		return this->m_astsHeartbeat;
-	}
-
 private:
-	void ReleaseAstsLogonInfo() {
-		((AstsLogonInfo*)this->LastDecodeInfo())->ReleaseUnused();
+	void ReleaseAstsHeartbeatInfo() {
+		((AstsHeartbeatInfo*)this->LastDecodeInfo())->ReleaseUnused();
+	}
+	void ReleaseAstsTradingSessionStatusInfo() {
+		((AstsTradingSessionStatusInfo*)this->LastDecodeInfo())->ReleaseUnused();
+	}
+	void ReleaseAstsSecurityStatusInfo() {
+		((AstsSecurityStatusInfo*)this->LastDecodeInfo())->ReleaseUnused();
+	}
+	void ReleaseAstsSecurityDefinitionInfo() {
+		((AstsSecurityDefinitionInfo*)this->LastDecodeInfo())->ReleaseUnused();
+	}
+	void ReleaseAstsTLSCURRInfo() {
+		((AstsTLSCURRInfo*)this->LastDecodeInfo())->ReleaseUnused();
+	}
+	void ReleaseAstsTLSFONDInfo() {
+		((AstsTLSFONDInfo*)this->LastDecodeInfo())->ReleaseUnused();
+	}
+	void ReleaseAstsOLSCURRInfo() {
+		((AstsOLSCURRInfo*)this->LastDecodeInfo())->ReleaseUnused();
+	}
+	void ReleaseAstsOLSFONDInfo() {
+		((AstsOLSFONDInfo*)this->LastDecodeInfo())->ReleaseUnused();
+	}
+	void ReleaseAstsGenericInfo() {
+		((AstsGenericInfo*)this->LastDecodeInfo())->ReleaseUnused();
 	}
 	void ReleaseAstsLogoutInfo() {
 		((AstsLogoutInfo*)this->LastDecodeInfo())->ReleaseUnused();
 	}
+	void ReleaseAstsLogonInfo() {
+		((AstsLogonInfo*)this->LastDecodeInfo())->ReleaseUnused();
+	}
 	void ReleaseAstsGenericItemInfo() {
 		((AstsGenericItemInfo*)this->LastDecodeInfo())->ReleaseUnused();
-	}
-	void ReleaseAstsGenericInfo() {
-		((AstsGenericInfo*)this->LastDecodeInfo())->ReleaseUnused();
 	}
 	void ReleaseAstsIncrementalGenericInfo() {
 		((AstsIncrementalGenericInfo*)this->LastDecodeInfo())->ReleaseUnused();
@@ -941,26 +949,14 @@ private:
 	void ReleaseAstsOLSFONDItemInfo() {
 		((AstsOLSFONDItemInfo*)this->LastDecodeInfo())->ReleaseUnused();
 	}
-	void ReleaseAstsOLSFONDInfo() {
-		((AstsOLSFONDInfo*)this->LastDecodeInfo())->ReleaseUnused();
-	}
 	void ReleaseAstsOLSCURRItemInfo() {
 		((AstsOLSCURRItemInfo*)this->LastDecodeInfo())->ReleaseUnused();
-	}
-	void ReleaseAstsOLSCURRInfo() {
-		((AstsOLSCURRInfo*)this->LastDecodeInfo())->ReleaseUnused();
 	}
 	void ReleaseAstsTLSFONDItemInfo() {
 		((AstsTLSFONDItemInfo*)this->LastDecodeInfo())->ReleaseUnused();
 	}
-	void ReleaseAstsTLSFONDInfo() {
-		((AstsTLSFONDInfo*)this->LastDecodeInfo())->ReleaseUnused();
-	}
 	void ReleaseAstsTLSCURRItemInfo() {
 		((AstsTLSCURRItemInfo*)this->LastDecodeInfo())->ReleaseUnused();
-	}
-	void ReleaseAstsTLSCURRInfo() {
-		((AstsTLSCURRInfo*)this->LastDecodeInfo())->ReleaseUnused();
 	}
 	void ReleaseAstsIncrementalMSRFONDInfo() {
 		((AstsIncrementalMSRFONDInfo*)this->LastDecodeInfo())->ReleaseUnused();
@@ -988,18 +984,6 @@ private:
 	}
 	void ReleaseAstsSecurityDefinitionMarketSegmentGrpItemInfo() {
 		((AstsSecurityDefinitionMarketSegmentGrpItemInfo*)this->LastDecodeInfo())->ReleaseUnused();
-	}
-	void ReleaseAstsSecurityDefinitionInfo() {
-		((AstsSecurityDefinitionInfo*)this->LastDecodeInfo())->ReleaseUnused();
-	}
-	void ReleaseAstsSecurityStatusInfo() {
-		((AstsSecurityStatusInfo*)this->LastDecodeInfo())->ReleaseUnused();
-	}
-	void ReleaseAstsTradingSessionStatusInfo() {
-		((AstsTradingSessionStatusInfo*)this->LastDecodeInfo())->ReleaseUnused();
-	}
-	void ReleaseAstsHeartbeatInfo() {
-		((AstsHeartbeatInfo*)this->LastDecodeInfo())->ReleaseUnused();
 	}
 	inline void ResetAsts() {
 		if(this->m_templateId <= 2510) {
@@ -3210,40 +3194,40 @@ public:
 	inline void SetBufferLength(int value) { this->bufferLength = value; }
 
 #pragma region Asts_Encode_Methods_Declaration_GeneratedCode
-	void EncodeAstsLogonInfo(AstsLogonInfo* info);
-	void EncodeAstsLogoutInfo(AstsLogoutInfo* info);
-	void EncodeAstsGenericInfo(AstsGenericInfo* info);
-	void EncodeAstsIncrementalGenericInfo(AstsIncrementalGenericInfo* info);
-	void EncodeAstsOLSFONDInfo(AstsOLSFONDInfo* info);
-	void EncodeAstsOLSCURRInfo(AstsOLSCURRInfo* info);
-	void EncodeAstsTLSFONDInfo(AstsTLSFONDInfo* info);
+	void EncodeAstsHeartbeatInfo(AstsHeartbeatInfo* info);
+	void EncodeAstsTradingSessionStatusInfo(AstsTradingSessionStatusInfo* info);
+	void EncodeAstsSecurityStatusInfo(AstsSecurityStatusInfo* info);
+	void EncodeAstsSecurityDefinitionInfo(AstsSecurityDefinitionInfo* info);
 	void EncodeAstsTLSCURRInfo(AstsTLSCURRInfo* info);
+	void EncodeAstsTLSFONDInfo(AstsTLSFONDInfo* info);
+	void EncodeAstsOLSCURRInfo(AstsOLSCURRInfo* info);
+	void EncodeAstsOLSFONDInfo(AstsOLSFONDInfo* info);
+	void EncodeAstsGenericInfo(AstsGenericInfo* info);
+	void EncodeAstsLogoutInfo(AstsLogoutInfo* info);
+	void EncodeAstsLogonInfo(AstsLogonInfo* info);
+	void EncodeAstsIncrementalGenericInfo(AstsIncrementalGenericInfo* info);
 	void EncodeAstsIncrementalMSRFONDInfo(AstsIncrementalMSRFONDInfo* info);
 	void EncodeAstsIncrementalMSRCURRInfo(AstsIncrementalMSRCURRInfo* info);
 	void EncodeAstsIncrementalOLRFONDInfo(AstsIncrementalOLRFONDInfo* info);
 	void EncodeAstsIncrementalOLRCURRInfo(AstsIncrementalOLRCURRInfo* info);
 	void EncodeAstsIncrementalTLRFONDInfo(AstsIncrementalTLRFONDInfo* info);
 	void EncodeAstsIncrementalTLRCURRInfo(AstsIncrementalTLRCURRInfo* info);
-	void EncodeAstsSecurityDefinitionInfo(AstsSecurityDefinitionInfo* info);
-	void EncodeAstsSecurityStatusInfo(AstsSecurityStatusInfo* info);
-	void EncodeAstsTradingSessionStatusInfo(AstsTradingSessionStatusInfo* info);
-	void EncodeAstsHeartbeatInfo(AstsHeartbeatInfo* info);
 #pragma endregion
 
 #pragma region Forts_Encode_Methods_Declaration_GeneratedCode
-	void EncodeFortsDefaultIncrementalRefreshMessageInfo(FortsDefaultIncrementalRefreshMessageInfo* info);
-	void EncodeFortsDefaultSnapshotMessageInfo(FortsDefaultSnapshotMessageInfo* info);
-	void EncodeFortsSecurityDefinitionInfo(FortsSecurityDefinitionInfo* info);
-	void EncodeFortsSecurityDefinitionUpdateReportInfo(FortsSecurityDefinitionUpdateReportInfo* info);
-	void EncodeFortsSecurityStatusInfo(FortsSecurityStatusInfo* info);
-	void EncodeFortsHeartbeatInfo(FortsHeartbeatInfo* info);
-	void EncodeFortsSequenceResetInfo(FortsSequenceResetInfo* info);
-	void EncodeFortsTradingSessionStatusInfo(FortsTradingSessionStatusInfo* info);
-	void EncodeFortsNewsInfo(FortsNewsInfo* info);
-	void EncodeFortsOrdersLogInfo(FortsOrdersLogInfo* info);
-	void EncodeFortsOrdersBookInfo(FortsOrdersBookInfo* info);
-	void EncodeFortsLogonInfo(FortsLogonInfo* info);
 	void EncodeFortsLogoutInfo(FortsLogoutInfo* info);
+	void EncodeFortsLogonInfo(FortsLogonInfo* info);
+	void EncodeFortsOrdersBookInfo(FortsOrdersBookInfo* info);
+	void EncodeFortsOrdersLogInfo(FortsOrdersLogInfo* info);
+	void EncodeFortsNewsInfo(FortsNewsInfo* info);
+	void EncodeFortsTradingSessionStatusInfo(FortsTradingSessionStatusInfo* info);
+	void EncodeFortsSequenceResetInfo(FortsSequenceResetInfo* info);
+	void EncodeFortsHeartbeatInfo(FortsHeartbeatInfo* info);
+	void EncodeFortsSecurityStatusInfo(FortsSecurityStatusInfo* info);
+	void EncodeFortsSecurityDefinitionUpdateReportInfo(FortsSecurityDefinitionUpdateReportInfo* info);
+	void EncodeFortsSecurityDefinitionInfo(FortsSecurityDefinitionInfo* info);
+	void EncodeFortsDefaultSnapshotMessageInfo(FortsDefaultSnapshotMessageInfo* info);
+	void EncodeFortsDefaultIncrementalRefreshMessageInfo(FortsDefaultIncrementalRefreshMessageInfo* info);
 #pragma endregion
 
 #pragma region Asts_Print_Methods_Declaration_GeneratedCode
@@ -6099,10 +6083,10 @@ public:
 			info->LastFragment = ReadUInt32_Optional();
 
 		info->MDEntriesCount = ReadUInt32_Mandatory();
-		FortsDefaultIncrementalRefreshMessageMDEntriesItemInfo* mdeItemInfo = NULL;
+		FortsDefaultSnapshotMessageMDEntriesItemInfo* mdeItemInfo = NULL;
 
 		for(int i = 0; i < info->MDEntriesCount; i++) {
-			mdeItemInfo = GetFreeFortsDefaultIncrementalRefreshMessageMDEntriesItemInfo();
+			mdeItemInfo = GetFreeFortsDefaultSnapshotMessageMDEntriesItemInfo();
 			info->MDEntries[i] = mdeItemInfo;
 
 			this->ParsePresenceMap(&(mdeItemInfo->PresenceMap));
@@ -6188,7 +6172,7 @@ public:
 				mdeItemInfo->NullMap |= NULL_MAP_INDEX17;
 			else
 				ReadString_Optional(mdeItemInfo->OrderSide, &(mdeItemInfo->OrderSideLength));
-			this->m_prevfortsDefaultIncrementalRefreshMessageMDEntriesItemInfo = mdeItemInfo;
+			this->m_prevfortsDefaultSnapshotMessageMDEntriesItemInfo = mdeItemInfo;
 		}
 
 		this->m_prevfortsDefaultIncrementalRefreshMessageInfo = info;

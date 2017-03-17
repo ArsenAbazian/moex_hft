@@ -9,6 +9,7 @@
 #include "Lib/StringIdComparer.h"
 #include "MarketData/MarketDataTable.h"
 #include "MarketData/OrderInfo.h"
+#include "MarketData/OrderBookInfo.h"
 #include "MarketData/TradeInfo.h"
 #include "MarketData/StatisticInfo.h"
 #include "MarketData/SymbolManager.h"
@@ -168,6 +169,7 @@ protected:
     int                                                                         m_symbolsCount;
 
 #pragma region FORTS
+    MarketDataTable<OrderBookInfo, FortsDefaultSnapshotMessageInfo, FortsDefaultSnapshotMessageMDEntriesItemInfo>			*m_fortsTable;
     LinkedPointer<FortsSecurityDefinitionInfo>                                  **m_symbolsForts;
 #pragma endregion
 
@@ -256,7 +258,12 @@ protected:
     }
 
     inline FeedConnectionMessageInfo* Packet(int index) { return this->m_packets[index - this->m_windowMsgSeqNum]; }
-    inline bool SupportWindow() { return this->m_type == FeedConnectionType::Incremental || this->m_type == FeedConnectionType::InstrumentStatus; }
+    inline bool SupportWindow() {
+        return this->m_type == FeedConnectionType::Incremental ||
+                this->m_type == FeedConnectionType::IncrementalForts ||
+                this->m_type == FeedConnectionType::InstrumentStatus ||
+                this->m_type == FeedConnectionType::InstrumentStatusForts;
+    }
 
     inline bool ProcessServerCoreIncremental_HistoricalReplay(SocketBuffer *buffer, int size, int msgSeqNum) {
         if(msgSeqNum < this->m_windowMsgSeqNum) // out of window
@@ -306,7 +313,7 @@ protected:
     }
     inline bool ProcessServerCore_FromHistoricalReplay(SocketBuffer *buffer, int size, int msgSeqNum) {
         // we should only process incremental messages
-        if(this->m_type == FeedConnectionType::Incremental)
+        if(this->m_type == FeedConnectionType::Incremental || this->m_type == FeedConnectionType::IncrementalForts)
             return ProcessServerCoreIncremental_HistoricalReplay(buffer, size, msgSeqNum);
         if(this->m_type == FeedConnectionType::InstrumentStatus)
             return ProcessServerCoreSecurityStatus_HistoricalReplay(buffer, size, msgSeqNum);
@@ -423,7 +430,7 @@ protected:
         //TODO remove debug
         printf("%d\n", msgSeqNum);
 
-        if(this->m_type == FeedConnectionType::Incremental)
+        if(this->m_type == FeedConnectionType::Incremental || this->m_type == FeedConnectionType::IncrementalForts)
             return ProcessServerCoreIncremental(size, msgSeqNum);
         if(this->m_type == FeedConnectionType::InstrumentStatus || this->m_type == FeedConnectionType::InstrumentStatusForts)
             return ProcessServerCoreSecurityStatus(size, msgSeqNum);
@@ -2549,14 +2556,19 @@ public:
     }
 
     inline void AddSymbol(LinkedPointer<FortsSecurityDefinitionInfo> *ptr, int index) {
-        FortsSecurityDefinitionInfo *sd = ptr->Data();
-//        printf("%s %d add symbol %s %lu %s %s\n", this->m_idName,
-//               index,
-//               DebugInfoManager::Default->GetString(sd->Symbol, sd->SymbolLength, 0),
-//               sd->SecurityID,
-//               DebugInfoManager::Default->GetString(sd->MarketID, sd->MarketIDLength, 1),
-//               DebugInfoManager::Default->GetString(sd->MarketSegmentID, sd->MarketSegmentIDLength, 2)
-//        );
+        FortsSecurityDefinitionInfo *info = ptr->Data();
+        MarketSymbolInfo<OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo>> *symbol = this->m_fortsTable->AddSymbol(info->Symbol, info->SymbolLength, index);
+        symbol->SecurityDefinitionPtr(ptr);
+        symbol->InitSessions(1);
+        symbol->AddSession(info->TradingSessionID);
+        // TODO remove debug
+        //  printf("%s %d add symbol %s %lu %s %s\n", this->m_idName,
+        //               index,
+        //               DebugInfoManager::Default->GetString(sd->Symbol, sd->SymbolLength, 0),
+        //               sd->SecurityID,
+        //               DebugInfoManager::Default->GetString(sd->MarketID, sd->MarketIDLength, 1),
+        //               DebugInfoManager::Default->GetString(sd->MarketSegmentID, sd->MarketSegmentIDLength, 2)
+        //        );
     }
 
     inline void AddSymbol(LinkedPointer<AstsSecurityDefinitionInfo> *ptr, int index) {
@@ -3284,7 +3296,7 @@ public:
         if(this->m_type == FeedConnectionType::HistoricalReplay) {
             this->m_hsState = FeedConnectionHistoricalReplayState::hsSuspend;
         }
-        if(this->m_type == FeedConnectionType::Incremental) {
+        if(this->m_type == FeedConnectionType::Incremental || this->m_type == FeedConnectionType::IncrementalForts) {
             this->m_requestMessageStartIndex = -1;
         }
     }

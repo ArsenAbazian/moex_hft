@@ -109,6 +109,7 @@ typedef bool (FeedConnection::*FeedConnectionWorkAtomPtr)();
 
 typedef enum _FeedConnectionType {
     Incremental,
+    IncrementalForts,
     Snapshot,
     InstrumentDefinition,
     InstrumentStatus,

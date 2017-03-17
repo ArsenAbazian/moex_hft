@@ -15,16 +15,17 @@ template <typename T> class MarketSymbolInfo;
 template <typename T> class TradeInfo {
     static PointerList<T>               *m_itemsPool;
 
-    PointerListLite<T>      *m_trades;
-    MDEntryQueue      *m_entryInfo;
+    PointerListLite<T>                  *m_trades;
+    MDEntryQueue                        *m_entryInfo;
 
-    bool                 m_used;
-    bool                 m_shouldProcessSnapshot;
-    int                  m_rptSeq;
-    int                  m_savedRptSeq;
-    MarketSymbolInfo<TradeInfo<T>>    *m_symbolInfo;
-    SizedArray          *m_tradingSession;
-    int                  m_snapshotProcessedCount;
+    bool                                m_used;
+    bool                                m_shouldProcessSnapshot;
+    int                                 m_rptSeq;
+    int                                 m_savedRptSeq;
+    MarketSymbolInfo<TradeInfo<T>>      *m_symbolInfo;
+    SizedArray                          *m_tradingSession;
+    int                                 m_snapshotProcessedCount;
+    UINT32                              m_sessionInt;
 
 public:
     TradeInfo();
@@ -40,6 +41,8 @@ public:
         }
         this->m_entryInfo = 0;
     }
+    inline UINT32 TradingSessionInt() { return this->m_sessionInt; }
+    inline void TradingSessionInt(UINT32 session) { this->m_sessionInt = session; }
     inline void ResetSnasphotProcessed() { this->m_snapshotProcessedCount = 0; }
     inline void OnSnapshotProcessed() { this->m_snapshotProcessedCount++; }
     inline int SnapshotProcessedCount() { return this->m_snapshotProcessedCount; }
