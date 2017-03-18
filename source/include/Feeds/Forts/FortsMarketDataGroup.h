@@ -106,6 +106,12 @@ public:
         if(this->m_incremental != 0 && this->m_snapshot != 0)
             this->m_incremental->SetSnapshot(this->m_snapshot);
     }
+    void SetSecurityDefinition(FeedConnection *conn) {
+        if(this->m_incremental != 0)
+            this->m_incremental->SetSecurityDefinition(conn);
+        if(this->m_snapshot != 0)
+            this->m_snapshot->SetSecurityDefinition(conn);
+    }
 };
 
 

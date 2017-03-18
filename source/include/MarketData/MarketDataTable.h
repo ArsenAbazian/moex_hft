@@ -51,6 +51,15 @@ public:
     ~MarketDataTable() {
         this->Release();
     }
+    inline TABLEITEM<ITEMINFO>* GetCachedItem(UINT64 securityId, int sessionIndex) {
+        if(this->m_cachedItem == 0)
+            return 0;
+        MarketSymbolInfo<TABLEITEM<ITEMINFO>> *s = this->m_cachedItem->SymbolInfo();
+        if(s->SecurityID() == securityId &&
+           s->Session(sessionIndex) == this->m_cachedItem)
+            return this->m_cachedItem;
+        return 0;
+    }
     inline TABLEITEM<ITEMINFO>* GetCachedItem(const char *symbol, int symbolLen, const char *tradingSession, int tradingSessionLen) {
         if(this->m_cachedItem == 0)
             return 0;
@@ -75,17 +84,17 @@ public:
     }
 
     inline void ObtainSnapshotItem(int symbolIndex, FortsSnapshotInfo *info) {
-        this->m_snapshotItem = this->GetCachedItem(info->Symbol, info->SymbolLength, info->TradingSessionID);
+        this->m_snapshotItem = this->GetCachedItem(info->SecurityID, 0);
         if(this->m_snapshotItem == 0)
-            this->m_snapshotItem = this->GetItem(symbolIndex, info->TradingSessionID);
+            this->m_snapshotItem = this->Symbol(symbolIndex)->Session(0);
         this->m_snapshotSymbol = this->m_snapshotItem->SymbolInfo();
         this->m_snapshotItemRptSeq = info->RptSeq;
         this->AddUsed(this->m_snapshotItem);
     }
     inline void ObtainSnapshotItem(FortsSnapshotInfo *info) {
-        this->m_snapshotItem = this->GetCachedItem(info->Symbol, info->SymbolLength, info->TradingSessionID);
+        this->m_snapshotItem = this->GetCachedItem(info->SecurityID, 0);
         if(this->m_snapshotItem == 0)
-            this->m_snapshotItem = this->GetItem(info->Symbol, info->SymbolLength, info->TradingSessionID);
+            this->m_snapshotItem = this->GetItem(info->SecurityID, 0);
         this->m_snapshotSymbol = this->m_snapshotItem->SymbolInfo();
         this->m_snapshotItemRptSeq = info->RptSeq;
         this->AddUsed(this->m_snapshotItem);
@@ -416,6 +425,18 @@ public:
         TABLEITEM<ITEMINFO>* res = s->GetSession(tradingSession);
         this->m_cachedItem = res;
         return res;
+    }
+    inline TABLEITEM<ITEMINFO>* GetItem(UINT64 securityId, UINT32 tradingSession) {
+        TABLEITEM<ITEMINFO> *item = 0;
+        MarketSymbolInfo<TABLEITEM<ITEMINFO>> **s = this->m_symbols;
+        for(int i = 0; i < this->m_symbolsCount; i++, s++) {
+            if((*s)->SecurityID == securityId) {
+                TABLEITEM<ITEMINFO>* res = (*s)->GetSession(tradingSession);
+                this->m_cachedItem = res;
+                return res;
+            }
+        }
+        return 0;
     }
     inline TABLEITEM<ITEMINFO>* GetItem(int symbolIndex) {
         TABLEITEM<ITEMINFO> *item = 0;

@@ -325,7 +325,6 @@ public:
 	inline FortsSnapshotInfo* GetFreeFortsSnapshotInfo() {
 		this->m_fortsSnapshotInfo->LastFragment = 0;
 		this->m_fortsSnapshotInfo->LastMsgSeqNumProcessed = -1;
-		this->m_fortsSnapshotInfo->RouteFirst = 0;
 		this->m_fortsSnapshotInfo->RptSeq = -1;
 		return this->m_fortsSnapshotInfo;
 	}
@@ -6842,12 +6841,10 @@ public:
 		info->RptSeq = ReadUInt32_Mandatory();
 		SkipToNextField(); // TotNumReports
 		info->LastMsgSeqNumProcessed = ReadUInt32_Mandatory();
-		SkipToNextField(); // SecurityID
-		SkipToNextField(); // SecurityIDSource
-		if(CheckProcessNullString())
-			info->NullMap |= NULL_MAP_INDEX2;
+		if(CheckProcessNullUInt64())
+			info->NullMap |= NULL_MAP_INDEX1;
 		else
-			ReadString_Optional(info->Symbol, &(info->SymbolLength));
+			info->SecurityID = ReadUInt64_Optional();
 		return info;
 	}
 	inline void* DecodeForts() {

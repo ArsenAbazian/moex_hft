@@ -238,7 +238,6 @@ public:
         this->m_fastProtocolManager = new FastProtocolManager();
         this->AllocateFastObjects();
         InitializePackets(this->GetPacketsCount());
-        InitializePackets(this->GetPacketsCount());
         DebugInfoManager::Default->PrintMemoryInfo("FeedConnection_FORTS_INSTR_INC");
     }
     int GetPacketsCount() { return 1000; }

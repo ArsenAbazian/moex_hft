@@ -198,7 +198,7 @@ namespace prebuild {
 			if(inc != null && inc.Count == 2) {
 				WriteLine("\t\t\tgroup->Inc( new " + feedConnectionName + "(" + 
 					"\"" + fid + " Inc\", " +
-					"\"" + label + "\", " + 
+					"\"" + label + " Incremental\", " + 
 					"'" + mid + "', " + 
 					inc[0].ProtocolString + ", " +
 					inc[0].SrcIpString + ", " + 
@@ -213,7 +213,7 @@ namespace prebuild {
 			if(snap != null && snap.Count == 2) {
 				WriteLine("\t\t\tgroup->Snap( new FeedConnection_FORTS_SNAP(" + 
 					"\"" + fid + " Snap\", " +
-					"\"" + label + "\", " + 
+					"\"" + label + " Snapshot\", " + 
 					"'" + mid + "', " + 
 					snap[0].ProtocolString + ", " +
 					snap[0].SrcIpString + ", " + 
@@ -242,7 +242,7 @@ namespace prebuild {
 
 			if(instrInc != null && instrInc.Count == 2) {
 				WriteLine("\t\t\tgroup->InstrInc( new FeedConnection_FORTS_INSTR_INC(" + 
-					"\"" + fid + " InstrInc\", " +
+					"\"" + fid + " Instrument Incremetnal\", " +
 					"\"" + label + "\", " + 
 					"'" + mid + "', " + 
 					instrInc[0].ProtocolString + ", " +
@@ -257,7 +257,7 @@ namespace prebuild {
 
 			if(instrSnap != null && instrSnap.Count == 2) {
 				WriteLine("\t\t\tgroup->InstrReplay( new FeedConnection_FORTS_INSTR_SNAP(" + 
-					"\"" + fid + " InstrReplay\", " +
+					"\"" + fid + " Instrument Replay\", " +
 					"\"" + label + "\", " + 
 					"'" + mid + "', " + 
 					instrSnap[0].ProtocolString + ", " +
@@ -583,11 +583,9 @@ namespace prebuild {
 			SnapshotInfoFields = new List<SnapshotFieldInfo>();
 			SnapshotInfoFields.Add(new SnapshotFieldInfo("", "RptSeq"));
 			SnapshotInfoFields.Add(new SnapshotFieldInfo("", "LastFragment"));
-			SnapshotInfoFields.Add(new SnapshotFieldInfo("", "RouteFirst"));
 			SnapshotInfoFields.Add(new SnapshotFieldInfo("", "LastMsgSeqNumProcessed"));
 			SnapshotInfoFields.Add(new SnapshotFieldInfo("", "SendingTime"));
-			SnapshotInfoFields.Add(new SnapshotFieldInfo("", "Symbol"));
-			SnapshotInfoFields.Add(new SnapshotFieldInfo("", "TradingSessionID"));
+			SnapshotInfoFields.Add(new SnapshotFieldInfo("", "SecurityID"));
 
 			ClearStructures();
 		}
@@ -950,7 +948,8 @@ namespace prebuild {
 			WriteLine("\tinline " + Prefix + "SnapshotInfo* GetFree" + Prefix + "SnapshotInfo() {");
 			WriteLine("\t\tthis->m_" + Prefix.ToLower() + "SnapshotInfo->LastFragment = 0;");
 			WriteLine("\t\tthis->m_" + Prefix.ToLower() + "SnapshotInfo->LastMsgSeqNumProcessed = -1;");
-			WriteLine("\t\tthis->m_" + Prefix.ToLower() + "SnapshotInfo->RouteFirst = 0;");
+			if(SnapshotInfoFields.FirstOrDefault((f) => f.FieldName == "RouteFirst") != null)
+				WriteLine("\t\tthis->m_" + Prefix.ToLower() + "SnapshotInfo->RouteFirst = 0;");
 			WriteLine("\t\tthis->m_" + Prefix.ToLower() + "SnapshotInfo->RptSeq = -1;");
 			WriteLine("\t\treturn this->m_" + Prefix.ToLower() + "SnapshotInfo;");
 			WriteLine("\t}");

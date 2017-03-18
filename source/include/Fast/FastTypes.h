@@ -2896,12 +2896,9 @@ public:
 	int				TemplateId;
 	UINT32				RptSeq;
 	UINT32				LastFragment;
-	UINT32				RouteFirst;
 	UINT32				LastMsgSeqNumProcessed;
 	UINT64				SendingTime;
-	char				Symbol[32];
-	int					SymbolLength;
-	UINT32				TradingSessionID;
+	UINT64				SecurityID;
 	FortsSnapshotInfo() {
 		this->PresenceMap = 0;
 		this->NullMap = 0;

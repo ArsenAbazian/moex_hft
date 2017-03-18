@@ -329,10 +329,67 @@ public:
 #endif
     }
 
+    inline void PrintStatisticsForts() {
+        printf("------\n");
+        if(this->m_fortsChannel->FutBook1() != 0) {
+            this->PrintIncFeedStatistics("fut book 1", this->m_fortsChannel->FutBook1()->Inc(),
+            this->m_fortsChannel->FutBook1()->Inc()->FastManager()->GetFortsDefaultSnapshotMessageMDEntriesItemInfoPool()->Count(),
+            this->m_fortsChannel->FutBook1()->Inc()->FastManager()->GetFortsDefaultSnapshotMessageMDEntriesItemInfoPool()->Capacity());
+        }
+        if(this->m_fortsChannel->FutBook5() != 0) {
+            this->PrintIncFeedStatistics("fut book 5", this->m_fortsChannel->FutBook5()->Inc(),
+                                         this->m_fortsChannel->FutBook5()->Inc()->FastManager()->GetFortsDefaultSnapshotMessageMDEntriesItemInfoPool()->Count(),
+                                         this->m_fortsChannel->FutBook5()->Inc()->FastManager()->GetFortsDefaultSnapshotMessageMDEntriesItemInfoPool()->Capacity());
+        }
+        if(this->m_fortsChannel->FutBook20() != 0) {
+            this->PrintIncFeedStatistics("fut book 20", this->m_fortsChannel->FutBook20()->Inc(),
+                                         this->m_fortsChannel->FutBook20()->Inc()->FastManager()->GetFortsDefaultSnapshotMessageMDEntriesItemInfoPool()->Count(),
+                                         this->m_fortsChannel->FutBook20()->Inc()->FastManager()->GetFortsDefaultSnapshotMessageMDEntriesItemInfoPool()->Capacity());
+        }
+        if(this->m_fortsChannel->FutBook50() != 0) {
+            this->PrintIncFeedStatistics("fut book 50", this->m_fortsChannel->FutBook50()->Inc(),
+                                         this->m_fortsChannel->FutBook50()->Inc()->FastManager()->GetFortsDefaultSnapshotMessageMDEntriesItemInfoPool()->Count(),
+                                         this->m_fortsChannel->FutBook50()->Inc()->FastManager()->GetFortsDefaultSnapshotMessageMDEntriesItemInfoPool()->Capacity());
+        }
+        if(this->m_fortsChannel->FutTrades() != 0) {
+            this->PrintIncFeedStatistics("fut book trades", this->m_fortsChannel->FutTrades()->Inc(),
+                                         this->m_fortsChannel->FutTrades()->Inc()->FastManager()->GetFortsDefaultSnapshotMessageMDEntriesItemInfoPool()->Count(),
+                                         this->m_fortsChannel->FutTrades()->Inc()->FastManager()->GetFortsDefaultSnapshotMessageMDEntriesItemInfoPool()->Capacity());
+        }
+
+        if(this->m_fortsChannel->OptBook1() != 0) {
+            this->PrintIncFeedStatistics("opt book 1", this->m_fortsChannel->OptBook1()->Inc(),
+                                         this->m_fortsChannel->OptBook1()->Inc()->FastManager()->GetFortsDefaultSnapshotMessageMDEntriesItemInfoPool()->Count(),
+                                         this->m_fortsChannel->OptBook1()->Inc()->FastManager()->GetFortsDefaultSnapshotMessageMDEntriesItemInfoPool()->Capacity());
+        }
+        if(this->m_fortsChannel->OptBook5() != 0) {
+            this->PrintIncFeedStatistics("opt book 5", this->m_fortsChannel->OptBook5()->Inc(),
+                                         this->m_fortsChannel->OptBook5()->Inc()->FastManager()->GetFortsDefaultSnapshotMessageMDEntriesItemInfoPool()->Count(),
+                                         this->m_fortsChannel->OptBook5()->Inc()->FastManager()->GetFortsDefaultSnapshotMessageMDEntriesItemInfoPool()->Capacity());
+        }
+        if(this->m_fortsChannel->OptBook20() != 0) {
+            this->PrintIncFeedStatistics("opt book 20", this->m_fortsChannel->OptBook20()->Inc(),
+                                         this->m_fortsChannel->OptBook20()->Inc()->FastManager()->GetFortsDefaultSnapshotMessageMDEntriesItemInfoPool()->Count(),
+                                         this->m_fortsChannel->OptBook20()->Inc()->FastManager()->GetFortsDefaultSnapshotMessageMDEntriesItemInfoPool()->Capacity());
+        }
+        if(this->m_fortsChannel->OptBook50() != 0) {
+            this->PrintIncFeedStatistics("opt book 50", this->m_fortsChannel->OptBook50()->Inc(),
+                                         this->m_fortsChannel->OptBook50()->Inc()->FastManager()->GetFortsDefaultSnapshotMessageMDEntriesItemInfoPool()->Count(),
+                                         this->m_fortsChannel->OptBook50()->Inc()->FastManager()->GetFortsDefaultSnapshotMessageMDEntriesItemInfoPool()->Capacity());
+        }
+        if(this->m_fortsChannel->OptTrades() != 0) {
+            this->PrintIncFeedStatistics("opt book trades", this->m_fortsChannel->OptTrades()->Inc(),
+                                         this->m_fortsChannel->OptTrades()->Inc()->FastManager()->GetFortsDefaultSnapshotMessageMDEntriesItemInfoPool()->Count(),
+                                         this->m_fortsChannel->OptTrades()->Inc()->FastManager()->GetFortsDefaultSnapshotMessageMDEntriesItemInfoPool()->Capacity());
+        }
+    }
+
     inline void PrintStatistics() {
         if(this->AllowFondMarket())
             this->PrintStatisticsFond();
         if(this->AllowCurrMarket())
             this->PrintStatisticsCurr();
+        if(this->AllowFortsMarket())
+            this->PrintStatisticsForts();
     }
 };

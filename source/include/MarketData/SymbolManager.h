@@ -34,12 +34,15 @@ class SymbolManager {
     friend class SymbolManagerTester;
     friend class SecurityDefinitionTester;
 
+    const int                   BucketList2Count = 1000000;
+
     int                         m_capacity;
     int                         m_count;
     short                       m_freeIndex;
 
     PointerList<SymbolInfo>      *m_pool;
     LinkedPointer<SymbolInfo>   **m_bucketList;
+    SymbolInfo                  **m_bucketList2;
     inline short GetFreeIndex() {
         this->m_freeIndex++;
         return this->m_freeIndex;
@@ -55,19 +58,23 @@ class SymbolManager {
         return ptr;
     }
     inline void ClearBucketList() {
-        for(int i = 0; i < StringHash::HashArrayItemsCount; i++) {
-            LinkedPointer<SymbolInfo> *ptr = this->m_bucketList[i];
-            LinkedPointer<SymbolInfo> *prevPtr = 0;
-            if(ptr == 0)
-                continue;
-            while(ptr != 0) {
-                prevPtr = ptr;
-                ptr = ptr->Next();
-                this->m_pool->Push(prevPtr);
+        if(this->m_bucketList != 0) {
+            for (int i = 0; i < StringHash::HashArrayItemsCount; i++) {
+                LinkedPointer<SymbolInfo> *ptr = this->m_bucketList[i];
+                LinkedPointer<SymbolInfo> *prevPtr = 0;
+                if (ptr == 0)
+                    continue;
+                while (ptr != 0) {
+                    prevPtr = ptr;
+                    ptr = ptr->Next();
+                    this->m_pool->Push(prevPtr);
+                }
+                this->m_bucketList[i] = 0;
             }
-            this->m_bucketList[i] = 0;
+            this->m_pool->Clear();
         }
-        this->m_pool->Clear();
+        else if(this->m_bucketList2 != 0)
+            bzero(this->m_bucketList2, sizeof(SymbolInfo*) * BucketList2Count);
     }
     inline LinkedPointer<SymbolInfo>* GetBucket(int hash) {
         return this->m_bucketList[hash];
@@ -105,9 +112,23 @@ public:
         this->m_pool = new PointerList<SymbolInfo>(capacity + 10);
         this->m_pool->AllocData();
         this->m_bucketList = new LinkedPointer<SymbolInfo>*[StringHash::HashArrayItemsCount];
+        this->m_bucketList2 = 0;
+    }
+    SymbolManager(int capacity, bool useUint64Hash) {
+        this->m_capacity = capacity;
+        this->m_count = 0;
+        this->m_freeIndex = -1;
+
+        this->m_pool = new PointerList<SymbolInfo>(capacity + 10);
+        this->m_pool->AllocData();
+        this->m_bucketList = 0;
+        this->m_bucketList2 = new SymbolInfo*[1000000];
+        bzero(this->m_bucketList2, sizeof(SymbolInfo*) * BucketList2Count);
     }
     ~SymbolManager() {
         delete this->m_pool;
+        if(this->m_bucketList2 != 0)
+            delete this->m_bucketList2;
     }
     inline void Clear() {
         this->m_freeIndex = -1;
@@ -137,10 +158,29 @@ public:
     inline SymbolInfo* GetSymbol(const char *symbol, bool *wasNewlyAdded) {
         return this->GetSymbol(symbol, strlen(symbol), wasNewlyAdded);
     }
+    inline SymbolInfo* GetSymbol(UINT64 securityId, bool *wasNewlyAdded) {
+        if(this->m_bucketList2[securityId] == 0) {
+            *wasNewlyAdded = true;
+            SymbolInfo *smb = GetPtrFromPool()->Data();
+            smb->m_index = GetFreeIndex();
+            this->m_bucketList2[securityId] = smb;
+            return smb;
+        }
+        *wasNewlyAdded = false;
+        return this->m_bucketList2[securityId];
+    }
+    inline SymbolInfo* GetSymbol(UINT64 securityId) {
+        bool wasNewlyAdded;
+        SymbolInfo *info = this->GetSymbol(securityId, &wasNewlyAdded);
+        if(wasNewlyAdded) { //TODO remove debug
+            printf("!!!unexpected add %" PRIu64 "\n", securityId);
+        }
+        return info;
+    }
     inline SymbolInfo* GetSymbol(const char *symbol, int length) {
         bool wasNewlyAdded = false;
         SymbolInfo *res = this->GetSymbol(symbol, length, &wasNewlyAdded);
-        if(wasNewlyAdded) {
+        if(wasNewlyAdded) { //TODO remove debug
             printf("!!!unexpected add %s\n", DebugInfoManager::Default->GetString(symbol, length, 0));
             return 0;
             //throw;

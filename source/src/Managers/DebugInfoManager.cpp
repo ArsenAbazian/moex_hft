@@ -347,6 +347,7 @@ void DebugInfoManager::PrintStatistics(FeedConnection *conn) {
             PrintStatisticsInstrumentDefinition(conn);
             break;
         case FeedConnectionType::InstrumentStatus:
+            case FeedConnectionType::InstrumentStatusForts:
             PrintStatisticsInstrumentStatus(conn);
             break;
         case FeedConnectionType::HistoricalReplay:
@@ -608,6 +609,7 @@ void DebugInfoManager::PrintStatisticsXml(FeedConnection *conn) {
             PrintStatisticsInstrumentDefinitionXml(conn);
             break;
         case FeedConnectionType::InstrumentStatus:
+            case FeedConnectionType::InstrumentStatusForts:
             PrintStatisticsInstrumentStatusXml(conn);
             break;
         case FeedConnectionType::HistoricalReplay:

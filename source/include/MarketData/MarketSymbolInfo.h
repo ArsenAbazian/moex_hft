@@ -16,6 +16,7 @@ template <typename T> class MarketSymbolInfo {
     int                                 m_sessionsToRecvSnapshot;
     LinkedPointer<AstsSecurityDefinitionInfo> *m_securityDefinitionPtr;
     LinkedPointer<FortsSecurityDefinitionInfo> *m_securityDefinitionFortsPtr;
+    UINT64                              m_securityId;
 public:
     MarketSymbolInfo() {
         this->m_count = 0;
@@ -24,6 +25,7 @@ public:
         this->m_symbol = new SizedArray();
         this->m_securityDefinitionPtr = 0;
         this->m_securityDefinitionFortsPtr = 0;
+        this->m_securityId = 0;
     }
     inline void InitSessions(int count) {
         Release();
@@ -50,6 +52,7 @@ public:
     }
     inline int Count() { return this->m_count; }
     inline int SessionCount() { return this->m_count; }
+    inline UINT64 SecurityID() { return this->m_securityId; }
     inline int MaxSessionCount() { return this->m_maxCount; }
     inline T* Session(int index) { return this->m_items[index]; }
     inline T* GetSession(const char *session, int sessionLength) {
@@ -74,8 +77,13 @@ public:
         this->m_count++;
         return res;
     }
-    inline void SecurityDefinitionPtr(LinkedPointer<AstsSecurityDefinitionInfo> *ptr) { this->m_securityDefinitionPtr = ptr; }
-    inline void SecurityDefinitionPtr(LinkedPointer<FortsSecurityDefinitionInfo> *ptr) { this->m_securityDefinitionFortsPtr = ptr; }
+    inline void SecurityDefinitionPtr(LinkedPointer<AstsSecurityDefinitionInfo> *ptr) {
+        this->m_securityDefinitionPtr = ptr;
+    }
+    inline void SecurityDefinitionPtr(LinkedPointer<FortsSecurityDefinitionInfo> *ptr) {
+        this->m_securityDefinitionFortsPtr = ptr;
+        this->m_securityId = SecurityDefinitionForts()->SecurityID;
+    }
     inline AstsSecurityDefinitionInfo* SecurityDefinitionAsts() { return this->m_securityDefinitionPtr->Data(); }
     inline FortsSecurityDefinitionInfo* SecurityDefinitionForts() { return this->m_securityDefinitionFortsPtr->Data(); }
     inline SizedArray *Symbol() { return this->m_symbol; }
