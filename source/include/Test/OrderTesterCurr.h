@@ -32,6 +32,8 @@ public:
                                                      "10.50.129.200", "239.192.113.3", 9113,
                                                      "10.50.129.200", "239.192.113.131", 9313);
         this->m_table->InitSymbols(10, 10);
+        this->incCurr->SetSymbolManager(new SymbolManager(10));
+        this->snapCurr->SetSymbolManager(this->incCurr->GetSymbolManager());
         this->incCurr->OrderCurr()->InitSymbols(10, 10);
         this->incCurr->SetMaxLostPacketCountForStartSnapshot(1);
     }
@@ -63,8 +65,9 @@ public:
     void Clear() {
         incCurr->SetSnapshot(this->snapCurr);
         incCurr->OrderCurr()->Clear();
+        incCurr->GetSymbolManager()->Clear();
         incCurr->ClearMessages();
-        incCurr->WaitIncrementalMaxTimeMs(50);
+        incCurr->WaitLostIncrementalMessageMaxTimeMs(50);
         incCurr->m_waitTimer->Stop();
         incCurr->m_waitTimer->Stop(1);
         snapCurr->ClearMessages();
@@ -75,19 +78,21 @@ public:
         incCurr->Stop();
 
         this->m_helper->Clear();
+        this->m_table->Clear();
         incCurr->Start();
     }
 
     void Test_OnIncrementalRefresh_OLR_CURR_Add() {
         this->Clear();
         this->TestDefaults();
+        this->AddSymbol("symbol1");
 
         AstsIncrementalOLRCURRInfo *info = this->m_helper->CreateAstsIncrementalOLRCURRInfo();
 
-        AstsOLSCURRItemInfo *item1 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
-        AstsOLSCURRItemInfo *item2 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
-        AstsOLSCURRItemInfo *item3 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
-        AstsOLSCURRItemInfo *item4 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "e4", 4);
+        AstsOLSCURRItemInfo *item1 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
+        AstsOLSCURRItemInfo *item2 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
+        AstsOLSCURRItemInfo *item3 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
+        AstsOLSCURRItemInfo *item4 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "e4", 4);
 
         if(item4->Used)
             throw;
@@ -105,7 +110,7 @@ public:
             throw;
         if(this->incCurr->OrderCurr()->Symbol(0)->Count() != 1)
             throw;
-        OrderInfo<AstsOLSCURRItemInfo> *obi = this->incCurr->OrderCurr()->GetItem("s1", "t1");
+        OrderInfo<AstsOLSCURRItemInfo> *obi = this->incCurr->OrderCurr()->GetItem("symbol1", "t1");
         if(obi == 0)
             throw;
         if(obi->BuyQuotes()->Count() != 1)
@@ -131,7 +136,7 @@ public:
             throw;
         if(this->incCurr->OrderCurr()->Symbol(0)->Count() != 1)
             throw;
-        obi = this->incCurr->OrderCurr()->GetItem("s1", "t1");
+        obi = this->incCurr->OrderCurr()->GetItem("symbol1", "t1");
         if(obi == 0)
             throw;
         if(obi->BuyQuotes()->Count() != 2)
@@ -156,7 +161,7 @@ public:
             throw;
         if(this->incCurr->OrderCurr()->Symbol(0)->Count() != 1)
             throw;
-        obi = this->incCurr->OrderCurr()->GetItem("s1", "t1");
+        obi = this->incCurr->OrderCurr()->GetItem("symbol1", "t1");
         if(obi == 0)
             throw;
         if(obi->BuyQuotes()->Count() != 3)
@@ -200,7 +205,7 @@ public:
             throw;
         if(this->incCurr->OrderCurr()->Symbol(0)->Count() != 1)
             throw;
-        obi = this->incCurr->OrderCurr()->GetItem("s1", "t1");
+        obi = this->incCurr->OrderCurr()->GetItem("symbol1", "t1");
         if(obi == 0)
             throw;
         if(obi->BuyQuotes()->Count() != 4)
@@ -246,12 +251,13 @@ public:
     void Test_OnIncrementalRefresh_OLR_CURR_Remove() {
         this->Clear();
         this->TestDefaults();
+        this->AddSymbol("symbol1");
 
         AstsIncrementalOLRCURRInfo *info = this->m_helper->CreateAstsIncrementalOLRCURRInfo();
-        AstsOLSCURRItemInfo *item1 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
-        AstsOLSCURRItemInfo *item2 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
-        AstsOLSCURRItemInfo *item3 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
-        AstsOLSCURRItemInfo *item4 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "e4", 4);
+        AstsOLSCURRItemInfo *item1 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
+        AstsOLSCURRItemInfo *item2 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
+        AstsOLSCURRItemInfo *item3 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
+        AstsOLSCURRItemInfo *item4 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "e4", 4);
 
         info->GroupMDEntriesCount = 4;
         info->GroupMDEntries[0] = item1;
@@ -279,7 +285,7 @@ public:
         if(this->incCurr->OrderCurr()->UsedItemCount() != 1)
             throw;
 
-        OrderInfo<AstsOLSCURRItemInfo> *obi = this->incCurr->OrderCurr()->GetItem("s1", "t1");
+        OrderInfo<AstsOLSCURRItemInfo> *obi = this->incCurr->OrderCurr()->GetItem("symbol1", "t1");
         if(obi->BuyQuotes()->Count() != 3)
             throw;
         if(!StringIdComparer::Equal(obi->BuyQuotes()->Item(0)->MDEntryID, 2, "e1", 2))
@@ -298,7 +304,7 @@ public:
         if(this->incCurr->OrderCurr()->UsedItemCount() != 1)
             throw;
 
-        obi = this->incCurr->OrderCurr()->GetItem("s1", "t1");
+        obi = this->incCurr->OrderCurr()->GetItem("symbol1", "t1");
         if(obi->BuyQuotes()->Count() != 2)
             throw;
         if(!StringIdComparer::Equal(obi->BuyQuotes()->Item(0)->MDEntryID, 2, "e1", 2))
@@ -315,7 +321,7 @@ public:
         if(this->incCurr->OrderCurr()->UsedItemCount() != 1)
             throw;
 
-        obi = this->incCurr->OrderCurr()->GetItem("s1", "t1");
+        obi = this->incCurr->OrderCurr()->GetItem("symbol1", "t1");
         if(obi->BuyQuotes()->Count() != 1)
             throw;
         if(!StringIdComparer::Equal(obi->BuyQuotes()->Item(0)->MDEntryID, 2, "e1", 2))
@@ -330,7 +336,7 @@ public:
         if(this->incCurr->OrderCurr()->UsedItemCount() != 1)
             throw;
 
-        obi = this->incCurr->OrderCurr()->GetItem("s1", "t1");
+        obi = this->incCurr->OrderCurr()->GetItem("symbol1", "t1");
         if(obi->BuyQuotes()->Count() != 0)
             throw;
     }
@@ -338,12 +344,13 @@ public:
     void Test_OnIncrementalRefresh_OLR_CURR_Change() {
         this->Clear();
         this->TestDefaults();
+        this->AddSymbol("symbol1");
 
         AstsIncrementalOLRCURRInfo *info = this->m_helper->CreateAstsIncrementalOLRCURRInfo();
-        AstsOLSCURRItemInfo *item1 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
-        AstsOLSCURRItemInfo *item2 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
-        AstsOLSCURRItemInfo *item3 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
-        AstsOLSCURRItemInfo *item4 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "e4", 4);
+        AstsOLSCURRItemInfo *item1 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
+        AstsOLSCURRItemInfo *item2 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
+        AstsOLSCURRItemInfo *item3 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
+        AstsOLSCURRItemInfo *item4 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "e4", 4);
 
         info->GroupMDEntriesCount = 4;
         info->GroupMDEntries[0] = item1;
@@ -353,7 +360,7 @@ public:
 
         this->incCurr->OnIncrementalRefresh_OLR_CURR(info);
 
-        OrderInfo<AstsOLSCURRItemInfo> *obi2 = this->incCurr->OrderCurr()->GetItem("s1", "t1");
+        OrderInfo<AstsOLSCURRItemInfo> *obi2 = this->incCurr->OrderCurr()->GetItem("symbol1", "t1");
         if(!StringIdComparer::Equal(obi2->BuyQuotes()->Item(0)->MDEntryID, 2, "e1", 2))
             throw;
         if(!StringIdComparer::Equal(obi2->BuyQuotes()->Item(1)->MDEntryID, 2, "e2", 2))
@@ -363,7 +370,7 @@ public:
         if(!StringIdComparer::Equal(obi2->BuyQuotes()->Item(3)->MDEntryID, 2, "e4", 2))
             throw;
 
-        AstsOLSCURRItemInfo *item5 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 24, -3, 1, 3, mduaChange, mdetBuyQuote, "e2", 5);
+        AstsOLSCURRItemInfo *item5 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "t1", 24, -3, 1, 3, mduaChange, mdetBuyQuote, "e2", 5);
 
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item5;
@@ -378,7 +385,7 @@ public:
         if(item5->Allocator->Count() != 1)
             throw;
 
-        OrderInfo<AstsOLSCURRItemInfo> *obi = this->incCurr->OrderCurr()->GetItem("s1", "t1");
+        OrderInfo<AstsOLSCURRItemInfo> *obi = this->incCurr->OrderCurr()->GetItem("symbol1", "t1");
 
         AstsOLSCURRItemInfo *qt1 = obi->BuyQuotes()->Item(0);
         AstsOLSCURRItemInfo *qt2 = obi->BuyQuotes()->Item(1);
@@ -412,12 +419,13 @@ public:
     void Test_Clear() {
         this->Clear();
         this->TestDefaults();
+        this->AddSymbol("symbol1");
 
         AstsIncrementalOLRCURRInfo *info = this->m_helper->CreateAstsIncrementalOLRCURRInfo();
-        AstsOLSCURRItemInfo *item1 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
-        AstsOLSCURRItemInfo *item2 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
-        AstsOLSCURRItemInfo *item3 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
-        AstsOLSCURRItemInfo *item4 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "e4", 4);
+        AstsOLSCURRItemInfo *item1 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
+        AstsOLSCURRItemInfo *item2 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
+        AstsOLSCURRItemInfo *item3 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
+        AstsOLSCURRItemInfo *item4 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "e4", 4);
 
         info->GroupMDEntriesCount = 4;
         info->GroupMDEntries[0] = item1;
@@ -438,7 +446,7 @@ public:
         if(this->incCurr->OrderCurr()->UsedItemCount() != 0)
             throw;
 
-        OrderInfo<AstsOLSCURRItemInfo> *obi = this->incCurr->OrderCurr()->GetItem("s1", "t1");
+        OrderInfo<AstsOLSCURRItemInfo> *obi = this->incCurr->OrderCurr()->GetItem("symbol1", "t1");
         if(obi->BuyQuotes()->Count() != 0)
             throw;
     }
@@ -446,12 +454,13 @@ public:
     void Test_OnFullRefresh_OLS_CURR() {
         this->Clear();
         this->TestDefaults();
+        this->AddSymbol("symbol1");
 
         AstsIncrementalOLRCURRInfo *info = this->m_helper->CreateAstsIncrementalOLRCURRInfo();
-        AstsOLSCURRItemInfo *item1 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
-        AstsOLSCURRItemInfo *item2 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
-        AstsOLSCURRItemInfo *item3 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
-        AstsOLSCURRItemInfo *item4 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "e4", 4);
+        AstsOLSCURRItemInfo *item1 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
+        AstsOLSCURRItemInfo *item2 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
+        AstsOLSCURRItemInfo *item3 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
+        AstsOLSCURRItemInfo *item4 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "e4", 4);
 
         info->GroupMDEntriesCount = 4;
         info->GroupMDEntries[0] = item1;
@@ -461,7 +470,7 @@ public:
 
         this->incCurr->OnIncrementalRefresh_OLR_CURR(info);
 
-        OrderInfo<AstsOLSCURRItemInfo> *obi2 = this->incCurr->OrderCurr()->GetItem("s1", "t1");
+        OrderInfo<AstsOLSCURRItemInfo> *obi2 = this->incCurr->OrderCurr()->GetItem("symbol1", "t1");
         if(obi2->BuyQuotes()->Count() != 4)
             throw;
 
@@ -480,7 +489,7 @@ public:
         if(this->incCurr->OrderCurr()->UsedItemCount() != 2)
             throw;
 
-        OrderInfo<AstsOLSCURRItemInfo> *obi3 = this->incCurr->OrderCurr()->GetItem("s1", "t1");
+        OrderInfo<AstsOLSCURRItemInfo> *obi3 = this->incCurr->OrderCurr()->GetItem("symbol1", "t1");
         if(obi3->BuyQuotes()->Count() != 4)
             throw;
 
@@ -506,13 +515,14 @@ public:
     void Test_OnIncrementalRefresh_OLR_CURR_Add_SellQuotes() {
         this->Clear();
         this->TestDefaults();
+        this->AddSymbol("symbol1");
 
         AstsIncrementalOLRCURRInfo *info = this->m_helper->CreateAstsIncrementalOLRCURRInfo();
 
-        AstsOLSCURRItemInfo *item1 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "e1", 1);
-        AstsOLSCURRItemInfo *item2 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "e2", 2);
-        AstsOLSCURRItemInfo *item3 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "e3", 3);
-        AstsOLSCURRItemInfo *item4 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "e4", 4);
+        AstsOLSCURRItemInfo *item1 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "e1", 1);
+        AstsOLSCURRItemInfo *item2 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "e2", 2);
+        AstsOLSCURRItemInfo *item3 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "e3", 3);
+        AstsOLSCURRItemInfo *item4 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "e4", 4);
 
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item1;
@@ -525,7 +535,7 @@ public:
             throw;
         if(this->incCurr->OrderCurr()->Symbol(0)->Count() != 1)
             throw;
-        OrderInfo<AstsOLSCURRItemInfo> *obi = this->incCurr->OrderCurr()->GetItem("s1", "t1");
+        OrderInfo<AstsOLSCURRItemInfo> *obi = this->incCurr->OrderCurr()->GetItem("symbol1", "t1");
         if(obi == 0)
             throw;
         if(obi->SellQuotes()->Count() != 1)
@@ -549,7 +559,7 @@ public:
             throw;
         if(this->incCurr->OrderCurr()->Symbol(0)->Count() != 1)
             throw;
-        obi = this->incCurr->OrderCurr()->GetItem("s1", "t1");
+        obi = this->incCurr->OrderCurr()->GetItem("symbol1", "t1");
         if(obi == 0)
             throw;
         if(obi->SellQuotes()->Count() != 2)
@@ -581,7 +591,7 @@ public:
             throw;
         if(this->incCurr->OrderCurr()->Symbol(0)->Count() != 1)
             throw;
-        obi = this->incCurr->OrderCurr()->GetItem("s1", "t1");
+        obi = this->incCurr->OrderCurr()->GetItem("symbol1", "t1");
         if(obi == 0)
             throw;
         if(obi->SellQuotes()->Count() != 3)
@@ -622,7 +632,7 @@ public:
             throw;
         if(this->incCurr->OrderCurr()->Symbol(0)->Count() != 1)
             throw;
-        obi = this->incCurr->OrderCurr()->GetItem("s1", "t1");
+        obi = this->incCurr->OrderCurr()->GetItem("symbol1", "t1");
         if(obi == 0)
             throw;
         if(obi->SellQuotes()->Count() != 4)
@@ -664,12 +674,13 @@ public:
     void Test_OnIncrementalRefresh_OLR_CURR_Remove_SellQuotes() {
         this->Clear();
         this->TestDefaults();
+        this->AddSymbol("symbol1");
 
         AstsIncrementalOLRCURRInfo *info = this->m_helper->CreateAstsIncrementalOLRCURRInfo();
-        AstsOLSCURRItemInfo *item1 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "e1", 1);
-        AstsOLSCURRItemInfo *item2 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "e2", 2);
-        AstsOLSCURRItemInfo *item3 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "e3", 3);
-        AstsOLSCURRItemInfo *item4 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "e4", 4);
+        AstsOLSCURRItemInfo *item1 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "e1", 1);
+        AstsOLSCURRItemInfo *item2 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "e2", 2);
+        AstsOLSCURRItemInfo *item3 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "e3", 3);
+        AstsOLSCURRItemInfo *item4 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "e4", 4);
 
         info->GroupMDEntriesCount = 4;
         info->GroupMDEntries[0] = item1;
@@ -693,7 +704,7 @@ public:
         if(this->incCurr->OrderCurr()->UsedItemCount() != 1)
             throw;
 
-        OrderInfo<AstsOLSCURRItemInfo> *obi = this->incCurr->OrderCurr()->GetItem("s1", "t1");
+        OrderInfo<AstsOLSCURRItemInfo> *obi = this->incCurr->OrderCurr()->GetItem("symbol1", "t1");
         if(obi->SellQuotes()->Count() != 3)
             throw;
 
@@ -713,7 +724,7 @@ public:
         if(this->incCurr->OrderCurr()->UsedItemCount() != 1)
             throw;
 
-        obi = this->incCurr->OrderCurr()->GetItem("s1", "t1");
+        obi = this->incCurr->OrderCurr()->GetItem("symbol1", "t1");
         if(obi->SellQuotes()->Count() != 2)
             throw;
         if(!StringIdComparer::Equal(obi->SellQuotes()->Item(0)->MDEntryID, 2,"e1", 2))
@@ -730,7 +741,7 @@ public:
         if(this->incCurr->OrderCurr()->UsedItemCount() != 1)
             throw;
 
-        obi = this->incCurr->OrderCurr()->GetItem("s1", "t1");
+        obi = this->incCurr->OrderCurr()->GetItem("symbol1", "t1");
         if(obi->SellQuotes()->Count() != 1)
             throw;
         if(!StringIdComparer::Equal(obi->SellQuotes()->Item(0)->MDEntryID, 2,"e1", 2))
@@ -745,7 +756,7 @@ public:
         if(this->incCurr->OrderCurr()->UsedItemCount() != 1)
             throw;
 
-        obi = this->incCurr->OrderCurr()->GetItem("s1", "t1");
+        obi = this->incCurr->OrderCurr()->GetItem("symbol1", "t1");
         if(obi->SellQuotes()->Count() != 0)
             throw;
     }
@@ -753,12 +764,13 @@ public:
     void Test_OnIncrementalRefresh_OLR_CURR_Change_SellQuotes() {
         this->Clear();
         this->TestDefaults();
+        this->AddSymbol("symbol1");
 
         AstsIncrementalOLRCURRInfo *info = this->m_helper->CreateAstsIncrementalOLRCURRInfo();
-        AstsOLSCURRItemInfo *item1 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "e1", 1);
-        AstsOLSCURRItemInfo *item2 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "e2", 2);
-        AstsOLSCURRItemInfo *item3 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "e3", 3);
-        AstsOLSCURRItemInfo *item4 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "e4", 4);
+        AstsOLSCURRItemInfo *item1 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "e1", 1);
+        AstsOLSCURRItemInfo *item2 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "e2", 2);
+        AstsOLSCURRItemInfo *item3 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "e3", 3);
+        AstsOLSCURRItemInfo *item4 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "e4", 4);
 
         info->GroupMDEntriesCount = 4;
         info->GroupMDEntries[0] = item1;
@@ -768,7 +780,7 @@ public:
 
         this->incCurr->OnIncrementalRefresh_OLR_CURR(info);
 
-        OrderInfo<AstsOLSCURRItemInfo> *obi2 = this->incCurr->OrderCurr()->GetItem("s1", "t1");
+        OrderInfo<AstsOLSCURRItemInfo> *obi2 = this->incCurr->OrderCurr()->GetItem("symbol1", "t1");
         if(!StringIdComparer::Equal(obi2->SellQuotes()->Item(0)->MDEntryID, 2, "e1", 2))
             throw;
         if(!StringIdComparer::Equal(obi2->SellQuotes()->Item(1)->MDEntryID, 2, "e2", 2))
@@ -778,14 +790,14 @@ public:
         if(!StringIdComparer::Equal(obi2->SellQuotes()->Item(3)->MDEntryID, 2, "e4", 2))
             throw;
 
-        AstsOLSCURRItemInfo *item5 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 24, -3, 1, 3, mduaChange, mdetSellQuote, "e2", 5);
+        AstsOLSCURRItemInfo *item5 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "t1", 24, -3, 1, 3, mduaChange, mdetSellQuote, "e2", 5);
 
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item5;
 
         this->incCurr->OnIncrementalRefresh_OLR_CURR(info);
 
-        OrderInfo<AstsOLSCURRItemInfo> *obi = this->incCurr->OrderCurr()->GetItem("s1", "t1");
+        OrderInfo<AstsOLSCURRItemInfo> *obi = this->incCurr->OrderCurr()->GetItem("symbol1", "t1");
 
         AstsOLSCURRItemInfo *qt1 = obi->SellQuotes()->Item(0);
         AstsOLSCURRItemInfo *qt2 = obi->SellQuotes()->Item(1);
@@ -819,12 +831,13 @@ public:
     void Test_Clear_SellQuotes() {
         this->Clear();
         this->TestDefaults();
+        this->AddSymbol("symbol1");
 
         AstsIncrementalOLRCURRInfo *info = this->m_helper->CreateAstsIncrementalOLRCURRInfo();
-        AstsOLSCURRItemInfo *item1 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "e1", 1);
-        AstsOLSCURRItemInfo *item2 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "e2", 2);
-        AstsOLSCURRItemInfo *item3 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "e3", 3);
-        AstsOLSCURRItemInfo *item4 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "e4", 4);
+        AstsOLSCURRItemInfo *item1 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "e1", 1);
+        AstsOLSCURRItemInfo *item2 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "e2", 2);
+        AstsOLSCURRItemInfo *item3 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "e3", 3);
+        AstsOLSCURRItemInfo *item4 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "e4", 4);
 
         info->GroupMDEntriesCount = 4;
         info->GroupMDEntries[0] = item1;
@@ -838,7 +851,7 @@ public:
         if(this->incCurr->OrderCurr()->UsedItemCount() != 0)
             throw;
 
-        OrderInfo<AstsOLSCURRItemInfo> *obi = this->incCurr->OrderCurr()->GetItem("s1", "t1");
+        OrderInfo<AstsOLSCURRItemInfo> *obi = this->incCurr->OrderCurr()->GetItem("symbol1", "t1");
         if(obi->SellQuotes()->Count() != 0)
             throw;
     }
@@ -846,12 +859,13 @@ public:
     void Test_OnFullRefresh_OLS_CURR_SellQuotes() {
         this->Clear();
         this->TestDefaults();
+        this->AddSymbol("symbol1");
 
         AstsIncrementalOLRCURRInfo *info = this->m_helper->CreateAstsIncrementalOLRCURRInfo();
-        AstsOLSCURRItemInfo *item1 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "e1", 1);
-        AstsOLSCURRItemInfo *item2 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "e2", 2);
-        AstsOLSCURRItemInfo *item3 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "e3", 3);
-        AstsOLSCURRItemInfo *item4 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "e4", 4);
+        AstsOLSCURRItemInfo *item1 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "e1", 1);
+        AstsOLSCURRItemInfo *item2 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "e2", 2);
+        AstsOLSCURRItemInfo *item3 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "e3", 3);
+        AstsOLSCURRItemInfo *item4 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "e4", 4);
 
         info->GroupMDEntriesCount = 4;
         info->GroupMDEntries[0] = item1;
@@ -875,7 +889,7 @@ public:
         if(this->incCurr->OrderCurr()->UsedItemCount() != 2)
             throw;
 
-        OrderInfo<AstsOLSCURRItemInfo> *obi3 = this->incCurr->OrderCurr()->GetItem("s1", "t1");
+        OrderInfo<AstsOLSCURRItemInfo> *obi3 = this->incCurr->OrderCurr()->GetItem("symbol1", "t1");
         if(obi3->SellQuotes()->Count() != 4)
             throw;
 
@@ -939,7 +953,7 @@ public:
 
     void TestTableItem_CorrectBegin() {
         OrderInfo<AstsOLSCURRItemInfo> *tb = new OrderInfo<AstsOLSCURRItemInfo>();
-        tb->SymbolInfo(this->m_helper->CreateSymbol<OrderInfo<AstsOLSCURRItemInfo>>("s1"));
+        tb->SymbolInfo(this->m_helper->CreateSymbol<OrderInfo<AstsOLSCURRItemInfo>>("symbol1"));
 
         AstsOLSCURRItemInfo *item1 = this->m_helper->CreateOLSCurrItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e1");
         item1->RptSeq = 1;
@@ -957,7 +971,7 @@ public:
 
     void TestTableItem_IncorrectBegin() {
         OrderInfo<AstsOLSCURRItemInfo> *tb = new OrderInfo<AstsOLSCURRItemInfo>();
-        tb->SymbolInfo(this->m_helper->CreateSymbol<OrderInfo<AstsOLSCURRItemInfo>>("s1"));
+        tb->SymbolInfo(this->m_helper->CreateSymbol<OrderInfo<AstsOLSCURRItemInfo>>("symbol1"));
 
         AstsOLSCURRItemInfo *item1 = this->m_helper->CreateOLSCurrItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e1");
         item1->RptSeq = 2;
@@ -979,7 +993,7 @@ public:
 
     void TestTableItem_SkipMessage() {
         OrderInfo<AstsOLSCURRItemInfo> *tb = new OrderInfo<AstsOLSCURRItemInfo>();
-        tb->SymbolInfo(this->m_helper->CreateSymbol<OrderInfo<AstsOLSCURRItemInfo>>("s1"));
+        tb->SymbolInfo(this->m_helper->CreateSymbol<OrderInfo<AstsOLSCURRItemInfo>>("symbol1"));
 
         AstsOLSCURRItemInfo *item1 = this->m_helper->CreateOLSCurrItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e1");
         item1->RptSeq = 1;
@@ -1017,36 +1031,46 @@ public:
     }
 
     void TestTable_Default() {
-
-        this->m_table->Clear();
+        this->ClearSymbols();
 
         TestTableItemsAllocator(this->m_table);
+    }
 
-        
+    inline void AddSymbol(const char *symbol) {
+        this->incCurr->GetSymbolManager()->AddSymbol(symbol);
+        this->incCurr->OrderCurr()->AddSymbol(symbol);
+        this->m_table->AddSymbol(symbol);
+    }
+
+    void ClearSymbols() {
+        this->m_table->Clear();
+        this->incCurr->OrderCurr()->Clear();
+        this->incCurr->GetSymbolManager()->Clear();
     }
 
     void TestTable_AfterClear() {
-        this->m_table->Clear();
+        this->ClearSymbols();
+        this->AddSymbol("symbol1");
 
-        AstsOLSCURRItemInfo *item = this->m_helper->CreateOLRCurrItemInfo("s1", "session1", "e1");
+        AstsOLSCURRItemInfo *item = this->m_helper->CreateOLRCurrItemInfo("symbol1", "session1", "e1");
         item->RptSeq = 1;
 
-        AstsOLSCURRItemInfo *item2 = this->m_helper->CreateOLRCurrItemInfo("s1", "session1", "e1");
+        AstsOLSCURRItemInfo *item2 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "session1", "e1");
         item2->RptSeq = 2;
 
-        AstsOLSCURRItemInfo *item3 = this->m_helper->CreateOLRCurrItemInfo("s1", "session1", "e1");
+        AstsOLSCURRItemInfo *item3 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "session1", "e1");
         item3->RptSeq = 4;
 
-        this->m_table->ProcessIncremental(item);
-        this->m_table->ProcessIncremental(item2);
-        this->m_table->ProcessIncremental(item3);
+        this->m_table->ProcessIncremental(item, 0, item->TradingSessionID, item->TradingSessionIDLength);
+        this->m_table->ProcessIncremental(item2, 0, item->TradingSessionID, item->TradingSessionIDLength);
+        this->m_table->ProcessIncremental(item3, 0, item->TradingSessionID, item->TradingSessionIDLength);
 
         if(this->m_table->UsedItemCount() != 1)
             throw;
-        OrderInfo<AstsOLSCURRItemInfo> *tableItem = this->m_table->GetItem("s1", "session1");
+        OrderInfo<AstsOLSCURRItemInfo> *tableItem = this->m_table->GetItem("symbol1", "session1");
         if(tableItem->EntriesQueue()->MaxIndex() != 1) // 3 is empty and 4 has value
             throw;
-        this->m_table->Clear();;
+        this->m_table->Clear();
         if(this->m_table->UsedItemCount() != 0)
             throw;
         if(tableItem->RptSeq() != 0)
@@ -1060,67 +1084,67 @@ public:
     }
 
     void TestTable_CorrectBegin() {
+        this->ClearSymbols();
+        this->AddSymbol("symbol1");
 
-        this->m_table->Clear();
-
-        AstsOLSCURRItemInfo *item1 = this->m_helper->CreateOLRCurrItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsOLSCURRItemInfo *item1 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 1;
 
-        if(!this->m_table->ProcessIncremental(item1))
+        if(!this->m_table->ProcessIncremental(item1, 0, item1->TradingSessionID, item1->TradingSessionIDLength))
             throw;
-
-        
     }
 
     void TestTable_IncorrectBegin() {
-        this->m_table->Clear();
+        this->ClearSymbols();
+        this->AddSymbol("symbol1");
 
-        AstsOLSCURRItemInfo *item1 = this->m_helper->CreateOLRCurrItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsOLSCURRItemInfo *item1 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 2;
 
-        if(this->m_table->ProcessIncremental(item1))
+        if(this->m_table->ProcessIncremental(item1, 0, item1->TradingSessionID, item1->TradingSessionIDLength))
             throw;
-
-        
     }
 
     void TestTable_SkipMessages() {
-        this->m_table->Clear();
+        this->ClearSymbols();
+        this->AddSymbol("symbol1");
 
-        AstsOLSCURRItemInfo *item1 = this->m_helper->CreateOLRCurrItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsOLSCURRItemInfo *item1 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 1;
 
-        if(!this->m_table->ProcessIncremental(item1))
+        if(!this->m_table->ProcessIncremental(item1, 0, item1->TradingSessionID, item1->TradingSessionIDLength))
             throw;
 
-        AstsOLSCURRItemInfo *item2 = this->m_helper->CreateOLRCurrItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsOLSCURRItemInfo *item2 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                            MDEntryType::mdetBuyQuote, "e1", 3);
         item2->RptSeq = 3;
 
-        if(this->m_table->ProcessIncremental(item2))
+        if(this->m_table->ProcessIncremental(item2, 0, item2->TradingSessionID, item2->TradingSessionIDLength))
             throw;
 
         
     }
 
     void Test_2UsedItemsAfter2IncrementalMessages() {
-        this->m_table->Clear();
+        this->ClearSymbols();
+        this->AddSymbol("symbol1");
+        this->AddSymbol("symbol2");
 
-        AstsOLSCURRItemInfo *item1 = this->m_helper->CreateOLRCurrItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsOLSCURRItemInfo *item1 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 1;
 
-        if(!this->m_table->ProcessIncremental(item1))
+        if(!this->m_table->ProcessIncremental(item1, 0, item1->TradingSessionID, item1->TradingSessionIDLength))
             throw;
 
-        AstsOLSCURRItemInfo *item2 = this->m_helper->CreateOLRCurrItemInfo("SYMBOL2", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsOLSCURRItemInfo *item2 = this->m_helper->CreateOLRCurrItemInfo("symbol2", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item2->RptSeq = 1;
 
-        if(!this->m_table->ProcessIncremental(item2))
+        if(!this->m_table->ProcessIncremental(item2, 1, item2->TradingSessionID, item2->TradingSessionIDLength))
             throw;
 
         if(this->m_table->UsedItemCount() != 2)
@@ -1130,45 +1154,46 @@ public:
     }
 
     void TestTable_CorrectApplySnapshot() {
-        this->m_table->Clear();
+        this->ClearSymbols();
+        this->AddSymbol("symbol1");
 
-        AstsOLSCURRItemInfo *item1 = this->m_helper->CreateOLRCurrItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsOLSCURRItemInfo *item1 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 1;
 
-        this->m_table->ProcessIncremental(item1);
+        this->m_table->ProcessIncremental(item1, 0, item1->TradingSessionID, item1->TradingSessionIDLength);
 
-        AstsOLSCURRItemInfo *item2 = this->m_helper->CreateOLRCurrItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsOLSCURRItemInfo *item2 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                            MDEntryType::mdetBuyQuote, "e2", 3);
         item2->RptSeq = 3;
 
-        if(this->m_table->ProcessIncremental(item2))
+        if(this->m_table->ProcessIncremental(item2, 0, item2->TradingSessionID, item2->TradingSessionIDLength))
             throw;
 
-        AstsOLSCURRItemInfo *item3 = this->m_helper->CreateOLRCurrItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsOLSCURRItemInfo *item3 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                            MDEntryType::mdetBuyQuote, "e3", 4);
         item3->RptSeq = 4;
 
-        if(this->m_table->ProcessIncremental(item3))
+        if(this->m_table->ProcessIncremental(item3, 0, item3->TradingSessionID, item3->TradingSessionIDLength))
             throw;
 
-        AstsOLSCURRItemInfo *item4 = this->m_helper->CreateOLRCurrItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsOLSCURRItemInfo *item4 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                            MDEntryType::mdetBuyQuote, "e4", 5);
         item4->RptSeq = 5;
 
-        if(this->m_table->ProcessIncremental(item4))
+        if(this->m_table->ProcessIncremental(item4, 0, item4->TradingSessionID, item4->TradingSessionIDLength))
             throw;
 
-        AstsOLSCURRItemInfo *item5 = this->m_helper->CreateOLRCurrItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsOLSCURRItemInfo *item5 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                            MDEntryType::mdetBuyQuote, "e5", 3);
         item5->RptSeq = 3;
 
-        AstsOLSCURRInfo *info = this->m_helper->CreateOLSCurrInfo("s1", "session1");
+        AstsOLSCURRInfo *info = this->m_helper->CreateOLSCurrInfo("symbol1", "session1");
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item5;
         info->RptSeq = 3;
 
-        OrderInfo<AstsOLSCURRItemInfo> *tb = this->m_table->GetItem("s1", "session1");
+        OrderInfo<AstsOLSCURRItemInfo> *tb = this->m_table->GetItem("symbol1", "session1");
 
         this->m_table->ObtainSnapshotItem(info);
         this->m_table->StartProcessSnapshot();
@@ -1196,42 +1221,42 @@ public:
     }
 
     void TestTable_CorrectApplySnapshot_2() {
+        this->ClearSymbols();
+        this->AddSymbol("symbol1");
 
-        this->m_table->Clear();
-
-        AstsOLSCURRItemInfo *item1 = this->m_helper->CreateOLRCurrItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsOLSCURRItemInfo *item1 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 1;
 
-        this->m_table->ProcessIncremental(item1);
+        this->m_table->ProcessIncremental(item1, 0, item1->TradingSessionID, item1->TradingSessionIDLength);
 
-        AstsOLSCURRItemInfo *item3 = this->m_helper->CreateOLRCurrItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsOLSCURRItemInfo *item3 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                            MDEntryType::mdetBuyQuote, "e3", 4);
         item3->RptSeq = 4;
 
-        if(this->m_table->ProcessIncremental(item3))
+        if(this->m_table->ProcessIncremental(item3, 0, item3->TradingSessionID, item3->TradingSessionIDLength))
             throw;
 
-        AstsOLSCURRItemInfo *item4 = this->m_helper->CreateOLRCurrItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsOLSCURRItemInfo *item4 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                            MDEntryType::mdetBuyQuote, "e4", 5);
         item4->RptSeq = 5;
 
-        if(this->m_table->ProcessIncremental(item4))
+        if(this->m_table->ProcessIncremental(item4, 0, item4->TradingSessionID, item4->TradingSessionIDLength))
             throw;
 
-        AstsOLSCURRInfo *info1 = this->m_helper->CreateOLSCurrInfo("s1", "session1");
+        AstsOLSCURRInfo *info1 = this->m_helper->CreateOLSCurrInfo("symbol1", "session1");
         info1->GroupMDEntriesCount = 1;
         info1->RptSeq = 3;
         info1->RouteFirst = true;
         info1->GroupMDEntries[0] = this->m_helper->CreateOLSCurrItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e2");
 
-        AstsOLSCURRInfo *info2 = this->m_helper->CreateOLSCurrInfo("s1", "session1");
+        AstsOLSCURRInfo *info2 = this->m_helper->CreateOLSCurrInfo("symbol1", "session1");
         info2->GroupMDEntriesCount = 1;
         info2->RptSeq = 3;
         info2->RouteFirst = true;
         info2->GroupMDEntries[0] = this->m_helper->CreateOLSCurrItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e2");
 
-        OrderInfo<AstsOLSCURRItemInfo> *tb = this->m_table->GetItem("s1", "session1");
+        OrderInfo<AstsOLSCURRItemInfo> *tb = this->m_table->GetItem("symbol1", "session1");
 
         this->m_table->ObtainSnapshotItem(info1);
         this->m_table->StartProcessSnapshot();
@@ -1253,45 +1278,46 @@ public:
     }
 
     void TestTable_IncorrectApplySnapshot() {
-        this->m_table->Clear();
+        this->ClearSymbols();
+        this->AddSymbol("symbol1");
 
-        AstsOLSCURRItemInfo *item1 = this->m_helper->CreateOLRCurrItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsOLSCURRItemInfo *item1 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 1;
 
-        this->m_table->ProcessIncremental(item1);
+        this->m_table->ProcessIncremental(item1, 0, item1->TradingSessionID, item1->TradingSessionIDLength);
 
-        AstsOLSCURRItemInfo *item2 = this->m_helper->CreateOLRCurrItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsOLSCURRItemInfo *item2 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                            MDEntryType::mdetBuyQuote, "e2", 4);
         item2->RptSeq = 4;
 
-        if(this->m_table->ProcessIncremental(item2))
+        if(this->m_table->ProcessIncremental(item2, 0, item2->TradingSessionID, item2->TradingSessionIDLength))
             throw;
 
-        AstsOLSCURRItemInfo *item3 = this->m_helper->CreateOLRCurrItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsOLSCURRItemInfo *item3 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                            MDEntryType::mdetBuyQuote, "e3", 5);
         item3->RptSeq = 5;
 
-        if(this->m_table->ProcessIncremental(item3))
+        if(this->m_table->ProcessIncremental(item3, 0, item3->TradingSessionID, item3->TradingSessionIDLength))
             throw;
 
-        AstsOLSCURRItemInfo *item4 = this->m_helper->CreateOLRCurrItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsOLSCURRItemInfo *item4 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                            MDEntryType::mdetBuyQuote, "e4", 6);
         item4->RptSeq = 6;
 
-        if(this->m_table->ProcessIncremental(item4))
+        if(this->m_table->ProcessIncremental(item4, 0, item4->TradingSessionID, item4->TradingSessionIDLength))
             throw;
 
-        AstsOLSCURRItemInfo *item5 = this->m_helper->CreateOLRCurrItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsOLSCURRItemInfo *item5 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                            MDEntryType::mdetBuyQuote, "e5", 2);
         item5->RptSeq = 2;
 
-        AstsOLSCURRInfo *info = this->m_helper->CreateOLSCurrInfo("s1", "session1");
+        AstsOLSCURRInfo *info = this->m_helper->CreateOLSCurrInfo("symbol1", "session1");
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item5;
         info->RptSeq = 2;
 
-        OrderInfo<AstsOLSCURRItemInfo> *tb = this->m_table->GetItem("s1", "session1");
+        OrderInfo<AstsOLSCURRItemInfo> *tb = this->m_table->GetItem("symbol1", "session1");
 
         this->m_table->ObtainSnapshotItem(info);
         this->m_table->StartProcessSnapshot();
@@ -1315,38 +1341,39 @@ public:
     }
 
     void TestTable_IncorrectApplySnapshot_WhenMessageSkipped() {
-        this->m_table->Clear();
+        this->ClearSymbols();
+        this->AddSymbol("symbol1");
 
-        AstsOLSCURRItemInfo *item1 = this->m_helper->CreateOLRCurrItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsOLSCURRItemInfo *item1 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 1;
 
-        this->m_table->ProcessIncremental(item1);
+        this->m_table->ProcessIncremental(item1, 0, item1->TradingSessionID, item1->TradingSessionIDLength);
 
-        AstsOLSCURRItemInfo *item2 = this->m_helper->CreateOLRCurrItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsOLSCURRItemInfo *item2 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                            MDEntryType::mdetBuyQuote, "e2", 4);
         item2->RptSeq = 4;
 
-        if(this->m_table->ProcessIncremental(item2))
+        if(this->m_table->ProcessIncremental(item2, 0, item2->TradingSessionID, item2->TradingSessionIDLength))
             throw;
 
-        AstsOLSCURRItemInfo *item4 = this->m_helper->CreateOLRCurrItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsOLSCURRItemInfo *item4 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                            MDEntryType::mdetBuyQuote, "e4", 6);
         item4->RptSeq = 6;
 
-        if(this->m_table->ProcessIncremental(item4))
+        if(this->m_table->ProcessIncremental(item4, 0, item4->TradingSessionID, item4->TradingSessionIDLength))
             throw;
 
-        AstsOLSCURRItemInfo *item5 = this->m_helper->CreateOLRCurrItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsOLSCURRItemInfo *item5 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                            MDEntryType::mdetBuyQuote, "e5", 3);
         item5->RptSeq = 3;
 
-        AstsOLSCURRInfo *info = this->m_helper->CreateOLSCurrInfo("s1", "session1");
+        AstsOLSCURRInfo *info = this->m_helper->CreateOLSCurrInfo("symbol1", "session1");
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item5;
         info->RptSeq = 3;
 
-        OrderInfo<AstsOLSCURRItemInfo> *tb = this->m_table->GetItem("s1", "session1");
+        OrderInfo<AstsOLSCURRItemInfo> *tb = this->m_table->GetItem("symbol1", "session1");
 
         this->m_table->ObtainSnapshotItem(info);
         this->m_table->StartProcessSnapshot();
@@ -1392,20 +1419,21 @@ public:
 
     void TestConnection_TestCorrectIncMessages() {
         this->Clear();
+        this->AddSymbol("symbol1");
 
         SendMessages(incCurr, new TestTemplateInfo*[3] {
                 new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OLR_CURR, 1,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "session1", "e1", 1, 1, 1, 1, 1),
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "session1", "e2", 2, 2, 1, 2, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "e1", 1, 1, 1, 1, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "e2", 2, 2, 1, 2, 1),
                                      }, 2),
                 new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OLR_CURR, 2,
                                      new TestTemplateItemInfo*[1] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "session1", "e3", 3, 3, 1, 3, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "e3", 3, 3, 1, 3, 1),
                                      }, 1),
                 new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OLR_CURR, 3,
                                      new TestTemplateItemInfo*[1] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "session1", "e4", 4, 3, 1, 3, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "e4", 4, 3, 1, 3, 1),
                                      }, 1)
         }, 3);
 
@@ -1417,7 +1445,7 @@ public:
 
         if(incCurr->m_waitTimer->Active()) // everything is ok = timer should not be activated
             throw;
-        if(incCurr->OrderCurr()->GetItem("s1", "session1")->BuyQuotes()->Count() != 4)
+        if(incCurr->OrderCurr()->GetItem("symbol1", "session1")->BuyQuotes()->Count() != 4)
             throw;
     }
 
@@ -1428,16 +1456,17 @@ public:
      * */
     void TestConnection_TestIncMessagesLost_AndWhenAppeared() {
         this->Clear();
+        this->AddSymbol("symbol1");
 
         SendMessages(incCurr, new TestTemplateInfo*[2] {
                 new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OLR_CURR, 1,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "session1", "e1", 1, 1, 1, 1, 1),
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "session1", "e2", 2, 2, 1, 2, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "e1", 1, 1, 1, 1, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "e2", 2, 2, 1, 2, 1),
                                      }, 2),
                 new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OLR_CURR, 3,
                                      new TestTemplateItemInfo*[1] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "session1", "e3", 4, 3, 1, 3, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "e3", 4, 3, 1, 3, 1),
                                      }, 1)
         }, 2);
         if(!incCurr->Listen_Atom_Incremental_Core())
@@ -1445,7 +1474,7 @@ public:
 
         this->TestTableItemsAllocator(incCurr->OrderCurr());
 
-        OrderInfo<AstsOLSCURRItemInfo> *item = incCurr->OrderCurr()->GetItem("s1", "session1");
+        OrderInfo<AstsOLSCURRItemInfo> *item = incCurr->OrderCurr()->GetItem("symbol1", "session1");
         if(item->BuyQuotes()->Count() != 2)
             throw;
         if(!incCurr->m_waitTimer->Active()) // not all messages was processed - some messages was skipped
@@ -1463,7 +1492,7 @@ public:
         SendMessages(incCurr, new TestTemplateInfo*[1] {
                 new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OLR_CURR, 2,
                                      new TestTemplateItemInfo*[1] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "session1", "e4", 3, 1, 1, 1, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "e4", 3, 1, 1, 1, 1),
                                      }, 1)
         }, 1);
 
@@ -1482,16 +1511,17 @@ public:
 
     void TestConnection_TestInc2MessagesLost_AppearedThen2Messages() {
         this->Clear();
+        this->AddSymbol("symbol1");
 
         SendMessages(incCurr, new TestTemplateInfo*[2] {
                 new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OLR_CURR, 1,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "session1", "e1", 1, 1, 1, 1, 1),
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "session1", "e2", 2, 2, 1, 2, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "e1", 1, 1, 1, 1, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "e2", 2, 2, 1, 2, 1),
                                      }, 2),
                 new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OLR_CURR, 3,
                                      new TestTemplateItemInfo*[1] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "session1", "e5", 5, 3, 1, 3, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "e5", 5, 3, 1, 3, 1),
                                      }, 1)
         }, 2);
         if(!incCurr->Listen_Atom_Incremental_Core())
@@ -1499,7 +1529,7 @@ public:
 
         this->TestTableItemsAllocator(incCurr->OrderCurr());
 
-        OrderInfo<AstsOLSCURRItemInfo> *item = incCurr->OrderCurr()->GetItem("s1", "session1");
+        OrderInfo<AstsOLSCURRItemInfo> *item = incCurr->OrderCurr()->GetItem("symbol1", "session1");
         if(item->BuyQuotes()->Count() != 2)
             throw;
         if(!incCurr->m_waitTimer->Active()) // not all messages was processed - some messages was skipped
@@ -1519,8 +1549,8 @@ public:
         SendMessages(incCurr, new TestTemplateInfo*[1] {
                 new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OLR_CURR, 2,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "session1", "e3", 3, 1, 1, 1, 1),
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "session1", "e4", 4, 1, 1, 1, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "e3", 3, 1, 1, 1, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "e4", 4, 1, 1, 1, 1),
                                      }, 2)
         }, 1);
 
@@ -1539,16 +1569,17 @@ public:
 
     void TestConnection_TestInc2MessagesLost_AppearedSeparately_1_2() {
         this->Clear();
+        this->AddSymbol("symbol1");
 
         SendMessages(incCurr, new TestTemplateInfo*[2] {
                 new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OLR_CURR, 1,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "session1", "e1", 1, 1, 1, 1, 1),
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "session1", "e2", 2, 2, 1, 2, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "e1", 1, 1, 1, 1, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "e2", 2, 2, 1, 2, 1),
                                      }, 2),
                 new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OLR_CURR, 4,
                                      new TestTemplateItemInfo*[1] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "session1", "e5", 5, 3, 1, 3, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "e5", 5, 3, 1, 3, 1),
                                      }, 1)
         }, 2);
         if(!incCurr->Listen_Atom_Incremental_Core())
@@ -1556,7 +1587,7 @@ public:
 
         this->TestTableItemsAllocator(incCurr->OrderCurr());
 
-        OrderInfo<AstsOLSCURRItemInfo> *item = incCurr->OrderCurr()->GetItem("s1", "session1");
+        OrderInfo<AstsOLSCURRItemInfo> *item = incCurr->OrderCurr()->GetItem("symbol1", "session1");
         if(item->BuyQuotes()->Count() != 2)
             throw;
         if(!incCurr->m_waitTimer->Active()) // not all messages was processed - some messages was skipped
@@ -1576,7 +1607,7 @@ public:
         SendMessages(incCurr, new TestTemplateInfo*[1] {
                 new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OLR_CURR, 2,
                                      new TestTemplateItemInfo*[1] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "session1", "e3", 3, 1, 1, 1, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "e3", 3, 1, 1, 1, 1),
                                      }, 1)
         }, 1);
 
@@ -1599,7 +1630,7 @@ public:
         SendMessages(incCurr, new TestTemplateInfo*[1] {
                 new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OLR_CURR, 3,
                                      new TestTemplateItemInfo*[1] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "session1", "e3", 4, 1, 1, 1, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "e3", 4, 1, 1, 1, 1),
                                      }, 1)
         }, 1);
 
@@ -1620,16 +1651,17 @@ public:
 
     void TestConnection_TestInc2MessagesLost_AppearedSeparately_2_1() {
         this->Clear();
+        this->AddSymbol("symbol1");
 
         SendMessages(incCurr, new TestTemplateInfo*[2] {
                 new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OLR_CURR, 1,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "session1", "e1", 1, 1, 1, 1, 1),
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "session1", "e2", 2, 2, 1, 2, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "e1", 1, 1, 1, 1, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "e2", 2, 2, 1, 2, 1),
                                      }, 2),
                 new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OLR_CURR, 4,
                                      new TestTemplateItemInfo*[1] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "session1", "e5", 5, 3, 1, 3, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "e5", 5, 3, 1, 3, 1),
                                      }, 1)
         }, 2);
         if(!incCurr->Listen_Atom_Incremental_Core())
@@ -1637,7 +1669,7 @@ public:
 
         this->TestTableItemsAllocator(incCurr->OrderCurr());
 
-        OrderInfo<AstsOLSCURRItemInfo> *item = incCurr->OrderCurr()->GetItem("s1", "session1");
+        OrderInfo<AstsOLSCURRItemInfo> *item = incCurr->OrderCurr()->GetItem("symbol1", "session1");
         if(item->BuyQuotes()->Count() != 2)
             throw;
         if(!incCurr->m_waitTimer->Active()) // not all messages was processed - some messages was skipped
@@ -1657,7 +1689,7 @@ public:
         SendMessages(incCurr, new TestTemplateInfo*[1] {
                 new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OLR_CURR, 3,
                                      new TestTemplateItemInfo*[1] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "session1", "e3", 4, 1, 1, 1, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "e3", 4, 1, 1, 1, 1),
                                      }, 1)
         }, 1);
 
@@ -1680,7 +1712,7 @@ public:
         SendMessages(incCurr, new TestTemplateInfo*[1] {
                 new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OLR_CURR, 2,
                                      new TestTemplateItemInfo*[1] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "session1", "e3", 3, 1, 1, 1, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "e3", 3, 1, 1, 1, 1),
                                      }, 1)
         }, 1);
 
@@ -1701,6 +1733,7 @@ public:
 
     void TestConnection_TestIncMessageLost_AndWaitTimerElapsed() {
         this->Clear();
+        this->AddSymbol("symbol1");
 
         if(snapCurr->State() != FeedConnectionState::fcsSuspend)
             throw;
@@ -1708,12 +1741,12 @@ public:
         SendMessages(incCurr, new TestTemplateInfo*[2] {
                 new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OLR_CURR, 1,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "session1", "e1", 1, 1, 1, 1, 1),
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "session1", "e2", 2, 2, 1, 2, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "e1", 1, 1, 1, 1, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "e2", 2, 2, 1, 2, 1),
                                      }, 2),
                 new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OLR_CURR, 4,
                                      new TestTemplateItemInfo*[1] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "session1", "e5", 5, 3, 1, 3, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "e5", 5, 3, 1, 3, 1),
                                      }, 1)
         }, 2);
         if(!incCurr->Listen_Atom_Incremental_Core())
@@ -1721,11 +1754,11 @@ public:
 
         this->TestTableItemsAllocator(incCurr->OrderCurr());
 
-        OrderInfo<AstsOLSCURRItemInfo> *item = incCurr->OrderCurr()->GetItem("s1", "session1");
+        OrderInfo<AstsOLSCURRItemInfo> *item = incCurr->OrderCurr()->GetItem("symbol1", "session1");
         if(!incCurr->m_waitTimer->Active()) // not all messages was processed - some messages was skipped
             throw;
         // wait
-        while(incCurr->m_waitTimer->ElapsedMilliseconds() < incCurr->WaitIncrementalMaxTimeMs());
+        while(incCurr->m_waitTimer->ElapsedMilliseconds() < incCurr->WaitLostIncrementalMessageMaxTimeMs());
         if(!incCurr->Listen_Atom_Incremental_Core())
             throw;
         //entering snapshot mode
@@ -1794,6 +1827,7 @@ public:
 
     void TestConnection_OneMessageReceived() {
         this->Clear();
+        this->AddSymbol("symbol1");
         incCurr->StartListenSnapshot();
 
         //no messages first half time
@@ -1809,7 +1843,7 @@ public:
         }
 
         SendMessages(snapCurr, new TestTemplateInfo*[1] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OLS_CURR, 2, "s1", "session1", false, false,
+                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OLS_CURR, 2, "symbol1", "session1", false, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -1833,10 +1867,11 @@ public:
     void TestConnection_RouteFirstReceived_Empty() {
 
         this->Clear();
+        this->AddSymbol("symbol1");
         incCurr->StartListenSnapshot();
 
         SendMessages(snapCurr, new TestTemplateInfo*[1] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OLS_CURR, 2, "s1", "session1", true, false,
+                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OLS_CURR, 2, "symbol1", "session1", true, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -1879,10 +1914,12 @@ public:
 
     void TestConnection_RouteFirstReceived_AfterSomeDummyMessages() {
         this->Clear();
+        this->AddSymbol("symbol1");
+
         incCurr->StartListenSnapshot();
 
         SendMessages(snapCurr, new TestTemplateInfo*[1] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OLS_CURR, 1, "s1", "session1", false, false,
+                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OLS_CURR, 1, "symbol1", "session1", false, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -1903,7 +1940,7 @@ public:
             throw;
 
         SendMessages(snapCurr, new TestTemplateInfo*[1] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OLS_CURR, 2, "s1", "session1", false, false,
+                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OLS_CURR, 2, "symbol1", "session1", false, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -1924,12 +1961,12 @@ public:
             throw;
 
         SendMessages(snapCurr, new TestTemplateInfo*[2] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OLS_CURR, 3, "s1", "session1", false, false,
+                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OLS_CURR, 3, "symbol1", "session1", false, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
                                      }, 2, 4),
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OLS_CURR, 4, "s1", "session1", false, false,
+                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OLS_CURR, 4, "symbol1", "session1", false, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -1950,12 +1987,12 @@ public:
             throw;
 
         SendMessages(snapCurr, new TestTemplateInfo*[2] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OLS_CURR, 5, "s1", "session1", false, false,
+                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OLS_CURR, 5, "symbol1", "session1", false, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
                                      }, 2, 4),
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OLS_CURR, 6, "s1", "session1", true, false,
+                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OLS_CURR, 6, "symbol1", "session1", true, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -1997,10 +2034,12 @@ public:
 
     void TestConnection_LastFragmentReceivedBeforeRouteFirst() {
         this->Clear();
+        this->AddSymbol("symbol1");
+
         incCurr->StartListenSnapshot();
 
         SendMessages(snapCurr, new TestTemplateInfo*[1] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OLS_CURR, 1, "s1", "session1", false, true,
+                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OLS_CURR, 1, "symbol1", "session1", false, true,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -2025,10 +2064,11 @@ public:
 
     void TestConnection_SnapshotSomeMessagesNotReceived() {
         this->Clear();
+        this->AddSymbol("symbol1");
         incCurr->StartListenSnapshot();
 
         SendMessages(snapCurr, new TestTemplateInfo*[1] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OLS_CURR, 1, "s1", "session1", false, false,
+                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OLS_CURR, 1, "symbol1", "session1", false, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -2039,7 +2079,7 @@ public:
 
         // message seq 2 lost
         SendMessages(snapCurr, new TestTemplateInfo*[1] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OLS_CURR, 3, "s1", "session1", false, false,
+                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OLS_CURR, 3, "symbol1", "session1", false, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -2078,10 +2118,11 @@ public:
 
     void TestConnection_SnapshotSomeMessagesReceivedLater() {
         this->Clear();
+        this->AddSymbol("symbol1");
         incCurr->StartListenSnapshot();
 
         SendMessages(snapCurr, new TestTemplateInfo*[1] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OLS_CURR, 1, "s1", "session1", false, false,
+                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OLS_CURR, 1, "symbol1", "session1", false, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -2092,7 +2133,7 @@ public:
 
         // message seq 2 lost
         SendMessages(snapCurr, new TestTemplateInfo*[1] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OLS_CURR, 3, "s1", "session1", false, false,
+                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OLS_CURR, 3, "symbol1", "session1", false, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -2124,7 +2165,7 @@ public:
             throw;
 
         SendMessages(snapCurr, new TestTemplateInfo*[1] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OLS_CURR, 2, "s1", "session1", false, false,
+                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OLS_CURR, 2, "symbol1", "session1", false, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -2158,10 +2199,11 @@ public:
 
     void TestConnection_TestSnapshotCollect() {
         this->Clear();
+        this->AddSymbol("symbol1");
         incCurr->StartListenSnapshot();
 
         SendMessages(snapCurr, new TestTemplateInfo*[1] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OLS_CURR, 2, "s1", "session1", true, true,
+                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OLS_CURR, 2, "symbol1", "session1", true, true,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -2175,7 +2217,7 @@ public:
 
         snapCurr->Listen_Atom_Snapshot_Core();
         //snapshot received and should be applied
-        OrderInfo<AstsOLSCURRItemInfo> *tableItem = incCurr->OrderCurr()->GetItem("s1", "session1");
+        OrderInfo<AstsOLSCURRItemInfo> *tableItem = incCurr->OrderCurr()->GetItem("symbol1", "session1");
 
         this->TestTableItemsAllocator(incCurr->OrderCurr());
 
@@ -2196,6 +2238,7 @@ public:
 
     void TestConnection_TestSnapshotMessageLostAndTimeExpired() {
         this->Clear();
+        this->AddSymbol("symbol1");
         incCurr->StartListenSnapshot();
 
         snapCurr->WaitSnapshotMaxTimeMs(100);
@@ -2203,12 +2246,12 @@ public:
             throw;
 
         SendMessages(snapCurr, new TestTemplateInfo*[2] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OLS_CURR, 2, "s1", "session1", true, false,
+                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OLS_CURR, 2, "symbol1", "session1", true, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
                                      }, 2, 4),
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OLS_CURR, 4, "s1", "session1", false, true,
+                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OLS_CURR, 4, "symbol1", "session1", false, true,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -2259,6 +2302,8 @@ public:
      * */
     void TestConnection_TestMessagesLost_2Items_SnapshotReceivedForOneItem() {
         this->Clear();
+        this->AddSymbol("symbol1");
+        this->AddSymbol("symbol2");
         incCurr->StartListenSnapshot();
 
         this->TestTableItemsAllocator(incCurr->OrderCurr());
@@ -2266,12 +2311,12 @@ public:
         SendMessages(incCurr, new TestTemplateInfo*[4] {
                 new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OLR_CURR, 1,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo("s1", "e1", 1),
+                                             new TestTemplateItemInfo("symbol1", "e1", 1),
                                              new TestTemplateItemInfo("symbol2", "e1", 1),
                                      }, 2),
                 new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OLR_CURR, 3,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo("s1", "e1", 4),
+                                             new TestTemplateItemInfo("symbol1", "e1", 4),
                                              new TestTemplateItemInfo("symbol2", "e1", 4),
                                      }, 2)
         }, 2);
@@ -2287,11 +2332,11 @@ public:
         if(!incCurr->m_waitTimer->Active()) // not all messages was processed - some messages was skipped
             throw;
         // wait
-        while(incCurr->m_waitTimer->ElapsedMilliseconds() < incCurr->WaitIncrementalMaxTimeMs());
+        while(incCurr->m_waitTimer->ElapsedMilliseconds() < incCurr->WaitLostIncrementalMessageMaxTimeMs());
 
         // sending snapshot for only one item and rpt seq before last incremental message
         SendMessages(snapCurr, new TestTemplateInfo*[4] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OLS_CURR, 2, "s1", "session1", true, true,
+                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OLS_CURR, 2, "symbol1", "session1", true, true,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e1"),
@@ -2304,7 +2349,7 @@ public:
 
         // snapshot for first item should be received and immediately applied then, should be applied incremental messages in que,
         // but connection should not be closed - because not all items were updated
-        OrderInfo<AstsOLSCURRItemInfo> *item1 = incCurr->OrderCurr()->GetItem("s1", "session1");
+        OrderInfo<AstsOLSCURRItemInfo> *item1 = incCurr->OrderCurr()->GetItem("symbol1", "session1");
         OrderInfo<AstsOLSCURRItemInfo> *item2 = incCurr->OrderCurr()->GetItem("symbol2", "session1");
         if(item1->HasEntries())
             throw;
@@ -2322,12 +2367,12 @@ public:
     void TestConnection_SkipHearthBeatMessages_Incremental() {
         this->Clear();
 
-        this->incCurr->OrderCurr()->Add("s1", "session1");
+        this->AddSymbol("symbol1", "session1");
         this->incCurr->StartListenSnapshot();
         if(snapCurr->State() != FeedConnectionState::fcsListenSnapshot)
             throw;
         SendMessages(incCurr, snapCurr,
-                     "olr entry s1 e1, lost olr entry s1 e2, wait_snap, hbeat, hbeat, hbeat",
+                     "olr entry symbol1 e1, lost olr entry symbol1 e2, wait_snap, hbeat, hbeat, hbeat",
                      "                                                  hbeat, hbeat, hbeat",
                      30);
         if(incCurr->Packet(4)->m_address == 0 || incCurr->Packet(5)->m_address == 0 || incCurr->Packet(6)->m_address == 0)
@@ -2344,9 +2389,11 @@ public:
 
     void TestConnection_AllSymbolsAreOk() {
         this->Clear();
+        this->AddSymbol("symbol1");
+        this->AddSymbol("symbol2");
 
         SendMessages(incCurr, snapCurr,
-                     "olr entry s1 e1, olr entry s1 e2, olr entry s1 e3, olr entry symbol2 e1, olr entry symbol2 e2",
+                     "olr entry symbol1 e1, olr entry symbol1 e2, olr entry symbol1 e3, olr entry symbol2 e1, olr entry symbol2 e2",
                      "",
                      30);
         if(incCurr->m_orderTableCurr->UsedItemCount() != 2)
@@ -2365,9 +2412,11 @@ public:
 
     void TestConnection_NotAllSymbolsAreOk() {
         this->Clear();
+        this->AddSymbol("symbol1");
+        this->AddSymbol("symbol2");
 
         SendMessages(incCurr, snapCurr,
-                     "olr entry s1 e1, lost olr entry s1 e2, olr entry s1 e3, olr entry symbol2 e1, olr entry symbol2 e2",
+                     "olr entry symbol1 e1, lost olr entry symbol1 e2, olr entry symbol1 e3, olr entry symbol2 e1, olr entry symbol2 e2",
                      "",
                      30);
         if(incCurr->m_orderTableCurr->UsedItemCount() != 2)
@@ -2384,9 +2433,12 @@ public:
 
     void TestConnection_AllSymbolsAreOkButOneMessageLost() {
         this->Clear();
+        this->AddSymbol("symbol1");
+        this->AddSymbol("symbol2");
+        this->AddSymbol("symbol3");
 
         SendMessages(incCurr, snapCurr,
-                     "olr entry s1 e1, lost olr entry symbol3 e2, olr entry s1 e3, olr entry symbol2 e1, olr entry symbol2 e2",
+                     "olr entry symbol1 e1, lost olr entry symbol3 e2, olr entry symbol1 e3, olr entry symbol2 e1, olr entry symbol2 e2",
                      "",
                      30);
 
@@ -2402,11 +2454,13 @@ public:
 
     void TestConnection_ParallelWorkingIncrementalAndSnapshot_1() {
         this->Clear();
+        this->AddSymbol("symbol1");
+        this->AddSymbol("symbol3");
 
         if(snapCurr->State() != FeedConnectionState::fcsSuspend)
             throw;
         SendMessages(incCurr, snapCurr,
-                     "olr entry s1 e1, lost olr entry symbol3 e1",
+                     "olr entry symbol1 e1, lost olr entry symbol3 e1",
                      "",
                      30);
         if(incCurr->HasPotentiallyLostPackets())
@@ -2419,11 +2473,13 @@ public:
 
     void TestConnection_ParallelWorkingIncrementalAndSnapshot_2() {
         this->Clear();
+        this->AddSymbol("symbol1");
+        this->AddSymbol("symbol3");
 
         if(snapCurr->State() != FeedConnectionState::fcsSuspend)
             throw;
         SendMessages(incCurr, snapCurr,
-                     "olr entry s1 e1, lost olr entry symbol3 e1, hbeat",
+                     "olr entry symbol1 e1, lost olr entry symbol3 e1, hbeat",
                      "",
                      30);
         if(!incCurr->HasPotentiallyLostPackets())
@@ -2432,7 +2488,7 @@ public:
             throw;
         if(!incCurr->m_waitTimer->Active())
             throw;
-        if(incCurr->m_waitTimer->IsElapsedMilliseconds(incCurr->m_waitIncrementalMaxTimeMs))
+        if(incCurr->m_waitTimer->IsElapsedMilliseconds(incCurr->m_waitLostIncrementalMessageMaxTimeMs))
             throw;
         if(snapCurr->State() != FeedConnectionState::fcsSuspend)
             throw;
@@ -2441,13 +2497,13 @@ public:
     void TestConnection_ParallelWorkingIncrementalAndSnapshot_2_1() {
         this->Clear();
 
-        incCurr->OrderCurr()->Add("s1", "session1");
-        incCurr->OrderCurr()->Add("symbol3", "session1");
+        this->AddSymbol("symbol1", "session1");
+        this->AddSymbol("symbol3", "session1");
 
         if(snapCurr->State() != FeedConnectionState::fcsSuspend)
             throw;
         SendMessages(incCurr, snapCurr,
-                     "olr entry s1 e1, lost olr entry symbol3 e1, hbeat, hbeat",
+                     "olr entry symbol1 e1, lost olr entry symbol3 e1, hbeat, hbeat",
                      "",
                      30);
         if(incCurr->SymbolsToRecvSnapshotCount() != 2)
@@ -2471,13 +2527,13 @@ public:
     void TestConnection_ParallelWorkingIncrementalAndSnapshot_3() {
         this->Clear();
 
-        incCurr->OrderCurr()->Add("s1", "session1");
-        incCurr->OrderCurr()->Add("symbol3", "session1");
+        this->AddSymbol("symbol1", "session1");
+        this->AddSymbol("symbol3", "session1");
 
         if(snapCurr->State() != FeedConnectionState::fcsSuspend)
             throw;
         SendMessages(incCurr, snapCurr,
-                     "olr entry s1 e1, lost olr entry symbol3 e1, hbeat, hbeat, hbeat",
+                     "olr entry symbol1 e1, lost olr entry symbol3 e1, hbeat, hbeat, hbeat",
                      "",
                      30);
         if(incCurr->SymbolsToRecvSnapshotCount() != 2)
@@ -2531,13 +2587,13 @@ public:
     void TestConnection_ParallelWorkingIncrementalAndSnapshot_4() {
         this->Clear();
 
-        incCurr->OrderCurr()->Add("s1", "session1");
-        incCurr->OrderCurr()->Add("symbol3", "session1");
+        this->AddSymbol("symbol1", "session1");
+        this->AddSymbol("symbol3", "session1");
 
         if(snapCurr->State() != FeedConnectionState::fcsSuspend)
             throw;
         SendMessages(incCurr, snapCurr,
-                     "olr entry s1 e1, lost olr entry symbol3 e1, wait_snap",
+                     "olr entry symbol1 e1, lost olr entry symbol3 e1, wait_snap",
                      "",
                      30);
         if(incCurr->m_waitTimer->Active())
@@ -2561,14 +2617,14 @@ public:
     void TestConnection_ParallelWorkingIncrementalAndSnapshot_5() {
         this->Clear();
 
-        incCurr->OrderCurr()->Add("s1", "session1");
-        incCurr->OrderCurr()->Add("symbol2", "session1");
-        incCurr->OrderCurr()->Add("symbol3", "session1");
+        this->AddSymbol("symbol1", "session1");
+        this->AddSymbol("symbol2", "session1");
+        this->AddSymbol("symbol3", "session1");
 
         if(snapCurr->State() != FeedConnectionState::fcsSuspend)
             throw;
         SendMessages(incCurr, snapCurr,
-                     "olr entry s1 e1, lost olr entry symbol3 e1, wait_snap, olr entry s1 e3,    hbeat,                              hbeat",
+                     "olr entry symbol1 e1, lost olr entry symbol3 e1, wait_snap, olr entry symbol1 e3,    hbeat,                              hbeat",
                      "                                                            ols symbol3 begin rpt 1, ols symbol3 rpt 1 entry symbol3 e1, ols symbol3 rpt 1 end",
                      30);
         if(incCurr->HasQueueEntries())
@@ -2579,7 +2635,7 @@ public:
             throw;
         if(incCurr->m_orderTableCurr->UsedItemCount() != 3)
             throw;
-        if(incCurr->m_orderTableCurr->GetItem("s1", "session1")->BuyQuotes()->Count() != 2)
+        if(incCurr->m_orderTableCurr->GetItem("symbol1", "session1")->BuyQuotes()->Count() != 2)
             throw;
         if(incCurr->m_orderTableCurr->GetItem("symbol2", "session1")->BuyQuotes()->Count() != 0)
             throw;
@@ -2597,13 +2653,13 @@ public:
     void TestConnection_ParallelWorkingIncrementalAndSnapshot_5_1() {
         this->Clear();
 
-        incCurr->OrderCurr()->Add("s1", "session1");
+        this->AddSymbol("symbol1", "session1");
 
         if(snapCurr->State() != FeedConnectionState::fcsSuspend)
             throw;
         SendMessages(incCurr, snapCurr,
-                     "lost olr entry s1 e1, lost hbeat, wait_snap",
-                     "ols s1 begin rpt 1, ols s1 rpt 1 entry s1 e1, ols s1 rpt 1 end",
+                     "lost olr entry symbol1 e1, lost hbeat, wait_snap",
+                     "ols symbol1 begin rpt 1, ols symbol1 rpt 1 entry symbol1 e1, ols symbol1 rpt 1 end",
                      30);
         if(incCurr->HasQueueEntries())
             throw;
@@ -2617,7 +2673,7 @@ public:
             throw;
         if(incCurr->m_orderTableCurr->UsedItemCount() != 1)
             throw;
-        if(incCurr->m_orderTableCurr->GetItem("s1", "session1")->BuyQuotes()->Count() != 1)
+        if(incCurr->m_orderTableCurr->GetItem("symbol1", "session1")->BuyQuotes()->Count() != 1)
             throw;
         if(incCurr->m_startMsgSeqNum != 4)
             throw;
@@ -2632,21 +2688,21 @@ public:
     void TestConnection_ParallelWorkingIncrementalAndSnapshot_5_2() {
         this->Clear();
 
-        incCurr->OrderCurr()->Add("s1", "session1");
-        incCurr->OrderCurr()->Add("symbol2", "session1");
-        incCurr->OrderCurr()->Add("symbol3", "session1");
+        this->AddSymbol("symbol1", "session1");
+        this->AddSymbol("symbol2", "session1");
+        this->AddSymbol("symbol3", "session1");
 
         if(snapCurr->State() != FeedConnectionState::fcsSuspend)
             throw;
         if(incCurr->OrderCurr()->UsedItemCount() != 3)
             throw;
         SendMessages(incCurr, snapCurr,
-                     "olr entry s1 e1, lost olr entry symbol3 e1, wait_snap, olr entry s1 e3,                         hbeat,                                        hbeat",
-                     "                                                            ols symbol3 begin rpt 1 end entry symbol3 e1, ols s1 begin rpt 2 end entry s1 e1, hbeat, ols symbol2 begin rpt 2 end entry symbol2 e1",
+                     "olr entry symbol1 e1, lost olr entry symbol3 e1, wait_snap, olr entry symbol1 e3,                         hbeat,                                        hbeat",
+                     "                                                            ols symbol3 begin rpt 1 end entry symbol3 e1, ols symbol1 begin rpt 2 end entry symbol1 e1, hbeat, ols symbol2 begin rpt 2 end entry symbol2 e1",
                      30);
         if(incCurr->HasQueueEntries())
             throw;
-        if(incCurr->m_orderTableCurr->GetItem("s1", "session1")->RptSeq() != 2)
+        if(incCurr->m_orderTableCurr->GetItem("symbol1", "session1")->RptSeq() != 2)
             throw;
         if(incCurr->m_orderTableCurr->GetItem("symbol3", "session1")->RptSeq() != 1)
             throw;
@@ -2658,7 +2714,7 @@ public:
             throw;
         if(incCurr->m_orderTableCurr->UsedItemCount() != 3)
             throw;
-        if(incCurr->m_orderTableCurr->GetItem("s1", "session1")->BuyQuotes()->Count() != 2) // snapshot applied virtually actually skipped
+        if(incCurr->m_orderTableCurr->GetItem("symbol1", "session1")->BuyQuotes()->Count() != 2) // snapshot applied virtually actually skipped
             throw;
         if(incCurr->m_orderTableCurr->GetItem("symbol2", "session1")->BuyQuotes()->Count() != 1)
             throw;
@@ -2679,21 +2735,21 @@ public:
     void TestConnection_ParallelWorkingIncrementalAndSnapshot_5_2_2() {
         this->Clear();
 
-        incCurr->OrderCurr()->Add("s1", "session1");
-        incCurr->OrderCurr()->Add("symbol2", "session1");
-        incCurr->OrderCurr()->Add("symbol3", "session1");
+        this->AddSymbol("symbol1", "session1");
+        this->AddSymbol("symbol2", "session1");
+        this->AddSymbol("symbol3", "session1");
 
         if(snapCurr->State() != FeedConnectionState::fcsSuspend)
             throw;
         if(incCurr->OrderCurr()->UsedItemCount() != 3)
             throw;
         SendMessages(incCurr, snapCurr,
-                     "olr entry s1 e1, lost olr entry symbol3 e1, wait_snap, olr entry s1 e3,                         olr entry symbol2 e1,                         olr entry symbol2 e2",
-                     "                                                            ols symbol3 begin rpt 1 end entry symbol3 e1, ols s1 begin rpt 2 end entry s1 e1, ols symbol2 begin rpt 2 end entry symbol2 e1 skip_if_suspend",
+                     "olr entry symbol1 e1, lost olr entry symbol3 e1, wait_snap, olr entry symbol1 e3,                         olr entry symbol2 e1,                         olr entry symbol2 e2",
+                     "                                                            ols symbol3 begin rpt 1 end entry symbol3 e1, ols symbol1 begin rpt 2 end entry symbol1 e1, ols symbol2 begin rpt 2 end entry symbol2 e1 skip_if_suspend",
                      30);
         if(incCurr->HasQueueEntries())
             throw;
-        if(incCurr->m_orderTableCurr->GetItem("s1", "session1")->RptSeq() != 2)
+        if(incCurr->m_orderTableCurr->GetItem("symbol1", "session1")->RptSeq() != 2)
             throw;
         if(incCurr->m_orderTableCurr->GetItem("symbol3", "session1")->RptSeq() != 1)
             throw;
@@ -2705,7 +2761,7 @@ public:
             throw;
         if(incCurr->m_orderTableCurr->UsedItemCount() != 3)
             throw;
-        if(incCurr->m_orderTableCurr->GetItem("s1", "session1")->BuyQuotes()->Count() != 2) // snapshot applied virtually actually skipped
+        if(incCurr->m_orderTableCurr->GetItem("symbol1", "session1")->BuyQuotes()->Count() != 2) // snapshot applied virtually actually skipped
             throw;
         if(incCurr->m_orderTableCurr->GetItem("symbol2", "session1")->BuyQuotes()->Count() != 2)
             throw;
@@ -2724,13 +2780,13 @@ public:
     void TestConnection_ParallelWorkingIncrementalAndSnapshot_5_3() {
         this->Clear();
 
-        incCurr->OrderCurr()->Add("s1", "session1");
+        this->AddSymbol("symbol1", "session1");
 
         if(!incCurr->m_waitTimer->Active())
             throw;
         SendMessages(incCurr, snapCurr,
-                     "olr entry s1 e1, olr entry s1 e2, olr entry s1 e3, lost hbeat, wait_snap, hbeat",
-                     "                                                                          ols s1 begin rpt 1 entry s1 e1 end",
+                     "olr entry symbol1 e1, olr entry symbol1 e2, olr entry symbol1 e3, lost hbeat, wait_snap, hbeat",
+                     "                                                                          ols symbol1 begin rpt 1 entry symbol1 e1 end",
                      50);
         if(incCurr->HasQueueEntries())
             throw;
@@ -2738,9 +2794,9 @@ public:
             throw;
         if(incCurr->CanStopListeningSnapshot())
             throw;
-        if(incCurr->OrderCurr()->GetItem("s1", "session1")->RptSeq() != 3)
+        if(incCurr->OrderCurr()->GetItem("symbol1", "session1")->RptSeq() != 3)
             throw;
-        if(incCurr->OrderCurr()->GetItem("s1", "session1")->BuyQuotes()->Count() != 3)
+        if(incCurr->OrderCurr()->GetItem("symbol1", "session1")->BuyQuotes()->Count() != 3)
             throw;
         if(snapCurr->m_startMsgSeqNum != 2)
             throw;
@@ -2755,13 +2811,13 @@ public:
     void TestConnection_ParallelWorkingIncrementalAndSnapshot_5_4() {
         this->Clear();
 
-        incCurr->WaitIncrementalMaxTimeMs(500);
-        incCurr->OrderCurr()->Add("s1", "session1");
+        incCurr->WaitLostIncrementalMessageMaxTimeMs(500);
+        this->AddSymbol("symbol1", "session1");
         incCurr->Start();
 
         SendMessages(incCurr, snapCurr,
-                     "olr entry s1 e1, olr entry s1 e2, lost olr entry s1 e3, olr entry s1 e4, lost olr entry s1 e5, olr entry s1 e6, wait_snap, ",
-                     "                                                                                                                           ols s1 begin rpt 4 entry s1 e4 end",
+                     "olr entry symbol1 e1, olr entry symbol1 e2, lost olr entry symbol1 e3, olr entry symbol1 e4, lost olr entry symbol1 e5, olr entry symbol1 e6, wait_snap, ",
+                     "                                                                                                                           ols symbol1 begin rpt 4 entry symbol1 e4 end",
                      30);
         if(incCurr->OrderCurr()->SymbolsToRecvSnapshotCount() != 1)
             throw;
@@ -2769,24 +2825,24 @@ public:
             throw;
         if(snapCurr->State() != FeedConnectionState::fcsListenSnapshot)
             throw;
-        if(!incCurr->OrderCurr()->GetItem("s1", "session1")->HasEntries())
+        if(!incCurr->OrderCurr()->GetItem("symbol1", "session1")->HasEntries())
             throw;
-        if(incCurr->OrderCurr()->GetItem("s1", "session1")->RptSeq() != 4)
+        if(incCurr->OrderCurr()->GetItem("symbol1", "session1")->RptSeq() != 4)
             throw;
-        if(incCurr->OrderCurr()->GetItem("s1", "session1")->BuyQuotes()->Count() != 1)
+        if(incCurr->OrderCurr()->GetItem("symbol1", "session1")->BuyQuotes()->Count() != 1)
             throw;
     }
     // almost the same as 5_4 but we received new snapshot for item but item has 2 gaps and snapshot is fully actual
     void TestConnection_ParallelWorkingIncrementalAndSnapshot_5_4_1() {
         this->Clear();
 
-        incCurr->WaitIncrementalMaxTimeMs(500);
-        incCurr->OrderCurr()->Add("s1", "session1");
+        incCurr->WaitLostIncrementalMessageMaxTimeMs(500);
+        this->AddSymbol("symbol1", "session1");
         incCurr->Start();
 
         SendMessages(incCurr, snapCurr,
-                     "olr entry s1 e1, olr entry s1 e2, lost olr entry s1 e3, olr entry s1 e4, lost olr entry s1 e5, olr entry s1 e6, wait_snap, ",
-                     "                                                                                                                           ols s1 begin rpt 5 entry s1 e5 end",
+                     "olr entry symbol1 e1, olr entry symbol1 e2, lost olr entry symbol1 e3, olr entry symbol1 e4, lost olr entry symbol1 e5, olr entry symbol1 e6, wait_snap, ",
+                     "                                                                                                                           ols symbol1 begin rpt 5 entry symbol1 e5 end",
                      30);
         if(incCurr->OrderCurr()->SymbolsToRecvSnapshotCount() != 0)
             throw;
@@ -2796,24 +2852,24 @@ public:
             throw;
         if(snapCurr->State() != FeedConnectionState::fcsSuspend)
             throw;
-        if(incCurr->OrderCurr()->GetItem("s1", "session1")->HasEntries())
+        if(incCurr->OrderCurr()->GetItem("symbol1", "session1")->HasEntries())
             throw;
-        if(incCurr->OrderCurr()->GetItem("s1", "session1")->RptSeq() != 6)
+        if(incCurr->OrderCurr()->GetItem("symbol1", "session1")->RptSeq() != 6)
             throw;
-        if(incCurr->OrderCurr()->GetItem("s1", "session1")->BuyQuotes()->Count() != 2)
+        if(incCurr->OrderCurr()->GetItem("symbol1", "session1")->BuyQuotes()->Count() != 2)
             throw;
     }
     // almost the same as 5_4_1 but we received new snapshot with rptseq 6
     void TestConnection_ParallelWorkingIncrementalAndSnapshot_5_4_2() {
         this->Clear();
 
-        incCurr->WaitIncrementalMaxTimeMs(500);
-        incCurr->OrderCurr()->Add("s1", "session1");
+        incCurr->WaitLostIncrementalMessageMaxTimeMs(500);
+        this->AddSymbol("symbol1", "session1");
         incCurr->Start();
 
         SendMessages(incCurr, snapCurr,
-                     "olr entry s1 e1, olr entry s1 e2, lost olr entry s1 e3, olr entry s1 e4, lost olr entry s1 e5, olr entry s1 e6, wait_snap, ",
-                     "                                                                                                                           ols s1 begin rpt 6 entry s1 e6 end",
+                     "olr entry symbol1 e1, olr entry symbol1 e2, lost olr entry symbol1 e3, olr entry symbol1 e4, lost olr entry symbol1 e5, olr entry symbol1 e6, wait_snap, ",
+                     "                                                                                                                           ols symbol1 begin rpt 6 entry symbol1 e6 end",
                      30);
         if(incCurr->OrderCurr()->SymbolsToRecvSnapshotCount() != 0)
             throw;
@@ -2823,39 +2879,39 @@ public:
             throw;
         if(snapCurr->State() != FeedConnectionState::fcsSuspend)
             throw;
-        if(incCurr->OrderCurr()->GetItem("s1", "session1")->HasEntries())
+        if(incCurr->OrderCurr()->GetItem("symbol1", "session1")->HasEntries())
             throw;
-        if(incCurr->OrderCurr()->GetItem("s1", "session1")->RptSeq() != 6)
+        if(incCurr->OrderCurr()->GetItem("symbol1", "session1")->RptSeq() != 6)
             throw;
-        if(incCurr->OrderCurr()->GetItem("s1", "session1")->BuyQuotes()->Count() != 1)
+        if(incCurr->OrderCurr()->GetItem("symbol1", "session1")->BuyQuotes()->Count() != 1)
             throw;
     }
     // we have received snapshot and almost ok but next incremental message during snapshot has greater RptSeq
     void TestConnection_ParallelWorkingIncrementalAndSnapshot_5_5() {
         this->Clear();
 
-        incCurr->WaitIncrementalMaxTimeMs(500);
-        incCurr->OrderCurr()->Add("s1", "session1");
-        incCurr->OrderCurr()->Add("s2", "session1");
+        incCurr->WaitLostIncrementalMessageMaxTimeMs(500);
+        this->AddSymbol("symbol1", "session1");
+        this->AddSymbol("symbol2", "session1");
         incCurr->Start();
 
         SendMessages(incCurr, snapCurr,
-                     "olr entry s1 e1, olr entry s2 e1, lost olr entry s1 e2, wait_snap, hbeat                               lost olr entry s1 e3,               olr entry s1 e4",
-                     "                                                                   ols s1 begin rpt 2 entry s1 e2 end, ols s2 begin rpt 1 entry s2 e1 end, hbeat",
+                     "olr entry symbol1 e1, olr entry symbol2 e1, lost olr entry symbol1 e2, wait_snap, hbeat                               lost olr entry symbol1 e3,               olr entry symbol1 e4",
+                     "                                                                   ols symbol1 begin rpt 2 entry symbol1 e2 end, ols symbol2 begin rpt 1 entry symbol2 e1 end, hbeat",
                      30);
         if(incCurr->CanStopListeningSnapshot())
             throw;
         if(snapCurr->State() != FeedConnectionState::fcsListenSnapshot)
             throw;
-        if(incCurr->OrderCurr()->GetItem("s1", "session1")->RptSeq() != 2)
+        if(incCurr->OrderCurr()->GetItem("symbol1", "session1")->RptSeq() != 2)
             throw;
-        if(!incCurr->OrderCurr()->GetItem("s1", "session1")->HasEntries())
+        if(!incCurr->OrderCurr()->GetItem("symbol1", "session1")->HasEntries())
             throw;
-        if(incCurr->OrderCurr()->GetItem("s1", "session1")->EntriesQueue()->StartRptSeq() != 3)
+        if(incCurr->OrderCurr()->GetItem("symbol1", "session1")->EntriesQueue()->StartRptSeq() != 3)
             throw;
-        if(incCurr->OrderCurr()->GetItem("s1", "session1")->EntriesQueue()->MaxIndex() != 1)
+        if(incCurr->OrderCurr()->GetItem("symbol1", "session1")->EntriesQueue()->MaxIndex() != 1)
             throw;
-        if(incCurr->OrderCurr()->GetItem("s2", "session1")->RptSeq() != 1)
+        if(incCurr->OrderCurr()->GetItem("symbol2", "session1")->RptSeq() != 1)
             throw;
         if(incCurr->OrderCurr()->QueueEntriesCount() != 1)
             throw;
@@ -2865,8 +2921,8 @@ public:
     void TestConnection_ParallelWorkingIncrementalAndSnapshot_5_5_1() {
         this->Clear();
 
-        incCurr->OrderCurr()->Add("s1", "session1");
-        incCurr->OrderCurr()->Add("s2", "session1");
+        this->AddSymbol("symbol1", "session1");
+        this->AddSymbol("symbol2", "session1");
         if(incCurr->OrderCurr()->Symbol(0)->Session(0)->ShouldProcessSnapshot())
             throw;
         if(incCurr->OrderCurr()->Symbol(1)->Session(0)->ShouldProcessSnapshot())
@@ -2874,16 +2930,16 @@ public:
         incCurr->Start();
 
         SendMessages(incCurr, snapCurr,
-                     "olr entry s1 e1, olr entry s2 e1, lost olr entry s1 e2, wait_snap, hbeat                               lost olr entry s1 e3,               olr entry s1 e4, hbeat ",
-                     "                                                                   ols s1 begin rpt 2 entry s1 e2 end, ols s2 begin rpt 1 entry s2 e1 end, hbeat          , ols s1 begin rpt 3 entry s1 e3 end",
+                     "olr entry symbol1 e1, olr entry symbol2 e1, lost olr entry symbol1 e2, wait_snap, hbeat                               lost olr entry symbol1 e3,               olr entry symbol1 e4, hbeat ",
+                     "                                                                   ols symbol1 begin rpt 2 entry symbol1 e2 end, ols symbol2 begin rpt 1 entry symbol2 e1 end, hbeat          , ols symbol1 begin rpt 3 entry symbol1 e3 end",
                      30);
         if(!incCurr->CanStopListeningSnapshot())
             throw;
         if(snapCurr->State() != FeedConnectionState::fcsSuspend)
             throw;
-        if(incCurr->OrderCurr()->GetItem("s1", "session1")->RptSeq() != 4)
+        if(incCurr->OrderCurr()->GetItem("symbol1", "session1")->RptSeq() != 4)
             throw;
-        if(incCurr->OrderCurr()->GetItem("s1", "session1")->HasEntries())
+        if(incCurr->OrderCurr()->GetItem("symbol1", "session1")->HasEntries())
             throw;
         if(incCurr->OrderCurr()->QueueEntriesCount() != 0)
             throw;
@@ -2894,12 +2950,12 @@ public:
     void TestConnection_ParallelWorkingIncrementalAndSnapshot_5_6() {
         this->Clear();
 
-        incCurr->OrderCurr()->Add("s1", "session1");
-        incCurr->OrderCurr()->Add("s2", "session1");
+        this->AddSymbol("symbol1", "session1");
+        this->AddSymbol("symbol2", "session1");
         incCurr->Start();
 
         SendMessages(incCurr, snapCurr,
-                     "olr entry s1 e1, olr entry s2 e1, lost olr entry s1 e2, wait_snap, olr entry s2 e2, hbeat",
+                     "olr entry symbol1 e1, olr entry symbol2 e1, lost olr entry symbol1 e2, wait_snap, olr entry symbol2 e2, hbeat",
                      "                                                        hbeat,     hbeat,           hbeat",
                      30);
         if(incCurr->CanStopListeningSnapshot())
@@ -2908,7 +2964,7 @@ public:
             throw;
         if(incCurr->OrderCurr()->SymbolsToRecvSnapshotCount() != 1)
             throw;
-        if(incCurr->OrderCurr()->GetItem("s2", "session1")->ShouldProcessSnapshot())
+        if(incCurr->OrderCurr()->GetItem("symbol2", "session1")->ShouldProcessSnapshot())
             throw;
     }
     // we have received twice the same snapshot (rpt seq num = the same value) which means that item did not receive incremental message so item state is actual
@@ -2936,12 +2992,12 @@ public:
         incCurr->m_fastProtocolManager->Print();
         */
 
-        incCurr->OrderCurr()->Add("s1", "session1");
+        this->AddSymbol("symbol1", "session1");
         incCurr->Start();
 
         SendMessages(incCurr, snapCurr,
-                     "olr entry s1 e1, lost olr entry s1 e2, olr entry s1 e2, wait_snap, hbeat",
-                     "                                       hbeat,           hbeat,     ols s1 begin rpt 0 lastmsg 0 entry s1 e1 end",
+                     "olr entry symbol1 e1, lost olr entry symbol1 e2, olr entry symbol1 e2, wait_snap, hbeat",
+                     "                                       hbeat,           hbeat,     ols symbol1 begin rpt 0 lastmsg 0 entry symbol1 e1 end",
                      30);
         if(incCurr->OrderCurr()->SymbolsToRecvSnapshotCount() != 0)
             throw;
@@ -2956,19 +3012,19 @@ public:
     void TestConnection_EnterSnapshotMode() {
         this->Clear();
 
-        incCurr->OrderCurr()->Add("s1", "session1");
+        this->AddSymbol("symbol1", "session1");
         incCurr->OrderCurr()->EnterSnapshotMode();
-        if(!incCurr->OrderCurr()->GetItem("s1", "session1")->ShouldProcessSnapshot())
+        if(!incCurr->OrderCurr()->GetItem("symbol1", "session1")->ShouldProcessSnapshot())
             throw;
     }
     // clear after apply snapshot
     void TestConnection_ClearSnapshotMessages_1() {
         this->Clear();
 
-        incCurr->OrderCurr()->Add("s1", "session1");
+        this->AddSymbol("symbol1", "session1");
         SendMessages(incCurr, snapCurr,
-                     "olr entry s1 e1, lost olr entry s1 e2, wait_snap, hbeat",
-                     "                                                  ols s1 begin rpt 2 entry s1 e2 end",
+                     "olr entry symbol1 e1, lost olr entry symbol1 e2, wait_snap, hbeat",
+                     "                                                  ols symbol1 begin rpt 2 entry symbol1 e2 end",
                      30);
         if(snapCurr->Packet(1)->m_address != 0)
             throw;
@@ -2979,10 +3035,10 @@ public:
     void TestConnection_ClearSnapshotMessages_2() {
         this->Clear();
 
-        incCurr->OrderCurr()->Add("s1", "session1");
+        this->AddSymbol("symbol1", "session1");
         SendMessages(incCurr, snapCurr,
-                     "olr entry s1 e1, lost olr entry s1 e2, wait_snap, hbeat",
-                     "                                                  hbeat, hbeat, ols s1 begin rpt 2 entry s1 e2 end",
+                     "olr entry symbol1 e1, lost olr entry symbol1 e2, wait_snap, hbeat",
+                     "                                                  hbeat, hbeat, ols symbol1 begin rpt 2 entry symbol1 e2 end",
                      30);
         if(snapCurr->Packet(1)->m_address != 0 ||
            snapCurr->Packet(2)->m_address != 0 ||
@@ -2997,11 +3053,11 @@ public:
     void TestConnection_ClearSnapshotMessages_3() {
         this->Clear();
 
-        incCurr->OrderCurr()->Add("s1", "session1");
+        this->AddSymbol("symbol1", "session1");
         snapCurr->WaitSnapshotMaxTimeMs(50);
         SendMessages(incCurr, snapCurr,
-                     "olr entry s1 e1, lost olr entry s1 e2, wait_snap, hbeat",
-                     "                                                  ols s1 begin rpt 2 entry s1 e2, lost ols s1 rpt 2 entry s1 e2, hbeat, hbeat, hbeat, hbeat, hbeat",
+                     "olr entry symbol1 e1, lost olr entry symbol1 e2, wait_snap, hbeat",
+                     "                                                  ols symbol1 begin rpt 2 entry symbol1 e2, lost ols symbol1 rpt 2 entry symbol1 e2, hbeat, hbeat, hbeat, hbeat, hbeat",
                      30);
         for(int i = 1; i < 100; i++) {
             if(snapCurr->m_packets[i]->m_address != 0 ||
@@ -3013,11 +3069,11 @@ public:
     void TestConnection_ClearSnapshotMessages_4() {
         this->Clear();
 
-        incCurr->OrderCurr()->Add("s1", "session1");
+        this->AddSymbol("symbol1", "session1");
         snapCurr->WaitSnapshotMaxTimeMs(50);
         SendMessages(incCurr, snapCurr,
-                     "olr entry s1 e1, lost olr entry s1 e2, wait_snap, hbeat                           hbeat,                         hbeat, hbeat, hbeat, hbeat, hbeat,                           hbeat",
-                     "                                                  ols s1 begin rpt 2 entry s1 e2, lost ols s1 rpt 2 entry s1 e2, hbeat, hbeat, hbeat, hbeat, hbeat, ols s1 rpt 2 entry s1 e2, ols s1 begin rpt 2 entry s1 e2 end",
+                     "olr entry symbol1 e1, lost olr entry symbol1 e2, wait_snap, hbeat                           hbeat,                         hbeat, hbeat, hbeat, hbeat, hbeat,                           hbeat",
+                     "                                                  ols symbol1 begin rpt 2 entry symbol1 e2, lost ols symbol1 rpt 2 entry symbol1 e2, hbeat, hbeat, hbeat, hbeat, hbeat, ols symbol1 rpt 2 entry symbol1 e2, ols symbol1 begin rpt 2 entry symbol1 e2 end",
                      30);
         if(incCurr->OrderCurr()->UsedItemCount() != 1)
             throw;
@@ -3090,6 +3146,8 @@ public:
     void TestConnection_Clear_AfterIncremental() {
         this->TestTableItemsAllocator(incCurr->OrderCurr());
         this->Clear();
+        this->AddSymbol("symbol1");
+        this->AddSymbol("symbol2");
         incCurr->StartListenSnapshot();
 
         this->TestTableItemsAllocator(incCurr->OrderCurr());
@@ -3097,12 +3155,12 @@ public:
         SendMessages(incCurr, new TestTemplateInfo*[4] {
                 new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OLR_CURR, 1,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo("s1", "e1", 1),
+                                             new TestTemplateItemInfo("symbol1", "e1", 1),
                                              new TestTemplateItemInfo("symbol2", "e1", 1),
                                      }, 2),
                 new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OLR_CURR, 3,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo("s1", "e1", 4),
+                                             new TestTemplateItemInfo("symbol1", "e1", 4),
                                              new TestTemplateItemInfo("symbol2", "e1", 4),
                                      }, 2)
         }, 2);
@@ -3211,13 +3269,18 @@ public:
         }
     }
 
+    void AddSymbol(const char *symbol, const char *session) {
+        this->incCurr->GetSymbolManager()->AddSymbol(symbol);
+        this->incCurr->OrderCurr()->Add(symbol, session);
+    }
+
     void TestInfoAndItemInfoUsageAndAllocationCurr_Inc_1() {
         this->Clear();
 
-        this->incCurr->OrderCurr()->Add("s1", "session1");
+        this->AddSymbol("symbol1", "session1");
         int prevCount = this->incCurr->m_fastProtocolManager->m_astsOLSCURRItems->Count();
         this->SendMessages(this->incCurr, this->snapCurr,
-                           "olr entry s1 e1",
+                           "olr entry symbol1 e1",
                            "",
                            30);
 
@@ -3229,10 +3292,10 @@ public:
     void TestInfoAndItemInfoUsageAndAllocationCurr_Inc_2() {
         this->Clear();
 
-        this->incCurr->OrderCurr()->Add("s1", "session1");
+        this->AddSymbol("symbol1", "session1");
         int prevCount = this->incCurr->m_fastProtocolManager->m_astsOLSCURRItems->Count();
         this->SendMessages(this->incCurr, this->snapCurr,
-                           "olr entry s1 e1, olr entry s1 e2",
+                           "olr entry symbol1 e1, olr entry symbol1 e2",
                            "",
                            30);
 
@@ -3248,10 +3311,10 @@ public:
     void TestInfoAndItemInfoUsageAndAllocationCurr_Inc_3() {
         this->Clear();
 
-        this->incCurr->OrderCurr()->Add("s1", "session1");
+        this->AddSymbol("symbol1", "session1");
         int prevCount = this->incCurr->m_fastProtocolManager->m_astsOLSCURRItems->Count();
         this->SendMessages(this->incCurr, this->snapCurr,
-                           "olr entry s1 e1, olr entry s1 e2, olr entry del s1 e1",
+                           "olr entry symbol1 e1, olr entry symbol1 e2, olr entry del symbol1 e1",
                            "",
                            30);
 
@@ -3280,10 +3343,10 @@ public:
     void TestInfoAndItemInfoUsageAndAllocationCurr_Inc_5() {
         this->Clear();
 
-        this->incCurr->OrderCurr()->Add("s1", "session1");
+        this->AddSymbol("symbol1", "session1");
         int prevCount = this->incCurr->m_fastProtocolManager->m_astsOLSCURRItems->Count();
         this->SendMessages(this->incCurr, this->snapCurr,
-                           "olr entry s1 e1, olr entry s1 e2, olr entry change s1 e1",
+                           "olr entry symbol1 e1, olr entry symbol1 e2, olr entry change symbol1 e1",
                            "",
                            30);
 
@@ -3299,11 +3362,11 @@ public:
     void TestInfoAndItemInfoUsageAndAllocationCurr_Snap_1() {
         this->Clear();
 
-        this->incCurr->OrderCurr()->Add("s1", "session1");
+        this->AddSymbol("symbol1", "session1");
         int prevCount = this->snapCurr->m_fastProtocolManager->m_astsOLSCURRItems->Count();
         this->SendMessages(this->incCurr, this->snapCurr,
-                           "olr entry s1 e1, lost olr entry s1 e2, wait_snap, hbeat",
-                           "                                                  ols begin s1 entry s1 e2 rpt 2 end",
+                           "olr entry symbol1 e1, lost olr entry symbol1 e2, wait_snap, hbeat",
+                           "                                                  ols begin symbol1 entry symbol1 e2 rpt 2 end",
                            30);
 
         int newCount = this->snapCurr->m_fastProtocolManager->m_astsOLSCURRItems->Count();
@@ -3314,11 +3377,11 @@ public:
     void TestInfoAndItemInfoUsageAndAllocationCurr_Snap_2() {
         this->Clear();
 
-        this->incCurr->OrderCurr()->Add("s1", "session1");
+        this->AddSymbol("symbol1", "session1");
         int prevCount = this->snapCurr->m_fastProtocolManager->m_astsOLSCURRItems->Count();
         this->SendMessages(this->incCurr, this->snapCurr,
-                           "olr entry s1 e1, lost olr entry s1 e2 entry s1 e3, wait_snap, hbeat",
-                           "                                                   ols begin s1 entry s1 e2 rpt 2, ols s1 entry s1 e3 end",
+                           "olr entry symbol1 e1, lost olr entry symbol1 e2 entry symbol1 e3, wait_snap, hbeat",
+                           "                                                   ols begin symbol1 entry symbol1 e2 rpt 2, ols symbol1 entry symbol1 e3 end",
                            30);
 
         int newCount = this->snapCurr->m_fastProtocolManager->m_astsOLSCURRItems->Count();
@@ -3346,14 +3409,14 @@ public:
     void TestInfoAndItemInfoUsageAndAllocationCurr_Snap_4() {
         this->Clear();
 
-        incCurr->OrderCurr()->Add("s1", "session1");
-        incCurr->OrderCurr()->Add("s2", "session1");
-        incCurr->OrderCurr()->Add("symbol3", "session1");
+        this->AddSymbol("symbol1", "session1");
+        this->AddSymbol("symbol2", "session1");
+        this->AddSymbol("symbol3", "session1");
 
         int prevCount = this->snapCurr->m_fastProtocolManager->m_astsOLSCURRItems->Count();
         SendMessages(incCurr, snapCurr,
-                     "olr entry s1 e1, lost olr entry symbol3 e1, wait_snap, olr entry s1 e3,                              hbeat,                              hbeat",
-                     "                                                       ols symbol3 begin rpt 1 end entry symbol3 e1, ols s1 begin rpt 2 end entry s1 e1, hbeat, ols s2 begin rpt 2 end entry s2 e1",
+                     "olr entry symbol1 e1, lost olr entry symbol3 e1, wait_snap, olr entry symbol1 e3,                              hbeat,                              hbeat",
+                     "                                                       ols symbol3 begin rpt 1 end entry symbol3 e1, ols symbol1 begin rpt 2 end entry symbol1 e1, hbeat, ols symbol2 begin rpt 2 end entry symbol2 e1",
                      30);
         int newCount = this->snapCurr->m_fastProtocolManager->m_astsOLSCURRItems->Count();
         if(newCount != prevCount + 4) // was 2
@@ -3362,13 +3425,13 @@ public:
     // check in case CheckProcessNullSnapshot
     void TestInfoAndItemInfoUsageAndAllocationCurr_Snap_5() {
         this->Clear();
-        incCurr->OrderCurr()->Add("s1", "session1");
+        this->AddSymbol("symbol1", "session1");
         incCurr->Start();
 
         int prevCount = this->snapCurr->m_fastProtocolManager->m_astsOLSCURRItems->Count();
         SendMessages(incCurr, snapCurr,
-                     "olr entry s1 e1, lost olr entry s1 e2, olr entry s1 e2, wait_snap, hbeat",
-                     "                                       hbeat,           hbeat,     ols s1 begin rpt 0 lastmsg 0 entry s1 e1 end",
+                     "olr entry symbol1 e1, lost olr entry symbol1 e2, olr entry symbol1 e2, wait_snap, hbeat",
+                     "                                       hbeat,           hbeat,     ols symbol1 begin rpt 0 lastmsg 0 entry symbol1 e1 end",
                      30);
         int newCount = this->snapCurr->m_fastProtocolManager->m_astsOLSCURRItems->Count();
         if(newCount != prevCount)
@@ -3379,12 +3442,12 @@ public:
     void TestInfoAndItemInfoUsageAndAllocationCurr_Snap_6() {
         this->Clear();
 
-        incCurr->OrderCurr()->Add("s1", "session1");
+        this->AddSymbol("symbol1", "session1");
 
         int prevCount = this->snapCurr->m_fastProtocolManager->m_astsOLSCURRItems->Count();
         SendMessages(incCurr, snapCurr,
-                     "olr entry s1 e1, olr entry s1 e2, olr entry s1 e3, lost hbeat, wait_snap, hbeat",
-                     "                                                                          ols s1 begin rpt 1 entry s1 e1 end",
+                     "olr entry symbol1 e1, olr entry symbol1 e2, olr entry symbol1 e3, lost hbeat, wait_snap, hbeat",
+                     "                                                                          ols symbol1 begin rpt 1 entry symbol1 e1 end",
                      50);
         int newCount = this->snapCurr->m_fastProtocolManager->m_astsOLSCURRItems->Count();
         if(newCount != prevCount + 3)
@@ -3422,13 +3485,14 @@ public:
     void Test_OnIncrementalRefresh_OLR_CURR_Add_Aggregated() {
         this->Clear();
         this->TestDefaults();
+        this->AddSymbol("symbol1");
 
         AstsIncrementalOLRCURRInfo *info = this->m_helper->CreateAstsIncrementalOLRCURRInfo();
 
-        AstsOLSCURRItemInfo *item1 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
-        AstsOLSCURRItemInfo *item2 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
-        AstsOLSCURRItemInfo *item3 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
-        AstsOLSCURRItemInfo *item4 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "e4", 4);
+        AstsOLSCURRItemInfo *item1 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
+        AstsOLSCURRItemInfo *item2 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
+        AstsOLSCURRItemInfo *item3 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
+        AstsOLSCURRItemInfo *item4 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "e4", 4);
 
         if(item4->Used)
             throw;
@@ -3446,7 +3510,7 @@ public:
             throw;
         if(this->incCurr->OrderCurr()->Symbol(0)->Count() != 1)
             throw;
-        OrderInfo<AstsOLSCURRItemInfo> *obi = this->incCurr->OrderCurr()->GetItem("s1", "t1");
+        OrderInfo<AstsOLSCURRItemInfo> *obi = this->incCurr->OrderCurr()->GetItem("symbol1", "t1");
         if(obi == 0)
             throw;
         if(obi->AggregatedBuyQuotes()->Count() != 1)
@@ -3469,7 +3533,7 @@ public:
             throw;
         if(this->incCurr->OrderCurr()->Symbol(0)->Count() != 1)
             throw;
-        obi = this->incCurr->OrderCurr()->GetItem("s1", "t1");
+        obi = this->incCurr->OrderCurr()->GetItem("symbol1", "t1");
         if(obi == 0)
             throw;
         if(obi->AggregatedBuyQuotes()->Count() != 2)
@@ -3492,7 +3556,7 @@ public:
             throw;
         if(this->incCurr->OrderCurr()->Symbol(0)->Count() != 1)
             throw;
-        obi = this->incCurr->OrderCurr()->GetItem("s1", "t1");
+        obi = this->incCurr->OrderCurr()->GetItem("symbol1", "t1");
         if(obi == 0)
             throw;
         if(obi->AggregatedBuyQuotes()->Count() != 3)
@@ -3530,7 +3594,7 @@ public:
             throw;
         if(this->incCurr->OrderCurr()->Symbol(0)->Count() != 1)
             throw;
-        obi = this->incCurr->OrderCurr()->GetItem("s1", "t1");
+        obi = this->incCurr->OrderCurr()->GetItem("symbol1", "t1");
         if(obi == 0)
             throw;
         if(obi->AggregatedBuyQuotes()->Count() != 4)
@@ -3568,12 +3632,13 @@ public:
     void Test_OnIncrementalRefresh_OLR_CURR_Remove_Aggregated() {
         this->Clear();
         this->TestDefaults();
+        this->AddSymbol("symbol1");
 
         AstsIncrementalOLRCURRInfo *info = this->m_helper->CreateAstsIncrementalOLRCURRInfo();
-        AstsOLSCURRItemInfo *item1 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
-        AstsOLSCURRItemInfo *item2 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
-        AstsOLSCURRItemInfo *item3 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
-        AstsOLSCURRItemInfo *item4 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "e4", 4);
+        AstsOLSCURRItemInfo *item1 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
+        AstsOLSCURRItemInfo *item2 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
+        AstsOLSCURRItemInfo *item3 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
+        AstsOLSCURRItemInfo *item4 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "e4", 4);
 
         info->GroupMDEntriesCount = 4;
         info->GroupMDEntries[0] = item1;
@@ -3592,7 +3657,7 @@ public:
         if(item4->Allocator->Count() != 1)
             throw;
 
-        OrderInfo<AstsOLSCURRItemInfo> *ob = this->incCurr->OrderCurr()->GetItem("s1", "t1");
+        OrderInfo<AstsOLSCURRItemInfo> *ob = this->incCurr->OrderCurr()->GetItem("symbol1", "t1");
         if(!ob->AggregatedBuyQuotes()->Item(0)->Price()->Equal(4, -2))
             throw;
         if(!ob->AggregatedBuyQuotes()->Item(1)->Price()->Equal(3, -2))
@@ -3620,7 +3685,7 @@ public:
         if(this->incCurr->OrderCurr()->UsedItemCount() != 1)
             throw;
 
-        OrderInfo<AstsOLSCURRItemInfo> *obi = this->incCurr->OrderCurr()->GetItem("s1", "t1");
+        OrderInfo<AstsOLSCURRItemInfo> *obi = this->incCurr->OrderCurr()->GetItem("symbol1", "t1");
         if(obi->AggregatedBuyQuotes()->Count() != 3)
             throw;
         if(!obi->AggregatedBuyQuotes()->Item(0)->Price()->Equal(4, -2))
@@ -3639,7 +3704,7 @@ public:
         if(this->incCurr->OrderCurr()->UsedItemCount() != 1)
             throw;
 
-        obi = this->incCurr->OrderCurr()->GetItem("s1", "t1");
+        obi = this->incCurr->OrderCurr()->GetItem("symbol1", "t1");
         if(obi->AggregatedBuyQuotes()->Count() != 2)
             throw;
         if(!obi->AggregatedBuyQuotes()->Item(0)->Price()->Equal(4, -2))
@@ -3656,7 +3721,7 @@ public:
         if(this->incCurr->OrderCurr()->UsedItemCount() != 1)
             throw;
 
-        obi = this->incCurr->OrderCurr()->GetItem("s1", "t1");
+        obi = this->incCurr->OrderCurr()->GetItem("symbol1", "t1");
         if(obi->AggregatedBuyQuotes()->Count() != 1)
             throw;
         if(!obi->AggregatedBuyQuotes()->Item(0)->Price()->Equal(3, -2))
@@ -3671,7 +3736,7 @@ public:
         if(this->incCurr->OrderCurr()->UsedItemCount() != 1)
             throw;
 
-        obi = this->incCurr->OrderCurr()->GetItem("s1", "t1");
+        obi = this->incCurr->OrderCurr()->GetItem("symbol1", "t1");
         if(obi->AggregatedBuyQuotes()->Count() != 0)
             throw;
     }
@@ -3679,12 +3744,13 @@ public:
     void Test_OnIncrementalRefresh_OLR_CURR_Change_Aggregated() {
         this->Clear();
         this->TestDefaults();
+        this->AddSymbol("symbol1");
 
         AstsIncrementalOLRCURRInfo *info = this->m_helper->CreateAstsIncrementalOLRCURRInfo();
-        AstsOLSCURRItemInfo *item1 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
-        AstsOLSCURRItemInfo *item2 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
-        AstsOLSCURRItemInfo *item3 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
-        AstsOLSCURRItemInfo *item4 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "e4", 4);
+        AstsOLSCURRItemInfo *item1 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
+        AstsOLSCURRItemInfo *item2 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
+        AstsOLSCURRItemInfo *item3 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
+        AstsOLSCURRItemInfo *item4 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "e4", 4);
 
         info->GroupMDEntriesCount = 4;
         info->GroupMDEntries[0] = item1;
@@ -3694,7 +3760,7 @@ public:
 
         this->incCurr->OnIncrementalRefresh_OLR_CURR(info);
 
-        OrderInfo<AstsOLSCURRItemInfo> *obi2 = this->incCurr->OrderCurr()->GetItem("s1", "t1");
+        OrderInfo<AstsOLSCURRItemInfo> *obi2 = this->incCurr->OrderCurr()->GetItem("symbol1", "t1");
         if(!obi2->AggregatedBuyQuotes()->Item(0)->Price()->Equal(4, -2))
             throw;
         if(!obi2->AggregatedBuyQuotes()->Item(1)->Price()->Equal(3, -2))
@@ -3704,7 +3770,7 @@ public:
         if(!obi2->AggregatedBuyQuotes()->Item(3)->Price()->Equal(2, -2))
             throw;
 
-        AstsOLSCURRItemInfo *item5 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 24, -3, 1, 3, mduaChange, mdetBuyQuote, "e2", 5);
+        AstsOLSCURRItemInfo *item5 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "t1", 24, -3, 1, 3, mduaChange, mdetBuyQuote, "e2", 5);
 
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item5;
@@ -3719,7 +3785,7 @@ public:
         if(item5->Allocator->Count() != 1)
             throw;
 
-        OrderInfo<AstsOLSCURRItemInfo> *obi = this->incCurr->OrderCurr()->GetItem("s1", "t1");
+        OrderInfo<AstsOLSCURRItemInfo> *obi = this->incCurr->OrderCurr()->GetItem("symbol1", "t1");
 
         QuoteInfo *qt1 = obi->AggregatedBuyQuotes()->Item(0);
         QuoteInfo *qt2 = obi->AggregatedBuyQuotes()->Item(1);
@@ -3743,12 +3809,13 @@ public:
     void Test_Clear_Aggregated() {
         this->Clear();
         this->TestDefaults();
+        this->AddSymbol("symbol1");
 
         AstsIncrementalOLRCURRInfo *info = this->m_helper->CreateAstsIncrementalOLRCURRInfo();
-        AstsOLSCURRItemInfo *item1 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
-        AstsOLSCURRItemInfo *item2 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
-        AstsOLSCURRItemInfo *item3 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
-        AstsOLSCURRItemInfo *item4 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "e4", 4);
+        AstsOLSCURRItemInfo *item1 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
+        AstsOLSCURRItemInfo *item2 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
+        AstsOLSCURRItemInfo *item3 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
+        AstsOLSCURRItemInfo *item4 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "e4", 4);
 
         info->GroupMDEntriesCount = 4;
         info->GroupMDEntries[0] = item1;
@@ -3769,7 +3836,7 @@ public:
         if(this->incCurr->OrderCurr()->UsedItemCount() != 0)
             throw;
 
-        OrderInfo<AstsOLSCURRItemInfo> *obi = this->incCurr->OrderCurr()->GetItem("s1", "t1");
+        OrderInfo<AstsOLSCURRItemInfo> *obi = this->incCurr->OrderCurr()->GetItem("symbol1", "t1");
         if(obi->AggregatedBuyQuotes()->Count() != 0)
             throw;
     }
@@ -3777,12 +3844,13 @@ public:
     void Test_OnFullRefresh_OBS_CURR_Aggregated() {
         this->Clear();
         this->TestDefaults();
+        this->AddSymbol("symbol1");
 
         AstsIncrementalOLRCURRInfo *info = this->m_helper->CreateAstsIncrementalOLRCURRInfo();
-        AstsOLSCURRItemInfo *item1 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
-        AstsOLSCURRItemInfo *item2 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
-        AstsOLSCURRItemInfo *item3 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
-        AstsOLSCURRItemInfo *item4 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "e4", 4);
+        AstsOLSCURRItemInfo *item1 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
+        AstsOLSCURRItemInfo *item2 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
+        AstsOLSCURRItemInfo *item3 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
+        AstsOLSCURRItemInfo *item4 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "e4", 4);
 
         info->GroupMDEntriesCount = 4;
         info->GroupMDEntries[0] = item1;
@@ -3792,7 +3860,7 @@ public:
 
         this->incCurr->OnIncrementalRefresh_OLR_CURR(info);
 
-        OrderInfo<AstsOLSCURRItemInfo> *obi2 = this->incCurr->OrderCurr()->GetItem("s1", "t1");
+        OrderInfo<AstsOLSCURRItemInfo> *obi2 = this->incCurr->OrderCurr()->GetItem("symbol1", "t1");
         if(obi2->AggregatedBuyQuotes()->Count() != 4)
             throw;
 
@@ -3811,7 +3879,7 @@ public:
         if(this->incCurr->OrderCurr()->UsedItemCount() != 2)
             throw;
 
-        OrderInfo<AstsOLSCURRItemInfo> *obi3 = this->incCurr->OrderCurr()->GetItem("s1", "t1");
+        OrderInfo<AstsOLSCURRItemInfo> *obi3 = this->incCurr->OrderCurr()->GetItem("symbol1", "t1");
         if(obi3->AggregatedBuyQuotes()->Count() != 4)
             throw;
 
@@ -3831,13 +3899,14 @@ public:
     void Test_OnIncrementalRefresh_OLR_CURR_Add_SellQuotes_Aggregated() {
         this->Clear();
         this->TestDefaults();
+        this->AddSymbol("symbol1");
 
         AstsIncrementalOLRCURRInfo *info = this->m_helper->CreateAstsIncrementalOLRCURRInfo();
 
-        AstsOLSCURRItemInfo *item1 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "e1", 1);
-        AstsOLSCURRItemInfo *item2 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "e2", 2);
-        AstsOLSCURRItemInfo *item3 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "e3", 3);
-        AstsOLSCURRItemInfo *item4 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "e4", 4);
+        AstsOLSCURRItemInfo *item1 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "e1", 1);
+        AstsOLSCURRItemInfo *item2 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "e2", 2);
+        AstsOLSCURRItemInfo *item3 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "e3", 3);
+        AstsOLSCURRItemInfo *item4 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "e4", 4);
 
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item1;
@@ -3850,7 +3919,7 @@ public:
             throw;
         if(this->incCurr->OrderCurr()->Symbol(0)->Count() != 1)
             throw;
-        OrderInfo<AstsOLSCURRItemInfo> *obi = this->incCurr->OrderCurr()->GetItem("s1", "t1");
+        OrderInfo<AstsOLSCURRItemInfo> *obi = this->incCurr->OrderCurr()->GetItem("symbol1", "t1");
         if(obi == 0)
             throw;
         if(obi->AggregatedSellQuotes()->Count() != 1)
@@ -3870,7 +3939,7 @@ public:
             throw;
         if(this->incCurr->OrderCurr()->Symbol(0)->Count() != 1)
             throw;
-        obi = this->incCurr->OrderCurr()->GetItem("s1", "t1");
+        obi = this->incCurr->OrderCurr()->GetItem("symbol1", "t1");
         if(obi == 0)
             throw;
         if(obi->AggregatedSellQuotes()->Count() != 2)
@@ -3894,7 +3963,7 @@ public:
             throw;
         if(this->incCurr->OrderCurr()->Symbol(0)->Count() != 1)
             throw;
-        obi = this->incCurr->OrderCurr()->GetItem("s1", "t1");
+        obi = this->incCurr->OrderCurr()->GetItem("symbol1", "t1");
         if(obi == 0)
             throw;
         if(obi->AggregatedSellQuotes()->Count() != 3)
@@ -3923,7 +3992,7 @@ public:
             throw;
         if(this->incCurr->OrderCurr()->Symbol(0)->Count() != 1)
             throw;
-        obi = this->incCurr->OrderCurr()->GetItem("s1", "t1");
+        obi = this->incCurr->OrderCurr()->GetItem("symbol1", "t1");
         if(obi == 0)
             throw;
         if(obi->AggregatedSellQuotes()->Count() != 4)
@@ -3949,12 +4018,13 @@ public:
     void Test_OnIncrementalRefresh_OLR_CURR_Remove_SellQuotes_Aggregated() {
         this->Clear();
         this->TestDefaults();
+        this->AddSymbol("symbol1");
 
         AstsIncrementalOLRCURRInfo *info = this->m_helper->CreateAstsIncrementalOLRCURRInfo();
-        AstsOLSCURRItemInfo *item1 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "e1", 1);
-        AstsOLSCURRItemInfo *item2 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "e2", 2);
-        AstsOLSCURRItemInfo *item3 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "e3", 3);
-        AstsOLSCURRItemInfo *item4 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "e4", 4);
+        AstsOLSCURRItemInfo *item1 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "e1", 1);
+        AstsOLSCURRItemInfo *item2 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "e2", 2);
+        AstsOLSCURRItemInfo *item3 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "e3", 3);
+        AstsOLSCURRItemInfo *item4 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "e4", 4);
 
         info->GroupMDEntriesCount = 4;
         info->GroupMDEntries[0] = item1;
@@ -3978,7 +4048,7 @@ public:
         if(this->incCurr->OrderCurr()->UsedItemCount() != 1)
             throw;
 
-        OrderInfo<AstsOLSCURRItemInfo> *obi = this->incCurr->OrderCurr()->GetItem("s1", "t1");
+        OrderInfo<AstsOLSCURRItemInfo> *obi = this->incCurr->OrderCurr()->GetItem("symbol1", "t1");
         if(obi->AggregatedSellQuotes()->Count() != 3)
             throw;
 
@@ -3998,7 +4068,7 @@ public:
         if(this->incCurr->OrderCurr()->UsedItemCount() != 1)
             throw;
 
-        obi = this->incCurr->OrderCurr()->GetItem("s1", "t1");
+        obi = this->incCurr->OrderCurr()->GetItem("symbol1", "t1");
         if(obi->AggregatedSellQuotes()->Count() != 2)
             throw;
         if(!obi->AggregatedSellQuotes()->Item(0)->Price()->Equal(3, -2))
@@ -4015,7 +4085,7 @@ public:
         if(this->incCurr->OrderCurr()->UsedItemCount() != 1)
             throw;
 
-        obi = this->incCurr->OrderCurr()->GetItem("s1", "t1");
+        obi = this->incCurr->OrderCurr()->GetItem("symbol1", "t1");
         if(obi->AggregatedSellQuotes()->Count() != 1)
             throw;
         if(!obi->AggregatedSellQuotes()->Item(0)->Price()->Equal(3, -2))
@@ -4030,7 +4100,7 @@ public:
         if(this->incCurr->OrderCurr()->UsedItemCount() != 1)
             throw;
 
-        obi = this->incCurr->OrderCurr()->GetItem("s1", "t1");
+        obi = this->incCurr->OrderCurr()->GetItem("symbol1", "t1");
         if(obi->AggregatedSellQuotes()->Count() != 0)
             throw;
     }
@@ -4038,12 +4108,13 @@ public:
     void Test_OnIncrementalRefresh_OLR_CURR_Change_SellQuotes_Aggregated() {
         this->Clear();
         this->TestDefaults();
+        this->AddSymbol("symbol1");
 
         AstsIncrementalOLRCURRInfo *info = this->m_helper->CreateAstsIncrementalOLRCURRInfo();
-        AstsOLSCURRItemInfo *item1 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "e1", 1);
-        AstsOLSCURRItemInfo *item2 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "e2", 2);
-        AstsOLSCURRItemInfo *item3 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "e3", 3);
-        AstsOLSCURRItemInfo *item4 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "e4", 4);
+        AstsOLSCURRItemInfo *item1 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "e1", 1);
+        AstsOLSCURRItemInfo *item2 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "e2", 2);
+        AstsOLSCURRItemInfo *item3 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "e3", 3);
+        AstsOLSCURRItemInfo *item4 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "e4", 4);
 
         info->GroupMDEntriesCount = 4;
         info->GroupMDEntries[0] = item1;
@@ -4053,7 +4124,7 @@ public:
 
         this->incCurr->OnIncrementalRefresh_OLR_CURR(info);
 
-        OrderInfo<AstsOLSCURRItemInfo> *obi2 = this->incCurr->OrderCurr()->GetItem("s1", "t1");
+        OrderInfo<AstsOLSCURRItemInfo> *obi2 = this->incCurr->OrderCurr()->GetItem("symbol1", "t1");
         if(!obi2->AggregatedSellQuotes()->Item(0)->Price()->Equal(2, -2))
             throw;
         if(!obi2->AggregatedSellQuotes()->Item(1)->Price()->Equal(25, -3))
@@ -4063,14 +4134,14 @@ public:
         if(!obi2->AggregatedSellQuotes()->Item(3)->Price()->Equal(4, -2))
             throw;
 
-        AstsOLSCURRItemInfo *item5 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 24, -3, 1, 3, mduaChange, mdetSellQuote, "e2", 5);
+        AstsOLSCURRItemInfo *item5 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "t1", 24, -3, 1, 3, mduaChange, mdetSellQuote, "e2", 5);
 
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item5;
 
         this->incCurr->OnIncrementalRefresh_OLR_CURR(info);
 
-        OrderInfo<AstsOLSCURRItemInfo> *obi = this->incCurr->OrderCurr()->GetItem("s1", "t1");
+        OrderInfo<AstsOLSCURRItemInfo> *obi = this->incCurr->OrderCurr()->GetItem("symbol1", "t1");
 
         QuoteInfo *qt1 = obi->AggregatedSellQuotes()->Item(0);
         QuoteInfo *qt2 = obi->AggregatedSellQuotes()->Item(1);
@@ -4094,12 +4165,13 @@ public:
     void Test_Clear_SellQuotes_Aggregated() {
         this->Clear();
         this->TestDefaults();
+        this->AddSymbol("symbol1");
 
         AstsIncrementalOLRCURRInfo *info = this->m_helper->CreateAstsIncrementalOLRCURRInfo();
-        AstsOLSCURRItemInfo *item1 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "e1", 1);
-        AstsOLSCURRItemInfo *item2 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "e2", 2);
-        AstsOLSCURRItemInfo *item3 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "e3", 3);
-        AstsOLSCURRItemInfo *item4 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "e4", 4);
+        AstsOLSCURRItemInfo *item1 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "e1", 1);
+        AstsOLSCURRItemInfo *item2 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "e2", 2);
+        AstsOLSCURRItemInfo *item3 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "e3", 3);
+        AstsOLSCURRItemInfo *item4 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "e4", 4);
 
         info->GroupMDEntriesCount = 4;
         info->GroupMDEntries[0] = item1;
@@ -4113,7 +4185,7 @@ public:
         if(this->incCurr->OrderCurr()->UsedItemCount() != 0)
             throw;
 
-        OrderInfo<AstsOLSCURRItemInfo> *obi = this->incCurr->OrderCurr()->GetItem("s1", "t1");
+        OrderInfo<AstsOLSCURRItemInfo> *obi = this->incCurr->OrderCurr()->GetItem("symbol1", "t1");
         if(obi->AggregatedSellQuotes()->Count() != 0)
             throw;
     }
@@ -4121,12 +4193,13 @@ public:
     void Test_OnFullRefresh_OBS_CURR_SellQuotes_Aggregated() {
         this->Clear();
         this->TestDefaults();
+        this->AddSymbol("symbol1");
 
         AstsIncrementalOLRCURRInfo *info = this->m_helper->CreateAstsIncrementalOLRCURRInfo();
-        AstsOLSCURRItemInfo *item1 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "e1", 1);
-        AstsOLSCURRItemInfo *item2 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "e2", 2);
-        AstsOLSCURRItemInfo *item3 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "e3", 3);
-        AstsOLSCURRItemInfo *item4 = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "e4", 4);
+        AstsOLSCURRItemInfo *item1 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "e1", 1);
+        AstsOLSCURRItemInfo *item2 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "e2", 2);
+        AstsOLSCURRItemInfo *item3 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "e3", 3);
+        AstsOLSCURRItemInfo *item4 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "e4", 4);
 
         info->GroupMDEntriesCount = 4;
         info->GroupMDEntries[0] = item1;
@@ -4150,7 +4223,7 @@ public:
         if(this->incCurr->OrderCurr()->UsedItemCount() != 2)
             throw;
 
-        OrderInfo<AstsOLSCURRItemInfo> *obi3 = this->incCurr->OrderCurr()->GetItem("s1", "t1");
+        OrderInfo<AstsOLSCURRItemInfo> *obi3 = this->incCurr->OrderCurr()->GetItem("symbol1", "t1");
         if(obi3->AggregatedSellQuotes()->Count() != 4)
             throw;
 
@@ -4192,10 +4265,11 @@ public:
 
     void Test_Aggregation_Logic() {
         this->Clear();
+        this->AddSymbol("symbol1");
 
-        OrderInfo<AstsOLSCURRItemInfo> *item = this->m_table->Add("s1", "t1");
+        OrderInfo<AstsOLSCURRItemInfo> *item = this->m_table->Symbol(0)->Session(0);
 
-        AstsOLSCURRItemInfo *info = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 100, 0, 200, 0, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "e1", 1);
+        AstsOLSCURRItemInfo *info = this->m_helper->CreateOLRCurrItemInfo("symbol1", "t1", 100, 0, 200, 0, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "e1", 1);
         item->ProcessIncrementalMessage(info);
 
         if(item->AggregatedBuyQuotes()->Count() != 1)
@@ -4205,7 +4279,7 @@ public:
         if(item->AggregatedBuyQuotes()->Item(0)->Size() != 200)
             throw;
 
-        info = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 100, 0, 100, 0, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "e2", 2);
+        info = this->m_helper->CreateOLRCurrItemInfo("symbol1", "t1", 100, 0, 100, 0, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "e2", 2);
         item->ProcessIncrementalMessage(info);
 
         if(item->AggregatedBuyQuotes()->Count() != 1)
@@ -4215,7 +4289,7 @@ public:
         if(item->AggregatedBuyQuotes()->Item(0)->Size() != 300)
             throw;
 
-        info = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 100, 0, 50, 0, MDUpdateAction::mduaDelete, MDEntryType::mdetBuyQuote, "e2", 3);
+        info = this->m_helper->CreateOLRCurrItemInfo("symbol1", "t1", 100, 0, 50, 0, MDUpdateAction::mduaDelete, MDEntryType::mdetBuyQuote, "e2", 3);
         item->ProcessIncrementalMessage(info);
 
         if(item->AggregatedBuyQuotes()->Count() != 1)
@@ -4225,7 +4299,7 @@ public:
         if(item->AggregatedBuyQuotes()->Item(0)->Size() != 200)
             throw;
 
-        info = this->m_helper->CreateOLRCurrItemInfo("s1", "t1", 100, 0, 50, 0, MDUpdateAction::mduaChange, MDEntryType::mdetBuyQuote, "e1", 4);
+        info = this->m_helper->CreateOLRCurrItemInfo("symbol1", "t1", 100, 0, 50, 0, MDUpdateAction::mduaChange, MDEntryType::mdetBuyQuote, "e1", 4);
         item->ProcessIncrementalMessage(info);
 
         if(item->AggregatedBuyQuotes()->Count() != 1)

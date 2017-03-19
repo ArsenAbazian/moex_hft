@@ -64,7 +64,7 @@ public:
         incFond->SetSnapshot(this->snapFond);
         incFond->StatisticFond()->Clear();
         incFond->ClearMessages();
-        incFond->WaitIncrementalMaxTimeMs(50);
+        incFond->WaitLostIncrementalMessageMaxTimeMs(50);
         incFond->m_waitTimer->Stop();
         incFond->m_waitTimer->Stop(1);
         snapFond->ClearMessages();
@@ -1732,7 +1732,7 @@ public:
         if(!incFond->m_waitTimer->Active()) // not all messages was processed - some messages was skipped
             throw;
         // wait
-        while(incFond->m_waitTimer->ElapsedMilliseconds() < incFond->WaitIncrementalMaxTimeMs());
+        while(incFond->m_waitTimer->ElapsedMilliseconds() < incFond->WaitLostIncrementalMessageMaxTimeMs());
         if(!incFond->Listen_Atom_Incremental_Core())
             throw;
         //entering snapshot mode
@@ -2284,7 +2284,7 @@ public:
         if(!incFond->m_waitTimer->Active()) // not all messages was processed - some messages was skipped
             throw;
         // wait
-        while(incFond->m_waitTimer->ElapsedMilliseconds() < incFond->WaitIncrementalMaxTimeMs());
+        while(incFond->m_waitTimer->ElapsedMilliseconds() < incFond->WaitLostIncrementalMessageMaxTimeMs());
 
         // sending snapshot for only one item and rpt seq before last incremental message
         SendMessages(snapFond, new TestTemplateInfo*[4] {
@@ -2431,7 +2431,7 @@ public:
             throw;
         if(!incFond->m_waitTimer->Active())
             throw;
-        if(incFond->m_waitTimer->IsElapsedMilliseconds(incFond->m_waitIncrementalMaxTimeMs))
+        if(incFond->m_waitTimer->IsElapsedMilliseconds(incFond->m_waitLostIncrementalMessageMaxTimeMs))
             throw;
         if(snapFond->State() != FeedConnectionState::fcsSuspend)
             throw;
@@ -2754,7 +2754,7 @@ public:
     void TestConnectionFond_ParallelWorkingIncrementalAndSnapshot_5_4() {
         this->Clear();
 
-        incFond->WaitIncrementalMaxTimeMs(500);
+        incFond->WaitLostIncrementalMessageMaxTimeMs(500);
         incFond->StatisticFond()->Add("s1", "session1");
         incFond->Start();
 
@@ -2779,7 +2779,7 @@ public:
     void TestConnectionFond_ParallelWorkingIncrementalAndSnapshot_5_4_1() {
         this->Clear();
 
-        incFond->WaitIncrementalMaxTimeMs(500);
+        incFond->WaitLostIncrementalMessageMaxTimeMs(500);
         incFond->StatisticFond()->Add("s1", "session1");
         incFond->Start();
 
@@ -2806,7 +2806,7 @@ public:
     void TestConnectionFond_ParallelWorkingIncrementalAndSnapshot_5_4_2() {
         this->Clear();
 
-        incFond->WaitIncrementalMaxTimeMs(500);
+        incFond->WaitLostIncrementalMessageMaxTimeMs(500);
         incFond->StatisticFond()->Add("s1", "session1");
         incFond->Start();
 
@@ -2833,7 +2833,7 @@ public:
     void TestConnectionFond_ParallelWorkingIncrementalAndSnapshot_5_5() {
         this->Clear();
 
-        incFond->WaitIncrementalMaxTimeMs(500);
+        incFond->WaitLostIncrementalMessageMaxTimeMs(500);
         incFond->StatisticFond()->Add("s1", "session1");
         incFond->StatisticFond()->Add("s2", "session1");
         incFond->Start();

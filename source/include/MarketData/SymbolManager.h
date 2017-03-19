@@ -158,6 +158,15 @@ public:
     inline SymbolInfo* GetSymbol(const char *symbol, bool *wasNewlyAdded) {
         return this->GetSymbol(symbol, strlen(symbol), wasNewlyAdded);
     }
+    inline SymbolInfo* AddSymbol(const char *symbol) {
+        bool wasNewlyAdded = false;
+        SymbolInfo *res = this->GetSymbol(symbol, strlen(symbol), &wasNewlyAdded);
+#ifdef TEST
+        if(!wasNewlyAdded)
+            throw;
+#endif
+        return res;
+    }
     inline SymbolInfo* GetSymbol(UINT64 securityId, bool *wasNewlyAdded) {
         if(this->m_bucketList2[securityId] == 0) {
             *wasNewlyAdded = true;

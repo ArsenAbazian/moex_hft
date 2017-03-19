@@ -84,7 +84,8 @@ protected:
     int                                         m_lastMsgSeqNumProcessed;
 	int											m_rptSeq;
 
-    int                                         m_waitIncrementalMaxTimeMs;
+    int                                         m_waitLostIncrementalMessageMaxTimeMs;
+    int                                         m_waitIncrementalMessageMaxTimeMs;
     int                                         m_snapshotMaxTimeMs;
     int                                         m_maxLostPacketCountForStartSnapshot;
     bool                                        m_isLastIncrementalRecv;
@@ -1070,42 +1071,47 @@ protected:
         int newStartMsgSeqNum = -1;
 
         if(localStart == localEnd) { // special case - one packet
-            if(this->m_packets[localStart]->m_address == 0)
+            FeedConnectionMessageInfo *info = this->m_packets[localStart];
+            if(info->m_address == 0)
                 return true;
-            if(!this->m_packets[localStart]->m_processed) {
-                if (!this->ProcessIncremental(this->m_packets[localStart]))
+            if(!info->m_processed) {
+                if (!this->ProcessIncremental(info))
                     return false;
             }
-            this->ClearLocalPackets(0, localEnd);
+            info->Clear();
             this->m_startMsgSeqNum = this->m_endMsgSeqNum + 1;
             this->m_windowMsgSeqNum = this->m_startMsgSeqNum;
             this->AfterMoveWindow();
         }
         else { // more than one packet
+            FeedConnectionMessageInfo **pinfo = this->m_packets + i;
+            FeedConnectionMessageInfo *info;
             while (i <= localEnd) {
-                if (this->m_packets[i]->m_processed) {
-                    i++;
+                info = *pinfo;
+                if (info->m_processed) {
+                    i++; pinfo++;
                     continue;
                 }
-                if (this->m_packets[i]->m_address == 0) {
+                if (info->m_address == 0) {
                     if (this->m_requestMessageStartIndex < i + this->m_windowMsgSeqNum)
                         this->m_requestMessageStartIndex = i + this->m_windowMsgSeqNum;
                     newStartMsgSeqNum = i + this->m_windowMsgSeqNum;
                     break;
                 }
-                if (!this->ProcessIncremental(this->m_packets[i]))
+                if (!this->ProcessIncremental(info))
                     return false;
-                i++;
+                i++; pinfo++;
             }
 
             while (i <= localEnd) {
-                if (this->m_packets[i]->m_processed || this->m_packets[i]->m_address == 0) {
-                    i++;
+                info = *pinfo;
+                if (info->m_processed || info->m_address == 0) {
+                    i++; pinfo++;
                     continue;
                 }
-                if (!this->ProcessIncremental(this->m_packets[i]))
+                if (!this->ProcessIncremental(info))
                     return false;
-                i++;
+                i++; pinfo++;
             }
             if (newStartMsgSeqNum != -1) {
                 this->m_startMsgSeqNum = newStartMsgSeqNum;
@@ -1951,7 +1957,7 @@ protected:
                 return true;
             }
             this->m_waitTimer->Activate();
-            if(this->m_waitTimer->ElapsedMilliseconds() >= this->m_waitIncrementalMaxTimeMs) {
+            if(this->m_waitTimer->ElapsedMilliseconds() >= this->m_waitLostIncrementalMessageMaxTimeMs) {
                 if(!this->CheckRequestLostIncrementalMessages())
                     return false;
                 this->m_waitTimer->Stop();
@@ -1962,6 +1968,7 @@ protected:
             if(this->CanStopListeningSnapshot()) {
                 this->StopListenSnapshot();
                 this->m_waitTimer->Activate();
+                this->m_waitTimer->Stop(1);
             }
         }
         return true;
@@ -2363,11 +2370,12 @@ protected:
 
         if(!this->m_isLastIncrementalRecv) {
             this->m_waitTimer->Activate(1);
-            if(this->m_waitTimer->ElapsedMilliseconds(1) > this->WaitAnyPacketMaxTimeMs) {
+            if(this->m_waitTimer->ElapsedMilliseconds(1) > this->m_waitIncrementalMessageMaxTimeMs /*this->WaitAnyPacketMaxTimeMs*/) {
                 //TODO remove debug
-                if(this->m_snapshot->State() == FeedConnectionState::fcsSuspend)
-                    printf("%s listen atom incremental timeout... start snapshot\n", this->m_idName);
-                this->StartListenSnapshot();
+                if(this->m_snapshot->State() == FeedConnectionState::fcsSuspend) {
+                    printf("%s listen atom incremental timeout %" PRIu64 " ms... start snapshot\n", this->m_idName, this->m_waitTimer->ElapsedMilliseconds(1));
+                    this->StartListenSnapshot();
+                }
                 return true;
             }
         }
@@ -2515,17 +2523,17 @@ protected:
     }
 
     inline bool OnIncrementalRefresh_MSR_CURR(AstsGenericItemInfo *info) {
-        int index = this->SecurityDefinition()->m_symbolManager->GetSymbol(info->Symbol, info->SymbolLength)->m_index;
+        int index = this->m_symbolManager->GetSymbol(info->Symbol, info->SymbolLength)->m_index;
         return this->m_statTableCurr->ProcessIncremental(info, index, info->TradingSessionID, info->TradingSessionIDLength);
     }
 
     inline bool OnIncrementalRefresh_FORTS_OBR(FortsDefaultSnapshotMessageMDEntriesItemInfo *info) {
-        int index = this->SecurityDefinition()->m_symbolManager->GetSymbol(info->Symbol, info->SymbolLength)->m_index;
+        int index = this->m_symbolManager->GetSymbol(info->SecurityID)->m_index;
         return this->m_fortsOrderBookTable->ProcessIncremental(info, index);
     }
 
     inline bool OnIncrementalRefresh_FORTS_TLR(FortsDefaultSnapshotMessageMDEntriesItemInfo *info) {
-        int index = this->SecurityDefinition()->m_symbolManager->GetSymbol(info->Symbol, info->SymbolLength)->m_index;
+        int index = this->m_symbolManager->GetSymbol(info->SecurityID)->m_index;
         return this->m_fortsTradeBookTable->ProcessIncremental(info, index);
     }
 
@@ -2731,13 +2739,14 @@ protected:
         if(processMsgSeqNumber)
             this->m_fastProtocolManager->ReadMsgSeqNumber();
 
-#ifdef TEST
-        if(this->m_fastProtocolManager->MessageLength() != length)
-            throw;
-#endif
-
+        this->m_fastProtocolManager->DecodeAstsHeader();
         if(this->m_fastProtocolManager->TemplateId() == FeedConnectionMessage::fmcSecurityStatus) {
-            return this->ProcessSecurityStatus((AstsSecurityStatusInfo *)this->m_fastProtocolManager->LastDecodeInfo());
+            bool res = this->ProcessSecurityStatus((AstsSecurityStatusInfo *)this->m_fastProtocolManager->DecodeAstsSecurityStatus());
+#ifdef TEST
+            if(this->m_fastProtocolManager->MessageLength() != length)
+                throw;
+#endif
+            return res;
         }
 
         return true;
@@ -2748,17 +2757,22 @@ protected:
         if(processMsgSeqNumber)
             this->m_fastProtocolManager->ReadMsgSeqNumber();
 
+        this->m_fastProtocolManager->DecodeFortsHeader();
+        bool res = true;
+        if(this->m_fastProtocolManager->TemplateId() == FortsMessage::fortsSecurityStatus) {
+            res = this->ProcessSecurityStatus(
+                    (FortsSecurityStatusInfo *) this->m_fastProtocolManager->DecodeFortsSecurityStatus());
+        }
+        else if(this->m_fastProtocolManager->TemplateId() == FortsMessage::fortsSecurityDefinitionUpdateReport) {
+            res = this->ProcessSecurityDefinitionUpdateReport(
+                    (FortsSecurityDefinitionUpdateReportInfo *) this->m_fastProtocolManager->DecodeFortsSecurityDefinitionUpdateReport());
+        }
+
 #ifdef TEST
         if(this->m_fastProtocolManager->MessageLength() != length)
             throw;
 #endif
-
-        if(this->m_fastProtocolManager->TemplateId() == FortsMessage::fortsSecurityStatus)
-            return this->ProcessSecurityStatus((FortsSecurityStatusInfo *)this->m_fastProtocolManager->LastDecodeInfo());
-        else if(this->m_fastProtocolManager->TemplateId() == FortsMessage::fortsSecurityDefinitionUpdateReport)
-            return this->ProcessSecurityDefinitionUpdateReport((FortsSecurityDefinitionUpdateReportInfo *)this->m_fastProtocolManager->LastDecodeInfo());
-
-        return true;
+        return res;
     }
 
     inline bool ShouldSkipMessageForts(unsigned char *buffer, bool shouldProcessMsgSeqNumber) {
@@ -2862,8 +2876,16 @@ public:
     inline FortsSecurityDefinitionInfo* SymbolForts(int index) { return this->m_symbolsForts[index]->Data(); }
     inline int SymbolCount() { return this->m_symbolsCount; }
     inline FeedConnectionSecurityDefinitionMode SecurityDefinitionMode() { return this->m_idfMode; }
-    inline void WaitIncrementalMaxTimeMs(int timeMs) { this->m_waitIncrementalMaxTimeMs = timeMs; }
-    inline int WaitIncrementalMaxTimeMs() { return this->m_waitIncrementalMaxTimeMs; }
+
+    inline void SetSymbolManager(SymbolManager *manager) { this->m_symbolManager = manager; }
+    inline SymbolManager* GetSymbolManager() { return this->m_symbolManager; }
+
+    inline void WaitLostIncrementalMessageMaxTimeMs(int timeMs) { this->m_waitLostIncrementalMessageMaxTimeMs = timeMs; }
+    inline int WaitLostIncrementalMessageMaxTimeMs() { return this->m_waitLostIncrementalMessageMaxTimeMs; }
+
+    inline void WaitIncrementalMessageMaxTimeMs(int timeMs) { this->m_waitIncrementalMessageMaxTimeMs = timeMs; }
+    inline int WaitIncrementalMessageMaxTimeMs() { return this->m_waitIncrementalMessageMaxTimeMs; }
+
     inline void WaitSnapshotMaxTimeMs(int timeMs) { this->m_snapshotMaxTimeMs = timeMs; }
     inline int WaitSnapshotMaxTimeMs() { return this->m_snapshotMaxTimeMs; }
 

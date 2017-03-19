@@ -189,8 +189,8 @@ public:
         if(m->m_pool->CalcPoolCount() != m->m_pool->Capacity())
             throw;
 
-        m->GetSymbol("s1", 2, &isNewlyAdded);
-        m->GetSymbol("s2", 2, &isNewlyAdded);
+        m->GetSymbol("symbol1", 2, &isNewlyAdded);
+        m->GetSymbol("symbol2", 2, &isNewlyAdded);
 
         if(m->m_pool->CalcPoolCount() != m->m_pool->Capacity() - 2)
             throw;

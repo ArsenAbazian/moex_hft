@@ -2068,7 +2068,7 @@ public:
                     throw;
                 if(fcs->State() != FeedConnectionState::fcsSuspend)
                     throw;
-                while(!fci->m_waitTimer->IsElapsedMilliseconds(fci->WaitIncrementalMaxTimeMs()) && fcs->State() == FeedConnectionState::fcsSuspend)
+                while(!fci->m_waitTimer->IsElapsedMilliseconds(fci->WaitLostIncrementalMessageMaxTimeMs()) && fcs->State() == FeedConnectionState::fcsSuspend)
                     fci->Listen_Atom_Incremental_Core();
                 if(fcs->State() == FeedConnectionState::fcsSuspend)
                     fci->Listen_Atom_Incremental_Core();
