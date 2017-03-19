@@ -985,7 +985,7 @@ public:
 
     unsigned char *CreateHearthBeatMessage(int msgIndex) {
         this->m_helper->m_fastManager->SetNewBuffer(this->m_helper->m_buffer->CurrentPos(), 1000);
-        this->m_helper->EncodeHearthBeatMessage(new TestTemplateInfo(FeedConnectionMessage::fcmHeartBeat, msgIndex));
+        this->m_helper->EncodeHearthBeatMessage(new TestTemplateInfo(FeedTemplateId::fcmHeartBeat, msgIndex));
         unsigned char *address = this->m_helper->m_buffer->CurrentPos();
         this->m_helper->m_buffer->Next(this->m_helper->m_fastManager->MessageLength());
         return address;

@@ -28,10 +28,7 @@ typedef enum _FeedConnectionMessage {
     fmcFullRefresh_TLS_CURR = 3601,
     fmcIncrementalRefresh_TLR_CURR = 3611,
     fmcIncrementalRefresh_MSR_FOND = 2523,
-    fmcIncrementalRefresh_MSR_CURR = 3613
-} FeedConnectionMessage;
-
-typedef enum _FortsMessage {
+    fmcIncrementalRefresh_MSR_CURR = 3613,
     fortsSecurityDefinition = 3,
     fortsSecurityDefinitionUpdateReport = 4,
     fortsSecurityStatus = 5,
@@ -40,7 +37,7 @@ typedef enum _FortsMessage {
     fortsSnapshot = 13,
     fortsHearthBeat = 6,
     fortsSequenceReset = 7
-}FortsMessage;
+} FeedTemplateId;
 
 typedef enum _FeedConnectionId {
     fcidObrFond,

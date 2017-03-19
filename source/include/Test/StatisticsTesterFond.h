@@ -361,7 +361,7 @@ public:
 
         this->incFond->OnIncrementalRefresh_MSR_FOND(info);
 
-        StatisticsInfo<AstsGenericItemInfo> *obi2 = this->incFond->StatisticFond()->GetItem("s1", "t1");
+        StatisticsInfo<AstsGenericItemInfo> *obi2 = this->incFond->StatisticFond()->GetItemByIndex("s1", "t1");
         if(!StringIdComparer::Equal(obi2->BuyQuotes()->Item(0)->MDEntryID, 2, "e2", 2))
             throw;
         if(!StringIdComparer::Equal(obi2->BuyQuotes()->Item(1)->MDEntryID, 2, "e1", 2))
@@ -701,7 +701,7 @@ public:
         if(this->incFond->StatisticFond()->UsedItemCount() != 1)
             throw;
 
-        StatisticsInfo<AstsGenericItemInfo> *obi = this->incFond->StatisticFond()->GetItem("s1", "t1");
+        StatisticsInfo<AstsGenericItemInfo> *obi = this->incFond->StatisticFond()->GetItemBySecurityId("s1", "t1");
         if(obi->SellQuotes()->Count() != 3)
             throw;
 
@@ -1391,9 +1391,9 @@ public:
         this->Clear();
 
         SendMessages(incFond, new TestTemplateInfo*[3] {
-                new TestTemplateInfo(FeedConnectionMessage::fcmHeartBeat, 1),
-                new TestTemplateInfo(FeedConnectionMessage::fcmHeartBeat, 2),
-                new TestTemplateInfo(FeedConnectionMessage::fcmHeartBeat, 3)}, 3);
+                new TestTemplateInfo(FeedTemplateId::fcmHeartBeat, 1),
+                new TestTemplateInfo(FeedTemplateId::fcmHeartBeat, 2),
+                new TestTemplateInfo(FeedTemplateId::fcmHeartBeat, 3)}, 3);
 
     }
 
@@ -1401,16 +1401,16 @@ public:
         this->Clear();
 
         SendMessages(incFond, new TestTemplateInfo*[3] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_MSR_FOND, 1,
+                new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_MSR_FOND, 1,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "session1", "e1", 1, 1, 1, 1, 1),
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "session1", "e2", 2, 2, 1, 2, 1),
                                      }, 2),
-                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_MSR_FOND, 2,
+                new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_MSR_FOND, 2,
                                      new TestTemplateItemInfo*[1] {
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "session1", "e3", 3, 3, 1, 3, 1),
                                      }, 1),
-                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_MSR_FOND, 3,
+                new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_MSR_FOND, 3,
                                      new TestTemplateItemInfo*[1] {
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "session1", "e4", 4, 3, 1, 3, 1),
                                      }, 1)
@@ -1424,7 +1424,7 @@ public:
 
         if(incFond->m_waitTimer->Active()) // everything is ok = timer should not be activated
             throw;
-        if(incFond->StatisticFond()->GetItem("s1", "session1")->BuyQuotes()->Count() != 4)
+        if(incFond->StatisticFond()->GetItemByIndex("s1", "session1")->BuyQuotes()->Count() != 4)
             throw;
     }
 
@@ -1437,12 +1437,12 @@ public:
         this->Clear();
 
         SendMessages(incFond, new TestTemplateInfo*[2] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_MSR_FOND, 1,
+                new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_MSR_FOND, 1,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "session1", "e1", 1, 1, 1, 1, 1),
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "session1", "e2", 2, 2, 1, 2, 1),
                                      }, 2),
-                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_MSR_FOND, 3,
+                new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_MSR_FOND, 3,
                                      new TestTemplateItemInfo*[1] {
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "session1", "e3", 4, 3, 1, 3, 1),
                                      }, 1)
@@ -1468,7 +1468,7 @@ public:
 
         // lost message finally appeared before wait timer elapsed
         SendMessages(incFond, new TestTemplateInfo*[1] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_MSR_FOND, 2,
+                new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_MSR_FOND, 2,
                                      new TestTemplateItemInfo*[1] {
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "session1", "e4", 3, 1, 1, 1, 1),
                                      }, 1)
@@ -1491,12 +1491,12 @@ public:
         this->Clear();
 
         SendMessages(incFond, new TestTemplateInfo*[2] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_MSR_FOND, 1,
+                new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_MSR_FOND, 1,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "session1", "e1", 1, 1, 1, 1, 1),
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "session1", "e2", 2, 2, 1, 2, 1),
                                      }, 2),
-                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_MSR_FOND, 3,
+                new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_MSR_FOND, 3,
                                      new TestTemplateItemInfo*[1] {
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "session1", "e5", 5, 3, 1, 3, 1),
                                      }, 1)
@@ -1524,7 +1524,7 @@ public:
 
         // lost message finally appeared before wait timer elapsed
         SendMessages(incFond, new TestTemplateInfo*[1] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_MSR_FOND, 2,
+                new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_MSR_FOND, 2,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "session1", "e3", 3, 1, 1, 1, 1),
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "session1", "e4", 4, 1, 1, 1, 1),
@@ -1548,12 +1548,12 @@ public:
         this->Clear();
 
         SendMessages(incFond, new TestTemplateInfo*[2] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_MSR_FOND, 1,
+                new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_MSR_FOND, 1,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "session1", "e1", 1, 1, 1, 1, 1),
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "session1", "e2", 2, 2, 1, 2, 1),
                                      }, 2),
-                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_MSR_FOND, 4,
+                new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_MSR_FOND, 4,
                                      new TestTemplateItemInfo*[1] {
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "session1", "e5", 5, 3, 1, 3, 1),
                                      }, 1)
@@ -1581,7 +1581,7 @@ public:
 
         // lost message finally appeared before wait timer elapsed
         SendMessages(incFond, new TestTemplateInfo*[1] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_MSR_FOND, 2,
+                new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_MSR_FOND, 2,
                                      new TestTemplateItemInfo*[1] {
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "session1", "e3", 3, 1, 1, 1, 1),
                                      }, 1)
@@ -1604,7 +1604,7 @@ public:
             throw;
 
         SendMessages(incFond, new TestTemplateInfo*[1] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_MSR_FOND, 3,
+                new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_MSR_FOND, 3,
                                      new TestTemplateItemInfo*[1] {
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "session1", "e3", 4, 1, 1, 1, 1),
                                      }, 1)
@@ -1629,12 +1629,12 @@ public:
         this->Clear();
 
         SendMessages(incFond, new TestTemplateInfo*[2] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_MSR_FOND, 1,
+                new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_MSR_FOND, 1,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "session1", "e1", 1, 1, 1, 1, 1),
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "session1", "e2", 2, 2, 1, 2, 1),
                                      }, 2),
-                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_MSR_FOND, 4,
+                new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_MSR_FOND, 4,
                                      new TestTemplateItemInfo*[1] {
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "session1", "e5", 5, 3, 1, 3, 1),
                                      }, 1)
@@ -1662,7 +1662,7 @@ public:
 
         // lost message finally appeared before wait timer elapsed
         SendMessages(incFond, new TestTemplateInfo*[1] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_MSR_FOND, 3,
+                new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_MSR_FOND, 3,
                                      new TestTemplateItemInfo*[1] {
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "session1", "e3", 4, 1, 1, 1, 1),
                                      }, 1)
@@ -1685,7 +1685,7 @@ public:
             throw;
 
         SendMessages(incFond, new TestTemplateInfo*[1] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_MSR_FOND, 2,
+                new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_MSR_FOND, 2,
                                      new TestTemplateItemInfo*[1] {
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "session1", "e3", 3, 1, 1, 1, 1),
                                      }, 1)
@@ -1713,12 +1713,12 @@ public:
             throw;
 
         SendMessages(incFond, new TestTemplateInfo*[2] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_MSR_FOND, 1,
+                new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_MSR_FOND, 1,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "session1", "e1", 1, 1, 1, 1, 1),
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "session1", "e2", 2, 2, 1, 2, 1),
                                      }, 2),
-                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_MSR_FOND, 4,
+                new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_MSR_FOND, 4,
                                      new TestTemplateItemInfo*[1] {
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "session1", "e5", 5, 3, 1, 3, 1),
                                      }, 1)
@@ -1805,7 +1805,7 @@ public:
         }
 
         SendMessages(snapFond, new TestTemplateInfo*[1] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_Generic, 2, "s1", "session1", false, false,
+                new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_Generic, 2, "s1", "session1", false, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -1832,7 +1832,7 @@ public:
         incFond->StartListenSnapshot();
 
         SendMessages(snapFond, new TestTemplateInfo*[1] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_Generic, 2, "s1", "session1", true, false,
+                new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_Generic, 2, "s1", "session1", true, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -1878,7 +1878,7 @@ public:
         incFond->StartListenSnapshot();
 
         SendMessages(snapFond, new TestTemplateInfo*[1] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_Generic, 1, "s1", "session1", false, false,
+                new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_Generic, 1, "s1", "session1", false, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -1899,7 +1899,7 @@ public:
             throw;
 
         SendMessages(snapFond, new TestTemplateInfo*[1] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_Generic, 2, "s1", "session1", false, false,
+                new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_Generic, 2, "s1", "session1", false, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -1920,12 +1920,12 @@ public:
             throw;
 
         SendMessages(snapFond, new TestTemplateInfo*[2] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_Generic, 3, "s1", "session1", false, false,
+                new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_Generic, 3, "s1", "session1", false, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
                                      }, 2, 4),
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_Generic, 4, "s1", "session1", false, false,
+                new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_Generic, 4, "s1", "session1", false, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -1946,12 +1946,12 @@ public:
             throw;
 
         SendMessages(snapFond, new TestTemplateInfo*[2] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_Generic, 5, "s1", "session1", false, false,
+                new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_Generic, 5, "s1", "session1", false, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
                                      }, 2, 4),
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_Generic, 6, "s1", "session1", true, false,
+                new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_Generic, 6, "s1", "session1", true, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -1996,7 +1996,7 @@ public:
         incFond->StartListenSnapshot();
 
         SendMessages(snapFond, new TestTemplateInfo*[1] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_Generic, 1, "s1", "session1", false, true,
+                new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_Generic, 1, "s1", "session1", false, true,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -2024,7 +2024,7 @@ public:
         incFond->StartListenSnapshot();
 
         SendMessages(snapFond, new TestTemplateInfo*[1] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_Generic, 1, "s1", "session1", false, false,
+                new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_Generic, 1, "s1", "session1", false, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -2035,7 +2035,7 @@ public:
 
         // message seq 2 lost
         SendMessages(snapFond, new TestTemplateInfo*[1] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_Generic, 3, "s1", "session1", false, false,
+                new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_Generic, 3, "s1", "session1", false, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -2077,7 +2077,7 @@ public:
         incFond->StartListenSnapshot();
 
         SendMessages(snapFond, new TestTemplateInfo*[1] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_Generic, 1, "s1", "session1", false, false,
+                new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_Generic, 1, "s1", "session1", false, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -2088,7 +2088,7 @@ public:
 
         // message seq 2 lost
         SendMessages(snapFond, new TestTemplateInfo*[1] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_Generic, 3, "s1", "session1", false, false,
+                new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_Generic, 3, "s1", "session1", false, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -2120,7 +2120,7 @@ public:
             throw;
 
         SendMessages(snapFond, new TestTemplateInfo*[1] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_Generic, 2, "s1", "session1", false, false,
+                new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_Generic, 2, "s1", "session1", false, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -2157,7 +2157,7 @@ public:
         incFond->StartListenSnapshot();
 
         SendMessages(snapFond, new TestTemplateInfo*[1] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_Generic, 2, "s1", "session1", true, true,
+                new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_Generic, 2, "s1", "session1", true, true,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -2200,12 +2200,12 @@ public:
 
         snapFond->m_waitTimer->Stop();
         SendMessages(snapFond, new TestTemplateInfo*[2] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_Generic, 2, "s1", "session1", true, false,
+                new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_Generic, 2, "s1", "session1", true, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
                                      }, 2, 4),
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_Generic, 4, "s1", "session1", false, true,
+                new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_Generic, 4, "s1", "session1", false, true,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -2261,12 +2261,12 @@ public:
         this->TestTableItemsAllocator(incFond->StatisticFond());
 
         SendMessages(incFond, new TestTemplateInfo*[4] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_MSR_FOND, 1,
+                new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_MSR_FOND, 1,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("s1", "e1", 1),
                                              new TestTemplateItemInfo("s2", "e1", 1),
                                      }, 2),
-                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_MSR_FOND, 3,
+                new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_MSR_FOND, 3,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("s1", "e1", 4),
                                              new TestTemplateItemInfo("s2", "e1", 4),
@@ -2288,7 +2288,7 @@ public:
 
         // sending snapshot for only one item and rpt seq before last incremental message
         SendMessages(snapFond, new TestTemplateInfo*[4] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_Generic, 2, "s1", "session1", true, true,
+                new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_Generic, 2, "s1", "session1", true, true,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e1"),
@@ -3083,12 +3083,12 @@ public:
         this->TestTableItemsAllocator(incFond->StatisticFond());
 
         SendMessages(incFond, new TestTemplateInfo*[4] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_MSR_FOND, 1,
+                new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_MSR_FOND, 1,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("s1", "e1", 1),
                                              new TestTemplateItemInfo("s2", "e1", 1),
                                      }, 2),
-                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_MSR_FOND, 3,
+                new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_MSR_FOND, 3,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("s1", "e1", 4),
                                              new TestTemplateItemInfo("s2", "e1", 4),

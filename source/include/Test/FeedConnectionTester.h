@@ -20,6 +20,7 @@
 #include "PointerListTester.h"
 #include "SecurityStatusTester.h"
 #include "HistoricalReplayTester.h"
+#include "FortsOrderBookTester.h"
 
 class TestFeedMessage{
 public:
@@ -117,7 +118,7 @@ public:
         this->inc->GetSymbolManager()->AddSymbol("symbol1");
         this->inc->OrderCurr()->AddSymbol("symbol1");
 
-        info->m_templateId = FeedConnectionMessage::fmcIncrementalRefresh_OLR_CURR;
+        info->m_templateId = FeedTemplateId::fmcIncrementalRefresh_OLR_CURR;
         info->m_itemsCount = 1;
         info->m_items[0] = item;
 
@@ -156,7 +157,7 @@ public:
         TestTemplateInfo *info = new TestTemplateInfo();
         TestTemplateItemInfo *item = new TestTemplateItemInfo();
 
-        info->m_templateId = FeedConnectionMessage::fmcIncrementalRefresh_OLR_CURR;
+        info->m_templateId = FeedTemplateId::fmcIncrementalRefresh_OLR_CURR;
         info->m_itemsCount = 1;
         info->m_items[0] = item;
 
@@ -220,7 +221,7 @@ public:
         TestTemplateInfo *info = new TestTemplateInfo();
         TestTemplateItemInfo *item = new TestTemplateItemInfo();
 
-        info->m_templateId = FeedConnectionMessage::fmcIncrementalRefresh_OLR_CURR;
+        info->m_templateId = FeedTemplateId::fmcIncrementalRefresh_OLR_CURR;
         info->m_itemsCount = 1;
         info->m_items[0] = item;
 
@@ -262,7 +263,7 @@ public:
         TestTemplateInfo *info2 = new TestTemplateInfo();
         TestTemplateItemInfo *item2 = new TestTemplateItemInfo();
 
-        info2->m_templateId = FeedConnectionMessage::fmcFullRefresh_OLS_CURR;
+        info2->m_templateId = FeedTemplateId::fmcFullRefresh_OLS_CURR;
         info2->m_itemsCount = 1;
         info2->m_items[0] = item2;
         info2->m_symbol = "symbol1";
@@ -297,7 +298,7 @@ public:
         this->inc->GetSymbolManager()->Clear();
 
         TestTemplateInfo *info = new TestTemplateInfo();
-        info->m_templateId = FeedConnectionMessage::fcmHeartBeat;
+        info->m_templateId = FeedTemplateId::fcmHeartBeat;
         info->m_msgSeqNo = 1000000;
 
         this->m_helper->SendHearthBeatMessage(this->inc, info);
@@ -329,7 +330,7 @@ public:
         this->inc->m_packets[10]->m_address = new unsigned char[2];
 
         TestTemplateInfo *info = new TestTemplateInfo();
-        info->m_templateId = FeedConnectionMessage::fcmHeartBeat;
+        info->m_templateId = FeedTemplateId::fcmHeartBeat;
         info->m_msgSeqNo = 1000000;
 
         this->m_helper->SendHearthBeatMessage(this->inc, info);

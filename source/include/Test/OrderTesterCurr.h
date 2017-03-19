@@ -1411,9 +1411,9 @@ public:
         this->Clear();
 
         SendMessages(incCurr, new TestTemplateInfo*[3] {
-                new TestTemplateInfo(FeedConnectionMessage::fcmHeartBeat, 1),
-                new TestTemplateInfo(FeedConnectionMessage::fcmHeartBeat, 2),
-                new TestTemplateInfo(FeedConnectionMessage::fcmHeartBeat, 3)}, 3);
+                new TestTemplateInfo(FeedTemplateId::fcmHeartBeat, 1),
+                new TestTemplateInfo(FeedTemplateId::fcmHeartBeat, 2),
+                new TestTemplateInfo(FeedTemplateId::fcmHeartBeat, 3)}, 3);
 
     }
 
@@ -1422,16 +1422,16 @@ public:
         this->AddSymbol("symbol1");
 
         SendMessages(incCurr, new TestTemplateInfo*[3] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OLR_CURR, 1,
+                new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_OLR_CURR, 1,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "e1", 1, 1, 1, 1, 1),
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "e2", 2, 2, 1, 2, 1),
                                      }, 2),
-                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OLR_CURR, 2,
+                new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_OLR_CURR, 2,
                                      new TestTemplateItemInfo*[1] {
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "e3", 3, 3, 1, 3, 1),
                                      }, 1),
-                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OLR_CURR, 3,
+                new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_OLR_CURR, 3,
                                      new TestTemplateItemInfo*[1] {
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "e4", 4, 3, 1, 3, 1),
                                      }, 1)
@@ -1459,12 +1459,12 @@ public:
         this->AddSymbol("symbol1");
 
         SendMessages(incCurr, new TestTemplateInfo*[2] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OLR_CURR, 1,
+                new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_OLR_CURR, 1,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "e1", 1, 1, 1, 1, 1),
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "e2", 2, 2, 1, 2, 1),
                                      }, 2),
-                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OLR_CURR, 3,
+                new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_OLR_CURR, 3,
                                      new TestTemplateItemInfo*[1] {
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "e3", 4, 3, 1, 3, 1),
                                      }, 1)
@@ -1490,7 +1490,7 @@ public:
 
         // lost message finally appeared before wait timer elapsed
         SendMessages(incCurr, new TestTemplateInfo*[1] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OLR_CURR, 2,
+                new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_OLR_CURR, 2,
                                      new TestTemplateItemInfo*[1] {
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "e4", 3, 1, 1, 1, 1),
                                      }, 1)
@@ -1514,12 +1514,12 @@ public:
         this->AddSymbol("symbol1");
 
         SendMessages(incCurr, new TestTemplateInfo*[2] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OLR_CURR, 1,
+                new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_OLR_CURR, 1,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "e1", 1, 1, 1, 1, 1),
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "e2", 2, 2, 1, 2, 1),
                                      }, 2),
-                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OLR_CURR, 3,
+                new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_OLR_CURR, 3,
                                      new TestTemplateItemInfo*[1] {
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "e5", 5, 3, 1, 3, 1),
                                      }, 1)
@@ -1547,7 +1547,7 @@ public:
 
         // lost message finally appeared before wait timer elapsed
         SendMessages(incCurr, new TestTemplateInfo*[1] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OLR_CURR, 2,
+                new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_OLR_CURR, 2,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "e3", 3, 1, 1, 1, 1),
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "e4", 4, 1, 1, 1, 1),
@@ -1572,12 +1572,12 @@ public:
         this->AddSymbol("symbol1");
 
         SendMessages(incCurr, new TestTemplateInfo*[2] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OLR_CURR, 1,
+                new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_OLR_CURR, 1,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "e1", 1, 1, 1, 1, 1),
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "e2", 2, 2, 1, 2, 1),
                                      }, 2),
-                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OLR_CURR, 4,
+                new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_OLR_CURR, 4,
                                      new TestTemplateItemInfo*[1] {
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "e5", 5, 3, 1, 3, 1),
                                      }, 1)
@@ -1605,7 +1605,7 @@ public:
 
         // lost message finally appeared before wait timer elapsed
         SendMessages(incCurr, new TestTemplateInfo*[1] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OLR_CURR, 2,
+                new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_OLR_CURR, 2,
                                      new TestTemplateItemInfo*[1] {
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "e3", 3, 1, 1, 1, 1),
                                      }, 1)
@@ -1628,7 +1628,7 @@ public:
             throw;
 
         SendMessages(incCurr, new TestTemplateInfo*[1] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OLR_CURR, 3,
+                new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_OLR_CURR, 3,
                                      new TestTemplateItemInfo*[1] {
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "e3", 4, 1, 1, 1, 1),
                                      }, 1)
@@ -1654,12 +1654,12 @@ public:
         this->AddSymbol("symbol1");
 
         SendMessages(incCurr, new TestTemplateInfo*[2] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OLR_CURR, 1,
+                new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_OLR_CURR, 1,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "e1", 1, 1, 1, 1, 1),
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "e2", 2, 2, 1, 2, 1),
                                      }, 2),
-                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OLR_CURR, 4,
+                new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_OLR_CURR, 4,
                                      new TestTemplateItemInfo*[1] {
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "e5", 5, 3, 1, 3, 1),
                                      }, 1)
@@ -1687,7 +1687,7 @@ public:
 
         // lost message finally appeared before wait timer elapsed
         SendMessages(incCurr, new TestTemplateInfo*[1] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OLR_CURR, 3,
+                new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_OLR_CURR, 3,
                                      new TestTemplateItemInfo*[1] {
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "e3", 4, 1, 1, 1, 1),
                                      }, 1)
@@ -1710,7 +1710,7 @@ public:
             throw;
 
         SendMessages(incCurr, new TestTemplateInfo*[1] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OLR_CURR, 2,
+                new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_OLR_CURR, 2,
                                      new TestTemplateItemInfo*[1] {
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "e3", 3, 1, 1, 1, 1),
                                      }, 1)
@@ -1739,12 +1739,12 @@ public:
             throw;
 
         SendMessages(incCurr, new TestTemplateInfo*[2] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OLR_CURR, 1,
+                new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_OLR_CURR, 1,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "e1", 1, 1, 1, 1, 1),
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "e2", 2, 2, 1, 2, 1),
                                      }, 2),
-                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OLR_CURR, 4,
+                new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_OLR_CURR, 4,
                                      new TestTemplateItemInfo*[1] {
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "e5", 5, 3, 1, 3, 1),
                                      }, 1)
@@ -1843,7 +1843,7 @@ public:
         }
 
         SendMessages(snapCurr, new TestTemplateInfo*[1] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OLS_CURR, 2, "symbol1", "session1", false, false,
+                new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_OLS_CURR, 2, "symbol1", "session1", false, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -1871,7 +1871,7 @@ public:
         incCurr->StartListenSnapshot();
 
         SendMessages(snapCurr, new TestTemplateInfo*[1] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OLS_CURR, 2, "symbol1", "session1", true, false,
+                new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_OLS_CURR, 2, "symbol1", "session1", true, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -1919,7 +1919,7 @@ public:
         incCurr->StartListenSnapshot();
 
         SendMessages(snapCurr, new TestTemplateInfo*[1] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OLS_CURR, 1, "symbol1", "session1", false, false,
+                new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_OLS_CURR, 1, "symbol1", "session1", false, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -1940,7 +1940,7 @@ public:
             throw;
 
         SendMessages(snapCurr, new TestTemplateInfo*[1] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OLS_CURR, 2, "symbol1", "session1", false, false,
+                new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_OLS_CURR, 2, "symbol1", "session1", false, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -1961,12 +1961,12 @@ public:
             throw;
 
         SendMessages(snapCurr, new TestTemplateInfo*[2] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OLS_CURR, 3, "symbol1", "session1", false, false,
+                new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_OLS_CURR, 3, "symbol1", "session1", false, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
                                      }, 2, 4),
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OLS_CURR, 4, "symbol1", "session1", false, false,
+                new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_OLS_CURR, 4, "symbol1", "session1", false, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -1987,12 +1987,12 @@ public:
             throw;
 
         SendMessages(snapCurr, new TestTemplateInfo*[2] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OLS_CURR, 5, "symbol1", "session1", false, false,
+                new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_OLS_CURR, 5, "symbol1", "session1", false, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
                                      }, 2, 4),
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OLS_CURR, 6, "symbol1", "session1", true, false,
+                new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_OLS_CURR, 6, "symbol1", "session1", true, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -2039,7 +2039,7 @@ public:
         incCurr->StartListenSnapshot();
 
         SendMessages(snapCurr, new TestTemplateInfo*[1] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OLS_CURR, 1, "symbol1", "session1", false, true,
+                new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_OLS_CURR, 1, "symbol1", "session1", false, true,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -2068,7 +2068,7 @@ public:
         incCurr->StartListenSnapshot();
 
         SendMessages(snapCurr, new TestTemplateInfo*[1] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OLS_CURR, 1, "symbol1", "session1", false, false,
+                new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_OLS_CURR, 1, "symbol1", "session1", false, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -2079,7 +2079,7 @@ public:
 
         // message seq 2 lost
         SendMessages(snapCurr, new TestTemplateInfo*[1] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OLS_CURR, 3, "symbol1", "session1", false, false,
+                new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_OLS_CURR, 3, "symbol1", "session1", false, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -2122,7 +2122,7 @@ public:
         incCurr->StartListenSnapshot();
 
         SendMessages(snapCurr, new TestTemplateInfo*[1] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OLS_CURR, 1, "symbol1", "session1", false, false,
+                new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_OLS_CURR, 1, "symbol1", "session1", false, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -2133,7 +2133,7 @@ public:
 
         // message seq 2 lost
         SendMessages(snapCurr, new TestTemplateInfo*[1] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OLS_CURR, 3, "symbol1", "session1", false, false,
+                new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_OLS_CURR, 3, "symbol1", "session1", false, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -2165,7 +2165,7 @@ public:
             throw;
 
         SendMessages(snapCurr, new TestTemplateInfo*[1] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OLS_CURR, 2, "symbol1", "session1", false, false,
+                new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_OLS_CURR, 2, "symbol1", "session1", false, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -2203,7 +2203,7 @@ public:
         incCurr->StartListenSnapshot();
 
         SendMessages(snapCurr, new TestTemplateInfo*[1] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OLS_CURR, 2, "symbol1", "session1", true, true,
+                new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_OLS_CURR, 2, "symbol1", "session1", true, true,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -2246,12 +2246,12 @@ public:
             throw;
 
         SendMessages(snapCurr, new TestTemplateInfo*[2] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OLS_CURR, 2, "symbol1", "session1", true, false,
+                new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_OLS_CURR, 2, "symbol1", "session1", true, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
                                      }, 2, 4),
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OLS_CURR, 4, "symbol1", "session1", false, true,
+                new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_OLS_CURR, 4, "symbol1", "session1", false, true,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -2309,12 +2309,12 @@ public:
         this->TestTableItemsAllocator(incCurr->OrderCurr());
 
         SendMessages(incCurr, new TestTemplateInfo*[4] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OLR_CURR, 1,
+                new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_OLR_CURR, 1,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("symbol1", "e1", 1),
                                              new TestTemplateItemInfo("symbol2", "e1", 1),
                                      }, 2),
-                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OLR_CURR, 3,
+                new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_OLR_CURR, 3,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("symbol1", "e1", 4),
                                              new TestTemplateItemInfo("symbol2", "e1", 4),
@@ -2336,7 +2336,7 @@ public:
 
         // sending snapshot for only one item and rpt seq before last incremental message
         SendMessages(snapCurr, new TestTemplateInfo*[4] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcFullRefresh_OLS_CURR, 2, "symbol1", "session1", true, true,
+                new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_OLS_CURR, 2, "symbol1", "session1", true, true,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e1"),
@@ -3153,12 +3153,12 @@ public:
         this->TestTableItemsAllocator(incCurr->OrderCurr());
 
         SendMessages(incCurr, new TestTemplateInfo*[4] {
-                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OLR_CURR, 1,
+                new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_OLR_CURR, 1,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("symbol1", "e1", 1),
                                              new TestTemplateItemInfo("symbol2", "e1", 1),
                                      }, 2),
-                new TestTemplateInfo(FeedConnectionMessage::fmcIncrementalRefresh_OLR_CURR, 3,
+                new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_OLR_CURR, 3,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("symbol1", "e1", 4),
                                              new TestTemplateItemInfo("symbol2", "e1", 4),

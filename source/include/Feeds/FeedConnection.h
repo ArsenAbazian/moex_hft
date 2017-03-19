@@ -18,6 +18,7 @@
 #include "Managers/DebugInfoManager.h"
 #include "../ProgramStatistics.h"
 
+class OrderBookTesterForts;
 class OrderTesterFond;
 class OrderTesterCurr;
 class TradeTesterFond;
@@ -43,6 +44,7 @@ class FeedConnection {
     friend class SecurityStatusTester;
     friend class DebugInfoManager;
     friend class HistoricalReplayTester;
+    friend class OrderBookTesterForts;
 
 public:
 	const int MaxReceiveBufferSize 				        = 1500;
@@ -236,7 +238,7 @@ protected:
     inline int TryGetSecurityDefinitionTotNumReportsAsts(unsigned char *buffer) {
         this->m_fastProtocolManager->SetNewBuffer(buffer + 4, 1500);
         this->m_fastProtocolManager->DecodeAstsHeader();
-        if(this->m_fastProtocolManager->TemplateId() != FeedConnectionMessage::fmcSecurityDefinition)
+        if(this->m_fastProtocolManager->TemplateId() != FeedTemplateId::fmcSecurityDefinition)
             return 0;
         return this->m_fastProtocolManager->GetAstsTotalNumReports();
     }
@@ -244,7 +246,7 @@ protected:
     inline int TryGetSecurityDefinitionTotNumReportsForts(unsigned char *buffer) {
         this->m_fastProtocolManager->SetNewBuffer(buffer + 4, 1500);
         this->m_fastProtocolManager->DecodeFortsHeader();
-        if(this->m_fastProtocolManager->TemplateId() != FortsMessage::fortsSecurityDefinition)
+        if(this->m_fastProtocolManager->TemplateId() != FeedTemplateId::fortsSecurityDefinition)
             return 0;
         return this->m_fastProtocolManager->GetFortsTotalNumReports();
     }
@@ -1379,7 +1381,7 @@ protected:
 
     inline bool StartApplySnapshotAsts() {
         switch(this->m_astsSnapshotInfo->TemplateId) {
-            case FeedConnectionMessage::fmcFullRefresh_Generic:
+            case FeedTemplateId::fmcFullRefresh_Generic:
                 switch(this->m_id) {
                     case FeedConnectionId::fcidMssFond:
                         return this->StartApplySnapshot_MSS_FOND();
@@ -1389,13 +1391,13 @@ protected:
                         return false;
                 }
                 break;
-            case FeedConnectionMessage::fmcFullRefresh_OLS_FOND:
+            case FeedTemplateId::fmcFullRefresh_OLS_FOND:
                 return this->StartApplySnapshot_OLS_FOND();
-            case FeedConnectionMessage::fmcFullRefresh_OLS_CURR:
+            case FeedTemplateId::fmcFullRefresh_OLS_CURR:
                 return this->StartApplySnapshot_OLS_CURR();
-            case FeedConnectionMessage::fmcFullRefresh_TLS_FOND:
+            case FeedTemplateId::fmcFullRefresh_TLS_FOND:
                 return this->StartApplySnapshot_TLS_FOND();
-            case FeedConnectionMessage::fmcFullRefresh_TLS_CURR:
+            case FeedTemplateId::fmcFullRefresh_TLS_CURR:
                 return this->StartApplySnapshot_TLS_CURR();
             default:
                 return false;
@@ -1404,7 +1406,7 @@ protected:
 
     inline bool EndApplySnapshotAsts() {
         switch(this->m_astsSnapshotInfo->TemplateId) {
-            case FeedConnectionMessage::fmcFullRefresh_Generic:
+            case FeedTemplateId::fmcFullRefresh_Generic:
                 switch(this->m_id) {
                     case FeedConnectionId::fcidMssFond:
                         return this->EndApplySnapshot_MSS_FOND();
@@ -1414,13 +1416,13 @@ protected:
                         return false;
                 }
                 break;
-            case FeedConnectionMessage::fmcFullRefresh_OLS_FOND:
+            case FeedTemplateId::fmcFullRefresh_OLS_FOND:
                 return this->EndApplySnapshot_OLS_FOND();
-            case FeedConnectionMessage::fmcFullRefresh_OLS_CURR:
+            case FeedTemplateId::fmcFullRefresh_OLS_CURR:
                 return this->EndApplySnapshot_OLS_CURR();
-            case FeedConnectionMessage::fmcFullRefresh_TLS_FOND:
+            case FeedTemplateId::fmcFullRefresh_TLS_FOND:
                 return this->EndApplySnapshot_TLS_FOND();
-            case FeedConnectionMessage::fmcFullRefresh_TLS_CURR:
+            case FeedTemplateId::fmcFullRefresh_TLS_CURR:
                 return this->EndApplySnapshot_TLS_CURR();
             default:
                 return false;
@@ -1429,7 +1431,7 @@ protected:
 
     inline bool CancelSnapshotAsts() {
         switch(this->m_astsSnapshotInfo->TemplateId) {
-            case FeedConnectionMessage::fmcFullRefresh_Generic:
+            case FeedTemplateId::fmcFullRefresh_Generic:
                 switch(this->m_id) {
                     case FeedConnectionId::fcidMssFond:
                         return this->CancelApplySnapshot_MSS_FOND();
@@ -1439,13 +1441,13 @@ protected:
                         return false;
                 }
                 break;
-            case FeedConnectionMessage::fmcFullRefresh_OLS_FOND:
+            case FeedTemplateId::fmcFullRefresh_OLS_FOND:
                 return this->CancelApplySnapshot_OLS_FOND();
-            case FeedConnectionMessage::fmcFullRefresh_OLS_CURR:
+            case FeedTemplateId::fmcFullRefresh_OLS_CURR:
                 return this->CancelApplySnapshot_OLS_CURR();
-            case FeedConnectionMessage::fmcFullRefresh_TLS_FOND:
+            case FeedTemplateId::fmcFullRefresh_TLS_FOND:
                 return this->CancelApplySnapshot_TLS_FOND();
-            case FeedConnectionMessage::fmcFullRefresh_TLS_CURR:
+            case FeedTemplateId::fmcFullRefresh_TLS_CURR:
                 return this->CancelApplySnapshot_TLS_CURR();
             default:
                 return false;
@@ -1454,7 +1456,7 @@ protected:
 
     inline bool ApplySnapshotPartAsts(int index) {
         switch(this->m_astsSnapshotInfo->TemplateId) {
-            case FeedConnectionMessage::fmcFullRefresh_Generic:
+            case FeedTemplateId::fmcFullRefresh_Generic:
                 switch(this->m_id) {
                     case FeedConnectionId::fcidMssFond:
                         return this->ApplySnapshotPart_MSS_FOND(index);
@@ -1464,13 +1466,13 @@ protected:
                         return false;
                 }
                 break;
-            case FeedConnectionMessage::fmcFullRefresh_OLS_FOND:
+            case FeedTemplateId::fmcFullRefresh_OLS_FOND:
                 return this->ApplySnapshotPart_OLS_FOND(index);
-            case FeedConnectionMessage::fmcFullRefresh_OLS_CURR:
+            case FeedTemplateId::fmcFullRefresh_OLS_CURR:
                 return this->ApplySnapshotPart_OLS_CURR(index);
-            case FeedConnectionMessage::fmcFullRefresh_TLS_FOND:
+            case FeedTemplateId::fmcFullRefresh_TLS_FOND:
                 return this->ApplySnapshotPart_TLS_FOND(index);
-            case FeedConnectionMessage::fmcFullRefresh_TLS_CURR:
+            case FeedTemplateId::fmcFullRefresh_TLS_CURR:
                 return this->ApplySnapshotPart_TLS_CURR(index);
             default:
                 return false;
@@ -1478,14 +1480,14 @@ protected:
     }
 
     inline bool StartApplySnapshotForts() {
-        if(this->m_fortsSnapshotInfo->TemplateId == FortsMessage::fortsTradingSessionStatus) {
+        if(this->m_fortsSnapshotInfo->TemplateId == FeedTemplateId::fortsTradingSessionStatus) {
             this->ProcessTradingSessionStatusForts();
             return false; // prevent from calling end process snapshot
         }
-        if(this->m_fortsSnapshotInfo->TemplateId == FortsMessage::fortsSequenceReset) {
+        if(this->m_fortsSnapshotInfo->TemplateId == FeedTemplateId::fortsSequenceReset) {
             return false;
         }
-        if(this->m_fortsSnapshotInfo->TemplateId == FortsMessage::fortsSnapshot) {
+        if(this->m_fortsSnapshotInfo->TemplateId == FeedTemplateId::fortsSnapshot) {
             FeedConnectionId incId = this->m_incremental->Id();
             if (incId == FeedConnectionId::fcidObrForts)
                 return this->StartApplySnapshot_FORTS_OBS();
@@ -1511,7 +1513,7 @@ protected:
         return true;
     }
     inline bool ApplySnapshotPartForts(int index) {
-        if(this->m_fortsSnapshotInfo->TemplateId == FortsMessage::fortsTradingSessionStatus)
+        if(this->m_fortsSnapshotInfo->TemplateId == FeedTemplateId::fortsTradingSessionStatus)
             return this->ProcessTradingSessionStatusForts();
 
         FeedConnectionId incId = this->m_incremental->Id();
@@ -1790,7 +1792,7 @@ protected:
         this->m_fastProtocolManager->ReadMsgSeqNumber();
 
         this->m_fastProtocolManager->DecodeFortsHeader();
-        if(this->m_fastProtocolManager->TemplateId() != FortsMessage::fortsSecurityDefinition) {
+        if(this->m_fastProtocolManager->TemplateId() != FeedTemplateId::fortsSecurityDefinition) {
             printf("not an security definition template: %d\n", this->m_fastProtocolManager->TemplateId());
             return true;
         }
@@ -1802,7 +1804,7 @@ protected:
         this->m_fastProtocolManager->ReadMsgSeqNumber();
 
         this->m_fastProtocolManager->DecodeAstsHeader();
-        if(this->m_fastProtocolManager->TemplateId() != FeedConnectionMessage::fmcSecurityDefinition) {
+        if(this->m_fastProtocolManager->TemplateId() != FeedTemplateId::fmcSecurityDefinition) {
             printf("not an security definition template: %d\n", this->m_fastProtocolManager->TemplateId());
             return true;
         }
@@ -2154,9 +2156,9 @@ protected:
         }
         this->m_fastProtocolManager->SetNewBuffer(buffer, size);
         this->m_fastProtocolManager->DecodeAstsHeader();
-        if(this->m_fastProtocolManager->TemplateId() != FeedConnectionMessage::fmcLogon) {
+        if(this->m_fastProtocolManager->TemplateId() != FeedTemplateId::fmcLogon) {
             this->Disconnect();
-            if(this->m_fastProtocolManager->TemplateId() == FeedConnectionMessage::fmcLogout) {
+            if(this->m_fastProtocolManager->TemplateId() == FeedTemplateId::fmcLogout) {
                 this->OnProcessHistoricalReplayUnexpectedLogoutMessage("OnWaitLogon", (AstsLogoutInfo*)this->m_fastProtocolManager->DecodeAstsLogout());
             }
             this->m_hsState = FeedConnectionHistoricalReplayState::hsSuspend;
@@ -2212,7 +2214,7 @@ protected:
             this->m_fastProtocolManager->SetNewBuffer(buffer, this->m_hrMessageSize);
             this->m_fastProtocolManager->DecodeAstsHeader();
 
-            if(this->m_fastProtocolManager->TemplateId() == FeedConnectionMessage::fmcLogout) {
+            if(this->m_fastProtocolManager->TemplateId() == FeedTemplateId::fmcLogout) {
                 if(msg->IsAllMessagesReceived()) {
                     this->OnProcessHistoricalReplayExpectedLogoutMessage((AstsLogoutInfo*)this->m_fastProtocolManager->DecodeAstsLogout());
                     this->m_hsRequestList->Remove(ptr);
@@ -2649,25 +2651,25 @@ protected:
 
     inline bool ApplyIncrementalCoreAsts() {
         switch (this->m_fastProtocolManager->TemplateId()) {
-            case FeedConnectionMessage::fmcIncrementalRefresh_OLR_FOND:
+            case FeedTemplateId::fmcIncrementalRefresh_OLR_FOND:
                 return this->OnIncrementalRefresh_OLR_FOND(
                         (AstsIncrementalOLRFONDInfo *) this->m_fastProtocolManager->LastDecodeInfo());
-            case FeedConnectionMessage::fmcIncrementalRefresh_OLR_CURR:
+            case FeedTemplateId::fmcIncrementalRefresh_OLR_CURR:
                 return this->OnIncrementalRefresh_OLR_CURR(
                         (AstsIncrementalOLRCURRInfo *) this->m_fastProtocolManager->LastDecodeInfo());
-            case FeedConnectionMessage::fmcIncrementalRefresh_TLR_FOND:
+            case FeedTemplateId::fmcIncrementalRefresh_TLR_FOND:
                 return this->OnIncrementalRefresh_TLR_FOND(
                         (AstsIncrementalTLRFONDInfo *) this->m_fastProtocolManager->LastDecodeInfo());
-            case FeedConnectionMessage::fmcIncrementalRefresh_TLR_CURR:
+            case FeedTemplateId::fmcIncrementalRefresh_TLR_CURR:
                 return this->OnIncrementalRefresh_TLR_CURR(
                         (AstsIncrementalTLRCURRInfo *) this->m_fastProtocolManager->LastDecodeInfo());
-            case FeedConnectionMessage::fmcIncrementalRefresh_MSR_FOND:
+            case FeedTemplateId::fmcIncrementalRefresh_MSR_FOND:
                 return this->OnIncrementalRefresh_MSR_FOND(
                         (AstsIncrementalMSRFONDInfo *) this->m_fastProtocolManager->LastDecodeInfo());
-            case FeedConnectionMessage::fmcIncrementalRefresh_MSR_CURR:
+            case FeedTemplateId::fmcIncrementalRefresh_MSR_CURR:
                 return this->OnIncrementalRefresh_MSR_CURR(
                         (AstsIncrementalMSRCURRInfo *) this->m_fastProtocolManager->LastDecodeInfo());
-            case FeedConnectionMessage::fcmHeartBeat:
+            case FeedTemplateId::fcmHeartBeat:
                 return this->OnHearthBeatMessage(
                         (AstsHeartbeatInfo *) this->m_fastProtocolManager->LastDecodeInfo());
             default:
@@ -2676,7 +2678,7 @@ protected:
     }
     inline bool ApplyIncrementalCoreForts() {
         int templateId = this->m_fastProtocolManager->TemplateId();
-        if (templateId == FortsMessage::fortsIncremental) {
+        if (templateId == FeedTemplateId::fortsIncremental) {
             if (this->m_id == FeedConnectionId::fcidObrForts)
                 return this->OnIncrementalRefresh_FORTS_OBR(
                         (FortsDefaultIncrementalRefreshMessageInfo *) this->m_fastProtocolManager->LastDecodeInfo());
@@ -2684,7 +2686,7 @@ protected:
                 return this->OnIncrementalRefresh_FORTS_TLR(
                         (FortsDefaultIncrementalRefreshMessageInfo *) this->m_fastProtocolManager->LastDecodeInfo());
         }
-        else if (templateId == FortsMessage::fortsHearthBeat)
+        else if (templateId == FeedTemplateId::fortsHearthBeat)
             return true;
         else
             throw;
@@ -2740,7 +2742,7 @@ protected:
             this->m_fastProtocolManager->ReadMsgSeqNumber();
 
         this->m_fastProtocolManager->DecodeAstsHeader();
-        if(this->m_fastProtocolManager->TemplateId() == FeedConnectionMessage::fmcSecurityStatus) {
+        if(this->m_fastProtocolManager->TemplateId() == FeedTemplateId::fmcSecurityStatus) {
             bool res = this->ProcessSecurityStatus((AstsSecurityStatusInfo *)this->m_fastProtocolManager->DecodeAstsSecurityStatus());
 #ifdef TEST
             if(this->m_fastProtocolManager->MessageLength() != length)
@@ -2759,11 +2761,11 @@ protected:
 
         this->m_fastProtocolManager->DecodeFortsHeader();
         bool res = true;
-        if(this->m_fastProtocolManager->TemplateId() == FortsMessage::fortsSecurityStatus) {
+        if(this->m_fastProtocolManager->TemplateId() == FeedTemplateId::fortsSecurityStatus) {
             res = this->ProcessSecurityStatus(
                     (FortsSecurityStatusInfo *) this->m_fastProtocolManager->DecodeFortsSecurityStatus());
         }
-        else if(this->m_fastProtocolManager->TemplateId() == FortsMessage::fortsSecurityDefinitionUpdateReport) {
+        else if(this->m_fastProtocolManager->TemplateId() == FeedTemplateId::fortsSecurityDefinitionUpdateReport) {
             res = this->ProcessSecurityDefinitionUpdateReport(
                     (FortsSecurityDefinitionUpdateReportInfo *) this->m_fastProtocolManager->DecodeFortsSecurityDefinitionUpdateReport());
         }
@@ -3418,7 +3420,7 @@ public:
     inline void UpdateSecurityDefinitionAsts(FeedConnectionMessageInfo *info) {
         this->m_fastProtocolManager->SetNewBuffer(info->m_address + 4, info->m_size - 4); // skip msg seq num
         this->m_fastProtocolManager->DecodeAstsHeader();
-        if(this->m_fastProtocolManager->TemplateId() != FeedConnectionMessage::fmcSecurityDefinition)
+        if(this->m_fastProtocolManager->TemplateId() != FeedTemplateId::fmcSecurityDefinition)
             return;
         AstsSecurityDefinitionInfo *fi = (AstsSecurityDefinitionInfo *)this->m_fastProtocolManager->DecodeAstsSecurityDefinition();
         this->UpdateSecurityDefinition(fi);
@@ -3428,7 +3430,7 @@ public:
     inline void UpdateSecurityDefinitionForts(FeedConnectionMessageInfo *info) {
         this->m_fastProtocolManager->SetNewBuffer(info->m_address + 4, info->m_size - 4); // skip msg seq num
         this->m_fastProtocolManager->DecodeFortsHeader();
-        if(this->m_fastProtocolManager->TemplateId() != FortsMessage::fortsSecurityDefinition)
+        if(this->m_fastProtocolManager->TemplateId() != FeedTemplateId::fortsSecurityDefinition)
             return;
         FortsSecurityDefinitionInfo *fi = (FortsSecurityDefinitionInfo *)this->m_fastProtocolManager->DecodeFortsSecurityDefinition();
         this->UpdateSecurityDefinition(fi);

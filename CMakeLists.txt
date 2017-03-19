@@ -151,7 +151,10 @@ add_executable(hft_robot
         source/src/Fast/FastTypes.cpp
         source/src/FortsMarketDataGroup.cpp
         source/include/Feeds/Forts/FortsMarketDataGroup.h
-        source/include/Feeds/Forts/FortsFeedChannel.h source/src/FortsFeedChannel.cpp source/include/Feeds/Forts/FortsFeeds.h)
+        source/include/Feeds/Forts/FortsFeedChannel.h
+        source/src/FortsFeedChannel.cpp
+        source/include/Feeds/Forts/FortsFeeds.h
+        source/include/Test/FortsOrderBookTester.h)
 add_dependencies(hft_robot fast_generate)
 
 add_custom_command(TARGET fast_generate

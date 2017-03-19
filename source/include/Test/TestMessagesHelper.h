@@ -30,6 +30,12 @@ public:
     TestTemplateInfo    **m_templates;
 };
 
+typedef enum _TestMessagesHelperMode {
+    tmhmFond,
+    tmhmCurr,
+    tmhmForts
+}TestMessagesHelperMode;
+
 class TestMessagesHelper {
 public:
     static PointerList<SocketMessageInfo> *m_sockMessages;
@@ -44,7 +50,7 @@ public:
     const char              *m_symbols[100];
     int                     m_rptSeq[100];
     int                     m_symbolsCount;
-    bool                    m_curr;
+    TestMessagesHelperMode  m_mode;
 
     FixProtocolManager      *m_fixManager;
     FastProtocolManager     *m_fastManager;
@@ -152,11 +158,11 @@ void AddFeedInfo(FeedConnection *feed, TestTemplateInfo **tmp, int templatesCoun
             info->m_msgSeqNo = atoi(this->m_keys[KeyIndex("msgSeqNo") + 1]);
         }
         if(HasKey("logout")) {
-            info->m_templateId = FeedConnectionMessage::fmcLogout;
+            info->m_templateId = FeedTemplateId::fmcLogout;
             return info;
         }
         else if(HasKey("logon")) {
-            info->m_templateId = FeedConnectionMessage::fmcLogon;
+            info->m_templateId = FeedTemplateId::fmcLogon;
             if(HasKey("sender"))
                 info->m_senderId = this->m_keys[KeyIndex("sender") + 1];
             else
@@ -168,48 +174,57 @@ void AddFeedInfo(FeedConnection *feed, TestTemplateInfo **tmp, int templatesCoun
             return info;
         }
         else if(HasKey("obr")) {
-            info->m_templateId = FeedConnectionMessage::fmcIncrementalRefresh_Generic;
+            info->m_templateId = FeedTemplateId::fmcIncrementalRefresh_Generic;
         }
         else if(HasKey("olr")) {
-            info->m_templateId = this->m_curr? FeedConnectionMessage::fmcIncrementalRefresh_OLR_CURR:
-                                 FeedConnectionMessage::fmcIncrementalRefresh_OLR_FOND;
+            info->m_templateId = this->IsCurr()? FeedTemplateId::fmcIncrementalRefresh_OLR_CURR:
+                                 FeedTemplateId::fmcIncrementalRefresh_OLR_FOND;
+        }
+        else if(HasKey("obr")) {
+            if(this->IsForts())
+                info->m_templateId = FeedTemplateId::fortsIncremental;
+            else
+                throw;
         }
         else if(HasKey("tlr")) {
-            info->m_templateId = this->m_curr? FeedConnectionMessage::fmcIncrementalRefresh_TLR_CURR:
-                                 FeedConnectionMessage::fmcIncrementalRefresh_TLR_FOND;
+            info->m_templateId = this->IsCurr()? FeedTemplateId::fmcIncrementalRefresh_TLR_CURR:
+                                 FeedTemplateId::fmcIncrementalRefresh_TLR_FOND;
         }
         else if(HasKey("obs")) {
-            info->m_templateId = FeedConnectionMessage::fmcFullRefresh_Generic;
+            if(this->IsForts())
+                info->m_templateId = FeedTemplateId::fortsSnapshot
+            else
+                throw;
             int snapIndex = KeyIndex("obs");
             if(KeyIndex("begin") == snapIndex + 1)
                 snapIndex++;
             info->m_symbol = this->m_keys[snapIndex + 1];
         }
         else if(HasKey("ols")) {
-            info->m_templateId = this->m_curr? FeedConnectionMessage::fmcFullRefresh_OLS_CURR:
-                                 FeedConnectionMessage::fmcFullRefresh_OLS_FOND;
+            info->m_templateId = this->IsCurr()? FeedTemplateId::fmcFullRefresh_OLS_CURR:
+                                 FeedTemplateId::fmcFullRefresh_OLS_FOND;
             int snapIndex = KeyIndex("ols");
             if(KeyIndex("begin") == snapIndex + 1)
                 snapIndex++;
             info->m_symbol = this->m_keys[snapIndex + 1];
         }
         else if(HasKey("tls")) {
-            info->m_templateId = this->m_curr ? FeedConnectionMessage::fmcFullRefresh_TLS_CURR :
-                                 FeedConnectionMessage::fmcFullRefresh_TLS_FOND;
+            info->m_templateId = this->IsCurr() ? FeedTemplateId::fmcFullRefresh_TLS_CURR :
+                                 FeedTemplateId::fmcFullRefresh_TLS_FOND;
             int snapIndex = KeyIndex("tls");
             if (KeyIndex("begin") == snapIndex + 1)
                 snapIndex++;
             info->m_symbol = this->m_keys[snapIndex + 1];
         }
         else if(HasKey("idf")) {
-            info->m_templateId = FeedConnectionMessage::fmcSecurityDefinition;
+            info->m_templateId = FeedTemplateId::fmcSecurityDefinition;
             int idfIndex = KeyIndex("idf");
             if (HasKey("totNumReports"))
                 info->m_totNumReports = atoi(this->m_keys[KeyIndex("totNumReports") + 1]);
             info->m_symbol = this->m_keys[idfIndex + 1];
         }
         else if(HasKey("isf")) {
-            info->m_templateId = FeedConnectionMessage::fmcSecurityStatus;
+            info->m_templateId = FeedTemplateId::fmcSecurityStatus;
             int isfIndex = KeyIndex("isf");
             info->m_symbol = this->m_keys[isfIndex + 1];
             info->m_session = this->m_keys[isfIndex + 2];
@@ -220,12 +235,12 @@ void AddFeedInfo(FeedConnection *feed, TestTemplateInfo **tmp, int templatesCoun
             return info;
         }
         else if(HasKey("wait_snap")) {
-            info->m_templateId = FeedConnectionMessage::fcmHeartBeat;
+            info->m_templateId = FeedTemplateId::fcmHeartBeat;
             info->m_wait = true;
             return info;
         }
         else if(HasKey("hbeat")) {
-            info->m_templateId = FeedConnectionMessage::fcmHeartBeat;
+            info->m_templateId = FeedTemplateId::fcmHeartBeat;
             return info;
         }
 
@@ -345,7 +360,7 @@ public:
     TestMessagesHelper() {
         this->m_feedInfoCount = 0;
         this->m_symbolsCount = 0;
-        this->m_curr = false;
+        this->m_mode = TestMessagesHelperMode::tmhmFond;
         this->m_fixManager = new FixProtocolManager(new SocketBufferProvider(DefaultSocketBufferManager::Default, 16000, 100, 16000, 100), FastProtocolVersion);
         this->m_fastManager = new FastProtocolManager(new AstsObjectsAllocationInfo(128), new FortsObjectsAllocationInfo(128));
         if(TestMessagesHelper::m_sockMessages->PoolStart()->Data() == 0)
@@ -432,6 +447,11 @@ public:
 
     AstsIncrementalTLRCURRInfo* CreateAstsIncrementalTLRCURRInfo() {
         AutoAllocatePointerList<AstsIncrementalTLRCURRInfo> *list = new AutoAllocatePointerList<AstsIncrementalTLRCURRInfo>(2, 1);
+        return list->NewItem();
+    }
+
+    FortsDefaultIncrementalRefreshMessageInfo* CreateFortsDefaultIncrementalRefreshMessageInfo() {
+        AutoAllocatePointerList<FortsDefaultIncrementalRefreshMessageInfo> *list = new AutoAllocatePointerList<FortsDefaultIncrementalRefreshMessageInfo>(2, 1);
         return list->NewItem();
     }
 
@@ -817,6 +837,85 @@ public:
         info->MDEntryPx.Set(priceMantissa, priceExponenta);
         info->MDEntrySize.Set(sizeMantissa, sizeExponenta);
         info->RptSeq = rptSeq;
+
+        return info;
+    }
+
+    UINT64 ConstCharToUINT64(const char *id) {
+        int len = strlen(id);
+        if(len > 8)
+            return *(UINT64*)(id + len - 8);
+        char buf[16];
+        bzero(buf, 16);
+        memcpy(buf + 8 - len, id, len);
+        return *(UINT64*)buf;
+    }
+
+    FortsDefaultSnapshotMessageMDEntriesItemInfo* CreateFortsOBRItemInfo(INT64 priceMantissa, INT32 priceExponenta, UINT64 size, MDEntryType entryType, UINT64 entryId) {
+
+        AutoAllocatePointerList<FortsDefaultSnapshotMessageMDEntriesItemInfo> *list = new AutoAllocatePointerList<FortsDefaultSnapshotMessageMDEntriesItemInfo>(2, 1);
+        FortsDefaultSnapshotMessageMDEntriesItemInfo *info = list->NewItem();
+
+        char *type = new char[1];
+        type[0] = (char) entryType;
+
+        info->MDUpdateAction = MDUpdateAction::mduaAdd;
+        info->MDEntryID = entryId;
+
+        StringIdComparer::CopyString(info->MDEntryType, type, 1);
+        info->MDEntryTypeLength = 1;
+        info->MDEntryPx.Set(priceMantissa, priceExponenta);
+        info->MDEntrySize = size;
+
+        return info;
+    }
+
+    FortsDefaultSnapshotMessageMDEntriesItemInfo* CreateFortsOBRItemInfo(const char *symbol, UINT64 securityId, INT64 priceMantissa,
+                                               INT32 priceExponenta, UINT64 size,
+                                               MDUpdateAction updateAction, MDEntryType entryType, UINT64 entryId,
+                                               int rptSeq) {
+        FortsDefaultSnapshotMessageMDEntriesItemInfo *info = CreateFortsOBRItemInfo(priceMantissa, priceExponenta, size, entryType, entryId);
+
+        StringIdComparer::CopyString(info->Symbol, symbol, strlen(symbol));
+        info->SymbolLength = strlen(symbol);
+        info->SecurityID = securityId;
+
+        info->MDUpdateAction = updateAction;
+        info->RptSeq = rptSeq;
+
+        return info;
+    }
+
+    FortsDefaultSnapshotMessageMDEntriesItemInfo* CreateFortsOBRItemInfo(const char *symbol, UINT64 securityId, UINT64 entryId) {
+        return CreateFortsOBRItemInfo(symbol, securityId, 1, 1, 10, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote,
+                                     entryId, 1);
+    }
+
+    FortsDefaultSnapshotMessageMDEntriesItemInfo* CreateFortsOBSItemInfo(INT64 priceMantissa, INT32 priceExponenta, UINT64 size, MDEntryType entryType, UINT64 entryId) {
+
+        AutoAllocatePointerList<FortsDefaultSnapshotMessageMDEntriesItemInfo> *list = new AutoAllocatePointerList<FortsDefaultSnapshotMessageMDEntriesItemInfo>(2, 1);
+        FortsDefaultSnapshotMessageMDEntriesItemInfo *info = list->NewItem();
+
+        char *type = new char[1];
+        type[0] = (char) entryType;
+
+        info->MDUpdateAction = MDUpdateAction::mduaAdd;
+        info->MDEntryID = entryId;
+        StringIdComparer::CopyString(info->MDEntryType, type, 1);
+        info->MDEntryTypeLength = 1;
+        info->MDEntryPx.Set(priceMantissa, priceExponenta);
+        info->MDEntrySize = size;
+
+        return info;
+    }
+
+    FortsDefaultSnapshotMessageInfo* CreateFortsSnapshotInfo(const char *symbol, UINT64 securityId) {
+        FortsDefaultSnapshotMessageInfo *info = new FortsDefaultSnapshotMessageInfo();
+
+        StringIdComparer::CopyString(info->Symbol, symbol, strlen(symbol));
+        info->SymbolLength = strlen(symbol);
+
+        info->SecurityID = securityId;
 
         return info;
     }
@@ -1585,49 +1684,49 @@ public:
 
     void SendMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
         switch(tmp->m_templateId) {
-            case FeedConnectionMessage::fcmHeartBeat:
+            case FeedTemplateId::fcmHeartBeat:
                 SendHearthBeatMessage(conn, tmp);
                 break;
-            case FeedConnectionMessage::fmcIncrementalRefresh_Generic:
+            case FeedTemplateId::fmcIncrementalRefresh_Generic:
                 SendIncrementalGenericMessage(conn, tmp);
                 break;
-            case FeedConnectionMessage::fmcFullRefresh_Generic:
+            case FeedTemplateId::fmcFullRefresh_Generic:
                 SendSnapshotGenericMessage(conn, tmp);
                 break;
-            case FeedConnectionMessage::fmcIncrementalRefresh_OLR_FOND:
+            case FeedTemplateId::fmcIncrementalRefresh_OLR_FOND:
                 SendOLRFondMessage(conn, tmp);
                 break;
-            case FeedConnectionMessage::fmcFullRefresh_OLS_FOND:
+            case FeedTemplateId::fmcFullRefresh_OLS_FOND:
                 SendOLSFondMessage(conn, tmp);
                 break;
-            case FeedConnectionMessage::fmcIncrementalRefresh_TLR_FOND:
+            case FeedTemplateId::fmcIncrementalRefresh_TLR_FOND:
                 SendTLRFondMessage(conn, tmp);
                 break;
-            case FeedConnectionMessage::fmcFullRefresh_TLS_FOND:
+            case FeedTemplateId::fmcFullRefresh_TLS_FOND:
                 SendTLSFondMessage(conn, tmp);
                 break;
-            case FeedConnectionMessage::fmcIncrementalRefresh_OLR_CURR:
+            case FeedTemplateId::fmcIncrementalRefresh_OLR_CURR:
                 SendOLRCurrMessage(conn, tmp);
                 break;
-            case FeedConnectionMessage::fmcFullRefresh_OLS_CURR:
+            case FeedTemplateId::fmcFullRefresh_OLS_CURR:
                 SendOLSCurrMessage(conn, tmp);
                 break;
-            case FeedConnectionMessage::fmcIncrementalRefresh_TLR_CURR:
+            case FeedTemplateId::fmcIncrementalRefresh_TLR_CURR:
                 SendTLRCurrMessage(conn, tmp);
                 break;
-            case FeedConnectionMessage::fmcFullRefresh_TLS_CURR:
+            case FeedTemplateId::fmcFullRefresh_TLS_CURR:
                 SendTLSCurrMessage(conn, tmp);
                 break;
-            case FeedConnectionMessage::fmcSecurityDefinition:
+            case FeedTemplateId::fmcSecurityDefinition:
                 SendSecurityDefinitionMessage(conn, tmp);
                 break;
-            case FeedConnectionMessage::fmcSecurityStatus:
+            case FeedTemplateId::fmcSecurityStatus:
                 SendSecurityStatusMessage(conn, tmp);
                 break;
-            case FeedConnectionMessage::fmcLogon:
+            case FeedTemplateId::fmcLogon:
                 SendLogonMessage(conn, tmp);
                 break;
-            case FeedConnectionMessage::fmcLogout:
+            case FeedTemplateId::fmcLogout:
                 SendLogoutMessage(conn, tmp);
                 break;
             default:
@@ -1930,49 +2029,49 @@ public:
 
     void EncodeMessage(TestTemplateInfo *tmp) {
         switch(tmp->m_templateId) {
-            case FeedConnectionMessage::fcmHeartBeat:
+            case FeedTemplateId::fcmHeartBeat:
                 EncodeHearthBeatMessage(tmp);
                 break;
-            case FeedConnectionMessage::fmcIncrementalRefresh_Generic:
+            case FeedTemplateId::fmcIncrementalRefresh_Generic:
                 EncodeAstsIncrementalGenericMessage(tmp);
                 break;
-            case FeedConnectionMessage::fmcFullRefresh_Generic:
+            case FeedTemplateId::fmcFullRefresh_Generic:
                 EncodeSnapshotGenericMessage(tmp);
                 break;
-            case FeedConnectionMessage::fmcIncrementalRefresh_OLR_FOND:
+            case FeedTemplateId::fmcIncrementalRefresh_OLR_FOND:
                 EncodeOLRFondMessage(tmp);
                 break;
-            case FeedConnectionMessage::fmcFullRefresh_OLS_FOND:
+            case FeedTemplateId::fmcFullRefresh_OLS_FOND:
                 EncodeAstsOLSFondMessage(tmp);
                 break;
-            case FeedConnectionMessage::fmcIncrementalRefresh_TLR_FOND:
+            case FeedTemplateId::fmcIncrementalRefresh_TLR_FOND:
                 EncodeTLRFondMessage(tmp);
                 break;
-            case FeedConnectionMessage::fmcFullRefresh_TLS_FOND:
+            case FeedTemplateId::fmcFullRefresh_TLS_FOND:
                 EncodeAstsTLSFondMessage(tmp);
                 break;
-            case FeedConnectionMessage::fmcIncrementalRefresh_OLR_CURR:
+            case FeedTemplateId::fmcIncrementalRefresh_OLR_CURR:
                 EncodeOLRCurrMessage(tmp);
                 break;
-            case FeedConnectionMessage::fmcFullRefresh_OLS_CURR:
+            case FeedTemplateId::fmcFullRefresh_OLS_CURR:
                 EncodeAstsOLSCurrMessage(tmp);
                 break;
-            case FeedConnectionMessage::fmcIncrementalRefresh_TLR_CURR:
+            case FeedTemplateId::fmcIncrementalRefresh_TLR_CURR:
                 EncodeTLRCurrMessage(tmp);
                 break;
-            case FeedConnectionMessage::fmcFullRefresh_TLS_CURR:
+            case FeedTemplateId::fmcFullRefresh_TLS_CURR:
                 EncodeAstsTLSCurrMessage(tmp);
                 break;
-            case FeedConnectionMessage::fmcSecurityDefinition:
+            case FeedTemplateId::fmcSecurityDefinition:
                 EncodeAstsSecurityDefinitionMessage(tmp);
                 break;
-            case FeedConnectionMessage::fmcSecurityStatus:
+            case FeedTemplateId::fmcSecurityStatus:
                 EncodeAstsSecurityStatusMessage(tmp);
                 break;
-            case FeedConnectionMessage::fmcLogon:
+            case FeedTemplateId::fmcLogon:
                 EncodeLogonMessage(tmp);
                 break;
-            case FeedConnectionMessage::fmcLogout:
+            case FeedTemplateId::fmcLogout:
                 EncodeLogoutMessage(tmp);
                 break;
             default:
@@ -1982,45 +2081,45 @@ public:
 
     void EncodeMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
         switch(tmp->m_templateId) {
-            case FeedConnectionMessage::fcmHeartBeat:
+            case FeedTemplateId::fcmHeartBeat:
                 EncodeHearthBeatMessage(conn, tmp);
                 break;
-            case FeedConnectionMessage::fmcIncrementalRefresh_Generic:
+            case FeedTemplateId::fmcIncrementalRefresh_Generic:
                 EncodeAstsIncrementalGenericMessage(conn, tmp);
                 break;
-            case FeedConnectionMessage::fmcFullRefresh_Generic:
+            case FeedTemplateId::fmcFullRefresh_Generic:
                 EncodeSnapshotGenericMessage(conn, tmp);
                 break;
-            case FeedConnectionMessage::fmcIncrementalRefresh_OLR_FOND:
+            case FeedTemplateId::fmcIncrementalRefresh_OLR_FOND:
                 EncodeOLRFondMessage(conn, tmp);
                 break;
-            case FeedConnectionMessage::fmcFullRefresh_OLS_FOND:
+            case FeedTemplateId::fmcFullRefresh_OLS_FOND:
                 EncodeAstsOLSFondMessage(conn, tmp);
                 break;
-            case FeedConnectionMessage::fmcIncrementalRefresh_TLR_FOND:
+            case FeedTemplateId::fmcIncrementalRefresh_TLR_FOND:
                 EncodeTLRFondMessage(conn, tmp);
                 break;
-            case FeedConnectionMessage::fmcFullRefresh_TLS_FOND:
+            case FeedTemplateId::fmcFullRefresh_TLS_FOND:
                 EncodeAstsTLSFondMessage(conn, tmp);
                 break;
-            case FeedConnectionMessage::fmcIncrementalRefresh_OLR_CURR:
+            case FeedTemplateId::fmcIncrementalRefresh_OLR_CURR:
                 EncodeOLRCurrMessage(conn, tmp);
                 break;
-            case FeedConnectionMessage::fmcFullRefresh_OLS_CURR:
+            case FeedTemplateId::fmcFullRefresh_OLS_CURR:
                 EncodeAstsOLSCurrMessage(conn, tmp);
                 break;
-            case FeedConnectionMessage::fmcIncrementalRefresh_TLR_CURR:
+            case FeedTemplateId::fmcIncrementalRefresh_TLR_CURR:
                 EncodeTLRCurrMessage(conn, tmp);
                 break;
-            case FeedConnectionMessage::fmcFullRefresh_TLS_CURR:
+            case FeedTemplateId::fmcFullRefresh_TLS_CURR:
                 EncodeAstsTLSCurrMessage(conn, tmp);
                 break;
-            case FeedConnectionMessage::fmcSecurityDefinition:
+            case FeedTemplateId::fmcSecurityDefinition:
                 EncodeAstsSecurityDefinitionMessage(conn, tmp);
-            case FeedConnectionMessage::fmcLogon:
+            case FeedTemplateId::fmcLogon:
                 EncodeLogonMessage(conn, tmp);
                 break;
-            case FeedConnectionMessage::fmcLogout:
+            case FeedTemplateId::fmcLogout:
                 EncodeLogoutMessage(conn, tmp);
                 break;
             default:
@@ -2081,7 +2180,7 @@ public:
             if(fcs->State() == FeedConnectionState::fcsListenSnapshot) {
                 if (snap_index < snapMsgCount && !snap_msg[snap_index]->m_lost) {
                     snap_msg[snap_index]->m_msgSeqNo = snap_index + 1;
-                    if(snap_msg[snap_index]->m_templateId != FeedConnectionMessage::fcmHeartBeat && (snap_msg[snap_index]->m_symbol == 0 || snap_msg[snap_index]->m_session == 0))
+                    if(snap_msg[snap_index]->m_templateId != FeedTemplateId::fcmHeartBeat && (snap_msg[snap_index]->m_symbol == 0 || snap_msg[snap_index]->m_session == 0))
                         throw;
                     SendMessage(fcs, snap_msg[snap_index]);
                 }
@@ -2111,8 +2210,17 @@ public:
         }
     }
 
-    inline void SetCurrMode() { this->m_curr = true; }
-    inline void SetFondMode() { this->m_curr = false; }
+    void SetCurrMode() {
+        this->m_mode = TestMessagesHelperMode::tmhmCurr;
+    }
+    void SetFondMode() {
+        this->m_mode = TestMessagesHelperMode::tmhmFond;
+    }
+    void SetFortsMode() {
+        this->m_mode = TestMessagesHelperMode::tmhmForts;
+    }
+    bool IsCurr() { return this->m_mode == TestMessagesHelperMode::tmhmCurr; }
+    bool IsForts() { return this->m_mode == TestMessagesHelperMode::tmhmForts; }
 
     void CreateFixLogonMessage(FeedConnection *fc, const char *senderId, const char *pass) {
         FixLogonInfo *lg = new FixLogonInfo;

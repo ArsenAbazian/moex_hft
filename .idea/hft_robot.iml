@@ -60,11 +60,12 @@
       <sourceFolder url="file://$MODULE_DIR$/source/include/Test/SecurityStatusTester.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/include/Test/DecimalTester.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/include/Test/OrderTesterCurr.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/source/include/Test/FeedConnectionTester.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/source/include/Test/FortsOrderBookTester.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/include/Test/TradeTesterFond.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/include/Test/TestMessagesHelper.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/include/Test/HistoricalReplayTester.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/include/Test/SecurityDefinitionTester.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/source/include/Test/FeedConnectionTester.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/include/Test/StatisticsTesterCurr.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/include/Test/PointerListTester.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/include/Lib/StringIdComparer.h" isTestSource="false" />

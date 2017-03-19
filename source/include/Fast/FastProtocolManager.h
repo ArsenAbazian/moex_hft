@@ -11,6 +11,7 @@ class OrderTesterFond;
 class OrderTesterCurr;
 class TradeTesterFond;
 class TradeTesterCurr;
+class OrderBookTesterForts;
 class StatisticsTesterFond;
 class StatisticsTesterCurr;
 class FeedConnection;
@@ -25,6 +26,7 @@ class FastProtocolManager {
 	friend class OrderTesterCurr;
 	friend class TradeTesterFond;
 	friend class TradeTesterCurr;
+	friend class OrderBookTesterForts;
 	friend class StatisticsTesterFond;
 	friend class StatisticsTesterCurr;
 	friend class FeedConnection;
