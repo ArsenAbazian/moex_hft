@@ -3309,7 +3309,7 @@ public:
         this->AddSymbol("symbol1", 111111);
         int prevCount = this->incForts->m_fastProtocolManager->m_fortsDefaultSnapshotMessageMDEntriesItems->Count();
         this->SendMessages(this->incForts, this->snapForts,
-                           "obr entry symbol1 sid 111111 111111, obr entry symbol1 sid 111111 222222",
+                           "obr entry symbol1 sid 111111 111111 px 100, obr entry symbol1 sid 111111 222222 px 200",
                            "",
                            30);
 
@@ -3328,7 +3328,7 @@ public:
         this->AddSymbol("symbol1", 111111);
         int prevCount = this->incForts->m_fastProtocolManager->m_fortsDefaultSnapshotMessageMDEntriesItems->Count();
         this->SendMessages(this->incForts, this->snapForts,
-                           "obr entry symbol1 sid 111111 111111, obr entry symbol1 sid 111111 222222, obr entry del symbol1 111111",
+                           "obr entry symbol1 sid 111111 111111 px 100, obr entry symbol1 sid 111111 222222 px 200, obr entry del symbol1 sid 111111 222222 px 200",
                            "",
                            30);
 
@@ -3360,7 +3360,7 @@ public:
         this->AddSymbol("symbol1", 111111);
         int prevCount = this->incForts->m_fastProtocolManager->m_fortsDefaultSnapshotMessageMDEntriesItems->Count();
         this->SendMessages(this->incForts, this->snapForts,
-                           "obr entry symbol1 sid 111111 111111, obr entry symbol1 sid 111111 222222, obr entry change symbol1 111111",
+                           "obr entry symbol1 sid 111111 111111 px 100, obr entry symbol1 sid 111111 222222 px 200, obr entry change symbol1 sid 111111 222222 px 200",
                            "",
                            30);
 
@@ -3379,8 +3379,8 @@ public:
         this->AddSymbol("symbol1", 111111);
         int prevCount = this->snapForts->m_fastProtocolManager->m_fortsDefaultSnapshotMessageMDEntriesItems->Count();
         this->SendMessages(this->incForts, this->snapForts,
-                           "obr entry symbol1 sid 111111 111111, lost obr entry symbol1 sid 111111 222222, wait_snap, hbeat",
-                           "                                                  obs begin symbol1 entry symbol1 sid 111111 222222 rpt 2 end",
+                           "obr entry symbol1 sid 111111 111111 px 100, lost obr entry symbol1 sid 111111 222222 px 200, wait_snap, hbeat",
+                           "                                                  obs begin symbol1 sid 111111 entry symbol1 sid 111111 222222 px 200 rpt 2 end",
                            30);
 
         int newCount = this->snapForts->m_fastProtocolManager->m_fortsDefaultSnapshotMessageMDEntriesItems->Count();
@@ -3394,8 +3394,8 @@ public:
         this->AddSymbol("symbol1", 111111);
         int prevCount = this->snapForts->m_fastProtocolManager->m_fortsDefaultSnapshotMessageMDEntriesItems->Count();
         this->SendMessages(this->incForts, this->snapForts,
-                           "obr entry symbol1 sid 111111 111111, lost obr entry symbol1 sid 111111 222222 entry symbol1 sid 111111 333333, wait_snap, hbeat",
-                           "                                                   obs begin symbol1 entry symbol1 sid 111111 222222 rpt 2, obs symbol1 entry symbol1 sid 111111 333333 end",
+                           "obr entry symbol1 sid 111111 111111 px 100, lost obr entry symbol1 sid 111111 222222 px 200 entry symbol1 sid 111111 333333 px 300, wait_snap, hbeat",
+                           "                                                                                                                                    obs begin symbol1 entry symbol1 sid 111111 222222 px 200 rpt 2, obs symbol1 entry symbol1 sid 111111 333333 px 300 end",
                            30);
 
         int newCount = this->snapForts->m_fastProtocolManager->m_fortsDefaultSnapshotMessageMDEntriesItems->Count();

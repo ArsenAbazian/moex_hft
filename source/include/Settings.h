@@ -53,8 +53,13 @@ public:
         MarketDataMaxEntriesCount = 1024 * 2000;
         MaxSecurityDefinitionCount = 2600;
         HistoricalReplayMaxMessageRequestCount = 1024;
+#ifdef TEST
+        MDEntryQueueItemsCount = 100;
+        MDEntryQueueItemsAddCount = 100;
+#else
         MDEntryQueueItemsCount = 10000;
         MDEntryQueueItemsAddCount = 100;
+#endif
     }
 };
 

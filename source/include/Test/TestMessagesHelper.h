@@ -233,12 +233,18 @@ void AddFeedInfo(FeedConnection *feed, TestTemplateInfo **tmp, int templatesCoun
             return info;
         }
         else if(HasKey("wait_snap")) {
-            info->m_templateId = FeedTemplateId::fcmHeartBeat;
+            if(IsForts())
+                info->m_templateId = FeedTemplateId::fortsHearthBeat;
+            else
+                info->m_templateId = FeedTemplateId::fcmHeartBeat;
             info->m_wait = true;
             return info;
         }
         else if(HasKey("hbeat")) {
-            info->m_templateId = FeedTemplateId::fcmHeartBeat;
+            if(IsForts())
+                info->m_templateId = FeedTemplateId::fortsHearthBeat;
+            else
+                info->m_templateId = FeedTemplateId::fcmHeartBeat;
             return info;
         }
 
@@ -308,8 +314,10 @@ void AddFeedInfo(FeedConnection *feed, TestTemplateInfo **tmp, int templatesCoun
                 item->m_entryIdInt = atoi(this->m_keys[entryIndex + 2]);
             else
                 item->m_entryId = this->m_keys[entryIndex + 2];
-            item->m_entryType = MDEntryType::mdetBuyQuote;
             item->m_entryPx.Set(2, 1);
+            if(KeyIndex("px", entryIndex + 3) == entryIndex + 3)
+                item->m_entryPx.Set(atoi(this->m_keys[entryIndex + 4]), 0);
+            item->m_entryType = MDEntryType::mdetBuyQuote;
             item->m_entrySize.Set(2, 1);
             info->m_items[itemIndex] = item;
             info->m_itemsCount++;
@@ -940,6 +948,7 @@ public:
         strcpy(info->Symbol, item->m_symbol);
         info->RptSeq = item->m_rptSeq;
         info->SymbolLength = strlen(item->m_symbol);
+        info->MDUpdateAction = item->m_action;
         info->SecurityID = item->m_securityId;
         info->MDEntryID = item->m_entryIdInt;
         info->MDEntryType[0] = item->m_entryType;
@@ -958,6 +967,7 @@ public:
         info->MDEntryTypeLength = 1;
         info->MDEntryPx.Set(&(item->m_entryPx));
         info->MDEntrySize = item->m_entrySizeInt;
+        info->MDUpdateAction = item->m_action;
 
         return info;
     }
@@ -1263,6 +1273,15 @@ public:
         conn->m_fastProtocolManager->SetNewBuffer(conn->m_recvABuffer->CurrentPos(), 2000);
         conn->m_fastProtocolManager->WriteMsgSeqNumber(info->MsgSeqNum);
         conn->m_fastProtocolManager->EncodeAstsHeartbeatInfo(info);
+        conn->ProcessServerCore(conn->m_fastProtocolManager->MessageLength());
+    }
+
+    void SendHearthBeatMessageForts(FeedConnection *conn, TestTemplateInfo *tmp) {
+        FortsHeartbeatInfo *info = new FortsHeartbeatInfo();
+        info->MsgSeqNum = tmp->m_msgSeqNo;
+        conn->m_fastProtocolManager->SetNewBuffer(conn->m_recvABuffer->CurrentPos(), 2000);
+        conn->m_fastProtocolManager->WriteMsgSeqNumber(info->MsgSeqNum);
+        conn->m_fastProtocolManager->EncodeFortsHeartbeatInfo(info);
         conn->ProcessServerCore(conn->m_fastProtocolManager->MessageLength());
     }
 
@@ -1762,6 +1781,9 @@ public:
         switch(tmp->m_templateId) {
             case FeedTemplateId::fcmHeartBeat:
                 SendHearthBeatMessage(conn, tmp);
+                break;
+            case FeedTemplateId::fortsHearthBeat:
+                SendHearthBeatMessageForts(conn, tmp);
                 break;
             case FeedTemplateId::fmcIncrementalRefresh_Generic:
                 SendIncrementalGenericMessage(conn, tmp);
