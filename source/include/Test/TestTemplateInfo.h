@@ -29,14 +29,14 @@ public:
         this->m_sessionStatus = 0;
     }
 
-    TestTemplateItemInfo(MDUpdateAction action, MDEntryType entryType, const char *symbol, UINT64 securityId, UINT64 entryId, int rptSeq, int pxm, INT64 pxe, int sizem, INT64 sizee) {
+    TestTemplateItemInfo(MDUpdateAction action, MDEntryType entryType, const char *symbol, UINT64 securityId, UINT64 entryId, int rptSeq, int pxm, INT64 pxe, int size) {
         this->m_action = action;
         this->m_entryType = entryType;
         this->m_symbol = symbol;
         this->m_securityId = securityId;
         this->m_entryIdInt = entryId;
         this->m_entryPx.Set(pxm, pxe);
-        this->m_entrySize.Set(sizem, sizee);
+        this->m_entrySizeInt = size;
         this->m_rptSeq = rptSeq;
         this->m_sessionStatus = 0;
     }

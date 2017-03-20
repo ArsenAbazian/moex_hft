@@ -173,9 +173,6 @@ void AddFeedInfo(FeedConnection *feed, TestTemplateInfo **tmp, int templatesCoun
                 info->m_pass = 0;
             return info;
         }
-        else if(HasKey("obr")) {
-            info->m_templateId = FeedTemplateId::fmcIncrementalRefresh_Generic;
-        }
         else if(HasKey("olr")) {
             info->m_templateId = this->IsCurr()? FeedTemplateId::fmcIncrementalRefresh_OLR_CURR:
                                  FeedTemplateId::fmcIncrementalRefresh_OLR_FOND;
@@ -192,13 +189,14 @@ void AddFeedInfo(FeedConnection *feed, TestTemplateInfo **tmp, int templatesCoun
         }
         else if(HasKey("obs")) {
             if(this->IsForts())
-                info->m_templateId = FeedTemplateId::fortsSnapshot
+                info->m_templateId = FeedTemplateId::fortsSnapshot;
             else
                 throw;
             int snapIndex = KeyIndex("obs");
             if(KeyIndex("begin") == snapIndex + 1)
                 snapIndex++;
             info->m_symbol = this->m_keys[snapIndex + 1];
+            info->m_securityId = atoi(this->m_keys[snapIndex + 2]);
         }
         else if(HasKey("ols")) {
             info->m_templateId = this->IsCurr()? FeedTemplateId::fmcFullRefresh_OLS_CURR:
@@ -244,7 +242,7 @@ void AddFeedInfo(FeedConnection *feed, TestTemplateInfo **tmp, int templatesCoun
             return info;
         }
 
-        bool isSnap = HasKey("obs") || HasKey("ols") || HasKey("tls");
+        bool isSnap = HasKey("obs") || HasKey("ols") || HasKey("tls") || HasKey("mss");
         bool isIdf = HasKey("idf");
         if(isSnap) {
             info->m_session = "session1";
@@ -300,7 +298,16 @@ void AddFeedInfo(FeedConnection *feed, TestTemplateInfo **tmp, int templatesCoun
                 entryIndex++;
             }
             item->m_symbol = this->m_keys[entryIndex + 1];
-            item->m_entryId = this->m_keys[entryIndex + 2];
+            if(IsForts()) {
+                if(KeyIndex("sid", entryIndex + 2) != entryIndex + 2)
+                    throw;
+                item->m_securityId = atoi(this->m_keys[entryIndex + 3]);
+                entryIndex+=2;
+            }
+            if(IsForts())
+                item->m_entryIdInt = atoi(this->m_keys[entryIndex + 2]);
+            else
+                item->m_entryId = this->m_keys[entryIndex + 2];
             item->m_entryType = MDEntryType::mdetBuyQuote;
             item->m_entryPx.Set(2, 1);
             item->m_entrySize.Set(2, 1);
@@ -453,6 +460,48 @@ public:
     FortsDefaultIncrementalRefreshMessageInfo* CreateFortsDefaultIncrementalRefreshMessageInfo() {
         AutoAllocatePointerList<FortsDefaultIncrementalRefreshMessageInfo> *list = new AutoAllocatePointerList<FortsDefaultIncrementalRefreshMessageInfo>(2, 1);
         return list->NewItem();
+    }
+
+    FortsDefaultIncrementalRefreshMessageInfo* CreateFortsDefaultIncrementalRefreshMessageInfo(TestTemplateInfo *tmp) {
+        FortsDefaultIncrementalRefreshMessageInfo *info = new FortsDefaultIncrementalRefreshMessageInfo();
+        info->MsgSeqNum = tmp->m_msgSeqNo;
+        info->MDEntriesCount = tmp->m_itemsCount;
+        for(int i = 0; i < tmp->m_itemsCount; i++) {
+            info->MDEntries[i] = CreateFortsOBRItemInfo(tmp->m_items[i]);
+        }
+        return info;
+    }
+
+    void SendFortsOBRMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
+        FortsDefaultIncrementalRefreshMessageInfo* info = CreateFortsDefaultIncrementalRefreshMessageInfo(tmp);
+
+        conn->m_fastProtocolManager->SetNewBuffer(conn->m_recvABuffer->CurrentPos(), 2000);
+        conn->m_fastProtocolManager->WriteMsgSeqNumber(info->MsgSeqNum);
+        conn->m_fastProtocolManager->EncodeFortsDefaultIncrementalRefreshMessageInfo(info);
+        conn->ProcessServerCore(conn->m_fastProtocolManager->MessageLength());
+    }
+
+    FortsDefaultSnapshotMessageInfo* CreateFortsDefaultSnapshotMessageInfo(TestTemplateInfo *tmp) {
+        FortsDefaultSnapshotMessageInfo *info = new FortsDefaultSnapshotMessageInfo();
+        strcpy(info->Symbol, tmp->m_symbol);
+        info->SymbolLength = strlen(tmp->m_symbol);
+
+        info->SecurityID = tmp->m_securityId;
+        info->MDEntriesCount = tmp->m_itemsCount;
+        info->RptSeq = tmp->m_rptSec;
+        for(int i = 0; i < tmp->m_itemsCount; i++) {
+            info->MDEntries[i] = CreateFortsOBSItemInfo(tmp->m_items[i]);
+        }
+        return info;
+    }
+
+    void SendFortsOBSMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
+        FortsDefaultSnapshotMessageInfo *info = CreateFortsDefaultSnapshotMessageInfo(tmp);
+
+        conn->m_fastProtocolManager->SetNewBuffer(conn->m_recvABuffer->CurrentPos(), 2000);
+        conn->m_fastProtocolManager->WriteMsgSeqNumber(info->MsgSeqNum);
+        conn->m_fastProtocolManager->EncodeFortsDefaultSnapshotMessageInfo(info);
+        conn->ProcessServerCore(conn->m_fastProtocolManager->MessageLength());
     }
 
     AstsOLSFONDItemInfo* CreateOLRFondItemInfo(const char *symbol, const char *trading, INT64 priceMantissa,
@@ -882,6 +931,33 @@ public:
 
         info->MDUpdateAction = updateAction;
         info->RptSeq = rptSeq;
+
+        return info;
+    }
+
+    FortsDefaultSnapshotMessageMDEntriesItemInfo* CreateFortsOBRItemInfo(TestTemplateItemInfo *item) {
+        FortsDefaultSnapshotMessageMDEntriesItemInfo *info = new FortsDefaultSnapshotMessageMDEntriesItemInfo();
+        strcpy(info->Symbol, item->m_symbol);
+        info->RptSeq = item->m_rptSeq;
+        info->SymbolLength = strlen(item->m_symbol);
+        info->SecurityID = item->m_securityId;
+        info->MDEntryID = item->m_entryIdInt;
+        info->MDEntryType[0] = item->m_entryType;
+        info->MDEntryTypeLength = 1;
+        info->MDEntryPx.Set(&(item->m_entryPx));
+        info->MDEntrySize = item->m_entrySizeInt;
+
+        return info;
+    }
+
+    FortsDefaultSnapshotMessageMDEntriesItemInfo* CreateFortsOBSItemInfo(TestTemplateItemInfo *item) {
+        FortsDefaultSnapshotMessageMDEntriesItemInfo *info = new FortsDefaultSnapshotMessageMDEntriesItemInfo();
+
+        info->MDEntryID = item->m_entryIdInt;
+        info->MDEntryType[0] = item->m_entryType;
+        info->MDEntryTypeLength = 1;
+        info->MDEntryPx.Set(&(item->m_entryPx));
+        info->MDEntrySize = item->m_entrySizeInt;
 
         return info;
     }
@@ -1707,6 +1783,12 @@ public:
                 break;
             case FeedTemplateId::fmcIncrementalRefresh_OLR_CURR:
                 SendOLRCurrMessage(conn, tmp);
+                break;
+            case FeedTemplateId::fortsIncremental:
+                SendFortsOBRMessage(conn, tmp);
+                break;
+            case FeedTemplateId::fortsSnapshot:
+                SendFortsOBSMessage(conn, tmp);
                 break;
             case FeedTemplateId::fmcFullRefresh_OLS_CURR:
                 SendOLSCurrMessage(conn, tmp);

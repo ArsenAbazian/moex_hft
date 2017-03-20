@@ -20,6 +20,7 @@ class OrderBookTesterForts {
     TestMessagesHelper          *m_helper;
     FeedConnection_FORTS_OBR    *incForts;
     FeedConnection_FORTS_SNAP   *snapForts;
+    FeedConnection_FORTS_INSTR_SNAP *idfForts;
     MarketDataTable<OrderBookInfo, FortsDefaultSnapshotMessageInfo, FortsDefaultSnapshotMessageMDEntriesItemInfo> *m_table;
 public:
     OrderBookTesterForts() {
@@ -35,9 +36,15 @@ public:
                                                      FeedConnectionProtocol::UDP_IP,
                                                      "10.50.129.200", "239.192.113.3", 9113,
                                                      "10.50.129.200", "239.192.113.131", 9313);
+        this->idfForts = new FeedConnection_FORTS_INSTR_SNAP("FUT-BOOK-INFO", "Full Refresh", 'I',
+                                                             FeedConnectionProtocol::UDP_IP,
+                                                             "10.50.129.200", "239.192.113.3", 9113,
+                                                             "10.50.129.200", "239.192.113.131", 9313);
         this->m_table->InitSymbols(10, 10);
         this->incForts->SetSymbolManager(new SymbolManager(10, true));
         this->snapForts->SetSymbolManager(this->incForts->GetSymbolManager());
+        this->idfForts->AddConnectionToRecvSymbol(this->incForts);
+        this->incForts->SetSecurityDefinition(this->idfForts);
         this->incForts->OrderBookForts()->InitSymbols(10, 10);
         this->incForts->SetMaxLostPacketCountForStartSnapshot(1);
     }
@@ -46,6 +53,7 @@ public:
         delete this->snapForts;
         delete this->m_helper;
         delete this->m_table;
+        delete this->idfForts;
     }
 
     void TestItem(OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *tableItem) {
@@ -80,6 +88,7 @@ public:
         snapForts->m_waitTimer->Stop();
         snapForts->Stop();
         incForts->Stop();
+        idfForts->ClearSecurityDefinitions();
 
         this->m_helper->Clear();
         this->m_table->Clear();
@@ -89,7 +98,7 @@ public:
     void Test_OnIncrementalRefresh_FORTS_OBR_Add() {
         this->Clear();
         this->TestDefaults();
-        this->AddSymbol("symbol1");
+        this->AddSymbol("symbol1", 111111);
 
         FortsDefaultIncrementalRefreshMessageInfo *info = this->m_helper->CreateFortsDefaultIncrementalRefreshMessageInfo();
 
@@ -254,7 +263,7 @@ public:
     void Test_OnIncrementalRefresh_FORTS_OBR_Remove() {
         this->Clear();
         this->TestDefaults();
-        this->AddSymbol("symbol1");
+        this->AddSymbol("symbol1", 111111);
 
         FortsDefaultIncrementalRefreshMessageInfo *info = this->m_helper->CreateFortsDefaultIncrementalRefreshMessageInfo();
         FortsDefaultSnapshotMessageMDEntriesItemInfo *item1 = this->m_helper->CreateFortsOBRItemInfo("symbol1", 111111, 3, -2, 100, mduaAdd, mdetBuyQuote, 111111, 1);
@@ -347,7 +356,7 @@ public:
     void Test_OnIncrementalRefresh_FORTS_OBR_Change() {
         this->Clear();
         this->TestDefaults();
-        this->AddSymbol("symbol1");
+        this->AddSymbol("symbol1", 111111);
 
         FortsDefaultIncrementalRefreshMessageInfo *info = this->m_helper->CreateFortsDefaultIncrementalRefreshMessageInfo();
         FortsDefaultSnapshotMessageMDEntriesItemInfo *item1 = this->m_helper->CreateFortsOBRItemInfo("symbol1", 111111, 3, -2, 100, mduaAdd, mdetBuyQuote, 111111, 1);
@@ -422,7 +431,7 @@ public:
     void Test_Clear() {
         this->Clear();
         this->TestDefaults();
-        this->AddSymbol("symbol1");
+        this->AddSymbol("symbol1", 111111);
 
         FortsDefaultIncrementalRefreshMessageInfo *info = this->m_helper->CreateFortsDefaultIncrementalRefreshMessageInfo();
         FortsDefaultSnapshotMessageMDEntriesItemInfo *item1 = this->m_helper->CreateFortsOBRItemInfo("symbol1", 111111, 3, -2, 100, mduaAdd, mdetBuyQuote, 111111, 1);
@@ -457,7 +466,7 @@ public:
     void Test_OnFullRefresh_OLS_CURR() {
         this->Clear();
         this->TestDefaults();
-        this->AddSymbol("symbol1");
+        this->AddSymbol("symbol1", 111111);
 
         FortsDefaultIncrementalRefreshMessageInfo *info = this->m_helper->CreateFortsDefaultIncrementalRefreshMessageInfo();
         FortsDefaultSnapshotMessageMDEntriesItemInfo *item1 = this->m_helper->CreateFortsOBRItemInfo("symbol1", 111111, 3, -2, 100, mduaAdd, mdetBuyQuote, 111111, 1);
@@ -518,7 +527,7 @@ public:
     void Test_OnIncrementalRefresh_FORTS_OBR_Add_SellQuotes() {
         this->Clear();
         this->TestDefaults();
-        this->AddSymbol("symbol1");
+        this->AddSymbol("symbol1", 111111);
 
         FortsDefaultIncrementalRefreshMessageInfo *info = this->m_helper->CreateFortsDefaultIncrementalRefreshMessageInfo();
 
@@ -677,7 +686,7 @@ public:
     void Test_OnIncrementalRefresh_FORTS_OBR_Remove_SellQuotes() {
         this->Clear();
         this->TestDefaults();
-        this->AddSymbol("symbol1");
+        this->AddSymbol("symbol1", 111111);
 
         FortsDefaultIncrementalRefreshMessageInfo *info = this->m_helper->CreateFortsDefaultIncrementalRefreshMessageInfo();
         FortsDefaultSnapshotMessageMDEntriesItemInfo *item1 = this->m_helper->CreateFortsOBRItemInfo("symbol1", 111111, 3, -2, 100, mduaAdd, mdetSellQuote, 111111, 1);
@@ -767,7 +776,7 @@ public:
     void Test_OnIncrementalRefresh_FORTS_OBR_Change_SellQuotes() {
         this->Clear();
         this->TestDefaults();
-        this->AddSymbol("symbol1");
+        this->AddSymbol("symbol1", 111111);
 
         FortsDefaultIncrementalRefreshMessageInfo *info = this->m_helper->CreateFortsDefaultIncrementalRefreshMessageInfo();
         FortsDefaultSnapshotMessageMDEntriesItemInfo *item1 = this->m_helper->CreateFortsOBRItemInfo("symbol1", 111111, 3, -2, 100, mduaAdd, mdetSellQuote, 111111, 1);
@@ -834,7 +843,7 @@ public:
     void Test_Clear_SellQuotes() {
         this->Clear();
         this->TestDefaults();
-        this->AddSymbol("symbol1");
+        this->AddSymbol("symbol1", 111111);
 
         FortsDefaultIncrementalRefreshMessageInfo *info = this->m_helper->CreateFortsDefaultIncrementalRefreshMessageInfo();
         FortsDefaultSnapshotMessageMDEntriesItemInfo *item1 = this->m_helper->CreateFortsOBRItemInfo("symbol1", 111111, 3, -2, 100, mduaAdd, mdetSellQuote, 111111, 1);
@@ -862,7 +871,7 @@ public:
     void Test_OnFullRefresh_OLS_CURR_SellQuotes() {
         this->Clear();
         this->TestDefaults();
-        this->AddSymbol("symbol1");
+        this->AddSymbol("symbol1", 111111);
 
         FortsDefaultIncrementalRefreshMessageInfo *info = this->m_helper->CreateFortsDefaultIncrementalRefreshMessageInfo();
         FortsDefaultSnapshotMessageMDEntriesItemInfo *item1 = this->m_helper->CreateFortsOBRItemInfo("symbol1", 111111, 3, -2, 100, mduaAdd, mdetSellQuote, 111111, 1);
@@ -1039,21 +1048,16 @@ public:
         TestTableItemsAllocator(this->m_table);
     }
 
-    inline void AddSymbol(const char *symbol) {
-        this->incForts->GetSymbolManager()->AddSymbol(symbol);
-        this->incForts->OrderBookForts()->AddSymbol(symbol);
-        this->m_table->AddSymbol(symbol);
-    }
-
     void ClearSymbols() {
         this->m_table->Clear();
+        this->idfForts->ClearSecurityDefinitions();
         this->incForts->OrderBookForts()->Clear();
         this->incForts->GetSymbolManager()->Clear();
     }
 
     void TestTable_AfterClear() {
         this->ClearSymbols();
-        this->AddSymbol("symbol1");
+        this->AddSymbol("symbol1", 111111);
 
         FortsDefaultSnapshotMessageMDEntriesItemInfo *item = this->m_helper->CreateFortsOBRItemInfo("symbol1", 111111, 111111);
         item->RptSeq = 1;
@@ -1088,7 +1092,7 @@ public:
 
     void TestTable_CorrectBegin() {
         this->ClearSymbols();
-        this->AddSymbol("symbol1");
+        this->AddSymbol("symbol1", 111111);
 
         FortsDefaultSnapshotMessageMDEntriesItemInfo *item1 = this->m_helper->CreateFortsOBRItemInfo("symbol1", 111111, 8, 1, 80, MDUpdateAction::mduaAdd,
                                                            MDEntryType::mdetBuyQuote, 111111, 1);
@@ -1100,7 +1104,7 @@ public:
 
     void TestTable_IncorrectBegin() {
         this->ClearSymbols();
-        this->AddSymbol("symbol1");
+        this->AddSymbol("symbol1", 111111);
 
         FortsDefaultSnapshotMessageMDEntriesItemInfo *item1 = this->m_helper->CreateFortsOBRItemInfo("symbol1", 111111, 8, 1, 80, MDUpdateAction::mduaAdd,
                                                            MDEntryType::mdetBuyQuote, 111111, 1);
@@ -1112,7 +1116,7 @@ public:
 
     void TestTable_SkipMessages() {
         this->ClearSymbols();
-        this->AddSymbol("symbol1");
+        this->AddSymbol("symbol1", 111111);
 
         FortsDefaultSnapshotMessageMDEntriesItemInfo *item1 = this->m_helper->CreateFortsOBRItemInfo("symbol1", 111111, 8, 1, 80, MDUpdateAction::mduaAdd,
                                                            MDEntryType::mdetBuyQuote, 111111, 1);
@@ -1133,8 +1137,8 @@ public:
 
     void Test_2UsedItemsAfter2IncrementalMessages() {
         this->ClearSymbols();
-        this->AddSymbol("symbol1");
-        this->AddSymbol("symbol2");
+        this->AddSymbol("symbol1", 111111);
+        this->AddSymbol("symbol2", 222222);
 
         FortsDefaultSnapshotMessageMDEntriesItemInfo *item1 = this->m_helper->CreateFortsOBRItemInfo("symbol1", 111111, 8, 1, 80, MDUpdateAction::mduaAdd,
                                                            MDEntryType::mdetBuyQuote, 111111, 1);
@@ -1158,7 +1162,7 @@ public:
 
     void TestTable_CorrectApplySnapshot() {
         this->ClearSymbols();
-        this->AddSymbol("symbol1");
+        this->AddSymbol("symbol1", 111111);
 
         FortsDefaultSnapshotMessageMDEntriesItemInfo *item1 = this->m_helper->CreateFortsOBRItemInfo("symbol1", 111111, 8, 1, 80, MDUpdateAction::mduaAdd,
                                                            MDEntryType::mdetBuyQuote, 111111, 1);
@@ -1225,7 +1229,7 @@ public:
 
     void TestTable_CorrectApplySnapshot_2() {
         this->ClearSymbols();
-        this->AddSymbol("symbol1");
+        this->AddSymbol("symbol1", 111111);
 
         FortsDefaultSnapshotMessageMDEntriesItemInfo *item1 = this->m_helper->CreateFortsOBRItemInfo("symbol1", 111111, 8, 1, 80, MDUpdateAction::mduaAdd,
                                                            MDEntryType::mdetBuyQuote, 111111, 1);
@@ -1280,7 +1284,7 @@ public:
 
     void TestTable_IncorrectApplySnapshot() {
         this->ClearSymbols();
-        this->AddSymbol("symbol1");
+        this->AddSymbol("symbol1", 111111);
 
         FortsDefaultSnapshotMessageMDEntriesItemInfo *item1 = this->m_helper->CreateFortsOBRItemInfo("symbol1", 111111, 8, 1, 80, MDUpdateAction::mduaAdd,
                                                            MDEntryType::mdetBuyQuote, 111111, 1);
@@ -1343,7 +1347,7 @@ public:
 
     void TestTable_IncorrectApplySnapshot_WhenMessageSkipped() {
         this->ClearSymbols();
-        this->AddSymbol("symbol1");
+        this->AddSymbol("symbol1", 111111);
 
         FortsDefaultSnapshotMessageMDEntriesItemInfo *item1 = this->m_helper->CreateFortsOBRItemInfo("symbol1", 111111, 8, 1, 80, MDUpdateAction::mduaAdd,
                                                            MDEntryType::mdetBuyQuote, 111111, 1);
@@ -1420,21 +1424,21 @@ public:
 
     void TestConnection_TestCorrectIncMessages() {
         this->Clear();
-        this->AddSymbol("symbol1");
+        this->AddSymbol("symbol1", 111111);
 
         SendMessages(incForts, new TestTemplateInfo*[3] {
                 new TestTemplateInfo(FeedTemplateId::fortsIncremental, 1,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 111111, 1, 1, 1, 1, 1),
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 222222, 2, 2, 1, 2, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 111111, 1, 1, 10, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 222222, 2, 2, 100, 1),
                                      }, 2),
                 new TestTemplateInfo(FeedTemplateId::fortsIncremental, 2,
                                      new TestTemplateItemInfo*[1] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 333333, 3, 3, 1, 3, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 333333, 3, 3, 1000, 1),
                                      }, 1),
                 new TestTemplateInfo(FeedTemplateId::fortsIncremental, 3,
                                      new TestTemplateItemInfo*[1] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 444444, 4, 3, 1, 3, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 444444, 4, 3, 1000, 1),
                                      }, 1)
         }, 3);
 
@@ -1457,17 +1461,17 @@ public:
      * */
     void TestConnection_TestIncMessagesLost_AndWhenAppeared() {
         this->Clear();
-        this->AddSymbol("symbol1");
+        this->AddSymbol("symbol1", 111111);
 
         SendMessages(incForts, new TestTemplateInfo*[2] {
                 new TestTemplateInfo(FeedTemplateId::fortsIncremental, 1,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 111111, 1, 1, 1, 1, 1),
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 222222, 2, 2, 1, 2, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 111111, 1, 1, 10, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 222222, 2, 2, 100, 1),
                                      }, 2),
                 new TestTemplateInfo(FeedTemplateId::fortsIncremental, 3,
                                      new TestTemplateItemInfo*[1] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 333333, 4, 3, 1, 3, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 333333, 4, 3, 1000, 1),
                                      }, 1)
         }, 2);
         if(!incForts->Listen_Atom_Incremental_Core())
@@ -1493,7 +1497,7 @@ public:
         SendMessages(incForts, new TestTemplateInfo*[1] {
                 new TestTemplateInfo(FeedTemplateId::fortsIncremental, 2,
                                      new TestTemplateItemInfo*[1] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 444444, 3, 1, 1, 1, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 444444, 3, 1, 10, 1),
                                      }, 1)
         }, 1);
 
@@ -1512,17 +1516,17 @@ public:
 
     void TestConnection_TestInc2MessagesLost_AppearedThen2Messages() {
         this->Clear();
-        this->AddSymbol("symbol1");
+        this->AddSymbol("symbol1", 111111);
 
         SendMessages(incForts, new TestTemplateInfo*[2] {
                 new TestTemplateInfo(FeedTemplateId::fortsIncremental, 1,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 111111, 1, 1, 1, 1, 1),
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 222222, 2, 2, 1, 2, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 111111, 1, 1, 10, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 222222, 2, 2, 100, 1),
                                      }, 2),
                 new TestTemplateInfo(FeedTemplateId::fortsIncremental, 3,
                                      new TestTemplateItemInfo*[1] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 555555, 5, 3, 1, 3, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 555555, 5, 3, 1000, 1),
                                      }, 1)
         }, 2);
         if(!incForts->Listen_Atom_Incremental_Core())
@@ -1550,8 +1554,8 @@ public:
         SendMessages(incForts, new TestTemplateInfo*[1] {
                 new TestTemplateInfo(FeedTemplateId::fortsIncremental, 2,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 333333, 3, 1, 1, 1, 1),
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 444444, 4, 1, 1, 1, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 333333, 3, 1, 10, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 444444, 4, 1, 10, 1),
                                      }, 2)
         }, 1);
 
@@ -1570,17 +1574,17 @@ public:
 
     void TestConnection_TestInc2MessagesLost_AppearedSeparately_1_2() {
         this->Clear();
-        this->AddSymbol("symbol1");
+        this->AddSymbol("symbol1", 111111);
 
         SendMessages(incForts, new TestTemplateInfo*[2] {
                 new TestTemplateInfo(FeedTemplateId::fortsIncremental, 1,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 111111, 1, 1, 1, 1, 1),
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 222222, 2, 2, 1, 2, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 111111, 1, 1, 10, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 222222, 2, 2, 100, 1),
                                      }, 2),
                 new TestTemplateInfo(FeedTemplateId::fortsIncremental, 4,
                                      new TestTemplateItemInfo*[1] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 555555, 5, 3, 1, 3, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 555555, 5, 3, 1000, 1),
                                      }, 1)
         }, 2);
         if(!incForts->Listen_Atom_Incremental_Core())
@@ -1608,7 +1612,7 @@ public:
         SendMessages(incForts, new TestTemplateInfo*[1] {
                 new TestTemplateInfo(FeedTemplateId::fortsIncremental, 2,
                                      new TestTemplateItemInfo*[1] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 333333, 3, 1, 1, 1, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 333333, 3, 1, 10, 1),
                                      }, 1)
         }, 1);
 
@@ -1631,7 +1635,7 @@ public:
         SendMessages(incForts, new TestTemplateInfo*[1] {
                 new TestTemplateInfo(FeedTemplateId::fortsIncremental, 3,
                                      new TestTemplateItemInfo*[1] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 333333, 4, 1, 1, 1, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 333333, 4, 1, 10, 1),
                                      }, 1)
         }, 1);
 
@@ -1652,17 +1656,17 @@ public:
 
     void TestConnection_TestInc2MessagesLost_AppearedSeparately_2_1() {
         this->Clear();
-        this->AddSymbol("symbol1");
+        this->AddSymbol("symbol1", 111111);
 
         SendMessages(incForts, new TestTemplateInfo*[2] {
                 new TestTemplateInfo(FeedTemplateId::fortsIncremental, 1,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 111111, 1, 1, 1, 1, 1),
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 222222, 2, 2, 1, 2, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 111111, 1, 1, 10, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 222222, 2, 2, 100, 1),
                                      }, 2),
                 new TestTemplateInfo(FeedTemplateId::fortsIncremental, 4,
                                      new TestTemplateItemInfo*[1] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 555555, 5, 3, 1, 3, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 555555, 5, 3, 1000, 1),
                                      }, 1)
         }, 2);
         if(!incForts->Listen_Atom_Incremental_Core())
@@ -1690,7 +1694,7 @@ public:
         SendMessages(incForts, new TestTemplateInfo*[1] {
                 new TestTemplateInfo(FeedTemplateId::fortsIncremental, 3,
                                      new TestTemplateItemInfo*[1] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 333333, 4, 1, 1, 1, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 333333, 4, 1, 10, 1),
                                      }, 1)
         }, 1);
 
@@ -1713,7 +1717,7 @@ public:
         SendMessages(incForts, new TestTemplateInfo*[1] {
                 new TestTemplateInfo(FeedTemplateId::fortsIncremental, 2,
                                      new TestTemplateItemInfo*[1] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 333333, 3, 1, 1, 1, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 333333, 3, 1, 10, 1),
                                      }, 1)
         }, 1);
 
@@ -1734,7 +1738,7 @@ public:
 
     void TestConnection_TestIncMessageLost_AndWaitTimerElapsed() {
         this->Clear();
-        this->AddSymbol("symbol1");
+        this->AddSymbol("symbol1", 111111);
 
         if(snapForts->State() != FeedConnectionState::fcsSuspend)
             throw;
@@ -1742,12 +1746,12 @@ public:
         SendMessages(incForts, new TestTemplateInfo*[2] {
                 new TestTemplateInfo(FeedTemplateId::fortsIncremental, 1,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 111111, 1, 1, 1, 1, 1),
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 222222, 2, 2, 1, 2, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 111111, 1, 1, 10, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 222222, 2, 2, 100, 1),
                                      }, 2),
                 new TestTemplateInfo(FeedTemplateId::fortsIncremental, 4,
                                      new TestTemplateItemInfo*[1] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 555555, 5, 3, 1, 3, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 555555, 5, 3, 1000, 1),
                                      }, 1)
         }, 2);
         if(!incForts->Listen_Atom_Incremental_Core())
@@ -1828,7 +1832,7 @@ public:
 
     void TestConnection_OneMessageReceived() {
         this->Clear();
-        this->AddSymbol("symbol1");
+        this->AddSymbol("symbol1", 111111);
         incForts->StartListenSnapshot();
 
         //no messages first half time
@@ -1868,7 +1872,7 @@ public:
     void TestConnection_RouteFirstReceived_Empty() {
 
         this->Clear();
-        this->AddSymbol("symbol1");
+        this->AddSymbol("symbol1", 111111);
         incForts->StartListenSnapshot();
 
         SendMessages(snapForts, new TestTemplateInfo*[1] {
@@ -1915,7 +1919,7 @@ public:
 
     void TestConnection_RouteFirstReceived_AfterSomeDummyMessages() {
         this->Clear();
-        this->AddSymbol("symbol1");
+        this->AddSymbol("symbol1", 111111);
 
         incForts->StartListenSnapshot();
 
@@ -2035,7 +2039,7 @@ public:
 
     void TestConnection_LastFragmentReceivedBeforeRouteFirst() {
         this->Clear();
-        this->AddSymbol("symbol1");
+        this->AddSymbol("symbol1", 111111);
 
         incForts->StartListenSnapshot();
 
@@ -2065,7 +2069,7 @@ public:
 
     void TestConnection_SnapshotSomeMessagesNotReceived() {
         this->Clear();
-        this->AddSymbol("symbol1");
+        this->AddSymbol("symbol1", 111111);
         incForts->StartListenSnapshot();
 
         SendMessages(snapForts, new TestTemplateInfo*[1] {
@@ -2119,7 +2123,7 @@ public:
 
     void TestConnection_SnapshotSomeMessagesReceivedLater() {
         this->Clear();
-        this->AddSymbol("symbol1");
+        this->AddSymbol("symbol1", 111111);
         incForts->StartListenSnapshot();
 
         SendMessages(snapForts, new TestTemplateInfo*[1] {
@@ -2200,7 +2204,7 @@ public:
 
     void TestConnection_TestSnapshotCollect() {
         this->Clear();
-        this->AddSymbol("symbol1");
+        this->AddSymbol("symbol1", 111111);
         incForts->StartListenSnapshot();
 
         SendMessages(snapForts, new TestTemplateInfo*[1] {
@@ -2239,7 +2243,7 @@ public:
 
     void TestConnection_TestSnapshotMessageLostAndTimeExpired() {
         this->Clear();
-        this->AddSymbol("symbol1");
+        this->AddSymbol("symbol1", 111111);
         incForts->StartListenSnapshot();
 
         snapForts->WaitSnapshotMaxTimeMs(100);
@@ -2303,8 +2307,8 @@ public:
      * */
     void TestConnection_TestMessagesLost_2Items_SnapshotReceivedForOneItem() {
         this->Clear();
-        this->AddSymbol("symbol1");
-        this->AddSymbol("symbol2");
+        this->AddSymbol("symbol1", 111111);
+        this->AddSymbol("symbol2", 222222);
         incForts->StartListenSnapshot();
 
         this->TestTableItemsAllocator(incForts->OrderBookForts());
@@ -2368,12 +2372,12 @@ public:
     void TestConnection_SkipHearthBeatMessages_Incremental() {
         this->Clear();
 
-        this->AddSymbol("symbol1", "session1");
+        this->AddSymbol("symbol1", 111111);
         this->incForts->StartListenSnapshot();
         if(snapForts->State() != FeedConnectionState::fcsListenSnapshot)
             throw;
         SendMessages(incForts, snapForts,
-                     "obr entry symbol1 111111, lost obr entry symbol1 222222, wait_snap, hbeat, hbeat, hbeat",
+                     "obr entry symbol1 sid 111111 111111, lost obr entry symbol1 sid 111111 222222, wait_snap, hbeat, hbeat, hbeat",
                      "                                                  hbeat, hbeat, hbeat",
                      30);
         if(incForts->Packet(4)->m_address == 0 || incForts->Packet(5)->m_address == 0 || incForts->Packet(6)->m_address == 0)
@@ -2390,11 +2394,11 @@ public:
 
     void TestConnection_AllSymbolsAreOk() {
         this->Clear();
-        this->AddSymbol("symbol1");
-        this->AddSymbol("symbol2");
+        this->AddSymbol("symbol1", 111111);
+        this->AddSymbol("symbol2", 222222);
 
         SendMessages(incForts, snapForts,
-                     "obr entry symbol1 111111, obr entry symbol1 222222, obr entry symbol1 333333, obr entry symbol2 111111, obr entry symbol2 222222",
+                     "obr entry symbol1 sid 111111 111111, obr entry symbol1 sid 111111 222222, obr entry symbol1 sid 111111 333333, obr entry symbol2 sid 222222 111111, obr entry symbol2 sid 222222 222222",
                      "",
                      30);
         if(incForts->OrderBookForts()->UsedItemCount() != 2)
@@ -2413,11 +2417,11 @@ public:
 
     void TestConnection_NotAllSymbolsAreOk() {
         this->Clear();
-        this->AddSymbol("symbol1");
-        this->AddSymbol("symbol2");
+        this->AddSymbol("symbol1", 111111);
+        this->AddSymbol("symbol2", 222222);
 
         SendMessages(incForts, snapForts,
-                     "obr entry symbol1 111111, lost obr entry symbol1 222222, obr entry symbol1 333333, obr entry symbol2 111111, obr entry symbol2 222222",
+                     "obr entry symbol1 sid 111111 111111, lost obr entry symbol1 sid 111111 222222, obr entry symbol1 sid 111111 333333, obr entry symbol2 sid 222222 111111, obr entry symbol2 sid 222222 222222",
                      "",
                      30);
         if(incForts->OrderBookForts()->UsedItemCount() != 2)
@@ -2434,12 +2438,12 @@ public:
 
     void TestConnection_AllSymbolsAreOkButOneMessageLost() {
         this->Clear();
-        this->AddSymbol("symbol1");
-        this->AddSymbol("symbol2");
-        this->AddSymbol("symbol3");
+        this->AddSymbol("symbol1", 111111);
+        this->AddSymbol("symbol2", 222222);
+        this->AddSymbol("symbol3", 333333);
 
         SendMessages(incForts, snapForts,
-                     "obr entry symbol1 111111, lost obr entry symbol3 222222, obr entry symbol1 333333, obr entry symbol2 111111, obr entry symbol2 222222",
+                     "obr entry symbol1 sid 111111 111111, lost obr entry symbol3 sid 333333 222222, obr entry symbol1 sid 111111 333333, obr entry symbol2 sid 222222 111111, obr entry symbol2 sid 222222 222222",
                      "",
                      30);
 
@@ -2455,13 +2459,13 @@ public:
 
     void TestConnection_ParallelWorkingIncrementalAndSnapshot_1() {
         this->Clear();
-        this->AddSymbol("symbol1");
-        this->AddSymbol("symbol3");
+        this->AddSymbol("symbol1", 111111);
+        this->AddSymbol("symbol3", 333333);
 
         if(snapForts->State() != FeedConnectionState::fcsSuspend)
             throw;
         SendMessages(incForts, snapForts,
-                     "obr entry symbol1 111111, lost obr entry symbol3 111111",
+                     "obr entry symbol1 sid 111111 111111, lost obr entry symbol3 sid 333333 111111",
                      "",
                      30);
         if(incForts->HasPotentiallyLostPackets())
@@ -2474,13 +2478,13 @@ public:
 
     void TestConnection_ParallelWorkingIncrementalAndSnapshot_2() {
         this->Clear();
-        this->AddSymbol("symbol1");
-        this->AddSymbol("symbol3");
+        this->AddSymbol("symbol1", 111111);
+        this->AddSymbol("symbol3", 333333);
 
         if(snapForts->State() != FeedConnectionState::fcsSuspend)
             throw;
         SendMessages(incForts, snapForts,
-                     "obr entry symbol1 111111, lost obr entry symbol3 111111, hbeat",
+                     "obr entry symbol1 sid 111111 111111, lost obr entry symbol3 sid 333333 111111, hbeat",
                      "",
                      30);
         if(!incForts->HasPotentiallyLostPackets())
@@ -2498,13 +2502,13 @@ public:
     void TestConnection_ParallelWorkingIncrementalAndSnapshot_2_1() {
         this->Clear();
 
-        this->AddSymbol("symbol1", "session1");
-        this->AddSymbol("symbol3", "session1");
+        this->AddSymbol("symbol1", 111111);
+        this->AddSymbol("symbol3", 333333);
 
         if(snapForts->State() != FeedConnectionState::fcsSuspend)
             throw;
         SendMessages(incForts, snapForts,
-                     "obr entry symbol1 111111, lost obr entry symbol3 111111, hbeat, hbeat",
+                     "obr entry symbol1 sid 111111 111111, lost obr entry symbol3 sid 333333 111111, hbeat, hbeat",
                      "",
                      30);
         if(incForts->SymbolsToRecvSnapshotCount() != 2)
@@ -2528,13 +2532,13 @@ public:
     void TestConnection_ParallelWorkingIncrementalAndSnapshot_3() {
         this->Clear();
 
-        this->AddSymbol("symbol1", "session1");
-        this->AddSymbol("symbol3", "session1");
+        this->AddSymbol("symbol1", 111111);
+        this->AddSymbol("symbol3", 333333);
 
         if(snapForts->State() != FeedConnectionState::fcsSuspend)
             throw;
         SendMessages(incForts, snapForts,
-                     "obr entry symbol1 111111, lost obr entry symbol3 111111, hbeat, hbeat, hbeat",
+                     "obr entry symbol1 sid 111111 111111, lost obr entry symbol3 sid 333333 111111, hbeat, hbeat, hbeat",
                      "",
                      30);
         if(incForts->SymbolsToRecvSnapshotCount() != 2)
@@ -2588,13 +2592,13 @@ public:
     void TestConnection_ParallelWorkingIncrementalAndSnapshot_4() {
         this->Clear();
 
-        this->AddSymbol("symbol1", "session1");
-        this->AddSymbol("symbol3", "session1");
+        this->AddSymbol("symbol1", 111111);
+        this->AddSymbol("symbol3", 333333);
 
         if(snapForts->State() != FeedConnectionState::fcsSuspend)
             throw;
         SendMessages(incForts, snapForts,
-                     "obr entry symbol1 111111, lost obr entry symbol3 111111, wait_snap",
+                     "obr entry symbol1 sid 111111 111111, lost obr entry symbol3 sid 333333 111111, wait_snap",
                      "",
                      30);
         if(incForts->m_waitTimer->Active())
@@ -2618,15 +2622,15 @@ public:
     void TestConnection_ParallelWorkingIncrementalAndSnapshot_5() {
         this->Clear();
 
-        this->AddSymbol("symbol1", "session1");
-        this->AddSymbol("symbol2", "session1");
-        this->AddSymbol("symbol3", "session1");
+        this->AddSymbol("symbol1", 111111);
+        this->AddSymbol("symbol2", 222222);
+        this->AddSymbol("symbol3", 333333);
 
         if(snapForts->State() != FeedConnectionState::fcsSuspend)
             throw;
         SendMessages(incForts, snapForts,
-                     "obr entry symbol1 111111, lost obr entry symbol3 111111, wait_snap, obr entry symbol1 333333,    hbeat,                              hbeat",
-                     "                                                            obs symbol3 begin rpt 1, obs symbol3 rpt 1 entry symbol3 111111, obs symbol3 rpt 1 end",
+                     "obr entry symbol1 sid 111111 111111, lost obr entry symbol3 sid 333333 111111, wait_snap, obr entry symbol1 sid 111111 333333,    hbeat,                              hbeat",
+                     "                                                            obs symbol3 begin rpt 1, obs symbol3 rpt 1 entry symbol3 sid 333333 111111, obs symbol3 rpt 1 end",
                      30);
         if(incForts->HasQueueEntries())
             throw;
@@ -2654,13 +2658,13 @@ public:
     void TestConnection_ParallelWorkingIncrementalAndSnapshot_5_1() {
         this->Clear();
 
-        this->AddSymbol("symbol1", "session1");
+        this->AddSymbol("symbol1", 111111);
 
         if(snapForts->State() != FeedConnectionState::fcsSuspend)
             throw;
         SendMessages(incForts, snapForts,
-                     "lost obr entry symbol1 111111, lost hbeat, wait_snap",
-                     "obs symbol1 begin rpt 1, obs symbol1 rpt 1 entry symbol1 111111, obs symbol1 rpt 1 end",
+                     "lost obr entry symbol1 sid 111111 111111, lost hbeat, wait_snap",
+                     "obs symbol1 begin rpt 1, obs symbol1 rpt 1 entry symbol1 sid 111111 111111, obs symbol1 rpt 1 end",
                      30);
         if(incForts->HasQueueEntries())
             throw;
@@ -2689,17 +2693,17 @@ public:
     void TestConnection_ParallelWorkingIncrementalAndSnapshot_5_2() {
         this->Clear();
 
-        this->AddSymbol("symbol1", "session1");
-        this->AddSymbol("symbol2", "session1");
-        this->AddSymbol("symbol3", "session1");
+        this->AddSymbol("symbol1", 111111);
+        this->AddSymbol("symbol2", 222222);
+        this->AddSymbol("symbol3", 333333);
 
         if(snapForts->State() != FeedConnectionState::fcsSuspend)
             throw;
         if(incForts->OrderBookForts()->UsedItemCount() != 3)
             throw;
         SendMessages(incForts, snapForts,
-                     "obr entry symbol1 111111, lost obr entry symbol3 111111, wait_snap, obr entry symbol1 333333,                         hbeat,                                        hbeat",
-                     "                                                            obs symbol3 begin rpt 1 end entry symbol3 111111, obs symbol1 begin rpt 2 end entry symbol1 111111, hbeat, obs symbol2 begin rpt 2 end entry symbol2 111111",
+                     "obr entry symbol1 sid 111111 111111, lost obr entry symbol3 sid 333333 111111, wait_snap, obr entry symbol1 sid 111111 333333,                         hbeat,                                        hbeat",
+                     "                                                            obs symbol3 begin rpt 1 end entry symbol3 sid 333333 111111, obs symbol1 begin rpt 2 end entry symbol1 sid 111111 111111, hbeat, obs symbol2 begin rpt 2 end entry symbol2 sid 222222 111111",
                      30);
         if(incForts->HasQueueEntries())
             throw;
@@ -2736,17 +2740,17 @@ public:
     void TestConnection_ParallelWorkingIncrementalAndSnapshot_5_2_2() {
         this->Clear();
 
-        this->AddSymbol("symbol1", "session1");
-        this->AddSymbol("symbol2", "session1");
-        this->AddSymbol("symbol3", "session1");
+        this->AddSymbol("symbol1", 111111);
+        this->AddSymbol("symbol2", 222222);
+        this->AddSymbol("symbol3", 333333);
 
         if(snapForts->State() != FeedConnectionState::fcsSuspend)
             throw;
         if(incForts->OrderBookForts()->UsedItemCount() != 3)
             throw;
         SendMessages(incForts, snapForts,
-                     "obr entry symbol1 111111, lost obr entry symbol3 111111, wait_snap, obr entry symbol1 333333,                         obr entry symbol2 111111,                         obr entry symbol2 222222",
-                     "                                                            obs symbol3 begin rpt 1 end entry symbol3 111111, obs symbol1 begin rpt 2 end entry symbol1 111111, obs symbol2 begin rpt 2 end entry symbol2 111111 skip_if_suspend",
+                     "obr entry symbol1 sid 111111 111111, lost obr entry symbol3 sid 333333 111111, wait_snap, obr entry symbol1 sid 111111 333333,                         obr entry symbol2 sid 222222 111111,                         obr entry symbol2 sid 222222 222222",
+                     "                                                            obs symbol3 begin rpt 1 end entry symbol3 sid 333333 111111, obs symbol1 begin rpt 2 end entry symbol1 sid 111111 111111, obs symbol2 begin rpt 2 end entry symbol2 sid 222222 111111 skip_if_suspend",
                      30);
         if(incForts->HasQueueEntries())
             throw;
@@ -2781,13 +2785,13 @@ public:
     void TestConnection_ParallelWorkingIncrementalAndSnapshot_5_3() {
         this->Clear();
 
-        this->AddSymbol("symbol1", "session1");
+        this->AddSymbol("symbol1", 111111);
 
         if(!incForts->m_waitTimer->Active())
             throw;
         SendMessages(incForts, snapForts,
-                     "obr entry symbol1 111111, obr entry symbol1 222222, obr entry symbol1 333333, lost hbeat, wait_snap, hbeat",
-                     "                                                                          obs symbol1 begin rpt 1 entry symbol1 111111 end",
+                     "obr entry symbol1 sid 111111 111111, obr entry symbol1 sid 111111 222222, obr entry symbol1 sid 111111 333333, lost hbeat, wait_snap, hbeat",
+                     "                                                                          obs symbol1 begin rpt 1 entry symbol1 sid 111111 111111 end",
                      50);
         if(incForts->HasQueueEntries())
             throw;
@@ -2813,12 +2817,12 @@ public:
         this->Clear();
 
         incForts->WaitLostIncrementalMessageMaxTimeMs(500);
-        this->AddSymbol("symbol1", "session1");
+        this->AddSymbol("symbol1", 111111);
         incForts->Start();
 
         SendMessages(incForts, snapForts,
-                     "obr entry symbol1 111111, obr entry symbol1 222222, lost obr entry symbol1 333333, obr entry symbol1 444444, lost obr entry symbol1 555555, obr entry symbol1 666666, wait_snap, ",
-                     "                                                                                                                           obs symbol1 begin rpt 4 entry symbol1 444444 end",
+                     "obr entry symbol1 sid 111111 111111, obr entry symbol1 sid 111111 222222, lost obr entry symbol1 sid 111111 333333, obr entry symbol1 sid 111111 444444, lost obr entry symbol1 sid 111111 555555, obr entry symbol1 sid 111111 666666, wait_snap, ",
+                     "                                                                                                                           obs symbol1 begin rpt 4 entry symbol1 sid 111111 444444 end",
                      30);
         if(incForts->OrderBookForts()->SymbolsToRecvSnapshotCount() != 1)
             throw;
@@ -2838,12 +2842,12 @@ public:
         this->Clear();
 
         incForts->WaitLostIncrementalMessageMaxTimeMs(500);
-        this->AddSymbol("symbol1", "session1");
+        this->AddSymbol("symbol1", 111111);
         incForts->Start();
 
         SendMessages(incForts, snapForts,
-                     "obr entry symbol1 111111, obr entry symbol1 222222, lost obr entry symbol1 333333, obr entry symbol1 444444, lost obr entry symbol1 555555, obr entry symbol1 666666, wait_snap, ",
-                     "                                                                                                                           obs symbol1 begin rpt 5 entry symbol1 555555 end",
+                     "obr entry symbol1 sid 111111 111111, obr entry symbol1 sid 111111 222222, lost obr entry symbol1 sid 111111 333333, obr entry symbol1 sid 111111 444444, lost obr entry symbol1 sid 111111 555555, obr entry symbol1 sid 111111 666666, wait_snap, ",
+                     "                                                                                                                           obs symbol1 begin rpt 5 entry symbol1 sid 111111 555555 end",
                      30);
         if(incForts->OrderBookForts()->SymbolsToRecvSnapshotCount() != 0)
             throw;
@@ -2865,12 +2869,12 @@ public:
         this->Clear();
 
         incForts->WaitLostIncrementalMessageMaxTimeMs(500);
-        this->AddSymbol("symbol1", "session1");
+        this->AddSymbol("symbol1", 111111);
         incForts->Start();
 
         SendMessages(incForts, snapForts,
-                     "obr entry symbol1 111111, obr entry symbol1 222222, lost obr entry symbol1 333333, obr entry symbol1 444444, lost obr entry symbol1 555555, obr entry symbol1 666666, wait_snap, ",
-                     "                                                                                                                           obs symbol1 begin rpt 6 entry symbol1 666666 end",
+                     "obr entry symbol1 sid 111111 111111, obr entry symbol1 sid 111111 222222, lost obr entry symbol1 sid 111111 333333, obr entry symbol1 sid 111111 444444, lost obr entry symbol1 sid 111111 555555, obr entry symbol1 sid 111111 666666, wait_snap, ",
+                     "                                                                                                                           obs symbol1 begin rpt 6 entry symbol1 sid 111111 666666 end",
                      30);
         if(incForts->OrderBookForts()->SymbolsToRecvSnapshotCount() != 0)
             throw;
@@ -2892,13 +2896,13 @@ public:
         this->Clear();
 
         incForts->WaitLostIncrementalMessageMaxTimeMs(500);
-        this->AddSymbol("symbol1", "session1");
-        this->AddSymbol("symbol2", "session1");
+        this->AddSymbol("symbol1", 111111);
+        this->AddSymbol("symbol2", 222222);
         incForts->Start();
 
         SendMessages(incForts, snapForts,
-                     "obr entry symbol1 111111, obr entry symbol2 111111, lost obr entry symbol1 222222, wait_snap, hbeat                               lost obr entry symbol1 333333,               obr entry symbol1 444444",
-                     "                                                                   obs symbol1 begin rpt 2 entry symbol1 222222 end, obs symbol2 begin rpt 1 entry symbol2 111111 end, hbeat",
+                     "obr entry symbol1 sid 111111 111111, obr entry symbol2 sid 222222 111111, lost obr entry symbol1 sid 111111 222222, wait_snap, hbeat                               lost obr entry symbol1 sid 111111 333333,               obr entry symbol1 sid 111111 444444",
+                     "                                                                   obs symbol1 begin rpt 2 entry symbol1 sid 111111 222222 end, obs symbol2 begin rpt 1 entry symbol2 sid 222222 111111 end, hbeat",
                      30);
         if(incForts->CanStopListeningSnapshot())
             throw;
@@ -2922,8 +2926,8 @@ public:
     void TestConnection_ParallelWorkingIncrementalAndSnapshot_5_5_1() {
         this->Clear();
 
-        this->AddSymbol("symbol1", "session1");
-        this->AddSymbol("symbol2", "session1");
+        this->AddSymbol("symbol1", 111111);
+        this->AddSymbol("symbol2", 222222);
         if(incForts->OrderBookForts()->Symbol(0)->Session(0)->ShouldProcessSnapshot())
             throw;
         if(incForts->OrderBookForts()->Symbol(1)->Session(0)->ShouldProcessSnapshot())
@@ -2931,8 +2935,8 @@ public:
         incForts->Start();
 
         SendMessages(incForts, snapForts,
-                     "obr entry symbol1 111111, obr entry symbol2 111111, lost obr entry symbol1 222222, wait_snap, hbeat                               lost obr entry symbol1 333333,               obr entry symbol1 444444, hbeat ",
-                     "                                                                   obs symbol1 begin rpt 2 entry symbol1 222222 end, obs symbol2 begin rpt 1 entry symbol2 111111 end, hbeat          , obs symbol1 begin rpt 3 entry symbol1 333333 end",
+                     "obr entry symbol1 sid 111111 111111, obr entry symbol2 sid 222222 111111, lost obr entry symbol1 sid 111111 222222, wait_snap, hbeat                               lost obr entry symbol1 sid 111111 333333,               obr entry symbol1 sid 111111 444444, hbeat ",
+                     "                                                                   obs symbol1 begin rpt 2 entry symbol1 sid 111111 222222 end, obs symbol2 begin rpt 1 entry symbol2 sid 222222 111111 end, hbeat          , obs symbol1 begin rpt 3 entry symbol1 sid 111111 333333 end",
                      30);
         if(!incForts->CanStopListeningSnapshot())
             throw;
@@ -2951,12 +2955,12 @@ public:
     void TestConnection_ParallelWorkingIncrementalAndSnapshot_5_6() {
         this->Clear();
 
-        this->AddSymbol("symbol1", "session1");
-        this->AddSymbol("symbol2", "session1");
+        this->AddSymbol("symbol1", 111111);
+        this->AddSymbol("symbol2", 222222);
         incForts->Start();
 
         SendMessages(incForts, snapForts,
-                     "obr entry symbol1 111111, obr entry symbol2 111111, lost obr entry symbol1 222222, wait_snap, obr entry symbol2 222222, hbeat",
+                     "obr entry symbol1 sid 111111 111111, obr entry symbol2 sid 222222 111111, lost obr entry symbol1 sid 111111 222222, wait_snap, obr entry symbol2 sid 222222 222222, hbeat",
                      "                                                        hbeat,     hbeat,           hbeat",
                      30);
         if(incForts->CanStopListeningSnapshot())
@@ -2993,12 +2997,12 @@ public:
         incForts->m_fastProtocolManager->Print();
         */
 
-        this->AddSymbol("symbol1", "session1");
+        this->AddSymbol("symbol1", 111111);
         incForts->Start();
 
         SendMessages(incForts, snapForts,
-                     "obr entry symbol1 111111, lost obr entry symbol1 222222, obr entry symbol1 222222, wait_snap, hbeat",
-                     "                                       hbeat,           hbeat,     obs symbol1 begin rpt 0 lastmsg 0 entry symbol1 111111 end",
+                     "obr entry symbol1 sid 111111 111111, lost obr entry symbol1 sid 111111 222222, obr entry symbol1 sid 111111 222222, wait_snap, hbeat",
+                     "                                       hbeat,           hbeat,     obs symbol1 begin rpt 0 lastmsg 0 entry symbol1 sid 111111 111111 end",
                      30);
         if(incForts->OrderBookForts()->SymbolsToRecvSnapshotCount() != 0)
             throw;
@@ -3013,7 +3017,7 @@ public:
     void TestConnection_EnterSnapshotMode() {
         this->Clear();
 
-        this->AddSymbol("symbol1", "session1");
+        this->AddSymbol("symbol1", 111111);
         incForts->OrderBookForts()->EnterSnapshotMode();
         if(!incForts->OrderBookForts()->GetItemBySecurityId(111111, 0)->ShouldProcessSnapshot())
             throw;
@@ -3022,10 +3026,10 @@ public:
     void TestConnection_ClearSnapshotMessages_1() {
         this->Clear();
 
-        this->AddSymbol("symbol1", "session1");
+        this->AddSymbol("symbol1", 111111);
         SendMessages(incForts, snapForts,
-                     "obr entry symbol1 111111, lost obr entry symbol1 222222, wait_snap, hbeat",
-                     "                                                  obs symbol1 begin rpt 2 entry symbol1 222222 end",
+                     "obr entry symbol1 sid 111111 111111, lost obr entry symbol1 sid 111111 222222, wait_snap, hbeat",
+                     "                                                  obs symbol1 begin rpt 2 entry symbol1 sid 111111 222222 end",
                      30);
         if(snapForts->Packet(1)->m_address != 0)
             throw;
@@ -3036,10 +3040,10 @@ public:
     void TestConnection_ClearSnapshotMessages_2() {
         this->Clear();
 
-        this->AddSymbol("symbol1", "session1");
+        this->AddSymbol("symbol1", 111111);
         SendMessages(incForts, snapForts,
-                     "obr entry symbol1 111111, lost obr entry symbol1 222222, wait_snap, hbeat",
-                     "                                                  hbeat, hbeat, obs symbol1 begin rpt 2 entry symbol1 222222 end",
+                     "obr entry symbol1 sid 111111 111111, lost obr entry symbol1 sid 111111 222222, wait_snap, hbeat",
+                     "                                                  hbeat, hbeat, obs symbol1 begin rpt 2 entry symbol1 sid 111111 222222 end",
                      30);
         if(snapForts->Packet(1)->m_address != 0 ||
            snapForts->Packet(2)->m_address != 0 ||
@@ -3054,11 +3058,11 @@ public:
     void TestConnection_ClearSnapshotMessages_3() {
         this->Clear();
 
-        this->AddSymbol("symbol1", "session1");
+        this->AddSymbol("symbol1", 111111);
         snapForts->WaitSnapshotMaxTimeMs(50);
         SendMessages(incForts, snapForts,
-                     "obr entry symbol1 111111, lost obr entry symbol1 222222, wait_snap, hbeat",
-                     "                                                  obs symbol1 begin rpt 2 entry symbol1 222222, lost obs symbol1 rpt 2 entry symbol1 222222, hbeat, hbeat, hbeat, hbeat, hbeat",
+                     "obr entry symbol1 sid 111111 111111, lost obr entry symbol1 sid 111111 222222, wait_snap, hbeat",
+                     "                                                  obs symbol1 begin rpt 2 entry symbol1 sid 111111 222222, lost obs symbol1 rpt 2 entry symbol1 sid 111111 222222, hbeat, hbeat, hbeat, hbeat, hbeat",
                      30);
         for(int i = 1; i < 100; i++) {
             if(snapForts->m_packets[i]->m_address != 0 ||
@@ -3070,11 +3074,11 @@ public:
     void TestConnection_ClearSnapshotMessages_4() {
         this->Clear();
 
-        this->AddSymbol("symbol1", "session1");
+        this->AddSymbol("symbol1", 111111);
         snapForts->WaitSnapshotMaxTimeMs(50);
         SendMessages(incForts, snapForts,
-                     "obr entry symbol1 111111, lost obr entry symbol1 222222, wait_snap, hbeat                           hbeat,                         hbeat, hbeat, hbeat, hbeat, hbeat,                           hbeat",
-                     "                                                  obs symbol1 begin rpt 2 entry symbol1 222222, lost obs symbol1 rpt 2 entry symbol1 222222, hbeat, hbeat, hbeat, hbeat, hbeat, obs symbol1 rpt 2 entry symbol1 222222, obs symbol1 begin rpt 2 entry symbol1 222222 end",
+                     "obr entry symbol1 sid 111111 111111, lost obr entry symbol1 sid 111111 222222, wait_snap, hbeat                           hbeat,                         hbeat, hbeat, hbeat, hbeat, hbeat,                           hbeat",
+                     "                                                  obs symbol1 begin rpt 2 entry symbol1 sid 111111 222222, lost obs symbol1 rpt 2 entry symbol1 sid 111111 222222, hbeat, hbeat, hbeat, hbeat, hbeat, obs symbol1 rpt 2 entry symbol1 sid 111111 222222, obs symbol1 begin rpt 2 entry symbol1 sid 111111 222222 end",
                      30);
         if(incForts->OrderBookForts()->UsedItemCount() != 1)
             throw;
@@ -3147,8 +3151,8 @@ public:
     void TestConnection_Clear_AfterIncremental() {
         this->TestTableItemsAllocator(incForts->OrderBookForts());
         this->Clear();
-        this->AddSymbol("symbol1");
-        this->AddSymbol("symbol2");
+        this->AddSymbol("symbol1", 111111);
+        this->AddSymbol("symbol2", 222222);
         incForts->StartListenSnapshot();
 
         this->TestTableItemsAllocator(incForts->OrderBookForts());
@@ -3270,18 +3274,27 @@ public:
         }
     }
 
-    void AddSymbol(const char *symbol, const char *session) {
-        this->incForts->GetSymbolManager()->AddSymbol(symbol);
-        this->incForts->OrderBookForts()->Add(symbol, session);
+    void AddSymbol(const char *symbol, UINT64 securityId) {
+        FortsSecurityDefinitionInfo *info = new FortsSecurityDefinitionInfo();
+        strcpy(info->Symbol, symbol);
+        info->SymbolLength = strlen(symbol);
+        info->SecurityID = securityId;
+
+        LinkedPointer<FortsSecurityDefinitionInfo> *ptr = new LinkedPointer<FortsSecurityDefinitionInfo>();
+        ptr->Data(info);
+
+        SymbolInfo *s = this->incForts->GetSymbolManager()->GetSymbol(info->SecurityID);
+        this->incForts->SecurityDefinition()->SymbolsForts()[s->m_index] = ptr;
+        this->incForts->AddSymbol(ptr, s->m_index);
     }
 
     void TestInfoAndItemInfoUsageAndAllocationCurr_Inc_1() {
         this->Clear();
 
-        this->AddSymbol("symbol1", "session1");
+        this->AddSymbol("symbol1", 111111);
         int prevCount = this->incForts->m_fastProtocolManager->m_fortsDefaultSnapshotMessageMDEntriesItems->Count();
         this->SendMessages(this->incForts, this->snapForts,
-                           "obr entry symbol1 111111",
+                           "obr entry symbol1 sid 111111 111111",
                            "",
                            30);
 
@@ -3293,10 +3306,10 @@ public:
     void TestInfoAndItemInfoUsageAndAllocationCurr_Inc_2() {
         this->Clear();
 
-        this->AddSymbol("symbol1", "session1");
+        this->AddSymbol("symbol1", 111111);
         int prevCount = this->incForts->m_fastProtocolManager->m_fortsDefaultSnapshotMessageMDEntriesItems->Count();
         this->SendMessages(this->incForts, this->snapForts,
-                           "obr entry symbol1 111111, obr entry symbol1 222222",
+                           "obr entry symbol1 sid 111111 111111, obr entry symbol1 sid 111111 222222",
                            "",
                            30);
 
@@ -3312,10 +3325,10 @@ public:
     void TestInfoAndItemInfoUsageAndAllocationCurr_Inc_3() {
         this->Clear();
 
-        this->AddSymbol("symbol1", "session1");
+        this->AddSymbol("symbol1", 111111);
         int prevCount = this->incForts->m_fastProtocolManager->m_fortsDefaultSnapshotMessageMDEntriesItems->Count();
         this->SendMessages(this->incForts, this->snapForts,
-                           "obr entry symbol1 111111, obr entry symbol1 222222, obr entry del symbol1 111111",
+                           "obr entry symbol1 sid 111111 111111, obr entry symbol1 sid 111111 222222, obr entry del symbol1 111111",
                            "",
                            30);
 
@@ -3344,10 +3357,10 @@ public:
     void TestInfoAndItemInfoUsageAndAllocationCurr_Inc_5() {
         this->Clear();
 
-        this->AddSymbol("symbol1", "session1");
+        this->AddSymbol("symbol1", 111111);
         int prevCount = this->incForts->m_fastProtocolManager->m_fortsDefaultSnapshotMessageMDEntriesItems->Count();
         this->SendMessages(this->incForts, this->snapForts,
-                           "obr entry symbol1 111111, obr entry symbol1 222222, obr entry change symbol1 111111",
+                           "obr entry symbol1 sid 111111 111111, obr entry symbol1 sid 111111 222222, obr entry change symbol1 111111",
                            "",
                            30);
 
@@ -3363,11 +3376,11 @@ public:
     void TestInfoAndItemInfoUsageAndAllocationCurr_Snap_1() {
         this->Clear();
 
-        this->AddSymbol("symbol1", "session1");
+        this->AddSymbol("symbol1", 111111);
         int prevCount = this->snapForts->m_fastProtocolManager->m_fortsDefaultSnapshotMessageMDEntriesItems->Count();
         this->SendMessages(this->incForts, this->snapForts,
-                           "obr entry symbol1 111111, lost obr entry symbol1 222222, wait_snap, hbeat",
-                           "                                                  obs begin symbol1 entry symbol1 222222 rpt 2 end",
+                           "obr entry symbol1 sid 111111 111111, lost obr entry symbol1 sid 111111 222222, wait_snap, hbeat",
+                           "                                                  obs begin symbol1 entry symbol1 sid 111111 222222 rpt 2 end",
                            30);
 
         int newCount = this->snapForts->m_fastProtocolManager->m_fortsDefaultSnapshotMessageMDEntriesItems->Count();
@@ -3378,11 +3391,11 @@ public:
     void TestInfoAndItemInfoUsageAndAllocationCurr_Snap_2() {
         this->Clear();
 
-        this->AddSymbol("symbol1", "session1");
+        this->AddSymbol("symbol1", 111111);
         int prevCount = this->snapForts->m_fastProtocolManager->m_fortsDefaultSnapshotMessageMDEntriesItems->Count();
         this->SendMessages(this->incForts, this->snapForts,
-                           "obr entry symbol1 111111, lost obr entry symbol1 222222 entry symbol1 333333, wait_snap, hbeat",
-                           "                                                   obs begin symbol1 entry symbol1 222222 rpt 2, obs symbol1 entry symbol1 333333 end",
+                           "obr entry symbol1 sid 111111 111111, lost obr entry symbol1 sid 111111 222222 entry symbol1 sid 111111 333333, wait_snap, hbeat",
+                           "                                                   obs begin symbol1 entry symbol1 sid 111111 222222 rpt 2, obs symbol1 entry symbol1 sid 111111 333333 end",
                            30);
 
         int newCount = this->snapForts->m_fastProtocolManager->m_fortsDefaultSnapshotMessageMDEntriesItems->Count();
@@ -3410,14 +3423,14 @@ public:
     void TestInfoAndItemInfoUsageAndAllocationCurr_Snap_4() {
         this->Clear();
 
-        this->AddSymbol("symbol1", "session1");
-        this->AddSymbol("symbol2", "session1");
-        this->AddSymbol("symbol3", "session1");
+        this->AddSymbol("symbol1", 111111);
+        this->AddSymbol("symbol2", 222222);
+        this->AddSymbol("symbol3", 333333);
 
         int prevCount = this->snapForts->m_fastProtocolManager->m_fortsDefaultSnapshotMessageMDEntriesItems->Count();
         SendMessages(incForts, snapForts,
-                     "obr entry symbol1 111111, lost obr entry symbol3 111111, wait_snap, obr entry symbol1 333333,                              hbeat,                              hbeat",
-                     "                                                       obs symbol3 begin rpt 1 end entry symbol3 111111, obs symbol1 begin rpt 2 end entry symbol1 111111, hbeat, obs symbol2 begin rpt 2 end entry symbol2 111111",
+                     "obr entry symbol1 sid 111111 111111, lost obr entry symbol3 sid 333333 111111, wait_snap, obr entry symbol1 sid 111111 333333,                              hbeat,                              hbeat",
+                     "                                                       obs symbol3 begin rpt 1 end entry symbol3 sid 333333 111111, obs symbol1 begin rpt 2 end entry symbol1 sid 111111 111111, hbeat, obs symbol2 begin rpt 2 end entry symbol2 sid 222222 111111",
                      30);
         int newCount = this->snapForts->m_fastProtocolManager->m_fortsDefaultSnapshotMessageMDEntriesItems->Count();
         if(newCount != prevCount + 4) // was 2
@@ -3426,13 +3439,13 @@ public:
     // check in case CheckProcessNullSnapshot
     void TestInfoAndItemInfoUsageAndAllocationCurr_Snap_5() {
         this->Clear();
-        this->AddSymbol("symbol1", "session1");
+        this->AddSymbol("symbol1", 111111);
         incForts->Start();
 
         int prevCount = this->snapForts->m_fastProtocolManager->m_fortsDefaultSnapshotMessageMDEntriesItems->Count();
         SendMessages(incForts, snapForts,
-                     "obr entry symbol1 111111, lost obr entry symbol1 222222, obr entry symbol1 222222, wait_snap, hbeat",
-                     "                                       hbeat,           hbeat,     obs symbol1 begin rpt 0 lastmsg 0 entry symbol1 111111 end",
+                     "obr entry symbol1 sid 111111 111111, lost obr entry symbol1 sid 111111 222222, obr entry symbol1 sid 111111 222222, wait_snap, hbeat",
+                     "                                       hbeat,           hbeat,     obs symbol1 begin rpt 0 lastmsg 0 entry symbol1 sid 111111 111111 end",
                      30);
         int newCount = this->snapForts->m_fastProtocolManager->m_fortsDefaultSnapshotMessageMDEntriesItems->Count();
         if(newCount != prevCount)
@@ -3443,12 +3456,12 @@ public:
     void TestInfoAndItemInfoUsageAndAllocationCurr_Snap_6() {
         this->Clear();
 
-        this->AddSymbol("symbol1", "session1");
+        this->AddSymbol("symbol1", 111111);
 
         int prevCount = this->snapForts->m_fastProtocolManager->m_fortsDefaultSnapshotMessageMDEntriesItems->Count();
         SendMessages(incForts, snapForts,
-                     "obr entry symbol1 111111, obr entry symbol1 222222, obr entry symbol1 333333, lost hbeat, wait_snap, hbeat",
-                     "                                                                          obs symbol1 begin rpt 1 entry symbol1 111111 end",
+                     "obr entry symbol1 sid 111111 111111, obr entry symbol1 sid 111111 222222, obr entry symbol1 sid 111111 333333, lost hbeat, wait_snap, hbeat",
+                     "                                                                          obs symbol1 begin rpt 1 entry symbol1 sid 111111 111111 end",
                      50);
         int newCount = this->snapForts->m_fastProtocolManager->m_fortsDefaultSnapshotMessageMDEntriesItems->Count();
         if(newCount != prevCount + 3)
@@ -3456,7 +3469,7 @@ public:
     }
 
     void TestInfoAndItemInfoUsageAndAllocationCurr() {
-        this->m_helper->SetCurrMode();
+        this->m_helper->SetFortsMode();
         printf("OLR CURR TestInfoAndItemInfoUsageAndAllocationCurr_Inc_1\n");
         TestInfoAndItemInfoUsageAndAllocationCurr_Inc_1();
         printf("OLR CURR TestInfoAndItemInfoUsageAndAllocationCurr_Inc_2\n");
@@ -3485,7 +3498,7 @@ public:
     void Test_OnIncrementalRefresh_FORTS_OBR_Add_Aggregated() {
         this->Clear();
         this->TestDefaults();
-        this->AddSymbol("symbol1");
+        this->AddSymbol("symbol1", 111111);
 
         FortsDefaultIncrementalRefreshMessageInfo *info = this->m_helper->CreateFortsDefaultIncrementalRefreshMessageInfo();
 
@@ -3632,7 +3645,7 @@ public:
     void Test_OnIncrementalRefresh_FORTS_OBR_Remove_Aggregated() {
         this->Clear();
         this->TestDefaults();
-        this->AddSymbol("symbol1");
+        this->AddSymbol("symbol1", 111111);
 
         FortsDefaultIncrementalRefreshMessageInfo *info = this->m_helper->CreateFortsDefaultIncrementalRefreshMessageInfo();
         FortsDefaultSnapshotMessageMDEntriesItemInfo *item1 = this->m_helper->CreateFortsOBRItemInfo("symbol1", 111111, 3, -2, 100, mduaAdd, mdetBuyQuote, 111111, 1);
@@ -3744,7 +3757,7 @@ public:
     void Test_OnIncrementalRefresh_FORTS_OBR_Change_Aggregated() {
         this->Clear();
         this->TestDefaults();
-        this->AddSymbol("symbol1");
+        this->AddSymbol("symbol1", 111111);
 
         FortsDefaultIncrementalRefreshMessageInfo *info = this->m_helper->CreateFortsDefaultIncrementalRefreshMessageInfo();
         FortsDefaultSnapshotMessageMDEntriesItemInfo *item1 = this->m_helper->CreateFortsOBRItemInfo("symbol1", 111111, 3, -2, 100, mduaAdd, mdetBuyQuote, 111111, 1);
@@ -3809,7 +3822,7 @@ public:
     void Test_Clear_Aggregated() {
         this->Clear();
         this->TestDefaults();
-        this->AddSymbol("symbol1");
+        this->AddSymbol("symbol1", 111111);
 
         FortsDefaultIncrementalRefreshMessageInfo *info = this->m_helper->CreateFortsDefaultIncrementalRefreshMessageInfo();
         FortsDefaultSnapshotMessageMDEntriesItemInfo *item1 = this->m_helper->CreateFortsOBRItemInfo("symbol1", 111111, 3, -2, 100, mduaAdd, mdetBuyQuote, 111111, 1);
@@ -3844,7 +3857,7 @@ public:
     void Test_OnFullRefresh_OBS_CURR_Aggregated() {
         this->Clear();
         this->TestDefaults();
-        this->AddSymbol("symbol1");
+        this->AddSymbol("symbol1", 111111);
 
         FortsDefaultIncrementalRefreshMessageInfo *info = this->m_helper->CreateFortsDefaultIncrementalRefreshMessageInfo();
         FortsDefaultSnapshotMessageMDEntriesItemInfo *item1 = this->m_helper->CreateFortsOBRItemInfo("symbol1", 111111, 3, -2, 100, mduaAdd, mdetBuyQuote, 111111, 1);
@@ -3899,7 +3912,7 @@ public:
     void Test_OnIncrementalRefresh_FORTS_OBR_Add_SellQuotes_Aggregated() {
         this->Clear();
         this->TestDefaults();
-        this->AddSymbol("symbol1");
+        this->AddSymbol("symbol1", 111111);
 
         FortsDefaultIncrementalRefreshMessageInfo *info = this->m_helper->CreateFortsDefaultIncrementalRefreshMessageInfo();
 
@@ -4018,7 +4031,7 @@ public:
     void Test_OnIncrementalRefresh_FORTS_OBR_Remove_SellQuotes_Aggregated() {
         this->Clear();
         this->TestDefaults();
-        this->AddSymbol("symbol1");
+        this->AddSymbol("symbol1", 111111);
 
         FortsDefaultIncrementalRefreshMessageInfo *info = this->m_helper->CreateFortsDefaultIncrementalRefreshMessageInfo();
         FortsDefaultSnapshotMessageMDEntriesItemInfo *item1 = this->m_helper->CreateFortsOBRItemInfo("symbol1", 111111, 3, -2, 100, mduaAdd, mdetSellQuote, 111111, 1);
@@ -4108,7 +4121,7 @@ public:
     void Test_OnIncrementalRefresh_FORTS_OBR_Change_SellQuotes_Aggregated() {
         this->Clear();
         this->TestDefaults();
-        this->AddSymbol("symbol1");
+        this->AddSymbol("symbol1", 111111);
 
         FortsDefaultIncrementalRefreshMessageInfo *info = this->m_helper->CreateFortsDefaultIncrementalRefreshMessageInfo();
         FortsDefaultSnapshotMessageMDEntriesItemInfo *item1 = this->m_helper->CreateFortsOBRItemInfo("symbol1", 111111, 3, -2, 100, mduaAdd, mdetSellQuote, 111111, 1);
@@ -4165,7 +4178,7 @@ public:
     void Test_Clear_SellQuotes_Aggregated() {
         this->Clear();
         this->TestDefaults();
-        this->AddSymbol("symbol1");
+        this->AddSymbol("symbol1", 111111);
 
         FortsDefaultIncrementalRefreshMessageInfo *info = this->m_helper->CreateFortsDefaultIncrementalRefreshMessageInfo();
         FortsDefaultSnapshotMessageMDEntriesItemInfo *item1 = this->m_helper->CreateFortsOBRItemInfo("symbol1", 111111, 3, -2, 100, mduaAdd, mdetSellQuote, 111111, 1);
@@ -4193,7 +4206,7 @@ public:
     void Test_OnFullRefresh_OBS_CURR_SellQuotes_Aggregated() {
         this->Clear();
         this->TestDefaults();
-        this->AddSymbol("symbol1");
+        this->AddSymbol("symbol1", 111111);
 
         FortsDefaultIncrementalRefreshMessageInfo *info = this->m_helper->CreateFortsDefaultIncrementalRefreshMessageInfo();
         FortsDefaultSnapshotMessageMDEntriesItemInfo *item1 = this->m_helper->CreateFortsOBRItemInfo("symbol1", 111111, 3, -2, 100, mduaAdd, mdetSellQuote, 111111, 1);
@@ -4265,7 +4278,7 @@ public:
 
     void Test_Aggregation_Logic() {
         this->Clear();
-        this->AddSymbol("symbol1");
+        this->AddSymbol("symbol1", 111111);
 
         OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = this->m_table->Symbol(0)->Session(0);
 
@@ -4311,7 +4324,7 @@ public:
     }
 
     void Test_Aggregated() {
-        this->m_helper->SetCurrMode();
+        this->m_helper->SetFortsMode();
         printf("OLR CURR Test_OnIncrementalRefresh_FORTS_OBR\n");
         Test_OnIncrementalRefresh_FORTS_OBR_Aggregated();
         printf("OLR CURR Test_OnFullRefresh_OBS_CURR\n");
