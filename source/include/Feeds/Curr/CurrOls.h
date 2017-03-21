@@ -21,7 +21,13 @@ public:
     void AllocateFastObjects() {
         AstsObjectsAllocationInfo::Default->AllocateOLSCURRInfoPool(10, 10);
     }
-    int GetPacketsCount() { return 50000; }
+    int GetPacketsCount() {
+#ifdef TEST
+        return 100;
+#else
+        return 50000;
+#endif
+    }
     ISocketBufferProvider* CreateSocketBufferProvider() {
         return new SocketBufferProvider(DefaultSocketBufferManager::Default,
                                         RobotSettings::Default->DefaultFeedConnectionSendBufferSize,

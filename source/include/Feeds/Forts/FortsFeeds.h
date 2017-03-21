@@ -22,9 +22,19 @@ public:
     void AllocateFastObjects() {
         FortsObjectsAllocationInfo::Default->AllocateHeartbeatInfoPoolTo(10);
         FortsObjectsAllocationInfo::Default->AllocateDefaultIncrementalRefreshMessageInfoPool(10, 10);
+#ifdef TEST
+        FortsObjectsAllocationInfo::Default->AllocateDefaultSnapshotMessageMDEntriesItemInfoPool(100, 500);
+#else
         FortsObjectsAllocationInfo::Default->AllocateDefaultSnapshotMessageMDEntriesItemInfoPool(300000, 500);
+#endif
     }
-    int GetPacketsCount() { return 10000; }
+    int GetPacketsCount() {
+#ifdef TEST
+        return 100;
+#else
+        return 10000;
+#endif
+    }
     ISocketBufferProvider* CreateSocketBufferProvider() {
         return new SocketBufferProvider(DefaultSocketBufferManager::Default,
                                         RobotSettings::Default->DefaultFeedConnectionSendBufferSize,
@@ -132,9 +142,19 @@ public:
     void AllocateFastObjects() {
         FortsObjectsAllocationInfo::Default->AllocateHeartbeatInfoPoolTo(10);
         FortsObjectsAllocationInfo::Default->AllocateDefaultIncrementalRefreshMessageInfoPool(10, 10);
+#ifdef TEST
+        FortsObjectsAllocationInfo::Default->AllocateDefaultSnapshotMessageMDEntriesItemInfoPool(100, 500);
+#else
         FortsObjectsAllocationInfo::Default->AllocateDefaultSnapshotMessageMDEntriesItemInfoPool(300000, 500);
+#endif
     }
-    int GetPacketsCount() { return 10000; }
+    int GetPacketsCount() {
+#ifdef TEST
+        return 100;
+#else
+        return 10000;
+#endif
+    }
     ISocketBufferProvider* CreateSocketBufferProvider() {
         return new SocketBufferProvider(DefaultSocketBufferManager::Default,
                                         RobotSettings::Default->DefaultFeedConnectionSendBufferSize,
@@ -188,7 +208,13 @@ public:
     void AllocateFastObjects() {
         FortsObjectsAllocationInfo::Default->AllocateDefaultSnapshotMessageInfoPool(10, 10);
     }
-    int GetPacketsCount() { return 50000; }
+    int GetPacketsCount() {
+#ifdef TEST
+        return 100;
+#else
+        return 50000;
+#endif
+    }
     ISocketBufferProvider* CreateSocketBufferProvider() {
         return new SocketBufferProvider(DefaultSocketBufferManager::Default,
                                         RobotSettings::Default->DefaultFeedConnectionSendBufferSize,

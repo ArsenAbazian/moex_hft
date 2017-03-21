@@ -186,6 +186,14 @@ public:
         }
         return info;
     }
+    inline SymbolInfo* AddSymbol(UINT64 securityId) {
+        bool wasNewlyAdded;
+        SymbolInfo *info = this->GetSymbol(securityId, &wasNewlyAdded);
+        if(!wasNewlyAdded) { //TODO remove debug
+            printf("!!!already added %" PRIu64 "\n", securityId);
+        }
+        return info;
+    }
     inline SymbolInfo* GetSymbol(const char *symbol, int length) {
         bool wasNewlyAdded = false;
         SymbolInfo *res = this->GetSymbol(symbol, length, &wasNewlyAdded);

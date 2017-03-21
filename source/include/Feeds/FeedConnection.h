@@ -2940,6 +2940,10 @@ protected:
             this->m_fortsIncrementalRouteFirst = messageIndex + 1;
         }
     }
+    inline void AfterApplyIncrementalForts(int prevFortsRouteFirst) {
+        if(this->m_fortsIncrementalRouteFirst != prevFortsRouteFirst)
+            this->m_fortsRouteFirtsSecurityId = 0;
+    }
     inline bool ProcessIncrementalForts(FeedConnectionMessageInfo *info, int messageIndex) {
         unsigned char *buffer = info->m_address;
         if(this->ShouldSkipMessageForts(buffer, !info->m_requested)) {
@@ -2957,8 +2961,10 @@ protected:
         // there is no need to check
         this->m_fastProtocolManager->DecodeForts();
 
+        int prevFortsRouteFirst = this->m_fortsIncrementalRouteFirst;
         this->CheckUpdateFortsIncrementalParams(messageIndex);
         this->ApplyIncrementalCoreForts();
+        this->AfterApplyIncrementalForts(prevFortsRouteFirst);
         return true;
     }
 

@@ -38,10 +38,18 @@ public:
 
     RobotSettings() {
         SocketBuffersMaxCount = 256; // they are created only when needed
+
+
+        DefaultFeedConnectionSendItemsCount = 2000;        // I think that we most will listen data - no to send
+#ifdef TEST
+        DefaultFeedConnectionSendBufferSize = 4 * 1024 * 1024;
+        DefaultFeedConnectionRecvBufferSize = 4 * 1024 * 1024;
+        DefaultFeedConnectionRecvItemsCount = 2000;       // I don't know yet how much items needed
+#else
         DefaultFeedConnectionSendBufferSize = 4 * 1024 * 1024;
         DefaultFeedConnectionRecvBufferSize = 16 * 1024 * 1024;
-        DefaultFeedConnectionSendItemsCount = 20000;        // I think that we most will listen data - no to send
-        DefaultFeedConnectionRecvItemsCount = 200000;       // I don't know yet how much items needed
+        DefaultFeedConnectionRecvItemsCount = 20000;       // I don't know yet how much items needed
+#endif
 
         DefaultMarketSendBufferSize = 8 * 1024 * 1024;     // why 16? don't know
         DefaultMarketRecvBufferSize = 8 * 1024 * 1024;

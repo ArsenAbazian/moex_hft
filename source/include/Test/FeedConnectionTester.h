@@ -413,7 +413,7 @@ public:
     }
 
     void TestForts_Defaults() {
-        if(this->incForts->m_fortsIncrementalRouteFirst != 0)
+        if(this->incForts->m_fortsIncrementalRouteFirst != 1)
             throw;
         if(this->incForts->m_fortsRouteFirtsSecurityId != 0)
             throw;
@@ -439,12 +439,12 @@ public:
         else {
             strcpy(item->Symbol, symbol);
             item->SymbolLength = strlen(symbol);
-            if(securityId == 0) {
-                item->NullMap |= FortsDefaultIncrementalRefreshMessageMDEntriesItemInfoNullIndices::SecurityIDNullIndex;
-            }
-            else {
-                item->SecurityID = securityId;
-            }
+        }
+        if(securityId == 0) {
+            item->NullMap |= FortsDefaultIncrementalRefreshMessageMDEntriesItemInfoNullIndices::SecurityIDNullIndex;
+        }
+        else {
+            item->SecurityID = securityId;
         }
 
         info->MDEntriesCount = 1;
@@ -453,10 +453,34 @@ public:
         return info;
     }
 
+    FortsDefaultIncrementalRefreshMessageInfo* CreateFortsIncremental(int msgSeqNum, const char *symbol, UINT64 securityId, int rptSeq, bool nullLastFragment) {
+        FortsDefaultIncrementalRefreshMessageInfo *info = CreateFortsIncremental(msgSeqNum, symbol, securityId, rptSeq);
+        info->LastFragment = 0;
+        info->NullMap |= FortsDefaultIncrementalRefreshMessageInfoNullIndices::LastFragmentNullIndex;
+
+        return info;
+    }
+
+    FortsDefaultIncrementalRefreshMessageInfo* CreateFortsIncremental(int msgSeqNum, const char *symbol, UINT64 securityId, int rptSeq, int isLastFragment) {
+        FortsDefaultIncrementalRefreshMessageInfo *info = CreateFortsIncremental(msgSeqNum, symbol, securityId, rptSeq);
+        info->LastFragment = isLastFragment;
+        info->NullMap = 0;
+
+        return info;
+    }
+
     void SendProcessFortsIncremental(FortsDefaultIncrementalRefreshMessageInfo *info) {
-        this->incForts->FastManager()->SetNewBuffer(this->m_buffer, 1000);
+        this->incForts->FastManager()->SetNewBuffer(this->incForts->m_recvABuffer->CurrentPos(), 1000);
         this->incForts->FastManager()->WriteMsgSeqNumber(info->MsgSeqNum);
         this->incForts->FastManager()->EncodeFortsDefaultIncrementalRefreshMessageInfo(info);
+        this->incForts->ProcessServerCore(this->incForts->m_fastProtocolManager->MessageLength());
+        this->incForts->Listen_Atom_Incremental_Forts_Core();
+    }
+
+    void SendProcessFortsIncremental(FortsHeartbeatInfo *info) {
+        this->incForts->FastManager()->SetNewBuffer(this->incForts->m_recvABuffer->CurrentPos(), 1000);
+        this->incForts->FastManager()->WriteMsgSeqNumber(info->MsgSeqNum);
+        this->incForts->FastManager()->EncodeFortsHeartbeatInfo(info);
         this->incForts->ProcessServerCore(this->incForts->m_fastProtocolManager->MessageLength());
         this->incForts->Listen_Atom_Incremental_Forts_Core();
     }
@@ -470,7 +494,7 @@ public:
         LinkedPointer<FortsSecurityDefinitionInfo> *ptr = new LinkedPointer<FortsSecurityDefinitionInfo>();
         ptr->Data(info);
 
-        SymbolInfo *s = this->incForts->GetSymbolManager()->GetSymbol(info->SecurityID);
+        SymbolInfo *s = this->incForts->GetSymbolManager()->AddSymbol(info->SecurityID);
         this->incForts->SecurityDefinition()->SymbolsForts()[s->m_index] = ptr;
         this->incForts->AddSymbol(ptr, s->m_index);
     }
@@ -491,11 +515,201 @@ public:
         // message with index 1 should be processed
         if(this->incForts->OrderBookForts()->Symbol(0)->Session(0)->BuyQuotes()->Count() != 1)
             throw;
+        if(this->incForts->m_fortsIncrementalRouteFirst != 2)
+            throw;
+        if(this->incForts->m_fortsRouteFirtsSecurityId != 0)
+            throw;
+    }
+
+    void ClearFortsIncremental() {
+        this->incForts->OrderBookForts()->Clear();
+        this->incForts->SecurityDefinition()->GetSymbolManager()->Clear();
+        this->idfForts->ClearSecurityDefinitions();
+        this->incForts->m_fortsIncrementalRouteFirst = 1;
+        this->incForts->m_fortsRouteFirtsSecurityId = 0;
+        this->incForts->m_startMsgSeqNum = 1;
+        this->incForts->m_endMsgSeqNum = 0;
+        this->incForts->m_windowMsgSeqNum = 0;
+    }
+
+    void TestForts_RecvIncrementalRouteFirst_FirstMessage_NullLastFragment() {
+        this->ClearSymbolsForts();
+        this->ClearFortsIncremental();
+        this->AddSymbol("symbol1", 111111);
+        this->AddSymbol("symbol2", 222222);
+
+        FortsDefaultIncrementalRefreshMessageInfo *info = CreateFortsIncremental(1, "symbol2", 222222, 1, true);
+        this->SendProcessFortsIncremental(info);
+
+        // message with index 1 should be processed
+        if(this->incForts->OrderBookForts()->Symbol(1)->Session(0)->BuyQuotes()->Count() != 1)
+            throw;
+        if(this->incForts->m_fortsIncrementalRouteFirst != 2)
+            throw;
+        if(this->incForts->m_fortsRouteFirtsSecurityId != 0)
+            throw;
+    }
+
+    void TestForts_RecvIncrementalRouteFirst_NotFirstMessage_RouteFirts() {
+        this->ClearSymbolsForts();
+        this->ClearFortsIncremental();
+        this->AddSymbol("symbol1", 111111);
+        this->AddSymbol("symbol2", 222222);
+
+        FortsDefaultIncrementalRefreshMessageInfo *info = CreateFortsIncremental(10, "symbol2", 222222, 1);
+        this->SendProcessFortsIncremental(info);
+
+        // message with index 1 should be processed
+        if(this->incForts->OrderBookForts()->Symbol(1)->Session(0)->BuyQuotes()->Count() != 0)
+            throw;
+        if(this->incForts->m_fortsIncrementalRouteFirst != 1)
+            throw;
+        if(this->incForts->m_fortsRouteFirtsSecurityId != 0)
+            throw;
+    }
+
+    void TestForts_RecvIncrementalRouteFirst_InProcess_RouteFirst() {
+        this->ClearSymbolsForts();
+        this->ClearFortsIncremental();
+        this->AddSymbol("symbol1", 111111);
+        this->AddSymbol("symbol2", 222222);
+
+        FortsDefaultIncrementalRefreshMessageInfo *info = CreateFortsIncremental(1, "symbol2", 222222, 1);
+        this->SendProcessFortsIncremental(info);
+
+        FortsDefaultIncrementalRefreshMessageInfo *info2 = CreateFortsIncremental(2, "symbol2", 222222, 2);
+        info2->MDEntries[0]->MDEntryPx.Set(2, 1);
+        this->SendProcessFortsIncremental(info2);
+
+        if(this->incForts->OrderBookForts()->Symbol(1)->Session(0)->BuyQuotes()->Count() != 2)
+            throw;
+        if(this->incForts->m_fortsIncrementalRouteFirst != 3)
+            throw;
+        if(this->incForts->m_fortsRouteFirtsSecurityId != 0)
+            throw;
+        if(this->incForts->m_startMsgSeqNum != 3)
+            throw;
+        if(this->incForts->m_endMsgSeqNum != 2)
+            throw;
+        if(this->incForts->m_windowMsgSeqNum != 3)
+            throw;
+    }
+
+    void TestForts_RecvIncrementalRouteFirst_InProcess_RouteFirst_NullLastFragment() {
+        this->ClearSymbolsForts();
+        this->ClearFortsIncremental();
+        this->AddSymbol("symbol1", 111111);
+        this->AddSymbol("symbol2", 222222);
+
+        FortsDefaultIncrementalRefreshMessageInfo *info = CreateFortsIncremental(1, "symbol2", 222222, 1, true);
+        this->SendProcessFortsIncremental(info);
+
+        FortsDefaultIncrementalRefreshMessageInfo *info2 = CreateFortsIncremental(2, "symbol2", 222222, 2, true);
+        info2->MDEntries[0]->MDEntryPx.Set(2, 1);
+        this->SendProcessFortsIncremental(info2);
+
+        if(this->incForts->OrderBookForts()->Symbol(1)->Session(0)->BuyQuotes()->Count() != 2)
+            throw;
+        if(this->incForts->m_fortsIncrementalRouteFirst != 3)
+            throw;
+        if(this->incForts->m_fortsRouteFirtsSecurityId != 0)
+            throw;
+        if(this->incForts->m_startMsgSeqNum != 3)
+            throw;
+        if(this->incForts->m_endMsgSeqNum != 2)
+            throw;
+        if(this->incForts->m_windowMsgSeqNum != 3)
+            throw;
+    }
+
+    void TestForts_RecvIncrementalRouteFirst_FirstMessage_Fragmented() {
+        this->ClearSymbolsForts();
+        this->ClearFortsIncremental();
+        this->AddSymbol("symbol1", 111111);
+        this->AddSymbol("symbol2", 222222);
+
+        FortsDefaultIncrementalRefreshMessageInfo *info = CreateFortsIncremental(1, "symbol2", 222222, 1, 0);
+        this->SendProcessFortsIncremental(info);
+
+        // message with index 1 should be processed
+        if(this->incForts->OrderBookForts()->Symbol(1)->Session(0)->BuyQuotes()->Count() != 1)
+            throw;
+        if(this->incForts->m_fortsIncrementalRouteFirst != 1)
+            throw;
+        if(this->incForts->m_fortsRouteFirtsSecurityId != 222222)
+            throw;
+
+        FortsDefaultIncrementalRefreshMessageInfo *info2 = CreateFortsIncremental(2, 0, 0, 2, 0);
+        info2->MDEntries[0]->MDEntryPx.Set(2, 2);
+        this->SendProcessFortsIncremental(info2);
+
+        if(this->incForts->m_fortsIncrementalRouteFirst != 1)
+            throw;
+        if(this->incForts->m_fortsRouteFirtsSecurityId != 222222)
+            throw;
+        if(this->incForts->OrderBookForts()->Symbol(1)->Session(0)->BuyQuotes()->Count() != 2)
+            throw;
+
+        FortsDefaultIncrementalRefreshMessageInfo *info3 = CreateFortsIncremental(3, 0, 0, 3, 1);
+        info3->MDEntries[0]->MDEntryPx.Set(3, 3);
+        this->SendProcessFortsIncremental(info3);
+
+        if(this->incForts->m_fortsIncrementalRouteFirst != 4)
+            throw;
+        if(this->incForts->m_fortsRouteFirtsSecurityId != 0)
+            throw;
+        if(this->incForts->OrderBookForts()->Symbol(1)->Session(0)->BuyQuotes()->Count() != 3)
+            throw;
+    }
+
+    FortsHeartbeatInfo* CreateFortsHearthBeat(int msgSeqNum) {
+        FortsHeartbeatInfo *info = new FortsHeartbeatInfo();
+        info->MsgSeqNum = msgSeqNum;
+        return info;
+    }
+
+    void TestForts_RecvIncrementalRouteFirst_HearthBeat() {
+        this->ClearSymbolsForts();
+        this->ClearFortsIncremental();
+        this->AddSymbol("symbol1", 111111);
+        this->AddSymbol("symbol2", 111111);
+
+        FortsDefaultIncrementalRefreshMessageInfo *info = CreateFortsIncremental(1, "symbol2", 222222, 1);
+        this->SendProcessFortsIncremental(info);
+
+        // message with index 1 should be processed
+        if(this->incForts->OrderBookForts()->Symbol(1)->Session(0)->BuyQuotes()->Count() != 1)
+            throw;
+        if(this->incForts->m_fortsIncrementalRouteFirst != 2)
+            throw;
+        if(this->incForts->m_fortsRouteFirtsSecurityId != 0)
+            throw;
+        FortsHeartbeatInfo *hbeat = CreateFortsHearthBeat(2);
+        this->SendProcessFortsIncremental(hbeat);
+
+        if(this->incForts->OrderBookForts()->Symbol(1)->Session(0)->BuyQuotes()->Count() != 1)
+            throw;
+        if(this->incForts->m_fortsIncrementalRouteFirst != 3)
+            throw;
+        if(this->incForts->m_fortsRouteFirtsSecurityId != 0)
+            throw;
+        if(this->incForts->m_startMsgSeqNum != 3)
+            throw;
+        if(this->incForts->m_endMsgSeqNum != 2)
+            throw;
+        if(this->incForts->m_windowMsgSeqNum != 3)
+            throw;
     }
 
     void TestForts() {
         TestForts_Defaults();
         TestForts_RecvIncrementalRouteFirst_FirstMessage();
+        TestForts_RecvIncrementalRouteFirst_FirstMessage_NullLastFragment();
+        TestForts_RecvIncrementalRouteFirst_NotFirstMessage_RouteFirts();
+        TestForts_RecvIncrementalRouteFirst_InProcess_RouteFirst();
+        TestForts_RecvIncrementalRouteFirst_InProcess_RouteFirst_NullLastFragment();
+        TestForts_RecvIncrementalRouteFirst_FirstMessage_Fragmented();
+        TestForts_RecvIncrementalRouteFirst_HearthBeat();
     }
 
     void TestFeedConnectionBase() {

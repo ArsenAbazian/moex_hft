@@ -60,7 +60,7 @@ FeedConnection::FeedConnection(const char *id, const char *name, char value, Fee
     this->m_packetsCount = 0;
     this->m_hrUnsuccessfulConnectCount = 0;
 
-    this->m_fortsIncrementalRouteFirst = 0;
+    this->m_fortsIncrementalRouteFirst = 1;
     this->m_fortsRouteFirtsSecurityId = 0;
     this->m_nextFortsSnapshotRouteFirst = 0;
 
