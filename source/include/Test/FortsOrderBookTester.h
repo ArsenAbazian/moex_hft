@@ -3429,8 +3429,8 @@ public:
 
         int prevCount = this->snapForts->m_fastProtocolManager->m_fortsDefaultSnapshotMessageMDEntriesItems->Count();
         SendMessages(incForts, snapForts,
-                     "obr entry symbol1 sid 111111 111111, lost obr entry symbol3 sid 333333 111111, wait_snap, obr entry symbol1 sid 111111 333333,                              hbeat,                              hbeat",
-                     "                                                       obs symbol3 begin rpt 1 end entry symbol3 sid 333333 111111, obs symbol1 begin rpt 2 end entry symbol1 sid 111111 111111, hbeat, obs symbol2 begin rpt 2 end entry symbol2 sid 222222 111111",
+                     "obr entry symbol1 sid 111111 111111 px 100, lost obr entry symbol3 sid 333333 111111 px 100, wait_snap, obr entry symbol1 sid 111111 333333 px 300,                         hbeat,                                                              hbeat",
+                     "                                                                                                        obs symbol3 begin rpt 1 end entry symbol3 sid 333333 111111 px 100, obs symbol1 begin rpt 2 end entry symbol1 sid 111111 111111 px 100, hbeat, obs symbol2 begin rpt 2 end entry symbol2 sid 222222 111111 px 100",
                      30);
         int newCount = this->snapForts->m_fastProtocolManager->m_fortsDefaultSnapshotMessageMDEntriesItems->Count();
         if(newCount != prevCount + 4) // was 2

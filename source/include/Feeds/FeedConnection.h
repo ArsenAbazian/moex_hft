@@ -133,6 +133,9 @@ protected:
     int                                         m_endMsgSeqNum;
     int                                         m_requestMessageStartIndex;
 
+    int                                         m_fortsIncrementalRouteFirst;
+    int                                         m_fortsRouteFirtsSecurityId;
+
     const char                                  *m_senderCompId;
     int                                         m_senderCompIdLength;
     const char                                  *m_password;
@@ -1077,7 +1080,7 @@ protected:
             if(info->m_address == 0)
                 return true;
             if(!info->m_processed) {
-                if (!this->ProcessIncremental(info))
+                if (!this->ProcessIncrementalAsts(info))
                     return false;
             }
             info->Clear();
@@ -1100,7 +1103,7 @@ protected:
                     newStartMsgSeqNum = i + this->m_windowMsgSeqNum;
                     break;
                 }
-                if (!this->ProcessIncremental(info))
+                if (!this->ProcessIncrementalAsts(info))
                     return false;
                 i++; pinfo++;
             }
@@ -1111,7 +1114,7 @@ protected:
                     i++; pinfo++;
                     continue;
                 }
-                if (!this->ProcessIncremental(info))
+                if (!this->ProcessIncrementalAsts(info))
                     return false;
                 i++; pinfo++;
             }
@@ -1127,6 +1130,63 @@ protected:
         }
         return true;
     }
+
+    inline bool ProcessIncrementalMessagesForts() {
+        int localStart = this->m_startMsgSeqNum - this->m_windowMsgSeqNum;
+        int localEnd = this->m_endMsgSeqNum - this->m_windowMsgSeqNum;
+        int i = localStart;
+
+        int newStartMsgSeqNum = -1;
+
+        if(localStart == localEnd) { // special case - one packet
+            FeedConnectionMessageInfo *info = this->m_packets[localStart];
+            if(info->m_address == 0)
+                return true;
+            if(!info->m_processed) {
+                if (!this->ProcessIncrementalForts(info, this->m_startMsgSeqNum))
+                    return false;
+            }
+            info->Clear();
+            this->m_startMsgSeqNum = this->m_endMsgSeqNum + 1;
+            this->m_windowMsgSeqNum = this->m_startMsgSeqNum;
+            this->AfterMoveWindow();
+        }
+        else { // more than one packet
+            FeedConnectionMessageInfo **pinfo = this->m_packets + i;
+            FeedConnectionMessageInfo *info;
+            int msgSeqNum = this->m_startMsgSeqNum;
+            while (i <= localEnd) {
+                info = *pinfo;
+                if (info->m_processed) {
+                    i++; msgSeqNum++; pinfo++;
+                    continue;
+                }
+                if (info->m_address == 0) {
+                    if (this->m_requestMessageStartIndex < msgSeqNum)
+                        this->m_requestMessageStartIndex = msgSeqNum;
+                    newStartMsgSeqNum = msgSeqNum;
+                    break;
+                }
+                if (!this->ProcessIncrementalForts(info, msgSeqNum))
+                    return false;
+                i++; msgSeqNum++; pinfo++;
+            }
+
+            // we cannot process messages after lost message
+            // because messages are fragmented
+            if (newStartMsgSeqNum != -1) {
+                this->m_startMsgSeqNum = newStartMsgSeqNum;
+            }
+            else {
+                this->ClearLocalPackets(0, localEnd);
+                this->m_startMsgSeqNum = this->m_endMsgSeqNum + 1;
+                this->m_windowMsgSeqNum = this->m_startMsgSeqNum;
+                this->AfterMoveWindow();
+            }
+        }
+        return true;
+    }
+
     inline void MarketTableEnterSnapshotMode() {
         if(this->m_orderTableFond != 0) {
             this->m_orderTableFond->EnterSnapshotMode();
@@ -1304,7 +1364,12 @@ protected:
             return 0;
         this->m_fastProtocolManager->SetNewBuffer(buffer, item->m_size);
         this->m_fastProtocolManager->ReadMsgSeqNumber();
-        return this->m_fastProtocolManager->GetFortsSnapshotInfo();
+
+        FortsSnapshotInfo* info = this->m_fastProtocolManager->GetFortsSnapshotInfo();
+        // for FORTS if LastFragment field is not presented i.e. == null then it is can be threathed as LastFragment = 1
+        if((info->NullMap & FortsDefaultSnapshotMessageInfoNullIndices::LastFragmentNullIndex) != 0)
+            info->LastFragment = 1;
+        return info;
     }
 
     inline void ResetWaitTime() { this->m_waitTimer->Start(); }
@@ -1976,6 +2041,44 @@ protected:
         return true;
     }
 
+    inline bool Listen_Atom_Incremental_Forts_Core() {
+
+#ifndef TEST
+        // TODO remove hack. just skip 30 messages and then try to restore
+        // Skip this hack when testing :)
+//        if(this->m_snapshot->State() == FeedConnectionState::fcsSuspend && (this->m_endMsgSeqNum % 100) < 10) {
+//            if(this->m_endMsgSeqNum >= this->m_startMsgSeqNum && this->Packet(this->m_endMsgSeqNum)->m_address != 0) {
+//                this->Packet(this->m_endMsgSeqNum)->m_address = 0;
+//                //printf("packet %d is lost, requestIndexd = %d\n", this->m_endMsgSeqNum, this->m_requestMessageStartIndex);
+//            }
+//            return true;
+//        }
+#endif
+        if(!this->ProcessIncrementalMessagesForts())
+            return false;
+        if(this->m_snapshot->State() == FeedConnectionState::fcsSuspend) {
+            if(!this->ShouldRestoreIncrementalMessages()) {
+                this->m_waitTimer->Stop();
+                return true;
+            }
+            this->m_waitTimer->Activate();
+            if(this->m_waitTimer->ElapsedMilliseconds() >= this->m_waitLostIncrementalMessageMaxTimeMs) {
+                if(!this->CheckRequestLostIncrementalMessages())
+                    return false;
+                this->m_waitTimer->Stop();
+            }
+        }
+        else {
+            //printf("%d que entries and %d symbols to go\n", this->OrderCurr()->QueueEntriesCount(), this->OrderCurr()->SymbolsToRecvSnapshotCount());
+            if(this->CanStopListeningSnapshot()) {
+                this->StopListenSnapshot();
+                this->m_waitTimer->Activate();
+                this->m_waitTimer->Stop(1);
+            }
+        }
+        return true;
+    }
+
     inline bool Listen_Atom_SecurityStatus_Core() {
         if(!this->ProcessSecurityStatusMessages())
             return false;
@@ -2387,6 +2490,29 @@ protected:
 
         return this->Listen_Atom_Incremental_Core();
     }
+    inline bool Listen_Atom_Incremental_Forts() {
+
+        bool recv = this->ProcessServerAIncremental();
+        recv |= this->ProcessServerBIncremental();
+        this->m_isLastIncrementalRecv = recv;
+
+        if(!this->m_isLastIncrementalRecv) {
+            this->m_waitTimer->Activate(1);
+            if(this->m_waitTimer->ElapsedMilliseconds(1) > this->m_waitIncrementalMessageMaxTimeMs /*this->WaitAnyPacketMaxTimeMs*/) {
+                //TODO remove debug
+                if(this->m_snapshot->State() == FeedConnectionState::fcsSuspend) {
+                    printf("%s listen atom incremental timeout %" PRIu64 " ms... start snapshot\n", this->m_idName, this->m_waitTimer->ElapsedMilliseconds(1));
+                    this->StartListenSnapshot();
+                }
+                return true;
+            }
+        }
+        else {
+            this->m_waitTimer->Stop(1);
+        }
+
+        return this->Listen_Atom_Incremental_Forts_Core();
+    }
 
     inline bool Listen_Atom_SecurityStatus() {
         bool recv = this->ProcessServerASecurityStatus();
@@ -2529,13 +2655,21 @@ protected:
         return this->m_statTableCurr->ProcessIncremental(info, index, info->TradingSessionID, info->TradingSessionIDLength);
     }
 
+    inline UINT64 GetFortsSecurityId(FortsDefaultSnapshotMessageMDEntriesItemInfo *info) {
+        // if SecurityID not present this means fragmented message. so use m_fortsRouteFirtsSecurityId
+        if((info->NullMap & FortsDefaultIncrementalRefreshMessageMDEntriesItemInfoNullIndices::SecurityIDNullIndex) != 0)
+            return this->m_fortsRouteFirtsSecurityId;
+        return info->SecurityID;
+    }
+
     inline bool OnIncrementalRefresh_FORTS_OBR(FortsDefaultSnapshotMessageMDEntriesItemInfo *info) {
-        int index = this->m_symbolManager->GetSymbol(info->SecurityID)->m_index;
+        // since there is fragmented messages
+        int index = this->m_symbolManager->GetSymbol(GetFortsSecurityId(info))->m_index;
         return this->m_fortsOrderBookTable->ProcessIncremental(info, index);
     }
 
     inline bool OnIncrementalRefresh_FORTS_TLR(FortsDefaultSnapshotMessageMDEntriesItemInfo *info) {
-        int index = this->m_symbolManager->GetSymbol(info->SecurityID)->m_index;
+        int index = this->m_symbolManager->GetSymbol(GetFortsSecurityId(info))->m_index;
         return this->m_fortsTradeBookTable->ProcessIncremental(info, index);
     }
 
@@ -2705,19 +2839,6 @@ protected:
 		return true;
 	}
 
-    inline bool ProcessIncrementalCoreForts(unsigned char *buffer, int length, bool shouldProcessMsgSeqNumber) {
-        this->m_fastProtocolManager->SetNewBuffer(buffer, length);
-        if(shouldProcessMsgSeqNumber)
-            this->m_fastProtocolManager->ReadMsgSeqNumber();
-
-        if(this->m_fastProtocolManager->DecodeForts() == 0) {
-            printf("unknown template: %d\n", this->m_fastProtocolManager->TemplateId());
-            return true;
-        }
-        this->ApplyIncrementalCoreForts();
-        return true;
-    }
-
     inline bool ProcessSecurityStatus(AstsSecurityStatusInfo *info) {
         if(!this->m_securityDefinition->IsIdfDataCollected())
             return true; // TODO just skip? Should we do something else?
@@ -2793,12 +2914,6 @@ protected:
         return *((unsigned short*)(buffer + 1)) == 0xbc10;
 	}
 
-    inline bool ProcessIncremental(FeedConnectionMessageInfo *info) {
-        if(this->m_marketType == FeedMarketType::fmtAsts)
-            return this->ProcessIncrementalAsts(info);
-        return this->ProcessIncrementalForts(info);
-    }
-
 	inline bool ProcessIncrementalAsts(FeedConnectionMessageInfo *info) {
         unsigned char *buffer = info->m_address;
 		if(this->ShouldSkipMessageAsts(buffer, !info->m_requested)) {
@@ -2810,17 +2925,41 @@ protected:
         info->m_processed = true;
 		return this->ProcessIncrementalCoreAsts(buffer, info->m_size, !info->m_requested);
 	}
-
-    inline bool ProcessIncrementalForts(FeedConnectionMessageInfo *info) {
+    inline void CheckUpdateFortsIncrementalParams(int messageIndex) {
+        if(this->m_fastProtocolManager->TemplateId() == FeedTemplateId::fortsIncremental) {
+            FortsDefaultIncrementalRefreshMessageInfo *info = (FortsDefaultIncrementalRefreshMessageInfo*)this->m_fastProtocolManager->LastDecodeInfo();
+            if(this->m_fortsIncrementalRouteFirst == messageIndex) // at least should be one MDEntry
+                this->m_fortsRouteFirtsSecurityId = info->MDEntries[0]->SecurityID;
+            // if there is no LastFragment present in message i.e. it == null then it should be threathed as 1
+            if((info->NullMap & FortsDefaultSnapshotMessageInfoNullIndices::LastFragmentNullIndex) != 0)
+                info->LastFragment = 1;
+            if(info->LastFragment == 1)
+                this->m_fortsIncrementalRouteFirst = messageIndex + 1;
+        }
+        else {
+            this->m_fortsIncrementalRouteFirst = messageIndex + 1;
+        }
+    }
+    inline bool ProcessIncrementalForts(FeedConnectionMessageInfo *info, int messageIndex) {
         unsigned char *buffer = info->m_address;
         if(this->ShouldSkipMessageForts(buffer, !info->m_requested)) {
+            this->m_fortsIncrementalRouteFirst = messageIndex + 1;
             info->m_processed = true;
             return true;  // TODO - take this message into account, becasue it determines feed alive
         }
 
-        //DefaultLogManager::Default->WriteFast(this->m_idLogIndex, this->m_recvABuffer->BufferIndex(), info->m_item->m_itemIndex);
         info->m_processed = true;
-        return this->ProcessIncrementalCoreForts(buffer, info->m_size, !info->m_requested);
+
+        this->m_fastProtocolManager->SetNewBuffer(buffer, info->m_size);
+        if(!info->m_requested)
+            this->m_fastProtocolManager->ReadMsgSeqNumber();
+
+        // there is no need to check
+        this->m_fastProtocolManager->DecodeForts();
+
+        this->CheckUpdateFortsIncrementalParams(messageIndex);
+        this->ApplyIncrementalCoreForts();
+        return true;
     }
 
     inline bool ProcessSecurityStatus(FeedConnectionMessageInfo *info) {
@@ -3673,6 +3812,8 @@ public:
 		FeedConnectionState st = this->m_state;
         if(st == FeedConnectionState::fcsListenIncremental)
             return this->Listen_Atom_Incremental();
+        else if(st == FeedConnectionState::fcsListenIncremental)
+            return this->Listen_Atom_Incremental_Forts();
         if(st == FeedConnectionState::fcsHistoricalReplay)
             return this->HistoricalReplay_Atom();
         if(st == FeedConnectionState::fcsListenSecurityDefinition)
@@ -3701,7 +3842,9 @@ public:
             return FeedConnectionState::fcsListenSecurityStatus;
         else if(m_type == FeedConnectionType::InstrumentStatusForts)
             return FeedConnectionState::fcsListenSecurityStatusForts;
-        return FeedConnectionState::fcsListenIncremental;
+        if(this->m_marketType == FeedMarketType::fmtAsts)
+            return FeedConnectionState::fcsListenIncremental;
+        return FeedConnectionState::fcsListenIncrementalForts;
     }
 	inline void Listen() {
         FeedConnectionState st = CalcListenStateByType();

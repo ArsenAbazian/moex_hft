@@ -83,6 +83,7 @@ typedef enum _FeedConnectionProtocol {
 typedef enum _FeedConnectionState {
     fcsSuspend,
     fcsListenIncremental,
+    fcsListenIncrementalForts,
     fcsListenSnapshot,
     fcsListenSecurityDefinition,
     fcsListenSecurityStatus,

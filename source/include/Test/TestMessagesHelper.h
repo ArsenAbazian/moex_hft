@@ -494,6 +494,7 @@ public:
         strcpy(info->Symbol, tmp->m_symbol);
         info->SymbolLength = strlen(tmp->m_symbol);
 
+        info->MsgSeqNum = tmp->m_msgSeqNo;
         info->SecurityID = tmp->m_securityId;
         info->MDEntriesCount = tmp->m_itemsCount;
         info->RptSeq = tmp->m_rptSec;
@@ -2284,7 +2285,8 @@ public:
             if(fcs->State() == FeedConnectionState::fcsListenSnapshot) {
                 if (snap_index < snapMsgCount && !snap_msg[snap_index]->m_lost) {
                     snap_msg[snap_index]->m_msgSeqNo = snap_index + 1;
-                    if(snap_msg[snap_index]->m_templateId != FeedTemplateId::fcmHeartBeat && (snap_msg[snap_index]->m_symbol == 0 || snap_msg[snap_index]->m_session == 0))
+                    FeedTemplateId hbeatId = IsForts()? FeedTemplateId::fortsHearthBeat: FeedTemplateId::fcmHeartBeat;
+                    if(snap_msg[snap_index]->m_templateId != hbeatId && (snap_msg[snap_index]->m_symbol == 0 || snap_msg[snap_index]->m_session == 0))
                         throw;
                     SendMessage(fcs, snap_msg[snap_index]);
                 }

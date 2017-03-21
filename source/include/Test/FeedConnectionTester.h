@@ -37,9 +37,13 @@ public:
 
 class FeedConnectionTester {
 
-    TestMessagesHelper      *m_helper;
-    FeedConnection_CURR_OLR *inc;
-    FeedConnection_CURR_OLS *snap;
+    TestMessagesHelper                  *m_helper;
+    FeedConnection_CURR_OLR             *inc;
+    FeedConnection_CURR_OLS             *snap;
+    FeedConnection_FORTS_OBR            *incForts;
+    FeedConnection_FORTS_SNAP           *snapForts;
+    FeedConnection_FORTS_INSTR_SNAP     *idfForts;
+    unsigned char                       m_buffer[1000];
 
     bool ReadNextQuote(FILE *fp) {
         while(!feof(fp)) {
@@ -97,6 +101,28 @@ public:
         this->inc->SetSymbolManager(new SymbolManager(10));
         this->snap->SetSymbolManager(this->inc->GetSymbolManager());
         this->inc->SetSnapshot(this->snap);
+
+        this->incForts = new FeedConnection_FORTS_OBR("FUT-BOOK-1 Incremental", "Refresh Incremental", 'I',
+                                                      FeedConnectionProtocol::UDP_IP,
+                                                      "10.50.129.200", "239.192.113.3", 9113,
+                                                      "10.50.129.200", "239.192.113.131", 9313);
+
+        this->snapForts = new FeedConnection_FORTS_SNAP("FUT_BOOK-1 Snap", "Full Refresh", 'I',
+                                                        FeedConnectionProtocol::UDP_IP,
+                                                        "10.50.129.200", "239.192.113.3", 9113,
+                                                        "10.50.129.200", "239.192.113.131", 9313);
+        this->idfForts = new FeedConnection_FORTS_INSTR_SNAP("FUT-BOOK-INFO", "Full Refresh", 'I',
+                                                             FeedConnectionProtocol::UDP_IP,
+                                                             "10.50.129.200", "239.192.113.3", 9113,
+                                                             "10.50.129.200", "239.192.113.131", 9313);
+
+        this->incForts->SetSymbolManager(new SymbolManager(10, true));
+        this->snapForts->SetSymbolManager(this->incForts->GetSymbolManager());
+        this->incForts->SetSnapshot(this->snapForts);
+        this->idfForts->AddConnectionToRecvSymbol(this->incForts);
+        this->incForts->SetSecurityDefinition(this->idfForts);
+        this->incForts->OrderBookForts()->InitSymbols(10, 10);
+        this->incForts->SetMaxLostPacketCountForStartSnapshot(1);
     }
 
     void TestDefaults() {
@@ -371,7 +397,7 @@ public:
         //throw;
     }
 
-    void TestFeedConnectionBase() {
+    void TestAsts() {
         TestDefaults();
         TestWindowStartMsgSeqNo_CorrectIncremental();
         TestWindowStartMsgSeqNo_MessageLost();
@@ -386,19 +412,110 @@ public:
         TestBufferShouldBeResetAfterProcessingAllMessages();
     }
 
+    void TestForts_Defaults() {
+        if(this->incForts->m_fortsIncrementalRouteFirst != 0)
+            throw;
+        if(this->incForts->m_fortsRouteFirtsSecurityId != 0)
+            throw;
+    }
+
+    FortsDefaultIncrementalRefreshMessageInfo* CreateFortsIncremental(int msgSeqNum, const char *symbol, UINT64 securityId, int rptSeq) {
+        FortsDefaultIncrementalRefreshMessageInfo *info = new FortsDefaultIncrementalRefreshMessageInfo();
+
+        info->MsgSeqNum = msgSeqNum;
+        info->NullMap |= FortsDefaultIncrementalRefreshMessageInfoNullIndices::LastFragmentNullIndex;
+
+        FortsDefaultSnapshotMessageMDEntriesItemInfo *item = new FortsDefaultSnapshotMessageMDEntriesItemInfo();
+        item->MDUpdateAction = MDUpdateAction::mduaAdd;
+        item->MDEntryType[0] = MDEntryType::mdetBuyQuote;
+        item->MDEntryTypeLength = 1;
+        item->MDEntryPx.Set(1, 1);
+        item->MDEntrySize = 100;
+        item->RptSeq = rptSeq;
+
+        if(symbol == 0) {
+            item->NullMap |= FortsDefaultIncrementalRefreshMessageMDEntriesItemInfoNullIndices::SymbolNullIndex;
+        }
+        else {
+            strcpy(item->Symbol, symbol);
+            item->SymbolLength = strlen(symbol);
+            if(securityId == 0) {
+                item->NullMap |= FortsDefaultIncrementalRefreshMessageMDEntriesItemInfoNullIndices::SecurityIDNullIndex;
+            }
+            else {
+                item->SecurityID = securityId;
+            }
+        }
+
+        info->MDEntriesCount = 1;
+        info->MDEntries[0] = item;
+
+        return info;
+    }
+
+    void SendProcessFortsIncremental(FortsDefaultIncrementalRefreshMessageInfo *info) {
+        this->incForts->FastManager()->SetNewBuffer(this->m_buffer, 1000);
+        this->incForts->FastManager()->WriteMsgSeqNumber(info->MsgSeqNum);
+        this->incForts->FastManager()->EncodeFortsDefaultIncrementalRefreshMessageInfo(info);
+        this->incForts->ProcessServerCore(this->incForts->m_fastProtocolManager->MessageLength());
+        this->incForts->Listen_Atom_Incremental_Forts_Core();
+    }
+
+    void AddSymbol(const char *symbol, UINT64 securityId) {
+        FortsSecurityDefinitionInfo *info = new FortsSecurityDefinitionInfo();
+        strcpy(info->Symbol, symbol);
+        info->SymbolLength = strlen(symbol);
+        info->SecurityID = securityId;
+
+        LinkedPointer<FortsSecurityDefinitionInfo> *ptr = new LinkedPointer<FortsSecurityDefinitionInfo>();
+        ptr->Data(info);
+
+        SymbolInfo *s = this->incForts->GetSymbolManager()->GetSymbol(info->SecurityID);
+        this->incForts->SecurityDefinition()->SymbolsForts()[s->m_index] = ptr;
+        this->incForts->AddSymbol(ptr, s->m_index);
+    }
+
+    void ClearSymbolsForts() {
+        this->idfForts->ClearSecurityDefinitions();
+        this->incForts->OrderBookForts()->Clear();
+        this->incForts->GetSymbolManager()->Clear();
+    }
+
+    void TestForts_RecvIncrementalRouteFirst_FirstMessage() {
+        this->ClearSymbolsForts();
+        this->AddSymbol("symbol1", 111111);
+
+        FortsDefaultIncrementalRefreshMessageInfo *info = CreateFortsIncremental(1, "symbol1", 111111, 1);
+        this->SendProcessFortsIncremental(info);
+
+        // message with index 1 should be processed
+        if(this->incForts->OrderBookForts()->Symbol(0)->Session(0)->BuyQuotes()->Count() != 1)
+            throw;
+    }
+
+    void TestForts() {
+        TestForts_Defaults();
+        TestForts_RecvIncrementalRouteFirst_FirstMessage();
+    }
+
+    void TestFeedConnectionBase() {
+        TestForts();
+        TestAsts();
+    }
+
     void Test() {
         RobotSettings::Default->MarketDataMaxSymbolsCount = 10;
         RobotSettings::Default->MarketDataMaxSessionsCount = 32;
         RobotSettings::Default->MarketDataMaxEntriesCount = 32 * 10;
         RobotSettings::Default->MDEntryQueueItemsCount = 100;
 
+        TestFeedConnectionBase();
+
         OrderBookTesterForts fob;
         fob.Test();
 
         PointerListTester pt;
         pt.Test();
-
-        TestFeedConnectionBase();
 
         SymbolManagerTester ht;
         ht.Test();

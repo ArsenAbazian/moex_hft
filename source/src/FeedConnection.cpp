@@ -36,7 +36,7 @@ FeedConnection::FeedConnection(const char *id, const char *name, char value, Fee
     this->m_snapshot = 0;
     this->m_connectionsToRecvSymbolsCount = 0;
     this->m_connToRecvHistoricalReplayCount = 0;
-    m_enableHistoricalReplay = true;
+    this->m_enableHistoricalReplay = true;
     this->m_reconnectCount = 0;
     this->m_maxReconnectCount = 20;
 
@@ -59,6 +59,10 @@ FeedConnection::FeedConnection(const char *id, const char *name, char value, Fee
     this->m_isfStartSnapshotCount = 0;
     this->m_packetsCount = 0;
     this->m_hrUnsuccessfulConnectCount = 0;
+
+    this->m_fortsIncrementalRouteFirst = 0;
+    this->m_fortsRouteFirtsSecurityId = 0;
+    this->m_nextFortsSnapshotRouteFirst = 0;
 
 	this->SetState(FeedConnectionState::fcsSuspend);
 

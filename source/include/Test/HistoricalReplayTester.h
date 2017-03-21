@@ -34,7 +34,7 @@ public:
         delete this->hr;
     }
 
-    // just call inline bool ProcessIncremental(FeedConnectionMessageInfo *info) {
+    // just call inline bool ProcessIncrementalAsts(FeedConnectionMessageInfo *info) {
     // info->m_requested = false;
     // check other methods using this flag
     void TestCorrectlyReadHearthbeatTemplateId_WhenShouldProcessMsgSeqNum() {
@@ -44,10 +44,10 @@ public:
         FeedConnectionMessageInfo *info = new FeedConnectionMessageInfo();
         info->m_requested = false;
         info->m_address = this->m_buffer;
-        this->olr->ProcessIncremental(info);
+        this->olr->ProcessIncrementalAsts(info);
     }
 
-    // just call inline bool ProcessIncremental(FeedConnectionMessageInfo *info) {
+    // just call inline bool ProcessIncrementalAsts(FeedConnectionMessageInfo *info) {
     // info->m_requested = true;
     // check other methods using this flag
     void TestCorrectlyReadHearthbeatTemplateId_WhenShouldNotProcessMsgSeqNum() {
@@ -57,7 +57,7 @@ public:
         FeedConnectionMessageInfo *info = new FeedConnectionMessageInfo();
         info->m_requested = true;
         info->m_address = this->m_buffer;
-        this->olr->ProcessIncremental(info);
+        this->olr->ProcessIncrementalAsts(info);
     }
 
     // because if no - then will be close tcp socket immediately
