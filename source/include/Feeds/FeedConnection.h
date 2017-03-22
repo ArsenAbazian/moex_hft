@@ -1137,6 +1137,7 @@ protected:
         int i = localStart;
 
         int newStartMsgSeqNum = -1;
+        int lastNullMsgSeq = 0;
 
         if(localStart == localEnd) { // special case - one packet
             FeedConnectionMessageInfo *info = this->m_packets[localStart];
@@ -1174,6 +1175,25 @@ protected:
 
             // we cannot process messages after lost message
             // because messages are fragmented
+            // but we can do this only when snapshot is started
+            if(i <= localEnd && this->m_snapshot->State() != FeedConnectionState::fcsSuspend) {
+                lastNullMsgSeq = newStartMsgSeqNum;
+                while (i <= localEnd) {
+                    info = *pinfo;
+                    if (info->m_processed) {
+                        i++; msgSeqNum++; pinfo++;
+                        continue;
+                    }
+                    if(info->m_address == 0) {
+                        lastNullMsgSeq = msgSeqNum;
+                        i++; msgSeqNum++; pinfo++;
+                        continue;
+                    }
+                    if (!this->ProcessIncrementalForts(info, msgSeqNum, lastNullMsgSeq))
+                        return false;
+                    i++; msgSeqNum++; pinfo++;
+                }
+            }
             if (newStartMsgSeqNum != -1) {
                 this->m_startMsgSeqNum = newStartMsgSeqNum;
             }
@@ -2944,6 +2964,7 @@ protected:
         if(this->m_fortsIncrementalRouteFirst != prevFortsRouteFirst)
             this->m_fortsRouteFirtsSecurityId = 0;
     }
+
     inline bool ProcessIncrementalForts(FeedConnectionMessageInfo *info, int messageIndex) {
         unsigned char *buffer = info->m_address;
         if(this->ShouldSkipMessageForts(buffer, !info->m_requested)) {
@@ -2963,6 +2984,36 @@ protected:
 
         int prevFortsRouteFirst = this->m_fortsIncrementalRouteFirst;
         this->CheckUpdateFortsIncrementalParams(messageIndex);
+        this->ApplyIncrementalCoreForts();
+        this->AfterApplyIncrementalForts(prevFortsRouteFirst);
+        return true;
+    }
+
+    inline bool ProcessIncrementalForts(FeedConnectionMessageInfo *info, int messageIndex, int lastNullMsgIndex) {
+        unsigned char *buffer = info->m_address;
+        if(this->ShouldSkipMessageForts(buffer, !info->m_requested)) {
+            this->m_fortsIncrementalRouteFirst = messageIndex + 1;
+            info->m_processed = true;
+            return true;  // TODO - take this message into account, becasue it determines feed alive
+        }
+
+        info->m_processed = true;
+
+        this->m_fastProtocolManager->SetNewBuffer(buffer, info->m_size);
+        if(!info->m_requested)
+            this->m_fastProtocolManager->ReadMsgSeqNumber();
+
+        // there is no need to check
+        this->m_fastProtocolManager->DecodeForts();
+
+        int prevFortsRouteFirst = this->m_fortsIncrementalRouteFirst;
+        this->CheckUpdateFortsIncrementalParams(messageIndex);
+        // it isunfinished fragmented message.
+        if(prevFortsRouteFirst < lastNullMsgIndex) {
+            FortsDefaultIncrementalRefreshMessageInfo *ri = (FortsDefaultIncrementalRefreshMessageInfo*)this->m_fastProtocolManager->LastDecodeInfo();
+            if((ri->NullMap & FortsDefaultIncrementalRefreshMessageInfoNullIndices::LastFragmentNullIndex) == 0)
+                return true;
+        }
         this->ApplyIncrementalCoreForts();
         this->AfterApplyIncrementalForts(prevFortsRouteFirst);
         return true;

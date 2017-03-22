@@ -522,6 +522,7 @@ public:
     }
 
     void ClearFortsIncremental() {
+        this->incForts->ClearLocalPackets(0, 30);
         this->incForts->OrderBookForts()->Clear();
         this->incForts->SecurityDefinition()->GetSymbolManager()->Clear();
         this->idfForts->ClearSecurityDefinitions();
@@ -734,23 +735,63 @@ public:
         this->ClearFortsIncremental();
         this->AddSymbol("symbol1", 111111);
         this->AddSymbol("symbol2", 222222);
+        this->AddSymbol("symbol3", 333333);
 
         this->SendProcessFortsIncremental(CreateFortsIncremental(1, "symbol2", 222222, 1));
         this->SendProcessFortsIncremental(CreateFortsIncremental(2, "symbol2", 222222, 2));
         this->SendProcessFortsIncremental(CreateFortsIncremental(3, "symbol2", 222222, 3, 0));
         // ... missed message and then received last fragment
-        this->SendProcessFortsIncremental(CreateFortsIncremental(5, "symbol2", 222222, 5));
-        this->SendProcessFortsIncremental(CreateFortsIncremental(6, "symbol2", 222222, 6));
+        this->SendProcessFortsIncremental(CreateFortsIncremental(5, "symbol3", 333333, 1));
+        this->SendProcessFortsIncremental(CreateFortsIncremental(6, "symbol3", 333333, 2));
         this->incForts->StartListenSnapshot();
         this->incForts->Listen_Atom_Incremental_Forts_Core();
 
-        if(this->incForts->m_fortsRouteFirtsSecurityId != 222222)
+        if(this->incForts->m_fortsRouteFirtsSecurityId != 0)
             throw;
-        if(this->incForts->m_fortsIncrementalRouteFirst != 6)
+        if(this->incForts->m_fortsIncrementalRouteFirst != 7)
             throw;
-        if(this->incForts->OrderBookForts()->Symbol(1)->Session(0)->RptSeq() != 6)
+        if(this->incForts->OrderBookForts()->Symbol(1)->Session(0)->RptSeq() != 3)
+            throw;
+        // we dont know if msg seq 5 is route first so we also skip this...
+        if(this->incForts->OrderBookForts()->Symbol(2)->Session(0)->RptSeq() != 2)
             throw;
         if(this->incForts->m_endMsgSeqNum != 6)
+            throw;
+        if(this->incForts->m_startMsgSeqNum != 4)
+            throw;
+        if(this->incForts->m_windowMsgSeqNum != 4)
+            throw;
+    }
+
+    // well, after starting snapshot we can process queue messages, but we should find RouteFirst
+    void TestForts_LostMessageAndThenStartSnapshot_TryToProcessQueMessages2() {
+        this->ClearSymbolsForts();
+        this->ClearFortsIncremental();
+        this->AddSymbol("symbol1", 111111);
+        this->AddSymbol("symbol2", 222222);
+        this->AddSymbol("symbol3", 333333);
+
+        this->SendProcessFortsIncremental(CreateFortsIncremental(1, "symbol2", 222222, 1));
+        this->SendProcessFortsIncremental(CreateFortsIncremental(2, "symbol2", 222222, 2));
+        this->SendProcessFortsIncremental(CreateFortsIncremental(3, "symbol2", 222222, 3, 0));
+        // ... missed message and then received last fragment
+        this->SendProcessFortsIncremental(CreateFortsIncremental(5, "symbol2", 222222, 5, 0));
+        this->SendProcessFortsIncremental(CreateFortsIncremental(6, "symbol2", 222222, 6, 1));
+        this->SendProcessFortsIncremental(CreateFortsIncremental(7, "symbol3", 333333, 1));
+        this->incForts->StartListenSnapshot();
+        this->incForts->Listen_Atom_Incremental_Forts_Core();
+
+        if(this->incForts->m_fortsRouteFirtsSecurityId != 0)
+            throw;
+        if(this->incForts->m_fortsIncrementalRouteFirst != 8)
+            throw;
+        if(this->incForts->OrderBookForts()->Symbol(1)->Session(0)->RptSeq() != 3)
+            throw;
+        // we dont know if msg seq 5 is route first so we also skip this...
+        // but msg seq 6 we can process
+        if(this->incForts->OrderBookForts()->Symbol(2)->Session(0)->RptSeq() != 1)
+            throw;
+        if(this->incForts->m_endMsgSeqNum != 7)
             throw;
         if(this->incForts->m_startMsgSeqNum != 4)
             throw;
@@ -769,6 +810,7 @@ public:
         TestForts_RecvIncrementalRouteFirst_HearthBeat();
         TestForts_LostMessage();
         TestForts_LostMessageAndThenStartSnapshot_TryToProcessQueMessages();
+        TestForts_LostMessageAndThenStartSnapshot_TryToProcessQueMessages2();
     }
 
     void TestFeedConnectionBase() {

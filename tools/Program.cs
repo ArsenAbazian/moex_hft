@@ -1863,6 +1863,8 @@ namespace prebuild {
 			WriteLine("\tinline void Clear() {");
 
 			//WriteClearFieldsCode(info);
+			WriteLine("\t\tthis->PresenceMap = 0;");
+			WriteLine("\t\tthis->NullMap = 0;");
 
 			WriteLine("\t\tthis->Used = false;");
 			WriteLine("\t\tthis->Allocator->FreeItem(this->Pointer);");
@@ -1878,6 +1880,8 @@ namespace prebuild {
 			WriteLine("\t\tif(this->Used)");
 			WriteLine("\t\t\treturn;");
 			WriteLine("");
+			WriteLine("\t\tthis->PresenceMap = 0;");
+			WriteLine("\t\tthis->NullMap = 0;");
 			WriteLine("\t\tthis->Allocator->FreeItem(this->Pointer);");
 			foreach(XmlNode field in info.Fields) {
 				if(field.Name != "sequence")
