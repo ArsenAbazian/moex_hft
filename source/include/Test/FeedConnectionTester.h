@@ -701,6 +701,10 @@ public:
             throw;
     }
 
+    void TestForts_LostMessageTryingToFindNextRoutFirst() {
+        throw;
+    }
+
     void TestForts() {
         TestForts_Defaults();
         TestForts_RecvIncrementalRouteFirst_FirstMessage();
@@ -710,6 +714,7 @@ public:
         TestForts_RecvIncrementalRouteFirst_InProcess_RouteFirst_NullLastFragment();
         TestForts_RecvIncrementalRouteFirst_FirstMessage_Fragmented();
         TestForts_RecvIncrementalRouteFirst_HearthBeat();
+        TestForts_LostMessageTryingToFindNextRoutFirst();
     }
 
     void TestFeedConnectionBase() {
