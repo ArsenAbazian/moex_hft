@@ -196,6 +196,8 @@ void AddFeedInfo(FeedConnection *feed, TestTemplateInfo **tmp, int templatesCoun
             if(KeyIndex("begin") == snapIndex + 1)
                 snapIndex++;
             info->m_symbol = this->m_keys[snapIndex + 1];
+            if(KeyIndex("sid") == snapIndex + 2)
+                snapIndex++;
             info->m_securityId = atoi(this->m_keys[snapIndex + 2]);
         }
         else if(HasKey("ols")) {
@@ -2264,7 +2266,10 @@ public:
                 inc_msg[inc_index]->m_msgSeqNo = inc_index + 1;
                 SendMessage(fci, inc_msg[inc_index]);
             }
-            fci->Listen_Atom_Incremental_Core();
+            if(this->IsForts())
+                fci->Listen_Atom_Incremental_Forts_Core();
+            else
+                fci->Listen_Atom_Incremental_Core();
             if(snapshotStarterd && fcs->State() == FeedConnectionState::fcsSuspend && snap_index < snapMsgCount && !snap_msg[snap_index]->m_skip)
                 throw;
             if(inc_index < incMsgCount && inc_msg[inc_index]->m_wait) {
@@ -2272,10 +2277,18 @@ public:
                     throw;
                 if(fcs->State() != FeedConnectionState::fcsSuspend)
                     throw;
-                while(!fci->m_waitTimer->IsElapsedMilliseconds(fci->WaitLostIncrementalMessageMaxTimeMs()) && fcs->State() == FeedConnectionState::fcsSuspend)
-                    fci->Listen_Atom_Incremental_Core();
-                if(fcs->State() == FeedConnectionState::fcsSuspend)
-                    fci->Listen_Atom_Incremental_Core();
+                while(!fci->m_waitTimer->IsElapsedMilliseconds(fci->WaitLostIncrementalMessageMaxTimeMs()) && fcs->State() == FeedConnectionState::fcsSuspend) {
+                    if(this->IsForts())
+                        fci->Listen_Atom_Incremental_Forts_Core();
+                    else
+                        fci->Listen_Atom_Incremental_Core();
+                }
+                if(fcs->State() == FeedConnectionState::fcsSuspend) {
+                    if(this->IsForts())
+                        fci->Listen_Atom_Incremental_Forts_Core();
+                    else
+                        fci->Listen_Atom_Incremental_Core();
+                }
                 if(fcs->State() != FeedConnectionState::fcsListenSnapshot)
                     throw;
                 snapshotStarterd = true;

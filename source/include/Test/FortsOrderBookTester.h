@@ -3395,7 +3395,7 @@ public:
         int prevCount = this->snapForts->m_fastProtocolManager->m_fortsDefaultSnapshotMessageMDEntriesItems->Count();
         this->SendMessages(this->incForts, this->snapForts,
                            "obr entry symbol1 sid 111111 111111 px 100, lost obr entry symbol1 sid 111111 222222 px 200 entry symbol1 sid 111111 333333 px 300, wait_snap, hbeat",
-                           "                                                                                                                                    obs begin symbol1 entry symbol1 sid 111111 222222 px 200 rpt 2, obs symbol1 entry symbol1 sid 111111 333333 px 300 end",
+                           "                                                                                                                                    obs begin symbol1 sid 111111 entry symbol1 sid 111111 222222 px 200 rpt 2, obs symbol1 sid 111111 entry symbol1 sid 111111 333333 px 300 end",
                            30);
 
         int newCount = this->snapForts->m_fastProtocolManager->m_fortsDefaultSnapshotMessageMDEntriesItems->Count();
@@ -3420,7 +3420,54 @@ public:
     }
 
     // check in case CheckProcessIfSessionInActualState returns true
-    void TestInfoAndItemInfoUsageAndAllocationCurr_Snap_4() {
+    void TestInfoAndItemInfoUsageAndAllocationCurr_Snap_4_1() {
+        this->Clear();
+
+        this->AddSymbol("symbol1", 111111);
+        this->AddSymbol("symbol2", 222222);
+        this->AddSymbol("symbol3", 333333);
+
+        if(this->incForts->m_symbolManager->SymbolCount() != 3)
+            throw;
+        if(this->incForts->m_symbolManager->GetSymbol(333333)->m_index != 2)
+            throw;
+        if(this->incForts->m_symbolManager->GetSymbol(222222)->m_index != 1)
+            throw;
+        if(this->incForts->m_symbolManager->GetSymbol(111111)->m_index != 0)
+            throw;
+
+        int prevCount = this->snapForts->m_fastProtocolManager->m_fortsDefaultSnapshotMessageMDEntriesItems->Count();
+        SendMessages(incForts, snapForts,
+                     "obr entry symbol1 sid 111111 111111 px 100, lost obr entry symbol3 sid 333333 111111 px 100, wait_snap, obr entry symbol1 sid 111111 333333 px 300,                                  hbeat,                                                              hbeat",
+                     "                                                                                                        obs begin symbol3 sid 333333 rpt 1 end entry symbol3 sid 333333 111111 px 100",
+                     30);
+        if(this->incForts->OrderBookForts()->Symbol(2)->Session(0)->BuyQuotes()->Count() != 1)
+            throw;
+        int newCount = this->snapForts->m_fastProtocolManager->m_fortsDefaultSnapshotMessageMDEntriesItems->Count();
+        if(newCount != prevCount + 3) // was 2
+            throw;
+    }
+
+    // check in case CheckProcessIfSessionInActualState returns true
+    void TestInfoAndItemInfoUsageAndAllocationCurr_Snap_4_2() {
+        this->Clear();
+
+        this->AddSymbol("symbol1", 111111);
+        this->AddSymbol("symbol2", 222222);
+        this->AddSymbol("symbol3", 333333);
+
+        int prevCount = this->snapForts->m_fastProtocolManager->m_fortsDefaultSnapshotMessageMDEntriesItems->Count();
+        SendMessages(incForts, snapForts,
+                     "obr entry symbol1 sid 111111 111111 px 100, lost obr entry symbol3 sid 333333 111111 px 100, wait_snap, obr entry symbol1 sid 111111 333333 px 300,                         hbeat,                                                              hbeat",
+                     "                                                                                                        obs symbol3 sid 333333 begin rpt 1 end entry symbol3 sid 333333 111111 px 100, obs symbol1 sid 111111 begin rpt 2 end entry symbol1 sid 111111 111111 px 100, hbeat, obs symbol2 sid 222222 begin rpt 2 end entry symbol2 sid 222222 111111 px 100",
+                     30);
+        int newCount = this->snapForts->m_fastProtocolManager->m_fortsDefaultSnapshotMessageMDEntriesItems->Count();
+        if(newCount != prevCount + 4) // was 2
+            throw;
+    }
+
+    // check in case CheckProcessIfSessionInActualState returns true
+    void TestInfoAndItemInfoUsageAndAllocationCurr_Snap_4_3() {
         this->Clear();
 
         this->AddSymbol("symbol1", 111111);
@@ -3435,6 +3482,13 @@ public:
         int newCount = this->snapForts->m_fastProtocolManager->m_fortsDefaultSnapshotMessageMDEntriesItems->Count();
         if(newCount != prevCount + 4) // was 2
             throw;
+    }
+
+    // check in case CheckProcessIfSessionInActualState returns true
+    void TestInfoAndItemInfoUsageAndAllocationCurr_Snap_4() {
+        TestInfoAndItemInfoUsageAndAllocationCurr_Snap_4_1();
+        TestInfoAndItemInfoUsageAndAllocationCurr_Snap_4_2();
+        TestInfoAndItemInfoUsageAndAllocationCurr_Snap_4_3();
     }
     // check in case CheckProcessNullSnapshot
     void TestInfoAndItemInfoUsageAndAllocationCurr_Snap_5() {
