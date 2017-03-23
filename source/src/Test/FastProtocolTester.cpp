@@ -43,6 +43,12 @@ void FastProtocolTester::TestMessages() {
     msgSeqNo = manager->ReadMsgSeqNumber();
     manager->DecodeFortsHeader();
     FortsDefaultIncrementalRefreshMessageInfo *fr = (FortsDefaultIncrementalRefreshMessageInfo*)manager->DecodeFortsDefaultIncrementalRefreshMessage();
+    if(fr->MDEntriesCount != 2)
+        throw;
+    if(fr->MDEntries[0]->SecurityID != 419139)
+        throw;
+    if(fr->MDEntries[1]->SecurityID != 419139)
+        throw;
 
 
     message = new unsigned char[77] {
