@@ -2879,6 +2879,8 @@ namespace prebuild {
 		}
 
 		private bool CanParseValue(XmlNode value) {
+			if(HasConstantAttribute(value))
+				return false;
 			if(value.NodeType == XmlNodeType.Comment)
 				return false;
 			string[] forbidden = { "MessageType", "ApplVerID", "BeginString", "SenderCompID", "MessageEncoding" };
