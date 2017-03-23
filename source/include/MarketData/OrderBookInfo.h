@@ -201,12 +201,10 @@ public:
             printf("ERROR: %" PRIu64 " entry not found\n", info->MDEntryID);
             return;
         }
-        //TODO remove debug
-        if(ptr->Data()->MDEntryPx.Mantissa != info->MDEntryPx.Mantissa || ptr->Data()->MDEntryPx.Exponent != info->MDEntryPx.Exponent)
-            throw;
+        this->m_buyQuoteList->Remove(ptr);
+        AddBuyQuote(info);
         info->Used = true;
         ptr->Data()->Clear();
-        ptr->Data(info);
     }
 
     inline void ChangeSellQuote(T *info) {
@@ -217,12 +215,10 @@ public:
             printf("ERROR: %" PRIu64 " entry not found\n", info->MDEntryID);
             return;
         }
-        //TODO remove debug
-        if(ptr->Data()->MDEntryPx.Mantissa != info->MDEntryPx.Mantissa || ptr->Data()->MDEntryPx.Exponent != info->MDEntryPx.Exponent)
-            throw;
+        this->m_sellQuoteList->Remove(ptr);
+        AddSellQuote(info);
         info->Used = true;
         ptr->Data()->Clear();
-        ptr->Data(info);
     }
 
     inline LinkedPointer<T>* AddBuyQuote(T *item) {

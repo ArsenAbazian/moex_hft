@@ -71,16 +71,17 @@ class SymbolManager {
                 }
                 this->m_bucketList[i] = 0;
             }
-            this->m_pool->Clear();
         }
         else if(this->m_bucketList2 != 0)
             bzero(this->m_bucketList2, sizeof(SymbolInfo*) * BucketList2Count);
+        this->m_pool->Clear();
     }
     inline LinkedPointer<SymbolInfo>* GetBucket(int hash) {
         return this->m_bucketList[hash];
     }
     inline LinkedPointer<SymbolInfo>* GetPtrFromPool() {
         LinkedPointer<SymbolInfo> *res = this->m_pool->Pop();
+        this->m_pool->Add(res);
         res->Next(0);
         return res;
     }
@@ -173,6 +174,7 @@ public:
             SymbolInfo *smb = GetPtrFromPool()->Data();
             smb->m_index = GetFreeIndex();
             this->m_bucketList2[securityId] = smb;
+            this->m_count++;
             return smb;
         }
         *wasNewlyAdded = false;

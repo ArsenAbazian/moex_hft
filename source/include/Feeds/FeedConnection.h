@@ -408,6 +408,7 @@ protected:
     }
 
     inline bool ProcessServerCoreSecurityStatus(int size, int msgSeqNum) {
+        printf("status msgSeqNum = %d\n", msgSeqNum);
         if(msgSeqNum < this->m_windowMsgSeqNum) // out of window
             return true;
         if(msgSeqNum - this->m_windowMsgSeqNum >= this->m_packetsCount) {
@@ -1453,6 +1454,13 @@ protected:
             if(i == 1 || i == this->m_nextFortsSnapshotRouteFirst) {
                 this->m_startMsgSeqNum = i;
                 this->m_snapshotRouteFirst = i;
+                if(this->m_fortsSnapshotInfo == 0) {
+                    this->m_nextFortsSnapshotRouteFirst = i + 1;
+                    this->m_startMsgSeqNum = i + 1;
+                    this->m_snapshotRouteFirst = -1;
+                    this->m_packets[i]->Clear();
+                    return false;
+                }
                 return true;
             }
             if(this->m_fortsSnapshotInfo != 0 && this->m_fortsSnapshotInfo->LastFragment == 1) {
@@ -3392,10 +3400,10 @@ public:
         info->Used = true;
         if(wasNewlyAdded) {
             this->AddSecurityDefinitionToList(info, smb->m_index);
-            //printf("add forts security definition %" PRIu64 " index = %d\n", info->SecurityID, smb->m_index);
+            printf("add forts security definition %" PRIu64 " symbol = %s index = %d\n", info->SecurityID, DebugInfoManager::Default->GetString(info->Symbol, info->SymbolLength, 0), smb->m_index);
         }
         else {
-            //printf("update forts security definition %" PRIu64 "\n", info->SecurityID);
+            printf("update forts security definition %" PRIu64 " symbol = %s index = %d\n", info->SecurityID, DebugInfoManager::Default->GetString(info->Symbol, info->SymbolLength, 0), smb->m_index);
             this->UpdateSecurityDefinition(info);
         }
         info->ReleaseUnused();
@@ -3869,7 +3877,7 @@ public:
 		FeedConnectionState st = this->m_state;
         if(st == FeedConnectionState::fcsListenIncremental)
             return this->Listen_Atom_Incremental();
-        else if(st == FeedConnectionState::fcsListenIncremental)
+        else if(st == FeedConnectionState::fcsListenIncrementalForts)
             return this->Listen_Atom_Incremental_Forts();
         if(st == FeedConnectionState::fcsHistoricalReplay)
             return this->HistoricalReplay_Atom();

@@ -469,6 +469,14 @@ public:
         return info;
     }
 
+    void SendProcessFortsSnapshot(FortsHeartbeatInfo *info) {
+        this->snapForts->FastManager()->SetNewBuffer(this->snapForts->m_recvABuffer->CurrentPos(), 1000);
+        this->snapForts->FastManager()->WriteMsgSeqNumber(info->MsgSeqNum);
+        this->snapForts->FastManager()->EncodeFortsHeartbeatInfo(info);
+        this->snapForts->ProcessServerCore(this->snapForts->m_fastProtocolManager->MessageLength());
+        this->snapForts->Listen_Atom_Snapshot_Core();
+    }
+    
     void SendProcessFortsIncremental(FortsDefaultIncrementalRefreshMessageInfo *info) {
         this->incForts->FastManager()->SetNewBuffer(this->incForts->m_recvABuffer->CurrentPos(), 1000);
         this->incForts->FastManager()->WriteMsgSeqNumber(info->MsgSeqNum);
@@ -799,6 +807,31 @@ public:
             throw;
     }
 
+    void TestForts_NextSnapshotIsHearthBeat() {
+        this->SendProcessFortsSnapshot(CreateFortsHearthBeat(1));
+        if(this->snapForts->m_packets[1]->m_address != 0)
+            throw;
+        if(this->snapForts->m_startMsgSeqNum != 2)
+            throw;
+        if(this->snapForts->m_endMsgSeqNum != 1)
+            throw;
+        if(this->snapForts->m_nextFortsSnapshotRouteFirst != 2)
+            throw;
+        if(this->snapForts->m_snapshotRouteFirst != -1)
+            throw;
+        this->SendProcessFortsSnapshot(CreateFortsHearthBeat(2));
+        if(this->snapForts->m_packets[2]->m_address != 0)
+            throw;
+        if(this->snapForts->m_startMsgSeqNum != 3)
+            throw;
+        if(this->snapForts->m_endMsgSeqNum != 2)
+            throw;
+        if(this->snapForts->m_nextFortsSnapshotRouteFirst != 3)
+            throw;
+        if(this->snapForts->m_snapshotRouteFirst != -1)
+            throw;
+    }
+
     void TestForts() {
         TestForts_Defaults();
         TestForts_RecvIncrementalRouteFirst_FirstMessage();
@@ -811,6 +844,7 @@ public:
         TestForts_LostMessage();
         TestForts_LostMessageAndThenStartSnapshot_TryToProcessQueMessages();
         TestForts_LostMessageAndThenStartSnapshot_TryToProcessQueMessages2();
+        TestForts_NextSnapshotIsHearthBeat();
     }
 
     void TestFeedConnectionBase() {

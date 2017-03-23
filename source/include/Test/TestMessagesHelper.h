@@ -2243,6 +2243,13 @@ public:
         this->EncodeMessage(fc, inc_msg[0]);
     }
 
+    void ListenAtomIncremental(FeedConnection *fci) {
+        if(this->IsForts())
+            fci->Listen_Atom_Incremental_Forts_Core();
+        else
+            fci->Listen_Atom_Incremental_Core();
+    }
+
     void SendMessages(FeedConnection *fci, FeedConnection *fcs, const char *inc, const char *snap, int delay) {
         int incMsgCount = CalcMsgCount(inc);
         int snapMsgCount = CalcMsgCount(snap);
@@ -2266,10 +2273,7 @@ public:
                 inc_msg[inc_index]->m_msgSeqNo = inc_index + 1;
                 SendMessage(fci, inc_msg[inc_index]);
             }
-            if(this->IsForts())
-                fci->Listen_Atom_Incremental_Forts_Core();
-            else
-                fci->Listen_Atom_Incremental_Core();
+            ListenAtomIncremental(fci);
             if(snapshotStarterd && fcs->State() == FeedConnectionState::fcsSuspend && snap_index < snapMsgCount && !snap_msg[snap_index]->m_skip)
                 throw;
             if(inc_index < incMsgCount && inc_msg[inc_index]->m_wait) {
@@ -2278,16 +2282,10 @@ public:
                 if(fcs->State() != FeedConnectionState::fcsSuspend)
                     throw;
                 while(!fci->m_waitTimer->IsElapsedMilliseconds(fci->WaitLostIncrementalMessageMaxTimeMs()) && fcs->State() == FeedConnectionState::fcsSuspend) {
-                    if(this->IsForts())
-                        fci->Listen_Atom_Incremental_Forts_Core();
-                    else
-                        fci->Listen_Atom_Incremental_Core();
+                    ListenAtomIncremental(fci);
                 }
                 if(fcs->State() == FeedConnectionState::fcsSuspend) {
-                    if(this->IsForts())
-                        fci->Listen_Atom_Incremental_Forts_Core();
-                    else
-                        fci->Listen_Atom_Incremental_Core();
+                    ListenAtomIncremental(fci);
                 }
                 if(fcs->State() != FeedConnectionState::fcsListenSnapshot)
                     throw;
@@ -2318,7 +2316,7 @@ public:
             if(!TestMessagesHelper::SkipTimeOutCheck && w.ElapsedMilliseconds(1) > 5000)
                 throw;
         }
-        fci->Listen_Atom_Incremental_Core(); // emulate endless loop
+        ListenAtomIncremental(fci); // emulate endless loop
     }
 
     void Clear() {

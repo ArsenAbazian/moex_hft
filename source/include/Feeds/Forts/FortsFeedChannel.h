@@ -157,32 +157,36 @@ public:
         if(this->m_optInfo != 0 && this->m_optInfo->InstrInc() != 0)
             this->m_optInfo->InstrInc()->SetSecurityDefinition(this->m_optInfo->InstrReplay());
 
-        if(this->m_futInfo->InstrReplay() != 0) {
-            this->m_futInfo->InstrReplay()->AddConnectionToRecvSymbol(this->m_futInfo->InstrInc());
-            if(this->FutBook1() != 0)
-                this->m_futInfo->InstrReplay()->AddConnectionToRecvSymbol(this->FutBook1()->Inc());
-            if(this->FutBook5() != 0)
-                this->m_futInfo->InstrReplay()->AddConnectionToRecvSymbol(this->FutBook5()->Inc());
-            if(this->FutBook20() != 0)
-                this->m_futInfo->InstrReplay()->AddConnectionToRecvSymbol(this->FutBook20()->Inc());
-            if(this->FutBook50() != 0)
-                this->m_futInfo->InstrReplay()->AddConnectionToRecvSymbol(this->FutBook50()->Inc());
-            if(this->FutTrades() != 0)
-                this->m_futInfo->InstrReplay()->AddConnectionToRecvSymbol(this->FutTrades()->Inc());
+        if(this->m_futInfo != 0) {
+            if (this->m_futInfo->InstrReplay() != 0) {
+                this->m_futInfo->InstrReplay()->AddConnectionToRecvSymbol(this->m_futInfo->InstrInc());
+                if (this->FutBook1() != 0)
+                    this->m_futInfo->InstrReplay()->AddConnectionToRecvSymbol(this->FutBook1()->Inc());
+                if (this->FutBook5() != 0)
+                    this->m_futInfo->InstrReplay()->AddConnectionToRecvSymbol(this->FutBook5()->Inc());
+                if (this->FutBook20() != 0)
+                    this->m_futInfo->InstrReplay()->AddConnectionToRecvSymbol(this->FutBook20()->Inc());
+                if (this->FutBook50() != 0)
+                    this->m_futInfo->InstrReplay()->AddConnectionToRecvSymbol(this->FutBook50()->Inc());
+                if (this->FutTrades() != 0)
+                    this->m_futInfo->InstrReplay()->AddConnectionToRecvSymbol(this->FutTrades()->Inc());
+            }
         }
-        
-        if(this->m_optInfo->InstrReplay() != 0) {
-            this->m_optInfo->InstrReplay()->AddConnectionToRecvSymbol(this->m_optInfo->InstrInc());
-            if(this->OptBook1() != 0)
-                this->m_optInfo->InstrReplay()->AddConnectionToRecvSymbol(this->OptBook1()->Inc());
-            if(this->OptBook5() != 0)
-                this->m_optInfo->InstrReplay()->AddConnectionToRecvSymbol(this->OptBook5()->Inc());
-            if(this->OptBook20() != 0)
-                this->m_optInfo->InstrReplay()->AddConnectionToRecvSymbol(this->OptBook20()->Inc());
-            if(this->OptBook50() != 0)
-                this->m_optInfo->InstrReplay()->AddConnectionToRecvSymbol(this->OptBook50()->Inc());
-            if(this->OptTrades() != 0)
-                this->m_optInfo->InstrReplay()->AddConnectionToRecvSymbol(this->OptTrades()->Inc());
+
+        if(this->m_optInfo != 0) {
+            if (this->m_optInfo->InstrReplay() != 0) {
+                this->m_optInfo->InstrReplay()->AddConnectionToRecvSymbol(this->m_optInfo->InstrInc());
+                if (this->OptBook1() != 0)
+                    this->m_optInfo->InstrReplay()->AddConnectionToRecvSymbol(this->OptBook1()->Inc());
+                if (this->OptBook5() != 0)
+                    this->m_optInfo->InstrReplay()->AddConnectionToRecvSymbol(this->OptBook5()->Inc());
+                if (this->OptBook20() != 0)
+                    this->m_optInfo->InstrReplay()->AddConnectionToRecvSymbol(this->OptBook20()->Inc());
+                if (this->OptBook50() != 0)
+                    this->m_optInfo->InstrReplay()->AddConnectionToRecvSymbol(this->OptBook50()->Inc());
+                if (this->OptTrades() != 0)
+                    this->m_optInfo->InstrReplay()->AddConnectionToRecvSymbol(this->OptTrades()->Inc());
+            }
         }
 
         if(this->FutBook1() != 0) {
