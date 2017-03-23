@@ -2414,7 +2414,7 @@ namespace prebuild {
 			}
 
 			if(HasMandatoryPresence(value) && HasConstantAttribute(value))
-				return true; // WAS false - PLEASE CHECK
+				return false; // it seems that there is an error with mandatory presence true; // WAS false - PLEASE CHECK
 			if(HasOptionalPresence(value) && HasConstantAttribute(value))
 				return true;
 			if(HasMandatoryPresence(value) &&
