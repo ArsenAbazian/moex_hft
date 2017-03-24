@@ -1446,22 +1446,18 @@ protected:
                 return false;
             }
             this->m_fortsSnapshotInfo = this->GetFortsSnapshotInfo(i);
-//            if (this->m_fortsSnapshotInfo != 0 && this->m_fortsSnapshotInfo->RouteFirst == 1) {
-//                this->m_startMsgSeqNum = i;
-//                this->m_snapshotRouteFirst = i;
-//                return true;
-//            }
-            if(i == 1 || i == this->m_nextFortsSnapshotRouteFirst) {
-                this->m_startMsgSeqNum = i;
-                this->m_snapshotRouteFirst = i;
+            if(i == this->m_nextFortsSnapshotRouteFirst || i == 1) {
                 if(this->m_fortsSnapshotInfo == 0) {
                     this->m_nextFortsSnapshotRouteFirst = i + 1;
-                    this->m_startMsgSeqNum = i + 1;
                     this->m_snapshotRouteFirst = -1;
                     this->m_packets[i]->Clear();
-                    return false;
+                    continue;
                 }
-                return true;
+                else {
+                    this->m_startMsgSeqNum = i;
+                    this->m_snapshotRouteFirst = i;
+                    return true;
+                }
             }
             if(this->m_fortsSnapshotInfo != 0 && this->m_fortsSnapshotInfo->LastFragment == 1) {
                 this->m_nextFortsSnapshotRouteFirst = i + 1;
@@ -2013,6 +2009,7 @@ protected:
                 this->CancelSnapshot();
                 //this->ClearPackets(this->m_snapshotRouteFirst, this->m_startMsgSeqNum);
             }
+            printf("skip lost packet %d %d\n", this->m_startMsgSeqNum, this->m_endMsgSeqNum);
             this->SkipLostSnapshotPackets();
             this->m_waitTimer->Stop(1);
             this->m_snapshotRouteFirst = -1;
@@ -3110,6 +3107,8 @@ public:
         this->m_windowMsgSeqNum = 0;
         this->m_snapshotRouteFirst = -1;
         this->m_snapshotLastFragment = -1;
+        this->m_nextFortsSnapshotRouteFirst = -1;
+        this->m_snapshotRouteFirst = -1;
     }
 
     inline void SetType(FeedConnectionType type) {

@@ -500,6 +500,8 @@ public:
         info->SecurityID = tmp->m_securityId;
         info->MDEntriesCount = tmp->m_itemsCount;
         info->RptSeq = tmp->m_rptSec;
+        info->LastFragment = tmp->m_lastFragment;
+        info->LastMsgSeqNumProcessed = tmp->m_lastMsgSeqNoProcessed;
         for(int i = 0; i < tmp->m_itemsCount; i++) {
             info->MDEntries[i] = CreateFortsOBSItemInfo(tmp->m_items[i]);
         }

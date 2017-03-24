@@ -49,6 +49,7 @@ void FastProtocolTester::TestMessages() {
         throw;
     if(fr->MDEntries[1]->SecurityID != 419139)
         throw;
+    manager->PrintFortsDefaultIncrementalRefreshMessage(fr);
 
 
     message = new unsigned char[77] {

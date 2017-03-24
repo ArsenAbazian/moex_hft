@@ -2725,8 +2725,9 @@ public:
         if(incForts->OrderBookForts()->UsedItemCount() != 3)
             throw;
         SendMessages(incForts, snapForts,
-                     "obr entry symbol1 sid 111111 111111, lost obr entry symbol3 sid 333333 111111, wait_snap, obr entry symbol1 sid 111111 333333,                         hbeat,                                        hbeat",
-                     "                                                            obs begin symbol3 sid 333333 rpt 1 end entry symbol3 sid 333333 111111, obs begin symbol1 sid 111111 rpt 2 end entry symbol1 sid 111111 111111, hbeat, obs symbol2 begin rpt 2 end entry symbol2 sid 222222 111111",
+                     "obr entry symbol1 sid 111111 111111 px 100, lost obr entry symbol3 sid 333333 111111 px 100, wait_snap, "
+                             "obr entry symbol1 sid 111111 333333 px 300,                                    hbeat,                                                                         hbeat",
+                             "obs begin symbol3 sid 333333 rpt 1 end entry symbol3 sid 333333 111111 px 100, obs begin symbol1 sid 111111 rpt 2 end entry symbol1 sid 111111 111111 px 100, hbeat, obs begin symbol2 sid 222222 rpt 2 end entry symbol2 sid 222222 111111 px 100",
                      30);
         if(incForts->HasQueueEntries())
             throw;
@@ -2772,8 +2773,8 @@ public:
         if(incForts->OrderBookForts()->UsedItemCount() != 3)
             throw;
         SendMessages(incForts, snapForts,
-                     "obr entry symbol1 sid 111111 111111, lost obr entry symbol3 sid 333333 111111, wait_snap, obr entry symbol1 sid 111111 333333,                         obr entry symbol2 sid 222222 111111,                         obr entry symbol2 sid 222222 222222",
-                     "                                                            obs begin symbol3 sid 333333 rpt 1 end entry symbol3 sid 333333 111111, obs begin symbol1 sid 111111 rpt 2 end entry symbol1 sid 111111 111111, obs symbol2 begin rpt 2 end entry symbol2 sid 222222 111111 skip_if_suspend",
+                     "obr entry symbol1 sid 111111 111111 px 100, lost obr entry symbol3 sid 333333 111111 px 100, wait_snap, obr entry symbol1 sid 111111 333333 px 300,                                    obr entry symbol2 sid 222222 111111 px 100,                                    obr entry symbol2 sid 222222 222222 px 200",
+                     "                                                                                                        obs begin symbol3 sid 333333 rpt 1 end entry symbol3 sid 333333 111111 px 100, obs begin symbol1 sid 111111 rpt 2 end entry symbol1 sid 111111 111111 px 100, obs begin symbol2 sid 222222 rpt 2 end entry symbol2 sid 222222 111111 px 100 skip_if_suspend",
                      30);
         if(incForts->HasQueueEntries())
             throw;
@@ -2790,6 +2791,8 @@ public:
         if(incForts->OrderBookForts()->UsedItemCount() != 3)
             throw;
         if(incForts->OrderBookForts()->GetItemBySecurityId(111111, 0)->BuyQuotes()->Count() != 2) // snapshot applied virtually actually skipped
+            throw;
+        if(this->BuyQuotes(0)->Item(0)->MDEntryPx.Mantissa != 300)
             throw;
         if(incForts->OrderBookForts()->GetItemBySecurityId(222222, 0)->BuyQuotes()->Count() != 2)
             throw;
@@ -2813,8 +2816,8 @@ public:
         if(!incForts->m_waitTimer->Active())
             throw;
         SendMessages(incForts, snapForts,
-                     "obr entry symbol1 sid 111111 111111, obr entry symbol1 sid 111111 222222, obr entry symbol1 sid 111111 333333, lost hbeat, wait_snap, hbeat",
-                     "                                                                          obs begin symbol1 sid 111111 rpt 1 entry symbol1 sid 111111 111111 end",
+                     "obr entry symbol1 sid 111111 111111 px 100, obr entry symbol1 sid 111111 222222 px 200, obr entry symbol1 sid 111111 333333 px 300, lost hbeat, wait_snap, hbeat",
+                     "                                                                                                                                                           obs begin symbol1 sid 111111 rpt 1 entry symbol1 sid 111111 111111 px 100 end",
                      50);
         if(incForts->HasQueueEntries())
             throw;
@@ -2825,6 +2828,12 @@ public:
         if(incForts->OrderBookForts()->GetItemBySecurityId(111111, 0)->RptSeq() != 3)
             throw;
         if(incForts->OrderBookForts()->GetItemBySecurityId(111111, 0)->BuyQuotes()->Count() != 3)
+            throw;
+        if(this->BuyQuotes(0)->Item(0)->MDEntryPx.Mantissa != 300)
+            throw;
+        if(this->BuyQuotes(0)->Item(1)->MDEntryPx.Mantissa != 200)
+            throw;
+        if(this->BuyQuotes(0)->Item(2)->MDEntryPx.Mantissa != 100)
             throw;
         if(snapForts->m_startMsgSeqNum != 2)
             throw;
@@ -2844,8 +2853,14 @@ public:
         incForts->Start();
 
         SendMessages(incForts, snapForts,
-                     "obr entry symbol1 sid 111111 111111, obr entry symbol1 sid 111111 222222, lost obr entry symbol1 sid 111111 333333, obr entry symbol1 sid 111111 444444, lost obr entry symbol1 sid 111111 555555, obr entry symbol1 sid 111111 666666, wait_snap, ",
-                     "                                                                                                                           obs begin symbol1 sid 111111 rpt 4 entry symbol1 sid 111111 444444 end",
+                     "obr entry symbol1 sid 111111 111111 px 100, "
+                             "obr entry symbol1 sid 111111 222222 px 200, "
+                             "lost obr entry symbol1 sid 111111 333333 px 300, "
+                             "obr entry symbol1 sid 111111 444444 px 400, "
+                             "lost obr entry symbol1 sid 111111 555555 px 500, "
+                             "obr entry symbol1 sid 111111 666666 px 600, "
+                             "wait_snap",
+                     "hbeat, hbeat, hbeat, hbeat, hbeat, hbeat, hbeat, obs begin symbol1 sid 111111 rpt 4 entry symbol1 sid 111111 444444 px 400 end",
                      30);
         if(incForts->OrderBookForts()->SymbolsToRecvSnapshotCount() != 1)
             throw;
@@ -2869,8 +2884,14 @@ public:
         incForts->Start();
 
         SendMessages(incForts, snapForts,
-                     "obr entry symbol1 sid 111111 111111, obr entry symbol1 sid 111111 222222, lost obr entry symbol1 sid 111111 333333, obr entry symbol1 sid 111111 444444, lost obr entry symbol1 sid 111111 555555, obr entry symbol1 sid 111111 666666, wait_snap, ",
-                     "                                                                                                                           obs begin symbol1 sid 111111 rpt 5 entry symbol1 sid 111111 555555 end",
+                     "obr entry symbol1 sid 111111 111111 px 100, "
+                             "obr entry symbol1 sid 111111 222222 px 200, "
+                             "lost obr entry symbol1 sid 111111 333333 px 300, "
+                             "obr entry symbol1 sid 111111 444444 px 400, "
+                             "lost obr entry symbol1 sid 111111 555555 px 500, "
+                             "obr entry symbol1 sid 111111 666666 px 600, "
+                             "wait_snap",
+                     "obs begin symbol1 sid 111111 rpt 5 entry symbol1 sid 111111 555555 px 500 end",
                      30);
         if(incForts->OrderBookForts()->SymbolsToRecvSnapshotCount() != 0)
             throw;
@@ -2886,6 +2907,10 @@ public:
             throw;
         if(incForts->OrderBookForts()->GetItemBySecurityId(111111, 0)->BuyQuotes()->Count() != 2)
             throw;
+        if(this->BuyQuotes(0)->Item(0)->MDEntryPx.Mantissa != 600)
+            throw;
+        if(this->BuyQuotes(0)->Item(1)->MDEntryPx.Mantissa != 500)
+            throw;
     }
     // almost the same as 5_4_1 but we received new snapshot with rptseq 6
     void TestConnection_ParallelWorkingIncrementalAndSnapshot_5_4_2() {
@@ -2896,8 +2921,14 @@ public:
         incForts->Start();
 
         SendMessages(incForts, snapForts,
-                     "obr entry symbol1 sid 111111 111111, obr entry symbol1 sid 111111 222222, lost obr entry symbol1 sid 111111 333333, obr entry symbol1 sid 111111 444444, lost obr entry symbol1 sid 111111 555555, obr entry symbol1 sid 111111 666666, wait_snap, ",
-                     "                                                                                                                           obs begin symbol1 sid 111111 rpt 6 entry symbol1 sid 111111 666666 end",
+                     "obr entry symbol1 sid 111111 111111 px 100, "
+                             "obr entry symbol1 sid 111111 222222 px 200, "
+                             "lost obr entry symbol1 sid 111111 333333 px 300, "
+                             "obr entry symbol1 sid 111111 444444 px 400, "
+                             "lost obr entry symbol1 sid 111111 555555 px 500, "
+                             "obr entry symbol1 sid 111111 666666 px 600, "
+                             "wait_snap",
+                     "obs begin symbol1 sid 111111 rpt 6 entry symbol1 sid 111111 666666 px 600 end",
                      30);
         if(incForts->OrderBookForts()->SymbolsToRecvSnapshotCount() != 0)
             throw;
@@ -2912,6 +2943,8 @@ public:
         if(incForts->OrderBookForts()->GetItemBySecurityId(111111, 0)->RptSeq() != 6)
             throw;
         if(incForts->OrderBookForts()->GetItemBySecurityId(111111, 0)->BuyQuotes()->Count() != 1)
+            throw;
+        if(this->BuyQuotes(0)->Item(0)->MDEntryPx.Mantissa != 600)
             throw;
     }
     // we have received snapshot and almost ok but next incremental message during snapshot has greater RptSeq
@@ -3085,7 +3118,13 @@ public:
         snapForts->WaitSnapshotMaxTimeMs(50);
         SendMessages(incForts, snapForts,
                      "obr entry symbol1 sid 111111 111111, lost obr entry symbol1 sid 111111 222222, wait_snap, hbeat",
-                     "                                                                                          obs begin symbol1 sid 111111 rpt 2 entry symbol1 sid 111111 222222, lost obs symbol1 rpt 2 entry symbol1 sid 111111 222222, hbeat, hbeat, hbeat, hbeat, hbeat",
+                     "obs begin symbol1 sid 111111 rpt 2 entry symbol1 sid 111111 222222, "
+                             "lost obs symbol1 rpt 2 entry symbol1 sid 111111 222222, "
+                             "hbeat, "
+                             "hbeat, "
+                             "hbeat, "
+                             "hbeat, "
+                             "hbeat",
                      30);
         for(int i = 1; i < 100; i++) {
             if(snapForts->m_packets[i]->m_address != 0 ||
@@ -3101,8 +3140,8 @@ public:
         snapForts->WaitSnapshotMaxTimeMs(50);
         SendMessages(incForts, snapForts,
                      "obr entry symbol1 sid 111111 111111 px 100, lost obr entry symbol1 sid 111111 222222 px 200, wait_snap, "
-                     "hbeat                                                                      hbeat,                                                  hbeat,                                                 hbeat, hbeat, hbeat, hbeat, hbeat",
-                     "obs begin symbol1 sid 111111 rpt 2 entry symbol1 sid 111111 222222 px 200, lost obs symbol1 rpt 2 entry symbol1 sid 111111 222222, obs symbol1 rpt 2 entry symbol1 sid 111111 222222 end, obs begin symbol1 sid 111111 rpt 2 entry symbol1 sid 111111 222222 px 200 end",
+                     "hbeat                                                                      hbeat,                                                  hbeat,                                                        hbeat, hbeat, hbeat, hbeat, hbeat",
+                     "obs begin symbol1 sid 111111 rpt 2 entry symbol1 sid 111111 222222 px 200, lost obs symbol1 rpt 2 entry symbol1 sid 111111 222222, obs symbol1 sid 111111 rpt 2 entry symbol1 sid 111111 222222 end, obs begin symbol1 sid 111111 rpt 2 entry symbol1 sid 111111 222222 px 200 end",
                      30);
         if(this->BuyQuotes(0)->Count() != 1)
             throw;
