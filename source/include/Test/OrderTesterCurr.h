@@ -2930,8 +2930,8 @@ public:
         incCurr->Start();
 
         SendMessages(incCurr, snapCurr,
-                     "olr entry symbol1 e1, olr entry symbol2 e1, lost olr entry symbol1 e2, wait_snap, hbeat                               lost olr entry symbol1 e3,               olr entry symbol1 e4, hbeat ",
-                     "                                                                   ols symbol1 begin rpt 2 entry symbol1 e2 end, ols symbol2 begin rpt 1 entry symbol2 e1 end, hbeat          , ols symbol1 begin rpt 3 entry symbol1 e3 end",
+                     "olr entry symbol1 e1, olr entry symbol2 e1, lost olr entry symbol1 e2, wait_snap, hbeat                                         lost olr entry symbol1 e3,               olr entry symbol1 e4, hbeat ",
+                     "                                                                                  ols symbol1 begin rpt 2 entry symbol1 e2 end, ols symbol2 begin rpt 1 entry symbol2 e1 end, hbeat          , ols symbol1 begin rpt 3 entry symbol1 e3 end",
                      30);
         if(!incCurr->CanStopListeningSnapshot())
             throw;

@@ -530,6 +530,10 @@ protected:
             return this->m_tradeTableFond->HasQueueEntries();
         else if(this->m_tradeTableCurr != 0)
             return this->m_tradeTableCurr->HasQueueEntries();
+        else if(this->m_fortsOrderBookTable != 0)
+            return this->m_fortsOrderBookTable->HasQueueEntries();
+        else if(this->m_fortsTradeBookTable != 0)
+            return this->m_fortsTradeBookTable->HasQueueEntries();
         return false;
     }
 
@@ -3013,8 +3017,8 @@ protected:
 
         int prevFortsRouteFirst = this->m_fortsIncrementalRouteFirst;
         this->CheckUpdateFortsIncrementalParams(messageIndex);
-        // it isunfinished fragmented message.
-        if(prevFortsRouteFirst < lastNullMsgIndex) {
+        // it is unfinished fragmented message.
+        if(prevFortsRouteFirst <= lastNullMsgIndex) {
             FortsDefaultIncrementalRefreshMessageInfo *ri = (FortsDefaultIncrementalRefreshMessageInfo*)this->m_fastProtocolManager->LastDecodeInfo();
             if((ri->NullMap & FortsDefaultIncrementalRefreshMessageInfoNullIndices::LastFragmentNullIndex) == 0)
                 return true;

@@ -51,10 +51,11 @@ public:
         this->m_rptSeq = rptSeq;
         this->m_sessionStatus = 0;
     }
-    TestTemplateItemInfo(const char *symbol, UINT64 entryId, int rptSeq) {
+    TestTemplateItemInfo(const char *symbol, UINT64 securityId, UINT64 entryId, int rptSeq) {
         this->m_action = MDUpdateAction::mduaAdd;
         this->m_entryType = MDEntryType::mdetBuyQuote;
         this->m_symbol = symbol;
+        this->m_securityId = securityId;
         this->m_tradingSession = "session1";
         this->m_entryIdInt = entryId;
         this->m_entryPx.Set(1, 1);
@@ -78,6 +79,14 @@ public:
         this->m_entryType = MDEntryType::mdetBuyQuote;
         this->m_entryIdInt = entryId;
         this->m_entryPx.Set(1, 1);
+        this->m_entrySizeInt = 10;
+        this->m_sessionStatus = 0;
+    }
+    TestTemplateItemInfo(UINT64 entryId, int price) {
+        this->m_action = MDUpdateAction::mduaAdd;
+        this->m_entryType = MDEntryType::mdetBuyQuote;
+        this->m_entryIdInt = entryId;
+        this->m_entryPx.Set(price, 0);
         this->m_entrySizeInt = 10;
         this->m_sessionStatus = 0;
     }

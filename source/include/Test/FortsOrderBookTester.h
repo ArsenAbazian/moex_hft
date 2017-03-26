@@ -932,35 +932,35 @@ public:
     }
 
     void Test_OnIncrementalRefresh_FORTS_OBR() {
-        printf("OLR CURR Test_OnIncrementalRefresh_FORTS_OBR_Add\n");
+        printf("OBR FORTS Test_OnIncrementalRefresh_FORTS_OBR_Add\n");
         Test_OnIncrementalRefresh_FORTS_OBR_Add();
-        printf("OLR CURR Test_OnIncrementalRefresh_FORTS_OBR_Remove\n");
+        printf("OBR FORTS Test_OnIncrementalRefresh_FORTS_OBR_Remove\n");
         Test_OnIncrementalRefresh_FORTS_OBR_Remove();
-        printf("OLR CURR Test_OnIncrementalRefresh_FORTS_OBR_Change\n");
+        printf("OBR FORTS Test_OnIncrementalRefresh_FORTS_OBR_Change\n");
         Test_OnIncrementalRefresh_FORTS_OBR_Change();
-        printf("OLR CURR Test_Clear\n");
+        printf("OBR FORTS Test_Clear\n");
         Test_Clear();
     }
 
     void Test_OnIncrementalRefresh_FORTS_OBR_SellQuotes() {
-        printf("OLR CURR Test_OnIncrementalRefresh_FORTS_OBR_Add_SellQuotes\n");
+        printf("OBR FORTS Test_OnIncrementalRefresh_FORTS_OBR_Add_SellQuotes\n");
         Test_OnIncrementalRefresh_FORTS_OBR_Add_SellQuotes();
-        printf("OLR CURR Test_OnIncrementalRefresh_FORTS_OBR_Remove_SellQuotes\n");
+        printf("OBR FORTS Test_OnIncrementalRefresh_FORTS_OBR_Remove_SellQuotes\n");
         Test_OnIncrementalRefresh_FORTS_OBR_Remove_SellQuotes();
-        printf("OLR CURR Test_OnIncrementalRefresh_FORTS_OBR_Change_SellQuotes\n");
+        printf("OBR FORTS Test_OnIncrementalRefresh_FORTS_OBR_Change_SellQuotes\n");
         Test_OnIncrementalRefresh_FORTS_OBR_Change_SellQuotes();
-        printf("OLR CURR Test_Clear_SellQuotes\n");
+        printf("OBR FORTS Test_Clear_SellQuotes\n");
         Test_Clear_SellQuotes();
     }
 
     void Test_OLR_CURR() {
-        printf("OLR CURR Test_OnIncrementalRefresh_FORTS_OBR\n");
+        printf("OBR FORTS Test_OnIncrementalRefresh_FORTS_OBR\n");
         Test_OnIncrementalRefresh_FORTS_OBR();
-        printf("OLR CURR Test_OnFullRefresh_OLS_CURR\n");
+        printf("OBR FORTS Test_OnFullRefresh_OLS_CURR\n");
         Test_OnFullRefresh_OLS_CURR();
-        printf("OLR CURR Test_OnIncrementalRefresh_FORTS_OBR_SellQuotes\n");
+        printf("OBR FORTS Test_OnIncrementalRefresh_FORTS_OBR_SellQuotes\n");
         Test_OnIncrementalRefresh_FORTS_OBR_SellQuotes();
-        printf("OLR CURR Test_OnFullRefresh_OLS_CURR_SellQuotes\n");
+        printf("OBR FORTS Test_OnFullRefresh_OLS_CURR_SellQuotes\n");
         Test_OnFullRefresh_OLS_CURR_SellQuotes();
     }
 
@@ -1442,21 +1442,21 @@ public:
         SendMessages(incForts, new TestTemplateInfo*[3] {
                 new TestTemplateInfo(FeedTemplateId::fortsIncremental, 1,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 111111, 1, 1, 10, 1),
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 222222, 2, 2, 100, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 111111, 1, 100, 0, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 222222, 2, 200, 0, 1),
                                      }, 2),
                 new TestTemplateInfo(FeedTemplateId::fortsIncremental, 2,
                                      new TestTemplateItemInfo*[1] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 333333, 3, 3, 1000, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 333333, 3, 300, 0, 1),
                                      }, 1),
                 new TestTemplateInfo(FeedTemplateId::fortsIncremental, 3,
                                      new TestTemplateItemInfo*[1] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 444444, 4, 3, 1000, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 444444, 4, 400, 0, 1),
                                      }, 1)
         }, 3);
 
 
-        if(!incForts->Listen_Atom_Incremental_Core())
+        if(!incForts->Listen_Atom_Incremental_Forts_Core())
             throw;
 
         this->TestTableItemsAllocator(incForts->OrderBookForts());
@@ -1475,19 +1475,20 @@ public:
     void TestConnection_TestIncMessagesLost_AndWhenAppeared() {
         this->Clear();
         this->AddSymbol("symbol1", 111111);
+        this->snapForts->Start();
 
         SendMessages(incForts, new TestTemplateInfo*[2] {
                 new TestTemplateInfo(FeedTemplateId::fortsIncremental, 1,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 111111, 1, 1, 10, 1),
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 222222, 2, 2, 100, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 111111, 1, 100, 0, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 222222, 2, 200, 0, 1),
                                      }, 2),
                 new TestTemplateInfo(FeedTemplateId::fortsIncremental, 3,
                                      new TestTemplateItemInfo*[1] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 333333, 4, 3, 1000, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 333333, 4, 400, 0, 1),
                                      }, 1)
         }, 2);
-        if(!incForts->Listen_Atom_Incremental_Core())
+        if(!incForts->Listen_Atom_Incremental_Forts_Core())
             throw;
 
         this->TestTableItemsAllocator(incForts->OrderBookForts());
@@ -1510,17 +1511,15 @@ public:
         SendMessages(incForts, new TestTemplateInfo*[1] {
                 new TestTemplateInfo(FeedTemplateId::fortsIncremental, 2,
                                      new TestTemplateItemInfo*[1] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 444444, 3, 1, 10, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 444444, 3, 300, 0, 1),
                                      }, 1)
         }, 1);
 
-        if(!incForts->Listen_Atom_Incremental_Core())
+        if(!incForts->Listen_Atom_Incremental_Forts_Core())
             throw;
 
         this->TestTableItemsAllocator(incForts->OrderBookForts());
 
-        if(incForts->m_waitTimer->Active()) // wait timer should be deactivated because we received all lost messages
-            throw;
         if(item->BuyQuotes()->Count() != 4) // all messages from que should be applied
             throw;
         if(item->EntriesQueue() != 0) // should be reset
@@ -1530,19 +1529,20 @@ public:
     void TestConnection_TestInc2MessagesLost_AppearedThen2Messages() {
         this->Clear();
         this->AddSymbol("symbol1", 111111);
+        this->snapForts->Start();
 
         SendMessages(incForts, new TestTemplateInfo*[2] {
                 new TestTemplateInfo(FeedTemplateId::fortsIncremental, 1,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 111111, 1, 1, 10, 1),
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 222222, 2, 2, 100, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 111111, 1, 100, 0, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 222222, 2, 200, 0, 1),
                                      }, 2),
                 new TestTemplateInfo(FeedTemplateId::fortsIncremental, 3,
                                      new TestTemplateItemInfo*[1] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 555555, 5, 3, 1000, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 555555, 5, 500, 0, 1),
                                      }, 1)
         }, 2);
-        if(!incForts->Listen_Atom_Incremental_Core())
+        if(!incForts->Listen_Atom_Incremental_Forts_Core())
             throw;
 
         this->TestTableItemsAllocator(incForts->OrderBookForts());
@@ -1567,18 +1567,16 @@ public:
         SendMessages(incForts, new TestTemplateInfo*[1] {
                 new TestTemplateInfo(FeedTemplateId::fortsIncremental, 2,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 333333, 3, 1, 10, 1),
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 444444, 4, 1, 10, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 333333, 3, 300, 0, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 444444, 4, 400, 0, 1),
                                      }, 2)
         }, 1);
 
-        if(!incForts->Listen_Atom_Incremental_Core())
+        if(!incForts->Listen_Atom_Incremental_Forts_Core())
             throw;
 
         this->TestTableItemsAllocator(incForts->OrderBookForts());
 
-        if(incForts->m_waitTimer->Active()) // wait timer should be deactivated because we received all lost messages
-            throw;
         if(item->BuyQuotes()->Count() != 5) // all messages from que should be applied
             throw;
         if(item->EntriesQueue() != 0) // should be reset
@@ -1588,19 +1586,20 @@ public:
     void TestConnection_TestInc2MessagesLost_AppearedSeparately_1_2() {
         this->Clear();
         this->AddSymbol("symbol1", 111111);
+        this->snapForts->Start();
 
         SendMessages(incForts, new TestTemplateInfo*[2] {
                 new TestTemplateInfo(FeedTemplateId::fortsIncremental, 1,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 111111, 1, 1, 10, 1),
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 222222, 2, 2, 100, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 111111, 1, 100, 0, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 222222, 2, 200, 0, 1),
                                      }, 2),
                 new TestTemplateInfo(FeedTemplateId::fortsIncremental, 4,
                                      new TestTemplateItemInfo*[1] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 555555, 5, 3, 1000, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 555555, 5, 500, 0, 1),
                                      }, 1)
         }, 2);
-        if(!incForts->Listen_Atom_Incremental_Core())
+        if(!incForts->Listen_Atom_Incremental_Forts_Core())
             throw;
 
         this->TestTableItemsAllocator(incForts->OrderBookForts());
@@ -1625,11 +1624,11 @@ public:
         SendMessages(incForts, new TestTemplateInfo*[1] {
                 new TestTemplateInfo(FeedTemplateId::fortsIncremental, 2,
                                      new TestTemplateItemInfo*[1] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 333333, 3, 1, 10, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 333333, 3, 300, 0, 1),
                                      }, 1)
         }, 1);
 
-        if(!incForts->Listen_Atom_Incremental_Core())
+        if(!incForts->Listen_Atom_Incremental_Forts_Core())
             throw;
 
         this->TestTableItemsAllocator(incForts->OrderBookForts());
@@ -1648,17 +1647,15 @@ public:
         SendMessages(incForts, new TestTemplateInfo*[1] {
                 new TestTemplateInfo(FeedTemplateId::fortsIncremental, 3,
                                      new TestTemplateItemInfo*[1] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 333333, 4, 1, 10, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 333333, 4, 400, 0, 1),
                                      }, 1)
         }, 1);
 
-        if(!incForts->Listen_Atom_Incremental_Core())
+        if(!incForts->Listen_Atom_Incremental_Forts_Core())
             throw;
 
         this->TestTableItemsAllocator(incForts->OrderBookForts());
 
-        if(incForts->m_waitTimer->Active()) // now wait timer should be deactivated because we received all messages
-            throw;
         if(item->BuyQuotes()->Count() != 5) // all messages applied
             throw;
         if(item->HasEntries()) // should have entries
@@ -1670,19 +1667,20 @@ public:
     void TestConnection_TestInc2MessagesLost_AppearedSeparately_2_1() {
         this->Clear();
         this->AddSymbol("symbol1", 111111);
+        this->snapForts->Start();
 
         SendMessages(incForts, new TestTemplateInfo*[2] {
                 new TestTemplateInfo(FeedTemplateId::fortsIncremental, 1,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 111111, 1, 1, 10, 1),
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 222222, 2, 2, 100, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 111111, 1, 100, 0, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 222222, 2, 200, 0, 1),
                                      }, 2),
                 new TestTemplateInfo(FeedTemplateId::fortsIncremental, 4,
                                      new TestTemplateItemInfo*[1] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 555555, 5, 3, 1000, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 555555, 5, 500, 0, 1),
                                      }, 1)
         }, 2);
-        if(!incForts->Listen_Atom_Incremental_Core())
+        if(!incForts->Listen_Atom_Incremental_Forts_Core())
             throw;
 
         this->TestTableItemsAllocator(incForts->OrderBookForts());
@@ -1707,11 +1705,11 @@ public:
         SendMessages(incForts, new TestTemplateInfo*[1] {
                 new TestTemplateInfo(FeedTemplateId::fortsIncremental, 3,
                                      new TestTemplateItemInfo*[1] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 333333, 4, 1, 10, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 333333, 4, 400, 0, 1),
                                      }, 1)
         }, 1);
 
-        if(!incForts->Listen_Atom_Incremental_Core())
+        if(!incForts->Listen_Atom_Incremental_Forts_Core())
             throw;
 
         this->TestTableItemsAllocator(incForts->OrderBookForts());
@@ -1730,17 +1728,15 @@ public:
         SendMessages(incForts, new TestTemplateInfo*[1] {
                 new TestTemplateInfo(FeedTemplateId::fortsIncremental, 2,
                                      new TestTemplateItemInfo*[1] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 333333, 3, 1, 10, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 333333, 3, 300, 0, 1),
                                      }, 1)
         }, 1);
 
-        if(!incForts->Listen_Atom_Incremental_Core())
+        if(!incForts->Listen_Atom_Incremental_Forts_Core())
             throw;
 
         this->TestTableItemsAllocator(incForts->OrderBookForts());
 
-        if(incForts->m_waitTimer->Active()) // now wait timer should be deactivated because we received all messages
-            throw;
         if(item->BuyQuotes()->Count() != 5) // applied two messages
             throw;
         if(item->HasEntries()) // should have entries
@@ -1767,7 +1763,7 @@ public:
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 555555, 5, 3, 1000, 1),
                                      }, 1)
         }, 2);
-        if(!incForts->Listen_Atom_Incremental_Core())
+        if(!incForts->Listen_Atom_Incremental_Forts_Core())
             throw;
 
         this->TestTableItemsAllocator(incForts->OrderBookForts());
@@ -1777,7 +1773,7 @@ public:
             throw;
         // wait
         while(incForts->m_waitTimer->ElapsedMilliseconds() < incForts->WaitLostIncrementalMessageMaxTimeMs());
-        if(!incForts->Listen_Atom_Incremental_Core())
+        if(!incForts->Listen_Atom_Incremental_Forts_Core())
             throw;
         //entering snapshot mode
         if(snapForts->State() != FeedConnectionState::fcsListenSnapshot)
@@ -1889,22 +1885,30 @@ public:
         incForts->StartListenSnapshot();
 
         SendMessages(snapForts, new TestTemplateInfo*[1] {
-                new TestTemplateInfo(FeedTemplateId::fortsSnapshot, 2, "symbol1", 111111, true, false,
+                new TestTemplateInfo(FeedTemplateId::fortsSnapshot, 7, "symbol1", 111111, false, true,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo(111111),
                                              new TestTemplateItemInfo(222222),
                                      }, 2, 4)
         }, 1);
 
+        SendMessages(snapForts, new TestTemplateInfo*[1] {
+                new TestTemplateInfo(FeedTemplateId::fortsSnapshot, 8, "symbol1", 111111, false, false,
+                                     new TestTemplateItemInfo*[2] {
+                                             new TestTemplateItemInfo(111111),
+                                             new TestTemplateItemInfo(222222),
+                                     }, 2, 5)
+        }, 1);
+
         if(!snapForts->Listen_Atom_Snapshot_Core())
             throw;
         if(snapForts->m_state != FeedConnectionState::fcsListenSnapshot)
             throw;
-        if(snapForts->m_startMsgSeqNum != 3)
+        if(snapForts->m_startMsgSeqNum != 9)
             throw;
-        if(snapForts->m_endMsgSeqNum != 2)
+        if(snapForts->m_endMsgSeqNum != 8)
             throw;
-        if(snapForts->m_snapshotRouteFirst != 2)
+        if(snapForts->m_snapshotRouteFirst != 8)
             throw;
         if(!snapForts->m_waitTimer->Active())
             throw;
@@ -1920,42 +1924,23 @@ public:
         if(snapForts->m_state != FeedConnectionState::fcsListenSnapshot)
             throw;
 
-        if(snapForts->m_startMsgSeqNum != 3)
+        if(snapForts->m_startMsgSeqNum != 9)
             throw;
-        if(snapForts->m_endMsgSeqNum != 2)
+        if(snapForts->m_endMsgSeqNum != 8)
             throw;
-        if(snapForts->m_snapshotRouteFirst != 2)
+        if(snapForts->m_snapshotRouteFirst != 8)
             throw;
         if(!snapForts->m_waitTimer->Active())
             throw;
     }
 
+    // there is no route first field in FORTS messages
+    // but msgSeq = 1 is route firts, so in this test msgSeq = 2
     void TestConnection_RouteFirstReceived_AfterSomeDummyMessages() {
         this->Clear();
         this->AddSymbol("symbol1", 111111);
 
         incForts->StartListenSnapshot();
-
-        SendMessages(snapForts, new TestTemplateInfo*[1] {
-                new TestTemplateInfo(FeedTemplateId::fortsSnapshot, 1, "symbol1", 111111, false, false,
-                                     new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo(111111),
-                                             new TestTemplateItemInfo(222222),
-                                     }, 2, 4)
-        }, 1);
-
-        if(!snapForts->Listen_Atom_Snapshot_Core())
-            throw;
-        if(snapForts->m_state != FeedConnectionState::fcsListenSnapshot)
-            throw;
-        if(snapForts->m_startMsgSeqNum != 2)
-            throw;
-        if(snapForts->m_endMsgSeqNum != 1)
-            throw;
-        if(snapForts->m_snapshotRouteFirst != -1)
-            throw;
-        if(!snapForts->m_waitTimer->Active())
-            throw;
 
         SendMessages(snapForts, new TestTemplateInfo*[1] {
                 new TestTemplateInfo(FeedTemplateId::fortsSnapshot, 2, "symbol1", 111111, false, false,
@@ -1975,42 +1960,43 @@ public:
             throw;
         if(snapForts->m_snapshotRouteFirst != -1)
             throw;
+        if(snapForts->m_nextFortsSnapshotRouteFirst != -1) // we do not know what message is route firts - until we receive last fragment
+            throw;
         if(!snapForts->m_waitTimer->Active())
             throw;
 
-        SendMessages(snapForts, new TestTemplateInfo*[2] {
+        SendMessages(snapForts, new TestTemplateInfo*[1] {
                 new TestTemplateInfo(FeedTemplateId::fortsSnapshot, 3, "symbol1", 111111, false, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo(111111),
                                              new TestTemplateItemInfo(222222),
-                                     }, 2, 4),
-                new TestTemplateInfo(FeedTemplateId::fortsSnapshot, 4, "symbol1", 111111, false, false,
-                                     new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo(111111),
-                                             new TestTemplateItemInfo(222222),
                                      }, 2, 4)
-        }, 2);
+        }, 1);
 
         if(!snapForts->Listen_Atom_Snapshot_Core())
             throw;
         if(snapForts->m_state != FeedConnectionState::fcsListenSnapshot)
             throw;
-        if(snapForts->m_startMsgSeqNum != 5)
+        if(snapForts->m_startMsgSeqNum != 4)
             throw;
-        if(snapForts->m_endMsgSeqNum != 4)
+        if(snapForts->m_endMsgSeqNum != 3)
             throw;
         if(snapForts->m_snapshotRouteFirst != -1)
+            throw;
+        if(snapForts->m_snapshotRouteFirst != -1)
+            throw;
+        if(snapForts->m_nextFortsSnapshotRouteFirst != -1) // we do not know what message is route firts - until we receive last fragment
             throw;
         if(!snapForts->m_waitTimer->Active())
             throw;
 
         SendMessages(snapForts, new TestTemplateInfo*[2] {
-                new TestTemplateInfo(FeedTemplateId::fortsSnapshot, 5, "symbol1", 111111, false, false,
+                new TestTemplateInfo(FeedTemplateId::fortsSnapshot, 4, "symbol1", 111111, false, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo(111111),
                                              new TestTemplateItemInfo(222222),
                                      }, 2, 4),
-                new TestTemplateInfo(FeedTemplateId::fortsSnapshot, 6, "symbol1", 111111, true, false,
+                new TestTemplateInfo(FeedTemplateId::fortsSnapshot, 5, "symbol1", 111111, false, true,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo(111111),
                                              new TestTemplateItemInfo(222222),
@@ -2021,11 +2007,41 @@ public:
             throw;
         if(snapForts->m_state != FeedConnectionState::fcsListenSnapshot)
             throw;
-        if(snapForts->m_startMsgSeqNum != 7)
+        if(snapForts->m_startMsgSeqNum != 6)
             throw;
-        if(snapForts->m_endMsgSeqNum != 6)
+        if(snapForts->m_endMsgSeqNum != 5)
             throw;
-        if(snapForts->m_snapshotRouteFirst != 6)
+        if(snapForts->m_snapshotRouteFirst != -1)
+            throw;
+        if(snapForts->m_nextFortsSnapshotRouteFirst != 6) // we do not know what message is route firts - until we receive last fragment
+            throw;
+        if(!snapForts->m_waitTimer->Active())
+            throw;
+
+        SendMessages(snapForts, new TestTemplateInfo*[2] {
+                new TestTemplateInfo(FeedTemplateId::fortsSnapshot, 6, "symbol1", 111111, false, false, // a-ha we received last fragment
+                                     new TestTemplateItemInfo*[2] {
+                                             new TestTemplateItemInfo(111111),
+                                             new TestTemplateItemInfo(222222),
+                                     }, 2, 4),
+                new TestTemplateInfo(FeedTemplateId::fortsSnapshot, 7, "symbol1", 111111, false, true,
+                                     new TestTemplateItemInfo*[2] {
+                                             new TestTemplateItemInfo(111111),
+                                             new TestTemplateItemInfo(222222),
+                                     }, 2, 4)
+        }, 2);
+
+        if(!snapForts->Listen_Atom_Snapshot_Core())
+            throw;
+        if(snapForts->m_state != FeedConnectionState::fcsListenSnapshot)
+            throw;
+        if(snapForts->m_startMsgSeqNum != 8)
+            throw;
+        if(snapForts->m_endMsgSeqNum != 7)
+            throw;
+        if(snapForts->m_snapshotRouteFirst != -1)
+            throw;
+        if(snapForts->m_nextFortsSnapshotRouteFirst != 8) // we do not know next route firts but it should remain prev route first
             throw;
         if(!snapForts->m_waitTimer->Active())
             throw;
@@ -2040,11 +2056,13 @@ public:
 
         if(snapForts->m_state != FeedConnectionState::fcsListenSnapshot)
             throw;
-        if(snapForts->m_startMsgSeqNum != 7)
+        if(snapForts->m_startMsgSeqNum != 8)
             throw;
-        if(snapForts->m_endMsgSeqNum != 6)
+        if(snapForts->m_endMsgSeqNum != 7)
             throw;
-        if(snapForts->m_snapshotRouteFirst != 6)
+        if(snapForts->m_snapshotRouteFirst != -1)
+            throw;
+        if(snapForts->m_nextFortsSnapshotRouteFirst != 8) // we do not know next route firts but it should remain prev route first
             throw;
         if(!snapForts->m_waitTimer->Active())
             throw;
@@ -2221,16 +2239,24 @@ public:
         incForts->StartListenSnapshot();
 
         SendMessages(snapForts, new TestTemplateInfo*[1] {
-                new TestTemplateInfo(FeedTemplateId::fortsSnapshot, 2, "symbol1", 111111, true, true,
+                new TestTemplateInfo(FeedTemplateId::fortsSnapshot, 2, "symbol1", 111111, false, true,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo(111111),
-                                             new TestTemplateItemInfo(222222),
+                                             new TestTemplateItemInfo(111111, 100),
+                                             new TestTemplateItemInfo(222222, 200),
                                      }, 2, 4)
         }, 1);
 
-        if(snapForts->m_startMsgSeqNum != 2)
+        snapForts->Listen_Atom_Snapshot_Core();
+        SendMessages(snapForts, new TestTemplateInfo*[1] {
+                new TestTemplateInfo(FeedTemplateId::fortsSnapshot, 3, "symbol1", 111111, false, true,
+                                     new TestTemplateItemInfo*[2] {
+                                             new TestTemplateItemInfo(111111, 300),
+                                             new TestTemplateItemInfo(222222, 400),
+                                     }, 2, 5)
+        }, 1);
+        if(snapForts->m_startMsgSeqNum != 3)
             throw;
-        if(snapForts->m_endMsgSeqNum != 2)
+        if(snapForts->m_endMsgSeqNum != 3)
             throw;
 
         snapForts->Listen_Atom_Snapshot_Core();
@@ -2248,9 +2274,9 @@ public:
             throw;
         if(snapForts->m_snapshotLastFragment != -1)
             throw;
-        if(snapForts->m_startMsgSeqNum != 3)
+        if(snapForts->m_startMsgSeqNum != 4)
             throw;
-        if(snapForts->m_endMsgSeqNum != 2)
+        if(snapForts->m_endMsgSeqNum != 3)
             throw;
     }
 
@@ -2264,23 +2290,32 @@ public:
             throw;
 
         SendMessages(snapForts, new TestTemplateInfo*[2] {
-                new TestTemplateInfo(FeedTemplateId::fortsSnapshot, 2, "symbol1", 111111, true, false,
+                new TestTemplateInfo(FeedTemplateId::fortsSnapshot, 6, "symbol1", 111111, false, true,
+                                     new TestTemplateItemInfo*[2] {
+                                             new TestTemplateItemInfo(111111),
+                                             new TestTemplateItemInfo(222222),
+                                     }, 2, 3)
+        } , 1); // for route firts
+        snapForts->Listen_Atom_Snapshot_Core();
+
+        SendMessages(snapForts, new TestTemplateInfo*[2] {
+                new TestTemplateInfo(FeedTemplateId::fortsSnapshot, 7, "symbol1", 111111, true, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo(111111),
                                              new TestTemplateItemInfo(222222),
                                      }, 2, 4),
-                new TestTemplateInfo(FeedTemplateId::fortsSnapshot, 4, "symbol1", 111111, false, true,
+                new TestTemplateInfo(FeedTemplateId::fortsSnapshot, 9, "symbol1", 111111, false, true,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo(111111),
                                              new TestTemplateItemInfo(222222),
-                                     }, 2, 6),
+                                     }, 2, 6)
         }, 2);
 
-        if(snapForts->Packet(3)->m_address != 0)
+        if(snapForts->Packet(8)->m_address != 0)
             throw;
-        if(snapForts->m_startMsgSeqNum != 2)
+        if(snapForts->m_startMsgSeqNum != 7)
             throw;
-        if(snapForts->m_endMsgSeqNum != 4)
+        if(snapForts->m_endMsgSeqNum != 9)
             throw;
         if(snapForts->m_waitTimer->Active(1))
             throw;
@@ -2293,9 +2328,9 @@ public:
 
         if(!snapForts->m_waitTimer->Active(1))
             throw;
-        if(snapForts->m_startMsgSeqNum != 3)
+        if(snapForts->m_startMsgSeqNum != 8)
             throw;
-        if(snapForts->m_snapshotRouteFirst != 2)
+        if(snapForts->m_snapshotRouteFirst != 7)
             throw;
         if(snapForts->m_snapshotLastFragment != -1)
             throw;
@@ -2329,17 +2364,17 @@ public:
         SendMessages(incForts, new TestTemplateInfo*[4] {
                 new TestTemplateInfo(FeedTemplateId::fortsIncremental, 1,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo("symbol1", 111111, 1),
-                                             new TestTemplateItemInfo("symbol2", 111111, 1),
+                                             new TestTemplateItemInfo("symbol1", 111111, 111111, 1),
+                                             new TestTemplateItemInfo("symbol2", 222222, 111111, 1),
                                      }, 2),
                 new TestTemplateInfo(FeedTemplateId::fortsIncremental, 3,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo("symbol1", 111111, 4),
-                                             new TestTemplateItemInfo("symbol2", 111111, 4),
+                                             new TestTemplateItemInfo("symbol1", 111111, 111111, 4),
+                                             new TestTemplateItemInfo("symbol2", 222222, 111111, 4),
                                      }, 2)
         }, 2);
 
-        if(!incForts->Listen_Atom_Incremental_Core())
+        if(!incForts->Listen_Atom_Incremental_Forts_Core())
             throw;
 
         this->TestTableItemsAllocator(incForts->OrderBookForts());
@@ -2352,9 +2387,19 @@ public:
         // wait
         while(incForts->m_waitTimer->ElapsedMilliseconds() < incForts->WaitLostIncrementalMessageMaxTimeMs());
 
+        SendMessages(snapForts, new TestTemplateInfo*[4] { // for route firts - this message will not be applied
+                new TestTemplateInfo(FeedTemplateId::fortsSnapshot, 3, "symbol1", 111111, false, true,
+                                     new TestTemplateItemInfo*[2] {
+                                             new TestTemplateItemInfo(111111),
+                                             new TestTemplateItemInfo(111111),
+                                     }, 2, 4)
+        }, 1);
+        if(!snapForts->Listen_Atom_Snapshot_Core())
+            throw;
+
         // sending snapshot for only one item and rpt seq before last incremental message
         SendMessages(snapForts, new TestTemplateInfo*[4] {
-                new TestTemplateInfo(FeedTemplateId::fortsSnapshot, 2, "symbol1", 111111, true, true,
+                new TestTemplateInfo(FeedTemplateId::fortsSnapshot, 4, "symbol1", 111111, true, true,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo(111111),
                                              new TestTemplateItemInfo(111111),
@@ -2957,8 +3002,9 @@ public:
         incForts->Start();
 
         SendMessages(incForts, snapForts,
-                     "obr entry symbol1 sid 111111 111111, obr entry symbol2 sid 222222 111111, lost obr entry symbol1 sid 111111 222222, wait_snap, hbeat                               lost obr entry symbol1 sid 111111 333333,               obr entry symbol1 sid 111111 444444",
-                     "                                                                   obs begin symbol1 sid 111111 rpt 2 entry symbol1 sid 111111 222222 end, obs symbol2 begin rpt 1 entry symbol2 sid 222222 111111 end, hbeat",
+                     "obr entry symbol1 sid 111111 111111, obr entry symbol2 sid 222222 111111, lost obr entry symbol1 sid 111111 222222,"
+                             "wait_snap, lost obr entry symbol1 sid 111111 333333,                               obr entry symbol1 sid 111111 444444",
+                     "        hbeat,     obs begin symbol1 sid 111111 rpt 2 entry symbol1 sid 111111 222222 end, obs symbol2 begin rpt 1 entry symbol2 sid 222222 111111 end, hbeat",
                      30);
         if(incForts->CanStopListeningSnapshot())
             throw;
@@ -2991,8 +3037,11 @@ public:
         incForts->Start();
 
         SendMessages(incForts, snapForts,
-                     "obr entry symbol1 sid 111111 111111, obr entry symbol2 sid 222222 111111, lost obr entry symbol1 sid 111111 222222, wait_snap, hbeat                               lost obr entry symbol1 sid 111111 333333,               obr entry symbol1 sid 111111 444444, hbeat ",
-                     "                                                                   obs begin symbol1 sid 111111 rpt 2 entry symbol1 sid 111111 222222 end, obs symbol2 begin rpt 1 entry symbol2 sid 222222 111111 end, hbeat          , obs begin symbol1 sid 111111 rpt 3 entry symbol1 sid 111111 333333 end",
+                     "obr entry symbol1 sid 111111 111111 px 100, "
+                             "obr entry symbol2 sid 222222 111111 px 100, "
+                             "lost obr entry symbol1 sid 111111 222222 px 200, "
+                             "wait_snap,                                                                     lost obr entry symbol1 sid 111111 333333,                                      obr entry symbol1 sid 111111 444444, hbeat ",
+                             "obs begin symbol1 sid 111111 rpt 2 entry symbol1 sid 111111 222222 px 200 end, obs begin symbol2 sid 222222 rpt 1 entry symbol2 sid 222222 111111 px 100 end, hbeat,                               obs begin symbol1 sid 111111 rpt 3 entry symbol1 sid 111111 333333 px 300 end",
                      30);
         if(!incForts->CanStopListeningSnapshot())
             throw;
@@ -3163,55 +3212,55 @@ public:
     }
     // messages should be clear in snapshot connection because the are repeat
     void TestConnection_ClearSnapshotMessages() {
-        printf("OLR CURR TestConnection_ClearSnapshotMessages_1\n");
+        printf("OBR FORTS TestConnection_ClearSnapshotMessages_1\n");
         TestConnection_ClearSnapshotMessages_1();
-        printf("OLR CURR TestConnection_ClearSnapshotMessages_2\n");
+        printf("OBR FORTS TestConnection_ClearSnapshotMessages_2\n");
         TestConnection_ClearSnapshotMessages_2();
-        printf("OLR CURR TestConnection_ClearSnapshotMessages_3\n");
+        printf("OBR FORTS TestConnection_ClearSnapshotMessages_3\n");
         TestConnection_ClearSnapshotMessages_3();
-        printf("OLR CURR TestConnection_ClearSnapshotMessages_4\n");
+        printf("OBR FORTS TestConnection_ClearSnapshotMessages_4\n");
         TestConnection_ClearSnapshotMessages_4();
     }
     void TestConnection_ParallelWorkingIncrementalAndSnapshot() {
-        printf("OLR CURR TestConnection_EnterSnapshotMode\n");
+        printf("OBR FORTS TestConnection_EnterSnapshotMode\n");
         TestConnection_EnterSnapshotMode();
-        printf("OLR CURR TestConnection_ClearSnapshotMessages\n");
+        printf("OBR FORTS TestConnection_ClearSnapshotMessages\n");
         TestConnection_ClearSnapshotMessages();
-        printf("OLR CURR TestConnection_ParallelWorkingIncrementalAndSnapshot_1\n");
+        printf("OBR FORTS TestConnection_ParallelWorkingIncrementalAndSnapshot_1\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_1();
-        printf("OLR CURR TestConnection_ParallelWorkingIncrementalAndSnapshot_2\n");
+        printf("OBR FORTS TestConnection_ParallelWorkingIncrementalAndSnapshot_2\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_2();
-        printf("OLR CURR TestConnection_ParallelWorkingIncrementalAndSnapshot_2_1\n");
+        printf("OBR FORTS TestConnection_ParallelWorkingIncrementalAndSnapshot_2_1\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_2_1();
-        printf("OLR CURR TestConnection_ParallelWorkingIncrementalAndSnapshot_3\n");
+        printf("OBR FORTS TestConnection_ParallelWorkingIncrementalAndSnapshot_3\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_3();
-        printf("OLR CURR TestConnection_ParallelWorkingIncrementalAndSnapshot_3_1\n");
+        printf("OBR FORTS TestConnection_ParallelWorkingIncrementalAndSnapshot_3_1\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_3_1();
-        printf("OLR CURR TestConnection_ParallelWorkingIncrementalAndSnapshot_4\n");
+        printf("OBR FORTS TestConnection_ParallelWorkingIncrementalAndSnapshot_4\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_4();
-        printf("OLR CURR TestConnection_ParallelWorkingIncrementalAndSnapshot_5\n");
+        printf("OBR FORTS TestConnection_ParallelWorkingIncrementalAndSnapshot_5\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_5();
-        printf("OLR CURR TestConnection_ParallelWorkingIncrementalAndSnapshot_5_1\n");
+        printf("OBR FORTS TestConnection_ParallelWorkingIncrementalAndSnapshot_5_1\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_5_1();
-        printf("OLR CURR TestConnection_ParallelWorkingIncrementalAndSnapshot_5_2\n");
+        printf("OBR FORTS TestConnection_ParallelWorkingIncrementalAndSnapshot_5_2\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_5_2();
-        printf("OLR CURR TestConnection_ParallelWorkingIncrementalAndSnapshot_5_2_2\n");
+        printf("OBR FORTS TestConnection_ParallelWorkingIncrementalAndSnapshot_5_2_2\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_5_2_2();
-        printf("OLR CURR TestConnection_ParallelWorkingIncrementalAndSnapshot_5_3\n");
+        printf("OBR FORTS TestConnection_ParallelWorkingIncrementalAndSnapshot_5_3\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_5_3();
-        printf("OLR CURR TestConnection_ParallelWorkingIncrementalAndSnapshot_5_4\n");
+        printf("OBR FORTS TestConnection_ParallelWorkingIncrementalAndSnapshot_5_4\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_5_4();
-        printf("OLR CURR TestConnection_ParallelWorkingIncrementalAndSnapshot_5_4_1\n");
+        printf("OBR FORTS TestConnection_ParallelWorkingIncrementalAndSnapshot_5_4_1\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_5_4_1();
-        printf("OLR CURR TestConnection_ParallelWorkingIncrementalAndSnapshot_5_4_2\n");
+        printf("OBR FORTS TestConnection_ParallelWorkingIncrementalAndSnapshot_5_4_2\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_5_4_2();
-        printf("OLR CURR TestConnection_ParallelWorkingIncrementalAndSnapshot_5_5\n");
+        printf("OBR FORTS TestConnection_ParallelWorkingIncrementalAndSnapshot_5_5\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_5_5();
-        printf("OLR CURR TestConnection_ParallelWorkingIncrementalAndSnapshot_5_5_1\n");
+        printf("OBR FORTS TestConnection_ParallelWorkingIncrementalAndSnapshot_5_5_1\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_5_5_1();
-        printf("OLR CURR TestConnection_ParallelWorkingIncrementalAndSnapshot_5_6\n");
+        printf("OBR FORTS TestConnection_ParallelWorkingIncrementalAndSnapshot_5_6\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_5_6();
-        printf("OLR CURR TestConnection_ParallelWorkingIncrementalAndSnapshot_5_7\n");
+        printf("OBR FORTS TestConnection_ParallelWorkingIncrementalAndSnapshot_5_7\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot_5_7();
     }
 
@@ -3227,17 +3276,17 @@ public:
         SendMessages(incForts, new TestTemplateInfo*[4] {
                 new TestTemplateInfo(FeedTemplateId::fortsIncremental, 1,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo("symbol1", 111111, 1),
-                                             new TestTemplateItemInfo("symbol2", 111111, 1),
+                                             new TestTemplateItemInfo("symbol1", 111111, 111111, 1),
+                                             new TestTemplateItemInfo("symbol2", 222222, 111111, 1),
                                      }, 2),
                 new TestTemplateInfo(FeedTemplateId::fortsIncremental, 3,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo("symbol1", 111111, 4),
-                                             new TestTemplateItemInfo("symbol2", 111111, 4),
+                                             new TestTemplateItemInfo("symbol1", 111111, 111111, 4),
+                                             new TestTemplateItemInfo("symbol2", 222222, 111111, 4),
                                      }, 2)
         }, 2);
 
-        if(!incForts->Listen_Atom_Incremental_Core())
+        if(!incForts->Listen_Atom_Incremental_Forts_Core())
             throw;
 
         this->TestTableItemsAllocator(incForts->OrderBookForts());
@@ -3246,87 +3295,87 @@ public:
     }
 
     void TestConnection() {
-        printf("OLR CURR TestConnection_AllSymbolsAreOk\n");
+        printf("OBR FORTS TestConnection_AllSymbolsAreOk\n");
         TestConnection_AllSymbolsAreOk();
-        printf("OLR CURR TestConnection_ResetEntriesQueueIfNullSnapshotIsReceived\n");
+        printf("OBR FORTS TestConnection_ResetEntriesQueueIfNullSnapshotIsReceived\n");
         TestConnection_ResetEntriesQueueIfNullSnapshotIsReceived();
-        printf("OLR CURR TestConnection_AllSymbolsAreOkButOneMessageLost\n");
+        printf("OBR FORTS TestConnection_AllSymbolsAreOkButOneMessageLost\n");
         TestConnection_AllSymbolsAreOkButOneMessageLost();
-        printf("OLR CURR TestConnection_SkipHearthBeatMessages_Incremental\n");
+        printf("OBR FORTS TestConnection_SkipHearthBeatMessages_Incremental\n");
         TestConnection_SkipHearthBeatMessages_Incremental();
-        printf("OLR CURR TestConnection_ParallelWorkingIncrementalAndSnapshot\n");
+        printf("OBR FORTS TestConnection_ParallelWorkingIncrementalAndSnapshot\n");
         TestConnection_ParallelWorkingIncrementalAndSnapshot();
-        printf("OLR CURR TestConnection_NotAllSymbolsAreOk\n");
+        printf("OBR FORTS TestConnection_NotAllSymbolsAreOk\n");
         TestConnection_NotAllSymbolsAreOk();
-        printf("OLR CURR TestConnection_StopListeningSnapshotBecauseAllItemsIsUpToDate\n");
+        printf("OBR FORTS TestConnection_StopListeningSnapshotBecauseAllItemsIsUpToDate\n");
         TestConnection_StopListeningSnapshotBecauseAllItemsIsUpToDate();
-        printf("OLR CURR TestConnection_StopTimersAfterReconnect\n");
+        printf("OBR FORTS TestConnection_StopTimersAfterReconnect\n");
         TestConnection_StopTimersAfterReconnect();
-        printf("OLR CURR TestConnection_SnapshotSomeMessagesReceivedLater\n");
+        printf("OBR FORTS TestConnection_SnapshotSomeMessagesReceivedLater\n");
         TestConnection_SnapshotSomeMessagesReceivedLater();
-        printf("OLR CURR TestConnection_SnapshotSomeMessagesNotReceived\n");
+        printf("OBR FORTS TestConnection_SnapshotSomeMessagesNotReceived\n");
         TestConnection_SnapshotSomeMessagesNotReceived();
-        printf("OLR CURR TestConnection_LastFragmentReceivedBeforeRouteFirst\n");
+        printf("OBR FORTS TestConnection_LastFragmentReceivedBeforeRouteFirst\n");
         TestConnection_LastFragmentReceivedBeforeRouteFirst();
-        printf("OLR CURR TestConnection_RouteFirstReceived_AfterSomeDummyMessages\n");
+        printf("OBR FORTS TestConnection_RouteFirstReceived_AfterSomeDummyMessages\n");
         TestConnection_RouteFirstReceived_AfterSomeDummyMessages();
-        printf("OLR CURR TestConnection_RouteFirstReceived_Empty\n");
+        printf("OBR FORTS TestConnection_RouteFirstReceived_Empty\n");
         TestConnection_RouteFirstReceived_Empty();
-        printf("OLR CURR TestConnection_TestSnapshotNoMessagesAtAll\n");
+        printf("OBR FORTS TestConnection_TestSnapshotNoMessagesAtAll\n");
         TestConnection_TestSnapshotNoMessagesAtAll();
-        printf("OLR CURR TestConnection_OneMessageReceived\n");
+        printf("OBR FORTS TestConnection_OneMessageReceived\n");
         TestConnection_OneMessageReceived();
-        printf("OLR CURR TestConnection_Clear_AfterIncremental\n");
+        printf("OBR FORTS TestConnection_Clear_AfterIncremental\n");
         TestConnection_Clear_AfterIncremental();
-        printf("OLR CURR TestConnection_TestIncMessageLost_AndWaitTimerElapsed\n");
+        printf("OBR FORTS TestConnection_TestIncMessageLost_AndWaitTimerElapsed\n");
         TestConnection_TestIncMessageLost_AndWaitTimerElapsed();
-        printf("OLR CURR TestConnection_TestSnapshotCollect\n");
+        printf("OBR FORTS TestConnection_TestSnapshotCollect\n");
         TestConnection_TestSnapshotCollect();
-        printf("OLR CURR TestConnection_TestSnapshotNotCollect\n");
+        printf("OBR FORTS TestConnection_TestSnapshotNotCollect\n");
         TestConnection_TestSnapshotMessageLostAndTimeExpired();
-        printf("OLR CURR TestConnection_TestMessagesLost_2Items_SnapshotReceivedForOneItem\n");
+        printf("OBR FORTS TestConnection_TestMessagesLost_2Items_SnapshotReceivedForOneItem\n");
         TestConnection_TestMessagesLost_2Items_SnapshotReceivedForOneItem();
 
-        printf("OLR CURR TestConnection_EmptyTest\n");
+        printf("OBR FORTS TestConnection_EmptyTest\n");
         TestConnection_EmptyTest();
-        printf("OLR CURR TestConnection_TestCorrectIncMessages\n");
+        printf("OBR FORTS TestConnection_TestCorrectIncMessages\n");
         TestConnection_TestCorrectIncMessages();
-        printf("OLR CURR TestConnection_TestIncMessagesLost_AndWhenAppeared\n");
+        printf("OBR FORTS TestConnection_TestIncMessagesLost_AndWhenAppeared\n");
         TestConnection_TestIncMessagesLost_AndWhenAppeared();
-        printf("OLR CURR TestConnection_TestInc2MessagesLost_AppearedThen2Messages\n");
+        printf("OBR FORTS TestConnection_TestInc2MessagesLost_AppearedThen2Messages\n");
         TestConnection_TestInc2MessagesLost_AppearedThen2Messages();
-        printf("OLR CURR TestConnection_TestInc2MessagesLost_AppearedSeparately_1_2\n");
+        printf("OBR FORTS TestConnection_TestInc2MessagesLost_AppearedSeparately_1_2\n");
         TestConnection_TestInc2MessagesLost_AppearedSeparately_1_2();
-        printf("OLR CURR TestConnection_TestInc2MessagesLost_AppearedSeparately_2_1\n");
+        printf("OBR FORTS TestConnection_TestInc2MessagesLost_AppearedSeparately_2_1\n");
         TestConnection_TestInc2MessagesLost_AppearedSeparately_2_1();
     }
 
     void TestOrderTableItem() {
-        printf("OLR CURR TestTableItem_CorrectBegin\n");
+        printf("OBR FORTS TestTableItem_CorrectBegin\n");
         TestTableItem_CorrectBegin();
-        printf("OLR CURR TestTableItem_IncorrectBegin\n");
+        printf("OBR FORTS TestTableItem_IncorrectBegin\n");
         TestTableItem_IncorrectBegin();
-        printf("OLR CURR TestTableItem_SkipMessage\n");
+        printf("OBR FORTS TestTableItem_SkipMessage\n");
         TestTableItem_SkipMessage();
-        printf("OLR CURR TestTable_Default\n");
+        printf("OBR FORTS TestTable_Default\n");
         TestTable_Default();
-        printf("OLR CURR TestTable_AfterClear\n");
+        printf("OBR FORTS TestTable_AfterClear\n");
         TestTable_AfterClear();
-        printf("OLR CURR TestTable_CorrectBegin\n");
+        printf("OBR FORTS TestTable_CorrectBegin\n");
         TestTable_CorrectBegin();
-        printf("OLR CURR TestTable_IncorrectBegin\n");
+        printf("OBR FORTS TestTable_IncorrectBegin\n");
         TestTable_IncorrectBegin();
-        printf("OLR CURR TestTable_SkipMessages\n");
+        printf("OBR FORTS TestTable_SkipMessages\n");
         TestTable_SkipMessages();
-        printf("OLR CURR Test_2UsedItemsAfter2IncrementalMessages\n");
+        printf("OBR FORTS Test_2UsedItemsAfter2IncrementalMessages\n");
         Test_2UsedItemsAfter2IncrementalMessages();
-        printf("OLR CURR TestTable_CorrectApplySnapshot\n");
+        printf("OBR FORTS TestTable_CorrectApplySnapshot\n");
         TestTable_CorrectApplySnapshot();
-        printf("OLR CURR TestTable_CorrectApplySnapshot_2\n");
+        printf("OBR FORTS TestTable_CorrectApplySnapshot_2\n");
         TestTable_CorrectApplySnapshot_2();
-        printf("OLR CURR TestTable_IncorrectApplySnapshot\n");
+        printf("OBR FORTS TestTable_IncorrectApplySnapshot\n");
         TestTable_IncorrectApplySnapshot();
-        printf("OLR CURR TestTable_IncorrectApplySnapshot_WhenMessageSkipped\n");
+        printf("OBR FORTS TestTable_IncorrectApplySnapshot_WhenMessageSkipped\n");
         TestTable_IncorrectApplySnapshot_WhenMessageSkipped();
     }
 
@@ -3592,27 +3641,27 @@ public:
 
     void TestInfoAndItemInfoUsageAndAllocationCurr() {
         this->m_helper->SetFortsMode();
-        printf("OLR CURR TestInfoAndItemInfoUsageAndAllocationCurr_Inc_1\n");
+        printf("OBR FORTS TestInfoAndItemInfoUsageAndAllocationCurr_Inc_1\n");
         TestInfoAndItemInfoUsageAndAllocationCurr_Inc_1();
-        printf("OLR CURR TestInfoAndItemInfoUsageAndAllocationCurr_Inc_2\n");
+        printf("OBR FORTS TestInfoAndItemInfoUsageAndAllocationCurr_Inc_2\n");
         TestInfoAndItemInfoUsageAndAllocationCurr_Inc_2();
-        printf("OLR CURR TestInfoAndItemInfoUsageAndAllocationCurr_Inc_3\n");
+        printf("OBR FORTS TestInfoAndItemInfoUsageAndAllocationCurr_Inc_3\n");
         TestInfoAndItemInfoUsageAndAllocationCurr_Inc_3();
-        printf("OLR CURR TestInfoAndItemInfoUsageAndAllocationCurr_Inc_4\n");
+        printf("OBR FORTS TestInfoAndItemInfoUsageAndAllocationCurr_Inc_4\n");
         TestInfoAndItemInfoUsageAndAllocationCurr_Inc_4();
-        printf("OLR CURR TestInfoAndItemInfoUsageAndAllocationCurr_Inc_5\n");
+        printf("OBR FORTS TestInfoAndItemInfoUsageAndAllocationCurr_Inc_5\n");
         TestInfoAndItemInfoUsageAndAllocationCurr_Inc_5();
-        printf("OLR CURR TestInfoAndItemInfoUsageAndAllocationCurr_Snap_1\n");
+        printf("OBR FORTS TestInfoAndItemInfoUsageAndAllocationCurr_Snap_1\n");
         TestInfoAndItemInfoUsageAndAllocationCurr_Snap_1();
-        printf("OLR CURR TestInfoAndItemInfoUsageAndAllocationCurr_Snap_2\n");
+        printf("OBR FORTS TestInfoAndItemInfoUsageAndAllocationCurr_Snap_2\n");
         TestInfoAndItemInfoUsageAndAllocationCurr_Snap_2();
-        printf("OLR CURR TestInfoAndItemInfoUsageAndAllocationCurr_Snap_3\n");
+        printf("OBR FORTS TestInfoAndItemInfoUsageAndAllocationCurr_Snap_3\n");
         TestInfoAndItemInfoUsageAndAllocationCurr_Snap_3();
-        printf("OLR CURR TestInfoAndItemInfoUsageAndAllocationCurr_Snap_4\n");
+        printf("OBR FORTS TestInfoAndItemInfoUsageAndAllocationCurr_Snap_4\n");
         TestInfoAndItemInfoUsageAndAllocationCurr_Snap_4();
-        printf("OLR CURR TestInfoAndItemInfoUsageAndAllocationCurr_Snap_5\n");
+        printf("OBR FORTS TestInfoAndItemInfoUsageAndAllocationCurr_Snap_5\n");
         TestInfoAndItemInfoUsageAndAllocationCurr_Snap_5();
-        printf("OLR CURR TestInfoAndItemInfoUsageAndAllocationCurr_Snap_6\n");
+        printf("OBR FORTS TestInfoAndItemInfoUsageAndAllocationCurr_Snap_6\n");
         TestInfoAndItemInfoUsageAndAllocationCurr_Snap_6();
     }
 
@@ -4378,36 +4427,36 @@ public:
 
 
     void Test_OnIncrementalRefresh_FORTS_OBR_Aggregated() {
-        printf("OLR CURR Test_OnIncrementalRefresh_FORTS_OBR_Add_Aggregated\n");
+        printf("OBR FORTS Test_OnIncrementalRefresh_FORTS_OBR_Add_Aggregated\n");
         Test_OnIncrementalRefresh_FORTS_OBR_Add_Aggregated();
-        printf("OLR CURR Test_OnIncrementalRefresh_FORTS_OBR_Remove_Aggregated\n");
+        printf("OBR FORTS Test_OnIncrementalRefresh_FORTS_OBR_Remove_Aggregated\n");
         Test_OnIncrementalRefresh_FORTS_OBR_Remove_Aggregated();
-        printf("OLR CURR Test_OnIncrementalRefresh_FORTS_OBR_Change_Aggregated\n");
+        printf("OBR FORTS Test_OnIncrementalRefresh_FORTS_OBR_Change_Aggregated\n");
         Test_OnIncrementalRefresh_FORTS_OBR_Change_Aggregated();
-        printf("OLR CURR Test_Clear_Aggregated\n");
+        printf("OBR FORTS Test_Clear_Aggregated\n");
         Test_Clear();
     }
 
     void Test_OnIncrementalRefresh_FORTS_OBR_SellQuotes_Aggregated() {
-        printf("OLR CURR Test_OnIncrementalRefresh_FORTS_OBR_Add_SellQuotes_Aggregated\n");
+        printf("OBR FORTS Test_OnIncrementalRefresh_FORTS_OBR_Add_SellQuotes_Aggregated\n");
         Test_OnIncrementalRefresh_FORTS_OBR_Add_SellQuotes_Aggregated();
-        printf("OLR CURR Test_OnIncrementalRefresh_FORTS_OBR_Remove_SellQuotes_Aggregated\n");
+        printf("OBR FORTS Test_OnIncrementalRefresh_FORTS_OBR_Remove_SellQuotes_Aggregated\n");
         Test_OnIncrementalRefresh_FORTS_OBR_Remove_SellQuotes_Aggregated();
-        printf("OLR CURR Test_OnIncrementalRefresh_FORTS_OBR_Change_SellQuotes_Aggregated\n");
+        printf("OBR FORTS Test_OnIncrementalRefresh_FORTS_OBR_Change_SellQuotes_Aggregated\n");
         Test_OnIncrementalRefresh_FORTS_OBR_Change_SellQuotes_Aggregated();
-        printf("OLR CURR Test_Clear_SellQuotes_Aggregated\n");
+        printf("OBR FORTS Test_Clear_SellQuotes_Aggregated\n");
         Test_Clear_SellQuotes();
     }
 
     void Test_Aggregated() {
         this->m_helper->SetFortsMode();
-        printf("OLR CURR Test_OnIncrementalRefresh_FORTS_OBR\n");
+        printf("OBR FORTS Test_OnIncrementalRefresh_FORTS_OBR\n");
         Test_OnIncrementalRefresh_FORTS_OBR_Aggregated();
-        printf("OLR CURR Test_OnFullRefresh_OBS_CURR\n");
+        printf("OBR FORTS Test_OnFullRefresh_OBS_CURR\n");
         Test_OnFullRefresh_OBS_CURR_Aggregated();
-        printf("OLR CURR Test_OnIncrementalRefresh_FORTS_OBR_SellQuotes\n");
+        printf("OBR FORTS Test_OnIncrementalRefresh_FORTS_OBR_SellQuotes\n");
         Test_OnIncrementalRefresh_FORTS_OBR_SellQuotes_Aggregated();
-        printf("OLR CURR Test_OnFullRefresh_OBS_CURR_SellQuotes\n");
+        printf("OBR FORTS Test_OnFullRefresh_OBS_CURR_SellQuotes\n");
         Test_OnFullRefresh_OBS_CURR_SellQuotes_Aggregated();
     }
 

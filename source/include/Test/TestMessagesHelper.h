@@ -475,6 +475,7 @@ public:
     FortsDefaultIncrementalRefreshMessageInfo* CreateFortsDefaultIncrementalRefreshMessageInfo(TestTemplateInfo *tmp) {
         FortsDefaultIncrementalRefreshMessageInfo *info = new FortsDefaultIncrementalRefreshMessageInfo();
         info->MsgSeqNum = tmp->m_msgSeqNo;
+        info->NullMap |= FortsDefaultIncrementalRefreshMessageInfoNullIndices::LastFragmentNullIndex;
         info->MDEntriesCount = tmp->m_itemsCount;
         for(int i = 0; i < tmp->m_itemsCount; i++) {
             info->MDEntries[i] = CreateFortsOBRItemInfo(tmp->m_items[i]);
