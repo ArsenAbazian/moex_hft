@@ -24,6 +24,7 @@ WinSockManager::WinSockManager() {
     this->m_recvSize = 0;
 	this->m_pollIndex = -1;
     this->m_tempBuffer = new unsigned char[2000];
+    this->RegisterPoll();
 }
 
 

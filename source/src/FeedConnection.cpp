@@ -32,6 +32,10 @@ FeedConnection::FeedConnection(const char *id, const char *name, char value, Fee
     this->m_snapshotMaxTimeMs = 30;
     this->m_maxLostPacketCountForStartSnapshot = 2000;
 
+    this->m_astsSnapshotInfo = 0;
+    this->m_fortsSnapshotInfo = 0;
+    this->m_fortsTradingSessionStatus = 0;
+
     this->m_incremental = 0;
     this->m_snapshot = 0;
     this->m_connectionsToRecvSymbolsCount = 0;

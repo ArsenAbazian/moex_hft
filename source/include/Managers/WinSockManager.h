@@ -140,7 +140,7 @@ private:
 			printf("socket %d port %d\n", this->m_socket, sin.sin_port);
 	}
 	inline bool ReconnectMulticast() {
-		DefaultLogManager::Default->StartLog(LogMessageCode::lmcWinSockManager_Reconnect, this->m_serverAddressLogIndex);
+		//DefaultLogManager::Default->StartLog(LogMessageCode::lmcWinSockManager_Reconnect, this->m_serverAddressLogIndex);
 
 		if(this->m_connected) {
 			shutdown(this->m_socket, SHUT_RDWR);
@@ -149,8 +149,8 @@ private:
 
 		int result = close(this->m_socket);
 		if (result < 0) {
-			DefaultLogManager::Default->Write(LogMessageCode::lmcsocket_close);
-			DefaultLogManager::Default->EndLog(false, strerror(errno));
+			//DefaultLogManager::Default->Write(LogMessageCode::lmcsocket_close);
+			//DefaultLogManager::Default->EndLog(false, strerror(errno));
 			return false;
 		}
 
@@ -158,26 +158,26 @@ private:
 
 		this->m_socket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
 		if (this->m_socket < 0) {
-			DefaultLogManager::Default->Write(LogMessageCode::lmcsocket_socket);
-			DefaultLogManager::Default->EndLogErrNo(false, strerror(errno));
+			//DefaultLogManager::Default->Write(LogMessageCode::lmcsocket_socket);
+			//DefaultLogManager::Default->EndLogErrNo(false, strerror(errno));
 			return false;
 		}
 
 		int flag = 1;
 		if(setsockopt(this->m_socket,SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &flag, sizeof(flag)) < 0) {
-			DefaultLogManager::Default->EndLogErrNo(false, strerror(errno));
+			//DefaultLogManager::Default->EndLogErrNo(false, strerror(errno));
 			return false;
 		}
 
 		if(bind(this->m_socket, (struct sockaddr*)&(this->m_adress), sizeof(this->m_adress)) < 0) {
-			DefaultLogManager::Default->Write(LogMessageCode::lmcsocket_bind);
-			DefaultLogManager::Default->EndLogErrNo(false, strerror(errno));
+			//DefaultLogManager::Default->Write(LogMessageCode::lmcsocket_bind);
+			//DefaultLogManager::Default->EndLogErrNo(false, strerror(errno));
 			return false;
 		}
 
 		if(setsockopt(this->m_socket, IPPROTO_IP, IP_ADD_SOURCE_MEMBERSHIP, (char*)&(this->m_imr), sizeof(this->m_imr)) < 0) {
-			DefaultLogManager::Default->Write(LogMessageCode::lmcsocket_setsockopt);
-			DefaultLogManager::Default->EndLogErrNo(false, strerror(errno));
+			//DefaultLogManager::Default->Write(LogMessageCode::lmcsocket_setsockopt);
+			//DefaultLogManager::Default->EndLogErrNo(false, strerror(errno));
 			return false;
 		}
 
@@ -186,12 +186,12 @@ private:
 		this->UpdatePoll();
 
 		this->m_connected = true;
-		DefaultLogManager::Default->EndLog(true);
+		//DefaultLogManager::Default->EndLog(true);
 		return true;
 	}
 
 	inline bool ReconnectTcp() {
-		DefaultLogManager::Default->StartLog(LogMessageCode::lmcWinSockManager_Reconnect, this->m_serverAddressLogIndex);
+		//DefaultLogManager::Default->StartLog(LogMessageCode::lmcWinSockManager_Reconnect, this->m_serverAddressLogIndex);
 
 		if(this->m_connected) {
 			shutdown(this->m_socket, SHUT_RDWR);
@@ -200,7 +200,7 @@ private:
 
 		int result = close(this->m_socket);
 		if (result < 0) {
-			DefaultLogManager::Default->EndLog(false, strerror(errno));
+			//DefaultLogManager::Default->EndLog(false, strerror(errno));
 			return false;
 		}
 
@@ -209,20 +209,20 @@ private:
 								SOCK_STREAM,
 								IPPROTO_TCP);
 		if (this->m_socket < 0) {
-			DefaultLogManager::Default->EndLog(false, strerror(errno));
+			//DefaultLogManager::Default->EndLog(false, strerror(errno));
 			return false;
 		}
 
 		result = connect(this->m_socket, (const sockaddr*)&(this->m_adress), sizeof(this->m_adress));
 		if (result < 0) {
-			DefaultLogManager::Default->EndLog(false, strerror(errno));
+			//DefaultLogManager::Default->EndLog(false, strerror(errno));
 			return false;
 		}
 
 		this->UpdatePoll();
 
 		this->m_connected = true;
-		DefaultLogManager::Default->EndLog(true);
+		//DefaultLogManager::Default->EndLog(true);
 		return true;
 	}
 
@@ -233,7 +233,8 @@ public:
 	inline void UpdatePollStatus() {
 		if(poll(&(WinSockManager::m_pollFd[this->m_pollIndex]), 1, 0) == 0)
 			return;
-		WinSockManager::m_recvCount[this->m_pollIndex] = (WinSockManager::m_pollFd + this->m_pollIndex)->revents;
+		int revents = (WinSockManager::m_pollFd + this->m_pollIndex)->revents;
+		WinSockManager::m_recvCount[this->m_pollIndex] = revents & (POLLIN | POLLPRI);
 	}
 
 	inline static bool UpdateManagersPollStatus() {
@@ -251,7 +252,7 @@ public:
 		int *recv = WinSockManager::m_recvCount;
 		struct pollfd *pl = WinSockManager::m_pollFd;
 		for(int i = 0; i < WinSockManager::m_registeredCount; i++, recv++, pl++) {
-			*recv += pl->revents;
+			*recv = pl->revents & (POLLIN | POLLPRI);
 			pl->revents = 0;
 		}
 		return true;
@@ -267,7 +268,7 @@ public:
 		sprintf(this->m_fullAddress, "%s:%d (TCP)", server_address, server_port);
 		this->m_serverAddressLogIndex = DefaultLogMessageProvider::Default->RegisterText(this->m_fullAddress);
 
-		DefaultLogManager::Default->StartLog(LogMessageCode::lmcWinSockManager_Connect, this->m_serverAddressLogIndex);
+		//DefaultLogManager::Default->StartLog(LogMessageCode::lmcWinSockManager_Connect, this->m_serverAddressLogIndex);
 
 		this->m_connected = false;
 		this->m_socket = socket(AF_INET,
@@ -275,9 +276,11 @@ public:
 								IPPROTO_TCP);
 
 		if (this->m_socket < 0) {
-			DefaultLogManager::Default->EndLogErrNo(false, strerror(errno));
+			//DefaultLogManager::Default->EndLogErrNo(false, strerror(errno));
 			return false;
 		}
+
+		this->UpdatePoll();
 
 		this->m_addressSize = sizeof(sockaddr_in);
 		bzero(&this->m_adress, sizeof(sockaddr_in));
@@ -289,17 +292,12 @@ public:
 		int result = connect(this->m_socket, (struct sockaddr*)&(this->m_adress), sizeof(this->m_adress));
 		if(result < 0) {
 			close(this->m_socket);
-			DefaultLogManager::Default->EndLogErrNo(false, strerror(errno));
+			//DefaultLogManager::Default->EndLogErrNo(false, strerror(errno));
 			return false;
 		}
 #endif
 
-		if(this->m_pollIndex == -1)
-			this->RegisterPoll();
-		else
-			this->UpdatePoll();
-
-		DefaultLogManager::Default->EndLog(true);
+		//DefaultLogManager::Default->EndLog(true);
 		this->m_connected = true;
 		return true;
 	}
@@ -312,17 +310,18 @@ public:
 		sprintf(this->m_fullAddress, "%s-%s:%d (UDP)", sourceIp, groupIp, groupPort);
 		this->m_serverAddressLogIndex = DefaultLogMessageProvider::Default->RegisterText(this->m_fullAddress);
 
-		DefaultLogManager::Default->StartLog(LogMessageCode::lmcWinSockManager_ConnectFast, this->m_serverAddressLogIndex);
+		//DefaultLogManager::Default->StartLog(LogMessageCode::lmcWinSockManager_ConnectFast, this->m_serverAddressLogIndex);
 
 		this->m_socket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
 		if (this->m_socket < 0) {
-			DefaultLogManager::Default->EndLogErrNo(false, strerror(errno));
+			//DefaultLogManager::Default->EndLogErrNo(false, strerror(errno));
 			return false;
 		}
+		this->UpdatePoll();
 
 		int flag = 1;
 		if(setsockopt(this->m_socket,SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &flag, sizeof(flag)) < 0) {
-			DefaultLogManager::Default->EndLogErrNo(false, strerror(errno));
+			//DefaultLogManager::Default->EndLogErrNo(false, strerror(errno));
 			return false;
 		}
 
@@ -333,7 +332,7 @@ public:
 		this->m_adress.sin_port = htons(groupPort);
 
 		if(bind(this->m_socket, (struct sockaddr*)&(this->m_adress), sizeof(this->m_adress)) < 0) {
-			DefaultLogManager::Default->EndLogErrNo(false, strerror(errno));
+			//DefaultLogManager::Default->EndLogErrNo(false, strerror(errno));
 			return false;
 		}
 
@@ -345,18 +344,15 @@ public:
 		this->m_imr.imr_interface.s_addr = INADDR_ANY;
 
 		if(setsockopt(this->m_socket, IPPROTO_IP, IP_ADD_SOURCE_MEMBERSHIP, (char*)&(this->m_imr), sizeof(this->m_imr)) < 0) {
-			DefaultLogManager::Default->EndLogErrNo(false, strerror(errno));
+			//DefaultLogManager::Default->EndLogErrNo(false, strerror(errno));
 			return false;
 		}
 
 		//this->PrintSocketInfo();
 
-		if(this->m_pollIndex == -1)
-			this->RegisterPoll();
-		else
-			this->UpdatePoll();
 
-		DefaultLogManager::Default->EndLog(true);
+
+		//DefaultLogManager::Default->EndLog(true);
 		this->m_connected = true;
 		return true;
 #endif
@@ -369,7 +365,7 @@ public:
 		if (this->m_socket == -1)
 			return true;
 
-		DefaultLogManager::Default->StartLog(LogMessageCode::lmcWinSockManager_Close, this->m_serverAddressLogIndex);
+		//DefaultLogManager::Default->StartLog(LogMessageCode::lmcWinSockManager_Close, this->m_serverAddressLogIndex);
 		if (this->m_connected) {
 			shutdown(this->m_socket, SHUT_RDWR);
 			this->m_connected = false;
@@ -377,12 +373,13 @@ public:
 
 		int result = close(this->m_socket);
 		if (result != 0) {
-			DefaultLogManager::Default->EndLog(false, strerror(errno));
+			//DefaultLogManager::Default->EndLog(false, strerror(errno));
 			return false;
 		}
 		this->m_socket = -1;
+		this->UpdatePoll();
 
-		DefaultLogManager::Default->EndLog(true);
+		//DefaultLogManager::Default->EndLog(true);
 		return true;
 #endif
 	}

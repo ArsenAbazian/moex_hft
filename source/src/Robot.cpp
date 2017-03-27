@@ -667,10 +667,10 @@ bool Robot::MainLoopForts() {
         if(!this->Working())
             break;
 
-        if(w->ElapsedMilliseconds() > 5000) {
+        if(w->ElapsedMilliseconds() > 2000) {
             double nanosecPerCycle = w->ElapsedMilliseconds() * 1000.0 * 1000.0 / cycleCount;
             printf("--------\n");
-            printf("FORTS cycle count for 5 sec = %d. %g nanosec per cycle\n", cycleCount, nanosecPerCycle);
+            printf("FORTS cycle count for 2 sec = %d. %g nanosec per cycle\n", cycleCount, nanosecPerCycle);
             this->PrintStatistics();
 
             w->Reset();

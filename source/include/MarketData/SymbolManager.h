@@ -180,6 +180,9 @@ public:
         *wasNewlyAdded = false;
         return this->m_bucketList2[securityId];
     }
+    inline SymbolInfo* GetExistingSymbol(UINT64 securityId) {
+        return this->m_bucketList2[securityId];
+    }
     inline SymbolInfo* GetSymbol(UINT64 securityId) {
         bool wasNewlyAdded;
         SymbolInfo *info = this->GetSymbol(securityId, &wasNewlyAdded);

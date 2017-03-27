@@ -430,14 +430,14 @@ public:
     inline TABLEITEM<ITEMINFO>* GetItemByIndex(int symbolIndex, UINT32 tradingSession) {
         TABLEITEM<ITEMINFO> *item = 0;
         MarketSymbolInfo<TABLEITEM<ITEMINFO>> *s = this->m_symbols[symbolIndex];
-        TABLEITEM<ITEMINFO>* res = s->GetSession(tradingSession);
+        TABLEITEM<ITEMINFO>* res = s->Session(0);
         this->m_cachedItem = res;
         return res;
     }
     inline TABLEITEM<ITEMINFO>* GetItemByIndex(int symbolIndex) {
         TABLEITEM<ITEMINFO> *item = 0;
         MarketSymbolInfo<TABLEITEM<ITEMINFO>> *s = this->m_symbols[symbolIndex];
-        TABLEITEM<ITEMINFO>* res = s->GetSession(0);
+        TABLEITEM<ITEMINFO>* res = s->Session(0);
         this->m_cachedItem = res;
         return res;
     }
@@ -446,7 +446,7 @@ public:
         MarketSymbolInfo<TABLEITEM<ITEMINFO>> **s = this->m_symbols;
         for(int i = 0; i < this->m_symbolsCount; i++, s++) {
             if((*s)->SecurityID() == securityId) {
-                TABLEITEM<ITEMINFO>* res = (*s)->GetSession(tradingSession);
+                TABLEITEM<ITEMINFO>* res = (*s)->Session(tradingSession);
                 this->m_cachedItem = res;
                 return res;
             }
@@ -458,7 +458,7 @@ public:
         MarketSymbolInfo<TABLEITEM<ITEMINFO>> **s = this->m_symbols;
         for(int i = 0; i < this->m_symbolsCount; i++, s++) {
             if((*s)->SecurityID() == securityId) {
-                TABLEITEM<ITEMINFO>* res = (*s)->GetSession(0);
+                TABLEITEM<ITEMINFO>* res = (*s)->Session(0);
                 this->m_cachedItem = res;
                 return res;
             }

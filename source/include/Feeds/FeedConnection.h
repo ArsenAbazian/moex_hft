@@ -86,6 +86,10 @@ protected:
     int                                         m_lastMsgSeqNumProcessed;
 	int											m_rptSeq;
 
+    AstsSnapshotInfo                            *m_astsSnapshotInfo;
+    FortsSnapshotInfo                           *m_fortsSnapshotInfo;
+    FortsTradingSessionStatusInfo               *m_fortsTradingSessionStatus;
+
     int                                         m_waitLostIncrementalMessageMaxTimeMs;
     int                                         m_waitIncrementalMessageMaxTimeMs;
     int                                         m_snapshotMaxTimeMs;
@@ -408,7 +412,6 @@ protected:
     }
 
     inline bool ProcessServerCoreSecurityStatus(int size, int msgSeqNum) {
-        printf("status msgSeqNum = %d\n", msgSeqNum);
         if(msgSeqNum < this->m_windowMsgSeqNum) // out of window
             return true;
         if(msgSeqNum - this->m_windowMsgSeqNum >= this->m_packetsCount) {
@@ -795,9 +798,15 @@ protected:
     inline int GetFortsSnapshotSymbolIndex() {
         return this->m_symbolManager->GetSymbol(this->m_fortsSnapshotInfo->SecurityID)->m_index;
     }
+    inline SymbolInfo* GetFortsSnapshotSymbolInfo() {
+        return this->m_symbolManager->GetExistingSymbol(this->m_fortsSnapshotInfo->SecurityID);
+    }
 
     inline bool StartApplySnapshot_FORTS_OBS() {
-        this->m_incremental->OrderBookForts()->ObtainSnapshotItem(this->GetFortsSnapshotSymbolIndex(), this->m_fortsSnapshotInfo);
+        SymbolInfo *info = GetFortsSnapshotSymbolInfo();
+        if(info == 0)
+            return false; // do not apply snapshot - symbol does not exist
+        this->m_incremental->OrderBookForts()->ObtainSnapshotItem(info->m_index, this->m_fortsSnapshotInfo);
         if(this->m_incremental->OrderBookForts()->ApplyQuickSnapshot(this->m_fortsSnapshotInfo)) {
             return false; // skip all the snapshot
         }
@@ -825,7 +834,10 @@ protected:
     }
 
     inline bool StartApplySnapshot_FORTS_TLS() {
-        this->m_incremental->TradeForts()->ObtainSnapshotItem(this->GetFortsSnapshotSymbolIndex(), this->m_fortsSnapshotInfo);
+        SymbolInfo *info = GetFortsSnapshotSymbolInfo();
+        if(info == 0)
+            return false; // do not apply snapshot - symbol does not exist
+        this->m_incremental->TradeForts()->ObtainSnapshotItem(info->m_index, this->m_fortsSnapshotInfo);
         if(this->m_incremental->TradeForts()->ApplyQuickSnapshot(this->m_fortsSnapshotInfo)) {
             return false; // skip all the snapshot
         }
@@ -940,8 +952,13 @@ protected:
             return true;
         while(this->m_requestMessageStartIndex <= this->m_endMsgSeqNum) {
             this->m_requestMessageStartIndex = GetRequestMessageStartIndex(this->m_requestMessageStartIndex);
-            if(this->m_requestMessageStartIndex > this->m_endMsgSeqNum)
+            if(this->m_requestMessageStartIndex > this->m_endMsgSeqNum) {
+                if(this->HasQueueEntries() || this->SymbolsToRecvSnapshotCount() > 0) {
+                    if(this->m_snapshot->State() == FeedConnectionState::fcsSuspend)
+                        return this->StartListenSnapshot();
+                }
                 return true;
+            }
             int endIndex = GetRequestMessageEndIndex(this->m_requestMessageStartIndex);
             if(ShouldStartIncrementalSnapshot(endIndex)) {
                 this->m_requestMessageStartIndex = -1;
@@ -1422,8 +1439,6 @@ protected:
 		this->m_shouldUseNextState = true;
 	}
 
-    AstsSnapshotInfo *m_astsSnapshotInfo;
-    FortsSnapshotInfo *m_fortsSnapshotInfo;
     inline int GetLocalIndex(int msgSeqNo) { return msgSeqNo - this->m_windowMsgSeqNum; }
     inline int LocalIndexToMsgSeqNo(int index) { return index + this->m_windowMsgSeqNum; }
     inline bool FindRouteFirstAsts() {
@@ -1621,9 +1636,7 @@ protected:
         FeedConnectionMessageInfo *info = this->m_packets[this->m_startMsgSeqNum];
         this->m_fastProtocolManager->SetNewBuffer(info->m_address, info->m_size);
         FortsTradingSessionStatusInfo *sinfo = (FortsTradingSessionStatusInfo*)this->m_fastProtocolManager->DecodeFortsTradingSessionStatus();
-        sinfo->Clear();
-        //TODO finish this...
-        return true;
+        return this->m_incremental->OnTradingSessionStatusForts(sinfo);
     }
 
     inline bool StartApplySnapshot() {
@@ -2693,13 +2706,23 @@ protected:
 
     inline bool OnIncrementalRefresh_FORTS_OBR(FortsDefaultSnapshotMessageMDEntriesItemInfo *info) {
         // since there is fragmented messages
-        int index = this->m_symbolManager->GetSymbol(GetFortsSecurityId(info))->m_index;
-        return this->m_fortsOrderBookTable->ProcessIncremental(info, index);
+        SymbolInfo *smb = this->m_symbolManager->GetExistingSymbol(GetFortsSecurityId(info));
+        if(smb == 0) {
+            //TODO remove debug
+            printf("skip securityId = %" PRIu64 "\n", GetFortsSecurityId(info));
+            return true;
+        }
+        return this->m_fortsOrderBookTable->ProcessIncremental(info, smb->m_index);
     }
 
     inline bool OnIncrementalRefresh_FORTS_TLR(FortsDefaultSnapshotMessageMDEntriesItemInfo *info) {
-        int index = this->m_symbolManager->GetSymbol(GetFortsSecurityId(info))->m_index;
-        return this->m_fortsTradeBookTable->ProcessIncremental(info, index);
+        SymbolInfo *smb = this->m_symbolManager->GetExistingSymbol(GetFortsSecurityId(info));
+        if(smb == 0) {
+            //TODO remove debug
+            printf("skip securityId = %" PRIu64 "\n", GetFortsSecurityId(info));
+            return true;
+        }
+        return this->m_fortsTradeBookTable->ProcessIncremental(info, smb->m_index);
     }
 
     inline bool OnIncrementalRefresh_OLR_FOND(AstsIncrementalOLRFONDInfo *info) {
@@ -2782,6 +2805,14 @@ protected:
         return res;
     }
 
+    inline bool OnTradingSessionStatusForts(FortsTradingSessionStatusInfo *info) {
+        if(this->m_fortsTradingSessionStatus != 0)
+            this->m_fortsTradingSessionStatus->Clear();
+        info->Used = true;
+        this->m_fortsTradingSessionStatus = info;
+        return true;
+    }
+
     inline bool OnIncrementalRefresh_FORTS_OBR(FortsDefaultIncrementalRefreshMessageInfo *info) {
 //#ifdef COLLECT_STATISTICS
 //        ProgramStatistics::Current->IncCurrMsrProcessedCount();
@@ -2849,6 +2880,8 @@ protected:
                 return this->OnIncrementalRefresh_FORTS_TLR(
                         (FortsDefaultIncrementalRefreshMessageInfo *) this->m_fastProtocolManager->LastDecodeInfo());
         }
+        if(templateId == FeedTemplateId::fortsTradingSessionStatus)
+            return this->OnTradingSessionStatusForts((FortsTradingSessionStatusInfo*) this->m_fastProtocolManager->LastDecodeInfo());
         else if (templateId == FeedTemplateId::fortsHearthBeat)
             return true;
         else
@@ -2869,20 +2902,26 @@ protected:
 	}
 
     inline bool ProcessSecurityStatus(AstsSecurityStatusInfo *info) {
-        if(!this->m_securityDefinition->IsIdfDataCollected())
+        if(!this->m_securityDefinition->IsIdfDataCollected()) {
+            info->Clear();
             return true; // TODO just skip? Should we do something else?
+        }
         return this->m_securityDefinition->UpdateSecurityDefinition(info);
     }
 
     inline bool ProcessSecurityDefinitionUpdateReport(FortsSecurityDefinitionUpdateReportInfo *info) {
-        if(!this->m_securityDefinition->IsIdfDataCollected())
+        if(!this->m_securityDefinition->IsIdfDataCollected()) {
+            info->Clear();
             return true; // TODO just skip? Should we do something else?
+        }
         return this->m_securityDefinition->UpdateSecurityDefinition(info);
     }
 
     inline bool ProcessSecurityStatus(FortsSecurityStatusInfo *info) {
-        if(!this->m_securityDefinition->IsIdfDataCollected())
+        if(!this->m_securityDefinition->IsIdfDataCollected()) {
+            info->Clear();
             return true; // TODO just skip? Should we do something else?
+        }
         return this->m_securityDefinition->UpdateSecurityDefinition(info);
     }
 
@@ -3620,7 +3659,7 @@ public:
         (&(sd->Volatility))->Set(&(info->Volatility));
         (&(sd->TheorPrice))->Set(&(info->TheorPrice));
         (&(sd->TheorPriceLimit))->Set(&(info->TheorPriceLimit));
-        printf("%s sdur %s %lu\n", this->m_channelName, DebugInfoManager::Default->GetString(sd->Symbol, sd->SymbolLength, 0), info->SecurityID);
+        //printf("%s update report %s %lu msgSeqNum = %d\n", this->m_channelName, DebugInfoManager::Default->GetString(sd->Symbol, sd->SymbolLength, 0), info->SecurityID, info->MsgSeqNum);
         return true;
     }
 
