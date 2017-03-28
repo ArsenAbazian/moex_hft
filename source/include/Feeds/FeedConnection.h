@@ -947,7 +947,7 @@ protected:
 
     inline bool CheckRequestLostIncrementalMessages() {
         if(this->m_requestMessageStartIndex == -1)
-            return false;
+            return true;
         if(this->m_snapshot->State() != FeedConnectionState::fcsSuspend)
             return true;
         while(this->m_requestMessageStartIndex <= this->m_endMsgSeqNum) {
@@ -2662,17 +2662,11 @@ protected:
 	FILE *obrLogFile;
 
 	inline bool OnIncrementalRefresh_OLR_FOND(AstsOLSFONDItemInfo *info) {
-		if(info->MDEntryType[0] == MDEntryType::mdetEmptyBook) { // fatal!!!!!
-			return true; // TODO!!!!!
-		}
         int index = this->m_symbolManager->GetSymbol(info->Symbol, info->SymbolLength)->m_index;
 		return this->m_orderTableFond->ProcessIncremental(info, index, info->TradingSessionID, info->TradingSessionIDLength);
 	}
 
 	inline bool OnIncrementalRefresh_OLR_CURR(AstsOLSCURRItemInfo *info) {
-		if(info->MDEntryType[0] == MDEntryType::mdetEmptyBook) { // fatal!!!!!
-			return true; // TODO!!!!!
-		}
         int index = this->m_symbolManager->GetSymbol(info->Symbol, info->SymbolLength)->m_index;
 		return this->m_orderTableCurr->ProcessIncremental(info, index, info->TradingSessionID, info->TradingSessionIDLength);
 	}
@@ -3936,8 +3930,25 @@ public:
         if(st == FeedConnectionState::fcsConnect)
             return this->Reconnect_Atom();
         return true;
-
 	}
+    inline bool DoWorkAtomForts() {
+        FeedConnectionState st = this->m_state;
+        if(st == FeedConnectionState::fcsListenIncrementalForts)
+            return this->Listen_Atom_Incremental_Forts();
+        if(st == FeedConnectionState::fcsHistoricalReplay)
+            return this->HistoricalReplay_Atom();
+        if(st == FeedConnectionState::fcsListenSecurityDefinition)
+            return this->Listen_Atom_SecurityDefinition();
+        if(st == FeedConnectionState::fcsListenSecurityStatusForts)
+            return this->Listen_Atom_SecurityStatusForts();
+        if(st == FeedConnectionState::fcsListenSnapshot)
+            return this->Listen_Atom_Snapshot();
+        if(st == FeedConnectionState::fcsSuspend)
+            return true;
+        if(st == FeedConnectionState::fcsConnect)
+            return this->Reconnect_Atom();
+        return true;
+    }
     inline FeedConnectionState CalcListenStateByType() {
         if(m_type == FeedConnectionType::InstrumentDefinition)
             return FeedConnectionState::fcsListenSecurityDefinition;

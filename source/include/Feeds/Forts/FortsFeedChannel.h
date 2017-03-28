@@ -121,8 +121,9 @@ public:
     inline bool DoWorkInc(FortsMarketDataGroup *g) {
         if(g == 0)
             return true;
-        return g->Inc()->DoWorkAtom() &&
-                g->Snap()->DoWorkAtom();
+        bool res = g->Inc()->DoWorkAtom();
+        res &= g->Snap()->DoWorkAtom();
+        return res;
     }
 
     inline bool DoWorkFutures() {
