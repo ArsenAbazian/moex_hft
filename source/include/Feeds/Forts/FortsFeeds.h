@@ -145,6 +145,7 @@ public:
 #ifdef TEST
         FortsObjectsAllocationInfo::Default->AllocateDefaultSnapshotMessageMDEntriesItemInfoPool(100, 500);
 #else
+        FortsObjectsAllocationInfo::Default->AllocateTradingSessionStatusInfoPoolTo(100);
         FortsObjectsAllocationInfo::Default->AllocateDefaultSnapshotMessageMDEntriesItemInfoPool(300000, 500);
 #endif
     }
@@ -182,6 +183,7 @@ public:
         FortsObjectsAllocationInfo::Default->AllocateHeartbeatInfoPoolTo(10);
         FortsObjectsAllocationInfo::Default->AllocateDefaultIncrementalRefreshMessageInfoPool(10, 10);
         FortsObjectsAllocationInfo::Default->AllocateDefaultSnapshotMessageMDEntriesItemInfoPool(300000, 500);
+        FortsObjectsAllocationInfo::Default->AllocateTradingSessionStatusInfoPoolTo(100);
     }
     int GetPacketsCount() { return 10000; }
     ISocketBufferProvider* CreateSocketBufferProvider() {
@@ -207,6 +209,7 @@ public:
     }
     void AllocateFastObjects() {
         FortsObjectsAllocationInfo::Default->AllocateDefaultSnapshotMessageInfoPool(10, 10);
+        FortsObjectsAllocationInfo::Default->AllocateTradingSessionStatusInfoPoolTo(100);
     }
     int GetPacketsCount() {
 #ifdef TEST
@@ -271,7 +274,7 @@ public:
     int GetPacketsCount() { return 1000; }
     void AllocateFastObjects() {
         FortsObjectsAllocationInfo::Default->AllocateHeartbeatInfoPoolTo(10);
-        FortsObjectsAllocationInfo::Default->AllocateTradingSessionStatusInfoPoolTo(10);
+        FortsObjectsAllocationInfo::Default->AllocateTradingSessionStatusInfoPoolTo(100);
         FortsObjectsAllocationInfo::Default->AllocateSecurityStatusInfoPool(50, 10);
         FortsObjectsAllocationInfo::Default->AllocateSecurityDefinitionUpdateReportInfoPool(50, 10);
     }
@@ -311,7 +314,7 @@ public:
         FortsObjectsAllocationInfo::Default->AllocateSecurityDefinitionInfoPool(60, 10);
 #else
         FortsObjectsAllocationInfo::Default->AllocateHeartbeatInfoPoolTo(10);
-        FortsObjectsAllocationInfo::Default->AllocateTradingSessionStatusInfoPoolTo(10);
+        FortsObjectsAllocationInfo::Default->AllocateTradingSessionStatusInfoPoolTo(100);
         FortsObjectsAllocationInfo::Default->AllocateSecurityDefinitionInfoPool(6000, 500);
 #endif
         FortsObjectsAllocationInfo::Default->AllocateSecurityDefinitionMDFeedTypesItemInfoPool(sdSeqCount, sdSeqCountAdd);

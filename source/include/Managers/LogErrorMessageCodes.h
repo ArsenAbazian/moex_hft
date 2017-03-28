@@ -90,15 +90,15 @@ typedef enum _LogMessageCode {
 	lmcFeedConnection_Reconnect_Atom = 80,
 	lmcFeedConnection_SendCore = 81,
 	lmcWinSockManager_ConnectFast = 82,
-	lmcFeedConnection_Listen_Atom_Incremental = 83,
+	lmcFeedConnection_ListenIncremental = 83,
 	lmcFeedConnection_StartListenSnapshot = 84,
 	lmcFeedConnection_GetRouteFirst = 85,
 	lmcFeedConnection_GetLastFragment = 86,
 	lmcFeedConnection_StartNewSnapshot = 87,
-	lmcFeedConnection_Listen_Atom_Snapshot = 88,
+	lmcFeedConnection_ListenSnapshot = 88,
 	lmcFeedConnection_StopListenSnapshot = 89,
-	lmcFeedConnection_Listen_Atom_SecurityDefinition = 90,
-	lmcFeedConnection_Listen_Atom_SecurityStatus = 91,
+	lmcFeedConnection_ListenSecurityDefinition = 90,
+	lmcFeedConnection_ListenSecurityStatus = 91,
 	lmcsocket_close = 92,
 	lmcsocket_socket = 93,
 	lmcsocket_bind = 94,
@@ -111,7 +111,7 @@ typedef enum _LogMessageCode {
 	lmcRobot_GenerateSecurityDefinitionsForts = 101,
 	lmcFeedConnection_StartSecurityStatusSnapshot = 102,
 	lmcFeedConnection_FinishSecurityStatusSnapshot = 103,
-	lmcFeedConnection_Listen_Atom_SecurityStatusForts = 104
+	lmcFeedConnection_ListenSecurityStatusForts = 104
 #pragma  endregion
 }LogMessageCode;
 

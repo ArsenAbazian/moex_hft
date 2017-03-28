@@ -92,15 +92,15 @@ void LogMessageProvider::InitializeLogMessageText() {
 	this->m_logMessageText[LogMessageCode::lmcFeedConnection_Reconnect_Atom] = "FeedConnection::Reconnect_Atom";
 	this->m_logMessageText[LogMessageCode::lmcFeedConnection_SendCore] = "FeedConnection::SendCore";
 	this->m_logMessageText[LogMessageCode::lmcWinSockManager_ConnectFast] = "WinSockManager::ConnectFast";
-	this->m_logMessageText[LogMessageCode::lmcFeedConnection_Listen_Atom_Incremental] = "FeedConnection::Listen_Atom_Incremental";
+	this->m_logMessageText[LogMessageCode::lmcFeedConnection_ListenIncremental] = "FeedConnection::ListenIncremental";
 	this->m_logMessageText[LogMessageCode::lmcFeedConnection_StartListenSnapshot] = "FeedConnection::StartListenSnapshot";
 	this->m_logMessageText[LogMessageCode::lmcFeedConnection_GetRouteFirst] = "FeedConnection::GetRouteFirst";
 	this->m_logMessageText[LogMessageCode::lmcFeedConnection_GetLastFragment] = "FeedConnection::GetLastFragment";
 	this->m_logMessageText[LogMessageCode::lmcFeedConnection_StartNewSnapshot] = "FeedConnection::StartNewSnapshot";
-	this->m_logMessageText[LogMessageCode::lmcFeedConnection_Listen_Atom_Snapshot] = "FeedConnection::Listen_Atom_Snapshot";
+	this->m_logMessageText[LogMessageCode::lmcFeedConnection_ListenSnapshot] = "FeedConnection::ListenSnapshot";
 	this->m_logMessageText[LogMessageCode::lmcFeedConnection_StopListenSnapshot] = "FeedConnection::StopListenSnapshot";
-	this->m_logMessageText[LogMessageCode::lmcFeedConnection_Listen_Atom_SecurityDefinition] = "FeedConnection::Listen_Atom_SecurityDefinition";
-	this->m_logMessageText[LogMessageCode::lmcFeedConnection_Listen_Atom_SecurityStatus] = "FeedConnection::Listen_Atom_SecurityStatus";
+	this->m_logMessageText[LogMessageCode::lmcFeedConnection_ListenSecurityDefinition] = "FeedConnection::ListenSecurityDefinition";
+	this->m_logMessageText[LogMessageCode::lmcFeedConnection_ListenSecurityStatus] = "FeedConnection::ListenSecurityStatus";
 	this->m_logMessageText[LogMessageCode::lmcsocket_close] = "socket->close()";
 	this->m_logMessageText[LogMessageCode::lmcsocket_socket] = "socket->socket()";
 	this->m_logMessageText[LogMessageCode::lmcsocket_bind] = "socket->bind()";
@@ -113,7 +113,7 @@ void LogMessageProvider::InitializeLogMessageText() {
 	this->m_logMessageText[LogMessageCode::lmcRobot_GenerateSecurityDefinitionsForts] = "Robot::GenerateSecurityDefinitionsForts";
 	this->m_logMessageText[LogMessageCode::lmcFeedConnection_StartSecurityStatusSnapshot] = "FeedConnection::StartSecurityStatusSnapshot";
 	this->m_logMessageText[LogMessageCode::lmcFeedConnection_FinishSecurityStatusSnapshot] = "FeedConnection::FinishSecurityStatusSnapshot";
-	this->m_logMessageText[LogMessageCode::lmcFeedConnection_Listen_Atom_SecurityStatusForts] = "FeedConnection::Listen_Atom_SecurityStatusForts";
+	this->m_logMessageText[LogMessageCode::lmcFeedConnection_ListenSecurityStatusForts] = "FeedConnection::ListenSecurityStatusForts";
 #pragma endregion
 }
 

@@ -1862,7 +1862,7 @@ public:
                 idf_msg[idf_index]->m_msgSeqNo = idf_index + 1;
             if(!idf_msg[idf_index]->m_lost) {
                 SendMessage(fif, idf_msg[idf_index]);
-                if (!fif->Listen_Atom_SecurityDefinition_Core())
+                if (!fif->ListenSecurityDefinition_Core())
                     throw;
             }
             idf_index++;
@@ -1888,7 +1888,7 @@ public:
                 idf_msg[idf_index]->m_msgSeqNo = idf_index + 1;
             if(!idf_msg[idf_index]->m_lost) {
                 SendMessage(fif, idf_msg[idf_index]);
-                if (!fif->Listen_Atom_SecurityStatus_Core())
+                if (!fif->ListenSecurityStatus_Core())
                     throw;
             }
             idf_index++;
@@ -2058,7 +2058,7 @@ public:
                 if (isfIndex < isfCount) {
                     if (!tisf[isfIndex]->m_lost) {
                         SendMessage(isf, tisf[isfIndex]);
-                        if (!isf->Listen_Atom_SecurityStatus_Core())
+                        if (!isf->ListenSecurityStatus_Core())
                             throw;
                     }
                     isfIndex++;
@@ -2068,7 +2068,7 @@ public:
                 if (idfIndex < idfCount) {
                     if (!tidf[idfIndex]->m_lost) {
                         SendMessage(idf, tidf[idfIndex]);
-                        if (!idf->Listen_Atom_SecurityDefinition_Core())
+                        if (!idf->ListenSecurityDefinition_Core())
                             throw;
                         if (idf->IsIdfDataCollected()) {
                             if (startIsfAfterIdfComplete && isf->State() == FeedConnectionState::fcsSuspend) {
@@ -2114,13 +2114,13 @@ public:
             if(idf_index < idfMsgCount) {
                 if (!idf_msg[idf_index]->m_lost) {
                     SendMessage(fif, idf_msg[idf_index]);
-                    if (!fif->Listen_Atom_SecurityStatus_Core())
+                    if (!fif->ListenSecurityStatus_Core())
                         throw;
                 }
                 idf_index++;
             }
             else {
-                if (!fif->Listen_Atom_SecurityStatus_Core())
+                if (!fif->ListenSecurityStatus_Core())
                     throw;
             }
             w.Start();
@@ -2133,7 +2133,7 @@ public:
             if(!TestMessagesHelper::SkipTimeOutCheck && w.ElapsedMilliseconds(1) > 5000)
                 throw;
         }
-        if(!fif->Listen_Atom_SecurityStatus_Core())
+        if(!fif->ListenSecurityStatus_Core())
             throw;
     }
 
@@ -2248,9 +2248,9 @@ public:
 
     void ListenAtomIncremental(FeedConnection *fci) {
         if(this->IsForts())
-            fci->Listen_Atom_Incremental_Forts_Core();
+            fci->ListenIncremental_Forts_Core();
         else
-            fci->Listen_Atom_Incremental_Core();
+            fci->ListenIncremental_Core();
     }
 
     void SendMessages(FeedConnection *fci, FeedConnection *fcs, const char *inc, const char *snap, int delay) {
@@ -2306,7 +2306,7 @@ public:
                 }
                 if(snap_index < snapMsgCount)
                     snap_index++;
-                fcs->Listen_Atom_Snapshot_Core();
+                fcs->ListenSnapshot_Core();
             }
             else {
                 if (snap_index < snapMsgCount && snap_msg[snap_index]->m_skip) {

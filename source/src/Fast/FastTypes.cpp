@@ -4,5 +4,5 @@
 
 #include "FastTypes.h"
 
-AstsObjectsAllocationInfo* AstsObjectsAllocationInfo::Default = new AstsObjectsAllocationInfo(10);
-FortsObjectsAllocationInfo* FortsObjectsAllocationInfo::Default = new FortsObjectsAllocationInfo(10);
+AstsObjectsAllocationInfo* AstsObjectsAllocationInfo::Default = new AstsObjectsAllocationInfo(32);
+FortsObjectsAllocationInfo* FortsObjectsAllocationInfo::Default = new FortsObjectsAllocationInfo(32);

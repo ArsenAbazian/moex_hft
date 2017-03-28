@@ -844,7 +844,7 @@ public:
         }, 3);
 
 
-        if(!incCurr->Listen_Atom_Incremental_Core())
+        if(!incCurr->ListenIncremental_Core())
             throw;
 
         this->TestTableItemsAllocator(incCurr->TradeCurr());
@@ -875,7 +875,7 @@ public:
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "e3", 4, 3, 1, 3, 1),
                                      }, 1)
         }, 2);
-        if(!incCurr->Listen_Atom_Incremental_Core())
+        if(!incCurr->ListenIncremental_Core())
             throw;
 
         this->TestTableItemsAllocator(incCurr->TradeCurr());
@@ -902,7 +902,7 @@ public:
                                      }, 1)
         }, 1);
 
-        if(!incCurr->Listen_Atom_Incremental_Core())
+        if(!incCurr->ListenIncremental_Core())
             throw;
 
         this->TestTableItemsAllocator(incCurr->TradeCurr());
@@ -930,7 +930,7 @@ public:
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "e5", 5, 3, 1, 3, 1),
                                      }, 1)
         }, 2);
-        if(!incCurr->Listen_Atom_Incremental_Core())
+        if(!incCurr->ListenIncremental_Core())
             throw;
 
         this->TestTableItemsAllocator(incCurr->TradeCurr());
@@ -960,7 +960,7 @@ public:
                                      }, 2)
         }, 1);
 
-        if(!incCurr->Listen_Atom_Incremental_Core())
+        if(!incCurr->ListenIncremental_Core())
             throw;
 
         this->TestTableItemsAllocator(incCurr->TradeCurr());
@@ -988,7 +988,7 @@ public:
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "e5", 5, 3, 1, 3, 1),
                                      }, 1)
         }, 2);
-        if(!incCurr->Listen_Atom_Incremental_Core())
+        if(!incCurr->ListenIncremental_Core())
             throw;
 
         this->TestTableItemsAllocator(incCurr->TradeCurr());
@@ -1017,7 +1017,7 @@ public:
                                      }, 1)
         }, 1);
 
-        if(!incCurr->Listen_Atom_Incremental_Core())
+        if(!incCurr->ListenIncremental_Core())
             throw;
 
         this->TestTableItemsAllocator(incCurr->TradeCurr());
@@ -1040,7 +1040,7 @@ public:
                                      }, 1)
         }, 1);
 
-        if(!incCurr->Listen_Atom_Incremental_Core())
+        if(!incCurr->ListenIncremental_Core())
             throw;
 
         this->TestTableItemsAllocator(incCurr->TradeCurr());
@@ -1070,7 +1070,7 @@ public:
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "e5", 5, 3, 1, 3, 1),
                                      }, 1)
         }, 2);
-        if(!incCurr->Listen_Atom_Incremental_Core())
+        if(!incCurr->ListenIncremental_Core())
             throw;
 
         this->TestTableItemsAllocator(incCurr->TradeCurr());
@@ -1099,7 +1099,7 @@ public:
                                      }, 1)
         }, 1);
 
-        if(!incCurr->Listen_Atom_Incremental_Core())
+        if(!incCurr->ListenIncremental_Core())
             throw;
 
         this->TestTableItemsAllocator(incCurr->TradeCurr());
@@ -1122,7 +1122,7 @@ public:
                                      }, 1)
         }, 1);
 
-        if(!incCurr->Listen_Atom_Incremental_Core())
+        if(!incCurr->ListenIncremental_Core())
             throw;
 
         this->TestTableItemsAllocator(incCurr->TradeCurr());
@@ -1155,7 +1155,7 @@ public:
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "e5", 5, 3, 1, 3, 1),
                                      }, 1)
         }, 2);
-        if(!incCurr->Listen_Atom_Incremental_Core())
+        if(!incCurr->ListenIncremental_Core())
             throw;
 
         this->TestTableItemsAllocator(incCurr->TradeCurr());
@@ -1165,7 +1165,7 @@ public:
             throw;
         // wait
         while(incCurr->m_waitTimer->ElapsedMilliseconds() < incCurr->WaitLostIncrementalMessageMaxTimeMs());
-        if(!incCurr->Listen_Atom_Incremental_Core())
+        if(!incCurr->ListenIncremental_Core())
             throw;
         //entering snapshot mode
         if(snapCurr->State() != FeedConnectionState::fcsListenSnapshot)
@@ -1188,12 +1188,12 @@ public:
         if(!snapCurr->m_waitTimer->Active()) // start wait timer immediately
             throw;
 
-        snapCurr->Listen_Atom_Snapshot(); // activate timer 2 when first time no messages recv
+        snapCurr->ListenSnapshot(); // activate timer 2 when first time no messages recv
         //no messages
         while(snapCurr->m_waitTimer->ElapsedMilliseconds(2) <= snapCurr->WaitAnyPacketMaxTimeMs - 50) {
             if(!snapCurr->m_waitTimer->Active())
                 throw;
-            if(!snapCurr->Listen_Atom_Snapshot())
+            if(!snapCurr->ListenSnapshot())
                 throw; // nothing should be happens
             if(!snapCurr->m_waitTimer->Active(2))
                 throw;
@@ -1209,7 +1209,7 @@ public:
         if(!snapCurr->m_waitTimer->Active(2))
             throw;
 
-        if(!snapCurr->Listen_Atom_Snapshot()) // reconnect
+        if(!snapCurr->ListenSnapshot()) // reconnect
             throw;
         if(snapCurr->m_waitTimer->Active())
             throw;
@@ -1240,7 +1240,7 @@ public:
         while(snapCurr->m_waitTimer->ElapsedMilliseconds() < snapCurr->WaitSnapshotMaxTimeMs() / 2) {
             if(!snapCurr->m_waitTimer->Active())
                 throw;
-            if(!snapCurr->Listen_Atom_Snapshot())
+            if(!snapCurr->ListenSnapshot())
                 throw; // nothing should be happens
             if(snapCurr->m_endMsgSeqNum != -1)
                 throw;
@@ -1266,7 +1266,7 @@ public:
         if(snapCurr->m_waitTimer->ElapsedMilliseconds() >= snapCurr->WaitAnyPacketMaxTimeMs / 2)
             throw;
 
-        if(!snapCurr->Listen_Atom_Snapshot())
+        if(!snapCurr->ListenSnapshot())
             throw; // nothing should be happens
     }
 
@@ -1284,7 +1284,7 @@ public:
                                      }, 2, 4)
         }, 1);
 
-        if(!snapCurr->Listen_Atom_Snapshot_Core())
+        if(!snapCurr->ListenSnapshot_Core())
             throw;
         if(snapCurr->m_state != FeedConnectionState::fcsListenSnapshot)
             throw;
@@ -1298,11 +1298,11 @@ public:
             throw;
 
         // just empty cyccle - nothing should be changed
-        if(!snapCurr->Listen_Atom_Snapshot_Core())
+        if(!snapCurr->ListenSnapshot_Core())
             throw;
-        if(!snapCurr->Listen_Atom_Snapshot_Core())
+        if(!snapCurr->ListenSnapshot_Core())
             throw;
-        if(!snapCurr->Listen_Atom_Snapshot_Core())
+        if(!snapCurr->ListenSnapshot_Core())
             throw;
 
         if(snapCurr->m_state != FeedConnectionState::fcsListenSnapshot)
@@ -1332,7 +1332,7 @@ public:
                                      }, 2, 4)
         }, 1);
 
-        if(!snapCurr->Listen_Atom_Snapshot_Core())
+        if(!snapCurr->ListenSnapshot_Core())
             throw;
         if(snapCurr->m_state != FeedConnectionState::fcsListenSnapshot)
             throw;
@@ -1353,7 +1353,7 @@ public:
                                      }, 2, 4)
         }, 1);
 
-        if(!snapCurr->Listen_Atom_Snapshot_Core())
+        if(!snapCurr->ListenSnapshot_Core())
             throw;
         if(snapCurr->m_state != FeedConnectionState::fcsListenSnapshot)
             throw;
@@ -1379,7 +1379,7 @@ public:
                                      }, 2, 4)
         }, 2);
 
-        if(!snapCurr->Listen_Atom_Snapshot_Core())
+        if(!snapCurr->ListenSnapshot_Core())
             throw;
         if(snapCurr->m_state != FeedConnectionState::fcsListenSnapshot)
             throw;
@@ -1405,7 +1405,7 @@ public:
                                      }, 2, 4)
         }, 2);
 
-        if(!snapCurr->Listen_Atom_Snapshot_Core())
+        if(!snapCurr->ListenSnapshot_Core())
             throw;
         if(snapCurr->m_state != FeedConnectionState::fcsListenSnapshot)
             throw;
@@ -1419,11 +1419,11 @@ public:
             throw;
 
         // just empty cyccle - nothing should be changed
-        if(!snapCurr->Listen_Atom_Snapshot_Core())
+        if(!snapCurr->ListenSnapshot_Core())
             throw;
-        if(!snapCurr->Listen_Atom_Snapshot_Core())
+        if(!snapCurr->ListenSnapshot_Core())
             throw;
-        if(!snapCurr->Listen_Atom_Snapshot_Core())
+        if(!snapCurr->ListenSnapshot_Core())
             throw;
 
         if(snapCurr->m_state != FeedConnectionState::fcsListenSnapshot)
@@ -1452,7 +1452,7 @@ public:
                                      }, 2, 4)
         }, 1);
 
-        if(!snapCurr->Listen_Atom_Snapshot_Core())
+        if(!snapCurr->ListenSnapshot_Core())
             throw;
         if(snapCurr->m_state != FeedConnectionState::fcsListenSnapshot)
             throw;
@@ -1481,7 +1481,7 @@ public:
                                      }, 2, 4)
         }, 1);
 
-        snapCurr->Listen_Atom_Snapshot_Core();
+        snapCurr->ListenSnapshot_Core();
 
         // message seq 2 lost
         SendMessages(snapCurr, new TestTemplateInfo*[1] {
@@ -1492,7 +1492,7 @@ public:
                                      }, 2, 4)
         }, 1);
 
-        snapCurr->Listen_Atom_Snapshot_Core();
+        snapCurr->ListenSnapshot_Core();
 
         if(snapCurr->m_startMsgSeqNum != 2)
             throw;
@@ -1508,12 +1508,12 @@ public:
         snapCurr->m_waitTimer->Stop(); // reset timer 0 to avoid simulate situation when no packet received
         // now wait some time and after that we have to skip lost message to get other snapshot
         while(!snapCurr->m_waitTimer->IsElapsedMilliseconds(1, snapCurr->WaitSnapshotMaxTimeMs())) {
-            snapCurr->Listen_Atom_Snapshot_Core();
+            snapCurr->ListenSnapshot_Core();
             if(!snapCurr->m_waitTimer->Active(1))
                 break;
         }
 
-        snapCurr->Listen_Atom_Snapshot_Core();
+        snapCurr->ListenSnapshot_Core();
         if(snapCurr->m_startMsgSeqNum != 4)
             throw;
         if(snapCurr->m_endMsgSeqNum != 3)
@@ -1535,7 +1535,7 @@ public:
                                      }, 2, 4)
         }, 1);
 
-        snapCurr->Listen_Atom_Snapshot_Core();
+        snapCurr->ListenSnapshot_Core();
 
         // message seq 2 lost
         SendMessages(snapCurr, new TestTemplateInfo*[1] {
@@ -1546,7 +1546,7 @@ public:
                                      }, 2, 4)
         }, 1);
 
-        if(!snapCurr->Listen_Atom_Snapshot_Core())
+        if(!snapCurr->ListenSnapshot_Core())
             throw;
 
         if(snapCurr->m_startMsgSeqNum != 2)
@@ -1563,7 +1563,7 @@ public:
         // wait some time and then receive lost packet
         while(!snapCurr->m_waitTimer->IsElapsedMilliseconds(1, snapCurr->WaitSnapshotMaxTimeMs() / 2)) {
             snapCurr->m_waitTimer->Start(); // reset timer 0 to avoid simulate situation when no packet received
-            if(!snapCurr->Listen_Atom_Snapshot_Core())
+            if(!snapCurr->ListenSnapshot_Core())
                 throw;
         }
 
@@ -1578,7 +1578,7 @@ public:
                                      }, 2, 4)
         }, 1);
 
-        if(!snapCurr->Listen_Atom_Snapshot_Core())
+        if(!snapCurr->ListenSnapshot_Core())
             throw;
         if(snapCurr->m_startMsgSeqNum != 4)
             throw;
@@ -1621,7 +1621,7 @@ public:
         if(snapCurr->m_endMsgSeqNum != 2)
             throw;
 
-        snapCurr->Listen_Atom_Snapshot_Core();
+        snapCurr->ListenSnapshot_Core();
         //snapshot received and should be applied
         TradeInfo<AstsTLSCURRItemInfo> *tableItem = incCurr->TradeCurr()->GetItem("symbol1", "session1");
 
@@ -1673,11 +1673,11 @@ public:
         if(snapCurr->m_waitTimer->Active(1))
             throw;
 
-        snapCurr->Listen_Atom_Snapshot_Core();
+        snapCurr->ListenSnapshot_Core();
         if(snapCurr->m_waitTimer->Active(1))
             throw;
 
-        snapCurr->Listen_Atom_Snapshot_Core();
+        snapCurr->ListenSnapshot_Core();
 
         if(!snapCurr->m_waitTimer->Active(1))
             throw;
@@ -1688,13 +1688,13 @@ public:
         if(snapCurr->m_snapshotLastFragment != -1)
             throw;
 
-        snapCurr->Listen_Atom_Snapshot_Core();
+        snapCurr->ListenSnapshot_Core();
         if(!snapCurr->m_waitTimer->Active(1))
             throw;
         while(snapCurr->m_waitTimer->ElapsedMilliseconds(1) <= snapCurr->WaitSnapshotMaxTimeMs())
-            snapCurr->Listen_Atom_Snapshot_Core();
+            snapCurr->ListenSnapshot_Core();
 
-        snapCurr->Listen_Atom_Snapshot_Core();
+        snapCurr->ListenSnapshot_Core();
         // reset
         if(snapCurr->m_snapshotRouteFirst != -1)
             throw;
@@ -1727,7 +1727,7 @@ public:
                                      }, 2)
         }, 2);
 
-        if(!incCurr->Listen_Atom_Incremental_Core())
+        if(!incCurr->ListenIncremental_Core())
             throw;
 
         this->TestTableItemsAllocator(incCurr->TradeCurr());
@@ -1748,7 +1748,7 @@ public:
                                              new TestTemplateItemInfo("e1"),
                                      }, 2, 4)
         }, 1);
-        if(!snapCurr->Listen_Atom_Snapshot_Core())
+        if(!snapCurr->ListenSnapshot_Core())
             throw;
 
         this->TestTableItemsAllocator(incCurr->TradeCurr());
@@ -2570,7 +2570,7 @@ public:
                                      }, 2)
         }, 2);
 
-        if(!incCurr->Listen_Atom_Incremental_Core())
+        if(!incCurr->ListenIncremental_Core())
             throw;
 
         this->TestTableItemsAllocator(incCurr->TradeCurr());

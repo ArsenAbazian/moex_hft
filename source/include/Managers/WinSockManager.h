@@ -82,13 +82,14 @@ private:
 #endif
 
 	static struct pollfd			*m_pollFd;
-	static int 						*m_recvCount;
 	static int 						m_pollFdCount;
 	static int						m_registeredCount;
 	static WinSockManager			**m_registeredManagers;
 	static int 						m_pollRes;
 
 	int                             m_socket;
+    bool                            m_shouldRecv;
+    struct pollfd			        *m_poll;
 	sockaddr_in                     m_adress;
 	ip_mreq_source					m_imr;
 	unsigned int					m_addressSize;
@@ -113,9 +114,10 @@ private:
 	inline void IncPollIndex() { WinSockManager::m_registeredCount++;  }
 	inline void RegisterPoll() {
 		this->m_pollIndex = this->GetFreePollIndex();
+        this->m_poll = &(WinSockManager::m_pollFd[this->m_pollIndex]);
 
-		WinSockManager::m_pollFd[this->m_pollIndex].fd = this->m_socket;
-		WinSockManager::m_pollFd[this->m_pollIndex].events = POLLIN;
+		this->m_poll->fd = this->m_socket;
+		this->m_poll->events = POLLIN;
 		WinSockManager::m_registeredManagers[this->m_pollIndex] = this;
 
 		WinSockManager::IncPollIndex();
@@ -123,12 +125,11 @@ private:
 	}
 
 	inline void UpdatePoll() {
-		WinSockManager::m_pollFd[this->m_pollIndex].fd = this->m_socket;
+		this->m_poll->fd = this->m_socket;
 	}
 
 	inline void InitializePollInfo() {
 		bzero(WinSockManager::m_pollFd, sizeof(struct pollfd) * 256);
-		bzero(WinSockManager::m_recvCount, sizeof(int) * 256);
 		bzero(WinSockManager::m_registeredManagers, sizeof(WinSockManager*) * 256);
 	}
 	inline void PrintSocketInfo() {
@@ -153,6 +154,8 @@ private:
 			DefaultLogManager::Default->EndLog(false, strerror(errno));
 			return false;
 		}
+        this->m_socket = -1;
+        this->UpdatePoll();
 
 		this->m_connected = false;
 
@@ -165,7 +168,7 @@ private:
 
 		int flag = 1;
 		if(setsockopt(this->m_socket,SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &flag, sizeof(flag)) < 0) {
-			DefaultLogManager::Default->EndLogErrNo(false, strerror(errno));
+            DefaultLogManager::Default->EndLogErrNo(false, strerror(errno));
 			return false;
 		}
 
@@ -204,6 +207,9 @@ private:
 			return false;
 		}
 
+        this->m_socket = -1;
+        this->UpdatePoll();
+
 		this->m_connected = false;
 		this->m_socket = socket(AF_INET,
 								SOCK_STREAM,
@@ -230,11 +236,12 @@ public:
 	WinSockManager();
 	~WinSockManager();
 
+    inline struct pollfd* PollFd() { return this->m_poll; }
+
 	inline void UpdatePollStatus() {
-		if(poll(&(WinSockManager::m_pollFd[this->m_pollIndex]), 1, 0) == 0)
+		if(poll(this->m_poll, 1, 0) == 0)
 			return;
-		int revents = (WinSockManager::m_pollFd + this->m_pollIndex)->revents;
-		WinSockManager::m_recvCount[this->m_pollIndex] = revents & (POLLIN | POLLPRI);
+		this->m_shouldRecv = this->m_poll->revents & (POLLIN | POLLPRI);
 	}
 
 	inline static bool UpdateManagersPollStatus() {
@@ -249,10 +256,10 @@ public:
 		else if(WinSockManager::m_pollRes == 0)
 			return true;
 
-		int *recv = WinSockManager::m_recvCount;
+		WinSockManager **man = WinSockManager::m_registeredManagers;
 		struct pollfd *pl = WinSockManager::m_pollFd;
-		for(int i = 0; i < WinSockManager::m_registeredCount; i++, recv++, pl++) {
-			*recv = pl->revents & (POLLIN | POLLPRI);
+		for(int i = 0; i < WinSockManager::m_registeredCount; i++, man++, pl++) {
+            (*man)->m_shouldRecv = pl->revents & (POLLIN | POLLPRI);
 			pl->revents = 0;
 		}
 		return true;
@@ -416,15 +423,14 @@ public:
 #ifdef TEST
         return ShouldRecvTest();
 #else
-		return WinSockManager::m_recvCount[this->m_pollIndex] > 0;
+		return this->m_shouldRecv;
 #endif
 	}
 #ifdef TEST
 	bool ShouldRecvTest();
 #endif
 	inline void OnRecv() {
-		//if(this->ShouldRecv())
-		WinSockManager::m_recvCount[this->m_pollIndex] = 0;//--;
+		this->m_shouldRecv = false;
 	}
 
 	bool RecvTest(unsigned char *buffer);

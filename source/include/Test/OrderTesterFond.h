@@ -1436,7 +1436,7 @@ public:
         }, 3);
 
 
-        if(!incFond->Listen_Atom_Incremental_Core())
+        if(!incFond->ListenIncremental_Core())
             throw;
 
         this->TestTableItemsAllocator(incFond->OrderFond());
@@ -1467,7 +1467,7 @@ public:
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "e3", 4, 3, 1, 3, 1),
                                      }, 1)
         }, 2);
-        if(!incFond->Listen_Atom_Incremental_Core())
+        if(!incFond->ListenIncremental_Core())
             throw;
 
         this->TestTableItemsAllocator(incFond->OrderFond());
@@ -1494,7 +1494,7 @@ public:
                                      }, 1)
         }, 1);
 
-        if(!incFond->Listen_Atom_Incremental_Core())
+        if(!incFond->ListenIncremental_Core())
             throw;
 
         this->TestTableItemsAllocator(incFond->OrderFond());
@@ -1522,7 +1522,7 @@ public:
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "e5", 5, 3, 1, 3, 1),
                                      }, 1)
         }, 2);
-        if(!incFond->Listen_Atom_Incremental_Core())
+        if(!incFond->ListenIncremental_Core())
             throw;
 
         this->TestTableItemsAllocator(incFond->OrderFond());
@@ -1552,7 +1552,7 @@ public:
                                      }, 2)
         }, 1);
 
-        if(!incFond->Listen_Atom_Incremental_Core())
+        if(!incFond->ListenIncremental_Core())
             throw;
 
         this->TestTableItemsAllocator(incFond->OrderFond());
@@ -1580,7 +1580,7 @@ public:
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "e5", 5, 3, 1, 3, 1),
                                      }, 1)
         }, 2);
-        if(!incFond->Listen_Atom_Incremental_Core())
+        if(!incFond->ListenIncremental_Core())
             throw;
 
         this->TestTableItemsAllocator(incFond->OrderFond());
@@ -1609,7 +1609,7 @@ public:
                                      }, 1)
         }, 1);
 
-        if(!incFond->Listen_Atom_Incremental_Core())
+        if(!incFond->ListenIncremental_Core())
             throw;
 
         this->TestTableItemsAllocator(incFond->OrderFond());
@@ -1632,7 +1632,7 @@ public:
                                      }, 1)
         }, 1);
 
-        if(!incFond->Listen_Atom_Incremental_Core())
+        if(!incFond->ListenIncremental_Core())
             throw;
 
         this->TestTableItemsAllocator(incFond->OrderFond());
@@ -1662,7 +1662,7 @@ public:
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "e5", 5, 3, 1, 3, 1),
                                      }, 1)
         }, 2);
-        if(!incFond->Listen_Atom_Incremental_Core())
+        if(!incFond->ListenIncremental_Core())
             throw;
 
         this->TestTableItemsAllocator(incFond->OrderFond());
@@ -1691,7 +1691,7 @@ public:
                                      }, 1)
         }, 1);
 
-        if(!incFond->Listen_Atom_Incremental_Core())
+        if(!incFond->ListenIncremental_Core())
             throw;
 
         this->TestTableItemsAllocator(incFond->OrderFond());
@@ -1714,7 +1714,7 @@ public:
                                      }, 1)
         }, 1);
 
-        if(!incFond->Listen_Atom_Incremental_Core())
+        if(!incFond->ListenIncremental_Core())
             throw;
 
         this->TestTableItemsAllocator(incFond->OrderFond());
@@ -1747,7 +1747,7 @@ public:
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "e5", 5, 3, 1, 3, 1),
                                      }, 1)
         }, 2);
-        if(!incFond->Listen_Atom_Incremental_Core())
+        if(!incFond->ListenIncremental_Core())
             throw;
 
         this->TestTableItemsAllocator(incFond->OrderFond());
@@ -1757,7 +1757,7 @@ public:
             throw;
         // wait
         while(incFond->m_waitTimer->ElapsedMilliseconds() < incFond->WaitLostIncrementalMessageMaxTimeMs());
-        if(!incFond->Listen_Atom_Incremental_Core())
+        if(!incFond->ListenIncremental_Core())
             throw;
         //entering snapshot mode
         if(snapFond->State() != FeedConnectionState::fcsListenSnapshot)
@@ -1780,12 +1780,12 @@ public:
         if(!snapFond->m_waitTimer->Active()) // start wait timer immediately
             throw;
 
-        snapFond->Listen_Atom_Snapshot(); // activate timer 2 when first time no messages recv
+        snapFond->ListenSnapshot(); // activate timer 2 when first time no messages recv
         //no messages
         while(snapFond->m_waitTimer->ElapsedMilliseconds(2) <= snapFond->WaitAnyPacketMaxTimeMs - 50) {
             if(!snapFond->m_waitTimer->Active())
                 throw;
-            if(!snapFond->Listen_Atom_Snapshot())
+            if(!snapFond->ListenSnapshot())
                 throw; // nothing should be happens
             if(!snapFond->m_waitTimer->Active(2))
                 throw;
@@ -1801,7 +1801,7 @@ public:
         if(!snapFond->m_waitTimer->Active(2))
             throw;
 
-        if(!snapFond->Listen_Atom_Snapshot()) // reconnect
+        if(!snapFond->ListenSnapshot()) // reconnect
             throw;
         if(snapFond->m_waitTimer->Active())
             throw;
@@ -1832,7 +1832,7 @@ public:
         while(snapFond->m_waitTimer->ElapsedMilliseconds() < snapFond->WaitSnapshotMaxTimeMs() / 2) {
             if(!snapFond->m_waitTimer->Active())
                 throw;
-            if(!snapFond->Listen_Atom_Snapshot())
+            if(!snapFond->ListenSnapshot())
                 throw; // nothing should be happens
             if(snapFond->m_endMsgSeqNum != -1)
                 throw;
@@ -1858,7 +1858,7 @@ public:
         if(snapFond->m_waitTimer->ElapsedMilliseconds() >= snapFond->WaitAnyPacketMaxTimeMs / 2)
             throw;
 
-        if(!snapFond->Listen_Atom_Snapshot())
+        if(!snapFond->ListenSnapshot())
             throw; // nothing should be happens
     }
 
@@ -1876,7 +1876,7 @@ public:
                                      }, 2, 4)
         }, 1);
 
-        if(!snapFond->Listen_Atom_Snapshot_Core())
+        if(!snapFond->ListenSnapshot_Core())
             throw;
         if(snapFond->m_state != FeedConnectionState::fcsListenSnapshot)
             throw;
@@ -1890,11 +1890,11 @@ public:
             throw;
 
         // just empty cyccle - nothing should be changed
-        if(!snapFond->Listen_Atom_Snapshot_Core())
+        if(!snapFond->ListenSnapshot_Core())
             throw;
-        if(!snapFond->Listen_Atom_Snapshot_Core())
+        if(!snapFond->ListenSnapshot_Core())
             throw;
-        if(!snapFond->Listen_Atom_Snapshot_Core())
+        if(!snapFond->ListenSnapshot_Core())
             throw;
 
         if(snapFond->m_state != FeedConnectionState::fcsListenSnapshot)
@@ -1923,7 +1923,7 @@ public:
                                      }, 2, 4)
         }, 1);
 
-        if(!snapFond->Listen_Atom_Snapshot_Core())
+        if(!snapFond->ListenSnapshot_Core())
             throw;
         if(snapFond->m_state != FeedConnectionState::fcsListenSnapshot)
             throw;
@@ -1944,7 +1944,7 @@ public:
                                      }, 2, 4)
         }, 1);
 
-        if(!snapFond->Listen_Atom_Snapshot_Core())
+        if(!snapFond->ListenSnapshot_Core())
             throw;
         if(snapFond->m_state != FeedConnectionState::fcsListenSnapshot)
             throw;
@@ -1970,7 +1970,7 @@ public:
                                      }, 2, 4)
         }, 2);
 
-        if(!snapFond->Listen_Atom_Snapshot_Core())
+        if(!snapFond->ListenSnapshot_Core())
             throw;
         if(snapFond->m_state != FeedConnectionState::fcsListenSnapshot)
             throw;
@@ -1996,7 +1996,7 @@ public:
                                      }, 2, 4)
         }, 2);
 
-        if(!snapFond->Listen_Atom_Snapshot_Core())
+        if(!snapFond->ListenSnapshot_Core())
             throw;
         if(snapFond->m_state != FeedConnectionState::fcsListenSnapshot)
             throw;
@@ -2010,11 +2010,11 @@ public:
             throw;
 
         // just empty cyccle - nothing should be changed
-        if(!snapFond->Listen_Atom_Snapshot_Core())
+        if(!snapFond->ListenSnapshot_Core())
             throw;
-        if(!snapFond->Listen_Atom_Snapshot_Core())
+        if(!snapFond->ListenSnapshot_Core())
             throw;
-        if(!snapFond->Listen_Atom_Snapshot_Core())
+        if(!snapFond->ListenSnapshot_Core())
             throw;
 
         if(snapFond->m_state != FeedConnectionState::fcsListenSnapshot)
@@ -2042,7 +2042,7 @@ public:
                                      }, 2, 4)
         }, 1);
 
-        if(!snapFond->Listen_Atom_Snapshot_Core())
+        if(!snapFond->ListenSnapshot_Core())
             throw;
         if(snapFond->m_state != FeedConnectionState::fcsListenSnapshot)
             throw;
@@ -2071,7 +2071,7 @@ public:
                                      }, 2, 4)
         }, 1);
 
-        snapFond->Listen_Atom_Snapshot_Core();
+        snapFond->ListenSnapshot_Core();
 
         // message seq 2 lost
         SendMessages(snapFond, new TestTemplateInfo*[1] {
@@ -2082,7 +2082,7 @@ public:
                                      }, 2, 4)
         }, 1);
 
-        snapFond->Listen_Atom_Snapshot_Core();
+        snapFond->ListenSnapshot_Core();
 
         if(snapFond->m_startMsgSeqNum != 2)
             throw;
@@ -2098,12 +2098,12 @@ public:
         snapFond->m_waitTimer->Stop(); // reset timer 0 to avoid simulate situation when no packet received
         // now wait some time and after that we have to skip lost message to get other snapshot
         while(!snapFond->m_waitTimer->IsElapsedMilliseconds(1, snapFond->WaitSnapshotMaxTimeMs())) {
-            snapFond->Listen_Atom_Snapshot_Core();
+            snapFond->ListenSnapshot_Core();
             if(!snapFond->m_waitTimer->Active(1))
                 break;
         }
 
-        snapFond->Listen_Atom_Snapshot_Core();
+        snapFond->ListenSnapshot_Core();
         if(snapFond->m_startMsgSeqNum != 4)
             throw;
         if(snapFond->m_endMsgSeqNum != 3)
@@ -2125,7 +2125,7 @@ public:
                                      }, 2, 4)
         }, 1);
 
-        snapFond->Listen_Atom_Snapshot_Core();
+        snapFond->ListenSnapshot_Core();
 
         // message seq 2 lost
         SendMessages(snapFond, new TestTemplateInfo*[1] {
@@ -2136,7 +2136,7 @@ public:
                                      }, 2, 4)
         }, 1);
 
-        if(!snapFond->Listen_Atom_Snapshot_Core())
+        if(!snapFond->ListenSnapshot_Core())
             throw;
 
         if(snapFond->m_startMsgSeqNum != 2)
@@ -2154,7 +2154,7 @@ public:
         // wait some time and then receive lost packet
         while(!snapFond->m_waitTimer->IsElapsedMilliseconds(1, snapFond->WaitSnapshotMaxTimeMs() / 2)) {
             snapFond->m_waitTimer->Start(); // reset timer 0 to avoid simulate situation when no packet received
-            if(!snapFond->Listen_Atom_Snapshot_Core())
+            if(!snapFond->ListenSnapshot_Core())
                 throw;
         }
 
@@ -2169,7 +2169,7 @@ public:
                                      }, 2, 4)
         }, 1);
 
-        if(!snapFond->Listen_Atom_Snapshot_Core())
+        if(!snapFond->ListenSnapshot_Core())
             throw;
         if(snapFond->m_startMsgSeqNum != 4)
             throw;
@@ -2212,7 +2212,7 @@ public:
         if(snapFond->m_endMsgSeqNum != 2)
             throw;
 
-        snapFond->Listen_Atom_Snapshot_Core();
+        snapFond->ListenSnapshot_Core();
         //snapshot received and should be applied
         OrderInfo<AstsOLSFONDItemInfo> *tableItem = incFond->OrderFond()->GetItem("symbol1", "session1");
 
@@ -2264,11 +2264,11 @@ public:
         if(snapFond->m_waitTimer->Active(1))
             throw;
 
-        snapFond->Listen_Atom_Snapshot_Core();
+        snapFond->ListenSnapshot_Core();
         if(snapFond->m_waitTimer->Active(1))
             throw;
 
-        snapFond->Listen_Atom_Snapshot_Core();
+        snapFond->ListenSnapshot_Core();
 
         if(!snapFond->m_waitTimer->Active(1))
             throw;
@@ -2279,13 +2279,13 @@ public:
         if(snapFond->m_snapshotLastFragment != -1)
             throw;
 
-        snapFond->Listen_Atom_Snapshot_Core();
+        snapFond->ListenSnapshot_Core();
         if(!snapFond->m_waitTimer->Active(1))
             throw;
         while(snapFond->m_waitTimer->ElapsedMilliseconds(1) <= snapFond->WaitSnapshotMaxTimeMs())
-            snapFond->Listen_Atom_Snapshot_Core();
+            snapFond->ListenSnapshot_Core();
 
-        snapFond->Listen_Atom_Snapshot_Core();
+        snapFond->ListenSnapshot_Core();
         // reset
         if(snapFond->m_snapshotRouteFirst != -1)
             throw;
@@ -2318,7 +2318,7 @@ public:
                                      }, 2)
         }, 2);
 
-        if(!incFond->Listen_Atom_Incremental_Core())
+        if(!incFond->ListenIncremental_Core())
             throw;
 
         this->TestTableItemsAllocator(incFond->OrderFond());
@@ -2339,7 +2339,7 @@ public:
                                              new TestTemplateItemInfo("e1"),
                                      }, 2, 4)
         }, 1);
-        if(!snapFond->Listen_Atom_Snapshot_Core())
+        if(!snapFond->ListenSnapshot_Core())
             throw;
 
         this->TestTableItemsAllocator(incFond->OrderFond());
@@ -2551,7 +2551,7 @@ public:
             throw;
     }
     // exceeded connection time
-    // i have commented this test because reconnect logic moved to Listen_Atom_Snapshot method
+    // i have commented this test because reconnect logic moved to ListenSnapshot method
     void TestConnection_ParallelWorkingIncrementalAndSnapshot_3_1() {
 //        this->Clear();
 //
@@ -3147,7 +3147,7 @@ public:
                                      }, 2)
         }, 2);
 
-        if(!incFond->Listen_Atom_Incremental_Core())
+        if(!incFond->ListenIncremental_Core())
             throw;
 
         this->TestTableItemsAllocator(incFond->OrderFond());

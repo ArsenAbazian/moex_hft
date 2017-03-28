@@ -7,10 +7,11 @@
       <sourceFolder url="file://$MODULE_DIR$/cmake/GetPkgVariable.cmake" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/cmake/FindMono.cmake" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/CMakeLists.txt" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/source/src/FortsFeedChannel.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/src/AstsFeedChannel.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/source/src/Settings.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/source/src/FortsFeedChannel.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/src/MarketInfo.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/source/src/Settings.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/source/src/Robot.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/src/Converters/ItoaConverter.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/src/Converters/DtoaConverter.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/src/Converters/UTCTimeConverter.cpp" isTestSource="false" />
@@ -32,7 +33,6 @@
       <sourceFolder url="file://$MODULE_DIR$/source/src/Fast/FastProtocolManager.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/src/Fast/FastTypes.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/src/PerformanceProfiler.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/source/src/Robot.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/src/Managers/LogManager.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/src/Managers/SocketBufferManager.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/source/src/Managers/LogErrorMessageCodes.cpp" isTestSource="false" />

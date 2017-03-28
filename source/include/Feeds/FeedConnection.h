@@ -17,7 +17,6 @@
 #include "FeedTypes.h"
 #include "Managers/DebugInfoManager.h"
 #include "../ProgramStatistics.h"
-
 class OrderBookTesterForts;
 class OrderTesterFond;
 class OrderTesterCurr;
@@ -134,6 +133,7 @@ protected:
 
 	int                                         m_windowMsgSeqNum;
     int											m_startMsgSeqNum;
+    int                                         m_lostPacketCount;
     int                                         m_endMsgSeqNum;
     int                                         m_requestMessageStartIndex;
 
@@ -946,8 +946,13 @@ protected:
     }
 
     inline bool CheckRequestLostIncrementalMessages() {
-        if(this->m_requestMessageStartIndex == -1)
+        if(this->m_requestMessageStartIndex == -1) {
+            if(this->HasQueueEntries() || this->SymbolsToRecvSnapshotCount() > 0) {
+                if(this->m_snapshot->State() == FeedConnectionState::fcsSuspend)
+                    return this->StartListenSnapshot();
+            }
             return true;
+        }
         if(this->m_snapshot->State() != FeedConnectionState::fcsSuspend)
             return true;
         while(this->m_requestMessageStartIndex <= this->m_endMsgSeqNum) {
@@ -1870,6 +1875,7 @@ protected:
         for(int i = this->m_startMsgSeqNum; i <= this->m_endMsgSeqNum; i++) {
             if(this->m_packets[i]->m_address != 0) {
 #ifdef COLLECT_STATISTICS
+                this->m_lostPacketCount += i - this->m_startMsgSeqNum;
                 this->UpdateLostPacketsStatistic(i - this->m_startMsgSeqNum);
 #endif
                 this->m_startMsgSeqNum = i;
@@ -2000,7 +2006,7 @@ protected:
         return true;
     }
 
-    inline bool Listen_Atom_SecurityDefinition_Core() {
+    inline bool ListenSecurityDefinition_Core() {
 #ifdef COLLECT_STATISTICS
         if(this->m_id == FeedConnectionId::fcidIdfFond)
             ProgramStatistics::Current->FondIdfProcessedCount(this->m_endMsgSeqNum);
@@ -2012,7 +2018,7 @@ protected:
         return this->ProcessSecurityDefinitionMessagesFromStart();
     }
 
-    inline bool Listen_Atom_Snapshot_Core() {
+    inline bool ListenSnapshot_Core() {
         if(this->m_startMsgSeqNum < 1)
             return true;
         if(this->HasPotentiallyLostPackets()) {
@@ -2026,7 +2032,7 @@ protected:
                 this->CancelSnapshot();
                 //this->ClearPackets(this->m_snapshotRouteFirst, this->m_startMsgSeqNum);
             }
-            printf("skip lost packet %d %d\n", this->m_startMsgSeqNum, this->m_endMsgSeqNum);
+            //printf("%s skip lost packet %d %d\n", this->m_idName, this->m_startMsgSeqNum, this->m_endMsgSeqNum);
             this->SkipLostSnapshotPackets();
             this->m_waitTimer->Stop(1);
             this->m_snapshotRouteFirst = -1;
@@ -2045,7 +2051,7 @@ protected:
 
         return true;
     }
-    inline bool Listen_Atom_Incremental_Core() {
+    inline bool ListenIncremental_Core() {
 
 #ifndef TEST
         // TODO remove hack. just skip 30 messages and then try to restore
@@ -2083,7 +2089,7 @@ protected:
         return true;
     }
 
-    inline bool Listen_Atom_Incremental_Forts_Core() {
+    inline bool ListenIncremental_Forts_Core() {
 
 #ifndef TEST
         // TODO remove hack. just skip 30 messages and then try to restore
@@ -2121,13 +2127,13 @@ protected:
         return true;
     }
 
-    inline bool Listen_Atom_SecurityStatus_Core() {
+    inline bool ListenSecurityStatus_Core() {
         if(!this->ProcessSecurityStatusMessages())
             return false;
         return true;
     }
 
-    inline bool Listen_Atom_SecurityStatusForts_Core() {
+    inline bool ListenSecurityStatusForts_Core() {
         if(!this->ProcessSecurityStatusMessagesForts())
             return false;
         return true;
@@ -2509,7 +2515,7 @@ public:
         return true;
     }
 protected:
-    inline bool Listen_Atom_Incremental() {
+    inline bool ListenIncremental() {
 
         bool recv = this->ProcessServerAIncremental();
         recv |= this->ProcessServerBIncremental();
@@ -2530,9 +2536,9 @@ protected:
             this->m_waitTimer->Stop(1);
         }
 
-        return this->Listen_Atom_Incremental_Core();
+        return this->ListenIncremental_Core();
     }
-    inline bool Listen_Atom_Incremental_Forts() {
+    inline bool ListenIncremental_Forts() {
 
         bool recv = this->ProcessServerAIncremental();
         recv |= this->ProcessServerBIncremental();
@@ -2553,10 +2559,10 @@ protected:
             this->m_waitTimer->Stop(1);
         }
 
-        return this->Listen_Atom_Incremental_Forts_Core();
+        return this->ListenIncremental_Forts_Core();
     }
 
-    inline bool Listen_Atom_SecurityStatus() {
+    inline bool ListenSecurityStatus() {
         bool recv = this->ProcessServerASecurityStatus();
         recv |= this->ProcessServerBSecurityStatus();
 
@@ -2567,7 +2573,7 @@ protected:
             else {
                 if(this->m_waitTimer->ElapsedMilliseconds(1) > this->WaitAnyPacketMaxTimeMs) {
                     printf("%s %s Timeout 10 sec... Reconnect...\n", this->m_channelName, this->m_idName);
-                    DefaultLogManager::Default->WriteSuccess(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_Listen_Atom_SecurityStatus, false);
+                    DefaultLogManager::Default->WriteSuccess(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_ListenSecurityStatus, false);
                     this->ReconnectSetNextState(FeedConnectionState::fcsListenSecurityStatus);
                 }
             }
@@ -2576,10 +2582,10 @@ protected:
         else {
             this->m_waitTimer->Stop(1);
         }
-        return this->Listen_Atom_SecurityStatus_Core();
+        return this->ListenSecurityStatus_Core();
     }
 
-    inline bool Listen_Atom_SecurityStatusForts() {
+    inline bool ListenSecurityStatusForts() {
         bool recv = this->ProcessServerASecurityStatus();
         recv |= this->ProcessServerBSecurityStatus();
 
@@ -2590,7 +2596,7 @@ protected:
             else {
                 if(this->m_waitTimer->ElapsedSeconds(1) > this->WaitSecurityStatusFortsMaxTimeSec) {
                     printf("%s %s Timeout %d sec... Reconnect...\n", this->m_channelName, this->m_idName, this->WaitSecurityStatusFortsMaxTimeSec);
-                    DefaultLogManager::Default->WriteSuccess(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_Listen_Atom_SecurityStatusForts, false);
+                    DefaultLogManager::Default->WriteSuccess(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_ListenSecurityStatusForts, false);
                     this->ReconnectSetNextState(FeedConnectionState::fcsListenSecurityStatus);
                 }
             }
@@ -2599,10 +2605,10 @@ protected:
         else {
             this->m_waitTimer->Stop(1);
         }
-        return this->Listen_Atom_SecurityStatusForts_Core();
+        return this->ListenSecurityStatusForts_Core();
     }
 
-    inline bool Listen_Atom_SecurityDefinition() {
+    inline bool ListenSecurityDefinition() {
         bool recv = this->ProcessServerASecurityDefinition();
         recv |= this->ProcessServerBSecurityDefinition();
 
@@ -2613,7 +2619,7 @@ protected:
             else {
                 if(this->m_waitTimer->ElapsedMilliseconds(1) > this->WaitAnyPacketMaxTimeMs) {
                     printf("%s %s Timeout 10 sec... Reconnect...\n", this->m_channelName, this->m_idName);
-                    DefaultLogManager::Default->WriteSuccess(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_Listen_Atom_SecurityDefinition, false);
+                    DefaultLogManager::Default->WriteSuccess(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_ListenSecurityDefinition, false);
                     this->ReconnectSetNextState(FeedConnectionState::fcsListenSecurityDefinition);
                 }
             }
@@ -2622,10 +2628,10 @@ protected:
         else {
             this->m_waitTimer->Stop(1);
         }
-        return this->Listen_Atom_SecurityDefinition_Core();
+        return this->ListenSecurityDefinition_Core();
     }
 
-    inline bool Listen_Atom_Snapshot() {
+    inline bool ListenSnapshot() {
         bool recv = this->ProcessServerASnapshot();
         recv |= this->ProcessServerBSnapshot();
 
@@ -2636,15 +2642,19 @@ protected:
             else {
                 if(this->m_waitTimer->ElapsedMilliseconds(2) > this->WaitAnyPacketMaxTimeMs) {
                     this->m_waitTimer->Stop(2);
-                    DefaultLogManager::Default->WriteSuccess(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_Listen_Atom_Snapshot, false);
-                    ReconnectSetNextState(FeedConnectionState::fcsListenSnapshot);
+                    DefaultLogManager::Default->WriteSuccess(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_ListenSnapshot, false);
+                    this->socketAManager->UpdatePollStatus();
+                    this->socketBManager->UpdatePollStatus();
+                    printf("a = %d  b = %d\n", this->socketAManager->PollFd()->revents, this->socketBManager->PollFd()->revents);
+                    //TODO uncomment this code....
+                    //ReconnectSetNextState(FeedConnectionState::fcsListenSnapshot);
                     return true;
                 }
             }
         }
         else {
             this->m_waitTimer->Stop(2);
-            return this->Listen_Atom_Snapshot_Core();
+            return this->ListenSnapshot_Core();
         }
         return true;
     }
@@ -2952,6 +2962,9 @@ protected:
             res = this->ProcessSecurityDefinitionUpdateReport(
                     (FortsSecurityDefinitionUpdateReportInfo *) this->m_fastProtocolManager->DecodeFortsSecurityDefinitionUpdateReport());
         }
+        else {
+            throw;
+        }
 
 #ifdef TEST
         if(this->m_fastProtocolManager->MessageLength() != length)
@@ -3052,9 +3065,16 @@ protected:
         this->CheckUpdateFortsIncrementalParams(messageIndex);
         // it is unfinished fragmented message.
         if(prevFortsRouteFirst <= lastNullMsgIndex) {
-            FortsDefaultIncrementalRefreshMessageInfo *ri = (FortsDefaultIncrementalRefreshMessageInfo*)this->m_fastProtocolManager->LastDecodeInfo();
-            if((ri->NullMap & FortsDefaultIncrementalRefreshMessageInfoNullIndices::LastFragmentNullIndex) == 0)
-                return true;
+            if(this->m_fastProtocolManager->TemplateId() == FeedTemplateId::fortsIncremental) {
+                FortsDefaultIncrementalRefreshMessageInfo *ri = (FortsDefaultIncrementalRefreshMessageInfo *) this->m_fastProtocolManager->LastDecodeInfo();
+                if ((ri->NullMap & FortsDefaultIncrementalRefreshMessageInfoNullIndices::LastFragmentNullIndex) == 0) {
+                    ri->Clear();
+                    return true;
+                }
+            }
+            else {
+                throw;
+            }
         }
         this->ApplyIncrementalCoreForts();
         this->AfterApplyIncrementalForts(prevFortsRouteFirst);
@@ -3626,14 +3646,16 @@ public:
         return true;
     }
 
-    inline int IdfFindBySecurityId(UINT64 securityId) {
-        return this->m_symbolManager->GetSymbol(securityId)->m_index;
+    inline SymbolInfo* IdfFindBySecurityId(UINT64 securityId) {
+        return this->m_symbolManager->GetExistingSymbol(securityId);
     }
 
     inline bool UpdateSecurityDefinition(FortsSecurityStatusInfo *info) {
         info->Clear(); // just free object before. Data will not be corrupt
-        int index = this->IdfFindBySecurityId(info->SecurityID);
-        FortsSecurityDefinitionInfo *sd = this->SymbolForts(index);
+        SymbolInfo *s = this->IdfFindBySecurityId(info->SecurityID);
+        if(s == 0)
+            return true;
+        FortsSecurityDefinitionInfo *sd = this->SymbolForts(s->m_index);
         if(sd == 0) return true;
         sd->SecurityTradingStatus = info->SecurityTradingStatus;
         (&(sd->HighLimitPx))->Set(&(info->HighLimitPx));
@@ -3647,8 +3669,10 @@ public:
 
     inline bool UpdateSecurityDefinition(FortsSecurityDefinitionUpdateReportInfo *info) {
         info->Clear(); // just free object before. Data will not be corrupt
-        int index = this->IdfFindBySecurityId(info->SecurityID);
-        FortsSecurityDefinitionInfo *sd = this->SymbolForts(index);
+        SymbolInfo *s= this->IdfFindBySecurityId(info->SecurityID);
+        if(s == 0)
+            return true;
+        FortsSecurityDefinitionInfo *sd = this->SymbolForts(s->m_index);
         if(sd == 0) return true;
         (&(sd->Volatility))->Set(&(info->Volatility));
         (&(sd->TheorPrice))->Set(&(info->TheorPrice));
@@ -3751,7 +3775,7 @@ public:
     }
 
     inline void UpdateSecurityDefinition(FortsSecurityDefinitionInfo *info) {
-        SymbolInfo *sm = this->m_symbolManager->GetSymbol(info->SecurityID);
+        SymbolInfo *sm = this->m_symbolManager->GetExistingSymbol(info->SecurityID);
         //TODO remove debug
         if(sm == 0)
             return;
@@ -3903,6 +3927,7 @@ public:
 
     inline int TotalNumReports() { return this->m_idfMaxMsgSeqNo; }
 	inline int MsgSeqNo() { return this->m_startMsgSeqNum; }
+    inline int LostPacketCount() { return this->m_lostPacketCount; }
     inline int WindowMsgSeqNo () { return this->m_windowMsgSeqNum; }
     inline int WindowSize() { return this->m_endMsgSeqNum - this->m_windowMsgSeqNum; }
     inline int LastRecvMsgSeqNo() { return this->m_endMsgSeqNum; }
@@ -3912,19 +3937,19 @@ public:
 	inline bool DoWorkAtom() {
 		FeedConnectionState st = this->m_state;
         if(st == FeedConnectionState::fcsListenIncremental)
-            return this->Listen_Atom_Incremental();
+            return this->ListenIncremental();
         else if(st == FeedConnectionState::fcsListenIncrementalForts)
-            return this->Listen_Atom_Incremental_Forts();
+            return this->ListenIncremental_Forts();
         if(st == FeedConnectionState::fcsHistoricalReplay)
             return this->HistoricalReplay_Atom();
         if(st == FeedConnectionState::fcsListenSecurityDefinition)
-            return this->Listen_Atom_SecurityDefinition();
+            return this->ListenSecurityDefinition();
         if(st == FeedConnectionState::fcsListenSecurityStatus)
-            return this->Listen_Atom_SecurityStatus();
+            return this->ListenSecurityStatus();
         if(st == FeedConnectionState::fcsListenSecurityStatusForts)
-            return this->Listen_Atom_SecurityStatusForts();
+            return this->ListenSecurityStatusForts();
         if(st == FeedConnectionState::fcsListenSnapshot)
-            return this->Listen_Atom_Snapshot();
+            return this->ListenSnapshot();
         if(st == FeedConnectionState::fcsSuspend)
             return true;
         if(st == FeedConnectionState::fcsConnect)
@@ -3934,15 +3959,15 @@ public:
     inline bool DoWorkAtomForts() {
         FeedConnectionState st = this->m_state;
         if(st == FeedConnectionState::fcsListenIncrementalForts)
-            return this->Listen_Atom_Incremental_Forts();
+            return this->ListenIncremental_Forts();
         if(st == FeedConnectionState::fcsHistoricalReplay)
             return this->HistoricalReplay_Atom();
         if(st == FeedConnectionState::fcsListenSecurityDefinition)
-            return this->Listen_Atom_SecurityDefinition();
+            return this->ListenSecurityDefinition();
         if(st == FeedConnectionState::fcsListenSecurityStatusForts)
-            return this->Listen_Atom_SecurityStatusForts();
+            return this->ListenSecurityStatusForts();
         if(st == FeedConnectionState::fcsListenSnapshot)
-            return this->Listen_Atom_Snapshot();
+            return this->ListenSnapshot();
         if(st == FeedConnectionState::fcsSuspend)
             return true;
         if(st == FeedConnectionState::fcsConnect)
@@ -4013,6 +4038,7 @@ public:
         this->m_waitTimer->Start();
         this->m_waitTimer->Stop(1);
         this->m_waitTimer->Stop(2); //for snapshot
+        this->m_lostPacketCount = 0; // TODO remove debug?
         this->BeforeListen();
         this->Listen();
 		return true;

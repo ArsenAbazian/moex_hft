@@ -1456,7 +1456,7 @@ public:
         }, 3);
 
 
-        if(!incForts->Listen_Atom_Incremental_Forts_Core())
+        if(!incForts->ListenIncremental_Forts_Core())
             throw;
 
         this->TestTableItemsAllocator(incForts->OrderBookForts());
@@ -1488,7 +1488,7 @@ public:
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 333333, 4, 400, 0, 1),
                                      }, 1)
         }, 2);
-        if(!incForts->Listen_Atom_Incremental_Forts_Core())
+        if(!incForts->ListenIncremental_Forts_Core())
             throw;
 
         this->TestTableItemsAllocator(incForts->OrderBookForts());
@@ -1515,7 +1515,7 @@ public:
                                      }, 1)
         }, 1);
 
-        if(!incForts->Listen_Atom_Incremental_Forts_Core())
+        if(!incForts->ListenIncremental_Forts_Core())
             throw;
 
         this->TestTableItemsAllocator(incForts->OrderBookForts());
@@ -1542,7 +1542,7 @@ public:
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 555555, 5, 500, 0, 1),
                                      }, 1)
         }, 2);
-        if(!incForts->Listen_Atom_Incremental_Forts_Core())
+        if(!incForts->ListenIncremental_Forts_Core())
             throw;
 
         this->TestTableItemsAllocator(incForts->OrderBookForts());
@@ -1572,7 +1572,7 @@ public:
                                      }, 2)
         }, 1);
 
-        if(!incForts->Listen_Atom_Incremental_Forts_Core())
+        if(!incForts->ListenIncremental_Forts_Core())
             throw;
 
         this->TestTableItemsAllocator(incForts->OrderBookForts());
@@ -1599,7 +1599,7 @@ public:
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 555555, 5, 500, 0, 1),
                                      }, 1)
         }, 2);
-        if(!incForts->Listen_Atom_Incremental_Forts_Core())
+        if(!incForts->ListenIncremental_Forts_Core())
             throw;
 
         this->TestTableItemsAllocator(incForts->OrderBookForts());
@@ -1628,7 +1628,7 @@ public:
                                      }, 1)
         }, 1);
 
-        if(!incForts->Listen_Atom_Incremental_Forts_Core())
+        if(!incForts->ListenIncremental_Forts_Core())
             throw;
 
         this->TestTableItemsAllocator(incForts->OrderBookForts());
@@ -1651,7 +1651,7 @@ public:
                                      }, 1)
         }, 1);
 
-        if(!incForts->Listen_Atom_Incremental_Forts_Core())
+        if(!incForts->ListenIncremental_Forts_Core())
             throw;
 
         this->TestTableItemsAllocator(incForts->OrderBookForts());
@@ -1680,7 +1680,7 @@ public:
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 555555, 5, 500, 0, 1),
                                      }, 1)
         }, 2);
-        if(!incForts->Listen_Atom_Incremental_Forts_Core())
+        if(!incForts->ListenIncremental_Forts_Core())
             throw;
 
         this->TestTableItemsAllocator(incForts->OrderBookForts());
@@ -1709,7 +1709,7 @@ public:
                                      }, 1)
         }, 1);
 
-        if(!incForts->Listen_Atom_Incremental_Forts_Core())
+        if(!incForts->ListenIncremental_Forts_Core())
             throw;
 
         this->TestTableItemsAllocator(incForts->OrderBookForts());
@@ -1732,7 +1732,7 @@ public:
                                      }, 1)
         }, 1);
 
-        if(!incForts->Listen_Atom_Incremental_Forts_Core())
+        if(!incForts->ListenIncremental_Forts_Core())
             throw;
 
         this->TestTableItemsAllocator(incForts->OrderBookForts());
@@ -1763,7 +1763,7 @@ public:
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 555555, 5, 3, 1000, 1),
                                      }, 1)
         }, 2);
-        if(!incForts->Listen_Atom_Incremental_Forts_Core())
+        if(!incForts->ListenIncremental_Forts_Core())
             throw;
 
         this->TestTableItemsAllocator(incForts->OrderBookForts());
@@ -1773,7 +1773,7 @@ public:
             throw;
         // wait
         while(incForts->m_waitTimer->ElapsedMilliseconds() < incForts->WaitLostIncrementalMessageMaxTimeMs());
-        if(!incForts->Listen_Atom_Incremental_Forts_Core())
+        if(!incForts->ListenIncremental_Forts_Core())
             throw;
         //entering snapshot mode
         if(snapForts->State() != FeedConnectionState::fcsListenSnapshot)
@@ -1796,12 +1796,12 @@ public:
         if(!snapForts->m_waitTimer->Active()) // start wait timer immediately
             throw;
 
-        snapForts->Listen_Atom_Snapshot(); // activate timer 2 when first time no messages recv
+        snapForts->ListenSnapshot(); // activate timer 2 when first time no messages recv
         //no messages
         while(snapForts->m_waitTimer->ElapsedMilliseconds(2) <= snapForts->WaitAnyPacketMaxTimeMs - 50) {
             if(!snapForts->m_waitTimer->Active())
                 throw;
-            if(!snapForts->Listen_Atom_Snapshot())
+            if(!snapForts->ListenSnapshot())
                 throw; // nothing should be happens
             if(!snapForts->m_waitTimer->Active(2))
                 throw;
@@ -1817,7 +1817,7 @@ public:
         if(!snapForts->m_waitTimer->Active(2))
             throw;
 
-        if(!snapForts->Listen_Atom_Snapshot()) // reconnect
+        if(!snapForts->ListenSnapshot()) // reconnect
             throw;
         if(snapForts->m_waitTimer->Active())
             throw;
@@ -1848,7 +1848,7 @@ public:
         while(snapForts->m_waitTimer->ElapsedMilliseconds() < snapForts->WaitSnapshotMaxTimeMs() / 2) {
             if(!snapForts->m_waitTimer->Active())
                 throw;
-            if(!snapForts->Listen_Atom_Snapshot())
+            if(!snapForts->ListenSnapshot())
                 throw; // nothing should be happens
             if(snapForts->m_endMsgSeqNum != -1)
                 throw;
@@ -1874,7 +1874,7 @@ public:
         if(snapForts->m_waitTimer->ElapsedMilliseconds() >= snapForts->WaitAnyPacketMaxTimeMs / 2)
             throw;
 
-        if(!snapForts->Listen_Atom_Snapshot())
+        if(!snapForts->ListenSnapshot())
             throw; // nothing should be happens
     }
 
@@ -1900,7 +1900,7 @@ public:
                                      }, 2, 5)
         }, 1);
 
-        if(!snapForts->Listen_Atom_Snapshot_Core())
+        if(!snapForts->ListenSnapshot_Core())
             throw;
         if(snapForts->m_state != FeedConnectionState::fcsListenSnapshot)
             throw;
@@ -1914,11 +1914,11 @@ public:
             throw;
 
         // just empty cyccle - nothing should be changed
-        if(!snapForts->Listen_Atom_Snapshot_Core())
+        if(!snapForts->ListenSnapshot_Core())
             throw;
-        if(!snapForts->Listen_Atom_Snapshot_Core())
+        if(!snapForts->ListenSnapshot_Core())
             throw;
-        if(!snapForts->Listen_Atom_Snapshot_Core())
+        if(!snapForts->ListenSnapshot_Core())
             throw;
 
         if(snapForts->m_state != FeedConnectionState::fcsListenSnapshot)
@@ -1950,7 +1950,7 @@ public:
                                      }, 2, 4)
         }, 1);
 
-        if(!snapForts->Listen_Atom_Snapshot_Core())
+        if(!snapForts->ListenSnapshot_Core())
             throw;
         if(snapForts->m_state != FeedConnectionState::fcsListenSnapshot)
             throw;
@@ -1973,7 +1973,7 @@ public:
                                      }, 2, 4)
         }, 1);
 
-        if(!snapForts->Listen_Atom_Snapshot_Core())
+        if(!snapForts->ListenSnapshot_Core())
             throw;
         if(snapForts->m_state != FeedConnectionState::fcsListenSnapshot)
             throw;
@@ -2003,7 +2003,7 @@ public:
                                      }, 2, 4)
         }, 2);
 
-        if(!snapForts->Listen_Atom_Snapshot_Core())
+        if(!snapForts->ListenSnapshot_Core())
             throw;
         if(snapForts->m_state != FeedConnectionState::fcsListenSnapshot)
             throw;
@@ -2031,7 +2031,7 @@ public:
                                      }, 2, 4)
         }, 2);
 
-        if(!snapForts->Listen_Atom_Snapshot_Core())
+        if(!snapForts->ListenSnapshot_Core())
             throw;
         if(snapForts->m_state != FeedConnectionState::fcsListenSnapshot)
             throw;
@@ -2047,11 +2047,11 @@ public:
             throw;
 
         // just empty cyccle - nothing should be changed
-        if(!snapForts->Listen_Atom_Snapshot_Core())
+        if(!snapForts->ListenSnapshot_Core())
             throw;
-        if(!snapForts->Listen_Atom_Snapshot_Core())
+        if(!snapForts->ListenSnapshot_Core())
             throw;
-        if(!snapForts->Listen_Atom_Snapshot_Core())
+        if(!snapForts->ListenSnapshot_Core())
             throw;
 
         if(snapForts->m_state != FeedConnectionState::fcsListenSnapshot)
@@ -2082,7 +2082,7 @@ public:
                                      }, 2, 4)
         }, 1);
 
-        if(!snapForts->Listen_Atom_Snapshot_Core())
+        if(!snapForts->ListenSnapshot_Core())
             throw;
         if(snapForts->m_state != FeedConnectionState::fcsListenSnapshot)
             throw;
@@ -2111,7 +2111,7 @@ public:
                                      }, 2, 4)
         }, 1);
 
-        snapForts->Listen_Atom_Snapshot_Core();
+        snapForts->ListenSnapshot_Core();
 
         // message seq 2 lost
         SendMessages(snapForts, new TestTemplateInfo*[1] {
@@ -2122,7 +2122,7 @@ public:
                                      }, 2, 4)
         }, 1);
 
-        snapForts->Listen_Atom_Snapshot_Core();
+        snapForts->ListenSnapshot_Core();
 
         if(snapForts->m_startMsgSeqNum != 2)
             throw;
@@ -2138,12 +2138,12 @@ public:
         snapForts->m_waitTimer->Stop(); // reset timer 0 to avoid simulate situation when no packet received
         // now wait some time and after that we have to skip lost message to get other snapshot
         while(!snapForts->m_waitTimer->IsElapsedMilliseconds(1, snapForts->WaitSnapshotMaxTimeMs())) {
-            snapForts->Listen_Atom_Snapshot_Core();
+            snapForts->ListenSnapshot_Core();
             if(!snapForts->m_waitTimer->Active(1))
                 break;
         }
 
-        snapForts->Listen_Atom_Snapshot_Core();
+        snapForts->ListenSnapshot_Core();
         if(snapForts->m_startMsgSeqNum != 4)
             throw;
         if(snapForts->m_endMsgSeqNum != 3)
@@ -2165,7 +2165,7 @@ public:
                                      }, 2, 4)
         }, 1);
 
-        snapForts->Listen_Atom_Snapshot_Core();
+        snapForts->ListenSnapshot_Core();
 
         // message seq 2 lost
         SendMessages(snapForts, new TestTemplateInfo*[1] {
@@ -2176,7 +2176,7 @@ public:
                                      }, 2, 4)
         }, 1);
 
-        if(!snapForts->Listen_Atom_Snapshot_Core())
+        if(!snapForts->ListenSnapshot_Core())
             throw;
 
         if(snapForts->m_startMsgSeqNum != 2)
@@ -2193,7 +2193,7 @@ public:
         // wait some time and then receive lost packet
         while(!snapForts->m_waitTimer->IsElapsedMilliseconds(1, snapForts->WaitSnapshotMaxTimeMs() / 2)) {
             snapForts->m_waitTimer->Start(); // reset timer 0 to avoid simulate situation when no packet received
-            if(!snapForts->Listen_Atom_Snapshot_Core())
+            if(!snapForts->ListenSnapshot_Core())
                 throw;
         }
 
@@ -2208,7 +2208,7 @@ public:
                                      }, 2, 4)
         }, 1);
 
-        if(!snapForts->Listen_Atom_Snapshot_Core())
+        if(!snapForts->ListenSnapshot_Core())
             throw;
         if(snapForts->m_startMsgSeqNum != 4)
             throw;
@@ -2246,7 +2246,7 @@ public:
                                      }, 2, 4)
         }, 1);
 
-        snapForts->Listen_Atom_Snapshot_Core();
+        snapForts->ListenSnapshot_Core();
         SendMessages(snapForts, new TestTemplateInfo*[1] {
                 new TestTemplateInfo(FeedTemplateId::fortsSnapshot, 3, "symbol1", 111111, false, true,
                                      new TestTemplateItemInfo*[2] {
@@ -2259,7 +2259,7 @@ public:
         if(snapForts->m_endMsgSeqNum != 3)
             throw;
 
-        snapForts->Listen_Atom_Snapshot_Core();
+        snapForts->ListenSnapshot_Core();
         //snapshot received and should be applied
         OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *tableItem = incForts->OrderBookForts()->GetItemBySecurityId(111111, 0);
 
@@ -2296,7 +2296,7 @@ public:
                                              new TestTemplateItemInfo(222222),
                                      }, 2, 3)
         } , 1); // for route firts
-        snapForts->Listen_Atom_Snapshot_Core();
+        snapForts->ListenSnapshot_Core();
 
         SendMessages(snapForts, new TestTemplateInfo*[2] {
                 new TestTemplateInfo(FeedTemplateId::fortsSnapshot, 7, "symbol1", 111111, true, false,
@@ -2320,11 +2320,11 @@ public:
         if(snapForts->m_waitTimer->Active(1))
             throw;
 
-        snapForts->Listen_Atom_Snapshot_Core();
+        snapForts->ListenSnapshot_Core();
         if(snapForts->m_waitTimer->Active(1))
             throw;
 
-        snapForts->Listen_Atom_Snapshot_Core();
+        snapForts->ListenSnapshot_Core();
 
         if(!snapForts->m_waitTimer->Active(1))
             throw;
@@ -2335,13 +2335,13 @@ public:
         if(snapForts->m_snapshotLastFragment != -1)
             throw;
 
-        snapForts->Listen_Atom_Snapshot_Core();
+        snapForts->ListenSnapshot_Core();
         if(!snapForts->m_waitTimer->Active(1))
             throw;
         while(snapForts->m_waitTimer->ElapsedMilliseconds(1) <= snapForts->WaitSnapshotMaxTimeMs())
-            snapForts->Listen_Atom_Snapshot_Core();
+            snapForts->ListenSnapshot_Core();
 
-        snapForts->Listen_Atom_Snapshot_Core();
+        snapForts->ListenSnapshot_Core();
         // reset
         if(snapForts->m_snapshotRouteFirst != -1)
             throw;
@@ -2374,7 +2374,7 @@ public:
                                      }, 2)
         }, 2);
 
-        if(!incForts->Listen_Atom_Incremental_Forts_Core())
+        if(!incForts->ListenIncremental_Forts_Core())
             throw;
 
         this->TestTableItemsAllocator(incForts->OrderBookForts());
@@ -2394,7 +2394,7 @@ public:
                                              new TestTemplateItemInfo(111111),
                                      }, 2, 4)
         }, 1);
-        if(!snapForts->Listen_Atom_Snapshot_Core())
+        if(!snapForts->ListenSnapshot_Core())
             throw;
 
         // sending snapshot for only one item and rpt seq before last incremental message
@@ -2405,7 +2405,7 @@ public:
                                              new TestTemplateItemInfo(111111),
                                      }, 2, 4)
         }, 1);
-        if(!snapForts->Listen_Atom_Snapshot_Core())
+        if(!snapForts->ListenSnapshot_Core())
             throw;
 
         this->TestTableItemsAllocator(incForts->OrderBookForts());
@@ -3286,7 +3286,7 @@ public:
                                      }, 2)
         }, 2);
 
-        if(!incForts->Listen_Atom_Incremental_Forts_Core())
+        if(!incForts->ListenIncremental_Forts_Core())
             throw;
 
         this->TestTableItemsAllocator(incForts->OrderBookForts());
