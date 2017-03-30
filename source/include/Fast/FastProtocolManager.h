@@ -1308,6 +1308,10 @@ public:
 		return result;
 	}
 
+    inline void SkipMsgSeqNumber() {
+        this->currentPos += 4;
+    }
+
     inline UINT TemplateId() { return this->m_templateId; }
     inline UINT64 PresenceMap() { return this->m_presenceMap; }
 
@@ -1799,6 +1803,56 @@ public:
 		INT32 result = 0;
 		INT32 memory = *((INT32*)(this->currentPos));
 
+        if((memory & 0x8080) != 0) { // first two bytes
+            if((memory & 0x80) != 0) {
+                this->currentPos++;
+                return memory & 0x7f;
+            }
+            else {
+                this->currentPos += 2;
+                result |= memory & 0x7f;
+                memory >>= 8;
+                result <<= 7;
+                result |= memory & 0x7f;
+                return result;
+            }
+        }
+        else { // second two bytes
+            if((memory & 0x800000) != 0) {
+                this->currentPos += 3;
+                result |= memory & 0x7f;
+                memory >>= 8;
+                result <<= 7;
+                result |= memory & 0x7f;
+                memory >>= 8;
+                result <<= 7;
+                result |= memory & 0x7f;
+                return result;
+            }
+            else {
+                this->currentPos += 4;
+                result |= memory & 0x7f;
+                memory >>= 8;
+                result <<= 7;
+                result |= memory & 0x7f;
+                memory >>= 8;
+                result <<= 7;
+                result |= memory & 0x7f;
+                memory >>= 8;
+                result <<= 7;
+                result |= memory & 0x7f;
+
+                if((memory & 0x80) == 0) {
+                    result <<= 7;
+                    memory = *((INT32*)(this->currentPos));
+                    result |= memory & 0x7f;
+                    this->currentPos++;
+                }
+                return result;
+            }
+        }
+        /*
+
 		result |= memory & 0x7f;
 		if ((memory & 0x80) != 0) {
 			this->currentPos++;
@@ -1834,6 +1888,7 @@ public:
 		result |= memory & 0x7f;
 
 		this->currentPos++;
+        */
 		return result;
 	}
 	inline UINT32 ReadUInt32_Optional() {

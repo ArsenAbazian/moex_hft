@@ -56,7 +56,7 @@ bool WinSockManager::RecvTest(unsigned char *buffer) {
 			this->m_recvBytes = buffer;
 			memcpy(buffer, ptr->Data()->m_buffer, this->m_recvSize);
             TestMessagesHelper::m_sockMessages->Remove(ptr);
-            WinSockManager::m_recvCount[this->m_pollIndex] = 0;
+            WinSockManager::m_registeredManagers[this->m_pollIndex]->m_shouldRecv = false;
             return true;
 		}
         if(!ptr->HasNext())

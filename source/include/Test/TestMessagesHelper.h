@@ -2356,7 +2356,7 @@ public:
 
     void ClearPoll() {
         for(int i = 0; i < WinSockManager::m_registeredCount; i++) {
-            WinSockManager::m_recvCount[i] = 0;
+            WinSockManager::m_registeredManagers[i]->m_shouldRecv = false;
         }
     }
 
@@ -2373,7 +2373,7 @@ public:
         this->m_sockMessages->Add(ptr);
         for(int i = 0; i < WinSockManager::m_registeredCount; i++) {
             if(WinSockManager::m_registeredManagers[i] == msg->m_manager) {
-                WinSockManager::m_recvCount[i] = msg->m_canRecv? 1: 0;
+                WinSockManager::m_registeredManagers[i]->m_shouldRecv = msg->m_canRecv? 1: 0;
             }
         }
     }

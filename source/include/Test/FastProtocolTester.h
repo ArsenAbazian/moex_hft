@@ -10,6 +10,7 @@ public:
 	~FastProtocolTester();
 
 	void Test() {
+	    TestPerformance();
 		TestMessages();
 		TestStringCopy();
         TestReadString_Optional();
@@ -56,5 +57,6 @@ public:
 	void TestReadInt64();
 	void TestReadUInt64();
 	void TestParsePresenceMap();
+	void TestPerformance();
 };
 #endif

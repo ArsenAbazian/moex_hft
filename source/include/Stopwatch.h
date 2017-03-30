@@ -56,6 +56,16 @@ public:
             clock_gettime(CLOCK_REALTIME_COARSE, this->m_specEnd);
         return  (this->m_specEnd->tv_sec - (*(this->m_specStart))->tv_sec) * 1000 + (this->m_specEnd->tv_nsec - (*(this->m_specStart))->tv_nsec) / 1000000;
     }
+    inline time_t ElapsedNanoseconds() {
+        if(this->m_enabled[0])
+            clock_gettime(CLOCK_REALTIME_COARSE, this->m_specEnd);
+        return  (this->m_specEnd->tv_sec - (*(this->m_specStart))->tv_sec) * 1000000000 + (this->m_specEnd->tv_nsec - (*(this->m_specStart))->tv_nsec);
+    }
+    inline time_t ElapsedNanoseconds(int index) {
+        if(this->m_enabled[index])
+            clock_gettime(CLOCK_REALTIME_COARSE, this->m_specEnd);
+        return  (this->m_specEnd->tv_sec - this->m_specStart[index]->tv_sec) * 1000000000 + (this->m_specEnd->tv_nsec - this->m_specStart[index]->tv_nsec);
+    }
     inline bool IsElapsedMilliseconds(time_t ms) {
         if(!this->m_enabled[0])
             return false;
