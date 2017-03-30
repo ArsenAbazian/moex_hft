@@ -235,19 +235,39 @@ public:
     }
 
     inline bool ApplyQuickSnapshot(FortsSnapshotInfo *info) {
-        if(this->CheckProcessIfSessionInActualState(info->RptSeq))
+        if(this->CheckProcessIfSessionInActualState(info->RptSeq)) {
+            //TODO remove debug
+            //printf("  actual state\n");
             return true;
-        if(this->CheckProcessNullSnapshot(info->RptSeq, info->LastMsgSeqNumProcessed))
+        }
+        if(this->CheckProcessNullSnapshot(info->RptSeq, info->LastMsgSeqNumProcessed)) {
+            //TODO remove debug
+            //printf("  null snap\n");
             return true;
-        if(!this->ShouldProcessSnapshot(info->RptSeq))
+        }
+        if(!this->ShouldProcessSnapshot(info->RptSeq)) {
+            //TODO remove debug
+            //printf("  should not process\n");
             return true;
+        }
         return false;
     }
 
     inline bool ShouldProcessSnapshot(int rptSeq) {
-        if(!this->m_snapshotItem->HasEntries())
-            return this->m_snapshotItem->RptSeq() < rptSeq;
-        return this->m_snapshotItem->EntriesQueue()->StartRptSeq() <= rptSeq;
+        if(!this->m_snapshotItem->HasEntries()) {
+            //TODO remove debug
+            bool res = this->m_snapshotItem->RptSeq() < rptSeq;
+//            if(!res) {
+//                printf("  !he %d < %d\n", this->m_snapshotItem->RptSeq(), rptSeq);
+//            }
+            return res;
+        }
+        //TODO remove debug
+        bool res = this->m_snapshotItem->EntriesQueue()->StartRptSeq() <= rptSeq;
+//        if(!res) {
+//            printf("  he %d < %d  max index = %d\n", this->m_snapshotItem->EntriesQueue()->StartRptSeq(), rptSeq, this->m_snapshotItem->EntriesQueue()->MaxIndex());
+//        }
+        return res;
     }
     inline bool CheckProcessIfSessionInActualState(int rptSeq) {
         if(this->m_snapshotItem->HasEntries())
@@ -504,10 +524,11 @@ public:
         return AddSymbol(symbol, strlen(symbol));
     }
     inline void EnterSnapshotMode() {
-        this->m_symbolsToRecvSnapshot = this->m_symbolsCount;
+        this->m_symbolsToRecvSnapshot = 0; //this->m_symbolsCount;
         MarketSymbolInfo<TABLEITEM<ITEMINFO>> **s = this->m_symbols;
         for(int i = 0; i < this->m_symbolsCount; i++, s++) {
-            (*s)->EnterSnapshotMode();
+            if((*s)->EnterSnapshotMode())
+                this->m_symbolsToRecvSnapshot++;
         }
         this->m_snapshotMode = true;
     }

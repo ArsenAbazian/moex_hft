@@ -380,6 +380,7 @@ protected:
         info->m_address = this->m_recvABuffer->CurrentPos();
         info->m_size = size;
         info->m_requested = false;
+        //printf("snap %d   %s\n", msgSeqNum, DebugInfoManager::Default->BinaryToString(info->m_address, info->m_size));
         this->m_recvABuffer->Next(size);
         return true;
     }
@@ -441,8 +442,6 @@ protected:
 #pragma region ProcessSever
     inline bool ProcessServerCore(int size) {
         int msgSeqNum = *((UINT*)this->m_recvABuffer->CurrentPos());
-        //TODO remove debug
-        printf("%d\n", msgSeqNum);
 
         if(this->m_type == FeedConnectionType::Incremental || this->m_type == FeedConnectionType::IncrementalForts)
             return ProcessServerCoreIncremental(size, msgSeqNum);
@@ -804,9 +803,12 @@ protected:
 
     inline bool StartApplySnapshot_FORTS_OBS() {
         SymbolInfo *info = GetFortsSnapshotSymbolInfo();
-        if(info == 0)
+        if(info == 0) {
+            //printf("%s  invalid security id = %" PRIu64 "\n", this->m_idName, this->m_fortsSnapshotInfo->SecurityID);
             return false; // do not apply snapshot - symbol does not exist
+        }
         this->m_incremental->OrderBookForts()->ObtainSnapshotItem(info->m_index, this->m_fortsSnapshotInfo);
+        //printf("%s  start snap for security id = %" PRIu64 "\n", this->m_idName, this->m_fortsSnapshotInfo->SecurityID);
         if(this->m_incremental->OrderBookForts()->ApplyQuickSnapshot(this->m_fortsSnapshotInfo)) {
             return false; // skip all the snapshot
         }
@@ -820,24 +822,34 @@ protected:
         FortsDefaultSnapshotMessageInfo *info = (FortsDefaultSnapshotMessageInfo *) this->m_fastProtocolManager->DecodeFortsDefaultSnapshotMessage();
         this->m_incremental->OrderBookForts()->ProcessSnapshotForts(info);
         info->ReleaseUnused();
+        //printf("%s  apply part for security id = %" PRIu64 "  index = %d\n", this->m_idName, info->SecurityID, index);
         return true;
     }
 
     inline bool EndApplySnapshot_FORTS_OBS() {
         this->m_incremental->OrderBookForts()->EndProcessSnapshot();
+//        printf("%s  end snap for security id = %" PRIu64 "  que = %d  ss = %d\n",
+//               this->m_idName,
+//               this->m_fortsSnapshotInfo->SecurityID,
+//               this->m_incremental->QueueEntriesCount(),
+        //this->m_incremental->SymbolsToRecvSnapshotCount());
         return true;
     }
 
     inline bool CancelApplySnapshot_FORTS_OBS() {
+        //printf("%s  cancel snap for security id = %" PRIu64 "\n", this->m_idName, this->m_fortsSnapshotInfo->SecurityID);
         this->m_incremental->OrderBookForts()->CancelSnapshot();
         return true;
     }
 
     inline bool StartApplySnapshot_FORTS_TLS() {
         SymbolInfo *info = GetFortsSnapshotSymbolInfo();
-        if(info == 0)
+        if(info == 0) {
+            //printf("%s  invalid security id = %" PRIu64 "\n", this->m_idName, this->m_fortsSnapshotInfo->SecurityID);
             return false; // do not apply snapshot - symbol does not exist
+        }
         this->m_incremental->TradeForts()->ObtainSnapshotItem(info->m_index, this->m_fortsSnapshotInfo);
+        //printf("%s  start snap for security id = %" PRIu64 "\n", this->m_idName, this->m_fortsSnapshotInfo->SecurityID);
         if(this->m_incremental->TradeForts()->ApplyQuickSnapshot(this->m_fortsSnapshotInfo)) {
             return false; // skip all the snapshot
         }
@@ -849,17 +861,24 @@ protected:
     inline bool ApplySnapshotPart_FORTS_TLS(int index) {
         this->PrepareDecodeSnapshotMessageForts(index);
         FortsDefaultSnapshotMessageInfo *info = (FortsDefaultSnapshotMessageInfo *) this->m_fastProtocolManager->DecodeFortsDefaultSnapshotMessage();
+        //printf("%s  apply part for security id = %" PRIu64 "  index = %d\n", this->m_idName, info->SecurityID, index);
         this->m_incremental->TradeForts()->ProcessSnapshotForts(info);
         info->ReleaseUnused();
         return true;
     }
 
     inline bool EndApplySnapshot_FORTS_TLS() {
+//        printf("%s  end snap for security id = %" PRIu64 "  que = %d  ss = %d\n",
+//               this->m_idName,
+//               this->m_fortsSnapshotInfo->SecurityID,
+//               this->m_incremental->QueueEntriesCount(),
+//               this->m_incremental->SymbolsToRecvSnapshotCount());
         this->m_incremental->TradeForts()->EndProcessSnapshot();
         return true;
     }
 
     inline bool CancelApplySnapshot_FORTS_TLS() {
+        //printf("%s  cancel snap for security id = %" PRIu64 "\n", this->m_idName, this->m_fortsSnapshotInfo->SecurityID);
         this->m_incremental->TradeForts()->CancelSnapshot();
         return true;
     }
@@ -1594,6 +1613,8 @@ protected:
 
     inline bool StartApplySnapshotForts() {
         if(this->m_fortsSnapshotInfo->TemplateId == FeedTemplateId::fortsTradingSessionStatus) {
+            //TODO remove debug
+            //printf("process trading sessions status\n");
             this->ProcessTradingSessionStatusForts();
             return false; // prevent from calling end process snapshot
         }
@@ -1670,11 +1691,12 @@ protected:
             if(!FindRouteFirstForts())
                 return false;
              // TODO remove debug
-//            printf("find snapshot %d   for security id = %" PRIu64 "  lastFragment = %d  template = %d\n",
+//            printf("%s   find snapshot %d   for security id = %" PRIu64 "  lastFragment = %d  template = %d\n",
+//                   this->m_idName,
 //                   this->m_snapshotRouteFirst,
 //                   this->m_fortsSnapshotInfo->SecurityID,
 //                   this->m_fortsSnapshotInfo->LastFragment,
-//            this->m_fortsSnapshotInfo->TemplateId);
+            //this->m_fortsSnapshotInfo->TemplateId);
             if(!StartApplySnapshotForts()) {
                 if(this->m_fortsSnapshotInfo->LastFragment == 1)
                     this->m_nextFortsSnapshotRouteFirst = this->m_snapshotRouteFirst + 1;
@@ -3456,7 +3478,7 @@ public:
         info->Used = true;
         if(wasNewlyAdded) {
             this->AddSecurityDefinitionToList(info, smb->m_index);
-            printf("add forts security definition %" PRIu64 " symbol = %s index = %d\n", info->SecurityID, DebugInfoManager::Default->GetString(info->Symbol, info->SymbolLength, 0), smb->m_index);
+            printf("add forts security definition %" PRIu64 " symbol = %s index = %d  status = %d\n", info->SecurityID, DebugInfoManager::Default->GetString(info->Symbol, info->SymbolLength, 0), smb->m_index, info->SecurityTradingStatus);
         }
         else {
             printf("update forts security definition %" PRIu64 " symbol = %s index = %d\n", info->SecurityID, DebugInfoManager::Default->GetString(info->Symbol, info->SymbolLength, 0), smb->m_index);

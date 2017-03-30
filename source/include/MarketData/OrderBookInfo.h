@@ -166,7 +166,7 @@ public:
             node = node->Next();
         }
         //TODO remove debug
-        printf("ERROR: %" PRIu64 " entry not found\n", info->MDEntryID);
+        //printf("ERROR: %" PRIu64 " entry not found\n", info->MDEntryID);
 
         return 0;
     }
@@ -188,7 +188,7 @@ public:
             node = node->Next();
         }
         //TODO remove debug
-        printf("ERROR: %" PRIu64 " entry not found\n", info->MDEntryID);
+        //printf("ERROR: %" PRIu64 " entry not found\n", info->MDEntryID);
         return 0;
     }
 
@@ -198,7 +198,7 @@ public:
         LinkedPointer<T> *ptr = GetQuote(this->m_buyQuoteList, info);
         //TODO remove debug
         if(ptr == 0) {
-            printf("ERROR: %" PRIu64 " entry not found\n", info->MDEntryID);
+            //printf("ERROR: %" PRIu64 " entry not found\n", info->MDEntryID);
             return;
         }
         this->m_buyQuoteList->Remove(ptr);
@@ -212,7 +212,7 @@ public:
         LinkedPointer<T> *ptr = GetQuote(this->m_sellQuoteList, info);
         //TODO remove debug
         if(ptr == 0) {
-            printf("ERROR: %" PRIu64 " entry not found\n", info->MDEntryID);
+            //printf("ERROR: %" PRIu64 " entry not found\n", info->MDEntryID);
             return;
         }
         this->m_sellQuoteList->Remove(ptr);

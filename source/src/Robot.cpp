@@ -452,14 +452,18 @@ bool Robot::CollectSecurityDefinitionsForts() {
 
             double nanosecPerCycle = w->ElapsedMilliseconds() * 1000.0 * 1000.0 / cycleCount;
             printf("cycle count for 1 sec = %d. %g nanosec per cycle\n", cycleCount, nanosecPerCycle);
-            printf("process future idf %d of %d\n",
-                   this->m_fortsChannel->FutInfo()->InstrReplay()->LastRecvMsgSeqNo(),
-                   this->m_fortsChannel->FutInfo()->InstrReplay()->TotalNumReports()
-            );
-            printf("process options idf %d of %d\n",
-                   this->m_fortsChannel->OptInfo()->InstrReplay()->LastRecvMsgSeqNo(),
-                   this->m_fortsChannel->OptInfo()->InstrReplay()->TotalNumReports()
-            );
+            if(this->m_fortsChannel->FutInfo() != 0) {
+                printf("process future idf %d of %d\n",
+                       this->m_fortsChannel->FutInfo()->InstrReplay()->LastRecvMsgSeqNo(),
+                       this->m_fortsChannel->FutInfo()->InstrReplay()->TotalNumReports()
+                );
+            }
+            if(this->m_fortsChannel->OptInfo() != 0) {
+                printf("process options idf %d of %d\n",
+                       this->m_fortsChannel->OptInfo()->InstrReplay()->LastRecvMsgSeqNo(),
+                       this->m_fortsChannel->OptInfo()->InstrReplay()->TotalNumReports()
+                );
+            }
 
             cycleCount = 0;
         }
@@ -730,7 +734,7 @@ bool Robot::DoWork() {
     if(this->AllowFondMarket())
         this->m_fondMarket->FeedChannel()->Idf()->AllowSaveSecurityDefinitions(true);
     if(this->AllowFortsMarket())
-        this->m_fortsChannel->AllowSaveSecurityDefinitions(true);
+        this->m_fortsChannel->AllowSaveSecurityDefinitions(false); //TODO change to true later
 
     while(true) {
         if(!this->AllowFortsMarket()) { // no forts market

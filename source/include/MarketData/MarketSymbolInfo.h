@@ -106,6 +106,10 @@ public:
         return GetSession(session);
     }
     inline bool EnterSnapshotMode() {
+        if(this->m_securityDefinitionFortsPtr != 0) {
+            if(this->m_securityDefinitionFortsPtr->Data()->SecurityTradingStatus == 2)
+                return false;
+        }
         this->m_sessionsToRecvSnapshot = this->m_count;
         T **item = this->m_items;
         for(int i = 0; i < this->m_count; i++, item++) {
