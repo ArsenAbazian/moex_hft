@@ -494,6 +494,20 @@ public:
         }
         return 0;
     }
+
+    inline int IndexOf(LinkedPointer<T> *item) {
+        LinkedPointer<T> *node = this->m_head;
+        int index = 0;
+        while(true) {
+            if(node == item)
+                return index;
+            if(node == this->m_tail)
+                break;
+            node = node->Next();
+            index++;
+        }
+        return -1;
+    }
 };
 
 #endif //HFT_ROBOT_SIMPLELIST_H

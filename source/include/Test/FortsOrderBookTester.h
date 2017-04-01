@@ -4460,21 +4460,100 @@ public:
         Test_OnFullRefresh_OBS_CURR_SellQuotes_Aggregated();
     }
 
+    FortsDefaultSnapshotMessageMDEntriesItemInfo* CreatePerformanceItem(int price) {
+        FortsDefaultSnapshotMessageMDEntriesItemInfo *item = new FortsDefaultSnapshotMessageMDEntriesItemInfo();
+        item->MDEntryPx.Set(price, 0);
+        item->MDEntryType[0] = MDEntryType::mdetBuyQuote;
+        item->MDEntryTypeLength = 1;
+        return item;
+    }
+
     void TestPerformance1000() {
         OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *obi = new OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo>();
+        obi->SymbolInfo(new MarketSymbolInfo<OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo>>());
         FortsDefaultSnapshotMessageMDEntriesItemInfo **items = new FortsDefaultSnapshotMessageMDEntriesItemInfo*[1000];
         int startMantissa = 1000;
         for(int i = 0; i < 1000; i++) {
-            FortsDefaultSnapshotMessageMDEntriesItemInfo *item = new FortsDefaultSnapshotMessageMDEntriesItemInfo();
-            item->MDEntryPx.Set(startMantissa + i, 0);
-            item->MDEntryType[0] = MDEntryType::mdetBuyQuote;
-            item->MDEntryTypeLength = 1;
+            FortsDefaultSnapshotMessageMDEntriesItemInfo *item = CreatePerformanceItem(startMantissa + i * 2);
             items[i] = item;
             obi->Add(item);
         }
 
         Stopwatch *w = new Stopwatch();
-        w->Start()
+        int count = 30000;
+
+        /*
+            performance 1000 items: add 10000 times item before 51 = 224000000 nanosec
+            performance 1000 items: ave = 22400 nanosec
+            performance 1000 items: add 10000 times item before 201 = 236000000 nanosec
+            performance 1000 items: ave = 23600 nanosec
+            performance 1000 items: add 10000 times item before 501 = 120000000 nanosec
+            performance 1000 items: ave = 12000 nanosec
+         */
+
+        FortsDefaultSnapshotMessageMDEntriesItemInfo *item50 = CreatePerformanceItem(startMantissa + 50 * 2 + 1);
+        w->Start();
+        for(int i = 0; i < count; i++) {
+            LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *ptr = obi->Add(item50);
+            obi->BuyQuotes()->Remove(ptr);
+        }
+        UINT64 en = w->ElapsedNanoseconds();
+        printf("performance 1000 items: add %d times item before 51 = %" PRIu64 " nanosec\n", count, en);
+        printf("performance 1000 items: ave = %" PRIu64 " nanosec\n", en / count);
+
+        FortsDefaultSnapshotMessageMDEntriesItemInfo *item200 = CreatePerformanceItem(startMantissa + 200 * 2 + 1);
+        w->Start();
+        for(int i = 0; i < count; i++) {
+            LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *ptr = obi->Add(item200);
+            obi->BuyQuotes()->Remove(ptr);
+        }
+        en = w->ElapsedNanoseconds();
+        printf("performance 1000 items: add %d times item before 201 = %" PRIu64 " nanosec\n", count, en);
+        printf("performance 1000 items: ave = %" PRIu64 " nanosec\n", en / count);
+
+        FortsDefaultSnapshotMessageMDEntriesItemInfo *item500 = CreatePerformanceItem(startMantissa + 500 * 2 + 1);
+        w->Start();
+        for(int i = 0; i < count; i++) {
+            LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *ptr = obi->Add(item500);
+            obi->BuyQuotes()->Remove(ptr);
+        }
+        en = w->ElapsedNanoseconds();
+        printf("performance 1000 items: add %d times item before 501 = %" PRIu64 " nanosec\n", count, en);
+        printf("performance 1000 items: ave = %" PRIu64 " nanosec\n", en / count);
+
+        FortsDefaultSnapshotMessageMDEntriesItemInfo *item700 = CreatePerformanceItem(startMantissa + 700 * 2 + 1);
+        w->Start();
+        for(int i = 0; i < count; i++) {
+            LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *ptr = obi->Add(item700);
+            obi->BuyQuotes()->Remove(ptr);
+        }
+        en = w->ElapsedNanoseconds();
+        printf("performance 1000 items: add %d times item before 701 = %" PRIu64 " nanosec\n", count, en);
+        printf("performance 1000 items: ave = %" PRIu64 " nanosec\n", en / count);
+
+        FortsDefaultSnapshotMessageMDEntriesItemInfo *item900 = CreatePerformanceItem(startMantissa + 900 * 2 + 1);
+        w->Start();
+        for(int i = 0; i < count; i++) {
+            LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *ptr = obi->Add(item900);
+            obi->BuyQuotes()->Remove(ptr);
+        }
+        en = w->ElapsedNanoseconds();
+        printf("performance 1000 items: add %d times item before 901 = %" PRIu64 " nanosec\n", count, en);
+        printf("performance 1000 items: ave = %" PRIu64 " nanosec\n", en / count);
+
+
+        FortsDefaultSnapshotMessageMDEntriesItemInfo *item995 = CreatePerformanceItem(startMantissa + 995 * 2 + 1);
+        w->Start();
+        for(int i = 0; i < count; i++) {
+            LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *ptr = obi->Add(item995);
+            obi->BuyQuotes()->Remove(ptr);
+        }
+        en = w->ElapsedNanoseconds();
+        printf("performance 1000 items: add %d times item before 995 = %" PRIu64 " nanosec\n", count, en);
+        printf("performance 1000 items: ave = %" PRIu64 " nanosec\n", en / count);
+
+        w->Stop();
+        getchar();
     }
 
     void TestPerformance() {
