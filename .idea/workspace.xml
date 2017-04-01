@@ -23,8 +23,6 @@
   <component name="ChangeListManager">
     <list default="true" id="32604c03-98a8-42cf-80f6-771ec2ce84cc" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CMakeLists.txt" afterPath="$PROJECT_DIR$/CMakeLists.txt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/Test/FortsOrderBookTester.h" afterPath="$PROJECT_DIR$/source/include/Test/FortsOrderBookTester.h" />
     </list>
     <ignored path="hft_robot.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -849,14 +847,7 @@
       <workItem from="1490722251282" duration="40561000" />
       <workItem from="1490945809554" duration="673000" />
       <workItem from="1490953134090" duration="1963000" />
-      <workItem from="1490974940776" duration="2785000" />
-    </task>
-    <task id="LOCAL-00199" summary="A little refactoring">
-      <created>1488271728025</created>
-      <option name="number" value="00199" />
-      <option name="presentableId" value="LOCAL-00199" />
-      <option name="project" value="LOCAL" />
-      <updated>1488271728025</updated>
+      <workItem from="1490974940776" duration="2826000" />
     </task>
     <task id="LOCAL-00200" summary="Starting Window for packets...">
       <created>1488300778152</created>
@@ -1194,11 +1185,18 @@
       <option name="project" value="LOCAL" />
       <updated>1490945868811</updated>
     </task>
-    <option name="localTasksCounter" value="248" />
+    <task id="LOCAL-00248" summary="add forts">
+      <created>1491054711623</created>
+      <option name="number" value="00248" />
+      <option name="presentableId" value="LOCAL-00248" />
+      <option name="project" value="LOCAL" />
+      <updated>1491054711629</updated>
+    </task>
+    <option name="localTasksCounter" value="249" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="2282212000" />
+    <option name="totallyTimeSpent" value="2282253000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
