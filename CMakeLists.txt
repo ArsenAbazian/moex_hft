@@ -66,7 +66,7 @@ add_custom_target(fast_generate ALL
 set(CMAKE_CXX_COMPILER clang++)
 set(CMAKE_C_COMPILER clang)
 
-set(common_params "-march=corei7 -msse4.2 -msse4.1 -m64 -mtune=corei7 -fpic -pthread -std=gnu++1z -fms-extensions -mcx16 -D__STDC_LIMIT_MACROS")
+set(common_params "-march=corei7 -msse4.2 -msse4.1 -m64 -mtune=corei7 -fpic -pthread -std=gnu++1z -fms-extensions -mcx16 -masm=intel -D__STDC_LIMIT_MACROS")
 #set(common_params "${common_params} --target=x86_64-pc-linux-elf")
 #set(CMAKE_CXX_FLAGS_DEBUG "${common_params} -g3 - O0")
 #set(CMAKE_CXX_FLAGS_RELEASE "${common_params} -g0 -O3")

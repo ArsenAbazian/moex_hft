@@ -4460,9 +4460,31 @@ public:
         Test_OnFullRefresh_OBS_CURR_SellQuotes_Aggregated();
     }
 
+    void TestPerformance1000() {
+        OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *obi = new OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo>();
+        FortsDefaultSnapshotMessageMDEntriesItemInfo **items = new FortsDefaultSnapshotMessageMDEntriesItemInfo*[1000];
+        int startMantissa = 1000;
+        for(int i = 0; i < 1000; i++) {
+            FortsDefaultSnapshotMessageMDEntriesItemInfo *item = new FortsDefaultSnapshotMessageMDEntriesItemInfo();
+            item->MDEntryPx.Set(startMantissa + i, 0);
+            item->MDEntryType[0] = MDEntryType::mdetBuyQuote;
+            item->MDEntryTypeLength = 1;
+            items[i] = item;
+            obi->Add(item);
+        }
+
+        Stopwatch *w = new Stopwatch();
+        w->Start()
+    }
+
+    void TestPerformance() {
+        TestPerformance1000();
+    }
+
     void Test() {
         TestDefaults();
         TestStringIdComparer();
+        TestPerformance();
         TestConnection();
         TestInfoAndItemInfoUsageAndAllocationCurr();
         Test_OLR_CURR();
