@@ -36,7 +36,6 @@ class SymbolManagerTester {
             if(symb == 0xa)
                 this->m_itemsCount++;
         }
-        this->m_itemsCount++;
         fseek(fp, 0, SEEK_SET);
 
         this->m_items = new hashTextInfo[this->m_itemsCount];
@@ -54,12 +53,12 @@ class SymbolManagerTester {
                     this->m_items[index].lenght = symbol;
                     symbol = 0;
                     index++;
+                    if(index == this->m_itemsCount)
+                        break;
                 }
                 else symbol++;
              }
         }
-        this->m_items[index].text[symbol] = '\0';
-        this->m_items[index].lenght = symbol;
         fclose(fp);
     }
     void ClearBusy() {
@@ -102,16 +101,18 @@ public:
             unsigned int hash = StringHash::GetHash(this->m_items[i].text, this->m_items[i].lenght);
             if(hash >= StringHash::MaxHashValue)
                 throw;
-            m_hashCount[hash] ++;
+            this->m_hashCount[hash] ++;
         }
         int maxHashCollisionCount = 0;
         for(int i = 0; i < StringHash::MaxHashValue; i++) {
-            if(m_hashCount[i] > maxHashCollisionCount)
-                maxHashCollisionCount = m_hashCount[i];
-            //printf("i = %d\n", m_hashCount[i]);
+            if(this->m_hashCount[i] > maxHashCollisionCount)
+                maxHashCollisionCount = this->m_hashCount[i];
+            //printf("hash collision count for %d = %d\n", i, m_hashCount[i]);
         }
 
-        printf("SMB max collision count = %d\n", maxHashCollisionCount);
+        //printf("SMB max collision count = %d\n", maxHashCollisionCount);
+        if(maxHashCollisionCount > 8)
+            throw; // it should be 8
     }
 
     void TestAddAllSymbols() {
@@ -120,18 +121,50 @@ public:
 
         bool wasNewlyAdded = false;
         int dublicateItems = 0;
+        int maxCollisionCount = 0;
         for(int i = 0; i < this->m_itemsCount; i++) {
-            int index = this->m_manager->GetSymbolIndex(this->m_items[i].text, this->m_items[i].lenght, &wasNewlyAdded);
-            if(!wasNewlyAdded)
-                dublicateItems++;
-            else
-                this->m_busy[index]++;
+            unsigned int hash = StringHash::GetHash(this->m_items[i].text, this->m_items[i].lenght);
+            int poolBefore = this->m_manager->m_pool->CalcPoolCount();
+            int bucketCountBefore = this->m_manager->CalcBucketCollisitonCount(hash);
 
+            if(bucketCountBefore > this->m_hashCount[hash])
+                throw;
+
+            printf("%d  adding symbol %s with hash %d\n", i, DebugInfoManager::Default->GetString(this->m_items[i].text, this->m_items[i].lenght, 0), hash);
+            printf("pool count before = %d  bucket count before = %d\n", poolBefore, bucketCountBefore);
+
+            int index = this->m_manager->GetSymbolIndex(this->m_items[i].text, this->m_items[i].lenght, &wasNewlyAdded);
+
+            int poolAfter =this->m_manager->m_pool->CalcPoolCount();
+            int bucketCountAfter = this->m_manager->CalcBucketCollisitonCount(hash);
+            if(bucketCountAfter > this->m_hashCount[hash])
+                throw;
+
+            printf("pool count after = %d  bucket count after = %d\n", poolAfter, bucketCountAfter);
+
+            if(!wasNewlyAdded) {
+                dublicateItems++;
+                if(poolBefore != poolAfter)
+                    throw;
+            }
+            else {
+                this->m_busy[index]++;
+                if(poolAfter != poolBefore - 1)
+                    throw;
+                if(index != i - dublicateItems)
+                    throw;
+            }
             if(this->m_busy[index] > 1)
                 throw;
+            if(bucketCountAfter > bucketCountBefore + 1)
+                throw;
+            if(bucketCountAfter > 8)
+                throw;
+            maxCollisionCount = maxCollisionCount < bucketCountAfter? bucketCountAfter: maxCollisionCount;
         }
         if(this->m_manager->SymbolCount() != this->m_itemsCount - dublicateItems) // sorry some m_symbols are dublicated
             throw;
+        this->m_manager->Clear();
     }
 
     void TestAddSymbols() {
