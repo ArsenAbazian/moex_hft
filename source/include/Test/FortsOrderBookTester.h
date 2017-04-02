@@ -1079,14 +1079,10 @@ public:
         this->m_table->ProcessIncremental(item2, 0);
         this->m_table->ProcessIncremental(item3, 0);
 
-        if(this->m_table->UsedItemCount() != 1)
-            throw;
         OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *tableItem = this->m_table->GetItemBySecurityId(111111, 0);
         if(tableItem->EntriesQueue()->MaxIndex() != 1) // 3 is empty and 4 has value
             throw;
         this->m_table->Clear();
-        if(this->m_table->UsedItemCount() != 0)
-            throw;
         if(tableItem->RptSeq() != 0)
             throw;
         if(tableItem->BuyQuotes()->Count() != 0)
@@ -1160,11 +1156,6 @@ public:
 
         if(!this->m_table->ProcessIncremental(item2, 1))
             throw;
-
-        if(this->m_table->UsedItemCount() != 2)
-            throw;
-
-        
     }
 
     void TestTable_CorrectApplySnapshot() {
@@ -3607,7 +3598,7 @@ public:
             throw;
     }
 
-    PointerListLite<FortsDefaultSnapshotMessageMDEntriesItemInfo>* BuyQuotes(int symbolIndex) {
+    HrPointerListLite<FortsDefaultSnapshotMessageMDEntriesItemInfo>* BuyQuotes(int symbolIndex) {
         return incForts->OrderBookForts()->Symbol(symbolIndex)->Session(0)->BuyQuotes();
     }
 
@@ -4494,7 +4485,7 @@ public:
         FortsDefaultSnapshotMessageMDEntriesItemInfo *item50 = CreatePerformanceItem(startMantissa + 50 * 2 + 1);
         w->Start();
         for(int i = 0; i < count; i++) {
-            LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *ptr = obi->Add(item50);
+            HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *ptr = obi->Add(item50);
             obi->BuyQuotes()->Remove(ptr);
         }
         UINT64 en = w->ElapsedNanoseconds();
@@ -4504,7 +4495,7 @@ public:
         FortsDefaultSnapshotMessageMDEntriesItemInfo *item200 = CreatePerformanceItem(startMantissa + 200 * 2 + 1);
         w->Start();
         for(int i = 0; i < count; i++) {
-            LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *ptr = obi->Add(item200);
+            HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *ptr = obi->Add(item200);
             obi->BuyQuotes()->Remove(ptr);
         }
         en = w->ElapsedNanoseconds();
@@ -4514,7 +4505,7 @@ public:
         FortsDefaultSnapshotMessageMDEntriesItemInfo *item500 = CreatePerformanceItem(startMantissa + 500 * 2 + 1);
         w->Start();
         for(int i = 0; i < count; i++) {
-            LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *ptr = obi->Add(item500);
+            HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *ptr = obi->Add(item500);
             obi->BuyQuotes()->Remove(ptr);
         }
         en = w->ElapsedNanoseconds();
@@ -4524,7 +4515,7 @@ public:
         FortsDefaultSnapshotMessageMDEntriesItemInfo *item700 = CreatePerformanceItem(startMantissa + 700 * 2 + 1);
         w->Start();
         for(int i = 0; i < count; i++) {
-            LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *ptr = obi->Add(item700);
+            HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *ptr = obi->Add(item700);
             obi->BuyQuotes()->Remove(ptr);
         }
         en = w->ElapsedNanoseconds();
@@ -4534,7 +4525,7 @@ public:
         FortsDefaultSnapshotMessageMDEntriesItemInfo *item900 = CreatePerformanceItem(startMantissa + 900 * 2 + 1);
         w->Start();
         for(int i = 0; i < count; i++) {
-            LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *ptr = obi->Add(item900);
+            HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *ptr = obi->Add(item900);
             obi->BuyQuotes()->Remove(ptr);
         }
         en = w->ElapsedNanoseconds();
@@ -4545,7 +4536,7 @@ public:
         FortsDefaultSnapshotMessageMDEntriesItemInfo *item995 = CreatePerformanceItem(startMantissa + 995 * 2 + 1);
         w->Start();
         for(int i = 0; i < count; i++) {
-            LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *ptr = obi->Add(item995);
+            HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *ptr = obi->Add(item995);
             obi->BuyQuotes()->Remove(ptr);
         }
         en = w->ElapsedNanoseconds();
@@ -4553,7 +4544,6 @@ public:
         printf("performance 1000 items: ave = %" PRIu64 " nanosec\n", en / count);
 
         w->Stop();
-        getchar();
     }
 
     void TestPerformance() {
@@ -4563,12 +4553,12 @@ public:
     void Test() {
         TestDefaults();
         TestStringIdComparer();
+        TestOrderTableItem();
         TestPerformance();
         TestConnection();
         TestInfoAndItemInfoUsageAndAllocationCurr();
         Test_OLR_CURR();
         Test_Aggregated();
-        TestOrderTableItem();
     }
 };
 

@@ -2669,7 +2669,7 @@ protected:
                     this->socketBManager->UpdatePollStatus();
                     printf("a = %d  b = %d\n", this->socketAManager->PollFd()->revents, this->socketBManager->PollFd()->revents);
                     //TODO uncomment this code....
-                    //ReconnectSetNextState(FeedConnectionState::fcsListenSnapshot);
+                    ReconnectSetNextState(FeedConnectionState::fcsListenSnapshot);
                     return true;
                 }
             }

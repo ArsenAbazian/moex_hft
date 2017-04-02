@@ -7,7 +7,8 @@
 
 #include "../Lib/StringIdComparer.h"
 #include "Fast/FastTypes.h"
-#include "../Lib/PointerList.h"
+#include "../Lib/HrPointerList.h"
+#include "../Lib/HrPointerList.h"
 #include "MDEntryQueue.h"
 #include "QuoteInfo.h"
 #include "../Managers/DebugInfoManager.h"
@@ -15,10 +16,10 @@
 template <typename T> class MarketSymbolInfo;
 
 template <typename T> class OrderBookInfo {
-    static PointerList<T>               *m_itemsPool;
+    static HrPointerList<T>               *m_itemsPool;
 
-    PointerListLite<T>                  *m_sellQuoteList;
-    PointerListLite<T>                  *m_buyQuoteList;
+    HrPointerListLite<T>                  *m_sellQuoteList;
+    HrPointerListLite<T>                  *m_buyQuoteList;
 
     MDEntryQueue                       *m_entryInfo;
 
@@ -63,15 +64,15 @@ public:
     inline void ClearEntries() { this->ReleaseEntryQue(); }
     inline MDEntryQueue* EntriesQueue() { return this->m_entryInfo; }
 
-    inline PointerListLite<T>* SellQuotes() { return this->m_sellQuoteList; }
-    inline PointerListLite<T>* BuyQuotes() { return this->m_buyQuoteList; }
+    inline HrPointerListLite<T>* SellQuotes() { return this->m_sellQuoteList; }
+    inline HrPointerListLite<T>* BuyQuotes() { return this->m_buyQuoteList; }
 
     inline bool Used() { return this->m_used; }
     inline void Used(bool used) { this->m_used = used; }
-    inline void Clear(PointerListLite<T> *list) {
+    inline void Clear(HrPointerListLite<T> *list) {
         if(list->Count() == 0)
             return;
-        LinkedPointer<T> *node = list->Start();
+        HrLinkedPointer<T> *node = list->Start();
         while(true) {
             node->Data()->Clear();
             if(node == list->End())
@@ -90,8 +91,8 @@ public:
         this->m_snapshotProcessedCount = 0;
     }
 
-    inline LinkedPointer<T>* GetQuote(PointerListLite<T> *list, T *info) {
-        LinkedPointer<T> *node = list->Start();
+    inline HrLinkedPointer<T>* GetQuote(HrPointerListLite<T> *list, T *info) {
+        HrLinkedPointer<T> *node = list->Start();
         if(node == 0)
             return 0;
         while(true) {
@@ -107,8 +108,8 @@ public:
         return list->Add(info);
     }
 
-    inline LinkedPointer<T>* GetBuyQuote(Decimal *price) {
-        LinkedPointer<T> *node = this->m_buyQuoteList->Start();
+    inline HrLinkedPointer<T>* GetBuyQuote(Decimal *price) {
+        HrLinkedPointer<T> *node = this->m_buyQuoteList->Start();
         double value = price->Calculate();
         T *quote = 0;
 
@@ -128,8 +129,8 @@ public:
         return this->m_buyQuoteList->Add();
     }
 
-    inline LinkedPointer<T>* GetSellQuote(Decimal *price) {
-        LinkedPointer<T> *node = this->m_sellQuoteList->Start();
+    inline HrLinkedPointer<T>* GetSellQuote(Decimal *price) {
+        HrLinkedPointer<T> *node = this->m_sellQuoteList->Start();
         double value = price->Calculate();
         T *quote = 0;
 
@@ -149,9 +150,9 @@ public:
         return this->m_sellQuoteList->Add();
     }
 
-    inline LinkedPointer<T>* RemoveBuyQuote(T *info) {
+    inline HrLinkedPointer<T>* RemoveBuyQuote(T *info) {
         DebugInfoManager::Default->Log(this->m_symbolInfo->Symbol(), this->m_sessionInt, "Remove BuyQuote", info->MDEntryID, &(info->MDEntryPx), info->MDEntrySize);
-        LinkedPointer<T> *node = this->m_buyQuoteList->Start();
+        HrLinkedPointer<T> *node = this->m_buyQuoteList->Start();
         if(node == 0)
             return 0;
         while(true) {
@@ -171,9 +172,9 @@ public:
         return 0;
     }
 
-    inline LinkedPointer<T>* RemoveSellQuote(T *info) {
+    inline HrLinkedPointer<T>* RemoveSellQuote(T *info) {
         DebugInfoManager::Default->Log(this->m_symbolInfo->Symbol(), this->m_sessionInt, "Remove SellQuote", info->MDEntryID, &(info->MDEntryPx), info->MDEntrySize);
-        LinkedPointer<T> *node = this->m_sellQuoteList->Start();
+        HrLinkedPointer<T> *node = this->m_sellQuoteList->Start();
         if(node == 0)
             return 0;
         while(true) {
@@ -195,7 +196,7 @@ public:
     inline void ChangeBuyQuote(T *info) {
         DebugInfoManager::Default->Log(this->m_symbolInfo->Symbol(), this->m_sessionInt, "Change BuyQuote", info->MDEntryID, &(info->MDEntryPx), info->MDEntrySize);
 
-        LinkedPointer<T> *ptr = GetQuote(this->m_buyQuoteList, info);
+        HrLinkedPointer<T> *ptr = GetQuote(this->m_buyQuoteList, info);
         //TODO remove debug
         if(ptr == 0) {
             //printf("ERROR: %" PRIu64 " entry not found\n", info->MDEntryID);
@@ -209,7 +210,7 @@ public:
 
     inline void ChangeSellQuote(T *info) {
         DebugInfoManager::Default->Log(this->m_symbolInfo->Symbol(), this->m_sessionInt, "Change SellQuote", info->MDEntryID, &(info->MDEntryPx), info->MDEntrySize);
-        LinkedPointer<T> *ptr = GetQuote(this->m_sellQuoteList, info);
+        HrLinkedPointer<T> *ptr = GetQuote(this->m_sellQuoteList, info);
         //TODO remove debug
         if(ptr == 0) {
             //printf("ERROR: %" PRIu64 " entry not found\n", info->MDEntryID);
@@ -221,18 +222,18 @@ public:
         ptr->Data()->Clear();
     }
 
-    inline LinkedPointer<T>* AddBuyQuote(T *item) {
+    inline HrLinkedPointer<T>* AddBuyQuote(T *item) {
         DebugInfoManager::Default->Log(this->m_symbolInfo->Symbol(), this->m_sessionInt, "Add BuyQuote", item->MDEntryID, &(item->MDEntryPx), item->MDEntrySize);
         item->Used = true;
-        LinkedPointer<T> *ptr = GetBuyQuote(&(item->MDEntryPx));
+        HrLinkedPointer<T> *ptr = GetBuyQuote(&(item->MDEntryPx));
         ptr->Data(item);
         return ptr;
     }
 
-    inline LinkedPointer<T>* AddSellQuote(T *item) {
+    inline HrLinkedPointer<T>* AddSellQuote(T *item) {
         DebugInfoManager::Default->Log(this->m_symbolInfo->Symbol(), this->m_sessionInt, "Add SellQuote", item->MDEntryID, &(item->MDEntryPx), item->MDEntrySize);
         item->Used = true;
-        LinkedPointer<T> *ptr = GetSellQuote(&(item->MDEntryPx));
+        HrLinkedPointer<T> *ptr = GetSellQuote(&(item->MDEntryPx));
         ptr->Data(item);
         return ptr;
     }
@@ -251,7 +252,7 @@ public:
             this->ChangeSellQuote(info);
     }
 
-    inline LinkedPointer<T>* Add(T *info) {
+    inline HrLinkedPointer<T>* Add(T *info) {
         if(info->MDEntryType[0] == mdetBuyQuote)
             return this->AddBuyQuote(info);
         else if(info->MDEntryType[0] == mdetSellQuote)
@@ -391,16 +392,16 @@ public:
     }
 };
 
-template <typename T> PointerList<T>* OrderBookInfo<T>::m_itemsPool = 0;
+template <typename T> HrPointerList<T>* OrderBookInfo<T>::m_itemsPool = 0;
 
 template <typename T> OrderBookInfo<T>::OrderBookInfo() {
     if(OrderBookInfo::m_itemsPool == 0)
-        OrderBookInfo::m_itemsPool = new PointerList<T>(RobotSettings::Default->MarketDataMaxEntriesCount, false);
+        OrderBookInfo::m_itemsPool = new HrPointerList<T>(RobotSettings::Default->MarketDataMaxEntriesCount, false);
 
     this->m_entryInfo = 0;
 
-    this->m_sellQuoteList = new PointerListLite<T>(OrderBookInfo<T>::m_itemsPool);
-    this->m_buyQuoteList = new PointerListLite<T>(OrderBookInfo<T>::m_itemsPool);
+    this->m_sellQuoteList = new HrPointerListLite<T>(OrderBookInfo<T>::m_itemsPool);
+    this->m_buyQuoteList = new HrPointerListLite<T>(OrderBookInfo<T>::m_itemsPool);
 
     this->m_tradingSession = new SizedArray();
     this->m_shouldProcessSnapshot = false;

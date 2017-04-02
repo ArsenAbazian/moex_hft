@@ -113,6 +113,8 @@ public:
         this->m_pool = new PointerList<SymbolInfo>(capacity + 10);
         this->m_pool->AllocData();
         this->m_bucketList = new LinkedPointer<SymbolInfo>*[StringHash::HashArrayItemsCount];
+        for(int i = 0; i < StringHash::HashArrayItemsCount; i++)
+            this->m_bucketList[i] = 0;
         this->m_bucketList2 = 0;
     }
     SymbolManager(int capacity, bool useUint64Hash) {
