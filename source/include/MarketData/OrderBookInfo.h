@@ -108,6 +108,19 @@ public:
         return list->Add(info);
     }
 
+    inline HrLinkedPointer<T>* GetBuyQuoteExtended(Decimal *price) {
+        HrLinkedPointer<T> *node = this->m_buyQuoteList->Start();
+        double value = price->Calculate();
+        if(node == 0)
+            return this->m_buyQuoteList->Add();
+
+        while(true) {
+            if(node->HasNext5()) {
+
+            }
+        }
+    }
+
     inline HrLinkedPointer<T>* GetBuyQuote(Decimal *price) {
         HrLinkedPointer<T> *node = this->m_buyQuoteList->Start();
         double value = price->Calculate();
