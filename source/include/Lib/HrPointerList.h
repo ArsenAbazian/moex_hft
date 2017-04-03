@@ -512,6 +512,34 @@ public:
         return node;
     }
 
+    inline HrLinkedPointer<T>* Insert2(HrLinkedPointer<T> *start, HrLinkedPointer<T> *node, HrLinkedPointer<T> *end) {
+        start->Next2(node);
+        node->Prev2(start);
+        end->Prev2(node);
+        node->Next2(end);
+    }
+
+    inline HrLinkedPointer<T>* Insert3(HrLinkedPointer<T> *start, HrLinkedPointer<T> *node, HrLinkedPointer<T> *end) {
+        start->Next3(node);
+        node->Prev3(start);
+        end->Prev3(node);
+        node->Next3(end);
+    }
+
+    inline HrLinkedPointer<T>* Insert4(HrLinkedPointer<T> *start, HrLinkedPointer<T> *node, HrLinkedPointer<T> *end) {
+        start->Next4(node);
+        node->Prev4(start);
+        end->Prev4(node);
+        node->Next4(end);
+    }
+
+    inline HrLinkedPointer<T>* Insert5(HrLinkedPointer<T> *start, HrLinkedPointer<T> *node, HrLinkedPointer<T> *end) {
+        start->Next5(node);
+        node->Prev5(start);
+        end->Prev5(node);
+        node->Next5(end);
+    }
+
     inline HrLinkedPointer<T>* Insert(HrLinkedPointer<T> *insertBefore) {
         HrLinkedPointer<T> *node = this->m_pool->Pop();
         HrLinkedPointer<T> *prev = insertBefore->Prev();

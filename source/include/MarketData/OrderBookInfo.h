@@ -20,6 +20,7 @@ template <typename T> class OrderBookInfo {
 
     HrPointerListLite<T>                  *m_sellQuoteList;
     HrPointerListLite<T>                  *m_buyQuoteList;
+    int                                    m_buyQuoteListLevel;
 
     MDEntryQueue                       *m_entryInfo;
 
@@ -108,17 +109,111 @@ public:
         return list->Add(info);
     }
 
-    inline HrLinkedPointer<T>* GetBuyQuoteExtended(Decimal *price) {
-        HrLinkedPointer<T> *node = this->m_buyQuoteList->Start();
-        double value = price->Calculate();
-        if(node == 0)
-            return this->m_buyQuoteList->Add();
-
+    inline HrLinkedPointer<T>* GetBuyQuoteCore1(double value, HrLinkedPointer<T> *start, HrLinkedPointer<T> *end) {
+        HrLinkedPointer<T> *node = start;
         while(true) {
-            if(node->HasNext5()) {
-
+            double val = (&(node->Data()->MDEntryPx))->Value;
+            if(val < value) {
+                this->m_buyQuoteListLevel = this->CalcLevel();
+                return this->m_buyQuoteList->Insert(node);
             }
+            if(val == value)
+                return node;
+            node = node->Next4();
         }
+    }
+
+    inline HrLinkedPointer<T>* GetBuyQuoteCore2(double value, HrLinkedPointer<T> *start, HrLinkedPointer<T> *end) {
+        HrLinkedPointer<T> *node = start;
+        while(true) {
+            double val = (&(node->Data()->MDEntryPx))->Value;
+            if(val < value) {
+                node = GetBuyQuoteCore1(value, node->Prev5(), node);
+                if(this->m_buyQuoteListLevel >= 2)
+                    this->m_buyQuoteList->Insert2(start, node, end);
+                return node;
+            }
+            if(val == value)
+                return node;
+            node = node->Next2();
+        }
+    }
+
+    inline HrLinkedPointer<T>* GetBuyQuoteCore3(double value, HrLinkedPointer<T> *start, HrLinkedPointer<T> *end) {
+        HrLinkedPointer<T> *node = start;
+        while(true) {
+            double val = (&(node->Data()->MDEntryPx))->Value;
+            if(val < value) {
+                node = GetBuyQuoteCore2(value, node->Prev5(), node);
+                if(this->m_buyQuoteListLevel >= 3)
+                    this->m_buyQuoteList->Insert3(start, node, end);
+                return node;
+            }
+            if(val == value)
+                return node;
+            node = node->Next3();
+        }
+    }
+
+    inline HrLinkedPointer<T>* GetBuyQuoteCore4(double value, HrLinkedPointer<T> *start, HrLinkedPointer<T> *end) {
+        HrLinkedPointer<T> *node = start;
+        while(true) {
+            double val = (&(node->Data()->MDEntryPx))->Value;
+            if(val < value) {
+                node = GetBuyQuoteCore3(value, node->Prev5(), node);
+                if(this->m_buyQuoteListLevel >= 4)
+                    this->m_buyQuoteList->Insert4(start, node, end);
+                return node;
+            }
+            if(val == value)
+                return node;
+            node = node->Next4();
+        }
+    }
+
+    inline HrLinkedPointer<T>* GetBuyQuoteCore5(double value, HrLinkedPointer<T> *start, HrLinkedPointer<T> *end) {
+        HrLinkedPointer<T> *node = start;
+        if (node == 0) {
+
+        }
+        while (true) {
+            double val = (&(node->Data()->MDEntryPx))->Value;
+            if (val < value) {
+                node = GetBuyQuoteCore4(value, node->Prev5(), node);
+                if (this->m_buyQuoteListLevel >= 5)
+                    this->m_buyQuoteList->Insert5(start, node, end);
+                return node;
+            }
+            if (val == value)
+                return node;
+            if (node == end)
+                break;
+            node = node->Next5();
+        }
+
+        this->m_buyQuoteListLevel = CalcLevel();
+        node = this->m_buyQuoteList->Add();
+        return node;
+    }
+
+    inline int CalcLevel() {
+        const int maxP = INT32_MAX >> 1;
+
+        //TODO change rand to faster method!!!!!
+        if(rand() > maxP)
+            return 1;
+        if(rand() > maxP)
+            return 2;
+        if(rand() > maxP)
+            return 3;
+        if(rand() > maxP)
+            return 4;
+        return 5;
+    }
+
+    inline HrLinkedPointer<T>* GetBuyQuoteEx(Decimal *price) {
+        this->m_buyQuoteListLevel = 0;
+        return this->GetBuyQuoteCore5(price->Calculate(), this->m_buyQuoteList->Start(), this->m_buyQuoteList->End());
     }
 
     inline HrLinkedPointer<T>* GetBuyQuote(Decimal *price) {

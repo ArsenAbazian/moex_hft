@@ -68,6 +68,8 @@ class SymbolManager {
                     continue;
                 while (ptr != 0) {
                     prevPtr = ptr;
+                    if(ptr == ptr->Next())
+                        throw;
                     ptr = ptr->Next();
                     this->m_pool->Push(prevPtr);
                 }
