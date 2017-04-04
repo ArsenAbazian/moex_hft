@@ -395,6 +395,7 @@ public:
     }
     inline LinkedPointer<T>* Start() { return this->m_head->Next(); }
     inline LinkedPointer<T>* End() { return this->m_tail; }
+    inline LinkedPointer<T>* Last() { return this->m_tail; }
     inline LinkedPointer<T>* Next(LinkedPointer<T> *node) { return node->Next(); }
     inline int Count() { return this->m_count; }
 
@@ -493,6 +494,20 @@ public:
             node = node->Next();
         }
         return 0;
+    }
+
+    inline int IndexOf(LinkedPointer<T> *item) {
+        LinkedPointer<T> *node = this->m_head;
+        int index = 0;
+        while(true) {
+            if(node == item)
+                return index;
+            if(node == this->m_tail)
+                break;
+            node = node->Next();
+            index++;
+        }
+        return -1;
     }
 };
 

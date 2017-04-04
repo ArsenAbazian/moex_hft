@@ -12,6 +12,7 @@
 
 class SymbolInfo {
 public:
+    LinkedPointer<SymbolInfo>   *m_pointer;
     int                         m_index;
     int                         m_length;
     char                        m_text[17];
@@ -19,6 +20,7 @@ public:
     SymbolInfo() {
         this->m_length = 0;
         this->m_index = -1;
+        this->m_pointer = 0;
     }
     void Set(const char *symbol, int length, int index) {
         memcpy(this->m_text, symbol, length);
@@ -66,14 +68,21 @@ class SymbolManager {
                     continue;
                 while (ptr != 0) {
                     prevPtr = ptr;
+                    if(ptr == ptr->Next())
+                        throw;
                     ptr = ptr->Next();
                     this->m_pool->Push(prevPtr);
                 }
                 this->m_bucketList[i] = 0;
             }
         }
-        else if(this->m_bucketList2 != 0)
-            bzero(this->m_bucketList2, sizeof(SymbolInfo*) * BucketList2Count);
+        else if(this->m_bucketList2 != 0) {
+            for(int i = 0; i < BucketList2Count; i++) {
+                if(this->m_bucketList2[i] != 0)
+                    this->m_pool->Push(this->m_bucketList2[i]->m_pointer);
+            }
+            bzero(this->m_bucketList2, sizeof(SymbolInfo *) * BucketList2Count);
+        }
         this->m_pool->Clear();
     }
     inline LinkedPointer<SymbolInfo>* GetBucket(int hash) {
@@ -81,7 +90,6 @@ class SymbolManager {
     }
     inline LinkedPointer<SymbolInfo>* GetPtrFromPool() {
         LinkedPointer<SymbolInfo> *res = this->m_pool->Pop();
-        this->m_pool->Add(res);
         res->Next(0);
         return res;
     }
@@ -104,6 +112,15 @@ class SymbolManager {
         next->Next(0);
         this->m_count++;
     }
+    void AssignPointersToSymbols() {
+        LinkedPointer<SymbolInfo> *ptr = this->m_pool->PoolStart();
+        while(true) {
+            ptr->Data()->m_pointer = ptr;
+            if(ptr == this->m_pool->PoolEnd())
+                break;
+            ptr = ptr->Next();
+        }
+    }
 public:
     SymbolManager(int capacity) {
         this->m_capacity = capacity;
@@ -112,7 +129,10 @@ public:
 
         this->m_pool = new PointerList<SymbolInfo>(capacity + 10);
         this->m_pool->AllocData();
+        this->AssignPointersToSymbols();
         this->m_bucketList = new LinkedPointer<SymbolInfo>*[StringHash::HashArrayItemsCount];
+        for(int i = 0; i < StringHash::HashArrayItemsCount; i++)
+            this->m_bucketList[i] = 0;
         this->m_bucketList2 = 0;
     }
     SymbolManager(int capacity, bool useUint64Hash) {
@@ -122,8 +142,9 @@ public:
 
         this->m_pool = new PointerList<SymbolInfo>(capacity + 10);
         this->m_pool->AllocData();
+        this->AssignPointersToSymbols();
         this->m_bucketList = 0;
-        this->m_bucketList2 = new SymbolInfo*[1000000];
+        this->m_bucketList2 = new SymbolInfo*[BucketList2Count];
         bzero(this->m_bucketList2, sizeof(SymbolInfo*) * BucketList2Count);
     }
     ~SymbolManager() {

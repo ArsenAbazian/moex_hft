@@ -64,13 +64,14 @@ void DebugInfoManager::PrintDecimal2List(const char *name, PointerListLite<Stati
     this->AddTabs();
     LinkedPointer<StatisticItemDecimal2> *ptr = list->Start();
     while(true) {
+        if(ptr == list->End())
+            break;
         StatisticItemDecimal2 *value = ptr->Data();
         printf("Time = %ld Value = %g Value2 = %g\n",
                value->Time(),
                value->Value()->Calculate(),
                value->Value2()->Calculate());
-        if(ptr == list->End())
-            break;
+
         ptr = ptr->Next();
     }
     this->RemoveTabs();
