@@ -53,7 +53,6 @@ pkg_get_variable(mono-options Sources)
 message(STATUS "${Green}Found Mono.Options in ${BoldBlue}${MONO_OPTIONS_SOURCES}${ColourReset}")
 
 set(fast_generator ${EXECUTABLE_OUTPUT_PATH}/fast_generator)
-file(MAKE_DIRECTORY ${fast_generator})
 add_custom_command(OUTPUT ${fast_generator}
   COMMAND ${CSHARP_COMPILER} -sdk:4.0 -out:${fast_generator} ${CMAKE_CURRENT_LIST_DIR}/tools/Program.cs ${CMAKE_CURRENT_LIST_DIR}/tools/AssemblyInfo.cs ${MONO_OPTIONS_SOURCES}
   COMMENT "building fast_generator..."
@@ -67,6 +66,8 @@ set(CMAKE_CXX_COMPILER clang++)
 set(CMAKE_C_COMPILER clang)
 
 set(common_params "-march=corei7 -msse4.2 -msse4.1 -m64 -mtune=corei7 -fpic -pthread -std=gnu++1z -fms-extensions -mcx16 -D__STDC_LIMIT_MACROS")
+#set(common_params "${common_params} -S -mllvm --x86-asm-syntax=intel -g")
+#set(common_params "${common_params} -no-integrated-as -Xassembler -adhln")
 #set(common_params "${common_params} --target=x86_64-pc-linux-elf")
 #set(CMAKE_CXX_FLAGS_DEBUG "${common_params} -g3 - O0")
 #set(CMAKE_CXX_FLAGS_RELEASE "${common_params} -g0 -O3")
