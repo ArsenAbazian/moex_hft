@@ -198,7 +198,7 @@ public:
         if(!StringIdComparer::Equal(quote->MDEntryID, quote->MDEntryIDLength, "e2", 2))
             throw;
 
-        quote = obi->Trades()->End()->Data();
+        quote = obi->Trades()->Last()->Data();
         price.Set(2, -2);
         if(!quote->MDEntryPx.Equal(&price))
             throw;
@@ -251,7 +251,7 @@ public:
         if(!StringIdComparer::Equal(quote->MDEntryID, quote->MDEntryIDLength, "e3", 2))
             throw;
 
-        quote = obi->Trades()->End()->Data();
+        quote = obi->Trades()->Last()->Data();
         price.Set(25, -3);
         if(!quote->MDEntryPx.Equal(&price))
             throw;

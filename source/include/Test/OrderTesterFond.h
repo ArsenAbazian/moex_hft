@@ -3558,7 +3558,7 @@ public:
         if(quote->Size() != 100)
             throw;
 
-        quote = obi->AggregatedBuyQuotes()->End()->Data();
+        quote = obi->AggregatedBuyQuotes()->Last()->Data();
         price.Set(2, -2);
         if(!quote->Price()->Equal(&price))
             throw;
@@ -3603,7 +3603,7 @@ public:
         if(quote->Size() != 100)
             throw;
 
-        quote = obi->AggregatedBuyQuotes()->End()->Data();
+        quote = obi->AggregatedBuyQuotes()->Last()->Data();
         price.Set(2, -2);
         if(!quote->Price()->Equal(&price))
             throw;
@@ -3959,7 +3959,7 @@ public:
         if(!quote->Price()->Equal(3, -2))
             throw;
 
-        quote = obi->AggregatedSellQuotes()->End()->Data();
+        quote = obi->AggregatedSellQuotes()->Last()->Data();
         if(!quote->Price()->Equal(4, -2))
             throw;
 
@@ -3992,7 +3992,7 @@ public:
         if(!quote->Price()->Equal(3, -2))
             throw;
 
-        quote = obi->AggregatedSellQuotes()->End()->Data();
+        quote = obi->AggregatedSellQuotes()->Last()->Data();
         if(!quote->Price()->Equal(4, -2))
             throw;
     }

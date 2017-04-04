@@ -3750,7 +3750,7 @@ public:
         if(quote->MDEntrySize != 100)
             throw;
 
-        quote = obi->BuyQuotes()->End()->Data();
+        quote = obi->BuyQuotes()->Last()->Data();
         price.Set(2, -2);
         if(!quote->MDEntryPx.Equal(&price))
             throw;
@@ -3795,7 +3795,7 @@ public:
         if(quote->MDEntrySize != 100)
             throw;
 
-        quote = obi->BuyQuotes()->End()->Data();
+        quote = obi->BuyQuotes()->Last()->Data();
         price.Set(2, -2);
         if(!quote->MDEntryPx.Equal(&price))
             throw;
@@ -4152,7 +4152,7 @@ public:
         if(!quote->MDEntryPx.Equal(3, -2))
             throw;
 
-        quote = obi->SellQuotes()->End()->Data();
+        quote = obi->SellQuotes()->Last()->Data();
         if(!quote->MDEntryPx.Equal(4, -2))
             throw;
 
@@ -4185,7 +4185,7 @@ public:
         if(!quote->MDEntryPx.Equal(3, -2))
             throw;
 
-        quote = obi->SellQuotes()->End()->Data();
+        quote = obi->SellQuotes()->Last()->Data();
         if(!quote->MDEntryPx.Equal(4, -2))
             throw;
     }

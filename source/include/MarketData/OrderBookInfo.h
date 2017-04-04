@@ -174,12 +174,13 @@ public:
     inline HrLinkedPointer<T>* GetBuyQuoteCore5(double value, HrLinkedPointer<T> *start, HrLinkedPointer<T> *end) {
         HrLinkedPointer<T> *node = start;
         if (node == 0) {
-
+            node = this->m_buyQuoteList->Add();
+            return node;
         }
         while (true) {
             double val = (&(node->Data()->MDEntryPx))->Value;
             if (val < value) {
-                node = GetBuyQuoteCore4(value, node->Prev5(), node);
+                node = GetBuyQuoteCore4(value, node->Prev5(), node); //node->Prev5 can be null
                 if (this->m_buyQuoteListLevel >= 5)
                     this->m_buyQuoteList->Insert5(start, node, end);
                 return node;
@@ -193,6 +194,12 @@ public:
 
         this->m_buyQuoteListLevel = CalcLevel();
         node = this->m_buyQuoteList->Add();
+        if(this->m_buyQuoteList->Count() == 2) {
+            start->Next2(node);
+            start->Next3(node);
+            start->Next4(node);
+            start->Next5(node);
+        }
         return node;
     }
 
@@ -333,7 +340,7 @@ public:
     inline HrLinkedPointer<T>* AddBuyQuote(T *item) {
         DebugInfoManager::Default->Log(this->m_symbolInfo->Symbol(), this->m_sessionInt, "Add BuyQuote", item->MDEntryID, &(item->MDEntryPx), item->MDEntrySize);
         item->Used = true;
-        HrLinkedPointer<T> *ptr = GetBuyQuote(&(item->MDEntryPx));
+        HrLinkedPointer<T> *ptr = GetBuyQuoteEx(&(item->MDEntryPx)); // TODO changed from GetBuyQuote
         ptr->Data(item);
         return ptr;
     }

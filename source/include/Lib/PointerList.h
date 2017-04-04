@@ -395,6 +395,7 @@ public:
     }
     inline LinkedPointer<T>* Start() { return this->m_head->Next(); }
     inline LinkedPointer<T>* End() { return this->m_tail; }
+    inline LinkedPointer<T>* Last() { return this->m_tail; }
     inline LinkedPointer<T>* Next(LinkedPointer<T> *node) { return node->Next(); }
     inline int Count() { return this->m_count; }
 
