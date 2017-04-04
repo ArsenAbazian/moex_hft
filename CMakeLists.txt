@@ -97,65 +97,8 @@ foreach(inc_dir ${inc_dirs})
 endforeach(inc_dir)
 
 add_executable(hft_robot
-        source/src/Settings.cpp
         ${sources}
-        source/src/Stopwatch.cpp
-        source/include/Stopwatch.h
-        source/src/Test/FixProtocolManagerTester.cpp
-        source/include/Test/FixProtocolManagerTester.h
-        source/include/Fix/FixProtocolMacros.h
-        source/include/Fix/FixMessage.h
-        source/include/Fast/FastTypes.h
-        source/include/Lib/StringIdComparer.h
-        source/include/Lib/PointerList.h
-        source/include/Lib/AutoAllocatePointerList.h
-        source/include/MarketData/MarketDataTable.h
-        source/include/Test/DecimalTester.h
-        source/src/Fix/FixTypes.cpp
-        source/include/Test/OrderTesterFond.h
-        source/include/Test/FeedConnectionTester.h
-        source/include/Test/TradeTesterFond.h
-        source/include/Test/SecurityDefinitionTester.h
-        source/include/Test/TestTemplateInfo.h
-        source/include/Test/TestMessagesHelper.h
-        source/include/Test/StatisticsTesterFond.h
-        source/include/MarketData/MDEntryQueue.h
-        source/include/MarketData/OrderInfo.h
-        source/include/MarketData/TradeInfo.h
-        source/include/MarketData/StatisticInfo.h
-        source/include/MarketData/MarketSymbolInfo.h
-        source/include/Test/OrderTesterCurr.h
-        source/include/Test/TradeTesterCurr.h
-        source/include/Test/StatisticsTesterCurr.h
-        source/include/MarketData/QuoteInfo.h
-        source/include/Test/SymbolManagerTester.h
-        source/include/Lib/StringHash.h
-        source/include/MarketData/SymbolManager.h
-        source/include/Feeds/FeedConnections.h
-        source/src/Test/TestMessagesHelper.cpp
-        source/include/Test/PointerListTester.h
-        source/src/Converters/DtoaConverter.cpp
-        source/include/Test/SecurityStatusTester.h
-        source/include/Feeds/FeedTypes.h
-        source/src/MarketData/StatisticInfo.cpp
-        source/include/Managers/DebugInfoManager.h
-        source/src/Managers/DebugInfoManager.cpp
-        source/include/Feeds/Fond/FondOlr.h
-        source/include/Feeds/Fond/FondMsr.h
-        source/include/Feeds/Fond/FondIsf.h
-        source/include/Feeds/Curr/CurrHr.h
-        source/include/Test/HistoricalReplayTester.h
-        source/include/ProgramStatistics.h
-        source/src/ProgramStatistics.cpp
-        source/src/MarketData/MDEntryQueue.cpp
-        source/include/MarketData/StatisticItem.h
-        source/src/Fast/FastTypes.cpp
-        source/src/FortsMarketDataGroup.cpp
-        source/include/Feeds/Forts/FortsMarketDataGroup.h
-        source/include/Feeds/Forts/FortsFeedChannel.h
-        source/src/FortsFeedChannel.cpp
-        source/include/Feeds/Forts/FortsFeeds.h
-        source/include/Test/FortsOrderBookTester.h source/src/PerformanceProfiler.cpp source/include/PerformanceProfiler/PerformanceProfiler.h source/include/PerformanceProfiler/PerformanceProfilerItem.h)
+)
 add_dependencies(hft_robot fast_generate)
 
 add_custom_command(TARGET fast_generate
