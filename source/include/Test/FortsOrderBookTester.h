@@ -5393,8 +5393,8 @@ public:
         TestDefaults();
         TestStringIdComparer();
         TestHr();
-        TestOrderTableItem();
         TestPerformance();
+        TestOrderTableItem();
         TestConnection();
         TestInfoAndItemInfoUsageAndAllocationCurr();
         Test_OLR_CURR();
