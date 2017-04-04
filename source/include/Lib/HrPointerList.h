@@ -72,6 +72,25 @@ public:
     inline HrLinkedPointer* Prev5() { return this->m_prev5; }
     inline void Prev5(HrLinkedPointer *node) { this->m_prev5 = node; }
 
+    inline void AllNext(HrLinkedPointer *node) {
+        this->m_next2 = node;
+        this->m_next3 = node;
+        this->m_next4 = node;
+        this->m_next5 = node;
+    }
+
+    inline void AllPrev(HrLinkedPointer *node) {
+        this->m_prev2 = node;
+        this->m_prev3 = node;
+        this->m_prev4 = node;
+        this->m_prev5 = node;
+    }
+
+    inline void AllConnect(HrLinkedPointer *node) {
+        this->AllNext(node);
+        node->AllPrev(this);
+    }
+
     inline T* Data() { return this->m_data; }
     inline void Data(T *data) { this->m_data = data; }
     inline HrPointerList<T>* Owner() { return this->m_owner; }
@@ -434,11 +453,11 @@ public:
 };
 
 template <typename T> class HrPointerListLite {
-    HrPointerList<T>      *m_pool;
+    HrPointerList<T>       *m_pool;
 
-    HrLinkedPointer<T>    *m_head;
-    HrLinkedPointer<T>    *m_tail;
-    int                 m_count;
+    HrLinkedPointer<T>     *m_head;
+    HrLinkedPointer<T>     *m_tail;
+    int                     m_count;
 public:
     HrPointerListLite(HrPointerList<T> *globalPool) {
         this->m_pool = globalPool;
@@ -541,6 +560,32 @@ public:
         node->Next5(end);
     }
 
+    inline void InsertByLevel(int level, HrLinkedPointer<T> *start, HrLinkedPointer<T> *node, HrLinkedPointer<T> *end) {
+        if(level <= 1)
+            return;
+        if(level > 3) {
+            if(level == 4) {
+                this->Insert2(start, node, end);
+                this->Insert3(start, node, end);
+                this->Insert4(start, node, end);
+                return;
+            }
+            this->Insert2(start, node, end);
+            this->Insert3(start, node, end);
+            this->Insert4(start, node, end);
+            this->Insert5(start, node, end);
+        }
+        else {
+            if(level == 2) {
+                this->Insert2(start, node, end);
+                return;
+            }
+            this->Insert2(start, node, end);
+            this->Insert3(start, node, end);
+            return;
+        }
+    }
+
     inline HrLinkedPointer<T>* Insert(HrLinkedPointer<T> *insertBefore) {
         HrLinkedPointer<T> *node = this->m_pool->Pop();
         HrLinkedPointer<T> *prev = insertBefore->Prev();
@@ -578,6 +623,17 @@ public:
             index--;
         }
         return node->Data();
+    }
+
+    inline HrLinkedPointer<T>* Node(int index) {
+        HrLinkedPointer<T> *node = this->Start();
+        while(index > 0) {
+            if(node == this->End())
+                return 0;
+            node = node->Next();
+            index--;
+        }
+        return node;
     }
 
     inline HrLinkedPointer<T>* Get(T *data) {

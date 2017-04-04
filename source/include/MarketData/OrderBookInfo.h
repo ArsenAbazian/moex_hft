@@ -33,12 +33,18 @@ template <typename T> class OrderBookInfo {
     UINT32                              m_sessionInt;
 
     int                                 m_snapshotProcessedCount;
+
+    int                                 m_debugLevel;
 public:
     OrderBookInfo();
     ~OrderBookInfo() {
         ReleaseEntryQue();
         delete this->m_sellQuoteList;
         delete this->m_buyQuoteList;
+    }
+
+    inline void SetDebugLevel(int level) {
+        this->m_debugLevel = level;
     }
 
     inline void ReleaseEntryQue() {
@@ -119,7 +125,7 @@ public:
             }
             if(val == value)
                 return node;
-            node = node->Next4();
+            node = node->Next();
         }
     }
 
@@ -128,7 +134,7 @@ public:
         while(true) {
             double val = (&(node->Data()->MDEntryPx))->Value;
             if(val < value) {
-                node = GetBuyQuoteCore1(value, node->Prev5(), node);
+                node = GetBuyQuoteCore1(value, node->Prev2(), node);
                 if(this->m_buyQuoteListLevel >= 2)
                     this->m_buyQuoteList->Insert2(start, node, end);
                 return node;
@@ -144,7 +150,7 @@ public:
         while(true) {
             double val = (&(node->Data()->MDEntryPx))->Value;
             if(val < value) {
-                node = GetBuyQuoteCore2(value, node->Prev5(), node);
+                node = GetBuyQuoteCore2(value, node->Prev3(), node);
                 if(this->m_buyQuoteListLevel >= 3)
                     this->m_buyQuoteList->Insert3(start, node, end);
                 return node;
@@ -160,7 +166,7 @@ public:
         while(true) {
             double val = (&(node->Data()->MDEntryPx))->Value;
             if(val < value) {
-                node = GetBuyQuoteCore3(value, node->Prev5(), node);
+                node = GetBuyQuoteCore3(value, node->Prev4(), node);
                 if(this->m_buyQuoteListLevel >= 4)
                     this->m_buyQuoteList->Insert4(start, node, end);
                 return node;
@@ -173,39 +179,67 @@ public:
 
     inline HrLinkedPointer<T>* GetBuyQuoteCore5(double value, HrLinkedPointer<T> *start, HrLinkedPointer<T> *end) {
         HrLinkedPointer<T> *node = start;
-        if (node == 0) {
-            node = this->m_buyQuoteList->Add();
-            return node;
+        HrLinkedPointer<T> *newNode;
+        // no items
+        if (start == 0) {
+            newNode = this->m_buyQuoteList->Add();
+            return newNode;
         }
-        while (true) {
-            double val = (&(node->Data()->MDEntryPx))->Value;
-            if (val < value) {
-                node = GetBuyQuoteCore4(value, node->Prev5(), node); //node->Prev5 can be null
-                if (this->m_buyQuoteListLevel >= 5)
-                    this->m_buyQuoteList->Insert5(start, node, end);
-                return node;
+        double val = (&(start->Data()->MDEntryPx))->Value;
+        // add before
+        if(val < value) {
+            newNode = this->m_buyQuoteList->Insert(start);
+            if(start == end) { // we have one item in list
+                // just connect start with end
+                newNode->AllConnect(start);
+                return newNode;
             }
-            if (val == value)
-                return node;
-            if (node == end)
-                break;
-            node = node->Next5();
+            newNode->AllConnect(start->Next());
+            start->AllNext(0);
+            this->m_buyQuoteList->InsertByLevel(CalcLevel(), newNode, start, end);
+            return newNode;
         }
-
-        this->m_buyQuoteListLevel = CalcLevel();
-        node = this->m_buyQuoteList->Add();
-        if(this->m_buyQuoteList->Count() == 2) {
-            start->Next2(node);
-            start->Next3(node);
-            start->Next4(node);
-            start->Next5(node);
+        if(val == value)
+            return start;
+        node = node->Next();
+        if(node != 0) {
+            while (true) {
+                double val = (&(node->Data()->MDEntryPx))->Value;
+                if (val < value) {
+                    node = GetBuyQuoteCore4(value, node->Prev5(), node);
+                    if (this->m_buyQuoteListLevel >= 5)
+                        this->m_buyQuoteList->Insert5(start, node, end);
+                    return node;
+                }
+                if (val == value)
+                    return node;
+                if (node == end)
+                    break;
+                node = node->Next5();
+            }
         }
-        return node;
+        // add after
+        newNode = this->m_buyQuoteList->Add();
+        if(start == end) {
+            // just connect start with end
+            start->AllConnect(newNode);
+            return newNode;
+        }
+        end->Prev()->AllConnect(newNode);
+        end->AllPrev(0);
+        this->m_buyQuoteList->InsertByLevel(this->CalcLevel(), end->Prev(), end, newNode);
+        return newNode;
     }
 
     inline int CalcLevel() {
         const int maxP = INT32_MAX >> 1;
-
+#ifdef TEST
+        if(this->m_debugLevel != 0) {
+            int res = this->m_debugLevel;
+            this->m_debugLevel = 0;
+            return res;
+        }
+#endif
         //TODO change rand to faster method!!!!!
         if(rand() > maxP)
             return 1;
@@ -514,6 +548,9 @@ template <typename T> OrderBookInfo<T>::OrderBookInfo() {
         OrderBookInfo::m_itemsPool = new HrPointerList<T>(RobotSettings::Default->MarketDataMaxEntriesCount, false);
 
     this->m_entryInfo = 0;
+#ifdef TEST
+    this->m_debugLevel = 0;
+#endif
 
     this->m_sellQuoteList = new HrPointerListLite<T>(OrderBookInfo<T>::m_itemsPool);
     this->m_buyQuoteList = new HrPointerListLite<T>(OrderBookInfo<T>::m_itemsPool);

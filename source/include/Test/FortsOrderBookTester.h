@@ -4550,9 +4550,849 @@ public:
         TestPerformance1000();
     }
 
+    FortsDefaultSnapshotMessageMDEntriesItemInfo* CreateHrItem(int price) {
+        FortsDefaultSnapshotMessageMDEntriesItemInfo* item = new FortsDefaultSnapshotMessageMDEntriesItemInfo();
+        item->MDEntryPx.Set(price, 0);
+        return item;
+    }
+
+    OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *CreateOrderBook() {
+        OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = new OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo>();
+        MarketSymbolInfo<OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo>> *s = new MarketSymbolInfo<OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo>>();
+        item->SymbolInfo(s);
+        return item;
+    }
+
+    void TestHrAddBuyQuote1() {
+        OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
+        if(item->BuyQuotes()->Start() != 0)
+            throw;
+        item->AddBuyQuote(CreateHrItem(100));
+        if(item->BuyQuotes()->Start() == 0)
+            throw;
+        if(item->BuyQuotes()->Count() != 1)
+            throw;
+        if(item->BuyQuotes()->Start()->Data()->MDEntryPx.Mantissa != 100)
+            throw;
+    }
+
+    void TestHrAddBuyQuote2() {
+        OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
+        if(item->BuyQuotes()->Start() != 0)
+            throw;
+        item->AddBuyQuote(CreateHrItem(100));
+        item->AddBuyQuote(CreateHrItem(90));
+        if(item->BuyQuotes()->Count() != 2)
+            throw;
+        if(item->BuyQuotes()->Start()->Data()->MDEntryPx.Mantissa != 100)
+            throw;
+        if(item->BuyQuotes()->End()->Data()->MDEntryPx.Mantissa != 90)
+            throw;
+        if(item->BuyQuotes()->Start()->Next() != item->BuyQuotes()->End())
+            throw;
+        if(item->BuyQuotes()->Start()->Next2() != item->BuyQuotes()->End())
+            throw;
+        if(item->BuyQuotes()->Start()->Next3() != item->BuyQuotes()->End())
+            throw;
+        if(item->BuyQuotes()->Start()->Next4() != item->BuyQuotes()->End())
+            throw;
+        if(item->BuyQuotes()->Start()->Next5() != item->BuyQuotes()->End())
+            throw;
+    }
+
+    void TestHrAddBuyQuote3() {
+        OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
+        if(item->BuyQuotes()->Start() != 0)
+            throw;
+        item->AddBuyQuote(CreateHrItem(100));
+        item->AddBuyQuote(CreateHrItem(110));
+        if(item->BuyQuotes()->Count() != 2)
+            throw;
+        if(item->BuyQuotes()->Start()->Data()->MDEntryPx.Mantissa != 110)
+            throw;
+        if(item->BuyQuotes()->End()->Data()->MDEntryPx.Mantissa != 100)
+            throw;
+        if(item->BuyQuotes()->Start()->Next() != item->BuyQuotes()->End())
+            throw;
+        if(item->BuyQuotes()->Start()->Next2() != item->BuyQuotes()->End())
+            throw;
+        if(item->BuyQuotes()->Start()->Next3() != item->BuyQuotes()->End())
+            throw;
+        if(item->BuyQuotes()->Start()->Next4() != item->BuyQuotes()->End())
+            throw;
+        if(item->BuyQuotes()->Start()->Next5() != item->BuyQuotes()->End())
+            throw;
+    }
+
+    void TestHrAddBuyQuote4() {
+        OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
+        if(item->BuyQuotes()->Start() != 0)
+            throw;
+        item->AddBuyQuote(CreateHrItem(100));
+        item->AddBuyQuote(CreateHrItem(110));
+
+        item->SetDebugLevel(3);
+
+        item->AddBuyQuote(CreateHrItem(120));
+        if(item->BuyQuotes()->Count() != 3)
+            throw;
+        if(item->BuyQuotes()->Item(0)->MDEntryPx.Mantissa != 120)
+            throw;
+        if(item->BuyQuotes()->Item(1)->MDEntryPx.Mantissa != 110)
+            throw;
+        if(item->BuyQuotes()->Item(2)->MDEntryPx.Mantissa != 100)
+            throw;
+
+        if(item->BuyQuotes()->Start()->Next() != item->BuyQuotes()->Node(1))
+            throw;
+        if(item->BuyQuotes()->Start()->Next2() != item->BuyQuotes()->Node(1))
+            throw;
+        if(item->BuyQuotes()->Start()->Next3() != item->BuyQuotes()->Node(1))
+            throw;
+        if(item->BuyQuotes()->Start()->Next4() != item->BuyQuotes()->End())
+            throw;
+        if(item->BuyQuotes()->Start()->Next5() != item->BuyQuotes()->End())
+            throw;
+
+        if(item->BuyQuotes()->Node(1)->Next() != item->BuyQuotes()->End())
+            throw;
+        if(item->BuyQuotes()->Node(1)->Next2() != item->BuyQuotes()->End())
+            throw;
+        if(item->BuyQuotes()->Node(1)->Next3() != item->BuyQuotes()->End())
+            throw;
+        if(item->BuyQuotes()->Node(1)->Next5() != 0)
+            throw;
+        if(item->BuyQuotes()->Node(1)->Next4() != 0)
+            throw;
+
+        if(item->BuyQuotes()->End()->Prev() != item->BuyQuotes()->Node(1))
+            throw;
+        if(item->BuyQuotes()->End()->Prev2() != item->BuyQuotes()->Node(1))
+            throw;
+        if(item->BuyQuotes()->End()->Prev3() != item->BuyQuotes()->Node(1))
+            throw;
+        if(item->BuyQuotes()->End()->Prev4() != item->BuyQuotes()->Start())
+            throw;
+        if(item->BuyQuotes()->End()->Prev5() != item->BuyQuotes()->Start())
+            throw;
+    }
+
+    void TestHrAddBuyQuote5() {
+        OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
+        if(item->BuyQuotes()->Start() != 0)
+            throw;
+        item->AddBuyQuote(CreateHrItem(100));
+        item->AddBuyQuote(CreateHrItem(110));
+
+        item->SetDebugLevel(3);
+
+        item->AddBuyQuote(CreateHrItem(90));
+        if(item->BuyQuotes()->Count() != 3)
+            throw;
+        if(item->BuyQuotes()->Item(0)->MDEntryPx.Mantissa != 110)
+            throw;
+        if(item->BuyQuotes()->Item(1)->MDEntryPx.Mantissa != 100)
+            throw;
+        if(item->BuyQuotes()->Item(2)->MDEntryPx.Mantissa != 90)
+            throw;
+
+        if(item->BuyQuotes()->Start()->Next() != item->BuyQuotes()->Node(1))
+            throw;
+        if(item->BuyQuotes()->Start()->Next2() != item->BuyQuotes()->Node(1))
+            throw;
+        if(item->BuyQuotes()->Start()->Next3() != item->BuyQuotes()->Node(1))
+            throw;
+        if(item->BuyQuotes()->Start()->Next4() != item->BuyQuotes()->End())
+            throw;
+        if(item->BuyQuotes()->Start()->Next5() != item->BuyQuotes()->End())
+            throw;
+
+        if(item->BuyQuotes()->Node(1)->Next() != item->BuyQuotes()->End())
+            throw;
+        if(item->BuyQuotes()->Node(1)->Next2() != item->BuyQuotes()->End())
+            throw;
+        if(item->BuyQuotes()->Node(1)->Next3() != item->BuyQuotes()->End())
+            throw;
+        if(item->BuyQuotes()->Node(1)->Next5() != 0)
+            throw;
+        if(item->BuyQuotes()->Node(1)->Next4() != 0)
+            throw;
+
+        if(item->BuyQuotes()->End()->Prev() != item->BuyQuotes()->Node(1))
+            throw;
+        if(item->BuyQuotes()->End()->Prev2() != item->BuyQuotes()->Node(1))
+            throw;
+        if(item->BuyQuotes()->End()->Prev3() != item->BuyQuotes()->Node(1))
+            throw;
+        if(item->BuyQuotes()->End()->Prev4() != item->BuyQuotes()->Start())
+            throw;
+        if(item->BuyQuotes()->End()->Prev5() != item->BuyQuotes()->Start())
+            throw;
+    }
+
+    void TestHrInsertByLevel0() {
+        OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
+        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *start = item->BuyQuotes()->Add();
+        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *node = item->BuyQuotes()->Add();
+        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *end = item->BuyQuotes()->Add();
+
+        start->AllConnect(end);
+        item->BuyQuotes()->InsertByLevel(0, start, node, end);
+
+        if(start->Next() != node)
+            throw;
+        if(start->Next2() != end)
+            throw;
+        if(start->Next3() != end)
+            throw;
+        if(start->Next4() != end)
+            throw;
+        if(start->Next5() != end)
+            throw;
+
+        if(end->Prev() != node)
+            throw;
+        if(end->Prev2() != start)
+            throw;
+        if(end->Prev3() != start)
+            throw;
+        if(end->Prev4() != start)
+            throw;
+        if(end->Prev5() != start)
+            throw;
+
+        if(node->Prev() != start)
+            throw;
+        if(node->Prev2() != 0)
+            throw;
+        if(node->Prev3() != 0)
+            throw;
+        if(node->Prev4() != 0)
+            throw;
+        if(node->Prev5() != 0)
+            throw;
+
+        if(node->Next() != end)
+            throw;
+        if(node->Next2() != 0)
+            throw;
+        if(node->Next3() != 0)
+            throw;
+        if(node->Next4() != 0)
+            throw;
+        if(node->Next5() != 0)
+            throw;
+    }
+
+    void TestHrInsertByLevel1() {
+        OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
+        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *start = item->BuyQuotes()->Add();
+        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *node = item->BuyQuotes()->Add();
+        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *end = item->BuyQuotes()->Add();
+
+        start->AllConnect(end);
+        item->BuyQuotes()->InsertByLevel(1, start, node, end);
+
+        if(start->Next() != node)
+            throw;
+        if(start->Next2() != end)
+            throw;
+        if(start->Next3() != end)
+            throw;
+        if(start->Next4() != end)
+            throw;
+        if(start->Next5() != end)
+            throw;
+
+        if(end->Prev() != node)
+            throw;
+        if(end->Prev2() != start)
+            throw;
+        if(end->Prev3() != start)
+            throw;
+        if(end->Prev4() != start)
+            throw;
+        if(end->Prev5() != start)
+            throw;
+
+        if(node->Prev() != start)
+            throw;
+        if(node->Prev2() != 0)
+            throw;
+        if(node->Prev3() != 0)
+            throw;
+        if(node->Prev4() != 0)
+            throw;
+        if(node->Prev5() != 0)
+            throw;
+
+        if(node->Next() != end)
+            throw;
+        if(node->Next2() != 0)
+            throw;
+        if(node->Next3() != 0)
+            throw;
+        if(node->Next4() != 0)
+            throw;
+        if(node->Next5() != 0)
+            throw;
+    }
+
+    void TestHrInsertByLevel2() {
+        OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
+        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *start = item->BuyQuotes()->Add();
+        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *node = item->BuyQuotes()->Add();
+        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *end = item->BuyQuotes()->Add();
+
+        start->AllConnect(end);
+        item->BuyQuotes()->InsertByLevel(2, start, node, end);
+
+        if(start->Next() != node)
+            throw;
+        if(start->Next2() != node)
+            throw;
+        if(start->Next3() != end)
+            throw;
+        if(start->Next4() != end)
+            throw;
+        if(start->Next5() != end)
+            throw;
+
+        if(end->Prev() != node)
+            throw;
+        if(end->Prev2() != node)
+            throw;
+        if(end->Prev3() != start)
+            throw;
+        if(end->Prev4() != start)
+            throw;
+        if(end->Prev5() != start)
+            throw;
+
+        if(node->Prev() != start)
+            throw;
+        if(node->Prev2() != start)
+            throw;
+        if(node->Prev3() != 0)
+            throw;
+        if(node->Prev4() != 0)
+            throw;
+        if(node->Prev5() != 0)
+            throw;
+
+        if(node->Next() != end)
+            throw;
+        if(node->Next2() != end)
+            throw;
+        if(node->Next3() != 0)
+            throw;
+        if(node->Next4() != 0)
+            throw;
+        if(node->Next5() != 0)
+            throw;
+    }
+
+    void TestHrInsertByLevel3() {
+        OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
+        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *start = item->BuyQuotes()->Add();
+        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *node = item->BuyQuotes()->Add();
+        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *end = item->BuyQuotes()->Add();
+
+        start->AllConnect(end);
+        item->BuyQuotes()->InsertByLevel(3, start, node, end);
+
+        if(start->Next() != node)
+            throw;
+        if(start->Next2() != node)
+            throw;
+        if(start->Next3() != node)
+            throw;
+        if(start->Next4() != end)
+            throw;
+        if(start->Next5() != end)
+            throw;
+
+        if(end->Prev() != node)
+            throw;
+        if(end->Prev2() != node)
+            throw;
+        if(end->Prev3() != node)
+            throw;
+        if(end->Prev4() != start)
+            throw;
+        if(end->Prev5() != start)
+            throw;
+
+        if(node->Prev() != start)
+            throw;
+        if(node->Prev2() != start)
+            throw;
+        if(node->Prev3() != start)
+            throw;
+        if(node->Prev4() != 0)
+            throw;
+        if(node->Prev5() != 0)
+            throw;
+
+        if(node->Next() != end)
+            throw;
+        if(node->Next2() != end)
+            throw;
+        if(node->Next3() != end)
+            throw;
+        if(node->Next4() != 0)
+            throw;
+        if(node->Next5() != 0)
+            throw;
+    }
+
+    void TestHrInsertByLevel4() {
+        OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
+        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *start = item->BuyQuotes()->Add();
+        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *node = item->BuyQuotes()->Add();
+        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *end = item->BuyQuotes()->Add();
+
+        start->AllConnect(end);
+        item->BuyQuotes()->InsertByLevel(4, start, node, end);
+
+        if(start->Next() != node)
+            throw;
+        if(start->Next2() != node)
+            throw;
+        if(start->Next3() != node)
+            throw;
+        if(start->Next4() != node)
+            throw;
+        if(start->Next5() != end)
+            throw;
+
+        if(end->Prev() != node)
+            throw;
+        if(end->Prev2() != node)
+            throw;
+        if(end->Prev3() != node)
+            throw;
+        if(end->Prev4() != node)
+            throw;
+        if(end->Prev5() != start)
+            throw;
+
+        if(node->Prev() != start)
+            throw;
+        if(node->Prev2() != start)
+            throw;
+        if(node->Prev3() != start)
+            throw;
+        if(node->Prev4() != start)
+            throw;
+        if(node->Prev5() != 0)
+            throw;
+
+        if(node->Next() != end)
+            throw;
+        if(node->Next2() != end)
+            throw;
+        if(node->Next3() != end)
+            throw;
+        if(node->Next4() != end)
+            throw;
+        if(node->Next5() != 0)
+            throw;
+    }
+
+    void TestHrInsertByLevel5() {
+        OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
+        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *start = item->BuyQuotes()->Add();
+        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *node = item->BuyQuotes()->Add();
+        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *end = item->BuyQuotes()->Add();
+
+        start->AllConnect(end);
+        item->BuyQuotes()->InsertByLevel(5, start, node, end);
+
+        if(start->Next() != node)
+            throw;
+        if(start->Next2() != node)
+            throw;
+        if(start->Next3() != node)
+            throw;
+        if(start->Next4() != node)
+            throw;
+        if(start->Next5() != node)
+            throw;
+
+        if(end->Prev() != node)
+            throw;
+        if(end->Prev2() != node)
+            throw;
+        if(end->Prev3() != node)
+            throw;
+        if(end->Prev4() != node)
+            throw;
+        if(end->Prev5() != node)
+            throw;
+
+        if(node->Prev() != start)
+            throw;
+        if(node->Prev2() != start)
+            throw;
+        if(node->Prev3() != start)
+            throw;
+        if(node->Prev4() != start)
+            throw;
+        if(node->Prev5() != start)
+            throw;
+
+        if(node->Next() != end)
+            throw;
+        if(node->Next2() != end)
+            throw;
+        if(node->Next3() != end)
+            throw;
+        if(node->Next4() != end)
+            throw;
+        if(node->Next5() != end)
+            throw;
+    }
+
+    void TestHrInsertBuyQuote1() {
+        OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
+        if(item->BuyQuotes()->Start() != 0)
+            throw;
+        item->AddBuyQuote(CreateHrItem(100));
+        item->AddBuyQuote(CreateHrItem(120));
+
+        item->SetDebugLevel(1);
+        item->AddBuyQuote(CreateHrItem(110));
+
+        if(item->BuyQuotes()->Item(0)->MDEntryPx.Mantissa != 120)
+            throw;
+        if(item->BuyQuotes()->Item(1)->MDEntryPx.Mantissa != 110)
+            throw;
+        if(item->BuyQuotes()->Item(2)->MDEntryPx.Mantissa != 100)
+            throw;
+
+        if(item->BuyQuotes()->Node(0)->Next() != item->BuyQuotes()->Node(1))
+            throw;
+        if(item->BuyQuotes()->Node(0)->Next2() != item->BuyQuotes()->Node(2))
+            throw;
+        if(item->BuyQuotes()->Node(0)->Next3() != item->BuyQuotes()->Node(2))
+            throw;
+        if(item->BuyQuotes()->Node(0)->Next4() != item->BuyQuotes()->Node(2))
+            throw;
+        if(item->BuyQuotes()->Node(0)->Next5() != item->BuyQuotes()->Node(2))
+            throw;
+
+        if(item->BuyQuotes()->Node(1)->Next() != item->BuyQuotes()->Node(2))
+            throw;
+        if(item->BuyQuotes()->Node(1)->Next2() != 0)
+            throw;
+        if(item->BuyQuotes()->Node(1)->Next3() != 0)
+            throw;
+        if(item->BuyQuotes()->Node(1)->Next4() != 0)
+            throw;
+        if(item->BuyQuotes()->Node(1)->Next5() != 0)
+            throw;
+
+        if(item->BuyQuotes()->Node(1)->Prev() != item->BuyQuotes()->Node(0))
+            throw;
+        if(item->BuyQuotes()->Node(1)->Prev2() != 0)
+            throw;
+        if(item->BuyQuotes()->Node(1)->Prev3() != 0)
+            throw;
+        if(item->BuyQuotes()->Node(1)->Prev4() != 0)
+            throw;
+        if(item->BuyQuotes()->Node(1)->Prev5() != 0)
+            throw;
+
+        if(item->BuyQuotes()->Node(2)->Prev() != item->BuyQuotes()->Node(1))
+            throw;
+        if(item->BuyQuotes()->Node(2)->Prev2() != item->BuyQuotes()->Node(0))
+            throw;
+        if(item->BuyQuotes()->Node(2)->Prev3() != item->BuyQuotes()->Node(0))
+            throw;
+        if(item->BuyQuotes()->Node(2)->Prev4() != item->BuyQuotes()->Node(0))
+            throw;
+        if(item->BuyQuotes()->Node(2)->Prev5() != item->BuyQuotes()->Node(0))
+            throw;
+    }
+
+    void TestHrInsertBuyQuote2() {
+        OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
+        if(item->BuyQuotes()->Start() != 0)
+            throw;
+        item->AddBuyQuote(CreateHrItem(100));
+        item->AddBuyQuote(CreateHrItem(120));
+
+        item->SetDebugLevel(2);
+        item->AddBuyQuote(CreateHrItem(110));
+
+        if(item->BuyQuotes()->Item(0)->MDEntryPx.Mantissa != 120)
+            throw;
+        if(item->BuyQuotes()->Item(1)->MDEntryPx.Mantissa != 110)
+            throw;
+        if(item->BuyQuotes()->Item(2)->MDEntryPx.Mantissa != 100)
+            throw;
+
+        if(item->BuyQuotes()->Node(0)->Next() != item->BuyQuotes()->Node(1))
+            throw;
+        if(item->BuyQuotes()->Node(0)->Next2() != item->BuyQuotes()->Node(1))
+            throw;
+        if(item->BuyQuotes()->Node(0)->Next3() != item->BuyQuotes()->Node(2))
+            throw;
+        if(item->BuyQuotes()->Node(0)->Next4() != item->BuyQuotes()->Node(2))
+            throw;
+        if(item->BuyQuotes()->Node(0)->Next5() != item->BuyQuotes()->Node(2))
+            throw;
+
+        if(item->BuyQuotes()->Node(1)->Next() != item->BuyQuotes()->Node(2))
+            throw;
+        if(item->BuyQuotes()->Node(1)->Next2() != item->BuyQuotes()->Node(2))
+            throw;
+        if(item->BuyQuotes()->Node(1)->Next3() != 0)
+            throw;
+        if(item->BuyQuotes()->Node(1)->Next4() != 0)
+            throw;
+        if(item->BuyQuotes()->Node(1)->Next5() != 0)
+            throw;
+
+        if(item->BuyQuotes()->Node(1)->Prev() != item->BuyQuotes()->Node(0))
+            throw;
+        if(item->BuyQuotes()->Node(1)->Prev2() != item->BuyQuotes()->Node(0))
+            throw;
+        if(item->BuyQuotes()->Node(1)->Prev3() != 0)
+            throw;
+        if(item->BuyQuotes()->Node(1)->Prev4() != 0)
+            throw;
+        if(item->BuyQuotes()->Node(1)->Prev5() != 0)
+            throw;
+
+        if(item->BuyQuotes()->Node(2)->Prev() != item->BuyQuotes()->Node(1))
+            throw;
+        if(item->BuyQuotes()->Node(2)->Prev2() != item->BuyQuotes()->Node(1))
+            throw;
+        if(item->BuyQuotes()->Node(2)->Prev3() != item->BuyQuotes()->Node(0))
+            throw;
+        if(item->BuyQuotes()->Node(2)->Prev4() != item->BuyQuotes()->Node(0))
+            throw;
+        if(item->BuyQuotes()->Node(2)->Prev5() != item->BuyQuotes()->Node(0))
+            throw;
+    }
+
+    void TestHrInsertBuyQuote3() {
+        OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
+        if(item->BuyQuotes()->Start() != 0)
+            throw;
+        item->AddBuyQuote(CreateHrItem(100));
+        item->AddBuyQuote(CreateHrItem(120));
+
+        item->SetDebugLevel(3);
+        item->AddBuyQuote(CreateHrItem(110));
+
+        if(item->BuyQuotes()->Item(0)->MDEntryPx.Mantissa != 120)
+            throw;
+        if(item->BuyQuotes()->Item(1)->MDEntryPx.Mantissa != 110)
+            throw;
+        if(item->BuyQuotes()->Item(2)->MDEntryPx.Mantissa != 100)
+            throw;
+
+        if(item->BuyQuotes()->Node(0)->Next() != item->BuyQuotes()->Node(1))
+            throw;
+        if(item->BuyQuotes()->Node(0)->Next2() != item->BuyQuotes()->Node(1))
+            throw;
+        if(item->BuyQuotes()->Node(0)->Next3() != item->BuyQuotes()->Node(1))
+            throw;
+        if(item->BuyQuotes()->Node(0)->Next4() != item->BuyQuotes()->Node(2))
+            throw;
+        if(item->BuyQuotes()->Node(0)->Next5() != item->BuyQuotes()->Node(2))
+            throw;
+
+        if(item->BuyQuotes()->Node(1)->Next() != item->BuyQuotes()->Node(2))
+            throw;
+        if(item->BuyQuotes()->Node(1)->Next2() != item->BuyQuotes()->Node(2))
+            throw;
+        if(item->BuyQuotes()->Node(1)->Next3() != item->BuyQuotes()->Node(2))
+            throw;
+        if(item->BuyQuotes()->Node(1)->Next4() != 0)
+            throw;
+        if(item->BuyQuotes()->Node(1)->Next5() != 0)
+            throw;
+
+        if(item->BuyQuotes()->Node(1)->Prev() != item->BuyQuotes()->Node(0))
+            throw;
+        if(item->BuyQuotes()->Node(1)->Prev2() != item->BuyQuotes()->Node(0))
+            throw;
+        if(item->BuyQuotes()->Node(1)->Prev3() != item->BuyQuotes()->Node(0))
+            throw;
+        if(item->BuyQuotes()->Node(1)->Prev4() != 0)
+            throw;
+        if(item->BuyQuotes()->Node(1)->Prev5() != 0)
+            throw;
+
+        if(item->BuyQuotes()->Node(2)->Prev() != item->BuyQuotes()->Node(1))
+            throw;
+        if(item->BuyQuotes()->Node(2)->Prev2() != item->BuyQuotes()->Node(1))
+            throw;
+        if(item->BuyQuotes()->Node(2)->Prev3() != item->BuyQuotes()->Node(1))
+            throw;
+        if(item->BuyQuotes()->Node(2)->Prev4() != item->BuyQuotes()->Node(0))
+            throw;
+        if(item->BuyQuotes()->Node(2)->Prev5() != item->BuyQuotes()->Node(0))
+            throw;
+    }
+
+    void TestHrInsertBuyQuote4() {
+        OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
+        if(item->BuyQuotes()->Start() != 0)
+            throw;
+        item->AddBuyQuote(CreateHrItem(100));
+        item->AddBuyQuote(CreateHrItem(120));
+
+        item->SetDebugLevel(4);
+        item->AddBuyQuote(CreateHrItem(110));
+
+        if(item->BuyQuotes()->Item(0)->MDEntryPx.Mantissa != 120)
+            throw;
+        if(item->BuyQuotes()->Item(1)->MDEntryPx.Mantissa != 110)
+            throw;
+        if(item->BuyQuotes()->Item(2)->MDEntryPx.Mantissa != 100)
+            throw;
+
+        if(item->BuyQuotes()->Node(0)->Next() != item->BuyQuotes()->Node(1))
+            throw;
+        if(item->BuyQuotes()->Node(0)->Next2() != item->BuyQuotes()->Node(1))
+            throw;
+        if(item->BuyQuotes()->Node(0)->Next3() != item->BuyQuotes()->Node(1))
+            throw;
+        if(item->BuyQuotes()->Node(0)->Next4() != item->BuyQuotes()->Node(1))
+            throw;
+        if(item->BuyQuotes()->Node(0)->Next5() != item->BuyQuotes()->Node(2))
+            throw;
+
+        if(item->BuyQuotes()->Node(1)->Next() != item->BuyQuotes()->Node(2))
+            throw;
+        if(item->BuyQuotes()->Node(1)->Next2() != item->BuyQuotes()->Node(2))
+            throw;
+        if(item->BuyQuotes()->Node(1)->Next3() != item->BuyQuotes()->Node(2))
+            throw;
+        if(item->BuyQuotes()->Node(1)->Next4() != item->BuyQuotes()->Node(2))
+            throw;
+        if(item->BuyQuotes()->Node(1)->Next5() != 0)
+            throw;
+
+        if(item->BuyQuotes()->Node(1)->Prev() != item->BuyQuotes()->Node(0))
+            throw;
+        if(item->BuyQuotes()->Node(1)->Prev2() != item->BuyQuotes()->Node(0))
+            throw;
+        if(item->BuyQuotes()->Node(1)->Prev3() != item->BuyQuotes()->Node(0))
+            throw;
+        if(item->BuyQuotes()->Node(1)->Prev4() != item->BuyQuotes()->Node(0))
+            throw;
+        if(item->BuyQuotes()->Node(1)->Prev5() != 0)
+            throw;
+
+        if(item->BuyQuotes()->Node(2)->Prev() != item->BuyQuotes()->Node(1))
+            throw;
+        if(item->BuyQuotes()->Node(2)->Prev2() != item->BuyQuotes()->Node(1))
+            throw;
+        if(item->BuyQuotes()->Node(2)->Prev3() != item->BuyQuotes()->Node(1))
+            throw;
+        if(item->BuyQuotes()->Node(2)->Prev4() != item->BuyQuotes()->Node(1))
+            throw;
+        if(item->BuyQuotes()->Node(2)->Prev5() != item->BuyQuotes()->Node(0))
+            throw;
+    }
+
+    void TestHrInsertBuyQuote5() {
+        OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
+        if(item->BuyQuotes()->Start() != 0)
+            throw;
+        item->AddBuyQuote(CreateHrItem(100));
+        item->AddBuyQuote(CreateHrItem(120));
+
+        item->SetDebugLevel(5);
+        item->AddBuyQuote(CreateHrItem(110));
+
+        if(item->BuyQuotes()->Item(0)->MDEntryPx.Mantissa != 120)
+            throw;
+        if(item->BuyQuotes()->Item(1)->MDEntryPx.Mantissa != 110)
+            throw;
+        if(item->BuyQuotes()->Item(2)->MDEntryPx.Mantissa != 100)
+            throw;
+
+        if(item->BuyQuotes()->Node(0)->Next() != item->BuyQuotes()->Node(1))
+            throw;
+        if(item->BuyQuotes()->Node(0)->Next2() != item->BuyQuotes()->Node(1))
+            throw;
+        if(item->BuyQuotes()->Node(0)->Next3() != item->BuyQuotes()->Node(1))
+            throw;
+        if(item->BuyQuotes()->Node(0)->Next4() != item->BuyQuotes()->Node(1))
+            throw;
+        if(item->BuyQuotes()->Node(0)->Next5() != item->BuyQuotes()->Node(1))
+            throw;
+
+        if(item->BuyQuotes()->Node(1)->Next() != item->BuyQuotes()->Node(2))
+            throw;
+        if(item->BuyQuotes()->Node(1)->Next2() != item->BuyQuotes()->Node(2))
+            throw;
+        if(item->BuyQuotes()->Node(1)->Next3() != item->BuyQuotes()->Node(2))
+            throw;
+        if(item->BuyQuotes()->Node(1)->Next4() != item->BuyQuotes()->Node(2))
+            throw;
+        if(item->BuyQuotes()->Node(1)->Next5() != item->BuyQuotes()->Node(2))
+            throw;
+
+        if(item->BuyQuotes()->Node(1)->Prev() != item->BuyQuotes()->Node(0))
+            throw;
+        if(item->BuyQuotes()->Node(1)->Prev2() != item->BuyQuotes()->Node(0))
+            throw;
+        if(item->BuyQuotes()->Node(1)->Prev3() != item->BuyQuotes()->Node(0))
+            throw;
+        if(item->BuyQuotes()->Node(1)->Prev4() != item->BuyQuotes()->Node(0))
+            throw;
+        if(item->BuyQuotes()->Node(1)->Prev5() != item->BuyQuotes()->Node(0))
+            throw;
+
+        if(item->BuyQuotes()->Node(2)->Prev() != item->BuyQuotes()->Node(1))
+            throw;
+        if(item->BuyQuotes()->Node(2)->Prev2() != item->BuyQuotes()->Node(1))
+            throw;
+        if(item->BuyQuotes()->Node(2)->Prev3() != item->BuyQuotes()->Node(1))
+            throw;
+        if(item->BuyQuotes()->Node(2)->Prev4() != item->BuyQuotes()->Node(1))
+            throw;
+        if(item->BuyQuotes()->Node(2)->Prev5() != item->BuyQuotes()->Node(1))
+            throw;
+    }
+
+    void TestHrBuyQuotes() {
+        TestHrAddBuyQuote1();
+        TestHrAddBuyQuote2();
+        TestHrAddBuyQuote3();
+        TestHrAddBuyQuote4();
+        TestHrAddBuyQuote5();
+
+        TestHrInsertByLevel0();
+        TestHrInsertByLevel1();
+        TestHrInsertByLevel2();
+        TestHrInsertByLevel3();
+        TestHrInsertByLevel4();
+        TestHrInsertByLevel5();
+
+        TestHrInsertBuyQuote1();
+        TestHrInsertBuyQuote2();
+        TestHrInsertBuyQuote3();
+        TestHrInsertBuyQuote4();
+        TestHrInsertBuyQuote5();
+    }
+
+    void TestHr() {
+        TestHrBuyQuotes();
+    }
+
     void Test() {
         TestDefaults();
         TestStringIdComparer();
+        TestHr();
         TestOrderTableItem();
         TestPerformance();
         TestConnection();

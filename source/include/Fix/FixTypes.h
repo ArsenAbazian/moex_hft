@@ -414,6 +414,11 @@ public:
     INT64       MantissaDigitCount;
     double      Value;
 
+    Decimal(int value) {
+        Mantissa = value;
+        Exponent = 0;
+        MantissaDigitCount = CalcMantissaDigitCount();
+    }
     Decimal() {
         Mantissa = 0;
         Exponent = 0;

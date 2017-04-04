@@ -858,14 +858,14 @@ public:
         RobotSettings::Default->MarketDataMaxEntriesCount = 32 * 10;
         RobotSettings::Default->MDEntryQueueItemsCount = 100;
 
+        OrderBookTesterForts fob;
+        fob.Test();
+
         PointerListTester pt;
         pt.Test();
 
         SymbolManagerTester ht;
         ht.Test();
-
-        OrderBookTesterForts fob;
-        fob.Test();
 
         TestFeedConnectionBase();
 
