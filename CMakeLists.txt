@@ -53,6 +53,7 @@ pkg_get_variable(mono-options Sources)
 message(STATUS "${Green}Found Mono.Options in ${BoldBlue}${MONO_OPTIONS_SOURCES}${ColourReset}")
 
 set(fast_generator ${EXECUTABLE_OUTPUT_PATH}/fast_generator)
+file(MAKE_DIRECTORY ${EXECUTABLE_OUTPUT_PATH})
 add_custom_command(OUTPUT ${fast_generator}
   COMMAND ${CSHARP_COMPILER} -sdk:4.0 -out:${fast_generator} ${CMAKE_CURRENT_LIST_DIR}/tools/Program.cs ${CMAKE_CURRENT_LIST_DIR}/tools/AssemblyInfo.cs ${MONO_OPTIONS_SOURCES}
   COMMENT "building fast_generator..."
@@ -108,11 +109,11 @@ add_custom_command(TARGET fast_generate
         -s ${CMAKE_CURRENT_LIST_DIR}/source/
         -f
         -fh ${CMAKE_CURRENT_LIST_DIR}/source/include/Fast/FastProtocolManager.h
-        -fc ${CMAKE_CURRENT_LIST_DIR}/source/src/Fast/FastProtocolManager.cpp
         -ft ${CMAKE_CURRENT_LIST_DIR}/source/include/Fast/FastTypes.h
+        -fc ${CMAKE_CURRENT_LIST_DIR}/source/src/Fast/FastProtocolManager.cpp
+        -rb ${CMAKE_CURRENT_LIST_DIR}/source/src/Robot.cpp
         -ax ${CMAKE_CURRENT_LIST_DIR}/test/data/FIX50SP2-2017-Mar.xml
         -sx ${CMAKE_CURRENT_LIST_DIR}/test/data/forts_templates.xml
-        -rb ${CMAKE_CURRENT_LIST_DIR}/source/src/Robot.cpp
         -acfg ${CMAKE_CURRENT_LIST_DIR}/test/data/asts_config_test.xml
         -scfg ${CMAKE_CURRENT_LIST_DIR}/test/data/forts_config_test.xml
         COMMENT "generating code...")
