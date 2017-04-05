@@ -798,7 +798,7 @@ void FastProtocolTester::TestReadByteVector_Optional() {
 		throw;
 
 	BYTE *buffer = new BYTE[1000];
-	BYTE *buffer2;
+	BYTE *buffer2 = nullptr;
 	for (int i = 0; i < 1000; i++) {
 		buffer[i] = (char)('A' + i % 60);
 	}
