@@ -49,11 +49,11 @@ class SocketBufferProvider : public ISocketBufferProvider {
 
 public:
 	SocketBufferProvider(SocketBufferManager *manager, unsigned int sendSize, unsigned int sendItemsCount, unsigned int recvSize, unsigned int recvItemsCount)
-			: m_manager(manager),
-			m_sendSize(sendSize),
+			: m_sendSize(sendSize),
 			m_recvSize(recvSize),
 			m_sendItemsCount(sendItemsCount),
-			m_recvItemsCount(recvItemsCount) {
+			m_recvItemsCount(recvItemsCount),
+			m_manager(manager) {
 		this->m_sendBuffer = this->m_recvBuffer = 0;
 	}
 	~SocketBufferProvider() {
