@@ -6,13 +6,13 @@
 
 class MarketServerInfo;
 
-typedef enum _MarketServerInfoProcessMessageResultValue {
+typedef enum class _MarketServerInfoProcessMessageResultValue : uint8_t {
 	msiMsgResProcessed,
 	msiMsgResFailed,
 	msiMsgResProcessedExit
-}MsiMessageProcessResult;
+} MsiMessageProcessResult;
 
-typedef enum _MarketServerState {
+typedef enum class _MarketServerState : uint8_t{
     mssConnect,
     mssSendLogon,
 	mssSendLogonRepeat,
@@ -25,7 +25,7 @@ typedef enum _MarketServerState {
     mssEnd,
 	mssDoNothing,
 	mssPanic
-}MarketServerState;
+} MarketServerState;
 
 class MarketServerInfo {
 	char									m_name[128];
@@ -127,12 +127,12 @@ class MarketServerInfo {
 		DefaultLogManager::Default->StartLog(this->m_nameLogIndex, LogMessageCode::lmcMarketServerInfo_ProcessMessages);
 		for(int i = startIndex; i < this->m_fixManager->RecvMessageCount(); i++) {
 			MsiMessageProcessResult res = ProcessMessage(i);
-			if(res == msiMsgResFailed) {
+			if(res == MsiMessageProcessResult::msiMsgResFailed) {
 				DefaultLogManager::Default->EndLog(false);
 				this->SetState(MarketServerState::mssPanic);
 				return false;
 			}
-			if(res == msiMsgResProcessedExit)
+			if(res == MsiMessageProcessResult::msiMsgResProcessedExit)
 				break;
 		}
 
@@ -165,11 +165,11 @@ class MarketServerInfo {
 
 		if(!msg->ProcessCheckHeader()) {
 			DefaultLogManager::Default->EndLog(false);
-			return msiMsgResFailed;
+			return MsiMessageProcessResult::msiMsgResFailed;
 		}
 
 		MsiMessageProcessResult res = this->ProcessMessageCore(msg->Header()->msgType, msg);
-		if(res == msiMsgResFailed) {
+		if(res == MsiMessageProcessResult::msiMsgResFailed) {
 			DefaultLogManager::Default->EndLog(false);
 			return res;
 		}
