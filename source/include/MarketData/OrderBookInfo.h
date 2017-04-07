@@ -134,10 +134,11 @@ public:
         while(true) {
             double val = (&(node->Data()->MDEntryPx))->Value;
             if(val < value) {
-                node = GetBuyQuoteCore1(value, node->Prev2(), node);
+                start = node->Prev2();
+                HrLinkedPointer<T> *newNode = GetBuyQuoteCore1(value, start, node);
                 if(this->m_buyQuoteListLevel >= 2)
-                    this->m_buyQuoteList->Insert2(start, node, end);
-                return node;
+                    this->m_buyQuoteList->Insert2(start, newNode, node);
+                return newNode;
             }
             if(val == value)
                 return node;
@@ -150,10 +151,11 @@ public:
         while(true) {
             double val = (&(node->Data()->MDEntryPx))->Value;
             if(val < value) {
-                node = GetBuyQuoteCore2(value, node->Prev3(), node);
+                start = node->Prev3();
+                HrLinkedPointer<T> *newNode = GetBuyQuoteCore2(value, start, node);
                 if(this->m_buyQuoteListLevel >= 3)
-                    this->m_buyQuoteList->Insert3(start, node, end);
-                return node;
+                    this->m_buyQuoteList->Insert3(start, newNode, node);
+                return newNode;
             }
             if(val == value)
                 return node;
@@ -166,10 +168,11 @@ public:
         while(true) {
             double val = (&(node->Data()->MDEntryPx))->Value;
             if(val < value) {
-                node = GetBuyQuoteCore3(value, node->Prev4(), node);
+                start = node->Prev4();
+                HrLinkedPointer<T> *newNode = GetBuyQuoteCore3(value, start, node);
                 if(this->m_buyQuoteListLevel >= 4)
-                    this->m_buyQuoteList->Insert4(start, node, end);
-                return node;
+                    this->m_buyQuoteList->Insert4(start, newNode, node);
+                return newNode;
             }
             if(val == value)
                 return node;
@@ -194,30 +197,34 @@ public:
                 newNode->AllConnect(start);
                 return newNode;
             }
-            newNode->AllConnect(start->Next());
+            newNode->Connect5(start->Next5());
+            newNode->Connect4(start->Next4());
+            newNode->Connect3(start->Next3());
+            newNode->Connect2(start->Next2());
             start->AllNext(0);
+            start->AllPrev(0);
             this->m_buyQuoteList->InsertByLevel(CalcLevel(), newNode, start, end);
             return newNode;
         }
         if(val == value)
             return start;
-        node = node->Next();
-        if(node != 0) {
-            while (true) {
-                double val = (&(node->Data()->MDEntryPx))->Value;
-                if (val < value) {
-                    node = GetBuyQuoteCore4(value, node->Prev5(), node);
-                    if (this->m_buyQuoteListLevel >= 5)
-                        this->m_buyQuoteList->Insert5(start, node, end);
-                    return node;
-                }
-                if (val == value)
-                    return node;
-                if (node == end)
-                    break;
-                node = node->Next5();
+
+        while (true) {
+            double val = (&(node->Data()->MDEntryPx))->Value;
+            if (val < value) {
+                start = node->Prev5();
+                newNode = GetBuyQuoteCore4(value, start, node);
+                if (this->m_buyQuoteListLevel >= 5)
+                    this->m_buyQuoteList->Insert5(start, newNode, node);
+                return newNode;
             }
+            if (val == value)
+                return node;
+            if (node == end)
+                break;
+            node = node->Next5();
         }
+
         // add after
         newNode = this->m_buyQuoteList->Add();
         if(start == end) {

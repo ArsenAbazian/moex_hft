@@ -497,7 +497,7 @@ public:
     }
 
     inline int IndexOf(LinkedPointer<T> *item) {
-        LinkedPointer<T> *node = this->m_head;
+        LinkedPointer<T> *node = this->Start();
         int index = 0;
         while(true) {
             if(node == item)

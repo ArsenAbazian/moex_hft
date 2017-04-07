@@ -98,6 +98,7 @@ foreach(inc_dir ${inc_dirs})
 endforeach(inc_dir)
 
 add_executable(hft_robot
+        source/src/Settings.cpp
         ${sources}
 )
 add_dependencies(hft_robot fast_generate)

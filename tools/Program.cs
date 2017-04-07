@@ -705,7 +705,7 @@ namespace prebuild {
 		}
 
 		private  void GenerateTemplatesCodeSpectra () {
-			Console.WriteLine("generate spectra...");
+			Console.WriteLine("generate forts...");
 			WriteDeclareAllocationInfoCode();
 			WriteStructuresDefinitionCode(TemplatesNode, true);
 			WriteStructuresDeclarationCode();
@@ -1525,7 +1525,6 @@ namespace prebuild {
 		void WriteStringDefinitionCore(XmlNode field, string tabs) {
 			int maxStringLength = GetMaxStringSize(field);
 			WriteLine("\tchar" + tabs + Name(field) + "[" + maxStringLength + "];" + GetCommentLine(field));
-			WriteLine("\tint"+ tabs + Name(field) + "Length = 0;");
 		}
 
 		int GetMaxByteVectorSize(XmlNode field) {
@@ -1562,7 +1561,6 @@ namespace prebuild {
 		void WriteByteVectorDefinitionCore(XmlNode field, string tabs) {
 			int maxStringLength = GetMaxByteVectorSize(field);
 			WriteLine("\tunsigned char" + tabs + Name(field) + "[" + maxStringLength + "];" + GetCommentLine(field));
-			WriteLine("\tint"+ tabs + Name(field) + "Length = 0;");
 		}
 
 		List<StructureInfo> structures;
@@ -1831,15 +1829,25 @@ namespace prebuild {
 				} else
 					Console.WriteLine("found undefined field " + field.Name);
 			}
+			foreach (XmlNode field in info.Fields) {
+				if(field.NodeType == XmlNodeType.Comment)
+					continue;
+				if (IsString (field) || IsByteVector(field))
+					WriteLength(field);
+				if (field.Name == "sequence")
+					WriteCount (field);
+			}
 
 			WriteLine("");
-			WriteLine("\t" + info.Name + "(){");
-			WriteLine("\t\tthis->Used = false;");
-			WriteLine("\t\tthis->Pointer = 0;");
-			WriteLine("\t\tthis->Allocator = 0;");
-			WriteClearFieldsCode(info);
+			WriteLine("\t" + info.Name + "() {");
+			WriteLine ("\t\tbzero(this, sizeof(" + info.Name + "));");
+			//WriteLine("\t\tthis->Used = false;");
+			//WriteLine("\t\tthis->Pointer = 0;");
+			//WriteLine("\t\tthis->Allocator = 0;");
+			//WriteClearFieldsCode(info);
+
 			WriteLine("\t}");
-			WriteLine("\t~" + info.Name + "(){ }");
+			WriteLine("\t~" + info.Name + "() { }");
 			WriteClearCode(info);
 		}
 
@@ -1983,7 +1991,6 @@ namespace prebuild {
 		}
 
 		private  void WriteSequence (XmlNode field, string parentName) {
-			WriteLine("\tint" + StuctFieldsSpacing + Name(field) + "Count;" + GetCommentLine(field));
 			StructureInfo originalStruct = GetOriginalStruct(field);
 			if(originalStruct != null) {
 				originalStruct.Prefix = Prefix;
@@ -1995,8 +2002,6 @@ namespace prebuild {
 
 		private  void WriteByteVectorField (XmlNode field) {
 			WriteByteVectorDefinitionCore(field, StuctFieldsSpacing);
-			//WriteLine("\tBYTE*" + StuctFieldsSpacing + Name(field) + ";" + GetCommentLine(field));
-			//WriteLine("\tint" + StuctFieldsSpacing + Name(field) + "Length;");
 		}
 
 		private  void WriteDecimalField (XmlNode field) {
@@ -2021,8 +2026,14 @@ namespace prebuild {
 
 		private  void WriteStringDefinition (XmlNode field) {
 			WriteStringDefinitionCore(field, StuctFieldsSpacing);
-			//WriteLine("\tchar*" + StuctFieldsSpacing + Name(field) + ";" + GetCommentLine(field));
-			//WriteLine("\tint" + StuctFieldsSpacing + Name(field) + "Length;");
+		}
+
+		private void WriteLength(XmlNode field) {
+			WriteLine("\tint\t"+ StuctFieldsSpacing + Name(field) + "Length;" + GetCommentLine(field));
+		}
+
+		private void WriteCount(XmlNode field) {
+			WriteLine("\tint\t" + StuctFieldsSpacing + Name(field) + "Count;" + GetCommentLine(field));
 		}
 
 		string GetTemplateName(XmlNode node) {
