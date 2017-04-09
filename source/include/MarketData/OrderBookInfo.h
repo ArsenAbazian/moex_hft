@@ -35,6 +35,10 @@ template <typename T> class OrderBookInfo {
     int                                 m_snapshotProcessedCount;
 
     int                                 m_debugLevel;
+    unsigned int                        g_seed;
+    void init_fast_srand() {
+        g_seed = (DefaultStopwatch::Default->ElapsedNanoseconds() & 0xffffffff);
+    }
 public:
     OrderBookInfo();
     ~OrderBookInfo() {
@@ -43,6 +47,9 @@ public:
         delete this->m_buyQuoteList;
     }
 
+    inline void SetDebugFastRandSeed(int seed) {
+        this->g_seed = seed;
+    }
     inline void SetDebugLevel(int level) {
         this->m_debugLevel = level;
     }
@@ -203,7 +210,7 @@ public:
             newNode->Connect2(start->Next2());
             start->AllNext(0);
             start->AllPrev(0);
-            this->m_buyQuoteList->InsertByLevel(CalcLevel(), newNode, start, end);
+            this->m_buyQuoteList->InsertAfterByLevel(CalcLevel(), newNode, start);
             return newNode;
         }
         if(val == value)
@@ -232,33 +239,53 @@ public:
             start->AllConnect(newNode);
             return newNode;
         }
-        end->Prev()->AllConnect(newNode);
+        end->Prev5()->Connect5(newNode);
+        end->Prev4()->Connect4(newNode);
+        end->Prev3()->Connect3(newNode);
+        end->Prev2()->Connect2(newNode);
         end->AllPrev(0);
-        this->m_buyQuoteList->InsertByLevel(this->CalcLevel(), end->Prev(), end, newNode);
+        end->AllNext(0);
+        this->m_buyQuoteList->InsertBeforeByLevel(this->CalcLevel(), end, newNode);
         return newNode;
     }
 
+    // Compute a pseudorandom integer.
+    // Output value in range [0, 32767]
+    inline int fast_rand(void) {
+        g_seed = (214013 * g_seed + 2531011);
+        return (g_seed >> 16) & 0x7fff;
+    }
+
     inline int CalcLevel() {
-        const int maxP = INT32_MAX >> 1;
+        //const int level2P = 32767 >> 2;
+        //const int level3P = 32767 >> 3;
+        //const int level4P = 32767 >> 4;
+        //const int level5P = 32767 >> 6;
+
+        const int level2P = 32767 >> 2;
+        const int level3P = 32767 >> 3;
+        const int level4P = 32767 >> 4;
+        const int level5P = 32767 >> 5;
 #ifdef TEST
-        if(this->m_debugLevel != 0) {
+        if (this->m_debugLevel != 0) {
             int res = this->m_debugLevel;
             this->m_debugLevel = 0;
             return res;
         }
 #endif
-        //TODO change rand to faster method!!!!!
-        if(rand() > maxP)
-            return 1;
-        if(rand() > maxP)
-            return 2;
-        if(rand() > maxP)
-            return 3;
-        if(rand() > maxP)
+        int p = fast_rand();
+        if (p < level4P) {
+            if (p < level5P)
+                return 5;
             return 4;
-        return 5;
+        } else {
+            if (p < level3P)
+                return 3;
+            if (p < level2P)
+                return 2;
+            return 1;
+        }
     }
-
     inline HrLinkedPointer<T>* GetBuyQuoteEx(Decimal *price) {
         this->m_buyQuoteListLevel = 0;
         return this->GetBuyQuoteCore5(price->Calculate(), this->m_buyQuoteList->Start(), this->m_buyQuoteList->End());
@@ -306,17 +333,27 @@ public:
         return this->m_sellQuoteList->Add();
     }
 
-    inline HrLinkedPointer<T>* RemoveBuyQuote(T *info) {
+    inline void RemoveBuyQuoteEx(T *info) {
+        DebugInfoManager::Default->Log(this->m_symbolInfo->Symbol(), this->m_sessionInt, "Remove BuyQuoteEx", info->MDEntryID, &(info->MDEntryPx), info->MDEntrySize);
+        HrLinkedPointer<T> *node = this->GetBuyQuoteEx(&(info->MDEntryPx));
+        this->m_buyQuoteList->Remove(node);
+        node->Data()->Clear();
+        //TODO remove debug
+        //printf("ERROR: %" PRIu64 " entry not found\n", info->MDEntryID);
+        return ;
+    }
+
+    inline void RemoveBuyQuote(T *info) {
         DebugInfoManager::Default->Log(this->m_symbolInfo->Symbol(), this->m_sessionInt, "Remove BuyQuote", info->MDEntryID, &(info->MDEntryPx), info->MDEntrySize);
         HrLinkedPointer<T> *node = this->m_buyQuoteList->Start();
         if(node == 0)
-            return 0;
+            return;
         while(true) {
             T *data = node->Data();
             if(data->MDEntryID == info->MDEntryID) {
                 this->m_buyQuoteList->Remove(node);
                 data->Clear();
-                return node;
+                return;
             }
             if(node == this->m_buyQuoteList->End())
                 break;
@@ -324,8 +361,7 @@ public:
         }
         //TODO remove debug
         //printf("ERROR: %" PRIu64 " entry not found\n", info->MDEntryID);
-
-        return 0;
+        return;
     }
 
     inline HrLinkedPointer<T>* RemoveSellQuote(T *info) {
@@ -378,10 +414,18 @@ public:
         ptr->Data()->Clear();
     }
 
-    inline HrLinkedPointer<T>* AddBuyQuote(T *item) {
+    inline HrLinkedPointer<T>* AddBuyQuoteEx(T *item) {
         DebugInfoManager::Default->Log(this->m_symbolInfo->Symbol(), this->m_sessionInt, "Add BuyQuote", item->MDEntryID, &(item->MDEntryPx), item->MDEntrySize);
         item->Used = true;
         HrLinkedPointer<T> *ptr = GetBuyQuoteEx(&(item->MDEntryPx)); // TODO changed from GetBuyQuote
+        ptr->Data(item);
+        return ptr;
+    }
+
+    inline HrLinkedPointer<T>* AddBuyQuote(T *item) {
+        DebugInfoManager::Default->Log(this->m_symbolInfo->Symbol(), this->m_sessionInt, "Add BuyQuote", item->MDEntryID, &(item->MDEntryPx), item->MDEntrySize);
+        item->Used = true;
+        HrLinkedPointer<T> *ptr = GetBuyQuote(&(item->MDEntryPx)); // TODO changed from GetBuyQuote
         ptr->Data(item);
         return ptr;
     }
@@ -554,6 +598,7 @@ template <typename T> OrderBookInfo<T>::OrderBookInfo() {
     if(OrderBookInfo::m_itemsPool == 0)
         OrderBookInfo::m_itemsPool = new HrPointerList<T>(RobotSettings::Default->MarketDataMaxEntriesCount, false);
 
+    this->init_fast_srand();
     this->m_entryInfo = 0;
 #ifdef TEST
     this->m_debugLevel = 0;

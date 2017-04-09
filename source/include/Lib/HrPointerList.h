@@ -606,6 +606,44 @@ public:
         node->Next5(end);
     }
 
+    inline void InsertAfterByLevel(int level, HrLinkedPointer<T> *start, HrLinkedPointer<T> *node) {
+        if(level > 3) {
+            if(level == 5)
+                Insert5(start, node, start->Next5());
+            Insert4(start, node, start->Next4());
+            Insert3(start, node, start->Next3());
+            Insert2(start, node, start->Next2());
+            return;
+        }
+        else {
+            if(level == 3) {
+                Insert3(start, node, start->Next3());
+                Insert2(start, node, start->Next2());
+            }
+            else if(level == 2)
+                Insert2(start, node, start->Next2());
+        }
+    }
+
+    inline void InsertBeforeByLevel(int level, HrLinkedPointer<T> *node, HrLinkedPointer<T> *end) {
+        if(level > 3) {
+            if(level == 5)
+                Insert5(end->Prev5(), node, end);
+            Insert4(end->Prev4(), node, end);
+            Insert3(end->Prev3(), node, end);
+            Insert2(end->Prev2(), node, end);
+            return;
+        }
+        else {
+            if(level == 3) {
+                Insert3(end->Prev3(), node, end);
+                Insert2(end->Prev2(), node, end);
+            }
+            else if(level == 2)
+                Insert2(end->Prev2(), node, end);
+        }
+    }
+
     inline void InsertByLevel(int level, HrLinkedPointer<T> *start, HrLinkedPointer<T> *node, HrLinkedPointer<T> *end) {
         if(level <= 1)
             return;
