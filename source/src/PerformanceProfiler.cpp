@@ -2,7 +2,7 @@
 // Created by root on 26.03.17.
 //
 
-#include "PerformanceProfiler/PerformanceProfiler.h"
+#include "../include/PerformanceProfiler/PerformanceProfiler.h"
 
 PerformanceProfiler::PerformanceProfiler() {
     this->m_time = new struct timespec;

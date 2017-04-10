@@ -1,4 +1,4 @@
-#include "Fix/FixProtocolManager.h"
+#include "../../include/Fix/FixProtocolManager.h"
 
 
 FixProtocolManager::FixProtocolManager(ISocketBufferProvider *provider, const char *protocolVersion) {

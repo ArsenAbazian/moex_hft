@@ -1,6 +1,6 @@
-#include "Managers/SocketBufferManager.h"
+#include "../../include/Managers/SocketBufferManager.h"
 #include <memory.h>
-#include "DebugInfoManager.h"
+#include "../../include/Managers/DebugInfoManager.h"
 
 SocketBuffer::SocketBuffer(unsigned int bufferSize, unsigned int maxItemsCount, unsigned int bufferIndex) {
 

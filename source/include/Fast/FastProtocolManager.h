@@ -1,6 +1,6 @@
 #pragma once
 #pragma once
-#include "Fix/FixTypes.h"
+#include "../Fix/FixTypes.h"
 #include "FastTypes.h"
 #include <stdio.h>
 #include <math.h>

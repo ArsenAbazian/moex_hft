@@ -4,11 +4,11 @@
 
 #ifndef HFT_ROBOT_INSTRUMENTDEFINITIONTESTER_H
 #define HFT_ROBOT_INSTRUMENTDEFINITIONTESTER_H
-#include "Settings.h"
+#include "../Settings.h"
 
 #ifdef TEST
 
-#include "Feeds/FeedConnection.h"
+#include "../Feeds/FeedConnection.h"
 #include "TestMessagesHelper.h"
 #include "SymbolManagerTester.h"
 #include <stdio.h>

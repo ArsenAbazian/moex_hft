@@ -5,9 +5,9 @@
 #ifndef HFT_ROBOT_ORDERBOOKTABLE_H
 #define HFT_ROBOT_ORDERBOOKTABLE_H
 
-#include <Managers/DebugInfoManager.h>
-#include "Lib/StringIdComparer.h"
-#include "Fast/FastTypes.h"
+#include "../Managers/DebugInfoManager.h"
+#include "../Lib/StringIdComparer.h"
+#include "../Fast/FastTypes.h"
 #include "MDEntryQueue.h"
 #include "MarketSymbolInfo.h"
 

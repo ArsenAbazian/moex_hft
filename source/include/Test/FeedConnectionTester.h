@@ -4,11 +4,11 @@
 
 #ifndef HFT_ROBOT_FEEDCONNECTIONTESTER_H
 #define HFT_ROBOT_FEEDCONNECTIONTESTER_H
-#include "Settings.h"
+#include "../Settings.h"
 
 #ifdef TEST
 
-#include "Feeds/FeedConnections.h"
+#include "../Feeds/FeedConnections.h"
 #include "SecurityDefinitionTester.h"
 #include "OrderTesterFond.h"
 #include "OrderTesterCurr.h"

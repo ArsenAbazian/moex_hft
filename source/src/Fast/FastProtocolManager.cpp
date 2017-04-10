@@ -1,5 +1,5 @@
-#include "Fast/FastProtocolManager.h"
-#include "../Managers/DebugInfoManager.h"
+#include "../../include/Fast/FastProtocolManager.h"
+#include "../../include/Managers/DebugInfoManager.h"
 
 FastProtocolManager::FastProtocolManager() : FastProtocolManager(AstsObjectsAllocationInfo::Default, FortsObjectsAllocationInfo::Default) { }
 

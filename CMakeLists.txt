@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.5)
 project(hft_robot)
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
+
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
 include(InstallRequiredSystemLibraries)
 include(ExternalProject)

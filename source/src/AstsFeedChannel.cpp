@@ -1,5 +1,4 @@
-#include "AstsFeedChannel.h"
-#include "Managers/LogManager.h"
+#include "../include/Feeds/AstsFeedChannel.h"
 
 AstsFeedChannel::AstsFeedChannel(const char *id, const char *name) {
 	strcpy(this->id, id);

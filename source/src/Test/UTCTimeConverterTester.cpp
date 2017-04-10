@@ -1,5 +1,5 @@
-#include "Test/UTCTimeConverterTester.h"
-#include "Converters/UTCTimeConverter.h"
+#include "../../include/Test/UTCTimeConverterTester.h"
+#include "../../include/Converters/UTCTimeConverter.h"
 #include <stdlib.h>
 #include <stdio.h>
 #ifdef TEST

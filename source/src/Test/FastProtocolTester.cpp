@@ -3,13 +3,13 @@
 #include <exception>
 #include <stdexcept>
 #include <limits.h>
-#include "Fast/FastProtocolManager.h"
-#include "Test/FastProtocolTester.h"
+#include "../../include/Fast/FastProtocolManager.h"
+#include "../../include/Test/FastProtocolTester.h"
 #include <sys/time.h>
-#include <Lib/StringIdComparer.h>
-#include <Stopwatch.h>
-#include <Feeds/FeedTypes.h>
-#include "../Managers/DebugInfoManager.h"
+#include "../../include/Lib/StringIdComparer.h"
+#include "../../include/Stopwatch.h"
+#include "../../include/Feeds/FeedTypes.h"
+#include "../../include/Managers/DebugInfoManager.h"
 
 #ifdef TEST
 FastProtocolTester::FastProtocolTester() {

@@ -5,7 +5,7 @@
 #ifndef HFT_ROBOT_PERFORMANCEPROFILER_H
 #define HFT_ROBOT_PERFORMANCEPROFILER_H
 
-#include <Stopwatch.h>
+#include "../Stopwatch.h"
 #include "PerformanceProfilerItem.h"
 
 class PerformanceProfiler {

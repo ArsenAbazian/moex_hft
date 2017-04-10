@@ -1,5 +1,5 @@
-#include "Converters/ItoaConverter.h"
-#include "Test/ItoaTester.h"
+#include "../../include/Converters/ItoaConverter.h"
+#include "../../include/Test/ItoaTester.h"
 #include <stdio.h>
 
 #ifdef TEST

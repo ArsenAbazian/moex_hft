@@ -1,6 +1,6 @@
 #pragma once
 #include "MarketServerInfo.h"
-#include "AstsFeedChannel.h"
+#include "Feeds/AstsFeedChannel.h"
 
 class MarketInfo {
 

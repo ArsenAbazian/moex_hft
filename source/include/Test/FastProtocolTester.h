@@ -1,5 +1,5 @@
 #pragma once
-#include "Settings.h"
+#include "../Settings.h"
 #include "../Fast/FastProtocolManager.h"
 
 #ifdef TEST

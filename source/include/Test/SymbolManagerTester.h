@@ -4,7 +4,7 @@
 
 #ifndef HFT_ROBOT_HASHSTRINGTESTER_H
 #define HFT_ROBOT_HASHSTRINGTESTER_H
-#include "Settings.h"
+#include "../Settings.h"
 
 #ifdef TEST
 

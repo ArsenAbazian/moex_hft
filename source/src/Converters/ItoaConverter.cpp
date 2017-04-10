@@ -1,5 +1,5 @@
-#include "Converters/ItoaConverter.h"
-#include "../Managers/DebugInfoManager.h"
+#include "../../include/Converters/ItoaConverter.h"
+#include "../../include/Managers/DebugInfoManager.h"
 
 
 DigitString* ItoaConverter::digitStringList = NULL;

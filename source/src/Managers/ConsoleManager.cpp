@@ -1,4 +1,4 @@
-#include "Managers/ConsoleManager.h"
+#include "../../include/Managers/ConsoleManager.h"
 
 char ConsoleManager::buffer[1024];
 

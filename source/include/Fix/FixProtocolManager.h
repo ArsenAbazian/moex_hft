@@ -2,15 +2,15 @@
 #pragma once
 
 #include "FixTypes.h"
-#include "Converters/ItoaConverter.h"
-#include "Converters/DtoaConverter.h"
-#include "Converters/UTCTimeConverter.h"
-#include "Managers/SocketBufferManager.h"
+#include "../Converters/ItoaConverter.h"
+#include "../Converters/DtoaConverter.h"
+#include "../Converters/UTCTimeConverter.h"
+#include "../Managers/SocketBufferManager.h"
 #include <time.h>
 #include <sys/time.h>
 #include <stdio.h>
 #include "FixMessage.h"
-#include "Managers/WinSockManager.h"
+#include "../Managers/WinSockManager.h"
 
 #define AddTagValue(tagName, tagValue) tagName AddEqual(); AddValue(tagValue); AddSeparator();
 #define AddTagSymbolValue(tagName, tagValue) tagName AddEqual(); AddSymbol(tagValue); AddSeparator();

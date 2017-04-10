@@ -1,4 +1,4 @@
-#include "FeedConnection.h"
+#include "../include/Feeds/FeedConnection.h"
 
 FeedConnection::FeedConnection(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) {
 	strcpy(this->m_idName, id);

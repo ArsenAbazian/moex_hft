@@ -4,12 +4,12 @@
 
 #ifndef HFT_ROBOT_SECURITYSTATUSTESTER_H
 #define HFT_ROBOT_SECURITYSTATUSTESTER_H
-#include "Settings.h"
+#include "../Settings.h"
 
 #ifdef TEST
 
-#include "Feeds/FeedConnection.h"
-#include "Feeds/FeedConnections.h"
+#include "../Feeds/FeedConnection.h"
+#include "../Feeds/FeedConnections.h"
 #include "TestMessagesHelper.h"
 #include "SymbolManagerTester.h"
 #include <stdio.h>

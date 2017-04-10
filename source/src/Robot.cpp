@@ -1,8 +1,8 @@
-#include "Robot.h"
-#include "AstsFeedChannel.h"
+#include "../include/Robot.h"
+#include "../include/Feeds/AstsFeedChannel.h"
 #include <cstdio>
-#include "ProgramStatistics.h"
-#include "Feeds/Forts/FortsFeeds.h"
+#include "../include/ProgramStatistics.h"
+#include "../include/Feeds/Forts/FortsFeeds.h"
 
 Robot::Robot() {
 	this->channelsCount = 0;

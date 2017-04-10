@@ -1,8 +1,8 @@
 //
 // Created by root on 05.02.17.
 //
-#include "StatisticInfo.h"
-#include "../Managers/DebugInfoManager.h"
+#include "../../include/MarketData/StatisticInfo.h"
+#include "../../include/Managers/DebugInfoManager.h"
 
 StatisticItemAllocator::StatisticItemAllocator() {
     this->m_decimals = new PointerList<StatisticItemDecimal>(400000, true, "StatisticsInfo::Decimals");

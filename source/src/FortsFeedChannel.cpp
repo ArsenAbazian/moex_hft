@@ -2,7 +2,7 @@
 // Created by root on 11.03.17.
 //
 
-#include "Feeds/Forts/FortsFeedChannel.h"
+#include "../include/Feeds/Forts/FortsFeedChannel.h"
 
 FortsFeedChannel::FortsFeedChannel() {
     this->m_futBook1 = 0;

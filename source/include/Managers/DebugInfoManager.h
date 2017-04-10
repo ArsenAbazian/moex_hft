@@ -5,14 +5,14 @@
 #ifndef HFT_ROBOT_DEBUGINFOMANAGER_H
 #define HFT_ROBOT_DEBUGINFOMANAGER_H
 
-#include <Fast/FastProtocolManager.h>
-#include <MarketData/QuoteInfo.h>
+#include "../Fast/FastProtocolManager.h"
+#include "../MarketData/QuoteInfo.h"
 #include "../Fast/FastTypes.h"
 #include "../Lib/PointerList.h"
 #include "../Lib/StringIdComparer.h"
 #include <stdio.h>
 #include <malloc.h>
-#include <MarketData/MDEntryQueue.h>
+#include "../MarketData/MDEntryQueue.h"
 #include <cstdlib>
 
 template <template<typename ITEMINFO> class TABLEITEM, typename INFO, typename ITEMINFO> class MarketDataTable;

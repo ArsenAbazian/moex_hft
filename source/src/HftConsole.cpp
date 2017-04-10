@@ -1,16 +1,16 @@
 // HftConsole.cpp : Defines the entry point for the console application.
 //
-#include "Settings.h"
+#include "../include/Settings.h"
 #ifdef TEST
-#include "Test/ItoaTester.h"
-#include "Test/UTCTimeConverterTester.h"
-#include "Test/FastProtocolTester.h"
-#include "Test/FixProtocolManagerTester.h"
-#include "Test/FeedConnectionTester.h"
-#include "Test/DecimalTester.h"
+#include "../include/Test/ItoaTester.h"
+#include "../include/Test/UTCTimeConverterTester.h"
+#include "../include/Test/FastProtocolTester.h"
+#include "../include/Test/FixProtocolManagerTester.h"
+#include "../include/Test/FeedConnectionTester.h"
+#include "../include/Test/DecimalTester.h"
 #endif //TEST
 
-#include "Robot.h"
+#include "../include/Robot.h"
 
 int main(int argc, char** argv) {
 

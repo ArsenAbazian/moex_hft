@@ -1,7 +1,7 @@
-#include "MarketServerInfo.h"
+#include "../include/MarketServerInfo.h"
 #include <stdio.h>
-#include "Managers/LogManager.h"
-#include "Stopwatch.h"
+#include "../include/Managers/LogManager.h"
+#include "../include/Stopwatch.h"
 
 MarketServerInfo::MarketServerInfo(const char *name, const char *internetAddress, int internetPort, const char *senderComputerId, const char *password, const char *targetComputerId, const char *astsServerName) {
 	strcpy(this->m_name, name);

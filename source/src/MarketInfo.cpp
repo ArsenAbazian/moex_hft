@@ -1,5 +1,5 @@
-#include "MarketInfo.h"
-#include "Managers/LogManager.h"
+#include "../include/MarketInfo.h"
+#include "../include/Managers/LogManager.h"
 
 void MarketInfo::Initialize(const char* name, const char *senderComputerId, const char *password,
 	const char *tradeName, const char *tradeAddress, int tradePort, const char *tradeTargetComputerId, const char *tradeASTSServerName,

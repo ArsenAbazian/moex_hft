@@ -2,8 +2,8 @@
 // Created by root on 25.02.17.
 //
 
-#include "MDEntryQueue.h"
-#include "../Managers/DebugInfoManager.h"
+#include "../../include/MarketData/MDEntryQueue.h"
+#include "../../include/Managers/DebugInfoManager.h"
 
 AutoAllocatePointerList<MDEntryQueue>* MDEntryQueue::CreatePool() {
     AutoAllocatePointerList<MDEntryQueue>* res = new AutoAllocatePointerList<MDEntryQueue>(RobotSettings::Default->MDEntryQueueItemsCount, RobotSettings::Default->MDEntryQueueItemsAddCount, "Some of MDEntryQueuePool");

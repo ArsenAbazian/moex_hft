@@ -5,8 +5,8 @@
 #ifndef HFT_ROBOT_FIXTYPES_H
 #define HFT_ROBOT_FIXTYPES_H
 
-#include "Settings.h"
-#include "Converters/UTCTimeConverter.h"
+#include "../Settings.h"
+#include "../Converters/UTCTimeConverter.h"
 #include "FixProtocolMacros.h"
 
 #pragma pack(push)

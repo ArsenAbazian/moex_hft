@@ -6,9 +6,9 @@
 #define HFT_ROBOT_FIXMESSAGE_H
 
 #include "FixTypes.h"
-#include "Converters/ItoaConverter.h"
-#include "Converters/DtoaConverter.h"
-#include "Converters/UTCTimeConverter.h"
+#include "../Converters/ItoaConverter.h"
+#include "../Converters/DtoaConverter.h"
+#include "../Converters/UTCTimeConverter.h"
 
 typedef struct _FixTag {
     union {

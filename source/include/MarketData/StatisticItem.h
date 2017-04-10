@@ -6,7 +6,7 @@
 #define HFT_ROBOT_STATISTICITEM_H
 
 #include "../Lib/StringIdComparer.h"
-#include "Fast/FastTypes.h"
+#include "../Fast/FastTypes.h"
 #include "../Lib/PointerList.h"
 #include "MDEntryQueue.h"
 #include "../Managers/DebugInfoManager.h"

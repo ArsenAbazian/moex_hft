@@ -4,7 +4,7 @@
 
 #ifndef HFT_ROBOT_FIXPROTOCOLMANAGERTESTER_H
 #define HFT_ROBOT_FIXPROTOCOLMANAGERTESTER_H
-#include "Settings.h"
+#include "../Settings.h"
 
 #ifdef TEST
 class FixProtocolManagerTester {

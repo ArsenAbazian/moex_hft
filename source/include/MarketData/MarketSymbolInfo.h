@@ -6,7 +6,7 @@
 #define HFT_ROBOT_MARKETSYMBOLINFO_H
 
 #include "../Lib/StringIdComparer.h"
-#include "Fast/FastTypes.h"
+#include "../Fast/FastTypes.h"
 
 template <typename T> class MarketSymbolInfo {
     T                                  **m_items;

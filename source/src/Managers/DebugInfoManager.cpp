@@ -1,9 +1,9 @@
 //
 // Created by root on 09.02.17.
 //
-#include "DebugInfoManager.h"
-#include "../MarketData/StatisticInfo.h"
-#include "Feeds/AstsFeedChannel.h"
+#include "../../include/Managers/DebugInfoManager.h"
+#include "../../include/MarketData/StatisticInfo.h"
+#include "../../include/Feeds/AstsFeedChannel.h"
 //#define ENABLE_LOG
 
 

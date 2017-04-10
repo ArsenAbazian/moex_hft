@@ -2,8 +2,8 @@
 // Created by root on 29.07.16.
 //
 
-#include "Test/FixProtocolManagerTester.h"
-#include "Fix/FixProtocolManager.h"
+#include "../../include/Test/FixProtocolManagerTester.h"
+#include "../../include/Fix/FixProtocolManager.h"
 #ifdef TEST
 
 void FixProtocolManagerTester::TestMoreThanOneMessageReceived() {

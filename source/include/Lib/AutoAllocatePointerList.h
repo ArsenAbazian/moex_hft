@@ -5,8 +5,8 @@
 #ifndef HFT_ROBOT_ORDERBOOKINFOLIST_H
 #define HFT_ROBOT_ORDERBOOKINFOLIST_H
 
-#include "Lib/PointerList.h"
-#include "Fast/FastTypes.h"
+#include "PointerList.h"
+#include "../Fast/FastTypes.h"
 
 template<typename T> class AutoAllocatePointerList {
     int                 m_addCapacity;

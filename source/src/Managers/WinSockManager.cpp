@@ -1,6 +1,6 @@
-#include "Managers/WinSockManager.h"
-#include "../Lib/PointerList.h"
-#include "Test/TestMessagesHelper.h"
+#include "../../include/Managers/WinSockManager.h"
+#include "../../include/Lib/PointerList.h"
+#include "../../include/Test/TestMessagesHelper.h"
 
 int 				WinSockManager::m_pollFdCount = 256;
 struct pollfd* 		WinSockManager::m_pollFd = new struct pollfd[256];

@@ -5,7 +5,7 @@
 #ifndef HFT_ROBOT_QUOTEINFO_H
 #define HFT_ROBOT_QUOTEINFO_H
 
-#include "Fast/FastTypes.h"
+#include "../Fast/FastTypes.h"
 
 class QuoteInfo {
     Decimal     m_price;

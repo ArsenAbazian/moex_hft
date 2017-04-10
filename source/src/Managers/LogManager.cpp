@@ -1,6 +1,6 @@
-#include <Managers/SocketBufferManager.h>
-#include "Managers/LogManager.h"
-#include "DebugInfoManager.h"
+#include "../../include/Managers/SocketBufferManager.h"
+#include "../../include/Managers/LogManager.h"
+#include "../../include/Managers/DebugInfoManager.h"
 
 BinaryLogManager::BinaryLogManager() {
     this->m_items = new BinaryLogItem[this->m_itemsCount];

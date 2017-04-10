@@ -1,7 +1,7 @@
-#include "Converters/ItoaConverter.h"
-#include "Converters/UTCTimeConverter.h"
+#include "../../include/Converters/ItoaConverter.h"
+#include "../../include/Converters/UTCTimeConverter.h"
 #include <memory>
-#include "../Managers/DebugInfoManager.h"
+#include "../../include/Managers/DebugInfoManager.h"
 
 CharVector4 *UTCTimeConverter::years = NULL;
 CharVector2 *UTCTimeConverter::hours = NULL;

@@ -1,6 +1,6 @@
 #pragma once
-#include "Settings.h"
-#include "Converters/ItoaConverter.h"
+#include "../Settings.h"
+#include "ItoaConverter.h"
 #include <sys/time.h>
 #include <time.h>
 
