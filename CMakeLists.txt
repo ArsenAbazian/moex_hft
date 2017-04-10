@@ -102,7 +102,7 @@ endforeach(inc_dir)
 add_executable(hft_robot
         source/src/Settings.cpp
         ${sources}
-)
+        )
 add_dependencies(hft_robot fast_generate)
 
 add_custom_command(TARGET fast_generate

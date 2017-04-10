@@ -211,7 +211,7 @@ public:
 	bool Run();
 
     inline void PrintSnapFeedStatistics(const char *name, FeedConnection *fc) {
-        printf("%s   bu %g  bi %g  lost = %d  msgSeqNo = %d\n",
+        printf("%-22s   bu = %4g%%  bi = %.4g%%  lost = %6d  msgSeqNo = %7d\n",
                name,
                fc->RecvBuffer()->CalcMemoryUsagePercentage(),
                fc->RecvBuffer()->CalcItemsUsagePercentage(),
@@ -222,7 +222,7 @@ public:
 
     inline void PrintIncFeedStatistics(const char *name, FeedConnection *fc, int usedItemsCount, int totalItemsCount) {
         bool inSnapshot = fc->Snapshot()->State() == FeedConnectionState::fcsListenSnapshot;
-        printf("%s   state = %s  it = %d of %d %g%%  que = %d  ss %d  bu %g  bi %g  msgSeqNo = %d\n",
+        printf("%-22s   state = %-4s  it = %7d of %7d %.4g%%  que = %3d  ss = %4d  bu = %.4g%%  bi = %.4g%%  msgSeqNo = %7d\n",
                name,
                inSnapshot? "snap" : "inc",
                usedItemsCount, totalItemsCount, 100.0 * usedItemsCount / totalItemsCount,
@@ -236,7 +236,7 @@ public:
 
     inline void PrintStatusFeedStatistics(const char *name, FeedConnection *fc, int usedItemsCount, int totalItemsCount) {
         bool inSnapshot = fc->SecurityDefinition()->State() == FeedConnectionState::fcsListenSecurityDefinition;
-        printf("%s   state = %s it = %d of %d %g%%  que = %d  ss %d  bu %g  bi %g  msgSeqNo = %d\n",
+        printf("%-22s   state = %-4s  it = %7d of %7d %.4g%%  que = %3d  ss = %4d  bu = %.4g%%  bi = %.4g%%  msgSeqNo = %7d\n",
                name,
                inSnapshot? "snap" : "inc",
                usedItemsCount, totalItemsCount, 100.0 * usedItemsCount / totalItemsCount,
@@ -378,11 +378,31 @@ public:
                                          this->m_fortsChannel->OptBook50()->Inc()->FastManager()->GetFortsDefaultSnapshotMessageMDEntriesItemInfoPool()->Count(),
                                          this->m_fortsChannel->OptBook50()->Inc()->FastManager()->GetFortsDefaultSnapshotMessageMDEntriesItemInfoPool()->Capacity());
         }
+        printf("\n");
+        if(this->m_fortsChannel->FutInfo() !=0 ) {
+            this->PrintStatusFeedStatistics("fut status", this->m_fortsChannel->FutInfo()->InstrInc(),
+                                            this->m_fortsChannel->FutInfo()->InstrInc()->FastManager()->GetFortsTradingSessionStatusInfoPool()->Count(),
+                                            this->m_fortsChannel->FutInfo()->InstrInc()->FastManager()->GetFortsTradingSessionStatusInfoPool()->Capacity());
+        }
+        if(this->m_fortsChannel->FutInfo() !=0 ) {
+            this->PrintStatusFeedStatistics("opt status", this->m_fortsChannel->FutInfo()->InstrInc(),
+                                            this->m_fortsChannel->OptInfo()->InstrInc()->FastManager()->GetFortsTradingSessionStatusInfoPool()->Count(),
+                                            this->m_fortsChannel->OptInfo()->InstrInc()->FastManager()->GetFortsTradingSessionStatusInfoPool()->Capacity());
+        }
+
+        printf("\n");
+        if(this->m_fortsChannel->FutInfo() !=0 ) {
+            this->PrintSnapFeedStatistics("fut info", this->m_fortsChannel->FutInfo()->InstrReplay());
+        }
+        if(this->m_fortsChannel->FutInfo() !=0 ) {
+            this->PrintSnapFeedStatistics("opt info", this->m_fortsChannel->FutInfo()->InstrReplay());
+        }
+
+        printf("\n");
+
         if(this->m_fortsChannel->OptTrades() != 0) {
             this->PrintSnapFeedStatistics("opt book trades snap", this->m_fortsChannel->OptTrades()->Snap());
         }
-        printf("\n");
-
         if(this->m_fortsChannel->FutBook1() != 0) {
             this->PrintSnapFeedStatistics("fut book 1 snap", this->m_fortsChannel->FutBook1()->Snap());
         }

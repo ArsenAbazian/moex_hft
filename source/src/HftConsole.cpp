@@ -89,10 +89,9 @@ int main(int argc, char** argv) {
 
     DebugInfoManager::Default->PrintMemoryInfo("Before Robot::Robot");
 	Robot *robot = new Robot();
-//	robot->AllowFortsMarket(false);
+	robot->AllowFortsMarket(true);
 	robot->AllowFondMarket(false);
 	robot->AllowCurrMarket(false);
-	robot->AllowFortsMarket(true);
 	robot->AllowFutures(true);
 	robot->AllowOptions(true);
 	robot->AllowMarketDataGroup(MarketDataGroupId::mdgidFutBook1, true);

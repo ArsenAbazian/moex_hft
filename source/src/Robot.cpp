@@ -273,12 +273,18 @@ bool Robot::Run() {
         return false;
     }
 
+    Stopwatch *globalWatch = new Stopwatch();
+    globalWatch->Start();
     if(!this->DoWork()) {
+        globalWatch->Stop();
         DefaultLogManager::Default->EndLog(false);
+        printf("Total work time = %" PRIu64 " seconds\n", globalWatch->ElapsedSeconds());
         return false;
     }
 
+    globalWatch->Stop();
 	DefaultLogManager::Default->EndLog(true);
+    printf("Total work time = %" PRIu64 " seconds\n", globalWatch->ElapsedSeconds());
 	return true;
 }
 
@@ -673,7 +679,8 @@ bool Robot::MainLoopForts() {
 
         if(w->ElapsedMilliseconds() > 2000) {
             double nanosecPerCycle = w->ElapsedMilliseconds() * 1000.0 * 1000.0 / cycleCount;
-            printf("--------\n");
+            //printf("--------\n");
+            printf("\033[2J\033[1;1H");
             printf("FORTS cycle count for 2 sec = %d. %g nanosec per cycle\n", cycleCount, nanosecPerCycle);
             this->PrintStatistics();
 
