@@ -3599,7 +3599,7 @@ public:
             throw;
     }
 
-    HrPointerListLite<FortsDefaultSnapshotMessageMDEntriesItemInfo>* BuyQuotes(int symbolIndex) {
+    PointerListLite<FortsDefaultSnapshotMessageMDEntriesItemInfo>* BuyQuotes(int symbolIndex) {
         return incForts->OrderBookForts()->Symbol(symbolIndex)->Session(0)->BuyQuotes();
     }
 
@@ -4463,9 +4463,9 @@ public:
     }
 
     template <typename T>
-    void TestLevelsDescending(HrPointerListLite<T> *list) {
+    void TestLevelsDescending(PointerListLite<T> *list) {
 
-        HrLinkedPointer<T> *node = list->Start();
+        LinkedPointer<T> *node = list->Start();
         while(true) {
             if(node == list->End())
                 break;
@@ -4529,7 +4529,7 @@ public:
             node = node->Next2();
         }
     }
-
+    /*
     void TestPerformance(int itemsCount) {
         OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *obi = new OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo>();
         obi->SetDebugFastRandSeed(2006221698);
@@ -4566,7 +4566,7 @@ public:
             FortsDefaultSnapshotMessageMDEntriesItemInfo *item50 = CreatePerformanceItem(price);
             w->Start();
             for (int i = 0; i < count; i++) {
-                HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *ptr = obi->AddBuyQuoteEx(item50);
+                LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *ptr = obi->AddBuyQuoteEx(item50);
                 obi->RemoveBuyQuote(ptr->Data());
 
                 if(obi->BuyQuotes()->Count() != itemsCount)
@@ -4580,7 +4580,7 @@ public:
 
             w->Start();
             for (int i = 0; i < count; i++) {
-                HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *ptr = obi->AddBuyQuote(item50);
+                LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *ptr = obi->AddBuyQuote(item50);
                 obi->RemoveBuyQuote(ptr->Data());
             }
             UINT64 en2 = w->ElapsedNanoseconds();
@@ -4599,7 +4599,8 @@ public:
         TestPerformance(100);
         TestPerformance(50);
     }
-
+     */
+    /*
     FortsDefaultSnapshotMessageMDEntriesItemInfo* CreateHrItem(int price) {
         AutoAllocatePointerList<FortsDefaultSnapshotMessageMDEntriesItemInfo> *list = new AutoAllocatePointerList<FortsDefaultSnapshotMessageMDEntriesItemInfo>(2, 1);
         FortsDefaultSnapshotMessageMDEntriesItemInfo* item = list->NewItem();
@@ -4794,9 +4795,9 @@ public:
 
     void TestHrInsertByLevel0() {
         OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
-        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *start = item->BuyQuotes()->Add();
-        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *node = item->BuyQuotes()->Add();
-        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *end = item->BuyQuotes()->Add();
+        LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *start = item->BuyQuotes()->Add();
+        LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *node = item->BuyQuotes()->Add();
+        LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *end = item->BuyQuotes()->Add();
 
         start->AllConnect(end);
         item->BuyQuotes()->InsertByLevel(0, start, node, end);
@@ -4848,9 +4849,9 @@ public:
 
     void TestHrInsertByLevel1() {
         OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
-        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *start = item->BuyQuotes()->Add();
-        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *node = item->BuyQuotes()->Add();
-        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *end = item->BuyQuotes()->Add();
+        LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *start = item->BuyQuotes()->Add();
+        LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *node = item->BuyQuotes()->Add();
+        LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *end = item->BuyQuotes()->Add();
 
         start->AllConnect(end);
         item->BuyQuotes()->InsertByLevel(1, start, node, end);
@@ -4902,9 +4903,9 @@ public:
 
     void TestHrInsertByLevel2() {
         OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
-        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *start = item->BuyQuotes()->Add();
-        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *node = item->BuyQuotes()->Add();
-        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *end = item->BuyQuotes()->Add();
+        LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *start = item->BuyQuotes()->Add();
+        LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *node = item->BuyQuotes()->Add();
+        LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *end = item->BuyQuotes()->Add();
 
         start->AllConnect(end);
         item->BuyQuotes()->InsertByLevel(2, start, node, end);
@@ -4956,9 +4957,9 @@ public:
 
     void TestHrInsertByLevel3() {
         OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
-        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *start = item->BuyQuotes()->Add();
-        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *node = item->BuyQuotes()->Add();
-        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *end = item->BuyQuotes()->Add();
+        LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *start = item->BuyQuotes()->Add();
+        LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *node = item->BuyQuotes()->Add();
+        LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *end = item->BuyQuotes()->Add();
 
         start->AllConnect(end);
         item->BuyQuotes()->InsertByLevel(3, start, node, end);
@@ -5010,9 +5011,9 @@ public:
 
     void TestHrInsertByLevel4() {
         OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
-        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *start = item->BuyQuotes()->Add();
-        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *node = item->BuyQuotes()->Add();
-        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *end = item->BuyQuotes()->Add();
+        LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *start = item->BuyQuotes()->Add();
+        LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *node = item->BuyQuotes()->Add();
+        LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *end = item->BuyQuotes()->Add();
 
         start->AllConnect(end);
         item->BuyQuotes()->InsertByLevel(4, start, node, end);
@@ -5064,9 +5065,9 @@ public:
 
     void TestHrInsertByLevel5() {
         OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
-        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *start = item->BuyQuotes()->Add();
-        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *node = item->BuyQuotes()->Add();
-        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *end = item->BuyQuotes()->Add();
+        LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *start = item->BuyQuotes()->Add();
+        LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *node = item->BuyQuotes()->Add();
+        LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *end = item->BuyQuotes()->Add();
 
         start->AllConnect(end);
         item->BuyQuotes()->InsertByLevel(5, start, node, end);
@@ -5436,11 +5437,11 @@ public:
             throw;
     }
 
-    void AssertNextEqual(HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *node,
-                   HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *next2,
-                   HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *next3,
-                   HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *next4,
-                   HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *next5) {
+    void AssertNextEqual(LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *node,
+                   LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *next2,
+                   LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *next3,
+                   LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *next4,
+                   LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *next5) {
 
         if(node->Next2() != next2)
             throw;
@@ -5452,11 +5453,11 @@ public:
             throw;
     }
 
-    void AssertPrevEqual(HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *node,
-                   HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *prev2,
-                   HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *prev3,
-                   HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *prev4,
-                   HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *prev5) {
+    void AssertPrevEqual(LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *node,
+                   LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *prev2,
+                   LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *prev3,
+                   LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *prev4,
+                   LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *prev5) {
 
         if(node->Prev2() != prev2)
             throw;
@@ -5479,7 +5480,7 @@ public:
         if(item->BuyQuotes()->Count() != 1)
             throw;
 
-        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *node = item->BuyQuotes()->Node(0);
+        LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *node = item->BuyQuotes()->Node(0);
         if(node->Next() != 0)
             throw;
         this->AssertNextEqual(node, 0, 0, 0, 0);
@@ -5497,7 +5498,7 @@ public:
         if(item->BuyQuotes()->Count() != 1)
             throw;
 
-        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *node = item->BuyQuotes()->Node(0);
+        LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *node = item->BuyQuotes()->Node(0);
         if(node->Next() != 0)
             throw;
         this->AssertNextEqual(node, 0, 0, 0, 0);
@@ -5510,12 +5511,12 @@ public:
         item->AddBuyQuoteEx(CreateHrItem(100));
         item->AddBuyQuoteEx(CreateHrItem(120));
         item->SetDebugLevel(1);
-        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *node =  item->AddBuyQuoteEx(CreateHrItem(110));
+        LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *node =  item->AddBuyQuoteEx(CreateHrItem(110));
 
         item->RemoveBuyQuote(CreateHrItem(110));
 
-        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *start =  item->BuyQuotes()->Node(0);
-        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *end =  item->BuyQuotes()->Node(1);
+        LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *start =  item->BuyQuotes()->Node(0);
+        LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *end =  item->BuyQuotes()->Node(1);
 
         this->AssertNextEqual(start, end, end, end, end);
         this->AssertPrevEqual(end, start, start, start, start);
@@ -5527,12 +5528,12 @@ public:
         item->AddBuyQuoteEx(CreateHrItem(100));
         item->AddBuyQuoteEx(CreateHrItem(120));
         item->SetDebugLevel(2);
-        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *node =  item->AddBuyQuoteEx(CreateHrItem(110));
+        LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *node =  item->AddBuyQuoteEx(CreateHrItem(110));
 
         item->RemoveBuyQuote(CreateHrItem(110));
 
-        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *start =  item->BuyQuotes()->Node(0);
-        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *end =  item->BuyQuotes()->Node(1);
+        LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *start =  item->BuyQuotes()->Node(0);
+        LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *end =  item->BuyQuotes()->Node(1);
 
         this->AssertNextEqual(start, end, end, end, end);
         this->AssertPrevEqual(end, start, start, start, start);
@@ -5544,12 +5545,12 @@ public:
         item->AddBuyQuoteEx(CreateHrItem(100));
         item->AddBuyQuoteEx(CreateHrItem(120));
         item->SetDebugLevel(3);
-        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *node =  item->AddBuyQuoteEx(CreateHrItem(110));
+        LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *node =  item->AddBuyQuoteEx(CreateHrItem(110));
 
         item->RemoveBuyQuote(CreateHrItem(110));
 
-        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *start =  item->BuyQuotes()->Node(0);
-        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *end =  item->BuyQuotes()->Node(1);
+        LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *start =  item->BuyQuotes()->Node(0);
+        LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *end =  item->BuyQuotes()->Node(1);
 
         this->AssertNextEqual(start, end, end, end, end);
         this->AssertPrevEqual(end, start, start, start, start);
@@ -5561,12 +5562,12 @@ public:
         item->AddBuyQuoteEx(CreateHrItem(100));
         item->AddBuyQuoteEx(CreateHrItem(120));
         item->SetDebugLevel(4);
-        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *node =  item->AddBuyQuoteEx(CreateHrItem(110));
+        LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *node =  item->AddBuyQuoteEx(CreateHrItem(110));
 
         item->RemoveBuyQuote(CreateHrItem(110));
 
-        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *start =  item->BuyQuotes()->Node(0);
-        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *end =  item->BuyQuotes()->Node(1);
+        LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *start =  item->BuyQuotes()->Node(0);
+        LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *end =  item->BuyQuotes()->Node(1);
 
         this->AssertNextEqual(start, end, end, end, end);
         this->AssertPrevEqual(end, start, start, start, start);
@@ -5578,12 +5579,12 @@ public:
         item->AddBuyQuoteEx(CreateHrItem(100));
         item->AddBuyQuoteEx(CreateHrItem(120));
         item->SetDebugLevel(5);
-        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *node =  item->AddBuyQuoteEx(CreateHrItem(110));
+        LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *node =  item->AddBuyQuoteEx(CreateHrItem(110));
 
         item->RemoveBuyQuote(CreateHrItem(110));
 
-        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *start =  item->BuyQuotes()->Node(0);
-        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *end =  item->BuyQuotes()->Node(1);
+        LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *start =  item->BuyQuotes()->Node(0);
+        LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *end =  item->BuyQuotes()->Node(1);
 
         this->AssertNextEqual(start, end, end, end, end);
         this->AssertPrevEqual(end, start, start, start, start);
@@ -5601,9 +5602,9 @@ public:
 
         item->RemoveBuyQuote(CreateHrItem(110));
 
-        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *i0 =  item->BuyQuotes()->Node(0);
-        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *i1 =  item->BuyQuotes()->Node(1);
-        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *i2 =  item->BuyQuotes()->Node(2);
+        LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *i0 =  item->BuyQuotes()->Node(0);
+        LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *i1 =  item->BuyQuotes()->Node(1);
+        LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *i2 =  item->BuyQuotes()->Node(2);
 
         this->AssertNextEqual(i0, i2, i2, i2, i2);
         this->AssertPrevEqual(i2, i0, i0, i0, i0);
@@ -5621,27 +5622,27 @@ public:
 
         item->RemoveBuyQuote(CreateHrItem(120));
 
-        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *i0 =  item->BuyQuotes()->Node(0);
-        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *i1 =  item->BuyQuotes()->Node(1);
-        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *i2 =  item->BuyQuotes()->Node(2);
+        LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *i0 =  item->BuyQuotes()->Node(0);
+        LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *i1 =  item->BuyQuotes()->Node(1);
+        LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *i2 =  item->BuyQuotes()->Node(2);
 
         this->AssertNextEqual(i0, i2, i2, i2, i2);
         this->AssertPrevEqual(i2, i0, i0, i0, i0);
     }
 
     template <typename T>
-    const char* GetLevelMap(HrPointerListLite<T> *list, int level) {
+    const char* GetLevelMap(PointerListLite<T> *list, int level) {
         char *buf = new char[list->Count() + 1];
         memset(buf, ' ', list->Count());
         buf[list->Count()] = '\0';
 
-        HrLinkedPointer<T> *node = list->Start();
+        LinkedPointer<T> *node = list->Start();
         while(true) {
             int index = list->IndexOf(node);
             buf[index] = '*';
             if(node == list->End())
                 break;
-            HrLinkedPointer<T> *next = node->NextByLevel(level);
+            LinkedPointer<T> *next = node->NextByLevel(level);
             if(next == 0)
                 throw;
             node = next;
@@ -5650,8 +5651,8 @@ public:
     }
 
     template <typename T>
-    void PrintLevelItems(HrPointerListLite<T> *list, int level) {
-        HrLinkedPointer<T> *node = list->Start();
+    void PrintLevelItems(PointerListLite<T> *list, int level) {
+        LinkedPointer<T> *node = list->Start();
         while(true) {
             printf("%" PRIi64 " ", node->Data()->MDEntryPx.Mantissa);
             if(node == list->End())
@@ -5662,13 +5663,13 @@ public:
     }
 
     template <typename T>
-    void AssertSequence(HrPointerListLite<T> *list, int level, const char *itemsPresenceMap) {
+    void AssertSequence(PointerListLite<T> *list, int level, const char *itemsPresenceMap) {
 
         int length = strlen(itemsPresenceMap);
         if(length != list->Count())
             throw;
-        HrLinkedPointer<T> **items = new HrLinkedPointer<T>*[length];
-        HrLinkedPointer<T> *node = list->Start();
+        LinkedPointer<T> **items = new LinkedPointer<T>*[length];
+        LinkedPointer<T> *node = list->Start();
         int count = 0;
         for(int i = 0; i < length; i++) {
             if(itemsPresenceMap[i] != ' ') {
@@ -5686,8 +5687,8 @@ public:
                 throw;
             return;
         }
-        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *start = items[0];
-        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *end = items[count - 1];
+        LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *start = items[0];
+        LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *end = items[count - 1];
 
         node = start;
         for(int i = 0; i < count; i++) {
@@ -5722,9 +5723,9 @@ public:
         }
     }
 
-    void AssertPrices(HrPointerListLite<FortsDefaultSnapshotMessageMDEntriesItemInfo> *list, int prices, ...) {
-        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> **items = new HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *[list->Count()];
-        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *node = list->Start();
+    void AssertPrices(PointerListLite<FortsDefaultSnapshotMessageMDEntriesItemInfo> *list, int prices, ...) {
+        LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> **items = new LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *[list->Count()];
+        LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *node = list->Start();
 
         if(node->Data()->MDEntryPx.Mantissa != prices)
             throw;
@@ -6856,12 +6857,12 @@ public:
         TestRandomGenerator();
         TestHrBuyQuotes();
     }
-
+    */
     void Test() {
         TestDefaults();
         TestStringIdComparer();
-        TestHr();
-        TestPerformance();
+        //TestHr();
+        //TestPerformance();
         TestOrderTableItem();
         TestConnection();
         TestInfoAndItemInfoUsageAndAllocationCurr();

@@ -28,7 +28,7 @@ class FeedConnection_CURR_MSR : public FeedConnection {
 public:
     FeedConnection_CURR_MSR(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
             FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
-        this->SetType(FeedConnectionType::Incremental);
+        this->SetType(FeedConnectionType::fctIncremental);
         this->m_statTableCurr = new MarketDataTable<StatisticsInfo, AstsGenericInfo, AstsGenericItemInfo>();
         this->SetId(FeedConnectionId::fcidMsrCurr);
         this->m_fastProtocolManager = new FastProtocolManager();

@@ -11,7 +11,7 @@ class FeedConnection_CURR_TLS : public FeedConnection {
 public:
     FeedConnection_CURR_TLS(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
             FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
-        this->SetType(FeedConnectionType::Snapshot);
+        this->SetType(FeedConnectionType::fctSnapshot);
         this->SetId(FeedConnectionId::fcidTlsCurr);
         this->m_fastProtocolManager = new FastProtocolManager();
         this->AllocateFastObjects();

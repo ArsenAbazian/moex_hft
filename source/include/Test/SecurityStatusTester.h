@@ -54,7 +54,7 @@ public:
     }
 
     void TestDefaults() {
-        if(this->isf->Type() != FeedConnectionType::InstrumentStatus)
+        if(this->isf->Type() != FeedConnectionType::fctInstrumentStatus)
             throw;
         if(this->isf->SecurityDefinition() != this->idf)
             throw;

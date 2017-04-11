@@ -200,7 +200,7 @@ public:
 
         clock_gettime(CLOCK_PROCESS_CPUTIME_ID, (struct timespec*)item);
         item->m_message = messageCode;
-        item->m_message = messageCode2;
+        item->m_message2 = messageCode2;
         item->m_result = (NullableBoolean)condition;
 #ifdef BINARY_LOG_MANAGER_ALLOW_PRINT
         Print(item);

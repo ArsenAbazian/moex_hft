@@ -230,17 +230,23 @@ public:
 
 template <typename T> PointerList<T>* TradeInfo<T>::m_itemsPool = 0;
 
-template <typename T> TradeInfo<T>::TradeInfo(){
+template <typename T> TradeInfo<T>::TradeInfo() :
+        m_entryInfo(0),
+        m_shouldProcessSnapshot(false),
+        m_rptSeq(0),
+        m_savedRptSeq(0),
+        m_snapshotProcessedCount(0),
+        m_trades(0),
+        m_used(false),
+        m_symbolInfo(0),
+        m_tradingSession(0),
+        m_sessionInt(0) {
+
     if(TradeInfo::m_itemsPool == 0)
         TradeInfo::m_itemsPool = new PointerList<T>(RobotSettings::Default->MarketDataMaxEntriesCount, false);
 
-    this->m_entryInfo = 0;
     this->m_trades = new PointerListLite<T>(TradeInfo::m_itemsPool);
     this->m_tradingSession = new SizedArray();
-    this->m_shouldProcessSnapshot = false;
-    this->m_rptSeq = 0;
-    this->m_savedRptSeq = 0;
-    this->m_snapshotProcessedCount = 0;
 }
 
 #endif //HFT_ROBOT_TRADEINFO_H

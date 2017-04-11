@@ -13,7 +13,9 @@ class QuoteInfo {
 
     Decimal     *m_pricePtr;
 public:
-    QuoteInfo() {
+    QuoteInfo() :
+            m_price(0, 0),
+            m_size(0) {
         this->m_pricePtr = &(this->m_price);
     }
     QuoteInfo(Decimal *price, int size) :
@@ -45,8 +47,7 @@ public:
     }
     inline int Size() { return this->m_size; }
     inline void Size(Decimal *size) {
-        int count = size->CalcMantissaDigitCount();
-
+        this->m_size = size->CalcMantissaDigitCount();
     }
 };
 

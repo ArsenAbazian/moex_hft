@@ -293,11 +293,10 @@ public:
     inline LinkedPointer<T>* GetBuyQuote(Decimal *price) {
         LinkedPointer<T> *node = this->m_buyQuoteList->Start();
         double value = price->Calculate();
-        T *quote = 0;
 
         if(node != 0) {
             while (true) {
-                quote = node->Data();
+                T *quote = node->Data();
                 Decimal *val = &(quote->MDEntryPx);
                 if (val->Value < value)
                     return this->m_buyQuoteList->Insert(node);
@@ -314,11 +313,10 @@ public:
     inline LinkedPointer<T>* GetSellQuote(Decimal *price) {
         LinkedPointer<T> *node = this->m_sellQuoteList->Start();
         double value = price->Calculate();
-        T *quote = 0;
 
         if(node != 0) {
             while (true) {
-                quote = node->Data();
+                T *quote = node->Data();
                 Decimal *val = &(quote->MDEntryPx);
                 if (val->Value > value)
                     return this->m_sellQuoteList->Insert(node);
@@ -593,24 +591,28 @@ public:
 
 template <typename T> PointerList<T>* OrderBookInfo<T>::m_itemsPool = 0;
 
-template <typename T> OrderBookInfo<T>::OrderBookInfo() {
+template <typename T> OrderBookInfo<T>::OrderBookInfo() :
+        m_sellQuoteList(0),
+        m_buyQuoteList(0),
+        m_tradingSession(0),
+        m_shouldProcessSnapshot(false),
+        m_rptSeq(0),
+        m_savedRptSeq(0),
+        m_snapshotProcessedCount(0),
+        m_used(0),
+        m_buyQuoteListLevel(0),
+        m_symbolInfo(0),
+        m_entryInfo(0),
+#ifdef TEST
+        m_debugLevel(0),
+#endif
+        g_seed(0) {
     if(OrderBookInfo::m_itemsPool == 0)
         OrderBookInfo::m_itemsPool = new PointerList<T>(RobotSettings::Default->MarketDataMaxEntriesCount, false);
 
     this->init_fast_srand();
-    this->m_entryInfo = 0;
-#ifdef TEST
-    this->m_debugLevel = 0;
-#endif
-
     this->m_sellQuoteList = new PointerListLite<T>(OrderBookInfo<T>::m_itemsPool);
     this->m_buyQuoteList = new PointerListLite<T>(OrderBookInfo<T>::m_itemsPool);
-
-    this->m_tradingSession = new SizedArray();
-    this->m_shouldProcessSnapshot = false;
-    this->m_rptSeq = 0;
-    this->m_savedRptSeq = 0;
-    this->m_snapshotProcessedCount = 0;
 }
 
 #endif //HFT_ROBOT_ORDERINFO_H

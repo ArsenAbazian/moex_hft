@@ -584,6 +584,7 @@ public:
     
     
 #pragma region Hr
+/*
     void TestHrAdditionalAllocate() {
         HrPointerList<SimpleData> *list = new HrPointerList<SimpleData>(10);
         for(int i = 0; i < 10; i++)
@@ -1143,6 +1144,7 @@ public:
         TestHrAutoAllocate();
         TestHrClearAutoAllocate();
     }
+    */
 #pragma endregion
 
     void TestCore() {
@@ -1151,14 +1153,14 @@ public:
         TestAutoAllocatePointerList();
     }
 
-    void TestCoreHr() {
-        TestHrPointerList();
-        TestHrPointerListLite();
-    }
+    //void TestCoreHr() {
+    //    TestHrPointerList();
+    //    TestHrPointerListLite();
+    //}
 
     void Test() {
         TestCore();
-        TestCoreHr();
+        //TestCoreHr();
     }
 };
 

@@ -35,7 +35,7 @@ class ItoaConverter
 		s[4] = d4;
 		s[5] = d5;
 	}
-	inline void Copy(DigitString dst, DigitString src) {  memcpy(dst, src, 10);	}
+	inline void Copy(DigitString dst, DigitString src) {  memcpy(dst, src, sizeof(DigitString));	}
 	void Initialize();
 	void InitializePositive4DigitMinCount1();
 	void InitializePositive4DigitMinCount2();

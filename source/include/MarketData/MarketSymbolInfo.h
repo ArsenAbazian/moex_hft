@@ -18,14 +18,16 @@ template <typename T> class MarketSymbolInfo {
     LinkedPointer<FortsSecurityDefinitionInfo> *m_securityDefinitionFortsPtr;
     UINT64                              m_securityId;
 public:
-    MarketSymbolInfo() {
-        this->m_count = 0;
-        this->m_maxCount = 0;
-        this->m_items = 0;
+    MarketSymbolInfo() :
+            m_count(0),
+            m_maxCount(0),
+            m_items(0),
+            m_symbol(0),
+            m_securityDefinitionPtr(0),
+            m_securityDefinitionFortsPtr(0),
+            m_securityId(0),
+            m_sessionsToRecvSnapshot(0) {
         this->m_symbol = new SizedArray();
-        this->m_securityDefinitionPtr = 0;
-        this->m_securityDefinitionFortsPtr = 0;
-        this->m_securityId = 0;
     }
     inline void InitSessions(int count) {
         Release();

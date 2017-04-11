@@ -11,7 +11,7 @@ class FeedConnection_CURR_IDF : public FeedConnection{
 public:
     FeedConnection_CURR_IDF(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
             FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
-        this->SetType(FeedConnectionType::InstrumentDefinition);
+        this->SetType(FeedConnectionType::fctInstrumentDefinition);
         this->SetId(FeedConnectionId::fcidIdfCurr);
         this->m_fastProtocolManager = new FastProtocolManager();
         this->AllocateFastObjects();

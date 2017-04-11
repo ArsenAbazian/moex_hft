@@ -73,7 +73,7 @@ public:
     inline void Buffer(char *buffer) { this->m_buffer = buffer; }
     inline char* Buffer() { return this->m_buffer; }
     inline void Size(int size) { this->m_size = size; }
-    inline int Size() { return this->m_size; }
+    inline int Size() const { return this->m_size; }
     inline void AddTag(char *tagPtr, int size) {
         this->m_tags[this->m_tagsCount]->buffer = tagPtr;
         this->m_tags[this->m_tagsCount]->size = size;
@@ -84,7 +84,7 @@ public:
     inline FixMarketDataRequestInfo *MarketDataRequestInfo() { return this->m_marketDataRequestInfo; }
     inline FixTag* Tag(int index) { return this->m_tags[index]; }
     inline FixTag* CurrentTag() { return this->Tag(this->m_currentTag); }
-    inline int TagsCount() { return this->m_tagsCount; }
+    inline int TagsCount() const { return this->m_tagsCount; }
     inline void MoveNext() { this->m_currentTag++; }
 
     inline void Error(int errorTagId, FixSessionRejectReason rejectReason) {
@@ -148,11 +148,11 @@ public:
             *outValue = this->m_intConv->From3SymbolUnsigned(buffer);
             return 4;
         }
-        else if ((tagVal & 0xff000000) == FIX_EQUAL_THIRD_BYTE) {
+        else if ((tagVal & 0x00ff0000) == FIX_EQUAL_THIRD_BYTE) {
             *outValue = this->m_intConv->From2SymbolUnsigned(buffer);
             return 3;
         }
-        else if ((tagVal & 0xff000000) == FIX_EQUAL_SECOND_BYTE) {
+        else if ((tagVal & 0x0000ff00) == FIX_EQUAL_SECOND_BYTE) {
             *outValue = *buffer - 0x30;
             return 2;
         }

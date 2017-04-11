@@ -11,16 +11,18 @@
 #include <memory.h>
 
 class SymbolInfo {
+    static const int m_textSize = 17;
 public:
     LinkedPointer<SymbolInfo>   *m_pointer;
     int                         m_index;
     int                         m_length;
-    char                        m_text[17];
+    char                        m_text[SymbolInfo::m_textSize];
 
-    SymbolInfo() {
-        this->m_length = 0;
-        this->m_index = -1;
-        this->m_pointer = 0;
+    SymbolInfo() :
+            m_length(0),
+            m_index(-1),
+            m_pointer(0) {
+        memset(this->m_text, SymbolInfo::m_textSize, 0);
     }
     void Set(const char *symbol, int length, int index) {
         memcpy(this->m_text, symbol, length);
@@ -63,11 +65,10 @@ class SymbolManager {
         if(this->m_bucketList != 0) {
             for (int i = 0; i < StringHash::HashArrayItemsCount; i++) {
                 LinkedPointer<SymbolInfo> *ptr = this->m_bucketList[i];
-                LinkedPointer<SymbolInfo> *prevPtr = 0;
-                if (ptr == 0)
+                if(ptr == 0)
                     continue;
                 while (ptr != 0) {
-                    prevPtr = ptr;
+                    LinkedPointer<SymbolInfo> *prevPtr = ptr;
                     if(ptr == ptr->Next())
                         throw;
                     ptr = ptr->Next();
@@ -81,7 +82,7 @@ class SymbolManager {
                 if(this->m_bucketList2[i] != 0)
                     this->m_pool->Push(this->m_bucketList2[i]->m_pointer);
             }
-            bzero(this->m_bucketList2, sizeof(SymbolInfo *) * BucketList2Count);
+            memset(this->m_bucketList2, sizeof(SymbolInfo *) * BucketList2Count, 0);
         }
         this->m_pool->Clear();
     }
@@ -145,7 +146,7 @@ public:
         this->AssignPointersToSymbols();
         this->m_bucketList = 0;
         this->m_bucketList2 = new SymbolInfo*[BucketList2Count];
-        bzero(this->m_bucketList2, sizeof(SymbolInfo*) * BucketList2Count);
+        memset(this->m_bucketList2, sizeof(SymbolInfo*) * BucketList2Count, 0);
     }
     ~SymbolManager() {
         delete this->m_pool;

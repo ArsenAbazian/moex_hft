@@ -18,18 +18,6 @@ template<typename T> class AutoAllocatePointerList {
     LinkedPointer<T>    *m_usedTail;
     const char          *m_name;
 
-    inline void Allocate(LinkedPointer<T> *start, LinkedPointer<T> *end) {
-        while(true) {
-            T *t = new T;
-            t->Pointer = start;
-            t->Allocator = this;
-            start->Data(t);
-            if(start == end)
-                break;
-            start = start->Next();
-        }
-    }
-
     inline LinkedPointer<T>* CreatePointer() {
         LinkedPointer<T> *node = new LinkedPointer<T>();
         T *t = new T();

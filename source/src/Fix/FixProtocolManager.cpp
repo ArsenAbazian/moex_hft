@@ -16,7 +16,7 @@ FixProtocolManager::FixProtocolManager(ISocketBufferProvider *provider, const ch
     this->m_recvBuffer = this->m_bufferProvider->RecvBuffer();
     this->m_sendBuffer = this->m_bufferProvider->SendBuffer();
     this->m_rejectInfo = new FixRejectInfo();
-    bzero(this->m_rejectInfo, sizeof(FixRejectInfo));
+    memset(this->m_rejectInfo, sizeof(FixRejectInfo), 0);
 
     for(int i = 0; i < this->m_maxRecvMessageCount; i++) {
         this->m_recvMessage[i] = new FixProtocolMessage(this->intConverter,

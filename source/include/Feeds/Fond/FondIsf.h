@@ -11,7 +11,7 @@ class FeedConnection_FOND_ISF : public FeedConnection{
 public:
     FeedConnection_FOND_ISF(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
             FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
-        this->SetType(FeedConnectionType::InstrumentStatus);
+        this->SetType(FeedConnectionType::fctInstrumentStatus);
         this->SetId(FeedConnectionId::fcidIsfFond);
         this->m_fastProtocolManager = new FastProtocolManager();
         this->AllocateFastObjects();

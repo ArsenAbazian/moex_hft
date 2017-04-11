@@ -129,8 +129,8 @@ private:
 	}
 
 	inline void InitializePollInfo() {
-		bzero(WinSockManager::m_pollFd, sizeof(struct pollfd) * 256);
-		bzero(WinSockManager::m_registeredManagers, sizeof(WinSockManager*) * 256);
+		memset(WinSockManager::m_pollFd, sizeof(struct pollfd) * 256, 0);
+		memset(WinSockManager::m_registeredManagers, sizeof(WinSockManager*) * 256, 0);
 	}
 	inline void PrintSocketInfo() {
 		struct sockaddr_in sin;
@@ -268,7 +268,7 @@ public:
 
 	inline static bool HasRecvEvents() { return WinSockManager::m_pollRes > 0; }
 
-	inline int Socket() { return this->m_socket; }
+	inline int Socket() const { return this->m_socket; }
 
 	inline bool Connect(char *server_address, unsigned short server_port) {
 		this->m_connectionType = WinSockConnectionType::wsTCP;
@@ -290,7 +290,7 @@ public:
 		this->UpdatePoll();
 
 		this->m_addressSize = sizeof(sockaddr_in);
-		bzero(&this->m_adress, sizeof(sockaddr_in));
+		memset(&this->m_adress, sizeof(sockaddr_in), 0);
 		inet_pton(AF_INET, server_address, &(this->m_adress.sin_addr));
 		this->m_adress.sin_family = AF_INET;
 		this->m_adress.sin_port = htons(server_port);
@@ -333,7 +333,7 @@ public:
 		}
 
 		this->m_addressSize = sizeof(sockaddr_in);
-		bzero(&this->m_adress, sizeof(sockaddr_in));
+		memset(&this->m_adress, sizeof(sockaddr_in), 0);
 		this->m_adress.sin_addr.s_addr = htonl(INADDR_ANY);
 		this->m_adress.sin_family = AF_INET;
 		this->m_adress.sin_port = htons(groupPort);
@@ -471,11 +471,11 @@ public:
 		}
 		return false;
 	}
-	inline bool IsConnected() { return this->m_connected; }
-	inline int RecvSize() { return this->m_recvSize; }
+	inline bool IsConnected() const { return this->m_connected; }
+	inline int RecvSize() const { return this->m_recvSize; }
 	inline unsigned char* RecvBytes() { return this->m_recvBytes; }
-    inline int SendSize() { return this->m_sendSize; }
-    inline int ActualSendSize() { return this->m_sendSizeActual; }
+    inline int SendSize() const { return this->m_sendSize; }
+    inline int ActualSendSize() const { return this->m_sendSizeActual; }
     inline unsigned char* SendBytes() { return this->m_sendBytes; }
 };
 

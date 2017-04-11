@@ -689,13 +689,13 @@ void FastProtocolTester::TestStringCopy() {
     }
 
     for (int i = 1; i < 60; i++) {
-        bzero(buffer2, 60);
+        memset(buffer2, 60, 0);
         manager->CopyString(buffer2, buffer, i);
         for(int j = 0; j < i; j++) {
             if(buffer[j] != buffer2[j])
                 throw;
         }
-        bzero(buffer2, 60);
+        memset(buffer2, 60, 0);
 
         StringIdComparer::CopyString(buffer2, buffer, i);
         for(int j = 0; j < i; j++) {

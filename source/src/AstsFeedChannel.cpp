@@ -61,23 +61,23 @@ bool AstsFeedChannel::Disconnect(FeedConnection *conn) {
 }
 
 bool AstsFeedChannel::CheckConnections() {
-//	if(this->olr->Type() != FeedConnectionType::Incremental)
+//	if(this->olr->Type() != FeedConnectionType::fctIncremental)
 //		return false;
-//	if(this->msr->Type() != FeedConnectionType::Incremental)
+//	if(this->msr->Type() != FeedConnectionType::fctIncremental)
 //		return false;
-//	if(this->tlr->Type() != FeedConnectionType::Incremental)
-//		return false;
-//
-//	if(this->ols->Type() != FeedConnectionType::Snapshot)
-//		return false;
-//	if(this->mss->Type() != FeedConnectionType::Snapshot)
-//		return false;
-//	if(this->tls->Type() != FeedConnectionType::Snapshot)
+//	if(this->tlr->Type() != FeedConnectionType::fctIncremental)
 //		return false;
 //
-//    if(this->idf->Type() != FeedConnectionType::InstrumentDefinition)
+//	if(this->ols->Type() != FeedConnectionType::fctSnapshot)
+//		return false;
+//	if(this->mss->Type() != FeedConnectionType::fctSnapshot)
+//		return false;
+//	if(this->tls->Type() != FeedConnectionType::fctSnapshot)
+//		return false;
+//
+//    if(this->idf->Type() != FeedConnectionType::fctInstrumentDefinition)
 //        return false;
-//	if(this->hr->Type() != FeedConnectionType::HistoricalReplay)
+//	if(this->hr->Type() != FeedConnectionType::fctHistoricalReplay)
 //		return false;
 
 	return true;

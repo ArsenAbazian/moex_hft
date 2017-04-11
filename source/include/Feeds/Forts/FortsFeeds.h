@@ -11,7 +11,7 @@ class FeedConnection_FORTS_INC : public FeedConnection {
 public:
     FeedConnection_FORTS_INC(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
             FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
-        this->m_type = FeedConnectionType::IncrementalForts;
+        this->m_type = FeedConnectionType::fctIncrementalForts;
         this->m_id = FeedConnectionId::fcidIncForts;
         this->m_marketType = FeedMarketType::fmtForts;
         this->m_fastProtocolManager = new FastProtocolManager();
@@ -48,7 +48,7 @@ class FeedConnection_FORTS_INDEX : public FeedConnection {
 public:
     FeedConnection_FORTS_INDEX(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
             FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
-        this->m_type = FeedConnectionType::IncrementalForts;
+        this->m_type = FeedConnectionType::fctIncrementalForts;
         this->m_id = FeedConnectionId::fcidIndexForts;
         this->m_marketType = FeedMarketType::fmtForts;
         this->m_fastProtocolManager = new FastProtocolManager();
@@ -75,7 +75,7 @@ class FeedConnection_FORTS_NEWS : public FeedConnection {
 public:
     FeedConnection_FORTS_NEWS(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
             FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
-        this->m_type = FeedConnectionType::IncrementalForts;
+        this->m_type = FeedConnectionType::fctIncrementalForts;
         this->m_id = FeedConnectionId::fcidNewsForts;
         this->m_marketType = FeedMarketType::fmtForts;
         this->m_fastProtocolManager = new FastProtocolManager();
@@ -102,7 +102,7 @@ class FeedConnection_FORTS_NEWS_SKRIN : public FeedConnection {
 public:
     FeedConnection_FORTS_NEWS_SKRIN(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
             FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
-        this->m_type = FeedConnectionType::IncrementalForts;
+        this->m_type = FeedConnectionType::fctIncrementalForts;
         this->m_id = FeedConnectionId::fcidNewsSkrinForts;
         this->m_marketType = FeedMarketType::fmtForts;
         this->m_fastProtocolManager = new FastProtocolManager();
@@ -129,7 +129,7 @@ class FeedConnection_FORTS_OBR : public FeedConnection {
 public:
     FeedConnection_FORTS_OBR(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
             FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
-        this->m_type = FeedConnectionType::IncrementalForts;
+        this->m_type = FeedConnectionType::fctIncrementalForts;
         this->m_id = FeedConnectionId::fcidObrForts;
         this->m_marketType = FeedMarketType::fmtForts;
         this->m_fortsOrderBookTable = new MarketDataTable<OrderBookInfo, FortsDefaultSnapshotMessageInfo, FortsDefaultSnapshotMessageMDEntriesItemInfo>();
@@ -169,7 +169,7 @@ class FeedConnection_FORTS_TLR : public FeedConnection {
 public:
     FeedConnection_FORTS_TLR(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
             FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
-        this->m_type = FeedConnectionType::IncrementalForts;
+        this->m_type = FeedConnectionType::fctIncrementalForts;
         this->m_id = FeedConnectionId::fcidTlrForts;
         this->m_marketType = FeedMarketType::fmtForts;
         this->m_fortsTradeBookTable = new MarketDataTable<TradeInfo, FortsDefaultSnapshotMessageInfo, FortsDefaultSnapshotMessageMDEntriesItemInfo>();
@@ -200,7 +200,7 @@ public:
     FeedConnection_FORTS_SNAP(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
             FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
         this->m_marketType = FeedMarketType::fmtForts;
-        this->SetType(FeedConnectionType::Snapshot);
+        this->SetType(FeedConnectionType::fctSnapshot);
         this->m_id = FeedConnectionId::fcidSnapForts;
         this->m_fastProtocolManager = new FastProtocolManager();
         this->AllocateFastObjects();
@@ -237,7 +237,7 @@ public:
         this->m_fastProtocolManager = new FastProtocolManager();
         this->AllocateFastObjects();
         PrepareLogonInfo();
-        this->SetType(FeedConnectionType::HistoricalReplay);
+        this->SetType(FeedConnectionType::fctHistoricalReplay);
         this->SetState(FeedConnectionState::fcsHistoricalReplay);
         this->SetHsState(FeedConnectionHistoricalReplayState::hsSuspend);
         this->SetId(FeedConnectionId::fcidHrForts);
@@ -264,7 +264,7 @@ public:
     FeedConnection_FORTS_INSTR_INC(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
             FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
         this->m_marketType = FeedMarketType::fmtForts;
-        this->m_type = FeedConnectionType::InstrumentStatusForts;
+        this->m_type = FeedConnectionType::fctInstrumentStatusForts;
         this->SetId(FeedConnectionId::fcidIdfIncForts);
         this->m_fastProtocolManager = new FastProtocolManager();
         this->AllocateFastObjects();
@@ -292,7 +292,7 @@ public:
     FeedConnection_FORTS_INSTR_SNAP(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
             FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
         this->m_marketType = FeedMarketType::fmtForts;
-        this->SetType(FeedConnectionType::InstrumentDefinition);
+        this->SetType(FeedConnectionType::fctInstrumentDefinition);
         this->SetId(FeedConnectionId::fcidIdfForts);
         this->m_fastProtocolManager = new FastProtocolManager();
         this->AllocateFastObjects();

@@ -16,7 +16,7 @@ public:
         this->m_fastProtocolManager = new FastProtocolManager();
         this->AllocateFastObjects();
         PrepareLogonInfo();
-        this->SetType(FeedConnectionType::HistoricalReplay);
+        this->SetType(FeedConnectionType::fctHistoricalReplay);
         this->SetState(FeedConnectionState::fcsHistoricalReplay);
         this->SetHsState(FeedConnectionHistoricalReplayState::hsSuspend);
         this->SetId(FeedConnectionId::fcidHFond);

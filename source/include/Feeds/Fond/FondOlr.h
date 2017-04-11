@@ -24,7 +24,7 @@ class FeedConnection_FOND_OLR : public FeedConnection {
 public:
     FeedConnection_FOND_OLR(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) :
             FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
-        this->SetType(FeedConnectionType::Incremental);
+        this->SetType(FeedConnectionType::fctIncremental);
         this->m_orderTableFond = new MarketDataTable<OrderInfo, AstsOLSFONDInfo, AstsOLSFONDItemInfo>();
         this->SetId(FeedConnectionId::fcidOlrFond);
         this->m_fastProtocolManager = new FastProtocolManager();

@@ -6,7 +6,7 @@
 
 void LogMessageProvider::InitializeLogMessageText() {
 	this->m_logMessageText = new const char*[this->m_logMessageTextCapacity];
-    bzero(this->m_logMessageText, sizeof(const char*) * this->m_logMessageTextCapacity);
+    memset(this->m_logMessageText, sizeof(const char*) * this->m_logMessageTextCapacity, 0);
 
 #pragma region LogMessagesProvider_InitializeLogMessageText_GeneratedCode
 	this->m_logMessageText[LogMessageCode::lmcNone] = "none";

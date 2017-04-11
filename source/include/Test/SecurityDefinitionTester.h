@@ -78,7 +78,7 @@ public:
             throw;
         if(this->idf->ConnectionsToRecvSymbols()[2] != this->tlr)
             throw;
-        if(this->idf->Type() != FeedConnectionType::InstrumentDefinition)
+        if(this->idf->Type() != FeedConnectionType::fctInstrumentDefinition)
             throw;
         if(this->idf->SecurityDefinitionMode() != FeedConnectionSecurityDefinitionMode::sdmCollectData)
             throw;

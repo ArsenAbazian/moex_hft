@@ -982,7 +982,7 @@ namespace prebuild {
 		private void WriteReleaseItemCode (XmlNode templatesNode) {
 			foreach(StructureInfo str in Structures) {
 				WriteLine("\tvoid " + str.ReleaseMethodName + "() {");
-				WriteLine("\t\t((" + str.Name + "*)this->LastDecodeInfo())->ReleaseUnused();");
+				WriteLine("\t\tstatic_cast<" + str.Name + "*>(this->LastDecodeInfo())->ReleaseUnused();");
 				WriteLine("\t}");
 			}
 			WriteLine("\tinline void Reset" + Prefix + "() {");
@@ -1380,8 +1380,7 @@ namespace prebuild {
 				}
 			}
 			WriteLine("\t" + Prefix + "SnapshotInfo() {");
-			WriteLine("\t\tthis->PresenceMap = 0;");
-			WriteLine("\t\tthis->NullMap = 0;");
+			WriteLine("\t\tmemset(this, sizeof(" + Prefix + "SnapshotInfo), 0);");
 			WriteLine("\t}");
 			WriteLine("};");
 
@@ -1661,7 +1660,8 @@ namespace prebuild {
 			if(list.Count == 0)
 				return;
 			if(list.Count == 1) {
-				del(tabs, list[0]);
+				WriteLine (tabs + "if(this->m_templateId == " + list [0].TemplateId + ")");
+				del(tabs + "\t", list[0]);
 				return;
 			}
 			int a = 0, b = list.Count - 1, c = (a + b) / 2;
@@ -1712,7 +1712,7 @@ namespace prebuild {
 
 			foreach(DecodeMessageInfo info in messages) {
 				WriteLine("\t\t\tcase " + info.TemplateId + ":");
-				WriteLine("\t\t\t\t" + info.PrintMethodName + "((" + info.StructName + "*)this->m_lastDecodedInfo);");
+				WriteLine("\t\t\t\t" + info.PrintMethodName + "(static_cast<" + info.StructName + "*>(this->m_lastDecodedInfo));");
 				WriteLine("\t\t\t\tbreak;");
 			}
 			WriteLine("\t\t}");
@@ -1723,7 +1723,7 @@ namespace prebuild {
 			WriteLine("\t\tswitch(this->m_templateId) {");
 			foreach(DecodeMessageInfo info in messages) {
 				WriteLine("\t\t\tcase " + info.TemplateId + ":");
-				WriteLine("\t\t\t\t" + info.PrintXmlMethodName + "((" + info.StructName + "*)this->m_lastDecodedInfo);");
+				WriteLine("\t\t\t\t" + info.PrintXmlMethodName + "(static_cast<" + info.StructName + "*>(this->m_lastDecodedInfo));");
 				WriteLine("\t\t\t\tbreak;");
 			}
 			WriteLine("\t\t}");
@@ -1840,7 +1840,7 @@ namespace prebuild {
 
 			WriteLine("");
 			WriteLine("\t" + info.Name + "() {");
-			WriteLine ("\t\tbzero(this, sizeof(" + info.Name + "));");
+			WriteLine ("\t\tmemset(this, sizeof(" + info.Name + "), 0);");
 			//WriteLine("\t\tthis->Used = false;");
 			//WriteLine("\t\tthis->Pointer = 0;");
 			//WriteLine("\t\tthis->Allocator = 0;");
@@ -2085,8 +2085,9 @@ namespace prebuild {
 		}
 
 		private  void ParseTemplateNode(XmlNode template, string templateName) {
-			WriteLine("\tinline void* Decode" + Prefix + templateName + "() {");
 			StructureInfo info = new StructureInfo() { Node = template, NameCore = templateName };
+			info.Prefix = Prefix;
+			WriteLine("\tinline " + info.Name + "* Decode" + Prefix + templateName + "() {");
 			info.Prefix = Prefix;
 			WriteLine("\t\t" + Prefix + templateName + "Info* info = " + info.GetFreeMethodName + "();");
 			WriteCopyPresenceMap("\t\t", "info");

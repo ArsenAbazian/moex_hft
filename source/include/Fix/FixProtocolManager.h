@@ -65,11 +65,11 @@ public:
 
     inline FixRejectInfo* RejectInfo() { return this->m_rejectInfo; }
 
-	inline const char* SenderCompId() { return this->senderComputerId; }
-	inline int SenderCompIdLength() { return this->senderComputerIdLength; }
+	inline const char* SenderCompId() const { return this->senderComputerId; }
+	inline int SenderCompIdLength() const { return this->senderComputerIdLength; }
 
-	inline const char* TargetCompId() { return this->targetComputerId; }
-	inline int TargetCompIdLength() { return this->targetComputerIdLength; }
+	inline const char* TargetCompId() const { return this->targetComputerId; }
+	inline int TargetCompIdLength() const { return this->targetComputerIdLength; }
 
 	inline void PrintBufferFromCurrent() {
 		int start = this->currentPos - this->messageBuffer;
@@ -103,7 +103,7 @@ public:
     inline unsigned char* SendBuffer() { return this->m_sendMessageBuffer; }
     inline unsigned char* RecvBuffer() { return (unsigned char*)this->messageBuffer; }
 
-    inline unsigned int SendBufferSize() { return (unsigned int)(this->currentPos - ((char*)this->m_sendMessageBuffer)); }
+    inline unsigned int SendBufferSize() const { return (unsigned int)(this->currentPos - ((char*)this->m_sendMessageBuffer)); }
     inline bool SendFix(WinSockManager *manager) {
 		DefaultLogManager::Default->WriteFix(LogMessageCode::lmcFixProtocolManager_SendFix, this->m_sendBuffer->BufferIndex(), this->m_sendItemStartIndex);
         return manager->Send(this->SendBuffer(), this->SendBufferSize());
@@ -195,7 +195,7 @@ public:
         this->currentPos = this->messageBuffer;
     }
     inline FixProtocolMessage* RecvMessage(int index) { return this->m_recvMessage[index]; }
-    inline int RecvMessageCount() { return this->m_recvMessageCount; }
+    inline int RecvMessageCount() const { return this->m_recvMessageCount; }
 	inline FixProtocolMessage* Message(int index) { return this->m_recvMessage[index]; }
     
     inline void ResetSendMsgSeqNo() { this->SetSendMsgSeqNo(1); }
@@ -307,7 +307,7 @@ public:
 
 public:
 	inline char*	Message() { return this->messageBuffer; }
-	inline int		MessageLength() { return this->currentPos - this->messageBuffer; }
+	inline int		MessageLength() const { return this->currentPos - this->messageBuffer; }
 
 	inline void AddSendingTime() {
 		AddTagSendingTime
@@ -476,9 +476,9 @@ public:
 
 	inline void CreateLogoutMessage(char *text, int textLength, char *encodedText, int encodedTextLength) {
 		AddHeader(MsgTypeLogout);
-		if (text != NULL)
+		if(0 != text)
 			AddTagString2(AddTagText, text, textLength);
-		if(encodedText != NULL)
+		if(0 != encodedText)
 			AddEncodedTextTag(encodedText, encodedTextLength);
 		UpdateLengthTagValue();
 		AddTrail();
@@ -849,8 +849,8 @@ public:
 		}
 	}
 
-    inline int SendMsgSeqNo() { return this->m_sendMsgSeqNo; }
-	inline int RecvMsgSeqNo() { return this->m_recvMsgSeqNo; }
+    inline int SendMsgSeqNo() const { return this->m_sendMsgSeqNo; }
+	inline int RecvMsgSeqNo() const { return this->m_recvMsgSeqNo; }
 
 	inline void CreateLogonMessage(FixLogonInfo *logon) {
         this->m_sendMsgSeqNo = logon->MsgStartSeqNo;

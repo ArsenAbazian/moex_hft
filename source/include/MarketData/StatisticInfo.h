@@ -67,18 +67,22 @@ template <typename T> class StatisticsInfo {
     UINT64               m_time;
     int                  m_snapshotProcessedCount;
 public:
-    StatisticsInfo() {
+    StatisticsInfo() :
+            m_entryInfo(0),
+            m_tradingSession(0),
+            m_shouldProcessSnapshot(0),
+            m_rptSeq(0),
+            m_savedRptSeq(0),
+            m_time(0),
+            m_snapshotProcessedCount(0),
+            m_used(0),
+            m_symbolInfo(0),
+            m_sessionInt(0) {
         if(DefaultStatisticItemAllocator::Default == 0)
             DefaultStatisticItemAllocator::Default = new StatisticItemAllocator();
 
-        this->m_entryInfo = 0;
         this->m_tradingSession = new SizedArray();
-        this->m_shouldProcessSnapshot = false;
-        this->m_rptSeq = 0;
-        this->m_savedRptSeq = 0;
-        this->m_time = 0;
-        this->m_snapshotProcessedCount = 0;
-        
+
         this->m_buyQuotes = new PointerListLite<StatisticItemDecimal2>(DefaultStatisticItemAllocator::Default->Decimals2());
         this->m_sellQuotes = new PointerListLite<StatisticItemDecimal2>(DefaultStatisticItemAllocator::Default->Decimals2());
         this->m_lstDealInfo = new PointerListLite<StatisticItemLastDealInfo>(DefaultStatisticItemAllocator::Default->LastDealInfos());

@@ -42,9 +42,6 @@ class FastProtocolManager {
 
 	void						*m_lastDecodedInfo;
 
-	UINT32						m_skipTemplateId[8];
-	int							m_skipTemplateIdCount;
-
 #pragma region Asts_Declare_AllocationInfo_GeneratedCode
 	AstsObjectsAllocationInfo *m_astsAllocationInfo;
 	AstsSnapshotInfo *m_astsSnapshotInfo;
@@ -508,70 +505,70 @@ public:
 
 private:
 	void ReleaseFortsDefaultSnapshotMessageMDEntriesItemInfo() {
-		((FortsDefaultSnapshotMessageMDEntriesItemInfo*)this->LastDecodeInfo())->ReleaseUnused();
+		static_cast<FortsDefaultSnapshotMessageMDEntriesItemInfo*>(this->LastDecodeInfo())->ReleaseUnused();
 	}
 	void ReleaseFortsDefaultSnapshotMessageInfo() {
-		((FortsDefaultSnapshotMessageInfo*)this->LastDecodeInfo())->ReleaseUnused();
+		static_cast<FortsDefaultSnapshotMessageInfo*>(this->LastDecodeInfo())->ReleaseUnused();
 	}
 	void ReleaseFortsSecurityDefinitionMDFeedTypesItemInfo() {
-		((FortsSecurityDefinitionMDFeedTypesItemInfo*)this->LastDecodeInfo())->ReleaseUnused();
+		static_cast<FortsSecurityDefinitionMDFeedTypesItemInfo*>(this->LastDecodeInfo())->ReleaseUnused();
 	}
 	void ReleaseFortsSecurityDefinitionUnderlyingsItemInfo() {
-		((FortsSecurityDefinitionUnderlyingsItemInfo*)this->LastDecodeInfo())->ReleaseUnused();
+		static_cast<FortsSecurityDefinitionUnderlyingsItemInfo*>(this->LastDecodeInfo())->ReleaseUnused();
 	}
 	void ReleaseFortsSecurityDefinitionInstrumentLegsItemInfo() {
-		((FortsSecurityDefinitionInstrumentLegsItemInfo*)this->LastDecodeInfo())->ReleaseUnused();
+		static_cast<FortsSecurityDefinitionInstrumentLegsItemInfo*>(this->LastDecodeInfo())->ReleaseUnused();
 	}
 	void ReleaseFortsSecurityDefinitionInstrumentAttributesItemInfo() {
-		((FortsSecurityDefinitionInstrumentAttributesItemInfo*)this->LastDecodeInfo())->ReleaseUnused();
+		static_cast<FortsSecurityDefinitionInstrumentAttributesItemInfo*>(this->LastDecodeInfo())->ReleaseUnused();
 	}
 	void ReleaseFortsSecurityDefinitionEvntGrpItemInfo() {
-		((FortsSecurityDefinitionEvntGrpItemInfo*)this->LastDecodeInfo())->ReleaseUnused();
+		static_cast<FortsSecurityDefinitionEvntGrpItemInfo*>(this->LastDecodeInfo())->ReleaseUnused();
 	}
 	void ReleaseFortsSecurityDefinitionInfo() {
-		((FortsSecurityDefinitionInfo*)this->LastDecodeInfo())->ReleaseUnused();
+		static_cast<FortsSecurityDefinitionInfo*>(this->LastDecodeInfo())->ReleaseUnused();
 	}
 	void ReleaseFortsSecurityDefinitionUpdateReportInfo() {
-		((FortsSecurityDefinitionUpdateReportInfo*)this->LastDecodeInfo())->ReleaseUnused();
+		static_cast<FortsSecurityDefinitionUpdateReportInfo*>(this->LastDecodeInfo())->ReleaseUnused();
 	}
 	void ReleaseFortsSecurityStatusInfo() {
-		((FortsSecurityStatusInfo*)this->LastDecodeInfo())->ReleaseUnused();
+		static_cast<FortsSecurityStatusInfo*>(this->LastDecodeInfo())->ReleaseUnused();
 	}
 	void ReleaseFortsHeartbeatInfo() {
-		((FortsHeartbeatInfo*)this->LastDecodeInfo())->ReleaseUnused();
+		static_cast<FortsHeartbeatInfo*>(this->LastDecodeInfo())->ReleaseUnused();
 	}
 	void ReleaseFortsSequenceResetInfo() {
-		((FortsSequenceResetInfo*)this->LastDecodeInfo())->ReleaseUnused();
+		static_cast<FortsSequenceResetInfo*>(this->LastDecodeInfo())->ReleaseUnused();
 	}
 	void ReleaseFortsTradingSessionStatusInfo() {
-		((FortsTradingSessionStatusInfo*)this->LastDecodeInfo())->ReleaseUnused();
+		static_cast<FortsTradingSessionStatusInfo*>(this->LastDecodeInfo())->ReleaseUnused();
 	}
 	void ReleaseFortsNewsNewsTextItemInfo() {
-		((FortsNewsNewsTextItemInfo*)this->LastDecodeInfo())->ReleaseUnused();
+		static_cast<FortsNewsNewsTextItemInfo*>(this->LastDecodeInfo())->ReleaseUnused();
 	}
 	void ReleaseFortsNewsInfo() {
-		((FortsNewsInfo*)this->LastDecodeInfo())->ReleaseUnused();
+		static_cast<FortsNewsInfo*>(this->LastDecodeInfo())->ReleaseUnused();
 	}
 	void ReleaseFortsOrdersLogMDEntriesItemInfo() {
-		((FortsOrdersLogMDEntriesItemInfo*)this->LastDecodeInfo())->ReleaseUnused();
+		static_cast<FortsOrdersLogMDEntriesItemInfo*>(this->LastDecodeInfo())->ReleaseUnused();
 	}
 	void ReleaseFortsOrdersLogInfo() {
-		((FortsOrdersLogInfo*)this->LastDecodeInfo())->ReleaseUnused();
+		static_cast<FortsOrdersLogInfo*>(this->LastDecodeInfo())->ReleaseUnused();
 	}
 	void ReleaseFortsOrdersBookMDEntriesItemInfo() {
-		((FortsOrdersBookMDEntriesItemInfo*)this->LastDecodeInfo())->ReleaseUnused();
+		static_cast<FortsOrdersBookMDEntriesItemInfo*>(this->LastDecodeInfo())->ReleaseUnused();
 	}
 	void ReleaseFortsOrdersBookInfo() {
-		((FortsOrdersBookInfo*)this->LastDecodeInfo())->ReleaseUnused();
+		static_cast<FortsOrdersBookInfo*>(this->LastDecodeInfo())->ReleaseUnused();
 	}
 	void ReleaseFortsLogonInfo() {
-		((FortsLogonInfo*)this->LastDecodeInfo())->ReleaseUnused();
+		static_cast<FortsLogonInfo*>(this->LastDecodeInfo())->ReleaseUnused();
 	}
 	void ReleaseFortsLogoutInfo() {
-		((FortsLogoutInfo*)this->LastDecodeInfo())->ReleaseUnused();
+		static_cast<FortsLogoutInfo*>(this->LastDecodeInfo())->ReleaseUnused();
 	}
 	void ReleaseFortsDefaultIncrementalRefreshMessageInfo() {
-		((FortsDefaultIncrementalRefreshMessageInfo*)this->LastDecodeInfo())->ReleaseUnused();
+		static_cast<FortsDefaultIncrementalRefreshMessageInfo*>(this->LastDecodeInfo())->ReleaseUnused();
 	}
 	inline void ResetForts() {
 		if(this->m_templateId <= 9) {
@@ -909,82 +906,82 @@ public:
 
 private:
 	void ReleaseAstsLogonInfo() {
-		((AstsLogonInfo*)this->LastDecodeInfo())->ReleaseUnused();
+		static_cast<AstsLogonInfo*>(this->LastDecodeInfo())->ReleaseUnused();
 	}
 	void ReleaseAstsLogoutInfo() {
-		((AstsLogoutInfo*)this->LastDecodeInfo())->ReleaseUnused();
+		static_cast<AstsLogoutInfo*>(this->LastDecodeInfo())->ReleaseUnused();
 	}
 	void ReleaseAstsGenericItemInfo() {
-		((AstsGenericItemInfo*)this->LastDecodeInfo())->ReleaseUnused();
+		static_cast<AstsGenericItemInfo*>(this->LastDecodeInfo())->ReleaseUnused();
 	}
 	void ReleaseAstsGenericInfo() {
-		((AstsGenericInfo*)this->LastDecodeInfo())->ReleaseUnused();
+		static_cast<AstsGenericInfo*>(this->LastDecodeInfo())->ReleaseUnused();
 	}
 	void ReleaseAstsOLSFONDItemInfo() {
-		((AstsOLSFONDItemInfo*)this->LastDecodeInfo())->ReleaseUnused();
+		static_cast<AstsOLSFONDItemInfo*>(this->LastDecodeInfo())->ReleaseUnused();
 	}
 	void ReleaseAstsOLSFONDInfo() {
-		((AstsOLSFONDInfo*)this->LastDecodeInfo())->ReleaseUnused();
+		static_cast<AstsOLSFONDInfo*>(this->LastDecodeInfo())->ReleaseUnused();
 	}
 	void ReleaseAstsOLSCURRItemInfo() {
-		((AstsOLSCURRItemInfo*)this->LastDecodeInfo())->ReleaseUnused();
+		static_cast<AstsOLSCURRItemInfo*>(this->LastDecodeInfo())->ReleaseUnused();
 	}
 	void ReleaseAstsOLSCURRInfo() {
-		((AstsOLSCURRInfo*)this->LastDecodeInfo())->ReleaseUnused();
+		static_cast<AstsOLSCURRInfo*>(this->LastDecodeInfo())->ReleaseUnused();
 	}
 	void ReleaseAstsTLSFONDItemInfo() {
-		((AstsTLSFONDItemInfo*)this->LastDecodeInfo())->ReleaseUnused();
+		static_cast<AstsTLSFONDItemInfo*>(this->LastDecodeInfo())->ReleaseUnused();
 	}
 	void ReleaseAstsTLSFONDInfo() {
-		((AstsTLSFONDInfo*)this->LastDecodeInfo())->ReleaseUnused();
+		static_cast<AstsTLSFONDInfo*>(this->LastDecodeInfo())->ReleaseUnused();
 	}
 	void ReleaseAstsTLSCURRItemInfo() {
-		((AstsTLSCURRItemInfo*)this->LastDecodeInfo())->ReleaseUnused();
+		static_cast<AstsTLSCURRItemInfo*>(this->LastDecodeInfo())->ReleaseUnused();
 	}
 	void ReleaseAstsTLSCURRInfo() {
-		((AstsTLSCURRInfo*)this->LastDecodeInfo())->ReleaseUnused();
+		static_cast<AstsTLSCURRInfo*>(this->LastDecodeInfo())->ReleaseUnused();
 	}
 	void ReleaseAstsSecurityDefinitionGroupInstrAttribItemInfo() {
-		((AstsSecurityDefinitionGroupInstrAttribItemInfo*)this->LastDecodeInfo())->ReleaseUnused();
+		static_cast<AstsSecurityDefinitionGroupInstrAttribItemInfo*>(this->LastDecodeInfo())->ReleaseUnused();
 	}
 	void ReleaseAstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo() {
-		((AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo*)this->LastDecodeInfo())->ReleaseUnused();
+		static_cast<AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo*>(this->LastDecodeInfo())->ReleaseUnused();
 	}
 	void ReleaseAstsSecurityDefinitionMarketSegmentGrpItemInfo() {
-		((AstsSecurityDefinitionMarketSegmentGrpItemInfo*)this->LastDecodeInfo())->ReleaseUnused();
+		static_cast<AstsSecurityDefinitionMarketSegmentGrpItemInfo*>(this->LastDecodeInfo())->ReleaseUnused();
 	}
 	void ReleaseAstsSecurityDefinitionInfo() {
-		((AstsSecurityDefinitionInfo*)this->LastDecodeInfo())->ReleaseUnused();
+		static_cast<AstsSecurityDefinitionInfo*>(this->LastDecodeInfo())->ReleaseUnused();
 	}
 	void ReleaseAstsSecurityStatusInfo() {
-		((AstsSecurityStatusInfo*)this->LastDecodeInfo())->ReleaseUnused();
+		static_cast<AstsSecurityStatusInfo*>(this->LastDecodeInfo())->ReleaseUnused();
 	}
 	void ReleaseAstsTradingSessionStatusInfo() {
-		((AstsTradingSessionStatusInfo*)this->LastDecodeInfo())->ReleaseUnused();
+		static_cast<AstsTradingSessionStatusInfo*>(this->LastDecodeInfo())->ReleaseUnused();
 	}
 	void ReleaseAstsHeartbeatInfo() {
-		((AstsHeartbeatInfo*)this->LastDecodeInfo())->ReleaseUnused();
+		static_cast<AstsHeartbeatInfo*>(this->LastDecodeInfo())->ReleaseUnused();
 	}
 	void ReleaseAstsIncrementalGenericInfo() {
-		((AstsIncrementalGenericInfo*)this->LastDecodeInfo())->ReleaseUnused();
+		static_cast<AstsIncrementalGenericInfo*>(this->LastDecodeInfo())->ReleaseUnused();
 	}
 	void ReleaseAstsIncrementalMSRFONDInfo() {
-		((AstsIncrementalMSRFONDInfo*)this->LastDecodeInfo())->ReleaseUnused();
+		static_cast<AstsIncrementalMSRFONDInfo*>(this->LastDecodeInfo())->ReleaseUnused();
 	}
 	void ReleaseAstsIncrementalMSRCURRInfo() {
-		((AstsIncrementalMSRCURRInfo*)this->LastDecodeInfo())->ReleaseUnused();
+		static_cast<AstsIncrementalMSRCURRInfo*>(this->LastDecodeInfo())->ReleaseUnused();
 	}
 	void ReleaseAstsIncrementalOLRFONDInfo() {
-		((AstsIncrementalOLRFONDInfo*)this->LastDecodeInfo())->ReleaseUnused();
+		static_cast<AstsIncrementalOLRFONDInfo*>(this->LastDecodeInfo())->ReleaseUnused();
 	}
 	void ReleaseAstsIncrementalOLRCURRInfo() {
-		((AstsIncrementalOLRCURRInfo*)this->LastDecodeInfo())->ReleaseUnused();
+		static_cast<AstsIncrementalOLRCURRInfo*>(this->LastDecodeInfo())->ReleaseUnused();
 	}
 	void ReleaseAstsIncrementalTLRFONDInfo() {
-		((AstsIncrementalTLRFONDInfo*)this->LastDecodeInfo())->ReleaseUnused();
+		static_cast<AstsIncrementalTLRFONDInfo*>(this->LastDecodeInfo())->ReleaseUnused();
 	}
 	void ReleaseAstsIncrementalTLRCURRInfo() {
-		((AstsIncrementalTLRCURRInfo*)this->LastDecodeInfo())->ReleaseUnused();
+		static_cast<AstsIncrementalTLRCURRInfo*>(this->LastDecodeInfo())->ReleaseUnused();
 	}
 	inline void ResetAsts() {
 		if(this->m_templateId <= 2510) {
@@ -1158,19 +1155,6 @@ private:
 
 public:
 
-	inline void SkipTemplateId(UINT32 templateId) {
-		this->m_skipTemplateId[this->m_skipTemplateIdCount] = templateId;
-		this->m_skipTemplateIdCount++;
-	}
-
-	inline bool ShouldSkipTemplate() {
-		for (int i = 1; i < this->m_skipTemplateIdCount; i++) {
-			if (this->m_skipTemplateId[i] == this->m_templateId)
-				return true;
-		}
-		return false;
-	}
-
 	inline void* LastDecodeInfo() { return this->m_lastDecodedInfo; }
 	inline void LastDecodeInfo(void *info) { this->m_lastDecodedInfo = info; }
 
@@ -1191,7 +1175,6 @@ public:
 		for (int i = 0; i < lengthInt; i++)
 			if (((int*)this->buffer)[i] != ((int*)arrayToCompare)[i])
 				return false;
-		int length2 = length % 4;
 		for (int i = lengthInt * 4; i < length; i++)
 			if (this->buffer[i] != arrayToCompare[i])
 				return false;
@@ -1202,7 +1185,6 @@ public:
 		for (int i = 0; i < lengthInt; i++)
 			if (((int*)this->currentPos)[i] != ((int*)arrayToCompare)[i])
 				return false;
-		int length2 = length % 4;
 		for (int i = lengthInt * 4; i < length; i++)
 			if (this->currentPos[i] != arrayToCompare[i])
 				return false;
@@ -1312,10 +1294,10 @@ public:
         this->currentPos += 4;
     }
 
-    inline UINT TemplateId() { return this->m_templateId; }
-    inline UINT64 PresenceMap() { return this->m_presenceMap; }
+    inline UINT TemplateId() const { return this->m_templateId; }
+    inline UINT64 PresenceMap() const { return this->m_presenceMap; }
 
-	inline bool IsNull() {  return *(this->currentPos) == 0x80; }
+	inline bool IsNull() const {  return *(this->currentPos) == 0x80; }
 
     void PrintTabs(int tabCount);
     void PrintPresenceMap(UINT64 map, int count, int tabsCount);
@@ -1682,7 +1664,6 @@ public:
 			return result;
 		}
 		else if (valueMasked == 0x7f) { // extended negative integer
-			result = 0;
 			memory >>= 8;
 
 			result = 0xffffff80;
@@ -2442,7 +2423,6 @@ public:
 			return result;
 		}
 		else if (valueMasked == 0x7f) { // extended negative integer
-			result = 0;
 			memory >>= 8;
 
 			result = 0xffffffffffffff80;
@@ -2832,11 +2812,12 @@ public:
 	}
 
 	inline void WriteString_Optional(char *str, int length) { 
-		if (str == NULL) { 
+		if(0 == str) {
 			*(this->currentPos) = 0x80;
 			this->currentPos++;
+			return;
 		}
-		else if (length == 0) { 
+		if (length == 0) {
 			*((int*)this->currentPos) = 0x8000;
 			this->currentPos += 2;
 			return;
@@ -2847,7 +2828,7 @@ public:
 	}
 
 	inline void WriteString_Mandatory(char *str, int length) {
-		if (length == 0) {
+		if(0 == str || length == 0) {
 			*((int*)this->currentPos) = 0x80;
 			this->currentPos ++;
 			return;
@@ -3245,8 +3226,8 @@ public:
 
 	inline BYTE* Buffer() { return this->buffer; }
 	inline BYTE* CurrentPos() { return this->currentPos; }
-	inline int BufferLength() { return this->bufferLength; }
-	inline int MessageLength() { return this->currentPos - this->buffer; }
+	inline int BufferLength() const { return this->bufferLength; }
+	inline int MessageLength() const { return this->currentPos - this->buffer; }
 	inline void SetBufferLength(int value) { this->bufferLength = value; }
 
 #pragma region Asts_Encode_Methods_Declaration_GeneratedCode
@@ -3369,7 +3350,7 @@ public:
 	}
 	inline void* DecodeAstsUnsupportedMessage() { return 0; }
 	inline AstsSnapshotInfo* GetAstsSnapshotInfoUnsupported() { return 0; }
-	inline void* DecodeAstsLogon() {
+	inline AstsLogonInfo* DecodeAstsLogon() {
 		AstsLogonInfo* info = GetFreeAstsLogonInfo();
 		info->PresenceMap = this->m_presenceMap;
 
@@ -3389,7 +3370,7 @@ public:
 		this->m_prevastsLogonInfo = info;
 		return info;
 	}
-	inline void* DecodeAstsLogout() {
+	inline AstsLogoutInfo* DecodeAstsLogout() {
 		AstsLogoutInfo* info = GetFreeAstsLogoutInfo();
 		info->PresenceMap = this->m_presenceMap;
 
@@ -3403,7 +3384,7 @@ public:
 		this->m_prevastsLogoutInfo = info;
 		return info;
 	}
-	inline void* DecodeAstsGeneric() {
+	inline AstsGenericInfo* DecodeAstsGeneric() {
 		AstsGenericInfo* info = GetFreeAstsGenericInfo();
 		info->PresenceMap = this->m_presenceMap;
 
@@ -3620,7 +3601,7 @@ public:
 		this->m_prevastsGenericInfo = info;
 		return info;
 	}
-	inline void* DecodeAstsIncrementalGeneric() {
+	inline AstsIncrementalGenericInfo* DecodeAstsIncrementalGeneric() {
 		AstsIncrementalGenericInfo* info = GetFreeAstsIncrementalGenericInfo();
 		info->PresenceMap = this->m_presenceMap;
 
@@ -3823,7 +3804,7 @@ public:
 		this->m_prevastsIncrementalGenericInfo = info;
 		return info;
 	}
-	inline void* DecodeAstsOLSFOND() {
+	inline AstsOLSFONDInfo* DecodeAstsOLSFOND() {
 		AstsOLSFONDInfo* info = GetFreeAstsOLSFONDInfo();
 		info->PresenceMap = this->m_presenceMap;
 
@@ -3982,7 +3963,7 @@ public:
 		this->m_prevastsOLSFONDInfo = info;
 		return info;
 	}
-	inline void* DecodeAstsOLSCURR() {
+	inline AstsOLSCURRInfo* DecodeAstsOLSCURR() {
 		AstsOLSCURRInfo* info = GetFreeAstsOLSCURRInfo();
 		info->PresenceMap = this->m_presenceMap;
 
@@ -4109,7 +4090,7 @@ public:
 		this->m_prevastsOLSCURRInfo = info;
 		return info;
 	}
-	inline void* DecodeAstsTLSFOND() {
+	inline AstsTLSFONDInfo* DecodeAstsTLSFOND() {
 		AstsTLSFONDInfo* info = GetFreeAstsTLSFONDInfo();
 		info->PresenceMap = this->m_presenceMap;
 
@@ -4332,7 +4313,7 @@ public:
 		this->m_prevastsTLSFONDInfo = info;
 		return info;
 	}
-	inline void* DecodeAstsTLSCURR() {
+	inline AstsTLSCURRInfo* DecodeAstsTLSCURR() {
 		AstsTLSCURRInfo* info = GetFreeAstsTLSCURRInfo();
 		info->PresenceMap = this->m_presenceMap;
 
@@ -4533,7 +4514,7 @@ public:
 		this->m_prevastsTLSCURRInfo = info;
 		return info;
 	}
-	inline void* DecodeAstsIncrementalMSRFOND() {
+	inline AstsIncrementalMSRFONDInfo* DecodeAstsIncrementalMSRFOND() {
 		AstsIncrementalMSRFONDInfo* info = GetFreeAstsIncrementalMSRFONDInfo();
 		info->PresenceMap = this->m_presenceMap;
 
@@ -4688,7 +4669,7 @@ public:
 		this->m_prevastsIncrementalMSRFONDInfo = info;
 		return info;
 	}
-	inline void* DecodeAstsIncrementalMSRCURR() {
+	inline AstsIncrementalMSRCURRInfo* DecodeAstsIncrementalMSRCURR() {
 		AstsIncrementalMSRCURRInfo* info = GetFreeAstsIncrementalMSRCURRInfo();
 		info->PresenceMap = this->m_presenceMap;
 
@@ -4823,7 +4804,7 @@ public:
 		this->m_prevastsIncrementalMSRCURRInfo = info;
 		return info;
 	}
-	inline void* DecodeAstsIncrementalOLRFOND() {
+	inline AstsIncrementalOLRFONDInfo* DecodeAstsIncrementalOLRFOND() {
 		AstsIncrementalOLRFONDInfo* info = GetFreeAstsIncrementalOLRFONDInfo();
 		info->PresenceMap = this->m_presenceMap;
 
@@ -4980,7 +4961,7 @@ public:
 		this->m_prevastsIncrementalOLRFONDInfo = info;
 		return info;
 	}
-	inline void* DecodeAstsIncrementalOLRCURR() {
+	inline AstsIncrementalOLRCURRInfo* DecodeAstsIncrementalOLRCURR() {
 		AstsIncrementalOLRCURRInfo* info = GetFreeAstsIncrementalOLRCURRInfo();
 		info->PresenceMap = this->m_presenceMap;
 
@@ -5114,7 +5095,7 @@ public:
 		this->m_prevastsIncrementalOLRCURRInfo = info;
 		return info;
 	}
-	inline void* DecodeAstsIncrementalTLRFOND() {
+	inline AstsIncrementalTLRFONDInfo* DecodeAstsIncrementalTLRFOND() {
 		AstsIncrementalTLRFONDInfo* info = GetFreeAstsIncrementalTLRFONDInfo();
 		info->PresenceMap = this->m_presenceMap;
 
@@ -5226,7 +5207,7 @@ public:
 		this->m_prevastsIncrementalTLRFONDInfo = info;
 		return info;
 	}
-	inline void* DecodeAstsIncrementalTLRCURR() {
+	inline AstsIncrementalTLRCURRInfo* DecodeAstsIncrementalTLRCURR() {
 		AstsIncrementalTLRCURRInfo* info = GetFreeAstsIncrementalTLRCURRInfo();
 		info->PresenceMap = this->m_presenceMap;
 
@@ -5330,7 +5311,7 @@ public:
 		this->m_prevastsIncrementalTLRCURRInfo = info;
 		return info;
 	}
-	inline void* DecodeAstsSecurityDefinition() {
+	inline AstsSecurityDefinitionInfo* DecodeAstsSecurityDefinition() {
 		AstsSecurityDefinitionInfo* info = GetFreeAstsSecurityDefinitionInfo();
 		info->PresenceMap = this->m_presenceMap;
 
@@ -5558,7 +5539,7 @@ public:
 		this->m_prevastsSecurityDefinitionInfo = info;
 		return info;
 	}
-	inline void* DecodeAstsSecurityStatus() {
+	inline AstsSecurityStatusInfo* DecodeAstsSecurityStatus() {
 		AstsSecurityStatusInfo* info = GetFreeAstsSecurityStatusInfo();
 		info->PresenceMap = this->m_presenceMap;
 
@@ -5584,7 +5565,7 @@ public:
 		this->m_prevastsSecurityStatusInfo = info;
 		return info;
 	}
-	inline void* DecodeAstsTradingSessionStatus() {
+	inline AstsTradingSessionStatusInfo* DecodeAstsTradingSessionStatus() {
 		AstsTradingSessionStatusInfo* info = GetFreeAstsTradingSessionStatusInfo();
 		info->PresenceMap = this->m_presenceMap;
 
@@ -5599,7 +5580,7 @@ public:
 		this->m_prevastsTradingSessionStatusInfo = info;
 		return info;
 	}
-	inline void* DecodeAstsHeartbeat() {
+	inline AstsHeartbeatInfo* DecodeAstsHeartbeat() {
 		AstsHeartbeatInfo* info = GetFreeAstsHeartbeatInfo();
 		info->PresenceMap = this->m_presenceMap;
 
@@ -5956,58 +5937,58 @@ public:
 
 		switch(this->m_templateId) {
 			case 2101:
-				PrintAstsLogon((AstsLogonInfo*)this->m_lastDecodedInfo);
+				PrintAstsLogon(static_cast<AstsLogonInfo*>(this->m_lastDecodedInfo));
 				break;
 			case 2102:
-				PrintAstsLogout((AstsLogoutInfo*)this->m_lastDecodedInfo);
+				PrintAstsLogout(static_cast<AstsLogoutInfo*>(this->m_lastDecodedInfo));
 				break;
 			case 2103:
-				PrintAstsGeneric((AstsGenericInfo*)this->m_lastDecodedInfo);
+				PrintAstsGeneric(static_cast<AstsGenericInfo*>(this->m_lastDecodedInfo));
 				break;
 			case 2104:
-				PrintAstsIncrementalGeneric((AstsIncrementalGenericInfo*)this->m_lastDecodedInfo);
+				PrintAstsIncrementalGeneric(static_cast<AstsIncrementalGenericInfo*>(this->m_lastDecodedInfo));
 				break;
 			case 2510:
-				PrintAstsOLSFOND((AstsOLSFONDInfo*)this->m_lastDecodedInfo);
+				PrintAstsOLSFOND(static_cast<AstsOLSFONDInfo*>(this->m_lastDecodedInfo));
 				break;
 			case 3600:
-				PrintAstsOLSCURR((AstsOLSCURRInfo*)this->m_lastDecodedInfo);
+				PrintAstsOLSCURR(static_cast<AstsOLSCURRInfo*>(this->m_lastDecodedInfo));
 				break;
 			case 2511:
-				PrintAstsTLSFOND((AstsTLSFONDInfo*)this->m_lastDecodedInfo);
+				PrintAstsTLSFOND(static_cast<AstsTLSFONDInfo*>(this->m_lastDecodedInfo));
 				break;
 			case 3601:
-				PrintAstsTLSCURR((AstsTLSCURRInfo*)this->m_lastDecodedInfo);
+				PrintAstsTLSCURR(static_cast<AstsTLSCURRInfo*>(this->m_lastDecodedInfo));
 				break;
 			case 2523:
-				PrintAstsIncrementalMSRFOND((AstsIncrementalMSRFONDInfo*)this->m_lastDecodedInfo);
+				PrintAstsIncrementalMSRFOND(static_cast<AstsIncrementalMSRFONDInfo*>(this->m_lastDecodedInfo));
 				break;
 			case 3613:
-				PrintAstsIncrementalMSRCURR((AstsIncrementalMSRCURRInfo*)this->m_lastDecodedInfo);
+				PrintAstsIncrementalMSRCURR(static_cast<AstsIncrementalMSRCURRInfo*>(this->m_lastDecodedInfo));
 				break;
 			case 2520:
-				PrintAstsIncrementalOLRFOND((AstsIncrementalOLRFONDInfo*)this->m_lastDecodedInfo);
+				PrintAstsIncrementalOLRFOND(static_cast<AstsIncrementalOLRFONDInfo*>(this->m_lastDecodedInfo));
 				break;
 			case 3610:
-				PrintAstsIncrementalOLRCURR((AstsIncrementalOLRCURRInfo*)this->m_lastDecodedInfo);
+				PrintAstsIncrementalOLRCURR(static_cast<AstsIncrementalOLRCURRInfo*>(this->m_lastDecodedInfo));
 				break;
 			case 2521:
-				PrintAstsIncrementalTLRFOND((AstsIncrementalTLRFONDInfo*)this->m_lastDecodedInfo);
+				PrintAstsIncrementalTLRFOND(static_cast<AstsIncrementalTLRFONDInfo*>(this->m_lastDecodedInfo));
 				break;
 			case 3611:
-				PrintAstsIncrementalTLRCURR((AstsIncrementalTLRCURRInfo*)this->m_lastDecodedInfo);
+				PrintAstsIncrementalTLRCURR(static_cast<AstsIncrementalTLRCURRInfo*>(this->m_lastDecodedInfo));
 				break;
 			case 2115:
-				PrintAstsSecurityDefinition((AstsSecurityDefinitionInfo*)this->m_lastDecodedInfo);
+				PrintAstsSecurityDefinition(static_cast<AstsSecurityDefinitionInfo*>(this->m_lastDecodedInfo));
 				break;
 			case 2106:
-				PrintAstsSecurityStatus((AstsSecurityStatusInfo*)this->m_lastDecodedInfo);
+				PrintAstsSecurityStatus(static_cast<AstsSecurityStatusInfo*>(this->m_lastDecodedInfo));
 				break;
 			case 2107:
-				PrintAstsTradingSessionStatus((AstsTradingSessionStatusInfo*)this->m_lastDecodedInfo);
+				PrintAstsTradingSessionStatus(static_cast<AstsTradingSessionStatusInfo*>(this->m_lastDecodedInfo));
 				break;
 			case 2108:
-				PrintAstsHeartbeat((AstsHeartbeatInfo*)this->m_lastDecodedInfo);
+				PrintAstsHeartbeat(static_cast<AstsHeartbeatInfo*>(this->m_lastDecodedInfo));
 				break;
 		}
 	}
@@ -6015,58 +5996,58 @@ public:
 
 		switch(this->m_templateId) {
 			case 2101:
-				PrintXmlAstsLogon((AstsLogonInfo*)this->m_lastDecodedInfo);
+				PrintXmlAstsLogon(static_cast<AstsLogonInfo*>(this->m_lastDecodedInfo));
 				break;
 			case 2102:
-				PrintXmlAstsLogout((AstsLogoutInfo*)this->m_lastDecodedInfo);
+				PrintXmlAstsLogout(static_cast<AstsLogoutInfo*>(this->m_lastDecodedInfo));
 				break;
 			case 2103:
-				PrintXmlAstsGeneric((AstsGenericInfo*)this->m_lastDecodedInfo);
+				PrintXmlAstsGeneric(static_cast<AstsGenericInfo*>(this->m_lastDecodedInfo));
 				break;
 			case 2104:
-				PrintXmlAstsIncrementalGeneric((AstsIncrementalGenericInfo*)this->m_lastDecodedInfo);
+				PrintXmlAstsIncrementalGeneric(static_cast<AstsIncrementalGenericInfo*>(this->m_lastDecodedInfo));
 				break;
 			case 2510:
-				PrintXmlAstsOLSFOND((AstsOLSFONDInfo*)this->m_lastDecodedInfo);
+				PrintXmlAstsOLSFOND(static_cast<AstsOLSFONDInfo*>(this->m_lastDecodedInfo));
 				break;
 			case 3600:
-				PrintXmlAstsOLSCURR((AstsOLSCURRInfo*)this->m_lastDecodedInfo);
+				PrintXmlAstsOLSCURR(static_cast<AstsOLSCURRInfo*>(this->m_lastDecodedInfo));
 				break;
 			case 2511:
-				PrintXmlAstsTLSFOND((AstsTLSFONDInfo*)this->m_lastDecodedInfo);
+				PrintXmlAstsTLSFOND(static_cast<AstsTLSFONDInfo*>(this->m_lastDecodedInfo));
 				break;
 			case 3601:
-				PrintXmlAstsTLSCURR((AstsTLSCURRInfo*)this->m_lastDecodedInfo);
+				PrintXmlAstsTLSCURR(static_cast<AstsTLSCURRInfo*>(this->m_lastDecodedInfo));
 				break;
 			case 2523:
-				PrintXmlAstsIncrementalMSRFOND((AstsIncrementalMSRFONDInfo*)this->m_lastDecodedInfo);
+				PrintXmlAstsIncrementalMSRFOND(static_cast<AstsIncrementalMSRFONDInfo*>(this->m_lastDecodedInfo));
 				break;
 			case 3613:
-				PrintXmlAstsIncrementalMSRCURR((AstsIncrementalMSRCURRInfo*)this->m_lastDecodedInfo);
+				PrintXmlAstsIncrementalMSRCURR(static_cast<AstsIncrementalMSRCURRInfo*>(this->m_lastDecodedInfo));
 				break;
 			case 2520:
-				PrintXmlAstsIncrementalOLRFOND((AstsIncrementalOLRFONDInfo*)this->m_lastDecodedInfo);
+				PrintXmlAstsIncrementalOLRFOND(static_cast<AstsIncrementalOLRFONDInfo*>(this->m_lastDecodedInfo));
 				break;
 			case 3610:
-				PrintXmlAstsIncrementalOLRCURR((AstsIncrementalOLRCURRInfo*)this->m_lastDecodedInfo);
+				PrintXmlAstsIncrementalOLRCURR(static_cast<AstsIncrementalOLRCURRInfo*>(this->m_lastDecodedInfo));
 				break;
 			case 2521:
-				PrintXmlAstsIncrementalTLRFOND((AstsIncrementalTLRFONDInfo*)this->m_lastDecodedInfo);
+				PrintXmlAstsIncrementalTLRFOND(static_cast<AstsIncrementalTLRFONDInfo*>(this->m_lastDecodedInfo));
 				break;
 			case 3611:
-				PrintXmlAstsIncrementalTLRCURR((AstsIncrementalTLRCURRInfo*)this->m_lastDecodedInfo);
+				PrintXmlAstsIncrementalTLRCURR(static_cast<AstsIncrementalTLRCURRInfo*>(this->m_lastDecodedInfo));
 				break;
 			case 2115:
-				PrintXmlAstsSecurityDefinition((AstsSecurityDefinitionInfo*)this->m_lastDecodedInfo);
+				PrintXmlAstsSecurityDefinition(static_cast<AstsSecurityDefinitionInfo*>(this->m_lastDecodedInfo));
 				break;
 			case 2106:
-				PrintXmlAstsSecurityStatus((AstsSecurityStatusInfo*)this->m_lastDecodedInfo);
+				PrintXmlAstsSecurityStatus(static_cast<AstsSecurityStatusInfo*>(this->m_lastDecodedInfo));
 				break;
 			case 2107:
-				PrintXmlAstsTradingSessionStatus((AstsTradingSessionStatusInfo*)this->m_lastDecodedInfo);
+				PrintXmlAstsTradingSessionStatus(static_cast<AstsTradingSessionStatusInfo*>(this->m_lastDecodedInfo));
 				break;
 			case 2108:
-				PrintXmlAstsHeartbeat((AstsHeartbeatInfo*)this->m_lastDecodedInfo);
+				PrintXmlAstsHeartbeat(static_cast<AstsHeartbeatInfo*>(this->m_lastDecodedInfo));
 				break;
 		}
 	}
@@ -6127,7 +6108,7 @@ public:
 	}
 	inline void* DecodeFortsUnsupportedMessage() { return 0; }
 	inline FortsSnapshotInfo* GetFortsSnapshotInfoUnsupported() { return 0; }
-	inline void* DecodeFortsDefaultIncrementalRefreshMessage() {
+	inline FortsDefaultIncrementalRefreshMessageInfo* DecodeFortsDefaultIncrementalRefreshMessage() {
 		FortsDefaultIncrementalRefreshMessageInfo* info = GetFreeFortsDefaultIncrementalRefreshMessageInfo();
 		info->PresenceMap = this->m_presenceMap;
 
@@ -6226,7 +6207,7 @@ public:
 		this->m_prevfortsDefaultIncrementalRefreshMessageInfo = info;
 		return info;
 	}
-	inline void* DecodeFortsDefaultSnapshotMessage() {
+	inline FortsDefaultSnapshotMessageInfo* DecodeFortsDefaultSnapshotMessage() {
 		FortsDefaultSnapshotMessageInfo* info = GetFreeFortsDefaultSnapshotMessageInfo();
 		info->PresenceMap = this->m_presenceMap;
 
@@ -6318,7 +6299,7 @@ public:
 		this->m_prevfortsDefaultSnapshotMessageInfo = info;
 		return info;
 	}
-	inline void* DecodeFortsSecurityDefinition() {
+	inline FortsSecurityDefinitionInfo* DecodeFortsSecurityDefinition() {
 		FortsSecurityDefinitionInfo* info = GetFreeFortsSecurityDefinitionInfo();
 		info->PresenceMap = this->m_presenceMap;
 
@@ -6527,7 +6508,7 @@ public:
 		this->m_prevfortsSecurityDefinitionInfo = info;
 		return info;
 	}
-	inline void* DecodeFortsSecurityDefinitionUpdateReport() {
+	inline FortsSecurityDefinitionUpdateReportInfo* DecodeFortsSecurityDefinitionUpdateReport() {
 		FortsSecurityDefinitionUpdateReportInfo* info = GetFreeFortsSecurityDefinitionUpdateReportInfo();
 		info->PresenceMap = this->m_presenceMap;
 
@@ -6549,7 +6530,7 @@ public:
 		this->m_prevfortsSecurityDefinitionUpdateReportInfo = info;
 		return info;
 	}
-	inline void* DecodeFortsSecurityStatus() {
+	inline FortsSecurityStatusInfo* DecodeFortsSecurityStatus() {
 		FortsSecurityStatusInfo* info = GetFreeFortsSecurityStatusInfo();
 		info->PresenceMap = this->m_presenceMap;
 
@@ -6584,7 +6565,7 @@ public:
 		this->m_prevfortsSecurityStatusInfo = info;
 		return info;
 	}
-	inline void* DecodeFortsHeartbeat() {
+	inline FortsHeartbeatInfo* DecodeFortsHeartbeat() {
 		FortsHeartbeatInfo* info = GetFreeFortsHeartbeatInfo();
 		info->PresenceMap = this->m_presenceMap;
 
@@ -6593,7 +6574,7 @@ public:
 		this->m_prevfortsHeartbeatInfo = info;
 		return info;
 	}
-	inline void* DecodeFortsSequenceReset() {
+	inline FortsSequenceResetInfo* DecodeFortsSequenceReset() {
 		FortsSequenceResetInfo* info = GetFreeFortsSequenceResetInfo();
 		info->PresenceMap = this->m_presenceMap;
 
@@ -6603,7 +6584,7 @@ public:
 		this->m_prevfortsSequenceResetInfo = info;
 		return info;
 	}
-	inline void* DecodeFortsTradingSessionStatus() {
+	inline FortsTradingSessionStatusInfo* DecodeFortsTradingSessionStatus() {
 		FortsTradingSessionStatusInfo* info = GetFreeFortsTradingSessionStatusInfo();
 		info->PresenceMap = this->m_presenceMap;
 
@@ -6633,7 +6614,7 @@ public:
 		this->m_prevfortsTradingSessionStatusInfo = info;
 		return info;
 	}
-	inline void* DecodeFortsNews() {
+	inline FortsNewsInfo* DecodeFortsNews() {
 		FortsNewsInfo* info = GetFreeFortsNewsInfo();
 		info->PresenceMap = this->m_presenceMap;
 
@@ -6678,7 +6659,7 @@ public:
 		this->m_prevfortsNewsInfo = info;
 		return info;
 	}
-	inline void* DecodeFortsOrdersLog() {
+	inline FortsOrdersLogInfo* DecodeFortsOrdersLog() {
 		FortsOrdersLogInfo* info = GetFreeFortsOrdersLogInfo();
 		info->PresenceMap = this->m_presenceMap;
 
@@ -6749,7 +6730,7 @@ public:
 		this->m_prevfortsOrdersLogInfo = info;
 		return info;
 	}
-	inline void* DecodeFortsOrdersBook() {
+	inline FortsOrdersBookInfo* DecodeFortsOrdersBook() {
 		FortsOrdersBookInfo* info = GetFreeFortsOrdersBookInfo();
 		info->PresenceMap = this->m_presenceMap;
 
@@ -6806,7 +6787,7 @@ public:
 		this->m_prevfortsOrdersBookInfo = info;
 		return info;
 	}
-	inline void* DecodeFortsLogon() {
+	inline FortsLogonInfo* DecodeFortsLogon() {
 		FortsLogonInfo* info = GetFreeFortsLogonInfo();
 		info->PresenceMap = this->m_presenceMap;
 
@@ -6815,7 +6796,7 @@ public:
 		this->m_prevfortsLogonInfo = info;
 		return info;
 	}
-	inline void* DecodeFortsLogout() {
+	inline FortsLogoutInfo* DecodeFortsLogout() {
 		FortsLogoutInfo* info = GetFreeFortsLogoutInfo();
 		info->PresenceMap = this->m_presenceMap;
 
@@ -6997,43 +6978,43 @@ public:
 
 		switch(this->m_templateId) {
 			case 12:
-				PrintFortsDefaultIncrementalRefreshMessage((FortsDefaultIncrementalRefreshMessageInfo*)this->m_lastDecodedInfo);
+				PrintFortsDefaultIncrementalRefreshMessage(static_cast<FortsDefaultIncrementalRefreshMessageInfo*>(this->m_lastDecodedInfo));
 				break;
 			case 13:
-				PrintFortsDefaultSnapshotMessage((FortsDefaultSnapshotMessageInfo*)this->m_lastDecodedInfo);
+				PrintFortsDefaultSnapshotMessage(static_cast<FortsDefaultSnapshotMessageInfo*>(this->m_lastDecodedInfo));
 				break;
 			case 3:
-				PrintFortsSecurityDefinition((FortsSecurityDefinitionInfo*)this->m_lastDecodedInfo);
+				PrintFortsSecurityDefinition(static_cast<FortsSecurityDefinitionInfo*>(this->m_lastDecodedInfo));
 				break;
 			case 4:
-				PrintFortsSecurityDefinitionUpdateReport((FortsSecurityDefinitionUpdateReportInfo*)this->m_lastDecodedInfo);
+				PrintFortsSecurityDefinitionUpdateReport(static_cast<FortsSecurityDefinitionUpdateReportInfo*>(this->m_lastDecodedInfo));
 				break;
 			case 5:
-				PrintFortsSecurityStatus((FortsSecurityStatusInfo*)this->m_lastDecodedInfo);
+				PrintFortsSecurityStatus(static_cast<FortsSecurityStatusInfo*>(this->m_lastDecodedInfo));
 				break;
 			case 6:
-				PrintFortsHeartbeat((FortsHeartbeatInfo*)this->m_lastDecodedInfo);
+				PrintFortsHeartbeat(static_cast<FortsHeartbeatInfo*>(this->m_lastDecodedInfo));
 				break;
 			case 7:
-				PrintFortsSequenceReset((FortsSequenceResetInfo*)this->m_lastDecodedInfo);
+				PrintFortsSequenceReset(static_cast<FortsSequenceResetInfo*>(this->m_lastDecodedInfo));
 				break;
 			case 8:
-				PrintFortsTradingSessionStatus((FortsTradingSessionStatusInfo*)this->m_lastDecodedInfo);
+				PrintFortsTradingSessionStatus(static_cast<FortsTradingSessionStatusInfo*>(this->m_lastDecodedInfo));
 				break;
 			case 9:
-				PrintFortsNews((FortsNewsInfo*)this->m_lastDecodedInfo);
+				PrintFortsNews(static_cast<FortsNewsInfo*>(this->m_lastDecodedInfo));
 				break;
 			case 14:
-				PrintFortsOrdersLog((FortsOrdersLogInfo*)this->m_lastDecodedInfo);
+				PrintFortsOrdersLog(static_cast<FortsOrdersLogInfo*>(this->m_lastDecodedInfo));
 				break;
 			case 15:
-				PrintFortsOrdersBook((FortsOrdersBookInfo*)this->m_lastDecodedInfo);
+				PrintFortsOrdersBook(static_cast<FortsOrdersBookInfo*>(this->m_lastDecodedInfo));
 				break;
 			case 1000:
-				PrintFortsLogon((FortsLogonInfo*)this->m_lastDecodedInfo);
+				PrintFortsLogon(static_cast<FortsLogonInfo*>(this->m_lastDecodedInfo));
 				break;
 			case 1001:
-				PrintFortsLogout((FortsLogoutInfo*)this->m_lastDecodedInfo);
+				PrintFortsLogout(static_cast<FortsLogoutInfo*>(this->m_lastDecodedInfo));
 				break;
 		}
 	}
@@ -7041,49 +7022,50 @@ public:
 
 		switch(this->m_templateId) {
 			case 12:
-				PrintXmlFortsDefaultIncrementalRefreshMessage((FortsDefaultIncrementalRefreshMessageInfo*)this->m_lastDecodedInfo);
+				PrintXmlFortsDefaultIncrementalRefreshMessage(static_cast<FortsDefaultIncrementalRefreshMessageInfo*>(this->m_lastDecodedInfo));
 				break;
 			case 13:
-				PrintXmlFortsDefaultSnapshotMessage((FortsDefaultSnapshotMessageInfo*)this->m_lastDecodedInfo);
+				PrintXmlFortsDefaultSnapshotMessage(static_cast<FortsDefaultSnapshotMessageInfo*>(this->m_lastDecodedInfo));
 				break;
 			case 3:
-				PrintXmlFortsSecurityDefinition((FortsSecurityDefinitionInfo*)this->m_lastDecodedInfo);
+				PrintXmlFortsSecurityDefinition(static_cast<FortsSecurityDefinitionInfo*>(this->m_lastDecodedInfo));
 				break;
 			case 4:
-				PrintXmlFortsSecurityDefinitionUpdateReport((FortsSecurityDefinitionUpdateReportInfo*)this->m_lastDecodedInfo);
+				PrintXmlFortsSecurityDefinitionUpdateReport(static_cast<FortsSecurityDefinitionUpdateReportInfo*>(this->m_lastDecodedInfo));
 				break;
 			case 5:
-				PrintXmlFortsSecurityStatus((FortsSecurityStatusInfo*)this->m_lastDecodedInfo);
+				PrintXmlFortsSecurityStatus(static_cast<FortsSecurityStatusInfo*>(this->m_lastDecodedInfo));
 				break;
 			case 6:
-				PrintXmlFortsHeartbeat((FortsHeartbeatInfo*)this->m_lastDecodedInfo);
+				PrintXmlFortsHeartbeat(static_cast<FortsHeartbeatInfo*>(this->m_lastDecodedInfo));
 				break;
 			case 7:
-				PrintXmlFortsSequenceReset((FortsSequenceResetInfo*)this->m_lastDecodedInfo);
+				PrintXmlFortsSequenceReset(static_cast<FortsSequenceResetInfo*>(this->m_lastDecodedInfo));
 				break;
 			case 8:
-				PrintXmlFortsTradingSessionStatus((FortsTradingSessionStatusInfo*)this->m_lastDecodedInfo);
+				PrintXmlFortsTradingSessionStatus(static_cast<FortsTradingSessionStatusInfo*>(this->m_lastDecodedInfo));
 				break;
 			case 9:
-				PrintXmlFortsNews((FortsNewsInfo*)this->m_lastDecodedInfo);
+				PrintXmlFortsNews(static_cast<FortsNewsInfo*>(this->m_lastDecodedInfo));
 				break;
 			case 14:
-				PrintXmlFortsOrdersLog((FortsOrdersLogInfo*)this->m_lastDecodedInfo);
+				PrintXmlFortsOrdersLog(static_cast<FortsOrdersLogInfo*>(this->m_lastDecodedInfo));
 				break;
 			case 15:
-				PrintXmlFortsOrdersBook((FortsOrdersBookInfo*)this->m_lastDecodedInfo);
+				PrintXmlFortsOrdersBook(static_cast<FortsOrdersBookInfo*>(this->m_lastDecodedInfo));
 				break;
 			case 1000:
-				PrintXmlFortsLogon((FortsLogonInfo*)this->m_lastDecodedInfo);
+				PrintXmlFortsLogon(static_cast<FortsLogonInfo*>(this->m_lastDecodedInfo));
 				break;
 			case 1001:
-				PrintXmlFortsLogout((FortsLogoutInfo*)this->m_lastDecodedInfo);
+				PrintXmlFortsLogout(static_cast<FortsLogoutInfo*>(this->m_lastDecodedInfo));
 				break;
 		}
 	}
 	inline FortsSnapshotInfo* GetFortsSnapshotInfo() {
 		this->DecodeFortsHeader();
-		return this->GetFortsSnapshotInfoDefaultSnapshotMessage();
+		if(this->m_templateId == 13)
+			return this->GetFortsSnapshotInfoDefaultSnapshotMessage();
 		return this->GetFortsSnapshotInfoUnsupported();
 	}
 #pragma endregion

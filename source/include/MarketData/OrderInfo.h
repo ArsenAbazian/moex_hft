@@ -477,13 +477,24 @@ public:
 template <typename T> PointerList<T>* OrderInfo<T>::m_itemsPool = 0;
 template <typename T> PointerList<QuoteInfo>* OrderInfo<T>::m_aggregatedItemsPool = 0;
 
-template <typename T> OrderInfo<T>::OrderInfo() {
+template <typename T> OrderInfo<T>::OrderInfo() :
+        m_entryInfo(0),
+        m_sellQuoteList(0),
+        m_buyQuoteList(0),
+        m_aggregatedBuyQuoteList(0),
+        m_aggregatedSellQuoteList(0),
+        m_tradingSession(0),
+        m_shouldProcessSnapshot(false),
+        m_rptSeq(0),
+        m_savedRptSeq(0),
+        m_snapshotProcessedCount(0),
+        m_used(0),
+        m_symbolInfo(0),
+        m_sessionInt(0) {
     if(OrderInfo::m_itemsPool == 0)
         OrderInfo::m_itemsPool = new PointerList<T>(RobotSettings::Default->MarketDataMaxEntriesCount, false);
     if(OrderInfo::m_aggregatedItemsPool == 0)
         OrderInfo::m_aggregatedItemsPool = new PointerList<QuoteInfo>(RobotSettings::Default->MarketDataMaxEntriesCount, true);
-
-    this->m_entryInfo = 0;
 
     this->m_sellQuoteList = new PointerListLite<T>(OrderInfo<T>::m_itemsPool);
     this->m_buyQuoteList = new PointerListLite<T>(OrderInfo<T>::m_itemsPool);
@@ -491,10 +502,6 @@ template <typename T> OrderInfo<T>::OrderInfo() {
     this->m_aggregatedSellQuoteList = new PointerListLite<QuoteInfo>(OrderInfo<T>::m_aggregatedItemsPool);
 
     this->m_tradingSession = new SizedArray();
-    this->m_shouldProcessSnapshot = false;
-    this->m_rptSeq = 0;
-    this->m_savedRptSeq = 0;
-    this->m_snapshotProcessedCount = 0;
 }
 
 #endif //HFT_ROBOT_ORDERINFO_H

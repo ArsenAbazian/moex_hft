@@ -138,8 +138,9 @@ public:
     const char *m_text;
     int m_length;
 
-    SizedArray() {
-        this->m_length = 0;
+    SizedArray() :
+            m_text(0),
+            m_length(0) {
     }
 
     inline void Set(const char *text, int length) { this->m_text = text; this->m_length = length; }

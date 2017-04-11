@@ -17,7 +17,9 @@ protected:
     Decimal         m_value;
     Decimal         *m_valuePtr;
 public:
-    StatisticItemDecimal() {
+    StatisticItemDecimal() :
+            m_time(0),
+            m_value(0, 0) {
         this->m_valuePtr = &this->m_value;
     }
     ~StatisticItemDecimal() { }
@@ -37,7 +39,10 @@ protected:
     Decimal         *m_valuePtr;
     Decimal         *m_value2Ptr;
 public:
-    StatisticItemDecimal2() {
+    StatisticItemDecimal2() :
+            m_time(0),
+            m_value(0, 0),
+            m_value2(0, 0) {
         this->m_valuePtr = &this->m_value;
         this->m_value2Ptr = &this->m_value2;
     }
@@ -67,7 +72,13 @@ protected:
     Decimal         *m_tradeValuePtr;
     UINT32          m_dealTime;
 public:
-    StatisticItemLastDealInfo() {
+    StatisticItemLastDealInfo() :
+            m_time(0),
+            m_price(0, 0),
+            m_size(0, 0),
+            m_netChangePrevDay(0, 0),
+            m_changeFromWAPrice(0, 0),
+            m_tradeValue(0, 0) {
         this->m_pricePtr = &(this->m_price);
         this->m_sizePtr = &(this->m_size);
         this->m_netChangePrevDayPtr = &(this->m_netChangePrevDay);
@@ -101,7 +112,10 @@ protected:
     Decimal         *m_sizePtr;
 
 public:
-    StatisticItemTotalOffer() {
+    StatisticItemTotalOffer() :
+            m_time(0),
+            m_size(0, 0),
+            m_offerNbOr(0) {
         this->m_sizePtr = &(this->m_size);
     }
     ~StatisticItemTotalOffer() { }
@@ -124,7 +138,11 @@ protected:
     Decimal         *m_sizePtr;
     Decimal         *m_tradeValuePtr;
 public:
-    StatisticItemTransactionsMagnitude() {
+    StatisticItemTransactionsMagnitude() :
+            m_time(0),
+            m_size(0, 0),
+            m_tradeValue(0, 0),
+            m_totalNumOfTrades(0) {
         this->m_sizePtr = &(this->m_size);
         this->m_tradeValuePtr = &(this->m_tradeValue);
     }
@@ -151,7 +169,11 @@ protected:
     Decimal         *m_sizePtr;
     Decimal         *m_tradeValuePtr;
 public:
-    StatisticItemIndexList() {
+    StatisticItemIndexList() :
+            m_time(0),
+            m_price(0, 0),
+            m_size(0, 0),
+            m_tradeValue(0, 0) {
         this->m_pricePtr = &(this->m_price);
         this->m_sizePtr = &(this->m_size);
         this->m_tradeValuePtr = &(this->m_tradeValue);
@@ -177,7 +199,10 @@ protected:
     Decimal         *m_sizePtr;
 
 public:
-    StatisticItemTotalBid() {
+    StatisticItemTotalBid() :
+            m_time(0),
+            m_size(0, 0),
+            m_bidNbOr(0) {
         this->m_sizePtr = &(this->m_size);
     }
     ~StatisticItemTotalBid() { }
@@ -195,7 +220,7 @@ template <typename T> class StatisticItem {
     UINT64          m_time;
     T               m_value;
 public:
-    StatisticItem() { }
+    StatisticItem() : m_time(0) { }
     ~StatisticItem() { }
 
     inline void Set(UINT64 time, T value) {

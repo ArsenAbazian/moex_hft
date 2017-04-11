@@ -40,7 +40,7 @@ public:
         this->Used = false;
         this->Pointer = 0;
         this->m_incEntries = new void *[MDENTRYINFO_INCREMENTAL_ENTRIES_BUFFER_LENGTH];
-        bzero(this->m_incEntries, sizeof(void *) * this->m_incEntriesCount);
+        memset(this->m_incEntries, sizeof(void *) * this->m_incEntriesCount, 0);
         this->m_incEntriesMaxIndex = -1;
         this->m_incStartRptSeq = 0;
     }
@@ -103,19 +103,21 @@ public:
 
     inline void Reset() {
         if(this->m_incEntriesMaxIndex >= 0)
-            bzero(this->m_incEntries, sizeof(void*) * (this->m_incEntriesMaxIndex + 1));
+            memset(this->m_incEntries, sizeof(void*) * (this->m_incEntriesMaxIndex + 1), 0);
         this->m_incEntriesMaxIndex = -1;
         this->m_incStartRptSeq = 0;
     }
 
     inline void Clear() {
+        /*
         void **ptr = this->m_incEntries;
         void *item = 0;
         for(int i = 0; i < this->m_incEntriesCount; i++) {
             item = *ptr;
             //if(item != 0) item->Clear();
             throw;
-        }
+        }*/
+        //memset(this->m_incEntries, sizeof(void*) * this->m_incEntriesCount);
         this->Reset();
     }
 

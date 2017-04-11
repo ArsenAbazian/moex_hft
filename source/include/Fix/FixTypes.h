@@ -128,8 +128,8 @@ typedef struct _UnderlyingStipulation {
 }UnderlyingStipulation;
 
 typedef enum _FixSessionStatus  {
-    Active = 0,
-    PasswordDoesNotMeetRequirements = 3
+    fssActive = 0,
+    fssPasswordDoesNotMeetRequirements = 3
 }FixSessionStatus;
 
 
@@ -414,25 +414,26 @@ public:
     INT64       MantissaDigitCount;
     double      Value;
 
-    Decimal(int value) {
-        Mantissa = value;
-        Exponent = 0;
+    Decimal(int value) :
+            Mantissa(value),
+            Exponent(0),
+            Value(0) {
         MantissaDigitCount = CalcMantissaDigitCount();
     }
-    Decimal() {
-        Mantissa = 0;
-        Exponent = 0;
-        MantissaDigitCount = 0;
+    Decimal() : Mantissa(0),
+                Exponent(0),
+                Value(0),
+                MantissaDigitCount(0) {
     }
-    Decimal(INT64 mantissa, INT32 exponent) {
-        this->Mantissa = mantissa;
-        this->Exponent = exponent;
-        //this->Update();
+    Decimal(INT64 mantissa, INT32 exponent) :
+            Mantissa(mantissa),
+            Exponent(exponent),
+            Value(0),
+            MantissaDigitCount(0) {
     }
     inline void Set(INT64 mantissa, INT32 exponent) {
         this->Mantissa = mantissa;
         this->Exponent = exponent;
-        //this->Update();
     }
     inline void Set(Decimal *value) {
         this->Mantissa = value->Mantissa;

@@ -272,10 +272,10 @@ protected:
 
     inline FeedConnectionMessageInfo* Packet(int index) { return this->m_packets[index - this->m_windowMsgSeqNum]; }
     inline bool SupportWindow() {
-        return this->m_type == FeedConnectionType::Incremental ||
-                this->m_type == FeedConnectionType::IncrementalForts ||
-                this->m_type == FeedConnectionType::InstrumentStatus ||
-                this->m_type == FeedConnectionType::InstrumentStatusForts;
+        return this->m_type == FeedConnectionType::fctIncremental ||
+                this->m_type == FeedConnectionType::fctIncrementalForts ||
+                this->m_type == FeedConnectionType::fctInstrumentStatus ||
+                this->m_type == FeedConnectionType::fctInstrumentStatusForts;
     }
 
     inline bool ProcessServerCoreIncremental_HistoricalReplay(SocketBuffer *buffer, int size, int msgSeqNum) {
@@ -326,9 +326,9 @@ protected:
     }
     inline bool ProcessServerCore_FromHistoricalReplay(SocketBuffer *buffer, int size, int msgSeqNum) {
         // we should only process incremental messages
-        if(this->m_type == FeedConnectionType::Incremental || this->m_type == FeedConnectionType::IncrementalForts)
+        if(this->m_type == FeedConnectionType::fctIncremental || this->m_type == FeedConnectionType::fctIncrementalForts)
             return ProcessServerCoreIncremental_HistoricalReplay(buffer, size, msgSeqNum);
-        if(this->m_type == FeedConnectionType::InstrumentStatus)
+        if(this->m_type == FeedConnectionType::fctInstrumentStatus)
             return ProcessServerCoreSecurityStatus_HistoricalReplay(buffer, size, msgSeqNum);
         return true;
     }
@@ -443,13 +443,13 @@ protected:
     inline bool ProcessServerCore(int size) {
         int msgSeqNum = *((UINT*)this->m_recvABuffer->CurrentPos());
 
-        if(this->m_type == FeedConnectionType::Incremental || this->m_type == FeedConnectionType::IncrementalForts)
+        if(this->m_type == FeedConnectionType::fctIncremental || this->m_type == FeedConnectionType::fctIncrementalForts)
             return ProcessServerCoreIncremental(size, msgSeqNum);
-        if(this->m_type == FeedConnectionType::InstrumentStatus || this->m_type == FeedConnectionType::InstrumentStatusForts)
+        if(this->m_type == FeedConnectionType::fctInstrumentStatus || this->m_type == FeedConnectionType::fctInstrumentStatusForts)
             return ProcessServerCoreSecurityStatus(size, msgSeqNum);
-        if(this->m_type == FeedConnectionType::Snapshot)
+        if(this->m_type == FeedConnectionType::fctSnapshot)
             return ProcessServerCoreSnapshot(size, msgSeqNum);
-        if(this->m_type == FeedConnectionType::InstrumentDefinition)
+        if(this->m_type == FeedConnectionType::fctInstrumentDefinition)
             return ProcessServerCoreSecurityDefinition(size, msgSeqNum);
         return false;
     }
@@ -588,7 +588,7 @@ protected:
         ProgramStatistics::Current->IncFondOlsProcessedCount();
         ProgramStatistics::Total->IncFondOlsProcessedCount();
 #endif
-        AstsOLSFONDInfo *info = (AstsOLSFONDInfo *) this->m_fastProtocolManager->DecodeAstsOLSFOND();
+        AstsOLSFONDInfo *info = this->m_fastProtocolManager->DecodeAstsOLSFOND();
         this->m_incremental->OrderFond()->ProcessSnapshot(info);
         info->ReleaseUnused();
         return true;
@@ -624,7 +624,7 @@ protected:
         ProgramStatistics::Current->IncCurrOlsProcessedCount();
         ProgramStatistics::Total->IncCurrOlsProcessedCount();
 #endif
-        AstsOLSCURRInfo *info = (AstsOLSCURRInfo *) this->m_fastProtocolManager->DecodeAstsOLSCURR();
+        AstsOLSCURRInfo *info = this->m_fastProtocolManager->DecodeAstsOLSCURR();
         this->m_incremental->OrderCurr()->ProcessSnapshot(info);
         info->ReleaseUnused();
         return true;
@@ -660,7 +660,7 @@ protected:
         ProgramStatistics::Current->IncFondTlsProcessedCount();
         ProgramStatistics::Total->IncFondTlsProcessedCount();
 #endif
-        AstsTLSFONDInfo *info = (AstsTLSFONDInfo *) this->m_fastProtocolManager->DecodeAstsTLSFOND();
+        AstsTLSFONDInfo *info = this->m_fastProtocolManager->DecodeAstsTLSFOND();
         this->m_incremental->TradeFond()->ProcessSnapshot(info);
         info->ReleaseUnused();
         return true;
@@ -696,7 +696,7 @@ protected:
         ProgramStatistics::Current->IncCurrTlsProcessedCount();
         ProgramStatistics::Total->IncCurrTlsProcessedCount();
 #endif
-        AstsTLSCURRInfo *info = (AstsTLSCURRInfo *) this->m_fastProtocolManager->DecodeAstsTLSCURR();
+        AstsTLSCURRInfo *info = this->m_fastProtocolManager->DecodeAstsTLSCURR();
         this->m_incremental->TradeCurr()->ProcessSnapshot(info);
         info->ReleaseUnused();
         return true;
@@ -732,7 +732,7 @@ protected:
         ProgramStatistics::Current->IncFondMssProcessedCount();
         ProgramStatistics::Total->IncFondMssProcessedCount();
 #endif
-        AstsGenericInfo *info = (AstsGenericInfo *) this->m_fastProtocolManager->DecodeAstsGeneric();
+        AstsGenericInfo *info = this->m_fastProtocolManager->DecodeAstsGeneric();
         this->m_incremental->StatisticFond()->ProcessSnapshot(info);
         info->ReleaseUnused();
         return true;
@@ -768,7 +768,7 @@ protected:
         ProgramStatistics::Current->IncCurrMssProcessedCount();
         ProgramStatistics::Total->IncCurrMssProcessedCount();
 #endif
-        AstsGenericInfo *info = (AstsGenericInfo *) this->m_fastProtocolManager->DecodeAstsGeneric();
+        AstsGenericInfo *info = this->m_fastProtocolManager->DecodeAstsGeneric();
         this->m_incremental->StatisticCurr()->ProcessSnapshot(info);
         info->ReleaseUnused();
         return true;
@@ -819,7 +819,7 @@ protected:
 
     inline bool ApplySnapshotPart_FORTS_OBS(int index) {
         this->PrepareDecodeSnapshotMessageForts(index);
-        FortsDefaultSnapshotMessageInfo *info = (FortsDefaultSnapshotMessageInfo *) this->m_fastProtocolManager->DecodeFortsDefaultSnapshotMessage();
+        FortsDefaultSnapshotMessageInfo *info = this->m_fastProtocolManager->DecodeFortsDefaultSnapshotMessage();
         this->m_incremental->OrderBookForts()->ProcessSnapshotForts(info);
         info->ReleaseUnused();
         //printf("%s  apply part for security id = %" PRIu64 "  index = %d\n", this->m_idName, info->SecurityID, index);
@@ -860,7 +860,7 @@ protected:
 
     inline bool ApplySnapshotPart_FORTS_TLS(int index) {
         this->PrepareDecodeSnapshotMessageForts(index);
-        FortsDefaultSnapshotMessageInfo *info = (FortsDefaultSnapshotMessageInfo *) this->m_fastProtocolManager->DecodeFortsDefaultSnapshotMessage();
+        FortsDefaultSnapshotMessageInfo *info = this->m_fastProtocolManager->DecodeFortsDefaultSnapshotMessage();
         //printf("%s  apply part for security id = %" PRIu64 "  index = %d\n", this->m_idName, info->SecurityID, index);
         this->m_incremental->TradeForts()->ProcessSnapshotForts(info);
         info->ReleaseUnused();
@@ -1117,9 +1117,6 @@ protected:
     inline bool ProcessIncrementalMessages() {
         int localStart = this->m_startMsgSeqNum - this->m_windowMsgSeqNum;
         int localEnd = this->m_endMsgSeqNum - this->m_windowMsgSeqNum;
-        int i = localStart;
-
-        int newStartMsgSeqNum = -1;
 
         if(localStart == localEnd) { // special case - one packet
             FeedConnectionMessageInfo *info = this->m_packets[localStart];
@@ -1135,6 +1132,9 @@ protected:
             this->AfterMoveWindow();
         }
         else { // more than one packet
+            int newStartMsgSeqNum = -1;
+            int i = localStart;
+
             FeedConnectionMessageInfo **pinfo = this->m_packets + i;
             FeedConnectionMessageInfo *info;
             while (i <= localEnd) {
@@ -1164,7 +1164,7 @@ protected:
                     return false;
                 i++; pinfo++;
             }
-            if (newStartMsgSeqNum != -1) {
+            if(newStartMsgSeqNum != -1) {
                 this->m_startMsgSeqNum = newStartMsgSeqNum;
             }
             else {
@@ -1180,10 +1180,6 @@ protected:
     inline bool ProcessIncrementalMessagesForts() {
         int localStart = this->m_startMsgSeqNum - this->m_windowMsgSeqNum;
         int localEnd = this->m_endMsgSeqNum - this->m_windowMsgSeqNum;
-        int i = localStart;
-
-        int newStartMsgSeqNum = -1;
-        int lastNullMsgSeq = 0;
 
         if(localStart == localEnd) { // special case - one packet
             FeedConnectionMessageInfo *info = this->m_packets[localStart];
@@ -1199,6 +1195,10 @@ protected:
             this->AfterMoveWindow();
         }
         else { // more than one packet
+            int newStartMsgSeqNum = -1;
+            int lastNullMsgSeq = 0;
+            int i = localStart;
+
             FeedConnectionMessageInfo **pinfo = this->m_packets + i;
             FeedConnectionMessageInfo *info;
             int msgSeqNum = this->m_startMsgSeqNum;
@@ -1393,7 +1393,7 @@ protected:
         return true;
     }
     inline bool StartListenSnapshot() {
-		if(this->m_type == FeedConnectionType::InstrumentStatus || this->m_type == FeedConnectionType::InstrumentStatusForts)
+		if(this->m_type == FeedConnectionType::fctInstrumentStatus || this->m_type == FeedConnectionType::fctInstrumentStatusForts)
             return this->StartSecurityStatusSnapshot();
         return this->StartIncrementalSnapshot();
 	}
@@ -1661,7 +1661,7 @@ protected:
     inline bool ProcessTradingSessionStatusForts() {
         FeedConnectionMessageInfo *info = this->m_packets[this->m_startMsgSeqNum];
         this->m_fastProtocolManager->SetNewBuffer(info->m_address, info->m_size);
-        FortsTradingSessionStatusInfo *sinfo = (FortsTradingSessionStatusInfo*)this->m_fastProtocolManager->DecodeFortsTradingSessionStatus();
+        FortsTradingSessionStatusInfo *sinfo = this->m_fastProtocolManager->DecodeFortsTradingSessionStatus();
         return this->m_incremental->OnTradingSessionStatusForts(sinfo);
     }
 
@@ -1930,7 +1930,7 @@ protected:
             printf("not an security definition template: %d\n", this->m_fastProtocolManager->TemplateId());
             return true;
         }
-        return this->ProcessSecurityDefinition((FortsSecurityDefinitionInfo*)this->m_fastProtocolManager->DecodeFortsSecurityDefinition());
+        return this->ProcessSecurityDefinition(this->m_fastProtocolManager->DecodeFortsSecurityDefinition());
     }
 
     inline bool ProcessSecurityDefinitionAsts(unsigned char *buffer, int length) {
@@ -1942,7 +1942,7 @@ protected:
             printf("not an security definition template: %d\n", this->m_fastProtocolManager->TemplateId());
             return true;
         }
-        return this->ProcessSecurityDefinition((AstsSecurityDefinitionInfo*)this->m_fastProtocolManager->DecodeAstsSecurityDefinition());
+        return this->ProcessSecurityDefinition(this->m_fastProtocolManager->DecodeAstsSecurityDefinition());
     }
 
     inline bool ProcessSecurityDefinitionForts(FeedConnectionMessageInfo *info) {
@@ -2332,7 +2332,7 @@ protected:
         if(this->m_fastProtocolManager->TemplateId() != FeedTemplateId::fmcLogon) {
             this->Disconnect();
             if(this->m_fastProtocolManager->TemplateId() == FeedTemplateId::fmcLogout) {
-                this->OnProcessHistoricalReplayUnexpectedLogoutMessage("OnWaitLogon", (AstsLogoutInfo*)this->m_fastProtocolManager->DecodeAstsLogout());
+                this->OnProcessHistoricalReplayUnexpectedLogoutMessage("OnWaitLogon", this->m_fastProtocolManager->DecodeAstsLogout());
             }
             this->m_hsState = FeedConnectionHistoricalReplayState::hsSuspend;
             return true;
@@ -2389,12 +2389,12 @@ protected:
 
             if(this->m_fastProtocolManager->TemplateId() == FeedTemplateId::fmcLogout) {
                 if(msg->IsAllMessagesReceived()) {
-                    this->OnProcessHistoricalReplayExpectedLogoutMessage((AstsLogoutInfo*)this->m_fastProtocolManager->DecodeAstsLogout());
+                    this->OnProcessHistoricalReplayExpectedLogoutMessage(this->m_fastProtocolManager->DecodeAstsLogout());
                     this->m_hsRequestList->Remove(ptr);
                     this->m_hsState = FeedConnectionHistoricalReplayState::hsSuspend;
                     return this->HistoricalReplay_SendLogout();
                 }
-                this->OnProcessHistoricalReplayUnexpectedLogoutMessage("OnRecvMessage", (AstsLogoutInfo*)this->m_fastProtocolManager->DecodeAstsLogout());
+                this->OnProcessHistoricalReplayUnexpectedLogoutMessage("OnRecvMessage", this->m_fastProtocolManager->DecodeAstsLogout());
                 this->Disconnect();
                 this->m_hsState = FeedConnectionHistoricalReplayState::hsSuspend;
                 return true;
@@ -2873,25 +2873,25 @@ protected:
         switch (this->m_fastProtocolManager->TemplateId()) {
             case FeedTemplateId::fmcIncrementalRefresh_OLR_FOND:
                 return this->OnIncrementalRefresh_OLR_FOND(
-                        (AstsIncrementalOLRFONDInfo *) this->m_fastProtocolManager->LastDecodeInfo());
+                        static_cast<AstsIncrementalOLRFONDInfo*>(this->m_fastProtocolManager->LastDecodeInfo()));
             case FeedTemplateId::fmcIncrementalRefresh_OLR_CURR:
                 return this->OnIncrementalRefresh_OLR_CURR(
-                        (AstsIncrementalOLRCURRInfo *) this->m_fastProtocolManager->LastDecodeInfo());
+                        static_cast<AstsIncrementalOLRCURRInfo*>(this->m_fastProtocolManager->LastDecodeInfo()));
             case FeedTemplateId::fmcIncrementalRefresh_TLR_FOND:
                 return this->OnIncrementalRefresh_TLR_FOND(
-                        (AstsIncrementalTLRFONDInfo *) this->m_fastProtocolManager->LastDecodeInfo());
+                        static_cast<AstsIncrementalTLRFONDInfo*>(this->m_fastProtocolManager->LastDecodeInfo()));
             case FeedTemplateId::fmcIncrementalRefresh_TLR_CURR:
                 return this->OnIncrementalRefresh_TLR_CURR(
-                        (AstsIncrementalTLRCURRInfo *) this->m_fastProtocolManager->LastDecodeInfo());
+                        static_cast<AstsIncrementalTLRCURRInfo*>(this->m_fastProtocolManager->LastDecodeInfo()));
             case FeedTemplateId::fmcIncrementalRefresh_MSR_FOND:
                 return this->OnIncrementalRefresh_MSR_FOND(
-                        (AstsIncrementalMSRFONDInfo *) this->m_fastProtocolManager->LastDecodeInfo());
+                        static_cast<AstsIncrementalMSRFONDInfo*>(this->m_fastProtocolManager->LastDecodeInfo()));
             case FeedTemplateId::fmcIncrementalRefresh_MSR_CURR:
                 return this->OnIncrementalRefresh_MSR_CURR(
-                        (AstsIncrementalMSRCURRInfo *) this->m_fastProtocolManager->LastDecodeInfo());
+                        static_cast<AstsIncrementalMSRCURRInfo*>(this->m_fastProtocolManager->LastDecodeInfo()));
             case FeedTemplateId::fcmHeartBeat:
                 return this->OnHearthBeatMessage(
-                        (AstsHeartbeatInfo *) this->m_fastProtocolManager->LastDecodeInfo());
+                        static_cast<AstsHeartbeatInfo*>(this->m_fastProtocolManager->LastDecodeInfo()));
             default:
                 throw;
         }
@@ -2901,13 +2901,13 @@ protected:
         if (templateId == FeedTemplateId::fortsIncremental) {
             if (this->m_id == FeedConnectionId::fcidObrForts)
                 return this->OnIncrementalRefresh_FORTS_OBR(
-                        (FortsDefaultIncrementalRefreshMessageInfo *) this->m_fastProtocolManager->LastDecodeInfo());
+                        static_cast<FortsDefaultIncrementalRefreshMessageInfo*>(this->m_fastProtocolManager->LastDecodeInfo()));
             else
                 return this->OnIncrementalRefresh_FORTS_TLR(
-                        (FortsDefaultIncrementalRefreshMessageInfo *) this->m_fastProtocolManager->LastDecodeInfo());
+                        static_cast<FortsDefaultIncrementalRefreshMessageInfo*>(this->m_fastProtocolManager->LastDecodeInfo()));
         }
         if(templateId == FeedTemplateId::fortsTradingSessionStatus)
-            return this->OnTradingSessionStatusForts((FortsTradingSessionStatusInfo*) this->m_fastProtocolManager->LastDecodeInfo());
+            return this->OnTradingSessionStatusForts(static_cast<FortsTradingSessionStatusInfo*>(this->m_fastProtocolManager->LastDecodeInfo()));
         else if (templateId == FeedTemplateId::fortsHearthBeat)
             return true;
         else
@@ -2958,7 +2958,7 @@ protected:
 
         this->m_fastProtocolManager->DecodeAstsHeader();
         if(this->m_fastProtocolManager->TemplateId() == FeedTemplateId::fmcSecurityStatus) {
-            bool res = this->ProcessSecurityStatus((AstsSecurityStatusInfo *)this->m_fastProtocolManager->DecodeAstsSecurityStatus());
+            bool res = this->ProcessSecurityStatus(this->m_fastProtocolManager->DecodeAstsSecurityStatus());
 #ifdef TEST
             if(this->m_fastProtocolManager->MessageLength() != length)
                 throw;
@@ -2977,12 +2977,10 @@ protected:
         this->m_fastProtocolManager->DecodeFortsHeader();
         bool res = true;
         if(this->m_fastProtocolManager->TemplateId() == FeedTemplateId::fortsSecurityStatus) {
-            res = this->ProcessSecurityStatus(
-                    (FortsSecurityStatusInfo *) this->m_fastProtocolManager->DecodeFortsSecurityStatus());
+            res = this->ProcessSecurityStatus(this->m_fastProtocolManager->DecodeFortsSecurityStatus());
         }
         else if(this->m_fastProtocolManager->TemplateId() == FeedTemplateId::fortsSecurityDefinitionUpdateReport) {
-            res = this->ProcessSecurityDefinitionUpdateReport(
-                    (FortsSecurityDefinitionUpdateReportInfo *) this->m_fastProtocolManager->DecodeFortsSecurityDefinitionUpdateReport());
+            res = this->ProcessSecurityDefinitionUpdateReport(this->m_fastProtocolManager->DecodeFortsSecurityDefinitionUpdateReport());
         }
         else {
             throw;
@@ -3024,7 +3022,7 @@ protected:
 	}
     inline void CheckUpdateFortsIncrementalParams(int messageIndex) {
         if(this->m_fastProtocolManager->TemplateId() == FeedTemplateId::fortsIncremental) {
-            FortsDefaultIncrementalRefreshMessageInfo *info = (FortsDefaultIncrementalRefreshMessageInfo*)this->m_fastProtocolManager->LastDecodeInfo();
+            FortsDefaultIncrementalRefreshMessageInfo *info = static_cast<FortsDefaultIncrementalRefreshMessageInfo*>(this->m_fastProtocolManager->LastDecodeInfo());
             if(this->m_fortsIncrementalRouteFirst == messageIndex) // at least should be one MDEntry
                 this->m_fortsRouteFirtsSecurityId = info->MDEntries[0]->SecurityID;
             // if there is no LastFragment present in message i.e. it == null then it should be threathed as 1
@@ -3088,7 +3086,7 @@ protected:
         // it is unfinished fragmented message.
         if(prevFortsRouteFirst <= lastNullMsgIndex) {
             if(this->m_fastProtocolManager->TemplateId() == FeedTemplateId::fortsIncremental) {
-                FortsDefaultIncrementalRefreshMessageInfo *ri = (FortsDefaultIncrementalRefreshMessageInfo *) this->m_fastProtocolManager->LastDecodeInfo();
+                FortsDefaultIncrementalRefreshMessageInfo *ri = static_cast<FortsDefaultIncrementalRefreshMessageInfo*>(this->m_fastProtocolManager->LastDecodeInfo());
                 if ((ri->NullMap & FortsDefaultIncrementalRefreshMessageInfoNullIndices::LastFragmentNullIndex) == 0) {
                     ri->Clear();
                     return true;
@@ -3139,7 +3137,7 @@ protected:
 
 public:
 	FeedConnection(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort);
-	~FeedConnection();
+	virtual ~FeedConnection();
 
     inline int LastMsgSeqNumProcessed() { return this->m_lastMsgSeqNumProcessed; }
     inline MarketDataTable<OrderInfo, AstsOLSFONDInfo, AstsOLSFONDItemInfo> *OrderFond() { return this->m_orderTableFond; }
@@ -3187,7 +3185,6 @@ public:
         this->m_snapshotRouteFirst = -1;
         this->m_snapshotLastFragment = -1;
         this->m_nextFortsSnapshotRouteFirst = -1;
-        this->m_snapshotRouteFirst = -1;
     }
 
     inline void SetType(FeedConnectionType type) {
@@ -3708,7 +3705,7 @@ public:
         this->m_fastProtocolManager->DecodeAstsHeader();
         if(this->m_fastProtocolManager->TemplateId() != FeedTemplateId::fmcSecurityDefinition)
             return;
-        AstsSecurityDefinitionInfo *fi = (AstsSecurityDefinitionInfo *)this->m_fastProtocolManager->DecodeAstsSecurityDefinition();
+        AstsSecurityDefinitionInfo *fi = this->m_fastProtocolManager->DecodeAstsSecurityDefinition();
         this->UpdateSecurityDefinition(fi);
         fi->ReleaseUnused();
     }
@@ -3718,7 +3715,7 @@ public:
         this->m_fastProtocolManager->DecodeFortsHeader();
         if(this->m_fastProtocolManager->TemplateId() != FeedTemplateId::fortsSecurityDefinition)
             return;
-        FortsSecurityDefinitionInfo *fi = (FortsSecurityDefinitionInfo *)this->m_fastProtocolManager->DecodeFortsSecurityDefinition();
+        FortsSecurityDefinitionInfo *fi = this->m_fastProtocolManager->DecodeFortsSecurityDefinition();
         this->UpdateSecurityDefinition(fi);
         fi->ReleaseUnused();
     }
@@ -3755,7 +3752,6 @@ public:
     }
 
     inline void UpdateSecurityDefinition(LinkedPointer<AstsSecurityDefinitionInfo> *ptr, AstsSecurityDefinitionInfo *curr) {
-        int sc1 = ptr->Data()->MarketSegmentGrp[0]->TradingSessionRulesGrp[0]->Allocator->Count();
         AstsSecurityDefinitionInfo *prev = ptr->Data();
         int mcPrev = prev->MarketSegmentGrpCount;
         int mcCurr = curr->MarketSegmentGrpCount;
@@ -3918,13 +3914,13 @@ public:
             this->m_senderCompIdLength = 0;
         else
             this->m_senderCompIdLength = strlen(this->m_senderCompId);
-        if(this->m_type == FeedConnectionType::HistoricalReplay && this->m_senderCompId != 0) {
+        if(this->m_type == FeedConnectionType::fctHistoricalReplay && this->m_senderCompId != 0) {
             strcpy(this->m_hsLogonInfo->SenderCompID, this->m_senderCompId);
             this->m_hsLogonInfo->SenderCompIDLength = this->m_senderCompIdLength;
         }
     }
     void SetPassword(const char *password) {
-        if(this->m_type == FeedConnectionType::HistoricalReplay) {
+        if(this->m_type == FeedConnectionType::fctHistoricalReplay) {
             this->m_password = HistoricalReplayPassword;
             this->m_passwordLength = HistoricalReplayPasswordLength;
         }
@@ -3997,15 +3993,15 @@ public:
         return true;
     }
     inline FeedConnectionState CalcListenStateByType() {
-        if(m_type == FeedConnectionType::InstrumentDefinition)
+        if(m_type == FeedConnectionType::fctInstrumentDefinition)
             return FeedConnectionState::fcsListenSecurityDefinition;
-        else if(m_type == FeedConnectionType::Snapshot)
+        else if(m_type == FeedConnectionType::fctSnapshot)
             return FeedConnectionState::fcsListenSnapshot;
-        else if(m_type == FeedConnectionType::HistoricalReplay)
+        else if(m_type == FeedConnectionType::fctHistoricalReplay)
             return FeedConnectionState::fcsHistoricalReplay;
-        else if(m_type == FeedConnectionType::InstrumentStatus)
+        else if(m_type == FeedConnectionType::fctInstrumentStatus)
             return FeedConnectionState::fcsListenSecurityStatus;
-        else if(m_type == FeedConnectionType::InstrumentStatusForts)
+        else if(m_type == FeedConnectionType::fctInstrumentStatusForts)
             return FeedConnectionState::fcsListenSecurityStatusForts;
         if(this->m_marketType == FeedMarketType::fmtAsts)
             return FeedConnectionState::fcsListenIncremental;
@@ -4036,17 +4032,17 @@ public:
         this->m_securityStatusSnapshotActive = false;
     }
     inline void BeforeListen() {
-        if(this->m_type == FeedConnectionType::InstrumentDefinition) {
+        if(this->m_type == FeedConnectionType::fctInstrumentDefinition) {
             BeforeListenSecurityDefinition();
         }
-        if(this->m_type == FeedConnectionType::InstrumentStatus ||
-                this->m_type == FeedConnectionType::InstrumentStatusForts) {
+        if(this->m_type == FeedConnectionType::fctInstrumentStatus ||
+                this->m_type == FeedConnectionType::fctInstrumentStatusForts) {
             BeforeListenSecurityStatus();
         }
-        if(this->m_type == FeedConnectionType::HistoricalReplay) {
+        if(this->m_type == FeedConnectionType::fctHistoricalReplay) {
             this->m_hsState = FeedConnectionHistoricalReplayState::hsSuspend;
         }
-        if(this->m_type == FeedConnectionType::Incremental || this->m_type == FeedConnectionType::IncrementalForts) {
+        if(this->m_type == FeedConnectionType::fctIncremental || this->m_type == FeedConnectionType::fctIncrementalForts) {
             this->m_requestMessageStartIndex = -1;
         }
     }
@@ -4071,7 +4067,7 @@ public:
         this->SetState(FeedConnectionState::fcsSuspend);
 		if(!this->Disconnect())
 			return false;
-        if(this->m_type == FeedConnectionType::Snapshot)
+        if(this->m_type == FeedConnectionType::fctSnapshot)
             this->m_recvABuffer->Reset();
 		return true;
 	}

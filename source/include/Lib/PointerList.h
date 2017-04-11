@@ -19,11 +19,12 @@ template <typename T> class LinkedPointer {
     bool             m_released;
 
 public:
-    LinkedPointer() {
-        this->m_next = 0;
-        this->m_data = 0;
-        this->m_prev = 0;
-        this->m_released = true;
+    LinkedPointer() :
+            m_owner(0),
+            m_next(0),
+            m_prev(0),
+            m_data(0),
+            m_released(true) {
     }
 
     inline bool HasNext() { return this->m_next != 0; }
@@ -57,6 +58,44 @@ template <typename T> class PointerList {
     const char      *m_name;
 
 public:
+    PointerList(int capacity, bool autoAllocate) :
+            m_name(""),
+            m_capacity(capacity),
+            m_count(0),
+            m_autoAllocate(autoAllocate),
+            m_poolHead(0),
+            m_poolTail(0),
+            m_head(0),
+            m_tail(0) {
+
+        this->m_poolHead = new LinkedPointer<T>;
+        this->m_poolTail = this->m_poolHead;
+
+        for(int i = 0; i < this->m_capacity + 1; i++) {
+            LinkedPointer<T> *ptr = new LinkedPointer<T>;
+            ptr->Owner(this);
+
+            this->m_poolTail->Next(ptr);
+            this->m_poolTail = ptr;
+        }
+
+        this->m_tail = this->m_head = this->Pop();
+        this->m_head->Next(0);
+        this->m_head->Prev(0);
+        this->m_head->Data(0);
+        this->m_count = 0;
+
+        if(this->m_autoAllocate)
+            AllocData();
+    }
+    PointerList(int capacity, bool autoAllocate, const char *name) : PointerList(capacity, autoAllocate) {
+        this->m_name = name;
+    }
+    PointerList(int capacity) : PointerList(capacity, false) { }
+    PointerList(int capacity, const char *name) : PointerList(capacity, false, name) {
+        this->m_name = name;
+    }
+
     inline LinkedPointer<T>* Pop(const char *name) {
         if(this->m_poolHead == this->m_poolTail) {
             this->Append(this->m_capacity, name);
@@ -86,39 +125,7 @@ public:
         this->m_poolTail = node;
         this->m_count--;
     }
-    PointerList(int capacity, bool autoAllocate) {
-        this->m_name = "";
-        this->m_capacity = capacity;
-        this->m_count = 0;
-        this->m_autoAllocate = autoAllocate;
 
-        this->m_poolHead = new LinkedPointer<T>;
-        this->m_poolTail = this->m_poolHead;
-
-        for(int i = 0; i < this->m_capacity + 1; i++) {
-            LinkedPointer<T> *ptr = new LinkedPointer<T>;
-            ptr->Owner(this);
-
-            this->m_poolTail->Next(ptr);
-            this->m_poolTail = ptr;
-        }
-
-        this->m_tail = this->m_head = this->Pop();
-        this->m_head->Next(0);
-        this->m_head->Prev(0);
-        this->m_head->Data(0);
-        this->m_count = 0;
-
-        if(this->m_autoAllocate)
-            AllocData();
-    }
-    PointerList(int capacity, bool autoAllocate, const char *name) : PointerList(capacity, autoAllocate) {
-        this->m_name = name;
-    }
-    PointerList(int capacity) : PointerList(capacity, false) { }
-    PointerList(int capacity, const char *name) : PointerList(capacity, false, name) {
-        this->m_name = name;
-    }
     inline void FreeData() {
         LinkedPointer<T> *s = this->m_poolHead;
         while(true) {

@@ -11,7 +11,6 @@ FastProtocolManager::FastProtocolManager(AstsObjectsAllocationInfo *astsInfo, Fo
     this->InitializeFortsMessageInfo();
 	this->m_astsSnapshotInfo = new AstsSnapshotInfo();
 	this->m_fortsSnapshotInfo = new FortsSnapshotInfo();
-	this->m_skipTemplateIdCount = 0;
 	DebugInfoManager::Default->PrintMemoryInfo("FastProtocolManager::FastProtocolManager");
 }
 

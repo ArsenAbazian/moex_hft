@@ -26,20 +26,15 @@ template <typename T> class HrLinkedPointer {
     bool             m_released;
 
 public:
-    HrLinkedPointer() {
-        this->m_next = 0;
-        this->m_prev = 0;
-        this->m_next2 = 0;
-        this->m_prev2 = 0;
-        this->m_next3 = 0;
-        this->m_prev3 = 0;
-        this->m_next4 = 0;
-        this->m_prev4 = 0;
-        this->m_next5 = 0;
-        this->m_prev5 = 0;
-
-        this->m_data = 0;
-        this->m_released = true;
+    HrLinkedPointer() :
+            m_next(0), m_prev(0),
+            m_next2(0), m_prev2(0),
+            m_next3(0), m_prev3(0),
+            m_next4(0), m_prev4(0),
+            m_next5(0), m_prev5(0),
+            m_owner(0),
+            m_data(0),
+            m_released(true) {
     }
 
     inline bool HasNext() { return this->m_next != 0; }
@@ -190,6 +185,44 @@ template <typename T> class HrPointerList {
     const char      *m_name;
 
 public:
+    HrPointerList(int capacity, bool autoAllocate) :
+            m_name(""),
+            m_capacity(capacity),
+            m_count(0),
+            m_autoAllocate(autoAllocate),
+            m_poolHead(0),
+            m_poolTail(0),
+            m_head(0),
+            m_tail(0) {
+
+        this->m_poolHead = new HrLinkedPointer<T>;
+        this->m_poolTail = this->m_poolHead;
+
+        for(int i = 0; i < this->m_capacity + 1; i++) {
+            HrLinkedPointer<T> *ptr = new HrLinkedPointer<T>;
+            ptr->Owner(this);
+
+            this->m_poolTail->Next(ptr);
+            this->m_poolTail = ptr;
+        }
+
+        this->m_tail = this->m_head = this->Pop();
+        this->m_head->Next(0);
+        this->m_head->Prev(0);
+        this->m_head->Data(0);
+        this->m_count = 0;
+
+        if(this->m_autoAllocate)
+            AllocData();
+    }
+    HrPointerList(int capacity, bool autoAllocate, const char *name) : HrPointerList(capacity, autoAllocate) {
+        this->m_name = name;
+    }
+    HrPointerList(int capacity) : HrPointerList(capacity, false) { }
+    HrPointerList(int capacity, const char *name) : HrPointerList(capacity, false, name) {
+        this->m_name = name;
+    }
+
     inline HrLinkedPointer<T>* Pop(const char *name) {
         if(this->m_poolHead == this->m_poolTail) {
             this->Append(this->m_capacity, name);
@@ -219,39 +252,7 @@ public:
         this->m_poolTail = node;
         this->m_count--;
     }
-    HrPointerList(int capacity, bool autoAllocate) {
-        this->m_name = "";
-        this->m_capacity = capacity;
-        this->m_count = 0;
-        this->m_autoAllocate = autoAllocate;
 
-        this->m_poolHead = new HrLinkedPointer<T>;
-        this->m_poolTail = this->m_poolHead;
-
-        for(int i = 0; i < this->m_capacity + 1; i++) {
-            HrLinkedPointer<T> *ptr = new HrLinkedPointer<T>;
-            ptr->Owner(this);
-
-            this->m_poolTail->Next(ptr);
-            this->m_poolTail = ptr;
-        }
-
-        this->m_tail = this->m_head = this->Pop();
-        this->m_head->Next(0);
-        this->m_head->Prev(0);
-        this->m_head->Data(0);
-        this->m_count = 0;
-
-        if(this->m_autoAllocate)
-            AllocData();
-    }
-    HrPointerList(int capacity, bool autoAllocate, const char *name) : HrPointerList(capacity, autoAllocate) {
-        this->m_name = name;
-    }
-    HrPointerList(int capacity) : HrPointerList(capacity, false) { }
-    HrPointerList(int capacity, const char *name) : HrPointerList(capacity, false, name) {
-        this->m_name = name;
-    }
     inline void FreeData() {
         HrLinkedPointer<T> *s = this->m_poolHead;
         while(true) {

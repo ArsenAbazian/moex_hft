@@ -337,21 +337,21 @@ void DebugInfoManager::PrintStatistics(FeedConnection *conn) {
     this->AddTabs();
     printf("State %d\n", conn->State());
     switch(conn->Type()) {
-        case FeedConnectionType::Incremental:
-        case FeedConnectionType::IncrementalForts:
+        case FeedConnectionType::fctIncremental:
+        case FeedConnectionType::fctIncrementalForts:
             PrintStatisticsIncremental(conn);
             break;
-        case FeedConnectionType::Snapshot:
+        case FeedConnectionType::fctSnapshot:
             PrintStatisticsSnapshot(conn);
             break;
-        case FeedConnectionType::InstrumentDefinition:
+        case FeedConnectionType::fctInstrumentDefinition:
             PrintStatisticsInstrumentDefinition(conn);
             break;
-        case FeedConnectionType::InstrumentStatus:
-            case FeedConnectionType::InstrumentStatusForts:
+        case FeedConnectionType::fctInstrumentStatus:
+            case FeedConnectionType::fctInstrumentStatusForts:
             PrintStatisticsInstrumentStatus(conn);
             break;
-        case FeedConnectionType::HistoricalReplay:
+        case FeedConnectionType::fctHistoricalReplay:
             PrintStatisticsHistoricalReplay(conn);
             break;
     }
@@ -599,21 +599,21 @@ void DebugInfoManager::PrintStatisticsXml(FeedConnection *conn) {
     fprintf(fp, "<FeedConnection Name=\"%s\" State=\"%d\">\n", conn->IdName(), conn->State());
     this->AddTabs();
     switch(conn->Type()) {
-        case FeedConnectionType::Incremental:
-        case FeedConnectionType::IncrementalForts:
+        case FeedConnectionType::fctIncremental:
+        case FeedConnectionType::fctIncrementalForts:
             PrintStatisticsIncrementalXml(conn);
             break;
-        case FeedConnectionType::Snapshot:
+        case FeedConnectionType::fctSnapshot:
             PrintStatisticsSnapshotXml(conn);
             break;
-        case FeedConnectionType::InstrumentDefinition:
+        case FeedConnectionType::fctInstrumentDefinition:
             PrintStatisticsInstrumentDefinitionXml(conn);
             break;
-        case FeedConnectionType::InstrumentStatus:
-            case FeedConnectionType::InstrumentStatusForts:
+        case FeedConnectionType::fctInstrumentStatus:
+            case FeedConnectionType::fctInstrumentStatusForts:
             PrintStatisticsInstrumentStatusXml(conn);
             break;
-        case FeedConnectionType::HistoricalReplay:
+        case FeedConnectionType::fctHistoricalReplay:
             PrintStatisticsHistoricalReplayXml(conn);
             break;
     }

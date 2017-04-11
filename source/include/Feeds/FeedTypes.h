@@ -119,25 +119,29 @@ class FeedConnection;
 typedef bool (FeedConnection::*FeedConnectionWorkAtomPtr)();
 
 typedef enum _FeedConnectionType {
-    Incremental,
-    IncrementalForts,
-    Snapshot,
-    InstrumentDefinition,
-    InstrumentStatus,
-    InstrumentStatusForts,
-    HistoricalReplay
+    fctIncremental,
+    fctIncrementalForts,
+    fctSnapshot,
+    fctInstrumentDefinition,
+    fctInstrumentStatus,
+    fctInstrumentStatusForts,
+    fctHistoricalReplay
 }FeedConnectionType;
 
 class FeedConnectionMessageInfo {
 public:
-    FeedConnectionMessageInfo() {
-        this->m_address = 0;
-        this->m_processed = false;
-    }
     bool                 m_processed;
     bool                 m_requested;
     unsigned char       *m_address;
     int                  m_size;
+
+    FeedConnectionMessageInfo() :
+            m_processed(false),
+            m_requested(false),
+            m_address(0),
+            m_size(0) {
+    }
+
     inline void Clear() {
         this->m_address = 0;
         this->m_processed = false;
@@ -156,11 +160,12 @@ public:
     FeedConnection             *m_conn;
     int                         m_requestCount;
 
-    FeedConnectionRequestMessageInfo() {
-        this->m_requestCount = 0;
-        this->m_startMsgSeqNo = 0;
-        this->m_endMsgSeqNo = 0;
-        this->m_conn = 0;
+    FeedConnectionRequestMessageInfo() :
+            m_startMsgSeqNo(0),
+            m_endMsgSeqNo(0),
+            m_lastRecvMsgSeqNo(0),
+            m_conn(0),
+            m_requestCount(0) {
     }
     inline void Clear() {
         this->m_requestCount = 0;
