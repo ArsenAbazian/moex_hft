@@ -224,9 +224,9 @@ public:
 	inline unsigned int From4SymbolUnsigned(char *buffer) {
 		return (int)(*buffer - 0x30) * 1000 + From3SymbolUnsigned(&(buffer[1]));
 	}
-    inline int FromStringFast(char *buffer, int *outValue, char stopSymbol) {
-        char *start = buffer;
-        char *digitStart = buffer;
+    inline int FromStringFast(const char *buffer, int *outValue, char stopSymbol) {
+        const char *start = buffer;
+        const char *digitStart = buffer;
         int result = 0;
 
         if (*buffer == '-') {
@@ -273,9 +273,9 @@ public:
         return buffer - start;
     }
 
-    inline int FromStringFastUnsigned(char *buffer, int *outValue, char stopSymbol) {
-        char *start = buffer;
-        char *digitStart = buffer;
+    inline int FromStringFastUnsigned(const char *buffer, int *outValue, char stopSymbol) {
+        const char *start = buffer;
+        const char *digitStart = buffer;
         int result = 0;
 
         while (*buffer != stopSymbol) {
@@ -300,8 +300,8 @@ public:
         *outValue = result;
         return buffer - start;
     }
-    inline int FromStringFastUnsigned(char *buffer, int count) {
-        char *digitStart = buffer;
+    inline int FromStringFastUnsigned(const char *buffer, int count) {
+        const char *digitStart = buffer;
         int result = 0;
         while(count > 0) {
             if (count >= 3) {
@@ -321,7 +321,7 @@ public:
         }
         return result;
     }
-	inline int FromStringFast(char *buffer, int count) {
+	inline int FromStringFast(const char *buffer, int count) {
 		if (*buffer == '-') {
 			buffer++;
 			count--;

@@ -8,6 +8,7 @@
 #include "../Lib/StringIdComparer.h"
 #include "../Fast/FastTypes.h"
 #include "../Lib/PointerList.h"
+#include "../Lib/HashTable.h"
 #include "MDEntryQueue.h"
 #include "QuoteInfo.h"
 #include "../Managers/DebugInfoManager.h"
@@ -609,6 +610,8 @@ template <typename T> OrderBookInfo<T>::OrderBookInfo() :
         g_seed(0) {
     if(OrderBookInfo::m_itemsPool == 0)
         OrderBookInfo::m_itemsPool = new PointerList<T>(RobotSettings::Default->MarketDataMaxEntriesCount, false);
+
+    HashTable::SafeCreateDefault();
 
     this->init_fast_srand();
     this->m_sellQuoteList = new PointerListLite<T>(OrderBookInfo<T>::m_itemsPool);

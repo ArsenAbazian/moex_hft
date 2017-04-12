@@ -73,7 +73,7 @@ public:
     void AddCount(int addCount) {
         this->m_addCapacity = addCount;
     }
-    inline T* NewItem() {
+    inline LinkedPointer<T>* NewPointer() {
         this->m_count++;
         LinkedPointer<T> *node = this->m_head;
         this->m_head = this->m_head->Next();
@@ -86,7 +86,10 @@ public:
             this->m_tail = this->CreatePointers(this->m_head, this->m_addCapacity);
             this->m_capacity += this->m_addCapacity;
         }
-        return node->Data();
+        return node;
+    }
+    inline T* NewItem() {
+        return this->NewPointer()->Data();
     }
     inline void FreeItem(LinkedPointer<T> *node) {
         if(node->Data()->Used || node->Released())
