@@ -105,8 +105,13 @@ public:
 
         unsigned char *res = new unsigned char[bytesCount];
         int byteIndex = 0;
+        bool isHex = str[0] == '0' && str[1] == 'x';
         for(int i = 0; i < len; ) {
             if(str[i] != 0x20) {
+                if(isHex && (i == 0 || str[i - 1] == 0x20)) {
+                    i += 2;
+                    continue;
+                }
                 res[byteIndex] = AsciiToByte(str + i);
                 byteIndex++;
                 i += 3;

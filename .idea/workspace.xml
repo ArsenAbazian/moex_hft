@@ -21,68 +21,11 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="32604c03-98a8-42cf-80f6-771ec2ce84cc" name="Default" comment="1. order book info calculator starting... just for testing... to obtain info about min/max/ave orderbook deepness...">
+    <list default="true" id="32604c03-98a8-42cf-80f6-771ec2ce84cc" name="Default" comment="">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/codeStyleSettings.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/Converters/ItoaConverter.h" afterPath="$PROJECT_DIR$/source/include/Converters/ItoaConverter.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/Fast/FastProtocolManager.h" afterPath="$PROJECT_DIR$/source/include/Fast/FastProtocolManager.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/Fast/FastTypes.h" afterPath="$PROJECT_DIR$/source/include/Fast/FastTypes.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/Feeds/Curr/CurrHr.h" afterPath="$PROJECT_DIR$/source/include/Feeds/Curr/CurrHr.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/Feeds/Curr/CurrIdf.h" afterPath="$PROJECT_DIR$/source/include/Feeds/Curr/CurrIdf.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/Feeds/Curr/CurrIsf.h" afterPath="$PROJECT_DIR$/source/include/Feeds/Curr/CurrIsf.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/Feeds/Curr/CurrMsr.h" afterPath="$PROJECT_DIR$/source/include/Feeds/Curr/CurrMsr.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/Feeds/Curr/CurrMss.h" afterPath="$PROJECT_DIR$/source/include/Feeds/Curr/CurrMss.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/Feeds/Curr/CurrOlr.h" afterPath="$PROJECT_DIR$/source/include/Feeds/Curr/CurrOlr.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/Feeds/Curr/CurrOls.h" afterPath="$PROJECT_DIR$/source/include/Feeds/Curr/CurrOls.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/Feeds/Curr/CurrTlr.h" afterPath="$PROJECT_DIR$/source/include/Feeds/Curr/CurrTlr.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/Feeds/Curr/CurrTls.h" afterPath="$PROJECT_DIR$/source/include/Feeds/Curr/CurrTls.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/Feeds/FeedConnection.h" afterPath="$PROJECT_DIR$/source/include/Feeds/FeedConnection.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/Feeds/FeedTypes.h" afterPath="$PROJECT_DIR$/source/include/Feeds/FeedTypes.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/Feeds/Fond/FondHr.h" afterPath="$PROJECT_DIR$/source/include/Feeds/Fond/FondHr.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/Feeds/Fond/FondIdf.h" afterPath="$PROJECT_DIR$/source/include/Feeds/Fond/FondIdf.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/Feeds/Fond/FondIsf.h" afterPath="$PROJECT_DIR$/source/include/Feeds/Fond/FondIsf.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/Feeds/Fond/FondMsr.h" afterPath="$PROJECT_DIR$/source/include/Feeds/Fond/FondMsr.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/Feeds/Fond/FondMss.h" afterPath="$PROJECT_DIR$/source/include/Feeds/Fond/FondMss.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/Feeds/Fond/FondOlr.h" afterPath="$PROJECT_DIR$/source/include/Feeds/Fond/FondOlr.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/Feeds/Fond/FondOls.h" afterPath="$PROJECT_DIR$/source/include/Feeds/Fond/FondOls.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/Feeds/Fond/FondTlr.h" afterPath="$PROJECT_DIR$/source/include/Feeds/Fond/FondTlr.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/Feeds/Fond/FondTls.h" afterPath="$PROJECT_DIR$/source/include/Feeds/Fond/FondTls.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/Feeds/Forts/FortsFeeds.h" afterPath="$PROJECT_DIR$/source/include/Feeds/Forts/FortsFeeds.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/Fix/FixMessage.h" afterPath="$PROJECT_DIR$/source/include/Fix/FixMessage.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/Fix/FixProtocolManager.h" afterPath="$PROJECT_DIR$/source/include/Fix/FixProtocolManager.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/Fix/FixTypes.h" afterPath="$PROJECT_DIR$/source/include/Fix/FixTypes.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/Lib/AutoAllocatePointerList.h" afterPath="$PROJECT_DIR$/source/include/Lib/AutoAllocatePointerList.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/Lib/HrPointerList.h" afterPath="$PROJECT_DIR$/source/include/Lib/HrPointerList.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/Lib/PointerList.h" afterPath="$PROJECT_DIR$/source/include/Lib/PointerList.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/Lib/StringIdComparer.h" afterPath="$PROJECT_DIR$/source/include/Lib/StringIdComparer.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/Managers/LogErrorMessageCodes.h" afterPath="$PROJECT_DIR$/source/include/Managers/LogErrorMessageCodes.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/Managers/LogManager.h" afterPath="$PROJECT_DIR$/source/include/Managers/LogManager.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/Managers/SocketBufferManager.h" afterPath="$PROJECT_DIR$/source/include/Managers/SocketBufferManager.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/Managers/WinSockManager.h" afterPath="$PROJECT_DIR$/source/include/Managers/WinSockManager.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/MarketData/MDEntryQueue.h" afterPath="$PROJECT_DIR$/source/include/MarketData/MDEntryQueue.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/MarketData/MarketDataTable.h" afterPath="$PROJECT_DIR$/source/include/MarketData/MarketDataTable.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/MarketData/MarketSymbolInfo.h" afterPath="$PROJECT_DIR$/source/include/MarketData/MarketSymbolInfo.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/MarketData/OrderBookInfo.h" afterPath="$PROJECT_DIR$/source/include/MarketData/OrderBookInfo.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/MarketData/OrderInfo.h" afterPath="$PROJECT_DIR$/source/include/MarketData/OrderInfo.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/MarketData/QuoteInfo.h" afterPath="$PROJECT_DIR$/source/include/MarketData/QuoteInfo.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/MarketData/StatisticInfo.h" afterPath="$PROJECT_DIR$/source/include/MarketData/StatisticInfo.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/MarketData/StatisticItem.h" afterPath="$PROJECT_DIR$/source/include/MarketData/StatisticItem.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/MarketData/SymbolManager.h" afterPath="$PROJECT_DIR$/source/include/MarketData/SymbolManager.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/MarketData/TradeInfo.h" afterPath="$PROJECT_DIR$/source/include/MarketData/TradeInfo.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/Settings.h" afterPath="$PROJECT_DIR$/source/include/Settings.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/Stopwatch.h" afterPath="$PROJECT_DIR$/source/include/Stopwatch.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/Test/FortsOrderBookTester.h" afterPath="$PROJECT_DIR$/source/include/Test/FortsOrderBookTester.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/Test/PointerListTester.h" afterPath="$PROJECT_DIR$/source/include/Test/PointerListTester.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/Test/SecurityDefinitionTester.h" afterPath="$PROJECT_DIR$/source/include/Test/SecurityDefinitionTester.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/Test/SecurityStatusTester.h" afterPath="$PROJECT_DIR$/source/include/Test/SecurityStatusTester.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/Test/TestMessagesHelper.h" afterPath="$PROJECT_DIR$/source/include/Test/TestMessagesHelper.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/src/AstsFeedChannel.cpp" afterPath="$PROJECT_DIR$/source/src/AstsFeedChannel.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/src/Fast/FastProtocolManager.cpp" afterPath="$PROJECT_DIR$/source/src/Fast/FastProtocolManager.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/src/Fix/FixProtocolManager.cpp" afterPath="$PROJECT_DIR$/source/src/Fix/FixProtocolManager.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/src/Managers/DebugInfoManager.cpp" afterPath="$PROJECT_DIR$/source/src/Managers/DebugInfoManager.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/src/Managers/LogErrorMessageCodes.cpp" afterPath="$PROJECT_DIR$/source/src/Managers/LogErrorMessageCodes.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/src/Managers/SocketBufferManager.cpp" afterPath="$PROJECT_DIR$/source/src/Managers/SocketBufferManager.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/src/Test/FastProtocolTester.cpp" afterPath="$PROJECT_DIR$/source/src/Test/FastProtocolTester.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tools/Program.cs" afterPath="$PROJECT_DIR$/tools/Program.cs" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/Managers/DebugInfoManager.h" afterPath="$PROJECT_DIR$/source/include/Managers/DebugInfoManager.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/src/HftConsole.cpp" afterPath="$PROJECT_DIR$/source/src/HftConsole.cpp" />
     </list>
     <ignored path="hft_robot.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -107,11 +50,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="FastProtocolManager.h" pinned="false" current-in-tab="false">
+      <file leaf-file-name="FastProtocolManager.h" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/source/include/Fast/FastProtocolManager.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="231">
-              <caret line="3228" column="26" lean-forward="true" selection-start-line="3228" selection-start-column="26" selection-end-line="3228" selection-end-column="26" />
+            <state relative-caret-position="233">
+              <caret line="6219" column="0" lean-forward="false" selection-start-line="6219" selection-start-column="0" selection-end-line="6219" selection-end-column="0" />
               <folding>
                 <element signature="e#26#54#0" expanded="true" />
               </folding>
@@ -119,11 +62,31 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="FixMessage.h" pinned="false" current-in-tab="true">
+      <file leaf-file-name="FixMessage.h" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/source/include/Fix/FixMessage.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="271">
+            <state relative-caret-position="151">
               <caret line="150" column="51" lean-forward="false" selection-start-line="150" selection-start-column="51" selection-end-line="150" selection-end-column="51" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="HftConsole.cpp" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/source/src/HftConsole.cpp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="175">
+              <caret line="62" column="0" lean-forward="false" selection-start-line="62" selection-start-column="0" selection-end-line="62" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="DebugInfoManager.h" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/source/include/Managers/DebugInfoManager.h">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="266">
+              <caret line="120" column="0" lean-forward="false" selection-start-line="120" selection-start-column="0" selection-end-line="120" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -133,7 +96,7 @@
         <entry file="file://$PROJECT_DIR$/source/include/Fix/FixProtocolManager.h">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="171">
-              <caret line="848" column="9" lean-forward="true" selection-start-line="848" selection-start-column="9" selection-end-line="848" selection-end-column="9" />
+              <caret line="848" column="9" lean-forward="false" selection-start-line="848" selection-start-column="9" selection-end-line="848" selection-end-column="9" />
               <folding />
             </state>
           </provider>
@@ -144,26 +107,6 @@
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="240">
               <caret line="13" column="0" lean-forward="false" selection-start-line="13" selection-start-column="0" selection-end-line="13" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="SocketBufferManager.h" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/source/include/Managers/SocketBufferManager.h">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="245">
-              <caret line="81" column="51" lean-forward="false" selection-start-line="81" selection-start-column="51" selection-end-line="81" selection-end-column="51" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="LogErrorMessageCodes.h" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/source/include/Managers/LogErrorMessageCodes.h">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="440">
-              <caret line="130" column="50" lean-forward="false" selection-start-line="130" selection-start-column="50" selection-end-line="130" selection-end-column="50" />
               <folding />
             </state>
           </provider>
@@ -205,7 +148,7 @@
         <entry file="file://$PROJECT_DIR$/source/include/Converters/ItoaConverter.h">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="262">
-              <caret line="161" column="22" lean-forward="true" selection-start-line="161" selection-start-column="22" selection-end-line="161" selection-end-column="22" />
+              <caret line="161" column="22" lean-forward="false" selection-start-line="161" selection-start-column="22" selection-end-line="161" selection-end-column="22" />
               <folding />
             </state>
           </provider>
@@ -275,8 +218,6 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/source/include/Test/StatisticsTesterCurr.h" />
-        <option value="$PROJECT_DIR$/source/include/Managers/DebugInfoManager.h" />
-        <option value="$PROJECT_DIR$/source/src/HftConsole.cpp" />
         <option value="$PROJECT_DIR$/source/include/Test/FeedConnectionTester.h" />
         <option value="$PROJECT_DIR$/source/src/MarketData/MDEntryQueue.cpp" />
         <option value="$PROJECT_DIR$/source/src/MarketData/StatisticInfo.cpp" />
@@ -325,6 +266,8 @@
         <option value="$PROJECT_DIR$/source/include/Fast/FastProtocolManager.h" />
         <option value="$PROJECT_DIR$/source/include/Fix/FixProtocolManager.h" />
         <option value="$PROJECT_DIR$/source/include/Fix/FixMessage.h" />
+        <option value="$PROJECT_DIR$/source/src/HftConsole.cpp" />
+        <option value="$PROJECT_DIR$/source/include/Managers/DebugInfoManager.h" />
       </list>
     </option>
   </component>
@@ -340,6 +283,22 @@
     <option name="y" value="-11" />
     <option name="width" value="1857" />
     <option name="height" value="987" />
+  </component>
+  <component name="ProjectInspectionProfilesVisibleTreeState">
+    <entry key="Project Default">
+      <profile-state>
+        <expanded-state>
+          <State>
+            <id />
+          </State>
+        </expanded-state>
+        <selected-state>
+          <State>
+            <id>C/C++</id>
+          </State>
+        </selected-state>
+      </profile-state>
+    </entry>
   </component>
   <component name="ProjectView">
     <navigator currentView="ProjectPane" proportions="" version="1">
@@ -413,296 +372,6 @@
               <option name="myItemId" value="source" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Test" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="hft_robot" />
-              <option name="myItemType" value="com.jetbrains.cidr.projectView.CidrFilesViewHelper$MyProjectTreeStructure$1" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="hft" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="source" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="MarketData" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="hft_robot" />
-              <option name="myItemType" value="com.jetbrains.cidr.projectView.CidrFilesViewHelper$MyProjectTreeStructure$1" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="hft" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="source" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Managers" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="hft_robot" />
-              <option name="myItemType" value="com.jetbrains.cidr.projectView.CidrFilesViewHelper$MyProjectTreeStructure$1" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="hft" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="source" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Fix" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="hft_robot" />
-              <option name="myItemType" value="com.jetbrains.cidr.projectView.CidrFilesViewHelper$MyProjectTreeStructure$1" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="hft" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="source" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Fast" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="hft_robot" />
-              <option name="myItemType" value="com.jetbrains.cidr.projectView.CidrFilesViewHelper$MyProjectTreeStructure$1" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="hft" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="source" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Converters" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="hft_robot" />
-              <option name="myItemType" value="com.jetbrains.cidr.projectView.CidrFilesViewHelper$MyProjectTreeStructure$1" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="hft" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="source" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="include" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="hft_robot" />
-              <option name="myItemType" value="com.jetbrains.cidr.projectView.CidrFilesViewHelper$MyProjectTreeStructure$1" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="hft" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="source" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="include" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="MarketData" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="hft_robot" />
-              <option name="myItemType" value="com.jetbrains.cidr.projectView.CidrFilesViewHelper$MyProjectTreeStructure$1" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="hft" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="source" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="include" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Managers" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="hft_robot" />
-              <option name="myItemType" value="com.jetbrains.cidr.projectView.CidrFilesViewHelper$MyProjectTreeStructure$1" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="hft" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="source" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="include" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Lib" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="hft_robot" />
-              <option name="myItemType" value="com.jetbrains.cidr.projectView.CidrFilesViewHelper$MyProjectTreeStructure$1" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="hft" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="source" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="include" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Fix" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="hft_robot" />
-              <option name="myItemType" value="com.jetbrains.cidr.projectView.CidrFilesViewHelper$MyProjectTreeStructure$1" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="hft" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="source" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="include" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Feeds" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="hft_robot" />
-              <option name="myItemType" value="com.jetbrains.cidr.projectView.CidrFilesViewHelper$MyProjectTreeStructure$1" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="hft" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="source" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="include" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Fast" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="hft_robot" />
-              <option name="myItemType" value="com.jetbrains.cidr.projectView.CidrFilesViewHelper$MyProjectTreeStructure$1" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="hft" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="source" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="include" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Converters" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
           </PATH>
         </subPane>
       </pane>
@@ -713,7 +382,7 @@
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="js.buildTools.grunt.grunt-cli.package" value="" />
     <property name="js.buildTools.gulp.gulp_package_dir" value="" />
-    <property name="settings.editor.selected.configurable" value="preferences.keymap" />
+    <property name="settings.editor.selected.configurable" value="preferences.sourceCode.C/C++" />
     <property name="FileHistory.git4idea.history.GitHistoryProvider_flatWidth0" value="272" />
     <property name="FileHistory.git4idea.history.GitHistoryProvider_flatOrder0" value="0" />
     <property name="FileHistory.git4idea.history.GitHistoryProvider_flatWidth1" value="272" />
@@ -31174,7 +30843,7 @@
       <envs />
       <method />
     </configuration>
-    <configuration default="false" name="Build All" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="test_feed" PASS_PARENT_ENVS_2="true" CONFIG_NAME="DEBUG" RUN_TARGET_PROJECT_NAME="hft_robot" RUN_TARGET_NAME="hft_robot" EXPLICIT_BUILD_TARGET_NAME="all">
+    <configuration default="false" name="Build All" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" CONFIG_NAME="DEBUG" RUN_TARGET_PROJECT_NAME="hft_robot" RUN_TARGET_NAME="hft_robot" EXPLICIT_BUILD_TARGET_NAME="all">
       <envs />
       <method />
     </configuration>
@@ -31412,13 +31081,6 @@
       <workItem from="1491426286270" duration="2482000" />
       <workItem from="1491461983404" duration="12147000" />
       <workItem from="1491548232027" duration="21021000" />
-    </task>
-    <task id="LOCAL-00206" summary="All tests passed">
-      <created>1488319927889</created>
-      <option name="number" value="00206" />
-      <option name="presentableId" value="LOCAL-00206" />
-      <option name="project" value="LOCAL" />
-      <updated>1488319927892</updated>
     </task>
     <task id="LOCAL-00207" summary="1. modify some tests due to windowStartMsgSeqNo&#10;2. all tests passed">
       <created>1488321782804</created>
@@ -31756,11 +31418,18 @@
       <option name="project" value="LOCAL" />
       <updated>1491863498867</updated>
     </task>
-    <option name="localTasksCounter" value="255" />
+    <task id="LOCAL-00255" summary="1. cpp checker refactoring according its warning... not finished yet">
+      <created>1491933254361</created>
+      <option name="number" value="00255" />
+      <option name="presentableId" value="LOCAL-00255" />
+      <option name="project" value="LOCAL" />
+      <updated>1491933254363</updated>
+    </task>
+    <option name="localTasksCounter" value="256" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="2377821000" />
+    <option name="totallyTimeSpent" value="2382763000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -31773,20 +31442,19 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="64" y="-11" width="1857" height="987" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.36616454" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24429224" sideWeight="0.38481677" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3242009" sideWeight="0.38481677" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="CMake" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4634703" sideWeight="0.4384817" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.82271147" sideWeight="0.19895288" order="8" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33105022" sideWeight="0.5804974" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.19406393" sideWeight="0.48689955" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.57796013" sideWeight="0.4973822" order="10" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.34285715" sideWeight="0.493007" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24528302" sideWeight="0.493007" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4280822" sideWeight="0.49344978" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.289267" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.235262" sideWeight="0.506993" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.5353881" sideWeight="0.80104715" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.5936073" sideWeight="0.80104715" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Data View" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.36616454" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -31843,7 +31511,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
-    <MESSAGE value="1. working on forts security definitioins" />
     <MESSAGE value="1. almost done forts security definitioins" />
     <MESSAGE value="1. almost done forts security definitioins&#10;2. working on security status" />
     <MESSAGE value="1. almost done forts security definitioins&#10;2. almost done forts security status" />
@@ -31868,7 +31535,8 @@
     <MESSAGE value="1. start implement hr list for order book info" />
     <MESSAGE value="1. continue implement hr list for order book info" />
     <MESSAGE value="1. order book info calculator starting... just for testing... to obtain info about min/max/ave orderbook deepness..." />
-    <option name="LAST_COMMIT_MESSAGE" value="1. order book info calculator starting... just for testing... to obtain info about min/max/ave orderbook deepness..." />
+    <MESSAGE value="1. cpp checker refactoring according its warning... not finished yet" />
+    <option name="LAST_COMMIT_MESSAGE" value="1. cpp checker refactoring according its warning... not finished yet" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -31929,6 +31597,11 @@
           <line>211</line>
           <option name="timeStamp" value="2337" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/source/src/HftConsole.cpp</url>
+          <line>62</line>
+          <option name="timeStamp" value="2447" />
+        </line-breakpoint>
       </breakpoints>
       <breakpoints-dialog>
         <breakpoints-dialog />
@@ -31940,87 +31613,16 @@
           </properties>
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="2444" />
+      <option name="time" value="2448" />
     </breakpoint-manager>
     <watches-manager>
       <configuration name="CMakeRunConfiguration">
         <watch expression="TestMessagesHelper::SkipTimeOutCheck = true" language="ObjectiveC" />
-        <watch expression="node" language="ObjectiveC" />
-        <watch expression="node-&gt;Data()-&gt;MDEntryPx.Mantissa" language="ObjectiveC" />
-        <watch expression="list-&gt;Start()-&gt;Data()-&gt;MDEntryPx.Mantissa" language="ObjectiveC" />
-        <watch expression="this-&gt;m_fastProtocolManager-&gt;TemplateId()" />
+        <watch expression="this-&gt;m_buyQuoteList-&gt;Count()" language="ObjectiveC" />
       </configuration>
     </watches-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/source/src/HftConsole.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="40">
-          <caret line="2" column="31" lean-forward="false" selection-start-line="2" selection-start-column="31" selection-end-line="2" selection-end-column="31" />
-          <folding>
-            <marker date="1491900949623" expanded="false" signature="130:407" ph="..." />
-            <marker date="1491900949623" expanded="true" signature="486:3726" ph="{...}" />
-            <marker date="1491900949623" expanded="false" signature="1366:1547" ph="..." />
-            <marker date="1491900949623" expanded="false" signature="2328:3717" ph="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/source/include/Test/FeedConnectionTester.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="120">
-          <caret line="12" column="10" lean-forward="false" selection-start-line="12" selection-start-column="10" selection-end-line="12" selection-end-column="10" />
-          <folding>
-            <marker date="1491840430808" expanded="true" signature="169:587" ph="..." />
-            <marker date="1491840430808" expanded="true" signature="610:1088" ph="{...}" />
-            <marker date="1491840430808" expanded="true" signature="1118:35579" ph="{...}" />
-            <marker date="1491840430808" expanded="true" signature="1509:1665" ph="{...}" />
-            <marker date="1491840430808" expanded="true" signature="1715:2156" ph="{...}" />
-            <marker date="1491840430808" expanded="true" signature="2189:2440" ph="{...}" />
-            <marker date="1491840430808" expanded="true" signature="2476:5457" ph="{...}" />
-            <marker date="1491840430808" expanded="true" signature="5483:5555" ph="{...}" />
-            <marker date="1491840430808" expanded="true" signature="5605:5743" ph="{...}" />
-            <marker date="1491840430808" expanded="true" signature="5799:7014" ph="{...}" />
-            <marker date="1491840430808" expanded="true" signature="7063:9174" ph="{...}" />
-            <marker date="1491840430808" expanded="true" signature="9230:12040" ph="{...}" />
-            <marker date="1491840430808" expanded="true" signature="12097:12831" ph="{...}" />
-            <marker date="1491840430808" expanded="true" signature="12888:14196" ph="{...}" />
-            <marker date="1491840430808" expanded="true" signature="14251:14354" ph="{...}" />
-            <marker date="1491840430808" expanded="true" signature="14415:14438" ph="{...}" />
-            <marker date="1491840430808" expanded="true" signature="14497:14520" ph="{...}" />
-            <marker date="1491840430808" expanded="true" signature="14591:14615" ph="{...}" />
-            <marker date="1491840430808" expanded="true" signature="14690:14714" ph="{...}" />
-            <marker date="1491840430808" expanded="true" signature="14776:14800" ph="{...}" />
-            <marker date="1491840430808" expanded="true" signature="14822:15491" ph="{...}" />
-            <marker date="1491840430808" expanded="true" signature="15523:15691" ph="{...}" />
-            <marker date="1491840430808" expanded="true" signature="15829:17030" ph="{...}" />
-            <marker date="1491840430808" expanded="true" signature="17191:17475" ph="{...}" />
-            <marker date="1491840430808" expanded="true" signature="17633:17855" ph="{...}" />
-            <marker date="1491840430808" expanded="true" signature="17917:18327" ph="{...}" />
-            <marker date="1491840430808" expanded="true" signature="18419:18854" ph="{...}" />
-            <marker date="1491840430808" expanded="true" signature="18919:19331" ph="{...}" />
-            <marker date="1491840430808" expanded="true" signature="19391:19955" ph="{...}" />
-            <marker date="1491840430808" expanded="true" signature="19986:20149" ph="{...}" />
-            <marker date="1491840430808" expanded="true" signature="20211:20782" ph="{...}" />
-            <marker date="1491840430808" expanded="true" signature="20817:21304" ph="{...}" />
-            <marker date="1491840430808" expanded="true" signature="21383:22043" ph="{...}" />
-            <marker date="1491840430808" expanded="true" signature="22119:22774" ph="{...}" />
-            <marker date="1491840430808" expanded="true" signature="22844:23861" ph="{...}" />
-            <marker date="1491840430808" expanded="true" signature="23948:24977" ph="{...}" />
-            <marker date="1491840430808" expanded="true" signature="25050:26667" ph="{...}" />
-            <marker date="1491840430808" expanded="true" signature="26730:26856" ph="{...}" />
-            <marker date="1491840430808" expanded="true" signature="26916:28164" ph="{...}" />
-            <marker date="1491840430808" expanded="true" signature="28199:29369" ph="{...}" />
-            <marker date="1491840430808" expanded="true" signature="29546:31036" ph="{...}" />
-            <marker date="1491840430808" expanded="true" signature="31214:32842" ph="{...}" />
-            <marker date="1491840430808" expanded="true" signature="32890:33775" ph="{...}" />
-            <marker date="1491840430808" expanded="true" signature="33798:34562" ph="{...}" />
-            <marker date="1491840430808" expanded="true" signature="34598:34646" ph="{...}" />
-            <marker date="1491840430808" expanded="true" signature="34664:35577" ph="{...}" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/source/src/MarketData/MDEntryQueue.cpp">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="80">
@@ -32189,7 +31791,7 @@
         <state relative-caret-position="149">
           <caret line="911" column="25" lean-forward="false" selection-start-line="911" selection-start-column="25" selection-end-line="911" selection-end-column="25" />
           <folding>
-            <element signature="e#156#195#0" expanded="true" />
+            <element signature="e#156#195#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -32346,7 +31948,7 @@
         <state relative-caret-position="443">
           <caret line="613" column="4" lean-forward="false" selection-start-line="613" selection-start-column="4" selection-end-line="613" selection-end-column="4" />
           <folding>
-            <element signature="e#21022#21034#0" expanded="true" />
+            <element signature="e#21022#21034#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -32364,7 +31966,7 @@
         <state relative-caret-position="277">
           <caret line="238" column="20" lean-forward="true" selection-start-line="238" selection-start-column="20" selection-end-line="238" selection-end-column="20" />
           <folding>
-            <element signature="e#7630#7642#0" expanded="true" />
+            <element signature="e#7630#7642#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -32374,7 +31976,7 @@
         <state relative-caret-position="297">
           <caret line="491" column="24" lean-forward="true" selection-start-line="491" selection-start-column="24" selection-end-line="491" selection-end-column="24" />
           <folding>
-            <element signature="e#18206#18218#0" expanded="true" />
+            <element signature="e#18206#18218#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -32458,7 +32060,7 @@
     <entry file="file://$PROJECT_DIR$/source/include/Converters/ItoaConverter.h">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="262">
-          <caret line="161" column="22" lean-forward="true" selection-start-line="161" selection-start-column="22" selection-end-line="161" selection-end-column="22" />
+          <caret line="161" column="22" lean-forward="false" selection-start-line="161" selection-start-column="22" selection-end-line="161" selection-end-column="22" />
           <folding />
         </state>
       </provider>
@@ -32471,20 +32073,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/source/include/Fast/FastProtocolManager.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="231">
-          <caret line="3228" column="26" lean-forward="true" selection-start-line="3228" selection-start-column="26" selection-end-line="3228" selection-end-column="26" />
-          <folding>
-            <element signature="e#26#54#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/source/include/Fix/FixProtocolManager.h">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="171">
-          <caret line="848" column="9" lean-forward="true" selection-start-line="848" selection-start-column="9" selection-end-line="848" selection-end-column="9" />
+          <caret line="848" column="9" lean-forward="false" selection-start-line="848" selection-start-column="9" selection-end-line="848" selection-end-column="9" />
           <folding />
         </state>
       </provider>
@@ -32499,9 +32091,35 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/source/include/Fix/FixMessage.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="271">
+        <state relative-caret-position="151">
           <caret line="150" column="51" lean-forward="false" selection-start-line="150" selection-start-column="51" selection-end-line="150" selection-end-column="51" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/include/Managers/DebugInfoManager.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="266">
+          <caret line="120" column="0" lean-forward="false" selection-start-line="120" selection-start-column="0" selection-end-line="120" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/src/HftConsole.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="175">
+          <caret line="62" column="0" lean-forward="false" selection-start-line="62" selection-start-column="0" selection-end-line="62" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/include/Fast/FastProtocolManager.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="233">
+          <caret line="6219" column="0" lean-forward="false" selection-start-line="6219" selection-start-column="0" selection-end-line="6219" selection-end-column="0" />
+          <folding>
+            <element signature="e#26#54#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
