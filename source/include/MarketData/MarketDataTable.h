@@ -199,10 +199,12 @@ public:
     inline bool CheckProcessIfSessionInActualState(INFO *info) {
         if(this->m_snapshotItem->HasEntries())
             return false;
-        if(this->m_snapshotItem->RptSeq() != info->RptSeq)
-            return false;
         MarketSymbolInfo<TABLEITEM<ITEMINFO>> *smb = this->m_snapshotItem->SymbolInfo();
         bool allItemsRecvSnapshot = smb->AllSessionsRecvSnapshot();
+        if(allItemsRecvSnapshot)
+            return true;
+        if(this->m_snapshotItem->RptSeq() != info->RptSeq)
+            return false;
         this->m_snapshotItem->ProcessActualSnapshotState();
         if (!allItemsRecvSnapshot && smb->AllSessionsRecvSnapshot())
             this->DecSymbolsToRecvSnapshotCount();
@@ -262,26 +264,33 @@ public:
         if(!this->m_snapshotItem->HasEntries()) {
             //TODO remove debug
             bool res = this->m_snapshotItem->RptSeq() < rptSeq;
-//            if(!res) {
-//                printf("  !he %d < %d\n", this->m_snapshotItem->RptSeq(), rptSeq);
-//            }
+            if(!res) {
+                //printf("  %s skip snapshot : item->RptSeq = %d >= snap->RptSeq = %d\n",
+                //       this->m_snapshotSymbol->Symbol()->m_text, this->m_snapshotItem->RptSeq(), rptSeq);
+            }
             return res;
         }
         //TODO remove debug
         bool res = this->m_snapshotItem->EntriesQueue()->StartRptSeq() <= rptSeq;
-//        if(!res) {
-//            printf("  he %d < %d  max index = %d\n", this->m_snapshotItem->EntriesQueue()->StartRptSeq(), rptSeq, this->m_snapshotItem->EntriesQueue()->MaxIndex());
-//        }
+        if(!res) {
+            //printf("  %s skip snapshot : que->StartRptSeq = %d >= snap->RptSeq = %d  max index = %d\n",
+            //       this->m_snapshotSymbol->Symbol()->m_text, this->m_snapshotItem->EntriesQueue()->StartRptSeq(),
+            //       rptSeq, this->m_snapshotItem->EntriesQueue()->MaxIndex());
+        }
         return res;
     }
     inline bool CheckProcessIfSessionInActualState(int rptSeq) {
         if(this->m_snapshotItem->HasEntries())
             return false;
-        if(this->m_snapshotItem->RptSeq() != rptSeq)
-            return false;
 
         MarketSymbolInfo<TABLEITEM<ITEMINFO>> *smb = this->m_snapshotItem->SymbolInfo();
         bool allItemsRecvSnapshot = smb->AllSessionsRecvSnapshot();
+        if(allItemsRecvSnapshot)
+            return true;
+
+        if(this->m_snapshotItem->RptSeq() != rptSeq)
+            return false;
+
         this->m_snapshotItem->ProcessActualSnapshotState();
         if (!allItemsRecvSnapshot && smb->AllSessionsRecvSnapshot())
             this->DecSymbolsToRecvSnapshotCount();

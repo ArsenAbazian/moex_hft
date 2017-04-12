@@ -1432,6 +1432,8 @@ protected:
         this->m_fastProtocolManager->ReadMsgSeqNumber();
 
         FortsSnapshotInfo* info = this->m_fastProtocolManager->GetFortsSnapshotInfo();
+        if(info == 0) // TODO Trading Session Status sometimes appears in snap
+            return 0;
         // for FORTS if LastFragment field is not presented i.e. == null then it is can be threathed as LastFragment = 1
         if((info->NullMap & FortsDefaultSnapshotMessageInfoNullIndices::LastFragmentNullIndex) != 0)
             info->LastFragment = 1;
@@ -1691,12 +1693,12 @@ protected:
             if(!FindRouteFirstForts())
                 return false;
              // TODO remove debug
-//            printf("%s   find snapshot %d   for security id = %" PRIu64 "  lastFragment = %d  template = %d\n",
-//                   this->m_idName,
-//                   this->m_snapshotRouteFirst,
-//                   this->m_fortsSnapshotInfo->SecurityID,
-//                   this->m_fortsSnapshotInfo->LastFragment,
-            //this->m_fortsSnapshotInfo->TemplateId);
+            printf("%s   find snapshot %d   sid = %" PRIu64 "  lf = %d rptSeq = %d\n",
+                   this->m_idName,
+                   this->m_snapshotRouteFirst,
+                   this->m_fortsSnapshotInfo->SecurityID,
+                   this->m_fortsSnapshotInfo->LastFragment,
+                   this->m_fortsSnapshotInfo->RptSeq);
             if(!StartApplySnapshotForts()) {
                 if(this->m_fortsSnapshotInfo->LastFragment == 1)
                     this->m_nextFortsSnapshotRouteFirst = this->m_snapshotRouteFirst + 1;
@@ -2694,31 +2696,49 @@ protected:
 	FILE *obrLogFile;
 
 	inline bool OnIncrementalRefresh_OLR_FOND(AstsOLSFONDItemInfo *info) {
+        //TODO remove debug
+        info->MDEntryID[info->MDEntryIDLength] = '\0';
+        printf("OLR FOND %s\n", info->MDEntryID);
         int index = this->m_symbolManager->GetSymbol(info->Symbol, info->SymbolLength)->m_index;
 		return this->m_orderTableFond->ProcessIncremental(info, index, info->TradingSessionID, info->TradingSessionIDLength);
 	}
 
 	inline bool OnIncrementalRefresh_OLR_CURR(AstsOLSCURRItemInfo *info) {
+        //TODO remove debug
+        info->MDEntryID[info->MDEntryIDLength] = '\0';
+        printf("OLR CURR %s\n", info->MDEntryID);
         int index = this->m_symbolManager->GetSymbol(info->Symbol, info->SymbolLength)->m_index;
 		return this->m_orderTableCurr->ProcessIncremental(info, index, info->TradingSessionID, info->TradingSessionIDLength);
 	}
 
 	inline bool OnIncrementalRefresh_TLR_FOND(AstsTLSFONDItemInfo *info) {
+        //TODO remove debug
+        info->MDEntryID[info->MDEntryIDLength] = '\0';
+        printf("TRL FOND %s\n", info->MDEntryID);
         int index = this->m_symbolManager->GetSymbol(info->Symbol, info->SymbolLength)->m_index;
 		return this->m_tradeTableFond->ProcessIncremental(info, index, info->TradingSessionID, info->TradingSessionIDLength);
 	}
 
 	inline bool OnIncrementalRefresh_TLR_CURR(AstsTLSCURRItemInfo *info) {
+        //TODO remove debug
+        info->MDEntryID[info->MDEntryIDLength] = '\0';
+        printf("TLR CURR %s\n", info->MDEntryID);
         int index = this->m_symbolManager->GetSymbol(info->Symbol, info->SymbolLength)->m_index;
         return this->m_tradeTableCurr->ProcessIncremental(info, index, info->TradingSessionID, info->TradingSessionIDLength);
 	}
 
     inline bool OnIncrementalRefresh_MSR_FOND(AstsGenericItemInfo *info) {
+        //TODO remove debug
+        info->MDEntryID[info->MDEntryIDLength] = '\0';
+        printf("MSR FOND %s\n", info->MDEntryID);
         int index = this->m_symbolManager->GetSymbol(info->Symbol, info->SymbolLength)->m_index;
         return this->m_statTableFond->ProcessIncremental(info, index, info->TradingSessionID, info->TradingSessionIDLength);
     }
 
     inline bool OnIncrementalRefresh_MSR_CURR(AstsGenericItemInfo *info) {
+        //TODO remove debug
+        info->MDEntryID[info->MDEntryIDLength] = '\0';
+        printf("MSR CURR %s\n", info->MDEntryID);
         int index = this->m_symbolManager->GetSymbol(info->Symbol, info->SymbolLength)->m_index;
         return this->m_statTableCurr->ProcessIncremental(info, index, info->TradingSessionID, info->TradingSessionIDLength);
     }

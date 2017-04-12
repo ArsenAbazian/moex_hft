@@ -88,7 +88,9 @@ public:
             return;
         LinkedPointer<T> *node = list->Start();
         while(true) {
-            node->Data()->Clear();
+            T *data = node->Data();
+            this->FreePointer(data);
+            data->Clear();
             if(node == list->End())
                 break;
             node = node->Next();
@@ -105,22 +107,6 @@ public:
         this->m_snapshotProcessedCount = 0;
     }
 
-    inline LinkedPointer<T>* GetQuote(PointerListLite<T> *list, T *info) {
-        LinkedPointer<T> *node = list->Start();
-        if(node == 0)
-            return 0;
-        while(true) {
-            T *info2 = node->Data();
-            if(info2->MDEntryID == info->MDEntryID)
-                return node;
-            if(node == list->End())
-                break;
-            node = node->Next();
-        }
-        // such thing could happen because of some packet lost
-        // so please do not return null :)
-        return list->Add(info);
-    }
     /*
     inline LinkedPointer<T>* GetBuyQuoteCore1(double value, LinkedPointer<T> *start, LinkedPointer<T> *end) {
         LinkedPointer<T> *node = start;
@@ -330,7 +316,7 @@ public:
         }
         return this->m_sellQuoteList->Add();
     }
-
+    /*
     inline void RemoveBuyQuoteEx(T *info) {
         DebugInfoManager::Default->Log(this->m_symbolInfo->Symbol(), this->m_sessionInt, "Remove BuyQuoteEx", info->MDEntryID, &(info->MDEntryPx), info->MDEntrySize);
         LinkedPointer<T> *node = this->GetBuyQuote(&(info->MDEntryPx));
@@ -340,90 +326,111 @@ public:
         //printf("ERROR: %" PRIu64 " entry not found\n", info->MDEntryID);
         return ;
     }
+    */
+    inline LinkedPointer<HashTableItemInfo>* GetPointer(T *info) {
+        return HashTable::Default->GetPointer(this, info->MDEntryID);
+    }
+    inline void FreePointer(LinkedPointer<HashTableItemInfo> *hashItem) {
+        HashTable::Default->RemovePointer(hashItem);
+    }
+    inline void FreePointer(T *data) {
+        HashTable::Default->Remove(this, data->MDEntryID);
+    }
+    inline LinkedPointer<HashTableItemInfo>* AddPointer(T *info) {
+        return HashTable::Default->Add(this, 0, info->MDEntryID);
+    }
+    inline LinkedPointer<HashTableItemInfo>* AddPointer(PointerListLite<T> *list, T *info) {
+        LinkedPointer<T> *item = list->Add(info);
+        return HashTable::Default->Add(this, item, info->MDEntryID);
+    }
+    inline LinkedPointer<HashTableItemInfo>* AddPointer(LinkedPointer<T> *ptr, T *info) {
+        return HashTable::Default->Add(this, ptr, info->MDEntryID);
+    }
+    inline LinkedPointer<T>* GetQuote(PointerListLite<T> *list, T *info) {
+        LinkedPointer<HashTableItemInfo> *hashItem = this->GetPointer(info);
+        if(hashItem == 0) {
+            // such thing could happen because of some packet lost
+            // so please do not return null :)
+            LinkedPointer<T> *res = list->Add(info);
+            hashItem = AddPointer(list, info);
+            return res;
+        }
+        return static_cast<LinkedPointer<T>*>(hashItem->Data()->m_object);
+    }
+
+    inline void RemoveQuote(PointerListLite<T> *list, T *info) {
+        LinkedPointer<HashTableItemInfo> *hashItem = this->GetPointer(info);
+        if(hashItem == 0) {
+            // such thing could happen because of some packet lost
+            // so please do not return null :)
+            //TODO remove debug
+            //printf("ERROR: %" PRIu64 " entry not found\n", info->MDEntryID);
+            return;
+        }
+        LinkedPointer<T> *node = static_cast<LinkedPointer<T>*>(hashItem->Data()->m_object);
+        T *data = node->Data();
+        list->Remove(node);
+        this->FreePointer(hashItem);
+    }
 
     inline void RemoveBuyQuote(T *info) {
         DebugInfoManager::Default->Log(this->m_symbolInfo->Symbol(), this->m_sessionInt, "Remove BuyQuote", info->MDEntryID, &(info->MDEntryPx), info->MDEntrySize);
-        LinkedPointer<T> *node = this->m_buyQuoteList->Start();
-        if(node == 0)
-            return;
-        while(true) {
-            T *data = node->Data();
-            if(data->MDEntryID == info->MDEntryID) {
-                this->m_buyQuoteList->Remove(node);
-                data->Clear();
-                return;
-            }
-            if(node == this->m_buyQuoteList->End())
-                break;
-            node = node->Next();
-        }
-        //TODO remove debug
-        //printf("ERROR: %" PRIu64 " entry not found\n", info->MDEntryID);
-        return;
+        RemoveQuote(this->m_buyQuoteList, info);
     }
 
-    inline LinkedPointer<T>* RemoveSellQuote(T *info) {
+    inline void RemoveSellQuote(T *info) {
         DebugInfoManager::Default->Log(this->m_symbolInfo->Symbol(), this->m_sessionInt, "Remove SellQuote", info->MDEntryID, &(info->MDEntryPx), info->MDEntrySize);
-        LinkedPointer<T> *node = this->m_sellQuoteList->Start();
-        if(node == 0)
-            return 0;
-        while(true) {
-            T *data = node->Data();
-            if(data->MDEntryID == info->MDEntryID) {
-                this->m_sellQuoteList->Remove(node);
-                data->Clear();
-                return node;
-            }
-            if(node == this->m_sellQuoteList->End())
-                break;
-            node = node->Next();
-        }
-        //TODO remove debug
-        //printf("ERROR: %" PRIu64 " entry not found\n", info->MDEntryID);
-        return 0;
+        RemoveQuote(this->m_sellQuoteList, info);
     }
 
     inline void ChangeBuyQuote(T *info) {
         DebugInfoManager::Default->Log(this->m_symbolInfo->Symbol(), this->m_sessionInt, "Change BuyQuote", info->MDEntryID, &(info->MDEntryPx), info->MDEntrySize);
 
-        LinkedPointer<T> *ptr = GetQuote(this->m_buyQuoteList, info);
-        //TODO remove debug
-        if(ptr == 0) {
-            //printf("ERROR: %" PRIu64 " entry not found\n", info->MDEntryID);
+        LinkedPointer<HashTableItemInfo> *hashItem = this->GetPointer(info);
+        LinkedPointer<T> *ptr;
+        if(hashItem != 0) {
+            ptr = static_cast<LinkedPointer<T>*>(hashItem->Data()->m_object);
+            this->m_buyQuoteList->Remove(ptr);
+            ptr->Data()->Clear();
+
+            info->Used = true;
+            ptr = GetBuyQuote(&(info->MDEntryPx));
+            HashTableItemInfo *h = hashItem->Data();
+            h->m_object = ptr;
+            h->m_intId = info->MDEntryID;
             return;
         }
-        this->m_buyQuoteList->Remove(ptr);
-        AddBuyQuote(info);
         info->Used = true;
-        ptr->Data()->Clear();
+        ptr = GetBuyQuote(&(info->MDEntryPx));
+        hashItem = AddPointer(ptr, info);
     }
 
     inline void ChangeSellQuote(T *info) {
         DebugInfoManager::Default->Log(this->m_symbolInfo->Symbol(), this->m_sessionInt, "Change SellQuote", info->MDEntryID, &(info->MDEntryPx), info->MDEntrySize);
-        LinkedPointer<T> *ptr = GetQuote(this->m_sellQuoteList, info);
-        //TODO remove debug
-        if(ptr == 0) {
-            //printf("ERROR: %" PRIu64 " entry not found\n", info->MDEntryID);
+        LinkedPointer<HashTableItemInfo> *hashItem = this->GetPointer(info);
+        LinkedPointer<T> *ptr;
+        if(hashItem != 0) {
+            ptr = static_cast<LinkedPointer<T>*>(hashItem->Data()->m_object);
+            this->m_sellQuoteList->Remove(ptr);
+            ptr->Data()->Clear();
+
+            info->Used = true;
+            ptr = GetSellQuote(&(info->MDEntryPx));
+            HashTableItemInfo *h = hashItem->Data();
+            h->m_object = ptr;
+            h->m_intId = info->MDEntryID;
             return;
         }
-        this->m_sellQuoteList->Remove(ptr);
-        AddSellQuote(info);
         info->Used = true;
-        ptr->Data()->Clear();
-    }
-
-    inline LinkedPointer<T>* AddBuyQuoteEx(T *item) {
-        DebugInfoManager::Default->Log(this->m_symbolInfo->Symbol(), this->m_sessionInt, "Add BuyQuote", item->MDEntryID, &(item->MDEntryPx), item->MDEntrySize);
-        item->Used = true;
-        LinkedPointer<T> *ptr = GetBuyQuoteEx(&(item->MDEntryPx)); // TODO changed from GetBuyQuote
-        ptr->Data(item);
-        return ptr;
+        ptr = GetSellQuote(&(info->MDEntryPx));
+        hashItem = AddPointer(ptr, info);
     }
 
     inline LinkedPointer<T>* AddBuyQuote(T *item) {
         DebugInfoManager::Default->Log(this->m_symbolInfo->Symbol(), this->m_sessionInt, "Add BuyQuote", item->MDEntryID, &(item->MDEntryPx), item->MDEntrySize);
         item->Used = true;
-        LinkedPointer<T> *ptr = GetBuyQuote(&(item->MDEntryPx)); // TODO changed from GetBuyQuote
+        LinkedPointer<T> *ptr = GetBuyQuote(&(item->MDEntryPx));
+        AddPointer(ptr, item);
         ptr->Data(item);
         return ptr;
     }
@@ -432,6 +439,7 @@ public:
         DebugInfoManager::Default->Log(this->m_symbolInfo->Symbol(), this->m_sessionInt, "Add SellQuote", item->MDEntryID, &(item->MDEntryPx), item->MDEntrySize);
         item->Used = true;
         LinkedPointer<T> *ptr = GetSellQuote(&(item->MDEntryPx));
+        AddPointer(ptr, item);
         ptr->Data(item);
         return ptr;
     }

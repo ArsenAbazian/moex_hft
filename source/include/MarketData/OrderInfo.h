@@ -6,8 +6,9 @@
 #define HFT_ROBOT_ORDERINFO_H
 
 #include "../Lib/StringIdComparer.h"
-#include "../Fast/FastTypes.h"
 #include "../Lib/PointerList.h"
+#include "../Lib/HashTable.h"
+#include "../Fast/FastTypes.h"
 #include "MDEntryQueue.h"
 #include "QuoteInfo.h"
 #include "../Managers/DebugInfoManager.h"
@@ -82,7 +83,9 @@ public:
             return;
         LinkedPointer<T> *node = list->Start();
         while(true) {
-            node->Data()->Clear();
+            T *data = node->Data();
+            FreePointer(data);
+            data->Clear();
             if(node == list->End())
                 break;
             node = node->Next();
@@ -99,23 +102,6 @@ public:
         this->m_savedRptSeq = 0;
         this->m_shouldProcessSnapshot = false;
         this->m_snapshotProcessedCount = 0;
-    }
-
-    inline LinkedPointer<T>* GetQuote(PointerListLite<T> *list, T *info) {
-        LinkedPointer<T> *node = list->Start();
-        if(node == 0)
-            return 0;
-        while(true) {
-            T *info2 = node->Data();
-            if(StringIdComparer::Equal(info2->MDEntryID, info2->MDEntryIDLength, info->MDEntryID, info->MDEntryIDLength))
-                return node;
-            if(node == list->End())
-                break;
-            node = node->Next();
-        }
-        // such thing could happen because of some packet lost
-        // so please do not return null :)
-        return list->Add(info);
     }
 
     inline LinkedPointer<QuoteInfo>* GetAggregatedBuyQuote(Decimal *price) {
@@ -225,95 +211,130 @@ public:
         ptr->Data()->AddSize(item->MDEntrySize.CalculatePositiveInteger());
     }
 
-    inline LinkedPointer<T>* RemoveBuyQuote(T *info) {
-        DebugInfoManager::Default->Log(this->m_symbolInfo->Symbol(), this->m_tradingSession, "Remove BuyQuote", info->MDEntryID, info->MDEntryIDLength, &(info->MDEntryPx), &(info->MDEntrySize));
-        LinkedPointer<T> *node = this->m_buyQuoteList->Start();
-        if(node == 0)
-            return 0;
-        while(true) {
-            T *data = node->Data();
-            if(StringIdComparer::Equal(data->MDEntryID, data->MDEntryIDLength, info->MDEntryID, info->MDEntryIDLength)) {
-                this->m_buyQuoteList->Remove(node);
-                this->RemoveAggregatedBuyQuote(data);
-                data->Clear();
-                return node;
-            }
-            if(node == this->m_buyQuoteList->End())
-                break;
-            node = node->Next();
+    inline LinkedPointer<HashTableItemInfo>* GetPointer(T *info) {
+        return HashTable::Default->GetPointer(this, info->MDEntryID, info->MDEntryIDLength);
+    }
+    inline void FreePointer(LinkedPointer<HashTableItemInfo> *hashItem) {
+        HashTable::Default->RemovePointer(hashItem);
+    }
+    inline void FreePointer(T *data) {
+        HashTable::Default->Remove(this, data->MDEntryID, data->MDEntryIDLength);
+    }
+    inline LinkedPointer<HashTableItemInfo>* AddPointer(T *info) {
+        return HashTable::Default->Add(this, 0, info->MDEntryID, info->MDEntryIDLength);
+    }
+    inline LinkedPointer<HashTableItemInfo>* AddPointer(PointerListLite<T> *list, T *info) {
+        LinkedPointer<T> *item = list->Add(info);
+        return HashTable::Default->Add(this, item, info->MDEntryID, info->MDEntryIDLength);
+    }
+    inline LinkedPointer<HashTableItemInfo>* AddPointer(LinkedPointer<T> *ptr, T *info) {
+        return HashTable::Default->Add(this, ptr, info->MDEntryID, info->MDEntryIDLength);
+    }
+    inline LinkedPointer<T>* GetQuote(PointerListLite<T> *list, T *info) {
+        LinkedPointer<HashTableItemInfo> *hashItem = this->GetPointer(info);
+        if(hashItem == 0) {
+            // such thing could happen because of some packet lost
+            // so please do not return null :)
+            LinkedPointer<T> *res = list->Add(info);
+            hashItem = AddPointer(list, info);
+            return res;
         }
-        //TODO remove debug
-        info->MDEntryID[info->MDEntryIDLength] = '\0';
-        printf("ERROR: %s entry not found\n", info->MDEntryID);
-
-        return 0;
+        return static_cast<LinkedPointer<T>*>(hashItem->Data()->m_object);
     }
 
-    inline LinkedPointer<T>* RemoveSellQuote(T *info) {
-        DebugInfoManager::Default->Log(this->m_symbolInfo->Symbol(), this->m_tradingSession, "Remove SellQuote", info->MDEntryID, info->MDEntryIDLength, &(info->MDEntryPx), &(info->MDEntrySize));
-        LinkedPointer<T> *node = this->m_sellQuoteList->Start();
-        if(node == 0)
-            return 0;
-        while(true) {
-            T *data = node->Data();
-            if(StringIdComparer::Equal(data->MDEntryID, data->MDEntryIDLength, info->MDEntryID, info->MDEntryIDLength)) {
-                this->m_sellQuoteList->Remove(node);
-                this->RemoveAggregatedSellQuote(data);
-                data->Clear();
-                return node;
-            }
-            if(node == this->m_sellQuoteList->End())
-                break;
-            node = node->Next();
+    inline void RemoveQuote(PointerListLite<T> *list, T *info) {
+        LinkedPointer<HashTableItemInfo> *hashItem = this->GetPointer(info);
+        if(hashItem == 0) {
+            // such thing could happen because of some packet lost
+            // so please do not return null :)
+            //TODO remove debug
+            //printf("ERROR: %" PRIu64 " entry not found\n", info->MDEntryID);
+            return;
         }
-        //TODO remove debug
-        info->MDEntryID[info->MDEntryIDLength] = '\0';
-        printf("ERROR: %s entry not found\n", info->MDEntryID);
-        return 0;
+        LinkedPointer<T> *node = static_cast<LinkedPointer<T>*>(hashItem->Data()->m_object);
+        T *data = node->Data();
+        list->Remove(node);
+        this->FreePointer(hashItem);
+    }
+
+    inline void RemoveBuyQuote(T *info) {
+        DebugInfoManager::Default->Log(this->m_symbolInfo->Symbol(), this->m_tradingSession, "Remove BuyQuote", info->MDEntryID, info->MDEntryIDLength, &(info->MDEntryPx), &(info->MDEntrySize));
+        RemoveQuote(this->m_buyQuoteList, info);
+        RemoveAggregatedBuyQuote(info);
+    }
+
+    inline void RemoveSellQuote(T *info) {
+        DebugInfoManager::Default->Log(this->m_symbolInfo->Symbol(), this->m_tradingSession, "Remove SellQuote", info->MDEntryID, info->MDEntryIDLength, &(info->MDEntryPx), &(info->MDEntrySize));
+        RemoveQuote(this->m_sellQuoteList, info);
+        RemoveAggregatedSellQuote(info);
     }
 
     inline void ChangeBuyQuote(T *info) {
         DebugInfoManager::Default->Log(this->m_symbolInfo->Symbol(), this->m_tradingSession, "Change BuyQuote", info->MDEntryID, info->MDEntryIDLength, &(info->MDEntryPx), &(info->MDEntrySize));
-        LinkedPointer<T> *ptr = GetQuote(this->m_buyQuoteList, info);
-        //TODO remove debug
-        if(ptr == 0) {
-            info->MDEntryID[info->MDEntryIDLength] = '\0';
-            printf("ERROR: %s entry not found\n", info->MDEntryID);
+
+        LinkedPointer<HashTableItemInfo> *hashItem = this->GetPointer(info);
+        LinkedPointer<T> *ptr;
+        if(hashItem != 0) {
+            ptr = static_cast<LinkedPointer<T>*>(hashItem->Data()->m_object);
+            this->m_buyQuoteList->Remove(ptr);
+            ptr->Data()->Clear();
+
+            info->Used = true;
+            LinkedPointer<T> *ptrNew = this->m_buyQuoteList->Add(info);
+            HashTableItemInfo *h = hashItem->Data();
+            h->m_object = ptrNew;
+            h->m_stringId = info->MDEntryID;
+            h->m_length = info->MDEntryIDLength;
+            ChangeAggregatedBuyQuote(ptr->Data(), info);
             return;
         }
-        this->ChangeAggregatedBuyQuote(ptr->Data(), info);
-        info->Used = true;
-        ptr->Data()->Clear();
-        ptr->Data(info);
+        //TODO remove debug
+        info->MDEntryID[info->MDEntryIDLength] = '\0';
+        printf("ERROR: %s entry not found\n", info->MDEntryID);
+        return;
     }
 
     inline void ChangeSellQuote(T *info) {
         DebugInfoManager::Default->Log(this->m_symbolInfo->Symbol(), this->m_tradingSession, "Change SellQuote", info->MDEntryID, info->MDEntryIDLength, &(info->MDEntryPx), &(info->MDEntrySize));
-        LinkedPointer<T> *ptr = GetQuote(this->m_sellQuoteList, info);
-        //TODO remove debug
-        if(ptr == 0) {
-            info->MDEntryID[info->MDEntryIDLength] = '\0';
-            printf("ERROR: %s entry not found\n", info->MDEntryID);
+        LinkedPointer<HashTableItemInfo> *hashItem = this->GetPointer(info);
+        LinkedPointer<T> *ptr;
+        if(hashItem != 0) {
+            ptr = static_cast<LinkedPointer<T>*>(hashItem->Data()->m_object);
+            this->m_sellQuoteList->Remove(ptr);
+            ptr->Data()->Clear();
+
+            info->Used = true;
+            LinkedPointer<T> *ptrNew = this->m_sellQuoteList->Add(info);
+            HashTableItemInfo *h = hashItem->Data();
+            h->m_object = ptrNew;
+            h->m_stringId = info->MDEntryID;
+            h->m_length = info->MDEntryIDLength;
+            ChangeAggregatedSellQuote(ptr->Data(), info);
             return;
         }
-        this->ChangeAggregatedSellQuote(ptr->Data(), info);
-        info->Used = true;
-        ptr->Data()->Clear();
-        ptr->Data(info);
+        //TODO remove debug
+        info->MDEntryID[info->MDEntryIDLength] = '\0';
+        printf("ERROR: %s entry not found\n", info->MDEntryID);
+        return;
     }
 
     inline LinkedPointer<T>* AddBuyQuote(T *item) {
         DebugInfoManager::Default->Log(this->m_symbolInfo->Symbol(), this->m_tradingSession, "Add BuyQuote", item->MDEntryID, item->MDEntryIDLength, &(item->MDEntryPx), &(item->MDEntrySize));
         item->Used = true;
-        this->AddAggregatedBuyQuote(item);
-        return this->m_buyQuoteList->Add(item);
+        LinkedPointer<T> *ptr = this->m_buyQuoteList->Add(item);
+        AddPointer(ptr, item);
+        AddAggregatedBuyQuote(item);
+        return ptr;
     }
 
     inline LinkedPointer<T>* AddSellQuote(T *item) {
         DebugInfoManager::Default->Log(this->m_symbolInfo->Symbol(), this->m_tradingSession, "Add SellQuote", item->MDEntryID, item->MDEntryIDLength, &(item->MDEntryPx), &(item->MDEntrySize));
         item->Used = true;
-        this->AddAggregatedSellQuote(item);
-        return this->m_sellQuoteList->Add(item);
+        LinkedPointer<T> *ptr = this->m_sellQuoteList->Add(item);
+        AddPointer(ptr, item);
+        ptr->Data(item);
+        AddAggregatedSellQuote(item);
+        return ptr;
     }
 
     inline void Remove(T *info) {
@@ -495,6 +516,8 @@ template <typename T> OrderInfo<T>::OrderInfo() :
         OrderInfo::m_itemsPool = new PointerList<T>(RobotSettings::Default->MarketDataMaxEntriesCount, false);
     if(OrderInfo::m_aggregatedItemsPool == 0)
         OrderInfo::m_aggregatedItemsPool = new PointerList<QuoteInfo>(RobotSettings::Default->MarketDataMaxEntriesCount, true);
+
+    HashTable::SafeCreateDefault();
 
     this->m_sellQuoteList = new PointerListLite<T>(OrderInfo<T>::m_itemsPool);
     this->m_buyQuoteList = new PointerListLite<T>(OrderInfo<T>::m_itemsPool);

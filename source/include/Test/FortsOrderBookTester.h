@@ -1061,6 +1061,7 @@ public:
         this->idfForts->ClearSecurityDefinitions();
         this->incForts->OrderBookForts()->Clear();
         this->incForts->GetSymbolManager()->Clear();
+        HashTable::Default->Clear();
     }
 
     void TestTable_AfterClear() {
@@ -1070,10 +1071,10 @@ public:
         FortsDefaultSnapshotMessageMDEntriesItemInfo *item = this->m_helper->CreateFortsOBRItemInfo("symbol1", 111111, 111111);
         item->RptSeq = 1;
 
-        FortsDefaultSnapshotMessageMDEntriesItemInfo *item2 = this->m_helper->CreateFortsOBRItemInfo("symbol1", 111111, 111111);
+        FortsDefaultSnapshotMessageMDEntriesItemInfo *item2 = this->m_helper->CreateFortsOBRItemInfo("symbol1", 111111, 222222);
         item2->RptSeq = 2;
 
-        FortsDefaultSnapshotMessageMDEntriesItemInfo *item3 = this->m_helper->CreateFortsOBRItemInfo("symbol1", 111111, 111111);
+        FortsDefaultSnapshotMessageMDEntriesItemInfo *item3 = this->m_helper->CreateFortsOBRItemInfo("symbol1", 111111, 333333);
         item3->RptSeq = 4;
 
         this->m_table->ProcessIncremental(item, 0);
