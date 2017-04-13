@@ -81,14 +81,14 @@ public:
     void Test_OnIncrementalRefresh_TLR_CURR_Add() {
         this->Clear();
         this->TestDefaults();
-        this->AddSymbol("symbol1");
+        this->AddSymbol("symbol1", "session1");
 
         AstsIncrementalTLRCURRInfo *info = this->m_helper->CreateAstsIncrementalTLRCURRInfo();
 
-        AstsTLSCURRItemInfo *item1 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "t1", 3, -2, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "e1", 1);
-        AstsTLSCURRItemInfo *item2 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "t1", 4, -2, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "e2", 2);
-        AstsTLSCURRItemInfo *item3 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "t1", 2, -2, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "e3", 3);
-        AstsTLSCURRItemInfo *item4 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "t1", 25, -3, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "e4", 4);
+        AstsTLSCURRItemInfo *item1 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "session1", 3, -2, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "e1", 1);
+        AstsTLSCURRItemInfo *item2 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "session1", 4, -2, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "e2", 2);
+        AstsTLSCURRItemInfo *item3 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "session1", 2, -2, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "e3", 3);
+        AstsTLSCURRItemInfo *item4 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "session1", 25, -3, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "e4", 4);
 
         if(item4->Used)
             throw;
@@ -106,7 +106,7 @@ public:
             throw;
         if(this->incCurr->TradeCurr()->Symbol(0)->Count() != 1)
             throw;
-        TradeInfo<AstsTLSCURRItemInfo> *obi = this->incCurr->TradeCurr()->GetItem("symbol1", "t1");
+        TradeInfo<AstsTLSCURRItemInfo> *obi = this->incCurr->TradeCurr()->GetItem("symbol1", "session1");
         if(obi == 0)
             throw;
         if(obi->Trades()->Count() != 1)
@@ -132,7 +132,7 @@ public:
             throw;
         if(this->incCurr->TradeCurr()->Symbol(0)->Count() != 1)
             throw;
-        obi = this->incCurr->TradeCurr()->GetItem("symbol1", "t1");
+        obi = this->incCurr->TradeCurr()->GetItem("symbol1", "session1");
         if(obi == 0)
             throw;
         if(obi->Trades()->Count() != 2)
@@ -157,7 +157,7 @@ public:
             throw;
         if(this->incCurr->TradeCurr()->Symbol(0)->Count() != 1)
             throw;
-        obi = this->incCurr->TradeCurr()->GetItem("symbol1", "t1");
+        obi = this->incCurr->TradeCurr()->GetItem("symbol1", "session1");
         if(obi == 0)
             throw;
         if(obi->Trades()->Count() != 3)
@@ -201,7 +201,7 @@ public:
             throw;
         if(this->incCurr->TradeCurr()->Symbol(0)->Count() != 1)
             throw;
-        obi = this->incCurr->TradeCurr()->GetItem("symbol1", "t1");
+        obi = this->incCurr->TradeCurr()->GetItem("symbol1", "session1");
         if(obi == 0)
             throw;
         if(obi->Trades()->Count() != 4)
@@ -247,13 +247,13 @@ public:
     void Test_Clear() {
         this->Clear();
         this->TestDefaults();
-        this->AddSymbol("symbol1");
+        this->AddSymbol("symbol1", "session1");
 
         AstsIncrementalTLRCURRInfo *info = this->m_helper->CreateAstsIncrementalTLRCURRInfo();
-        AstsTLSCURRItemInfo *item1 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "t1", 3, -2, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "e1", 1);
-        AstsTLSCURRItemInfo *item2 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "t1", 4, -2, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "e2", 2);
-        AstsTLSCURRItemInfo *item3 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "t1", 2, -2, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "e3", 3);
-        AstsTLSCURRItemInfo *item4 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "t1", 25, -3, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "e4", 4);
+        AstsTLSCURRItemInfo *item1 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "session1", 3, -2, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "e1", 1);
+        AstsTLSCURRItemInfo *item2 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "session1", 4, -2, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "e2", 2);
+        AstsTLSCURRItemInfo *item3 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "session1", 2, -2, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "e3", 3);
+        AstsTLSCURRItemInfo *item4 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "session1", 25, -3, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "e4", 4);
 
         info->GroupMDEntriesCount = 4;
         info->GroupMDEntries[0] = item1;
@@ -274,7 +274,7 @@ public:
         if(this->incCurr->TradeCurr()->UsedItemCount() != 0)
             throw;
 
-        TradeInfo<AstsTLSCURRItemInfo> *obi = this->incCurr->TradeCurr()->GetItem("symbol1", "t1");
+        TradeInfo<AstsTLSCURRItemInfo> *obi = this->incCurr->TradeCurr()->GetItem("symbol1", "session1");
         if(obi->Trades()->Count() != 0)
             throw;
     }
@@ -282,13 +282,13 @@ public:
     void Test_OnFullRefresh_TLS_CURR() {
         this->Clear();
         this->TestDefaults();
-        this->AddSymbol("symbol1");
+        this->AddSymbol("symbol1", "session1");
 
         AstsIncrementalTLRCURRInfo *info = this->m_helper->CreateAstsIncrementalTLRCURRInfo();
-        AstsTLSCURRItemInfo *item1 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "t1", 3, -2, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "e1", 1);
-        AstsTLSCURRItemInfo *item2 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "t1", 4, -2, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "e2", 2);
-        AstsTLSCURRItemInfo *item3 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "t1", 2, -2, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "e3", 3);
-        AstsTLSCURRItemInfo *item4 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "t1", 25, -3, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "e4", 4);
+        AstsTLSCURRItemInfo *item1 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "session1", 3, -2, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "e1", 1);
+        AstsTLSCURRItemInfo *item2 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "session1", 4, -2, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "e2", 2);
+        AstsTLSCURRItemInfo *item3 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "session1", 2, -2, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "e3", 3);
+        AstsTLSCURRItemInfo *item4 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "session1", 25, -3, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "e4", 4);
 
         info->GroupMDEntriesCount = 4;
         info->GroupMDEntries[0] = item1;
@@ -298,11 +298,11 @@ public:
 
         this->incCurr->OnIncrementalRefresh_TLR_CURR(info);
 
-        TradeInfo<AstsTLSCURRItemInfo> *obi2 = this->incCurr->TradeCurr()->GetItem("symbol1", "t1");
+        TradeInfo<AstsTLSCURRItemInfo> *obi2 = this->incCurr->TradeCurr()->GetItem("symbol1", "session1");
         if(obi2->Trades()->Count() != 4)
             throw;
 
-        AstsTLSCURRInfo *info2 = this->m_helper->CreateTLSCurrInfo("t1s2", "t1");
+        AstsTLSCURRInfo *info2 = this->m_helper->CreateTLSCurrInfo("t1s2", "session1");
         AstsTLSCURRItemInfo *newItem1 = this->m_helper->CreateTLSCurrItemInfo(7,-2, 1, 2, MDEntryType::mdetBuyQuote, "e7");
         AstsTLSCURRItemInfo *newItem2 = this->m_helper->CreateTLSCurrItemInfo(8,-2, 1, 2, MDEntryType::mdetBuyQuote, "e8");
         info2->RptSeq = 5;
@@ -317,11 +317,11 @@ public:
         if(this->incCurr->TradeCurr()->UsedItemCount() != 2)
             throw;
 
-        TradeInfo<AstsTLSCURRItemInfo> *obi3 = this->incCurr->TradeCurr()->GetItem("symbol1", "t1");
+        TradeInfo<AstsTLSCURRItemInfo> *obi3 = this->incCurr->TradeCurr()->GetItem("symbol1", "session1");
         if(obi3->Trades()->Count() != 4)
             throw;
 
-        TradeInfo<AstsTLSCURRItemInfo> *obi = this->incCurr->TradeCurr()->GetItem("t1s2", 4, "t1", 2);
+        TradeInfo<AstsTLSCURRItemInfo> *obi = this->incCurr->TradeCurr()->GetItem("t1s2", "session1");
         if(obi->Trades()->Count() != 2)
             throw;
 
@@ -445,10 +445,14 @@ public:
         TestTableItemsAllocator(this->m_table);
     }
 
-    inline void AddSymbol(const char *symbol) {
+    void AddSymbol(const char *symbol, const char *session) {
         this->incCurr->GetSymbolManager()->AddSymbol(symbol);
-        this->incCurr->TradeCurr()->AddSymbol(symbol);
-        this->m_table->AddSymbol(symbol);
+        this->incCurr->TradeCurr()->Add(symbol, session);
+        this->m_table->Add(symbol, session);
+    }
+
+    void AddSymbol(const char *symbol) {
+        AddSymbol(symbol, "session1");
     }
 
     void ClearSymbols() {
@@ -496,7 +500,7 @@ public:
         this->ClearSymbols();
         this->AddSymbol("symbol1");
 
-        AstsTLSCURRItemInfo *item1 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSCURRItemInfo *item1 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 1;
 
@@ -508,7 +512,7 @@ public:
         this->ClearSymbols();
         this->AddSymbol("symbol1");
 
-        AstsTLSCURRItemInfo *item1 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSCURRItemInfo *item1 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 2;
 
@@ -520,14 +524,14 @@ public:
         this->ClearSymbols();
         this->AddSymbol("symbol1");
 
-        AstsTLSCURRItemInfo *item1 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSCURRItemInfo *item1 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 1;
 
         if(!this->m_table->ProcessIncremental(item1, 0, item1->TradingSessionID, item1->TradingSessionIDLength))
             throw;
 
-        AstsTLSCURRItemInfo *item2 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSCURRItemInfo *item2 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 3);
         item2->RptSeq = 3;
 
@@ -542,14 +546,14 @@ public:
         this->AddSymbol("symbol1");
         this->AddSymbol("symbol2");
 
-        AstsTLSCURRItemInfo *item1 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSCURRItemInfo *item1 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 1;
 
         if(!this->m_table->ProcessIncremental(item1, 0, item1->TradingSessionID, item1->TradingSessionIDLength))
             throw;
 
-        AstsTLSCURRItemInfo *item2 = this->m_helper->CreateTLSCurrItemInfo("symbol2", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSCURRItemInfo *item2 = this->m_helper->CreateTLSCurrItemInfo("symbol2", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item2->RptSeq = 1;
 
@@ -566,43 +570,43 @@ public:
         this->ClearSymbols();
         this->AddSymbol("symbol1");
 
-        AstsTLSCURRItemInfo *item1 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSCURRItemInfo *item1 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 1;
 
         this->m_table->ProcessIncremental(item1, 0, item1->TradingSessionID, item1->TradingSessionIDLength);
 
-        AstsTLSCURRItemInfo *item2 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSCURRItemInfo *item2 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e2", 3);
         item2->RptSeq = 3;
 
         if(this->m_table->ProcessIncremental(item2, 0, item2->TradingSessionID, item2->TradingSessionIDLength))
             throw;
 
-        AstsTLSCURRItemInfo *item3 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSCURRItemInfo *item3 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e3", 4);
         item3->RptSeq = 4;
 
         if(this->m_table->ProcessIncremental(item3, 0, item3->TradingSessionID, item3->TradingSessionIDLength))
             throw;
 
-        AstsTLSCURRItemInfo *item4 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSCURRItemInfo *item4 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e4", 5);
         item4->RptSeq = 5;
 
         if(this->m_table->ProcessIncremental(item4, 0, item4->TradingSessionID, item4->TradingSessionIDLength))
             throw;
 
-        AstsTLSCURRItemInfo *item5 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSCURRItemInfo *item5 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e5", 3);
         item5->RptSeq = 3;
 
-        AstsTLSCURRInfo *info = this->m_helper->CreateTLSCurrInfo("symbol1", "session");
+        AstsTLSCURRInfo *info = this->m_helper->CreateTLSCurrInfo("symbol1", "session1");
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item5;
         info->RptSeq = 3;
 
-        TradeInfo<AstsTLSCURRItemInfo> *tb = this->m_table->GetItem("symbol1", "session");
+        TradeInfo<AstsTLSCURRItemInfo> *tb = this->m_table->GetItem("symbol1", "session1");
 
         this->m_table->ObtainSnapshotItem(info);
         this->m_table->StartProcessSnapshot();
@@ -631,39 +635,39 @@ public:
         this->ClearSymbols();
         this->AddSymbol("symbol1");
 
-        AstsTLSCURRItemInfo *item1 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSCURRItemInfo *item1 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 1;
 
         this->m_table->ProcessIncremental(item1, 0, item1->TradingSessionID, item1->TradingSessionIDLength);
 
-        AstsTLSCURRItemInfo *item3 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSCURRItemInfo *item3 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e3", 4);
         item3->RptSeq = 4;
 
         if(this->m_table->ProcessIncremental(item3, 0, item3->TradingSessionID, item3->TradingSessionIDLength))
             throw;
 
-        AstsTLSCURRItemInfo *item4 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSCURRItemInfo *item4 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e4", 5);
         item4->RptSeq = 5;
 
         if(this->m_table->ProcessIncremental(item4, 0, item4->TradingSessionID, item4->TradingSessionIDLength))
             throw;
 
-        AstsTLSCURRInfo *info1 = this->m_helper->CreateTLSCurrInfo("symbol1", "session");
+        AstsTLSCURRInfo *info1 = this->m_helper->CreateTLSCurrInfo("symbol1", "session1");
         info1->GroupMDEntriesCount = 1;
         info1->RptSeq = 3;
         info1->RouteFirst = true;
         info1->GroupMDEntries[0] = this->m_helper->CreateTLSCurrItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e2");
 
-        AstsTLSCURRInfo *info2 = this->m_helper->CreateTLSCurrInfo("symbol1", "session");
+        AstsTLSCURRInfo *info2 = this->m_helper->CreateTLSCurrInfo("symbol1", "session1");
         info2->GroupMDEntriesCount = 1;
         info2->RptSeq = 3;
         info2->RouteFirst = true;
         info2->GroupMDEntries[0] = this->m_helper->CreateTLSCurrItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e2");
 
-        TradeInfo<AstsTLSCURRItemInfo> *tb = this->m_table->GetItem("symbol1", "session");
+        TradeInfo<AstsTLSCURRItemInfo> *tb = this->m_table->GetItem("symbol1", "session1");
 
         this->m_table->ObtainSnapshotItem(info1);
         this->m_table->StartProcessSnapshot();
@@ -686,43 +690,43 @@ public:
         this->ClearSymbols();
         this->AddSymbol("symbol1");
 
-        AstsTLSCURRItemInfo *item1 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSCURRItemInfo *item1 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 1;
 
         this->m_table->ProcessIncremental(item1, 0, item1->TradingSessionID, item1->TradingSessionIDLength);
 
-        AstsTLSCURRItemInfo *item2 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSCURRItemInfo *item2 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e2", 4);
         item2->RptSeq = 4;
 
         if(this->m_table->ProcessIncremental(item2, 0, item2->TradingSessionID, item2->TradingSessionIDLength))
             throw;
 
-        AstsTLSCURRItemInfo *item3 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSCURRItemInfo *item3 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e3", 5);
         item3->RptSeq = 5;
 
         if(this->m_table->ProcessIncremental(item3, 0, item3->TradingSessionID, item3->TradingSessionIDLength))
             throw;
 
-        AstsTLSCURRItemInfo *item4 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSCURRItemInfo *item4 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e4", 6);
         item4->RptSeq = 6;
 
         if(this->m_table->ProcessIncremental(item4, 0, item4->TradingSessionID, item4->TradingSessionIDLength))
             throw;
 
-        AstsTLSCURRItemInfo *item5 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSCURRItemInfo *item5 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e5", 2);
         item5->RptSeq = 2;
 
-        AstsTLSCURRInfo *info = this->m_helper->CreateTLSCurrInfo("symbol1", "session");
+        AstsTLSCURRInfo *info = this->m_helper->CreateTLSCurrInfo("symbol1", "session1");
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item5;
         info->RptSeq = 2;
 
-        TradeInfo<AstsTLSCURRItemInfo> *tb = this->m_table->GetItem("symbol1", "session");
+        TradeInfo<AstsTLSCURRItemInfo> *tb = this->m_table->GetItem("symbol1", "session1");
 
         this->m_table->ObtainSnapshotItem(info);
         this->m_table->StartProcessSnapshot();
@@ -747,36 +751,36 @@ public:
         this->ClearSymbols();
         this->AddSymbol("symbol1");
 
-        AstsTLSCURRItemInfo *item1 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSCURRItemInfo *item1 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 1;
 
         this->m_table->ProcessIncremental(item1, 0, item1->TradingSessionID, item1->TradingSessionIDLength);
 
-        AstsTLSCURRItemInfo *item2 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSCURRItemInfo *item2 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e2", 4);
         item2->RptSeq = 4;
 
         if(this->m_table->ProcessIncremental(item2, 0, item2->TradingSessionID, item2->TradingSessionIDLength))
             throw;
 
-        AstsTLSCURRItemInfo *item4 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSCURRItemInfo *item4 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e4", 6);
         item4->RptSeq = 6;
 
         if(this->m_table->ProcessIncremental(item4, 0, item4->TradingSessionID, item4->TradingSessionIDLength))
             throw;
 
-        AstsTLSCURRItemInfo *item5 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSCURRItemInfo *item5 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e5", 3);
         item5->RptSeq = 3;
 
-        AstsTLSCURRInfo *info = this->m_helper->CreateTLSCurrInfo("symbol1", "session");
+        AstsTLSCURRInfo *info = this->m_helper->CreateTLSCurrInfo("symbol1", "session1");
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item5;
         info->RptSeq = 3;
 
-        TradeInfo<AstsTLSCURRItemInfo> *tb = this->m_table->GetItem("symbol1", "session");
+        TradeInfo<AstsTLSCURRItemInfo> *tb = this->m_table->GetItem("symbol1", "session1");
 
         this->m_table->ObtainSnapshotItem(info);
         this->m_table->StartProcessSnapshot();
@@ -1848,7 +1852,7 @@ public:
                      "",
                      30);
 
-        if(incCurr->TradeCurr()->UsedItemCount() != 2)
+        if(incCurr->TradeCurr()->UsedItemCount() != 3)
             throw;
         if(incCurr->TradeCurr()->Symbol(0)->Session(0)->HasEntries())
             throw;
@@ -2672,11 +2676,6 @@ public:
             if(!StringIdComparer::Equal(buf, i, buf, i))
                 throw;
         }
-    }
-
-    void AddSymbol(const char *symbol, const char *session) {
-        this->incCurr->GetSymbolManager()->AddSymbol(symbol);
-        this->incCurr->TradeCurr()->Add(symbol, session);
     }
 
     void TestInfoAndItemInfoUsageAndAllocationCurr_Inc_1() {

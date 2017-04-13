@@ -277,16 +277,11 @@ public:
         LinkedPointer<T> *ptr;
         if(hashItem != 0) {
             ptr = static_cast<LinkedPointer<T>*>(hashItem->Data()->m_object);
-            this->m_buyQuoteList->Remove(ptr);
-            ptr->Data()->Clear();
-
+            T *data = ptr->Data();
+            data->Clear();
+            ptr->Data(info);
             info->Used = true;
-            LinkedPointer<T> *ptrNew = this->m_buyQuoteList->Add(info);
-            HashTableItemInfo *h = hashItem->Data();
-            h->m_object = ptrNew;
-            h->m_stringId = info->MDEntryID;
-            h->m_length = info->MDEntryIDLength;
-            ChangeAggregatedBuyQuote(ptr->Data(), info);
+            ChangeAggregatedBuyQuote(data, info);
             return;
         }
         //TODO remove debug
@@ -301,16 +296,11 @@ public:
         LinkedPointer<T> *ptr;
         if(hashItem != 0) {
             ptr = static_cast<LinkedPointer<T>*>(hashItem->Data()->m_object);
-            this->m_sellQuoteList->Remove(ptr);
-            ptr->Data()->Clear();
-
+            T *data = ptr->Data();
+            data->Clear();
+            ptr->Data(info);
             info->Used = true;
-            LinkedPointer<T> *ptrNew = this->m_sellQuoteList->Add(info);
-            HashTableItemInfo *h = hashItem->Data();
-            h->m_object = ptrNew;
-            h->m_stringId = info->MDEntryID;
-            h->m_length = info->MDEntryIDLength;
-            ChangeAggregatedSellQuote(ptr->Data(), info);
+            ChangeAggregatedSellQuote(data, info);
             return;
         }
         //TODO remove debug

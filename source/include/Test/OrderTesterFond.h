@@ -89,10 +89,10 @@ public:
 
         AstsIncrementalOLRFONDInfo *info = this->m_helper->CreateAstsIncrementalOLRFONDInfo();
 
-        AstsOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("symbol1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "111111", 1);
-        AstsOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("symbol1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "222222", 6);
-        AstsOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("symbol1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "333333", 3);
-        AstsOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("symbol1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "444444", 4);
+        AstsOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("symbol1", "session1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "111111", 1);
+        AstsOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("symbol1", "session1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "222222", 2);
+        AstsOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("symbol1", "session1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "333333", 3);
+        AstsOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("symbol1", "session1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "444444", 4);
 
         if(item4->Used)
             throw;
@@ -110,7 +110,7 @@ public:
             throw;
         if(this->incFond->OrderFond()->Symbol(0)->Count() != 1)
             throw;
-        OrderInfo<AstsOLSFONDItemInfo> *obi = this->incFond->OrderFond()->GetItem("symbol1", "t1");
+        OrderInfo<AstsOLSFONDItemInfo> *obi = this->incFond->OrderFond()->GetItem("symbol1", "session1");
         if(obi == 0)
             throw;
         if(obi->BuyQuotes()->Count() != 1)
@@ -136,7 +136,7 @@ public:
             throw;
         if(this->incFond->OrderFond()->Symbol(0)->Count() != 1)
             throw;
-        obi = this->incFond->OrderFond()->GetItem("symbol1", "t1");
+        obi = this->incFond->OrderFond()->GetItem("symbol1", "session1");
         if(obi == 0)
             throw;
         if(obi->BuyQuotes()->Count() != 2)
@@ -161,7 +161,7 @@ public:
             throw;
         if(this->incFond->OrderFond()->Symbol(0)->Count() != 1)
             throw;
-        obi = this->incFond->OrderFond()->GetItem("symbol1", "t1");
+        obi = this->incFond->OrderFond()->GetItem("symbol1", "session1");
         if(obi == 0)
             throw;
         if(obi->BuyQuotes()->Count() != 3)
@@ -205,7 +205,7 @@ public:
             throw;
         if(this->incFond->OrderFond()->Symbol(0)->Count() != 1)
             throw;
-        obi = this->incFond->OrderFond()->GetItem("symbol1", "t1");
+        obi = this->incFond->OrderFond()->GetItem("symbol1", "session1");
         if(obi == 0)
             throw;
         if(obi->BuyQuotes()->Count() != 4)
@@ -254,10 +254,10 @@ public:
         this->AddSymbol("symbol1");
 
         AstsIncrementalOLRFONDInfo *info = this->m_helper->CreateAstsIncrementalOLRFONDInfo();
-        AstsOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("symbol1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "111111", 1);
-        AstsOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("symbol1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "222222", 6);
-        AstsOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("symbol1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "333333", 3);
-        AstsOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("symbol1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "444444", 4);
+        AstsOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("symbol1", "session1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "111111", 1);
+        AstsOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("symbol1", "session1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "222222", 2);
+        AstsOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("symbol1", "session1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "333333", 3);
+        AstsOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("symbol1", "session1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "444444", 4);
 
         info->GroupMDEntriesCount = 4;
         info->GroupMDEntries[0] = item1;
@@ -285,14 +285,14 @@ public:
         if(this->incFond->OrderFond()->UsedItemCount() != 1)
             throw;
 
-        OrderInfo<AstsOLSFONDItemInfo> *obi = this->incFond->OrderFond()->GetItem("symbol1", "t1");
+        OrderInfo<AstsOLSFONDItemInfo> *obi = this->incFond->OrderFond()->GetItem("symbol1", "session1");
         if(obi->BuyQuotes()->Count() != 3)
             throw;
-        if(!StringIdComparer::Equal(obi->BuyQuotes()->Item(0)->MDEntryID, 2, "111111", 6))
+        if(!StringIdComparer::Equal(obi->BuyQuotes()->Item(0)->MDEntryID, 6, "111111", 6))
             throw;
-        if(!StringIdComparer::Equal(obi->BuyQuotes()->Item(1)->MDEntryID, 2, "222222", 6))
+        if(!StringIdComparer::Equal(obi->BuyQuotes()->Item(1)->MDEntryID, 6, "222222", 6))
             throw;
-        if(!StringIdComparer::Equal(obi->BuyQuotes()->Item(2)->MDEntryID, 2, "333333", 6))
+        if(!StringIdComparer::Equal(obi->BuyQuotes()->Item(2)->MDEntryID, 6, "333333", 6))
             throw;
 
         info->GroupMDEntriesCount = 1;
@@ -304,12 +304,12 @@ public:
         if(this->incFond->OrderFond()->UsedItemCount() != 1)
             throw;
 
-        obi = this->incFond->OrderFond()->GetItem("symbol1", "t1");
+        obi = this->incFond->OrderFond()->GetItem("symbol1", "session1");
         if(obi->BuyQuotes()->Count() != 2)
             throw;
-        if(!StringIdComparer::Equal(obi->BuyQuotes()->Item(0)->MDEntryID, 2, "111111", 6))
+        if(!StringIdComparer::Equal(obi->BuyQuotes()->Item(0)->MDEntryID, 6, "111111", 6))
             throw;
-        if(!StringIdComparer::Equal(obi->BuyQuotes()->Item(1)->MDEntryID, 2, "222222", 6))
+        if(!StringIdComparer::Equal(obi->BuyQuotes()->Item(1)->MDEntryID, 6, "222222", 6))
             throw;
 
         info->GroupMDEntriesCount = 1;
@@ -321,10 +321,10 @@ public:
         if(this->incFond->OrderFond()->UsedItemCount() != 1)
             throw;
 
-        obi = this->incFond->OrderFond()->GetItem("symbol1", "t1");
+        obi = this->incFond->OrderFond()->GetItem("symbol1", "session1");
         if(obi->BuyQuotes()->Count() != 1)
             throw;
-        if(!StringIdComparer::Equal(obi->BuyQuotes()->Item(0)->MDEntryID, 2, "111111", 6))
+        if(!StringIdComparer::Equal(obi->BuyQuotes()->Item(0)->MDEntryID, 6, "111111", 6))
             throw;
 
         info->GroupMDEntriesCount = 1;
@@ -336,7 +336,7 @@ public:
         if(this->incFond->OrderFond()->UsedItemCount() != 1)
             throw;
 
-        obi = this->incFond->OrderFond()->GetItem("symbol1", "t1");
+        obi = this->incFond->OrderFond()->GetItem("symbol1", "session1");
         if(obi->BuyQuotes()->Count() != 0)
             throw;
     }
@@ -347,10 +347,10 @@ public:
         this->AddSymbol("symbol1");
 
         AstsIncrementalOLRFONDInfo *info = this->m_helper->CreateAstsIncrementalOLRFONDInfo();
-        AstsOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("symbol1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "111111", 1);
-        AstsOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("symbol1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "222222", 6);
-        AstsOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("symbol1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "333333", 3);
-        AstsOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("symbol1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "444444", 4);
+        AstsOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("symbol1", "session1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "111111", 1);
+        AstsOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("symbol1", "session1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "222222", 2);
+        AstsOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("symbol1", "session1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "333333", 3);
+        AstsOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("symbol1", "session1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "444444", 4);
 
         info->GroupMDEntriesCount = 4;
         info->GroupMDEntries[0] = item1;
@@ -360,17 +360,17 @@ public:
 
         this->incFond->OnIncrementalRefresh_OLR_FOND(info);
 
-        OrderInfo<AstsOLSFONDItemInfo> *obi2 = this->incFond->OrderFond()->GetItem("symbol1", "t1");
-        if(!StringIdComparer::Equal(obi2->BuyQuotes()->Item(0)->MDEntryID, 2, "111111", 6))
+        OrderInfo<AstsOLSFONDItemInfo> *obi2 = this->incFond->OrderFond()->GetItem("symbol1", "session1");
+        if(!StringIdComparer::Equal(obi2->BuyQuotes()->Item(0)->MDEntryID, 6, "111111", 6))
             throw;
-        if(!StringIdComparer::Equal(obi2->BuyQuotes()->Item(1)->MDEntryID, 2, "222222", 6))
+        if(!StringIdComparer::Equal(obi2->BuyQuotes()->Item(1)->MDEntryID, 6, "222222", 6))
             throw;
-        if(!StringIdComparer::Equal(obi2->BuyQuotes()->Item(2)->MDEntryID, 2, "333333", 6))
+        if(!StringIdComparer::Equal(obi2->BuyQuotes()->Item(2)->MDEntryID, 6, "333333", 6))
             throw;
-        if(!StringIdComparer::Equal(obi2->BuyQuotes()->Item(3)->MDEntryID, 2, "444444", 6))
+        if(!StringIdComparer::Equal(obi2->BuyQuotes()->Item(3)->MDEntryID, 6, "444444", 6))
             throw;
 
-        AstsOLSFONDItemInfo *item5 = this->m_helper->CreateOLRFondItemInfo("symbol1", "t1", 24, -3, 1, 3, mduaChange, mdetBuyQuote, "222222", 5);
+        AstsOLSFONDItemInfo *item5 = this->m_helper->CreateOLRFondItemInfo("symbol1", "session1", 24, -3, 1, 3, mduaChange, mdetBuyQuote, "222222", 5);
 
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item5;
@@ -385,7 +385,7 @@ public:
         if(item5->Allocator->Count() != 1)
             throw;
 
-        OrderInfo<AstsOLSFONDItemInfo> *obi = this->incFond->OrderFond()->GetItem("symbol1", "t1");
+        OrderInfo<AstsOLSFONDItemInfo> *obi = this->incFond->OrderFond()->GetItem("symbol1", "session1");
 
         AstsOLSFONDItemInfo *qt1 = obi->BuyQuotes()->Item(0);
         AstsOLSFONDItemInfo *qt2 = obi->BuyQuotes()->Item(1);
@@ -396,13 +396,13 @@ public:
             throw;
         if(obi->BuyQuotes()->Count() != 4)
             throw;
-        if(!StringIdComparer::Equal(qt1->MDEntryID, 2, "111111", 6))
+        if(!StringIdComparer::Equal(qt1->MDEntryID, 6, "111111", 6))
             throw;
-        if(!StringIdComparer::Equal(qt2->MDEntryID, 2, "222222", 6))
+        if(!StringIdComparer::Equal(qt2->MDEntryID, 6, "222222", 6))
             throw;
-        if(!StringIdComparer::Equal(qt3->MDEntryID, 2, "333333", 6))
+        if(!StringIdComparer::Equal(qt3->MDEntryID, 6, "333333", 6))
             throw;
-        if(!StringIdComparer::Equal(qt4->MDEntryID, 2, "444444", 6))
+        if(!StringIdComparer::Equal(qt4->MDEntryID, 6, "444444", 6))
             throw;
 
         if(qt1->MDEntryPx.Mantissa != item1->MDEntryPx.Mantissa)
@@ -422,10 +422,10 @@ public:
         this->AddSymbol("symbol1");
 
         AstsIncrementalOLRFONDInfo *info = this->m_helper->CreateAstsIncrementalOLRFONDInfo();
-        AstsOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("symbol1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "111111", 1);
-        AstsOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("symbol1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "222222", 6);
-        AstsOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("symbol1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "333333", 3);
-        AstsOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("symbol1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "444444", 4);
+        AstsOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("symbol1", "session1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "111111", 1);
+        AstsOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("symbol1", "session1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "222222", 2);
+        AstsOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("symbol1", "session1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "333333", 3);
+        AstsOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("symbol1", "session1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "444444", 4);
 
         info->GroupMDEntriesCount = 4;
         info->GroupMDEntries[0] = item1;
@@ -446,7 +446,7 @@ public:
         if(this->incFond->OrderFond()->UsedItemCount() != 0)
             throw;
 
-        OrderInfo<AstsOLSFONDItemInfo> *obi = this->incFond->OrderFond()->GetItem("symbol1", "t1");
+        OrderInfo<AstsOLSFONDItemInfo> *obi = this->incFond->OrderFond()->GetItem("symbol1", "session1");
         if(obi->BuyQuotes()->Count() != 0)
             throw;
     }
@@ -457,10 +457,10 @@ public:
         this->AddSymbol("symbol1");
 
         AstsIncrementalOLRFONDInfo *info = this->m_helper->CreateAstsIncrementalOLRFONDInfo();
-        AstsOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("symbol1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "111111", 1);
-        AstsOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("symbol1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "222222", 6);
-        AstsOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("symbol1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "333333", 3);
-        AstsOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("symbol1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "444444", 4);
+        AstsOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("symbol1", "session1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "111111", 1);
+        AstsOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("symbol1", "session1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "222222", 2);
+        AstsOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("symbol1", "session1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "333333", 3);
+        AstsOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("symbol1", "session1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "444444", 4);
 
         info->GroupMDEntriesCount = 4;
         info->GroupMDEntries[0] = item1;
@@ -470,11 +470,11 @@ public:
 
         this->incFond->OnIncrementalRefresh_OLR_FOND(info);
 
-        OrderInfo<AstsOLSFONDItemInfo> *obi2 = this->incFond->OrderFond()->GetItem("symbol1", "t1");
+        OrderInfo<AstsOLSFONDItemInfo> *obi2 = this->incFond->OrderFond()->GetItem("symbol1", "session1");
         if(obi2->BuyQuotes()->Count() != 4)
             throw;
 
-        AstsOLSFONDInfo *info2 = this->m_helper->CreateOLSFondInfo("t1s2", "t1");
+        AstsOLSFONDInfo *info2 = this->m_helper->CreateOLSFondInfo("t1s2", "session1");
         AstsOLSFONDItemInfo *newItem1 = this->m_helper->CreateOLSFondItemInfo(7,-2, 1, 2, mdetBuyQuote, "777777");
         AstsOLSFONDItemInfo *newItem2 = this->m_helper->CreateOLSFondItemInfo(8,-2, 1, 2, mdetBuyQuote, "888888");
         info2->RptSeq = 5;
@@ -489,20 +489,20 @@ public:
         if(this->incFond->OrderFond()->UsedItemCount() != 2)
             throw;
 
-        OrderInfo<AstsOLSFONDItemInfo> *obi3 = this->incFond->OrderFond()->GetItem("symbol1", "t1");
+        OrderInfo<AstsOLSFONDItemInfo> *obi3 = this->incFond->OrderFond()->GetItem("symbol1", "session1");
         if(obi3->BuyQuotes()->Count() != 4)
             throw;
 
-        OrderInfo<AstsOLSFONDItemInfo> *obi = this->incFond->OrderFond()->GetItem("t1s2", 4, "t1", 2);
+        OrderInfo<AstsOLSFONDItemInfo> *obi = this->incFond->OrderFond()->GetItem("t1s2", "session1");
         if(obi->BuyQuotes()->Count() != 2)
             throw;
 
         AstsOLSFONDItemInfo *qt1 = obi->BuyQuotes()->Item(0);
         AstsOLSFONDItemInfo *qt2 = obi->BuyQuotes()->Item(1);
 
-        if(!StringIdComparer::Equal(qt1->MDEntryID, 2, "777777", 6))
+        if(!StringIdComparer::Equal(qt1->MDEntryID, 6, "777777", 6))
             throw;
-        if(!StringIdComparer::Equal(qt2->MDEntryID, 2, "888888", 6))
+        if(!StringIdComparer::Equal(qt2->MDEntryID, 6, "888888", 6))
             throw;
         if(!qt1->MDEntryPx.Equal(7, -2))
             throw;
@@ -519,10 +519,10 @@ public:
 
         AstsIncrementalOLRFONDInfo *info = this->m_helper->CreateAstsIncrementalOLRFONDInfo();
 
-        AstsOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("symbol1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "111111", 1);
-        AstsOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("symbol1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "222222", 6);
-        AstsOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("symbol1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "333333", 3);
-        AstsOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("symbol1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "444444", 4);
+        AstsOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("symbol1", "session1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "111111", 1);
+        AstsOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("symbol1", "session1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "222222", 2);
+        AstsOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("symbol1", "session1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "333333", 3);
+        AstsOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("symbol1", "session1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "444444", 4);
 
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item1;
@@ -535,7 +535,7 @@ public:
             throw;
         if(this->incFond->OrderFond()->Symbol(0)->Count() != 1)
             throw;
-        OrderInfo<AstsOLSFONDItemInfo> *obi = this->incFond->OrderFond()->GetItem("symbol1", "t1");
+        OrderInfo<AstsOLSFONDItemInfo> *obi = this->incFond->OrderFond()->GetItem("symbol1", "session1");
         if(obi == 0)
             throw;
         if(obi->SellQuotes()->Count() != 1)
@@ -545,7 +545,7 @@ public:
             throw;
         if(!quote->MDEntrySize.Equal(1, 2))
             throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, 2, "111111", 6))
+        if(!StringIdComparer::Equal(quote->MDEntryID, 6, "111111", 6))
             throw;
 
         info->GroupMDEntriesCount = 1;
@@ -559,7 +559,7 @@ public:
             throw;
         if(this->incFond->OrderFond()->Symbol(0)->Count() != 1)
             throw;
-        obi = this->incFond->OrderFond()->GetItem("symbol1", "t1");
+        obi = this->incFond->OrderFond()->GetItem("symbol1", "session1");
         if(obi == 0)
             throw;
         if(obi->SellQuotes()->Count() != 2)
@@ -569,7 +569,7 @@ public:
             throw;
         if(!quote->MDEntrySize.Equal(1, 2))
             throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, 2, "111111", 6))
+        if(!StringIdComparer::Equal(quote->MDEntryID, 6, "111111", 6))
             throw;
 
         quote = obi->SellQuotes()->Item(1);
@@ -577,7 +577,7 @@ public:
             throw;
         if(!quote->MDEntrySize.Equal(1, 2))
             throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, 2, "222222", 6))
+        if(!StringIdComparer::Equal(quote->MDEntryID, 6, "222222", 6))
             throw;
 
         info->GroupMDEntriesCount = 1;
@@ -591,7 +591,7 @@ public:
             throw;
         if(this->incFond->OrderFond()->Symbol(0)->Count() != 1)
             throw;
-        obi = this->incFond->OrderFond()->GetItem("symbol1", "t1");
+        obi = this->incFond->OrderFond()->GetItem("symbol1", "session1");
         if(obi == 0)
             throw;
         if(obi->SellQuotes()->Count() != 3)
@@ -602,7 +602,7 @@ public:
             throw;
         if(!quote->MDEntrySize.Equal(1, 2))
             throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, 2, "111111", 6))
+        if(!StringIdComparer::Equal(quote->MDEntryID, 6, "111111", 6))
             throw;
 
         quote = obi->SellQuotes()->Item(1);
@@ -610,7 +610,7 @@ public:
             throw;
         if(!quote->MDEntrySize.Equal(1, 2))
             throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, 2, "222222", 6))
+        if(!StringIdComparer::Equal(quote->MDEntryID, 6, "222222", 6))
             throw;
 
         quote = obi->SellQuotes()->Item(2);
@@ -618,7 +618,7 @@ public:
             throw;
         if(!quote->MDEntrySize.Equal(1, 2))
             throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, 2, "333333", 6))
+        if(!StringIdComparer::Equal(quote->MDEntryID, 6, "333333", 6))
             throw;
 
         info->GroupMDEntriesCount = 1;
@@ -632,7 +632,7 @@ public:
             throw;
         if(this->incFond->OrderFond()->Symbol(0)->Count() != 1)
             throw;
-        obi = this->incFond->OrderFond()->GetItem("symbol1", "t1");
+        obi = this->incFond->OrderFond()->GetItem("symbol1", "session1");
         if(obi == 0)
             throw;
         if(obi->SellQuotes()->Count() != 4)
@@ -643,7 +643,7 @@ public:
             throw;
         if(!quote->MDEntrySize.Equal(1, 2))
             throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, 2, "111111", 6))
+        if(!StringIdComparer::Equal(quote->MDEntryID, 6, "111111", 6))
             throw;
 
         quote = obi->SellQuotes()->Item(1);
@@ -651,7 +651,7 @@ public:
             throw;
         if(!quote->MDEntrySize.Equal(1, 2))
             throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, 2, "222222", 6))
+        if(!StringIdComparer::Equal(quote->MDEntryID, 6, "222222", 6))
             throw;
 
         quote = obi->SellQuotes()->Item(2);
@@ -659,7 +659,7 @@ public:
             throw;
         if(!quote->MDEntrySize.Equal(1, 2))
             throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, 2, "333333", 6))
+        if(!StringIdComparer::Equal(quote->MDEntryID, 6, "333333", 6))
             throw;
 
         quote = obi->SellQuotes()->Item(3);
@@ -667,7 +667,7 @@ public:
             throw;
         if(!quote->MDEntrySize.Equal(1, 2))
             throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, 2, "444444", 6))
+        if(!StringIdComparer::Equal(quote->MDEntryID, 6, "444444", 6))
             throw;
     }
 
@@ -677,10 +677,10 @@ public:
         this->AddSymbol("symbol1");
 
         AstsIncrementalOLRFONDInfo *info = this->m_helper->CreateAstsIncrementalOLRFONDInfo();
-        AstsOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("symbol1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "111111", 1);
-        AstsOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("symbol1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "222222", 6);
-        AstsOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("symbol1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "333333", 3);
-        AstsOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("symbol1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "444444", 4);
+        AstsOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("symbol1", "session1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "111111", 1);
+        AstsOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("symbol1", "session1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "222222", 2);
+        AstsOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("symbol1", "session1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "333333", 3);
+        AstsOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("symbol1", "session1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "444444", 4);
 
         info->GroupMDEntriesCount = 4;
         info->GroupMDEntries[0] = item1;
@@ -704,15 +704,15 @@ public:
         if(this->incFond->OrderFond()->UsedItemCount() != 1)
             throw;
 
-        OrderInfo<AstsOLSFONDItemInfo> *obi = this->incFond->OrderFond()->GetItem("symbol1", "t1");
+        OrderInfo<AstsOLSFONDItemInfo> *obi = this->incFond->OrderFond()->GetItem("symbol1", "session1");
         if(obi->SellQuotes()->Count() != 3)
             throw;
 
-        if(!StringIdComparer::Equal(obi->SellQuotes()->Item(0)->MDEntryID, 2,"111111", 6))
+        if(!StringIdComparer::Equal(obi->SellQuotes()->Item(0)->MDEntryID, 6,"111111", 6))
             throw;
-        if(!StringIdComparer::Equal(obi->SellQuotes()->Item(1)->MDEntryID, 2,"222222", 6))
+        if(!StringIdComparer::Equal(obi->SellQuotes()->Item(1)->MDEntryID, 6,"222222", 6))
             throw;
-        if(!StringIdComparer::Equal(obi->SellQuotes()->Item(2)->MDEntryID, 2,"333333", 6))
+        if(!StringIdComparer::Equal(obi->SellQuotes()->Item(2)->MDEntryID, 6,"333333", 6))
             throw;
 
         info->GroupMDEntriesCount = 1;
@@ -724,12 +724,12 @@ public:
         if(this->incFond->OrderFond()->UsedItemCount() != 1)
             throw;
 
-        obi = this->incFond->OrderFond()->GetItem("symbol1", "t1");
+        obi = this->incFond->OrderFond()->GetItem("symbol1", "session1");
         if(obi->SellQuotes()->Count() != 2)
             throw;
-        if(!StringIdComparer::Equal(obi->SellQuotes()->Item(0)->MDEntryID, 2,"111111", 6))
+        if(!StringIdComparer::Equal(obi->SellQuotes()->Item(0)->MDEntryID, 6,"111111", 6))
             throw;
-        if(!StringIdComparer::Equal(obi->SellQuotes()->Item(1)->MDEntryID, 2,"222222", 6))
+        if(!StringIdComparer::Equal(obi->SellQuotes()->Item(1)->MDEntryID, 6,"222222", 6))
             throw;
 
         info->GroupMDEntriesCount = 1;
@@ -741,10 +741,10 @@ public:
         if(this->incFond->OrderFond()->UsedItemCount() != 1)
             throw;
 
-        obi = this->incFond->OrderFond()->GetItem("symbol1", "t1");
+        obi = this->incFond->OrderFond()->GetItem("symbol1", "session1");
         if(obi->SellQuotes()->Count() != 1)
             throw;
-        if(!StringIdComparer::Equal(obi->SellQuotes()->Item(0)->MDEntryID, 2,"111111", 6))
+        if(!StringIdComparer::Equal(obi->SellQuotes()->Item(0)->MDEntryID, 6,"111111", 6))
             throw;
 
         info->GroupMDEntriesCount = 1;
@@ -756,7 +756,7 @@ public:
         if(this->incFond->OrderFond()->UsedItemCount() != 1)
             throw;
 
-        obi = this->incFond->OrderFond()->GetItem("symbol1", "t1");
+        obi = this->incFond->OrderFond()->GetItem("symbol1", "session1");
         if(obi->SellQuotes()->Count() != 0)
             throw;
     }
@@ -767,10 +767,10 @@ public:
         this->AddSymbol("symbol1");
 
         AstsIncrementalOLRFONDInfo *info = this->m_helper->CreateAstsIncrementalOLRFONDInfo();
-        AstsOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("symbol1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "111111", 1);
-        AstsOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("symbol1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "222222", 6);
-        AstsOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("symbol1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "333333", 3);
-        AstsOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("symbol1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "444444", 4);
+        AstsOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("symbol1", "session1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "111111", 1);
+        AstsOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("symbol1", "session1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "222222", 2);
+        AstsOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("symbol1", "session1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "333333", 3);
+        AstsOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("symbol1", "session1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "444444", 4);
 
         info->GroupMDEntriesCount = 4;
         info->GroupMDEntries[0] = item1;
@@ -780,24 +780,24 @@ public:
 
         this->incFond->OnIncrementalRefresh_OLR_FOND(info);
 
-        OrderInfo<AstsOLSFONDItemInfo> *obi2 = this->incFond->OrderFond()->GetItem("symbol1", "t1");
-        if(!StringIdComparer::Equal(obi2->SellQuotes()->Item(0)->MDEntryID, 2, "111111", 6))
+        OrderInfo<AstsOLSFONDItemInfo> *obi2 = this->incFond->OrderFond()->GetItem("symbol1", "session1");
+        if(!StringIdComparer::Equal(obi2->SellQuotes()->Item(0)->MDEntryID, 6, "111111", 6))
             throw;
-        if(!StringIdComparer::Equal(obi2->SellQuotes()->Item(1)->MDEntryID, 2, "222222", 6))
+        if(!StringIdComparer::Equal(obi2->SellQuotes()->Item(1)->MDEntryID, 6, "222222", 6))
             throw;
-        if(!StringIdComparer::Equal(obi2->SellQuotes()->Item(2)->MDEntryID, 2, "333333", 6))
+        if(!StringIdComparer::Equal(obi2->SellQuotes()->Item(2)->MDEntryID, 6, "333333", 6))
             throw;
-        if(!StringIdComparer::Equal(obi2->SellQuotes()->Item(3)->MDEntryID, 2, "444444", 6))
+        if(!StringIdComparer::Equal(obi2->SellQuotes()->Item(3)->MDEntryID, 6, "444444", 6))
             throw;
 
-        AstsOLSFONDItemInfo *item5 = this->m_helper->CreateOLRFondItemInfo("symbol1", "t1", 24, -3, 1, 3, mduaChange, mdetSellQuote, "222222", 5);
+        AstsOLSFONDItemInfo *item5 = this->m_helper->CreateOLRFondItemInfo("symbol1", "session1", 24, -3, 1, 3, mduaChange, mdetSellQuote, "222222", 5);
 
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item5;
 
         this->incFond->OnIncrementalRefresh_OLR_FOND(info);
 
-        OrderInfo<AstsOLSFONDItemInfo> *obi = this->incFond->OrderFond()->GetItem("symbol1", "t1");
+        OrderInfo<AstsOLSFONDItemInfo> *obi = this->incFond->OrderFond()->GetItem("symbol1", "session1");
 
         AstsOLSFONDItemInfo *qt1 = obi->SellQuotes()->Item(0);
         AstsOLSFONDItemInfo *qt2 = obi->SellQuotes()->Item(1);
@@ -808,13 +808,13 @@ public:
             throw;
         if(obi->SellQuotes()->Count() != 4)
             throw;
-        if(!StringIdComparer::Equal(qt1->MDEntryID, 2, "111111", 6))
+        if(!StringIdComparer::Equal(qt1->MDEntryID, 6, "111111", 6))
             throw;
-        if(!StringIdComparer::Equal(qt2->MDEntryID, 2, "222222", 6))
+        if(!StringIdComparer::Equal(qt2->MDEntryID, 6, "222222", 6))
             throw;
-        if(!StringIdComparer::Equal(qt3->MDEntryID, 2, "333333", 6))
+        if(!StringIdComparer::Equal(qt3->MDEntryID, 6, "333333", 6))
             throw;
-        if(!StringIdComparer::Equal(qt4->MDEntryID, 2, "444444", 6))
+        if(!StringIdComparer::Equal(qt4->MDEntryID, 6, "444444", 6))
             throw;
 
         if(qt1->MDEntryPx.Mantissa != item1->MDEntryPx.Mantissa)
@@ -834,10 +834,10 @@ public:
         this->AddSymbol("symbol1");
 
         AstsIncrementalOLRFONDInfo *info = this->m_helper->CreateAstsIncrementalOLRFONDInfo();
-        AstsOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("symbol1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "111111", 1);
-        AstsOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("symbol1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "222222", 6);
-        AstsOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("symbol1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "333333", 3);
-        AstsOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("symbol1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "444444", 4);
+        AstsOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("symbol1", "session1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "111111", 1);
+        AstsOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("symbol1", "session1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "222222", 2);
+        AstsOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("symbol1", "session1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "333333", 3);
+        AstsOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("symbol1", "session1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "444444", 4);
 
         info->GroupMDEntriesCount = 4;
         info->GroupMDEntries[0] = item1;
@@ -851,7 +851,7 @@ public:
         if(this->incFond->OrderFond()->UsedItemCount() != 0)
             throw;
 
-        OrderInfo<AstsOLSFONDItemInfo> *obi = this->incFond->OrderFond()->GetItem("symbol1", "t1");
+        OrderInfo<AstsOLSFONDItemInfo> *obi = this->incFond->OrderFond()->GetItem("symbol1", "session1");
         if(obi->SellQuotes()->Count() != 0)
             throw;
     }
@@ -862,10 +862,10 @@ public:
         this->AddSymbol("symbol1");
 
         AstsIncrementalOLRFONDInfo *info = this->m_helper->CreateAstsIncrementalOLRFONDInfo();
-        AstsOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("symbol1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "111111", 1);
-        AstsOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("symbol1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "222222", 6);
-        AstsOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("symbol1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "333333", 3);
-        AstsOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("symbol1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "444444", 4);
+        AstsOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("symbol1", "session1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "111111", 1);
+        AstsOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("symbol1", "session1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "222222", 2);
+        AstsOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("symbol1", "session1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "333333", 3);
+        AstsOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("symbol1", "session1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "444444", 4);
 
         info->GroupMDEntriesCount = 4;
         info->GroupMDEntries[0] = item1;
@@ -875,7 +875,7 @@ public:
 
         this->incFond->OnIncrementalRefresh_OLR_FOND(info);
 
-        AstsOLSFONDInfo *info2 = this->m_helper->CreateOLSFondInfo("t1s2", "t1");
+        AstsOLSFONDInfo *info2 = this->m_helper->CreateOLSFondInfo("t1s2", "session1");
         AstsOLSFONDItemInfo *newItem1 = this->m_helper->CreateOLSFondItemInfo(7,-2, 1, 2, mdetSellQuote, "777777");
         AstsOLSFONDItemInfo *newItem2 = this->m_helper->CreateOLSFondItemInfo(8,-2, 1, 2, mdetSellQuote, "888888");
 
@@ -889,20 +889,20 @@ public:
         if(this->incFond->OrderFond()->UsedItemCount() != 2)
             throw;
 
-        OrderInfo<AstsOLSFONDItemInfo> *obi3 = this->incFond->OrderFond()->GetItem("symbol1", "t1");
+        OrderInfo<AstsOLSFONDItemInfo> *obi3 = this->incFond->OrderFond()->GetItem("symbol1", "session1");
         if(obi3->SellQuotes()->Count() != 4)
             throw;
 
-        OrderInfo<AstsOLSFONDItemInfo> *obi = this->incFond->OrderFond()->GetItem("t1s2", 4, "t1", 2);
+        OrderInfo<AstsOLSFONDItemInfo> *obi = this->incFond->OrderFond()->GetItem("t1s2", "session1");
         if(obi->SellQuotes()->Count() != 2)
             throw;
 
         AstsOLSFONDItemInfo *qt1 = obi->SellQuotes()->Start()->Data();
         AstsOLSFONDItemInfo *qt2 = obi->SellQuotes()->Start()->Next()->Data();
 
-        if(!StringIdComparer::Equal(qt1->MDEntryID, 2, "777777", 6))
+        if(!StringIdComparer::Equal(qt1->MDEntryID, 6, "777777", 6))
             throw;
-        if(!StringIdComparer::Equal(qt2->MDEntryID, 2, "888888", 6))
+        if(!StringIdComparer::Equal(qt2->MDEntryID, 6, "888888", 6))
             throw;
         if(!qt1->MDEntryPx.Equal(7, -2))
             throw;
@@ -1036,10 +1036,14 @@ public:
         this->incFond->GetSymbolManager()->Clear();
     }
 
-    inline void AddSymbol(const char *symbol) {
+    void AddSymbol(const char *symbol, const char *session) {
         this->incFond->GetSymbolManager()->AddSymbol(symbol);
-	    this->incFond->OrderFond()->AddSymbol(symbol);
-        this->m_table->AddSymbol(symbol);
+        this->incFond->OrderFond()->Add(symbol, session);
+        this->m_table->Add(symbol, session);
+    }
+
+    void AddSymbol(const char *symbol) {
+        AddSymbol(symbol, "session1");
     }
 
     void TestTable_Default() {
@@ -3251,11 +3255,6 @@ public:
         }
     }
 
-    void AddSymbol(const char *symbol, const char *session) {
-        this->incFond->GetSymbolManager()->AddSymbol(symbol);
-        this->incFond->OrderFond()->Add(symbol, session);
-    }
-
     void TestInfoAndItemInfoUsageAndAllocationFond_Inc_1() {
         this->Clear();
 
@@ -3471,10 +3470,10 @@ public:
 
         AstsIncrementalOLRFONDInfo *info = this->m_helper->CreateAstsIncrementalOLRFONDInfo();
 
-        AstsOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("symbol1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "111111", 1);
-        AstsOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("symbol1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "222222", 6);
-        AstsOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("symbol1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "333333", 3);
-        AstsOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("symbol1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "444444", 4);
+        AstsOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("symbol1", "session1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "111111", 1);
+        AstsOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("symbol1", "session1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "222222", 2);
+        AstsOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("symbol1", "session1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "333333", 3);
+        AstsOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("symbol1", "session1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "444444", 4);
 
         if(item4->Used)
             throw;
@@ -3492,7 +3491,7 @@ public:
             throw;
         if(this->incFond->OrderFond()->Symbol(0)->Count() != 1)
             throw;
-        OrderInfo<AstsOLSFONDItemInfo> *obi = this->incFond->OrderFond()->GetItem("symbol1", "t1");
+        OrderInfo<AstsOLSFONDItemInfo> *obi = this->incFond->OrderFond()->GetItem("symbol1", "session1");
         if(obi == 0)
             throw;
         if(obi->AggregatedBuyQuotes()->Count() != 1)
@@ -3515,7 +3514,7 @@ public:
             throw;
         if(this->incFond->OrderFond()->Symbol(0)->Count() != 1)
             throw;
-        obi = this->incFond->OrderFond()->GetItem("symbol1", "t1");
+        obi = this->incFond->OrderFond()->GetItem("symbol1", "session1");
         if(obi == 0)
             throw;
         if(obi->AggregatedBuyQuotes()->Count() != 2)
@@ -3538,7 +3537,7 @@ public:
             throw;
         if(this->incFond->OrderFond()->Symbol(0)->Count() != 1)
             throw;
-        obi = this->incFond->OrderFond()->GetItem("symbol1", "t1");
+        obi = this->incFond->OrderFond()->GetItem("symbol1", "session1");
         if(obi == 0)
             throw;
         if(obi->AggregatedBuyQuotes()->Count() != 3)
@@ -3576,7 +3575,7 @@ public:
             throw;
         if(this->incFond->OrderFond()->Symbol(0)->Count() != 1)
             throw;
-        obi = this->incFond->OrderFond()->GetItem("symbol1", "t1");
+        obi = this->incFond->OrderFond()->GetItem("symbol1", "session1");
         if(obi == 0)
             throw;
         if(obi->AggregatedBuyQuotes()->Count() != 4)
@@ -3617,10 +3616,10 @@ public:
         this->AddSymbol("symbol1");
 
         AstsIncrementalOLRFONDInfo *info = this->m_helper->CreateAstsIncrementalOLRFONDInfo();
-        AstsOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("symbol1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "111111", 1);
-        AstsOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("symbol1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "222222", 6);
-        AstsOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("symbol1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "333333", 3);
-        AstsOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("symbol1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "444444", 4);
+        AstsOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("symbol1", "session1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "111111", 1);
+        AstsOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("symbol1", "session1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "222222", 2);
+        AstsOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("symbol1", "session1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "333333", 3);
+        AstsOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("symbol1", "session1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "444444", 4);
 
         info->GroupMDEntriesCount = 4;
         info->GroupMDEntries[0] = item1;
@@ -3639,7 +3638,7 @@ public:
         if(item4->Allocator->Count() != 1)
             throw;
 
-        OrderInfo<AstsOLSFONDItemInfo> *ob = this->incFond->OrderFond()->GetItem("symbol1", "t1");
+        OrderInfo<AstsOLSFONDItemInfo> *ob = this->incFond->OrderFond()->GetItem("symbol1", "session1");
         if(!ob->AggregatedBuyQuotes()->Item(0)->Price()->Equal(4, -2))
             throw;
         if(!ob->AggregatedBuyQuotes()->Item(1)->Price()->Equal(3, -2))
@@ -3667,7 +3666,7 @@ public:
         if(this->incFond->OrderFond()->UsedItemCount() != 1)
             throw;
 
-        OrderInfo<AstsOLSFONDItemInfo> *obi = this->incFond->OrderFond()->GetItem("symbol1", "t1");
+        OrderInfo<AstsOLSFONDItemInfo> *obi = this->incFond->OrderFond()->GetItem("symbol1", "session1");
         if(obi->AggregatedBuyQuotes()->Count() != 3)
             throw;
         if(!obi->AggregatedBuyQuotes()->Item(0)->Price()->Equal(4, -2))
@@ -3686,7 +3685,7 @@ public:
         if(this->incFond->OrderFond()->UsedItemCount() != 1)
             throw;
 
-        obi = this->incFond->OrderFond()->GetItem("symbol1", "t1");
+        obi = this->incFond->OrderFond()->GetItem("symbol1", "session1");
         if(obi->AggregatedBuyQuotes()->Count() != 2)
             throw;
         if(!obi->AggregatedBuyQuotes()->Item(0)->Price()->Equal(4, -2))
@@ -3703,7 +3702,7 @@ public:
         if(this->incFond->OrderFond()->UsedItemCount() != 1)
             throw;
 
-        obi = this->incFond->OrderFond()->GetItem("symbol1", "t1");
+        obi = this->incFond->OrderFond()->GetItem("symbol1", "session1");
         if(obi->AggregatedBuyQuotes()->Count() != 1)
             throw;
         if(!obi->AggregatedBuyQuotes()->Item(0)->Price()->Equal(3, -2))
@@ -3718,7 +3717,7 @@ public:
         if(this->incFond->OrderFond()->UsedItemCount() != 1)
             throw;
 
-        obi = this->incFond->OrderFond()->GetItem("symbol1", "t1");
+        obi = this->incFond->OrderFond()->GetItem("symbol1", "session1");
         if(obi->AggregatedBuyQuotes()->Count() != 0)
             throw;
     }
@@ -3729,10 +3728,10 @@ public:
         this->AddSymbol("symbol1");
 
         AstsIncrementalOLRFONDInfo *info = this->m_helper->CreateAstsIncrementalOLRFONDInfo();
-        AstsOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("symbol1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "111111", 1);
-        AstsOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("symbol1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "222222", 6);
-        AstsOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("symbol1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "333333", 3);
-        AstsOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("symbol1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "444444", 4);
+        AstsOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("symbol1", "session1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "111111", 1);
+        AstsOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("symbol1", "session1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "222222", 2);
+        AstsOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("symbol1", "session1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "333333", 3);
+        AstsOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("symbol1", "session1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "444444", 4);
 
         info->GroupMDEntriesCount = 4;
         info->GroupMDEntries[0] = item1;
@@ -3742,7 +3741,7 @@ public:
 
         this->incFond->OnIncrementalRefresh_OLR_FOND(info);
 
-        OrderInfo<AstsOLSFONDItemInfo> *obi2 = this->incFond->OrderFond()->GetItem("symbol1", "t1");
+        OrderInfo<AstsOLSFONDItemInfo> *obi2 = this->incFond->OrderFond()->GetItem("symbol1", "session1");
         if(!obi2->AggregatedBuyQuotes()->Item(0)->Price()->Equal(4, -2))
             throw;
         if(!obi2->AggregatedBuyQuotes()->Item(1)->Price()->Equal(3, -2))
@@ -3752,7 +3751,7 @@ public:
         if(!obi2->AggregatedBuyQuotes()->Item(3)->Price()->Equal(2, -2))
             throw;
 
-        AstsOLSFONDItemInfo *item5 = this->m_helper->CreateOLRFondItemInfo("symbol1", "t1", 24, -3, 1, 3, mduaChange, mdetBuyQuote, "222222", 5);
+        AstsOLSFONDItemInfo *item5 = this->m_helper->CreateOLRFondItemInfo("symbol1", "session1", 24, -3, 1, 3, mduaChange, mdetBuyQuote, "222222", 5);
 
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item5;
@@ -3767,7 +3766,7 @@ public:
         if(item5->Allocator->Count() != 1)
             throw;
 
-        OrderInfo<AstsOLSFONDItemInfo> *obi = this->incFond->OrderFond()->GetItem("symbol1", "t1");
+        OrderInfo<AstsOLSFONDItemInfo> *obi = this->incFond->OrderFond()->GetItem("symbol1", "session1");
 
         QuoteInfo *qt1 = obi->AggregatedBuyQuotes()->Item(0);
         QuoteInfo *qt2 = obi->AggregatedBuyQuotes()->Item(1);
@@ -3794,10 +3793,10 @@ public:
         this->AddSymbol("symbol1");
 
         AstsIncrementalOLRFONDInfo *info = this->m_helper->CreateAstsIncrementalOLRFONDInfo();
-        AstsOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("symbol1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "111111", 1);
-        AstsOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("symbol1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "222222", 6);
-        AstsOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("symbol1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "333333", 3);
-        AstsOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("symbol1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "444444", 4);
+        AstsOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("symbol1", "session1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "111111", 1);
+        AstsOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("symbol1", "session1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "222222", 2);
+        AstsOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("symbol1", "session1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "333333", 3);
+        AstsOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("symbol1", "session1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "444444", 4);
 
         info->GroupMDEntriesCount = 4;
         info->GroupMDEntries[0] = item1;
@@ -3818,7 +3817,7 @@ public:
         if(this->incFond->OrderFond()->UsedItemCount() != 0)
             throw;
 
-        OrderInfo<AstsOLSFONDItemInfo> *obi = this->incFond->OrderFond()->GetItem("symbol1", "t1");
+        OrderInfo<AstsOLSFONDItemInfo> *obi = this->incFond->OrderFond()->GetItem("symbol1", "session1");
         if(obi->AggregatedBuyQuotes()->Count() != 0)
             throw;
     }
@@ -3829,10 +3828,10 @@ public:
         this->AddSymbol("symbol1");
 
         AstsIncrementalOLRFONDInfo *info = this->m_helper->CreateAstsIncrementalOLRFONDInfo();
-        AstsOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("symbol1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "111111", 1);
-        AstsOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("symbol1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "222222", 6);
-        AstsOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("symbol1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "333333", 3);
-        AstsOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("symbol1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "444444", 4);
+        AstsOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("symbol1", "session1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "111111", 1);
+        AstsOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("symbol1", "session1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "222222", 2);
+        AstsOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("symbol1", "session1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "333333", 3);
+        AstsOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("symbol1", "session1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "444444", 4);
 
         info->GroupMDEntriesCount = 4;
         info->GroupMDEntries[0] = item1;
@@ -3842,11 +3841,11 @@ public:
 
         this->incFond->OnIncrementalRefresh_OLR_FOND(info);
 
-        OrderInfo<AstsOLSFONDItemInfo> *obi2 = this->incFond->OrderFond()->GetItem("symbol1", "t1");
+        OrderInfo<AstsOLSFONDItemInfo> *obi2 = this->incFond->OrderFond()->GetItem("symbol1", "session1");
         if(obi2->AggregatedBuyQuotes()->Count() != 4)
             throw;
 
-        AstsOLSFONDInfo *info2 = this->m_helper->CreateOLSFondInfo("t1s2", "t1");
+        AstsOLSFONDInfo *info2 = this->m_helper->CreateOLSFondInfo("t1s2", "session1");
         AstsOLSFONDItemInfo *newItem1 = this->m_helper->CreateOLSFondItemInfo(7,-2, 1, 2, mdetBuyQuote, "777777");
         AstsOLSFONDItemInfo *newItem2 = this->m_helper->CreateOLSFondItemInfo(8,-2, 1, 2, mdetBuyQuote, "888888");
         info2->RptSeq = 5;
@@ -3861,11 +3860,11 @@ public:
         if(this->incFond->OrderFond()->UsedItemCount() != 2)
             throw;
 
-        OrderInfo<AstsOLSFONDItemInfo> *obi3 = this->incFond->OrderFond()->GetItem("symbol1", "t1");
+        OrderInfo<AstsOLSFONDItemInfo> *obi3 = this->incFond->OrderFond()->GetItem("symbol1", "session1");
         if(obi3->AggregatedBuyQuotes()->Count() != 4)
             throw;
 
-        OrderInfo<AstsOLSFONDItemInfo> *obi = this->incFond->OrderFond()->GetItem("t1s2", 4, "t1", 2);
+        OrderInfo<AstsOLSFONDItemInfo> *obi = this->incFond->OrderFond()->GetItem("t1s2", "session1");
         if(obi->AggregatedBuyQuotes()->Count() != 2)
             throw;
 
@@ -3885,10 +3884,10 @@ public:
 
         AstsIncrementalOLRFONDInfo *info = this->m_helper->CreateAstsIncrementalOLRFONDInfo();
 
-        AstsOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("symbol1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "111111", 1);
-        AstsOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("symbol1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "222222", 6);
-        AstsOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("symbol1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "333333", 3);
-        AstsOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("symbol1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "444444", 4);
+        AstsOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("symbol1", "session1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "111111", 1);
+        AstsOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("symbol1", "session1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "222222", 2);
+        AstsOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("symbol1", "session1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "333333", 3);
+        AstsOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("symbol1", "session1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "444444", 4);
 
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item1;
@@ -3901,7 +3900,7 @@ public:
             throw;
         if(this->incFond->OrderFond()->Symbol(0)->Count() != 1)
             throw;
-        OrderInfo<AstsOLSFONDItemInfo> *obi = this->incFond->OrderFond()->GetItem("symbol1", "t1");
+        OrderInfo<AstsOLSFONDItemInfo> *obi = this->incFond->OrderFond()->GetItem("symbol1", "session1");
         if(obi == 0)
             throw;
         if(obi->AggregatedSellQuotes()->Count() != 1)
@@ -3921,7 +3920,7 @@ public:
             throw;
         if(this->incFond->OrderFond()->Symbol(0)->Count() != 1)
             throw;
-        obi = this->incFond->OrderFond()->GetItem("symbol1", "t1");
+        obi = this->incFond->OrderFond()->GetItem("symbol1", "session1");
         if(obi == 0)
             throw;
         if(obi->AggregatedSellQuotes()->Count() != 2)
@@ -3945,7 +3944,7 @@ public:
             throw;
         if(this->incFond->OrderFond()->Symbol(0)->Count() != 1)
             throw;
-        obi = this->incFond->OrderFond()->GetItem("symbol1", "t1");
+        obi = this->incFond->OrderFond()->GetItem("symbol1", "session1");
         if(obi == 0)
             throw;
         if(obi->AggregatedSellQuotes()->Count() != 3)
@@ -3974,7 +3973,7 @@ public:
             throw;
         if(this->incFond->OrderFond()->Symbol(0)->Count() != 1)
             throw;
-        obi = this->incFond->OrderFond()->GetItem("symbol1", "t1");
+        obi = this->incFond->OrderFond()->GetItem("symbol1", "session1");
         if(obi == 0)
             throw;
         if(obi->AggregatedSellQuotes()->Count() != 4)
@@ -4003,10 +4002,10 @@ public:
         this->AddSymbol("symbol1");
 
         AstsIncrementalOLRFONDInfo *info = this->m_helper->CreateAstsIncrementalOLRFONDInfo();
-        AstsOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("symbol1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "111111", 1);
-        AstsOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("symbol1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "222222", 6);
-        AstsOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("symbol1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "333333", 3);
-        AstsOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("symbol1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "444444", 4);
+        AstsOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("symbol1", "session1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "111111", 1);
+        AstsOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("symbol1", "session1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "222222", 2);
+        AstsOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("symbol1", "session1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "333333", 3);
+        AstsOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("symbol1", "session1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "444444", 4);
 
         info->GroupMDEntriesCount = 4;
         info->GroupMDEntries[0] = item1;
@@ -4030,7 +4029,7 @@ public:
         if(this->incFond->OrderFond()->UsedItemCount() != 1)
             throw;
 
-        OrderInfo<AstsOLSFONDItemInfo> *obi = this->incFond->OrderFond()->GetItem("symbol1", "t1");
+        OrderInfo<AstsOLSFONDItemInfo> *obi = this->incFond->OrderFond()->GetItem("symbol1", "session1");
         if(obi->AggregatedSellQuotes()->Count() != 3)
             throw;
 
@@ -4050,7 +4049,7 @@ public:
         if(this->incFond->OrderFond()->UsedItemCount() != 1)
             throw;
 
-        obi = this->incFond->OrderFond()->GetItem("symbol1", "t1");
+        obi = this->incFond->OrderFond()->GetItem("symbol1", "session1");
         if(obi->AggregatedSellQuotes()->Count() != 2)
             throw;
         if(!obi->AggregatedSellQuotes()->Item(0)->Price()->Equal(3, -2))
@@ -4067,7 +4066,7 @@ public:
         if(this->incFond->OrderFond()->UsedItemCount() != 1)
             throw;
 
-        obi = this->incFond->OrderFond()->GetItem("symbol1", "t1");
+        obi = this->incFond->OrderFond()->GetItem("symbol1", "session1");
         if(obi->AggregatedSellQuotes()->Count() != 1)
             throw;
         if(!obi->AggregatedSellQuotes()->Item(0)->Price()->Equal(3, -2))
@@ -4082,7 +4081,7 @@ public:
         if(this->incFond->OrderFond()->UsedItemCount() != 1)
             throw;
 
-        obi = this->incFond->OrderFond()->GetItem("symbol1", "t1");
+        obi = this->incFond->OrderFond()->GetItem("symbol1", "session1");
         if(obi->AggregatedSellQuotes()->Count() != 0)
             throw;
     }
@@ -4093,10 +4092,10 @@ public:
         this->AddSymbol("symbol1");
 
         AstsIncrementalOLRFONDInfo *info = this->m_helper->CreateAstsIncrementalOLRFONDInfo();
-        AstsOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("symbol1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "111111", 1);
-        AstsOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("symbol1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "222222", 6);
-        AstsOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("symbol1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "333333", 3);
-        AstsOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("symbol1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "444444", 4);
+        AstsOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("symbol1", "session1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "111111", 1);
+        AstsOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("symbol1", "session1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "222222", 2);
+        AstsOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("symbol1", "session1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "333333", 3);
+        AstsOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("symbol1", "session1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "444444", 4);
 
         info->GroupMDEntriesCount = 4;
         info->GroupMDEntries[0] = item1;
@@ -4106,7 +4105,7 @@ public:
 
         this->incFond->OnIncrementalRefresh_OLR_FOND(info);
 
-        OrderInfo<AstsOLSFONDItemInfo> *obi2 = this->incFond->OrderFond()->GetItem("symbol1", "t1");
+        OrderInfo<AstsOLSFONDItemInfo> *obi2 = this->incFond->OrderFond()->GetItem("symbol1", "session1");
         if(!obi2->AggregatedSellQuotes()->Item(0)->Price()->Equal(2, -2))
             throw;
         if(!obi2->AggregatedSellQuotes()->Item(1)->Price()->Equal(25, -3))
@@ -4116,14 +4115,14 @@ public:
         if(!obi2->AggregatedSellQuotes()->Item(3)->Price()->Equal(4, -2))
             throw;
 
-        AstsOLSFONDItemInfo *item5 = this->m_helper->CreateOLRFondItemInfo("symbol1", "t1", 24, -3, 1, 3, mduaChange, mdetSellQuote, "222222", 5);
+        AstsOLSFONDItemInfo *item5 = this->m_helper->CreateOLRFondItemInfo("symbol1", "session1", 24, -3, 1, 3, mduaChange, mdetSellQuote, "222222", 5);
 
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item5;
 
         this->incFond->OnIncrementalRefresh_OLR_FOND(info);
 
-        OrderInfo<AstsOLSFONDItemInfo> *obi = this->incFond->OrderFond()->GetItem("symbol1", "t1");
+        OrderInfo<AstsOLSFONDItemInfo> *obi = this->incFond->OrderFond()->GetItem("symbol1", "session1");
 
         QuoteInfo *qt1 = obi->AggregatedSellQuotes()->Item(0);
         QuoteInfo *qt2 = obi->AggregatedSellQuotes()->Item(1);
@@ -4150,10 +4149,10 @@ public:
         this->AddSymbol("symbol1");
 
         AstsIncrementalOLRFONDInfo *info = this->m_helper->CreateAstsIncrementalOLRFONDInfo();
-        AstsOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("symbol1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "111111", 1);
-        AstsOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("symbol1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "222222", 6);
-        AstsOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("symbol1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "333333", 3);
-        AstsOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("symbol1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "444444", 4);
+        AstsOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("symbol1", "session1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "111111", 1);
+        AstsOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("symbol1", "session1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "222222", 2);
+        AstsOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("symbol1", "session1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "333333", 3);
+        AstsOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("symbol1", "session1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "444444", 4);
 
         info->GroupMDEntriesCount = 4;
         info->GroupMDEntries[0] = item1;
@@ -4167,7 +4166,7 @@ public:
         if(this->incFond->OrderFond()->UsedItemCount() != 0)
             throw;
 
-        OrderInfo<AstsOLSFONDItemInfo> *obi = this->incFond->OrderFond()->GetItem("symbol1", "t1");
+        OrderInfo<AstsOLSFONDItemInfo> *obi = this->incFond->OrderFond()->GetItem("symbol1", "session1");
         if(obi->AggregatedSellQuotes()->Count() != 0)
             throw;
     }
@@ -4178,10 +4177,10 @@ public:
         this->AddSymbol("symbol1");
 
         AstsIncrementalOLRFONDInfo *info = this->m_helper->CreateAstsIncrementalOLRFONDInfo();
-        AstsOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("symbol1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "111111", 1);
-        AstsOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("symbol1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "222222", 6);
-        AstsOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("symbol1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "333333", 3);
-        AstsOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("symbol1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "444444", 4);
+        AstsOLSFONDItemInfo *item1 = this->m_helper->CreateOLRFondItemInfo("symbol1", "session1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "111111", 1);
+        AstsOLSFONDItemInfo *item2 = this->m_helper->CreateOLRFondItemInfo("symbol1", "session1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "222222", 2);
+        AstsOLSFONDItemInfo *item3 = this->m_helper->CreateOLRFondItemInfo("symbol1", "session1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "333333", 3);
+        AstsOLSFONDItemInfo *item4 = this->m_helper->CreateOLRFondItemInfo("symbol1", "session1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "444444", 4);
 
         info->GroupMDEntriesCount = 4;
         info->GroupMDEntries[0] = item1;
@@ -4191,7 +4190,7 @@ public:
 
         this->incFond->OnIncrementalRefresh_OLR_FOND(info);
 
-        AstsOLSFONDInfo *info2 = this->m_helper->CreateOLSFondInfo("t1s2", "t1");
+        AstsOLSFONDInfo *info2 = this->m_helper->CreateOLSFondInfo("t1s2", "session1");
         AstsOLSFONDItemInfo *newItem1 = this->m_helper->CreateOLSFondItemInfo(7,-2, 1, 2, mdetSellQuote, "777777");
         AstsOLSFONDItemInfo *newItem2 = this->m_helper->CreateOLSFondItemInfo(8,-2, 1, 2, mdetSellQuote, "888888");
 
@@ -4205,11 +4204,11 @@ public:
         if(this->incFond->OrderFond()->UsedItemCount() != 2)
             throw;
 
-        OrderInfo<AstsOLSFONDItemInfo> *obi3 = this->incFond->OrderFond()->GetItem("symbol1", "t1");
+        OrderInfo<AstsOLSFONDItemInfo> *obi3 = this->incFond->OrderFond()->GetItem("symbol1", "session1");
         if(obi3->AggregatedSellQuotes()->Count() != 4)
             throw;
 
-        OrderInfo<AstsOLSFONDItemInfo> *obi = this->incFond->OrderFond()->GetItem("t1s2", 4, "t1", 2);
+        OrderInfo<AstsOLSFONDItemInfo> *obi = this->incFond->OrderFond()->GetItem("t1s2", "session1");
         if(obi->AggregatedSellQuotes()->Count() != 2)
             throw;
 
@@ -4251,7 +4250,7 @@ public:
 
         OrderInfo<AstsOLSFONDItemInfo> *item = this->m_table->Symbol(0)->Session(0);
 
-        AstsOLSFONDItemInfo *info = this->m_helper->CreateOLRFondItemInfo("symbol1", "t1", 100, 0, 200, 0, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "111111", 1);
+        AstsOLSFONDItemInfo *info = this->m_helper->CreateOLRFondItemInfo("symbol1", "session1", 100, 0, 200, 0, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "111111", 1);
         item->ProcessIncrementalMessage(info);
 
         if(item->AggregatedBuyQuotes()->Count() != 1)
@@ -4261,7 +4260,7 @@ public:
         if(item->AggregatedBuyQuotes()->Item(0)->Size() != 200)
             throw;
 
-        info = this->m_helper->CreateOLRFondItemInfo("symbol1", "t1", 100, 0, 100, 0, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "222222", 6);
+        info = this->m_helper->CreateOLRFondItemInfo("symbol1", "session1", 100, 0, 100, 0, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "222222", 2);
         item->ProcessIncrementalMessage(info);
 
         if(item->AggregatedBuyQuotes()->Count() != 1)
@@ -4271,17 +4270,17 @@ public:
         if(item->AggregatedBuyQuotes()->Item(0)->Size() != 300)
             throw;
 
-        info = this->m_helper->CreateOLRFondItemInfo("symbol1", "t1", 100, 0, 50, 0, MDUpdateAction::mduaDelete, MDEntryType::mdetBuyQuote, "222222", 3);
+        info = this->m_helper->CreateOLRFondItemInfo("symbol1", "session1", 100, 0, 50, 0, MDUpdateAction::mduaDelete, MDEntryType::mdetBuyQuote, "222222", 3);
         item->ProcessIncrementalMessage(info);
 
         if(item->AggregatedBuyQuotes()->Count() != 1)
             throw;
         if(!item->AggregatedBuyQuotes()->Item(0)->Price()->Equal(100, 0))
             throw;
-        if(item->AggregatedBuyQuotes()->Item(0)->Size() != 200)
+        if(item->AggregatedBuyQuotes()->Item(0)->Size() != 250)
             throw;
 
-        info = this->m_helper->CreateOLRFondItemInfo("symbol1", "t1", 100, 0, 50, 0, MDUpdateAction::mduaChange, MDEntryType::mdetBuyQuote, "111111", 4);
+        info = this->m_helper->CreateOLRFondItemInfo("symbol1", "session1", 100, 0, 50, 0, MDUpdateAction::mduaChange, MDEntryType::mdetBuyQuote, "111111", 4);
         item->ProcessIncrementalMessage(info);
 
         if(item->AggregatedBuyQuotes()->Count() != 1)
@@ -4309,9 +4308,12 @@ public:
     void Test() {
         TestDefaults();
         TestStringIdComparer();
+
+        Test_Aggregated();
+
         TestInfoAndItemInfoUsageAndAllocationFond();
         Test_OLR_FOND();
-        Test_Aggregated();
+
         TestOrderTableItem();
         TestConnection();
     }

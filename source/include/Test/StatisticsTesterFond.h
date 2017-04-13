@@ -1071,7 +1071,7 @@ public:
 
         this->m_table->Clear();
 
-        AstsGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 1;
 
@@ -1084,7 +1084,7 @@ public:
     void TestTable_IncorrectBegin() {
         this->m_table->Clear();
 
-        AstsGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 2;
 
@@ -1097,14 +1097,14 @@ public:
     void TestTable_SkipMessages() {
         this->m_table->Clear();
 
-        AstsGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 1;
 
         if(!this->m_table->ProcessIncremental(item1))
             throw;
 
-        AstsGenericItemInfo *item2 = this->m_helper->CreateGenericItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsGenericItemInfo *item2 = this->m_helper->CreateGenericItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 3);
         item2->RptSeq = 3;
 
@@ -1117,14 +1117,14 @@ public:
     void Test_2UsedItemsAfter2IncrementalMessages() {
         this->m_table->Clear();
 
-        AstsGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 1;
 
         if(!this->m_table->ProcessIncremental(item1))
             throw;
 
-        AstsGenericItemInfo *item2 = this->m_helper->CreateGenericItemInfo("s2", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsGenericItemInfo *item2 = this->m_helper->CreateGenericItemInfo("s2", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item2->RptSeq = 1;
 
@@ -1140,42 +1140,42 @@ public:
     void TestTable_CorrectApplySnapshot() {
         this->m_table->Clear();
 
-        AstsGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 1;
 
         this->m_table->ProcessIncremental(item1);
 
-        AstsGenericItemInfo *item2 = this->m_helper->CreateGenericItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsGenericItemInfo *item2 = this->m_helper->CreateGenericItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e2", 3);
         item2->RptSeq = 3;
 
         if(this->m_table->ProcessIncremental(item2))
             throw;
 
-        AstsGenericItemInfo *item3 = this->m_helper->CreateGenericItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsGenericItemInfo *item3 = this->m_helper->CreateGenericItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e3", 4);
         item3->RptSeq = 4;
 
         if(this->m_table->ProcessIncremental(item3))
             throw;
 
-        AstsGenericItemInfo *item4 = this->m_helper->CreateGenericItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsGenericItemInfo *item4 = this->m_helper->CreateGenericItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e4", 5);
         item4->RptSeq = 5;
 
         if(this->m_table->ProcessIncremental(item4))
             throw;
 
-        AstsGenericItemInfo *item5 = this->m_helper->CreateGenericItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsGenericItemInfo *item5 = this->m_helper->CreateGenericItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e5", 3);
         item5->RptSeq = 3;
 
-        AstsGenericInfo *info = this->m_helper->CreateMSSFondInfo("s1", "session");
+        AstsGenericInfo *info = this->m_helper->CreateMSSFondInfo("s1", "session1");
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item5;
 
-        StatisticsInfo<AstsGenericItemInfo> *tb = this->m_table->GetItem("s1", "session");
+        StatisticsInfo<AstsGenericItemInfo> *tb = this->m_table->GetItem("s1", "session1");
 
         this->m_table->ObtainSnapshotItem(info);
         this->m_table->StartProcessSnapshot(info);
@@ -1208,39 +1208,39 @@ public:
 
         this->m_table->Clear();
 
-        AstsGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 1;
 
         this->m_table->ProcessIncremental(item1);
 
-        AstsGenericItemInfo *item3 = this->m_helper->CreateGenericItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsGenericItemInfo *item3 = this->m_helper->CreateGenericItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e3", 4);
         item3->RptSeq = 4;
 
         if(this->m_table->ProcessIncremental(item3))
             throw;
 
-        AstsGenericItemInfo *item4 = this->m_helper->CreateGenericItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsGenericItemInfo *item4 = this->m_helper->CreateGenericItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e4", 5);
         item4->RptSeq = 5;
 
         if(this->m_table->ProcessIncremental(item4))
             throw;
 
-        AstsGenericInfo *info1 = this->m_helper->CreateMSSFondInfo("s1", "session");
+        AstsGenericInfo *info1 = this->m_helper->CreateMSSFondInfo("s1", "session1");
         info1->GroupMDEntriesCount = 1;
         info1->RptSeq = 3;
         info1->RouteFirst = true;
         info1->GroupMDEntries[0] = this->m_helper->CreateGenericItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e2");
 
-        AstsGenericInfo *info2 = this->m_helper->CreateMSSFondInfo("s1", "session");
+        AstsGenericInfo *info2 = this->m_helper->CreateMSSFondInfo("s1", "session1");
         info2->GroupMDEntriesCount = 1;
         info2->RptSeq = 3;
         info2->RouteFirst = true;
         info2->GroupMDEntries[0] = this->m_helper->CreateGenericItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e2");
 
-        StatisticsInfo<AstsGenericItemInfo> *tb = this->m_table->GetItem("s1", "session");
+        StatisticsInfo<AstsGenericItemInfo> *tb = this->m_table->GetItem("s1", "session1");
 
         this->m_table->ObtainSnapshotItem(info1);
         this->m_table->StartProcessSnapshot(info1);
@@ -1264,42 +1264,42 @@ public:
     void TestTable_IncorrectApplySnapshot() {
         this->m_table->Clear();
 
-        AstsGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 1;
 
         this->m_table->ProcessIncremental(item1);
 
-        AstsGenericItemInfo *item2 = this->m_helper->CreateGenericItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsGenericItemInfo *item2 = this->m_helper->CreateGenericItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e2", 4);
         item2->RptSeq = 4;
 
         if(this->m_table->ProcessIncremental(item2))
             throw;
 
-        AstsGenericItemInfo *item3 = this->m_helper->CreateGenericItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsGenericItemInfo *item3 = this->m_helper->CreateGenericItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e3", 5);
         item3->RptSeq = 5;
 
         if(this->m_table->ProcessIncremental(item3))
             throw;
 
-        AstsGenericItemInfo *item4 = this->m_helper->CreateGenericItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsGenericItemInfo *item4 = this->m_helper->CreateGenericItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e4", 6);
         item4->RptSeq = 6;
 
         if(this->m_table->ProcessIncremental(item4))
             throw;
 
-        AstsGenericItemInfo *item5 = this->m_helper->CreateGenericItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsGenericItemInfo *item5 = this->m_helper->CreateGenericItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e5", 2);
         item5->RptSeq = 2;
 
-        AstsGenericInfo *info = this->m_helper->CreateMSSFondInfo("s1", "session");
+        AstsGenericInfo *info = this->m_helper->CreateMSSFondInfo("s1", "session1");
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item5;
 
-        StatisticsInfo<AstsGenericItemInfo> *tb = this->m_table->GetItem("s1", "session");
+        StatisticsInfo<AstsGenericItemInfo> *tb = this->m_table->GetItem("s1", "session1");
 
         this->m_table->ObtainSnapshotItem(info);
         this->m_table->StartProcessSnapshot(info);
@@ -1325,35 +1325,35 @@ public:
     void TestTable_IncorrectApplySnapshot_WhenMessageSkipped() {
         this->m_table->Clear();
 
-        AstsGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 1;
 
         this->m_table->ProcessIncremental(item1);
 
-        AstsGenericItemInfo *item2 = this->m_helper->CreateGenericItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsGenericItemInfo *item2 = this->m_helper->CreateGenericItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e2", 4);
         item2->RptSeq = 4;
 
         if(this->m_table->ProcessIncremental(item2))
             throw;
 
-        AstsGenericItemInfo *item4 = this->m_helper->CreateGenericItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsGenericItemInfo *item4 = this->m_helper->CreateGenericItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e4", 6);
         item4->RptSeq = 6;
 
         if(this->m_table->ProcessIncremental(item4))
             throw;
 
-        AstsGenericItemInfo *item5 = this->m_helper->CreateGenericItemInfo("s1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsGenericItemInfo *item5 = this->m_helper->CreateGenericItemInfo("s1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e5", 3);
         item5->RptSeq = 3;
 
-        AstsGenericInfo *info = this->m_helper->CreateMSSFondInfo("s1", "session");
+        AstsGenericInfo *info = this->m_helper->CreateMSSFondInfo("s1", "session1");
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item5;
 
-        StatisticsInfo<AstsGenericItemInfo> *tb = this->m_table->GetItem("s1", "session");
+        StatisticsInfo<AstsGenericItemInfo> *tb = this->m_table->GetItem("s1", "session1");
 
         this->m_table->ObtainSnapshotItem(info);
         this->m_table->StartProcessSnapshot(info);

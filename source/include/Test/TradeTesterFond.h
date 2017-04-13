@@ -98,14 +98,14 @@ public:
     void Test_OnIncrementalRefresh_TLR_FOND_Add() {
         this->Clear();
         this->TestDefaults();
-        this->AddSymbol("symbol1");
+        this->AddSymbol("symbol1", "session1");
 
         AstsIncrementalTLRFONDInfo *info = this->m_helper->CreateAstsIncrementalTLRFONDInfo();
 
-        AstsTLSFONDItemInfo *item1 = this->m_helper->CreateTLRFondItemInfo("symbol1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
-        AstsTLSFONDItemInfo *item2 = this->m_helper->CreateTLRFondItemInfo("symbol1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
-        AstsTLSFONDItemInfo *item3 = this->m_helper->CreateTLRFondItemInfo("symbol1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
-        AstsTLSFONDItemInfo *item4 = this->m_helper->CreateTLRFondItemInfo("symbol1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "e4", 4);
+        AstsTLSFONDItemInfo *item1 = this->m_helper->CreateTLRFondItemInfo("symbol1", "session1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
+        AstsTLSFONDItemInfo *item2 = this->m_helper->CreateTLRFondItemInfo("symbol1", "session1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
+        AstsTLSFONDItemInfo *item3 = this->m_helper->CreateTLRFondItemInfo("symbol1", "session1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
+        AstsTLSFONDItemInfo *item4 = this->m_helper->CreateTLRFondItemInfo("symbol1", "session1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "e4", 4);
 
         if(item4->Used)
             throw;
@@ -123,7 +123,7 @@ public:
             throw;
         if(this->incFond->TradeFond()->Symbol(0)->Count() != 1)
             throw;
-        TradeInfo<AstsTLSFONDItemInfo> *obi = this->incFond->TradeFond()->GetItem("symbol1", "t1");
+        TradeInfo<AstsTLSFONDItemInfo> *obi = this->incFond->TradeFond()->GetItem("symbol1", "session1");
         if(obi == 0)
             throw;
         if(obi->Trades()->Count() != 1)
@@ -149,7 +149,7 @@ public:
             throw;
         if(this->incFond->TradeFond()->Symbol(0)->Count() != 1)
             throw;
-        obi = this->incFond->TradeFond()->GetItem("symbol1", "t1");
+        obi = this->incFond->TradeFond()->GetItem("symbol1", "session1");
         if(obi == 0)
             throw;
         if(obi->Trades()->Count() != 2)
@@ -174,7 +174,7 @@ public:
             throw;
         if(this->incFond->TradeFond()->Symbol(0)->Count() != 1)
             throw;
-        obi = this->incFond->TradeFond()->GetItem("symbol1", "t1");
+        obi = this->incFond->TradeFond()->GetItem("symbol1", "session1");
         if(obi == 0)
             throw;
         if(obi->Trades()->Count() != 3)
@@ -218,7 +218,7 @@ public:
             throw;
         if(this->incFond->TradeFond()->Symbol(0)->Count() != 1)
             throw;
-        obi = this->incFond->TradeFond()->GetItem("symbol1", "t1");
+        obi = this->incFond->TradeFond()->GetItem("symbol1", "session1");
         if(obi == 0)
             throw;
         if(obi->Trades()->Count() != 4)
@@ -264,13 +264,13 @@ public:
     void Test_Clear() {
         this->Clear();
         this->TestDefaults();
-        this->AddSymbol("symbol1");
+        this->AddSymbol("symbol1", "session1");
 
         AstsIncrementalTLRFONDInfo *info = this->m_helper->CreateAstsIncrementalTLRFONDInfo();
-        AstsTLSFONDItemInfo *item1 = this->m_helper->CreateTLRFondItemInfo("symbol1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
-        AstsTLSFONDItemInfo *item2 = this->m_helper->CreateTLRFondItemInfo("symbol1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
-        AstsTLSFONDItemInfo *item3 = this->m_helper->CreateTLRFondItemInfo("symbol1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
-        AstsTLSFONDItemInfo *item4 = this->m_helper->CreateTLRFondItemInfo("symbol1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "e4", 4);
+        AstsTLSFONDItemInfo *item1 = this->m_helper->CreateTLRFondItemInfo("symbol1", "session1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
+        AstsTLSFONDItemInfo *item2 = this->m_helper->CreateTLRFondItemInfo("symbol1", "session1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
+        AstsTLSFONDItemInfo *item3 = this->m_helper->CreateTLRFondItemInfo("symbol1", "session1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
+        AstsTLSFONDItemInfo *item4 = this->m_helper->CreateTLRFondItemInfo("symbol1", "session1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "e4", 4);
 
         info->GroupMDEntriesCount = 4;
         info->GroupMDEntries[0] = item1;
@@ -291,7 +291,7 @@ public:
         if(this->incFond->TradeFond()->UsedItemCount() != 0)
             throw;
 
-        TradeInfo<AstsTLSFONDItemInfo> *obi = this->incFond->TradeFond()->GetItem("symbol1", "t1");
+        TradeInfo<AstsTLSFONDItemInfo> *obi = this->incFond->TradeFond()->GetItem("symbol1", "session1");
         if(obi->Trades()->Count() != 0)
             throw;
     }
@@ -299,13 +299,13 @@ public:
     void Test_OnFullRefresh_TLS_FOND() {
         this->Clear();
         this->TestDefaults();
-        this->AddSymbol("symbol1");
+        this->AddSymbol("symbol1", "session1");
 
         AstsIncrementalTLRFONDInfo *info = this->m_helper->CreateAstsIncrementalTLRFONDInfo();
-        AstsTLSFONDItemInfo *item1 = this->m_helper->CreateTLRFondItemInfo("symbol1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
-        AstsTLSFONDItemInfo *item2 = this->m_helper->CreateTLRFondItemInfo("symbol1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
-        AstsTLSFONDItemInfo *item3 = this->m_helper->CreateTLRFondItemInfo("symbol1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
-        AstsTLSFONDItemInfo *item4 = this->m_helper->CreateTLRFondItemInfo("symbol1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "e4", 4);
+        AstsTLSFONDItemInfo *item1 = this->m_helper->CreateTLRFondItemInfo("symbol1", "session1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
+        AstsTLSFONDItemInfo *item2 = this->m_helper->CreateTLRFondItemInfo("symbol1", "session1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
+        AstsTLSFONDItemInfo *item3 = this->m_helper->CreateTLRFondItemInfo("symbol1", "session1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
+        AstsTLSFONDItemInfo *item4 = this->m_helper->CreateTLRFondItemInfo("symbol1", "session1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "e4", 4);
 
         info->GroupMDEntriesCount = 4;
         info->GroupMDEntries[0] = item1;
@@ -315,11 +315,11 @@ public:
 
         this->incFond->OnIncrementalRefresh_TLR_FOND(info);
 
-        TradeInfo<AstsTLSFONDItemInfo> *obi2 = this->incFond->TradeFond()->GetItem("symbol1", "t1");
+        TradeInfo<AstsTLSFONDItemInfo> *obi2 = this->incFond->TradeFond()->GetItem("symbol1", "session1");
         if(obi2->Trades()->Count() != 4)
             throw;
 
-        AstsTLSFONDInfo *info2 = this->m_helper->CreateTLSFondInfo("t1s2", "t1");
+        AstsTLSFONDInfo *info2 = this->m_helper->CreateTLSFondInfo("t1s2", "session1");
         AstsTLSFONDItemInfo *newItem1 = this->m_helper->CreateTLSFondItemInfo(7,-2, 1, 2, mdetBuyQuote, "e7");
         AstsTLSFONDItemInfo *newItem2 = this->m_helper->CreateTLSFondItemInfo(8,-2, 1, 2, mdetBuyQuote, "e8");
         info2->RptSeq = 5;
@@ -334,11 +334,11 @@ public:
         if(this->incFond->TradeFond()->UsedItemCount() != 2)
             throw;
 
-        TradeInfo<AstsTLSFONDItemInfo> *obi3 = this->incFond->TradeFond()->GetItem("symbol1", "t1");
+        TradeInfo<AstsTLSFONDItemInfo> *obi3 = this->incFond->TradeFond()->GetItem("symbol1", "session1");
         if(obi3->Trades()->Count() != 4)
             throw;
 
-        TradeInfo<AstsTLSFONDItemInfo> *obi = this->incFond->TradeFond()->GetItem("t1s2", 4, "t1", 2);
+        TradeInfo<AstsTLSFONDItemInfo> *obi = this->incFond->TradeFond()->GetItem("t1s2", "session1");
         if(obi->Trades()->Count() != 2)
             throw;
 
@@ -472,10 +472,14 @@ public:
         TestTableItemsAllocator(this->m_table);
     }
 
-    inline void AddSymbol(const char *symbol) {
+    void AddSymbol(const char *symbol, const char *session) {
         this->incFond->GetSymbolManager()->AddSymbol(symbol);
-        this->incFond->TradeFond()->AddSymbol(symbol);
-        this->m_table->AddSymbol(symbol);
+        this->incFond->TradeFond()->Add(symbol, session);
+        this->m_table->Add(symbol, session);
+    }
+
+    void AddSymbol(const char *symbol) {
+        AddSymbol(symbol, "session1");
     }
 
     void ClearSymbols() {
@@ -523,7 +527,7 @@ public:
         this->ClearSymbols();
         this->AddSymbol("symbol1");
 
-        AstsTLSFONDItemInfo *item1 = this->m_helper->CreateTLRFondItemInfo("symbol1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSFONDItemInfo *item1 = this->m_helper->CreateTLRFondItemInfo("symbol1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 1;
 
@@ -535,7 +539,7 @@ public:
         this->ClearSymbols();
         this->AddSymbol("symbol1");
 
-        AstsTLSFONDItemInfo *item1 = this->m_helper->CreateTLRFondItemInfo("symbol1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSFONDItemInfo *item1 = this->m_helper->CreateTLRFondItemInfo("symbol1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 2;
 
@@ -547,14 +551,14 @@ public:
         this->ClearSymbols();
         this->AddSymbol("symbol1");
 
-        AstsTLSFONDItemInfo *item1 = this->m_helper->CreateTLRFondItemInfo("symbol1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSFONDItemInfo *item1 = this->m_helper->CreateTLRFondItemInfo("symbol1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 1;
 
         if(!this->m_table->ProcessIncremental(item1, 0, item1->TradingSessionID, item1->TradingSessionIDLength))
             throw;
 
-        AstsTLSFONDItemInfo *item2 = this->m_helper->CreateTLRFondItemInfo("symbol1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSFONDItemInfo *item2 = this->m_helper->CreateTLRFondItemInfo("symbol1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 3);
         item2->RptSeq = 3;
 
@@ -569,14 +573,14 @@ public:
         this->AddSymbol("symbol1");
         this->AddSymbol("symbol2");
 
-        AstsTLSFONDItemInfo *item1 = this->m_helper->CreateTLRFondItemInfo("symbol1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSFONDItemInfo *item1 = this->m_helper->CreateTLRFondItemInfo("symbol1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 1;
 
         if(!this->m_table->ProcessIncremental(item1, 0, item1->TradingSessionID, item1->TradingSessionIDLength))
             throw;
 
-        AstsTLSFONDItemInfo *item2 = this->m_helper->CreateTLRFondItemInfo("symbol2", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSFONDItemInfo *item2 = this->m_helper->CreateTLRFondItemInfo("symbol2", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item2->RptSeq = 1;
 
@@ -593,43 +597,43 @@ public:
         this->ClearSymbols();
         this->AddSymbol("symbol1");
 
-        AstsTLSFONDItemInfo *item1 = this->m_helper->CreateTLRFondItemInfo("symbol1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSFONDItemInfo *item1 = this->m_helper->CreateTLRFondItemInfo("symbol1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 1;
 
         this->m_table->ProcessIncremental(item1, 0, item1->TradingSessionID, item1->TradingSessionIDLength);
 
-        AstsTLSFONDItemInfo *item2 = this->m_helper->CreateTLRFondItemInfo("symbol1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSFONDItemInfo *item2 = this->m_helper->CreateTLRFondItemInfo("symbol1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e2", 3);
         item2->RptSeq = 3;
 
         if(this->m_table->ProcessIncremental(item2, 0, item2->TradingSessionID, item2->TradingSessionIDLength))
             throw;
 
-        AstsTLSFONDItemInfo *item3 = this->m_helper->CreateTLRFondItemInfo("symbol1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSFONDItemInfo *item3 = this->m_helper->CreateTLRFondItemInfo("symbol1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e3", 4);
         item3->RptSeq = 4;
 
         if(this->m_table->ProcessIncremental(item3, 0, item3->TradingSessionID, item3->TradingSessionIDLength))
             throw;
 
-        AstsTLSFONDItemInfo *item4 = this->m_helper->CreateTLRFondItemInfo("symbol1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSFONDItemInfo *item4 = this->m_helper->CreateTLRFondItemInfo("symbol1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e4", 5);
         item4->RptSeq = 5;
 
         if(this->m_table->ProcessIncremental(item4, 0, item4->TradingSessionID, item4->TradingSessionIDLength))
             throw;
 
-        AstsTLSFONDItemInfo *item5 = this->m_helper->CreateTLRFondItemInfo("symbol1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSFONDItemInfo *item5 = this->m_helper->CreateTLRFondItemInfo("symbol1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e5", 3);
         item5->RptSeq = 3;
 
-        AstsTLSFONDInfo *info = this->m_helper->CreateTLSFondInfo("symbol1", "session");
+        AstsTLSFONDInfo *info = this->m_helper->CreateTLSFondInfo("symbol1", "session1");
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item5;
         info->RptSeq = 3;
 
-        TradeInfo<AstsTLSFONDItemInfo> *tb = this->m_table->GetItem("symbol1", "session");
+        TradeInfo<AstsTLSFONDItemInfo> *tb = this->m_table->GetItem("symbol1", "session1");
 
         this->m_table->ObtainSnapshotItem(info);
         this->m_table->StartProcessSnapshot();
@@ -658,39 +662,39 @@ public:
         this->ClearSymbols();
         this->AddSymbol("symbol1");
 
-        AstsTLSFONDItemInfo *item1 = this->m_helper->CreateTLRFondItemInfo("symbol1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSFONDItemInfo *item1 = this->m_helper->CreateTLRFondItemInfo("symbol1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 1;
 
         this->m_table->ProcessIncremental(item1, 0, item1->TradingSessionID, item1->TradingSessionIDLength);
 
-        AstsTLSFONDItemInfo *item3 = this->m_helper->CreateTLRFondItemInfo("symbol1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSFONDItemInfo *item3 = this->m_helper->CreateTLRFondItemInfo("symbol1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e3", 4);
         item3->RptSeq = 4;
 
         if(this->m_table->ProcessIncremental(item3, 0, item3->TradingSessionID, item3->TradingSessionIDLength))
             throw;
 
-        AstsTLSFONDItemInfo *item4 = this->m_helper->CreateTLRFondItemInfo("symbol1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSFONDItemInfo *item4 = this->m_helper->CreateTLRFondItemInfo("symbol1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e4", 5);
         item4->RptSeq = 5;
 
         if(this->m_table->ProcessIncremental(item4, 0, item4->TradingSessionID, item4->TradingSessionIDLength))
             throw;
 
-        AstsTLSFONDInfo *info1 = this->m_helper->CreateTLSFondInfo("symbol1", "session");
+        AstsTLSFONDInfo *info1 = this->m_helper->CreateTLSFondInfo("symbol1", "session1");
         info1->GroupMDEntriesCount = 1;
         info1->RptSeq = 3;
         info1->RouteFirst = true;
         info1->GroupMDEntries[0] = this->m_helper->CreateTLSFondItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e2");
 
-        AstsTLSFONDInfo *info2 = this->m_helper->CreateTLSFondInfo("symbol1", "session");
+        AstsTLSFONDInfo *info2 = this->m_helper->CreateTLSFondInfo("symbol1", "session1");
         info2->GroupMDEntriesCount = 1;
         info2->RptSeq = 3;
         info2->RouteFirst = true;
         info2->GroupMDEntries[0] = this->m_helper->CreateTLSFondItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e2");
 
-        TradeInfo<AstsTLSFONDItemInfo> *tb = this->m_table->GetItem("symbol1", "session");
+        TradeInfo<AstsTLSFONDItemInfo> *tb = this->m_table->GetItem("symbol1", "session1");
 
         this->m_table->ObtainSnapshotItem(info1);
         this->m_table->StartProcessSnapshot();
@@ -713,43 +717,43 @@ public:
         this->ClearSymbols();
         this->AddSymbol("symbol1");
 
-        AstsTLSFONDItemInfo *item1 = this->m_helper->CreateTLRFondItemInfo("symbol1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSFONDItemInfo *item1 = this->m_helper->CreateTLRFondItemInfo("symbol1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 1;
 
         this->m_table->ProcessIncremental(item1, 0, item1->TradingSessionID, item1->TradingSessionIDLength);
 
-        AstsTLSFONDItemInfo *item2 = this->m_helper->CreateTLRFondItemInfo("symbol1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSFONDItemInfo *item2 = this->m_helper->CreateTLRFondItemInfo("symbol1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e2", 4);
         item2->RptSeq = 4;
 
         if(this->m_table->ProcessIncremental(item2, 0, item2->TradingSessionID, item2->TradingSessionIDLength))
             throw;
 
-        AstsTLSFONDItemInfo *item3 = this->m_helper->CreateTLRFondItemInfo("symbol1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSFONDItemInfo *item3 = this->m_helper->CreateTLRFondItemInfo("symbol1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e3", 5);
         item3->RptSeq = 5;
 
         if(this->m_table->ProcessIncremental(item3, 0, item3->TradingSessionID, item3->TradingSessionIDLength))
             throw;
 
-        AstsTLSFONDItemInfo *item4 = this->m_helper->CreateTLRFondItemInfo("symbol1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSFONDItemInfo *item4 = this->m_helper->CreateTLRFondItemInfo("symbol1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e4", 6);
         item4->RptSeq = 6;
 
         if(this->m_table->ProcessIncremental(item4, 0, item4->TradingSessionID, item4->TradingSessionIDLength))
             throw;
 
-        AstsTLSFONDItemInfo *item5 = this->m_helper->CreateTLRFondItemInfo("symbol1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSFONDItemInfo *item5 = this->m_helper->CreateTLRFondItemInfo("symbol1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e5", 2);
         item5->RptSeq = 2;
 
-        AstsTLSFONDInfo *info = this->m_helper->CreateTLSFondInfo("symbol1", "session");
+        AstsTLSFONDInfo *info = this->m_helper->CreateTLSFondInfo("symbol1", "session1");
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item5;
         info->RptSeq = 2;
 
-        TradeInfo<AstsTLSFONDItemInfo> *tb = this->m_table->GetItem("symbol1", "session");
+        TradeInfo<AstsTLSFONDItemInfo> *tb = this->m_table->GetItem("symbol1", "session1");
 
         this->m_table->ObtainSnapshotItem(info);
         this->m_table->StartProcessSnapshot();
@@ -774,36 +778,36 @@ public:
         this->ClearSymbols();
         this->AddSymbol("symbol1");
 
-        AstsTLSFONDItemInfo *item1 = this->m_helper->CreateTLRFondItemInfo("symbol1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSFONDItemInfo *item1 = this->m_helper->CreateTLRFondItemInfo("symbol1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 1;
 
         this->m_table->ProcessIncremental(item1, 0, item1->TradingSessionID, item1->TradingSessionIDLength);
 
-        AstsTLSFONDItemInfo *item2 = this->m_helper->CreateTLRFondItemInfo("symbol1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSFONDItemInfo *item2 = this->m_helper->CreateTLRFondItemInfo("symbol1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e2", 4);
         item2->RptSeq = 4;
 
         if(this->m_table->ProcessIncremental(item2, 0, item2->TradingSessionID, item2->TradingSessionIDLength))
             throw;
 
-        AstsTLSFONDItemInfo *item4 = this->m_helper->CreateTLRFondItemInfo("symbol1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSFONDItemInfo *item4 = this->m_helper->CreateTLRFondItemInfo("symbol1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e4", 6);
         item4->RptSeq = 6;
 
         if(this->m_table->ProcessIncremental(item4, 0, item4->TradingSessionID, item4->TradingSessionIDLength))
             throw;
 
-        AstsTLSFONDItemInfo *item5 = this->m_helper->CreateTLRFondItemInfo("symbol1", "session", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSFONDItemInfo *item5 = this->m_helper->CreateTLRFondItemInfo("symbol1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e5", 3);
         item5->RptSeq = 3;
 
-        AstsTLSFONDInfo *info = this->m_helper->CreateTLSFondInfo("symbol1", "session");
+        AstsTLSFONDInfo *info = this->m_helper->CreateTLSFondInfo("symbol1", "session1");
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item5;
         info->RptSeq = 3;
 
-        TradeInfo<AstsTLSFONDItemInfo> *tb = this->m_table->GetItem("symbol1", "session");
+        TradeInfo<AstsTLSFONDItemInfo> *tb = this->m_table->GetItem("symbol1", "session1");
 
         this->m_table->ObtainSnapshotItem(info);
         this->m_table->StartProcessSnapshot();
@@ -1875,7 +1879,7 @@ public:
                      "",
                      30);
 
-        if(incFond->TradeFond()->UsedItemCount() != 2)
+        if(incFond->TradeFond()->UsedItemCount() != 3)
             throw;
         if(incFond->TradeFond()->Symbol(0)->Session(0)->HasEntries())
             throw;
@@ -2704,11 +2708,6 @@ public:
             if(!StringIdComparer::Equal(buf, i, buf, i))
                 throw;
         }
-    }
-
-    void AddSymbol(const char *symbol, const char *session) {
-        this->incFond->GetSymbolManager()->AddSymbol(symbol);
-        this->incFond->TradeFond()->Add(symbol, session);
     }
 
     void TestInfoAndItemInfoUsageAndAllocationFond_Inc_1() {
