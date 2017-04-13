@@ -129,8 +129,8 @@ private:
 	}
 
 	inline void InitializePollInfo() {
-		memset(WinSockManager::m_pollFd, sizeof(struct pollfd) * 256, 0);
-		memset(WinSockManager::m_registeredManagers, sizeof(WinSockManager*) * 256, 0);
+		memset(WinSockManager::m_pollFd, 0, sizeof(struct pollfd) * 256);
+		memset(WinSockManager::m_registeredManagers, 0, sizeof(WinSockManager*) * 256);
 	}
 	inline void PrintSocketInfo() {
 		struct sockaddr_in sin;
@@ -290,7 +290,7 @@ public:
 		this->UpdatePoll();
 
 		this->m_addressSize = sizeof(sockaddr_in);
-		memset(&this->m_adress, sizeof(sockaddr_in), 0);
+		memset(&this->m_adress, 0, sizeof(sockaddr_in));
 		inet_pton(AF_INET, server_address, &(this->m_adress.sin_addr));
 		this->m_adress.sin_family = AF_INET;
 		this->m_adress.sin_port = htons(server_port);
@@ -333,7 +333,7 @@ public:
 		}
 
 		this->m_addressSize = sizeof(sockaddr_in);
-		memset(&this->m_adress, sizeof(sockaddr_in), 0);
+		memset(&this->m_adress, 0, sizeof(sockaddr_in));
 		this->m_adress.sin_addr.s_addr = htonl(INADDR_ANY);
 		this->m_adress.sin_family = AF_INET;
 		this->m_adress.sin_port = htons(groupPort);

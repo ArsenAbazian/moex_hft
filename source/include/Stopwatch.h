@@ -16,11 +16,11 @@ public:
     Stopwatch() {
         for(int i = 0; i < 10; i++) {
             this->m_specStart[i] = new struct timespec;
-            memset(this->m_specStart[i], sizeof(struct timespec), 0);
+            memset(this->m_specStart[i], 0, sizeof(struct timespec));
             this->m_enabled[i] = false;
         }
         this->m_specEnd = new struct timespec;
-        memset(this->m_specEnd, sizeof(struct timespec), 0);
+        memset(this->m_specEnd, 0, sizeof(struct timespec));
     }
     ~Stopwatch() {
         for(int i = 0; i < 10; i++)

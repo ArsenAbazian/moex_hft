@@ -221,7 +221,7 @@ public:
 	char				TradingSessionID[32];
 	int					TradingSessionIDLength;
 	AstsSnapshotInfo() {
-		memset(this, sizeof(AstsSnapshotInfo), 0);
+		memset(this, 0, sizeof(AstsSnapshotInfo));
 	}
 };
 
@@ -278,7 +278,7 @@ public:
 	int								DefaultApplVerIDLength;			// id=1137  
 
 	AstsLogonInfo() {
-		memset(this, sizeof(AstsLogonInfo), 0);
+		memset(this, 0, sizeof(AstsLogonInfo));
 	}
 	~AstsLogonInfo() { }
 	inline void Clear() {
@@ -318,7 +318,7 @@ public:
 	int								TextLength;			// id=58  presence=optional  
 
 	AstsLogoutInfo() {
-		memset(this, sizeof(AstsLogoutInfo), 0);
+		memset(this, 0, sizeof(AstsLogoutInfo));
 	}
 	~AstsLogoutInfo() { }
 	inline void Clear() {
@@ -405,7 +405,7 @@ public:
 	int								TradingSessionIDLength;			// id=336  presence=optional  
 
 	AstsGenericItemInfo() {
-		memset(this, sizeof(AstsGenericItemInfo), 0);
+		memset(this, 0, sizeof(AstsGenericItemInfo));
 	}
 	~AstsGenericItemInfo() { }
 	inline void Clear() {
@@ -457,7 +457,7 @@ public:
 	int								GroupMDEntriesCount;
 
 	AstsGenericInfo() {
-		memset(this, sizeof(AstsGenericInfo), 0);
+		memset(this, 0, sizeof(AstsGenericInfo));
 	}
 	~AstsGenericInfo() { }
 	inline void Clear() {
@@ -512,7 +512,7 @@ public:
 	int								TradingSessionIDLength;			// id=336  presence=optional    copy
 
 	AstsOLSFONDItemInfo() {
-		memset(this, sizeof(AstsOLSFONDItemInfo), 0);
+		memset(this, 0, sizeof(AstsOLSFONDItemInfo));
 	}
 	~AstsOLSFONDItemInfo() { }
 	inline void Clear() {
@@ -563,7 +563,7 @@ public:
 	int								GroupMDEntriesCount;
 
 	AstsOLSFONDInfo() {
-		memset(this, sizeof(AstsOLSFONDInfo), 0);
+		memset(this, 0, sizeof(AstsOLSFONDInfo));
 	}
 	~AstsOLSFONDInfo() { }
 	inline void Clear() {
@@ -614,7 +614,7 @@ public:
 	int								TradingSessionIDLength;			// id=336  presence=optional    copy
 
 	AstsOLSCURRItemInfo() {
-		memset(this, sizeof(AstsOLSCURRItemInfo), 0);
+		memset(this, 0, sizeof(AstsOLSCURRItemInfo));
 	}
 	~AstsOLSCURRItemInfo() { }
 	inline void Clear() {
@@ -664,7 +664,7 @@ public:
 	int								GroupMDEntriesCount;
 
 	AstsOLSCURRInfo() {
-		memset(this, sizeof(AstsOLSCURRInfo), 0);
+		memset(this, 0, sizeof(AstsOLSCURRInfo));
 	}
 	~AstsOLSCURRInfo() { }
 	inline void Clear() {
@@ -728,7 +728,7 @@ public:
 	int								TradingSessionIDLength;			// id=336  presence=optional  
 
 	AstsTLSFONDItemInfo() {
-		memset(this, sizeof(AstsTLSFONDItemInfo), 0);
+		memset(this, 0, sizeof(AstsTLSFONDItemInfo));
 	}
 	~AstsTLSFONDItemInfo() { }
 	inline void Clear() {
@@ -779,7 +779,7 @@ public:
 	int								GroupMDEntriesCount;
 
 	AstsTLSFONDInfo() {
-		memset(this, sizeof(AstsTLSFONDInfo), 0);
+		memset(this, 0, sizeof(AstsTLSFONDInfo));
 	}
 	~AstsTLSFONDInfo() { }
 	inline void Clear() {
@@ -841,7 +841,7 @@ public:
 	int								TradingSessionIDLength;			// id=336  presence=optional  
 
 	AstsTLSCURRItemInfo() {
-		memset(this, sizeof(AstsTLSCURRItemInfo), 0);
+		memset(this, 0, sizeof(AstsTLSCURRItemInfo));
 	}
 	~AstsTLSCURRItemInfo() { }
 	inline void Clear() {
@@ -891,7 +891,7 @@ public:
 	int								GroupMDEntriesCount;
 
 	AstsTLSCURRInfo() {
-		memset(this, sizeof(AstsTLSCURRInfo), 0);
+		memset(this, 0, sizeof(AstsTLSCURRInfo));
 	}
 	~AstsTLSCURRInfo() { }
 	inline void Clear() {
@@ -926,7 +926,7 @@ public:
 	int								InstrAttribValueLength;			// id=872  presence=optional  
 
 	AstsSecurityDefinitionGroupInstrAttribItemInfo() {
-		memset(this, sizeof(AstsSecurityDefinitionGroupInstrAttribItemInfo), 0);
+		memset(this, 0, sizeof(AstsSecurityDefinitionGroupInstrAttribItemInfo));
 	}
 	~AstsSecurityDefinitionGroupInstrAttribItemInfo() { }
 	inline void Clear() {
@@ -960,7 +960,7 @@ public:
 	int								TradingSessionSubIDLength;			// id=625  presence=optional  
 
 	AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo() {
-		memset(this, sizeof(AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo), 0);
+		memset(this, 0, sizeof(AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo));
 	}
 	~AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo() { }
 	inline void Clear() {
@@ -991,7 +991,7 @@ public:
 	int								TradingSessionRulesGrpCount;			// presence=optional  
 
 	AstsSecurityDefinitionMarketSegmentGrpItemInfo() {
-		memset(this, sizeof(AstsSecurityDefinitionMarketSegmentGrpItemInfo), 0);
+		memset(this, 0, sizeof(AstsSecurityDefinitionMarketSegmentGrpItemInfo));
 	}
 	~AstsSecurityDefinitionMarketSegmentGrpItemInfo() { }
 	inline void Clear() {
@@ -1091,7 +1091,7 @@ public:
 	int								MarketCodeLength;			// id=5385  presence=optional  
 
 	AstsSecurityDefinitionInfo() {
-		memset(this, sizeof(AstsSecurityDefinitionInfo), 0);
+		memset(this, 0, sizeof(AstsSecurityDefinitionInfo));
 	}
 	~AstsSecurityDefinitionInfo() { }
 	inline void Clear() {
@@ -1145,7 +1145,7 @@ public:
 	int								TradingSessionSubIDLength;			// id=625  presence=optional  
 
 	AstsSecurityStatusInfo() {
-		memset(this, sizeof(AstsSecurityStatusInfo), 0);
+		memset(this, 0, sizeof(AstsSecurityStatusInfo));
 	}
 	~AstsSecurityStatusInfo() { }
 	inline void Clear() {
@@ -1188,7 +1188,7 @@ public:
 	int								TradingSessionIDLength;			// id=336  
 
 	AstsTradingSessionStatusInfo() {
-		memset(this, sizeof(AstsTradingSessionStatusInfo), 0);
+		memset(this, 0, sizeof(AstsTradingSessionStatusInfo));
 	}
 	~AstsTradingSessionStatusInfo() { }
 	inline void Clear() {
@@ -1224,7 +1224,7 @@ public:
 	int								SenderCompIDLength;			// id=49    constant has constant value = MOEX
 
 	AstsHeartbeatInfo() {
-		memset(this, sizeof(AstsHeartbeatInfo), 0);
+		memset(this, 0, sizeof(AstsHeartbeatInfo));
 	}
 	~AstsHeartbeatInfo() { }
 	inline void Clear() {
@@ -1264,7 +1264,7 @@ public:
 	int								GroupMDEntriesCount;
 
 	AstsIncrementalGenericInfo() {
-		memset(this, sizeof(AstsIncrementalGenericInfo), 0);
+		memset(this, 0, sizeof(AstsIncrementalGenericInfo));
 	}
 	~AstsIncrementalGenericInfo() { }
 	inline void Clear() {
@@ -1309,7 +1309,7 @@ public:
 	int								GroupMDEntriesCount;
 
 	AstsIncrementalMSRFONDInfo() {
-		memset(this, sizeof(AstsIncrementalMSRFONDInfo), 0);
+		memset(this, 0, sizeof(AstsIncrementalMSRFONDInfo));
 	}
 	~AstsIncrementalMSRFONDInfo() { }
 	inline void Clear() {
@@ -1354,7 +1354,7 @@ public:
 	int								GroupMDEntriesCount;
 
 	AstsIncrementalMSRCURRInfo() {
-		memset(this, sizeof(AstsIncrementalMSRCURRInfo), 0);
+		memset(this, 0, sizeof(AstsIncrementalMSRCURRInfo));
 	}
 	~AstsIncrementalMSRCURRInfo() { }
 	inline void Clear() {
@@ -1398,7 +1398,7 @@ public:
 	int								GroupMDEntriesCount;
 
 	AstsIncrementalOLRFONDInfo() {
-		memset(this, sizeof(AstsIncrementalOLRFONDInfo), 0);
+		memset(this, 0, sizeof(AstsIncrementalOLRFONDInfo));
 	}
 	~AstsIncrementalOLRFONDInfo() { }
 	inline void Clear() {
@@ -1442,7 +1442,7 @@ public:
 	int								GroupMDEntriesCount;
 
 	AstsIncrementalOLRCURRInfo() {
-		memset(this, sizeof(AstsIncrementalOLRCURRInfo), 0);
+		memset(this, 0, sizeof(AstsIncrementalOLRCURRInfo));
 	}
 	~AstsIncrementalOLRCURRInfo() { }
 	inline void Clear() {
@@ -1486,7 +1486,7 @@ public:
 	int								GroupMDEntriesCount;
 
 	AstsIncrementalTLRFONDInfo() {
-		memset(this, sizeof(AstsIncrementalTLRFONDInfo), 0);
+		memset(this, 0, sizeof(AstsIncrementalTLRFONDInfo));
 	}
 	~AstsIncrementalTLRFONDInfo() { }
 	inline void Clear() {
@@ -1530,7 +1530,7 @@ public:
 	int								GroupMDEntriesCount;
 
 	AstsIncrementalTLRCURRInfo() {
-		memset(this, sizeof(AstsIncrementalTLRCURRInfo), 0);
+		memset(this, 0, sizeof(AstsIncrementalTLRCURRInfo));
 	}
 	~AstsIncrementalTLRCURRInfo() { }
 	inline void Clear() {
@@ -2481,7 +2481,7 @@ public:
 	UINT64				SendingTime;
 	UINT64				SecurityID;
 	FortsSnapshotInfo() {
-		memset(this, sizeof(FortsSnapshotInfo), 0);
+		memset(this, 0, sizeof(FortsSnapshotInfo));
 	}
 };
 
@@ -2546,7 +2546,7 @@ public:
 	int								SecurityGroupLength;			// id=1151  presence=optional  
 
 	FortsDefaultSnapshotMessageMDEntriesItemInfo() {
-		memset(this, sizeof(FortsDefaultSnapshotMessageMDEntriesItemInfo), 0);
+		memset(this, 0, sizeof(FortsDefaultSnapshotMessageMDEntriesItemInfo));
 	}
 	~FortsDefaultSnapshotMessageMDEntriesItemInfo() { }
 	inline void Clear() {
@@ -2594,7 +2594,7 @@ public:
 	int								MDEntriesCount;
 
 	FortsDefaultSnapshotMessageInfo() {
-		memset(this, sizeof(FortsDefaultSnapshotMessageInfo), 0);
+		memset(this, 0, sizeof(FortsDefaultSnapshotMessageInfo));
 	}
 	~FortsDefaultSnapshotMessageInfo() { }
 	inline void Clear() {
@@ -2630,7 +2630,7 @@ public:
 	int								MDFeedTypeLength;			// id=1022  
 
 	FortsSecurityDefinitionMDFeedTypesItemInfo() {
-		memset(this, sizeof(FortsSecurityDefinitionMDFeedTypesItemInfo), 0);
+		memset(this, 0, sizeof(FortsSecurityDefinitionMDFeedTypesItemInfo));
 	}
 	~FortsSecurityDefinitionMDFeedTypesItemInfo() { }
 	inline void Clear() {
@@ -2661,7 +2661,7 @@ public:
 	int								UnderlyingSymbolLength;			// id=311  
 
 	FortsSecurityDefinitionUnderlyingsItemInfo() {
-		memset(this, sizeof(FortsSecurityDefinitionUnderlyingsItemInfo), 0);
+		memset(this, 0, sizeof(FortsSecurityDefinitionUnderlyingsItemInfo));
 	}
 	~FortsSecurityDefinitionUnderlyingsItemInfo() { }
 	inline void Clear() {
@@ -2693,7 +2693,7 @@ public:
 	int								LegSymbolLength;			// id=600  
 
 	FortsSecurityDefinitionInstrumentLegsItemInfo() {
-		memset(this, sizeof(FortsSecurityDefinitionInstrumentLegsItemInfo), 0);
+		memset(this, 0, sizeof(FortsSecurityDefinitionInstrumentLegsItemInfo));
 	}
 	~FortsSecurityDefinitionInstrumentLegsItemInfo() { }
 	inline void Clear() {
@@ -2724,7 +2724,7 @@ public:
 	int								InstrAttribValueLength;			// id=872  
 
 	FortsSecurityDefinitionInstrumentAttributesItemInfo() {
-		memset(this, sizeof(FortsSecurityDefinitionInstrumentAttributesItemInfo), 0);
+		memset(this, 0, sizeof(FortsSecurityDefinitionInstrumentAttributesItemInfo));
 	}
 	~FortsSecurityDefinitionInstrumentAttributesItemInfo() { }
 	inline void Clear() {
@@ -2755,7 +2755,7 @@ public:
 	UINT64							EventTime;			// id=1145  
 
 	FortsSecurityDefinitionEvntGrpItemInfo() {
-		memset(this, sizeof(FortsSecurityDefinitionEvntGrpItemInfo), 0);
+		memset(this, 0, sizeof(FortsSecurityDefinitionEvntGrpItemInfo));
 	}
 	~FortsSecurityDefinitionEvntGrpItemInfo() { }
 	inline void Clear() {
@@ -2844,7 +2844,7 @@ public:
 	int								EvntGrpCount;			// presence=optional  
 
 	FortsSecurityDefinitionInfo() {
-		memset(this, sizeof(FortsSecurityDefinitionInfo), 0);
+		memset(this, 0, sizeof(FortsSecurityDefinitionInfo));
 	}
 	~FortsSecurityDefinitionInfo() { }
 	inline void Clear() {
@@ -2905,7 +2905,7 @@ public:
 	int								SenderCompIDLength;			// id=49    constant has constant value = MOEX
 
 	FortsSecurityDefinitionUpdateReportInfo() {
-		memset(this, sizeof(FortsSecurityDefinitionUpdateReportInfo), 0);
+		memset(this, 0, sizeof(FortsSecurityDefinitionUpdateReportInfo));
 	}
 	~FortsSecurityDefinitionUpdateReportInfo() { }
 	inline void Clear() {
@@ -2951,7 +2951,7 @@ public:
 	int								SymbolLength;			// id=55  
 
 	FortsSecurityStatusInfo() {
-		memset(this, sizeof(FortsSecurityStatusInfo), 0);
+		memset(this, 0, sizeof(FortsSecurityStatusInfo));
 	}
 	~FortsSecurityStatusInfo() { }
 	inline void Clear() {
@@ -2987,7 +2987,7 @@ public:
 	int								SenderCompIDLength;			// id=49    constant has constant value = MOEX
 
 	FortsHeartbeatInfo() {
-		memset(this, sizeof(FortsHeartbeatInfo), 0);
+		memset(this, 0, sizeof(FortsHeartbeatInfo));
 	}
 	~FortsHeartbeatInfo() { }
 	inline void Clear() {
@@ -3024,7 +3024,7 @@ public:
 	int								SenderCompIDLength;			// id=49    constant has constant value = MOEX
 
 	FortsSequenceResetInfo() {
-		memset(this, sizeof(FortsSequenceResetInfo), 0);
+		memset(this, 0, sizeof(FortsSequenceResetInfo));
 	}
 	~FortsSequenceResetInfo() { }
 	inline void Clear() {
@@ -3072,7 +3072,7 @@ public:
 	int								MarketSegmentIDLength;			// id=1300  
 
 	FortsTradingSessionStatusInfo() {
-		memset(this, sizeof(FortsTradingSessionStatusInfo), 0);
+		memset(this, 0, sizeof(FortsTradingSessionStatusInfo));
 	}
 	~FortsTradingSessionStatusInfo() { }
 	inline void Clear() {
@@ -3102,7 +3102,7 @@ public:
 	int								TextLength;			// id=58  charset=unicode  
 
 	FortsNewsNewsTextItemInfo() {
-		memset(this, sizeof(FortsNewsNewsTextItemInfo), 0);
+		memset(this, 0, sizeof(FortsNewsNewsTextItemInfo));
 	}
 	~FortsNewsNewsTextItemInfo() { }
 	inline void Clear() {
@@ -3153,7 +3153,7 @@ public:
 	int								NewsTextCount;
 
 	FortsNewsInfo() {
-		memset(this, sizeof(FortsNewsInfo), 0);
+		memset(this, 0, sizeof(FortsNewsInfo));
 	}
 	~FortsNewsInfo() { }
 	inline void Clear() {
@@ -3202,7 +3202,7 @@ public:
 	int								MDEntryTypeLength;			// id=269  
 
 	FortsOrdersLogMDEntriesItemInfo() {
-		memset(this, sizeof(FortsOrdersLogMDEntriesItemInfo), 0);
+		memset(this, 0, sizeof(FortsOrdersLogMDEntriesItemInfo));
 	}
 	~FortsOrdersLogMDEntriesItemInfo() { }
 	inline void Clear() {
@@ -3241,7 +3241,7 @@ public:
 	int								MDEntriesCount;
 
 	FortsOrdersLogInfo() {
-		memset(this, sizeof(FortsOrdersLogInfo), 0);
+		memset(this, 0, sizeof(FortsOrdersLogInfo));
 	}
 	~FortsOrdersLogInfo() { }
 	inline void Clear() {
@@ -3282,7 +3282,7 @@ public:
 	int								MDEntryTypeLength;			// id=269  
 
 	FortsOrdersBookMDEntriesItemInfo() {
-		memset(this, sizeof(FortsOrdersBookMDEntriesItemInfo), 0);
+		memset(this, 0, sizeof(FortsOrdersBookMDEntriesItemInfo));
 	}
 	~FortsOrdersBookMDEntriesItemInfo() { }
 	inline void Clear() {
@@ -3327,7 +3327,7 @@ public:
 	int								MDEntriesCount;
 
 	FortsOrdersBookInfo() {
-		memset(this, sizeof(FortsOrdersBookInfo), 0);
+		memset(this, 0, sizeof(FortsOrdersBookInfo));
 	}
 	~FortsOrdersBookInfo() { }
 	inline void Clear() {
@@ -3367,7 +3367,7 @@ public:
 	int								SenderCompIDLength;			// id=49    constant has constant value = MOEX
 
 	FortsLogonInfo() {
-		memset(this, sizeof(FortsLogonInfo), 0);
+		memset(this, 0, sizeof(FortsLogonInfo));
 	}
 	~FortsLogonInfo() { }
 	inline void Clear() {
@@ -3405,7 +3405,7 @@ public:
 	int								TextLength;			// id=58  presence=optional  
 
 	FortsLogoutInfo() {
-		memset(this, sizeof(FortsLogoutInfo), 0);
+		memset(this, 0, sizeof(FortsLogoutInfo));
 	}
 	~FortsLogoutInfo() { }
 	inline void Clear() {
@@ -3444,7 +3444,7 @@ public:
 	int								MDEntriesCount;
 
 	FortsDefaultIncrementalRefreshMessageInfo() {
-		memset(this, sizeof(FortsDefaultIncrementalRefreshMessageInfo), 0);
+		memset(this, 0, sizeof(FortsDefaultIncrementalRefreshMessageInfo));
 	}
 	~FortsDefaultIncrementalRefreshMessageInfo() { }
 	inline void Clear() {

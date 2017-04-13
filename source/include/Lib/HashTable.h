@@ -84,7 +84,7 @@ public:
             m_converter(0),
             m_lastHash(0) {
         this->m_bucket = new LinkedPointer<HashTableItemInfo>*[HashTable::m_itemsCount];
-        memset(this->m_bucket, sizeof(LinkedPointer<HashTableItemInfo>*) * HashTable::m_itemsCount, 0);
+        memset(this->m_bucket, 0, sizeof(LinkedPointer<HashTableItemInfo>*) * HashTable::m_itemsCount);
         this->m_pool = new PointerList<HashTableItemInfo>(m_poolSize, true, "HashTable::Pool");
         this->m_converter = new ItoaConverter();
     }
@@ -99,7 +99,7 @@ public:
     void Clear() {
         this->m_pool->Clear();
         this->m_count = 0;
-        memset(this->m_bucket, sizeof(LinkedPointer<HashTableItemInfo>*) * HashTable::m_itemsCount, 0);
+        memset(this->m_bucket, 0, sizeof(LinkedPointer<HashTableItemInfo>*) * HashTable::m_itemsCount);
     }
 
     inline UINT64 CalcHash(const char *stringId, int length) {

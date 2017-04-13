@@ -909,7 +909,7 @@ public:
         if(len > 8)
             return *(UINT64*)(id + len - 8);
         char buf[16];
-        memset(buf, 16, 0);
+        memset(buf, 0, 16);
         memcpy(buf + 8 - len, id, len);
         return *(UINT64*)buf;
     }

@@ -1380,7 +1380,7 @@ namespace prebuild {
 				}
 			}
 			WriteLine("\t" + Prefix + "SnapshotInfo() {");
-			WriteLine("\t\tmemset(this, sizeof(" + Prefix + "SnapshotInfo), 0);");
+			WriteLine("\t\tmemset(this, 0, sizeof(" + Prefix + "SnapshotInfo));");
 			WriteLine("\t}");
 			WriteLine("};");
 
@@ -1840,7 +1840,7 @@ namespace prebuild {
 
 			WriteLine("");
 			WriteLine("\t" + info.Name + "() {");
-			WriteLine ("\t\tmemset(this, sizeof(" + info.Name + "), 0);");
+			WriteLine ("\t\tmemset(this, 0, sizeof(" + info.Name + "));");
 			//WriteLine("\t\tthis->Used = false;");
 			//WriteLine("\t\tthis->Pointer = 0;");
 			//WriteLine("\t\tthis->Allocator = 0;");

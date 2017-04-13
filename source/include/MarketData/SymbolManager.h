@@ -22,7 +22,7 @@ public:
             m_length(0),
             m_index(-1),
             m_pointer(0) {
-        memset(this->m_text, SymbolInfo::m_textSize, 0);
+        memset(this->m_text, 0, SymbolInfo::m_textSize);
     }
     void Set(const char *symbol, int length, int index) {
         memcpy(this->m_text, symbol, length);
@@ -82,7 +82,7 @@ class SymbolManager {
                 if(this->m_bucketList2[i] != 0)
                     this->m_pool->Push(this->m_bucketList2[i]->m_pointer);
             }
-            memset(this->m_bucketList2, sizeof(SymbolInfo *) * BucketList2Count, 0);
+            memset(this->m_bucketList2, 0, sizeof(SymbolInfo *) * BucketList2Count);
         }
         this->m_pool->Clear();
     }
@@ -146,7 +146,7 @@ public:
         this->AssignPointersToSymbols();
         this->m_bucketList = 0;
         this->m_bucketList2 = new SymbolInfo*[BucketList2Count];
-        memset(this->m_bucketList2, sizeof(SymbolInfo*) * BucketList2Count, 0);
+        memset(this->m_bucketList2, 0, sizeof(SymbolInfo*) * BucketList2Count);
     }
     ~SymbolManager() {
         delete this->m_pool;
