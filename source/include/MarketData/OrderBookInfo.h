@@ -369,6 +369,7 @@ public:
         }
         LinkedPointer<T> *node = static_cast<LinkedPointer<T>*>(hashItem->Data()->m_object);
         T *data = node->Data();
+        data->Clear();
         list->Remove(node);
         this->FreePointer(hashItem);
     }
@@ -395,6 +396,7 @@ public:
 
             info->Used = true;
             ptr = GetBuyQuote(&(info->MDEntryPx));
+            ptr->Data(info);
             HashTableItemInfo *h = hashItem->Data();
             h->m_object = ptr;
             h->m_intId = info->MDEntryID;
@@ -416,6 +418,7 @@ public:
 
             info->Used = true;
             ptr = GetSellQuote(&(info->MDEntryPx));
+            ptr->Data(info);
             HashTableItemInfo *h = hashItem->Data();
             h->m_object = ptr;
             h->m_intId = info->MDEntryID;

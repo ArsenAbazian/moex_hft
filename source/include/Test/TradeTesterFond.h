@@ -2979,9 +2979,9 @@ public:
     void Test() {
         TestDefaults();
         TestStringIdComparer();
+        TestConnection();
         TestInfoAndItemInfoUsageAndAllocationFond();
         Test_TLR_FOND();
-        TestConnection();
         TestTradeTableItem();
     }
 };

@@ -150,7 +150,7 @@ public:
 
         item->m_symbol = "symbol1";
         item->m_tradingSession = "session1";
-        item->m_entryId = "entry1";
+        item->m_entryId = "111111";
         item->m_action = MDUpdateAction::mduaAdd;
         item->m_entryType = MDEntryType::mdetBuyQuote;
 
@@ -189,7 +189,7 @@ public:
 
         item->m_symbol = "symbol1";
         item->m_tradingSession = "session1";
-        item->m_entryId = "entry1";
+        item->m_entryId = "111111";
         item->m_action = MDUpdateAction::mduaAdd;
         item->m_entryType = MDEntryType::mdetBuyQuote;
 
@@ -253,7 +253,7 @@ public:
 
         item->m_symbol = "symbol1";
         item->m_tradingSession = "session1";
-        item->m_entryId = "entry1";
+        item->m_entryId = "111111";
         item->m_action = MDUpdateAction::mduaAdd;
         item->m_entryType = MDEntryType::mdetBuyQuote;
 
@@ -300,7 +300,7 @@ public:
         info2->m_msgSeqNo = 1;
         info2->m_rptSec = 11;
 
-        item2->m_entryId = "entry1";
+        item2->m_entryId = "111111";
         item2->m_action = MDUpdateAction::mduaAdd;
         item2->m_entryType = MDEntryType::mdetBuyQuote;
 
@@ -858,14 +858,14 @@ public:
         RobotSettings::Default->MarketDataMaxEntriesCount = 32 * 10;
         RobotSettings::Default->MDEntryQueueItemsCount = 100;
 
-        OrderBookTesterForts fob;
-        fob.Test();
-
         PointerListTester pt;
         pt.Test();
 
         SymbolManagerTester ht;
         ht.Test();
+
+        OrderBookTesterForts fob;
+        fob.Test();
 
         TestFeedConnectionBase();
 

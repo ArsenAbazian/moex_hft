@@ -253,6 +253,7 @@ public:
         }
         LinkedPointer<T> *node = static_cast<LinkedPointer<T>*>(hashItem->Data()->m_object);
         T *data = node->Data();
+        data->Clear();
         list->Remove(node);
         this->FreePointer(hashItem);
     }
