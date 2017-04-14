@@ -80,16 +80,18 @@ typedef enum _FeedConnectionProtocol {
     UDP_IP
 }FeedConnectionProtocol;
 
+// do not!!!! do not change values for this enum
+// because they are used for hierarchically if
 typedef enum _FeedConnectionState {
-    fcsSuspend,
-    fcsListenIncremental,
-    fcsListenIncrementalForts,
-    fcsListenSnapshot,
-    fcsListenSecurityDefinition,
-    fcsListenSecurityStatus,
-    fcsListenSecurityStatusForts,
-    fcsHistoricalReplay,
-    fcsConnect
+    fcsListenIncremental = 0,
+    fcsListenIncrementalForts = 1,
+    fcsListenSecurityStatus = 2,
+    fcsListenSecurityStatusForts = 3,
+    fcsSuspend = 4,
+    fcsListenSnapshot = 5,
+    fcsListenSecurityDefinition = 6,
+    fcsHistoricalReplay = 7,
+    fcsConnect = 8
 } FeedConnectionState;
 
 typedef enum _FeedConnectionProcessMessageResultValue {
