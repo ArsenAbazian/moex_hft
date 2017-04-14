@@ -1427,7 +1427,7 @@ public:
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_OLR_FOND, 1,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "111111", 1, 1, 1, 1, 1),
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "222222", 6, 2, 1, 2, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "222222", 2, 2, 1, 2, 1),
                                      }, 2),
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_OLR_FOND, 2,
                                      new TestTemplateItemInfo*[1] {
@@ -1464,7 +1464,7 @@ public:
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_OLR_FOND, 1,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "111111", 1, 1, 1, 1, 1),
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "222222", 6, 2, 1, 2, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "222222", 2, 2, 1, 2, 1),
                                      }, 2),
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_OLR_FOND, 3,
                                      new TestTemplateItemInfo*[1] {
@@ -1519,7 +1519,7 @@ public:
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_OLR_FOND, 1,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "111111", 1, 1, 1, 1, 1),
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "222222", 6, 2, 1, 2, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "222222", 2, 2, 1, 2, 1),
                                      }, 2),
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_OLR_FOND, 3,
                                      new TestTemplateItemInfo*[1] {
@@ -1577,7 +1577,7 @@ public:
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_OLR_FOND, 1,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "111111", 1, 1, 1, 1, 1),
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "222222", 6, 2, 1, 2, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "222222", 2, 2, 1, 2, 1),
                                      }, 2),
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_OLR_FOND, 4,
                                      new TestTemplateItemInfo*[1] {
@@ -1659,7 +1659,7 @@ public:
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_OLR_FOND, 1,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "111111", 1, 1, 1, 1, 1),
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "222222", 6, 2, 1, 2, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "222222", 2, 2, 1, 2, 1),
                                      }, 2),
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_OLR_FOND, 4,
                                      new TestTemplateItemInfo*[1] {
@@ -1744,7 +1744,7 @@ public:
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_OLR_FOND, 1,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "111111", 1, 1, 1, 1, 1),
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "222222", 6, 2, 1, 2, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "222222", 2, 2, 1, 2, 1),
                                      }, 2),
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_OLR_FOND, 4,
                                      new TestTemplateItemInfo*[1] {
@@ -2443,7 +2443,7 @@ public:
                      "",
                      30);
 
-        if(incFond->m_orderTableFond->UsedItemCount() != 2)
+        if(incFond->m_orderTableFond->UsedItemCount() != 3)
             throw;
         if(incFond->m_orderTableFond->Symbol(0)->Session(0)->HasEntries())
             throw;
@@ -4287,7 +4287,7 @@ public:
             throw;
         if(!item->AggregatedBuyQuotes()->Item(0)->Price()->Equal(100, 0))
             throw;
-        if(item->AggregatedBuyQuotes()->Item(0)->Size() != 50)
+        if(item->AggregatedBuyQuotes()->Item(0)->Size() != 100)
             throw;
     }
 
