@@ -249,7 +249,8 @@ public:
             // such thing could happen because of some packet lost
             // so please do not return null :)
             //TODO remove debug
-            //printf("ERROR: %" PRIu64 " entry not found\n", info->MDEntryID);
+            info->MDEntryID[info->MDEntryIDLength] = '\0';
+            printf("ERROR: %s entry not found\n", info->MDEntryID);
             return;
         }
         LinkedPointer<T> *node = static_cast<LinkedPointer<T>*>(hashItem->Data()->m_object);

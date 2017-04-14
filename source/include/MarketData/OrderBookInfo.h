@@ -365,7 +365,7 @@ public:
             // such thing could happen because of some packet lost
             // so please do not return null :)
             //TODO remove debug
-            //printf("ERROR: %" PRIu64 " entry not found\n", info->MDEntryID);
+            printf("ERROR: %" PRIu64 " entry not found\n", info->MDEntryID);
             return;
         }
         LinkedPointer<T> *node = static_cast<LinkedPointer<T>*>(hashItem->Data()->m_object);
@@ -403,6 +403,8 @@ public:
             h->m_intId = info->MDEntryID;
             return;
         }
+        //TODO remove debug
+        printf("ERROR: %" PRIu64 " entry not found\n", info->MDEntryID);
         info->Used = true;
         ptr = GetBuyQuote(&(info->MDEntryPx));
         hashItem = AddPointer(ptr, info);
@@ -425,6 +427,8 @@ public:
             h->m_intId = info->MDEntryID;
             return;
         }
+        //TODO remove debug
+        printf("ERROR: %" PRIu64 " entry not found\n", info->MDEntryID);
         info->Used = true;
         ptr = GetSellQuote(&(info->MDEntryPx));
         hashItem = AddPointer(ptr, info);
