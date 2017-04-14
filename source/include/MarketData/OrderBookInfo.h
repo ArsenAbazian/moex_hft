@@ -12,6 +12,7 @@
 #include "MDEntryQueue.h"
 #include "QuoteInfo.h"
 #include "../Managers/DebugInfoManager.h"
+#include "../ProgramStatistics.h"
 
 template <typename T> class MarketSymbolInfo;
 
@@ -448,6 +449,10 @@ public:
     }
 
     inline void Remove(T *info) {
+#ifdef COLLECT_STATISTICS
+        ProgramStatistics::Current->Inc(Counters::cRemoveObr);
+        ProgramStatistics::Total->Inc(Counters::cRemoveObr);
+#endif
         if(info->MDEntryType[0] == mdetBuyQuote)
             this->RemoveBuyQuote(info);
         else if(info->MDEntryType[0] == mdetSellQuote)
@@ -455,6 +460,10 @@ public:
     }
 
     inline void Change(T *info) {
+#ifdef COLLECT_STATISTICS
+        ProgramStatistics::Current->Inc(Counters::cChangeObr);
+        ProgramStatistics::Total->Inc(Counters::cChangeObr);
+#endif
         if(info->MDEntryType[0] == mdetBuyQuote)
             this->ChangeBuyQuote(info);
         else if(info->MDEntryType[0] == mdetSellQuote)
@@ -462,6 +471,10 @@ public:
     }
 
     inline LinkedPointer<T>* Add(T *info) {
+#ifdef COLLECT_STATISTICS
+        ProgramStatistics::Current->Inc(Counters::cAddObr);
+        ProgramStatistics::Total->Inc(Counters::cAddObr);
+#endif
         if(info->MDEntryType[0] == mdetBuyQuote)
             return this->AddBuyQuote(info);
         else if(info->MDEntryType[0] == mdetSellQuote)
