@@ -9,9 +9,9 @@
   </component>
   <component name="CMakeRunConfigurationManager" shouldGenerate="true" shouldDeleteObsolete="true" buildAllGenerated="true">
     <generated>
-      <config projectName="hft_robot" targetName="fast_generate" />
-      <config projectName="hft_robot" targetName="tinyxml" />
       <config projectName="hft_robot" targetName="hft_robot" />
+      <config projectName="hft_robot" targetName="tinyxml" />
+      <config projectName="hft_robot" targetName="fast_generate" />
       <config projectName="hft_robot" targetName="clean-cmake" />
     </generated>
   </component>
@@ -22,9 +22,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32604c03-98a8-42cf-80f6-771ec2ce84cc" name="Default" comment="">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/source/include/MarketData/OrderedListManager.h" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CMakeLists.txt" afterPath="$PROJECT_DIR$/CMakeLists.txt" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/Feeds/FeedConnection.h" afterPath="$PROJECT_DIR$/source/include/Feeds/FeedConnection.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/Feeds/FeedTypes.h" afterPath="$PROJECT_DIR$/source/include/Feeds/FeedTypes.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/Feeds/Forts/FortsFeeds.h" afterPath="$PROJECT_DIR$/source/include/Feeds/Forts/FortsFeeds.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/MarketData/OrderBookInfo.h" afterPath="$PROJECT_DIR$/source/include/MarketData/OrderBookInfo.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/Settings.h" afterPath="$PROJECT_DIR$/source/include/Settings.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/Test/FeedConnectionTester.h" afterPath="$PROJECT_DIR$/source/include/Test/FeedConnectionTester.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/Test/FortsOrderBookTester.h" afterPath="$PROJECT_DIR$/source/include/Test/FortsOrderBookTester.h" />
     </list>
     <ignored path="hft_robot.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -49,93 +55,38 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="OrderInfo.h" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/source/include/MarketData/OrderInfo.h">
+      <file leaf-file-name="HashTable.h" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/source/include/Lib/HashTable.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="404">
-              <caret line="308" column="8" lean-forward="true" selection-start-line="308" selection-start-column="8" selection-end-line="308" selection-end-column="8" />
+            <state relative-caret-position="160">
+              <caret line="43" column="17" lean-forward="false" selection-start-line="43" selection-start-column="17" selection-end-line="43" selection-end-column="17" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Settings.h" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/source/include/Settings.h">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="229">
+              <caret line="59" column="8" lean-forward="false" selection-start-line="59" selection-start-column="8" selection-end-line="59" selection-end-column="8" />
               <folding>
-                <element signature="e#100#136#0" expanded="true" />
+                <element signature="e#1540#1759#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ProgramStatistics.h" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/source/include/ProgramStatistics.h">
+      <file leaf-file-name="FortsOrderBookTester.h" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/source/include/Test/FortsOrderBookTester.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="464">
-              <caret line="134" column="38" lean-forward="false" selection-start-line="134" selection-start-column="38" selection-end-line="134" selection-end-column="38" />
+            <state relative-caret-position="169">
+              <caret line="4638" column="0" lean-forward="false" selection-start-line="4638" selection-start-column="0" selection-end-line="4638" selection-end-column="0" />
               <folding>
-                <element signature="e#116#134#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="FeedConnectionTester.h" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/source/include/Test/FeedConnectionTester.h">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="465">
-              <caret line="886" column="0" lean-forward="true" selection-start-line="886" selection-start-column="0" selection-end-line="886" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="FeedConnection.h" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/source/include/Feeds/FeedConnection.h">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-873">
-              <caret line="4010" column="0" lean-forward="false" selection-start-line="4010" selection-start-column="0" selection-end-line="4010" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="FeedTypes.h" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/source/include/Feeds/FeedTypes.h">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="362">
-              <caret line="94" column="0" lean-forward="false" selection-start-line="94" selection-start-column="0" selection-end-line="94" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="OrderTesterCurr.h" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/source/include/Test/OrderTesterCurr.h">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="248">
-              <caret line="4297" column="62" lean-forward="false" selection-start-line="4297" selection-start-column="62" selection-end-line="4297" selection-end-column="62" />
-              <folding>
-                <marker date="1492197496774" expanded="true" signature="259:189355" ph="{...}" />
-                <marker date="1492197496774" expanded="true" signature="486:1700" ph="{...}" />
-                <marker date="1492197496774" expanded="true" signature="1724:1853" ph="{...}" />
-                <marker date="1492197496774" expanded="true" signature="1916:2229" ph="{...}" />
-                <marker date="1492197496774" expanded="true" signature="2337:2620" ph="{...}" />
-                <marker date="1492197496774" expanded="true" signature="2639:3248" ph="{...}" />
-                <marker date="1492197496774" expanded="true" signature="3300:9274" ph="{...}" />
-                <marker date="1492197496774" expanded="true" signature="9329:12901" ph="{...}" />
-                <marker date="1492197496774" expanded="true" signature="12956:16253" ph="{...}" />
-                <marker date="1492197496774" expanded="true" signature="16277:17907" ph="{...}" />
-                <marker date="1492197496774" expanded="true" signature="17948:20671" ph="{...}" />
-                <marker date="1492197496774" expanded="true" signature="20734:26432" ph="{...}" />
-                <marker date="1492197496774" expanded="true" signature="26498:29974" ph="{...}" />
-                <marker date="1492197496774" expanded="true" signature="30040:33140" ph="{...}" />
-                <marker date="1492197496774" expanded="true" signature="33175:34525" ph="{...}" />
-                <marker date="1492197496774" expanded="true" signature="34577:37136" ph="{...}" />
-                <marker date="1492197496774" expanded="true" signature="37184:37623" ph="{...}" />
-                <marker date="1492197496774" expanded="true" signature="37682:38209" ph="{...}" />
-                <marker date="1492197496774" expanded="true" signature="38236:38703" ph="{...}" />
-                <marker date="1492197496774" expanded="true" signature="38729:38876" ph="{...}" />
-                <marker date="1492197496774" expanded="true" signature="38916:39491" ph="{...}" />
-                <marker date="1492197496774" expanded="true" signature="39533:40254" ph="{...}" />
-                <marker date="1492197496774" expanded="true" signature="40293:41629" ph="{...}" />
-                <marker date="1492197496774" expanded="true" signature="41660:41746" ph="{...}" />
-                <marker date="1492197496774" expanded="true" signature="188404:188431" ph="{...}" />
-                <marker date="1492197496774" expanded="true" signature="188460:189097" ph="{...}" />
-                <marker date="1492197496774" expanded="true" signature="189129:189353" ph="{...}" />
+                <element signature="e#202814#202826#0" expanded="true" />
+                <element signature="e#246928#246940#0" expanded="true" />
+                <element signature="e#247531#247543#0" expanded="true" />
+                <element signature="e#247908#247920#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -144,40 +95,72 @@
       <file leaf-file-name="OrderBookInfo.h" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/source/include/MarketData/OrderBookInfo.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-276">
-              <caret line="558" column="0" lean-forward="false" selection-start-line="558" selection-start-column="0" selection-end-line="558" selection-end-column="0" />
+            <state relative-caret-position="200">
+              <caret line="438" column="39" lean-forward="false" selection-start-line="438" selection-start-column="39" selection-end-line="438" selection-end-column="39" />
               <folding>
                 <element signature="e#108#144#0" expanded="true" />
+                <element signature="e#407#419#0" expanded="true" />
+                <element signature="e#454#466#0" expanded="true" />
+                <element signature="e#4894#4962#0" expanded="true" />
+                <element signature="e#5272#5340#0" expanded="true" />
+                <element signature="e#15938#15950#0" expanded="true" />
+                <element signature="e#16014#16026#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="FeedConnections.h" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/source/include/Feeds/FeedConnections.h">
+      <file leaf-file-name="SymbolManagerTester.h" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/source/include/Test/SymbolManagerTester.h">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="246">
+              <caret line="228" column="0" lean-forward="false" selection-start-line="228" selection-start-column="0" selection-end-line="228" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="FeedConnectionTester.h" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/source/include/Test/FeedConnectionTester.h">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="126">
+              <caret line="886" column="0" lean-forward="false" selection-start-line="886" selection-start-column="0" selection-end-line="886" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="OrderedListManager.h" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/source/include/MarketData/OrderedListManager.h">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="0">
               <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding>
+                <element signature="e#118#151#0" expanded="true" />
+                <element signature="e#286#376#0" expanded="true" />
+                <element signature="e#295#310#0" expanded="true" />
+                <element signature="e#331#346#0" expanded="true" />
+                <element signature="e#2731#4798#0" expanded="false" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="HrPointerList.h" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/source/include/Lib/HrPointerList.h">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="213">
+              <caret line="134" column="0" lean-forward="false" selection-start-line="134" selection-start-column="0" selection-end-line="134" selection-end-column="0" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="MDEntryQueue.h" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/source/include/MarketData/MDEntryQueue.h">
+      <file leaf-file-name="PointerList.h" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/source/include/Lib/PointerList.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="224">
-              <caret line="123" column="32" lean-forward="false" selection-start-line="123" selection-start-column="32" selection-end-line="123" selection-end-column="32" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="MarketDataTable.h" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/source/include/MarketData/MarketDataTable.h">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="153">
-              <caret line="449" column="32" lean-forward="false" selection-start-line="449" selection-start-column="32" selection-end-line="449" selection-end-column="32" />
+            <state relative-caret-position="20">
+              <caret line="34" column="23" lean-forward="true" selection-start-line="34" selection-start-column="23" selection-end-line="34" selection-end-column="23" />
               <folding />
             </state>
           </provider>
@@ -187,29 +170,9 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>&quot;8&quot;, 2</find>
-      <find>&quot;88&quot;, 2</find>
-      <find>&quot;888&quot;, 2</find>
-      <find>&quot;8888&quot;, 2</find>
-      <find>&quot;88888&quot;, 2</find>
-      <find>&quot;888888&quot;, 2</find>
-      <find>NewI</find>
-      <find>NewPointer</find>
-      <find>AutooA</find>
-      <find>Pop</find>
-      <find>LastHash</find>
-      <find>&quot;session&quot;</find>
-      <find>&quot;&quot;</find>
-      <find>&quot;t1&quot;</find>
-      <find>mdetBuyQuote, &quot;222222&quot;, 6</find>
-      <find>-&gt;MDEntryID, 2,</find>
-      <find>&quot;t1s2&quot;, 4, &quot;session1&quot;, 2</find>
-      <find>AddSymbol</find>
-      <find>mdetSellQuote, &quot;222222&quot;, 6)</find>
       <find>-&gt;MDEntryID, 2,&quot;111111&quot;, 6</find>
       <find>Aggreg</find>
       <find>&quot;session1&quot;, &quot;222222&quot;, 6</find>
-      <find>AddBuyQuote</find>
       <find>Remoe</find>
       <find>#if COLLECT_STATISTICS</find>
       <find>Remove</find>
@@ -217,16 +180,28 @@
       <find>printf</find>
       <find>DoWor</find>
       <find>DoWorkAtom</find>
+      <find>Quote</find>
+      <find>GetBuy</find>
+      <find>g_seed</find>
+      <find>Des</find>
+      <find>Greater</find>
+      <find>Initi</find>
+      <find>MaxSecurityDefinitionCount</find>
+      <find>HrLinkedPointer</find>
+      <find>T</find>
+      <find>Add</find>
+      <find>HrLinkedPointer&lt;HashTableItemInfo&gt;</find>
+      <find>PointerListLite</find>
+      <find>MarketDataMaxSymbolsCount</find>
+      <find>G</find>
+      <find>GetBuyQu</find>
+      <find>GetBuyQuo</find>
+      <find>GetBuyQuote</find>
+      <find>AddBuyQuoteEx</find>
+      <find>AddBuyQuote</find>
+      <find>LinkedPointer</find>
     </findStrings>
     <replaceStrings>
-      <replace>FeedConnectionType::fctSnapshot</replace>
-      <replace>AddBuyQuoteEx</replace>
-      <replace>FeedConnectionType::fctInstrument</replace>
-      <replace>FeedConnectionType::fctHistorical</replace>
-      <replace>LinkedPointer</replace>
-      <replace>111111</replace>
-      <replace>222222</replace>
-      <replace>333333</replace>
       <replace>444444</replace>
       <replace>555555</replace>
       <replace>666666</replace>
@@ -247,8 +222,16 @@
       <replace>-&gt;MDEntryID, 6,&quot;111111&quot;, 6</replace>
       <replace>&quot;session1&quot;, &quot;222222&quot;, 2</replace>
       <replace>-&gt;MDEntryID, 6,</replace>
-      <replace>#ifdef COLLECT_STATISTICS</replace>
       <replace>&quot;session1&quot;</replace>
+      <replace>As</replace>
+      <replace>Less</replace>
+      <replace>POINTER</replace>
+      <replace>DATA</replace>
+      <replace>LinkedPointer&lt;HashTableItemInfo&gt;</replace>
+      <replace>#ifdef COLLECT_STATISTICS</replace>
+      <replace>AddBuyQuote</replace>
+      <replace>HrPointerListLite</replace>
+      <replace>HrLinkedPointer</replace>
     </replaceStrings>
     <dirStrings>
       <dir>$PROJECT_DIR$</dir>
@@ -261,8 +244,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/source/include/Feeds/Curr/CurrMsr.h" />
-        <option value="$PROJECT_DIR$/source/include/Feeds/Curr/CurrMss.h" />
         <option value="$PROJECT_DIR$/source/include/Feeds/Curr/CurrIdf.h" />
         <option value="$PROJECT_DIR$/source/include/Feeds/Curr/CurrHr.h" />
         <option value="$PROJECT_DIR$/source/include/Test/PointerListTester.h" />
@@ -281,7 +262,6 @@
         <option value="$PROJECT_DIR$/source/include/MarketData/StatisticItem.h" />
         <option value="$PROJECT_DIR$/source/include/MarketData/StatisticInfo.h" />
         <option value="$PROJECT_DIR$/source/include/MarketData/SymbolManager.h" />
-        <option value="$PROJECT_DIR$/source/include/Lib/HrPointerList.h" />
         <option value="$PROJECT_DIR$/source/include/MarketData/MarketSymbolInfo.h" />
         <option value="$PROJECT_DIR$/source/include/Lib/PointerList.h" />
         <option value="$PROJECT_DIR$/source/include/Managers/SocketBufferManager.h" />
@@ -296,22 +276,25 @@
         <option value="$PROJECT_DIR$/source/include/Managers/DebugInfoManager.h" />
         <option value="$PROJECT_DIR$/source/include/Converters/ItoaConverter.h" />
         <option value="$PROJECT_DIR$/source/src/Lib/HashTable.cpp" />
-        <option value="$PROJECT_DIR$/source/include/Settings.h" />
         <option value="$PROJECT_DIR$/source/include/Lib/AutoAllocatePointerList.h" />
-        <option value="$PROJECT_DIR$/source/include/Test/FortsOrderBookTester.h" />
-        <option value="$PROJECT_DIR$/source/include/Lib/HashTable.h" />
         <option value="$PROJECT_DIR$/source/include/Test/TradeTesterFond.h" />
         <option value="$PROJECT_DIR$/source/include/Test/StatisticsTesterFond.h" />
         <option value="$PROJECT_DIR$/source/include/Test/TradeTesterCurr.h" />
-        <option value="$PROJECT_DIR$/source/include/Test/FeedConnectionTester.h" />
         <option value="$PROJECT_DIR$/source/include/Test/OrderTesterFond.h" />
         <option value="$PROJECT_DIR$/source/include/Test/OrderTesterCurr.h" />
         <option value="$PROJECT_DIR$/source/include/ProgramStatistics.h" />
         <option value="$PROJECT_DIR$/source/include/MarketData/OrderInfo.h" />
         <option value="$PROJECT_DIR$/source/include/MarketData/MDEntryQueue.h" />
-        <option value="$PROJECT_DIR$/source/include/MarketData/OrderBookInfo.h" />
         <option value="$PROJECT_DIR$/source/include/Feeds/FeedTypes.h" />
+        <option value="$PROJECT_DIR$/source/include/Lib/HrPointerList.h" />
         <option value="$PROJECT_DIR$/source/include/Feeds/FeedConnection.h" />
+        <option value="$PROJECT_DIR$/source/include/Feeds/Forts/FortsFeeds.h" />
+        <option value="$PROJECT_DIR$/source/include/Settings.h" />
+        <option value="$PROJECT_DIR$/source/include/Test/FeedConnectionTester.h" />
+        <option value="$PROJECT_DIR$/source/include/Lib/HashTable.h" />
+        <option value="$PROJECT_DIR$/source/include/Test/FortsOrderBookTester.h" />
+        <option value="$PROJECT_DIR$/source/include/MarketData/OrderedListManager.h" />
+        <option value="$PROJECT_DIR$/source/include/MarketData/OrderBookInfo.h" />
       </list>
     </option>
   </component>
@@ -425,6 +408,28 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
+              <option name="myItemId" value="Test" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="hft_robot" />
+              <option name="myItemType" value="com.jetbrains.cidr.projectView.CidrFilesViewHelper$MyProjectTreeStructure$1" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="hft" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="source" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="include" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
               <option name="myItemId" value="MarketData" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
@@ -447,7 +452,7 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="Feeds" />
+              <option name="myItemId" value="Lib" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -1055,13 +1060,6 @@
       <workItem from="1492120988248" duration="4388000" />
       <workItem from="1492166089720" duration="6168000" />
     </task>
-    <task id="LOCAL-00211" summary="1. still catching bug...">
-      <created>1488750826313</created>
-      <option name="number" value="00211" />
-      <option name="presentableId" value="LOCAL-00211" />
-      <option name="project" value="LOCAL" />
-      <updated>1488750826313</updated>
-    </task>
     <task id="LOCAL-00212" summary="1. Fixed bug with queueItemsCount desync...&#10;2. Refactor cleanup MarketDataTable code">
       <created>1488925179415</created>
       <option name="number" value="00212" />
@@ -1398,11 +1396,18 @@
       <option name="project" value="LOCAL" />
       <updated>1492211120992</updated>
     </task>
-    <option name="localTasksCounter" value="260" />
+    <task id="LOCAL-00260" summary="1. optimize DoWorkAtom">
+      <created>1492212290218</created>
+      <option name="number" value="00260" />
+      <option name="presentableId" value="LOCAL-00260" />
+      <option name="project" value="LOCAL" />
+      <updated>1492212290219</updated>
+    </task>
+    <option name="localTasksCounter" value="261" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="2419931000" />
+    <option name="totallyTimeSpent" value="2432085000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -1418,17 +1423,17 @@
     <editor active="true" />
     <layout>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.36616454" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.250591" sideWeight="0.38481677" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.41489363" sideWeight="0.69597524" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="CMake" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4634703" sideWeight="0.4384817" order="11" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.82271147" sideWeight="0.19895288" order="8" side_tool="true" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.64775413" sideWeight="0.24210526" order="8" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32387707" sideWeight="0.5804974" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.19460727" sideWeight="0.48689955" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.57796013" sideWeight="0.4973822" order="10" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.26439628" sideWeight="0.493007" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.6217494" sideWeight="0.49344978" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24705882" sideWeight="0.493007" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4172577" sideWeight="0.4860681" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.289267" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.235262" sideWeight="0.506993" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="1.0" sideWeight="0.80104715" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.64775413" sideWeight="0.75789475" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Data View" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.36616454" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -1485,7 +1490,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
-    <MESSAGE value="Fixing bugs for snapshot" />
     <MESSAGE value="1. Support Futures and Options books for FORTS market.... In Testing" />
     <MESSAGE value="1. Restore all tests." />
     <MESSAGE value="1. Writing test for FortsOrderBook. Compilable but test not working" />
@@ -1510,7 +1514,8 @@
     <MESSAGE value="1. &quot;fix&quot; some strange bug with workspace.xml... it allocates 50 mb" />
     <MESSAGE value="1. implemented ProgrammStatistics class.... just add another value to enum and use it.... :)" />
     <MESSAGE value="1. sync" />
-    <option name="LAST_COMMIT_MESSAGE" value="1. sync" />
+    <MESSAGE value="1. optimize DoWorkAtom" />
+    <option name="LAST_COMMIT_MESSAGE" value="1. optimize DoWorkAtom" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1519,11 +1524,6 @@
           <url>file://$PROJECT_DIR$/source/src/Test/UTCTimeConverterTester.cpp</url>
           <line>192</line>
           <option name="timeStamp" value="70" />
-        </line-breakpoint>
-        <line-breakpoint type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/source/include/Test/SecurityDefinitionTester.h</url>
-          <line>997</line>
-          <option name="timeStamp" value="1285" />
         </line-breakpoint>
         <line-breakpoint type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/source/src/Managers/DebugInfoManager.cpp</url>
@@ -1544,11 +1544,6 @@
           <url>file://$PROJECT_DIR$/source/src/Managers/DebugInfoManager.cpp</url>
           <line>789</line>
           <option name="timeStamp" value="2067" />
-        </line-breakpoint>
-        <line-breakpoint type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/source/include/MarketData/MarketDataTable.h</url>
-          <line>216</line>
-          <option name="timeStamp" value="2081" />
         </line-breakpoint>
         <line-breakpoint type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <condition expression="info-&gt;EvntGrpCount &gt; 10" language="ObjectiveC" />
@@ -1591,54 +1586,13 @@
         <watch expression="info-&gt;RptSeq" language="ObjectiveC" />
         <watch expression="qt2-&gt;MDEntryID" />
         <watch expression="q" language="ObjectiveC" />
-        <watch expression="prev-&gt;MDEntrySize" />
-        <watch expression="item-&gt;AggregatedBuyQuotes()-&gt;Item(0)-&gt;Size()" />
+        <watch expression="RobotSettings::Default-&gt;MaxSecurityDefinitionCount" />
+        <watch expression="m-&gt;m_pool-&gt;CalcPoolCount()" />
+        <watch expression="m-&gt;m_pool-&gt;Capacity() - 2" />
       </configuration>
     </watches-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/source/include/Lib/StringIdComparer.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="425">
-          <caret line="143" column="4" lean-forward="false" selection-start-line="143" selection-start-column="4" selection-end-line="143" selection-end-column="4" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/source/include/MarketData/QuoteInfo.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="280">
-          <caret line="20" column="41" lean-forward="true" selection-start-line="20" selection-start-column="41" selection-end-line="20" selection-end-column="41" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/source/include/MarketData/StatisticItem.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-23">
-          <caret line="233" column="30" lean-forward="true" selection-start-line="233" selection-start-column="30" selection-end-line="233" selection-end-column="30" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/source/include/MarketData/StatisticInfo.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="131">
-          <caret line="1478" column="0" lean-forward="false" selection-start-line="1478" selection-start-column="0" selection-end-line="1478" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/source/include/Lib/HrPointerList.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="417">
-          <caret line="217" column="71" lean-forward="false" selection-start-line="217" selection-start-column="71" selection-end-line="217" selection-end-column="71" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/source/src/Managers/SocketBufferManager.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="40">
-          <caret line="4" column="14" lean-forward="false" selection-start-line="4" selection-start-column="14" selection-end-line="4" selection-end-column="14" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/source/include/Managers/SocketBufferManager.h">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="245">
@@ -1703,14 +1657,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/source/include/MarketData/SymbolManager.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1260">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/source/include/Feeds/AstsFeedChannel.h">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="60">
@@ -1768,35 +1714,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/source/include/Settings.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="20">
-          <caret line="5" column="0" lean-forward="false" selection-start-line="5" selection-start-column="0" selection-end-line="5" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/source/include/Lib/AutoAllocatePointerList.h">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1720">
           <caret line="86" column="9" lean-forward="false" selection-start-line="86" selection-start-column="9" selection-end-line="86" selection-end-column="9" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/source/include/Lib/PointerList.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="5060">
-          <caret line="253" column="0" lean-forward="false" selection-start-line="253" selection-start-column="0" selection-end-line="253" selection-end-column="0" />
-          <folding>
-            <element signature="e#213#1217#1" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/source/include/Lib/HashTable.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1480">
-          <caret line="74" column="4" lean-forward="false" selection-start-line="74" selection-start-column="4" selection-end-line="74" selection-end-column="4" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1930,14 +1851,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/source/include/MarketData/MarketDataTable.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="153">
-          <caret line="449" column="32" lean-forward="false" selection-start-line="449" selection-start-column="32" selection-end-line="449" selection-end-column="32" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/source/include/Test/OrderTesterCurr.h">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="248">
@@ -1974,35 +1887,12 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/source/include/Test/FortsOrderBookTester.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="317">
-          <caret line="56" column="0" lean-forward="false" selection-start-line="56" selection-start-column="0" selection-end-line="56" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/source/include/Feeds/Forts/FortsFeeds.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="139">
-          <caret line="303" column="0" lean-forward="false" selection-start-line="303" selection-start-column="0" selection-end-line="303" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/source/include/Test/FeedConnectionTester.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="465">
-          <caret line="886" column="0" lean-forward="true" selection-start-line="886" selection-start-column="0" selection-end-line="886" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/source/include/ProgramStatistics.h">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="464">
           <caret line="134" column="38" lean-forward="false" selection-start-line="134" selection-start-column="38" selection-end-line="134" selection-end-column="38" />
           <folding>
-            <element signature="e#116#134#0" expanded="true" />
+            <element signature="e#116#134#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -2010,9 +1900,29 @@
     <entry file="file://$PROJECT_DIR$/source/include/MarketData/OrderInfo.h">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="404">
-          <caret line="308" column="8" lean-forward="true" selection-start-line="308" selection-start-column="8" selection-end-line="308" selection-end-column="8" />
+          <caret line="308" column="8" lean-forward="false" selection-start-line="308" selection-start-column="8" selection-end-line="308" selection-end-column="8" />
           <folding>
-            <element signature="e#100#136#0" expanded="true" />
+            <element signature="e#100#136#0" expanded="false" />
+            <marker date="1492210920062" expanded="true" signature="441:19336" ph="{...}" />
+            <marker date="1492210920062" expanded="true" signature="14798:15167" ph="{...}" />
+            <marker date="1492210920062" expanded="true" signature="15208:15266" ph="{...}" />
+            <marker date="1492210920062" expanded="true" signature="15305:15410" ph="{...}" />
+            <marker date="1492210920062" expanded="true" signature="15456:15616" ph="{...}" />
+            <marker date="1492210920062" expanded="true" signature="15663:15872" ph="{...}" />
+            <marker date="1492210920062" expanded="true" signature="15917:15971" ph="{...}" />
+            <marker date="1492210920062" expanded="true" signature="16024:16409" ph="{...}" />
+            <marker date="1492210920062" expanded="true" signature="16458:16685" ph="{...}" />
+            <marker date="1492210920062" expanded="true" signature="16725:16906" ph="{...}" />
+            <marker date="1492210920062" expanded="true" signature="16956:16988" ph="{...}" />
+            <marker date="1492210920062" expanded="true" signature="17029:18005" ph="{...}" />
+            <marker date="1492210920062" expanded="true" signature="18056:18228" ph="{...}" />
+            <marker date="1492210920062" expanded="true" signature="18279:18451" ph="{...}" />
+            <marker date="1492210920062" expanded="true" signature="18494:18547" ph="{...}" />
+            <marker date="1492210920062" expanded="true" signature="18594:18738" ph="{...}" />
+            <marker date="1492210920062" expanded="true" signature="18776:18940" ph="{...}" />
+            <marker date="1492210920062" expanded="true" signature="18977:19031" ph="{...}" />
+            <marker date="1492210920062" expanded="true" signature="19161:19334" ph="{...}" />
+            <marker date="1492210920062" expanded="true" signature="19921:20701" ph="{...}" />
           </folding>
         </state>
       </provider>
@@ -2021,16 +1931,17 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="224">
           <caret line="123" column="32" lean-forward="false" selection-start-line="123" selection-start-column="32" selection-end-line="123" selection-end-column="32" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/source/include/MarketData/OrderBookInfo.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-276">
-          <caret line="558" column="0" lean-forward="false" selection-start-line="558" selection-start-column="0" selection-end-line="558" selection-end-column="0" />
           <folding>
-            <element signature="e#108#144#0" expanded="true" />
+            <marker date="1492211062830" expanded="true" signature="549:4153" ph="{...}" />
+            <marker date="1492211062830" expanded="true" signature="1251:1559" ph="{...}" />
+            <marker date="1492211062830" expanded="true" signature="1580:1622" ph="{...}" />
+            <marker date="1492211062830" expanded="true" signature="1656:1821" ph="{...}" />
+            <marker date="1492211062830" expanded="true" signature="1851:2159" ph="{...}" />
+            <marker date="1492211062830" expanded="true" signature="2201:2249" ph="{...}" />
+            <marker date="1492211062830" expanded="true" signature="2365:2723" ph="{...}" />
+            <marker date="1492211062830" expanded="true" signature="2780:3184" ph="{...}" />
+            <marker date="1492211062830" expanded="true" signature="3210:3431" ph="{...}" />
+            <marker date="1492211062830" expanded="true" signature="3457:3800" ph="{...}" />
           </folding>
         </state>
       </provider>
@@ -2047,14 +1958,167 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="362">
           <caret line="94" column="0" lean-forward="false" selection-start-line="94" selection-start-column="0" selection-end-line="94" selection-end-column="0" />
+          <folding>
+            <marker date="1492211876652" expanded="true" signature="1973:2244" ph="{...}" />
+            <marker date="1492211876652" expanded="true" signature="3209:3769" ph="{...}" />
+            <marker date="1492211876652" expanded="true" signature="3511:3518" ph="{...}" />
+            <marker date="1492211876652" expanded="true" signature="3544:3650" ph="{...}" />
+            <marker date="1492211876652" expanded="true" signature="3679:3767" ph="{...}" />
+            <marker date="1492211876652" expanded="true" signature="3811:4953" ph="{...}" />
+            <marker date="1492211876652" expanded="true" signature="4249:4256" ph="{...}" />
+            <marker date="1492211876652" expanded="true" signature="4281:4416" ph="{...}" />
+            <marker date="1492211876652" expanded="true" signature="4464:4591" ph="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/include/MarketData/SymbolManager.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="249">
+          <caret line="89" column="0" lean-forward="false" selection-start-line="89" selection-start-column="0" selection-end-line="89" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/include/Test/SecurityDefinitionTester.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="60">
+          <caret line="42" column="33" lean-forward="false" selection-start-line="42" selection-start-column="33" selection-end-line="42" selection-end-column="33" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/include/Feeds/Fond/FondIdf.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="149">
+          <caret line="17" column="14" lean-forward="false" selection-start-line="17" selection-start-column="14" selection-end-line="17" selection-end-column="14" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/include/Feeds/Forts/FortsFeeds.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="179">
+          <caret line="303" column="38" lean-forward="false" selection-start-line="303" selection-start-column="38" selection-end-line="303" selection-end-column="38" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/source/include/Feeds/FeedConnection.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-873">
-          <caret line="4010" column="0" lean-forward="false" selection-start-line="4010" selection-start-column="0" selection-end-line="4010" selection-end-column="0" />
+        <state relative-caret-position="164">
+          <caret line="218" column="74" lean-forward="false" selection-start-line="218" selection-start-column="74" selection-end-line="218" selection-end-column="74" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/include/MarketData/StatisticInfo.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="131">
+          <caret line="1478" column="0" lean-forward="false" selection-start-line="1478" selection-start-column="0" selection-end-line="1478" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/include/MarketData/MarketDataTable.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="73">
+          <caret line="13" column="10" lean-forward="true" selection-start-line="13" selection-start-column="10" selection-end-line="13" selection-end-column="10" />
+          <folding>
+            <element signature="e#295#314#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/include/Lib/PointerList.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="20">
+          <caret line="34" column="23" lean-forward="true" selection-start-line="34" selection-start-column="23" selection-end-line="34" selection-end-column="23" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/include/Lib/HashTable.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="160">
+          <caret line="43" column="17" lean-forward="false" selection-start-line="43" selection-start-column="17" selection-end-line="43" selection-end-column="17" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/include/Settings.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="229">
+          <caret line="59" column="8" lean-forward="false" selection-start-line="59" selection-start-column="8" selection-end-line="59" selection-end-column="8" />
+          <folding>
+            <element signature="e#1540#1759#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/include/Lib/HrPointerList.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="213">
+          <caret line="134" column="0" lean-forward="false" selection-start-line="134" selection-start-column="0" selection-end-line="134" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/include/Test/FortsOrderBookTester.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="169">
+          <caret line="4638" column="0" lean-forward="false" selection-start-line="4638" selection-start-column="0" selection-end-line="4638" selection-end-column="0" />
+          <folding>
+            <element signature="e#202814#202826#0" expanded="true" />
+            <element signature="e#246928#246940#0" expanded="true" />
+            <element signature="e#247531#247543#0" expanded="true" />
+            <element signature="e#247908#247920#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/include/MarketData/OrderedListManager.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="e#118#151#0" expanded="true" />
+            <element signature="e#286#376#0" expanded="true" />
+            <element signature="e#295#310#0" expanded="true" />
+            <element signature="e#331#346#0" expanded="true" />
+            <element signature="e#2731#4798#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/include/MarketData/OrderBookInfo.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="200">
+          <caret line="438" column="39" lean-forward="false" selection-start-line="438" selection-start-column="39" selection-end-line="438" selection-end-column="39" />
+          <folding>
+            <element signature="e#108#144#0" expanded="true" />
+            <element signature="e#407#419#0" expanded="true" />
+            <element signature="e#454#466#0" expanded="true" />
+            <element signature="e#4894#4962#0" expanded="true" />
+            <element signature="e#5272#5340#0" expanded="true" />
+            <element signature="e#15938#15950#0" expanded="true" />
+            <element signature="e#16014#16026#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/include/Test/FeedConnectionTester.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="126">
+          <caret line="886" column="0" lean-forward="false" selection-start-line="886" selection-start-column="0" selection-end-line="886" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/include/Test/SymbolManagerTester.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="246">
+          <caret line="228" column="0" lean-forward="false" selection-start-line="228" selection-start-column="0" selection-end-line="228" selection-end-column="0" />
           <folding />
         </state>
       </provider>

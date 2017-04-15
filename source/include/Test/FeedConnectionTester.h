@@ -858,6 +858,18 @@ public:
         RobotSettings::Default->MarketDataMaxEntriesCount = 32 * 10;
         RobotSettings::Default->MDEntryQueueItemsCount = 100;
 
+        OrderBookTesterForts fob;
+        fob.Test();
+
+        SecurityDefinitionTester ids;
+        ids.Test();
+
+        SecurityStatusTester ist;
+        ist.Test();
+
+        HistoricalReplayTester hrt;
+        hrt.Test();
+
         OrderTesterFond otFond;
         otFond.Test();
         OrderTesterCurr otCurr;
@@ -874,19 +886,7 @@ public:
         SymbolManagerTester ht;
         ht.Test();
 
-        OrderBookTesterForts fob;
-        fob.Test();
-
         TestFeedConnectionBase();
-
-        SecurityDefinitionTester ids;
-        ids.Test();
-
-        SecurityStatusTester ist;
-        ist.Test();
-
-        HistoricalReplayTester hrt;
-        hrt.Test();
 
         StatisticsTesterFond stFond;
         stFond.Test();

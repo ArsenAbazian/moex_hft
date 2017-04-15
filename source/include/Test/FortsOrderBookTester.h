@@ -8,6 +8,7 @@
 #include "../Settings.h"
 
 #ifdef TEST
+#define USE_SKIP_LIST
 
 #include "../Feeds/FeedConnection.h"
 #include "../Feeds/Forts/FortsFeeds.h"
@@ -3600,7 +3601,7 @@ public:
             throw;
     }
 
-    PointerListLite<FortsDefaultSnapshotMessageMDEntriesItemInfo>* BuyQuotes(int symbolIndex) {
+    HrPointerListLite<FortsDefaultSnapshotMessageMDEntriesItemInfo>* BuyQuotes(int symbolIndex) {
         return incForts->OrderBookForts()->Symbol(symbolIndex)->Session(0)->BuyQuotes();
     }
 
@@ -4463,10 +4464,11 @@ public:
         return item;
     }
 
-    template <typename T>
-    void TestLevelsDescending(PointerListLite<T> *list) {
+#ifdef USE_SKIP_LIST
+template <typename T>
+    void TestLevelsDescending(HrPointerListLite<T> *list) {
 
-        LinkedPointer<T> *node = list->Start();
+        HrLinkedPointer<T> *node = list->Start();
         while(true) {
             if(node == list->End())
                 break;
@@ -4530,19 +4532,20 @@ public:
             node = node->Next2();
         }
     }
-    /*
+
     void TestPerformance(int itemsCount) {
         OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *obi = new OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo>();
-        obi->SetDebugFastRandSeed(2006221698);
+        obi->ListMode(ListType::ltSkipList);
+        obi->BuyQuoteManager()->SetDebugFastRandSeed(2006221698);
         obi->SymbolInfo(new MarketSymbolInfo<OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo>>());
-        obi->SetDebugLevel(0);
+        obi->BuyQuoteManager()->SetDebugLevel(0);
         FortsDefaultSnapshotMessageMDEntriesItemInfo **items = new FortsDefaultSnapshotMessageMDEntriesItemInfo*[itemsCount];
         int startMantissa = 1000;
         for(int i = 0; i < itemsCount * 3; i++) {
             int val = rand() % itemsCount;
             FortsDefaultSnapshotMessageMDEntriesItemInfo *item = CreatePerformanceItem(startMantissa + val * 5);
             items[i] = item;
-            obi->AddBuyQuoteEx(item);
+            obi->AddBuyQuote(item);
             this->TestLevelsDescending(obi->BuyQuotes());
             if(obi->BuyQuotes()->Count() == itemsCount)
                 break;
@@ -4565,9 +4568,10 @@ public:
             FortsDefaultSnapshotMessageMDEntriesItemInfo *it = obi->BuyQuotes()->Item(index[i]);
             int price = it->MDEntryPx.Mantissa + 1;
             FortsDefaultSnapshotMessageMDEntriesItemInfo *item50 = CreatePerformanceItem(price);
+            obi->ListMode(ListType::ltSkipList);
             w->Start();
             for (int i = 0; i < count; i++) {
-                LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *ptr = obi->AddBuyQuoteEx(item50);
+                HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *ptr = obi->AddBuyQuote(item50);
                 obi->RemoveBuyQuote(ptr->Data());
 
                 if(obi->BuyQuotes()->Count() != itemsCount)
@@ -4579,9 +4583,10 @@ public:
             if(obi->BuyQuotes()->Count() != itemsCount)
                 throw;
 
+            obi->ListMode(ListType::ltSimple);
             w->Start();
             for (int i = 0; i < count; i++) {
-                LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *ptr = obi->AddBuyQuote(item50);
+                HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *ptr = obi->AddBuyQuote(item50);
                 obi->RemoveBuyQuote(ptr->Data());
             }
             UINT64 en2 = w->ElapsedNanoseconds();
@@ -4600,8 +4605,7 @@ public:
         TestPerformance(100);
         TestPerformance(50);
     }
-     */
-    /*
+
     FortsDefaultSnapshotMessageMDEntriesItemInfo* CreateHrItem(int price) {
         AutoAllocatePointerList<FortsDefaultSnapshotMessageMDEntriesItemInfo> *list = new AutoAllocatePointerList<FortsDefaultSnapshotMessageMDEntriesItemInfo>(2, 1);
         FortsDefaultSnapshotMessageMDEntriesItemInfo* item = list->NewItem();
@@ -4624,6 +4628,7 @@ public:
         OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = new OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo>();
         MarketSymbolInfo<OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo>> *s = new MarketSymbolInfo<OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo>>();
         item->SymbolInfo(s);
+        item->ListMode(ListType::ltSkipList);
         return item;
     }
 
@@ -4631,7 +4636,7 @@ public:
         OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
         if(item->BuyQuotes()->Start() != 0)
             throw;
-        item->AddBuyQuoteEx(CreateHrItem(100));
+        item->AddBuyQuote(CreateHrItem(100));
         if(item->BuyQuotes()->Start() == 0)
             throw;
         if(item->BuyQuotes()->Count() != 1)
@@ -4644,8 +4649,8 @@ public:
         OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
         if(item->BuyQuotes()->Start() != 0)
             throw;
-        item->AddBuyQuoteEx(CreateHrItem(100));
-        item->AddBuyQuoteEx(CreateHrItem(90));
+        item->AddBuyQuote(CreateHrItem(100));
+        item->AddBuyQuote(CreateHrItem(90));
         if(item->BuyQuotes()->Count() != 2)
             throw;
         if(item->BuyQuotes()->Start()->Data()->MDEntryPx.Mantissa != 100)
@@ -4668,8 +4673,8 @@ public:
         OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
         if(item->BuyQuotes()->Start() != 0)
             throw;
-        item->AddBuyQuoteEx(CreateHrItem(100));
-        item->AddBuyQuoteEx(CreateHrItem(110));
+        item->AddBuyQuote(CreateHrItem(100));
+        item->AddBuyQuote(CreateHrItem(110));
         if(item->BuyQuotes()->Count() != 2)
             throw;
         if(item->BuyQuotes()->Start()->Data()->MDEntryPx.Mantissa != 110)
@@ -4692,12 +4697,12 @@ public:
         OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
         if(item->BuyQuotes()->Start() != 0)
             throw;
-        item->AddBuyQuoteEx(CreateHrItem(100));
-        item->AddBuyQuoteEx(CreateHrItem(110));
+        item->AddBuyQuote(CreateHrItem(100));
+        item->AddBuyQuote(CreateHrItem(110));
 
         item->SetDebugLevel(3);
 
-        item->AddBuyQuoteEx(CreateHrItem(120));
+        item->AddBuyQuote(CreateHrItem(120));
         if(item->BuyQuotes()->Count() != 3)
             throw;
         if(item->BuyQuotes()->Item(0)->MDEntryPx.Mantissa != 120)
@@ -4745,12 +4750,12 @@ public:
         OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
         if(item->BuyQuotes()->Start() != 0)
             throw;
-        item->AddBuyQuoteEx(CreateHrItem(100));
-        item->AddBuyQuoteEx(CreateHrItem(110));
+        item->AddBuyQuote(CreateHrItem(100));
+        item->AddBuyQuote(CreateHrItem(110));
 
         item->SetDebugLevel(3);
 
-        item->AddBuyQuoteEx(CreateHrItem(90));
+        item->AddBuyQuote(CreateHrItem(90));
         if(item->BuyQuotes()->Count() != 3)
             throw;
         if(item->BuyQuotes()->Item(0)->MDEntryPx.Mantissa != 110)
@@ -4796,9 +4801,9 @@ public:
 
     void TestHrInsertByLevel0() {
         OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
-        LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *start = item->BuyQuotes()->Add();
-        LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *node = item->BuyQuotes()->Add();
-        LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *end = item->BuyQuotes()->Add();
+        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *start = item->BuyQuotes()->Add();
+        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *node = item->BuyQuotes()->Add();
+        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *end = item->BuyQuotes()->Add();
 
         start->AllConnect(end);
         item->BuyQuotes()->InsertByLevel(0, start, node, end);
@@ -4850,9 +4855,9 @@ public:
 
     void TestHrInsertByLevel1() {
         OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
-        LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *start = item->BuyQuotes()->Add();
-        LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *node = item->BuyQuotes()->Add();
-        LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *end = item->BuyQuotes()->Add();
+        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *start = item->BuyQuotes()->Add();
+        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *node = item->BuyQuotes()->Add();
+        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *end = item->BuyQuotes()->Add();
 
         start->AllConnect(end);
         item->BuyQuotes()->InsertByLevel(1, start, node, end);
@@ -4904,9 +4909,9 @@ public:
 
     void TestHrInsertByLevel2() {
         OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
-        LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *start = item->BuyQuotes()->Add();
-        LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *node = item->BuyQuotes()->Add();
-        LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *end = item->BuyQuotes()->Add();
+        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *start = item->BuyQuotes()->Add();
+        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *node = item->BuyQuotes()->Add();
+        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *end = item->BuyQuotes()->Add();
 
         start->AllConnect(end);
         item->BuyQuotes()->InsertByLevel(2, start, node, end);
@@ -4958,9 +4963,9 @@ public:
 
     void TestHrInsertByLevel3() {
         OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
-        LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *start = item->BuyQuotes()->Add();
-        LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *node = item->BuyQuotes()->Add();
-        LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *end = item->BuyQuotes()->Add();
+        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *start = item->BuyQuotes()->Add();
+        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *node = item->BuyQuotes()->Add();
+        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *end = item->BuyQuotes()->Add();
 
         start->AllConnect(end);
         item->BuyQuotes()->InsertByLevel(3, start, node, end);
@@ -5012,9 +5017,9 @@ public:
 
     void TestHrInsertByLevel4() {
         OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
-        LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *start = item->BuyQuotes()->Add();
-        LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *node = item->BuyQuotes()->Add();
-        LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *end = item->BuyQuotes()->Add();
+        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *start = item->BuyQuotes()->Add();
+        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *node = item->BuyQuotes()->Add();
+        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *end = item->BuyQuotes()->Add();
 
         start->AllConnect(end);
         item->BuyQuotes()->InsertByLevel(4, start, node, end);
@@ -5066,9 +5071,9 @@ public:
 
     void TestHrInsertByLevel5() {
         OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
-        LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *start = item->BuyQuotes()->Add();
-        LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *node = item->BuyQuotes()->Add();
-        LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *end = item->BuyQuotes()->Add();
+        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *start = item->BuyQuotes()->Add();
+        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *node = item->BuyQuotes()->Add();
+        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *end = item->BuyQuotes()->Add();
 
         start->AllConnect(end);
         item->BuyQuotes()->InsertByLevel(5, start, node, end);
@@ -5122,11 +5127,11 @@ public:
         OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
         if(item->BuyQuotes()->Start() != 0)
             throw;
-        item->AddBuyQuoteEx(CreateHrItem(100));
-        item->AddBuyQuoteEx(CreateHrItem(120));
+        item->AddBuyQuote(CreateHrItem(100));
+        item->AddBuyQuote(CreateHrItem(120));
 
         item->SetDebugLevel(1);
-        item->AddBuyQuoteEx(CreateHrItem(110));
+        item->AddBuyQuote(CreateHrItem(110));
 
         if(item->BuyQuotes()->Item(0)->MDEntryPx.Mantissa != 120)
             throw;
@@ -5184,11 +5189,11 @@ public:
         OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
         if(item->BuyQuotes()->Start() != 0)
             throw;
-        item->AddBuyQuoteEx(CreateHrItem(100));
-        item->AddBuyQuoteEx(CreateHrItem(120));
+        item->AddBuyQuote(CreateHrItem(100));
+        item->AddBuyQuote(CreateHrItem(120));
 
         item->SetDebugLevel(2);
-        item->AddBuyQuoteEx(CreateHrItem(110));
+        item->AddBuyQuote(CreateHrItem(110));
 
         if(item->BuyQuotes()->Item(0)->MDEntryPx.Mantissa != 120)
             throw;
@@ -5246,11 +5251,11 @@ public:
         OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
         if(item->BuyQuotes()->Start() != 0)
             throw;
-        item->AddBuyQuoteEx(CreateHrItem(100));
-        item->AddBuyQuoteEx(CreateHrItem(120));
+        item->AddBuyQuote(CreateHrItem(100));
+        item->AddBuyQuote(CreateHrItem(120));
 
         item->SetDebugLevel(3);
-        item->AddBuyQuoteEx(CreateHrItem(110));
+        item->AddBuyQuote(CreateHrItem(110));
 
         if(item->BuyQuotes()->Item(0)->MDEntryPx.Mantissa != 120)
             throw;
@@ -5308,11 +5313,11 @@ public:
         OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
         if(item->BuyQuotes()->Start() != 0)
             throw;
-        item->AddBuyQuoteEx(CreateHrItem(100));
-        item->AddBuyQuoteEx(CreateHrItem(120));
+        item->AddBuyQuote(CreateHrItem(100));
+        item->AddBuyQuote(CreateHrItem(120));
 
         item->SetDebugLevel(4);
-        item->AddBuyQuoteEx(CreateHrItem(110));
+        item->AddBuyQuote(CreateHrItem(110));
 
         if(item->BuyQuotes()->Item(0)->MDEntryPx.Mantissa != 120)
             throw;
@@ -5370,11 +5375,11 @@ public:
         OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
         if(item->BuyQuotes()->Start() != 0)
             throw;
-        item->AddBuyQuoteEx(CreateHrItem(100));
-        item->AddBuyQuoteEx(CreateHrItem(120));
+        item->AddBuyQuote(CreateHrItem(100));
+        item->AddBuyQuote(CreateHrItem(120));
 
         item->SetDebugLevel(5);
-        item->AddBuyQuoteEx(CreateHrItem(110));
+        item->AddBuyQuote(CreateHrItem(110));
 
         if(item->BuyQuotes()->Item(0)->MDEntryPx.Mantissa != 120)
             throw;
@@ -5431,18 +5436,18 @@ public:
     void TestRemoveBuyQuote1() {
         OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
 
-        item->AddBuyQuoteEx(CreateHrItem(100));
+        item->AddBuyQuote(CreateHrItem(100));
         item->RemoveBuyQuote(CreateHrItem(100));
 
         if(item->BuyQuotes()->Count() != 0)
             throw;
     }
 
-    void AssertNextEqual(LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *node,
-                   LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *next2,
-                   LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *next3,
-                   LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *next4,
-                   LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *next5) {
+    void AssertNextEqual(HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *node,
+                   HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *next2,
+                   HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *next3,
+                   HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *next4,
+                   HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *next5) {
 
         if(node->Next2() != next2)
             throw;
@@ -5454,11 +5459,11 @@ public:
             throw;
     }
 
-    void AssertPrevEqual(LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *node,
-                   LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *prev2,
-                   LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *prev3,
-                   LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *prev4,
-                   LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *prev5) {
+    void AssertPrevEqual(HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *node,
+                   HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *prev2,
+                   HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *prev3,
+                   HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *prev4,
+                   HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *prev5) {
 
         if(node->Prev2() != prev2)
             throw;
@@ -5473,15 +5478,15 @@ public:
     void TestRemoveBuyQuote21() {
         OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
 
-        item->AddBuyQuoteEx(CreateHrItem(100));
-        item->AddBuyQuoteEx(CreateHrItem(120));
+        item->AddBuyQuote(CreateHrItem(100));
+        item->AddBuyQuote(CreateHrItem(120));
 
         item->RemoveBuyQuote(CreateHrItem(100));
 
         if(item->BuyQuotes()->Count() != 1)
             throw;
 
-        LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *node = item->BuyQuotes()->Node(0);
+        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *node = item->BuyQuotes()->Node(0);
         if(node->Next() != 0)
             throw;
         this->AssertNextEqual(node, 0, 0, 0, 0);
@@ -5491,15 +5496,15 @@ public:
     void TestRemoveBuyQuote22() {
         OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
 
-        item->AddBuyQuoteEx(CreateHrItem(100));
-        item->AddBuyQuoteEx(CreateHrItem(120));
+        item->AddBuyQuote(CreateHrItem(100));
+        item->AddBuyQuote(CreateHrItem(120));
 
         item->RemoveBuyQuote(CreateHrItem(120));
 
         if(item->BuyQuotes()->Count() != 1)
             throw;
 
-        LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *node = item->BuyQuotes()->Node(0);
+        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *node = item->BuyQuotes()->Node(0);
         if(node->Next() != 0)
             throw;
         this->AssertNextEqual(node, 0, 0, 0, 0);
@@ -5509,15 +5514,15 @@ public:
     void TestRemoveBuyQuote31() {
         OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
 
-        item->AddBuyQuoteEx(CreateHrItem(100));
-        item->AddBuyQuoteEx(CreateHrItem(120));
+        item->AddBuyQuote(CreateHrItem(100));
+        item->AddBuyQuote(CreateHrItem(120));
         item->SetDebugLevel(1);
-        LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *node =  item->AddBuyQuoteEx(CreateHrItem(110));
+        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *node =  item->AddBuyQuote(CreateHrItem(110));
 
         item->RemoveBuyQuote(CreateHrItem(110));
 
-        LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *start =  item->BuyQuotes()->Node(0);
-        LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *end =  item->BuyQuotes()->Node(1);
+        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *start =  item->BuyQuotes()->Node(0);
+        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *end =  item->BuyQuotes()->Node(1);
 
         this->AssertNextEqual(start, end, end, end, end);
         this->AssertPrevEqual(end, start, start, start, start);
@@ -5526,15 +5531,15 @@ public:
     void TestRemoveBuyQuote32() {
         OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
 
-        item->AddBuyQuoteEx(CreateHrItem(100));
-        item->AddBuyQuoteEx(CreateHrItem(120));
+        item->AddBuyQuote(CreateHrItem(100));
+        item->AddBuyQuote(CreateHrItem(120));
         item->SetDebugLevel(2);
-        LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *node =  item->AddBuyQuoteEx(CreateHrItem(110));
+        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *node =  item->AddBuyQuote(CreateHrItem(110));
 
         item->RemoveBuyQuote(CreateHrItem(110));
 
-        LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *start =  item->BuyQuotes()->Node(0);
-        LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *end =  item->BuyQuotes()->Node(1);
+        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *start =  item->BuyQuotes()->Node(0);
+        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *end =  item->BuyQuotes()->Node(1);
 
         this->AssertNextEqual(start, end, end, end, end);
         this->AssertPrevEqual(end, start, start, start, start);
@@ -5543,15 +5548,15 @@ public:
     void TestRemoveBuyQuote33() {
         OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
 
-        item->AddBuyQuoteEx(CreateHrItem(100));
-        item->AddBuyQuoteEx(CreateHrItem(120));
+        item->AddBuyQuote(CreateHrItem(100));
+        item->AddBuyQuote(CreateHrItem(120));
         item->SetDebugLevel(3);
-        LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *node =  item->AddBuyQuoteEx(CreateHrItem(110));
+        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *node =  item->AddBuyQuote(CreateHrItem(110));
 
         item->RemoveBuyQuote(CreateHrItem(110));
 
-        LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *start =  item->BuyQuotes()->Node(0);
-        LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *end =  item->BuyQuotes()->Node(1);
+        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *start =  item->BuyQuotes()->Node(0);
+        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *end =  item->BuyQuotes()->Node(1);
 
         this->AssertNextEqual(start, end, end, end, end);
         this->AssertPrevEqual(end, start, start, start, start);
@@ -5560,15 +5565,15 @@ public:
     void TestRemoveBuyQuote34() {
         OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
 
-        item->AddBuyQuoteEx(CreateHrItem(100));
-        item->AddBuyQuoteEx(CreateHrItem(120));
+        item->AddBuyQuote(CreateHrItem(100));
+        item->AddBuyQuote(CreateHrItem(120));
         item->SetDebugLevel(4);
-        LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *node =  item->AddBuyQuoteEx(CreateHrItem(110));
+        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *node =  item->AddBuyQuote(CreateHrItem(110));
 
         item->RemoveBuyQuote(CreateHrItem(110));
 
-        LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *start =  item->BuyQuotes()->Node(0);
-        LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *end =  item->BuyQuotes()->Node(1);
+        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *start =  item->BuyQuotes()->Node(0);
+        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *end =  item->BuyQuotes()->Node(1);
 
         this->AssertNextEqual(start, end, end, end, end);
         this->AssertPrevEqual(end, start, start, start, start);
@@ -5577,15 +5582,15 @@ public:
     void TestRemoveBuyQuote35() {
         OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
 
-        item->AddBuyQuoteEx(CreateHrItem(100));
-        item->AddBuyQuoteEx(CreateHrItem(120));
+        item->AddBuyQuote(CreateHrItem(100));
+        item->AddBuyQuote(CreateHrItem(120));
         item->SetDebugLevel(5);
-        LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *node =  item->AddBuyQuoteEx(CreateHrItem(110));
+        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *node =  item->AddBuyQuote(CreateHrItem(110));
 
         item->RemoveBuyQuote(CreateHrItem(110));
 
-        LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *start =  item->BuyQuotes()->Node(0);
-        LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *end =  item->BuyQuotes()->Node(1);
+        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *start =  item->BuyQuotes()->Node(0);
+        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *end =  item->BuyQuotes()->Node(1);
 
         this->AssertNextEqual(start, end, end, end, end);
         this->AssertPrevEqual(end, start, start, start, start);
@@ -5594,18 +5599,18 @@ public:
     void TestRemoveBuyQuote411() {
         OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
 
-        item->AddBuyQuoteEx(CreateHrItem(130));
-        item->AddBuyQuoteEx(CreateHrItem(100));
+        item->AddBuyQuote(CreateHrItem(130));
+        item->AddBuyQuote(CreateHrItem(100));
         item->SetDebugLevel(1);
-        item->AddBuyQuoteEx(CreateHrItem(110));
+        item->AddBuyQuote(CreateHrItem(110));
         item->SetDebugLevel(1);
-        item->AddBuyQuoteEx(CreateHrItem(120));
+        item->AddBuyQuote(CreateHrItem(120));
 
         item->RemoveBuyQuote(CreateHrItem(110));
 
-        LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *i0 =  item->BuyQuotes()->Node(0);
-        LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *i1 =  item->BuyQuotes()->Node(1);
-        LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *i2 =  item->BuyQuotes()->Node(2);
+        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *i0 =  item->BuyQuotes()->Node(0);
+        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *i1 =  item->BuyQuotes()->Node(1);
+        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *i2 =  item->BuyQuotes()->Node(2);
 
         this->AssertNextEqual(i0, i2, i2, i2, i2);
         this->AssertPrevEqual(i2, i0, i0, i0, i0);
@@ -5614,36 +5619,36 @@ public:
     void TestRemoveBuyQuote412() {
         OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
 
-        item->AddBuyQuoteEx(CreateHrItem(130));
-        item->AddBuyQuoteEx(CreateHrItem(100));
+        item->AddBuyQuote(CreateHrItem(130));
+        item->AddBuyQuote(CreateHrItem(100));
         item->SetDebugLevel(1);
-        item->AddBuyQuoteEx(CreateHrItem(110));
+        item->AddBuyQuote(CreateHrItem(110));
         item->SetDebugLevel(1);
-        item->AddBuyQuoteEx(CreateHrItem(120));
+        item->AddBuyQuote(CreateHrItem(120));
 
         item->RemoveBuyQuote(CreateHrItem(120));
 
-        LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *i0 =  item->BuyQuotes()->Node(0);
-        LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *i1 =  item->BuyQuotes()->Node(1);
-        LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *i2 =  item->BuyQuotes()->Node(2);
+        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *i0 =  item->BuyQuotes()->Node(0);
+        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *i1 =  item->BuyQuotes()->Node(1);
+        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *i2 =  item->BuyQuotes()->Node(2);
 
         this->AssertNextEqual(i0, i2, i2, i2, i2);
         this->AssertPrevEqual(i2, i0, i0, i0, i0);
     }
 
     template <typename T>
-    const char* GetLevelMap(PointerListLite<T> *list, int level) {
+    const char* GetLevelMap(HrPointerListLite<T> *list, int level) {
         char *buf = new char[list->Count() + 1];
         memset(buf, ' ', list->Count());
         buf[list->Count()] = '\0';
 
-        LinkedPointer<T> *node = list->Start();
+        HrLinkedPointer<T> *node = list->Start();
         while(true) {
             int index = list->IndexOf(node);
             buf[index] = '*';
             if(node == list->End())
                 break;
-            LinkedPointer<T> *next = node->NextByLevel(level);
+            HrLinkedPointer<T> *next = node->NextByLevel(level);
             if(next == 0)
                 throw;
             node = next;
@@ -5652,8 +5657,8 @@ public:
     }
 
     template <typename T>
-    void PrintLevelItems(PointerListLite<T> *list, int level) {
-        LinkedPointer<T> *node = list->Start();
+    void PrintLevelItems(HrPointerListLite<T> *list, int level) {
+        HrLinkedPointer<T> *node = list->Start();
         while(true) {
             printf("%" PRIi64 " ", node->Data()->MDEntryPx.Mantissa);
             if(node == list->End())
@@ -5664,13 +5669,13 @@ public:
     }
 
     template <typename T>
-    void AssertSequence(PointerListLite<T> *list, int level, const char *itemsPresenceMap) {
+    void AssertSequence(HrPointerListLite<T> *list, int level, const char *itemsPresenceMap) {
 
         int length = strlen(itemsPresenceMap);
         if(length != list->Count())
             throw;
-        LinkedPointer<T> **items = new LinkedPointer<T>*[length];
-        LinkedPointer<T> *node = list->Start();
+        HrLinkedPointer<T> **items = new HrLinkedPointer<T>*[length];
+        HrLinkedPointer<T> *node = list->Start();
         int count = 0;
         for(int i = 0; i < length; i++) {
             if(itemsPresenceMap[i] != ' ') {
@@ -5688,8 +5693,8 @@ public:
                 throw;
             return;
         }
-        LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *start = items[0];
-        LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *end = items[count - 1];
+        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *start = items[0];
+        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *end = items[count - 1];
 
         node = start;
         for(int i = 0; i < count; i++) {
@@ -5724,9 +5729,9 @@ public:
         }
     }
 
-    void AssertPrices(PointerListLite<FortsDefaultSnapshotMessageMDEntriesItemInfo> *list, int prices, ...) {
-        LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> **items = new LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *[list->Count()];
-        LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *node = list->Start();
+    void AssertPrices(HrPointerListLite<FortsDefaultSnapshotMessageMDEntriesItemInfo> *list, int prices, ...) {
+        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> **items = new HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *[list->Count()];
+        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *node = list->Start();
 
         if(node->Data()->MDEntryPx.Mantissa != prices)
             throw;
@@ -5746,12 +5751,12 @@ public:
     void TestRemoveBuyQuote421() {
         OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
 
-        item->AddBuyQuoteEx(CreateHrItem(130));
-        item->AddBuyQuoteEx(CreateHrItem(100));
+        item->AddBuyQuote(CreateHrItem(130));
+        item->AddBuyQuote(CreateHrItem(100));
         item->SetDebugLevel(2);
-        item->AddBuyQuoteEx(CreateHrItem(110));
+        item->AddBuyQuote(CreateHrItem(110));
         item->SetDebugLevel(2);
-        item->AddBuyQuoteEx(CreateHrItem(120));
+        item->AddBuyQuote(CreateHrItem(120));
 
         this->AssertPrices(item->BuyQuotes(), 130, 120, 110, 100);
         this->AssertSequence(item->BuyQuotes(), 5, "*  *");
@@ -5773,12 +5778,12 @@ public:
     void TestRemoveBuyQuote422() {
         OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
 
-        item->AddBuyQuoteEx(CreateHrItem(130));
-        item->AddBuyQuoteEx(CreateHrItem(100));
+        item->AddBuyQuote(CreateHrItem(130));
+        item->AddBuyQuote(CreateHrItem(100));
         item->SetDebugLevel(2);
-        item->AddBuyQuoteEx(CreateHrItem(110));
+        item->AddBuyQuote(CreateHrItem(110));
         item->SetDebugLevel(2);
-        item->AddBuyQuoteEx(CreateHrItem(120));
+        item->AddBuyQuote(CreateHrItem(120));
 
         this->AssertPrices(item->BuyQuotes(), 130, 120, 110, 100);
         this->AssertSequence(item->BuyQuotes(), 5, "*  *");
@@ -5800,12 +5805,12 @@ public:
     void TestRemoveBuyQuote431() {
         OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
 
-        item->AddBuyQuoteEx(CreateHrItem(130));
-        item->AddBuyQuoteEx(CreateHrItem(100));
+        item->AddBuyQuote(CreateHrItem(130));
+        item->AddBuyQuote(CreateHrItem(100));
         item->SetDebugLevel(3);
-        item->AddBuyQuoteEx(CreateHrItem(110));
+        item->AddBuyQuote(CreateHrItem(110));
         item->SetDebugLevel(3);
-        item->AddBuyQuoteEx(CreateHrItem(120));
+        item->AddBuyQuote(CreateHrItem(120));
 
         this->AssertPrices(item->BuyQuotes(), 130, 120, 110, 100);
         this->AssertSequence(item->BuyQuotes(), 5, "*  *");
@@ -5827,12 +5832,12 @@ public:
     void TestRemoveBuyQuote432() {
         OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
 
-        item->AddBuyQuoteEx(CreateHrItem(130));
-        item->AddBuyQuoteEx(CreateHrItem(100));
+        item->AddBuyQuote(CreateHrItem(130));
+        item->AddBuyQuote(CreateHrItem(100));
         item->SetDebugLevel(3);
-        item->AddBuyQuoteEx(CreateHrItem(110));
+        item->AddBuyQuote(CreateHrItem(110));
         item->SetDebugLevel(3);
-        item->AddBuyQuoteEx(CreateHrItem(120));
+        item->AddBuyQuote(CreateHrItem(120));
 
         this->AssertPrices(item->BuyQuotes(), 130, 120, 110, 100);
         this->AssertSequence(item->BuyQuotes(), 5, "*  *");
@@ -5854,12 +5859,12 @@ public:
     void TestRemoveBuyQuote441() {
         OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
 
-        item->AddBuyQuoteEx(CreateHrItem(130));
-        item->AddBuyQuoteEx(CreateHrItem(100));
+        item->AddBuyQuote(CreateHrItem(130));
+        item->AddBuyQuote(CreateHrItem(100));
         item->SetDebugLevel(4);
-        item->AddBuyQuoteEx(CreateHrItem(110));
+        item->AddBuyQuote(CreateHrItem(110));
         item->SetDebugLevel(4);
-        item->AddBuyQuoteEx(CreateHrItem(120));
+        item->AddBuyQuote(CreateHrItem(120));
 
         this->AssertPrices(item->BuyQuotes(), 130, 120, 110, 100);
         this->AssertSequence(item->BuyQuotes(), 5, "*  *");
@@ -5881,12 +5886,12 @@ public:
     void TestRemoveBuyQuote442() {
         OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
 
-        item->AddBuyQuoteEx(CreateHrItem(130));
-        item->AddBuyQuoteEx(CreateHrItem(100));
+        item->AddBuyQuote(CreateHrItem(130));
+        item->AddBuyQuote(CreateHrItem(100));
         item->SetDebugLevel(4);
-        item->AddBuyQuoteEx(CreateHrItem(110));
+        item->AddBuyQuote(CreateHrItem(110));
         item->SetDebugLevel(4);
-        item->AddBuyQuoteEx(CreateHrItem(120));
+        item->AddBuyQuote(CreateHrItem(120));
 
         this->AssertPrices(item->BuyQuotes(), 130, 120, 110, 100);
         this->AssertSequence(item->BuyQuotes(), 5, "*  *");
@@ -5908,12 +5913,12 @@ public:
     void TestRemoveBuyQuote451() {
         OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
 
-        item->AddBuyQuoteEx(CreateHrItem(130));
-        item->AddBuyQuoteEx(CreateHrItem(100));
+        item->AddBuyQuote(CreateHrItem(130));
+        item->AddBuyQuote(CreateHrItem(100));
         item->SetDebugLevel(5);
-        item->AddBuyQuoteEx(CreateHrItem(110));
+        item->AddBuyQuote(CreateHrItem(110));
         item->SetDebugLevel(5);
-        item->AddBuyQuoteEx(CreateHrItem(120));
+        item->AddBuyQuote(CreateHrItem(120));
 
         this->AssertPrices(item->BuyQuotes(), 130, 120, 110, 100);
         this->AssertSequence(item->BuyQuotes(), 5, "****");
@@ -5935,12 +5940,12 @@ public:
     void TestRemoveBuyQuote452() {
         OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
 
-        item->AddBuyQuoteEx(CreateHrItem(130));
-        item->AddBuyQuoteEx(CreateHrItem(100));
+        item->AddBuyQuote(CreateHrItem(130));
+        item->AddBuyQuote(CreateHrItem(100));
         item->SetDebugLevel(5);
-        item->AddBuyQuoteEx(CreateHrItem(110));
+        item->AddBuyQuote(CreateHrItem(110));
         item->SetDebugLevel(5);
-        item->AddBuyQuoteEx(CreateHrItem(120));
+        item->AddBuyQuote(CreateHrItem(120));
 
         this->AssertPrices(item->BuyQuotes(), 130, 120, 110, 100);
         this->AssertSequence(item->BuyQuotes(), 5, "****");
@@ -5959,19 +5964,19 @@ public:
         this->AssertSequence(item->BuyQuotes(), 1, "***");
     }
 
-    void AddBuyQuoteEx(OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item, int price, int level) {
+    void AddBuyQuote(OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item, int price, int level) {
         item->SetDebugLevel(level);
-        item->AddBuyQuoteEx(CreateHrItem(price));
+        item->AddBuyQuote(CreateHrItem(price));
     }
 
     void TestRemoveBuyQuote511() {
         OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
 
-        this->AddBuyQuoteEx(item, 140, 5);
-        this->AddBuyQuoteEx(item, 100, 5);
-        this->AddBuyQuoteEx(item, 110, 4);
-        this->AddBuyQuoteEx(item, 120, 3);
-        this->AddBuyQuoteEx(item, 130, 2);
+        this->AddBuyQuote(item, 140, 5);
+        this->AddBuyQuote(item, 100, 5);
+        this->AddBuyQuote(item, 110, 4);
+        this->AddBuyQuote(item, 120, 3);
+        this->AddBuyQuote(item, 130, 2);
 
         this->AssertPrices(item->BuyQuotes(), 140, 130, 120, 110, 100);
         this->AssertSequence(item->BuyQuotes(), 5, "*   *");
@@ -6020,11 +6025,11 @@ public:
     void TestRemoveBuyQuote513() {
         OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
 
-        this->AddBuyQuoteEx(item, 140, 5);
-        this->AddBuyQuoteEx(item, 100, 5);
-        this->AddBuyQuoteEx(item, 110, 4);
-        this->AddBuyQuoteEx(item, 120, 3);
-        this->AddBuyQuoteEx(item, 130, 2);
+        this->AddBuyQuote(item, 140, 5);
+        this->AddBuyQuote(item, 100, 5);
+        this->AddBuyQuote(item, 110, 4);
+        this->AddBuyQuote(item, 120, 3);
+        this->AddBuyQuote(item, 130, 2);
 
         this->AssertPrices(item->BuyQuotes(), 140, 130, 120, 110, 100);
         this->AssertSequence(item->BuyQuotes(), 5, "*   *");
@@ -6073,11 +6078,11 @@ public:
     void TestRemoveBuyQuote512() {
         OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
 
-        this->AddBuyQuoteEx(item, 140, 5);
-        this->AddBuyQuoteEx(item, 100, 5);
-        this->AddBuyQuoteEx(item, 110, 2);
-        this->AddBuyQuoteEx(item, 120, 3);
-        this->AddBuyQuoteEx(item, 130, 4);
+        this->AddBuyQuote(item, 140, 5);
+        this->AddBuyQuote(item, 100, 5);
+        this->AddBuyQuote(item, 110, 2);
+        this->AddBuyQuote(item, 120, 3);
+        this->AddBuyQuote(item, 130, 4);
 
         this->AssertPrices(item->BuyQuotes(), 140, 130, 120, 110, 100);
         this->AssertSequence(item->BuyQuotes(), 5, "*   *");
@@ -6127,11 +6132,11 @@ public:
     void TestRemoveBuyQuote514() {
         OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
 
-        this->AddBuyQuoteEx(item, 140, 5);
-        this->AddBuyQuoteEx(item, 100, 5);
-        this->AddBuyQuoteEx(item, 110, 2);
-        this->AddBuyQuoteEx(item, 120, 3);
-        this->AddBuyQuoteEx(item, 130, 4);
+        this->AddBuyQuote(item, 140, 5);
+        this->AddBuyQuote(item, 100, 5);
+        this->AddBuyQuote(item, 110, 2);
+        this->AddBuyQuote(item, 120, 3);
+        this->AddBuyQuote(item, 130, 4);
 
         this->AssertPrices(item->BuyQuotes(), 140, 130, 120, 110, 100);
         this->AssertSequence(item->BuyQuotes(), 5, "*   *");
@@ -6181,29 +6186,29 @@ public:
     void TestRemoveBuyQuote611() {
         OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
 
-        this->AddBuyQuoteEx(item, 160, 5);
-        this->AddBuyQuoteEx(item, 100, 5);
+        this->AddBuyQuote(item, 160, 5);
+        this->AddBuyQuote(item, 100, 5);
         this->AssertPrices(item->BuyQuotes(), 160, 100);
         this->AssertSequence(item->BuyQuotes(), 5, "**");
 
 
-        this->AddBuyQuoteEx(item, 150, 5);
+        this->AddBuyQuote(item, 150, 5);
         this->AssertPrices(item->BuyQuotes(), 160, 150, 100);
         this->AssertSequence(item->BuyQuotes(), 5, "***");
 
-        this->AddBuyQuoteEx(item, 110, 5);
+        this->AddBuyQuote(item, 110, 5);
         this->AssertPrices(item->BuyQuotes(), 160, 150, 110, 100);
         this->AssertSequence(item->BuyQuotes(), 5, "****");
 
-        this->AddBuyQuoteEx(item, 130, 5);
+        this->AddBuyQuote(item, 130, 5);
         this->AssertPrices(item->BuyQuotes(), 160, 150, 130, 110, 100);
         this->AssertSequence(item->BuyQuotes(), 5, "*****");
 
-        this->AddBuyQuoteEx(item, 140, 1);
+        this->AddBuyQuote(item, 140, 1);
         this->AssertPrices(item->BuyQuotes(), 160, 150, 140, 130, 110, 100);
         this->AssertSequence(item->BuyQuotes(), 5, "** ***");
 
-        this->AddBuyQuoteEx(item, 120, 1);
+        this->AddBuyQuote(item, 120, 1);
 
         this->AssertPrices(item->BuyQuotes(), 160, 150, 140, 130, 120, 110, 100);
         this->AssertSequence(item->BuyQuotes(), 5, "** * **");
@@ -6221,7 +6226,7 @@ public:
         this->AssertSequence(item->BuyQuotes(), 2, "**  **");
         this->AssertSequence(item->BuyQuotes(), 1, "******");
 
-        this->AddBuyQuoteEx(item, 130, 4);
+        this->AddBuyQuote(item, 130, 4);
         this->AssertPrices(item->BuyQuotes(), 160, 150, 140, 130, 120, 110, 100);
         this->AssertSequence(item->BuyQuotes(), 5, "**   **");
         this->AssertSequence(item->BuyQuotes(), 4, "** * **");
@@ -6238,7 +6243,7 @@ public:
         this->AssertSequence(item->BuyQuotes(), 2, "**  **");
         this->AssertSequence(item->BuyQuotes(), 1, "******");
 
-        this->AddBuyQuoteEx(item, 130, 3);
+        this->AddBuyQuote(item, 130, 3);
         this->AssertPrices(item->BuyQuotes(), 160, 150, 140, 130, 120, 110, 100);
         this->AssertSequence(item->BuyQuotes(), 5, "**   **");
         this->AssertSequence(item->BuyQuotes(), 4, "**   **");
@@ -6255,7 +6260,7 @@ public:
         this->AssertSequence(item->BuyQuotes(), 2, "**  **");
         this->AssertSequence(item->BuyQuotes(), 1, "******");
 
-        this->AddBuyQuoteEx(item, 130, 2);
+        this->AddBuyQuote(item, 130, 2);
         this->AssertPrices(item->BuyQuotes(), 160, 150, 140, 130, 120, 110, 100);
         this->AssertSequence(item->BuyQuotes(), 5, "**   **");
         this->AssertSequence(item->BuyQuotes(), 4, "**   **");
@@ -6272,7 +6277,7 @@ public:
         this->AssertSequence(item->BuyQuotes(), 2, "**  **");
         this->AssertSequence(item->BuyQuotes(), 1, "******");
 
-        this->AddBuyQuoteEx(item, 130, 1);
+        this->AddBuyQuote(item, 130, 1);
         this->AssertPrices(item->BuyQuotes(), 160, 150, 140, 130, 120, 110, 100);
         this->AssertSequence(item->BuyQuotes(), 5, "**   **");
         this->AssertSequence(item->BuyQuotes(), 4, "**   **");
@@ -6293,30 +6298,30 @@ public:
     void TestRemoveBuyQuote612() {
         OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
 
-        this->AddBuyQuoteEx(item, 160, 5);
-        this->AddBuyQuoteEx(item, 100, 5);
+        this->AddBuyQuote(item, 160, 5);
+        this->AddBuyQuote(item, 100, 5);
         this->AssertPrices(item->BuyQuotes(), 160, 100);
         this->AssertSequence(item->BuyQuotes(), 5, "**");
 
 
-        this->AddBuyQuoteEx(item, 150, 4);
+        this->AddBuyQuote(item, 150, 4);
         this->AssertPrices(item->BuyQuotes(), 160, 150, 100);
         this->AssertSequence(item->BuyQuotes(), 4, "***");
 
-        this->AddBuyQuoteEx(item, 110, 4);
+        this->AddBuyQuote(item, 110, 4);
         this->AssertPrices(item->BuyQuotes(), 160, 150, 110, 100);
         this->AssertSequence(item->BuyQuotes(), 4, "****");
 
-        this->AddBuyQuoteEx(item, 130, 5);
+        this->AddBuyQuote(item, 130, 5);
         this->AssertPrices(item->BuyQuotes(), 160, 150, 130, 110, 100);
         this->AssertSequence(item->BuyQuotes(), 5, "* * *");
         this->AssertSequence(item->BuyQuotes(), 4, "*****");
 
-        this->AddBuyQuoteEx(item, 140, 1);
+        this->AddBuyQuote(item, 140, 1);
         this->AssertPrices(item->BuyQuotes(), 160, 150, 140, 130, 110, 100);
         this->AssertSequence(item->BuyQuotes(), 4, "** ***");
 
-        this->AddBuyQuoteEx(item, 120, 1);
+        this->AddBuyQuote(item, 120, 1);
 
         this->AssertPrices(item->BuyQuotes(), 160, 150, 140, 130, 120, 110, 100);
         this->AssertSequence(item->BuyQuotes(), 5, "*  *  *");
@@ -6334,7 +6339,7 @@ public:
         this->AssertSequence(item->BuyQuotes(), 2, "**  **");
         this->AssertSequence(item->BuyQuotes(), 1, "******");
 
-        this->AddBuyQuoteEx(item, 130, 4);
+        this->AddBuyQuote(item, 130, 4);
         this->AssertPrices(item->BuyQuotes(), 160, 150, 140, 130, 120, 110, 100);
         this->AssertSequence(item->BuyQuotes(), 5, "*     *");
         this->AssertSequence(item->BuyQuotes(), 4, "** * **");
@@ -6351,7 +6356,7 @@ public:
         this->AssertSequence(item->BuyQuotes(), 2, "**  **");
         this->AssertSequence(item->BuyQuotes(), 1, "******");
 
-        this->AddBuyQuoteEx(item, 130, 3);
+        this->AddBuyQuote(item, 130, 3);
         this->AssertPrices(item->BuyQuotes(), 160, 150, 140, 130, 120, 110, 100);
         this->AssertSequence(item->BuyQuotes(), 5, "*     *");
         this->AssertSequence(item->BuyQuotes(), 4, "**   **");
@@ -6368,7 +6373,7 @@ public:
         this->AssertSequence(item->BuyQuotes(), 2, "**  **");
         this->AssertSequence(item->BuyQuotes(), 1, "******");
 
-        this->AddBuyQuoteEx(item, 130, 2);
+        this->AddBuyQuote(item, 130, 2);
         this->AssertPrices(item->BuyQuotes(), 160, 150, 140, 130, 120, 110, 100);
         this->AssertSequence(item->BuyQuotes(), 5, "*     *");
         this->AssertSequence(item->BuyQuotes(), 4, "**   **");
@@ -6385,7 +6390,7 @@ public:
         this->AssertSequence(item->BuyQuotes(), 2, "**  **");
         this->AssertSequence(item->BuyQuotes(), 1, "******");
 
-        this->AddBuyQuoteEx(item, 130, 1);
+        this->AddBuyQuote(item, 130, 1);
         this->AssertPrices(item->BuyQuotes(), 160, 150, 140, 130, 120, 110, 100);
         this->AssertSequence(item->BuyQuotes(), 5, "*     *");
         this->AssertSequence(item->BuyQuotes(), 4, "**   **");
@@ -6406,30 +6411,30 @@ public:
     void TestRemoveBuyQuote613() {
         OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
 
-        this->AddBuyQuoteEx(item, 160, 5);
-        this->AddBuyQuoteEx(item, 100, 5);
+        this->AddBuyQuote(item, 160, 5);
+        this->AddBuyQuote(item, 100, 5);
         this->AssertPrices(item->BuyQuotes(), 160, 100);
         this->AssertSequence(item->BuyQuotes(), 5, "**");
 
 
-        this->AddBuyQuoteEx(item, 150, 3);
+        this->AddBuyQuote(item, 150, 3);
         this->AssertPrices(item->BuyQuotes(), 160, 150, 100);
         this->AssertSequence(item->BuyQuotes(), 3, "***");
 
-        this->AddBuyQuoteEx(item, 110, 3);
+        this->AddBuyQuote(item, 110, 3);
         this->AssertPrices(item->BuyQuotes(), 160, 150, 110, 100);
         this->AssertSequence(item->BuyQuotes(), 3, "****");
 
-        this->AddBuyQuoteEx(item, 130, 5);
+        this->AddBuyQuote(item, 130, 5);
         this->AssertPrices(item->BuyQuotes(), 160, 150, 130, 110, 100);
         this->AssertSequence(item->BuyQuotes(), 5, "* * *");
         this->AssertSequence(item->BuyQuotes(), 3, "*****");
 
-        this->AddBuyQuoteEx(item, 140, 1);
+        this->AddBuyQuote(item, 140, 1);
         this->AssertPrices(item->BuyQuotes(), 160, 150, 140, 130, 110, 100);
         this->AssertSequence(item->BuyQuotes(), 3, "** ***");
 
-        this->AddBuyQuoteEx(item, 120, 1);
+        this->AddBuyQuote(item, 120, 1);
 
         this->AssertPrices(item->BuyQuotes(), 160, 150, 140, 130, 120, 110, 100);
         this->AssertSequence(item->BuyQuotes(), 5, "*  *  *");
@@ -6447,7 +6452,7 @@ public:
         this->AssertSequence(item->BuyQuotes(), 2, "**  **");
         this->AssertSequence(item->BuyQuotes(), 1, "******");
 
-        this->AddBuyQuoteEx(item, 130, 4);
+        this->AddBuyQuote(item, 130, 4);
         this->AssertPrices(item->BuyQuotes(), 160, 150, 140, 130, 120, 110, 100);
         this->AssertSequence(item->BuyQuotes(), 5, "*     *");
         this->AssertSequence(item->BuyQuotes(), 4, "*  *  *");
@@ -6464,7 +6469,7 @@ public:
         this->AssertSequence(item->BuyQuotes(), 2, "**  **");
         this->AssertSequence(item->BuyQuotes(), 1, "******");
 
-        this->AddBuyQuoteEx(item, 130, 3);
+        this->AddBuyQuote(item, 130, 3);
         this->AssertPrices(item->BuyQuotes(), 160, 150, 140, 130, 120, 110, 100);
         this->AssertSequence(item->BuyQuotes(), 5, "*     *");
         this->AssertSequence(item->BuyQuotes(), 4, "*     *");
@@ -6481,7 +6486,7 @@ public:
         this->AssertSequence(item->BuyQuotes(), 2, "**  **");
         this->AssertSequence(item->BuyQuotes(), 1, "******");
 
-        this->AddBuyQuoteEx(item, 130, 2);
+        this->AddBuyQuote(item, 130, 2);
         this->AssertPrices(item->BuyQuotes(), 160, 150, 140, 130, 120, 110, 100);
         this->AssertSequence(item->BuyQuotes(), 5, "*     *");
         this->AssertSequence(item->BuyQuotes(), 4, "*     *");
@@ -6498,7 +6503,7 @@ public:
         this->AssertSequence(item->BuyQuotes(), 2, "**  **");
         this->AssertSequence(item->BuyQuotes(), 1, "******");
 
-        this->AddBuyQuoteEx(item, 130, 1);
+        this->AddBuyQuote(item, 130, 1);
         this->AssertPrices(item->BuyQuotes(), 160, 150, 140, 130, 120, 110, 100);
         this->AssertSequence(item->BuyQuotes(), 5, "*     *");
         this->AssertSequence(item->BuyQuotes(), 4, "*     *");
@@ -6519,30 +6524,30 @@ public:
     void TestRemoveBuyQuote614() {
         OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
 
-        this->AddBuyQuoteEx(item, 160, 5);
-        this->AddBuyQuoteEx(item, 100, 5);
+        this->AddBuyQuote(item, 160, 5);
+        this->AddBuyQuote(item, 100, 5);
         this->AssertPrices(item->BuyQuotes(), 160, 100);
         this->AssertSequence(item->BuyQuotes(), 5, "**");
 
 
-        this->AddBuyQuoteEx(item, 150, 2);
+        this->AddBuyQuote(item, 150, 2);
         this->AssertPrices(item->BuyQuotes(), 160, 150, 100);
         this->AssertSequence(item->BuyQuotes(), 2, "***");
 
-        this->AddBuyQuoteEx(item, 110, 2);
+        this->AddBuyQuote(item, 110, 2);
         this->AssertPrices(item->BuyQuotes(), 160, 150, 110, 100);
         this->AssertSequence(item->BuyQuotes(), 2, "****");
 
-        this->AddBuyQuoteEx(item, 130, 5);
+        this->AddBuyQuote(item, 130, 5);
         this->AssertPrices(item->BuyQuotes(), 160, 150, 130, 110, 100);
         this->AssertSequence(item->BuyQuotes(), 5, "* * *");
         this->AssertSequence(item->BuyQuotes(), 2, "*****");
 
-        this->AddBuyQuoteEx(item, 140, 1);
+        this->AddBuyQuote(item, 140, 1);
         this->AssertPrices(item->BuyQuotes(), 160, 150, 140, 130, 110, 100);
         this->AssertSequence(item->BuyQuotes(), 2, "** ***");
 
-        this->AddBuyQuoteEx(item, 120, 1);
+        this->AddBuyQuote(item, 120, 1);
 
         this->AssertPrices(item->BuyQuotes(), 160, 150, 140, 130, 120, 110, 100);
         this->AssertSequence(item->BuyQuotes(), 5, "*  *  *");
@@ -6560,7 +6565,7 @@ public:
         this->AssertSequence(item->BuyQuotes(), 2, "**  **");
         this->AssertSequence(item->BuyQuotes(), 1, "******");
 
-        this->AddBuyQuoteEx(item, 130, 4);
+        this->AddBuyQuote(item, 130, 4);
         this->AssertPrices(item->BuyQuotes(), 160, 150, 140, 130, 120, 110, 100);
         this->AssertSequence(item->BuyQuotes(), 5, "*     *");
         this->AssertSequence(item->BuyQuotes(), 4, "*  *  *");
@@ -6577,7 +6582,7 @@ public:
         this->AssertSequence(item->BuyQuotes(), 2, "**  **");
         this->AssertSequence(item->BuyQuotes(), 1, "******");
 
-        this->AddBuyQuoteEx(item, 130, 3);
+        this->AddBuyQuote(item, 130, 3);
         this->AssertPrices(item->BuyQuotes(), 160, 150, 140, 130, 120, 110, 100);
         this->AssertSequence(item->BuyQuotes(), 5, "*     *");
         this->AssertSequence(item->BuyQuotes(), 4, "*     *");
@@ -6594,7 +6599,7 @@ public:
         this->AssertSequence(item->BuyQuotes(), 2, "**  **");
         this->AssertSequence(item->BuyQuotes(), 1, "******");
 
-        this->AddBuyQuoteEx(item, 130, 2);
+        this->AddBuyQuote(item, 130, 2);
         this->AssertPrices(item->BuyQuotes(), 160, 150, 140, 130, 120, 110, 100);
         this->AssertSequence(item->BuyQuotes(), 5, "*     *");
         this->AssertSequence(item->BuyQuotes(), 4, "*     *");
@@ -6611,7 +6616,7 @@ public:
         this->AssertSequence(item->BuyQuotes(), 2, "**  **");
         this->AssertSequence(item->BuyQuotes(), 1, "******");
 
-        this->AddBuyQuoteEx(item, 130, 1);
+        this->AddBuyQuote(item, 130, 1);
         this->AssertPrices(item->BuyQuotes(), 160, 150, 140, 130, 120, 110, 100);
         this->AssertSequence(item->BuyQuotes(), 5, "*     *");
         this->AssertSequence(item->BuyQuotes(), 4, "*     *");
@@ -6632,30 +6637,30 @@ public:
     void TestRemoveBuyQuote615() {
         OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
 
-        this->AddBuyQuoteEx(item, 160, 5);
-        this->AddBuyQuoteEx(item, 100, 5);
+        this->AddBuyQuote(item, 160, 5);
+        this->AddBuyQuote(item, 100, 5);
         this->AssertPrices(item->BuyQuotes(), 160, 100);
         this->AssertSequence(item->BuyQuotes(), 5, "**");
 
 
-        this->AddBuyQuoteEx(item, 150, 1);
+        this->AddBuyQuote(item, 150, 1);
         this->AssertPrices(item->BuyQuotes(), 160, 150, 100);
         this->AssertSequence(item->BuyQuotes(), 1, "***");
 
-        this->AddBuyQuoteEx(item, 110, 1);
+        this->AddBuyQuote(item, 110, 1);
         this->AssertPrices(item->BuyQuotes(), 160, 150, 110, 100);
         this->AssertSequence(item->BuyQuotes(), 1, "****");
 
-        this->AddBuyQuoteEx(item, 130, 5);
+        this->AddBuyQuote(item, 130, 5);
         this->AssertPrices(item->BuyQuotes(), 160, 150, 130, 110, 100);
         this->AssertSequence(item->BuyQuotes(), 5, "* * *");
         this->AssertSequence(item->BuyQuotes(), 1, "*****");
 
-        this->AddBuyQuoteEx(item, 140, 1);
+        this->AddBuyQuote(item, 140, 1);
         this->AssertPrices(item->BuyQuotes(), 160, 150, 140, 130, 110, 100);
         this->AssertSequence(item->BuyQuotes(), 1, "******");
 
-        this->AddBuyQuoteEx(item, 120, 1);
+        this->AddBuyQuote(item, 120, 1);
 
         this->AssertPrices(item->BuyQuotes(), 160, 150, 140, 130, 120, 110, 100);
         this->AssertSequence(item->BuyQuotes(), 5, "*  *  *");
@@ -6673,7 +6678,7 @@ public:
         this->AssertSequence(item->BuyQuotes(), 2, "*    *");
         this->AssertSequence(item->BuyQuotes(), 1, "******");
 
-        this->AddBuyQuoteEx(item, 130, 4);
+        this->AddBuyQuote(item, 130, 4);
         this->AssertPrices(item->BuyQuotes(), 160, 150, 140, 130, 120, 110, 100);
         this->AssertSequence(item->BuyQuotes(), 5, "*     *");
         this->AssertSequence(item->BuyQuotes(), 4, "*  *  *");
@@ -6690,7 +6695,7 @@ public:
         this->AssertSequence(item->BuyQuotes(), 2, "*    *");
         this->AssertSequence(item->BuyQuotes(), 1, "******");
 
-        this->AddBuyQuoteEx(item, 130, 3);
+        this->AddBuyQuote(item, 130, 3);
         this->AssertPrices(item->BuyQuotes(), 160, 150, 140, 130, 120, 110, 100);
         this->AssertSequence(item->BuyQuotes(), 5, "*     *");
         this->AssertSequence(item->BuyQuotes(), 4, "*     *");
@@ -6707,7 +6712,7 @@ public:
         this->AssertSequence(item->BuyQuotes(), 2, "*    *");
         this->AssertSequence(item->BuyQuotes(), 1, "******");
 
-        this->AddBuyQuoteEx(item, 130, 2);
+        this->AddBuyQuote(item, 130, 2);
         this->AssertPrices(item->BuyQuotes(), 160, 150, 140, 130, 120, 110, 100);
         this->AssertSequence(item->BuyQuotes(), 5, "*     *");
         this->AssertSequence(item->BuyQuotes(), 4, "*     *");
@@ -6724,7 +6729,7 @@ public:
         this->AssertSequence(item->BuyQuotes(), 2, "*    *");
         this->AssertSequence(item->BuyQuotes(), 1, "******");
 
-        this->AddBuyQuoteEx(item, 130, 1);
+        this->AddBuyQuote(item, 130, 1);
         this->AssertPrices(item->BuyQuotes(), 160, 150, 140, 130, 120, 110, 100);
         this->AssertSequence(item->BuyQuotes(), 5, "*     *");
         this->AssertSequence(item->BuyQuotes(), 4, "*     *");
@@ -6747,20 +6752,20 @@ public:
 
         item->SetDebugLevel(0);
 
-        this->AddBuyQuoteEx(item, 1000, 5);
-        this->AddBuyQuoteEx(item, 1002, 5);
+        this->AddBuyQuote(item, 1000, 5);
+        this->AddBuyQuote(item, 1002, 5);
         this->AssertPrices(item->BuyQuotes(), 1002, 1000);
         this->AssertSequence(item->BuyQuotes(), 5, "**");
 
-        this->AddBuyQuoteEx(item, 1004, 5);
+        this->AddBuyQuote(item, 1004, 5);
         this->AssertPrices(item->BuyQuotes(), 1004, 1002, 1000);
         this->TestLevelsDescending(item->BuyQuotes());
 
-        this->AddBuyQuoteEx(item, 1006, 5);
+        this->AddBuyQuote(item, 1006, 5);
         this->AssertPrices(item->BuyQuotes(), 1006, 1004, 1002, 1000);
         this->TestLevelsDescending(item->BuyQuotes());
 
-        this->AddBuyQuoteEx(item, 1008, 5);
+        this->AddBuyQuote(item, 1008, 5);
         this->AssertPrices(item->BuyQuotes(), 1008, 1006, 1004, 1002, 1000);
         this->TestLevelsDescending(item->BuyQuotes());
     }
@@ -6770,20 +6775,20 @@ public:
 
         item->SetDebugLevel(0);
 
-        this->AddBuyQuoteEx(item, 1008, 5);
-        this->AddBuyQuoteEx(item, 1006, 5);
+        this->AddBuyQuote(item, 1008, 5);
+        this->AddBuyQuote(item, 1006, 5);
         this->AssertPrices(item->BuyQuotes(), 1008, 1006);
         this->AssertSequence(item->BuyQuotes(), 5, "**");
 
-        this->AddBuyQuoteEx(item, 1004, 5);
+        this->AddBuyQuote(item, 1004, 5);
         this->AssertPrices(item->BuyQuotes(), 1008, 1006, 1004);
         this->TestLevelsDescending(item->BuyQuotes());
 
-        this->AddBuyQuoteEx(item, 1002, 5);
+        this->AddBuyQuote(item, 1002, 5);
         this->AssertPrices(item->BuyQuotes(), 1008, 1006, 1004, 1002);
         this->TestLevelsDescending(item->BuyQuotes());
 
-        this->AddBuyQuoteEx(item, 1000, 5);
+        this->AddBuyQuote(item, 1000, 5);
         this->AssertPrices(item->BuyQuotes(), 1008, 1006, 1004, 1002, 1000);
         this->TestLevelsDescending(item->BuyQuotes());
     }
@@ -6848,7 +6853,7 @@ public:
         OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *info = new OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo>();
         int count[6] = {0, 0, 0, 0, 0, 0};
         for(int i = 0; i < 10000; i++) {
-            int level = info->CalcLevel();
+            int level = info->BuyQuoteManager()->CalcLevel();
             count[level]++;
         }
         printf("levels = %d %d %d %d %d\n", count[1], count[2], count[3], count[4], count[5]);
@@ -6858,12 +6863,15 @@ public:
         TestRandomGenerator();
         TestHrBuyQuotes();
     }
-    */
+#endif
+
     void Test() {
         TestDefaults();
         TestStringIdComparer();
-        //TestHr();
-        //TestPerformance();
+#ifdef USE_SKIP_LIST
+        TestHr();
+        TestPerformance();
+#endif
         TestOrderTableItem();
         TestConnection();
         TestInfoAndItemInfoUsageAndAllocationCurr();

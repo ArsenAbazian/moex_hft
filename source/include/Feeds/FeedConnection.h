@@ -216,7 +216,7 @@ protected:
             this->m_symbolsForts[i] = new LinkedPointer<FortsSecurityDefinitionInfo>();
         this->m_symbolsCount = 0;
         this->m_idfMode = FeedConnectionSecurityDefinitionMode::sdmCollectData;
-        this->m_symbolManager = new SymbolManager(RobotSettings::Default->MarketDataMaxSymbolsCount, true);
+        this->m_symbolManager = new SymbolManager(RobotSettings::Default->MarketDataMaxSymbolsCountForts, true);
     }
     void InitializeSecurityDefinition() {
         this->m_symbols = new LinkedPointer<AstsSecurityDefinitionInfo>*[RobotSettings::Default->MaxSecurityDefinitionCount];
@@ -3972,7 +3972,7 @@ public:
 	inline int ExpectedMsgSeqNo() { return this->m_startMsgSeqNum + 1; }
     inline FastProtocolManager* FastManager() { return this->m_fastProtocolManager; }
 
-    inline bool DoWorkAtomCommon() {
+    inline bool DoWorkAtomCommon(FeedConnectionState st) {
         if(st <= FeedConnectionState::fcsListenSecurityDefinition) {
             if(st == FeedConnectionState::fcsSuspend)
                 return true;
@@ -4000,7 +4000,7 @@ public:
             return this->ListenIncremental();
         if(st == FeedConnectionState::fcsListenSecurityStatus)
             return this->ListenSecurityStatus();
-        return this->DoWorkAtomCommon();
+        return this->DoWorkAtomCommon(st);
 	}
     inline bool DoWorkAtomForts() {
         FeedConnectionState st = this->m_state;
@@ -4008,7 +4008,7 @@ public:
             return this->ListenIncremental_Forts();
         if(st == FeedConnectionState::fcsListenSecurityStatusForts)
             return this->ListenSecurityStatusForts();
-        return this->DoWorkAtomCommon();
+        return this->DoWorkAtomCommon(st);
     }
     inline FeedConnectionState CalcListenStateByType() {
         if(m_type == FeedConnectionType::fctInstrumentDefinition)

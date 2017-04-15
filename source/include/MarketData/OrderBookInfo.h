@@ -7,21 +7,23 @@
 
 #include "../Lib/StringIdComparer.h"
 #include "../Fast/FastTypes.h"
-#include "../Lib/PointerList.h"
+#include "../Lib/HrPointerList.h"
 #include "../Lib/HashTable.h"
 #include "MDEntryQueue.h"
 #include "QuoteInfo.h"
 #include "../Managers/DebugInfoManager.h"
 #include "../ProgramStatistics.h"
+#include "OrderedListManager.h"
 
 template <typename T> class MarketSymbolInfo;
 
 template <typename T> class OrderBookInfo {
-    static PointerList<T>               *m_itemsPool;
+    static HrPointerList<T>               *m_itemsPool;
 
-    PointerListLite<T>                  *m_sellQuoteList;
-    PointerListLite<T>                  *m_buyQuoteList;
-    int                                    m_buyQuoteListLevel;
+    OrderedListManager<HrPointerListLite, HrLinkedPointer, T>   *m_sellQuoteManager;
+    OrderedListManager<HrPointerListLite, HrLinkedPointer, T>   *m_buyQuoteManager;
+    HrPointerListLite<T>                  *m_sellQuoteList;
+    HrPointerListLite<T>                  *m_buyQuoteList;
 
     MDEntryQueue                       *m_entryInfo;
 
@@ -34,26 +36,27 @@ template <typename T> class OrderBookInfo {
     UINT32                              m_sessionInt;
 
     int                                 m_snapshotProcessedCount;
-
-    int                                 m_debugLevel;
-    unsigned int                        g_seed;
-    void init_fast_srand() {
-        g_seed = (DefaultStopwatch::Default->ElapsedNanoseconds() & 0xffffffff);
-    }
+#ifdef TEST
+    ListType                            m_listMode;
+#endif
 public:
     OrderBookInfo();
     ~OrderBookInfo() {
         ReleaseEntryQue();
+        delete this->m_sellQuoteManager;
+        delete this->m_buyQuoteManager;
         delete this->m_sellQuoteList;
         delete this->m_buyQuoteList;
     }
 
-    inline void SetDebugFastRandSeed(int seed) {
-        this->g_seed = seed;
-    }
+#ifdef  TEST
+    inline ListType ListMode() const { return this->m_listMode; }
+    inline void ListMode(ListType listType) { this->m_listMode = listType; }
     inline void SetDebugLevel(int level) {
-        this->m_debugLevel = level;
+        this->m_buyQuoteManager->SetDebugLevel(level);
+        this->m_sellQuoteManager->SetDebugLevel(level);
     }
+#endif
 
     inline void ReleaseEntryQue() {
         if(this->m_entryInfo != 0) {
@@ -79,15 +82,17 @@ public:
     inline void ClearEntries() { this->ReleaseEntryQue(); }
     inline MDEntryQueue* EntriesQueue() { return this->m_entryInfo; }
 
-    inline PointerListLite<T>* SellQuotes() { return this->m_sellQuoteList; }
-    inline PointerListLite<T>* BuyQuotes() { return this->m_buyQuoteList; }
+    inline HrPointerListLite<T>* SellQuotes() const { return this->m_sellQuoteList; }
+    inline HrPointerListLite<T>* BuyQuotes() const { return this->m_buyQuoteList; }
+    inline OrderedListManager<HrPointerListLite, HrLinkedPointer, T> *SellQuoteManager() const { return this->m_sellQuoteManager; }
+    inline OrderedListManager<HrPointerListLite, HrLinkedPointer, T> *BuyQuoteManager() const { return this->m_buyQuoteManager; }
 
     inline bool Used() { return this->m_used; }
     inline void Used(bool used) { this->m_used = used; }
-    inline void Clear(PointerListLite<T> *list) {
+    inline void Clear(HrPointerListLite<T> *list) {
         if(list->Count() == 0)
             return;
-        LinkedPointer<T> *node = list->Start();
+        HrLinkedPointer<T> *node = list->Start();
         while(true) {
             T *data = node->Data();
             this->FreePointer(data);
@@ -108,226 +113,24 @@ public:
         this->m_snapshotProcessedCount = 0;
     }
 
-    /*
-    inline LinkedPointer<T>* GetBuyQuoteCore1(double value, LinkedPointer<T> *start, LinkedPointer<T> *end) {
-        LinkedPointer<T> *node = start;
-        while(true) {
-            double val = (&(node->Data()->MDEntryPx))->Value;
-            if(val < value) {
-                this->m_buyQuoteListLevel = this->CalcLevel();
-                return this->m_buyQuoteList->Insert(node);
-            }
-            if(val == value)
-                return node;
-            node = node->Next();
-        }
-    }
-
-    inline LinkedPointer<T>* GetBuyQuoteCore2(double value, LinkedPointer<T> *start, LinkedPointer<T> *end) {
-        LinkedPointer<T> *node = start;
-        while(true) {
-            double val = (&(node->Data()->MDEntryPx))->Value;
-            if(val < value) {
-                start = node->Prev2();
-                LinkedPointer<T> *newNode = GetBuyQuoteCore1(value, start, node);
-                if(this->m_buyQuoteListLevel >= 2)
-                    this->m_buyQuoteList->Insert2(start, newNode, node);
-                return newNode;
-            }
-            if(val == value)
-                return node;
-            node = node->Next2();
-        }
-    }
-
-    inline LinkedPointer<T>* GetBuyQuoteCore3(double value, LinkedPointer<T> *start, LinkedPointer<T> *end) {
-        LinkedPointer<T> *node = start;
-        while(true) {
-            double val = (&(node->Data()->MDEntryPx))->Value;
-            if(val < value) {
-                start = node->Prev3();
-                LinkedPointer<T> *newNode = GetBuyQuoteCore2(value, start, node);
-                if(this->m_buyQuoteListLevel >= 3)
-                    this->m_buyQuoteList->Insert3(start, newNode, node);
-                return newNode;
-            }
-            if(val == value)
-                return node;
-            node = node->Next3();
-        }
-    }
-
-    inline LinkedPointer<T>* GetBuyQuoteCore4(double value, LinkedPointer<T> *start, LinkedPointer<T> *end) {
-        LinkedPointer<T> *node = start;
-        while(true) {
-            double val = (&(node->Data()->MDEntryPx))->Value;
-            if(val < value) {
-                start = node->Prev4();
-                LinkedPointer<T> *newNode = GetBuyQuoteCore3(value, start, node);
-                if(this->m_buyQuoteListLevel >= 4)
-                    this->m_buyQuoteList->Insert4(start, newNode, node);
-                return newNode;
-            }
-            if(val == value)
-                return node;
-            node = node->Next4();
-        }
-    }
-
-    inline LinkedPointer<T>* GetBuyQuoteCore5(double value, LinkedPointer<T> *start, LinkedPointer<T> *end) {
-        LinkedPointer<T> *node = start;
-        LinkedPointer<T> *newNode;
-        // no items
-        if (start == 0) {
-            newNode = this->m_buyQuoteList->Add();
-            return newNode;
-        }
-        double val = (&(start->Data()->MDEntryPx))->Value;
-        // add before
-        if(val < value) {
-            newNode = this->m_buyQuoteList->Insert(start);
-            if(start == end) { // we have one item in list
-                // just connect start with end
-                newNode->AllConnect(start);
-                return newNode;
-            }
-            newNode->Connect5(start->Next5());
-            newNode->Connect4(start->Next4());
-            newNode->Connect3(start->Next3());
-            newNode->Connect2(start->Next2());
-            start->AllNext(0);
-            start->AllPrev(0);
-            this->m_buyQuoteList->InsertAfterByLevel(CalcLevel(), newNode, start);
-            return newNode;
-        }
-        if(val == value)
-            return start;
-
-        while (true) {
-            double val = (&(node->Data()->MDEntryPx))->Value;
-            if (val < value) {
-                start = node->Prev5();
-                newNode = GetBuyQuoteCore4(value, start, node);
-                if (this->m_buyQuoteListLevel >= 5)
-                    this->m_buyQuoteList->Insert5(start, newNode, node);
-                return newNode;
-            }
-            if (val == value)
-                return node;
-            if (node == end)
-                break;
-            node = node->Next5();
-        }
-
-        // add after
-        newNode = this->m_buyQuoteList->Add();
-        if(start == end) {
-            // just connect start with end
-            start->AllConnect(newNode);
-            return newNode;
-        }
-        end->Prev5()->Connect5(newNode);
-        end->Prev4()->Connect4(newNode);
-        end->Prev3()->Connect3(newNode);
-        end->Prev2()->Connect2(newNode);
-        end->AllPrev(0);
-        end->AllNext(0);
-        this->m_buyQuoteList->InsertBeforeByLevel(this->CalcLevel(), end, newNode);
-        return newNode;
-    }
-
-    // Compute a pseudorandom integer.
-    // Output value in range [0, 32767]
-    inline int fast_rand(void) {
-        g_seed = (214013 * g_seed + 2531011);
-        return (g_seed >> 16) & 0x7fff;
-    }
-
-    inline int CalcLevel() {
-        //const int level2P = 32767 >> 2;
-        //const int level3P = 32767 >> 3;
-        //const int level4P = 32767 >> 4;
-        //const int level5P = 32767 >> 6;
-
-        const int level2P = 32767 >> 2;
-        const int level3P = 32767 >> 3;
-        const int level4P = 32767 >> 4;
-        const int level5P = 32767 >> 5;
+    inline HrLinkedPointer<T>* InsertBuyQuote(Decimal *price) {
 #ifdef TEST
-        if (this->m_debugLevel != 0) {
-            int res = this->m_debugLevel;
-            this->m_debugLevel = 0;
-            return res;
-        }
+        if(this->m_listMode == ListType::ltSimple)
+            return this->m_buyQuoteManager->SimpleInsertBeforeDescending(price);
+        return this->m_buyQuoteManager->HrInsertBeforeDescending(price);
+#else
+        return this->m_buyQuoteManager->SimpleInsertBeforeDescending(price);
 #endif
-        int p = fast_rand();
-        if (p < level4P) {
-            if (p < level5P)
-                return 5;
-            return 4;
-        } else {
-            if (p < level3P)
-                return 3;
-            if (p < level2P)
-                return 2;
-            return 1;
-        }
     }
-    inline LinkedPointer<T>* GetBuyQuoteEx(Decimal *price) {
-        this->m_buyQuoteListLevel = 0;
-        return this->GetBuyQuoteCore5(price->Calculate(), this->m_buyQuoteList->Start(), this->m_buyQuoteList->End());
+    inline HrLinkedPointer<T>* InsertSellQuote(Decimal *price) {
+#ifdef TEST
+        if(this->m_listMode == ListType::ltSimple)
+            return this->m_sellQuoteManager->SimpleInsertBeforeAscending(price);
+        return this->m_sellQuoteManager->HrInsertBeforeAscending(price);
+#else
+        return this->m_sellQuoteManager->SimpleInsertBeforeAscending(price);
+#endif
     }
-    */
-    inline LinkedPointer<T>* GetBuyQuote(Decimal *price) {
-        LinkedPointer<T> *node = this->m_buyQuoteList->Start();
-        double value = price->Calculate();
-
-        if(node != 0) {
-            while (true) {
-                T *quote = node->Data();
-                Decimal *val = &(quote->MDEntryPx);
-                if (val->Value < value)
-                    return this->m_buyQuoteList->Insert(node);
-                else if(val->Value == value)
-                    return node;
-                if (node == this->m_buyQuoteList->End())
-                    break;
-                node = node->Next();
-            }
-        }
-        return this->m_buyQuoteList->Add();
-    }
-
-    inline LinkedPointer<T>* GetSellQuote(Decimal *price) {
-        LinkedPointer<T> *node = this->m_sellQuoteList->Start();
-        double value = price->Calculate();
-
-        if(node != 0) {
-            while (true) {
-                T *quote = node->Data();
-                Decimal *val = &(quote->MDEntryPx);
-                if (val->Value > value)
-                    return this->m_sellQuoteList->Insert(node);
-                else if(val->Value == value)
-                    return node;
-                if (node == this->m_sellQuoteList->End())
-                    break;
-                node = node->Next();
-            }
-        }
-        return this->m_sellQuoteList->Add();
-    }
-    /*
-    inline void RemoveBuyQuoteEx(T *info) {
-        DebugInfoManager::Default->Log(this->m_symbolInfo->Symbol(), this->m_sessionInt, "Remove BuyQuoteEx", info->MDEntryID, &(info->MDEntryPx), info->MDEntrySize);
-        LinkedPointer<T> *node = this->GetBuyQuote(&(info->MDEntryPx));
-        this->m_buyQuoteList->Remove(node);
-        node->Data()->Clear();
-        //TODO remove debug
-        //printf("ERROR: %" PRIu64 " entry not found\n", info->MDEntryID);
-        return ;
-    }
-    */
     inline LinkedPointer<HashTableItemInfo>* GetPointer(T *info) {
         return HashTable::Default->GetPointer(this, info->MDEntryID);
     }
@@ -340,26 +143,26 @@ public:
     inline LinkedPointer<HashTableItemInfo>* AddPointer(T *info) {
         return HashTable::Default->Add(this, 0, info->MDEntryID);
     }
-    inline LinkedPointer<HashTableItemInfo>* AddPointer(PointerListLite<T> *list, T *info) {
+    inline LinkedPointer<HashTableItemInfo>* AddPointer(HrPointerListLite<T> *list, T *info) {
         LinkedPointer<T> *item = list->Add(info);
         return HashTable::Default->Add(this, item, info->MDEntryID);
     }
-    inline LinkedPointer<HashTableItemInfo>* AddPointer(LinkedPointer<T> *ptr, T *info) {
+    inline LinkedPointer<HashTableItemInfo>* AddPointer(HrLinkedPointer<T> *ptr, T *info) {
         return HashTable::Default->Add(this, ptr, info->MDEntryID);
     }
-    inline LinkedPointer<T>* GetQuote(PointerListLite<T> *list, T *info) {
+    inline HrLinkedPointer<T>* GetQuote(HrPointerListLite<T> *list, T *info) {
         LinkedPointer<HashTableItemInfo> *hashItem = this->GetPointer(info);
         if(hashItem == 0) {
             // such thing could happen because of some packet lost
             // so please do not return null :)
-            LinkedPointer<T> *res = list->Add(info);
+            HrLinkedPointer<T> *res = list->Add(info);
             hashItem = AddPointer(list, info);
             return res;
         }
-        return static_cast<LinkedPointer<T>*>(hashItem->Data()->m_object);
+        return static_cast<HrLinkedPointer<T>*>(hashItem->Data()->m_object);
     }
 
-    inline void RemoveQuote(PointerListLite<T> *list, T *info) {
+    inline void RemoveQuote(HrPointerListLite<T> *list, T *info) {
         LinkedPointer<HashTableItemInfo> *hashItem = this->GetPointer(info);
         if(hashItem == 0) {
             // such thing could happen because of some packet lost
@@ -368,7 +171,7 @@ public:
             printf("ERROR: %" PRIu64 " entry not found\n", info->MDEntryID);
             return;
         }
-        LinkedPointer<T> *node = static_cast<LinkedPointer<T>*>(hashItem->Data()->m_object);
+        HrLinkedPointer<T> *node = static_cast<HrLinkedPointer<T>*>(hashItem->Data()->m_object);
         T *data = node->Data();
         data->Clear();
         list->Remove(node);
@@ -389,14 +192,14 @@ public:
         DebugInfoManager::Default->Log(this->m_symbolInfo->Symbol(), this->m_sessionInt, "Change BuyQuote", info->MDEntryID, &(info->MDEntryPx), info->MDEntrySize);
 
         LinkedPointer<HashTableItemInfo> *hashItem = this->GetPointer(info);
-        LinkedPointer<T> *ptr;
+        HrLinkedPointer<T> *ptr;
         if(hashItem != 0) {
-            ptr = static_cast<LinkedPointer<T>*>(hashItem->Data()->m_object);
+            ptr = static_cast<HrLinkedPointer<T>*>(hashItem->Data()->m_object);
             this->m_buyQuoteList->Remove(ptr);
             ptr->Data()->Clear();
 
             info->Used = true;
-            ptr = GetBuyQuote(&(info->MDEntryPx));
+            ptr = InsertBuyQuote(&(info->MDEntryPx));
             ptr->Data(info);
             HashTableItemInfo *h = hashItem->Data();
             h->m_object = ptr;
@@ -406,21 +209,21 @@ public:
         //TODO remove debug
         printf("ERROR: %" PRIu64 " entry not found\n", info->MDEntryID);
         info->Used = true;
-        ptr = GetBuyQuote(&(info->MDEntryPx));
+        ptr = InsertBuyQuote(&(info->MDEntryPx));
         hashItem = AddPointer(ptr, info);
     }
 
     inline void ChangeSellQuote(T *info) {
         DebugInfoManager::Default->Log(this->m_symbolInfo->Symbol(), this->m_sessionInt, "Change SellQuote", info->MDEntryID, &(info->MDEntryPx), info->MDEntrySize);
         LinkedPointer<HashTableItemInfo> *hashItem = this->GetPointer(info);
-        LinkedPointer<T> *ptr;
+        HrLinkedPointer<T> *ptr;
         if(hashItem != 0) {
-            ptr = static_cast<LinkedPointer<T>*>(hashItem->Data()->m_object);
+            ptr = static_cast<HrLinkedPointer<T>*>(hashItem->Data()->m_object);
             this->m_sellQuoteList->Remove(ptr);
             ptr->Data()->Clear();
 
             info->Used = true;
-            ptr = GetSellQuote(&(info->MDEntryPx));
+            ptr = InsertSellQuote(&(info->MDEntryPx));
             ptr->Data(info);
             HashTableItemInfo *h = hashItem->Data();
             h->m_object = ptr;
@@ -430,23 +233,23 @@ public:
         //TODO remove debug
         printf("ERROR: %" PRIu64 " entry not found\n", info->MDEntryID);
         info->Used = true;
-        ptr = GetSellQuote(&(info->MDEntryPx));
+        ptr = InsertSellQuote(&(info->MDEntryPx));
         hashItem = AddPointer(ptr, info);
     }
 
-    inline LinkedPointer<T>* AddBuyQuote(T *item) {
+    inline HrLinkedPointer<T>* AddBuyQuote(T *item) {
         DebugInfoManager::Default->Log(this->m_symbolInfo->Symbol(), this->m_sessionInt, "Add BuyQuote", item->MDEntryID, &(item->MDEntryPx), item->MDEntrySize);
         item->Used = true;
-        LinkedPointer<T> *ptr = GetBuyQuote(&(item->MDEntryPx));
+        HrLinkedPointer<T> *ptr = InsertBuyQuote(&(item->MDEntryPx));
         AddPointer(ptr, item);
         ptr->Data(item);
         return ptr;
     }
 
-    inline LinkedPointer<T>* AddSellQuote(T *item) {
+    inline HrLinkedPointer<T>* AddSellQuote(T *item) {
         DebugInfoManager::Default->Log(this->m_symbolInfo->Symbol(), this->m_sessionInt, "Add SellQuote", item->MDEntryID, &(item->MDEntryPx), item->MDEntrySize);
         item->Used = true;
-        LinkedPointer<T> *ptr = GetSellQuote(&(item->MDEntryPx));
+        HrLinkedPointer<T> *ptr = InsertSellQuote(&(item->MDEntryPx));
         AddPointer(ptr, item);
         ptr->Data(item);
         return ptr;
@@ -474,7 +277,7 @@ public:
             this->ChangeSellQuote(info);
     }
 
-    inline LinkedPointer<T>* Add(T *info) {
+    inline HrLinkedPointer<T>* Add(T *info) {
 #ifdef COLLECT_STATISTICS
         ProgramStatistics::Current->Inc(Counters::cAddObr);
         ProgramStatistics::Total->Inc(Counters::cAddObr);
@@ -618,32 +421,33 @@ public:
     }
 };
 
-template <typename T> PointerList<T>* OrderBookInfo<T>::m_itemsPool = 0;
+template <typename T> HrPointerList<T>* OrderBookInfo<T>::m_itemsPool = 0;
 
 template <typename T> OrderBookInfo<T>::OrderBookInfo() :
         m_sellQuoteList(0),
         m_buyQuoteList(0),
+        m_buyQuoteManager(0),
+        m_sellQuoteManager(0),
         m_tradingSession(0),
         m_shouldProcessSnapshot(false),
         m_rptSeq(0),
         m_savedRptSeq(0),
         m_snapshotProcessedCount(0),
         m_used(0),
-        m_buyQuoteListLevel(0),
         m_symbolInfo(0),
-        m_entryInfo(0),
 #ifdef TEST
-        m_debugLevel(0),
+        m_listMode(ListType::ltSkipList),
 #endif
-        g_seed(0) {
+        m_entryInfo(0) {
     if(OrderBookInfo::m_itemsPool == 0)
-        OrderBookInfo::m_itemsPool = new PointerList<T>(RobotSettings::Default->MarketDataMaxEntriesCount, false);
+        OrderBookInfo::m_itemsPool = new HrPointerList<T>(RobotSettings::Default->MarketDataMaxEntriesCount, false);
 
     HashTable::SafeCreateDefault();
 
-    this->init_fast_srand();
-    this->m_sellQuoteList = new PointerListLite<T>(OrderBookInfo<T>::m_itemsPool);
-    this->m_buyQuoteList = new PointerListLite<T>(OrderBookInfo<T>::m_itemsPool);
+    this->m_sellQuoteList = new HrPointerListLite<T>(OrderBookInfo<T>::m_itemsPool);
+    this->m_buyQuoteList = new HrPointerListLite<T>(OrderBookInfo<T>::m_itemsPool);
+    this->m_sellQuoteManager = new OrderedListManager<HrPointerListLite, HrLinkedPointer, T>(this->m_sellQuoteList);
+    this->m_buyQuoteManager = new OrderedListManager<HrPointerListLite, HrLinkedPointer, T>(this->m_buyQuoteList);
 }
 
 #endif //HFT_ROBOT_ORDERINFO_H
