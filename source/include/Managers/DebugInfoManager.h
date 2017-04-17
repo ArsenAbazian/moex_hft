@@ -9,6 +9,7 @@
 #include "../MarketData/QuoteInfo.h"
 #include "../Fast/FastTypes.h"
 #include "../Lib/PointerList.h"
+#include "../Lib/HrPointerList.h"
 #include "../Lib/StringIdComparer.h"
 #include <stdio.h>
 #include <malloc.h>
@@ -189,17 +190,11 @@ public:
             this->AddTabs();
             for(int j = 0; j < symbol->SessionCount(); j++) {
                 TABLEITEM<ITEMINFO> *session = symbol->Session(j);
-                printf("Session %s Buy Quotes %d Sell Quotes %d Agg. Buy Quotes %d Agg. Sell Quotes %d\n",
+                printf("Session %s Buy Quotes %d Sell Quotes %d \n",
                        this->GetString(session->TradingSession(), 0),
                        session->BuyQuotes()->Count(),
-                       session->SellQuotes()->Count(),
-                       session->AggregatedBuyQuotes()->Count(),
-                       session->AggregatedSellQuotes()->Count());
+                       session->SellQuotes()->Count());
                 printf("Queued Messages Count = %d\n", session->EntriesQueue()->MaxIndex() + 1);
-                this->PrintQuotes<ITEMINFO>("Buy Quotes", session->BuyQuotes());
-                this->PrintQuotes<ITEMINFO>("Sell Quotes", session->SellQuotes());
-                this->PrintStatistics("Aggregated Buy Quotes", session->AggregatedBuyQuotes());
-                this->PrintStatistics("Aggregated Sell Quotes", session->AggregatedSellQuotes());
             }
             this->RemoveTabs();
         }
@@ -320,6 +315,16 @@ public:
         this->RemoveTabs();
         fprintf(fp, "</QuotesList>\n");
     }
+    template<typename T> void PrintQuotesXml(const char *quotesName, HrPointerListLite<T> *quotes) {
+        fprintf(fp, "<QuotesList Name=\"%s\"/>\n", quotesName);
+        this->AddTabs();
+        for(int quoteIndex = 0; quoteIndex < quotes->Count(); quoteIndex++) {
+            T *info = quotes->Item(quoteIndex);
+            fprintf(fp, "<Item Name=\"%s\" Price=\"%g\" Size=\"%g\"/>\n", this->GetString(info->MDEntryID, info->MDEntryIDLength, 0), info->MDEntryPx.Value, info->MDEntrySize.Value);
+        }
+        this->RemoveTabs();
+        fprintf(fp, "</QuotesList>\n");
+    }
     template<typename T> void PrintQuotesXml(const char *quotesName, PointerList<T> *quotes) {
         fprintf(fp, "<QuotesList Name=\"%s\"/>\n", quotesName);
         this->AddTabs();
@@ -350,16 +355,13 @@ public:
             this->AddTabs();
             for(int j = 0; j < symbol->SessionCount(); j++) {
                 TABLEITEM<ITEMINFO> *session = symbol->Session(j);
-                fprintf(fp, "<Session Name=\"%s\" BuyQuotes=\"%d\" SellQuotes=\"%d\" AggBuyQuotes=\"%d\" AggSellQuotes=\"%d\" QueuedMessagesCount=\"%d\">\n",
+                fprintf(fp, "<Session Name=\"%s\" BuyQuotes=\"%d\" SellQuotes=\"%d\" QueuedMessagesCount=\"%d\">\n",
                        this->GetString(session->TradingSession(), 0),
                        session->BuyQuotes()->Count(),
                        session->SellQuotes()->Count(),
-                       session->AggregatedBuyQuotes()->Count(),
-                       session->AggregatedSellQuotes()->Count(), session->EntriesQueue()->MaxIndex() + 1);
+                       session->EntriesQueue()->MaxIndex() + 1);
                 this->PrintQuotesXml<ITEMINFO>("BuyQuotes", session->BuyQuotes());
                 this->PrintQuotesXml<ITEMINFO>("SellQuotes", session->SellQuotes());
-                this->PrintStatisticsXml("AggregatedBuyQuotes", session->AggregatedBuyQuotes());
-                this->PrintStatisticsXml("AggregatedSellQuotes", session->AggregatedSellQuotes());
                 fprintf(fp, "</Session>\n");
             }
             this->RemoveTabs();

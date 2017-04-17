@@ -119,7 +119,7 @@ public:
             return this->m_buyQuoteManager->SimpleInsertBeforeDescending(price);
         return this->m_buyQuoteManager->HrInsertBeforeDescending(price);
 #else
-        return this->m_buyQuoteManager->SimpleInsertBeforeDescending(price);
+        return this->m_buyQuoteManager->HrInsertBeforeDescending(price);
 #endif
     }
     inline HrLinkedPointer<T>* InsertSellQuote(Decimal *price) {
@@ -128,7 +128,7 @@ public:
             return this->m_sellQuoteManager->SimpleInsertBeforeAscending(price);
         return this->m_sellQuoteManager->HrInsertBeforeAscending(price);
 #else
-        return this->m_sellQuoteManager->SimpleInsertBeforeAscending(price);
+        return this->m_sellQuoteManager->HrInsertBeforeAscending(price);
 #endif
     }
     inline LinkedPointer<HashTableItemInfo>* GetPointer(T *info) {

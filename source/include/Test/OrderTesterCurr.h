@@ -141,13 +141,22 @@ public:
             throw;
         if(obi->BuyQuotes()->Count() != 2)
             throw;
-        quote = obi->BuyQuotes()->Item(1);
+        quote = obi->BuyQuotes()->Item(0);
         price.Set(4, -2);
         if(!quote->MDEntryPx.Equal(&price))
             throw;
         if(!quote->MDEntrySize.Equal(&size))
             throw;
         if(!StringIdComparer::Equal(quote->MDEntryID, quote->MDEntryIDLength, "222222", 6))
+            throw;
+
+        quote = obi->BuyQuotes()->Item(1);
+        price.Set(3, -2);
+        if(!quote->MDEntryPx.Equal(&price))
+            throw;
+        if(!quote->MDEntrySize.Equal(&size))
+            throw;
+        if(!StringIdComparer::Equal(quote->MDEntryID, quote->MDEntryIDLength, "111111", 6))
             throw;
 
         info->GroupMDEntriesCount = 1;
@@ -167,7 +176,7 @@ public:
         if(obi->BuyQuotes()->Count() != 3)
             throw;
 
-        quote = obi->BuyQuotes()->Item(1);
+        quote = obi->BuyQuotes()->Item(0);
         price.Set(4, -2);
         if(!quote->MDEntryPx.Equal(&price))
             throw;
@@ -176,7 +185,7 @@ public:
         if(!StringIdComparer::Equal(quote->MDEntryID, quote->MDEntryIDLength, "222222", 6))
             throw;
 
-        quote = obi->BuyQuotes()->Item(0);
+        quote = obi->BuyQuotes()->Item(1);
         price.Set(3, -2);
         if(!quote->MDEntryPx.Equal(&price))
             throw;
@@ -211,7 +220,7 @@ public:
         if(obi->BuyQuotes()->Count() != 4)
             throw;
 
-        quote = obi->BuyQuotes()->Item(1);
+        quote = obi->BuyQuotes()->Item(0);
         price.Set(4, -2);
         if(!quote->MDEntryPx.Equal(&price))
             throw;
@@ -220,7 +229,7 @@ public:
         if(!StringIdComparer::Equal(quote->MDEntryID, quote->MDEntryIDLength, "222222", 6))
             throw;
 
-        quote = obi->BuyQuotes()->Item(0);
+        quote = obi->BuyQuotes()->Item(1);
         price.Set(3, -2);
         if(!quote->MDEntryPx.Equal(&price))
             throw;
@@ -229,7 +238,7 @@ public:
         if(!StringIdComparer::Equal(quote->MDEntryID, quote->MDEntryIDLength, "111111", 6))
             throw;
 
-        quote = obi->BuyQuotes()->Item(3);
+        quote = obi->BuyQuotes()->Item(2);
         price.Set(25, -3);
         if(!quote->MDEntryPx.Equal(&price))
             throw;
@@ -238,7 +247,7 @@ public:
         if(!StringIdComparer::Equal(quote->MDEntryID, quote->MDEntryIDLength, "444444", 6))
             throw;
 
-        quote = obi->BuyQuotes()->Item(2);
+        quote = obi->BuyQuotes()->Item(3);
         price.Set(2, -2);
         if(!quote->MDEntryPx.Equal(&price))
             throw;
@@ -288,9 +297,9 @@ public:
         OrderInfo<AstsOLSCURRItemInfo> *obi = this->incCurr->OrderCurr()->GetItem("symbol1", "session1");
         if(obi->BuyQuotes()->Count() != 3)
             throw;
-        if(!StringIdComparer::Equal(obi->BuyQuotes()->Item(0)->MDEntryID, 6, "111111", 6))
+        if(!StringIdComparer::Equal(obi->BuyQuotes()->Item(0)->MDEntryID, 6, "222222", 6))
             throw;
-        if(!StringIdComparer::Equal(obi->BuyQuotes()->Item(1)->MDEntryID, 6, "222222", 6))
+        if(!StringIdComparer::Equal(obi->BuyQuotes()->Item(1)->MDEntryID, 6, "111111", 6))
             throw;
         if(!StringIdComparer::Equal(obi->BuyQuotes()->Item(2)->MDEntryID, 6, "333333", 6))
             throw;
@@ -307,9 +316,9 @@ public:
         obi = this->incCurr->OrderCurr()->GetItem("symbol1", "session1");
         if(obi->BuyQuotes()->Count() != 2)
             throw;
-        if(!StringIdComparer::Equal(obi->BuyQuotes()->Item(0)->MDEntryID, 6, "111111", 6))
+        if(!StringIdComparer::Equal(obi->BuyQuotes()->Item(0)->MDEntryID, 6, "222222", 6))
             throw;
-        if(!StringIdComparer::Equal(obi->BuyQuotes()->Item(1)->MDEntryID, 6, "222222", 6))
+        if(!StringIdComparer::Equal(obi->BuyQuotes()->Item(1)->MDEntryID, 6, "111111", 6))
             throw;
 
         info->GroupMDEntriesCount = 1;
@@ -361,13 +370,13 @@ public:
         this->incCurr->OnIncrementalRefresh_OLR_CURR(info);
 
         OrderInfo<AstsOLSCURRItemInfo> *obi2 = this->incCurr->OrderCurr()->GetItem("symbol1", "session1");
-        if(!StringIdComparer::Equal(obi2->BuyQuotes()->Item(0)->MDEntryID, 6, "111111", 6))
+        if(!StringIdComparer::Equal(obi2->BuyQuotes()->Item(0)->MDEntryID, 6, "222222", 6))
             throw;
-        if(!StringIdComparer::Equal(obi2->BuyQuotes()->Item(1)->MDEntryID, 6, "222222", 6))
+        if(!StringIdComparer::Equal(obi2->BuyQuotes()->Item(1)->MDEntryID, 6, "111111", 6))
             throw;
-        if(!StringIdComparer::Equal(obi2->BuyQuotes()->Item(2)->MDEntryID, 6, "333333", 6))
+        if(!StringIdComparer::Equal(obi2->BuyQuotes()->Item(2)->MDEntryID, 6, "444444", 6))
             throw;
-        if(!StringIdComparer::Equal(obi2->BuyQuotes()->Item(3)->MDEntryID, 6, "444444", 6))
+        if(!StringIdComparer::Equal(obi2->BuyQuotes()->Item(3)->MDEntryID, 6, "333333", 6))
             throw;
 
         AstsOLSCURRItemInfo *item5 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "session1", 24, -3, 1, 3, mduaChange, mdetBuyQuote, "222222", 5);
@@ -398,11 +407,11 @@ public:
             throw;
         if(!StringIdComparer::Equal(qt1->MDEntryID, 6, "111111", 6))
             throw;
-        if(!StringIdComparer::Equal(qt2->MDEntryID, 6, "222222", 6))
+        if(!StringIdComparer::Equal(qt2->MDEntryID, 6, "444444", 6))
             throw;
-        if(!StringIdComparer::Equal(qt3->MDEntryID, 6, "333333", 6))
+        if(!StringIdComparer::Equal(qt3->MDEntryID, 6, "222222", 6))
             throw;
-        if(!StringIdComparer::Equal(qt4->MDEntryID, 6, "444444", 6))
+        if(!StringIdComparer::Equal(qt4->MDEntryID, 6, "333333", 6))
             throw;
 
         if(qt1->MDEntryPx.Mantissa != item1->MDEntryPx.Mantissa)
@@ -410,9 +419,9 @@ public:
         if(qt1->MDEntryPx.Exponent != item1->MDEntryPx.Exponent)
             throw;
 
-        if(qt2->MDEntryPx.Mantissa != item5->MDEntryPx.Mantissa)
+        if(qt2->MDEntryPx.Mantissa != item4->MDEntryPx.Mantissa)
             throw;
-        if(qt2->MDEntryPx.Exponent != item5->MDEntryPx.Exponent)
+        if(qt2->MDEntryPx.Exponent != item4->MDEntryPx.Exponent)
             throw;
     }
 
@@ -500,15 +509,15 @@ public:
         AstsOLSCURRItemInfo *qt1 = obi->BuyQuotes()->Item(0);
         AstsOLSCURRItemInfo *qt2 = obi->BuyQuotes()->Item(1);
 
-        if(!StringIdComparer::Equal(qt1->MDEntryID, 6, "777777", 6))
+        if(!StringIdComparer::Equal(qt1->MDEntryID, 6, "888888", 6))
             throw;
-        if(!StringIdComparer::Equal(qt2->MDEntryID, 6, "888888", 6))
+        if(!StringIdComparer::Equal(qt2->MDEntryID, 6, "777777", 6))
             throw;
-        if(!qt1->MDEntryPx.Equal(7, -2))
+        if(!qt1->MDEntryPx.Equal(8, -2))
             throw;
         if(!qt1->MDEntrySize.Equal(1, 2))
             throw;
-        if(!qt2->MDEntryPx.Equal(8, -2))
+        if(!qt2->MDEntryPx.Equal(7, -2))
             throw;
     }
 
@@ -597,7 +606,7 @@ public:
         if(obi->SellQuotes()->Count() != 3)
             throw;
 
-        quote = obi->SellQuotes()->Item(0);
+        quote = obi->SellQuotes()->Item(1);
         if(!quote->MDEntryPx.Equal(3, -2))
             throw;
         if(!quote->MDEntrySize.Equal(1, 2))
@@ -605,7 +614,7 @@ public:
         if(!StringIdComparer::Equal(quote->MDEntryID, 6, "111111", 6))
             throw;
 
-        quote = obi->SellQuotes()->Item(1);
+        quote = obi->SellQuotes()->Item(2);
         if(!quote->MDEntryPx.Equal(4, -2))
             throw;
         if(!quote->MDEntrySize.Equal(1, 2))
@@ -613,7 +622,7 @@ public:
         if(!StringIdComparer::Equal(quote->MDEntryID, 6, "222222", 6))
             throw;
 
-        quote = obi->SellQuotes()->Item(2);
+        quote = obi->SellQuotes()->Item(0);
         if(!quote->MDEntryPx.Equal(2, -2))
             throw;
         if(!quote->MDEntrySize.Equal(1, 2))
@@ -638,7 +647,7 @@ public:
         if(obi->SellQuotes()->Count() != 4)
             throw;
 
-        quote = obi->SellQuotes()->Item(0);
+        quote = obi->SellQuotes()->Item(2);
         if(!quote->MDEntryPx.Equal(3, -2))
             throw;
         if(!quote->MDEntrySize.Equal(1, 2))
@@ -646,7 +655,7 @@ public:
         if(!StringIdComparer::Equal(quote->MDEntryID, 6, "111111", 6))
             throw;
 
-        quote = obi->SellQuotes()->Item(1);
+        quote = obi->SellQuotes()->Item(3);
         if(!quote->MDEntryPx.Equal(4, -2))
             throw;
         if(!quote->MDEntrySize.Equal(1, 2))
@@ -654,7 +663,7 @@ public:
         if(!StringIdComparer::Equal(quote->MDEntryID, 6, "222222", 6))
             throw;
 
-        quote = obi->SellQuotes()->Item(2);
+        quote = obi->SellQuotes()->Item(0);
         if(!quote->MDEntryPx.Equal(2, -2))
             throw;
         if(!quote->MDEntrySize.Equal(1, 2))
@@ -662,7 +671,7 @@ public:
         if(!StringIdComparer::Equal(quote->MDEntryID, 6, "333333", 6))
             throw;
 
-        quote = obi->SellQuotes()->Item(3);
+        quote = obi->SellQuotes()->Item(1);
         if(!quote->MDEntryPx.Equal(25, -3))
             throw;
         if(!quote->MDEntrySize.Equal(1, 2))
@@ -708,11 +717,11 @@ public:
         if(obi->SellQuotes()->Count() != 3)
             throw;
 
-        if(!StringIdComparer::Equal(obi->SellQuotes()->Item(0)->MDEntryID, 6,"111111", 6))
+        if(!StringIdComparer::Equal(obi->SellQuotes()->Item(0)->MDEntryID, 6,"333333", 6))
             throw;
-        if(!StringIdComparer::Equal(obi->SellQuotes()->Item(1)->MDEntryID, 6,"222222", 6))
+        if(!StringIdComparer::Equal(obi->SellQuotes()->Item(1)->MDEntryID, 6,"111111", 6))
             throw;
-        if(!StringIdComparer::Equal(obi->SellQuotes()->Item(2)->MDEntryID, 6,"333333", 6))
+        if(!StringIdComparer::Equal(obi->SellQuotes()->Item(2)->MDEntryID, 6,"222222", 6))
             throw;
 
         info->GroupMDEntriesCount = 1;
@@ -781,13 +790,13 @@ public:
         this->incCurr->OnIncrementalRefresh_OLR_CURR(info);
 
         OrderInfo<AstsOLSCURRItemInfo> *obi2 = this->incCurr->OrderCurr()->GetItem("symbol1", "session1");
-        if(!StringIdComparer::Equal(obi2->SellQuotes()->Item(0)->MDEntryID, 6, "111111", 6))
+        if(!StringIdComparer::Equal(obi2->SellQuotes()->Item(0)->MDEntryID, 6, "333333", 6))
             throw;
-        if(!StringIdComparer::Equal(obi2->SellQuotes()->Item(1)->MDEntryID, 6, "222222", 6))
+        if(!StringIdComparer::Equal(obi2->SellQuotes()->Item(1)->MDEntryID, 6, "444444", 6))
             throw;
-        if(!StringIdComparer::Equal(obi2->SellQuotes()->Item(2)->MDEntryID, 6, "333333", 6))
+        if(!StringIdComparer::Equal(obi2->SellQuotes()->Item(2)->MDEntryID, 6, "111111", 6))
             throw;
-        if(!StringIdComparer::Equal(obi2->SellQuotes()->Item(3)->MDEntryID, 6, "444444", 6))
+        if(!StringIdComparer::Equal(obi2->SellQuotes()->Item(3)->MDEntryID, 6, "222222", 6))
             throw;
 
         AstsOLSCURRItemInfo *item5 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "session1", 24, -3, 1, 3, mduaChange, mdetSellQuote, "222222", 5);
@@ -808,18 +817,18 @@ public:
             throw;
         if(obi->SellQuotes()->Count() != 4)
             throw;
-        if(!StringIdComparer::Equal(qt1->MDEntryID, 6, "111111", 6))
+        if(!StringIdComparer::Equal(qt1->MDEntryID, 6, "333333", 6))
             throw;
         if(!StringIdComparer::Equal(qt2->MDEntryID, 6, "222222", 6))
             throw;
-        if(!StringIdComparer::Equal(qt3->MDEntryID, 6, "333333", 6))
+        if(!StringIdComparer::Equal(qt3->MDEntryID, 6, "444444", 6))
             throw;
-        if(!StringIdComparer::Equal(qt4->MDEntryID, 6, "444444", 6))
+        if(!StringIdComparer::Equal(qt4->MDEntryID, 6, "111111", 6))
             throw;
 
-        if(qt1->MDEntryPx.Mantissa != item1->MDEntryPx.Mantissa)
+        if(qt1->MDEntryPx.Mantissa != item3->MDEntryPx.Mantissa)
             throw;
-        if(qt1->MDEntryPx.Exponent != item1->MDEntryPx.Exponent)
+        if(qt1->MDEntryPx.Exponent != item3->MDEntryPx.Exponent)
             throw;
 
         if(qt2->MDEntryPx.Mantissa != item5->MDEntryPx.Mantissa)
@@ -3478,859 +3487,11 @@ public:
         printf("OLR CURR TestInfoAndItemInfoUsageAndAllocationCurr_Snap_6\n");
         TestInfoAndItemInfoUsageAndAllocationCurr_Snap_6();
     }
-
-
-
-    void Test_OnIncrementalRefresh_OLR_CURR_Add_Aggregated() {
-        this->Clear();
-        this->TestDefaults();
-        this->AddSymbol("symbol1");
-
-        AstsIncrementalOLRCURRInfo *info = this->m_helper->CreateAstsIncrementalOLRCURRInfo();
-
-        AstsOLSCURRItemInfo *item1 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "session1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "111111", 1);
-        AstsOLSCURRItemInfo *item2 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "session1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "222222", 2);
-        AstsOLSCURRItemInfo *item3 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "session1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "333333", 3);
-        AstsOLSCURRItemInfo *item4 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "session1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "444444", 4);
-
-        if(item4->Used)
-            throw;
-
-        info->GroupMDEntriesCount = 1;
-        info->GroupMDEntries[0] = item1;
-
-        this->incCurr->OnIncrementalRefresh_OLR_CURR(info);
-
-        if(!item1->Used)
-            throw;
-        if(this->incCurr->OrderCurr()->UsedItemCount() != 1)
-            throw;
-        if(this->incCurr->OrderCurr()->SymbolsCount() != 1)
-            throw;
-        if(this->incCurr->OrderCurr()->Symbol(0)->Count() != 1)
-            throw;
-        OrderInfo<AstsOLSCURRItemInfo> *obi = this->incCurr->OrderCurr()->GetItem("symbol1", "session1");
-        if(obi == 0)
-            throw;
-        if(obi->AggregatedBuyQuotes()->Count() != 1)
-            throw;
-        QuoteInfo *quote = obi->AggregatedBuyQuotes()->Item(0);
-        Decimal price(3, -2);
-        if(!quote->Price()->Equal(&price))
-            throw;
-        if(quote->Size() != 100)
-            throw;
-
-        info->GroupMDEntriesCount = 1;
-        info->GroupMDEntries[0] = item2;
-
-        this->incCurr->OnIncrementalRefresh_OLR_CURR(info);
-
-        if(this->incCurr->OrderCurr()->UsedItemCount() != 1)
-            throw;
-        if(this->incCurr->OrderCurr()->SymbolsCount() != 1)
-            throw;
-        if(this->incCurr->OrderCurr()->Symbol(0)->Count() != 1)
-            throw;
-        obi = this->incCurr->OrderCurr()->GetItem("symbol1", "session1");
-        if(obi == 0)
-            throw;
-        if(obi->AggregatedBuyQuotes()->Count() != 2)
-            throw;
-        quote = obi->AggregatedBuyQuotes()->Start()->Data();
-        price.Set(4, -2);
-        if(!quote->Price()->Equal(&price))
-            throw;
-        if(quote->Size() != 100)
-            throw;
-
-        info->GroupMDEntriesCount = 1;
-        info->GroupMDEntries[0] = item3;
-
-        this->incCurr->OnIncrementalRefresh_OLR_CURR(info);
-
-        if(this->incCurr->OrderCurr()->UsedItemCount() != 1)
-            throw;
-        if(this->incCurr->OrderCurr()->SymbolsCount() != 1)
-            throw;
-        if(this->incCurr->OrderCurr()->Symbol(0)->Count() != 1)
-            throw;
-        obi = this->incCurr->OrderCurr()->GetItem("symbol1", "session1");
-        if(obi == 0)
-            throw;
-        if(obi->AggregatedBuyQuotes()->Count() != 3)
-            throw;
-
-        quote = obi->AggregatedBuyQuotes()->Start()->Data();
-        price.Set(4, -2);
-        if(!quote->Price()->Equal(&price))
-            throw;
-        if(quote->Size() != 100)
-            throw;
-
-        quote = obi->AggregatedBuyQuotes()->Start()->Next()->Data();
-        price.Set(3, -2);
-        if(!quote->Price()->Equal(&price))
-            throw;
-        if(quote->Size() != 100)
-            throw;
-
-        quote = obi->AggregatedBuyQuotes()->Last()->Data();
-        price.Set(2, -2);
-        if(!quote->Price()->Equal(&price))
-            throw;
-        if(quote->Size() != 100)
-            throw;
-
-        info->GroupMDEntriesCount = 1;
-        info->GroupMDEntries[0] = item4;
-
-        this->incCurr->OnIncrementalRefresh_OLR_CURR(info);
-
-        if(this->incCurr->OrderCurr()->UsedItemCount() != 1)
-            throw;
-        if(this->incCurr->OrderCurr()->SymbolsCount() != 1)
-            throw;
-        if(this->incCurr->OrderCurr()->Symbol(0)->Count() != 1)
-            throw;
-        obi = this->incCurr->OrderCurr()->GetItem("symbol1", "session1");
-        if(obi == 0)
-            throw;
-        if(obi->AggregatedBuyQuotes()->Count() != 4)
-            throw;
-
-        quote = obi->AggregatedBuyQuotes()->Start()->Data();
-        price.Set(4, -2);
-        if(!quote->Price()->Equal(&price))
-            throw;
-        if(quote->Size() != 100)
-            throw;
-
-        quote = obi->AggregatedBuyQuotes()->Start()->Next()->Data();
-        price.Set(3, -2);
-        if(!quote->Price()->Equal(&price))
-            throw;
-        if(quote->Size() != 100)
-            throw;
-
-        quote = obi->AggregatedBuyQuotes()->Start()->Next()->Next()->Data();
-        price.Set(25, -3);
-        if(!quote->Price()->Equal(&price))
-            throw;
-        if(quote->Size() != 100)
-            throw;
-
-        quote = obi->AggregatedBuyQuotes()->Last()->Data();
-        price.Set(2, -2);
-        if(!quote->Price()->Equal(&price))
-            throw;
-        if(quote->Size() != 100)
-            throw;
-    }
-
-    void Test_OnIncrementalRefresh_OLR_CURR_Remove_Aggregated() {
-        this->Clear();
-        this->TestDefaults();
-        this->AddSymbol("symbol1");
-
-        AstsIncrementalOLRCURRInfo *info = this->m_helper->CreateAstsIncrementalOLRCURRInfo();
-        AstsOLSCURRItemInfo *item1 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "session1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "111111", 1);
-        AstsOLSCURRItemInfo *item2 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "session1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "222222", 2);
-        AstsOLSCURRItemInfo *item3 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "session1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "333333", 3);
-        AstsOLSCURRItemInfo *item4 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "session1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "444444", 4);
-
-        info->GroupMDEntriesCount = 4;
-        info->GroupMDEntries[0] = item1;
-        info->GroupMDEntries[1] = item2;
-        info->GroupMDEntries[2] = item3;
-        info->GroupMDEntries[3] = item4;
-
-        this->incCurr->OnIncrementalRefresh_OLR_CURR(info);
-
-        if(item1->Allocator->Count() != 1)
-            throw;
-        if(item2->Allocator->Count() != 1)
-            throw;
-        if(item3->Allocator->Count() != 1)
-            throw;
-        if(item4->Allocator->Count() != 1)
-            throw;
-
-        OrderInfo<AstsOLSCURRItemInfo> *ob = this->incCurr->OrderCurr()->GetItem("symbol1", "session1");
-        if(!ob->AggregatedBuyQuotes()->Item(0)->Price()->Equal(4, -2))
-            throw;
-        if(!ob->AggregatedBuyQuotes()->Item(1)->Price()->Equal(3, -2))
-            throw;
-        if(!ob->AggregatedBuyQuotes()->Item(2)->Price()->Equal(25, -3))
-            throw;
-        if(!ob->AggregatedBuyQuotes()->Item(3)->Price()->Equal(2, -2))
-            throw;
-
-        item1->MDUpdateAction = mduaDelete;
-        item2->MDUpdateAction = mduaDelete;
-        item3->MDUpdateAction = mduaDelete;
-        item4->MDUpdateAction = mduaDelete;
-
-        info->GroupMDEntriesCount = 1;
-        info->GroupMDEntries[0] = item4;
-        item4->RptSeq = 5;
-
-        this->incCurr->OnIncrementalRefresh_OLR_CURR(info);
-        if(item4->Used)
-            throw;
-        if(item4->Allocator->Count() != 0)
-            throw;
-
-        if(this->incCurr->OrderCurr()->UsedItemCount() != 1)
-            throw;
-
-        OrderInfo<AstsOLSCURRItemInfo> *obi = this->incCurr->OrderCurr()->GetItem("symbol1", "session1");
-        if(obi->AggregatedBuyQuotes()->Count() != 3)
-            throw;
-        if(!obi->AggregatedBuyQuotes()->Item(0)->Price()->Equal(4, -2))
-            throw;
-        if(!obi->AggregatedBuyQuotes()->Item(1)->Price()->Equal(3, -2))
-            throw;
-        if(!obi->AggregatedBuyQuotes()->Item(2)->Price()->Equal(2, -2))
-            throw;
-
-        info->GroupMDEntriesCount = 1;
-        info->GroupMDEntries[0] = item3;
-        item3->RptSeq = 6;
-
-        this->incCurr->OnIncrementalRefresh_OLR_CURR(info);
-
-        if(this->incCurr->OrderCurr()->UsedItemCount() != 1)
-            throw;
-
-        obi = this->incCurr->OrderCurr()->GetItem("symbol1", "session1");
-        if(obi->AggregatedBuyQuotes()->Count() != 2)
-            throw;
-        if(!obi->AggregatedBuyQuotes()->Item(0)->Price()->Equal(4, -2))
-            throw;
-        if(!obi->AggregatedBuyQuotes()->Item(1)->Price()->Equal(3, -2))
-            throw;
-
-        info->GroupMDEntriesCount = 1;
-        info->GroupMDEntries[0] = item2;
-        item2->RptSeq = 7;
-
-        this->incCurr->OnIncrementalRefresh_OLR_CURR(info);
-
-        if(this->incCurr->OrderCurr()->UsedItemCount() != 1)
-            throw;
-
-        obi = this->incCurr->OrderCurr()->GetItem("symbol1", "session1");
-        if(obi->AggregatedBuyQuotes()->Count() != 1)
-            throw;
-        if(!obi->AggregatedBuyQuotes()->Item(0)->Price()->Equal(3, -2))
-            throw;
-
-        info->GroupMDEntriesCount = 1;
-        info->GroupMDEntries[0] = item1;
-        item1->RptSeq = 8;
-
-        this->incCurr->OnIncrementalRefresh_OLR_CURR(info);
-
-        if(this->incCurr->OrderCurr()->UsedItemCount() != 1)
-            throw;
-
-        obi = this->incCurr->OrderCurr()->GetItem("symbol1", "session1");
-        if(obi->AggregatedBuyQuotes()->Count() != 0)
-            throw;
-    }
-
-    void Test_OnIncrementalRefresh_OLR_CURR_Change_Aggregated() {
-        this->Clear();
-        this->TestDefaults();
-        this->AddSymbol("symbol1");
-
-        AstsIncrementalOLRCURRInfo *info = this->m_helper->CreateAstsIncrementalOLRCURRInfo();
-        AstsOLSCURRItemInfo *item1 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "session1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "111111", 1);
-        AstsOLSCURRItemInfo *item2 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "session1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "222222", 2);
-        AstsOLSCURRItemInfo *item3 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "session1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "333333", 3);
-        AstsOLSCURRItemInfo *item4 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "session1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "444444", 4);
-
-        info->GroupMDEntriesCount = 4;
-        info->GroupMDEntries[0] = item1;
-        info->GroupMDEntries[1] = item2;
-        info->GroupMDEntries[2] = item3;
-        info->GroupMDEntries[3] = item4;
-
-        this->incCurr->OnIncrementalRefresh_OLR_CURR(info);
-
-        OrderInfo<AstsOLSCURRItemInfo> *obi2 = this->incCurr->OrderCurr()->GetItem("symbol1", "session1");
-        if(!obi2->AggregatedBuyQuotes()->Item(0)->Price()->Equal(4, -2))
-            throw;
-        if(!obi2->AggregatedBuyQuotes()->Item(1)->Price()->Equal(3, -2))
-            throw;
-        if(!obi2->AggregatedBuyQuotes()->Item(2)->Price()->Equal(25, -3))
-            throw;
-        if(!obi2->AggregatedBuyQuotes()->Item(3)->Price()->Equal(2, -2))
-            throw;
-
-        AstsOLSCURRItemInfo *item5 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "session1", 24, -3, 1, 3, mduaChange, mdetBuyQuote, "222222", 5);
-
-        info->GroupMDEntriesCount = 1;
-        info->GroupMDEntries[0] = item5;
-        item5->RptSeq = 5;
-
-        this->incCurr->OnIncrementalRefresh_OLR_CURR(info);
-
-        if(item2->Used || item2->Allocator->Count() != 0)
-            throw;
-        if(!item5->Used)
-            throw;
-        if(item5->Allocator->Count() != 1)
-            throw;
-
-        OrderInfo<AstsOLSCURRItemInfo> *obi = this->incCurr->OrderCurr()->GetItem("symbol1", "session1");
-
-        QuoteInfo *qt1 = obi->AggregatedBuyQuotes()->Item(0);
-        QuoteInfo *qt2 = obi->AggregatedBuyQuotes()->Item(1);
-        QuoteInfo *qt3 = obi->AggregatedBuyQuotes()->Item(2);
-        QuoteInfo *qt4 = obi->AggregatedBuyQuotes()->Item(3);
-
-        if(this->incCurr->OrderCurr()->UsedItemCount() != 1)
-            throw;
-        if(obi->AggregatedBuyQuotes()->Count() != 4)
-            throw;
-        if(!qt1->Price()->Equal(3, -2))
-            throw;
-        if(!qt2->Price()->Equal(25, -3))
-            throw;
-        if(!qt3->Price()->Equal(24, -3))
-            throw;
-        if(!qt4->Price()->Equal(2, -2))
-            throw;
-    }
-
-    void Test_Clear_Aggregated() {
-        this->Clear();
-        this->TestDefaults();
-        this->AddSymbol("symbol1");
-
-        AstsIncrementalOLRCURRInfo *info = this->m_helper->CreateAstsIncrementalOLRCURRInfo();
-        AstsOLSCURRItemInfo *item1 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "session1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "111111", 1);
-        AstsOLSCURRItemInfo *item2 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "session1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "222222", 2);
-        AstsOLSCURRItemInfo *item3 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "session1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "333333", 3);
-        AstsOLSCURRItemInfo *item4 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "session1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "444444", 4);
-
-        info->GroupMDEntriesCount = 4;
-        info->GroupMDEntries[0] = item1;
-        info->GroupMDEntries[1] = item2;
-        info->GroupMDEntries[2] = item3;
-        info->GroupMDEntries[3] = item4;
-
-        this->incCurr->OnIncrementalRefresh_OLR_CURR(info);
-
-        this->incCurr->OrderCurr()->Clear();
-        if(item1->Used || item2->Used || item3->Used || item4->Used)
-            throw;
-        if(item1->Allocator->Count() != 0 ||
-           item2->Allocator->Count() != 0 ||
-           item3->Allocator->Count() != 0 ||
-           item4->Allocator->Count() != 0)
-            throw;
-        if(this->incCurr->OrderCurr()->UsedItemCount() != 0)
-            throw;
-
-        OrderInfo<AstsOLSCURRItemInfo> *obi = this->incCurr->OrderCurr()->GetItem("symbol1", "session1");
-        if(obi->AggregatedBuyQuotes()->Count() != 0)
-            throw;
-    }
-
-    void Test_OnFullRefresh_OBS_CURR_Aggregated() {
-        this->Clear();
-        this->TestDefaults();
-        this->AddSymbol("symbol1");
-
-        AstsIncrementalOLRCURRInfo *info = this->m_helper->CreateAstsIncrementalOLRCURRInfo();
-        AstsOLSCURRItemInfo *item1 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "session1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "111111", 1);
-        AstsOLSCURRItemInfo *item2 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "session1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "222222", 2);
-        AstsOLSCURRItemInfo *item3 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "session1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "333333", 3);
-        AstsOLSCURRItemInfo *item4 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "session1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "444444", 4);
-
-        info->GroupMDEntriesCount = 4;
-        info->GroupMDEntries[0] = item1;
-        info->GroupMDEntries[1] = item2;
-        info->GroupMDEntries[2] = item3;
-        info->GroupMDEntries[3] = item4;
-
-        this->incCurr->OnIncrementalRefresh_OLR_CURR(info);
-
-        OrderInfo<AstsOLSCURRItemInfo> *obi2 = this->incCurr->OrderCurr()->GetItem("symbol1", "session1");
-        if(obi2->AggregatedBuyQuotes()->Count() != 4)
-            throw;
-
-        AstsOLSCURRInfo *info2 = this->m_helper->CreateOLSCurrInfo("t1s2", "session1");
-        AstsOLSCURRItemInfo *newItem1 = this->m_helper->CreateOLSCurrItemInfo(7,-2, 1, 2, mdetBuyQuote, "777777");
-        AstsOLSCURRItemInfo *newItem2 = this->m_helper->CreateOLSCurrItemInfo(8,-2, 1, 2, mdetBuyQuote, "888888");
-        info2->RptSeq = 5;
-
-        info2->GroupMDEntriesCount = 2;
-        info2->GroupMDEntries[0] = newItem1;
-        info2->GroupMDEntries[1] = newItem2;
-
-        this->incCurr->OrderCurr()->ObtainSnapshotItem(info2);
-        this->incCurr->OrderCurr()->ProcessSnapshot(info2);
-
-        if(this->incCurr->OrderCurr()->UsedItemCount() != 2)
-            throw;
-
-        OrderInfo<AstsOLSCURRItemInfo> *obi3 = this->incCurr->OrderCurr()->GetItem("symbol1", "session1");
-        if(obi3->AggregatedBuyQuotes()->Count() != 4)
-            throw;
-
-        OrderInfo<AstsOLSCURRItemInfo> *obi = this->incCurr->OrderCurr()->GetItem("t1s2", "session1");
-        if(obi->AggregatedBuyQuotes()->Count() != 2)
-            throw;
-
-        QuoteInfo *qt1 = obi->AggregatedBuyQuotes()->Start()->Data();
-        QuoteInfo *qt2 = obi->AggregatedBuyQuotes()->Start()->Next()->Data();
-
-        if(!qt1->Price()->Equal(8, -2))
-            throw;
-        if(!qt2->Price()->Equal(7, -2))
-            throw;
-    }
-
-    void Test_OnIncrementalRefresh_OLR_CURR_Add_SellQuotes_Aggregated() {
-        this->Clear();
-        this->TestDefaults();
-        this->AddSymbol("symbol1");
-
-        AstsIncrementalOLRCURRInfo *info = this->m_helper->CreateAstsIncrementalOLRCURRInfo();
-
-        AstsOLSCURRItemInfo *item1 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "session1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "111111", 1);
-        AstsOLSCURRItemInfo *item2 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "session1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "222222", 2);
-        AstsOLSCURRItemInfo *item3 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "session1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "333333", 3);
-        AstsOLSCURRItemInfo *item4 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "session1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "444444", 4);
-
-        info->GroupMDEntriesCount = 1;
-        info->GroupMDEntries[0] = item1;
-
-        this->incCurr->OnIncrementalRefresh_OLR_CURR(info);
-
-        if(this->incCurr->OrderCurr()->UsedItemCount() != 1)
-            throw;
-        if(this->incCurr->OrderCurr()->SymbolsCount() != 1)
-            throw;
-        if(this->incCurr->OrderCurr()->Symbol(0)->Count() != 1)
-            throw;
-        OrderInfo<AstsOLSCURRItemInfo> *obi = this->incCurr->OrderCurr()->GetItem("symbol1", "session1");
-        if(obi == 0)
-            throw;
-        if(obi->AggregatedSellQuotes()->Count() != 1)
-            throw;
-        QuoteInfo *quote = obi->AggregatedSellQuotes()->Start()->Data();
-        if(!quote->Price()->Equal(3, -2))
-            throw;
-
-        info->GroupMDEntriesCount = 1;
-        info->GroupMDEntries[0] = item2;
-
-        this->incCurr->OnIncrementalRefresh_OLR_CURR(info);
-
-        if(this->incCurr->OrderCurr()->UsedItemCount() != 1)
-            throw;
-        if(this->incCurr->OrderCurr()->SymbolsCount() != 1)
-            throw;
-        if(this->incCurr->OrderCurr()->Symbol(0)->Count() != 1)
-            throw;
-        obi = this->incCurr->OrderCurr()->GetItem("symbol1", "session1");
-        if(obi == 0)
-            throw;
-        if(obi->AggregatedSellQuotes()->Count() != 2)
-            throw;
-        quote = obi->AggregatedSellQuotes()->Start()->Data();
-        if(!quote->Price()->Equal(3, -2))
-            throw;
-
-        quote = obi->AggregatedSellQuotes()->Item(1);
-        if(!quote->Price()->Equal(4, -2))
-            throw;
-
-        info->GroupMDEntriesCount = 1;
-        info->GroupMDEntries[0] = item3;
-
-        this->incCurr->OnIncrementalRefresh_OLR_CURR(info);
-
-        if(this->incCurr->OrderCurr()->UsedItemCount() != 1)
-            throw;
-        if(this->incCurr->OrderCurr()->SymbolsCount() != 1)
-            throw;
-        if(this->incCurr->OrderCurr()->Symbol(0)->Count() != 1)
-            throw;
-        obi = this->incCurr->OrderCurr()->GetItem("symbol1", "session1");
-        if(obi == 0)
-            throw;
-        if(obi->AggregatedSellQuotes()->Count() != 3)
-            throw;
-
-        quote = obi->AggregatedSellQuotes()->Start()->Data();
-        if(!quote->Price()->Equal(2, -2))
-            throw;
-
-        quote = obi->AggregatedSellQuotes()->Start()->Next()->Data();
-        if(!quote->Price()->Equal(3, -2))
-            throw;
-
-        quote = obi->AggregatedSellQuotes()->Last()->Data();
-        if(!quote->Price()->Equal(4, -2))
-            throw;
-
-        info->GroupMDEntriesCount = 1;
-        info->GroupMDEntries[0] = item4;
-
-        this->incCurr->OnIncrementalRefresh_OLR_CURR(info);
-
-        if(this->incCurr->OrderCurr()->UsedItemCount() != 1)
-            throw;
-        if(this->incCurr->OrderCurr()->SymbolsCount() != 1)
-            throw;
-        if(this->incCurr->OrderCurr()->Symbol(0)->Count() != 1)
-            throw;
-        obi = this->incCurr->OrderCurr()->GetItem("symbol1", "session1");
-        if(obi == 0)
-            throw;
-        if(obi->AggregatedSellQuotes()->Count() != 4)
-            throw;
-
-        quote = obi->AggregatedSellQuotes()->Start()->Data();
-        if(!quote->Price()->Equal(2, -2))
-            throw;
-
-        quote = obi->AggregatedSellQuotes()->Start()->Next()->Data();
-        if(!quote->Price()->Equal(25, -3))
-            throw;
-
-        quote = obi->AggregatedSellQuotes()->Start()->Next()->Next()->Data();
-        if(!quote->Price()->Equal(3, -2))
-            throw;
-
-        quote = obi->AggregatedSellQuotes()->Last()->Data();
-        if(!quote->Price()->Equal(4, -2))
-            throw;
-    }
-
-    void Test_OnIncrementalRefresh_OLR_CURR_Remove_SellQuotes_Aggregated() {
-        this->Clear();
-        this->TestDefaults();
-        this->AddSymbol("symbol1");
-
-        AstsIncrementalOLRCURRInfo *info = this->m_helper->CreateAstsIncrementalOLRCURRInfo();
-        AstsOLSCURRItemInfo *item1 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "session1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "111111", 1);
-        AstsOLSCURRItemInfo *item2 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "session1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "222222", 2);
-        AstsOLSCURRItemInfo *item3 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "session1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "333333", 3);
-        AstsOLSCURRItemInfo *item4 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "session1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "444444", 4);
-
-        info->GroupMDEntriesCount = 4;
-        info->GroupMDEntries[0] = item1;
-        info->GroupMDEntries[1] = item2;
-        info->GroupMDEntries[2] = item3;
-        info->GroupMDEntries[3] = item4;
-
-        this->incCurr->OnIncrementalRefresh_OLR_CURR(info);
-
-        item1->MDUpdateAction = mduaDelete;
-        item2->MDUpdateAction = mduaDelete;
-        item3->MDUpdateAction = mduaDelete;
-        item4->MDUpdateAction = mduaDelete;
-
-        info->GroupMDEntriesCount = 1;
-        info->GroupMDEntries[0] = item4;
-        item4->RptSeq = 5;
-
-        this->incCurr->OnIncrementalRefresh_OLR_CURR(info);
-
-        if(this->incCurr->OrderCurr()->UsedItemCount() != 1)
-            throw;
-
-        OrderInfo<AstsOLSCURRItemInfo> *obi = this->incCurr->OrderCurr()->GetItem("symbol1", "session1");
-        if(obi->AggregatedSellQuotes()->Count() != 3)
-            throw;
-
-        if(!obi->AggregatedSellQuotes()->Item(0)->Price()->Equal(2, -2))
-            throw;
-        if(!obi->AggregatedSellQuotes()->Item(1)->Price()->Equal(3, -2))
-            throw;
-        if(!obi->AggregatedSellQuotes()->Item(2)->Price()->Equal(4, -2))
-            throw;
-
-        info->GroupMDEntriesCount = 1;
-        info->GroupMDEntries[0] = item3;
-        item3->RptSeq = 6;
-
-        this->incCurr->OnIncrementalRefresh_OLR_CURR(info);
-
-        if(this->incCurr->OrderCurr()->UsedItemCount() != 1)
-            throw;
-
-        obi = this->incCurr->OrderCurr()->GetItem("symbol1", "session1");
-        if(obi->AggregatedSellQuotes()->Count() != 2)
-            throw;
-        if(!obi->AggregatedSellQuotes()->Item(0)->Price()->Equal(3, -2))
-            throw;
-        if(!obi->AggregatedSellQuotes()->Item(1)->Price()->Equal(4, -2))
-            throw;
-
-        info->GroupMDEntriesCount = 1;
-        info->GroupMDEntries[0] = item2;
-        item2->RptSeq = 7;
-
-        this->incCurr->OnIncrementalRefresh_OLR_CURR(info);
-
-        if(this->incCurr->OrderCurr()->UsedItemCount() != 1)
-            throw;
-
-        obi = this->incCurr->OrderCurr()->GetItem("symbol1", "session1");
-        if(obi->AggregatedSellQuotes()->Count() != 1)
-            throw;
-        if(!obi->AggregatedSellQuotes()->Item(0)->Price()->Equal(3, -2))
-            throw;
-
-        info->GroupMDEntriesCount = 1;
-        info->GroupMDEntries[0] = item1;
-        item1->RptSeq = 8;
-
-        this->incCurr->OnIncrementalRefresh_OLR_CURR(info);
-
-        if(this->incCurr->OrderCurr()->UsedItemCount() != 1)
-            throw;
-
-        obi = this->incCurr->OrderCurr()->GetItem("symbol1", "session1");
-        if(obi->AggregatedSellQuotes()->Count() != 0)
-            throw;
-    }
-
-    void Test_OnIncrementalRefresh_OLR_CURR_Change_SellQuotes_Aggregated() {
-        this->Clear();
-        this->TestDefaults();
-        this->AddSymbol("symbol1");
-
-        AstsIncrementalOLRCURRInfo *info = this->m_helper->CreateAstsIncrementalOLRCURRInfo();
-        AstsOLSCURRItemInfo *item1 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "session1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "111111", 1);
-        AstsOLSCURRItemInfo *item2 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "session1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "222222", 2);
-        AstsOLSCURRItemInfo *item3 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "session1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "333333", 3);
-        AstsOLSCURRItemInfo *item4 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "session1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "444444", 4);
-
-        info->GroupMDEntriesCount = 4;
-        info->GroupMDEntries[0] = item1;
-        info->GroupMDEntries[1] = item2;
-        info->GroupMDEntries[2] = item3;
-        info->GroupMDEntries[3] = item4;
-
-        this->incCurr->OnIncrementalRefresh_OLR_CURR(info);
-
-        OrderInfo<AstsOLSCURRItemInfo> *obi2 = this->incCurr->OrderCurr()->GetItem("symbol1", "session1");
-        if(!obi2->AggregatedSellQuotes()->Item(0)->Price()->Equal(2, -2))
-            throw;
-        if(!obi2->AggregatedSellQuotes()->Item(1)->Price()->Equal(25, -3))
-            throw;
-        if(!obi2->AggregatedSellQuotes()->Item(2)->Price()->Equal(3, -2))
-            throw;
-        if(!obi2->AggregatedSellQuotes()->Item(3)->Price()->Equal(4, -2))
-            throw;
-
-        AstsOLSCURRItemInfo *item5 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "session1", 24, -3, 1, 3, mduaChange, mdetSellQuote, "222222", 5);
-
-        info->GroupMDEntriesCount = 1;
-        info->GroupMDEntries[0] = item5;
-
-        this->incCurr->OnIncrementalRefresh_OLR_CURR(info);
-
-        OrderInfo<AstsOLSCURRItemInfo> *obi = this->incCurr->OrderCurr()->GetItem("symbol1", "session1");
-
-        QuoteInfo *qt1 = obi->AggregatedSellQuotes()->Item(0);
-        QuoteInfo *qt2 = obi->AggregatedSellQuotes()->Item(1);
-        QuoteInfo *qt3 = obi->AggregatedSellQuotes()->Item(2);
-        QuoteInfo *qt4 = obi->AggregatedSellQuotes()->Item(3);
-
-        if(this->incCurr->OrderCurr()->UsedItemCount() != 1)
-            throw;
-        if(obi->AggregatedSellQuotes()->Count() != 4)
-            throw;
-        if(!qt1->Price()->Equal(2, -2))
-            throw;
-        if(!qt2->Price()->Equal(24, -3))
-            throw;
-        if(!qt3->Price()->Equal(25, -3))
-            throw;
-        if(!qt4->Price()->Equal(3, -2))
-            throw;
-    }
-
-    void Test_Clear_SellQuotes_Aggregated() {
-        this->Clear();
-        this->TestDefaults();
-        this->AddSymbol("symbol1");
-
-        AstsIncrementalOLRCURRInfo *info = this->m_helper->CreateAstsIncrementalOLRCURRInfo();
-        AstsOLSCURRItemInfo *item1 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "session1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "111111", 1);
-        AstsOLSCURRItemInfo *item2 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "session1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "222222", 2);
-        AstsOLSCURRItemInfo *item3 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "session1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "333333", 3);
-        AstsOLSCURRItemInfo *item4 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "session1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "444444", 4);
-
-        info->GroupMDEntriesCount = 4;
-        info->GroupMDEntries[0] = item1;
-        info->GroupMDEntries[1] = item2;
-        info->GroupMDEntries[2] = item3;
-        info->GroupMDEntries[3] = item4;
-
-        this->incCurr->OnIncrementalRefresh_OLR_CURR(info);
-
-        this->incCurr->OrderCurr()->Clear();
-        if(this->incCurr->OrderCurr()->UsedItemCount() != 0)
-            throw;
-
-        OrderInfo<AstsOLSCURRItemInfo> *obi = this->incCurr->OrderCurr()->GetItem("symbol1", "session1");
-        if(obi->AggregatedSellQuotes()->Count() != 0)
-            throw;
-    }
-
-    void Test_OnFullRefresh_OBS_CURR_SellQuotes_Aggregated() {
-        this->Clear();
-        this->TestDefaults();
-        this->AddSymbol("symbol1");
-
-        AstsIncrementalOLRCURRInfo *info = this->m_helper->CreateAstsIncrementalOLRCURRInfo();
-        AstsOLSCURRItemInfo *item1 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "session1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "111111", 1);
-        AstsOLSCURRItemInfo *item2 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "session1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "222222", 2);
-        AstsOLSCURRItemInfo *item3 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "session1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "333333", 3);
-        AstsOLSCURRItemInfo *item4 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "session1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "444444", 4);
-
-        info->GroupMDEntriesCount = 4;
-        info->GroupMDEntries[0] = item1;
-        info->GroupMDEntries[1] = item2;
-        info->GroupMDEntries[2] = item3;
-        info->GroupMDEntries[3] = item4;
-
-        this->incCurr->OnIncrementalRefresh_OLR_CURR(info);
-
-        AstsOLSCURRInfo *info2 = this->m_helper->CreateOLSCurrInfo("t1s2", "session1");
-        AstsOLSCURRItemInfo *newItem1 = this->m_helper->CreateOLSCurrItemInfo(7,-2, 1, 2, mdetSellQuote, "777777");
-        AstsOLSCURRItemInfo *newItem2 = this->m_helper->CreateOLSCurrItemInfo(8,-2, 1, 2, mdetSellQuote, "888888");
-
-        info2->GroupMDEntriesCount = 2;
-        info2->GroupMDEntries[0] = newItem1;
-        info2->GroupMDEntries[1] = newItem2;
-
-        this->incCurr->OrderCurr()->ObtainSnapshotItem(info2);
-        this->incCurr->OrderCurr()->ProcessSnapshot(info2);
-
-        if(this->incCurr->OrderCurr()->UsedItemCount() != 2)
-            throw;
-
-        OrderInfo<AstsOLSCURRItemInfo> *obi3 = this->incCurr->OrderCurr()->GetItem("symbol1", "session1");
-        if(obi3->AggregatedSellQuotes()->Count() != 4)
-            throw;
-
-        OrderInfo<AstsOLSCURRItemInfo> *obi = this->incCurr->OrderCurr()->GetItem("t1s2", "session1");
-        if(obi->AggregatedSellQuotes()->Count() != 2)
-            throw;
-
-        QuoteInfo *qt1 = obi->AggregatedSellQuotes()->Start()->Data();
-        QuoteInfo *qt2 = obi->AggregatedSellQuotes()->Start()->Next()->Data();
-
-        if(!qt1->Price()->Equal(7, -2))
-            throw;
-        if(!qt2->Price()->Equal(8, -2))
-            throw;
-    }
-
-
-    void Test_OnIncrementalRefresh_OLR_CURR_Aggregated() {
-        printf("OLR CURR Test_OnIncrementalRefresh_OLR_CURR_Add_Aggregated\n");
-        Test_OnIncrementalRefresh_OLR_CURR_Add_Aggregated();
-        printf("OLR CURR Test_OnIncrementalRefresh_OLR_CURR_Remove_Aggregated\n");
-        Test_OnIncrementalRefresh_OLR_CURR_Remove_Aggregated();
-        printf("OLR CURR Test_OnIncrementalRefresh_OLR_CURR_Change_Aggregated\n");
-        Test_OnIncrementalRefresh_OLR_CURR_Change_Aggregated();
-        printf("OLR CURR Test_Clear_Aggregated\n");
-        Test_Clear();
-    }
-
-    void Test_OnIncrementalRefresh_OLR_CURR_SellQuotes_Aggregated() {
-        printf("OLR CURR Test_OnIncrementalRefresh_OLR_CURR_Add_SellQuotes_Aggregated\n");
-        Test_OnIncrementalRefresh_OLR_CURR_Add_SellQuotes_Aggregated();
-        printf("OLR CURR Test_OnIncrementalRefresh_OLR_CURR_Remove_SellQuotes_Aggregated\n");
-        Test_OnIncrementalRefresh_OLR_CURR_Remove_SellQuotes_Aggregated();
-        printf("OLR CURR Test_OnIncrementalRefresh_OLR_CURR_Change_SellQuotes_Aggregated\n");
-        Test_OnIncrementalRefresh_OLR_CURR_Change_SellQuotes_Aggregated();
-        printf("OLR CURR Test_Clear_SellQuotes_Aggregated\n");
-        Test_Clear_SellQuotes();
-    }
-
-    void Test_Aggregation_Logic() {
-        this->Clear();
-        this->AddSymbol("symbol1");
-
-        OrderInfo<AstsOLSCURRItemInfo> *item = this->m_table->Symbol(0)->Session(0);
-
-        AstsOLSCURRItemInfo *info = this->m_helper->CreateOLRCurrItemInfo("symbol1", "session1", 100, 0, 200, 0, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "111111", 1);
-        item->ProcessIncrementalMessage(info);
-
-        if(item->AggregatedBuyQuotes()->Count() != 1)
-            throw;
-        if(!item->AggregatedBuyQuotes()->Item(0)->Price()->Equal(100, 0))
-            throw;
-        if(item->AggregatedBuyQuotes()->Item(0)->Size() != 200)
-            throw;
-
-        info = this->m_helper->CreateOLRCurrItemInfo("symbol1", "session1", 100, 0, 100, 0, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "222222", 2);
-        item->ProcessIncrementalMessage(info);
-
-        if(item->AggregatedBuyQuotes()->Count() != 1)
-            throw;
-        if(!item->AggregatedBuyQuotes()->Item(0)->Price()->Equal(100, 0))
-            throw;
-        if(item->AggregatedBuyQuotes()->Item(0)->Size() != 300)
-            throw;
-
-        info = this->m_helper->CreateOLRCurrItemInfo("symbol1", "session1", 100, 0, 50, 0, MDUpdateAction::mduaDelete, MDEntryType::mdetBuyQuote, "222222", 3);
-        item->ProcessIncrementalMessage(info);
-
-        if(item->AggregatedBuyQuotes()->Count() != 1)
-            throw;
-        if(!item->AggregatedBuyQuotes()->Item(0)->Price()->Equal(100, 0))
-            throw;
-        if(item->AggregatedBuyQuotes()->Item(0)->Size() != 250)
-            throw;
-
-        info = this->m_helper->CreateOLRCurrItemInfo("symbol1", "session1", 100, 0, 50, 0, MDUpdateAction::mduaChange, MDEntryType::mdetBuyQuote, "111111", 4);
-        item->ProcessIncrementalMessage(info);
-
-        if(item->AggregatedBuyQuotes()->Count() != 1)
-            throw;
-        if(!item->AggregatedBuyQuotes()->Item(0)->Price()->Equal(100, 0))
-            throw;
-        if(item->AggregatedBuyQuotes()->Item(0)->Size() != 100)
-            throw;
-    }
-
-    void Test_Aggregated() {
-        this->m_helper->SetCurrMode();
-        printf("OLR CURR Test_OnIncrementalRefresh_OLR_CURR\n");
-        Test_OnIncrementalRefresh_OLR_CURR_Aggregated();
-        printf("OLR CURR Test_OnFullRefresh_OBS_CURR\n");
-        Test_OnFullRefresh_OBS_CURR_Aggregated();
-        printf("OLR CURR Test_OnIncrementalRefresh_OLR_CURR_SellQuotes\n");
-        Test_OnIncrementalRefresh_OLR_CURR_SellQuotes_Aggregated();
-        printf("OLR CURR Test_OnFullRefresh_OBS_CURR_SellQuotes\n");
-        Test_OnFullRefresh_OBS_CURR_SellQuotes_Aggregated();
-        printf("OLR CURR Test_Aggregation_Logic\n");
-        Test_Aggregation_Logic();
-    }
-    
-    
-    
     void Test() {
         TestDefaults();
         TestStringIdComparer();
         TestInfoAndItemInfoUsageAndAllocationCurr();
         Test_OLR_CURR();
-        Test_Aggregated();
         TestOrderTableItem();
         TestConnection();
     }
