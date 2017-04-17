@@ -143,7 +143,7 @@ void ItoaConverter::Initialize() {
 
 	ItoaConverter::charDigit2 = new int[max2DigiValue - min2DigitValue];
 	
-	char digit[2] = { 0, 0 };
+	char digit[4] = { 0, 0, 0, 0 };
 	int *index = (int*)digit;
 	for (int i = 0; i < 100; i++) {
 		int iarr = (*index & 0x0000ffff);
@@ -160,7 +160,7 @@ void ItoaConverter::Initialize() {
 		}
 	}
 
-	char digit3[] = { 0, 0, 0 };
+	char digit3[4] = { 0, 0, 0, 0 };
 	int max3DigitValue = 0x393939 + 1;
 	int min3DigitValue = 0x303030;
 

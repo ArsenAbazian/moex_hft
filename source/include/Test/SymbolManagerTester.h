@@ -219,8 +219,10 @@ public:
         bool isNewlyAdded = false;
 
         // IT IS IMPORTANT!!!! To preven PointerList from appending new items...
-        if(m->m_pool->CalcPoolCount() != m->m_pool->Capacity())
+        if(m->m_pool->CalcPoolCount() != m->m_pool->Capacity()) {
+            delete m;
             throw;
+        }
 
         m->GetSymbol("symbol1", 2, &isNewlyAdded);
         m->GetSymbol("symbol2", 2, &isNewlyAdded);
@@ -229,8 +231,10 @@ public:
             throw;
 
         m->Clear();
-        if(m->m_pool->CalcPoolCount() != m->m_pool->Capacity())
+        if(m->m_pool->CalcPoolCount() != m->m_pool->Capacity()) {
+            delete m;
             throw;
+        }
     }
 
     void TestAddSymbols2() {

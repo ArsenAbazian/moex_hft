@@ -3702,7 +3702,7 @@ public:
         (&(sd->InitialMarginOnBuy))->Set(&(info->InitialMarginOnBuy));
         (&(sd->InitialMarginOnSell))->Set(&(info->InitialMarginOnSell));
         (&(sd->InitialMarginSyntetic))->Set(&(info->InitialMarginSyntetic));
-        printf("%s isf %s %lu\n", this->m_channelName, DebugInfoManager::Default->GetString(sd->Symbol, sd->SymbolLength, 0), info->SecurityID);
+        printf("%s isf %s %" PRIu64 "\n", this->m_channelName, DebugInfoManager::Default->GetString(sd->Symbol, sd->SymbolLength, 0), info->SecurityID);
         return true;
     }
 

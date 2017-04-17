@@ -2,7 +2,7 @@
 
 
 FixProtocolManager::FixProtocolManager(ISocketBufferProvider *provider, const char *protocolVersion) {
-	this->messageBuffer = this->currentPos = NULL;
+	this->messageBuffer = this->currentPos = 0;
     this->m_sendMsgSeqNo = 1;
     this->m_recvMsgSeqNo = 1;
 	this->intConverter = new ItoaConverter();
@@ -13,10 +13,21 @@ FixProtocolManager::FixProtocolManager(ISocketBufferProvider *provider, const ch
     this->m_protocolVersion = protocolVersion;
     this->m_protocolVersionLength = strlen(protocolVersion);
 
+    memset(this->senderComputerId, 0, 100);
+    this->senderComputerIdLength = 0;
+    memset(this->targetComputerId, 0, 100);
+    this->targetComputerIdLength = 0;
+    this->receivedMessageLength = 0;
+    this->m_sendMessageBuffer = 0;
+    this->m_sendItemStartIndex = 0;
+    this->messageBufferSize = 0;
+    this->m_currMsg = 0;
+    this->currentPos = 0;
+
     this->m_recvBuffer = this->m_bufferProvider->RecvBuffer();
     this->m_sendBuffer = this->m_bufferProvider->SendBuffer();
     this->m_rejectInfo = new FixRejectInfo();
-    memset(this->m_rejectInfo, sizeof(FixRejectInfo), 0);
+    memset(this->m_rejectInfo, 0, sizeof(FixRejectInfo));
 
     for(int i = 0; i < this->m_maxRecvMessageCount; i++) {
         this->m_recvMessage[i] = new FixProtocolMessage(this->intConverter,

@@ -36,13 +36,14 @@ public:
     LinkedPointer<MDEntryQueue>                         *Pointer;
     bool                                                Used;
 
-    MDEntryQueue() {
-        this->Used = false;
-        this->Pointer = 0;
+    MDEntryQueue() :
+            Used(false),
+            Pointer(0),
+            Allocator(0),
+            m_incEntriesMaxIndex(-1),
+            m_incStartRptSeq(0) {
         this->m_incEntries = new void *[MDENTRYINFO_INCREMENTAL_ENTRIES_BUFFER_LENGTH];
         memset(this->m_incEntries, 0, sizeof(void *) * this->m_incEntriesCount);
-        this->m_incEntriesMaxIndex = -1;
-        this->m_incStartRptSeq = 0;
     }
     ~MDEntryQueue() {
         delete this->m_incEntries;

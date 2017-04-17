@@ -12,11 +12,11 @@
 #include "FixMessage.h"
 #include "../Managers/WinSockManager.h"
 
-#define AddTagValue(tagName, tagValue) tagName AddEqual(); AddValue(tagValue); AddSeparator();
-#define AddTagSymbolValue(tagName, tagValue) tagName AddEqual(); AddSymbol(tagValue); AddSeparator();
-#define AddTagString(tagName, tagValueString) tagName AddEqual(); AddArray(tagValueString); AddSeparator();
-#define AddTagString2(tagName, tagValueString, length) tagName AddEqual(); AddArray(tagValueString, length); AddSeparator();
-#define AddTagData(tagName, tagData, tagDataLen) tagName AddEqual(); AddArray(tagData, tagDataLen); AddSeparator();
+#define AddTagValue(tagName, tagValue) { tagName AddEqual(); AddValue(tagValue); AddSeparator(); }
+#define AddTagSymbolValue(tagName, tagValue) { tagName AddEqual(); AddSymbol(tagValue); AddSeparator(); }
+#define AddTagString(tagName, tagValueString) { tagName AddEqual(); AddArray(tagValueString); AddSeparator(); }
+#define AddTagString2(tagName, tagValueString, length) { tagName AddEqual(); AddArray(tagValueString, length); AddSeparator(); }
+#define AddTagData(tagName, tagData, tagDataLen) tagName AddEqual(); { AddArray(tagData, tagDataLen); AddSeparator(); }
 
 class FixProtocolManager {
 

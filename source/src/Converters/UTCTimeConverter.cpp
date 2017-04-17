@@ -8,10 +8,11 @@ CharVector2 *UTCTimeConverter::hours = NULL;
 CharVector3 *UTCTimeConverter::miliseconds = NULL;
 
 
-UTCTimeConverter::UTCTimeConverter()
-{
+UTCTimeConverter::UTCTimeConverter() {
 	if (UTCTimeConverter::years == NULL)
 		Initialize();
+	memset(&(this->currentTime), 0, sizeof(SYSTEMTIME));
+	this->currentMs = 0;
 	this->tval = new struct timeval;
 	this->calendarTime = new struct tm;
 	this->converter = new ItoaConverter();

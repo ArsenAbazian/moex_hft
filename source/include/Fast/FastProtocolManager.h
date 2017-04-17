@@ -5930,8 +5930,6 @@ public:
 				}
 			}
 		}
-		this->m_lastDecodedInfo = this->DecodeAstsUnsupportedMessage();
-		return this->m_lastDecodedInfo;
 	}
 	void PrintAsts() {
 
@@ -6971,8 +6969,6 @@ public:
 				}
 			}
 		}
-		this->m_lastDecodedInfo = this->DecodeFortsUnsupportedMessage();
-		return this->m_lastDecodedInfo;
 	}
 	void PrintForts() {
 

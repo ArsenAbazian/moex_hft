@@ -45,6 +45,7 @@ class FixProtocolMessage {
 
 public:
     FixProtocolMessage(ItoaConverter *intConv, UTCTimeConverter *timeConv, DtoaConverter *doubleConv, FixRejectInfo *rejectInfo) {
+        this->m_currentTag = 0;
         this->m_headerInfo = new FixHeaderInfo;
         this->m_resendRequestInfo = new FixResendRequestInfo;
         this->m_marketDataRequestInfo = new FixMarketDataRequestInfo();

@@ -68,7 +68,7 @@ int main(int argc, char** argv) {
             manager->PrintAsts();
         }
         delete manager;
-        delete msg;
+        delete[] msg;
         return 0;
     }
 

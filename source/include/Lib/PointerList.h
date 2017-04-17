@@ -151,8 +151,9 @@ public:
         do {
             if(this->m_autoAllocate)
                 delete node->Data();
+            LinkedPointer<T> *nextNode = node->Next();
             delete node;
-            node = node->Next();
+            node = nextNode;
         }
         while(node != this->m_poolTail);
     }

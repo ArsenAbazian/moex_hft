@@ -1702,8 +1702,6 @@ namespace prebuild {
 			WriteLine("\t\tthis->Decode" + Prefix + "Header();");
 			List<DecodeMessageInfo> messages = GetDecodeMessageMethods(templatesNode);
 			WriteSelector("\t\t", GetDecodeMessageMethods(templatesNode), new WriteConditionDelegate(WriteDecodeMethod));
-			WriteLine("\t\tthis->m_lastDecodedInfo = this->Decode" + Prefix + "UnsupportedMessage();");
-			WriteLine("\t\treturn this->m_lastDecodedInfo;");
 			WriteLine("\t}");
 
 			WriteLine("\tvoid Print" + Prefix + "() {");

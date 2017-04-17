@@ -51,6 +51,7 @@ public:
         this->idf->IdfAllowGenerateSecurityDefinitions(true);
         this->idf->AllowSaveSecurityDefinitions(false);
         StatisticsInfo<AstsGenericItemInfo> *st = new StatisticsInfo<AstsGenericItemInfo>(); // force init StatisticItemAllocator
+        delete st;
     }
     ~SecurityDefinitionTester() {
         delete this->olr;

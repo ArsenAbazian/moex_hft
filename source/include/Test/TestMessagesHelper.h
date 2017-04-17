@@ -307,8 +307,10 @@ void AddFeedInfo(FeedConnection *feed, TestTemplateInfo **tmp, int templatesCoun
             }
             item->m_symbol = this->m_keys[entryIndex + 1];
             if(IsForts()) {
-                if(KeyIndex("sid", entryIndex + 2) != entryIndex + 2)
+                if(KeyIndex("sid", entryIndex + 2) != entryIndex + 2) {
+                    delete item;
                     throw;
+                }
                 item->m_securityId = atoi(this->m_keys[entryIndex + 3]);
                 entryIndex+=2;
             }

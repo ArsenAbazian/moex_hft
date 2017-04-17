@@ -78,7 +78,8 @@ public:
             m_size(0, 0),
             m_netChangePrevDay(0, 0),
             m_changeFromWAPrice(0, 0),
-            m_tradeValue(0, 0) {
+            m_tradeValue(0, 0),
+            m_dealTime(0) {
         this->m_pricePtr = &(this->m_price);
         this->m_sizePtr = &(this->m_size);
         this->m_netChangePrevDayPtr = &(this->m_netChangePrevDay);
