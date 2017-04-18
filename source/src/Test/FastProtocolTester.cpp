@@ -586,15 +586,43 @@ void FastProtocolTester::TestReadInt32_Mandatory() {
 	printf("Test FastProtocolTester::TestReadInt32_Mandatory\n");
     manager->SetNewBuffer(new unsigned char[100], 100);
 
-	for (int i = 0; i > -2147483630; i -= 5) {
+    for (int i = 0; i < 0x7ffffff0; i+= 5) {
+        manager->ResetBuffer();
+        manager->WriteInt32_Mandatory(i);
+        manager->ResetBuffer();
+        INT32 value = manager->ReadInt32_Mandatory_Optimized();
+        if (value != i)
+            throw;
+        /*
+        if ((i % 1000000) == 0)
+            printf("%d\n", i);
+            */
+    }
+
+    for (int i = 0; i > -2147483630; i -= 5) {
+        manager->ResetBuffer();
+        manager->WriteInt32_Mandatory(i);
+        manager->ResetBuffer();
+        INT32 value = manager->ReadInt32_Mandatory_Optimized();
+        if (value != i)
+            throw;
+        /*
+        if ((i % 1000000) == 0)
+            printf("%d\n", i);
+            */
+    }
+
+    for (int i = 0; i > -2147483630; i -= 5) {
 		manager->ResetBuffer();
 		manager->WriteInt32_Mandatory(i);
 		manager->ResetBuffer();
 		INT32 value = manager->ReadInt32_Mandatory();
 		if (value != i)
 			throw;
+        /*
 		if ((i % 1000000) == 0)
 			printf("%d\n", i);
+         */
 	}
 
 	for (int i = 0; i < 0x7ffffff0; i+= 5) { 
@@ -604,8 +632,10 @@ void FastProtocolTester::TestReadInt32_Mandatory() {
 		INT32 value = manager->ReadInt32_Mandatory();
 		if (value != i)
 			throw;
+        /*
 		if ((i % 1000000) == 0)
 			printf("%d\n", i);
+         */
 	}
 
 	delete manager;

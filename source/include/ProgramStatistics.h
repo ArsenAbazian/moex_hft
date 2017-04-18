@@ -60,6 +60,7 @@ typedef enum _Counters {
     cReadInt8Byte = 43, // read int 8 byte
     cReadInt9Byte = 43, // read int 9 byte
     cReadInt10Byte = 43, // read int 10 byte
+	cReadInt11Byte = 43, // read int 11 byte
 #pragma endregion
 }Counters;
 
