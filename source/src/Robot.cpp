@@ -642,6 +642,10 @@ bool Robot::MainLoop_CurrOnly() {
             printf("--------\n");
             printf("cycle count for 1 sec = %d. %g nanosec per cycle\n", cycleCount, nanosecPerCycle);
             this->PrintStatistics();
+            ProgramStatistics::Current->Print();
+            ProgramStatistics::Total->Print();
+            ProgramStatistics::Current->Clear();
+            ProgramStatistics::Total->ResetFlags();
 
             w->Reset();
             cycleCount = 0;

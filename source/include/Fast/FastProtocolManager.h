@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <math.h>
 #include <inttypes.h>
+#include "../ProgramStatistics.h"
 
 class FastProtocolManager;
 class OrderTesterFond;
@@ -1629,6 +1630,9 @@ public:
 
 			result |= memory & 0x7f;
 			if ((memory & 0x80) != 0) {
+#ifdef COLLECT_STATISTICS
+				ProgramStatistics::Defalt->Inc(Counters::cReadInt2Byte);
+#endif
 				this->currentPos += 2;
 				return result;
 			}
@@ -1636,6 +1640,9 @@ public:
 			memory >>= 8;
 			result |= memory & 0x7f;
 			if ((memory & 0x80) != 0) {
+#ifdef COLLECT_STATISTICS
+				ProgramStatistics::Defalt->Inc(Counters::cReadInt2Byte);
+#endif
 				this->currentPos += 3;
 				return result;
 			}

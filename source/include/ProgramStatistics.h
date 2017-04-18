@@ -50,6 +50,16 @@ typedef enum _Counters {
 	cAddObr = 35, // add obr
 	cRemoveObr = 36, // add obr
 	cChangeObr = 37, // change obr
+    cReadInt1Byte = 38, // read int 1 byte
+    cReadInt2Byte = 39, // read int 2 byte
+    cReadInt3Byte = 40, // read int 3 byte
+    cReadInt4Byte = 41, // read int 4 byte
+    cReadInt5Byte = 42, // read int 5 byte
+    cReadInt6Byte = 43, // read int 6 byte
+    cReadInt7Byte = 43, // read int 7 byte
+    cReadInt8Byte = 43, // read int 8 byte
+    cReadInt9Byte = 43, // read int 9 byte
+    cReadInt10Byte = 43, // read int 10 byte
 #pragma endregion
 }Counters;
 
@@ -146,7 +156,7 @@ public:
         for(int i = 0; i < this->m_itemsCount; i++) {
             if(this->m_changed[i]) {
 				//std::cout2 << this->m_names[i] << " = " << this->m_counts[i];
-				printf("%s = %d", this->m_names[i], this->m_counts[i]);
+				printf("%s = %d\n", this->m_names[i], this->m_counts[i]);
 			}
         }
     }

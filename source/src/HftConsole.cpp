@@ -120,10 +120,10 @@ int main(int argc, char** argv) {
     DebugInfoManager::Default->PrintMemoryInfo("Before Robot::Robot");
 	Robot *robot = new Robot();
 	robot->AllowFortsMarket(false);
-	robot->AllowFondMarket(true);
+	robot->AllowFondMarket(false);
 	robot->AllowCurrMarket(true);
-	robot->AllowFutures(true);
-	robot->AllowOptions(true);
+	robot->AllowFutures(false);
+	robot->AllowOptions(false);
 	robot->AllowMarketDataGroup(MarketDataGroupId::mdgidFutBook1, false);
 	robot->AllowMarketDataGroup(MarketDataGroupId::mdgidFutBook5, false);
 	robot->AllowMarketDataGroup(MarketDataGroupId::mdgidFutBook20, false);

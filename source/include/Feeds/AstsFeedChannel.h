@@ -1,9 +1,9 @@
 #pragma once
 #include "FeedConnections.h"
 
-#define ALLOW_TRADES
+//#define ALLOW_TRADES
 #define ALLOW_ORDERS
-#define ALLOW_STATISTICS
+//#define ALLOW_STATISTICS
 #define ALLOW_STATUS
 
 typedef enum _FeedChannelState {
