@@ -3273,6 +3273,9 @@ namespace prebuild {
 				return false;
 			}
 		}
+		public void NextLine() {
+			Line++;
+		}
 		public int FindString (string searchString) {
 			if(Line < 0 || Line > LineCount)
 				Line = 0;
@@ -3424,6 +3427,7 @@ namespace prebuild {
 			//}
 
 			GenerateLogMessages();
+			GenerateStatisticMessages();
 			GenerateFast();
 		}
 		static void GenerateFast() {
@@ -3486,6 +3490,88 @@ namespace prebuild {
 
 		static string LogMessageCodes_GeneratedCode = "LogMessageCodes_GeneratedCode";
 		static string LogMessagesProvider_InitializeLogMessageText_GeneratedCode = "LogMessagesProvider_InitializeLogMessageText_GeneratedCode";
+		static string ProgramStatistics_GeneratedCode = "ProgramStatistics_GeneratedCode";
+		static string ProgramStatistics_Enum = "ProgramStatistics_Enum";
+
+		public class EnumText { 
+			public string Value { get; set; }
+			public string Text { get; set; }
+		}
+
+		public static void GenerateStatisticMessages() {
+			Console.WriteLine("generate statistic messages...");
+			List<TextFile> files = LoadSourceFiles();
+			if(files == null)
+				throw new Exception("can't load source files ");
+
+			TextFile file = GetFileWithRegion(ProgramStatistics_GeneratedCode, files);
+			if (file == null) {
+				Console.WriteLine ("error: can't find file containing '" + ProgramStatistics_GeneratedCode + "' region");
+				throw new Exception ("error: can't find file containing '" + ProgramStatistics_GeneratedCode + "' region");
+			}
+			file.Line = 0;
+			int start = file.FindString (ProgramStatistics_Enum);
+			if (start == -1) {
+				Console.WriteLine ("error: can't find '" + ProgramStatistics_Enum + "' region");
+				throw new Exception ("error: can't find '" + ProgramStatistics_Enum + "' region");
+			}
+			int end = file.FindString ("endregion");
+			List<EnumText> values = new List<EnumText> ();
+
+			for (int i = start + 1; i < end;) {
+				file.Line = i;
+				string enumString = file.LineText.Trim();
+				EnumText et = new EnumText ();
+				if (enumString.StartsWith ("//")) {
+					et.Text = enumString.Substring (2).Trim();
+					i++;
+					file.Line = i;
+				}
+				enumString = file.LineText.Trim();
+				if (string.IsNullOrEmpty (enumString)) {
+					i++; continue;
+				}
+				string[] lines = enumString.Split (',');
+				if (lines == null || lines.Length == 0) {
+					i++;
+					continue;
+				}
+				if (lines[0].Contains ('=')) {
+					lines [0] = lines [0].Split ('=')[0].Trim ();
+				}
+				et.Value = lines [0];
+				if (lines.Length > 0 && !string.IsNullOrEmpty (lines [1])) {
+					et.Text = lines [1].Trim ().Substring (2).Trim();
+				}
+				if (string.IsNullOrEmpty (et.Text))
+					et.Text = et.Value.Substring (1);
+				i++;
+				values.Add (et);
+			}
+			file.Line = 0;
+			file.ClearRegion (ProgramStatistics_Enum);
+			for (int i = 0; i < values.Count; i++) {
+				file.Add ("\t" + values [i].Value + " = " + i + ", // " + values [i].Text);
+			}
+
+			if (file.FindString (ProgramStatistics_GeneratedCode) == -1) {
+				Console.WriteLine ("error: can't find '" + ProgramStatistics_GeneratedCode + "' region");
+				throw new Exception ("error: can't find '" + ProgramStatistics_GeneratedCode + "' region");
+			}
+
+			file.ClearRegion (ProgramStatistics_GeneratedCode);
+			file.Add ("\t\tthis->m_itemsCount = " + values.Count + ";");
+			file.Add ("\t\tthis->m_counts = new int[ this->m_itemsCount ];");
+			file.Add ("\t\tthis->m_changed = new bool[ this->m_itemsCount ];");
+			file.Add ("\t\tthis->m_names = new const char*[" + values.Count() +"];");
+			for (int i = 0; i < values.Count; i++) {
+				file.Add ("\t\tthis->m_names[" + i + "] = \"" + values[i].Text + "\";");
+			}
+			if(file.Modified && !file.Save())
+				throw new IOException("error: cannot update file " + file.FileName);
+			
+			Console.WriteLine("done.");
+		}
 
 		public static void GenerateLogMessages () { 
 			Console.WriteLine("generate log messages...");
@@ -3498,11 +3584,11 @@ namespace prebuild {
 
 			if(enumFile == null) {
 				Console.WriteLine("error: can't find file containing 'LogMessageCodes_GeneratedCode' region");
-				return;
+				throw new Exception("can't find file containing 'LogMessageCodes_GeneratedCode' region");
 			}
 			if(msgInitFile == null) {
 				Console.WriteLine("error: can't find file containing 'LogMessagesProvider_InitializeLogMessageText_GeneratedCode' region");
-				return;
+				throw new Exception("can't find file containing 'LogMessagesProvider_InitializeLogMessageText_GeneratedCode' region");
 			}
 
 			List<EnumInfo> availableEnums = GetAvailableEnums(enumFile, msgInitFile);

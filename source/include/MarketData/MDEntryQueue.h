@@ -122,11 +122,11 @@ public:
         this->Reset();
     }
 
-    inline int MaxIndex() { return this->m_incEntriesMaxIndex; }
-    inline bool HasEntries() { return this->m_incEntriesMaxIndex != -1; };
-    inline void** Entries() { return this->m_incEntries; }
-    inline int RptSeq() { return this->m_incStartRptSeq; }
-    inline int Capacity() { return this->m_incEntriesCount; }
+    inline int MaxIndex() const { return this->m_incEntriesMaxIndex; }
+    inline bool HasEntries() const { return this->m_incEntriesMaxIndex != -1; };
+    inline void** Entries() const { return this->m_incEntries; }
+    inline int RptSeq() const { return this->m_incStartRptSeq; }
+    inline int Capacity() const { return this->m_incEntriesCount; }
 };
 
 #endif //HFT_ROBOT_MARKETDATAENTRYQUEUE_H

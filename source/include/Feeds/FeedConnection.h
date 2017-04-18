@@ -216,7 +216,7 @@ protected:
             this->m_symbolsForts[i] = new LinkedPointer<FortsSecurityDefinitionInfo>();
         this->m_symbolsCount = 0;
         this->m_idfMode = FeedConnectionSecurityDefinitionMode::sdmCollectData;
-        this->m_symbolManager = new SymbolManager(RobotSettings::Default->MarketDataMaxSymbolsCount, true);
+        this->m_symbolManager = new SymbolManager(RobotSettings::Default->MarketDataMaxSymbolsCountForts, true);
     }
     void InitializeSecurityDefinition() {
         this->m_symbols = new LinkedPointer<AstsSecurityDefinitionInfo>*[RobotSettings::Default->MaxSecurityDefinitionCount];
@@ -572,8 +572,8 @@ protected:
         this->m_incremental->OrderFond()->ObtainSnapshotItem(this->GetAstsSnapshotSymbolIndex(), this->m_astsSnapshotInfo);
         if(this->m_incremental->OrderFond()->ApplyQuickSnapshot(this->m_astsSnapshotInfo)) {
 #ifdef COLLECT_STATISTICS
-            ProgramStatistics::Current->IncFondOlsProcessedCount();
-            ProgramStatistics::Total->IncFondOlsProcessedCount();
+            ProgramStatistics::Current->Inc(Counters::cFondOls);
+            ProgramStatistics::Total->Inc(Counters::cFondOls);
 #endif
             return false; // skip all the snapshot
         }
@@ -585,8 +585,8 @@ protected:
     inline bool ApplySnapshotPart_OLS_FOND(int index) {
         this->PrepareDecodeSnapshotMessage(index);
 #ifdef COLLECT_STATISTICS
-        ProgramStatistics::Current->IncFondOlsProcessedCount();
-        ProgramStatistics::Total->IncFondOlsProcessedCount();
+        ProgramStatistics::Current->Inc(Counters::cFondOls);
+        ProgramStatistics::Total->Inc(Counters::cFondOls);
 #endif
         AstsOLSFONDInfo *info = this->m_fastProtocolManager->DecodeAstsOLSFOND();
         this->m_incremental->OrderFond()->ProcessSnapshot(info);
@@ -608,8 +608,8 @@ protected:
         this->m_incremental->OrderCurr()->ObtainSnapshotItem(this->GetAstsSnapshotSymbolIndex(), this->m_astsSnapshotInfo);
         if(this->m_incremental->OrderCurr()->ApplyQuickSnapshot(this->m_astsSnapshotInfo)) {
 #ifdef COLLECT_STATISTICS
-            ProgramStatistics::Current->IncCurrOlsProcessedCount();
-            ProgramStatistics::Total->IncCurrOlsProcessedCount();
+            ProgramStatistics::Current->Inc(Counters::cCurrOls);
+            ProgramStatistics::Total->Inc(Counters::cCurrOls);
 #endif
             return false; // skip all the snapshot
         }
@@ -621,8 +621,8 @@ protected:
     inline bool ApplySnapshotPart_OLS_CURR(int index) {
         this->PrepareDecodeSnapshotMessage(index);
 #ifdef COLLECT_STATISTICS
-        ProgramStatistics::Current->IncCurrOlsProcessedCount();
-        ProgramStatistics::Total->IncCurrOlsProcessedCount();
+        ProgramStatistics::Current->Inc(Counters::cCurrOls);
+        ProgramStatistics::Total->Inc(Counters::cCurrOls);
 #endif
         AstsOLSCURRInfo *info = this->m_fastProtocolManager->DecodeAstsOLSCURR();
         this->m_incremental->OrderCurr()->ProcessSnapshot(info);
@@ -644,8 +644,8 @@ protected:
         this->m_incremental->TradeFond()->ObtainSnapshotItem(this->GetAstsSnapshotSymbolIndex(), this->m_astsSnapshotInfo);
         if(this->m_incremental->TradeFond()->ApplyQuickSnapshot(this->m_astsSnapshotInfo)) {
 #ifdef COLLECT_STATISTICS
-            ProgramStatistics::Current->IncFondTlsProcessedCount();
-            ProgramStatistics::Total->IncFondTlsProcessedCount();
+            ProgramStatistics::Current->Inc(Counters::cFondTls);
+            ProgramStatistics::Total->Inc(Counters::cFondTls);
 #endif
             return false; // skip all the snapshot
         }
@@ -657,8 +657,8 @@ protected:
     inline bool ApplySnapshotPart_TLS_FOND(int index) {
         this->PrepareDecodeSnapshotMessage(index);
 #ifdef COLLECT_STATISTICS
-        ProgramStatistics::Current->IncFondTlsProcessedCount();
-        ProgramStatistics::Total->IncFondTlsProcessedCount();
+        ProgramStatistics::Current->Inc(Counters::cFondTls);
+        ProgramStatistics::Total->Inc(Counters::cFondTls);
 #endif
         AstsTLSFONDInfo *info = this->m_fastProtocolManager->DecodeAstsTLSFOND();
         this->m_incremental->TradeFond()->ProcessSnapshot(info);
@@ -680,8 +680,8 @@ protected:
         this->m_incremental->TradeCurr()->ObtainSnapshotItem(this->GetAstsSnapshotSymbolIndex(), this->m_astsSnapshotInfo);
         if(this->m_incremental->TradeCurr()->ApplyQuickSnapshot(this->m_astsSnapshotInfo)) {
 #ifdef COLLECT_STATISTICS
-            ProgramStatistics::Current->IncCurrTlsProcessedCount();
-            ProgramStatistics::Total->IncCurrTlsProcessedCount();
+            ProgramStatistics::Current->Inc(Counters::cCurrTls);
+            ProgramStatistics::Total->Inc(Counters::cCurrTls);
 #endif
             return false; // skip all the snapshot
         }
@@ -693,8 +693,8 @@ protected:
     inline bool ApplySnapshotPart_TLS_CURR(int index) {
         this->PrepareDecodeSnapshotMessage(index);
 #ifdef COLLECT_STATISTICS
-        ProgramStatistics::Current->IncCurrTlsProcessedCount();
-        ProgramStatistics::Total->IncCurrTlsProcessedCount();
+        ProgramStatistics::Current->Inc(Counters::cCurrTls);
+        ProgramStatistics::Total->Inc(Counters::cCurrTls);
 #endif
         AstsTLSCURRInfo *info = this->m_fastProtocolManager->DecodeAstsTLSCURR();
         this->m_incremental->TradeCurr()->ProcessSnapshot(info);
@@ -716,8 +716,8 @@ protected:
         this->m_incremental->StatisticFond()->ObtainSnapshotItem(this->GetAstsSnapshotSymbolIndex(), this->m_astsSnapshotInfo);
         if(this->m_incremental->StatisticFond()->ApplyQuickSnapshot(this->m_astsSnapshotInfo)) {
 #ifdef COLLECT_STATISTICS
-            ProgramStatistics::Current->IncFondMssProcessedCount();
-            ProgramStatistics::Total->IncFondMssProcessedCount();
+            ProgramStatistics::Current->Inc(Counters::cFondMss);
+            ProgramStatistics::Total->Inc(Counters::cFondMss);
 #endif
             return false; // skip all the snapshot
         }
@@ -729,8 +729,8 @@ protected:
     inline bool ApplySnapshotPart_MSS_FOND(int index) {
         this->PrepareDecodeSnapshotMessage(index);
 #ifdef COLLECT_STATISTICS
-        ProgramStatistics::Current->IncFondMssProcessedCount();
-        ProgramStatistics::Total->IncFondMssProcessedCount();
+        ProgramStatistics::Current->Inc(Counters::cFondMss);
+        ProgramStatistics::Total->Inc(Counters::cFondMss);
 #endif
         AstsGenericInfo *info = this->m_fastProtocolManager->DecodeAstsGeneric();
         this->m_incremental->StatisticFond()->ProcessSnapshot(info);
@@ -752,8 +752,8 @@ protected:
         this->m_incremental->StatisticCurr()->ObtainSnapshotItem(this->GetAstsSnapshotSymbolIndex(), this->m_astsSnapshotInfo);
         if(this->m_incremental->StatisticCurr()->ApplyQuickSnapshot(this->m_astsSnapshotInfo)) {
 #ifdef COLLECT_STATISTICS
-            ProgramStatistics::Current->IncCurrMssProcessedCount();
-            ProgramStatistics::Total->IncCurrMssProcessedCount();
+            ProgramStatistics::Current->Inc(Counters::cCurrMss);
+            ProgramStatistics::Total->Inc(Counters::cCurrMss);
 #endif
             return false; // skip all the snapshot
         }
@@ -765,8 +765,8 @@ protected:
     inline bool ApplySnapshotPart_MSS_CURR(int index) {
         this->PrepareDecodeSnapshotMessage(index);
 #ifdef COLLECT_STATISTICS
-        ProgramStatistics::Current->IncCurrMssProcessedCount();
-        ProgramStatistics::Total->IncCurrMssProcessedCount();
+        ProgramStatistics::Current->Inc(Counters::cCurrMss);
+        ProgramStatistics::Total->Inc(Counters::cCurrMss);
 #endif
         AstsGenericInfo *info = this->m_fastProtocolManager->DecodeAstsGeneric();
         this->m_incremental->StatisticCurr()->ProcessSnapshot(info);
@@ -1807,90 +1807,90 @@ protected:
 
     inline void UpdateLostPacketsStatistic(int count) {
         if(this->m_id == FeedConnectionId::fcidIdfCurr) {
-            ProgramStatistics::Current->CurrIdfLostCount(count);
-            ProgramStatistics::Total->CurrIdfLostCount(ProgramStatistics::Total->CurrIdfLostCount() + count);
+            ProgramStatistics::Current->Set(Counters::cCurrIdfLost, count);
+            ProgramStatistics::Total->Inc(Counters::cCurrIdfLost, count);
             return;
         }
         if(this->m_id == FeedConnectionId::fcidIdfFond) {
-            ProgramStatistics::Current->FondIdfLostCount(count);
-            ProgramStatistics::Total->FondIdfLostCount(ProgramStatistics::Total->FondIdfLostCount() + count);
+            ProgramStatistics::Current->Set(Counters::cFondIdfLost, count);
+            ProgramStatistics::Total->Inc(Counters::cFondIdfLost, count);
             return;
         }
         
         if(this->m_id == FeedConnectionId::fcidOlrCurr) {
-            ProgramStatistics::Current->CurrOlrLostCount(count);
-            ProgramStatistics::Total->CurrOlrLostCount(ProgramStatistics::Total->CurrOlrLostCount() + count);
+            ProgramStatistics::Current->Set(Counters::cCurrOlrLost, count);
+            ProgramStatistics::Total->Inc(Counters::cCurrOlrLost, count);
             return;
         }
         if(this->m_id == FeedConnectionId::fcidOlrFond) {
-            ProgramStatistics::Current->FondOlrLostCount(count);
-            ProgramStatistics::Total->FondOlrLostCount(ProgramStatistics::Total->FondOlrLostCount() + count);
+            ProgramStatistics::Current->Set(Counters::cFondOlrLost, count);
+            ProgramStatistics::Total->Inc(Counters::cFondOlrLost, count);
             return;
         }
 
         if(this->m_id == FeedConnectionId::fcidOlsCurr) {
-            ProgramStatistics::Current->CurrOlsLostCount(count);
-            ProgramStatistics::Total->CurrOlsLostCount(ProgramStatistics::Total->CurrOlsLostCount() + count);
+            ProgramStatistics::Current->Set(Counters::cCurrOlsLost, count);
+            ProgramStatistics::Total->Inc(Counters::cCurrOlsLost, count);
             return;
         }
         if(this->m_id == FeedConnectionId::fcidOlsFond) {
-            ProgramStatistics::Current->FondOlsLostCount(count);
-            ProgramStatistics::Total->FondOlsLostCount(ProgramStatistics::Total->FondOlsLostCount() + count);
+            ProgramStatistics::Current->Set(Counters::cFondOlsLost, count);
+            ProgramStatistics::Total->Inc(Counters::cFondOlsLost, count);
             return;
         }
 
         if(this->m_id == FeedConnectionId::fcidTlrCurr) {
-            ProgramStatistics::Current->CurrTlrLostCount(count);
-            ProgramStatistics::Total->CurrTlrLostCount(ProgramStatistics::Total->CurrTlrLostCount() + count);
+            ProgramStatistics::Current->Set(Counters::cCurrTlrLost, count);
+            ProgramStatistics::Total->Inc(Counters::cCurrTlrLost, count);
             return;
         }
         if(this->m_id == FeedConnectionId::fcidTlrFond) {
-            ProgramStatistics::Current->FondTlrLostCount(count);
-            ProgramStatistics::Total->FondTlrLostCount(ProgramStatistics::Total->FondTlrLostCount() + count);
+            ProgramStatistics::Current->Set(Counters::cFondTlrLost, count);
+            ProgramStatistics::Total->Inc(Counters::cFondTlrLost, count);
             return;
         }
 
         if(this->m_id == FeedConnectionId::fcidTlsCurr) {
-            ProgramStatistics::Current->CurrTlsLostCount(count);
-            ProgramStatistics::Total->CurrTlsLostCount(ProgramStatistics::Total->CurrTlsLostCount() + count);
+            ProgramStatistics::Current->Set(Counters::cCurrTlsLost, count);
+            ProgramStatistics::Total->Inc(Counters::cCurrTlsLost, count);
             return;
         }
         if(this->m_id == FeedConnectionId::fcidTlsFond) {
-            ProgramStatistics::Current->FondTlsLostCount(count);
-            ProgramStatistics::Total->FondTlsLostCount(ProgramStatistics::Total->FondTlsLostCount() + count);
+            ProgramStatistics::Current->Set(Counters::cFondTlsLost, count);
+            ProgramStatistics::Total->Inc(Counters::cFondTlsLost, count);
             return;
         }
 
         if(this->m_id == FeedConnectionId::fcidMsrCurr) {
-            ProgramStatistics::Current->CurrMsrLostCount(count);
-            ProgramStatistics::Total->CurrMsrLostCount(ProgramStatistics::Total->CurrMsrLostCount() + count);
+            ProgramStatistics::Current->Set(Counters::cCurrMsrLost, count);
+            ProgramStatistics::Total->Inc(Counters::cCurrMsrLost, count);
             return;
         }
         if(this->m_id == FeedConnectionId::fcidMsrFond) {
-            ProgramStatistics::Current->FondMsrLostCount(count);
-            ProgramStatistics::Total->FondMsrLostCount(ProgramStatistics::Total->FondMsrLostCount() + count);
+            ProgramStatistics::Current->Set(Counters::cFondMsrLost, count);
+            ProgramStatistics::Total->Inc(Counters::cFondMsrLost, count);
             return;
         }
 
         if(this->m_id == FeedConnectionId::fcidMssCurr) {
-            ProgramStatistics::Current->CurrMssLostCount(count);
-            ProgramStatistics::Total->CurrMssLostCount(ProgramStatistics::Total->CurrMssLostCount() + count);
+            ProgramStatistics::Current->Set(Counters::cCurrMssLost, count);
+            ProgramStatistics::Total->Inc(Counters::cCurrMssLost, count);
             return;
         }
         if(this->m_id == FeedConnectionId::fcidMssFond) {
-            ProgramStatistics::Current->FondMssLostCount(count);
-            ProgramStatistics::Total->FondMssLostCount(ProgramStatistics::Total->FondMssLostCount() + count);
+            ProgramStatistics::Current->Set(Counters::cFondMssLost, count);
+            ProgramStatistics::Total->Inc(Counters::cFondMssLost, count);
             return;
         }
 
         if(this->m_id == FeedConnectionId::fcidIsfCurr) {
-            ProgramStatistics::Current->CurrIssLostCount(count);
-            ProgramStatistics::Total->CurrIssLostCount(ProgramStatistics::Total->CurrIssLostCount() + count);
+            ProgramStatistics::Current->Set(Counters::cCurrIdfLost, count);
+            ProgramStatistics::Total->Inc(Counters::cCurrIdfLost, count);
             return;
         }
         if(this->m_id == FeedConnectionId::fcidIsfFond) {
-            ProgramStatistics::Current->FondIssLostCount(count);
-            ProgramStatistics::Total->FondIssLostCount(ProgramStatistics::Total->FondIssLostCount() + count);
+            ProgramStatistics::Current->Set(Counters::cFondIdfLost, count);
+            ProgramStatistics::Total->Inc(Counters::cFondIdfLost, count);
             return;
         }
     }
@@ -1993,12 +1993,12 @@ protected:
                     int lostPacketCount = CalcLostPacketCount(1, this->m_idfMaxMsgSeqNo);
 #ifdef COLLECT_STATISTICS
                     if(this->m_id == FeedConnectionId::fcidIdfFond) {
-                        ProgramStatistics::Total->FondIdfProcessedCount(this->m_idfMaxMsgSeqNo - lostPacketCount);
-                        ProgramStatistics::Total->FondIdfLostCount(lostPacketCount);
+                        ProgramStatistics::Total->Set(Counters::cFondIdfLost, this->m_idfMaxMsgSeqNo - lostPacketCount);
+                        ProgramStatistics::Total->Set(Counters::cFondIdfLost, lostPacketCount);
                     }
                     else if(this->m_id == FeedConnectionId::fcidIdfCurr){
-                        ProgramStatistics::Total->CurrIdfProcessedCount(this->m_idfMaxMsgSeqNo - lostPacketCount);
-                        ProgramStatistics::Total->CurrIdfLostCount(lostPacketCount);
+                        ProgramStatistics::Total->Set(Counters::cCurrIdfLost, this->m_idfMaxMsgSeqNo - lostPacketCount);
+                        ProgramStatistics::Total->Set(Counters::cCurrIdfLost, lostPacketCount);
                     }
 #endif
                     this->m_idfState = FeedConnectionSecurityDefinitionState::sdsProcessToEnd;
@@ -2006,9 +2006,9 @@ protected:
                 }
 #ifdef COLLECT_STATISTICS
                 if(this->m_id == FeedConnectionId::fcidIdfFond)
-                    ProgramStatistics::Total->FondIdfProcessedCount(this->m_idfMaxMsgSeqNo);
+                    ProgramStatistics::Total->Set(Counters::cFondIdf, this->m_idfMaxMsgSeqNo);
                 else if(this->m_id == FeedConnectionId::fcidIdfCurr)
-                    ProgramStatistics::Total->CurrIdfProcessedCount(this->m_idfMaxMsgSeqNo);
+                    ProgramStatistics::Total->Set(Counters::cFondIdf, this->m_idfMaxMsgSeqNo);
 #endif
                 if(this->IdfAllowGenerateSecurityDefinitions())
                     this->GenerateSecurityDefinitions();
@@ -2033,9 +2033,9 @@ protected:
     inline bool ListenSecurityDefinition_Core() {
 #ifdef COLLECT_STATISTICS
         if(this->m_id == FeedConnectionId::fcidIdfFond)
-            ProgramStatistics::Current->FondIdfProcessedCount(this->m_endMsgSeqNum);
+            ProgramStatistics::Current->Set(Counters::cFondIdf, this->m_endMsgSeqNum);
         else
-            ProgramStatistics::Current->CurrIdfProcessedCount(this->m_endMsgSeqNum);
+            ProgramStatistics::Current->Set(Counters::cCurrIdf, this->m_endMsgSeqNum);
 #endif
         if(this->m_idfState == FeedConnectionSecurityDefinitionState::sdsProcessToEnd)
             return this->ProcessSecurityDefinitionMessagesToEnd();
@@ -2773,8 +2773,8 @@ protected:
 
     inline bool OnIncrementalRefresh_OLR_FOND(AstsIncrementalOLRFONDInfo *info) {
 #ifdef COLLECT_STATISTICS
-        ProgramStatistics::Current->IncFondOlrProcessedCount();
-        ProgramStatistics::Total->IncFondOlrProcessedCount();
+        ProgramStatistics::Current->Inc(Counters::cFondOlr);
+        ProgramStatistics::Total->Inc(Counters::cFondOlr);
 #endif
         bool res = true;
         for(int i = 0; i < info->GroupMDEntriesCount; i++) {
@@ -2786,8 +2786,8 @@ protected:
 
     inline bool OnIncrementalRefresh_OLR_CURR(AstsIncrementalOLRCURRInfo *info) {
 #ifdef COLLECT_STATISTICS
-        ProgramStatistics::Current->IncCurrOlrProcessedCount();
-        ProgramStatistics::Total->IncCurrOlrProcessedCount();
+        ProgramStatistics::Current->Inc(Counters::cCurrOlr);
+        ProgramStatistics::Total->Inc(Counters::cCurrOlr);
 #endif
         bool res = true;
         for(int i = 0; i < info->GroupMDEntriesCount; i++) {
@@ -2799,8 +2799,8 @@ protected:
 
     inline bool OnIncrementalRefresh_TLR_FOND(AstsIncrementalTLRFONDInfo *info) {
 #ifdef COLLECT_STATISTICS
-        ProgramStatistics::Current->IncFondTlrProcessedCount();
-        ProgramStatistics::Total->IncFondTlrProcessedCount();
+        ProgramStatistics::Current->Inc(Counters::cFondTlr);
+        ProgramStatistics::Total->Inc(Counters::cFondTlr);
 #endif
         bool res = true;
         for(int i = 0; i < info->GroupMDEntriesCount; i++) {
@@ -2812,8 +2812,8 @@ protected:
 
     inline bool OnIncrementalRefresh_TLR_CURR(AstsIncrementalTLRCURRInfo *info) {
 #ifdef COLLECT_STATISTICS
-        ProgramStatistics::Current->IncCurrTlrProcessedCount();
-        ProgramStatistics::Total->IncCurrTlrProcessedCount();
+        ProgramStatistics::Current->Inc(Counters::cCurrTlr);
+        ProgramStatistics::Total->Inc(Counters::cCurrTlr);
 #endif
         bool res = true;
         for(int i = 0; i < info->GroupMDEntriesCount; i++) {
@@ -2825,8 +2825,8 @@ protected:
 
     inline bool OnIncrementalRefresh_MSR_FOND(AstsIncrementalMSRFONDInfo *info) {
 #ifdef COLLECT_STATISTICS
-        ProgramStatistics::Current->IncFondMsrProcessedCount();
-        ProgramStatistics::Total->IncFondMsrProcessedCount();
+        ProgramStatistics::Current->Inc(Counters::cFondMsr);
+        ProgramStatistics::Total->Inc(Counters::cFondMsr);
 #endif
         bool res = true;
         for(int i = 0; i < info->GroupMDEntriesCount; i++) {
@@ -2840,8 +2840,8 @@ protected:
 
     inline bool OnIncrementalRefresh_MSR_CURR(AstsIncrementalMSRCURRInfo *info) {
 #ifdef COLLECT_STATISTICS
-        ProgramStatistics::Current->IncCurrMsrProcessedCount();
-        ProgramStatistics::Total->IncCurrMsrProcessedCount();
+        ProgramStatistics::Current->Inc(Counters::cCurrMsr);
+        ProgramStatistics::Total->Inc(Counters::cCurrMsr);
 #endif
         bool res = true;
         for(int i = 0; i < info->GroupMDEntriesCount; i++) {
@@ -3124,12 +3124,12 @@ protected:
     inline bool ProcessSecurityStatus(FeedConnectionMessageInfo *info) {
 #ifdef COLLECT_STATISTICS
         if(this->m_id == FeedConnectionId::fcidIsfFond) {
-            ProgramStatistics::Current->IncFondIssProcessedCount();
-            ProgramStatistics::Total->IncFondIssProcessedCount();
+            ProgramStatistics::Current->Inc(Counters::cFondIss);
+            ProgramStatistics::Total->Inc(Counters::cFondIss);
         }
         else {
-            ProgramStatistics::Current->IncCurrIssProcessedCount();
-            ProgramStatistics::Total->IncCurrIssProcessedCount();
+            ProgramStatistics::Current->Inc(Counters::cCurrIss);
+            ProgramStatistics::Total->Inc(Counters::cCurrIss);
         }
 #endif
         unsigned char *buffer = info->m_address;
@@ -3972,45 +3972,43 @@ public:
 	inline int ExpectedMsgSeqNo() { return this->m_startMsgSeqNum + 1; }
     inline FastProtocolManager* FastManager() { return this->m_fastProtocolManager; }
 
+    inline bool DoWorkAtomCommon(FeedConnectionState st) {
+        if(st <= FeedConnectionState::fcsListenSecurityDefinition) {
+            if(st == FeedConnectionState::fcsSuspend)
+                return true;
+            if(st == FeedConnectionState::fcsListenSnapshot)
+                return this->ListenSnapshot();
+            return this->ListenSecurityDefinition();
+        }
+        else {
+            if(st == FeedConnectionState::fcsHistoricalReplay)
+                return this->HistoricalReplay_Atom();
+            return this->Reconnect_Atom();
+        }
+        return true;
+    }
+    // this if organised by frequency of messages
+    // incremental and status messages appear mostly often
+    // fcsSuspend = 4,
+    // fcsListenSnapshot = 5,
+    // fcsListenSecurityDefinition = 6,
+    // fcsHistoricalReplay = 7,
+    // fcsConnect = 8
 	inline bool DoWorkAtom() {
 		FeedConnectionState st = this->m_state;
         if(st == FeedConnectionState::fcsListenIncremental)
             return this->ListenIncremental();
-        else if(st == FeedConnectionState::fcsListenIncrementalForts)
-            return this->ListenIncremental_Forts();
-        if(st == FeedConnectionState::fcsHistoricalReplay)
-            return this->HistoricalReplay_Atom();
-        if(st == FeedConnectionState::fcsListenSecurityDefinition)
-            return this->ListenSecurityDefinition();
         if(st == FeedConnectionState::fcsListenSecurityStatus)
             return this->ListenSecurityStatus();
-        if(st == FeedConnectionState::fcsListenSecurityStatusForts)
-            return this->ListenSecurityStatusForts();
-        if(st == FeedConnectionState::fcsListenSnapshot)
-            return this->ListenSnapshot();
-        if(st == FeedConnectionState::fcsSuspend)
-            return true;
-        if(st == FeedConnectionState::fcsConnect)
-            return this->Reconnect_Atom();
-        return true;
+        return this->DoWorkAtomCommon(st);
 	}
     inline bool DoWorkAtomForts() {
         FeedConnectionState st = this->m_state;
         if(st == FeedConnectionState::fcsListenIncrementalForts)
             return this->ListenIncremental_Forts();
-        if(st == FeedConnectionState::fcsHistoricalReplay)
-            return this->HistoricalReplay_Atom();
-        if(st == FeedConnectionState::fcsListenSecurityDefinition)
-            return this->ListenSecurityDefinition();
         if(st == FeedConnectionState::fcsListenSecurityStatusForts)
             return this->ListenSecurityStatusForts();
-        if(st == FeedConnectionState::fcsListenSnapshot)
-            return this->ListenSnapshot();
-        if(st == FeedConnectionState::fcsSuspend)
-            return true;
-        if(st == FeedConnectionState::fcsConnect)
-            return this->Reconnect_Atom();
-        return true;
+        return this->DoWorkAtomCommon(st);
     }
     inline FeedConnectionState CalcListenStateByType() {
         if(m_type == FeedConnectionType::fctInstrumentDefinition)

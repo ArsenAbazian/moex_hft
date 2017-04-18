@@ -102,7 +102,7 @@ endforeach(inc_dir)
 add_executable(hft_robot
         source/src/Settings.cpp
         ${sources}
-        source/include/Lib/HashTable.h source/src/Lib/HashTable.cpp)
+        source/include/Lib/HashTable.h source/src/Lib/HashTable.cpp source/include/MarketData/OrderedListManager.h)
 add_dependencies(hft_robot fast_generate)
 
 add_custom_command(TARGET fast_generate

@@ -29,6 +29,7 @@ public:
     unsigned int DefaultMarketSendItemsCount;
     unsigned int DefaultMarketRecvItemsCount;
     int MarketDataMaxSymbolsCount;
+    int MarketDataMaxSymbolsCountForts;
     int MarketDataMaxSessionsCount;
     int MarketDataMaxEntriesCount;
     int MaxSecurityDefinitionCount;
@@ -57,9 +58,10 @@ public:
         DefaultMarketRecvItemsCount = 4 * 1024 * 1024;
 
         MarketDataMaxSymbolsCount = 2600;
+        MarketDataMaxSymbolsCountForts = 500;
         MarketDataMaxSessionsCount = 8;
         MarketDataMaxEntriesCount = 1024 * 2000;
-        MaxSecurityDefinitionCount = 2600;
+            MaxSecurityDefinitionCount = 2600;
         HistoricalReplayMaxMessageRequestCount = 1024;
 #ifdef TEST
         MDEntryQueueItemsCount = 100;

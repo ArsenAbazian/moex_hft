@@ -301,7 +301,7 @@ public:
         DebugInfoManager::Default->PrintMemoryInfo("FeedConnection_FORTS_INSTR_SNAP");
     }
     ~FeedConnection_FORTS_INSTR_SNAP() {
-        DisposeSecurityDefinition();
+        DisposeSecurityDefinitionForts();
     }
     void AllocateFastObjects() {
         int sdSeqCount = 13000;
