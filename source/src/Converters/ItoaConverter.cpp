@@ -46,7 +46,6 @@ void ItoaConverter::InitializePositive4DigitMinCount1() {
         if ((i % 100) / 10 > 0 || force) {
             *digit = (i % 100) / 10 + 0x30;
             digit++;
-            force = true;
         }
         *digit = (i % 10) + 0x30;
         ((int*)ItoaConverter::digitString4List)[i] = *((int*)buffer);

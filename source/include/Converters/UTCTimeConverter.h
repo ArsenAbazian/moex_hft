@@ -124,7 +124,6 @@ public:
         buffer += 2;
 
         *((WORD*)buffer) = *((WORD*)&(UTCTimeConverter::hours[st->wDay]));
-        buffer += 2;
 
         //     y   m   d 
         return 4 + 2 + 2;
@@ -138,7 +137,6 @@ public:
         buffer += 2;
 
         *((WORD*)buffer) = *((WORD*)&(UTCTimeConverter::hours[day]));
-        buffer += 2;
 
         //     y   m   d 
         return 4 + 2 + 2;

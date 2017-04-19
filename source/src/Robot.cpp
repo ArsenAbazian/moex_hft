@@ -279,12 +279,15 @@ bool Robot::Run() {
         globalWatch->Stop();
         DefaultLogManager::Default->EndLog(false);
         printf("Total work time = %lu seconds\n", globalWatch->ElapsedSeconds());
+        globalWatch->Stop();
+        delete globalWatch;
         return false;
     }
 
     globalWatch->Stop();
     DefaultLogManager::Default->EndLog(true);
     printf("Total work time = %lu seconds\n", globalWatch->ElapsedSeconds());
+    delete globalWatch;
     return true;
 }
 
@@ -333,6 +336,7 @@ bool Robot::CollectSecurityDefinitions_FondOnly() {
             cycleCount++;
         }
     }
+    delete w;
     DefaultLogManager::Default->EndLog(true);
     DefaultLogManager::Default->StartLog(LogMessageCode::lmcRobot_GenerateSecurityDefinitions);
     this->m_fondMarket->FeedChannel()->Idf()->GenerateSecurityDefinitions();
@@ -389,6 +393,7 @@ bool Robot::CollectSecurityDefinitions_CurrOnly() {
     }
     DefaultLogManager::Default->EndLog(true);
 
+    delete w;
     DefaultLogManager::Default->StartLog(LogMessageCode::lmcRobot_GenerateSecurityDefinitions);
     this->m_currMarket->FeedChannel()->Idf()->GenerateSecurityDefinitions();
     if(!this->m_currMarket->FeedChannel()->OnAfterGenerateSecurityDefinitions()) {
@@ -477,6 +482,7 @@ bool Robot::CollectSecurityDefinitionsForts() {
     }
     DefaultLogManager::Default->EndLog(true);
 
+    delete w;
     DefaultLogManager::Default->StartLog(LogMessageCode::lmcRobot_GenerateSecurityDefinitionsForts);
 
     if(this->m_fortsChannel->AllowFutures())
@@ -572,6 +578,7 @@ bool Robot::CollectSecurityDefinitionsAsts() {
     }
     DefaultLogManager::Default->EndLog(true);
 
+    delete w;
     DefaultLogManager::Default->StartLog(LogMessageCode::lmcRobot_GenerateSecurityDefinitions);
 
     this->m_fondMarket->FeedChannel()->Idf()->GenerateSecurityDefinitions();
@@ -597,9 +604,11 @@ bool Robot::MainLoop_FondOnly() {
         if(!WinSockManager::UpdateManagersPollStatus())
             break;
         if (!this->m_fondMarket->DoWorkAtom()) {
+            delete w;
             return false;
         }
         if(!this->DoWorkAtom()) {
+            delete w;
             return false;
         }
         if(!this->Working())
@@ -616,7 +625,7 @@ bool Robot::MainLoop_FondOnly() {
         }
         cycleCount++;
     }
-
+    delete w;
     return true;
 }
 
@@ -629,9 +638,11 @@ bool Robot::MainLoop_CurrOnly() {
         if(!WinSockManager::UpdateManagersPollStatus())
             break;
         if(!this->m_currMarket->DoWorkAtom()) {
+            delete w;
             return false;
         }
         if(!this->DoWorkAtom()) {
+            delete w;
             return false;
         }
         if(!this->Working())
@@ -655,6 +666,7 @@ bool Robot::MainLoop_CurrOnly() {
         cycleCount++;
     }
 
+    delete w;
     return true;
 }
 
@@ -707,12 +719,15 @@ bool Robot::MainLoopAsts() {
         if(!WinSockManager::UpdateManagersPollStatus())
             break;
         if(!this->m_currMarket->DoWorkAtom()) {
+            delete w;
             return false;
         }
         if(!this->m_fondMarket->DoWorkAtom()) {
+            delete w;
             return false;
         }
         if(!this->DoWorkAtom()) {
+            delete w;
             return false;
         }
         if(!this->Working())
@@ -730,6 +745,7 @@ bool Robot::MainLoopAsts() {
         cycleCount++;
     }
 
+    delete w;
     return true;
 }
 

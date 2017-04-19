@@ -1781,13 +1781,12 @@ public:
     }
 
     inline INT32 ReadInt32_Mandatory() {
-        INT32 result;
+        INT32 result = 0; // TODO: actually, it may be left uninitialized, becasue lower in the code it always get assigned
         INT32 memory = *((INT32*)(this->currentPos));
 
         INT32 valueMasked = memory & 0xff;
 
         if (valueMasked == 0x00) { // extended positive integer
-            result = 0;
             memory >>= 8;
 
             if((memory & 0x8080) != 0) { // first two bytes
