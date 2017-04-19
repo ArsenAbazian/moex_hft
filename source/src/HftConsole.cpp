@@ -75,7 +75,7 @@ int main(int argc, char** argv) {
     bool hasTest = test_itoa || test_ftoa || test_time || test_all || test_fast || test_fix || test_feed || test_decimal;
 #ifndef TEST
     if(hasTest) {
-        printf("you are trying to run robot in 'test' mode, but TEST macros is not defined. please uncomment TEST macro in file Types.h\n!!!");
+        printf("you are trying to run robot in 'test' mode, but TEST macros is not defined. please uncomment TEST macro in file Settings.h\n!!!");
         return 0;
     }
 #endif
