@@ -435,7 +435,6 @@ template <typename T> OrderBookInfo<T>::OrderBookInfo() :
         m_snapshotProcessedCount(0),
         m_used(0),
         m_symbolInfo(0),
-        m_entryInfo(0),
         m_sessionInt(0),
 #ifdef TEST
         m_listMode(ListType::ltSkipList),

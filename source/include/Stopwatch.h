@@ -8,6 +8,12 @@
 #include <time.h>
 #include <memory.h>
 
+#ifndef CLOCK_REALTIME_COARSE
+// yes, it will slow down a little, but at least it will compile
+#pragma message "CLOCK_REALTIME_COARSE does not defined, using CLOCK_REALTIME"
+#define CLOCK_REALTIME_COARSE CLOCK_REALTIME
+#endif
+
 class Stopwatch {
     struct timespec *m_specStart[10];
     struct timespec *m_specEnd;

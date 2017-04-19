@@ -3,6 +3,7 @@
 #include "Managers/WinSockManager.h"
 #include "Fix/FixProtocolManager.h"
 #include "Stopwatch.h"
+#include <stdlib.h>
 
 class MarketServerInfo;
 
