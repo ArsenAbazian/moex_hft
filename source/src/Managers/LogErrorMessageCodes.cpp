@@ -123,6 +123,8 @@ LogMessageProvider::LogMessageProvider() {
 }
 
 LogMessageProvider::~LogMessageProvider() {
+    for (unsigned int i = 0; i < this->m_dynamicLogMessageCount; i++)
+        delete[] (this->m_logMessageText[this->m_dynamicLogMessageStartIndex + i]);
     delete[] this->m_logMessageText;
 }
 
@@ -132,10 +134,9 @@ int LogMessageProvider::RegisterText(const char *text) {
             return i;
     }
     int length = strlen(text);
-    char *newText = new char[length + 1];
-    strcpy(newText, text);
 
-    this->m_logMessageText[this->m_dynamicLogMessageStartIndex + this->m_dynamicLogMessageCount] = newText;
+    this->m_logMessageText[this->m_dynamicLogMessageStartIndex + this->m_dynamicLogMessageCount] = new char[length + 1];
+    strncpy(const_cast<char*>(this->m_logMessageText[this->m_dynamicLogMessageStartIndex + this->m_dynamicLogMessageCount]), text, length);
     this->m_dynamicLogMessageCount++;
 
     return this->m_dynamicLogMessageStartIndex + this->m_dynamicLogMessageCount - 1;

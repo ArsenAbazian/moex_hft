@@ -365,6 +365,7 @@ bool Robot::CollectSecurityDefinitions_CurrOnly() {
                 break;
             if (!this->m_currMarket->FeedChannel()->CollectSecurityDefinitions()) {
                 DefaultLogManager::Default->EndLog(false);
+                delete w;
                 return false;
             }
             if (this->m_currMarket->FeedChannel()->Idf()->IsIdfDataCollected()) {
