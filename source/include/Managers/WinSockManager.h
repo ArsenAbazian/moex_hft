@@ -91,6 +91,8 @@ private:
     bool                            m_shouldRecv;
     struct pollfd			        *m_poll;
 	sockaddr_in                     m_adress;
+	struct sockaddr					*m_senderAddr;
+	socklen_t 						m_senderAddrLength;
 	ip_mreq_source					m_imr;
 	unsigned int					m_addressSize;
 	WinSockConnectionType           m_connectionType;
@@ -308,6 +310,36 @@ public:
 		this->m_connected = true;
 		return true;
 	}
+	inline bool ConnectUdp(int port) {
+
+		this->m_connectionType = WinSockConnectionType::wsUDP;
+		this->m_socket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+		if (this->m_socket < 0) {
+			//DefaultLogManager::Default->EndLogErrNo(false, strerror(errno));
+			return false;
+		}
+		this->UpdatePoll();
+
+		int flag = 1;
+		if(setsockopt(this->m_socket,SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &flag, sizeof(flag)) < 0) {
+			//DefaultLogManager::Default->EndLogErrNo(false, strerror(errno));
+			return false;
+		}
+
+		this->m_addressSize = sizeof(sockaddr_in);
+		memset(&this->m_adress, 0, this->m_addressSize);
+
+		this->m_adress.sin_family = AF_INET;
+		this->m_adress.sin_addr.s_addr = htonl(INADDR_ANY);
+		this->m_adress.sin_port = port;
+
+		if(bind(this->m_socket, (struct sockaddr*)&(this->m_adress), sizeof(this->m_adress)) < 0) {
+			//DefaultLogManager::Default->EndLogErrNo(false, strerror(errno));
+			return false;
+		}
+
+		return true;
+	}
 	inline bool ConnectMulticast(char *sourceIp, char *groupIp, unsigned short groupPort) {
 #ifdef TEST
 		return true;
@@ -435,6 +467,19 @@ public:
 
 	bool RecvTest(unsigned char *buffer);
 
+	inline bool RecvFrom(unsigned char *buffer, struct sockaddr *senderAddr, socklen_t *length) {
+		if(!this->ShouldRecv()) {
+			this->m_recvSize = 0;
+			return true;
+		}
+#ifdef TEST
+		return RecvTest(buffer);
+#else
+		if(this->m_connectionType == WinSockConnectionType::wsTCP)
+			return this->RecvFromTCP(buffer, senderAddr, length);
+		return this->RecvUDP(buffer, senderAddr, length);
+	}
+
 	inline bool Recv(unsigned char *buffer) {
 		if(!this->ShouldRecv()) {
 			this->m_recvSize = 0;
@@ -455,22 +500,39 @@ public:
 		if(this->m_recvSize < 0)
             return false;
 		this->OnRecv();
-		if(this->m_recvSize == 0) {
-			//this->Reconnect();
-            return false; // do nothing
-		}
-        return true;
+		return this->m_recvSize != 0;
 	}
-	inline bool RecvUDP(unsigned char *buffer) {
+
+	inline bool RecvFromTCP(unsigned char *buffer, struct sockaddr *senderAddr, socklen_t *length) {
 		this->m_recvBytes = buffer;
-		this->m_addressSize = sizeof(sockaddr_in);
-		this->m_recvSize = recvfrom(this->m_socket, this->m_recvBytes, 8192, 0, (struct sockaddr*)&(this->m_adress), &(this->m_addressSize));
+		*length = sizeof(struct sockaddr);
+		this->m_recvSize = recvfrom(this->m_socket, this->m_recvBytes, 8192, 0, senderAddr, length);
+		if(this->m_recvSize < 0)
+			return false;
+		this->OnRecv();
+		return this->m_recvSize != 0;
+	}
+	inline bool RecvUDP(unsigned char *buffer, struct sockaddr *senderAddr, socklen_t *length) {
+		this->m_recvBytes = buffer;
+		*length = sizeof(struct sockaddr);
+		this->m_recvSize = recvfrom(this->m_socket, this->m_recvBytes, 8192, 0, (struct sockaddr *)senderAddr, length);
 		if(this->m_recvSize > 0) {
 			this->OnRecv();
 			return true;
 		}
 		return false;
 	}
+	inline bool RecvUDP(unsigned char *buffer) {
+		this->m_recvBytes = buffer;
+		this->m_clientAddrLength = sizeof(struct sockaddr);
+		this->m_recvSize = recvfrom(this->m_socket, this->m_recvBytes, 8192, 0, (struct sockaddr *)this->m_senderAddr, &(this->m_senderAddrLength));
+		if(this->m_recvSize > 0) {
+			this->OnRecv();
+			return true;
+		}
+		return false;
+	}
+	inline struct sockaddr* SenderAddress() const { return this->m_senderAddr; }
 	inline bool IsConnected() const { return this->m_connected; }
 	inline int RecvSize() const { return this->m_recvSize; }
 	inline unsigned char* RecvBytes() { return this->m_recvBytes; }
