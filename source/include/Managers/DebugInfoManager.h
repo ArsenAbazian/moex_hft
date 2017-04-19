@@ -12,7 +12,22 @@
 #include "../Lib/HrPointerList.h"
 #include "../Lib/StringIdComparer.h"
 #include <stdio.h>
+#ifndef __MACH__
 #include <malloc.h>
+#else
+struct mallinfo {
+    int arena;
+    int ordblks;  /* number of free chunks */
+    int smblks;   /* number of fastbin blocks */
+    int hblks;    /* number of mmapped regions */
+    int hblkhd;   /* space in mmapped regions */
+    int usmblks;  /* maximum total allocated space */
+    int fsmblks;  /* space available in freed fastbin blocks */
+    int uordblks; /* total allocated space */
+    int fordblks; /* total free space */
+    int keepcost; /* top-most, releasable (via malloc_trim) space */
+};
+#endif
 #include "../MarketData/MDEntryQueue.h"
 #include <cstdlib>
 
@@ -37,7 +52,7 @@ class DebugInfoManager {
     int             *MDEntryTypeRecv;
 
     char            m_buffer[392];
-    char            m_buffer2[392];
+//    char            m_buffer2[392]; // unused
     char            m_tabs[32];
     int             m_tabsCount;
     FILE            *fp;

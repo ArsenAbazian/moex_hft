@@ -1,7 +1,11 @@
 #pragma once
 
 #include <time.h>
+#ifndef __MACH__
 #include <error.h>
+#else
+#include <mach/error.h>
+#endif
 #include <string.h>
 #include "ConsoleManager.h"
 #include "LogErrorMessageCodes.h"
@@ -315,5 +319,5 @@ public:
 
 class DefaultLogManager {
 public:
-	static BinaryLogManager *Default;
+    static BinaryLogManager *Default;
 };

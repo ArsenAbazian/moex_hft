@@ -37,11 +37,11 @@ public:
     bool                                                Used;
 
     MDEntryQueue() :
-            Used(false),
-            Pointer(0),
-            Allocator(0),
             m_incEntriesMaxIndex(-1),
-            m_incStartRptSeq(0) {
+            m_incStartRptSeq(0),
+            Allocator(0),
+            Pointer(0),
+            Used(false) {
         this->m_incEntries = new void *[MDENTRYINFO_INCREMENTAL_ENTRIES_BUFFER_LENGTH];
         memset(this->m_incEntries, 0, sizeof(void *) * this->m_incEntriesCount);
     }

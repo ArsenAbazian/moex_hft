@@ -5,8 +5,8 @@
 #include "../include/Feeds/Forts/FortsFeeds.h"
 
 Robot::Robot() {
-	this->channelsCount = 0;
-	memset(this->channels, 0, sizeof(AstsFeedChannel*) * MARKET_INFO_CAPACITY);
+    this->channelsCount = 0;
+    memset(this->channels, 0, sizeof(AstsFeedChannel*) * MARKET_INFO_CAPACITY);
     this->m_allowCurrMarket = true;
     this->m_allowFondMarket = true;
     for(int i = 0; i < MarketDataGroupId::mdgidCount; i++)
@@ -17,38 +17,38 @@ Robot::~Robot() {
     DefaultLogManager::Default->StartLog(LogMessageCode::lmcRobot_Robot);
 
     bool result = DisconnectMarkets();
-	delete this->protocolManager;
+    delete this->protocolManager;
 
     DefaultLogManager::Default->EndLog(result);
 }
 
 bool Robot::ConnectMarkets() {
-	
-	DefaultLogManager::Default->StartLog(LogMessageCode::lmcRobot_ConnectMarkets);
-	for (int i = 0; i < this->marketCount; i++) {
-		if (!this->markets[i]->Connect()) {
-			DefaultLogManager::Default->EndLog(false);
+    
+    DefaultLogManager::Default->StartLog(LogMessageCode::lmcRobot_ConnectMarkets);
+    for (int i = 0; i < this->marketCount; i++) {
+        if (!this->markets[i]->Connect()) {
+            DefaultLogManager::Default->EndLog(false);
 #ifdef ROBOT_WORK_ANYWAY
             continue;
 #else
-			return false;
+            return false;
 #endif
-		}
-	}
+        }
+    }
 
     if(this->AllowFortsMarket())
         this->FortsChannel()->Prepare();
 
-	DefaultLogManager::Default->EndLog(true);
-	return true;
+    DefaultLogManager::Default->EndLog(true);
+    return true;
 }
 
 bool Robot::DisconnectMarkets() {
-	bool success = true;
-	for (int i = 0; i < this->marketCount; i++) {
-		success &= this->markets[i]->Disconnect();
-	}
-	return success;
+    bool success = true;
+    for (int i = 0; i < this->marketCount; i++) {
+        success &= this->markets[i]->Disconnect();
+    }
+    return success;
 }
 
 bool Robot::AddDefaultTestChannels() {
@@ -252,16 +252,16 @@ bool Robot::AddDefaultTestChannels() {
 
 bool Robot::Run() {
     DefaultLogManager::Default->StartLog(LogMessageCode::lmcRobot_Run);
-	
-	if(!this->AddDefaultTestMarkets()) {
-		DefaultLogManager::Default->EndLog(false);
-		return false;
-	}
+    
+    if(!this->AddDefaultTestMarkets()) {
+        DefaultLogManager::Default->EndLog(false);
+        return false;
+    }
 
-	if(!this->AddDefaultTestChannels()) {
-		DefaultLogManager::Default->EndLog(false);
-		return false;
-	}
+    if(!this->AddDefaultTestChannels()) {
+        DefaultLogManager::Default->EndLog(false);
+        return false;
+    }
 
     if(!this->SetFeedChannelsForMarkets()) {
         DefaultLogManager::Default->EndLog(false);
@@ -278,14 +278,17 @@ bool Robot::Run() {
     if(!this->DoWork()) {
         globalWatch->Stop();
         DefaultLogManager::Default->EndLog(false);
-        printf("Total work time = %" PRIu64 " seconds\n", globalWatch->ElapsedSeconds());
+        printf("Total work time = %lu seconds\n", globalWatch->ElapsedSeconds());
+        globalWatch->Stop();
+        delete globalWatch;
         return false;
     }
 
     globalWatch->Stop();
-	DefaultLogManager::Default->EndLog(true);
-    printf("Total work time = %" PRIu64 " seconds\n", globalWatch->ElapsedSeconds());
-	return true;
+    DefaultLogManager::Default->EndLog(true);
+    printf("Total work time = %lu seconds\n", globalWatch->ElapsedSeconds());
+    delete globalWatch;
+    return true;
 }
 
 bool Robot::CollectSecurityDefinitions_FondOnly() {
@@ -333,6 +336,7 @@ bool Robot::CollectSecurityDefinitions_FondOnly() {
             cycleCount++;
         }
     }
+    delete w;
     DefaultLogManager::Default->EndLog(true);
     DefaultLogManager::Default->StartLog(LogMessageCode::lmcRobot_GenerateSecurityDefinitions);
     this->m_fondMarket->FeedChannel()->Idf()->GenerateSecurityDefinitions();
@@ -361,6 +365,7 @@ bool Robot::CollectSecurityDefinitions_CurrOnly() {
                 break;
             if (!this->m_currMarket->FeedChannel()->CollectSecurityDefinitions()) {
                 DefaultLogManager::Default->EndLog(false);
+                delete w;
                 return false;
             }
             if (this->m_currMarket->FeedChannel()->Idf()->IsIdfDataCollected()) {
@@ -389,6 +394,7 @@ bool Robot::CollectSecurityDefinitions_CurrOnly() {
     }
     DefaultLogManager::Default->EndLog(true);
 
+    delete w;
     DefaultLogManager::Default->StartLog(LogMessageCode::lmcRobot_GenerateSecurityDefinitions);
     this->m_currMarket->FeedChannel()->Idf()->GenerateSecurityDefinitions();
     if(!this->m_currMarket->FeedChannel()->OnAfterGenerateSecurityDefinitions()) {
@@ -477,6 +483,7 @@ bool Robot::CollectSecurityDefinitionsForts() {
     }
     DefaultLogManager::Default->EndLog(true);
 
+    delete w;
     DefaultLogManager::Default->StartLog(LogMessageCode::lmcRobot_GenerateSecurityDefinitionsForts);
 
     if(this->m_fortsChannel->AllowFutures())
@@ -572,6 +579,7 @@ bool Robot::CollectSecurityDefinitionsAsts() {
     }
     DefaultLogManager::Default->EndLog(true);
 
+    delete w;
     DefaultLogManager::Default->StartLog(LogMessageCode::lmcRobot_GenerateSecurityDefinitions);
 
     this->m_fondMarket->FeedChannel()->Idf()->GenerateSecurityDefinitions();
@@ -597,9 +605,11 @@ bool Robot::MainLoop_FondOnly() {
         if(!WinSockManager::UpdateManagersPollStatus())
             break;
         if (!this->m_fondMarket->DoWorkAtom()) {
+            delete w;
             return false;
         }
         if(!this->DoWorkAtom()) {
+            delete w;
             return false;
         }
         if(!this->Working())
@@ -616,7 +626,7 @@ bool Robot::MainLoop_FondOnly() {
         }
         cycleCount++;
     }
-
+    delete w;
     return true;
 }
 
@@ -629,9 +639,11 @@ bool Robot::MainLoop_CurrOnly() {
         if(!WinSockManager::UpdateManagersPollStatus())
             break;
         if(!this->m_currMarket->DoWorkAtom()) {
+            delete w;
             return false;
         }
         if(!this->DoWorkAtom()) {
+            delete w;
             return false;
         }
         if(!this->Working())
@@ -655,6 +667,7 @@ bool Robot::MainLoop_CurrOnly() {
         cycleCount++;
     }
 
+    delete w;
     return true;
 }
 
@@ -707,12 +720,15 @@ bool Robot::MainLoopAsts() {
         if(!WinSockManager::UpdateManagersPollStatus())
             break;
         if(!this->m_currMarket->DoWorkAtom()) {
+            delete w;
             return false;
         }
         if(!this->m_fondMarket->DoWorkAtom()) {
+            delete w;
             return false;
         }
         if(!this->DoWorkAtom()) {
+            delete w;
             return false;
         }
         if(!this->Working())
@@ -730,6 +746,7 @@ bool Robot::MainLoopAsts() {
         cycleCount++;
     }
 
+    delete w;
     return true;
 }
 

@@ -422,21 +422,17 @@ template <typename T> HrPointerList<T>* OrderInfo<T>::m_itemsPool = 0;
 
 template <typename T> OrderInfo<T>::OrderInfo() :
         m_entryInfo(0),
-        m_sellQuoteList(0),
-        m_buyQuoteList(0),
-        m_tradingSession(0),
+        m_used(false),
         m_shouldProcessSnapshot(false),
         m_rptSeq(0),
         m_savedRptSeq(0),
-        m_snapshotProcessedCount(0),
-        m_used(0),
         m_symbolInfo(0),
         m_sessionInt(0),
+        m_snapshotProcessedCount(0)
 #ifdef TEST
-        m_listMode(ListType::ltSkipList),
+        , m_listMode(ListType::ltSkipList)
 #endif
-        m_buyQuoteManager(0),
-        m_sellQuoteManager(0) {
+    {
     if(OrderInfo::m_itemsPool == 0)
         OrderInfo::m_itemsPool = new HrPointerList<T>(RobotSettings::Default->MarketDataMaxEntriesCount, false);
 

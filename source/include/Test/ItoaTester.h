@@ -5,9 +5,9 @@
 class ItoaTester
 {
 public:
-	ItoaTester();
-	~ItoaTester();
+    ItoaTester();
+    ~ItoaTester();
 
-	void Test();
+    void Test();
 };
 #endif

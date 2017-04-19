@@ -2,13 +2,13 @@
 
 
 FixProtocolManager::FixProtocolManager(ISocketBufferProvider *provider, const char *protocolVersion) {
-	this->messageBuffer = this->currentPos = 0;
+    this->messageBuffer = this->currentPos = 0;
     this->m_sendMsgSeqNo = 1;
     this->m_recvMsgSeqNo = 1;
-	this->intConverter = new ItoaConverter();
-	this->doubleConverter = new DtoaConverter();
-	this->timeConverter = new UTCTimeConverter();
-	this->currentTime = new SYSTEMTIME;
+    this->intConverter = new ItoaConverter();
+    this->doubleConverter = new DtoaConverter();
+    this->timeConverter = new UTCTimeConverter();
+    this->currentTime = new SYSTEMTIME;
     this->m_bufferProvider = provider;
     this->m_protocolVersion = protocolVersion;
     this->m_protocolVersionLength = strlen(protocolVersion);

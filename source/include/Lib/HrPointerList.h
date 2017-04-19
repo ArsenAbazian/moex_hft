@@ -27,12 +27,12 @@ template <typename T> class HrLinkedPointer {
 
 public:
     HrLinkedPointer() :
+            m_owner(0),
             m_next(0), m_prev(0),
             m_next2(0), m_prev2(0),
             m_next3(0), m_prev3(0),
             m_next4(0), m_prev4(0),
             m_next5(0), m_prev5(0),
-            m_owner(0),
             m_data(0),
             m_released(true) {
     }
@@ -186,15 +186,14 @@ template <typename T> class HrPointerList {
 
 public:
     HrPointerList(int capacity, bool autoAllocate) :
-            m_name(""),
             m_capacity(capacity),
-            m_count(0),
-            m_autoAllocate(autoAllocate),
             m_poolHead(0),
             m_poolTail(0),
             m_head(0),
-            m_tail(0) {
-
+            m_tail(0),
+            m_count(0),
+            m_autoAllocate(autoAllocate),
+            m_name("") {
         this->m_poolHead = new HrLinkedPointer<T>;
         this->m_poolTail = this->m_poolHead;
 

@@ -15,18 +15,18 @@
 int main(int argc, char** argv) {
 
     bool test_itoa = false;
-	bool test_ftoa = false;
-	bool test_decimal = false;
-	bool test_all = false;
-	bool test_time = false;
-	bool test_fast = false;
-	bool test_fix = false;
-	bool test_feed = false;
+    bool test_ftoa = false;
+    bool test_decimal = false;
+    bool test_all = false;
+    bool test_time = false;
+    bool test_fast = false;
+    bool test_fix = false;
+    bool test_feed = false;
     bool decode_forts = false;
     bool decode_asts = false;
     const char *decode_string = 0;
 
-	for (int i = 0; i < argc; i++) {
+    for (int i = 0; i < argc; i++) {
         if(strcmp(argv[i], "test_itoa") == 0)
             test_itoa = true;
         if(strcmp(argv[i], "test_ftoa") == 0)
@@ -80,71 +80,71 @@ int main(int argc, char** argv) {
     }
 #endif
 #ifdef TEST
-	if (test_itoa || test_all) {
-		ItoaTester tester;
-		tester.Test();
-	}
+    if (test_itoa || test_all) {
+        ItoaTester tester;
+        tester.Test();
+    }
 
-	if(test_decimal || test_all) {
-		DecimalTester tester;
-		tester.Test();
-	}
+    if(test_decimal || test_all) {
+        DecimalTester tester;
+        tester.Test();
+    }
 
-	if (test_time || test_all) {
-		UTCTimeConverterTester tester;
-		tester.Test();
-	}
+    if (test_time || test_all) {
+        UTCTimeConverterTester tester;
+        tester.Test();
+    }
 
-	if (test_fast || test_all) {
-		FastProtocolTester tester;
-		tester.Test();
-	}
+    if (test_fast || test_all) {
+        FastProtocolTester tester;
+        tester.Test();
+    }
 
-	if(test_fix || test_all) {
-		FixProtocolManagerTester tester;
-		tester.Test();
-	}
+    if(test_fix || test_all) {
+        FixProtocolManagerTester tester;
+        tester.Test();
+    }
 
-	if(test_feed || test_all) {
-		FeedConnectionTester tester2;
-		tester2.Test();
-	}
+    if(test_feed || test_all) {
+        FeedConnectionTester tester2;
+        tester2.Test();
+    }
 
-	if (test_itoa || test_ftoa || test_time || test_all || test_fast || test_fix || test_feed || test_decimal)
-		return 1;
+    if (test_itoa || test_ftoa || test_time || test_all || test_fast || test_fix || test_feed || test_decimal)
+        return 1;
 
     printf("you are trying to run robot in 'full work' mode, but TEST macros is defined. please remove TEST macro in file Types.h\n!!!");
-	return 0;
+    return 0;
 #else
 
     DebugInfoManager::Default->PrintMemoryInfo("Before Robot::Robot");
-	Robot *robot = new Robot();
-	robot->AllowFortsMarket(false);
-	robot->AllowFondMarket(false);
-	robot->AllowCurrMarket(true);
-	robot->AllowFutures(false);
-	robot->AllowOptions(false);
-	robot->AllowMarketDataGroup(MarketDataGroupId::mdgidFutBook1, false);
-	robot->AllowMarketDataGroup(MarketDataGroupId::mdgidFutBook5, false);
-	robot->AllowMarketDataGroup(MarketDataGroupId::mdgidFutBook20, false);
-	robot->AllowMarketDataGroup(MarketDataGroupId::mdgidFutBook50, false);
-	robot->AllowMarketDataGroup(MarketDataGroupId::mdgidFutTrades, true     );
-	robot->AllowMarketDataGroup(MarketDataGroupId::mdgidOptBook1, false);
-	robot->AllowMarketDataGroup(MarketDataGroupId::mdgidOptBook5, false);
-	robot->AllowMarketDataGroup(MarketDataGroupId::mdgidOptBook20, false);
-	robot->AllowMarketDataGroup(MarketDataGroupId::mdgidOptBook50, false);
-	robot->AllowMarketDataGroup(MarketDataGroupId::mdgidOptTrades, false);
-	robot->AllowMarketDataGroup(MarketDataGroupId::mdgidOtcTrades, false);
-	robot->AllowMarketDataGroup(MarketDataGroupId::mdgidOtcIssues, false);
-	robot->AllowMarketDataGroup(MarketDataGroupId::mdgidNews, false);
-	robot->AllowMarketDataGroup(MarketDataGroupId::mdgidNewsSkrin, false);
-	robot->AllowMarketDataGroup(MarketDataGroupId::mdgidIndex, false);
-	robot->Run();
+    Robot *robot = new Robot();
+    robot->AllowFortsMarket(false);
+    robot->AllowFondMarket(false);
+    robot->AllowCurrMarket(true);
+    robot->AllowFutures(false);
+    robot->AllowOptions(false);
+    robot->AllowMarketDataGroup(MarketDataGroupId::mdgidFutBook1, false);
+    robot->AllowMarketDataGroup(MarketDataGroupId::mdgidFutBook5, false);
+    robot->AllowMarketDataGroup(MarketDataGroupId::mdgidFutBook20, false);
+    robot->AllowMarketDataGroup(MarketDataGroupId::mdgidFutBook50, false);
+    robot->AllowMarketDataGroup(MarketDataGroupId::mdgidFutTrades, true     );
+    robot->AllowMarketDataGroup(MarketDataGroupId::mdgidOptBook1, false);
+    robot->AllowMarketDataGroup(MarketDataGroupId::mdgidOptBook5, false);
+    robot->AllowMarketDataGroup(MarketDataGroupId::mdgidOptBook20, false);
+    robot->AllowMarketDataGroup(MarketDataGroupId::mdgidOptBook50, false);
+    robot->AllowMarketDataGroup(MarketDataGroupId::mdgidOptTrades, false);
+    robot->AllowMarketDataGroup(MarketDataGroupId::mdgidOtcTrades, false);
+    robot->AllowMarketDataGroup(MarketDataGroupId::mdgidOtcIssues, false);
+    robot->AllowMarketDataGroup(MarketDataGroupId::mdgidNews, false);
+    robot->AllowMarketDataGroup(MarketDataGroupId::mdgidNewsSkrin, false);
+    robot->AllowMarketDataGroup(MarketDataGroupId::mdgidIndex, false);
+    robot->Run();
     delete robot;
 
-	DefaultLogManager::Default->Print();
+    DefaultLogManager::Default->Print();
 
-	return 0;
+    return 0;
 #endif
 }
 

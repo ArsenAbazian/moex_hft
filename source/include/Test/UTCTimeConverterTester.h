@@ -5,9 +5,9 @@
 class UTCTimeConverterTester
 {
 public:
-	UTCTimeConverterTester();
-	~UTCTimeConverterTester();
+    UTCTimeConverterTester();
+    ~UTCTimeConverterTester();
 
-	void Test();
+    void Test();
 };
 #endif //TEST

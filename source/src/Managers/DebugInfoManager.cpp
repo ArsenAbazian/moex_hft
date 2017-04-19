@@ -67,7 +67,7 @@ void DebugInfoManager::PrintDecimal2List(const char *name, PointerListLite<Stati
         if(ptr == list->End())
             break;
         StatisticItemDecimal2 *value = ptr->Data();
-        printf("Time = %ld Value = %g Value2 = %g\n",
+        printf("Time = %llu Value = %g Value2 = %g\n",
                value->Time(),
                value->Value()->Calculate(),
                value->Value2()->Calculate());
@@ -84,7 +84,7 @@ void DebugInfoManager::PrintDecimalList(const char *name, PointerListLite<Statis
     LinkedPointer<StatisticItemDecimal> *ptr = list->Start();
     while(true) {
         StatisticItemDecimal *value = ptr->Data();
-        printf("Time = %ld Value = %g\n",
+        printf("Time = %llu Value = %g\n",
                value->Time(),
                value->Value()->Calculate());
         if(ptr == list->End())
@@ -101,7 +101,7 @@ void DebugInfoManager::PrintLastDealInfoList(const char *name, PointerListLite<S
     LinkedPointer<StatisticItemLastDealInfo> *ptr = list->Start();
     while(ptr != 0) {
         StatisticItemLastDealInfo *value = ptr->Data();
-        printf("Time = %ld Px = %g Size = %g DealTime = %u TradeValue = %g NetChangePrevDayPtr = %g ChangeFromWAPrice = %g\n",
+        printf("Time = %llu Px = %g Size = %g DealTime = %u TradeValue = %g NetChangePrevDayPtr = %g ChangeFromWAPrice = %g\n",
                value->Time(),
                value->Price()->Calculate(),
                value->Size()->Calculate(),
@@ -123,7 +123,7 @@ void DebugInfoManager::PrintIndicesList(const char *name, PointerListLite<Statis
     LinkedPointer<StatisticItemIndexList> *ptr = list->Start();
     while(ptr != 0) {
         StatisticItemIndexList *value = ptr->Data();
-        printf("Time = %ld Px = %g Size = %g TradeValue = %g\n",
+        printf("Time = %llu Px = %g Size = %g TradeValue = %g\n",
                value->Time(),
                value->Price()->Calculate(),
                value->Size()->Calculate(),
@@ -142,7 +142,7 @@ void DebugInfoManager::PrintTransactionMagnitude(const char *name, PointerListLi
     LinkedPointer<StatisticItemTransactionsMagnitude> *ptr = list->Start();
     while(ptr != 0) {
         StatisticItemTransactionsMagnitude *value = ptr->Data();
-        printf("Time = %ld Size = %g TotalNumOfTrades = %u TradeValue = %g\n",
+        printf("Time = %llu Size = %g TotalNumOfTrades = %u TradeValue = %g\n",
                value->Time(),
                value->Size()->Calculate(),
                value->TotalNumOfTrades(),
@@ -161,7 +161,7 @@ void DebugInfoManager::PrintBooleanList(const char *name, PointerListLite<Statis
     LinkedPointer<StatisticItem<bool>> *ptr = list->Start();
     while(true) {
         StatisticItem<bool> *value = ptr->Data();
-        printf("Time = %ld Value = %s\n",
+        printf("Time = %llu Value = %s\n",
                value->Time(), value->Value()? "fasle": "true");
         if(ptr == list->End())
             break;
@@ -177,7 +177,7 @@ void DebugInfoManager::PrintTotalOfferList(const char *name, PointerListLite<Sta
     LinkedPointer<StatisticItemTotalOffer> *ptr = list->Start();
     while(ptr != 0) {
         StatisticItemTotalOffer *value = ptr->Data();
-        printf("Time = %ld Value = %g OfferNbOr = %d\n", value->Time(), value->Size()->Calculate(), value->OfferNbOr());
+        printf("Time = %llu Value = %g OfferNbOr = %d\n", value->Time(), value->Size()->Calculate(), value->OfferNbOr());
         if(ptr == list->End())
             break;
         ptr = ptr->Next();
@@ -192,7 +192,7 @@ void DebugInfoManager::PrintTotalBidList(const char *name, PointerListLite<Stati
     LinkedPointer<StatisticItemTotalBid> *ptr = list->Start();
     while(ptr != 0) {
         StatisticItemTotalBid *value = ptr->Data();
-        printf("Time = %ld Value = %g BidNbOr = %d\n", value->Time(), value->Size()->Calculate(), value->BidNbOr());
+        printf("Time = %llu Value = %g BidNbOr = %d\n", value->Time(), value->Size()->Calculate(), value->BidNbOr());
         if(ptr == list->End())
             break;
         ptr = ptr->Next();
@@ -205,7 +205,7 @@ void DebugInfoManager::Log(SizedArray *symbol, SizedArray *trading, const char *
 #ifdef ENABLE_LOG
     StatisticItemDecimal *value = list->End()->Data();
     printf(" %s %s %s ", GetString(symbol, 0), GetString(trading, 1), string);
-    printf("Time = %ld Value = %g. %d Items \n", value->Time(), value->Value()->Calculate(), list->Count());
+    printf("Time = %llu Value = %g. %d Items \n", value->Time(), value->Value()->Calculate(), list->Count());
 #endif
 }
 
@@ -213,7 +213,7 @@ void DebugInfoManager::Log(SizedArray *symbol, SizedArray *trading, const char *
 #ifdef ENABLE_LOG
     StatisticItemDecimal2 *value = list->End()->Data();
     printf(" %s %s %s ", GetString(symbol, 0), GetString(trading, 1), string);
-    printf("Time = %ld Px = %g Size = %g. %d Items \n", value->Time(), value->Value()->Calculate(), value->Value2()->Calculate(), list->Count());
+    printf("Time = %llu Px = %g Size = %g. %d Items \n", value->Time(), value->Value()->Calculate(), value->Value2()->Calculate(), list->Count());
 #endif
 }
 
@@ -221,7 +221,7 @@ void DebugInfoManager::Log(SizedArray *symbol, SizedArray *trading, const char *
 #ifdef ENABLE_LOG
     StatisticItemLastDealInfo *value = list->End()->Data();
     printf(" %s %s %s ", GetString(symbol, 0), GetString(trading, 1), string);
-    printf("Time = %ld Px = %g Size = %g DealTime = %u TradeValue = %g NetChangePrevDayPtr = %g ChangeFromWAPrice = %g. %d Items \n",
+    printf("Time = %llu Px = %g Size = %g DealTime = %u TradeValue = %g NetChangePrevDayPtr = %g ChangeFromWAPrice = %g. %d Items \n",
            value->Time(),
            value->Price()->Calculate(),
            value->Size()->Calculate(),
@@ -237,7 +237,7 @@ void DebugInfoManager::Log(SizedArray *symbol, SizedArray *trading, const char *
 #ifdef ENABLE_LOG
     StatisticItemIndexList *value = list->End()->Data();
     printf(" %s %s %s ", GetString(symbol, 0), GetString(trading, 1), string);
-    printf("Time = %ld Px = %g Size = %g TradeValue = %g. %d Items \n",
+    printf("Time = %llu Px = %g Size = %g TradeValue = %g. %d Items \n",
            value->Time(),
            value->Price()->Calculate(),
            value->Size()->Calculate(),
@@ -250,7 +250,7 @@ void DebugInfoManager::Log(SizedArray *symbol, SizedArray *trading, const char *
 #ifdef ENABLE_LOG
     StatisticItemTotalBid *value = list->End()->Data();
     printf(" %s %s %s ", GetString(symbol, 0), GetString(trading, 1), string);
-    printf("Time = %ld Value = %g BidNbOr = %d. %d Items \n", value->Time(), value->Size()->Calculate(), value->BidNbOr(), list->Count());
+    printf("Time = %llu Value = %g BidNbOr = %d. %d Items \n", value->Time(), value->Size()->Calculate(), value->BidNbOr(), list->Count());
 #endif
 }
 
@@ -258,7 +258,7 @@ void DebugInfoManager::Log(SizedArray *symbol, SizedArray *trading, const char *
 #ifdef ENABLE_LOG
     StatisticItemTotalOffer *value = list->End()->Data();
     printf(" %s %s %s ", GetString(symbol, 0), GetString(trading, 1), string);
-    printf("Time = %ld Value = %g OfferNbOr = %d. %d Items \n", value->Time(), value->Size()->Calculate(), value->OfferNbOr(), list->Count());
+    printf("Time = %llu Value = %g OfferNbOr = %d. %d Items \n", value->Time(), value->Size()->Calculate(), value->OfferNbOr(), list->Count());
 #endif
 }
 
@@ -266,7 +266,7 @@ void DebugInfoManager::Log(SizedArray *symbol, SizedArray *trading, const char *
 #ifdef ENABLE_LOG
     StatisticItemTransactionsMagnitude *value = list->End()->Data();
     printf(" %s %s %s ", GetString(symbol, 0), GetString(trading, 1), string);
-    printf("Time = %ld Size = %g TotalNumOfTrades = %u TradeValue = %g. %d Items \n",
+    printf("Time = %llu Size = %g TotalNumOfTrades = %u TradeValue = %g. %d Items \n",
            value->Time(),
            value->Size()->Calculate(),
            value->TotalNumOfTrades(),
@@ -412,7 +412,7 @@ void DebugInfoManager::PrintDecimal2ListXml(const char *name, PointerListLite<St
     LinkedPointer<StatisticItemDecimal2> *ptr = list->Start();
     while(true) {
         StatisticItemDecimal2 *value = ptr->Data();
-        fprintf(fp, "<Item Time=\"%ld\" Value=\"%g\" Value2=\"%g\"/>\n",
+        fprintf(fp, "<Item Time=\"%llu\" Value=\"%g\" Value2=\"%g\"/>\n",
                value->Time(),
                value->Value()->Calculate(),
                value->Value2()->Calculate());
@@ -430,7 +430,7 @@ void DebugInfoManager::PrintDecimalListXml(const char *name, PointerListLite<Sta
     LinkedPointer<StatisticItemDecimal> *ptr = list->Start();
     while(true) {
         StatisticItemDecimal *value = ptr->Data();
-        fprintf(fp, "<Item Time=\"%ld\" Value=\"%g\"/>\n",
+        fprintf(fp, "<Item Time=\"%llu\" Value=\"%g\"/>\n",
                value->Time(),
                value->Value()->Calculate());
         if(ptr == list->End())
@@ -447,7 +447,7 @@ void DebugInfoManager::PrintLastDealInfoListXml(const char *name, PointerListLit
     LinkedPointer<StatisticItemLastDealInfo> *ptr = list->Start();
     while(ptr != 0) {
         StatisticItemLastDealInfo *value = ptr->Data();
-        fprintf(fp, "<Item Time=\"%ld\" Px=\"%g\" Size=\"%g\" DealTime=\"%u\" TradeValue=\"%g\" NetChangePrevDayPtr=\"%g\" ChangeFromWAPrice=\"%g\"/>\n",
+        fprintf(fp, "<Item Time=\"%llu\" Px=\"%g\" Size=\"%g\" DealTime=\"%u\" TradeValue=\"%g\" NetChangePrevDayPtr=\"%g\" ChangeFromWAPrice=\"%g\"/>\n",
                value->Time(),
                value->Price()->Calculate(),
                value->Size()->Calculate(),
@@ -469,7 +469,7 @@ void DebugInfoManager::PrintIndicesListXml(const char *name, PointerListLite<Sta
     LinkedPointer<StatisticItemIndexList> *ptr = list->Start();
     while(ptr != 0) {
         StatisticItemIndexList *value = ptr->Data();
-        fprintf(fp, "<Item Time=\"%ld\" Px=\"%g\" Size=\"%g\" TradeValue=\"%g\"/>\n",
+        fprintf(fp, "<Item Time=\"%llu\" Px=\"%g\" Size=\"%g\" TradeValue=\"%g\"/>\n",
                value->Time(),
                value->Price()->Calculate(),
                value->Size()->Calculate(),
@@ -488,7 +488,7 @@ void DebugInfoManager::PrintTransactionMagnitudeXml(const char *name, PointerLis
     LinkedPointer<StatisticItemTransactionsMagnitude> *ptr = list->Start();
     while(ptr != 0) {
         StatisticItemTransactionsMagnitude *value = ptr->Data();
-        fprintf(fp, "<Item Time=\"%ld\" Size=\"%g\" TotalNumOfTrades=\"%u\" TradeValue=\"%g\"/>\n",
+        fprintf(fp, "<Item Time=\"%llu\" Size=\"%g\" TotalNumOfTrades=\"%u\" TradeValue=\"%g\"/>\n",
                value->Time(),
                value->Size()->Calculate(),
                value->TotalNumOfTrades(),
@@ -507,7 +507,7 @@ void DebugInfoManager::PrintBooleanListXml(const char *name, PointerListLite<Sta
     LinkedPointer<StatisticItem<bool>> *ptr = list->Start();
     while(true) {
         StatisticItem<bool> *value = ptr->Data();
-        fprintf(fp, "<Item Time=\"%ld\" Value=\"%s\"/>\n",
+        fprintf(fp, "<Item Time=\"%llu\" Value=\"%s\"/>\n",
                value->Time(), value->Value()? "fasle": "true");
         if(ptr == list->End())
             break;
@@ -523,7 +523,7 @@ void DebugInfoManager::PrintTotalOfferListXml(const char *name, PointerListLite<
     LinkedPointer<StatisticItemTotalOffer> *ptr = list->Start();
     while(ptr != 0) {
         StatisticItemTotalOffer *value = ptr->Data();
-        fprintf(fp, "<Item Time=\"%ld\" Value=\"%g\" OfferNbOr=\"%d\"/>\n", value->Time(), value->Size()->Calculate(), value->OfferNbOr());
+        fprintf(fp, "<Item Time=\"%llu\" Value=\"%g\" OfferNbOr=\"%d\"/>\n", value->Time(), value->Size()->Calculate(), value->OfferNbOr());
         if(ptr == list->End())
             break;
         ptr = ptr->Next();
@@ -538,7 +538,7 @@ void DebugInfoManager::PrintTotalBidListXml(const char *name, PointerListLite<St
     LinkedPointer<StatisticItemTotalBid> *ptr = list->Start();
     while(ptr != 0) {
         StatisticItemTotalBid *value = ptr->Data();
-        fprintf(fp, "<Item Time=\"%ld\" Value=\"%g\" BidNbOr=\"%d\"/>\n", value->Time(), value->Size()->Calculate(), value->BidNbOr());
+        fprintf(fp, "<Item Time=\"%llu\" Value=\"%g\" BidNbOr=\"%d\"/>\n", value->Time(), value->Size()->Calculate(), value->BidNbOr());
         if(ptr == list->End())
             break;
         ptr = ptr->Next();
@@ -728,7 +728,6 @@ int DebugInfoManager::CheckIsFriedMDEntryQueryCleared() {
 }
 
 MDEntryQueue* DebugInfoManager::GetFirstMDEntryQueue() {
-    int index = 0;
     LinkedPointer<MDEntryQueue> *start = MDEntryQueue::Pool->Start();
     while(start != 0) {
         MDEntryQueue *data = start->Data();
@@ -741,7 +740,6 @@ MDEntryQueue* DebugInfoManager::GetFirstMDEntryQueue() {
     return 0;
 }
 int DebugInfoManager::GetFirstNonEmptyEntry() {
-    int index = 0;
     LinkedPointer<MDEntryQueue> *start = MDEntryQueue::Pool->Start();
     while(start != 0) {
         MDEntryQueue *data = start->Data();

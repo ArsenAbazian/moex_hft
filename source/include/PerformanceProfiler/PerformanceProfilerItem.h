@@ -7,6 +7,11 @@
 
 #include "../Settings.h"
 
+#ifdef __MACH__
+typedef time_t __time_t;
+typedef long int __syscall_slong_t;
+#endif
+
 class PerformanceProfilerItem {
 public:
     PerformanceProfilerItem    *m_items[64];
