@@ -319,5 +319,5 @@ public:
 
 class DefaultLogManager {
 public:
-	static BinaryLogManager *Default;
+    static BinaryLogManager *Default;
 };

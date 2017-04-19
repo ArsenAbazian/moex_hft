@@ -5,8 +5,8 @@
 #include "../include/Feeds/Forts/FortsFeeds.h"
 
 Robot::Robot() {
-	this->channelsCount = 0;
-	memset(this->channels, 0, sizeof(AstsFeedChannel*) * MARKET_INFO_CAPACITY);
+    this->channelsCount = 0;
+    memset(this->channels, 0, sizeof(AstsFeedChannel*) * MARKET_INFO_CAPACITY);
     this->m_allowCurrMarket = true;
     this->m_allowFondMarket = true;
     for(int i = 0; i < MarketDataGroupId::mdgidCount; i++)
@@ -17,38 +17,38 @@ Robot::~Robot() {
     DefaultLogManager::Default->StartLog(LogMessageCode::lmcRobot_Robot);
 
     bool result = DisconnectMarkets();
-	delete this->protocolManager;
+    delete this->protocolManager;
 
     DefaultLogManager::Default->EndLog(result);
 }
 
 bool Robot::ConnectMarkets() {
-	
-	DefaultLogManager::Default->StartLog(LogMessageCode::lmcRobot_ConnectMarkets);
-	for (int i = 0; i < this->marketCount; i++) {
-		if (!this->markets[i]->Connect()) {
-			DefaultLogManager::Default->EndLog(false);
+    
+    DefaultLogManager::Default->StartLog(LogMessageCode::lmcRobot_ConnectMarkets);
+    for (int i = 0; i < this->marketCount; i++) {
+        if (!this->markets[i]->Connect()) {
+            DefaultLogManager::Default->EndLog(false);
 #ifdef ROBOT_WORK_ANYWAY
             continue;
 #else
-			return false;
+            return false;
 #endif
-		}
-	}
+        }
+    }
 
     if(this->AllowFortsMarket())
         this->FortsChannel()->Prepare();
 
-	DefaultLogManager::Default->EndLog(true);
-	return true;
+    DefaultLogManager::Default->EndLog(true);
+    return true;
 }
 
 bool Robot::DisconnectMarkets() {
-	bool success = true;
-	for (int i = 0; i < this->marketCount; i++) {
-		success &= this->markets[i]->Disconnect();
-	}
-	return success;
+    bool success = true;
+    for (int i = 0; i < this->marketCount; i++) {
+        success &= this->markets[i]->Disconnect();
+    }
+    return success;
 }
 
 bool Robot::AddDefaultTestChannels() {
@@ -252,16 +252,16 @@ bool Robot::AddDefaultTestChannels() {
 
 bool Robot::Run() {
     DefaultLogManager::Default->StartLog(LogMessageCode::lmcRobot_Run);
-	
-	if(!this->AddDefaultTestMarkets()) {
-		DefaultLogManager::Default->EndLog(false);
-		return false;
-	}
+    
+    if(!this->AddDefaultTestMarkets()) {
+        DefaultLogManager::Default->EndLog(false);
+        return false;
+    }
 
-	if(!this->AddDefaultTestChannels()) {
-		DefaultLogManager::Default->EndLog(false);
-		return false;
-	}
+    if(!this->AddDefaultTestChannels()) {
+        DefaultLogManager::Default->EndLog(false);
+        return false;
+    }
 
     if(!this->SetFeedChannelsForMarkets()) {
         DefaultLogManager::Default->EndLog(false);
@@ -283,9 +283,9 @@ bool Robot::Run() {
     }
 
     globalWatch->Stop();
-	DefaultLogManager::Default->EndLog(true);
+    DefaultLogManager::Default->EndLog(true);
     printf("Total work time = %lu seconds\n", globalWatch->ElapsedSeconds());
-	return true;
+    return true;
 }
 
 bool Robot::CollectSecurityDefinitions_FondOnly() {

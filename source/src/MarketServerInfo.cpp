@@ -4,17 +4,17 @@
 #include "../include/Stopwatch.h"
 
 MarketServerInfo::MarketServerInfo(const char *name, const char *internetAddress, int internetPort, const char *senderComputerId, const char *password, const char *targetComputerId, const char *astsServerName) {
-	strcpy(this->m_name, name);
+    strcpy(this->m_name, name);
     this->m_nameLogIndex = DefaultLogMessageProvider::Default->RegisterText(this->m_name);
-	strcpy(this->m_internetAddress, internetAddress);
-	this->m_internetPort = internetPort;
-	strcpy(this->m_targetComputerId, targetComputerId);
-	this->m_targetComputerIdLength = strlen(this->m_targetComputerId);
-	strcpy(this->m_astsServerName, astsServerName);
-	strcpy(this->m_senderComputerId, senderComputerId);
-	this->m_senderComputerIdLength = strlen(this->m_senderComputerId);
-	strcpy(this->m_password, password);
-	this->m_passwordLength = strlen(this->m_password);
+    strcpy(this->m_internetAddress, internetAddress);
+    this->m_internetPort = internetPort;
+    strcpy(this->m_targetComputerId, targetComputerId);
+    this->m_targetComputerIdLength = strlen(this->m_targetComputerId);
+    strcpy(this->m_astsServerName, astsServerName);
+    strcpy(this->m_senderComputerId, senderComputerId);
+    this->m_senderComputerIdLength = strlen(this->m_senderComputerId);
+    strcpy(this->m_password, password);
+    this->m_passwordLength = strlen(this->m_password);
     this->m_stopwatch = new Stopwatch();
     this->m_resendRequestInfo = new FixResendRequestInfo();
     this->m_inSendResendRequest = false;
@@ -28,30 +28,30 @@ MarketServerInfo::MarketServerInfo(const char *name, const char *internetAddress
 }
 
 void MarketServerInfo::Clear() { 
-	if (this->m_fixManager != NULL)
-		delete this->m_fixManager;
-	if (this->m_socketManager != NULL)
-		delete this->m_socketManager;
-	if (this->m_logonInfo != NULL)
-		delete this->m_logonInfo;
-	this->m_logonInfo = NULL;
-	this->m_fixManager = NULL;
-	this->m_socketManager = NULL;
+    if (this->m_fixManager != NULL)
+        delete this->m_fixManager;
+    if (this->m_socketManager != NULL)
+        delete this->m_socketManager;
+    if (this->m_logonInfo != NULL)
+        delete this->m_logonInfo;
+    this->m_logonInfo = NULL;
+    this->m_fixManager = NULL;
+    this->m_socketManager = NULL;
     delete this->m_stopwatch;
 }
 
 FixLogonInfo* MarketServerInfo::CreateLogonInfo() { 
-	FixLogonInfo* res = new FixLogonInfo();
-	
-	strcpy(res->SenderCompID, SenderComputerId());
-	res->SenderCompIDLength = strlen(res->SenderCompID);
-	strcpy(res->Password, Password());
-	res->PassLength = strlen(res->Password);
-	res->HearthBtInt = 60;
-	res->ShouldResetSeqNum = false;
-	res->MsgStartSeqNo = 1;
+    FixLogonInfo* res = new FixLogonInfo();
+    
+    strcpy(res->SenderCompID, SenderComputerId());
+    res->SenderCompIDLength = strlen(res->SenderCompID);
+    strcpy(res->Password, Password());
+    res->PassLength = strlen(res->Password);
+    res->HearthBtInt = 60;
+    res->ShouldResetSeqNum = false;
+    res->MsgStartSeqNo = 1;
 
-	return res;
+    return res;
 }
 
 /*
@@ -254,36 +254,36 @@ ISocketBufferProvider* MarketServerInfo::CreateSocketBufferProvider() {
 }
 
 bool MarketServerInfo::Connect() {
-	DefaultLogManager::Default->StartLog(this->m_nameLogIndex, LogMessageCode::lmcMarketServerInfo_Connect);
-	if (this->m_fixManager == NULL) {
-		this->m_fixManager = new FixProtocolManager(this->CreateSocketBufferProvider());
-		this->m_fixManager->SetTargetComputerId((char*)TargetComputerId());
+    DefaultLogManager::Default->StartLog(this->m_nameLogIndex, LogMessageCode::lmcMarketServerInfo_Connect);
+    if (this->m_fixManager == NULL) {
+        this->m_fixManager = new FixProtocolManager(this->CreateSocketBufferProvider());
+        this->m_fixManager->SetTargetComputerId((char*)TargetComputerId());
         this->m_fixManager->SetSendMsgSeqNo(1);
-		this->m_fixManager->SetRecvMsgSeqNo(1);
-	}
-	if (this->m_logonInfo == NULL) {
-		this->m_logonInfo = CreateLogonInfo();
+        this->m_fixManager->SetRecvMsgSeqNo(1);
+    }
+    if (this->m_logonInfo == NULL) {
+        this->m_logonInfo = CreateLogonInfo();
         this->m_logonInfo->MsgStartSeqNo = 1;
-	}
-	
-	this->m_socketManager = new WinSockManager();
-	bool result = this->m_socketManager->Connect(this->m_internetAddress, this->m_internetPort);
-	
-	DefaultLogManager::Default->EndLog(result);
-	return result;
+    }
+    
+    this->m_socketManager = new WinSockManager();
+    bool result = this->m_socketManager->Connect(this->m_internetAddress, this->m_internetPort);
+    
+    DefaultLogManager::Default->EndLog(result);
+    return result;
 }
 
 bool MarketServerInfo::Disconnect() {
     DefaultLogManager::Default->StartLog(this->m_nameLogIndex, LogMessageCode::lmcMarketServerInfo_Disconnect);
-	if (this->m_socketManager != NULL && this->m_socketManager->IsConnected()) {
+    if (this->m_socketManager != NULL && this->m_socketManager->IsConnected()) {
         bool result = this->m_socketManager->Disconnect();
         DefaultLogManager::Default->EndLog(result);
         return result;
     }
     DefaultLogManager::Default->EndLog(true);
-	return true;
+    return true;
 }
 
 MarketServerInfo::~MarketServerInfo() {
-	Clear();
+    Clear();
 }

@@ -4,14 +4,14 @@
 FastProtocolManager::FastProtocolManager() : FastProtocolManager(AstsObjectsAllocationInfo::Default, FortsObjectsAllocationInfo::Default) { }
 
 FastProtocolManager::FastProtocolManager(AstsObjectsAllocationInfo *astsInfo, FortsObjectsAllocationInfo *spectraInfo) {
-	this->m_astsAllocationInfo = astsInfo;
-	this->m_fortsAllocationInfo = spectraInfo;
-	this->InitializeConstantStrings();
-	this->InitializeAstsMessageInfo();
+    this->m_astsAllocationInfo = astsInfo;
+    this->m_fortsAllocationInfo = spectraInfo;
+    this->InitializeConstantStrings();
+    this->InitializeAstsMessageInfo();
     this->InitializeFortsMessageInfo();
-	this->m_astsSnapshotInfo = new AstsSnapshotInfo();
-	this->m_fortsSnapshotInfo = new FortsSnapshotInfo();
-	DebugInfoManager::Default->PrintMemoryInfo("FastProtocolManager::FastProtocolManager");
+    this->m_astsSnapshotInfo = new AstsSnapshotInfo();
+    this->m_fortsSnapshotInfo = new FortsSnapshotInfo();
+    DebugInfoManager::Default->PrintMemoryInfo("FastProtocolManager::FastProtocolManager");
 }
 
 
@@ -20,166 +20,166 @@ FastProtocolManager::~FastProtocolManager() {
 }
 
 void FastProtocolManager::PrintTabs(int tabCount) {
-	for(int i = 0; i < tabCount; i++)
-		printf("\t");
+    for(int i = 0; i < tabCount; i++)
+        printf("\t");
 }
 
 void FastProtocolManager::PrintPresenceMap(UINT64 map, int count, int tabsCount) {
-	this->PrintTabs(tabsCount);
-	printf("PresenceMap = ");
-	UINT64 values[56] = {
-			PRESENCE_MAP_INDEX0,
-			PRESENCE_MAP_INDEX1,
-			PRESENCE_MAP_INDEX2,
-			PRESENCE_MAP_INDEX3,
-			PRESENCE_MAP_INDEX4,
-			PRESENCE_MAP_INDEX5,
-			PRESENCE_MAP_INDEX6,
-			PRESENCE_MAP_INDEX7,
-			PRESENCE_MAP_INDEX8,
-			PRESENCE_MAP_INDEX9,
-			PRESENCE_MAP_INDEX10,
-			PRESENCE_MAP_INDEX11,
-			PRESENCE_MAP_INDEX12,
-			PRESENCE_MAP_INDEX13,
-			PRESENCE_MAP_INDEX14,
-			PRESENCE_MAP_INDEX15,
-			PRESENCE_MAP_INDEX16,
-			PRESENCE_MAP_INDEX17,
-			PRESENCE_MAP_INDEX18,
-			PRESENCE_MAP_INDEX19,
-			PRESENCE_MAP_INDEX20,
-			PRESENCE_MAP_INDEX21,
-			PRESENCE_MAP_INDEX22,
-			PRESENCE_MAP_INDEX23,
-			PRESENCE_MAP_INDEX24,
-			PRESENCE_MAP_INDEX25,
-			PRESENCE_MAP_INDEX26,
-			PRESENCE_MAP_INDEX27,
-			PRESENCE_MAP_INDEX28,
-			PRESENCE_MAP_INDEX29,
-			PRESENCE_MAP_INDEX30,
-			PRESENCE_MAP_INDEX31,
-			PRESENCE_MAP_INDEX32,
-			PRESENCE_MAP_INDEX33,
-			PRESENCE_MAP_INDEX34,
-			PRESENCE_MAP_INDEX35,
-			PRESENCE_MAP_INDEX36,
-			PRESENCE_MAP_INDEX37,
-			PRESENCE_MAP_INDEX38,
-			PRESENCE_MAP_INDEX39,
-			PRESENCE_MAP_INDEX40,
-			PRESENCE_MAP_INDEX41,
-			PRESENCE_MAP_INDEX42,
-			PRESENCE_MAP_INDEX43,
-			PRESENCE_MAP_INDEX44,
-			PRESENCE_MAP_INDEX45,
-			PRESENCE_MAP_INDEX46,
-			PRESENCE_MAP_INDEX47,
-			PRESENCE_MAP_INDEX48,
-			PRESENCE_MAP_INDEX49,
-			PRESENCE_MAP_INDEX50,
-			PRESENCE_MAP_INDEX51,
-			PRESENCE_MAP_INDEX52,
-			PRESENCE_MAP_INDEX53,
-			PRESENCE_MAP_INDEX54,
-			PRESENCE_MAP_INDEX55
-	};
-	for(int i = 0; i < count; i++) {
-		if((map & values[i]) == 1)
-			printf("1");
-		else
-			printf("0");
-	}
-	printf("\n");
+    this->PrintTabs(tabsCount);
+    printf("PresenceMap = ");
+    UINT64 values[56] = {
+            PRESENCE_MAP_INDEX0,
+            PRESENCE_MAP_INDEX1,
+            PRESENCE_MAP_INDEX2,
+            PRESENCE_MAP_INDEX3,
+            PRESENCE_MAP_INDEX4,
+            PRESENCE_MAP_INDEX5,
+            PRESENCE_MAP_INDEX6,
+            PRESENCE_MAP_INDEX7,
+            PRESENCE_MAP_INDEX8,
+            PRESENCE_MAP_INDEX9,
+            PRESENCE_MAP_INDEX10,
+            PRESENCE_MAP_INDEX11,
+            PRESENCE_MAP_INDEX12,
+            PRESENCE_MAP_INDEX13,
+            PRESENCE_MAP_INDEX14,
+            PRESENCE_MAP_INDEX15,
+            PRESENCE_MAP_INDEX16,
+            PRESENCE_MAP_INDEX17,
+            PRESENCE_MAP_INDEX18,
+            PRESENCE_MAP_INDEX19,
+            PRESENCE_MAP_INDEX20,
+            PRESENCE_MAP_INDEX21,
+            PRESENCE_MAP_INDEX22,
+            PRESENCE_MAP_INDEX23,
+            PRESENCE_MAP_INDEX24,
+            PRESENCE_MAP_INDEX25,
+            PRESENCE_MAP_INDEX26,
+            PRESENCE_MAP_INDEX27,
+            PRESENCE_MAP_INDEX28,
+            PRESENCE_MAP_INDEX29,
+            PRESENCE_MAP_INDEX30,
+            PRESENCE_MAP_INDEX31,
+            PRESENCE_MAP_INDEX32,
+            PRESENCE_MAP_INDEX33,
+            PRESENCE_MAP_INDEX34,
+            PRESENCE_MAP_INDEX35,
+            PRESENCE_MAP_INDEX36,
+            PRESENCE_MAP_INDEX37,
+            PRESENCE_MAP_INDEX38,
+            PRESENCE_MAP_INDEX39,
+            PRESENCE_MAP_INDEX40,
+            PRESENCE_MAP_INDEX41,
+            PRESENCE_MAP_INDEX42,
+            PRESENCE_MAP_INDEX43,
+            PRESENCE_MAP_INDEX44,
+            PRESENCE_MAP_INDEX45,
+            PRESENCE_MAP_INDEX46,
+            PRESENCE_MAP_INDEX47,
+            PRESENCE_MAP_INDEX48,
+            PRESENCE_MAP_INDEX49,
+            PRESENCE_MAP_INDEX50,
+            PRESENCE_MAP_INDEX51,
+            PRESENCE_MAP_INDEX52,
+            PRESENCE_MAP_INDEX53,
+            PRESENCE_MAP_INDEX54,
+            PRESENCE_MAP_INDEX55
+    };
+    for(int i = 0; i < count; i++) {
+        if((map & values[i]) == 1)
+            printf("1");
+        else
+            printf("0");
+    }
+    printf("\n");
 }
 
 void FastProtocolManager::PrintXmlPresenceMap(UINT64 map, int count) {
-	fprintf(this->m_xmlFilePtr, "<PresenceMap value=\"");
-	UINT64 values[56] = {
-			PRESENCE_MAP_INDEX0,
-			PRESENCE_MAP_INDEX1,
-			PRESENCE_MAP_INDEX2,
-			PRESENCE_MAP_INDEX3,
-			PRESENCE_MAP_INDEX4,
-			PRESENCE_MAP_INDEX5,
-			PRESENCE_MAP_INDEX6,
-			PRESENCE_MAP_INDEX7,
-			PRESENCE_MAP_INDEX8,
-			PRESENCE_MAP_INDEX9,
-			PRESENCE_MAP_INDEX10,
-			PRESENCE_MAP_INDEX11,
-			PRESENCE_MAP_INDEX12,
-			PRESENCE_MAP_INDEX13,
-			PRESENCE_MAP_INDEX14,
-			PRESENCE_MAP_INDEX15,
-			PRESENCE_MAP_INDEX16,
-			PRESENCE_MAP_INDEX17,
-			PRESENCE_MAP_INDEX18,
-			PRESENCE_MAP_INDEX19,
-			PRESENCE_MAP_INDEX20,
-			PRESENCE_MAP_INDEX21,
-			PRESENCE_MAP_INDEX22,
-			PRESENCE_MAP_INDEX23,
-			PRESENCE_MAP_INDEX24,
-			PRESENCE_MAP_INDEX25,
-			PRESENCE_MAP_INDEX26,
-			PRESENCE_MAP_INDEX27,
-			PRESENCE_MAP_INDEX28,
-			PRESENCE_MAP_INDEX29,
-			PRESENCE_MAP_INDEX30,
-			PRESENCE_MAP_INDEX31,
-			PRESENCE_MAP_INDEX32,
-			PRESENCE_MAP_INDEX33,
-			PRESENCE_MAP_INDEX34,
-			PRESENCE_MAP_INDEX35,
-			PRESENCE_MAP_INDEX36,
-			PRESENCE_MAP_INDEX37,
-			PRESENCE_MAP_INDEX38,
-			PRESENCE_MAP_INDEX39,
-			PRESENCE_MAP_INDEX40,
-			PRESENCE_MAP_INDEX41,
-			PRESENCE_MAP_INDEX42,
-			PRESENCE_MAP_INDEX43,
-			PRESENCE_MAP_INDEX44,
-			PRESENCE_MAP_INDEX45,
-			PRESENCE_MAP_INDEX46,
-			PRESENCE_MAP_INDEX47,
-			PRESENCE_MAP_INDEX48,
-			PRESENCE_MAP_INDEX49,
-			PRESENCE_MAP_INDEX50,
-			PRESENCE_MAP_INDEX51,
-			PRESENCE_MAP_INDEX52,
-			PRESENCE_MAP_INDEX53,
-			PRESENCE_MAP_INDEX54,
-			PRESENCE_MAP_INDEX55
-	};
-	for(int i = 0; i < count; i++) {
-		if((map & values[i]) == 1)
-			fprintf(this->m_xmlFilePtr, "1");
-		else
-			fprintf(this->m_xmlFilePtr, "0");
-	}
-	fprintf(this->m_xmlFilePtr, "\"/>");
+    fprintf(this->m_xmlFilePtr, "<PresenceMap value=\"");
+    UINT64 values[56] = {
+            PRESENCE_MAP_INDEX0,
+            PRESENCE_MAP_INDEX1,
+            PRESENCE_MAP_INDEX2,
+            PRESENCE_MAP_INDEX3,
+            PRESENCE_MAP_INDEX4,
+            PRESENCE_MAP_INDEX5,
+            PRESENCE_MAP_INDEX6,
+            PRESENCE_MAP_INDEX7,
+            PRESENCE_MAP_INDEX8,
+            PRESENCE_MAP_INDEX9,
+            PRESENCE_MAP_INDEX10,
+            PRESENCE_MAP_INDEX11,
+            PRESENCE_MAP_INDEX12,
+            PRESENCE_MAP_INDEX13,
+            PRESENCE_MAP_INDEX14,
+            PRESENCE_MAP_INDEX15,
+            PRESENCE_MAP_INDEX16,
+            PRESENCE_MAP_INDEX17,
+            PRESENCE_MAP_INDEX18,
+            PRESENCE_MAP_INDEX19,
+            PRESENCE_MAP_INDEX20,
+            PRESENCE_MAP_INDEX21,
+            PRESENCE_MAP_INDEX22,
+            PRESENCE_MAP_INDEX23,
+            PRESENCE_MAP_INDEX24,
+            PRESENCE_MAP_INDEX25,
+            PRESENCE_MAP_INDEX26,
+            PRESENCE_MAP_INDEX27,
+            PRESENCE_MAP_INDEX28,
+            PRESENCE_MAP_INDEX29,
+            PRESENCE_MAP_INDEX30,
+            PRESENCE_MAP_INDEX31,
+            PRESENCE_MAP_INDEX32,
+            PRESENCE_MAP_INDEX33,
+            PRESENCE_MAP_INDEX34,
+            PRESENCE_MAP_INDEX35,
+            PRESENCE_MAP_INDEX36,
+            PRESENCE_MAP_INDEX37,
+            PRESENCE_MAP_INDEX38,
+            PRESENCE_MAP_INDEX39,
+            PRESENCE_MAP_INDEX40,
+            PRESENCE_MAP_INDEX41,
+            PRESENCE_MAP_INDEX42,
+            PRESENCE_MAP_INDEX43,
+            PRESENCE_MAP_INDEX44,
+            PRESENCE_MAP_INDEX45,
+            PRESENCE_MAP_INDEX46,
+            PRESENCE_MAP_INDEX47,
+            PRESENCE_MAP_INDEX48,
+            PRESENCE_MAP_INDEX49,
+            PRESENCE_MAP_INDEX50,
+            PRESENCE_MAP_INDEX51,
+            PRESENCE_MAP_INDEX52,
+            PRESENCE_MAP_INDEX53,
+            PRESENCE_MAP_INDEX54,
+            PRESENCE_MAP_INDEX55
+    };
+    for(int i = 0; i < count; i++) {
+        if((map & values[i]) == 1)
+            fprintf(this->m_xmlFilePtr, "1");
+        else
+            fprintf(this->m_xmlFilePtr, "0");
+    }
+    fprintf(this->m_xmlFilePtr, "\"/>");
 }
 
 void FastProtocolManager::PrintXmlInt32(const char *name, int value) {
-	fprintf(this->m_xmlFilePtr, "<%s value=\"%d\"/>", name, value);
+    fprintf(this->m_xmlFilePtr, "<%s value=\"%d\"/>", name, value);
 }
 void FastProtocolManager::PrintXmlUInt32(const char *name, UINT value) {
-	fprintf(this->m_xmlFilePtr, "<%s value=\"%u\"/>", name, value);
+    fprintf(this->m_xmlFilePtr, "<%s value=\"%u\"/>", name, value);
 }
 void FastProtocolManager::PrintXmlInt64(const char *name, INT64 value) {
-	fprintf(this->m_xmlFilePtr, "<%s value=\"%" PRId64 "\"/>", name, value);
+    fprintf(this->m_xmlFilePtr, "<%s value=\"%" PRId64 "\"/>", name, value);
 }
 void FastProtocolManager::PrintXmlUInt64(const char *name, UINT64 value) {
-	fprintf(this->m_xmlFilePtr, "<%s value=\"%" PRIu64 "\"/>", name, value);
+    fprintf(this->m_xmlFilePtr, "<%s value=\"%" PRIu64 "\"/>", name, value);
 }
 void FastProtocolManager::PrintXmlItemBegin(const char *name, int index) {
-	fprintf(this->m_xmlFilePtr, "<%s%d>", name, index);
+    fprintf(this->m_xmlFilePtr, "<%s%d>", name, index);
 }
 void FastProtocolManager::PrintXmlItemEnd(const char *name, int index) {
-	fprintf(this->m_xmlFilePtr, "</%s%d>", name, index);
+    fprintf(this->m_xmlFilePtr, "</%s%d>", name, index);
 }
 void FastProtocolManager::PrintXmlItemBegin(const char *name) {
     fprintf(this->m_xmlFilePtr, "<%s>", name);
@@ -188,124 +188,124 @@ void FastProtocolManager::PrintXmlItemEnd(const char *name) {
     fprintf(this->m_xmlFilePtr, "</%s>", name);
 }
 void FastProtocolManager::PrintXmlString(const char *name, char *str, int count) {
-	fprintf(this->m_xmlFilePtr, "<%s value=\"", name);
-	for(int i = 0; i < count; i++)
-		fprintf(this->m_xmlFilePtr, "%c", str[i]);
-	fprintf(this->m_xmlFilePtr, "\"/>");
+    fprintf(this->m_xmlFilePtr, "<%s value=\"", name);
+    for(int i = 0; i < count; i++)
+        fprintf(this->m_xmlFilePtr, "%c", str[i]);
+    fprintf(this->m_xmlFilePtr, "\"/>");
 }
 void FastProtocolManager::PrintXmlByteVector(const char *name, unsigned char *data, int count) {
-	fprintf(this->m_xmlFilePtr, "<%s value=\"", name);
-	for(int i = 0; i < count; i++) {
-		if(i == count - 1)
-			fprintf(this->m_xmlFilePtr, "%02x", data[i]);
-		else
-			fprintf(this->m_xmlFilePtr, "%02x ", data[i]);
-	}
-	fprintf(this->m_xmlFilePtr, "\"/>");
+    fprintf(this->m_xmlFilePtr, "<%s value=\"", name);
+    for(int i = 0; i < count; i++) {
+        if(i == count - 1)
+            fprintf(this->m_xmlFilePtr, "%02x", data[i]);
+        else
+            fprintf(this->m_xmlFilePtr, "%02x ", data[i]);
+    }
+    fprintf(this->m_xmlFilePtr, "\"/>");
 }
 void FastProtocolManager::PrintXmlDecimal(const char *name, Decimal *value) {
-	fprintf(this->m_xmlFilePtr, "<%s value=\"", name);
-	INT64 intVal = value->Mantissa;
-	if(value->Exponent >= 0) {
-		for(int i = 0; i < value->Exponent; i++) {
-			intVal *= 10;
-		}
-		fprintf(this->m_xmlFilePtr, "%" PRId64, intVal);
-	}
-	if(value->Exponent < 0) {
-		for(int i = value->Exponent; i < 0; i++) {
-			intVal = intVal / 10;
-		}
-		fprintf(this->m_xmlFilePtr, "%" PRId64 ".", intVal);
-		for(int i = value->Exponent; i < 0; i++) {
-			intVal = intVal * 10;
-		}
-		intVal = value->Mantissa - intVal;
-		fprintf(this->m_xmlFilePtr, "%" PRId64, intVal);
-	}
-	fprintf(this->m_xmlFilePtr, "\"/>");
+    fprintf(this->m_xmlFilePtr, "<%s value=\"", name);
+    INT64 intVal = value->Mantissa;
+    if(value->Exponent >= 0) {
+        for(int i = 0; i < value->Exponent; i++) {
+            intVal *= 10;
+        }
+        fprintf(this->m_xmlFilePtr, "%" PRId64, intVal);
+    }
+    if(value->Exponent < 0) {
+        for(int i = value->Exponent; i < 0; i++) {
+            intVal = intVal / 10;
+        }
+        fprintf(this->m_xmlFilePtr, "%" PRId64 ".", intVal);
+        for(int i = value->Exponent; i < 0; i++) {
+            intVal = intVal * 10;
+        }
+        intVal = value->Mantissa - intVal;
+        fprintf(this->m_xmlFilePtr, "%" PRId64, intVal);
+    }
+    fprintf(this->m_xmlFilePtr, "\"/>");
 }
 
 bool FastProtocolManager::BeginExportXml(const char *fileName) {
-	this->m_xmlFilePtr = fopen(fileName, "wt");
-	if(this->m_xmlFilePtr == NULL)
-		return false;
-	fprintf(this->m_xmlFilePtr, "<messages>");
-	return true;
+    this->m_xmlFilePtr = fopen(fileName, "wt");
+    if(this->m_xmlFilePtr == NULL)
+        return false;
+    fprintf(this->m_xmlFilePtr, "<messages>");
+    return true;
 }
 
 void FastProtocolManager::EndExportXml() {
-	fprintf(this->m_xmlFilePtr, "</messages>");
-	fclose(this->m_xmlFilePtr);
+    fprintf(this->m_xmlFilePtr, "</messages>");
+    fclose(this->m_xmlFilePtr);
 }
 
 void FastProtocolManager::PrintInt32(const char *name, int value, int tabCount) {
-	this->PrintTabs(tabCount);
-	printf("%s = %d\n", name, value);
+    this->PrintTabs(tabCount);
+    printf("%s = %d\n", name, value);
 }
 void FastProtocolManager::PrintUInt32(const char *name, UINT value, int tabCount) {
-	this->PrintTabs(tabCount);
-	printf("%s = %u\n", name, value);
+    this->PrintTabs(tabCount);
+    printf("%s = %u\n", name, value);
 }
 void FastProtocolManager::PrintInt64(const char *name, INT64 value, int tabCount) {
-	this->PrintTabs(tabCount);
-	printf("%s = %" PRId64 "\n", name, value);
+    this->PrintTabs(tabCount);
+    printf("%s = %" PRId64 "\n", name, value);
 }
 void FastProtocolManager::PrintUInt64(const char *name, UINT64 value, int tabCount) {
-	this->PrintTabs(tabCount);
-	printf("%s = %" PRIu64 "\n", name, value);
+    this->PrintTabs(tabCount);
+    printf("%s = %" PRIu64 "\n", name, value);
 }
 void FastProtocolManager::PrintItemBegin(const char *name, int index, int tabsCount) {
-	this->PrintTabs(tabsCount);
-	printf("%s%d {\n", name, index);
+    this->PrintTabs(tabsCount);
+    printf("%s%d {\n", name, index);
 }
 void FastProtocolManager::PrintItemEnd(int tabsCount) {
-	this->PrintTabs(tabsCount);
-	printf("}\n");
+    this->PrintTabs(tabsCount);
+    printf("}\n");
 }
 void FastProtocolManager::PrintString(const char *name, char *str, int count, int tabCount) {
-	this->PrintTabs(tabCount);
-	printf("%s = '", name);
-	for(int i = 0; i < count; i++)
-		printf("%c", str[i]);
-	printf("'\n");
+    this->PrintTabs(tabCount);
+    printf("%s = '", name);
+    for(int i = 0; i < count; i++)
+        printf("%c", str[i]);
+    printf("'\n");
 }
 void FastProtocolManager::PrintByteVector(const char *name, unsigned char *data, int count, int tabCount) {
-	this->PrintTabs(tabCount);
-	printf("%s = '", name);
-	for(int i = 0; i < count; i++) {
-		if(i == count - 1)
-			printf("%02x", data[i]);
-		else
-			printf("%02x ", data[i]);
-	}
-	printf("' -> '");
-	for(int i = 0; i < count; i++)
-		printf("%c", data[i]);
-	printf("'\n");
+    this->PrintTabs(tabCount);
+    printf("%s = '", name);
+    for(int i = 0; i < count; i++) {
+        if(i == count - 1)
+            printf("%02x", data[i]);
+        else
+            printf("%02x ", data[i]);
+    }
+    printf("' -> '");
+    for(int i = 0; i < count; i++)
+        printf("%c", data[i]);
+    printf("'\n");
 }
 void FastProtocolManager::PrintDecimal(const char *name, Decimal *value, int tabCount) {
-	this->PrintTabs(tabCount);
-	printf("%s = ", name);
-	INT64 intVal = value->Mantissa;
-	if(value->Exponent >= 0) {
-		for(int i = 0; i < value->Exponent; i++) {
-			intVal *= 10;
-		}
-		printf("%" PRId64, intVal);
-	}
-	if(value->Exponent < 0) {
-		for(int i = value->Exponent; i < 0; i++) {
-			intVal = intVal / 10;
-		}
-		printf("%" PRId64 ".", intVal);
-		for(int i = value->Exponent; i < 0; i++) {
-			intVal = intVal * 10;
-		}
-		intVal = value->Mantissa - intVal;
-		printf("%" PRId64, intVal);
-	}
-	printf("\n");
+    this->PrintTabs(tabCount);
+    printf("%s = ", name);
+    INT64 intVal = value->Mantissa;
+    if(value->Exponent >= 0) {
+        for(int i = 0; i < value->Exponent; i++) {
+            intVal *= 10;
+        }
+        printf("%" PRId64, intVal);
+    }
+    if(value->Exponent < 0) {
+        for(int i = value->Exponent; i < 0; i++) {
+            intVal = intVal / 10;
+        }
+        printf("%" PRId64 ".", intVal);
+        for(int i = value->Exponent; i < 0; i++) {
+            intVal = intVal * 10;
+        }
+        intVal = value->Mantissa - intVal;
+        printf("%" PRId64, intVal);
+    }
+    printf("\n");
 }
 
 #pragma region Asts_Print_Methods_Definition_GeneratedCode

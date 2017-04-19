@@ -33,9 +33,9 @@ class HistoricalReplayTester;
 class FeedConnection {
     friend class OrderTesterFond;
     friend class OrderTesterCurr;
-	friend class TradeTesterFond;
+    friend class TradeTesterFond;
     friend class TradeTesterCurr;
-	friend class FeedConnectionTester;
+    friend class FeedConnectionTester;
     friend class TestMessagesHelper;
     friend class StatisticsTesterFond;
     friend class StatisticsTesterCurr;
@@ -46,16 +46,16 @@ class FeedConnection {
     friend class OrderBookTesterForts;
 
 public:
-	const int MaxReceiveBufferSize 				        = 1500;
+    const int MaxReceiveBufferSize                      = 1500;
     const int WaitAnyPacketMaxTimeMs                    = 4000;
     const int WaitAnyPacketFortsMaxTimeMs               = 40000;
     const int WaitSecurityStatusFortsMaxTimeSec         = 120;
     const int MaxHrUnsuccessfulConnectCount             = 20;
     const int WaitSecurityDefinitionPacketMaxTimeMs     = 20000;
 protected:
-	char										m_idName[128];
+    char                                        m_idName[128];
     char                                        m_channelName[128];
-	char										feedTypeName[128];
+    char                                        feedTypeName[128];
 
 #ifdef TEST
     TestMessagesHelper                          *m_testHelper;
@@ -83,7 +83,7 @@ protected:
     int                                         m_snapshotLastFragment;
     int                                         m_nextFortsSnapshotRouteFirst;
     int                                         m_lastMsgSeqNumProcessed;
-	int											m_rptSeq;
+    int                                         m_rptSeq;
 
     AstsSnapshotInfo                            *m_astsSnapshotInfo;
     FortsSnapshotInfo                           *m_fortsSnapshotInfo;
@@ -116,23 +116,23 @@ protected:
     FeedConnectionMessageInfo                       **m_packets;
     int                                         m_packetsCount;
 
-	int     									m_idLogIndex;
-	int 										m_feedTypeNameLogIndex;
+    int                                         m_idLogIndex;
+    int                                         m_feedTypeNameLogIndex;
 
-	char										feedTypeValue;
+    char                                        feedTypeValue;
 
-	FeedConnectionProtocol 						protocol;
+    FeedConnectionProtocol                      protocol;
 
-	char										feedASourceIp[64];
-	char										feedAIp[64];
-	int											feedAPort;
+    char                                        feedASourceIp[64];
+    char                                        feedAIp[64];
+    int                                         feedAPort;
 
-	char										feedBSourceIp[64];
-	char										feedBIp[64];
-	int											feedBPort;
+    char                                        feedBSourceIp[64];
+    char                                        feedBIp[64];
+    int                                         feedBPort;
 
-	int                                         m_windowMsgSeqNum;
-    int											m_startMsgSeqNum;
+    int                                         m_windowMsgSeqNum;
+    int                                         m_startMsgSeqNum;
     int                                         m_lostPacketCount;
     int                                         m_endMsgSeqNum;
     int                                         m_requestMessageStartIndex;
@@ -145,9 +145,9 @@ protected:
     const char                                  *m_password;
     int                                         m_passwordLength;
 
-	WinSockManager								*socketAManager;
-	WinSockManager								*socketBManager;
-	FastProtocolManager 						*m_fastProtocolManager;
+    WinSockManager                              *socketAManager;
+    WinSockManager                              *socketBManager;
+    FastProtocolManager                         *m_fastProtocolManager;
     AstsLogonInfo                               *m_fastLogonInfo;
 
     FixProtocolManager                          *m_fixProtocolManager;
@@ -155,14 +155,14 @@ protected:
     FixRejectInfo                               *m_hsRejectInfo;
     int                                          m_hsMsgSeqNo;
 
-	ISocketBufferProvider						*m_socketABufferProvider;
-	SocketBuffer								*m_sendABuffer;
-	SocketBuffer								*m_recvABuffer;
+    ISocketBufferProvider                       *m_socketABufferProvider;
+    SocketBuffer                                *m_sendABuffer;
+    SocketBuffer                                *m_recvABuffer;
 
-	FeedConnectionState							m_state;
-	FeedConnectionState							m_nextState;
+    FeedConnectionState                         m_state;
+    FeedConnectionState                         m_nextState;
 
-    bool										m_shouldUseNextState;
+    bool                                        m_shouldUseNextState;
     int                                         m_reconnectCount;
     int                                         m_maxReconnectCount;
 
@@ -171,18 +171,18 @@ protected:
     Stopwatch                                   *m_waitTimer;
     bool                                        m_shouldReceiveAnswer;
 
-	MarketDataTable<OrderInfo, AstsOLSFONDInfo, AstsOLSFONDItemInfo>			*m_orderTableFond;
-	MarketDataTable<OrderInfo, AstsOLSCURRInfo, AstsOLSCURRItemInfo>			*m_orderTableCurr;
-	MarketDataTable<TradeInfo, AstsTLSFONDInfo, AstsTLSFONDItemInfo>			*m_tradeTableFond;
-	MarketDataTable<TradeInfo, AstsTLSCURRInfo, AstsTLSCURRItemInfo>			*m_tradeTableCurr;
+    MarketDataTable<OrderInfo, AstsOLSFONDInfo, AstsOLSFONDItemInfo>            *m_orderTableFond;
+    MarketDataTable<OrderInfo, AstsOLSCURRInfo, AstsOLSCURRItemInfo>            *m_orderTableCurr;
+    MarketDataTable<TradeInfo, AstsTLSFONDInfo, AstsTLSFONDItemInfo>            *m_tradeTableFond;
+    MarketDataTable<TradeInfo, AstsTLSCURRInfo, AstsTLSCURRItemInfo>            *m_tradeTableCurr;
     MarketDataTable<StatisticsInfo, AstsGenericInfo, AstsGenericItemInfo>       *m_statTableFond;
     MarketDataTable<StatisticsInfo, AstsGenericInfo, AstsGenericItemInfo>       *m_statTableCurr;
     LinkedPointer<AstsSecurityDefinitionInfo>                                   **m_symbols;
     int                                                                         m_symbolsCount;
 
 #pragma region FORTS
-    MarketDataTable<OrderBookInfo, FortsDefaultSnapshotMessageInfo, FortsDefaultSnapshotMessageMDEntriesItemInfo>			*m_fortsOrderBookTable;
-    MarketDataTable<TradeInfo, FortsDefaultSnapshotMessageInfo, FortsDefaultSnapshotMessageMDEntriesItemInfo>			    *m_fortsTradeBookTable;
+    MarketDataTable<OrderBookInfo, FortsDefaultSnapshotMessageInfo, FortsDefaultSnapshotMessageMDEntriesItemInfo>           *m_fortsOrderBookTable;
+    MarketDataTable<TradeInfo, FortsDefaultSnapshotMessageInfo, FortsDefaultSnapshotMessageMDEntriesItemInfo>               *m_fortsTradeBookTable;
     LinkedPointer<FortsSecurityDefinitionInfo>                                  **m_symbolsForts;
 #pragma endregion
 
@@ -264,7 +264,7 @@ protected:
         return this->TryGetSecurityDefinitionTotNumReportsForts(buffer);
     }
 
-	inline bool CanListen() { return this->socketAManager->ShouldRecv() || this->socketBManager->ShouldRecv(); }
+    inline bool CanListen() { return this->socketAManager->ShouldRecv() || this->socketBManager->ShouldRecv(); }
     inline void ThreatFirstMessageIndexAsStart() {
         this->m_startMsgSeqNum = -1;
         this->m_endMsgSeqNum = 0;
@@ -1393,35 +1393,35 @@ protected:
         return true;
     }
     inline bool StartListenSnapshot() {
-		if(this->m_type == FeedConnectionType::fctInstrumentStatus || this->m_type == FeedConnectionType::fctInstrumentStatusForts)
+        if(this->m_type == FeedConnectionType::fctInstrumentStatus || this->m_type == FeedConnectionType::fctInstrumentStatusForts)
             return this->StartSecurityStatusSnapshot();
         return this->StartIncrementalSnapshot();
-	}
+    }
     inline void UpdateMessageSeqNoAfterSnapshot() {
         this->ClearLocalPackets(0, GetLocalIndex(this->m_endMsgSeqNum));
         this->m_startMsgSeqNum = this->m_endMsgSeqNum + 1;
         this->m_windowMsgSeqNum = this->m_startMsgSeqNum;
     }
-	inline bool StopListenSnapshot() {
+    inline bool StopListenSnapshot() {
         if(!this->m_snapshot->Stop()) {
-			DefaultLogManager::Default->WriteSuccess(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_StopListenSnapshot, false);
-			return false;
-		}
+            DefaultLogManager::Default->WriteSuccess(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_StopListenSnapshot, false);
+            return false;
+        }
         this->MarketTableExitSnapshotMode();
-		this->UpdateMessageSeqNoAfterSnapshot();
+        this->UpdateMessageSeqNoAfterSnapshot();
         DefaultLogManager::Default->WriteSuccess(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_StopListenSnapshot, true);
-		return true;
-	}
+        return true;
+    }
 
     inline AstsSnapshotInfo* GetAstsSnapshotInfo(int msgSeqNo) {
-		FeedConnectionMessageInfo *item = this->m_packets[msgSeqNo];
-		unsigned char *buffer = item->m_address;
-		if(this->ShouldSkipMessageAsts(buffer, !item->m_requested))
+        FeedConnectionMessageInfo *item = this->m_packets[msgSeqNo];
+        unsigned char *buffer = item->m_address;
+        if(this->ShouldSkipMessageAsts(buffer, !item->m_requested))
             return 0;
         this->m_fastProtocolManager->SetNewBuffer(buffer, item->m_size);
-		this->m_fastProtocolManager->ReadMsgSeqNumber();
-		return this->m_fastProtocolManager->GetAstsSnapshotInfo();
-	}
+        this->m_fastProtocolManager->ReadMsgSeqNumber();
+        return this->m_fastProtocolManager->GetAstsSnapshotInfo();
+    }
 
     inline FortsSnapshotInfo* GetFortsSnapshotInfo(int msgSeqNo) {
         FeedConnectionMessageInfo *item = this->m_packets[msgSeqNo];
@@ -1443,27 +1443,27 @@ protected:
     inline void ResetWaitTime() { this->m_waitTimer->Start(); }
     inline bool ActualMsgSeqNum() { return this->m_startMsgSeqNum == this->m_endMsgSeqNum; }
 
-	inline void IncrementMsgSeqNo() { this->m_startMsgSeqNum++; }
-	virtual ISocketBufferProvider* CreateSocketBufferProvider() {
-			return new SocketBufferProvider(DefaultSocketBufferManager::Default,
-											RobotSettings::Default->DefaultFeedConnectionSendBufferSize,
-											RobotSettings::Default->DefaultFeedConnectionSendItemsCount,
-											RobotSettings::Default->DefaultFeedConnectionRecvBufferSize,
-											RobotSettings::Default->DefaultFeedConnectionRecvItemsCount);
-	}
-	virtual void ClearSocketBufferProvider() {
+    inline void IncrementMsgSeqNo() { this->m_startMsgSeqNum++; }
+    virtual ISocketBufferProvider* CreateSocketBufferProvider() {
+            return new SocketBufferProvider(DefaultSocketBufferManager::Default,
+                                            RobotSettings::Default->DefaultFeedConnectionSendBufferSize,
+                                            RobotSettings::Default->DefaultFeedConnectionSendItemsCount,
+                                            RobotSettings::Default->DefaultFeedConnectionRecvBufferSize,
+                                            RobotSettings::Default->DefaultFeedConnectionRecvItemsCount);
+    }
+    virtual void ClearSocketBufferProvider() {
 
-	}
+    }
     void SetMaxReconnectCount(int value) { this->m_maxReconnectCount = value; }
     void SetMaxLostPacketCountForStartSnapshot(int count) { this->m_maxLostPacketCountForStartSnapshot = count; }
     int MaxLostPacketCountForStartSnapshot() { return this->m_maxLostPacketCountForStartSnapshot; }
-	inline void SetState(FeedConnectionState state) { this->m_state = state; }
+    inline void SetState(FeedConnectionState state) { this->m_state = state; }
     inline void SetId(FeedConnectionId id) { this->m_id = id; }
     inline void SetHsState(FeedConnectionHistoricalReplayState state) { this->m_hsState = state; }
-	inline void SetNextState(FeedConnectionState state) {
-		this->m_nextState = state;
-		this->m_shouldUseNextState = true;
-	}
+    inline void SetNextState(FeedConnectionState state) {
+        this->m_nextState = state;
+        this->m_shouldUseNextState = true;
+    }
 
     inline int GetLocalIndex(int msgSeqNo) { return msgSeqNo - this->m_windowMsgSeqNum; }
     inline int LocalIndexToMsgSeqNo(int index) { return index + this->m_windowMsgSeqNum; }
@@ -2693,39 +2693,39 @@ protected:
         this->SetState(this->m_nextState);
     }
 
-	FILE *obrLogFile;
+    FILE *obrLogFile;
 
-	inline bool OnIncrementalRefresh_OLR_FOND(AstsOLSFONDItemInfo *info) {
+    inline bool OnIncrementalRefresh_OLR_FOND(AstsOLSFONDItemInfo *info) {
         //TODO remove debug
         info->MDEntryID[info->MDEntryIDLength] = '\0';
         printf("OLR FOND %s\n", info->MDEntryID);
         int index = this->m_symbolManager->GetSymbol(info->Symbol, info->SymbolLength)->m_index;
-		return this->m_orderTableFond->ProcessIncremental(info, index, info->TradingSessionID, info->TradingSessionIDLength);
-	}
+        return this->m_orderTableFond->ProcessIncremental(info, index, info->TradingSessionID, info->TradingSessionIDLength);
+    }
 
-	inline bool OnIncrementalRefresh_OLR_CURR(AstsOLSCURRItemInfo *info) {
+    inline bool OnIncrementalRefresh_OLR_CURR(AstsOLSCURRItemInfo *info) {
         //TODO remove debug
         info->MDEntryID[info->MDEntryIDLength] = '\0';
         //printf("OLR CURR %s\n", info->MDEntryID);
         int index = this->m_symbolManager->GetSymbol(info->Symbol, info->SymbolLength)->m_index;
-		return this->m_orderTableCurr->ProcessIncremental(info, index, info->TradingSessionID, info->TradingSessionIDLength);
-	}
+        return this->m_orderTableCurr->ProcessIncremental(info, index, info->TradingSessionID, info->TradingSessionIDLength);
+    }
 
-	inline bool OnIncrementalRefresh_TLR_FOND(AstsTLSFONDItemInfo *info) {
+    inline bool OnIncrementalRefresh_TLR_FOND(AstsTLSFONDItemInfo *info) {
         //TODO remove debug
         info->MDEntryID[info->MDEntryIDLength] = '\0';
         printf("TRL FOND %s\n", info->MDEntryID);
         int index = this->m_symbolManager->GetSymbol(info->Symbol, info->SymbolLength)->m_index;
-		return this->m_tradeTableFond->ProcessIncremental(info, index, info->TradingSessionID, info->TradingSessionIDLength);
-	}
+        return this->m_tradeTableFond->ProcessIncremental(info, index, info->TradingSessionID, info->TradingSessionIDLength);
+    }
 
-	inline bool OnIncrementalRefresh_TLR_CURR(AstsTLSCURRItemInfo *info) {
+    inline bool OnIncrementalRefresh_TLR_CURR(AstsTLSCURRItemInfo *info) {
         //TODO remove debug
         info->MDEntryID[info->MDEntryIDLength] = '\0';
         printf("TLR CURR %s\n", info->MDEntryID);
         int index = this->m_symbolManager->GetSymbol(info->Symbol, info->SymbolLength)->m_index;
         return this->m_tradeTableCurr->ProcessIncremental(info, index, info->TradingSessionID, info->TradingSessionIDLength);
-	}
+    }
 
     inline bool OnIncrementalRefresh_MSR_FOND(AstsGenericItemInfo *info) {
         //TODO remove debug
@@ -2934,18 +2934,18 @@ protected:
             throw;
     }
 
-	inline bool ProcessIncrementalCoreAsts(unsigned char *buffer, int length, bool shouldProcessMsgSeqNumber) {
-		this->m_fastProtocolManager->SetNewBuffer(buffer, length);
-		if(shouldProcessMsgSeqNumber)
+    inline bool ProcessIncrementalCoreAsts(unsigned char *buffer, int length, bool shouldProcessMsgSeqNumber) {
+        this->m_fastProtocolManager->SetNewBuffer(buffer, length);
+        if(shouldProcessMsgSeqNumber)
             this->m_fastProtocolManager->ReadMsgSeqNumber();
 
-		if(this->m_fastProtocolManager->DecodeAsts() == 0) {
+        if(this->m_fastProtocolManager->DecodeAsts() == 0) {
             printf("unknown template: %d\n", this->m_fastProtocolManager->TemplateId());
             return true;
         }
         this->ApplyIncrementalCoreAsts();
-		return true;
-	}
+        return true;
+    }
 
     inline bool ProcessSecurityStatus(AstsSecurityStatusInfo *info) {
         if(!this->m_securityDefinition->IsIdfDataCollected()) {
@@ -3021,25 +3021,25 @@ protected:
         return *((unsigned char*)(buffer + 1)) == 0x86;
     }
 
-	inline bool ShouldSkipMessageAsts(unsigned char *buffer, bool shouldProcessMsgSeqNumber) {
-		if(shouldProcessMsgSeqNumber) {
+    inline bool ShouldSkipMessageAsts(unsigned char *buffer, bool shouldProcessMsgSeqNumber) {
+        if(shouldProcessMsgSeqNumber) {
             unsigned short *templateId = (unsigned short*)(buffer + 5);
             return (*templateId) == 0xbc10;
         }
         return *((unsigned short*)(buffer + 1)) == 0xbc10;
-	}
+    }
 
-	inline bool ProcessIncrementalAsts(FeedConnectionMessageInfo *info) {
+    inline bool ProcessIncrementalAsts(FeedConnectionMessageInfo *info) {
         unsigned char *buffer = info->m_address;
-		if(this->ShouldSkipMessageAsts(buffer, !info->m_requested)) {
+        if(this->ShouldSkipMessageAsts(buffer, !info->m_requested)) {
             info->m_processed = true;
             return true;  // TODO - take this message into account, becasue it determines feed alive
         }
 
         //DefaultLogManager::Default->WriteFast(this->m_idLogIndex, this->m_recvABuffer->BufferIndex(), info->m_item->m_itemIndex);
         info->m_processed = true;
-		return this->ProcessIncrementalCoreAsts(buffer, info->m_size, !info->m_requested);
-	}
+        return this->ProcessIncrementalCoreAsts(buffer, info->m_size, !info->m_requested);
+    }
     inline void CheckUpdateFortsIncrementalParams(int messageIndex) {
         if(this->m_fastProtocolManager->TemplateId() == FeedTemplateId::fortsIncremental) {
             FortsDefaultIncrementalRefreshMessageInfo *info = static_cast<FortsDefaultIncrementalRefreshMessageInfo*>(this->m_fastProtocolManager->LastDecodeInfo());
@@ -3156,14 +3156,14 @@ protected:
     }
 
 public:
-	FeedConnection(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort);
-	virtual ~FeedConnection();
+    FeedConnection(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort);
+    virtual ~FeedConnection();
 
     inline int LastMsgSeqNumProcessed() { return this->m_lastMsgSeqNumProcessed; }
     inline MarketDataTable<OrderInfo, AstsOLSFONDInfo, AstsOLSFONDItemInfo> *OrderFond() { return this->m_orderTableFond; }
-	inline MarketDataTable<OrderInfo, AstsOLSCURRInfo, AstsOLSCURRItemInfo> *OrderCurr() { return this->m_orderTableCurr; }
-	inline MarketDataTable<TradeInfo, AstsTLSFONDInfo, AstsTLSFONDItemInfo> *TradeFond() { return this->m_tradeTableFond; }
-	inline MarketDataTable<TradeInfo, AstsTLSCURRInfo, AstsTLSCURRItemInfo> *TradeCurr() { return this->m_tradeTableCurr; }
+    inline MarketDataTable<OrderInfo, AstsOLSCURRInfo, AstsOLSCURRItemInfo> *OrderCurr() { return this->m_orderTableCurr; }
+    inline MarketDataTable<TradeInfo, AstsTLSFONDInfo, AstsTLSFONDItemInfo> *TradeFond() { return this->m_tradeTableFond; }
+    inline MarketDataTable<TradeInfo, AstsTLSCURRInfo, AstsTLSCURRItemInfo> *TradeCurr() { return this->m_tradeTableCurr; }
     inline MarketDataTable<StatisticsInfo, AstsGenericInfo, AstsGenericItemInfo> *StatisticFond() { return this->m_statTableFond; }
     inline MarketDataTable<StatisticsInfo, AstsGenericInfo, AstsGenericItemInfo> *StatisticCurr() { return this->m_statTableCurr; }
 
@@ -3209,32 +3209,32 @@ public:
 
     inline void SetType(FeedConnectionType type) {
         this->m_type = type;
-		if(this->m_state == FeedConnectionState::fcsListenIncremental ||
+        if(this->m_state == FeedConnectionState::fcsListenIncremental ||
                 this->m_state == FeedConnectionState::fcsListenSnapshot)
-			this->SetState(this->m_state);
-		else if(this->m_nextState == FeedConnectionState::fcsListenIncremental ||
+            this->SetState(this->m_state);
+        else if(this->m_nextState == FeedConnectionState::fcsListenIncremental ||
                 this->m_nextState == FeedConnectionState::fcsListenSnapshot)
-			this->SetNextState(this->m_state);
+            this->SetNextState(this->m_state);
     }
     inline FeedConnectionType Type() { return this->m_type; }
 
     inline void SetIncremental(FeedConnection *conn) {
-		if(this->m_incremental == conn)
-			return;
-		this->m_incremental = conn;
-		if(this->m_incremental != 0) {
+        if(this->m_incremental == conn)
+            return;
+        this->m_incremental = conn;
+        if(this->m_incremental != 0) {
             this->m_incremental->SetSnapshot(this);
         }
-	}
+    }
     inline FeedConnection *Incremental() { return this->m_incremental; }
 
     inline void SetSnapshot(FeedConnection *conn) {
-		if(this->m_snapshot == conn)
-			return;
-		this->m_snapshot = conn;
-		if(this->m_snapshot != 0)
-			this->m_snapshot->SetIncremental(this);
-	}
+        if(this->m_snapshot == conn)
+            return;
+        this->m_snapshot = conn;
+        if(this->m_snapshot != 0)
+            this->m_snapshot->SetIncremental(this);
+    }
     inline FeedConnection* Snapshot() { return this->m_snapshot; }
     void AddConnectionForHistoricalReplay(FeedConnection *conn) {
         for(int i = 0; i < this->m_connToRecvHistoricalReplayCount; i++) {
@@ -3886,47 +3886,47 @@ public:
     inline FeedConnectionSecurityDefinitionMode IdfMode() { return this->m_idfMode; }
     inline FeedConnectionSecurityDefinitionState IdfState() { return this->m_idfState; }
 
-	inline bool Connect() {
+    inline bool Connect() {
         if(this->socketAManager != NULL && this->socketAManager->IsConnected())
-			return true;
-		if(this->socketAManager == NULL && !this->InitializeSockets())
-			return false;
-		DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Connect);
-		if(this->protocol == FeedConnectionProtocol::UDP_IP) {
-			if (!this->socketAManager->ConnectMulticast(this->feedASourceIp, this->feedAIp, this->feedAPort)) {
-				DefaultLogManager::Default->EndLog(false);
-				return false;
-			}
-			if (!this->socketBManager->ConnectMulticast(this->feedBSourceIp, this->feedBIp, this->feedBPort)) {
-				DefaultLogManager::Default->EndLog(false);
-				return false;
-			}
-		}
-		else {
-			if(!this->socketAManager->Connect(this->feedAIp, this->feedAPort)) {
-				DefaultLogManager::Default->EndLog(false);
-				return false;
-			}
-		}
-		DefaultLogManager::Default->EndLog(true);
-		return true;
-	}
+            return true;
+        if(this->socketAManager == NULL && !this->InitializeSockets())
+            return false;
+        DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Connect);
+        if(this->protocol == FeedConnectionProtocol::UDP_IP) {
+            if (!this->socketAManager->ConnectMulticast(this->feedASourceIp, this->feedAIp, this->feedAPort)) {
+                DefaultLogManager::Default->EndLog(false);
+                return false;
+            }
+            if (!this->socketBManager->ConnectMulticast(this->feedBSourceIp, this->feedBIp, this->feedBPort)) {
+                DefaultLogManager::Default->EndLog(false);
+                return false;
+            }
+        }
+        else {
+            if(!this->socketAManager->Connect(this->feedAIp, this->feedAPort)) {
+                DefaultLogManager::Default->EndLog(false);
+                return false;
+            }
+        }
+        DefaultLogManager::Default->EndLog(true);
+        return true;
+    }
 
-	inline bool Disconnect() {
+    inline bool Disconnect() {
         if((this->socketAManager == NULL || !this->socketAManager->IsConnected()) &&
                 (this->socketBManager == NULL || !this->socketBManager->IsConnected()))
             return true;
-		DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Disconnect);
+        DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Disconnect);
 
-		bool result = true;
-		if(this->socketAManager != NULL)
-			result &= this->socketAManager->Disconnect();
-		if(this->socketBManager != NULL)
-			result &= this->socketBManager->Disconnect();
+        bool result = true;
+        if(this->socketAManager != NULL)
+            result &= this->socketAManager->Disconnect();
+        if(this->socketBManager != NULL)
+            result &= this->socketBManager->Disconnect();
 
-		DefaultLogManager::Default->EndLog(result);
-		return result;
-	}
+        DefaultLogManager::Default->EndLog(result);
+        return result;
+    }
 
     void SetSenderCompId(const char *senderCompId) {
         this->m_senderCompId = senderCompId;
@@ -3957,19 +3957,19 @@ public:
     inline char* IdName() { return this->m_idName; }
     inline FeedConnectionId Id() { return this->m_id; }
 
-	inline virtual void Decode() {
-		DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Decode);
+    inline virtual void Decode() {
+        DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_Decode);
 
-		DefaultLogManager::Default->EndLog(true);
-	}
+        DefaultLogManager::Default->EndLog(true);
+    }
 
     inline int TotalNumReports() { return this->m_idfMaxMsgSeqNo; }
-	inline int MsgSeqNo() { return this->m_startMsgSeqNum; }
+    inline int MsgSeqNo() { return this->m_startMsgSeqNum; }
     inline int LostPacketCount() { return this->m_lostPacketCount; }
     inline int WindowMsgSeqNo () { return this->m_windowMsgSeqNum; }
     inline int WindowSize() { return this->m_endMsgSeqNum - this->m_windowMsgSeqNum; }
     inline int LastRecvMsgSeqNo() { return this->m_endMsgSeqNum; }
-	inline int ExpectedMsgSeqNo() { return this->m_startMsgSeqNum + 1; }
+    inline int ExpectedMsgSeqNo() { return this->m_startMsgSeqNum + 1; }
     inline FastProtocolManager* FastManager() { return this->m_fastProtocolManager; }
 
     inline bool DoWorkAtomCommon(FeedConnectionState st) {
@@ -3994,14 +3994,14 @@ public:
     // fcsListenSecurityDefinition = 6,
     // fcsHistoricalReplay = 7,
     // fcsConnect = 8
-	inline bool DoWorkAtom() {
-		FeedConnectionState st = this->m_state;
+    inline bool DoWorkAtom() {
+        FeedConnectionState st = this->m_state;
         if(st == FeedConnectionState::fcsListenIncremental)
             return this->ListenIncremental();
         if(st == FeedConnectionState::fcsListenSecurityStatus)
             return this->ListenSecurityStatus();
         return this->DoWorkAtomCommon(st);
-	}
+    }
     inline bool DoWorkAtomForts() {
         FeedConnectionState st = this->m_state;
         if(st == FeedConnectionState::fcsListenIncrementalForts)
@@ -4025,13 +4025,13 @@ public:
             return FeedConnectionState::fcsListenIncremental;
         return FeedConnectionState::fcsListenIncrementalForts;
     }
-	inline void Listen() {
+    inline void Listen() {
         FeedConnectionState st = CalcListenStateByType();
-		if(this->m_state == FeedConnectionState::fcsSuspend)
-			this->SetState(st);
-		else
-			this->SetNextState(st);
-	}
+        if(this->m_state == FeedConnectionState::fcsSuspend)
+            this->SetState(st);
+        else
+            this->SetNextState(st);
+    }
     inline void BeforeListenSecurityDefinition() {
         this->ClearPackets(1, this->m_idfMaxMsgSeqNo);
         if(this->m_idfMode == FeedConnectionSecurityDefinitionMode::sdmCollectData)
@@ -4068,8 +4068,8 @@ public:
         if(this->m_state == FeedConnectionState::fcsHistoricalReplay)
             return true;
         if(!this->Connect())
-			return false;
-		if(this->m_state != FeedConnectionState::fcsSuspend)
+            return false;
+        if(this->m_state != FeedConnectionState::fcsSuspend)
             return true;
         this->m_waitTimer->Start();
         this->m_waitTimer->Stop(1);
@@ -4077,18 +4077,18 @@ public:
         this->m_lostPacketCount = 0; // TODO remove debug?
         this->BeforeListen();
         this->Listen();
-		return true;
+        return true;
     }
-	inline bool Stop() {
-		if(this->m_state == FeedConnectionState::fcsHistoricalReplay)
+    inline bool Stop() {
+        if(this->m_state == FeedConnectionState::fcsHistoricalReplay)
             return true;
         this->SetState(FeedConnectionState::fcsSuspend);
-		if(!this->Disconnect())
-			return false;
+        if(!this->Disconnect())
+            return false;
         if(this->m_type == FeedConnectionType::fctSnapshot)
             this->m_recvABuffer->Reset();
-		return true;
-	}
+        return true;
+    }
     inline FeedConnectionState State() { return this->m_state; }
 
 

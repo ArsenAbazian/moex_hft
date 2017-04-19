@@ -9,11 +9,11 @@
 #define MARKET_INFO_CAPACITY 10
 
 class Robot {
-	AstsFeedChannel *channels[MARKET_INFO_CAPACITY];
-	int		channelsCount;
+    AstsFeedChannel *channels[MARKET_INFO_CAPACITY];
+    int     channelsCount;
 
-	MarketInfo *markets[MARKET_INFO_CAPACITY];
-	int		marketCount;
+    MarketInfo *markets[MARKET_INFO_CAPACITY];
+    int     marketCount;
 
     FortsFeedChannel        *m_fortsChannel;
     bool                    m_allowFortsFeeds[MarketDataGroupId::mdgidCount];
@@ -25,7 +25,7 @@ class Robot {
     bool                    m_allowCurrMarket;
     bool                    m_allowFortsMarket;
 
-	FixProtocolManager *protocolManager;
+    FixProtocolManager *protocolManager;
 
     MarketInfo* FindMarket(const char* name) {
         for(int i = 0; i < this->marketCount; i++) {
@@ -65,8 +65,8 @@ class Robot {
     }
 
 public:
-	Robot();
-	~Robot();
+    Robot();
+    ~Robot();
 
     inline bool AllowFondMarket() { return this->m_allowFondMarket; }
     inline void AllowFondMarket(bool value) { this->m_allowFondMarket = value; }
@@ -127,21 +127,21 @@ public:
         return false;
     }
 
-	void AddChannel(AstsFeedChannel *info) {
-		this->channels[this->channelsCount] = info;
-		this->channelsCount++;
-	}
+    void AddChannel(AstsFeedChannel *info) {
+        this->channels[this->channelsCount] = info;
+        this->channelsCount++;
+    }
 
-	void AddMarket(MarketInfo *info) { 
-		this->markets[this->marketCount] = info;
-		this->marketCount++;
-	}
+    void AddMarket(MarketInfo *info) { 
+        this->markets[this->marketCount] = info;
+        this->marketCount++;
+    }
 
-	bool AddDefaultTestChannels();
+    bool AddDefaultTestChannels();
 
-	bool AddDefaultTestMarkets() { 
-		DefaultLogManager::Default->StartLog(LogMessageCode::lmcRobot_AddDefaultTestMarkets);
-		if(this->AllowFondMarket()) {
+    bool AddDefaultTestMarkets() { 
+        DefaultLogManager::Default->StartLog(LogMessageCode::lmcRobot_AddDefaultTestMarkets);
+        if(this->AllowFondMarket()) {
             AddMarket(new FondMarketInfo("FOND", FundMarketSenderComputerId, FundMarketPassword,
                                          FundMarketTradeServerAddress, FundMarketTradeASTSServerName,
                                          FundMarketTradeName, FundMarketTradeServerPort,
@@ -151,7 +151,7 @@ public:
                                          FundMarketTradeDropCopyName, FundMarketTradeDropCopyServerPort,
                                          FundMarketTradeDropCopyTargetComputerId));
         }
-		if(this->AllowCurrMarket()) {
+        if(this->AllowCurrMarket()) {
             AddMarket(new CurrencyMarketInfo("CURR", CurrencyMarketSenderComputerId, CurrencyMarketPassword,
                                              CurrencyMarketTradeServerAddress, CurrencyMarketTradeASTSServerName,
                                              CurrencyMarketTradeName, CurrencyMarketTradeServerPort,
@@ -161,9 +161,9 @@ public:
                                              CurrencyMarketTradeDropCopyName, CurrencyMarketTradeDropCopyeServerPort,
                                              CurrencyMarketTradeDropCopyTargetComputerId));
         }
-		DefaultLogManager::Default->EndLog(true);
-		return true;
-	}
+        DefaultLogManager::Default->EndLog(true);
+        return true;
+    }
 
     bool SetFeedChannelsForMarkets() {
         DefaultLogManager::Default->StartLog(LogMessageCode::lmcRobot_SetFeedChannelsForMarkets);
@@ -200,15 +200,15 @@ public:
         return true;
     }
 
-	inline AstsFeedChannel **Channels() { return (AstsFeedChannel**)this->channels; }
-	inline int ChannelCount() { return this->channelsCount; }
+    inline AstsFeedChannel **Channels() { return (AstsFeedChannel**)this->channels; }
+    inline int ChannelCount() { return this->channelsCount; }
 
     inline FortsFeedChannel *FortsChannel() { return this->m_fortsChannel; }
 
-	inline MarketInfo **Markets() { return (MarketInfo**)this->markets; }
-	inline int MarketCount() { return this->marketCount; }
+    inline MarketInfo **Markets() { return (MarketInfo**)this->markets; }
+    inline int MarketCount() { return this->marketCount; }
 
-	bool Run();
+    bool Run();
 
     inline void PrintSnapFeedStatistics(const char *name, FeedConnection *fc) {
         printf("%-22s   bu = %4.4g%%  bi = %4.4g%%  lost = %6d  msgSeqNo = %7d\n",

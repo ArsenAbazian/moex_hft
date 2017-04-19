@@ -1,31 +1,31 @@
 #include "../include/Feeds/FeedConnection.h"
 
 FeedConnection::FeedConnection(const char *id, const char *name, char value, FeedConnectionProtocol protocol, const char *aSourceIp, const char *aIp, int aPort, const char *bSourceIp, const char *bIp, int bPort) {
-	strcpy(this->m_idName, id);
-	strcpy(this->feedTypeName, name);
+    strcpy(this->m_idName, id);
+    strcpy(this->feedTypeName, name);
 
-	this->m_idLogIndex = DefaultLogMessageProvider::Default->RegisterText(this->m_idName);
-	this->m_feedTypeNameLogIndex = DefaultLogMessageProvider::Default->RegisterText(this->feedTypeName);
+    this->m_idLogIndex = DefaultLogMessageProvider::Default->RegisterText(this->m_idName);
+    this->m_feedTypeNameLogIndex = DefaultLogMessageProvider::Default->RegisterText(this->feedTypeName);
 
-	this->feedTypeValue = value;
-	this->protocol = protocol;
-	
-	if(aSourceIp != 0)
+    this->feedTypeValue = value;
+    this->protocol = protocol;
+    
+    if(aSourceIp != 0)
         strcpy(this->feedASourceIp, aSourceIp);
-	if(aIp != 0)
+    if(aIp != 0)
         strcpy(this->feedAIp, aIp);
-	this->feedAPort = aPort;
+    this->feedAPort = aPort;
 
-	if(bSourceIp != 0)
+    if(bSourceIp != 0)
         strcpy(this->feedBSourceIp, bSourceIp);
     if(bIp != 0)
-	    strcpy(this->feedBIp, bIp);
-	this->feedBPort = bPort;
+        strcpy(this->feedBIp, bIp);
+    this->feedBPort = bPort;
 
     this->m_fastLogonInfo = new AstsLogonInfo();
-	this->m_socketABufferProvider = CreateSocketBufferProvider();
-	this->m_sendABuffer = this->m_socketABufferProvider->SendBuffer();
-	this->m_recvABuffer = this->m_socketABufferProvider->RecvBuffer();
+    this->m_socketABufferProvider = CreateSocketBufferProvider();
+    this->m_sendABuffer = this->m_socketABufferProvider->SendBuffer();
+    this->m_recvABuffer = this->m_socketABufferProvider->RecvBuffer();
 
     this->m_waitLostIncrementalMessageMaxTimeMs = 100;
     this->m_waitIncrementalMessageMaxTimeMs = this->WaitAnyPacketMaxTimeMs;
@@ -47,15 +47,15 @@ FeedConnection::FeedConnection(const char *id, const char *name, char value, Fee
     this->socketAManager = NULL;
     this->socketBManager = NULL;
 
-	this->m_stopwatch = new Stopwatch();
+    this->m_stopwatch = new Stopwatch();
     this->m_waitTimer = new Stopwatch();
 
     this->m_tval = new struct timeval;
 
     this->m_marketType = FeedMarketType::fmtAsts;
     this->m_windowMsgSeqNum = 0;
-	this->m_startMsgSeqNum = 1;
-	this->m_endMsgSeqNum = 0;
+    this->m_startMsgSeqNum = 1;
+    this->m_endMsgSeqNum = 0;
     this->m_requestMessageStartIndex = -1;
     this->m_securityStatusSnapshotActive = false;
     this->m_idfStopAfterUpdateAllMessages = false;
@@ -68,7 +68,7 @@ FeedConnection::FeedConnection(const char *id, const char *name, char value, Fee
     this->m_fortsRouteFirtsSecurityId = 0;
     this->m_nextFortsSnapshotRouteFirst = 0;
 
-	this->SetState(FeedConnectionState::fcsSuspend);
+    this->SetState(FeedConnectionState::fcsSuspend);
 
     strcpy(this->m_channelName, "");
     this->m_orderTableFond = 0;

@@ -12,13 +12,13 @@ class SocketBuffer {
 
     unsigned int         m_bufferIndex;
     unsigned char       *m_buffer;
-	unsigned char       *m_current;
+    unsigned char       *m_current;
     unsigned char       *m_end;
-	unsigned int        m_maxItemsCount;
-	unsigned int        m_itemsCount;
-	unsigned int        m_size;
-	unsigned char*      *m_items;
-	unsigned int        *m_itemLength;
+    unsigned int        m_maxItemsCount;
+    unsigned int        m_itemsCount;
+    unsigned int        m_size;
+    unsigned char*      *m_items;
+    unsigned int        *m_itemLength;
 public:
     SocketBuffer(unsigned int bufferSize, unsigned int maxItemsCount, unsigned int bufferIndex);
     ~SocketBuffer();
@@ -94,8 +94,8 @@ class SocketBufferManager : public INextIndexProvider {
 
     void PrintMemoryInfo(const char *string);
 public:
-	SocketBufferManager(int maxBuffersCount);
-	~SocketBufferManager() {
+    SocketBufferManager(int maxBuffersCount);
+    ~SocketBufferManager() {
         for(int i = 0; i < this->m_itemsCount; i++)
             delete this->m_buffers[i];
         delete[] this->m_buffers;

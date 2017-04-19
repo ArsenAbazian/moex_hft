@@ -299,12 +299,12 @@ public:
         this->m_counts[c] += value;
         this->m_changed[c] = true;
     }
-	inline void Max(Counters c, int value) {
-		if(this->m_counts[c] < value) {
-			this->m_counts[c] = value;
-			this->m_changed[c] = true;
-		}
-	}
+    inline void Max(Counters c, int value) {
+        if(this->m_counts[c] < value) {
+            this->m_counts[c] = value;
+            this->m_changed[c] = true;
+        }
+    }
     inline void Clear() {
         memset(this->m_counts, 0, sizeof(int) * this->m_itemsCount);
 
@@ -315,9 +315,9 @@ public:
         printf("------------------------------------\n");
         for(int i = 0; i < this->m_itemsCount; i++) {
             if(this->m_changed[i]) {
-				//std::cout2 << this->m_names[i] << " = " << this->m_counts[i];
-				printf("%s = %d\n", this->m_names[i], this->m_counts[i]);
-			}
+                //std::cout2 << this->m_names[i] << " = " << this->m_counts[i];
+                printf("%s = %d\n", this->m_names[i], this->m_counts[i]);
+            }
         }
     }
 

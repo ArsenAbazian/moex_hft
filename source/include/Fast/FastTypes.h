@@ -6,14 +6,14 @@
 #ifndef HFT_ROBOT_FASTTYPES_H
 #define HFT_ROBOT_FASTTYPES_H
 
-#define FAST_STOPBIT_FIRST_BYTE 		0x0000000000000080L
-#define FAST_STOPBIT_SECOND_BYTE		0x0000000000008000L
-#define FAST_STOPBIT_THIRD_BYTE			0x0000000000800000L
-#define FAST_STOPBIT_FORTH_BYTE			0x0000000080000000L
+#define FAST_STOPBIT_FIRST_BYTE         0x0000000000000080L
+#define FAST_STOPBIT_SECOND_BYTE        0x0000000000008000L
+#define FAST_STOPBIT_THIRD_BYTE         0x0000000000800000L
+#define FAST_STOPBIT_FORTH_BYTE         0x0000000080000000L
 
-#define FAST_STOPBIT_FIFTH_BYTE 		0x0000008000000000L
-#define FAST_STOPBIT_SIXSTH_BYTE		0x0000800000000000L
-#define FAST_STOPBIT_SEVENTH_BYTE		0x0080000000000000L
+#define FAST_STOPBIT_FIFTH_BYTE         0x0000008000000000L
+#define FAST_STOPBIT_SIXSTH_BYTE        0x0000800000000000L
+#define FAST_STOPBIT_SEVENTH_BYTE       0x0080000000000000L
 
 #include "../Settings.h"
 #include "../Lib/AutoAllocatePointerList.h"
@@ -68,18 +68,18 @@ typedef enum _MDEntryType {
 }MDEntryType;
 
 typedef enum _SecurityStatus {
-	ssUndefined = 0,
-	ssNoTrading = 18,
-	ssOpening = 118,
-	ssTradingClosed = 18,
-	ssClosing = 130,
-	ssTradingPaused = 2,
-	ssNormalTrading = 17,
-	ssClosingAuction = 102,
-	ssBigPacketAuction = 106,
-	ssDiscreteAuction = 107,
-	ssOpeningAuction = 119,
-	ssTradingByClosingAuctionPrice = 120
+    ssUndefined = 0,
+    ssNoTrading = 18,
+    ssOpening = 118,
+    ssTradingClosed = 18,
+    ssClosing = 130,
+    ssTradingPaused = 2,
+    ssNormalTrading = 17,
+    ssClosingAuction = 102,
+    ssBigPacketAuction = 106,
+    ssDiscreteAuction = 107,
+    ssOpeningAuction = 119,
+    ssTradingByClosingAuctionPrice = 120
 }SecurityStatus;
 
 #pragma region Defines_GeneratedCode

@@ -28,25 +28,25 @@ class FeedConnection;
 #endif
 
 class FastProtocolManager {
-	friend class OrderTesterFond;
-	friend class OrderTesterCurr;
-	friend class TradeTesterFond;
-	friend class TradeTesterCurr;
-	friend class OrderBookTesterForts;
-	friend class StatisticsTesterFond;
-	friend class StatisticsTesterCurr;
-	friend class FeedConnection;
+    friend class OrderTesterFond;
+    friend class OrderTesterCurr;
+    friend class TradeTesterFond;
+    friend class TradeTesterCurr;
+    friend class OrderBookTesterForts;
+    friend class StatisticsTesterFond;
+    friend class StatisticsTesterCurr;
+    friend class FeedConnection;
 
-	const int maxBufferLength = 16000;
-	BYTE	        			*buffer;
-	BYTE	        			*currentPos;
-	int		        			bufferLength;
-    UINT            			m_templateId;
-    UINT64          			m_presenceMap;
+    const int maxBufferLength = 16000;
+    BYTE                        *buffer;
+    BYTE                        *currentPos;
+    int                         bufferLength;
+    UINT                        m_templateId;
+    UINT64                      m_presenceMap;
 
-    FILE            			*m_xmlFilePtr;
+    FILE                        *m_xmlFilePtr;
 
-	void						*m_lastDecodedInfo;
+    void                        *m_lastDecodedInfo;
 
 #pragma region Asts_Declare_AllocationInfo_GeneratedCode
 	AstsObjectsAllocationInfo *m_astsAllocationInfo;
@@ -1161,46 +1161,46 @@ private:
 
 public:
 
-	inline void* LastDecodeInfo() { return this->m_lastDecodedInfo; }
-	inline void LastDecodeInfo(void *info) { this->m_lastDecodedInfo = info; }
+    inline void* LastDecodeInfo() { return this->m_lastDecodedInfo; }
+    inline void LastDecodeInfo(void *info) { this->m_lastDecodedInfo = info; }
 
 #pragma region Core_Methods
-	inline bool FastCompareString1(char *str1, char *str2) { return *str1 == *str2; }
-	inline bool FastCompareString4(char *str1, char *str2) { return *((int*)str1) == *((int*)str2); }
-	inline bool FastCompareString8(char *str1, char *str2) { return *((UINT64*)str1) == *((UINT64*)str2); }
-	inline void ResetBuffer() { this->currentPos = this->buffer; }
-	inline void SetNewBuffer(BYTE *buffer, int length) { 
-		this->buffer = buffer;
-		this->bufferLength = length;
-		this->ResetBuffer();
+    inline bool FastCompareString1(char *str1, char *str2) { return *str1 == *str2; }
+    inline bool FastCompareString4(char *str1, char *str2) { return *((int*)str1) == *((int*)str2); }
+    inline bool FastCompareString8(char *str1, char *str2) { return *((UINT64*)str1) == *((UINT64*)str2); }
+    inline void ResetBuffer() { this->currentPos = this->buffer; }
+    inline void SetNewBuffer(BYTE *buffer, int length) { 
+        this->buffer = buffer;
+        this->bufferLength = length;
+        this->ResetBuffer();
     }
-	inline void ClearBuffer() { memset(this->buffer, 0, this->bufferLength); }
+    inline void ClearBuffer() { memset(this->buffer, 0, this->bufferLength); }
 
-	inline bool CheckBuffer(BYTE *arrayToCompare, int length) {
-		int lengthInt = length / 4;
-		for (int i = 0; i < lengthInt; i++)
-			if (((int*)this->buffer)[i] != ((int*)arrayToCompare)[i])
-				return false;
-		for (int i = lengthInt * 4; i < length; i++)
-			if (this->buffer[i] != arrayToCompare[i])
-				return false;
-		return true;
-	}
-	inline bool CheckBufferFromCurrent(BYTE *arrayToCompare, int length) { 
-		int lengthInt = length / 4;
-		for (int i = 0; i < lengthInt; i++)
-			if (((int*)this->currentPos)[i] != ((int*)arrayToCompare)[i])
-				return false;
-		for (int i = lengthInt * 4; i < length; i++)
-			if (this->currentPos[i] != arrayToCompare[i])
-				return false;
-		return true;
-	}
-	
-	inline void WriteMsgSeqNumber(int msgSeqNumber) {
-		*((int*)this->currentPos) = msgSeqNumber;
-		this->currentPos += 4;
-	}
+    inline bool CheckBuffer(BYTE *arrayToCompare, int length) {
+        int lengthInt = length / 4;
+        for (int i = 0; i < lengthInt; i++)
+            if (((int*)this->buffer)[i] != ((int*)arrayToCompare)[i])
+                return false;
+        for (int i = lengthInt * 4; i < length; i++)
+            if (this->buffer[i] != arrayToCompare[i])
+                return false;
+        return true;
+    }
+    inline bool CheckBufferFromCurrent(BYTE *arrayToCompare, int length) { 
+        int lengthInt = length / 4;
+        for (int i = 0; i < lengthInt; i++)
+            if (((int*)this->currentPos)[i] != ((int*)arrayToCompare)[i])
+                return false;
+        for (int i = lengthInt * 4; i < length; i++)
+            if (this->currentPos[i] != arrayToCompare[i])
+                return false;
+        return true;
+    }
+    
+    inline void WriteMsgSeqNumber(int msgSeqNumber) {
+        *((int*)this->currentPos) = msgSeqNumber;
+        this->currentPos += 4;
+    }
 
 
     inline void WritePresenceMap1(UINT64 map) {
@@ -1223,78 +1223,78 @@ public:
         this->currentPos+=4;
     }
 
-	inline void WritePresenceMap5(UINT64 map) {
-		*((UINT64*)this->currentPos) = map;
-		this->currentPos+=5;
-	}
+    inline void WritePresenceMap5(UINT64 map) {
+        *((UINT64*)this->currentPos) = map;
+        this->currentPos+=5;
+    }
 
-	inline void WritePresenceMap6(UINT64 map) {
-		*((UINT64*)this->currentPos) = map;
-		this->currentPos+=6;
-	}
+    inline void WritePresenceMap6(UINT64 map) {
+        *((UINT64*)this->currentPos) = map;
+        this->currentPos+=6;
+    }
 
-	inline void WritePresenceMap7(UINT64 map) {
-		*((UINT64*)this->currentPos) = map;
-		this->currentPos+=7;
-	}
+    inline void WritePresenceMap7(UINT64 map) {
+        *((UINT64*)this->currentPos) = map;
+        this->currentPos+=7;
+    }
 
-	inline void WritePresenceMap8(UINT64 map) {
-		*((UINT64*)this->currentPos) = map;
-		this->currentPos+=8;
-	}
+    inline void WritePresenceMap8(UINT64 map) {
+        *((UINT64*)this->currentPos) = map;
+        this->currentPos+=8;
+    }
 
-	inline void WritePresenceMap(UINT64 map) {
-		if(map < 0x0000000080000000) {
-			if(map < 0x00008000) {
-				if(map < 0x80) {
-					map |= 0x80;
-					WritePresenceMap1(map);
-				}
-				else {
-					map |= 0x8000;
-					WritePresenceMap2(map);
-				}
-			}
-			else {
-				if(map < 0x800000) {
-					map |= 0x800000;
-					WritePresenceMap3(map);
-				}
-				else {
-					map |= 0x80000000;
-					WritePresenceMap4(map);
-				}
-			}
-		}
-		else {
-			if(map < 0x0000800000000000) {
-				if(map < 0x0000008000000000) {
-					map |= 0x0000008000000000;
-					WritePresenceMap5(map);
-				}
-				else {
-					map |= 0x0000800000000000;
-					WritePresenceMap6(map);
-				}
-			}
-			else {
-				if(map < 0x0080000000000000) {
-					map |= 0x0080000000000000;
-					WritePresenceMap7(map);
-				}
-				else {
-					map |= 0x8000000000000000;
-					WritePresenceMap8(map);
-				}
-			}
-		}
-	}
+    inline void WritePresenceMap(UINT64 map) {
+        if(map < 0x0000000080000000) {
+            if(map < 0x00008000) {
+                if(map < 0x80) {
+                    map |= 0x80;
+                    WritePresenceMap1(map);
+                }
+                else {
+                    map |= 0x8000;
+                    WritePresenceMap2(map);
+                }
+            }
+            else {
+                if(map < 0x800000) {
+                    map |= 0x800000;
+                    WritePresenceMap3(map);
+                }
+                else {
+                    map |= 0x80000000;
+                    WritePresenceMap4(map);
+                }
+            }
+        }
+        else {
+            if(map < 0x0000800000000000) {
+                if(map < 0x0000008000000000) {
+                    map |= 0x0000008000000000;
+                    WritePresenceMap5(map);
+                }
+                else {
+                    map |= 0x0000800000000000;
+                    WritePresenceMap6(map);
+                }
+            }
+            else {
+                if(map < 0x0080000000000000) {
+                    map |= 0x0080000000000000;
+                    WritePresenceMap7(map);
+                }
+                else {
+                    map |= 0x8000000000000000;
+                    WritePresenceMap8(map);
+                }
+            }
+        }
+    }
 
-	inline int ReadMsgSeqNumber() {
-		int result = *(int*)this->currentPos;
-		this->currentPos += 4;
-		return result;
-	}
+    inline int ReadMsgSeqNumber() {
+        int result = *(int*)this->currentPos;
+        this->currentPos += 4;
+        return result;
+    }
 
     inline void SkipMsgSeqNumber() {
         this->currentPos += 4;
@@ -1303,7 +1303,7 @@ public:
     inline UINT TemplateId() const { return this->m_templateId; }
     inline UINT64 PresenceMap() const { return this->m_presenceMap; }
 
-	inline bool IsNull() const {  return *(this->currentPos) == 0x80; }
+    inline bool IsNull() const {  return *(this->currentPos) == 0x80; }
 
     void PrintTabs(int tabCount);
     void PrintPresenceMap(UINT64 map, int count, int tabsCount);
@@ -1342,695 +1342,695 @@ public:
         this->currentPos++;
     }
 
-	inline bool CheckProcessNullInt32() {
-		if (*(this->currentPos) == 0x80) {
-			this->currentPos++;
-			return true;
-		}
-		return false;
-	}
-	inline bool CheckProcessNullUInt32() { 
-		if (*(this->currentPos) == 0x80) {
-			this->currentPos++;
-			return true;
-		}
-		return false;
-	}
-	inline bool CheckProcessNullInt64() {
-		if (*(this->currentPos) == 0x80) {
-			this->currentPos++;
-			return true;
-		}
-		return false;
-	}
-	inline bool CheckProcessNullUInt64() {
-		if (*(this->currentPos) == 0x80) {
-			this->currentPos++;
-			return true;
-		}
-		return false;
-	}
-	inline bool CheckProcessNullString() {
-		WORD str = *((WORD*)this->currentPos);
-		//if (str == 0x0000)
-		//	return false;
+    inline bool CheckProcessNullInt32() {
+        if (*(this->currentPos) == 0x80) {
+            this->currentPos++;
+            return true;
+        }
+        return false;
+    }
+    inline bool CheckProcessNullUInt32() { 
+        if (*(this->currentPos) == 0x80) {
+            this->currentPos++;
+            return true;
+        }
+        return false;
+    }
+    inline bool CheckProcessNullInt64() {
+        if (*(this->currentPos) == 0x80) {
+            this->currentPos++;
+            return true;
+        }
+        return false;
+    }
+    inline bool CheckProcessNullUInt64() {
+        if (*(this->currentPos) == 0x80) {
+            this->currentPos++;
+            return true;
+        }
+        return false;
+    }
+    inline bool CheckProcessNullString() {
+        WORD str = *((WORD*)this->currentPos);
+        //if (str == 0x0000)
+        //  return false;
         if(str == 0x8000) {
             this->currentPos+=2;
             return true;
         }
-		/*
-		if ((str & 0xFF) == 0x00) {
-			this->currentPos++;
-			return true;
-		}*/
-		return false;
-	}
-	inline bool CheckProcessNullByteVector() {
-		return CheckProcessNullUInt32();
-	}
-	inline bool CheckProcessNullDecimal() {
-		return CheckProcessNullInt32();
-	}
+        /*
+        if ((str & 0xFF) == 0x00) {
+            this->currentPos++;
+            return true;
+        }*/
+        return false;
+    }
+    inline bool CheckProcessNullByteVector() {
+        return CheckProcessNullUInt32();
+    }
+    inline bool CheckProcessNullDecimal() {
+        return CheckProcessNullInt32();
+    }
 
-	inline void WriteInt32_Mandatory(INT32 value) { 
-		int encoded = 0;
-		if (value >= 0) {
+    inline void WriteInt32_Mandatory(INT32 value) { 
+        int encoded = 0;
+        if (value >= 0) {
 
-			encoded |= ((value & 0x7f) | 0x80);
-			value >>= 7;
+            encoded |= ((value & 0x7f) | 0x80);
+            value >>= 7;
 
-			if (value == 0) {
-				if ((encoded & 0x40) != 0) {
-					encoded <<= 8;
-					*((int*)this->currentPos) = encoded;
-					this->currentPos += 2;
-					return;
-				}
-				else {
-					*((int*)this->currentPos) = encoded;
-					this->currentPos++;
-					return;
-				}
-			}
+            if (value == 0) {
+                if ((encoded & 0x40) != 0) {
+                    encoded <<= 8;
+                    *((int*)this->currentPos) = encoded;
+                    this->currentPos += 2;
+                    return;
+                }
+                else {
+                    *((int*)this->currentPos) = encoded;
+                    this->currentPos++;
+                    return;
+                }
+            }
 
-			encoded <<= 8;
-			encoded |= value & 0x7f;
-			value >>= 7;
+            encoded <<= 8;
+            encoded |= value & 0x7f;
+            value >>= 7;
 
-			if (value == 0) {
-				if ((encoded & 0x40) != 0) {
-					encoded <<= 8;
-					*((int*)this->currentPos) = encoded;
-					this->currentPos += 3;
-					return;
-				}
-				else {
-					*((int*)this->currentPos) = encoded;
-					this->currentPos += 2;
-					return;
-				}
-			}
+            if (value == 0) {
+                if ((encoded & 0x40) != 0) {
+                    encoded <<= 8;
+                    *((int*)this->currentPos) = encoded;
+                    this->currentPos += 3;
+                    return;
+                }
+                else {
+                    *((int*)this->currentPos) = encoded;
+                    this->currentPos += 2;
+                    return;
+                }
+            }
 
-			encoded <<= 8;
-			encoded |= value & 0x7f;
-			value >>= 7;
+            encoded <<= 8;
+            encoded |= value & 0x7f;
+            value >>= 7;
 
-			if (value == 0) {
-				if ((encoded & 0x40) != 0) {
-					encoded <<= 8;
-					*((int*)this->currentPos) = encoded;
-					this->currentPos += 4;
-					return;
-				}
-				else {
-					*((int*)this->currentPos) = encoded;
-					this->currentPos += 3;
-					return;
-				}
-			}
+            if (value == 0) {
+                if ((encoded & 0x40) != 0) {
+                    encoded <<= 8;
+                    *((int*)this->currentPos) = encoded;
+                    this->currentPos += 4;
+                    return;
+                }
+                else {
+                    *((int*)this->currentPos) = encoded;
+                    this->currentPos += 3;
+                    return;
+                }
+            }
 
-			encoded <<= 8;
-			encoded |= value & 0x7f;
-			value >>= 7;
+            encoded <<= 8;
+            encoded |= value & 0x7f;
+            value >>= 7;
 
-			if (value == 0) {
-				if ((encoded & 0x40) != 0) {
-					*(this->currentPos) = 0x00;
-					this->currentPos++;
-					*((int*)this->currentPos) = encoded;
-					this->currentPos += 4;
-					return;
-				}
-				else {
-					*((int*)this->currentPos) = encoded;
-					this->currentPos += 4;
-					return;
-				}
-			}
+            if (value == 0) {
+                if ((encoded & 0x40) != 0) {
+                    *(this->currentPos) = 0x00;
+                    this->currentPos++;
+                    *((int*)this->currentPos) = encoded;
+                    this->currentPos += 4;
+                    return;
+                }
+                else {
+                    *((int*)this->currentPos) = encoded;
+                    this->currentPos += 4;
+                    return;
+                }
+            }
 
-			if ((value & 0x40) != 0) { 
-				*(this->currentPos) = 0x00;
-				this->currentPos++;
-			}
+            if ((value & 0x40) != 0) { 
+                *(this->currentPos) = 0x00;
+                this->currentPos++;
+            }
 
-			*(this->currentPos) = value;
-			this->currentPos++;
+            *(this->currentPos) = value;
+            this->currentPos++;
 
-			*((int*)this->currentPos) = encoded;
-			this->currentPos += 4;
-		}
-		else {
-			encoded |= ((value & 0x7f) | 0x80);
-			value >>= 7;
+            *((int*)this->currentPos) = encoded;
+            this->currentPos += 4;
+        }
+        else {
+            encoded |= ((value & 0x7f) | 0x80);
+            value >>= 7;
 
-			if (value == 0xffffffff) {
-				if ((encoded & 0x40) == 0) {
-					encoded <<= 8;
-					encoded |= 0x7f;
-					*((int*)this->currentPos) = encoded;
-					this->currentPos += 2;
-					return;
-				}
-				*((int*)this->currentPos) = encoded;
-				this->currentPos++;
-				return;
-			}
+            if (value == 0xffffffff) {
+                if ((encoded & 0x40) == 0) {
+                    encoded <<= 8;
+                    encoded |= 0x7f;
+                    *((int*)this->currentPos) = encoded;
+                    this->currentPos += 2;
+                    return;
+                }
+                *((int*)this->currentPos) = encoded;
+                this->currentPos++;
+                return;
+            }
 
-			encoded <<= 8;
-			encoded |= value & 0x7f;
-			value >>= 7;
+            encoded <<= 8;
+            encoded |= value & 0x7f;
+            value >>= 7;
 
-			if (value == 0xffffffff) {
-				if ((encoded & 0x40) == 0) {
-					encoded <<= 8;
-					encoded |= 0x7f;
-					*((int*)this->currentPos) = encoded;
-					this->currentPos += 3;
-					return;
-				}
-				*((int*)this->currentPos) = encoded;
-				this->currentPos += 2;
-				return;
-			}
+            if (value == 0xffffffff) {
+                if ((encoded & 0x40) == 0) {
+                    encoded <<= 8;
+                    encoded |= 0x7f;
+                    *((int*)this->currentPos) = encoded;
+                    this->currentPos += 3;
+                    return;
+                }
+                *((int*)this->currentPos) = encoded;
+                this->currentPos += 2;
+                return;
+            }
 
-			encoded <<= 8;
-			encoded |= value & 0x7f;
-			value >>= 7;
+            encoded <<= 8;
+            encoded |= value & 0x7f;
+            value >>= 7;
 
-			if (value == 0xffffffff) {
-				if ((encoded & 0x40) == 0) {
-					encoded <<= 8;
-					encoded |= 0x7f;
-					*((int*)this->currentPos) = encoded;
-					this->currentPos += 4;
-					return;
-				}
-				*((int*)this->currentPos) = encoded;
-				this->currentPos += 3;
-				return;
-			}
+            if (value == 0xffffffff) {
+                if ((encoded & 0x40) == 0) {
+                    encoded <<= 8;
+                    encoded |= 0x7f;
+                    *((int*)this->currentPos) = encoded;
+                    this->currentPos += 4;
+                    return;
+                }
+                *((int*)this->currentPos) = encoded;
+                this->currentPos += 3;
+                return;
+            }
 
-			encoded <<= 8;
-			encoded |= value & 0x7f;
-			value >>= 7;
+            encoded <<= 8;
+            encoded |= value & 0x7f;
+            value >>= 7;
 
-			if (value == 0xffffffff) {
-				if ((encoded & 0x40) == 0) {
-					*this->currentPos = 0x7f;
-					this->currentPos++;
-					*((int*)this->currentPos) = encoded;
-					this->currentPos += 4;
-					return;
-				}
-				*((int*)this->currentPos) = encoded;
-				this->currentPos += 4;
-				return;
-			}
+            if (value == 0xffffffff) {
+                if ((encoded & 0x40) == 0) {
+                    *this->currentPos = 0x7f;
+                    this->currentPos++;
+                    *((int*)this->currentPos) = encoded;
+                    this->currentPos += 4;
+                    return;
+                }
+                *((int*)this->currentPos) = encoded;
+                this->currentPos += 4;
+                return;
+            }
 
-			if ((value & 0x40) == 0) { 
-				(*this->currentPos) = 0x7f;
-				this->currentPos++;
-			}
-			*(this->currentPos) = (BYTE)(value & 0x7f);
-			this->currentPos++;
+            if ((value & 0x40) == 0) { 
+                (*this->currentPos) = 0x7f;
+                this->currentPos++;
+            }
+            *(this->currentPos) = (BYTE)(value & 0x7f);
+            this->currentPos++;
 
-			*((int*)this->currentPos) = encoded;
-			this->currentPos += 4;
-		}
-	}
-	inline void WriteInt32_Optional(INT32 value) {
-		if (value >= 0)
-			value++;
-		WriteInt32_Mandatory(value);
-	}
+            *((int*)this->currentPos) = encoded;
+            this->currentPos += 4;
+        }
+    }
+    inline void WriteInt32_Optional(INT32 value) {
+        if (value >= 0)
+            value++;
+        WriteInt32_Mandatory(value);
+    }
 
-	inline void WriteUInt32_Mandatory(UINT32 value) {
-		UINT encoded = 0;
+    inline void WriteUInt32_Mandatory(UINT32 value) {
+        UINT encoded = 0;
 
-		encoded |= ((value & 0x7f) | 0x80);
-		value >>= 7;
+        encoded |= ((value & 0x7f) | 0x80);
+        value >>= 7;
 
-		if (value == 0) {
-			*((int*)this->currentPos) = encoded;
-			this->currentPos++;
-			return;
-		}
+        if (value == 0) {
+            *((int*)this->currentPos) = encoded;
+            this->currentPos++;
+            return;
+        }
 
-		encoded <<= 8;
-		encoded |= value & 0x7f;
-		value >>= 7;
+        encoded <<= 8;
+        encoded |= value & 0x7f;
+        value >>= 7;
 
-		if (value == 0) {
-			*((int*)this->currentPos) = encoded;
-			this->currentPos += 2;
-			return;
-		}
+        if (value == 0) {
+            *((int*)this->currentPos) = encoded;
+            this->currentPos += 2;
+            return;
+        }
 
-		encoded <<= 8;
-		encoded |= value & 0x7f;
-		value >>= 7;
+        encoded <<= 8;
+        encoded |= value & 0x7f;
+        value >>= 7;
 
-		if (value == 0) {
-			*((int*)this->currentPos) = encoded;
-			this->currentPos += 3;
-			return;
-		}
+        if (value == 0) {
+            *((int*)this->currentPos) = encoded;
+            this->currentPos += 3;
+            return;
+        }
 
-		encoded <<= 8;
-		encoded |= value & 0x7f;
-		value >>= 7;
+        encoded <<= 8;
+        encoded |= value & 0x7f;
+        value >>= 7;
 
-		if (value == 0) {
-			*((int*)this->currentPos) = encoded;
-			this->currentPos += 4;
-			return;
-		}
+        if (value == 0) {
+            *((int*)this->currentPos) = encoded;
+            this->currentPos += 4;
+            return;
+        }
 
-		*(this->currentPos) = value;
-		this->currentPos++;
+        *(this->currentPos) = value;
+        this->currentPos++;
 
-		*((int*)this->currentPos) = encoded;
-		this->currentPos += 4;
-	}
-	inline void WriteUInt32_Optional(UINT32 value) {
-		value++;
-		WriteUInt32_Mandatory(value);
-	}
+        *((int*)this->currentPos) = encoded;
+        this->currentPos += 4;
+    }
+    inline void WriteUInt32_Optional(UINT32 value) {
+        value++;
+        WriteUInt32_Mandatory(value);
+    }
 
-	inline INT32 ReadInt32_Optional() {
-		INT32 result = ReadInt32_Mandatory();
-		if (result > 0)
-			return result - 1;
-		return result;
-	}
+    inline INT32 ReadInt32_Optional() {
+        INT32 result = ReadInt32_Mandatory();
+        if (result > 0)
+            return result - 1;
+        return result;
+    }
 #pragma intrinsic(_pext_u32)
-	__attribute__((target ("bmi2")))
-	inline INT32 ReadInt32_Mandatory_Optimized() {
-		INT32 result;
-		INT32 memory = *((INT32*)(this->currentPos));
+    __attribute__((target ("bmi2")))
+    inline INT32 ReadInt32_Mandatory_Optimized() {
+        INT32 result;
+        INT32 memory = *((INT32*)(this->currentPos));
 
-		INT32 valueMasked = memory & 0xff;
+        INT32 valueMasked = memory & 0xff;
 
-		if (valueMasked == 0x00) { // extended positive integer
-			result = 0;
-			memory >>= 8;
+        if (valueMasked == 0x00) { // extended positive integer
+            result = 0;
+            memory >>= 8;
 
-			result |= memory & 0x7f;
-			if ((memory & 0x80) != 0) {
-				this->currentPos += 2;
-				return result;
-			}
-			result <<= 7;
-			memory >>= 8;
-			result |= memory & 0x7f;
-			if ((memory & 0x80) != 0) {
-				this->currentPos += 3;
-				return result;
-			}
-			result <<= 7;
-			memory >>= 8;
-			result |= memory & 0x7f;
-			if ((memory & 0x80) != 0) {
-				this->currentPos += 4;
-				return result;
-			}
-			this->currentPos += 4;
+            result |= memory & 0x7f;
+            if ((memory & 0x80) != 0) {
+                this->currentPos += 2;
+                return result;
+            }
+            result <<= 7;
+            memory >>= 8;
+            result |= memory & 0x7f;
+            if ((memory & 0x80) != 0) {
+                this->currentPos += 3;
+                return result;
+            }
+            result <<= 7;
+            memory >>= 8;
+            result |= memory & 0x7f;
+            if ((memory & 0x80) != 0) {
+                this->currentPos += 4;
+                return result;
+            }
+            this->currentPos += 4;
 
-			result <<= 7;
-			memory = *((INT32*)(this->currentPos));
-			result |= memory & 0x7f;
-			if ((memory & 0x80) != 0) {
-				this->currentPos++;
-				return result;
-			}
+            result <<= 7;
+            memory = *((INT32*)(this->currentPos));
+            result |= memory & 0x7f;
+            if ((memory & 0x80) != 0) {
+                this->currentPos++;
+                return result;
+            }
 
-			result <<= 7;
-			memory >>= 8;
-			result |= memory & 0x7f;
+            result <<= 7;
+            memory >>= 8;
+            result |= memory & 0x7f;
 
-			this->currentPos += 2;
-			return result;
-		}
-		else if (valueMasked == 0x7f) { // extended negative integer
-			memory >>= 8;
+            this->currentPos += 2;
+            return result;
+        }
+        else if (valueMasked == 0x7f) { // extended negative integer
+            memory >>= 8;
 
-			result = 0xffffff80;
-			result |= memory & 0x7f;
-			if ((memory & 0x80) != 0) {
-				this->currentPos += 2;
-				return result;
-			}
-			result <<= 7;
-			memory >>= 8;
+            result = 0xffffff80;
+            result |= memory & 0x7f;
+            if ((memory & 0x80) != 0) {
+                this->currentPos += 2;
+                return result;
+            }
+            result <<= 7;
+            memory >>= 8;
 
-			result |= memory & 0x7f;
-			if ((memory & 0x80) != 0) {
-				this->currentPos += 3;
-				return result;
-			}
+            result |= memory & 0x7f;
+            if ((memory & 0x80) != 0) {
+                this->currentPos += 3;
+                return result;
+            }
 
-			result <<= 7;
-			memory >>= 8;
+            result <<= 7;
+            memory >>= 8;
 
-			result |= memory & 0x7f;
-			if ((memory & 0x80) != 0) {
-				this->currentPos += 4;
-				return result;
-			}
+            result |= memory & 0x7f;
+            if ((memory & 0x80) != 0) {
+                this->currentPos += 4;
+                return result;
+            }
 
-			result <<= 7;
-			this->currentPos += 4;
-			memory = *((INT32*)(this->currentPos));
-			result |= memory & 0x7f;
+            result <<= 7;
+            this->currentPos += 4;
+            memory = *((INT32*)(this->currentPos));
+            result |= memory & 0x7f;
 
-			this->currentPos ++;
-			return result;
-		}
-		else if ((memory & 0x40) != 0) { // simple negative integer
-			result = 0xffffff80;
-			result |= memory & 0x7f;
-			if ((memory & 0x80) != 0) {
-				this->currentPos++;
-				return result;
-			}
-			result <<= 7;
-			memory >>= 8;
+            this->currentPos ++;
+            return result;
+        }
+        else if ((memory & 0x40) != 0) { // simple negative integer
+            result = 0xffffff80;
+            result |= memory & 0x7f;
+            if ((memory & 0x80) != 0) {
+                this->currentPos++;
+                return result;
+            }
+            result <<= 7;
+            memory >>= 8;
 
-			result |= memory & 0x7f;
-			if ((memory & 0x80) != 0) {
-				this->currentPos += 2;
-				return result;
-			}
+            result |= memory & 0x7f;
+            if ((memory & 0x80) != 0) {
+                this->currentPos += 2;
+                return result;
+            }
 
-			result <<= 7;
-			memory >>= 8;
+            result <<= 7;
+            memory >>= 8;
 
-			result |= memory & 0x7f;
-			if ((memory & 0x80) != 0) {
-				this->currentPos += 3;
-				return result;
-			}
+            result |= memory & 0x7f;
+            if ((memory & 0x80) != 0) {
+                this->currentPos += 3;
+                return result;
+            }
 
-			result <<= 7;
-			memory >>= 8;
+            result <<= 7;
+            memory >>= 8;
 
-			result |= memory & 0x7f;
-			if ((memory & 0x80) != 0) {
-				this->currentPos += 4;
-				return result;
-			}
-			this->currentPos += 4;
-			result <<= 7;
-			memory = *((INT32*)(this->currentPos));
-			result |= memory & 0x7f;
+            result |= memory & 0x7f;
+            if ((memory & 0x80) != 0) {
+                this->currentPos += 4;
+                return result;
+            }
+            this->currentPos += 4;
+            result <<= 7;
+            memory = *((INT32*)(this->currentPos));
+            result |= memory & 0x7f;
 
-			this->currentPos++;
-			return result;
-		}
-		else {  // simple positive integer
-			if((memory & 0x8080) != 0) { // first two bytes
-				if((memory & 0x80) != 0) { // one byte
-					this->currentPos++;
-					return memory & 0x7f;
-				}
-				else { // two bytes
-					this->currentPos += 2;
-					return _pext_u32(memory, 0x00007f7f);
-				}
-			}
-			else {
-				// 3 - 4 and may be 5 byte
-				if((memory & 0x800000) != 0) { // three bytes
-					this->currentPos += 3;
-					return _pext_u32(memory, 0x007f7f7f);
-				}
-				else {
-					if((memory & 0x80000000) != 0) {
-						this->currentPos += 4;
-						return _pext_u32(memory, 0x7f7f7f7f);
-					}
-					result = _pext_u32(memory, 0x7f7f7f7f);
-					result <<= 7;
-					this->currentPos += 4;
-					memory = *((INT32*)(this->currentPos));
-					this->currentPos ++;
-					return result | (memory & 0x7f);
-				}
-			}
-		}
-	}
+            this->currentPos++;
+            return result;
+        }
+        else {  // simple positive integer
+            if((memory & 0x8080) != 0) { // first two bytes
+                if((memory & 0x80) != 0) { // one byte
+                    this->currentPos++;
+                    return memory & 0x7f;
+                }
+                else { // two bytes
+                    this->currentPos += 2;
+                    return _pext_u32(memory, 0x00007f7f);
+                }
+            }
+            else {
+                // 3 - 4 and may be 5 byte
+                if((memory & 0x800000) != 0) { // three bytes
+                    this->currentPos += 3;
+                    return _pext_u32(memory, 0x007f7f7f);
+                }
+                else {
+                    if((memory & 0x80000000) != 0) {
+                        this->currentPos += 4;
+                        return _pext_u32(memory, 0x7f7f7f7f);
+                    }
+                    result = _pext_u32(memory, 0x7f7f7f7f);
+                    result <<= 7;
+                    this->currentPos += 4;
+                    memory = *((INT32*)(this->currentPos));
+                    this->currentPos ++;
+                    return result | (memory & 0x7f);
+                }
+            }
+        }
+    }
 
-	inline INT32 ReadInt32_Mandatory() {
-		INT32 result;
-		INT32 memory = *((INT32*)(this->currentPos));
+    inline INT32 ReadInt32_Mandatory() {
+        INT32 result;
+        INT32 memory = *((INT32*)(this->currentPos));
 
-		INT32 valueMasked = memory & 0xff;
+        INT32 valueMasked = memory & 0xff;
 
-		if (valueMasked == 0x00) { // extended positive integer
-			result = 0;
-			memory >>= 8;
+        if (valueMasked == 0x00) { // extended positive integer
+            result = 0;
+            memory >>= 8;
 
-			if((memory & 0x8080) != 0) { // first two bytes
-				if((memory & 0x0080) != 0) {
-					this->currentPos += 2;
+            if((memory & 0x8080) != 0) { // first two bytes
+                if((memory & 0x0080) != 0) {
+                    this->currentPos += 2;
 #ifdef COLLECT_STATISTICS_FAST
-					ProgramStatistics::Total->Inc(Counters::cReadInt32MandatoryEp_2Byte);
+                    ProgramStatistics::Total->Inc(Counters::cReadInt32MandatoryEp_2Byte);
 #endif
-					return memory & 0x7f;
-				}
-				else {
-					result = memory & 0x7f;
-					result <<= 7;
-					memory >>= 8;
-					result |= memory & 0x7f;
-					this->currentPos += 3;
+                    return memory & 0x7f;
+                }
+                else {
+                    result = memory & 0x7f;
+                    result <<= 7;
+                    memory >>= 8;
+                    result |= memory & 0x7f;
+                    this->currentPos += 3;
 #ifdef COLLECT_STATISTICS_FAST
-					ProgramStatistics::Total->Inc(Counters::cReadInt32MandatoryEp_3Byte);
+                    ProgramStatistics::Total->Inc(Counters::cReadInt32MandatoryEp_3Byte);
 #endif
-					return result;
-				}
-			}
-			else {
-				if(memory & 0x800000) {
-					result = memory & 0x7f;
-					result <<= 7;
-					memory >>= 8;
-					result |= memory & 0x7f;
-					result <<= 7;
-					memory >>= 8;
-					result |= memory & 0x7f;
-					this->currentPos += 4;
+                    return result;
+                }
+            }
+            else {
+                if(memory & 0x800000) {
+                    result = memory & 0x7f;
+                    result <<= 7;
+                    memory >>= 8;
+                    result |= memory & 0x7f;
+                    result <<= 7;
+                    memory >>= 8;
+                    result |= memory & 0x7f;
+                    this->currentPos += 4;
 #ifdef COLLECT_STATISTICS_FAST
-					ProgramStatistics::Total->Inc(Counters::cReadInt32MandatoryEp_4Byte);
+                    ProgramStatistics::Total->Inc(Counters::cReadInt32MandatoryEp_4Byte);
 #endif
-					return result;
-				}
-				else {
-					result = memory & 0x7f;
-					result <<= 7;
-					memory >>= 8;
-					result |= memory & 0x7f;
-					result <<= 7;
-					memory >>= 8;
-					result |= memory & 0x7f;
-					this->currentPos += 4;
+                    return result;
+                }
+                else {
+                    result = memory & 0x7f;
+                    result <<= 7;
+                    memory >>= 8;
+                    result |= memory & 0x7f;
+                    result <<= 7;
+                    memory >>= 8;
+                    result |= memory & 0x7f;
+                    this->currentPos += 4;
 
-					result <<= 7;
-					memory = *((INT32*)(this->currentPos));
+                    result <<= 7;
+                    memory = *((INT32*)(this->currentPos));
 
-					result |= memory & 0x7f;
-					if ((memory & 0x80) != 0) {
-						this->currentPos++;
+                    result |= memory & 0x7f;
+                    if ((memory & 0x80) != 0) {
+                        this->currentPos++;
 #ifdef COLLECT_STATISTICS_FAST
-						ProgramStatistics::Total->Inc(Counters::cReadInt32MandatoryEp_5Byte);
+                        ProgramStatistics::Total->Inc(Counters::cReadInt32MandatoryEp_5Byte);
 #endif
-						return result;
-					}
+                        return result;
+                    }
 
-					result <<= 7;
-					memory >>= 8;
-					result |= memory & 0x7f;
+                    result <<= 7;
+                    memory >>= 8;
+                    result |= memory & 0x7f;
 
-					this->currentPos += 2;
+                    this->currentPos += 2;
 #ifdef COLLECT_STATISTICS_FAST
-					ProgramStatistics::Total->Inc(Counters::cReadInt32MandatoryEp_6Byte);
+                    ProgramStatistics::Total->Inc(Counters::cReadInt32MandatoryEp_6Byte);
 #endif
-					return result;
-				}
-			}
-		}
-		else if (valueMasked == 0x7f) { // extended negative integer
-			memory >>= 8;
+                    return result;
+                }
+            }
+        }
+        else if (valueMasked == 0x7f) { // extended negative integer
+            memory >>= 8;
 
-			result = 0xffffff80;
-			result |= memory & 0x7f;
-			if ((memory & 0x80) != 0) {
-				this->currentPos += 2;
+            result = 0xffffff80;
+            result |= memory & 0x7f;
+            if ((memory & 0x80) != 0) {
+                this->currentPos += 2;
 #ifdef COLLECT_STATISTICS_FAST
-				ProgramStatistics::Total->Inc(Counters::cReadInt32MandatoryEn_2Byte);
+                ProgramStatistics::Total->Inc(Counters::cReadInt32MandatoryEn_2Byte);
 #endif
-				return result;
-			}
+                return result;
+            }
 
-			result <<= 7;
-			memory >>= 8;
-			result |= memory & 0x7f;
-			if ((memory & 0x80) != 0) {
-				this->currentPos += 3;
+            result <<= 7;
+            memory >>= 8;
+            result |= memory & 0x7f;
+            if ((memory & 0x80) != 0) {
+                this->currentPos += 3;
 #ifdef COLLECT_STATISTICS_FAST
-				ProgramStatistics::Total->Inc(Counters::cReadInt32MandatoryEn_3Byte);
+                ProgramStatistics::Total->Inc(Counters::cReadInt32MandatoryEn_3Byte);
 #endif
-				return result;
-			}
+                return result;
+            }
 
-			result <<= 7;
-			memory >>= 8;
-			result |= memory & 0x7f;
-			if ((memory & 0x80) != 0) {
-				this->currentPos += 4;
+            result <<= 7;
+            memory >>= 8;
+            result |= memory & 0x7f;
+            if ((memory & 0x80) != 0) {
+                this->currentPos += 4;
 #ifdef COLLECT_STATISTICS_FAST
-				ProgramStatistics::Total->Inc(Counters::cReadInt32MandatoryEn_4Byte);
+                ProgramStatistics::Total->Inc(Counters::cReadInt32MandatoryEn_4Byte);
 #endif
-				return result;
-			}
+                return result;
+            }
 
-			result <<= 7;
-			this->currentPos += 4;
-			memory = *((INT32*)(this->currentPos));
-			result |= memory & 0x7f;
-			this->currentPos ++;
+            result <<= 7;
+            this->currentPos += 4;
+            memory = *((INT32*)(this->currentPos));
+            result |= memory & 0x7f;
+            this->currentPos ++;
 #ifdef COLLECT_STATISTICS_FAST
-			ProgramStatistics::Total->Inc(Counters::cReadInt32MandatoryEn_5Byte);
+            ProgramStatistics::Total->Inc(Counters::cReadInt32MandatoryEn_5Byte);
 #endif
-			return result;
-		}
-		else if ((memory & 0x40) != 0) { // simple negative integer 
-			result = 0xffffff80;
-			result |= memory & 0x7f;
-			if ((memory & 0x80) != 0) {
+            return result;
+        }
+        else if ((memory & 0x40) != 0) { // simple negative integer 
+            result = 0xffffff80;
+            result |= memory & 0x7f;
+            if ((memory & 0x80) != 0) {
 #ifdef COLLECT_STATISTICS_FAST
-				ProgramStatistics::Total->Inc(Counters::cReadInt32MandatorySn_1Byte);
+                ProgramStatistics::Total->Inc(Counters::cReadInt32MandatorySn_1Byte);
 #endif
-				this->currentPos++;
-				return result;
-			}
-			result <<= 7;
-			memory >>= 8;
+                this->currentPos++;
+                return result;
+            }
+            result <<= 7;
+            memory >>= 8;
 
-			result |= memory & 0x7f;
-			if ((memory & 0x80) != 0) {
+            result |= memory & 0x7f;
+            if ((memory & 0x80) != 0) {
 #ifdef COLLECT_STATISTICS_FAST
-				ProgramStatistics::Total->Inc(Counters::cReadInt32MandatorySn_2Byte);
+                ProgramStatistics::Total->Inc(Counters::cReadInt32MandatorySn_2Byte);
 #endif
-				this->currentPos += 2;
-				return result;
-			}
+                this->currentPos += 2;
+                return result;
+            }
 
-			result <<= 7;
-			memory >>= 8;
+            result <<= 7;
+            memory >>= 8;
 
-			result |= memory & 0x7f;
-			if ((memory & 0x80) != 0) {
+            result |= memory & 0x7f;
+            if ((memory & 0x80) != 0) {
 #ifdef COLLECT_STATISTICS_FAST
-				ProgramStatistics::Total->Inc(Counters::cReadInt32MandatorySn_3Byte);
+                ProgramStatistics::Total->Inc(Counters::cReadInt32MandatorySn_3Byte);
 #endif
-				this->currentPos += 3;
-				return result;
-			}
+                this->currentPos += 3;
+                return result;
+            }
 
-			result <<= 7;
-			memory >>= 8;
+            result <<= 7;
+            memory >>= 8;
 
-			result |= memory & 0x7f;
-			if ((memory & 0x80) != 0) {
+            result |= memory & 0x7f;
+            if ((memory & 0x80) != 0) {
 #ifdef COLLECT_STATISTICS_FAST
-				ProgramStatistics::Total->Inc(Counters::cReadInt32MandatorySn_4Byte);
+                ProgramStatistics::Total->Inc(Counters::cReadInt32MandatorySn_4Byte);
 #endif
-				this->currentPos += 4;
-				return result;
-			}
-			this->currentPos += 4;
-			result <<= 7;
-			memory = *((INT32*)(this->currentPos));
-			result |= memory & 0x7f;
+                this->currentPos += 4;
+                return result;
+            }
+            this->currentPos += 4;
+            result <<= 7;
+            memory = *((INT32*)(this->currentPos));
+            result |= memory & 0x7f;
 #ifdef COLLECT_STATISTICS_FAST
-			ProgramStatistics::Total->Inc(Counters::cReadInt32MandatorySn_5Byte);
+            ProgramStatistics::Total->Inc(Counters::cReadInt32MandatorySn_5Byte);
 #endif
-			this->currentPos++;
-			return result;
-		}
-		else {  // simple positive integer
-			if((memory & 0x8080) != 0) {
-				if((memory & 0x80) != 0) { // first byte
-					this->currentPos++;
+            this->currentPos++;
+            return result;
+        }
+        else {  // simple positive integer
+            if((memory & 0x8080) != 0) {
+                if((memory & 0x80) != 0) { // first byte
+                    this->currentPos++;
 #ifdef COLLECT_STATISTICS_FAST
-					ProgramStatistics::Total->Inc(Counters::cReadInt32MandatorySp_1Byte);
+                    ProgramStatistics::Total->Inc(Counters::cReadInt32MandatorySp_1Byte);
 #endif
-					return memory & 0x7f;
-				}
-				else { // second byte
-					result = memory & 0x7f;
-					result <<= 7;
-					memory >>= 8;
-					result |= memory & 0x7f;
-					this->currentPos += 2;
+                    return memory & 0x7f;
+                }
+                else { // second byte
+                    result = memory & 0x7f;
+                    result <<= 7;
+                    memory >>= 8;
+                    result |= memory & 0x7f;
+                    this->currentPos += 2;
 #ifdef COLLECT_STATISTICS_FAST
-					ProgramStatistics::Total->Inc(Counters::cReadInt32MandatorySp_2Byte);
+                    ProgramStatistics::Total->Inc(Counters::cReadInt32MandatorySp_2Byte);
 #endif
-					return result;
-				}
-			}
-			else {
-				if((memory & 0x800000) != 0) {
-					result = memory & 0x7f;
-					result <<= 7;
-					memory >>= 8;
-					result |= memory & 0x7f;
-					result <<= 7;
-					memory >>= 8;
-					result |= memory & 0x7f;
-					this->currentPos += 3;
+                    return result;
+                }
+            }
+            else {
+                if((memory & 0x800000) != 0) {
+                    result = memory & 0x7f;
+                    result <<= 7;
+                    memory >>= 8;
+                    result |= memory & 0x7f;
+                    result <<= 7;
+                    memory >>= 8;
+                    result |= memory & 0x7f;
+                    this->currentPos += 3;
 #ifdef COLLECT_STATISTICS_FAST
-					ProgramStatistics::Total->Inc(Counters::cReadInt32MandatorySp_3Byte);
+                    ProgramStatistics::Total->Inc(Counters::cReadInt32MandatorySp_3Byte);
 #endif
-					return result;
-				}
-				else {
-					result = memory & 0x7f;
-					result <<= 7;
-					memory >>= 8;
-					result |= memory & 0x7f;
-					result <<= 7;
-					memory >>= 8;
-					result |= memory & 0x7f;
-					result <<= 7;
-					memory >>= 8;
-					result |= memory & 0x7f;
-					this->currentPos += 4;
+                    return result;
+                }
+                else {
+                    result = memory & 0x7f;
+                    result <<= 7;
+                    memory >>= 8;
+                    result |= memory & 0x7f;
+                    result <<= 7;
+                    memory >>= 8;
+                    result |= memory & 0x7f;
+                    result <<= 7;
+                    memory >>= 8;
+                    result |= memory & 0x7f;
+                    this->currentPos += 4;
 
-					if((memory & 0x80000000) != 0) {
+                    if((memory & 0x80000000) != 0) {
 #ifdef COLLECT_STATISTICS_FAST
-						ProgramStatistics::Total->Inc(Counters::cReadInt32MandatorySp_4Byte);
+                        ProgramStatistics::Total->Inc(Counters::cReadInt32MandatorySp_4Byte);
 #endif
-						return result;
-					}
+                        return result;
+                    }
 
-					result <<= 7;
-					memory = *((INT32*)(this->currentPos));
-					result |= memory & 0x7f;
-					this->currentPos++;
+                    result <<= 7;
+                    memory = *((INT32*)(this->currentPos));
+                    result |= memory & 0x7f;
+                    this->currentPos++;
 #ifdef COLLECT_STATISTICS_FAST
-					ProgramStatistics::Total->Inc(Counters::cReadInt32MandatorySp_5Byte);
+                    ProgramStatistics::Total->Inc(Counters::cReadInt32MandatorySp_5Byte);
 #endif
-					return result;
-				}
-			}
-		}
-	}
-	
-	inline UINT32 ReadUInt32_Mandatory() {
-		INT32 result = 0;
-		INT32 memory = *((INT32*)(this->currentPos));
+                    return result;
+                }
+            }
+        }
+    }
+    
+    inline UINT32 ReadUInt32_Mandatory() {
+        INT32 result = 0;
+        INT32 memory = *((INT32*)(this->currentPos));
 
         if((memory & 0x8080) != 0) { // first two bytes
             if((memory & 0x80) != 0) {
@@ -2042,7 +2042,7 @@ public:
             }
             else {
 #ifdef COLLECT_STATISTICS_FAST
-				ProgramStatistics::Total->Inc(Counters::cReadUInt32Mandatory_2Byte);
+                ProgramStatistics::Total->Inc(Counters::cReadUInt32Mandatory_2Byte);
 #endif
                 this->currentPos += 2;
                 result |= memory & 0x7f;
@@ -2055,7 +2055,7 @@ public:
         else { // second two bytes
             if((memory & 0x800000) != 0) {
 #ifdef COLLECT_STATISTICS_FAST
-				ProgramStatistics::Total->Inc(Counters::cReadUInt32Mandatory_3Byte);
+                ProgramStatistics::Total->Inc(Counters::cReadUInt32Mandatory_3Byte);
 #endif
                 this->currentPos += 3;
                 result |= memory & 0x7f;
@@ -2086,1138 +2086,1138 @@ public:
                     result |= memory & 0x7f;
                     this->currentPos++;
 #ifdef COLLECT_STATISTICS_FAST
-					ProgramStatistics::Total->Inc(Counters::cReadUInt32Mandatory_5Byte);
+                    ProgramStatistics::Total->Inc(Counters::cReadUInt32Mandatory_5Byte);
 #endif
                 }
                 else {
 #ifdef COLLECT_STATISTICS_FAST
-					ProgramStatistics::Total->Inc(Counters::cReadUInt32Mandatory_4Byte);
+                    ProgramStatistics::Total->Inc(Counters::cReadUInt32Mandatory_4Byte);
 #endif
                 }
                 return result;
             }
         }
-		return result;
-	}
-	inline UINT32 ReadUInt32_Optional() {
-		return ReadUInt32_Mandatory() - 1;
-	}
+        return result;
+    }
+    inline UINT32 ReadUInt32_Optional() {
+        return ReadUInt32_Mandatory() - 1;
+    }
 
-	inline void WriteInt64_Optional(INT64 value) {
-		if (value > 0)
-			value++;
-		WriteInt64_Mandatory(value);
-	}
-	inline void WriteInt64_Mandatory(INT64 value) { 
-		INT64 encoded = 0;
-		INT32 encoded2;
-		if (value >= 0) {
-			encoded |= ((value & 0x7f) | 0x80);
-			value >>= 7;
+    inline void WriteInt64_Optional(INT64 value) {
+        if (value > 0)
+            value++;
+        WriteInt64_Mandatory(value);
+    }
+    inline void WriteInt64_Mandatory(INT64 value) { 
+        INT64 encoded = 0;
+        INT32 encoded2;
+        if (value >= 0) {
+            encoded |= ((value & 0x7f) | 0x80);
+            value >>= 7;
 
-			if (value == 0) {
-				if ((encoded & 0x40) != 0) {
-					encoded <<= 8;
-					*((INT64*)this->currentPos) = encoded;
-					this->currentPos += 2;
+            if (value == 0) {
+                if ((encoded & 0x40) != 0) {
+                    encoded <<= 8;
+                    *((INT64*)this->currentPos) = encoded;
+                    this->currentPos += 2;
                     return;
-				}
-				else {
-					*((INT64*)this->currentPos) = encoded;
-					this->currentPos++;
+                }
+                else {
+                    *((INT64*)this->currentPos) = encoded;
+                    this->currentPos++;
                     return;
-				}
-			}
+                }
+            }
 
-			encoded <<= 8;
-			encoded |= value & 0x7f;
-			value >>= 7;
+            encoded <<= 8;
+            encoded |= value & 0x7f;
+            value >>= 7;
 
-			if (value == 0) {
-				if ((encoded & 0x40) != 0) {
-					encoded <<= 8;
-					*((INT64*)this->currentPos) = encoded;
-					this->currentPos += 3;
+            if (value == 0) {
+                if ((encoded & 0x40) != 0) {
+                    encoded <<= 8;
+                    *((INT64*)this->currentPos) = encoded;
+                    this->currentPos += 3;
                     return;
-				}
-				else {
-					*((INT64*)this->currentPos) = encoded;
-					this->currentPos += 2;
+                }
+                else {
+                    *((INT64*)this->currentPos) = encoded;
+                    this->currentPos += 2;
                     return;
-				}
-			}
+                }
+            }
 
-			encoded <<= 8;
-			encoded |= value & 0x7f;
-			value >>= 7;
+            encoded <<= 8;
+            encoded |= value & 0x7f;
+            value >>= 7;
 
-			if (value == 0) {
-				if ((encoded & 0x40) != 0) {
-					encoded <<= 8;
-					*((INT64*)this->currentPos) = encoded;
-					this->currentPos += 4;
+            if (value == 0) {
+                if ((encoded & 0x40) != 0) {
+                    encoded <<= 8;
+                    *((INT64*)this->currentPos) = encoded;
+                    this->currentPos += 4;
                     return;
-				}
-				else {
-					*((INT64*)this->currentPos) = encoded;
-					this->currentPos += 3;
-					return;
-				}
-			}
+                }
+                else {
+                    *((INT64*)this->currentPos) = encoded;
+                    this->currentPos += 3;
+                    return;
+                }
+            }
 
-			encoded <<= 8;
-			encoded |= value & 0x7f;
-			value >>= 7;
+            encoded <<= 8;
+            encoded |= value & 0x7f;
+            value >>= 7;
 
-			if (value == 0) {
-				if ((encoded & 0x40) != 0) {
-					encoded <<= 8;
-					*((INT64*)this->currentPos) = encoded;
-					this->currentPos += 5;
-					return;
-				}
-				else {
-					*((INT64*)this->currentPos) = encoded;
-					this->currentPos += 4;
-					return;
-				}
-			}
+            if (value == 0) {
+                if ((encoded & 0x40) != 0) {
+                    encoded <<= 8;
+                    *((INT64*)this->currentPos) = encoded;
+                    this->currentPos += 5;
+                    return;
+                }
+                else {
+                    *((INT64*)this->currentPos) = encoded;
+                    this->currentPos += 4;
+                    return;
+                }
+            }
 
-			encoded <<= 8;
-			encoded |= value & 0x7f;
-			value >>= 7;
+            encoded <<= 8;
+            encoded |= value & 0x7f;
+            value >>= 7;
 
-			if (value == 0) {
-				if ((encoded & 0x40) != 0) {
-					encoded <<= 8;
-					*((INT64*)this->currentPos) = encoded;
-					this->currentPos += 6;
-					return;
-				}
-				else {
-					*((INT64*)this->currentPos) = encoded;
-					this->currentPos += 5;
-					return;
-				}
-			}
+            if (value == 0) {
+                if ((encoded & 0x40) != 0) {
+                    encoded <<= 8;
+                    *((INT64*)this->currentPos) = encoded;
+                    this->currentPos += 6;
+                    return;
+                }
+                else {
+                    *((INT64*)this->currentPos) = encoded;
+                    this->currentPos += 5;
+                    return;
+                }
+            }
 
-			encoded <<= 8;
-			encoded |= value & 0x7f;
-			value >>= 7;
+            encoded <<= 8;
+            encoded |= value & 0x7f;
+            value >>= 7;
 
-			if (value == 0) {
-				if ((encoded & 0x40) != 0) {
-					encoded <<= 8;
-					*((INT64*)this->currentPos) = encoded;
-					this->currentPos += 7;
-					return;
-				}
-				else {
-					*((INT64*)this->currentPos) = encoded;
-					this->currentPos += 6;
-					return;
-				}
-			}
+            if (value == 0) {
+                if ((encoded & 0x40) != 0) {
+                    encoded <<= 8;
+                    *((INT64*)this->currentPos) = encoded;
+                    this->currentPos += 7;
+                    return;
+                }
+                else {
+                    *((INT64*)this->currentPos) = encoded;
+                    this->currentPos += 6;
+                    return;
+                }
+            }
 
-			encoded <<= 8;
-			encoded |= value & 0x7f;
-			value >>= 7;
+            encoded <<= 8;
+            encoded |= value & 0x7f;
+            value >>= 7;
 
-			if (value == 0) {
-				if ((encoded & 0x40) != 0) {
-					encoded <<= 8;
-					*((INT64*)this->currentPos) = encoded;
-					this->currentPos += 8;
-					return;
-				}
-				else {
-					*((INT64*)this->currentPos) = encoded;
-					this->currentPos += 7;
-					return;
-				}
-			}
+            if (value == 0) {
+                if ((encoded & 0x40) != 0) {
+                    encoded <<= 8;
+                    *((INT64*)this->currentPos) = encoded;
+                    this->currentPos += 8;
+                    return;
+                }
+                else {
+                    *((INT64*)this->currentPos) = encoded;
+                    this->currentPos += 7;
+                    return;
+                }
+            }
 
-			encoded <<= 8;
-			encoded |= value & 0x7f;
-			value >>= 7;
+            encoded <<= 8;
+            encoded |= value & 0x7f;
+            value >>= 7;
 
-			if (value == 0) {
-				if ((encoded & 0x40) != 0) {
-					*((INT64*)this->currentPos) = 0x00;
-					this->currentPos++;
-					*((INT64*)this->currentPos) = encoded;
-					this->currentPos += 8;
-					return;
-				}
-				else {
-					*((INT64*)this->currentPos) = encoded;
-					this->currentPos += 8;
-					return;
-				}
-			}
+            if (value == 0) {
+                if ((encoded & 0x40) != 0) {
+                    *((INT64*)this->currentPos) = 0x00;
+                    this->currentPos++;
+                    *((INT64*)this->currentPos) = encoded;
+                    this->currentPos += 8;
+                    return;
+                }
+                else {
+                    *((INT64*)this->currentPos) = encoded;
+                    this->currentPos += 8;
+                    return;
+                }
+            }
 
-			encoded2 = value & 0x7f;
-			value >>= 7;
-			if (value == 0) {
-				if ((encoded2 & 0x40) != 0) {
-					encoded2 <<= 8;
-					*((INT32*)(this->currentPos)) = encoded2;
-					this->currentPos += 2;
+            encoded2 = value & 0x7f;
+            value >>= 7;
+            if (value == 0) {
+                if ((encoded2 & 0x40) != 0) {
+                    encoded2 <<= 8;
+                    *((INT32*)(this->currentPos)) = encoded2;
+                    this->currentPos += 2;
 
-					*((INT64*)this->currentPos) = encoded;
-					this->currentPos += 8;
-					return;
-				}
-				else {
-					*((INT32*)(this->currentPos)) = encoded2;
-					this->currentPos++;
+                    *((INT64*)this->currentPos) = encoded;
+                    this->currentPos += 8;
+                    return;
+                }
+                else {
+                    *((INT32*)(this->currentPos)) = encoded2;
+                    this->currentPos++;
 
-					*((INT64*)this->currentPos) = encoded;
-					this->currentPos += 8;
-					return;
-				}
-			}
+                    *((INT64*)this->currentPos) = encoded;
+                    this->currentPos += 8;
+                    return;
+                }
+            }
 
-			encoded2 <<= 8;
-			encoded2 |= value & 0x7f;
+            encoded2 <<= 8;
+            encoded2 |= value & 0x7f;
 
-			*((INT32*)(this->currentPos)) = encoded2;
-			this->currentPos += 2;
+            *((INT32*)(this->currentPos)) = encoded2;
+            this->currentPos += 2;
 
-			*((INT64*)this->currentPos) = encoded;
-			this->currentPos += 8;
-		}
-		else {
-			encoded |= ((value & 0x7f) | 0x80);
-			value >>= 7;
+            *((INT64*)this->currentPos) = encoded;
+            this->currentPos += 8;
+        }
+        else {
+            encoded |= ((value & 0x7f) | 0x80);
+            value >>= 7;
 
-			if (value == 0xffffffffffffffff) {
-				if ((encoded & 0x40) == 0) {
-					encoded <<= 8;
-					encoded |= 0x7f;
-					*((INT64*)this->currentPos) = encoded;
-					this->currentPos += 2;
-					return;
-				}
-				*((INT64*)this->currentPos) = encoded;
-				this->currentPos++;
-				return;
-			}
+            if (value == 0xffffffffffffffff) {
+                if ((encoded & 0x40) == 0) {
+                    encoded <<= 8;
+                    encoded |= 0x7f;
+                    *((INT64*)this->currentPos) = encoded;
+                    this->currentPos += 2;
+                    return;
+                }
+                *((INT64*)this->currentPos) = encoded;
+                this->currentPos++;
+                return;
+            }
 
-			encoded <<= 8;
-			encoded |= value & 0x7f;
-			value >>= 7;
+            encoded <<= 8;
+            encoded |= value & 0x7f;
+            value >>= 7;
 
-			if (value == 0xffffffffffffffff) {
-				if ((encoded & 0x40) == 0) {
-					encoded <<= 8;
-					encoded |= 0x7f;
-					*((INT64*)this->currentPos) = encoded;
-					this->currentPos += 3;
-					return;
-				}
-				*((INT64*)this->currentPos) = encoded;
-				this->currentPos += 2;
-				return;
-			}
+            if (value == 0xffffffffffffffff) {
+                if ((encoded & 0x40) == 0) {
+                    encoded <<= 8;
+                    encoded |= 0x7f;
+                    *((INT64*)this->currentPos) = encoded;
+                    this->currentPos += 3;
+                    return;
+                }
+                *((INT64*)this->currentPos) = encoded;
+                this->currentPos += 2;
+                return;
+            }
 
-			encoded <<= 8;
-			encoded |= value & 0x7f;
-			value >>= 7;
+            encoded <<= 8;
+            encoded |= value & 0x7f;
+            value >>= 7;
 
-			if (value == 0xffffffffffffffff) {
-				if ((encoded & 0x40) == 0) {
-					encoded <<= 8;
-					encoded |= 0x7f;
-					*((INT64*)this->currentPos) = encoded;
-					this->currentPos += 4;
-					return;
-				}
-				*((INT64*)this->currentPos) = encoded;
-				this->currentPos += 3;
-				return;
-			}
+            if (value == 0xffffffffffffffff) {
+                if ((encoded & 0x40) == 0) {
+                    encoded <<= 8;
+                    encoded |= 0x7f;
+                    *((INT64*)this->currentPos) = encoded;
+                    this->currentPos += 4;
+                    return;
+                }
+                *((INT64*)this->currentPos) = encoded;
+                this->currentPos += 3;
+                return;
+            }
 
-			encoded <<= 8;
-			encoded |= value & 0x7f;
-			value >>= 7;
+            encoded <<= 8;
+            encoded |= value & 0x7f;
+            value >>= 7;
 
-			if (value == 0xffffffffffffffff) {
-				if ((encoded & 0x40) == 0) {
-					encoded <<= 8;
-					encoded |= 0x7f;
-					*((INT64*)this->currentPos) = encoded;
-					this->currentPos += 5;
-					return;
-				}
-				*((INT64*)this->currentPos) = encoded;
-				this->currentPos += 4;
-				return;
-			}
+            if (value == 0xffffffffffffffff) {
+                if ((encoded & 0x40) == 0) {
+                    encoded <<= 8;
+                    encoded |= 0x7f;
+                    *((INT64*)this->currentPos) = encoded;
+                    this->currentPos += 5;
+                    return;
+                }
+                *((INT64*)this->currentPos) = encoded;
+                this->currentPos += 4;
+                return;
+            }
 
-			encoded <<= 8;
-			encoded |= value & 0x7f;
-			value >>= 7;
+            encoded <<= 8;
+            encoded |= value & 0x7f;
+            value >>= 7;
 
-			if (value == 0xffffffffffffffff) {
-				if ((encoded & 0x40) == 0) {
-					encoded <<= 8;
-					encoded |= 0x7f;
-					*((INT64*)this->currentPos) = encoded;
-					this->currentPos += 6;
-					return;
-				}
-				*((INT64*)this->currentPos) = encoded;
-				this->currentPos += 5;
-				return;
-			}
+            if (value == 0xffffffffffffffff) {
+                if ((encoded & 0x40) == 0) {
+                    encoded <<= 8;
+                    encoded |= 0x7f;
+                    *((INT64*)this->currentPos) = encoded;
+                    this->currentPos += 6;
+                    return;
+                }
+                *((INT64*)this->currentPos) = encoded;
+                this->currentPos += 5;
+                return;
+            }
 
-			encoded <<= 8;
-			encoded |= value & 0x7f;
-			value >>= 7;
+            encoded <<= 8;
+            encoded |= value & 0x7f;
+            value >>= 7;
 
-			if (value == 0xffffffffffffffff) {
-				if ((encoded & 0x40) == 0) {
-					encoded <<= 8;
-					encoded |= 0x7f;
-					*((INT64*)this->currentPos) = encoded;
-					this->currentPos += 7;
-					return;
-				}
-				*((INT64*)this->currentPos) = encoded;
-				this->currentPos += 6;
-				return;
-			}
+            if (value == 0xffffffffffffffff) {
+                if ((encoded & 0x40) == 0) {
+                    encoded <<= 8;
+                    encoded |= 0x7f;
+                    *((INT64*)this->currentPos) = encoded;
+                    this->currentPos += 7;
+                    return;
+                }
+                *((INT64*)this->currentPos) = encoded;
+                this->currentPos += 6;
+                return;
+            }
 
-			encoded <<= 8;
-			encoded |= value & 0x7f;
-			value >>= 7;
+            encoded <<= 8;
+            encoded |= value & 0x7f;
+            value >>= 7;
 
-			if (value == 0xffffffffffffffff) {
-				if ((encoded & 0x40) == 0) {
-					encoded <<= 8;
-					encoded |= 0x7f;
-					*((INT64*)this->currentPos) = encoded;
-					this->currentPos += 8;
-					return;
-				}
-				*((INT64*)this->currentPos) = encoded;
-				this->currentPos += 7;
-				return;
-			}
+            if (value == 0xffffffffffffffff) {
+                if ((encoded & 0x40) == 0) {
+                    encoded <<= 8;
+                    encoded |= 0x7f;
+                    *((INT64*)this->currentPos) = encoded;
+                    this->currentPos += 8;
+                    return;
+                }
+                *((INT64*)this->currentPos) = encoded;
+                this->currentPos += 7;
+                return;
+            }
 
-			encoded <<= 8;
-			encoded |= value & 0x7f;
-			value >>= 7;
+            encoded <<= 8;
+            encoded |= value & 0x7f;
+            value >>= 7;
 
-			if (value == 0xffffffffffffffff) {
-				if ((encoded & 0x40) == 0) {
-					(*this->currentPos) = 0x7f;
-					this->currentPos++;
-					*((INT64*)this->currentPos) = encoded;
-					this->currentPos += 8;
-					return;
-				}
-				*((INT64*)this->currentPos) = encoded;
-				this->currentPos += 8;
-				return;
-			}
+            if (value == 0xffffffffffffffff) {
+                if ((encoded & 0x40) == 0) {
+                    (*this->currentPos) = 0x7f;
+                    this->currentPos++;
+                    *((INT64*)this->currentPos) = encoded;
+                    this->currentPos += 8;
+                    return;
+                }
+                *((INT64*)this->currentPos) = encoded;
+                this->currentPos += 8;
+                return;
+            }
 
-			encoded2 = value & 0x7f;
-			value >>= 7;
+            encoded2 = value & 0x7f;
+            value >>= 7;
 
-			if (value == 0xffffffffffffffff) {
-				if ((encoded2 & 0x40) == 0) {
-					encoded2 <<= 8;
-					encoded2 |= 0x7f;
+            if (value == 0xffffffffffffffff) {
+                if ((encoded2 & 0x40) == 0) {
+                    encoded2 <<= 8;
+                    encoded2 |= 0x7f;
 
-					*((INT64*)this->currentPos) = encoded2;
-					this->currentPos += 2;
+                    *((INT64*)this->currentPos) = encoded2;
+                    this->currentPos += 2;
 
-					*((INT64*)this->currentPos) = encoded;
-					this->currentPos += 8;
-					return;
-				}
-				else {
-					*((INT64*)this->currentPos) = encoded2;
-					this->currentPos++;
+                    *((INT64*)this->currentPos) = encoded;
+                    this->currentPos += 8;
+                    return;
+                }
+                else {
+                    *((INT64*)this->currentPos) = encoded2;
+                    this->currentPos++;
 
-					*((INT64*)this->currentPos) = encoded;
-					this->currentPos += 8;
-					return;
-				}
-			}
+                    *((INT64*)this->currentPos) = encoded;
+                    this->currentPos += 8;
+                    return;
+                }
+            }
 
-			encoded2 <<= 8;
-			encoded2 |= value & 0x7f;
+            encoded2 <<= 8;
+            encoded2 |= value & 0x7f;
 
-			*((INT64*)this->currentPos) = encoded2;
-			this->currentPos += 2;
+            *((INT64*)this->currentPos) = encoded2;
+            this->currentPos += 2;
 
-			*((INT64*)this->currentPos) = encoded;
-			this->currentPos += 8;
-			return;
-		}
-	}
-	inline void WriteUInt64_Optional(UINT64 value) {
-		value++;
-		WriteUInt64_Mandatory(value);
-	}
-	inline void WriteUInt64_Mandatory(UINT64 value) {
-		UINT64 encoded = 0;
-		UINT encoded2;
+            *((INT64*)this->currentPos) = encoded;
+            this->currentPos += 8;
+            return;
+        }
+    }
+    inline void WriteUInt64_Optional(UINT64 value) {
+        value++;
+        WriteUInt64_Mandatory(value);
+    }
+    inline void WriteUInt64_Mandatory(UINT64 value) {
+        UINT64 encoded = 0;
+        UINT encoded2;
 
-		encoded |= ((value & 0x7f) | 0x80);
-		value >>= 7;
+        encoded |= ((value & 0x7f) | 0x80);
+        value >>= 7;
 
-		if (value == 0) {
-			*((UINT64*)this->currentPos) = encoded;
-			this->currentPos++;
-			return;
-		}
+        if (value == 0) {
+            *((UINT64*)this->currentPos) = encoded;
+            this->currentPos++;
+            return;
+        }
 
-		encoded <<= 8;
-		encoded |= value & 0x7f;
-		value >>= 7;
+        encoded <<= 8;
+        encoded |= value & 0x7f;
+        value >>= 7;
 
-		if (value == 0) {
-			*((UINT64*)this->currentPos) = encoded;
-			this->currentPos += 2;
-			return;
-		}
+        if (value == 0) {
+            *((UINT64*)this->currentPos) = encoded;
+            this->currentPos += 2;
+            return;
+        }
 
-		encoded <<= 8;
-		encoded |= value & 0x7f;
-		value >>= 7;
+        encoded <<= 8;
+        encoded |= value & 0x7f;
+        value >>= 7;
 
-		if (value == 0) {
-			*((UINT64*)this->currentPos) = encoded;
-			this->currentPos += 3;
-			return;
-		}
+        if (value == 0) {
+            *((UINT64*)this->currentPos) = encoded;
+            this->currentPos += 3;
+            return;
+        }
 
-		encoded <<= 8;
-		encoded |= value & 0x7f;
-		value >>= 7;
+        encoded <<= 8;
+        encoded |= value & 0x7f;
+        value >>= 7;
 
-		if (value == 0) {
-			*((UINT64*)this->currentPos) = encoded;
-			this->currentPos += 4;
-			return;
-		}
+        if (value == 0) {
+            *((UINT64*)this->currentPos) = encoded;
+            this->currentPos += 4;
+            return;
+        }
 
-		encoded <<= 8;
-		encoded |= value & 0x7f;
-		value >>= 7;
+        encoded <<= 8;
+        encoded |= value & 0x7f;
+        value >>= 7;
 
-		if (value == 0) {
-			*((UINT64*)this->currentPos) = encoded;
-			this->currentPos += 5;
-			return;
-		}
+        if (value == 0) {
+            *((UINT64*)this->currentPos) = encoded;
+            this->currentPos += 5;
+            return;
+        }
 
-		encoded <<= 8;
-		encoded |= value & 0x7f;
-		value >>= 7;
+        encoded <<= 8;
+        encoded |= value & 0x7f;
+        value >>= 7;
 
-		if (value == 0) {
-			*((UINT64*)this->currentPos) = encoded;
-			this->currentPos += 6;
-			return;
-		}
+        if (value == 0) {
+            *((UINT64*)this->currentPos) = encoded;
+            this->currentPos += 6;
+            return;
+        }
 
-		encoded <<= 8;
-		encoded |= value & 0x7f;
-		value >>= 7;
+        encoded <<= 8;
+        encoded |= value & 0x7f;
+        value >>= 7;
 
-		if (value == 0) {
-			*((UINT64*)this->currentPos) = encoded;
-			this->currentPos += 7;
-			return;
-		}
+        if (value == 0) {
+            *((UINT64*)this->currentPos) = encoded;
+            this->currentPos += 7;
+            return;
+        }
 
-		encoded <<= 8;
-		encoded |= value & 0x7f;
-		value >>= 7;
+        encoded <<= 8;
+        encoded |= value & 0x7f;
+        value >>= 7;
 
-		if (value == 0) {
-			*((UINT64*)this->currentPos) = encoded;
-			this->currentPos += 8;
-			return;
-		}
+        if (value == 0) {
+            *((UINT64*)this->currentPos) = encoded;
+            this->currentPos += 8;
+            return;
+        }
 
-		encoded2 = value & 0x7f;
-		value >>= 7;
-		if (value == 0) { 
-			*((UINT*)this->currentPos) = encoded2;
-			this->currentPos ++;
-			*((UINT64*)this->currentPos) = encoded;
-			return;
-		}
-	
-		encoded2 <<= 8;
-		encoded2 |= value;
+        encoded2 = value & 0x7f;
+        value >>= 7;
+        if (value == 0) { 
+            *((UINT*)this->currentPos) = encoded2;
+            this->currentPos ++;
+            *((UINT64*)this->currentPos) = encoded;
+            return;
+        }
+    
+        encoded2 <<= 8;
+        encoded2 |= value;
 
-		*((UINT*)this->currentPos) = encoded2;
-		this->currentPos +=2;
-		*((UINT64*)this->currentPos) = encoded;
-		return;
-	}
+        *((UINT*)this->currentPos) = encoded2;
+        this->currentPos +=2;
+        *((UINT64*)this->currentPos) = encoded;
+        return;
+    }
 
-	inline INT64 ReadInt64_Mandatory() {
-		INT64 result;
-		INT64 memory = *((INT64*)(this->currentPos));
+    inline INT64 ReadInt64_Mandatory() {
+        INT64 result;
+        INT64 memory = *((INT64*)(this->currentPos));
 
-		INT64 valueMasked = memory & 0xff;
+        INT64 valueMasked = memory & 0xff;
 
-		if (valueMasked == 0x00) { // extended positive integer
-			result = 0;
-			memory >>= 8;
+        if (valueMasked == 0x00) { // extended positive integer
+            result = 0;
+            memory >>= 8;
 
-			result |= memory & 0x7f;
-			if ((memory & 0x80) != 0) {
-				this->currentPos += 2;
+            result |= memory & 0x7f;
+            if ((memory & 0x80) != 0) {
+                this->currentPos += 2;
 #ifdef COLLECT_STATISTICS_FAST
-				ProgramStatistics::Total->Inc(Counters::cReadInt64MandatoryEp_2Byte);
+                ProgramStatistics::Total->Inc(Counters::cReadInt64MandatoryEp_2Byte);
 #endif
-				return result;
-			}
-			result <<= 7;
-			memory >>= 8;
-			result |= memory & 0x7f;
-			if ((memory & 0x80) != 0) {
-				this->currentPos += 3;
+                return result;
+            }
+            result <<= 7;
+            memory >>= 8;
+            result |= memory & 0x7f;
+            if ((memory & 0x80) != 0) {
+                this->currentPos += 3;
 #ifdef COLLECT_STATISTICS_FAST
-				ProgramStatistics::Total->Inc(Counters::cReadInt64MandatoryEp_3Byte);
+                ProgramStatistics::Total->Inc(Counters::cReadInt64MandatoryEp_3Byte);
 #endif
-				return result;
-			}
-			result <<= 7;
-			memory >>= 8;
-			result |= memory & 0x7f;
-			if ((memory & 0x80) != 0) {
-				this->currentPos += 4;
+                return result;
+            }
+            result <<= 7;
+            memory >>= 8;
+            result |= memory & 0x7f;
+            if ((memory & 0x80) != 0) {
+                this->currentPos += 4;
 #ifdef COLLECT_STATISTICS_FAST
-				ProgramStatistics::Total->Inc(Counters::cReadInt64MandatoryEp_4Byte);
+                ProgramStatistics::Total->Inc(Counters::cReadInt64MandatoryEp_4Byte);
 #endif
-				return result;
-			}
-			result <<= 7;
-			memory >>= 8;
-			result |= memory & 0x7f;
-			if ((memory & 0x80) != 0) {
-				this->currentPos += 5;
+                return result;
+            }
+            result <<= 7;
+            memory >>= 8;
+            result |= memory & 0x7f;
+            if ((memory & 0x80) != 0) {
+                this->currentPos += 5;
 #ifdef COLLECT_STATISTICS_FAST
-				ProgramStatistics::Total->Inc(Counters::cReadInt64MandatoryEp_5Byte);
+                ProgramStatistics::Total->Inc(Counters::cReadInt64MandatoryEp_5Byte);
 #endif
-				return result;
-			}
-			result <<= 7;
-			memory >>= 8;
-			result |= memory & 0x7f;
-			if ((memory & 0x80) != 0) {
-				this->currentPos += 6;
+                return result;
+            }
+            result <<= 7;
+            memory >>= 8;
+            result |= memory & 0x7f;
+            if ((memory & 0x80) != 0) {
+                this->currentPos += 6;
 #ifdef COLLECT_STATISTICS_FAST
-				ProgramStatistics::Total->Inc(Counters::cReadInt64MandatoryEp_6Byte);
+                ProgramStatistics::Total->Inc(Counters::cReadInt64MandatoryEp_6Byte);
 #endif
-				return result;
-			}
-			result <<= 7;
-			memory >>= 8;
-			result |= memory & 0x7f;
-			if ((memory & 0x80) != 0) {
-				this->currentPos += 7;
+                return result;
+            }
+            result <<= 7;
+            memory >>= 8;
+            result |= memory & 0x7f;
+            if ((memory & 0x80) != 0) {
+                this->currentPos += 7;
 #ifdef COLLECT_STATISTICS_FAST
-				ProgramStatistics::Total->Inc(Counters::cReadInt64MandatoryEp_7Byte);
+                ProgramStatistics::Total->Inc(Counters::cReadInt64MandatoryEp_7Byte);
 #endif
-				return result;
-			}
-			result <<= 7;
-			memory >>= 8;
-			result |= memory & 0x7f;
-			if ((memory & 0x80) != 0) {
-				this->currentPos += 8;
+                return result;
+            }
+            result <<= 7;
+            memory >>= 8;
+            result |= memory & 0x7f;
+            if ((memory & 0x80) != 0) {
+                this->currentPos += 8;
 #ifdef COLLECT_STATISTICS_FAST
-				ProgramStatistics::Total->Inc(Counters::cReadInt64MandatoryEp_8Byte);
+                ProgramStatistics::Total->Inc(Counters::cReadInt64MandatoryEp_8Byte);
 #endif
-				return result;
-			}
-			
-			this->currentPos += 8;
+                return result;
+            }
+            
+            this->currentPos += 8;
 
-			result <<= 7;
-			memory = *((INT64*)(this->currentPos));
-			result |= memory & 0x7f;
-			if ((memory & 0x80) != 0) {
-				this->currentPos++;
+            result <<= 7;
+            memory = *((INT64*)(this->currentPos));
+            result |= memory & 0x7f;
+            if ((memory & 0x80) != 0) {
+                this->currentPos++;
 #ifdef COLLECT_STATISTICS_FAST
-				ProgramStatistics::Total->Inc(Counters::cReadInt64MandatoryEp_9Byte);
+                ProgramStatistics::Total->Inc(Counters::cReadInt64MandatoryEp_9Byte);
 #endif
-				return result;
-			}
+                return result;
+            }
 
-			result <<= 7;
-			memory >>= 8;
-			result |= memory & 0x7f;
-			if ((memory & 0x80) != 0) {
-				this->currentPos += 2;
+            result <<= 7;
+            memory >>= 8;
+            result |= memory & 0x7f;
+            if ((memory & 0x80) != 0) {
+                this->currentPos += 2;
 #ifdef COLLECT_STATISTICS_FAST
-				ProgramStatistics::Total->Inc(Counters::cReadInt64MandatoryEp_10Byte);
+                ProgramStatistics::Total->Inc(Counters::cReadInt64MandatoryEp_10Byte);
 #endif
-				return result;
-			}
+                return result;
+            }
 
-			result <<= 7;
-			memory >>= 8;
-			result |= memory & 0x7f;
+            result <<= 7;
+            memory >>= 8;
+            result |= memory & 0x7f;
 
-			this->currentPos += 3;
+            this->currentPos += 3;
 #ifdef COLLECT_STATISTICS_FAST
-			ProgramStatistics::Total->Inc(Counters::cReadInt64MandatoryEp_11Byte);
+            ProgramStatistics::Total->Inc(Counters::cReadInt64MandatoryEp_11Byte);
 #endif
-			return result;
-		}
-		else if (valueMasked == 0x7f) { // extended negative integer
-			memory >>= 8;
+            return result;
+        }
+        else if (valueMasked == 0x7f) { // extended negative integer
+            memory >>= 8;
 
-			result = 0xffffffffffffff80;
-			result |= memory & 0x7f;
-			if ((memory & 0x80) != 0) {
-				this->currentPos += 2;
+            result = 0xffffffffffffff80;
+            result |= memory & 0x7f;
+            if ((memory & 0x80) != 0) {
+                this->currentPos += 2;
 #ifdef COLLECT_STATISTICS_FAST
                 ProgramStatistics::Total->Inc(Counters::cReadInt64MandatoryEn_2Byte);
 #endif
-				return result;
-			}
-			result <<= 7;
-			memory >>= 8;
+                return result;
+            }
+            result <<= 7;
+            memory >>= 8;
 
-			result |= memory & 0x7f;
-			if ((memory & 0x80) != 0) {
-				this->currentPos += 3;
+            result |= memory & 0x7f;
+            if ((memory & 0x80) != 0) {
+                this->currentPos += 3;
 #ifdef COLLECT_STATISTICS_FAST
-				ProgramStatistics::Total->Inc(Counters::cReadInt64MandatoryEn_3Byte);
+                ProgramStatistics::Total->Inc(Counters::cReadInt64MandatoryEn_3Byte);
 #endif
-				return result;
-			}
+                return result;
+            }
 
-			result <<= 7;
-			memory >>= 8;
+            result <<= 7;
+            memory >>= 8;
 
-			result |= memory & 0x7f;
-			if ((memory & 0x80) != 0) {
-				this->currentPos += 4;
+            result |= memory & 0x7f;
+            if ((memory & 0x80) != 0) {
+                this->currentPos += 4;
 #ifdef COLLECT_STATISTICS_FAST
                 ProgramStatistics::Total->Inc(Counters::cReadInt64MandatoryEn_4Byte);
 #endif
-				return result;
-			}
+                return result;
+            }
 
-			result <<= 7;
-			memory >>= 8;
+            result <<= 7;
+            memory >>= 8;
 
-			result |= memory & 0x7f;
-			if ((memory & 0x80) != 0) {
-				this->currentPos += 5;
+            result |= memory & 0x7f;
+            if ((memory & 0x80) != 0) {
+                this->currentPos += 5;
 #ifdef COLLECT_STATISTICS_FAST
                 ProgramStatistics::Total->Inc(Counters::cReadInt64MandatoryEn_5Byte);
 #endif
-				return result;
-			}
+                return result;
+            }
 
-			result <<= 7;
-			memory >>= 8;
+            result <<= 7;
+            memory >>= 8;
 
-			result |= memory & 0x7f;
-			if ((memory & 0x80) != 0) {
-				this->currentPos += 6;
+            result |= memory & 0x7f;
+            if ((memory & 0x80) != 0) {
+                this->currentPos += 6;
 #ifdef COLLECT_STATISTICS_FAST
                 ProgramStatistics::Total->Inc(Counters::cReadInt64MandatoryEn_6Byte);
 #endif
-				return result;
-			}
+                return result;
+            }
 
-			result <<= 7;
-			memory >>= 8;
+            result <<= 7;
+            memory >>= 8;
 
-			result |= memory & 0x7f;
-			if ((memory & 0x80) != 0) {
-				this->currentPos += 7;
+            result |= memory & 0x7f;
+            if ((memory & 0x80) != 0) {
+                this->currentPos += 7;
 #ifdef COLLECT_STATISTICS_FAST
                 ProgramStatistics::Total->Inc(Counters::cReadInt64MandatoryEn_7Byte);
 #endif
-				return result;
-			}
+                return result;
+            }
 
-			result <<= 7;
-			memory >>= 8;
+            result <<= 7;
+            memory >>= 8;
 
-			result |= memory & 0x7f;
-			if ((memory & 0x80) != 0) {
-				this->currentPos += 8;
+            result |= memory & 0x7f;
+            if ((memory & 0x80) != 0) {
+                this->currentPos += 8;
 #ifdef COLLECT_STATISTICS_FAST
                 ProgramStatistics::Total->Inc(Counters::cReadInt64MandatoryEn_8Byte);
 #endif
-				return result;
-			}
-			
-			this->currentPos += 8;
-			result <<= 7;
-			memory = *((INT64*)(this->currentPos));
-			result |= memory & 0x7f;
+                return result;
+            }
+            
+            this->currentPos += 8;
+            result <<= 7;
+            memory = *((INT64*)(this->currentPos));
+            result |= memory & 0x7f;
 
-			if ((memory & 0x80) != 0) {
-				this->currentPos ++;
+            if ((memory & 0x80) != 0) {
+                this->currentPos ++;
 #ifdef COLLECT_STATISTICS_FAST
                 ProgramStatistics::Total->Inc(Counters::cReadInt64MandatoryEn_9Byte);
 #endif
-				return result;
-			}
+                return result;
+            }
 
-			result <<= 7;
-			memory >>= 8;
+            result <<= 7;
+            memory >>= 8;
 
-			result |= memory & 0x7f;
-			if ((memory & 0x80) != 0) {
-				this->currentPos += 2;
+            result |= memory & 0x7f;
+            if ((memory & 0x80) != 0) {
+                this->currentPos += 2;
 #ifdef COLLECT_STATISTICS_FAST
                 ProgramStatistics::Total->Inc(Counters::cReadInt64MandatoryEn_10Byte);
 #endif
-				return result;
-			}
-			
-			result <<= 7;
-			memory >>= 8;
-			result |= memory & 0x7f;
+                return result;
+            }
+            
+            result <<= 7;
+            memory >>= 8;
+            result |= memory & 0x7f;
 
-			this->currentPos += 3;
+            this->currentPos += 3;
 #ifdef COLLECT_STATISTICS_FAST
             ProgramStatistics::Total->Inc(Counters::cReadInt64MandatoryEn_11Byte);
 #endif
-			return result;
-		}
-		else if ((memory & 0x40) != 0) { // simple negative integer 
-			result = 0xffffffffffffff80;
-			result |= memory & 0x7f;
-			if ((memory & 0x80) != 0) {
-				this->currentPos++;
+            return result;
+        }
+        else if ((memory & 0x40) != 0) { // simple negative integer 
+            result = 0xffffffffffffff80;
+            result |= memory & 0x7f;
+            if ((memory & 0x80) != 0) {
+                this->currentPos++;
 #ifdef COLLECT_STATISTICS_FAST
                 ProgramStatistics::Total->Inc(Counters::cReadInt64MandatorySn_1Byte);
 #endif
-				return result;
-			}
-			result <<= 7;
-			memory >>= 8;
+                return result;
+            }
+            result <<= 7;
+            memory >>= 8;
 
-			result |= memory & 0x7f;
-			if ((memory & 0x80) != 0) {
-				this->currentPos += 2;
+            result |= memory & 0x7f;
+            if ((memory & 0x80) != 0) {
+                this->currentPos += 2;
 #ifdef COLLECT_STATISTICS_FAST
                 ProgramStatistics::Total->Inc(Counters::cReadInt64MandatorySn_2Byte);
 #endif
-				return result;
-			}
+                return result;
+            }
 
-			result <<= 7;
-			memory >>= 8;
+            result <<= 7;
+            memory >>= 8;
 
-			result |= memory & 0x7f;
-			if ((memory & 0x80) != 0) {
-				this->currentPos += 3;
+            result |= memory & 0x7f;
+            if ((memory & 0x80) != 0) {
+                this->currentPos += 3;
 #ifdef COLLECT_STATISTICS_FAST
                 ProgramStatistics::Total->Inc(Counters::cReadInt64MandatorySn_3Byte);
 #endif
-				return result;
-			}
+                return result;
+            }
 
-			result <<= 7;
-			memory >>= 8;
+            result <<= 7;
+            memory >>= 8;
 
-			result |= memory & 0x7f;
-			if ((memory & 0x80) != 0) {
-				this->currentPos += 4;
+            result |= memory & 0x7f;
+            if ((memory & 0x80) != 0) {
+                this->currentPos += 4;
 #ifdef COLLECT_STATISTICS_FAST
                 ProgramStatistics::Total->Inc(Counters::cReadInt64MandatorySn_4Byte);
 #endif
-				return result;
-			}
+                return result;
+            }
 
-			result <<= 7;
-			memory >>= 8;
+            result <<= 7;
+            memory >>= 8;
 
-			result |= memory & 0x7f;
-			if ((memory & 0x80) != 0) {
-				this->currentPos += 5;
+            result |= memory & 0x7f;
+            if ((memory & 0x80) != 0) {
+                this->currentPos += 5;
 #ifdef COLLECT_STATISTICS_FAST
                 ProgramStatistics::Total->Inc(Counters::cReadInt64MandatorySn_5Byte);
 #endif
-				return result;
-			}
+                return result;
+            }
 
-			result <<= 7;
-			memory >>= 8;
+            result <<= 7;
+            memory >>= 8;
 
-			result |= memory & 0x7f;
-			if ((memory & 0x80) != 0) {
-				this->currentPos += 6;
+            result |= memory & 0x7f;
+            if ((memory & 0x80) != 0) {
+                this->currentPos += 6;
 #ifdef COLLECT_STATISTICS_FAST
                 ProgramStatistics::Total->Inc(Counters::cReadInt64MandatorySn_6Byte);
 #endif
-				return result;
-			}
+                return result;
+            }
 
-			result <<= 7;
-			memory >>= 8;
+            result <<= 7;
+            memory >>= 8;
 
-			result |= memory & 0x7f;
-			if ((memory & 0x80) != 0) {
-				this->currentPos += 7;
+            result |= memory & 0x7f;
+            if ((memory & 0x80) != 0) {
+                this->currentPos += 7;
 #ifdef COLLECT_STATISTICS_FAST
                 ProgramStatistics::Total->Inc(Counters::cReadInt64MandatorySn_7Byte);
 #endif
-				return result;
-			}
+                return result;
+            }
 
-			result <<= 7;
-			memory >>= 8;
+            result <<= 7;
+            memory >>= 8;
 
-			result |= memory & 0x7f;
-			if ((memory & 0x80) != 0) {
-				this->currentPos += 8;
+            result |= memory & 0x7f;
+            if ((memory & 0x80) != 0) {
+                this->currentPos += 8;
 #ifdef COLLECT_STATISTICS_FAST
                 ProgramStatistics::Total->Inc(Counters::cReadInt64MandatorySn_8Byte);
 #endif
-				return result;
-			}
+                return result;
+            }
 
-			this->currentPos += 8;
-			result <<= 7;
-			memory = *((INT64*)(this->currentPos));
-			result |= memory & 0x7f;
+            this->currentPos += 8;
+            result <<= 7;
+            memory = *((INT64*)(this->currentPos));
+            result |= memory & 0x7f;
 
-			if ((memory & 0x80) != 0) {
-				this->currentPos ++;
+            if ((memory & 0x80) != 0) {
+                this->currentPos ++;
 #ifdef COLLECT_STATISTICS_FAST
                 ProgramStatistics::Total->Inc(Counters::cReadInt64MandatorySn_9Byte);
 #endif
-				return result;
-			}
+                return result;
+            }
 
-			result <<= 7;
-			memory >>= 8;
+            result <<= 7;
+            memory >>= 8;
 
-			result |= memory & 0x7f;
-			if ((memory & 0x80) != 0) {
-				this->currentPos += 2;
+            result |= memory & 0x7f;
+            if ((memory & 0x80) != 0) {
+                this->currentPos += 2;
 #ifdef COLLECT_STATISTICS_FAST
                 ProgramStatistics::Total->Inc(Counters::cReadInt64MandatorySn_10Byte);
 #endif
-				return result;
-			}
+                return result;
+            }
 
-			result <<= 7;
-			memory >>= 8;
-			result |= memory & 0x7f;
+            result <<= 7;
+            memory >>= 8;
+            result |= memory & 0x7f;
 
-			this->currentPos += 3;
+            this->currentPos += 3;
 #ifdef COLLECT_STATISTICS_FAST
             ProgramStatistics::Total->Inc(Counters::cReadInt64MandatorySn_11Byte);
 #endif
-			return result;
-		}
-		else {  // simple positive integer
-			result = 0;
-			result |= memory & 0x7f;
-			if ((memory & 0x80) != 0) {
-				this->currentPos++;
+            return result;
+        }
+        else {  // simple positive integer
+            result = 0;
+            result |= memory & 0x7f;
+            if ((memory & 0x80) != 0) {
+                this->currentPos++;
 #ifdef COLLECT_STATISTICS_FAST
                 ProgramStatistics::Total->Inc(Counters::cReadInt64MandatorySp_1Byte);
 #endif
-				return result;
-			}
-			result <<= 7;
-			memory >>= 8;
-			result |= memory & 0x7f;
-			if ((memory & 0x80) != 0) {
-				this->currentPos += 2;
+                return result;
+            }
+            result <<= 7;
+            memory >>= 8;
+            result |= memory & 0x7f;
+            if ((memory & 0x80) != 0) {
+                this->currentPos += 2;
 #ifdef COLLECT_STATISTICS_FAST
                 ProgramStatistics::Total->Inc(Counters::cReadInt64MandatorySp_2Byte);
 #endif
-				return result;
-			}
-			result <<= 7;
-			memory >>= 8;
-			result |= memory & 0x7f;
-			if ((memory & 0x80) != 0) {
-				this->currentPos += 3;
+                return result;
+            }
+            result <<= 7;
+            memory >>= 8;
+            result |= memory & 0x7f;
+            if ((memory & 0x80) != 0) {
+                this->currentPos += 3;
 #ifdef COLLECT_STATISTICS_FAST
                 ProgramStatistics::Total->Inc(Counters::cReadInt64MandatorySp_3Byte);
 #endif
-				return result;
-			}
+                return result;
+            }
 
-			result <<= 7;
-			memory >>= 8;
-			result |= memory & 0x7f;
-			if ((memory & 0x80) != 0) {
-				this->currentPos += 4;
+            result <<= 7;
+            memory >>= 8;
+            result |= memory & 0x7f;
+            if ((memory & 0x80) != 0) {
+                this->currentPos += 4;
 #ifdef COLLECT_STATISTICS_FAST
                 ProgramStatistics::Total->Inc(Counters::cReadInt64MandatorySp_4Byte);
 #endif
-				return result;
-			}
+                return result;
+            }
 
-			result <<= 7;
-			memory >>= 8;
-			result |= memory & 0x7f;
-			if ((memory & 0x80) != 0) {
-				this->currentPos += 5;
+            result <<= 7;
+            memory >>= 8;
+            result |= memory & 0x7f;
+            if ((memory & 0x80) != 0) {
+                this->currentPos += 5;
 #ifdef COLLECT_STATISTICS_FAST
                 ProgramStatistics::Total->Inc(Counters::cReadInt64MandatorySp_5Byte);
 #endif
-				return result;
-			}
+                return result;
+            }
 
-			result <<= 7;
-			memory >>= 8;
-			result |= memory & 0x7f;
-			if ((memory & 0x80) != 0) {
-				this->currentPos += 6;
+            result <<= 7;
+            memory >>= 8;
+            result |= memory & 0x7f;
+            if ((memory & 0x80) != 0) {
+                this->currentPos += 6;
 #ifdef COLLECT_STATISTICS_FAST
                 ProgramStatistics::Total->Inc(Counters::cReadInt64MandatorySp_6Byte);
 #endif
-				return result;
-			}
+                return result;
+            }
 
-			result <<= 7;
-			memory >>= 8;
-			result |= memory & 0x7f;
-			if ((memory & 0x80) != 0) {
-				this->currentPos += 7;
+            result <<= 7;
+            memory >>= 8;
+            result |= memory & 0x7f;
+            if ((memory & 0x80) != 0) {
+                this->currentPos += 7;
 #ifdef COLLECT_STATISTICS_FAST
                 ProgramStatistics::Total->Inc(Counters::cReadInt64MandatorySp_7Byte);
 #endif
-				return result;
-			}
+                return result;
+            }
 
-			result <<= 7;
-			memory >>= 8;
-			result |= memory & 0x7f;
-			if ((memory & 0x80) != 0) {
-				this->currentPos += 8;
+            result <<= 7;
+            memory >>= 8;
+            result |= memory & 0x7f;
+            if ((memory & 0x80) != 0) {
+                this->currentPos += 8;
 #ifdef COLLECT_STATISTICS_FAST
                 ProgramStatistics::Total->Inc(Counters::cReadInt64MandatorySp_8Byte);
 #endif
-				return result;
-			}
+                return result;
+            }
 
-			this->currentPos += 8;
+            this->currentPos += 8;
 
-			result <<= 7;
-			memory = *((INT64*)(this->currentPos));
-			result |= memory & 0x7f;
+            result <<= 7;
+            memory = *((INT64*)(this->currentPos));
+            result |= memory & 0x7f;
 
-			if ((memory & 0x80) != 0) {
-				this->currentPos ++;
+            if ((memory & 0x80) != 0) {
+                this->currentPos ++;
 #ifdef COLLECT_STATISTICS_FAST
                 ProgramStatistics::Total->Inc(Counters::cReadInt64MandatorySp_9Byte);
 #endif
-				return result;
-			}
+                return result;
+            }
 
-			result <<= 7;
-			memory >>= 8;
-			result |= memory & 0x7f;
-			if ((memory & 0x80) != 0) {
-				this->currentPos += 2;
+            result <<= 7;
+            memory >>= 8;
+            result |= memory & 0x7f;
+            if ((memory & 0x80) != 0) {
+                this->currentPos += 2;
 #ifdef COLLECT_STATISTICS_FAST
                 ProgramStatistics::Total->Inc(Counters::cReadInt64MandatorySp_10Byte);
 #endif
-				return result;
-			}
+                return result;
+            }
 
-			this->currentPos += 3;
+            this->currentPos += 3;
 #ifdef COLLECT_STATISTICS_FAST
             ProgramStatistics::Total->Inc(Counters::cReadInt64MandatorySp_11Byte);
 #endif
-			return result;
-		}
-	}
-	inline INT64 ReadInt64_Optional() {
-		INT64 value = ReadInt64_Mandatory();
-		if (value > 0)
-			return value - 1;
-		return value;
-	}
+            return result;
+        }
+    }
+    inline INT64 ReadInt64_Optional() {
+        INT64 value = ReadInt64_Mandatory();
+        if (value > 0)
+            return value - 1;
+        return value;
+    }
 
-	inline UINT64 ReadUInt64_Mandatory() {
-		UINT64 result;
-		UINT64 memory = *(UINT64*)this->currentPos;
+    inline UINT64 ReadUInt64_Mandatory() {
+        UINT64 result;
+        UINT64 memory = *(UINT64*)this->currentPos;
 
-		result = memory & 0x7f;
-		if ((memory & 0x80) != 0) {
-			this->currentPos++;
+        result = memory & 0x7f;
+        if ((memory & 0x80) != 0) {
+            this->currentPos++;
 #ifdef COLLECT_STATISTICS_FAST
             ProgramStatistics::Total->Inc(Counters::cReadUInt64Mandatory_1Byte);
 #endif
-			return result;
-		}
-		result <<= 7;
-		memory >>= 8;
-		result |= memory & 0x7f;
-		if ((memory & 0x80) != 0) {
-			this->currentPos += 2;
+            return result;
+        }
+        result <<= 7;
+        memory >>= 8;
+        result |= memory & 0x7f;
+        if ((memory & 0x80) != 0) {
+            this->currentPos += 2;
 #ifdef COLLECT_STATISTICS_FAST
             ProgramStatistics::Total->Inc(Counters::cReadUInt64Mandatory_2Byte);
 #endif
-			return result;
-		}
-		result <<= 7;
-		memory >>= 8;
-		result |= memory & 0x7f;
-		if ((memory & 0x80) != 0) {
-			this->currentPos += 3;
+            return result;
+        }
+        result <<= 7;
+        memory >>= 8;
+        result |= memory & 0x7f;
+        if ((memory & 0x80) != 0) {
+            this->currentPos += 3;
 #ifdef COLLECT_STATISTICS_FAST
             ProgramStatistics::Total->Inc(Counters::cReadUInt64Mandatory_3Byte);
 #endif
-			return result;
-		}
+            return result;
+        }
 
-		result <<= 7;
-		memory >>= 8;
-		result |= memory & 0x7f;
-		if ((memory & 0x80) != 0) {
-			this->currentPos += 4;
+        result <<= 7;
+        memory >>= 8;
+        result |= memory & 0x7f;
+        if ((memory & 0x80) != 0) {
+            this->currentPos += 4;
 #ifdef COLLECT_STATISTICS_FAST
             ProgramStatistics::Total->Inc(Counters::cReadUInt64Mandatory_4Byte);
 #endif
-			return result;
-		}
+            return result;
+        }
 
-		result <<= 7;
-		memory >>= 8;
-		result |= memory & 0x7f;
-		if ((memory & 0x80) != 0) {
-			this->currentPos += 5;
+        result <<= 7;
+        memory >>= 8;
+        result |= memory & 0x7f;
+        if ((memory & 0x80) != 0) {
+            this->currentPos += 5;
 #ifdef COLLECT_STATISTICS_FAST
             ProgramStatistics::Total->Inc(Counters::cReadUInt64Mandatory_5Byte);
 #endif
-			return result;
-		}
+            return result;
+        }
 
-		result <<= 7;
-		memory >>= 8;
-		result |= memory & 0x7f;
-		if ((memory & 0x80) != 0) {
-			this->currentPos += 6;
+        result <<= 7;
+        memory >>= 8;
+        result |= memory & 0x7f;
+        if ((memory & 0x80) != 0) {
+            this->currentPos += 6;
 #ifdef COLLECT_STATISTICS_FAST
             ProgramStatistics::Total->Inc(Counters::cReadUInt64Mandatory_6Byte);
 #endif
-			return result;
-		}
+            return result;
+        }
 
-		result <<= 7;
-		memory >>= 8;
-		result |= memory & 0x7f;
-		if ((memory & 0x80) != 0) {
-			this->currentPos += 7;
+        result <<= 7;
+        memory >>= 8;
+        result |= memory & 0x7f;
+        if ((memory & 0x80) != 0) {
+            this->currentPos += 7;
 #ifdef COLLECT_STATISTICS_FAST
             ProgramStatistics::Total->Inc(Counters::cReadUInt64Mandatory_7Byte);
 #endif
-			return result;
-		}
+            return result;
+        }
 
-		result <<= 7;
-		memory >>= 8;
-		result |= memory & 0x7f;
-		if ((memory & 0x80) != 0) {
-			this->currentPos += 8;
+        result <<= 7;
+        memory >>= 8;
+        result |= memory & 0x7f;
+        if ((memory & 0x80) != 0) {
+            this->currentPos += 8;
 #ifdef COLLECT_STATISTICS_FAST
             ProgramStatistics::Total->Inc(Counters::cReadUInt64Mandatory_8Byte);
 #endif
-			return result;
-		}
+            return result;
+        }
 
-		this->currentPos += 8;
+        this->currentPos += 8;
 
-		result <<= 7;
-		memory = *((INT64*)(this->currentPos));
-		result |= memory & 0x7f;
+        result <<= 7;
+        memory = *((INT64*)(this->currentPos));
+        result |= memory & 0x7f;
 
-		if ((memory & 0x80) != 0) {
-			this->currentPos ++;
+        if ((memory & 0x80) != 0) {
+            this->currentPos ++;
 #ifdef COLLECT_STATISTICS_FAST
             ProgramStatistics::Total->Inc(Counters::cReadUInt64Mandatory_9Byte);
 #endif
-			return result;
-		}
+            return result;
+        }
 
-		result <<= 7;
-		memory >>= 8;
-		result |= memory & 0x7f;
+        result <<= 7;
+        memory >>= 8;
+        result |= memory & 0x7f;
 
-		this->currentPos +=2;
+        this->currentPos +=2;
 #ifdef COLLECT_STATISTICS_FAST
         ProgramStatistics::Total->Inc(Counters::cReadUInt64Mandatory_10Byte);
 #endif
-		return result;
-	}
-	inline UINT64 ReadUInt64_Optional() {
-		return ReadUInt64_Mandatory() - 1;
-	}
+        return result;
+    }
+    inline UINT64 ReadUInt64_Optional() {
+        return ReadUInt64_Mandatory() - 1;
+    }
 
-	inline void CopyToBuffer(BYTE *value, int length) { 
-		memcpy(this->buffer, value, length);
-	}
+    inline void CopyToBuffer(BYTE *value, int length) { 
+        memcpy(this->buffer, value, length);
+    }
 
-	inline void ReadDecimal_Optional(Decimal *value) {
+    inline void ReadDecimal_Optional(Decimal *value) {
         value->Exponent = ReadInt32_Optional();
         value->Mantissa = ReadInt64_Mandatory();
-	}
+    }
 
-	inline void ReadDecimal_Mandatory(Decimal *value) {
+    inline void ReadDecimal_Mandatory(Decimal *value) {
         value->Exponent = ReadInt32_Mandatory();
         value->Mantissa = ReadInt64_Mandatory();
-	}
+    }
 
-	inline void WriteDecimal_Optional(Decimal *value) { 
-		WriteInt32_Optional(value->Exponent);
-		WriteInt64_Mandatory(value->Mantissa);
-		return;
-	}
+    inline void WriteDecimal_Optional(Decimal *value) { 
+        WriteInt32_Optional(value->Exponent);
+        WriteInt64_Mandatory(value->Mantissa);
+        return;
+    }
 
-	inline void WriteDecimal_Mandatory(Decimal *value) {
-		WriteInt32_Mandatory(value->Exponent);
-		WriteInt64_Mandatory(value->Mantissa);
-		return;
-	}
+    inline void WriteDecimal_Mandatory(Decimal *value) {
+        WriteInt32_Mandatory(value->Exponent);
+        WriteInt64_Mandatory(value->Mantissa);
+        return;
+    }
 
-	inline void WriteString_Optional(char *str, int length) { 
-		if(0 == str) {
-			*(this->currentPos) = 0x80;
-			this->currentPos++;
-			return;
-		}
-		if (length == 0) {
-			*((int*)this->currentPos) = 0x8000;
-			this->currentPos += 2;
-			return;
-		}
-		memcpy(this->currentPos, str, length);
-		this->currentPos[length - 1] |= 0x80;
-		this->currentPos += length;
-	}
+    inline void WriteString_Optional(char *str, int length) { 
+        if(0 == str) {
+            *(this->currentPos) = 0x80;
+            this->currentPos++;
+            return;
+        }
+        if (length == 0) {
+            *((int*)this->currentPos) = 0x8000;
+            this->currentPos += 2;
+            return;
+        }
+        memcpy(this->currentPos, str, length);
+        this->currentPos[length - 1] |= 0x80;
+        this->currentPos += length;
+    }
 
-	inline void WriteString_Mandatory(char *str, int length) {
-		if(0 == str || length == 0) {
-			*((int*)this->currentPos) = 0x80;
-			this->currentPos ++;
-			return;
-		}
-		memcpy(this->currentPos, str, length);
-		this->currentPos[length - 1] |= 0x80;
-		this->currentPos += length;
-	}
+    inline void WriteString_Mandatory(char *str, int length) {
+        if(0 == str || length == 0) {
+            *((int*)this->currentPos) = 0x80;
+            this->currentPos ++;
+            return;
+        }
+        memcpy(this->currentPos, str, length);
+        this->currentPos[length - 1] |= 0x80;
+        this->currentPos += length;
+    }
 
     inline void WriteString_Optional(const char *str, int length) {
         if (str == NULL) {
@@ -3245,25 +3245,25 @@ public:
         this->currentPos += length;
     }
 
-	inline void CopyString(char *dst, char *src, int count) {
-		while(count >= 8) {
-			*((UINT64*)dst) = *((UINT64*)src);
-			count -= 8;
-			dst += 8; src += 8;
-		}
-		if(count >= 4) {
-			*((UINT32*)dst) = *((UINT32*)src);
-			count -= 4;
-			dst += 4; src += 4;
-		}
-		if(count >= 2) {
-			*((unsigned short*)dst) = *((unsigned short*)src);
-			count -= 2;
-			dst += 2; src += 2;
-		}
-		if(count > 0)
-			*dst = *src;
-	}
+    inline void CopyString(char *dst, char *src, int count) {
+        while(count >= 8) {
+            *((UINT64*)dst) = *((UINT64*)src);
+            count -= 8;
+            dst += 8; src += 8;
+        }
+        if(count >= 4) {
+            *((UINT32*)dst) = *((UINT32*)src);
+            count -= 4;
+            dst += 4; src += 4;
+        }
+        if(count >= 2) {
+            *((unsigned short*)dst) = *((unsigned short*)src);
+            count -= 2;
+            dst += 2; src += 2;
+        }
+        if(count > 0)
+            *dst = *src;
+    }
 
     inline void SkipToNextField() {
         UINT64 memory = *((UINT64*)this->currentPos);
@@ -3319,258 +3319,258 @@ public:
         }
     }
 
-	inline void ReadString_Optional(char *str, int *lengthAddress) {
-		UINT64 memory = *((UINT64*)this->currentPos);
-		int length = 0;
-		if ((memory & 0xffff) == 0x8000) { 
-			lengthAddress = 0;
-			this->currentPos += 2;
-			return;
-		}
-		while (true) {
-			if ((memory & 0x8080808080808080) != 0) {
-				if ((memory & 0x0000000080808080) != 0) {
-					if ((memory & 0x8080) != 0) {
-						if ((memory & 0x80) != 0) {
-							*str = (char)(memory & 0x7f);
-							length++;
-							this->currentPos++;
-							break;
-						}
-						else {
-							*((unsigned short*)str) = (unsigned short)(memory & 0x7fff);
-							length += 2;
-							this->currentPos += 2;
-							break;
-						}
-					}
-					else {
-						if ((memory & 0x800000) != 0) {
+    inline void ReadString_Optional(char *str, int *lengthAddress) {
+        UINT64 memory = *((UINT64*)this->currentPos);
+        int length = 0;
+        if ((memory & 0xffff) == 0x8000) { 
+            lengthAddress = 0;
+            this->currentPos += 2;
+            return;
+        }
+        while (true) {
+            if ((memory & 0x8080808080808080) != 0) {
+                if ((memory & 0x0000000080808080) != 0) {
+                    if ((memory & 0x8080) != 0) {
+                        if ((memory & 0x80) != 0) {
+                            *str = (char)(memory & 0x7f);
+                            length++;
+                            this->currentPos++;
+                            break;
+                        }
+                        else {
+                            *((unsigned short*)str) = (unsigned short)(memory & 0x7fff);
+                            length += 2;
+                            this->currentPos += 2;
+                            break;
+                        }
+                    }
+                    else {
+                        if ((memory & 0x800000) != 0) {
 
-							*str = (char)memory;
-							this->currentPos++; str++; memory >>= 8;
-							*((unsigned short*)str) = (unsigned short)(memory & 0x7fff);
+                            *str = (char)memory;
+                            this->currentPos++; str++; memory >>= 8;
+                            *((unsigned short*)str) = (unsigned short)(memory & 0x7fff);
 
-							length += 3;
-							this->currentPos += 2;
-							break;
-						}
-						else {
-							*((unsigned int*)str) = (unsigned int)(memory & 0x7fffffff);
-							length += 4;
-							this->currentPos += 4;
-							break;
-						}
-					}
-				}
-				else {
-					if ((memory & 0x0000808000000000) != 0) {
-						if ((memory & 0x0000008000000000) != 0) {
+                            length += 3;
+                            this->currentPos += 2;
+                            break;
+                        }
+                        else {
+                            *((unsigned int*)str) = (unsigned int)(memory & 0x7fffffff);
+                            length += 4;
+                            this->currentPos += 4;
+                            break;
+                        }
+                    }
+                }
+                else {
+                    if ((memory & 0x0000808000000000) != 0) {
+                        if ((memory & 0x0000008000000000) != 0) {
 
-							*str = (char)memory;
-							this->currentPos++; str++; memory >>= 8;
-							*((unsigned int*)str) = (unsigned int)(memory & 0x7fffffff);
+                            *str = (char)memory;
+                            this->currentPos++; str++; memory >>= 8;
+                            *((unsigned int*)str) = (unsigned int)(memory & 0x7fffffff);
 
-							length += 5;
-							this->currentPos += 4;
-							break;
-						}
-						else {
-							*((unsigned short*)str) = (unsigned short)memory;
-							this->currentPos += 2; str += 2; memory >>= 16;
-							*((unsigned int*)str) = (unsigned int)(memory & 0x7fffffff);
+                            length += 5;
+                            this->currentPos += 4;
+                            break;
+                        }
+                        else {
+                            *((unsigned short*)str) = (unsigned short)memory;
+                            this->currentPos += 2; str += 2; memory >>= 16;
+                            *((unsigned int*)str) = (unsigned int)(memory & 0x7fffffff);
 
-							length += 6;
-							this->currentPos += 4;
-							break;
-						}
-					}
-					else {
-						if ((memory & 0x0080000000000000) != 0) {
+                            length += 6;
+                            this->currentPos += 4;
+                            break;
+                        }
+                    }
+                    else {
+                        if ((memory & 0x0080000000000000) != 0) {
 
-							*str = (char)memory;
-							this->currentPos++; str++; memory >>= 8;
+                            *str = (char)memory;
+                            this->currentPos++; str++; memory >>= 8;
 
-							*((unsigned short*)str) = (unsigned short)memory;
-							this->currentPos += 2; str += 2; memory >>= 16;
+                            *((unsigned short*)str) = (unsigned short)memory;
+                            this->currentPos += 2; str += 2; memory >>= 16;
 
-							*((unsigned int*)str) = (unsigned int)(memory & 0x7fffffff);
+                            *((unsigned int*)str) = (unsigned int)(memory & 0x7fffffff);
 
-							length += 7;
-							this->currentPos += 4;
-							break;
-						}
-						else {
-							*((UINT64*)str) = memory & 0x7fffffffffffffff;
+                            length += 7;
+                            this->currentPos += 4;
+                            break;
+                        }
+                        else {
+                            *((UINT64*)str) = memory & 0x7fffffffffffffff;
 
-							length += 8;
-							this->currentPos += 8;
-							break;
-						}
-					}
-				}
-			}
-            *((UINT64*)str) = memory;
-            str += 8;
-
-            length += 8;
-			this->currentPos += 8;
-			memory = *((UINT64*)this->currentPos);
-		}
-		*lengthAddress = length;
-	}
-	inline void ReadString_Mandatory(char *str, int *lengthAddress) {
-		UINT64 memory = *((UINT64*)this->currentPos);
-		int length = 0;
-		if ((memory & 0xff) == 0x80) {
-			lengthAddress = 0;
-			this->currentPos ++;
-			return;
-		}
-		while (true) {
-			if ((memory & 0x8080808080808080) != 0) {
-				if ((memory & 0x0000000080808080) != 0) {
-					if ((memory & 0x8080) != 0) {
-						if ((memory & 0x80) != 0) {
-							*str = (char)(memory & 0x7f);
-							length++;
-							this->currentPos++;
-							break;
-						}
-						else {
-							*((unsigned short*)str) = (unsigned short)(memory & 0x7fff);
-							length += 2;
-							this->currentPos += 2;
-							break;
-						}
-					}
-					else {
-						if ((memory & 0x800000) != 0) {
-
-							*str = (char)memory;
-							this->currentPos++; str++; memory >>= 8;
-							*((unsigned short*)str) = (unsigned short)(memory & 0x7fff);
-
-							length += 3;
-							this->currentPos += 2;
-							break;
-						}
-						else {
-							*((unsigned int*)str) = (unsigned int)(memory & 0x7fffffff);
-							length += 4;
-							this->currentPos += 4;
-							break;
-						}
-					}
-				}
-				else {
-					if ((memory & 0x0000808000000000) != 0) {
-						if ((memory & 0x0000008000000000) != 0) {
-
-							*str = (char)memory;
-							this->currentPos++; str++; memory >>= 8;
-							*((unsigned int*)str) = (unsigned int)(memory & 0x7fffffff);
-
-							length += 5;
-							this->currentPos += 4;
-							break;
-						}
-						else {
-							*((unsigned short*)str) = (unsigned short)memory;
-							this->currentPos += 2; str += 2; memory >>= 16;
-							*((unsigned int*)str) = (unsigned int)(memory & 0x7fffffff);
-
-							length += 6;
-							this->currentPos += 4;
-							break;
-						}
-					}
-					else {
-						if ((memory & 0x0080000000000000) != 0) {
-
-							*str = (char)memory;
-							this->currentPos++; str++; memory >>= 8;
-
-							*((unsigned short*)str) = (unsigned short)memory;
-							this->currentPos += 2; str += 2; memory >>= 16;
-
-							*((unsigned int*)str) = (unsigned int)(memory & 0x7fffffff);
-
-							length += 7;
-							this->currentPos += 4;
-							break;
-						}
-						else {
-							*((UINT64*)str) = memory & 0x7fffffffffffffff;
-
-							length += 8;
-							this->currentPos += 8;
-							break;
-						}
-					}
-				}
-			}
+                            length += 8;
+                            this->currentPos += 8;
+                            break;
+                        }
+                    }
+                }
+            }
             *((UINT64*)str) = memory;
             str += 8;
 
             length += 8;
             this->currentPos += 8;
             memory = *((UINT64*)this->currentPos);
-		}
-		*lengthAddress = length;
-	}
+        }
+        *lengthAddress = length;
+    }
+    inline void ReadString_Mandatory(char *str, int *lengthAddress) {
+        UINT64 memory = *((UINT64*)this->currentPos);
+        int length = 0;
+        if ((memory & 0xff) == 0x80) {
+            lengthAddress = 0;
+            this->currentPos ++;
+            return;
+        }
+        while (true) {
+            if ((memory & 0x8080808080808080) != 0) {
+                if ((memory & 0x0000000080808080) != 0) {
+                    if ((memory & 0x8080) != 0) {
+                        if ((memory & 0x80) != 0) {
+                            *str = (char)(memory & 0x7f);
+                            length++;
+                            this->currentPos++;
+                            break;
+                        }
+                        else {
+                            *((unsigned short*)str) = (unsigned short)(memory & 0x7fff);
+                            length += 2;
+                            this->currentPos += 2;
+                            break;
+                        }
+                    }
+                    else {
+                        if ((memory & 0x800000) != 0) {
 
-	inline void ReadByteVector_Optional(BYTE *vecPtrAddress, int *lengthAddress, int maxLength) {
-		int length = ReadUInt32_Optional();
-		int copyLength = length > maxLength? maxLength: length;
-		this->CopyString((char*)vecPtrAddress, (char*)(this->currentPos), copyLength);
-		this->currentPos += length;
-		*lengthAddress = copyLength;
-	}
-	inline void ReadByteVector_Mandatory(BYTE *vecPtrAddress, int *lengthAddress, int maxLength) {
-		int length = ReadUInt32_Mandatory();
-		int copyLength = length > maxLength? maxLength: length;
-		this->CopyString((char*)vecPtrAddress, (char*)(this->currentPos), copyLength);
-		this->currentPos += length;
-		*lengthAddress = copyLength;
-	}
+                            *str = (char)memory;
+                            this->currentPos++; str++; memory >>= 8;
+                            *((unsigned short*)str) = (unsigned short)(memory & 0x7fff);
 
-	inline void WriteByteVector_Optional(BYTE *vecPtr, int length) { 
-		if (vecPtr == NULL) { 
-			*(this->currentPos) = 0x80;
-			this->currentPos++;
-			return;
-		}
-		WriteInt32_Optional(length);
-		memcpy(this->currentPos, vecPtr, length);
-		this->currentPos += length;
-	}
-	inline void WriteByteVector_Mandatory(BYTE *vecPtr, int length) {
-		WriteInt32_Mandatory(length);
-		memcpy(this->currentPos, vecPtr, length);
-		this->currentPos += length;
-	}
+                            length += 3;
+                            this->currentPos += 2;
+                            break;
+                        }
+                        else {
+                            *((unsigned int*)str) = (unsigned int)(memory & 0x7fffffff);
+                            length += 4;
+                            this->currentPos += 4;
+                            break;
+                        }
+                    }
+                }
+                else {
+                    if ((memory & 0x0000808000000000) != 0) {
+                        if ((memory & 0x0000008000000000) != 0) {
 
-	inline void ParsePresenceMap(UINT64 *map) {
-		UINT64 value = *((UINT*)this->currentPos);
-		if((value & FAST_STOPBIT_FIRST_BYTE) != 0) {
-			value &= 0x000000000000007f;
+                            *str = (char)memory;
+                            this->currentPos++; str++; memory >>= 8;
+                            *((unsigned int*)str) = (unsigned int)(memory & 0x7fffffff);
+
+                            length += 5;
+                            this->currentPos += 4;
+                            break;
+                        }
+                        else {
+                            *((unsigned short*)str) = (unsigned short)memory;
+                            this->currentPos += 2; str += 2; memory >>= 16;
+                            *((unsigned int*)str) = (unsigned int)(memory & 0x7fffffff);
+
+                            length += 6;
+                            this->currentPos += 4;
+                            break;
+                        }
+                    }
+                    else {
+                        if ((memory & 0x0080000000000000) != 0) {
+
+                            *str = (char)memory;
+                            this->currentPos++; str++; memory >>= 8;
+
+                            *((unsigned short*)str) = (unsigned short)memory;
+                            this->currentPos += 2; str += 2; memory >>= 16;
+
+                            *((unsigned int*)str) = (unsigned int)(memory & 0x7fffffff);
+
+                            length += 7;
+                            this->currentPos += 4;
+                            break;
+                        }
+                        else {
+                            *((UINT64*)str) = memory & 0x7fffffffffffffff;
+
+                            length += 8;
+                            this->currentPos += 8;
+                            break;
+                        }
+                    }
+                }
+            }
+            *((UINT64*)str) = memory;
+            str += 8;
+
+            length += 8;
+            this->currentPos += 8;
+            memory = *((UINT64*)this->currentPos);
+        }
+        *lengthAddress = length;
+    }
+
+    inline void ReadByteVector_Optional(BYTE *vecPtrAddress, int *lengthAddress, int maxLength) {
+        int length = ReadUInt32_Optional();
+        int copyLength = length > maxLength? maxLength: length;
+        this->CopyString((char*)vecPtrAddress, (char*)(this->currentPos), copyLength);
+        this->currentPos += length;
+        *lengthAddress = copyLength;
+    }
+    inline void ReadByteVector_Mandatory(BYTE *vecPtrAddress, int *lengthAddress, int maxLength) {
+        int length = ReadUInt32_Mandatory();
+        int copyLength = length > maxLength? maxLength: length;
+        this->CopyString((char*)vecPtrAddress, (char*)(this->currentPos), copyLength);
+        this->currentPos += length;
+        *lengthAddress = copyLength;
+    }
+
+    inline void WriteByteVector_Optional(BYTE *vecPtr, int length) { 
+        if (vecPtr == NULL) { 
+            *(this->currentPos) = 0x80;
+            this->currentPos++;
+            return;
+        }
+        WriteInt32_Optional(length);
+        memcpy(this->currentPos, vecPtr, length);
+        this->currentPos += length;
+    }
+    inline void WriteByteVector_Mandatory(BYTE *vecPtr, int length) {
+        WriteInt32_Mandatory(length);
+        memcpy(this->currentPos, vecPtr, length);
+        this->currentPos += length;
+    }
+
+    inline void ParsePresenceMap(UINT64 *map) {
+        UINT64 value = *((UINT*)this->currentPos);
+        if((value & FAST_STOPBIT_FIRST_BYTE) != 0) {
+            value &= 0x000000000000007f;
             *map = value;
-			this->currentPos++;
-			return;
-		}
-		if((value & FAST_STOPBIT_SECOND_BYTE) != 0) {
+            this->currentPos++;
+            return;
+        }
+        if((value & FAST_STOPBIT_SECOND_BYTE) != 0) {
             value &= 0x0000000000007f7f;
             *map = value;
-			this->currentPos += 2;
-			return;
-		}
-		if((value & FAST_STOPBIT_THIRD_BYTE) != 0) {
+            this->currentPos += 2;
+            return;
+        }
+        if((value & FAST_STOPBIT_THIRD_BYTE) != 0) {
             value &= 0x00000000007f7f7f;
             *map = value;
-			this->currentPos += 3;
-			return;
-		}
+            this->currentPos += 3;
+            return;
+        }
         if((value & FAST_STOPBIT_FORTH_BYTE) != 0) {
             value &= 0x000000007f7f7f7f;
             *map = value;
@@ -3596,20 +3596,20 @@ public:
             return;
         }
         value &= 0x7f7f7f7f7f7f7f7f;
-		*map = value;
-		this->currentPos += 8;
-		return;
-	}
+        *map = value;
+        this->currentPos += 8;
+        return;
+    }
 
-	FastProtocolManager(AstsObjectsAllocationInfo *astsInfo, FortsObjectsAllocationInfo *spectraInfo);
-	FastProtocolManager();
-	~FastProtocolManager();
+    FastProtocolManager(AstsObjectsAllocationInfo *astsInfo, FortsObjectsAllocationInfo *spectraInfo);
+    FastProtocolManager();
+    ~FastProtocolManager();
 
-	inline BYTE* Buffer() { return this->buffer; }
-	inline BYTE* CurrentPos() { return this->currentPos; }
-	inline int BufferLength() const { return this->bufferLength; }
-	inline int MessageLength() const { return this->currentPos - this->buffer; }
-	inline void SetBufferLength(int value) { this->bufferLength = value; }
+    inline BYTE* Buffer() { return this->buffer; }
+    inline BYTE* CurrentPos() { return this->currentPos; }
+    inline int BufferLength() const { return this->bufferLength; }
+    inline int MessageLength() const { return this->currentPos - this->buffer; }
+    inline void SetBufferLength(int value) { this->bufferLength = value; }
 
 #pragma region Asts_Encode_Methods_Declaration_GeneratedCode
 	void EncodeAstsLogonInfo(AstsLogonInfo* info);

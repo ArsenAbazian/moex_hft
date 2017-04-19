@@ -4,32 +4,32 @@
 
 class DtoaConverter
 {
-	ItoaConverter	converter;
-	
+    ItoaConverter   converter;
+    
 public:
-	
-	DtoaConverter();
-	~DtoaConverter();
+    
+    DtoaConverter();
+    ~DtoaConverter();
 
-	inline int ToString(double value, char *buffer) { 
-		char* start = buffer;
-		int sign = 1;
-		if (value < 0) {
-			sign = -1;
-			value = -value;
-		}
-		double intFloat = floor(value);
-		double precFloat = value - intFloat;
+    inline int ToString(double value, char *buffer) { 
+        char* start = buffer;
+        int sign = 1;
+        if (value < 0) {
+            sign = -1;
+            value = -value;
+        }
+        double intFloat = floor(value);
+        double precFloat = value - intFloat;
 
-		int intValue = (int)intFloat;
-		int precValue = precFloat * 1000000000.0;
+        int intValue = (int)intFloat;
+        int precValue = precFloat * 1000000000.0;
 
-		if (sign == -1) *buffer++ = '-';
+        if (sign == -1) *buffer++ = '-';
 
-		buffer += converter.Convert(buffer, intValue, 0);
-		*buffer++ = '.';
-		buffer += converter.Convert(buffer, precValue, 0);
+        buffer += converter.Convert(buffer, intValue, 0);
+        *buffer++ = '.';
+        buffer += converter.Convert(buffer, precValue, 0);
 
-		return buffer - start;
-	}
+        return buffer - start;
+    }
 };

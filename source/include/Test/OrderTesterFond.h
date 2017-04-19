@@ -1838,7 +1838,7 @@ public:
 
     void TestConnection_OneMessageReceived() {
         this->Clear();
-	this->AddSymbol("symbol1");
+    this->AddSymbol("symbol1");
         incFond->StartListenSnapshot();
 
         //no messages first half time
@@ -1878,7 +1878,7 @@ public:
     void TestConnection_RouteFirstReceived_Empty() {
 
         this->Clear();
-	this->AddSymbol("symbol1");
+    this->AddSymbol("symbol1");
         incFond->StartListenSnapshot();
 
         SendMessages(snapFond, new TestTemplateInfo*[1] {
@@ -1925,7 +1925,7 @@ public:
 
     void TestConnection_RouteFirstReceived_AfterSomeDummyMessages() {
         this->Clear();
-	this->AddSymbol("symbol1");
+    this->AddSymbol("symbol1");
         incFond->StartListenSnapshot();
 
         SendMessages(snapFond, new TestTemplateInfo*[1] {
