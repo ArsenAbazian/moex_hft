@@ -5,6 +5,8 @@
 #include <stdio.h>
 #include <math.h>
 #include <inttypes.h>
+#include "../ProgramStatistics.h"
+#include <immintrin.h>
 
 class FastProtocolManager;
 class OrderTesterFond;
@@ -20,6 +22,10 @@ class FeedConnection;
 #define CheckMandatoryFieldPresence(map, field) ((map & field) != 0)
 #define CheckOptionalFieldPresence(map, field) ((map & field) != 0)
 #pragma endregion
+
+#ifdef COLLECT_STATISTICS
+#define COLLECT_STATISTICS_FAST
+#endif
 
 class FastProtocolManager {
 	friend class OrderTesterFond;
@@ -1617,7 +1623,9 @@ public:
 			return result - 1;
 		return result;
 	}
-	inline INT32 ReadInt32_Mandatory() {
+#pragma intrinsic(_pext_u32)
+	__attribute__((target ("bmi2")))
+	inline INT32 ReadInt32_Mandatory_Optimized() {
 		INT32 result;
 		INT32 memory = *((INT32*)(this->currentPos));
 
@@ -1694,11 +1702,11 @@ public:
 			this->currentPos += 4;
 			memory = *((INT32*)(this->currentPos));
 			result |= memory & 0x7f;
-			
+
 			this->currentPos ++;
 			return result;
 		}
-		else if ((memory & 0x40) != 0) { // simple negative integer 
+		else if ((memory & 0x40) != 0) { // simple negative integer
 			result = 0xffffff80;
 			result |= memory & 0x7f;
 			if ((memory & 0x80) != 0) {
@@ -1740,24 +1748,138 @@ public:
 			return result;
 		}
 		else {  // simple positive integer
-			result = 0;
-			result |= memory & 0x7f;
-			if ((memory & 0x80) != 0) {
-				this->currentPos++;
-				return result;
+			if((memory & 0x8080) != 0) { // first two bytes
+				if((memory & 0x80) != 0) { // one byte
+					this->currentPos++;
+					return memory & 0x7f;
+				}
+				else { // two bytes
+					this->currentPos += 2;
+					return _pext_u32(memory, 0x00007f7f);
+				}
 			}
-			result <<= 7;
+			else {
+				// 3 - 4 and may be 5 byte
+				if((memory & 0x800000) != 0) { // three bytes
+					this->currentPos += 3;
+					return _pext_u32(memory, 0x007f7f7f);
+				}
+				else {
+					if((memory & 0x80000000) != 0) {
+						this->currentPos += 4;
+						return _pext_u32(memory, 0x7f7f7f7f);
+					}
+					result = _pext_u32(memory, 0x7f7f7f7f);
+					result <<= 7;
+					this->currentPos += 4;
+					memory = *((INT32*)(this->currentPos));
+					this->currentPos ++;
+					return result | (memory & 0x7f);
+				}
+			}
+		}
+	}
+
+	inline INT32 ReadInt32_Mandatory() {
+		INT32 result;
+		INT32 memory = *((INT32*)(this->currentPos));
+
+		INT32 valueMasked = memory & 0xff;
+
+		if (valueMasked == 0x00) { // extended positive integer
+			result = 0;
 			memory >>= 8;
+
+			if((memory & 0x8080) != 0) { // first two bytes
+				if((memory & 0x0080) != 0) {
+					this->currentPos += 2;
+#ifdef COLLECT_STATISTICS_FAST
+					ProgramStatistics::Total->Inc(Counters::cReadInt32MandatoryEp_2Byte);
+#endif
+					return memory & 0x7f;
+				}
+				else {
+					result = memory & 0x7f;
+					result <<= 7;
+					memory >>= 8;
+					result |= memory & 0x7f;
+					this->currentPos += 3;
+#ifdef COLLECT_STATISTICS_FAST
+					ProgramStatistics::Total->Inc(Counters::cReadInt32MandatoryEp_3Byte);
+#endif
+					return result;
+				}
+			}
+			else {
+				if(memory & 0x800000) {
+					result = memory & 0x7f;
+					result <<= 7;
+					memory >>= 8;
+					result |= memory & 0x7f;
+					result <<= 7;
+					memory >>= 8;
+					result |= memory & 0x7f;
+					this->currentPos += 4;
+#ifdef COLLECT_STATISTICS_FAST
+					ProgramStatistics::Total->Inc(Counters::cReadInt32MandatoryEp_4Byte);
+#endif
+					return result;
+				}
+				else {
+					result = memory & 0x7f;
+					result <<= 7;
+					memory >>= 8;
+					result |= memory & 0x7f;
+					result <<= 7;
+					memory >>= 8;
+					result |= memory & 0x7f;
+					this->currentPos += 4;
+
+					result <<= 7;
+					memory = *((INT32*)(this->currentPos));
+
+					result |= memory & 0x7f;
+					if ((memory & 0x80) != 0) {
+						this->currentPos++;
+#ifdef COLLECT_STATISTICS_FAST
+						ProgramStatistics::Total->Inc(Counters::cReadInt32MandatoryEp_5Byte);
+#endif
+						return result;
+					}
+
+					result <<= 7;
+					memory >>= 8;
+					result |= memory & 0x7f;
+
+					this->currentPos += 2;
+#ifdef COLLECT_STATISTICS_FAST
+					ProgramStatistics::Total->Inc(Counters::cReadInt32MandatoryEp_6Byte);
+#endif
+					return result;
+				}
+			}
+		}
+		else if (valueMasked == 0x7f) { // extended negative integer
+			memory >>= 8;
+
+			result = 0xffffff80;
 			result |= memory & 0x7f;
 			if ((memory & 0x80) != 0) {
 				this->currentPos += 2;
+#ifdef COLLECT_STATISTICS_FAST
+				ProgramStatistics::Total->Inc(Counters::cReadInt32MandatoryEn_2Byte);
+#endif
 				return result;
 			}
+
 			result <<= 7;
 			memory >>= 8;
 			result |= memory & 0x7f;
 			if ((memory & 0x80) != 0) {
 				this->currentPos += 3;
+#ifdef COLLECT_STATISTICS_FAST
+				ProgramStatistics::Total->Inc(Counters::cReadInt32MandatoryEn_3Byte);
+#endif
 				return result;
 			}
 
@@ -1766,17 +1888,143 @@ public:
 			result |= memory & 0x7f;
 			if ((memory & 0x80) != 0) {
 				this->currentPos += 4;
+#ifdef COLLECT_STATISTICS_FAST
+				ProgramStatistics::Total->Inc(Counters::cReadInt32MandatoryEn_4Byte);
+#endif
 				return result;
 			}
 
+			result <<= 7;
 			this->currentPos += 4;
+			memory = *((INT32*)(this->currentPos));
+			result |= memory & 0x7f;
+			this->currentPos ++;
+#ifdef COLLECT_STATISTICS_FAST
+			ProgramStatistics::Total->Inc(Counters::cReadInt32MandatoryEn_5Byte);
+#endif
+			return result;
+		}
+		else if ((memory & 0x40) != 0) { // simple negative integer 
+			result = 0xffffff80;
+			result |= memory & 0x7f;
+			if ((memory & 0x80) != 0) {
+#ifdef COLLECT_STATISTICS_FAST
+				ProgramStatistics::Total->Inc(Counters::cReadInt32MandatorySn_1Byte);
+#endif
+				this->currentPos++;
+				return result;
+			}
+			result <<= 7;
+			memory >>= 8;
 
+			result |= memory & 0x7f;
+			if ((memory & 0x80) != 0) {
+#ifdef COLLECT_STATISTICS_FAST
+				ProgramStatistics::Total->Inc(Counters::cReadInt32MandatorySn_2Byte);
+#endif
+				this->currentPos += 2;
+				return result;
+			}
+
+			result <<= 7;
+			memory >>= 8;
+
+			result |= memory & 0x7f;
+			if ((memory & 0x80) != 0) {
+#ifdef COLLECT_STATISTICS_FAST
+				ProgramStatistics::Total->Inc(Counters::cReadInt32MandatorySn_3Byte);
+#endif
+				this->currentPos += 3;
+				return result;
+			}
+
+			result <<= 7;
+			memory >>= 8;
+
+			result |= memory & 0x7f;
+			if ((memory & 0x80) != 0) {
+#ifdef COLLECT_STATISTICS_FAST
+				ProgramStatistics::Total->Inc(Counters::cReadInt32MandatorySn_4Byte);
+#endif
+				this->currentPos += 4;
+				return result;
+			}
+			this->currentPos += 4;
 			result <<= 7;
 			memory = *((INT32*)(this->currentPos));
 			result |= memory & 0x7f;
-
+#ifdef COLLECT_STATISTICS_FAST
+			ProgramStatistics::Total->Inc(Counters::cReadInt32MandatorySn_5Byte);
+#endif
 			this->currentPos++;
 			return result;
+		}
+		else {  // simple positive integer
+			if((memory & 0x8080) != 0) {
+				if((memory & 0x80) != 0) { // first byte
+					this->currentPos++;
+#ifdef COLLECT_STATISTICS_FAST
+					ProgramStatistics::Total->Inc(Counters::cReadInt32MandatorySp_1Byte);
+#endif
+					return memory & 0x7f;
+				}
+				else { // second byte
+					result = memory & 0x7f;
+					result <<= 7;
+					memory >>= 8;
+					result |= memory & 0x7f;
+					this->currentPos += 2;
+#ifdef COLLECT_STATISTICS_FAST
+					ProgramStatistics::Total->Inc(Counters::cReadInt32MandatorySp_2Byte);
+#endif
+					return result;
+				}
+			}
+			else {
+				if((memory & 0x800000) != 0) {
+					result = memory & 0x7f;
+					result <<= 7;
+					memory >>= 8;
+					result |= memory & 0x7f;
+					result <<= 7;
+					memory >>= 8;
+					result |= memory & 0x7f;
+					this->currentPos += 3;
+#ifdef COLLECT_STATISTICS_FAST
+					ProgramStatistics::Total->Inc(Counters::cReadInt32MandatorySp_3Byte);
+#endif
+					return result;
+				}
+				else {
+					result = memory & 0x7f;
+					result <<= 7;
+					memory >>= 8;
+					result |= memory & 0x7f;
+					result <<= 7;
+					memory >>= 8;
+					result |= memory & 0x7f;
+					result <<= 7;
+					memory >>= 8;
+					result |= memory & 0x7f;
+					this->currentPos += 4;
+
+					if((memory & 0x80000000) != 0) {
+#ifdef COLLECT_STATISTICS_FAST
+						ProgramStatistics::Total->Inc(Counters::cReadInt32MandatorySp_4Byte);
+#endif
+						return result;
+					}
+
+					result <<= 7;
+					memory = *((INT32*)(this->currentPos));
+					result |= memory & 0x7f;
+					this->currentPos++;
+#ifdef COLLECT_STATISTICS_FAST
+					ProgramStatistics::Total->Inc(Counters::cReadInt32MandatorySp_5Byte);
+#endif
+					return result;
+				}
+			}
 		}
 	}
 	
@@ -1786,10 +2034,16 @@ public:
 
         if((memory & 0x8080) != 0) { // first two bytes
             if((memory & 0x80) != 0) {
+#ifdef COLLECT_STATISTICS_FAST
+                ProgramStatistics::Total->Inc(Counters::cReadUInt32Mandatory_1Byte);
+#endif
                 this->currentPos++;
                 return memory & 0x7f;
             }
             else {
+#ifdef COLLECT_STATISTICS_FAST
+				ProgramStatistics::Total->Inc(Counters::cReadUInt32Mandatory_2Byte);
+#endif
                 this->currentPos += 2;
                 result |= memory & 0x7f;
                 memory >>= 8;
@@ -1800,6 +2054,9 @@ public:
         }
         else { // second two bytes
             if((memory & 0x800000) != 0) {
+#ifdef COLLECT_STATISTICS_FAST
+				ProgramStatistics::Total->Inc(Counters::cReadUInt32Mandatory_3Byte);
+#endif
                 this->currentPos += 3;
                 result |= memory & 0x7f;
                 memory >>= 8;
@@ -1828,53 +2085,22 @@ public:
                     memory = *((INT32*)(this->currentPos));
                     result |= memory & 0x7f;
                     this->currentPos++;
+#ifdef COLLECT_STATISTICS_FAST
+					ProgramStatistics::Total->Inc(Counters::cReadUInt32Mandatory_5Byte);
+#endif
+                }
+                else {
+#ifdef COLLECT_STATISTICS_FAST
+					ProgramStatistics::Total->Inc(Counters::cReadUInt32Mandatory_4Byte);
+#endif
                 }
                 return result;
             }
         }
-        /*
-
-		result |= memory & 0x7f;
-		if ((memory & 0x80) != 0) {
-			this->currentPos++;
-			return result;
-		}
-		result <<= 7;
-		memory >>= 8;
-		result |= memory & 0x7f;
-		if ((memory & 0x80) != 0) {
-			this->currentPos += 2;
-			return result;
-		}
-		result <<= 7;
-		memory >>= 8;
-		result |= memory & 0x7f;
-		if ((memory & 0x80) != 0) {
-			this->currentPos += 3;
-			return result;
-		}
-
-		result <<= 7;
-		memory >>= 8;
-		result |= memory & 0x7f;
-		if ((memory & 0x80) != 0) {
-			this->currentPos += 4;
-			return result;
-		}
-
-		this->currentPos += 4;
-
-		result <<= 7;
-		memory = *((INT32*)(this->currentPos));
-		result |= memory & 0x7f;
-
-		this->currentPos++;
-        */
 		return result;
 	}
 	inline UINT32 ReadUInt32_Optional() {
-		INT32 result = ReadUInt32_Mandatory();
-		return result - 1;
+		return ReadUInt32_Mandatory() - 1;
 	}
 
 	inline void WriteInt64_Optional(INT64 value) {
@@ -1894,12 +2120,12 @@ public:
 					encoded <<= 8;
 					*((INT64*)this->currentPos) = encoded;
 					this->currentPos += 2;
-					return;
+                    return;
 				}
 				else {
 					*((INT64*)this->currentPos) = encoded;
 					this->currentPos++;
-					return;
+                    return;
 				}
 			}
 
@@ -1912,12 +2138,12 @@ public:
 					encoded <<= 8;
 					*((INT64*)this->currentPos) = encoded;
 					this->currentPos += 3;
-					return;
+                    return;
 				}
 				else {
 					*((INT64*)this->currentPos) = encoded;
 					this->currentPos += 2;
-					return;
+                    return;
 				}
 			}
 
@@ -1930,7 +2156,7 @@ public:
 					encoded <<= 8;
 					*((INT64*)this->currentPos) = encoded;
 					this->currentPos += 4;
-					return;
+                    return;
 				}
 				else {
 					*((INT64*)this->currentPos) = encoded;
@@ -2233,7 +2459,6 @@ public:
 			return;
 		}
 	}
-	
 	inline void WriteUInt64_Optional(UINT64 value) {
 		value++;
 		WriteUInt64_Mandatory(value);
@@ -2352,6 +2577,9 @@ public:
 			result |= memory & 0x7f;
 			if ((memory & 0x80) != 0) {
 				this->currentPos += 2;
+#ifdef COLLECT_STATISTICS_FAST
+				ProgramStatistics::Total->Inc(Counters::cReadInt64MandatoryEp_2Byte);
+#endif
 				return result;
 			}
 			result <<= 7;
@@ -2359,6 +2587,9 @@ public:
 			result |= memory & 0x7f;
 			if ((memory & 0x80) != 0) {
 				this->currentPos += 3;
+#ifdef COLLECT_STATISTICS_FAST
+				ProgramStatistics::Total->Inc(Counters::cReadInt64MandatoryEp_3Byte);
+#endif
 				return result;
 			}
 			result <<= 7;
@@ -2366,6 +2597,9 @@ public:
 			result |= memory & 0x7f;
 			if ((memory & 0x80) != 0) {
 				this->currentPos += 4;
+#ifdef COLLECT_STATISTICS_FAST
+				ProgramStatistics::Total->Inc(Counters::cReadInt64MandatoryEp_4Byte);
+#endif
 				return result;
 			}
 			result <<= 7;
@@ -2373,6 +2607,9 @@ public:
 			result |= memory & 0x7f;
 			if ((memory & 0x80) != 0) {
 				this->currentPos += 5;
+#ifdef COLLECT_STATISTICS_FAST
+				ProgramStatistics::Total->Inc(Counters::cReadInt64MandatoryEp_5Byte);
+#endif
 				return result;
 			}
 			result <<= 7;
@@ -2380,6 +2617,9 @@ public:
 			result |= memory & 0x7f;
 			if ((memory & 0x80) != 0) {
 				this->currentPos += 6;
+#ifdef COLLECT_STATISTICS_FAST
+				ProgramStatistics::Total->Inc(Counters::cReadInt64MandatoryEp_6Byte);
+#endif
 				return result;
 			}
 			result <<= 7;
@@ -2387,6 +2627,9 @@ public:
 			result |= memory & 0x7f;
 			if ((memory & 0x80) != 0) {
 				this->currentPos += 7;
+#ifdef COLLECT_STATISTICS_FAST
+				ProgramStatistics::Total->Inc(Counters::cReadInt64MandatoryEp_7Byte);
+#endif
 				return result;
 			}
 			result <<= 7;
@@ -2394,6 +2637,9 @@ public:
 			result |= memory & 0x7f;
 			if ((memory & 0x80) != 0) {
 				this->currentPos += 8;
+#ifdef COLLECT_STATISTICS_FAST
+				ProgramStatistics::Total->Inc(Counters::cReadInt64MandatoryEp_8Byte);
+#endif
 				return result;
 			}
 			
@@ -2404,6 +2650,9 @@ public:
 			result |= memory & 0x7f;
 			if ((memory & 0x80) != 0) {
 				this->currentPos++;
+#ifdef COLLECT_STATISTICS_FAST
+				ProgramStatistics::Total->Inc(Counters::cReadInt64MandatoryEp_9Byte);
+#endif
 				return result;
 			}
 
@@ -2412,6 +2661,9 @@ public:
 			result |= memory & 0x7f;
 			if ((memory & 0x80) != 0) {
 				this->currentPos += 2;
+#ifdef COLLECT_STATISTICS_FAST
+				ProgramStatistics::Total->Inc(Counters::cReadInt64MandatoryEp_10Byte);
+#endif
 				return result;
 			}
 
@@ -2420,6 +2672,9 @@ public:
 			result |= memory & 0x7f;
 
 			this->currentPos += 3;
+#ifdef COLLECT_STATISTICS_FAST
+			ProgramStatistics::Total->Inc(Counters::cReadInt64MandatoryEp_11Byte);
+#endif
 			return result;
 		}
 		else if (valueMasked == 0x7f) { // extended negative integer
@@ -2429,6 +2684,9 @@ public:
 			result |= memory & 0x7f;
 			if ((memory & 0x80) != 0) {
 				this->currentPos += 2;
+#ifdef COLLECT_STATISTICS_FAST
+                ProgramStatistics::Total->Inc(Counters::cReadInt64MandatoryEn_2Byte);
+#endif
 				return result;
 			}
 			result <<= 7;
@@ -2437,6 +2695,9 @@ public:
 			result |= memory & 0x7f;
 			if ((memory & 0x80) != 0) {
 				this->currentPos += 3;
+#ifdef COLLECT_STATISTICS_FAST
+				ProgramStatistics::Total->Inc(Counters::cReadInt64MandatoryEn_3Byte);
+#endif
 				return result;
 			}
 
@@ -2446,6 +2707,9 @@ public:
 			result |= memory & 0x7f;
 			if ((memory & 0x80) != 0) {
 				this->currentPos += 4;
+#ifdef COLLECT_STATISTICS_FAST
+                ProgramStatistics::Total->Inc(Counters::cReadInt64MandatoryEn_4Byte);
+#endif
 				return result;
 			}
 
@@ -2455,6 +2719,9 @@ public:
 			result |= memory & 0x7f;
 			if ((memory & 0x80) != 0) {
 				this->currentPos += 5;
+#ifdef COLLECT_STATISTICS_FAST
+                ProgramStatistics::Total->Inc(Counters::cReadInt64MandatoryEn_5Byte);
+#endif
 				return result;
 			}
 
@@ -2464,6 +2731,9 @@ public:
 			result |= memory & 0x7f;
 			if ((memory & 0x80) != 0) {
 				this->currentPos += 6;
+#ifdef COLLECT_STATISTICS_FAST
+                ProgramStatistics::Total->Inc(Counters::cReadInt64MandatoryEn_6Byte);
+#endif
 				return result;
 			}
 
@@ -2473,6 +2743,9 @@ public:
 			result |= memory & 0x7f;
 			if ((memory & 0x80) != 0) {
 				this->currentPos += 7;
+#ifdef COLLECT_STATISTICS_FAST
+                ProgramStatistics::Total->Inc(Counters::cReadInt64MandatoryEn_7Byte);
+#endif
 				return result;
 			}
 
@@ -2482,6 +2755,9 @@ public:
 			result |= memory & 0x7f;
 			if ((memory & 0x80) != 0) {
 				this->currentPos += 8;
+#ifdef COLLECT_STATISTICS_FAST
+                ProgramStatistics::Total->Inc(Counters::cReadInt64MandatoryEn_8Byte);
+#endif
 				return result;
 			}
 			
@@ -2492,6 +2768,9 @@ public:
 
 			if ((memory & 0x80) != 0) {
 				this->currentPos ++;
+#ifdef COLLECT_STATISTICS_FAST
+                ProgramStatistics::Total->Inc(Counters::cReadInt64MandatoryEn_9Byte);
+#endif
 				return result;
 			}
 
@@ -2501,6 +2780,9 @@ public:
 			result |= memory & 0x7f;
 			if ((memory & 0x80) != 0) {
 				this->currentPos += 2;
+#ifdef COLLECT_STATISTICS_FAST
+                ProgramStatistics::Total->Inc(Counters::cReadInt64MandatoryEn_10Byte);
+#endif
 				return result;
 			}
 			
@@ -2509,6 +2791,9 @@ public:
 			result |= memory & 0x7f;
 
 			this->currentPos += 3;
+#ifdef COLLECT_STATISTICS_FAST
+            ProgramStatistics::Total->Inc(Counters::cReadInt64MandatoryEn_11Byte);
+#endif
 			return result;
 		}
 		else if ((memory & 0x40) != 0) { // simple negative integer 
@@ -2516,6 +2801,9 @@ public:
 			result |= memory & 0x7f;
 			if ((memory & 0x80) != 0) {
 				this->currentPos++;
+#ifdef COLLECT_STATISTICS_FAST
+                ProgramStatistics::Total->Inc(Counters::cReadInt64MandatorySn_1Byte);
+#endif
 				return result;
 			}
 			result <<= 7;
@@ -2524,6 +2812,9 @@ public:
 			result |= memory & 0x7f;
 			if ((memory & 0x80) != 0) {
 				this->currentPos += 2;
+#ifdef COLLECT_STATISTICS_FAST
+                ProgramStatistics::Total->Inc(Counters::cReadInt64MandatorySn_2Byte);
+#endif
 				return result;
 			}
 
@@ -2533,6 +2824,9 @@ public:
 			result |= memory & 0x7f;
 			if ((memory & 0x80) != 0) {
 				this->currentPos += 3;
+#ifdef COLLECT_STATISTICS_FAST
+                ProgramStatistics::Total->Inc(Counters::cReadInt64MandatorySn_3Byte);
+#endif
 				return result;
 			}
 
@@ -2542,6 +2836,9 @@ public:
 			result |= memory & 0x7f;
 			if ((memory & 0x80) != 0) {
 				this->currentPos += 4;
+#ifdef COLLECT_STATISTICS_FAST
+                ProgramStatistics::Total->Inc(Counters::cReadInt64MandatorySn_4Byte);
+#endif
 				return result;
 			}
 
@@ -2551,6 +2848,9 @@ public:
 			result |= memory & 0x7f;
 			if ((memory & 0x80) != 0) {
 				this->currentPos += 5;
+#ifdef COLLECT_STATISTICS_FAST
+                ProgramStatistics::Total->Inc(Counters::cReadInt64MandatorySn_5Byte);
+#endif
 				return result;
 			}
 
@@ -2560,6 +2860,9 @@ public:
 			result |= memory & 0x7f;
 			if ((memory & 0x80) != 0) {
 				this->currentPos += 6;
+#ifdef COLLECT_STATISTICS_FAST
+                ProgramStatistics::Total->Inc(Counters::cReadInt64MandatorySn_6Byte);
+#endif
 				return result;
 			}
 
@@ -2569,6 +2872,9 @@ public:
 			result |= memory & 0x7f;
 			if ((memory & 0x80) != 0) {
 				this->currentPos += 7;
+#ifdef COLLECT_STATISTICS_FAST
+                ProgramStatistics::Total->Inc(Counters::cReadInt64MandatorySn_7Byte);
+#endif
 				return result;
 			}
 
@@ -2578,6 +2884,9 @@ public:
 			result |= memory & 0x7f;
 			if ((memory & 0x80) != 0) {
 				this->currentPos += 8;
+#ifdef COLLECT_STATISTICS_FAST
+                ProgramStatistics::Total->Inc(Counters::cReadInt64MandatorySn_8Byte);
+#endif
 				return result;
 			}
 
@@ -2588,6 +2897,9 @@ public:
 
 			if ((memory & 0x80) != 0) {
 				this->currentPos ++;
+#ifdef COLLECT_STATISTICS_FAST
+                ProgramStatistics::Total->Inc(Counters::cReadInt64MandatorySn_9Byte);
+#endif
 				return result;
 			}
 
@@ -2597,6 +2909,9 @@ public:
 			result |= memory & 0x7f;
 			if ((memory & 0x80) != 0) {
 				this->currentPos += 2;
+#ifdef COLLECT_STATISTICS_FAST
+                ProgramStatistics::Total->Inc(Counters::cReadInt64MandatorySn_10Byte);
+#endif
 				return result;
 			}
 
@@ -2605,6 +2920,9 @@ public:
 			result |= memory & 0x7f;
 
 			this->currentPos += 3;
+#ifdef COLLECT_STATISTICS_FAST
+            ProgramStatistics::Total->Inc(Counters::cReadInt64MandatorySn_11Byte);
+#endif
 			return result;
 		}
 		else {  // simple positive integer
@@ -2612,6 +2930,9 @@ public:
 			result |= memory & 0x7f;
 			if ((memory & 0x80) != 0) {
 				this->currentPos++;
+#ifdef COLLECT_STATISTICS_FAST
+                ProgramStatistics::Total->Inc(Counters::cReadInt64MandatorySp_1Byte);
+#endif
 				return result;
 			}
 			result <<= 7;
@@ -2619,6 +2940,9 @@ public:
 			result |= memory & 0x7f;
 			if ((memory & 0x80) != 0) {
 				this->currentPos += 2;
+#ifdef COLLECT_STATISTICS_FAST
+                ProgramStatistics::Total->Inc(Counters::cReadInt64MandatorySp_2Byte);
+#endif
 				return result;
 			}
 			result <<= 7;
@@ -2626,6 +2950,9 @@ public:
 			result |= memory & 0x7f;
 			if ((memory & 0x80) != 0) {
 				this->currentPos += 3;
+#ifdef COLLECT_STATISTICS_FAST
+                ProgramStatistics::Total->Inc(Counters::cReadInt64MandatorySp_3Byte);
+#endif
 				return result;
 			}
 
@@ -2634,6 +2961,9 @@ public:
 			result |= memory & 0x7f;
 			if ((memory & 0x80) != 0) {
 				this->currentPos += 4;
+#ifdef COLLECT_STATISTICS_FAST
+                ProgramStatistics::Total->Inc(Counters::cReadInt64MandatorySp_4Byte);
+#endif
 				return result;
 			}
 
@@ -2642,6 +2972,9 @@ public:
 			result |= memory & 0x7f;
 			if ((memory & 0x80) != 0) {
 				this->currentPos += 5;
+#ifdef COLLECT_STATISTICS_FAST
+                ProgramStatistics::Total->Inc(Counters::cReadInt64MandatorySp_5Byte);
+#endif
 				return result;
 			}
 
@@ -2650,6 +2983,9 @@ public:
 			result |= memory & 0x7f;
 			if ((memory & 0x80) != 0) {
 				this->currentPos += 6;
+#ifdef COLLECT_STATISTICS_FAST
+                ProgramStatistics::Total->Inc(Counters::cReadInt64MandatorySp_6Byte);
+#endif
 				return result;
 			}
 
@@ -2658,6 +2994,9 @@ public:
 			result |= memory & 0x7f;
 			if ((memory & 0x80) != 0) {
 				this->currentPos += 7;
+#ifdef COLLECT_STATISTICS_FAST
+                ProgramStatistics::Total->Inc(Counters::cReadInt64MandatorySp_7Byte);
+#endif
 				return result;
 			}
 
@@ -2666,6 +3005,9 @@ public:
 			result |= memory & 0x7f;
 			if ((memory & 0x80) != 0) {
 				this->currentPos += 8;
+#ifdef COLLECT_STATISTICS_FAST
+                ProgramStatistics::Total->Inc(Counters::cReadInt64MandatorySp_8Byte);
+#endif
 				return result;
 			}
 
@@ -2677,6 +3019,9 @@ public:
 
 			if ((memory & 0x80) != 0) {
 				this->currentPos ++;
+#ifdef COLLECT_STATISTICS_FAST
+                ProgramStatistics::Total->Inc(Counters::cReadInt64MandatorySp_9Byte);
+#endif
 				return result;
 			}
 
@@ -2685,10 +3030,16 @@ public:
 			result |= memory & 0x7f;
 			if ((memory & 0x80) != 0) {
 				this->currentPos += 2;
+#ifdef COLLECT_STATISTICS_FAST
+                ProgramStatistics::Total->Inc(Counters::cReadInt64MandatorySp_10Byte);
+#endif
 				return result;
 			}
 
 			this->currentPos += 3;
+#ifdef COLLECT_STATISTICS_FAST
+            ProgramStatistics::Total->Inc(Counters::cReadInt64MandatorySp_11Byte);
+#endif
 			return result;
 		}
 	}
@@ -2706,6 +3057,9 @@ public:
 		result = memory & 0x7f;
 		if ((memory & 0x80) != 0) {
 			this->currentPos++;
+#ifdef COLLECT_STATISTICS_FAST
+            ProgramStatistics::Total->Inc(Counters::cReadUInt64Mandatory_1Byte);
+#endif
 			return result;
 		}
 		result <<= 7;
@@ -2713,6 +3067,9 @@ public:
 		result |= memory & 0x7f;
 		if ((memory & 0x80) != 0) {
 			this->currentPos += 2;
+#ifdef COLLECT_STATISTICS_FAST
+            ProgramStatistics::Total->Inc(Counters::cReadUInt64Mandatory_2Byte);
+#endif
 			return result;
 		}
 		result <<= 7;
@@ -2720,6 +3077,9 @@ public:
 		result |= memory & 0x7f;
 		if ((memory & 0x80) != 0) {
 			this->currentPos += 3;
+#ifdef COLLECT_STATISTICS_FAST
+            ProgramStatistics::Total->Inc(Counters::cReadUInt64Mandatory_3Byte);
+#endif
 			return result;
 		}
 
@@ -2728,6 +3088,9 @@ public:
 		result |= memory & 0x7f;
 		if ((memory & 0x80) != 0) {
 			this->currentPos += 4;
+#ifdef COLLECT_STATISTICS_FAST
+            ProgramStatistics::Total->Inc(Counters::cReadUInt64Mandatory_4Byte);
+#endif
 			return result;
 		}
 
@@ -2736,6 +3099,9 @@ public:
 		result |= memory & 0x7f;
 		if ((memory & 0x80) != 0) {
 			this->currentPos += 5;
+#ifdef COLLECT_STATISTICS_FAST
+            ProgramStatistics::Total->Inc(Counters::cReadUInt64Mandatory_5Byte);
+#endif
 			return result;
 		}
 
@@ -2744,6 +3110,9 @@ public:
 		result |= memory & 0x7f;
 		if ((memory & 0x80) != 0) {
 			this->currentPos += 6;
+#ifdef COLLECT_STATISTICS_FAST
+            ProgramStatistics::Total->Inc(Counters::cReadUInt64Mandatory_6Byte);
+#endif
 			return result;
 		}
 
@@ -2752,6 +3121,9 @@ public:
 		result |= memory & 0x7f;
 		if ((memory & 0x80) != 0) {
 			this->currentPos += 7;
+#ifdef COLLECT_STATISTICS_FAST
+            ProgramStatistics::Total->Inc(Counters::cReadUInt64Mandatory_7Byte);
+#endif
 			return result;
 		}
 
@@ -2760,6 +3132,9 @@ public:
 		result |= memory & 0x7f;
 		if ((memory & 0x80) != 0) {
 			this->currentPos += 8;
+#ifdef COLLECT_STATISTICS_FAST
+            ProgramStatistics::Total->Inc(Counters::cReadUInt64Mandatory_8Byte);
+#endif
 			return result;
 		}
 
@@ -2771,6 +3146,9 @@ public:
 
 		if ((memory & 0x80) != 0) {
 			this->currentPos ++;
+#ifdef COLLECT_STATISTICS_FAST
+            ProgramStatistics::Total->Inc(Counters::cReadUInt64Mandatory_9Byte);
+#endif
 			return result;
 		}
 
@@ -2779,6 +3157,9 @@ public:
 		result |= memory & 0x7f;
 
 		this->currentPos +=2;
+#ifdef COLLECT_STATISTICS_FAST
+        ProgramStatistics::Total->Inc(Counters::cReadUInt64Mandatory_10Byte);
+#endif
 		return result;
 	}
 	inline UINT64 ReadUInt64_Optional() {

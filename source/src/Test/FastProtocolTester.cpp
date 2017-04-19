@@ -586,15 +586,22 @@ void FastProtocolTester::TestReadInt32_Mandatory() {
 	printf("Test FastProtocolTester::TestReadInt32_Mandatory\n");
     manager->SetNewBuffer(new unsigned char[100], 100);
 
-	for (int i = 0; i > -2147483630; i -= 5) {
+    manager->ResetBuffer();
+    manager->WriteInt32_Mandatory(8195);
+    manager->ResetBuffer();
+    INT32 v1 = manager->ReadInt32_Mandatory();
+
+    for (int i = 0; i > -2147483630; i -= 5) {
 		manager->ResetBuffer();
 		manager->WriteInt32_Mandatory(i);
 		manager->ResetBuffer();
 		INT32 value = manager->ReadInt32_Mandatory();
 		if (value != i)
 			throw;
+        /*
 		if ((i % 1000000) == 0)
 			printf("%d\n", i);
+         */
 	}
 
 	for (int i = 0; i < 0x7ffffff0; i+= 5) { 
@@ -604,8 +611,10 @@ void FastProtocolTester::TestReadInt32_Mandatory() {
 		INT32 value = manager->ReadInt32_Mandatory();
 		if (value != i)
 			throw;
+        /*
 		if ((i % 1000000) == 0)
 			printf("%d\n", i);
+         */
 	}
 
 	delete manager;
@@ -658,8 +667,6 @@ void FastProtocolTester::TestReadInt32_Optional() {
 
 void FastProtocolTester::TestReadUInt32_Optional() {
 	printf("Test FastProtocolTester::TestReadUInt32_Optional\n");
-
-	delete manager;
 }
 
 void FastProtocolTester::TestReadUInt32_Mandatory() {
@@ -1169,8 +1176,6 @@ void FastProtocolTester::TestReadInt64_Mandatory() {
 	INT64 value2 = manager->ReadInt64_Mandatory();
 	if (value != value2)
 		throw;
-
-	delete manager;
 }
 
 void FastProtocolTester::TestReadUInt64_Mandatory() {
@@ -1235,8 +1240,6 @@ void FastProtocolTester::TestReadUInt64_Mandatory() {
 	UINT64 value2 = manager->ReadUInt64_Mandatory();
 	if (value != value2)
 		throw;
-
-	delete manager;
 }
 
 void FastProtocolTester::TestReadUInt64_Optional() {
@@ -1280,8 +1283,6 @@ void FastProtocolTester::TestReadUInt64_Optional() {
 	UINT64 value2 = manager->ReadUInt64_Optional();
 	if (value != value2)
 		throw;
-
-	delete manager;
 }
 
 void FastProtocolTester::TestParsePresenceMap() {

@@ -2706,7 +2706,7 @@ protected:
 	inline bool OnIncrementalRefresh_OLR_CURR(AstsOLSCURRItemInfo *info) {
         //TODO remove debug
         info->MDEntryID[info->MDEntryIDLength] = '\0';
-        printf("OLR CURR %s\n", info->MDEntryID);
+        //printf("OLR CURR %s\n", info->MDEntryID);
         int index = this->m_symbolManager->GetSymbol(info->Symbol, info->SymbolLength)->m_index;
 		return this->m_orderTableCurr->ProcessIncremental(info, index, info->TradingSessionID, info->TradingSessionIDLength);
 	}
