@@ -26,9 +26,9 @@ public:
 
     HashTableItemInfo() :
             m_object(0),
+            m_owner(0),
             m_stringId(0),
-            m_length(0),
-            m_owner(0) { }
+            m_length(0) { }
 
     inline void Clear() {
         this->m_object = 0;

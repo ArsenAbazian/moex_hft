@@ -46,6 +46,7 @@ MarketInfo::MarketInfo(const char* name, const char *senderComputedId, const cha
 }
 
 MarketInfo::~MarketInfo() { 
+// TODO: i don't like this code. calling non-virtual destructor from non-final class with virtual functions, but without virtual destructor.
     if (this->m_trade != NULL)
         delete this->m_trade;
     if (this->m_tradeCapture != NULL)

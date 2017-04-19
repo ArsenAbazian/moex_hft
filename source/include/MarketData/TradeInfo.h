@@ -232,16 +232,13 @@ template <typename T> PointerList<T>* TradeInfo<T>::m_itemsPool = 0;
 
 template <typename T> TradeInfo<T>::TradeInfo() :
         m_entryInfo(0),
+        m_used(false),
         m_shouldProcessSnapshot(false),
         m_rptSeq(0),
         m_savedRptSeq(0),
-        m_snapshotProcessedCount(0),
-        m_trades(0),
-        m_used(false),
         m_symbolInfo(0),
-        m_tradingSession(0),
+        m_snapshotProcessedCount(0),
         m_sessionInt(0) {
-
     if(TradeInfo::m_itemsPool == 0)
         TradeInfo::m_itemsPool = new PointerList<T>(RobotSettings::Default->MarketDataMaxEntriesCount, false);
 

@@ -728,7 +728,6 @@ int DebugInfoManager::CheckIsFriedMDEntryQueryCleared() {
 }
 
 MDEntryQueue* DebugInfoManager::GetFirstMDEntryQueue() {
-    int index = 0;
     LinkedPointer<MDEntryQueue> *start = MDEntryQueue::Pool->Start();
     while(start != 0) {
         MDEntryQueue *data = start->Data();
@@ -741,7 +740,6 @@ MDEntryQueue* DebugInfoManager::GetFirstMDEntryQueue() {
     return 0;
 }
 int DebugInfoManager::GetFirstNonEmptyEntry() {
-    int index = 0;
     LinkedPointer<MDEntryQueue> *start = MDEntryQueue::Pool->Start();
     while(start != 0) {
         MDEntryQueue *data = start->Data();

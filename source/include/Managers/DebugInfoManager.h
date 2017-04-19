@@ -52,7 +52,7 @@ class DebugInfoManager {
     int             *MDEntryTypeRecv;
 
     char            m_buffer[392];
-    char            m_buffer2[392];
+//    char            m_buffer2[392]; // unused
     char            m_tabs[32];
     int             m_tabsCount;
     FILE            *fp;

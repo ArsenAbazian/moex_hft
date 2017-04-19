@@ -19,14 +19,13 @@ template <typename T> class MarketSymbolInfo {
     UINT64                              m_securityId;
 public:
     MarketSymbolInfo() :
+            m_items(0),
             m_count(0),
             m_maxCount(0),
-            m_items(0),
-            m_symbol(0),
+            m_sessionsToRecvSnapshot(0),
             m_securityDefinitionPtr(0),
             m_securityDefinitionFortsPtr(0),
-            m_securityId(0),
-            m_sessionsToRecvSnapshot(0) {
+            m_securityId(0) {
         this->m_symbol = new SizedArray();
     }
     inline void InitSessions(int count) {

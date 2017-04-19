@@ -19,9 +19,9 @@ public:
     char                        m_text[SymbolInfo::m_textSize];
 
     SymbolInfo() :
-            m_length(0),
+            m_pointer(0),
             m_index(-1),
-            m_pointer(0) {
+            m_length(0) {
         memset(this->m_text, 0, SymbolInfo::m_textSize);
     }
     void Set(const char *symbol, int length, int index) {

@@ -69,15 +69,14 @@ template <typename T> class StatisticsInfo {
 public:
     StatisticsInfo() :
             m_entryInfo(0),
-            m_tradingSession(0),
-            m_shouldProcessSnapshot(0),
+            m_used(false),
+            m_shouldProcessSnapshot(false),
             m_rptSeq(0),
             m_savedRptSeq(0),
-            m_time(0),
-            m_snapshotProcessedCount(0),
-            m_used(0),
             m_symbolInfo(0),
-            m_sessionInt(0) {
+            m_sessionInt(0),
+            m_time(0),
+            m_snapshotProcessedCount(0) {
         if(DefaultStatisticItemAllocator::Default == 0)
             DefaultStatisticItemAllocator::Default = new StatisticItemAllocator();
 
