@@ -278,13 +278,13 @@ bool Robot::Run() {
     if(!this->DoWork()) {
         globalWatch->Stop();
         DefaultLogManager::Default->EndLog(false);
-        printf("Total work time = %" PRIu64 " seconds\n", globalWatch->ElapsedSeconds());
+        printf("Total work time = %lu seconds\n", globalWatch->ElapsedSeconds());
         return false;
     }
 
     globalWatch->Stop();
 	DefaultLogManager::Default->EndLog(true);
-    printf("Total work time = %" PRIu64 " seconds\n", globalWatch->ElapsedSeconds());
+    printf("Total work time = %lu seconds\n", globalWatch->ElapsedSeconds());
 	return true;
 }
 

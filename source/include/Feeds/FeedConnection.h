@@ -2550,7 +2550,7 @@ protected:
             if(this->m_waitTimer->ElapsedMilliseconds(1) > this->m_waitIncrementalMessageMaxTimeMs /*this->WaitAnyPacketMaxTimeMs*/) {
                 //TODO remove debug
                 if(this->m_snapshot->State() == FeedConnectionState::fcsSuspend) {
-                    printf("%s listen atom incremental timeout %" PRIu64 " ms... start snapshot\n", this->m_idName, this->m_waitTimer->ElapsedMilliseconds(1));
+                    printf("%s listen atom incremental timeout %lu ms... start snapshot\n", this->m_idName, this->m_waitTimer->ElapsedMilliseconds(1));
                     this->StartListenSnapshot();
                 }
                 return true;
@@ -2573,7 +2573,7 @@ protected:
             if(this->m_waitTimer->ElapsedMilliseconds(1) > this->m_waitIncrementalMessageMaxTimeMs /*this->WaitAnyPacketMaxTimeMs*/) {
                 //TODO remove debug
                 if(this->m_snapshot->State() == FeedConnectionState::fcsSuspend) {
-                    printf("%s listen atom incremental timeout %" PRIu64 " ms... start snapshot\n", this->m_idName, this->m_waitTimer->ElapsedMilliseconds(1));
+                    printf("%s listen atom incremental timeout %lu ms... start snapshot\n", this->m_idName, this->m_waitTimer->ElapsedMilliseconds(1));
                     this->StartListenSnapshot();
                 }
                 return true;
