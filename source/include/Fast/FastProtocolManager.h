@@ -2026,7 +2026,16 @@ public:
             }
         }
     }
-    
+
+	inline UINT32 ReadUInt32_Mandatory_Fixed1() {
+		UINT32 result = (UINT32)*(this->currentPos) & 0x7f;
+		this->currentPos++;
+#ifdef COLLECT_STATISTICS_FAST
+		ProgramStatistics::Total->Inc(Counters::cReadUInt32Mandatory_1Byte);
+#endif
+		return result;
+	}
+
     inline UINT32 ReadUInt32_Mandatory() {
         INT32 result = 0;
         INT32 memory = *((INT32*)(this->currentPos));
@@ -2098,6 +2107,11 @@ public:
         }
         return result;
     }
+
+	inline UINT32 ReadUInt32_Optional_Fixed1() {
+		return ReadUInt32_Mandatory_Fixed1() - 1;
+	}
+
     inline UINT32 ReadUInt32_Optional() {
         return ReadUInt32_Mandatory() - 1;
     }
@@ -3318,11 +3332,23 @@ public:
         }
     }
 
+	inline void ReadString_Optional_Fixed1(char *str, int *lengthAddress) {
+		UINT64 memory = *((UINT64*)this->currentPos);
+		if ((memory & 0xffff) == 0x8000) {
+			*lengthAddress = 0;
+			this->currentPos += 2;
+			return;
+		}
+		*str = (char)(memory & 0x7f);
+		*lengthAddress = 1;
+		this->currentPos++;
+	}
+
     inline void ReadString_Optional(char *str, int *lengthAddress) {
         UINT64 memory = *((UINT64*)this->currentPos);
         int length = 0;
         if ((memory & 0xffff) == 0x8000) { 
-            lengthAddress = 0;
+            *lengthAddress = 0;
             this->currentPos += 2;
             return;
         }
@@ -3418,11 +3444,24 @@ public:
         }
         *lengthAddress = length;
     }
-    inline void ReadString_Mandatory(char *str, int *lengthAddress) {
+
+	inline void ReadString_Mandatory_Fixed1(char *str, int *lengthAddress) {
+		unsigned char memory = *(this->currentPos);
+		if (memory == 0x80) {
+			*lengthAddress = 0;
+			this->currentPos ++;
+			return;
+		}
+		*str = (char)(memory & 0x7f);
+		*lengthAddress = 1;
+		this->currentPos++;
+	}
+
+	inline void ReadString_Mandatory(char *str, int *lengthAddress) {
         UINT64 memory = *((UINT64*)this->currentPos);
         int length = 0;
         if ((memory & 0xff) == 0x80) {
-            lengthAddress = 0;
+            *lengthAddress = 0;
             this->currentPos ++;
             return;
         }
@@ -3814,7 +3853,7 @@ public:
 			if(CheckProcessNullString())
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX0;
 			else
-				ReadString_Optional(gmdeItemInfo->MDEntryType, &(gmdeItemInfo->MDEntryTypeLength));
+				ReadString_Optional_Fixed1(gmdeItemInfo->MDEntryType, &(gmdeItemInfo->MDEntryTypeLength));
 			if(CheckProcessNullString())
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX1;
 			else
@@ -3997,11 +4036,11 @@ public:
 			if(CheckProcessNullUInt32())
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX0;
 			else
-				gmdeItemInfo->MDUpdateAction = ReadUInt32_Optional();
+				gmdeItemInfo->MDUpdateAction = ReadUInt32_Optional_Fixed1();
 			if(CheckProcessNullString())
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX1;
 			else
-				ReadString_Optional(gmdeItemInfo->MDEntryType, &(gmdeItemInfo->MDEntryTypeLength));
+				ReadString_Optional_Fixed1(gmdeItemInfo->MDEntryType, &(gmdeItemInfo->MDEntryTypeLength));
 			if(CheckProcessNullString())
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX2;
 			else
@@ -4234,7 +4273,7 @@ public:
 				if(CheckProcessNullString())
 					gmdeItemInfo->NullMap |= NULL_MAP_INDEX0;
 				else
-					ReadString_Optional(gmdeItemInfo->MDEntryType, &(gmdeItemInfo->MDEntryTypeLength));
+					ReadString_Optional_Fixed1(gmdeItemInfo->MDEntryType, &(gmdeItemInfo->MDEntryTypeLength));
 			}
 			else {
 				this->CopyString(gmdeItemInfo->MDEntryType, m_prevastsOLSFONDItemInfo->MDEntryType, m_prevastsOLSFONDItemInfo->MDEntryTypeLength);
@@ -4389,7 +4428,7 @@ public:
 				if(CheckProcessNullString())
 					gmdeItemInfo->NullMap |= NULL_MAP_INDEX0;
 				else
-					ReadString_Optional(gmdeItemInfo->MDEntryType, &(gmdeItemInfo->MDEntryTypeLength));
+					ReadString_Optional_Fixed1(gmdeItemInfo->MDEntryType, &(gmdeItemInfo->MDEntryTypeLength));
 			}
 			else {
 				this->CopyString(gmdeItemInfo->MDEntryType, m_prevastsOLSCURRItemInfo->MDEntryType, m_prevastsOLSCURRItemInfo->MDEntryTypeLength);
@@ -4516,7 +4555,7 @@ public:
 
 			this->ParsePresenceMap(&(gmdeItemInfo->PresenceMap));
 
-			ReadString_Mandatory(gmdeItemInfo->MDEntryType, &(gmdeItemInfo->MDEntryTypeLength));
+			ReadString_Mandatory_Fixed1(gmdeItemInfo->MDEntryType, &(gmdeItemInfo->MDEntryTypeLength));
 			if(CheckProcessNullString())
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX0;
 			else
@@ -4735,7 +4774,7 @@ public:
 
 			this->ParsePresenceMap(&(gmdeItemInfo->PresenceMap));
 
-			ReadString_Mandatory(gmdeItemInfo->MDEntryType, &(gmdeItemInfo->MDEntryTypeLength));
+			ReadString_Mandatory_Fixed1(gmdeItemInfo->MDEntryType, &(gmdeItemInfo->MDEntryTypeLength));
 			if(CheckProcessNullString())
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX0;
 			else
@@ -4914,11 +4953,11 @@ public:
 			if(CheckProcessNullUInt32())
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX0;
 			else
-				gmdeItemInfo->MDUpdateAction = ReadUInt32_Optional();
+				gmdeItemInfo->MDUpdateAction = ReadUInt32_Optional_Fixed1();
 			if(CheckProcessNullString())
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX1;
 			else
-				ReadString_Optional(gmdeItemInfo->MDEntryType, &(gmdeItemInfo->MDEntryTypeLength));
+				ReadString_Optional_Fixed1(gmdeItemInfo->MDEntryType, &(gmdeItemInfo->MDEntryTypeLength));
 			if(CheckProcessNullString())
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX2;
 			else
@@ -5069,11 +5108,11 @@ public:
 			if(CheckProcessNullUInt32())
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX0;
 			else
-				gmdeItemInfo->MDUpdateAction = ReadUInt32_Optional();
+				gmdeItemInfo->MDUpdateAction = ReadUInt32_Optional_Fixed1();
 			if(CheckProcessNullString())
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX1;
 			else
-				ReadString_Optional(gmdeItemInfo->MDEntryType, &(gmdeItemInfo->MDEntryTypeLength));
+				ReadString_Optional_Fixed1(gmdeItemInfo->MDEntryType, &(gmdeItemInfo->MDEntryTypeLength));
 			if(CheckProcessNullString())
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX2;
 			else
@@ -5203,12 +5242,12 @@ public:
 			if(CheckProcessNullUInt32())
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX0;
 			else
-				gmdeItemInfo->MDUpdateAction = ReadUInt32_Optional();
+				gmdeItemInfo->MDUpdateAction = ReadUInt32_Optional_Fixed1();
 			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX0)) {
 				if(CheckProcessNullString())
 					gmdeItemInfo->NullMap |= NULL_MAP_INDEX1;
 				else
-					ReadString_Optional(gmdeItemInfo->MDEntryType, &(gmdeItemInfo->MDEntryTypeLength));
+					ReadString_Optional_Fixed1(gmdeItemInfo->MDEntryType, &(gmdeItemInfo->MDEntryTypeLength));
 			}
 			else {
 				this->CopyString(gmdeItemInfo->MDEntryType, m_prevastsOLSFONDItemInfo->MDEntryType, m_prevastsOLSFONDItemInfo->MDEntryTypeLength);
@@ -5361,7 +5400,7 @@ public:
 				if(CheckProcessNullUInt32())
 					gmdeItemInfo->NullMap |= NULL_MAP_INDEX0;
 				else
-					gmdeItemInfo->MDUpdateAction = ReadUInt32_Optional();
+					gmdeItemInfo->MDUpdateAction = ReadUInt32_Optional_Fixed1();
 			}
 			else {
 				gmdeItemInfo->MDUpdateAction = this->m_prevastsOLSCURRItemInfo->MDUpdateAction;
@@ -5370,7 +5409,7 @@ public:
 				if(CheckProcessNullString())
 					gmdeItemInfo->NullMap |= NULL_MAP_INDEX1;
 				else
-					ReadString_Optional(gmdeItemInfo->MDEntryType, &(gmdeItemInfo->MDEntryTypeLength));
+					ReadString_Optional_Fixed1(gmdeItemInfo->MDEntryType, &(gmdeItemInfo->MDEntryTypeLength));
 			}
 			else {
 				this->CopyString(gmdeItemInfo->MDEntryType, m_prevastsOLSCURRItemInfo->MDEntryType, m_prevastsOLSCURRItemInfo->MDEntryTypeLength);
@@ -5491,8 +5530,8 @@ public:
 			if(CheckProcessNullUInt32())
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX0;
 			else
-				gmdeItemInfo->MDUpdateAction = ReadUInt32_Optional();
-			ReadString_Mandatory(gmdeItemInfo->MDEntryType, &(gmdeItemInfo->MDEntryTypeLength));
+				gmdeItemInfo->MDUpdateAction = ReadUInt32_Optional_Fixed1();
+			ReadString_Mandatory_Fixed1(gmdeItemInfo->MDEntryType, &(gmdeItemInfo->MDEntryTypeLength));
 			if(CheckProcessNullString())
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX1;
 			else
@@ -5603,8 +5642,8 @@ public:
 			if(CheckProcessNullUInt32())
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX0;
 			else
-				gmdeItemInfo->MDUpdateAction = ReadUInt32_Optional();
-			ReadString_Mandatory(gmdeItemInfo->MDEntryType, &(gmdeItemInfo->MDEntryTypeLength));
+				gmdeItemInfo->MDUpdateAction = ReadUInt32_Optional_Fixed1();
+			ReadString_Mandatory_Fixed1(gmdeItemInfo->MDEntryType, &(gmdeItemInfo->MDEntryTypeLength));
 			if(CheckProcessNullString())
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX1;
 			else

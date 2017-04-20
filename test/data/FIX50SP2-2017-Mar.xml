@@ -45,7 +45,7 @@
 		<decimal name="NetChgPrevDay" id="451" presence="optional"></decimal>
 		<sequence name="GroupMDEntries">
 			<length name="NoMDEntries" id="268"/>
-			<string name="MDEntryType" id="269" presence="optional"></string>
+			<string name="MDEntryType" id="269" presence="optional" fixed_size="1"></string>
 			<string name="MDEntryID" id="278" presence="optional"></string>
 			<uInt32 name="MDEntryDate" id="272" presence="optional"></uInt32>
 			<uInt32 name="MDEntryTime" id="273" presence="optional"></uInt32>
@@ -99,8 +99,8 @@
 		<uInt64 name="SendingTime" id="52"></uInt64>
 		<sequence name="GroupMDEntries">
 			<length name="NoMDEntries" id="268"/>
-			<uInt32 name="MDUpdateAction" id="279" presence="optional"></uInt32>
-			<string name="MDEntryType" id="269" presence="optional"></string>
+			<uInt32 name="MDUpdateAction" id="279" presence="optional" fixed_size="1"></uInt32>
+			<string name="MDEntryType" id="269" presence="optional" fixed_size="1"></string>
 			<string name="MDEntryID" id="278" presence="optional"></string>
 			<int32 name="RptSeq" id="83" presence="optional"></int32>
 			<uInt32 name="MDEntryDate" id="272" presence="optional"></uInt32>
@@ -168,7 +168,7 @@
     	<uInt32 name="AuctionIndicator" id="5509" presence="optional"></uInt32>
 		<sequence name="GroupMDEntries">
 			<length name="NoMDEntries" id="268"/>
-			<string name="MDEntryType" id="269" presence="optional"><copy/></string>
+			<string name="MDEntryType" id="269" presence="optional" fixed_size="1"><copy/></string>
 			<string name="MDEntryID" id="278" presence="optional"></string>
  			<uInt32 name="MDEntryDate" id="272" presence="optional"><copy/></uInt32>
 			<uInt32 name="MDEntryTime" id="273" presence="optional"><copy/></uInt32>
@@ -201,7 +201,7 @@
 		<int32 name="MDSecurityTradingStatus" id="1682" presence="optional"></int32>
 		<sequence name="GroupMDEntries">
 			<length name="NoMDEntries" id="268"/>
-			<string name="MDEntryType" id="269" presence="optional"><copy/></string>
+			<string name="MDEntryType" id="269" presence="optional" fixed_size="1"><copy/></string>
 			<string name="MDEntryID" id="278" presence="optional"></string>
 			<uInt32 name="MDEntryDate" id="272" presence="optional"><copy/></uInt32>
 			<uInt32 name="MDEntryTime" id="273" presence="optional"><copy/></uInt32>
@@ -233,7 +233,7 @@
 		<uInt32 name="AuctionIndicator" id="5509" presence="optional"></uInt32>
 		<sequence name="GroupMDEntries">
 			<length name="NoMDEntries" id="268"/>
-			<string name="MDEntryType" id="269"></string>
+			<string name="MDEntryType" id="269" fixed_size="1"></string>
 			<string name="MDEntryID" id="278" presence="optional"></string>
 			<uInt32 name="MDEntryDate" id="272" presence="optional"><copy/></uInt32>
 			<uInt32 name="MDEntryTime" id="273" presence="optional"><copy/></uInt32>
@@ -274,7 +274,7 @@
 		<int32 name="MDSecurityTradingStatus" id="1682" presence="optional"></int32>
 		<sequence name="GroupMDEntries">
 			<length name="NoMDEntries" id="268"/>
-			<string name="MDEntryType" id="269"></string>
+			<string name="MDEntryType" id="269" fixed_size="1"></string>
 			<string name="MDEntryID" id="278" presence="optional"></string>
 			<uInt32 name="MDEntryDate" id="272" presence="optional"><copy/></uInt32>
 			<uInt32 name="MDEntryTime" id="273" presence="optional"><copy/></uInt32>
@@ -308,8 +308,8 @@
 		<uInt64 name="LastUpdateTime" id="779" presence="optional"></uInt64>
 		<sequence name="GroupMDEntries">
 			<length name="NoMDEntries" id="268"/>
-			<uInt32 name="MDUpdateAction" id="279" presence="optional"></uInt32>
-			<string name="MDEntryType" id="269" presence="optional"></string>
+			<uInt32 name="MDUpdateAction" id="279" presence="optional" fixed_size="1"></uInt32>
+			<string name="MDEntryType" id="269" presence="optional" fixed_size="1"></string>
 			<string name="MDEntryID" id="278" presence="optional"></string>
 			<string name="Symbol" id="55" presence="optional"></string>
 			<int32 name="RptSeq" id="83" presence="optional"></int32>
@@ -355,8 +355,8 @@
 		<uInt64 name="LastUpdateTime" id="779" presence="optional"></uInt64>
 		<sequence name="GroupMDEntries">
 			<length name="NoMDEntries" id="268"/>
-			<uInt32 name="MDUpdateAction" id="279" presence="optional"></uInt32>
-			<string name="MDEntryType" id="269" presence="optional"></string>
+			<uInt32 name="MDUpdateAction" id="279" presence="optional" fixed_size="1"></uInt32>
+			<string name="MDEntryType" id="269" presence="optional" fixed_size="1"></string>
 			<string name="MDEntryID" id="278" presence="optional"></string>
 			<string name="Symbol" id="55" presence="optional"></string>
 			<int32 name="RptSeq" id="83" presence="optional"></int32>
@@ -397,8 +397,8 @@
 		<uInt64 name="SendingTime" id="52"></uInt64>
 		<sequence name="GroupMDEntries">
 			<length name="NoMDEntries" id="268"/>
-			<uInt32 name="MDUpdateAction" id="279" presence="optional"></uInt32>
-			<string name="MDEntryType" id="269" presence="optional"><copy/></string>
+			<uInt32 name="MDUpdateAction" id="279" presence="optional" fixed_size="1"></uInt32>
+			<string name="MDEntryType" id="269" presence="optional" fixed_size="1"><copy/></string>
 			<string name="MDEntryID" id="278" presence="optional"></string>
 			<string name="Symbol" id="55" presence="optional"><copy/></string>
 			<int32 name="RptSeq" id="83" presence="optional"></int32>
@@ -426,8 +426,8 @@
 		<uInt64 name="SendingTime" id="52"></uInt64>
 		<sequence name="GroupMDEntries">
 			<length name="NoMDEntries" id="268"/>
-			<uInt32 name="MDUpdateAction" id="279" presence="optional"><copy/></uInt32>
-			<string name="MDEntryType" id="269" presence="optional"><copy/></string>
+			<uInt32 name="MDUpdateAction" id="279" presence="optional" fixed_size="1"><copy/></uInt32>
+			<string name="MDEntryType" id="269" presence="optional" fixed_size="1"><copy/></string>
 			<string name="MDEntryID" id="278" presence="optional"></string>
 			<string name="Symbol" id="55" presence="optional"><copy/></string>
 			<int32 name="RptSeq" id="83" presence="optional"></int32>
@@ -453,8 +453,8 @@
 		<uInt64 name="SendingTime" id="52"></uInt64>
 		<sequence name="GroupMDEntries">
 			<length name="NoMDEntries" id="268"/>
-			<uInt32 name="MDUpdateAction" id="279" presence="optional"></uInt32>
-			<string name="MDEntryType" id="269"></string>
+			<uInt32 name="MDUpdateAction" id="279" presence="optional" fixed_size="1"></uInt32>
+			<string name="MDEntryType" id="269" fixed_size="1"></string>
 			<string name="MDEntryID" id="278" presence="optional"></string>
 			<string name="Symbol" id="55" presence="optional"></string>
 			<int32 name="RptSeq" id="83" presence="optional"></int32>
@@ -491,8 +491,8 @@
 		<uInt64 name="SendingTime" id="52"></uInt64>
 		<sequence name="GroupMDEntries">
 			<length name="NoMDEntries" id="268"/>
-			<uInt32 name="MDUpdateAction" id="279" presence="optional"></uInt32>
-			<string name="MDEntryType" id="269"></string>
+			<uInt32 name="MDUpdateAction" id="279" presence="optional" fixed_size="1"></uInt32>
+			<string name="MDEntryType" id="269" fixed_size="1"></string>
 			<string name="MDEntryID" id="278" presence="optional"></string>
 			<string name="Symbol" id="55" presence="optional"></string>
 			<int32 name="RptSeq" id="83" presence="optional"></int32>

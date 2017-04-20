@@ -1968,7 +1968,7 @@ namespace prebuild {
 		}
 
 		private  bool IsKnownAttribute (XmlAttribute attribute) {
-			return attribute.Name == "name" || attribute.Name == "id" || attribute.Name == "presence" || attribute.Name == "charset";
+			return attribute.Name == "name" || attribute.Name == "id" || attribute.Name == "presence" || attribute.Name == "charset" || attribute.Name == "fixed_size";
 		}
 		StructureInfo GetOriginalStruct(XmlNode field) {
 			if(field.ParentNode == null || field.ParentNode.Attributes["name"] == null)
@@ -2710,6 +2710,12 @@ namespace prebuild {
 			}
 		}
 
+		private string GetMethodName(XmlNode field, string method) {
+			if (!HasAttribute (field, "fixed_size"))
+				return method;
+			return method + "_Fixed" + field.Attributes ["fixed_size"].Value.ToString ();
+		}
+
 		private  void ParseUint32Value (StructureInfo str, XmlNode value, string info, string tabString) {
 			if(ShouldWriteNullCheckCode(value)) {
 				WriteLine(tabString + "if(CheckProcessNullUInt32())");
@@ -2720,21 +2726,14 @@ namespace prebuild {
 			if(ShouldSkipField(value)) {
 				WriteLine(tabString + "SkipToNextField(); // " + Name(value));
 			} else {
-				if(HasOptionalPresence(value))
-					WriteLine(tabString + info + "->" + Name(value) + " = ReadUInt32_Optional();");
-				else
-					WriteLine(tabString + info + "->" + Name(value) + " = ReadUInt32_Mandatory();");
+				if (HasOptionalPresence (value)) {
+					WriteLine (tabString + info + "->" + Name (value) + " = " + GetMethodName(value, "ReadUInt32_Optional") + "();");
+				} else {
+					WriteLine (tabString + info + "->" + Name (value) + " = " + GetMethodName(value, "ReadUInt32_Mandatory") + "();");
+				}
 			}
 			if(ShouldWriteNullCheckCode(value)) {
 				tabString = tabString.Substring(1);
-				/*
-				if(HasOperators(value)) {
-					WriteLine(tabString + "else {");
-					tabString += "\t";
-					WriteUint32ValueOperatorsCode(str, value, info, tabString);
-					tabString = tabString.Substring(1);
-					WriteLine(tabString + "}");
-				}*/
 			}
 		}
 
@@ -2749,9 +2748,9 @@ namespace prebuild {
 				WriteLine(tabString + "SkipToNextField(); //" + Name(value));
 			} else {
 				if(HasOptionalPresence(value))
-					WriteLine(tabString + "ReadString_Optional(" + info + "->" + Name(value) + ", &(" + info + "->" + Name(value) + "Length)" + ");");
+					WriteLine(tabString + GetMethodName(value, "ReadString_Optional") + "(" + info + "->" + Name(value) + ", &(" + info + "->" + Name(value) + "Length)" + ");");
 				else
-					WriteLine(tabString + "ReadString_Mandatory(" + info + "->" + Name(value) + ", &(" + info + "->" + Name(value) + "Length)" + ");");
+					WriteLine(tabString + GetMethodName(value, "ReadString_Mandatory") + "(" + info + "->" + Name(value) + ", &(" + info + "->" + Name(value) + "Length)" + ");");
 			}
 			if(ShouldWriteNullCheckCode(value)) {
 				tabString = tabString.Substring(1);

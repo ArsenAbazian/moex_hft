@@ -344,7 +344,7 @@ public:
 	LinkedPointer<AstsGenericItemInfo>							*Pointer;
 	AutoAllocatePointerList<AstsGenericItemInfo>							*Allocator;
 	bool							Used;
-	char							MDEntryType[4];			// id=269  presence=optional  
+	char							MDEntryType[4];			// id=269  presence=optional  fixed_size=1  
 	char							MDEntryID[16];			// id=278  presence=optional  
 	UINT32							MDEntryDate;			// id=272  presence=optional  
 	UINT32							MDEntryTime;			// id=273  presence=optional  
@@ -385,12 +385,12 @@ public:
 	UINT32							BuyBackDate;			// id=5559  presence=optional  
 	char							CXFlag[4];			// id=5154  presence=optional  
 	char							TradingSessionSubID[4];			// id=625  presence=optional  
-	UINT32							MDUpdateAction;			// id=279  presence=optional  
+	UINT32							MDUpdateAction;			// id=279  presence=optional  fixed_size=1  
 	INT32							RptSeq;			// id=83  presence=optional  
 	char							Symbol[16];			// id=55  presence=optional  
 	Decimal							NetChgPrevDay;			// id=451  presence=optional  
 	char							TradingSessionID[16];			// id=336  presence=optional  
-	int								MDEntryTypeLength;			// id=269  presence=optional  
+	int								MDEntryTypeLength;			// id=269  presence=optional  fixed_size=1  
 	int								MDEntryIDLength;			// id=278  presence=optional  
 	int								QuoteConditionLength;			// id=276  presence=optional  
 	int								TradeConditionLength;			// id=277  presence=optional  
@@ -487,7 +487,7 @@ public:
 	LinkedPointer<AstsOLSFONDItemInfo>							*Pointer;
 	AutoAllocatePointerList<AstsOLSFONDItemInfo>							*Allocator;
 	bool							Used;
-	char							MDEntryType[4];			// id=269  presence=optional    copy
+	char							MDEntryType[4];			// id=269  presence=optional  fixed_size=1    copy
 	char							MDEntryID[16];			// id=278  presence=optional  
 	UINT32							MDEntryDate;			// id=272  presence=optional    copy
 	UINT32							MDEntryTime;			// id=273  presence=optional    copy
@@ -499,11 +499,11 @@ public:
 	char							OrdType[4];			// id=40  presence=optional    copy
 	Decimal							TotalVolume;			// id=5791  presence=optional    copy
 	char							TradingSessionSubID[4];			// id=625  presence=optional    copy
-	UINT32							MDUpdateAction;			// id=279  presence=optional  
+	UINT32							MDUpdateAction;			// id=279  presence=optional  fixed_size=1  
 	char							Symbol[16];			// id=55  presence=optional    copy
 	INT32							RptSeq;			// id=83  presence=optional  
 	char							TradingSessionID[16];			// id=336  presence=optional    copy
-	int								MDEntryTypeLength;			// id=269  presence=optional    copy
+	int								MDEntryTypeLength;			// id=269  presence=optional  fixed_size=1    copy
 	int								MDEntryIDLength;			// id=278  presence=optional  
 	int								OrderStatusLength;			// id=10505  presence=optional    copy
 	int								OrdTypeLength;			// id=40  presence=optional    copy
@@ -593,7 +593,7 @@ public:
 	LinkedPointer<AstsOLSCURRItemInfo>							*Pointer;
 	AutoAllocatePointerList<AstsOLSCURRItemInfo>							*Allocator;
 	bool							Used;
-	char							MDEntryType[4];			// id=269  presence=optional    copy
+	char							MDEntryType[4];			// id=269  presence=optional  fixed_size=1    copy
 	char							MDEntryID[16];			// id=278  presence=optional  
 	UINT32							MDEntryDate;			// id=272  presence=optional    copy
 	UINT32							MDEntryTime;			// id=273  presence=optional    copy
@@ -602,11 +602,11 @@ public:
 	Decimal							MDEntrySize;			// id=271  presence=optional    copy
 	char							OrderStatus[4];			// id=10505  presence=optional    copy
 	char							TradingSessionSubID[4];			// id=625  presence=optional    copy
-	UINT32							MDUpdateAction;			// id=279  presence=optional    copy
+	UINT32							MDUpdateAction;			// id=279  presence=optional  fixed_size=1    copy
 	char							Symbol[16];			// id=55  presence=optional    copy
 	INT32							RptSeq;			// id=83  presence=optional  
 	char							TradingSessionID[16];			// id=336  presence=optional    copy
-	int								MDEntryTypeLength;			// id=269  presence=optional    copy
+	int								MDEntryTypeLength;			// id=269  presence=optional  fixed_size=1    copy
 	int								MDEntryIDLength;			// id=278  presence=optional  
 	int								OrderStatusLength;			// id=10505  presence=optional    copy
 	int								TradingSessionSubIDLength;			// id=625  presence=optional    copy
@@ -694,7 +694,7 @@ public:
 	LinkedPointer<AstsTLSFONDItemInfo>							*Pointer;
 	AutoAllocatePointerList<AstsTLSFONDItemInfo>							*Allocator;
 	bool							Used;
-	char							MDEntryType[4];			// id=269  
+	char							MDEntryType[4];			// id=269  fixed_size=1  
 	char							MDEntryID[16];			// id=278  presence=optional  
 	UINT32							MDEntryDate;			// id=272  presence=optional    copy
 	UINT32							MDEntryTime;			// id=273  presence=optional    copy
@@ -714,11 +714,11 @@ public:
 	UINT32							BuyBackDate;			// id=5559  presence=optional    copy
 	char							TradingSessionSubID[4];			// id=625  presence=optional    copy
 	char							RefOrderID[16];			// id=1080  presence=optional    copy
-	UINT32							MDUpdateAction;			// id=279  presence=optional  
+	UINT32							MDUpdateAction;			// id=279  presence=optional  fixed_size=1  
 	char							Symbol[16];			// id=55  presence=optional  
 	INT32							RptSeq;			// id=83  presence=optional  
 	char							TradingSessionID[16];			// id=336  presence=optional  
-	int								MDEntryTypeLength;			// id=269  
+	int								MDEntryTypeLength;			// id=269  fixed_size=1  
 	int								MDEntryIDLength;			// id=278  presence=optional  
 	int								OrderSideLength;			// id=10504  presence=optional    copy
 	int								SettleTypeLength;			// id=5459  presence=optional    copy
@@ -809,7 +809,7 @@ public:
 	LinkedPointer<AstsTLSCURRItemInfo>							*Pointer;
 	AutoAllocatePointerList<AstsTLSCURRItemInfo>							*Allocator;
 	bool							Used;
-	char							MDEntryType[4];			// id=269  
+	char							MDEntryType[4];			// id=269  fixed_size=1  
 	char							MDEntryID[16];			// id=278  presence=optional  
 	UINT32							MDEntryDate;			// id=272  presence=optional    copy
 	UINT32							MDEntryTime;			// id=273  presence=optional    copy
@@ -827,11 +827,11 @@ public:
 	UINT32							BuyBackDate;			// id=5559  presence=optional    copy
 	char							TradingSessionSubID[4];			// id=625  presence=optional    copy
 	char							RefOrderID[16];			// id=1080  presence=optional    copy
-	UINT32							MDUpdateAction;			// id=279  presence=optional  
+	UINT32							MDUpdateAction;			// id=279  presence=optional  fixed_size=1  
 	char							Symbol[16];			// id=55  presence=optional  
 	INT32							RptSeq;			// id=83  presence=optional  
 	char							TradingSessionID[16];			// id=336  presence=optional  
-	int								MDEntryTypeLength;			// id=269  
+	int								MDEntryTypeLength;			// id=269  fixed_size=1  
 	int								MDEntryIDLength;			// id=278  presence=optional  
 	int								OrderSideLength;			// id=10504  presence=optional    copy
 	int								SettleTypeLength;			// id=5459  presence=optional    copy
