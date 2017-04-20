@@ -5,6 +5,7 @@
 #include "Fix/FixProtocolManager.h"
 #include "Managers/LogManager.h"
 #include "ConnectionParameters.h"
+#include "Managers/CommandManager.h"
 
 #define MARKET_INFO_CAPACITY 10
 
@@ -25,7 +26,8 @@ class Robot {
     bool                    m_allowCurrMarket;
     bool                    m_allowFortsMarket;
 
-    FixProtocolManager *protocolManager;
+    FixProtocolManager      *protocolManager;
+    CommandManager          *m_commandManager;
 
     MarketInfo* FindMarket(const char* name) {
         for(int i = 0; i < this->marketCount; i++) {
@@ -56,6 +58,10 @@ class Robot {
     bool MainLoopForts();
 
     inline bool DoWorkAtom() {
+#ifdef ALLOW_COMMAND_MANAGER
+        if(!this->m_commandManager->DoWorkAtom())
+            return false;
+#endif
         return true;
     }
     inline bool Working() {

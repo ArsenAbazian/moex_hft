@@ -11,6 +11,9 @@ Robot::Robot() {
     this->m_allowFondMarket = true;
     for(int i = 0; i < MarketDataGroupId::mdgidCount; i++)
         this->m_allowFortsFeeds[i] = false;
+#ifdef ALLOW_COMMAND_MANAGER
+    this->m_commandManager = new CommandManager(8282);
+#endif
 }
 
 Robot::~Robot() {
@@ -39,6 +42,11 @@ bool Robot::ConnectMarkets() {
     if(this->AllowFortsMarket())
         this->FortsChannel()->Prepare();
 
+#ifdef ALLOW_COMMAND_MANAGER
+    if(!this->m_commandManager->SetUp())
+        return false;
+#endif
+
     DefaultLogManager::Default->EndLog(true);
     return true;
 }
@@ -48,6 +56,10 @@ bool Robot::DisconnectMarkets() {
     for (int i = 0; i < this->marketCount; i++) {
         success &= this->markets[i]->Disconnect();
     }
+#ifdef ALLOW_COMMAND_MANAGER
+    if(!this->m_commandManager->TearDown())
+        return false;
+#endif
     return success;
 }
 

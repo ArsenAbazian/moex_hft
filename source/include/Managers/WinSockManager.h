@@ -310,6 +310,40 @@ public:
 		this->m_connected = true;
 		return true;
 	}
+    inline bool StartUdpServer(int port) {
+#ifdef TEST
+        return true;
+#else
+        this->m_connectionType = WinSockConnectionType::wsUDP;
+        this->m_socket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+        if (this->m_socket < 0) {
+            //DefaultLogManager::Default->EndLogErrNo(false, strerror(errno));
+            return false;
+        }
+        this->UpdatePoll();
+
+        int flag = 1;
+        if(setsockopt(this->m_socket,SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &flag, sizeof(flag)) < 0) {
+            //DefaultLogManager::Default->EndLogErrNo(false, strerror(errno));
+            return false;
+        }
+
+        memset(&(this->m_adress), 0, sizeof(sockaddr_in));
+        this->m_adress.sin_family = AF_INET;
+        this->m_adress.sin_addr.s_addr = htonl(INADDR_ANY);
+        this->m_adress.sin_port = htons((unsigned short)port);
+
+        if(bind(this->m_socket, (struct sockaddr*)&(this->m_adress), sizeof(this->m_adress)) < 0) {
+            //DefaultLogManager::Default->EndLogErrNo(false, strerror(errno));
+            return false;
+        }
+        this->PrintSocketInfo();
+
+        //DefaultLogManager::Default->EndLog(true);
+        this->m_connected = true;
+        return true;
+#endif
+    }
 	inline bool ConnectMulticast(char *sourceIp, char *groupIp, unsigned short groupPort) {
 #ifdef TEST
         return true;
@@ -416,6 +450,20 @@ public:
 #endif
         return true;
     }
+    inline bool SendTo(struct sockaddr *target, socklen_t targetLength, unsigned char *buffer, int size) {
+        this->m_sendBytes = buffer;
+        this->m_sendSize = size;
+#ifdef TEST
+        this->m_sendSizeActual = this->m_sendSize;
+        this->SendTest();
+#else
+        this->m_sendSizeActual = sendto(this->m_socket, this->m_sendBytes, size, 0, target, targetLength);
+        if(this->m_sendSizeActual != this->m_sendSize) {
+            return false;
+        }
+#endif
+        return true;
+    }
 
 //#ifdef TEST
     void SendTest();
@@ -448,6 +496,7 @@ public:
         if(this->m_connectionType == WinSockConnectionType::wsTCP)
             return this->RecvFromTCP(buffer, senderAddr, length);
         return this->RecvUDP(buffer, senderAddr, length);
+#endif
     }
 
 	inline bool Recv(unsigned char *buffer) {
@@ -493,7 +542,7 @@ public:
     }
     inline bool RecvUDP(unsigned char *buffer) {
         this->m_recvBytes = buffer;
-        this->m_clientAddrLength = sizeof(struct sockaddr);
+        this->m_senderAddrLength = sizeof(struct sockaddr);
         this->m_recvSize = recvfrom(this->m_socket, this->m_recvBytes, 8192, 0, (struct sockaddr *)this->m_senderAddr, &(this->m_senderAddrLength));
         if(this->m_recvSize > 0) {
             this->OnRecv();

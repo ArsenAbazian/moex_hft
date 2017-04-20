@@ -139,7 +139,7 @@ typedef enum _Counters {
 }Counters;
 
 class ProgramStatistics {
-    int             *m_counts;
+	int             *m_counts;
     bool            *m_changed;
     const char     **m_names;
     int             m_itemsCount;
@@ -320,6 +320,17 @@ public:
             }
         }
     }
+
+	inline int WriteToBuffer(unsigned char *buffer) {
+		int index = 0;
+		for(int i = 0; i < this->m_itemsCount; i++) {
+			if (!this->m_changed[i]) continue;
+			*((unsigned short*)(buffer + index)) = (unsigned short)i;
+			*((int*)(buffer + index + sizeof(unsigned short))) = this->m_counts[i];
+			index += sizeof(unsigned short) + sizeof(int);
+		}
+		return index;
+	}
 
     inline void ResetFlags() {
         memset(this->m_changed, 0, sizeof(bool) * this->m_itemsCount);

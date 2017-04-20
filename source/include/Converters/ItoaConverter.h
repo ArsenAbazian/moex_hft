@@ -303,6 +303,21 @@ public:
     inline int FromStringFastUnsigned(const char *buffer, int count) {
         const char *digitStart = buffer;
         int result = 0;
+
+        if (count >= 3) {
+            result = ItoaConverter::charDigit3[((*(int *) buffer) & 0x00ffffff) - 0x00303030];
+            count -= 3;
+            buffer += 3;
+        }
+        else if(count >= 2) {
+            result = ItoaConverter::charDigit2[((*(int*)buffer) & 0x0000ffff) - 0x00003030];
+            count -= 2;
+            buffer += 2;
+        }
+        else {
+            return *buffer - D0;
+        }
+
         while(count > 0) {
             if (count >= 3) {
                 result = result * 1000 + ItoaConverter::charDigit3[((*(int *) buffer) & 0x00ffffff) - 0x00303030];
@@ -315,7 +330,7 @@ public:
                 buffer += 2;
             }
             else {
-                result = result * 10 + *digitStart - D0;
+                result = result * 10 + *buffer - D0;
                 break;
             }
         }

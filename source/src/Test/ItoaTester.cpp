@@ -18,7 +18,14 @@ void ItoaTester::Test() {
 
     char buf[100];
     int newValue, newValueFast;
-        
+
+    for(int i = 0; i < 10000001; i++) {
+        sprintf(buf, "%d", i);
+        newValue = conv.FromStringFastUnsigned(buf, strlen(buf));
+        if(newValue != i)
+            throw;
+    }
+
     for (int i = 0; i < 1000; i++) { 
         buf[conv.Convert(buf, i, 3)] = '\0';
         newValue = conv.From3SymbolUnsigned(buf);
