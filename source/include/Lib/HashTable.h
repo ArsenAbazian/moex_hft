@@ -205,9 +205,6 @@ public:
     }
 
     inline LinkedPointer<HashTableItemInfo>* Add(void *owner, void *object, UINT64 hash, const char *stringId, int length) {
-        if(hash > 1000000) {
-            hash = this->CalcHash(stringId, length);
-        }
         LinkedPointer<HashTableItemInfo> *ptr = this->AddPointer(hash);
         HashTableItemInfo *info = ptr->Data();
         info->m_owner = owner;
