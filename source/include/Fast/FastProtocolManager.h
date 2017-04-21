@@ -2073,11 +2073,17 @@ public:
 	inline UINT32 ReadUInt32_Mandatory_Fixed1() {
 		UINT32 result = (UINT32)*(this->currentPos) & 0x7f;
 		this->currentPos++;
-#ifdef COLLECT_STATISTICS_FAST
-		ProgramStatistics::Total->Inc(Counters::cReadUInt32Mandatory_1Byte);
-#endif
 		return result;
 	}
+
+    inline UINT32 ReadUInt32_Mandatory_Predict1() {
+        UINT32 result = (UINT32)*(this->currentPos);
+        if((result & 0x80) == 0x80) {
+            this->currentPos++;
+            return result & 0x7f;
+        }
+        return ReadUInt32_Mandatory();
+    }
 
     inline UINT32 ReadUInt32_Mandatory() {
         INT32 result = 0;
@@ -2154,6 +2160,10 @@ public:
 	inline UINT32 ReadUInt32_Optional_Fixed1() {
 		return ReadUInt32_Mandatory_Fixed1() - 1;
 	}
+
+    inline UINT32 ReadUInt32_Optional_Predict1() {
+        return ReadUInt32_Mandatory_Predict1() - 1;
+    }
 
     inline UINT32 ReadUInt32_Optional() {
         return ReadUInt32_Mandatory() - 1;
@@ -3942,7 +3952,7 @@ public:
 		else
 			ReadDecimal_Optional(&(info->NetChgPrevDay));
 
-		info->GroupMDEntriesCount = ReadUInt32_Mandatory();
+		info->GroupMDEntriesCount = ReadUInt32_Mandatory_Predict1();
 		AstsGenericItemInfo* gmdeItemInfo = NULL;
 
 		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
@@ -4125,7 +4135,7 @@ public:
 		info->MsgSeqNum = ReadUInt32_Mandatory();
 		info->SendingTime = ReadUInt64_Mandatory();
 
-		info->GroupMDEntriesCount = ReadUInt32_Mandatory();
+		info->GroupMDEntriesCount = ReadUInt32_Mandatory_Predict1();
 		AstsGenericItemInfo* gmdeItemInfo = NULL;
 
 		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
@@ -4358,7 +4368,7 @@ public:
 		else
 			info->AuctionIndicator = ReadUInt32_Optional();
 
-		info->GroupMDEntriesCount = ReadUInt32_Mandatory();
+		info->GroupMDEntriesCount = ReadUInt32_Mandatory_Predict1();
 		AstsOLSFONDItemInfo* gmdeItemInfo = NULL;
 
 		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
@@ -4513,7 +4523,7 @@ public:
 		else
 			info->MDSecurityTradingStatus = ReadInt32_Optional();
 
-		info->GroupMDEntriesCount = ReadUInt32_Mandatory();
+		info->GroupMDEntriesCount = ReadUInt32_Mandatory_Predict1();
 		AstsOLSCURRItemInfo* gmdeItemInfo = NULL;
 
 		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
@@ -4644,7 +4654,7 @@ public:
 		else
 			info->AuctionIndicator = ReadUInt32_Optional();
 
-		info->GroupMDEntriesCount = ReadUInt32_Mandatory();
+		info->GroupMDEntriesCount = ReadUInt32_Mandatory_Predict1();
 		AstsTLSFONDItemInfo* gmdeItemInfo = NULL;
 
 		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
@@ -4863,7 +4873,7 @@ public:
 		else
 			info->MDSecurityTradingStatus = ReadInt32_Optional();
 
-		info->GroupMDEntriesCount = ReadUInt32_Mandatory();
+		info->GroupMDEntriesCount = ReadUInt32_Mandatory_Predict1();
 		AstsTLSCURRItemInfo* gmdeItemInfo = NULL;
 
 		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
@@ -5042,7 +5052,7 @@ public:
 		else
 			info->LastUpdateTime = ReadUInt64_Optional();
 
-		info->GroupMDEntriesCount = ReadUInt32_Mandatory();
+		info->GroupMDEntriesCount = ReadUInt32_Mandatory_Predict1();
 		AstsGenericItemInfo* gmdeItemInfo = NULL;
 
 		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
@@ -5197,7 +5207,7 @@ public:
 		else
 			info->LastUpdateTime = ReadUInt64_Optional();
 
-		info->GroupMDEntriesCount = ReadUInt32_Mandatory();
+		info->GroupMDEntriesCount = ReadUInt32_Mandatory_Predict1();
 		AstsGenericItemInfo* gmdeItemInfo = NULL;
 
 		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
@@ -5328,7 +5338,7 @@ public:
 		info->MsgSeqNum = ReadUInt32_Mandatory();
 		info->SendingTime = ReadUInt64_Mandatory();
 
-		info->GroupMDEntriesCount = ReadUInt32_Mandatory();
+		info->GroupMDEntriesCount = ReadUInt32_Mandatory_Predict1();
 		AstsOLSFONDItemInfo* gmdeItemInfo = NULL;
 
 		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
@@ -5485,7 +5495,7 @@ public:
 		info->MsgSeqNum = ReadUInt32_Mandatory();
 		info->SendingTime = ReadUInt64_Mandatory();
 
-		info->GroupMDEntriesCount = ReadUInt32_Mandatory();
+		info->GroupMDEntriesCount = ReadUInt32_Mandatory_Predict1();
 		AstsOLSCURRItemInfo* gmdeItemInfo = NULL;
 
 		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
@@ -5619,7 +5629,7 @@ public:
 		info->MsgSeqNum = ReadUInt32_Mandatory();
 		info->SendingTime = ReadUInt64_Mandatory();
 
-		info->GroupMDEntriesCount = ReadUInt32_Mandatory();
+		info->GroupMDEntriesCount = ReadUInt32_Mandatory_Predict1();
 		AstsTLSFONDItemInfo* gmdeItemInfo = NULL;
 
 		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
@@ -5731,7 +5741,7 @@ public:
 		info->MsgSeqNum = ReadUInt32_Mandatory();
 		info->SendingTime = ReadUInt64_Mandatory();
 
-		info->GroupMDEntriesCount = ReadUInt32_Mandatory();
+		info->GroupMDEntriesCount = ReadUInt32_Mandatory_Predict1();
 		AstsTLSCURRItemInfo* gmdeItemInfo = NULL;
 
 		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
@@ -5912,7 +5922,7 @@ public:
 			info->NullMap |= NULL_MAP_INDEX18;
 		}
 		else
-			info->GroupInstrAttribCount = ReadUInt32_Optional();
+			info->GroupInstrAttribCount = ReadUInt32_Optional_Predict1();
 		AstsSecurityDefinitionGroupInstrAttribItemInfo* giaItemInfo = NULL;
 
 		for(int i = 0; i < info->GroupInstrAttribCount; i++) {
@@ -5936,7 +5946,7 @@ public:
 			info->NullMap |= NULL_MAP_INDEX20;
 		}
 		else
-			info->MarketSegmentGrpCount = ReadUInt32_Optional();
+			info->MarketSegmentGrpCount = ReadUInt32_Optional_Predict1();
 		AstsSecurityDefinitionMarketSegmentGrpItemInfo* msgItemInfo = NULL;
 
 		for(int i = 0; i < info->MarketSegmentGrpCount; i++) {
@@ -5952,7 +5962,7 @@ public:
 				msgItemInfo->NullMap |= NULL_MAP_INDEX1;
 			}
 			else
-				msgItemInfo->TradingSessionRulesGrpCount = ReadUInt32_Optional();
+				msgItemInfo->TradingSessionRulesGrpCount = ReadUInt32_Optional_Predict1();
 			AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo* tsrgItemInfo = NULL;
 
 			for(int i = 0; i < msgItemInfo->TradingSessionRulesGrpCount; i++) {
@@ -6634,7 +6644,7 @@ public:
 		else
 			info->LastFragment = ReadUInt32_Optional();
 
-		info->MDEntriesCount = ReadUInt32_Mandatory();
+		info->MDEntriesCount = ReadUInt32_Mandatory_Predict1();
 		FortsDefaultSnapshotMessageMDEntriesItemInfo* mdeItemInfo = NULL;
 
 		for(int i = 0; i < info->MDEntriesCount; i++) {
@@ -6748,7 +6758,7 @@ public:
 		else
 			ReadString_Optional(info->SecurityGroup, &(info->SecurityGroupLength));
 
-		info->MDEntriesCount = ReadUInt32_Mandatory();
+		info->MDEntriesCount = ReadUInt32_Mandatory_Predict1();
 		FortsDefaultSnapshotMessageMDEntriesItemInfo* mdeItemInfo = NULL;
 
 		for(int i = 0; i < info->MDEntriesCount; i++) {
@@ -6873,7 +6883,7 @@ public:
 		else
 			ReadDecimal_Optional(&(info->Volatility));
 
-		info->MDFeedTypesCount = ReadUInt32_Mandatory();
+		info->MDFeedTypesCount = ReadUInt32_Mandatory_Predict1();
 		FortsSecurityDefinitionMDFeedTypesItemInfo* mdftItemInfo = NULL;
 
 		for(int i = 0; i < info->MDFeedTypesCount; i++) {
@@ -6897,7 +6907,7 @@ public:
 			info->NullMap |= NULL_MAP_INDEX12;
 		}
 		else
-			info->UnderlyingsCount = ReadUInt32_Optional();
+			info->UnderlyingsCount = ReadUInt32_Optional_Predict1();
 		FortsSecurityDefinitionUnderlyingsItemInfo* uItemInfo = NULL;
 
 		for(int i = 0; i < info->UnderlyingsCount; i++) {
@@ -6957,7 +6967,7 @@ public:
 			info->NullMap |= NULL_MAP_INDEX23;
 		}
 		else
-			info->InstrumentLegsCount = ReadUInt32_Optional();
+			info->InstrumentLegsCount = ReadUInt32_Optional_Predict1();
 		FortsSecurityDefinitionInstrumentLegsItemInfo* ilItemInfo = NULL;
 
 		for(int i = 0; i < info->InstrumentLegsCount; i++) {
@@ -6975,7 +6985,7 @@ public:
 			info->NullMap |= NULL_MAP_INDEX24;
 		}
 		else
-			info->InstrumentAttributesCount = ReadUInt32_Optional();
+			info->InstrumentAttributesCount = ReadUInt32_Optional_Predict1();
 		FortsSecurityDefinitionInstrumentAttributesItemInfo* iaItemInfo = NULL;
 
 		for(int i = 0; i < info->InstrumentAttributesCount; i++) {
@@ -7000,7 +7010,7 @@ public:
 			info->NullMap |= NULL_MAP_INDEX27;
 		}
 		else
-			info->EvntGrpCount = ReadUInt32_Optional();
+			info->EvntGrpCount = ReadUInt32_Optional_Predict1();
 		FortsSecurityDefinitionEvntGrpItemInfo* egItemInfo = NULL;
 
 		for(int i = 0; i < info->EvntGrpCount; i++) {
@@ -7161,7 +7171,7 @@ public:
 		else
 			ReadString_Optional(info->MarketSegmentID, &(info->MarketSegmentIDLength));
 
-		info->NewsTextCount = ReadUInt32_Mandatory();
+		info->NewsTextCount = ReadUInt32_Mandatory_Predict1();
 		FortsNewsNewsTextItemInfo* ntItemInfo = NULL;
 
 		for(int i = 0; i < info->NewsTextCount; i++) {
@@ -7182,7 +7192,7 @@ public:
 		info->SendingTime = ReadUInt64_Mandatory();
 		info->LastFragment = ReadUInt32_Mandatory();
 
-		info->MDEntriesCount = ReadUInt32_Mandatory();
+		info->MDEntriesCount = ReadUInt32_Mandatory_Predict1();
 		FortsOrdersLogMDEntriesItemInfo* mdeItemInfo = NULL;
 
 		for(int i = 0; i < info->MDEntriesCount; i++) {
@@ -7264,7 +7274,7 @@ public:
 		else
 			info->SecurityID = ReadUInt64_Optional();
 
-		info->MDEntriesCount = ReadUInt32_Mandatory();
+		info->MDEntriesCount = ReadUInt32_Mandatory_Predict1();
 		FortsOrdersBookMDEntriesItemInfo* mdeItemInfo = NULL;
 
 		for(int i = 0; i < info->MDEntriesCount; i++) {
