@@ -3116,6 +3116,36 @@ public:
         return value;
     }
 
+	inline UINT64 ReadUInt64_Mandatory_Predict9() {
+		UINT64 memory = *(UINT64*)this->currentPos;
+		unsigned char val9 = *(this->currentPos + 8);
+		if((memory & 0x8080808080808080) == 0 && (val9 & 0x80) == 0x80) {
+			UINT64 result = memory & 0x7f;
+
+			memory >>= 8; result <<= 7;
+			result |= memory & 0x7f; // 2 byte
+			memory >>= 8; result <<= 7;
+			result |= memory & 0x7f; // 3 byte
+			memory >>= 8; result <<= 7;
+			result |= memory & 0x7f; // 4 byte
+			memory >>= 8; result <<= 7;
+			result |= memory & 0x7f; // 5 byte
+			memory >>= 8; result <<= 7;
+			result |= memory & 0x7f; // 6 byte
+			memory >>= 8; result <<= 7;
+			result |= memory & 0x7f; // 7 byte
+			memory >>= 8; result <<= 7;
+			result |= memory & 0x7f; // 8 byte
+
+			result <<= 7;
+			result |= val9 & 0x7f;
+
+			this->currentPos += 9;
+			return result;
+		}
+		return ReadUInt64_Mandatory();
+	}
+
     inline UINT64 ReadUInt64_Mandatory() {
         UINT64 result;
         UINT64 memory = *(UINT64*)this->currentPos;
@@ -3883,7 +3913,7 @@ public:
 
 		ReadString_Mandatory(info->TargetCompID, &(info->TargetCompIDLength));
 		info->MsgSeqNum = ReadUInt32_Mandatory();
-		info->SendingTime = ReadUInt64_Mandatory();
+		info->SendingTime = ReadUInt64_Mandatory_Predict9();
 		info->HeartBtInt = ReadInt32_Mandatory();
 		if(CheckProcessNullString())
 			info->NullMap |= NULL_MAP_INDEX0;
@@ -3903,7 +3933,7 @@ public:
 
 		ReadString_Mandatory(info->TargetCompID, &(info->TargetCompIDLength));
 		info->MsgSeqNum = ReadUInt32_Mandatory();
-		info->SendingTime = ReadUInt64_Mandatory();
+		info->SendingTime = ReadUInt64_Mandatory_Predict9();
 		if(CheckProcessNullString())
 			info->NullMap |= NULL_MAP_INDEX0;
 		else
@@ -3916,7 +3946,7 @@ public:
 		info->PresenceMap = this->m_presenceMap;
 
 		info->MsgSeqNum = ReadUInt32_Mandatory();
-		info->SendingTime = ReadUInt64_Mandatory();
+		info->SendingTime = ReadUInt64_Mandatory_Predict9();
 		if(CheckProcessNullString())
 			info->NullMap |= NULL_MAP_INDEX0;
 		else
@@ -4121,7 +4151,7 @@ public:
 			if(CheckProcessNullString())
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX40;
 			else
-				ReadString_Optional(gmdeItemInfo->TradingSessionSubID, &(gmdeItemInfo->TradingSessionSubIDLength));
+				ReadString_Optional_Predict12(gmdeItemInfo->TradingSessionSubID, &(gmdeItemInfo->TradingSessionSubIDLength));
 			this->m_prevastsGenericItemInfo = gmdeItemInfo;
 		}
 
@@ -4133,7 +4163,7 @@ public:
 		info->PresenceMap = this->m_presenceMap;
 
 		info->MsgSeqNum = ReadUInt32_Mandatory();
-		info->SendingTime = ReadUInt64_Mandatory();
+		info->SendingTime = ReadUInt64_Mandatory_Predict9();
 
 		info->GroupMDEntriesCount = ReadUInt32_Mandatory_Predict1();
 		AstsGenericItemInfo* gmdeItemInfo = NULL;
@@ -4324,7 +4354,7 @@ public:
 			if(CheckProcessNullString())
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX45;
 			else
-				ReadString_Optional(gmdeItemInfo->TradingSessionSubID, &(gmdeItemInfo->TradingSessionSubIDLength));
+				ReadString_Optional_Predict12(gmdeItemInfo->TradingSessionSubID, &(gmdeItemInfo->TradingSessionSubIDLength));
 			this->m_prevastsGenericItemInfo = gmdeItemInfo;
 		}
 
@@ -4336,7 +4366,7 @@ public:
 		info->PresenceMap = this->m_presenceMap;
 
 		info->MsgSeqNum = ReadUInt32_Mandatory();
-		info->SendingTime = ReadUInt64_Mandatory();
+		info->SendingTime = ReadUInt64_Mandatory_Predict9();
 		if(CheckProcessNullUInt32())
 			info->NullMap |= NULL_MAP_INDEX0;
 		else
@@ -4478,7 +4508,7 @@ public:
 				if(CheckProcessNullString())
 					gmdeItemInfo->NullMap |= NULL_MAP_INDEX11;
 				else
-					ReadString_Optional(gmdeItemInfo->TradingSessionSubID, &(gmdeItemInfo->TradingSessionSubIDLength));
+					ReadString_Optional_Predict12(gmdeItemInfo->TradingSessionSubID, &(gmdeItemInfo->TradingSessionSubIDLength));
 			}
 			else {
 				this->CopyString(gmdeItemInfo->TradingSessionSubID, m_prevastsOLSFONDItemInfo->TradingSessionSubID, m_prevastsOLSFONDItemInfo->TradingSessionSubIDLength);
@@ -4495,7 +4525,7 @@ public:
 		info->PresenceMap = this->m_presenceMap;
 
 		info->MsgSeqNum = ReadUInt32_Mandatory();
-		info->SendingTime = ReadUInt64_Mandatory();
+		info->SendingTime = ReadUInt64_Mandatory_Predict9();
 		if(CheckProcessNullUInt32())
 			info->NullMap |= NULL_MAP_INDEX0;
 		else
@@ -4605,7 +4635,7 @@ public:
 				if(CheckProcessNullString())
 					gmdeItemInfo->NullMap |= NULL_MAP_INDEX8;
 				else
-					ReadString_Optional(gmdeItemInfo->TradingSessionSubID, &(gmdeItemInfo->TradingSessionSubIDLength));
+					ReadString_Optional_Predict12(gmdeItemInfo->TradingSessionSubID, &(gmdeItemInfo->TradingSessionSubIDLength));
 			}
 			else {
 				this->CopyString(gmdeItemInfo->TradingSessionSubID, m_prevastsOLSCURRItemInfo->TradingSessionSubID, m_prevastsOLSCURRItemInfo->TradingSessionSubIDLength);
@@ -4622,7 +4652,7 @@ public:
 		info->PresenceMap = this->m_presenceMap;
 
 		info->MsgSeqNum = ReadUInt32_Mandatory();
-		info->SendingTime = ReadUInt64_Mandatory();
+		info->SendingTime = ReadUInt64_Mandatory_Predict9();
 		if(CheckProcessNullUInt32())
 			info->NullMap |= NULL_MAP_INDEX0;
 		else
@@ -4818,7 +4848,7 @@ public:
 				if(CheckProcessNullString())
 					gmdeItemInfo->NullMap |= NULL_MAP_INDEX17;
 				else
-					ReadString_Optional(gmdeItemInfo->TradingSessionSubID, &(gmdeItemInfo->TradingSessionSubIDLength));
+					ReadString_Optional_Predict12(gmdeItemInfo->TradingSessionSubID, &(gmdeItemInfo->TradingSessionSubIDLength));
 			}
 			else {
 				this->CopyString(gmdeItemInfo->TradingSessionSubID, m_prevastsTLSFONDItemInfo->TradingSessionSubID, m_prevastsTLSFONDItemInfo->TradingSessionSubIDLength);
@@ -4845,7 +4875,7 @@ public:
 		info->PresenceMap = this->m_presenceMap;
 
 		info->MsgSeqNum = ReadUInt32_Mandatory();
-		info->SendingTime = ReadUInt64_Mandatory();
+		info->SendingTime = ReadUInt64_Mandatory_Predict9();
 		if(CheckProcessNullUInt32())
 			info->NullMap |= NULL_MAP_INDEX0;
 		else
@@ -5019,7 +5049,7 @@ public:
 				if(CheckProcessNullString())
 					gmdeItemInfo->NullMap |= NULL_MAP_INDEX15;
 				else
-					ReadString_Optional(gmdeItemInfo->TradingSessionSubID, &(gmdeItemInfo->TradingSessionSubIDLength));
+					ReadString_Optional_Predict12(gmdeItemInfo->TradingSessionSubID, &(gmdeItemInfo->TradingSessionSubIDLength));
 			}
 			else {
 				this->CopyString(gmdeItemInfo->TradingSessionSubID, m_prevastsTLSCURRItemInfo->TradingSessionSubID, m_prevastsTLSCURRItemInfo->TradingSessionSubIDLength);
@@ -5046,7 +5076,7 @@ public:
 		info->PresenceMap = this->m_presenceMap;
 
 		info->MsgSeqNum = ReadUInt32_Mandatory();
-		info->SendingTime = ReadUInt64_Mandatory();
+		info->SendingTime = ReadUInt64_Mandatory_Predict9();
 		if(CheckProcessNullUInt64())
 			info->NullMap |= NULL_MAP_INDEX0;
 		else
@@ -5189,7 +5219,7 @@ public:
 			if(CheckProcessNullString())
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX32;
 			else
-				ReadString_Optional(gmdeItemInfo->TradingSessionSubID, &(gmdeItemInfo->TradingSessionSubIDLength));
+				ReadString_Optional_Predict12(gmdeItemInfo->TradingSessionSubID, &(gmdeItemInfo->TradingSessionSubIDLength));
 			this->m_prevastsGenericItemInfo = gmdeItemInfo;
 		}
 
@@ -5201,7 +5231,7 @@ public:
 		info->PresenceMap = this->m_presenceMap;
 
 		info->MsgSeqNum = ReadUInt32_Mandatory();
-		info->SendingTime = ReadUInt64_Mandatory();
+		info->SendingTime = ReadUInt64_Mandatory_Predict9();
 		if(CheckProcessNullUInt64())
 			info->NullMap |= NULL_MAP_INDEX0;
 		else
@@ -5324,7 +5354,7 @@ public:
 			if(CheckProcessNullString())
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX27;
 			else
-				ReadString_Optional(gmdeItemInfo->TradingSessionSubID, &(gmdeItemInfo->TradingSessionSubIDLength));
+				ReadString_Optional_Predict12(gmdeItemInfo->TradingSessionSubID, &(gmdeItemInfo->TradingSessionSubIDLength));
 			this->m_prevastsGenericItemInfo = gmdeItemInfo;
 		}
 
@@ -5336,7 +5366,7 @@ public:
 		info->PresenceMap = this->m_presenceMap;
 
 		info->MsgSeqNum = ReadUInt32_Mandatory();
-		info->SendingTime = ReadUInt64_Mandatory();
+		info->SendingTime = ReadUInt64_Mandatory_Predict9();
 
 		info->GroupMDEntriesCount = ReadUInt32_Mandatory_Predict1();
 		AstsOLSFONDItemInfo* gmdeItemInfo = NULL;
@@ -5493,7 +5523,7 @@ public:
 		info->PresenceMap = this->m_presenceMap;
 
 		info->MsgSeqNum = ReadUInt32_Mandatory();
-		info->SendingTime = ReadUInt64_Mandatory();
+		info->SendingTime = ReadUInt64_Mandatory_Predict9();
 
 		info->GroupMDEntriesCount = ReadUInt32_Mandatory_Predict1();
 		AstsOLSCURRItemInfo* gmdeItemInfo = NULL;
@@ -5610,7 +5640,7 @@ public:
 				if(CheckProcessNullString())
 					gmdeItemInfo->NullMap |= NULL_MAP_INDEX12;
 				else
-					ReadString_Optional(gmdeItemInfo->TradingSessionSubID, &(gmdeItemInfo->TradingSessionSubIDLength));
+					ReadString_Optional_Predict12(gmdeItemInfo->TradingSessionSubID, &(gmdeItemInfo->TradingSessionSubIDLength));
 			}
 			else {
 				this->CopyString(gmdeItemInfo->TradingSessionSubID, m_prevastsOLSCURRItemInfo->TradingSessionSubID, m_prevastsOLSCURRItemInfo->TradingSessionSubIDLength);
@@ -5627,7 +5657,7 @@ public:
 		info->PresenceMap = this->m_presenceMap;
 
 		info->MsgSeqNum = ReadUInt32_Mandatory();
-		info->SendingTime = ReadUInt64_Mandatory();
+		info->SendingTime = ReadUInt64_Mandatory_Predict9();
 
 		info->GroupMDEntriesCount = ReadUInt32_Mandatory_Predict1();
 		AstsTLSFONDItemInfo* gmdeItemInfo = NULL;
@@ -5723,7 +5753,7 @@ public:
 			if(CheckProcessNullString())
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX21;
 			else
-				ReadString_Optional(gmdeItemInfo->TradingSessionSubID, &(gmdeItemInfo->TradingSessionSubIDLength));
+				ReadString_Optional_Predict12(gmdeItemInfo->TradingSessionSubID, &(gmdeItemInfo->TradingSessionSubIDLength));
 			if(CheckProcessNullString())
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX22;
 			else
@@ -5739,7 +5769,7 @@ public:
 		info->PresenceMap = this->m_presenceMap;
 
 		info->MsgSeqNum = ReadUInt32_Mandatory();
-		info->SendingTime = ReadUInt64_Mandatory();
+		info->SendingTime = ReadUInt64_Mandatory_Predict9();
 
 		info->GroupMDEntriesCount = ReadUInt32_Mandatory_Predict1();
 		AstsTLSCURRItemInfo* gmdeItemInfo = NULL;
@@ -5827,7 +5857,7 @@ public:
 			if(CheckProcessNullString())
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX19;
 			else
-				ReadString_Optional(gmdeItemInfo->TradingSessionSubID, &(gmdeItemInfo->TradingSessionSubIDLength));
+				ReadString_Optional_Predict12(gmdeItemInfo->TradingSessionSubID, &(gmdeItemInfo->TradingSessionSubIDLength));
 			if(CheckProcessNullString())
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX20;
 			else
@@ -5843,7 +5873,7 @@ public:
 		info->PresenceMap = this->m_presenceMap;
 
 		info->MsgSeqNum = ReadUInt32_Mandatory();
-		info->SendingTime = ReadUInt64_Mandatory();
+		info->SendingTime = ReadUInt64_Mandatory_Predict9();
 		if(CheckProcessNullInt32())
 			info->NullMap |= NULL_MAP_INDEX0;
 		else
@@ -5972,7 +6002,7 @@ public:
 				if(CheckProcessNullString())
 					tsrgItemInfo->NullMap |= NULL_MAP_INDEX0;
 				else
-					ReadString_Optional(tsrgItemInfo->TradingSessionSubID, &(tsrgItemInfo->TradingSessionSubIDLength));
+					ReadString_Optional_Predict12(tsrgItemInfo->TradingSessionSubID, &(tsrgItemInfo->TradingSessionSubIDLength));
 				if(CheckProcessNullInt32())
 					tsrgItemInfo->NullMap |= NULL_MAP_INDEX1;
 				else
@@ -6071,7 +6101,7 @@ public:
 		info->PresenceMap = this->m_presenceMap;
 
 		info->MsgSeqNum = ReadUInt32_Mandatory();
-		info->SendingTime = ReadUInt64_Mandatory();
+		info->SendingTime = ReadUInt64_Mandatory_Predict9();
 		ReadString_Mandatory(info->Symbol, &(info->SymbolLength));
 		if(CheckProcessNullString())
 			info->NullMap |= NULL_MAP_INDEX0;
@@ -6080,7 +6110,7 @@ public:
 		if(CheckProcessNullString())
 			info->NullMap |= NULL_MAP_INDEX1;
 		else
-			ReadString_Optional(info->TradingSessionSubID, &(info->TradingSessionSubIDLength));
+			ReadString_Optional_Predict12(info->TradingSessionSubID, &(info->TradingSessionSubIDLength));
 		if(CheckProcessNullInt32())
 			info->NullMap |= NULL_MAP_INDEX2;
 		else
@@ -6097,7 +6127,7 @@ public:
 		info->PresenceMap = this->m_presenceMap;
 
 		info->MsgSeqNum = ReadUInt32_Mandatory();
-		info->SendingTime = ReadUInt64_Mandatory();
+		info->SendingTime = ReadUInt64_Mandatory_Predict9();
 		info->TradSesStatus = ReadInt32_Mandatory();
 		if(CheckProcessNullString())
 			info->NullMap |= NULL_MAP_INDEX0;
@@ -6112,7 +6142,7 @@ public:
 		info->PresenceMap = this->m_presenceMap;
 
 		info->MsgSeqNum = ReadUInt32_Mandatory();
-		info->SendingTime = ReadUInt64_Mandatory();
+		info->SendingTime = ReadUInt64_Mandatory_Predict9();
 		this->m_prevastsHeartbeatInfo = info;
 		return info;
 	}
@@ -6122,7 +6152,7 @@ public:
 		info->TemplateId = this->m_templateId;
 
 		SkipToNextField(); // MsgSeqNum
-		info->SendingTime = ReadUInt64_Mandatory();
+		info->SendingTime = ReadUInt64_Mandatory_Predict9();
 		if(CheckProcessNullString())
 			info->NullMap |= NULL_MAP_INDEX0;
 		else
@@ -6149,7 +6179,7 @@ public:
 		info->TemplateId = this->m_templateId;
 
 		SkipToNextField(); // MsgSeqNum
-		info->SendingTime = ReadUInt64_Mandatory();
+		info->SendingTime = ReadUInt64_Mandatory_Predict9();
 		if(CheckProcessNullUInt32())
 			info->NullMap |= NULL_MAP_INDEX0;
 		else
@@ -6177,7 +6207,7 @@ public:
 		info->TemplateId = this->m_templateId;
 
 		SkipToNextField(); // MsgSeqNum
-		info->SendingTime = ReadUInt64_Mandatory();
+		info->SendingTime = ReadUInt64_Mandatory_Predict9();
 		if(CheckProcessNullUInt32())
 			info->NullMap |= NULL_MAP_INDEX0;
 		else
@@ -6205,7 +6235,7 @@ public:
 		info->TemplateId = this->m_templateId;
 
 		SkipToNextField(); // MsgSeqNum
-		info->SendingTime = ReadUInt64_Mandatory();
+		info->SendingTime = ReadUInt64_Mandatory_Predict9();
 		if(CheckProcessNullUInt32())
 			info->NullMap |= NULL_MAP_INDEX0;
 		else
@@ -6233,7 +6263,7 @@ public:
 		info->TemplateId = this->m_templateId;
 
 		SkipToNextField(); // MsgSeqNum
-		info->SendingTime = ReadUInt64_Mandatory();
+		info->SendingTime = ReadUInt64_Mandatory_Predict9();
 		if(CheckProcessNullUInt32())
 			info->NullMap |= NULL_MAP_INDEX0;
 		else

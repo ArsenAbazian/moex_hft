@@ -264,7 +264,7 @@ public:
 	char							SenderCompID[32];			// id=49    constant has constant value = MOEX
 	char							TargetCompID[32];			// id=56  
 	UINT32							MsgSeqNum;			// id=34  
-	UINT64							SendingTime;			// id=52  
+	UINT64							SendingTime;			// id=52  predict=9  
 	INT32							HeartBtInt;			// id=108  
 	char							Username[16];			// id=553  presence=optional  
 	char							Password[16];			// id=554  presence=optional  
@@ -309,7 +309,7 @@ public:
 	char							SenderCompID[32];			// id=49    constant has constant value = MOEX
 	char							TargetCompID[32];			// id=56  
 	UINT32							MsgSeqNum;			// id=34  
-	UINT64							SendingTime;			// id=52  
+	UINT64							SendingTime;			// id=52  predict=9  
 	char							Text[512];			// id=58  presence=optional  
 	int								MessageTypeLength;			// id=35    constant has constant value = 5
 	int								BeginStringLength;			// id=8    constant has constant value = FIXT.1.1
@@ -384,7 +384,7 @@ public:
 	Decimal							BuyBackPx;			// id=5558  presence=optional  
 	UINT32							BuyBackDate;			// id=5559  presence=optional  
 	char							CXFlag[4];			// id=5154  presence=optional  
-	char							TradingSessionSubID[4];			// id=625  presence=optional  
+	char							TradingSessionSubID[4];			// id=625  presence=optional  predict=12  
 	UINT32							MDUpdateAction;			// id=279  presence=optional  fixed_size=1  
 	INT32							RptSeq;			// id=83  presence=optional  
 	char							Symbol[16];			// id=55  presence=optional  
@@ -400,7 +400,7 @@ public:
 	int								OrderSideLength;			// id=10504  presence=optional  
 	int								OrderStatusLength;			// id=10505  presence=optional  fixed_size=1  
 	int								CXFlagLength;			// id=5154  presence=optional  
-	int								TradingSessionSubIDLength;			// id=625  presence=optional  
+	int								TradingSessionSubIDLength;			// id=625  presence=optional  predict=12  
 	int								SymbolLength;			// id=55  presence=optional  
 	int								TradingSessionIDLength;			// id=336  presence=optional  
 
@@ -436,7 +436,7 @@ public:
 	char							ApplVerID[16];			// id=1128    constant has constant value = 9
 	char							SenderCompID[32];			// id=49    constant has constant value = MOEX
 	UINT32							MsgSeqNum;			// id=34  
-	UINT64							SendingTime;			// id=52  
+	UINT64							SendingTime;			// id=52  predict=9  
 	char							TradingSessionID[16];			// id=336  presence=optional  
 	char							Symbol[16];			// id=55  
 	UINT32							LastMsgSeqNumProcessed;			// id=369  presence=optional  
@@ -498,7 +498,7 @@ public:
 	char							OrderStatus[4];			// id=10505  presence=optional  fixed_size=1    copy
 	char							OrdType[4];			// id=40  presence=optional    copy
 	Decimal							TotalVolume;			// id=5791  presence=optional    copy
-	char							TradingSessionSubID[4];			// id=625  presence=optional    copy
+	char							TradingSessionSubID[4];			// id=625  presence=optional  predict=12    copy
 	UINT32							MDUpdateAction;			// id=279  presence=optional  fixed_size=1  
 	char							Symbol[16];			// id=55  presence=optional    copy
 	INT32							RptSeq;			// id=83  presence=optional  
@@ -507,7 +507,7 @@ public:
 	int								MDEntryIDLength;			// id=278  presence=optional  predict=67Other  
 	int								OrderStatusLength;			// id=10505  presence=optional  fixed_size=1    copy
 	int								OrdTypeLength;			// id=40  presence=optional    copy
-	int								TradingSessionSubIDLength;			// id=625  presence=optional    copy
+	int								TradingSessionSubIDLength;			// id=625  presence=optional  predict=12    copy
 	int								SymbolLength;			// id=55  presence=optional    copy
 	int								TradingSessionIDLength;			// id=336  presence=optional    copy
 
@@ -543,7 +543,7 @@ public:
 	char							ApplVerID[16];			// id=1128    constant has constant value = 9
 	char							SenderCompID[32];			// id=49    constant has constant value = MOEX
 	UINT32							MsgSeqNum;			// id=34  
-	UINT64							SendingTime;			// id=52  
+	UINT64							SendingTime;			// id=52  predict=9  
 	UINT32							LastMsgSeqNumProcessed;			// id=369  presence=optional  
 	INT32							RptSeq;			// id=83  
 	UINT32							LastFragment;			// id=893  presence=optional  
@@ -601,7 +601,7 @@ public:
 	Decimal							MDEntryPx;			// id=270  presence=optional    copy
 	Decimal							MDEntrySize;			// id=271  presence=optional    copy
 	char							OrderStatus[4];			// id=10505  presence=optional  fixed_size=1    copy
-	char							TradingSessionSubID[4];			// id=625  presence=optional    copy
+	char							TradingSessionSubID[4];			// id=625  presence=optional  predict=12    copy
 	UINT32							MDUpdateAction;			// id=279  presence=optional  fixed_size=1    copy
 	char							Symbol[16];			// id=55  presence=optional    copy
 	INT32							RptSeq;			// id=83  presence=optional  
@@ -609,7 +609,7 @@ public:
 	int								MDEntryTypeLength;			// id=269  presence=optional  fixed_size=1    copy
 	int								MDEntryIDLength;			// id=278  presence=optional  predict=67Other  
 	int								OrderStatusLength;			// id=10505  presence=optional  fixed_size=1    copy
-	int								TradingSessionSubIDLength;			// id=625  presence=optional    copy
+	int								TradingSessionSubIDLength;			// id=625  presence=optional  predict=12    copy
 	int								SymbolLength;			// id=55  presence=optional    copy
 	int								TradingSessionIDLength;			// id=336  presence=optional    copy
 
@@ -645,7 +645,7 @@ public:
 	char							ApplVerID[16];			// id=1128    constant has constant value = 9
 	char							SenderCompID[32];			// id=49    constant has constant value = MOEX
 	UINT32							MsgSeqNum;			// id=34  
-	UINT64							SendingTime;			// id=52  
+	UINT64							SendingTime;			// id=52  predict=9  
 	UINT32							LastMsgSeqNumProcessed;			// id=369  presence=optional  
 	INT32							RptSeq;			// id=83  
 	UINT32							LastFragment;			// id=893  presence=optional  
@@ -712,7 +712,7 @@ public:
 	Decimal							RepoToPx;			// id=5677  presence=optional    copy
 	Decimal							BuyBackPx;			// id=5558  presence=optional    copy
 	UINT32							BuyBackDate;			// id=5559  presence=optional    copy
-	char							TradingSessionSubID[4];			// id=625  presence=optional    copy
+	char							TradingSessionSubID[4];			// id=625  presence=optional  predict=12    copy
 	char							RefOrderID[16];			// id=1080  presence=optional    copy
 	UINT32							MDUpdateAction;			// id=279  presence=optional  fixed_size=1  
 	char							Symbol[16];			// id=55  presence=optional  
@@ -722,7 +722,7 @@ public:
 	int								MDEntryIDLength;			// id=278  presence=optional  predict=67Other  
 	int								OrderSideLength;			// id=10504  presence=optional    copy
 	int								SettleTypeLength;			// id=5459  presence=optional    copy
-	int								TradingSessionSubIDLength;			// id=625  presence=optional    copy
+	int								TradingSessionSubIDLength;			// id=625  presence=optional  predict=12    copy
 	int								RefOrderIDLength;			// id=1080  presence=optional    copy
 	int								SymbolLength;			// id=55  presence=optional  
 	int								TradingSessionIDLength;			// id=336  presence=optional  
@@ -759,7 +759,7 @@ public:
 	char							ApplVerID[16];			// id=1128    constant has constant value = 9
 	char							SenderCompID[32];			// id=49    constant has constant value = MOEX
 	UINT32							MsgSeqNum;			// id=34  
-	UINT64							SendingTime;			// id=52  
+	UINT64							SendingTime;			// id=52  predict=9  
 	UINT32							LastMsgSeqNumProcessed;			// id=369  presence=optional  
 	INT32							RptSeq;			// id=83  
 	UINT32							LastFragment;			// id=893  presence=optional  
@@ -825,7 +825,7 @@ public:
 	Decimal							RepoToPx;			// id=5677  presence=optional    copy
 	Decimal							BuyBackPx;			// id=5558  presence=optional    copy
 	UINT32							BuyBackDate;			// id=5559  presence=optional    copy
-	char							TradingSessionSubID[4];			// id=625  presence=optional    copy
+	char							TradingSessionSubID[4];			// id=625  presence=optional  predict=12    copy
 	char							RefOrderID[16];			// id=1080  presence=optional    copy
 	UINT32							MDUpdateAction;			// id=279  presence=optional  fixed_size=1  
 	char							Symbol[16];			// id=55  presence=optional  
@@ -835,7 +835,7 @@ public:
 	int								MDEntryIDLength;			// id=278  presence=optional  predict=67Other  
 	int								OrderSideLength;			// id=10504  presence=optional    copy
 	int								SettleTypeLength;			// id=5459  presence=optional    copy
-	int								TradingSessionSubIDLength;			// id=625  presence=optional    copy
+	int								TradingSessionSubIDLength;			// id=625  presence=optional  predict=12    copy
 	int								RefOrderIDLength;			// id=1080  presence=optional    copy
 	int								SymbolLength;			// id=55  presence=optional  
 	int								TradingSessionIDLength;			// id=336  presence=optional  
@@ -872,7 +872,7 @@ public:
 	char							ApplVerID[16];			// id=1128    constant has constant value = 9
 	char							SenderCompID[32];			// id=49    constant has constant value = MOEX
 	UINT32							MsgSeqNum;			// id=34  
-	UINT64							SendingTime;			// id=52  
+	UINT64							SendingTime;			// id=52  predict=9  
 	UINT32							LastMsgSeqNumProcessed;			// id=369  presence=optional  
 	INT32							RptSeq;			// id=83  
 	UINT32							LastFragment;			// id=893  presence=optional  
@@ -953,11 +953,11 @@ public:
 	AutoAllocatePointerList<AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo>							*Allocator;
 	bool							Used;
 	char							TradingSessionID[16];			// id=336  
-	char							TradingSessionSubID[4];			// id=625  presence=optional  
+	char							TradingSessionSubID[4];			// id=625  presence=optional  predict=12  
 	INT32							SecurityTradingStatus;			// id=326  presence=optional  
 	INT32							OrderNote;			// id=9680  presence=optional  
 	int								TradingSessionIDLength;			// id=336  
-	int								TradingSessionSubIDLength;			// id=625  presence=optional  
+	int								TradingSessionSubIDLength;			// id=625  presence=optional  predict=12  
 
 	AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo() {
 		memset(this, 0, sizeof(AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo));
@@ -1026,7 +1026,7 @@ public:
 	char							BeginString[16];			// id=8    constant has constant value = FIXT.1.1
 	char							SenderCompID[32];			// id=49    constant has constant value = MOEX
 	UINT32							MsgSeqNum;			// id=34    increment
-	UINT64							SendingTime;			// id=52  
+	UINT64							SendingTime;			// id=52  predict=9  
 	char							MessageEncoding[16];			// id=347    default
 	INT32							TotNumReports;			// id=911  presence=optional  
 	char							Symbol[16];			// id=55  presence=optional  
@@ -1130,10 +1130,10 @@ public:
 	char							BeginString[16];			// id=8    constant has constant value = FIXT.1.1
 	char							SenderCompID[32];			// id=49    constant has constant value = MOEX
 	UINT32							MsgSeqNum;			// id=34  
-	UINT64							SendingTime;			// id=52  
+	UINT64							SendingTime;			// id=52  predict=9  
 	char							Symbol[16];			// id=55  
 	char							TradingSessionID[16];			// id=336  presence=optional  
-	char							TradingSessionSubID[4];			// id=625  presence=optional  
+	char							TradingSessionSubID[4];			// id=625  presence=optional  predict=12  
 	INT32							SecurityTradingStatus;			// id=326  presence=optional  
 	UINT32							AuctionIndicator;			// id=5509  presence=optional  
 	int								MessageTypeLength;			// id=35    constant has constant value = f
@@ -1142,7 +1142,7 @@ public:
 	int								SenderCompIDLength;			// id=49    constant has constant value = MOEX
 	int								SymbolLength;			// id=55  
 	int								TradingSessionIDLength;			// id=336  presence=optional  
-	int								TradingSessionSubIDLength;			// id=625  presence=optional  
+	int								TradingSessionSubIDLength;			// id=625  presence=optional  predict=12  
 
 	AstsSecurityStatusInfo() {
 		memset(this, 0, sizeof(AstsSecurityStatusInfo));
@@ -1176,7 +1176,7 @@ public:
 	char							BeginString[16];			// id=8    constant has constant value = FIXT.1.1
 	char							SenderCompID[32];			// id=49    constant has constant value = MOEX
 	UINT32							MsgSeqNum;			// id=34  
-	UINT64							SendingTime;			// id=52  
+	UINT64							SendingTime;			// id=52  predict=9  
 	INT32							TradSesStatus;			// id=340  
 	char							Text[512];			// id=58  presence=optional  
 	char							TradingSessionID[16];			// id=336  
@@ -1218,7 +1218,7 @@ public:
 	char							BeginString[16];			// id=8    constant has constant value = FIXT.1.1
 	char							SenderCompID[32];			// id=49    constant has constant value = MOEX
 	UINT32							MsgSeqNum;			// id=34  
-	UINT64							SendingTime;			// id=52  
+	UINT64							SendingTime;			// id=52  predict=9  
 	int								MessageTypeLength;			// id=35    constant has constant value = 0
 	int								BeginStringLength;			// id=8    constant has constant value = FIXT.1.1
 	int								SenderCompIDLength;			// id=49    constant has constant value = MOEX
@@ -1255,7 +1255,7 @@ public:
 	char							BeginString[16];			// id=8    constant has constant value = FIXT.1.1
 	char							SenderCompID[32];			// id=49    constant has constant value = MOEX
 	UINT32							MsgSeqNum;			// id=34  
-	UINT64							SendingTime;			// id=52  
+	UINT64							SendingTime;			// id=52  predict=9  
 	AstsGenericItemInfo* GroupMDEntries[256];
 	int								MessageTypeLength;			// id=35    constant has constant value = X
 	int								ApplVerIDLength;			// id=1128    constant has constant value = 9
@@ -1299,7 +1299,7 @@ public:
 	char							BeginString[16];			// id=8    constant has constant value = FIXT.1.1
 	char							SenderCompID[32];			// id=49    constant has constant value = MOEX
 	UINT32							MsgSeqNum;			// id=34  
-	UINT64							SendingTime;			// id=52  
+	UINT64							SendingTime;			// id=52  predict=9  
 	UINT64							LastUpdateTime;			// id=779  presence=optional  
 	AstsGenericItemInfo* GroupMDEntries[256];
 	int								MessageTypeLength;			// id=35    constant has constant value = X
@@ -1344,7 +1344,7 @@ public:
 	char							BeginString[16];			// id=8    constant has constant value = FIXT.1.1
 	char							SenderCompID[32];			// id=49    constant has constant value = MOEX
 	UINT32							MsgSeqNum;			// id=34  
-	UINT64							SendingTime;			// id=52  
+	UINT64							SendingTime;			// id=52  predict=9  
 	UINT64							LastUpdateTime;			// id=779  presence=optional  
 	AstsGenericItemInfo* GroupMDEntries[256];
 	int								MessageTypeLength;			// id=35    constant has constant value = X
@@ -1389,7 +1389,7 @@ public:
 	char							BeginString[16];			// id=8    constant has constant value = FIXT.1.1
 	char							SenderCompID[32];			// id=49    constant has constant value = MOEX
 	UINT32							MsgSeqNum;			// id=34  
-	UINT64							SendingTime;			// id=52  
+	UINT64							SendingTime;			// id=52  predict=9  
 	AstsOLSFONDItemInfo* GroupMDEntries[256];
 	int								MessageTypeLength;			// id=35    constant has constant value = X
 	int								ApplVerIDLength;			// id=1128    constant has constant value = 9
@@ -1433,7 +1433,7 @@ public:
 	char							BeginString[16];			// id=8    constant has constant value = FIXT.1.1
 	char							SenderCompID[32];			// id=49    constant has constant value = MOEX
 	UINT32							MsgSeqNum;			// id=34  
-	UINT64							SendingTime;			// id=52  
+	UINT64							SendingTime;			// id=52  predict=9  
 	AstsOLSCURRItemInfo* GroupMDEntries[256];
 	int								MessageTypeLength;			// id=35    constant has constant value = X
 	int								ApplVerIDLength;			// id=1128    constant has constant value = 9
@@ -1477,7 +1477,7 @@ public:
 	char							BeginString[16];			// id=8    constant has constant value = FIXT.1.1
 	char							SenderCompID[32];			// id=49    constant has constant value = MOEX
 	UINT32							MsgSeqNum;			// id=34  
-	UINT64							SendingTime;			// id=52  
+	UINT64							SendingTime;			// id=52  predict=9  
 	AstsTLSFONDItemInfo* GroupMDEntries[256];
 	int								MessageTypeLength;			// id=35    constant has constant value = X
 	int								ApplVerIDLength;			// id=1128    constant has constant value = 9
@@ -1521,7 +1521,7 @@ public:
 	char							BeginString[16];			// id=8    constant has constant value = FIXT.1.1
 	char							SenderCompID[32];			// id=49    constant has constant value = MOEX
 	UINT32							MsgSeqNum;			// id=34  
-	UINT64							SendingTime;			// id=52  
+	UINT64							SendingTime;			// id=52  predict=9  
 	AstsTLSCURRItemInfo* GroupMDEntries[256];
 	int								MessageTypeLength;			// id=35    constant has constant value = X
 	int								ApplVerIDLength;			// id=1128    constant has constant value = 9

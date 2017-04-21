@@ -105,13 +105,13 @@ public:
     inline UINT64 CalcHash(const char *stringId, int length) {
         if(length == 0)
             return 0;
-        UINT64 res = this->m_converter->FromStringFastUnsigned(stringId, length);
+        UINT64 res = this->m_converter->FromStringFastUnsignedPredict67(stringId, length);
         this->m_lastHash = res;
         return this->CalcHash(res);
     }
 
     inline UINT64 CalcHash(UINT64 m_id) {
-        if(m_id > HashTable::m_itemsCount)
+        if(m_id >= HashTable::m_itemsCount)
             this->m_lastHash = m_id % HashTable::m_itemsCount;
         else
             this->m_lastHash = m_id;

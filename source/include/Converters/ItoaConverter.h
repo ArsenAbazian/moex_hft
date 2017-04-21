@@ -300,6 +300,21 @@ public:
         *outValue = result;
         return buffer - start;
     }
+    inline int FromStringFastUnsignedPredict67(const char *buffer, int count) {
+        if(count == 6) {
+            int result = 1000 * ItoaConverter::charDigit3[((*(int *) buffer) & 0x00ffffff) - 0x00303030];
+            buffer += 3;
+            return result + ItoaConverter::charDigit3[((*(int *) buffer) & 0x00ffffff) - 0x00303030];
+        }
+        else if(count == 7) {
+            int result = 10000 * ItoaConverter::charDigit3[((*(int *) buffer) & 0x00ffffff) - 0x00303030];
+            buffer += 3;
+            result += 10 * ItoaConverter::charDigit3[((*(int *) buffer) & 0x00ffffff) - 0x00303030];
+            buffer += 3;
+            return result + (*buffer) - D0;
+        }
+        return FromStringFastUnsigned(buffer, count);
+    }
     inline int FromStringFastUnsigned(const char *buffer, int count) {
         const char *digitStart = buffer;
         int result = 0;

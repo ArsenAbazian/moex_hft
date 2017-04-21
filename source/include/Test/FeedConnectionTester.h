@@ -21,6 +21,7 @@
 #include "SecurityStatusTester.h"
 #include "HistoricalReplayTester.h"
 #include "FortsOrderBookTester.h"
+#include "HashTableTester.h"
 
 class TestFeedMessage{
 public:
@@ -858,20 +859,24 @@ public:
         RobotSettings::Default->MarketDataMaxEntriesCount = 32 * 10;
         RobotSettings::Default->MDEntryQueueItemsCount = 100;
 
+        PointerListTester *pt = new PointerListTester();
+        pt->Test();
+        delete pt;
+
+        HashTableTester *htt = new HashTableTester();
+        htt->Test();
+        delete htt;
+
+        SymbolManagerTester *ht = new SymbolManagerTester();
+        ht->Test();
+        delete ht;
+
         TradeTesterFond *ttFond = new TradeTesterFond();
         ttFond->Test();
         delete ttFond;
         TradeTesterCurr *ttCurr = new TradeTesterCurr();
         ttCurr->Test();
         delete ttCurr;
-
-        PointerListTester *pt = new PointerListTester();
-        pt->Test();
-        delete pt;
-
-        SymbolManagerTester *ht = new SymbolManagerTester();
-        ht->Test();
-        delete ht;
 
         OrderTesterCurr *otCurr = new OrderTesterCurr();
         otCurr->Test();

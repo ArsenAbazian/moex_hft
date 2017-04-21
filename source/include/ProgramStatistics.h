@@ -130,11 +130,11 @@ typedef enum _Counters {
 	cReadUInt64Mandatory_4Byte = 115, // read u64m 4 byte
 	cReadUInt64Mandatory_5Byte = 116, // read u64m 5 byte
 	cReadUInt64Mandatory_6Byte = 117, // read u64m 6 byte
-	cReadUInt64Mandatory_7Byte = 118, // read u64m 6 byte
-	cReadUInt64Mandatory_8Byte = 119, // read u64m 6 byte
-	cReadUInt64Mandatory_9Byte = 120, // read u64m 6 byte
-	cReadUInt64Mandatory_10Byte = 121, // read u64m 6 byte
-	cReadUInt64Mandatory_11Byte = 122, // read u64m 6 byte
+	cReadUInt64Mandatory_7Byte = 118, // read u64m 7 byte
+	cReadUInt64Mandatory_8Byte = 119, // read u64m 8 byte
+	cReadUInt64Mandatory_9Byte = 120, // read u64m 9 byte
+	cReadUInt64Mandatory_10Byte = 121, // read u64m 10 byte
+	cReadUInt64Mandatory_11Byte = 122, // read u64m 11 byte
 #pragma endregion
 }Counters;
 
@@ -273,11 +273,11 @@ public:
 		this->m_names[115] = "read u64m 4 byte";
 		this->m_names[116] = "read u64m 5 byte";
 		this->m_names[117] = "read u64m 6 byte";
-		this->m_names[118] = "read u64m 6 byte";
-		this->m_names[119] = "read u64m 6 byte";
-		this->m_names[120] = "read u64m 6 byte";
-		this->m_names[121] = "read u64m 6 byte";
-		this->m_names[122] = "read u64m 6 byte";
+		this->m_names[118] = "read u64m 7 byte";
+		this->m_names[119] = "read u64m 8 byte";
+		this->m_names[120] = "read u64m 9 byte";
+		this->m_names[121] = "read u64m 10 byte";
+		this->m_names[122] = "read u64m 11 byte";
 #pragma endregion
     }
 
@@ -312,7 +312,6 @@ public:
     }
 
     inline void Print() {
-        printf("------------------------------------\n");
         for(int i = 0; i < this->m_itemsCount; i++) {
             if(this->m_changed[i]) {
                 //std::cout2 << this->m_names[i] << " = " << this->m_counts[i];

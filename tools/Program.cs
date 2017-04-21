@@ -2486,8 +2486,9 @@ namespace prebuild {
 		string Name (XmlNode node) {
 			if(node == null)
 				throw new ArgumentException("node == null");
-			if(node.Attributes == null)
-				throw new ArgumentException("node.Attributes == null for " + node.Name.ToString());
+			if (node.Attributes == null) {
+				throw new ArgumentException ("node.Attributes == null for " + node.Name.ToString () + "  " + node.InnerText);
+			}
 			return node.Attributes["name"] != null ? node.Attributes["name"].Value : "";
 		}
 		string ItemName(XmlNode node) {
@@ -2642,9 +2643,9 @@ namespace prebuild {
 				WriteLine(tabString + "SkipToNextField(); // " + Name(value));
 			} else {
 				if(HasOptionalPresence(value))
-					WriteLine(tabString + info + "->" + Name(value) + " = ReadInt64_Optional();");
+					WriteLine(tabString + info + "->" + Name(value) + " = " + GetMethodName(value, "ReadInt64_Optional") + "();");
 				else
-					WriteLine(tabString + info + "->" + Name(value) + " = ReadInt64_Mandatory();");
+					WriteLine(tabString + info + "->" + Name(value) + " = " + GetMethodName(value, "ReadInt64_Mandatory") + "();");
 			}
 			if(ShouldWriteNullCheckCode(value)) {
 				tabString = tabString.Substring(1);
@@ -2670,20 +2671,12 @@ namespace prebuild {
 				WriteLine(tabString + "SkipToNextField(); // " + Name(value));
 			} else {
 				if(HasOptionalPresence(value))
-					WriteLine(tabString + info + "->" + Name(value) + " = ReadUInt64_Optional();");
+					WriteLine(tabString + info + "->" + Name(value) + " = " + GetMethodName(value, "ReadUInt64_Optional") + "();");
 				else
-					WriteLine(tabString + info + "->" + Name(value) + " = ReadUInt64_Mandatory();");
+					WriteLine(tabString + info + "->" + Name(value) + " = " + GetMethodName(value, "ReadUInt64_Mandatory") + "();");
 			}
 			if(ShouldWriteNullCheckCode(value)) {
 				tabString = tabString.Substring(1);
-				/*
-				if(HasOperators(value)) {
-					WriteLine(tabString + "else {");
-					tabString += "\t";
-					WriteUint64ValueOperatorsCode(str, value, info, tabString);
-					tabString = tabString.Substring(1);
-					WriteLine(tabString + "}");
-				}*/
 			}
 		}
 
@@ -2698,9 +2691,9 @@ namespace prebuild {
 				WriteLine(tabString + "SkipToNextField(); // " + Name(value));
 			} else {
 				if(HasOptionalPresence(value))
-					WriteLine(tabString + info + "->" + Name(value) + " = ReadInt32_Optional();");
+					WriteLine(tabString + info + "->" + Name(value) + " = " + GetMethodName(value, "ReadInt32_Optional") + "();");
 				else
-					WriteLine(tabString + info + "->" + Name(value) + " = ReadInt32_Mandatory();");
+					WriteLine(tabString + info + "->" + Name(value) + " = " + GetMethodName(value, "ReadInt32_Mandatory") + "();");
 			}
 			if(ShouldWriteNullCheckCode(value)) {
 				tabString = tabString.Substring(1);
