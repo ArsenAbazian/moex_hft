@@ -3366,6 +3366,38 @@ public:
 		}
 	}
 
+    inline void ReadString_Optional_Predict67Other(char *str, int *lengthAddress) {
+        UINT64 memory = *((UINT64*)this->currentPos);
+        if ((memory & 0xffff) == 0x8000) {
+            *lengthAddress = 0;
+            this->currentPos += 2;
+            return;
+        }
+        if((memory & 0x808080808080) == 0x800000000000) { // 6 bytes
+            *((unsigned short*)str) = (unsigned short)memory;
+            this->currentPos += 2; str += 2; memory >>= 16;
+            *((unsigned int*)str) = (unsigned int)(memory & 0x7fffffff);
+
+            *lengthAddress = 6;
+            this->currentPos += 4;
+            return;
+        }
+        if((memory & 0x80808080808080) == 0x80000000000000) { // 7 bytes
+            *str = (char)memory;
+            this->currentPos++; str++; memory >>= 8;
+
+            *((unsigned short*)str) = (unsigned short)memory;
+            this->currentPos += 2; str += 2; memory >>= 16;
+
+            *((unsigned int*)str) = (unsigned int)(memory & 0x7fffffff);
+
+            *lengthAddress = 7;
+            this->currentPos += 4;
+            return;
+        }
+        ReadString_Optional(str, lengthAddress);
+    }
+
     inline void ReadString_Optional(char *str, int *lengthAddress) {
         UINT64 memory = *((UINT64*)this->currentPos);
         int length = 0;
@@ -3879,7 +3911,7 @@ public:
 			if(CheckProcessNullString())
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX1;
 			else
-				ReadString_Optional(gmdeItemInfo->MDEntryID, &(gmdeItemInfo->MDEntryIDLength));
+				ReadString_Optional_Predict67Other(gmdeItemInfo->MDEntryID, &(gmdeItemInfo->MDEntryIDLength));
 			if(CheckProcessNullUInt32())
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX2;
 			else
@@ -4066,7 +4098,7 @@ public:
 			if(CheckProcessNullString())
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX2;
 			else
-				ReadString_Optional(gmdeItemInfo->MDEntryID, &(gmdeItemInfo->MDEntryIDLength));
+				ReadString_Optional_Predict67Other(gmdeItemInfo->MDEntryID, &(gmdeItemInfo->MDEntryIDLength));
 			if(CheckProcessNullInt32())
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX3;
 			else
@@ -4304,7 +4336,7 @@ public:
 			if(CheckProcessNullString())
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX1;
 			else
-				ReadString_Optional(gmdeItemInfo->MDEntryID, &(gmdeItemInfo->MDEntryIDLength));
+				ReadString_Optional_Predict67Other(gmdeItemInfo->MDEntryID, &(gmdeItemInfo->MDEntryIDLength));
 			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX1)) {
 				if(CheckProcessNullUInt32())
 					gmdeItemInfo->NullMap |= NULL_MAP_INDEX2;
@@ -4459,7 +4491,7 @@ public:
 			if(CheckProcessNullString())
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX1;
 			else
-				ReadString_Optional(gmdeItemInfo->MDEntryID, &(gmdeItemInfo->MDEntryIDLength));
+				ReadString_Optional_Predict67Other(gmdeItemInfo->MDEntryID, &(gmdeItemInfo->MDEntryIDLength));
 			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX1)) {
 				if(CheckProcessNullUInt32())
 					gmdeItemInfo->NullMap |= NULL_MAP_INDEX2;
@@ -4581,7 +4613,7 @@ public:
 			if(CheckProcessNullString())
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX0;
 			else
-				ReadString_Optional(gmdeItemInfo->MDEntryID, &(gmdeItemInfo->MDEntryIDLength));
+				ReadString_Optional_Predict67Other(gmdeItemInfo->MDEntryID, &(gmdeItemInfo->MDEntryIDLength));
 			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX0)) {
 				if(CheckProcessNullUInt32())
 					gmdeItemInfo->NullMap |= NULL_MAP_INDEX1;
@@ -4800,7 +4832,7 @@ public:
 			if(CheckProcessNullString())
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX0;
 			else
-				ReadString_Optional(gmdeItemInfo->MDEntryID, &(gmdeItemInfo->MDEntryIDLength));
+				ReadString_Optional_Predict67Other(gmdeItemInfo->MDEntryID, &(gmdeItemInfo->MDEntryIDLength));
 			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX0)) {
 				if(CheckProcessNullUInt32())
 					gmdeItemInfo->NullMap |= NULL_MAP_INDEX1;
@@ -4983,7 +5015,7 @@ public:
 			if(CheckProcessNullString())
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX2;
 			else
-				ReadString_Optional(gmdeItemInfo->MDEntryID, &(gmdeItemInfo->MDEntryIDLength));
+				ReadString_Optional_Predict67Other(gmdeItemInfo->MDEntryID, &(gmdeItemInfo->MDEntryIDLength));
 			if(CheckProcessNullString())
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX3;
 			else
@@ -5138,7 +5170,7 @@ public:
 			if(CheckProcessNullString())
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX2;
 			else
-				ReadString_Optional(gmdeItemInfo->MDEntryID, &(gmdeItemInfo->MDEntryIDLength));
+				ReadString_Optional_Predict67Other(gmdeItemInfo->MDEntryID, &(gmdeItemInfo->MDEntryIDLength));
 			if(CheckProcessNullString())
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX3;
 			else
@@ -5278,7 +5310,7 @@ public:
 			if(CheckProcessNullString())
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX2;
 			else
-				ReadString_Optional(gmdeItemInfo->MDEntryID, &(gmdeItemInfo->MDEntryIDLength));
+				ReadString_Optional_Predict67Other(gmdeItemInfo->MDEntryID, &(gmdeItemInfo->MDEntryIDLength));
 			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX1)) {
 				if(CheckProcessNullString())
 					gmdeItemInfo->NullMap |= NULL_MAP_INDEX3;
@@ -5440,7 +5472,7 @@ public:
 			if(CheckProcessNullString())
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX2;
 			else
-				ReadString_Optional(gmdeItemInfo->MDEntryID, &(gmdeItemInfo->MDEntryIDLength));
+				ReadString_Optional_Predict67Other(gmdeItemInfo->MDEntryID, &(gmdeItemInfo->MDEntryIDLength));
 			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX2)) {
 				if(CheckProcessNullString())
 					gmdeItemInfo->NullMap |= NULL_MAP_INDEX3;
@@ -5557,7 +5589,7 @@ public:
 			if(CheckProcessNullString())
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX1;
 			else
-				ReadString_Optional(gmdeItemInfo->MDEntryID, &(gmdeItemInfo->MDEntryIDLength));
+				ReadString_Optional_Predict67Other(gmdeItemInfo->MDEntryID, &(gmdeItemInfo->MDEntryIDLength));
 			if(CheckProcessNullString())
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX2;
 			else
@@ -5669,7 +5701,7 @@ public:
 			if(CheckProcessNullString())
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX1;
 			else
-				ReadString_Optional(gmdeItemInfo->MDEntryID, &(gmdeItemInfo->MDEntryIDLength));
+				ReadString_Optional_Predict67Other(gmdeItemInfo->MDEntryID, &(gmdeItemInfo->MDEntryIDLength));
 			if(CheckProcessNullString())
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX2;
 			else
