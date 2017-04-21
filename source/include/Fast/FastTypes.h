@@ -345,7 +345,7 @@ public:
 	AutoAllocatePointerList<AstsGenericItemInfo>							*Allocator;
 	bool							Used;
 	char							MDEntryType[4];			// id=269  presence=optional  fixed_size=1  
-	char							MDEntryID[16];			// id=278  presence=optional  
+	char							MDEntryID[16];			// id=278  presence=optional  predict=67Other  
 	UINT32							MDEntryDate;			// id=272  presence=optional  
 	UINT32							MDEntryTime;			// id=273  presence=optional  
 	UINT32							OrigTime;			// id=9412  presence=optional  
@@ -391,7 +391,7 @@ public:
 	Decimal							NetChgPrevDay;			// id=451  presence=optional  
 	char							TradingSessionID[16];			// id=336  presence=optional  
 	int								MDEntryTypeLength;			// id=269  presence=optional  fixed_size=1  
-	int								MDEntryIDLength;			// id=278  presence=optional  
+	int								MDEntryIDLength;			// id=278  presence=optional  predict=67Other  
 	int								QuoteConditionLength;			// id=276  presence=optional  
 	int								TradeConditionLength;			// id=277  presence=optional  
 	int								OpenCloseSettlFlagLength;			// id=286  presence=optional  
@@ -488,7 +488,7 @@ public:
 	AutoAllocatePointerList<AstsOLSFONDItemInfo>							*Allocator;
 	bool							Used;
 	char							MDEntryType[4];			// id=269  presence=optional  fixed_size=1    copy
-	char							MDEntryID[16];			// id=278  presence=optional  
+	char							MDEntryID[16];			// id=278  presence=optional  predict=67Other  
 	UINT32							MDEntryDate;			// id=272  presence=optional    copy
 	UINT32							MDEntryTime;			// id=273  presence=optional    copy
 	UINT32							OrigTime;			// id=9412  presence=optional    copy
@@ -504,7 +504,7 @@ public:
 	INT32							RptSeq;			// id=83  presence=optional  
 	char							TradingSessionID[16];			// id=336  presence=optional    copy
 	int								MDEntryTypeLength;			// id=269  presence=optional  fixed_size=1    copy
-	int								MDEntryIDLength;			// id=278  presence=optional  
+	int								MDEntryIDLength;			// id=278  presence=optional  predict=67Other  
 	int								OrderStatusLength;			// id=10505  presence=optional  fixed_size=1    copy
 	int								OrdTypeLength;			// id=40  presence=optional    copy
 	int								TradingSessionSubIDLength;			// id=625  presence=optional    copy
@@ -594,7 +594,7 @@ public:
 	AutoAllocatePointerList<AstsOLSCURRItemInfo>							*Allocator;
 	bool							Used;
 	char							MDEntryType[4];			// id=269  presence=optional  fixed_size=1    copy
-	char							MDEntryID[16];			// id=278  presence=optional  
+	char							MDEntryID[16];			// id=278  presence=optional  predict=67Other  
 	UINT32							MDEntryDate;			// id=272  presence=optional    copy
 	UINT32							MDEntryTime;			// id=273  presence=optional    copy
 	UINT32							OrigTime;			// id=9412  presence=optional    copy
@@ -607,7 +607,7 @@ public:
 	INT32							RptSeq;			// id=83  presence=optional  
 	char							TradingSessionID[16];			// id=336  presence=optional    copy
 	int								MDEntryTypeLength;			// id=269  presence=optional  fixed_size=1    copy
-	int								MDEntryIDLength;			// id=278  presence=optional  
+	int								MDEntryIDLength;			// id=278  presence=optional  predict=67Other  
 	int								OrderStatusLength;			// id=10505  presence=optional  fixed_size=1    copy
 	int								TradingSessionSubIDLength;			// id=625  presence=optional    copy
 	int								SymbolLength;			// id=55  presence=optional    copy
@@ -695,7 +695,7 @@ public:
 	AutoAllocatePointerList<AstsTLSFONDItemInfo>							*Allocator;
 	bool							Used;
 	char							MDEntryType[4];			// id=269  fixed_size=1  
-	char							MDEntryID[16];			// id=278  presence=optional  
+	char							MDEntryID[16];			// id=278  presence=optional  predict=67Other  
 	UINT32							MDEntryDate;			// id=272  presence=optional    copy
 	UINT32							MDEntryTime;			// id=273  presence=optional    copy
 	UINT32							OrigTime;			// id=9412  presence=optional    copy
@@ -719,7 +719,7 @@ public:
 	INT32							RptSeq;			// id=83  presence=optional  
 	char							TradingSessionID[16];			// id=336  presence=optional  
 	int								MDEntryTypeLength;			// id=269  fixed_size=1  
-	int								MDEntryIDLength;			// id=278  presence=optional  
+	int								MDEntryIDLength;			// id=278  presence=optional  predict=67Other  
 	int								OrderSideLength;			// id=10504  presence=optional    copy
 	int								SettleTypeLength;			// id=5459  presence=optional    copy
 	int								TradingSessionSubIDLength;			// id=625  presence=optional    copy
@@ -810,7 +810,7 @@ public:
 	AutoAllocatePointerList<AstsTLSCURRItemInfo>							*Allocator;
 	bool							Used;
 	char							MDEntryType[4];			// id=269  fixed_size=1  
-	char							MDEntryID[16];			// id=278  presence=optional  
+	char							MDEntryID[16];			// id=278  presence=optional  predict=67Other  
 	UINT32							MDEntryDate;			// id=272  presence=optional    copy
 	UINT32							MDEntryTime;			// id=273  presence=optional    copy
 	UINT32							OrigTime;			// id=9412  presence=optional    copy
@@ -832,7 +832,7 @@ public:
 	INT32							RptSeq;			// id=83  presence=optional  
 	char							TradingSessionID[16];			// id=336  presence=optional  
 	int								MDEntryTypeLength;			// id=269  fixed_size=1  
-	int								MDEntryIDLength;			// id=278  presence=optional  
+	int								MDEntryIDLength;			// id=278  presence=optional  predict=67Other  
 	int								OrderSideLength;			// id=10504  presence=optional    copy
 	int								SettleTypeLength;			// id=5459  presence=optional    copy
 	int								TradingSessionSubIDLength;			// id=625  presence=optional    copy
