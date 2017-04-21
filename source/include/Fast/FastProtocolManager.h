@@ -1623,6 +1623,12 @@ public:
             return result - 1;
         return result;
     }
+    inline INT32 ReadInt32_Optional_Predict1() {
+        INT32 result = ReadInt32_Mandatory_Predict1();
+        if (result > 0)
+            return result - 1;
+        return result;
+    }
 #pragma intrinsic(_pext_u32)
     __attribute__((target ("bmi2")))
     inline INT32 ReadInt32_Mandatory_Optimized() {
@@ -1778,6 +1784,43 @@ public:
                 }
             }
         }
+    }
+
+    inline INT32 ReadInt32_Mandatory_Predict1() {
+        INT32 memory = *((INT32*)(this->currentPos));
+        INT32 valueMasked = memory & 0xff;
+        if (valueMasked == 0x00) { // extended positive integer
+            memory >>= 8;
+            if((memory & 0x0080) != 0) {
+                this->currentPos += 2;
+                return memory & 0x7f;
+            }
+        }
+        else if (valueMasked == 0x7f) { // extended negative integer
+            memory >>= 8;
+            INT32 result = 0xffffff80;
+            result |= memory & 0x7f;
+            if((memory & 0x80) != 0) {
+                this->currentPos += 2;
+                return result;
+            }
+        }
+        else if ((memory & 0x40) != 0) { // simple negative integer
+            INT32 result = 0xffffff80;
+            result |= memory & 0x7f;
+            if((memory & 0x80) != 0) {
+                this->currentPos++;
+                return result;
+            }
+        }
+        else {  // simple positive integer
+            if((memory & 0x80) != 0) { // first byte
+                this->currentPos++;
+                return memory & 0x7f;
+            }
+        }
+
+        return ReadInt32_Mandatory();
     }
 
     inline INT32 ReadInt32_Mandatory() {
@@ -3183,13 +3226,14 @@ public:
         memcpy(this->buffer, value, length);
     }
 
+    // for decima exponent we use predict 1 because power of 10 will fit almost always in one byte
     inline void ReadDecimal_Optional(Decimal *value) {
-        value->Exponent = ReadInt32_Optional();
+        value->Exponent = ReadInt32_Optional_Predict1();
         value->Mantissa = ReadInt64_Mandatory();
     }
 
     inline void ReadDecimal_Mandatory(Decimal *value) {
-        value->Exponent = ReadInt32_Mandatory();
+        value->Exponent = ReadInt32_Mandatory_Predict1();
         value->Mantissa = ReadInt64_Mandatory();
     }
 
