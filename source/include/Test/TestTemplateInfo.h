@@ -25,11 +25,23 @@ public:
     int             m_rptSeq;
     int             m_sessionStatus;
 
-    TestTemplateItemInfo() {
-        this->m_sessionStatus = 0;
+    TestTemplateItemInfo() :
+            m_action(MDUpdateAction::mduaAdd),
+            m_symbol(0),
+            m_securityId(0),
+            m_tradingSession(0),
+            m_entryType(MDEntryType::mdetBuyQuote),
+            m_entryId(0),
+            m_entryIdInt(0),
+            m_entryPx(0,0),
+            m_entrySize(0,0),
+            m_entrySizeInt(0),
+            m_rptSeq(0),
+            m_sessionStatus(0) {
+
     }
 
-    TestTemplateItemInfo(MDUpdateAction action, MDEntryType entryType, const char *symbol, UINT64 securityId, UINT64 entryId, int rptSeq, int pxm, INT64 pxe, int size) {
+    TestTemplateItemInfo(MDUpdateAction action, MDEntryType entryType, const char *symbol, UINT64 securityId, UINT64 entryId, int rptSeq, int pxm, INT64 pxe, int size) : TestTemplateItemInfo() {
         this->m_action = action;
         this->m_entryType = entryType;
         this->m_symbol = symbol;
@@ -40,7 +52,7 @@ public:
         this->m_rptSeq = rptSeq;
         this->m_sessionStatus = 0;
     }
-    TestTemplateItemInfo(MDUpdateAction action, MDEntryType entryType, const char *symbol, const char *sessionId, const char *entryId, int rptSeq, int pxm, INT64 pxe, int sizem, INT64 sizee) {
+    TestTemplateItemInfo(MDUpdateAction action, MDEntryType entryType, const char *symbol, const char *sessionId, const char *entryId, int rptSeq, int pxm, INT64 pxe, int sizem, INT64 sizee) : TestTemplateItemInfo() {
         this->m_action = action;
         this->m_entryType = entryType;
         this->m_symbol = symbol;
@@ -51,7 +63,7 @@ public:
         this->m_rptSeq = rptSeq;
         this->m_sessionStatus = 0;
     }
-    TestTemplateItemInfo(const char *symbol, UINT64 securityId, UINT64 entryId, int rptSeq) {
+    TestTemplateItemInfo(const char *symbol, UINT64 securityId, UINT64 entryId, int rptSeq) : TestTemplateItemInfo() {
         this->m_action = MDUpdateAction::mduaAdd;
         this->m_entryType = MDEntryType::mdetBuyQuote;
         this->m_symbol = symbol;
@@ -63,7 +75,7 @@ public:
         this->m_rptSeq = rptSeq;
         this->m_sessionStatus = 0;
     }
-    TestTemplateItemInfo(const char *symbol, const char *entryId, int rptSeq) {
+    TestTemplateItemInfo(const char *symbol, const char *entryId, int rptSeq) : TestTemplateItemInfo() {
         this->m_action = MDUpdateAction::mduaAdd;
         this->m_entryType = MDEntryType::mdetBuyQuote;
         this->m_symbol = symbol;
@@ -74,7 +86,7 @@ public:
         this->m_rptSeq = rptSeq;
         this->m_sessionStatus = 0;
     }
-    TestTemplateItemInfo(UINT64 entryId) {
+    TestTemplateItemInfo(UINT64 entryId) : TestTemplateItemInfo() {
         this->m_action = MDUpdateAction::mduaAdd;
         this->m_entryType = MDEntryType::mdetBuyQuote;
         this->m_entryIdInt = entryId;
@@ -82,7 +94,7 @@ public:
         this->m_entrySizeInt = 10;
         this->m_sessionStatus = 0;
     }
-    TestTemplateItemInfo(UINT64 entryId, int price) {
+    TestTemplateItemInfo(UINT64 entryId, int price) : TestTemplateItemInfo() {
         this->m_action = MDUpdateAction::mduaAdd;
         this->m_entryType = MDEntryType::mdetBuyQuote;
         this->m_entryIdInt = entryId;
@@ -90,7 +102,7 @@ public:
         this->m_entrySizeInt = 10;
         this->m_sessionStatus = 0;
     }
-    TestTemplateItemInfo(const char *entryId) {
+    TestTemplateItemInfo(const char *entryId) : TestTemplateItemInfo() {
         this->m_action = MDUpdateAction::mduaAdd;
         this->m_entryType = MDEntryType::mdetBuyQuote;
         this->m_entryId = entryId;

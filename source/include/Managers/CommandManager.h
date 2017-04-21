@@ -17,6 +17,7 @@ typedef enum _CommandManagerCommand {
     hcNone = 0,
     hcProgrammStatisticCurrent = 1,
     hcProgrammStatisticTotal = 2,
+    hcRegMe = 3,
 } CommandManagerCommand;
 
 typedef enum _CommandManagerState {

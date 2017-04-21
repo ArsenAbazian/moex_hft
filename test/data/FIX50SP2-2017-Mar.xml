@@ -74,7 +74,7 @@
 			<string name="SettleType" id="5459" presence="optional"></string>
 			<int32 name="SumQtyOfBest" id="10503" presence="optional"></int32>
 			<string name="OrderSide" id="10504" presence="optional"></string>
-			<string name="OrderStatus" id="10505" presence="optional"></string>
+			<string name="OrderStatus" id="10505" presence="optional" fixed_size="1"></string>
 			<decimal name="MinCurrPx" id="10509" presence="optional"></decimal>
 			<uInt32 name="MinCurrPxChgTime" id="10510" presence="optional"></uInt32>
 			<uInt32 name="VolumeIndicator" id="7017" presence="optional"></uInt32>
@@ -132,7 +132,7 @@
 			<decimal name="ChgFromSettlmnt" id="9750" presence="optional"></decimal>
 			<int32 name="SumQtyOfBest" id="10503" presence="optional"></int32>
 			<string name="OrderSide" id="10504" presence="optional"></string>
-			<string name="OrderStatus" id="10505" presence="optional"></string>
+			<string name="OrderStatus" id="10505" presence="optional" fixed_size="1"></string>
 			<decimal name="MinCurrPx" id="10509" presence="optional"></decimal>
 			<uInt32 name="MinCurrPxChgTime" id="10510" presence="optional"></uInt32>
 			<uInt32 name="VolumeIndicator" id="7017" presence="optional"></uInt32>
@@ -176,7 +176,7 @@
            <decimal name="MDEntryPx" id="270" presence="optional"><copy/></decimal>
 			<decimal name="MDEntrySize" id="271" presence="optional"><copy/></decimal>
 			<decimal name="Yield" id="236" presence="optional"><copy/></decimal>
-			<string name="OrderStatus" id="10505" presence="optional"><copy/></string>
+			<string name="OrderStatus" id="10505" presence="optional" fixed_size="1"><copy/></string>
 			<string name="OrdType" id="40" presence="optional"><copy/></string>
 			<decimal name="TotalVolume" id="5791" presence="optional"><copy/></decimal>
 			<string name="TradingSessionSubID" id="625" presence="optional"><copy/></string>
@@ -208,7 +208,7 @@
 			<uInt32 name="OrigTime" id="9412" presence="optional"><copy/></uInt32>
             <decimal name="MDEntryPx" id="270" presence="optional"><copy/></decimal>
 			<decimal name="MDEntrySize" id="271" presence="optional"><copy/></decimal>
-			<string name="OrderStatus" id="10505" presence="optional"><copy/></string>
+			<string name="OrderStatus" id="10505" presence="optional" fixed_size="1"><copy/></string>
 			<string name="TradingSessionSubID" id="625" presence="optional"><copy/></string>
 		</sequence>
 	</template>
@@ -408,11 +408,11 @@
             <decimal name="MDEntryPx" id="270" presence="optional"><copy/></decimal>
 			<decimal name="MDEntrySize" id="271" presence="optional"><copy/></decimal>
 			<decimal name="Yield" id="236" presence="optional"><copy/></decimal>
-			<string name="OrderStatus" id="10505" presence="optional"><copy/></string>
+			<string name="OrderStatus" id="10505" presence="optional" fixed_size="1"><copy/></string>
 			<string name="OrdType" id="40" presence="optional"><copy/></string>
 			<decimal name="TotalVolume" id="5791" presence="optional"><copy/></decimal>
 			<string name="TradingSessionID" id="336" presence="optional"><copy/></string>
-			<string name="TradingSessionSubID" id="625" presence="optional"><copy/></string>
+			<string name="TradingSessionSubID" id="625" presence="optional" predict="12"><copy/></string>
 		</sequence>
 	</template>
 
@@ -436,7 +436,7 @@
 			<uInt32 name="OrigTime" id="9412" presence="optional"><copy/></uInt32>
             <decimal name="MDEntryPx" id="270" presence="optional"><copy/></decimal>
 			<decimal name="MDEntrySize" id="271" presence="optional"><copy/></decimal>
-			<string name="OrderStatus" id="10505" presence="optional"><copy/></string>
+			<string name="OrderStatus" id="10505" presence="optional" fixed_size="1"><copy/></string>
 			<string name="TradingSessionID" id="336" presence="optional"><copy/></string>
 			<string name="TradingSessionSubID" id="625" presence="optional"><copy/></string>
 		</sequence>

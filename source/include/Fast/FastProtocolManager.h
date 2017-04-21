@@ -3334,14 +3334,36 @@ public:
 
 	inline void ReadString_Optional_Fixed1(char *str, int *lengthAddress) {
 		UINT64 memory = *((UINT64*)this->currentPos);
-		if ((memory & 0xffff) == 0x8000) {
+		if((memory & 0x80) != 0) {
+			*str = (char)(memory & 0x7f);
+			*lengthAddress = 1;
+			this->currentPos++;
+		}
+		else if ((memory & 0xffff) == 0x8000) {
 			*lengthAddress = 0;
 			this->currentPos += 2;
 			return;
 		}
-		*str = (char)(memory & 0x7f);
-		*lengthAddress = 1;
-		this->currentPos++;
+	}
+
+	inline void ReadString_Optional_Predict12(char *str, int *lengthAddress) {
+		UINT64 memory = *((UINT64*)this->currentPos);
+
+		if((memory & 0x80) != 0) {
+			*str = (char)(memory & 0x7f);
+			*lengthAddress = 1;
+			this->currentPos++;
+		}
+		else if((memory & 0xffff) == 0x8000) {
+			*lengthAddress = 0;
+			this->currentPos += 2;
+			return;
+		}
+		else {
+			*((unsigned short*)str) = memory & 0x7fff;
+			*lengthAddress = 2;
+			this->currentPos += 2;
+		}
 	}
 
     inline void ReadString_Optional(char *str, int *lengthAddress) {
@@ -3969,7 +3991,7 @@ public:
 			if(CheckProcessNullString())
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX29;
 			else
-				ReadString_Optional(gmdeItemInfo->OrderStatus, &(gmdeItemInfo->OrderStatusLength));
+				ReadString_Optional_Fixed1(gmdeItemInfo->OrderStatus, &(gmdeItemInfo->OrderStatusLength));
 			if(CheckProcessNullDecimal())
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX30;
 			else
@@ -4168,7 +4190,7 @@ public:
 			if(CheckProcessNullString())
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX33;
 			else
-				ReadString_Optional(gmdeItemInfo->OrderStatus, &(gmdeItemInfo->OrderStatusLength));
+				ReadString_Optional_Fixed1(gmdeItemInfo->OrderStatus, &(gmdeItemInfo->OrderStatusLength));
 			if(CheckProcessNullDecimal())
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX34;
 			else
@@ -4341,7 +4363,7 @@ public:
 				if(CheckProcessNullString())
 					gmdeItemInfo->NullMap |= NULL_MAP_INDEX8;
 				else
-					ReadString_Optional(gmdeItemInfo->OrderStatus, &(gmdeItemInfo->OrderStatusLength));
+					ReadString_Optional_Fixed1(gmdeItemInfo->OrderStatus, &(gmdeItemInfo->OrderStatusLength));
 			}
 			else {
 				this->CopyString(gmdeItemInfo->OrderStatus, m_prevastsOLSFONDItemInfo->OrderStatus, m_prevastsOLSFONDItemInfo->OrderStatusLength);
@@ -4487,7 +4509,7 @@ public:
 				if(CheckProcessNullString())
 					gmdeItemInfo->NullMap |= NULL_MAP_INDEX7;
 				else
-					ReadString_Optional(gmdeItemInfo->OrderStatus, &(gmdeItemInfo->OrderStatusLength));
+					ReadString_Optional_Fixed1(gmdeItemInfo->OrderStatus, &(gmdeItemInfo->OrderStatusLength));
 			}
 			else {
 				this->CopyString(gmdeItemInfo->OrderStatus, m_prevastsOLSCURRItemInfo->OrderStatus, m_prevastsOLSCURRItemInfo->OrderStatusLength);
@@ -5329,7 +5351,7 @@ public:
 				if(CheckProcessNullString())
 					gmdeItemInfo->NullMap |= NULL_MAP_INDEX11;
 				else
-					ReadString_Optional(gmdeItemInfo->OrderStatus, &(gmdeItemInfo->OrderStatusLength));
+					ReadString_Optional_Fixed1(gmdeItemInfo->OrderStatus, &(gmdeItemInfo->OrderStatusLength));
 			}
 			else {
 				this->CopyString(gmdeItemInfo->OrderStatus, m_prevastsOLSFONDItemInfo->OrderStatus, m_prevastsOLSFONDItemInfo->OrderStatusLength);
@@ -5368,7 +5390,7 @@ public:
 				if(CheckProcessNullString())
 					gmdeItemInfo->NullMap |= NULL_MAP_INDEX15;
 				else
-					ReadString_Optional(gmdeItemInfo->TradingSessionSubID, &(gmdeItemInfo->TradingSessionSubIDLength));
+					ReadString_Optional_Predict12(gmdeItemInfo->TradingSessionSubID, &(gmdeItemInfo->TradingSessionSubIDLength));
 			}
 			else {
 				this->CopyString(gmdeItemInfo->TradingSessionSubID, m_prevastsOLSFONDItemInfo->TradingSessionSubID, m_prevastsOLSFONDItemInfo->TradingSessionSubIDLength);
@@ -5482,7 +5504,7 @@ public:
 				if(CheckProcessNullString())
 					gmdeItemInfo->NullMap |= NULL_MAP_INDEX10;
 				else
-					ReadString_Optional(gmdeItemInfo->OrderStatus, &(gmdeItemInfo->OrderStatusLength));
+					ReadString_Optional_Fixed1(gmdeItemInfo->OrderStatus, &(gmdeItemInfo->OrderStatusLength));
 			}
 			else {
 				this->CopyString(gmdeItemInfo->OrderStatus, m_prevastsOLSCURRItemInfo->OrderStatus, m_prevastsOLSCURRItemInfo->OrderStatusLength);

@@ -373,7 +373,7 @@ public:
 	char							SettleType[16];			// id=5459  presence=optional  
 	INT32							SumQtyOfBest;			// id=10503  presence=optional  
 	char							OrderSide[4];			// id=10504  presence=optional  
-	char							OrderStatus[4];			// id=10505  presence=optional  
+	char							OrderStatus[4];			// id=10505  presence=optional  fixed_size=1  
 	Decimal							MinCurrPx;			// id=10509  presence=optional  
 	UINT32							MinCurrPxChgTime;			// id=10510  presence=optional  
 	UINT32							VolumeIndicator;			// id=7017  presence=optional  
@@ -398,7 +398,7 @@ public:
 	int								OrdTypeLength;			// id=40  presence=optional  
 	int								SettleTypeLength;			// id=5459  presence=optional  
 	int								OrderSideLength;			// id=10504  presence=optional  
-	int								OrderStatusLength;			// id=10505  presence=optional  
+	int								OrderStatusLength;			// id=10505  presence=optional  fixed_size=1  
 	int								CXFlagLength;			// id=5154  presence=optional  
 	int								TradingSessionSubIDLength;			// id=625  presence=optional  
 	int								SymbolLength;			// id=55  presence=optional  
@@ -495,7 +495,7 @@ public:
 	Decimal							MDEntryPx;			// id=270  presence=optional    copy
 	Decimal							MDEntrySize;			// id=271  presence=optional    copy
 	Decimal							Yield;			// id=236  presence=optional    copy
-	char							OrderStatus[4];			// id=10505  presence=optional    copy
+	char							OrderStatus[4];			// id=10505  presence=optional  fixed_size=1    copy
 	char							OrdType[4];			// id=40  presence=optional    copy
 	Decimal							TotalVolume;			// id=5791  presence=optional    copy
 	char							TradingSessionSubID[4];			// id=625  presence=optional    copy
@@ -505,7 +505,7 @@ public:
 	char							TradingSessionID[16];			// id=336  presence=optional    copy
 	int								MDEntryTypeLength;			// id=269  presence=optional  fixed_size=1    copy
 	int								MDEntryIDLength;			// id=278  presence=optional  
-	int								OrderStatusLength;			// id=10505  presence=optional    copy
+	int								OrderStatusLength;			// id=10505  presence=optional  fixed_size=1    copy
 	int								OrdTypeLength;			// id=40  presence=optional    copy
 	int								TradingSessionSubIDLength;			// id=625  presence=optional    copy
 	int								SymbolLength;			// id=55  presence=optional    copy
@@ -600,7 +600,7 @@ public:
 	UINT32							OrigTime;			// id=9412  presence=optional    copy
 	Decimal							MDEntryPx;			// id=270  presence=optional    copy
 	Decimal							MDEntrySize;			// id=271  presence=optional    copy
-	char							OrderStatus[4];			// id=10505  presence=optional    copy
+	char							OrderStatus[4];			// id=10505  presence=optional  fixed_size=1    copy
 	char							TradingSessionSubID[4];			// id=625  presence=optional    copy
 	UINT32							MDUpdateAction;			// id=279  presence=optional  fixed_size=1    copy
 	char							Symbol[16];			// id=55  presence=optional    copy
@@ -608,7 +608,7 @@ public:
 	char							TradingSessionID[16];			// id=336  presence=optional    copy
 	int								MDEntryTypeLength;			// id=269  presence=optional  fixed_size=1    copy
 	int								MDEntryIDLength;			// id=278  presence=optional  
-	int								OrderStatusLength;			// id=10505  presence=optional    copy
+	int								OrderStatusLength;			// id=10505  presence=optional  fixed_size=1    copy
 	int								TradingSessionSubIDLength;			// id=625  presence=optional    copy
 	int								SymbolLength;			// id=55  presence=optional    copy
 	int								TradingSessionIDLength;			// id=336  presence=optional    copy

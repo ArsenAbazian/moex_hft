@@ -858,38 +858,49 @@ public:
         RobotSettings::Default->MarketDataMaxEntriesCount = 32 * 10;
         RobotSettings::Default->MDEntryQueueItemsCount = 100;
 
-        PointerListTester pt;
-        pt.Test();
+        TradeTesterFond *ttFond = new TradeTesterFond();
+        ttFond->Test();
+        delete ttFond;
+        TradeTesterCurr *ttCurr = new TradeTesterCurr();
+        ttCurr->Test();
+        delete ttCurr;
 
-        SymbolManagerTester ht;
-        ht.Test();
+        PointerListTester *pt = new PointerListTester();
+        pt->Test();
+        delete pt;
 
-        OrderTesterCurr otCurr;
-        otCurr.Test();
-        OrderTesterFond otFond;
-        otFond.Test();
+        SymbolManagerTester *ht = new SymbolManagerTester();
+        ht->Test();
+        delete ht;
 
-        OrderBookTesterForts fob;
-        fob.Test();
+        OrderTesterCurr *otCurr = new OrderTesterCurr();
+        otCurr->Test();
+        delete otCurr;
+        OrderTesterFond *otFond = new OrderTesterFond();
+        otFond->Test();
+        delete otFond;
 
-        SecurityDefinitionTester ids;
-        ids.Test();
+        OrderBookTesterForts *fob = new OrderBookTesterForts();
+        fob->Test();
+        delete fob;
 
-        SecurityStatusTester ist;
-        ist.Test();
+        SecurityDefinitionTester *ids = new SecurityDefinitionTester();
+        ids->Test();
+        delete ids;
 
-        HistoricalReplayTester hrt;
-        hrt.Test();
+        SecurityStatusTester *ist = new SecurityStatusTester();
+        ist->Test();
+        delete ist;
 
-        TradeTesterCurr ttCurr;
-        ttCurr.Test();
-        TradeTesterFond ttFond;
-        ttFond.Test();
+        HistoricalReplayTester *hrt = new HistoricalReplayTester();
+        hrt->Test();
+        delete hrt;
 
         TestFeedConnectionBase();
 
-        StatisticsTesterFond stFond;
-        stFond.Test();
+        StatisticsTesterFond *stFond = new StatisticsTesterFond();
+        stFond->Test();
+        delete stFond;
     }
 };
 

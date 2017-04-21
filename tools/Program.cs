@@ -1968,7 +1968,12 @@ namespace prebuild {
 		}
 
 		private  bool IsKnownAttribute (XmlAttribute attribute) {
-			return attribute.Name == "name" || attribute.Name == "id" || attribute.Name == "presence" || attribute.Name == "charset" || attribute.Name == "fixed_size";
+			return attribute.Name == "name" || 
+				attribute.Name == "id" || 
+				attribute.Name == "presence" || 
+				attribute.Name == "charset" || 
+				attribute.Name == "fixed_size" || 
+				attribute.Name == "predict";
 		}
 		StructureInfo GetOriginalStruct(XmlNode field) {
 			if(field.ParentNode == null || field.ParentNode.Attributes["name"] == null)
@@ -2711,9 +2716,11 @@ namespace prebuild {
 		}
 
 		private string GetMethodName(XmlNode field, string method) {
-			if (!HasAttribute (field, "fixed_size"))
-				return method;
-			return method + "_Fixed" + field.Attributes ["fixed_size"].Value.ToString ();
+			if(HasAttribute(field, "fixed_size"))
+				return method + "_Fixed" + field.Attributes ["fixed_size"].Value.ToString();
+			if(HasAttribute(field, "predict"))
+				return method + "_Predict" + field.Attributes ["predict"].Value.ToString();
+			return method;
 		}
 
 		private  void ParseUint32Value (StructureInfo str, XmlNode value, string info, string tabString) {
