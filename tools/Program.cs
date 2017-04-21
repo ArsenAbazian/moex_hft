@@ -2529,9 +2529,9 @@ namespace prebuild {
 				tabString += "\t";
 			}
 			if(HasOptionalPresence(value))
-				WriteLine(tabString + objectValueName + "->" + Name(value) + "Count = ReadUInt32_Optional();");
+				WriteLine(tabString + objectValueName + "->" + Name(value) + "Count = ReadUInt32_Optional_Predict1();");
 			else 				
-				WriteLine(tabString + objectValueName + "->" + Name(value) + "Count = ReadUInt32_Mandatory();");
+				WriteLine(tabString + objectValueName + "->" + Name(value) + "Count = ReadUInt32_Mandatory_Predict1();");
 			if(ShouldWriteNullCheckCode(value)) {
 				tabString = tabString.Substring(1);
 			}
