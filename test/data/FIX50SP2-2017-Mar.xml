@@ -85,7 +85,7 @@
 			<decimal name="BuyBackPx" id="5558" presence="optional"></decimal>
 			<uInt32 name="BuyBackDate" id="5559" presence="optional"></uInt32>
 			<string name="CXFlag" id="5154" presence="optional"></string>
-			<string name="TradingSessionSubID" id="625" presence="optional"></string>
+			<string name="TradingSessionSubID" id="625" presence="optional" predict="12"></string>
 		</sequence>
 	</template>
 
@@ -144,7 +144,7 @@
 			<uInt32 name="BuyBackDate" id="5559" presence="optional"></uInt32>
 			<string name="CXFlag" id="5154" presence="optional"></string>
 			<string name="TradingSessionID" id="336" presence="optional"></string>
-			<string name="TradingSessionSubID" id="625" presence="optional"></string>
+			<string name="TradingSessionSubID" id="625" presence="optional" predict="12"></string>
 		</sequence>
 	</template>
 
@@ -179,7 +179,7 @@
 			<string name="OrderStatus" id="10505" presence="optional" fixed_size="1"><copy/></string>
 			<string name="OrdType" id="40" presence="optional"><copy/></string>
 			<decimal name="TotalVolume" id="5791" presence="optional"><copy/></decimal>
-			<string name="TradingSessionSubID" id="625" presence="optional"><copy/></string>
+			<string name="TradingSessionSubID" id="625" presence="optional" predict="12"><copy/></string>f
 		</sequence>
 	</template>
 
@@ -209,7 +209,7 @@
             <decimal name="MDEntryPx" id="270" presence="optional"><copy/></decimal>
 			<decimal name="MDEntrySize" id="271" presence="optional"><copy/></decimal>
 			<string name="OrderStatus" id="10505" presence="optional" fixed_size="1"><copy/></string>
-			<string name="TradingSessionSubID" id="625" presence="optional"><copy/></string>
+			<string name="TradingSessionSubID" id="625" presence="optional" predict="12"><copy/></string>
 		</sequence>
 	</template>
 
@@ -251,7 +251,7 @@
 			<decimal name="RepoToPx" id="5677" presence="optional"><copy/></decimal>
 			<decimal name="BuyBackPx" id="5558" presence="optional"><copy/></decimal>
 			<uInt32 name="BuyBackDate" id="5559" presence="optional"><copy/></uInt32>
-			<string name="TradingSessionSubID" id="625" presence="optional"><copy/></string>
+			<string name="TradingSessionSubID" id="625" presence="optional" predict="12"><copy/></string>
 			<string name="RefOrderID" id="1080" presence="optional"><copy/></string>
 		</sequence>
 	</template>
@@ -290,7 +290,7 @@
 			<decimal name="RepoToPx" id="5677" presence="optional"><copy/></decimal>
 			<decimal name="BuyBackPx" id="5558" presence="optional"><copy/></decimal>
 			<uInt32 name="BuyBackDate" id="5559" presence="optional"><copy/></uInt32>
-			<string name="TradingSessionSubID" id="625" presence="optional"><copy/></string>
+			<string name="TradingSessionSubID" id="625" presence="optional" predict="12"><copy/></string>
 			<string name="RefOrderID" id="1080" presence="optional"><copy/></string>
 		</sequence>
 	</template>
@@ -340,7 +340,7 @@
 			<string name="SettleType" id="5459" presence="optional"></string>
 			<string name="CXFlag" id="5154" presence="optional"></string>
 			<string name="TradingSessionID" id="336" presence="optional"></string>
-			<string name="TradingSessionSubID" id="625" presence="optional"></string>
+			<string name="TradingSessionSubID" id="625" presence="optional" predict="12"></string>
 		</sequence>
 	</template>
 
@@ -382,7 +382,7 @@
 			<string name="SettleType" id="5459" presence="optional"></string>
 			<string name="CXFlag" id="5154" presence="optional"></string>
 			<string name="TradingSessionID" id="336" presence="optional"></string>
-			<string name="TradingSessionSubID" id="625" presence="optional"></string>
+			<string name="TradingSessionSubID" id="625" presence="optional" predict="12"></string>
 		</sequence>
 	</template>
 
@@ -438,7 +438,7 @@
 			<decimal name="MDEntrySize" id="271" presence="optional"><copy/></decimal>
 			<string name="OrderStatus" id="10505" presence="optional" fixed_size="1"><copy/></string>
 			<string name="TradingSessionID" id="336" presence="optional"><copy/></string>
-			<string name="TradingSessionSubID" id="625" presence="optional"><copy/></string>
+			<string name="TradingSessionSubID" id="625" presence="optional" predict="12"><copy/></string>
 		</sequence>
 	</template>
 
@@ -475,7 +475,7 @@
 			<decimal name="BuyBackPx" id="5558" presence="optional"></decimal>
 			<uInt32 name="BuyBackDate" id="5559" presence="optional"></uInt32>
 			<string name="TradingSessionID" id="336" presence="optional"></string>
-			<string name="TradingSessionSubID" id="625" presence="optional"></string>
+			<string name="TradingSessionSubID" id="625" presence="optional" predict="12"></string>
 			<string name="RefOrderID" id="1080" presence="optional"></string>
 		</sequence>
 	</template>
@@ -511,7 +511,7 @@
 			<decimal name="BuyBackPx" id="5558" presence="optional"></decimal>
 			<uInt32 name="BuyBackDate" id="5559" presence="optional"></uInt32>
 			<string name="TradingSessionID" id="336" presence="optional"></string>
-			<string name="TradingSessionSubID" id="625" presence="optional"></string>
+			<string name="TradingSessionSubID" id="625" presence="optional" predict="12"></string>
 			<string name="RefOrderID" id="1080" presence="optional"></string>
 		</sequence>
 	</template>
@@ -556,7 +556,7 @@
 			<sequence name="TradingSessionRulesGrp" presence="optional">
 				<length name="NoTradingSessionRules" id="1309"/>
 				<string name="TradingSessionID" id="336"></string>
-				<string name="TradingSessionSubID" id="625" presence="optional"></string>
+				<string name="TradingSessionSubID" id="625" presence="optional" predict="12"></string>
 				<int32 name="SecurityTradingStatus" id="326" presence="optional"></int32>
 				<int32 name="OrderNote" id="9680" presence="optional"></int32>
 				</sequence>
@@ -591,7 +591,7 @@
 		<uInt64 name="SendingTime" id="52"></uInt64>
 		<string name="Symbol" id="55"></string>
 		<string name="TradingSessionID" id="336" presence="optional"></string>
-		<string name="TradingSessionSubID" id="625" presence="optional"></string>
+		<string name="TradingSessionSubID" id="625" presence="optional" predict="12"></string>
 		<int32 name="SecurityTradingStatus" id="326" presence="optional"></int32>
 		<uInt32 name="AuctionIndicator" id="5509" presence="optional"></uInt32>
 	</template>
