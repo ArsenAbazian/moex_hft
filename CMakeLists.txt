@@ -75,6 +75,11 @@ set(common_params "-march=corei7 -msse4.2 -msse4.1 -m64 -mtune=corei7 -fpic -pth
 #set(CMAKE_CXX_FLAGS_DEBUG "${common_params} -g3 - O0")
 #set(CMAKE_CXX_FLAGS_RELEASE "${common_params} -g0 -O3")
 
+set(CMAKE_C_FLAGS_DEBUG "${common_flags} -g3 -DDEBUG")
+set(CMAKE_CXX_FLAGS_DEBUG "${common_flags} -g3 -DDEBUG")
+set(CMAKE_C_FLAGS_RELEASE "${common_flags} -O3 -DNDEBUG -fdata-sections -ffunction-sections")
+set(CMAKE_CXX_FLAGS_RELEASE "${common_flags} -O3 -DNDEBUG -fdata-sections -ffunction-sections")
+
 set(CMAKE_C_FLAGS "${common_flags}" CACHE STRING "contains options always passed to the C compiler." FORCE)
 set(CMAKE_CXX_FLAGS "${common_flags}" CACHE STRING "contains options always passed to the C++ compiler." FORCE)
 set(${PROJECT_NAME}_CFLAGS_ARE_CONFIGURED YES CACHE INTERNAL "indicates that the ${PROJECT_NAME} CFLAGS have been configured.")
