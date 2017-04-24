@@ -2219,7 +2219,7 @@ public:
         // manually activate timer 1
         snapForts->m_waitTimer->Activate(1);
         snapForts->ReconnectSetNextState(FeedConnectionState::fcsListenSnapshot);
-        snapForts->DoWorkAtom();
+        snapForts->DoWorkAtomSnapshot();
 
         if(!snapForts->m_waitTimer->Active())
             throw;

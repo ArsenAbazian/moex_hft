@@ -1626,7 +1626,7 @@ public:
         // manually activate timer 1
         snapFond->m_waitTimer->Activate(1);
         snapFond->ReconnectSetNextState(FeedConnectionState::fcsListenSnapshot);
-        snapFond->DoWorkAtom();
+        snapFond->DoWorkAtomSnapshot();
 
         if(!snapFond->m_waitTimer->Active())
             throw;

@@ -449,7 +449,7 @@ bool Robot::CollectSecurityDefinitionsForts() {
         if(!WinSockManager::UpdateManagersPollStatus())
             break;
         if(!collectedFutures) {
-            if(!this->m_fortsChannel->FutInfo()->InstrReplay()->DoWorkAtom()) {
+            if(!this->m_fortsChannel->FutInfo()->InstrReplay()->DoWorkAtomIncremental()) {
                 DefaultLogManager::Default->EndLog(false);
                 return false;
             }
@@ -459,7 +459,7 @@ bool Robot::CollectSecurityDefinitionsForts() {
             }
         }
         if(!collectedOptions) {
-            if(!this->m_fortsChannel->OptInfo()->InstrReplay()->DoWorkAtom()) {
+            if(!this->m_fortsChannel->OptInfo()->InstrReplay()->DoWorkAtomIncremental()) {
                 DefaultLogManager::Default->EndLog(false);
                 return false;
             }

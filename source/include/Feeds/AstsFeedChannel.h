@@ -114,12 +114,7 @@ public:
     inline bool CollectSecurityDefinitions() {
         if(this->m_state == FeedChannelState::fchSuspend)
             return true;
-        return this->idf->DoWorkAtom();
-    }
-
-    inline bool DoWorkAtom(FeedConnection *conn) {
-        if(conn == 0) return true;
-        return conn->DoWorkAtom();
+        return this->idf->DoWorkAtomSecurityDefinition();
     }
 
     inline bool DoWorkAtom() {
@@ -127,22 +122,22 @@ public:
             return true;
         bool res = true;
 #ifdef ALLOW_STATISTICS
-            res &= this->msr->DoWorkAtom();
-            res &= this->mss->DoWorkAtom();
+            res &= this->msr->DoWorkAtomIncremental();
+            res &= this->mss->DoWorkAtomSnapshot();
 #endif
 #ifdef ALLOW_ORDERS
-            res &= this->olr->DoWorkAtom();
-            res &= this->ols->DoWorkAtom();
+            res &= this->olr->DoWorkAtomIncremental();
+            res &= this->ols->DoWorkAtomSnapshot();
 #endif
 #ifdef ALLOW_TRADES
-            res &= this->tlr->DoWorkAtom();
-            res &= this->tls->DoWorkAtom();
+            res &= this->tlr->DoWorkAtomIncremental();
+            res &= this->tls->DoWorkAtomSnapshot();
 #endif
-            res &= this->idf->DoWorkAtom();
+            res &= this->idf->DoWorkAtomSecurityDefinition();
 #ifdef ALLOW_STATUS
-            res &= this->isf->DoWorkAtom();
+            res &= this->isf->DoWorkAtomSecurityStatus();
 #endif
-            res &= this->hr->DoWorkAtom();
+            res &= this->hr->DoWorkAtomHistoricalReplay();
             return res;
     }
 };

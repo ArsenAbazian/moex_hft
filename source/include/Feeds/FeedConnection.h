@@ -3994,22 +3994,59 @@ public:
     // fcsListenSecurityDefinition = 6,
     // fcsHistoricalReplay = 7,
     // fcsConnect = 8
-    inline bool DoWorkAtom() {
+    inline bool DoWorkAtomIncremental() {
         FeedConnectionState st = this->m_state;
         if(st == FeedConnectionState::fcsListenIncremental)
             return this->ListenIncremental();
+        if(st == FeedConnectionState::fcsConnect)
+            return this->Reconnect_Atom();
+        return true;
+    }
+    inline bool DoWorkAtomSnapshot() {
+        FeedConnectionState st = this->m_state;
+        if(st == FeedConnectionState::fcsSuspend)
+            return true;
+        if(st == FeedConnectionState::fcsListenSnapshot)
+            return this->ListenSnapshot();
+        return this->Reconnect_Atom();
+    }
+    inline bool DoWorkAtomSecurityStatus() {
+        FeedConnectionState st = this->m_state;
         if(st == FeedConnectionState::fcsListenSecurityStatus)
             return this->ListenSecurityStatus();
-        return this->DoWorkAtomCommon(st);
+        if(st == FeedConnectionState::fcsConnect)
+            return this->Reconnect_Atom();
+        return true;
     }
-    inline bool DoWorkAtomForts() {
+    inline bool DoWorkAtomSecurityDefinition() {
+        FeedConnectionState st = this->m_state;
+        if(st == FeedConnectionState::fcsSuspend)
+            return true;
+        if(st == FeedConnectionState::fcsListenSecurityDefinition)
+            return this->ListenSecurityDefinition();
+        return this->Reconnect_Atom();
+    }
+    inline bool DoWorkAtomHistoricalReplay() {
+        return this->HistoricalReplay_Atom();
+    }
+
+    inline bool DoWorkAtomIncrementalForts() {
         FeedConnectionState st = this->m_state;
         if(st == FeedConnectionState::fcsListenIncrementalForts)
             return this->ListenIncremental_Forts();
+        if(st == FeedConnectionState::fcsConnect)
+            return this->Reconnect_Atom();
+        return true;
+    }
+    inline bool DoWorkAtomSecurityStatusForts() {
+        FeedConnectionState st = this->m_state;
         if(st == FeedConnectionState::fcsListenSecurityStatusForts)
             return this->ListenSecurityStatusForts();
-        return this->DoWorkAtomCommon(st);
+        if(st == FeedConnectionState::fcsConnect)
+            return this->Reconnect_Atom();
+        return true;
     }
+
     inline FeedConnectionState CalcListenStateByType() {
         if(m_type == FeedConnectionType::fctInstrumentDefinition)
             return FeedConnectionState::fcsListenSecurityDefinition;

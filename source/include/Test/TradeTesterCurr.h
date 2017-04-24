@@ -1599,7 +1599,7 @@ public:
         // manually activate timer 1
         snapCurr->m_waitTimer->Activate(1);
         snapCurr->ReconnectSetNextState(FeedConnectionState::fcsListenSnapshot);
-        snapCurr->DoWorkAtom();
+        snapCurr->DoWorkAtomSnapshot();
 
         if(!snapCurr->m_waitTimer->Active())
             throw;

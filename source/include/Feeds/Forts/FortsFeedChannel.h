@@ -114,15 +114,15 @@ public:
     inline bool DoWorkInstr(FortsMarketDataGroup *g) {
         if(g == 0)
             return true;
-        return g->InstrReplay()->DoWorkAtom() &&
-                g->InstrInc()->DoWorkAtom();
+        return g->InstrReplay()->DoWorkAtomSecurityDefinition() &&
+                g->InstrInc()->DoWorkAtomSecurityStatusForts();
     }
 
     inline bool DoWorkInc(FortsMarketDataGroup *g) {
         if(g == 0)
             return true;
-        bool res = g->Inc()->DoWorkAtom();
-        res &= g->Snap()->DoWorkAtom();
+        bool res = g->Inc()->DoWorkAtomIncrementalForts();
+        res &= g->Snap()->DoWorkAtomSnapshot();
         return res;
     }
 

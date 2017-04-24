@@ -2088,10 +2088,10 @@ public:
             }
             w.Start();
             while (!w.IsElapsedMilliseconds(delay)) {
-                hr->DoWorkAtom();
+                hr->DoWorkAtomHistoricalReplay();
             }
             w.Stop();
-            hr->DoWorkAtom();
+            hr->DoWorkAtomHistoricalReplay();
 
             if(!TestMessagesHelper::SkipTimeOutCheck && w.ElapsedMilliseconds(1) > 5000)
                 throw;
@@ -2127,10 +2127,10 @@ public:
             }
             w.Start();
             while (!w.IsElapsedMilliseconds(delay)) {
-                hr->DoWorkAtom();
+                hr->DoWorkAtomHistoricalReplay();
             }
             w.Stop();
-            hr->DoWorkAtom();
+            hr->DoWorkAtomHistoricalReplay();
 
             if(!TestMessagesHelper::SkipTimeOutCheck && w.ElapsedMilliseconds(1) > 5000)
                 throw;
@@ -2358,7 +2358,7 @@ public:
 
     void ClearPoll() {
         for(int i = 0; i < WinSockManager::m_registeredCount; i++) {
-            WinSockManager::m_registeredManagers[i]->m_shouldRecv = false;
+            WinSockManager::m_registeredManagers[i]->PollFd()->revents = 0;
         }
     }
 
@@ -2375,7 +2375,7 @@ public:
         this->m_sockMessages->Add(ptr);
         for(int i = 0; i < WinSockManager::m_registeredCount; i++) {
             if(WinSockManager::m_registeredManagers[i] == msg->m_manager) {
-                WinSockManager::m_registeredManagers[i]->m_shouldRecv = msg->m_canRecv? 1: 0;
+                WinSockManager::m_registeredManagers[i]->PollFd()->revents = msg->m_canRecv? POLLIN: 0;
             }
         }
     }
