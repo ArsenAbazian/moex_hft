@@ -9,6 +9,7 @@ DigitString4* ItoaConverter::digitString4List3 = NULL;
 DigitString4* ItoaConverter::digitString4List4 = NULL;
 int* ItoaConverter::digitCount = NULL;
 int* ItoaConverter::charDigit2 = NULL;
+int* ItoaConverter::charDigit3MulBy1000 = NULL;
 int* ItoaConverter::charDigit3 = NULL;
 
 ItoaConverter::ItoaConverter()
@@ -164,12 +165,14 @@ void ItoaConverter::Initialize() {
     int min3DigitValue = 0x303030;
 
     ItoaConverter::charDigit3 = new int[max3DigitValue - min3DigitValue];
+    ItoaConverter::charDigit3MulBy1000 = new int[max3DigitValue - min3DigitValue];
     index = (int*)digit3;
     for (int i = 0; i < 1000; i++) {
         int iarr = (*index & 0x00ffffff);
         if(iarr >= max3DigitValue - min3DigitValue)
             throw;
         ItoaConverter::charDigit3[iarr] = ((int)digit3[0]) * 100 + ((int)digit3[1]) * 10 + digit3[2];
+        ItoaConverter::charDigit3MulBy1000[iarr] = ItoaConverter::charDigit3[iarr] * 1000;
         if (digit3[0] < 9) {
             digit3[0]++;
         }

@@ -25,6 +25,7 @@ class ItoaConverter
     static DigitString4 *digitString4List4;
     static int          *digitCount;
     static int          *charDigit3;
+    static int          *charDigit3MulBy1000;
     static int          *charDigit2;
 
     inline void Init(DigitString s, char d0, char d1, char d2, char d3, char d4, char d5) { 
@@ -302,7 +303,7 @@ public:
     }
     inline int FromStringFastUnsignedPredict67(const char *buffer, int count) {
         if(count == 6) {
-            int result = 1000 * ItoaConverter::charDigit3[((*(int *) buffer) & 0x00ffffff) - 0x00303030];
+            int result = ItoaConverter::charDigit3MulBy1000[((*(int *) buffer) & 0x00ffffff) - 0x00303030];
             buffer += 3;
             return result + ItoaConverter::charDigit3[((*(int *) buffer) & 0x00ffffff) - 0x00303030];
         }
