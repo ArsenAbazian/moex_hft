@@ -88,7 +88,7 @@ private:
     static int                      m_pollRes;
 
     int                             m_socket;
-    bool                            m_shouldRecv;
+    //bool                            m_shouldRecv;
     struct pollfd                   *m_poll;
     sockaddr_in                     m_adress;
     struct sockaddr					*m_senderAddr;
@@ -240,30 +240,29 @@ public:
 
     inline struct pollfd* PollFd() { return this->m_poll; }
 
-    inline void UpdatePollStatus() {
-        if(poll(this->m_poll, 1, 0) == 0)
-            return;
-        this->m_shouldRecv = this->m_poll->revents & (POLLIN | POLLPRI);
-    }
-
     inline static bool UpdateManagersPollStatus() {
 #ifdef TEST
         return true;
 #else
+        // TODO check it that we do not need to !!!!!!
         WinSockManager::m_pollRes = poll(WinSockManager::m_pollFd, WinSockManager::m_registeredCount, 0);
+        /* There is no need to check this since there was no error ever after calling poll
+         *
         if(WinSockManager::m_pollRes == -1) {
             DefaultLogManager::Default->WriteSuccess(LogMessageCode::lmcWinSockManager_UpdateManagersPollStatus, false)->m_errno = errno;
             return false;
         }
-        else if(WinSockManager::m_pollRes == 0)
+        else
+        */
+        /*
+        if(WinSockManager::m_pollRes == 0)
             return true;
 
+
         WinSockManager **man = WinSockManager::m_registeredManagers;
-        struct pollfd *pl = WinSockManager::m_pollFd;
-        for(int i = 0; i < WinSockManager::m_registeredCount; i++, man++, pl++) {
-            (*man)->m_shouldRecv = pl->revents & (POLLIN | POLLPRI);
-            pl->revents = 0;
-        }
+        for(int i = 0; i < WinSockManager::m_registeredCount; i++, man++) {
+            (*man)->UpdatePollStatusCore();
+        }*/
         return true;
 #endif
     }
@@ -469,18 +468,22 @@ public:
     void SendTest();
 //#endif
 
+    inline void UpdatePollStatus() {
+        poll(this->m_poll, 1, 0);
+    }
     inline bool ShouldRecv() {
 #ifdef TEST
         return ShouldRecvTest();
 #else
-        return this->m_shouldRecv;
+        return this->m_poll->revents & (POLLIN | POLLPRI);
 #endif
     }
 #ifdef TEST
     bool ShouldRecvTest();
 #endif
     inline void OnRecv() {
-        this->m_shouldRecv = false;
+        this->m_poll->revents = 0;
+        //this->m_shouldRecv = false;
     }
 
     bool RecvTest(unsigned char *buffer);

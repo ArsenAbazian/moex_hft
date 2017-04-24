@@ -22,7 +22,7 @@ WinSockManager::WinSockManager() {
     this->m_sendSize = 0;
     this->m_recvSize = 0;
     this->m_pollIndex = -1;
-    this->m_shouldRecv = false;
+    //this->m_shouldRecv = false;
     this->m_tempBuffer = new unsigned char[2000];
     this->m_senderAddr = new struct sockaddr;
     this->m_senderAddrLength = 0;

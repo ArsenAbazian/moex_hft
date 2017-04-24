@@ -12,8 +12,6 @@ void MarketInfo::Initialize(const char* name, const char *senderComputerId, cons
     this->m_trade = this->CreateTradeServerInfo(tradeName, tradeAddress, tradePort, senderComputerId, password, tradeTargetComputerId, tradeASTSServerName);
     this->m_tradeCapture = this->CreateTradeCaptureServerInfo(tradeCaptureName, tradeCaptureAddress, tradeCapturePort, senderComputerId, password, tradeCaptureTargetComputerId, tradeCaptureASTSServerName);
     this->m_dropCopy = this->CreateDropCopyServerInfo(tradeDropCopyName, tradeDropCopyAddress, tradeDropCopyPort, senderComputerId, password, tradeDropCopyTargetComputerId, tradeDropCopyASTSServerName);
-
-    this->m_enable = true;
 }
 
 MarketServerInfo* MarketInfo::CreateTradeServerInfo(const char *name, const char *internetAddress, int internetPort, const char *senderComputerId, const char *password, const char *targetComputerId, const char *astsServerName) {
