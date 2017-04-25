@@ -2616,7 +2616,7 @@ protected:
 
         if(!recv) {
             if(!this->m_waitTimer->Active(1)) {
-                this->m_waitTimer->Start(1);
+                this->m_waitTimer->StartFast(1);
             }
             else {
                 if(this->m_waitTimer->IsTimeOutFast(1, this->WaitAnyPacketMaxTimeMcs)) {
@@ -2641,7 +2641,7 @@ protected:
 
         if(!recv) {
             if(!this->m_waitTimer->Active(1)) {
-                this->m_waitTimer->Start(1);
+                this->m_waitTimer->StartFast(1);
             }
             else {
                 if(this->m_waitTimer->ElapsedMicrosecondsFast(1) > this->WaitSecurityStatusFortsMaxTimeMcs) {
@@ -2667,7 +2667,7 @@ protected:
 
         if(!recv) {
             if(!this->m_waitTimer->Active(1)) {
-                this->m_waitTimer->Start(1);
+                this->m_waitTimer->StartFast(1);
             }
             else {
                 if(this->m_waitTimer->IsTimeOutFast(1, this->WaitAnyPacketMaxTimeMcs)) {
@@ -2693,7 +2693,7 @@ protected:
 
         if(!recv) {
             if(!this->m_waitTimer->Active(2)) {
-                this->m_waitTimer->Start(2);
+                this->m_waitTimer->StartFast(2);
             }
             else {
                 if(this->m_waitTimer->IsTimeOutFast(2, this->WaitAnyPacketMaxTimeMcs)) {

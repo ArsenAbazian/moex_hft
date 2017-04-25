@@ -880,12 +880,12 @@ public:
         ht->Test();
         delete ht;
 
-        TradeTesterFond *ttFond = new TradeTesterFond();
-        ttFond->Test();
-        delete ttFond;
         TradeTesterCurr *ttCurr = new TradeTesterCurr();
         ttCurr->Test();
         delete ttCurr;
+        TradeTesterFond *ttFond = new TradeTesterFond();
+        ttFond->Test();
+        delete ttFond;
 
         OrderTesterCurr *otCurr = new OrderTesterCurr();
         otCurr->Test();

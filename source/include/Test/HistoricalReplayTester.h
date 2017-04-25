@@ -63,12 +63,14 @@ public:
     // because if no - then will be close tcp socket immediately
     void TestTimerDeactivatedAfterSendLogonMessageAndMarketDataRequest() {
         this->hr->HrRequestMessage(this->olr, 1, 1);
-        this->hr->m_waitTimer->Start(2);
+        Stopwatch::Default->GetElapsedMicrosecondsGlobal();
+        this->hr->m_waitTimer->StartFast(2);
         this->hr->HistoricalReplay_SendLogon();
         if(this->hr->m_waitTimer->Active(2))
             throw;
 
-        this->hr->m_waitTimer->Start(2);
+        Stopwatch::Default->GetElapsedMicrosecondsGlobal();
+        this->hr->m_waitTimer->StartFast(2);
         this->hr->HistoricalReplay_SendMarketDataRequest();
         if(this->hr->m_waitTimer->Active(2))
             throw;

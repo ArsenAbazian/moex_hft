@@ -1769,7 +1769,9 @@ public:
         if(!incFond->m_waitTimer->Active()) // not all messages was processed - some messages was skipped
             throw;
         // wait
-        while(incFond->m_waitTimer->ElapsedMicrosecondsFast() < incFond->WaitLostIncrementalMessageMaxTimeMcs());
+        while(incFond->m_waitTimer->ElapsedMicrosecondsFast() < incFond->WaitLostIncrementalMessageMaxTimeMcs()) {
+            Stopwatch::Default->GetElapsedMicrosecondsGlobal();
+        }
         if(!incFond->ListenIncremental_Core())
             throw;
         //entering snapshot mode
@@ -1808,7 +1810,7 @@ public:
                 throw;
         }
         while(snapFond->m_waitTimer->ElapsedMicrosecondsFast(2) <= snapFond->WaitAnyPacketMaxTimeMcs) {
-            int a = 5;
+            Stopwatch::Default->GetElapsedMicrosecondsGlobal();
             // just wait
         }
         if(!snapFond->m_waitTimer->Active(2))
@@ -1838,7 +1840,7 @@ public:
 
     void TestConnection_OneMessageReceived() {
         this->Clear();
-    this->AddSymbol("symbol1");
+        this->AddSymbol("symbol1");
         incFond->StartListenSnapshot();
 
         //no messages first half time
@@ -2166,7 +2168,8 @@ public:
         snapFond->WaitSnapshotMaxTimeMcs(50000);
         // wait some time and then receive lost packet
         while(!snapFond->m_waitTimer->IsTimeOutFast(1, snapFond->WaitSnapshotMaxTimeMcs() / 2)) {
-            snapFond->m_waitTimer->Start(); // reset timer 0 to avoid simulate situation when no packet received
+            Stopwatch::Default->GetElapsedMicrosecondsGlobal();
+            snapFond->m_waitTimer->StartFast(); // reset timer 0 to avoid simulate situation when no packet received
             if(!snapFond->ListenSnapshot_Core())
                 throw;
         }
@@ -2342,7 +2345,9 @@ public:
         if(!incFond->m_waitTimer->Active()) // not all messages was processed - some messages was skipped
             throw;
         // wait
-        while(incFond->m_waitTimer->ElapsedMicrosecondsFast() < incFond->WaitLostIncrementalMessageMaxTimeMcs());
+        while(incFond->m_waitTimer->ElapsedMicrosecondsFast() < incFond->WaitLostIncrementalMessageMaxTimeMcs()) {
+            Stopwatch::Default->GetElapsedMicrosecondsGlobal();
+        }
 
         // sending snapshot for only one item and rpt seq before last incremental message
         SendMessages(snapFond, new TestTemplateInfo*[4] {

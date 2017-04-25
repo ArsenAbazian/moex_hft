@@ -1773,7 +1773,9 @@ public:
         if(!incForts->m_waitTimer->Active()) // not all messages was processed - some messages was skipped
             throw;
         // wait
-        while(incForts->m_waitTimer->ElapsedMicrosecondsFast() < incForts->WaitLostIncrementalMessageMaxTimeMcs());
+        while(incForts->m_waitTimer->ElapsedMicrosecondsFast() < incForts->WaitLostIncrementalMessageMaxTimeMcs()) {
+            Stopwatch::Default->GetElapsedMicrosecondsGlobal();
+        }
 
         if(!incForts->ListenIncremental_Forts_Core())
             throw;
@@ -1815,7 +1817,7 @@ public:
                 throw;
         }
         while(snapForts->m_waitTimer->ElapsedMicrosecondsFast(2) <= snapForts->WaitAnyPacketMaxTimeMcs) {
-            int a = 5;
+            Stopwatch::Default->GetElapsedMicrosecondsGlobal();
             // just wait
         }
         if(!snapForts->m_waitTimer->Active(2))
@@ -2203,7 +2205,8 @@ public:
 
         // wait some time and then receive lost packet
         while(!snapForts->m_waitTimer->IsTimeOutFast(1, snapForts->WaitSnapshotMaxTimeMcs() / 2)) {
-            snapForts->m_waitTimer->Start(); // reset timer 0 to avoid simulate situation when no packet received
+            Stopwatch::Default->GetElapsedMicrosecondsGlobal();
+            snapForts->m_waitTimer->StartFast(); // reset timer 0 to avoid simulate situation when no packet received
             if(!snapForts->ListenSnapshot_Core())
                 throw;
         }
@@ -2396,7 +2399,9 @@ public:
         if(!incForts->m_waitTimer->Active()) // not all messages was processed - some messages was skipped
             throw;
         // wait
-        while(incForts->m_waitTimer->ElapsedMicrosecondsFast() < incForts->WaitLostIncrementalMessageMaxTimeMcs());
+        while(incForts->m_waitTimer->ElapsedMicrosecondsFast() < incForts->WaitLostIncrementalMessageMaxTimeMcs()) {
+            Stopwatch::Default->GetElapsedMicrosecondsGlobal();
+        }
 
         SendMessages(snapForts, new TestTemplateInfo*[4] { // for route firts - this message will not be applied
                 new TestTemplateInfo(FeedTemplateId::fortsSnapshot, 3, "symbol1", 111111, false, true,
