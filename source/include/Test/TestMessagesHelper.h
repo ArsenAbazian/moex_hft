@@ -1864,15 +1864,16 @@ public:
                 idf_msg[idf_index]->m_msgSeqNo = idf_index + 1;
             if(!idf_msg[idf_index]->m_lost) {
                 SendMessage(fif, idf_msg[idf_index]);
+
                 if (!fif->ListenSecurityDefinition_Core())
                     throw;
             }
             idf_index++;
 
             w.Start();
-            while(!w.IsElapsedMilliseconds(delay));
+            while(!w.IsElapsedMillisecondsSlow(delay));
             w.Stop();
-            if(!TestMessagesHelper::SkipTimeOutCheck && w.ElapsedMilliseconds(1) > 5000)
+            if(!TestMessagesHelper::SkipTimeOutCheck && w.ElapsedMillisecondsSlow(1) > 5000)
                 throw;
         }
     }
@@ -1890,15 +1891,16 @@ public:
                 idf_msg[idf_index]->m_msgSeqNo = idf_index + 1;
             if(!idf_msg[idf_index]->m_lost) {
                 SendMessage(fif, idf_msg[idf_index]);
+
                 if (!fif->ListenSecurityStatus_Core())
                     throw;
             }
             idf_index++;
 
             w.Start();
-            while(!w.IsElapsedMilliseconds(delay));
+            while(!w.IsElapsedMillisecondsSlow(delay));
             w.Stop();
-            if(!TestMessagesHelper::SkipTimeOutCheck && w.ElapsedMilliseconds(1) > 5000)
+            if(!TestMessagesHelper::SkipTimeOutCheck && w.ElapsedMillisecondsSlow(1) > 5000)
                 throw;
         }
     }
@@ -2060,6 +2062,7 @@ public:
                 if (isfIndex < isfCount) {
                     if (!tisf[isfIndex]->m_lost) {
                         SendMessage(isf, tisf[isfIndex]);
+
                         if (!isf->ListenSecurityStatus_Core())
                             throw;
                     }
@@ -2070,6 +2073,7 @@ public:
                 if (idfIndex < idfCount) {
                     if (!tidf[idfIndex]->m_lost) {
                         SendMessage(idf, tidf[idfIndex]);
+
                         if (!idf->ListenSecurityDefinition_Core())
                             throw;
                         if (idf->IsIdfDataCollected()) {
@@ -2087,13 +2091,13 @@ public:
                     idfIndex = idfCount;
             }
             w.Start();
-            while (!w.IsElapsedMilliseconds(delay)) {
+            while (!w.IsElapsedMillisecondsSlow(delay)) {
                 hr->DoWorkAtomHistoricalReplay();
             }
             w.Stop();
             hr->DoWorkAtomHistoricalReplay();
 
-            if(!TestMessagesHelper::SkipTimeOutCheck && w.ElapsedMilliseconds(1) > 5000)
+            if(!TestMessagesHelper::SkipTimeOutCheck && w.ElapsedMillisecondsSlow(1) > 5000)
                 throw;
         }
     }
@@ -2116,25 +2120,28 @@ public:
             if(idf_index < idfMsgCount) {
                 if (!idf_msg[idf_index]->m_lost) {
                     SendMessage(fif, idf_msg[idf_index]);
+
                     if (!fif->ListenSecurityStatus_Core())
                         throw;
                 }
                 idf_index++;
             }
             else {
+
                 if (!fif->ListenSecurityStatus_Core())
                     throw;
             }
             w.Start();
-            while (!w.IsElapsedMilliseconds(delay)) {
+            while (!w.IsElapsedMillisecondsSlow(delay)) {
                 hr->DoWorkAtomHistoricalReplay();
             }
             w.Stop();
             hr->DoWorkAtomHistoricalReplay();
 
-            if(!TestMessagesHelper::SkipTimeOutCheck && w.ElapsedMilliseconds(1) > 5000)
+            if(!TestMessagesHelper::SkipTimeOutCheck && w.ElapsedMillisecondsSlow(1) > 5000)
                 throw;
         }
+
         if(!fif->ListenSecurityStatus_Core())
             throw;
     }
@@ -2249,6 +2256,7 @@ public:
     }
 
     void ListenAtomIncremental(FeedConnection *fci) {
+
         if(this->IsForts())
             fci->ListenIncremental_Forts_Core();
         else
@@ -2286,7 +2294,7 @@ public:
                     throw;
                 if(fcs->State() != FeedConnectionState::fcsSuspend)
                     throw;
-                while(!fci->m_waitTimer->IsElapsedMilliseconds(fci->WaitLostIncrementalMessageMaxTimeMs()) && fcs->State() == FeedConnectionState::fcsSuspend) {
+                while(!fci->m_waitTimer->IsTimeOutFast(fci->WaitLostIncrementalMessageMaxTimeMcs()) && fcs->State() == FeedConnectionState::fcsSuspend) {
                     ListenAtomIncremental(fci);
                 }
                 if(fcs->State() == FeedConnectionState::fcsSuspend) {
@@ -2308,6 +2316,7 @@ public:
                 }
                 if(snap_index < snapMsgCount)
                     snap_index++;
+
                 fcs->ListenSnapshot_Core();
             }
             else {
@@ -2316,9 +2325,9 @@ public:
                 }
             }
             w.Start();
-            while(!w.IsElapsedMilliseconds(delay));
+            while(!w.IsElapsedMillisecondsSlow(delay));
             w.Stop();
-            if(!TestMessagesHelper::SkipTimeOutCheck && w.ElapsedMilliseconds(1) > 5000)
+            if(!TestMessagesHelper::SkipTimeOutCheck && w.ElapsedMillisecondsSlow(1) > 5000)
                 throw;
         }
         ListenAtomIncremental(fci); // emulate endless loop

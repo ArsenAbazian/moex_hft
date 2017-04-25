@@ -218,8 +218,8 @@ class MarketServerInfo {
 
     inline MsiMessageProcessResult OnReceiveLogonMessage(FixProtocolMessage *msg) {
         DefaultLogManager::Default->StartLog(this->m_nameLogIndex, LogMessageCode::lmcMarketServerInfo_OnReceiveLogonMessage);
-
-        this->m_stopwatch->Start();
+        Stopwatch::Default->GetElapsedMicrosecondsGlobal();
+        this->m_stopwatch->StartFast();
         this->SetState(MarketServerState::mssDoNothing);
 
         DefaultLogManager::Default->EndLog(true);
@@ -418,7 +418,8 @@ public:
         this->m_fixManager->PrepareSendBuffer();
         this->m_testRequestId = rand();
         this->m_fixManager->CreateTestRequestMessage();
-        this->m_stopwatch->Start();
+        Stopwatch::Default->GetElapsedMicrosecondsGlobal();
+        this->m_stopwatch->StartFast();
         return this->SendCore(true);
     }
 

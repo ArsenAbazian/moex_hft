@@ -129,6 +129,9 @@ public:
     }
 
     inline bool ProcessIncrementalMessage(T *info) {
+#ifdef TEST
+        printf("trade inc %s %d %d\n", this->m_symbolInfo->Symbol()->m_text, this->m_rptSeq, info->RptSeq);
+#endif
         if(!this->IsNextMessage(info)) {
             if(this->IsOutdatedMessage(info))
                 return false;
@@ -143,6 +146,9 @@ public:
     }
 
     inline void StartProcessSnapshotMessages() {
+#ifdef TEST
+        printf("start snap %s %d\n", this->m_symbolInfo->Symbol()->m_text, this->m_rptSeq);
+#endif
         this->m_savedRptSeq = this->m_rptSeq;
         this->Clear(this->Trades());
     }
@@ -152,6 +158,9 @@ public:
     }
 
     inline void ProcessSnapshotMessage(T *info) {
+#ifdef TEST
+        printf("trade snap %s %d %d\n", this->m_symbolInfo->Symbol()->m_text, this->m_rptSeq, info->RptSeq);
+#endif
         this->ForceProcessMessage(info);
     }
 

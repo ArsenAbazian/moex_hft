@@ -4,4 +4,5 @@
 
 #include "../include/Stopwatch.h"
 
-Stopwatch* DefaultStopwatch::Default = new Stopwatch();
+__syscall_slong_t  Stopwatch::ElapsedMicroseconds = 0;
+Stopwatch* Stopwatch::Default = new Stopwatch();

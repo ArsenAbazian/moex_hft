@@ -263,6 +263,7 @@ public:
             info->m_msgSeqNo = i + 1;
 
             this->m_helper->SendMessage(this->inc, info);
+
             this->inc->ListenIncremental_Core();
         }
         TestPacketsCleared(0, 10);
@@ -271,6 +272,7 @@ public:
             info->m_msgSeqNo = i + 1;
 
             this->m_helper->SendMessage(this->inc, info);
+
             this->inc->ListenIncremental_Core();
         }
 
@@ -307,7 +309,9 @@ public:
 
         this->inc->StartListenSnapshot();
         this->m_helper->SendMessage(this->snap, info2);
+
         this->snap->ListenSnapshot_Core();
+
         this->inc->ListenIncremental_Core();
 
         TestPacketsCleared(0, 10);
@@ -475,6 +479,7 @@ public:
         this->snapForts->FastManager()->WriteMsgSeqNumber(info->MsgSeqNum);
         this->snapForts->FastManager()->EncodeFortsHeartbeatInfo(info);
         this->snapForts->ProcessServerCore(this->snapForts->m_fastProtocolManager->MessageLength());
+
         this->snapForts->ListenSnapshot_Core();
     }
     
@@ -483,6 +488,7 @@ public:
         this->incForts->FastManager()->WriteMsgSeqNumber(info->MsgSeqNum);
         this->incForts->FastManager()->EncodeFortsDefaultIncrementalRefreshMessageInfo(info);
         this->incForts->ProcessServerCore(this->incForts->m_fastProtocolManager->MessageLength());
+
         this->incForts->ListenIncremental_Forts_Core();
     }
 
@@ -491,6 +497,7 @@ public:
         this->incForts->FastManager()->WriteMsgSeqNumber(info->MsgSeqNum);
         this->incForts->FastManager()->EncodeFortsHeartbeatInfo(info);
         this->incForts->ProcessServerCore(this->incForts->m_fastProtocolManager->MessageLength());
+
         this->incForts->ListenIncremental_Forts_Core();
     }
 
@@ -753,6 +760,7 @@ public:
         this->SendProcessFortsIncremental(CreateFortsIncremental(5, "symbol3", 333333, 1));
         this->SendProcessFortsIncremental(CreateFortsIncremental(6, "symbol3", 333333, 2));
         this->incForts->StartListenSnapshot();
+
         this->incForts->ListenIncremental_Forts_Core();
 
         if(this->incForts->m_fortsRouteFirtsSecurityId != 0)
@@ -788,6 +796,7 @@ public:
         this->SendProcessFortsIncremental(CreateFortsIncremental(6, "symbol2", 222222, 6, 1));
         this->SendProcessFortsIncremental(CreateFortsIncremental(7, "symbol3", 333333, 1));
         this->incForts->StartListenSnapshot();
+
         this->incForts->ListenIncremental_Forts_Core();
 
         if(this->incForts->m_fortsRouteFirtsSecurityId != 0)

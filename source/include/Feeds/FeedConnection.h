@@ -47,11 +47,11 @@ class FeedConnection {
 
 public:
     const int MaxReceiveBufferSize                      = 1500;
-    const int WaitAnyPacketMaxTimeMs                    = 4000;
-    const int WaitAnyPacketFortsMaxTimeMs               = 40000;
-    const int WaitSecurityStatusFortsMaxTimeSec         = 120;
+    const int WaitAnyPacketMaxTimeMcs                   = 4000000;
+    const int WaitAnyPacketFortsMaxTimeMcs              = 40000000;
+    const int WaitSecurityStatusFortsMaxTimeMcs         = 120000000;
     const int MaxHrUnsuccessfulConnectCount             = 20;
-    const int WaitSecurityDefinitionPacketMaxTimeMs     = 20000;
+    const int WaitSecurityDefinitionPacketMaxTimeMcs    = 20000000;
 protected:
     char                                        m_idName[128];
     char                                        m_channelName[128];
@@ -89,9 +89,9 @@ protected:
     FortsSnapshotInfo                           *m_fortsSnapshotInfo;
     FortsTradingSessionStatusInfo               *m_fortsTradingSessionStatus;
 
-    int                                         m_waitLostIncrementalMessageMaxTimeMs;
-    int                                         m_waitIncrementalMessageMaxTimeMs;
-    int                                         m_snapshotMaxTimeMs;
+    int                                         m_waitLostIncrementalMessageMaxTimeMcs;
+    int                                         m_waitIncrementalMessageMaxTimeMcs;
+    int                                         m_snapshotMaxTimeMcs;
     int                                         m_maxLostPacketCountForStartSnapshot;
 
     FeedConnectionSecurityDefinitionMode        m_idfMode;
@@ -1439,7 +1439,10 @@ protected:
         return info;
     }
 
-    inline void ResetWaitTime() { this->m_waitTimer->Start(); }
+    inline void ResetWaitTime() {
+        Stopwatch::Default->GetElapsedMicrosecondsGlobal();
+        this->m_waitTimer->StartFast();
+    }
     inline bool ActualMsgSeqNum() { return this->m_startMsgSeqNum == this->m_endMsgSeqNum; }
 
     inline void IncrementMsgSeqNo() { this->m_startMsgSeqNum++; }
@@ -2030,6 +2033,9 @@ protected:
     }
 
     inline bool ListenSecurityDefinition_Core() {
+#ifdef TEST
+        Stopwatch::Default->GetElapsedMicrosecondsGlobal();
+#endif
 #ifdef COLLECT_STATISTICS
         if(this->m_id == FeedConnectionId::fcidIdfFond)
             ProgramStatistics::Current->Set(Counters::cFondIdf, this->m_endMsgSeqNum);
@@ -2042,14 +2048,17 @@ protected:
     }
 
     inline bool ListenSnapshot_Core() {
+#ifdef TEST
+        Stopwatch::Default->GetElapsedMicrosecondsGlobal();
+#endif
         if(this->m_startMsgSeqNum < 1)
             return true;
         if(this->HasPotentiallyLostPackets()) {
-            this->m_waitTimer->Activate(1);
+            this->m_waitTimer->ActivateFast(1);
         }
         else
             this->m_waitTimer->Stop(1);
-        if(this->m_waitTimer->IsElapsedMilliseconds(1, this->WaitSnapshotMaxTimeMs()) ||
+        if(this->m_waitTimer->IsTimeOutFast(1, this->WaitSnapshotMaxTimeMcs()) ||
                 this->m_endMsgSeqNum - this->m_startMsgSeqNum > 5) {
             if(this->m_snapshotRouteFirst != -1) {
                 this->CancelSnapshot();
@@ -2075,7 +2084,9 @@ protected:
         return true;
     }
     inline bool ListenIncremental_Core() {
-
+#ifdef TEST
+        Stopwatch::Default->GetElapsedMicrosecondsGlobal();
+#endif
 #ifndef TEST
         // TODO remove hack. just skip 30 messages and then try to restore
         // Skip this hack when testing :)
@@ -2094,8 +2105,8 @@ protected:
                 this->m_waitTimer->Stop();
                 return true;
             }
-            this->m_waitTimer->Activate();
-            if(this->m_waitTimer->ElapsedMilliseconds() >= this->m_waitLostIncrementalMessageMaxTimeMs) {
+            this->m_waitTimer->ActivateFast();
+            if(this->m_waitTimer->IsTimeOutFast(this->m_waitLostIncrementalMessageMaxTimeMcs)) {
                 if(!this->CheckRequestLostIncrementalMessages())
                     return false;
                 this->m_waitTimer->Stop();
@@ -2105,7 +2116,7 @@ protected:
             //printf("%d que entries and %d symbols to go\n", this->OrderCurr()->QueueEntriesCount(), this->OrderCurr()->SymbolsToRecvSnapshotCount());
             if(this->CanStopListeningSnapshot()) {
                 this->StopListenSnapshot();
-                this->m_waitTimer->Activate();
+                this->m_waitTimer->ActivateFast();
                 this->m_waitTimer->Stop(1);
             }
         }
@@ -2113,7 +2124,9 @@ protected:
     }
 
     inline bool ListenIncremental_Forts_Core() {
-
+#ifdef TEST
+        Stopwatch::Default->GetElapsedMicrosecondsGlobal();
+#endif
 #ifndef TEST
         // TODO remove hack. just skip 30 messages and then try to restore
         // Skip this hack when testing :)
@@ -2132,8 +2145,8 @@ protected:
                 this->m_waitTimer->Stop();
                 return true;
             }
-            this->m_waitTimer->Activate();
-            if(this->m_waitTimer->ElapsedMilliseconds() >= this->m_waitLostIncrementalMessageMaxTimeMs) {
+            this->m_waitTimer->ActivateFast();
+            if(this->m_waitTimer->IsTimeOutFast(this->m_waitLostIncrementalMessageMaxTimeMcs)) {
                 if(!this->CheckRequestLostIncrementalMessages())
                     return false;
                 this->m_waitTimer->Stop();
@@ -2143,7 +2156,7 @@ protected:
             //printf("%d que entries and %d symbols to go\n", this->OrderCurr()->QueueEntriesCount(), this->OrderCurr()->SymbolsToRecvSnapshotCount());
             if(this->CanStopListeningSnapshot()) {
                 this->StopListenSnapshot();
-                this->m_waitTimer->Activate();
+                this->m_waitTimer->ActivateFast();
                 this->m_waitTimer->Stop(1);
             }
         }
@@ -2151,12 +2164,18 @@ protected:
     }
 
     inline bool ListenSecurityStatus_Core() {
+#ifdef TEST
+        Stopwatch::Default->GetElapsedMicrosecondsGlobal();
+#endif
         if(!this->ProcessSecurityStatusMessages())
             return false;
         return true;
     }
 
     inline bool ListenSecurityStatusForts_Core() {
+#ifdef TEST
+        Stopwatch::Default->GetElapsedMicrosecondsGlobal();
+#endif
         if(!this->ProcessSecurityStatusMessagesForts())
             return false;
         return true;
@@ -2203,7 +2222,8 @@ protected:
 #endif
         this->m_reconnectCount = 0;
         this->SetState(this->m_nextState);
-        this->m_waitTimer->Start();
+        Stopwatch::Default->GetElapsedMicrosecondsGlobal();
+        this->m_waitTimer->StartFast();
         this->m_waitTimer->Stop(1);
         this->m_startMsgSeqNum = -1;
         this->m_endMsgSeqNum = -1;
@@ -2295,7 +2315,7 @@ protected:
     }
 
     inline void CheckReconnectHistoricalReplay() {
-        this->m_waitTimer->Activate(2);
+        this->m_waitTimer->ActivateFast(2);
         if(this->m_waitTimer->ElapsedSeconds(2) > 9) {
             //this->Disconnect();
             //this->m_hsState = FeedConnectionHistoricalReplayState::hsSuspend;
@@ -2533,22 +2553,24 @@ public:
         this->GenerateSecurityDefinitionsCore();
         this->AfterProcessSecurityDefinitions();
         this->OnSecurityDefinitionRecvAllMessages();
-        printf("\t\t%s %s done in %ld ms.\n", this->m_channelName, this->m_idName, this->m_waitTimer->ElapsedMilliseconds(3)); // TODOO remove debug
+        printf("\t\t%s %s done in %ld ms.\n", this->m_channelName, this->m_idName, this->m_waitTimer->ElapsedMillisecondsFast(3)); // TODOO remove debug
         this->m_waitTimer->Stop(3);
         return true;
     }
 protected:
     inline bool ListenIncremental() {
-
+#ifdef TEST
+        Stopwatch::Default->GetElapsedMicrosecondsGlobal();
+#endif
         bool recv = this->ProcessServerAIncremental();
         recv |= this->ProcessServerBIncremental();
 
         if(!recv) {
-            this->m_waitTimer->Activate(1);
-            if(this->m_waitTimer->ElapsedMilliseconds(1) > this->m_waitIncrementalMessageMaxTimeMs /*this->WaitAnyPacketMaxTimeMs*/) {
+            this->m_waitTimer->ActivateFast(1);
+            if(this->m_waitTimer->IsTimeOutFast(1, this->m_waitIncrementalMessageMaxTimeMcs)) {
                 //TODO remove debug
                 if(this->m_snapshot->State() == FeedConnectionState::fcsSuspend) {
-                    printf("%s listen atom incremental timeout %lu ms... start snapshot\n", this->m_idName, this->m_waitTimer->ElapsedMilliseconds(1));
+                    printf("%s listen atom incremental timeout %lu ms... start snapshot\n", this->m_idName, this->m_waitTimer->ElapsedMillisecondsFast(1));
                     this->StartListenSnapshot();
                 }
                 return true;
@@ -2561,16 +2583,18 @@ protected:
         return this->ListenIncremental_Core();
     }
     inline bool ListenIncremental_Forts() {
-
+#ifdef TEST
+        Stopwatch::Default->GetElapsedMicrosecondsGlobal();
+#endif
         bool recv = this->ProcessServerAIncremental();
         recv |= this->ProcessServerBIncremental();
 
         if(!recv) {
-            this->m_waitTimer->Activate(1);
-            if(this->m_waitTimer->ElapsedMilliseconds(1) > this->m_waitIncrementalMessageMaxTimeMs /*this->WaitAnyPacketMaxTimeMs*/) {
+            this->m_waitTimer->ActivateFast(1);
+            if(this->m_waitTimer->IsTimeOutFast(1, this->m_waitIncrementalMessageMaxTimeMcs)) {
                 //TODO remove debug
                 if(this->m_snapshot->State() == FeedConnectionState::fcsSuspend) {
-                    printf("%s listen atom incremental timeout %lu ms... start snapshot\n", this->m_idName, this->m_waitTimer->ElapsedMilliseconds(1));
+                    printf("%s listen atom incremental timeout %lu ms... start snapshot\n", this->m_idName, this->m_waitTimer->ElapsedMillisecondsFast(1));
                     this->StartListenSnapshot();
                 }
                 return true;
@@ -2584,6 +2608,9 @@ protected:
     }
 
     inline bool ListenSecurityStatus() {
+#ifdef TEST
+        Stopwatch::Default->GetElapsedMicrosecondsGlobal();
+#endif
         bool recv = this->ProcessServerASecurityStatus();
         recv |= this->ProcessServerBSecurityStatus();
 
@@ -2592,7 +2619,7 @@ protected:
                 this->m_waitTimer->Start(1);
             }
             else {
-                if(this->m_waitTimer->ElapsedMilliseconds(1) > this->WaitAnyPacketMaxTimeMs) {
+                if(this->m_waitTimer->IsTimeOutFast(1, this->WaitAnyPacketMaxTimeMcs)) {
                     printf("%s %s Timeout 10 sec... Reconnect...\n", this->m_channelName, this->m_idName);
                     DefaultLogManager::Default->WriteSuccess(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_ListenSecurityStatus, false);
                     this->ReconnectSetNextState(FeedConnectionState::fcsListenSecurityStatus);
@@ -2605,8 +2632,10 @@ protected:
         }
         return this->ListenSecurityStatus_Core();
     }
-
     inline bool ListenSecurityStatusForts() {
+#ifdef TEST
+        Stopwatch::Default->GetElapsedMicrosecondsGlobal();
+#endif
         bool recv = this->ProcessServerASecurityStatus();
         recv |= this->ProcessServerBSecurityStatus();
 
@@ -2615,8 +2644,8 @@ protected:
                 this->m_waitTimer->Start(1);
             }
             else {
-                if(this->m_waitTimer->ElapsedSeconds(1) > this->WaitSecurityStatusFortsMaxTimeSec) {
-                    printf("%s %s Timeout %d sec... Reconnect...\n", this->m_channelName, this->m_idName, this->WaitSecurityStatusFortsMaxTimeSec);
+                if(this->m_waitTimer->ElapsedMicrosecondsFast(1) > this->WaitSecurityStatusFortsMaxTimeMcs) {
+                    printf("%s %s Timeout %d sec... Reconnect...\n", this->m_channelName, this->m_idName, this->WaitSecurityStatusFortsMaxTimeMcs);
                     DefaultLogManager::Default->WriteSuccess(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_ListenSecurityStatusForts, false);
                     this->ReconnectSetNextState(FeedConnectionState::fcsListenSecurityStatus);
                 }
@@ -2630,6 +2659,9 @@ protected:
     }
 
     inline bool ListenSecurityDefinition() {
+#ifdef TEST
+        Stopwatch::Default->GetElapsedMicrosecondsGlobal();
+#endif
         bool recv = this->ProcessServerASecurityDefinition();
         recv |= this->ProcessServerBSecurityDefinition();
 
@@ -2638,7 +2670,7 @@ protected:
                 this->m_waitTimer->Start(1);
             }
             else {
-                if(this->m_waitTimer->ElapsedMilliseconds(1) > this->WaitAnyPacketMaxTimeMs) {
+                if(this->m_waitTimer->IsTimeOutFast(1, this->WaitAnyPacketMaxTimeMcs)) {
                     printf("%s %s Timeout 10 sec... Reconnect...\n", this->m_channelName, this->m_idName);
                     DefaultLogManager::Default->WriteSuccess(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_ListenSecurityDefinition, false);
                     this->ReconnectSetNextState(FeedConnectionState::fcsListenSecurityDefinition);
@@ -2653,6 +2685,9 @@ protected:
     }
 
     inline bool ListenSnapshot() {
+#ifdef TEST
+        Stopwatch::Default->GetElapsedMicrosecondsGlobal();
+#endif
         bool recv = this->ProcessServerASnapshot();
         recv |= this->ProcessServerBSnapshot();
 
@@ -2661,7 +2696,7 @@ protected:
                 this->m_waitTimer->Start(2);
             }
             else {
-                if(this->m_waitTimer->ElapsedMilliseconds(2) > this->WaitAnyPacketMaxTimeMs) {
+                if(this->m_waitTimer->IsTimeOutFast(2, this->WaitAnyPacketMaxTimeMcs)) {
                     this->m_waitTimer->Stop(2);
                     DefaultLogManager::Default->WriteSuccess(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_ListenSnapshot, false);
                     this->socketAManager->UpdatePollStatus();
@@ -3179,14 +3214,14 @@ public:
     inline void SetSymbolManager(SymbolManager *manager) { this->m_symbolManager = manager; }
     inline SymbolManager* GetSymbolManager() { return this->m_symbolManager; }
 
-    inline void WaitLostIncrementalMessageMaxTimeMs(int timeMs) { this->m_waitLostIncrementalMessageMaxTimeMs = timeMs; }
-    inline int WaitLostIncrementalMessageMaxTimeMs() { return this->m_waitLostIncrementalMessageMaxTimeMs; }
+    inline void WaitLostIncrementalMessageMaxTimeMcs(int timeMs) { this->m_waitLostIncrementalMessageMaxTimeMcs = timeMs; }
+    inline int WaitLostIncrementalMessageMaxTimeMcs() { return this->m_waitLostIncrementalMessageMaxTimeMcs; }
 
-    inline void WaitIncrementalMessageMaxTimeMs(int timeMs) { this->m_waitIncrementalMessageMaxTimeMs = timeMs; }
-    inline int WaitIncrementalMessageMaxTimeMs() { return this->m_waitIncrementalMessageMaxTimeMs; }
+    inline void WaitIncrementalMessageMaxTimeMcs(int timeMs) { this->m_waitIncrementalMessageMaxTimeMcs = timeMs; }
+    inline int WaitIncrementalMessageMaxTimeMcs() { return this->m_waitIncrementalMessageMaxTimeMcs; }
 
-    inline void WaitSnapshotMaxTimeMs(int timeMs) { this->m_snapshotMaxTimeMs = timeMs; }
-    inline int WaitSnapshotMaxTimeMs() { return this->m_snapshotMaxTimeMs; }
+    inline void WaitSnapshotMaxTimeMcs(int timeMs) { this->m_snapshotMaxTimeMcs = timeMs; }
+    inline int WaitSnapshotMaxTimeMcs() { return this->m_snapshotMaxTimeMcs; }
 
     inline void ClearMessages() {
         for(int i = 0;i < this->m_packetsCount; i++)
@@ -3481,8 +3516,8 @@ public:
         }
         else {
             this->m_idfMode = FeedConnectionSecurityDefinitionMode::sdmUpdateData;
-            this->m_waitTimer->Reset(0);
-            this->m_waitTimer->Reset(1);
+            this->m_waitTimer->ResetFast(0);
+            this->m_waitTimer->ResetFast(1);
         }
     }
 
@@ -4107,7 +4142,8 @@ public:
             return false;
         if(this->m_state != FeedConnectionState::fcsSuspend)
             return true;
-        this->m_waitTimer->Start();
+        Stopwatch::Default->GetElapsedMicrosecondsGlobal();
+        this->m_waitTimer->StartFast();
         this->m_waitTimer->Stop(1);
         this->m_waitTimer->Stop(2); //for snapshot
         this->m_lostPacketCount = 0; // TODO remove debug?

@@ -80,11 +80,11 @@ public:
         incFond->TradeFond()->Clear();
         incFond->GetSymbolManager()->Clear();
         incFond->ClearMessages();
-        incFond->WaitLostIncrementalMessageMaxTimeMs(50);
+        incFond->WaitLostIncrementalMessageMaxTimeMcs(50000);
         incFond->m_waitTimer->Stop();
         incFond->m_waitTimer->Stop(1);
         snapFond->ClearMessages();
-        snapFond->WaitSnapshotMaxTimeMs(50);
+        snapFond->WaitSnapshotMaxTimeMcs(50000);
         incFond->StartListenSnapshot();
         snapFond->m_waitTimer->Stop();
         snapFond->Stop();
@@ -1195,7 +1195,7 @@ public:
         if(!incFond->m_waitTimer->Active()) // not all messages was processed - some messages was skipped
             throw;
         // wait
-        while(incFond->m_waitTimer->ElapsedMilliseconds() < incFond->WaitLostIncrementalMessageMaxTimeMs());
+        while(incFond->m_waitTimer->ElapsedMicrosecondsFast() < incFond->WaitLostIncrementalMessageMaxTimeMcs());
         if(!incFond->ListenIncremental_Core())
             throw;
         //entering snapshot mode
@@ -1221,7 +1221,7 @@ public:
 
         snapFond->ListenSnapshot(); // activate timer 2 when first time no messages recv
         //no messages
-        while(snapFond->m_waitTimer->ElapsedMilliseconds(2) <= snapFond->WaitAnyPacketMaxTimeMs - 50) {
+        while(snapFond->m_waitTimer->ElapsedMicrosecondsFast(2) <= snapFond->WaitAnyPacketMaxTimeMcs - 50000) {
             if(!snapFond->m_waitTimer->Active())
                 throw;
             if(!snapFond->ListenSnapshot())
@@ -1233,7 +1233,7 @@ public:
             if(snapFond->m_startMsgSeqNum != -1)
                 throw;
         }
-        while(snapFond->m_waitTimer->ElapsedMilliseconds(2) <= snapFond->WaitAnyPacketMaxTimeMs) {
+        while(snapFond->m_waitTimer->ElapsedMicrosecondsFast(2) <= snapFond->WaitAnyPacketMaxTimeMcs) {
             int a = 5;
             // just wait
         }
@@ -1266,9 +1266,10 @@ public:
         this->Clear();
         this->AddSymbol("symbol1");
         incFond->StartListenSnapshot();
-
+        if(!snapFond->m_waitTimer->Active())
+            throw;
         //no messages first half time
-        while(snapFond->m_waitTimer->ElapsedMilliseconds() < snapFond->WaitSnapshotMaxTimeMs() / 2) {
+        while(snapFond->m_waitTimer->ElapsedMicrosecondsFast() < snapFond->WaitSnapshotMaxTimeMcs() / 2) {
             if(!snapFond->m_waitTimer->Active())
                 throw;
             if(!snapFond->ListenSnapshot())
@@ -1294,7 +1295,7 @@ public:
         if(!snapFond->m_waitTimer->Active())
             throw;
         //timer should be active but reset
-        if(snapFond->m_waitTimer->ElapsedMilliseconds() >= snapFond->WaitAnyPacketMaxTimeMs / 2)
+        if(snapFond->m_waitTimer->ElapsedMicrosecondsFast() >= snapFond->WaitAnyPacketMaxTimeMcs / 2)
             throw;
 
         if(!snapFond->ListenSnapshot())
@@ -1538,7 +1539,7 @@ public:
 
         snapFond->m_waitTimer->Stop(); // reset timer 0 to avoid simulate situation when no packet received
         // now wait some time and after that we have to skip lost message to get other snapshot
-        while(!snapFond->m_waitTimer->IsElapsedMilliseconds(1, snapFond->WaitSnapshotMaxTimeMs())) {
+        while(!snapFond->m_waitTimer->IsTimeOutFast(1, snapFond->WaitSnapshotMaxTimeMcs())) {
             snapFond->ListenSnapshot_Core();
             if(!snapFond->m_waitTimer->Active(1))
                 break;
@@ -1592,7 +1593,7 @@ public:
             throw;
 
         // wait some time and then receive lost packet
-        while(!snapFond->m_waitTimer->IsElapsedMilliseconds(1, snapFond->WaitSnapshotMaxTimeMs() / 2)) {
+        while(!snapFond->m_waitTimer->IsTimeOutFast(1, snapFond->WaitSnapshotMaxTimeMcs() / 2)) {
             snapFond->m_waitTimer->Start(); // reset timer 0 to avoid simulate situation when no packet received
             if(!snapFond->ListenSnapshot_Core())
                 throw;
@@ -1678,7 +1679,7 @@ public:
         this->AddSymbol("symbol1");
         incFond->StartListenSnapshot();
 
-        snapFond->WaitSnapshotMaxTimeMs(100);
+        snapFond->WaitSnapshotMaxTimeMcs(100);
         if(!snapFond->m_waitTimer->Active())
             throw;
 
@@ -1722,7 +1723,7 @@ public:
         snapFond->ListenSnapshot_Core();
         if(!snapFond->m_waitTimer->Active(1))
             throw;
-        while(snapFond->m_waitTimer->ElapsedMilliseconds(1) <= snapFond->WaitSnapshotMaxTimeMs())
+        while(snapFond->m_waitTimer->ElapsedMicrosecondsFast(1) <= snapFond->WaitSnapshotMaxTimeMcs())
             snapFond->ListenSnapshot_Core();
 
         snapFond->ListenSnapshot_Core();
@@ -1769,7 +1770,7 @@ public:
         if(!incFond->m_waitTimer->Active()) // not all messages was processed - some messages was skipped
             throw;
         // wait
-        while(incFond->m_waitTimer->ElapsedMilliseconds() < incFond->WaitLostIncrementalMessageMaxTimeMs());
+        while(incFond->m_waitTimer->ElapsedMicrosecondsFast() < incFond->WaitLostIncrementalMessageMaxTimeMcs());
 
         // sending snapshot for only one item and rpt seq before last incremental message
         SendMessages(snapFond, new TestTemplateInfo*[4] {
@@ -1925,7 +1926,7 @@ public:
             throw;
         if(!incFond->m_waitTimer->Active())
             throw;
-        if(incFond->m_waitTimer->IsElapsedMilliseconds(incFond->m_waitLostIncrementalMessageMaxTimeMs))
+        if(incFond->m_waitTimer->IsTimeOutFast(incFond->m_waitLostIncrementalMessageMaxTimeMcs))
             throw;
         if(snapFond->State() != FeedConnectionState::fcsSuspend)
             throw;
@@ -2248,7 +2249,7 @@ public:
     void TestConnection_ParallelWorkingIncrementalAndSnapshot_5_4() {
         this->Clear();
 
-        incFond->WaitLostIncrementalMessageMaxTimeMs(500);
+        incFond->WaitLostIncrementalMessageMaxTimeMcs(500000);
         this->AddSymbol("symbol1", "session1");
         incFond->Start();
 
@@ -2273,7 +2274,7 @@ public:
     void TestConnection_ParallelWorkingIncrementalAndSnapshot_5_4_1() {
         this->Clear();
 
-        incFond->WaitLostIncrementalMessageMaxTimeMs(500);
+        incFond->WaitLostIncrementalMessageMaxTimeMcs(500000);
         this->AddSymbol("symbol1", "session1");
         incFond->Start();
 
@@ -2300,7 +2301,7 @@ public:
     void TestConnection_ParallelWorkingIncrementalAndSnapshot_5_4_2() {
         this->Clear();
 
-        incFond->WaitLostIncrementalMessageMaxTimeMs(500);
+        incFond->WaitLostIncrementalMessageMaxTimeMcs(500000);
         this->AddSymbol("symbol1", "session1");
         incFond->Start();
 
@@ -2327,7 +2328,7 @@ public:
     void TestConnection_ParallelWorkingIncrementalAndSnapshot_5_5() {
         this->Clear();
 
-        incFond->WaitLostIncrementalMessageMaxTimeMs(500);
+        incFond->WaitLostIncrementalMessageMaxTimeMcs(500000);
         this->AddSymbol("symbol1", "session1");
         this->AddSymbol("symbol2", "session1");
         incFond->Start();
@@ -2493,7 +2494,7 @@ public:
         this->Clear();
 
         this->AddSymbol("symbol1", "session1");
-        snapFond->WaitSnapshotMaxTimeMs(50);
+        snapFond->WaitSnapshotMaxTimeMcs(50000);
         SendMessages(incFond, snapFond,
                      "tlr entry symbol1 e1, lost tlr entry symbol1 e2, wait_snap, hbeat",
                      "                                                  tls symbol1 begin rpt 2 entry symbol1 e2, lost tls symbol1 rpt 2 entry symbol1 e2, hbeat, hbeat, hbeat, hbeat, hbeat",
@@ -2508,7 +2509,7 @@ public:
         this->Clear();
 
         this->AddSymbol("symbol1", "session1");
-        snapFond->WaitSnapshotMaxTimeMs(50);
+        snapFond->WaitSnapshotMaxTimeMcs(50000);
         SendMessages(incFond, snapFond,
                      "tlr entry symbol1 e1, lost tlr entry symbol1 e2, wait_snap, hbeat                           hbeat,                         hbeat, hbeat, hbeat, hbeat, hbeat,                           hbeat",
                      "                                                  tls symbol1 begin rpt 2 entry symbol1 e2, lost tls symbol1 rpt 2 entry symbol1 e2, hbeat, hbeat, hbeat, hbeat, hbeat, tls symbol1 rpt 2 entry symbol1 e2, tls symbol1 begin rpt 2 entry symbol1 e2 end",

@@ -63,11 +63,11 @@ public:
         incCurr->TradeCurr()->Clear();
         incCurr->GetSymbolManager()->Clear();
         incCurr->ClearMessages();
-        incCurr->WaitLostIncrementalMessageMaxTimeMs(50);
+        incCurr->WaitLostIncrementalMessageMaxTimeMcs(50000);
         incCurr->m_waitTimer->Stop();
         incCurr->m_waitTimer->Stop(1);
         snapCurr->ClearMessages();
-        snapCurr->WaitSnapshotMaxTimeMs(50);
+        snapCurr->WaitSnapshotMaxTimeMcs(50000);
         incCurr->StartListenSnapshot();
         snapCurr->m_waitTimer->Stop();
         snapCurr->Stop();
@@ -1168,7 +1168,7 @@ public:
         if(!incCurr->m_waitTimer->Active()) // not all messages was processed - some messages was skipped
             throw;
         // wait
-        while(incCurr->m_waitTimer->ElapsedMilliseconds() < incCurr->WaitLostIncrementalMessageMaxTimeMs());
+        while(incCurr->m_waitTimer->ElapsedMicrosecondsFast() < incCurr->WaitLostIncrementalMessageMaxTimeMcs());
         if(!incCurr->ListenIncremental_Core())
             throw;
         //entering snapshot mode
@@ -1194,7 +1194,7 @@ public:
 
         snapCurr->ListenSnapshot(); // activate timer 2 when first time no messages recv
         //no messages
-        while(snapCurr->m_waitTimer->ElapsedMilliseconds(2) <= snapCurr->WaitAnyPacketMaxTimeMs - 50) {
+        while(snapCurr->m_waitTimer->ElapsedMicrosecondsFast(2) <= snapCurr->WaitAnyPacketMaxTimeMcs - 50000) {
             if(!snapCurr->m_waitTimer->Active())
                 throw;
             if(!snapCurr->ListenSnapshot())
@@ -1206,7 +1206,7 @@ public:
             if(snapCurr->m_startMsgSeqNum != -1)
                 throw;
         }
-        while(snapCurr->m_waitTimer->ElapsedMilliseconds(2) <= snapCurr->WaitAnyPacketMaxTimeMs) {
+        while(snapCurr->m_waitTimer->ElapsedMicrosecondsFast(2) <= snapCurr->WaitAnyPacketMaxTimeMcs) {
             int a = 5;
             // just wait
         }
@@ -1241,7 +1241,7 @@ public:
         incCurr->StartListenSnapshot();
 
         //no messages first half time
-        while(snapCurr->m_waitTimer->ElapsedMilliseconds() < snapCurr->WaitSnapshotMaxTimeMs() / 2) {
+        while(snapCurr->m_waitTimer->ElapsedMicrosecondsFast() < snapCurr->WaitSnapshotMaxTimeMcs() / 2) {
             if(!snapCurr->m_waitTimer->Active())
                 throw;
             if(!snapCurr->ListenSnapshot())
@@ -1267,7 +1267,7 @@ public:
         if(!snapCurr->m_waitTimer->Active())
             throw;
         //timer should be active but reset
-        if(snapCurr->m_waitTimer->ElapsedMilliseconds() >= snapCurr->WaitAnyPacketMaxTimeMs / 2)
+        if(snapCurr->m_waitTimer->ElapsedMicrosecondsFast() >= snapCurr->WaitAnyPacketMaxTimeMcs / 2)
             throw;
 
         if(!snapCurr->ListenSnapshot())
@@ -1511,7 +1511,7 @@ public:
 
         snapCurr->m_waitTimer->Stop(); // reset timer 0 to avoid simulate situation when no packet received
         // now wait some time and after that we have to skip lost message to get other snapshot
-        while(!snapCurr->m_waitTimer->IsElapsedMilliseconds(1, snapCurr->WaitSnapshotMaxTimeMs())) {
+        while(!snapCurr->m_waitTimer->IsTimeOutFast(1, snapCurr->WaitSnapshotMaxTimeMcs())) {
             snapCurr->ListenSnapshot_Core();
             if(!snapCurr->m_waitTimer->Active(1))
                 break;
@@ -1565,7 +1565,7 @@ public:
             throw;
 
         // wait some time and then receive lost packet
-        while(!snapCurr->m_waitTimer->IsElapsedMilliseconds(1, snapCurr->WaitSnapshotMaxTimeMs() / 2)) {
+        while(!snapCurr->m_waitTimer->IsTimeOutFast(1, snapCurr->WaitSnapshotMaxTimeMcs() / 2)) {
             snapCurr->m_waitTimer->Start(); // reset timer 0 to avoid simulate situation when no packet received
             if(!snapCurr->ListenSnapshot_Core())
                 throw;
@@ -1651,7 +1651,7 @@ public:
         this->AddSymbol("symbol1");
         incCurr->StartListenSnapshot();
 
-        snapCurr->WaitSnapshotMaxTimeMs(100);
+        snapCurr->WaitSnapshotMaxTimeMcs(100);
         if(!snapCurr->m_waitTimer->Active())
             throw;
 
@@ -1695,7 +1695,7 @@ public:
         snapCurr->ListenSnapshot_Core();
         if(!snapCurr->m_waitTimer->Active(1))
             throw;
-        while(snapCurr->m_waitTimer->ElapsedMilliseconds(1) <= snapCurr->WaitSnapshotMaxTimeMs())
+        while(snapCurr->m_waitTimer->ElapsedMicrosecondsFast(1) <= snapCurr->WaitSnapshotMaxTimeMcs())
             snapCurr->ListenSnapshot_Core();
 
         snapCurr->ListenSnapshot_Core();
@@ -1742,7 +1742,7 @@ public:
         if(!incCurr->m_waitTimer->Active()) // not all messages was processed - some messages was skipped
             throw;
         // wait
-        while(incCurr->m_waitTimer->ElapsedMilliseconds() < incCurr->WaitLostIncrementalMessageMaxTimeMs());
+        while(incCurr->m_waitTimer->ElapsedMicrosecondsFast() < incCurr->WaitLostIncrementalMessageMaxTimeMcs());
 
         // sending snapshot for only one item and rpt seq before last incremental message
         SendMessages(snapCurr, new TestTemplateInfo*[4] {
@@ -1898,7 +1898,7 @@ public:
             throw;
         if(!incCurr->m_waitTimer->Active())
             throw;
-        if(incCurr->m_waitTimer->IsElapsedMilliseconds(incCurr->m_waitLostIncrementalMessageMaxTimeMs))
+        if(incCurr->m_waitTimer->IsTimeOutFast(incCurr->m_waitLostIncrementalMessageMaxTimeMcs))
             throw;
         if(snapCurr->State() != FeedConnectionState::fcsSuspend)
             throw;
@@ -2221,7 +2221,7 @@ public:
     void TestConnection_ParallelWorkingIncrementalAndSnapshot_5_4() {
         this->Clear();
 
-        incCurr->WaitLostIncrementalMessageMaxTimeMs(500);
+        incCurr->WaitLostIncrementalMessageMaxTimeMcs(500000);
         this->AddSymbol("symbol1", "session1");
         incCurr->Start();
 
@@ -2246,7 +2246,7 @@ public:
     void TestConnection_ParallelWorkingIncrementalAndSnapshot_5_4_1() {
         this->Clear();
 
-        incCurr->WaitLostIncrementalMessageMaxTimeMs(500);
+        incCurr->WaitLostIncrementalMessageMaxTimeMcs(500000);
         this->AddSymbol("symbol1", "session1");
         incCurr->Start();
 
@@ -2273,7 +2273,7 @@ public:
     void TestConnection_ParallelWorkingIncrementalAndSnapshot_5_4_2() {
         this->Clear();
 
-        incCurr->WaitLostIncrementalMessageMaxTimeMs(500);
+        incCurr->WaitLostIncrementalMessageMaxTimeMcs(500000);
         this->AddSymbol("symbol1", "session1");
         incCurr->Start();
 
@@ -2300,7 +2300,7 @@ public:
     void TestConnection_ParallelWorkingIncrementalAndSnapshot_5_5() {
         this->Clear();
 
-        incCurr->WaitLostIncrementalMessageMaxTimeMs(500);
+        incCurr->WaitLostIncrementalMessageMaxTimeMcs(500000);
         this->AddSymbol("symbol1", "session1");
         this->AddSymbol("symbol2", "session1");
         incCurr->Start();
@@ -2464,7 +2464,7 @@ public:
         this->Clear();
 
         this->AddSymbol("symbol1", "session1");
-        snapCurr->WaitSnapshotMaxTimeMs(50);
+        snapCurr->WaitSnapshotMaxTimeMcs(50000);
         SendMessages(incCurr, snapCurr,
                      "tlr entry symbol1 e1, lost tlr entry symbol1 e2, wait_snap, hbeat",
                      "                                                  tls symbol1 begin rpt 2 entry symbol1 e2, lost tls symbol1 rpt 2 entry symbol1 e2, hbeat, hbeat, hbeat, hbeat, hbeat",
@@ -2479,7 +2479,7 @@ public:
         this->Clear();
 
         this->AddSymbol("symbol1", "session1");
-        snapCurr->WaitSnapshotMaxTimeMs(50);
+        snapCurr->WaitSnapshotMaxTimeMcs(50000);
         SendMessages(incCurr, snapCurr,
                      "tlr entry symbol1 e1, lost tlr entry symbol1 e2, wait_snap, hbeat                           hbeat,                         hbeat, hbeat, hbeat, hbeat, hbeat,                           hbeat",
                      "                                                  tls symbol1 begin rpt 2 entry symbol1 e2, lost tls symbol1 rpt 2 entry symbol1 e2, hbeat, hbeat, hbeat, hbeat, hbeat, tls symbol1 rpt 2 entry symbol1 e2, tls symbol1 begin rpt 2 entry symbol1 e2 end",

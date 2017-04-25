@@ -27,9 +27,9 @@ FeedConnection::FeedConnection(const char *id, const char *name, char value, Fee
     this->m_sendABuffer = this->m_socketABufferProvider->SendBuffer();
     this->m_recvABuffer = this->m_socketABufferProvider->RecvBuffer();
 
-    this->m_waitLostIncrementalMessageMaxTimeMs = 100;
-    this->m_waitIncrementalMessageMaxTimeMs = this->WaitAnyPacketMaxTimeMs;
-    this->m_snapshotMaxTimeMs = 30;
+    this->m_waitLostIncrementalMessageMaxTimeMcs = 100000;
+    this->m_waitIncrementalMessageMaxTimeMcs = this->WaitAnyPacketMaxTimeMcs;
+    this->m_snapshotMaxTimeMcs = 30000;
     this->m_maxLostPacketCountForStartSnapshot = 2000;
 
     this->m_astsSnapshotInfo = 0;

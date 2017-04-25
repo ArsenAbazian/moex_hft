@@ -54,7 +54,7 @@ public:
             if(d != dec.Calculate())
                 throw;
         }
-        //printf("Elapsed Seconds Array = %d\n", w->ElapsedMilliseconds());
+        //printf("Elapsed Seconds Array = %d\n", w->ElapsedMillisecondsSlow());
         w->Start();
         for(int i = 0; i < 1000000; i++) {
             double d = i * 0.0000001;
@@ -91,7 +91,7 @@ public:
             if(d != dec.CalculateFunc())
                 throw;
         }
-        //printf("Elapsed Seconds Compare = %d\n", w->ElapsedMilliseconds());
+        //printf("Elapsed Seconds Compare = %d\n", w->ElapsedMillisecondsSlow());
         w->Start();
         for(int exp = 0; exp < 7; exp++) {
             for (INT64 i = 0; i < 10000; i++) {
@@ -102,7 +102,7 @@ public:
                     throw;
             }
         }
-        //printf("Elapsed Seconds CalculatePositiveInteger = %d\n", w->ElapsedMilliseconds());
+        //printf("Elapsed Seconds CalculatePositiveInteger = %d\n", w->ElapsedMillisecondsSlow());
     }
 };
 #endif

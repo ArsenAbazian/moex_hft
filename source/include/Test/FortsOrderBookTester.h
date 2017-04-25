@@ -81,11 +81,11 @@ public:
         incForts->OrderBookForts()->Clear();
         incForts->GetSymbolManager()->Clear();
         incForts->ClearMessages();
-        incForts->WaitLostIncrementalMessageMaxTimeMs(50);
+        incForts->WaitLostIncrementalMessageMaxTimeMcs(50000);
         incForts->m_waitTimer->Stop();
         incForts->m_waitTimer->Stop(1);
         snapForts->ClearMessages();
-        snapForts->WaitSnapshotMaxTimeMs(50);
+        snapForts->WaitSnapshotMaxTimeMcs(50000);
         incForts->StartListenSnapshot();
         snapForts->m_waitTimer->Stop();
         snapForts->Stop();
@@ -1482,6 +1482,7 @@ public:
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 333333, 4, 400, 0, 1),
                                      }, 1)
         }, 2);
+
         if(!incForts->ListenIncremental_Forts_Core())
             throw;
 
@@ -1536,6 +1537,7 @@ public:
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 555555, 5, 500, 0, 1),
                                      }, 1)
         }, 2);
+
         if(!incForts->ListenIncremental_Forts_Core())
             throw;
 
@@ -1593,6 +1595,7 @@ public:
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 555555, 5, 500, 0, 1),
                                      }, 1)
         }, 2);
+
         if(!incForts->ListenIncremental_Forts_Core())
             throw;
 
@@ -1622,6 +1625,7 @@ public:
                                      }, 1)
         }, 1);
 
+
         if(!incForts->ListenIncremental_Forts_Core())
             throw;
 
@@ -1644,6 +1648,7 @@ public:
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 333333, 4, 400, 0, 1),
                                      }, 1)
         }, 1);
+
 
         if(!incForts->ListenIncremental_Forts_Core())
             throw;
@@ -1674,6 +1679,7 @@ public:
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 555555, 5, 500, 0, 1),
                                      }, 1)
         }, 2);
+
         if(!incForts->ListenIncremental_Forts_Core())
             throw;
 
@@ -1757,6 +1763,7 @@ public:
                                              new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", 111111, 555555, 5, 3, 1000, 1),
                                      }, 1)
         }, 2);
+
         if(!incForts->ListenIncremental_Forts_Core())
             throw;
 
@@ -1766,7 +1773,8 @@ public:
         if(!incForts->m_waitTimer->Active()) // not all messages was processed - some messages was skipped
             throw;
         // wait
-        while(incForts->m_waitTimer->ElapsedMilliseconds() < incForts->WaitLostIncrementalMessageMaxTimeMs());
+        while(incForts->m_waitTimer->ElapsedMicrosecondsFast() < incForts->WaitLostIncrementalMessageMaxTimeMcs());
+
         if(!incForts->ListenIncremental_Forts_Core())
             throw;
         //entering snapshot mode
@@ -1790,11 +1798,13 @@ public:
         if(!snapForts->m_waitTimer->Active()) // start wait timer immediately
             throw;
 
+
         snapForts->ListenSnapshot(); // activate timer 2 when first time no messages recv
         //no messages
-        while(snapForts->m_waitTimer->ElapsedMilliseconds(2) <= snapForts->WaitAnyPacketMaxTimeMs - 50) {
+        while(snapForts->m_waitTimer->ElapsedMicrosecondsFast(2) <= snapForts->WaitAnyPacketMaxTimeMcs - 50000) {
             if(!snapForts->m_waitTimer->Active())
                 throw;
+
             if(!snapForts->ListenSnapshot())
                 throw; // nothing should be happens
             if(!snapForts->m_waitTimer->Active(2))
@@ -1804,7 +1814,7 @@ public:
             if(snapForts->m_startMsgSeqNum != -1)
                 throw;
         }
-        while(snapForts->m_waitTimer->ElapsedMilliseconds(2) <= snapForts->WaitAnyPacketMaxTimeMs) {
+        while(snapForts->m_waitTimer->ElapsedMicrosecondsFast(2) <= snapForts->WaitAnyPacketMaxTimeMcs) {
             int a = 5;
             // just wait
         }
@@ -1839,9 +1849,10 @@ public:
         incForts->StartListenSnapshot();
 
         //no messages first half time
-        while(snapForts->m_waitTimer->ElapsedMilliseconds() < snapForts->WaitSnapshotMaxTimeMs() / 2) {
+        while(snapForts->m_waitTimer->ElapsedMicrosecondsFast() < snapForts->WaitSnapshotMaxTimeMcs() / 2) {
             if(!snapForts->m_waitTimer->Active())
                 throw;
+
             if(!snapForts->ListenSnapshot())
                 throw; // nothing should be happens
             if(snapForts->m_endMsgSeqNum != -1)
@@ -1865,7 +1876,7 @@ public:
         if(!snapForts->m_waitTimer->Active())
             throw;
         //timer should be active but reset
-        if(snapForts->m_waitTimer->ElapsedMilliseconds() >= snapForts->WaitAnyPacketMaxTimeMs / 2)
+        if(snapForts->m_waitTimer->ElapsedMicrosecondsFast() >= snapForts->WaitAnyPacketMaxTimeMcs / 2)
             throw;
 
         if(!snapForts->ListenSnapshot())
@@ -1910,8 +1921,10 @@ public:
         // just empty cyccle - nothing should be changed
         if(!snapForts->ListenSnapshot_Core())
             throw;
+
         if(!snapForts->ListenSnapshot_Core())
             throw;
+
         if(!snapForts->ListenSnapshot_Core())
             throw;
 
@@ -2043,8 +2056,10 @@ public:
         // just empty cyccle - nothing should be changed
         if(!snapForts->ListenSnapshot_Core())
             throw;
+
         if(!snapForts->ListenSnapshot_Core())
             throw;
+
         if(!snapForts->ListenSnapshot_Core())
             throw;
 
@@ -2076,6 +2091,7 @@ public:
                                      }, 2, 4)
         }, 1);
 
+
         if(!snapForts->ListenSnapshot_Core())
             throw;
         if(snapForts->m_state != FeedConnectionState::fcsListenSnapshot)
@@ -2105,6 +2121,7 @@ public:
                                      }, 2, 4)
         }, 1);
 
+
         snapForts->ListenSnapshot_Core();
 
         // message seq 2 lost
@@ -2131,7 +2148,7 @@ public:
 
         snapForts->m_waitTimer->Stop(); // reset timer 0 to avoid simulate situation when no packet received
         // now wait some time and after that we have to skip lost message to get other snapshot
-        while(!snapForts->m_waitTimer->IsElapsedMilliseconds(1, snapForts->WaitSnapshotMaxTimeMs())) {
+        while(!snapForts->m_waitTimer->IsTimeOutFast(1, snapForts->WaitSnapshotMaxTimeMcs())) {
             snapForts->ListenSnapshot_Core();
             if(!snapForts->m_waitTimer->Active(1))
                 break;
@@ -2185,7 +2202,7 @@ public:
             throw;
 
         // wait some time and then receive lost packet
-        while(!snapForts->m_waitTimer->IsElapsedMilliseconds(1, snapForts->WaitSnapshotMaxTimeMs() / 2)) {
+        while(!snapForts->m_waitTimer->IsTimeOutFast(1, snapForts->WaitSnapshotMaxTimeMcs() / 2)) {
             snapForts->m_waitTimer->Start(); // reset timer 0 to avoid simulate situation when no packet received
             if(!snapForts->ListenSnapshot_Core())
                 throw;
@@ -2279,7 +2296,7 @@ public:
         this->AddSymbol("symbol1", 111111);
         incForts->StartListenSnapshot();
 
-        snapForts->WaitSnapshotMaxTimeMs(100);
+        snapForts->WaitSnapshotMaxTimeMcs(100);
         if(!snapForts->m_waitTimer->Active())
             throw;
 
@@ -2332,7 +2349,7 @@ public:
         snapForts->ListenSnapshot_Core();
         if(!snapForts->m_waitTimer->Active(1))
             throw;
-        while(snapForts->m_waitTimer->ElapsedMilliseconds(1) <= snapForts->WaitSnapshotMaxTimeMs())
+        while(snapForts->m_waitTimer->ElapsedMicrosecondsFast(1) <= snapForts->WaitSnapshotMaxTimeMcs())
             snapForts->ListenSnapshot_Core();
 
         snapForts->ListenSnapshot_Core();
@@ -2379,7 +2396,7 @@ public:
         if(!incForts->m_waitTimer->Active()) // not all messages was processed - some messages was skipped
             throw;
         // wait
-        while(incForts->m_waitTimer->ElapsedMilliseconds() < incForts->WaitLostIncrementalMessageMaxTimeMs());
+        while(incForts->m_waitTimer->ElapsedMicrosecondsFast() < incForts->WaitLostIncrementalMessageMaxTimeMcs());
 
         SendMessages(snapForts, new TestTemplateInfo*[4] { // for route firts - this message will not be applied
                 new TestTemplateInfo(FeedTemplateId::fortsSnapshot, 3, "symbol1", 111111, false, true,
@@ -2555,7 +2572,7 @@ public:
             throw;
         if(!incForts->m_waitTimer->Active())
             throw;
-        if(incForts->m_waitTimer->IsElapsedMilliseconds(incForts->m_waitLostIncrementalMessageMaxTimeMs))
+        if(incForts->m_waitTimer->IsTimeOutFast(incForts->m_waitLostIncrementalMessageMaxTimeMcs))
             throw;
         if(snapForts->State() != FeedConnectionState::fcsSuspend)
             throw;
@@ -2887,7 +2904,7 @@ public:
     void TestConnection_ParallelWorkingIncrementalAndSnapshot_5_4() {
         this->Clear();
 
-        incForts->WaitLostIncrementalMessageMaxTimeMs(500);
+        incForts->WaitLostIncrementalMessageMaxTimeMcs(500000);
         this->AddSymbol("symbol1", 111111);
         incForts->Start();
 
@@ -2918,7 +2935,7 @@ public:
     void TestConnection_ParallelWorkingIncrementalAndSnapshot_5_4_1() {
         this->Clear();
 
-        incForts->WaitLostIncrementalMessageMaxTimeMs(500);
+        incForts->WaitLostIncrementalMessageMaxTimeMcs(500000);
         this->AddSymbol("symbol1", 111111);
         incForts->Start();
 
@@ -2955,7 +2972,7 @@ public:
     void TestConnection_ParallelWorkingIncrementalAndSnapshot_5_4_2() {
         this->Clear();
 
-        incForts->WaitLostIncrementalMessageMaxTimeMs(500);
+        incForts->WaitLostIncrementalMessageMaxTimeMcs(500000);
         this->AddSymbol("symbol1", 111111);
         incForts->Start();
 
@@ -2990,7 +3007,7 @@ public:
     void TestConnection_ParallelWorkingIncrementalAndSnapshot_5_5() {
         this->Clear();
 
-        incForts->WaitLostIncrementalMessageMaxTimeMs(500);
+        incForts->WaitLostIncrementalMessageMaxTimeMcs(500000);
         this->AddSymbol("symbol1", 111111);
         this->AddSymbol("symbol2", 222222);
         incForts->Start();
@@ -3158,7 +3175,7 @@ public:
         this->Clear();
 
         this->AddSymbol("symbol1", 111111);
-        snapForts->WaitSnapshotMaxTimeMs(50);
+        snapForts->WaitSnapshotMaxTimeMcs(50000);
         SendMessages(incForts, snapForts,
                      "obr entry symbol1 sid 111111 111111, lost obr entry symbol1 sid 111111 222222, wait_snap, hbeat",
                      "obs begin symbol1 sid 111111 rpt 2 entry symbol1 sid 111111 222222, "
@@ -3180,7 +3197,7 @@ public:
         this->Clear();
 
         this->AddSymbol("symbol1", 111111);
-        snapForts->WaitSnapshotMaxTimeMs(50);
+        snapForts->WaitSnapshotMaxTimeMcs(50000);
         SendMessages(incForts, snapForts,
                      "obr entry symbol1 sid 111111 111111 px 100, lost obr entry symbol1 sid 111111 222222 px 200, wait_snap, "
                      "hbeat                                                                      hbeat,                                                  hbeat,                                                        hbeat, hbeat, hbeat, hbeat, hbeat",
@@ -4577,7 +4594,7 @@ template <typename T>
                 if(obi->BuyQuotes()->Count() != itemsCount)
                     throw;
             }
-            UINT64 en = w->ElapsedNanoseconds();
+            UINT64 en = w->ElapsedNanosecondsSlow();
             w->Stop();
 
             if(obi->BuyQuotes()->Count() != itemsCount)
@@ -4589,7 +4606,7 @@ template <typename T>
                 HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *ptr = obi->AddBuyQuote(item50);
                 obi->RemoveBuyQuote(ptr->Data());
             }
-            UINT64 en2 = w->ElapsedNanoseconds();
+            UINT64 en2 = w->ElapsedNanosecondsSlow();
             w->Stop();
 
             printf("performance %d items: insert before %d. ave Ex = %" PRIu64 "  vs  Sm = %" PRIu64 " nanosec, optimization = %g times\n", itemsCount, index[i], en / count, en2 / count, ((double)en2) / en);

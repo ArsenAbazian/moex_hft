@@ -217,7 +217,7 @@ public:
         if(!this->m_manager->SendTo(info->m_target, info->m_targetLength, this->m_sendBuffer + this->m_sendIndex, this->m_sendSize))
             return false;
         this->m_state = CommandManagerState::cmsRecvAnswer;
-        this->m_timer->Start();
+        this->m_timer->StartFast();
         return true;
     }
 

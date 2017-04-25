@@ -285,8 +285,9 @@ bool Robot::Run() {
         return false;
     }
 
+    Stopwatch::Default->GetElapsedMicrosecondsGlobal();
     Stopwatch *globalWatch = new Stopwatch();
-    globalWatch->Start();
+    globalWatch->StartFast();
     if(!this->DoWork()) {
         globalWatch->Stop();
         DefaultLogManager::Default->EndLog(false);
@@ -304,8 +305,11 @@ bool Robot::Run() {
 }
 
 bool Robot::CollectSecurityDefinitions_FondOnly() {
+    Stopwatch::Default->GetElapsedMicrosecondsGlobal();
+
     Stopwatch *w = new Stopwatch();
-    w->Start();
+    Stopwatch::Default->GetElapsedMicrosecondsGlobal();
+    w->StartFast();
     unsigned int cycleCount = 0;
 
     DefaultLogManager::Default->StartLog(LogMessageCode::lmcRobot_CollectSecurityDefinitions);
@@ -317,6 +321,7 @@ bool Robot::CollectSecurityDefinitions_FondOnly() {
         }
         // collect data first
         while (true) {
+            Stopwatch::Default->GetElapsedMicrosecondsGlobal();
             if (!WinSockManager::UpdateManagersPollStatus())
                 break;
 
@@ -329,10 +334,10 @@ bool Robot::CollectSecurityDefinitions_FondOnly() {
                 break;
             }
 
-            if (w->ElapsedMilliseconds() > 1000) {
-                w->Reset();
+            if (w->ElapsedMicrosecondsFast() > 1000000) { // 1 sec
+                w->ResetFast();
 
-                double nanosecPerCycle = w->ElapsedMilliseconds() * 1000.0 * 1000.0 / cycleCount;
+                double nanosecPerCycle = w->ElapsedMicrosecondsFast() * 1000.0 / cycleCount;
                 printf("cycle count for 1 sec = %d. %g nanosec per cycle\n", cycleCount, nanosecPerCycle);
 
                 printf("Changes------------------------\n");
@@ -362,7 +367,8 @@ bool Robot::CollectSecurityDefinitions_FondOnly() {
 
 bool Robot::CollectSecurityDefinitions_CurrOnly() {
     Stopwatch *w = new Stopwatch();
-    w->Start();
+    Stopwatch::Default->GetElapsedMicrosecondsGlobal();
+    w->StartFast();
     unsigned int cycleCount = 0;
 
     DefaultLogManager::Default->StartLog(LogMessageCode::lmcRobot_CollectSecurityDefinitions);
@@ -373,6 +379,7 @@ bool Robot::CollectSecurityDefinitions_CurrOnly() {
         }
         // collect data first
         while (true) {
+            Stopwatch::Default->GetElapsedMicrosecondsGlobal();
             if (!WinSockManager::UpdateManagersPollStatus())
                 break;
             if (!this->m_currMarket->FeedChannel()->CollectSecurityDefinitions()) {
@@ -385,10 +392,10 @@ bool Robot::CollectSecurityDefinitions_CurrOnly() {
                 break;
             }
 
-            if (w->ElapsedMilliseconds() > 1000) {
-                w->Reset();
+            if (w->ElapsedMicrosecondsFast() > 1000000) { // 1 sec
+                w->ResetFast();
 
-                double nanosecPerCycle = w->ElapsedMilliseconds() * 1000.0 * 1000.0 / cycleCount;
+                double nanosecPerCycle = w->ElapsedMicrosecondsFast() * 1000.0 / cycleCount;
                 printf("cycle count for 1 sec = %d. %g nanosec per cycle\n", cycleCount, nanosecPerCycle);
 
                 printf("Changes------------------------\n");
@@ -419,7 +426,8 @@ bool Robot::CollectSecurityDefinitions_CurrOnly() {
 
 bool Robot::CollectSecurityDefinitionsForts() {
     Stopwatch *w = new Stopwatch();
-    w->Start();
+    Stopwatch::Default->GetElapsedMicrosecondsGlobal();
+    w->StartFast();
     unsigned int cycleCount = 0;
 
     DefaultLogManager::Default->StartLog(LogMessageCode::lmcRobot_CollectSecurityDefinitionsForts);
@@ -446,6 +454,7 @@ bool Robot::CollectSecurityDefinitionsForts() {
     }
 
     while(true) {
+        Stopwatch::Default->GetElapsedMicrosecondsGlobal();
         if(!WinSockManager::UpdateManagersPollStatus())
             break;
         if(!collectedFutures) {
@@ -471,10 +480,10 @@ bool Robot::CollectSecurityDefinitionsForts() {
         if(collectedFutures && collectedOptions)
             break;
 
-        if(w->ElapsedMilliseconds() > 1000) {
-            w->Reset();
+        if(w->ElapsedMicrosecondsFast() > 1000000) { // 1 sec
+            w->ResetFast();
 
-            double nanosecPerCycle = w->ElapsedMilliseconds() * 1000.0 * 1000.0 / cycleCount;
+            double nanosecPerCycle = w->ElapsedMicrosecondsFast() * 1000.0 / cycleCount;
             printf("cycle count for 1 sec = %d. %g nanosec per cycle\n", cycleCount, nanosecPerCycle);
             if(this->m_fortsChannel->FutInfo() != 0) {
                 printf("process future idf %d of %d\n",
@@ -523,7 +532,8 @@ bool Robot::CollectSecurityDefinitionsForts() {
 
 bool Robot::CollectSecurityDefinitionsAsts() {
     Stopwatch *w = new Stopwatch();
-    w->Start();
+    Stopwatch::Default->GetElapsedMicrosecondsGlobal();
+    w->StartFast();
     unsigned int cycleCount = 0;
 
     DefaultLogManager::Default->StartLog(LogMessageCode::lmcRobot_CollectSecurityDefinitions);
@@ -571,10 +581,10 @@ bool Robot::CollectSecurityDefinitionsAsts() {
         if(collectedFond && collectedCurr)
             break;
 
-        if(w->ElapsedMilliseconds() > 1000) {
-            w->Reset();
+        if(w->ElapsedMicrosecondsFast() > 1000000) { // 1 sec
+            w->ResetFast();
 
-            double nanosecPerCycle = w->ElapsedMilliseconds() * 1000.0 * 1000.0 / cycleCount;
+            double nanosecPerCycle = w->ElapsedMicrosecondsFast() * 1000.0 / cycleCount;
             printf("cycle count for 1 sec = %d. %g nanosec per cycle\n", cycleCount, nanosecPerCycle);
 
             printf("Changes------------------------\n");
@@ -611,9 +621,10 @@ bool Robot::CollectSecurityDefinitionsAsts() {
 bool Robot::MainLoop_FondOnly() {
     Stopwatch *w = new Stopwatch();
     unsigned int cycleCount = 0;
-
-    w->Start();
+    Stopwatch::Default->GetElapsedMicrosecondsGlobal();
+    w->StartFast();
     while(true) {
+        Stopwatch::Default->GetElapsedMicrosecondsGlobal();
         if(!WinSockManager::UpdateManagersPollStatus())
             break;
         if (!this->m_fondMarket->DoWorkAtom()) {
@@ -627,13 +638,13 @@ bool Robot::MainLoop_FondOnly() {
         if(!this->Working())
             break;
 
-        if(w->ElapsedMilliseconds() > 1000) {
-            double nanosecPerCycle = w->ElapsedMilliseconds() * 1000.0 * 1000.0 / cycleCount;
+        if(w->ElapsedMicrosecondsFast() > 1000000) { // 1 sec
+            double nanosecPerCycle = w->ElapsedMicrosecondsFast() * 1000.0 / cycleCount;
             printf("--------\n");
             printf("cycle count for 1 sec = %d. %g nanosec per cycle\n", cycleCount, nanosecPerCycle);
             this->PrintStatistics();
 
-            w->Reset();
+            w->ResetFast();
             cycleCount = 0;
         }
         cycleCount++;
@@ -646,8 +657,10 @@ bool Robot::MainLoop_CurrOnly() {
     Stopwatch *w = new Stopwatch();
     unsigned int cycleCount = 0;
 
-    w->Start();
+    Stopwatch::Default->GetElapsedMicrosecondsGlobal();
+    w->StartFast();
     while(true) {
+        Stopwatch::Default->GetElapsedMicrosecondsGlobal();
         if(!WinSockManager::UpdateManagersPollStatus())
             break;
         if(!this->m_currMarket->DoWorkAtom()) {
@@ -661,8 +674,8 @@ bool Robot::MainLoop_CurrOnly() {
         if(!this->Working())
             break;
 
-        if(w->ElapsedMilliseconds() > 5000) {
-            double nanosecPerCycle = w->ElapsedMilliseconds() * 1000.0 * 1000.0 / cycleCount;
+        if(w->ElapsedMicrosecondsFast() > 5000000) { // 5 sec
+            double nanosecPerCycle = w->ElapsedMicrosecondsFast() * 1000.0/ cycleCount;
             printf("--------------------------\n");
             printf("cycle count for 1 sec = %d. %g nanosec per cycle\n", cycleCount, nanosecPerCycle);
             this->PrintStatistics();
@@ -672,7 +685,7 @@ bool Robot::MainLoop_CurrOnly() {
             ProgramStatistics::Total->Print();
             ProgramStatistics::Current->Clear();
 
-            w->Reset();
+            w->ResetFast();
             cycleCount = 0;
         }
         cycleCount++;
@@ -685,9 +698,10 @@ bool Robot::MainLoop_CurrOnly() {
 bool Robot::MainLoopForts() {
     Stopwatch *w = new Stopwatch();
     unsigned int cycleCount = 0;
-
-    w->Start();
+    Stopwatch::Default->GetElapsedMicrosecondsGlobal();
+    w->StartFast();
     while(true) {
+        Stopwatch::Default->GetElapsedMicrosecondsGlobal();
         if (!WinSockManager::UpdateManagersPollStatus())
             break;
 
@@ -707,14 +721,14 @@ bool Robot::MainLoopForts() {
         if(!this->Working())
             break;
 
-        if(w->ElapsedMilliseconds() > 2000) {
-            double nanosecPerCycle = w->ElapsedMilliseconds() * 1000.0 * 1000.0 / cycleCount;
+        if(w->ElapsedMicrosecondsFast() > 5000000) { // 5 sec
+            double nanosecPerCycle = w->ElapsedMicrosecondsFast() * 1000.0 / cycleCount;
             //printf("--------\n");
             printf("\033[2J\033[1;1H");
             printf("FORTS cycle count for 2 sec = %d. %g nanosec per cycle\n", cycleCount, nanosecPerCycle);
             this->PrintStatistics();
 
-            w->Reset();
+            w->ResetFast();
             cycleCount = 0;
         }
         cycleCount++;
@@ -726,14 +740,17 @@ bool Robot::MainLoopAsts() {
     Stopwatch *w = new Stopwatch();
     unsigned int cycleCount = 0;
 
-    w->Start();
+    Stopwatch::Default->GetElapsedMicrosecondsGlobal();
+    w->StartFast();
     while(true) {
+        Stopwatch::Default->GetElapsedMicrosecondsGlobal();
         if(!WinSockManager::UpdateManagersPollStatus())
             break;
         if(!this->m_currMarket->DoWorkAtom()) {
             delete w;
             return false;
         }
+        Stopwatch::Default->GetElapsedMicrosecondsGlobal();
         if(!this->m_fondMarket->DoWorkAtom()) {
             delete w;
             return false;
@@ -745,13 +762,13 @@ bool Robot::MainLoopAsts() {
         if(!this->Working())
             break;
 
-        if(w->ElapsedMilliseconds() > 5000) {
-            double nanosecPerCycle = w->ElapsedMilliseconds() * 1000.0 * 1000.0 / cycleCount;
+        if(w->ElapsedMicrosecondsFast() > 5000000) { // 1 sec
+            double nanosecPerCycle = w->ElapsedMicrosecondsFast() * 1000.0 / cycleCount;
             printf("--------\n");
             printf("cycle count for 5 sec = %d. %g nanosec per cycle\n", cycleCount, nanosecPerCycle);
             this->PrintStatistics();
 
-            w->Reset();
+            w->ResetFast();
             cycleCount = 0;
         }
         cycleCount++;

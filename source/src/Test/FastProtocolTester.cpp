@@ -93,7 +93,7 @@ void FastProtocolTester::TestPerformance() {
             }
         }
 
-        time = w->ElapsedNanoseconds();
+        time = w->ElapsedNanosecondsSlow();
         printf("decode 100000 time = %" PRIu64 " nanosec or %" PRIu64 " ms\n", time, time / 1000000);
     }
 

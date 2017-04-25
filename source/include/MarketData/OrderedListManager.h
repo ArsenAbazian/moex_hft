@@ -17,7 +17,7 @@ typedef enum _ListType {
 template <template<typename DATA> class LIST, template<typename DATA> class POINTER, typename DATA>
 class OrderedListManager {
     void init_fast_srand() {
-        g_seed = (DefaultStopwatch::Default->ElapsedNanoseconds() & 0xffffffff);
+        g_seed = (Stopwatch::Default->ElapsedNanosecondsSlow() & 0xffffffff);
     }
 #pragma region InsertBeforeDescendingCore
     inline POINTER<DATA>* InsertBeforeDescending1(double value, POINTER<DATA> *node, POINTER<DATA> *end) {

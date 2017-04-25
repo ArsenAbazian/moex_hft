@@ -64,11 +64,11 @@ public:
         incFond->SetSnapshot(this->snapFond);
         incFond->StatisticFond()->Clear();
         incFond->ClearMessages();
-        incFond->WaitLostIncrementalMessageMaxTimeMs(50);
+        incFond->WaitLostIncrementalMessageMaxTimeMcs(50000);
         incFond->m_waitTimer->Stop();
         incFond->m_waitTimer->Stop(1);
         snapFond->ClearMessages();
-        snapFond->WaitSnapshotMaxTimeMs(50);
+        snapFond->WaitSnapshotMaxTimeMcs(50000);
         incFond->StartListenSnapshot();
         snapFond->m_waitTimer->Stop();
         snapFond->Stop();
@@ -1732,7 +1732,7 @@ public:
         if(!incFond->m_waitTimer->Active()) // not all messages was processed - some messages was skipped
             throw;
         // wait
-        while(incFond->m_waitTimer->ElapsedMilliseconds() < incFond->WaitLostIncrementalMessageMaxTimeMs());
+        while(incFond->m_waitTimer->ElapsedMillisecondsSlow() < incFond->WaitLostIncrementalMessageMaxTimeMcs());
         if(!incFond->ListenIncremental_Core())
             throw;
         //entering snapshot mode
@@ -1757,7 +1757,7 @@ public:
             throw;
 
         //no messages
-        while(snapFond->m_waitTimer->ElapsedMilliseconds() <= snapFond->WaitSnapshotMaxTimeMs()) {
+        while(snapFond->m_waitTimer->ElapsedMillisecondsSlow() <= snapFond->WaitSnapshotMaxTimeMcs()) {
             if(!snapFond->m_waitTimer->Active())
                 throw;
             if(!snapFond->ListenSnapshot_Core())
@@ -1793,7 +1793,7 @@ public:
         incFond->StartListenSnapshot();
 
         //no messages first half time
-        while(snapFond->m_waitTimer->ElapsedMilliseconds() < snapFond->WaitSnapshotMaxTimeMs() / 2) {
+        while(snapFond->m_waitTimer->ElapsedMillisecondsSlow() < snapFond->WaitSnapshotMaxTimeMcs() / 2) {
             if(!snapFond->m_waitTimer->Active())
                 throw;
             if(!snapFond->ListenSnapshot_Core())
@@ -1819,7 +1819,7 @@ public:
         if(!snapFond->m_waitTimer->Active())
             throw;
         //timer should be active but reset
-        if(snapFond->m_waitTimer->ElapsedMilliseconds() >= snapFond->WaitSnapshotMaxTimeMs() / 2)
+        if(snapFond->m_waitTimer->ElapsedMillisecondsSlow() >= snapFond->WaitSnapshotMaxTimeMcs() / 2)
             throw;
 
         if(!snapFond->ListenSnapshot_Core())
@@ -2057,7 +2057,7 @@ public:
 
         snapFond->m_waitTimer->Stop(); // reset timer 0 to avoid simulate situation when no packet received
         // now wait some time and after that we have to skip lost message to get other snapshot
-        while(!snapFond->m_waitTimer->IsElapsedMilliseconds(1, snapFond->WaitSnapshotMaxTimeMs())) {
+        while(!snapFond->m_waitTimer->IsTimeOutFast(1, snapFond->WaitSnapshotMaxTimeMcs())) {
             snapFond->ListenSnapshot_Core();
             if(!snapFond->m_waitTimer->Active(1))
                 break;
@@ -2110,7 +2110,7 @@ public:
             throw;
 
         // wait some time and then receive lost packet
-        while(!snapFond->m_waitTimer->IsElapsedMilliseconds(1, snapFond->WaitSnapshotMaxTimeMs() / 2)) {
+        while(!snapFond->m_waitTimer->IsTimeOutFast(1, snapFond->WaitSnapshotMaxTimeMcs() / 2)) {
             snapFond->m_waitTimer->Start(); // reset timer 0 to avoid simulate situation when no packet received
             if(!snapFond->ListenSnapshot_Core())
                 throw;
@@ -2192,7 +2192,7 @@ public:
 
     void TestConnectionFond_TestSnapshotMessageLostAndTimeExpired() {
         this->Clear();
-        snapFond->WaitSnapshotMaxTimeMs(100);
+        snapFond->WaitSnapshotMaxTimeMcs(100);
         incFond->StartListenSnapshot();
 
         if(!snapFond->m_waitTimer->Active())
@@ -2239,7 +2239,7 @@ public:
         if(!snapFond->m_waitTimer->Active(1))
             throw;
         snapFond->m_waitTimer->Stop(); //TODO check!!!!
-        while(snapFond->m_waitTimer->ElapsedMilliseconds(1) <= snapFond->WaitSnapshotMaxTimeMs())
+        while(snapFond->m_waitTimer->ElapsedMillisecondsSlow(1) <= snapFond->WaitSnapshotMaxTimeMcs())
             snapFond->ListenSnapshot_Core();
 
         snapFond->ListenSnapshot_Core();
@@ -2284,7 +2284,7 @@ public:
         if(!incFond->m_waitTimer->Active()) // not all messages was processed - some messages was skipped
             throw;
         // wait
-        while(incFond->m_waitTimer->ElapsedMilliseconds() < incFond->WaitLostIncrementalMessageMaxTimeMs());
+        while(incFond->m_waitTimer->ElapsedMillisecondsSlow() < incFond->WaitLostIncrementalMessageMaxTimeMcs());
 
         // sending snapshot for only one item and rpt seq before last incremental message
         SendMessages(snapFond, new TestTemplateInfo*[4] {
@@ -2431,7 +2431,7 @@ public:
             throw;
         if(!incFond->m_waitTimer->Active())
             throw;
-        if(incFond->m_waitTimer->IsElapsedMilliseconds(incFond->m_waitLostIncrementalMessageMaxTimeMs))
+        if(incFond->m_waitTimer->IsTimeOutFast(incFond->m_waitLostIncrementalMessageMaxTimeMcs))
             throw;
         if(snapFond->State() != FeedConnectionState::fcsSuspend)
             throw;
@@ -2754,7 +2754,7 @@ public:
     void TestConnectionFond_ParallelWorkingIncrementalAndSnapshot_5_4() {
         this->Clear();
 
-        incFond->WaitLostIncrementalMessageMaxTimeMs(500);
+        incFond->WaitLostIncrementalMessageMaxTimeMcs(500000);
         incFond->StatisticFond()->Add("s1", "session1");
         incFond->Start();
 
@@ -2779,7 +2779,7 @@ public:
     void TestConnectionFond_ParallelWorkingIncrementalAndSnapshot_5_4_1() {
         this->Clear();
 
-        incFond->WaitLostIncrementalMessageMaxTimeMs(500);
+        incFond->WaitLostIncrementalMessageMaxTimeMcs(500000);
         incFond->StatisticFond()->Add("s1", "session1");
         incFond->Start();
 
@@ -2806,7 +2806,7 @@ public:
     void TestConnectionFond_ParallelWorkingIncrementalAndSnapshot_5_4_2() {
         this->Clear();
 
-        incFond->WaitLostIncrementalMessageMaxTimeMs(500);
+        incFond->WaitLostIncrementalMessageMaxTimeMcs(500000);
         incFond->StatisticFond()->Add("s1", "session1");
         incFond->Start();
 
@@ -2833,7 +2833,7 @@ public:
     void TestConnectionFond_ParallelWorkingIncrementalAndSnapshot_5_5() {
         this->Clear();
 
-        incFond->WaitLostIncrementalMessageMaxTimeMs(500);
+        incFond->WaitLostIncrementalMessageMaxTimeMcs(500000);
         incFond->StatisticFond()->Add("s1", "session1");
         incFond->StatisticFond()->Add("s2", "session1");
         incFond->Start();
@@ -2987,7 +2987,7 @@ public:
         this->Clear();
 
         incFond->StatisticFond()->Add("s1", "session1");
-        snapFond->WaitSnapshotMaxTimeMs(50);
+        snapFond->WaitSnapshotMaxTimeMcs(50000);
         SendMessages(incFond, snapFond,
                      "obr entry s1 e1, lost obr entry s1 e2, wait_snap, hbeat",
                      "                                                  obs s1 begin rpt 2 entry s1 e2, lost obs s1 rpt 2 entry s1 e2, hbeat, hbeat, hbeat, hbeat, hbeat",
@@ -3002,7 +3002,7 @@ public:
         this->Clear();
 
         incFond->StatisticFond()->Add("s1", "session1");
-        snapFond->WaitSnapshotMaxTimeMs(50);
+        snapFond->WaitSnapshotMaxTimeMcs(50000);
         SendMessages(incFond, snapFond,
                      "obr entry s1 e1, lost obr entry s1 e2, wait_snap, hbeat                           hbeat,                         hbeat, hbeat, hbeat, hbeat, hbeat,                           hbeat",
                      "                                                  obs s1 begin rpt 2 entry s1 e2, lost obs s1 rpt 2 entry s1 e2, hbeat, hbeat, hbeat, hbeat, hbeat, obs s1 rpt 2 entry s1 e2, obs s1 begin rpt 2 entry s1 e2 end",
