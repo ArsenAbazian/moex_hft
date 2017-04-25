@@ -93,7 +93,6 @@ protected:
     int                                         m_waitIncrementalMessageMaxTimeMs;
     int                                         m_snapshotMaxTimeMs;
     int                                         m_maxLostPacketCountForStartSnapshot;
-    bool                                        m_isLastIncrementalRecv;
 
     FeedConnectionSecurityDefinitionMode        m_idfMode;
     FeedConnectionSecurityDefinitionState       m_idfState;
@@ -2543,9 +2542,8 @@ protected:
 
         bool recv = this->ProcessServerAIncremental();
         recv |= this->ProcessServerBIncremental();
-        this->m_isLastIncrementalRecv = recv;
 
-        if(!this->m_isLastIncrementalRecv) {
+        if(!recv) {
             this->m_waitTimer->Activate(1);
             if(this->m_waitTimer->ElapsedMilliseconds(1) > this->m_waitIncrementalMessageMaxTimeMs /*this->WaitAnyPacketMaxTimeMs*/) {
                 //TODO remove debug
@@ -2566,9 +2564,8 @@ protected:
 
         bool recv = this->ProcessServerAIncremental();
         recv |= this->ProcessServerBIncremental();
-        this->m_isLastIncrementalRecv = recv;
 
-        if(!this->m_isLastIncrementalRecv) {
+        if(!recv) {
             this->m_waitTimer->Activate(1);
             if(this->m_waitTimer->ElapsedMilliseconds(1) > this->m_waitIncrementalMessageMaxTimeMs /*this->WaitAnyPacketMaxTimeMs*/) {
                 //TODO remove debug
