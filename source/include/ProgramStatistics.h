@@ -135,6 +135,7 @@ typedef enum _Counters {
 	cReadUInt64Mandatory_9Byte = 120, // read u64m 9 byte
 	cReadUInt64Mandatory_10Byte = 121, // read u64m 10 byte
 	cReadUInt64Mandatory_11Byte = 122, // read u64m 11 byte
+	cOlrMDEntryCount = 123, // olr mdentry count [128]
 #pragma endregion
 }Counters;
 
@@ -143,6 +144,9 @@ class ProgramStatistics {
     bool            *m_changed;
     const char     **m_names;
     int             m_itemsCount;
+#pragma region ProgramStatistics_GeneratedFields
+	int			m_cOlrMDEntryCount[128];
+#pragma endregion
 public:
     ProgramStatistics() {
         this->InitializeNames();
@@ -151,10 +155,11 @@ public:
 
     void InitializeNames() {
 #pragma region ProgramStatistics_GeneratedCode
-		this->m_itemsCount = 123;
+		this->m_itemsCount = 124;
 		this->m_counts = new int[ this->m_itemsCount ];
 		this->m_changed = new bool[ this->m_itemsCount ];
-		this->m_names = new const char*[123];
+		this->m_names = new const char*[124];
+		memset(this->m_cOlrMDEntryCount, 0, sizeof(int) * 128);
 		this->m_names[0] = "fond olr";
 		this->m_names[1] = "fond ols";
 		this->m_names[2] = "curr olr";
@@ -278,11 +283,48 @@ public:
 		this->m_names[120] = "read u64m 9 byte";
 		this->m_names[121] = "read u64m 10 byte";
 		this->m_names[122] = "read u64m 11 byte";
+		this->m_names[123] = "olr mdentry count ";
 #pragma endregion
     }
 
     static ProgramStatistics       *Current;
     static ProgramStatistics       *Total;
+
+#pragma region ProgramStatistics_GeneratedMethods
+	inline int* CounterIndex(Counters c) {
+		if(c == Counters::cOlrMDEntryCount)
+			return (int*)this->m_cOlrMDEntryCount;
+		return 0;
+	}
+	inline int CounterSize(Counters c) {
+		if(c == Counters::cOlrMDEntryCount)
+			return 128;
+		return 0;
+	}
+#pragma endregion
+
+	inline int Counter(Counters c, int index) {
+		return this->CounterIndex(c)[index];
+	}
+	inline void Set(Counters c, int index, int value) {
+		this->CounterIndex(c)[index] = value;
+		this->m_changed[c] = true;
+	}
+	inline void IncIndex(Counters c, int index) {
+		this->CounterIndex(c)[index]++;
+		this->m_changed[c] = true;
+	}
+	inline void Inc(Counters c, int index, int value) {
+		this->CounterIndex(c)[index] += value;
+		this->m_changed[c] = true;
+	}
+	inline void Max(Counters c, int index, int value) {
+		int *array = this->CounterIndex(c);
+		if(array[index] < value) {
+			array[index] = value;
+			m_changed[c] = true;
+		}
+	}
 
     inline int Counter(Counters c) { return this->m_counts[c]; }
     inline void Set(Counters c, int value) {
@@ -307,15 +349,24 @@ public:
     }
     inline void Clear() {
         memset(this->m_counts, 0, sizeof(int) * this->m_itemsCount);
-
+#pragma region ProgramStatistics_GeneratedClearCode
+		memset(this->m_cOlrMDEntryCount, 0, sizeof(int) * 128);
+#pragma endregion
         this->ResetFlags();
     }
 
     inline void Print() {
         for(int i = 0; i < this->m_itemsCount; i++) {
             if(this->m_changed[i]) {
-                //std::cout2 << this->m_names[i] << " = " << this->m_counts[i];
-                printf("%s = %d\n", this->m_names[i], this->m_counts[i]);
+				if(CounterIndex((Counters)i) != 0) {
+					printf("%s = ", this->m_names[i]);
+					for(int j = 0; j < this->CounterSize((Counters)i); j++) {
+						printf("%d = %d  ", j, this->Counter((Counters)i, j));
+					}
+					printf("\n");
+				}
+				else
+					printf("%s = %d\n", this->m_names[i], this->m_counts[i]);
             }
         }
     }

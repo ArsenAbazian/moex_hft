@@ -1973,7 +1973,8 @@ namespace prebuild {
 				attribute.Name == "presence" || 
 				attribute.Name == "charset" || 
 				attribute.Name == "fixed_size" || 
-				attribute.Name == "predict";
+				attribute.Name == "predict" || 
+				attribute.Name == "skip";
 		}
 		StructureInfo GetOriginalStruct(XmlNode field) {
 			if(field.ParentNode == null || field.ParentNode.Attributes["name"] == null)
@@ -3491,10 +3492,15 @@ namespace prebuild {
 		static string LogMessagesProvider_InitializeLogMessageText_GeneratedCode = "LogMessagesProvider_InitializeLogMessageText_GeneratedCode";
 		static string ProgramStatistics_GeneratedCode = "ProgramStatistics_GeneratedCode";
 		static string ProgramStatistics_Enum = "ProgramStatistics_Enum";
+		static string ProgramStatistics_GeneratedFields = "ProgramStatistics_GeneratedFields";
+		static string ProgramStatistics_GeneratedMethods = "ProgramStatistics_GeneratedMethods";
+		static string ProgramStatistics_GeneratedClearCode = "ProgramStatistics_GeneratedClearCode";
 
 		public class EnumText { 
 			public string Value { get; set; }
 			public string Text { get; set; }
+			public bool IsArray { get; set; }
+			public int Size { get; set; }
 		}
 
 		public static void GenerateStatisticMessages() {
@@ -3544,13 +3550,24 @@ namespace prebuild {
 				}
 				if (string.IsNullOrEmpty (et.Text))
 					et.Text = et.Value.Substring (1);
+				if (et.Text.Contains ('[')) {
+					int sizeStart = et.Text.IndexOf('[');
+					int sizeEnd = et.Text.IndexOf(']');
+					string length = et.Text.Substring(sizeStart + 1, sizeEnd - sizeStart - 1).Trim();
+					et.Size = int.Parse(length);
+					et.IsArray = true;
+					et.Text = et.Text.Substring(0, sizeStart);
+				}
 				i++;
 				values.Add (et);
 			}
 			file.Line = 0;
 			file.ClearRegion (ProgramStatistics_Enum);
 			for (int i = 0; i < values.Count; i++) {
-				file.Add ("\t" + values [i].Value + " = " + i + ", // " + values [i].Text);
+				if(values[i].IsArray)
+					file.Add ("\t" + values [i].Value + " = " + i + ", // " + values [i].Text + "[" + values[i].Size + "]");
+				else 
+					file.Add ("\t" + values [i].Value + " = " + i + ", // " + values [i].Text);
 			}
 
 			if (file.FindString (ProgramStatistics_GeneratedCode) == -1) {
@@ -3558,14 +3575,58 @@ namespace prebuild {
 				throw new Exception ("error: can't find '" + ProgramStatistics_GeneratedCode + "' region");
 			}
 
+			file.Line = 0;
+			file.ClearRegion (ProgramStatistics_GeneratedFields);
+			for (int i = 0; i < values.Count; i++) {
+				if (!values [i].IsArray)
+					continue;
+				file.Add ("\tint\t\t\tm_" + values [i].Value + "[" + values [i].Size + "];");
+			}
+
+			file.Line = 0;
 			file.ClearRegion (ProgramStatistics_GeneratedCode);
 			file.Add ("\t\tthis->m_itemsCount = " + values.Count + ";");
 			file.Add ("\t\tthis->m_counts = new int[ this->m_itemsCount ];");
 			file.Add ("\t\tthis->m_changed = new bool[ this->m_itemsCount ];");
 			file.Add ("\t\tthis->m_names = new const char*[" + values.Count() +"];");
 			for (int i = 0; i < values.Count; i++) {
+				if (!values [i].IsArray)
+					continue;
+				file.Add ("\t\tmemset(this->m_" + values[i].Value + ", 0, sizeof(int) * " + values[i].Size + ");");
+			}
+			for (int i = 0; i < values.Count; i++) {
 				file.Add ("\t\tthis->m_names[" + i + "] = \"" + values[i].Text + "\";");
 			}
+
+			file.Line = 0;
+			file.ClearRegion (ProgramStatistics_GeneratedMethods);
+			file.Add ("\tinline int* CounterIndex(Counters c) {");
+			for (int i = 0; i < values.Count; i++) {
+				if (!values [i].IsArray)
+					continue;
+				file.Add ("\t\tif(c == Counters::" + values[i].Value + ")");
+				file.Add ("\t\t\treturn (int*)this->m_" + values [i].Value + ";");
+			}
+			file.Add ("\t\treturn 0;");
+			file.Add ("\t}");
+
+			file.Add ("\tinline int CounterSize(Counters c) {");
+			for (int i = 0; i < values.Count; i++) {
+				if (!values [i].IsArray)
+					continue;
+				file.Add ("\t\tif(c == Counters::" + values[i].Value + ")");
+				file.Add ("\t\t\treturn " + values [i].Size + ";");
+			}
+			file.Add ("\t\treturn 0;");
+			file.Add ("\t}");
+			file.Line = 0;
+			file.ClearRegion (ProgramStatistics_GeneratedClearCode);
+			for (int i = 0; i < values.Count; i++) {
+				if (!values [i].IsArray)
+					continue;
+				file.Add ("\t\tmemset(this->m_" + values[i].Value + ", 0, sizeof(int) * " + values[i].Size + ");");
+			}
+
 			if(file.Modified && !file.Save())
 				throw new IOException("error: cannot update file " + file.FileName);
 			

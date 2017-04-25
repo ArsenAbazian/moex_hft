@@ -2697,15 +2697,15 @@ protected:
 
     inline bool OnIncrementalRefresh_OLR_FOND(AstsOLSFONDItemInfo *info) {
         //TODO remove debug
-        info->MDEntryID[info->MDEntryIDLength] = '\0';
-        printf("OLR FOND %s\n", info->MDEntryID);
+        //info->MDEntryID[info->MDEntryIDLength] = '\0';
+        //printf("OLR FOND %s\n", info->MDEntryID);
         int index = this->m_symbolManager->GetSymbol(info->Symbol, info->SymbolLength)->m_index;
         return this->m_orderTableFond->ProcessIncremental(info, index, info->TradingSessionID, info->TradingSessionIDLength);
     }
 
     inline bool OnIncrementalRefresh_OLR_CURR(AstsOLSCURRItemInfo *info) {
         //TODO remove debug
-        info->MDEntryID[info->MDEntryIDLength] = '\0';
+        //info->MDEntryID[info->MDEntryIDLength] = '\0';
         //printf("OLR CURR %s\n", info->MDEntryID);
         int index = this->m_symbolManager->GetSymbol(info->Symbol, info->SymbolLength)->m_index;
         return this->m_orderTableCurr->ProcessIncremental(info, index, info->TradingSessionID, info->TradingSessionIDLength);
@@ -2713,32 +2713,32 @@ protected:
 
     inline bool OnIncrementalRefresh_TLR_FOND(AstsTLSFONDItemInfo *info) {
         //TODO remove debug
-        info->MDEntryID[info->MDEntryIDLength] = '\0';
-        printf("TRL FOND %s\n", info->MDEntryID);
+        //info->MDEntryID[info->MDEntryIDLength] = '\0';
+        //printf("TRL FOND %s\n", info->MDEntryID);
         int index = this->m_symbolManager->GetSymbol(info->Symbol, info->SymbolLength)->m_index;
         return this->m_tradeTableFond->ProcessIncremental(info, index, info->TradingSessionID, info->TradingSessionIDLength);
     }
 
     inline bool OnIncrementalRefresh_TLR_CURR(AstsTLSCURRItemInfo *info) {
         //TODO remove debug
-        info->MDEntryID[info->MDEntryIDLength] = '\0';
-        printf("TLR CURR %s\n", info->MDEntryID);
+        //info->MDEntryID[info->MDEntryIDLength] = '\0';
+        //printf("TLR CURR %s\n", info->MDEntryID);
         int index = this->m_symbolManager->GetSymbol(info->Symbol, info->SymbolLength)->m_index;
         return this->m_tradeTableCurr->ProcessIncremental(info, index, info->TradingSessionID, info->TradingSessionIDLength);
     }
 
     inline bool OnIncrementalRefresh_MSR_FOND(AstsGenericItemInfo *info) {
         //TODO remove debug
-        info->MDEntryID[info->MDEntryIDLength] = '\0';
-        printf("MSR FOND %s\n", info->MDEntryID);
+        //info->MDEntryID[info->MDEntryIDLength] = '\0';
+        //printf("MSR FOND %s\n", info->MDEntryID);
         int index = this->m_symbolManager->GetSymbol(info->Symbol, info->SymbolLength)->m_index;
         return this->m_statTableFond->ProcessIncremental(info, index, info->TradingSessionID, info->TradingSessionIDLength);
     }
 
     inline bool OnIncrementalRefresh_MSR_CURR(AstsGenericItemInfo *info) {
         //TODO remove debug
-        info->MDEntryID[info->MDEntryIDLength] = '\0';
-        printf("MSR CURR %s\n", info->MDEntryID);
+        //info->MDEntryID[info->MDEntryIDLength] = '\0';
+        //printf("MSR CURR %s\n", info->MDEntryID);
         int index = this->m_symbolManager->GetSymbol(info->Symbol, info->SymbolLength)->m_index;
         return this->m_statTableCurr->ProcessIncremental(info, index, info->TradingSessionID, info->TradingSessionIDLength);
     }
@@ -2788,6 +2788,8 @@ protected:
 #ifdef COLLECT_STATISTICS
         ProgramStatistics::Current->Inc(Counters::cCurrOlr);
         ProgramStatistics::Total->Inc(Counters::cCurrOlr);
+        //ProgramStatistics::Current->IncIndex(Counters::cOlrMDEntryCount, info->GroupMDEntriesCount);
+        //ProgramStatistics::Total->IncIndex(Counters::cOlrMDEntryCount, info->GroupMDEntriesCount);
 #endif
         bool res = true;
         for(int i = 0; i < info->GroupMDEntriesCount; i++) {

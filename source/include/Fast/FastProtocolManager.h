@@ -24,7 +24,7 @@ class FeedConnection;
 #pragma endregion
 
 #ifdef COLLECT_STATISTICS
-#define COLLECT_STATISTICS_FAST
+//#define COLLECT_STATISTICS_FAST
 #endif
 
 class FastProtocolManager {
@@ -3913,7 +3913,7 @@ public:
 
 		ReadString_Mandatory(info->TargetCompID, &(info->TargetCompIDLength));
 		info->MsgSeqNum = ReadUInt32_Mandatory();
-		info->SendingTime = ReadUInt64_Mandatory();
+		SkipToNextField(); // SendingTime
 		info->HeartBtInt = ReadInt32_Mandatory();
 		if(CheckProcessNullString())
 			info->NullMap |= NULL_MAP_INDEX0;
@@ -3933,7 +3933,7 @@ public:
 
 		ReadString_Mandatory(info->TargetCompID, &(info->TargetCompIDLength));
 		info->MsgSeqNum = ReadUInt32_Mandatory();
-		info->SendingTime = ReadUInt64_Mandatory();
+		SkipToNextField(); // SendingTime
 		if(CheckProcessNullString())
 			info->NullMap |= NULL_MAP_INDEX0;
 		else
@@ -3946,7 +3946,7 @@ public:
 		info->PresenceMap = this->m_presenceMap;
 
 		info->MsgSeqNum = ReadUInt32_Mandatory();
-		info->SendingTime = ReadUInt64_Mandatory();
+		SkipToNextField(); // SendingTime
 		if(CheckProcessNullString())
 			info->NullMap |= NULL_MAP_INDEX0;
 		else
@@ -4163,7 +4163,7 @@ public:
 		info->PresenceMap = this->m_presenceMap;
 
 		info->MsgSeqNum = ReadUInt32_Mandatory();
-		info->SendingTime = ReadUInt64_Mandatory();
+		SkipToNextField(); // SendingTime
 
 		info->GroupMDEntriesCount = ReadUInt32_Mandatory_Predict1();
 		AstsGenericItemInfo* gmdeItemInfo = NULL;
@@ -4366,7 +4366,7 @@ public:
 		info->PresenceMap = this->m_presenceMap;
 
 		info->MsgSeqNum = ReadUInt32_Mandatory();
-		info->SendingTime = ReadUInt64_Mandatory();
+		SkipToNextField(); // SendingTime
 		if(CheckProcessNullUInt32())
 			info->NullMap |= NULL_MAP_INDEX0;
 		else
@@ -4525,7 +4525,7 @@ public:
 		info->PresenceMap = this->m_presenceMap;
 
 		info->MsgSeqNum = ReadUInt32_Mandatory();
-		info->SendingTime = ReadUInt64_Mandatory();
+		SkipToNextField(); // SendingTime
 		if(CheckProcessNullUInt32())
 			info->NullMap |= NULL_MAP_INDEX0;
 		else
@@ -4652,7 +4652,7 @@ public:
 		info->PresenceMap = this->m_presenceMap;
 
 		info->MsgSeqNum = ReadUInt32_Mandatory();
-		info->SendingTime = ReadUInt64_Mandatory();
+		SkipToNextField(); // SendingTime
 		if(CheckProcessNullUInt32())
 			info->NullMap |= NULL_MAP_INDEX0;
 		else
@@ -4875,7 +4875,7 @@ public:
 		info->PresenceMap = this->m_presenceMap;
 
 		info->MsgSeqNum = ReadUInt32_Mandatory();
-		info->SendingTime = ReadUInt64_Mandatory();
+		SkipToNextField(); // SendingTime
 		if(CheckProcessNullUInt32())
 			info->NullMap |= NULL_MAP_INDEX0;
 		else
@@ -5076,7 +5076,7 @@ public:
 		info->PresenceMap = this->m_presenceMap;
 
 		info->MsgSeqNum = ReadUInt32_Mandatory();
-		info->SendingTime = ReadUInt64_Mandatory();
+		SkipToNextField(); // SendingTime
 		if(CheckProcessNullUInt64())
 			info->NullMap |= NULL_MAP_INDEX0;
 		else
@@ -5231,7 +5231,7 @@ public:
 		info->PresenceMap = this->m_presenceMap;
 
 		info->MsgSeqNum = ReadUInt32_Mandatory();
-		info->SendingTime = ReadUInt64_Mandatory();
+		SkipToNextField(); // SendingTime
 		if(CheckProcessNullUInt64())
 			info->NullMap |= NULL_MAP_INDEX0;
 		else
@@ -5366,7 +5366,7 @@ public:
 		info->PresenceMap = this->m_presenceMap;
 
 		info->MsgSeqNum = ReadUInt32_Mandatory();
-		info->SendingTime = ReadUInt64_Mandatory();
+		SkipToNextField(); // SendingTime
 
 		info->GroupMDEntriesCount = ReadUInt32_Mandatory_Predict1();
 		AstsOLSFONDItemInfo* gmdeItemInfo = NULL;
@@ -5523,7 +5523,7 @@ public:
 		info->PresenceMap = this->m_presenceMap;
 
 		info->MsgSeqNum = ReadUInt32_Mandatory();
-		info->SendingTime = ReadUInt64_Mandatory();
+		SkipToNextField(); // SendingTime
 
 		info->GroupMDEntriesCount = ReadUInt32_Mandatory_Predict1();
 		AstsOLSCURRItemInfo* gmdeItemInfo = NULL;
@@ -5657,7 +5657,7 @@ public:
 		info->PresenceMap = this->m_presenceMap;
 
 		info->MsgSeqNum = ReadUInt32_Mandatory();
-		info->SendingTime = ReadUInt64_Mandatory();
+		SkipToNextField(); // SendingTime
 
 		info->GroupMDEntriesCount = ReadUInt32_Mandatory_Predict1();
 		AstsTLSFONDItemInfo* gmdeItemInfo = NULL;
@@ -5769,7 +5769,7 @@ public:
 		info->PresenceMap = this->m_presenceMap;
 
 		info->MsgSeqNum = ReadUInt32_Mandatory();
-		info->SendingTime = ReadUInt64_Mandatory();
+		SkipToNextField(); // SendingTime
 
 		info->GroupMDEntriesCount = ReadUInt32_Mandatory_Predict1();
 		AstsTLSCURRItemInfo* gmdeItemInfo = NULL;
@@ -5873,7 +5873,7 @@ public:
 		info->PresenceMap = this->m_presenceMap;
 
 		info->MsgSeqNum = ReadUInt32_Mandatory();
-		info->SendingTime = ReadUInt64_Mandatory();
+		SkipToNextField(); // SendingTime
 		if(CheckProcessNullInt32())
 			info->NullMap |= NULL_MAP_INDEX0;
 		else
@@ -6101,7 +6101,7 @@ public:
 		info->PresenceMap = this->m_presenceMap;
 
 		info->MsgSeqNum = ReadUInt32_Mandatory();
-		info->SendingTime = ReadUInt64_Mandatory();
+		SkipToNextField(); // SendingTime
 		ReadString_Mandatory(info->Symbol, &(info->SymbolLength));
 		if(CheckProcessNullString())
 			info->NullMap |= NULL_MAP_INDEX0;
@@ -6127,7 +6127,7 @@ public:
 		info->PresenceMap = this->m_presenceMap;
 
 		info->MsgSeqNum = ReadUInt32_Mandatory();
-		info->SendingTime = ReadUInt64_Mandatory();
+		SkipToNextField(); // SendingTime
 		info->TradSesStatus = ReadInt32_Mandatory();
 		if(CheckProcessNullString())
 			info->NullMap |= NULL_MAP_INDEX0;
@@ -6142,7 +6142,7 @@ public:
 		info->PresenceMap = this->m_presenceMap;
 
 		info->MsgSeqNum = ReadUInt32_Mandatory();
-		info->SendingTime = ReadUInt64_Mandatory();
+		SkipToNextField(); // SendingTime
 		this->m_prevastsHeartbeatInfo = info;
 		return info;
 	}
@@ -6152,7 +6152,7 @@ public:
 		info->TemplateId = this->m_templateId;
 
 		SkipToNextField(); // MsgSeqNum
-		info->SendingTime = ReadUInt64_Mandatory();
+		SkipToNextField(); // SendingTime
 		if(CheckProcessNullString())
 			info->NullMap |= NULL_MAP_INDEX0;
 		else
@@ -6179,7 +6179,7 @@ public:
 		info->TemplateId = this->m_templateId;
 
 		SkipToNextField(); // MsgSeqNum
-		info->SendingTime = ReadUInt64_Mandatory();
+		SkipToNextField(); // SendingTime
 		if(CheckProcessNullUInt32())
 			info->NullMap |= NULL_MAP_INDEX0;
 		else
@@ -6207,7 +6207,7 @@ public:
 		info->TemplateId = this->m_templateId;
 
 		SkipToNextField(); // MsgSeqNum
-		info->SendingTime = ReadUInt64_Mandatory();
+		SkipToNextField(); // SendingTime
 		if(CheckProcessNullUInt32())
 			info->NullMap |= NULL_MAP_INDEX0;
 		else
@@ -6235,7 +6235,7 @@ public:
 		info->TemplateId = this->m_templateId;
 
 		SkipToNextField(); // MsgSeqNum
-		info->SendingTime = ReadUInt64_Mandatory();
+		SkipToNextField(); // SendingTime
 		if(CheckProcessNullUInt32())
 			info->NullMap |= NULL_MAP_INDEX0;
 		else
@@ -6263,7 +6263,7 @@ public:
 		info->TemplateId = this->m_templateId;
 
 		SkipToNextField(); // MsgSeqNum
-		info->SendingTime = ReadUInt64_Mandatory();
+		SkipToNextField(); // SendingTime
 		if(CheckProcessNullUInt32())
 			info->NullMap |= NULL_MAP_INDEX0;
 		else
