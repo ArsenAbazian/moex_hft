@@ -862,11 +862,48 @@ public:
         TestAsts();
     }
 
+    void TestStopwatchPerformance() {
+        Stopwatch *w = new Stopwatch();
+        w->Start();
+        for(int i = 0; i < 10000000; i++) {
+            Stopwatch::Default->GetElapsedMicrosecondsGlobal();
+        }
+        int ms = w->ElapsedMillisecondsSlow();
+        printf("stopwatch fast = %d\n", ms);
+        w->Stop();
+        w->Start();
+        for(int i = 0; i < 10000000; i++) {
+            Stopwatch::Default->GetElapsedMicrosecondsGlobalSlow();
+        }
+        ms = w->ElapsedMillisecondsSlow();
+        printf("stopwatch slow = %d\n", ms);
+
+        Stopwatch::Default->Start();
+        w->Stop();
+        w->Start();
+        for(int i = 0; i < 10000000; i++) {
+            Stopwatch::Default->ElapsedMillisecondsSlow();
+        }
+        ms = w->ElapsedMillisecondsSlow();
+        printf("stopwatch elapsed slow = %d\n", ms);
+
+        Stopwatch::Default->Start();
+        w->Stop();
+        w->Start();
+        for(int i = 0; i < 10000000; i++) {
+            Stopwatch::Default->ElapsedMicrosecondsFast();
+        }
+        ms = w->ElapsedMillisecondsSlow();
+        printf("stopwatch elapsed fast = %d\n", ms);
+    }
+
     void Test() {
         RobotSettings::Default->MarketDataMaxSymbolsCount = 10;
         RobotSettings::Default->MarketDataMaxSessionsCount = 32;
         RobotSettings::Default->MarketDataMaxEntriesCount = 32 * 10;
         RobotSettings::Default->MDEntryQueueItemsCount = 100;
+
+        TestStopwatchPerformance();
 
         PointerListTester *pt = new PointerListTester();
         pt->Test();

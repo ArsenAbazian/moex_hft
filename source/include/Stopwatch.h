@@ -45,6 +45,10 @@ public:
         __syscall_slong_t res2 = (res << 10) - (res << 4) - (res << 3);
         Stopwatch::ElapsedMicroseconds = res2 + (this->m_specEnd->tv_nsec >> 10);
     }
+    inline void GetElapsedMicrosecondsGlobalSlow() {
+        clock_gettime(CLOCK_REALTIME_COARSE, this->m_specEnd);
+        Stopwatch::ElapsedMicroseconds = this->m_specEnd->tv_sec * 1000000 + this->m_specEnd->tv_nsec / 1000;
+    }
     inline void UpdateElapsedMicrosecondsGlobal(struct timespec *ts) {
         __syscall_slong_t sec = ts->tv_sec;
         __syscall_slong_t res = (sec << 10) - (sec << 4) - (sec << 3);

@@ -386,9 +386,10 @@ protected:
 
     inline bool ProcessServerCoreIncremental(int size, int msgSeqNum) {
 
-        if(msgSeqNum < this->m_windowMsgSeqNum) // out of window
+        int localMsgSeqNum = msgSeqNum - this->m_windowMsgSeqNum;
+        if(localMsgSeqNum < 0) // out of window
             return true;
-        if(msgSeqNum - this->m_windowMsgSeqNum >= this->m_packetsCount) {
+        if(localMsgSeqNum >= this->m_packetsCount) {
             // we should start snapshot
             this->ClearLocalPackets(0, this->GetLocalIndex(this->m_endMsgSeqNum));
             this->m_startMsgSeqNum = msgSeqNum;
@@ -397,7 +398,7 @@ protected:
             this->StartListenSnapshot();
             return false;
         }
-        FeedConnectionMessageInfo *info = this->Packet(msgSeqNum);
+        FeedConnectionMessageInfo *info = this->m_packets[localMsgSeqNum];
         if(info->m_address != 0) // already recv
             return true;
 
@@ -406,7 +407,6 @@ protected:
 
         info->m_address = this->m_recvABuffer->CurrentPos();
         info->m_size = size;
-        info->m_requested = false;
         this->m_recvABuffer->Next(size);
         return true;
     }
@@ -1114,23 +1114,18 @@ protected:
     }
 
     inline bool ProcessIncrementalMessages() {
-        int localStart = this->m_startMsgSeqNum - this->m_windowMsgSeqNum;
-        int localEnd = this->m_endMsgSeqNum - this->m_windowMsgSeqNum;
-
-        if(localStart == localEnd) { // special case - one packet
-            FeedConnectionMessageInfo *info = this->m_packets[localStart];
-            if(info->m_address == 0)
-                return true;
-            if(!info->m_processed) {
-                if (!this->ProcessIncrementalAsts(info))
-                    return false;
-            }
+        if(this->m_startMsgSeqNum == this->m_endMsgSeqNum) { // special case - one packet
+            FeedConnectionMessageInfo *info = this->Packet(this->m_startMsgSeqNum);
+            this->ProcessIncrementalAsts(info);
             info->Clear();
-            this->m_startMsgSeqNum = this->m_endMsgSeqNum + 1;
+            this->m_startMsgSeqNum ++;
             this->m_windowMsgSeqNum = this->m_startMsgSeqNum;
             this->AfterMoveWindow();
         }
         else { // more than one packet
+            int localStart = this->m_startMsgSeqNum - this->m_windowMsgSeqNum;
+            int localEnd = this->m_endMsgSeqNum - this->m_windowMsgSeqNum;
+
             int newStartMsgSeqNum = -1;
             int i = localStart;
 
@@ -2113,7 +2108,6 @@ protected:
             }
         }
         else {
-            //printf("%d que entries and %d symbols to go\n", this->OrderCurr()->QueueEntriesCount(), this->OrderCurr()->SymbolsToRecvSnapshotCount());
             if(this->CanStopListeningSnapshot()) {
                 this->StopListenSnapshot();
                 this->m_waitTimer->ActivateFast();
@@ -2568,8 +2562,8 @@ protected:
         if(!recv) {
             this->m_waitTimer->ActivateFast(1);
             if(this->m_waitTimer->IsTimeOutFast(1, this->m_waitIncrementalMessageMaxTimeMcs)) {
-                //TODO remove debug
                 if(this->m_snapshot->State() == FeedConnectionState::fcsSuspend) {
+                    //TODO remove debug
                     printf("%s listen atom incremental timeout %lu ms... start snapshot\n", this->m_idName, this->m_waitTimer->ElapsedMillisecondsFast(1));
                     this->StartListenSnapshot();
                 }
