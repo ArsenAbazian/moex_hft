@@ -28,7 +28,6 @@ template <typename T> class OrderInfo {
 
     MDEntryQueue                       *m_entryInfo;
 
-    bool                                m_used;
     bool                                m_shouldProcessSnapshot;
     int                                 m_rptSeq;
     int                                 m_savedRptSeq;
@@ -78,8 +77,6 @@ public:
     inline HrPointerListLite<T>* SellQuotes() { return this->m_sellQuoteList; }
     inline HrPointerListLite<T>* BuyQuotes() { return this->m_buyQuoteList; }
 
-    inline bool Used() { return this->m_used; }
-    inline void Used(bool used) { this->m_used = used; }
     inline void Clear(HrPointerListLite<T> *list) {
         if(list->Count() == 0)
             return;
@@ -259,7 +256,7 @@ public:
 #endif
         if(info->MDEntryType[0] == mdetBuyQuote)
             this->RemoveBuyQuote(info);
-        else if(info->MDEntryType[0] == mdetSellQuote)
+        else
             this->RemoveSellQuote(info);
     }
 
@@ -422,7 +419,6 @@ template <typename T> HrPointerList<T>* OrderInfo<T>::m_itemsPool = 0;
 
 template <typename T> OrderInfo<T>::OrderInfo() :
         m_entryInfo(0),
-        m_used(false),
         m_shouldProcessSnapshot(false),
         m_rptSeq(0),
         m_savedRptSeq(0),

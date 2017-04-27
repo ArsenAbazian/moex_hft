@@ -24,9 +24,6 @@ template <template<typename ITEMINFO> class TABLEITEM, typename INFO, typename I
     bool                                        m_allSessionsRecvSnapshot;
     bool                                        m_snapshotMode;
 
-    inline void AddUsed(TABLEITEM<ITEMINFO> *tableItem) {
-        tableItem->Used(true);
-    }
 public:
     inline void InitSymbols(int count) {
         this->m_symbolsMaxCount = count;
@@ -85,7 +82,6 @@ public:
             this->m_snapshotItem = this->GetItem(info->Symbol, info->SymbolLength, info->TradingSessionID, info->TradingSessionIDLength);
         this->m_snapshotSymbol = this->m_snapshotItem->SymbolInfo();
         this->m_snapshotItemRptSeq = info->RptSeq;
-        this->AddUsed(this->m_snapshotItem);
     }
     inline void ObtainSnapshotItem(int symbolIndex, FortsSnapshotInfo *info) {
         this->m_snapshotItem = this->GetCachedItem(info->SecurityID, 0);
@@ -93,7 +89,6 @@ public:
             this->m_snapshotItem = this->Symbol(symbolIndex)->Session(0);
         this->m_snapshotSymbol = this->m_snapshotItem->SymbolInfo();
         this->m_snapshotItemRptSeq = info->RptSeq;
-        this->AddUsed(this->m_snapshotItem);
     }
     inline void ObtainSnapshotItem(FortsSnapshotInfo *info) {
         this->m_snapshotItem = this->GetCachedItem(info->SecurityID, 0);
@@ -101,7 +96,6 @@ public:
             this->m_snapshotItem = this->GetItemBySecurityId(info->SecurityID, 0);
         this->m_snapshotSymbol = this->m_snapshotItem->SymbolInfo();
         this->m_snapshotItemRptSeq = info->RptSeq;
-        this->AddUsed(this->m_snapshotItem);
     }
     inline void ObtainSnapshotItemForts(INFO *info) {
         this->m_snapshotItem = this->GetCachedItem(info->SecurityID, 0);
@@ -109,7 +103,6 @@ public:
             this->m_snapshotItem = this->GetItemBySecurityId(info->SecurityID, 0);
         this->m_snapshotSymbol = this->m_snapshotItem->SymbolInfo();
         this->m_snapshotItemRptSeq = info->RptSeq;
-        this->AddUsed(this->m_snapshotItem);
     }
 
     inline void ObtainSnapshotItem(int symbolIndex, AstsSnapshotInfo *info) {
@@ -118,7 +111,6 @@ public:
             this->m_snapshotItem = this->GetItem(symbolIndex, info->TradingSessionID, info->TradingSessionIDLength);
         this->m_snapshotSymbol = this->m_snapshotItem->SymbolInfo();
         this->m_snapshotItemRptSeq = info->RptSeq;
-        this->AddUsed(this->m_snapshotItem);
     }
     inline void ObtainSnapshotItem(AstsSnapshotInfo *info) {
         this->m_snapshotItem = this->GetCachedItem(info->Symbol, info->SymbolLength, info->TradingSessionID, info->TradingSessionIDLength);
@@ -126,7 +118,6 @@ public:
             this->m_snapshotItem = this->GetItem(info->Symbol, info->SymbolLength, info->TradingSessionID, info->TradingSessionIDLength);
         this->m_snapshotSymbol = this->m_snapshotItem->SymbolInfo();
         this->m_snapshotItemRptSeq = info->RptSeq;
-        this->AddUsed(this->m_snapshotItem);
     }
     inline void DecSymbolsToRecvSnapshotCount() {
         this->m_symbolsToRecvSnapshot--;
@@ -159,7 +150,6 @@ public:
         return true;
     }
     inline bool ProcessIncremental(ITEMINFO *info, TABLEITEM<ITEMINFO> *tableItem) {
-        this->AddUsed(tableItem);
         bool prevHasEntries = tableItem->HasEntries();
         bool res = tableItem->ProcessIncrementalMessage(info);
         bool hasEntries = tableItem->HasEntries();

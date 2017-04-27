@@ -18,7 +18,6 @@ template <typename T> class TradeInfo {
     PointerListLite<T>                  *m_trades;
     MDEntryQueue                        *m_entryInfo;
 
-    bool                                m_used;
     bool                                m_shouldProcessSnapshot;
     int                                 m_rptSeq;
     int                                 m_savedRptSeq;
@@ -59,8 +58,7 @@ public:
     inline MDEntryQueue* EntriesQueue() { return this->m_entryInfo; }
 
     inline PointerListLite<T>* Trades() { return this->m_trades; }
-    inline bool Used() { return this->m_used; }
-    inline void Used(bool used) { this->m_used = used; }
+
     inline void Clear(PointerListLite<T> *list) {
         if(list->Count() == 0)
             return;
@@ -232,7 +230,6 @@ template <typename T> PointerList<T>* TradeInfo<T>::m_itemsPool = 0;
 
 template <typename T> TradeInfo<T>::TradeInfo() :
         m_entryInfo(0),
-        m_used(false),
         m_shouldProcessSnapshot(false),
         m_rptSeq(0),
         m_savedRptSeq(0),

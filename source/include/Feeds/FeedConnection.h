@@ -302,14 +302,15 @@ protected:
         return true;
     }
     inline bool ProcessServerCoreSecurityStatus_HistoricalReplay(SocketBuffer *buffer, int size, int msgSeqNum) {
-        if(msgSeqNum < this->m_windowMsgSeqNum) // out of window
+        int localMsgSeqNum = msgSeqNum - this->m_windowMsgSeqNum;
+        if(localMsgSeqNum < 0) // out of window
             return true;
-        if(msgSeqNum - this->m_windowMsgSeqNum >= this->m_packetsCount) {
+        if(localMsgSeqNum >= this->m_packetsCount) {
             // we should start snapshot
             this->StartSecurityStatusSnapshot();
             return false;
         }
-        FeedConnectionMessageInfo *info = this->Packet(msgSeqNum);
+        FeedConnectionMessageInfo *info = this->m_packets[localMsgSeqNum];
         if(info->m_address != 0) // already recv
             return true;
 
@@ -1020,10 +1021,20 @@ protected:
                 this->FinishSecurityStatusSnapshot();
             }
         }
+        if(this->m_startMsgSeqNum - this->m_endMsgSeqNum == 1)
+            return true;
+        int i = this->m_startMsgSeqNum - this->m_windowMsgSeqNum;
+        if(this->m_startMsgSeqNum == this->m_endMsgSeqNum) { // special case - one packet
+            FeedConnectionMessageInfo *info = this->m_packets[i];
+            this->ProcessSecurityStatus(info);
+            info->Clear();
+            this->m_startMsgSeqNum ++;
+            this->m_windowMsgSeqNum = this->m_startMsgSeqNum;
+            this->AfterMoveWindow();
+            return true;
+        }
 
         int end = this->m_endMsgSeqNum - this->m_windowMsgSeqNum;
-        int i = this->m_startMsgSeqNum - this->m_windowMsgSeqNum;
-
         while(i <= end) {
             if(this->m_packets[i]->m_processed) {
                 i++; continue;
@@ -2156,18 +2167,13 @@ protected:
 #ifdef TEST
         Stopwatch::Default->GetElapsedMicrosecondsGlobal();
 #endif
-        if(!this->ProcessSecurityStatusMessages())
-            return false;
-        return true;
+        return this->ProcessSecurityStatusMessages();
     }
-
     inline bool ListenSecurityStatusForts_Core() {
 #ifdef TEST
         Stopwatch::Default->GetElapsedMicrosecondsGlobal();
 #endif
-        if(!this->ProcessSecurityStatusMessagesForts())
-            return false;
-        return true;
+        return this->ProcessSecurityStatusMessagesForts();
     }
 
     inline bool InitializeSockets() {
@@ -2725,9 +2731,6 @@ protected:
     }
 
     inline bool OnIncrementalRefresh_OLR_CURR(AstsOLSCURRItemInfo *info) {
-        //TODO remove debug
-        //info->MDEntryID[info->MDEntryIDLength] = '\0';
-        //printf("OLR CURR %s\n", info->MDEntryID);
         int index = this->m_symbolManager->GetSymbol(info->Symbol, info->SymbolLength)->m_index;
         return this->m_orderTableCurr->ProcessIncremental(info, index, info->TradingSessionID, info->TradingSessionIDLength);
     }
@@ -2809,15 +2812,11 @@ protected:
 #ifdef COLLECT_STATISTICS
         ProgramStatistics::Current->Inc(Counters::cCurrOlr);
         ProgramStatistics::Total->Inc(Counters::cCurrOlr);
-        //ProgramStatistics::Current->IncIndex(Counters::cOlrMDEntryCount, info->GroupMDEntriesCount);
-        //ProgramStatistics::Total->IncIndex(Counters::cOlrMDEntryCount, info->GroupMDEntriesCount);
 #endif
-        bool res = true;
-        for(int i = 0; i < info->GroupMDEntriesCount; i++) {
-            res |= this->OnIncrementalRefresh_OLR_CURR(info->GroupMDEntries[i]);
-        }
+        for(int i = 0; i < info->GroupMDEntriesCount; i++)
+            this->OnIncrementalRefresh_OLR_CURR(info->GroupMDEntries[i]);
         info->ReleaseUnused();
-        return res;
+        return true;
     }
 
     inline bool OnIncrementalRefresh_TLR_FOND(AstsIncrementalTLRFONDInfo *info) {
@@ -3132,11 +3131,18 @@ protected:
 #endif
         unsigned char *buffer = info->m_address;
         if(this->ShouldSkipMessageAsts(buffer, !info->m_requested)) {
+#ifdef COLLECT_STATISTICS
+            ProgramStatistics::Current->Inc(Counters::cSecStatusHbeatCount);
+            ProgramStatistics::Total->Inc(Counters::cSecStatusHbeatCount);
+#endif
             info->m_processed = true;
             return true;  // TODO - take this message into account, becasue it determines feed alive
         }
 
-        //DefaultLogManager::Default->WriteFast(this->m_idLogIndex, this->m_recvABuffer->BufferIndex(), info->m_item->m_itemIndex);
+#ifdef COLLECT_STATISTICS
+        ProgramStatistics::Current->Inc(Counters::cSecStatusPacketCount);
+        ProgramStatistics::Total->Inc(Counters::cSecStatusPacketCount);
+#endif
         info->m_processed = true;
         return this->ProcessSecurityStatus(buffer, info->m_size, !info->m_requested);
     }

@@ -27,7 +27,6 @@ template <typename T> class OrderBookInfo {
 
     MDEntryQueue                       *m_entryInfo;
 
-    bool                                m_used;
     bool                                m_shouldProcessSnapshot;
     int                                 m_rptSeq;
     int                                 m_savedRptSeq;
@@ -87,8 +86,6 @@ public:
     inline OrderedListManager<HrPointerListLite, HrLinkedPointer, T> *SellQuoteManager() const { return this->m_sellQuoteManager; }
     inline OrderedListManager<HrPointerListLite, HrLinkedPointer, T> *BuyQuoteManager() const { return this->m_buyQuoteManager; }
 
-    inline bool Used() { return this->m_used; }
-    inline void Used(bool used) { this->m_used = used; }
     inline void Clear(HrPointerListLite<T> *list) {
         if(list->Count() == 0)
             return;
@@ -429,7 +426,6 @@ template <typename T> OrderBookInfo<T>::OrderBookInfo() :
         m_sellQuoteList(0),
         m_buyQuoteList(0),
         m_entryInfo(0),
-        m_used(false),
         m_shouldProcessSnapshot(false),
         m_rptSeq(0),
         m_savedRptSeq(0),

@@ -108,6 +108,16 @@ class SymbolManager {
             start = start->Next();
         }
     }
+    inline SymbolInfo* FindSymbol(LinkedPointer<SymbolInfo> *start, const char *symbol, int length) {
+        while(true) {
+            SymbolInfo *s = start->Data();
+            if(StringIdComparer::Equal(s->m_text, s->m_length, symbol, length))
+                return s;
+            if(!start->HasNext())
+                return 0;
+            start = start->Next();
+        }
+    }
     inline void AppendSymbol(LinkedPointer<SymbolInfo> *current, LinkedPointer<SymbolInfo> *next) {
         current->Next(next);
         next->Next(0);
@@ -222,14 +232,9 @@ public:
         return info;
     }
     inline SymbolInfo* GetSymbol(const char *symbol, int length) {
-        bool wasNewlyAdded = false;
-        SymbolInfo *res = this->GetSymbol(symbol, length, &wasNewlyAdded);
-        if(wasNewlyAdded) { //TODO remove debug
-            printf("!!!unexpected add %s\n", DebugInfoManager::Default->GetString(symbol, length, 0));
-            return 0;
-            //throw;
-        }
-        return res;
+        int hash = StringHash::GetHash(symbol, length);
+        LinkedPointer<SymbolInfo> *bucket = GetBucket(hash);
+        return FindSymbol(bucket, symbol, length);
     }
     inline SymbolInfo* GetSymbol(const char *symbol, int length, bool *wasNewlyAdded) {
         int hash = StringHash::GetHash(symbol, length);

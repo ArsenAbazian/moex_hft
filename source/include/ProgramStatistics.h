@@ -136,6 +136,10 @@ typedef enum _Counters {
 	cReadUInt64Mandatory_10Byte = 121, // read u64m 10 byte
 	cReadUInt64Mandatory_11Byte = 122, // read u64m 11 byte
 	cOlrMDEntryCount = 123, // olr mdentry count [128]
+	cIncHbeatCount = 124, // inc hbeat packet count
+	cIncPacketCount = 125, // inc refresh packet count
+	cSecStatusHbeatCount = 126, // sec status hbeat count
+	cSecStatusPacketCount = 127, // sec status packet count
 #pragma endregion
 }Counters;
 
@@ -155,10 +159,10 @@ public:
 
     void InitializeNames() {
 #pragma region ProgramStatistics_GeneratedCode
-		this->m_itemsCount = 124;
+		this->m_itemsCount = 128;
 		this->m_counts = new int[ this->m_itemsCount ];
 		this->m_changed = new bool[ this->m_itemsCount ];
-		this->m_names = new const char*[124];
+		this->m_names = new const char*[128];
 		memset(this->m_cOlrMDEntryCount, 0, sizeof(int) * 128);
 		this->m_names[0] = "fond olr";
 		this->m_names[1] = "fond ols";
@@ -284,6 +288,10 @@ public:
 		this->m_names[121] = "read u64m 10 byte";
 		this->m_names[122] = "read u64m 11 byte";
 		this->m_names[123] = "olr mdentry count ";
+		this->m_names[124] = "inc hbeat packet count";
+		this->m_names[125] = "inc refresh packet count";
+		this->m_names[126] = "sec status hbeat count";
+		this->m_names[127] = "sec status packet count";
 #pragma endregion
     }
 

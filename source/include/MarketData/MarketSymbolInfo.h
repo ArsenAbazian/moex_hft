@@ -91,10 +91,8 @@ public:
     inline bool Equals(const char *symbol, int symbolLen) { return this->m_symbol->Equal(symbol, symbolLen); }
     inline void Clear() {
         T **item = this->m_items;
-        for(int i = 0; i < this->m_maxCount; i++, item++) {
-            (*item)->Used(false);
+        for(int i = 0; i < this->m_maxCount; i++, item++)
             (*item)->Clear();
-        }
         this->m_count = 0;
     }
     inline T* AddSession(const char *session, int sessionLength) {

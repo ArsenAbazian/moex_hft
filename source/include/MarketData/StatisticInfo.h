@@ -56,7 +56,6 @@ template <typename T> class StatisticsInfo {
     PointerListLite<StatisticItemDecimal>                    *m_auctionMagnitudeBigPackets;
     PointerListLite<StatisticItemDecimal>                    *m_cumulativeCouponDebit;
 
-    bool                 m_used;
     bool                 m_shouldProcessSnapshot;
     int                  m_rptSeq;
     int                  m_savedRptSeq;
@@ -69,7 +68,6 @@ template <typename T> class StatisticsInfo {
 public:
     StatisticsInfo() :
             m_entryInfo(0),
-            m_used(false),
             m_shouldProcessSnapshot(false),
             m_rptSeq(0),
             m_savedRptSeq(0),
@@ -186,8 +184,6 @@ public:
     inline void ClearEntries() { this->ReleaseEntryQue(); }
     inline MDEntryQueue* EntriesQueue() { return this->m_entryInfo; }
 
-    inline bool Used() { return this->m_used; }
-    inline void Used(bool used) { this->m_used = used; }
     inline void Clear(PointerList<T> *list) {
         if(list->Count() == 0)
             return;
