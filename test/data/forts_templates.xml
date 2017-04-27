@@ -226,8 +226,8 @@
         <string name="SenderCompID" id="49">
             <constant value="MOEX"/>
         </string>
-        <uInt32 name="MsgSeqNum" id="34"/>
-        <uInt64 name="SendingTime" id="52"/>
+        <uInt32 name="MsgSeqNum" id="34" skip="true"/>
+        <uInt64 name="SendingTime" id="52" skip="true"/>
     </template>
 
     <template name="SequenceReset" id="7">

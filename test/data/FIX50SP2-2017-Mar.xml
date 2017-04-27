@@ -611,7 +611,7 @@
 		<string name="MessageType" id="35"><constant value="0" /></string>
 		<string name="BeginString" id="8"><constant value="FIXT.1.1"/></string>
 		<string name="SenderCompID" id="49"><constant value="MOEX"/></string>
-		<uInt32 name="MsgSeqNum" id="34"></uInt32>
+		<uInt32 name="MsgSeqNum" id="34" skip="true"></uInt32>
 		<uInt64 name="SendingTime" id="52" predict="9" skip="true"></uInt64>
 	</template>
 </templates>

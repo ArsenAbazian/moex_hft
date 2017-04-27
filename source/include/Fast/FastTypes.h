@@ -1217,7 +1217,7 @@ public:
 	char							MessageType[16];			// id=35    constant has constant value = 0
 	char							BeginString[16];			// id=8    constant has constant value = FIXT.1.1
 	char							SenderCompID[32];			// id=49    constant has constant value = MOEX
-	UINT32							MsgSeqNum;			// id=34  
+	UINT32							MsgSeqNum;			// id=34  skip=true  
 	UINT64							SendingTime;			// id=52  predict=9  skip=true  
 	int								MessageTypeLength;			// id=35    constant has constant value = 0
 	int								BeginStringLength;			// id=8    constant has constant value = FIXT.1.1
@@ -2980,8 +2980,8 @@ public:
 	char							ApplVerID[16];			// id=1128    constant has constant value = 9
 	char							MessageType[16];			// id=35    constant has constant value = 0
 	char							SenderCompID[32];			// id=49    constant has constant value = MOEX
-	UINT32							MsgSeqNum;			// id=34  
-	UINT64							SendingTime;			// id=52  
+	UINT32							MsgSeqNum;			// id=34  skip=true  
+	UINT64							SendingTime;			// id=52  skip=true  
 	int								ApplVerIDLength;			// id=1128    constant has constant value = 9
 	int								MessageTypeLength;			// id=35    constant has constant value = 0
 	int								SenderCompIDLength;			// id=49    constant has constant value = MOEX

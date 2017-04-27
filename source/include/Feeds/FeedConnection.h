@@ -1177,12 +1177,7 @@ protected:
 
         if(localStart == localEnd) { // special case - one packet
             FeedConnectionMessageInfo *info = this->m_packets[localStart];
-            if(info->m_address == 0)
-                return true;
-            if(!info->m_processed) {
-                if (!this->ProcessIncrementalForts(info, this->m_startMsgSeqNum))
-                    return false;
-            }
+            this->ProcessIncrementalForts(info, this->m_startMsgSeqNum);
             info->Clear();
             this->m_startMsgSeqNum = this->m_endMsgSeqNum + 1;
             this->m_windowMsgSeqNum = this->m_startMsgSeqNum;
@@ -2914,7 +2909,7 @@ protected:
     }
 
     inline bool OnHearthBeatMessage(AstsHeartbeatInfo *info) {
-        throw; // there is no need to apply message just check
+        return true;
     }
 
     inline bool ApplyIncrementalCoreAsts() {
@@ -2960,19 +2955,6 @@ protected:
             return true;
         else
             throw;
-    }
-
-    inline bool ProcessIncrementalCoreAsts(unsigned char *buffer, int length, bool shouldProcessMsgSeqNumber) {
-        this->m_fastProtocolManager->SetNewBuffer(buffer, length);
-        if(shouldProcessMsgSeqNumber)
-            this->m_fastProtocolManager->ReadMsgSeqNumber();
-
-        if(this->m_fastProtocolManager->DecodeAsts() == 0) {
-            printf("unknown template: %d\n", this->m_fastProtocolManager->TemplateId());
-            return true;
-        }
-        this->ApplyIncrementalCoreAsts();
-        return true;
     }
 
     inline bool ProcessSecurityStatus(AstsSecurityStatusInfo *info) {
@@ -3056,17 +3038,14 @@ protected:
         }
         return *((unsigned short*)(buffer + 1)) == 0xbc10;
     }
-
     inline bool ProcessIncrementalAsts(FeedConnectionMessageInfo *info) {
-        unsigned char *buffer = info->m_address;
-        if(this->ShouldSkipMessageAsts(buffer, !info->m_requested)) {
-            info->m_processed = true;
-            return true;  // TODO - take this message into account, becasue it determines feed alive
-        }
-
-        //DefaultLogManager::Default->WriteFast(this->m_idLogIndex, this->m_recvABuffer->BufferIndex(), info->m_item->m_itemIndex);
         info->m_processed = true;
-        return this->ProcessIncrementalCoreAsts(buffer, info->m_size, !info->m_requested);
+        this->m_fastProtocolManager->SetNewBuffer(info->m_address, info->m_size);
+        if(!info->m_requested)
+            this->m_fastProtocolManager->ReadMsgSeqNumber();
+
+        this->m_fastProtocolManager->DecodeAsts();
+        return this->ApplyIncrementalCoreAsts();
     }
     inline void CheckUpdateFortsIncrementalParams(int messageIndex) {
         if(this->m_fastProtocolManager->TemplateId() == FeedTemplateId::fortsIncremental) {
@@ -3089,20 +3068,11 @@ protected:
     }
 
     inline bool ProcessIncrementalForts(FeedConnectionMessageInfo *info, int messageIndex) {
-        unsigned char *buffer = info->m_address;
-        if(this->ShouldSkipMessageForts(buffer, !info->m_requested)) {
-            this->m_fortsIncrementalRouteFirst = messageIndex + 1;
-            info->m_processed = true;
-            return true;  // TODO - take this message into account, becasue it determines feed alive
-        }
-
         info->m_processed = true;
-
-        this->m_fastProtocolManager->SetNewBuffer(buffer, info->m_size);
+        this->m_fastProtocolManager->SetNewBuffer(info->m_address, info->m_size);
         if(!info->m_requested)
             this->m_fastProtocolManager->ReadMsgSeqNumber();
 
-        // there is no need to check
         this->m_fastProtocolManager->DecodeForts();
 
         int prevFortsRouteFirst = this->m_fortsIncrementalRouteFirst;

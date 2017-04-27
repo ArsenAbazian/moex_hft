@@ -6141,7 +6141,7 @@ public:
 		AstsHeartbeatInfo* info = GetFreeAstsHeartbeatInfo();
 		info->PresenceMap = this->m_presenceMap;
 
-		info->MsgSeqNum = ReadUInt32_Mandatory();
+		SkipToNextField(); // MsgSeqNum
 		SkipToNextField(); // SendingTime
 		this->m_prevastsHeartbeatInfo = info;
 		return info;
@@ -7124,8 +7124,8 @@ public:
 		FortsHeartbeatInfo* info = GetFreeFortsHeartbeatInfo();
 		info->PresenceMap = this->m_presenceMap;
 
-		info->MsgSeqNum = ReadUInt32_Mandatory();
-		info->SendingTime = ReadUInt64_Mandatory();
+		SkipToNextField(); // MsgSeqNum
+		SkipToNextField(); // SendingTime
 		this->m_prevfortsHeartbeatInfo = info;
 		return info;
 	}
