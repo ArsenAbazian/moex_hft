@@ -685,117 +685,142 @@ public:
         node->Data(data);
         return node;
     }
-    inline void RemoveLevels(HrLinkedPointer<T> *node) {
-        if (node->Next2() == 0 && node->Prev2() == 0) // no levels....
-            return;
-        if (node->Next4() != 0) {
-            if (node->Next5() != 0) {
-                if (node->Prev5() != 0) {
-                    node->Prev5()->Connect5(node->Next5());
-                    node->Prev4()->Connect4(node->Next4());
-                    node->Prev3()->Connect3(node->Next3());
-                    node->Prev2()->Connect2(node->Next2());
-                } else {
-                    HrLinkedPointer<T> *newStart = node->Next();
-                    newStart->AllPrev(0);
 
-                    HrLinkedPointer<T> *n = node->Next5();
-                    if (n != newStart) {
-                        newStart->Connect5(n);
-                        n = node->Next4();
-                        if (n != newStart) {
-                            newStart->Connect4(n);
-                            n = node->Next3();
-                            if (n != newStart) {
-                                newStart->Connect3(n);
-                                n = node->Next2();
-                                if (n != newStart)
-                                    newStart->Connect2(n);
-                            }
-                        }
-                    }
+    inline void RemoveFirstLevels(HrLinkedPointer<T> *node) {
+        HrLinkedPointer<T> *newStart = node->Next();
+        newStart->AllPrev(0);
+
+        HrLinkedPointer<T> *n = node->Next2();
+        if(newStart != n) {
+            newStart->Connect2(n);
+            newStart->Connect3(node->Next3());
+            newStart->Connect4(node->Next4());
+            newStart->Connect5(node->Next5());
+            return;
+        }
+        n = node->Next3();
+        if(newStart != n) {
+            newStart->Connect3(n);
+            newStart->Connect4(node->Next4());
+            newStart->Connect5(node->Next5());
+            return;
+        }
+        n = node->Next4();
+        if(newStart != n) {
+            newStart->Connect4(n);
+            newStart->Connect5(node->Next5());
+            return;
+        }
+        n = node->Next5();
+        if(newStart != n) {
+            newStart->Connect5(n);
+        }
+
+        /*
+        HrLinkedPointer<T> *n = node->Next5();
+        if (n != newStart) {
+            newStart->Connect5(n);
+            n = node->Next4();
+            if (n != newStart) {
+                newStart->Connect4(n);
+                n = node->Next3();
+                if (n != newStart) {
+                    newStart->Connect3(n);
+                    n = node->Next2();
+                    if (n != newStart)
+                        newStart->Connect2(n);
                 }
-                return;
             }
+        }
+        */
+    }
 
-            node->Prev4()->Connect4(node->Next4());
-            node->Prev3()->Connect3(node->Next3());
-            node->Prev2()->Connect2(node->Next2());
+    inline void RemoveLastLevels(HrLinkedPointer<T> *node) {
+        if(this->m_count == 1)
+            return;
 
+        HrLinkedPointer<T> *newEnd = node->Prev();
+        newEnd->AllNext(0);
+
+        HrLinkedPointer<T> *n = node->Prev2();
+        if(newEnd != n) {
+            n->Connect2(newEnd);
+            node->Prev3()->Connect3(newEnd);
+            node->Prev4()->Connect4(newEnd);
+            node->Prev5()->Connect5(newEnd);
             return;
         }
-        else {
-            if (node->Next3() != 0) {
-                node->Prev3()->Connect3(node->Next3());
-                node->Prev2()->Connect2(node->Next2());
-
-                return;
-            }
-            if (node->Next2() != 0) {
-                node->Prev2()->Connect2(node->Next2());
-
-                return;
-            }
+        n = node->Prev3();
+        if(newEnd != n) {
+            n->Connect3(newEnd);
+            node->Prev4()->Connect4(newEnd);
+            node->Prev5()->Connect5(newEnd);
+            return;
+        }
+        n = node->Prev4();
+        if(newEnd != n) {
+            n->Connect4(newEnd);
+            node->Prev5()->Connect5(newEnd);
+            return;
+        }
+        n = node->Prev5();
+        if(newEnd != n) {
+            n->Connect5(newEnd);
+            return;
         }
 
-        HrLinkedPointer<T> *prev = node->Prev4();
-        if(prev != 0) {
-            if (node->Prev5() != 0) {
-
-                HrLinkedPointer<T> *newEnd = node->Prev();
-                newEnd->AllNext(0);
-
-                HrLinkedPointer<T> *n = node->Prev5();
+        /*
+        HrLinkedPointer<T> *n = node->Prev5();
+        if (n != newEnd) {
+            n->Connect5(newEnd);
+            n = node->Prev4();
+            if (n != newEnd) {
+                n->Connect4(newEnd);
+                n = node->Prev3();
                 if (n != newEnd) {
-                    n->Connect5(newEnd);
-                    n = node->Prev4();
-                    if (n != newEnd) {
-                        n->Connect4(newEnd);
-                        n = node->Prev3();
-                        if (n != newEnd) {
-                            n->Connect3(newEnd);
-                            n = node->Prev2();
-                            if (n != newEnd)
-                                n->Connect2(newEnd);
-                        }
-                    }
+                    n->Connect3(newEnd);
+                    n = node->Prev2();
+                    if (n != newEnd)
+                        n->Connect2(newEnd);
                 }
-
-                return;
             }
-            prev->Next4(0);
-            prev->Next3(0);
-            prev->Next2(0);
+        }*/
+    }
 
-            return;
-        }
-        else {
-            prev = node->Prev3();
-            if (prev != 0) {
-                prev->Next3(0);
-                prev->Next2(0);
-
-                return;
-            }
-            prev = node->Prev2();
-            if (prev != 0) {
-                prev->Next2(0);
-
-                return;
+    inline void RemoveMiddleLevels(HrLinkedPointer<T> *node) {
+        if(node->Next2() != 0) {
+            node->Prev2()->Connect2(node->Next2());
+            if(node->Next3() != 0) {
+                node->Prev3()->Connect3(node->Next3());
+                if(node->Next4() != 0) {
+                    node->Prev4()->Connect4(node->Next4());
+                    if (node->Next5() != 0)
+                        node->Prev5()->Connect5(node->Next5());
+                }
             }
         }
     }
     inline void Remove(HrLinkedPointer<T> *node) {
         HrLinkedPointer<T> *prev = node->Prev();
         HrLinkedPointer<T> *next = node->Next();
-        prev->Next(next);
-        if(next != 0) {
-            next->Prev(prev);
+
+        if(prev == this->m_head) { // first item
+            prev->Next(next);
+            if(next != 0) {
+                next->Prev(prev);
+                RemoveFirstLevels(node);
+            }
+        }
+        else if(next == 0) { // last item
+            this->m_tail = prev;
+            prev->Next(0);
+            RemoveLastLevels(node);
         }
         else {
-            this->m_tail = prev;
+            prev->Next(next);
+            next->Prev(prev);
+            RemoveMiddleLevels(node);
         }
-        RemoveLevels(node);
         this->m_count--;
         this->m_pool->Push(node);
     }
