@@ -10,8 +10,8 @@
         <string name="SenderCompID" id="49">
             <constant value="MOEX"/>
         </string>
-        <uInt32 name="MsgSeqNum" id="34"/>
-        <uInt64 name="SendingTime" id="52"/>
+        <uInt32 name="MsgSeqNum" id="34" skip="true"/>
+        <uInt64 name="SendingTime" id="52" skip="true"/>
         <uInt32 name="LastFragment" id="893" presence="optional"/>
         <sequence name="MDEntries">
             <length name="NoMDEntries" id="268"/>
@@ -53,8 +53,8 @@
         <string name="SenderCompID" id="49">
             <constant value="MOEX"/>
         </string>
-        <uInt32 name="MsgSeqNum" id="34"/>
-        <uInt64 name="SendingTime" id="52"/>
+        <uInt32 name="MsgSeqNum" id="34" skip="true"/>
+        <uInt64 name="SendingTime" id="52" skip="true"/>
         <uInt32 name="LastFragment" id="893" presence="optional"/>
         <uInt32 name="RptSeq" id="83"/>
         <uInt32 name="TotNumReports" id="911"/>
@@ -95,8 +95,8 @@
         <string name="SenderCompID" id="49">
             <constant value="MOEX"/>
         </string>
-        <uInt32 name="MsgSeqNum" id="34"/>
-        <uInt64 name="SendingTime" id="52"/>
+        <uInt32 name="MsgSeqNum" id="34" skip="true"/>
+        <uInt64 name="SendingTime" id="52" skip="true"/>
         <!-- Total count of SecurityDefinition messages -->
         <uInt32 name="TotNumReports" id="911"/>
         <string name="Symbol" id="55"/>
@@ -178,8 +178,8 @@
         <string name="SenderCompID" id="49">
             <constant value="MOEX"/>
         </string>
-        <uInt32 name="MsgSeqNum" id="34"/>
-        <uInt64 name="SendingTime" id="52"/>
+        <uInt32 name="MsgSeqNum" id="34" skip="true"/>
+        <uInt64 name="SendingTime" id="52" skip="true"/>
         <!-- Unique among all instruments; primary key -->
         <uInt64 name="SecurityID" id="48"/>
         <uInt32 name="SecurityIDSource" id="22">
@@ -200,8 +200,8 @@
         <string name="SenderCompID" id="49">
             <constant value="MOEX"/>
         </string>
-        <uInt32 name="MsgSeqNum" id="34"/>
-        <uInt64 name="SendingTime" id="52"/>
+        <uInt32 name="MsgSeqNum" id="34" skip="true"/>
+        <uInt64 name="SendingTime" id="52" skip="true"/>
         <!-- Unique among all instruments; primary key -->
         <uInt64 name="SecurityID" id="48"/>
         <uInt32 name="SecurityIDSource" id="22">
@@ -240,8 +240,8 @@
         <string name="SenderCompID" id="49">
             <constant value="MOEX"/>
         </string>
-        <uInt32 name="MsgSeqNum" id="34"/>
-        <uInt64 name="SendingTime" id="52"/>
+        <uInt32 name="MsgSeqNum" id="34" skip="true"/>
+        <uInt64 name="SendingTime" id="52" skip="true"/>
         <uInt32 name="NewSeqNo" id="36"/>
     </template>
 
@@ -255,8 +255,8 @@
         <string name="SenderCompID" id="49">
             <constant value="MOEX"/>
         </string>
-        <uInt32 name="MsgSeqNum" id="34"/>
-        <uInt64 name="SendingTime" id="52"/>
+        <uInt32 name="MsgSeqNum" id="34" skip="true"/>
+        <uInt64 name="SendingTime" id="52" skip="true"/>
         <uInt64 name="TradSesOpenTime" id="342"/>
         <uInt64 name="TradSesCloseTime" id="344"/>
         <uInt64 name="TradSesIntermClearingStartTime" id="5840" presence="optional"/>
@@ -281,8 +281,8 @@
         <string name="SenderCompID" id="49">
             <constant value="MOEX"/>
         </string>
-        <uInt32 name="MsgSeqNum" id="34"/>
-        <uInt64 name="SendingTime" id="52"/>
+        <uInt32 name="MsgSeqNum" id="34" skip="true"/>
+        <uInt64 name="SendingTime" id="52" skip="true"/>
         <uInt32 name="LastFragment" id="893" presence="optional"/>
         <string name="NewsId" id="1472" presence="optional"/>
         <uInt64 name="OrigTime" id="42" presence="optional"/>
@@ -309,8 +309,8 @@
         <string name="SenderCompID" id="49">
             <constant value="MOEX"/>
         </string>
-        <uInt32 name="MsgSeqNum" id="34"/>
-        <uInt64 name="SendingTime" id="52"/>
+        <uInt32 name="MsgSeqNum" id="34" skip="true"/>
+        <uInt64 name="SendingTime" id="52" skip="true"/>
         <uInt32 name="LastFragment" id="893"/>
         <sequence name="MDEntries">
             <length name="NoMDEntries" id="268"/>
@@ -345,8 +345,8 @@
         <string name="SenderCompID" id="49">
             <constant value="MOEX"/>
         </string>
-        <uInt32 name="MsgSeqNum" id="34"/>
-        <uInt64 name="SendingTime" id="52"/>
+        <uInt32 name="MsgSeqNum" id="34" skip="true"/>
+        <uInt64 name="SendingTime" id="52" skip="true"/>
         <uInt32 name="LastMsgSeqNumProcessed" id="369"/>
         <uInt32 name="RptSeq" id="83" presence="optional"/>
         <uInt32 name="LastFragment" id="893"/>
@@ -379,8 +379,8 @@
         <string name="SenderCompID" id="49">
             <constant value="MOEX"/>
         </string>
-        <uInt32 name="MsgSeqNum" id="34"/>
-        <uInt64 name="SendingTime" id="52"/>
+        <uInt32 name="MsgSeqNum" id="34" skip="true"/>
+        <uInt64 name="SendingTime" id="52" skip="true"/>
     </template>
 
     <template name="Logout" id="1001">
@@ -393,8 +393,8 @@
         <string name="SenderCompID" id="49">
             <constant value="MOEX"/>
         </string>
-        <uInt32 name="MsgSeqNum" id="34"/>
-        <uInt64 name="SendingTime" id="52"/>
+        <uInt32 name="MsgSeqNum" id="34" skip="true"/>
+        <uInt64 name="SendingTime" id="52" skip="true"/>
         <string name="Text" id="58" presence="optional"/>
     </template>
 

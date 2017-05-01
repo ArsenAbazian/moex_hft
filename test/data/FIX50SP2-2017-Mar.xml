@@ -6,7 +6,7 @@
 		<string name="BeginString" id="8"><constant value="FIXT.1.1"/></string>
 		<string name="SenderCompID" id="49"><constant value="MOEX"/></string>
 		<string name="TargetCompID" id="56"></string>
-		<uInt32 name="MsgSeqNum" id="34"></uInt32>
+		<uInt32 name="MsgSeqNum" id="34" skip="true"></uInt32>
 		<uInt64 name="SendingTime" id="52" predict="9" skip="true"></uInt64>
 		<int32 name="HeartBtInt" id="108"></int32>
 		<string name="Username" id="553" presence="optional"></string>
@@ -19,7 +19,7 @@
 		<string name="BeginString" id="8"><constant value="FIXT.1.1"/></string>
 		<string name="SenderCompID" id="49"><constant value="MOEX"/></string>
 		<string name="TargetCompID" id="56"></string>
-		<uInt32 name="MsgSeqNum" id="34"></uInt32>
+		<uInt32 name="MsgSeqNum" id="34" skip="true"></uInt32>
 		<uInt64 name="SendingTime" id="52" predict="9" skip="true"></uInt64>
 
 		<string name="Text" id="58" presence="optional"></string>
@@ -30,7 +30,7 @@
 		<string name="BeginString" id="8"><constant value="FIXT.1.1"/></string>
 		<string name="ApplVerID" id="1128"><constant value="9"/></string>
 		<string name="SenderCompID" id="49"><constant value="MOEX"/></string>
-		<uInt32 name="MsgSeqNum" id="34"></uInt32>
+		<uInt32 name="MsgSeqNum" id="34" skip="true"></uInt32>
 		<uInt64 name="SendingTime" id="52" predict="9" skip="true"></uInt64>
 		<string name="TradingSessionID" id="336" presence="optional"></string>
 		<string name="Symbol" id="55"></string>
@@ -94,7 +94,7 @@
 		<string name="ApplVerID" id="1128"><constant value="9"/></string>
 		<string name="BeginString" id="8"><constant value="FIXT.1.1"/></string>
 		<string name="SenderCompID" id="49"><constant value="MOEX"/></string>
-		<uInt32 name="MsgSeqNum" id="34"></uInt32>
+		<uInt32 name="MsgSeqNum" id="34" skip="true"></uInt32>
 		<uInt64 name="SendingTime" id="52" predict="9" skip="true"></uInt64>
 		<sequence name="GroupMDEntries">
 			<length name="NoMDEntries" id="268"/>
@@ -154,7 +154,7 @@
 		<string name="BeginString" id="8"><constant value="FIXT.1.1"/></string>
 		<string name="ApplVerID" id="1128"><constant value="9"/></string>
 		<string name="SenderCompID" id="49"><constant value="MOEX"/></string>
-		<uInt32 name="MsgSeqNum" id="34"></uInt32>
+		<uInt32 name="MsgSeqNum" id="34" skip="true"></uInt32>
 		<uInt64 name="SendingTime" id="52" predict="9" skip="true"></uInt64>
 		<uInt32 name="LastMsgSeqNumProcessed" id="369" presence="optional"></uInt32>
 		<int32 name="RptSeq" id="83"></int32>
@@ -188,7 +188,7 @@
 		<string name="BeginString" id="8"><constant value="FIXT.1.1"/></string>
 		<string name="ApplVerID" id="1128"><constant value="9"/></string>
 		<string name="SenderCompID" id="49"><constant value="MOEX"/></string>
-		<uInt32 name="MsgSeqNum" id="34"></uInt32>
+		<uInt32 name="MsgSeqNum" id="34" skip="true"></uInt32>
 		<uInt64 name="SendingTime" id="52" predict="9" skip="true"></uInt64>
 		<uInt32 name="LastMsgSeqNumProcessed" id="369" presence="optional"></uInt32>
 		<int32 name="RptSeq" id="83"></int32>
@@ -219,7 +219,7 @@
 		<string name="BeginString" id="8"><constant value="FIXT.1.1"/></string>
 		<string name="ApplVerID" id="1128"><constant value="9"/></string>
 		<string name="SenderCompID" id="49"><constant value="MOEX"/></string>
-		<uInt32 name="MsgSeqNum" id="34"></uInt32>
+		<uInt32 name="MsgSeqNum" id="34" skip="true"></uInt32>
 		<uInt64 name="SendingTime" id="52" predict="9" skip="true"></uInt64>
 		<uInt32 name="LastMsgSeqNumProcessed" id="369" presence="optional"></uInt32>
 		<int32 name="RptSeq" id="83"></int32>
@@ -261,7 +261,7 @@
 		<string name="BeginString" id="8"><constant value="FIXT.1.1"/></string>
 		<string name="ApplVerID" id="1128"><constant value="9"/></string>
 		<string name="SenderCompID" id="49"><constant value="MOEX"/></string>
-		<uInt32 name="MsgSeqNum" id="34"></uInt32>
+		<uInt32 name="MsgSeqNum" id="34" skip="true"></uInt32>
 		<uInt64 name="SendingTime" id="52" predict="9" skip="true"></uInt64>
 		<uInt32 name="LastMsgSeqNumProcessed" id="369" presence="optional"></uInt32>
 		<int32 name="RptSeq" id="83"></int32>
@@ -302,7 +302,7 @@
 		<string name="ApplVerID" id="1128"><constant value="9"/></string>
 		<string name="BeginString" id="8"><constant value="FIXT.1.1"/></string>
 		<string name="SenderCompID" id="49"><constant value="MOEX"/></string>
-		<uInt32 name="MsgSeqNum" id="34"></uInt32>
+		<uInt32 name="MsgSeqNum" id="34" skip="true"></uInt32>
 		<uInt64 name="SendingTime" id="52" predict="9" skip="true"></uInt64>
 		<uInt64 name="LastUpdateTime" id="779" presence="optional"></uInt64>
 		<sequence name="GroupMDEntries">
@@ -349,7 +349,7 @@
 		<string name="ApplVerID" id="1128"><constant value="9"/></string>
 		<string name="BeginString" id="8"><constant value="FIXT.1.1"/></string>
 		<string name="SenderCompID" id="49"><constant value="MOEX"/></string>
-		<uInt32 name="MsgSeqNum" id="34"></uInt32>
+		<uInt32 name="MsgSeqNum" id="34" skip="true"></uInt32>
 		<uInt64 name="SendingTime" id="52" predict="9" skip="true"></uInt64>
 		<uInt64 name="LastUpdateTime" id="779" presence="optional"></uInt64>
 		<sequence name="GroupMDEntries">
@@ -392,7 +392,7 @@
 		<string name="ApplVerID" id="1128"><constant value="9"/></string>
 		<string name="BeginString" id="8"><constant value="FIXT.1.1"/></string>
 		<string name="SenderCompID" id="49"><constant value="MOEX"/></string>
-		<uInt32 name="MsgSeqNum" id="34"></uInt32>
+		<uInt32 name="MsgSeqNum" id="34" skip="true"></uInt32>
 		<uInt64 name="SendingTime" id="52" predict="9" skip="true"></uInt64>
 		<sequence name="GroupMDEntries">
 			<length name="NoMDEntries" id="268"/>
@@ -421,7 +421,7 @@
 		<string name="ApplVerID" id="1128"><constant value="9"/></string>
 		<string name="BeginString" id="8"><constant value="FIXT.1.1"/></string>
 		<string name="SenderCompID" id="49"><constant value="MOEX"/></string>
-		<uInt32 name="MsgSeqNum" id="34"></uInt32>
+		<uInt32 name="MsgSeqNum" id="34" skip="true"></uInt32>
 		<uInt64 name="SendingTime" id="52" predict="9" skip="true"></uInt64>
 		<sequence name="GroupMDEntries">
 			<length name="NoMDEntries" id="268"/>
@@ -448,7 +448,7 @@
 		<string name="ApplVerID" id="1128"><constant value="9"/></string>
 		<string name="BeginString" id="8"><constant value="FIXT.1.1"/></string>
 		<string name="SenderCompID" id="49"><constant value="MOEX"/></string>
-		<uInt32 name="MsgSeqNum" id="34"></uInt32>
+		<uInt32 name="MsgSeqNum" id="34" skip="true"></uInt32>
 		<uInt64 name="SendingTime" id="52" predict="9" skip="true"></uInt64>
 		<sequence name="GroupMDEntries">
 			<length name="NoMDEntries" id="268"/>
@@ -486,7 +486,7 @@
 		<string name="ApplVerID" id="1128"><constant value="9"/></string>
 		<string name="BeginString" id="8"><constant value="FIXT.1.1"/></string>
 		<string name="SenderCompID" id="49"><constant value="MOEX"/></string>
-		<uInt32 name="MsgSeqNum" id="34"></uInt32>
+		<uInt32 name="MsgSeqNum" id="34" skip="true"></uInt32>
 		<uInt64 name="SendingTime" id="52" predict="9" skip="true"></uInt64>
 		<sequence name="GroupMDEntries">
 			<length name="NoMDEntries" id="268"/>
@@ -522,7 +522,7 @@
 		<string name="ApplVerID" id="1128"><constant value="9"/></string>
 		<string name="BeginString" id="8"><constant value="FIXT.1.1"/></string>
 		<string name="SenderCompID" id="49"><constant value="MOEX"/></string>
-		<uInt32 name="MsgSeqNum" id="34"><increment/></uInt32>
+		<uInt32 name="MsgSeqNum" id="34" skip="true"><increment/></uInt32>
 		<uInt64 name="SendingTime" id="52" predict="9" skip="true"></uInt64>
 		<string name="MessageEncoding" id="347"><default value="UTF-8"/></string>
 		<int32 name="TotNumReports" id="911" presence="optional"></int32>
@@ -586,7 +586,7 @@
 		<string name="ApplVerID" id="1128"><constant value="9"/></string>
 		<string name="BeginString" id="8"><constant value="FIXT.1.1"/></string>
 		<string name="SenderCompID" id="49"><constant value="MOEX"/></string>
-		<uInt32 name="MsgSeqNum" id="34"></uInt32>
+		<uInt32 name="MsgSeqNum" id="34" skip="true"></uInt32>
 		<uInt64 name="SendingTime" id="52" predict="9" skip="true"></uInt64>
 		<string name="Symbol" id="55"></string>
 		<string name="TradingSessionID" id="336" presence="optional"></string>
@@ -600,7 +600,7 @@
 		<string name="ApplVerID" id="1128"><constant value="9"/></string>
 		<string name="BeginString" id="8"><constant value="FIXT.1.1"/></string>
 		<string name="SenderCompID" id="49"><constant value="MOEX"/></string>
-		<uInt32 name="MsgSeqNum" id="34"></uInt32>
+		<uInt32 name="MsgSeqNum" id="34" skip="true"></uInt32>
 		<uInt64 name="SendingTime" id="52" predict="9" skip="true"></uInt64>
 		<int32 name="TradSesStatus" id="340"></int32>
 		<string name="Text" id="58" presence="optional"></string>

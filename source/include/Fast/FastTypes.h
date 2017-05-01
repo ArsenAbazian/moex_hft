@@ -263,7 +263,7 @@ public:
 	char							BeginString[16];			// id=8    constant has constant value = FIXT.1.1
 	char							SenderCompID[32];			// id=49    constant has constant value = MOEX
 	char							TargetCompID[32];			// id=56  
-	UINT32							MsgSeqNum;			// id=34  
+	UINT32							MsgSeqNum;			// id=34  skip=true  
 	UINT64							SendingTime;			// id=52  predict=9  skip=true  
 	INT32							HeartBtInt;			// id=108  
 	char							Username[16];			// id=553  presence=optional  
@@ -308,7 +308,7 @@ public:
 	char							BeginString[16];			// id=8    constant has constant value = FIXT.1.1
 	char							SenderCompID[32];			// id=49    constant has constant value = MOEX
 	char							TargetCompID[32];			// id=56  
-	UINT32							MsgSeqNum;			// id=34  
+	UINT32							MsgSeqNum;			// id=34  skip=true  
 	UINT64							SendingTime;			// id=52  predict=9  skip=true  
 	char							Text[512];			// id=58  presence=optional  
 	int								MessageTypeLength;			// id=35    constant has constant value = 5
@@ -435,7 +435,7 @@ public:
 	char							BeginString[16];			// id=8    constant has constant value = FIXT.1.1
 	char							ApplVerID[16];			// id=1128    constant has constant value = 9
 	char							SenderCompID[32];			// id=49    constant has constant value = MOEX
-	UINT32							MsgSeqNum;			// id=34  
+	UINT32							MsgSeqNum;			// id=34  skip=true  
 	UINT64							SendingTime;			// id=52  predict=9  skip=true  
 	char							TradingSessionID[16];			// id=336  presence=optional  
 	char							Symbol[16];			// id=55  
@@ -542,7 +542,7 @@ public:
 	char							BeginString[16];			// id=8    constant has constant value = FIXT.1.1
 	char							ApplVerID[16];			// id=1128    constant has constant value = 9
 	char							SenderCompID[32];			// id=49    constant has constant value = MOEX
-	UINT32							MsgSeqNum;			// id=34  
+	UINT32							MsgSeqNum;			// id=34  skip=true  
 	UINT64							SendingTime;			// id=52  predict=9  skip=true  
 	UINT32							LastMsgSeqNumProcessed;			// id=369  presence=optional  
 	INT32							RptSeq;			// id=83  
@@ -644,7 +644,7 @@ public:
 	char							BeginString[16];			// id=8    constant has constant value = FIXT.1.1
 	char							ApplVerID[16];			// id=1128    constant has constant value = 9
 	char							SenderCompID[32];			// id=49    constant has constant value = MOEX
-	UINT32							MsgSeqNum;			// id=34  
+	UINT32							MsgSeqNum;			// id=34  skip=true  
 	UINT64							SendingTime;			// id=52  predict=9  skip=true  
 	UINT32							LastMsgSeqNumProcessed;			// id=369  presence=optional  
 	INT32							RptSeq;			// id=83  
@@ -758,7 +758,7 @@ public:
 	char							BeginString[16];			// id=8    constant has constant value = FIXT.1.1
 	char							ApplVerID[16];			// id=1128    constant has constant value = 9
 	char							SenderCompID[32];			// id=49    constant has constant value = MOEX
-	UINT32							MsgSeqNum;			// id=34  
+	UINT32							MsgSeqNum;			// id=34  skip=true  
 	UINT64							SendingTime;			// id=52  predict=9  skip=true  
 	UINT32							LastMsgSeqNumProcessed;			// id=369  presence=optional  
 	INT32							RptSeq;			// id=83  
@@ -871,7 +871,7 @@ public:
 	char							BeginString[16];			// id=8    constant has constant value = FIXT.1.1
 	char							ApplVerID[16];			// id=1128    constant has constant value = 9
 	char							SenderCompID[32];			// id=49    constant has constant value = MOEX
-	UINT32							MsgSeqNum;			// id=34  
+	UINT32							MsgSeqNum;			// id=34  skip=true  
 	UINT64							SendingTime;			// id=52  predict=9  skip=true  
 	UINT32							LastMsgSeqNumProcessed;			// id=369  presence=optional  
 	INT32							RptSeq;			// id=83  
@@ -1025,7 +1025,7 @@ public:
 	char							ApplVerID[16];			// id=1128    constant has constant value = 9
 	char							BeginString[16];			// id=8    constant has constant value = FIXT.1.1
 	char							SenderCompID[32];			// id=49    constant has constant value = MOEX
-	UINT32							MsgSeqNum;			// id=34    increment
+	UINT32							MsgSeqNum;			// id=34  skip=true    increment
 	UINT64							SendingTime;			// id=52  predict=9  skip=true  
 	char							MessageEncoding[16];			// id=347    default
 	INT32							TotNumReports;			// id=911  presence=optional  
@@ -1129,7 +1129,7 @@ public:
 	char							ApplVerID[16];			// id=1128    constant has constant value = 9
 	char							BeginString[16];			// id=8    constant has constant value = FIXT.1.1
 	char							SenderCompID[32];			// id=49    constant has constant value = MOEX
-	UINT32							MsgSeqNum;			// id=34  
+	UINT32							MsgSeqNum;			// id=34  skip=true  
 	UINT64							SendingTime;			// id=52  predict=9  skip=true  
 	char							Symbol[16];			// id=55  
 	char							TradingSessionID[16];			// id=336  presence=optional  
@@ -1175,7 +1175,7 @@ public:
 	char							ApplVerID[16];			// id=1128    constant has constant value = 9
 	char							BeginString[16];			// id=8    constant has constant value = FIXT.1.1
 	char							SenderCompID[32];			// id=49    constant has constant value = MOEX
-	UINT32							MsgSeqNum;			// id=34  
+	UINT32							MsgSeqNum;			// id=34  skip=true  
 	UINT64							SendingTime;			// id=52  predict=9  skip=true  
 	INT32							TradSesStatus;			// id=340  
 	char							Text[512];			// id=58  presence=optional  
@@ -1254,7 +1254,7 @@ public:
 	char							ApplVerID[16];			// id=1128    constant has constant value = 9
 	char							BeginString[16];			// id=8    constant has constant value = FIXT.1.1
 	char							SenderCompID[32];			// id=49    constant has constant value = MOEX
-	UINT32							MsgSeqNum;			// id=34  
+	UINT32							MsgSeqNum;			// id=34  skip=true  
 	UINT64							SendingTime;			// id=52  predict=9  skip=true  
 	AstsGenericItemInfo* GroupMDEntries[256];
 	int								MessageTypeLength;			// id=35    constant has constant value = X
@@ -1298,7 +1298,7 @@ public:
 	char							ApplVerID[16];			// id=1128    constant has constant value = 9
 	char							BeginString[16];			// id=8    constant has constant value = FIXT.1.1
 	char							SenderCompID[32];			// id=49    constant has constant value = MOEX
-	UINT32							MsgSeqNum;			// id=34  
+	UINT32							MsgSeqNum;			// id=34  skip=true  
 	UINT64							SendingTime;			// id=52  predict=9  skip=true  
 	UINT64							LastUpdateTime;			// id=779  presence=optional  
 	AstsGenericItemInfo* GroupMDEntries[256];
@@ -1343,7 +1343,7 @@ public:
 	char							ApplVerID[16];			// id=1128    constant has constant value = 9
 	char							BeginString[16];			// id=8    constant has constant value = FIXT.1.1
 	char							SenderCompID[32];			// id=49    constant has constant value = MOEX
-	UINT32							MsgSeqNum;			// id=34  
+	UINT32							MsgSeqNum;			// id=34  skip=true  
 	UINT64							SendingTime;			// id=52  predict=9  skip=true  
 	UINT64							LastUpdateTime;			// id=779  presence=optional  
 	AstsGenericItemInfo* GroupMDEntries[256];
@@ -1388,7 +1388,7 @@ public:
 	char							ApplVerID[16];			// id=1128    constant has constant value = 9
 	char							BeginString[16];			// id=8    constant has constant value = FIXT.1.1
 	char							SenderCompID[32];			// id=49    constant has constant value = MOEX
-	UINT32							MsgSeqNum;			// id=34  
+	UINT32							MsgSeqNum;			// id=34  skip=true  
 	UINT64							SendingTime;			// id=52  predict=9  skip=true  
 	AstsOLSFONDItemInfo* GroupMDEntries[256];
 	int								MessageTypeLength;			// id=35    constant has constant value = X
@@ -1432,7 +1432,7 @@ public:
 	char							ApplVerID[16];			// id=1128    constant has constant value = 9
 	char							BeginString[16];			// id=8    constant has constant value = FIXT.1.1
 	char							SenderCompID[32];			// id=49    constant has constant value = MOEX
-	UINT32							MsgSeqNum;			// id=34  
+	UINT32							MsgSeqNum;			// id=34  skip=true  
 	UINT64							SendingTime;			// id=52  predict=9  skip=true  
 	AstsOLSCURRItemInfo* GroupMDEntries[256];
 	int								MessageTypeLength;			// id=35    constant has constant value = X
@@ -1476,7 +1476,7 @@ public:
 	char							ApplVerID[16];			// id=1128    constant has constant value = 9
 	char							BeginString[16];			// id=8    constant has constant value = FIXT.1.1
 	char							SenderCompID[32];			// id=49    constant has constant value = MOEX
-	UINT32							MsgSeqNum;			// id=34  
+	UINT32							MsgSeqNum;			// id=34  skip=true  
 	UINT64							SendingTime;			// id=52  predict=9  skip=true  
 	AstsTLSFONDItemInfo* GroupMDEntries[256];
 	int								MessageTypeLength;			// id=35    constant has constant value = X
@@ -1520,7 +1520,7 @@ public:
 	char							ApplVerID[16];			// id=1128    constant has constant value = 9
 	char							BeginString[16];			// id=8    constant has constant value = FIXT.1.1
 	char							SenderCompID[32];			// id=49    constant has constant value = MOEX
-	UINT32							MsgSeqNum;			// id=34  
+	UINT32							MsgSeqNum;			// id=34  skip=true  
 	UINT64							SendingTime;			// id=52  predict=9  skip=true  
 	AstsTLSCURRItemInfo* GroupMDEntries[256];
 	int								MessageTypeLength;			// id=35    constant has constant value = X
@@ -2575,8 +2575,8 @@ public:
 	char							ApplVerID[16];			// id=1128    constant has constant value = 9
 	char							MessageType[16];			// id=35    constant has constant value = W
 	char							SenderCompID[32];			// id=49    constant has constant value = MOEX
-	UINT32							MsgSeqNum;			// id=34  
-	UINT64							SendingTime;			// id=52  
+	UINT32							MsgSeqNum;			// id=34  skip=true  
+	UINT64							SendingTime;			// id=52  skip=true  
 	UINT32							LastFragment;			// id=893  presence=optional  
 	UINT32							RptSeq;			// id=83  
 	UINT32							TotNumReports;			// id=911  
@@ -2784,8 +2784,8 @@ public:
 	char							ApplVerID[16];			// id=1128    constant has constant value = 9
 	char							MessageType[16];			// id=35    constant has constant value = d
 	char							SenderCompID[32];			// id=49    constant has constant value = MOEX
-	UINT32							MsgSeqNum;			// id=34  
-	UINT64							SendingTime;			// id=52  
+	UINT32							MsgSeqNum;			// id=34  skip=true  
+	UINT64							SendingTime;			// id=52  skip=true  
 	UINT32							TotNumReports;			// id=911  
 	char							Symbol[16];			// id=55  
 	unsigned char							SecurityDesc[128];			// id=107  presence=optional  charset=unicode  
@@ -2893,8 +2893,8 @@ public:
 	char							ApplVerID[16];			// id=1128    constant has constant value = 9
 	char							MessageType[16];			// id=35    constant has constant value = BP
 	char							SenderCompID[32];			// id=49    constant has constant value = MOEX
-	UINT32							MsgSeqNum;			// id=34  
-	UINT64							SendingTime;			// id=52  
+	UINT32							MsgSeqNum;			// id=34  skip=true  
+	UINT64							SendingTime;			// id=52  skip=true  
 	UINT64							SecurityID;			// id=48  
 	UINT32							SecurityIDSource;			// id=22    constant has constant value = 8
 	Decimal							Volatility;			// id=5678  presence=optional  
@@ -2934,8 +2934,8 @@ public:
 	char							ApplVerID[16];			// id=1128    constant has constant value = 9
 	char							MessageType[16];			// id=35    constant has constant value = f
 	char							SenderCompID[32];			// id=49    constant has constant value = MOEX
-	UINT32							MsgSeqNum;			// id=34  
-	UINT64							SendingTime;			// id=52  
+	UINT32							MsgSeqNum;			// id=34  skip=true  
+	UINT64							SendingTime;			// id=52  skip=true  
 	UINT64							SecurityID;			// id=48  
 	UINT32							SecurityIDSource;			// id=22    constant has constant value = 8
 	char							Symbol[16];			// id=55  
@@ -3016,8 +3016,8 @@ public:
 	char							ApplVerID[16];			// id=1128    constant has constant value = 9
 	char							MessageType[16];			// id=35    constant has constant value = 4
 	char							SenderCompID[32];			// id=49    constant has constant value = MOEX
-	UINT32							MsgSeqNum;			// id=34  
-	UINT64							SendingTime;			// id=52  
+	UINT32							MsgSeqNum;			// id=34  skip=true  
+	UINT64							SendingTime;			// id=52  skip=true  
 	UINT32							NewSeqNo;			// id=36  
 	int								ApplVerIDLength;			// id=1128    constant has constant value = 9
 	int								MessageTypeLength;			// id=35    constant has constant value = 4
@@ -3053,8 +3053,8 @@ public:
 	char							ApplVerID[16];			// id=1128    constant has constant value = 9
 	char							MessageType[16];			// id=35    constant has constant value = h
 	char							SenderCompID[32];			// id=49    constant has constant value = MOEX
-	UINT32							MsgSeqNum;			// id=34  
-	UINT64							SendingTime;			// id=52  
+	UINT32							MsgSeqNum;			// id=34  skip=true  
+	UINT64							SendingTime;			// id=52  skip=true  
 	UINT64							TradSesOpenTime;			// id=342  
 	UINT64							TradSesCloseTime;			// id=344  
 	UINT64							TradSesIntermClearingStartTime;			// id=5840  presence=optional  
@@ -3131,8 +3131,8 @@ public:
 	char							ApplVerID[16];			// id=1128    constant has constant value = 9
 	char							MessageType[16];			// id=35    constant has constant value = B
 	char							SenderCompID[32];			// id=49    constant has constant value = MOEX
-	UINT32							MsgSeqNum;			// id=34  
-	UINT64							SendingTime;			// id=52  
+	UINT32							MsgSeqNum;			// id=34  skip=true  
+	UINT64							SendingTime;			// id=52  skip=true  
 	UINT32							LastFragment;			// id=893  presence=optional  
 	char							NewsId[16];			// id=1472  presence=optional  
 	UINT64							OrigTime;			// id=42  presence=optional  
@@ -3231,8 +3231,8 @@ public:
 	char							ApplVerID[16];			// id=1128    constant has constant value = 9
 	char							MessageType[16];			// id=35    constant has constant value = X
 	char							SenderCompID[32];			// id=49    constant has constant value = MOEX
-	UINT32							MsgSeqNum;			// id=34  
-	UINT64							SendingTime;			// id=52  
+	UINT32							MsgSeqNum;			// id=34  skip=true  
+	UINT64							SendingTime;			// id=52  skip=true  
 	UINT32							LastFragment;			// id=893  
 	FortsOrdersLogMDEntriesItemInfo* MDEntries[256];
 	int								ApplVerIDLength;			// id=1128    constant has constant value = 9
@@ -3311,8 +3311,8 @@ public:
 	char							ApplVerID[16];			// id=1128    constant has constant value = 9
 	char							MessageType[16];			// id=35    constant has constant value = W
 	char							SenderCompID[32];			// id=49    constant has constant value = MOEX
-	UINT32							MsgSeqNum;			// id=34  
-	UINT64							SendingTime;			// id=52  
+	UINT32							MsgSeqNum;			// id=34  skip=true  
+	UINT64							SendingTime;			// id=52  skip=true  
 	UINT32							LastMsgSeqNumProcessed;			// id=369  
 	UINT32							RptSeq;			// id=83  presence=optional  
 	UINT32							LastFragment;			// id=893  
@@ -3360,8 +3360,8 @@ public:
 	char							ApplVerID[16];			// id=1128    constant has constant value = 9
 	char							MessageType[16];			// id=35    constant has constant value = A
 	char							SenderCompID[32];			// id=49    constant has constant value = MOEX
-	UINT32							MsgSeqNum;			// id=34  
-	UINT64							SendingTime;			// id=52  
+	UINT32							MsgSeqNum;			// id=34  skip=true  
+	UINT64							SendingTime;			// id=52  skip=true  
 	int								ApplVerIDLength;			// id=1128    constant has constant value = 9
 	int								MessageTypeLength;			// id=35    constant has constant value = A
 	int								SenderCompIDLength;			// id=49    constant has constant value = MOEX
@@ -3396,8 +3396,8 @@ public:
 	char							ApplVerID[16];			// id=1128    constant has constant value = 9
 	char							MessageType[16];			// id=35    constant has constant value = 5
 	char							SenderCompID[32];			// id=49    constant has constant value = MOEX
-	UINT32							MsgSeqNum;			// id=34  
-	UINT64							SendingTime;			// id=52  
+	UINT32							MsgSeqNum;			// id=34  skip=true  
+	UINT64							SendingTime;			// id=52  skip=true  
 	char							Text[512];			// id=58  presence=optional  
 	int								ApplVerIDLength;			// id=1128    constant has constant value = 9
 	int								MessageTypeLength;			// id=35    constant has constant value = 5
@@ -3434,8 +3434,8 @@ public:
 	char							ApplVerID[16];			// id=1128    constant has constant value = 9
 	char							MessageType[16];			// id=35    constant has constant value = X
 	char							SenderCompID[32];			// id=49    constant has constant value = MOEX
-	UINT32							MsgSeqNum;			// id=34  
-	UINT64							SendingTime;			// id=52  
+	UINT32							MsgSeqNum;			// id=34  skip=true  
+	UINT64							SendingTime;			// id=52  skip=true  
 	UINT32							LastFragment;			// id=893  presence=optional  
 	FortsDefaultSnapshotMessageMDEntriesItemInfo* MDEntries[256];
 	int								ApplVerIDLength;			// id=1128    constant has constant value = 9

@@ -1617,300 +1617,881 @@ public:
         WriteUInt32_Mandatory(value);
     }
 
-    inline INT32 ReadInt32_Optional() {
+	inline bool ReadInt32_Optional(INT32 *value) {
+		INT32 result;
+		UINT64 memory = *((UINT64*)(this->currentPos));
+		if((memory & 0xff) == 0x80) {
+			this->currentPos++;
+			return false;
+		}
+
+		if ((memory & 0xff) == 0x00) { // extended positive integer
+			memory >>= 8;
+
+			if ((memory & 0x8080) == 0x8000) { // three bytes
+#ifdef COLLECT_STATISTICS_FAST
+				ProgramStatistics::Total->Inc(Counters::cReadInt32MandatoryEp_3Byte);
+#endif
+				result = memory & 0x7f;
+				result <<= 7;
+				memory >>= 8;
+				result |= memory & 0x7f;
+				this->currentPos += 3;
+				*value = result - 1;
+				return true;
+			}
+
+			if ((memory & 0x80) == 0x80) { // two bytes
+#ifdef COLLECT_STATISTICS_FAST
+				ProgramStatistics::Total->Inc(Counters::cReadInt32MandatoryEp_2Byte);
+#endif
+				this->currentPos += 2;
+				result = memory & 0x7f;
+				*value = result - 1;
+				return true;
+			}
+
+			if ((memory & 0x808080) == 0x800000) { // four bytes
+#ifdef COLLECT_STATISTICS_FAST
+				ProgramStatistics::Total->Inc(Counters::cReadInt32MandatoryEp_4Byte);
+#endif
+				result = memory & 0x7f;
+				result <<= 7;
+				memory >>= 8;
+				result |= memory & 0x7f;
+				result <<= 7;
+				memory >>= 8;
+				result |= memory & 0x7f;
+				this->currentPos += 4;
+				*value = result - 1;
+				return true;
+			}
+
+			if ((memory & 0x80808080) == 0x80000000) { // five bytes
+#ifdef COLLECT_STATISTICS_FAST
+				ProgramStatistics::Total->Inc(Counters::cReadInt32MandatoryEp_5Byte);
+#endif
+				result = memory & 0x7f;
+				result <<= 7;
+				memory >>= 8;
+				result |= memory & 0x7f;
+				result <<= 7;
+				memory >>= 8;
+				result |= memory & 0x7f;
+				result <<= 7;
+				memory >>= 8;
+				result |= memory & 0x7f;
+				this->currentPos += 5;
+				*value = result - 1;
+				return true;
+			}
+			// six bytes
+#ifdef COLLECT_STATISTICS_FAST
+			ProgramStatistics::Total->Inc(Counters::cReadInt32MandatoryEp_6Byte);
+#endif
+			result = memory & 0x7f;
+			result <<= 7;
+			memory >>= 8;
+			result |= memory & 0x7f;
+			result <<= 7;
+			memory >>= 8;
+			result |= memory & 0x7f;
+			result <<= 7;
+			memory >>= 8;
+			result |= memory & 0x7f;
+			result <<= 7;
+			memory >>= 8;
+			result |= memory & 0x7f;
+			this->currentPos += 6;
+			*value = result - 1;
+			return true;
+		}
+		else if ((memory & 0xff) == 0x7f) { // extended negative integer
+			memory >>= 8;
+
+			result = 0xffffff80;
+			result |= memory & 0x7f;
+			if ((memory & 0x80) != 0) {
+#ifdef COLLECT_STATISTICS_FAST
+				ProgramStatistics::Total->Inc(Counters::cReadInt32MandatoryEn_2Byte);
+#endif
+				this->currentPos += 2;
+				*value = result;
+				return true;
+			}
+
+			result <<= 7;
+			memory >>= 8;
+			result |= memory & 0x7f;
+			if ((memory & 0x80) != 0) {
+#ifdef COLLECT_STATISTICS_FAST
+				ProgramStatistics::Total->Inc(Counters::cReadInt32MandatoryEn_3Byte);
+#endif
+				this->currentPos += 3;
+				*value = result;
+				return true;
+			}
+
+			result <<= 7;
+			memory >>= 8;
+			result |= memory & 0x7f;
+			if ((memory & 0x80) != 0) {
+#ifdef COLLECT_STATISTICS_FAST
+				ProgramStatistics::Total->Inc(Counters::cReadInt32MandatoryEn_4Byte);
+#endif
+				this->currentPos += 4;
+				*value = result;
+				return true;
+			}
+
+			result <<= 7;
+			memory >>= 8;
+			result |= memory & 0x7f;
+#ifdef COLLECT_STATISTICS_FAST
+			ProgramStatistics::Total->Inc(Counters::cReadInt32MandatoryEn_5Byte);
+#endif
+			this->currentPos += 5;
+			*value = result;
+			return true;
+		}
+		else if ((memory & 0x40) != 0) { // simple negative integer
+			result = 0xffffff80;
+			result |= memory & 0x7f;
+			if ((memory & 0x80) != 0) {
+#ifdef COLLECT_STATISTICS_FAST
+				ProgramStatistics::Total->Inc(Counters::cReadInt32MandatorySn_1Byte);
+#endif
+				this->currentPos++;
+				*value = result;
+				return true;
+			}
+
+			result <<= 7;
+			memory >>= 8;
+			result |= memory & 0x7f;
+			if ((memory & 0x80) != 0) {
+#ifdef COLLECT_STATISTICS_FAST
+				ProgramStatistics::Total->Inc(Counters::cReadInt32MandatorySn_2Byte);
+#endif
+				this->currentPos += 2;
+				*value = result;
+				return true;
+			}
+
+			result <<= 7;
+			memory >>= 8;
+			result |= memory & 0x7f;
+			if ((memory & 0x80) != 0) {
+#ifdef COLLECT_STATISTICS_FAST
+				ProgramStatistics::Total->Inc(Counters::cReadInt32MandatorySn_3Byte);
+#endif
+				this->currentPos += 3;
+				*value = result;
+				return true;
+			}
+
+			result <<= 7;
+			memory >>= 8;
+			result |= memory & 0x7f;
+			if ((memory & 0x80) != 0) {
+#ifdef COLLECT_STATISTICS_FAST
+				ProgramStatistics::Total->Inc(Counters::cReadInt32MandatorySn_4Byte);
+#endif
+				this->currentPos += 4;
+				*value = result;
+				return true;
+			}
+			result <<= 7;
+			memory >>= 8;
+			result |= memory & 0x7f;
+#ifdef COLLECT_STATISTICS_FAST
+			ProgramStatistics::Total->Inc(Counters::cReadInt32MandatorySn_5Byte);
+#endif
+			this->currentPos += 5;
+			*value = result;
+			return true;
+		}
+		else {  // simple positive integer
+
+			if((memory & 0x808080) == 0x800000) { // three bytes
+#ifdef COLLECT_STATISTICS_FAST
+				ProgramStatistics::Total->Inc(Counters::cReadInt32MandatorySp_3Byte);
+#endif
+				result = memory & 0x7f;
+				result <<= 7;
+				memory >>= 8;
+				result |= memory & 0x7f;
+				result <<= 7;
+				memory >>= 8;
+				result |= memory & 0x7f;
+				this->currentPos += 3;
+				*value = result - 1;
+				return true;
+			}
+
+			if(memory & 0x80) { //one byte
+#ifdef COLLECT_STATISTICS_FAST
+				ProgramStatistics::Total->Inc(Counters::cReadInt32MandatorySp_1Byte);
+#endif
+				this->currentPos++;
+				*value = (memory & 0x7f) - 1;
+				return true;
+			}
+
+			if((memory & 0x8080) == 0x8000) { // two bytes
+#ifdef COLLECT_STATISTICS_FAST
+				ProgramStatistics::Total->Inc(Counters::cReadInt32MandatorySp_2Byte);
+#endif
+				result = memory & 0x7f;
+				result <<= 7;
+				memory >>= 8;
+				result |= memory & 0x7f;
+				this->currentPos += 2;
+				*value = result - 1;
+				return true;
+			}
+			if((memory & 0x80808080) == 0x80000000) { // four bytes
+#ifdef COLLECT_STATISTICS_FAST
+				ProgramStatistics::Total->Inc(Counters::cReadInt32MandatorySp_4Byte);
+#endif
+				result = memory & 0x7f;
+				result <<= 7;
+				memory >>= 8;
+				result |= memory & 0x7f;
+				result <<= 7;
+				memory >>= 8;
+				result |= memory & 0x7f;
+				result <<= 7;
+				memory >>= 8;
+				result |= memory & 0x7f;
+				this->currentPos += 4;
+				*value = result - 1;
+				return true;
+			}
+			// five bytes
+#ifdef COLLECT_STATISTICS_FAST
+			ProgramStatistics::Total->Inc(Counters::cReadInt32MandatorySp_5Byte);
+#endif
+			result = memory & 0x7f;
+			result <<= 7;
+			memory >>= 8;
+			result |= memory & 0x7f;
+			result <<= 7;
+			memory >>= 8;
+			result |= memory & 0x7f;
+			result <<= 7;
+			memory >>= 8;
+			result |= memory & 0x7f;
+			result <<= 7;
+			memory >>= 8;
+			result |= memory & 0x7f;
+			this->currentPos += 5;
+			*value = result - 1;
+			return true;
+		}
+	}
+
+	inline INT32 ReadInt32_Optional() {
         INT32 result = ReadInt32_Mandatory();
         if (result > 0)
             return result - 1;
         return result;
     }
+
+	inline bool ReadInt32_Optional_Predict1(INT32 *value) {
+		return ReadInt32_Optional(value);
+	}
+
     inline INT32 ReadInt32_Optional_Predict1() {
-        INT32 result = ReadInt32_Mandatory_Predict1();
-        if (result > 0)
-            return result - 1;
-        return result;
-    }
-#pragma intrinsic(_pext_u32)
-    __attribute__((target ("bmi2")))
-    inline INT32 ReadInt32_Mandatory_Optimized() {
-        INT32 result;
-        INT32 memory = *((INT32*)(this->currentPos));
+		INT32 result;
+		UINT64 memory = *((UINT64*)(this->currentPos));
 
-        INT32 valueMasked = memory & 0xff;
+		if ((memory & 0xff) == 0x00) { // extended positive integer
+			memory >>= 8;
 
-        if (valueMasked == 0x00) { // extended positive integer
-            result = 0;
-            memory >>= 8;
+			if ((memory & 0x80) == 0x80) { // two bytes
+#ifdef COLLECT_STATISTICS_FAST
+				ProgramStatistics::Total->Inc(Counters::cReadInt32MandatoryEp_2Byte);
+#endif
+				this->currentPos += 2;
+				return (memory & 0x7f) - 1;
+			}
 
-            result |= memory & 0x7f;
-            if ((memory & 0x80) != 0) {
-                this->currentPos += 2;
-                return result;
-            }
-            result <<= 7;
-            memory >>= 8;
-            result |= memory & 0x7f;
-            if ((memory & 0x80) != 0) {
-                this->currentPos += 3;
-                return result;
-            }
-            result <<= 7;
-            memory >>= 8;
-            result |= memory & 0x7f;
-            if ((memory & 0x80) != 0) {
-                this->currentPos += 4;
-                return result;
-            }
-            this->currentPos += 4;
+			if ((memory & 0x8080) == 0x8000) { // three bytes
+#ifdef COLLECT_STATISTICS_FAST
+				ProgramStatistics::Total->Inc(Counters::cReadInt32MandatoryEp_3Byte);
+#endif
+				result = memory & 0x7f;
+				result <<= 7;
+				memory >>= 8;
+				result |= memory & 0x7f;
+				this->currentPos += 3;
+				return result - 1;
+			}
 
-            result <<= 7;
-            memory = *((INT32*)(this->currentPos));
-            result |= memory & 0x7f;
-            if ((memory & 0x80) != 0) {
-                this->currentPos++;
-                return result;
-            }
+			if ((memory & 0x808080) == 0x800000) { // four bytes
+#ifdef COLLECT_STATISTICS_FAST
+				ProgramStatistics::Total->Inc(Counters::cReadInt32MandatoryEp_4Byte);
+#endif
+				result = memory & 0x7f;
+				result <<= 7;
+				memory >>= 8;
+				result |= memory & 0x7f;
+				result <<= 7;
+				memory >>= 8;
+				result |= memory & 0x7f;
+				this->currentPos += 4;
 
-            result <<= 7;
-            memory >>= 8;
-            result |= memory & 0x7f;
+				return result - 1;
+			}
 
-            this->currentPos += 2;
-            return result;
-        }
-        else if (valueMasked == 0x7f) { // extended negative integer
-            memory >>= 8;
+			if ((memory & 0x80808080) == 0x80000000) { // five bytes
+#ifdef COLLECT_STATISTICS_FAST
+				ProgramStatistics::Total->Inc(Counters::cReadInt32MandatoryEp_5Byte);
+#endif
+				result = memory & 0x7f;
+				result <<= 7;
+				memory >>= 8;
+				result |= memory & 0x7f;
+				result <<= 7;
+				memory >>= 8;
+				result |= memory & 0x7f;
+				result <<= 7;
+				memory >>= 8;
+				result |= memory & 0x7f;
+				this->currentPos += 5;
+				return result - 1;
+			}
+			// six bytes
+#ifdef COLLECT_STATISTICS_FAST
+			ProgramStatistics::Total->Inc(Counters::cReadInt32MandatoryEp_6Byte);
+#endif
+			result = memory & 0x7f;
+			result <<= 7;
+			memory >>= 8;
+			result |= memory & 0x7f;
+			result <<= 7;
+			memory >>= 8;
+			result |= memory & 0x7f;
+			result <<= 7;
+			memory >>= 8;
+			result |= memory & 0x7f;
+			result <<= 7;
+			memory >>= 8;
+			result |= memory & 0x7f;
+			this->currentPos += 6;
+			return result - 1;
+		}
+		else if ((memory & 0xff) == 0x7f) { // extended negative integer
+			memory >>= 8;
 
-            result = 0xffffff80;
-            result |= memory & 0x7f;
-            if ((memory & 0x80) != 0) {
-                this->currentPos += 2;
-                return result;
-            }
-            result <<= 7;
-            memory >>= 8;
+			result = 0xffffff80;
+			result |= memory & 0x7f;
+			if ((memory & 0x80) != 0) {
+#ifdef COLLECT_STATISTICS_FAST
+				ProgramStatistics::Total->Inc(Counters::cReadInt32MandatoryEn_2Byte);
+#endif
+				this->currentPos += 2;
+				return result;
+			}
 
-            result |= memory & 0x7f;
-            if ((memory & 0x80) != 0) {
-                this->currentPos += 3;
-                return result;
-            }
+			result <<= 7;
+			memory >>= 8;
+			result |= memory & 0x7f;
+			if ((memory & 0x80) != 0) {
+#ifdef COLLECT_STATISTICS_FAST
+				ProgramStatistics::Total->Inc(Counters::cReadInt32MandatoryEn_3Byte);
+#endif
+				this->currentPos += 3;
+				return result;
+			}
 
-            result <<= 7;
-            memory >>= 8;
+			result <<= 7;
+			memory >>= 8;
+			result |= memory & 0x7f;
+			if ((memory & 0x80) != 0) {
+#ifdef COLLECT_STATISTICS_FAST
+				ProgramStatistics::Total->Inc(Counters::cReadInt32MandatoryEn_4Byte);
+#endif
+				this->currentPos += 4;
+				return result;
+			}
 
-            result |= memory & 0x7f;
-            if ((memory & 0x80) != 0) {
-                this->currentPos += 4;
-                return result;
-            }
+			result <<= 7;
+			memory >>= 8;
+			result |= memory & 0x7f;
+#ifdef COLLECT_STATISTICS_FAST
+			ProgramStatistics::Total->Inc(Counters::cReadInt32MandatoryEn_5Byte);
+#endif
+			this->currentPos += 5;
+			return result;
+		}
+		else if ((memory & 0x40) != 0) { // simple negative integer
+			result = 0xffffff80;
+			result |= memory & 0x7f;
+			if ((memory & 0x80) != 0) {
+#ifdef COLLECT_STATISTICS_FAST
+				ProgramStatistics::Total->Inc(Counters::cReadInt32MandatorySn_1Byte);
+#endif
+				this->currentPos++;
+				return result;
+			}
 
-            result <<= 7;
-            this->currentPos += 4;
-            memory = *((INT32*)(this->currentPos));
-            result |= memory & 0x7f;
+			result <<= 7;
+			memory >>= 8;
+			result |= memory & 0x7f;
+			if ((memory & 0x80) != 0) {
+#ifdef COLLECT_STATISTICS_FAST
+				ProgramStatistics::Total->Inc(Counters::cReadInt32MandatorySn_2Byte);
+#endif
+				this->currentPos += 2;
+				return result;
+			}
 
-            this->currentPos ++;
-            return result;
-        }
-        else if ((memory & 0x40) != 0) { // simple negative integer
-            result = 0xffffff80;
-            result |= memory & 0x7f;
-            if ((memory & 0x80) != 0) {
-                this->currentPos++;
-                return result;
-            }
-            result <<= 7;
-            memory >>= 8;
+			result <<= 7;
+			memory >>= 8;
+			result |= memory & 0x7f;
+			if ((memory & 0x80) != 0) {
+#ifdef COLLECT_STATISTICS_FAST
+				ProgramStatistics::Total->Inc(Counters::cReadInt32MandatorySn_3Byte);
+#endif
+				this->currentPos += 3;
+				return result;
+			}
 
-            result |= memory & 0x7f;
-            if ((memory & 0x80) != 0) {
-                this->currentPos += 2;
-                return result;
-            }
+			result <<= 7;
+			memory >>= 8;
+			result |= memory & 0x7f;
+			if ((memory & 0x80) != 0) {
+#ifdef COLLECT_STATISTICS_FAST
+				ProgramStatistics::Total->Inc(Counters::cReadInt32MandatorySn_4Byte);
+#endif
+				this->currentPos += 4;
+				return result;
+			}
+			result <<= 7;
+			memory >>= 8;
+			result |= memory & 0x7f;
+#ifdef COLLECT_STATISTICS_FAST
+			ProgramStatistics::Total->Inc(Counters::cReadInt32MandatorySn_5Byte);
+#endif
+			this->currentPos += 5;
+			return result;
+		}
+		else {  // simple positive integer
+			if(memory & 0x80) { //one byte
+#ifdef COLLECT_STATISTICS_FAST
+				ProgramStatistics::Total->Inc(Counters::cReadInt32MandatorySp_1Byte);
+#endif
+				this->currentPos++;
+				return (memory & 0x7f) - 1;
+			}
 
-            result <<= 7;
-            memory >>= 8;
+			if((memory & 0x808080) == 0x800000) { // three bytes
+#ifdef COLLECT_STATISTICS_FAST
+				ProgramStatistics::Total->Inc(Counters::cReadInt32MandatorySp_3Byte);
+#endif
+				result = memory & 0x7f;
+				result <<= 7;
+				memory >>= 8;
+				result |= memory & 0x7f;
+				result <<= 7;
+				memory >>= 8;
+				result |= memory & 0x7f;
+				this->currentPos += 3;
+				return result - 1;
+			}
 
-            result |= memory & 0x7f;
-            if ((memory & 0x80) != 0) {
-                this->currentPos += 3;
-                return result;
-            }
-
-            result <<= 7;
-            memory >>= 8;
-
-            result |= memory & 0x7f;
-            if ((memory & 0x80) != 0) {
-                this->currentPos += 4;
-                return result;
-            }
-            this->currentPos += 4;
-            result <<= 7;
-            memory = *((INT32*)(this->currentPos));
-            result |= memory & 0x7f;
-
-            this->currentPos++;
-            return result;
-        }
-        else {  // simple positive integer
-            if((memory & 0x8080) != 0) { // first two bytes
-                if((memory & 0x80) != 0) { // one byte
-                    this->currentPos++;
-                    return memory & 0x7f;
-                }
-                else { // two bytes
-                    this->currentPos += 2;
-                    return _pext_u32(memory, 0x00007f7f);
-                }
-            }
-            else {
-                // 3 - 4 and may be 5 byte
-                if((memory & 0x800000) != 0) { // three bytes
-                    this->currentPos += 3;
-                    return _pext_u32(memory, 0x007f7f7f);
-                }
-                else {
-                    if((memory & 0x80000000) != 0) {
-                        this->currentPos += 4;
-                        return _pext_u32(memory, 0x7f7f7f7f);
-                    }
-                    result = _pext_u32(memory, 0x7f7f7f7f);
-                    result <<= 7;
-                    this->currentPos += 4;
-                    memory = *((INT32*)(this->currentPos));
-                    this->currentPos ++;
-                    return result | (memory & 0x7f);
-                }
-            }
-        }
+			if((memory & 0x8080) == 0x8000) { // two bytes
+#ifdef COLLECT_STATISTICS_FAST
+				ProgramStatistics::Total->Inc(Counters::cReadInt32MandatorySp_2Byte);
+#endif
+				result = memory & 0x7f;
+				result <<= 7;
+				memory >>= 8;
+				result |= memory & 0x7f;
+				this->currentPos += 2;
+				return result - 1;
+			}
+			if((memory & 0x80808080) == 0x80000000) { // four bytes
+#ifdef COLLECT_STATISTICS_FAST
+				ProgramStatistics::Total->Inc(Counters::cReadInt32MandatorySp_4Byte);
+#endif
+				result = memory & 0x7f;
+				result <<= 7;
+				memory >>= 8;
+				result |= memory & 0x7f;
+				result <<= 7;
+				memory >>= 8;
+				result |= memory & 0x7f;
+				result <<= 7;
+				memory >>= 8;
+				result |= memory & 0x7f;
+				this->currentPos += 4;
+				return result - 1;
+			}
+			// five bytes
+#ifdef COLLECT_STATISTICS_FAST
+			ProgramStatistics::Total->Inc(Counters::cReadInt32MandatorySp_5Byte);
+#endif
+			result = memory & 0x7f;
+			result <<= 7;
+			memory >>= 8;
+			result |= memory & 0x7f;
+			result <<= 7;
+			memory >>= 8;
+			result |= memory & 0x7f;
+			result <<= 7;
+			memory >>= 8;
+			result |= memory & 0x7f;
+			result <<= 7;
+			memory >>= 8;
+			result |= memory & 0x7f;
+			this->currentPos += 5;
+			return result - 1;
+		}
     }
 
     inline INT32 ReadInt32_Mandatory_Predict1() {
-        INT32 memory = *((INT32*)(this->currentPos));
-        INT32 valueMasked = memory & 0xff;
-        if (valueMasked == 0x00) { // extended positive integer
-            memory >>= 8;
-            if((memory & 0x0080) != 0) {
-                this->currentPos += 2;
-                return memory & 0x7f;
-            }
-        }
-        else if (valueMasked == 0x7f) { // extended negative integer
-            memory >>= 8;
-            INT32 result = 0xffffff80;
-            result |= memory & 0x7f;
-            if((memory & 0x80) != 0) {
-                this->currentPos += 2;
-                return result;
-            }
-        }
-        else if ((memory & 0x40) != 0) { // simple negative integer
-            INT32 result = 0xffffff80;
-            result |= memory & 0x7f;
-            if((memory & 0x80) != 0) {
-                this->currentPos++;
-                return result;
-            }
-        }
-        else {  // simple positive integer
-            if((memory & 0x80) != 0) { // first byte
-                this->currentPos++;
-                return memory & 0x7f;
-            }
-        }
+		INT32 result;
+		UINT64 memory = *((UINT64*)(this->currentPos));
 
-        return ReadInt32_Mandatory();
+		if ((memory & 0xff) == 0x00) { // extended positive integer
+			memory >>= 8;
+
+			if ((memory & 0x80) == 0x80) { // two bytes
+#ifdef COLLECT_STATISTICS_FAST
+				ProgramStatistics::Total->Inc(Counters::cReadInt32MandatoryEp_2Byte);
+#endif
+				this->currentPos += 2;
+				return memory & 0x7f;
+			}
+
+			if ((memory & 0x8080) == 0x8000) { // three bytes
+#ifdef COLLECT_STATISTICS_FAST
+				ProgramStatistics::Total->Inc(Counters::cReadInt32MandatoryEp_3Byte);
+#endif
+				result = memory & 0x7f;
+				result <<= 7;
+				memory >>= 8;
+				result |= memory & 0x7f;
+				this->currentPos += 3;
+				return result;
+			}
+
+			if ((memory & 0x808080) == 0x800000) { // four bytes
+#ifdef COLLECT_STATISTICS_FAST
+				ProgramStatistics::Total->Inc(Counters::cReadInt32MandatoryEp_4Byte);
+#endif
+				result = memory & 0x7f;
+				result <<= 7;
+				memory >>= 8;
+				result |= memory & 0x7f;
+				result <<= 7;
+				memory >>= 8;
+				result |= memory & 0x7f;
+				this->currentPos += 4;
+
+				return result;
+			}
+
+			if ((memory & 0x80808080) == 0x80000000) { // five bytes
+#ifdef COLLECT_STATISTICS_FAST
+				ProgramStatistics::Total->Inc(Counters::cReadInt32MandatoryEp_5Byte);
+#endif
+				result = memory & 0x7f;
+				result <<= 7;
+				memory >>= 8;
+				result |= memory & 0x7f;
+				result <<= 7;
+				memory >>= 8;
+				result |= memory & 0x7f;
+				result <<= 7;
+				memory >>= 8;
+				result |= memory & 0x7f;
+				this->currentPos += 5;
+				return result;
+			}
+			// six bytes
+#ifdef COLLECT_STATISTICS_FAST
+			ProgramStatistics::Total->Inc(Counters::cReadInt32MandatoryEp_6Byte);
+#endif
+			result = memory & 0x7f;
+			result <<= 7;
+			memory >>= 8;
+			result |= memory & 0x7f;
+			result <<= 7;
+			memory >>= 8;
+			result |= memory & 0x7f;
+			result <<= 7;
+			memory >>= 8;
+			result |= memory & 0x7f;
+			result <<= 7;
+			memory >>= 8;
+			result |= memory & 0x7f;
+			this->currentPos += 6;
+			return result;
+		}
+		else if ((memory & 0xff) == 0x7f) { // extended negative integer
+			memory >>= 8;
+
+			result = 0xffffff80;
+			result |= memory & 0x7f;
+			if ((memory & 0x80) != 0) {
+#ifdef COLLECT_STATISTICS_FAST
+				ProgramStatistics::Total->Inc(Counters::cReadInt32MandatoryEn_2Byte);
+#endif
+				this->currentPos += 2;
+				return result;
+			}
+
+			result <<= 7;
+			memory >>= 8;
+			result |= memory & 0x7f;
+			if ((memory & 0x80) != 0) {
+#ifdef COLLECT_STATISTICS_FAST
+				ProgramStatistics::Total->Inc(Counters::cReadInt32MandatoryEn_3Byte);
+#endif
+				this->currentPos += 3;
+				return result;
+			}
+
+			result <<= 7;
+			memory >>= 8;
+			result |= memory & 0x7f;
+			if ((memory & 0x80) != 0) {
+#ifdef COLLECT_STATISTICS_FAST
+				ProgramStatistics::Total->Inc(Counters::cReadInt32MandatoryEn_4Byte);
+#endif
+				this->currentPos += 4;
+				return result;
+			}
+
+			result <<= 7;
+			memory >>= 8;
+			result |= memory & 0x7f;
+#ifdef COLLECT_STATISTICS_FAST
+			ProgramStatistics::Total->Inc(Counters::cReadInt32MandatoryEn_5Byte);
+#endif
+			this->currentPos += 5;
+			return result;
+		}
+		else if ((memory & 0x40) != 0) { // simple negative integer
+			result = 0xffffff80;
+			result |= memory & 0x7f;
+			if ((memory & 0x80) != 0) {
+#ifdef COLLECT_STATISTICS_FAST
+				ProgramStatistics::Total->Inc(Counters::cReadInt32MandatorySn_1Byte);
+#endif
+				this->currentPos++;
+				return result;
+			}
+
+			result <<= 7;
+			memory >>= 8;
+			result |= memory & 0x7f;
+			if ((memory & 0x80) != 0) {
+#ifdef COLLECT_STATISTICS_FAST
+				ProgramStatistics::Total->Inc(Counters::cReadInt32MandatorySn_2Byte);
+#endif
+				this->currentPos += 2;
+				return result;
+			}
+
+			result <<= 7;
+			memory >>= 8;
+			result |= memory & 0x7f;
+			if ((memory & 0x80) != 0) {
+#ifdef COLLECT_STATISTICS_FAST
+				ProgramStatistics::Total->Inc(Counters::cReadInt32MandatorySn_3Byte);
+#endif
+				this->currentPos += 3;
+				return result;
+			}
+
+			result <<= 7;
+			memory >>= 8;
+			result |= memory & 0x7f;
+			if ((memory & 0x80) != 0) {
+#ifdef COLLECT_STATISTICS_FAST
+				ProgramStatistics::Total->Inc(Counters::cReadInt32MandatorySn_4Byte);
+#endif
+				this->currentPos += 4;
+				return result;
+			}
+			result <<= 7;
+			memory >>= 8;
+			result |= memory & 0x7f;
+#ifdef COLLECT_STATISTICS_FAST
+			ProgramStatistics::Total->Inc(Counters::cReadInt32MandatorySn_5Byte);
+#endif
+			this->currentPos += 5;
+			return result;
+		}
+		else {  // simple positive integer
+			if(memory & 0x80) { //one byte
+#ifdef COLLECT_STATISTICS_FAST
+				ProgramStatistics::Total->Inc(Counters::cReadInt32MandatorySp_1Byte);
+#endif
+				this->currentPos++;
+				return memory & 0x7f;
+			}
+
+			if((memory & 0x808080) == 0x800000) { // three bytes
+#ifdef COLLECT_STATISTICS_FAST
+				ProgramStatistics::Total->Inc(Counters::cReadInt32MandatorySp_3Byte);
+#endif
+				result = memory & 0x7f;
+				result <<= 7;
+				memory >>= 8;
+				result |= memory & 0x7f;
+				result <<= 7;
+				memory >>= 8;
+				result |= memory & 0x7f;
+				this->currentPos += 3;
+				return result;
+			}
+
+			if((memory & 0x8080) == 0x8000) { // two bytes
+#ifdef COLLECT_STATISTICS_FAST
+				ProgramStatistics::Total->Inc(Counters::cReadInt32MandatorySp_2Byte);
+#endif
+				result = memory & 0x7f;
+				result <<= 7;
+				memory >>= 8;
+				result |= memory & 0x7f;
+				this->currentPos += 2;
+				return result;
+			}
+			if((memory & 0x80808080) == 0x80000000) { // four bytes
+#ifdef COLLECT_STATISTICS_FAST
+				ProgramStatistics::Total->Inc(Counters::cReadInt32MandatorySp_4Byte);
+#endif
+				result = memory & 0x7f;
+				result <<= 7;
+				memory >>= 8;
+				result |= memory & 0x7f;
+				result <<= 7;
+				memory >>= 8;
+				result |= memory & 0x7f;
+				result <<= 7;
+				memory >>= 8;
+				result |= memory & 0x7f;
+				this->currentPos += 4;
+				return result;
+			}
+			// five bytes
+#ifdef COLLECT_STATISTICS_FAST
+			ProgramStatistics::Total->Inc(Counters::cReadInt32MandatorySp_5Byte);
+#endif
+			result = memory & 0x7f;
+			result <<= 7;
+			memory >>= 8;
+			result |= memory & 0x7f;
+			result <<= 7;
+			memory >>= 8;
+			result |= memory & 0x7f;
+			result <<= 7;
+			memory >>= 8;
+			result |= memory & 0x7f;
+			result <<= 7;
+			memory >>= 8;
+			result |= memory & 0x7f;
+			this->currentPos += 5;
+			return result;
+		}
     }
 
     inline INT32 ReadInt32_Mandatory() {
-        INT32 result = 0; // TODO: actually, it may be left uninitialized, becasue lower in the code it always get assigned
-        INT32 memory = *((INT32*)(this->currentPos));
+        INT32 result;
+        UINT64 memory = *((UINT64*)(this->currentPos));
 
-        INT32 valueMasked = memory & 0xff;
+        if ((memory & 0xff) == 0x00) { // extended positive integer
+			memory >>= 8;
 
-        if (valueMasked == 0x00) { // extended positive integer
-            memory >>= 8;
-
-            if((memory & 0x8080) != 0) { // first two bytes
-                if((memory & 0x0080) != 0) {
-                    this->currentPos += 2;
+			if ((memory & 0x8080) == 0x8000) { // three bytes
 #ifdef COLLECT_STATISTICS_FAST
-                    ProgramStatistics::Total->Inc(Counters::cReadInt32MandatoryEp_2Byte);
+				ProgramStatistics::Total->Inc(Counters::cReadInt32MandatoryEp_3Byte);
 #endif
-                    return memory & 0x7f;
-                }
-                else {
-                    result = memory & 0x7f;
-                    result <<= 7;
-                    memory >>= 8;
-                    result |= memory & 0x7f;
-                    this->currentPos += 3;
-#ifdef COLLECT_STATISTICS_FAST
-                    ProgramStatistics::Total->Inc(Counters::cReadInt32MandatoryEp_3Byte);
-#endif
-                    return result;
-                }
-            }
-            else {
-                if(memory & 0x800000) {
-                    result = memory & 0x7f;
-                    result <<= 7;
-                    memory >>= 8;
-                    result |= memory & 0x7f;
-                    result <<= 7;
-                    memory >>= 8;
-                    result |= memory & 0x7f;
-                    this->currentPos += 4;
-#ifdef COLLECT_STATISTICS_FAST
-                    ProgramStatistics::Total->Inc(Counters::cReadInt32MandatoryEp_4Byte);
-#endif
-                    return result;
-                }
-                else {
-                    result = memory & 0x7f;
-                    result <<= 7;
-                    memory >>= 8;
-                    result |= memory & 0x7f;
-                    result <<= 7;
-                    memory >>= 8;
-                    result |= memory & 0x7f;
-                    this->currentPos += 4;
+				result = memory & 0x7f;
+				result <<= 7;
+				memory >>= 8;
+				result |= memory & 0x7f;
+				this->currentPos += 3;
+				return result;
+			}
 
-                    result <<= 7;
-                    memory = *((INT32*)(this->currentPos));
-
-                    result |= memory & 0x7f;
-                    if ((memory & 0x80) != 0) {
-                        this->currentPos++;
+			if ((memory & 0x80) == 0x80) { // two bytes
 #ifdef COLLECT_STATISTICS_FAST
-                        ProgramStatistics::Total->Inc(Counters::cReadInt32MandatoryEp_5Byte);
+				ProgramStatistics::Total->Inc(Counters::cReadInt32MandatoryEp_2Byte);
 #endif
-                        return result;
-                    }
+				this->currentPos += 2;
+				return memory & 0x7f;
+			}
 
-                    result <<= 7;
-                    memory >>= 8;
-                    result |= memory & 0x7f;
-
-                    this->currentPos += 2;
+			if ((memory & 0x808080) == 0x800000) { // four bytes
 #ifdef COLLECT_STATISTICS_FAST
-                    ProgramStatistics::Total->Inc(Counters::cReadInt32MandatoryEp_6Byte);
+				ProgramStatistics::Total->Inc(Counters::cReadInt32MandatoryEp_4Byte);
 #endif
-                    return result;
-                }
-            }
-        }
-        else if (valueMasked == 0x7f) { // extended negative integer
+				result = memory & 0x7f;
+				result <<= 7;
+				memory >>= 8;
+				result |= memory & 0x7f;
+				result <<= 7;
+				memory >>= 8;
+				result |= memory & 0x7f;
+				this->currentPos += 4;
+
+				return result;
+			}
+
+			if ((memory & 0x80808080) == 0x80000000) { // five bytes
+#ifdef COLLECT_STATISTICS_FAST
+				ProgramStatistics::Total->Inc(Counters::cReadInt32MandatoryEp_5Byte);
+#endif
+				result = memory & 0x7f;
+				result <<= 7;
+				memory >>= 8;
+				result |= memory & 0x7f;
+				result <<= 7;
+				memory >>= 8;
+				result |= memory & 0x7f;
+				result <<= 7;
+				memory >>= 8;
+				result |= memory & 0x7f;
+				this->currentPos += 5;
+				return result;
+			}
+			// six bytes
+#ifdef COLLECT_STATISTICS_FAST
+			ProgramStatistics::Total->Inc(Counters::cReadInt32MandatoryEp_6Byte);
+#endif
+			result = memory & 0x7f;
+			result <<= 7;
+			memory >>= 8;
+			result |= memory & 0x7f;
+			result <<= 7;
+			memory >>= 8;
+			result |= memory & 0x7f;
+			result <<= 7;
+			memory >>= 8;
+			result |= memory & 0x7f;
+			result <<= 7;
+			memory >>= 8;
+			result |= memory & 0x7f;
+			this->currentPos += 6;
+			return result;
+		}
+        else if ((memory & 0xff) == 0x7f) { // extended negative integer
             memory >>= 8;
 
             result = 0xffffff80;
             result |= memory & 0x7f;
             if ((memory & 0x80) != 0) {
+#ifdef COLLECT_STATISTICS_FAST
+				ProgramStatistics::Total->Inc(Counters::cReadInt32MandatoryEn_2Byte);
+#endif
                 this->currentPos += 2;
-#ifdef COLLECT_STATISTICS_FAST
-                ProgramStatistics::Total->Inc(Counters::cReadInt32MandatoryEn_2Byte);
-#endif
                 return result;
             }
 
@@ -1918,10 +2499,10 @@ public:
             memory >>= 8;
             result |= memory & 0x7f;
             if ((memory & 0x80) != 0) {
+#ifdef COLLECT_STATISTICS_FAST
+				ProgramStatistics::Total->Inc(Counters::cReadInt32MandatoryEn_3Byte);
+#endif
                 this->currentPos += 3;
-#ifdef COLLECT_STATISTICS_FAST
-                ProgramStatistics::Total->Inc(Counters::cReadInt32MandatoryEn_3Byte);
-#endif
                 return result;
             }
 
@@ -1929,21 +2510,20 @@ public:
             memory >>= 8;
             result |= memory & 0x7f;
             if ((memory & 0x80) != 0) {
-                this->currentPos += 4;
 #ifdef COLLECT_STATISTICS_FAST
-                ProgramStatistics::Total->Inc(Counters::cReadInt32MandatoryEn_4Byte);
+				ProgramStatistics::Total->Inc(Counters::cReadInt32MandatoryEn_4Byte);
 #endif
+                this->currentPos += 4;
                 return result;
             }
 
             result <<= 7;
-            this->currentPos += 4;
-            memory = *((INT32*)(this->currentPos));
+            memory >>= 8;
             result |= memory & 0x7f;
-            this->currentPos ++;
 #ifdef COLLECT_STATISTICS_FAST
-            ProgramStatistics::Total->Inc(Counters::cReadInt32MandatoryEn_5Byte);
+			ProgramStatistics::Total->Inc(Counters::cReadInt32MandatoryEn_5Byte);
 #endif
+            this->currentPos += 5;
             return result;
         }
         else if ((memory & 0x40) != 0) { // simple negative integer 
@@ -1956,9 +2536,9 @@ public:
                 this->currentPos++;
                 return result;
             }
-            result <<= 7;
-            memory >>= 8;
 
+			result <<= 7;
+            memory >>= 8;
             result |= memory & 0x7f;
             if ((memory & 0x80) != 0) {
 #ifdef COLLECT_STATISTICS_FAST
@@ -1970,7 +2550,6 @@ public:
 
             result <<= 7;
             memory >>= 8;
-
             result |= memory & 0x7f;
             if ((memory & 0x80) != 0) {
 #ifdef COLLECT_STATISTICS_FAST
@@ -1982,7 +2561,6 @@ public:
 
             result <<= 7;
             memory >>= 8;
-
             result |= memory & 0x7f;
             if ((memory & 0x80) != 0) {
 #ifdef COLLECT_STATISTICS_FAST
@@ -1991,82 +2569,87 @@ public:
                 this->currentPos += 4;
                 return result;
             }
-            this->currentPos += 4;
-            result <<= 7;
-            memory = *((INT32*)(this->currentPos));
-            result |= memory & 0x7f;
+			result <<= 7;
+			memory >>= 8;
+			result |= memory & 0x7f;
 #ifdef COLLECT_STATISTICS_FAST
             ProgramStatistics::Total->Inc(Counters::cReadInt32MandatorySn_5Byte);
 #endif
-            this->currentPos++;
+            this->currentPos += 5;
             return result;
         }
         else {  // simple positive integer
-            if((memory & 0x8080) != 0) {
-                if((memory & 0x80) != 0) { // first byte
-                    this->currentPos++;
+
+			if((memory & 0x808080) == 0x800000) { // three bytes
 #ifdef COLLECT_STATISTICS_FAST
-                    ProgramStatistics::Total->Inc(Counters::cReadInt32MandatorySp_1Byte);
+				ProgramStatistics::Total->Inc(Counters::cReadInt32MandatorySp_3Byte);
 #endif
-                    return memory & 0x7f;
-                }
-                else { // second byte
+				result = memory & 0x7f;
+				result <<= 7;
+				memory >>= 8;
+				result |= memory & 0x7f;
+				result <<= 7;
+				memory >>= 8;
+				result |= memory & 0x7f;
+				this->currentPos += 3;
+				return result;
+			}
+
+			if(memory & 0x80) { //one byte
+#ifdef COLLECT_STATISTICS_FAST
+				ProgramStatistics::Total->Inc(Counters::cReadInt32MandatorySp_1Byte);
+#endif
+				this->currentPos++;
+				return memory & 0x7f;
+			}
+
+			if((memory & 0x8080) == 0x8000) { // two bytes
+#ifdef COLLECT_STATISTICS_FAST
+				ProgramStatistics::Total->Inc(Counters::cReadInt32MandatorySp_2Byte);
+#endif
                     result = memory & 0x7f;
                     result <<= 7;
                     memory >>= 8;
                     result |= memory & 0x7f;
                     this->currentPos += 2;
-#ifdef COLLECT_STATISTICS_FAST
-                    ProgramStatistics::Total->Inc(Counters::cReadInt32MandatorySp_2Byte);
-#endif
                     return result;
-                }
             }
-            else {
-                if((memory & 0x800000) != 0) {
-                    result = memory & 0x7f;
-                    result <<= 7;
-                    memory >>= 8;
-                    result |= memory & 0x7f;
-                    result <<= 7;
-                    memory >>= 8;
-                    result |= memory & 0x7f;
-                    this->currentPos += 3;
+			if((memory & 0x80808080) == 0x80000000) { // four bytes
 #ifdef COLLECT_STATISTICS_FAST
-                    ProgramStatistics::Total->Inc(Counters::cReadInt32MandatorySp_3Byte);
+				ProgramStatistics::Total->Inc(Counters::cReadInt32MandatorySp_4Byte);
 #endif
-                    return result;
-                }
-                else {
-                    result = memory & 0x7f;
-                    result <<= 7;
-                    memory >>= 8;
-                    result |= memory & 0x7f;
-                    result <<= 7;
-                    memory >>= 8;
-                    result |= memory & 0x7f;
-                    result <<= 7;
-                    memory >>= 8;
-                    result |= memory & 0x7f;
-                    this->currentPos += 4;
-
-                    if((memory & 0x80000000) != 0) {
+				result = memory & 0x7f;
+				result <<= 7;
+				memory >>= 8;
+				result |= memory & 0x7f;
+				result <<= 7;
+				memory >>= 8;
+				result |= memory & 0x7f;
+				result <<= 7;
+				memory >>= 8;
+				result |= memory & 0x7f;
+				this->currentPos += 4;
+				return result;
+			}
+			// five bytes
 #ifdef COLLECT_STATISTICS_FAST
-                        ProgramStatistics::Total->Inc(Counters::cReadInt32MandatorySp_4Byte);
+			ProgramStatistics::Total->Inc(Counters::cReadInt32MandatorySp_5Byte);
 #endif
-                        return result;
-                    }
-
-                    result <<= 7;
-                    memory = *((INT32*)(this->currentPos));
-                    result |= memory & 0x7f;
-                    this->currentPos++;
-#ifdef COLLECT_STATISTICS_FAST
-                    ProgramStatistics::Total->Inc(Counters::cReadInt32MandatorySp_5Byte);
-#endif
-                    return result;
-                }
-            }
+			result = memory & 0x7f;
+			result <<= 7;
+			memory >>= 8;
+			result |= memory & 0x7f;
+			result <<= 7;
+			memory >>= 8;
+			result |= memory & 0x7f;
+			result <<= 7;
+			memory >>= 8;
+			result |= memory & 0x7f;
+			result <<= 7;
+			memory >>= 8;
+			result |= memory & 0x7f;
+			this->currentPos += 5;
+			return result;
         }
     }
 
@@ -2157,6 +2740,15 @@ public:
         return result;
     }
 
+	inline bool ReadUInt32_Optional_Fixed1(UINT32 *result) {
+		UINT32 val = (UINT32)*(this->currentPos) & 0x7f;
+		this->currentPos++;
+		if(val == 0)
+			return false;
+		(*result) = val - 1;
+		return true;
+	}
+
 	inline UINT32 ReadUInt32_Optional_Fixed1() {
 		return ReadUInt32_Mandatory_Fixed1() - 1;
 	}
@@ -2166,7 +2758,160 @@ public:
     }
 
     inline UINT32 ReadUInt32_Optional() {
-        return ReadUInt32_Mandatory() - 1;
+        UINT32 result;
+        UINT64 memory = *((UINT64*)(this->currentPos));
+
+        if((memory & 0x808080) == 0x800000) { // three bytes
+#ifdef COLLECT_STATISTICS_FAST
+            ProgramStatistics::Total->Inc(Counters::cReadUInt32Mandatory_3Byte);
+#endif
+            this->currentPos += 3;
+            result = memory & 0x7f;
+            memory >>= 8;
+            result <<= 7;
+            result |= memory & 0x7f;
+            memory >>= 8;
+            result <<= 7;
+            result |= memory & 0x7f;
+            return result - 1;
+        }
+        else if((memory & 0x80808080) == 0x80000000) { // four bytes
+#ifdef COLLECT_STATISTICS_FAST
+            ProgramStatistics::Total->Inc(Counters::cReadUInt32Mandatory_4Byte);
+#endif
+            this->currentPos += 4;
+            result = memory & 0x7f;
+            memory >>= 8;
+            result <<= 7;
+            result |= memory & 0x7f;
+            memory >>= 8;
+            result <<= 7;
+            result |= memory & 0x7f;
+            memory >>= 8;
+            result <<= 7;
+            result |= memory & 0x7f;
+            return result - 1;
+        }
+        else if((memory & 0x8080) == 0x8000) { // two bytes
+#ifdef COLLECT_STATISTICS_FAST
+            ProgramStatistics::Total->Inc(Counters::cReadUInt32Mandatory_2Byte);
+#endif
+            this->currentPos += 2;
+            result = memory & 0x7f;
+            memory >>= 8;
+            result <<= 7;
+            result |= memory & 0x7f;
+            return result - 1;
+        }
+        else if((memory & 0x80) == 0x80) { // one byte
+#ifdef COLLECT_STATISTICS_FAST
+            ProgramStatistics::Total->Inc(Counters::cReadUInt32Mandatory_1Byte);
+#endif
+            this->currentPos++;
+            return (memory & 0x7f) - 1;
+        }
+        //there is no need to check 5 bytes
+#ifdef COLLECT_STATISTICS_FAST
+        ProgramStatistics::Total->Inc(Counters::cReadUInt32Mandatory_5Byte);
+#endif
+        this->currentPos += 5;
+        result = memory & 0x7f;
+        memory >>= 8;
+        result <<= 7;
+        result |= memory & 0x7f;
+        memory >>= 8;
+        result <<= 7;
+        result |= memory & 0x7f;
+        memory >>= 8;
+        result <<= 7;
+        result |= memory & 0x7f;
+        memory >>= 8;
+        result <<= 7;
+        result |= memory & 0x7f;
+        return result - 1;
+    }
+
+    inline bool ReadUInt32_Optional(UINT32 *value) {
+        INT32 result;
+		UINT64 memory = *((UINT64*)(this->currentPos));
+        if((memory & 0xff) == 0x80) {
+            this->currentPos++;
+            return false;
+        }
+
+        if((memory & 0x808080) == 0x800000) { // three bytes
+#ifdef COLLECT_STATISTICS_FAST
+            ProgramStatistics::Total->Inc(Counters::cReadUInt32Mandatory_3Byte);
+#endif
+            this->currentPos += 3;
+            result = memory & 0x7f;
+            memory >>= 8;
+            result <<= 7;
+            result |= memory & 0x7f;
+            memory >>= 8;
+            result <<= 7;
+            result |= memory & 0x7f;
+            *value = result - 1;
+            return true;
+        }
+        else if((memory & 0x80808080) == 0x80000000) { // four bytes
+#ifdef COLLECT_STATISTICS_FAST
+            ProgramStatistics::Total->Inc(Counters::cReadUInt32Mandatory_4Byte);
+#endif
+            this->currentPos += 4;
+            result = memory & 0x7f;
+            memory >>= 8;
+            result <<= 7;
+            result |= memory & 0x7f;
+            memory >>= 8;
+            result <<= 7;
+            result |= memory & 0x7f;
+            memory >>= 8;
+            result <<= 7;
+            result |= memory & 0x7f;
+			*value = result - 1;
+            return true;
+        }
+        else if((memory & 0x8080) == 0x8000) { // two bytes
+#ifdef COLLECT_STATISTICS_FAST
+            ProgramStatistics::Total->Inc(Counters::cReadUInt32Mandatory_2Byte);
+#endif
+            this->currentPos += 2;
+            result = memory & 0x7f;
+            memory >>= 8;
+            result <<= 7;
+            result |= memory & 0x7f;
+			*value = result - 1;
+            return true;
+        }
+        else if((memory & 0x80) == 0x80) { // one byte
+#ifdef COLLECT_STATISTICS_FAST
+            ProgramStatistics::Total->Inc(Counters::cReadUInt32Mandatory_1Byte);
+#endif
+            this->currentPos++;
+            *value = (memory & 0x7f) - 1;
+            return true;
+        }
+        //there is no need to check 5 bytes
+#ifdef COLLECT_STATISTICS_FAST
+        ProgramStatistics::Total->Inc(Counters::cReadUInt32Mandatory_5Byte);
+#endif
+        this->currentPos += 5;
+        result = memory & 0x7f;
+        memory >>= 8;
+        result <<= 7;
+        result |= memory & 0x7f;
+        memory >>= 8;
+        result <<= 7;
+        result |= memory & 0x7f;
+        memory >>= 8;
+        result <<= 7;
+        result |= memory & 0x7f;
+        memory >>= 8;
+        result <<= 7;
+        result |= memory & 0x7f;
+		*value = result - 1;
+        return true;
     }
 
     inline void WriteInt64_Optional(INT64 value) {
@@ -3912,7 +4657,7 @@ public:
 		info->PresenceMap = this->m_presenceMap;
 
 		ReadString_Mandatory(info->TargetCompID, &(info->TargetCompIDLength));
-		info->MsgSeqNum = ReadUInt32_Mandatory();
+		SkipToNextField(); // MsgSeqNum
 		SkipToNextField(); // SendingTime
 		info->HeartBtInt = ReadInt32_Mandatory();
 		if(CheckProcessNullString())
@@ -3932,7 +4677,7 @@ public:
 		info->PresenceMap = this->m_presenceMap;
 
 		ReadString_Mandatory(info->TargetCompID, &(info->TargetCompIDLength));
-		info->MsgSeqNum = ReadUInt32_Mandatory();
+		SkipToNextField(); // MsgSeqNum
 		SkipToNextField(); // SendingTime
 		if(CheckProcessNullString())
 			info->NullMap |= NULL_MAP_INDEX0;
@@ -3945,38 +4690,26 @@ public:
 		AstsGenericInfo* info = GetFreeAstsGenericInfo();
 		info->PresenceMap = this->m_presenceMap;
 
-		info->MsgSeqNum = ReadUInt32_Mandatory();
+		SkipToNextField(); // MsgSeqNum
 		SkipToNextField(); // SendingTime
 		if(CheckProcessNullString())
 			info->NullMap |= NULL_MAP_INDEX0;
 		else
 			ReadString_Optional(info->TradingSessionID, &(info->TradingSessionIDLength));
 		ReadString_Mandatory(info->Symbol, &(info->SymbolLength));
-		if(CheckProcessNullUInt32())
+		if(!ReadUInt32_Optional(&(info->LastMsgSeqNumProcessed)))
 			info->NullMap |= NULL_MAP_INDEX1;
-		else
-			info->LastMsgSeqNumProcessed = ReadUInt32_Optional();
 		info->RptSeq = ReadInt32_Mandatory();
-		if(CheckProcessNullUInt32())
+		if(!ReadUInt32_Optional(&(info->LastFragment)))
 			info->NullMap |= NULL_MAP_INDEX2;
-		else
-			info->LastFragment = ReadUInt32_Optional();
-		if(CheckProcessNullUInt32())
+		if(!ReadUInt32_Optional(&(info->RouteFirst)))
 			info->NullMap |= NULL_MAP_INDEX3;
-		else
-			info->RouteFirst = ReadUInt32_Optional();
-		if(CheckProcessNullInt32())
+		if(!ReadInt32_Optional(&(info->TradSesStatus)))
 			info->NullMap |= NULL_MAP_INDEX4;
-		else
-			info->TradSesStatus = ReadInt32_Optional();
-		if(CheckProcessNullInt32())
+		if(!ReadInt32_Optional(&(info->MDSecurityTradingStatus)))
 			info->NullMap |= NULL_MAP_INDEX5;
-		else
-			info->MDSecurityTradingStatus = ReadInt32_Optional();
-		if(CheckProcessNullUInt32())
+		if(!ReadUInt32_Optional(&(info->AuctionIndicator)))
 			info->NullMap |= NULL_MAP_INDEX6;
-		else
-			info->AuctionIndicator = ReadUInt32_Optional();
 		if(CheckProcessNullDecimal())
 			info->NullMap |= NULL_MAP_INDEX7;
 		else
@@ -3996,18 +4729,12 @@ public:
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX1;
 			else
 				ReadString_Optional_Predict67Other(gmdeItemInfo->MDEntryID, &(gmdeItemInfo->MDEntryIDLength));
-			if(CheckProcessNullUInt32())
+			if(!ReadUInt32_Optional(&(gmdeItemInfo->MDEntryDate)))
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX2;
-			else
-				gmdeItemInfo->MDEntryDate = ReadUInt32_Optional();
-			if(CheckProcessNullUInt32())
+			if(!ReadUInt32_Optional(&(gmdeItemInfo->MDEntryTime)))
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX3;
-			else
-				gmdeItemInfo->MDEntryTime = ReadUInt32_Optional();
-			if(CheckProcessNullUInt32())
+			if(!ReadUInt32_Optional(&(gmdeItemInfo->OrigTime)))
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX4;
-			else
-				gmdeItemInfo->OrigTime = ReadUInt32_Optional();
 			if(CheckProcessNullDecimal())
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX5;
 			else
@@ -4032,14 +4759,10 @@ public:
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX10;
 			else
 				ReadString_Optional(gmdeItemInfo->OrdType, &(gmdeItemInfo->OrdTypeLength));
-			if(CheckProcessNullUInt32())
+			if(!ReadUInt32_Optional(&(gmdeItemInfo->EffectiveTime)))
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX11;
-			else
-				gmdeItemInfo->EffectiveTime = ReadUInt32_Optional();
-			if(CheckProcessNullUInt32())
+			if(!ReadUInt32_Optional(&(gmdeItemInfo->StartTime)))
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX12;
-			else
-				gmdeItemInfo->StartTime = ReadUInt32_Optional();
 			if(CheckProcessNullDecimal())
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX13;
 			else
@@ -4060,10 +4783,8 @@ public:
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX17;
 			else
 				ReadDecimal_Optional(&(gmdeItemInfo->AskMarketSize));
-			if(CheckProcessNullInt32())
+			if(!ReadInt32_Optional(&(gmdeItemInfo->TotalNumOfTrades)))
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX18;
-			else
-				gmdeItemInfo->TotalNumOfTrades = ReadInt32_Optional();
 			if(CheckProcessNullDecimal())
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX19;
 			else
@@ -4076,30 +4797,22 @@ public:
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX21;
 			else
 				ReadDecimal_Optional(&(gmdeItemInfo->TotalVolume));
-			if(CheckProcessNullInt32())
+			if(!ReadInt32_Optional(&(gmdeItemInfo->OfferNbOr)))
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX22;
-			else
-				gmdeItemInfo->OfferNbOr = ReadInt32_Optional();
-			if(CheckProcessNullInt32())
+			if(!ReadInt32_Optional(&(gmdeItemInfo->BidNbOr)))
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX23;
-			else
-				gmdeItemInfo->BidNbOr = ReadInt32_Optional();
 			if(CheckProcessNullDecimal())
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX24;
 			else
 				ReadDecimal_Optional(&(gmdeItemInfo->ChgFromSettlmnt));
-			if(CheckProcessNullUInt32())
+			if(!ReadUInt32_Optional(&(gmdeItemInfo->SettlDate)))
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX25;
-			else
-				gmdeItemInfo->SettlDate = ReadUInt32_Optional();
 			if(CheckProcessNullString())
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX26;
 			else
 				ReadString_Optional(gmdeItemInfo->SettleType, &(gmdeItemInfo->SettleTypeLength));
-			if(CheckProcessNullInt32())
+			if(!ReadInt32_Optional(&(gmdeItemInfo->SumQtyOfBest)))
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX27;
-			else
-				gmdeItemInfo->SumQtyOfBest = ReadInt32_Optional();
 			if(CheckProcessNullString())
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX28;
 			else
@@ -4112,22 +4825,16 @@ public:
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX30;
 			else
 				ReadDecimal_Optional(&(gmdeItemInfo->MinCurrPx));
-			if(CheckProcessNullUInt32())
+			if(!ReadUInt32_Optional(&(gmdeItemInfo->MinCurrPxChgTime)))
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX31;
-			else
-				gmdeItemInfo->MinCurrPxChgTime = ReadUInt32_Optional();
-			if(CheckProcessNullUInt32())
+			if(!ReadUInt32_Optional(&(gmdeItemInfo->VolumeIndicator)))
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX32;
-			else
-				gmdeItemInfo->VolumeIndicator = ReadUInt32_Optional();
 			if(CheckProcessNullDecimal())
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX33;
 			else
 				ReadDecimal_Optional(&(gmdeItemInfo->Price));
-			if(CheckProcessNullInt32())
+			if(!ReadInt32_Optional(&(gmdeItemInfo->PriceType)))
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX34;
-			else
-				gmdeItemInfo->PriceType = ReadInt32_Optional();
 			if(CheckProcessNullDecimal())
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX35;
 			else
@@ -4140,10 +4847,8 @@ public:
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX37;
 			else
 				ReadDecimal_Optional(&(gmdeItemInfo->BuyBackPx));
-			if(CheckProcessNullUInt32())
+			if(!ReadUInt32_Optional(&(gmdeItemInfo->BuyBackDate)))
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX38;
-			else
-				gmdeItemInfo->BuyBackDate = ReadUInt32_Optional();
 			if(CheckProcessNullString())
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX39;
 			else
@@ -4162,7 +4867,7 @@ public:
 		AstsIncrementalGenericInfo* info = GetFreeAstsIncrementalGenericInfo();
 		info->PresenceMap = this->m_presenceMap;
 
-		info->MsgSeqNum = ReadUInt32_Mandatory();
+		SkipToNextField(); // MsgSeqNum
 		SkipToNextField(); // SendingTime
 
 		info->GroupMDEntriesCount = ReadUInt32_Mandatory_Predict1();
@@ -4171,10 +4876,8 @@ public:
 		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 			gmdeItemInfo = GetFreeAstsGenericItemInfo();
 			info->GroupMDEntries[i] = gmdeItemInfo;
-			if(CheckProcessNullUInt32())
+			if(!ReadUInt32_Optional_Fixed1(&(gmdeItemInfo->MDUpdateAction)))
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX0;
-			else
-				gmdeItemInfo->MDUpdateAction = ReadUInt32_Optional_Fixed1();
 			if(CheckProcessNullString())
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX1;
 			else
@@ -4183,38 +4886,24 @@ public:
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX2;
 			else
 				ReadString_Optional_Predict67Other(gmdeItemInfo->MDEntryID, &(gmdeItemInfo->MDEntryIDLength));
-			if(CheckProcessNullInt32())
+			if(!ReadInt32_Optional(&(gmdeItemInfo->RptSeq)))
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX3;
-			else
-				gmdeItemInfo->RptSeq = ReadInt32_Optional();
-			if(CheckProcessNullUInt32())
+			if(!ReadUInt32_Optional(&(gmdeItemInfo->MDEntryDate)))
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX4;
-			else
-				gmdeItemInfo->MDEntryDate = ReadUInt32_Optional();
-			if(CheckProcessNullUInt32())
+			if(!ReadUInt32_Optional(&(gmdeItemInfo->OrigTime)))
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX5;
-			else
-				gmdeItemInfo->OrigTime = ReadUInt32_Optional();
-			if(CheckProcessNullUInt32())
+			if(!ReadUInt32_Optional(&(gmdeItemInfo->SettlDate)))
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX6;
-			else
-				gmdeItemInfo->SettlDate = ReadUInt32_Optional();
 			if(CheckProcessNullString())
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX7;
 			else
 				ReadString_Optional(gmdeItemInfo->SettleType, &(gmdeItemInfo->SettleTypeLength));
-			if(CheckProcessNullUInt32())
+			if(!ReadUInt32_Optional(&(gmdeItemInfo->MDEntryTime)))
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX8;
-			else
-				gmdeItemInfo->MDEntryTime = ReadUInt32_Optional();
-			if(CheckProcessNullUInt32())
+			if(!ReadUInt32_Optional(&(gmdeItemInfo->EffectiveTime)))
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX9;
-			else
-				gmdeItemInfo->EffectiveTime = ReadUInt32_Optional();
-			if(CheckProcessNullUInt32())
+			if(!ReadUInt32_Optional(&(gmdeItemInfo->StartTime)))
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX10;
-			else
-				gmdeItemInfo->StartTime = ReadUInt32_Optional();
 			if(CheckProcessNullString())
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX11;
 			else
@@ -4267,10 +4956,8 @@ public:
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX23;
 			else
 				ReadDecimal_Optional(&(gmdeItemInfo->AskMarketSize));
-			if(CheckProcessNullInt32())
+			if(!ReadInt32_Optional(&(gmdeItemInfo->TotalNumOfTrades)))
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX24;
-			else
-				gmdeItemInfo->TotalNumOfTrades = ReadInt32_Optional();
 			if(CheckProcessNullDecimal())
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX25;
 			else
@@ -4283,22 +4970,16 @@ public:
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX27;
 			else
 				ReadDecimal_Optional(&(gmdeItemInfo->TotalVolume));
-			if(CheckProcessNullInt32())
+			if(!ReadInt32_Optional(&(gmdeItemInfo->OfferNbOr)))
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX28;
-			else
-				gmdeItemInfo->OfferNbOr = ReadInt32_Optional();
-			if(CheckProcessNullInt32())
+			if(!ReadInt32_Optional(&(gmdeItemInfo->BidNbOr)))
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX29;
-			else
-				gmdeItemInfo->BidNbOr = ReadInt32_Optional();
 			if(CheckProcessNullDecimal())
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX30;
 			else
 				ReadDecimal_Optional(&(gmdeItemInfo->ChgFromSettlmnt));
-			if(CheckProcessNullInt32())
+			if(!ReadInt32_Optional(&(gmdeItemInfo->SumQtyOfBest)))
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX31;
-			else
-				gmdeItemInfo->SumQtyOfBest = ReadInt32_Optional();
 			if(CheckProcessNullString())
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX32;
 			else
@@ -4311,22 +4992,16 @@ public:
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX34;
 			else
 				ReadDecimal_Optional(&(gmdeItemInfo->MinCurrPx));
-			if(CheckProcessNullUInt32())
+			if(!ReadUInt32_Optional(&(gmdeItemInfo->MinCurrPxChgTime)))
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX35;
-			else
-				gmdeItemInfo->MinCurrPxChgTime = ReadUInt32_Optional();
-			if(CheckProcessNullUInt32())
+			if(!ReadUInt32_Optional(&(gmdeItemInfo->VolumeIndicator)))
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX36;
-			else
-				gmdeItemInfo->VolumeIndicator = ReadUInt32_Optional();
 			if(CheckProcessNullDecimal())
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX37;
 			else
 				ReadDecimal_Optional(&(gmdeItemInfo->Price));
-			if(CheckProcessNullInt32())
+			if(!ReadInt32_Optional(&(gmdeItemInfo->PriceType)))
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX38;
-			else
-				gmdeItemInfo->PriceType = ReadInt32_Optional();
 			if(CheckProcessNullDecimal())
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX39;
 			else
@@ -4339,10 +5014,8 @@ public:
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX41;
 			else
 				ReadDecimal_Optional(&(gmdeItemInfo->BuyBackPx));
-			if(CheckProcessNullUInt32())
+			if(!ReadUInt32_Optional(&(gmdeItemInfo->BuyBackDate)))
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX42;
-			else
-				gmdeItemInfo->BuyBackDate = ReadUInt32_Optional();
 			if(CheckProcessNullString())
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX43;
 			else
@@ -4365,38 +5038,26 @@ public:
 		AstsOLSFONDInfo* info = GetFreeAstsOLSFONDInfo();
 		info->PresenceMap = this->m_presenceMap;
 
-		info->MsgSeqNum = ReadUInt32_Mandatory();
+		SkipToNextField(); // MsgSeqNum
 		SkipToNextField(); // SendingTime
-		if(CheckProcessNullUInt32())
+		if(!ReadUInt32_Optional(&(info->LastMsgSeqNumProcessed)))
 			info->NullMap |= NULL_MAP_INDEX0;
-		else
-			info->LastMsgSeqNumProcessed = ReadUInt32_Optional();
 		info->RptSeq = ReadInt32_Mandatory();
-		if(CheckProcessNullUInt32())
+		if(!ReadUInt32_Optional(&(info->LastFragment)))
 			info->NullMap |= NULL_MAP_INDEX1;
-		else
-			info->LastFragment = ReadUInt32_Optional();
-		if(CheckProcessNullUInt32())
+		if(!ReadUInt32_Optional(&(info->RouteFirst)))
 			info->NullMap |= NULL_MAP_INDEX2;
-		else
-			info->RouteFirst = ReadUInt32_Optional();
-		if(CheckProcessNullInt32())
+		if(!ReadInt32_Optional(&(info->TradSesStatus)))
 			info->NullMap |= NULL_MAP_INDEX3;
-		else
-			info->TradSesStatus = ReadInt32_Optional();
 		if(CheckProcessNullString())
 			info->NullMap |= NULL_MAP_INDEX4;
 		else
 			ReadString_Optional(info->TradingSessionID, &(info->TradingSessionIDLength));
 		ReadString_Mandatory(info->Symbol, &(info->SymbolLength));
-		if(CheckProcessNullInt32())
+		if(!ReadInt32_Optional(&(info->MDSecurityTradingStatus)))
 			info->NullMap |= NULL_MAP_INDEX5;
-		else
-			info->MDSecurityTradingStatus = ReadInt32_Optional();
-		if(CheckProcessNullUInt32())
+		if(!ReadUInt32_Optional(&(info->AuctionIndicator)))
 			info->NullMap |= NULL_MAP_INDEX6;
-		else
-			info->AuctionIndicator = ReadUInt32_Optional();
 
 		info->GroupMDEntriesCount = ReadUInt32_Mandatory_Predict1();
 		AstsOLSFONDItemInfo* gmdeItemInfo = NULL;
@@ -4422,28 +5083,22 @@ public:
 			else
 				ReadString_Optional_Predict67Other(gmdeItemInfo->MDEntryID, &(gmdeItemInfo->MDEntryIDLength));
 			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX1)) {
-				if(CheckProcessNullUInt32())
+				if(!ReadUInt32_Optional(&(gmdeItemInfo->MDEntryDate)))
 					gmdeItemInfo->NullMap |= NULL_MAP_INDEX2;
-				else
-					gmdeItemInfo->MDEntryDate = ReadUInt32_Optional();
 			}
 			else {
 				gmdeItemInfo->MDEntryDate = this->m_prevastsOLSFONDItemInfo->MDEntryDate;
 			}
 			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX2)) {
-				if(CheckProcessNullUInt32())
+				if(!ReadUInt32_Optional(&(gmdeItemInfo->MDEntryTime)))
 					gmdeItemInfo->NullMap |= NULL_MAP_INDEX3;
-				else
-					gmdeItemInfo->MDEntryTime = ReadUInt32_Optional();
 			}
 			else {
 				gmdeItemInfo->MDEntryTime = this->m_prevastsOLSFONDItemInfo->MDEntryTime;
 			}
 			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX3)) {
-				if(CheckProcessNullUInt32())
+				if(!ReadUInt32_Optional(&(gmdeItemInfo->OrigTime)))
 					gmdeItemInfo->NullMap |= NULL_MAP_INDEX4;
-				else
-					gmdeItemInfo->OrigTime = ReadUInt32_Optional();
 			}
 			else {
 				gmdeItemInfo->OrigTime = this->m_prevastsOLSFONDItemInfo->OrigTime;
@@ -4524,34 +5179,24 @@ public:
 		AstsOLSCURRInfo* info = GetFreeAstsOLSCURRInfo();
 		info->PresenceMap = this->m_presenceMap;
 
-		info->MsgSeqNum = ReadUInt32_Mandatory();
+		SkipToNextField(); // MsgSeqNum
 		SkipToNextField(); // SendingTime
-		if(CheckProcessNullUInt32())
+		if(!ReadUInt32_Optional(&(info->LastMsgSeqNumProcessed)))
 			info->NullMap |= NULL_MAP_INDEX0;
-		else
-			info->LastMsgSeqNumProcessed = ReadUInt32_Optional();
 		info->RptSeq = ReadInt32_Mandatory();
-		if(CheckProcessNullUInt32())
+		if(!ReadUInt32_Optional(&(info->LastFragment)))
 			info->NullMap |= NULL_MAP_INDEX1;
-		else
-			info->LastFragment = ReadUInt32_Optional();
-		if(CheckProcessNullUInt32())
+		if(!ReadUInt32_Optional(&(info->RouteFirst)))
 			info->NullMap |= NULL_MAP_INDEX2;
-		else
-			info->RouteFirst = ReadUInt32_Optional();
-		if(CheckProcessNullInt32())
+		if(!ReadInt32_Optional(&(info->TradSesStatus)))
 			info->NullMap |= NULL_MAP_INDEX3;
-		else
-			info->TradSesStatus = ReadInt32_Optional();
 		if(CheckProcessNullString())
 			info->NullMap |= NULL_MAP_INDEX4;
 		else
 			ReadString_Optional(info->TradingSessionID, &(info->TradingSessionIDLength));
 		ReadString_Mandatory(info->Symbol, &(info->SymbolLength));
-		if(CheckProcessNullInt32())
+		if(!ReadInt32_Optional(&(info->MDSecurityTradingStatus)))
 			info->NullMap |= NULL_MAP_INDEX5;
-		else
-			info->MDSecurityTradingStatus = ReadInt32_Optional();
 
 		info->GroupMDEntriesCount = ReadUInt32_Mandatory_Predict1();
 		AstsOLSCURRItemInfo* gmdeItemInfo = NULL;
@@ -4577,28 +5222,22 @@ public:
 			else
 				ReadString_Optional_Predict67Other(gmdeItemInfo->MDEntryID, &(gmdeItemInfo->MDEntryIDLength));
 			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX1)) {
-				if(CheckProcessNullUInt32())
+				if(!ReadUInt32_Optional(&(gmdeItemInfo->MDEntryDate)))
 					gmdeItemInfo->NullMap |= NULL_MAP_INDEX2;
-				else
-					gmdeItemInfo->MDEntryDate = ReadUInt32_Optional();
 			}
 			else {
 				gmdeItemInfo->MDEntryDate = this->m_prevastsOLSCURRItemInfo->MDEntryDate;
 			}
 			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX2)) {
-				if(CheckProcessNullUInt32())
+				if(!ReadUInt32_Optional(&(gmdeItemInfo->MDEntryTime)))
 					gmdeItemInfo->NullMap |= NULL_MAP_INDEX3;
-				else
-					gmdeItemInfo->MDEntryTime = ReadUInt32_Optional();
 			}
 			else {
 				gmdeItemInfo->MDEntryTime = this->m_prevastsOLSCURRItemInfo->MDEntryTime;
 			}
 			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX3)) {
-				if(CheckProcessNullUInt32())
+				if(!ReadUInt32_Optional(&(gmdeItemInfo->OrigTime)))
 					gmdeItemInfo->NullMap |= NULL_MAP_INDEX4;
-				else
-					gmdeItemInfo->OrigTime = ReadUInt32_Optional();
 			}
 			else {
 				gmdeItemInfo->OrigTime = this->m_prevastsOLSCURRItemInfo->OrigTime;
@@ -4651,38 +5290,26 @@ public:
 		AstsTLSFONDInfo* info = GetFreeAstsTLSFONDInfo();
 		info->PresenceMap = this->m_presenceMap;
 
-		info->MsgSeqNum = ReadUInt32_Mandatory();
+		SkipToNextField(); // MsgSeqNum
 		SkipToNextField(); // SendingTime
-		if(CheckProcessNullUInt32())
+		if(!ReadUInt32_Optional(&(info->LastMsgSeqNumProcessed)))
 			info->NullMap |= NULL_MAP_INDEX0;
-		else
-			info->LastMsgSeqNumProcessed = ReadUInt32_Optional();
 		info->RptSeq = ReadInt32_Mandatory();
-		if(CheckProcessNullUInt32())
+		if(!ReadUInt32_Optional(&(info->LastFragment)))
 			info->NullMap |= NULL_MAP_INDEX1;
-		else
-			info->LastFragment = ReadUInt32_Optional();
-		if(CheckProcessNullUInt32())
+		if(!ReadUInt32_Optional(&(info->RouteFirst)))
 			info->NullMap |= NULL_MAP_INDEX2;
-		else
-			info->RouteFirst = ReadUInt32_Optional();
-		if(CheckProcessNullInt32())
+		if(!ReadInt32_Optional(&(info->TradSesStatus)))
 			info->NullMap |= NULL_MAP_INDEX3;
-		else
-			info->TradSesStatus = ReadInt32_Optional();
 		if(CheckProcessNullString())
 			info->NullMap |= NULL_MAP_INDEX4;
 		else
 			ReadString_Optional(info->TradingSessionID, &(info->TradingSessionIDLength));
 		ReadString_Mandatory(info->Symbol, &(info->SymbolLength));
-		if(CheckProcessNullInt32())
+		if(!ReadInt32_Optional(&(info->MDSecurityTradingStatus)))
 			info->NullMap |= NULL_MAP_INDEX5;
-		else
-			info->MDSecurityTradingStatus = ReadInt32_Optional();
-		if(CheckProcessNullUInt32())
+		if(!ReadUInt32_Optional(&(info->AuctionIndicator)))
 			info->NullMap |= NULL_MAP_INDEX6;
-		else
-			info->AuctionIndicator = ReadUInt32_Optional();
 
 		info->GroupMDEntriesCount = ReadUInt32_Mandatory_Predict1();
 		AstsTLSFONDItemInfo* gmdeItemInfo = NULL;
@@ -4699,28 +5326,22 @@ public:
 			else
 				ReadString_Optional_Predict67Other(gmdeItemInfo->MDEntryID, &(gmdeItemInfo->MDEntryIDLength));
 			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX0)) {
-				if(CheckProcessNullUInt32())
+				if(!ReadUInt32_Optional(&(gmdeItemInfo->MDEntryDate)))
 					gmdeItemInfo->NullMap |= NULL_MAP_INDEX1;
-				else
-					gmdeItemInfo->MDEntryDate = ReadUInt32_Optional();
 			}
 			else {
 				gmdeItemInfo->MDEntryDate = this->m_prevastsTLSFONDItemInfo->MDEntryDate;
 			}
 			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX1)) {
-				if(CheckProcessNullUInt32())
+				if(!ReadUInt32_Optional(&(gmdeItemInfo->MDEntryTime)))
 					gmdeItemInfo->NullMap |= NULL_MAP_INDEX2;
-				else
-					gmdeItemInfo->MDEntryTime = ReadUInt32_Optional();
 			}
 			else {
 				gmdeItemInfo->MDEntryTime = this->m_prevastsTLSFONDItemInfo->MDEntryTime;
 			}
 			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX2)) {
-				if(CheckProcessNullUInt32())
+				if(!ReadUInt32_Optional(&(gmdeItemInfo->OrigTime)))
 					gmdeItemInfo->NullMap |= NULL_MAP_INDEX3;
-				else
-					gmdeItemInfo->OrigTime = ReadUInt32_Optional();
 			}
 			else {
 				gmdeItemInfo->OrigTime = this->m_prevastsTLSFONDItemInfo->OrigTime;
@@ -4781,10 +5402,8 @@ public:
 				gmdeItemInfo->Yield = this->m_prevastsTLSFONDItemInfo->Yield;
 			}
 			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX9)) {
-				if(CheckProcessNullUInt32())
+				if(!ReadUInt32_Optional(&(gmdeItemInfo->SettlDate)))
 					gmdeItemInfo->NullMap |= NULL_MAP_INDEX10;
-				else
-					gmdeItemInfo->SettlDate = ReadUInt32_Optional();
 			}
 			else {
 				gmdeItemInfo->SettlDate = this->m_prevastsTLSFONDItemInfo->SettlDate;
@@ -4809,10 +5428,8 @@ public:
 				gmdeItemInfo->Price = this->m_prevastsTLSFONDItemInfo->Price;
 			}
 			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX12)) {
-				if(CheckProcessNullInt32())
+				if(!ReadInt32_Optional(&(gmdeItemInfo->PriceType)))
 					gmdeItemInfo->NullMap |= NULL_MAP_INDEX13;
-				else
-					gmdeItemInfo->PriceType = ReadInt32_Optional();
 			}
 			else {
 				gmdeItemInfo->PriceType = this->m_prevastsTLSFONDItemInfo->PriceType;
@@ -4836,10 +5453,8 @@ public:
 				gmdeItemInfo->BuyBackPx = this->m_prevastsTLSFONDItemInfo->BuyBackPx;
 			}
 			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX15)) {
-				if(CheckProcessNullUInt32())
+				if(!ReadUInt32_Optional(&(gmdeItemInfo->BuyBackDate)))
 					gmdeItemInfo->NullMap |= NULL_MAP_INDEX16;
-				else
-					gmdeItemInfo->BuyBackDate = ReadUInt32_Optional();
 			}
 			else {
 				gmdeItemInfo->BuyBackDate = this->m_prevastsTLSFONDItemInfo->BuyBackDate;
@@ -4874,34 +5489,24 @@ public:
 		AstsTLSCURRInfo* info = GetFreeAstsTLSCURRInfo();
 		info->PresenceMap = this->m_presenceMap;
 
-		info->MsgSeqNum = ReadUInt32_Mandatory();
+		SkipToNextField(); // MsgSeqNum
 		SkipToNextField(); // SendingTime
-		if(CheckProcessNullUInt32())
+		if(!ReadUInt32_Optional(&(info->LastMsgSeqNumProcessed)))
 			info->NullMap |= NULL_MAP_INDEX0;
-		else
-			info->LastMsgSeqNumProcessed = ReadUInt32_Optional();
 		info->RptSeq = ReadInt32_Mandatory();
-		if(CheckProcessNullUInt32())
+		if(!ReadUInt32_Optional(&(info->LastFragment)))
 			info->NullMap |= NULL_MAP_INDEX1;
-		else
-			info->LastFragment = ReadUInt32_Optional();
-		if(CheckProcessNullUInt32())
+		if(!ReadUInt32_Optional(&(info->RouteFirst)))
 			info->NullMap |= NULL_MAP_INDEX2;
-		else
-			info->RouteFirst = ReadUInt32_Optional();
-		if(CheckProcessNullInt32())
+		if(!ReadInt32_Optional(&(info->TradSesStatus)))
 			info->NullMap |= NULL_MAP_INDEX3;
-		else
-			info->TradSesStatus = ReadInt32_Optional();
 		if(CheckProcessNullString())
 			info->NullMap |= NULL_MAP_INDEX4;
 		else
 			ReadString_Optional(info->TradingSessionID, &(info->TradingSessionIDLength));
 		ReadString_Mandatory(info->Symbol, &(info->SymbolLength));
-		if(CheckProcessNullInt32())
+		if(!ReadInt32_Optional(&(info->MDSecurityTradingStatus)))
 			info->NullMap |= NULL_MAP_INDEX5;
-		else
-			info->MDSecurityTradingStatus = ReadInt32_Optional();
 
 		info->GroupMDEntriesCount = ReadUInt32_Mandatory_Predict1();
 		AstsTLSCURRItemInfo* gmdeItemInfo = NULL;
@@ -4918,28 +5523,22 @@ public:
 			else
 				ReadString_Optional_Predict67Other(gmdeItemInfo->MDEntryID, &(gmdeItemInfo->MDEntryIDLength));
 			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX0)) {
-				if(CheckProcessNullUInt32())
+				if(!ReadUInt32_Optional(&(gmdeItemInfo->MDEntryDate)))
 					gmdeItemInfo->NullMap |= NULL_MAP_INDEX1;
-				else
-					gmdeItemInfo->MDEntryDate = ReadUInt32_Optional();
 			}
 			else {
 				gmdeItemInfo->MDEntryDate = this->m_prevastsTLSCURRItemInfo->MDEntryDate;
 			}
 			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX1)) {
-				if(CheckProcessNullUInt32())
+				if(!ReadUInt32_Optional(&(gmdeItemInfo->MDEntryTime)))
 					gmdeItemInfo->NullMap |= NULL_MAP_INDEX2;
-				else
-					gmdeItemInfo->MDEntryTime = ReadUInt32_Optional();
 			}
 			else {
 				gmdeItemInfo->MDEntryTime = this->m_prevastsTLSCURRItemInfo->MDEntryTime;
 			}
 			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX2)) {
-				if(CheckProcessNullUInt32())
+				if(!ReadUInt32_Optional(&(gmdeItemInfo->OrigTime)))
 					gmdeItemInfo->NullMap |= NULL_MAP_INDEX3;
-				else
-					gmdeItemInfo->OrigTime = ReadUInt32_Optional();
 			}
 			else {
 				gmdeItemInfo->OrigTime = this->m_prevastsTLSCURRItemInfo->OrigTime;
@@ -4982,10 +5581,8 @@ public:
 				gmdeItemInfo->TradeValue = this->m_prevastsTLSCURRItemInfo->TradeValue;
 			}
 			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX7)) {
-				if(CheckProcessNullUInt32())
+				if(!ReadUInt32_Optional(&(gmdeItemInfo->SettlDate)))
 					gmdeItemInfo->NullMap |= NULL_MAP_INDEX8;
-				else
-					gmdeItemInfo->SettlDate = ReadUInt32_Optional();
 			}
 			else {
 				gmdeItemInfo->SettlDate = this->m_prevastsTLSCURRItemInfo->SettlDate;
@@ -5010,10 +5607,8 @@ public:
 				gmdeItemInfo->Price = this->m_prevastsTLSCURRItemInfo->Price;
 			}
 			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX10)) {
-				if(CheckProcessNullInt32())
+				if(!ReadInt32_Optional(&(gmdeItemInfo->PriceType)))
 					gmdeItemInfo->NullMap |= NULL_MAP_INDEX11;
-				else
-					gmdeItemInfo->PriceType = ReadInt32_Optional();
 			}
 			else {
 				gmdeItemInfo->PriceType = this->m_prevastsTLSCURRItemInfo->PriceType;
@@ -5037,10 +5632,8 @@ public:
 				gmdeItemInfo->BuyBackPx = this->m_prevastsTLSCURRItemInfo->BuyBackPx;
 			}
 			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX13)) {
-				if(CheckProcessNullUInt32())
+				if(!ReadUInt32_Optional(&(gmdeItemInfo->BuyBackDate)))
 					gmdeItemInfo->NullMap |= NULL_MAP_INDEX14;
-				else
-					gmdeItemInfo->BuyBackDate = ReadUInt32_Optional();
 			}
 			else {
 				gmdeItemInfo->BuyBackDate = this->m_prevastsTLSCURRItemInfo->BuyBackDate;
@@ -5075,7 +5668,7 @@ public:
 		AstsIncrementalMSRFONDInfo* info = GetFreeAstsIncrementalMSRFONDInfo();
 		info->PresenceMap = this->m_presenceMap;
 
-		info->MsgSeqNum = ReadUInt32_Mandatory();
+		SkipToNextField(); // MsgSeqNum
 		SkipToNextField(); // SendingTime
 		if(CheckProcessNullUInt64())
 			info->NullMap |= NULL_MAP_INDEX0;
@@ -5088,10 +5681,8 @@ public:
 		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 			gmdeItemInfo = GetFreeAstsGenericItemInfo();
 			info->GroupMDEntries[i] = gmdeItemInfo;
-			if(CheckProcessNullUInt32())
+			if(!ReadUInt32_Optional_Fixed1(&(gmdeItemInfo->MDUpdateAction)))
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX0;
-			else
-				gmdeItemInfo->MDUpdateAction = ReadUInt32_Optional_Fixed1();
 			if(CheckProcessNullString())
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX1;
 			else
@@ -5104,10 +5695,8 @@ public:
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX3;
 			else
 				ReadString_Optional(gmdeItemInfo->Symbol, &(gmdeItemInfo->SymbolLength));
-			if(CheckProcessNullInt32())
+			if(!ReadInt32_Optional(&(gmdeItemInfo->RptSeq)))
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX4;
-			else
-				gmdeItemInfo->RptSeq = ReadInt32_Optional();
 			if(CheckProcessNullDecimal())
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX5;
 			else
@@ -5116,18 +5705,12 @@ public:
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX6;
 			else
 				ReadDecimal_Optional(&(gmdeItemInfo->MDEntrySize));
-			if(CheckProcessNullUInt32())
+			if(!ReadUInt32_Optional(&(gmdeItemInfo->MDEntryDate)))
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX7;
-			else
-				gmdeItemInfo->MDEntryDate = ReadUInt32_Optional();
-			if(CheckProcessNullUInt32())
+			if(!ReadUInt32_Optional(&(gmdeItemInfo->MDEntryTime)))
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX8;
-			else
-				gmdeItemInfo->MDEntryTime = ReadUInt32_Optional();
-			if(CheckProcessNullUInt32())
+			if(!ReadUInt32_Optional(&(gmdeItemInfo->StartTime)))
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX9;
-			else
-				gmdeItemInfo->StartTime = ReadUInt32_Optional();
 			if(CheckProcessNullString())
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX10;
 			else
@@ -5164,10 +5747,8 @@ public:
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX18;
 			else
 				ReadDecimal_Optional(&(gmdeItemInfo->AskMarketSize));
-			if(CheckProcessNullInt32())
+			if(!ReadInt32_Optional(&(gmdeItemInfo->TotalNumOfTrades)))
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX19;
-			else
-				gmdeItemInfo->TotalNumOfTrades = ReadInt32_Optional();
 			if(CheckProcessNullDecimal())
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX20;
 			else
@@ -5176,14 +5757,10 @@ public:
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX21;
 			else
 				ReadDecimal_Optional(&(gmdeItemInfo->Yield));
-			if(CheckProcessNullInt32())
+			if(!ReadInt32_Optional(&(gmdeItemInfo->OfferNbOr)))
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX22;
-			else
-				gmdeItemInfo->OfferNbOr = ReadInt32_Optional();
-			if(CheckProcessNullInt32())
+			if(!ReadInt32_Optional(&(gmdeItemInfo->BidNbOr)))
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX23;
-			else
-				gmdeItemInfo->BidNbOr = ReadInt32_Optional();
 			if(CheckProcessNullDecimal())
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX24;
 			else
@@ -5192,18 +5769,12 @@ public:
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX25;
 			else
 				ReadDecimal_Optional(&(gmdeItemInfo->MinCurrPx));
-			if(CheckProcessNullUInt32())
+			if(!ReadUInt32_Optional(&(gmdeItemInfo->MinCurrPxChgTime)))
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX26;
-			else
-				gmdeItemInfo->MinCurrPxChgTime = ReadUInt32_Optional();
-			if(CheckProcessNullUInt32())
+			if(!ReadUInt32_Optional(&(gmdeItemInfo->VolumeIndicator)))
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX27;
-			else
-				gmdeItemInfo->VolumeIndicator = ReadUInt32_Optional();
-			if(CheckProcessNullUInt32())
+			if(!ReadUInt32_Optional(&(gmdeItemInfo->SettlDate)))
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX28;
-			else
-				gmdeItemInfo->SettlDate = ReadUInt32_Optional();
 			if(CheckProcessNullString())
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX29;
 			else
@@ -5230,7 +5801,7 @@ public:
 		AstsIncrementalMSRCURRInfo* info = GetFreeAstsIncrementalMSRCURRInfo();
 		info->PresenceMap = this->m_presenceMap;
 
-		info->MsgSeqNum = ReadUInt32_Mandatory();
+		SkipToNextField(); // MsgSeqNum
 		SkipToNextField(); // SendingTime
 		if(CheckProcessNullUInt64())
 			info->NullMap |= NULL_MAP_INDEX0;
@@ -5243,10 +5814,8 @@ public:
 		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 			gmdeItemInfo = GetFreeAstsGenericItemInfo();
 			info->GroupMDEntries[i] = gmdeItemInfo;
-			if(CheckProcessNullUInt32())
+			if(!ReadUInt32_Optional_Fixed1(&(gmdeItemInfo->MDUpdateAction)))
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX0;
-			else
-				gmdeItemInfo->MDUpdateAction = ReadUInt32_Optional_Fixed1();
 			if(CheckProcessNullString())
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX1;
 			else
@@ -5259,10 +5828,8 @@ public:
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX3;
 			else
 				ReadString_Optional(gmdeItemInfo->Symbol, &(gmdeItemInfo->SymbolLength));
-			if(CheckProcessNullInt32())
+			if(!ReadInt32_Optional(&(gmdeItemInfo->RptSeq)))
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX4;
-			else
-				gmdeItemInfo->RptSeq = ReadInt32_Optional();
 			if(CheckProcessNullDecimal())
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX5;
 			else
@@ -5271,18 +5838,12 @@ public:
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX6;
 			else
 				ReadDecimal_Optional(&(gmdeItemInfo->MDEntrySize));
-			if(CheckProcessNullUInt32())
+			if(!ReadUInt32_Optional(&(gmdeItemInfo->MDEntryDate)))
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX7;
-			else
-				gmdeItemInfo->MDEntryDate = ReadUInt32_Optional();
-			if(CheckProcessNullUInt32())
+			if(!ReadUInt32_Optional(&(gmdeItemInfo->MDEntryTime)))
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX8;
-			else
-				gmdeItemInfo->MDEntryTime = ReadUInt32_Optional();
-			if(CheckProcessNullUInt32())
+			if(!ReadUInt32_Optional(&(gmdeItemInfo->StartTime)))
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX9;
-			else
-				gmdeItemInfo->StartTime = ReadUInt32_Optional();
 			if(CheckProcessNullString())
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX10;
 			else
@@ -5315,30 +5876,22 @@ public:
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX17;
 			else
 				ReadDecimal_Optional(&(gmdeItemInfo->AskMarketSize));
-			if(CheckProcessNullInt32())
+			if(!ReadInt32_Optional(&(gmdeItemInfo->TotalNumOfTrades)))
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX18;
-			else
-				gmdeItemInfo->TotalNumOfTrades = ReadInt32_Optional();
 			if(CheckProcessNullDecimal())
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX19;
 			else
 				ReadDecimal_Optional(&(gmdeItemInfo->TradeValue));
-			if(CheckProcessNullInt32())
+			if(!ReadInt32_Optional(&(gmdeItemInfo->OfferNbOr)))
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX20;
-			else
-				gmdeItemInfo->OfferNbOr = ReadInt32_Optional();
-			if(CheckProcessNullInt32())
+			if(!ReadInt32_Optional(&(gmdeItemInfo->BidNbOr)))
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX21;
-			else
-				gmdeItemInfo->BidNbOr = ReadInt32_Optional();
 			if(CheckProcessNullDecimal())
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX22;
 			else
 				ReadDecimal_Optional(&(gmdeItemInfo->ChgFromSettlmnt));
-			if(CheckProcessNullUInt32())
+			if(!ReadUInt32_Optional(&(gmdeItemInfo->SettlDate)))
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX23;
-			else
-				gmdeItemInfo->SettlDate = ReadUInt32_Optional();
 			if(CheckProcessNullString())
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX24;
 			else
@@ -5365,7 +5918,7 @@ public:
 		AstsIncrementalOLRFONDInfo* info = GetFreeAstsIncrementalOLRFONDInfo();
 		info->PresenceMap = this->m_presenceMap;
 
-		info->MsgSeqNum = ReadUInt32_Mandatory();
+		SkipToNextField(); // MsgSeqNum
 		SkipToNextField(); // SendingTime
 
 		info->GroupMDEntriesCount = ReadUInt32_Mandatory_Predict1();
@@ -5377,10 +5930,8 @@ public:
 
 			this->ParsePresenceMap(&(gmdeItemInfo->PresenceMap));
 
-			if(CheckProcessNullUInt32())
+			if(!ReadUInt32_Optional_Fixed1(&(gmdeItemInfo->MDUpdateAction)))
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX0;
-			else
-				gmdeItemInfo->MDUpdateAction = ReadUInt32_Optional_Fixed1();
 			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX0)) {
 				if(CheckProcessNullString())
 					gmdeItemInfo->NullMap |= NULL_MAP_INDEX1;
@@ -5405,33 +5956,25 @@ public:
 				this->CopyString(gmdeItemInfo->Symbol, m_prevastsOLSFONDItemInfo->Symbol, m_prevastsOLSFONDItemInfo->SymbolLength);
 				gmdeItemInfo->SymbolLength = this->m_prevastsOLSFONDItemInfo->SymbolLength;
 			}
-			if(CheckProcessNullInt32())
+			if(!ReadInt32_Optional(&(gmdeItemInfo->RptSeq)))
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX4;
-			else
-				gmdeItemInfo->RptSeq = ReadInt32_Optional();
 			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX2)) {
-				if(CheckProcessNullUInt32())
+				if(!ReadUInt32_Optional(&(gmdeItemInfo->MDEntryDate)))
 					gmdeItemInfo->NullMap |= NULL_MAP_INDEX5;
-				else
-					gmdeItemInfo->MDEntryDate = ReadUInt32_Optional();
 			}
 			else {
 				gmdeItemInfo->MDEntryDate = this->m_prevastsOLSFONDItemInfo->MDEntryDate;
 			}
 			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX3)) {
-				if(CheckProcessNullUInt32())
+				if(!ReadUInt32_Optional(&(gmdeItemInfo->MDEntryTime)))
 					gmdeItemInfo->NullMap |= NULL_MAP_INDEX6;
-				else
-					gmdeItemInfo->MDEntryTime = ReadUInt32_Optional();
 			}
 			else {
 				gmdeItemInfo->MDEntryTime = this->m_prevastsOLSFONDItemInfo->MDEntryTime;
 			}
 			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX4)) {
-				if(CheckProcessNullUInt32())
+				if(!ReadUInt32_Optional(&(gmdeItemInfo->OrigTime)))
 					gmdeItemInfo->NullMap |= NULL_MAP_INDEX7;
-				else
-					gmdeItemInfo->OrigTime = ReadUInt32_Optional();
 			}
 			else {
 				gmdeItemInfo->OrigTime = this->m_prevastsOLSFONDItemInfo->OrigTime;
@@ -5522,7 +6065,7 @@ public:
 		AstsIncrementalOLRCURRInfo* info = GetFreeAstsIncrementalOLRCURRInfo();
 		info->PresenceMap = this->m_presenceMap;
 
-		info->MsgSeqNum = ReadUInt32_Mandatory();
+		SkipToNextField(); // MsgSeqNum
 		SkipToNextField(); // SendingTime
 
 		info->GroupMDEntriesCount = ReadUInt32_Mandatory_Predict1();
@@ -5535,10 +6078,8 @@ public:
 			this->ParsePresenceMap(&(gmdeItemInfo->PresenceMap));
 
 			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX0)) {
-				if(CheckProcessNullUInt32())
+				if(!ReadUInt32_Optional_Fixed1(&(gmdeItemInfo->MDUpdateAction)))
 					gmdeItemInfo->NullMap |= NULL_MAP_INDEX0;
-				else
-					gmdeItemInfo->MDUpdateAction = ReadUInt32_Optional_Fixed1();
 			}
 			else {
 				gmdeItemInfo->MDUpdateAction = this->m_prevastsOLSCURRItemInfo->MDUpdateAction;
@@ -5567,33 +6108,25 @@ public:
 				this->CopyString(gmdeItemInfo->Symbol, m_prevastsOLSCURRItemInfo->Symbol, m_prevastsOLSCURRItemInfo->SymbolLength);
 				gmdeItemInfo->SymbolLength = this->m_prevastsOLSCURRItemInfo->SymbolLength;
 			}
-			if(CheckProcessNullInt32())
+			if(!ReadInt32_Optional(&(gmdeItemInfo->RptSeq)))
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX4;
-			else
-				gmdeItemInfo->RptSeq = ReadInt32_Optional();
 			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX3)) {
-				if(CheckProcessNullUInt32())
+				if(!ReadUInt32_Optional(&(gmdeItemInfo->MDEntryDate)))
 					gmdeItemInfo->NullMap |= NULL_MAP_INDEX5;
-				else
-					gmdeItemInfo->MDEntryDate = ReadUInt32_Optional();
 			}
 			else {
 				gmdeItemInfo->MDEntryDate = this->m_prevastsOLSCURRItemInfo->MDEntryDate;
 			}
 			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX4)) {
-				if(CheckProcessNullUInt32())
+				if(!ReadUInt32_Optional(&(gmdeItemInfo->MDEntryTime)))
 					gmdeItemInfo->NullMap |= NULL_MAP_INDEX6;
-				else
-					gmdeItemInfo->MDEntryTime = ReadUInt32_Optional();
 			}
 			else {
 				gmdeItemInfo->MDEntryTime = this->m_prevastsOLSCURRItemInfo->MDEntryTime;
 			}
 			if(CheckOptionalFieldPresence(gmdeItemInfo->PresenceMap, PRESENCE_MAP_INDEX5)) {
-				if(CheckProcessNullUInt32())
+				if(!ReadUInt32_Optional(&(gmdeItemInfo->OrigTime)))
 					gmdeItemInfo->NullMap |= NULL_MAP_INDEX7;
-				else
-					gmdeItemInfo->OrigTime = ReadUInt32_Optional();
 			}
 			else {
 				gmdeItemInfo->OrigTime = this->m_prevastsOLSCURRItemInfo->OrigTime;
@@ -5656,7 +6189,7 @@ public:
 		AstsIncrementalTLRFONDInfo* info = GetFreeAstsIncrementalTLRFONDInfo();
 		info->PresenceMap = this->m_presenceMap;
 
-		info->MsgSeqNum = ReadUInt32_Mandatory();
+		SkipToNextField(); // MsgSeqNum
 		SkipToNextField(); // SendingTime
 
 		info->GroupMDEntriesCount = ReadUInt32_Mandatory_Predict1();
@@ -5665,10 +6198,8 @@ public:
 		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 			gmdeItemInfo = GetFreeAstsTLSFONDItemInfo();
 			info->GroupMDEntries[i] = gmdeItemInfo;
-			if(CheckProcessNullUInt32())
+			if(!ReadUInt32_Optional_Fixed1(&(gmdeItemInfo->MDUpdateAction)))
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX0;
-			else
-				gmdeItemInfo->MDUpdateAction = ReadUInt32_Optional_Fixed1();
 			ReadString_Mandatory_Fixed1(gmdeItemInfo->MDEntryType, &(gmdeItemInfo->MDEntryTypeLength));
 			if(CheckProcessNullString())
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX1;
@@ -5678,22 +6209,14 @@ public:
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX2;
 			else
 				ReadString_Optional(gmdeItemInfo->Symbol, &(gmdeItemInfo->SymbolLength));
-			if(CheckProcessNullInt32())
+			if(!ReadInt32_Optional(&(gmdeItemInfo->RptSeq)))
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX3;
-			else
-				gmdeItemInfo->RptSeq = ReadInt32_Optional();
-			if(CheckProcessNullUInt32())
+			if(!ReadUInt32_Optional(&(gmdeItemInfo->MDEntryDate)))
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX4;
-			else
-				gmdeItemInfo->MDEntryDate = ReadUInt32_Optional();
-			if(CheckProcessNullUInt32())
+			if(!ReadUInt32_Optional(&(gmdeItemInfo->MDEntryTime)))
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX5;
-			else
-				gmdeItemInfo->MDEntryTime = ReadUInt32_Optional();
-			if(CheckProcessNullUInt32())
+			if(!ReadUInt32_Optional(&(gmdeItemInfo->OrigTime)))
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX6;
-			else
-				gmdeItemInfo->OrigTime = ReadUInt32_Optional();
 			if(CheckProcessNullString())
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX7;
 			else
@@ -5718,10 +6241,8 @@ public:
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX12;
 			else
 				ReadDecimal_Optional(&(gmdeItemInfo->Yield));
-			if(CheckProcessNullUInt32())
+			if(!ReadUInt32_Optional(&(gmdeItemInfo->SettlDate)))
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX13;
-			else
-				gmdeItemInfo->SettlDate = ReadUInt32_Optional();
 			if(CheckProcessNullString())
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX14;
 			else
@@ -5730,10 +6251,8 @@ public:
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX15;
 			else
 				ReadDecimal_Optional(&(gmdeItemInfo->Price));
-			if(CheckProcessNullInt32())
+			if(!ReadInt32_Optional(&(gmdeItemInfo->PriceType)))
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX16;
-			else
-				gmdeItemInfo->PriceType = ReadInt32_Optional();
 			if(CheckProcessNullDecimal())
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX17;
 			else
@@ -5742,10 +6261,8 @@ public:
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX18;
 			else
 				ReadDecimal_Optional(&(gmdeItemInfo->BuyBackPx));
-			if(CheckProcessNullUInt32())
+			if(!ReadUInt32_Optional(&(gmdeItemInfo->BuyBackDate)))
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX19;
-			else
-				gmdeItemInfo->BuyBackDate = ReadUInt32_Optional();
 			if(CheckProcessNullString())
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX20;
 			else
@@ -5768,7 +6285,7 @@ public:
 		AstsIncrementalTLRCURRInfo* info = GetFreeAstsIncrementalTLRCURRInfo();
 		info->PresenceMap = this->m_presenceMap;
 
-		info->MsgSeqNum = ReadUInt32_Mandatory();
+		SkipToNextField(); // MsgSeqNum
 		SkipToNextField(); // SendingTime
 
 		info->GroupMDEntriesCount = ReadUInt32_Mandatory_Predict1();
@@ -5777,10 +6294,8 @@ public:
 		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
 			gmdeItemInfo = GetFreeAstsTLSCURRItemInfo();
 			info->GroupMDEntries[i] = gmdeItemInfo;
-			if(CheckProcessNullUInt32())
+			if(!ReadUInt32_Optional_Fixed1(&(gmdeItemInfo->MDUpdateAction)))
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX0;
-			else
-				gmdeItemInfo->MDUpdateAction = ReadUInt32_Optional_Fixed1();
 			ReadString_Mandatory_Fixed1(gmdeItemInfo->MDEntryType, &(gmdeItemInfo->MDEntryTypeLength));
 			if(CheckProcessNullString())
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX1;
@@ -5790,22 +6305,14 @@ public:
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX2;
 			else
 				ReadString_Optional(gmdeItemInfo->Symbol, &(gmdeItemInfo->SymbolLength));
-			if(CheckProcessNullInt32())
+			if(!ReadInt32_Optional(&(gmdeItemInfo->RptSeq)))
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX3;
-			else
-				gmdeItemInfo->RptSeq = ReadInt32_Optional();
-			if(CheckProcessNullUInt32())
+			if(!ReadUInt32_Optional(&(gmdeItemInfo->MDEntryDate)))
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX4;
-			else
-				gmdeItemInfo->MDEntryDate = ReadUInt32_Optional();
-			if(CheckProcessNullUInt32())
+			if(!ReadUInt32_Optional(&(gmdeItemInfo->MDEntryTime)))
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX5;
-			else
-				gmdeItemInfo->MDEntryTime = ReadUInt32_Optional();
-			if(CheckProcessNullUInt32())
+			if(!ReadUInt32_Optional(&(gmdeItemInfo->OrigTime)))
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX6;
-			else
-				gmdeItemInfo->OrigTime = ReadUInt32_Optional();
 			if(CheckProcessNullString())
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX7;
 			else
@@ -5822,10 +6329,8 @@ public:
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX10;
 			else
 				ReadDecimal_Optional(&(gmdeItemInfo->TradeValue));
-			if(CheckProcessNullUInt32())
+			if(!ReadUInt32_Optional(&(gmdeItemInfo->SettlDate)))
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX11;
-			else
-				gmdeItemInfo->SettlDate = ReadUInt32_Optional();
 			if(CheckProcessNullString())
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX12;
 			else
@@ -5834,10 +6339,8 @@ public:
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX13;
 			else
 				ReadDecimal_Optional(&(gmdeItemInfo->Price));
-			if(CheckProcessNullInt32())
+			if(!ReadInt32_Optional(&(gmdeItemInfo->PriceType)))
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX14;
-			else
-				gmdeItemInfo->PriceType = ReadInt32_Optional();
 			if(CheckProcessNullDecimal())
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX15;
 			else
@@ -5846,10 +6349,8 @@ public:
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX16;
 			else
 				ReadDecimal_Optional(&(gmdeItemInfo->BuyBackPx));
-			if(CheckProcessNullUInt32())
+			if(!ReadUInt32_Optional(&(gmdeItemInfo->BuyBackDate)))
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX17;
-			else
-				gmdeItemInfo->BuyBackDate = ReadUInt32_Optional();
 			if(CheckProcessNullString())
 				gmdeItemInfo->NullMap |= NULL_MAP_INDEX18;
 			else
@@ -5872,12 +6373,10 @@ public:
 		AstsSecurityDefinitionInfo* info = GetFreeAstsSecurityDefinitionInfo();
 		info->PresenceMap = this->m_presenceMap;
 
-		info->MsgSeqNum = ReadUInt32_Mandatory();
+		SkipToNextField(); // MsgSeqNum
 		SkipToNextField(); // SendingTime
-		if(CheckProcessNullInt32())
+		if(!ReadInt32_Optional(&(info->TotNumReports)))
 			info->NullMap |= NULL_MAP_INDEX0;
-		else
-			info->TotNumReports = ReadInt32_Optional();
 		if(CheckProcessNullString())
 			info->NullMap |= NULL_MAP_INDEX1;
 		else
@@ -5890,10 +6389,8 @@ public:
 			info->NullMap |= NULL_MAP_INDEX3;
 		else
 			ReadByteVector_Optional(info->SecurityIDSource, &(info->SecurityIDSourceLength), 128);
-		if(CheckProcessNullInt32())
+		if(!ReadInt32_Optional(&(info->Product)))
 			info->NullMap |= NULL_MAP_INDEX4;
-		else
-			info->Product = ReadInt32_Optional();
 		if(CheckProcessNullByteVector())
 			info->NullMap |= NULL_MAP_INDEX5;
 		else
@@ -5902,14 +6399,10 @@ public:
 			info->NullMap |= NULL_MAP_INDEX6;
 		else
 			ReadByteVector_Optional(info->SecurityType, &(info->SecurityTypeLength), 128);
-		if(CheckProcessNullUInt32())
+		if(!ReadUInt32_Optional(&(info->MaturityDate)))
 			info->NullMap |= NULL_MAP_INDEX7;
-		else
-			info->MaturityDate = ReadUInt32_Optional();
-		if(CheckProcessNullUInt32())
+		if(!ReadUInt32_Optional(&(info->SettlDate)))
 			info->NullMap |= NULL_MAP_INDEX8;
-		else
-			info->SettlDate = ReadUInt32_Optional();
 		if(CheckProcessNullString())
 			info->NullMap |= NULL_MAP_INDEX9;
 		else
@@ -5918,18 +6411,14 @@ public:
 			info->NullMap |= NULL_MAP_INDEX10;
 		else
 			ReadDecimal_Optional(&(info->OrigIssueAmt));
-		if(CheckProcessNullUInt32())
+		if(!ReadUInt32_Optional(&(info->CouponPaymentDate)))
 			info->NullMap |= NULL_MAP_INDEX11;
-		else
-			info->CouponPaymentDate = ReadUInt32_Optional();
 		if(CheckProcessNullDecimal())
 			info->NullMap |= NULL_MAP_INDEX12;
 		else
 			ReadDecimal_Optional(&(info->CouponRate));
-		if(CheckProcessNullUInt32())
+		if(!ReadUInt32_Optional(&(info->SettlFixingDate)))
 			info->NullMap |= NULL_MAP_INDEX13;
-		else
-			info->SettlFixingDate = ReadUInt32_Optional();
 		if(CheckProcessNullDecimal())
 			info->NullMap |= NULL_MAP_INDEX14;
 		else
@@ -6003,14 +6492,10 @@ public:
 					tsrgItemInfo->NullMap |= NULL_MAP_INDEX0;
 				else
 					ReadString_Optional_Predict12(tsrgItemInfo->TradingSessionSubID, &(tsrgItemInfo->TradingSessionSubIDLength));
-				if(CheckProcessNullInt32())
+				if(!ReadInt32_Optional(&(tsrgItemInfo->SecurityTradingStatus)))
 					tsrgItemInfo->NullMap |= NULL_MAP_INDEX1;
-				else
-					tsrgItemInfo->SecurityTradingStatus = ReadInt32_Optional();
-				if(CheckProcessNullInt32())
+				if(!ReadInt32_Optional(&(tsrgItemInfo->OrderNote)))
 					tsrgItemInfo->NullMap |= NULL_MAP_INDEX2;
-				else
-					tsrgItemInfo->OrderNote = ReadInt32_Optional();
 				this->m_prevastsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo = tsrgItemInfo;
 			}
 
@@ -6021,10 +6506,8 @@ public:
 			info->NullMap |= NULL_MAP_INDEX21;
 		else
 			ReadString_Optional(info->SettlCurrency, &(info->SettlCurrencyLength));
-		if(CheckProcessNullInt32())
+		if(!ReadInt32_Optional(&(info->PriceType)))
 			info->NullMap |= NULL_MAP_INDEX22;
-		else
-			info->PriceType = ReadInt32_Optional();
 		if(CheckProcessNullString())
 			info->NullMap |= NULL_MAP_INDEX23;
 		else
@@ -6073,10 +6556,8 @@ public:
 			info->NullMap |= NULL_MAP_INDEX34;
 		else
 			ReadDecimal_Optional(&(info->BuyBackPx));
-		if(CheckProcessNullUInt32())
+		if(!ReadUInt32_Optional(&(info->BuyBackDate)))
 			info->NullMap |= NULL_MAP_INDEX35;
-		else
-			info->BuyBackDate = ReadUInt32_Optional();
 		if(CheckProcessNullDecimal())
 			info->NullMap |= NULL_MAP_INDEX36;
 		else
@@ -6089,10 +6570,8 @@ public:
 			info->NullMap |= NULL_MAP_INDEX38;
 		else
 			ReadDecimal_Optional(&(info->LowLimit));
-		if(CheckProcessNullInt32())
+		if(!ReadInt32_Optional(&(info->NumOfDaysToMaturity)))
 			info->NullMap |= NULL_MAP_INDEX39;
-		else
-			info->NumOfDaysToMaturity = ReadInt32_Optional();
 		this->m_prevastsSecurityDefinitionInfo = info;
 		return info;
 	}
@@ -6100,7 +6579,7 @@ public:
 		AstsSecurityStatusInfo* info = GetFreeAstsSecurityStatusInfo();
 		info->PresenceMap = this->m_presenceMap;
 
-		info->MsgSeqNum = ReadUInt32_Mandatory();
+		SkipToNextField(); // MsgSeqNum
 		SkipToNextField(); // SendingTime
 		ReadString_Mandatory(info->Symbol, &(info->SymbolLength));
 		if(CheckProcessNullString())
@@ -6111,14 +6590,10 @@ public:
 			info->NullMap |= NULL_MAP_INDEX1;
 		else
 			ReadString_Optional_Predict12(info->TradingSessionSubID, &(info->TradingSessionSubIDLength));
-		if(CheckProcessNullInt32())
+		if(!ReadInt32_Optional(&(info->SecurityTradingStatus)))
 			info->NullMap |= NULL_MAP_INDEX2;
-		else
-			info->SecurityTradingStatus = ReadInt32_Optional();
-		if(CheckProcessNullUInt32())
+		if(!ReadUInt32_Optional(&(info->AuctionIndicator)))
 			info->NullMap |= NULL_MAP_INDEX3;
-		else
-			info->AuctionIndicator = ReadUInt32_Optional();
 		this->m_prevastsSecurityStatusInfo = info;
 		return info;
 	}
@@ -6126,7 +6601,7 @@ public:
 		AstsTradingSessionStatusInfo* info = GetFreeAstsTradingSessionStatusInfo();
 		info->PresenceMap = this->m_presenceMap;
 
-		info->MsgSeqNum = ReadUInt32_Mandatory();
+		SkipToNextField(); // MsgSeqNum
 		SkipToNextField(); // SendingTime
 		info->TradSesStatus = ReadInt32_Mandatory();
 		if(CheckProcessNullString())
@@ -6158,19 +6633,13 @@ public:
 		else
 			ReadString_Optional(info->TradingSessionID, &(info->TradingSessionIDLength));
 		ReadString_Mandatory(info->Symbol, &(info->SymbolLength));
-		if(CheckProcessNullUInt32())
+		if(!ReadUInt32_Optional(&(info->LastMsgSeqNumProcessed)))
 			info->NullMap |= NULL_MAP_INDEX1;
-		else
-			info->LastMsgSeqNumProcessed = ReadUInt32_Optional();
 		info->RptSeq = ReadInt32_Mandatory();
-		if(CheckProcessNullUInt32())
+		if(!ReadUInt32_Optional(&(info->LastFragment)))
 			info->NullMap |= NULL_MAP_INDEX2;
-		else
-			info->LastFragment = ReadUInt32_Optional();
-		if(CheckProcessNullUInt32())
+		if(!ReadUInt32_Optional(&(info->RouteFirst)))
 			info->NullMap |= NULL_MAP_INDEX3;
-		else
-			info->RouteFirst = ReadUInt32_Optional();
 		return info;
 	}
 	inline AstsSnapshotInfo* GetAstsSnapshotInfoOLSFOND() {
@@ -6180,19 +6649,13 @@ public:
 
 		SkipToNextField(); // MsgSeqNum
 		SkipToNextField(); // SendingTime
-		if(CheckProcessNullUInt32())
+		if(!ReadUInt32_Optional(&(info->LastMsgSeqNumProcessed)))
 			info->NullMap |= NULL_MAP_INDEX0;
-		else
-			info->LastMsgSeqNumProcessed = ReadUInt32_Optional();
 		info->RptSeq = ReadInt32_Mandatory();
-		if(CheckProcessNullUInt32())
+		if(!ReadUInt32_Optional(&(info->LastFragment)))
 			info->NullMap |= NULL_MAP_INDEX1;
-		else
-			info->LastFragment = ReadUInt32_Optional();
-		if(CheckProcessNullUInt32())
+		if(!ReadUInt32_Optional(&(info->RouteFirst)))
 			info->NullMap |= NULL_MAP_INDEX2;
-		else
-			info->RouteFirst = ReadUInt32_Optional();
 		SkipToNextField(); // TradSesStatus
 		if(CheckProcessNullString())
 			info->NullMap |= NULL_MAP_INDEX4;
@@ -6208,19 +6671,13 @@ public:
 
 		SkipToNextField(); // MsgSeqNum
 		SkipToNextField(); // SendingTime
-		if(CheckProcessNullUInt32())
+		if(!ReadUInt32_Optional(&(info->LastMsgSeqNumProcessed)))
 			info->NullMap |= NULL_MAP_INDEX0;
-		else
-			info->LastMsgSeqNumProcessed = ReadUInt32_Optional();
 		info->RptSeq = ReadInt32_Mandatory();
-		if(CheckProcessNullUInt32())
+		if(!ReadUInt32_Optional(&(info->LastFragment)))
 			info->NullMap |= NULL_MAP_INDEX1;
-		else
-			info->LastFragment = ReadUInt32_Optional();
-		if(CheckProcessNullUInt32())
+		if(!ReadUInt32_Optional(&(info->RouteFirst)))
 			info->NullMap |= NULL_MAP_INDEX2;
-		else
-			info->RouteFirst = ReadUInt32_Optional();
 		SkipToNextField(); // TradSesStatus
 		if(CheckProcessNullString())
 			info->NullMap |= NULL_MAP_INDEX4;
@@ -6236,19 +6693,13 @@ public:
 
 		SkipToNextField(); // MsgSeqNum
 		SkipToNextField(); // SendingTime
-		if(CheckProcessNullUInt32())
+		if(!ReadUInt32_Optional(&(info->LastMsgSeqNumProcessed)))
 			info->NullMap |= NULL_MAP_INDEX0;
-		else
-			info->LastMsgSeqNumProcessed = ReadUInt32_Optional();
 		info->RptSeq = ReadInt32_Mandatory();
-		if(CheckProcessNullUInt32())
+		if(!ReadUInt32_Optional(&(info->LastFragment)))
 			info->NullMap |= NULL_MAP_INDEX1;
-		else
-			info->LastFragment = ReadUInt32_Optional();
-		if(CheckProcessNullUInt32())
+		if(!ReadUInt32_Optional(&(info->RouteFirst)))
 			info->NullMap |= NULL_MAP_INDEX2;
-		else
-			info->RouteFirst = ReadUInt32_Optional();
 		SkipToNextField(); // TradSesStatus
 		if(CheckProcessNullString())
 			info->NullMap |= NULL_MAP_INDEX4;
@@ -6264,19 +6715,13 @@ public:
 
 		SkipToNextField(); // MsgSeqNum
 		SkipToNextField(); // SendingTime
-		if(CheckProcessNullUInt32())
+		if(!ReadUInt32_Optional(&(info->LastMsgSeqNumProcessed)))
 			info->NullMap |= NULL_MAP_INDEX0;
-		else
-			info->LastMsgSeqNumProcessed = ReadUInt32_Optional();
 		info->RptSeq = ReadInt32_Mandatory();
-		if(CheckProcessNullUInt32())
+		if(!ReadUInt32_Optional(&(info->LastFragment)))
 			info->NullMap |= NULL_MAP_INDEX1;
-		else
-			info->LastFragment = ReadUInt32_Optional();
-		if(CheckProcessNullUInt32())
+		if(!ReadUInt32_Optional(&(info->RouteFirst)))
 			info->NullMap |= NULL_MAP_INDEX2;
-		else
-			info->RouteFirst = ReadUInt32_Optional();
 		SkipToNextField(); // TradSesStatus
 		if(CheckProcessNullString())
 			info->NullMap |= NULL_MAP_INDEX4;
@@ -6667,12 +7112,10 @@ public:
 		FortsDefaultIncrementalRefreshMessageInfo* info = GetFreeFortsDefaultIncrementalRefreshMessageInfo();
 		info->PresenceMap = this->m_presenceMap;
 
-		info->MsgSeqNum = ReadUInt32_Mandatory();
-		info->SendingTime = ReadUInt64_Mandatory();
-		if(CheckProcessNullUInt32())
+		SkipToNextField(); // MsgSeqNum
+		SkipToNextField(); // SendingTime
+		if(!ReadUInt32_Optional(&(info->LastFragment)))
 			info->NullMap |= NULL_MAP_INDEX0;
-		else
-			info->LastFragment = ReadUInt32_Optional();
 
 		info->MDEntriesCount = ReadUInt32_Mandatory_Predict1();
 		FortsDefaultSnapshotMessageMDEntriesItemInfo* mdeItemInfo = NULL;
@@ -6694,19 +7137,13 @@ public:
 				mdeItemInfo->NullMap |= NULL_MAP_INDEX2;
 			else
 				ReadString_Optional(mdeItemInfo->SecurityGroup, &(mdeItemInfo->SecurityGroupLength));
-			if(CheckProcessNullUInt32())
+			if(!ReadUInt32_Optional(&(mdeItemInfo->ExchangeTradingSessionID)))
 				mdeItemInfo->NullMap |= NULL_MAP_INDEX3;
-			else
-				mdeItemInfo->ExchangeTradingSessionID = ReadUInt32_Optional();
 			mdeItemInfo->RptSeq = ReadUInt32_Mandatory();
-			if(CheckProcessNullUInt32())
+			if(!ReadUInt32_Optional(&(mdeItemInfo->MarketDepth)))
 				mdeItemInfo->NullMap |= NULL_MAP_INDEX4;
-			else
-				mdeItemInfo->MarketDepth = ReadUInt32_Optional();
-			if(CheckProcessNullUInt32())
+			if(!ReadUInt32_Optional(&(mdeItemInfo->MDPriceLevel)))
 				mdeItemInfo->NullMap |= NULL_MAP_INDEX5;
-			else
-				mdeItemInfo->MDPriceLevel = ReadUInt32_Optional();
 			if(CheckProcessNullInt64())
 				mdeItemInfo->NullMap |= NULL_MAP_INDEX6;
 			else
@@ -6719,31 +7156,23 @@ public:
 				mdeItemInfo->NullMap |= NULL_MAP_INDEX8;
 			else
 				mdeItemInfo->MDEntrySize = ReadInt64_Optional();
-			if(CheckProcessNullUInt32())
+			if(!ReadUInt32_Optional(&(mdeItemInfo->MDEntryDate)))
 				mdeItemInfo->NullMap |= NULL_MAP_INDEX9;
-			else
-				mdeItemInfo->MDEntryDate = ReadUInt32_Optional();
 			mdeItemInfo->MDEntryTime = ReadUInt64_Mandatory();
-			if(CheckProcessNullInt32())
+			if(!ReadInt32_Optional(&(mdeItemInfo->NumberOfOrders)))
 				mdeItemInfo->NullMap |= NULL_MAP_INDEX10;
-			else
-				mdeItemInfo->NumberOfOrders = ReadInt32_Optional();
 			if(CheckProcessNullString())
 				mdeItemInfo->NullMap |= NULL_MAP_INDEX11;
 			else
 				ReadString_Optional(mdeItemInfo->MDEntryTradeType, &(mdeItemInfo->MDEntryTradeTypeLength));
-			if(CheckProcessNullInt32())
+			if(!ReadInt32_Optional(&(mdeItemInfo->TrdType)))
 				mdeItemInfo->NullMap |= NULL_MAP_INDEX12;
-			else
-				mdeItemInfo->TrdType = ReadInt32_Optional();
 			if(CheckProcessNullDecimal())
 				mdeItemInfo->NullMap |= NULL_MAP_INDEX13;
 			else
 				ReadDecimal_Optional(&(mdeItemInfo->LastPx));
-			if(CheckProcessNullInt32())
+			if(!ReadInt32_Optional(&(mdeItemInfo->MDFlags)))
 				mdeItemInfo->NullMap |= NULL_MAP_INDEX14;
-			else
-				mdeItemInfo->MDFlags = ReadInt32_Optional();
 			if(CheckProcessNullString())
 				mdeItemInfo->NullMap |= NULL_MAP_INDEX15;
 			else
@@ -6766,12 +7195,10 @@ public:
 		FortsDefaultSnapshotMessageInfo* info = GetFreeFortsDefaultSnapshotMessageInfo();
 		info->PresenceMap = this->m_presenceMap;
 
-		info->MsgSeqNum = ReadUInt32_Mandatory();
-		info->SendingTime = ReadUInt64_Mandatory();
-		if(CheckProcessNullUInt32())
+		SkipToNextField(); // MsgSeqNum
+		SkipToNextField(); // SendingTime
+		if(!ReadUInt32_Optional(&(info->LastFragment)))
 			info->NullMap |= NULL_MAP_INDEX0;
-		else
-			info->LastFragment = ReadUInt32_Optional();
 		info->RptSeq = ReadUInt32_Mandatory();
 		info->TotNumReports = ReadUInt32_Mandatory();
 		info->LastMsgSeqNumProcessed = ReadUInt32_Mandatory();
@@ -6795,51 +7222,37 @@ public:
 			mdeItemInfo = GetFreeFortsDefaultSnapshotMessageMDEntriesItemInfo();
 			info->MDEntries[i] = mdeItemInfo;
 			ReadString_Mandatory(mdeItemInfo->MDEntryType, &(mdeItemInfo->MDEntryTypeLength));
-			if(CheckProcessNullUInt32())
+			if(!ReadUInt32_Optional(&(mdeItemInfo->ExchangeTradingSessionID)))
 				mdeItemInfo->NullMap |= NULL_MAP_INDEX0;
-			else
-				mdeItemInfo->ExchangeTradingSessionID = ReadUInt32_Optional();
 			if(CheckProcessNullInt64())
 				mdeItemInfo->NullMap |= NULL_MAP_INDEX1;
 			else
 				mdeItemInfo->MDEntryID = ReadInt64_Optional();
-			if(CheckProcessNullUInt32())
+			if(!ReadUInt32_Optional(&(mdeItemInfo->MarketDepth)))
 				mdeItemInfo->NullMap |= NULL_MAP_INDEX2;
-			else
-				mdeItemInfo->MarketDepth = ReadUInt32_Optional();
 			if(CheckProcessNullDecimal())
 				mdeItemInfo->NullMap |= NULL_MAP_INDEX3;
 			else
 				ReadDecimal_Optional(&(mdeItemInfo->MDEntryPx));
-			if(CheckProcessNullUInt32())
+			if(!ReadUInt32_Optional(&(mdeItemInfo->MDEntryDate)))
 				mdeItemInfo->NullMap |= NULL_MAP_INDEX4;
-			else
-				mdeItemInfo->MDEntryDate = ReadUInt32_Optional();
 			mdeItemInfo->MDEntryTime = ReadUInt64_Mandatory();
 			if(CheckProcessNullInt64())
 				mdeItemInfo->NullMap |= NULL_MAP_INDEX5;
 			else
 				mdeItemInfo->MDEntrySize = ReadInt64_Optional();
-			if(CheckProcessNullUInt32())
+			if(!ReadUInt32_Optional(&(mdeItemInfo->MDPriceLevel)))
 				mdeItemInfo->NullMap |= NULL_MAP_INDEX6;
-			else
-				mdeItemInfo->MDPriceLevel = ReadUInt32_Optional();
-			if(CheckProcessNullInt32())
+			if(!ReadInt32_Optional(&(mdeItemInfo->NumberOfOrders)))
 				mdeItemInfo->NullMap |= NULL_MAP_INDEX7;
-			else
-				mdeItemInfo->NumberOfOrders = ReadInt32_Optional();
 			if(CheckProcessNullString())
 				mdeItemInfo->NullMap |= NULL_MAP_INDEX8;
 			else
 				ReadString_Optional(mdeItemInfo->MDEntryTradeType, &(mdeItemInfo->MDEntryTradeTypeLength));
-			if(CheckProcessNullInt32())
+			if(!ReadInt32_Optional(&(mdeItemInfo->TrdType)))
 				mdeItemInfo->NullMap |= NULL_MAP_INDEX9;
-			else
-				mdeItemInfo->TrdType = ReadInt32_Optional();
-			if(CheckProcessNullInt32())
+			if(!ReadInt32_Optional(&(mdeItemInfo->MDFlags)))
 				mdeItemInfo->NullMap |= NULL_MAP_INDEX10;
-			else
-				mdeItemInfo->MDFlags = ReadInt32_Optional();
 			if(CheckProcessNullString())
 				mdeItemInfo->NullMap |= NULL_MAP_INDEX11;
 			else
@@ -6858,8 +7271,8 @@ public:
 		FortsSecurityDefinitionInfo* info = GetFreeFortsSecurityDefinitionInfo();
 		info->PresenceMap = this->m_presenceMap;
 
-		info->MsgSeqNum = ReadUInt32_Mandatory();
-		info->SendingTime = ReadUInt64_Mandatory();
+		SkipToNextField(); // MsgSeqNum
+		SkipToNextField(); // SendingTime
 		info->TotNumReports = ReadUInt32_Mandatory();
 		ReadString_Mandatory(info->Symbol, &(info->SymbolLength));
 		if(CheckProcessNullByteVector())
@@ -6891,23 +7304,17 @@ public:
 			info->NullMap |= NULL_MAP_INDEX6;
 		else
 			ReadDecimal_Optional(&(info->ContractMultiplier));
-		if(CheckProcessNullUInt32())
+		if(!ReadUInt32_Optional(&(info->SecurityTradingStatus)))
 			info->NullMap |= NULL_MAP_INDEX7;
-		else
-			info->SecurityTradingStatus = ReadUInt32_Optional();
 		if(CheckProcessNullString())
 			info->NullMap |= NULL_MAP_INDEX8;
 		else
 			ReadString_Optional(info->Currency, &(info->CurrencyLength));
 		ReadString_Mandatory(info->MarketSegmentID, &(info->MarketSegmentIDLength));
-		if(CheckProcessNullUInt32())
+		if(!ReadUInt32_Optional(&(info->TradingSessionID)))
 			info->NullMap |= NULL_MAP_INDEX9;
-		else
-			info->TradingSessionID = ReadUInt32_Optional();
-		if(CheckProcessNullUInt32())
+		if(!ReadUInt32_Optional(&(info->ExchangeTradingSessionID)))
 			info->NullMap |= NULL_MAP_INDEX10;
-		else
-			info->ExchangeTradingSessionID = ReadUInt32_Optional();
 		if(CheckProcessNullDecimal())
 			info->NullMap |= NULL_MAP_INDEX11;
 		else
@@ -6920,14 +7327,10 @@ public:
 			mdftItemInfo = GetFreeFortsSecurityDefinitionMDFeedTypesItemInfo();
 			info->MDFeedTypes[i] = mdftItemInfo;
 			ReadString_Mandatory(mdftItemInfo->MDFeedType, &(mdftItemInfo->MDFeedTypeLength));
-			if(CheckProcessNullUInt32())
+			if(!ReadUInt32_Optional(&(mdftItemInfo->MarketDepth)))
 				mdftItemInfo->NullMap |= NULL_MAP_INDEX0;
-			else
-				mdftItemInfo->MarketDepth = ReadUInt32_Optional();
-			if(CheckProcessNullUInt32())
+			if(!ReadUInt32_Optional(&(mdftItemInfo->MDBookType)))
 				mdftItemInfo->NullMap |= NULL_MAP_INDEX1;
-			else
-				mdftItemInfo->MDBookType = ReadUInt32_Optional();
 			this->m_prevfortsSecurityDefinitionMDFeedTypesItemInfo = mdftItemInfo;
 		}
 
@@ -7052,14 +7455,10 @@ public:
 			this->m_prevfortsSecurityDefinitionEvntGrpItemInfo = egItemInfo;
 		}
 
-		if(CheckProcessNullUInt32())
+		if(!ReadUInt32_Optional(&(info->MaturityDate)))
 			info->NullMap |= NULL_MAP_INDEX28;
-		else
-			info->MaturityDate = ReadUInt32_Optional();
-		if(CheckProcessNullUInt32())
+		if(!ReadUInt32_Optional(&(info->MaturityTime)))
 			info->NullMap |= NULL_MAP_INDEX29;
-		else
-			info->MaturityTime = ReadUInt32_Optional();
 		this->m_prevfortsSecurityDefinitionInfo = info;
 		return info;
 	}
@@ -7067,8 +7466,8 @@ public:
 		FortsSecurityDefinitionUpdateReportInfo* info = GetFreeFortsSecurityDefinitionUpdateReportInfo();
 		info->PresenceMap = this->m_presenceMap;
 
-		info->MsgSeqNum = ReadUInt32_Mandatory();
-		info->SendingTime = ReadUInt64_Mandatory();
+		SkipToNextField(); // MsgSeqNum
+		SkipToNextField(); // SendingTime
 		info->SecurityID = ReadUInt64_Mandatory();
 		if(CheckProcessNullDecimal())
 			info->NullMap |= NULL_MAP_INDEX0;
@@ -7089,14 +7488,12 @@ public:
 		FortsSecurityStatusInfo* info = GetFreeFortsSecurityStatusInfo();
 		info->PresenceMap = this->m_presenceMap;
 
-		info->MsgSeqNum = ReadUInt32_Mandatory();
-		info->SendingTime = ReadUInt64_Mandatory();
+		SkipToNextField(); // MsgSeqNum
+		SkipToNextField(); // SendingTime
 		info->SecurityID = ReadUInt64_Mandatory();
 		ReadString_Mandatory(info->Symbol, &(info->SymbolLength));
-		if(CheckProcessNullUInt32())
+		if(!ReadUInt32_Optional(&(info->SecurityTradingStatus)))
 			info->NullMap |= NULL_MAP_INDEX0;
-		else
-			info->SecurityTradingStatus = ReadUInt32_Optional();
 		if(CheckProcessNullDecimal())
 			info->NullMap |= NULL_MAP_INDEX1;
 		else
@@ -7133,8 +7530,8 @@ public:
 		FortsSequenceResetInfo* info = GetFreeFortsSequenceResetInfo();
 		info->PresenceMap = this->m_presenceMap;
 
-		info->MsgSeqNum = ReadUInt32_Mandatory();
-		info->SendingTime = ReadUInt64_Mandatory();
+		SkipToNextField(); // MsgSeqNum
+		SkipToNextField(); // SendingTime
 		info->NewSeqNo = ReadUInt32_Mandatory();
 		this->m_prevfortsSequenceResetInfo = info;
 		return info;
@@ -7143,8 +7540,8 @@ public:
 		FortsTradingSessionStatusInfo* info = GetFreeFortsTradingSessionStatusInfo();
 		info->PresenceMap = this->m_presenceMap;
 
-		info->MsgSeqNum = ReadUInt32_Mandatory();
-		info->SendingTime = ReadUInt64_Mandatory();
+		SkipToNextField(); // MsgSeqNum
+		SkipToNextField(); // SendingTime
 		info->TradSesOpenTime = ReadUInt64_Mandatory();
 		info->TradSesCloseTime = ReadUInt64_Mandatory();
 		if(CheckProcessNullUInt64())
@@ -7156,16 +7553,12 @@ public:
 		else
 			info->TradSesIntermClearingEndTime = ReadUInt64_Optional();
 		info->TradingSessionID = ReadUInt32_Mandatory();
-		if(CheckProcessNullUInt32())
+		if(!ReadUInt32_Optional(&(info->ExchangeTradingSessionID)))
 			info->NullMap |= NULL_MAP_INDEX2;
-		else
-			info->ExchangeTradingSessionID = ReadUInt32_Optional();
 		info->TradSesStatus = ReadUInt32_Mandatory();
 		ReadString_Mandatory(info->MarketSegmentID, &(info->MarketSegmentIDLength));
-		if(CheckProcessNullInt32())
+		if(!ReadInt32_Optional(&(info->TradSesEvent)))
 			info->NullMap |= NULL_MAP_INDEX3;
-		else
-			info->TradSesEvent = ReadInt32_Optional();
 		this->m_prevfortsTradingSessionStatusInfo = info;
 		return info;
 	}
@@ -7173,12 +7566,10 @@ public:
 		FortsNewsInfo* info = GetFreeFortsNewsInfo();
 		info->PresenceMap = this->m_presenceMap;
 
-		info->MsgSeqNum = ReadUInt32_Mandatory();
-		info->SendingTime = ReadUInt64_Mandatory();
-		if(CheckProcessNullUInt32())
+		SkipToNextField(); // MsgSeqNum
+		SkipToNextField(); // SendingTime
+		if(!ReadUInt32_Optional(&(info->LastFragment)))
 			info->NullMap |= NULL_MAP_INDEX0;
-		else
-			info->LastFragment = ReadUInt32_Optional();
 		if(CheckProcessNullString())
 			info->NullMap |= NULL_MAP_INDEX1;
 		else
@@ -7191,10 +7582,8 @@ public:
 			info->NullMap |= NULL_MAP_INDEX3;
 		else
 			ReadString_Optional(info->LanguageCode, &(info->LanguageCodeLength));
-		if(CheckProcessNullUInt32())
+		if(!ReadUInt32_Optional(&(info->Urgency)))
 			info->NullMap |= NULL_MAP_INDEX4;
-		else
-			info->Urgency = ReadUInt32_Optional();
 		ReadByteVector_Mandatory(info->Headline, &(info->HeadlineLength), 128);
 		if(CheckProcessNullString())
 			info->NullMap |= NULL_MAP_INDEX5;
@@ -7218,8 +7607,8 @@ public:
 		FortsOrdersLogInfo* info = GetFreeFortsOrdersLogInfo();
 		info->PresenceMap = this->m_presenceMap;
 
-		info->MsgSeqNum = ReadUInt32_Mandatory();
-		info->SendingTime = ReadUInt64_Mandatory();
+		SkipToNextField(); // MsgSeqNum
+		SkipToNextField(); // SendingTime
 		info->LastFragment = ReadUInt32_Mandatory();
 
 		info->MDEntriesCount = ReadUInt32_Mandatory_Predict1();
@@ -7238,14 +7627,10 @@ public:
 				mdeItemInfo->NullMap |= NULL_MAP_INDEX1;
 			else
 				mdeItemInfo->SecurityID = ReadUInt64_Optional();
-			if(CheckProcessNullUInt32())
+			if(!ReadUInt32_Optional(&(mdeItemInfo->RptSeq)))
 				mdeItemInfo->NullMap |= NULL_MAP_INDEX2;
-			else
-				mdeItemInfo->RptSeq = ReadUInt32_Optional();
-			if(CheckProcessNullUInt32())
+			if(!ReadUInt32_Optional(&(mdeItemInfo->MDEntryDate)))
 				mdeItemInfo->NullMap |= NULL_MAP_INDEX3;
-			else
-				mdeItemInfo->MDEntryDate = ReadUInt32_Optional();
 			mdeItemInfo->MDEntryTime = ReadUInt64_Mandatory();
 			if(CheckProcessNullDecimal())
 				mdeItemInfo->NullMap |= NULL_MAP_INDEX4;
@@ -7267,10 +7652,8 @@ public:
 				mdeItemInfo->NullMap |= NULL_MAP_INDEX8;
 			else
 				mdeItemInfo->TradeID = ReadInt64_Optional();
-			if(CheckProcessNullUInt32())
+			if(!ReadUInt32_Optional(&(mdeItemInfo->ExchangeTradingSessionID)))
 				mdeItemInfo->NullMap |= NULL_MAP_INDEX9;
-			else
-				mdeItemInfo->ExchangeTradingSessionID = ReadUInt32_Optional();
 			if(CheckProcessNullInt64())
 				mdeItemInfo->NullMap |= NULL_MAP_INDEX10;
 			else
@@ -7289,13 +7672,11 @@ public:
 		FortsOrdersBookInfo* info = GetFreeFortsOrdersBookInfo();
 		info->PresenceMap = this->m_presenceMap;
 
-		info->MsgSeqNum = ReadUInt32_Mandatory();
-		info->SendingTime = ReadUInt64_Mandatory();
+		SkipToNextField(); // MsgSeqNum
+		SkipToNextField(); // SendingTime
 		info->LastMsgSeqNumProcessed = ReadUInt32_Mandatory();
-		if(CheckProcessNullUInt32())
+		if(!ReadUInt32_Optional(&(info->RptSeq)))
 			info->NullMap |= NULL_MAP_INDEX0;
-		else
-			info->RptSeq = ReadUInt32_Optional();
 		info->LastFragment = ReadUInt32_Mandatory();
 		info->RouteFirst = ReadUInt32_Mandatory();
 		info->ExchangeTradingSessionID = ReadUInt32_Mandatory();
@@ -7315,10 +7696,8 @@ public:
 				mdeItemInfo->NullMap |= NULL_MAP_INDEX0;
 			else
 				mdeItemInfo->MDEntryID = ReadInt64_Optional();
-			if(CheckProcessNullUInt32())
+			if(!ReadUInt32_Optional(&(mdeItemInfo->MDEntryDate)))
 				mdeItemInfo->NullMap |= NULL_MAP_INDEX1;
-			else
-				mdeItemInfo->MDEntryDate = ReadUInt32_Optional();
 			mdeItemInfo->MDEntryTime = ReadUInt64_Mandatory();
 			if(CheckProcessNullDecimal())
 				mdeItemInfo->NullMap |= NULL_MAP_INDEX2;
@@ -7346,8 +7725,8 @@ public:
 		FortsLogonInfo* info = GetFreeFortsLogonInfo();
 		info->PresenceMap = this->m_presenceMap;
 
-		info->MsgSeqNum = ReadUInt32_Mandatory();
-		info->SendingTime = ReadUInt64_Mandatory();
+		SkipToNextField(); // MsgSeqNum
+		SkipToNextField(); // SendingTime
 		this->m_prevfortsLogonInfo = info;
 		return info;
 	}
@@ -7355,8 +7734,8 @@ public:
 		FortsLogoutInfo* info = GetFreeFortsLogoutInfo();
 		info->PresenceMap = this->m_presenceMap;
 
-		info->MsgSeqNum = ReadUInt32_Mandatory();
-		info->SendingTime = ReadUInt64_Mandatory();
+		SkipToNextField(); // MsgSeqNum
+		SkipToNextField(); // SendingTime
 		if(CheckProcessNullString())
 			info->NullMap |= NULL_MAP_INDEX0;
 		else
@@ -7370,11 +7749,9 @@ public:
 		info->TemplateId = this->m_templateId;
 
 		SkipToNextField(); // MsgSeqNum
-		info->SendingTime = ReadUInt64_Mandatory();
-		if(CheckProcessNullUInt32())
+		SkipToNextField(); // SendingTime
+		if(!ReadUInt32_Optional(&(info->LastFragment)))
 			info->NullMap |= NULL_MAP_INDEX0;
-		else
-			info->LastFragment = ReadUInt32_Optional();
 		info->RptSeq = ReadUInt32_Mandatory();
 		SkipToNextField(); // TotNumReports
 		info->LastMsgSeqNumProcessed = ReadUInt32_Mandatory();

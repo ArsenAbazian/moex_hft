@@ -14,12 +14,12 @@
 
 class HashTableItemInfo {
 public:
-    void                                        *m_object;
-    void                                        *m_owner;
+    void                    *m_object;
+    void                    *m_owner;
     union {
         struct {
-            const char *m_stringId;
-            unsigned int m_length;
+            const char      *m_stringId;
+            unsigned int    m_length;
         };
         UINT64              m_intId;
     };
@@ -50,7 +50,7 @@ class HashTable {
     inline void Remove(LinkedPointer<HashTableItemInfo> *node) { // not bidirectional
         LinkedPointer<HashTableItemInfo> *prev = node->Prev();
         LinkedPointer<HashTableItemInfo> *next = node->Next();
-        if(prev != 0) prev->Next(next);
+        prev->Next(next);
         node->Data()->Clear();
     }
     inline LinkedPointer<HashTableItemInfo> * AddPointer(UINT64 hash) {
@@ -66,6 +66,7 @@ class HashTable {
 
         LinkedPointer<HashTableItemInfo> *newNode = this->m_pool->Pop();
         newNode->Next(start);
+        start->Prev(newNode);
         this->m_bucket[hash] = newNode;
         return newNode;
 
@@ -182,8 +183,12 @@ public:
     }
 
     inline void RemovePointer(UINT64 hash, LinkedPointer<HashTableItemInfo> *ptr) {
-        if(this->m_bucket[hash] == ptr) { // first item
-            this->m_bucket[hash] = ptr->Next();
+        LinkedPointer<HashTableItemInfo> **start = this->m_bucket + hash;
+        if((*start) == ptr) { // first item
+            (*start) = ptr->Next();
+            this->m_pool->Push(ptr);
+            this->m_count--;
+            return;
         }
         this->Remove(ptr);
         this->m_pool->Push(ptr);
@@ -195,13 +200,15 @@ public:
     }
 
     inline void Remove(void *owner, const char *stringId, int length) {
-        LinkedPointer<HashTableItemInfo> *info = this->GetPointer(owner, stringId, length);
-        Remove(info);
+        UINT64 hash = this->CalcHash(stringId, length);
+        LinkedPointer<HashTableItemInfo> *info = this->FindPointer(this->m_bucket[hash], owner, stringId, length);
+        RemovePointer(hash, info);
     }
 
     inline void Remove(void *owner, UINT64 id) {
-        LinkedPointer<HashTableItemInfo> *info = this->GetPointer(owner, id);
-        Remove(info);
+        UINT64 hash = this->CalcHash(id);
+        LinkedPointer<HashTableItemInfo> *info = this->FindPointer(this->m_bucket[hash], owner, id);
+        RemovePointer(info);
     }
 
     inline LinkedPointer<HashTableItemInfo>* Add(void *owner, void *object, UINT64 hash, const char *stringId, int length) {

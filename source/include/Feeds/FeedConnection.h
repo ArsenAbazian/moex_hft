@@ -2311,7 +2311,7 @@ protected:
 
     inline void CheckReconnectHistoricalReplay() {
         this->m_waitTimer->ActivateFast(2);
-        if(this->m_waitTimer->ElapsedSeconds(2) > 9) {
+        if(this->m_waitTimer->ElapsedMicrosecondsFast(2) > 9000000) {
             //this->Disconnect();
             //this->m_hsState = FeedConnectionHistoricalReplayState::hsSuspend;
             this->HistoricalReplay_SendLogout();

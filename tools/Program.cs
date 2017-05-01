@@ -2568,6 +2568,14 @@ namespace prebuild {
 			return false;
 		}
 
+		private string GetMethodName(XmlNode field, string method) {
+			if(HasAttribute(field, "fixed_size"))
+				return method + "_Fixed" + field.Attributes ["fixed_size"].Value.ToString();
+			if(HasAttribute(field, "predict"))
+				return method + "_Predict" + field.Attributes ["predict"].Value.ToString();
+			return method;
+		}
+
 		private  void ParseByteVectorValue (StructureInfo str, XmlNode value, string info, string tabString) {
 			if(ShouldWriteNullCheckCode(value)) {
 				WriteLine(tabString + "if(CheckProcessNullByteVector())");
@@ -2682,60 +2690,37 @@ namespace prebuild {
 		}
 
 		private  void ParseInt32Value (StructureInfo str, XmlNode value, string info, string tabString) {
-			if(ShouldWriteNullCheckCode(value)) {
-				WriteLine(tabString + "if(CheckProcessNullInt32())");
-				WriteLine(tabString + "\t" + info + "->NullMap |= NULL_MAP_INDEX" + CalcNullIndex(value) + ";");
-				WriteLine(tabString + "else");
-				tabString += "\t";
-			}
-			if(ShouldSkipField(value)) {
+			if (ShouldSkipField (value)) {
 				WriteLine(tabString + "SkipToNextField(); // " + Name(value));
-			} else {
-				if(HasOptionalPresence(value))
-					WriteLine(tabString + info + "->" + Name(value) + " = " + GetMethodName(value, "ReadInt32_Optional") + "();");
-				else
-					WriteLine(tabString + info + "->" + Name(value) + " = " + GetMethodName(value, "ReadInt32_Mandatory") + "();");
+				return;
 			}
 			if(ShouldWriteNullCheckCode(value)) {
-				tabString = tabString.Substring(1);
-				/*
-				if(HasOperators(value)) {
-					WriteLine(tabString + "else {");
-					tabString += "\t";
-					WriteInt32ValueOperatorsCode(str, value, info, tabString);
-					tabString = tabString.Substring(1);
-					WriteLine(tabString + "}");
-				}*/
+				string nullIndex = "NULL_MAP_INDEX" + CalcNullIndex (value);
+				WriteLine (tabString + "if(!" + GetMethodName(value, "ReadInt32_Optional") + "(&(" + info + "->" + Name(value) + ")))");
+				WriteLine(tabString + "\t" + info + "->NullMap |= NULL_MAP_INDEX" + CalcNullIndex(value) + ";");
+				return;
 			}
-		}
-
-		private string GetMethodName(XmlNode field, string method) {
-			if(HasAttribute(field, "fixed_size"))
-				return method + "_Fixed" + field.Attributes ["fixed_size"].Value.ToString();
-			if(HasAttribute(field, "predict"))
-				return method + "_Predict" + field.Attributes ["predict"].Value.ToString();
-			return method;
+			if (HasOptionalPresence (value))
+				WriteLine (tabString + info + "->" + Name (value) + " = " + GetMethodName(value, "ReadInt32_Optional") + "();");
+			else
+				WriteLine (tabString + info + "->" + Name (value) + " = " + GetMethodName(value, "ReadInt32_Mandatory") + "();");
 		}
 
 		private  void ParseUint32Value (StructureInfo str, XmlNode value, string info, string tabString) {
-			if(ShouldWriteNullCheckCode(value)) {
-				WriteLine(tabString + "if(CheckProcessNullUInt32())");
-				WriteLine(tabString + "\t" + info + "->NullMap |= NULL_MAP_INDEX" + CalcNullIndex(value) + ";");
-				WriteLine(tabString + "else");
-				tabString += "\t";
-			}
-			if(ShouldSkipField(value)) {
+			if (ShouldSkipField (value)) {
 				WriteLine(tabString + "SkipToNextField(); // " + Name(value));
-			} else {
-				if (HasOptionalPresence (value)) {
-					WriteLine (tabString + info + "->" + Name (value) + " = " + GetMethodName(value, "ReadUInt32_Optional") + "();");
-				} else {
-					WriteLine (tabString + info + "->" + Name (value) + " = " + GetMethodName(value, "ReadUInt32_Mandatory") + "();");
-				}
+				return;
 			}
 			if(ShouldWriteNullCheckCode(value)) {
-				tabString = tabString.Substring(1);
+				string nullIndex = "NULL_MAP_INDEX" + CalcNullIndex (value);
+				WriteLine (tabString + "if(!" + GetMethodName(value, "ReadUInt32_Optional") + "(&(" + info + "->" + Name(value) + ")))");
+				WriteLine(tabString + "\t" + info + "->NullMap |= NULL_MAP_INDEX" + CalcNullIndex(value) + ";");
+				return;
 			}
+			if (HasOptionalPresence (value))
+				WriteLine (tabString + info + "->" + Name (value) + " = " + GetMethodName(value, "ReadUInt32_Optional") + "();");
+			else
+				WriteLine (tabString + info + "->" + Name (value) + " = " + GetMethodName(value, "ReadUInt32_Mandatory") + "();");
 		}
 
 		private  void ParseStringValue (StructureInfo str, XmlNode value, string info, string tabString) {
