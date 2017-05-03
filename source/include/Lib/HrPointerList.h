@@ -810,6 +810,9 @@ public:
                 next->Prev(prev);
                 RemoveFirstLevels(node);
             }
+            else {
+                this->m_tail = prev;
+            }
         }
         else if(next == 0) { // last item
             this->m_tail = prev;

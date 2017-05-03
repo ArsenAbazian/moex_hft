@@ -30,6 +30,7 @@ public:
     void TestReadUInt32_Optional2();
     void TestReadUInt32_Optional_Fixed1();
     void TestReadUInt32_Mandatory();
+    void TestReadUInt32_Mandatory_Predict1();
     void TestReadString_Optional();
     void TestReadString_Mandatory();
 
@@ -43,17 +44,19 @@ public:
     void TestPerformance();
 
     void Test() {
-        TestPerformance();
-
-        TestReadInt32_Optional2();
-        TestReadInt32_Optional();
-        TestReadInt32_Optional_Predict1();
-        TestReadInt32_Mandatory_Predict1();
+        TestReadUInt32_Mandatory();
+        TestReadUInt32_Mandatory_Predict1();
         TestReadUInt32_Optional2();
         TestReadUInt32_Optional_Fixed1();
         TestReadUInt32_Optional();
-        TestReadUInt32_Mandatory();
+
+        TestReadInt32_Optional2();
         TestReadInt32_Mandatory();
+        TestReadInt32_Optional();
+        TestReadInt32_Optional_Predict1();
+        TestReadInt32_Mandatory_Predict1();
+
+        TestPerformance();
 
         TestReadUInt64_Optional();
         TestReadUInt64_Mandatory();

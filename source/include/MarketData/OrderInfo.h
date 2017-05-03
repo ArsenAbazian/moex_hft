@@ -149,17 +149,17 @@ public:
     }
 
     inline void RemoveBuyQuote(T *info) {
-        DebugInfoManager::Default->Log(this->m_symbolInfo->Symbol(), this->m_tradingSession, "Remove BuyQuote", info->MDEntryID, info->MDEntryIDLength, &(info->MDEntryPx), &(info->MDEntrySize));
+        //DebugInfoManager::Default->Log(this->m_symbolInfo->Symbol(), this->m_tradingSession, "Remove BuyQuote", info->MDEntryID, info->MDEntryIDLength, &(info->MDEntryPx), &(info->MDEntrySize));
         RemoveQuote(this->m_buyQuoteList, info);
     }
 
     inline void RemoveSellQuote(T *info) {
-        DebugInfoManager::Default->Log(this->m_symbolInfo->Symbol(), this->m_tradingSession, "Remove SellQuote", info->MDEntryID, info->MDEntryIDLength, &(info->MDEntryPx), &(info->MDEntrySize));
+        //DebugInfoManager::Default->Log(this->m_symbolInfo->Symbol(), this->m_tradingSession, "Remove SellQuote", info->MDEntryID, info->MDEntryIDLength, &(info->MDEntryPx), &(info->MDEntrySize));
         RemoveQuote(this->m_sellQuoteList, info);
     }
 
     inline void ChangeBuyQuote(T *info) {
-        DebugInfoManager::Default->Log(this->m_symbolInfo->Symbol(), this->m_tradingSession, "Change BuyQuote", info->MDEntryID, info->MDEntryIDLength, &(info->MDEntryPx), &(info->MDEntrySize));
+        //DebugInfoManager::Default->Log(this->m_symbolInfo->Symbol(), this->m_tradingSession, "Change BuyQuote", info->MDEntryID, info->MDEntryIDLength, &(info->MDEntryPx), &(info->MDEntrySize));
 
         LinkedPointer<HashTableItemInfo> *hashItem = this->GetPointer(info);
         HrLinkedPointer<T> *ptr;
@@ -187,7 +187,7 @@ public:
     }
 
     inline void ChangeSellQuote(T *info) {
-        DebugInfoManager::Default->Log(this->m_symbolInfo->Symbol(), this->m_tradingSession, "Change SellQuote", info->MDEntryID, info->MDEntryIDLength, &(info->MDEntryPx), &(info->MDEntrySize));
+        //DebugInfoManager::Default->Log(this->m_symbolInfo->Symbol(), this->m_tradingSession, "Change SellQuote", info->MDEntryID, info->MDEntryIDLength, &(info->MDEntryPx), &(info->MDEntrySize));
         LinkedPointer<HashTableItemInfo> *hashItem = this->GetPointer(info);
         HrLinkedPointer<T> *ptr;
         if(hashItem != 0) {
@@ -232,7 +232,7 @@ public:
     }
 
     inline HrLinkedPointer<T>* AddBuyQuote(T *item) {
-        DebugInfoManager::Default->Log(this->m_symbolInfo->Symbol(), this->m_tradingSession, "Add BuyQuote", item->MDEntryID, item->MDEntryIDLength, &(item->MDEntryPx), &(item->MDEntrySize));
+        //DebugInfoManager::Default->Log(this->m_symbolInfo->Symbol(), this->m_tradingSession, "Add BuyQuote", item->MDEntryID, item->MDEntryIDLength, &(item->MDEntryPx), &(item->MDEntrySize));
         HrLinkedPointer<T> *ptr = this->InsertBuyQuote(&(item->MDEntryPx));
         item->Used = true;
         ptr->Data(item);
@@ -241,7 +241,7 @@ public:
     }
 
     inline HrLinkedPointer<T>* AddSellQuote(T *item) {
-        DebugInfoManager::Default->Log(this->m_symbolInfo->Symbol(), this->m_tradingSession, "Add SellQuote", item->MDEntryID, item->MDEntryIDLength, &(item->MDEntryPx), &(item->MDEntrySize));
+        //DebugInfoManager::Default->Log(this->m_symbolInfo->Symbol(), this->m_tradingSession, "Add SellQuote", item->MDEntryID, item->MDEntryIDLength, &(item->MDEntryPx), &(item->MDEntrySize));
         HrLinkedPointer<T> *ptr = this->InsertSellQuote(&(item->MDEntryPx));
         item->Used = true;
         ptr->Data(item);
@@ -397,6 +397,7 @@ public:
     inline bool EnterSnapshotMode() {
         this->ResetSnasphotProcessed();
         this->m_shouldProcessSnapshot = true;
+
         //this->m_entryInfo->ShouldProcess(true);
         return true;
     }

@@ -111,10 +111,11 @@ public:
         }
         this->m_sessionsToRecvSnapshot = this->m_count;
         T **item = this->m_items;
+        bool hasActiveSession = false;
         for(int i = 0; i < this->m_count; i++, item++) {
-            (*item)->EnterSnapshotMode();
+            hasActiveSession |= (*item)->EnterSnapshotMode();
         }
-        return true;
+        return hasActiveSession;
     }
     inline void ExitSnapshotMode() {
         T **item = this->m_items;

@@ -917,6 +917,13 @@ public:
         ht->Test();
         delete ht;
 
+        OrderTesterCurr *otCurr = new OrderTesterCurr();
+        otCurr->Test();
+        delete otCurr;
+        OrderTesterFond *otFond = new OrderTesterFond();
+        otFond->Test();
+        delete otFond;
+
         OrderBookTesterForts *fob = new OrderBookTesterForts();
         fob->Test();
         delete fob;
@@ -927,13 +934,6 @@ public:
         TradeTesterFond *ttFond = new TradeTesterFond();
         ttFond->Test();
         delete ttFond;
-
-        OrderTesterCurr *otCurr = new OrderTesterCurr();
-        otCurr->Test();
-        delete otCurr;
-        OrderTesterFond *otFond = new OrderTesterFond();
-        otFond->Test();
-        delete otFond;
 
         SecurityDefinitionTester *ids = new SecurityDefinitionTester();
         ids->Test();

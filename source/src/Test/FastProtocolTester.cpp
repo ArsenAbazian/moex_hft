@@ -589,10 +589,11 @@ void FastProtocolTester::TestReadInt32_Mandatory() {
         manager->WriteInt32_Mandatory(i);
         manager->ResetBuffer();
         value = manager->ReadInt32_Mandatory();
-        if (value != i)
+        if (value != i) {
+            manager->ResetBuffer();
+            value = manager->ReadInt32_Mandatory();
             throw;
-        if ((i % 1000000) == 0)
-            printf("%d\n", i);
+        }
     }
 
     for (int i = 0; i < INT32_MAX - 60; i += 50) {
@@ -600,10 +601,11 @@ void FastProtocolTester::TestReadInt32_Mandatory() {
         manager->WriteInt32_Mandatory(i);
         manager->ResetBuffer();
         value = manager->ReadInt32_Mandatory();
-        if (value != i)
+        if (value != i) {
+            manager->ResetBuffer();
+            value = manager->ReadInt32_Mandatory();
             throw;
-        if ((i % 1000000) == 0)
-            printf("%d\n", i);
+        }
     }
 }
 
@@ -619,8 +621,6 @@ void FastProtocolTester::TestReadInt32_Optional() {
         value = manager->ReadInt32_Optional();
         if (value != i)
             throw;
-        if ((i % 1000000) == 0)
-            printf("%d\n", i);
     }
 
     for (int i = 0; i < INT32_MAX - 60; i += 50) {
@@ -630,13 +630,11 @@ void FastProtocolTester::TestReadInt32_Optional() {
         value = manager->ReadInt32_Optional();
         if (value != i)
             throw;
-        if ((i % 1000000) == 0)
-            printf("%d\n", i);
     }
 }
 
 void FastProtocolTester::TestReadInt32_Optional_Predict1() {
-    printf("Test FastProtocolTester::TestReadInt32_Optional\n");
+    printf("Test FastProtocolTester::TestReadInt32_Optional_Predict1\n");
     manager->SetNewBuffer(new unsigned char[100], 100);
 
     INT32 value;
@@ -648,8 +646,6 @@ void FastProtocolTester::TestReadInt32_Optional_Predict1() {
         value = manager->ReadInt32_Optional_Predict1();
         if (value != i)
             throw;
-        if ((i % 1000000) == 0)
-            printf("%d\n", i);
     }
 
     for (int i = 0; i < INT32_MAX - 60; i+= 50) {
@@ -659,13 +655,11 @@ void FastProtocolTester::TestReadInt32_Optional_Predict1() {
         value = manager->ReadInt32_Optional_Predict1();
         if (value != i)
             throw;
-        if ((i % 1000000) == 0)
-            printf("%d\n", i);
     }
 }
 
 void FastProtocolTester::TestReadInt32_Mandatory_Predict1() {
-    printf("Test FastProtocolTester::TestReadInt32_Optional\n");
+    printf("Test FastProtocolTester::TestReadInt32_Mandatory_Predict1\n");
     manager->SetNewBuffer(new unsigned char[100], 100);
 
     INT32 value;
@@ -677,8 +671,6 @@ void FastProtocolTester::TestReadInt32_Mandatory_Predict1() {
         value = manager->ReadInt32_Mandatory_Predict1();
         if (value != i)
             throw;
-        if ((i % 1000000) == 0)
-            printf("%d\n", i);
     }
 
     for (int i = 0; i < INT32_MAX- 60; i+= 50) {
@@ -688,8 +680,6 @@ void FastProtocolTester::TestReadInt32_Mandatory_Predict1() {
         value = manager->ReadInt32_Mandatory_Predict1();
         if (value != i)
             throw;
-        if ((i % 1000000) == 0)
-            printf("%d\n", i);
     }
 }
 
@@ -708,10 +698,11 @@ void FastProtocolTester::TestReadInt32_Optional2() {
         manager->WriteInt32_Optional(i);
         manager->ResetBuffer();
         bool res = manager->ReadInt32_Optional(&value);
-        if (value != i || !res)
+        if (value != i || !res) {
+            manager->ResetBuffer();
+            res = manager->ReadInt32_Optional(&value);
             throw;
-        if ((i % 1000000) == 0)
-            printf("%d\n", i);
+        }
     }
 
     for (int i = 0; i < INT32_MAX - 60; i += 50) {
@@ -721,8 +712,6 @@ void FastProtocolTester::TestReadInt32_Optional2() {
         bool res = manager->ReadInt32_Optional(&value);
         if (value != i || !res)
             throw;
-        if ((i % 1000000) == 0)
-            printf("%d\n", i);
     }
 }
 
@@ -737,8 +726,6 @@ void FastProtocolTester::TestReadUInt32_Optional() {
         UINT32 value = manager->ReadUInt32_Optional();
         if (value != i)
             throw;
-        if ((i % 1000000) == 0)
-            printf("%u\n", i);
     }
 }
 
@@ -753,8 +740,6 @@ void FastProtocolTester::TestReadUInt32_Optional_Fixed1() {
         bool res = manager->ReadUInt32_Optional_Fixed1(&value);
         if (value != i || !res)
             throw;
-        if ((i % 1000000) == 0)
-            printf("%u\n", i);
     }
 }
 
@@ -775,8 +760,6 @@ void FastProtocolTester::TestReadUInt32_Optional2() {
         bool res = manager->ReadUInt32_Optional(&value);
         if (value != i || !res)
             throw;
-        if ((i % 1000000) == 0)
-            printf("%u\n", i);
     }
 }
 
@@ -789,10 +772,28 @@ void FastProtocolTester::TestReadUInt32_Mandatory() {
         manager->WriteUInt32_Mandatory(i);
         manager->ResetBuffer();
         UINT32 value = manager->ReadUInt32_Mandatory();
-        if (value != i)
+        if (value != i) {
+            manager->ResetBuffer();
+            value = manager->ReadUInt32_Mandatory();
             throw;
-        if ((i % 1000000) == 0)
-            printf("%u\n", i);
+        }
+    }
+}
+
+void FastProtocolTester::TestReadUInt32_Mandatory_Predict1() {
+    printf("Test FastProtocolTester::TestReadUInt32_Mandatory_Predict1\n");
+    manager->SetNewBuffer(new unsigned char[100], 100);
+
+    for (UINT32 i = 0; i < UINT32_MAX - 60; i += 50) {
+        manager->ResetBuffer();
+        manager->WriteUInt32_Mandatory(i);
+        manager->ResetBuffer();
+        UINT32 value = manager->ReadUInt32_Mandatory();
+        if (value != i) {
+            manager->ResetBuffer();
+            value = manager->ReadUInt32_Mandatory_Predict1();
+            throw;
+        }
     }
 }
 

@@ -2908,6 +2908,11 @@ protected:
     }
 
     inline bool OnHearthBeatMessage(AstsHeartbeatInfo *info) {
+#ifdef COLLECT_STATISTICS
+        ProgramStatistics::Current->Inc(Counters::cIncHbeatCount);
+        ProgramStatistics::Total->Inc(Counters::cIncHbeatCount);
+#endif
+        info->Clear();
         return true;
     }
 
@@ -2950,8 +2955,10 @@ protected:
         }
         if(templateId == FeedTemplateId::fortsTradingSessionStatus)
             return this->OnTradingSessionStatusForts(static_cast<FortsTradingSessionStatusInfo*>(this->m_fastProtocolManager->LastDecodeInfo()));
-        else if (templateId == FeedTemplateId::fortsHearthBeat)
+        else if (templateId == FeedTemplateId::fortsHearthBeat) {
+            ((FortsHeartbeatInfo*)this->m_fastProtocolManager->LastDecodeInfo())->Clear();
             return true;
+        }
         else
             throw;
     }

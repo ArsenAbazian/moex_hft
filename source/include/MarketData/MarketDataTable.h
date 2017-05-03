@@ -222,12 +222,15 @@ public:
     }
 
     inline bool ApplyQuickSnapshot(AstsSnapshotInfo *info) {
-        if(this->CheckProcessIfSessionInActualState(info->RptSeq))
+        if(this->CheckProcessIfSessionInActualState(info->RptSeq)) {
             return true;
-        if(this->CheckProcessNullSnapshot(info->RptSeq, info->LastMsgSeqNumProcessed))
+        }
+        if(this->CheckProcessNullSnapshot(info->RptSeq, info->LastMsgSeqNumProcessed)) {
             return true;
-        if(!this->ShouldProcessSnapshot(info->RptSeq))
+        }
+        if(!this->ShouldProcessSnapshot(info->RptSeq)) {
             return true;
+        }
         return false;
     }
 
@@ -255,17 +258,21 @@ public:
             //TODO remove debug
             bool res = this->m_snapshotItem->RptSeq() < rptSeq;
             if(!res) {
-                //printf("  %s skip snapshot : item->RptSeq = %d >= snap->RptSeq = %d\n",
-                //       this->m_snapshotSymbol->Symbol()->m_text, this->m_snapshotItem->RptSeq(), rptSeq);
+                printf("  %s - %s  skip snapshot : item->RptSeq = %d >= snap->RptSeq = %d\n",
+                       this->m_snapshotSymbol->Symbol()->m_text,
+                       this->m_snapshotItem->TradingSession()->m_text,
+                       this->m_snapshotItem->RptSeq(), rptSeq);
             }
             return res;
         }
         //TODO remove debug
         bool res = this->m_snapshotItem->EntriesQueue()->StartRptSeq() <= rptSeq;
         if(!res) {
-            //printf("  %s skip snapshot : que->StartRptSeq = %d >= snap->RptSeq = %d  max index = %d\n",
-            //       this->m_snapshotSymbol->Symbol()->m_text, this->m_snapshotItem->EntriesQueue()->StartRptSeq(),
-            //       rptSeq, this->m_snapshotItem->EntriesQueue()->MaxIndex());
+            printf("  %s - %s  skip snapshot : que->StartRptSeq = %d >= snap->RptSeq = %d  max index = %d\n",
+                   this->m_snapshotSymbol->Symbol()->m_text,
+                   this->m_snapshotItem->TradingSession()->m_text,
+                   this->m_snapshotItem->EntriesQueue()->StartRptSeq(),
+                   rptSeq, this->m_snapshotItem->EntriesQueue()->MaxIndex());
         }
         return res;
     }
