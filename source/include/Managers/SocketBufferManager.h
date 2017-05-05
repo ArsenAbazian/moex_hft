@@ -34,33 +34,20 @@ public:
     inline unsigned int ItemLength(int index) const { return this->m_itemLength[index]; }
     inline unsigned char* Item(int index) { return this->m_items[index]; }
 
+    // there is no need to check buffer - because resetting buffer leads to incorrect results after.
+    // better segmentation fault
     inline void Next(int length) {
-        int itemCount = this->m_itemsCount;
-
-        this->m_itemLength[itemCount] = length;
+        this->m_itemLength[this->m_itemsCount] = length;
         this->m_current += (length & 0xfffffffc) + 8; //optimization by 4 + additional 4 bytes for zero string
-
-        itemCount++;
-        if ((itemCount >= this->m_maxItemsCount) || (this->m_current >= this->m_end))
-            this->Reset();
-        else {
-            this->m_itemsCount = itemCount;
-            this->m_items[itemCount] = this->m_current;
-        }
+        this->m_itemsCount++;
+        this->m_items[this->m_itemsCount] = this->m_current;
     }
     inline void NextExact(int length) {
-        int itemCount = this->m_itemsCount;
-
-        this->m_itemLength[itemCount] = length;
+        this->m_itemLength[this->m_itemsCount] = length;
         this->m_current += length; //NO OPTIMIZE
 
-        itemCount++;
-        if ((itemCount >= this->m_maxItemsCount) || (this->m_current >= this->m_end))
-            this->Reset();
-        else {
-            this->m_itemsCount = itemCount;
-            this->m_items[itemCount] = this->m_current;
-        }
+        this->m_itemsCount++;
+        this->m_items[this->m_itemsCount] = this->m_current;
     }
     inline void Init() {
         this->m_current = this->m_buffer;

@@ -112,6 +112,8 @@ private:
 
     int                             m_pollIndex;
 
+    LogMessageCode                  m_socketLogName;
+
     inline int GetFreePollIndex() { return WinSockManager::m_registeredCount; }
     inline void IncPollIndex() { WinSockManager::m_registeredCount++;  }
     inline void RegisterPoll() {
@@ -267,6 +269,8 @@ public:
 #endif
     }
 
+    inline LogMessageCode SocketLogName() { return this->m_socketLogName; };
+    inline void SocketLogName(LogMessageCode code) { this->m_socketLogName = code; }
     inline static bool HasRecvEvents() { return WinSockManager::m_pollRes > 0; }
 
     inline int Socket() const { return this->m_socket; }
@@ -483,7 +487,6 @@ public:
 #endif
     inline void OnRecv() {
         this->m_poll->revents = 0;
-        //this->m_shouldRecv = false;
     }
 
     bool RecvTest(unsigned char *buffer);
@@ -511,12 +514,42 @@ public:
         return RecvTest(buffer);
 #else
         if(this->m_connectionType == WinSockConnectionType::wsTCP)
-            return this->RecvTCP(buffer);
-        return this->RecvUDP(buffer);
+            return this->RecvTCPCore(buffer);
+        return this->RecvUDPCore(buffer);
 #endif
     }
 
     inline bool RecvTCP(unsigned char *buffer) {
+        if(!this->ShouldRecv()) {
+            this->m_recvSize = 0;
+            return true;
+        }
+#ifdef TEST
+        return RecvTest(buffer);
+#else
+        return this->RecvTCPCore(buffer);
+#endif
+    }
+
+    inline bool RecvUDP(unsigned char *buffer) {
+        if(!this->ShouldRecv()) {
+            this->m_recvSize = 0;
+            return true;
+        }
+#ifdef TEST
+        return RecvTest(buffer);
+#else
+        return this->RecvUDPCore(buffer);
+#endif
+    }
+
+    inline void FlushUDP() {
+        if(!this->ShouldRecv())
+            return;
+        this->FlushUDPCore();
+    }
+
+    inline bool RecvTCPCore(unsigned char *buffer) {
         this->m_recvBytes = buffer;
         this->m_recvSize = recv(this->m_socket, this->m_recvBytes, 8192, 0);
         if(this->m_recvSize < 0)
@@ -543,10 +576,13 @@ public:
         }
         return false;
     }
-    inline bool RecvUDP(unsigned char *buffer) {
-        this->m_recvBytes = buffer;
-        this->m_senderAddrLength = sizeof(struct sockaddr);
-        this->m_recvSize = recvfrom(this->m_socket, this->m_recvBytes, 8192, 0, (struct sockaddr *)this->m_senderAddr, &(this->m_senderAddrLength));
+    inline void FlushUDPCore() {
+        recvfrom(this->m_socket, this->m_tempBuffer, 8192, 0, 0, 0);
+        this->OnRecv();
+    }
+    inline bool RecvUDPCore(unsigned char *buffer) {
+        this->m_recvBytes = 0;
+        this->m_recvSize = recvfrom(this->m_socket, this->m_recvBytes, 8192, 0, 0, 0);
         if(this->m_recvSize > 0) {
             this->OnRecv();
             return true;

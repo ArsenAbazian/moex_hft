@@ -257,23 +257,26 @@ public:
         if(!this->m_snapshotItem->HasEntries()) {
             //TODO remove debug
             bool res = this->m_snapshotItem->RptSeq() < rptSeq;
+            /*
             if(!res) {
                 printf("  %s - %s  skip snapshot : item->RptSeq = %d >= snap->RptSeq = %d\n",
                        this->m_snapshotSymbol->Symbol()->m_text,
                        this->m_snapshotItem->TradingSession()->m_text,
                        this->m_snapshotItem->RptSeq(), rptSeq);
-            }
+            }*/
             return res;
         }
         //TODO remove debug
         bool res = this->m_snapshotItem->EntriesQueue()->StartRptSeq() <= rptSeq;
+        /*
         if(!res) {
             printf("  %s - %s  skip snapshot : que->StartRptSeq = %d >= snap->RptSeq = %d  max index = %d\n",
                    this->m_snapshotSymbol->Symbol()->m_text,
                    this->m_snapshotItem->TradingSession()->m_text,
                    this->m_snapshotItem->EntriesQueue()->StartRptSeq(),
                    rptSeq, this->m_snapshotItem->EntriesQueue()->MaxIndex());
-        }
+
+        }*/
         return res;
     }
     inline bool CheckProcessIfSessionInActualState(int rptSeq) {

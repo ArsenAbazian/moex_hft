@@ -117,9 +117,10 @@ public:
         return this->idf->DoWorkAtomSecurityDefinition();
     }
 
+    // WARNING!!!! use this method only if this->m_state != FeedChannelState::fchSuspend
     inline bool DoWorkAtom() {
-        if(this->m_state == FeedChannelState::fchSuspend)
-            return true;
+        //if(this->m_state == FeedChannelState::fchSuspend) // small hacky optimization
+        //    return true;
         bool res = true;
 #ifdef ALLOW_STATISTICS
             res &= this->msr->DoWorkAtomIncremental();

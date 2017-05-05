@@ -263,7 +263,6 @@ protected:
         return this->TryGetSecurityDefinitionTotNumReportsForts(buffer);
     }
 
-    inline bool CanListen() { return this->socketAManager->ShouldRecv() || this->socketBManager->ShouldRecv(); }
     inline void ThreatFirstMessageIndexAsStart() {
         this->m_startMsgSeqNum = -1;
         this->m_endMsgSeqNum = 0;
@@ -386,7 +385,6 @@ protected:
     }
 
     inline bool ProcessServerCoreIncremental(int size, int msgSeqNum) {
-
         int localMsgSeqNum = msgSeqNum - this->m_windowMsgSeqNum;
         if(localMsgSeqNum < 0) // out of window
             return true;
@@ -469,11 +467,14 @@ protected:
         return this->ProcessServerCore(size);
     }
 
-    inline int ProcessSocketManager(WinSockManager *socketManager, LogMessageCode socketName) {
-        if(!socketManager->ShouldRecv())
-            return 0;
-        if(!socketManager->Recv(this->m_recvABuffer->CurrentPos())) {
-            DefaultLogManager::Default->WriteSuccess(socketName,
+    // in a case we have received NEXT msg in socket A
+    inline void FlushSocketBManager() {
+        this->socketBManager->FlushUDP();
+    }
+
+    inline int ProcessSocketManager(WinSockManager *socketManager) {
+        if(!socketManager->RecvUDP(this->m_recvABuffer->CurrentPos())) {
+            DefaultLogManager::Default->WriteSuccess(socketManager->SocketLogName(),
                                                      LogMessageCode::lmcFeedConnection_Listen_Atom,
                                                      false)->m_errno = errno;
             socketManager->Reconnect();
@@ -482,41 +483,41 @@ protected:
         return socketManager->RecvSize();
     }
 
-    inline bool ProcessServerIncremental(WinSockManager *socketManager, LogMessageCode socketName) {
-        int size = this->ProcessSocketManager(socketManager, socketName);
+    inline bool ProcessServerIncremental(WinSockManager *socketManager) {
+        int size = this->ProcessSocketManager(socketManager);
         if(size == 0)
             return false;
-        return ProcessServerCoreIncremental(socketManager->RecvSize(), *((UINT*)this->m_recvABuffer->CurrentPos()));
+        return ProcessServerCoreIncremental(size, *((UINT*)socketManager->RecvBytes()));
     }
-    inline bool ProcessServerAIncremental() { return this->ProcessServerIncremental(this->socketAManager, LogMessageCode::lmcsocketA); }
-    inline bool ProcessServerBIncremental() { return this->ProcessServerIncremental(this->socketBManager, LogMessageCode::lmcsocketB); }
+    inline bool ProcessServerAIncremental() { return this->ProcessServerIncremental(this->socketAManager); }
+    inline bool ProcessServerBIncremental() { return this->ProcessServerIncremental(this->socketBManager); }
 
-    inline bool ProcessServerSecurityStatus(WinSockManager *socketManager, LogMessageCode socketName) {
-        int size = this->ProcessSocketManager(socketManager, socketName);
+    inline bool ProcessServerSecurityStatus(WinSockManager *socketManager) {
+        int size = this->ProcessSocketManager(socketManager);
         if(size == 0)
             return false;
-        return ProcessServerCoreSecurityStatus(socketManager->RecvSize(), *((UINT*)this->m_recvABuffer->CurrentPos()));
+        return ProcessServerCoreSecurityStatus(size, *((UINT*)socketManager->RecvBytes()));
     }
-    inline bool ProcessServerASecurityStatus() { return this->ProcessServerSecurityStatus(this->socketAManager, LogMessageCode::lmcsocketA); }
-    inline bool ProcessServerBSecurityStatus() { return this->ProcessServerSecurityStatus(this->socketBManager, LogMessageCode::lmcsocketB); }
+    inline bool ProcessServerASecurityStatus() { return this->ProcessServerSecurityStatus(this->socketAManager); }
+    inline bool ProcessServerBSecurityStatus() { return this->ProcessServerSecurityStatus(this->socketBManager); }
 
-    inline bool ProcessServerSnapshot(WinSockManager *socketManager, LogMessageCode socketName) {
-        int size = this->ProcessSocketManager(socketManager, socketName);
+    inline bool ProcessServerSnapshot(WinSockManager *socketManager) {
+        int size = this->ProcessSocketManager(socketManager);
         if(size == 0)
             return false;
-        return ProcessServerCoreSnapshot(socketManager->RecvSize(), *((UINT*)this->m_recvABuffer->CurrentPos()));
+        return ProcessServerCoreSnapshot(socketManager->RecvSize(), *((UINT*)socketManager->RecvBytes()));
     }
-    inline bool ProcessServerASnapshot() { return this->ProcessServerSnapshot(this->socketAManager, LogMessageCode::lmcsocketA); }
-    inline bool ProcessServerBSnapshot() { return this->ProcessServerSnapshot(this->socketBManager, LogMessageCode::lmcsocketB); }
+    inline bool ProcessServerASnapshot() { return this->ProcessServerSnapshot(this->socketAManager); }
+    inline bool ProcessServerBSnapshot() { return this->ProcessServerSnapshot(this->socketBManager); }
 
-    inline bool ProcessServerSecurityDefinition(WinSockManager *socketManager, LogMessageCode socketName) {
-        int size = this->ProcessSocketManager(socketManager, socketName);
+    inline bool ProcessServerSecurityDefinition(WinSockManager *socketManager) {
+        int size = this->ProcessSocketManager(socketManager);
         if(size == 0)
             return false;
-        return ProcessServerCoreSecurityDefinition(socketManager->RecvSize(), *((UINT*)this->m_recvABuffer->CurrentPos()));
+        return ProcessServerCoreSecurityDefinition(size, *((UINT*)socketManager->RecvBytes()));
     }
-    inline bool ProcessServerASecurityDefinition() { return this->ProcessServerSecurityDefinition(this->socketAManager, LogMessageCode::lmcsocketA); }
-    inline bool ProcessServerBSecurityDefinition() { return this->ProcessServerSecurityDefinition(this->socketBManager, LogMessageCode::lmcsocketB); }
+    inline bool ProcessServerASecurityDefinition() { return this->ProcessServerSecurityDefinition(this->socketAManager); }
+    inline bool ProcessServerBSecurityDefinition() { return this->ProcessServerSecurityDefinition(this->socketBManager); }
 
 #pragma endregion
     inline bool HasQueueEntries() {
@@ -1124,65 +1125,72 @@ protected:
         return true;
     }
 
-    inline bool ProcessIncrementalMessages() {
-        if(this->m_startMsgSeqNum == this->m_endMsgSeqNum) { // special case - one packet
-            FeedConnectionMessageInfo *info = this->Packet(this->m_startMsgSeqNum);
+    inline void ProcessIncrementalMessages_OneMessage() {
+        FeedConnectionMessageInfo *info = this->Packet(this->m_startMsgSeqNum);
+        this->ProcessIncrementalAsts(info);
+        info->Clear();
+        this->m_startMsgSeqNum++;
+        this->m_windowMsgSeqNum = this->m_startMsgSeqNum;
+        this->AfterMoveWindow();
+    }
+
+    inline void ProcessIncrementalMessages_MultipleMessages() {
+        int localStart = this->m_startMsgSeqNum - this->m_windowMsgSeqNum;
+        int localEnd = this->m_endMsgSeqNum - this->m_windowMsgSeqNum;
+
+        int newStartMsgSeqNum = -1;
+        int i = localStart;
+
+        FeedConnectionMessageInfo **pinfo = this->m_packets + i;
+        FeedConnectionMessageInfo *info;
+        while(i <= localEnd) {
+            info = *pinfo;
+            if(info->m_processed) {
+                i++;
+                pinfo++;
+                continue;
+            }
+            if(info->m_address == 0) {
+                if(this->m_requestMessageStartIndex < i + this->m_windowMsgSeqNum)
+                    this->m_requestMessageStartIndex = i + this->m_windowMsgSeqNum;
+                newStartMsgSeqNum = i + this->m_windowMsgSeqNum;
+                break;
+            }
             this->ProcessIncrementalAsts(info);
-            info->Clear();
-            this->m_startMsgSeqNum ++;
+            i++;
+            pinfo++;
+        }
+
+        while(i <= localEnd) {
+            info = *pinfo;
+            if(info->m_processed || info->m_address == 0) {
+                i++;
+                pinfo++;
+                continue;
+            }
+            this->ProcessIncrementalAsts(info);
+            i++;
+            pinfo++;
+        }
+        if(newStartMsgSeqNum != -1) {
+            this->m_startMsgSeqNum = newStartMsgSeqNum;
+        } else {
+            this->ClearLocalPackets(0, localEnd);
+            this->m_startMsgSeqNum = this->m_endMsgSeqNum + 1;
             this->m_windowMsgSeqNum = this->m_startMsgSeqNum;
             this->AfterMoveWindow();
         }
-        else { // more than one packet
-            int localStart = this->m_startMsgSeqNum - this->m_windowMsgSeqNum;
-            int localEnd = this->m_endMsgSeqNum - this->m_windowMsgSeqNum;
-
-            int newStartMsgSeqNum = -1;
-            int i = localStart;
-
-            FeedConnectionMessageInfo **pinfo = this->m_packets + i;
-            FeedConnectionMessageInfo *info;
-            while (i <= localEnd) {
-                info = *pinfo;
-                if (info->m_processed) {
-                    i++; pinfo++;
-                    continue;
-                }
-                if (info->m_address == 0) {
-                    if (this->m_requestMessageStartIndex < i + this->m_windowMsgSeqNum)
-                        this->m_requestMessageStartIndex = i + this->m_windowMsgSeqNum;
-                    newStartMsgSeqNum = i + this->m_windowMsgSeqNum;
-                    break;
-                }
-                if (!this->ProcessIncrementalAsts(info))
-                    return false;
-                i++; pinfo++;
-            }
-
-            while (i <= localEnd) {
-                info = *pinfo;
-                if (info->m_processed || info->m_address == 0) {
-                    i++; pinfo++;
-                    continue;
-                }
-                if (!this->ProcessIncrementalAsts(info))
-                    return false;
-                i++; pinfo++;
-            }
-            if(newStartMsgSeqNum != -1) {
-                this->m_startMsgSeqNum = newStartMsgSeqNum;
-            }
-            else {
-                this->ClearLocalPackets(0, localEnd);
-                this->m_startMsgSeqNum = this->m_endMsgSeqNum + 1;
-                this->m_windowMsgSeqNum = this->m_startMsgSeqNum;
-                this->AfterMoveWindow();
-            }
-        }
-        return true;
     }
 
-    inline bool ProcessIncrementalMessagesForts() {
+    inline void ProcessIncrementalMessages() {
+        if(this->m_startMsgSeqNum == this->m_endMsgSeqNum) { // special case - one packet
+            ProcessIncrementalMessages_OneMessage();
+        } else { // more than one packet
+            ProcessIncrementalMessages_MultipleMessages();
+        }
+    }
+
+    inline void ProcessIncrementalMessagesForts() {
         int localStart = this->m_startMsgSeqNum - this->m_windowMsgSeqNum;
         int localEnd = this->m_endMsgSeqNum - this->m_windowMsgSeqNum;
 
@@ -1214,8 +1222,7 @@ protected:
                     newStartMsgSeqNum = msgSeqNum;
                     break;
                 }
-                if (!this->ProcessIncrementalForts(info, msgSeqNum))
-                    return false;
+                this->ProcessIncrementalForts(info, msgSeqNum);
                 i++; msgSeqNum++; pinfo++;
             }
 
@@ -1235,8 +1242,7 @@ protected:
                         i++; msgSeqNum++; pinfo++;
                         continue;
                     }
-                    if (!this->ProcessIncrementalForts(info, msgSeqNum, lastNullMsgSeq))
-                        return false;
+                    this->ProcessIncrementalForts(info, msgSeqNum, lastNullMsgSeq);
                     i++; msgSeqNum++; pinfo++;
                 }
             }
@@ -1250,7 +1256,7 @@ protected:
                 this->AfterMoveWindow();
             }
         }
-        return true;
+        return;
     }
 
     inline void MarketTableEnterSnapshotMode() {
@@ -1652,8 +1658,10 @@ protected:
         return true;
     }
     inline bool ApplySnapshotPartForts(int index) {
-        if(this->m_fortsSnapshotInfo->TemplateId == FeedTemplateId::fortsTradingSessionStatus)
-            return this->ProcessTradingSessionStatusForts();
+        if(this->m_fortsSnapshotInfo->TemplateId == FeedTemplateId::fortsTradingSessionStatus) {
+            this->ProcessTradingSessionStatusForts();
+            return true;
+        }
 
         FeedConnectionId incId = this->m_incremental->Id();
         if(incId == FeedConnectionId::fcidObrForts)
@@ -1663,11 +1671,11 @@ protected:
         return true;
     }
 
-    inline bool ProcessTradingSessionStatusForts() {
+    inline void ProcessTradingSessionStatusForts() {
         FeedConnectionMessageInfo *info = this->m_packets[this->m_startMsgSeqNum];
         this->m_fastProtocolManager->SetNewBuffer(info->m_address, info->m_size);
         FortsTradingSessionStatusInfo *sinfo = this->m_fastProtocolManager->DecodeFortsTradingSessionStatus();
-        return this->m_incremental->OnTradingSessionStatusForts(sinfo);
+        this->m_incremental->OnTradingSessionStatusForts(sinfo);
     }
 
     inline bool StartApplySnapshot() {
@@ -2099,8 +2107,7 @@ protected:
 //            return true;
 //        }
 #endif
-        if(!this->ProcessIncrementalMessages())
-            return false;
+        this->ProcessIncrementalMessages();
         if(this->m_snapshot->State() == FeedConnectionState::fcsSuspend) {
             if(!this->ShouldRestoreIncrementalMessages()) {
                 this->m_waitTimer->Stop();
@@ -2138,8 +2145,7 @@ protected:
 //            return true;
 //        }
 #endif
-        if(!this->ProcessIncrementalMessagesForts())
-            return false;
+        this->ProcessIncrementalMessagesForts();
         if(this->m_snapshot->State() == FeedConnectionState::fcsSuspend) {
             if(!this->ShouldRestoreIncrementalMessages()) {
                 this->m_waitTimer->Stop();
@@ -2182,9 +2188,11 @@ protected:
         //DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_InitializeSockets);
 
         this->socketAManager = new WinSockManager();
-        if(this->m_id != FeedConnectionId::fcidHFond &&
-                this->m_id != FeedConnectionId::fcidHCurr)
+        this->socketAManager->SocketLogName(LogMessageCode::lmcsocketA);
+        if(this->m_id != FeedConnectionId::fcidHFond && this->m_id != FeedConnectionId::fcidHCurr) {
             this->socketBManager = new WinSockManager();
+            this->socketAManager->SocketLogName(LogMessageCode::lmcsocketB);
+        }
 
         //DefaultLogManager::Default->EndLog(true);
         return true;
@@ -2565,11 +2573,13 @@ protected:
             if(this->m_waitTimer->IsTimeOutFast(1, this->m_waitIncrementalMessageMaxTimeMcs)) {
                 if(this->m_snapshot->State() == FeedConnectionState::fcsSuspend) {
                     //TODO remove debug
-                    printf("%s listen atom incremental timeout %lu ms... start snapshot\n", this->m_idName, this->m_waitTimer->ElapsedMillisecondsFast(1));
+                    printf("%s listen atom incremental timeout %lu ms... start snapshot\n", this->m_idName,
+                           this->m_waitTimer->ElapsedMillisecondsFast(1));
                     this->StartListenSnapshot();
                 }
                 return true;
             }
+
         }
         else {
             this->m_waitTimer->Stop(1);
@@ -2722,49 +2732,49 @@ protected:
 
     FILE *obrLogFile;
 
-    inline bool OnIncrementalRefresh_OLR_FOND(AstsOLSFONDItemInfo *info) {
+    inline void OnIncrementalRefresh_OLR_FOND(AstsOLSFONDItemInfo *info) {
         //TODO remove debug
         //info->MDEntryID[info->MDEntryIDLength] = '\0';
         //printf("OLR FOND %s\n", info->MDEntryID);
         int index = this->m_symbolManager->GetSymbol(info->Symbol, info->SymbolLength)->m_index;
-        return this->m_orderTableFond->ProcessIncremental(info, index, info->TradingSessionID, info->TradingSessionIDLength);
+        this->m_orderTableFond->ProcessIncremental(info, index, info->TradingSessionID, info->TradingSessionIDLength);
     }
 
-    inline bool OnIncrementalRefresh_OLR_CURR(AstsOLSCURRItemInfo *info) {
+    inline void OnIncrementalRefresh_OLR_CURR(AstsOLSCURRItemInfo *info) {
         int index = this->m_symbolManager->GetSymbol(info->Symbol, info->SymbolLength)->m_index;
-        return this->m_orderTableCurr->ProcessIncremental(info, index, info->TradingSessionID, info->TradingSessionIDLength);
+        this->m_orderTableCurr->ProcessIncremental(info, index, info->TradingSessionID, info->TradingSessionIDLength);
     }
 
-    inline bool OnIncrementalRefresh_TLR_FOND(AstsTLSFONDItemInfo *info) {
+    inline void OnIncrementalRefresh_TLR_FOND(AstsTLSFONDItemInfo *info) {
         //TODO remove debug
         //info->MDEntryID[info->MDEntryIDLength] = '\0';
         //printf("TRL FOND %s\n", info->MDEntryID);
         int index = this->m_symbolManager->GetSymbol(info->Symbol, info->SymbolLength)->m_index;
-        return this->m_tradeTableFond->ProcessIncremental(info, index, info->TradingSessionID, info->TradingSessionIDLength);
+        this->m_tradeTableFond->ProcessIncremental(info, index, info->TradingSessionID, info->TradingSessionIDLength);
     }
 
-    inline bool OnIncrementalRefresh_TLR_CURR(AstsTLSCURRItemInfo *info) {
+    inline void OnIncrementalRefresh_TLR_CURR(AstsTLSCURRItemInfo *info) {
         //TODO remove debug
         //info->MDEntryID[info->MDEntryIDLength] = '\0';
         //printf("TLR CURR %s\n", info->MDEntryID);
         int index = this->m_symbolManager->GetSymbol(info->Symbol, info->SymbolLength)->m_index;
-        return this->m_tradeTableCurr->ProcessIncremental(info, index, info->TradingSessionID, info->TradingSessionIDLength);
+        this->m_tradeTableCurr->ProcessIncremental(info, index, info->TradingSessionID, info->TradingSessionIDLength);
     }
 
-    inline bool OnIncrementalRefresh_MSR_FOND(AstsGenericItemInfo *info) {
+    inline void OnIncrementalRefresh_MSR_FOND(AstsGenericItemInfo *info) {
         //TODO remove debug
         //info->MDEntryID[info->MDEntryIDLength] = '\0';
         //printf("MSR FOND %s\n", info->MDEntryID);
         int index = this->m_symbolManager->GetSymbol(info->Symbol, info->SymbolLength)->m_index;
-        return this->m_statTableFond->ProcessIncremental(info, index, info->TradingSessionID, info->TradingSessionIDLength);
+        this->m_statTableFond->ProcessIncremental(info, index, info->TradingSessionID, info->TradingSessionIDLength);
     }
 
-    inline bool OnIncrementalRefresh_MSR_CURR(AstsGenericItemInfo *info) {
+    inline void OnIncrementalRefresh_MSR_CURR(AstsGenericItemInfo *info) {
         //TODO remove debug
         //info->MDEntryID[info->MDEntryIDLength] = '\0';
         //printf("MSR CURR %s\n", info->MDEntryID);
         int index = this->m_symbolManager->GetSymbol(info->Symbol, info->SymbolLength)->m_index;
-        return this->m_statTableCurr->ProcessIncremental(info, index, info->TradingSessionID, info->TradingSessionIDLength);
+        this->m_statTableCurr->ProcessIncremental(info, index, info->TradingSessionID, info->TradingSessionIDLength);
     }
 
     inline UINT64 GetFortsSecurityId(FortsDefaultSnapshotMessageMDEntriesItemInfo *info) {
@@ -2774,41 +2784,39 @@ protected:
         return info->SecurityID;
     }
 
-    inline bool OnIncrementalRefresh_FORTS_OBR(FortsDefaultSnapshotMessageMDEntriesItemInfo *info) {
+    inline void OnIncrementalRefresh_FORTS_OBR(FortsDefaultSnapshotMessageMDEntriesItemInfo *info) {
         // since there is fragmented messages
         SymbolInfo *smb = this->m_symbolManager->GetExistingSymbol(GetFortsSecurityId(info));
         if(smb == 0) {
             //TODO remove debug
             printf("skip securityId = %" PRIu64 "\n", GetFortsSecurityId(info));
-            return true;
+            return;
         }
-        return this->m_fortsOrderBookTable->ProcessIncremental(info, smb->m_index);
+        this->m_fortsOrderBookTable->ProcessIncremental(info, smb->m_index);
     }
 
-    inline bool OnIncrementalRefresh_FORTS_TLR(FortsDefaultSnapshotMessageMDEntriesItemInfo *info) {
+    inline void OnIncrementalRefresh_FORTS_TLR(FortsDefaultSnapshotMessageMDEntriesItemInfo *info) {
         SymbolInfo *smb = this->m_symbolManager->GetExistingSymbol(GetFortsSecurityId(info));
         if(smb == 0) {
             //TODO remove debug
             printf("skip securityId = %" PRIu64 "\n", GetFortsSecurityId(info));
-            return true;
+            return;
         }
-        return this->m_fortsTradeBookTable->ProcessIncremental(info, smb->m_index);
+        this->m_fortsTradeBookTable->ProcessIncremental(info, smb->m_index);
     }
 
-    inline bool OnIncrementalRefresh_OLR_FOND(AstsIncrementalOLRFONDInfo *info) {
+    inline void OnIncrementalRefresh_OLR_FOND(AstsIncrementalOLRFONDInfo *info) {
 #ifdef COLLECT_STATISTICS
         ProgramStatistics::Current->Inc(Counters::cFondOlr);
         ProgramStatistics::Total->Inc(Counters::cFondOlr);
 #endif
-        bool res = true;
         for(int i = 0; i < info->GroupMDEntriesCount; i++) {
-            res |= this->OnIncrementalRefresh_OLR_FOND(info->GroupMDEntries[i]);
+            this->OnIncrementalRefresh_OLR_FOND(info->GroupMDEntries[i]);
         }
         info->ReleaseUnused();
-        return res;
     }
 
-    inline bool OnIncrementalRefresh_OLR_CURR(AstsIncrementalOLRCURRInfo *info) {
+    inline void OnIncrementalRefresh_OLR_CURR(AstsIncrementalOLRCURRInfo *info) {
 #ifdef COLLECT_STATISTICS
         ProgramStatistics::Current->Inc(Counters::cCurrOlr);
         ProgramStatistics::Total->Inc(Counters::cCurrOlr);
@@ -2816,148 +2824,145 @@ protected:
         for(int i = 0; i < info->GroupMDEntriesCount; i++)
             this->OnIncrementalRefresh_OLR_CURR(info->GroupMDEntries[i]);
         info->ReleaseUnused();
-        return true;
     }
 
-    inline bool OnIncrementalRefresh_TLR_FOND(AstsIncrementalTLRFONDInfo *info) {
+    inline void OnIncrementalRefresh_TLR_FOND(AstsIncrementalTLRFONDInfo *info) {
 #ifdef COLLECT_STATISTICS
         ProgramStatistics::Current->Inc(Counters::cFondTlr);
         ProgramStatistics::Total->Inc(Counters::cFondTlr);
 #endif
-        bool res = true;
         for(int i = 0; i < info->GroupMDEntriesCount; i++) {
-            res |= this->OnIncrementalRefresh_TLR_FOND(info->GroupMDEntries[i]);
+            this->OnIncrementalRefresh_TLR_FOND(info->GroupMDEntries[i]);
         }
         info->ReleaseUnused();
-        return res;
     }
 
-    inline bool OnIncrementalRefresh_TLR_CURR(AstsIncrementalTLRCURRInfo *info) {
+    inline void OnIncrementalRefresh_TLR_CURR(AstsIncrementalTLRCURRInfo *info) {
 #ifdef COLLECT_STATISTICS
         ProgramStatistics::Current->Inc(Counters::cCurrTlr);
         ProgramStatistics::Total->Inc(Counters::cCurrTlr);
 #endif
-        bool res = true;
         for(int i = 0; i < info->GroupMDEntriesCount; i++) {
-            res |= this->OnIncrementalRefresh_TLR_CURR(info->GroupMDEntries[i]);
+            this->OnIncrementalRefresh_TLR_CURR(info->GroupMDEntries[i]);
         }
         info->ReleaseUnused();
-        return res;
     }
 
-    inline bool OnIncrementalRefresh_MSR_FOND(AstsIncrementalMSRFONDInfo *info) {
+    inline void OnIncrementalRefresh_MSR_FOND(AstsIncrementalMSRFONDInfo *info) {
 #ifdef COLLECT_STATISTICS
         ProgramStatistics::Current->Inc(Counters::cFondMsr);
         ProgramStatistics::Total->Inc(Counters::cFondMsr);
 #endif
-        bool res = true;
         for(int i = 0; i < info->GroupMDEntriesCount; i++) {
-            res |= this->OnIncrementalRefresh_MSR_FOND(info->GroupMDEntries[i]);
+            this->OnIncrementalRefresh_MSR_FOND(info->GroupMDEntries[i]);
         }
         info->ReleaseUnused();
-        return res;
     }
 
-
-
-    inline bool OnIncrementalRefresh_MSR_CURR(AstsIncrementalMSRCURRInfo *info) {
+    inline void OnIncrementalRefresh_MSR_CURR(AstsIncrementalMSRCURRInfo *info) {
 #ifdef COLLECT_STATISTICS
         ProgramStatistics::Current->Inc(Counters::cCurrMsr);
         ProgramStatistics::Total->Inc(Counters::cCurrMsr);
 #endif
-        bool res = true;
         for(int i = 0; i < info->GroupMDEntriesCount; i++) {
-            res |= this->OnIncrementalRefresh_MSR_CURR(info->GroupMDEntries[i]);
+            this->OnIncrementalRefresh_MSR_CURR(info->GroupMDEntries[i]);
         }
         info->ReleaseUnused();
-        return res;
     }
 
-    inline bool OnTradingSessionStatusForts(FortsTradingSessionStatusInfo *info) {
+    inline void OnTradingSessionStatusForts(FortsTradingSessionStatusInfo *info) {
         if(this->m_fortsTradingSessionStatus != 0)
             this->m_fortsTradingSessionStatus->Clear();
         info->Used = true;
         this->m_fortsTradingSessionStatus = info;
-        return true;
     }
 
-    inline bool OnIncrementalRefresh_FORTS_OBR(FortsDefaultIncrementalRefreshMessageInfo *info) {
+    inline void OnIncrementalRefresh_FORTS_OBR(FortsDefaultIncrementalRefreshMessageInfo *info) {
 //#ifdef COLLECT_STATISTICS
 //        ProgramStatistics::Current->IncCurrMsrProcessedCount();
 //        ProgramStatistics::Total->IncCurrMsrProcessedCount();
 //#endif
-        bool res = true;
         for(int i = 0; i < info->MDEntriesCount; i++) {
-            res |= this->OnIncrementalRefresh_FORTS_OBR(info->MDEntries[i]);
+            this->OnIncrementalRefresh_FORTS_OBR(info->MDEntries[i]);
         }
         info->ReleaseUnused();
-        return res;
     }
 
-    inline bool OnIncrementalRefresh_FORTS_TLR(FortsDefaultIncrementalRefreshMessageInfo *info) {
+    inline void OnIncrementalRefresh_FORTS_TLR(FortsDefaultIncrementalRefreshMessageInfo *info) {
 //#ifdef COLLECT_STATISTICS
 //        ProgramStatistics::Current->IncCurrMsrProcessedCount();
 //        ProgramStatistics::Total->IncCurrMsrProcessedCount();
 //#endif
-        bool res = true;
         for(int i = 0; i < info->MDEntriesCount; i++) {
-            res |= this->OnIncrementalRefresh_FORTS_TLR(info->MDEntries[i]);
+            this->OnIncrementalRefresh_FORTS_TLR(info->MDEntries[i]);
         }
         info->ReleaseUnused();
-        return res;
     }
 
-    inline bool OnHearthBeatMessage(AstsHeartbeatInfo *info) {
+    inline void OnHearthBeatMessage(AstsHeartbeatInfo *info) {
 #ifdef COLLECT_STATISTICS
         ProgramStatistics::Current->Inc(Counters::cIncHbeatCount);
         ProgramStatistics::Total->Inc(Counters::cIncHbeatCount);
 #endif
         info->Clear();
-        return true;
     }
 
-    inline bool ApplyIncrementalCoreAsts() {
+    inline void ApplyIncrementalCoreAsts() {
         switch (this->m_fastProtocolManager->TemplateId()) {
             case FeedTemplateId::fmcIncrementalRefresh_OLR_FOND:
-                return this->OnIncrementalRefresh_OLR_FOND(
+                this->OnIncrementalRefresh_OLR_FOND(
                         static_cast<AstsIncrementalOLRFONDInfo*>(this->m_fastProtocolManager->LastDecodeInfo()));
+                break;
             case FeedTemplateId::fmcIncrementalRefresh_OLR_CURR:
-                return this->OnIncrementalRefresh_OLR_CURR(
+                this->OnIncrementalRefresh_OLR_CURR(
                         static_cast<AstsIncrementalOLRCURRInfo*>(this->m_fastProtocolManager->LastDecodeInfo()));
+                break;
             case FeedTemplateId::fmcIncrementalRefresh_TLR_FOND:
-                return this->OnIncrementalRefresh_TLR_FOND(
+                this->OnIncrementalRefresh_TLR_FOND(
                         static_cast<AstsIncrementalTLRFONDInfo*>(this->m_fastProtocolManager->LastDecodeInfo()));
+                break;
             case FeedTemplateId::fmcIncrementalRefresh_TLR_CURR:
-                return this->OnIncrementalRefresh_TLR_CURR(
+                this->OnIncrementalRefresh_TLR_CURR(
                         static_cast<AstsIncrementalTLRCURRInfo*>(this->m_fastProtocolManager->LastDecodeInfo()));
+                break;
             case FeedTemplateId::fmcIncrementalRefresh_MSR_FOND:
-                return this->OnIncrementalRefresh_MSR_FOND(
+                this->OnIncrementalRefresh_MSR_FOND(
                         static_cast<AstsIncrementalMSRFONDInfo*>(this->m_fastProtocolManager->LastDecodeInfo()));
+                break;
             case FeedTemplateId::fmcIncrementalRefresh_MSR_CURR:
-                return this->OnIncrementalRefresh_MSR_CURR(
+                this->OnIncrementalRefresh_MSR_CURR(
                         static_cast<AstsIncrementalMSRCURRInfo*>(this->m_fastProtocolManager->LastDecodeInfo()));
+                break;
             case FeedTemplateId::fcmHeartBeat:
-                return this->OnHearthBeatMessage(
+                this->OnHearthBeatMessage(
                         static_cast<AstsHeartbeatInfo*>(this->m_fastProtocolManager->LastDecodeInfo()));
+                break;
             default:
                 throw;
         }
     }
-    inline bool ApplyIncrementalCoreForts() {
+    inline void ApplyIncrementalCoreForts() {
         int templateId = this->m_fastProtocolManager->TemplateId();
         if (templateId == FeedTemplateId::fortsIncremental) {
-            if (this->m_id == FeedConnectionId::fcidObrForts)
-                return this->OnIncrementalRefresh_FORTS_OBR(
-                        static_cast<FortsDefaultIncrementalRefreshMessageInfo*>(this->m_fastProtocolManager->LastDecodeInfo()));
-            else
-                return this->OnIncrementalRefresh_FORTS_TLR(
-                        static_cast<FortsDefaultIncrementalRefreshMessageInfo*>(this->m_fastProtocolManager->LastDecodeInfo()));
+            if (this->m_id == FeedConnectionId::fcidObrForts) {
+                this->OnIncrementalRefresh_FORTS_OBR(
+                        static_cast<FortsDefaultIncrementalRefreshMessageInfo *>(this->m_fastProtocolManager->LastDecodeInfo()));
+                return;
+            }
+            else {
+                this->OnIncrementalRefresh_FORTS_TLR(
+                        static_cast<FortsDefaultIncrementalRefreshMessageInfo *>(this->m_fastProtocolManager->LastDecodeInfo()));
+                return;
+            }
         }
-        if(templateId == FeedTemplateId::fortsTradingSessionStatus)
-            return this->OnTradingSessionStatusForts(static_cast<FortsTradingSessionStatusInfo*>(this->m_fastProtocolManager->LastDecodeInfo()));
+        if(templateId == FeedTemplateId::fortsTradingSessionStatus) {
+            this->OnTradingSessionStatusForts(
+                    static_cast<FortsTradingSessionStatusInfo *>(this->m_fastProtocolManager->LastDecodeInfo()));
+            return;
+        }
         else if (templateId == FeedTemplateId::fortsHearthBeat) {
             ((FortsHeartbeatInfo*)this->m_fastProtocolManager->LastDecodeInfo())->Clear();
-            return true;
+            return;
         }
         else
             throw;
@@ -2990,7 +2995,7 @@ protected:
     inline bool ProcessSecurityStatus(unsigned char *buffer, int length, bool processMsgSeqNumber) {
         this->m_fastProtocolManager->SetNewBuffer(buffer, length);
         if(processMsgSeqNumber)
-            this->m_fastProtocolManager->ReadMsgSeqNumber();
+            this->m_fastProtocolManager->SkipMsgSeqNumber();
 
         this->m_fastProtocolManager->DecodeAstsHeader();
         if(this->m_fastProtocolManager->TemplateId() == FeedTemplateId::fmcSecurityStatus) {
@@ -3008,7 +3013,7 @@ protected:
     inline bool ProcessSecurityStatusForts(unsigned char *buffer, int length, bool processMsgSeqNumber) {
         this->m_fastProtocolManager->SetNewBuffer(buffer, length);
         if(processMsgSeqNumber)
-            this->m_fastProtocolManager->ReadMsgSeqNumber();
+            this->m_fastProtocolManager->SkipMsgSeqNumber();
 
         this->m_fastProtocolManager->DecodeFortsHeader();
         bool res = true;
@@ -3044,14 +3049,14 @@ protected:
         }
         return *((unsigned short*)(buffer + 1)) == 0xbc10;
     }
-    inline bool ProcessIncrementalAsts(FeedConnectionMessageInfo *info) {
+    inline void ProcessIncrementalAsts(FeedConnectionMessageInfo *info) {
         info->m_processed = true;
         this->m_fastProtocolManager->SetNewBuffer(info->m_address, info->m_size);
         if(!info->m_requested)
-            this->m_fastProtocolManager->ReadMsgSeqNumber();
+            this->m_fastProtocolManager->SkipMsgSeqNumber();
 
         this->m_fastProtocolManager->DecodeAsts();
-        return this->ApplyIncrementalCoreAsts();
+        this->ApplyIncrementalCoreAsts();
     }
     inline void CheckUpdateFortsIncrementalParams(int messageIndex) {
         if(this->m_fastProtocolManager->TemplateId() == FeedTemplateId::fortsIncremental) {
@@ -3077,7 +3082,7 @@ protected:
         info->m_processed = true;
         this->m_fastProtocolManager->SetNewBuffer(info->m_address, info->m_size);
         if(!info->m_requested)
-            this->m_fastProtocolManager->ReadMsgSeqNumber();
+            this->m_fastProtocolManager->SkipMsgSeqNumber();
 
         this->m_fastProtocolManager->DecodeForts();
 
@@ -3088,19 +3093,19 @@ protected:
         return true;
     }
 
-    inline bool ProcessIncrementalForts(FeedConnectionMessageInfo *info, int messageIndex, int lastNullMsgIndex) {
+    inline void ProcessIncrementalForts(FeedConnectionMessageInfo *info, int messageIndex, int lastNullMsgIndex) {
         unsigned char *buffer = info->m_address;
         if(this->ShouldSkipMessageForts(buffer, !info->m_requested)) {
             this->m_fortsIncrementalRouteFirst = messageIndex + 1;
             info->m_processed = true;
-            return true;  // TODO - take this message into account, becasue it determines feed alive
+            return;  // TODO - take this message into account, becasue it determines feed alive
         }
 
         info->m_processed = true;
 
         this->m_fastProtocolManager->SetNewBuffer(buffer, info->m_size);
         if(!info->m_requested)
-            this->m_fastProtocolManager->ReadMsgSeqNumber();
+            this->m_fastProtocolManager->SkipMsgSeqNumber();
 
         // there is no need to check
         this->m_fastProtocolManager->DecodeForts();
@@ -3113,7 +3118,7 @@ protected:
                 FortsDefaultIncrementalRefreshMessageInfo *ri = static_cast<FortsDefaultIncrementalRefreshMessageInfo*>(this->m_fastProtocolManager->LastDecodeInfo());
                 if ((ri->NullMap & FortsDefaultIncrementalRefreshMessageInfoNullIndices::LastFragmentNullIndex) == 0) {
                     ri->Clear();
-                    return true;
+                    return;
                 }
             }
             else {
@@ -3122,7 +3127,6 @@ protected:
         }
         this->ApplyIncrementalCoreForts();
         this->AfterApplyIncrementalForts(prevFortsRouteFirst);
-        return true;
     }
 
     inline bool ProcessSecurityStatus(FeedConnectionMessageInfo *info) {
