@@ -168,7 +168,17 @@ public:
         this->AddTabs();
         for(int quoteIndex = 0; quoteIndex < quotes->Count(); quoteIndex++) {
             T *info = quotes->Item(quoteIndex);
-            printf("Quote %s Price %g Size %g\n", this->GetString(info->MDEntryID, info->MDEntryIDLength, 0), info->MDEntryPx.Value, info->MDEntrySize.Value);
+            printf("Quote %s Price %g Size %g\n", this->GetString(info->MDEntryID, info->MDEntryIDLength, 0), info->MDEntryPx.Calculate(), info->MDEntrySize.Calculate());
+        }
+        this->RemoveTabs();
+        printf("End %s\n", quotesName);
+    }
+    template<typename T> void PrintQuotes(const char *quotesName, HrPointerListLite<T> *quotes) {
+        printf("Start %s\n", quotesName);
+        this->AddTabs();
+        for(int quoteIndex = 0; quoteIndex < quotes->Count(); quoteIndex++) {
+            T *info = quotes->Item(quoteIndex);
+            printf("%d Quote %s Price %g Size %g\n", quoteIndex, this->GetString(info->MDEntryID, info->MDEntryIDLength, 0), info->MDEntryPx.Calculate(), info->MDEntrySize.Calculate());
         }
         this->RemoveTabs();
         printf("End %s\n", quotesName);
@@ -178,7 +188,7 @@ public:
         this->AddTabs();
         for(int quoteIndex = 0; quoteIndex < quotes->Count(); quoteIndex++) {
             T *info = quotes->Item(quoteIndex);
-            printf("Quote %s Price %g Size %g\n", this->GetString(info->MDEntryID, info->MDEntryIDLength, 0), info->MDEntryPx.Value, info->MDEntrySize.Value);
+            printf("Quote %s Price %g Size %g\n", this->GetString(info->MDEntryID, info->MDEntryIDLength, 0), info->MDEntryPx.Calculate(), info->MDEntrySize.Calculate());
         }
         this->RemoveTabs();
         printf("End %s\n", quotesName);

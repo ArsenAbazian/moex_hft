@@ -16,13 +16,9 @@ class HashTableItemInfo {
 public:
     void                    *m_object;
     void                    *m_owner;
-    union {
-        struct {
-            const char      *m_stringId;
-            unsigned int    m_length;
-        };
-        UINT64              m_intId;
-    };
+    const char              *m_stringId;
+    unsigned int            m_length;
+    UINT64                  m_intId;
 
     HashTableItemInfo() :
             m_object(0),
@@ -39,7 +35,10 @@ public:
     }
 };
 
+class HashTableTester;
 class HashTable {
+    friend class HashTableTester;
+
     static const int m_itemsCount = 1000000;
     LinkedPointer<HashTableItemInfo>                        **m_bucket;
     PointerList<HashTableItemInfo>                          *m_pool;
@@ -50,7 +49,7 @@ class HashTable {
     inline void Remove(LinkedPointer<HashTableItemInfo> *node) { // not bidirectional
         LinkedPointer<HashTableItemInfo> *prev = node->Prev();
         LinkedPointer<HashTableItemInfo> *next = node->Next();
-        prev->Next(next);
+        prev->Connect(next);
         node->Data()->Clear();
     }
     inline LinkedPointer<HashTableItemInfo> * AddPointer(UINT64 hash) {
@@ -185,7 +184,13 @@ public:
     inline void RemovePointer(UINT64 hash, LinkedPointer<HashTableItemInfo> *ptr) {
         LinkedPointer<HashTableItemInfo> **start = this->m_bucket + hash;
         if((*start) == ptr) { // first item
-            (*start) = ptr->Next();
+            if(ptr->Next() != 0) {
+                (*start) = ptr->Next();
+                (*start)->Prev(0);
+            }
+            else {
+                (*start) = 0;
+            }
             this->m_pool->Push(ptr);
             this->m_count--;
             return;

@@ -956,7 +956,7 @@ namespace prebuild {
 
 			foreach(StructureInfo str in Structures) {
 				WriteLine("\tinline " + str.Name + "* " + str.GetFreeMethodName + "() {");
-				WriteLine("\t\treturn this->" + str.ValueName + "->NewItem();");
+				WriteLine("\t\treturn this->" + str.ValueName + "->NewItemUnsafe();");
 				WriteLine("\t}");
 				WriteLine("");
 				WriteLine("\tinline AutoAllocatePointerList<" + str.Name + ">* " + str.GetListMethodName + "() {");
@@ -1009,6 +1009,8 @@ namespace prebuild {
 			public string NullIndicesClassName { 
 				get{ return Name + "NullIndices"; }
 			}
+
+			public int TemplateId { get { return int.Parse(Node.Attributes ["id"].Value); } }
 
 			public XmlNode Node { get; set; }
 
@@ -1442,6 +1444,56 @@ namespace prebuild {
 			}
 		}
 
+		private uint PackTemplateId(uint value) {
+			uint encoded = 0;
+
+			encoded |= ((value & 0x7f) | 0x80);
+			value >>= 7;
+
+			if (value == 0)
+				return encoded;
+
+			encoded <<= 8;
+			encoded |= value & 0x7f;
+			value >>= 7;
+
+			if (value == 0)
+				return encoded;
+
+			encoded <<= 8;
+			encoded |= value & 0x7f;
+			value >>= 7;
+
+			if (value == 0)
+				return encoded;
+
+			encoded <<= 8;
+			encoded |= value & 0x7f;
+			value >>= 7;
+
+			if (value == 0)
+				return encoded;
+			
+			throw new NotImplementedException ();
+		}
+
+		private string GetPacketTemplateIdString(int value) {
+			uint packetValue = PackTemplateId ((uint)value);
+			return string.Format ("0x{0:x4}", packetValue);
+		}
+
+		private void WriteTemplateIdClasses(List<StructureInfo> structures) {
+			WriteLine("class " + Prefix + "PackedTemplateId {");
+			WriteLine ("public:");
+			foreach (StructureInfo info in structures) {
+				if (info.IsSequence)
+					continue;
+				WriteLine ("\tstatic const UINT32 " + info.Name + " = " + GetPacketTemplateIdString(info.TemplateId) + ";");
+			}
+			WriteLine ("};");
+
+		}
+
 		private void WriteNullIndexClasses(List<StructureInfo> structures) {
 			foreach(StructureInfo info in structures) {
 				bool hasNullableIndex = false;
@@ -1482,6 +1534,7 @@ namespace prebuild {
 			WriteObjectsAllocationInfo();
 			WritePresenceIndexClasses(structures);
 			WriteNullIndexClasses(structures);
+			WriteTemplateIdClasses(structures);
 		}
 
 		int GetMaxSize(XmlNode field) {
@@ -1873,7 +1926,7 @@ namespace prebuild {
 			WriteLine("\t\tthis->NullMap = 0;");
 
 			WriteLine("\t\tthis->Used = false;");
-			WriteLine("\t\tthis->Allocator->FreeItem(this->Pointer);");
+			WriteLine("\t\tthis->Allocator->FreeItemUnsafe(this->Pointer);");
 			foreach(XmlNode field in info.Fields) {
 				if(field.Name != "sequence")
 					continue;
@@ -1888,7 +1941,7 @@ namespace prebuild {
 			WriteLine("");
 			WriteLine("\t\tthis->PresenceMap = 0;");
 			WriteLine("\t\tthis->NullMap = 0;");
-			WriteLine("\t\tthis->Allocator->FreeItem(this->Pointer);");
+			WriteLine("\t\tthis->Allocator->FreeItemUnsafe(this->Pointer);");
 			foreach(XmlNode field in info.Fields) {
 				if(field.Name != "sequence")
 					continue;
@@ -2697,7 +2750,7 @@ namespace prebuild {
 			if(ShouldWriteNullCheckCode(value)) {
 				string nullIndex = "NULL_MAP_INDEX" + CalcNullIndex (value);
 				WriteLine (tabString + "if(!" + GetMethodName(value, "ReadInt32_Optional") + "(&(" + info + "->" + Name(value) + ")))");
-				WriteLine(tabString + "\t" + info + "->NullMap |= NULL_MAP_INDEX" + CalcNullIndex(value) + ";");
+				WriteLine(tabString + "\t" + info + "->NullMap |= " + nullIndex + ";");
 				return;
 			}
 			if (HasOptionalPresence (value))
@@ -2714,7 +2767,7 @@ namespace prebuild {
 			if(ShouldWriteNullCheckCode(value)) {
 				string nullIndex = "NULL_MAP_INDEX" + CalcNullIndex (value);
 				WriteLine (tabString + "if(!" + GetMethodName(value, "ReadUInt32_Optional") + "(&(" + info + "->" + Name(value) + ")))");
-				WriteLine(tabString + "\t" + info + "->NullMap |= NULL_MAP_INDEX" + CalcNullIndex(value) + ";");
+				WriteLine(tabString + "\t" + info + "->NullMap |= " + nullIndex + ";");
 				return;
 			}
 			if (HasOptionalPresence (value))

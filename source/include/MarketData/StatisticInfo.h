@@ -196,6 +196,7 @@ public:
         }
         list->Clear();
     }
+    inline void DebugCheckHashTable() { }
     inline void Clear() {
          this->m_buyQuotes->Clear();
          this->m_sellQuotes->Clear();

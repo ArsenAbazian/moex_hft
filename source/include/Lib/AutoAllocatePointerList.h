@@ -72,6 +72,19 @@ public:
     void AddCount(int addCount) {
         this->m_addCapacity = addCount;
     }
+    inline LinkedPointer<T>* NewPointerUnsafe() {
+        this->m_count++;
+        LinkedPointer<T> *node = this->m_head;
+        this->m_head = this->m_head->Next();
+        node->Released(false);
+        if(this->m_head == 0) {
+            printf("!!!usafe unexpected append %s count = %d, additional capacity = %d!!!\n", this->m_name, this->m_count, this->m_addCapacity); //TODO remove debug info
+            this->m_head = CreatePointer();
+            this->m_tail = this->CreatePointers(this->m_head, this->m_addCapacity);
+            this->m_capacity += this->m_addCapacity;
+        }
+        return node;
+    }
     inline LinkedPointer<T>* NewPointer() {
         this->m_count++;
         LinkedPointer<T> *node = this->m_head;
@@ -89,6 +102,18 @@ public:
     }
     inline T* NewItem() {
         return this->NewPointer()->Data();
+    }
+    inline T* NewItemUnsafe() {
+        return this->NewPointerUnsafe()->Data();
+    }
+    inline void FreeItemUnsafe(LinkedPointer<T> *node) {
+        if(node->Released())
+            return;
+        node->Released(true);
+        this->m_count--;
+        this->m_tail->Next(node);
+        this->m_tail = node;
+        this->m_tail->Next(0);
     }
     inline void FreeItem(LinkedPointer<T> *node) {
         if(node->Data()->Used || node->Released())

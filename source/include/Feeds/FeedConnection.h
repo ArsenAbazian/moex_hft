@@ -2907,40 +2907,51 @@ protected:
         info->Clear();
     }
 
-    inline void ApplyIncrementalCoreAsts() {
-        switch (this->m_fastProtocolManager->TemplateId()) {
-            case FeedTemplateId::fmcIncrementalRefresh_OLR_FOND:
-                this->OnIncrementalRefresh_OLR_FOND(
-                        static_cast<AstsIncrementalOLRFONDInfo*>(this->m_fastProtocolManager->LastDecodeInfo()));
-                break;
-            case FeedTemplateId::fmcIncrementalRefresh_OLR_CURR:
-                this->OnIncrementalRefresh_OLR_CURR(
-                        static_cast<AstsIncrementalOLRCURRInfo*>(this->m_fastProtocolManager->LastDecodeInfo()));
-                break;
-            case FeedTemplateId::fmcIncrementalRefresh_TLR_FOND:
-                this->OnIncrementalRefresh_TLR_FOND(
-                        static_cast<AstsIncrementalTLRFONDInfo*>(this->m_fastProtocolManager->LastDecodeInfo()));
-                break;
-            case FeedTemplateId::fmcIncrementalRefresh_TLR_CURR:
-                this->OnIncrementalRefresh_TLR_CURR(
-                        static_cast<AstsIncrementalTLRCURRInfo*>(this->m_fastProtocolManager->LastDecodeInfo()));
-                break;
-            case FeedTemplateId::fmcIncrementalRefresh_MSR_FOND:
-                this->OnIncrementalRefresh_MSR_FOND(
-                        static_cast<AstsIncrementalMSRFONDInfo*>(this->m_fastProtocolManager->LastDecodeInfo()));
-                break;
-            case FeedTemplateId::fmcIncrementalRefresh_MSR_CURR:
-                this->OnIncrementalRefresh_MSR_CURR(
-                        static_cast<AstsIncrementalMSRCURRInfo*>(this->m_fastProtocolManager->LastDecodeInfo()));
-                break;
-            case FeedTemplateId::fcmHeartBeat:
-                this->OnHearthBeatMessage(
-                        static_cast<AstsHeartbeatInfo*>(this->m_fastProtocolManager->LastDecodeInfo()));
-                break;
+    inline void ApplyIncrementalCoreAsts2(UINT32 templateId) {
+        switch(templateId) {
+            case AstsPackedTemplateId::AstsIncrementalTLRCURRInfo:
+                this->OnIncrementalRefresh_TLR_CURR(this->m_fastProtocolManager->DecodeAstsIncrementalTLRCURR());
+                return;
+            case AstsPackedTemplateId::AstsIncrementalTLRFONDInfo:
+                this->OnIncrementalRefresh_TLR_FOND(this->m_fastProtocolManager->DecodeAstsIncrementalTLRFOND());
+                return;
+            case AstsPackedTemplateId::AstsIncrementalMSRCURRInfo:
+                this->OnIncrementalRefresh_MSR_CURR(this->m_fastProtocolManager->DecodeAstsIncrementalMSRCURR());
+                return;
+            case AstsPackedTemplateId::AstsIncrementalMSRFONDInfo:
+                this->OnIncrementalRefresh_MSR_FOND(this->m_fastProtocolManager->DecodeAstsIncrementalMSRFOND());
+                return;
+            case AstsPackedTemplateId::AstsHeartbeatInfo:
+                return;
             default:
                 throw;
         }
     }
+
+    inline void ApplyIncrementalCoreAsts() {
+        this->m_fastProtocolManager->ParsePresenceMap();
+        UINT32 templateId = this->m_fastProtocolManager->ReadPacketTemplateId();
+        if(this->m_id == FeedConnectionId::fcidOlrCurr) {
+            if(templateId == AstsPackedTemplateId::AstsIncrementalOLRCURRInfo) {
+                this->OnIncrementalRefresh_OLR_CURR(this->m_fastProtocolManager->DecodeAstsIncrementalOLRCURR());
+                return;
+            }
+            if(templateId == AstsPackedTemplateId::AstsHeartbeatInfo)
+                return;
+            throw;
+        }
+        if(this->m_id == FeedConnectionId::fcidOlrFond) {
+            if(templateId == AstsPackedTemplateId::AstsIncrementalOLRFONDInfo) {
+                this->OnIncrementalRefresh_OLR_FOND(this->m_fastProtocolManager->DecodeAstsIncrementalOLRFOND());
+                return;
+            }
+            if(templateId == AstsPackedTemplateId::AstsHeartbeatInfo)
+                return;
+            throw;
+        }
+        this->ApplyIncrementalCoreAsts2(templateId);
+    }
+
     inline void ApplyIncrementalCoreForts() {
         int templateId = this->m_fastProtocolManager->TemplateId();
         if (templateId == FeedTemplateId::fortsIncremental) {
@@ -3055,7 +3066,7 @@ protected:
         if(!info->m_requested)
             this->m_fastProtocolManager->SkipMsgSeqNumber();
 
-        this->m_fastProtocolManager->DecodeAsts();
+        //this->m_fastProtocolManager->DecodeAsts();
         this->ApplyIncrementalCoreAsts();
     }
     inline void CheckUpdateFortsIncrementalParams(int messageIndex) {

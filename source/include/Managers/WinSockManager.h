@@ -581,8 +581,8 @@ public:
         this->OnRecv();
     }
     inline bool RecvUDPCore(unsigned char *buffer) {
-        this->m_recvBytes = 0;
-        this->m_recvSize = recvfrom(this->m_socket, this->m_recvBytes, 8192, 0, 0, 0);
+        this->m_recvBytes = buffer;
+        this->m_recvSize = recv(this->m_socket, this->m_recvBytes, 8192, 0);
         if(this->m_recvSize > 0) {
             this->OnRecv();
             return true;

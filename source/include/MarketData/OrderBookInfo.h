@@ -92,7 +92,7 @@ public:
         HrLinkedPointer<T> *node = list->Start();
         while(true) {
             T *data = node->Data();
-            this->FreePointer(data);
+            this->FreePointer(data, list);
             data->Clear();
             if(node == list->End())
                 break;
@@ -100,6 +100,7 @@ public:
         }
         list->Clear();
     }
+    inline void DebugCheckHashTable() { }
     inline void Clear() {
         Clear(this->m_sellQuoteList);
         Clear(this->m_buyQuoteList);
@@ -128,24 +129,17 @@ public:
         return this->m_sellQuoteManager->HrInsertBeforeAscending(price);
 #endif
     }
-    inline LinkedPointer<HashTableItemInfo>* GetPointer(T *info) {
-        return HashTable::Default->GetPointer(this, info->MDEntryID);
+    inline LinkedPointer<HashTableItemInfo>* GetPointer(T *info, HrPointerListLite<T> *list) {
+        return HashTable::Default->GetPointer(list, info->MDEntryID);
     }
     inline void FreePointer(LinkedPointer<HashTableItemInfo> *hashItem) {
         HashTable::Default->RemovePointer(hashItem);
     }
-    inline void FreePointer(T *data) {
-        HashTable::Default->Remove(this, data->MDEntryID);
+    inline void FreePointer(T *data, HrPointerListLite<T> *list) {
+        HashTable::Default->Remove(list, data->MDEntryID);
     }
-    inline LinkedPointer<HashTableItemInfo>* AddPointer(T *info) {
-        return HashTable::Default->Add(this, 0, info->MDEntryID);
-    }
-    inline LinkedPointer<HashTableItemInfo>* AddPointer(HrPointerListLite<T> *list, T *info) {
-        LinkedPointer<T> *item = list->Add(info);
-        return HashTable::Default->Add(this, item, info->MDEntryID);
-    }
-    inline LinkedPointer<HashTableItemInfo>* AddPointer(HrLinkedPointer<T> *ptr, T *info) {
-        return HashTable::Default->Add(this, ptr, info->MDEntryID);
+    inline LinkedPointer<HashTableItemInfo>* AddPointer(HrLinkedPointer<T> *ptr, T *info, HrPointerListLite<T> *list) {
+        return HashTable::Default->Add(list, ptr, info->MDEntryID);
     }
     inline HrLinkedPointer<T>* GetQuote(HrPointerListLite<T> *list, T *info) {
         LinkedPointer<HashTableItemInfo> *hashItem = this->GetPointer(info);
@@ -153,14 +147,14 @@ public:
             // such thing could happen because of some packet lost
             // so please do not return null :)
             HrLinkedPointer<T> *res = list->Add(info);
-            hashItem = AddPointer(list, info);
+            hashItem = AddPointer(res, list, info);
             return res;
         }
         return static_cast<HrLinkedPointer<T>*>(hashItem->Data()->m_object);
     }
 
     inline void RemoveQuote(HrPointerListLite<T> *list, T *info) {
-        LinkedPointer<HashTableItemInfo> *hashItem = this->GetPointer(info);
+        LinkedPointer<HashTableItemInfo> *hashItem = this->GetPointer(info, list);
         if(hashItem == 0) {
             // such thing could happen because of some packet lost
             // so please do not return null :)
@@ -188,7 +182,7 @@ public:
     inline void ChangeBuyQuote(T *info) {
         DebugInfoManager::Default->Log(this->m_symbolInfo->Symbol(), this->m_sessionInt, "Change BuyQuote", info->MDEntryID, &(info->MDEntryPx), info->MDEntrySize);
 
-        LinkedPointer<HashTableItemInfo> *hashItem = this->GetPointer(info);
+        LinkedPointer<HashTableItemInfo> *hashItem = this->GetPointer(info, this->m_buyQuoteList);
         HrLinkedPointer<T> *ptr;
         if(hashItem != 0) {
             ptr = static_cast<HrLinkedPointer<T>*>(hashItem->Data()->m_object);
@@ -207,12 +201,12 @@ public:
         printf("ERROR: %" PRIu64 " entry not found\n", info->MDEntryID);
         info->Used = true;
         ptr = InsertBuyQuote(&(info->MDEntryPx));
-        hashItem = AddPointer(ptr, info);
+        hashItem = AddPointer(ptr, info, this->m_buyQuoteList);
     }
 
     inline void ChangeSellQuote(T *info) {
         DebugInfoManager::Default->Log(this->m_symbolInfo->Symbol(), this->m_sessionInt, "Change SellQuote", info->MDEntryID, &(info->MDEntryPx), info->MDEntrySize);
-        LinkedPointer<HashTableItemInfo> *hashItem = this->GetPointer(info);
+        LinkedPointer<HashTableItemInfo> *hashItem = this->GetPointer(info, this->m_sellQuoteList);
         HrLinkedPointer<T> *ptr;
         if(hashItem != 0) {
             ptr = static_cast<HrLinkedPointer<T>*>(hashItem->Data()->m_object);
@@ -231,14 +225,14 @@ public:
         printf("ERROR: %" PRIu64 " entry not found\n", info->MDEntryID);
         info->Used = true;
         ptr = InsertSellQuote(&(info->MDEntryPx));
-        hashItem = AddPointer(ptr, info);
+        hashItem = AddPointer(ptr, info, this->m_sellQuoteList);
     }
 
     inline HrLinkedPointer<T>* AddBuyQuote(T *item) {
         DebugInfoManager::Default->Log(this->m_symbolInfo->Symbol(), this->m_sessionInt, "Add BuyQuote", item->MDEntryID, &(item->MDEntryPx), item->MDEntrySize);
         item->Used = true;
         HrLinkedPointer<T> *ptr = InsertBuyQuote(&(item->MDEntryPx));
-        AddPointer(ptr, item);
+        AddPointer(ptr, item, this->m_buyQuoteList);
         ptr->Data(item);
         return ptr;
     }
@@ -247,7 +241,7 @@ public:
         DebugInfoManager::Default->Log(this->m_symbolInfo->Symbol(), this->m_sessionInt, "Add SellQuote", item->MDEntryID, &(item->MDEntryPx), item->MDEntrySize);
         item->Used = true;
         HrLinkedPointer<T> *ptr = InsertSellQuote(&(item->MDEntryPx));
-        AddPointer(ptr, item);
+        AddPointer(ptr, item, this->m_sellQuoteList);
         ptr->Data(item);
         return ptr;
     }

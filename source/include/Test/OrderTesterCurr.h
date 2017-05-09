@@ -3348,9 +3348,9 @@ public:
         info->ReleaseUnused();
         if(info->Allocator->Count() != 0)
             throw;
-        info->ReleaseUnused();
-        if(info->Allocator->Count() != 0)
-            throw;
+        //info->ReleaseUnused();
+        //if(info->Allocator->Count() != 0)
+        //    throw;
     }
 
     void TestInfoAndItemInfoUsageAndAllocationCurr_Inc_5() {

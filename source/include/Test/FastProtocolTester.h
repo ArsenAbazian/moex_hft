@@ -42,8 +42,13 @@ public:
     void TestReadUInt64();
     void TestParsePresenceMap();
     void TestPerformance();
+    void TestSkipToNextField();
 
     void Test() {
+        TestStringCopy();
+        TestReadString_Mandatory();
+        TestReadString_Optional();
+        TestSkipToNextField();
         TestReadUInt32_Mandatory();
         TestReadUInt32_Mandatory_Predict1();
         TestReadUInt32_Optional2();
@@ -64,9 +69,6 @@ public:
         TestReadInt64_Mandatory();
 
         TestMessages();
-        TestStringCopy();
-        TestReadString_Optional();
-        TestReadString_Mandatory();
         TestReadByteVector_Optional();
         TestReadByteVector_Mandatory();
         TestReadDecimal_Optional();

@@ -7,6 +7,7 @@
 #include <inttypes.h>
 #include "../ProgramStatistics.h"
 #include <immintrin.h>
+#include <x86intrin.h>
 
 class FastProtocolManager;
 class OrderTesterFond;
@@ -334,7 +335,7 @@ public:
 		return this->m_fortsSnapshotInfo;
 	}
 	inline FortsDefaultSnapshotMessageMDEntriesItemInfo* GetFreeFortsDefaultSnapshotMessageMDEntriesItemInfo() {
-		return this->m_fortsDefaultSnapshotMessageMDEntriesItems->NewItem();
+		return this->m_fortsDefaultSnapshotMessageMDEntriesItems->NewItemUnsafe();
 	}
 
 	inline AutoAllocatePointerList<FortsDefaultSnapshotMessageMDEntriesItemInfo>* GetFortsDefaultSnapshotMessageMDEntriesItemInfoPool() {
@@ -342,7 +343,7 @@ public:
 	}
 
 	inline FortsDefaultSnapshotMessageInfo* GetFreeFortsDefaultSnapshotMessageInfo() {
-		return this->m_fortsDefaultSnapshotMessage->NewItem();
+		return this->m_fortsDefaultSnapshotMessage->NewItemUnsafe();
 	}
 
 	inline AutoAllocatePointerList<FortsDefaultSnapshotMessageInfo>* GetFortsDefaultSnapshotMessageInfoPool() {
@@ -350,7 +351,7 @@ public:
 	}
 
 	inline FortsSecurityDefinitionMDFeedTypesItemInfo* GetFreeFortsSecurityDefinitionMDFeedTypesItemInfo() {
-		return this->m_fortsSecurityDefinitionMDFeedTypesItems->NewItem();
+		return this->m_fortsSecurityDefinitionMDFeedTypesItems->NewItemUnsafe();
 	}
 
 	inline AutoAllocatePointerList<FortsSecurityDefinitionMDFeedTypesItemInfo>* GetFortsSecurityDefinitionMDFeedTypesItemInfoPool() {
@@ -358,7 +359,7 @@ public:
 	}
 
 	inline FortsSecurityDefinitionUnderlyingsItemInfo* GetFreeFortsSecurityDefinitionUnderlyingsItemInfo() {
-		return this->m_fortsSecurityDefinitionUnderlyingsItems->NewItem();
+		return this->m_fortsSecurityDefinitionUnderlyingsItems->NewItemUnsafe();
 	}
 
 	inline AutoAllocatePointerList<FortsSecurityDefinitionUnderlyingsItemInfo>* GetFortsSecurityDefinitionUnderlyingsItemInfoPool() {
@@ -366,7 +367,7 @@ public:
 	}
 
 	inline FortsSecurityDefinitionInstrumentLegsItemInfo* GetFreeFortsSecurityDefinitionInstrumentLegsItemInfo() {
-		return this->m_fortsSecurityDefinitionInstrumentLegsItems->NewItem();
+		return this->m_fortsSecurityDefinitionInstrumentLegsItems->NewItemUnsafe();
 	}
 
 	inline AutoAllocatePointerList<FortsSecurityDefinitionInstrumentLegsItemInfo>* GetFortsSecurityDefinitionInstrumentLegsItemInfoPool() {
@@ -374,7 +375,7 @@ public:
 	}
 
 	inline FortsSecurityDefinitionInstrumentAttributesItemInfo* GetFreeFortsSecurityDefinitionInstrumentAttributesItemInfo() {
-		return this->m_fortsSecurityDefinitionInstrumentAttributesItems->NewItem();
+		return this->m_fortsSecurityDefinitionInstrumentAttributesItems->NewItemUnsafe();
 	}
 
 	inline AutoAllocatePointerList<FortsSecurityDefinitionInstrumentAttributesItemInfo>* GetFortsSecurityDefinitionInstrumentAttributesItemInfoPool() {
@@ -382,7 +383,7 @@ public:
 	}
 
 	inline FortsSecurityDefinitionEvntGrpItemInfo* GetFreeFortsSecurityDefinitionEvntGrpItemInfo() {
-		return this->m_fortsSecurityDefinitionEvntGrpItems->NewItem();
+		return this->m_fortsSecurityDefinitionEvntGrpItems->NewItemUnsafe();
 	}
 
 	inline AutoAllocatePointerList<FortsSecurityDefinitionEvntGrpItemInfo>* GetFortsSecurityDefinitionEvntGrpItemInfoPool() {
@@ -390,7 +391,7 @@ public:
 	}
 
 	inline FortsSecurityDefinitionInfo* GetFreeFortsSecurityDefinitionInfo() {
-		return this->m_fortsSecurityDefinition->NewItem();
+		return this->m_fortsSecurityDefinition->NewItemUnsafe();
 	}
 
 	inline AutoAllocatePointerList<FortsSecurityDefinitionInfo>* GetFortsSecurityDefinitionInfoPool() {
@@ -398,7 +399,7 @@ public:
 	}
 
 	inline FortsSecurityDefinitionUpdateReportInfo* GetFreeFortsSecurityDefinitionUpdateReportInfo() {
-		return this->m_fortsSecurityDefinitionUpdateReport->NewItem();
+		return this->m_fortsSecurityDefinitionUpdateReport->NewItemUnsafe();
 	}
 
 	inline AutoAllocatePointerList<FortsSecurityDefinitionUpdateReportInfo>* GetFortsSecurityDefinitionUpdateReportInfoPool() {
@@ -406,7 +407,7 @@ public:
 	}
 
 	inline FortsSecurityStatusInfo* GetFreeFortsSecurityStatusInfo() {
-		return this->m_fortsSecurityStatus->NewItem();
+		return this->m_fortsSecurityStatus->NewItemUnsafe();
 	}
 
 	inline AutoAllocatePointerList<FortsSecurityStatusInfo>* GetFortsSecurityStatusInfoPool() {
@@ -414,7 +415,7 @@ public:
 	}
 
 	inline FortsHeartbeatInfo* GetFreeFortsHeartbeatInfo() {
-		return this->m_fortsHeartbeat->NewItem();
+		return this->m_fortsHeartbeat->NewItemUnsafe();
 	}
 
 	inline AutoAllocatePointerList<FortsHeartbeatInfo>* GetFortsHeartbeatInfoPool() {
@@ -422,7 +423,7 @@ public:
 	}
 
 	inline FortsSequenceResetInfo* GetFreeFortsSequenceResetInfo() {
-		return this->m_fortsSequenceReset->NewItem();
+		return this->m_fortsSequenceReset->NewItemUnsafe();
 	}
 
 	inline AutoAllocatePointerList<FortsSequenceResetInfo>* GetFortsSequenceResetInfoPool() {
@@ -430,7 +431,7 @@ public:
 	}
 
 	inline FortsTradingSessionStatusInfo* GetFreeFortsTradingSessionStatusInfo() {
-		return this->m_fortsTradingSessionStatus->NewItem();
+		return this->m_fortsTradingSessionStatus->NewItemUnsafe();
 	}
 
 	inline AutoAllocatePointerList<FortsTradingSessionStatusInfo>* GetFortsTradingSessionStatusInfoPool() {
@@ -438,7 +439,7 @@ public:
 	}
 
 	inline FortsNewsNewsTextItemInfo* GetFreeFortsNewsNewsTextItemInfo() {
-		return this->m_fortsNewsNewsTextItems->NewItem();
+		return this->m_fortsNewsNewsTextItems->NewItemUnsafe();
 	}
 
 	inline AutoAllocatePointerList<FortsNewsNewsTextItemInfo>* GetFortsNewsNewsTextItemInfoPool() {
@@ -446,7 +447,7 @@ public:
 	}
 
 	inline FortsNewsInfo* GetFreeFortsNewsInfo() {
-		return this->m_fortsNews->NewItem();
+		return this->m_fortsNews->NewItemUnsafe();
 	}
 
 	inline AutoAllocatePointerList<FortsNewsInfo>* GetFortsNewsInfoPool() {
@@ -454,7 +455,7 @@ public:
 	}
 
 	inline FortsOrdersLogMDEntriesItemInfo* GetFreeFortsOrdersLogMDEntriesItemInfo() {
-		return this->m_fortsOrdersLogMDEntriesItems->NewItem();
+		return this->m_fortsOrdersLogMDEntriesItems->NewItemUnsafe();
 	}
 
 	inline AutoAllocatePointerList<FortsOrdersLogMDEntriesItemInfo>* GetFortsOrdersLogMDEntriesItemInfoPool() {
@@ -462,7 +463,7 @@ public:
 	}
 
 	inline FortsOrdersLogInfo* GetFreeFortsOrdersLogInfo() {
-		return this->m_fortsOrdersLog->NewItem();
+		return this->m_fortsOrdersLog->NewItemUnsafe();
 	}
 
 	inline AutoAllocatePointerList<FortsOrdersLogInfo>* GetFortsOrdersLogInfoPool() {
@@ -470,7 +471,7 @@ public:
 	}
 
 	inline FortsOrdersBookMDEntriesItemInfo* GetFreeFortsOrdersBookMDEntriesItemInfo() {
-		return this->m_fortsOrdersBookMDEntriesItems->NewItem();
+		return this->m_fortsOrdersBookMDEntriesItems->NewItemUnsafe();
 	}
 
 	inline AutoAllocatePointerList<FortsOrdersBookMDEntriesItemInfo>* GetFortsOrdersBookMDEntriesItemInfoPool() {
@@ -478,7 +479,7 @@ public:
 	}
 
 	inline FortsOrdersBookInfo* GetFreeFortsOrdersBookInfo() {
-		return this->m_fortsOrdersBook->NewItem();
+		return this->m_fortsOrdersBook->NewItemUnsafe();
 	}
 
 	inline AutoAllocatePointerList<FortsOrdersBookInfo>* GetFortsOrdersBookInfoPool() {
@@ -486,7 +487,7 @@ public:
 	}
 
 	inline FortsLogonInfo* GetFreeFortsLogonInfo() {
-		return this->m_fortsLogon->NewItem();
+		return this->m_fortsLogon->NewItemUnsafe();
 	}
 
 	inline AutoAllocatePointerList<FortsLogonInfo>* GetFortsLogonInfoPool() {
@@ -494,7 +495,7 @@ public:
 	}
 
 	inline FortsLogoutInfo* GetFreeFortsLogoutInfo() {
-		return this->m_fortsLogout->NewItem();
+		return this->m_fortsLogout->NewItemUnsafe();
 	}
 
 	inline AutoAllocatePointerList<FortsLogoutInfo>* GetFortsLogoutInfoPool() {
@@ -502,7 +503,7 @@ public:
 	}
 
 	inline FortsDefaultIncrementalRefreshMessageInfo* GetFreeFortsDefaultIncrementalRefreshMessageInfo() {
-		return this->m_fortsDefaultIncrementalRefreshMessage->NewItem();
+		return this->m_fortsDefaultIncrementalRefreshMessage->NewItemUnsafe();
 	}
 
 	inline AutoAllocatePointerList<FortsDefaultIncrementalRefreshMessageInfo>* GetFortsDefaultIncrementalRefreshMessageInfoPool() {
@@ -703,7 +704,7 @@ public:
 		return this->m_astsSnapshotInfo;
 	}
 	inline AstsLogonInfo* GetFreeAstsLogonInfo() {
-		return this->m_astsLogon->NewItem();
+		return this->m_astsLogon->NewItemUnsafe();
 	}
 
 	inline AutoAllocatePointerList<AstsLogonInfo>* GetAstsLogonInfoPool() {
@@ -711,7 +712,7 @@ public:
 	}
 
 	inline AstsLogoutInfo* GetFreeAstsLogoutInfo() {
-		return this->m_astsLogout->NewItem();
+		return this->m_astsLogout->NewItemUnsafe();
 	}
 
 	inline AutoAllocatePointerList<AstsLogoutInfo>* GetAstsLogoutInfoPool() {
@@ -719,7 +720,7 @@ public:
 	}
 
 	inline AstsGenericItemInfo* GetFreeAstsGenericItemInfo() {
-		return this->m_astsGenericItems->NewItem();
+		return this->m_astsGenericItems->NewItemUnsafe();
 	}
 
 	inline AutoAllocatePointerList<AstsGenericItemInfo>* GetAstsGenericItemInfoPool() {
@@ -727,7 +728,7 @@ public:
 	}
 
 	inline AstsGenericInfo* GetFreeAstsGenericInfo() {
-		return this->m_astsGeneric->NewItem();
+		return this->m_astsGeneric->NewItemUnsafe();
 	}
 
 	inline AutoAllocatePointerList<AstsGenericInfo>* GetAstsGenericInfoPool() {
@@ -735,7 +736,7 @@ public:
 	}
 
 	inline AstsOLSFONDItemInfo* GetFreeAstsOLSFONDItemInfo() {
-		return this->m_astsOLSFONDItems->NewItem();
+		return this->m_astsOLSFONDItems->NewItemUnsafe();
 	}
 
 	inline AutoAllocatePointerList<AstsOLSFONDItemInfo>* GetAstsOLSFONDItemInfoPool() {
@@ -743,7 +744,7 @@ public:
 	}
 
 	inline AstsOLSFONDInfo* GetFreeAstsOLSFONDInfo() {
-		return this->m_astsOLSFOND->NewItem();
+		return this->m_astsOLSFOND->NewItemUnsafe();
 	}
 
 	inline AutoAllocatePointerList<AstsOLSFONDInfo>* GetAstsOLSFONDInfoPool() {
@@ -751,7 +752,7 @@ public:
 	}
 
 	inline AstsOLSCURRItemInfo* GetFreeAstsOLSCURRItemInfo() {
-		return this->m_astsOLSCURRItems->NewItem();
+		return this->m_astsOLSCURRItems->NewItemUnsafe();
 	}
 
 	inline AutoAllocatePointerList<AstsOLSCURRItemInfo>* GetAstsOLSCURRItemInfoPool() {
@@ -759,7 +760,7 @@ public:
 	}
 
 	inline AstsOLSCURRInfo* GetFreeAstsOLSCURRInfo() {
-		return this->m_astsOLSCURR->NewItem();
+		return this->m_astsOLSCURR->NewItemUnsafe();
 	}
 
 	inline AutoAllocatePointerList<AstsOLSCURRInfo>* GetAstsOLSCURRInfoPool() {
@@ -767,7 +768,7 @@ public:
 	}
 
 	inline AstsTLSFONDItemInfo* GetFreeAstsTLSFONDItemInfo() {
-		return this->m_astsTLSFONDItems->NewItem();
+		return this->m_astsTLSFONDItems->NewItemUnsafe();
 	}
 
 	inline AutoAllocatePointerList<AstsTLSFONDItemInfo>* GetAstsTLSFONDItemInfoPool() {
@@ -775,7 +776,7 @@ public:
 	}
 
 	inline AstsTLSFONDInfo* GetFreeAstsTLSFONDInfo() {
-		return this->m_astsTLSFOND->NewItem();
+		return this->m_astsTLSFOND->NewItemUnsafe();
 	}
 
 	inline AutoAllocatePointerList<AstsTLSFONDInfo>* GetAstsTLSFONDInfoPool() {
@@ -783,7 +784,7 @@ public:
 	}
 
 	inline AstsTLSCURRItemInfo* GetFreeAstsTLSCURRItemInfo() {
-		return this->m_astsTLSCURRItems->NewItem();
+		return this->m_astsTLSCURRItems->NewItemUnsafe();
 	}
 
 	inline AutoAllocatePointerList<AstsTLSCURRItemInfo>* GetAstsTLSCURRItemInfoPool() {
@@ -791,7 +792,7 @@ public:
 	}
 
 	inline AstsTLSCURRInfo* GetFreeAstsTLSCURRInfo() {
-		return this->m_astsTLSCURR->NewItem();
+		return this->m_astsTLSCURR->NewItemUnsafe();
 	}
 
 	inline AutoAllocatePointerList<AstsTLSCURRInfo>* GetAstsTLSCURRInfoPool() {
@@ -799,7 +800,7 @@ public:
 	}
 
 	inline AstsSecurityDefinitionGroupInstrAttribItemInfo* GetFreeAstsSecurityDefinitionGroupInstrAttribItemInfo() {
-		return this->m_astsSecurityDefinitionGroupInstrAttribItems->NewItem();
+		return this->m_astsSecurityDefinitionGroupInstrAttribItems->NewItemUnsafe();
 	}
 
 	inline AutoAllocatePointerList<AstsSecurityDefinitionGroupInstrAttribItemInfo>* GetAstsSecurityDefinitionGroupInstrAttribItemInfoPool() {
@@ -807,7 +808,7 @@ public:
 	}
 
 	inline AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo* GetFreeAstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo() {
-		return this->m_astsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItems->NewItem();
+		return this->m_astsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItems->NewItemUnsafe();
 	}
 
 	inline AutoAllocatePointerList<AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo>* GetAstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfoPool() {
@@ -815,7 +816,7 @@ public:
 	}
 
 	inline AstsSecurityDefinitionMarketSegmentGrpItemInfo* GetFreeAstsSecurityDefinitionMarketSegmentGrpItemInfo() {
-		return this->m_astsSecurityDefinitionMarketSegmentGrpItems->NewItem();
+		return this->m_astsSecurityDefinitionMarketSegmentGrpItems->NewItemUnsafe();
 	}
 
 	inline AutoAllocatePointerList<AstsSecurityDefinitionMarketSegmentGrpItemInfo>* GetAstsSecurityDefinitionMarketSegmentGrpItemInfoPool() {
@@ -823,7 +824,7 @@ public:
 	}
 
 	inline AstsSecurityDefinitionInfo* GetFreeAstsSecurityDefinitionInfo() {
-		return this->m_astsSecurityDefinition->NewItem();
+		return this->m_astsSecurityDefinition->NewItemUnsafe();
 	}
 
 	inline AutoAllocatePointerList<AstsSecurityDefinitionInfo>* GetAstsSecurityDefinitionInfoPool() {
@@ -831,7 +832,7 @@ public:
 	}
 
 	inline AstsSecurityStatusInfo* GetFreeAstsSecurityStatusInfo() {
-		return this->m_astsSecurityStatus->NewItem();
+		return this->m_astsSecurityStatus->NewItemUnsafe();
 	}
 
 	inline AutoAllocatePointerList<AstsSecurityStatusInfo>* GetAstsSecurityStatusInfoPool() {
@@ -839,7 +840,7 @@ public:
 	}
 
 	inline AstsTradingSessionStatusInfo* GetFreeAstsTradingSessionStatusInfo() {
-		return this->m_astsTradingSessionStatus->NewItem();
+		return this->m_astsTradingSessionStatus->NewItemUnsafe();
 	}
 
 	inline AutoAllocatePointerList<AstsTradingSessionStatusInfo>* GetAstsTradingSessionStatusInfoPool() {
@@ -847,7 +848,7 @@ public:
 	}
 
 	inline AstsHeartbeatInfo* GetFreeAstsHeartbeatInfo() {
-		return this->m_astsHeartbeat->NewItem();
+		return this->m_astsHeartbeat->NewItemUnsafe();
 	}
 
 	inline AutoAllocatePointerList<AstsHeartbeatInfo>* GetAstsHeartbeatInfoPool() {
@@ -855,7 +856,7 @@ public:
 	}
 
 	inline AstsIncrementalGenericInfo* GetFreeAstsIncrementalGenericInfo() {
-		return this->m_astsIncrementalGeneric->NewItem();
+		return this->m_astsIncrementalGeneric->NewItemUnsafe();
 	}
 
 	inline AutoAllocatePointerList<AstsIncrementalGenericInfo>* GetAstsIncrementalGenericInfoPool() {
@@ -863,7 +864,7 @@ public:
 	}
 
 	inline AstsIncrementalMSRFONDInfo* GetFreeAstsIncrementalMSRFONDInfo() {
-		return this->m_astsIncrementalMSRFOND->NewItem();
+		return this->m_astsIncrementalMSRFOND->NewItemUnsafe();
 	}
 
 	inline AutoAllocatePointerList<AstsIncrementalMSRFONDInfo>* GetAstsIncrementalMSRFONDInfoPool() {
@@ -871,7 +872,7 @@ public:
 	}
 
 	inline AstsIncrementalMSRCURRInfo* GetFreeAstsIncrementalMSRCURRInfo() {
-		return this->m_astsIncrementalMSRCURR->NewItem();
+		return this->m_astsIncrementalMSRCURR->NewItemUnsafe();
 	}
 
 	inline AutoAllocatePointerList<AstsIncrementalMSRCURRInfo>* GetAstsIncrementalMSRCURRInfoPool() {
@@ -879,7 +880,7 @@ public:
 	}
 
 	inline AstsIncrementalOLRFONDInfo* GetFreeAstsIncrementalOLRFONDInfo() {
-		return this->m_astsIncrementalOLRFOND->NewItem();
+		return this->m_astsIncrementalOLRFOND->NewItemUnsafe();
 	}
 
 	inline AutoAllocatePointerList<AstsIncrementalOLRFONDInfo>* GetAstsIncrementalOLRFONDInfoPool() {
@@ -887,7 +888,7 @@ public:
 	}
 
 	inline AstsIncrementalOLRCURRInfo* GetFreeAstsIncrementalOLRCURRInfo() {
-		return this->m_astsIncrementalOLRCURR->NewItem();
+		return this->m_astsIncrementalOLRCURR->NewItemUnsafe();
 	}
 
 	inline AutoAllocatePointerList<AstsIncrementalOLRCURRInfo>* GetAstsIncrementalOLRCURRInfoPool() {
@@ -895,7 +896,7 @@ public:
 	}
 
 	inline AstsIncrementalTLRFONDInfo* GetFreeAstsIncrementalTLRFONDInfo() {
-		return this->m_astsIncrementalTLRFOND->NewItem();
+		return this->m_astsIncrementalTLRFOND->NewItemUnsafe();
 	}
 
 	inline AutoAllocatePointerList<AstsIncrementalTLRFONDInfo>* GetAstsIncrementalTLRFONDInfoPool() {
@@ -903,7 +904,7 @@ public:
 	}
 
 	inline AstsIncrementalTLRCURRInfo* GetFreeAstsIncrementalTLRCURRInfo() {
-		return this->m_astsIncrementalTLRCURR->NewItem();
+		return this->m_astsIncrementalTLRCURR->NewItemUnsafe();
 	}
 
 	inline AutoAllocatePointerList<AstsIncrementalTLRCURRInfo>* GetAstsIncrementalTLRCURRInfoPool() {
@@ -1295,6 +1296,16 @@ public:
         this->currentPos += 4;
         return result;
     }
+
+	inline UINT32 ReadPacketTemplateId() {
+		UINT32 result = *(UINT32*)this->currentPos;
+		if((result & 0x8080) == 0x8000) {  // 2byte value
+			this->currentPos += 2;
+			return result & 0xffff;
+		}
+		this->currentPos ++;
+		return result & 0xff;
+	}
 
     inline void SkipMsgSeqNumber() {
         this->currentPos += 4;
@@ -4107,7 +4118,35 @@ public:
             *dst = *src;
     }
 
-    inline void SkipToNextField() {
+	inline void SkipToNextField() {
+		UINT64 memory = *((UINT64*)this->currentPos) & 0x8080808080808080;
+
+		unsigned long long int count = _tzcnt_u64(memory);
+        if(count < 64) {
+            this->currentPos += (count + 1) >> 3;
+            return;
+		}
+
+        this->currentPos += 8;
+        memory = *((UINT64*)this->currentPos) & 0x8080808080808080;
+        count = _tzcnt_u64(memory);
+        if(count < 64) {
+            this->currentPos += (count + 1) >> 3;
+            return;
+        }
+
+        this->currentPos += 8;
+        memory = *((UINT64*)this->currentPos) & 0x8080808080808080;
+        count = _tzcnt_u64(memory);
+        if(count < 64) {
+            this->currentPos += (count + 1) >> 3;
+            return;
+        }
+
+		return;
+	}
+
+    inline void SkipToNextFieldSlow() {
         UINT64 memory = *((UINT64*)this->currentPos);
         while (true) {
             if ((memory & 0x8080808080808080) != 0) {
@@ -4203,25 +4242,15 @@ public:
             return;
         }
         if((memory & 0x808080808080) == 0x800000000000) { // 6 bytes
-            *((unsigned short*)str) = (unsigned short)memory;
-            this->currentPos += 2; str += 2; memory >>= 16;
-            *((unsigned int*)str) = (unsigned int)(memory & 0x7fffffff);
-
+            *((UINT64*)str) = memory & 0x7fffffffffff;
+            this->currentPos += 6;
             *lengthAddress = 6;
-            this->currentPos += 4;
             return;
         }
         if((memory & 0x80808080808080) == 0x80000000000000) { // 7 bytes
-            *str = (char)memory;
-            this->currentPos++; str++; memory >>= 8;
-
-            *((unsigned short*)str) = (unsigned short)memory;
-            this->currentPos += 2; str += 2; memory >>= 16;
-
-            *((unsigned int*)str) = (unsigned int)(memory & 0x7fffffff);
-
+            *((UINT64*)str) = memory & 0x7fffffffffffff;
+            this->currentPos += 7;
             *lengthAddress = 7;
-            this->currentPos += 4;
             return;
         }
         ReadString_Optional(str, lengthAddress);
@@ -4242,30 +4271,30 @@ public:
                         if ((memory & 0x80) != 0) {
                             *str = (char)(memory & 0x7f);
                             length++;
+							*lengthAddress = length;
                             this->currentPos++;
                             break;
                         }
                         else {
                             *((unsigned short*)str) = (unsigned short)(memory & 0x7fff);
                             length += 2;
+							*lengthAddress = length;
                             this->currentPos += 2;
                             break;
                         }
                     }
                     else {
                         if ((memory & 0x800000) != 0) {
-
-                            *str = (char)memory;
-                            this->currentPos++; str++; memory >>= 8;
-                            *((unsigned short*)str) = (unsigned short)(memory & 0x7fff);
-
+                            *((UINT32*)str) = memory & 0x7fffff;
                             length += 3;
-                            this->currentPos += 2;
+							*lengthAddress = length;
+                            this->currentPos += 3;
                             break;
                         }
                         else {
                             *((unsigned int*)str) = (unsigned int)(memory & 0x7fffffff);
                             length += 4;
+							*lengthAddress = length;
                             this->currentPos += 4;
                             break;
                         }
@@ -4274,44 +4303,32 @@ public:
                 else {
                     if ((memory & 0x0000808000000000) != 0) {
                         if ((memory & 0x0000008000000000) != 0) {
-
-                            *str = (char)memory;
-                            this->currentPos++; str++; memory >>= 8;
-                            *((unsigned int*)str) = (unsigned int)(memory & 0x7fffffff);
-
+                            *((UINT64*)str) = memory & 0x7fffffffff;
                             length += 5;
-                            this->currentPos += 4;
+							*lengthAddress = length;
+							this->currentPos += 5;
                             break;
                         }
                         else {
-                            *((unsigned short*)str) = (unsigned short)memory;
-                            this->currentPos += 2; str += 2; memory >>= 16;
-                            *((unsigned int*)str) = (unsigned int)(memory & 0x7fffffff);
-
+                            *((UINT64*)str) = memory & 0x7fffffffffff;
                             length += 6;
-                            this->currentPos += 4;
+							*lengthAddress = length;
+							this->currentPos += 6;
                             break;
                         }
                     }
                     else {
                         if ((memory & 0x0080000000000000) != 0) {
-
-                            *str = (char)memory;
-                            this->currentPos++; str++; memory >>= 8;
-
-                            *((unsigned short*)str) = (unsigned short)memory;
-                            this->currentPos += 2; str += 2; memory >>= 16;
-
-                            *((unsigned int*)str) = (unsigned int)(memory & 0x7fffffff);
-
+                            *((UINT64*)str) = memory & 0x7fffffffffffff;
                             length += 7;
-                            this->currentPos += 4;
+							*lengthAddress = length;
+							this->currentPos += 7;
                             break;
                         }
                         else {
                             *((UINT64*)str) = memory & 0x7fffffffffffffff;
-
                             length += 8;
+							*lengthAddress = length;
                             this->currentPos += 8;
                             break;
                         }
@@ -4325,7 +4342,6 @@ public:
             this->currentPos += 8;
             memory = *((UINT64*)this->currentPos);
         }
-        *lengthAddress = length;
     }
 
 	inline void ReadString_Mandatory_Fixed1(char *str, int *lengthAddress) {
@@ -4355,30 +4371,30 @@ public:
                         if ((memory & 0x80) != 0) {
                             *str = (char)(memory & 0x7f);
                             length++;
-                            this->currentPos++;
+							*lengthAddress = length;
+							this->currentPos++;
                             break;
                         }
                         else {
                             *((unsigned short*)str) = (unsigned short)(memory & 0x7fff);
                             length += 2;
+							*lengthAddress = length;
                             this->currentPos += 2;
                             break;
                         }
                     }
                     else {
                         if ((memory & 0x800000) != 0) {
-
-                            *str = (char)memory;
-                            this->currentPos++; str++; memory >>= 8;
-                            *((unsigned short*)str) = (unsigned short)(memory & 0x7fff);
-
+                            *((UINT32*)str) = memory & 0x7fffff;
                             length += 3;
-                            this->currentPos += 2;
+							*lengthAddress = length;
+                            this->currentPos += 3;
                             break;
                         }
                         else {
                             *((unsigned int*)str) = (unsigned int)(memory & 0x7fffffff);
                             length += 4;
+							*lengthAddress = length;
                             this->currentPos += 4;
                             break;
                         }
@@ -4387,44 +4403,32 @@ public:
                 else {
                     if ((memory & 0x0000808000000000) != 0) {
                         if ((memory & 0x0000008000000000) != 0) {
-
-                            *str = (char)memory;
-                            this->currentPos++; str++; memory >>= 8;
-                            *((unsigned int*)str) = (unsigned int)(memory & 0x7fffffff);
-
+                            *((UINT64*)str) = memory & 0x7fffffffff;
                             length += 5;
-                            this->currentPos += 4;
+							*lengthAddress = length;
+                            this->currentPos += 5;
                             break;
                         }
                         else {
-                            *((unsigned short*)str) = (unsigned short)memory;
-                            this->currentPos += 2; str += 2; memory >>= 16;
-                            *((unsigned int*)str) = (unsigned int)(memory & 0x7fffffff);
-
+                            *((UINT64*)str) = memory & 0x7fffffffffff;
                             length += 6;
-                            this->currentPos += 4;
+							*lengthAddress = length;
+                            this->currentPos += 6;
                             break;
                         }
                     }
                     else {
                         if ((memory & 0x0080000000000000) != 0) {
-
-                            *str = (char)memory;
-                            this->currentPos++; str++; memory >>= 8;
-
-                            *((unsigned short*)str) = (unsigned short)memory;
-                            this->currentPos += 2; str += 2; memory >>= 16;
-
-                            *((unsigned int*)str) = (unsigned int)(memory & 0x7fffffff);
-
+                            *((UINT64*)str) = memory & 0x7fffffffffffff;
                             length += 7;
-                            this->currentPos += 4;
+							*lengthAddress = length;
+                            this->currentPos += 7;
                             break;
                         }
                         else {
                             *((UINT64*)str) = memory & 0x7fffffffffffffff;
-
                             length += 8;
+							*lengthAddress = length;
                             this->currentPos += 8;
                             break;
                         }
@@ -4438,7 +4442,6 @@ public:
             this->currentPos += 8;
             memory = *((UINT64*)this->currentPos);
         }
-        *lengthAddress = length;
     }
 
     inline void ReadByteVector_Optional(BYTE *vecPtrAddress, int *lengthAddress, int maxLength) {
@@ -4471,6 +4474,10 @@ public:
         memcpy(this->currentPos, vecPtr, length);
         this->currentPos += length;
     }
+
+	inline void ParsePresenceMap() {
+		this->ParsePresenceMap(&(this->m_presenceMap));
+	}
 
     inline void ParsePresenceMap(UINT64 *map) {
         UINT64 value = *((UINT*)this->currentPos);

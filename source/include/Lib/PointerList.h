@@ -38,6 +38,11 @@ public:
     inline void Owner(PointerList<T> *owner) { this->m_owner = owner; }
     inline bool Released() { return this->m_released; }
     inline void Released(bool released) { this->m_released = released; }
+    inline void Connect(LinkedPointer<T> *next) {
+        this->m_next = next;
+        if(next != 0)
+            next->m_prev = this;
+    }
 };
 
 template <typename T> class PointerListLite;

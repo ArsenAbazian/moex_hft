@@ -285,7 +285,7 @@ public:
 		this->PresenceMap = 0;
 		this->NullMap = 0;
 		this->Used = false;
-		this->Allocator->FreeItem(this->Pointer);
+		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
 	inline void ReleaseUnused() {
 		if(this->Used)
@@ -293,7 +293,7 @@ public:
 
 		this->PresenceMap = 0;
 		this->NullMap = 0;
-		this->Allocator->FreeItem(this->Pointer);
+		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
 };
 
@@ -325,7 +325,7 @@ public:
 		this->PresenceMap = 0;
 		this->NullMap = 0;
 		this->Used = false;
-		this->Allocator->FreeItem(this->Pointer);
+		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
 	inline void ReleaseUnused() {
 		if(this->Used)
@@ -333,7 +333,7 @@ public:
 
 		this->PresenceMap = 0;
 		this->NullMap = 0;
-		this->Allocator->FreeItem(this->Pointer);
+		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
 };
 
@@ -412,7 +412,7 @@ public:
 		this->PresenceMap = 0;
 		this->NullMap = 0;
 		this->Used = false;
-		this->Allocator->FreeItem(this->Pointer);
+		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
 	inline void ReleaseUnused() {
 		if(this->Used)
@@ -420,7 +420,7 @@ public:
 
 		this->PresenceMap = 0;
 		this->NullMap = 0;
-		this->Allocator->FreeItem(this->Pointer);
+		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
 };
 
@@ -464,7 +464,7 @@ public:
 		this->PresenceMap = 0;
 		this->NullMap = 0;
 		this->Used = false;
-		this->Allocator->FreeItem(this->Pointer);
+		this->Allocator->FreeItemUnsafe(this->Pointer);
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->Clear();
 	}
@@ -474,7 +474,7 @@ public:
 
 		this->PresenceMap = 0;
 		this->NullMap = 0;
-		this->Allocator->FreeItem(this->Pointer);
+		this->Allocator->FreeItemUnsafe(this->Pointer);
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->ReleaseUnused();
 	}
@@ -519,7 +519,7 @@ public:
 		this->PresenceMap = 0;
 		this->NullMap = 0;
 		this->Used = false;
-		this->Allocator->FreeItem(this->Pointer);
+		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
 	inline void ReleaseUnused() {
 		if(this->Used)
@@ -527,7 +527,7 @@ public:
 
 		this->PresenceMap = 0;
 		this->NullMap = 0;
-		this->Allocator->FreeItem(this->Pointer);
+		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
 };
 
@@ -570,7 +570,7 @@ public:
 		this->PresenceMap = 0;
 		this->NullMap = 0;
 		this->Used = false;
-		this->Allocator->FreeItem(this->Pointer);
+		this->Allocator->FreeItemUnsafe(this->Pointer);
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->Clear();
 	}
@@ -580,7 +580,7 @@ public:
 
 		this->PresenceMap = 0;
 		this->NullMap = 0;
-		this->Allocator->FreeItem(this->Pointer);
+		this->Allocator->FreeItemUnsafe(this->Pointer);
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->ReleaseUnused();
 	}
@@ -621,7 +621,7 @@ public:
 		this->PresenceMap = 0;
 		this->NullMap = 0;
 		this->Used = false;
-		this->Allocator->FreeItem(this->Pointer);
+		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
 	inline void ReleaseUnused() {
 		if(this->Used)
@@ -629,7 +629,7 @@ public:
 
 		this->PresenceMap = 0;
 		this->NullMap = 0;
-		this->Allocator->FreeItem(this->Pointer);
+		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
 };
 
@@ -671,7 +671,7 @@ public:
 		this->PresenceMap = 0;
 		this->NullMap = 0;
 		this->Used = false;
-		this->Allocator->FreeItem(this->Pointer);
+		this->Allocator->FreeItemUnsafe(this->Pointer);
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->Clear();
 	}
@@ -681,7 +681,7 @@ public:
 
 		this->PresenceMap = 0;
 		this->NullMap = 0;
-		this->Allocator->FreeItem(this->Pointer);
+		this->Allocator->FreeItemUnsafe(this->Pointer);
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->ReleaseUnused();
 	}
@@ -735,7 +735,7 @@ public:
 		this->PresenceMap = 0;
 		this->NullMap = 0;
 		this->Used = false;
-		this->Allocator->FreeItem(this->Pointer);
+		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
 	inline void ReleaseUnused() {
 		if(this->Used)
@@ -743,7 +743,7 @@ public:
 
 		this->PresenceMap = 0;
 		this->NullMap = 0;
-		this->Allocator->FreeItem(this->Pointer);
+		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
 };
 
@@ -786,7 +786,7 @@ public:
 		this->PresenceMap = 0;
 		this->NullMap = 0;
 		this->Used = false;
-		this->Allocator->FreeItem(this->Pointer);
+		this->Allocator->FreeItemUnsafe(this->Pointer);
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->Clear();
 	}
@@ -796,7 +796,7 @@ public:
 
 		this->PresenceMap = 0;
 		this->NullMap = 0;
-		this->Allocator->FreeItem(this->Pointer);
+		this->Allocator->FreeItemUnsafe(this->Pointer);
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->ReleaseUnused();
 	}
@@ -848,7 +848,7 @@ public:
 		this->PresenceMap = 0;
 		this->NullMap = 0;
 		this->Used = false;
-		this->Allocator->FreeItem(this->Pointer);
+		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
 	inline void ReleaseUnused() {
 		if(this->Used)
@@ -856,7 +856,7 @@ public:
 
 		this->PresenceMap = 0;
 		this->NullMap = 0;
-		this->Allocator->FreeItem(this->Pointer);
+		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
 };
 
@@ -898,7 +898,7 @@ public:
 		this->PresenceMap = 0;
 		this->NullMap = 0;
 		this->Used = false;
-		this->Allocator->FreeItem(this->Pointer);
+		this->Allocator->FreeItemUnsafe(this->Pointer);
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->Clear();
 	}
@@ -908,7 +908,7 @@ public:
 
 		this->PresenceMap = 0;
 		this->NullMap = 0;
-		this->Allocator->FreeItem(this->Pointer);
+		this->Allocator->FreeItemUnsafe(this->Pointer);
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->ReleaseUnused();
 	}
@@ -933,7 +933,7 @@ public:
 		this->PresenceMap = 0;
 		this->NullMap = 0;
 		this->Used = false;
-		this->Allocator->FreeItem(this->Pointer);
+		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
 	inline void ReleaseUnused() {
 		if(this->Used)
@@ -941,7 +941,7 @@ public:
 
 		this->PresenceMap = 0;
 		this->NullMap = 0;
-		this->Allocator->FreeItem(this->Pointer);
+		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
 };
 
@@ -967,7 +967,7 @@ public:
 		this->PresenceMap = 0;
 		this->NullMap = 0;
 		this->Used = false;
-		this->Allocator->FreeItem(this->Pointer);
+		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
 	inline void ReleaseUnused() {
 		if(this->Used)
@@ -975,7 +975,7 @@ public:
 
 		this->PresenceMap = 0;
 		this->NullMap = 0;
-		this->Allocator->FreeItem(this->Pointer);
+		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
 };
 
@@ -998,7 +998,7 @@ public:
 		this->PresenceMap = 0;
 		this->NullMap = 0;
 		this->Used = false;
-		this->Allocator->FreeItem(this->Pointer);
+		this->Allocator->FreeItemUnsafe(this->Pointer);
 		for(int i = 0; i < this->TradingSessionRulesGrpCount; i++)
 			this->TradingSessionRulesGrp[i]->Clear();
 	}
@@ -1008,7 +1008,7 @@ public:
 
 		this->PresenceMap = 0;
 		this->NullMap = 0;
-		this->Allocator->FreeItem(this->Pointer);
+		this->Allocator->FreeItemUnsafe(this->Pointer);
 		for(int i = 0; i < this->TradingSessionRulesGrpCount; i++)
 			this->TradingSessionRulesGrp[i]->ReleaseUnused();
 	}
@@ -1098,7 +1098,7 @@ public:
 		this->PresenceMap = 0;
 		this->NullMap = 0;
 		this->Used = false;
-		this->Allocator->FreeItem(this->Pointer);
+		this->Allocator->FreeItemUnsafe(this->Pointer);
 		for(int i = 0; i < this->GroupInstrAttribCount; i++)
 			this->GroupInstrAttrib[i]->Clear();
 		for(int i = 0; i < this->MarketSegmentGrpCount; i++)
@@ -1110,7 +1110,7 @@ public:
 
 		this->PresenceMap = 0;
 		this->NullMap = 0;
-		this->Allocator->FreeItem(this->Pointer);
+		this->Allocator->FreeItemUnsafe(this->Pointer);
 		for(int i = 0; i < this->GroupInstrAttribCount; i++)
 			this->GroupInstrAttrib[i]->ReleaseUnused();
 		for(int i = 0; i < this->MarketSegmentGrpCount; i++)
@@ -1152,7 +1152,7 @@ public:
 		this->PresenceMap = 0;
 		this->NullMap = 0;
 		this->Used = false;
-		this->Allocator->FreeItem(this->Pointer);
+		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
 	inline void ReleaseUnused() {
 		if(this->Used)
@@ -1160,7 +1160,7 @@ public:
 
 		this->PresenceMap = 0;
 		this->NullMap = 0;
-		this->Allocator->FreeItem(this->Pointer);
+		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
 };
 
@@ -1195,7 +1195,7 @@ public:
 		this->PresenceMap = 0;
 		this->NullMap = 0;
 		this->Used = false;
-		this->Allocator->FreeItem(this->Pointer);
+		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
 	inline void ReleaseUnused() {
 		if(this->Used)
@@ -1203,7 +1203,7 @@ public:
 
 		this->PresenceMap = 0;
 		this->NullMap = 0;
-		this->Allocator->FreeItem(this->Pointer);
+		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
 };
 
@@ -1231,7 +1231,7 @@ public:
 		this->PresenceMap = 0;
 		this->NullMap = 0;
 		this->Used = false;
-		this->Allocator->FreeItem(this->Pointer);
+		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
 	inline void ReleaseUnused() {
 		if(this->Used)
@@ -1239,7 +1239,7 @@ public:
 
 		this->PresenceMap = 0;
 		this->NullMap = 0;
-		this->Allocator->FreeItem(this->Pointer);
+		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
 };
 
@@ -1271,7 +1271,7 @@ public:
 		this->PresenceMap = 0;
 		this->NullMap = 0;
 		this->Used = false;
-		this->Allocator->FreeItem(this->Pointer);
+		this->Allocator->FreeItemUnsafe(this->Pointer);
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->Clear();
 	}
@@ -1281,7 +1281,7 @@ public:
 
 		this->PresenceMap = 0;
 		this->NullMap = 0;
-		this->Allocator->FreeItem(this->Pointer);
+		this->Allocator->FreeItemUnsafe(this->Pointer);
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->ReleaseUnused();
 	}
@@ -1316,7 +1316,7 @@ public:
 		this->PresenceMap = 0;
 		this->NullMap = 0;
 		this->Used = false;
-		this->Allocator->FreeItem(this->Pointer);
+		this->Allocator->FreeItemUnsafe(this->Pointer);
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->Clear();
 	}
@@ -1326,7 +1326,7 @@ public:
 
 		this->PresenceMap = 0;
 		this->NullMap = 0;
-		this->Allocator->FreeItem(this->Pointer);
+		this->Allocator->FreeItemUnsafe(this->Pointer);
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->ReleaseUnused();
 	}
@@ -1361,7 +1361,7 @@ public:
 		this->PresenceMap = 0;
 		this->NullMap = 0;
 		this->Used = false;
-		this->Allocator->FreeItem(this->Pointer);
+		this->Allocator->FreeItemUnsafe(this->Pointer);
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->Clear();
 	}
@@ -1371,7 +1371,7 @@ public:
 
 		this->PresenceMap = 0;
 		this->NullMap = 0;
-		this->Allocator->FreeItem(this->Pointer);
+		this->Allocator->FreeItemUnsafe(this->Pointer);
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->ReleaseUnused();
 	}
@@ -1405,7 +1405,7 @@ public:
 		this->PresenceMap = 0;
 		this->NullMap = 0;
 		this->Used = false;
-		this->Allocator->FreeItem(this->Pointer);
+		this->Allocator->FreeItemUnsafe(this->Pointer);
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->Clear();
 	}
@@ -1415,7 +1415,7 @@ public:
 
 		this->PresenceMap = 0;
 		this->NullMap = 0;
-		this->Allocator->FreeItem(this->Pointer);
+		this->Allocator->FreeItemUnsafe(this->Pointer);
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->ReleaseUnused();
 	}
@@ -1449,7 +1449,7 @@ public:
 		this->PresenceMap = 0;
 		this->NullMap = 0;
 		this->Used = false;
-		this->Allocator->FreeItem(this->Pointer);
+		this->Allocator->FreeItemUnsafe(this->Pointer);
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->Clear();
 	}
@@ -1459,7 +1459,7 @@ public:
 
 		this->PresenceMap = 0;
 		this->NullMap = 0;
-		this->Allocator->FreeItem(this->Pointer);
+		this->Allocator->FreeItemUnsafe(this->Pointer);
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->ReleaseUnused();
 	}
@@ -1493,7 +1493,7 @@ public:
 		this->PresenceMap = 0;
 		this->NullMap = 0;
 		this->Used = false;
-		this->Allocator->FreeItem(this->Pointer);
+		this->Allocator->FreeItemUnsafe(this->Pointer);
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->Clear();
 	}
@@ -1503,7 +1503,7 @@ public:
 
 		this->PresenceMap = 0;
 		this->NullMap = 0;
-		this->Allocator->FreeItem(this->Pointer);
+		this->Allocator->FreeItemUnsafe(this->Pointer);
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->ReleaseUnused();
 	}
@@ -1537,7 +1537,7 @@ public:
 		this->PresenceMap = 0;
 		this->NullMap = 0;
 		this->Used = false;
-		this->Allocator->FreeItem(this->Pointer);
+		this->Allocator->FreeItemUnsafe(this->Pointer);
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->Clear();
 	}
@@ -1547,7 +1547,7 @@ public:
 
 		this->PresenceMap = 0;
 		this->NullMap = 0;
-		this->Allocator->FreeItem(this->Pointer);
+		this->Allocator->FreeItemUnsafe(this->Pointer);
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->ReleaseUnused();
 	}
@@ -2467,6 +2467,27 @@ public:
 	static const UINT64 TradingSessionSubIDNullIndex = NULL_MAP_INDEX19;
 	static const UINT64 RefOrderIDNullIndex = NULL_MAP_INDEX20;
 };
+class AstsPackedTemplateId {
+public:
+	static const UINT32 AstsLogonInfo = 0xb510;
+	static const UINT32 AstsLogoutInfo = 0xb610;
+	static const UINT32 AstsGenericInfo = 0xb710;
+	static const UINT32 AstsOLSFONDInfo = 0xce13;
+	static const UINT32 AstsOLSCURRInfo = 0x901c;
+	static const UINT32 AstsTLSFONDInfo = 0xcf13;
+	static const UINT32 AstsTLSCURRInfo = 0x911c;
+	static const UINT32 AstsSecurityDefinitionInfo = 0xc310;
+	static const UINT32 AstsSecurityStatusInfo = 0xba10;
+	static const UINT32 AstsTradingSessionStatusInfo = 0xbb10;
+	static const UINT32 AstsHeartbeatInfo = 0xbc10;
+	static const UINT32 AstsIncrementalGenericInfo = 0xb810;
+	static const UINT32 AstsIncrementalMSRFONDInfo = 0xdb13;
+	static const UINT32 AstsIncrementalMSRCURRInfo = 0x9d1c;
+	static const UINT32 AstsIncrementalOLRFONDInfo = 0xd813;
+	static const UINT32 AstsIncrementalOLRCURRInfo = 0x9a1c;
+	static const UINT32 AstsIncrementalTLRFONDInfo = 0xd913;
+	static const UINT32 AstsIncrementalTLRCURRInfo = 0x9b1c;
+};
 #pragma endregion
 
 #pragma region Forts_Message_Info_Structures_Definition_GeneratedCode
@@ -2553,7 +2574,7 @@ public:
 		this->PresenceMap = 0;
 		this->NullMap = 0;
 		this->Used = false;
-		this->Allocator->FreeItem(this->Pointer);
+		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
 	inline void ReleaseUnused() {
 		if(this->Used)
@@ -2561,7 +2582,7 @@ public:
 
 		this->PresenceMap = 0;
 		this->NullMap = 0;
-		this->Allocator->FreeItem(this->Pointer);
+		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
 };
 
@@ -2601,7 +2622,7 @@ public:
 		this->PresenceMap = 0;
 		this->NullMap = 0;
 		this->Used = false;
-		this->Allocator->FreeItem(this->Pointer);
+		this->Allocator->FreeItemUnsafe(this->Pointer);
 		for(int i = 0; i < this->MDEntriesCount; i++)
 			this->MDEntries[i]->Clear();
 	}
@@ -2611,7 +2632,7 @@ public:
 
 		this->PresenceMap = 0;
 		this->NullMap = 0;
-		this->Allocator->FreeItem(this->Pointer);
+		this->Allocator->FreeItemUnsafe(this->Pointer);
 		for(int i = 0; i < this->MDEntriesCount; i++)
 			this->MDEntries[i]->ReleaseUnused();
 	}
@@ -2637,7 +2658,7 @@ public:
 		this->PresenceMap = 0;
 		this->NullMap = 0;
 		this->Used = false;
-		this->Allocator->FreeItem(this->Pointer);
+		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
 	inline void ReleaseUnused() {
 		if(this->Used)
@@ -2645,7 +2666,7 @@ public:
 
 		this->PresenceMap = 0;
 		this->NullMap = 0;
-		this->Allocator->FreeItem(this->Pointer);
+		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
 };
 
@@ -2668,7 +2689,7 @@ public:
 		this->PresenceMap = 0;
 		this->NullMap = 0;
 		this->Used = false;
-		this->Allocator->FreeItem(this->Pointer);
+		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
 	inline void ReleaseUnused() {
 		if(this->Used)
@@ -2676,7 +2697,7 @@ public:
 
 		this->PresenceMap = 0;
 		this->NullMap = 0;
-		this->Allocator->FreeItem(this->Pointer);
+		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
 };
 
@@ -2700,7 +2721,7 @@ public:
 		this->PresenceMap = 0;
 		this->NullMap = 0;
 		this->Used = false;
-		this->Allocator->FreeItem(this->Pointer);
+		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
 	inline void ReleaseUnused() {
 		if(this->Used)
@@ -2708,7 +2729,7 @@ public:
 
 		this->PresenceMap = 0;
 		this->NullMap = 0;
-		this->Allocator->FreeItem(this->Pointer);
+		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
 };
 
@@ -2731,7 +2752,7 @@ public:
 		this->PresenceMap = 0;
 		this->NullMap = 0;
 		this->Used = false;
-		this->Allocator->FreeItem(this->Pointer);
+		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
 	inline void ReleaseUnused() {
 		if(this->Used)
@@ -2739,7 +2760,7 @@ public:
 
 		this->PresenceMap = 0;
 		this->NullMap = 0;
-		this->Allocator->FreeItem(this->Pointer);
+		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
 };
 
@@ -2762,7 +2783,7 @@ public:
 		this->PresenceMap = 0;
 		this->NullMap = 0;
 		this->Used = false;
-		this->Allocator->FreeItem(this->Pointer);
+		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
 	inline void ReleaseUnused() {
 		if(this->Used)
@@ -2770,7 +2791,7 @@ public:
 
 		this->PresenceMap = 0;
 		this->NullMap = 0;
-		this->Allocator->FreeItem(this->Pointer);
+		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
 };
 
@@ -2851,7 +2872,7 @@ public:
 		this->PresenceMap = 0;
 		this->NullMap = 0;
 		this->Used = false;
-		this->Allocator->FreeItem(this->Pointer);
+		this->Allocator->FreeItemUnsafe(this->Pointer);
 		for(int i = 0; i < this->MDFeedTypesCount; i++)
 			this->MDFeedTypes[i]->Clear();
 		for(int i = 0; i < this->UnderlyingsCount; i++)
@@ -2869,7 +2890,7 @@ public:
 
 		this->PresenceMap = 0;
 		this->NullMap = 0;
-		this->Allocator->FreeItem(this->Pointer);
+		this->Allocator->FreeItemUnsafe(this->Pointer);
 		for(int i = 0; i < this->MDFeedTypesCount; i++)
 			this->MDFeedTypes[i]->ReleaseUnused();
 		for(int i = 0; i < this->UnderlyingsCount; i++)
@@ -2912,7 +2933,7 @@ public:
 		this->PresenceMap = 0;
 		this->NullMap = 0;
 		this->Used = false;
-		this->Allocator->FreeItem(this->Pointer);
+		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
 	inline void ReleaseUnused() {
 		if(this->Used)
@@ -2920,7 +2941,7 @@ public:
 
 		this->PresenceMap = 0;
 		this->NullMap = 0;
-		this->Allocator->FreeItem(this->Pointer);
+		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
 };
 
@@ -2958,7 +2979,7 @@ public:
 		this->PresenceMap = 0;
 		this->NullMap = 0;
 		this->Used = false;
-		this->Allocator->FreeItem(this->Pointer);
+		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
 	inline void ReleaseUnused() {
 		if(this->Used)
@@ -2966,7 +2987,7 @@ public:
 
 		this->PresenceMap = 0;
 		this->NullMap = 0;
-		this->Allocator->FreeItem(this->Pointer);
+		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
 };
 
@@ -2994,7 +3015,7 @@ public:
 		this->PresenceMap = 0;
 		this->NullMap = 0;
 		this->Used = false;
-		this->Allocator->FreeItem(this->Pointer);
+		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
 	inline void ReleaseUnused() {
 		if(this->Used)
@@ -3002,7 +3023,7 @@ public:
 
 		this->PresenceMap = 0;
 		this->NullMap = 0;
-		this->Allocator->FreeItem(this->Pointer);
+		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
 };
 
@@ -3031,7 +3052,7 @@ public:
 		this->PresenceMap = 0;
 		this->NullMap = 0;
 		this->Used = false;
-		this->Allocator->FreeItem(this->Pointer);
+		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
 	inline void ReleaseUnused() {
 		if(this->Used)
@@ -3039,7 +3060,7 @@ public:
 
 		this->PresenceMap = 0;
 		this->NullMap = 0;
-		this->Allocator->FreeItem(this->Pointer);
+		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
 };
 
@@ -3079,7 +3100,7 @@ public:
 		this->PresenceMap = 0;
 		this->NullMap = 0;
 		this->Used = false;
-		this->Allocator->FreeItem(this->Pointer);
+		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
 	inline void ReleaseUnused() {
 		if(this->Used)
@@ -3087,7 +3108,7 @@ public:
 
 		this->PresenceMap = 0;
 		this->NullMap = 0;
-		this->Allocator->FreeItem(this->Pointer);
+		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
 };
 
@@ -3109,7 +3130,7 @@ public:
 		this->PresenceMap = 0;
 		this->NullMap = 0;
 		this->Used = false;
-		this->Allocator->FreeItem(this->Pointer);
+		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
 	inline void ReleaseUnused() {
 		if(this->Used)
@@ -3117,7 +3138,7 @@ public:
 
 		this->PresenceMap = 0;
 		this->NullMap = 0;
-		this->Allocator->FreeItem(this->Pointer);
+		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
 };
 
@@ -3160,7 +3181,7 @@ public:
 		this->PresenceMap = 0;
 		this->NullMap = 0;
 		this->Used = false;
-		this->Allocator->FreeItem(this->Pointer);
+		this->Allocator->FreeItemUnsafe(this->Pointer);
 		for(int i = 0; i < this->NewsTextCount; i++)
 			this->NewsText[i]->Clear();
 	}
@@ -3170,7 +3191,7 @@ public:
 
 		this->PresenceMap = 0;
 		this->NullMap = 0;
-		this->Allocator->FreeItem(this->Pointer);
+		this->Allocator->FreeItemUnsafe(this->Pointer);
 		for(int i = 0; i < this->NewsTextCount; i++)
 			this->NewsText[i]->ReleaseUnused();
 	}
@@ -3209,7 +3230,7 @@ public:
 		this->PresenceMap = 0;
 		this->NullMap = 0;
 		this->Used = false;
-		this->Allocator->FreeItem(this->Pointer);
+		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
 	inline void ReleaseUnused() {
 		if(this->Used)
@@ -3217,7 +3238,7 @@ public:
 
 		this->PresenceMap = 0;
 		this->NullMap = 0;
-		this->Allocator->FreeItem(this->Pointer);
+		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
 };
 
@@ -3248,7 +3269,7 @@ public:
 		this->PresenceMap = 0;
 		this->NullMap = 0;
 		this->Used = false;
-		this->Allocator->FreeItem(this->Pointer);
+		this->Allocator->FreeItemUnsafe(this->Pointer);
 		for(int i = 0; i < this->MDEntriesCount; i++)
 			this->MDEntries[i]->Clear();
 	}
@@ -3258,7 +3279,7 @@ public:
 
 		this->PresenceMap = 0;
 		this->NullMap = 0;
-		this->Allocator->FreeItem(this->Pointer);
+		this->Allocator->FreeItemUnsafe(this->Pointer);
 		for(int i = 0; i < this->MDEntriesCount; i++)
 			this->MDEntries[i]->ReleaseUnused();
 	}
@@ -3289,7 +3310,7 @@ public:
 		this->PresenceMap = 0;
 		this->NullMap = 0;
 		this->Used = false;
-		this->Allocator->FreeItem(this->Pointer);
+		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
 	inline void ReleaseUnused() {
 		if(this->Used)
@@ -3297,7 +3318,7 @@ public:
 
 		this->PresenceMap = 0;
 		this->NullMap = 0;
-		this->Allocator->FreeItem(this->Pointer);
+		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
 };
 
@@ -3334,7 +3355,7 @@ public:
 		this->PresenceMap = 0;
 		this->NullMap = 0;
 		this->Used = false;
-		this->Allocator->FreeItem(this->Pointer);
+		this->Allocator->FreeItemUnsafe(this->Pointer);
 		for(int i = 0; i < this->MDEntriesCount; i++)
 			this->MDEntries[i]->Clear();
 	}
@@ -3344,7 +3365,7 @@ public:
 
 		this->PresenceMap = 0;
 		this->NullMap = 0;
-		this->Allocator->FreeItem(this->Pointer);
+		this->Allocator->FreeItemUnsafe(this->Pointer);
 		for(int i = 0; i < this->MDEntriesCount; i++)
 			this->MDEntries[i]->ReleaseUnused();
 	}
@@ -3374,7 +3395,7 @@ public:
 		this->PresenceMap = 0;
 		this->NullMap = 0;
 		this->Used = false;
-		this->Allocator->FreeItem(this->Pointer);
+		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
 	inline void ReleaseUnused() {
 		if(this->Used)
@@ -3382,7 +3403,7 @@ public:
 
 		this->PresenceMap = 0;
 		this->NullMap = 0;
-		this->Allocator->FreeItem(this->Pointer);
+		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
 };
 
@@ -3412,7 +3433,7 @@ public:
 		this->PresenceMap = 0;
 		this->NullMap = 0;
 		this->Used = false;
-		this->Allocator->FreeItem(this->Pointer);
+		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
 	inline void ReleaseUnused() {
 		if(this->Used)
@@ -3420,7 +3441,7 @@ public:
 
 		this->PresenceMap = 0;
 		this->NullMap = 0;
-		this->Allocator->FreeItem(this->Pointer);
+		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
 };
 
@@ -3451,7 +3472,7 @@ public:
 		this->PresenceMap = 0;
 		this->NullMap = 0;
 		this->Used = false;
-		this->Allocator->FreeItem(this->Pointer);
+		this->Allocator->FreeItemUnsafe(this->Pointer);
 		for(int i = 0; i < this->MDEntriesCount; i++)
 			this->MDEntries[i]->Clear();
 	}
@@ -3461,7 +3482,7 @@ public:
 
 		this->PresenceMap = 0;
 		this->NullMap = 0;
-		this->Allocator->FreeItem(this->Pointer);
+		this->Allocator->FreeItemUnsafe(this->Pointer);
 		for(int i = 0; i < this->MDEntriesCount; i++)
 			this->MDEntries[i]->ReleaseUnused();
 	}
@@ -3934,6 +3955,22 @@ public:
 class FortsDefaultIncrementalRefreshMessageInfoNullIndices{
 public:
 	static const UINT64 LastFragmentNullIndex = NULL_MAP_INDEX0;
+};
+class FortsPackedTemplateId {
+public:
+	static const UINT32 FortsDefaultSnapshotMessageInfo = 0x008d;
+	static const UINT32 FortsSecurityDefinitionInfo = 0x0083;
+	static const UINT32 FortsSecurityDefinitionUpdateReportInfo = 0x0084;
+	static const UINT32 FortsSecurityStatusInfo = 0x0085;
+	static const UINT32 FortsHeartbeatInfo = 0x0086;
+	static const UINT32 FortsSequenceResetInfo = 0x0087;
+	static const UINT32 FortsTradingSessionStatusInfo = 0x0088;
+	static const UINT32 FortsNewsInfo = 0x0089;
+	static const UINT32 FortsOrdersLogInfo = 0x008e;
+	static const UINT32 FortsOrdersBookInfo = 0x008f;
+	static const UINT32 FortsLogonInfo = 0xe807;
+	static const UINT32 FortsLogoutInfo = 0xe907;
+	static const UINT32 FortsDefaultIncrementalRefreshMessageInfo = 0x008c;
 };
 #pragma endregion
 

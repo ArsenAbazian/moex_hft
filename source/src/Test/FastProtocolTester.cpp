@@ -21,6 +21,48 @@ FastProtocolTester::~FastProtocolTester() {
     delete this->manager;
 }
 
+void FastProtocolTester::TestSkipToNextField() {
+    unsigned char data[16];
+    data[0] = 0xff;
+
+    this->manager->SetNewBuffer(data, 16);
+    this->manager->ResetBuffer();
+    this->manager->SkipToNextField();
+    if(this->manager->MessageLength() != 1)
+        throw;
+
+    for(int i = 1; i < 16; i++) {
+        data[i] = 0xff;
+        data[i - 1] = (unsigned char)(rand() & 0x7f);
+        this->manager->ResetBuffer();
+        this->manager->SkipToNextField();
+        if(this->manager->MessageLength() != i + 1)
+            throw;
+    }
+
+    Stopwatch *w = new Stopwatch();
+    w->Start();
+    for(int i = 1; i < 16; i++) {
+        data[i] = 0xff;
+        data[i - 1] = (unsigned char)(rand() & 0x7f);
+        w->Reset();
+        for(int j = 0; j < 10000000; j++) {
+            this->manager->ResetBuffer();
+            this->manager->SkipToNextField();
+        }
+        time_t mic = w->ElapsedNanosecondsSlow();
+
+        w->Reset();
+        for(int j = 0; j < 10000000; j++) {
+            this->manager->ResetBuffer();
+            this->manager->SkipToNextFieldSlow();
+        }
+        time_t mic2 = w->ElapsedNanosecondsSlow();
+
+        printf("%d bytes fast = %" PRIu64 " slow = %" PRIu64 "\n", i, mic, mic2);
+    }
+}
+
 void FastProtocolTester::TestPerformance() {
     const char **snap = new const char*[25] {
             "01 00 00 00 c0 8d 81 23 6a 19 6f 24 1f 43 f8 80 01 26 8b 97 57 42 b5 19 4a d6 80 80 8b b2 48 f2 14 18 01 92 80 fb 08 0d 8e 80 24 69 14 7b 3c 31 d8 86 80 80 80 81 80 80 b1 b8 48 f2 80 80 fb 08 0d 8e 80 25 57 22 08 5d 21 d0 80 80 80 80 80 80 80 80 b7 48 f2 80 80 fb 08 10 ee 80 25 57 22 08 5d 21 d0 80 80 80 80 80 80 80 80 c2 48 f2 80 80 fe 38 55 37 32 cc 80 25 57 22 08 5d 21 d0 15 95 80 80 80 80 80 80 80 b9 48 f2 80 80 fb 08 0f e2 80 25 57 22 08 5d 21 d0 80 80 80 80 80 80 80 80 b4 48 f2 80 80 fb 08 10 ee 80 25 57 22 08 5d 21 d0 80 80 80 80 80 80 80 80 f6 48 f2 80 80 80 80 25 57 22 08 5d 21 d0 3d d2 80 87 80 80 80 80 80 f7 48 f2 80 80 80 80 25 57 22 08 5d 21 d0 3d 80 80 8c 80 80 80 80 80 c3 48 f2 80 80 80 80 25 57 22 08 5d 21 d0 07 17 fb 80 80 80 80 80 80 80 b5 48 f1 80 80 fb 08 11 82 80 17 61 51 54 48 52 c0 80 80 80 80 80 80 80 80 b6 48 f1 80 80 fb 08 11 82 09 4f 0c da 2f 5f 66 7b 1c 40 80 80 80 80 80 80 80 80 80",
@@ -865,8 +907,6 @@ void FastProtocolTester::TestReadString_Optional() {
                 throw;
         }
     }
-
-    delete manager;
 }
 
 void FastProtocolTester::TestReadString_Mandatory() {
@@ -901,8 +941,6 @@ void FastProtocolTester::TestReadString_Mandatory() {
                 throw;
         }
     }
-
-    delete manager;
 }
 
 void FastProtocolTester::TestReadByteVector_Optional() { 
@@ -936,8 +974,6 @@ void FastProtocolTester::TestReadByteVector_Optional() {
                 throw;
         }
     }
-
-    delete manager;
 }
 
 void FastProtocolTester::TestReadByteVector_Mandatory() {
@@ -965,8 +1001,6 @@ void FastProtocolTester::TestReadByteVector_Mandatory() {
                 throw;
         }
     }
-
-    delete manager;
 }
 
 void FastProtocolTester::TestReadDecimal_Optional() { 
@@ -997,8 +1031,6 @@ void FastProtocolTester::TestReadDecimal_Optional() {
         throw;
     if (!manager->CheckBuffer(new BYTE[4] { 0xfd, 0x7f, 0x3f, 0xff }, 4))
         throw;
-
-    delete manager;
 }
 
 void FastProtocolTester::TestReadDecimal_Mandatory() {
@@ -1029,8 +1061,6 @@ void FastProtocolTester::TestReadDecimal_Mandatory() {
         throw;
     if (!manager->CheckBuffer(new BYTE[4] { 0xfe, 0x39, 0x45, 0xa3 }, 4))
         throw;
-    
-    delete manager;
 }
 
 void FastProtocolTester::TestReadInt64_Optional() {
@@ -1143,8 +1173,6 @@ void FastProtocolTester::TestReadInt64_Optional() {
         if (value2 != value)
             throw;
     }
-
-    delete manager;
 }
 
 void FastProtocolTester::TestReadInt64_Mandatory() {

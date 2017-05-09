@@ -659,6 +659,9 @@ bool Robot::MainLoop_CurrOnly() {
 
     Stopwatch::Default->GetElapsedMicrosecondsGlobal();
     w->StartFast();
+
+    this->m_currMarket->FeedChannel()->Olr()->EnableHistoricalReplay(false); // TODO remove!!!!!
+
     while(true) {
         Stopwatch::Default->GetElapsedMicrosecondsGlobal();
         if(!WinSockManager::UpdateManagersPollStatus())

@@ -71,6 +71,7 @@ public:
         }
         list->Clear();
     }
+    inline void DebugCheckHashTable() { }
     inline void Clear() {
         Clear(this->m_trades);
         this->ClearEntries();
