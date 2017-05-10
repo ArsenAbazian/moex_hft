@@ -24,22 +24,6 @@
     <list default="true" id="32604c03-98a8-42cf-80f6-771ec2ce84cc" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/Fast/FastProtocolManager.h" afterPath="$PROJECT_DIR$/source/include/Fast/FastProtocolManager.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/Fast/FastTypes.h" afterPath="$PROJECT_DIR$/source/include/Fast/FastTypes.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/Feeds/FeedConnection.h" afterPath="$PROJECT_DIR$/source/include/Feeds/FeedConnection.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/Lib/AutoAllocatePointerList.h" afterPath="$PROJECT_DIR$/source/include/Lib/AutoAllocatePointerList.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/Lib/HashTable.h" afterPath="$PROJECT_DIR$/source/include/Lib/HashTable.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/Lib/PointerList.h" afterPath="$PROJECT_DIR$/source/include/Lib/PointerList.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/Managers/DebugInfoManager.h" afterPath="$PROJECT_DIR$/source/include/Managers/DebugInfoManager.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/Managers/WinSockManager.h" afterPath="$PROJECT_DIR$/source/include/Managers/WinSockManager.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/MarketData/OrderBookInfo.h" afterPath="$PROJECT_DIR$/source/include/MarketData/OrderBookInfo.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/MarketData/OrderInfo.h" afterPath="$PROJECT_DIR$/source/include/MarketData/OrderInfo.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/MarketData/StatisticInfo.h" afterPath="$PROJECT_DIR$/source/include/MarketData/StatisticInfo.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/MarketData/TradeInfo.h" afterPath="$PROJECT_DIR$/source/include/MarketData/TradeInfo.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/Test/FastProtocolTester.h" afterPath="$PROJECT_DIR$/source/include/Test/FastProtocolTester.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/Test/HashTableTester.h" afterPath="$PROJECT_DIR$/source/include/Test/HashTableTester.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/Test/OrderTesterCurr.h" afterPath="$PROJECT_DIR$/source/include/Test/OrderTesterCurr.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/src/Robot.cpp" afterPath="$PROJECT_DIR$/source/src/Robot.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/src/Test/FastProtocolTester.cpp" afterPath="$PROJECT_DIR$/source/src/Test/FastProtocolTester.cpp" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tools/Program.cs" afterPath="$PROJECT_DIR$/tools/Program.cs" />
     </list>
     <ignored path="hft_robot.iws" />
@@ -66,11 +50,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="Settings.h" pinned="false" current-in-tab="false">
+      <file leaf-file-name="Settings.h" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/source/include/Settings.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="260">
-              <caret line="13" column="23" lean-forward="false" selection-start-line="13" selection-start-column="23" selection-end-line="13" selection-end-column="23" />
+            <state relative-caret-position="100">
+              <caret line="5" column="2" lean-forward="false" selection-start-line="5" selection-start-column="2" selection-end-line="5" selection-end-column="2" />
               <folding>
                 <element signature="e#1310#1527#0" expanded="true" />
                 <element signature="e#2316#2386#0" expanded="true" />
@@ -199,11 +183,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="FastProtocolManager.h" pinned="false" current-in-tab="true">
+      <file leaf-file-name="FastProtocolManager.h" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/source/include/Fast/FastProtocolManager.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="148">
-              <caret line="6378" column="4" lean-forward="true" selection-start-line="6378" selection-start-column="4" selection-end-line="6378" selection-end-column="4" />
+            <state relative-caret-position="167">
+              <caret line="4716" column="12" lean-forward="false" selection-start-line="4716" selection-start-column="12" selection-end-line="4716" selection-end-column="12" />
               <folding>
                 <element signature="e#26#54#0" expanded="true" />
                 <element signature="e#63029#63098#0" expanded="true" />
@@ -349,8 +333,21 @@
                 <element signature="e#128377#128445#0" expanded="true" />
                 <element signature="e#128739#128807#0" expanded="true" />
                 <element signature="e#129000#129069#0" expanded="true" />
-                <element signature="e#133005#134915#0" expanded="false" />
+                <element signature="e#133056#134966#0" expanded="false" />
+                <element signature="e#135297#135804#0" expanded="false" />
+                <element signature="e#135810#136609#0" expanded="false" />
+                <element signature="e#136615#139899#0" expanded="false" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Robot.cpp" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/source/src/Robot.cpp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="200">
+              <caret line="665" column="35" lean-forward="false" selection-start-line="665" selection-start-column="35" selection-end-line="665" selection-end-column="35" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -625,24 +622,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="x86intrin.h" pinned="false" current-in-tab="false">
-        <entry file="file:///usr/lib/llvm-3.8/lib/clang/3.8.0/include/x86intrin.h">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="174">
-              <caret line="13" column="23" lean-forward="false" selection-start-line="13" selection-start-column="23" selection-end-line="13" selection-end-column="23" />
-              <folding>
-                <element signature="e#1288#1311#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
     </leaf>
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>ListenIncrementalCore</find>
-      <find>ListenSecurityStatusC</find>
       <find>ProcessIncrementalMessages</find>
       <find>WriteUIN</find>
       <find>TemplateId()</find>
@@ -663,14 +646,16 @@
       <find>Parse</find>
       <find>OLRCURRInfo() {</find>
       <find>OLRCURRInfo()</find>
-      <find>ReadString_Optional</find>
-      <find>ReadString_Mandatory</find>
       <find>delete m</find>
       <find>delete mana</find>
       <find>delete manage</find>
       <find>delete manager</find>
       <find>Skip</find>
       <find>ReadString</find>
+      <find>ReadString_Mandatory</find>
+      <find>ReadString_Optional</find>
+      <find>ReadDecimal_Op</find>
+      <find>ReadDecimal_Optional</find>
     </findStrings>
     <replaceStrings>
       <replace>Optional</replace>
@@ -764,8 +749,8 @@
         <option value="$PROJECT_DIR$/source/include/Lib/AutoAllocatePointerList.h" />
         <option value="$PROJECT_DIR$/source/include/Test/FastProtocolTester.h" />
         <option value="$PROJECT_DIR$/source/src/Test/FastProtocolTester.cpp" />
-        <option value="$PROJECT_DIR$/source/include/Settings.h" />
         <option value="$PROJECT_DIR$/source/include/Fast/FastProtocolManager.h" />
+        <option value="$PROJECT_DIR$/source/include/Settings.h" />
       </list>
     </option>
   </component>
@@ -779,8 +764,8 @@
   <component name="ProjectFrameBounds">
     <option name="x" value="64" />
     <option name="y" value="-11" />
-    <option name="width" value="1617" />
-    <option name="height" value="957" />
+    <option name="width" value="1857" />
+    <option name="height" value="987" />
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
     <entry key="Project Default">
@@ -2001,7 +1986,7 @@
       <envs />
       <method />
     </configuration>
-    <configuration default="false" name="Build All" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" CONFIG_NAME="DEBUG" RUN_TARGET_PROJECT_NAME="hft_robot" RUN_TARGET_NAME="hft_robot" EXPLICIT_BUILD_TARGET_NAME="all">
+    <configuration default="false" name="Build All" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="test_feed" PASS_PARENT_ENVS_2="true" CONFIG_NAME="DEBUG" RUN_TARGET_PROJECT_NAME="hft_robot" RUN_TARGET_NAME="hft_robot" EXPLICIT_BUILD_TARGET_NAME="all">
       <envs />
       <method />
     </configuration>
@@ -2251,13 +2236,6 @@
       <workItem from="1493796992253" duration="1082000" />
       <workItem from="1493798443708" duration="97000" />
       <workItem from="1493799168929" duration="3000" />
-    </task>
-    <task id="LOCAL-00221" summary="1. Generating code for Forts feeds in Robot-&gt;AddDefaultTestChannels">
-      <created>1489356926423</created>
-      <option name="number" value="00221" />
-      <option name="presentableId" value="LOCAL-00221" />
-      <option name="project" value="LOCAL" />
-      <updated>1489356926423</updated>
     </task>
     <task id="LOCAL-00222" summary="1. starting fix bug with resetting buffer after apply snapshot...">
       <created>1489423596197</created>
@@ -2595,11 +2573,18 @@
       <option name="project" value="LOCAL" />
       <updated>1493137874425</updated>
     </task>
-    <option name="localTasksCounter" value="270" />
+    <task id="LOCAL-00270" summary="1. some optimizations...">
+      <created>1494321656292</created>
+      <option name="number" value="00270" />
+      <option name="presentableId" value="LOCAL-00270" />
+      <option name="project" value="LOCAL" />
+      <updated>1494321656299</updated>
+    </task>
+    <option name="localTasksCounter" value="271" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="2661747000" />
+    <option name="totallyTimeSpent" value="2666698000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -2611,21 +2596,21 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="64" y="-11" width="1617" height="957" extended-state="6" />
+    <frame x="64" y="-11" width="1857" height="987" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.36616454" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.41607565" sideWeight="0.64520127" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.36301368" sideWeight="0.64520127" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="CMake" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.46335697" sideWeight="0.4384817" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.50472814" sideWeight="0.30835915" order="8" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.5449173" sideWeight="0.5804974" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.19460727" sideWeight="0.48689955" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.57796013" sideWeight="0.4973822" order="10" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.29411766" sideWeight="0.493007" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25606468" sideWeight="0.493007" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.15957446" sideWeight="0.49344978" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.289267" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.235262" sideWeight="0.506993" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3711584" sideWeight="0.69164085" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.5638298" sideWeight="0.69164085" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Data View" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.36616454" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -2680,7 +2665,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
-    <MESSAGE value="1. Restored all Forts OBR tests" />
     <MESSAGE value="1. fixing some bugs with FORTS working cycle..." />
     <MESSAGE value="2. fixing some bugs with FORTS working cycle..." />
     <MESSAGE value="3. fixing some bugs with FORTS working cycle..." />
@@ -2705,7 +2689,8 @@
     <MESSAGE value="1. optimize FeedConnection - call various DoWorkAtom for each type of Feed" />
     <MESSAGE value="1. optimize ReadFromStringFast67" />
     <MESSAGE value="1. optimize Stopwatch&#10;2. not all tests passed" />
-    <option name="LAST_COMMIT_MESSAGE" value="1. optimize Stopwatch&#10;2. not all tests passed" />
+    <MESSAGE value="1. some optimizations..." />
+    <option name="LAST_COMMIT_MESSAGE" value="1. some optimizations..." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -2738,7 +2723,7 @@
         <line-breakpoint type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <condition expression="info-&gt;EvntGrpCount &gt; 10" language="ObjectiveC" />
           <url>file://$PROJECT_DIR$/source/include/Fast/FastProtocolManager.h</url>
-          <line>6882</line>
+          <line>6429</line>
           <option name="timeStamp" value="2126" />
         </line-breakpoint>
         <line-breakpoint type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
@@ -2971,14 +2956,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/source/src/Robot.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="200">
-          <caret line="665" column="35" lean-forward="false" selection-start-line="665" selection-start-column="35" selection-end-line="665" selection-end-column="35" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -3528,17 +3505,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/source/include/Settings.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="260">
-          <caret line="13" column="23" lean-forward="false" selection-start-line="13" selection-start-column="23" selection-end-line="13" selection-end-column="23" />
-          <folding>
-            <element signature="e#1310#1527#0" expanded="true" />
-            <element signature="e#2316#2386#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/source/include/Feeds/FeedConnection.h">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="126">
@@ -3547,10 +3513,18 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/source/src/Robot.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="200">
+          <caret line="665" column="35" lean-forward="false" selection-start-line="665" selection-start-column="35" selection-end-line="665" selection-end-column="35" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/source/include/Fast/FastProtocolManager.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="148">
-          <caret line="6378" column="4" lean-forward="true" selection-start-line="6378" selection-start-column="4" selection-end-line="6378" selection-end-column="4" />
+        <state relative-caret-position="167">
+          <caret line="4716" column="12" lean-forward="false" selection-start-line="4716" selection-start-column="12" selection-end-line="4716" selection-end-column="12" />
           <folding>
             <element signature="e#26#54#0" expanded="true" />
             <element signature="e#63029#63098#0" expanded="true" />
@@ -3696,7 +3670,21 @@
             <element signature="e#128377#128445#0" expanded="true" />
             <element signature="e#128739#128807#0" expanded="true" />
             <element signature="e#129000#129069#0" expanded="true" />
-            <element signature="e#133005#134915#0" expanded="false" />
+            <element signature="e#133056#134966#0" expanded="false" />
+            <element signature="e#135297#135804#0" expanded="false" />
+            <element signature="e#135810#136609#0" expanded="false" />
+            <element signature="e#136615#139899#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/include/Settings.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="100">
+          <caret line="5" column="2" lean-forward="false" selection-start-line="5" selection-start-column="2" selection-end-line="5" selection-end-column="2" />
+          <folding>
+            <element signature="e#1310#1527#0" expanded="true" />
+            <element signature="e#2316#2386#0" expanded="true" />
           </folding>
         </state>
       </provider>

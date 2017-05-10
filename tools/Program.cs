@@ -2661,11 +2661,11 @@ namespace prebuild {
 		}
 
 		private  void ParseDecimalValue (StructureInfo str, XmlNode value, string info, string tabString) {
+			string methodName = HasOptionalPresence(value)? "ReadDecimal_Optional" : "ReadDecimal_Mandatory";
 			if(ShouldWriteNullCheckCode(value)) {
-				WriteLine(tabString + "if(CheckProcessNullDecimal())");
+				WriteLine(tabString + "if(!" + methodName +"(&(" + info + "->" + Name(value) + ")))");
 				WriteLine(tabString + "\t" + info + "->NullMap |= NULL_MAP_INDEX" + CalcNullIndex(value) + ";");
-				WriteLine(tabString + "else");
-				tabString += "\t";
+				return;
 			}
 			if(ExtendedDecimal(value))
 				throw new Exception("Extended deciamal detected in template!");
@@ -2675,22 +2675,7 @@ namespace prebuild {
 				WriteLine(tabString + "\tSkipToNextField(); // " + Name(value) + " Exponent");
 				WriteLine(tabString + "}");
 			} else {
-				if(HasOptionalPresence(value))
-					WriteLine(tabString + "ReadDecimal_Optional(&(" + info + "->" + Name(value) + "));");
-				else
-					WriteLine(tabString + "ReadDecimal_Mandatory(&(" + info + "->" + Name(value) + "));");
-			}
-			if(ShouldWriteNullCheckCode(value)) {
-				tabString = tabString.Substring(1);
-				/*
-				if(HasOperators(value)) {
-					WriteLine(tabString + "else {");
-					tabString += "\t";
-					WriteDecimalValueOperatorsCode(str, value, info, tabString);
-					tabString = tabString.Substring(1);
-					WriteLine(tabString + "}");
-				}
-				*/
+				WriteLine(tabString + methodName + "(&(" + info + "->" + Name(value) + "));");
 			}
 		}
 
@@ -2777,32 +2762,13 @@ namespace prebuild {
 		}
 
 		private  void ParseStringValue (StructureInfo str, XmlNode value, string info, string tabString) {
+			string methodName = HasOptionalPresence (value) ? GetMethodName (value, "ReadString_Optional") : GetMethodName (value, "ReadString_Mandatory");
 			if(ShouldWriteNullCheckCode(value)) {
-				WriteLine(tabString + "if(CheckProcessNullString())");
+				WriteLine(tabString + "if(!" + methodName + "(" + info + "->" + Name(value) + ", &(" + info + "->" + Name(value) + "Length)" + "))");
 				WriteLine(tabString + "\t" + info + "->NullMap |= NULL_MAP_INDEX" + CalcNullIndex(value) + ";");
-				WriteLine(tabString + "else");
-				tabString += "\t";
+				return;
 			}
-			if(ShouldSkipField(value)) {
-				WriteLine(tabString + "SkipToNextField(); //" + Name(value));
-			} else {
-				if(HasOptionalPresence(value))
-					WriteLine(tabString + GetMethodName(value, "ReadString_Optional") + "(" + info + "->" + Name(value) + ", &(" + info + "->" + Name(value) + "Length)" + ");");
-				else
-					WriteLine(tabString + GetMethodName(value, "ReadString_Mandatory") + "(" + info + "->" + Name(value) + ", &(" + info + "->" + Name(value) + "Length)" + ");");
-			}
-			if(ShouldWriteNullCheckCode(value)) {
-				tabString = tabString.Substring(1);
-				/*
-				if(HasOperators(value)) {
-					WriteLine(tabString + "else {");
-					tabString += "\t";
-					WriteStringValueOperatorsCode(str, value, info, tabString);
-					tabString = tabString.Substring(1);
-					WriteLine(tabString + "}");
-				}
-				*/
-			}
+			WriteLine(tabString + methodName + "(" + info + "->" + Name(value) + ", &(" + info + "->" + Name(value) + "Length)" + ");");
 		}
 
 		private  void WriteDecimalValueDefault (XmlNode value, string structName, string tabString) {
