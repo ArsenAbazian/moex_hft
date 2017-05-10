@@ -64,6 +64,65 @@ void FastProtocolTester::TestSkipToNextField() {
 }
 
 void FastProtocolTester::TestPerformance() {
+    /*
+    unsigned char** data = new unsigned char*[1024 * 1024];
+    for(int i = 0; i < 1024 * 1024; i++) {
+        data[i] = new unsigned char[12];
+        this->manager->SetNewBuffer(data[i], 12);
+        this->manager->WriteUInt32_Optional(i);
+    }
+
+    UINT32 value;
+    Stopwatch *w = new Stopwatch();
+
+    w->Start();
+    for(int j = 0; j < 400; j++) {
+        for(int i = 0; i < 1024 * 1024; i++) {
+            this->manager->SetNewBuffer(data[i], 12);
+            if(!this->manager->CheckProcessNullUInt32())
+                value = this->manager->ReadUInt32_Optional();
+        }
+    }
+    time_t t2 = w->ElapsedNanosecondsSlow();
+    w->Stop();
+    printf("ReadUInt32_Optional() = %" PRIu64 " ns = %" PRIu64 " mcs\n", t2, t2 / 1000);
+
+    w->Start();
+    for(int j = 0; j < 400; j++) {
+        for(int i = 0; i < 1024 * 1024; i++) {
+            this->manager->SetNewBuffer(data[i], 12);
+            this->manager->ReadUInt32_Optional(&value);
+        }
+    }
+    time_t t1 = w->ElapsedNanosecondsSlow();
+    w->Stop();
+    printf("ReadUInt32_Optional(UINT32*) = %" PRIu64 " ns = %" PRIu64 " mcs\n", t1, t1 / 1000);
+
+
+    w->Start();
+    for(int j = 0; j < 400; j++) {
+        for(int i = 0; i < 1024 * 1024; i++) {
+            this->manager->SetNewBuffer(data[i], 12);
+            if(!this->manager->CheckProcessNullUInt32())
+                value = this->manager->ReadUInt32_Optional();
+        }
+    }
+    t2 = w->ElapsedNanosecondsSlow();
+    w->Stop();
+    printf("ReadUInt32_Optional() = %" PRIu64 " ns = %" PRIu64 " mcs\n", t2, t2 / 1000);
+
+    w->Start();
+    for(int j = 0; j < 400; j++) {
+        for(int i = 0; i < 1024 * 1024; i++) {
+            this->manager->SetNewBuffer(data[i], 12);
+            this->manager->ReadUInt32_Optional(&value);
+        }
+    }
+    t1 = w->ElapsedNanosecondsSlow();
+    w->Stop();
+    printf("ReadUInt32_Optional(UINT32*) = %" PRIu64 " ns = %" PRIu64 " mcs\n", t1, t1 / 1000);
+    */
+    /*
     const char **snap = new const char*[25] {
             "01 00 00 00 c0 8d 81 23 6a 19 6f 24 1f 43 f8 80 01 26 8b 97 57 42 b5 19 4a d6 80 80 8b b2 48 f2 14 18 01 92 80 fb 08 0d 8e 80 24 69 14 7b 3c 31 d8 86 80 80 80 81 80 80 b1 b8 48 f2 80 80 fb 08 0d 8e 80 25 57 22 08 5d 21 d0 80 80 80 80 80 80 80 80 b7 48 f2 80 80 fb 08 10 ee 80 25 57 22 08 5d 21 d0 80 80 80 80 80 80 80 80 c2 48 f2 80 80 fe 38 55 37 32 cc 80 25 57 22 08 5d 21 d0 15 95 80 80 80 80 80 80 80 b9 48 f2 80 80 fb 08 0f e2 80 25 57 22 08 5d 21 d0 80 80 80 80 80 80 80 80 b4 48 f2 80 80 fb 08 10 ee 80 25 57 22 08 5d 21 d0 80 80 80 80 80 80 80 80 f6 48 f2 80 80 80 80 25 57 22 08 5d 21 d0 3d d2 80 87 80 80 80 80 80 f7 48 f2 80 80 80 80 25 57 22 08 5d 21 d0 3d 80 80 8c 80 80 80 80 80 c3 48 f2 80 80 80 80 25 57 22 08 5d 21 d0 07 17 fb 80 80 80 80 80 80 80 b5 48 f1 80 80 fb 08 11 82 80 17 61 51 54 48 52 c0 80 80 80 80 80 80 80 80 b6 48 f1 80 80 fb 08 11 82 09 4f 0c da 2f 5f 66 7b 1c 40 80 80 80 80 80 80 80 80 80",
             "02 00 00 00 c0 8d 82 23 6a 19 6f 24 1f 45 a5 80 9f 97 57 42 b5 19 4b 80 80 80 8a b2 48 f2 14 17 7d d4 80 fb 01 1e 58 c0 80 24 62 1b 07 28 36 ac 83 80 80 80 81 80 80 b2 b8 48 f2 80 80 fb 01 1e 58 c0 80 25 31 38 20 3e 71 b0 80 80 80 80 80 80 80 80 b7 48 f2 80 80 fb 01 2c 07 b8 80 25 31 38 20 3e 71 b0 80 80 80 80 80 80 80 80 c2 48 f2 80 80 fe 0a 72 5a 98 80 25 31 38 20 3e 71 b0 85 80 80 80 80 80 80 80 b9 48 f2 80 80 fb 01 25 2f fc 80 25 31 38 20 3e 71 b0 80 80 80 80 80 80 80 80 b4 48 f2 80 80 fb 01 2c 07 b8 80 25 31 38 20 3e 71 b0 80 80 80 80 80 80 80 80 f6 48 f2 80 80 80 80 25 31 38 20 3e 71 b0 83 80 82 80 80 80 80 80 f7 48 f2 80 80 80 80 25 31 38 20 3e 71 b0 83 80 82 80 80 80 80 80 c3 48 f2 80 80 80 80 25 31 38 20 3e 71 b0 01 f5 80 80 80 80 80 80 80 b6 48 f1 80 80 fb 01 27 70 a4 09 4f 0c da 2f 5f 66 7b 1c 40 80 80 80 80 80 80 80 80 80",
@@ -138,7 +197,7 @@ void FastProtocolTester::TestPerformance() {
         printf("decode 100000 time = %" PRIu64 " nanosec or %" PRIu64 " ms\n", time, time / 1000000);
     }
 
-    getchar();
+    getchar();*/
 }
 
 void FastProtocolTester::TestMessages() {

@@ -1225,7 +1225,7 @@ namespace prebuild {
 
 			WriteLine("\tinline void Decode" + Prefix + "Header() {"); 
 			WriteLine("");
-			WriteLine("\t\tthis->ParsePresenceMap(&(this->m_presenceMap));");
+			WriteLine("\t\tthis->m_presenceMap = this->ParsePresenceMap();");
 			WriteLine("\t\tthis->m_templateId = ReadUInt32_Mandatory();");
 			WriteLine("\t}");
 			WriteLine("");
@@ -2120,7 +2120,8 @@ namespace prebuild {
 		}
 
 		void WriteParsePresenceMap (XmlNode node, string info, string tabString) {
-			WriteLine(tabString + "this->ParsePresenceMap(&(" + info + "->PresenceMap));");
+			WriteLine(tabString + "UINT64 pmap" + LevelCount + " = this->ParsePresenceMap();");
+			//WriteLine(tabString + "this->ParsePresenceMap(&(" + info + "->PresenceMap));");
 		}
 
 		private  int GetMaxPresenceBitCount (XmlNode node) {
@@ -2148,10 +2149,13 @@ namespace prebuild {
 			info.Prefix = Prefix;
 			WriteLine("\t\t" + Prefix + templateName + "Info* info = " + info.GetFreeMethodName + "();");
 			WriteCopyPresenceMap("\t\t", "info");
+			WriteLine ("\t\tUINT64 pmap" + LevelCount + " = info->PresenceMap;");
+			WriteLine ("\t\tUINT64 nmap" + LevelCount + " = 0;");
 			WriteLine("");
 			foreach(XmlNode value in template.ChildNodes) {
 				ParseValue(info, value, "info", templateName, "\t\t");
 			}
+			WriteLine ("\t\tinfo->NullMap = nmap" + LevelCount + ";");
 			WriteLine("\t\tthis->" + info.PrevValueName + " = info;");
 			WriteLine("\t\treturn info;");
 			WriteLine("\t}");
@@ -2281,6 +2285,7 @@ namespace prebuild {
 
 			WriteLine("\t\t" + Prefix + "SnapshotInfo *info = GetFree" + Prefix + "SnapshotInfo();" );
 			WriteCopyPresenceMap("\t\t", "info");
+			WriteLine ("\t\tUINT64 nmap" + LevelCount + " = 0;");
 			WriteLine("\t\tinfo->TemplateId = this->m_templateId;");
 			WriteLine("");
 			StructureInfo info = new StructureInfo() { Node = template, NameCore = templateName }; 
@@ -2290,6 +2295,7 @@ namespace prebuild {
 				if(parsed.Count == SnapshotInfoFields.Count)
 					break;
 			}
+			WriteLine ("\t\tinfo->NullMap = nmap" + LevelCount + ";");
 			WriteLine("\t\treturn info;");
 			WriteLine("\t}");
 
@@ -2575,20 +2581,14 @@ namespace prebuild {
 			}
 			string itemInfo = GetIemInfoPrefix(value) + "ItemInfo";
 			WriteLine("");
-			if(ShouldWriteNullCheckCode(value)) {
-				WriteLine(tabString + "if(CheckProcessNullInt32()) {");
-				WriteLine(tabString + "\t" + objectValueName + "->" + Name(value) + "Count = 0;");
-				WriteLine(tabString + "\t" + objectValueName + "->NullMap |= NULL_MAP_INDEX" + CalcNullIndex(value) + ";");
-				WriteLine(tabString + "}");
-				WriteLine(tabString + "else");
-				tabString += "\t";
-			}
-			if(HasOptionalPresence(value))
-				WriteLine(tabString + objectValueName + "->" + Name(value) + "Count = ReadUInt32_Optional_Predict1();");
-			else 				
-				WriteLine(tabString + objectValueName + "->" + Name(value) + "Count = ReadUInt32_Mandatory_Predict1();");
-			if(ShouldWriteNullCheckCode(value)) {
-				tabString = tabString.Substring(1);
+			string methodName = HasOptionalPresence(value)? "ReadUInt32_Optional_Predict12": "ReadUInt32_Mandatory_Predict12";
+			if (ShouldWriteNullCheckCode (value)) {
+				WriteLine (tabString + "if(!" + methodName + "((UINT32*)&(" + objectValueName + "->" + Name (value) + "Count))) {");
+				WriteLine (tabString + "\t" + objectValueName + "->" + Name (value) + "Count = 0;");
+				WriteLine (tabString + "\tnmap" + LevelCount + " |= NULL_MAP_INDEX" + CalcNullIndex (value) + ";");
+				WriteLine (tabString + "}");
+			} else {
+				WriteLine (tabString + objectValueName + "->" + Name (value) + "Count = " + methodName + "();");
 			}
 			WriteLine(tabString + info.Name + "* " + itemInfo + " = NULL;");
 			WriteLine("");
@@ -2596,19 +2596,24 @@ namespace prebuild {
 			WriteLine(tabString + "\t" + itemInfo + " = " + info.GetFreeMethodName + "();");
 			WriteLine(tabString + "\t" + objectValueName + "->" + Name(value) + "[i] = " + itemInfo + ";");
 
+			LevelCount++;
 			if(GetMaxPresenceBitCount(value) > 0) {
 				WriteLine("");
 				WriteParsePresenceMap(value, itemInfo, tabString + "\t");
-				WriteLine("");
 			}
-
+			WriteLine(tabString + "\tUINT64 nmap" + LevelCount + " = 0;");
+			WriteLine("");
 			foreach(XmlNode node in value.ChildNodes) {
 				if(node.Name == "length")
 					continue;
-				LevelCount++;
+				
 				ParseValue(info, node, itemInfo, parentClassCoreName + Name(value), tabString + "\t");
-				LevelCount--;
 			}
+			if (GetMaxPresenceBitCount (value) > 0) {
+				WriteLine (tabString + "\t" + itemInfo + "->PresenceMap = pmap" + LevelCount + ";");
+			}
+			WriteLine (tabString + "\t" + itemInfo + "->NullMap = nmap" + LevelCount + ";");
+			LevelCount--;
 			WriteLine(tabString + "\tthis->" + info.PrevValueName + " = " + itemInfo + ";");
 			WriteLine(tabString + "}");
 			WriteLine("");
@@ -2632,7 +2637,7 @@ namespace prebuild {
 		private  void ParseByteVectorValue (StructureInfo str, XmlNode value, string info, string tabString) {
 			if(ShouldWriteNullCheckCode(value)) {
 				WriteLine(tabString + "if(CheckProcessNullByteVector())");
-				WriteLine(tabString + "\t" + info + "->NullMap |= NULL_MAP_INDEX" + CalcNullIndex(value) + ";");
+				WriteLine(tabString + "\tnmap" + LevelCount + " |= NULL_MAP_INDEX" + CalcNullIndex(value) + ";");
 				WriteLine(tabString + "else");
 				tabString += "\t";
 			}
@@ -2664,7 +2669,7 @@ namespace prebuild {
 			string methodName = HasOptionalPresence(value)? "ReadDecimal_Optional" : "ReadDecimal_Mandatory";
 			if(ShouldWriteNullCheckCode(value)) {
 				WriteLine(tabString + "if(!" + methodName +"(&(" + info + "->" + Name(value) + ")))");
-				WriteLine(tabString + "\t" + info + "->NullMap |= NULL_MAP_INDEX" + CalcNullIndex(value) + ";");
+				WriteLine(tabString + "\tnmap" + LevelCount + " |= NULL_MAP_INDEX" + CalcNullIndex(value) + ";");
 				return;
 			}
 			if(ExtendedDecimal(value))
@@ -2682,7 +2687,7 @@ namespace prebuild {
 		private  void ParseInt64Value (StructureInfo str, XmlNode value, string info, string tabString) {
 			if(ShouldWriteNullCheckCode(value)) {
 				WriteLine(tabString + "if(CheckProcessNullInt64())");
-				WriteLine(tabString + "\t" + info + "->NullMap |= NULL_MAP_INDEX" + CalcNullIndex(value) + ";");
+				WriteLine(tabString + "\tnmap" + LevelCount + " |= NULL_MAP_INDEX" + CalcNullIndex(value) + ";");
 				WriteLine(tabString + "else");
 				tabString += "\t";
 			}
@@ -2710,7 +2715,7 @@ namespace prebuild {
 		private  void ParseUint64Value (StructureInfo str, XmlNode value, string info, string tabString) {
 			if(ShouldWriteNullCheckCode(value)) {
 				WriteLine(tabString + "if(CheckProcessNullUInt64())");
-				WriteLine(tabString + "\t" + info + "->NullMap |= NULL_MAP_INDEX" + CalcNullIndex(value) + ";");
+				WriteLine(tabString + "\tnmap" + LevelCount + " |= NULL_MAP_INDEX" + CalcNullIndex(value) + ";");
 				WriteLine(tabString + "else");
 				tabString += "\t";
 			}
@@ -2735,7 +2740,7 @@ namespace prebuild {
 			if(ShouldWriteNullCheckCode(value)) {
 				string nullIndex = "NULL_MAP_INDEX" + CalcNullIndex (value);
 				WriteLine (tabString + "if(!" + GetMethodName(value, "ReadInt32_Optional") + "(&(" + info + "->" + Name(value) + ")))");
-				WriteLine(tabString + "\t" + info + "->NullMap |= " + nullIndex + ";");
+				WriteLine(tabString + "\tnmap" + LevelCount + " |= " + nullIndex + ";");
 				return;
 			}
 			if (HasOptionalPresence (value))
@@ -2752,7 +2757,7 @@ namespace prebuild {
 			if(ShouldWriteNullCheckCode(value)) {
 				string nullIndex = "NULL_MAP_INDEX" + CalcNullIndex (value);
 				WriteLine (tabString + "if(!" + GetMethodName(value, "ReadUInt32_Optional") + "(&(" + info + "->" + Name(value) + ")))");
-				WriteLine(tabString + "\t" + info + "->NullMap |= " + nullIndex + ";");
+				WriteLine(tabString + "\tnmap" + LevelCount + " |= " + nullIndex + ";");
 				return;
 			}
 			if (HasOptionalPresence (value))
@@ -2765,7 +2770,7 @@ namespace prebuild {
 			string methodName = HasOptionalPresence (value) ? GetMethodName (value, "ReadString_Optional") : GetMethodName (value, "ReadString_Mandatory");
 			if(ShouldWriteNullCheckCode(value)) {
 				WriteLine(tabString + "if(!" + methodName + "(" + info + "->" + Name(value) + ", &(" + info + "->" + Name(value) + "Length)" + "))");
-				WriteLine(tabString + "\t" + info + "->NullMap |= NULL_MAP_INDEX" + CalcNullIndex(value) + ";");
+				WriteLine(tabString + "\tnmap" + LevelCount + " |= NULL_MAP_INDEX" + CalcNullIndex(value) + ";");
 				return;
 			}
 			WriteLine(tabString + methodName + "(" + info + "->" + Name(value) + ", &(" + info + "->" + Name(value) + "Length)" + ");");
@@ -2936,7 +2941,7 @@ namespace prebuild {
 			}
 			if(ShouldWriteCheckPresenceMapCode(value)) {
 				string name = HasOptionalPresence(value)? "CheckOptionalFieldPresence": "CheckMandatoryFieldPresence";
-				WriteLine(tabString + "if(" + name + "(" + objectValueName + "->PresenceMap, PRESENCE_MAP_INDEX" + CalcFieldPresenceIndex(value) + ")) {");
+				WriteLine(tabString + "if(" + name + "(pmap" + LevelCount + ", PRESENCE_MAP_INDEX" + CalcFieldPresenceIndex(value) + ")) {");
 				tabString += "\t";
 			}
 			if(IsString(value))
