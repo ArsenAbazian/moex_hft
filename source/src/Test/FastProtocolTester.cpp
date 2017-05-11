@@ -861,6 +861,10 @@ void FastProtocolTester::TestReadUInt32_Optional2() {
         bool res = manager->ReadUInt32_Optional(&value);
         if (value != i || !res)
             throw;
+        manager->ResetBuffer();
+        res = manager->ReadUInt32_Optional_Predict1(&value);
+        if (value != i || !res)
+            throw;
     }
 }
 
@@ -1236,9 +1240,10 @@ void FastProtocolTester::TestReadInt64_Optional() {
 
 void FastProtocolTester::TestReadInt64_Mandatory() {
     printf("Test FastProtocolTester::TestReadInt64_Mandatory\n");
+    manager->SetNewBuffer(new unsigned char[128], 128);
 
     INT64 min = INT64_MIN + 10;
-
+    /*
     for (INT64 i = 0; i > min; i -= 5) {
         manager->ResetBuffer();
         manager->WriteInt64_Mandatory(i);
@@ -1260,7 +1265,7 @@ void FastProtocolTester::TestReadInt64_Mandatory() {
         if ((i % 1000000) == 0)
             printf("%" PRIu64 "\n", i);
     }
-
+    */
 
     BYTE buffer[12];
     for (int i = 1; i < 10; i++) { // extended positive
@@ -1275,6 +1280,8 @@ void FastProtocolTester::TestReadInt64_Mandatory() {
 
         manager->ResetBuffer();
         INT64 value = manager->ReadInt64_Mandatory();
+        if(manager->MessageLength() != i + 1)
+            throw;
         manager->ResetBuffer();
 
         manager->ClearBuffer();
@@ -1301,6 +1308,8 @@ void FastProtocolTester::TestReadInt64_Mandatory() {
 
         manager->ResetBuffer();
         INT64 value = manager->ReadInt64_Mandatory();
+        if(manager->MessageLength() != i + 1)
+            throw;
         manager->ResetBuffer();
 
         manager->ClearBuffer();
@@ -1328,6 +1337,8 @@ void FastProtocolTester::TestReadInt64_Mandatory() {
 
         manager->ResetBuffer();
         INT64 value = manager->ReadInt64_Mandatory();
+        if(manager->MessageLength() != i + 1)
+            throw;
         manager->ResetBuffer();
 
         manager->ClearBuffer();
@@ -1354,6 +1365,8 @@ void FastProtocolTester::TestReadInt64_Mandatory() {
 
         manager->ResetBuffer();
         INT64 value = manager->ReadInt64_Mandatory();
+        if(manager->MessageLength() != i + 1)
+            throw;
         manager->ResetBuffer();
 
         manager->ClearBuffer();

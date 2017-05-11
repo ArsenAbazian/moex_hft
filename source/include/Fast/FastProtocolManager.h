@@ -2784,158 +2784,46 @@ public:
     }
 
 	inline bool ReadUInt32_Optional_Predict1(UINT32 *value) {
-		INT32 result;
+		UINT32 result = 0;
 		UINT64 memory = *((UINT64*)(this->currentPos));
 		if((memory & 0xff) == 0x80) {
 			this->currentPos++;
 			return false;
 		}
-		if((memory & 0x80) == 0x80) { // one byte
-#ifdef COLLECT_STATISTICS_FAST
-			ProgramStatistics::Total->Inc(Counters::cReadUInt32Mandatory_1Byte);
-#endif
-			this->currentPos++;
-			*value = (memory & 0x7f) - 1;
-			return true;
-		}
-		else if((memory & 0x808080) == 0x800000) { // three bytes
-#ifdef COLLECT_STATISTICS_FAST
-			ProgramStatistics::Total->Inc(Counters::cReadUInt32Mandatory_3Byte);
-#endif
-			this->currentPos += 3;
-			result = memory & 0x7f;
-			memory >>= 8;
-			result <<= 7;
-			result |= memory & 0x7f;
-			memory >>= 8;
-			result <<= 7;
-			result |= memory & 0x7f;
-			*value = result - 1;
-			return true;
-		}
-		else if((memory & 0x80808080) == 0x80000000) { // four bytes
-#ifdef COLLECT_STATISTICS_FAST
-			ProgramStatistics::Total->Inc(Counters::cReadUInt32Mandatory_4Byte);
-#endif
-			this->currentPos += 4;
-			result = memory & 0x7f;
-			memory >>= 8;
-			result <<= 7;
-			result |= memory & 0x7f;
-			memory >>= 8;
-			result <<= 7;
-			result |= memory & 0x7f;
-			memory >>= 8;
-			result <<= 7;
-			result |= memory & 0x7f;
-			*value = result - 1;
-			return true;
-		}
-		else if((memory & 0x8080) == 0x8000) { // two bytes
-#ifdef COLLECT_STATISTICS_FAST
-			ProgramStatistics::Total->Inc(Counters::cReadUInt32Mandatory_2Byte);
-#endif
-			this->currentPos += 2;
-			result = memory & 0x7f;
-			memory >>= 8;
-			result <<= 7;
-			result |= memory & 0x7f;
-			*value = result - 1;
-			return true;
-		}
-		//there is no need to check 5 bytes
-#ifdef COLLECT_STATISTICS_FAST
-		ProgramStatistics::Total->Inc(Counters::cReadUInt32Mandatory_5Byte);
-#endif
-		this->currentPos += 5;
-		result = memory & 0x7f;
-		memory >>= 8;
-		result <<= 7;
-		result |= memory & 0x7f;
-		memory >>= 8;
-		result <<= 7;
-		result |= memory & 0x7f;
-		memory >>= 8;
-		result <<= 7;
-		result |= memory & 0x7f;
-		memory >>= 8;
-		result <<= 7;
-		result |= memory & 0x7f;
-		*value = result - 1;
-		return true;
+        unsigned long long int count = _tzcnt_u64(memory & 0x8080808080);
+        count++;
+        count >>= 3;
+        this->currentPos += count;
+
+        while(true) {
+            result |= memory & 0x7f;
+            count--;
+            if(count == 0)
+                break;
+            memory >>= 8;
+            result <<= 7;
+        }
+        *value = result - 1;
+        return true;
 	}
 
     inline UINT32 ReadUInt32_Optional() {
-        UINT32 result;
+        UINT32 result = 0;
         UINT64 memory = *((UINT64*)(this->currentPos));
 
-        if((memory & 0x808080) == 0x800000) { // three bytes
-#ifdef COLLECT_STATISTICS_FAST
-            ProgramStatistics::Total->Inc(Counters::cReadUInt32Mandatory_3Byte);
-#endif
-            this->currentPos += 3;
-            result = memory & 0x7f;
+        unsigned long long int count = _tzcnt_u64(memory & 0x8080808080);
+        count++;
+        count >>= 3;
+        this->currentPos += count;
+
+        while(true) {
+            result |= memory & 0x7f;
+            count--;
+            if(count == 0)
+                break;
             memory >>= 8;
             result <<= 7;
-            result |= memory & 0x7f;
-            memory >>= 8;
-            result <<= 7;
-            result |= memory & 0x7f;
-            return result - 1;
         }
-        else if((memory & 0x80808080) == 0x80000000) { // four bytes
-#ifdef COLLECT_STATISTICS_FAST
-            ProgramStatistics::Total->Inc(Counters::cReadUInt32Mandatory_4Byte);
-#endif
-            this->currentPos += 4;
-            result = memory & 0x7f;
-            memory >>= 8;
-            result <<= 7;
-            result |= memory & 0x7f;
-            memory >>= 8;
-            result <<= 7;
-            result |= memory & 0x7f;
-            memory >>= 8;
-            result <<= 7;
-            result |= memory & 0x7f;
-            return result - 1;
-        }
-        else if((memory & 0x8080) == 0x8000) { // two bytes
-#ifdef COLLECT_STATISTICS_FAST
-            ProgramStatistics::Total->Inc(Counters::cReadUInt32Mandatory_2Byte);
-#endif
-            this->currentPos += 2;
-            result = memory & 0x7f;
-            memory >>= 8;
-            result <<= 7;
-            result |= memory & 0x7f;
-            return result - 1;
-        }
-        else if((memory & 0x80) == 0x80) { // one byte
-#ifdef COLLECT_STATISTICS_FAST
-            ProgramStatistics::Total->Inc(Counters::cReadUInt32Mandatory_1Byte);
-#endif
-            this->currentPos++;
-            return (memory & 0x7f) - 1;
-        }
-        //there is no need to check 5 bytes
-#ifdef COLLECT_STATISTICS_FAST
-        ProgramStatistics::Total->Inc(Counters::cReadUInt32Mandatory_5Byte);
-#endif
-        this->currentPos += 5;
-        result = memory & 0x7f;
-        memory >>= 8;
-        result <<= 7;
-        result |= memory & 0x7f;
-        memory >>= 8;
-        result <<= 7;
-        result |= memory & 0x7f;
-        memory >>= 8;
-        result <<= 7;
-        result |= memory & 0x7f;
-        memory >>= 8;
-        result <<= 7;
-        result |= memory & 0x7f;
         return result - 1;
     }
 
@@ -2966,85 +2854,26 @@ public:
 	}
 
     inline bool ReadUInt32_Optional(UINT32 *value) {
-        UINT32 result;
-		UINT64 memory = *((UINT64*)(this->currentPos));
+        UINT32 result = 0;
+        UINT64 memory = *((UINT64*)(this->currentPos));
         if((memory & 0xff) == 0x80) {
             this->currentPos++;
             return false;
         }
+        unsigned long long int count = _tzcnt_u64(memory & 0x8080808080);
+        count++;
+        count >>= 3;
+        this->currentPos += count;
 
-        if((memory & 0x808080) == 0x800000) { // three bytes
-#ifdef COLLECT_STATISTICS_FAST
-            ProgramStatistics::Total->Inc(Counters::cReadUInt32Mandatory_3Byte);
-#endif
-            this->currentPos += 3;
-            result = memory & 0x7f;
+        while(true) {
+            result |= memory & 0x7f;
+            count--;
+            if(count == 0)
+                break;
             memory >>= 8;
             result <<= 7;
-            result |= memory & 0x7f;
-            memory >>= 8;
-            result <<= 7;
-            result |= memory & 0x7f;
-            *value = result - 1;
-            return true;
         }
-        else if((memory & 0x80808080) == 0x80000000) { // four bytes
-#ifdef COLLECT_STATISTICS_FAST
-            ProgramStatistics::Total->Inc(Counters::cReadUInt32Mandatory_4Byte);
-#endif
-            this->currentPos += 4;
-            result = memory & 0x7f;
-            memory >>= 8;
-            result <<= 7;
-            result |= memory & 0x7f;
-            memory >>= 8;
-            result <<= 7;
-            result |= memory & 0x7f;
-            memory >>= 8;
-            result <<= 7;
-            result |= memory & 0x7f;
-			*value = result - 1;
-            return true;
-        }
-        else if((memory & 0x8080) == 0x8000) { // two bytes
-#ifdef COLLECT_STATISTICS_FAST
-            ProgramStatistics::Total->Inc(Counters::cReadUInt32Mandatory_2Byte);
-#endif
-            this->currentPos += 2;
-            result = memory & 0x7f;
-            memory >>= 8;
-            result <<= 7;
-            result |= memory & 0x7f;
-			*value = result - 1;
-            return true;
-        }
-        else if((memory & 0x80) == 0x80) { // one byte
-#ifdef COLLECT_STATISTICS_FAST
-            ProgramStatistics::Total->Inc(Counters::cReadUInt32Mandatory_1Byte);
-#endif
-            this->currentPos++;
-            *value = (memory & 0x7f) - 1;
-            return true;
-        }
-        //there is no need to check 5 bytes
-#ifdef COLLECT_STATISTICS_FAST
-        ProgramStatistics::Total->Inc(Counters::cReadUInt32Mandatory_5Byte);
-#endif
-        this->currentPos += 5;
-        result = memory & 0x7f;
-        memory >>= 8;
-        result <<= 7;
-        result |= memory & 0x7f;
-        memory >>= 8;
-        result <<= 7;
-        result |= memory & 0x7f;
-        memory >>= 8;
-        result <<= 7;
-        result |= memory & 0x7f;
-        memory >>= 8;
-        result <<= 7;
-        result |= memory & 0x7f;
-		*value = result - 1;
+        *value = result - 1;
         return true;
     }
 
@@ -3510,484 +3339,47 @@ public:
     }
 
     inline INT64 ReadInt64_Mandatory() {
-        INT64 result;
-        INT64 memory = *((INT64*)(this->currentPos));
+		INT64 result = 0;
+		__int128 memory = *((__int128 *) (this->currentPos));
 
-        INT64 valueMasked = memory & 0xff;
+		unsigned char valueMasked = memory & 0xff;
+		int addLength = 0;
 
-        if (valueMasked == 0x00) { // extended positive integer
-            result = 0;
-            memory >>= 8;
+		if(valueMasked == 0x00) { // extended positive integer
+			memory >>= 8;
+			addLength = 1;
+		} else if(valueMasked == 0x7f) { // extended negative integer
+			memory >>= 8;
+			addLength = 1;
+			result = 0xffffffffffffff80;
+		} else if((memory & 0x40) != 0) {
+			result = 0xffffffffffffff80;
+		}
+		unsigned long long int count = _tzcnt_u64(memory & 0x8080808080808080);
+		if(count == 64) {
+			addLength += 8;
+			for(count = 0; count < 8; count++) {
+				result |= memory & 0x7f;
+				memory >>= 8;
+				result <<= 7;
+			}
+			count = _tzcnt_u64(memory & 0x80808080);
 
-            result |= memory & 0x7f;
-            if ((memory & 0x80) != 0) {
-                this->currentPos += 2;
-#ifdef COLLECT_STATISTICS_FAST
-                ProgramStatistics::Total->Inc(Counters::cReadInt64MandatoryEp_2Byte);
-#endif
-                return result;
-            }
-            result <<= 7;
-            memory >>= 8;
-            result |= memory & 0x7f;
-            if ((memory & 0x80) != 0) {
-                this->currentPos += 3;
-#ifdef COLLECT_STATISTICS_FAST
-                ProgramStatistics::Total->Inc(Counters::cReadInt64MandatoryEp_3Byte);
-#endif
-                return result;
-            }
-            result <<= 7;
-            memory >>= 8;
-            result |= memory & 0x7f;
-            if ((memory & 0x80) != 0) {
-                this->currentPos += 4;
-#ifdef COLLECT_STATISTICS_FAST
-                ProgramStatistics::Total->Inc(Counters::cReadInt64MandatoryEp_4Byte);
-#endif
-                return result;
-            }
-            result <<= 7;
-            memory >>= 8;
-            result |= memory & 0x7f;
-            if ((memory & 0x80) != 0) {
-                this->currentPos += 5;
-#ifdef COLLECT_STATISTICS_FAST
-                ProgramStatistics::Total->Inc(Counters::cReadInt64MandatoryEp_5Byte);
-#endif
-                return result;
-            }
-            result <<= 7;
-            memory >>= 8;
-            result |= memory & 0x7f;
-            if ((memory & 0x80) != 0) {
-                this->currentPos += 6;
-#ifdef COLLECT_STATISTICS_FAST
-                ProgramStatistics::Total->Inc(Counters::cReadInt64MandatoryEp_6Byte);
-#endif
-                return result;
-            }
-            result <<= 7;
-            memory >>= 8;
-            result |= memory & 0x7f;
-            if ((memory & 0x80) != 0) {
-                this->currentPos += 7;
-#ifdef COLLECT_STATISTICS_FAST
-                ProgramStatistics::Total->Inc(Counters::cReadInt64MandatoryEp_7Byte);
-#endif
-                return result;
-            }
-            result <<= 7;
-            memory >>= 8;
-            result |= memory & 0x7f;
-            if ((memory & 0x80) != 0) {
-                this->currentPos += 8;
-#ifdef COLLECT_STATISTICS_FAST
-                ProgramStatistics::Total->Inc(Counters::cReadInt64MandatoryEp_8Byte);
-#endif
-                return result;
-            }
-            
-            this->currentPos += 8;
+		}
+		count++;
+		count >>= 3;
+		this->currentPos += addLength + count;
 
-            result <<= 7;
-            memory = *((INT64*)(this->currentPos));
-            result |= memory & 0x7f;
-            if ((memory & 0x80) != 0) {
-                this->currentPos++;
-#ifdef COLLECT_STATISTICS_FAST
-                ProgramStatistics::Total->Inc(Counters::cReadInt64MandatoryEp_9Byte);
-#endif
-                return result;
-            }
-
-            result <<= 7;
-            memory >>= 8;
-            result |= memory & 0x7f;
-            if ((memory & 0x80) != 0) {
-                this->currentPos += 2;
-#ifdef COLLECT_STATISTICS_FAST
-                ProgramStatistics::Total->Inc(Counters::cReadInt64MandatoryEp_10Byte);
-#endif
-                return result;
-            }
-
-            result <<= 7;
-            memory >>= 8;
-            result |= memory & 0x7f;
-
-            this->currentPos += 3;
-#ifdef COLLECT_STATISTICS_FAST
-            ProgramStatistics::Total->Inc(Counters::cReadInt64MandatoryEp_11Byte);
-#endif
-            return result;
-        }
-        else if (valueMasked == 0x7f) { // extended negative integer
-            memory >>= 8;
-
-            result = 0xffffffffffffff80;
-            result |= memory & 0x7f;
-            if ((memory & 0x80) != 0) {
-                this->currentPos += 2;
-#ifdef COLLECT_STATISTICS_FAST
-                ProgramStatistics::Total->Inc(Counters::cReadInt64MandatoryEn_2Byte);
-#endif
-                return result;
-            }
-            result <<= 7;
-            memory >>= 8;
-
-            result |= memory & 0x7f;
-            if ((memory & 0x80) != 0) {
-                this->currentPos += 3;
-#ifdef COLLECT_STATISTICS_FAST
-                ProgramStatistics::Total->Inc(Counters::cReadInt64MandatoryEn_3Byte);
-#endif
-                return result;
-            }
-
-            result <<= 7;
-            memory >>= 8;
-
-            result |= memory & 0x7f;
-            if ((memory & 0x80) != 0) {
-                this->currentPos += 4;
-#ifdef COLLECT_STATISTICS_FAST
-                ProgramStatistics::Total->Inc(Counters::cReadInt64MandatoryEn_4Byte);
-#endif
-                return result;
-            }
-
-            result <<= 7;
-            memory >>= 8;
-
-            result |= memory & 0x7f;
-            if ((memory & 0x80) != 0) {
-                this->currentPos += 5;
-#ifdef COLLECT_STATISTICS_FAST
-                ProgramStatistics::Total->Inc(Counters::cReadInt64MandatoryEn_5Byte);
-#endif
-                return result;
-            }
-
-            result <<= 7;
-            memory >>= 8;
-
-            result |= memory & 0x7f;
-            if ((memory & 0x80) != 0) {
-                this->currentPos += 6;
-#ifdef COLLECT_STATISTICS_FAST
-                ProgramStatistics::Total->Inc(Counters::cReadInt64MandatoryEn_6Byte);
-#endif
-                return result;
-            }
-
-            result <<= 7;
-            memory >>= 8;
-
-            result |= memory & 0x7f;
-            if ((memory & 0x80) != 0) {
-                this->currentPos += 7;
-#ifdef COLLECT_STATISTICS_FAST
-                ProgramStatistics::Total->Inc(Counters::cReadInt64MandatoryEn_7Byte);
-#endif
-                return result;
-            }
-
-            result <<= 7;
-            memory >>= 8;
-
-            result |= memory & 0x7f;
-            if ((memory & 0x80) != 0) {
-                this->currentPos += 8;
-#ifdef COLLECT_STATISTICS_FAST
-                ProgramStatistics::Total->Inc(Counters::cReadInt64MandatoryEn_8Byte);
-#endif
-                return result;
-            }
-            
-            this->currentPos += 8;
-            result <<= 7;
-            memory = *((INT64*)(this->currentPos));
-            result |= memory & 0x7f;
-
-            if ((memory & 0x80) != 0) {
-                this->currentPos ++;
-#ifdef COLLECT_STATISTICS_FAST
-                ProgramStatistics::Total->Inc(Counters::cReadInt64MandatoryEn_9Byte);
-#endif
-                return result;
-            }
-
-            result <<= 7;
-            memory >>= 8;
-
-            result |= memory & 0x7f;
-            if ((memory & 0x80) != 0) {
-                this->currentPos += 2;
-#ifdef COLLECT_STATISTICS_FAST
-                ProgramStatistics::Total->Inc(Counters::cReadInt64MandatoryEn_10Byte);
-#endif
-                return result;
-            }
-            
-            result <<= 7;
-            memory >>= 8;
-            result |= memory & 0x7f;
-
-            this->currentPos += 3;
-#ifdef COLLECT_STATISTICS_FAST
-            ProgramStatistics::Total->Inc(Counters::cReadInt64MandatoryEn_11Byte);
-#endif
-            return result;
-        }
-        else if ((memory & 0x40) != 0) { // simple negative integer 
-            result = 0xffffffffffffff80;
-            result |= memory & 0x7f;
-            if ((memory & 0x80) != 0) {
-                this->currentPos++;
-#ifdef COLLECT_STATISTICS_FAST
-                ProgramStatistics::Total->Inc(Counters::cReadInt64MandatorySn_1Byte);
-#endif
-                return result;
-            }
-            result <<= 7;
-            memory >>= 8;
-
-            result |= memory & 0x7f;
-            if ((memory & 0x80) != 0) {
-                this->currentPos += 2;
-#ifdef COLLECT_STATISTICS_FAST
-                ProgramStatistics::Total->Inc(Counters::cReadInt64MandatorySn_2Byte);
-#endif
-                return result;
-            }
-
-            result <<= 7;
-            memory >>= 8;
-
-            result |= memory & 0x7f;
-            if ((memory & 0x80) != 0) {
-                this->currentPos += 3;
-#ifdef COLLECT_STATISTICS_FAST
-                ProgramStatistics::Total->Inc(Counters::cReadInt64MandatorySn_3Byte);
-#endif
-                return result;
-            }
-
-            result <<= 7;
-            memory >>= 8;
-
-            result |= memory & 0x7f;
-            if ((memory & 0x80) != 0) {
-                this->currentPos += 4;
-#ifdef COLLECT_STATISTICS_FAST
-                ProgramStatistics::Total->Inc(Counters::cReadInt64MandatorySn_4Byte);
-#endif
-                return result;
-            }
-
-            result <<= 7;
-            memory >>= 8;
-
-            result |= memory & 0x7f;
-            if ((memory & 0x80) != 0) {
-                this->currentPos += 5;
-#ifdef COLLECT_STATISTICS_FAST
-                ProgramStatistics::Total->Inc(Counters::cReadInt64MandatorySn_5Byte);
-#endif
-                return result;
-            }
-
-            result <<= 7;
-            memory >>= 8;
-
-            result |= memory & 0x7f;
-            if ((memory & 0x80) != 0) {
-                this->currentPos += 6;
-#ifdef COLLECT_STATISTICS_FAST
-                ProgramStatistics::Total->Inc(Counters::cReadInt64MandatorySn_6Byte);
-#endif
-                return result;
-            }
-
-            result <<= 7;
-            memory >>= 8;
-
-            result |= memory & 0x7f;
-            if ((memory & 0x80) != 0) {
-                this->currentPos += 7;
-#ifdef COLLECT_STATISTICS_FAST
-                ProgramStatistics::Total->Inc(Counters::cReadInt64MandatorySn_7Byte);
-#endif
-                return result;
-            }
-
-            result <<= 7;
-            memory >>= 8;
-
-            result |= memory & 0x7f;
-            if ((memory & 0x80) != 0) {
-                this->currentPos += 8;
-#ifdef COLLECT_STATISTICS_FAST
-                ProgramStatistics::Total->Inc(Counters::cReadInt64MandatorySn_8Byte);
-#endif
-                return result;
-            }
-
-            this->currentPos += 8;
-            result <<= 7;
-            memory = *((INT64*)(this->currentPos));
-            result |= memory & 0x7f;
-
-            if ((memory & 0x80) != 0) {
-                this->currentPos ++;
-#ifdef COLLECT_STATISTICS_FAST
-                ProgramStatistics::Total->Inc(Counters::cReadInt64MandatorySn_9Byte);
-#endif
-                return result;
-            }
-
-            result <<= 7;
-            memory >>= 8;
-
-            result |= memory & 0x7f;
-            if ((memory & 0x80) != 0) {
-                this->currentPos += 2;
-#ifdef COLLECT_STATISTICS_FAST
-                ProgramStatistics::Total->Inc(Counters::cReadInt64MandatorySn_10Byte);
-#endif
-                return result;
-            }
-
-            result <<= 7;
-            memory >>= 8;
-            result |= memory & 0x7f;
-
-            this->currentPos += 3;
-#ifdef COLLECT_STATISTICS_FAST
-            ProgramStatistics::Total->Inc(Counters::cReadInt64MandatorySn_11Byte);
-#endif
-            return result;
-        }
-        else {  // simple positive integer
-            result = 0;
-            result |= memory & 0x7f;
-            if ((memory & 0x80) != 0) {
-                this->currentPos++;
-#ifdef COLLECT_STATISTICS_FAST
-                ProgramStatistics::Total->Inc(Counters::cReadInt64MandatorySp_1Byte);
-#endif
-                return result;
-            }
-            result <<= 7;
-            memory >>= 8;
-            result |= memory & 0x7f;
-            if ((memory & 0x80) != 0) {
-                this->currentPos += 2;
-#ifdef COLLECT_STATISTICS_FAST
-                ProgramStatistics::Total->Inc(Counters::cReadInt64MandatorySp_2Byte);
-#endif
-                return result;
-            }
-            result <<= 7;
-            memory >>= 8;
-            result |= memory & 0x7f;
-            if ((memory & 0x80) != 0) {
-                this->currentPos += 3;
-#ifdef COLLECT_STATISTICS_FAST
-                ProgramStatistics::Total->Inc(Counters::cReadInt64MandatorySp_3Byte);
-#endif
-                return result;
-            }
-
-            result <<= 7;
-            memory >>= 8;
-            result |= memory & 0x7f;
-            if ((memory & 0x80) != 0) {
-                this->currentPos += 4;
-#ifdef COLLECT_STATISTICS_FAST
-                ProgramStatistics::Total->Inc(Counters::cReadInt64MandatorySp_4Byte);
-#endif
-                return result;
-            }
-
-            result <<= 7;
-            memory >>= 8;
-            result |= memory & 0x7f;
-            if ((memory & 0x80) != 0) {
-                this->currentPos += 5;
-#ifdef COLLECT_STATISTICS_FAST
-                ProgramStatistics::Total->Inc(Counters::cReadInt64MandatorySp_5Byte);
-#endif
-                return result;
-            }
-
-            result <<= 7;
-            memory >>= 8;
-            result |= memory & 0x7f;
-            if ((memory & 0x80) != 0) {
-                this->currentPos += 6;
-#ifdef COLLECT_STATISTICS_FAST
-                ProgramStatistics::Total->Inc(Counters::cReadInt64MandatorySp_6Byte);
-#endif
-                return result;
-            }
-
-            result <<= 7;
-            memory >>= 8;
-            result |= memory & 0x7f;
-            if ((memory & 0x80) != 0) {
-                this->currentPos += 7;
-#ifdef COLLECT_STATISTICS_FAST
-                ProgramStatistics::Total->Inc(Counters::cReadInt64MandatorySp_7Byte);
-#endif
-                return result;
-            }
-
-            result <<= 7;
-            memory >>= 8;
-            result |= memory & 0x7f;
-            if ((memory & 0x80) != 0) {
-                this->currentPos += 8;
-#ifdef COLLECT_STATISTICS_FAST
-                ProgramStatistics::Total->Inc(Counters::cReadInt64MandatorySp_8Byte);
-#endif
-                return result;
-            }
-
-            this->currentPos += 8;
-
-            result <<= 7;
-            memory = *((INT64*)(this->currentPos));
-            result |= memory & 0x7f;
-
-            if ((memory & 0x80) != 0) {
-                this->currentPos ++;
-#ifdef COLLECT_STATISTICS_FAST
-                ProgramStatistics::Total->Inc(Counters::cReadInt64MandatorySp_9Byte);
-#endif
-                return result;
-            }
-
-            result <<= 7;
-            memory >>= 8;
-            result |= memory & 0x7f;
-            if ((memory & 0x80) != 0) {
-                this->currentPos += 2;
-#ifdef COLLECT_STATISTICS_FAST
-                ProgramStatistics::Total->Inc(Counters::cReadInt64MandatorySp_10Byte);
-#endif
-                return result;
-            }
-
-            this->currentPos += 3;
-#ifdef COLLECT_STATISTICS_FAST
-            ProgramStatistics::Total->Inc(Counters::cReadInt64MandatorySp_11Byte);
-#endif
-            return result;
-        }
-    }
+		while(true) {
+			result |= memory & 0x7f;
+			count--;
+			if(count == 0)
+				return result;
+			memory >>= 8;
+			result <<= 7;
+		}
+		return result;
+	}
     inline INT64 ReadInt64_Optional() {
         INT64 value = ReadInt64_Mandatory();
         if (value > 0)
@@ -4224,7 +3616,7 @@ public:
     }
 
     inline void CopyString(char *dst, char *src, int count) {
-        while(count >= 8) {
+		while(count >= 8) {
             *((UINT64*)dst) = *((UINT64*)src);
             count -= 8;
             dst += 8; src += 8;

@@ -45,37 +45,39 @@ public:
     void TestSkipToNextField();
 
     void Test() {
-        TestPerformance();
-        TestStringCopy();
-        TestReadString_Mandatory();
-        TestReadString_Optional();
-        TestSkipToNextField();
-        TestReadUInt32_Mandatory();
-        TestReadUInt32_Mandatory_Predict1();
-        TestReadUInt32_Optional2();
-        TestReadUInt32_Optional_Fixed1();
-        TestReadUInt32_Optional();
+            TestReadInt64_Mandatory();
+            TestReadUInt32_Mandatory();
+            TestReadUInt32_Mandatory_Predict1();
+            TestReadUInt32_Optional2();
+            TestReadUInt32_Optional_Fixed1();
+            TestReadUInt32_Optional();
 
-        TestReadInt32_Optional2();
-        TestReadInt32_Mandatory();
-        TestReadInt32_Optional();
-        TestReadInt32_Optional_Predict1();
-        TestReadInt32_Mandatory_Predict1();
+            TestPerformance();
+            TestStringCopy();
+            TestReadString_Mandatory();
+            TestReadString_Optional();
+            TestSkipToNextField();
 
 
+            TestReadInt32_Optional2();
+            TestReadInt32_Mandatory();
+            TestReadInt32_Optional();
+            TestReadInt32_Optional_Predict1();
+            TestReadInt32_Mandatory_Predict1();
 
-        TestReadUInt64_Optional();
-        TestReadUInt64_Mandatory();
-        TestReadInt64_Optional();
-        TestReadInt64_Mandatory();
 
-        TestMessages();
-        TestReadByteVector_Optional();
-        TestReadByteVector_Mandatory();
-        TestReadDecimal_Optional();
-        TestReadDecimal_Mandatory();
-        TestMessageSequenceNumber();
-        TestParsePresenceMap();
+            TestReadUInt64_Optional();
+            TestReadUInt64_Mandatory();
+            TestReadInt64_Optional();
+            TestReadInt64_Mandatory();
+
+            TestMessages();
+            TestReadByteVector_Optional();
+            TestReadByteVector_Mandatory();
+            TestReadDecimal_Optional();
+            TestReadDecimal_Mandatory();
+            TestMessageSequenceNumber();
+            TestParsePresenceMap();
     }
 };
 #endif
