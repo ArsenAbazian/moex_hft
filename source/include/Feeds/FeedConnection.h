@@ -281,11 +281,7 @@ protected:
             return true;
         if(msgSeqNum - this->m_windowMsgSeqNum >= this->m_packetsCount) {
             // we should start snapshot
-            this->ClearLocalPackets(0, this->GetLocalIndex(this->m_endMsgSeqNum));
-            this->m_startMsgSeqNum = msgSeqNum;
-            this->m_windowMsgSeqNum = msgSeqNum;
-            this->m_endMsgSeqNum = msgSeqNum;
-            this->StartListenSnapshot();
+            OnMsgSeqNumOutOfBounds(msgSeqNum);
             return false;
         }
         FeedConnectionMessageInfo *info = this->Packet(msgSeqNum);
@@ -384,17 +380,21 @@ protected:
         return true;
     }
 
+    void OnMsgSeqNumOutOfBounds(int msgSeqNum) {
+        this->ClearLocalPackets(0, this->GetLocalIndex(this->m_endMsgSeqNum));
+        this->m_startMsgSeqNum = msgSeqNum;
+        this->m_windowMsgSeqNum = msgSeqNum;
+        this->m_endMsgSeqNum = msgSeqNum;
+        this->StartListenSnapshot();
+    }
+
     inline bool ProcessServerCoreIncremental(int size, int msgSeqNum) {
         int localMsgSeqNum = msgSeqNum - this->m_windowMsgSeqNum;
         if(localMsgSeqNum < 0) // out of window
             return true;
         if(localMsgSeqNum >= this->m_packetsCount) {
             // we should start snapshot
-            this->ClearLocalPackets(0, this->GetLocalIndex(this->m_endMsgSeqNum));
-            this->m_startMsgSeqNum = msgSeqNum;
-            this->m_windowMsgSeqNum = msgSeqNum;
-            this->m_endMsgSeqNum = msgSeqNum;
-            this->StartListenSnapshot();
+            OnMsgSeqNumOutOfBounds(msgSeqNum);
             return false;
         }
         FeedConnectionMessageInfo *info = this->m_packets[localMsgSeqNum];
@@ -472,22 +472,30 @@ protected:
         this->socketBManager->FlushUDP();
     }
 
+    void OnFailProcessSocketManager(WinSockManager *socketManager) {
+        DefaultLogManager::Default->WriteSuccess(socketManager->SocketLogName(),
+                                                 LogMessageCode::lmcFeedConnection_Listen_Atom,
+                                                 false)->m_errno = errno;
+        socketManager->Reconnect();
+    }
+
     inline int ProcessSocketManager(WinSockManager *socketManager) {
         if(!socketManager->RecvUDP(this->m_recvABuffer->CurrentPos())) {
-            DefaultLogManager::Default->WriteSuccess(socketManager->SocketLogName(),
-                                                     LogMessageCode::lmcFeedConnection_Listen_Atom,
-                                                     false)->m_errno = errno;
-            socketManager->Reconnect();
+            OnFailProcessSocketManager(socketManager);
             return 0;
         }
         return socketManager->RecvSize();
     }
 
     inline bool ProcessServerIncremental(WinSockManager *socketManager) {
-        int size = this->ProcessSocketManager(socketManager);
-        if(size == 0)
-            return false;
-        return ProcessServerCoreIncremental(size, *((UINT*)socketManager->RecvBytes()));
+        if(!socketManager->ShouldRecv())
+            return true;
+        unsigned char *current = this->m_recvABuffer->CurrentPos();
+        if(!socketManager->RecvUDP(current)) {
+            OnFailProcessSocketManager(socketManager);
+            return true;
+        }
+        return ProcessServerCoreIncremental(socketManager->RecvSize(), *((UINT*)current));
     }
     inline bool ProcessServerAIncremental() { return this->ProcessServerIncremental(this->socketAManager); }
     inline bool ProcessServerBIncremental() { return this->ProcessServerIncremental(this->socketBManager); }
@@ -1125,15 +1133,6 @@ protected:
         return true;
     }
 
-    inline void ProcessIncrementalMessages_OneMessage() {
-        FeedConnectionMessageInfo *info = this->Packet(this->m_startMsgSeqNum);
-        this->ProcessIncrementalAsts(info);
-        info->Clear();
-        this->m_startMsgSeqNum++;
-        this->m_windowMsgSeqNum = this->m_startMsgSeqNum;
-        this->AfterMoveWindow();
-    }
-
     inline void ProcessIncrementalMessages_MultipleMessages() {
         int localStart = this->m_startMsgSeqNum - this->m_windowMsgSeqNum;
         int localEnd = this->m_endMsgSeqNum - this->m_windowMsgSeqNum;
@@ -1184,7 +1183,12 @@ protected:
 
     inline void ProcessIncrementalMessages() {
         if(this->m_startMsgSeqNum == this->m_endMsgSeqNum) { // special case - one packet
-            ProcessIncrementalMessages_OneMessage();
+            FeedConnectionMessageInfo *info = this->Packet(this->m_startMsgSeqNum);
+            this->ProcessIncrementalAsts(info);
+            info->Clear();
+            this->m_startMsgSeqNum++;
+            this->m_windowMsgSeqNum = this->m_startMsgSeqNum;
+            this->AfterMoveWindow();
         } else { // more than one packet
             ProcessIncrementalMessages_MultipleMessages();
         }
@@ -2579,12 +2583,10 @@ protected:
                 }
                 return true;
             }
-
         }
         else {
             this->m_waitTimer->Stop(1);
         }
-
         return this->ListenIncremental_Core();
     }
     inline bool ListenIncremental_Forts() {

@@ -662,14 +662,25 @@ bool Robot::MainLoop_CurrOnly() {
 
     this->m_currMarket->FeedChannel()->Olr()->EnableHistoricalReplay(false); // TODO remove!!!!!
 
+    AstsFeedChannel *channel = this->m_currMarket->FeedChannel();
     while(true) {
         Stopwatch::Default->GetElapsedMicrosecondsGlobal();
         if(!WinSockManager::UpdateManagersPollStatus())
             break;
-        if(!this->m_currMarket->DoWorkAtom()) {
+
+        bool res = channel->Olr()->DoWorkAtomIncremental();
+        if(channel->Ols()->State() != FeedConnectionState::fcsSuspend)
+            res &= channel->Ols()->DoWorkAtomSnapshot();
+        res &= channel->Isf()->DoWorkAtomSecurityStatus();
+        if(channel->Idf()->State() != FeedConnectionState::fcsSuspend)
+            res &= channel->Idf()->DoWorkAtomSecurityDefinition();
+        res &= channel->Hr()->DoWorkAtomHistoricalReplay();
+
+        if(!res) {
             delete w;
             return false;
         }
+
         if(!this->DoWorkAtom()) {
             delete w;
             return false;

@@ -124,17 +124,20 @@ public:
         bool res = true;
 #ifdef ALLOW_STATISTICS
             res &= this->msr->DoWorkAtomIncremental();
-            res &= this->mss->DoWorkAtomSnapshot();
+            if(this->mss->State() != FeedConnectionState::fcsSuspend)
+                res &= this->mss->DoWorkAtomSnapshot();
 #endif
 #ifdef ALLOW_ORDERS
             res &= this->olr->DoWorkAtomIncremental();
-            res &= this->ols->DoWorkAtomSnapshot();
+            if(this->ols->State() != FeedConnectionState::fcsSuspend)
+                res &= this->ols->DoWorkAtomSnapshot();
 #endif
 #ifdef ALLOW_TRADES
             res &= this->tlr->DoWorkAtomIncremental();
             res &= this->tls->DoWorkAtomSnapshot();
 #endif
-            res &= this->idf->DoWorkAtomSecurityDefinition();
+            if(this->idf->State() != FeedConnectionState::fcsSuspend)
+                res &= this->idf->DoWorkAtomSecurityDefinition();
 #ifdef ALLOW_STATUS
             res &= this->isf->DoWorkAtomSecurityStatus();
 #endif
