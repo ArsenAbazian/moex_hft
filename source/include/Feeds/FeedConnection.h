@@ -3002,8 +3002,8 @@ protected:
 
     inline bool ProcessSecurityStatus(unsigned char *buffer) {
         this->m_fastProtocolManager->SetNewBuffer(buffer);
-        this->m_fastProtocolManager->DecodeAstsHeader();
-        if(this->m_fastProtocolManager->TemplateId() == FeedTemplateId::fmcSecurityStatus)
+        UINT32 templateId = this->m_fastProtocolManager->ParseHeaderFast();
+        if(this->m_fastProtocolManager->TemplateId() == AstsPackedTemplateId::AstsSecurityStatusInfo)
             return this->ProcessSecurityStatus(this->m_fastProtocolManager->DecodeAstsSecurityStatus());
         return true;
     }
