@@ -39,7 +39,7 @@ public:
     // check other methods using this flag
     void TestCorrectlyReadHearthbeatTemplateId_WhenShouldProcessMsgSeqNum() {
         int reservedForMsgSeqNum = 4;
-        this->m_helper->m_fastManager->SetNewBuffer(this->m_buffer + reservedForMsgSeqNum, 1024);
+        this->m_helper->m_fastManager->SetNewBuffer(this->m_buffer, 1024);
         this->m_helper->m_fastManager->EncodeAstsHeartbeatInfo(new AstsHeartbeatInfo());
         FeedConnectionMessageInfo *info = new FeedConnectionMessageInfo();
         info->m_requested = false;

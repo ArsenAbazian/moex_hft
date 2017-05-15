@@ -3020,7 +3020,7 @@ public:
         SendMessages(incForts, snapForts,
                      "obr entry symbol1 sid 111111 111111, obr entry symbol2 sid 222222 111111, lost obr entry symbol1 sid 111111 222222,"
                              "wait_snap, lost obr entry symbol1 sid 111111 333333,                               obr entry symbol1 sid 111111 444444",
-                     "        hbeat,     obs begin symbol1 sid 111111 rpt 2 entry symbol1 sid 111111 222222 end, obs symbol2 begin rpt 1 entry symbol2 sid 222222 111111 end, hbeat",
+                     "        hbeat,     obs begin symbol1 sid 111111 rpt 2 entry symbol1 sid 111111 222222 end, obs begin symbol2 sid 222222 rpt 1 entry symbol2 sid 222222 111111 end, hbeat",
                      30);
         if(incForts->CanStopListeningSnapshot())
             throw;

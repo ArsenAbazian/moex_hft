@@ -1184,7 +1184,11 @@ public:
     inline bool FastCompareString4(char *str1, char *str2) { return *((int*)str1) == *((int*)str2); }
     inline bool FastCompareString8(char *str1, char *str2) { return *((UINT64*)str1) == *((UINT64*)str2); }
     inline void ResetBuffer() { this->currentPos = this->buffer; }
-    inline void SetNewBuffer(BYTE *buffer, int length) { 
+    inline void SetNewBuffer(BYTE *buffer) {
+        this->buffer = buffer;
+        this->currentPos = buffer;
+    }
+    inline void SetNewBuffer(BYTE *buffer, int length) {
         this->buffer = buffer;
         this->bufferLength = length;
         this->ResetBuffer();
@@ -2162,7 +2166,7 @@ public:
         return result;
     }
 	inline bool ReadInt32_Optional(INT32 *value) {
-		INT32 result;
+		INT32 result = 0;
 		UINT64 memory = *((UINT64*)(this->currentPos));
 		if((memory & 0xff) == 0x80) {
 			this->currentPos++;

@@ -917,16 +917,16 @@ public:
         ht->Test();
         delete ht;
 
+        OrderBookTesterForts *fob = new OrderBookTesterForts();
+        fob->Test();
+        delete fob;
+
         OrderTesterCurr *otCurr = new OrderTesterCurr();
         otCurr->Test();
         delete otCurr;
         OrderTesterFond *otFond = new OrderTesterFond();
         otFond->Test();
         delete otFond;
-
-        OrderBookTesterForts *fob = new OrderBookTesterForts();
-        fob->Test();
-        delete fob;
 
         TradeTesterCurr *ttCurr = new TradeTesterCurr();
         ttCurr->Test();
